@@ -6,11 +6,20 @@
 import Foundation
 
 /// Sheets presented over the tab bar.
-enum AppSheet: String, Identifiable {
-    /// "What are you recording?"
+enum AppSheet: Identifiable, Hashable {
+    /// "+" on Scripts: prompt, write, import, themes or formats.
     case newScript
+    /// The Record tab: read from a recent script, start a new one, or record freestyle.
+    case startRecording
     case importScript
-    case generateScript
+    case generateScript(GenerateTab)
 
-    var id: String { rawValue }
+    var id: String {
+        switch self {
+        case .newScript: "newScript"
+        case .startRecording: "startRecording"
+        case .importScript: "importScript"
+        case .generateScript(let tab): "generateScript.\(tab.rawValue)"
+        }
+    }
 }

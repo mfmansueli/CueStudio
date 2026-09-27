@@ -97,14 +97,21 @@ struct PrompterView: View {
                 ScriptPanelClearance.sheetHeight(panelBottom: $0, safeAreaBottom: safeAreaBottom)
             })
         case .addScript:
+            StartRecordingSheet(
+                mode: .attach,
+                recent: Array(library.scripts.prefix(StartRecordingSheet.recentLimit)),
+                readSeconds: { ReadTime.seconds(for: $0.text, speed: preferences.prompter.speed) },
+                onPick: { viewModel.attach($0) },
+                onNewScript: { viewModel.sheet = .newScript }
+            )
+        case .newScript:
             NewScriptSheet(
                 mode: .attach,
-                recent: Array(library.scripts.prefix(3)),
-                readSeconds: { ReadTime.seconds(for: $0.text, speed: preferences.prompter.speed) },
+                onPrompt: { viewModel.sheet = .generateScript(.prompt) },
                 onPaste: pasteAndAttach,
                 onImport: { viewModel.sheet = .importScript },
-                onGenerate: { viewModel.sheet = .generateScript },
-                onPick: { viewModel.attach($0) }
+                onThemes: { viewModel.sheet = .generateScript(.themes) },
+                onFormats: { viewModel.sheet = .generateScript(.formats) }
             )
         case .importScript:
             ImportScriptSheet(
@@ -114,8 +121,8 @@ struct PrompterView: View {
                 },
                 onPaste: pasteAndAttach
             )
-        case .generateScript:
-            GenerateScriptSheet(services: services) { viewModel.attach($0) }
+        case .generateScript(let tab):
+            GenerateScriptSheet(services: services, initialTab: tab) { viewModel.attach($0) }
         }
     }
 

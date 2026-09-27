@@ -5,7 +5,7 @@
 
 import SwiftUI
 
-/// Tabs (Scripts, Takes, Profile) plus the record button, the creation sheets and the prompter.
+/// Tabs (Scripts, Takes, Profile) plus the Record tab, the creation sheets and the prompter.
 struct MainView: View {
     let services: AppServices
 
@@ -33,9 +33,15 @@ struct MainView: View {
             Tab("Profile", systemImage: "person.crop.circle", value: AppTab.profile) {
                 NavigationStack { ProfileView() }
             }
-            // Not a destination: selecting it opens "What are you recording?".
-            Tab("Record", systemImage: "record.circle", value: AppTab.record) {
+            // Not a destination: selecting it opens "Start recording".
+            Tab(value: AppTab.record) {
                 Color.clear
+            } label: {
+                Label {
+                    Text("Record")
+                } icon: {
+                    Image(uiImage: RecordGlyph.tabImage)
+                }
             }
         }
         .tint(Palette.acc)
@@ -51,13 +57,7 @@ struct MainView: View {
     private var tabSelection: Binding<AppTab> {
         Binding(
             get: { presentation.selectedTab },
-            set: { tab in
-                if tab == .record {
-                    presentation.present(.newScript)
-                } else {
-                    presentation.selectedTab = tab
-                }
-            }
+            set: { presentation.select($0) }
         )
     }
 
@@ -69,13 +69,19 @@ struct MainView: View {
         case .newScript:
             NewScriptSheet(
                 mode: .new,
-                recent: Array(library.scripts.prefix(3)),
-                readSeconds: { ReadTime.seconds(for: $0.text, speed: preferences.prompter.speed) },
+                onPrompt: { presentation.present(.generateScript(.prompt)) },
                 onWrite: writeNewScript,
-                onPaste: pasteScript,
                 onImport: { presentation.present(.importScript) },
-                onGenerate: { presentation.present(.generateScript) },
+                onThemes: { presentation.present(.generateScript(.themes)) },
+                onFormats: { presentation.present(.generateScript(.formats)) }
+            )
+        case .startRecording:
+            StartRecordingSheet(
+                mode: .new,
+                recent: Array(library.scripts.prefix(StartRecordingSheet.recentLimit)),
+                readSeconds: { ReadTime.seconds(for: $0.text, speed: preferences.prompter.speed) },
                 onPick: { presentation.openPrompter(scriptID: $0.id, mode: .selfie) },
+                onNewScript: { presentation.present(.newScript) },
                 onSkip: { presentation.openPrompter(scriptID: nil, mode: .selfie) }
             )
         case .importScript:
@@ -87,8 +93,8 @@ struct MainView: View {
                 },
                 onPaste: pasteScript
             )
-        case .generateScript:
-            GenerateScriptSheet(services: services) { script in
+        case .generateScript(let tab):
+            GenerateScriptSheet(services: services, initialTab: tab) { script in
                 presentation.openScript(script.id, editing: true)
             }
         }

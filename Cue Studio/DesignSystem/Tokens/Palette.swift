@@ -15,6 +15,8 @@ enum Palette {
     static let surface = Color(light: .white, dark: Color(hex: 0x1C1C1E))
     /// Controls and rows inside a card or sheet.
     static let surface2 = Color(light: Color(hex: 0xE5E5EA), dark: Color(hex: 0x2C2C2E))
+    /// Tiles and icons one step above `surface2` (share targets, "More").
+    static let surface3 = Color(light: Color(hex: 0xD1D1D6), dark: Color(hex: 0x3A3A3C))
     /// Serious formats are shown one step quieter than the rest.
     static let surfaceMuted = Color(light: Color(hex: 0xEDEDF0), dark: Color(hex: 0x242426))
     /// Inactive chips, search fields and meter tracks.
@@ -22,8 +24,12 @@ enum Palette {
     /// Buttons floating over the camera and prompter.
     static let overlayFill = Color.white.opacity(0.1)
     static let separator = Color(light: Color(hex: 0x3C3C43, opacity: 0.29), dark: Color(hex: 0x545458, opacity: 0.6))
-    /// Secondary swipe actions ("More").
+    /// Secondary swipe actions ("More") and the selected segment of a segmented control.
     static let neutralAction = Color(hex: 0x636366)
+    /// Hairline around glass surfaces: the tab bar, the camera toolbar, floating buttons.
+    static let glassBorder = Color.white.opacity(0.12)
+    /// Field sunk into a tinted card, like the prompt box.
+    static let insetField = Color.black.opacity(0.38)
 
     // MARK: - Text
 
@@ -38,6 +44,11 @@ enum Palette {
     static let accInk = Color.black
     static let accSoft = Color(hex: 0xFFD60A, opacity: 0.16)
     static let accLine = Color(hex: 0xFFD60A, opacity: 0.3)
+    /// Border of the highlighted prompt card.
+    static let accBorder = Color(hex: 0xFFD60A, opacity: 0.38)
+    /// Yellow wash at the top of highlighted cards, fading to `accWashFaint`.
+    static let accWash = Color(hex: 0xFFD60A, opacity: 0.22)
+    static let accWashFaint = Color(hex: 0xFFD60A, opacity: 0.05)
     static let record = Color(hex: 0xFF3B30)
     static let danger = Color(light: Color(hex: 0xFF3B30), dark: Color(hex: 0xFF453A))
     static let dangerSoft = Color(hex: 0xFF3B30, opacity: 0.2)

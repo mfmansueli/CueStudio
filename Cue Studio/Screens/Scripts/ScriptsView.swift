@@ -14,8 +14,6 @@ struct ScriptsView: View {
     @Environment(PresentationService.self) private var presentation
     @Environment(PreferencesService.self) private var preferences
     @Environment(CreatorProfileService.self) private var profile
-    @Environment(DocumentImportService.self) private var importer
-    @Environment(ToastService.self) private var toast
 
     init(library: ScriptLibraryService, toast: ToastService) {
         _viewModel = State(initialValue: ScriptsViewModel(library: library, toast: toast))
@@ -50,9 +48,10 @@ struct ScriptsView: View {
     private var content: some View {
         if library.hasLoaded && library.scripts.isEmpty {
             EmptyLibraryView(
+                onPrompt: { presentation.present(.generateScript(.prompt)) },
                 onWrite: newBlankScript,
                 onImport: { presentation.present(.importScript) },
-                onGenerate: { presentation.present(.generateScript) },
+                onGenerate: { presentation.present(.generateScript(.prompt)) },
                 onSkip: { presentation.openPrompter(scriptID: nil, mode: .selfie) }
             )
         } else {
@@ -214,24 +213,12 @@ struct ScriptsView: View {
     private var toolbarContent: some ToolbarContent {
         ToolbarItem(placement: .topBarTrailing) {
             Button {
-                presentation.present(.importScript)
+                presentation.present(.newScript)
             } label: {
-                Label("Import", systemImage: "square.and.arrow.down")
+                Label("New script", systemImage: "plus")
             }
-            .accessibilityIdentifier("scripts.importButton")
-        }
-        ToolbarItem(placement: .topBarTrailing) {
-            Menu {
-                Button("New script", systemImage: "square.and.pencil", action: newBlankScript)
-                Button("Paste from clipboard", systemImage: "doc.on.clipboard", action: pasteScript)
-                Button("Import document", systemImage: "doc") { presentation.present(.importScript) }
-                Button("Generate with AI", systemImage: "sparkles") { presentation.present(.generateScript) }
-                Divider()
-                Button("New folder", systemImage: "folder.badge.plus") { viewModel.startNewFolder() }
-            } label: {
-                Label("New", systemImage: "plus")
-            }
-            .accessibilityIdentifier("scripts.plusMenu")
+            .tint(Palette.ink)
+            .accessibilityIdentifier("scripts.newButton")
         }
     }
 
@@ -256,20 +243,6 @@ struct ScriptsView: View {
     private func newBlankScript() {
         let script = library.create(title: "", text: "", platform: profile.profile.defaultPlatform)
         presentation.openScript(script.id, editing: true)
-    }
-
-    private func pasteScript() {
-        guard let text = importer.clipboardText() else {
-            toast.show(String(localized: "Copy your script first, then paste it here"))
-            return
-        }
-        let script = library.create(
-            title: ScriptTextNormalizer.suggestedTitle(fileName: nil, text: text),
-            text: text,
-            platform: profile.profile.defaultPlatform
-        )
-        presentation.openScript(script.id, editing: true)
-        toast.show(String(localized: "Pasted · \(ReadTime.wordCount(in: text)) words"))
     }
 }
 

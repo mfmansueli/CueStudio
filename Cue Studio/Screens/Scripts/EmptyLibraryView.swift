@@ -5,8 +5,9 @@
 
 import SwiftUI
 
-/// First run: nudges toward writing a script, but recording right away is one tap too.
+/// First run: nudges toward a script (the prompt box first), but recording right away is one tap too.
 struct EmptyLibraryView: View {
+    let onPrompt: () -> Void
     let onWrite: () -> Void
     let onImport: () -> Void
     let onGenerate: () -> Void
@@ -23,22 +24,28 @@ struct EmptyLibraryView: View {
                         .font(.body)
                         .foregroundStyle(Palette.ink2)
                 }
+                PromptCard(base: Palette.surface, action: onPrompt)
+                    .accessibilityIdentifier("empty.promptCard")
                 GroupedCard(dividerInset: 72) {
-                    option(title: "Write a script", detail: "Blank page, with read-time as you type", systemImage: "square.and.pencil", identifier: "empty.writeButton", action: onWrite)
-                    option(title: "Import", detail: "Files, Google Docs exports or clipboard", systemImage: "doc.text", identifier: "empty.importButton", action: onImport)
+                    option(title: "Write a script", detail: "Blank page, with read-time as you type", systemImage: "pencil.line", identifier: "empty.writeButton", action: onWrite)
+                    option(title: "Import", detail: "Files or clipboard", systemImage: "doc.text", identifier: "empty.importButton", action: onImport)
                     option(title: "Generate with AI", detail: "Describe the video, get a first draft", systemImage: "sparkles", identifier: "empty.generateButton", highlighted: true, action: onGenerate)
                 }
-                Button(action: onSkip) {
-                    HStack(spacing: 6) {
-                        Text("Skip for now — record without a script")
-                        Image(systemName: "chevron.right").font(.caption.weight(.semibold))
+                VStack(spacing: 10) {
+                    Button(action: onSkip) {
+                        HStack(spacing: 10) {
+                            Circle().fill(Palette.record).frame(width: 12, height: 12)
+                            Text("Record without a script")
+                            Image(systemName: "chevron.right").font(.footnote.weight(.bold))
+                        }
                     }
-                    .font(.subheadline)
-                    .foregroundStyle(Palette.ink2)
-                    .frame(minHeight: Metrics.hitTarget)
+                    .buttonStyle(.cueOutline(.large))
+                    .accessibilityIdentifier("empty.skipButton")
+                    Text("Freestyle now — add a script anytime from the camera.")
+                        .font(.footnote)
+                        .foregroundStyle(Palette.ink2)
+                        .multilineTextAlignment(.center)
                 }
-                .frame(maxWidth: .infinity)
-                .accessibilityIdentifier("empty.skipButton")
             }
             .padding(.horizontal, Metrics.textGutter)
             .padding(.top, 24)
@@ -77,7 +84,7 @@ struct EmptyLibraryView: View {
 
 #if DEBUG
 #Preview {
-    EmptyLibraryView(onWrite: {}, onImport: {}, onGenerate: {}, onSkip: {})
+    EmptyLibraryView(onPrompt: {}, onWrite: {}, onImport: {}, onGenerate: {}, onSkip: {})
         .background(Palette.bg)
         .previewEnvironment(seeded: false)
 }

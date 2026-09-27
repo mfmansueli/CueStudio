@@ -5,118 +5,72 @@
 
 import SwiftUI
 
-/// "What are you recording?" — before the camera: write, paste, import, generate, pick a recent
-/// script, or skip. In attach mode it adds a script to a freestyle recording.
+/// "New script": the prompt box first, then Write, Import, Themes and Formats. Over the camera
+/// (attach mode) a blank page makes no sense, so Paste takes Write's place.
 struct NewScriptSheet: View {
     enum Mode { case new, attach }
 
     let mode: Mode
-    let recent: [Script]
-    let readSeconds: (Script) -> TimeInterval
-    var onWrite: (() -> Void)?
-    let onPaste: () -> Void
+    let onPrompt: () -> Void
+    var onWrite: () -> Void = {}
+    var onPaste: () -> Void = {}
     let onImport: () -> Void
-    let onGenerate: () -> Void
-    let onPick: (Script) -> Void
-    var onSkip: (() -> Void)?
+    let onThemes: () -> Void
+    let onFormats: () -> Void
+
+    @Environment(\.dismiss) private var dismiss
 
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 0) {
-                VStack(alignment: .leading, spacing: 5) {
-                    Text(mode == .attach ? "Add a script" : "What are you recording?")
-                        .font(.title2.bold())
-                    Text(mode == .attach
-                         ? "Cue will scroll it under the lens. Your camera stays where it is."
-                         : "A script keeps you on track and cuts retakes. Start one now, or skip it.")
-                        .font(.subheadline)
-                        .foregroundStyle(Palette.ink2)
-                }
-                .padding(.horizontal, 4)
-                .padding(.bottom, 18)
+        VStack(alignment: .leading, spacing: 0) {
+            SheetHeader(
+                title: String(localized: "New script"),
+                subtitle: String(localized: "Start from an idea, a blank page or a document."),
+                onClose: { dismiss() }
+            )
+            .padding(.horizontal, 4)
+            .padding(.bottom, 16)
 
-                LazyVGrid(columns: [GridItem(.flexible(), spacing: 10), GridItem(.flexible(), spacing: 10)], spacing: 10) {
-                    if let onWrite {
-                        tile("Write", detail: "Blank page", systemImage: "square.and.pencil", identifier: "newScript.write", action: onWrite)
-                    }
+            PromptCard(action: onPrompt)
+                .accessibilityIdentifier("newScript.prompt")
+
+            LazyVGrid(columns: [GridItem(.flexible(), spacing: 10), GridItem(.flexible(), spacing: 10)], spacing: 10) {
+                switch mode {
+                case .new:
+                    tile("Write", detail: "Blank page", systemImage: "pencil.line", identifier: "newScript.write", action: onWrite)
+                case .attach:
                     tile("Paste", detail: "From clipboard", systemImage: "doc.on.clipboard", identifier: "newScript.paste", action: onPaste)
-                    tile("Import", detail: "Files and exports", systemImage: "doc.text", identifier: "newScript.import", action: onImport)
-                    tile("Generate", detail: "Draft with AI", systemImage: "sparkles", identifier: "newScript.generate", highlighted: true, action: onGenerate)
                 }
-
-                if !recent.isEmpty {
-                    SectionHeading(text: String(localized: "Or use a script"))
-                        .padding(EdgeInsets(top: 22, leading: 4, bottom: 8, trailing: 4))
-                    GroupedCard(background: Palette.surface2, radius: Metrics.innerRadius, dividerInset: 34) {
-                        ForEach(recent) { script in
-                            Button { onPick(script) } label: {
-                                HStack(spacing: 12) {
-                                    ColorDot(color: script.platform.tint, size: 8)
-                                    Text(script.displayTitle)
-                                        .lineLimit(1)
-                                        .frame(maxWidth: .infinity, alignment: .leading)
-                                    Text("~\(DurationText.short(readSeconds(script)))")
-                                        .font(.footnote)
-                                        .foregroundStyle(Palette.ink2)
-                                }
-                                .foregroundStyle(Palette.ink)
-                                .padding(.horizontal, 14)
-                                .padding(.vertical, 12)
-                                .contentShape(Rectangle())
-                            }
-                            .buttonStyle(.plain)
-                        }
-                    }
-                }
-
-                if let onSkip {
-                    Button(action: onSkip) {
-                        HStack(spacing: 10) {
-                            Circle().fill(Palette.record).frame(width: 12, height: 12)
-                            Text("Record without a script")
-                        }
-                    }
-                    .buttonStyle(.cueOutline(.large))
-                    .padding(.top, 18)
-                    .accessibilityIdentifier("newScript.skip")
-                    Text("You can add a script later, right from the camera.")
-                        .font(.footnote)
-                        .foregroundStyle(Palette.ink2)
-                        .frame(maxWidth: .infinity)
-                        .padding(.top, 10)
-                }
+                tile("Import", detail: "Files or clipboard", systemImage: "doc.text", identifier: "newScript.import", action: onImport)
+                tile("Themes", detail: "Ideas for your niche", systemImage: "lightbulb", identifier: "newScript.themes", action: onThemes)
+                tile("Formats", detail: "Ad, review, tutorial…", systemImage: "square.grid.2x2", identifier: "newScript.formats", action: onFormats)
             }
-            .padding(EdgeInsets(top: 24, leading: Metrics.gutter, bottom: 24, trailing: Metrics.gutter))
+            .padding(.top, 10)
         }
-        .presentationDetents([.medium, .large])
-        .presentationBackground(Palette.surface)
+        .padding(EdgeInsets(top: 20, leading: Metrics.gutter, bottom: 24, trailing: Metrics.gutter))
+        .fittedSheet()
     }
 
     private func tile(
         _ title: LocalizedStringKey, detail: LocalizedStringKey, systemImage: String,
-        identifier: String, highlighted: Bool = false, action: @escaping () -> Void
+        identifier: String, action: @escaping () -> Void
     ) -> some View {
-        Button(action: action) {
+        let shape = RoundedRectangle(cornerRadius: Metrics.innerRadius, style: .continuous)
+        return Button(action: action) {
             VStack(alignment: .leading, spacing: 14) {
-                Image(systemName: systemImage).font(.title3)
+                Image(systemName: systemImage)
+                    .font(.title3)
                 VStack(alignment: .leading, spacing: 2) {
                     Text(title).font(.body.weight(.semibold))
                     Text(detail)
                         .font(.footnote)
-                        .foregroundStyle(highlighted ? Palette.acc.opacity(0.75) : Palette.ink2)
+                        .foregroundStyle(Palette.ink2)
                 }
             }
-            .foregroundStyle(highlighted ? Palette.acc : Palette.ink)
-            .frame(maxWidth: .infinity, alignment: .leading)
+            .foregroundStyle(Palette.ink)
+            .frame(maxWidth: .infinity, minHeight: 104, alignment: .topLeading)
             .padding(14)
-            .background(highlighted ? Palette.acc.opacity(0.12) : Palette.surface2, in: RoundedRectangle(cornerRadius: Metrics.innerRadius, style: .continuous))
-            .overlay {
-                if highlighted {
-                    RoundedRectangle(cornerRadius: Metrics.innerRadius, style: .continuous)
-                        .strokeBorder(Palette.accLine, lineWidth: 0.5)
-                }
-            }
-            .contentShape(RoundedRectangle(cornerRadius: Metrics.innerRadius, style: .continuous))
+            .background(Palette.surface2, in: shape)
+            .contentShape(shape)
         }
         .buttonStyle(.plain)
         .accessibilityIdentifier(identifier)
@@ -126,10 +80,7 @@ struct NewScriptSheet: View {
 #if DEBUG
 #Preview {
     Color.black.sheet(isPresented: .constant(true)) {
-        NewScriptSheet(
-            mode: .new, recent: Array(SampleScripts.all.prefix(3)), readSeconds: { _ in 62 },
-            onWrite: {}, onPaste: {}, onImport: {}, onGenerate: {}, onPick: { _ in }, onSkip: {}
-        )
+        NewScriptSheet(mode: .new, onPrompt: {}, onWrite: {}, onImport: {}, onThemes: {}, onFormats: {})
     }
 }
 #endif

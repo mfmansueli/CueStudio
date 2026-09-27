@@ -37,6 +37,16 @@ final class PresentationService {
         self.sheet = sheet
     }
 
+    /// Tab bar selection. Record is not a destination: it opens "Start recording" and the current
+    /// tab stays selected.
+    func select(_ tab: AppTab) {
+        if tab == .record {
+            present(.startRecording)
+        } else {
+            selectedTab = tab
+        }
+    }
+
     func closePrompter() {
         prompter = nil
     }

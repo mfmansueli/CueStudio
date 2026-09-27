@@ -2,7 +2,8 @@
 
 Fonte de verdade do design. Atualize junto com a UI (ver `ARCHITECTURE.md`, seção 5).
 
-Origem: projeto "iOS Teleprompter App Design" no Claude Design, arquivo `Cue Teleprompter v3.dc.html`.
+Origem: projeto "iOS Teleprompter App Design" no Claude Design, arquivo `Cue Teleprompter v6.dc.html`
+(cópia local em `design/`, fora do git). A v1 do app seguia a v3; a migração para a v6 é feita por fases.
 
 ---
 
@@ -28,13 +29,18 @@ tela branca atrapalha a gravação. Os tokens mantêm valores claros para o dia 
 | `bg` | `#000000` | Fundo das telas |
 | `surface` | `#1C1C1E` | Cards, linhas agrupadas, sheets |
 | `surface2` | `#2C2C2E` | Controles e linhas dentro de cards/sheets |
+| `surface3` | `#3A3A3C` | Tiles um nível acima de `surface2` (destinos de compartilhamento, "More") |
 | `surfaceMuted` | `#242426` | Formatos sérios (pedido de desculpas) |
 | `fill` | `#767680` 24% | Chips inativos, trilhos de medidores |
 | `overlayFill` | branco 10% | Botões sobre a câmera/prompter |
+| `neutralAction` | `#636366` | Swipe "More", segmento selecionado |
+| `glassBorder` | branco 12% | Borda de 0,5 pt das superfícies de vidro |
+| `separator` | `#545458` 60% | Separadores de 0,5 pt |
 | `ink` / `ink2` / `ink3` | branco / `#EBEBF5` 60% / 30% | Texto principal, secundário, terciário |
 | `acc` | `#FFD60A` | Acento: ação primária, hook, guia de leitura |
 | `accInk` | `#000000` | Texto sobre `acc` |
 | `accSoft` | `#FFD60A` 16% | Fundos tingidos (tags de cue, botões secundários de gravação) |
+| `accWash` → `accWashFaint` / `accBorder` | `#FFD60A` 22% → 5% / 38% | Card de Prompt em destaque |
 | `record` | `#FF3B30` | Botão de gravar, badge de gravação |
 | `danger` | `#FF453A` | Ações destrutivas |
 | `warn` | `#FF9F0A` | Fora da faixa ideal, hook longo, aviso de monetização |
@@ -55,7 +61,7 @@ tela branca atrapalha a gravação. Os tokens mantêm valores claros para o dia 
 ### Espaçamento e formas (`Metrics`)
 
 - Margem lateral: 16 pt (cards), 20 pt (títulos e texto solto).
-- Raios: card 26, interno 20, tile 18, campo 12; botões e chips em cápsula.
+- Raios: card 26, interno 20, tile 18, campo 12, sheet 38; botões e chips em cápsula.
 - Alturas: botão 50 (grande 54, compacto 34), chip 34, alvo de toque mínimo 44×44.
 - Controles sobre a câmera usam Liquid Glass (`glassEffect`).
 
@@ -80,18 +86,22 @@ SF Symbols por significado: `doc.text` scripts · `film.stack` takes · `person.
 | `FlowLayout` | Chips que quebram linha (nichos, frases) |
 | `ToastView` | Confirmação curta no topo (`ToastService` + `.toastHost()`) |
 | `CueMark`, `CameraFeedPlaceholder` | Marca e fundo quando não há câmera |
+| `RecordGlyph` | Anel branco com ponto vermelho da aba Record (imagem com cores originais) |
+| `fittedSheet()` | Sheet da altura do conteúdo, raio 38 (New script, Start recording) |
+| `PromptCard` (`Screens/Shared/PromptCard`) | Caixa de Prompt em destaque: selo Apple Intelligence, exemplo e botão enviar |
 
 ## 4. Telas
 
 | Tela | Onde | Conteúdo |
 |------|------|----------|
-| Scripts (home) | `Screens/Scripts` | Título + resumo, busca, chips (All, destinos, pastas), card "Last edited", lista "All scripts" com swipe (Record / More / Delete), segurar mostra preview + menu, modo de seleção com barra (mover, duplicar, apagar) |
-| Primeiro uso | `EmptyLibraryView` | "Start with a script." + Write / Import / Generate + "Skip for now" |
+| Scripts (home) | `Screens/Scripts` | "+" no topo (abre New script), título + resumo, busca, chips (All, destinos, pastas), card "Last edited", lista "All scripts" com swipe (Record / More / Delete), segurar mostra preview + menu, modo de seleção com barra (mover, duplicar, apagar) |
+| Primeiro uso | `EmptyLibraryView` | "Start with a script." + caixa de Prompt + Write / Import / Generate with AI + "Record without a script" |
 | Script (leitura) | `Screens/ScriptDetail` | Título, destino/formato/preset, medidor de duração, faixa de blocos, aviso de hook, texto com blocos e cues, takes, Studio mode + Record |
 | Script (edição) | `ScriptEditorView` | Título, faixa de blocos, editor, painel com aviso de versão, ferramentas de IA e medidor |
 | Destino | `DestinationSheet` | 4 destinos com preset + meta de monetização |
 | Hooks | `HooksSheet` | Hook atual + 3 opções + "More options" |
-| What are you recording? | `Screens/CreateScript` | Write / Paste / Import / Generate, scripts recentes, "Record without a script" |
+| New script | `NewScriptSheet` | Caixa de Prompt + grade Write / Import / Themes / Formats. Sobre a câmera, Paste no lugar de Write |
+| Start recording | `StartRecordingSheet` | "Read from a script" (4 recentes com duração), "+ New script", "Record without a script →". Sobre a câmera vira "Add a script", sem o freestyle |
 | Importar | `ImportScriptSheet` | Files e área de transferência |
 | Gerar com IA | `GenerateScript/` | Formato (8) → briefing em tópicos, destino, tom, frases → rascunho |
 | Selfie | `Screens/Prompter/Selfie` | Câmera, painel do prompter, grid, barras de enquadramento, safe zones, barra de controles |
@@ -111,8 +121,8 @@ RootView
     ├── Scripts ─ NavigationStack ─ ScriptDetailView (leitura ⇄ edição)
     ├── Takes ─ NavigationStack
     ├── Profile ─ NavigationStack
-    └── Record (botão; abre "What are you recording?")
-Sheets (sobre as abas): What are you recording? · Import · Generate
+    └── Record (aba-botão; abre "Start recording" sem trocar de aba)
+Sheets (sobre as abas): New script (+) · Start recording · Import · Generate (Prompt | Themes | Formats)
 Full screen: Prompter (Selfie ⇄ Studio → Revisão do take) · Paywall
 ```
 
@@ -163,10 +173,12 @@ O protótipo simulava várias coisas; o app implementa de verdade ou deixa de fo
   como controle pelo Apple Watch e sincronização com iPad/Mac ficaram de fora.
 - **"Save takes to Photos":** removido — salvar automaticamente contornaria o limite de exportações
   limpas. Takes ficam no app; Save/Share exportam.
-- **Pastas:** criadas pelo menu +, aparecem como chips depois dos destinos.
-- **Botão de gravar:** no protótipo é um círculo vermelho separado da barra de abas. No iOS 26+ a
-  tab bar de Liquid Glass renderiza os ícones em monocromático, então ele é a quarta aba ("Record",
-  `record.circle`), que abre "What are you recording?" sem trocar de aba.
+- **Pastas:** o "+" agora abre New script, então pastas nascem em "Move to a new folder…" (menu do
+  script, More e barra de seleção) e aparecem como chips depois dos destinos.
+- **Tab bar:** a pill flutuante do protótipo é a própria tab bar nativa de Liquid Glass. A aba
+  Record usa `RecordGlyph`, uma imagem com cores originais, porque SF Symbols viram monocromáticos
+  na tab bar.
+- **New script sobre a câmera:** não há editor no prompter, então o tile Write vira Paste.
 
 ## 10. Do's & don'ts
 

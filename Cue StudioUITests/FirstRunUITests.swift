@@ -16,6 +16,7 @@ final class FirstRunUITests: XCTestCase {
         let app = CueApp.launch(seeded: false)
         let write = app.buttons["empty.writeButton"]
         XCTAssertTrue(write.waitForExistence(timeout: 15))
+        XCTAssertTrue(app.buttons["empty.promptCard"].exists)
         write.tap()
 
         let title = element(app, "editor.titleField")

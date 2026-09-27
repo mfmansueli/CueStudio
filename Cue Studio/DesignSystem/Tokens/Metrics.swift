@@ -15,6 +15,8 @@ enum Metrics {
     static let innerRadius: CGFloat = 20
     static let tileRadius: CGFloat = 18
     static let fieldRadius: CGFloat = 12
+    /// Top corners of custom sheets.
+    static let sheetRadius: CGFloat = 38
     static let buttonHeight: CGFloat = 50
     static let largeButtonHeight: CGFloat = 54
     static let compactButtonHeight: CGFloat = 34

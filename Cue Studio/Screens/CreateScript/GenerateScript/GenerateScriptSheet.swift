@@ -8,11 +8,13 @@ import SwiftUI
 /// Two steps: format, then brief. Calls `onCreated` with the new script.
 struct GenerateScriptSheet: View {
     @State private var viewModel: GenerateScriptViewModel
+    /// Where the sheet opens: the prompt box, niche ideas or the format picker.
+    let initialTab: GenerateTab
     let onCreated: (Script) -> Void
 
     @Environment(\.dismiss) private var dismiss
 
-    init(services: AppServices, onCreated: @escaping (Script) -> Void) {
+    init(services: AppServices, initialTab: GenerateTab = .prompt, onCreated: @escaping (Script) -> Void) {
         let store = services.store
         _viewModel = State(initialValue: GenerateScriptViewModel(
             writer: services.writer,
@@ -22,6 +24,7 @@ struct GenerateScriptSheet: View {
             tier: { store.tier },
             toast: services.toast
         ))
+        self.initialTab = initialTab
         self.onCreated = onCreated
     }
 
