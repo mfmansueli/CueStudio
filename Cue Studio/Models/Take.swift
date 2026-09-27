@@ -29,12 +29,14 @@ nonisolated struct Take: Codable, Identifiable, Hashable, Sendable {
     var isEdited: Bool = false
     /// Saved or shared at least once; "Not shared" in the library means false.
     var isExported: Bool = false
+    /// Quick edit's recipe, applied on top of the recording when it plays or exports.
+    var edit: TakeEdit?
 
     init(
         id: UUID = UUID(), scriptID: UUID?, scriptTitle: String, scriptVersion: Int?, number: Int,
         duration: TimeInterval, recordedAt: Date = .now, fileName: String, isBest: Bool = false,
         resolution: VideoResolution, frameRate: FrameRate, aspect: AspectRatio, platform: Platform?,
-        isEdited: Bool = false, isExported: Bool = false
+        isEdited: Bool = false, isExported: Bool = false, edit: TakeEdit? = nil
     ) {
         self.id = id
         self.scriptID = scriptID
@@ -51,7 +53,11 @@ nonisolated struct Take: Codable, Identifiable, Hashable, Sendable {
         self.platform = platform
         self.isEdited = isEdited
         self.isExported = isExported
+        self.edit = edit
     }
+
+    /// The frame the take exports in: the edit's crop, or the frame it was filmed for.
+    var outputAspect: AspectRatio { edit?.aspect ?? aspect }
 
     var label: String { String(localized: "Take \(number)") }
 
@@ -77,5 +83,6 @@ nonisolated struct Take: Codable, Identifiable, Hashable, Sendable {
         platform = try container.decodeIfPresent(Platform.self, forKey: .platform)
         isEdited = try container.decodeIfPresent(Bool.self, forKey: .isEdited) ?? false
         isExported = try container.decodeIfPresent(Bool.self, forKey: .isExported) ?? false
+        edit = try container.decodeIfPresent(TakeEdit.self, forKey: .edit)
     }
 }

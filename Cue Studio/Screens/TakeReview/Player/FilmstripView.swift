@@ -13,27 +13,12 @@ struct FilmstripView: View {
     let progress: Double
     let onScrub: (Double) -> Void
 
-    @Environment(VideoThumbnailService.self) private var thumbnails
-    @State private var frames: [UIImage] = []
-
     private let frameCount = 7
 
     var body: some View {
         GeometryReader { proxy in
             ZStack(alignment: .leading) {
-                HStack(spacing: 2) {
-                    ForEach(0..<frameCount, id: \.self) { index in
-                        Group {
-                            if index < frames.count {
-                                Image(uiImage: frames[index]).resizable().scaledToFill()
-                            } else {
-                                LinearGradient(colors: [Color(hex: 0x7A6250), Color(hex: 0x2A211C)], startPoint: .topLeading, endPoint: .bottomTrailing)
-                            }
-                        }
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
-                        .clipped()
-                    }
-                }
+                FilmstripFrames(videoURL: videoURL, duration: take.edit?.sourceDuration ?? take.duration, count: frameCount)
                 .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
                 .overlay(RoundedRectangle(cornerRadius: 10, style: .continuous).strokeBorder(Color.white.opacity(0.85), lineWidth: 1.5))
                 Capsule()
@@ -50,9 +35,6 @@ struct FilmstripView: View {
             )
         }
         .frame(height: 36)
-        .task(id: take.id) {
-            frames = await thumbnails.filmstrip(for: videoURL, count: frameCount, duration: take.duration)
-        }
         .accessibilityElement()
         .accessibilityLabel(Text("Timeline"))
         .accessibilityValue(Text(DurationText.clock(take.duration * progress)))

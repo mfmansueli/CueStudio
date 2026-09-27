@@ -23,6 +23,21 @@ nonisolated enum CropMath {
         }
     }
 
+    /// Like `centeredCrop`, moved along the axis that has room by `offset` (-1 top/left, 0 center,
+    /// 1 bottom/right). Used by Quick edit's "drag to reposition".
+    static func crop(in size: CGSize, aspect: Double, offset: Double) -> CGRect {
+        var rect = centeredCrop(in: size, aspect: aspect)
+        let clamped = min(1, max(-1, offset))
+        let spareX = size.width - rect.width
+        let spareY = size.height - rect.height
+        if spareX > 1 {
+            rect.origin.x = (spareX / 2 * (1 + clamped)).rounded(.down)
+        } else if spareY > 1 {
+            rect.origin.y = (spareY / 2 * (1 + clamped)).rounded(.down)
+        }
+        return rect
+    }
+
     static func even(_ value: CGFloat) -> CGFloat {
         (value / 2).rounded(.down) * 2
     }

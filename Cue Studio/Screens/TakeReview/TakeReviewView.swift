@@ -21,6 +21,9 @@ struct TakeReviewView: View {
     @State private var progress: Double = 0
 
     @State private var confirmsDelete = false
+    @State private var editingTake: Take?
+    private let services: AppServices
+    @Environment(TakeEditService.self) private var editing
 
     init(
         takeID: UUID, services: AppServices,
@@ -37,6 +40,7 @@ struct TakeReviewView: View {
             photos: services.photos,
             toast: services.toast
         ))
+        self.services = services
         self.onRetake = onRetake
         self.onBack = onBack
         self.onSelect = onSelect
@@ -54,7 +58,10 @@ struct TakeReviewView: View {
                 ContentUnavailableView("This take was deleted", systemImage: "film")
             }
         }
-        .task(id: viewModel.takeID) { await runPlayer() }
+        .task(id: PlayerKey(takeID: viewModel.takeID, edit: viewModel.take?.edit)) { await runPlayer() }
+        .fullScreenCover(item: $editingTake) { take in
+            QuickEditView(take: take, services: services) { editingTake = nil }
+        }
         .confirmationDialog("Delete this take?", isPresented: $confirmsDelete, titleVisibility: .visible) {
             Button("Delete take", role: .destructive) {
                 player.pause()
@@ -83,7 +90,7 @@ struct TakeReviewView: View {
 
     private func video(for take: Take) -> some View {
         GeometryReader { proxy in
-            let frame = frameSize(for: take.aspect, in: proxy.size)
+            let frame = frameSize(for: take.outputAspect, in: proxy.size)
             PlayerView(player: player)
                 .frame(width: frame.width, height: frame.height)
                 .clipped()
@@ -202,6 +209,10 @@ struct TakeReviewView: View {
                 }
                 ReviewActionBar(
                     runningAction: viewModel.runningAction,
+                    onEdit: {
+                        player.pause()
+                        editingTake = take
+                    },
                     onRetake: onRetake,
                     onSave: { Task { await viewModel.save() } },
                     onShare: { Task { await viewModel.share() } }
@@ -214,9 +225,19 @@ struct TakeReviewView: View {
 
     // MARK: - Playback
 
+    /// Reloads the player when the take changes or is edited.
+    private struct PlayerKey: Equatable {
+        let takeID: UUID
+        let edit: TakeEdit?
+    }
+
     private func runPlayer() async {
         guard let url = viewModel.videoURL else { return }
-        player.replaceCurrentItem(with: AVPlayerItem(url: url))
+        if let edit = viewModel.take?.edit, let item = try? await editing.previewItem(forVideoAt: url, edit: edit) {
+            player.replaceCurrentItem(with: item)
+        } else {
+            player.replaceCurrentItem(with: AVPlayerItem(url: url))
+        }
         player.play()
         while !Task.isCancelled {
             let duration = viewModel.take?.duration ?? 0

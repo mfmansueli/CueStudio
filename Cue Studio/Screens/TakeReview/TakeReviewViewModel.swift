@@ -131,7 +131,7 @@ final class TakeReviewViewModel {
         do {
             let url = try await exporter.export(
                 videoAt: takes.videoURL(for: take),
-                options: ExportOptions(aspect: take.aspect, watermark: !clean)
+                options: ExportOptions(aspect: take.outputAspect, watermark: !clean, edit: take.edit)
             )
             if clean {
                 quota.recordCleanExport(tier: currentTier)

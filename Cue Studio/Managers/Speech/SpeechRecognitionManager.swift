@@ -104,7 +104,7 @@ final class SpeechRecognitionManager: SpeechTranscribing {
 
     /// The script's language, in the creator's own region when they use it (pt-BR over pt-PT).
     /// Without a clear language, the device's. Nil when the language isn't supported.
-    private static func locale(for script: String) async -> Locale? {
+    static func locale(for script: String) async -> Locale? {
         let recognizer = NLLanguageRecognizer()
         recognizer.processString(CueParser.stripCues(script))
         var candidates: [Locale] = []

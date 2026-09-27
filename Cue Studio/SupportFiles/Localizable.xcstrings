@@ -244,6 +244,9 @@
     "1 min" : {
 
     },
+    "1080p" : {
+
+    },
     "2 min" : {
 
     },
@@ -263,6 +266,9 @@
 
     },
     "30s" : {
+
+    },
+    "4K" : {
 
     },
     "A 10-minute dinner I make every week" : {
@@ -311,6 +317,9 @@
 
     },
     "Added “%@” — AI will use it" : {
+
+    },
+    "Adjust" : {
 
     },
     "Advanced" : {
@@ -367,7 +376,13 @@
     "Apps that replaced my notebook" : {
 
     },
+    "Audio" : {
+
+    },
     "Auto" : {
+
+    },
+    "Auto-enhanced" : {
 
     },
     "Automatic" : {
@@ -505,6 +520,9 @@
     "CAPTION · %@ UI" : {
 
     },
+    "Captions" : {
+
+    },
     "Car audio" : {
 
     },
@@ -529,6 +547,9 @@
     "Clean exports" : {
 
     },
+    "Clearer, fuller speech" : {
+
+    },
     "Clipboard" : {
 
     },
@@ -550,6 +571,9 @@
     "Confident" : {
 
     },
+    "Contrast" : {
+
+    },
     "Conversational" : {
 
     },
@@ -563,6 +587,9 @@
 
     },
     "Couldn't reach the App Store. Check your connection and try again." : {
+
+    },
+    "Couldn't sign in with Apple. Try again." : {
 
     },
     "Couldn't write the script" : {
@@ -589,7 +616,10 @@
     "Create more. Sound like you." : {
 
     },
-    "Creator DNA" : {
+    "Creator Voice" : {
+
+    },
+    "Crop" : {
 
     },
     "CTA" : {
@@ -616,16 +646,13 @@
     "Cue will scroll it under the lens. Your camera stays where it is." : {
 
     },
-    "Cue's AI uses this to write scripts that sound like you. One profile for every platform." : {
-
-    },
     "Current" : {
 
     },
     "Cyan" : {
 
     },
-    "Default destination" : {
+    "Default “Create for”" : {
 
     },
     "Delete" : {
@@ -697,6 +724,12 @@
     "Drafts and rewrites use Apple Intelligence's on-device model. Your briefs and scripts are never sent anywhere." : {
 
     },
+    "Drag the video to reposition" : {
+
+    },
+    "Drag the yellow handles to trim" : {
+
+    },
     "Drops Friday at 9 a.m." : {
 
     },
@@ -738,6 +771,9 @@
         }
       }
     },
+    "Edits saved to %@" : {
+
+    },
     "Edits your name and handle" : {
 
     },
@@ -751,6 +787,9 @@
 
     },
     "Energetic" : {
+
+    },
+    "Enhance voice" : {
 
     },
     "Every paid post will be clearly labeled from now on" : {
@@ -768,6 +807,9 @@
     "Explainer" : {
 
     },
+    "Exposure" : {
+
+    },
     "External" : {
 
     },
@@ -781,6 +823,9 @@
 
     },
     "Film" : {
+
+    },
+    "Filters" : {
 
     },
     "Finance" : {
@@ -881,6 +926,9 @@
 
     },
     "From clipboard" : {
+
+    },
+    "From your script, synced to your voice" : {
 
     },
     "Front" : {
@@ -1088,6 +1136,9 @@
     "Just the topic and your points. Cue writes a numbered list with a hook up top and a comment prompt at the end." : {
 
     },
+    "Keep at least one section" : {
+
+    },
     "Keep going" : {
 
     },
@@ -1158,6 +1209,9 @@
 
     },
     "Listening" : {
+
+    },
+    "Listening to your take…" : {
 
     },
     "Live preview" : {
@@ -1241,6 +1295,9 @@
     "Most creators overthink the camera and underthink the first line." : {
 
     },
+    "Move the playhead inside the clip" : {
+
+    },
     "Move to “%@”" : {
 
     },
@@ -1262,7 +1319,16 @@
     "My first preset pack" : {
 
     },
+    "My phrases" : {
+
+    },
+    "My style" : {
+
+    },
     "My Sunday reset in 60 seconds" : {
+
+    },
+    "My vocabulary" : {
 
     },
     "Myth-busting" : {
@@ -1304,6 +1370,9 @@
     "No cap." : {
 
     },
+    "No long pauses in this take" : {
+
+    },
     "No opening line yet" : {
 
     },
@@ -1311,6 +1380,9 @@
 
     },
     "No purchases to restore" : {
+
+    },
+    "No script to caption this take" : {
 
     },
     "No script — add one anytime" : {
@@ -1394,6 +1466,9 @@
     "Paste" : {
 
     },
+    "Paste from clipboard" : {
+
+    },
     "Pasted · %lld words" : {
 
     },
@@ -1415,9 +1490,6 @@
     "Photo" : {
 
     },
-    "Phrases you always say" : {
-
-    },
     "Pick a format. Cue builds the structure — you fill in bullets." : {
 
     },
@@ -1436,7 +1508,16 @@
     "Play" : {
 
     },
+    "Playhead %@" : {
+
+    },
+    "Playhead %@, length %@" : {
+
+    },
     "Portuguese" : {
+
+    },
+    "Position" : {
 
     },
     "Post without the watermark" : {
@@ -1446,6 +1527,9 @@
 
     },
     "Premium" : {
+
+    },
+    "Preview" : {
 
     },
     "Pricey for a lamp" : {
@@ -1517,6 +1601,9 @@
     "Quick" : {
 
     },
+    "Quick edit" : {
+
+    },
     "Read from a script" : {
 
     },
@@ -1557,6 +1644,9 @@
     "Recording in %lld" : {
 
     },
+    "Reduce background noise" : {
+
+    },
     "Reels" : {
 
     },
@@ -1564,6 +1654,12 @@
 
     },
     "Remove from folder" : {
+
+    },
+    "Remove silences" : {
+
+    },
+    "Remove silences · %lld" : {
 
     },
     "Removed defensive lines" : {
@@ -1591,6 +1687,9 @@
 
     },
     "Requires Apple Intelligence. Turn it on in Settings to use AI tools." : {
+
+    },
+    "Reset" : {
 
     },
     "Resolution" : {
@@ -1707,6 +1806,9 @@
     "Search scripts" : {
 
     },
+    "Section deleted" : {
+
+    },
     "Select" : {
 
     },
@@ -1767,6 +1869,18 @@
     "Side margins" : {
 
     },
+    "Sign out" : {
+
+    },
+    "Signed in with Apple" : {
+
+    },
+    "Signed out" : {
+
+    },
+    "Silences removed · −%llds" : {
+
+    },
     "Simple" : {
 
     },
@@ -1791,6 +1905,9 @@
     "Something you always say. The AI weaves it into new scripts." : {
 
     },
+    "Sounds like you" : {
+
+    },
     "Spanish" : {
 
     },
@@ -1801,6 +1918,12 @@
 
     },
     "Speed follows your voice" : {
+
+    },
+    "Split" : {
+
+    },
+    "Split at %@" : {
 
     },
     "Sponsored ad" : {
@@ -1915,6 +2038,15 @@
 
     },
     "Takes" : {
+
+    },
+    "Tap a section to select it" : {
+
+    },
+    "Tap a section to select it · Split at the playhead" : {
+
+    },
+    "Tap to play or pause" : {
 
     },
     "Tap ☆ to pick your best" : {
@@ -2088,6 +2220,9 @@
     "Translate" : {
 
     },
+    "Trim" : {
+
+    },
     "TrueDepth" : {
 
     },
@@ -2127,6 +2262,9 @@
     "Use" : {
 
     },
+    "Use my voice in AI scripts" : {
+
+    },
     "Uses the connected mic, or the iPhone's" : {
 
     },
@@ -2151,7 +2289,13 @@
     "Voice Following" : {
 
     },
+    "Volume" : {
+
+    },
     "Warm" : {
+
+    },
+    "Warmth" : {
 
     },
     "We signed a three-month deal" : {
@@ -2287,6 +2431,9 @@
 
     },
     "You've used your %lld free clean exports. Your takes are safe — export them clean anytime with Pro." : {
+
+    },
+    "Your AI identity. Cue writes and rewrites every script to sound like you — on every platform." : {
 
     },
     "Your first line matters more than your camera." : {

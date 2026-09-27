@@ -88,6 +88,19 @@ enum Palette {
     /// Tiles of the "Your takes" strip over the video.
     static let stripTile = Color(hex: 0x2C2C2E, opacity: 0.85)
 
+    // MARK: - Quick edit
+
+    /// A deleted section on the trim strip.
+    static let removedSection = Color(hex: 0xFF453A, opacity: 0.45)
+    /// The part of the strip outside the trim handles.
+    static let trimDim = Color.black.opacity(0.7)
+    /// Behind "Classic" captions.
+    static let captionBox = Color.black.opacity(0.62)
+    /// Behind the preview before the video loads.
+    static let previewWell = Color(hex: 0x111113)
+    /// The tool bar at the bottom of Quick edit.
+    static let toolbarFill = Color(hex: 0x1C1C1E, opacity: 0.92)
+
     // MARK: - Camera
 
     /// Letterbox bars and scrims over the camera feed.

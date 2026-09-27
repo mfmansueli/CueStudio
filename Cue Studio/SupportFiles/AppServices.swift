@@ -6,8 +6,9 @@
 import AppIntents
 import SwiftUI
 
-/// Every app-wide service, created once for the app session. `RootView` keeps it in `@State` and
-/// injects each service into the environment; screens read them with `@Environment(Service.self)`.
+/// Every app-wide service, created once for the app session. `CueStudioApp` keeps it in `@State`,
+/// `RootView` injects each service into the environment, and screens read them with
+/// `@Environment(Service.self)`.
 struct AppServices {
     let library: ScriptLibraryService
     let takes: TakeLibraryService
@@ -27,6 +28,7 @@ struct AppServices {
     let exporter: VideoExportService
     let photos: PhotoLibraryManager
     let thumbnails: VideoThumbnailService
+    let editing: TakeEditService
 
     init(options: LaunchOptions) {
         library = ScriptLibraryService(repository: options.scriptRepository)
@@ -47,6 +49,7 @@ struct AppServices {
         exporter = VideoExportService()
         photos = PhotoLibraryManager()
         thumbnails = VideoThumbnailService()
+        editing = TakeEditService()
     }
 
     func load() {
@@ -80,5 +83,6 @@ extension View {
             .environment(services.exporter)
             .environment(services.photos)
             .environment(services.thumbnails)
+            .environment(services.editing)
     }
 }

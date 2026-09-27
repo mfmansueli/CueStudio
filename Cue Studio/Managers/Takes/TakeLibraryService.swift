@@ -96,6 +96,16 @@ final class TakeLibraryService {
         persist()
     }
 
+    /// Quick edit's Done: keeps the recipe, the new length and the Edited mark. The video file is
+    /// untouched.
+    func applyEdit(_ edit: TakeEdit, to id: UUID) {
+        guard let index = takes.firstIndex(where: { $0.id == id }) else { return }
+        takes[index].edit = edit
+        takes[index].duration = edit.editedDuration
+        takes[index].isEdited = true
+        persist()
+    }
+
     /// Saved or shared: it no longer counts as "Not shared".
     func markExported(_ id: UUID) {
         guard let index = takes.firstIndex(where: { $0.id == id }), !takes[index].isExported else { return }
