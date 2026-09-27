@@ -44,10 +44,17 @@ final class AudioInputManager: AudioLevelMetering {
         // Switching to Selfie mode while the permission prompt was up: the camera owns the mic now.
         guard !Task.isCancelled, engine == nil else { return engine != nil }
         let session = AVAudioSession.sharedInstance()
-        let engine = AVAudioEngine()
         do {
             try session.setCategory(.playAndRecord, mode: .default, options: [.allowBluetoothHFP, .defaultToSpeaker, .mixWithOthers])
-            try session.setActive(true)
+            // Activation waits for the audio hardware, so it must not block the main thread.
+            guard try await session.activate(options: []) else { return false }
+        } catch {
+            return false
+        }
+        // Same as above, while the session was starting.
+        guard !Task.isCancelled, engine == nil else { return engine != nil }
+        let engine = AVAudioEngine()
+        do {
             let input = engine.inputNode
             let format = input.outputFormat(forBus: 0)
             guard format.sampleRate > 0, format.channelCount > 0 else { return false }
