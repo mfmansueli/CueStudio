@@ -90,6 +90,5 @@ struct StudioControlPanel: View {
                 .multilineTextAlignment(.trailing)
         }
         .frame(minHeight: 34)
-        .accessibilityIdentifier("prompter.voiceStatus")
     }
 }

@@ -107,8 +107,9 @@ final class PrompterUITests: XCTestCase {
         let youtube = app.buttons["destination.youtube"]
         XCTAssertTrue(youtube.waitForExistence(timeout: 5))
         youtube.tap()
-        XCTAssertTrue(app.staticTexts["Create for YouTube · long-form"].waitForExistence(timeout: 5))
-        XCTAssertTrue(chip.label.contains("YouTube"))
+        // The toast is brief; the chip is the lasting proof the preset changed.
+        let youtubeChip = app.buttons.matching(NSPredicate(format: "identifier == 'prompter.aspectButton' AND label CONTAINS 'YouTube'")).firstMatch
+        XCTAssertTrue(youtubeChip.waitForExistence(timeout: 5))
         app.buttons["prompter.closeButton"].tap()
     }
 
