@@ -679,7 +679,7 @@
     "Folder name" : {
 
     },
-    "Follows your voice and waits when you pause. Speed sets how fast it moves while you talk." : {
+    "Following your reading" : {
 
     },
     "Food" : {
@@ -946,6 +946,9 @@
 
     },
     "List the steps in plain words, separated by commas. Cue turns them into a numbered walkthrough with a hook up top and a save-this ending." : {
+
+    },
+    "Listens as you read and keeps your line on the guide, at your pace. Waits when you pause or go off script. Recognition happens on this device." : {
 
     },
     "Lumen desk lamp" : {
@@ -1562,6 +1565,9 @@
 
     },
     "Takes" : {
+
+    },
+    "Tap play, then start reading" : {
 
     },
     "Tap to add your name and handle" : {
