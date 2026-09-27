@@ -97,7 +97,7 @@ SF Symbols por significado: `doc.text` scripts · `film.stack` takes · `person.
 | Selfie | `Screens/Prompter/Selfie` | Câmera, painel do prompter, grid, barras de enquadramento, safe zones, barra de controles |
 | Studio | `Screens/Prompter/Studio` | Prompter em tela cheia, progresso, velocidade (no Voice follow, o status da escuta), pular linhas, espelhar |
 | Display | `DisplaySettingsSheet` | Fonte, tamanho, espaçamento, margens, alinhamento, cor, fundo, rolagem, guia, espelhar, cues |
-| Câmera | `CameraSettingsSheet` | Lente, enquadramento, resolução, fps, grid, safe zones, estabilização, microfone, contagem, formato |
+| Câmera | `CameraSettingsSheet` | Lente, enquadramento, resolução, fps, grid, safe zones, estabilização, microfone, contagem, formato. No Selfie com script, a sheet para logo abaixo do painel do texto (não cresce além dele) e não escurece o fundo |
 | Revisão do take | `Screens/TakeReview` | Vídeo, filmstrip, melhor take, Retake / Save / Share, aviso de exportações |
 | Takes | `Screens/Takes` | Takes agrupados por script |
 | Profile | `Screens/Profile` | Card do criador, plano e uso, Creator DNA, ajustes, privacidade |

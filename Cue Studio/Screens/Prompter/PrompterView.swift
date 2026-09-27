@@ -9,6 +9,10 @@ import UIKit
 /// Full-screen prompter session: Selfie or Studio mode, then the review of each take.
 struct PrompterView: View {
     @State private var viewModel: PrompterViewModel
+    /// Where the Selfie script panel ends and the safe area ends, both from the top of the screen:
+    /// the camera sheet stops between them so the script stays in sight.
+    @State private var scriptPanelBottom: CGFloat?
+    @State private var safeAreaBottom: CGFloat = 0
     private let services: AppServices
 
     @Environment(PreferencesService.self) private var preferences
@@ -54,12 +58,13 @@ struct PrompterView: View {
             } else {
                 switch viewModel.mode {
                 case .selfie:
-                    SelfieModeView(viewModel: viewModel, onClose: presentation.closePrompter)
+                    SelfieModeView(viewModel: viewModel, scriptPanelBottom: $scriptPanelBottom, onClose: presentation.closePrompter)
                 case .studio:
                     StudioModeView(viewModel: viewModel, onClose: presentation.closePrompter)
                 }
             }
         }
+        .onGeometryChange(for: CGFloat.self) { $0.frame(in: .global).maxY } action: { safeAreaBottom = $0 }
         .background(Color.black.ignoresSafeArea())
         .toastHost()
         .task {
@@ -88,7 +93,9 @@ struct PrompterView: View {
         case .display:
             DisplaySettingsSheet(mode: viewModel.mode)
         case .camera:
-            CameraSettingsSheet()
+            CameraSettingsSheet(maxHeight: scriptPanelBottom.map {
+                ScriptPanelClearance.sheetHeight(panelBottom: $0, safeAreaBottom: safeAreaBottom)
+            })
         case .addScript:
             NewScriptSheet(
                 mode: .attach,

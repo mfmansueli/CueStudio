@@ -12,6 +12,9 @@ struct CameraSettingsSheet: View {
     @Environment(PreferencesService.self) private var preferences
     @Environment(CameraManager.self) private var camera
     @Environment(AudioInputManager.self) private var audio
+    /// Tallest the sheet may grow, so the script above it stays readable. `nil` lets it go full height.
+    var maxHeight: CGFloat?
+
     @Environment(\.dismiss) private var dismiss
     @State private var tab: Tab = .camera
 
@@ -27,6 +30,7 @@ struct CameraSettingsSheet: View {
                 Spacer()
                 Button("Done") { dismiss() }
                     .buttonStyle(.cuePrimary(.compact, expands: false))
+                    .accessibilityIdentifier("camera.doneButton")
             }
             .padding(EdgeInsets(top: 18, leading: 16, bottom: 10, trailing: 16))
             ScrollView {
@@ -39,9 +43,14 @@ struct CameraSettingsSheet: View {
                 .padding(EdgeInsets(top: 4, leading: Metrics.gutter, bottom: 40, trailing: Metrics.gutter))
             }
         }
-        .presentationDetents([.fraction(0.75), .large])
+        .presentationDetents(detents)
         .presentationBackground(Palette.surface)
+        .presentationBackgroundInteraction(maxHeight.map { .enabled(upThrough: .height($0)) } ?? .automatic)
         .onAppear { audio.refreshInputs() }
+    }
+
+    private var detents: Set<PresentationDetent> {
+        maxHeight.map { [.height($0)] } ?? [.fraction(0.75), .large]
     }
 
     // MARK: - Camera

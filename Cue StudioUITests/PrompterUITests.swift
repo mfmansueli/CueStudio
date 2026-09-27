@@ -72,6 +72,31 @@ final class PrompterUITests: XCTestCase {
         app.buttons["prompter.closeButton"].tap()
     }
 
+    func testCameraSettingsStopBelowTheScript() {
+        let app = CueApp.launch(seeded: true)
+        let record = app.buttons["hero.recordButton"]
+        XCTAssertTrue(record.waitForExistence(timeout: 15))
+        record.tap()
+
+        let script = app.descendants(matching: .any)["prompter.text"]
+        XCTAssertTrue(script.waitForExistence(timeout: 5))
+        let scriptBottom = script.frame.maxY
+
+        app.buttons["prompter.cameraSettingsButton"].tap()
+        let done = app.buttons["camera.doneButton"]
+        XCTAssertTrue(done.waitForExistence(timeout: 5))
+        XCTAssertGreaterThan(done.frame.minY, scriptBottom)
+
+        // Pulling the sheet up doesn't let it grow over the script.
+        let header = app.coordinate(withNormalizedOffset: .zero)
+            .withOffset(CGVector(dx: done.frame.minX - 40, dy: done.frame.midY))
+        header.press(forDuration: 0.1, thenDragTo: header.withOffset(CGVector(dx: 0, dy: -400)))
+        XCTAssertGreaterThan(done.frame.minY, scriptBottom)
+
+        done.tap()
+        XCTAssertTrue(app.buttons["prompter.recordButton"].waitForExistence(timeout: 5))
+    }
+
     // MARK: - Helpers
 
     /// Voice follow listens to the microphone; the Simulator asks once.

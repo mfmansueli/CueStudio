@@ -8,6 +8,8 @@ import SwiftUI
 /// Prompter and camera together: the script floats near the lens while you record yourself.
 struct SelfieModeView: View {
     let viewModel: PrompterViewModel
+    /// Bottom edge of the script panel, from the top of the screen; `nil` while there is no panel.
+    @Binding var scriptPanelBottom: CGFloat?
     let onClose: () -> Void
 
     @Environment(PreferencesService.self) private var preferences
@@ -27,6 +29,8 @@ struct SelfieModeView: View {
                     .padding(.horizontal, 14)
                 if viewModel.hasScript {
                     prompterPanel
+                        .onGeometryChange(for: CGFloat.self) { $0.frame(in: .global).maxY } action: { scriptPanelBottom = $0 }
+                        .onDisappear { scriptPanelBottom = nil }
                         .padding(.horizontal, 10)
                         .padding(.top, 8)
                 }
@@ -77,6 +81,7 @@ struct SelfieModeView: View {
             camera: AppServices.preview.camera, audio: AppServices.preview.audio,
             speech: AppServices.preview.speech, toast: AppServices.preview.toast
         ),
+        scriptPanelBottom: .constant(nil),
         onClose: {}
     )
     .previewEnvironment()
