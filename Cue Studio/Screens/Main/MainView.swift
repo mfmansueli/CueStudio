@@ -1,0 +1,122 @@
+//
+//  MainView.swift
+//  Cue Studio
+//
+
+import SwiftUI
+
+/// Tabs (Scripts, Takes, Profile) plus the record button, the creation sheets and the prompter.
+struct MainView: View {
+    let services: AppServices
+
+    @Environment(PresentationService.self) private var presentation
+    @Environment(ScriptLibraryService.self) private var library
+    @Environment(PreferencesService.self) private var preferences
+    @Environment(CreatorProfileService.self) private var profile
+    @Environment(DocumentImportService.self) private var importer
+    @Environment(ToastService.self) private var toast
+
+    var body: some View {
+        @Bindable var presentation = presentation
+        TabView(selection: tabSelection) {
+            Tab("Scripts", systemImage: "doc.text", value: AppTab.scripts) {
+                NavigationStack(path: $presentation.scriptsPath) {
+                    ScriptsView(library: services.library, toast: services.toast)
+                        .navigationDestination(for: ScriptRoute.self) { route in
+                            ScriptDetailView(route: route, services: services)
+                        }
+                }
+            }
+            Tab("Takes", systemImage: "film.stack", value: AppTab.takes) {
+                NavigationStack { TakesView() }
+            }
+            Tab("Profile", systemImage: "person.crop.circle", value: AppTab.profile) {
+                NavigationStack { ProfileView() }
+            }
+            // Not a destination: selecting it opens "What are you recording?".
+            Tab("Record", systemImage: "record.circle", value: AppTab.record) {
+                Color.clear
+            }
+        }
+        .tint(Palette.acc)
+        .sheet(item: $presentation.sheet) { sheet in
+            sheetContent(sheet)
+        }
+        .fullScreenCover(item: $presentation.prompter) { launch in
+            PrompterView(launch: launch, services: services)
+        }
+    }
+
+    /// Selecting the record tab presents the sheet and keeps the current tab.
+    private var tabSelection: Binding<AppTab> {
+        Binding(
+            get: { presentation.selectedTab },
+            set: { tab in
+                if tab == .record {
+                    presentation.present(.newScript)
+                } else {
+                    presentation.selectedTab = tab
+                }
+            }
+        )
+    }
+
+    // MARK: - Sheets
+
+    @ViewBuilder
+    private func sheetContent(_ sheet: AppSheet) -> some View {
+        switch sheet {
+        case .newScript:
+            NewScriptSheet(
+                mode: .new,
+                recent: Array(library.scripts.prefix(3)),
+                readSeconds: { ReadTime.seconds(for: $0.text, speed: preferences.prompter.speed) },
+                onWrite: writeNewScript,
+                onPaste: pasteScript,
+                onImport: { presentation.present(.importScript) },
+                onGenerate: { presentation.present(.generateScript) },
+                onPick: { presentation.openPrompter(scriptID: $0.id, mode: .selfie) },
+                onSkip: { presentation.openPrompter(scriptID: nil, mode: .selfie) }
+            )
+        case .importScript:
+            ImportScriptSheet(
+                onImported: { document in
+                    let script = library.create(title: document.title, text: document.text, platform: profile.profile.defaultPlatform)
+                    presentation.openScript(script.id, editing: true)
+                    toast.show(String(localized: "Imported \(document.kind.lowercased()) · \(document.wordCount) words"))
+                },
+                onPaste: pasteScript
+            )
+        case .generateScript:
+            GenerateScriptSheet(services: services) { script in
+                presentation.openScript(script.id, editing: true)
+            }
+        }
+    }
+
+    private func writeNewScript() {
+        let script = library.create(title: "", text: "", platform: profile.profile.defaultPlatform)
+        presentation.openScript(script.id, editing: true)
+    }
+
+    private func pasteScript() {
+        guard let text = importer.clipboardText() else {
+            toast.show(String(localized: "Copy your script first, then paste it here"))
+            return
+        }
+        let script = library.create(
+            title: ScriptTextNormalizer.suggestedTitle(fileName: nil, text: text),
+            text: text,
+            platform: profile.profile.defaultPlatform
+        )
+        presentation.openScript(script.id, editing: true)
+        toast.show(String(localized: "Pasted · \(ReadTime.wordCount(in: text)) words"))
+    }
+}
+
+#if DEBUG
+#Preview {
+    MainView(services: .preview)
+        .previewEnvironment()
+}
+#endif

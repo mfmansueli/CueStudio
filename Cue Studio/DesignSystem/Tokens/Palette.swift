@@ -1,0 +1,64 @@
+//
+//  Palette.swift
+//  Cue Studio
+//
+
+import SwiftUI
+
+/// Semantic colors. Cue runs in dark appearance (a camera app should not flash white), but every
+/// token keeps a light value so the app stays correct if the appearance lock is ever removed.
+enum Palette {
+    // MARK: - Surfaces
+
+    static let bg = Color(light: Color(hex: 0xF2F2F7), dark: .black)
+    /// Cards and grouped rows.
+    static let surface = Color(light: .white, dark: Color(hex: 0x1C1C1E))
+    /// Controls and rows inside a card or sheet.
+    static let surface2 = Color(light: Color(hex: 0xE5E5EA), dark: Color(hex: 0x2C2C2E))
+    /// Serious formats are shown one step quieter than the rest.
+    static let surfaceMuted = Color(light: Color(hex: 0xEDEDF0), dark: Color(hex: 0x242426))
+    /// Inactive chips, search fields and meter tracks.
+    static let fill = Color(light: Color(hex: 0x767680, opacity: 0.12), dark: Color(hex: 0x767680, opacity: 0.24))
+    /// Buttons floating over the camera and prompter.
+    static let overlayFill = Color.white.opacity(0.1)
+    static let separator = Color(light: Color(hex: 0x3C3C43, opacity: 0.29), dark: Color(hex: 0x545458, opacity: 0.6))
+    /// Secondary swipe actions ("More").
+    static let neutralAction = Color(hex: 0x636366)
+
+    // MARK: - Text
+
+    static let ink = Color(light: .black, dark: .white)
+    static let ink2 = Color(light: Color(hex: 0x3C3C43, opacity: 0.6), dark: Color(hex: 0xEBEBF5, opacity: 0.6))
+    static let ink3 = Color(light: Color(hex: 0x3C3C43, opacity: 0.3), dark: Color(hex: 0xEBEBF5, opacity: 0.3))
+
+    // MARK: - Accents
+
+    static let acc = Color(light: Color(hex: 0xFFCC00), dark: Color(hex: 0xFFD60A))
+    /// Text and icons on top of `acc`.
+    static let accInk = Color.black
+    static let accSoft = Color(hex: 0xFFD60A, opacity: 0.16)
+    static let accLine = Color(hex: 0xFFD60A, opacity: 0.3)
+    static let record = Color(hex: 0xFF3B30)
+    static let danger = Color(light: Color(hex: 0xFF3B30), dark: Color(hex: 0xFF453A))
+    static let dangerSoft = Color(hex: 0xFF3B30, opacity: 0.2)
+    static let warn = Color(light: Color(hex: 0xFF9500), dark: Color(hex: 0xFF9F0A))
+    static let warnSoft = Color(hex: 0xFF9F0A, opacity: 0.16)
+    static let info = Color(light: Color(hex: 0x32ADE6), dark: Color(hex: 0x64D2FF))
+    static let infoSoft = Color(hex: 0x64D2FF, opacity: 0.1)
+    static let success = Color(hex: 0x34C759)
+
+    // MARK: - Platforms
+
+    static let platformTikTok = Color(hex: 0x64D2FF)
+    static let platformReels = Color(hex: 0xBF5AF2)
+    static let platformShorts = Color(hex: 0xFF6961)
+    static let platformYouTube = Color(hex: 0xFF9F0A)
+    static let platformNeutral = Color(hex: 0x8E8E93)
+
+    // MARK: - Camera
+
+    /// Letterbox bars and scrims over the camera feed.
+    static let cameraScrim = Color.black.opacity(0.72)
+    static let gridLine = Color.white.opacity(0.28)
+    static let safeZoneLine = Color.white.opacity(0.4)
+}

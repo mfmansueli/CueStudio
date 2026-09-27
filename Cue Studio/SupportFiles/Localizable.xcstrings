@@ -1,0 +1,1920 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "" : {
+
+    },
+    "·" : {
+
+    },
+    "“%@”" : {
+
+    },
+    "“3 things that…”" : {
+
+    },
+    "@" : {
+
+    },
+    "%@ — announcement" : {
+
+    },
+    "%@ — honest review" : {
+
+    },
+    "%@ — sponsored" : {
+
+    },
+    "%@ · ~%@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ · ~%2$@"
+          }
+        }
+      }
+    },
+    "%@ · renews %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ · renews %2$@"
+          }
+        }
+      }
+    },
+    "%@ (%@)" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ (%2$@)"
+          }
+        }
+      }
+    },
+    "%@ (copy)" : {
+
+    },
+    "%@ / month" : {
+
+    },
+    "%@ / year" : {
+
+    },
+    "%@ BUTTONS" : {
+
+    },
+    "%@ Cue will build a structured draft from your bullets instead." : {
+
+    },
+    "%@ once" : {
+
+    },
+    "%@ over ideal" : {
+
+    },
+    "%@ short of %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ short of %2$@"
+          }
+        }
+      }
+    },
+    "%@ to %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ to %2$@"
+          }
+        }
+      }
+    },
+    "%@ under ideal" : {
+
+    },
+    "%@ version saved as a copy" : {
+
+    },
+    "%@/mo" : {
+
+    },
+    "%lld" : {
+
+    },
+    "%lld %@ that work" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld %2$@ that work"
+          }
+        }
+      }
+    },
+    "%lld days free" : {
+
+    },
+    "%lld deleted" : {
+
+    },
+    "%lld of %lld AI scripts left this month" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld of %2$lld AI scripts left this month"
+          }
+        }
+      }
+    },
+    "%lld of %lld clean exports left" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld of %2$lld clean exports left"
+          }
+        }
+      }
+    },
+    "%lld of %lld left" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld of %2$lld left"
+          }
+        }
+      }
+    },
+    "%lld scripts · %lld takes" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld scripts · %2$lld takes"
+          }
+        }
+      }
+    },
+    "%lld selected" : {
+
+    },
+    "%lld takes" : {
+
+    },
+    "%lld takes · v%lld" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld takes · v%2$lld"
+          }
+        }
+      }
+    },
+    "%lld words · %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld words · %2$@"
+          }
+        }
+      }
+    },
+    "%lld words, %@. %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld words, %2$@. %3$@"
+          }
+        }
+      }
+    },
+    "%llds" : {
+
+    },
+    "+ Add" : {
+
+    },
+    "~%@" : {
+
+    },
+    "~%@ read" : {
+
+    },
+    "✓ Monetizable" : {
+
+    },
+    "0:00" : {
+
+    },
+    "0s" : {
+
+    },
+    "1 take" : {
+
+    },
+    "3 new hooks" : {
+
+    },
+    "12 presets made for phone footage" : {
+
+    },
+    "A friend made me try this — I owe her." : {
+
+    },
+    "A latte-art pour on camera" : {
+
+    },
+    "A note about %@" : {
+
+    },
+    "A script keeps you on track and cuts retakes. Start one now, or skip it." : {
+
+    },
+    "Aa" : {
+
+    },
+    "Acknowledge" : {
+
+    },
+    "Active" : {
+
+    },
+    "Add" : {
+
+    },
+    "Add a phrase" : {
+
+    },
+    "Add a script" : {
+
+    },
+    "Add disclosure" : {
+
+    },
+    "Add phrases in Profile" : {
+
+    },
+    "Add script" : {
+
+    },
+    "Added “%@” — AI will use it" : {
+
+    },
+    "AI runs on the device" : {
+
+    },
+    "AI scripts this month" : {
+
+    },
+    "AI tools aren't available right now." : {
+
+    },
+    "Aim for lengths that earn: TikTok 1:00+, YouTube 8:00+ for mid-roll ads" : {
+
+    },
+    "Alignment" : {
+
+    },
+    "All" : {
+
+    },
+    "All scripts" : {
+
+    },
+    "Allow Camera and Microphone for Cue in Settings to record takes. Studio mode works without them." : {
+
+    },
+    "Announcement" : {
+
+    },
+    "Annual" : {
+
+    },
+    "Apology / statement" : {
+
+    },
+    "Apple Intelligence is still getting ready. Try again in a few minutes." : {
+
+    },
+    "Apple Intelligence isn't available right now." : {
+
+    },
+    "Applied: %@" : {
+
+    },
+    "Automatic" : {
+
+    },
+    "Back" : {
+
+    },
+    "Back · Telephoto" : {
+
+    },
+    "Back · Ultra Wide" : {
+
+    },
+    "Back · Wide" : {
+
+    },
+    "Back three lines" : {
+
+    },
+    "Back to the top" : {
+
+    },
+    "Background" : {
+
+    },
+    "Background color" : {
+
+    },
+    "Batch-filming a week of content" : {
+
+    },
+    "Be specific and brief. Name what happened, own it without a “but”, and say what changes. Cue removes hype, jokes and calls to action." : {
+
+    },
+    "Beauty" : {
+
+    },
+    "Before anything else — I'm sorry." : {
+
+    },
+    "Best" : {
+
+    },
+    "best take" : {
+
+    },
+    "Best take" : {
+
+    },
+    "Best thing" : {
+
+    },
+    "Big news. Stay till the end." : {
+
+    },
+    "Black" : {
+
+    },
+    "Blank page" : {
+
+    },
+    "Blank page, with read-time as you type" : {
+
+    },
+    "Bluetooth" : {
+
+    },
+    "Body" : {
+
+    },
+    "Brand & product" : {
+
+    },
+    "Brand deal · UGC ad" : {
+
+    },
+    "Built-in" : {
+
+    },
+    "Bullets are enough. Open with your usual greeting, hit the product with one strong line, show it working in the middle, close with the code." : {
+
+    },
+    "Buy lifetime for %@" : {
+
+    },
+    "Call to action strengthened" : {
+
+    },
+    "Calm" : {
+
+    },
+    "Camera" : {
+
+    },
+    "Camera access is off" : {
+
+    },
+    "Camera settings" : {
+
+    },
+    "Cameras appear here once the camera is running." : {
+
+    },
+    "Can we talk about this for a second?" : {
+
+    },
+    "Cancel" : {
+
+    },
+    "Cancel anytime" : {
+
+    },
+    "Cancel countdown" : {
+
+    },
+    "CAPTION · %@ UI" : {
+
+    },
+    "Car audio" : {
+
+    },
+    "Casual" : {
+
+    },
+    "Center" : {
+
+    },
+    "Changes where this script will be posted" : {
+
+    },
+    "Clean exports" : {
+
+    },
+    "Clean exports forever · %lld AI scripts a month" : {
+
+    },
+    "Clipboard" : {
+
+    },
+    "Close" : {
+
+    },
+    "Code MORNING for 20% off" : {
+
+    },
+    "Code or link" : {
+
+    },
+    "Copy your script first, then paste it here" : {
+
+    },
+    "Couldn't import" : {
+
+    },
+    "Couldn't reach the App Store. Check your connection and try again." : {
+
+    },
+    "Couldn't write the script" : {
+
+    },
+    "Countdown" : {
+
+    },
+    "Cream" : {
+
+    },
+    "Create" : {
+
+    },
+    "Create more. Sound like you." : {
+
+    },
+    "Creator DNA" : {
+
+    },
+    "CTA" : {
+
+    },
+    "Cue can't save to Photos. Allow access in Settings › Privacy › Photos." : {
+
+    },
+    "Cue couldn't open this file." : {
+
+    },
+    "Cue couldn't switch to this camera." : {
+
+    },
+    "Cue has no account and no server. Your scripts, takes and Creator DNA are stored on this device and in your device backups." : {
+
+    },
+    "Cue Pro" : {
+
+    },
+    "Cue sets the frame, quality and length goals. You can still change any of it in camera settings." : {
+
+    },
+    "Cue will scroll it under the lens. Your camera stays where it is." : {
+
+    },
+    "Cue's AI uses this to write scripts that sound like you. One profile for every platform." : {
+
+    },
+    "Current" : {
+
+    },
+    "Cyan" : {
+
+    },
+    "Default destination" : {
+
+    },
+    "Delete" : {
+
+    },
+    "Delete take" : {
+
+    },
+    "Delete this take?" : {
+
+    },
+    "Describe the video, get a first draft" : {
+
+    },
+    "Destination: %@" : {
+
+    },
+    "Details" : {
+
+    },
+    "Dim behind text" : {
+
+    },
+    "Direct" : {
+
+    },
+    "Disclosure added up front" : {
+
+    },
+    "Display" : {
+
+    },
+    "Display settings" : {
+
+    },
+    "Documents, PDFs, exports" : {
+
+    },
+    "Don't buy this until you watch this." : {
+
+    },
+    "Done" : {
+
+    },
+    "Double-tap the text to edit" : {
+
+    },
+    "Draft ready — structured as %lld blocks" : {
+
+    },
+    "Draft with AI" : {
+
+    },
+    "Drafts and rewrites use Apple Intelligence's on-device model. Your briefs and scripts are never sent anywhere." : {
+
+    },
+    "Drops Friday at 9 a.m." : {
+
+    },
+    "Duplicate" : {
+
+    },
+    "Duplicated" : {
+
+    },
+    "Edit" : {
+
+    },
+    "Editing creates v%lld · your %lld takes stay linked to v%lld" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Editing creates v%1$lld · your %2$lld takes stay linked to v%3$lld"
+          }
+        }
+      }
+    },
+    "Editing creates v%lld · your take stays linked to v%lld" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Editing creates v%1$lld · your take stays linked to v%2$lld"
+          }
+        }
+      }
+    },
+    "Edits your name and handle" : {
+
+    },
+    "Education" : {
+
+    },
+    "Empty script" : {
+
+    },
+    "Energetic" : {
+
+    },
+    "Every paid post will be clearly labeled from now on" : {
+
+    },
+    "Expert" : {
+
+    },
+    "External" : {
+
+    },
+    "Faster" : {
+
+    },
+    "Files" : {
+
+    },
+    "Files and exports" : {
+
+    },
+    "Files, Google Docs exports or clipboard" : {
+
+    },
+    "Finance" : {
+
+    },
+    "First impression" : {
+
+    },
+    "First look" : {
+
+    },
+    "Fit to time" : {
+
+    },
+    "Fitness" : {
+
+    },
+    "Fitted to %@" : {
+
+    },
+    "Five videos from one afternoon" : {
+
+    },
+    "Fix grammar" : {
+
+    },
+    "Flicker-free light on camera" : {
+
+    },
+    "Foams like dairy, zero aftertaste" : {
+
+    },
+    "Folder created" : {
+
+    },
+    "Folder name" : {
+
+    },
+    "Follows your voice and waits when you pause. Speed sets how fast it moves while you talk." : {
+
+    },
+    "Food" : {
+
+    },
+    "For beam-splitter glass rigs" : {
+
+    },
+    "Format" : {
+
+    },
+    "Forward three lines" : {
+
+    },
+    "Frame" : {
+
+    },
+    "Frame %@" : {
+
+    },
+    "Frame rate" : {
+
+    },
+    "FREE" : {
+
+    },
+    "Free exports used — saves with a watermark" : {
+
+    },
+    "Free for %lld days, then %@/year. Cancel anytime in Settings." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Free for %1$lld days, then %2$@/year. Cancel anytime in Settings."
+          }
+        }
+      }
+    },
+    "Free plan" : {
+
+    },
+    "Freestyle" : {
+
+    },
+    "Freestyle recording" : {
+
+    },
+    "Freestyle recordings" : {
+
+    },
+    "French" : {
+
+    },
+    "From clipboard" : {
+
+    },
+    "Front" : {
+
+    },
+    "Funny" : {
+
+    },
+    "Generate" : {
+
+    },
+    "Generate script" : {
+
+    },
+    "Generate with AI" : {
+
+    },
+    "German" : {
+
+    },
+    "Go Pro" : {
+
+    },
+    "Grammar fixed" : {
+
+    },
+    "Graphite" : {
+
+    },
+    "Green" : {
+
+    },
+    "Grid" : {
+
+    },
+    "Grouped by script" : {
+
+    },
+    "Guide position" : {
+
+    },
+    "handle" : {
+
+    },
+    "Heavier than it looks and folds flat" : {
+
+    },
+    "Here's the whole process in under a minute." : {
+
+    },
+    "HEVC keeps files small. Choose H.264 if you edit on older software." : {
+
+    },
+    "Hey fam" : {
+
+    },
+    "Honest verdict, no sponsor." : {
+
+    },
+    "Hook" : {
+
+    },
+    "Hook replaced · ~%@" : {
+
+    },
+    "Hook runs ~%@ — aim for 3s. Tap Hook for options." : {
+
+    },
+    "Hot take / reply" : {
+
+    },
+    "Hot take: %@" : {
+
+    },
+    "How it ended" : {
+
+    },
+    "How-to, step by step" : {
+
+    },
+    "I almost didn't post this. [pause]" : {
+
+    },
+    "I didn't expect to like this one. [pause]" : {
+
+    },
+    "I found the only one that actually works." : {
+
+    },
+    "I owe you an explanation. [pause]" : {
+
+    },
+    "I should have said up front that it was sponsored" : {
+
+    },
+    "I tested this so you don't have to." : {
+
+    },
+    "I tried everything — these are the ones that stuck." : {
+
+    },
+    "I want to talk about last week, directly." : {
+
+    },
+    "I'm going to get hate for this. [pause]" : {
+
+    },
+    "I've been keeping a secret. [pause]" : {
+
+    },
+    "ideal %@" : {
+
+    },
+    "If you only change one thing tomorrow, make it this." : {
+
+    },
+    "Import" : {
+
+    },
+    "Import a script" : {
+
+    },
+    "Import document" : {
+
+    },
+    "Imported %@ · %lld words" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Imported %1$@ · %2$lld words"
+          }
+        }
+      }
+    },
+    "In the ideal range" : {
+
+    },
+    "Instagram Reels" : {
+
+    },
+    "Is this worth the hype? Let's see." : {
+
+    },
+    "It went wrong at the worst possible moment." : {
+
+    },
+    "It's finally happening." : {
+
+    },
+    "Italian" : {
+
+    },
+    "Join the waitlist — link in bio" : {
+
+    },
+    "Just the topic and your points. Cue writes a numbered list with a hook up top and a comment prompt at the end." : {
+
+    },
+    "Keep going" : {
+
+    },
+    "Keep writing with AI" : {
+
+    },
+    "Key detail" : {
+
+    },
+    "Last edited" : {
+
+    },
+    "Last take" : {
+
+    },
+    "Last week's giveaway video" : {
+
+    },
+    "Launch, drop, big news" : {
+
+    },
+    "Lead with the news, not the backstory. Add when it happens and one detail that makes people care." : {
+
+    },
+    "Left" : {
+
+    },
+    "Legible" : {
+
+    },
+    "Length" : {
+
+    },
+    "Lens" : {
+
+    },
+    "Less defensive" : {
+
+    },
+    "Lexend" : {
+
+    },
+    "Lifestyle" : {
+
+    },
+    "Lifetime" : {
+
+    },
+    "Line spacing" : {
+
+    },
+    "List the steps in plain words, separated by commas. Cue turns them into a numbered walkthrough with a hook up top and a save-this ending." : {
+
+    },
+    "Lumen desk lamp" : {
+
+    },
+    "Made it shorter and more direct" : {
+
+    },
+    "Made it sound more human" : {
+
+    },
+    "Made with Cue" : {
+
+    },
+    "Main benefit" : {
+
+    },
+    "Manage" : {
+
+    },
+    "Marked as best take" : {
+
+    },
+    "Microphone" : {
+
+    },
+    "mid-roll ads" : {
+
+    },
+    "mid-rolls" : {
+
+    },
+    "Mirror text" : {
+
+    },
+    "Monetization goals" : {
+
+    },
+    "monetize" : {
+
+    },
+    "monetizes" : {
+
+    },
+    "Monthly" : {
+
+    },
+    "More" : {
+
+    },
+    "More energy" : {
+
+    },
+    "More human" : {
+
+    },
+    "More options" : {
+
+    },
+    "Morning habits" : {
+
+    },
+    "Move to “%@”" : {
+
+    },
+    "Move to a new folder…" : {
+
+    },
+    "Move to folder" : {
+
+    },
+    "Moved to “%@”" : {
+
+    },
+    "My first brand call — and my camera froze" : {
+
+    },
+    "My first preset pack" : {
+
+    },
+    "Name" : {
+
+    },
+    "Navy" : {
+
+    },
+    "Needs Apple Intelligence" : {
+
+    },
+    "New" : {
+
+    },
+    "New folder" : {
+
+    },
+    "New folder…" : {
+
+    },
+    "New script" : {
+
+    },
+    "News" : {
+
+    },
+    "Niche" : {
+
+    },
+    "No camera here" : {
+
+    },
+    "No opening line yet" : {
+
+    },
+    "No phone for 20 minutes, write one goal, move for 5 minutes" : {
+
+    },
+    "No purchases to restore" : {
+
+    },
+    "No script — add one anytime" : {
+
+    },
+    "No scripts here yet." : {
+
+    },
+    "No takes" : {
+
+    },
+    "No takes yet" : {
+
+    },
+    "Nobody talks about this, so I will." : {
+
+    },
+    "Oat & Co. barista oat milk" : {
+
+    },
+    "Oat milk that never foams" : {
+
+    },
+    "Off" : {
+
+    },
+    "OFF" : {
+
+    },
+    "Offer" : {
+
+    },
+    "OK" : {
+
+    },
+    "Okay, real talk — this one matters." : {
+
+    },
+    "On" : {
+
+    },
+    "One-time purchase." : {
+
+    },
+    "Open Settings" : {
+
+    },
+    "Opening" : {
+
+    },
+    "Opinion or comment reply" : {
+
+    },
+    "Or use a script" : {
+
+    },
+    "Own it" : {
+
+    },
+    "Paste" : {
+
+    },
+    "Paste copied text" : {
+
+    },
+    "Paste from clipboard" : {
+
+    },
+    "Pasted · %lld words" : {
+
+    },
+    "Pause" : {
+
+    },
+    "Pay once · %lld AI scripts every month" : {
+
+    },
+    "Payoff" : {
+
+    },
+    "Phrases you always say" : {
+
+    },
+    "Pick a format. Cue builds the structure — you just fill in bullets." : {
+
+    },
+    "Pick a new hook" : {
+
+    },
+    "Plan the hooks, pick one outfit, set one light, film in order" : {
+
+    },
+    "Platform rules change — Cue updates these presets with the app." : {
+
+    },
+    "Platform safe zones" : {
+
+    },
+    "Play" : {
+
+    },
+    "Portuguese" : {
+
+    },
+    "Post to" : {
+
+    },
+    "Post without the watermark" : {
+
+    },
+    "POV: it finally looks like the ad." : {
+
+    },
+    "Premium" : {
+
+    },
+    "Pricey for a lamp" : {
+
+    },
+    "Privacy" : {
+
+    },
+    "Privacy & AI data" : {
+
+    },
+    "Privacy policy" : {
+
+    },
+    "PRO" : {
+
+    },
+    "Problem" : {
+
+    },
+    "Problem it solves" : {
+
+    },
+    "Product" : {
+
+    },
+    "Profile" : {
+
+    },
+    "Promise" : {
+
+    },
+    "Proof" : {
+
+    },
+    "Pros & cons" : {
+
+    },
+    "Purchase" : {
+
+    },
+    "Purchases restored" : {
+
+    },
+    "Question" : {
+
+    },
+    "Question for the comments" : {
+
+    },
+    "Reading" : {
+
+    },
+    "Reading guide" : {
+
+    },
+    "Ready to post · %lld of %lld clean exports left" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Ready to post · %1$lld of %2$lld clean exports left"
+          }
+        }
+      }
+    },
+    "Record" : {
+
+    },
+    "Record a take" : {
+
+    },
+    "Record without a script" : {
+
+    },
+    "Recording" : {
+
+    },
+    "Recording in %lld" : {
+
+    },
+    "Reels" : {
+
+    },
+    "Remove %@" : {
+
+    },
+    "Remove from folder" : {
+
+    },
+    "Removed defensive lines" : {
+
+    },
+    "Removed from folder" : {
+
+    },
+    "Renews monthly at %@. Cancel anytime in Settings." : {
+
+    },
+    "Renews yearly at %@. Cancel anytime in Settings." : {
+
+    },
+    "Resolution" : {
+
+    },
+    "Restore" : {
+
+    },
+    "Restore purchases" : {
+
+    },
+    "Retake" : {
+
+    },
+    "Review" : {
+
+    },
+    "Rewrote with more energy" : {
+
+    },
+    "Right" : {
+
+    },
+    "Rounded" : {
+
+    },
+    "Save" : {
+
+    },
+    "SAVE %lld%%" : {
+
+    },
+    "Save this before you need it." : {
+
+    },
+    "Save with watermark instead" : {
+
+    },
+    "Saved" : {
+
+    },
+    "Saved as v%lld — %lld takes stay with v%lld" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Saved as v%1$lld — %2$lld takes stay with v%3$lld"
+          }
+        }
+      }
+    },
+    "Saved as v%lld — your take stays with v%lld" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Saved as v%1$lld — your take stays with v%2$lld"
+          }
+        }
+      }
+    },
+    "Saved to Photos" : {
+
+    },
+    "Saved to Photos · %lld of %lld clean exports left" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Saved to Photos · %1$lld of %2$lld clean exports left"
+          }
+        }
+      }
+    },
+    "Saved with watermark" : {
+
+    },
+    "Say it like you would to a friend: one line on first impressions, one thing you love, one thing you don't, and a clear yes or no." : {
+
+    },
+    "Script" : {
+
+    },
+    "Script added" : {
+
+    },
+    "Script deleted" : {
+
+    },
+    "Script text" : {
+
+    },
+    "Scripts" : {
+
+    },
+    "Scripts and takes stay on this iPhone" : {
+
+    },
+    "Scrolling" : {
+
+    },
+    "Scrolling with your voice" : {
+
+    },
+    "Search scripts" : {
+
+    },
+    "Select" : {
+
+    },
+    "Select scripts" : {
+
+    },
+    "Selfie" : {
+
+    },
+    "Serif" : {
+
+    },
+    "Serious — no hype" : {
+
+    },
+    "Serious mode: no hooks, jokes, hype or “follow for more”." : {
+
+    },
+    "Settings" : {
+
+    },
+    "Setup" : {
+
+    },
+    "Setup, twist, payoff" : {
+
+    },
+    "Share" : {
+
+    },
+    "Shorter & direct" : {
+
+    },
+    "Shorts" : {
+
+    },
+    "Show cues" : {
+
+    },
+    "Show it working" : {
+
+    },
+    "Shown only on this device." : {
+
+    },
+    "Shows other hooks" : {
+
+    },
+    "Shows where app buttons and captions cover the frame" : {
+
+    },
+    "Side margins" : {
+
+    },
+    "Sincere" : {
+
+    },
+    "Skip for now — record without a script" : {
+
+    },
+    "Slower" : {
+
+    },
+    "Some of you felt misled" : {
+
+    },
+    "Someone asked this in the comments — let me answer." : {
+
+    },
+    "Something you always say. The AI weaves it into new scripts." : {
+
+    },
+    "Spanish" : {
+
+    },
+    "Speed" : {
+
+    },
+    "SPEED" : {
+
+    },
+    "Sponsored ad" : {
+
+    },
+    "Stabilization" : {
+
+    },
+    "Stage cues like [pause] in the prompter" : {
+
+    },
+    "Start %lld-day free trial" : {
+
+    },
+    "Start scrolling with recording" : {
+
+    },
+    "Start with a script.\nSound like you rehearsed." : {
+
+    },
+    "Start writing what you want to say… Add cues like [pause] or [smile]." : {
+
+    },
+    "State the opinion in one line, give one reason, end with a question — questions drive comments." : {
+
+    },
+    "Steady" : {
+
+    },
+    "Steal my system — it's simpler than you think." : {
+
+    },
+    "Steps" : {
+
+    },
+    "Steps, separated by commas" : {
+
+    },
+    "Stop anyway" : {
+
+    },
+    "Stop buying the version that does this. [pause]" : {
+
+    },
+    "Stop recording" : {
+
+    },
+    "Stop scrolling for ten seconds." : {
+
+    },
+    "Stop when script ends" : {
+
+    },
+    "Story time — and yes, it ends well." : {
+
+    },
+    "Storytime" : {
+
+    },
+    "Storytime: %@" : {
+
+    },
+    "Stronger CTA" : {
+
+    },
+    "Structure" : {
+
+    },
+    "Studio" : {
+
+    },
+    "Studio mode" : {
+
+    },
+    "Subscribe for %@/month" : {
+
+    },
+    "Subscribe for %@/year" : {
+
+    },
+    "Supports .txt, .md, .rtf, .html, .pdf and .fountain" : {
+
+    },
+    "Switch camera" : {
+
+    },
+    "Switches to the next frame" : {
+
+    },
+    "Take" : {
+
+    },
+    "Take %lld" : {
+
+    },
+    "Take deleted" : {
+
+    },
+    "Takes" : {
+
+    },
+    "Tap to add your name and handle" : {
+
+    },
+    "Tap to open · Swipe for actions · Hold to preview" : {
+
+    },
+    "Tech" : {
+
+    },
+    "Teleprompter always free" : {
+
+    },
+    "Terms" : {
+
+    },
+    "Text color" : {
+
+    },
+    "Text size" : {
+
+    },
+    "That folder already exists" : {
+
+    },
+    "The App Store couldn't verify this purchase." : {
+
+    },
+    "The camera isn't ready" : {
+
+    },
+    "The camera isn't ready yet." : {
+
+    },
+    "The camera stopped" : {
+
+    },
+    "The disclosure is already up front" : {
+
+    },
+    "The model didn't return any text. Try again." : {
+
+    },
+    "The news" : {
+
+    },
+    "The take couldn't be saved" : {
+
+    },
+    "The teleprompter stays free forever. Pro unlocks clean exports and AI that knows your style." : {
+
+    },
+    "The twist" : {
+
+    },
+    "The video is removed from Cue. Copies you saved to Photos stay there." : {
+
+    },
+    "They said it was the most real pitch all week" : {
+
+    },
+    "This device doesn't support Apple Intelligence." : {
+
+    },
+    "This device has no camera Cue can use." : {
+
+    },
+    "This device has no camera Cue can use. Studio mode still works." : {
+
+    },
+    "This file has no text Cue can read. Scanned PDFs need text recognition first." : {
+
+    },
+    "This is hard because you skip this. [pause]" : {
+
+    },
+    "This is the most embarrassing thing that's happened to me." : {
+
+    },
+    "This plan isn't available right now." : {
+
+    },
+    "This script is empty. Tap Edit to start writing." : {
+
+    },
+    "This script was deleted" : {
+
+    },
+    "This take can't be exported on this device." : {
+
+    },
+    "This take has no video." : {
+
+    },
+    "This take was deleted" : {
+
+    },
+    "This video is overdue." : {
+
+    },
+    "Three beats are enough: what happened, the moment it turned, how it ended. Cue adds a cliffhanger hook and pacing cues." : {
+
+    },
+    "Three tiny changes. Totally different results." : {
+
+    },
+    "TikTok" : {
+
+    },
+    "TikTok only pays Creator Rewards on videos longer than one minute." : {
+
+    },
+    "Timeline" : {
+
+    },
+    "Tips" : {
+
+    },
+    "Tips / list" : {
+
+    },
+    "Tone" : {
+
+    },
+    "Topic" : {
+
+    },
+    "Translate" : {
+
+    },
+    "TrueDepth" : {
+
+    },
+    "Try Pro free for %lld days" : {
+
+    },
+    "Turn on Apple Intelligence in Settings to use AI tools." : {
+
+    },
+    "Tutorial" : {
+
+    },
+    "Twist" : {
+
+    },
+    "Unboxing, first look" : {
+
+    },
+    "Undo" : {
+
+    },
+    "Unlimited AI scripts in your voice" : {
+
+    },
+    "Unlimited clean exports & AI" : {
+
+    },
+    "Unlimited exports, no watermark, up to 4K" : {
+
+    },
+    "Unpopular opinion, but hear me out." : {
+
+    },
+    "Untitled script" : {
+
+    },
+    "Upgrade to Cue Pro" : {
+
+    },
+    "USB" : {
+
+    },
+    "Use my phrases" : {
+
+    },
+    "Uses the connected mic, or the iPhone's" : {
+
+    },
+    "Verdict" : {
+
+    },
+    "Videos leave Cue only when you save them to Photos or share them. Camera and microphone are used only while the camera is open." : {
+
+    },
+    "Viewers decide in the first 3 seconds." : {
+
+    },
+    "Viewers remember your first sentence, not your camera" : {
+
+    },
+    "Voice" : {
+
+    },
+    "Voice follow" : {
+
+    },
+    "Waiting for you to speak" : {
+
+    },
+    "We signed a three-month deal" : {
+
+    },
+    "Welcome to Cue Pro" : {
+
+    },
+    "Welcome to Pro — AI unlocked" : {
+
+    },
+    "Welcome to Pro — exporting without watermark" : {
+
+    },
+    "Wellness" : {
+
+    },
+    "What are you recording?" : {
+
+    },
+    "What changes" : {
+
+    },
+    "What changes now" : {
+
+    },
+    "What happened" : {
+
+    },
+    "What kind of video?" : {
+
+    },
+    "What they'll get" : {
+
+    },
+    "What this is about" : {
+
+    },
+    "What to do next" : {
+
+    },
+    "What you take responsibility for" : {
+
+    },
+    "What you're teaching" : {
+
+    },
+    "What's one thing you can't film without?" : {
+
+    },
+    "When" : {
+
+    },
+    "Where will this go?" : {
+
+    },
+    "White" : {
+
+    },
+    "Who it affected and how" : {
+
+    },
+    "Why" : {
+
+    },
+    "Why you think so" : {
+
+    },
+    "Wired headset" : {
+
+    },
+    "Worst thing" : {
+
+    },
+    "Worth it if you film at a desk" : {
+
+    },
+    "Write" : {
+
+    },
+    "Write a script" : {
+
+    },
+    "Write, paste or import what you want to say. Cue scrolls it right under the lens while you record." : {
+
+    },
+    "Writing in Google Docs, Notion or Pages? Export the script as .txt, .rtf or .pdf to Files — or copy the text and use Clipboard." : {
+
+    },
+    "Writing your script" : {
+
+    },
+    "Writing your script…" : {
+
+    },
+    "Yellow" : {
+
+    },
+    "You asked for this — here it is." : {
+
+    },
+    "You can add a script later, right from the camera." : {
+
+    },
+    "You decide what leaves" : {
+
+    },
+    "You don't need expensive gear" : {
+
+    },
+    "You're doing this wrong. Here's the fix. [pause]" : {
+
+    },
+    "You've used this month's %lld AI scripts. Pro writes unlimited scripts in your voice." : {
+
+    },
+    "You've used your %lld free clean exports. Your takes are safe — export them clean anytime with Pro." : {
+
+    },
+    "Your name" : {
+
+    },
+    "Your points, separated by commas" : {
+
+    },
+    "Your profile" : {
+
+    },
+    "Your purchase is waiting for approval." : {
+
+    },
+    "Your recordings show up here, grouped by script." : {
+
+    },
+    "Your take" : {
+
+    },
+    "Your takes stay yours — export any of them clean" : {
+
+    },
+    "YouTube" : {
+
+    },
+    "YouTube · long-form" : {
+
+    },
+    "YouTube only allows mid-roll ads on videos 8 minutes or longer." : {
+
+    },
+    "YouTube Shorts" : {
+
+    },
+    "Zoom" : {
+
+    }
+  },
+  "version" : "1.0"
+}

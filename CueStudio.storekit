@@ -1,0 +1,116 @@
+{
+  "appPolicies" : {
+    "eula" : "",
+    "policies" : [
+      {
+        "locale" : "en_US",
+        "policyText" : "",
+        "policyURL" : ""
+      }
+    ]
+  },
+  "identifier" : "6C1F0B7E",
+  "nonRenewingSubscriptions" : [
+
+  ],
+  "products" : [
+    {
+      "displayPrice" : "89.99",
+      "familyShareable" : false,
+      "internalID" : "6743000003",
+      "localizations" : [
+        {
+          "description" : "Pay once. Clean exports forever and 30 AI scripts every month.",
+          "displayName" : "Cue Pro Lifetime",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "studio.cue.pro.lifetime",
+      "referenceName" : "Cue Pro Lifetime",
+      "type" : "NonConsumable"
+    }
+  ],
+  "settings" : {
+    "_failTransactionsEnabled" : false,
+    "_locale" : "en_US",
+    "_storefront" : "USA",
+    "_storeKitErrors" : [
+
+    ]
+  },
+  "subscriptionGroups" : [
+    {
+      "id" : "21500001",
+      "localizations" : [
+
+      ],
+      "name" : "Cue Pro",
+      "subscriptions" : [
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+
+          ],
+          "displayPrice" : "39.99",
+          "familyShareable" : false,
+          "groupNumber" : 1,
+          "internalID" : "6743000001",
+          "introductoryOffer" : {
+            "internalID" : "6743000011",
+            "numberOfPeriods" : 1,
+            "paymentMode" : "free",
+            "subscriptionPeriod" : "P1W"
+          },
+          "localizations" : [
+            {
+              "description" : "Unlimited clean exports and AI scripts.",
+              "displayName" : "Cue Pro Annual",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "studio.cue.pro.annual",
+          "recurringSubscriptionPeriod" : "P1Y",
+          "referenceName" : "Cue Pro Annual",
+          "subscriptionGroupID" : "21500001",
+          "type" : "RecurringSubscription",
+          "winbackOffers" : [
+
+          ]
+        },
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+
+          ],
+          "displayPrice" : "7.99",
+          "familyShareable" : false,
+          "groupNumber" : 2,
+          "internalID" : "6743000002",
+          "localizations" : [
+            {
+              "description" : "Unlimited clean exports and AI scripts.",
+              "displayName" : "Cue Pro Monthly",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "studio.cue.pro.monthly",
+          "recurringSubscriptionPeriod" : "P1M",
+          "referenceName" : "Cue Pro Monthly",
+          "subscriptionGroupID" : "21500001",
+          "type" : "RecurringSubscription",
+          "winbackOffers" : [
+
+          ]
+        }
+      ]
+    }
+  ],
+  "version" : {
+    "major" : 4,
+    "minor" : 0
+  }
+}

@@ -1,0 +1,27 @@
+//
+//  AppServices+Preview.swift
+//  Cue Studio
+//
+
+#if DEBUG
+import Foundation
+
+/// Shared preview services, so a preview can build a view model from the same services it
+/// injects into the environment.
+extension AppServices {
+    /// In-memory storage with the sample scripts.
+    static let preview = makePreview(seeded: true)
+    /// In-memory storage, empty library (first run).
+    static let previewEmpty = makePreview(seeded: false)
+
+    private static func makePreview(seeded: Bool) -> AppServices {
+        var options = LaunchOptions()
+        options.scriptRepository = InMemoryScriptRepository(scripts: seeded ? SampleScripts.all : [])
+        options.takeRepository = InMemoryTakeRepository()
+        options.defaults = UserDefaults(suiteName: "studio.cue.previews") ?? .standard
+        let services = AppServices(options: options)
+        services.load()
+        return services
+    }
+}
+#endif

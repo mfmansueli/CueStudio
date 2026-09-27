@@ -1,0 +1,15 @@
+//
+//  RewriteContext.swift
+//  Cue Studio
+//
+
+import Foundation
+
+/// What a rewrite tool needs to know besides the text.
+nonisolated struct RewriteContext: Hashable, Sendable {
+    var structure: ScriptStructure
+    var platform: Platform
+    var idealRange: ClosedRange<TimeInterval>
+    /// Target language for the translate tool, as a display name ("Spanish").
+    var language: String?
+}
