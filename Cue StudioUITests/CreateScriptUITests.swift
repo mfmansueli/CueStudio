@@ -69,7 +69,6 @@ final class CreateScriptUITests: XCTestCase {
         XCTAssertTrue(generate.waitForExistence(timeout: 5))
         generate.tap()
 
-        // The on-device model can take a while on first use.
-        XCTAssertTrue(app.buttons["editor.doneButton"].waitForExistence(timeout: 90))
+        XCTAssertTrue(app.buttons["editor.doneButton"].waitForExistence(timeout: 10))
     }
 }

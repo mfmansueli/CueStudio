@@ -25,7 +25,7 @@ struct TakeReviewViewModelTests {
         let take = TestData.take(scriptID: UUID())
         let takes = TakeLibraryService(repository: FakeTakeRepository(takes: [take]))
         takes.load()
-        let quota = UsageQuotaService(defaults: defaults.defaults, now: { TestData.now })
+        let quota = UsageQuotaService(defaults: defaults.defaults)
         for _ in 0..<usedExports { quota.recordCleanExport(tier: .free) }
         let exporter = FakeVideoExporter()
         let photos = FakePhotoSaver()

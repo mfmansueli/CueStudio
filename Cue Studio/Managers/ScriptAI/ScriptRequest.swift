@@ -5,16 +5,37 @@
 
 import Foundation
 
-/// Everything the AI needs to draft a script.
+/// Everything the AI needs to draft a script: a free prompt or a format's brief, where it will be
+/// posted, how long it runs and, when "Write in my voice" is on, the creator's voice.
 nonisolated struct ScriptRequest: Hashable, Sendable {
-    var type: ScriptType
-    /// Brief answers keyed by `BriefField.key`.
-    var brief: [String: String]
+    enum Source: Hashable, Sendable {
+        /// "2 minutes on how the electric shower was invented in Brazil".
+        case prompt(String)
+        /// Brief answers keyed by `BriefField.key`.
+        case format(ScriptType, brief: [String: String])
+    }
+
+    var source: Source
     var platform: Platform
-    var tone: Tone
-    /// Catchphrases to weave in; empty when "Use my phrases" is off or the format is serious.
-    var phrases: [String]
-    var niches: [Niche]
-    /// Target length in seconds (the platform's ideal range).
-    var idealRange: ClosedRange<TimeInterval>
+    /// Nil for prompts: the voice sets the tone.
+    var tone: Tone?
+    /// Nil when "Write in my voice" is off, and always for serious formats.
+    var voice: CreatorVoice?
+    /// Seconds the script should run.
+    var targetRange: ClosedRange<TimeInterval>
+
+    var type: ScriptType? {
+        if case .format(let type, _) = source { type } else { nil }
+    }
+
+    var structure: ScriptStructure { type?.structure ?? .generic }
+
+    var isFreePrompt: Bool {
+        if case .prompt = source { true } else { false }
+    }
+
+    /// History, science, "how X came to be": needs a fact check before recording.
+    var isFactualTopic: Bool {
+        if case .prompt(let text) = source { FactualTopic.isFactual(text) } else { false }
+    }
 }

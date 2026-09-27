@@ -40,6 +40,24 @@ final class CreatorProfileService {
         }
     }
 
+    /// Keeps at least one sound: an empty voice would tell the AI nothing.
+    func toggleSound(_ sound: VoiceSound) {
+        if let index = profile.sounds.firstIndex(of: sound) {
+            guard profile.sounds.count > 1 else { return }
+            profile.sounds.remove(at: index)
+        } else {
+            profile.sounds.append(sound)
+        }
+    }
+
+    func toggleStyle(_ style: VoiceStyle) {
+        if let index = profile.styles.firstIndex(of: style) {
+            profile.styles.remove(at: index)
+        } else {
+            profile.styles.append(style)
+        }
+    }
+
     /// Adds a catchphrase. Returns false when it is empty or already there.
     @discardableResult
     func addPhrase(_ phrase: String) -> Bool {

@@ -5,16 +5,27 @@
 
 import Foundation
 
-/// Drafts and rewrites scripts. Screens depend on this protocol so tests can use a fake writer.
+/// Drafts and rewrites scripts with Apple Intelligence. Screens depend on this protocol so tests
+/// can use a fake writer.
 protocol ScriptWriting: AnyObject {
-    /// Whether the on-device language model can be used right now.
-    var isLanguageModelAvailable: Bool { get }
-    /// Why the model is unavailable, in words for the creator. Nil when available.
-    var unavailableReason: String? { get }
+    /// Which models can run right now.
+    var availability: AIAvailability { get }
 
-    /// Drafts a script. Falls back to the structured draft when the model is unavailable.
+    /// Drafts a script. A format falls back to its structured draft when no model is available;
+    /// a free prompt throws `ScriptAIError.modelUnavailable`.
     func generate(_ request: ScriptRequest) async throws -> GeneratedScript
 
-    /// Rewrites `text` with a tool. Throws `ScriptAIError.modelUnavailable` without the model.
+    /// Rewrites `text` with a tool. Throws `ScriptAIError.modelUnavailable` without a model.
     func rewrite(_ text: String, with tool: ScriptTool, context: RewriteContext) async throws -> String
+
+    /// Three new opening lines for the script.
+    func hooks(for text: String, context: RewriteContext) async throws -> [String]
+
+    /// Fresh video ideas for the creator's niches.
+    func themeIdeas(for niches: [Niche]) async throws -> [ThemeIdea]
+}
+
+extension ScriptWriting {
+    var isLanguageModelAvailable: Bool { availability.isAvailable }
+    var unavailableReason: String? { availability.reason }
 }

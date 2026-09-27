@@ -3,6 +3,7 @@
 //  Cue Studio
 //
 
+import AppIntents
 import SwiftUI
 
 /// Every app-wide service, created once for the app session. `RootView` keeps it in `@State` and
@@ -20,7 +21,8 @@ struct AppServices {
     let camera: CameraManager
     let audio: AudioInputManager
     let speech: SpeechRecognitionManager
-    let writer: ScriptAIService
+    let writer: ScriptWriting
+    let textRecognizer: TextRecognitionManager
     let importer: DocumentImportService
     let exporter: VideoExportService
     let photos: PhotoLibraryManager
@@ -39,7 +41,8 @@ struct AppServices {
         camera = CameraManager()
         audio = AudioInputManager()
         speech = SpeechRecognitionManager()
-        writer = ScriptAIService()
+        writer = options.writer
+        textRecognizer = TextRecognitionManager()
         importer = DocumentImportService()
         exporter = VideoExportService()
         photos = PhotoLibraryManager()
@@ -49,6 +52,12 @@ struct AppServices {
     func load() {
         library.load()
         takes.load()
+    }
+
+    /// Lets App Intents (Siri, Shortcuts) read the same script library the app shows.
+    func registerIntentDependencies() {
+        let library = library
+        AppDependencyManager.shared.add(dependency: library)
     }
 }
 
@@ -66,7 +75,7 @@ extension View {
             .environment(services.camera)
             .environment(services.audio)
             .environment(services.speech)
-            .environment(services.writer)
+            .environment(services.textRecognizer)
             .environment(services.importer)
             .environment(services.exporter)
             .environment(services.photos)

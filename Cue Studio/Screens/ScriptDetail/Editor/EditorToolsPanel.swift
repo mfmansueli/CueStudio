@@ -30,7 +30,7 @@ struct EditorToolsPanel: View {
                         }
                         .buttonStyle(.plain)
                     }
-                    ForEach(viewModel.structure.tools) { tool in
+                    ForEach(viewModel.tools) { tool in
                         toolButton(tool)
                     }
                 }
@@ -74,7 +74,8 @@ struct EditorToolsPanel: View {
         }
         .opacity(dimmed ? 0.45 : 1)
         .disabled(viewModel.runningTool != nil)
-        .accessibilityHint(dimmed ? Text("Needs Apple Intelligence") : Text(""))
+        .accessibilityHint(dimmed ? Text("Requires Apple Intelligence") : Text(""))
+        .accessibilityIdentifier("editor.tool.\(tool.rawValue)")
     }
 
     private func toolLabel(_ title: String, systemImage: String, isRunning: Bool) -> some View {

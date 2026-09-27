@@ -13,6 +13,9 @@ nonisolated enum ScriptType: String, Codable, CaseIterable, Identifiable, Sendab
 
     var label: String { structure.label }
 
+    /// Brand deals are part of Cue Pro; every other format is free.
+    var isPro: Bool { self == .ad }
+
     var summary: String {
         switch self {
         case .ad: String(localized: "Brand deal · UGC ad")

@@ -54,6 +54,9 @@ enum Palette {
     static let dangerSoft = Color(hex: 0xFF3B30, opacity: 0.2)
     static let warn = Color(light: Color(hex: 0xFF9500), dark: Color(hex: 0xFF9F0A))
     static let warnSoft = Color(hex: 0xFF9F0A, opacity: 0.16)
+    /// Fact-check warnings: a faint orange card with a hairline.
+    static let warnWash = Color(hex: 0xFF9F0A, opacity: 0.08)
+    static let warnBorder = Color(hex: 0xFF9F0A, opacity: 0.28)
     static let info = Color(light: Color(hex: 0x32ADE6), dark: Color(hex: 0x64D2FF))
     static let infoSoft = Color(hex: 0x64D2FF, opacity: 0.1)
     static let success = Color(hex: 0x34C759)

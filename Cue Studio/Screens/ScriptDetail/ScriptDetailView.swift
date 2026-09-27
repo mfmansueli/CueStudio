@@ -65,8 +65,9 @@ struct ScriptDetailView: View {
                     currentHook: viewModel.currentHook,
                     options: viewModel.hookOptions,
                     speed: preferences.prompter.speed,
+                    isLoading: viewModel.isLoadingHooks,
                     onPick: { viewModel.replaceHook(with: $0) },
-                    onMore: { viewModel.showMoreHooks() }
+                    onMore: { Task { await viewModel.showMoreHooks() } }
                 )
             }
         }

@@ -12,4 +12,6 @@ nonisolated struct RewriteContext: Hashable, Sendable {
     var idealRange: ClosedRange<TimeInterval>
     /// Target language for the translate tool, as a display name ("Spanish").
     var language: String?
+    /// The creator's voice, for "In my voice" and hooks.
+    var voice: CreatorVoice?
 }

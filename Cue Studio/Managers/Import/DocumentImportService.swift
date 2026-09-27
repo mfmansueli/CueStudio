@@ -45,6 +45,19 @@ final class DocumentImportService: DocumentImporting {
         )
     }
 
+    /// Pages of a scanned PDF as images, for text recognition when the file has no text layer.
+    func pageImages(ofPDFAt url: URL, maxPages: Int = 10) -> [CGImage] {
+        let scoped = url.startAccessingSecurityScopedResource()
+        defer { if scoped { url.stopAccessingSecurityScopedResource() } }
+        guard let document = PDFDocument(url: url) else { return [] }
+        return (0..<min(document.pageCount, maxPages)).compactMap { index in
+            guard let page = document.page(at: index) else { return nil }
+            let bounds = page.bounds(for: .mediaBox)
+            let scale = 2000 / max(bounds.width, bounds.height, 1)
+            return page.thumbnail(of: CGSize(width: bounds.width * scale, height: bounds.height * scale), for: .mediaBox).cgImage
+        }
+    }
+
     func clipboardText() -> String? {
         guard UIPasteboard.general.hasStrings, let string = UIPasteboard.general.string else { return nil }
         let text = ScriptTextNormalizer.normalize(string)

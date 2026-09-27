@@ -10,7 +10,7 @@ nonisolated enum PaywallCopy {
     static func title(for context: PaywallContext) -> String {
         switch context {
         case .export: String(localized: "Post without the watermark")
-        case .ai: String(localized: "Keep writing with AI")
+        case .sponsoredAd: String(localized: "Brand deals, done right")
         case .profile: String(localized: "Create more. Sound like you.")
         }
     }
@@ -19,8 +19,8 @@ nonisolated enum PaywallCopy {
         switch context {
         case .export:
             String(localized: "You've used your \(UsagePolicy.freeCleanExports) free clean exports. Your takes are safe — export them clean anytime with Pro.")
-        case .ai:
-            String(localized: "You've used this month's \(UsagePolicy.freeAIScriptsPerMonth) AI scripts. Pro writes unlimited scripts in your voice.")
+        case .sponsoredAd:
+            String(localized: "Sponsored-ad scripts with disclosure, offer and brand checklist are part of Pro. Everything else in AI stays free.")
         case .profile:
             String(localized: "The teleprompter stays free forever. Pro unlocks clean exports and AI that knows your style.")
         }
@@ -29,7 +29,7 @@ nonisolated enum PaywallCopy {
     /// Only what Pro actually unlocks.
     static let features: [String] = [
         String(localized: "Unlimited exports, no watermark, up to 4K"),
-        String(localized: "Unlimited AI scripts in your voice"),
+        String(localized: "Full Creator Voice + sponsored-ad scripts"),
         String(localized: "Your takes stay yours — export any of them clean"),
     ]
 
@@ -51,7 +51,7 @@ nonisolated enum PaywallCopy {
         case .monthly:
             return String(localized: "Cancel anytime")
         case .lifetime:
-            return String(localized: "Pay once · \(UsagePolicy.lifetimeAIScriptsPerMonth) AI scripts every month")
+            return String(localized: "Pay once · everything in Pro")
         }
     }
 

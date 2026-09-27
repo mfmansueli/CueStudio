@@ -38,7 +38,7 @@ struct ScriptEditorView: View {
                 summaries: viewModel.summaries,
                 isSerious: viewModel.structure.isSerious,
                 hookRunsLong: viewModel.hookOverrun != nil,
-                onHookTap: { viewModel.sheet = .hooks }
+                onHookTap: { Task { await viewModel.openHooks() } }
             )
             .padding(.top, 4)
             Rectangle()
@@ -61,6 +61,8 @@ struct ScriptEditorView: View {
                     .foregroundStyle(Palette.ink.opacity(0.92))
                     .tint(Palette.acc)
                     .scrollContentBackground(.hidden)
+                    // Writing Tools (proofread, rewrite) from the system, on top of Cue's own tools.
+                    .writingToolsBehavior(.complete)
                     .focused($focus, equals: .text)
                     .padding(.horizontal, Metrics.textGutter)
                     .padding(.top, 16)

@@ -5,7 +5,7 @@
 
 import SwiftUI
 
-/// Niche, catchphrases and tone the AI writes with.
+/// Niche, catchphrases and how the creator sounds, which the AI writes with.
 struct CreatorDNASection: View {
     let onAddPhrase: () -> Void
 
@@ -73,16 +73,28 @@ struct CreatorDNASection: View {
         }
         .padding(.vertical, 6)
 
-        HStack {
-            label(String(localized: "Tone"))
-            Spacer()
-            Picker("Tone", selection: $profile.profile.tone) {
-                ForEach(Tone.creatorOptions) { Text($0.label).tag($0) }
+        VStack(alignment: .leading, spacing: 8) {
+            label(String(localized: "How I sound"))
+            FlowLayout(spacing: 6, lineSpacing: 6) {
+                ForEach(VoiceSound.allCases) { sound in
+                    let isOn = profile.profile.sounds.contains(sound)
+                    Button { profile.toggleSound(sound) } label: {
+                        Text(sound.label)
+                            .font(.subheadline.weight(.semibold))
+                            .foregroundStyle(isOn ? Palette.acc : Palette.ink.opacity(0.75))
+                            .padding(.horizontal, 12)
+                            .frame(height: 30)
+                            .background(isOn ? Palette.accSoft : Palette.surface2, in: Capsule())
+                            .overlay(Capsule().strokeBorder(isOn ? Palette.acc.opacity(0.45) : .clear, lineWidth: 1))
+                            .frame(minHeight: Metrics.hitTarget)
+                            .contentShape(Capsule())
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityAddTraits(isOn ? .isSelected : [])
+                }
             }
-            .pickerStyle(.segmented)
-            .fixedSize()
         }
-        .padding(.vertical, 4)
+        .padding(.vertical, 6)
     }
 
     private func label(_ text: String) -> some View {

@@ -11,8 +11,8 @@ enum PaywallContext: String, Identifiable {
     case profile
     /// The free clean exports ran out.
     case export
-    /// This month's AI scripts ran out.
-    case ai
+    /// The Sponsored ad format, which is part of Pro.
+    case sponsoredAd
 
     var id: String { rawValue }
 }

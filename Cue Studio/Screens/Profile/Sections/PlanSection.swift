@@ -32,11 +32,14 @@ struct PlanSection: View {
                 left: quota.cleanExportsLeft(for: .free) ?? 0,
                 limit: UsagePolicy.freeCleanExports
             )
-            usage(
-                title: String(localized: "AI scripts this month"),
-                left: quota.aiScriptsLeft(for: .free) ?? 0,
-                limit: UsagePolicy.freeAIScriptsPerMonth
-            )
+            HStack(spacing: 8) {
+                Image(systemName: "sparkles").foregroundStyle(Palette.acc)
+                Text("Apple Intelligence")
+                Spacer()
+                Text("On-device · unlimited").foregroundStyle(Palette.ink2)
+            }
+            .font(.subheadline)
+            .accessibilityElement(children: .combine)
             Button(action: onUpgrade) {
                 Label(trialDays.map { String(localized: "Try Pro free for \($0) days") } ?? String(localized: "Upgrade to Cue Pro"), systemImage: "sparkles")
             }
@@ -69,8 +72,8 @@ struct PlanSection: View {
                     .font(.footnote)
                     .foregroundStyle(Palette.ink.opacity(0.7))
                 Text(store.tier == .lifetime
-                     ? String(localized: "Clean exports forever · \(UsagePolicy.lifetimeAIScriptsPerMonth) AI scripts a month")
-                     : String(localized: "Unlimited clean exports & AI"))
+                     ? String(localized: "Lifetime · everything in Pro")
+                     : String(localized: "Unlimited clean exports, full Creator Voice"))
                     .font(.footnote)
                     .foregroundStyle(Palette.ink.opacity(0.7))
             }

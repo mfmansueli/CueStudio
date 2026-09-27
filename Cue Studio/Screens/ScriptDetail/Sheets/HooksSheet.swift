@@ -10,6 +10,8 @@ struct HooksSheet: View {
     let currentHook: String
     let options: [String]
     let speed: Double
+    /// The model is writing new options.
+    var isLoading = false
     let onPick: (String) -> Void
     let onMore: () -> Void
 
@@ -44,6 +46,16 @@ struct HooksSheet: View {
                     RoundedRectangle(cornerRadius: 18, style: .continuous)
                         .strokeBorder(Palette.ink.opacity(0.2), style: StrokeStyle(lineWidth: 1, dash: [4, 3]))
                 )
+                if isLoading {
+                    HStack(spacing: 10) {
+                        ProgressView().tint(Palette.acc)
+                        Text("Writing hooks with Apple Intelligence…")
+                            .font(.subheadline)
+                            .foregroundStyle(Palette.acc)
+                    }
+                    .frame(maxWidth: .infinity, minHeight: 120)
+                    .background(Palette.surface2, in: RoundedRectangle(cornerRadius: 22, style: .continuous))
+                } else {
                 GroupedCard(background: Palette.surface2, radius: 22) {
                     ForEach(options, id: \.self) { hook in
                         Button { onPick(hook) } label: {
@@ -61,14 +73,18 @@ struct HooksSheet: View {
                             .contentShape(Rectangle())
                         }
                         .buttonStyle(.plain)
+                        .accessibilityIdentifier("hooks.option")
                     }
+                }
                 }
                 Button(action: onMore) {
                     Label("More options", systemImage: "sparkles")
                         .foregroundStyle(Palette.acc)
                 }
                 .buttonStyle(.cueOutline())
+                .disabled(isLoading)
                 .padding(.top, 2)
+                .accessibilityIdentifier("hooks.moreButton")
             }
             .padding(EdgeInsets(top: 20, leading: Metrics.gutter, bottom: 24, trailing: Metrics.gutter))
         }

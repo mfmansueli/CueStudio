@@ -13,54 +13,121 @@ nonisolated enum ScriptPromptBuilder {
     // MARK: - Generation
 
     static func instructions(for request: ScriptRequest) -> String {
-        let structure = request.type.structure
+        let structure = request.structure
         var lines = [
             "You write short-form video scripts that a creator reads from a teleprompter while filming themselves.",
             "Write in the first person, as the creator, in natural spoken language with short sentences.",
-            "Return only the script: no title, no headings, no labels, no markdown, no quotes around it.",
-            "Separate paragraphs with a blank line. Each paragraph is one beat of the video.",
+            "Fill in a short title and the script blocks. Block text is only what the creator says: no headings, labels, markdown or quotes around it.",
             cueHint,
         ]
         if structure.isSerious {
-            lines.append("This is a serious statement. Be sincere, specific and brief. No hooks, jokes, hype, emojis or calls to follow, like or subscribe. Never write \"but\" after taking responsibility.")
+            lines.append(seriousRule)
         }
-        if !request.niches.isEmpty {
-            lines.append("The creator's niche: \(request.niches.map(\.label).joined(separator: ", ")).")
+        if request.isFreePrompt {
+            lines.append(accuracyRule)
         }
-        if !request.phrases.isEmpty && !structure.isSerious {
-            lines.append("The creator often says: \(request.phrases.map { "\"\($0)\"" }.joined(separator: ", ")). Use one of these naturally, ideally in the opening.")
+        if let voice = request.voice, !structure.isSerious {
+            lines += voiceLines(voice)
         }
         return lines.joined(separator: "\n")
     }
 
     static func prompt(for request: ScriptRequest) -> String {
-        let structure = request.type.structure
-        let brief = request.type.resolvedBrief(request.brief)
-        let briefLines = request.type.briefFields.map { field in
-            "- \(field.label): \(brief[field.key] ?? field.example)"
+        let structure = request.structure
+        let low = ReadTime.words(for: request.targetRange.lowerBound)
+        let high = ReadTime.words(for: request.targetRange.upperBound)
+        var lines = [
+            "Write a \(structure.label.lowercased()) script for \(request.platform.destinationName).",
+            "Blocks, in this order: \(structure.blocks.joined(separator: " → ")).",
+        ]
+        if let tone = request.tone {
+            lines.append("Tone: \(tone.label.lowercased()).")
         }
-        let low = ReadTime.words(for: request.idealRange.lowerBound)
-        let high = ReadTime.words(for: request.idealRange.upperBound)
-        return """
-        Write a \(structure.label.lowercased()) script for \(request.platform.destinationName).
-        Structure, one or more paragraphs per block, in this order: \(structure.blocks.joined(separator: " → ")).
-        Tone: \(request.tone.label.lowercased()).
-        Length: between \(low) and \(high) spoken words.
-        \(structure.isSerious ? "" : "Open with a hook that works in the first 3 seconds.")
-        Brief:
-        \(briefLines.joined(separator: "\n"))
+        lines.append("Length: between \(low) and \(high) spoken words in total.")
+        if !structure.isSerious {
+            lines.append("Open with a hook that works in the first 3 seconds.")
+        }
+        switch request.source {
+        case .prompt(let text):
+            lines.append("The video: \(text)")
+        case .format(let type, let brief):
+            let resolved = type.resolvedBrief(brief)
+            lines.append("Brief:")
+            lines += type.briefFields.map { "- \($0.label): \(resolved[$0.key] ?? $0.example)" }
+        }
+        return lines.joined(separator: "\n")
+    }
+
+    // MARK: - Voice
+
+    /// Creator Voice as instructions: how they sound, the words they use, their style, catchphrases
+    /// and niche.
+    static func voiceLines(_ voice: CreatorVoice) -> [String] {
+        var lines = ["Write in the creator's own voice."]
+        if !voice.sounds.isEmpty {
+            lines.append("They sound \(list(voice.sounds.map { $0.label.lowercased() })).")
+        }
+        lines.append(vocabularyRule(voice.vocabulary))
+        if !voice.styles.isEmpty {
+            lines.append("Their style: \(voice.styles.map { $0.label.lowercased() }.joined(separator: ", ")).")
+        }
+        if !voice.phrases.isEmpty {
+            lines.append("They often say: \(voice.phrases.map { "\"\($0)\"" }.joined(separator: ", ")). Use one of these naturally, ideally in the opening.")
+        }
+        if !voice.niches.isEmpty {
+            lines.append("Their niche: \(voice.niches.map(\.label).joined(separator: ", ")).")
+        }
+        return lines
+    }
+
+    private static func vocabularyRule(_ vocabulary: Vocabulary) -> String {
+        switch vocabulary {
+        case .simple: "Use simple, everyday words."
+        case .technical: "Technical terms are fine; this audience knows the field."
+        case .genZ: "Use casual Gen Z slang where it fits, without overdoing it."
+        case .professional: "Use polished, professional wording."
+        }
+    }
+
+    private static func list(_ items: [String]) -> String {
+        guard let last = items.last else { return "" }
+        return items.count == 1 ? last : items.dropLast().joined(separator: ", ") + " and " + last
+    }
+
+    static let seriousRule = "This is a serious statement. Be sincere, specific and brief. No hooks, jokes, hype, emojis or calls to follow, like or subscribe. Never write \"but\" after taking responsibility."
+
+    static let accuracyRule = "Be accurate. State only facts you are confident about; when unsure of a date, name or number, say it more generally instead of inventing it."
+
+    // MARK: - Hooks and ideas
+
+    static func hooksPrompt(for text: String, context: RewriteContext) -> String {
         """
+        Write three new opening lines for this \(context.structure.label.lowercased()) script for \(context.platform.destinationName). \
+        Each must grab attention in about three seconds and lead into the rest of the script.
+
+        Script:
+        \(text)
+        """
+    }
+
+    static func themesPrompt(for niches: [Niche]) -> String {
+        let names = (niches.isEmpty ? [Niche.lifestyle] : niches).map(\.label).joined(separator: ", ")
+        return "Suggest six fresh talking-head video ideas for a creator whose niche is: \(names). Mix the niches and the kinds of video. Use each niche name exactly as written."
     }
 
     // MARK: - Rewrites
 
-    static func rewriteInstructions() -> String {
-        [
+    static func rewriteInstructions(voice: CreatorVoice? = nil) -> String {
+        var lines = [
             "You edit teleprompter scripts for video creators.",
             "Keep the creator's voice and first person. Keep existing stage cues in square brackets unless the edit requires removing them.",
             "Return only the full edited script: no explanations, no headings, no markdown, no quotes around it.",
             "Separate paragraphs with a blank line.",
-        ].joined(separator: "\n")
+        ]
+        if let voice {
+            lines += voiceLines(voice)
+        }
+        return lines.joined(separator: "\n")
     }
 
     static func rewritePrompt(for text: String, tool: ScriptTool, context: RewriteContext) -> String {
@@ -87,6 +154,8 @@ nonisolated enum ScriptPromptBuilder {
             return "Remove defensive language, excuses and any \"but\" after an apology, keeping the substance."
         case .shorterAndDirect:
             return "Make it shorter and more direct. Remove filler and repetition."
+        case .inMyVoice:
+            return "Rewrite the script so it sounds like the creator described in your instructions: their tone, words, style and catchphrases. Keep every point and the same length."
         case .newHooks, .addDisclosure:
             return ""
         }
@@ -119,6 +188,17 @@ nonisolated enum ScriptPromptBuilder {
             text = String(text.dropFirst().dropLast())
         }
         return ScriptTextNormalizer.normalize(text)
+    }
+
+    /// A title or a single line (hook, idea): one line, no markdown or wrapping quotes.
+    static func cleanTitle(_ raw: String) -> String {
+        var line = raw.components(separatedBy: .newlines).first { !$0.trimmingCharacters(in: .whitespaces).isEmpty } ?? ""
+        line = line.replacingOccurrences(of: "**", with: "")
+            .trimmingCharacters(in: CharacterSet(charactersIn: "#*-• ").union(.whitespaces))
+        if line.count > 2, let first = line.first, let last = line.last, "\"“'".contains(first), "\"”'".contains(last) {
+            line = String(line.dropFirst().dropLast())
+        }
+        return line.trimmingCharacters(in: .whitespaces)
     }
 
     /// Block names the model tends to echo as "Hook: …".

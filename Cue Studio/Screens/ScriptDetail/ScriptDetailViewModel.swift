@@ -26,6 +26,9 @@ final class ScriptDetailViewModel {
     /// Text before the last AI rewrite, for Undo.
     private(set) var undoText: String?
     private(set) var hookRotation = 0
+    /// Hooks written by the model for this script; nil until asked, or without Apple Intelligence.
+    private(set) var generatedHooks: [String]?
+    private(set) var isLoadingHooks = false
 
     private var originalTitle = ""
     private var originalText = ""
@@ -91,8 +94,11 @@ final class ScriptDetailViewModel {
     var currentHook: String { ScriptTextEditing.opening(of: workingText) }
 
     var hookOptions: [String] {
-        ScriptTextEditing.hookOptions(from: structure.hooks, rotation: hookRotation)
+        generatedHooks ?? ScriptTextEditing.hookOptions(from: structure.hooks, rotation: hookRotation)
     }
+
+    /// Written by AI about a factual topic and not checked yet.
+    var needsFactCheck: Bool { script?.factCheck ?? false }
 
     /// Shown while editing a script that already has takes.
     var versionNotice: String? {
@@ -104,6 +110,18 @@ final class ScriptDetailViewModel {
     }
 
     var isLanguageModelAvailable: Bool { writer.isLanguageModelAvailable }
+
+    /// The tools above the keyboard: "In my voice" first, then the format's own.
+    var tools: [ScriptTool] { [.inMyVoice] + structure.tools }
+
+    private var rewriteContext: RewriteContext {
+        RewriteContext(
+            structure: structure,
+            platform: script?.platform ?? .tiktok,
+            idealRange: preset.idealRange,
+            voice: profile.profile.voice
+        )
+    }
 
     // MARK: - Editing
 
@@ -173,8 +191,39 @@ final class ScriptDetailViewModel {
         toast.show(String(localized: "Hook replaced · ~\(DurationText.short(ReadTime.seconds(for: hook, speed: preferences.prompter.speed)))"))
     }
 
-    func showMoreHooks() {
-        hookRotation += 1
+    /// "Pick a new hook": the model writes three for this script when it can; otherwise the
+    /// format's own ideas.
+    func openHooks() async {
+        sheet = .hooks
+        guard generatedHooks == nil else { return }
+        await loadHooks()
+    }
+
+    func showMoreHooks() async {
+        if writer.isLanguageModelAvailable {
+            await loadHooks()
+        } else {
+            hookRotation += 1
+        }
+    }
+
+    private func loadHooks() async {
+        guard !isLoadingHooks, writer.isLanguageModelAvailable else { return }
+        isLoadingHooks = true
+        defer { isLoadingHooks = false }
+        if let hooks = try? await writer.hooks(for: workingText, context: rewriteContext), !hooks.isEmpty {
+            generatedHooks = hooks
+        } else {
+            generatedHooks = nil
+            hookRotation += 1
+        }
+    }
+
+    // MARK: - Fact check
+
+    func markFactChecked() {
+        library.markFactChecked(scriptID)
+        toast.show(String(localized: "Marked as fact-checked"))
     }
 
     // MARK: - Tools
@@ -183,7 +232,7 @@ final class ScriptDetailViewModel {
         guard runningTool == nil else { return }
         switch tool {
         case .newHooks:
-            sheet = .hooks
+            await openHooks()
         case .addDisclosure:
             guard !ScriptTextEditing.hasDisclosure(workingText) else {
                 toast.show(String(localized: "The disclosure is already up front"))
@@ -206,7 +255,7 @@ final class ScriptDetailViewModel {
     }
 
     private func rewrite(with tool: ScriptTool) async {
-        guard let script else { return }
+        guard script != nil else { return }
         guard writer.isLanguageModelAvailable else {
             toast.show(writer.unavailableReason ?? String(localized: "AI tools aren't available right now."))
             return
@@ -215,8 +264,7 @@ final class ScriptDetailViewModel {
         defer { runningTool = nil }
         do {
             let before = draftText
-            let context = RewriteContext(structure: structure, platform: script.platform, idealRange: preset.idealRange)
-            let rewritten = try await writer.rewrite(before, with: tool, context: context)
+            let rewritten = try await writer.rewrite(before, with: tool, context: rewriteContext)
             guard isEditing else { return }
             undoText = before
             draftText = rewritten
@@ -235,7 +283,7 @@ final class ScriptDetailViewModel {
         runningTool = .translate
         defer { runningTool = nil }
         do {
-            var context = RewriteContext(structure: structure, platform: script.platform, idealRange: preset.idealRange)
+            var context = rewriteContext
             context.language = language.promptName
             let translated = try await writer.rewrite(workingText, with: .translate, context: context)
             library.create(
@@ -253,6 +301,9 @@ final class ScriptDetailViewModel {
         case .fitToTime:
             let range = DurationText.clock(preset.idealRange.lowerBound) + "–" + DurationText.clock(preset.idealRange.upperBound)
             return String(localized: "Fitted to \(range)")
+        case .inMyVoice:
+            let sounds = profile.profile.sounds.prefix(2).map { $0.label.lowercased() }.joined(separator: ", ")
+            return String(localized: "Rewrote in your voice · \(sounds)")
         case .moreEnergy: return String(localized: "Rewrote with more energy")
         case .fixGrammar: return String(localized: "Grammar fixed")
         case .strongerCTA: return String(localized: "Call to action strengthened")

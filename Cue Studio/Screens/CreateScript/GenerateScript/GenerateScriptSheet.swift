@@ -5,11 +5,10 @@
 
 import SwiftUI
 
-/// Two steps: format, then brief. Calls `onCreated` with the new script.
+/// "Generate with AI · Apple Intelligence · private · no cost": Prompt, Themes or Formats (which
+/// pushes the format's brief). Calls `onCreated` with the new script.
 struct GenerateScriptSheet: View {
     @State private var viewModel: GenerateScriptViewModel
-    /// Where the sheet opens: the prompt box, niche ideas or the format picker.
-    let initialTab: GenerateTab
     let onCreated: (Script) -> Void
 
     @Environment(\.dismiss) private var dismiss
@@ -17,40 +16,63 @@ struct GenerateScriptSheet: View {
     init(services: AppServices, initialTab: GenerateTab = .prompt, onCreated: @escaping (Script) -> Void) {
         let store = services.store
         _viewModel = State(initialValue: GenerateScriptViewModel(
+            initialTab: initialTab,
             writer: services.writer,
             library: services.library,
             profile: services.profile,
             rules: services.rules,
-            quota: services.quota,
             tier: { store.tier },
             toast: services.toast
         ))
-        self.initialTab = initialTab
         self.onCreated = onCreated
     }
 
     var body: some View {
         @Bindable var viewModel = viewModel
         NavigationStack {
-            ScriptTypePickerView(viewModel: viewModel, onClose: { dismiss() })
-                .navigationDestination(item: $viewModel.selectedType) { type in
-                    ScriptBriefView(viewModel: viewModel, type: type) {
-                        Task {
-                            if let script = await viewModel.generate() {
-                                onCreated(script)
+            ScrollView {
+                VStack(alignment: .leading, spacing: 14) {
+                    header
+                    Picker("Generate from", selection: $viewModel.tab) {
+                        ForEach(GenerateTab.allCases) { Text($0.label).tag($0) }
+                    }
+                    .pickerStyle(.segmented)
+                    .accessibilityIdentifier("generate.tabs")
+                    switch viewModel.tab {
+                    case .prompt:
+                        PromptTabView(viewModel: viewModel) {
+                            Task {
+                                if let script = await viewModel.generateFromPrompt() { onCreated(script) }
                             }
                         }
-                    }
-                    .toolbar {
-                        ToolbarItem(placement: .topBarTrailing) {
-                            Button { dismiss() } label: { Image(systemName: "xmark") }
-                                .accessibilityLabel(Text("Close"))
-                        }
+                    case .themes:
+                        ThemesTabView(viewModel: viewModel)
+                    case .formats:
+                        FormatsTabView(viewModel: viewModel)
                     }
                 }
+                .padding(EdgeInsets(top: 20, leading: Metrics.gutter, bottom: 28, trailing: Metrics.gutter))
+                .animation(.smooth(duration: 0.2), value: viewModel.tab)
+            }
+            .scrollDismissesKeyboard(.interactively)
+            .toolbarVisibility(.hidden, for: .navigationBar)
+            .navigationDestination(item: $viewModel.selectedType) { type in
+                ScriptBriefView(viewModel: viewModel, type: type) {
+                    Task {
+                        if let script = await viewModel.generateFromBrief() { onCreated(script) }
+                    }
+                }
+                .toolbar {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Button { dismiss() } label: { Image(systemName: "xmark") }
+                            .accessibilityLabel(Text("Close"))
+                    }
+                }
+            }
         }
         .presentationDetents([.large])
         .presentationBackground(Palette.surface)
+        .presentationCornerRadius(Metrics.sheetRadius)
         .fullScreenCover(item: $viewModel.paywall) { context in
             PaywallView(context: context)
         }
@@ -61,6 +83,31 @@ struct GenerateScriptSheet: View {
             Button("OK", role: .cancel) {}
         } message: {
             Text(viewModel.errorMessage ?? "")
+        }
+    }
+
+    private var header: some View {
+        HStack(alignment: .top, spacing: 12) {
+            VStack(alignment: .leading, spacing: 6) {
+                Text("Generate with AI")
+                    .font(.title2.bold())
+                    .foregroundStyle(Palette.ink)
+                HStack(spacing: 6) {
+                    Image(systemName: "sparkles").foregroundStyle(Palette.acc)
+                    Text("Apple Intelligence").fontWeight(.semibold).foregroundStyle(Palette.ink)
+                    Text("· private · no cost").foregroundStyle(Palette.ink2)
+                }
+                .font(.footnote)
+                .accessibilityElement(children: .combine)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            Button { dismiss() } label: {
+                Image(systemName: "xmark")
+                    .font(.system(size: 12, weight: .bold))
+                    .foregroundStyle(Palette.ink2)
+            }
+            .buttonStyle(.cueIcon(.surface, diameter: 32))
+            .accessibilityLabel(Text("Close"))
         }
     }
 }

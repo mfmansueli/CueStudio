@@ -8,27 +8,58 @@ import Foundation
 
 @MainActor
 final class FakeScriptWriter: ScriptWriting {
-    var isLanguageModelAvailable = true
-    var unavailableReason: String? = "Apple Intelligence is off."
+    var availability = AIAvailability(onDevice: true, privateCloud: true, reason: nil)
     var generatedText = "Hey there. [pause]\n\nThis is the body.\n\nFollow for more."
+    var generatedTitle = "Generated title"
+    var statesFacts = false
     var rewrittenText = "Rewritten with energy!"
+    var hookIdeas = ["New hook one.", "New hook two.", "New hook three."]
+    var ideas: [ThemeIdea] = []
     var error: Error?
     private(set) var lastRequest: ScriptRequest?
     private(set) var lastRewrite: (tool: ScriptTool, context: RewriteContext)?
+    private(set) var hooksRequested = 0
+
+    var isAvailable: Bool {
+        get { availability.isAvailable }
+        set { availability = newValue ? AIAvailability(onDevice: true, privateCloud: true, reason: nil) : .unavailable }
+    }
 
     func generate(_ request: ScriptRequest) async throws -> GeneratedScript {
         if let error { throw error }
         lastRequest = request
-        if isLanguageModelAvailable {
-            return GeneratedScript(title: request.type.draftTitle(from: request.brief), text: generatedText, usedLanguageModel: true)
+        switch request.source {
+        case .prompt:
+            guard availability.isAvailable else { throw ScriptAIError.modelUnavailable(availability.reason ?? "") }
+            return GeneratedScript(
+                title: generatedTitle, text: generatedText, usedLanguageModel: true,
+                needsFactCheck: request.isFactualTopic || statesFacts, model: .privateCloud
+            )
+        case .format(let type, let brief):
+            if availability.isAvailable {
+                return GeneratedScript(title: type.draftTitle(from: brief), text: generatedText, usedLanguageModel: true, model: .onDevice)
+            }
+            return GeneratedScript(title: type.draftTitle(from: brief), text: type.draft(from: brief), usedLanguageModel: false)
         }
-        return GeneratedScript(title: request.type.draftTitle(from: request.brief), text: request.type.draft(from: request.brief), usedLanguageModel: false)
     }
 
     func rewrite(_ text: String, with tool: ScriptTool, context: RewriteContext) async throws -> String {
         if let error { throw error }
-        guard isLanguageModelAvailable else { throw ScriptAIError.modelUnavailable(unavailableReason ?? "") }
+        guard availability.isAvailable else { throw ScriptAIError.modelUnavailable(availability.reason ?? "") }
         lastRewrite = (tool, context)
         return rewrittenText
+    }
+
+    func hooks(for text: String, context: RewriteContext) async throws -> [String] {
+        if let error { throw error }
+        guard availability.isAvailable else { throw ScriptAIError.modelUnavailable(availability.reason ?? "") }
+        hooksRequested += 1
+        return hookIdeas
+    }
+
+    func themeIdeas(for niches: [Niche]) async throws -> [ThemeIdea] {
+        if let error { throw error }
+        guard availability.isAvailable else { throw ScriptAIError.modelUnavailable(availability.reason ?? "") }
+        return ideas
     }
 }

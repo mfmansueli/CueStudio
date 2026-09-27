@@ -11,8 +11,6 @@ nonisolated enum DefaultsKey {
     static let cameraSettings = "cameraSettings"
     static let creatorProfile = "creatorProfile"
     static let cleanExportsUsed = "cleanExportsUsed"
-    /// Suffixed with the month key ("aiScriptsUsed_2026-09").
-    static let aiScriptsUsedPrefix = "aiScriptsUsed_"
-
-    static func aiScriptsUsed(month: String) -> String { aiScriptsUsedPrefix + month }
+    /// v1's monthly AI counters ("aiScriptsUsed_2026-09"), removed at launch.
+    static let legacyAIScriptsUsedPrefix = "aiScriptsUsed_"
 }

@@ -7,6 +7,8 @@ import Foundation
 
 /// One-tap tools offered above the keyboard while editing a script.
 nonisolated enum ScriptTool: String, Codable, CaseIterable, Identifiable, Sendable {
+    /// Rewrites with Creator Voice. Offered for every format, ahead of its own tools.
+    case inMyVoice
     case newHooks
     case fitToTime
     case moreEnergy
@@ -22,6 +24,7 @@ nonisolated enum ScriptTool: String, Codable, CaseIterable, Identifiable, Sendab
 
     var label: String {
         switch self {
+        case .inMyVoice: String(localized: "In my voice")
         case .newHooks: String(localized: "3 new hooks")
         case .fitToTime: String(localized: "Fit to time")
         case .moreEnergy: String(localized: "More energy")
@@ -35,7 +38,8 @@ nonisolated enum ScriptTool: String, Codable, CaseIterable, Identifiable, Sendab
         }
     }
 
-    /// Tools that rewrite text need the on-device language model; the others are plain edits.
+    /// Tools that rewrite text need a language model; the others are plain edits (hooks fall back
+    /// to the format's own ideas).
     var needsLanguageModel: Bool {
         switch self {
         case .newHooks, .addDisclosure: false

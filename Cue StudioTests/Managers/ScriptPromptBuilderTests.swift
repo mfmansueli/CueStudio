@@ -8,28 +8,68 @@ import Testing
 
 @Suite("ScriptPromptBuilder")
 struct ScriptPromptBuilderTests {
-    private func request(type: ScriptType = .list, phrases: [String] = ["Hey fam"]) -> ScriptRequest {
+    private let voice = CreatorVoice(
+        sounds: [.casual, .confident], phrases: ["Hey fam"], vocabulary: .genZ,
+        styles: [.shortSentences, .storytelling], niches: [.wellness]
+    )
+
+    private func formatRequest(type: ScriptType = .list, voice: CreatorVoice? = nil) -> ScriptRequest {
         ScriptRequest(
-            type: type, brief: ["topic": "Morning habits"], platform: .tiktok, tone: .casual,
-            phrases: phrases, niches: [.wellness], idealRange: 60...90
+            source: .format(type, brief: ["topic": "Morning habits"]), platform: .tiktok, tone: .casual,
+            voice: voice, targetRange: 60...90
         )
     }
 
-    @Test func promptCarriesStructureLengthAndBrief() {
-        let prompt = ScriptPromptBuilder.prompt(for: request())
+    private func promptRequest(_ text: String, voice: CreatorVoice? = nil) -> ScriptRequest {
+        ScriptRequest(source: .prompt(text), platform: .youtube, tone: nil, voice: voice, targetRange: 108...132)
+    }
+
+    @Test func formatPromptCarriesStructureLengthAndBrief() {
+        let prompt = ScriptPromptBuilder.prompt(for: formatRequest())
         #expect(prompt.contains("Hook → Tips → CTA"))
         #expect(prompt.contains("between 150 and 225 spoken words"))
         #expect(prompt.contains("- Topic: Morning habits"))
+        #expect(prompt.contains("Tone: casual."))
     }
 
-    @Test func instructionsUseTheCreatorsPhrases() {
-        #expect(ScriptPromptBuilder.instructions(for: request()).contains("\"Hey fam\""))
+    @Test func freePromptCarriesTheIdeaAndItsLength() {
+        let prompt = ScriptPromptBuilder.prompt(for: promptRequest("How the electric shower was invented"))
+        #expect(prompt.contains("The video: How the electric shower was invented"))
+        #expect(prompt.contains("between 270 and 330 spoken words"))
+        #expect(prompt.contains("YouTube · long-form"))
+        #expect(!prompt.contains("Tone:"))
     }
 
-    @Test func seriousFormatsForbidHype() {
-        let instructions = ScriptPromptBuilder.instructions(for: request(type: .apology))
+    @Test func freePromptsAskForAccuracy() {
+        #expect(ScriptPromptBuilder.instructions(for: promptRequest("Anything")).contains(ScriptPromptBuilder.accuracyRule))
+        #expect(!ScriptPromptBuilder.instructions(for: formatRequest()).contains(ScriptPromptBuilder.accuracyRule))
+    }
+
+    @Test func instructionsCarryTheCreatorsVoice() {
+        let instructions = ScriptPromptBuilder.instructions(for: formatRequest(voice: voice))
+        #expect(instructions.contains("\"Hey fam\""))
+        #expect(instructions.contains("They sound casual and confident."))
+        #expect(instructions.contains("Gen Z slang"))
+        #expect(instructions.contains("short sentences, storytelling"))
+        #expect(instructions.contains("Their niche: Wellness."))
+    }
+
+    @Test func withoutAVoiceTheInstructionsStayNeutral() {
+        #expect(!ScriptPromptBuilder.instructions(for: formatRequest()).contains("Write in the creator's own voice."))
+    }
+
+    @Test func seriousFormatsForbidHypeAndIgnoreTheVoice() {
+        let instructions = ScriptPromptBuilder.instructions(for: formatRequest(type: .apology, voice: voice))
         #expect(instructions.contains("No hooks, jokes, hype"))
-        #expect(!ScriptPromptBuilder.prompt(for: request(type: .apology)).contains("hook that works"))
+        #expect(!instructions.contains("Hey fam"))
+        #expect(!ScriptPromptBuilder.prompt(for: formatRequest(type: .apology)).contains("hook that works"))
+    }
+
+    @Test func inMyVoiceRewritesWithTheVoiceInTheInstructions() {
+        let instructions = ScriptPromptBuilder.rewriteInstructions(voice: voice)
+        #expect(instructions.contains("They sound casual and confident."))
+        let context = RewriteContext(structure: .generic, platform: .tiktok, idealRange: 60...90, voice: voice)
+        #expect(ScriptPromptBuilder.instruction(for: .inMyVoice, context: context).contains("sounds like the creator"))
     }
 
     @Test func cleanRemovesMarkdownAndBlockLabels() {
@@ -49,6 +89,11 @@ struct ScriptPromptBuilderTests {
 
     @Test func cleanKeepsOrdinaryColons() {
         #expect(ScriptPromptBuilder.clean("Here's the thing: it works.") == "Here's the thing: it works.")
+    }
+
+    @Test func cleanTitleKeepsOneLineWithoutDecoration() {
+        #expect(ScriptPromptBuilder.cleanTitle("**“How Brazil got the electric shower”**\nextra") == "How Brazil got the electric shower")
+        #expect(ScriptPromptBuilder.cleanTitle("# My morning") == "My morning")
     }
 
     @Test func fitToTimeTargetsTheIdealWordCount() {

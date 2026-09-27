@@ -135,10 +135,56 @@ struct ScriptDetailViewModelTests {
         let script = TestData.script(text: "Calm words.")
         let scenario = makeScenario(script: script, startsEditing: true)
         defer { scenario.defaults.tearDown() }
-        scenario.writer.isLanguageModelAvailable = false
+        scenario.writer.isAvailable = false
         await scenario.viewModel.run(.moreEnergy)
         #expect(scenario.viewModel.draftText == "Calm words.")
-        #expect(scenario.toast.message == "Apple Intelligence is off.")
+        #expect(scenario.toast.message == "Requires Apple Intelligence.")
+    }
+
+    @Test func inMyVoiceComesFirstAndRewritesWithTheVoice() async {
+        let script = TestData.script(text: "Plain words.", type: .apology)
+        let scenario = makeScenario(script: script, startsEditing: true)
+        defer { scenario.defaults.tearDown() }
+        #expect(scenario.viewModel.tools.first == .inMyVoice)
+        #expect(scenario.viewModel.tools.contains(.lessDefensive))
+        await scenario.viewModel.run(.inMyVoice)
+        #expect(scenario.writer.lastRewrite?.tool == .inMyVoice)
+        #expect(scenario.writer.lastRewrite?.context.voice?.sounds == [.casual, .confident])
+    }
+
+    @Test func newHooksAreWrittenForThisScript() async {
+        let script = TestData.script(text: "Old hook.\n\nBody.")
+        let scenario = makeScenario(script: script)
+        defer { scenario.defaults.tearDown() }
+        await scenario.viewModel.openHooks()
+        #expect(scenario.viewModel.sheet == .hooks)
+        #expect(scenario.viewModel.hookOptions == ["New hook one.", "New hook two.", "New hook three."])
+        await scenario.viewModel.showMoreHooks()
+        #expect(scenario.writer.hooksRequested == 2)
+    }
+
+    @Test func withoutTheModelHooksComeFromTheFormat() async {
+        let script = TestData.script(text: "Old hook.\n\nBody.")
+        let scenario = makeScenario(script: script)
+        defer { scenario.defaults.tearDown() }
+        scenario.writer.isAvailable = false
+        await scenario.viewModel.openHooks()
+        let first = scenario.viewModel.hookOptions
+        #expect(first == ScriptTextEditing.hookOptions(from: ScriptStructure.generic.hooks, rotation: 0))
+        await scenario.viewModel.showMoreHooks()
+        #expect(scenario.viewModel.hookOptions != first)
+    }
+
+    @Test func checkedClearsTheFactCheckWithoutReordering() {
+        var script = TestData.script()
+        script.factCheck = true
+        let scenario = makeScenario(script: script)
+        defer { scenario.defaults.tearDown() }
+        #expect(scenario.viewModel.needsFactCheck)
+        scenario.viewModel.markFactChecked()
+        #expect(!scenario.viewModel.needsFactCheck)
+        #expect(scenario.library.script(id: script.id)?.updatedAt == TestData.now)
+        #expect(scenario.toast.message == "Marked as fact-checked")
     }
 
     @Test func translationIsSavedAsACopy() async {

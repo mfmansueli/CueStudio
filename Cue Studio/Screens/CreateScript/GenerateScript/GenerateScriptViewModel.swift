@@ -5,15 +5,38 @@
 
 import Foundation
 
-/// Pick a format, fill in bullets, get a structured first draft.
+/// "Generate with AI": a free prompt, an idea for the creator's niche, or a format's brief. Apple
+/// Intelligence writes everything, on the device or with Private Cloud Compute, at no cost; only
+/// the Sponsored ad format is part of Pro.
 @MainActor
 @Observable
 final class GenerateScriptViewModel {
+    static let examples = [
+        String(localized: "2 minutes on how the electric shower was invented in Brazil"),
+        String(localized: "Why I quit coffee for 30 days"),
+        String(localized: "Explain compound interest like I’m 12"),
+        String(localized: "A day in my life as a creator"),
+    ]
+
+    var tab: GenerateTab
+
+    // MARK: Prompt
+    var promptText = ""
+    var length: ScriptLength = .auto
+    var platform: Platform
+    var writesInMyVoice: Bool
+
+    // MARK: Themes
+    private(set) var themes: [ThemeIdea] = []
+    private(set) var isLoadingThemes = false
+    private var themeRotation = 0
+
+    // MARK: Formats
     var selectedType: ScriptType?
     var brief: [String: String] = [:]
-    var platform: Platform
     var tone: Tone
-    var usesPhrases = true
+
+    // MARK: State
     private(set) var isGenerating = false
     var paywall: PaywallContext?
     var errorMessage: String?
@@ -22,49 +45,63 @@ final class GenerateScriptViewModel {
     private let library: ScriptLibraryService
     private let profile: CreatorProfileService
     private let rules: PlatformRulesService
-    private let quota: UsageQuotaService
     private let tier: () -> MembershipTier
     private let toast: ToastService
 
     init(
+        initialTab: GenerateTab = .prompt,
         writer: ScriptWriting,
         library: ScriptLibraryService,
         profile: CreatorProfileService,
         rules: PlatformRulesService,
-        quota: UsageQuotaService,
         tier: @escaping () -> MembershipTier,
         toast: ToastService
     ) {
+        tab = initialTab
         self.writer = writer
         self.library = library
         self.profile = profile
         self.rules = rules
-        self.quota = quota
         self.tier = tier
         self.toast = toast
-        platform = profile.profile.defaultPlatform
-        tone = profile.profile.tone
+        let defaultPlatform = profile.profile.defaultPlatform
+        platform = Platform.primary.contains(defaultPlatform) ? defaultPlatform : .tiktok
+        writesInMyVoice = profile.profile.usesVoiceInAI
+        tone = ScriptStructure.generic.tones[0]
+        themes = ThemeCatalog.page(for: profile.profile.niches, rotation: 0)
     }
 
     // MARK: - Reading
+
+    var availability: AIAvailability { writer.availability }
+
+    /// Prompts and theme ideas need a model; formats fall back to the structured draft.
+    var canWriteFromPrompt: Bool { availability.isAvailable }
+
+    var voiceSummary: String {
+        let summary = profile.profile.voice.summary
+        return summary.isEmpty ? String(localized: "Set up your voice in Profile") : summary
+    }
+
+    /// "Lifestyle, Wellness"
+    var themeNiches: String {
+        let niches = profile.profile.niches
+        return (niches.isEmpty ? [Niche.lifestyle] : niches).map(\.label).joined(separator: ", ")
+    }
 
     var tones: [Tone] { selectedType?.structure.tones ?? ScriptStructure.generic.tones }
 
     var isSerious: Bool { selectedType?.structure.isSerious ?? false }
 
-    var phrases: [String] { profile.profile.phrases }
-
-    /// "4 of 5 AI scripts left this month", or nil when unlimited.
-    var quotaLabel: String? {
-        guard writer.isLanguageModelAvailable, let left = quota.aiScriptsLeft(for: tier()),
-              let limit = UsagePolicy.aiScriptLimit(for: tier()) else { return nil }
-        return String(localized: "\(left) of \(limit) AI scripts left this month")
+    /// Formats are Pro only when they say so (Sponsored ad).
+    func isLocked(_ type: ScriptType) -> Bool {
+        type.isPro && !tier().isPro
     }
 
-    /// Explains the fallback when the on-device model can't be used.
+    /// Shown in a brief when no model can run: the draft is built from the bullets.
     var modelNote: String? {
-        guard !writer.isLanguageModelAvailable else { return nil }
-        let reason = writer.unavailableReason ?? ""
+        guard !availability.isAvailable else { return nil }
+        let reason = availability.reason ?? ""
         return String(localized: "\(reason) Cue will build a structured draft from your bullets instead.")
     }
 
@@ -72,13 +109,73 @@ final class GenerateScriptViewModel {
         brief[field.key] ?? ""
     }
 
-    // MARK: - Actions
+    // MARK: - Prompt
 
+    func useExample(_ example: String) {
+        promptText = example
+        if let detected = ScriptLength.detected(in: example) { length = detected }
+    }
+
+    /// Returns the new script, or nil when an error was shown instead.
+    func generateFromPrompt() async -> Script? {
+        let text = promptText.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !text.isEmpty, !isGenerating else { return nil }
+        let effectiveLength = length == .auto ? (ScriptLength.detected(in: text) ?? .auto) : length
+        let preset = rules.preset(for: platform, monetizationGoals: profile.profile.monetizationGoals)
+        let request = ScriptRequest(
+            source: .prompt(text),
+            platform: platform,
+            tone: nil,
+            voice: writesInMyVoice ? profile.profile.voice : nil,
+            targetRange: effectiveLength.targetRange(ideal: preset.idealRange)
+        )
+        guard let generated = await run(request) else { return nil }
+        let script = library.create(
+            title: generated.title, text: generated.text, platform: platform, factCheck: generated.needsFactCheck
+        )
+        toast.show(generated.needsFactCheck
+            ? String(localized: "Draft ready — check facts before recording")
+            : String(localized: "Draft ready — edit anything"))
+        return script
+    }
+
+    // MARK: - Themes
+
+    func useTheme(_ idea: ThemeIdea) {
+        promptText = idea.prompt
+        length = idea.length
+        tab = .prompt
+    }
+
+    /// Asks the device model for new ideas; without it (or if it fails) shows the next starter ideas.
+    func loadNewIdeas() async {
+        guard !isLoadingThemes else { return }
+        if availability.isAvailable {
+            isLoadingThemes = true
+            defer { isLoadingThemes = false }
+            if let ideas = try? await writer.themeIdeas(for: profile.profile.niches), !ideas.isEmpty {
+                themes = Array(ideas.prefix(ThemeCatalog.pageSize))
+                toast.show(String(localized: "New ideas for your niche"))
+                return
+            }
+        }
+        themeRotation += 2
+        themes = ThemeCatalog.page(for: profile.profile.niches, rotation: themeRotation)
+        toast.show(String(localized: "New ideas for your niche"))
+    }
+
+    // MARK: - Formats
+
+    /// Opens a format's brief, or the paywall for a Pro format on the free plan.
     func choose(_ type: ScriptType) {
-        selectedType = type
+        if isLocked(type) {
+            paywall = .sponsoredAd
+            return
+        }
         brief = [:]
         let tones = type.structure.tones
-        tone = tones.contains(profile.profile.tone) ? profile.profile.tone : (tones.first ?? .casual)
+        tone = profile.profile.sounds.compactMap(\.tone).first(where: tones.contains) ?? tones[0]
+        selectedType = type
     }
 
     func setValue(_ value: String, for field: BriefField) {
@@ -86,34 +183,33 @@ final class GenerateScriptViewModel {
     }
 
     /// Returns the new script, or nil when the paywall or an error was shown instead.
-    func generate() async -> Script? {
+    func generateFromBrief() async -> Script? {
         guard let type = selectedType, !isGenerating else { return nil }
-        let currentTier = tier()
-        let usesModel = writer.isLanguageModelAvailable
-        if usesModel && !quota.canGenerateAIScript(tier: currentTier) {
-            paywall = .ai
+        if isLocked(type) {
+            paywall = .sponsoredAd
             return nil
         }
-        isGenerating = true
-        defer { isGenerating = false }
         let preset = rules.preset(for: platform, monetizationGoals: profile.profile.monetizationGoals)
         let request = ScriptRequest(
-            type: type,
-            brief: brief,
+            source: .format(type, brief: brief),
             platform: platform,
             tone: tone,
-            phrases: usesPhrases && !type.structure.isSerious ? profile.profile.phrases : [],
-            niches: profile.profile.niches,
-            idealRange: preset.idealRange
+            voice: writesInMyVoice && !type.structure.isSerious ? profile.profile.voice : nil,
+            targetRange: preset.idealRange
         )
+        guard let generated = await run(request) else { return nil }
+        let script = library.create(title: generated.title, text: generated.text, platform: platform, type: type)
+        toast.show(String(localized: "Draft ready — structured as \(type.structure.blocks.count) blocks"))
+        return script
+    }
+
+    // MARK: - Private
+
+    private func run(_ request: ScriptRequest) async -> GeneratedScript? {
+        isGenerating = true
+        defer { isGenerating = false }
         do {
-            let generated = try await writer.generate(request)
-            if generated.usedLanguageModel {
-                quota.recordAIScript(tier: currentTier)
-            }
-            let script = library.create(title: generated.title, text: generated.text, platform: platform, type: type)
-            toast.show(String(localized: "Draft ready — structured as \(type.structure.blocks.count) blocks"))
-            return script
+            return try await writer.generate(request)
         } catch {
             errorMessage = error.localizedDescription
             return nil

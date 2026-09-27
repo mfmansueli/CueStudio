@@ -18,6 +18,41 @@ nonisolated struct Script: Codable, Identifiable, Hashable, Sendable {
     var folder: String?
     var createdAt: Date = .now
     var updatedAt: Date = .now
+    /// Written by AI about a factual topic: the read view asks for a fact check until the creator
+    /// taps "Checked".
+    var factCheck: Bool = false
+
+    init(
+        id: UUID = UUID(), title: String, text: String, platform: Platform, type: ScriptType? = nil,
+        version: Int = 1, folder: String? = nil, createdAt: Date = .now, updatedAt: Date = .now,
+        factCheck: Bool = false
+    ) {
+        self.id = id
+        self.title = title
+        self.text = text
+        self.platform = platform
+        self.type = type
+        self.version = version
+        self.folder = folder
+        self.createdAt = createdAt
+        self.updatedAt = updatedAt
+        self.factCheck = factCheck
+    }
+
+    /// Fields added after v1 are optional, so libraries saved by older builds still open.
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        id = try container.decode(UUID.self, forKey: .id)
+        title = try container.decode(String.self, forKey: .title)
+        text = try container.decode(String.self, forKey: .text)
+        platform = try container.decode(Platform.self, forKey: .platform)
+        type = try container.decodeIfPresent(ScriptType.self, forKey: .type)
+        version = try container.decodeIfPresent(Int.self, forKey: .version) ?? 1
+        folder = try container.decodeIfPresent(String.self, forKey: .folder)
+        createdAt = try container.decodeIfPresent(Date.self, forKey: .createdAt) ?? .now
+        updatedAt = try container.decodeIfPresent(Date.self, forKey: .updatedAt) ?? createdAt
+        factCheck = try container.decodeIfPresent(Bool.self, forKey: .factCheck) ?? false
+    }
 
     var structure: ScriptStructure { type?.structure ?? .generic }
 

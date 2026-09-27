@@ -10,9 +10,6 @@ nonisolated enum Tone: String, Codable, CaseIterable, Identifiable, Sendable {
 
     var id: String { rawValue }
 
-    /// Tones a creator can pick for their own voice in Creator DNA.
-    static let creatorOptions: [Tone] = [.casual, .energetic, .expert, .funny]
-
     var label: String {
         switch self {
         case .casual: String(localized: "Casual")

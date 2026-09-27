@@ -46,11 +46,14 @@ final class ScriptLibraryService {
     // MARK: - Scripts
 
     @discardableResult
-    func create(title: String, text: String, platform: Platform, type: ScriptType? = nil, folder: String? = nil) -> Script {
+    func create(
+        title: String, text: String, platform: Platform, type: ScriptType? = nil, folder: String? = nil,
+        factCheck: Bool = false
+    ) -> Script {
         let date = now()
         let script = Script(
             title: title, text: text, platform: platform, type: type,
-            folder: folder, createdAt: date, updatedAt: date
+            folder: folder, createdAt: date, updatedAt: date, factCheck: factCheck
         )
         scripts.insert(script, at: 0)
         persist()
@@ -66,6 +69,13 @@ final class ScriptLibraryService {
         script.updatedAt = now()
         scripts.remove(at: index)
         scripts.insert(script, at: 0)
+        persist()
+    }
+
+    /// "Checked" on the fact-check banner. Not an edit, so the order stays the same.
+    func markFactChecked(_ id: UUID) {
+        guard let index = scripts.firstIndex(where: { $0.id == id }), scripts[index].factCheck else { return }
+        scripts[index].factCheck = false
         persist()
     }
 

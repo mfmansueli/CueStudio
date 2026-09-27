@@ -98,14 +98,14 @@ SF Symbols por significado: `doc.text` scripts · `film.stack` takes · `person.
 |------|------|----------|
 | Scripts (home) | `Screens/Scripts` | "+" no topo (abre New script), título + resumo, busca, chips (All, destinos, pastas), card "Last edited", lista "All scripts" com swipe (Record / More / Delete), segurar mostra preview + menu, modo de seleção com barra (mover, duplicar, apagar) |
 | Primeiro uso | `EmptyLibraryView` | "Start with a script." + caixa de Prompt + Write / Import / Generate with AI + "Record without a script" |
-| Script (leitura) | `Screens/ScriptDetail` | Título, destino/formato/preset, medidor de duração, faixa de blocos, aviso de hook, texto com blocos e cues, takes, Studio mode + Record |
-| Script (edição) | `ScriptEditorView` | Título, faixa de blocos, editor, painel com aviso de versão, ferramentas de IA e medidor |
+| Script (leitura) | `Screens/ScriptDetail` | Título, destino/formato/preset, medidor de duração, faixa de blocos, aviso de hook, banner laranja de checagem de fatos ("Checked" dispensa), texto com blocos e cues, takes, Studio mode + Record |
+| Script (edição) | `ScriptEditorView` | Título, faixa de blocos, editor com Writing Tools, painel com aviso de versão, atalhos de IA ("In my voice" + os do formato) e medidor |
 | Create for | `DestinationSheet` | 6 plataformas com resumo do preset (formato · qualidade · safe zones · ideal) + "Monetization goals". Escolher mostra o toast "Create for {plataforma}" |
-| Hooks | `HooksSheet` | Hook atual + 3 opções + "More options" |
+| Hooks | `HooksSheet` | Hook atual + 3 opções escritas pelo modelo no aparelho (sem ele, as do formato) + "More options" |
 | New script | `NewScriptSheet` | Caixa de Prompt + grade Write / Import / Themes / Formats. Sobre a câmera, Paste no lugar de Write |
 | Start recording | `StartRecordingSheet` | "Read from a script" (4 recentes com duração), "+ New script", "Record without a script →". Sobre a câmera vira "Add a script", sem o freestyle |
-| Importar | `ImportScriptSheet` | Files e área de transferência |
-| Gerar com IA | `GenerateScript/` | Formato (8) → briefing em tópicos, destino, tom, frases → rascunho |
+| Importar | `ImportScriptSheet` | Files, Scan (câmera de documentos), Photo e Clipboard. Scan, Photo e PDFs escaneados passam por OCR do Vision no aparelho |
+| Gerar com IA | `GenerateScript/` | "Generate with AI · Apple Intelligence · private · no cost" + abas **Prompt** (texto livre, exemplos, Create for, Length, "Write in my voice", aviso de fatos), **Themes** (6 ideias do nicho, "New ideas", "Use" preenche o Prompt) e **Formats** (8 formatos; Sponsored ad é PRO) → briefing |
 | Selfie | `Screens/Prompter/Selfie` | Câmera, painel do prompter, grid, barras de enquadramento, safe zones, barra de controles |
 | Studio | `Screens/Prompter/Studio` | Prompter em tela cheia, progresso, velocidade (no Voice follow, o status da escuta), pular linhas, espelhar |
 | Display | `DisplaySettingsSheet` | Fonte, tamanho, espaçamento, margens, alinhamento, cor, fundo, rolagem, guia, espelhar, cues |
@@ -180,9 +180,21 @@ estático), o app baixa uma vez por abertura e só adota uma revisão maior, com
 
 O protótipo simulava várias coisas; o app implementa de verdade ou deixa de fora o que não existe:
 
-- **IA:** Foundation Models on-device (nada sai do aparelho). Sem Apple Intelligence, "Generate"
-  monta o rascunho estruturado a partir do briefing, e as ferramentas de reescrita explicam por que
-  estão indisponíveis. "Add disclosure" e "3 new hooks" não precisam de modelo.
+- **IA:** só Apple Intelligence (Foundation Models), sem custo e sem backend. No aparelho:
+  reescritas, tom, hooks, CTA, "Fit to time", "In my voice" e ideias de tema. Private Cloud Compute:
+  o Prompt livre (temas factuais incluídos); se o PCC não estiver disponível (ou falhar), o modelo do
+  aparelho escreve e o aviso de fatos continua. Os roteiros saem estruturados (`@Generable`
+  `ScriptDraft`: título + blocos), com o Creator Voice nas instructions quando "Write in my voice"
+  está ligado. Prompts factuais (história, ciência, "como surgiu…") ganham `factCheck`.
+- **Sem Apple Intelligence:** Prompt e as reescritas mostram "Requires Apple Intelligence" e ficam
+  desligados; Formats continua gerando o rascunho estruturado a partir do briefing (é um modelo de
+  texto, não IA); Themes mostra as ideias locais. O teleprompter não depende de IA.
+- **Uso de IA:** ilimitado no grátis (o v1 tinha 5 roteiros/mês). Só o formato Sponsored ad é Pro.
+- **Themes:** as ideias iniciais são a lista local por nicho do protótipo (`ThemeCatalog`);
+  "New ideas" pede ideias novas ao modelo do aparelho (sem ele, gira a lista).
+- **Import por foto:** não está no protótipo; vem do pedido (Vision OCR). Sai no simulador sem câmera.
+- **App Intents:** "Record script {nome}" e "New script" (Siri e Shortcuts) abrem o app no ponto
+  certo (`IntentRouter`).
 - **Importar:** Files (.txt, .md, .rtf, .html, .pdf, .fountain) e área de transferência. Google Docs e
   Notion entram exportando para Files ou copiando o texto (não há integração direta).
 - **Voice follow:** reconhecimento de fala on-device (`SpeechAnalyzer`, nada sai do aparelho) no

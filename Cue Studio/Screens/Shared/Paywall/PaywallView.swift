@@ -217,7 +217,7 @@ struct PaywallView: View {
         dismiss()
         let message = switch context {
         case .export: String(localized: "Welcome to Pro — exporting without watermark")
-        case .ai: String(localized: "Welcome to Pro — AI unlocked")
+        case .sponsoredAd: String(localized: "Welcome to Pro — sponsored ads unlocked")
         case .profile: String(localized: "Welcome to Cue Pro")
         }
         toast.show(message)

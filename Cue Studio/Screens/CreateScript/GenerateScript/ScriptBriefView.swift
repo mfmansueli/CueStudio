@@ -11,8 +11,6 @@ struct ScriptBriefView: View {
     let type: ScriptType
     let onGenerate: () -> Void
 
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
-
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 0) {
@@ -60,9 +58,9 @@ struct ScriptBriefView: View {
                 }
                 .padding(.top, 14)
 
-                chipRow(title: "Create for", options: Platform.primary, selection: $viewModel.platform) { $0.label }
+                OptionChipRow(title: "Create for", options: Platform.primary, selection: $viewModel.platform, label: \.label, identifier: "generate.platform")
                     .padding(.top, 14)
-                chipRow(title: "Tone", options: viewModel.tones, selection: $viewModel.tone) { $0.label }
+                OptionChipRow(title: "Tone", options: viewModel.tones, selection: $viewModel.tone, label: \.label, identifier: "generate.tone")
                     .padding(.top, 14)
 
                 if viewModel.isSerious {
@@ -76,22 +74,8 @@ struct ScriptBriefView: View {
                             .padding(.top, 14)
                     }
                 } else {
-                    Toggle(isOn: $viewModel.usesPhrases) {
-                        VStack(alignment: .leading, spacing: 2) {
-                            Text("Use my phrases").font(.subheadline.weight(.semibold))
-                            Text(viewModel.phrases.isEmpty
-                                 ? String(localized: "Add phrases in Profile")
-                                 : viewModel.phrases.map { "“\($0)”" }.joined(separator: " · "))
-                                .font(.footnote)
-                                .foregroundStyle(Palette.ink2)
-                                .lineLimit(2)
-                        }
-                    }
-                    .tint(Palette.success)
-                    .disabled(viewModel.phrases.isEmpty)
-                    .padding(EdgeInsets(top: 10, leading: 14, bottom: 10, trailing: 14))
-                    .background(Palette.surface2, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
-                    .padding(.top, 14)
+                    VoiceToggleRow(isOn: $viewModel.writesInMyVoice, summary: viewModel.voiceSummary)
+                        .padding(.top, 14)
                 }
 
                 if let note = viewModel.modelNote {
@@ -101,53 +85,13 @@ struct ScriptBriefView: View {
                         .padding(.top, 14)
                 }
 
-                generateButton.padding(.top, 18)
+                GenerateButton(isGenerating: viewModel.isGenerating, action: onGenerate)
+                    .padding(.top, 18)
             }
             .padding(EdgeInsets(top: 8, leading: Metrics.gutter, bottom: 24, trailing: Metrics.gutter))
         }
         .scrollDismissesKeyboard(.interactively)
         .navigationTitle(type.structure.label)
         .navigationBarTitleDisplayMode(.inline)
-    }
-
-    @ViewBuilder
-    private var generateButton: some View {
-        if viewModel.isGenerating {
-            Text("Writing your script…")
-                .font(.body.weight(.semibold))
-                .foregroundStyle(Palette.acc)
-                .frame(maxWidth: .infinity, minHeight: Metrics.largeButtonHeight)
-                .phaseAnimator(reduceMotion ? [0.2] : [0.14, 0.38]) { view, phase in
-                    view.background(Palette.acc.opacity(phase), in: Capsule())
-                } animation: { _ in .easeInOut(duration: 0.55) }
-                .accessibilityLabel(Text("Writing your script"))
-        } else {
-            Button(action: onGenerate) {
-                Label("Generate script", systemImage: "sparkles")
-            }
-            .buttonStyle(.cuePrimary(.large))
-            .accessibilityIdentifier("generate.generateButton")
-        }
-    }
-
-    private func chipRow<Option: Hashable>(
-        title: LocalizedStringKey, options: [Option], selection: Binding<Option>, label: @escaping (Option) -> String
-    ) -> some View {
-        HStack(alignment: .firstTextBaseline, spacing: 12) {
-            Text(title)
-                .font(.footnote.weight(.semibold))
-                .foregroundStyle(Palette.ink2)
-                .frame(width: 56, alignment: .leading)
-            FlowLayout(spacing: 6, lineSpacing: 6) {
-                ForEach(options, id: \.self) { option in
-                    Button {
-                        selection.wrappedValue = option
-                    } label: {
-                        FilterChip(label: label(option), isSelected: selection.wrappedValue == option, height: 32)
-                    }
-                    .buttonStyle(.plain)
-                }
-            }
-        }
     }
 }

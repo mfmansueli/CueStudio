@@ -26,12 +26,12 @@ struct ScriptReadView: View {
                     summaries: viewModel.summaries,
                     isSerious: viewModel.structure.isSerious,
                     hookRunsLong: viewModel.hookOverrun != nil,
-                    onHookTap: { viewModel.sheet = .hooks }
+                    onHookTap: { Task { await viewModel.openHooks() } }
                 )
                 .padding(.top, 14)
                 if let overrun = viewModel.hookOverrun {
                     Button {
-                        viewModel.sheet = .hooks
+                        Task { await viewModel.openHooks() }
                     } label: {
                         Label("Hook runs ~\(DurationText.short(overrun)) — aim for 3s. Tap Hook for options.", systemImage: "stopwatch")
                             .font(.footnote)
@@ -40,6 +40,11 @@ struct ScriptReadView: View {
                     }
                     .buttonStyle(.plain)
                     .padding(.horizontal, Metrics.textGutter)
+                }
+                if viewModel.needsFactCheck {
+                    FactCheckBanner(onChecked: viewModel.markFactChecked)
+                        .padding(.horizontal, Metrics.gutter)
+                        .padding(.top, 14)
                 }
                 paragraphs
                 if !viewModel.scriptTakes.isEmpty {
