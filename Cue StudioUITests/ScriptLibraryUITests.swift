@@ -75,8 +75,7 @@ final class ScriptLibraryUITests: XCTestCase {
         let share = app.buttons["Share"]
         XCTAssertTrue(share.waitForExistence(timeout: 5))
         share.tap()
-        // The system share sheet shows the script's text.
-        XCTAssertTrue(app.otherElements["ActivityListView"].waitForExistence(timeout: 5) || app.navigationBars.firstMatch.exists)
+        XCTAssertTrue(app.otherElements["ActivityListView"].waitForExistence(timeout: 5))
     }
 
     func testDoubleTappingTheTextStartsEditing() {
@@ -84,9 +83,9 @@ final class ScriptLibraryUITests: XCTestCase {
         let row = app.staticTexts["Unboxing the Lumen desk lamp"]
         XCTAssertTrue(row.waitForExistence(timeout: 15))
         row.tap()
-        let hint = app.staticTexts["Double-tap the text to edit"]
-        XCTAssertTrue(hint.waitForExistence(timeout: 5))
-        hint.doubleTap()
+        let text = app.descendants(matching: .any).matching(NSPredicate(format: "label CONTAINS %@", "it folds flat")).firstMatch
+        XCTAssertTrue(text.waitForExistence(timeout: 5))
+        text.doubleTap()
         XCTAssertTrue(app.buttons["editor.doneButton"].waitForExistence(timeout: 5))
     }
 
