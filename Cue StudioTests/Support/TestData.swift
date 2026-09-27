@@ -10,6 +10,19 @@ import Foundation
 enum TestData {
     static let now = Date(timeIntervalSince1970: 1_800_000_000)
 
+    /// The rules shipped in the app bundle (the test host).
+    static let rules = PlatformRulesService.bundledRules()
+
+    static func preset(_ platform: Platform, monetizationGoals: Bool = true) -> PlatformPreset {
+        rules.preset(for: platform, monetizationGoals: monetizationGoals)
+    }
+
+    /// A rules service that never reads a cache or the network.
+    @MainActor
+    static func rulesService() -> PlatformRulesService {
+        PlatformRulesService(bundled: rules, cacheURL: nil, remoteURL: nil)
+    }
+
     /// `count` spoken words.
     static func words(_ count: Int) -> String {
         Array(repeating: "word", count: count).joined(separator: " ")

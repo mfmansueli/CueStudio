@@ -25,6 +25,9 @@ struct RootView: View {
             .task {
                 await services.store.start()
             }
+            .task {
+                await services.rules.refresh()
+            }
             .onChange(of: scenePhase) { _, phase in
                 guard phase == .active else { return }
                 services.quota.refreshMonth()

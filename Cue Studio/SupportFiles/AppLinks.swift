@@ -12,4 +12,7 @@ enum AppLinks {
     /// Required for subscriptions on the App Store. Set before the first release; the link stays
     /// hidden while it is nil.
     static let privacyPolicy: URL? = nil
+    /// Newer copies of `PlatformRules.json` (a static file, e.g. on GitHub Pages). While nil, the
+    /// app uses the rules it shipped with.
+    static let platformRules: URL? = nil
 }

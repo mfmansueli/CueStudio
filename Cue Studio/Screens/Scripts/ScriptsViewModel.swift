@@ -38,7 +38,7 @@ final class ScriptsViewModel {
     }
 
     var filters: [ScriptFilter] {
-        [.all] + Platform.allCases.map(ScriptFilter.platform) + library.folders.map(ScriptFilter.folder)
+        [.all] + ScriptFilter.platformFilters(for: library.scripts) + library.folders.map(ScriptFilter.folder)
     }
 
     func summary(takeCount: Int) -> String {

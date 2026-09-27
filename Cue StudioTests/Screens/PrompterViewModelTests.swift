@@ -36,7 +36,7 @@ struct PrompterViewModelTests {
         let toast = ToastService()
         let viewModel = PrompterViewModel(
             launch: PrompterLaunch(scriptID: script?.id, mode: mode),
-            library: library, takes: takes, preferences: preferences, profile: profile,
+            library: library, takes: takes, preferences: preferences, profile: profile, rules: TestData.rulesService(),
             camera: camera, audio: audio, speech: speech, toast: toast
         )
         return Scenario(

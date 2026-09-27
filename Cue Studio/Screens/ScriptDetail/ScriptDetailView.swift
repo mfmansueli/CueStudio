@@ -21,6 +21,7 @@ struct ScriptDetailView: View {
             takes: services.takes,
             preferences: services.preferences,
             profile: services.profile,
+            rules: services.rules,
             writer: services.writer,
             toast: services.toast
         ))

@@ -10,7 +10,8 @@ Origem: projeto "iOS Teleprompter App Design" no Claude Design, arquivo `Cue Tel
 ## 1. Identidade
 
 **Cue** é um teleprompter para criadores de conteúdo. Script primeiro, câmera depois — ou direto para
-a gravação. Cada script carrega o destino (TikTok, Reels, Shorts, YouTube), o formato (anúncio,
+a gravação. Cada script carrega o destino ("Create for": TikTok, Reels, Shorts, YouTube, LinkedIn,
+Stories), o formato (anúncio,
 review, tutorial…) e a estrutura (Hook → Body → CTA).
 
 - Tom: direto, de criador para criador. Frases curtas, sem jargão.
@@ -46,7 +47,8 @@ tela branca atrapalha a gravação. Os tokens mantêm valores claros para o dia 
 | `warn` | `#FF9F0A` | Fora da faixa ideal, hook longo, aviso de monetização |
 | `info` | `#64D2FF` | Aviso de nova versão no editor |
 | `success` | `#34C759` | Toggles |
-| Plataformas | TikTok `#64D2FF` · Reels `#BF5AF2` · Shorts `#FF6961` · YouTube `#FF9F0A` | Ponto que marca o destino |
+| Plataformas | TikTok `#64D2FF` · Reels `#BF5AF2` · Shorts `#FF6961` · YouTube `#FF9F0A` · LinkedIn `#0A84FF` · Stories `#FF375F` | Ponto que marca o destino |
+| `safeZoneLine` / `safeZoneLabel` | branco 22% / 50% | Zonas seguras tracejadas sobre a câmera |
 
 ### Tipografia
 
@@ -98,7 +100,7 @@ SF Symbols por significado: `doc.text` scripts · `film.stack` takes · `person.
 | Primeiro uso | `EmptyLibraryView` | "Start with a script." + caixa de Prompt + Write / Import / Generate with AI + "Record without a script" |
 | Script (leitura) | `Screens/ScriptDetail` | Título, destino/formato/preset, medidor de duração, faixa de blocos, aviso de hook, texto com blocos e cues, takes, Studio mode + Record |
 | Script (edição) | `ScriptEditorView` | Título, faixa de blocos, editor, painel com aviso de versão, ferramentas de IA e medidor |
-| Destino | `DestinationSheet` | 4 destinos com preset + meta de monetização |
+| Create for | `DestinationSheet` | 6 plataformas com resumo do preset (formato · qualidade · safe zones · ideal) + "Monetization goals". Escolher mostra o toast "Create for {plataforma}" |
 | Hooks | `HooksSheet` | Hook atual + 3 opções + "More options" |
 | New script | `NewScriptSheet` | Caixa de Prompt + grade Write / Import / Themes / Formats. Sobre a câmera, Paste no lugar de Write |
 | Start recording | `StartRecordingSheet` | "Read from a script" (4 recentes com duração), "+ New script", "Record without a script →". Sobre a câmera vira "Add a script", sem o freestyle |
@@ -125,6 +127,26 @@ RootView
 Sheets (sobre as abas): New script (+) · Start recording · Import · Generate (Prompt | Themes | Formats)
 Full screen: Prompter (Selfie ⇄ Studio → Revisão do take) · Paywall
 ```
+
+## 5.1 Regras por plataforma
+
+Todos os números por plataforma vêm de `SupportFiles/PlatformRules.json` (`PlatformRules` +
+`PlatformRulesService`): formato, qualidade, faixa ideal (com e sem monetização), mínimo que
+monetiza, posição do painel do Selfie (topo, altura, largura) e zonas seguras. As medidas de layout
+são pontos na tela de referência 402 × 874 (iPhone 17) e escalam com a tela real.
+
+| Plataforma | Formato | Qualidade | Ideal | Mínimo (monetização) | Painel (topo · altura · largura) |
+|---|---|---|---|---|---|
+| TikTok | 9:16 | 1080p30 | 1:00–1:30 (sem metas: 0:15–1:00) | 1:00 | 118 · 280 · 58% |
+| Reels | 9:16 | 1080p30 | 0:15–1:00 | — | 104 · 290 · 60% |
+| Shorts | 9:16 | 1080p60 | 0:30–1:00 | — | 104 · 262 · 60% |
+| YouTube | 16:9 | 4K24 | 8:00–15:00 (sem metas: 4:00–10:00) | 8:00 | 104 · 210 · 70% (na faixa preta) |
+| LinkedIn | 4:5 | 1080p30 | 0:30–1:30 | — | 196 · 240 · 64% |
+| Stories | 9:16 | 1080p30 | 0:08–0:15 | — | 150 · 264 · 56% |
+
+O arquivo tem `revision`. Quando `AppLinks.platformRules` aponta para uma cópia publicada (um JSON
+estático), o app baixa uma vez por abertura e só adota uma revisão maior, completa e do mesmo
+`schemaVersion`; a cópia fica em cache. Sem URL, vale o arquivo do app.
 
 ## 6. Estados
 
@@ -179,6 +201,10 @@ O protótipo simulava várias coisas; o app implementa de verdade ou deixa de fo
   Record usa `RecordGlyph`, uma imagem com cores originais, porque SF Symbols viram monocromáticos
   na tab bar.
 - **New script sobre a câmera:** não há editor no prompter, então o tile Write vira Paste.
+- **Filtros de plataforma:** como no protótipo, All + TikTok, Reels, Shorts, YouTube e LinkedIn;
+  Stories ganha chip só quando algum script é para Stories (roteiros de 8–15 s são raros).
+- **Regras remotas:** o protótipo diz "presets update automatically". Sem backend, a atualização é
+  um JSON estático opcional (ver 5.1); até a URL existir, as regras mudam com o app.
 
 ## 10. Do's & don'ts
 

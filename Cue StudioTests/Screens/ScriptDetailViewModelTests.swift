@@ -35,6 +35,7 @@ struct ScriptDetailViewModelTests {
             takes: takes,
             preferences: PreferencesService(defaults: defaults.defaults),
             profile: CreatorProfileService(defaults: defaults.defaults),
+            rules: TestData.rulesService(),
             writer: writer,
             toast: toast
         )

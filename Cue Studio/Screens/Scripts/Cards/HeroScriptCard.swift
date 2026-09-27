@@ -13,8 +13,10 @@ struct HeroScriptCard: View {
     let onStudio: () -> Void
     let onRecord: () -> Void
 
+    @Environment(PlatformRulesService.self) private var rules
+
     private var prefersStudio: Bool {
-        PlatformPreset.preset(for: script.platform, monetizationGoals: false).prefersStudio
+        rules.preset(for: script.platform, monetizationGoals: false).prefersStudio
     }
 
     var body: some View {

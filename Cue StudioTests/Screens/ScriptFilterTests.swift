@@ -31,6 +31,15 @@ struct ScriptFilterTests {
         #expect(ScriptFilter.apply(.all, query: "COFFEE", to: scripts).map(\.title) == ["Q&A"])
     }
 
+    @Test func platformChipsAreThePrimaryPlatforms() {
+        #expect(ScriptFilter.platformFilters(for: scripts) == Platform.primary.map(ScriptFilter.platform))
+    }
+
+    @Test func storiesGetAChipOnceAScriptUsesThem() {
+        let withStories = scripts + [TestData.script(platform: .stories)]
+        #expect(ScriptFilter.platformFilters(for: withStories).last == .platform(.stories))
+    }
+
     @Test func searchCombinesWithTheFilter() {
         #expect(ScriptFilter.apply(.platform(.tiktok), query: "coffee", to: scripts).isEmpty)
     }

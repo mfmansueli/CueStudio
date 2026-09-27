@@ -76,6 +76,22 @@ enum SampleScripts {
         createdAt: .now.addingTimeInterval(-8 * 86_400), updatedAt: .now.addingTimeInterval(-8 * 86_400)
     )
 
-    static let all = [morningHabits, lampReview, sponsoredRead, weeklyQA]
+    static let brandDeals = Script(
+        id: UUID(uuidString: "00000000-0000-0000-0000-000000000005")!,
+        title: "What 100 brand deals taught me",
+        text: """
+        [confident] After a hundred brand deals, here's what I'd tell my younger self. [pause]
+
+        The brief is not the boss. Your audience is.
+
+        The best-performing ads I made never sounded like ads. [emphasis] They sounded like me.
+
+        What's the one thing you'd tell a creator doing their first deal?
+        """,
+        platform: .linkedin, type: .opinion,
+        createdAt: .now.addingTimeInterval(-90_000), updatedAt: .now.addingTimeInterval(-90_000)
+    )
+
+    static let all = [morningHabits, lampReview, brandDeals, sponsoredRead, weeklyQA]
 }
 #endif

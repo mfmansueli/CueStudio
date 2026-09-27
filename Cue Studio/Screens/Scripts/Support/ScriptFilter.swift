@@ -27,6 +27,14 @@ nonisolated enum ScriptFilter: Hashable, Sendable {
         }
     }
 
+    /// One chip per primary platform, plus any other platform a script already uses (Stories).
+    static func platformFilters(for scripts: [Script]) -> [ScriptFilter] {
+        let used = Set(scripts.map(\.platform))
+        return Platform.allCases
+            .filter { Platform.primary.contains($0) || used.contains($0) }
+            .map(ScriptFilter.platform)
+    }
+
     /// Scripts matching the filter whose title or text contains `query`, in their original order.
     static func apply(_ filter: ScriptFilter, query: String, to scripts: [Script]) -> [Script] {
         let needle = query.trimmingCharacters(in: .whitespacesAndNewlines)

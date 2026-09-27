@@ -19,6 +19,7 @@ extension AppServices {
         options.scriptRepository = InMemoryScriptRepository(scripts: seeded ? SampleScripts.all : [])
         options.takeRepository = InMemoryTakeRepository()
         options.defaults = UserDefaults(suiteName: "studio.cue.previews") ?? .standard
+        options.platformRules = PlatformRulesService(cacheURL: nil, remoteURL: nil)
         let services = AppServices(options: options)
         services.load()
         return services

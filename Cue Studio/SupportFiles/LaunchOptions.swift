@@ -14,6 +14,8 @@ struct LaunchOptions {
     var scriptRepository: ScriptRepository = LocalScriptRepository()
     var takeRepository: TakeRepository = LocalTakeRepository()
     var defaults: UserDefaults = .standard
+    /// UI tests and previews swap in rules read from the bundle only (no cache, no download).
+    var platformRules: PlatformRulesService = PlatformRulesService()
 
     static func fromProcess() -> LaunchOptions {
         var options = LaunchOptions()
@@ -26,6 +28,7 @@ struct LaunchOptions {
             let suite = "studio.cue.uitests"
             UserDefaults().removePersistentDomain(forName: suite)
             options.defaults = UserDefaults(suiteName: suite) ?? .standard
+            options.platformRules = PlatformRulesService(cacheURL: nil, remoteURL: nil)
         }
         #endif
         return options

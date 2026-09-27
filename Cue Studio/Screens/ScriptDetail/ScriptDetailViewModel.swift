@@ -34,6 +34,7 @@ final class ScriptDetailViewModel {
     private let takes: TakeLibraryService
     private let preferences: PreferencesService
     private let profile: CreatorProfileService
+    private let rules: PlatformRulesService
     private let writer: ScriptWriting
     private let toast: ToastService
 
@@ -44,6 +45,7 @@ final class ScriptDetailViewModel {
         takes: TakeLibraryService,
         preferences: PreferencesService,
         profile: CreatorProfileService,
+        rules: PlatformRulesService,
         writer: ScriptWriting,
         toast: ToastService
     ) {
@@ -52,6 +54,7 @@ final class ScriptDetailViewModel {
         self.takes = takes
         self.preferences = preferences
         self.profile = profile
+        self.rules = rules
         self.writer = writer
         self.toast = toast
         if startsEditing { startEditing() }
@@ -67,7 +70,7 @@ final class ScriptDetailViewModel {
     var structure: ScriptStructure { script?.structure ?? .generic }
 
     var preset: PlatformPreset {
-        PlatformPreset.preset(for: script?.platform ?? .tiktok, monetizationGoals: profile.profile.monetizationGoals)
+        rules.preset(for: script?.platform ?? .tiktok, monetizationGoals: profile.profile.monetizationGoals)
     }
 
     var blocks: [ScriptBlock] {
@@ -155,7 +158,7 @@ final class ScriptDetailViewModel {
     func setPlatform(_ platform: Platform) {
         library.update(scriptID) { $0.platform = platform }
         sheet = nil
-        toast.show(String(localized: "Applied: \(preset.summary)"))
+        toast.show(String(localized: "Create for \(platform.destinationName)"))
     }
 
     // MARK: - Hooks

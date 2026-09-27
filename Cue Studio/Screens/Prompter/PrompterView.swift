@@ -30,6 +30,7 @@ struct PrompterView: View {
             takes: services.takes,
             preferences: services.preferences,
             profile: services.profile,
+            rules: services.rules,
             camera: services.camera,
             audio: services.audio,
             speech: services.speech,

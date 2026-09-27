@@ -21,8 +21,8 @@ struct SelfieModeView: View {
             if camera.showsGrid { GridOverlay() }
             FrameGuideOverlay(aspect: camera.aspect)
             if let script = viewModel.script, let preset = viewModel.preset,
-               camera.showsSafeZones, camera.aspect == .portrait, preset.showsSafeZones {
-                SafeZoneOverlay(platformName: script.platform.label)
+               camera.showsSafeZones, camera.aspect == preset.aspect, preset.showsSafeZones {
+                SafeZoneOverlay(zones: preset.safeZones, reference: viewModel.layoutReference, platformName: script.platform.label)
             }
             VStack(spacing: 0) {
                 SelfieTopBar(viewModel: viewModel, onClose: onClose)
@@ -77,7 +77,7 @@ struct SelfieModeView: View {
         viewModel: PrompterViewModel(
             launch: PrompterLaunch(scriptID: SampleScripts.morningHabits.id, mode: .selfie),
             library: AppServices.preview.library, takes: AppServices.preview.takes,
-            preferences: AppServices.preview.preferences, profile: AppServices.preview.profile,
+            preferences: AppServices.preview.preferences, profile: AppServices.preview.profile, rules: AppServices.preview.rules,
             camera: AppServices.preview.camera, audio: AppServices.preview.audio,
             speech: AppServices.preview.speech, toast: AppServices.preview.toast
         ),

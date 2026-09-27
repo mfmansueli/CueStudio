@@ -13,6 +13,8 @@ extension Platform {
         case .reels: Palette.platformReels
         case .shorts: Palette.platformShorts
         case .youtube: Palette.platformYouTube
+        case .linkedin: Palette.platformLinkedIn
+        case .stories: Palette.platformStories
         }
     }
 }

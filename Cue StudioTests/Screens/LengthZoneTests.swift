@@ -8,8 +8,8 @@ import Testing
 
 @Suite("LengthZone")
 struct LengthZoneTests {
-    private let tikTok = PlatformPreset.preset(for: .tiktok, monetizationGoals: true)
-    private let reels = PlatformPreset.preset(for: .reels, monetizationGoals: true)
+    private let tikTok = TestData.preset(.tiktok)
+    private let reels = TestData.preset(.reels)
 
     @Test func belowTheMinimumCountsDownToMonetization() {
         let zone = LengthZone(text: TestData.words(100), preset: tikTok, speed: 1)

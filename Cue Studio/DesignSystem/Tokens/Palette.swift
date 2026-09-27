@@ -64,6 +64,8 @@ enum Palette {
     static let platformReels = Color(hex: 0xBF5AF2)
     static let platformShorts = Color(hex: 0xFF6961)
     static let platformYouTube = Color(hex: 0xFF9F0A)
+    static let platformLinkedIn = Color(hex: 0x0A84FF)
+    static let platformStories = Color(hex: 0xFF375F)
     static let platformNeutral = Color(hex: 0x8E8E93)
 
     // MARK: - Camera
@@ -71,5 +73,6 @@ enum Palette {
     /// Letterbox bars and scrims over the camera feed.
     static let cameraScrim = Color.black.opacity(0.72)
     static let gridLine = Color.white.opacity(0.28)
-    static let safeZoneLine = Color.white.opacity(0.4)
+    static let safeZoneLine = Color.white.opacity(0.22)
+    static let safeZoneLabel = Color.white.opacity(0.5)
 }

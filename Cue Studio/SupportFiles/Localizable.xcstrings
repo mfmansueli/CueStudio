@@ -317,9 +317,6 @@
     "Apple Intelligence isn't available right now." : {
 
     },
-    "Applied: %@" : {
-
-    },
     "Automatic" : {
 
     },
@@ -488,6 +485,12 @@
     "Create" : {
 
     },
+    "Create for" : {
+
+    },
+    "Create for %@" : {
+
+    },
     "Create more. Sound like you." : {
 
     },
@@ -512,7 +515,7 @@
     "Cue Pro" : {
 
     },
-    "Cue sets the frame, quality and length goals. You can still change any of it in camera settings." : {
+    "Cue sets the frame, safe zones, teleprompter position and length goals. Fine-tune anytime." : {
 
     },
     "Cue will scroll it under the lens. Your camera stays where it is." : {
@@ -885,6 +888,9 @@
     "Instagram Reels" : {
 
     },
+    "Instagram Stories" : {
+
+    },
     "Is this worth the hype? Let's see." : {
 
     },
@@ -952,6 +958,9 @@
 
     },
     "Line spacing" : {
+
+    },
+    "LinkedIn" : {
 
     },
     "List the steps in plain words, separated by commas. Cue turns them into a numbered walkthrough with a hook up top and a save-this ending." : {
@@ -1161,7 +1170,7 @@
     "Plan the hooks, pick one outfit, set one light, film in order" : {
 
     },
-    "Platform rules change — Cue updates these presets with the app." : {
+    "Platform rules change — presets update automatically." : {
 
     },
     "Platform safe zones" : {
@@ -1171,9 +1180,6 @@
 
     },
     "Portuguese" : {
-
-    },
-    "Post to" : {
 
     },
     "Post without the watermark" : {
@@ -1210,6 +1216,9 @@
 
     },
     "Profile" : {
+
+    },
+    "PROFILE · %@ UI" : {
 
     },
     "Promise" : {
@@ -1294,6 +1303,9 @@
     "Renews yearly at %@. Cancel anytime in Settings." : {
 
     },
+    "REPLY BAR · %@ UI" : {
+
+    },
     "Resolution" : {
 
     },
@@ -1316,6 +1328,9 @@
 
     },
     "Rounded" : {
+
+    },
+    "safe zones" : {
 
     },
     "Save" : {
@@ -1537,6 +1552,9 @@
     "Stop when script ends" : {
 
     },
+    "Stories" : {
+
+    },
     "Story time — and yes, it ends well." : {
 
     },
@@ -1711,6 +1729,9 @@
     "Tips / list" : {
 
     },
+    "TITLE · %@ UI" : {
+
+    },
     "Tone" : {
 
     },
@@ -1835,9 +1856,6 @@
 
     },
     "When" : {
-
-    },
-    "Where will this go?" : {
 
     },
     "White" : {

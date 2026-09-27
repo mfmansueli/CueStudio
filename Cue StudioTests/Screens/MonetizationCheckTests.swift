@@ -8,8 +8,8 @@ import Testing
 
 @Suite("MonetizationCheck")
 struct MonetizationCheckTests {
-    private let tikTok = PlatformPreset.preset(for: .tiktok, monetizationGoals: true)
-    private let reels = PlatformPreset.preset(for: .reels, monetizationGoals: true)
+    private let tikTok = TestData.preset(.tiktok)
+    private let reels = TestData.preset(.reels)
 
     @Test func countsDownToTheMinimum() {
         #expect(MonetizationCheck.secondsMissing(elapsed: 42, preset: tikTok) == 18)

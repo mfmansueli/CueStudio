@@ -49,7 +49,7 @@ private extension ScriptFilter {
 #if DEBUG
 #Preview {
     @Previewable @State var filter = ScriptFilter.all
-    FilterBar(filters: [.all] + Platform.allCases.map(ScriptFilter.platform) + [.folder("Brand deals")], selection: $filter)
+    FilterBar(filters: [.all] + Platform.primary.map(ScriptFilter.platform) + [.folder("Brand deals")], selection: $filter)
         .padding(.vertical)
         .background(Palette.bg)
 }

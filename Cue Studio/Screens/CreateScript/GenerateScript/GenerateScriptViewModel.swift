@@ -21,6 +21,7 @@ final class GenerateScriptViewModel {
     private let writer: ScriptWriting
     private let library: ScriptLibraryService
     private let profile: CreatorProfileService
+    private let rules: PlatformRulesService
     private let quota: UsageQuotaService
     private let tier: () -> MembershipTier
     private let toast: ToastService
@@ -29,6 +30,7 @@ final class GenerateScriptViewModel {
         writer: ScriptWriting,
         library: ScriptLibraryService,
         profile: CreatorProfileService,
+        rules: PlatformRulesService,
         quota: UsageQuotaService,
         tier: @escaping () -> MembershipTier,
         toast: ToastService
@@ -36,6 +38,7 @@ final class GenerateScriptViewModel {
         self.writer = writer
         self.library = library
         self.profile = profile
+        self.rules = rules
         self.quota = quota
         self.tier = tier
         self.toast = toast
@@ -93,7 +96,7 @@ final class GenerateScriptViewModel {
         }
         isGenerating = true
         defer { isGenerating = false }
-        let preset = PlatformPreset.preset(for: platform, monetizationGoals: profile.profile.monetizationGoals)
+        let preset = rules.preset(for: platform, monetizationGoals: profile.profile.monetizationGoals)
         let request = ScriptRequest(
             type: type,
             brief: brief,

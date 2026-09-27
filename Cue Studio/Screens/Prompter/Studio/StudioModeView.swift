@@ -71,7 +71,7 @@ struct StudioModeView: View {
         viewModel: PrompterViewModel(
             launch: PrompterLaunch(scriptID: SampleScripts.weeklyQA.id, mode: .studio),
             library: AppServices.preview.library, takes: AppServices.preview.takes,
-            preferences: AppServices.preview.preferences, profile: AppServices.preview.profile,
+            preferences: AppServices.preview.preferences, profile: AppServices.preview.profile, rules: AppServices.preview.rules,
             camera: AppServices.preview.camera, audio: AppServices.preview.audio,
             speech: AppServices.preview.speech, toast: AppServices.preview.toast
         ),

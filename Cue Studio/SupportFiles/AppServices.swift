@@ -12,6 +12,7 @@ struct AppServices {
     let takes: TakeLibraryService
     let preferences: PreferencesService
     let profile: CreatorProfileService
+    let rules: PlatformRulesService
     let quota: UsageQuotaService
     let store: StoreManager
     let presentation: PresentationService
@@ -30,6 +31,7 @@ struct AppServices {
         takes = TakeLibraryService(repository: options.takeRepository)
         preferences = PreferencesService(defaults: options.defaults)
         profile = CreatorProfileService(defaults: options.defaults)
+        rules = options.platformRules
         quota = UsageQuotaService(defaults: options.defaults)
         store = StoreManager()
         presentation = PresentationService()
@@ -56,6 +58,7 @@ extension View {
             .environment(services.takes)
             .environment(services.preferences)
             .environment(services.profile)
+            .environment(services.rules)
             .environment(services.quota)
             .environment(services.store)
             .environment(services.presentation)

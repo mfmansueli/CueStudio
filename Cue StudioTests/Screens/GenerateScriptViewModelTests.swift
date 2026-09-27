@@ -27,7 +27,7 @@ struct GenerateScriptViewModelTests {
         let profile = CreatorProfileService(defaults: defaults.defaults)
         profile.addPhrase("Hey fam")
         let viewModel = GenerateScriptViewModel(
-            writer: writer, library: library, profile: profile, quota: quota,
+            writer: writer, library: library, profile: profile, rules: TestData.rulesService(), quota: quota,
             tier: { tier }, toast: ToastService()
         )
         return Scenario(viewModel: viewModel, writer: writer, library: library, quota: quota, profile: profile, defaults: defaults)

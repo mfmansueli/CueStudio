@@ -89,6 +89,21 @@ final class ScriptLibraryUITests: XCTestCase {
         XCTAssertTrue(app.buttons["editor.doneButton"].waitForExistence(timeout: 5))
     }
 
+    func testCreateForOffersEveryPlatform() {
+        let app = CueApp.launch(seeded: true)
+        let row = app.staticTexts["Unboxing the Lumen desk lamp"]
+        XCTAssertTrue(row.waitForExistence(timeout: 15))
+        row.tap()
+
+        app.buttons["detail.destinationButton"].firstMatch.tap()
+        for platform in ["tiktok", "reels", "shorts", "youtube", "linkedin", "stories"] {
+            XCTAssertTrue(app.buttons["destination.\(platform)"].waitForExistence(timeout: 5), "Missing \(platform)")
+        }
+        app.buttons["destination.linkedin"].tap()
+        XCTAssertTrue(app.staticTexts["Create for LinkedIn"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.staticTexts["4:5 · 1080p30"].waitForExistence(timeout: 5))
+    }
+
     func testSelectingAndDeleting() {
         let app = CueApp.launch(seeded: true)
         let select = app.buttons["scripts.selectButton"]

@@ -60,7 +60,7 @@ struct ScriptBriefView: View {
                 }
                 .padding(.top, 14)
 
-                chipRow(title: "Post to", options: Platform.allCases, selection: $viewModel.platform) { $0.label }
+                chipRow(title: "Create for", options: Platform.primary, selection: $viewModel.platform) { $0.label }
                     .padding(.top, 14)
                 chipRow(title: "Tone", options: viewModel.tones, selection: $viewModel.tone) { $0.label }
                     .padding(.top, 14)

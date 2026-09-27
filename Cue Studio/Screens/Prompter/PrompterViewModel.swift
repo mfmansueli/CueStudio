@@ -40,6 +40,7 @@ final class PrompterViewModel {
     private let takes: TakeLibraryService
     private let preferences: PreferencesService
     private let profile: CreatorProfileService
+    private let rules: PlatformRulesService
     private let camera: CameraControlling
     private let audio: AudioLevelMetering
     private let speech: SpeechTranscribing
@@ -64,6 +65,7 @@ final class PrompterViewModel {
         takes: TakeLibraryService,
         preferences: PreferencesService,
         profile: CreatorProfileService,
+        rules: PlatformRulesService,
         camera: CameraControlling,
         audio: AudioLevelMetering,
         speech: SpeechTranscribing,
@@ -75,6 +77,7 @@ final class PrompterViewModel {
         self.takes = takes
         self.preferences = preferences
         self.profile = profile
+        self.rules = rules
         self.camera = camera
         self.audio = audio
         self.speech = speech
@@ -92,8 +95,11 @@ final class PrompterViewModel {
     var paragraphs: [String] { CueParser.paragraphs(in: script?.text ?? "") }
 
     var preset: PlatformPreset? {
-        script.map { PlatformPreset.preset(for: $0.platform, monetizationGoals: profile.profile.monetizationGoals) }
+        script.map { rules.preset(for: $0.platform, monetizationGoals: profile.profile.monetizationGoals) }
     }
+
+    /// Screen size the platform layout numbers were drawn on.
+    var layoutReference: CGSize { rules.rules.reference.size }
 
     /// Studio text is read from further away, so it is bigger.
     var fontSize: Double {

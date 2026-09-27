@@ -20,6 +20,7 @@ struct GenerateScriptSheet: View {
             writer: services.writer,
             library: services.library,
             profile: services.profile,
+            rules: services.rules,
             quota: services.quota,
             tier: { store.tier },
             toast: services.toast
