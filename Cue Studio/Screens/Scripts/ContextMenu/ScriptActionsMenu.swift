@@ -35,7 +35,7 @@ struct ScriptActionsMenu: View {
             Divider()
             Button("New folder…", systemImage: "folder.badge.plus") { actions.moveToNewFolder(script) }
         }
-        ShareLink(item: "\(script.displayTitle)\n\n\(script.text)", subject: Text(script.displayTitle)) {
+        ShareLink(item: script.shareText, subject: Text(script.displayTitle)) {
             Label("Share", systemImage: "square.and.arrow.up")
         }
         Divider()

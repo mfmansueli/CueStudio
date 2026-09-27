@@ -40,6 +40,10 @@ struct ScriptsView: View {
             ) { script in
                 moreActions(for: script)
             }
+            .sheet(item: $viewModel.shareTarget) { script in
+                ActivityView(items: [script.shareText])
+                    .presentationDetents([.medium, .large])
+            }
     }
 
     // MARK: - Content
@@ -204,6 +208,7 @@ struct ScriptsView: View {
             Button("Move to “\(folder)”") { actions.move(script, folder) }
         }
         Button("Move to a new folder…") { actions.moveToNewFolder(script) }
+        Button("Share") { viewModel.shareTarget = script }
         Button("Delete", role: .destructive) { actions.delete(script) }
     }
 

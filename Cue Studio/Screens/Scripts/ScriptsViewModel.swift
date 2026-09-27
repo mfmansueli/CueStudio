@@ -16,6 +16,8 @@ final class ScriptsViewModel {
     var selection = Set<UUID>()
     /// Script whose actions are shown after swiping "More".
     var actionsTarget: Script?
+    /// Script being shared from the "More" actions.
+    var shareTarget: Script?
     var isNamingFolder = false
     var newFolderName = ""
     /// Scripts to move into the folder being created, if any.

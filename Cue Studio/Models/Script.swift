@@ -28,6 +28,9 @@ nonisolated struct Script: Codable, Identifiable, Hashable, Sendable {
         CueParser.paragraphs(in: CueParser.stripCues(text)).first ?? ""
     }
 
+    /// What "Share" sends: the title, a blank line and the script as written (cues included).
+    var shareText: String { "\(displayTitle)\n\n\(text)" }
+
     var displayTitle: String {
         let trimmed = title.trimmingCharacters(in: .whitespacesAndNewlines)
         return trimmed.isEmpty ? String(localized: "Untitled script") : trimmed
