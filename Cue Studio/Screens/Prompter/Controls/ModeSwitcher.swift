@@ -18,6 +18,8 @@ struct ModeSwitcher: View {
                 } label: {
                     Text(option.label)
                         .font(.subheadline.weight(.semibold))
+                        .lineLimit(1)
+                        .fixedSize()
                         .foregroundStyle(option == mode ? Color.black : Color.white)
                         .padding(.horizontal, 16)
                         .frame(maxHeight: .infinity)
@@ -32,6 +34,8 @@ struct ModeSwitcher: View {
         .padding(3)
         .frame(height: 40)
         .glassEffect(.regular, in: Capsule())
+        // The mode names never truncate; the platform chip beside them gives way first.
+        .layoutPriority(1)
     }
 }
 

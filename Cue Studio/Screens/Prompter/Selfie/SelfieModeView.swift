@@ -5,7 +5,8 @@
 
 import SwiftUI
 
-/// Prompter and camera together: the script floats near the lens while you record yourself.
+/// The camera first, with the script in a floating panel close to the lens. The panel's position
+/// and height come from the platform preset, its width from the reading width.
 struct SelfieModeView: View {
     let viewModel: PrompterViewModel
     /// Bottom edge of the script panel, from the top of the screen; `nil` while there is no panel.
@@ -24,16 +25,28 @@ struct SelfieModeView: View {
                camera.showsSafeZones, camera.aspect == preset.aspect, preset.showsSafeZones {
                 SafeZoneOverlay(zones: preset.safeZones, reference: viewModel.layoutReference, platformName: script.platform.label)
             }
+            if viewModel.hasScript, let layout = viewModel.preset?.prompter {
+                GeometryReader { proxy in
+                    let letterboxed = camera.aspect == .landscape && viewModel.preset?.aspect == .landscape
+                    let frame = SelfiePanelFrame.frame(
+                        layout: layout,
+                        readingWidth: preferences.prompter.readingWidth,
+                        screen: proxy.size,
+                        reference: viewModel.layoutReference,
+                        bottomLimit: letterboxed ? FrameGuideLayout.barHeight(for: .landscape, in: proxy.size) : nil
+                    )
+                    prompterPanel(height: frame.height)
+                        .frame(width: frame.width, height: frame.height)
+                        .position(x: frame.midX, y: frame.midY)
+                        .onGeometryChange(for: CGFloat.self) { $0.frame(in: .global).maxY } action: { scriptPanelBottom = $0 }
+                        .onDisappear { scriptPanelBottom = nil }
+                        .animation(.smooth(duration: 0.3), value: frame)
+                }
+                .ignoresSafeArea()
+            }
             VStack(spacing: 0) {
                 SelfieTopBar(viewModel: viewModel, onClose: onClose)
                     .padding(.horizontal, 14)
-                if viewModel.hasScript {
-                    prompterPanel
-                        .onGeometryChange(for: CGFloat.self) { $0.frame(in: .global).maxY } action: { scriptPanelBottom = $0 }
-                        .onDisappear { scriptPanelBottom = nil }
-                        .padding(.horizontal, 10)
-                        .padding(.top, 8)
-                }
                 Spacer(minLength: 0)
                 if viewModel.showsStopWarning, let title = viewModel.stopWarningTitle, let message = viewModel.stopWarningMessage {
                     StopWarningCard(
@@ -56,18 +69,22 @@ struct SelfieModeView: View {
         }
     }
 
-    private var prompterPanel: some View {
+    /// Dark enough to read over any background, with the camera optionally blurred behind the text.
+    /// Both only change the preview, never the recording.
+    private func prompterPanel(height: CGFloat) -> some View {
         let settings = preferences.prompter
-        let shape = RoundedRectangle(cornerRadius: 30, style: .continuous)
-        return PrompterTextView(viewModel: viewModel, settings: settings, viewportHeight: 290)
+        let shape = RoundedRectangle(cornerRadius: Metrics.cardRadius, style: .continuous)
+        return PrompterTextView(viewModel: viewModel, settings: settings, viewportHeight: height, castsShadow: true)
             .background {
                 ZStack {
-                    Rectangle().fill(.ultraThinMaterial)
-                    Rectangle().fill(Color.black.opacity(settings.dim))
+                    if let material = CameraBlurLevel(amount: settings.cameraBlur).material {
+                        Rectangle().fill(material)
+                    }
+                    Rectangle().fill(Color.black.opacity(settings.backgroundOpacity))
                 }
             }
             .clipShape(shape)
-            .overlay(shape.strokeBorder(Color.white.opacity(0.1), lineWidth: 0.5))
+            .overlay(shape.strokeBorder(Palette.panelBorder, lineWidth: 0.5))
     }
 }
 

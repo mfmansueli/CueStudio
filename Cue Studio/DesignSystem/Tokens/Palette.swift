@@ -44,6 +44,8 @@ enum Palette {
     static let accInk = Color.black
     static let accSoft = Color(hex: 0xFFD60A, opacity: 0.16)
     static let accLine = Color(hex: 0xFFD60A, opacity: 0.3)
+    /// Behind AI Coach cues in the prompter: present, but quieter than the words.
+    static let accCueWash = Color(hex: 0xFFD60A, opacity: 0.12)
     /// Border of the highlighted prompt card.
     static let accBorder = Color(hex: 0xFFD60A, opacity: 0.38)
     /// Yellow wash at the top of highlighted cards, fading to `accWashFaint`.
@@ -71,11 +73,21 @@ enum Palette {
     static let platformStories = Color(hex: 0xFF375F)
     static let platformNeutral = Color(hex: 0x8E8E93)
 
+    /// "Live preview" dot in Display.
+    static let live = Color(hex: 0x30D158)
+
     // MARK: - Camera
 
     /// Letterbox bars and scrims over the camera feed.
     static let cameraScrim = Color.black.opacity(0.72)
     static let gridLine = Color.white.opacity(0.28)
     static let safeZoneLine = Color.white.opacity(0.22)
+    /// Hairline around the Selfie script panel.
+    static let panelBorder = Color.white.opacity(0.08)
+    /// Keeps prompter text readable over a bright camera feed.
+    static let textShadow = Color.black.opacity(0.6)
+    /// Display sheet over the camera: nearly opaque, so settings stay readable, with the preview
+    /// still visible above it.
+    static let sheetGlass = Color(hex: 0x1C1C1E, opacity: 0.97)
     static let safeZoneLabel = Color.white.opacity(0.5)
 }

@@ -10,6 +10,9 @@
     "%@ %@ video: %@" : {
 
     },
+    "%lld pt" : {
+
+    },
     "·" : {
 
     },
@@ -295,7 +298,13 @@
     "Added “%@” — AI will use it" : {
 
     },
+    "Advanced" : {
+
+    },
     "AI can get facts wrong. Topics like history or science are written with Apple’s Private Cloud Compute — check dates, names and numbers before you record." : {
+
+    },
+    "AI Coach" : {
 
     },
     "AI runs on the device" : {
@@ -364,10 +373,13 @@
     "Back to the top" : {
 
     },
-    "Background" : {
+    "Background and blur only change your preview — never the recording." : {
 
     },
     "Background color" : {
+
+    },
+    "Background opacity" : {
 
     },
     "Batch-filming a week of content" : {
@@ -412,6 +424,9 @@
     "Body" : {
 
     },
+    "Bottom" : {
+
+    },
     "Brand & product" : {
 
     },
@@ -440,6 +455,9 @@
 
     },
     "Camera access is off" : {
+
+    },
+    "Camera blur" : {
 
     },
     "Camera settings" : {
@@ -472,6 +490,9 @@
     "Center" : {
 
     },
+    "Changes the platform and its preset" : {
+
+    },
     "Changes where this script will be posted" : {
 
     },
@@ -491,6 +512,9 @@
 
     },
     "Code or link" : {
+
+    },
+    "Collapsed" : {
 
     },
     "Compound interest, explained simply" : {
@@ -527,6 +551,9 @@
 
     },
     "Create for %@" : {
+
+    },
+    "Create for %@, %@" : {
 
     },
     "Create more. Sound like you." : {
@@ -599,9 +626,6 @@
 
     },
     "Details" : {
-
-    },
-    "Dim behind text" : {
 
     },
     "Direct" : {
@@ -687,6 +711,9 @@
     "Every paid post will be clearly labeled from now on" : {
 
     },
+    "Expanded" : {
+
+    },
     "Expert" : {
 
     },
@@ -745,6 +772,9 @@
 
     },
     "Following your reading" : {
+
+    },
+    "Font, spacing, margins, alignment, color" : {
 
     },
     "Food" : {
@@ -853,9 +883,6 @@
     "Grouped by script" : {
 
     },
-    "Guide position" : {
-
-    },
     "Gym mistakes I made for years" : {
 
     },
@@ -878,6 +905,9 @@
 
     },
     "Hides this reminder" : {
+
+    },
+    "High" : {
 
     },
     "Honest verdict, no sponsor." : {
@@ -1085,7 +1115,13 @@
     "List the steps in plain words, separated by commas. Cue turns them into a numbered walkthrough with a hook up top and a save-this ending." : {
 
     },
-    "Listens as you read and keeps your line on the guide, at your pace. Waits when you pause or go off script. Recognition happens on this device." : {
+    "Listening" : {
+
+    },
+    "Live preview" : {
+
+    },
+    "Low" : {
 
     },
     "Lumen desk lamp" : {
@@ -1110,6 +1146,9 @@
 
     },
     "Marked as fact-checked" : {
+
+    },
+    "Medium" : {
 
     },
     "Microphone" : {
@@ -1185,6 +1224,9 @@
 
     },
     "Name" : {
+
+    },
+    "Narrow" : {
 
     },
     "Navy" : {
@@ -1307,10 +1349,16 @@
     "Pause" : {
 
     },
+    "Paused" : {
+
+    },
     "Pay once · everything in Pro" : {
 
     },
     "Payoff" : {
+
+    },
+    "Performance cues like PAUSE or SMILE" : {
 
     },
     "Photo" : {
@@ -1415,16 +1463,19 @@
     "Question for the comments" : {
 
     },
+    "Quick" : {
+
+    },
     "Read from a script" : {
 
     },
-    "Reading" : {
-
-    },
-    "Reading guide" : {
+    "Reading line" : {
 
     },
     "Reading the text…" : {
+
+    },
+    "Reading width" : {
 
     },
     "Ready to post · %lld of %lld clean exports left" : {
@@ -1602,12 +1653,6 @@
     "Scripts keep you on track and cut retakes. Pick one to read from." : {
 
     },
-    "Scrolling" : {
-
-    },
-    "Scrolling with your voice" : {
-
-    },
     "Search scripts" : {
 
     },
@@ -1653,10 +1698,10 @@
     "Shorts" : {
 
     },
-    "Show cues" : {
+    "Show it working" : {
 
     },
-    "Show it working" : {
+    "Show reading line" : {
 
     },
     "Shown only on this device." : {
@@ -1711,9 +1756,6 @@
 
     },
     "Stabilization" : {
-
-    },
-    "Stage cues like [pause] in the prompter" : {
 
     },
     "Start %lld-day free trial" : {
@@ -1971,6 +2013,9 @@
     "Tone" : {
 
     },
+    "Top" : {
+
+    },
     "Topic" : {
 
     },
@@ -2034,13 +2079,7 @@
     "Vlog" : {
 
     },
-    "Voice" : {
-
-    },
-    "Voice follow" : {
-
-    },
-    "Waiting for you to speak" : {
+    "Voice Following" : {
 
     },
     "We signed a three-month deal" : {
@@ -2113,6 +2152,9 @@
 
     },
     "Why you think so" : {
+
+    },
+    "Wide" : {
 
     },
     "Wired headset" : {

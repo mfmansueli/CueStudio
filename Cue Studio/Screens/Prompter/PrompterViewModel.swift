@@ -164,11 +164,41 @@ final class PrompterViewModel {
         updateVoiceMonitoring()
     }
 
-    /// A script opens with its destination's frame, resolution and frame rate, once per session.
+    /// A script opens with its platform's frame, resolution, frame rate and reading width, once per
+    /// session; after that the creator's changes stand.
     private func applyPresetOnce() {
         guard !hasAppliedPreset, let preset else { return }
         hasAppliedPreset = true
+        apply(preset)
+    }
+
+    private func apply(_ preset: PlatformPreset) {
         preferences.camera.apply(preset)
+        preferences.prompter.readingWidth = preset.prompter.width
+    }
+
+    /// "Create for" from the camera: the script moves to the platform and the camera takes its preset.
+    func setPlatform(_ platform: Platform) {
+        guard let scriptID else { return }
+        library.update(scriptID) { $0.platform = platform }
+        sheet = nil
+        if let preset { apply(preset) }
+        toast.show(String(localized: "Create for \(platform.destinationName)"))
+    }
+
+    /// The chip next to the mode switch: with a script it opens "Create for"; freestyle it cycles
+    /// the frame.
+    func platformChipTapped() {
+        if hasScript {
+            sheet = .destination
+        } else {
+            cycleAspect()
+        }
+    }
+
+    func setScrollMode(_ mode: ScrollMode) {
+        guard preferences.prompter.scrollMode != mode else { return }
+        preferences.prompter.scrollMode = mode
     }
 
     // MARK: - Scrolling

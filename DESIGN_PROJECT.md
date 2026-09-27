@@ -55,9 +55,11 @@ tela branca atrapalha a gravação. Os tokens mantêm valores claros para o dia 
 - Interface: SF Pro com Dynamic Type (`.largeTitle` 34, `.title2` 22, `.title3` 20, `.body` 17,
   `.subheadline` 15, `.footnote` 13, `.caption` 12).
 - Prompter (tamanho fixo, controlado pelo slider 16–56 pt; Studio usa 1,35×):
-  **Lexend** (padrão), **Atkinson Hyperlegible** ("Legible"), **New York** ("Serif"),
-  **SF Rounded** ("Rounded"). Lexend e Atkinson estão em `DesignSystem/Fonts/` (OFL) e são
-  registradas no launch.
+  **Lexend** (padrão), **Atkinson Hyperlegible** ("Legible"), **Source Serif 4** ("Serif"),
+  **SF Rounded** ("Rounded"). Lexend, Atkinson e Source Serif 4 estão em `DesignSystem/Fonts/` (OFL)
+  e são registradas no launch.
+- AI Coach: cues em caixa-alta a 0,42 do corpo, amarelo sobre `accCueWash` (12%), para o texto
+  falado ficar em destaque. Sobre a câmera o texto tem sombra leve (`textShadow`).
 - Números que mudam (relógio, duração, velocidade) usam `monospacedDigit()`.
 
 ### Espaçamento e formas (`Metrics`)
@@ -106,9 +108,9 @@ SF Symbols por significado: `doc.text` scripts · `film.stack` takes · `person.
 | Start recording | `StartRecordingSheet` | "Read from a script" (4 recentes com duração), "+ New script", "Record without a script →". Sobre a câmera vira "Add a script", sem o freestyle |
 | Importar | `ImportScriptSheet` | Files, Scan (câmera de documentos), Photo e Clipboard. Scan, Photo e PDFs escaneados passam por OCR do Vision no aparelho |
 | Gerar com IA | `GenerateScript/` | "Generate with AI · Apple Intelligence · private · no cost" + abas **Prompt** (texto livre, exemplos, Create for, Length, "Write in my voice", aviso de fatos), **Themes** (6 ideias do nicho, "New ideas", "Use" preenche o Prompt) e **Formats** (8 formatos; Sponsored ad é PRO) → briefing |
-| Selfie | `Screens/Prompter/Selfie` | Câmera, painel do prompter, grid, barras de enquadramento, safe zones, barra de controles |
+| Selfie | `Screens/Prompter/Selfie` | Câmera em primeiro plano; painel do texto na posição e altura do preset (largura 50–75%, padrão do preset; fundo preto 25%; desfoque opcional da câmera); topo: fechar, Selfie \| Studio e o chip "{Plataforma} · 9:16" (abre Create for; em freestyle troca o enquadramento); barra de vidro: Voice Following \| Steady, velocidade ou "Listening/Paused", voltar ao topo, play, Aa; câmera: última take, ajustes, gravar, virar, timer |
 | Studio | `Screens/Prompter/Studio` | Prompter em tela cheia, progresso, velocidade (no Voice follow, o status da escuta), pular linhas, espelhar |
-| Display | `DisplaySettingsSheet` | Fonte, tamanho, espaçamento, margens, alinhamento, cor, fundo, rolagem, guia, espelhar, cues |
+| Display | `DisplaySettingsSheet` | "Display · ● Live preview". Quick: AI Coach, Text size, Reading width, Reading line (Top/Bottom), Background opacity, Camera blur (Off/Low/Medium/High) — no Studio, Background color no lugar dos três do Selfie. Advanced (recolhível): fonte, espaçamento, margens, alinhamento, cor, linha de leitura, espelhar. No Selfie, a altura máxima para logo abaixo do painel |
 | Câmera | `CameraSettingsSheet` | Lente, enquadramento, resolução, fps, grid, safe zones, estabilização, microfone, contagem, formato. No Selfie com script, a sheet para logo abaixo do painel do texto (não cresce além dele) e não escurece o fundo |
 | Revisão do take | `Screens/TakeReview` | Vídeo, filmstrip, melhor take, Retake / Save / Share, aviso de exportações |
 | Takes | `Screens/Takes` | Takes agrupados por script |
@@ -213,6 +215,10 @@ O protótipo simulava várias coisas; o app implementa de verdade ou deixa de fo
   Record usa `RecordGlyph`, uma imagem com cores originais, porque SF Symbols viram monocromáticos
   na tab bar.
 - **New script sobre a câmera:** não há editor no prompter, então o tile Write vira Paste.
+- **Desfoque da câmera:** o protótipo usa um blur contínuo de 0 a 20; o app usa os materiais do
+  sistema atrás do painel (Low/Medium/High), que desfocam o preview e nunca a gravação.
+- **Painel do YouTube:** a câmera preenche a tela com o sensor 9:16, então a faixa preta do 16:9 é
+  mais baixa que no protótipo; o painel encolhe para caber nela (mínimo 120 pt).
 - **Filtros de plataforma:** como no protótipo, All + TikTok, Reels, Shorts, YouTube e LinkedIn;
   Stories ganha chip só quando algum script é para Stories (roteiros de 8–15 s são raros).
 - **Regras remotas:** o protótipo diz "presets update automatically". Sem backend, a atualização é

@@ -40,7 +40,7 @@ struct SelfieTopBar: View {
         let icon = iconSize(for: aspect)
         let label = viewModel.script.map { "\($0.platform.label) · \(aspect.label)" } ?? aspect.label
         return Button {
-            viewModel.cycleAspect()
+            viewModel.platformChipTapped()
         } label: {
             HStack(spacing: 6) {
                 RoundedRectangle(cornerRadius: 2.5)
@@ -49,6 +49,7 @@ struct SelfieTopBar: View {
                 Text(label)
                     .font(.footnote.weight(.semibold))
                     .lineLimit(1)
+                    .minimumScaleFactor(0.85)
             }
             .foregroundStyle(.white)
             .padding(.horizontal, 11)
@@ -57,8 +58,8 @@ struct SelfieTopBar: View {
         }
         .buttonStyle(.plain)
         .disabled(viewModel.isRecording)
-        .accessibilityLabel(Text("Frame \(aspect.label)"))
-        .accessibilityHint(Text("Switches to the next frame"))
+        .accessibilityLabel(Text(viewModel.script.map { "Create for \($0.platform.label), \(aspect.label)" } ?? "Frame \(aspect.label)"))
+        .accessibilityHint(viewModel.hasScript ? Text("Changes the platform and its preset") : Text("Switches to the next frame"))
         .accessibilityIdentifier("prompter.aspectButton")
     }
 

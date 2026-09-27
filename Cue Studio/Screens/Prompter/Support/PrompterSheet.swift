@@ -9,6 +9,8 @@ import Foundation
 enum PrompterSheet: Identifiable, Hashable {
     case display
     case camera
+    /// "Create for", from the platform chip at the top of the camera.
+    case destination
     /// Add a script to a freestyle recording: a recent one or a new one.
     case addScript
     /// "New script", without the blank page (there is no editor over the camera).
@@ -20,6 +22,7 @@ enum PrompterSheet: Identifiable, Hashable {
         switch self {
         case .display: "display"
         case .camera: "camera"
+        case .destination: "destination"
         case .addScript: "addScript"
         case .newScript: "newScript"
         case .importScript: "importScript"

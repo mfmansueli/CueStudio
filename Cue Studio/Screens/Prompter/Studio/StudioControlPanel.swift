@@ -77,9 +77,7 @@ struct StudioControlPanel: View {
     /// Following the reading, speed doesn't apply: the text moves at the creator's pace.
     private var voiceRow: some View {
         HStack(spacing: 12) {
-            VoiceIndicator(level: viewModel.voiceLevel, isActive: viewModel.isVoiceActive) {
-                viewModel.sheet = .display
-            }
+            VoiceIndicator(level: viewModel.voiceLevel, isListening: viewModel.isPlaying && viewModel.isVoiceActive)
             Text(viewModel.isPlaying ? "Following your reading" : "Tap play, then start reading")
                 .font(.footnote.weight(.semibold))
                 .foregroundStyle(Palette.ink2)

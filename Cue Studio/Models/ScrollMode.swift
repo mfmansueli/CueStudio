@@ -16,7 +16,7 @@ nonisolated enum ScrollMode: String, Codable, CaseIterable, Identifiable, Sendab
     var label: String {
         switch self {
         case .steady: String(localized: "Steady")
-        case .voice: String(localized: "Voice follow")
+        case .voice: String(localized: "Voice Following")
         }
     }
 }

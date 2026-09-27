@@ -92,7 +92,11 @@ struct PrompterView: View {
     private func sheetContent(_ sheet: PrompterSheet) -> some View {
         switch sheet {
         case .display:
-            DisplaySettingsSheet(mode: viewModel.mode)
+            DisplaySettingsSheet(mode: viewModel.mode, maxHeight: viewModel.mode == .selfie ? scriptPanelBottom.map {
+                ScriptPanelClearance.sheetHeight(panelBottom: $0, safeAreaBottom: safeAreaBottom)
+            } : nil)
+        case .destination:
+            DestinationSheet(current: viewModel.script?.platform ?? profile.profile.defaultPlatform) { viewModel.setPlatform($0) }
         case .camera:
             CameraSettingsSheet(maxHeight: scriptPanelBottom.map {
                 ScriptPanelClearance.sheetHeight(panelBottom: $0, safeAreaBottom: safeAreaBottom)

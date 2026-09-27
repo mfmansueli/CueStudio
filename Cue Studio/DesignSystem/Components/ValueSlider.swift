@@ -12,6 +12,9 @@ struct ValueSlider: View {
     @Binding var value: Double
     let range: ClosedRange<Double>
     var step: Double = 1
+    /// Words under both ends of the track ("Narrow" / "Wide").
+    var ends: (min: String, max: String)?
+    var identifier: String?
 
     var body: some View {
         VStack(spacing: 2) {
@@ -28,6 +31,17 @@ struct ValueSlider: View {
                 .tint(Palette.acc)
                 .accessibilityLabel(Text(title))
                 .accessibilityValue(Text(valueText))
+                .accessibilityIdentifier(identifier ?? "")
+            if let ends {
+                HStack {
+                    Text(ends.min)
+                    Spacer()
+                    Text(ends.max)
+                }
+                .font(.caption2)
+                .foregroundStyle(Palette.ink.opacity(0.4))
+                .accessibilityHidden(true)
+            }
         }
         .padding(.bottom, 6)
     }

@@ -34,26 +34,61 @@ final class PrompterUITests: XCTestCase {
         XCTAssertTrue(studio.waitForExistence(timeout: 5))
     }
 
-    func testVoiceFollowCanBeTurnedOn() {
+    func testVoiceFollowingIsOneTapInTheToolbar() {
         let app = CueApp.launch(seeded: true)
-        let studio = app.buttons["hero.studioButton"]
-        XCTAssertTrue(studio.waitForExistence(timeout: 15))
-        studio.tap()
+        let record = app.buttons["hero.recordButton"]
+        XCTAssertTrue(record.waitForExistence(timeout: 15))
+        record.tap()
 
-        app.buttons["prompter.displayButton"].tap()
-        let voice = app.buttons["Voice follow"]
+        let voice = app.buttons["prompter.scrollMode.voice"]
         XCTAssertTrue(voice.waitForExistence(timeout: 5))
         voice.tap()
         allowMicrophoneIfAsked()
-        XCTAssertTrue(app.staticTexts["display.voiceFollowNote"].waitForExistence(timeout: 5))
+        XCTAssertTrue(element(app, "prompter.voiceIndicator").waitForExistence(timeout: 5))
+        XCTAssertTrue(voice.isSelected)
 
-        app.buttons["display.doneButton"].tap()
-        let play = app.buttons["prompter.playButton"]
-        XCTAssertTrue(play.waitForExistence(timeout: 5))
-        play.tap()
-        XCTAssertEqual(play.label, "Pause")
+        app.buttons["prompter.scrollMode.steady"].tap()
+        XCTAssertFalse(element(app, "prompter.voiceIndicator").waitForExistence(timeout: 2))
         app.buttons["prompter.closeButton"].tap()
-        XCTAssertTrue(studio.waitForExistence(timeout: 5))
+        XCTAssertTrue(record.waitForExistence(timeout: 5))
+    }
+
+    func testDisplaySettingsStayBelowTheScriptWithAdvancedTucked() {
+        let app = CueApp.launch(seeded: true)
+        let record = app.buttons["hero.recordButton"]
+        XCTAssertTrue(record.waitForExistence(timeout: 15))
+        record.tap()
+
+        let script = element(app, "prompter.text")
+        XCTAssertTrue(script.waitForExistence(timeout: 5))
+        app.buttons["prompter.displayButton"].tap()
+        let done = app.buttons["display.doneButton"]
+        XCTAssertTrue(done.waitForExistence(timeout: 5))
+        XCTAssertGreaterThan(done.frame.minY, script.frame.maxY)
+        XCTAssertTrue(element(app, "display.aiCoachToggle").exists)
+        XCTAssertTrue(element(app, "display.readingWidth").exists)
+        XCTAssertFalse(app.staticTexts["Line spacing"].exists)
+        app.buttons["display.advancedButton"].tap()
+        XCTAssertTrue(app.staticTexts["Line spacing"].waitForExistence(timeout: 5))
+        done.tap()
+    }
+
+    func testPlatformChipOpensCreateFor() {
+        let app = CueApp.launch(seeded: true)
+        let record = app.buttons["hero.recordButton"]
+        XCTAssertTrue(record.waitForExistence(timeout: 15))
+        record.tap()
+
+        let chip = app.buttons["prompter.aspectButton"]
+        XCTAssertTrue(chip.waitForExistence(timeout: 5))
+        XCTAssertTrue(chip.label.contains("TikTok"))
+        chip.tap()
+        let youtube = app.buttons["destination.youtube"]
+        XCTAssertTrue(youtube.waitForExistence(timeout: 5))
+        youtube.tap()
+        XCTAssertTrue(app.staticTexts["Create for YouTube · long-form"].waitForExistence(timeout: 5))
+        XCTAssertTrue(chip.label.contains("YouTube"))
+        app.buttons["prompter.closeButton"].tap()
     }
 
     func testSelfieModeSwitchesToStudio() throws {
@@ -98,6 +133,10 @@ final class PrompterUITests: XCTestCase {
     }
 
     // MARK: - Helpers
+
+    private func element(_ app: XCUIApplication, _ identifier: String) -> XCUIElement {
+        app.descendants(matching: .any)[identifier].firstMatch
+    }
 
     /// Voice follow listens to the microphone; the Simulator asks once.
     private func allowMicrophoneIfAsked() {

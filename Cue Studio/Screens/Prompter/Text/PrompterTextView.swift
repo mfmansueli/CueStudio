@@ -12,6 +12,8 @@ struct PrompterTextView: View {
     let settings: PrompterSettings
     let viewportHeight: CGFloat
     var guideArrowSize: CGFloat = 9
+    /// Over the camera, a soft shadow keeps the text readable on bright backgrounds.
+    var castsShadow = false
     var onTap: (() -> Void)?
 
     @State private var lastTranslation: CGFloat = 0
@@ -27,6 +29,7 @@ struct PrompterTextView: View {
             onParagraphFrame: { viewModel.updateParagraphFrame($1, at: $0) }
         )
             .equatable()
+            .shadow(color: castsShadow ? Palette.textShadow : .clear, radius: 1.5, x: 0, y: 1)
             .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { height in
                 viewModel.updateLayout(contentHeight: height)
             }
@@ -91,7 +94,9 @@ struct PrompterTextView: View {
                     Text(CueAttributedText.make(
                         paragraph,
                         showsCues: settings.showsCues,
-                        cueFont: settings.font.font(size: fontSize * 0.5).weight(.bold)
+                        // AI Coach cues stay small and quiet so the spoken words lead.
+                        cueFont: settings.font.font(size: fontSize * 0.42).weight(.bold),
+                        cueBackground: Palette.accCueWash
                     ))
                     .font(settings.font.font(size: fontSize))
                     .fontWeight(.medium)

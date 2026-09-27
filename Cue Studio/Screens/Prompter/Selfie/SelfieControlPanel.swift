@@ -27,11 +27,16 @@ struct SelfieControlPanel: View {
     // MARK: - Rows
 
     private var scriptRow: some View {
+        VStack(spacing: 10) {
+            ScrollModePicker(selection: preferences.prompter.scrollMode) { viewModel.setScrollMode($0) }
+            scriptControls
+        }
+    }
+
+    private var scriptControls: some View {
         HStack {
             if preferences.prompter.scrollMode == .voice {
-                VoiceIndicator(level: viewModel.voiceLevel, isActive: viewModel.isVoiceActive) {
-                    viewModel.sheet = .display
-                }
+                VoiceIndicator(level: viewModel.voiceLevel, isListening: viewModel.isPlaying && viewModel.isVoiceActive)
             } else {
                 SpeedStepper(
                     speedLabel: preferences.prompter.speedLabel,

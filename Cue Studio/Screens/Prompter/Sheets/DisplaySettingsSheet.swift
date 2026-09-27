@@ -5,133 +5,208 @@
 
 import SwiftUI
 
-/// How the prompter looks and scrolls. The text stays visible behind the sheet at its first height.
+/// "Aa": how the prompter reads, with a live preview behind the sheet. Quick settings first,
+/// the rest under Advanced. Over the Selfie camera the sheet never covers the script panel.
 struct DisplaySettingsSheet: View {
     let mode: PrompterMode
+    /// Tallest the sheet may grow in Selfie mode, so the script above stays in sight.
+    var maxHeight: CGFloat?
 
     @Environment(PreferencesService.self) private var preferences
     @Environment(\.dismiss) private var dismiss
+    @State private var showsAdvanced = false
+
+    /// The medium detent, as in the design.
+    private static let compactHeight: CGFloat = 330
 
     var body: some View {
         @Bindable var preferences = preferences
         VStack(spacing: 0) {
-            HStack {
-                Text("Display").font(.title3.bold())
-                Spacer()
-                Button("Done") { dismiss() }
-                    .buttonStyle(.cuePrimary(.compact, expands: false))
-                    .accessibilityIdentifier("display.doneButton")
-            }
-            .padding(EdgeInsets(top: 18, leading: 20, bottom: 8, trailing: 16))
+            header
             ScrollView {
-                VStack(alignment: .leading, spacing: 12) {
-                    fontPicker
-                    GroupedCard(background: Palette.surface2, radius: 22) {
-                        ValueSlider(
-                            title: String(localized: "Text size"),
-                            valueText: "\(Int(preferences.prompter.size))",
-                            value: $preferences.prompter.size,
-                            range: PrompterSettings.sizeRange
-                        )
-                        .padding(.horizontal, 16)
-                        ValueSlider(
-                            title: String(localized: "Line spacing"),
-                            valueText: preferences.prompter.lineSpacing.formatted(.number.precision(.fractionLength(2))),
-                            value: $preferences.prompter.lineSpacing,
-                            range: PrompterSettings.lineSpacingRange, step: 0.05
-                        )
-                        .padding(.horizontal, 16)
-                        ValueSlider(
-                            title: String(localized: "Side margins"),
-                            valueText: "\(Int(preferences.prompter.margin))",
-                            value: $preferences.prompter.margin,
-                            range: PrompterSettings.marginRange, step: 2
-                        )
-                        .padding(.horizontal, 16)
-                        row(String(localized: "Alignment")) {
-                            Picker("Alignment", selection: $preferences.prompter.alignment) {
-                                ForEach(PrompterAlignment.allCases) { Text($0.label).tag($0) }
-                            }
-                            .pickerStyle(.segmented)
-                            .fixedSize()
-                        }
-                        row(String(localized: "Text color")) {
-                            HStack(spacing: 0) {
-                                ForEach(PrompterTextColor.allCases) { option in
-                                    SwatchButton(color: option.color, isSelected: preferences.prompter.textColor == option, accessibilityName: option.label) {
-                                        preferences.prompter.textColor = option
-                                    }
-                                }
-                            }
-                        }
+                VStack(alignment: .leading, spacing: 10) {
+                    SectionHeading(text: String(localized: "Quick"))
+                        .padding(EdgeInsets(top: 4, leading: 4, bottom: 0, trailing: 4))
+                    toggleRow(
+                        String(localized: "AI Coach"),
+                        detail: String(localized: "Performance cues like PAUSE or SMILE"),
+                        isOn: $preferences.prompter.showsCues
+                    )
+                    .background(Palette.surface2, in: RoundedRectangle(cornerRadius: 22, style: .continuous))
+                    .accessibilityIdentifier("display.aiCoachToggle")
+                    quickSliders
+                    if mode == .selfie {
+                        Text("Background and blur only change your preview — never the recording.")
+                            .font(.caption)
+                            .foregroundStyle(Palette.ink.opacity(0.45))
+                            .padding(.horizontal, 4)
                     }
-
-                    SectionHeading(text: String(localized: "Background"))
-                        .padding(EdgeInsets(top: 8, leading: 4, bottom: 0, trailing: 4))
-                    GroupedCard(background: Palette.surface2, radius: 22) {
-                        if mode == .selfie {
-                            ValueSlider(
-                                title: String(localized: "Dim behind text"),
-                                valueText: preferences.prompter.dim.formatted(.percent.precision(.fractionLength(0))),
-                                value: $preferences.prompter.dim,
-                                range: PrompterSettings.dimRange, step: 0.05
-                            )
-                            .padding(.horizontal, 16)
-                        } else {
-                            row(String(localized: "Background color")) {
-                                HStack(spacing: 0) {
-                                    ForEach(StudioBackground.allCases) { option in
-                                        SwatchButton(color: option.color, isSelected: preferences.prompter.studioBackground == option, accessibilityName: option.label) {
-                                            preferences.prompter.studioBackground = option
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                    SectionHeading(text: String(localized: "Reading"))
-                        .padding(EdgeInsets(top: 8, leading: 4, bottom: 0, trailing: 4))
-                    GroupedCard(background: Palette.surface2, radius: 22) {
-                        VStack(alignment: .leading, spacing: 0) {
-                            row(String(localized: "Scrolling")) {
-                                Picker("Scrolling", selection: $preferences.prompter.scrollMode) {
-                                    ForEach(ScrollMode.allCases) { Text($0.label).tag($0) }
-                                }
-                                .pickerStyle(.segmented)
-                                .fixedSize()
-                            }
-                            if preferences.prompter.scrollMode == .voice {
-                                Text("Listens as you read and keeps your line on the guide, at your pace. Waits when you pause or go off script. Recognition happens on this device.")
-                                    .font(.footnote)
-                                    .foregroundStyle(Palette.ink2)
-                                    .padding(EdgeInsets(top: 0, leading: 16, bottom: 12, trailing: 16))
-                                    .accessibilityIdentifier("display.voiceFollowNote")
-                            }
-                        }
-                        VStack(spacing: 0) {
-                            toggleRow(String(localized: "Reading guide"), isOn: $preferences.prompter.showsGuide)
-                            if preferences.prompter.showsGuide {
-                                ValueSlider(
-                                    title: String(localized: "Guide position"),
-                                    valueText: preferences.prompter.guidePosition.formatted(.percent.precision(.fractionLength(0))),
-                                    value: $preferences.prompter.guidePosition,
-                                    range: PrompterSettings.guideRange, step: 0.01
-                                )
-                                .font(.subheadline)
-                                .padding(.horizontal, 16)
-                            }
-                        }
-                        toggleRow(String(localized: "Mirror text"), detail: String(localized: "For beam-splitter glass rigs"), isOn: $preferences.prompter.isMirrored)
-                        toggleRow(String(localized: "Show cues"), detail: String(localized: "Stage cues like [pause] in the prompter"), isOn: $preferences.prompter.showsCues)
+                    advancedToggle
+                    if showsAdvanced {
+                        advanced
                     }
                 }
-                .padding(EdgeInsets(top: 6, leading: Metrics.gutter, bottom: 40, trailing: Metrics.gutter))
+                .padding(EdgeInsets(top: 0, leading: Metrics.gutter, bottom: 40, trailing: Metrics.gutter))
+                .animation(.smooth(duration: 0.25), value: showsAdvanced)
             }
         }
-        .presentationDetents([.height(480), .large])
-        .presentationBackground(Palette.surface)
-        .presentationBackgroundInteraction(.enabled(upThrough: .height(480)))
+        .presentationDetents(detents)
+        .presentationBackground(Palette.sheetGlass)
+        .presentationCornerRadius(32)
+        .presentationBackgroundInteraction(.enabled)
+    }
+
+    private var detents: Set<PresentationDetent> {
+        guard let maxHeight else { return [.height(Self.compactHeight), .large] }
+        return [.height(min(Self.compactHeight, maxHeight)), .height(maxHeight)]
+    }
+
+    // MARK: - Sections
+
+    private var header: some View {
+        HStack(alignment: .firstTextBaseline, spacing: 10) {
+            Text("Display").font(.title3.bold())
+            HStack(spacing: 5) {
+                Circle().fill(Palette.live).frame(width: 6, height: 6)
+                Text("Live preview")
+            }
+            .font(.caption.weight(.semibold))
+            .foregroundStyle(Palette.ink2)
+            Spacer()
+            Button("Done") { dismiss() }
+                .buttonStyle(.cuePrimary(.compact, expands: false))
+                .accessibilityIdentifier("display.doneButton")
+        }
+        .padding(EdgeInsets(top: 18, leading: 20, bottom: 10, trailing: 16))
+    }
+
+    private var quickSliders: some View {
+        @Bindable var preferences = preferences
+        return GroupedCard(background: Palette.surface2, radius: 22) {
+            ValueSlider(
+                title: String(localized: "Text size"),
+                valueText: "\(Int(preferences.prompter.size))",
+                value: $preferences.prompter.size,
+                range: PrompterSettings.sizeRange
+            )
+            .padding(.horizontal, 16)
+            if mode == .selfie {
+                ValueSlider(
+                    title: String(localized: "Reading width"),
+                    valueText: preferences.prompter.readingWidth.formatted(.percent.precision(.fractionLength(0))),
+                    value: $preferences.prompter.readingWidth,
+                    range: PrompterPanelLayout.widthRange, step: 0.01,
+                    ends: (String(localized: "Narrow"), String(localized: "Wide")),
+                    identifier: "display.readingWidth"
+                )
+                .padding(.horizontal, 16)
+            }
+            ValueSlider(
+                title: String(localized: "Reading line"),
+                valueText: preferences.prompter.guidePosition.formatted(.percent.precision(.fractionLength(0))),
+                value: $preferences.prompter.guidePosition,
+                range: PrompterSettings.guideRange, step: 0.01,
+                ends: (String(localized: "Top"), String(localized: "Bottom"))
+            )
+            .padding(.horizontal, 16)
+            if mode == .selfie {
+                ValueSlider(
+                    title: String(localized: "Background opacity"),
+                    valueText: preferences.prompter.backgroundOpacity.formatted(.percent.precision(.fractionLength(0))),
+                    value: $preferences.prompter.backgroundOpacity,
+                    range: PrompterSettings.backgroundOpacityRange, step: 0.05
+                )
+                .padding(.horizontal, 16)
+                ValueSlider(
+                    title: String(localized: "Camera blur"),
+                    valueText: preferences.prompter.cameraBlurLabel,
+                    value: $preferences.prompter.cameraBlur,
+                    range: PrompterSettings.cameraBlurRange
+                )
+                .padding(.horizontal, 16)
+            } else {
+                row(String(localized: "Background color")) {
+                    HStack(spacing: 0) {
+                        ForEach(StudioBackground.allCases) { option in
+                            SwatchButton(color: option.color, isSelected: preferences.prompter.studioBackground == option, accessibilityName: option.label) {
+                                preferences.prompter.studioBackground = option
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private var advancedToggle: some View {
+        Button {
+            showsAdvanced.toggle()
+        } label: {
+            HStack(spacing: 12) {
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("Advanced").font(.body.weight(.semibold))
+                    Text("Font, spacing, margins, alignment, color")
+                        .font(.footnote)
+                        .foregroundStyle(Palette.ink2)
+                }
+                Spacer()
+                Image(systemName: "chevron.right")
+                    .font(.footnote.weight(.bold))
+                    .foregroundStyle(Palette.ink.opacity(0.5))
+                    .rotationEffect(.degrees(showsAdvanced ? 90 : 0))
+            }
+            .foregroundStyle(Palette.ink)
+            .padding(.horizontal, 16)
+            .frame(minHeight: 58)
+            .background(Palette.surface2, in: RoundedRectangle(cornerRadius: 22, style: .continuous))
+            .contentShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
+        }
+        .buttonStyle(.plain)
+        .padding(.top, 4)
+        .accessibilityValue(showsAdvanced ? Text("Expanded") : Text("Collapsed"))
+        .accessibilityIdentifier("display.advancedButton")
+    }
+
+    @ViewBuilder
+    private var advanced: some View {
+        @Bindable var preferences = preferences
+        fontPicker
+        GroupedCard(background: Palette.surface2, radius: 22) {
+            ValueSlider(
+                title: String(localized: "Line spacing"),
+                valueText: preferences.prompter.lineSpacing.formatted(.number.precision(.fractionLength(2))),
+                value: $preferences.prompter.lineSpacing,
+                range: PrompterSettings.lineSpacingRange, step: 0.05
+            )
+            .padding(.horizontal, 16)
+            ValueSlider(
+                title: String(localized: "Side margins"),
+                valueText: String(localized: "\(Int(preferences.prompter.margin)) pt"),
+                value: $preferences.prompter.margin,
+                range: PrompterSettings.marginRange, step: 2
+            )
+            .padding(.horizontal, 16)
+            row(String(localized: "Alignment")) {
+                Picker("Alignment", selection: $preferences.prompter.alignment) {
+                    ForEach(PrompterAlignment.allCases) { Text($0.label).tag($0) }
+                }
+                .pickerStyle(.segmented)
+                .fixedSize()
+            }
+            row(String(localized: "Text color")) {
+                HStack(spacing: 0) {
+                    ForEach(PrompterTextColor.allCases) { option in
+                        SwatchButton(color: option.color, isSelected: preferences.prompter.textColor == option, accessibilityName: option.label) {
+                            preferences.prompter.textColor = option
+                        }
+                    }
+                }
+            }
+        }
+        GroupedCard(background: Palette.surface2, radius: 22) {
+            toggleRow(String(localized: "Show reading line"), isOn: $preferences.prompter.showsGuide)
+            toggleRow(String(localized: "Mirror text"), detail: String(localized: "For beam-splitter glass rigs"), isOn: $preferences.prompter.isMirrored)
+        }
     }
 
     private var fontPicker: some View {
@@ -150,9 +225,12 @@ struct DisplaySettingsSheet: View {
                 }
                 .buttonStyle(.plain)
                 .accessibilityLabel(Text(font.label))
+                .accessibilityAddTraits(preferences.prompter.font == font ? .isSelected : [])
             }
         }
     }
+
+    // MARK: - Rows
 
     private func row<Content: View>(_ title: String, @ViewBuilder content: () -> Content) -> some View {
         HStack {
@@ -174,7 +252,7 @@ struct DisplaySettingsSheet: View {
             }
         }
         .tint(Palette.success)
-        .frame(minHeight: 52)
+        .frame(minHeight: 58)
         .padding(.horizontal, 16)
     }
 }

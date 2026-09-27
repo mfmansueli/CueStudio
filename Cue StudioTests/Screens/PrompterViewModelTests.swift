@@ -84,6 +84,45 @@ struct PrompterViewModelTests {
         await scenario.viewModel.disappear()
     }
 
+    @Test func opensWithThePlatformsReadingWidth() async {
+        let scenario = makeScenario(script: TestData.script(platform: .linkedin))
+        defer { scenario.defaults.tearDown() }
+        scenario.preferences.prompter.readingWidth = 0.5
+        await scenario.viewModel.appear()
+        #expect(scenario.preferences.prompter.readingWidth == 0.64)
+        #expect(scenario.preferences.camera.aspect == .vertical)
+        await scenario.viewModel.disappear()
+    }
+
+    @Test func createForFromTheCameraMovesTheScriptAndAppliesThePreset() async {
+        let script = TestData.script(platform: .tiktok)
+        let scenario = makeScenario(script: script)
+        defer { scenario.defaults.tearDown() }
+        scenario.viewModel.platformChipTapped()
+        #expect(scenario.viewModel.sheet == .destination)
+        scenario.viewModel.setPlatform(.stories)
+        #expect(scenario.viewModel.sheet == nil)
+        #expect(scenario.viewModel.script?.platform == .stories)
+        #expect(scenario.preferences.prompter.readingWidth == 0.56)
+        #expect(scenario.toast.message == "Create for Instagram Stories")
+    }
+
+    @Test func freestyleChipCyclesTheFrame() {
+        let scenario = makeScenario(script: nil)
+        defer { scenario.defaults.tearDown() }
+        scenario.preferences.camera.aspect = .portrait
+        scenario.viewModel.platformChipTapped()
+        #expect(scenario.viewModel.sheet == nil)
+        #expect(scenario.preferences.camera.aspect == .vertical)
+    }
+
+    @Test func scrollModeSwitchesFromTheToolbar() {
+        let scenario = makeScenario()
+        defer { scenario.defaults.tearDown() }
+        scenario.viewModel.setScrollMode(.voice)
+        #expect(scenario.preferences.prompter.scrollMode == .voice)
+    }
+
     @Test func recordStartsRightAwayWithoutCountdown() async {
         let scenario = makeScenario()
         defer { scenario.defaults.tearDown() }
