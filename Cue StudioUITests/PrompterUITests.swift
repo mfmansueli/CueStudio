@@ -34,6 +34,27 @@ final class PrompterUITests: XCTestCase {
         XCTAssertTrue(studio.waitForExistence(timeout: 5))
     }
 
+    func testStudioSwitchesToVoiceFollowing() {
+        let app = CueApp.launch(seeded: true)
+        let studio = app.buttons["hero.studioButton"]
+        XCTAssertTrue(studio.waitForExistence(timeout: 15))
+        studio.tap()
+
+        XCTAssertTrue(app.sliders["Speed"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.buttons["prompter.backButton"].exists)
+        XCTAssertTrue(app.buttons["prompter.forwardButton"].exists)
+        app.buttons["prompter.scrollMode.voice"].tap()
+        allowMicrophoneIfAsked()
+        XCTAssertTrue(element(app, "prompter.voiceIndicator").waitForExistence(timeout: 5))
+        XCTAssertFalse(app.sliders["Speed"].exists)
+        let play = app.buttons["prompter.playButton"]
+        play.tap()
+        XCTAssertTrue(app.staticTexts["Speed follows your voice"].waitForExistence(timeout: 5))
+        play.tap()
+        app.buttons["prompter.closeButton"].tap()
+        XCTAssertTrue(studio.waitForExistence(timeout: 5))
+    }
+
     func testVoiceFollowingIsOneTapInTheToolbar() {
         let app = CueApp.launch(seeded: true)
         let record = app.buttons["hero.recordButton"]

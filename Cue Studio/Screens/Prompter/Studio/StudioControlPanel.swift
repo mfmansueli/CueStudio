@@ -13,7 +13,9 @@ struct StudioControlPanel: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            if preferences.prompter.scrollMode == .voice && viewModel.followsSpeech {
+            ScrollModePicker(selection: preferences.prompter.scrollMode) { viewModel.setScrollMode($0) }
+                .padding(.bottom, 12)
+            if preferences.prompter.scrollMode == .voice {
                 voiceRow
             } else {
                 speedRow
@@ -30,6 +32,7 @@ struct StudioControlPanel: View {
                 Button { viewModel.jump(lines: -3) } label: { Image(systemName: "chevron.backward.2") }
                     .buttonStyle(.cueIcon(.overlay, diameter: 48))
                     .accessibilityLabel(Text("Back three lines"))
+                    .accessibilityIdentifier("prompter.backButton")
                 Spacer()
                 Button { viewModel.togglePlay() } label: {
                     Image(systemName: viewModel.isPlaying ? "pause.fill" : "play.fill")
@@ -41,6 +44,7 @@ struct StudioControlPanel: View {
                 Button { viewModel.jump(lines: 3) } label: { Image(systemName: "chevron.forward.2") }
                     .buttonStyle(.cueIcon(.overlay, diameter: 48))
                     .accessibilityLabel(Text("Forward three lines"))
+                    .accessibilityIdentifier("prompter.forwardButton")
                 Spacer()
                 Button { viewModel.sheet = .display } label: {
                     Text("Aa").font(.system(size: 18, weight: .semibold))
@@ -77,12 +81,13 @@ struct StudioControlPanel: View {
     /// Following the reading, speed doesn't apply: the text moves at the creator's pace.
     private var voiceRow: some View {
         HStack(spacing: 12) {
-            VoiceIndicator(level: viewModel.voiceLevel, isListening: viewModel.isPlaying && viewModel.isVoiceActive)
-            Text(viewModel.isPlaying ? "Following your reading" : "Tap play, then start reading")
-                .font(.footnote.weight(.semibold))
+            VoiceIndicator(level: viewModel.voiceLevel, isListening: viewModel.isPlaying && viewModel.isVoiceActive, fillsWidth: true)
+            Spacer(minLength: 0)
+            Text(viewModel.isPlaying ? "Speed follows your voice" : "Tap play, then start reading")
+                .font(.footnote)
                 .foregroundStyle(Palette.ink2)
                 .lineLimit(2)
-            Spacer(minLength: 0)
+                .multilineTextAlignment(.trailing)
         }
         .frame(minHeight: 34)
         .accessibilityIdentifier("prompter.voiceStatus")
