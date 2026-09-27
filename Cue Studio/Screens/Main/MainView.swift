@@ -28,7 +28,7 @@ struct MainView: View {
                 }
             }
             Tab("Takes", systemImage: "film.stack", value: AppTab.takes) {
-                NavigationStack { TakesView() }
+                NavigationStack { TakesView(services: services) }
             }
             Tab("Profile", systemImage: "person.crop.circle", value: AppTab.profile) {
                 NavigationStack { ProfileView() }

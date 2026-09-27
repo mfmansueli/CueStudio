@@ -11,12 +11,22 @@ struct TakeReviewView: View {
     @State private var viewModel: TakeReviewViewModel
     let onRetake: () -> Void
     let onBack: () -> Void
+    /// Another take of the same script, from the strip.
+    let onSelect: (Take) -> Void
+    /// After deleting: the take to show next, or nil to leave the review.
+    let onDeleted: (Take?) -> Void
 
     @State private var player = AVPlayer()
     @State private var isPlaying = false
     @State private var progress: Double = 0
 
-    init(takeID: UUID, services: AppServices, onRetake: @escaping () -> Void, onBack: @escaping () -> Void) {
+    @State private var confirmsDelete = false
+
+    init(
+        takeID: UUID, services: AppServices,
+        onRetake: @escaping () -> Void, onBack: @escaping () -> Void,
+        onSelect: @escaping (Take) -> Void, onDeleted: @escaping (Take?) -> Void
+    ) {
         let store = services.store
         _viewModel = State(initialValue: TakeReviewViewModel(
             takeID: takeID,
@@ -29,6 +39,8 @@ struct TakeReviewView: View {
         ))
         self.onRetake = onRetake
         self.onBack = onBack
+        self.onSelect = onSelect
+        self.onDeleted = onDeleted
     }
 
     var body: some View {
@@ -43,6 +55,14 @@ struct TakeReviewView: View {
             }
         }
         .task(id: viewModel.takeID) { await runPlayer() }
+        .confirmationDialog("Delete this take?", isPresented: $confirmsDelete, titleVisibility: .visible) {
+            Button("Delete take", role: .destructive) {
+                player.pause()
+                onDeleted(viewModel.delete())
+            }
+        } message: {
+            Text("The video is removed from Cue. Copies you saved to Photos stay there.")
+        }
         .onDisappear { player.pause() }
         .sheet(isPresented: Binding(get: { viewModel.shareURL != nil }, set: { if !$0 { viewModel.shareURL = nil } })) {
             if let url = viewModel.shareURL {
@@ -122,34 +142,17 @@ struct TakeReviewView: View {
 
     private func chrome(for take: Take) -> some View {
         VStack(spacing: 0) {
-            HStack {
-                Button(action: onBack) { Image(systemName: "chevron.backward") }
-                    .buttonStyle(.cueIcon(.glass, diameter: 40))
-                    .accessibilityLabel(Text("Back"))
-                    .accessibilityIdentifier("review.backButton")
-                Spacer()
-                HStack(spacing: 8) {
-                    Text(take.label)
-                    Text(DurationText.clock(take.duration))
-                        .monospacedDigit()
-                        .foregroundStyle(Palette.ink2)
-                }
-                .font(.subheadline.weight(.semibold))
-                .padding(.horizontal, 14)
-                .frame(height: 34)
-                .glassEffect(.regular, in: Capsule())
-                Spacer()
-                Button { viewModel.toggleBest() } label: { Image(systemName: "star.fill") }
-                    .buttonStyle(.cueIcon(take.isBest ? .accent : .glass, diameter: 40))
-                    .accessibilityLabel(Text("Best take"))
-                    .accessibilityValue(Text(take.isBest ? "On" : "Off"))
-                    .accessibilityIdentifier("review.bestButton")
-            }
+            ReviewTopBar(
+                take: take,
+                onBack: onBack,
+                onToggleBest: viewModel.toggleBest,
+                onDelete: { confirmsDelete = true }
+            )
             .padding(.horizontal, 14)
             Spacer()
-            VStack(alignment: .leading, spacing: 18) {
+            VStack(alignment: .leading, spacing: 14) {
                 if let url = viewModel.videoURL {
-                    VStack(spacing: 8) {
+                    VStack(spacing: 6) {
                         FilmstripView(take: take, videoURL: url, progress: progress) { fraction in
                             seek(to: fraction, of: take)
                         }
@@ -163,10 +166,20 @@ struct TakeReviewView: View {
                     }
                 }
                 VStack(alignment: .leading, spacing: 3) {
-                    Text(take.scriptTitle)
-                        .font(.title3.bold())
-                        .lineLimit(1)
-                    Text(meta(for: take))
+                    HStack(spacing: 8) {
+                        Text(take.scriptTitle)
+                            .font(.title3.bold())
+                            .lineLimit(1)
+                        if take.isEdited {
+                            Text("EDITED")
+                                .font(.caption2.weight(.bold))
+                                .foregroundStyle(Palette.info)
+                                .padding(.horizontal, 7)
+                                .frame(height: 20)
+                                .background(Palette.infoSoft, in: Capsule())
+                        }
+                    }
+                    Text(viewModel.metaLine)
                         .font(.footnote)
                         .foregroundStyle(Palette.ink2)
                     if let notice = viewModel.exportNotice {
@@ -177,48 +190,26 @@ struct TakeReviewView: View {
                                 .foregroundStyle(Palette.acc)
                         }
                         .font(.footnote)
-                        .padding(.top, 6)
+                        .padding(.top, 4)
                     }
                 }
-                HStack(spacing: 10) {
-                    Button(action: onRetake) {
-                        Label("Retake", systemImage: "arrow.counterclockwise")
+                if viewModel.siblings.count > 1 {
+                    YourTakesStrip(takes: viewModel.siblings, currentID: take.id) { sibling in
+                        guard sibling.id != take.id else { return }
+                        player.pause()
+                        onSelect(sibling)
                     }
-                    .buttonStyle(.cueGlass())
-                    .accessibilityIdentifier("review.retakeButton")
-                    Button {
-                        Task { await viewModel.save() }
-                    } label: {
-                        if viewModel.runningAction == .save {
-                            ProgressView().tint(.white)
-                        } else {
-                            Label("Save", systemImage: "arrow.down.to.line")
-                        }
-                    }
-                    .buttonStyle(.cueGlass())
-                    .accessibilityIdentifier("review.saveButton")
-                    Button {
-                        Task { await viewModel.share() }
-                    } label: {
-                        if viewModel.runningAction == .share {
-                            ProgressView().tint(Palette.accInk)
-                        } else {
-                            Label("Share", systemImage: "square.and.arrow.up")
-                        }
-                    }
-                    .buttonStyle(.cuePrimary())
-                    .accessibilityIdentifier("review.shareButton")
                 }
-                .disabled(viewModel.runningAction != nil)
+                ReviewActionBar(
+                    runningAction: viewModel.runningAction,
+                    onRetake: onRetake,
+                    onSave: { Task { await viewModel.save() } },
+                    onShare: { Task { await viewModel.share() } }
+                )
             }
             .padding(.horizontal, Metrics.gutter)
             .padding(.bottom, 8)
         }
-    }
-
-    private func meta(for take: Take) -> String {
-        let when = take.recordedAt.formatted(.relative(presentation: .named))
-        return "\(when) · \(take.resolution.label) · \(take.frameRate.rawValue) fps · \(take.aspect.label)"
     }
 
     // MARK: - Playback

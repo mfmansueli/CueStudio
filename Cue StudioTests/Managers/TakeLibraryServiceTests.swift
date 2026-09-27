@@ -71,4 +71,50 @@ struct TakeLibraryServiceTests {
         service.renameScript(scriptID, to: "New")
         #expect(service.takes.first?.scriptTitle == "New")
     }
+
+    @Test func siblingsAreTheScriptsTakesByNumber() {
+        let script = UUID()
+        let service = TakeLibraryService(repository: FakeTakeRepository(takes: [
+            TestData.take(scriptID: script, number: 2),
+            TestData.take(scriptID: nil, number: 1),
+            TestData.take(scriptID: script, number: 1),
+        ]))
+        service.load()
+        let take = service.takes.first { $0.scriptID == script && $0.number == 2 }!
+        #expect(service.siblings(of: take).map(\.number) == [1, 2])
+        let freestyle = service.takes.first { $0.scriptID == nil }!
+        #expect(service.siblings(of: freestyle).map(\.id) == [freestyle.id])
+    }
+
+    @Test func freestyleBestTakesAreIndependent() {
+        let service = TakeLibraryService(repository: FakeTakeRepository(takes: [
+            TestData.take(scriptID: nil, number: 1, isBest: true),
+            TestData.take(scriptID: nil, number: 2),
+        ]))
+        service.load()
+        let second = service.takes.first { $0.number == 2 }!
+        service.setBest(second.id, isBest: true)
+        #expect(service.takes.filter(\.isBest).count == 2)
+    }
+
+    @Test func exportingMarksTheTakeShared() {
+        let service = TakeLibraryService(repository: FakeTakeRepository(takes: [TestData.take(scriptID: UUID())]))
+        service.load()
+        let id = service.takes[0].id
+        service.markExported(id)
+        #expect(service.takes[0].isExported)
+    }
+
+    @Test func v1TakesOpenAsNotEditedAndNotShared() throws {
+        let v1 = """
+        [{"id":"00000000-0000-0000-0000-00000000000A","scriptTitle":"Old","number":1,"duration":30,
+          "recordedAt":"2026-09-01T10:00:00Z","fileName":"a.mov","isBest":true,"resolution":"1080p",
+          "frameRate":30,"aspect":"9:16","platform":"tiktok"}]
+        """
+        let takes = try JSONDecoder.library.decode([Take].self, from: Data(v1.utf8))
+        #expect(takes[0].isBest)
+        #expect(!takes[0].isEdited)
+        #expect(!takes[0].isExported)
+        #expect(takes[0].scriptID == nil)
+    }
 }

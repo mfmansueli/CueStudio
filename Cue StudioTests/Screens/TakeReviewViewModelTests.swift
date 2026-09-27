@@ -88,6 +88,46 @@ struct TakeReviewViewModelTests {
         defer { scenario.defaults.tearDown() }
         scenario.viewModel.toggleBest()
         #expect(scenario.viewModel.take?.isBest == true)
-        #expect(scenario.toast.message == "Marked as best take")
+        #expect(scenario.toast.message == "Take 1 marked as best")
+    }
+
+    @Test func savingMarksTheTakeShared() async {
+        let scenario = makeScenario()
+        defer { scenario.defaults.tearDown() }
+        #expect(scenario.viewModel.take?.isExported == false)
+        await scenario.viewModel.save()
+        #expect(scenario.viewModel.take?.isExported == true)
+    }
+
+    @Test func deletingShowsTheNewestSiblingNext() {
+        let defaults = TestDefaults()
+        defer { defaults.tearDown() }
+        let script = UUID()
+        let first = TestData.take(scriptID: script, number: 1)
+        let second = TestData.take(scriptID: script, number: 2)
+        let third = TestData.take(scriptID: script, number: 3)
+        let takes = TakeLibraryService(repository: FakeTakeRepository(takes: [first, second, third]))
+        takes.load()
+        let viewModel = TakeReviewViewModel(
+            takeID: second.id, takes: takes, quota: UsageQuotaService(defaults: defaults.defaults), tier: { .free },
+            exporter: FakeVideoExporter(), photos: FakePhotoSaver(), toast: ToastService()
+        )
+        #expect(viewModel.siblings.map(\.number) == [1, 2, 3])
+        #expect(viewModel.delete()?.id == third.id)
+        #expect(takes.takes.count == 2)
+    }
+
+    @Test func deletingTheLastTakeLeavesTheReview() {
+        let scenario = makeScenario()
+        defer { scenario.defaults.tearDown() }
+        #expect(scenario.viewModel.delete() == nil)
+        #expect(scenario.takes.takes.isEmpty)
+        #expect(scenario.toast.message == "Take 1 deleted")
+    }
+
+    @Test func metaLineShowsWhenPlatformFrameAndQuality() {
+        let scenario = makeScenario()
+        defer { scenario.defaults.tearDown() }
+        #expect(scenario.viewModel.metaLine.hasSuffix("· TikTok · 9:16 · 1080p"))
     }
 }

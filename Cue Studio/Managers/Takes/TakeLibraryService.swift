@@ -42,6 +42,13 @@ final class TakeLibraryService {
         takes.filter { $0.scriptID == scriptID }
     }
 
+    /// The take and the others of its video (same script), by number, for the review strip. A
+    /// freestyle take stands alone.
+    func siblings(of take: Take) -> [Take] {
+        guard let scriptID = take.scriptID else { return [take] }
+        return takes.filter { $0.scriptID == scriptID }.sorted { $0.number < $1.number }
+    }
+
     func count(for scriptID: UUID) -> Int {
         takes.reduce(0) { $0 + ($1.scriptID == scriptID ? 1 : 0) }
     }
@@ -79,12 +86,20 @@ final class TakeLibraryService {
         return take
     }
 
-    /// One best take per script: marking a take unmarks the others.
+    /// One best take per script: marking a take unmarks the others. A freestyle take is a video of
+    /// its own, so it never unmarks other freestyle takes.
     func setBest(_ id: UUID, isBest: Bool) {
         guard let target = take(id: id) else { return }
-        for index in takes.indices where takes[index].scriptID == target.scriptID {
+        for index in takes.indices where takes[index].id == id || (target.scriptID != nil && takes[index].scriptID == target.scriptID) {
             takes[index].isBest = isBest && takes[index].id == id
         }
+        persist()
+    }
+
+    /// Saved or shared: it no longer counts as "Not shared".
+    func markExported(_ id: UUID) {
+        guard let index = takes.firstIndex(where: { $0.id == id }), !takes[index].isExported else { return }
+        takes[index].isExported = true
         persist()
     }
 

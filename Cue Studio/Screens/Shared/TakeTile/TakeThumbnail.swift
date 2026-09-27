@@ -16,7 +16,7 @@ struct TakeThumbnail: View {
     var body: some View {
         ZStack {
             LinearGradient(
-                colors: [Color(hex: 0x7A6250), Color(hex: 0x2A211C)],
+                colors: [Palette.thumbnailTop, Palette.thumbnailBottom],
                 startPoint: .topLeading, endPoint: .bottomTrailing
             )
             if let image {

@@ -17,7 +17,7 @@ extension AppServices {
     private static func makePreview(seeded: Bool) -> AppServices {
         var options = LaunchOptions()
         options.scriptRepository = InMemoryScriptRepository(scripts: seeded ? SampleScripts.all : [])
-        options.takeRepository = InMemoryTakeRepository()
+        options.takeRepository = InMemoryTakeRepository(takes: seeded ? SampleTakes.all() : [])
         options.defaults = UserDefaults(suiteName: "studio.cue.previews") ?? .standard
         options.platformRules = PlatformRulesService(cacheURL: nil, remoteURL: nil)
         let services = AppServices(options: options)

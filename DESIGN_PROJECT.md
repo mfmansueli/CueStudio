@@ -112,8 +112,8 @@ SF Symbols por significado: `doc.text` scripts · `film.stack` takes · `person.
 | Studio | `Screens/Prompter/Studio` | Prompter em tela cheia sem câmera, barra de progresso no topo, fechar, Selfie \| Studio e espelhar; barra: Voice Following \| Steady, slider de velocidade (no Voice Following, "Listening/Paused" e "Speed follows your voice"), voltar ao topo, 3 linhas para trás/frente, play grande amarelo e Aa |
 | Display | `DisplaySettingsSheet` | "Display · ● Live preview". Quick: AI Coach, Text size, Reading width, Reading line (Top/Bottom), Background opacity, Camera blur (Off/Low/Medium/High) — no Studio, Background color no lugar dos três do Selfie. Advanced (recolhível): fonte, espaçamento, margens, alinhamento, cor, linha de leitura, espelhar. No Selfie, a altura máxima para logo abaixo do painel |
 | Câmera | `CameraSettingsSheet` | Lente, enquadramento, resolução, fps, grid, safe zones, estabilização, microfone, contagem, formato. No Selfie com script, a sheet para logo abaixo do painel do texto (não cresce além dele) e não escurece o fundo |
-| Revisão do take | `Screens/TakeReview` | Vídeo, filmstrip, melhor take, Retake / Save / Share, aviso de exportações |
-| Takes | `Screens/Takes` | Takes agrupados por script |
+| Revisão do take | `Screens/TakeReview` | Vídeo no formato da take (barras pretas fora do 9:16); topo: voltar, "Take N · 0:44", estrela e lixeira; filmstrip, título (+ EDITED), meta, aviso de exportações; faixa "Your takes · N" (troca de take, "Tap ☆ to pick your best"); Retake · Save · Share (Share amarelo). Só uma melhor take por roteiro |
+| Takes | `Screens/Takes` | "Takes" + "N takes · N videos"; chips de plataforma e All takes / ★ Best / Not shared / Edited; seções Today / Yesterday / Earlier; cada linha é um vídeo (takes do mesmo roteiro): miniatura no formato certo com estrela e duração, plataforma · formato · qualidade, quando, chips "3 takes · Best: Take 3", "Edited", "Not shared" |
 | Profile | `Screens/Profile` | Card do criador, plano e uso, Creator DNA, ajustes, privacidade |
 | Paywall | `Screens/Shared/Paywall` | Contexto (perfil, exportação, IA), benefícios, planos, Restore/Terms |
 
@@ -219,6 +219,10 @@ O protótipo simulava várias coisas; o app implementa de verdade ou deixa de fo
   sistema atrás do painel (Low/Medium/High), que desfocam o preview e nunca a gravação.
 - **Painel do YouTube:** a câmera preenche a tela com o sensor 9:16, então a faixa preta do 16:9 é
   mais baixa que no protótipo; o painel encolhe para caber nela (mínimo 120 pt).
+- **Takes sem roteiro:** o protótipo marca gravações freestyle como Reels; aqui elas aparecem como
+  "Freestyle" (sem plataforma) e cada uma é um vídeo próprio.
+- **Take:** o arquivo é guardado pelo nome (`fileName`), não por URL, porque o caminho do container
+  muda entre instalações; `recordedAt` é o "createdAt" do pedido.
 - **Filtros de plataforma:** como no protótipo, All + TikTok, Reels, Shorts, YouTube e LinkedIn;
   Stories ganha chip só quando algum script é para Stories (roteiros de 8–15 s são raros).
 - **Regras remotas:** o protótipo diz "presets update automatically". Sem backend, a atualização é

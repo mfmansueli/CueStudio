@@ -76,6 +76,18 @@ enum Palette {
     /// "Live preview" dot in Display.
     static let live = Color(hex: 0x30D158)
 
+    // MARK: - Takes
+
+    /// The dark well a take's thumbnail sits in, at its own frame.
+    static let thumbnailWell = Color(hex: 0x0E0E10)
+    /// Placeholder behind a take until its poster frame loads.
+    static let thumbnailTop = Color(hex: 0x7A6250)
+    static let thumbnailBottom = Color(hex: 0x2A211C)
+    /// Duration label over a thumbnail.
+    static let durationBadge = Color.black.opacity(0.6)
+    /// Tiles of the "Your takes" strip over the video.
+    static let stripTile = Color(hex: 0x2C2C2E, opacity: 0.85)
+
     // MARK: - Camera
 
     /// Letterbox bars and scrims over the camera feed.

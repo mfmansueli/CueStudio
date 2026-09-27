@@ -46,11 +46,13 @@ struct PrompterView: View {
                     takeID: take.id,
                     services: services,
                     onRetake: { Task { await viewModel.retake() } },
-                    onBack: {
-                        if viewModel.openedOnReview {
-                            presentation.closePrompter()
+                    onBack: leaveReview,
+                    onSelect: { viewModel.reviewingTake = $0 },
+                    onDeleted: { next in
+                        if let next {
+                            viewModel.reviewingTake = next
                         } else {
-                            Task { await viewModel.retake() }
+                            leaveReview()
                         }
                     }
                 )
@@ -128,6 +130,16 @@ struct PrompterView: View {
             )
         case .generateScript(let tab):
             GenerateScriptSheet(services: services, initialTab: tab) { viewModel.attach($0) }
+        }
+    }
+
+    /// Back from a take: to the Takes tab when the review was opened from there, otherwise to the
+    /// camera for another take.
+    private func leaveReview() {
+        if viewModel.openedOnReview {
+            presentation.closePrompter()
+        } else {
+            Task { await viewModel.retake() }
         }
     }
 

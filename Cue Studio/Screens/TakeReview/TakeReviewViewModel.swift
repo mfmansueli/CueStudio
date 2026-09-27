@@ -49,6 +49,17 @@ final class TakeReviewViewModel {
 
     var take: Take? { takes.take(id: takeID) }
 
+    /// This take and the others of the same script, by number ("Your takes · 3").
+    var siblings: [Take] { take.map(takes.siblings(of:)) ?? [] }
+
+    /// "Today · 9:25 AM · TikTok · 9:16 · 1080p"
+    var metaLine: String {
+        guard let take else { return "" }
+        let when = take.recordedAt.formatted(.relative(presentation: .named))
+        let platform = take.platform?.label ?? String(localized: "Freestyle")
+        return "\(when) · \(platform) · \(take.aspect.label) · \(take.resolution.label)"
+    }
+
     var videoURL: URL? { take.map(takes.videoURL(for:)) }
 
     /// Nil when unlimited.
@@ -70,8 +81,18 @@ final class TakeReviewViewModel {
         guard let take else { return }
         takes.setBest(takeID, isBest: !take.isBest)
         if !take.isBest {
-            toast.show(String(localized: "Marked as best take"))
+            toast.show(String(localized: "\(take.label) marked as best"))
         }
+    }
+
+    /// Deletes this take and returns the one to show next (the newest sibling left), or nil to
+    /// leave the review.
+    func delete() -> Take? {
+        guard let take else { return nil }
+        let rest = siblings.filter { $0.id != take.id }
+        takes.delete(take.id)
+        toast.show(String(localized: "\(take.label) deleted"))
+        return rest.last
     }
 
     func save() async {
@@ -115,6 +136,7 @@ final class TakeReviewViewModel {
             if clean {
                 quota.recordCleanExport(tier: currentTier)
             }
+            takes.markExported(take.id)
             switch action {
             case .save:
                 try await photos.saveVideo(at: url)

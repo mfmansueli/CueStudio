@@ -4,16 +4,10 @@
     "" : {
 
     },
-    "%@" : {
-
-    },
-    "%@ %@ video: %@" : {
-
-    },
-    "%lld pt" : {
-
-    },
     "·" : {
+
+    },
+    "· %@ · %@" : {
 
     },
     "· private · no cost" : {
@@ -26,6 +20,9 @@
 
     },
     "@" : {
+
+    },
+    "%@" : {
 
     },
     "%@ — announcement" : {
@@ -76,10 +73,19 @@
     "%@ / year" : {
 
     },
+    "%@ %@ video: %@" : {
+
+    },
     "%@ BUTTONS" : {
 
     },
     "%@ Cue will build a structured draft from your bullets instead." : {
+
+    },
+    "%@ deleted" : {
+
+    },
+    "%@ marked as best" : {
 
     },
     "%@ once" : {
@@ -156,6 +162,9 @@
         }
       }
     },
+    "%lld pt" : {
+
+    },
     "%lld scripts · %lld takes" : {
       "localizations" : {
         "en" : {
@@ -172,6 +181,9 @@
     "%lld takes" : {
 
     },
+    "%lld takes · %lld videos" : {
+
+    },
     "%lld takes · v%lld" : {
       "localizations" : {
         "en" : {
@@ -181,6 +193,9 @@
           }
         }
       }
+    },
+    "%lld takes deleted" : {
+
     },
     "%lld words · %@" : {
       "localizations" : {
@@ -214,6 +229,9 @@
     "~%@ read" : {
 
     },
+    "★ Best" : {
+
+    },
     "✓ Monetizable" : {
 
     },
@@ -224,9 +242,6 @@
 
     },
     "1 min" : {
-
-    },
-    "1 take" : {
 
     },
     "2 min" : {
@@ -241,10 +256,10 @@
     "3 new hooks" : {
 
     },
-    "12 presets made for phone footage" : {
+    "3 things I stopped buying this year" : {
 
     },
-    "3 things I stopped buying this year" : {
+    "12 presets made for phone footage" : {
 
     },
     "30s" : {
@@ -323,6 +338,9 @@
 
     },
     "All scripts" : {
+
+    },
+    "All takes" : {
 
     },
     "Allow Camera and Microphone for Cue in Settings to record takes. Studio mode works without them." : {
@@ -406,6 +424,9 @@
     "Best thing" : {
 
     },
+    "Best: %@" : {
+
+    },
     "Big news. Stay till the end." : {
 
     },
@@ -422,6 +443,9 @@
 
     },
     "Body" : {
+
+    },
+    "Bold" : {
 
     },
     "Bottom" : {
@@ -499,6 +523,9 @@
     "Checked" : {
 
     },
+    "Classic" : {
+
+    },
     "Clean exports" : {
 
     },
@@ -524,6 +551,9 @@
 
     },
     "Conversational" : {
+
+    },
+    "Cool" : {
 
     },
     "Copy your script first, then paste it here" : {
@@ -601,7 +631,13 @@
     "Delete" : {
 
     },
+    "Delete %lld takes" : {
+
+    },
     "Delete take" : {
+
+    },
+    "Delete takes" : {
 
     },
     "Delete this take?" : {
@@ -670,7 +706,16 @@
     "Duplicated" : {
 
     },
+    "Earlier" : {
+
+    },
     "Edit" : {
+
+    },
+    "Edited" : {
+
+    },
+    "EDITED" : {
 
     },
     "Editing creates v%lld · your %lld takes stay linked to v%lld" : {
@@ -735,6 +780,9 @@
     "Files or clipboard" : {
 
     },
+    "Film" : {
+
+    },
     "Finance" : {
 
     },
@@ -769,9 +817,6 @@
 
     },
     "Folder name" : {
-
-    },
-    "Following your reading" : {
 
     },
     "Font, spacing, margins, alignment, color" : {
@@ -832,9 +877,6 @@
     "Freestyle recording" : {
 
     },
-    "Freestyle recordings" : {
-
-    },
     "French" : {
 
     },
@@ -880,9 +922,6 @@
     "Grid" : {
 
     },
-    "Grouped by script" : {
-
-    },
     "Gym mistakes I made for years" : {
 
     },
@@ -908,6 +947,9 @@
 
     },
     "High" : {
+
+    },
+    "Highlight" : {
 
     },
     "Honest verdict, no sponsor." : {
@@ -1142,9 +1184,6 @@
     "Manage" : {
 
     },
-    "Marked as best take" : {
-
-    },
     "Marked as fact-checked" : {
 
     },
@@ -1160,6 +1199,9 @@
     "mid-rolls" : {
 
     },
+    "Middle" : {
+
+    },
     "Mirror text" : {
 
     },
@@ -1173,6 +1215,9 @@
 
     },
     "Money mistakes I made in my 20s" : {
+
+    },
+    "Mono" : {
 
     },
     "Monthly" : {
@@ -1277,10 +1322,16 @@
     "No takes" : {
 
     },
+    "No takes here yet." : {
+
+    },
     "No takes yet" : {
 
     },
     "Nobody talks about this, so I will." : {
+
+    },
+    "Not shared" : {
 
     },
     "Oat & Co. barista oat milk" : {
@@ -1334,13 +1385,13 @@
     "Opinion-driven" : {
 
     },
+    "Original" : {
+
+    },
     "Own it" : {
 
     },
     "Paste" : {
-
-    },
-    "Paste from clipboard" : {
 
     },
     "Pasted · %lld words" : {
@@ -1409,10 +1460,10 @@
     "Privacy policy" : {
 
     },
-    "PRO" : {
+    "Pro" : {
 
     },
-    "Pro" : {
+    "PRO" : {
 
     },
     "Problem" : {
@@ -1749,6 +1800,9 @@
     "SPEED" : {
 
     },
+    "Speed follows your voice" : {
+
+    },
     "Sponsored ad" : {
 
     },
@@ -1863,6 +1917,9 @@
     "Takes" : {
 
     },
+    "Tap ☆ to pick your best" : {
+
+    },
     "Tap play, then start reading" : {
 
     },
@@ -1941,6 +1998,9 @@
     "The video is removed from Cue. Copies you saved to Photos stay there." : {
 
     },
+    "The videos are removed from Cue. Copies you saved to Photos stay there." : {
+
+    },
     "Themes" : {
 
     },
@@ -2010,6 +2070,12 @@
     "TITLE · %@ UI" : {
 
     },
+    "Today" : {
+
+    },
+    "Today · %@" : {
+
+    },
     "Tone" : {
 
     },
@@ -2076,10 +2142,16 @@
     "Viewers remember your first sentence, not your camera" : {
 
     },
+    "Vivid" : {
+
+    },
     "Vlog" : {
 
     },
     "Voice Following" : {
+
+    },
+    "Warm" : {
 
     },
     "We signed a three-month deal" : {
@@ -2196,6 +2268,12 @@
     "Yellow" : {
 
     },
+    "Yesterday" : {
+
+    },
+    "Yesterday · %@" : {
+
+    },
     "You asked for this — here it is." : {
 
     },
@@ -2226,10 +2304,13 @@
     "Your purchase is waiting for approval." : {
 
     },
-    "Your recordings show up here, grouped by script." : {
+    "Your recordings show up here, one row per video." : {
 
     },
     "Your take" : {
+
+    },
+    "Your takes · %lld" : {
 
     },
     "Your takes stay yours — export any of them clean" : {
