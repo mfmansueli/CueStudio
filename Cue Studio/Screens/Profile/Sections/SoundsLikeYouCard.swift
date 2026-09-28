@@ -6,9 +6,10 @@
 import SwiftUI
 
 /// A line in the creator's voice that updates as they change it, and the switch that sends the
-/// voice to the AI.
+/// voice to the AI. It reads the voice the AI gets on the current plan.
 struct SoundsLikeYouCard: View {
     @Environment(CreatorProfileService.self) private var profile
+    @Environment(StoreManager.self) private var store
 
     var body: some View {
         @Bindable var profile = profile
@@ -24,12 +25,12 @@ struct SoundsLikeYouCard: View {
                     .font(.caption)
                     .foregroundStyle(Palette.ink2)
             }
-            Text("“\(profile.profile.voice.sampleLine)”")
+            Text("“\(sampleLine)”")
                 .font(.title3.weight(.medium))
                 .foregroundStyle(Palette.ink)
                 .fixedSize(horizontal: false, vertical: true)
                 .contentTransition(.opacity)
-                .animation(.smooth(duration: 0.25), value: profile.profile.voice.sampleLine)
+                .animation(.smooth(duration: 0.25), value: sampleLine)
                 .accessibilityIdentifier("profile.voiceSample")
             Toggle("Use my voice in AI scripts", isOn: $profile.profile.usesVoiceInAI)
                 .font(.subheadline)
@@ -38,5 +39,9 @@ struct SoundsLikeYouCard: View {
                 .accessibilityIdentifier("profile.useVoiceToggle")
         }
         .padding(.vertical, 6)
+    }
+
+    private var sampleLine: String {
+        profile.profile.voice(unlocking: store.tier).sampleLine
     }
 }

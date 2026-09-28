@@ -95,7 +95,7 @@ final class GenerateScriptViewModel {
 
     /// Formats are Pro only when they say so (Sponsored ad).
     func isLocked(_ type: ScriptType) -> Bool {
-        type.isPro && !tier().isPro
+        type.isPro && !ProFeature.sponsoredAd.isUnlocked(for: tier())
     }
 
     /// Shown in a brief when no model can run: the draft is built from the bullets.
@@ -126,7 +126,7 @@ final class GenerateScriptViewModel {
             source: .prompt(text),
             platform: platform,
             tone: nil,
-            voice: writesInMyVoice ? profile.profile.voice : nil,
+            voice: writesInMyVoice ? profile.profile.voice(unlocking: tier()) : nil,
             targetRange: effectiveLength.targetRange(ideal: preset.idealRange)
         )
         guard let generated = await run(request) else { return nil }
@@ -194,7 +194,7 @@ final class GenerateScriptViewModel {
             source: .format(type, brief: brief),
             platform: platform,
             tone: tone,
-            voice: writesInMyVoice && !type.structure.isSerious ? profile.profile.voice : nil,
+            voice: writesInMyVoice && !type.structure.isSerious ? profile.profile.voice(unlocking: tier()) : nil,
             targetRange: preset.idealRange
         )
         guard let generated = await run(request) else { return nil }

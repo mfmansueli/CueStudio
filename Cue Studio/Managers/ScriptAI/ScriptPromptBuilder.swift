@@ -67,7 +67,9 @@ nonisolated enum ScriptPromptBuilder {
         if !voice.sounds.isEmpty {
             lines.append("They sound \(list(voice.sounds.map { $0.label.lowercased() })).")
         }
-        lines.append(vocabularyRule(voice.vocabulary))
+        if let vocabulary = voice.vocabulary {
+            lines.append(vocabularyRule(vocabulary))
+        }
         if !voice.styles.isEmpty {
             lines.append("Their style: \(voice.styles.map { $0.label.lowercased() }.joined(separator: ", ")).")
         }

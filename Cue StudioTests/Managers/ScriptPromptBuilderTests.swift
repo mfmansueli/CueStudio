@@ -100,4 +100,14 @@ struct ScriptPromptBuilderTests {
         let context = RewriteContext(structure: .generic, platform: .tiktok, idealRange: 60...90)
         #expect(ScriptPromptBuilder.instruction(for: .fitToTime, context: context).contains("between 150 and 225 spoken words"))
     }
+
+    @Test func withoutVocabularyThePromptSaysNothingAboutIt() {
+        var free = voice
+        free.vocabulary = nil
+        free.styles = []
+        let lines = ScriptPromptBuilder.voiceLines(free)
+        #expect(!lines.contains { $0.contains("slang") || $0.contains("words") && $0.hasPrefix("Use") })
+        #expect(!lines.contains { $0.hasPrefix("Their style") })
+        #expect(lines.contains { $0.contains("Hey fam") })
+    }
 }

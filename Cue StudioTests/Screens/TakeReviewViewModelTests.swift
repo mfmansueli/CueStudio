@@ -22,7 +22,17 @@ struct TakeReviewViewModelTests {
         let defaults: TestDefaults
     }
 
+    /// A plan that can change mid-test, like buying Pro from the paywall.
+    private final class Plan {
+        var tier: MembershipTier
+        init(_ tier: MembershipTier) { self.tier = tier }
+    }
+
     private func makeScenario(tier: MembershipTier = .free, usedExports: Int = 0, take: Take? = nil) -> Scenario {
+        makeScenario(plan: Plan(tier), usedExports: usedExports, take: take)
+    }
+
+    private func makeScenario(plan: Plan, usedExports: Int = 0, take: Take? = nil) -> Scenario {
         let defaults = TestDefaults()
         let script = TestData.script(text: "Okay, real talk.")
         let take = take ?? TestData.take(scriptID: script.id)
@@ -38,8 +48,10 @@ struct TakeReviewViewModelTests {
         let editor = FakeTakeEditor()
         let toast = ToastService()
         let viewModel = TakeReviewViewModel(
-            takeID: take.id, takes: takes, quota: quota, tier: { tier },
-            exporter: exporter, photos: photos, apps: apps, editing: editor, library: library, toast: toast
+            takeID: take.id, takes: takes, quota: quota, tier: { plan.tier },
+            exporter: exporter, photos: photos, apps: apps, editing: editor, library: library,
+            rules: TestData.rulesService(), profile: CreatorProfileService(defaults: defaults.defaults),
+            preferences: PreferencesService(defaults: defaults.defaults), toast: toast
         )
         return Scenario(
             viewModel: viewModel, exporter: exporter, photos: photos, apps: apps, editor: editor,
@@ -83,6 +95,29 @@ struct TakeReviewViewModelTests {
         #expect(scenario.exporter.exports.first?.watermark == false)
         #expect(scenario.toast.message == "Saved to Photos")
         #expect(scenario.viewModel.exportNotice == nil)
+    }
+
+    @Test func buyingProFinishesTheExportClean() async {
+        let plan = Plan(.free)
+        let scenario = makeScenario(plan: plan, usedExports: 5)
+        defer { scenario.defaults.tearDown() }
+        await scenario.viewModel.save()
+        #expect(scenario.viewModel.paywall == .export)
+        plan.tier = .subscriber
+        await scenario.viewModel.continueAfterPurchase()
+        #expect(scenario.exporter.exports == [ExportOptions(aspect: .portrait, watermark: false)])
+        #expect(scenario.photos.savedURLs.count == 1)
+    }
+
+    @Test func aTakeSavedWithTheWatermarkExportsCleanOnPro() async {
+        let plan = Plan(.free)
+        let scenario = makeScenario(plan: plan, usedExports: 5)
+        defer { scenario.defaults.tearDown() }
+        await scenario.viewModel.save()
+        await scenario.viewModel.exportWithWatermark()
+        plan.tier = .lifetime
+        await scenario.viewModel.save()
+        #expect(scenario.exporter.exports.map(\.watermark) == [true, false])
     }
 
     @Test func moreHandsTheFileToTheShareSheet() async {
@@ -162,7 +197,7 @@ struct TakeReviewViewModelTests {
         defer { free.defaults.tearDown() }
         free.viewModel.setQuality(.uhd4K)
         #expect(free.viewModel.quality == .hd1080)
-        #expect(free.viewModel.paywall == .export)
+        #expect(free.viewModel.paywall == .fourK)
 
         let pro = makeScenario(tier: .subscriber)
         defer { pro.defaults.tearDown() }
@@ -209,6 +244,57 @@ struct TakeReviewViewModelTests {
         #expect(scenario.viewModel.take?.isExported == true)
     }
 
+    // MARK: - Best take
+
+    /// Three takes of a script that reads in about 30 s: one stopped early, one on time, one long.
+    private func makeBestTakeScenario(tier: MembershipTier) -> (viewModel: TakeReviewViewModel, takes: [Take], toast: ToastService, defaults: TestDefaults) {
+        let defaults = TestDefaults()
+        let script = TestData.script(text: Array(repeating: "word", count: 75).joined(separator: " "))
+        let durations: [TimeInterval] = [12, 31, 45]
+        let all = durations.enumerated().map { index, duration in
+            var take = TestData.take(scriptID: script.id, number: index + 1, recordedAt: TestData.now.addingTimeInterval(Double(index) * 60))
+            take.duration = duration
+            return take
+        }
+        let takes = TakeLibraryService(repository: FakeTakeRepository(takes: all))
+        takes.load()
+        let library = ScriptLibraryService(repository: FakeScriptRepository(scripts: [script]))
+        library.load()
+        let toast = ToastService()
+        let viewModel = TakeReviewViewModel(
+            takeID: all[0].id, takes: takes, quota: UsageQuotaService(defaults: defaults.defaults), tier: { tier },
+            exporter: FakeVideoExporter(), photos: FakePhotoSaver(), apps: FakeAppOpener(), editing: FakeTakeEditor(),
+            library: library, rules: TestData.rulesService(), profile: CreatorProfileService(defaults: defaults.defaults),
+            preferences: PreferencesService(defaults: defaults.defaults), toast: toast
+        )
+        return (viewModel, all, toast, defaults)
+    }
+
+    @Test func suggestsTheCompleteTakeClosestToTheScript() {
+        let scenario = makeBestTakeScenario(tier: .subscriber)
+        defer { scenario.defaults.tearDown() }
+        #expect(scenario.viewModel.offersBestSuggestion)
+        #expect(!scenario.viewModel.locksBestSuggestion)
+        #expect(scenario.viewModel.suggestBest()?.id == scenario.takes[1].id)
+        #expect(scenario.toast.message == "Take 2 looks best — tap ☆ to keep it")
+        // A suggestion, not a pick: the creator keeps it with the star.
+        #expect(scenario.viewModel.siblings.allSatisfy { !$0.isBest })
+    }
+
+    @Test func bestTakeSuggestionIsPro() {
+        let scenario = makeBestTakeScenario(tier: .free)
+        defer { scenario.defaults.tearDown() }
+        #expect(scenario.viewModel.locksBestSuggestion)
+        #expect(scenario.viewModel.suggestBest() == nil)
+        #expect(scenario.viewModel.paywall == .bestTake)
+    }
+
+    @Test func aSingleTakeHasNothingToCompare() {
+        let scenario = makeScenario(tier: .subscriber)
+        defer { scenario.defaults.tearDown() }
+        #expect(!scenario.viewModel.offersBestSuggestion)
+    }
+
     @Test func deletingShowsTheNewestSiblingNext() {
         let defaults = TestDefaults()
         defer { defaults.tearDown() }
@@ -221,7 +307,9 @@ struct TakeReviewViewModelTests {
         let viewModel = TakeReviewViewModel(
             takeID: second.id, takes: takes, quota: UsageQuotaService(defaults: defaults.defaults), tier: { .free },
             exporter: FakeVideoExporter(), photos: FakePhotoSaver(), apps: FakeAppOpener(), editing: FakeTakeEditor(),
-            library: ScriptLibraryService(repository: FakeScriptRepository()), toast: ToastService()
+            library: ScriptLibraryService(repository: FakeScriptRepository()), rules: TestData.rulesService(),
+            profile: CreatorProfileService(defaults: defaults.defaults), preferences: PreferencesService(defaults: defaults.defaults),
+            toast: ToastService()
         )
         #expect(viewModel.siblings.map(\.number) == [1, 2, 3])
         #expect(viewModel.delete()?.id == third.id)

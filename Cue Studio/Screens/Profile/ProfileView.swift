@@ -56,10 +56,13 @@ struct ProfileView: View {
             }
             .listRowBackground(glow)
             Section {
-                CreatorVoiceSection(onAddPhrase: {
-                    newPhrase = ""
-                    isAddingPhrase = true
-                })
+                CreatorVoiceSection(
+                    onAddPhrase: {
+                        newPhrase = ""
+                        isAddingPhrase = true
+                    },
+                    onLocked: { paywall = .creatorVoice }
+                )
             }
             Section {
                 PlanSection(

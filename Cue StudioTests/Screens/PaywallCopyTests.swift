@@ -32,4 +32,21 @@ struct PaywallCopyTests {
         #expect(PaywallCopy.savingsBadge(percent: 0) == nil)
         #expect(PaywallCopy.savingsBadge(percent: nil) == nil)
     }
+
+    @Test func featuresPromiseOnlyWhatExists() {
+        let features = PaywallCopy.features.joined(separator: " ")
+        #expect(features.contains("4K"))
+        #expect(features.contains("Hook variations, multi-platform versions, best-take picks"))
+        #expect(!features.contains("Apple Watch"))
+        #expect(!features.contains("iPad"))
+    }
+
+    @MainActor @Test func everyProFeatureOpensItsOwnPaywall() {
+        let contexts = ProFeature.allCases.map { PaywallContext($0) }
+        #expect(Set(contexts).count == ProFeature.allCases.count)
+        #expect(PaywallContext(.fullCreatorVoice) == .creatorVoice)
+        #expect(PaywallCopy.title(for: .export) == "Post without the watermark")
+        #expect(PaywallCopy.title(for: .sponsoredAd) == "Brand deals, done right")
+        #expect(PaywallCopy.title(for: .profile) == "Create more. Sound like you.")
+    }
 }

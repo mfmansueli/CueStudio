@@ -5,10 +5,15 @@
 
 import SwiftUI
 
-/// "Your takes · 3": every take of the script, to switch between them and pick the best.
+/// "Your takes · 3": every take of the script, to switch between them and pick the best, then
+/// "Suggest best" (Pro).
 struct YourTakesStrip: View {
     let takes: [Take]
     let currentID: UUID
+    /// Nil hides "Suggest best".
+    var onSuggest: (() -> Void)?
+    /// Free plan: "Suggest best" carries the PRO badge.
+    var suggestionIsLocked = false
     let onSelect: (Take) -> Void
 
     var body: some View {
@@ -28,6 +33,7 @@ struct YourTakesStrip: View {
                     ForEach(takes) { take in
                         tile(take)
                     }
+                    if let onSuggest { suggestTile(action: onSuggest) }
                 }
                 .padding(.horizontal, Metrics.gutter)
                 .padding(.vertical, 2)
@@ -35,6 +41,25 @@ struct YourTakesStrip: View {
             .scrollIndicators(.hidden)
             .padding(.horizontal, -Metrics.gutter)
         }
+    }
+
+    private func suggestTile(action: @escaping () -> Void) -> some View {
+        let shape = RoundedRectangle(cornerRadius: 16, style: .continuous)
+        return Button(action: action) {
+            HStack(spacing: 6) {
+                Image(systemName: "sparkles").foregroundStyle(Palette.acc)
+                Text("Suggest best").font(.subheadline.weight(.semibold))
+                if suggestionIsLocked { ProBadge() }
+            }
+            .foregroundStyle(Palette.ink)
+            .padding(.horizontal, 14)
+            .frame(height: 60)
+            .background(Palette.stripTile, in: shape)
+            .overlay(shape.strokeBorder(Palette.accBorder, style: StrokeStyle(lineWidth: 1, dash: [4, 3])))
+            .contentShape(shape)
+        }
+        .buttonStyle(.plain)
+        .accessibilityIdentifier("review.suggestBestButton")
     }
 
     private func tile(_ take: Take) -> some View {

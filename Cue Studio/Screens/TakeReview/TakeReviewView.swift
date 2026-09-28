@@ -41,6 +41,9 @@ struct TakeReviewView: View {
             apps: services.apps,
             editing: services.editing,
             library: services.library,
+            rules: services.rules,
+            profile: services.profile,
+            preferences: services.preferences,
             toast: services.toast
         ))
         self.services = services
@@ -198,7 +201,12 @@ struct TakeReviewView: View {
                     }
                 }
                 if viewModel.siblings.count > 1 {
-                    YourTakesStrip(takes: viewModel.siblings, currentID: take.id) { sibling in
+                    YourTakesStrip(
+                        takes: viewModel.siblings,
+                        currentID: take.id,
+                        onSuggest: viewModel.offersBestSuggestion ? { suggestBest(from: take) } : nil,
+                        suggestionIsLocked: viewModel.locksBestSuggestion
+                    ) { sibling in
                         guard sibling.id != take.id else { return }
                         player.pause()
                         onSelect(sibling)
@@ -221,6 +229,13 @@ struct TakeReviewView: View {
             .padding(.horizontal, Metrics.gutter)
             .padding(.bottom, 8)
         }
+    }
+
+    /// Switches to the suggested take (or opens the paywall on the free plan).
+    private func suggestBest(from take: Take) {
+        guard let best = viewModel.suggestBest(), best.id != take.id else { return }
+        player.pause()
+        onSelect(best)
     }
 
     // MARK: - Playback

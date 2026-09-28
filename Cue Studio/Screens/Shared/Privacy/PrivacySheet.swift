@@ -5,7 +5,8 @@
 
 import SwiftUI
 
-/// What Cue does with the creator's data: everything stays on the device.
+/// What Cue does with the creator's data: it stays on the device, and the only AI is Apple
+/// Intelligence. Opened from the Profile and from the paywall's footer.
 struct PrivacySheet: View {
     @Environment(\.dismiss) private var dismiss
 
@@ -14,12 +15,12 @@ struct PrivacySheet: View {
             List {
                 item(
                     title: "Scripts and takes stay on this iPhone",
-                    detail: "Cue has no account and no server. Your scripts, takes and Creator DNA are stored on this device and in your device backups.",
+                    detail: "Cue has no server. Your scripts, takes and Creator Voice are stored on this device and in your device backups. Sign in with Apple is optional and only keeps your Apple ID on this iPhone.",
                     systemImage: "iphone"
                 )
                 item(
-                    title: "AI runs on the device",
-                    detail: "Drafts and rewrites use Apple Intelligence's on-device model. Your briefs and scripts are never sent anywhere.",
+                    title: "Apple Intelligence, nothing else",
+                    detail: "Rewrites, hooks and theme ideas run on the device. A free-form Prompt is written with Apple's Private Cloud Compute, which uses your request only to answer it and doesn't keep it. No other AI service is involved.",
                     systemImage: "cpu"
                 )
                 item(

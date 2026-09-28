@@ -10,7 +10,8 @@ import Foundation
 nonisolated struct CreatorVoice: Hashable, Sendable {
     var sounds: [VoiceSound]
     var phrases: [String]
-    var vocabulary: Vocabulary
+    /// Nil when the AI doesn't get it (vocabulary and style are part of Pro).
+    var vocabulary: Vocabulary?
     var styles: [VoiceStyle]
     var niches: [Niche]
 
@@ -40,10 +41,10 @@ nonisolated struct CreatorVoice: Hashable, Sendable {
             String(localized: "Your first line matters more than your camera.")
         }
         let ending: String = switch vocabulary {
-        case .genZ: " " + String(localized: "No cap.")
-        case .technical: " " + String(localized: "The hook sets retention for the whole video.")
-        case .professional: " " + String(localized: "That is what drives retention.")
-        case .simple: ""
+        case .genZ?: " " + String(localized: "No cap.")
+        case .technical?: " " + String(localized: "The hook sets retention for the whole video.")
+        case .professional?: " " + String(localized: "That is what drives retention.")
+        case .simple?, nil: ""
         }
         let greeting = phrases.first.map { "\($0)! " } ?? ""
         return greeting + opening + " " + body + ending

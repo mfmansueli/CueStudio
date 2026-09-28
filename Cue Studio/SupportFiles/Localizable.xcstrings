@@ -4,6 +4,9 @@
     "" : {
 
     },
+    "%@ looks best — tap ☆ to keep it" : {
+
+    },
     "%lld of %lld clean left" : {
 
     },
@@ -274,6 +277,9 @@
     "4K" : {
 
     },
+    "4K exports are part of Pro, with unlimited clean exports." : {
+
+    },
     "A 10-minute dinner I make every week" : {
 
     },
@@ -334,7 +340,7 @@
     "AI Coach" : {
 
     },
-    "AI runs on the device" : {
+    "AI that sounds like you" : {
 
     },
     "AI tools aren't available right now." : {
@@ -374,6 +380,12 @@
 
     },
     "Apple Intelligence isn't available right now." : {
+
+    },
+    "Apple Intelligence writes new hooks for this script with Pro. The quick hook ideas stay free." : {
+
+    },
+    "Apple Intelligence, nothing else" : {
 
     },
     "Apps that replaced my notebook" : {
@@ -643,7 +655,7 @@
     "Cue couldn't switch to this camera." : {
 
     },
-    "Cue has no account and no server. Your scripts, takes and Creator DNA are stored on this device and in your device backups." : {
+    "Cue has no server. Your scripts, takes and Creator Voice are stored on this device and in your device backups. Sign in with Apple is optional and only keeps your Apple ID on this iPhone." : {
 
     },
     "Cue Pro" : {
@@ -728,9 +740,6 @@
 
     },
     "Draft ready — structured as %lld blocks" : {
-
-    },
-    "Drafts and rewrites use Apple Intelligence's on-device model. Your briefs and scripts are never sent anywhere." : {
 
     },
     "Drag the video to reposition" : {
@@ -1021,6 +1030,12 @@
     "Hook runs ~%@ — aim for 3s. Tap Hook for options." : {
 
     },
+    "Hook variations, multi-platform versions, best-take picks" : {
+
+    },
+    "Hooks that stop the scroll" : {
+
+    },
     "Hot take / reply" : {
 
     },
@@ -1190,6 +1205,9 @@
     "Less defensive" : {
 
     },
+    "Let Cue pick your best take" : {
+
+    },
     "Let me explain this in 30 seconds." : {
 
     },
@@ -1242,6 +1260,9 @@
 
     },
     "Main benefit" : {
+
+    },
+    "Make a version for…" : {
 
     },
     "Manage" : {
@@ -1445,6 +1466,9 @@
     "On-device · unlimited" : {
 
     },
+    "One script, every platform" : {
+
+    },
     "One-time purchase." : {
 
     },
@@ -1529,6 +1553,9 @@
     "Position" : {
 
     },
+    "Post in 4K" : {
+
+    },
     "Post without the watermark" : {
 
     },
@@ -1557,6 +1584,12 @@
 
     },
     "PRO" : {
+
+    },
+    "Pro compares your takes with the script's timing and suggests the one to post." : {
+
+    },
+    "Pro rewrites a script for another platform — its length and pace — and saves it as a copy." : {
 
     },
     "Problem" : {
@@ -1710,6 +1743,9 @@
 
     },
     "Review" : {
+
+    },
+    "Rewrites, hooks and theme ideas run on the device. A free-form Prompt is written with Apple's Private Cloud Compute, which uses your request only to answer it and doesn't keep it. No other AI service is involved." : {
 
     },
     "Rewrote in your voice · %@" : {
@@ -2030,6 +2066,9 @@
     "Subscribe for %@/year" : {
 
     },
+    "Suggest best" : {
+
+    },
     "Supports .txt, .md, .rtf, .html, .pdf and .fountain" : {
 
     },
@@ -2315,10 +2354,16 @@
     "Welcome to Cue Pro" : {
 
     },
+    "Welcome to Pro — 4K unlocked" : {
+
+    },
     "Welcome to Pro — exporting without watermark" : {
 
     },
     "Welcome to Pro — sponsored ads unlocked" : {
+
+    },
+    "Welcome to Pro — your full voice is on" : {
 
     },
     "Wellness" : {
@@ -2399,6 +2444,9 @@
     "Write a script" : {
 
     },
+    "Write hooks for this script with AI" : {
+
+    },
     "Write in my voice" : {
 
     },
@@ -2409,6 +2457,9 @@
 
     },
     "Writing in Google Docs, Notion or Pages? Export the script as .txt, .rtf or .pdf to Files — or copy the text and use Clipboard. A printed brief? Scan it or pick a photo." : {
+
+    },
+    "Writing the %@ version…" : {
 
     },
     "Writing with Apple Intelligence…" : {
@@ -2471,7 +2522,7 @@
     "Your takes · %lld" : {
 
     },
-    "Your takes stay yours — export any of them clean" : {
+    "Your vocabulary, your style and “In my voice” rewrites are part of Pro. How you sound, your phrases and your niche stay free." : {
 
     },
     "YouTube" : {

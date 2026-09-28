@@ -36,6 +36,9 @@ final class TakeReviewViewModel {
     private let apps: ExternalAppOpening
     private let editing: TakeEditing
     private let library: ScriptLibraryService
+    private let rules: PlatformRulesService
+    private let profile: CreatorProfileService
+    private let preferences: PreferencesService
     private let toast: ToastService
 
     init(
@@ -48,6 +51,9 @@ final class TakeReviewViewModel {
         apps: ExternalAppOpening,
         editing: TakeEditing,
         library: ScriptLibraryService,
+        rules: PlatformRulesService,
+        profile: CreatorProfileService,
+        preferences: PreferencesService,
         toast: ToastService
     ) {
         self.takeID = takeID
@@ -59,6 +65,9 @@ final class TakeReviewViewModel {
         self.apps = apps
         self.editing = editing
         self.library = library
+        self.rules = rules
+        self.profile = profile
+        self.preferences = preferences
         self.toast = toast
     }
 
@@ -111,14 +120,38 @@ final class TakeReviewViewModel {
 
     /// 4K is part of Pro; on the free plan it opens the paywall.
     func setQuality(_ quality: ExportQuality) {
-        if quality.isPro && !isPro {
-            paywall = .export
+        if quality.isPro && !ProFeature.cleanExports.isUnlocked(for: tier()) {
+            paywall = .fourK
             return
         }
         self.quality = quality
     }
 
     // MARK: - Actions
+
+    // MARK: - Best take
+
+    /// "Suggest best" sits after a script's takes once there are two or more.
+    var offersBestSuggestion: Bool { take?.isFreestyle == false && siblings.count > 1 }
+
+    var locksBestSuggestion: Bool { !ProFeature.bestTakePicks.isUnlocked(for: tier()) }
+
+    /// Pro: the complete take closest to the script's timing, preferring the platform's ideal
+    /// range. The review switches to it; the creator still keeps it with ☆.
+    func suggestBest() -> Take? {
+        guard !locksBestSuggestion else {
+            paywall = .bestTake
+            return nil
+        }
+        guard let take, let script = library.script(id: take.scriptID) else { return nil }
+        let preset = rules.preset(for: take.platform ?? script.platform, monetizationGoals: profile.profile.monetizationGoals)
+        let expected = ReadTime.seconds(for: script.text, speed: preferences.prompter.speed)
+        guard let best = BestTakeSuggester.suggestion(among: siblings, expectedDuration: expected, idealRange: preset.idealRange) else {
+            return nil
+        }
+        toast.show(String(localized: "\(best.label) looks best — tap ☆ to keep it"))
+        return best
+    }
 
     func toggleBest() {
         guard let take else { return }

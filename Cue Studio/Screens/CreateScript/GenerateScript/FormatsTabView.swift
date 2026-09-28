@@ -55,15 +55,7 @@ struct FormatsTabView: View {
         }
         .overlay(alignment: .topTrailing) {
             if viewModel.isLocked(type) {
-                Text("PRO")
-                    .font(.system(size: 9.5, weight: .heavy))
-                    .kerning(0.4)
-                    .foregroundStyle(Palette.accInk)
-                    .padding(.horizontal, 6)
-                    .frame(height: 18)
-                    .background(Palette.acc, in: Capsule())
-                    .padding(10)
-                    .accessibilityLabel(Text("Pro"))
+                ProBadge().padding(10)
             }
         }
         .contentShape(shape)

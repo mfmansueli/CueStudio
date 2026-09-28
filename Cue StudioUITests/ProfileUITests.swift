@@ -24,6 +24,17 @@ final class ProfileUITests: XCTestCase {
         XCTAssertTrue(upgrade.waitForExistence(timeout: 5))
     }
 
+    func testPaywallFooterOffersRestoreTermsAndPrivacy() {
+        let app = openProfile()
+        let upgrade = app.buttons["profile.upgradeButton"]
+        scroll(app, to: upgrade)
+        upgrade.tap()
+        XCTAssertTrue(app.buttons["Restore"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.links["Terms"].exists || app.buttons["Terms"].exists)
+        app.buttons["paywall.privacyButton"].tap()
+        XCTAssertTrue(app.navigationBars["Privacy & AI data"].waitForExistence(timeout: 5))
+    }
+
     func testAddingACatchphrase() {
         let app = openProfile()
         let add = app.buttons["profile.addPhraseButton"]

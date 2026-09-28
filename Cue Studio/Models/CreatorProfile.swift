@@ -45,6 +45,16 @@ nonisolated struct CreatorProfile: Codable, Hashable, Sendable {
         CreatorVoice(sounds: sounds, phrases: phrases, vocabulary: vocabulary, styles: styles, niches: niches)
     }
 
+    /// The voice the AI writes with on this plan: sounds, phrases and niche are free; vocabulary and
+    /// style are part of Pro.
+    func voice(unlocking tier: MembershipTier) -> CreatorVoice {
+        var voice = voice
+        guard !ProFeature.fullCreatorVoice.isUnlocked(for: tier) else { return voice }
+        voice.vocabulary = nil
+        voice.styles = []
+        return voice
+    }
+
     var initials: String {
         let letters = name.split(separator: " ").prefix(2).compactMap(\.first)
         return letters.isEmpty ? "?" : String(letters).uppercased()

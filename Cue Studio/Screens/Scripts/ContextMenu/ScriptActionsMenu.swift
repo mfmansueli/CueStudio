@@ -35,6 +35,16 @@ struct ScriptActionsMenu: View {
             Divider()
             Button("New folder…", systemImage: "folder.badge.plus") { actions.moveToNewFolder(script) }
         }
+        if let makeVersion = actions.makeVersion {
+            Menu {
+                ForEach(Platform.allCases.filter { $0 != script.platform }) { platform in
+                    Button(platform.destinationName) { makeVersion(script, platform) }
+                }
+            } label: {
+                Label("Make a version for…", systemImage: "rectangle.on.rectangle")
+                if actions.versionsAreLocked { Text("Pro") }
+            }
+        }
         ShareLink(item: script.shareText, subject: Text(script.displayTitle)) {
             Label("Share", systemImage: "square.and.arrow.up")
         }

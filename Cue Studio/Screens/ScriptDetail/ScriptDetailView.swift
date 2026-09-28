@@ -14,6 +14,7 @@ struct ScriptDetailView: View {
     @Environment(\.dismiss) private var dismiss
 
     init(route: ScriptRoute, services: AppServices) {
+        let store = services.store
         _viewModel = State(initialValue: ScriptDetailViewModel(
             scriptID: route.scriptID,
             startsEditing: route.startsEditing,
@@ -23,6 +24,7 @@ struct ScriptDetailView: View {
             profile: services.profile,
             rules: services.rules,
             writer: services.writer,
+            tier: { store.tier },
             toast: services.toast
         ))
     }
@@ -66,11 +68,21 @@ struct ScriptDetailView: View {
                     options: viewModel.hookOptions,
                     speed: preferences.prompter.speed,
                     isLoading: viewModel.isLoadingHooks,
+                    onUnlock: viewModel.locksHookVariations ? { viewModel.unlockHookVariations() } : nil,
                     onPick: { viewModel.replaceHook(with: $0) },
                     onMore: { Task { await viewModel.showMoreHooks() } }
                 )
+                .fullScreenCover(item: paywallBinding(isActive: true)) { context in
+                    PaywallView(context: context, onPurchased: { Task { await viewModel.showMoreHooks() } })
+                }
             }
         }
+        // A sheet covers this view, so the paywall opens from the sheet while one is up.
+        .fullScreenCover(item: paywallBinding(isActive: viewModel.sheet == nil)) { PaywallView(context: $0) }
+    }
+
+    private func paywallBinding(isActive: Bool) -> Binding<PaywallContext?> {
+        Binding(get: { isActive ? viewModel.paywall : nil }, set: { viewModel.paywall = $0 })
     }
 
     @ToolbarContentBuilder
@@ -116,7 +128,9 @@ struct ScriptDetailView: View {
             delete: { _ in
                 viewModel.delete()
                 dismiss()
-            }
+            },
+            makeVersion: { _, platform in Task { await viewModel.makeVersion(for: platform) } },
+            versionsAreLocked: viewModel.locksPlatformVersions
         )
     }
 }

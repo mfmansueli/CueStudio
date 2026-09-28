@@ -16,7 +16,9 @@ review, tutorial…) e a estrutura (Hook → Body → CTA).
 
 - Tom: direto, de criador para criador. Frases curtas, sem jargão.
 - Marca: três linhas de script com a do meio acesa em amarelo (`CueMark`).
-- O teleprompter é sempre grátis; o Pro destrava exportações limpas e IA ilimitada.
+- O teleprompter, os roteiros e a IA (Prompt, Themes, formatos básicos) são grátis. O Pro destrava
+  exportações limpas até 4K, o Creator Voice completo, Sponsored ad, hooks escritos pela IA, versões
+  para outras plataformas e a sugestão de melhor take (`ProFeature`).
 
 ## 2. Aparência
 
@@ -93,6 +95,7 @@ SF Symbols por significado: `doc.text` scripts · `film.stack` takes · `person.
 | `RecordGlyph` | Anel branco com ponto vermelho da aba Record (imagem com cores originais) |
 | `fittedSheet()` | Sheet da altura do conteúdo, raio 38 (New script, Start recording) |
 | `PromptCard` (`Screens/Shared/PromptCard`) | Caixa de Prompt em destaque: selo Apple Intelligence, exemplo e botão enviar |
+| `ProBadge` | Pill amarela "PRO" em tudo que o Pro destrava (no grátis) |
 
 ## 4. Telas
 
@@ -100,10 +103,10 @@ SF Symbols por significado: `doc.text` scripts · `film.stack` takes · `person.
 |------|------|----------|
 | Scripts (home) | `Screens/Scripts` | "+" no topo (abre New script), título + resumo, busca, chips (All, destinos, pastas), card "Last edited", lista "All scripts" com swipe (Record / More / Delete), segurar mostra preview + menu, modo de seleção com barra (mover, duplicar, apagar) |
 | Primeiro uso | `EmptyLibraryView` | "Start with a script." + caixa de Prompt + Write / Import / Generate with AI + "Record without a script" |
-| Script (leitura) | `Screens/ScriptDetail` | Título, destino/formato/preset, medidor de duração, faixa de blocos, aviso de hook, banner laranja de checagem de fatos ("Checked" dispensa), texto com blocos e cues, takes, Studio mode + Record |
-| Script (edição) | `ScriptEditorView` | Título, faixa de blocos, editor com Writing Tools, painel com aviso de versão, atalhos de IA ("In my voice" + os do formato) e medidor |
+| Script (leitura) | `Screens/ScriptDetail` | Título, destino/formato/preset, medidor de duração, faixa de blocos, aviso de hook, banner laranja de checagem de fatos ("Checked" dispensa), texto com blocos e cues, takes, Studio mode + Record. Menu More: "Make a version for…" (PRO) cria uma cópia ajustada à duração de outra plataforma |
+| Script (edição) | `ScriptEditorView` | Título, faixa de blocos, editor com Writing Tools, painel com aviso de versão, atalhos de IA ("In my voice" com PRO no grátis + os do formato) e medidor |
 | Create for | `DestinationSheet` | 6 plataformas com resumo do preset (formato · qualidade · safe zones · ideal) + "Monetization goals". Escolher mostra o toast "Create for {plataforma}" |
-| Hooks | `HooksSheet` | Hook atual + 3 opções escritas pelo modelo no aparelho (sem ele, as do formato) + "More options" |
+| Hooks | `HooksSheet` | Hook atual + 3 opções escritas pelo modelo no aparelho (no grátis ou sem modelo, as do formato, e no grátis a linha "Write hooks for this script with AI" · PRO) + "More options" |
 | New script | `NewScriptSheet` | Caixa de Prompt + grade Write / Import / Themes / Formats. Sobre a câmera, Paste no lugar de Write |
 | Start recording | `StartRecordingSheet` | "Read from a script" (4 recentes com duração), "+ New script", "Record without a script →". Sobre a câmera vira "Add a script", sem o freestyle |
 | Importar | `ImportScriptSheet` | Files, Scan (câmera de documentos), Photo e Clipboard. Scan, Photo e PDFs escaneados passam por OCR do Vision no aparelho |
@@ -112,12 +115,12 @@ SF Symbols por significado: `doc.text` scripts · `film.stack` takes · `person.
 | Studio | `Screens/Prompter/Studio` | Prompter em tela cheia sem câmera, barra de progresso no topo, fechar, Selfie \| Studio e espelhar; barra: Voice Following \| Steady, slider de velocidade (no Voice Following, "Listening/Paused" e "Speed follows your voice"), voltar ao topo, 3 linhas para trás/frente, play grande amarelo e Aa |
 | Display | `DisplaySettingsSheet` | "Display · ● Live preview". Quick: AI Coach, Text size, Reading width, Reading line (Top/Bottom), Background opacity, Camera blur (Off/Low/Medium/High) — no Studio, Background color no lugar dos três do Selfie. Advanced (recolhível): fonte, espaçamento, margens, alinhamento, cor, linha de leitura, espelhar. No Selfie, a altura máxima para logo abaixo do painel |
 | Câmera | `CameraSettingsSheet` | Lente, enquadramento, resolução, fps, grid, safe zones, estabilização, microfone, contagem, formato. No Selfie com script, a sheet para logo abaixo do painel do texto (não cresce além dele) e não escurece o fundo |
-| Revisão do take | `Screens/TakeReview` | Vídeo no formato da take (barras pretas fora do 9:16); topo: voltar, "Take N · 0:44", estrela e lixeira; filmstrip, título (+ EDITED), meta, aviso de exportações; faixa "Your takes · N" (troca de take, "Tap ☆ to pick your best"); Edit · Retake · Save · Share (Share amarelo, abre Share to). Só uma melhor take por roteiro |
+| Revisão do take | `Screens/TakeReview` | Vídeo no formato da take (barras pretas fora do 9:16); topo: voltar, "Take N · 0:44", estrela e lixeira; filmstrip, título (+ EDITED), meta, aviso de exportações; faixa "Your takes · N" (troca de take, "Tap ☆ to pick your best", "Suggest best" · PRO); Edit · Retake · Save · Share (Share amarelo, abre Share to). Só uma melhor take por roteiro |
 | Share to | `TakeReview/Share` | Miniatura, "SHARE TO", título, "0:44 · 9:16 · 1080p"; seis plataformas (a da take com anel amarelo e "recommended"), Save video e More; "Created for X — framed and safe-zoned for it"; Burn in captions; Quality 1080p / 4K (PRO); exportações limpas restantes + Go Pro. Plataforma: exporta, salva no Fotos e abre o app; "Ready to post on X · N of 5 clean left" |
 | Quick edit | `Screens/QuickEdit` | Cancel / "Quick edit 1:04 → 0:58" / Done; prévia ao vivo no formato; Trim (alças amarelas, playhead, Split, Delete da seção, "Remove silences"), Audio (volume 0–150%, Enhance voice, Reduce background noise), Adjust (exposição, contraste, temperatura −100…+100, Auto), Filters (Original, Vivid, Warm, Cool, Mono, Film), Crop (9:16, 4:5, 1:1, 16:9, arrastar, Reset), Captions (do roteiro, sincronizadas à fala; Classic, Bold, Highlight; Top, Middle, Bottom). Done guarda a receita (`TakeEdit`), a nova duração e marca Edited; o arquivo original não muda |
 | Takes | `Screens/Takes` | "Takes" + "N takes · N videos"; chips de plataforma e All takes / ★ Best / Not shared / Edited; seções Today / Yesterday / Earlier; cada linha é um vídeo (takes do mesmo roteiro): miniatura no formato certo com estrela e duração, plataforma · formato · qualidade, quando, chips "3 takes · Best: Take 3", "Edited", "Not shared" |
-| Profile | `Screens/Profile` | Card do criador ("@handle · Signed in with Apple") + botão Sign in with Apple quando fora; Creator Voice: "Sounds like you" (frase ao vivo + "Use my voice in AI scripts"), How I sound, My phrases, My vocabulary, My style, Niche; plano e uso; Settings (Default "Create for", Monetization goals, Privacy & AI data, Restore purchases); Sign out |
-| Paywall | `Screens/Shared/Paywall` | Contexto (perfil, exportação, IA), benefícios, planos, Restore/Terms |
+| Profile | `Screens/Profile` | Card do criador ("@handle · Signed in with Apple") + botão Sign in with Apple quando fora; Creator Voice: "Sounds like you" (frase ao vivo + "Use my voice in AI scripts"), How I sound, My phrases, My vocabulary (PRO), My style (PRO), Niche; plano e uso; Settings (Default "Create for", Monetization goals, Privacy & AI data, Restore purchases); Sign out |
+| Paywall | `Screens/Shared/Paywall` | Tela cheia com título pelo contexto: exportação ("Post without the watermark", comparação com/sem marca e "Save with watermark instead"), Sponsored ad ("Brand deals, done right"), Profile ("Create more. Sound like you."), Creator Voice, hooks, versões, melhor take e 4K; benefícios, Annual (pré-selecionado, "SAVE 58%", 7 dias grátis) / Monthly / Lifetime; Restore, Terms, Privacy. Nunca abre durante a gravação |
 
 ## 5. Navegação
 
@@ -193,7 +196,11 @@ O protótipo simulava várias coisas; o app implementa de verdade ou deixa de fo
 - **Sem Apple Intelligence:** Prompt e as reescritas mostram "Requires Apple Intelligence" e ficam
   desligados; Formats continua gerando o rascunho estruturado a partir do briefing (é um modelo de
   texto, não IA); Themes mostra as ideias locais. O teleprompter não depende de IA.
-- **Uso de IA:** ilimitado no grátis (o v1 tinha 5 roteiros/mês). Só o formato Sponsored ad é Pro.
+- **Uso de IA:** ilimitado no grátis (o v1 tinha 5 roteiros/mês). No grátis a IA escreve com o som,
+  as frases e o nicho do Creator Voice; vocabulário, estilo e "In my voice" são Pro, assim como o
+  formato Sponsored ad, os hooks escritos pelo modelo e "Make a version for…". O Pro abre no
+  paywall do contexto (`PaywallContext`), nunca durante a gravação: no prompter, "Add script" fica
+  desligado enquanto grava.
 - **Themes:** as ideias iniciais são a lista local por nicho do protótipo (`ThemeCatalog`);
   "New ideas" pede ideias novas ao modelo do aparelho (sem ele, gira a lista).
 - **Import por foto:** não está no protótipo; vem do pedido (Vision OCR). Sai no simulador sem câmera.
@@ -211,8 +218,15 @@ O protótipo simulava várias coisas; o app implementa de verdade ou deixa de fo
   no launch confere o estado da credencial e sai se ela foi revogada. Nome e @ continuam editáveis
   e locais. O protótipo mostra "Signed in with Apple" sem botão de entrar; aqui ele aparece enquanto
   você não entrou.
-- **Paywall:** só lista o que o Pro realmente destrava (exportações limpas e IA). Itens do protótipo
-  como controle pelo Apple Watch e sincronização com iPad/Mac ficaram de fora.
+- **Paywall:** só lista o que o Pro realmente destrava. "Studio remote from Apple Watch, iPad & Mac
+  sync" ficou de fora porque não existe. Além dos três contextos do protótipo, há títulos para
+  Creator Voice, hooks, versões, melhor take e 4K. Enquanto `AppLinks.privacyPolicy` não tiver URL,
+  "Privacy" abre o resumo "Privacy & AI data" do app.
+- **Produtos:** `studio.cue.pro.annual` / `.monthly` / `.lifetime` (os IDs da v1, com prefixo, em vez
+  de `pro.annual` do pedido). Os preços regionais (ex.: R$ 24,90 / R$ 119,90 / R$ 299,90) são
+  definidos no App Store Connect; o `CueStudio.storekit` só tem os preços dos EUA.
+- **Melhor take:** "Suggest best" escolhe a take completa mais próxima da duração do roteiro, dentro
+  da faixa ideal da plataforma (`BestTakeSuggester`); o app troca para ela e você confirma com ☆.
 - **"Save takes to Photos":** removido — salvar automaticamente contornaria o limite de exportações
   limpas. Takes ficam no app; Save/Share exportam.
 - **Pastas:** o "+" agora abre New script, então pastas nascem em "Move to a new folder…" (menu do

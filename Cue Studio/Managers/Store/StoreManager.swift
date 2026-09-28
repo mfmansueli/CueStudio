@@ -164,7 +164,7 @@ final class StoreManager {
                   let owned = ProPlan(productID: transaction.productID)
             else { continue }
             if owned == .lifetime {
-                // A subscription gives unlimited AI, so it wins over lifetime.
+                // A subscription wins over lifetime so the Profile shows its renewal.
                 if newTier == .free { newTier = .lifetime; plan = .lifetime }
             } else if (transaction.expirationDate ?? .distantFuture) > .now {
                 newTier = .subscriber

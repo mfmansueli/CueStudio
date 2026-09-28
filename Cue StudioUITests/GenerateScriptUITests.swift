@@ -72,18 +72,28 @@ final class GenerateScriptUITests: XCTestCase {
     }
 
     func testEditorOffersInMyVoice() {
+        let app = CueApp.launch(seeded: true, pro: true)
+        openEditorVoiceTool(app).tap()
+        XCTAssertTrue(app.staticTexts.containing(NSPredicate(format: "label BEGINSWITH 'Rewrote in your voice'")).firstMatch.waitForExistence(timeout: 5))
+    }
+
+    func testInMyVoiceIsProOnTheFreePlan() {
         let app = CueApp.launch(seeded: true)
+        openEditorVoiceTool(app).tap()
+        XCTAssertTrue(app.staticTexts["AI that sounds like you"].waitForExistence(timeout: 5))
+    }
+
+    // MARK: - Helpers
+
+    private func openEditorVoiceTool(_ app: XCUIApplication) -> XCUIElement {
         let row = app.staticTexts["Unboxing the Lumen desk lamp"]
         XCTAssertTrue(row.waitForExistence(timeout: 15))
         row.tap()
         app.buttons["detail.editButton"].tap()
         let voice = element(app, "editor.tool.inMyVoice")
         XCTAssertTrue(voice.waitForExistence(timeout: 5))
-        voice.tap()
-        XCTAssertTrue(app.staticTexts.containing(NSPredicate(format: "label BEGINSWITH 'Rewrote in your voice'")).firstMatch.waitForExistence(timeout: 5))
+        return voice
     }
-
-    // MARK: - Helpers
 
     private func openNewScript(_ app: XCUIApplication) {
         let plus = app.buttons["scripts.newButton"]

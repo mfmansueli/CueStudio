@@ -29,7 +29,7 @@ struct ExportPresentations: ViewModifier {
             )) { context in
                 PaywallView(
                     context: context,
-                    onWatermarkInstead: { Task { await viewModel.exportWithWatermark() } },
+                    onWatermarkInstead: context == .export ? { Task { await viewModel.exportWithWatermark() } } : nil,
                     onPurchased: { Task { await viewModel.continueAfterPurchase() } }
                 )
             }

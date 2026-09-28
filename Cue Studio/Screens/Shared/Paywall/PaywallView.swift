@@ -17,6 +17,7 @@ struct PaywallView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var selectedPlan: ProPlan = .annual
     @State private var trialDays: [ProPlan: Int] = [:]
+    @State private var showsPrivacy = false
 
     var body: some View {
         VStack(spacing: 0) {
@@ -59,8 +60,8 @@ struct PaywallView: View {
         .foregroundStyle(Palette.ink)
         .background {
             ZStack(alignment: .top) {
-                Color.black
-                RadialGradient(colors: [Palette.acc.opacity(0.24), .clear], center: .top, startRadius: 0, endRadius: 360)
+                Palette.bg
+                RadialGradient(colors: [Palette.accWash, .clear], center: .top, startRadius: 0, endRadius: 360)
                     .frame(height: 420)
             }
             .ignoresSafeArea()
@@ -91,29 +92,23 @@ struct PaywallView: View {
     private var exportComparison: some View {
         HStack(spacing: 10) {
             RoundedRectangle(cornerRadius: 14, style: .continuous)
-                .fill(LinearGradient(colors: [Color(hex: 0x7A6250), Color(hex: 0x2A211C)], startPoint: .topLeading, endPoint: .bottomTrailing))
+                .fill(LinearGradient(colors: [Palette.thumbnailTop, Palette.thumbnailBottom], startPoint: .topLeading, endPoint: .bottomTrailing))
                 .frame(width: 78, height: 138)
                 .overlay(alignment: .bottomTrailing) {
                     Text("Made with Cue")
                         .font(.system(size: 7.5, weight: .bold))
                         .padding(.horizontal, 5)
                         .frame(height: 16)
-                        .background(Color.black.opacity(0.5), in: RoundedRectangle(cornerRadius: 5))
+                        .background(Palette.durationBadge, in: RoundedRectangle(cornerRadius: 5))
                         .padding(6)
                 }
                 .opacity(0.7)
             RoundedRectangle(cornerRadius: 14, style: .continuous)
-                .fill(LinearGradient(colors: [Color(hex: 0x7A6250), Color(hex: 0x2A211C)], startPoint: .topLeading, endPoint: .bottomTrailing))
+                .fill(LinearGradient(colors: [Palette.thumbnailTop, Palette.thumbnailBottom], startPoint: .topLeading, endPoint: .bottomTrailing))
                 .frame(width: 78, height: 138)
                 .overlay(RoundedRectangle(cornerRadius: 14, style: .continuous).strokeBorder(Palette.acc, lineWidth: 2))
                 .overlay(alignment: .topLeading) {
-                    Text("PRO")
-                        .font(.system(size: 9, weight: .heavy))
-                        .foregroundStyle(Palette.accInk)
-                        .padding(.horizontal, 6)
-                        .frame(height: 18)
-                        .background(Palette.acc, in: Capsule())
-                        .padding(6)
+                    ProBadge().padding(6)
                 }
         }
         .padding(.bottom, 18)
@@ -143,7 +138,7 @@ struct PaywallView: View {
             }
             .padding(.horizontal, 16)
             .padding(.vertical, 14)
-            .background(isSelected ? Palette.acc.opacity(0.07) : Palette.surface, in: RoundedRectangle(cornerRadius: Metrics.innerRadius, style: .continuous))
+            .background(isSelected ? Palette.accWashFaint : Palette.surface, in: RoundedRectangle(cornerRadius: Metrics.innerRadius, style: .continuous))
             .overlay(
                 RoundedRectangle(cornerRadius: Metrics.innerRadius, style: .continuous)
                     .strokeBorder(isSelected ? Palette.acc : Palette.separator, lineWidth: 2)
@@ -200,14 +195,22 @@ struct PaywallView: View {
             HStack(spacing: 18) {
                 Button("Restore") { Task { await restore() } }
                 if let terms = AppLinks.termsOfUse { Link("Terms", destination: terms) }
-                if let privacy = AppLinks.privacyPolicy { Link("Privacy", destination: privacy) }
+                // Until the policy has a URL, Privacy opens the same summary as the Profile.
+                if let privacy = AppLinks.privacyPolicy {
+                    Link("Privacy", destination: privacy)
+                } else {
+                    Button("Privacy") { showsPrivacy = true }
+                        .accessibilityIdentifier("paywall.privacyButton")
+                }
             }
             .font(.caption)
             .foregroundStyle(Palette.ink.opacity(0.5))
+            .frame(minHeight: Metrics.hitTarget)
         }
         .padding(EdgeInsets(top: 12, leading: 20, bottom: 12, trailing: 20))
-        .background(Color.black)
+        .background(Palette.bg)
         .overlay(alignment: .top) { Rectangle().fill(Palette.separator).frame(height: 0.5) }
+        .sheet(isPresented: $showsPrivacy) { PrivacySheet() }
     }
 
     // MARK: - Actions
@@ -215,12 +218,7 @@ struct PaywallView: View {
     private func purchase() async {
         guard await store.purchase(selectedPlan) else { return }
         dismiss()
-        let message = switch context {
-        case .export: String(localized: "Welcome to Pro — exporting without watermark")
-        case .sponsoredAd: String(localized: "Welcome to Pro — sponsored ads unlocked")
-        case .profile: String(localized: "Welcome to Cue Pro")
-        }
-        toast.show(message)
+        toast.show(PaywallCopy.welcome(for: context))
         onPurchased?()
     }
 

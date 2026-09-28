@@ -20,7 +20,7 @@
       "internalID" : "6743000003",
       "localizations" : [
         {
-          "description" : "Pay once. Clean exports forever and 30 AI scripts every month.",
+          "description" : "Pay once. Everything in Pro, forever.",
           "displayName" : "Cue Pro Lifetime",
           "locale" : "en_US"
         }
@@ -65,7 +65,7 @@
           },
           "localizations" : [
             {
-              "description" : "Unlimited clean exports and AI scripts.",
+              "description" : "Unlimited clean exports up to 4K and the full Creator Voice.",
               "displayName" : "Cue Pro Annual",
               "locale" : "en_US"
             }
@@ -92,7 +92,7 @@
           "internalID" : "6743000002",
           "localizations" : [
             {
-              "description" : "Unlimited clean exports and AI scripts.",
+              "description" : "Unlimited clean exports up to 4K and the full Creator Voice.",
               "displayName" : "Cue Pro Monthly",
               "locale" : "en_US"
             }

@@ -91,6 +91,11 @@ enum Palette {
     /// Tiles of the "Your takes" strip over the video.
     static let stripTile = Color(hex: 0x2C2C2E, opacity: 0.85)
 
+    // MARK: - Editor
+
+    /// The tools panel above the keyboard.
+    static let toolsPanel = Color(hex: 0x0E0E10)
+
     // MARK: - Quick edit
 
     /// A deleted section on the trim strip.

@@ -12,6 +12,11 @@ nonisolated enum PaywallCopy {
         case .export: String(localized: "Post without the watermark")
         case .sponsoredAd: String(localized: "Brand deals, done right")
         case .profile: String(localized: "Create more. Sound like you.")
+        case .creatorVoice: String(localized: "AI that sounds like you")
+        case .hookVariations: String(localized: "Hooks that stop the scroll")
+        case .platformVersions: String(localized: "One script, every platform")
+        case .bestTake: String(localized: "Let Cue pick your best take")
+        case .fourK: String(localized: "Post in 4K")
         }
     }
 
@@ -23,15 +28,36 @@ nonisolated enum PaywallCopy {
             String(localized: "Sponsored-ad scripts with disclosure, offer and brand checklist are part of Pro. Everything else in AI stays free.")
         case .profile:
             String(localized: "The teleprompter stays free forever. Pro unlocks clean exports and AI that knows your style.")
+        case .creatorVoice:
+            String(localized: "Your vocabulary, your style and “In my voice” rewrites are part of Pro. How you sound, your phrases and your niche stay free.")
+        case .hookVariations:
+            String(localized: "Apple Intelligence writes new hooks for this script with Pro. The quick hook ideas stay free.")
+        case .platformVersions:
+            String(localized: "Pro rewrites a script for another platform — its length and pace — and saves it as a copy.")
+        case .bestTake:
+            String(localized: "Pro compares your takes with the script's timing and suggests the one to post.")
+        case .fourK:
+            String(localized: "4K exports are part of Pro, with unlimited clean exports.")
         }
     }
 
-    /// Only what Pro actually unlocks.
+    /// Only what Pro actually unlocks (the prototype's Apple Watch remote and iPad & Mac sync don't
+    /// exist, so they aren't promised).
     static let features: [String] = [
         String(localized: "Unlimited exports, no watermark, up to 4K"),
         String(localized: "Full Creator Voice + sponsored-ad scripts"),
-        String(localized: "Your takes stay yours — export any of them clean"),
+        String(localized: "Hook variations, multi-platform versions, best-take picks"),
     ]
+
+    static func welcome(for context: PaywallContext) -> String {
+        switch context {
+        case .export: String(localized: "Welcome to Pro — exporting without watermark")
+        case .sponsoredAd: String(localized: "Welcome to Pro — sponsored ads unlocked")
+        case .creatorVoice: String(localized: "Welcome to Pro — your full voice is on")
+        case .fourK: String(localized: "Welcome to Pro — 4K unlocked")
+        case .profile, .hookVariations, .platformVersions, .bestTake: String(localized: "Welcome to Cue Pro")
+        }
+    }
 
     static func price(for plan: ProPlan, displayPrice: String?) -> String {
         let price = displayPrice ?? "…"
