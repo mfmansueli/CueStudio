@@ -24,6 +24,9 @@ struct RootView: View {
             .task {
                 await services.rules.refresh()
             }
+            .task {
+                await services.session.verify()
+            }
             .onChange(of: scenePhase) { _, phase in
                 guard phase == .active else { return }
                 Task { await services.store.refreshEntitlements() }

@@ -3,13 +3,15 @@
 //  Cue Studio
 //
 
+import AuthenticationServices
 import StoreKit
 import SwiftUI
 
-/// Account, plan, Creator DNA and settings.
+/// The creator card (Sign in with Apple is optional), Creator Voice, the plan and settings.
 struct ProfileView: View {
     @Environment(CreatorProfileService.self) private var profile
     @Environment(StoreManager.self) private var store
+    @Environment(SessionService.self) private var session
     @Environment(ToastService.self) private var toast
 
     @State private var showsEditProfile = false
@@ -25,10 +27,39 @@ struct ProfileView: View {
         List {
             Section {
                 Button { showsEditProfile = true } label: {
-                    CreatorCard(profile: profile.profile, isPro: store.tier.isPro)
+                    CreatorCard(profile: profile.profile, isPro: store.tier.isPro, isSignedIn: session.isSignedIn)
                 }
                 .buttonStyle(.plain)
                 .accessibilityIdentifier("profile.creatorCard")
+                if !session.isSignedIn {
+                    SignInWithAppleButton(.signIn, onRequest: { $0.requestedScopes = [.fullName, .email] }, onCompletion: signedIn)
+                        .signInWithAppleButtonStyle(.white)
+                        .frame(height: Metrics.buttonHeight)
+                        .clipShape(Capsule())
+                        .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
+                        .accessibilityIdentifier("profile.signInButton")
+                }
+            }
+            Section {
+                SoundsLikeYouCard()
+            } header: {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Creator Voice")
+                        .font(.title2.bold())
+                        .foregroundStyle(Palette.ink)
+                    Text("Your AI identity. Cue writes and rewrites every script to sound like you — on every platform.")
+                        .font(.subheadline)
+                        .foregroundStyle(Palette.ink2)
+                }
+                .textCase(nil)
+                .padding(.bottom, 4)
+            }
+            .listRowBackground(glow)
+            Section {
+                CreatorVoiceSection(onAddPhrase: {
+                    newPhrase = ""
+                    isAddingPhrase = true
+                })
             }
             Section {
                 PlanSection(
@@ -37,26 +68,9 @@ struct ProfileView: View {
                     onManage: { showsManageSubscriptions = true }
                 )
             }
-            .listRowBackground(Rectangle().fill(store.tier.isPro ? AnyShapeStyle(proBackground) : AnyShapeStyle(Palette.surface)))
-            Section {
-                CreatorDNASection(onAddPhrase: {
-                    newPhrase = ""
-                    isAddingPhrase = true
-                })
-            } header: {
-                VStack(alignment: .leading, spacing: 4) {
-                    Text("Creator DNA")
-                        .font(.title3.bold())
-                        .foregroundStyle(Palette.ink)
-                    Text("Cue's AI uses this to write scripts that sound like you. One profile for every platform.")
-                        .font(.subheadline)
-                        .foregroundStyle(Palette.ink2)
-                }
-                .textCase(nil)
-                .padding(.bottom, 4)
-            }
+            .listRowBackground(store.tier.isPro ? AnyView(glow) : AnyView(Palette.surface))
             Section("Settings") {
-                Picker("Default destination", selection: $profile.profile.defaultPlatform) {
+                Picker("Default “Create for”", selection: $profile.profile.defaultPlatform) {
                     ForEach(Platform.allCases) { Text($0.destinationName).tag($0) }
                 }
                 .pickerStyle(.menu)
@@ -79,6 +93,16 @@ struct ProfileView: View {
                     }
                 }
                 .foregroundStyle(Palette.ink)
+            }
+            if session.isSignedIn {
+                Section {
+                    Button("Sign out", role: .destructive) {
+                        session.signOut()
+                        toast.show(String(localized: "Signed out"))
+                    }
+                    .frame(maxWidth: .infinity)
+                    .accessibilityIdentifier("profile.signOutButton")
+                }
             }
         }
         .listStyle(.insetGrouped)
@@ -107,10 +131,31 @@ struct ProfileView: View {
         }
     }
 
-    private var proBackground: some ShapeStyle {
-        LinearGradient(
-            colors: [Palette.acc.opacity(0.18), Palette.acc.opacity(0.04), Palette.surface],
-            startPoint: .topLeading, endPoint: .bottomTrailing
+    /// Apple sends the name only on the first sign-in; it fills an empty profile name.
+    private func signedIn(_ result: Result<ASAuthorization, Error>) {
+        switch result {
+        case .success(let authorization):
+            guard let credential = authorization.credential as? ASAuthorizationAppleIDCredential else { return }
+            let name = credential.fullName.map { PersonNameComponentsFormatter().string(from: $0) }
+            session.signIn(userID: credential.user, name: name, email: credential.email)
+            if profile.profile.name.isEmpty, let name, !name.isEmpty {
+                profile.profile.name = name
+            }
+            toast.show(String(localized: "Signed in with Apple"))
+        case .failure(let error):
+            if (error as? ASAuthorizationError)?.code != .canceled {
+                toast.show(String(localized: "Couldn't sign in with Apple. Try again."))
+            }
+        }
+    }
+
+    /// Behind "Sounds like you" and the Pro plan.
+    private var glow: some View {
+        Palette.surface.overlay(
+            LinearGradient(
+                stops: [.init(color: Palette.accGlow, location: 0), .init(color: Palette.accGlowFaint, location: 0.6)],
+                startPoint: .topLeading, endPoint: .bottomTrailing
+            )
         )
     }
 }

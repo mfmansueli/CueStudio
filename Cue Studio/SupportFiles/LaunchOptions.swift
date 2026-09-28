@@ -18,6 +18,7 @@ struct LaunchOptions {
     /// UI tests and previews swap in rules read from the bundle only (no cache, no download).
     var platformRules: PlatformRulesService = PlatformRulesService()
     var writer: ScriptWriting = ScriptAIService()
+    var credentialChecker: AppleIDCredentialChecking = AppleIDCredentialChecker()
 
     static func fromProcess() -> LaunchOptions {
         var options = LaunchOptions()

@@ -5,7 +5,7 @@
 
 import XCTest
 
-/// Plan, paywall and Creator DNA.
+/// Account, Creator Voice, plan and paywall.
 @MainActor
 final class ProfileUITests: XCTestCase {
     override func setUp() {
@@ -13,13 +13,9 @@ final class ProfileUITests: XCTestCase {
     }
 
     func testUpgradeOpensAndClosesThePaywall() {
-        let app = CueApp.launch(seeded: true)
-        let profileTab = app.tabBars.buttons["Profile"]
-        XCTAssertTrue(profileTab.waitForExistence(timeout: 15))
-        profileTab.tap()
-
+        let app = openProfile()
         let upgrade = app.buttons["profile.upgradeButton"]
-        XCTAssertTrue(upgrade.waitForExistence(timeout: 5))
+        scroll(app, to: upgrade)
         upgrade.tap()
         let close = app.buttons["paywall.closeButton"]
         XCTAssertTrue(close.waitForExistence(timeout: 5))
@@ -29,10 +25,9 @@ final class ProfileUITests: XCTestCase {
     }
 
     func testAddingACatchphrase() {
-        let app = CueApp.launch(seeded: true)
-        app.tabBars.buttons["Profile"].tap()
+        let app = openProfile()
         let add = app.buttons["profile.addPhraseButton"]
-        XCTAssertTrue(add.waitForExistence(timeout: 5))
+        scroll(app, to: add)
         add.tap()
 
         let field = app.alerts.textFields.firstMatch
@@ -42,10 +37,46 @@ final class ProfileUITests: XCTestCase {
         XCTAssertTrue(app.staticTexts["“Bora”"].waitForExistence(timeout: 5))
     }
 
+    func testVoicePreviewFollowsHowYouSound() {
+        let app = openProfile()
+        let sample = app.staticTexts["profile.voiceSample"]
+        XCTAssertTrue(sample.waitForExistence(timeout: 5))
+        XCTAssertTrue(sample.label.contains("So, real quick."))
+        let casual = app.buttons["profile.sound.Casual"]
+        scroll(app, to: casual)
+        casual.tap()
+        XCTAssertTrue(app.staticTexts["profile.voiceSample"].label.contains("I'll say it"))
+    }
+
+    func testSignInWithAppleIsOfferedWhenSignedOut() {
+        let app = openProfile()
+        XCTAssertTrue(app.buttons["profile.signInButton"].waitForExistence(timeout: 5))
+        XCTAssertFalse(app.buttons["profile.signOutButton"].exists)
+    }
+
     func testProPlanHidesTheUpgrade() {
         let app = CueApp.launch(seeded: true, pro: true)
         app.tabBars.buttons["Profile"].tap()
-        XCTAssertTrue(app.staticTexts["Cue Pro"].waitForExistence(timeout: 5))
+        let pro = app.staticTexts["Cue Pro"]
+        scroll(app, to: pro)
         XCTAssertFalse(app.buttons["profile.upgradeButton"].exists)
+    }
+
+    // MARK: - Helpers
+
+    private func openProfile() -> XCUIApplication {
+        let app = CueApp.launch(seeded: true)
+        let tab = app.tabBars.buttons["Profile"]
+        XCTAssertTrue(tab.waitForExistence(timeout: 15))
+        tab.tap()
+        return app
+    }
+
+    /// The profile is a long list; rows below the fold only exist once scrolled to.
+    private func scroll(_ app: XCUIApplication, to element: XCUIElement) {
+        for _ in 0..<8 where !(element.exists && element.isHittable) {
+            app.swipeUp()
+        }
+        XCTAssertTrue(element.waitForExistence(timeout: 5))
     }
 }

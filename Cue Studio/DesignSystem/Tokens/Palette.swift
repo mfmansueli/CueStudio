@@ -51,6 +51,9 @@ enum Palette {
     /// Yellow wash at the top of highlighted cards, fading to `accWashFaint`.
     static let accWash = Color(hex: 0xFFD60A, opacity: 0.22)
     static let accWashFaint = Color(hex: 0xFFD60A, opacity: 0.05)
+    /// Creator Voice and Pro cards: a yellow glow from the top corner, fading into the surface.
+    static let accGlow = Color(hex: 0xFFD60A, opacity: 0.14)
+    static let accGlowFaint = Color(hex: 0xFFD60A, opacity: 0.02)
     static let record = Color(hex: 0xFF3B30)
     static let danger = Color(light: Color(hex: 0xFF3B30), dark: Color(hex: 0xFF453A))
     static let dangerSoft = Color(hex: 0xFF3B30, opacity: 0.2)

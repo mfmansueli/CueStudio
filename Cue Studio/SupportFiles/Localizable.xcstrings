@@ -595,6 +595,9 @@
     "Couldn't reach the App Store. Check your connection and try again." : {
 
     },
+    "Couldn't sign in with Apple. Try again." : {
+
+    },
     "Couldn't write the script" : {
 
     },
@@ -622,7 +625,7 @@
     "Created for %@ — framed and safe-zoned for it" : {
 
     },
-    "Creator DNA" : {
+    "Creator Voice" : {
 
     },
     "Crop" : {
@@ -652,16 +655,13 @@
     "Cue will scroll it under the lens. Your camera stays where it is." : {
 
     },
-    "Cue's AI uses this to write scripts that sound like you. One profile for every platform." : {
-
-    },
     "Current" : {
 
     },
     "Cyan" : {
 
     },
-    "Default destination" : {
+    "Default “Create for”" : {
 
     },
     "Delete" : {
@@ -1328,7 +1328,16 @@
     "My first preset pack" : {
 
     },
+    "My phrases" : {
+
+    },
+    "My style" : {
+
+    },
     "My Sunday reset in 60 seconds" : {
+
+    },
+    "My vocabulary" : {
 
     },
     "Myth-busting" : {
@@ -1488,9 +1497,6 @@
 
     },
     "Photo" : {
-
-    },
-    "Phrases you always say" : {
 
     },
     "Pick a format. Cue builds the structure — you fill in bullets." : {
@@ -1874,6 +1880,15 @@
     "Side margins" : {
 
     },
+    "Sign out" : {
+
+    },
+    "Signed in with Apple" : {
+
+    },
+    "Signed out" : {
+
+    },
     "Silences removed · −%llds" : {
 
     },
@@ -1899,6 +1914,9 @@
 
     },
     "Something you always say. The AI weaves it into new scripts." : {
+
+    },
+    "Sounds like you" : {
 
     },
     "Spanish" : {
@@ -2255,6 +2273,9 @@
     "Use" : {
 
     },
+    "Use my voice in AI scripts" : {
+
+    },
     "Uses the connected mic, or the iPhone's" : {
 
     },
@@ -2421,6 +2442,9 @@
 
     },
     "You've used your %lld free clean exports. Your takes are safe — export them clean anytime with Pro." : {
+
+    },
+    "Your AI identity. Cue writes and rewrites every script to sound like you — on every platform." : {
 
     },
     "Your first line matters more than your camera." : {

@@ -116,7 +116,7 @@ SF Symbols por significado: `doc.text` scripts · `film.stack` takes · `person.
 | Share to | `TakeReview/Share` | Miniatura, "SHARE TO", título, "0:44 · 9:16 · 1080p"; seis plataformas (a da take com anel amarelo e "recommended"), Save video e More; "Created for X — framed and safe-zoned for it"; Burn in captions; Quality 1080p / 4K (PRO); exportações limpas restantes + Go Pro. Plataforma: exporta, salva no Fotos e abre o app; "Ready to post on X · N of 5 clean left" |
 | Quick edit | `Screens/QuickEdit` | Cancel / "Quick edit 1:04 → 0:58" / Done; prévia ao vivo no formato; Trim (alças amarelas, playhead, Split, Delete da seção, "Remove silences"), Audio (volume 0–150%, Enhance voice, Reduce background noise), Adjust (exposição, contraste, temperatura −100…+100, Auto), Filters (Original, Vivid, Warm, Cool, Mono, Film), Crop (9:16, 4:5, 1:1, 16:9, arrastar, Reset), Captions (do roteiro, sincronizadas à fala; Classic, Bold, Highlight; Top, Middle, Bottom). Done guarda a receita (`TakeEdit`), a nova duração e marca Edited; o arquivo original não muda |
 | Takes | `Screens/Takes` | "Takes" + "N takes · N videos"; chips de plataforma e All takes / ★ Best / Not shared / Edited; seções Today / Yesterday / Earlier; cada linha é um vídeo (takes do mesmo roteiro): miniatura no formato certo com estrela e duração, plataforma · formato · qualidade, quando, chips "3 takes · Best: Take 3", "Edited", "Not shared" |
-| Profile | `Screens/Profile` | Card do criador, plano e uso, Creator DNA, ajustes, privacidade |
+| Profile | `Screens/Profile` | Card do criador ("@handle · Signed in with Apple") + botão Sign in with Apple quando fora; Creator Voice: "Sounds like you" (frase ao vivo + "Use my voice in AI scripts"), How I sound, My phrases, My vocabulary, My style, Niche; plano e uso; Settings (Default "Create for", Monetization goals, Privacy & AI data, Restore purchases); Sign out |
 | Paywall | `Screens/Shared/Paywall` | Contexto (perfil, exportação, IA), benefícios, planos, Restore/Terms |
 
 ## 5. Navegação
@@ -206,7 +206,11 @@ O protótipo simulava várias coisas; o app implementa de verdade ou deixa de fo
   leitura; espera nas pausas e quando a fala sai do script. Arrastar ou pular linhas muda o ponto de
   onde a leitura continua. Sem modelo para o idioma (ou enquanto ele baixa), volta ao nível de
   áudio: rola na velocidade definida enquanto ouve fala.
-- **Conta:** não existe login. O card do perfil é local (nome e @ editáveis); não há "Sign out".
+- **Conta:** Sign in with Apple é opcional e fica no Profile (não bloqueia nada). Sem backend, só
+  guarda o ID, o nome e o e-mail que a Apple manda na primeira vez (o nome preenche o perfil vazio);
+  no launch confere o estado da credencial e sai se ela foi revogada. Nome e @ continuam editáveis
+  e locais. O protótipo mostra "Signed in with Apple" sem botão de entrar; aqui ele aparece enquanto
+  você não entrou.
 - **Paywall:** só lista o que o Pro realmente destrava (exportações limpas e IA). Itens do protótipo
   como controle pelo Apple Watch e sincronização com iPad/Mac ficaram de fora.
 - **"Save takes to Photos":** removido — salvar automaticamente contornaria o limite de exportações

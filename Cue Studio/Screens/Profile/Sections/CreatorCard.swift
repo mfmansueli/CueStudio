@@ -9,6 +9,8 @@ import SwiftUI
 struct CreatorCard: View {
     let profile: CreatorProfile
     let isPro: Bool
+    /// Signed in with Apple: shown after the handle.
+    var isSignedIn = false
 
     var body: some View {
         HStack(spacing: 14) {
@@ -17,7 +19,7 @@ struct CreatorCard: View {
                 .foregroundStyle(Palette.accInk)
                 .frame(width: 58, height: 58)
                 .background(
-                    LinearGradient(colors: [Palette.acc, Color(hex: 0xFF9F0A)], startPoint: .topLeading, endPoint: .bottomTrailing),
+                    LinearGradient(colors: [Palette.acc, Palette.warn], startPoint: .topLeading, endPoint: .bottomTrailing),
                     in: Circle()
                 )
                 .accessibilityHidden(true)
@@ -25,7 +27,7 @@ struct CreatorCard: View {
                 Text(profile.displayName)
                     .font(.headline)
                     .foregroundStyle(Palette.ink)
-                Text(profile.handle.isEmpty ? String(localized: "Tap to add your name and handle") : "@\(profile.handle)")
+                Text(subtitle)
                     .font(.footnote)
                     .foregroundStyle(Palette.ink2)
             }
@@ -42,6 +44,14 @@ struct CreatorCard: View {
         .contentShape(Rectangle())
         .accessibilityElement(children: .combine)
         .accessibilityHint(Text("Edits your name and handle"))
+    }
+
+    /// "@mayamakes · Signed in with Apple"
+    private var subtitle: String {
+        let handle = profile.handle.isEmpty ? nil : "@\(profile.handle)"
+        let apple = isSignedIn ? String(localized: "Signed in with Apple") : nil
+        let parts = [handle, apple].compactMap { $0 }
+        return parts.isEmpty ? String(localized: "Tap to add your name and handle") : parts.joined(separator: " · ")
     }
 }
 

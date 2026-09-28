@@ -11,6 +11,8 @@ nonisolated enum DefaultsKey {
     static let cameraSettings = "cameraSettings"
     static let creatorProfile = "creatorProfile"
     static let cleanExportsUsed = "cleanExportsUsed"
+    /// The Sign in with Apple account (ID, and the name and email Apple shared once).
+    static let appleAccount = "appleAccount"
     /// v1's monthly AI counters ("aiScriptsUsed_2026-09"), removed at launch.
     static let legacyAIScriptsUsedPrefix = "aiScriptsUsed_"
 }
