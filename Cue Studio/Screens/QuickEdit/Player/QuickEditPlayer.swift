@@ -86,7 +86,7 @@ final class QuickEditPlayer: EditPlayback {
         let key = ItemKey(edit)
         if key != itemKey {
             // A new look or sound waits for the sliders to settle; new pieces show right away.
-            let settles = itemKey?.spans == key.spans
+            let settles = itemKey?.spans == key.spans && itemKey?.transitions == key.transitions
             itemKey = key
             if !settles, avPlayer.currentItem != nil {
                 awaitsItem = true
@@ -295,11 +295,12 @@ final class QuickEditPlayer: EditPlayback {
         min(max(0, time.isFinite ? time : 0), duration)
     }
 
-    /// What an item depends on: the look, the sound and where the pieces join. Not where the
+    /// What an item depends on: the look, the sound, where the pieces join and how. Not where the
     /// handles are, which only moves the playback window.
     private struct ItemKey: Equatable {
         let recipe: TakeEdit
         let spans: [TimeSpan]
+        let transitions: [TransitionWindow]
 
         init(_ edit: TakeEdit) {
             var recipe = edit
@@ -307,6 +308,7 @@ final class QuickEditPlayer: EditPlayback {
             recipe.suggestions = []
             self.recipe = recipe
             spans = edit.timeline.reachable.continuousSpans
+            transitions = TransitionWindow.windows(in: edit.timeline.reachable)
         }
     }
 }

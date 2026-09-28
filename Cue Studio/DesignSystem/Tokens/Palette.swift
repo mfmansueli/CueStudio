@@ -108,6 +108,10 @@ enum Palette {
     static let bubbleBorder = Color.white.opacity(0.25)
     /// The tick at the start of each frame, when the timeline is zoomed in to frame precision.
     static let frameTick = Color.white.opacity(0.7)
+    /// The thin line where one section cuts to the next on the timeline.
+    static let cutLine = Color.white.opacity(0.55)
+    /// Behind the mark on a cut (a hard cut) that picks its transition.
+    static let joinMark = Color.black.opacity(0.6)
     /// Behind "Classic" captions.
     static let captionBox = Color.black.opacity(0.62)
     /// Behind the preview before the video loads.

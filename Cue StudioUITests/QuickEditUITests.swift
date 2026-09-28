@@ -6,8 +6,8 @@
 import XCTest
 
 /// Quick edit from a take's review, on a small real video: play and pause, seek, cut, delete,
-/// remove part (and the zoom it brings), undo, redo, trim, Clean Up, captions, Done, and Cancel
-/// keeping a draft.
+/// remove part (and the zoom it brings), undo, redo, trim (straight through a cut), a cut's
+/// transition, Clean Up, captions, Done, and Cancel keeping a draft.
 @MainActor
 final class QuickEditUITests: XCTestCase {
     override func setUp() {
@@ -93,6 +93,43 @@ final class QuickEditUITests: XCTestCase {
 
         app.buttons["edit.undoButton"].tap()
         XCTAssertEqual(duration.label, "Original · 1:02")
+    }
+
+    func testTrimGoesStraightThroughACutAndACutCanFade() {
+        let app = openQuickEdit()
+        let time = app.staticTexts["edit.timeLabel"]
+        XCTAssertTrue(wait(for: time, value: "00:00.00 / 01:02.00"))
+        let timeline = element(app, "edit.timeline")
+        timeline.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).tap()
+        XCTAssertTrue(wait(for: time, value: "00:31.00 / 01:02.00"))
+        app.buttons["edit.cutButton"].tap()
+
+        // The cut's mark picks its transition: a hard cut ("None") until something else is chosen.
+        let join = element(app, "edit.join.1")
+        XCTAssertTrue(join.waitForExistence(timeout: 5))
+        XCTAssertEqual(join.value as? String, "None")
+        join.tap()
+        let fade = app.buttons["edit.transition.fade"]
+        XCTAssertTrue(fade.waitForExistence(timeout: 5))
+        XCTAssertTrue(app.buttons["edit.transition.hardCut"].isSelected)
+        fade.tap()
+        XCTAssertTrue(fade.isSelected)
+        app.buttons["edit.transitionDoneButton"].tap()
+        XCTAssertTrue(app.buttons["edit.cutButton"].waitForExistence(timeout: 5))
+        XCTAssertEqual(join.value as? String, "Fade")
+
+        // The start handle dragged past the cut keeps trimming: the cut is not a barrier.
+        let start = element(app, "edit.trimStartHandle")
+        start.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5))
+            .press(forDuration: 0.2, thenDragTo: timeline.coordinate(withNormalizedOffset: CGVector(dx: 0.75, dy: 0.5)))
+        let total = (time.value as? String)?.components(separatedBy: " / ").last ?? ""
+        XCTAssertLessThan(total, "00:31.00")
+        XCTAssertFalse(element(app, "edit.join.1").exists)
+
+        // Undo brings the cut back, with its fade.
+        app.buttons["edit.undoButton"].tap()
+        XCTAssertTrue(element(app, "edit.join.1").waitForExistence(timeout: 5))
+        XCTAssertEqual(element(app, "edit.join.1").value as? String, "Fade")
     }
 
     func testRemovePartTakesOutTheRedRange() {

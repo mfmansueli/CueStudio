@@ -39,13 +39,16 @@ struct TimelineLayoutTests {
         timeline.split(atEdited: 6)
         timeline.removeSegment(id: timeline.segments[1].id)
         let layout = TimelineLayout(timeline: timeline, width: width)
-        // 8 seconds left, with one hairline between the two pieces.
-        let scale = (width - 2 * inset - TimelineLayout.joinWidth) / 8
+        // 8 seconds left, edge to edge: the cut is a line, never a gap.
+        let scale = (width - 2 * inset) / 8
         #expect(near(layout.pointsPerSecond, scale))
-        #expect(near(layout.piece(1).minX, inset + 4 * scale + TimelineLayout.joinWidth))
+        #expect(near(layout.piece(1).minX, inset + 4 * scale))
+        #expect(near(layout.piece(1).minX, layout.piece(0).maxX))
+        #expect(near(layout.joinX(1), layout.piece(1).minX))
         #expect(layout.piece(1).source == TimeSpan(start: 6, end: 10))
-        // On the hairline: where the next piece starts.
-        #expect(near(layout.editedTime(atX: inset + 4 * scale + 1), 4))
+        // Right on the cut: where the next piece starts.
+        #expect(near(layout.editedTime(atX: inset + 4 * scale), 4))
+        #expect(near(layout.editedTime(atX: inset + 4 * scale + 1), 4 + 1 / Double(scale)))
         #expect(layout.segmentIndex(atX: layout.piece(1).minX + 10) == 1)
         #expect(near(layout.sourceTime(atX: layout.piece(1).minX + scale), 7))
     }
@@ -89,12 +92,75 @@ struct TimelineLayoutTests {
         timeline.removeSegment(id: timeline.segments[1].id)
         timeline.trimStart(to: 1)
         let layout = TimelineLayout(timeline: timeline, width: width)
-        // 1 s trimmed (still drawn) + 3 s + 4 s, and one hairline where B was.
-        let scale = (width - 2 * inset - TimelineLayout.joinWidth) / 8
+        // 1 s trimmed (still drawn) + 3 s + 4 s, and nothing where B was.
+        let scale = (width - 2 * inset) / 8
         #expect(near(layout.pointsPerSecond, scale))
-        #expect(near(layout.piece(1).minX, layout.piece(0).maxX + TimelineLayout.joinWidth))
+        #expect(near(layout.piece(1).minX, layout.piece(0).maxX))
         #expect(layout.piece(1).source == TimeSpan(start: 8, end: 12))
         #expect(near(layout.x(forEdited: 3), layout.piece(1).minX))
+    }
+
+    @Test func deletingTheLastSectionLeavesOnlyTheFirst() {
+        // Split, then Delete B: A alone plays; B is the trimmed end, dimmed, not a gap or a cut.
+        var timeline = EditTimeline(sourceDuration: 10)
+        timeline.split(atEdited: 4)
+        timeline.removeSegment(id: timeline.segments[1].id)
+        let layout = TimelineLayout(timeline: timeline, width: width)
+        let scale = (width - 2 * inset) / 10
+        #expect(layout.timeline.segments.count == 1)
+        #expect(near(layout.endHandleX, inset + 4 * scale))
+        #expect(layout.join(atX: layout.endHandleX) == nil)
+        #expect(near(layout.regions.last?.maxX ?? 0, width - inset))
+    }
+
+    @Test func aTapOnACutsMarkFindsTheNearestCut() {
+        var timeline = EditTimeline(sourceDuration: 10)
+        timeline.split(atEdited: 3)
+        timeline.split(atEdited: 7)
+        let layout = TimelineLayout(timeline: timeline, width: width)
+        #expect(layout.join(atX: layout.joinX(1) + 5) == 1)
+        #expect(layout.join(atX: layout.joinX(2) - TimelineLayout.joinReach + 1) == 2)
+        #expect(layout.join(atX: (layout.joinX(1) + layout.joinX(2)) / 2) == nil)
+        #expect(layout.join(atX: layout.startHandleX) == nil)
+    }
+
+    @Test func whileAHandleIsHeldTheStripStaysAsItWas() {
+        // [A | B] cut at 4; the start handle is dragged from A into B.
+        var origin = EditTimeline(sourceDuration: 10)
+        origin.split(atEdited: 4)
+        var trimmed = origin
+        trimmed.trimStart(to: 6)
+        let held = TimelineLayout(timeline: trimmed, width: width, reach: origin)
+        let before = TimelineLayout(timeline: origin, width: width)
+        // Same strip, same scale: nothing shifts under the finger.
+        #expect(held.regions == before.regions)
+        #expect(near(held.pointsPerSecond, before.pointsPerSecond))
+        // The handle sits where the finger took it, past the old cut.
+        let scale = (width - 2 * inset) / 10
+        #expect(near(held.startHandleX, inset + 6 * scale))
+        #expect(near(held.sourceTime(atX: held.startHandleX), 6))
+        #expect(near(held.endHandleX, width - inset))
+        #expect(held.timeline.segments.count == 1)
+        #expect(near(held.x(forEdited: 1), inset + 7 * scale))
+        #expect(near(held.editedTime(atX: inset + 8 * scale), 2))
+    }
+
+    @Test func aHandleHeldAcrossARemovedPartKeepsItsStrip() {
+        // [0,3] [6,10]: 3–6 was removed. The start handle dragged past A lands in B.
+        var origin = EditTimeline(sourceDuration: 10)
+        origin.split(atEdited: 3)
+        origin.split(atEdited: 6)
+        origin.removeSegment(id: origin.segments[1].id)
+        let fit = TimelineLayout(timeline: origin, width: width)
+        let x = fit.piece(1).minX + fit.pointsPerSecond
+        #expect(near(fit.sourceTime(atX: x), 7))
+        var trimmed = origin
+        trimmed.trimStart(to: fit.sourceTime(atX: x))
+        let held = TimelineLayout(timeline: trimmed, width: width, reach: origin)
+        #expect(held.regions == fit.regions)
+        #expect(near(held.startHandleX, x))
+        // Where the finger is still reads the same moment, so the handle keeps following it.
+        #expect(near(held.sourceTime(atX: x), 7))
     }
 
     @Test func cleanUpsStripShowsTheEditAlone() {

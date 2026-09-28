@@ -61,6 +61,9 @@
     "Cut at %@" : {
 
     },
+    "Cut at %@ · None keeps it a hard cut" : {
+
+    },
     "Cut at %@ — tap a side, then Delete" : {
 
     },
@@ -77,6 +80,12 @@
 
     },
     "Discard your edits?" : {
+
+    },
+    "Dissolve" : {
+
+    },
+    "Done with this cut" : {
 
     },
     "Draft kept — tap Edit to continue" : {
@@ -110,6 +119,9 @@
 
     },
     "Everything in Cue is free while you try it — %lld exports included. After that, 7 days free, then monthly or annual." : {
+
+    },
+    "Fade" : {
 
     },
     "Filler word" : {
@@ -184,7 +196,13 @@
     "No pauses left between the handles." : {
 
     },
+    "None" : {
+
+    },
     "Nothing to clean up here. Your take flows." : {
+
+    },
+    "Nothing was cut out here, so Dissolve won't show" : {
 
     },
     "Original · %@" : {
@@ -338,6 +356,9 @@
 
     },
     "Transcript, pauses and your script, compared on your iPhone. Nothing is removed until you say so." : {
+
+    },
+    "Transition at cut %lld" : {
 
     },
     "Trial started — enjoy Cue Pro" : {

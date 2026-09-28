@@ -6,16 +6,20 @@
 import SwiftUI
 
 /// The Quick edit timeline: the frames of what the handles can reach, with what they trimmed off
-/// dimmed outside them, the yellow trim handles, a black hairline between sections, the selected
+/// dimmed outside them, the yellow trim handles, a thin cut line between sections (the frames run
+/// edge to edge: a cut is never a gap) with a small mark to pick its transition, the selected
 /// section, the red "Remove part" range and the playhead. A bubble above shows the time being set.
 ///
 /// One drag gesture reads every touch and decides what it holds where the finger lands (see
 /// `TimelineLayout.target`): on the knob row above the frames, the playhead; on the frames, the red
 /// range's edges while it shows, else a handle, then the playhead's line, and anywhere else the
-/// playhead jumps to the finger and follows it; a tap also selects the section there. What a touch
-/// took hold of stays the same until it lifts, so the playhead and the handles never move each
-/// other. Both handles follow the finger the same way, to the moment of the recording under it.
-/// Nothing plays while a finger is down. Everything a finger sets lands on a frame (`FrameGrid`).
+/// playhead jumps to the finger and follows it; a tap also selects the section there, or the cut
+/// when it lands on its mark. What a touch took hold of stays the same until it lifts, so the
+/// playhead and the handles never move each other. Both handles follow the finger the same way, to
+/// the moment of the recording under it, straight through cuts: while a handle is held the strip
+/// stays as it was (`QuickEditViewModel.trimOrigin`), so a section the handle takes out doesn't
+/// shift the frames under the finger. Nothing plays while a finger is down. Everything a finger
+/// sets lands on a frame (`FrameGrid`).
 ///
 /// Zoom (`TimelineZoomController`): while the red range shows, the strip zooms in time so the range
 /// stays comfortable to see and to edit, down to frame by frame for a few frames; the edge under the
@@ -34,6 +38,12 @@ struct TimelineStripView: View {
     static let autoPanSpeed: CGFloat = 520
     /// Room kept between the red range and the sides when the zoom changes.
     static let selectionMargin: CGFloat = 24
+    /// The mark on a cut that picks its transition.
+    static let joinMarkSize: CGFloat = 20
+    /// How far above and below a cut's mark a tap still picks it.
+    static let joinMarkReach: CGFloat = 18
+    /// Sections narrower than this on screen don't show the marks of their cuts (unless selected).
+    static let joinMarkRoom: CGFloat = 26
 
     @State private var drag: Drag?
     /// Where the finger is while it holds something, for auto-pan.
@@ -43,6 +53,8 @@ struct TimelineStripView: View {
     @State private var autoPan: Task<Void, Never>?
     /// The playhead when the touch began, so a touch that becomes a pinch leaves it where it was.
     @State private var playheadAtTouch: TimeInterval = 0
+    /// The cut whose mark the touch began on: a tap there selects the cut.
+    @State private var touchedJoin: Int?
     /// Resets when the system cancels the touch, which `onEnded` never hears about.
     @GestureState private var isTouching = false
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
@@ -84,7 +96,7 @@ struct TimelineStripView: View {
                 .frame(width: proxy.size.width, height: Self.framesHeight)
                 .offset(y: framesTop)
                 trimDims(layout, handles: handles)
-                seams(layout)
+                cutLines(layout)
                 selection(layout)
                 trimBracket(layout, handles: handles)
                 removalRange(layout)
@@ -93,10 +105,12 @@ struct TimelineStripView: View {
                     knobHeight: Self.knobHeight, framesHeight: Self.framesHeight
                 )
                 .offset(y: Self.bubbleHeight)
+                joinMarks(layout)
                 bubble(layout, handles: handles)
                 handleElement(.start, x: handles.start)
                 handleElement(.end, x: handles.end)
                 removalEdgeElements(layout)
+                joinElements(layout)
             }
             .frame(width: proxy.size.width, height: proxy.size.height, alignment: .topLeading)
             // Zoomed in, the strip runs on past both sides.
@@ -124,7 +138,10 @@ struct TimelineStripView: View {
     private var framesTop: CGFloat { Self.bubbleHeight + Self.knobHeight }
 
     private func makeLayout(width: CGFloat) -> TimelineLayout {
-        TimelineLayout(timeline: viewModel.edit.timeline, width: width, zoom: zoom.zoom, offset: zoom.offset)
+        TimelineLayout(
+            timeline: viewModel.edit.timeline, width: width, reach: viewModel.trimOrigin,
+            zoom: zoom.zoom, offset: zoom.offset
+        )
     }
 
     /// The strip as it is now (zoom and scroll included), for work outside `body`.
@@ -163,14 +180,53 @@ struct TimelineStripView: View {
         }
     }
 
-    /// A black hairline between sections.
-    private func seams(_ layout: TimelineLayout) -> some View {
+    /// A thin line where one section cuts to the next: a division, not a gap. Yellow on the
+    /// selected cut.
+    private func cutLines(_ layout: TimelineLayout) -> some View {
         ForEach(1..<max(1, layout.timeline.segments.count), id: \.self) { index in
+            let isSelected = viewModel.selectedJoinIndex == index
+            let lineWidth: CGFloat = isSelected ? 2 : 1
             Rectangle()
-                .fill(Palette.bg)
-                .frame(width: 3, height: Self.framesHeight)
-                .offset(x: layout.piece(index).minX - TimelineLayout.joinWidth / 2 - 1.5, y: framesTop)
+                .fill(isSelected ? Palette.acc : Palette.cutLine)
+                .frame(width: lineWidth, height: Self.framesHeight)
+                .offset(x: layout.joinX(index) - lineWidth / 2, y: framesTop)
                 .allowsHitTesting(false)
+        }
+    }
+
+    /// Whether the cut before the section at `index` shows its mark: not while trimming or placing
+    /// the red range, and only with room for it on both sides (always when it's selected).
+    private func showsJoinMark(_ index: Int, in layout: TimelineLayout) -> Bool {
+        guard !isTrimming, viewModel.removalRange == nil, layout.timeline.segments.indices.contains(index), index > 0 else { return false }
+        let x = layout.joinX(index)
+        guard layout.visibleFrames.contains(x) else { return false }
+        if viewModel.selectedJoinIndex == index { return true }
+        return min(layout.piece(index - 1).width, layout.piece(index).width) >= Self.joinMarkRoom
+    }
+
+    /// On each cut, a small mark with its transition: tap it to pick one. Quiet for a hard cut,
+    /// yellow once a transition is set.
+    private func joinMarks(_ layout: TimelineLayout) -> some View {
+        ForEach(1..<max(1, layout.timeline.segments.count), id: \.self) { index in
+            if showsJoinMark(index, in: layout) {
+                let transition = layout.timeline.transition(atJoin: index)
+                let isSelected = viewModel.selectedJoinIndex == index
+                let isSet = transition != .hardCut
+                let shape = RoundedRectangle(cornerRadius: 6, style: .continuous)
+                Image(systemName: transition.systemImage)
+                    .font(.caption2.weight(.heavy))
+                    .imageScale(.small)
+                    .foregroundStyle(isSet ? Palette.accInk : Palette.ink)
+                    .frame(width: Self.joinMarkSize, height: Self.joinMarkSize)
+                    .background(isSet ? Palette.acc : Palette.joinMark, in: shape)
+                    .overlay(shape.strokeBorder(isSelected ? Palette.acc : Palette.bubbleBorder, lineWidth: isSelected ? 1.5 : 0.5))
+                    .offset(
+                        x: layout.joinX(index) - Self.joinMarkSize / 2,
+                        y: framesTop + (Self.framesHeight - Self.joinMarkSize) / 2
+                    )
+                    .allowsHitTesting(false)
+                    .accessibilityHidden(true)
+            }
         }
     }
 
@@ -327,6 +383,29 @@ struct TimelineStripView: View {
         }
     }
 
+    /// The cuts' marks, for VoiceOver and UI tests: a button that selects the cut, to pick its
+    /// transition. Touches go to the strip's gesture.
+    private func joinElements(_ layout: TimelineLayout) -> some View {
+        ForEach(1..<max(1, layout.timeline.segments.count), id: \.self) { index in
+            if showsJoinMark(index, in: layout) {
+                let transition = layout.timeline.transition(atJoin: index)
+                Color.clear
+                    .frame(width: TimelineLayout.joinReach * 2, height: Self.joinMarkReach * 2)
+                    .offset(
+                        x: layout.joinX(index) - TimelineLayout.joinReach,
+                        y: framesTop + Self.framesHeight / 2 - Self.joinMarkReach
+                    )
+                    .allowsHitTesting(false)
+                    .accessibilityElement()
+                    .accessibilityLabel(Text("Transition at cut \(index)"))
+                    .accessibilityValue(Text(transition.label))
+                    .accessibilityAddTraits(viewModel.selectedJoinIndex == index ? [.isButton, .isSelected] : .isButton)
+                    .accessibilityAction { viewModel.tapJoin(index) }
+                    .accessibilityIdentifier("edit.join.\(index)")
+            }
+        }
+    }
+
     // MARK: - Touch
 
     private func dragGesture(_ layout: TimelineLayout) -> some Gesture {
@@ -343,7 +422,11 @@ struct TimelineStripView: View {
             .onEnded { value in
                 let isTap = abs(value.translation.width) < 6 && abs(value.translation.height) < 6
                 if isTap, case .scrub = drag {
-                    viewModel.tapTimeline(onPiece: makeLayout(width: layout.width).segmentIndex(atX: value.location.x))
+                    if let join = touchedJoin {
+                        viewModel.tapJoin(join)
+                    } else {
+                        viewModel.tapTimeline(onPiece: makeLayout(width: layout.width).segmentIndex(atX: value.location.x))
+                    }
                 }
                 finish()
             }
@@ -357,6 +440,12 @@ struct TimelineStripView: View {
         let target = layout.target(
             atX: x, playheadX: playheadX, aboveFrames: location.y < framesTop - 3, removal: viewModel.removalRange
         )
+        touchedJoin = nil
+        if target == .playhead || target == .timeline,
+           abs(location.y - (framesTop + Self.framesHeight / 2)) <= Self.joinMarkReach,
+           let join = layout.join(atX: x), showsJoinMark(join, in: layout) {
+            touchedJoin = join
+        }
         switch target {
         case .handle(let handle):
             let timeline = viewModel.edit.timeline
@@ -423,6 +512,7 @@ struct TimelineStripView: View {
         }
         drag = nil
         finger = nil
+        touchedJoin = nil
     }
 
     // MARK: - Pinch

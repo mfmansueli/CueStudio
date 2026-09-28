@@ -10,7 +10,12 @@ import Foundation
 /// drops one, and Clean Up takes spans out the same way. A plain value, so every edit is a new
 /// state undo can return to, and the preview and the export play exactly the same pieces.
 ///
-/// Pieces stay in the recording's order, never overlap, and there is always at least one.
+/// A cut is a division, not a barrier: a handle dragged past one keeps trimming, and the pieces it
+/// passes leave the edit with their seams. Each seam carries how the next piece takes over
+/// (`EditSegment.transitionIn`), a hard cut unless the creator picks a transition.
+///
+/// Pieces stay in the recording's order, never overlap, and there is always at least one. The
+/// first piece's transition is always a hard cut: nothing comes before it.
 nonisolated struct EditTimeline: Codable, Hashable, Sendable {
     /// Shortest piece a trim or cut can leave: three frames at 30 fps.
     static let minimumDuration: TimeInterval = 0.1
@@ -18,7 +23,12 @@ nonisolated struct EditTimeline: Codable, Hashable, Sendable {
     /// Length of the original recording.
     private(set) var sourceDuration: TimeInterval
     /// What plays, in order.
-    private(set) var segments: [EditSegment]
+    private(set) var segments: [EditSegment] {
+        didSet {
+            // A piece that becomes the first (a trim or a delete took the one before) has no seam.
+            if let first = segments.first, first.transitionIn != .hardCut { segments[0].transitionIn = .hardCut }
+        }
+    }
 
     /// The whole recording, untouched.
     init(sourceDuration: TimeInterval) {
@@ -42,6 +52,7 @@ nonisolated struct EditTimeline: Codable, Hashable, Sendable {
             segment.sourceEnd = min(segment.sourceEnd, duration)
             if segment.duration >= Self.minimumDuration - 0.000_1 { kept.append(segment) }
         }
+        if !kept.isEmpty { kept[0].transitionIn = .hardCut }
         self.segments = kept.isEmpty ? [EditSegment(sourceStart: 0, sourceEnd: duration)] : kept
     }
 
@@ -105,6 +116,12 @@ nonisolated struct EditTimeline: Codable, Hashable, Sendable {
     /// removed nothing).
     func continuesFromPrevious(_ index: Int) -> Bool {
         index > 0 && index < segments.count && abs(segments[index].sourceStart - segments[index - 1].sourceEnd) < 0.001
+    }
+
+    /// How the piece at `index` takes over from the one before it (the seam before it). Always a
+    /// hard cut for the first piece.
+    func transition(atJoin index: Int) -> EditTransition {
+        index > 0 && index < segments.count ? segments[index].transitionIn : .hardCut
     }
 
     func segment(id: UUID) -> EditSegment? {
@@ -199,19 +216,49 @@ nonisolated struct EditTimeline: Codable, Hashable, Sendable {
 
     // MARK: - Editing
 
-    /// Moves the start handle: the first piece's start, from the beginning of the recording to
-    /// just before that piece ends.
+    /// Moves the start handle, from the beginning of the recording to just before the edit ends.
+    /// A cut is no barrier: past the end of the first piece, the pieces the handle passes leave
+    /// the edit, and so do the seams between them. Across a cut that removed nothing the handle
+    /// lands exactly on `time`; across a removed part, at the start of the piece after it.
     mutating func trimStart(to time: TimeInterval) {
-        let latest = max(0, segments[0].sourceEnd - Self.minimumDuration)
-        segments[0].sourceStart = min(max(0, time), latest)
+        let last = segments.count - 1
+        let target = min(max(0, time), max(0, segments[last].sourceEnd - Self.minimumDuration))
+        var first = 0
+        while first < last, segments[first].sourceEnd - target < Self.minimumDuration - 0.000_1 { first += 1 }
+        guard first > 0 else {
+            segments[0].sourceStart = target
+            return
+        }
+        // The rest of a passed piece that runs straight on into this one is the same recording.
+        let runsOn = continuesFromPrevious(first)
+        var trimmed = Array(segments[first...])
+        trimmed[0].sourceStart = runsOn ? target : max(trimmed[0].sourceStart, target)
+        segments = trimmed
     }
 
-    /// Moves the end handle: the last piece's end, from just after that piece starts to the end of
-    /// the recording.
+    /// Moves the end handle, from just after the edit starts to the end of the recording. Like
+    /// the start handle, it trims straight through cuts: the pieces it passes leave the edit.
     mutating func trimEnd(to time: TimeInterval) {
-        let last = segments.count - 1
-        let earliest = min(sourceDuration, segments[last].sourceStart + Self.minimumDuration)
-        segments[last].sourceEnd = max(min(sourceDuration, time), earliest)
+        let target = max(min(sourceDuration, time), min(sourceDuration, segments[0].sourceStart + Self.minimumDuration))
+        var last = segments.count - 1
+        while last > 0, target - segments[last].sourceStart < Self.minimumDuration - 0.000_1 { last -= 1 }
+        guard last < segments.count - 1 else {
+            segments[last].sourceEnd = target
+            return
+        }
+        let runsOn = continuesFromPrevious(last + 1)
+        var trimmed = Array(segments[...last])
+        trimmed[last].sourceEnd = runsOn ? target : min(trimmed[last].sourceEnd, target)
+        segments = trimmed
+    }
+
+    /// Sets how the piece at `index` takes over from the one before it. False, and no change,
+    /// for the first piece (no seam) or when it's already that transition.
+    @discardableResult
+    mutating func setTransition(_ transition: EditTransition, atJoin index: Int) -> Bool {
+        guard index > 0, index < segments.count, segments[index].transitionIn != transition else { return false }
+        segments[index].transitionIn = transition
+        return true
     }
 
     /// Cuts the piece playing at `time` (edited seconds) in two. False when either side would be
@@ -245,7 +292,11 @@ nonisolated struct EditTimeline: Codable, Hashable, Sendable {
         for segment in segments {
             let pieces = segment.span.subtracting(spans).filter { $0.duration >= Self.minimumDuration }
             for (offset, piece) in pieces.enumerated() {
-                result.append(EditSegment(id: offset == 0 ? segment.id : UUID(), span: piece))
+                // The first piece left keeps the seam before it; new seams start as hard cuts.
+                result.append(EditSegment(
+                    id: offset == 0 ? segment.id : UUID(), span: piece,
+                    transitionIn: offset == 0 ? segment.transitionIn : .hardCut
+                ))
             }
         }
         guard !result.isEmpty, result.map(\.span) != keptSpans else { return false }

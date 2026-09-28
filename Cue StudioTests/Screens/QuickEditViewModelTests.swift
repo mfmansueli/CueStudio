@@ -159,6 +159,207 @@ struct QuickEditViewModelTests {
         #expect(scenario.viewModel.edit.timeline.isWhole)
     }
 
+    // MARK: - Cuts and trims
+
+    /// Cut at 20 s of the 64 s take: [A | B], with B selected.
+    private func cutAtTwenty(_ scenario: Scenario) {
+        scenario.player.seek(to: 20)
+        scenario.viewModel.cut()
+    }
+
+    @Test func aCutMakesTwoSections() async {
+        // Case A.
+        let scenario = await makeScenario()
+        cutAtTwenty(scenario)
+        #expect(spans(scenario.viewModel) == [[0, 20], [20, 64]])
+        #expect(scenario.viewModel.edit.editedDuration == 64)
+    }
+
+    @Test func handlesTrimOnEitherSideOfACut() async {
+        // Cases B and C: the start handle inside A, the end handle inside B.
+        let scenario = await makeScenario()
+        let viewModel = scenario.viewModel
+        cutAtTwenty(scenario)
+        dragHandle(.start, to: 5, on: viewModel)
+        dragHandle(.end, to: 50, on: viewModel)
+        #expect(spans(viewModel) == [[5, 20], [20, 50]])
+    }
+
+    @Test func aHandleDraggedPastACutKeepsTrimming() async {
+        // Case D: the cut is no barrier; A leaves the edit and the division goes with it.
+        let scenario = await makeScenario()
+        let viewModel = scenario.viewModel
+        cutAtTwenty(scenario)
+        dragHandle(.start, to: 30, on: viewModel)
+        #expect(spans(viewModel) == [[30, 64]])
+        #expect(viewModel.edit.timeline.segments.count == 1)
+        #expect(viewModel.selectedSegmentIndex == nil)
+        #expect(viewModel.durationChange == "1:04 → 0:34")
+        dragHandle(.end, to: 40, on: viewModel)
+        #expect(spans(viewModel) == [[30, 40]])
+    }
+
+    @Test func theEndHandleCrossesACutToo() async {
+        let scenario = await makeScenario()
+        let viewModel = scenario.viewModel
+        cutAtTwenty(scenario)
+        dragHandle(.end, to: 12, on: viewModel)
+        #expect(spans(viewModel) == [[0, 12]])
+    }
+
+    @Test func goingBackBeforeLettingGoBringsTheCutBack() async {
+        let scenario = await makeScenario()
+        let viewModel = scenario.viewModel
+        cutAtTwenty(scenario)
+        let ids = viewModel.edit.timeline.segments.map(\.id)
+        viewModel.beginTrim(.start)
+        viewModel.trim(.start, toSource: 30)
+        #expect(spans(viewModel) == [[30, 64]])
+        // The strip keeps drawing the timeline the drag began with.
+        #expect(viewModel.trimOrigin?.segments.map(\.id) == ids)
+        viewModel.trim(.start, toSource: 10)
+        viewModel.endTrim()
+        #expect(spans(viewModel) == [[10, 20], [20, 64]])
+        #expect(viewModel.edit.timeline.segments.map(\.id) == ids)
+        #expect(viewModel.trimOrigin == nil)
+        #expect(viewModel.history.past.count == 2)
+    }
+
+    @Test func deletingTheSecondSectionLeavesOnlyTheFirst() async {
+        // Case E: the cut selected B; Delete leaves A alone, with no cut left behind.
+        let scenario = await makeScenario()
+        let viewModel = scenario.viewModel
+        cutAtTwenty(scenario)
+        viewModel.removeSelection()
+        #expect(spans(viewModel) == [[0, 20]])
+        #expect(viewModel.edit.timeline.segments.count == 1)
+        #expect(viewModel.edit.timeline.tail == TimeSpan(start: 20, end: 64))
+    }
+
+    @Test func cutTrimAndCutAgain() async {
+        // Case F.
+        let scenario = await makeScenario()
+        let viewModel = scenario.viewModel
+        cutAtTwenty(scenario)
+        dragHandle(.start, to: 5, on: viewModel)
+        // 30 s into the edit is 35 s into the recording.
+        scenario.player.seek(to: 30)
+        viewModel.cut()
+        #expect(spans(viewModel) == [[5, 20], [20, 35], [35, 64]])
+        dragHandle(.start, to: 25, on: viewModel)
+        #expect(spans(viewModel) == [[25, 35], [35, 64]])
+    }
+
+    @Test func aTrimAcrossSeveralCutsLeavesNoGhosts() async {
+        // Case G: [A][B][C][D], the start handle dragged into C, then the end handle into C.
+        let scenario = await makeScenario()
+        let viewModel = scenario.viewModel
+        for cut in [16.0, 32, 48] {
+            scenario.player.seek(to: cut)
+            viewModel.cut()
+        }
+        #expect(viewModel.edit.timeline.segments.count == 4)
+        dragHandle(.start, to: 40, on: viewModel)
+        #expect(spans(viewModel) == [[40, 48], [48, 64]])
+        dragHandle(.end, to: 44, on: viewModel)
+        #expect(spans(viewModel) == [[40, 44]])
+        #expect(viewModel.edit.editedDuration == 4)
+    }
+
+    @Test func undoAndRedoATrimAcrossACut() async {
+        // Case H: the cut, and the sections it made, come back with undo.
+        let scenario = await makeScenario()
+        let viewModel = scenario.viewModel
+        cutAtTwenty(scenario)
+        let cut = viewModel.edit.timeline
+        dragHandle(.start, to: 30, on: viewModel)
+        let trimmed = viewModel.edit.timeline
+        viewModel.undo()
+        #expect(viewModel.edit.timeline == cut)
+        viewModel.redo()
+        #expect(viewModel.edit.timeline == trimmed)
+        viewModel.undo()
+        viewModel.undo()
+        #expect(viewModel.edit.timeline.isWhole)
+    }
+
+    // MARK: - Transitions
+
+    @Test func aCutIsAHardCutUntilATransitionIsPicked() async {
+        let scenario = await makeScenario()
+        let viewModel = scenario.viewModel
+        cutAtTwenty(scenario)
+        #expect(viewModel.edit.timeline.transition(atJoin: 1) == .hardCut)
+        #expect(viewModel.selectedTransition == nil)
+
+        viewModel.tapJoin(1)
+        #expect(viewModel.selectedJoinIndex == 1)
+        #expect(viewModel.selectedSegmentIndex == nil)
+        #expect(viewModel.selectedTransition == .hardCut)
+        #expect(viewModel.trimHint == "Cut at 00:20.00 · None keeps it a hard cut")
+
+        viewModel.setTransition(.fade)
+        #expect(viewModel.edit.timeline.transition(atJoin: 1) == .fade)
+        #expect(scenario.player.shown.last?.timeline.transition(atJoin: 1) == .fade)
+        // A moment before the cut, so Play shows it.
+        #expect(scenario.player.currentTime == 20 - QuickEditViewModel.transitionLeadIn)
+
+        viewModel.undo()
+        #expect(viewModel.edit.timeline.transition(atJoin: 1) == .hardCut)
+        viewModel.redo()
+        #expect(viewModel.edit.timeline.transition(atJoin: 1) == .fade)
+
+        viewModel.closeTransitions()
+        #expect(viewModel.selectedTransition == nil)
+        viewModel.done()
+        #expect(scenario.takes.takes[0].edit?.timeline.transition(atJoin: 1) == .fade)
+    }
+
+    @Test func aDissolveOverACutThatRemovedNothingSaysSo() async {
+        let scenario = await makeScenario()
+        let viewModel = scenario.viewModel
+        cutAtTwenty(scenario)
+        viewModel.tapJoin(1)
+        viewModel.setTransition(.dissolve)
+        #expect(viewModel.trimHint == "Nothing was cut out here, so Dissolve won't show")
+    }
+
+    @Test func aCutOrASectionIsSelectedNeverBoth() async {
+        let scenario = await makeScenario()
+        let viewModel = scenario.viewModel
+        cutAtTwenty(scenario)
+        viewModel.tapJoin(1)
+        viewModel.tapTimeline(onPiece: 0)
+        #expect(viewModel.selectedJoinIndex == nil)
+        #expect(viewModel.selectedSegmentIndex == 0)
+        viewModel.tapJoin(1)
+        #expect(viewModel.selectedSegmentIndex == nil)
+        // Tapping the same cut again lets go of it; the first section has no cut before it.
+        viewModel.tapJoin(1)
+        #expect(viewModel.selectedJoinIndex == nil)
+        viewModel.tapJoin(0)
+        #expect(viewModel.selectedJoinIndex == nil)
+        // Nothing to pick while the red range shows.
+        viewModel.startRemovingPart()
+        viewModel.tapJoin(1)
+        #expect(viewModel.selectedJoinIndex == nil)
+    }
+
+    @Test func aTrimThatTakesTheCutTakesItsTransition() async {
+        let scenario = await makeScenario()
+        let viewModel = scenario.viewModel
+        cutAtTwenty(scenario)
+        viewModel.tapJoin(1)
+        viewModel.setTransition(.dissolve)
+        dragHandle(.start, to: 30, on: viewModel)
+        #expect(viewModel.selectedTransition == nil)
+        #expect(viewModel.edit.timeline.segments.count == 1)
+        #expect(viewModel.edit.timeline.segments[0].transitionIn == .hardCut)
+        // Undo brings back the cut with its dissolve.
+        viewModel.undo()
+        #expect(viewModel.edit.timeline.transition(atJoin: 1) == .dissolve)
+    }
+
     // MARK: - Frames
 
     @Test func readsTheFrameRateFromTheFile() async {

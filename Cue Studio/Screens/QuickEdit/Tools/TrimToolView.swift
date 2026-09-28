@@ -7,8 +7,9 @@ import SwiftUI
 
 /// Trim: play, the time, undo and redo; the timeline; then "Remove part" (drag a red range over
 /// what should go), Cut at the playhead, Delete the selected section and Clean Up. While the red
-/// range shows, the buttons become Cancel and "Remove 00:02.10". A hint says what the timeline does
-/// (and that it's zoomed in, when it is: see `TimelineZoomController`).
+/// range shows, the buttons become Cancel and "Remove 00:02.10"; with a cut selected (its mark on
+/// the timeline), its transition: None, Dissolve or Fade. A hint says what the timeline does (and
+/// that it's zoomed in, when it is: see `TimelineZoomController`).
 struct TrimToolView: View {
     let viewModel: QuickEditViewModel
 
@@ -20,7 +21,13 @@ struct TrimToolView: View {
             TimelineStripView(viewModel: viewModel, zoom: zoom)
                 .padding(.top, 4)
             Group {
-                if viewModel.removalRange == nil { actions } else { removalActions }
+                if viewModel.removalRange != nil {
+                    removalActions
+                } else if let transition = viewModel.selectedTransition {
+                    transitionActions(transition)
+                } else {
+                    actions
+                }
             }
             .padding(.top, 10)
             Text(zoom.hint(isRemovingPart: viewModel.removalRange != nil) ?? viewModel.trimHint)
@@ -76,6 +83,28 @@ struct TrimToolView: View {
             .buttonStyle(.cueTinted(.medium, expands: false))
             .accessibilityHint(Text("Finds pauses, filler words and retakes to review"))
             .accessibilityIdentifier("edit.cleanUpButton")
+        }
+    }
+
+    /// The selected cut: None keeps it a hard cut (the default), or a dissolve or a fade. The check
+    /// lets go of the cut.
+    private func transitionActions(_ selected: EditTransition) -> some View {
+        HStack(spacing: 8) {
+            ForEach(EditTransition.allCases) { transition in
+                Button { viewModel.setTransition(transition) } label: {
+                    FilterChip(label: transition.label, isSelected: transition == selected, height: Metrics.mediumButtonHeight)
+                }
+                .buttonStyle(.plain)
+                .accessibilityAddTraits(transition == selected ? .isSelected : [])
+                .accessibilityIdentifier("edit.transition.\(transition.rawValue)")
+            }
+            Spacer(minLength: 0)
+            Button(action: viewModel.closeTransitions) {
+                Image(systemName: "checkmark")
+            }
+            .buttonStyle(.cueIcon(.surface, diameter: Metrics.mediumButtonHeight))
+            .accessibilityLabel(Text("Done with this cut"))
+            .accessibilityIdentifier("edit.transitionDoneButton")
         }
     }
 
