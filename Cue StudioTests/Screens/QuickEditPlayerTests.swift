@@ -8,8 +8,8 @@ import Foundation
 import Testing
 @testable import Cue_Studio
 
-/// The real player on a real clip: the clock follows playback, stops at the end handle, stays
-/// put on pause, and trims move only the playback window.
+/// The real player on a real clip: the clock follows playback, stops at the end handle (or at the
+/// end of the part under review), stays put on pause, and trims move only the playback window.
 @MainActor
 @Suite("QuickEditPlayer", .serialized, .timeLimit(.minutes(2)))
 struct QuickEditPlayerTests {
@@ -79,6 +79,62 @@ struct QuickEditPlayerTests {
         try await waitUntil { abs(itemSeconds(player) - 2) < 0.05 }
         player.play()
         try await waitUntil { player.currentTime > 0.1 && player.currentTime < 1 }
+        player.stop()
+    }
+
+    @Test func playingInsideThePartUnderReviewStopsAtItsEnd() async throws {
+        let (player, _, clip) = try await makePlayer(seconds: 3)
+        defer { try? FileManager.default.removeItem(at: clip) }
+        player.reviewedPart = 0.5...1.2
+        player.seek(to: 0.7)
+        try await waitUntil { abs(itemSeconds(player) - 0.7) < 0.001 }
+        player.play()
+        try await waitUntil { player.currentTime > 0.9 }
+        #expect(player.isPlaying)
+        try await waitUntil { !player.isPlaying }
+        #expect(abs(player.currentTime - 1.2) < 0.001)
+        try await waitUntil { abs(itemSeconds(player) - 1.2) < 0.001 }
+        // It stays there: nothing past the part plays.
+        try await Task.sleep(for: .milliseconds(300))
+        #expect(abs(player.currentTime - 1.2) < 0.001)
+        #expect(!player.isPlaying)
+        player.stop()
+    }
+
+    @Test func playingFromThePartsEndPlaysThePartAgain() async throws {
+        let (player, _, clip) = try await makePlayer(seconds: 3)
+        defer { try? FileManager.default.removeItem(at: clip) }
+        player.reviewedPart = 0.5...1
+        player.seek(to: 1)
+        try await waitUntil { abs(itemSeconds(player) - 1) < 0.001 }
+        player.play()
+        #expect(player.currentTime == 0.5)
+        try await waitUntil { !player.isPlaying }
+        #expect(abs(player.currentTime - 1) < 0.001)
+        player.stop()
+    }
+
+    @Test func playingAfterThePartRunsToTheEnd() async throws {
+        let (player, _, clip) = try await makePlayer(seconds: 2)
+        defer { try? FileManager.default.removeItem(at: clip) }
+        player.reviewedPart = 0.2...0.5
+        player.seek(to: 1.2)
+        try await waitUntil { abs(itemSeconds(player) - 1.2) < 0.001 }
+        player.play()
+        try await waitUntil { !player.isPlaying }
+        #expect(abs(player.currentTime - 2) < 0.05)
+        player.stop()
+    }
+
+    @Test func droppingThePartLetsPlaybackRunOn() async throws {
+        let (player, _, clip) = try await makePlayer(seconds: 3)
+        defer { try? FileManager.default.removeItem(at: clip) }
+        player.reviewedPart = 0...1
+        player.play()
+        try await waitUntil { player.currentTime > 0.2 }
+        player.reviewedPart = nil
+        try await waitUntil { player.currentTime > 1.3 }
+        #expect(player.isPlaying)
         player.stop()
     }
 

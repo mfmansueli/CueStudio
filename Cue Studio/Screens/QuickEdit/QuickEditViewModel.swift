@@ -44,8 +44,11 @@ final class QuickEditViewModel {
     private(set) var selectedSegmentID: UUID?
     /// The trim handle being dragged.
     private(set) var activeHandle: TrimHandle?
-    /// "Remove part": the red range, in edited seconds, while it is being placed.
-    private(set) var removalRange: ClosedRange<TimeInterval>?
+    /// "Remove part": the red range, in edited seconds, while it is being placed. Playing from
+    /// inside it stops at its end, to watch exactly what would go.
+    private(set) var removalRange: ClosedRange<TimeInterval>? {
+        didSet { player.reviewedPart = removalRange }
+    }
     private(set) var isWritingCaptions = false
     /// Clean Up listening to the take (see `QuickEditViewModel+CleanUp`).
     var analysis: Analysis = .idle

@@ -177,6 +177,20 @@ struct QuickEditViewModelTests {
         #expect(scenario.viewModel.edit.timeline.isWhole)
     }
 
+    @Test func theRedRangeIsThePartThePlayerReviews() async {
+        let scenario = await makeScenario()
+        scenario.player.seek(to: 20)
+        scenario.viewModel.startRemovingPart()
+        #expect(scenario.player.reviewedPart == 19...21)
+        scenario.viewModel.moveRemovalEdge(.end, toEdited: 30)
+        #expect(scenario.player.reviewedPart == 19...30)
+        scenario.viewModel.cancelRemovingPart()
+        #expect(scenario.player.reviewedPart == nil)
+        scenario.viewModel.startRemovingPart()
+        scenario.viewModel.removePart()
+        #expect(scenario.player.reviewedPart == nil)
+    }
+
     @Test func theRedEdgesMoveAndNeverCross() async {
         let scenario = await makeScenario()
         scenario.player.seek(to: 20)

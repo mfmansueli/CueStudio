@@ -17,6 +17,9 @@ protocol EditPlayback: AnyObject {
     var state: EditPlaybackState { get }
     /// A rebuild is taking long enough to say so.
     var isProcessing: Bool { get }
+    /// A part under review (edited seconds): "Remove part"'s red range. Playing from before its
+    /// end stops exactly at its end instead of running on; from its end, it plays the part again.
+    var reviewedPart: ClosedRange<TimeInterval>? { get set }
 
     /// Plays `edit` from now on, keeping the playhead on the same moment of the recording (or
     /// where the edit picks up, when that moment was cut).

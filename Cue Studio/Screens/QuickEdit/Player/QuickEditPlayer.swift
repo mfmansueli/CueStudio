@@ -22,6 +22,13 @@ final class QuickEditPlayer: EditPlayback {
     private(set) var isPlaying = false
     private(set) var state: EditPlaybackState = .loading
     private(set) var isProcessing = false
+    var reviewedPart: ClosedRange<TimeInterval>? {
+        didSet {
+            guard reviewedPart != oldValue else { return }
+            stopTime = isPlaying ? reviewedPart.flatMap { currentTime < $0.upperBound ? $0.upperBound : nil } : nil
+            applyWindow()
+        }
+    }
 
     @ObservationIgnored let avPlayer = AVPlayer()
     @ObservationIgnored private let videoURL: URL
@@ -42,6 +49,9 @@ final class QuickEditPlayer: EditPlayback {
     /// longer map onto the edit, so it holds still and its ticks are ignored until the new one
     /// is in.
     @ObservationIgnored private var awaitsItem = false
+    /// Where this playback stops short of the end: the end of the part under review, when it
+    /// started before it. Set by `play()`, cleared when playback stops.
+    @ObservationIgnored private var stopTime: TimeInterval?
 
     private static let blankTimeline = EditTimeline(sourceDuration: 0)
 
@@ -56,6 +66,9 @@ final class QuickEditPlayer: EditPlayback {
 
     /// Length of the edit.
     var duration: TimeInterval { edit?.editedDuration ?? 0 }
+
+    /// Edited seconds where playback stops: the end of the part under review, or of the edit.
+    private var playbackEnd: TimeInterval { min(stopTime ?? duration, duration) }
 
     /// Where the edit starts inside the item, which begins at the start of the recording.
     private var windowStart: TimeInterval { edit?.timeline.trimStart ?? 0 }
@@ -90,11 +103,20 @@ final class QuickEditPlayer: EditPlayback {
     func play() {
         guard state == .ready, duration > 0 else { return }
         isPlaying = true
-        if currentTime >= duration - 0.02 {
+        var from = currentTime
+        if let part = reviewedPart, abs(currentTime - part.upperBound) < 0.02 {
+            // From the end of the part under review, that part plays again.
+            from = part.lowerBound
+        } else if currentTime >= duration - 0.02 {
             // From the end, the edit plays again from the start.
-            currentTime = 0
+            from = 0
+        }
+        stopTime = reviewedPart.flatMap { from < $0.upperBound - 0.02 ? $0.upperBound : nil }
+        applyWindow()
+        if from != currentTime {
+            currentTime = from
             resumesAfterSeek = true
-            requestSeek(to: 0)
+            requestSeek(to: from)
         } else if isSeeking || awaitsItem {
             resumesAfterSeek = true
         } else {
@@ -108,8 +130,9 @@ final class QuickEditPlayer: EditPlayback {
         avPlayer.pause()
         // The playhead stays on the frame that is showing (the last tick can trail it slightly).
         if state == .ready, !isSeeking, !awaitsItem, let shown = itemTime {
-            currentTime = clamped(shown - windowStart)
+            currentTime = min(clamped(shown - windowStart), playbackEnd)
         }
+        endStop()
     }
 
     func togglePlayback() {
@@ -137,6 +160,7 @@ final class QuickEditPlayer: EditPlayback {
         awaitsItem = false
         resumesAfterSeek = false
         isPlaying = false
+        stopTime = nil
         avPlayer.pause()
         if let timeObserver {
             avPlayer.removeTimeObserver(timeObserver)
@@ -204,9 +228,16 @@ final class QuickEditPlayer: EditPlayback {
         }
     }
 
-    /// Holds playback between the handles.
+    /// Holds playback between the handles, or up to the end of the part under review.
     private func applyWindow() {
-        avPlayer.currentItem?.forwardPlaybackEndTime = CMTime(seconds: windowStart + duration, preferredTimescale: 600)
+        avPlayer.currentItem?.forwardPlaybackEndTime = CMTime(seconds: windowStart + playbackEnd, preferredTimescale: 600)
+    }
+
+    /// Playback is over: the next one runs to the end handle unless it starts inside a part.
+    private func endStop() {
+        guard stopTime != nil else { return }
+        stopTime = nil
+        applyWindow()
     }
 
     // MARK: - Time
@@ -238,11 +269,21 @@ final class QuickEditPlayer: EditPlayback {
     private func playerDidTick(_ time: CMTime) {
         guard state == .ready, !isSeeking, !isScrubbing, !awaitsItem, time.isNumeric else { return }
         let edited = time.seconds - windowStart
-        let reachedEnd = edited >= duration - 0.001
-        currentTime = clamped(edited)
-        // `forwardPlaybackEndTime` stops playback at the end handle; this is the safety net.
+        let end = playbackEnd
+        let reachedEnd = edited >= end - 0.001
+        currentTime = min(clamped(edited), end)
+        // `forwardPlaybackEndTime` stops playback at the end handle (or the end of the part under
+        // review); this is the safety net.
         if reachedEnd, avPlayer.rate != 0 { avPlayer.pause() }
-        if isPlaying, avPlayer.rate == 0 || reachedEnd { isPlaying = false }
+        guard isPlaying, avPlayer.rate == 0 || reachedEnd else { return }
+        isPlaying = false
+        guard stopTime != nil else { return }
+        endStop()
+        // The part under review ends exactly on its end: never a frame past it, nor one short.
+        if abs(edited - end) < 0.05 {
+            currentTime = end
+            if edited != end { requestSeek(to: end) }
+        }
     }
 
     private var itemTime: TimeInterval? {
