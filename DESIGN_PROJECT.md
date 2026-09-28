@@ -126,7 +126,7 @@ SF Symbols por significado: `doc.text` scripts · `film.stack` takes · `person.
 | Câmera | `CameraSettingsSheet` | Lente, enquadramento, resolução, fps, grid, safe zones, estabilização, microfone, contagem, formato. No Selfie com script, a sheet para logo abaixo da janela de texto (não cresce além dela) e não escurece o fundo |
 | Revisão do take | `Screens/TakeReview` | Vídeo no formato da take (barras pretas fora do 9:16); topo: voltar, "Take N · 0:44", estrela e lixeira; filmstrip, título (+ EDITED), meta, aviso de exportações; faixa "Your takes · N" (troca de take, "Tap ☆ to pick your best", "Suggest best" · PRO); Edit · Retake · Save · Share (Share amarelo, abre Share to). Só uma melhor take por roteiro |
 | Share to | `TakeReview/Share` | Miniatura, "SHARE TO", título, "0:44 · 9:16 · 1080p"; seis plataformas (a da take com anel amarelo e "recommended"), Save video e More; "Created for X — framed and safe-zoned for it"; Burn in captions; Quality 1080p / 4K (PRO); exportações limpas restantes + Go Pro. Plataforma: exporta, salva no Fotos e abre o app; "Ready to post on X · N of 5 clean left" |
-| Quick edit | `Screens/QuickEdit` | Cancel / "Quick edit 1:04 → 0:58" / Done; prévia ao vivo no formato; Trim (alças amarelas, playhead, Split, Delete da seção, "Remove silences"), Audio (volume 0–150%, Enhance voice, Reduce background noise), Adjust (exposição, contraste, temperatura −100…+100, Auto), Filters (Original, Vivid, Warm, Cool, Mono, Film), Crop (9:16, 4:5, 1:1, 16:9, arrastar, Reset), Captions (do roteiro, sincronizadas à fala; Classic, Bold, Highlight; Top, Middle, Bottom). Done guarda a receita (`TakeEdit`), a nova duração e marca Edited; o arquivo original não muda |
+| Quick edit | `Screens/QuickEdit` | Cancel (com alterações, pergunta "Discard your edits?") / "Quick edit 1:04 → 0:58" / Done; prévia ao vivo no formato (toque = play/pause); barra de transporte com play/pause e "00:04.32 / 00:11.00" (playhead / duração editada) e, no Trim, desfazer/refazer; Trim (timeline com frames reais só da edição, trechos antes/depois das alças esmaecidos, fio vermelho onde algo foi removido, alças amarelas, playhead com botão arrastável, Cut no playhead, tocar um pedaço seleciona, Remove, "Remove silences"), Audio (volume 0–150%, Enhance voice, Reduce background noise), Adjust (exposição, contraste, temperatura −100…+100, Auto), Filters (Original, Vivid, Warm, Cool, Mono, Film), Crop (9:16, 4:5, 1:1, 16:9, arrastar, Reset), Captions (do roteiro, sincronizadas à fala; Classic, Bold, Highlight; Top, Middle, Bottom). Done guarda a receita (`TakeEdit`), a nova duração e marca Edited; o arquivo original não muda |
 | Takes | `Screens/Takes` | "Takes" + "N takes · N videos"; chips de plataforma e All takes / ★ Best / Not shared / Edited; seções Today / Yesterday / Earlier; cada linha é um vídeo (takes do mesmo roteiro): miniatura no formato certo com estrela e duração, plataforma · formato · qualidade, quando, chips "3 takes · Best: Take 3", "Edited", "Not shared" |
 | Profile | `Screens/Profile` | Card do criador ("@handle · Signed in with Apple") + botão Sign in with Apple quando fora; Creator Voice: "Sounds like you" (frase ao vivo + "Use my voice in AI scripts"), How I sound, My phrases, My vocabulary (PRO), My style (PRO), Niche; plano e uso; Settings (Default "Create for", Monetization goals, Privacy & AI data, Restore purchases); Sign out |
 | Paywall | `Screens/Shared/Paywall` | Tela cheia com título pelo contexto: exportação ("Post without the watermark", comparação com/sem marca e "Save with watermark instead"), Sponsored ad ("Brand deals, done right"), Profile ("Create more. Sound like you."), Creator Voice, hooks, versões, melhor take e 4K; benefícios, Annual (pré-selecionado, "SAVE 58%", 7 dias grátis) / Monthly / Lifetime; Restore, Terms, Privacy. Nunca abre durante a gravação |
@@ -175,10 +175,12 @@ estático), o app baixa uma vez por abertura e só adota uma revisão maior, com
 - **Vazio:** biblioteca vazia (primeiro uso), filtro sem resultado ("No scripts here yet."), sem
   takes ("No takes yet" + "Record a take"), script vazio ("This script is empty…").
 - **Carregando:** "Writing your script…" com brilho pulsante; indicadores nos chips de IA e nos
-  botões Save/Share durante a exportação.
+  botões Save/Share durante a exportação; no Quick edit, "Processing…" na prévia só quando uma
+  mudança demora mais de 0,3 s (cortes e trims são instantâneos).
 - **Erro / indisponível:** câmera sem permissão (botão para Ajustes), sem câmera, câmera parada;
   Apple Intelligence indisponível (explica e usa o rascunho estruturado); importação ilegível;
-  compra pendente ou não verificada.
+  compra pendente ou não verificada; take sem o arquivo de vídeo ou ilegível ("This video can't be
+  opened", ferramentas desligadas) e prévia que não montou ("The preview couldn't be built").
 
 ## 7. Movimento
 
@@ -198,6 +200,8 @@ estático), o app baixa uma vez por abertura e só adota uma revisão maior, com
 - Cards e linhas combinam os filhos em um elemento; tiles de take leem "Take 3, 0:44, best take".
 - Prompter: ajustável com VoiceOver (desliza 3 linhas), valor = progresso.
 - Alça da linha de leitura: ajustável com VoiceOver (8 pt por gesto), valor = distância da câmera.
+- Quick edit: a timeline é ajustável (1 s por gesto), valor = "tempo / duração, pedaço N de M",
+  com a ação "Select this piece"; as alças de trim também (0,5 s por gesto).
 - Toasts são anunciados (`AccessibilityNotification.Announcement`).
 - Alvos de toque de 44×44 mesmo quando o visual é menor.
 - Identificadores para UI tests: `"<tela>.<elemento>"` (ex.: `hero.recordButton`, `editor.doneButton`).
@@ -274,7 +278,16 @@ O protótipo simulava várias coisas; o app implementa de verdade ou deixa de fo
 - **Sheets sobre a janela:** o limite de altura da Display é medido quando ela abre; mudar a altura
   da janela com a sheet aberta não move a sheet sob o dedo.
 - **Quick edit:** a edição é uma receita aplicada na hora de tocar e exportar (composição do
-  AVFoundation + compositor próprio com Core Image), nunca um arquivo novo. "Enhance voice" e
+  AVFoundation + compositor próprio com Core Image), nunca um arquivo novo. A timeline é uma lista de
+  pedaços do original (`EditTimeline`): o trim move o começo do primeiro e o fim do último, Cut divide
+  um pedaço no playhead, Remove tira o selecionado, e "Remove silences" tira as pausas encontradas do
+  mesmo jeito (as pausas são sugestões, `CleanUpSuggestion`, prontas para filler words e retakes).
+  Tudo isso desfaz e refaz. A prévia toca a edição com as pontas crescidas até o original inteiro e
+  segura a reprodução entre as alças, então arrastar uma alça mostra o frame real sem reconstruir
+  nada. O export junta os mesmos pedaços, com um mergulho de 12 ms no som em cada corte que removeu
+  algo (sem clique). Um rascunho guarda a edição, o playhead e o histórico enquanto a tela está
+  aberta; ao voltar, "Picked up where you left off". O relógio usa `DurationText.timecode`
+  (00:04.32 abaixo de 1 min, 00:01:04 a partir de 1 min). "Enhance voice" e
   "Reduce background noise" são aproximações com EQ e dinâmica no `AVAudioEngine` (não há API da
   Apple de redução de ruído para arquivo). Os filtros usam Core Image e ficam próximos, não
   idênticos, aos do protótipo. As legendas usam o texto do roteiro com o tempo do `SpeechAnalyzer`;

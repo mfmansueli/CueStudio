@@ -5,33 +5,28 @@
 
 import SwiftUI
 
-/// Trim: the timeline, then Split at the playhead, Delete the selected section and Remove silences.
+/// Trim: the timeline, then Cut at the playhead, Remove the selected piece and Remove silences.
+/// Undo and redo sit in the transport bar above.
 struct TrimToolView: View {
     let viewModel: QuickEditViewModel
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            HStack {
-                Text("Playhead \(viewModel.playheadLabel)").monospacedDigit()
-                Spacer()
-                Text("Drag the yellow handles to trim")
-            }
-            .font(.footnote)
-            .foregroundStyle(Palette.ink2)
-            .padding(.bottom, 10)
-            TrimStripView(viewModel: viewModel)
+            TimelineStripView(viewModel: viewModel)
             HStack(spacing: 8) {
-                Button(action: viewModel.split) {
-                    Label("Split", systemImage: "scissors")
+                Button(action: viewModel.cut) {
+                    Label("Cut", systemImage: "scissors")
                 }
                 .buttonStyle(.cueSecondary(.compact, expands: false))
-                .accessibilityIdentifier("edit.splitButton")
-                Button(action: viewModel.deleteSelection) {
-                    Label("Delete", systemImage: "trash")
-                        .foregroundStyle(viewModel.canDeleteSelection ? Palette.danger : Palette.ink.opacity(0.4))
+                .accessibilityHint(Text("Cuts the video in two at the playhead"))
+                .accessibilityIdentifier("edit.cutButton")
+                Button(action: viewModel.removeSelection) {
+                    Label("Remove", systemImage: "trash")
+                        .foregroundStyle(viewModel.canRemoveSelection ? Palette.danger : Palette.ink.opacity(0.4))
                 }
                 .buttonStyle(.cueSecondary(.compact, expands: false))
-                .accessibilityIdentifier("edit.deleteButton")
+                .accessibilityHint(Text("Takes the selected piece out of the video"))
+                .accessibilityIdentifier("edit.removeButton")
                 Button {
                     Task { await viewModel.toggleRemoveSilences() }
                 } label: {
@@ -43,16 +38,17 @@ struct TrimToolView: View {
                         }
                         Text(viewModel.silenceLabel)
                     }
-                    .foregroundStyle(viewModel.edit.removesSilences ? Palette.acc : Palette.ink)
+                    .foregroundStyle(viewModel.silencesAreRemoved ? Palette.acc : Palette.ink)
                 }
-                .buttonStyle(viewModel.edit.removesSilences ? .cueTinted(.compact) : .cueSecondary(.compact))
+                .buttonStyle(viewModel.silencesAreRemoved ? .cueTinted(.compact) : .cueSecondary(.compact))
                 .disabled(viewModel.isFindingSilences)
                 .accessibilityIdentifier("edit.silencesButton")
             }
-            .padding(.top, 18)
-            Text("Tap a section to select it · Split at the playhead")
+            .padding(.top, 12)
+            Text("Drag the yellow handles to trim. Cut at the playhead, then tap a piece to remove it.")
                 .font(.caption)
                 .foregroundStyle(Palette.ink.opacity(0.45))
+                .fixedSize(horizontal: false, vertical: true)
                 .padding(.top, 10)
         }
     }

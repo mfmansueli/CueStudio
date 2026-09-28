@@ -67,11 +67,7 @@ final class VideoExportService: VideoExporting {
         edit.aspect = options.aspect
         var processedAudio: URL?
         if edit.volume != 1 || edit.enhancesVoice || edit.reducesNoise, options.edit != nil {
-            let audio = try await AudioTrackExtractor.extract(from: source)
-            let volume = edit.volume, enhances = edit.enhancesVoice, reduces = edit.reducesNoise
-            processedAudio = try await Task.detached {
-                try AudioEnhancer.process(audio, volume: volume, enhancesVoice: enhances, reducesNoise: reduces)
-            }.value
+            processedAudio = try await Self.processedAudio(for: source, edit: edit)
         }
         let composition = try await EditedComposition.build(
             source: source, edit: edit, processedAudio: processedAudio,
@@ -81,9 +77,24 @@ final class VideoExportService: VideoExporting {
             throw VideoExportError.exportUnavailable
         }
         session.videoComposition = composition.videoComposition
+        session.audioMix = composition.audioMix
         let output = URL.temporaryDirectory.appending(path: "Cue-\(UUID().uuidString.prefix(8)).mov")
         try await session.export(to: output, as: .mov)
         return output
+    }
+
+    /// The Audio tool's sound for the whole recording; nil when the take has no sound.
+    private static func processedAudio(for source: URL, edit: TakeEdit) async throws -> URL? {
+        let audio: URL
+        do {
+            audio = try await AudioTrackExtractor.extract(from: source)
+        } catch AudioTrackExtractor.ExtractError.noAudio {
+            return nil
+        }
+        let volume = edit.volume, enhances = edit.enhancesVoice, reduces = edit.reducesNoise
+        return try await Task.detached {
+            try AudioEnhancer.process(audio, volume: volume, enhancesVoice: enhances, reducesNoise: reduces)
+        }.value
     }
 
     // MARK: - Watermark

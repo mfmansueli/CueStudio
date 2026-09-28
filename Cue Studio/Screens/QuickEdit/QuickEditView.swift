@@ -5,21 +5,24 @@
 
 import SwiftUI
 
-/// Quick edit: Cancel / "Quick edit 1:04 → 0:58" / Done, the live preview, the current tool and
-/// the six tools along the bottom.
+/// Quick edit: Cancel / "Quick edit 1:04 → 0:58" / Done, the live preview, play and the time
+/// (with undo and redo in Trim), the current tool and the six tools along the bottom.
 struct QuickEditView: View {
     @State private var viewModel: QuickEditViewModel
     let onClose: () -> Void
 
+    @Environment(\.scenePhase) private var scenePhase
+
     init(take: Take, services: AppServices, onClose: @escaping () -> Void) {
         _viewModel = State(initialValue: QuickEditViewModel(
             take: take, takes: services.takes, library: services.library,
-            editing: services.editing, toast: services.toast
+            editing: services.editing, drafts: services.drafts, toast: services.toast
         ))
         self.onClose = onClose
     }
 
     var body: some View {
+        @Bindable var viewModel = viewModel
         VStack(spacing: 0) {
             topBar
                 .padding(.horizontal, Metrics.gutter)
@@ -27,24 +30,45 @@ struct QuickEditView: View {
                 QuickEditPreview(viewModel: viewModel, size: previewSize(in: proxy.size))
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
-            .padding(.vertical, 12)
-            toolPanel
-                .frame(height: 200, alignment: .top)
+            .padding(.top, 12)
+            QuickEditTransportBar(viewModel: viewModel)
                 .padding(.horizontal, Metrics.gutter)
+                .padding(.vertical, 4)
+            toolPanel
+                .frame(height: 190, alignment: .top)
+                .padding(.horizontal, Metrics.gutter)
+                .disabled(!viewModel.isReady)
+                .opacity(viewModel.isReady ? 1 : 0.4)
             toolbar
                 .padding(.horizontal, 10)
         }
         .background(Palette.bg.ignoresSafeArea())
         .toastHost()
+        .task { await viewModel.prepare() }
+        .onChange(of: scenePhase) { _, phase in
+            if phase != .active { viewModel.pauseAndKeepDraft() }
+        }
+        .onDisappear { viewModel.pauseAndKeepDraft() }
+        .confirmationDialog("Discard your edits?", isPresented: $viewModel.confirmsDiscard, titleVisibility: .visible) {
+            Button("Discard edits", role: .destructive) {
+                viewModel.discard()
+                onClose()
+            }
+            Button("Keep editing", role: .cancel) {}
+        } message: {
+            Text("The take stays as it was before this edit.")
+        }
     }
 
     // MARK: - Sections
 
     private var topBar: some View {
         HStack {
-            Button("Cancel", action: onClose)
-                .buttonStyle(.cueGlass(.compact, expands: false))
-                .accessibilityIdentifier("edit.cancelButton")
+            Button("Cancel") {
+                if viewModel.cancel() { onClose() }
+            }
+            .buttonStyle(.cueGlass(.compact, expands: false))
+            .accessibilityIdentifier("edit.cancelButton")
             Spacer()
             VStack(spacing: 1) {
                 Text("Quick edit").font(.body.weight(.semibold))
@@ -97,6 +121,7 @@ struct QuickEditView: View {
         .padding(.horizontal, 6)
         .background(Palette.toolbarFill, in: Capsule())
         .overlay(Capsule().strokeBorder(Palette.glassBorder, lineWidth: 0.5))
+        .disabled(!viewModel.isReady)
     }
 
     /// The take's frame, as large as fits (up to 370 × 464 pt on the design's screen).

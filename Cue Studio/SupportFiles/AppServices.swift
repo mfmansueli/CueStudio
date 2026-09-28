@@ -30,6 +30,7 @@ struct AppServices {
     let photos: PhotoLibraryManager
     let thumbnails: VideoThumbnailService
     let editing: TakeEditService
+    let drafts: QuickEditDraftStoring
     let apps: ExternalAppService
 
     init(options: LaunchOptions) {
@@ -53,6 +54,7 @@ struct AppServices {
         photos = PhotoLibraryManager()
         thumbnails = VideoThumbnailService()
         editing = TakeEditService()
+        drafts = options.draftStore
         apps = ExternalAppService()
     }
 

@@ -22,5 +22,6 @@ ao protótipo do Claude Design). Atualize-o junto com a UI.
 - `xcodebuild -project "Cue Studio.xcodeproj" -scheme "Cue Studio" -destination "platform=iOS Simulator,name=iPhone 17" test`
 - O build Release também precisa compilar: previews usam dados de `SupportFiles/Debug/` e ficam em `#if DEBUG`.
 - Launch arguments (só em Debug, ver `SupportFiles/LaunchOptions.swift`): `-uiTestInMemory` (armazenamento
-  em memória), `-uiTestSeedSamples` (scripts de exemplo), `-uiTestPro` (começa no Cue Pro).
+  em memória), `-uiTestSeedSamples` (scripts de exemplo), `-uiTestPro` (começa no Cue Pro),
+  `-uiTestSampleVideo` (vídeos reais pequenos atrás dos takes de "3 morning habits", para o Quick edit).
 - Compras são testadas localmente com `CueStudio.storekit` (selecionado no scheme).

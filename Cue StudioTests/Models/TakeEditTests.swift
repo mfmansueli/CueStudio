@@ -20,57 +20,17 @@ struct TakeEditTests {
         #expect(!edit.differs(from: .portrait))
     }
 
-    @Test func trimShortensAndKeepsHandlesApart() {
+    @Test func timelineChangesCount() {
         var edit = edit()
-        edit.setTrim(start: 5)
-        edit.setTrim(end: 50)
-        #expect(edit.editedDuration == 45)
-        edit.setTrim(start: 49.8)
-        #expect(edit.trimStart == 49.5)
+        edit.timeline.trimStart(to: 5)
+        #expect(edit.editedDuration == 55)
         #expect(edit.differs(from: .portrait))
     }
 
-    @Test func splitAndDeleteRemoveASection() {
+    @Test func pauseSuggestionsAloneChangeNothing() {
         var edit = edit()
-        let result1 = edit.split(at: 20)
-        #expect(result1)
-        let result2 = edit.split(at: 30)
-        #expect(result2)
-        #expect(edit.segments.count == 3)
-        let result3 = edit.removeSegment(containing: 25)
-        #expect(result3)
-        #expect(edit.keptSpans == [TimeSpan(start: 0, end: 20), TimeSpan(start: 30, end: 60)])
-        #expect(edit.editedDuration == 50)
-    }
-
-    @Test func splitsTooCloseAreIgnored() {
-        var edit = edit()
-        let result4 = edit.split(at: 20)
-        #expect(result4)
-        let result5 = edit.split(at: 20.2)
-        #expect(!result5)
-        let result6 = edit.split(at: 0.1)
-        #expect(!result6)
-    }
-
-    @Test func theLastSectionCannotBeDeleted() {
-        var edit = edit()
-        let result7 = edit.removeSegment(containing: 10)
-        #expect(!result7)
-        edit.split(at: 30)
-        let result8 = edit.removeSegment(containing: 10)
-        #expect(result8)
-        let result9 = edit.removeSegment(containing: 40)
-        #expect(!result9)
-    }
-
-    @Test func silencesAreCutOnlyWhenRemoved() {
-        var edit = edit()
-        edit.silences = [TimeSpan(start: 10, end: 13), TimeSpan(start: 40, end: 41)]
-        #expect(edit.editedDuration == 60)
-        edit.removesSilences = true
-        #expect(edit.editedDuration == 56)
-        #expect(edit.keptSpans.count == 3)
+        edit.suggestions = [CleanUpSuggestion(kind: .pause, span: TimeSpan(start: 10, end: 12), confidence: 1)]
+        #expect(!edit.differs(from: .portrait))
     }
 
     @Test func captionsFollowTheCuts() {
@@ -80,37 +40,52 @@ struct TakeEditTests {
             CaptionCue(text: "Cut", start: 22, end: 24),
             CaptionCue(text: "After", start: 35, end: 37),
         ]
-        edit.split(at: 20)
-        edit.split(at: 30)
-        edit.removeSegment(containing: 25)
+        edit.timeline.split(atEdited: 20)
+        edit.timeline.split(atEdited: 30)
+        edit.timeline.removeSegment(id: edit.timeline.segments[1].id)
         let captions = edit.editedCaptions
         #expect(captions.map(\.text) == ["Before", "After"])
         #expect(captions.last?.start == 25)
     }
 
-    @Test func editedTimeMapsAcrossRemovedSections() {
-        var edit = edit()
-        edit.split(at: 20)
-        edit.split(at: 30)
-        edit.removeSegment(containing: 25)
-        #expect(edit.editedTime(forSource: 10) == 10)
-        #expect(edit.editedTime(forSource: 25) == nil)
-        #expect(edit.editedTime(forSource: 31) == 21)
-    }
-
-    @Test func subtractingAndMergingSpans() {
-        let pieces = TakeEdit.subtract([TimeSpan(start: 2, end: 3), TimeSpan(start: 5, end: 12)], from: TimeSpan(start: 0, end: 10))
-        #expect(pieces == [TimeSpan(start: 0, end: 2), TimeSpan(start: 3, end: 5)])
-        #expect(TakeEdit.merged([TimeSpan(start: 3, end: 5), TimeSpan(start: 0, end: 3)]) == [TimeSpan(start: 0, end: 5)])
-    }
-
     @Test func roundTrips() throws {
         var edit = edit()
-        edit.split(at: 12)
+        edit.timeline.split(atEdited: 12)
+        edit.suggestions = [CleanUpSuggestion(kind: .pause, span: TimeSpan(start: 3, end: 4), confidence: 1)]
         edit.filter = .film
         edit.showsCaptions = true
         edit.captions = [CaptionCue(text: "Hi", start: 0, end: 1)]
         let decoded = try JSONDecoder().decode(TakeEdit.self, from: JSONEncoder().encode(edit))
         #expect(decoded == edit)
+    }
+
+    // MARK: - Edits saved by earlier builds
+
+    @Test func olderEditsOpenWithTheSamePieces() throws {
+        let json = """
+        {"sourceDuration": 60, "trimStart": 5, "trimEnd": 50, "splits": [20, 30],
+         "removed": [{"start": 20, "end": 30}], "silences": [], "removesSilences": false,
+         "volume": 1.2, "enhancesVoice": false, "reducesNoise": true, "exposure": 10, "contrast": 0,
+         "warmth": 0, "filter": "mono", "aspect": "9:16", "cropOffset": 0, "showsCaptions": false,
+         "captionStyle": "bold", "captionPosition": "bottom", "captions": []}
+        """
+        let edit = try JSONDecoder().decode(TakeEdit.self, from: Data(json.utf8))
+        #expect(edit.keptSpans == [TimeSpan(start: 5, end: 20), TimeSpan(start: 30, end: 50)])
+        #expect(edit.editedDuration == 35)
+        #expect(edit.volume == 1.2)
+        #expect(edit.filter == .mono)
+        #expect(!edit.enhancesVoice)
+    }
+
+    @Test func olderSilencesBecomePauseSuggestions() throws {
+        let json = """
+        {"sourceDuration": 60, "trimStart": 0, "trimEnd": 60, "splits": [], "removed": [],
+         "silences": [{"start": 10, "end": 13}, {"start": 40, "end": 41}], "removesSilences": true,
+         "aspect": "9:16"}
+        """
+        let edit = try JSONDecoder().decode(TakeEdit.self, from: Data(json.utf8))
+        #expect(edit.editedDuration == 56)
+        #expect(edit.suggestions.map(\.kind) == [.pause, .pause])
+        #expect(edit.suggestions.allSatisfy { edit.timeline.isRemoved($0.span) })
     }
 }

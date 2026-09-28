@@ -5,111 +5,328 @@
 
 import Foundation
 
-/// Quick edit of one take: every change goes into a `TakeEdit` recipe; Done saves it on the take
-/// (with the new length) and marks it edited. The recording itself is never changed.
+/// Quick edit of one take. The edit is a recipe (`TakeEdit`) on top of the recording, which is
+/// never changed, and the player (`EditPlayback`) plays it and owns the playhead. Timeline changes
+/// (trim, cut, remove, Clean Up) are undoable; the tools set the look and sound directly. A draft
+/// is kept while editing; Done saves the edit on the take, Cancel throws it away.
 @MainActor
 @Observable
 final class QuickEditViewModel {
+    /// Whether the recording could be opened.
+    enum Source: Equatable {
+        case loading, ready, unavailable
+    }
+
     var tool: QuickEditTool = .trim
-    var edit: TakeEdit
-    /// Playhead, in seconds of the original recording.
-    var playhead: TimeInterval
-    /// Start of the section tapped on the trim strip.
-    private(set) var selectedSegmentStart: TimeInterval?
+    var edit: TakeEdit {
+        didSet { editDidChange() }
+    }
+    private(set) var source: Source = .loading
+    private(set) var history = EditHistory<EditTimeline>()
+    /// The piece tapped on the timeline. Separate from the playhead: scrubbing doesn't change it.
+    private(set) var selectedSegmentID: UUID?
+    /// The trim handle being dragged.
+    private(set) var activeHandle: TrimHandle?
     private(set) var isFindingSilences = false
     private(set) var isWritingCaptions = false
+    /// Cancel with changes asks first.
+    var confirmsDiscard = false
 
     let take: Take
+    let player: EditPlayback
     private let takes: TakeLibraryService
     private let library: ScriptLibraryService
     private let editing: TakeEditing
+    private let drafts: QuickEditDraftStoring
     private let toast: ToastService
+    /// The take's edit when Quick edit opened: what Cancel goes back to.
+    private var original: TakeEdit
+    /// The timeline when a handle drag started, so a whole drag is one undo step.
+    @ObservationIgnored private var trimOrigin: EditTimeline?
+    @ObservationIgnored private var draftTask: Task<Void, Never>?
+    @ObservationIgnored private var isClosed = false
 
-    init(take: Take, takes: TakeLibraryService, library: ScriptLibraryService, editing: TakeEditing, toast: ToastService) {
+    init(
+        take: Take, takes: TakeLibraryService, library: ScriptLibraryService, editing: TakeEditing,
+        drafts: QuickEditDraftStoring, toast: ToastService, player: EditPlayback? = nil
+    ) {
         self.take = take
         self.takes = takes
         self.library = library
         self.editing = editing
+        self.drafts = drafts
         self.toast = toast
-        edit = take.edit ?? TakeEdit(sourceDuration: take.duration, aspect: take.aspect)
-        playhead = (take.edit?.trimStart ?? 0) + (take.edit?.sourceDuration ?? take.duration) * 0.28
+        let edit = take.edit ?? TakeEdit(sourceDuration: take.duration, aspect: take.aspect)
+        original = edit
+        self.edit = edit
+        self.player = player ?? QuickEditPlayer(videoURL: takes.videoURL(for: take), editing: editing)
+    }
+
+    /// Opens the recording, picks up a draft left behind and starts the player.
+    func prepare() async {
+        guard source == .loading else { return }
+        let duration: TimeInterval
+        do {
+            duration = try await editing.sourceDuration(ofVideoAt: videoURL)
+        } catch {
+            source = .unavailable
+            return
+        }
+        guard !isClosed else { return }
+        // The file's own length wins over the take's saved one.
+        original.timeline = original.timeline.fitted(toSourceDuration: duration)
+        var start = original
+        var playhead: TimeInterval = 0
+        if let draft = drafts.draft(for: take.id), draft.edit != original {
+            start = draft.edit
+            start.timeline = start.timeline.fitted(toSourceDuration: duration)
+            history = draft.history
+            playhead = draft.playhead
+            toast.show(String(localized: "Picked up where you left off"))
+        }
+        edit = start
+        source = .ready
+        player.show(edit)
+        player.seek(to: playhead)
+    }
+
+    private func editDidChange() {
+        guard source == .ready else { return }
+        if let id = selectedSegmentID, edit.timeline.segment(id: id) == nil { selectedSegmentID = nil }
+        player.show(edit)
+        scheduleDraftSave()
     }
 
     // MARK: - Reading
 
     var videoURL: URL { takes.videoURL(for: take) }
 
+    /// The recording is open and the preview can play.
+    var isReady: Bool { source == .ready && player.state != .failed }
+
     /// "1:04 → 0:58"
     var durationChange: String {
         DurationText.clock(edit.sourceDuration) + " → " + DurationText.clock(edit.editedDuration)
     }
 
-    var playheadLabel: String { DurationText.clock(playhead) }
+    /// "00:04.32 / 00:11.00": the playhead and the edit's length. It reads the player's clock, so
+    /// only the small views that show it redraw while the video plays.
+    var timeLabel: String {
+        let total = edit.sourceDuration
+        return DurationText.timecode(player.currentTime, total: total) + " / " + DurationText.timecode(edit.editedDuration, total: total)
+    }
 
-    var canDeleteSelection: Bool { selectedSegmentStart != nil }
+    var canUndo: Bool { history.canUndo && activeHandle == nil }
+    var canRedo: Bool { history.canRedo && activeHandle == nil }
+    var canRemoveSelection: Bool { selectedSegmentID != nil && edit.timeline.segments.count > 1 }
+    var hasUnsavedChanges: Bool { edit != original }
 
-    /// "Remove silences · 4" or "Silences removed · −3s".
-    var silenceLabel: String {
-        if edit.removesSilences {
-            let cut = Int(SilenceDetector.totalDuration(of: edit.silences).rounded())
-            return String(localized: "Silences removed · −\(cut)s")
+    var selectedSegmentIndex: Int? {
+        selectedSegmentID.flatMap { edit.timeline.index(ofSegment: $0) }
+    }
+
+    /// "00:04.32 / 00:11.00, piece 2 of 3, selected"
+    var timelineAccessibilityValue: String {
+        let timeline = edit.timeline
+        let index = timeline.segmentIndex(atEdited: player.currentTime)
+        var value = timeLabel
+        if timeline.segments.count > 1 {
+            value += ", " + String(localized: "piece \(index + 1) of \(timeline.segments.count)")
         }
-        return edit.silences.isEmpty
-            ? String(localized: "Remove silences")
-            : String(localized: "Remove silences · \(edit.silences.count)")
+        if selectedSegmentIndex == index { value += ", " + String(localized: "selected") }
+        return value
+    }
+
+    /// Where a handle is in the recording.
+    func handleAccessibilityValue(_ handle: TrimHandle) -> String {
+        let time = handle == .start ? edit.timeline.trimStart : edit.timeline.trimEnd
+        return DurationText.timecode(time, total: edit.sourceDuration)
+    }
+
+    // MARK: - Playback
+
+    func togglePlayback() {
+        guard isReady else { return }
+        player.togglePlayback()
+    }
+
+    /// Follows a finger on the timeline; the video stays paused.
+    func scrub(to time: TimeInterval) {
+        guard isReady else { return }
+        player.scrub(to: time)
+    }
+
+    func endScrub() {
+        player.endScrub()
+    }
+
+    /// VoiceOver: moves the playhead by `seconds`.
+    func nudgePlayhead(by seconds: TimeInterval) {
+        guard isReady else { return }
+        player.pause()
+        player.seek(to: player.currentTime + seconds)
+    }
+
+    // MARK: - Selection
+
+    /// A tap on the timeline (the playhead already went there): selects the piece under it, or
+    /// lets go of the selection beside the pieces.
+    func tapTimeline(onPiece index: Int?) {
+        guard let index, edit.timeline.segments.indices.contains(index) else {
+            selectedSegmentID = nil
+            return
+        }
+        selectedSegmentID = edit.timeline.segments[index].id
+    }
+
+    func selectPieceAtPlayhead() {
+        tapTimeline(onPiece: edit.timeline.segmentIndex(atEdited: player.currentTime))
     }
 
     // MARK: - Trim
 
-    func movePlayhead(to time: TimeInterval) {
-        playhead = min(edit.sourceDuration, max(0, time))
-        selectedSegmentStart = edit.segments.first { !$0.isRemoved && $0.span.contains(playhead) }?.span.start
+    func beginTrim(_ handle: TrimHandle) {
+        guard isReady else { return }
+        endTrim()
+        trimOrigin = edit.timeline
+        activeHandle = handle
+        player.pause()
     }
 
-    func setTrimStart(_ time: TimeInterval) {
-        edit.setTrim(start: time)
-        playhead = edit.trimStart
-    }
-
-    func setTrimEnd(_ time: TimeInterval) {
-        edit.setTrim(end: time)
-        playhead = edit.trimEnd
-    }
-
-    func split() {
-        if edit.split(at: playhead) {
-            selectedSegmentStart = nil
-            toast.show(String(localized: "Split at \(DurationText.clock(playhead))"))
-        } else {
-            toast.show(String(localized: "Move the playhead inside the clip"))
+    /// Moves a handle to `time` (seconds of the recording) while it's dragged; the playhead and
+    /// the preview follow it.
+    func trim(_ handle: TrimHandle, toSource time: TimeInterval) {
+        guard activeHandle == handle else { return }
+        var timeline = edit.timeline
+        switch handle {
+        case .start: timeline.trimStart(to: time)
+        case .end: timeline.trimEnd(to: time)
         }
+        if timeline != edit.timeline { edit.timeline = timeline }
+        player.scrub(to: handle == .start ? 0 : timeline.editedDuration)
     }
 
-    func deleteSelection() {
-        guard let start = selectedSegmentStart else {
-            toast.show(String(localized: "Tap a section to select it"))
+    func endTrim() {
+        guard let origin = trimOrigin else { return }
+        trimOrigin = nil
+        activeHandle = nil
+        if origin != edit.timeline { history.record(origin) }
+        player.endScrub()
+    }
+
+    /// VoiceOver: moves a handle by `seconds`.
+    func nudgeTrim(_ handle: TrimHandle, by seconds: TimeInterval) {
+        beginTrim(handle)
+        let from = handle == .start ? edit.timeline.trimStart : edit.timeline.trimEnd
+        trim(handle, toSource: from + seconds)
+        endTrim()
+    }
+
+    // MARK: - Cut and remove
+
+    /// Cuts the piece under the playhead in two.
+    func cut() {
+        guard isReady else { return }
+        let time = player.currentTime
+        var timeline = edit.timeline
+        guard timeline.split(atEdited: time) else {
+            toast.show(String(localized: "Move the playhead away from the edges to cut"))
             return
         }
-        if edit.removeSegment(containing: start) {
-            selectedSegmentStart = nil
-            toast.show(String(localized: "Section deleted"))
-        } else {
-            toast.show(String(localized: "Keep at least one section"))
+        selectedSegmentID = nil
+        commit(timeline)
+        toast.show(String(localized: "Cut at \(DurationText.timecode(time, total: edit.sourceDuration))"))
+    }
+
+    /// Takes the selected piece out of the edit.
+    func removeSelection() {
+        guard isReady else { return }
+        guard let id = selectedSegmentID else {
+            toast.show(String(localized: "Tap a piece to select it"))
+            return
+        }
+        var timeline = edit.timeline
+        guard timeline.removeSegment(id: id) else {
+            toast.show(String(localized: "Keep at least one piece"))
+            return
+        }
+        selectedSegmentID = nil
+        commit(timeline)
+        toast.show(String(localized: "Piece removed"))
+    }
+
+    // MARK: - Undo
+
+    func undo() {
+        guard canUndo, let previous = history.undo(from: edit.timeline) else { return }
+        edit.timeline = previous
+    }
+
+    func redo() {
+        guard canRedo, let next = history.redo(from: edit.timeline) else { return }
+        edit.timeline = next
+    }
+
+    /// A timeline change undo can take back.
+    private func commit(_ timeline: EditTimeline) {
+        guard timeline != edit.timeline else { return }
+        history.record(edit.timeline)
+        edit.timeline = timeline
+    }
+
+    // MARK: - Clean Up: silences
+
+    /// Pauses found in the take, between the handles, that the creator hasn't chosen to keep.
+    private var pauses: [CleanUpSuggestion] {
+        let timeline = edit.timeline
+        return edit.suggestions.filter {
+            $0.kind == .pause && !$0.isKept && $0.span.start >= timeline.trimStart && $0.span.end <= timeline.trimEnd
         }
     }
 
-    /// Finds the pauses the first time, then turns cutting them on and off.
+    private var removedPauses: [TimeSpan] {
+        pauses.map(\.span).filter(edit.timeline.isRemoved)
+    }
+
+    var silencesAreRemoved: Bool { !removedPauses.isEmpty }
+
+    /// "Remove silences · 4" or "Silences removed · −3s".
+    var silenceLabel: String {
+        let removed = removedPauses
+        if !removed.isEmpty {
+            let cut = Int(SilenceDetector.totalDuration(of: removed).rounded())
+            return String(localized: "Silences removed · −\(cut)s")
+        }
+        let found = pauses.count
+        return found == 0 ? String(localized: "Remove silences") : String(localized: "Remove silences · \(found)")
+    }
+
+    /// Finds the pauses the first time. Then removes them all in one step, or puts them back
+    /// when they're out; either way undo reverses it.
     func toggleRemoveSilences() async {
-        if edit.silences.isEmpty {
+        guard isReady, !isFindingSilences else { return }
+        if !edit.suggestions.contains(where: { $0.kind == .pause }) {
             isFindingSilences = true
-            defer { isFindingSilences = false }
-            guard let silences = try? await editing.silences(inVideoAt: videoURL), !silences.isEmpty else {
+            let found = try? await editing.silences(inVideoAt: videoURL)
+            isFindingSilences = false
+            guard !isClosed else { return }
+            guard let found, !found.isEmpty else {
                 toast.show(String(localized: "No long pauses in this take"))
                 return
             }
-            edit.silences = silences
+            edit.suggestions += found.map { CleanUpSuggestion(kind: .pause, span: $0, confidence: 1) }
         }
-        edit.removesSilences.toggle()
+        var timeline = edit.timeline
+        let removed = removedPauses
+        if removed.isEmpty {
+            guard timeline.remove(pauses.map(\.span)) else {
+                toast.show(String(localized: "No long pauses in this take"))
+                return
+            }
+        } else {
+            timeline.restore(removed)
+        }
+        commit(timeline)
     }
 
     // MARK: - Adjust
@@ -153,10 +370,67 @@ final class QuickEditViewModel {
         if !edit.showsCaptions { await setShowsCaptions(true) }
     }
 
-    // MARK: - Done
+    // MARK: - Leaving
 
+    /// Saves the edit on the take (its new length, marked Edited) when anything changed.
     func done() {
-        takes.applyEdit(edit, to: take.id)
-        toast.show(String(localized: "Edits saved to \(take.label)"))
+        endTrim()
+        if source == .ready, hasUnsavedChanges {
+            takes.applyEdit(edit, to: take.id)
+            toast.show(String(localized: "Edits saved to \(take.label)"))
+        }
+        close()
+    }
+
+    /// Cancel: true when the screen can close now. With changes it asks first
+    /// (`confirmsDiscard`).
+    func cancel() -> Bool {
+        endTrim()
+        guard source == .ready, hasUnsavedChanges else {
+            close()
+            return true
+        }
+        confirmsDiscard = true
+        return false
+    }
+
+    /// Throws the changes away.
+    func discard() {
+        close()
+    }
+
+    /// Leaving the app or the screen without Done or Cancel: the draft keeps everything.
+    func pauseAndKeepDraft() {
+        player.pause()
+        saveDraft()
+    }
+
+    private func close() {
+        isClosed = true
+        draftTask?.cancel()
+        drafts.discard(takeID: take.id)
+        player.stop()
+    }
+
+    // MARK: - Draft
+
+    private func scheduleDraftSave() {
+        guard !isClosed else { return }
+        draftTask?.cancel()
+        draftTask = Task { [weak self] in
+            try? await Task.sleep(for: .milliseconds(600))
+            guard !Task.isCancelled else { return }
+            self?.saveDraft()
+        }
+    }
+
+    /// Keeps the edit, the playhead and the undo steps, or drops the draft when nothing changed.
+    func saveDraft() {
+        guard source == .ready, !isClosed else { return }
+        if hasUnsavedChanges {
+            drafts.save(QuickEditDraft(takeID: take.id, edit: edit, playhead: player.currentTime, history: history, savedAt: .now))
+        } else {
+            drafts.discard(takeID: take.id)
+        }
     }
 }

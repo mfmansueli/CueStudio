@@ -5,17 +5,31 @@
 
 import AVFoundation
 
-/// A take with its Quick edit applied, ready to play or export: the kept sections joined, the
-/// processed sound, and a video composition that crops, adjusts and overlays every frame.
+/// A take with its Quick edit applied, ready to play or export: the timeline's pieces joined in
+/// order, the processed sound (dipped for a moment at each cut so it never clicks), and a video
+/// composition that crops, adjusts and overlays every frame.
 nonisolated struct EditedComposition: @unchecked Sendable {
+    /// How long the sound fades out and back in around a cut that removed something.
+    static let cutFade: TimeInterval = 0.012
+
     let asset: AVMutableComposition
     let videoComposition: AVVideoComposition
+    /// Nil when the take has no sound.
+    let audioMix: AVAudioMix?
 
     struct Options: Sendable {
         var burnsInCaptions: Bool
         var watermark: Bool
         /// Height of the output's short side in pixels (1080 or 2160); nil keeps the recording's.
         var shortSide: CGFloat?
+    }
+
+    /// A volume ramp on the edited timeline.
+    struct Fade: Hashable, Sendable {
+        var start: TimeInterval
+        var duration: TimeInterval
+        var fromVolume: Float
+        var toVolume: Float
     }
 
     enum BuildError: Error {
@@ -79,7 +93,11 @@ nonisolated struct EditedComposition: @unchecked Sendable {
             renderScale: 1,
             renderSize: renderSize
         )
-        return EditedComposition(asset: composition, videoComposition: AVVideoComposition(configuration: configuration))
+        return EditedComposition(
+            asset: composition,
+            videoComposition: AVVideoComposition(configuration: configuration),
+            audioMix: audio.map { audioMix(for: $0, fades: fades(for: edit.timeline)) }
+        )
     }
 
     /// The crop at the requested quality, with even dimensions. Never upscaled.
@@ -89,5 +107,42 @@ nonisolated struct EditedComposition: @unchecked Sendable {
         }
         let scale = min(1, shortSide / min(crop.width, crop.height))
         return CGSize(width: CropMath.even(crop.width * scale), height: CropMath.even(crop.height * scale))
+    }
+
+    // MARK: - Sound at the cuts
+
+    /// A short dip in the sound at each seam where something was removed, so joining two
+    /// waveforms mid-cycle never clicks. Cuts that removed nothing play straight through.
+    static func fades(for timeline: EditTimeline) -> [Fade] {
+        var fades: [Fade] = []
+        var elapsed: TimeInterval = 0
+        for (index, segment) in timeline.segments.enumerated() {
+            let end = elapsed + segment.duration
+            let length = min(cutFade, segment.duration / 2)
+            if index > 0, !timeline.continuesFromPrevious(index) {
+                fades.append(Fade(start: elapsed, duration: length, fromVolume: 0, toVolume: 1))
+            }
+            if index < timeline.segments.count - 1, !timeline.continuesFromPrevious(index + 1) {
+                fades.append(Fade(start: end - length, duration: length, fromVolume: 1, toVolume: 0))
+            }
+            elapsed = end
+        }
+        return fades
+    }
+
+    private static func audioMix(for track: AVMutableCompositionTrack, fades: [Fade]) -> AVAudioMix {
+        let parameters = AVMutableAudioMixInputParameters(track: track)
+        for fade in fades {
+            parameters.setVolumeRamp(
+                fromStartVolume: fade.fromVolume, toEndVolume: fade.toVolume,
+                timeRange: CMTimeRange(
+                    start: CMTime(seconds: fade.start, preferredTimescale: 600),
+                    duration: CMTime(seconds: fade.duration, preferredTimescale: 600)
+                )
+            )
+        }
+        let mix = AVMutableAudioMix()
+        mix.inputParameters = [parameters]
+        return mix
     }
 }

@@ -11,6 +11,8 @@ import UIKit
 @Observable
 final class VideoThumbnailService {
     private let cache = NSCache<NSURL, UIImage>()
+    /// The Quick edit timeline's frames, so switching tools doesn't read them again.
+    private var timelineFrames: [String: [UIImage?]] = [:]
 
     func thumbnail(for url: URL, maxPixelSize: CGFloat = 480) async -> UIImage? {
         if let cached = cache.object(forKey: url as NSURL) { return cached }
@@ -26,6 +28,30 @@ final class VideoThumbnailService {
         for index in 0..<count {
             let time = duration * (Double(index) + 0.5) / Double(count)
             if let image = await frame(of: url, at: time, maxPixelSize: maxPixelSize) { frames.append(image) }
+        }
+        return frames
+    }
+
+    /// Frames at `times` from one generator, nil where a frame can't be read. Each lands within
+    /// `tolerance` of its time rather than exactly on it, so long takes stay quick.
+    func frames(for url: URL, at times: [TimeInterval], tolerance: TimeInterval, maxPixelSize: CGFloat = 160) async -> [UIImage?] {
+        let key = "\(url.absoluteString)|\(times.count)|\(times.last ?? 0)"
+        if let cached = timelineFrames[key] { return cached }
+        let generator = AVAssetImageGenerator(asset: AVURLAsset(url: url))
+        generator.appliesPreferredTrackTransform = true
+        generator.maximumSize = CGSize(width: maxPixelSize, height: maxPixelSize)
+        let slack = CMTime(seconds: max(0, tolerance), preferredTimescale: 600)
+        generator.requestedTimeToleranceBefore = slack
+        generator.requestedTimeToleranceAfter = slack
+        let requested = times.map { CMTime(seconds: $0, preferredTimescale: 600) }
+        var frames = [UIImage?](repeating: nil, count: times.count)
+        for await result in generator.images(for: requested) {
+            guard let index = requested.firstIndex(of: result.requestedTime), let image = try? result.image else { continue }
+            frames[index] = UIImage(cgImage: image)
+        }
+        if frames.contains(where: { $0 != nil }) {
+            // Only the latest timeline's frames are kept: they're the ones on screen.
+            timelineFrames = [key: frames]
         }
         return frames
     }
