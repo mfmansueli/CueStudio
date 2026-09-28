@@ -147,6 +147,33 @@ struct PrompterViewModelTests {
         #expect(scenario.camera.recordingsStarted == 0)
     }
 
+    @Test func microphonePillOpensAudioInputBeforeRecording() async {
+        let scenario = makeScenario()
+        defer { scenario.defaults.tearDown() }
+        #expect(scenario.viewModel.canChangeAudioInput)
+        scenario.viewModel.openAudioInput()
+        #expect(scenario.viewModel.sheet == .audioInput)
+        scenario.viewModel.sheet = nil
+
+        await scenario.viewModel.recordButtonTapped()
+        #expect(!scenario.viewModel.canChangeAudioInput)
+        scenario.viewModel.openAudioInput()
+        #expect(scenario.viewModel.sheet == nil)
+        await scenario.viewModel.disappear()
+    }
+
+    @Test func audioInputStaysPutDuringTheCountdown() async {
+        let scenario = makeScenario()
+        defer { scenario.defaults.tearDown() }
+        scenario.preferences.camera.countdown = .three
+        await scenario.viewModel.recordButtonTapped()
+        #expect(!scenario.viewModel.canChangeAudioInput)
+        scenario.viewModel.openAudioInput()
+        #expect(scenario.viewModel.sheet == nil)
+        await scenario.viewModel.recordButtonTapped()
+        #expect(scenario.viewModel.canChangeAudioInput)
+    }
+
     @Test func stoppingShortOfTheMinimumWarnsFirst() async {
         let scenario = makeScenario(script: TestData.script(platform: .tiktok))
         defer { scenario.defaults.tearDown() }

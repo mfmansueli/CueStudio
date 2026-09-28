@@ -172,6 +172,33 @@ final class PrompterUITests: XCTestCase {
         app.buttons["prompter.closeButton"].tap()
     }
 
+    func testMicrophonePillPicksTheAudioInput() {
+        let app = CueApp.launch(seeded: true)
+        let record = app.buttons["hero.recordButton"]
+        XCTAssertTrue(record.waitForExistence(timeout: 15))
+        record.tap()
+        allowMicrophoneIfAsked()
+
+        let pill = app.buttons["prompter.audioInputButton"]
+        XCTAssertTrue(pill.waitForExistence(timeout: 5))
+        pill.tap()
+        XCTAssertTrue(app.staticTexts["Audio Input"].waitForExistence(timeout: 5))
+
+        // Whatever the Simulator offers: picking an input closes the sheet and the pill names it.
+        let option = app.buttons.matching(identifier: "audioInput.option").firstMatch
+        if option.waitForExistence(timeout: 2) {
+            let name = option.label.components(separatedBy: ",").first ?? option.label
+            option.tap()
+            XCTAssertTrue(app.staticTexts["Audio Input"].waitForNonExistence(timeout: 5))
+            XCTAssertEqual(pill.value as? String, name)
+        } else {
+            app.buttons.matching(NSPredicate(format: "label == 'Close' AND identifier != 'prompter.closeButton'")).firstMatch.tap()
+            XCTAssertTrue(app.staticTexts["Audio Input"].waitForNonExistence(timeout: 5))
+        }
+        XCTAssertTrue(app.buttons["prompter.recordButton"].exists)
+        app.buttons["prompter.closeButton"].tap()
+    }
+
     func testSelfieModeSwitchesToStudio() throws {
         let app = CueApp.launch(seeded: true)
         let record = app.buttons["hero.recordButton"]

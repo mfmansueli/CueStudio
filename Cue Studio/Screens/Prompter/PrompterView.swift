@@ -98,6 +98,8 @@ struct PrompterView: View {
             DestinationSheet(current: viewModel.script?.platform ?? profile.profile.defaultPlatform) { viewModel.setPlatform($0) }
         case .camera:
             CameraSettingsSheet(maxHeight: sheetMaxHeight)
+        case .audioInput:
+            AudioInputSheet()
         case .addScript:
             StartRecordingSheet(
                 mode: .attach,

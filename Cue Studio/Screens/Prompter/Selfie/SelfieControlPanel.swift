@@ -5,7 +5,8 @@
 
 import SwiftUI
 
-/// One toolbar for prompter and camera: scroll controls on top, capture controls below.
+/// One toolbar for prompter and camera: scroll controls on top, capture controls below, and between
+/// them the microphone the take records from.
 struct SelfieControlPanel: View {
     let viewModel: PrompterViewModel
 
@@ -14,10 +15,8 @@ struct SelfieControlPanel: View {
     var body: some View {
         VStack(spacing: 0) {
             if viewModel.hasScript { scriptRow } else { freestyleRow }
-            Rectangle()
-                .fill(Color.white.opacity(0.12))
-                .frame(height: 0.5)
-                .padding(EdgeInsets(top: 12, leading: 2, bottom: 10, trailing: 2))
+            audioRow
+                .padding(EdgeInsets(top: 4, leading: 2, bottom: 2, trailing: 2))
             cameraRow
         }
         .padding(EdgeInsets(top: 12, leading: 14, bottom: 14, trailing: 14))
@@ -84,6 +83,23 @@ struct SelfieControlPanel: View {
         }
         .padding(.leading, 6)
         .frame(height: 44)
+    }
+
+    /// The hairline between the rows, with the microphone pill in its middle.
+    private var audioRow: some View {
+        HStack(spacing: 10) {
+            hairline
+            AudioInputPill(isEnabled: viewModel.canChangeAudioInput) { viewModel.openAudioInput() }
+                .layoutPriority(1)
+            hairline
+        }
+    }
+
+    private var hairline: some View {
+        Rectangle()
+            .fill(Palette.glassBorder)
+            .frame(height: 0.5)
+            .frame(minWidth: 12)
     }
 
     private var cameraRow: some View {

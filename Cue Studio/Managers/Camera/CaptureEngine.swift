@@ -22,6 +22,7 @@ actor CaptureEngine {
     private var videoInput: AVCaptureDeviceInput?
     private var activeLens: CameraLens?
     private var isConfigured = false
+    private var hasAudioInput = false
     private var recordingDelegate: RecordingDelegate?
 
     var isRecording: Bool { movieOutput.isRecording }
@@ -48,14 +49,24 @@ actor CaptureEngine {
 
     /// Configures inputs and outputs and starts the session. Returns the lens actually in use.
     func start(settings: CameraSettings, includeAudio: Bool) throws -> CameraLens {
+        // Cue sets up the audio session itself: left to the capture session, it resets the input
+        // picked in Audio Input and leaves Bluetooth mics (AirPods) out. Every start, because
+        // Studio mode's meter changes the session in between.
+        session.automaticallyConfiguresApplicationAudioSession = false
+        if includeAudio {
+            try? AudioRoute.configureForCapture()
+            AudioRoute.prefer(inputID: settings.microphoneID)
+        }
         session.beginConfiguration()
         if !isConfigured {
             session.sessionPreset = .high
+            // The audio device records from whichever input the audio session routes.
             if includeAudio,
                let microphone = AVCaptureDevice.default(for: .audio),
                let input = try? AVCaptureDeviceInput(device: microphone),
                session.canAddInput(input) {
                 session.addInput(input)
+                hasAudioInput = true
                 if session.canAddOutput(audioDataOutput) {
                     audioDataOutput.setSampleBufferDelegate(audioTap, queue: audioQueue)
                     session.addOutput(audioDataOutput)
@@ -85,6 +96,9 @@ actor CaptureEngine {
     /// Applies changed settings to the running session. Returns the lens in use.
     func apply(settings: CameraSettings) -> CameraLens? {
         guard isConfigured, !movieOutput.isRecording else { return activeLens }
+        if hasAudioInput {
+            AudioRoute.prefer(inputID: settings.microphoneID)
+        }
         session.beginConfiguration()
         _ = try? useLens(settings.lens)
         configureFormat(settings)

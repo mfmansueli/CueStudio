@@ -5,35 +5,75 @@
 
 import AVFAudio
 
-/// Microphone choice, and the live input for Voice follow in Studio mode, where the camera (and
-/// its own audio) is off: the level, and the audio itself for speech recognition.
+/// The microphone: which inputs are connected, which one records (the pill on the recording
+/// screen), and the live input for Voice follow in Studio mode, where the camera (and its own
+/// audio) is off: the level, and the audio itself for speech recognition.
 @MainActor
 @Observable
 final class AudioInputManager: AudioLevelMetering {
     private(set) var inputs: [MicrophoneOption] = []
+    /// The input the audio comes from right now. Nil until the audio session reports one.
+    private(set) var currentInput: MicrophoneOption?
+    /// The input picked in Audio Input (or Camera settings), while it's connected.
+    private(set) var preferredInputID: String?
+    /// False once the creator denied the microphone: takes are recorded without sound.
+    private(set) var isMicrophoneAllowed = true
+
+    /// What the recording screen names and the picker checks.
+    var inputInUse: MicrophoneOption? {
+        MicrophoneOption.inUse(current: currentInput, preferredID: preferredInputID, available: inputs)
+    }
 
     private var engine: AVAudioEngine?
     private let tap = AudioBufferTap()
+    @ObservationIgnored private var routeObserver: (any NSObjectProtocol)?
 
     /// Average input power in dBFS (-160...0). Nil while not metering.
     var powerLevel: Float? { engine == nil ? nil : tap.level }
 
+    // MARK: - Inputs
+
     /// Lists the inputs available now (built-in, wired, Bluetooth, USB).
     func refreshInputs() {
-        let session = AVAudioSession.sharedInstance()
-        if session.category != .playAndRecord {
-            try? session.setCategory(.playAndRecord, mode: .videoRecording, options: [.allowBluetoothHFP, .defaultToSpeaker])
-        }
-        inputs = (session.availableInputs ?? []).map { port in
-            MicrophoneOption(id: port.uid, name: port.portName, detail: Self.detail(for: port.portType))
+        AudioRoute.prepareToListInputs()
+        readRoute()
+    }
+
+    /// Makes `id` the input to record from; nil returns to the system default. The camera applies
+    /// the same choice from the settings whenever it starts.
+    func select(_ id: String?) {
+        AudioRoute.prefer(inputID: id)
+        readRoute()
+    }
+
+    /// Keeps the inputs and the one in use current while the recording screen shows them: a mic
+    /// plugged in or unplugged, AirPods connecting, the camera setting up the session. Calling it
+    /// again reads the route again.
+    func startObservingRoute() {
+        readRoute()
+        guard routeObserver == nil else { return }
+        routeObserver = NotificationCenter.default.addObserver(
+            forName: AVAudioSession.routeChangeNotification, object: nil, queue: nil
+        ) { [weak self] _ in
+            Task { @MainActor [weak self] in self?.readRoute() }
         }
     }
 
-    /// Makes `id` the preferred input; nil returns to the system default.
-    func select(_ id: String?) {
-        let session = AVAudioSession.sharedInstance()
-        let port = session.availableInputs?.first { $0.uid == id }
-        try? session.setPreferredInput(port)
+    func stopObservingRoute() {
+        if let routeObserver {
+            NotificationCenter.default.removeObserver(routeObserver)
+        }
+        routeObserver = nil
+        inputs = []
+        currentInput = nil
+        preferredInputID = nil
+    }
+
+    private func readRoute() {
+        inputs = AudioRoute.availableInputs()
+        currentInput = AudioRoute.currentInput()
+        preferredInputID = AudioRoute.preferredInputID()
+        isMicrophoneAllowed = AVAudioApplication.shared.recordPermission != .denied
     }
 
     // MARK: - Metering
@@ -77,16 +117,5 @@ final class AudioInputManager: AudioLevelMetering {
 
     func setAudioHandler(_ handler: (@Sendable (AVAudioPCMBuffer) -> Void)?) {
         tap.setHandler(handler)
-    }
-
-    private static func detail(for type: AVAudioSession.Port) -> String {
-        switch type {
-        case .builtInMic: String(localized: "Built-in")
-        case .headsetMic: String(localized: "Wired headset")
-        case .bluetoothHFP, .bluetoothLE: String(localized: "Bluetooth")
-        case .usbAudio: String(localized: "USB")
-        case .carAudio: String(localized: "Car audio")
-        default: String(localized: "External")
-        }
     }
 }

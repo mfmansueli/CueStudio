@@ -54,7 +54,7 @@ tela branca atrapalha a gravação. Os tokens mantêm valores claros para o dia 
 | `danger` | `#FF453A` | Ações destrutivas |
 | `warn` | `#FF9F0A` | Fora da faixa ideal, hook longo, aviso de monetização |
 | `info` | `#64D2FF` | Aviso de nova versão no editor |
-| `success` | `#34C759` | Toggles, "Kept" no Clean Up |
+| `success` | `#34C759` | Toggles, "Kept" no Clean Up, ponto do microfone conectado |
 | Plataformas | TikTok `#64D2FF` · Reels `#BF5AF2` · Shorts `#FF6961` · YouTube `#FF9F0A` · LinkedIn `#0A84FF` · Stories `#FF375F` | Ponto que marca o destino |
 | `frameMask` / `frameEdge` | preto 60% / branco 22% | Fora do frame gravado / bordas de 0,5 pt do frame |
 | `safeZoneLine` / `safeZoneLabel` | branco 40% / 62% | Contorno tracejado da área segura e a legenda |
@@ -88,7 +88,8 @@ tela branca atrapalha a gravação. Os tokens mantêm valores claros para o dia 
 SF Symbols por significado: `doc.text` scripts · `film.stack` takes · `person.crop.circle` perfil ·
 `record.circle` gravar · `video.fill` gravar script · `text.alignleft` Studio · `sparkles` IA ·
 `arrow.up.to.line` voltar ao topo · `chevron.backward.2`/`forward.2` pular linhas ·
-`slider.horizontal.3` ajustes de câmera · `timer` contagem · `star.fill` melhor take.
+`slider.horizontal.3` ajustes de câmera · `timer` contagem · `star.fill` melhor take ·
+`mic.fill` / `mic.slash.fill` entrada de áudio.
 
 ## 3. Componentes (`DesignSystem/`)
 
@@ -124,9 +125,10 @@ SF Symbols por significado: `doc.text` scripts · `film.stack` takes · `person.
 | Start recording | `StartRecordingSheet` | "Read from a script" (4 recentes com duração), "+ New script", "Record without a script →". Sobre a câmera vira "Add a script", sem o freestyle |
 | Importar | `ImportScriptSheet` | Files, Scan (câmera de documentos), Photo e Clipboard. Scan, Photo e PDFs escaneados passam por OCR do Vision no aparelho |
 | Gerar com IA | `GenerateScript/` | "Generate with AI · Apple Intelligence · private · no cost" + abas **Prompt** (texto livre, exemplos, Create for, Length, "Write in my voice", aviso de fatos), **Themes** (6 ideias do nicho, "New ideas", "Use" preenche o Prompt) e **Formats** (8 formatos, Sponsored ad incluído) → briefing |
-| Selfie | `Screens/Prompter/Selfie` | Câmera em primeiro plano, em camadas que nunca entram no vídeo: o **frame gravado** (o preview mostra exatamente o que é gravado; fora dele, preto 60% e bordas de 0,5 pt), a **zona segura** da plataforma (degradê em cima e embaixo, sombra nas laterais, contorno tracejado e "INSTAGRAM REELS SAFE AREA"), a **janela de texto** (largura 50–93%, padrão 93%; altura 160–380, padrão 380: começa no máximo e o criador pode estreitar; as linhas quebram normalmente e preenchem a largura; fundo preto 25%; desfoque opcional; o texto já lido esmaece) e a **linha de leitura** fixa logo abaixo da lente (118 pt na frontal; 36% do frame na traseira), com uma alça fina (14 × 34, alvo de 44 pt) para arrastar, que some enquanto o texto roda ou a câmera grava. Sem dica de primeiro uso. A janela segue a linha (a linha fica ~25% abaixo do topo dela). Topo: fechar, Selfie \| Studio e o chip "{Plataforma} · 9:16" (abre Create for; em freestyle troca o enquadramento); gravando: olho (Hide UI), "● 00:42 \| 18s to 1:00" e o chip. Barra de vidro: Voice Following \| Steady, slider de velocidade com o valor (0,3–2,0×) ou "AUTO · Listening/Paused", voltar ao topo, play, Aa; câmera: última take, ajustes, gravar, virar, timer. Com os controles escondidos ficam só texto, linha, relógio e um botão de parar |
+| Selfie | `Screens/Prompter/Selfie` | Câmera em primeiro plano, em camadas que nunca entram no vídeo: o **frame gravado** (o preview mostra exatamente o que é gravado; fora dele, preto 60% e bordas de 0,5 pt), a **zona segura** da plataforma (degradê em cima e embaixo, sombra nas laterais, contorno tracejado e "INSTAGRAM REELS SAFE AREA"), a **janela de texto** (largura 50–93%, padrão 93%; altura 160–380, padrão 380: começa no máximo e o criador pode estreitar; as linhas quebram normalmente e preenchem a largura; fundo preto 25%; desfoque opcional; o texto já lido esmaece) e a **linha de leitura** fixa logo abaixo da lente (118 pt na frontal; 36% do frame na traseira), com uma alça fina (14 × 34, alvo de 44 pt) para arrastar, que some enquanto o texto roda ou a câmera grava. Sem dica de primeiro uso. A janela segue a linha (a linha fica ~25% abaixo do topo dela). Topo: fechar, Selfie \| Studio e o chip "{Plataforma} · 9:16" (abre Create for; em freestyle troca o enquadramento); gravando: olho (Hide UI), "● 00:42 \| 18s to 1:00" e o chip. Barra de vidro: Voice Following \| Steady, slider de velocidade com o valor (0,3–2,0×) ou "AUTO · Listening/Paused", voltar ao topo, play, Aa; entre as duas linhas, no meio do fio que as separa, a **pill do microfone** (`AudioInputPill`: 🎙 + ponto verde + nome da entrada em uso, ex.: "iPhone Microphone", "DJI Mic"; cápsula `overlayFill` de 26 pt, alvo de 40 pt; ponto `ink3` enquanto a sessão de áudio não informou a entrada; "Microphone off" com ponto laranja sem permissão; abre Audio Input e fica travada gravando ou na contagem); câmera: última take, ajustes, gravar, virar, timer. Com os controles escondidos ficam só texto, linha, relógio e um botão de parar |
 | Studio | `Screens/Prompter/Studio` | Prompter em tela cheia sem câmera, barra de progresso no topo, fechar, Selfie \| Studio e espelhar; barra: Voice Following \| Steady, slider de velocidade (no Voice Following, "Listening/Paused" e "Speed follows your voice"), voltar ao topo, 3 linhas para trás/frente, play grande amarelo e Aa |
 | Display | `DisplaySettingsSheet` | "Display · ● Live preview". No Selfie, primeiro **Layout** (`DisplayLayoutSection`): Reading line com ↑/↓ e a distância da câmera, Text window height e width ("Narrow · less eye movement"), **Social safe zone** (chips Reels / TikTok / Shorts / Stories / Custom no 9:16, LinkedIn / Custom no 4:5, Custom no 1:1; no Custom, margens em %), Show safe zone, Hide controls while recording e "Reset to Recommended", com o aviso de que a zona é guia e não garantia. Quick: AI Coach (desligado por padrão), Text size e, no Selfie, Background opacity e Camera blur (Off/Subtle/Soft/Medium, leve); no Studio, Reading line (Top/Bottom) e Background color. Advanced (recolhível): fonte, espaçamento, margens, alinhamento, cor, linha de leitura, espelhar. No Selfie, a altura máxima para logo abaixo da janela de texto (medida quando a sheet abre) |
+| Audio Input | `AudioInputSheet` | Aberta pela pill do microfone no Selfie (sheet na altura do conteúdo, sem tela de ajustes separada): "Audio Input" + "Where Cue hears you in this take.", a lista das entradas conectadas agora (nome + tipo: Built-in, Bluetooth, USB, Wired headset…) com a que está em uso marcada (círculo amarelo), e "Plug in or pair a mic and it shows up here.". Tocar numa entrada a torna a entrada da gravação, fecha a sheet e a pill muda na hora. Sem entradas: "No microphone found…"; sem permissão: explicação + Open Settings |
 | Câmera | `CameraSettingsSheet` | Lente, enquadramento, resolução, fps, grid, safe zones, estabilização, microfone, contagem, formato. No Selfie com script, a sheet para logo abaixo da janela de texto (não cresce além dela) e não escurece o fundo |
 | Revisão do take | `Screens/TakeReview` | Vídeo no formato da take (barras pretas fora do 9:16); topo: voltar, "Take N · 0:44", estrela e lixeira; filmstrip, título (+ EDITED), meta, "3 of 5 free exports" + Go Pro (no grátis); faixa "Your takes · N" (troca de take, "Tap ☆ to pick your best", "Suggest best"); Edit · Retake · Save · Share (Share amarelo, abre Share to). Só uma melhor take por roteiro |
 | Share to | `TakeReview/Share` | Miniatura, "SHARE TO", título, "0:44 · 9:16 · 1080p"; seis plataformas (a da take com anel amarelo e "recommended"), Save video e More; "Created for X — framed and safe-zoned for it"; Burn in captions; Quality 1080p / 4K; exportações grátis restantes + Go Pro. Plataforma: exporta, salva no Fotos e abre o app; "Ready to post on X · N of 5 free exports left". Sem exportações grátis, qualquer exportação abre o paywall e continua sozinha depois da assinatura |
@@ -208,6 +210,8 @@ estático), o app baixa uma vez por abertura e só adota uma revisão maior, com
 - Cards e linhas combinam os filhos em um elemento; tiles de take leem "Take 3, 0:44, best take".
 - Prompter: ajustável com VoiceOver (desliza 3 linhas), valor = progresso.
 - Alça da linha de leitura: ajustável com VoiceOver (8 pt por gesto), valor = distância da câmera.
+- Pill do microfone: label "Audio Input", valor = nome da entrada em uso; na sheet, a entrada em uso
+  marca `.isSelected` (`prompter.audioInputButton`, `audioInput.option`).
 - Quick edit: a timeline é ajustável (1 s por gesto), valor = "tempo / duração, seção N de M",
   com a ação "Select this section"; as alças de trim e as bordas do Remove part também (0,5 s por
   gesto). A timeline fina do Clean Up é ajustável como a do Trim.
@@ -287,6 +291,14 @@ O protótipo simulava várias coisas; o app implementa de verdade ou deixa de fo
 - **Lente:** não existe API para a posição da câmera frontal. O app estima a lente no meio da área
   segura superior (Dynamic Island ou notch) e guarda a linha como distância até ela, então a linha fica
   no mesmo lugar em qualquer iPhone. O app é só retrato no iPhone.
+- **Entrada de áudio:** não está no protótipo; vem do pedido. A `AVCaptureSession` não configura mais a
+  sessão de áudio sozinha (`automaticallyConfiguresApplicationAudioSession = false`): deixada com ela, a
+  sessão trocava a entrada escolhida e não aceitava microfones Bluetooth (AirPods). O app usa
+  `.playAndRecord` / `.videoRecording` com Bluetooth HFP (`AudioRoute`) e grava pela entrada preferida
+  (`CameraSettings.microphoneID`), aplicada toda vez que a câmera liga e quando muda. A pill mostra a
+  entrada que a sessão de áudio informa (`currentRoute`), então mostra o que vai para a take: se o
+  microfone externo desconecta, o sistema volta para o do iPhone e a pill acompanha
+  (`routeChangeNotification`). A entrada não muda durante a gravação.
 - **Speed na Display › Layout:** o prompt coloca Speed no Layout; o protótipo (e o app) deixam o
   slider só na barra.
 - **Zona no 16:9:** o protótipo mostra o chip Custom no 16:9 sem desenhar a zona; o app não mostra

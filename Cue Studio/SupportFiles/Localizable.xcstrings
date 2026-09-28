@@ -40,10 +40,19 @@
     "Analyzing your take…" : {
 
     },
+    "Audio Input" : {
+
+    },
+    "Choose the microphone to record with" : {
+
+    },
     "Clean Up" : {
 
     },
     "Couldn't listen to this take" : {
+
+    },
+    "Cue can't hear you. Allow the microphone in Settings to record sound." : {
 
     },
     "Cut" : {
@@ -151,6 +160,9 @@
     "May be intentional — for emphasis" : {
 
     },
+    "Microphone off" : {
+
+    },
     "Might carry meaning — listen first" : {
 
     },
@@ -164,6 +176,9 @@
 
     },
     "natural pauses stay" : {
+
+    },
+    "No microphone found. Connect one and it shows up here." : {
 
     },
     "No pauses left between the handles." : {
@@ -194,6 +209,9 @@
 
     },
     "Play from just before" : {
+
+    },
+    "Plug in or pair a mic and it shows up here." : {
 
     },
     "Possible retake" : {
@@ -347,6 +365,9 @@
 
     },
     "Welcome to Cue Pro — exporting now" : {
+
+    },
+    "Where Cue hears you in this take." : {
 
     },
     "You've used your %lld free exports. Every feature stays open — start 7 days free to keep exporting. Your takes are safe." : {

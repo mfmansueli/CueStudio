@@ -479,6 +479,14 @@ final class PrompterViewModel {
         preferences.camera.lens = preferences.camera.lens.isFront ? .wide : .front
     }
 
+    /// The microphone pill: the input can't change mid-take (or while the countdown runs into one).
+    var canChangeAudioInput: Bool { !isRecording && countdown == nil }
+
+    func openAudioInput() {
+        guard canChangeAudioInput else { return }
+        sheet = .audioInput
+    }
+
     func cycleCountdown() {
         preferences.camera.countdown = preferences.camera.countdown.next
     }

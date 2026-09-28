@@ -9,6 +9,8 @@ import Foundation
 enum PrompterSheet: Identifiable, Hashable {
     case display
     case camera
+    /// "Audio Input", from the microphone pill next to the capture controls.
+    case audioInput
     /// "Create for", from the platform chip at the top of the camera.
     case destination
     /// Add a script to a freestyle recording: a recent one or a new one.
@@ -22,6 +24,7 @@ enum PrompterSheet: Identifiable, Hashable {
         switch self {
         case .display: "display"
         case .camera: "camera"
+        case .audioInput: "audioInput"
         case .destination: "destination"
         case .addScript: "addScript"
         case .newScript: "newScript"
