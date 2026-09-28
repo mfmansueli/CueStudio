@@ -1314,6 +1314,12 @@
     "Frame %@" : {
 
     },
+    "Frame by frame · drag the red edges" : {
+
+    },
+    "Frame by frame · pinch to zoom out" : {
+
+    },
     "Frame rate" : {
 
     },
@@ -2994,6 +3000,18 @@
 
     },
     "Zoom" : {
+
+    },
+    "Zoom in" : {
+
+    },
+    "Zoom out" : {
+
+    },
+    "Zoomed in · drag the red edges" : {
+
+    },
+    "Zoomed in · pinch to zoom out" : {
 
     }
   },

@@ -15,7 +15,10 @@ import Foundation
 /// gap. A trim only moves the handles; the scale changes when something is removed from inside.
 /// Clean Up's strip (`showsTrimmedEnds: false`) shows the edited video alone.
 ///
-/// Ready for zoom: `zoom` above 1 widens every second and `offset` scrolls.
+/// Zoom (see `TimelineZoom`): `zoom` above 1 widens every second and `offset` scrolls, in points,
+/// from 0 (the strip's start at the left) to `maxOffset`. The time a point stands for changes;
+/// the time itself never does, so the handles, the red range and the playhead keep their real
+/// moments at any zoom.
 nonisolated struct TimelineLayout {
     /// Room for a yellow handle on each side of the frames.
     static let handleWidth: CGFloat = 16
@@ -48,12 +51,21 @@ nonisolated struct TimelineLayout {
     let inset: CGFloat
     /// Points per second, the same all along the strip.
     let pointsPerSecond: CGFloat
+    /// 1 fits the strip in the width; above 1 every second is wider.
+    let zoom: CGFloat
+    /// How far the strip is scrolled, in points, held between 0 and `maxOffset`.
+    let offset: CGFloat
+    /// The frames' width at zoom 1: the width less the handles' room and the hairlines.
+    let room: CGFloat
+    /// Points per second at zoom 1.
+    let fitPointsPerSecond: CGFloat
     /// What the strip draws, one per section in play order (with the trimmed ends when they show).
     let regions: [Region]
     /// The timeline drawn: the edit, or the edit with its ends grown to the whole recording.
     private let strip: EditTimeline
     /// Seconds of the strip before the edit starts (what the start handle trimmed, when it shows).
     private let lead: TimeInterval
+    private let showsTrimmedEnds: Bool
 
     init(
         timeline: EditTimeline, width: CGFloat, inset: CGFloat = TimelineLayout.handleWidth,
@@ -62,17 +74,25 @@ nonisolated struct TimelineLayout {
         self.timeline = timeline
         self.width = width
         self.inset = inset
+        self.showsTrimmedEnds = showsTrimmedEnds
         let strip = showsTrimmedEnds ? timeline.reachable : timeline
         self.strip = strip
         lead = showsTrimmedEnds ? timeline.trimStart : 0
         let joins = CGFloat(strip.segments.count - 1) * Self.joinWidth
         let seconds = strip.editedDuration
         let room = max(0, width - 2 * inset - joins)
-        let scale = seconds > 0 ? room / CGFloat(seconds) * max(1, zoom) : 0
+        let scaled = zoom.isFinite ? max(1, zoom) : 1
+        let scrolled = min(max(0, offset.isFinite ? offset : 0), room * (scaled - 1))
+        self.room = room
+        self.zoom = scaled
+        self.offset = scrolled
+        let fit = seconds > 0 ? room / CGFloat(seconds) : 0
+        fitPointsPerSecond = fit
+        let scale = fit * scaled
         pointsPerSecond = scale
 
         var regions: [Region] = []
-        var x = inset - offset
+        var x = inset - scrolled
         for (index, segment) in strip.segments.enumerated() {
             if index > 0 { x += Self.joinWidth }
             let end = x + CGFloat(segment.duration) * scale
@@ -122,6 +142,40 @@ nonisolated struct TimelineLayout {
     /// The section of the edit drawn at `x`, or nil outside the handles.
     func segmentIndex(atX x: CGFloat) -> Int? {
         timeline.segments.indices.first { piece($0).minX <= x && x <= piece($0).maxX + Self.joinWidth }
+    }
+
+    // MARK: - Zoom
+
+    /// The furthest the strip scrolls at this zoom: its end at the right.
+    var maxOffset: CGFloat { room * (zoom - 1) }
+
+    /// `offset` held to what this zoom can scroll.
+    func clampedOffset(_ offset: CGFloat) -> CGFloat {
+        min(max(0, offset), maxOffset)
+    }
+
+    /// Where the frames show, between the handles' room.
+    var visibleFrames: ClosedRange<CGFloat> { inset...max(inset, width - inset) }
+
+    /// The same strip at another zoom and scroll.
+    func zoomed(_ zoom: CGFloat, offset: CGFloat) -> TimelineLayout {
+        TimelineLayout(
+            timeline: timeline, width: width, inset: inset, showsTrimmedEnds: showsTrimmedEnds,
+            zoom: zoom, offset: offset
+        )
+    }
+
+    /// The scroll that draws `time` (seconds of the strip) at `x` at `zoom`, or as close as the
+    /// strip's ends allow.
+    func scrollOffset(placing time: TimeInterval, atX x: CGFloat, zoom: CGFloat) -> CGFloat {
+        let flat = zoomed(zoom, offset: 0)
+        return flat.clampedOffset(flat.x(forStrip: time) - x)
+    }
+
+    /// An edited moment as seconds of the strip (which starts before the edit when the trimmed
+    /// start shows).
+    func stripTime(forEdited time: TimeInterval) -> TimeInterval {
+        lead + min(max(0, time), timeline.editedDuration)
     }
 
     // MARK: - Touch
@@ -177,15 +231,15 @@ nonisolated struct TimelineLayout {
     // MARK: - Strip time
 
     /// Where a moment of the strip (seconds from its start) is drawn.
-    private func x(forStrip time: TimeInterval) -> CGFloat {
-        guard !regions.isEmpty else { return inset }
+    func x(forStrip time: TimeInterval) -> CGFloat {
+        guard !regions.isEmpty else { return inset - offset }
         let index = strip.segmentIndex(atEdited: time)
         let offset = min(max(0, time - strip.editedStart(ofSegmentAt: index)), strip.segments[index].duration)
         return regions[index].minX + CGFloat(offset) * pointsPerSecond
     }
 
     /// The moment of the strip at `x`, on the hairline the start of the next section.
-    private func stripTime(atX x: CGFloat) -> TimeInterval {
+    func stripTime(atX x: CGFloat) -> TimeInterval {
         guard pointsPerSecond > 0 else { return lead }
         for index in strip.segments.indices {
             let region = regions[index]

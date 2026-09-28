@@ -50,6 +50,11 @@ final class QuickEditViewModel {
         didSet { player.reviewedPart = removalRange }
     }
     private(set) var isWritingCaptions = false
+    /// Frames per second of the recording: read from the file when it opens, the take's setting
+    /// until then. The timeline puts every edit on a frame (`FrameGrid`).
+    private(set) var frameRate: Double
+    /// The timeline is zoomed in: the clock keeps the hundredths even on a long take.
+    var showsPreciseTime = false
     /// Clean Up listening to the take (see `QuickEditViewModel+CleanUp`).
     var analysis: Analysis = .idle
     /// Clean Up's "Ignore pauses under": shorter pauses aren't listed and stay as natural ones.
@@ -82,6 +87,7 @@ final class QuickEditViewModel {
         let edit = take.edit ?? TakeEdit(sourceDuration: take.duration, aspect: take.aspect)
         original = edit
         self.edit = edit
+        frameRate = Double(take.frameRate.rawValue)
         self.player = player ?? QuickEditPlayer(videoURL: takes.videoURL(for: take), editing: editing)
     }
 
@@ -95,6 +101,7 @@ final class QuickEditViewModel {
             source = .unavailable
             return
         }
+        if let rate = await editing.frameRate(ofVideoAt: videoURL) { frameRate = FrameGrid(rate: rate).rate }
         guard !isClosed else { return }
         // The file's own length wins over the take's saved one.
         original.timeline = original.timeline.fitted(toSourceDuration: duration)
@@ -141,12 +148,20 @@ final class QuickEditViewModel {
     /// "00:04.32": where the playhead is. It reads the player's clock, so only the small views that
     /// show it redraw while the video plays.
     var currentTimeLabel: String {
-        DurationText.timecode(player.currentTime, total: edit.editedDuration)
+        DurationText.timecode(player.currentTime, total: edit.editedDuration, precise: showsPreciseTime)
     }
 
     /// "00:11.00": the edit's length.
     var durationLabel: String {
-        DurationText.timecode(edit.editedDuration, total: edit.editedDuration)
+        DurationText.timecode(edit.editedDuration, total: edit.editedDuration, precise: showsPreciseTime)
+    }
+
+    /// The recording's frames in time.
+    var frameGrid: FrameGrid { FrameGrid(rate: frameRate) }
+
+    /// The frame nearest to `time` (edited seconds): where a finger on the timeline lands.
+    func frameSnapped(edited time: TimeInterval) -> TimeInterval {
+        frameGrid.snapped(edited: time, in: edit.timeline)
     }
 
     /// "00:04.32 / 00:11.00"

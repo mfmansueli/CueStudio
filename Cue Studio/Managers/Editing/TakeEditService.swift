@@ -32,6 +32,13 @@ final class TakeEditService: TakeEditing {
         return seconds
     }
 
+    func frameRate(ofVideoAt url: URL) async -> Double? {
+        let asset = AVURLAsset(url: url)
+        guard let track = try? await asset.loadTracks(withMediaType: .video).first,
+              let rate = try? await track.load(.nominalFrameRate), rate > 0 else { return nil }
+        return Double(rate)
+    }
+
     func cleanUpSuggestions(forVideoAt url: URL, script: String) async throws -> [CleanUpSuggestion] {
         let audio: URL
         do {

@@ -34,9 +34,10 @@ nonisolated enum DurationText {
     /// Quick edit's clock: "00:04.32" or "01:04.00" (minutes, seconds, hundredths) for a video under
     /// ten minutes, "00:12:04" (hours, minutes, seconds) from ten minutes up. `total` is the video's
     /// length and picks the format, so the playhead and the length always read alike.
-    static func timecode(_ seconds: TimeInterval, total: TimeInterval) -> String {
+    /// `precise` (the timeline zoomed in) keeps the hundredths on a long take too: "12:04.42".
+    static func timecode(_ seconds: TimeInterval, total: TimeInterval, precise: Bool = false) -> String {
         let value = seconds.isFinite ? max(0, seconds) : 0
-        if total < 600 {
+        if total < 600 || precise {
             let hundredths = Int((value * 100).rounded())
             return twoDigits(hundredths / 6000) + ":" + twoDigits(hundredths / 100 % 60) + "." + twoDigits(hundredths % 100)
         }

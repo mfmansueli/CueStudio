@@ -176,6 +176,49 @@ struct TimelineLayoutTests {
         #expect(near(zoomed.editedTime(atX: zoomed.x(forEdited: 2)), 2))
     }
 
+    @Test func theScrollStaysOnTheStrip() {
+        let timeline = EditTimeline(sourceDuration: 10)
+        let room = width - 2 * inset
+        let scrolledToTheEnd = TimelineLayout(timeline: timeline, width: width, zoom: 4, offset: 10_000)
+        #expect(near(scrolledToTheEnd.offset, room * 3))
+        #expect(near(scrolledToTheEnd.maxOffset, room * 3))
+        #expect(near(scrolledToTheEnd.endHandleX, width - inset))
+        #expect(near(scrolledToTheEnd.fitPointsPerSecond, room / 10))
+        #expect(near(scrolledToTheEnd.pointsPerSecond, room / 10 * 4))
+        #expect(near(TimelineLayout(timeline: timeline, width: width, zoom: 4, offset: -50).offset, 0))
+        // At zoom 1 there is nothing to scroll.
+        #expect(near(TimelineLayout(timeline: timeline, width: width, offset: 80).offset, 0))
+    }
+
+    @Test func aZoomCanKeepAMomentWhereItIs() {
+        let layout = TimelineLayout(timeline: EditTimeline(sourceDuration: 10), width: width)
+        let offset = layout.scrollOffset(placing: 5, atX: 100, zoom: 8)
+        let zoomed = layout.zoomed(8, offset: offset)
+        #expect(near(zoomed.x(forStrip: 5), 100))
+        #expect(near(zoomed.stripTime(atX: 100), 5))
+        #expect(near(zoomed.editedTime(atX: 100), 5))
+        // Near the start the strip can't scroll back past it.
+        #expect(near(layout.scrollOffset(placing: 0.1, atX: 300, zoom: 8), 0))
+    }
+
+    @Test func zoomedInTimesStayReal() {
+        var timeline = EditTimeline(sourceDuration: 10)
+        timeline.trimStart(to: 2)
+        let layout = TimelineLayout(timeline: timeline, width: width, zoom: 20, offset: 900)
+        #expect(near(layout.stripTime(forEdited: 1), 3))
+        #expect(near(layout.x(forStrip: 3), layout.x(forEdited: 1)))
+        for time in [1.0, 1.04, 1.0333] {
+            #expect(near(layout.editedTime(atX: layout.x(forEdited: time)), time))
+        }
+        // The red range's edges are told apart even a frame apart.
+        let removal: ClosedRange<TimeInterval> = 1.0...1.2
+        let startX = layout.x(forEdited: removal.lowerBound)
+        let endX = layout.x(forEdited: removal.upperBound)
+        #expect(endX - startX > 2 * TimelineLayout.removalEdgeReach)
+        #expect(layout.target(atX: startX + 4, playheadX: 0, removal: removal) == .removalEdge(.start))
+        #expect(layout.target(atX: endX - 4, playheadX: 0, removal: removal) == .removalEdge(.end))
+    }
+
     @Test func frameCountFollowsTheWidthNotTheLength() {
         #expect(TimelineLayout.frameCount(width: 350, tileWidth: 29.25) == 24)
         #expect(TimelineLayout.frameCount(width: 4_000, tileWidth: 29.25) == 60)

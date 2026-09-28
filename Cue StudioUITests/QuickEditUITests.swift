@@ -6,7 +6,8 @@
 import XCTest
 
 /// Quick edit from a take's review, on a small real video: play and pause, seek, cut, delete,
-/// remove part, undo, redo, trim, Clean Up, captions, Done, and Cancel keeping a draft.
+/// remove part (and the zoom it brings), undo, redo, trim, Clean Up, captions, Done, and Cancel
+/// keeping a draft.
 @MainActor
 final class QuickEditUITests: XCTestCase {
     override func setUp() {
@@ -109,6 +110,36 @@ final class QuickEditUITests: XCTestCase {
         XCTAssertTrue(app.staticTexts["Removed 00:02.00"].waitForExistence(timeout: 5))
         XCTAssertEqual(app.staticTexts["edit.durationChange"].label, "1:02 → 1:00")
         XCTAssertFalse(element(app, "edit.removalStartEdge").exists)
+    }
+
+    func testASmallRedRangeZoomsTheTimelineIn() {
+        let app = openQuickEdit()
+        let time = app.staticTexts["edit.timeLabel"]
+        XCTAssertTrue(wait(for: time, value: "00:00.00 / 01:02.00"))
+        let timeline = element(app, "edit.timeline")
+        timeline.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).tap()
+        XCTAssertTrue(wait(for: time, value: "00:31.00 / 01:02.00"))
+
+        // Two seconds of a 1:02 take would be a few points wide: the timeline zooms in on them.
+        app.buttons["edit.removePartButton"].tap()
+        let start = element(app, "edit.removalStartEdge")
+        let end = element(app, "edit.removalEndEdge")
+        XCTAssertTrue(start.waitForExistence(timeout: 5))
+        let hint = app.staticTexts["edit.trimHint"]
+        let zoomed = NSPredicate(format: "label BEGINSWITH 'Zoomed in' OR label BEGINSWITH 'Frame by frame'")
+        XCTAssertEqual(XCTWaiter.wait(for: [expectation(for: zoomed, evaluatedWith: hint)], timeout: 5), .completed)
+        sleep(1)
+        XCTAssertGreaterThan(end.frame.midX - start.frame.midX, timeline.frame.width * 0.3)
+        XCTAssertGreaterThan(start.frame.midX, timeline.frame.minX)
+        XCTAssertLessThan(end.frame.midX, timeline.frame.maxX)
+        // Only the drawing changed: the range is still the same two seconds.
+        XCTAssertTrue(app.buttons["edit.removePartConfirmButton"].label.contains("00:02.00"))
+
+        // Without the range, back to the whole take.
+        app.buttons["edit.removePartCancelButton"].tap()
+        XCTAssertFalse(start.exists)
+        let whole = NSPredicate(format: "label BEGINSWITH 'Tap to jump'")
+        XCTAssertEqual(XCTWaiter.wait(for: [expectation(for: whole, evaluatedWith: hint)], timeout: 5), .completed)
     }
 
     func testCleanUpListensAndSuggestsWithoutCutting() {

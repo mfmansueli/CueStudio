@@ -159,6 +159,24 @@ struct QuickEditViewModelTests {
         #expect(scenario.viewModel.edit.timeline.isWhole)
     }
 
+    // MARK: - Frames
+
+    @Test func readsTheFrameRateFromTheFile() async {
+        let editor = FakeTakeEditor()
+        editor.nominalFrameRate = 60
+        let scenario = await makeScenario(editor: editor)
+        #expect(scenario.viewModel.frameRate == 60)
+        #expect(abs(scenario.viewModel.frameSnapped(edited: 10.44) - 626.0 / 60) < 0.000_1)
+    }
+
+    @Test func withoutARateInTheFileItUsesTheTakes() async {
+        let editor = FakeTakeEditor()
+        editor.nominalFrameRate = nil
+        let scenario = await makeScenario(editor: editor)
+        #expect(scenario.viewModel.frameRate == 30)
+        #expect(abs(scenario.viewModel.frameSnapped(edited: 10.44) - 313.0 / 30) < 0.000_1)
+    }
+
     // MARK: - Remove part
 
     @Test func removePartTakesTheRedRangeOut() async {

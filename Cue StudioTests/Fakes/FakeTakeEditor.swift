@@ -11,6 +11,8 @@ import Foundation
 final class FakeTakeEditor: TakeEditing {
     /// Nil: the recording is missing.
     var duration: TimeInterval? = 64
+    /// Frames per second the file reports; nil when it doesn't say.
+    var nominalFrameRate: Double? = 30
     var silences: [TimeSpan] = [TimeSpan(start: 10, end: 12), TimeSpan(start: 30, end: 31)]
     /// What the transcript heard; nil when no speech model could listen.
     var transcript: TakeTranscript?
@@ -23,6 +25,10 @@ final class FakeTakeEditor: TakeEditing {
     func sourceDuration(ofVideoAt url: URL) async throws -> TimeInterval {
         guard let duration else { throw EditSourceError.missing }
         return duration
+    }
+
+    func frameRate(ofVideoAt url: URL) async -> Double? {
+        nominalFrameRate
     }
 
     func cleanUpSuggestions(forVideoAt url: URL, script: String) async throws -> [CleanUpSuggestion] {

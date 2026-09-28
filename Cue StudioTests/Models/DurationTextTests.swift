@@ -46,6 +46,11 @@ struct DurationTextTests {
         #expect(DurationText.timecode(3_725, total: 4_000) == "01:02:05")
     }
 
+    @Test func aPreciseTimecodeKeepsTheHundredthsOnALongTake() {
+        #expect(DurationText.timecode(724.42, total: 900, precise: true) == "12:04.42")
+        #expect(DurationText.timecode(10.43, total: 11, precise: true) == "00:10.43")
+    }
+
     @Test func timecodeNeverShowsNonsense() {
         #expect(DurationText.timecode(-2, total: 11) == "00:00.00")
         #expect(DurationText.timecode(.nan, total: 11) == "00:00.00")

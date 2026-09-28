@@ -7,26 +7,33 @@ import SwiftUI
 
 /// Trim: play, the time, undo and redo; the timeline; then "Remove part" (drag a red range over
 /// what should go), Cut at the playhead, Delete the selected section and Clean Up. While the red
-/// range shows, the buttons become Cancel and "Remove 00:02.10". A hint says what the timeline does.
+/// range shows, the buttons become Cancel and "Remove 00:02.10". A hint says what the timeline does
+/// (and that it's zoomed in, when it is: see `TimelineZoomController`).
 struct TrimToolView: View {
     let viewModel: QuickEditViewModel
+
+    @State private var zoom = TimelineZoomController()
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             QuickEditTransportBar(viewModel: viewModel)
-            TimelineStripView(viewModel: viewModel)
+            TimelineStripView(viewModel: viewModel, zoom: zoom)
                 .padding(.top, 4)
             Group {
                 if viewModel.removalRange == nil { actions } else { removalActions }
             }
             .padding(.top, 10)
-            Text(viewModel.trimHint)
+            Text(zoom.hint(isRemovingPart: viewModel.removalRange != nil) ?? viewModel.trimHint)
                 .font(.caption)
                 .foregroundStyle(Palette.ink.opacity(0.45))
                 .lineLimit(1)
                 .padding(.top, 10)
                 .accessibilityIdentifier("edit.trimHint")
         }
+        .onChange(of: zoom.isZoomed, initial: true) { _, isZoomed in
+            viewModel.showsPreciseTime = isZoomed
+        }
+        .onDisappear { viewModel.showsPreciseTime = false }
     }
 
     private var actions: some View {

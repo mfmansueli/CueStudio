@@ -11,6 +11,8 @@ protocol TakeEditing: AnyObject {
     /// Length of the recording, read from the file. Throws `EditSourceError` when the file is gone
     /// or can't be played.
     func sourceDuration(ofVideoAt url: URL) async throws -> TimeInterval
+    /// Frames per second of the recording, read from the file; nil when it can't be read.
+    func frameRate(ofVideoAt url: URL) async -> Double?
     /// Clean Up's findings: pauses from the take's loudness, and filler words and possible retakes
     /// from its transcript in the script's language (pauses only when no speech model can listen).
     /// None for a take without sound. Throws when the sound can't be read.

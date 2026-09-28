@@ -106,6 +106,8 @@ enum Palette {
     static let trimDim = Color.black.opacity(0.72)
     /// Hairline around the time bubble above the timeline.
     static let bubbleBorder = Color.white.opacity(0.25)
+    /// The tick at the start of each frame, when the timeline is zoomed in to frame precision.
+    static let frameTick = Color.white.opacity(0.7)
     /// Behind "Classic" captions.
     static let captionBox = Color.black.opacity(0.62)
     /// Behind the preview before the video loads.
