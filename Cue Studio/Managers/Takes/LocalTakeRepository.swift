@@ -15,7 +15,8 @@ struct LocalTakeRepository: TakeRepository {
     }
 
     func loadTakes() throws -> [Take] {
-        guard FileManager.default.fileExists(atPath: metadataURL.path()) else { return [] }
+        // Unencoded: `path()` gives "Application%20Support", which FileManager never finds.
+        guard FileManager.default.fileExists(atPath: metadataURL.path(percentEncoded: false)) else { return [] }
         let data = try Data(contentsOf: metadataURL)
         return try JSONDecoder.library.decode([Take].self, from: data)
     }
@@ -36,7 +37,7 @@ struct LocalTakeRepository: TakeRepository {
 
     func deleteVideo(named fileName: String) throws {
         let url = videoURL(named: fileName)
-        guard FileManager.default.fileExists(atPath: url.path()) else { return }
+        guard FileManager.default.fileExists(atPath: url.path(percentEncoded: false)) else { return }
         try FileManager.default.removeItem(at: url)
     }
 

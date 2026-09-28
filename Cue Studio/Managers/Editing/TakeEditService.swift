@@ -52,7 +52,7 @@ final class TakeEditService: TakeEditing {
     }
 
     private func audioFile(for url: URL) async throws -> URL {
-        if let cached = extractedAudio[url], FileManager.default.fileExists(atPath: cached.path()) { return cached }
+        if let cached = extractedAudio[url], FileManager.default.fileExists(atPath: cached.path(percentEncoded: false)) { return cached }
         let audio = try await AudioTrackExtractor.extract(from: url)
         extractedAudio[url] = audio
         return audio

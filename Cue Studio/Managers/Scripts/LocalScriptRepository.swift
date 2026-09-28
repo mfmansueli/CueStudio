@@ -15,7 +15,8 @@ struct LocalScriptRepository: ScriptRepository {
     }
 
     func load() throws -> ScriptLibrarySnapshot {
-        guard FileManager.default.fileExists(atPath: fileURL.path()) else { return ScriptLibrarySnapshot() }
+        // Unencoded: `path()` gives "Application%20Support", which FileManager never finds.
+        guard FileManager.default.fileExists(atPath: fileURL.path(percentEncoded: false)) else { return ScriptLibrarySnapshot() }
         let data = try Data(contentsOf: fileURL)
         return try JSONDecoder.library.decode(ScriptLibrarySnapshot.self, from: data)
     }
