@@ -5,7 +5,8 @@
 
 import SwiftUI
 
-/// Home: the script library. Tap opens, swipe for actions, hold to preview.
+/// Home: the Prompt box, always on top, then the script library. Tap opens, swipe for actions, hold
+/// to preview.
 struct ScriptsView: View {
     @State private var viewModel: ScriptsViewModel
 
@@ -70,6 +71,18 @@ struct ScriptsView: View {
         let rest = hero == nil ? visible : Array(visible.dropFirst())
         return List(selection: $viewModel.selection) {
             Section {
+                VStack(spacing: 14) {
+                    PromptCard(base: Palette.surface, layout: .compact) {
+                        presentation.present(.generateScript(.prompt))
+                    }
+                    .accessibilityIdentifier("scripts.promptCard")
+                    SearchField(text: $viewModel.query, prompt: "Search scripts")
+                        .accessibilityIdentifier("scripts.searchField")
+                }
+                .listRowInsets(EdgeInsets(top: 0, leading: Metrics.gutter, bottom: 6, trailing: Metrics.gutter))
+                .listRowBackground(Color.clear)
+                .listRowSeparator(.hidden)
+                .selectionDisabled()
                 FilterBar(filters: viewModel.filters, selection: $viewModel.filter)
                     .listRowInsets(EdgeInsets())
                     .listRowBackground(Color.clear)
@@ -128,7 +141,7 @@ struct ScriptsView: View {
         .listSectionSpacing(14)
         .scrollContentBackground(.hidden)
         .environment(\.editMode, .constant(viewModel.isSelecting ? .active : .inactive))
-        .searchable(text: $viewModel.query, placement: .navigationBarDrawer(displayMode: .always), prompt: Text("Search scripts"))
+        .scrollDismissesKeyboard(.immediately)
         .safeAreaInset(edge: .bottom) {
             if viewModel.isSelecting {
                 SelectionBar(

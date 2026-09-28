@@ -27,9 +27,29 @@ final class ScriptLibraryUITests: XCTestCase {
         XCTAssertFalse(app.staticTexts["Oat & Co. — sponsored read"].exists)
     }
 
+    func testPromptBoxStaysOnTop() {
+        let app = CueApp.launch(seeded: true)
+        let prompt = app.buttons["scripts.promptCard"]
+        XCTAssertTrue(prompt.waitForExistence(timeout: 15))
+        let search = app.descendants(matching: .any)["scripts.searchField"].firstMatch
+        XCTAssertLessThan(prompt.frame.minY, search.frame.minY)
+
+        // No filter, search or selection hides it.
+        app.buttons["scripts.selectButton"].tap()
+        XCTAssertTrue(prompt.exists)
+        app.buttons["scripts.selectButton"].tap()
+        search.tap()
+        search.typeText("nothing matches this")
+        XCTAssertTrue(app.staticTexts["No scripts here yet."].waitForExistence(timeout: 5))
+        XCTAssertTrue(prompt.exists)
+
+        prompt.tap()
+        XCTAssertTrue(app.descendants(matching: .any)["generate.promptField"].firstMatch.waitForExistence(timeout: 5))
+    }
+
     func testSearch() {
         let app = CueApp.launch(seeded: true)
-        let search = app.searchFields.firstMatch
+        let search = app.descendants(matching: .any)["scripts.searchField"].firstMatch
         XCTAssertTrue(search.waitForExistence(timeout: 15))
         search.tap()
         search.typeText("Q&A")

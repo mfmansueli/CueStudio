@@ -103,17 +103,18 @@ SF Symbols por significado: `doc.text` scripts · `film.stack` takes · `person.
 | `SettingToggleRow` | Linha de ajuste com título, detalhe e switch verde (Display, câmera) |
 | `SheetHeader`, `SectionHeading` | Cabeçalho de sheet e de grupo |
 | `FlowLayout` | Chips que quebram linha (nichos, frases) |
+| `SearchField` | Busca em cápsula (`fill`, 40 pt) dentro do conteúdo, para quando algo vem acima dela (Scripts) |
 | `ToastView` | Confirmação curta no topo (`ToastService` + `.toastHost()`) |
 | `CueMark`, `CameraFeedPlaceholder` | Marca e fundo quando não há câmera |
 | `RecordGlyph` | Anel branco com ponto vermelho da aba Record (imagem com cores originais) |
 | `fittedSheet()` | Sheet da altura do conteúdo, raio 38 (New script, Start recording) |
-| `PromptCard` (`Screens/Shared/PromptCard`) | Caixa de Prompt em destaque: selo Apple Intelligence, exemplo e botão enviar |
+| `PromptCard` (`Screens/Shared/PromptCard`) | Caixa de Prompt em destaque: selo Apple Intelligence, exemplo e botão enviar. `.compact` (Scripts) tira a explicação e usa "Describe your next video…" |
 
 ## 4. Telas
 
 | Tela | Onde | Conteúdo |
 |------|------|----------|
-| Scripts (home) | `Screens/Scripts` | "+" no topo (abre New script), título + resumo, busca, chips (All, destinos, pastas), card "Last edited", lista "All scripts" com swipe (Record / More / Delete), segurar mostra preview + menu, modo de seleção com barra (mover, duplicar, apagar) |
+| Scripts (home) | `Screens/Scripts` | "+" no topo (abre New script), título + resumo, caixa de Prompt compacta (sempre visível, no topo da lista; abre Generate › Prompt), busca, chips (All, destinos, pastas), card "Last edited", lista "All scripts" com swipe (Record / More / Delete), segurar mostra preview + menu, modo de seleção com barra (mover, duplicar, apagar) |
 | Primeiro uso | `EmptyLibraryView` | "Start with a script." + caixa de Prompt + Write / Import / Generate with AI + "Record without a script" |
 | Script (leitura) | `Screens/ScriptDetail` | Título, destino/formato/preset, medidor de duração, faixa de blocos, aviso de hook, banner laranja de checagem de fatos ("Checked" dispensa), texto com blocos e cues, takes, Studio mode + Record. Menu More: "Make a version for…" cria uma cópia ajustada à duração de outra plataforma |
 | Script (edição) | `ScriptEditorView` | Título, faixa de blocos, editor com Writing Tools, painel com aviso de versão, atalhos de IA ("In my voice" + os do formato) e medidor |
@@ -266,6 +267,9 @@ O protótipo simulava várias coisas; o app implementa de verdade ou deixa de fo
   da faixa ideal da plataforma (`BestTakeSuggester`); o app troca para ela e você confirma com ☆.
 - **"Save takes to Photos":** removido — salvar automaticamente contornaria o limite de exportações
   grátis. Takes ficam no app; Save/Share exportam.
+- **Prompt na home:** como no v9, a caixa de Prompt fica no topo de Scripts, acima da busca, e nunca
+  some (filtro, busca ou seleção não a escondem). A busca da barra de navegação fica sempre acima do
+  conteúdo, então a de Scripts é um `SearchField` logo abaixo da caixa.
 - **Pastas:** o "+" agora abre New script, então pastas nascem em "Move to a new folder…" (menu do
   script, More e barra de seleção) e aparecem como chips depois dos destinos.
 - **Tab bar:** a pill flutuante do protótipo é a própria tab bar nativa de Liquid Glass. A aba
