@@ -16,7 +16,7 @@ struct CleanUpStripView: View {
 
     var body: some View {
         GeometryReader { proxy in
-            let layout = TimelineLayout(timeline: viewModel.edit.timeline, width: proxy.size.width, inset: 0)
+            let layout = TimelineLayout(timeline: viewModel.edit.timeline, width: proxy.size.width, inset: 0, showsTrimmedEnds: false)
             ZStack(alignment: .topLeading) {
                 TimelineFramesView(
                     videoURL: viewModel.videoURL, layout: layout,

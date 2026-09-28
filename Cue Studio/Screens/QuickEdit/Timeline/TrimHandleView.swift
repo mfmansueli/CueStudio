@@ -5,7 +5,7 @@
 
 import SwiftUI
 
-/// One yellow trim handle. Thin to look at; the strip gives it a 32 pt reach for the finger.
+/// One yellow trim handle. Thin to look at; the strip gives it a 38 pt reach for the finger.
 /// While dragged it turns white and its grip grows.
 struct TrimHandleView: View {
     let edge: TrimHandle

@@ -50,34 +50,97 @@ struct TimelineLayoutTests {
         #expect(near(layout.sourceTime(atX: layout.piece(1).minX + scale), 7))
     }
 
-    @Test func trimmedEndsAreNotDrawn() {
+    @Test func trimmedEndsStayOnTheStripAndTheHandlesSitWhereTheyTrimmed() {
         var timeline = EditTimeline(sourceDuration: 10)
         timeline.trimStart(to: 2)
         let layout = TimelineLayout(timeline: timeline, width: width)
-        let scale = (width - 2 * inset) / 8
+        let scale = (width - 2 * inset) / 10
         #expect(near(layout.pointsPerSecond, scale))
-        #expect(near(layout.startHandleX, inset))
-        #expect(layout.sourceTime(atX: inset) == 2)
-        #expect(layout.sourceTime(atX: 0) == 2)
-        #expect(layout.segmentIndex(atX: inset + scale) == 0)
-        #expect(near(layout.editedTime(atX: inset + scale), 1))
+        #expect(near(layout.startHandleX, inset + 2 * scale))
+        #expect(near(layout.endHandleX, width - inset))
+        #expect(near(layout.piece(0).minX, layout.startHandleX))
+        #expect(near(layout.x(forEdited: 0), layout.startHandleX))
+        // The trimmed start is still drawn (dimmed), so the handle can go back over it.
+        #expect(near(layout.sourceTime(atX: inset), 0))
+        #expect(near(layout.sourceTime(atX: inset + scale), 1))
+        #expect(layout.segmentIndex(atX: inset + scale) == nil)
+        #expect(layout.editedTime(atX: inset + scale) == 0)
+        #expect(layout.segmentIndex(atX: layout.startHandleX + scale) == 0)
+        #expect(near(layout.editedTime(atX: layout.startHandleX + scale), 1))
     }
 
-    @Test func aTrimFitsTheStripAgain() {
+    @Test func aTrimKeepsTheScale() {
         var timeline = EditTimeline(sourceDuration: 10)
         timeline.trimStart(to: 3)
         timeline.trimEnd(to: 8)
-        #expect(near(TimelineLayout(timeline: timeline, width: width).pointsPerSecond, (width - 2 * inset) / 5))
+        let layout = TimelineLayout(timeline: timeline, width: width)
+        let scale = (width - 2 * inset) / 10
+        #expect(near(layout.pointsPerSecond, scale))
+        #expect(near(layout.startHandleX, inset + 3 * scale))
+        #expect(near(layout.endHandleX, inset + 8 * scale))
+        #expect(near(layout.x(forEdited: 5), layout.endHandleX))
+        #expect(layout.editedTime(atX: width) == 5)
     }
 
-    @Test func handlesComeBeforeThePlayheadAndThePlayheadBeforeTheTimeline() {
+    @Test func aDeletedSectionLeavesNoGap() {
+        var timeline = EditTimeline(sourceDuration: 12)
+        timeline.split(atEdited: 4)
+        timeline.split(atEdited: 8)
+        timeline.removeSegment(id: timeline.segments[1].id)
+        timeline.trimStart(to: 1)
+        let layout = TimelineLayout(timeline: timeline, width: width)
+        // 1 s trimmed (still drawn) + 3 s + 4 s, and one hairline where B was.
+        let scale = (width - 2 * inset - TimelineLayout.joinWidth) / 8
+        #expect(near(layout.pointsPerSecond, scale))
+        #expect(near(layout.piece(1).minX, layout.piece(0).maxX + TimelineLayout.joinWidth))
+        #expect(layout.piece(1).source == TimeSpan(start: 8, end: 12))
+        #expect(near(layout.x(forEdited: 3), layout.piece(1).minX))
+    }
+
+    @Test func cleanUpsStripShowsTheEditAlone() {
+        var timeline = EditTimeline(sourceDuration: 10)
+        timeline.trimStart(to: 2)
+        let layout = TimelineLayout(timeline: timeline, width: width, inset: 0, showsTrimmedEnds: false)
+        #expect(near(layout.pointsPerSecond, width / 8))
+        #expect(near(layout.startHandleX, 0))
+        #expect(near(layout.sourceTime(atX: 0), 2))
+    }
+
+    @Test func onTheFramesTheHandlesComeBeforeThePlayhead() {
         let layout = TimelineLayout(timeline: EditTimeline(sourceDuration: 10), width: width)
-        // The playhead at the start sits on the start handle: the handle wins.
+        // The playhead at 00:00 sits on the start handle: on the frames the handle still wins.
         #expect(layout.target(atX: layout.startHandleX, playheadX: layout.startHandleX) == .handle(.start))
-        #expect(layout.target(atX: layout.startHandleX - 20, playheadX: 200) == .handle(.start))
+        #expect(layout.target(atX: layout.startHandleX - 20, playheadX: layout.startHandleX) == .handle(.start))
+        #expect(layout.target(atX: layout.endHandleX, playheadX: layout.endHandleX) == .handle(.end))
         #expect(layout.target(atX: layout.endHandleX + 20, playheadX: 200) == .handle(.end))
         #expect(layout.target(atX: 205, playheadX: 200) == .playhead)
         #expect(layout.target(atX: 120, playheadX: 200) == .timeline)
+    }
+
+    @Test func aboveTheFramesThePlayheadAlwaysComesFirst() {
+        let layout = TimelineLayout(timeline: EditTimeline(sourceDuration: 10), width: width)
+        let atStart = layout.startHandleX
+        #expect(layout.target(atX: atStart, playheadX: atStart, aboveFrames: true) == .playhead)
+        #expect(layout.target(atX: layout.endHandleX, playheadX: layout.endHandleX, aboveFrames: true) == .playhead)
+        // Away from the playhead the knob row jumps it; it never trims.
+        #expect(layout.target(atX: atStart, playheadX: 200, aboveFrames: true) == .timeline)
+    }
+
+    @Test func bothHandlesCatchTheSameMirroredReach() {
+        var timeline = EditTimeline(sourceDuration: 10)
+        timeline.trimStart(to: 3)
+        timeline.trimEnd(to: 7)
+        let layout = TimelineLayout(timeline: timeline, width: width)
+        let outer = TimelineLayout.handleWidth + TimelineLayout.handleOuterReach
+        for offset in [-outer, -TimelineLayout.handleWidth / 2, 0, TimelineLayout.handleReach] {
+            #expect(layout.handle(atX: layout.startHandleX + offset) == .start)
+            #expect(layout.handle(atX: layout.endHandleX - offset) == .end)
+        }
+        #expect(layout.handle(atX: layout.startHandleX - outer - 1) == nil)
+        #expect(layout.handle(atX: layout.endHandleX + outer + 1) == nil)
+        #expect(layout.handle(atX: (layout.startHandleX + layout.endHandleX) / 2) == nil)
+        // A trimmed start handle is caught where it is, not at the strip's edge.
+        #expect(layout.handle(atX: inset) == nil)
     }
 
     @Test func handlesCloseTogetherGoToTheNearerOne() {

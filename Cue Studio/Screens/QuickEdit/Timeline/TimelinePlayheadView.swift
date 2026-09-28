@@ -13,13 +13,11 @@ struct TimelinePlayheadView: View {
     let layout: TimelineLayout
     let knobHeight: CGFloat
     let framesHeight: CGFloat
-    /// While a handle is dragged the strip keeps its scale, and the playhead rides the handle.
-    var pinnedX: CGFloat?
 
     private let knob: CGFloat = 12
 
     var body: some View {
-        let x = pinnedX ?? layout.x(forEdited: viewModel.player.currentTime)
+        let x = layout.x(forEdited: viewModel.player.currentTime)
         ZStack(alignment: .topLeading) {
             VStack(spacing: 0) {
                 Circle().fill(Palette.ink).frame(width: knob, height: knob)

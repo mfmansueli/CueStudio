@@ -66,6 +66,34 @@ final class QuickEditUITests: XCTestCase {
         XCTAssertTrue(app.staticTexts["EDITED"].waitForExistence(timeout: 5))
     }
 
+    func testBothHandlesTrimWithThePlayheadAtTheStart() {
+        let app = openQuickEdit()
+        let time = app.staticTexts["edit.timeLabel"]
+        XCTAssertTrue(wait(for: time, value: "00:00.00 / 01:02.00"))
+        let timeline = element(app, "edit.timeline")
+        let duration = app.staticTexts["edit.durationChange"]
+        let start = element(app, "edit.trimStartHandle")
+        let end = element(app, "edit.trimEndHandle")
+
+        // The playhead sits on the start handle at 00:00; the handle still moves.
+        start.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5))
+            .press(forDuration: 0.2, thenDragTo: timeline.coordinate(withNormalizedOffset: CGVector(dx: 0.25, dy: 0.5)))
+        XCTAssertNotEqual(duration.label, "Original · 1:02")
+        // It stays where it was let go, and goes back to the start from there.
+        XCTAssertGreaterThan(start.frame.midX, timeline.frame.minX + timeline.frame.width * 0.15)
+        start.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5))
+            .press(forDuration: 0.2, thenDragTo: timeline.coordinate(withNormalizedOffset: CGVector(dx: 0, dy: 0.5)))
+        XCTAssertEqual(duration.label, "Original · 1:02")
+
+        end.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5))
+            .press(forDuration: 0.2, thenDragTo: timeline.coordinate(withNormalizedOffset: CGVector(dx: 0.75, dy: 0.5)))
+        XCTAssertNotEqual(duration.label, "Original · 1:02")
+        XCTAssertLessThan(end.frame.midX, timeline.frame.maxX - timeline.frame.width * 0.15)
+
+        app.buttons["edit.undoButton"].tap()
+        XCTAssertEqual(duration.label, "Original · 1:02")
+    }
+
     func testRemovePartTakesOutTheRedRange() {
         let app = openQuickEdit()
         let time = app.staticTexts["edit.timeLabel"]

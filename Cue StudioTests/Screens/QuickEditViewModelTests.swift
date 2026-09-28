@@ -118,6 +118,41 @@ struct QuickEditViewModelTests {
         #expect(viewModel.edit.timeline.isWhole)
     }
 
+    @Test func theStartHandleLeavesTheStartAndComesBackWithThePlayheadThere() async {
+        let scenario = await makeScenario()
+        let viewModel = scenario.viewModel
+        #expect(scenario.player.currentTime == 0)
+        viewModel.beginTrim(.start)
+        viewModel.trim(.start, toSource: 5)
+        #expect(viewModel.edit.timeline.trimStart == 5)
+        #expect(viewModel.durationChange == "1:04 → 0:59")
+        viewModel.trim(.start, toSource: 0)
+        viewModel.endTrim()
+        #expect(viewModel.edit.timeline.isWhole)
+        // Out and back again changes nothing, so there is nothing to undo.
+        #expect(!viewModel.canUndo)
+
+        dragHandle(.start, to: 5, on: viewModel)
+        dragHandle(.start, to: 0, on: viewModel)
+        #expect(viewModel.edit.timeline.isWhole)
+        #expect(viewModel.history.past.count == 2)
+    }
+
+    @Test func thePlayheadMovesWithoutTouchingTheHandles() async {
+        let scenario = await makeScenario()
+        let viewModel = scenario.viewModel
+        dragHandle(.start, to: 5, on: viewModel)
+        dragHandle(.end, to: 30, on: viewModel)
+        for time in [0.0, 10, 100] {
+            viewModel.scrub(to: time)
+            viewModel.endScrub()
+        }
+        #expect(spans(viewModel) == [[5, 30]])
+        // Held between the handles: 25 s is the end of the edit.
+        #expect(scenario.player.currentTime == 25)
+        #expect(viewModel.history.past.count == 2)
+    }
+
     @Test func aHandleOnlyMovesWhileItsDragIsOn() async {
         let scenario = await makeScenario()
         scenario.viewModel.trim(.start, toSource: 10)
@@ -196,6 +231,15 @@ struct QuickEditViewModelTests {
         scenario.viewModel.cut()
         #expect(scenario.viewModel.edit.timeline.segments.count == 1)
         #expect(scenario.toast.message == "Move the playhead away from the edge")
+    }
+
+    @Test func cuttingAtTheEndExplainsToo() async {
+        let scenario = await makeScenario()
+        scenario.player.seek(to: 64)
+        scenario.viewModel.cut()
+        #expect(scenario.viewModel.edit.timeline.segments.count == 1)
+        #expect(scenario.toast.message == "Move the playhead away from the edge")
+        #expect(!scenario.viewModel.canUndo)
     }
 
     @Test func deletingTheSelectedSection() async {
@@ -301,6 +345,43 @@ struct QuickEditViewModelTests {
         viewModel.redo()
         #expect(spans(viewModel) == [[4, 20]])
         #expect(!viewModel.canRedo)
+    }
+
+    @Test func trimSplitDeleteUndoRedoAndWhatIsSavedAllShareOneTimeline() async {
+        let scenario = await makeScenario()
+        let viewModel = scenario.viewModel
+        dragHandle(.start, to: 5, on: viewModel)
+        dragHandle(.end, to: 30, on: viewModel)
+        #expect(spans(viewModel) == [[5, 30]])
+
+        // 7 s into the edit is 12 s into the recording.
+        scenario.player.seek(to: 7)
+        viewModel.cut()
+        #expect(spans(viewModel) == [[5, 12], [12, 30]])
+        viewModel.tapTimeline(onPiece: 0)
+        viewModel.removeSelection()
+        #expect(spans(viewModel) == [[12, 30]])
+        #expect(viewModel.durationChange == "1:04 → 0:18")
+        #expect(scenario.player.shown.last?.keptSpans == [TimeSpan(start: 12, end: 30)])
+
+        viewModel.undo()
+        #expect(spans(viewModel) == [[5, 12], [12, 30]])
+        viewModel.undo()
+        #expect(spans(viewModel) == [[5, 30]])
+        viewModel.undo()
+        #expect(spans(viewModel) == [[5, 64]])
+        viewModel.undo()
+        #expect(viewModel.edit.timeline.isWhole)
+
+        for _ in 0..<4 { viewModel.redo() }
+        #expect(spans(viewModel) == [[12, 30]])
+        #expect(!viewModel.canRedo)
+
+        // What Done saves is what the export plays.
+        viewModel.done()
+        let saved = scenario.takes.takes[0]
+        #expect(saved.edit?.keptSpans == [TimeSpan(start: 12, end: 30)])
+        #expect(saved.duration == 18)
     }
 
     @Test func undoLeavesTheLookAlone() async {
