@@ -177,8 +177,8 @@ final class PrompterViewModel {
         updateVoiceMonitoring()
     }
 
-    /// A script opens with its platform's frame, resolution, frame rate and reading width, once per
-    /// session; after that the creator's changes stand.
+    /// A script opens with its platform's frame, resolution and frame rate, and the text window at
+    /// its full size, once per session; after that the creator's changes stand.
     private func applyPresetOnce() {
         guard !hasAppliedPreset, let preset else { return }
         hasAppliedPreset = true
@@ -187,7 +187,8 @@ final class PrompterViewModel {
 
     private func apply(_ preset: PlatformPreset) {
         preferences.camera.apply(preset)
-        preferences.prompter.readingWidth = preset.readingWidth
+        preferences.prompter.readingWidth = PrompterSettings.defaultReadingWidth
+        preferences.prompter.textWindowHeight = PrompterSettings.defaultTextWindowHeight
     }
 
     /// "Create for" from the camera: the script moves to the platform and the camera takes its preset.
@@ -245,7 +246,6 @@ final class PrompterViewModel {
             speechTracker.reset(to: 0)
         }
         isPlaying = true
-        dismissReadingLineTip()
         if driver == nil {
             driver = DisplayLinkDriver { [weak self] seconds in self?.advance(by: seconds) }
         }

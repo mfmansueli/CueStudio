@@ -27,11 +27,7 @@ struct ExportPresentations: ViewModifier {
                 get: { isActive ? viewModel.paywall : nil },
                 set: { viewModel.paywall = $0 }
             )) { context in
-                PaywallView(
-                    context: context,
-                    onWatermarkInstead: context == .export ? { Task { await viewModel.exportWithWatermark() } } : nil,
-                    onPurchased: { Task { await viewModel.continueAfterPurchase() } }
-                )
+                PaywallView(context: context) { Task { await viewModel.continueAfterPurchase() } }
             }
     }
 }

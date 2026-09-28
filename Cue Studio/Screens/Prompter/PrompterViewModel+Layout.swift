@@ -69,28 +69,16 @@ extension PrompterViewModel {
         preferences.camera.showsSafeZones && !hidesControls && safeZone != nil
     }
 
-    // MARK: - Controls and tip
+    // MARK: - Controls
 
     /// Recording with only the text, the reading line, the clock and a stop button.
     var hidesControls: Bool { isRecording && controlsHidden }
-
-    /// "Don't read the text. Talk to the line." — once, until tapped, played or moved.
-    var showsReadingLineTip: Bool {
-        !preferences.hasSeenReadingLineTip && hasScript && mode == .selfie && reviewingTake == nil
-            && !isPlaying && !isRecording && sheet == nil && countdown == nil
-    }
-
-    func dismissReadingLineTip() {
-        guard !preferences.hasSeenReadingLineTip else { return }
-        preferences.hasSeenReadingLineTip = true
-    }
 
     // MARK: - Layout actions
 
     /// Dragging the handle: the line goes to `y` (in screen points), within reach.
     func moveReadingLine(toY y: CGFloat) {
         preferences.prompter.readingLineOffset = readingLayout.offset(forLineAt: y)
-        dismissReadingLineTip()
     }
 
     /// ↑ / ↓ in Display: a few points at a time.
@@ -104,7 +92,7 @@ extension PrompterViewModel {
         var prompter = preferences.prompter
         prompter.readingLineOffset = nil
         prompter.textWindowHeight = PrompterSettings.defaultTextWindowHeight
-        prompter.readingWidth = preset?.readingWidth ?? PrompterSettings().readingWidth
+        prompter.readingWidth = PrompterSettings.defaultReadingWidth
         prompter.speed = ReadTime.naturalSpeed
         prompter.hidesControlsWhileRecording = false
         preferences.prompter = prompter

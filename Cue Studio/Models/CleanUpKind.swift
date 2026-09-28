@@ -6,7 +6,7 @@
 import Foundation
 
 /// What Clean Up can find in a take. Pauses come from the take's loudness; filler words and
-/// retakes will come from the transcript with word timings (`TimedWord`).
+/// retakes from the transcript with word timings (`TimedWord`).
 nonisolated enum CleanUpKind: String, Codable, CaseIterable, Identifiable, Sendable {
     case pause, filler, retake
 

@@ -35,15 +35,13 @@ struct CreatorProfileTests {
         #expect(CreatorProfile.sounds(migratingFrom: .expert) == [.professional])
     }
 
-    @Test func theFreePlanVoiceLeavesVocabularyAndStyleToPro() {
+    @Test func theVoiceCarriesEverything() {
         let profile = CreatorProfile(niches: [.tech], phrases: ["Bora"], sounds: [.funny], vocabulary: .genZ, styles: [.storytelling])
-        let free = profile.voice(unlocking: .free)
-        #expect(free.sounds == [.funny])
-        #expect(free.phrases == ["Bora"])
-        #expect(free.niches == [.tech])
-        #expect(free.vocabulary == nil)
-        #expect(free.styles.isEmpty)
-        #expect(profile.voice(unlocking: .subscriber) == profile.voice)
-        #expect(profile.voice(unlocking: .lifetime) == profile.voice)
+        let voice = profile.voice
+        #expect(voice.sounds == [.funny])
+        #expect(voice.phrases == ["Bora"])
+        #expect(voice.niches == [.tech])
+        #expect(voice.vocabulary == .genZ)
+        #expect(voice.styles == [.storytelling])
     }
 }

@@ -50,10 +50,9 @@ struct SelfieModeView: View {
                     ReadingLineLayer(
                         layout: layout,
                         showsTag: viewModel.sheet == .display,
-                        showsTip: viewModel.showsReadingLineTip,
+                        showsHandle: !viewModel.isPlaying && !viewModel.isRecording,
                         onMove: { viewModel.moveReadingLine(toY: $0) },
-                        onNudge: { viewModel.nudgeReadingLine(by: $0) },
-                        onDismissTip: { viewModel.dismissReadingLineTip() }
+                        onNudge: { viewModel.nudgeReadingLine(by: $0) }
                     )
                 }
             }
@@ -83,8 +82,9 @@ struct SelfieModeView: View {
         )
         .background {
             ZStack {
-                if let material = CameraBlurLevel(amount: settings.cameraBlur).material {
-                    Rectangle().fill(material)
+                let blur = CameraBlurLevel(amount: settings.cameraBlur)
+                if blur != .off {
+                    Rectangle().fill(.ultraThinMaterial).opacity(blur.strength)
                 }
                 Rectangle().fill(Color.black.opacity(settings.backgroundOpacity))
             }

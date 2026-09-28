@@ -8,12 +8,11 @@ import Testing
 
 @Suite("UsagePolicy")
 struct UsagePolicyTests {
-    @Test func freePlanGetsFiveCleanExports() {
-        #expect(UsagePolicy.cleanExportLimit(for: .free) == 5)
+    @Test func freePlanGetsFiveExports() {
+        #expect(UsagePolicy.exportLimit(for: .free) == 5)
     }
 
-    @Test func proPlansExportCleanWithoutLimit() {
-        #expect(UsagePolicy.cleanExportLimit(for: .subscriber) == nil)
-        #expect(UsagePolicy.cleanExportLimit(for: .lifetime) == nil)
+    @Test func subscribersExportWithoutLimit() {
+        #expect(UsagePolicy.exportLimit(for: .subscriber) == nil)
     }
 }

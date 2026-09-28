@@ -20,7 +20,7 @@ struct VideoExportServiceTests {
     @Test func a9By16ExportIsTheWholeFrameUntouched() async throws {
         let source = try await makeClip()
         defer { try? FileManager.default.removeItem(at: source) }
-        let output = try await VideoExportService().export(videoAt: source, options: ExportOptions(aspect: .portrait, watermark: false))
+        let output = try await VideoExportService().export(videoAt: source, options: ExportOptions(aspect: .portrait))
         defer { try? FileManager.default.removeItem(at: output) }
 
         let image = try await firstFrame(of: output)
@@ -31,7 +31,7 @@ struct VideoExportServiceTests {
     @Test func a4By5ExportIsTheCenteredCropWithoutOverlays() async throws {
         let source = try await makeClip()
         defer { try? FileManager.default.removeItem(at: source) }
-        let output = try await VideoExportService().export(videoAt: source, options: ExportOptions(aspect: .vertical, watermark: false))
+        let output = try await VideoExportService().export(videoAt: source, options: ExportOptions(aspect: .vertical))
         defer { try? FileManager.default.removeItem(at: output) }
 
         let image = try await firstFrame(of: output)

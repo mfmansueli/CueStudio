@@ -6,10 +6,18 @@
 import AVFoundation
 import Speech
 
-/// Transcribes a take on the device, word by word with timings, so captions follow the voice.
+/// Transcribes a take on the device, word by word with timings, so captions follow the voice and
+/// Clean Up can find filler words and retakes.
 nonisolated enum CaptionTranscriber {
     /// Nil when there is no speech model for the script's language.
     static func words(in audio: URL, script: String) async throws -> [TimedWord]? {
+        try await transcript(in: audio, script: script)?.words
+    }
+
+    /// The words and the language they were heard in, for captions and Clean Up. The language is
+    /// the script's (a freestyle take, without one, uses the device's). Nil when there is no speech
+    /// model for it.
+    static func transcript(in audio: URL, script: String) async throws -> TakeTranscript? {
         guard SpeechTranscriber.isAvailable, let locale = await SpeechRecognitionManager.locale(for: script) else { return nil }
         let transcriber = SpeechTranscriber(locale: locale, transcriptionOptions: [], reportingOptions: [], attributeOptions: [.audioTimeRange])
         let modules: [any SpeechModule] = [transcriber]
@@ -34,7 +42,8 @@ nonisolated enum CaptionTranscriber {
         } else {
             await analyzer.cancelAndFinishNow()
         }
-        return try await collector.value
+        let words = try await collector.value
+        return TakeTranscript(words: words, languageCode: locale.language.languageCode?.identifier ?? "en")
     }
 
     /// A run can hold several words; they share its time evenly.

@@ -5,7 +5,7 @@
 
 import SwiftUI
 
-/// Free-plan usage with an upgrade button, or the active Pro plan.
+/// The free plan (every feature, five exports) with an upgrade button, or the active Pro plan.
 struct PlanSection: View {
     let trialDays: Int?
     let onUpgrade: () -> Void
@@ -23,14 +23,14 @@ struct PlanSection: View {
             HStack(alignment: .firstTextBaseline) {
                 Text("Free plan").font(.headline)
                 Spacer()
-                Text("Teleprompter always free")
+                Text("Every feature included")
                     .font(.footnote)
                     .foregroundStyle(Palette.ink2)
             }
             usage(
-                title: String(localized: "Clean exports"),
-                left: quota.cleanExportsLeft(for: .free) ?? 0,
-                limit: UsagePolicy.freeCleanExports
+                title: String(localized: "Free exports"),
+                left: quota.exportsLeft(for: .free) ?? 0,
+                limit: UsagePolicy.freeExports
             )
             HStack(spacing: 8) {
                 Image(systemName: "sparkles").foregroundStyle(Palette.acc)
@@ -71,17 +71,13 @@ struct PlanSection: View {
                 Text(planLine)
                     .font(.footnote)
                     .foregroundStyle(Palette.ink.opacity(0.7))
-                Text(store.tier == .lifetime
-                     ? String(localized: "Lifetime · everything in Pro")
-                     : String(localized: "Unlimited clean exports, full Creator Voice"))
+                Text("Unlimited exports, up to 4K")
                     .font(.footnote)
                     .foregroundStyle(Palette.ink.opacity(0.7))
             }
             Spacer()
-            if store.tier == .subscriber {
-                Button("Manage", action: onManage)
-                    .buttonStyle(.cueSecondary(.compact, expands: false))
-            }
+            Button("Manage", action: onManage)
+                .buttonStyle(.cueSecondary(.compact, expands: false))
         }
         .padding(.vertical, 6)
     }

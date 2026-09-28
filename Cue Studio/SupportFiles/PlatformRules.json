@@ -9,7 +9,6 @@
       "ideal": [15, 60],
       "monetization": { "ideal": [60, 90], "minimum": 60, "goal": "creatorRewards" },
       "prefersStudio": false,
-      "readingWidth": 0.58,
       "safeZone": { "aspect": "9:16", "videoWidth": 1080, "videoHeight": 1920, "top": 160, "bottom": 480, "left": 60, "right": 140 }
     },
     "reels": {
@@ -18,7 +17,6 @@
       "frameRate": 30,
       "ideal": [15, 60],
       "prefersStudio": false,
-      "readingWidth": 0.60,
       "safeZone": { "aspect": "9:16", "videoWidth": 1080, "videoHeight": 1920, "top": 220, "bottom": 420, "left": 60, "right": 120 }
     },
     "shorts": {
@@ -27,7 +25,6 @@
       "frameRate": 60,
       "ideal": [30, 60],
       "prefersStudio": false,
-      "readingWidth": 0.60,
       "safeZone": { "aspect": "9:16", "videoWidth": 1080, "videoHeight": 1920, "top": 190, "bottom": 380, "left": 60, "right": 140 }
     },
     "youtube": {
@@ -36,8 +33,7 @@
       "frameRate": 24,
       "ideal": [240, 600],
       "monetization": { "ideal": [480, 900], "minimum": 480, "goal": "midRollAds" },
-      "prefersStudio": true,
-      "readingWidth": 0.70
+      "prefersStudio": true
     },
     "linkedin": {
       "aspect": "4:5",
@@ -45,7 +41,6 @@
       "frameRate": 30,
       "ideal": [30, 90],
       "prefersStudio": false,
-      "readingWidth": 0.64,
       "safeZone": { "aspect": "4:5", "videoWidth": 1080, "videoHeight": 1350, "top": 0, "bottom": 200, "left": 40, "right": 40 }
     },
     "stories": {
@@ -54,7 +49,6 @@
       "frameRate": 30,
       "ideal": [8, 15],
       "prefersStudio": false,
-      "readingWidth": 0.56,
       "safeZone": { "aspect": "9:16", "videoWidth": 1080, "videoHeight": 1920, "top": 250, "bottom": 250, "left": 60, "right": 60 }
     }
   }

@@ -31,7 +31,6 @@ final class ScriptDetailViewModel {
     private(set) var isLoadingHooks = false
     /// The platform a "Make a version for…" copy is being written for.
     private(set) var versionInProgress: Platform?
-    var paywall: PaywallContext?
 
     private var originalTitle = ""
     private var originalText = ""
@@ -42,7 +41,6 @@ final class ScriptDetailViewModel {
     private let profile: CreatorProfileService
     private let rules: PlatformRulesService
     private let writer: ScriptWriting
-    private let tier: () -> MembershipTier
     private let toast: ToastService
 
     init(
@@ -54,7 +52,6 @@ final class ScriptDetailViewModel {
         profile: CreatorProfileService,
         rules: PlatformRulesService,
         writer: ScriptWriting,
-        tier: @escaping () -> MembershipTier,
         toast: ToastService
     ) {
         self.scriptID = scriptID
@@ -64,7 +61,6 @@ final class ScriptDetailViewModel {
         self.profile = profile
         self.rules = rules
         self.writer = writer
-        self.tier = tier
         self.toast = toast
         if startsEditing { startEditing() }
     }
@@ -120,17 +116,6 @@ final class ScriptDetailViewModel {
     /// The tools above the keyboard: "In my voice" first, then the format's own.
     var tools: [ScriptTool] { [.inMyVoice] + structure.tools }
 
-    /// "In my voice" is part of the full Creator Voice (Pro).
-    func isLocked(_ tool: ScriptTool) -> Bool {
-        tool == .inMyVoice && !ProFeature.fullCreatorVoice.isUnlocked(for: tier())
-    }
-
-    /// On the free plan "Pick a new hook" offers the format's ideas; hooks written by the model for
-    /// this script are part of Pro.
-    var locksHookVariations: Bool { !ProFeature.hookVariations.isUnlocked(for: tier()) }
-
-    var locksPlatformVersions: Bool { !ProFeature.platformVersions.isUnlocked(for: tier()) }
-
     /// Platforms "Make a version for…" offers: every one but the script's.
     var versionPlatforms: [Platform] {
         Platform.allCases.filter { $0 != script?.platform }
@@ -141,7 +126,7 @@ final class ScriptDetailViewModel {
             structure: structure,
             platform: script?.platform ?? .tiktok,
             idealRange: preset.idealRange,
-            voice: profile.profile.voice(unlocking: tier())
+            voice: profile.profile.voice
         )
     }
 
@@ -217,21 +202,16 @@ final class ScriptDetailViewModel {
     /// format's own ideas.
     func openHooks() async {
         sheet = .hooks
-        guard generatedHooks == nil, !locksHookVariations else { return }
+        guard generatedHooks == nil else { return }
         await loadHooks()
     }
 
     func showMoreHooks() async {
-        if writer.isLanguageModelAvailable && !locksHookVariations {
+        if writer.isLanguageModelAvailable {
             await loadHooks()
         } else {
             hookRotation += 1
         }
-    }
-
-    /// "Write hooks with AI · PRO" in the hooks sheet.
-    func unlockHookVariations() {
-        paywall = .hookVariations
     }
 
     private func loadHooks() async {
@@ -257,10 +237,6 @@ final class ScriptDetailViewModel {
 
     func run(_ tool: ScriptTool, language: TranslationLanguage? = nil) async {
         guard runningTool == nil else { return }
-        if isLocked(tool) {
-            paywall = .creatorVoice
-            return
-        }
         switch tool {
         case .newHooks:
             await openHooks()
@@ -330,13 +306,8 @@ final class ScriptDetailViewModel {
     // MARK: - Versions
 
     /// "Make a version for…": a copy fitted to another platform's length and pace, with its preset.
-    /// Part of Pro.
     func makeVersion(for platform: Platform) async {
         guard let script, versionInProgress == nil else { return }
-        guard !locksPlatformVersions else {
-            paywall = .platformVersions
-            return
-        }
         guard writer.isLanguageModelAvailable else {
             toast.show(writer.unavailableReason ?? String(localized: "AI tools aren't available right now."))
             return

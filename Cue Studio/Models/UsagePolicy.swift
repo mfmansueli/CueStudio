@@ -5,13 +5,14 @@
 
 import Foundation
 
-/// Free-plan limits. The teleprompter and Apple Intelligence (on the device or Private Cloud
-/// Compute, at no cost to anyone) are unlimited; only clean exports are metered.
+/// What the free plan limits: only exporting videos (saving to Photos or sharing). Every feature,
+/// Apple Intelligence included (on the device or Private Cloud Compute, at no cost to anyone), stays
+/// open to everyone; recording, editing and writing never stop.
 nonisolated enum UsagePolicy {
-    static let freeCleanExports = 5
+    static let freeExports = 5
 
     /// Nil means unlimited.
-    static func cleanExportLimit(for tier: MembershipTier) -> Int? {
-        tier == .free ? freeCleanExports : nil
+    static func exportLimit(for tier: MembershipTier) -> Int? {
+        tier == .free ? freeExports : nil
     }
 }

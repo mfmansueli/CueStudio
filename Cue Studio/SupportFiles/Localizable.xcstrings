@@ -4,10 +4,43 @@
     "" : {
 
     },
+    "%@ removed" : {
+
+    },
     "%@ · %@s" : {
 
     },
     "%@ · “%@”" : {
+
+    },
+    "%lld days free · cancel anytime" : {
+
+    },
+    "%lld of %lld free exports" : {
+
+    },
+    "%lld of %lld free exports left" : {
+
+    },
+    "%lld short pauses kept" : {
+
+    },
+    "%lld to review" : {
+
+    },
+    "1 short pause kept" : {
+
+    },
+    "All clean" : {
+
+    },
+    "Already removed" : {
+
+    },
+    "Analyzing your take…" : {
+
+    },
+    "Clean Up" : {
 
     },
     "Couldn't listen to this take" : {
@@ -19,7 +52,16 @@
     "Cut at %@" : {
 
     },
+    "Cut at %@ — tap a side, then Delete" : {
+
+    },
+    "Cut at playhead" : {
+
+    },
     "Cuts the video in two at the playhead" : {
+
+    },
+    "Delete section" : {
 
     },
     "Discard edits" : {
@@ -28,16 +70,58 @@
     "Discard your edits?" : {
 
     },
+    "Draft kept — tap Edit to continue" : {
+
+    },
+    "Draft restored" : {
+
+    },
+    "Drag the red edges over the part you want gone" : {
+
+    },
     "Drag the yellow handles to trim. Cut at the playhead, then tap a piece to remove it." : {
 
     },
+    "End %@" : {
+
+    },
     "End of the edit" : {
+
+    },
+    "End of the part to remove" : {
+
+    },
+    "Every feature included" : {
+
+    },
+    "Every feature stays open: AI, Creator Voice, Quick edit, Clean Up, captions" : {
+
+    },
+    "Every suggestion reviewed" : {
+
+    },
+    "Everything in Cue is free while you try it — %lld exports included. After that, 7 days free, then monthly or annual." : {
 
     },
     "Filler word" : {
 
     },
     "Finds long pauses to review, keep or remove" : {
+
+    },
+    "Finds pauses, filler words and retakes to review" : {
+
+    },
+    "Free exports" : {
+
+    },
+    "Free exports used — 7 days free to keep exporting" : {
+
+    },
+    "Free for %lld days, then %@/month. Cancel anytime in Settings." : {
+
+    },
+    "Ignore pauses under %@ · %@" : {
 
     },
     "It may have been deleted or damaged. The original take isn't changed." : {
@@ -52,16 +136,49 @@
     "Keep editing" : {
 
     },
+    "Keep posting with Cue" : {
+
+    },
     "Kept" : {
+
+    },
+    "Long pause" : {
+
+    },
+    "Longer" : {
+
+    },
+    "May be intentional — for emphasis" : {
+
+    },
+    "Might carry meaning — listen first" : {
+
+    },
+    "Move the playhead away from the edge" : {
 
     },
     "Move the playhead away from the edges to cut" : {
 
     },
+    "Moves the playhead here" : {
+
+    },
+    "natural pauses stay" : {
+
+    },
     "No pauses left between the handles." : {
 
     },
+    "Nothing to clean up here. Your take flows." : {
+
+    },
+    "Original · %@" : {
+
+    },
     "Paste from clipboard" : {
+
+    },
+    "Pause removed" : {
 
     },
     "Pauses" : {
@@ -88,6 +205,9 @@
     "Put all back" : {
 
     },
+    "Puts it back up for review" : {
+
+    },
     "Puts this pause back in the video" : {
 
     },
@@ -100,16 +220,70 @@
     "Remove all · %lld" : {
 
     },
+    "Remove part" : {
+
+    },
     "Removed" : {
+
+    },
+    "Removed %@" : {
+
+    },
+    "Removed %lld" : {
+
+    },
+    "Removed %lld · %lld left to review" : {
+
+    },
+    "Removes the suggestions Clean Up is sure about; the others wait for you" : {
+
+    },
+    "Retake removed" : {
+
+    },
+    "Saved to Photos · %lld of %lld free exports left" : {
+
+    },
+    "section %lld of %lld" : {
+
+    },
+    "Section %lld selected · Delete removes it" : {
 
     },
     "Select this piece" : {
 
     },
+    "Select this section" : {
+
+    },
     "selected" : {
 
     },
+    "Short pause" : {
+
+    },
+    "Shorter" : {
+
+    },
+    "Shows a red range to drag over the part to take out" : {
+
+    },
+    "Soft" : {
+
+    },
+    "Start %@" : {
+
+    },
     "Start of the edit" : {
+
+    },
+    "Start of the part to remove" : {
+
+    },
+    "Subtle" : {
+
+    },
+    "Suggestions only — you decide what goes" : {
 
     },
     "Suggestions only: a pause can be on purpose. Keep the ones that help." : {
@@ -118,10 +292,19 @@
     "Takes the selected piece out of the video" : {
 
     },
+    "Takes the selected section out of the video" : {
+
+    },
     "Takes this pause out of the video" : {
 
     },
     "Tap a piece to select it" : {
+
+    },
+    "Tap a section first" : {
+
+    },
+    "Tap to jump · drag the white line to scrub · handles trim" : {
 
     },
     "The preview couldn't be built" : {
@@ -136,7 +319,40 @@
     "Time" : {
 
     },
+    "Transcript, pauses and your script, compared on your iPhone. Nothing is removed until you say so." : {
+
+    },
+    "Trial started — enjoy Cue Pro" : {
+
+    },
+    "Trial started — exporting now" : {
+
+    },
+    "Try again" : {
+
+    },
     "Try another change, or cancel and open the take again." : {
+
+    },
+    "Undo brings it back" : {
+
+    },
+    "Unlimited exports, up to 4K" : {
+
+    },
+    "Unlimited video exports, up to 4K" : {
+
+    },
+    "Use Undo to bring it back" : {
+
+    },
+    "Welcome to Cue Pro — exporting now" : {
+
+    },
+    "You've used your %lld free exports. Every feature stays open — start 7 days free to keep exporting. Your takes are safe." : {
+
+    },
+    "Your takes are always yours — nothing is ever locked or deleted" : {
 
     },
     "·" : {
@@ -2046,6 +2262,12 @@
 
     },
     "Search scripts" : {
+
+    },
+    "Clear search" : {
+
+    },
+    "Describe your next video…" : {
 
     },
     "Section deleted" : {

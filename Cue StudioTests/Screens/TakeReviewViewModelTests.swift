@@ -40,8 +40,7 @@ struct TakeReviewViewModelTests {
         library.load()
         let takes = TakeLibraryService(repository: FakeTakeRepository(takes: [take]))
         takes.load()
-        let quota = UsageQuotaService(defaults: defaults.defaults)
-        for _ in 0..<usedExports { quota.recordCleanExport(tier: .free) }
+        let quota = UsageQuotaService(counter: FakeExportCountStore(count: usedExports), defaults: defaults.defaults)
         let exporter = FakeVideoExporter()
         let photos = FakePhotoSaver()
         let apps = FakeAppOpener()
@@ -59,45 +58,38 @@ struct TakeReviewViewModelTests {
         )
     }
 
-    @Test func freeSaveIsCleanAndCounted() async {
+    @Test func freeSaveIsCounted() async {
         let scenario = makeScenario()
         defer { scenario.defaults.tearDown() }
         await scenario.viewModel.save()
-        #expect(scenario.exporter.exports == [ExportOptions(aspect: .portrait, watermark: false)])
+        #expect(scenario.exporter.exports == [ExportOptions(aspect: .portrait)])
         #expect(scenario.photos.savedURLs.count == 1)
-        #expect(scenario.quota.cleanExportsLeft(for: .free) == 4)
-        #expect(scenario.toast.message == "Saved to Photos · 4 of 5 clean exports left")
+        #expect(scenario.quota.exportsLeft(for: .free) == 4)
+        #expect(scenario.toast.message == "Saved to Photos · 4 of 5 free exports left")
+        #expect(scenario.viewModel.exportNotice == "4 of 5 free exports")
     }
 
-    @Test func exhaustedExportsOpenThePaywallFirst() async {
+    @Test func pastTheFreeExportsThePaywallOpensAndNothingExports() async {
         let scenario = makeScenario(usedExports: 5)
         defer { scenario.defaults.tearDown() }
         await scenario.viewModel.save()
         #expect(scenario.viewModel.paywall == .export)
         #expect(scenario.exporter.exports.isEmpty)
-        #expect(scenario.viewModel.exportNotice == "Free exports used — saves with a watermark")
+        #expect(scenario.photos.savedURLs.isEmpty)
+        #expect(scenario.viewModel.exportNotice == "Free exports used — 7 days free to keep exporting")
     }
 
-    @Test func watermarkFallbackExportsWithTheBadge() async {
-        let scenario = makeScenario(usedExports: 5)
-        defer { scenario.defaults.tearDown() }
-        await scenario.viewModel.save()
-        await scenario.viewModel.exportWithWatermark()
-        #expect(scenario.exporter.exports == [ExportOptions(aspect: .portrait, watermark: true)])
-        #expect(scenario.toast.message == "Saved with watermark")
-        #expect(scenario.quota.cleanExportsUsed == 5)
-    }
-
-    @Test func proExportsAreCleanAndUncounted() async {
+    @Test func subscriberExportsAreUncounted() async {
         let scenario = makeScenario(tier: .subscriber, usedExports: 5)
         defer { scenario.defaults.tearDown() }
         await scenario.viewModel.save()
-        #expect(scenario.exporter.exports.first?.watermark == false)
+        #expect(scenario.exporter.exports.count == 1)
         #expect(scenario.toast.message == "Saved to Photos")
         #expect(scenario.viewModel.exportNotice == nil)
+        #expect(scenario.quota.exportsUsed == 5)
     }
 
-    @Test func buyingProFinishesTheExportClean() async {
+    @Test func startingTheTrialFinishesTheExport() async {
         let plan = Plan(.free)
         let scenario = makeScenario(plan: plan, usedExports: 5)
         defer { scenario.defaults.tearDown() }
@@ -105,19 +97,18 @@ struct TakeReviewViewModelTests {
         #expect(scenario.viewModel.paywall == .export)
         plan.tier = .subscriber
         await scenario.viewModel.continueAfterPurchase()
-        #expect(scenario.exporter.exports == [ExportOptions(aspect: .portrait, watermark: false)])
+        #expect(scenario.exporter.exports == [ExportOptions(aspect: .portrait)])
         #expect(scenario.photos.savedURLs.count == 1)
     }
 
-    @Test func aTakeSavedWithTheWatermarkExportsCleanOnPro() async {
-        let plan = Plan(.free)
-        let scenario = makeScenario(plan: plan, usedExports: 5)
+    @Test func closingThePaywallExportsNothing() async {
+        let scenario = makeScenario(usedExports: 5)
         defer { scenario.defaults.tearDown() }
         await scenario.viewModel.save()
-        await scenario.viewModel.exportWithWatermark()
-        plan.tier = .lifetime
-        await scenario.viewModel.save()
-        #expect(scenario.exporter.exports.map(\.watermark) == [true, false])
+        scenario.viewModel.paywall = nil
+        await scenario.viewModel.continueAfterPurchase()
+        #expect(scenario.exporter.exports.isEmpty)
+        #expect(scenario.viewModel.paywall == .export)
     }
 
     @Test func moreHandsTheFileToTheShareSheet() async {
@@ -137,7 +128,7 @@ struct TakeReviewViewModelTests {
         #expect(scenario.apps.opened == [.reels])
         #expect(scenario.viewModel.shareURL == nil)
         #expect(!scenario.viewModel.showsShareSheet)
-        #expect(scenario.toast.message == "Ready to post on Reels · 4 of 5 clean left")
+        #expect(scenario.toast.message == "Ready to post on Reels · 4 of 5 free exports left")
         #expect(scenario.viewModel.take?.isExported == true)
     }
 
@@ -159,10 +150,7 @@ struct TakeReviewViewModelTests {
         await scenario.viewModel.share(to: .shorts)
         #expect(scenario.viewModel.paywall == .export)
         #expect(scenario.apps.opened.isEmpty)
-        await scenario.viewModel.exportWithWatermark()
-        #expect(scenario.exporter.exports.first?.watermark == true)
-        #expect(scenario.apps.opened == [.shorts])
-        #expect(scenario.toast.message == "Ready to post on Shorts")
+        #expect(scenario.exporter.exports.isEmpty)
     }
 
     @Test func burnInCaptionsWritesThemFromTheScript() async {
@@ -192,18 +180,12 @@ struct TakeReviewViewModelTests {
         #expect(scenario.editor.captionScript == nil)
     }
 
-    @Test func fourKIsPro() {
+    @Test func fourKIsFreeToo() {
         let free = makeScenario()
         defer { free.defaults.tearDown() }
         free.viewModel.setQuality(.uhd4K)
-        #expect(free.viewModel.quality == .hd1080)
-        #expect(free.viewModel.paywall == .fourK)
-
-        let pro = makeScenario(tier: .subscriber)
-        defer { pro.defaults.tearDown() }
-        pro.viewModel.setQuality(.uhd4K)
-        #expect(pro.viewModel.quality == .uhd4K)
-        #expect(pro.viewModel.paywall == nil)
+        #expect(free.viewModel.quality == .uhd4K)
+        #expect(free.viewModel.paywall == nil)
     }
 
     @Test func qualityOnlyScalesDown() async {
@@ -262,7 +244,7 @@ struct TakeReviewViewModelTests {
         library.load()
         let toast = ToastService()
         let viewModel = TakeReviewViewModel(
-            takeID: all[0].id, takes: takes, quota: UsageQuotaService(defaults: defaults.defaults), tier: { tier },
+            takeID: all[0].id, takes: takes, quota: UsageQuotaService(counter: FakeExportCountStore(), defaults: defaults.defaults), tier: { tier },
             exporter: FakeVideoExporter(), photos: FakePhotoSaver(), apps: FakeAppOpener(), editing: FakeTakeEditor(),
             library: library, rules: TestData.rulesService(), profile: CreatorProfileService(defaults: defaults.defaults),
             preferences: PreferencesService(defaults: defaults.defaults), toast: toast
@@ -271,22 +253,13 @@ struct TakeReviewViewModelTests {
     }
 
     @Test func suggestsTheCompleteTakeClosestToTheScript() {
-        let scenario = makeBestTakeScenario(tier: .subscriber)
+        let scenario = makeBestTakeScenario(tier: .free)
         defer { scenario.defaults.tearDown() }
         #expect(scenario.viewModel.offersBestSuggestion)
-        #expect(!scenario.viewModel.locksBestSuggestion)
         #expect(scenario.viewModel.suggestBest()?.id == scenario.takes[1].id)
         #expect(scenario.toast.message == "Take 2 looks best — tap ☆ to keep it")
         // A suggestion, not a pick: the creator keeps it with the star.
         #expect(scenario.viewModel.siblings.allSatisfy { !$0.isBest })
-    }
-
-    @Test func bestTakeSuggestionIsPro() {
-        let scenario = makeBestTakeScenario(tier: .free)
-        defer { scenario.defaults.tearDown() }
-        #expect(scenario.viewModel.locksBestSuggestion)
-        #expect(scenario.viewModel.suggestBest() == nil)
-        #expect(scenario.viewModel.paywall == .bestTake)
     }
 
     @Test func aSingleTakeHasNothingToCompare() {
@@ -305,7 +278,7 @@ struct TakeReviewViewModelTests {
         let takes = TakeLibraryService(repository: FakeTakeRepository(takes: [first, second, third]))
         takes.load()
         let viewModel = TakeReviewViewModel(
-            takeID: second.id, takes: takes, quota: UsageQuotaService(defaults: defaults.defaults), tier: { .free },
+            takeID: second.id, takes: takes, quota: UsageQuotaService(counter: FakeExportCountStore(), defaults: defaults.defaults), tier: { .free },
             exporter: FakeVideoExporter(), photos: FakePhotoSaver(), apps: FakeAppOpener(), editing: FakeTakeEditor(),
             library: ScriptLibraryService(repository: FakeScriptRepository()), rules: TestData.rulesService(),
             profile: CreatorProfileService(defaults: defaults.defaults), preferences: PreferencesService(defaults: defaults.defaults),

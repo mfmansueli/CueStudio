@@ -36,7 +36,7 @@ struct TimelinePlayheadView: View {
                 .accessibilityAdjustableAction { direction in
                     viewModel.nudgePlayhead(by: direction == .increment ? 1 : -1)
                 }
-                .accessibilityAction(named: Text("Select this piece")) { viewModel.selectPieceAtPlayhead() }
+                .accessibilityAction(named: Text("Select this section")) { viewModel.selectPieceAtPlayhead() }
                 .accessibilityIdentifier("edit.timeline")
         }
         .frame(width: layout.width, alignment: .topLeading)

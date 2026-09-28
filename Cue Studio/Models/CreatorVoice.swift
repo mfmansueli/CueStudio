@@ -10,7 +10,7 @@ import Foundation
 nonisolated struct CreatorVoice: Hashable, Sendable {
     var sounds: [VoiceSound]
     var phrases: [String]
-    /// Nil when the AI doesn't get it (vocabulary and style are part of Pro).
+    /// Nil when the creator hasn't picked one.
     var vocabulary: Vocabulary?
     var styles: [VoiceStyle]
     var niches: [Niche]

@@ -13,6 +13,8 @@ nonisolated struct QuickEditDraft: Codable, Hashable, Sendable {
     var edit: TakeEdit
     /// Edited seconds.
     var playhead: TimeInterval
-    var history: EditHistory<EditTimeline>
+    /// Undo steps: the timeline and the suggestions' statuses. Drafts saved before suggestions were
+    /// part of undo can't be read, which only means the edit starts from the take's saved one.
+    var history: EditHistory<EditSnapshot>
     var savedAt: Date
 }

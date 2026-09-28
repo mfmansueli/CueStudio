@@ -67,7 +67,7 @@ struct EditorToolsPanel: View {
                 Button {
                     Task { await viewModel.run(tool) }
                 } label: {
-                    toolLabel(tool.label, systemImage: "sparkles", isRunning: isRunning, isLocked: viewModel.isLocked(tool))
+                    toolLabel(tool.label, systemImage: "sparkles", isRunning: isRunning)
                 }
                 .buttonStyle(.plain)
             }
@@ -78,7 +78,7 @@ struct EditorToolsPanel: View {
         .accessibilityIdentifier("editor.tool.\(tool.rawValue)")
     }
 
-    private func toolLabel(_ title: String, systemImage: String, isRunning: Bool, isLocked: Bool = false) -> some View {
+    private func toolLabel(_ title: String, systemImage: String, isRunning: Bool) -> some View {
         HStack(spacing: 6) {
             if isRunning {
                 ProgressView().controlSize(.mini).tint(Palette.acc)
@@ -86,7 +86,6 @@ struct EditorToolsPanel: View {
                 Image(systemName: systemImage).font(.caption.weight(.bold))
             }
             Text(title)
-            if isLocked { ProBadge() }
         }
         .font(.subheadline.weight(.semibold))
         .foregroundStyle(Palette.acc)

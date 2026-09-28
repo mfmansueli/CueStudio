@@ -17,7 +17,7 @@ struct EditedExportTests {
     private let loud: Set<Int> = [1, 3]
 
     private func export(_ edit: TakeEdit, of clip: URL) async throws -> URL {
-        try await VideoExportService().export(videoAt: clip, options: ExportOptions(aspect: .portrait, watermark: false, edit: edit))
+        try await VideoExportService().export(videoAt: clip, options: ExportOptions(aspect: .portrait, edit: edit))
     }
 
     private func videoDuration(of url: URL) async throws -> TimeInterval {

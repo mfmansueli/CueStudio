@@ -19,14 +19,21 @@ struct CueStudioButtonStyle: ButtonStyle {
         case outline
         /// Liquid Glass, for buttons over the camera or video.
         case glass
+        /// White, black label: a tool's main action next to the screen's yellow one.
+        case light
+        /// Red, white label: confirms something that removes.
+        case destructive
+        /// Soft red, red label: a small remove next to other choices.
+        case destructiveTinted
     }
 
     enum Size {
-        case compact, regular, large
+        case compact, medium, regular, large
 
         var height: CGFloat {
             switch self {
             case .compact: Metrics.compactButtonHeight
+            case .medium: Metrics.mediumButtonHeight
             case .regular: Metrics.buttonHeight
             case .large: Metrics.largeButtonHeight
             }
@@ -52,9 +59,9 @@ struct CueStudioButtonStyle: ButtonStyle {
         var body: some View {
             let shape = Capsule()
             configuration.label
-                .font(size == .compact ? .subheadline.weight(.semibold) : .body.weight(.semibold))
+                .font(size == .compact || size == .medium ? .subheadline.weight(.semibold) : .body.weight(.semibold))
                 .lineLimit(1)
-                .padding(.horizontal, size == .compact ? 14 : 18)
+                .padding(.horizontal, size == .compact || size == .medium ? 14 : 18)
                 .frame(maxWidth: expands ? .infinity : nil, minHeight: size.height)
                 .foregroundStyle(foreground)
                 .background {
@@ -74,7 +81,9 @@ struct CueStudioButtonStyle: ButtonStyle {
             switch variant {
             case .primary: Palette.accInk
             case .tinted: Palette.acc
-            case .secondary, .outline, .glass: Palette.ink
+            case .secondary, .outline, .glass, .destructive: Palette.ink
+            case .light: Palette.bg
+            case .destructiveTinted: Palette.danger
             }
         }
 
@@ -84,6 +93,9 @@ struct CueStudioButtonStyle: ButtonStyle {
             case .secondary: Palette.surface2
             case .tinted: Palette.accSoft
             case .outline, .glass: .clear
+            case .light: Palette.ink
+            case .destructive: Palette.danger
+            case .destructiveTinted: Palette.dangerSoft
             }
         }
     }
@@ -108,5 +120,17 @@ extension ButtonStyle where Self == CueStudioButtonStyle {
 
     static func cueGlass(_ size: CueStudioButtonStyle.Size = .regular, expands: Bool = true) -> CueStudioButtonStyle {
         CueStudioButtonStyle(variant: .glass, size: size, expands: expands)
+    }
+
+    static func cueLight(_ size: CueStudioButtonStyle.Size = .regular, expands: Bool = true) -> CueStudioButtonStyle {
+        CueStudioButtonStyle(variant: .light, size: size, expands: expands)
+    }
+
+    static func cueDestructive(_ size: CueStudioButtonStyle.Size = .regular, expands: Bool = true) -> CueStudioButtonStyle {
+        CueStudioButtonStyle(variant: .destructive, size: size, expands: expands)
+    }
+
+    static func cueDestructiveTinted(_ size: CueStudioButtonStyle.Size = .regular, expands: Bool = true) -> CueStudioButtonStyle {
+        CueStudioButtonStyle(variant: .destructiveTinted, size: size, expands: expands)
     }
 }

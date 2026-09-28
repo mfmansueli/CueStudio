@@ -9,7 +9,6 @@ import SwiftUI
 /// voice to the AI. It reads the voice the AI gets on the current plan.
 struct SoundsLikeYouCard: View {
     @Environment(CreatorProfileService.self) private var profile
-    @Environment(StoreManager.self) private var store
 
     var body: some View {
         @Bindable var profile = profile
@@ -42,6 +41,6 @@ struct SoundsLikeYouCard: View {
     }
 
     private var sampleLine: String {
-        profile.profile.voice(unlocking: store.tier).sampleLine
+        profile.profile.voice.sampleLine
     }
 }

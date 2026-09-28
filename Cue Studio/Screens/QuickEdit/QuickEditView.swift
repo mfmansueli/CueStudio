@@ -5,8 +5,10 @@
 
 import SwiftUI
 
-/// Quick edit: Cancel / "Quick edit 1:04 → 0:58" / Done, the live preview, play and the time
-/// (with undo and redo in Trim), the current tool and the six tools along the bottom.
+/// Quick edit: Cancel / "Quick edit · Original 1:04" (or "1:04 → 0:58") / Done, the live preview
+/// (tap to play or pause), the current tool and the seven tools along the bottom. Trim and Clean Up
+/// carry their own play button, time, undo and redo, and make the preview smaller to give the
+/// timeline room.
 struct QuickEditView: View {
     @State private var viewModel: QuickEditViewModel
     let onClose: () -> Void
@@ -31,12 +33,10 @@ struct QuickEditView: View {
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
             .padding(.top, 12)
-            QuickEditTransportBar(viewModel: viewModel)
-                .padding(.horizontal, Metrics.gutter)
-                .padding(.vertical, 4)
             toolPanel
-                .frame(height: 190, alignment: .top)
+                .frame(height: panelHeight, alignment: .top)
                 .padding(.horizontal, Metrics.gutter)
+                .padding(.top, 14)
                 .disabled(!viewModel.isReady)
                 .opacity(viewModel.isReady ? 1 : 0.4)
             toolbar
@@ -45,22 +45,15 @@ struct QuickEditView: View {
         .background(Palette.bg.ignoresSafeArea())
         .toastHost()
         .task { await viewModel.prepare() }
+        .onChange(of: viewModel.tool) { _, tool in
+            // Not tied to the tool: leaving Clean Up doesn't stop it listening.
+            if tool == .cleanUp { Task { await viewModel.analyzeIfNeeded() } }
+        }
         .onChange(of: scenePhase) { _, phase in
             if phase != .active { viewModel.pauseAndKeepDraft() }
         }
         .onDisappear { viewModel.pauseAndKeepDraft() }
-        .sheet(isPresented: $viewModel.showsCleanUp) {
-            CleanUpSheet(viewModel: viewModel)
-        }
-        .confirmationDialog("Discard your edits?", isPresented: $viewModel.confirmsDiscard, titleVisibility: .visible) {
-            Button("Discard edits", role: .destructive) {
-                viewModel.discard()
-                onClose()
-            }
-            Button("Keep editing", role: .cancel) {}
-        } message: {
-            Text("The take stays as it was before this edit.")
-        }
+        .animation(.smooth(duration: 0.3), value: viewModel.tool)
     }
 
     // MARK: - Sections
@@ -68,7 +61,8 @@ struct QuickEditView: View {
     private var topBar: some View {
         HStack {
             Button("Cancel") {
-                if viewModel.cancel() { onClose() }
+                viewModel.cancel()
+                onClose()
             }
             .buttonStyle(.cueGlass(.compact, expands: false))
             .accessibilityIdentifier("edit.cancelButton")
@@ -95,6 +89,7 @@ struct QuickEditView: View {
     private var toolPanel: some View {
         switch viewModel.tool {
         case .trim: TrimToolView(viewModel: viewModel)
+        case .cleanUp: CleanUpToolView(viewModel: viewModel)
         case .audio: AudioToolView(viewModel: viewModel)
         case .adjust: AdjustToolView(viewModel: viewModel)
         case .filters: FiltersToolView(viewModel: viewModel)
@@ -110,7 +105,10 @@ struct QuickEditView: View {
                 Button { viewModel.tool = tool } label: {
                     VStack(spacing: 4) {
                         Image(systemName: tool.systemImage).font(.system(size: 19, weight: .medium))
-                        Text(tool.label).font(.caption2.weight(.semibold))
+                        Text(tool.label)
+                            .font(.caption2.weight(.semibold))
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.8)
                     }
                     .foregroundStyle(isOn ? Palette.acc : Palette.ink2)
                     .frame(maxWidth: .infinity, minHeight: 64)
@@ -125,6 +123,15 @@ struct QuickEditView: View {
         .background(Palette.toolbarFill, in: Capsule())
         .overlay(Capsule().strokeBorder(Palette.glassBorder, lineWidth: 0.5))
         .disabled(!viewModel.isReady)
+    }
+
+    /// Trim and Clean Up need room for their timeline and list; the other tools are shorter.
+    private var panelHeight: CGFloat {
+        switch viewModel.tool {
+        case .trim: 262
+        case .cleanUp: 322
+        case .audio, .adjust, .filters, .crop, .captions: 190
+        }
     }
 
     /// The take's frame, as large as fits (up to 370 × 464 pt on the design's screen).

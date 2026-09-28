@@ -71,34 +71,12 @@ struct PrompterViewModelLayoutTests {
 
     // MARK: - Reading line
 
-    @Test func theReadingLineTipShowsOnceUntilPlayed() {
-        let defaults = TestDefaults()
-        defer { defaults.tearDown() }
-        let scenario = makeScenario(defaults: defaults)
-        #expect(scenario.viewModel.showsReadingLineTip)
-        scenario.viewModel.play()
-        #expect(!scenario.viewModel.showsReadingLineTip)
-        scenario.viewModel.pause()
-        #expect(!makeScenario(defaults: defaults).viewModel.showsReadingLineTip)
-    }
-
-    @Test func theTipWaitsForSheetsAndNeedsAScript() {
-        let scenario = makeScenario()
-        defer { scenario.defaults.tearDown() }
-        scenario.viewModel.sheet = .display
-        #expect(!scenario.viewModel.showsReadingLineTip)
-        let freestyle = makeScenario(script: nil)
-        defer { freestyle.defaults.tearDown() }
-        #expect(!freestyle.viewModel.showsReadingLineTip)
-    }
-
     @Test func draggingTheLineStoresItsDistanceFromTheLens() {
         let scenario = makeScenario()
         defer { scenario.defaults.tearDown() }
         scenario.viewModel.moveReadingLine(toY: 200)
         #expect(scenario.preferences.prompter.readingLineOffset == 169)
         #expect(scenario.viewModel.readingLayout.lineY == 200)
-        #expect(scenario.preferences.hasSeenReadingLineTip)
     }
 
     @Test func arrowsNudgeTheLineFromWhereItIs() {
@@ -128,8 +106,8 @@ struct PrompterViewModelLayoutTests {
         defer { scenario.defaults.tearDown() }
         let viewModel = scenario.viewModel
         viewModel.moveReadingLine(toY: 300)
-        scenario.preferences.prompter.textWindowHeight = 380
-        scenario.preferences.prompter.readingWidth = 0.75
+        scenario.preferences.prompter.textWindowHeight = 200
+        scenario.preferences.prompter.readingWidth = 0.6
         scenario.preferences.prompter.speed = 1.5
         scenario.preferences.prompter.hidesControlsWhileRecording = true
         scenario.preferences.camera.showsSafeZones = false
@@ -138,8 +116,8 @@ struct PrompterViewModelLayoutTests {
         viewModel.resetLayout()
 
         #expect(scenario.preferences.prompter.readingLineOffset == nil)
-        #expect(scenario.preferences.prompter.textWindowHeight == 250)
-        #expect(scenario.preferences.prompter.readingWidth == 0.58)
+        #expect(scenario.preferences.prompter.textWindowHeight == 380)
+        #expect(scenario.preferences.prompter.readingWidth == 0.93)
         #expect(scenario.preferences.prompter.speed == 0.7)
         #expect(!scenario.preferences.prompter.hidesControlsWhileRecording)
         #expect(scenario.preferences.camera.showsSafeZones)

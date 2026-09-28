@@ -6,7 +6,7 @@
 import CoreGraphics
 import Foundation
 
-/// "Quality" in Share to. 4K is part of Pro.
+/// "Quality" in Share to, on every plan.
 nonisolated enum ExportQuality: String, CaseIterable, Identifiable, Sendable {
     case hd1080, uhd4K
 
@@ -26,6 +26,4 @@ nonisolated enum ExportQuality: String, CaseIterable, Identifiable, Sendable {
         case .uhd4K: 2160
         }
     }
-
-    var isPro: Bool { self == .uhd4K }
 }

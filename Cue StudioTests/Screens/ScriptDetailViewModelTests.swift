@@ -18,8 +18,7 @@ struct ScriptDetailViewModelTests {
         let defaults: TestDefaults
     }
 
-    /// Pro by default, so the AI tools run; the free plan has its own tests.
-    private func makeScenario(script: Script, takeCount: Int = 0, startsEditing: Bool = false, tier: MembershipTier = .subscriber) -> Scenario {
+    private func makeScenario(script: Script, takeCount: Int = 0, startsEditing: Bool = false) -> Scenario {
         let defaults = TestDefaults()
         let library = ScriptLibraryService(repository: FakeScriptRepository(scripts: [script]), now: { TestData.now })
         library.load()
@@ -38,7 +37,6 @@ struct ScriptDetailViewModelTests {
             profile: CreatorProfileService(defaults: defaults.defaults),
             rules: TestData.rulesService(),
             writer: writer,
-            tier: { tier },
             toast: toast
         )
         return Scenario(viewModel: viewModel, library: library, writer: writer, toast: toast, defaults: defaults)
@@ -201,41 +199,22 @@ struct ScriptDetailViewModelTests {
         #expect(scenario.writer.lastRewrite?.context.language == "Spanish")
     }
 
-    // MARK: - Pro
+    // MARK: - Everything is free
 
-    @Test func inMyVoiceIsProOnTheFreePlan() async {
-        let scenario = makeScenario(script: TestData.script(), startsEditing: true, tier: .free)
+    @Test func inMyVoiceUsesTheWholeVoice() async {
+        let scenario = makeScenario(script: TestData.script(), startsEditing: true)
         defer { scenario.defaults.tearDown() }
-        #expect(scenario.viewModel.isLocked(.inMyVoice))
-        #expect(!scenario.viewModel.isLocked(.moreEnergy))
         await scenario.viewModel.run(.inMyVoice)
-        #expect(scenario.viewModel.paywall == .creatorVoice)
-        #expect(scenario.writer.lastRewrite == nil)
+        #expect(scenario.writer.lastRewrite?.tool == .inMyVoice)
+        #expect(scenario.writer.lastRewrite?.context.voice?.sounds == [.casual, .confident])
     }
 
-    @Test func freeRewritesUseTheFreePartOfTheVoice() async {
-        let scenario = makeScenario(script: TestData.script(), startsEditing: true, tier: .free)
-        defer { scenario.defaults.tearDown() }
-        await scenario.viewModel.run(.moreEnergy)
-        let voice = scenario.writer.lastRewrite?.context.voice
-        #expect(voice?.sounds == [.casual, .confident])
-        #expect(voice?.vocabulary == nil)
-        #expect(voice?.styles.isEmpty == true)
-    }
-
-    @Test func freeHooksComeFromTheFormatWithAIAsPro() async {
+    @Test func hooksAreWrittenByTheModel() async {
         let script = TestData.script(text: "Old hook.\n\nBody.")
-        let scenario = makeScenario(script: script, tier: .free)
+        let scenario = makeScenario(script: script)
         defer { scenario.defaults.tearDown() }
-        #expect(scenario.viewModel.locksHookVariations)
         await scenario.viewModel.openHooks()
-        let first = scenario.viewModel.hookOptions
-        #expect(first == ScriptTextEditing.hookOptions(from: ScriptStructure.generic.hooks, rotation: 0))
-        await scenario.viewModel.showMoreHooks()
-        #expect(scenario.viewModel.hookOptions != first)
-        #expect(scenario.writer.hooksRequested == 0)
-        scenario.viewModel.unlockHookVariations()
-        #expect(scenario.viewModel.paywall == .hookVariations)
+        #expect(scenario.writer.hooksRequested == 1)
         #expect(scenario.viewModel.sheet == .hooks)
     }
 
@@ -255,16 +234,6 @@ struct ScriptDetailViewModelTests {
         #expect(scenario.writer.lastRewrite?.context.idealRange == TestData.rules.preset(for: .reels, monetizationGoals: true).idealRange)
         #expect(scenario.library.script(id: script.id)?.text == script.text)
         #expect(scenario.toast.message == "Reels version saved as a copy")
-    }
-
-    @Test func versionsArePro() async {
-        let script = TestData.script()
-        let scenario = makeScenario(script: script, tier: .free)
-        defer { scenario.defaults.tearDown() }
-        #expect(scenario.viewModel.locksPlatformVersions)
-        await scenario.viewModel.makeVersion(for: .shorts)
-        #expect(scenario.viewModel.paywall == .platformVersions)
-        #expect(scenario.library.scripts.count == 1)
     }
 
     @Test func destinationChangeAppliesThePreset() {

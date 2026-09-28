@@ -94,9 +94,6 @@ struct TakeReviewView: View {
             PlayerView(player: player)
                 .frame(width: frame.width, height: frame.height)
                 .clipped()
-                .overlay(alignment: .bottomTrailing) {
-                    if viewModel.exportsExhausted { watermarkBadge.padding(18) }
-                }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
         .ignoresSafeArea()
@@ -131,18 +128,6 @@ struct TakeReviewView: View {
         guard aspect != .portrait else { return size }
         let height = size.width / aspect.widthOverHeight
         return CGSize(width: size.width, height: min(size.height, height))
-    }
-
-    private var watermarkBadge: some View {
-        HStack(spacing: 6) {
-            Capsule().fill(Palette.acc).frame(width: 12, height: 3)
-            Text("Made with Cue").font(.caption.weight(.bold))
-        }
-        .foregroundStyle(.white.opacity(0.85))
-        .padding(.horizontal, 10)
-        .frame(height: 26)
-        .background(Color.black.opacity(0.45), in: RoundedRectangle(cornerRadius: 8))
-        .accessibilityHidden(true)
     }
 
     // MARK: - Chrome
@@ -204,8 +189,7 @@ struct TakeReviewView: View {
                     YourTakesStrip(
                         takes: viewModel.siblings,
                         currentID: take.id,
-                        onSuggest: viewModel.offersBestSuggestion ? { suggestBest(from: take) } : nil,
-                        suggestionIsLocked: viewModel.locksBestSuggestion
+                        onSuggest: viewModel.offersBestSuggestion ? { suggestBest(from: take) } : nil
                     ) { sibling in
                         guard sibling.id != take.id else { return }
                         player.pause()

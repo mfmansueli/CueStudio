@@ -6,23 +6,24 @@
 import SwiftUI
 
 /// The Selfie reading line: a layer of its own that stays put while the text scrolls past it. A
-/// handle at its right end moves it (the text window follows); the first time, a tip explains it.
+/// slim grip at its right end moves it (the text window follows); the grip hides while the text
+/// plays or the camera records, so only the line is left.
 struct ReadingLineLayer: View {
     let layout: ReadingLayout
     /// "READING LINE" above the line, while Display is open.
     let showsTag: Bool
-    let showsTip: Bool
+    let showsHandle: Bool
     /// The line's new position while dragging, in screen points.
     let onMove: (CGFloat) -> Void
     /// ↑ / ↓ from VoiceOver.
     let onNudge: (CGFloat) -> Void
-    let onDismissTip: () -> Void
 
     @State private var dragStart: CGFloat?
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     private static let arrowSize: CGFloat = 10
     private static let handleTarget: CGFloat = 44
+    private static let gripSize = CGSize(width: 14, height: 34)
 
     var body: some View {
         let span = layout.lineSpan
@@ -33,15 +34,14 @@ struct ReadingLineLayer: View {
             if showsTag || dragStart != nil {
                 tag.position(x: span.lowerBound + 2, y: layout.lineY - 16)
             }
-            handle.position(x: handleX(span), y: layout.lineY)
-            if showsTip {
-                tip.position(x: layout.screenWidth / 2, y: layout.lineY + 16 + 38)
-                    .transition(reduceMotion ? .opacity : .scale(scale: 0.9, anchor: .top).combined(with: .opacity))
+            if showsHandle || dragStart != nil {
+                handle.position(x: handleX(span), y: layout.lineY)
+                    .transition(.opacity)
             }
         }
         .ignoresSafeArea()
         .animation(dragStart == nil ? .smooth(duration: 0.3) : nil, value: layout.lineY)
-        .animation(.spring(duration: 0.3), value: showsTip)
+        .animation(reduceMotion ? nil : .easeOut(duration: 0.2), value: showsHandle)
     }
 
     // MARK: - Parts
@@ -64,13 +64,15 @@ struct ReadingLineLayer: View {
 
     private var handle: some View {
         let dragging = dragStart != nil
+        let grip = RoundedRectangle(cornerRadius: Self.gripSize.width / 2, style: .continuous)
         return Image(systemName: "chevron.up.chevron.down")
-            .font(.system(size: 11, weight: .bold))
+            .font(.system(size: 7, weight: .bold))
             .foregroundStyle(.white)
-            .frame(width: 24, height: 34)
-            .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
-            .background(dragging ? Palette.readingLineHandleActive : Palette.readingLineHandle, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
-            .overlay(RoundedRectangle(cornerRadius: 12, style: .continuous).strokeBorder(Palette.readingLineHandleBorder, lineWidth: 0.5))
+            .frame(width: Self.gripSize.width, height: Self.gripSize.height)
+            .background(.ultraThinMaterial, in: grip)
+            .background(dragging ? Palette.readingLineHandleActive : Palette.readingLineHandle, in: grip)
+            .overlay(grip.strokeBorder(Palette.readingLineHandleBorder, lineWidth: 0.5))
+            // A slim grip to look at, a full 44 pt to catch.
             .frame(width: Self.handleTarget, height: Self.handleTarget)
             .contentShape(Rectangle())
             .gesture(
@@ -94,28 +96,6 @@ struct ReadingLineLayer: View {
                 }
             }
             .accessibilityIdentifier("prompter.readingLineHandle")
-    }
-
-    private var tip: some View {
-        Button(action: onDismissTip) {
-            VStack(spacing: 4) {
-                Text("Don’t read the text. Talk to the line.")
-                    .font(.subheadline.weight(.bold))
-                Text("It sits just under your camera, so your eyes stay on your viewer. Drag the handle to move it.")
-                    .font(.caption)
-                    .foregroundStyle(Palette.ink2)
-            }
-            .multilineTextAlignment(.center)
-            .foregroundStyle(.white)
-            .padding(EdgeInsets(top: 10, leading: 14, bottom: 10, trailing: 14))
-            .frame(width: 228)
-            .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
-            .background(Palette.tipBackground, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
-            .overlay(RoundedRectangle(cornerRadius: 16, style: .continuous).strokeBorder(Palette.accBorder, lineWidth: 0.5))
-        }
-        .buttonStyle(.plain)
-        .accessibilityHint(Text("Dismisses the tip"))
-        .accessibilityIdentifier("prompter.readingLineTip")
     }
 
     /// Just past the line's right end, but never off screen.

@@ -5,8 +5,8 @@
 
 import Foundation
 
-/// Save a take, or share it to a platform ("Share to"). The free plan exports clean up to its limit,
-/// then offers Pro or a watermarked copy.
+/// Save a take, or share it to a platform ("Share to"). Every feature is free; the free plan
+/// includes five exports, then exporting asks for Cue Pro (7 days free). Takes are never locked.
 @MainActor
 @Observable
 final class TakeReviewViewModel {
@@ -89,19 +89,17 @@ final class TakeReviewViewModel {
     var videoURL: URL? { take.map(takes.videoURL(for:)) }
 
     /// Nil when unlimited.
-    var cleanExportsLeft: Int? { quota.cleanExportsLeft(for: tier()) }
+    var exportsLeft: Int? { quota.exportsLeft(for: tier()) }
 
-    /// Free plan only: how many clean exports are left, or that the next one gets a watermark.
+    /// Free plan only: "3 of 5 free exports", or that the next export starts the trial.
     var exportNotice: String? {
-        guard let left = cleanExportsLeft else { return nil }
+        guard let left = exportsLeft else { return nil }
         return left > 0
-            ? String(localized: "\(left) of \(UsagePolicy.freeCleanExports) clean exports left")
-            : String(localized: "Free exports used — saves with a watermark")
+            ? String(localized: "\(left) of \(UsagePolicy.freeExports) free exports")
+            : String(localized: "Free exports used — 7 days free to keep exporting")
     }
 
-    var exportsExhausted: Bool { cleanExportsLeft == 0 }
-
-    var isPro: Bool { tier().isPro }
+    var exportsExhausted: Bool { exportsLeft == 0 }
 
     /// "0:44 · 9:16 · 1080p"
     var shareMeta: String {
@@ -118,12 +116,7 @@ final class TakeReviewViewModel {
         quality == .uhd4K ? take.resolution.label : quality.label
     }
 
-    /// 4K is part of Pro; on the free plan it opens the paywall.
     func setQuality(_ quality: ExportQuality) {
-        if quality.isPro && !ProFeature.cleanExports.isUnlocked(for: tier()) {
-            paywall = .fourK
-            return
-        }
         self.quality = quality
     }
 
@@ -134,15 +127,9 @@ final class TakeReviewViewModel {
     /// "Suggest best" sits after a script's takes once there are two or more.
     var offersBestSuggestion: Bool { take?.isFreestyle == false && siblings.count > 1 }
 
-    var locksBestSuggestion: Bool { !ProFeature.bestTakePicks.isUnlocked(for: tier()) }
-
-    /// Pro: the complete take closest to the script's timing, preferring the platform's ideal
-    /// range. The review switches to it; the creator still keeps it with ☆.
+    /// The complete take closest to the script's timing, preferring the platform's ideal range. The
+    /// review switches to it; the creator still keeps it with ☆.
     func suggestBest() -> Take? {
-        guard !locksBestSuggestion else {
-            paywall = .bestTake
-            return nil
-        }
         guard let take, let script = library.script(id: take.scriptID) else { return nil }
         let preset = rules.preset(for: take.platform ?? script.platform, monetizationGoals: profile.profile.monetizationGoals)
         let expected = ReadTime.seconds(for: script.text, speed: preferences.prompter.speed)
@@ -172,34 +159,26 @@ final class TakeReviewViewModel {
     }
 
     func save() async {
-        await export(.save, allowWatermark: false)
+        await export(.save)
     }
 
     /// A platform: export, save to Photos and open its app to post (the share sheet when the app
     /// isn't there). Nil is "More": the system share sheet.
     func share(to destination: ShareDestination?) async {
-        await export(.share(destination), allowWatermark: false)
+        await export(.share(destination))
     }
 
-    /// "Save with watermark instead" on the paywall.
-    func exportWithWatermark() async {
-        guard let action = pendingAction else { return }
-        pendingAction = nil
-        await export(action, allowWatermark: true)
-    }
-
-    /// Continues the export that opened the paywall, now clean.
+    /// Continues the export that opened the paywall, now that Pro (or its trial) is on.
     func continueAfterPurchase() async {
         guard let action = pendingAction else { return }
         pendingAction = nil
-        await export(action, allowWatermark: false)
+        await export(action)
     }
 
-    private func export(_ action: ExportAction, allowWatermark: Bool) async {
+    private func export(_ action: ExportAction) async {
         guard let take, runningAction == nil else { return }
         let currentTier = tier()
-        let clean = quota.canExportClean(tier: currentTier)
-        if !clean && !allowWatermark {
+        guard quota.canExport(tier: currentTier) else {
             pendingAction = action
             paywall = .export
             return
@@ -210,19 +189,17 @@ final class TakeReviewViewModel {
             let url = try await exporter.export(
                 videoAt: takes.videoURL(for: take),
                 options: ExportOptions(
-                    aspect: take.outputAspect, watermark: !clean, edit: await editForExport(take),
+                    aspect: take.outputAspect, edit: await editForExport(take),
                     burnsInCaptions: burnsInCaptions, shortSide: outputShortSide(for: take)
                 )
             )
-            if clean {
-                quota.recordCleanExport(tier: currentTier)
-            }
+            quota.recordExport(tier: currentTier)
             takes.markExported(take.id)
             switch action {
             case .save:
                 try await photos.saveVideo(at: url)
                 showsShareSheet = false
-                toast.show(savedMessage(clean: clean, tier: currentTier))
+                toast.show(savedMessage(tier: currentTier))
             case .share(nil):
                 shareURL = url
             case .share(let destination?):
@@ -230,7 +207,7 @@ final class TakeReviewViewModel {
                 try await photos.saveVideo(at: url)
                 if await apps.open(destination) {
                     showsShareSheet = false
-                    toast.show(readyMessage(for: destination, clean: clean, tier: currentTier))
+                    toast.show(readyMessage(for: destination, tier: currentTier))
                 } else {
                     shareURL = url
                 }
@@ -252,16 +229,15 @@ final class TakeReviewViewModel {
         return edit
     }
 
-    private func readyMessage(for destination: ShareDestination, clean: Bool, tier: MembershipTier) -> String {
+    private func readyMessage(for destination: ShareDestination, tier: MembershipTier) -> String {
         let ready = String(localized: "Ready to post on \(destination.platform.label)")
-        guard clean, let left = quota.cleanExportsLeft(for: tier) else { return ready }
-        return ready + " · " + String(localized: "\(left) of \(UsagePolicy.freeCleanExports) clean left")
+        guard let left = quota.exportsLeft(for: tier) else { return ready }
+        return ready + " · " + String(localized: "\(left) of \(UsagePolicy.freeExports) free exports left")
     }
 
-    private func savedMessage(clean: Bool, tier: MembershipTier) -> String {
-        guard clean else { return String(localized: "Saved with watermark") }
-        if let left = quota.cleanExportsLeft(for: tier) {
-            return String(localized: "Saved to Photos · \(left) of \(UsagePolicy.freeCleanExports) clean exports left")
+    private func savedMessage(tier: MembershipTier) -> String {
+        if let left = quota.exportsLeft(for: tier) {
+            return String(localized: "Saved to Photos · \(left) of \(UsagePolicy.freeExports) free exports left")
         }
         return String(localized: "Saved to Photos")
     }

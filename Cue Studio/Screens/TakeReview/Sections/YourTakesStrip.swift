@@ -6,14 +6,12 @@
 import SwiftUI
 
 /// "Your takes · 3": every take of the script, to switch between them and pick the best, then
-/// "Suggest best" (Pro).
+/// "Suggest best".
 struct YourTakesStrip: View {
     let takes: [Take]
     let currentID: UUID
     /// Nil hides "Suggest best".
     var onSuggest: (() -> Void)?
-    /// Free plan: "Suggest best" carries the PRO badge.
-    var suggestionIsLocked = false
     let onSelect: (Take) -> Void
 
     var body: some View {
@@ -49,7 +47,6 @@ struct YourTakesStrip: View {
             HStack(spacing: 6) {
                 Image(systemName: "sparkles").foregroundStyle(Palette.acc)
                 Text("Suggest best").font(.subheadline.weight(.semibold))
-                if suggestionIsLocked { ProBadge() }
             }
             .foregroundStyle(Palette.ink)
             .padding(.horizontal, 14)

@@ -24,7 +24,7 @@ struct FillerWordDetectorTests {
         #expect(found[0].text == "um,")
         #expect(found[0].confidence == FillerWordDetector.soundConfidence)
         // Nothing is removed by finding it.
-        #expect(!found[0].isKept)
+        #expect(found[0].status == .pending)
     }
 
     @Test func aHeldSoundIsTheSameSound() {

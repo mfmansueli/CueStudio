@@ -5,16 +5,14 @@
 
 import SwiftUI
 
-/// Swap the opening line for a stronger hook. On the free plan the options are the format's ideas,
-/// with hooks written by the model for this script offered as Pro.
+/// Swap the opening line for a stronger hook: written by the model for this script when Apple
+/// Intelligence is on, otherwise the format's own ideas.
 struct HooksSheet: View {
     let currentHook: String
     let options: [String]
     let speed: Double
     /// The model is writing new options.
     var isLoading = false
-    /// Free plan: shows "Write hooks with AI" with the PRO badge.
-    var onUnlock: (() -> Void)?
     let onPick: (String) -> Void
     let onMore: () -> Void
 
@@ -77,23 +75,6 @@ struct HooksSheet: View {
                             }
                             .buttonStyle(.plain)
                             .accessibilityIdentifier("hooks.option")
-                        }
-                        if let onUnlock {
-                            Button(action: onUnlock) {
-                                HStack(spacing: 10) {
-                                    Image(systemName: "sparkles").foregroundStyle(Palette.acc)
-                                    Text("Write hooks for this script with AI")
-                                        .font(.subheadline.weight(.semibold))
-                                        .foregroundStyle(Palette.ink)
-                                        .frame(maxWidth: .infinity, alignment: .leading)
-                                    ProBadge()
-                                }
-                                .padding(.horizontal, 16)
-                                .frame(minHeight: 52)
-                                .contentShape(Rectangle())
-                            }
-                            .buttonStyle(.plain)
-                            .accessibilityIdentifier("hooks.unlockButton")
                         }
                     }
                 }

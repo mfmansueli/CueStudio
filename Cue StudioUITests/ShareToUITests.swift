@@ -5,7 +5,7 @@
 
 import XCTest
 
-/// "Share to" from a take's review: the platforms, captions and quality, and 4K behind Pro.
+/// "Share to" from a take's review: the platforms, captions and quality (4K on every plan).
 @MainActor
 final class ShareToUITests: XCTestCase {
     override func setUp() {
@@ -23,20 +23,8 @@ final class ShareToUITests: XCTestCase {
         XCTAssertTrue(app.switches["share.captionsToggle"].exists)
     }
 
-    func testFourKOnTheFreePlanOpensThePaywall() {
+    func testFourKIsFree() {
         let app = openShareTo()
-        let quality = app.segmentedControls["share.quality"]
-        XCTAssertTrue(quality.buttons["1080p"].isSelected)
-        quality.buttons["4K · PRO"].tap()
-        let close = app.buttons["paywall.closeButton"]
-        XCTAssertTrue(close.waitForExistence(timeout: 5))
-        close.tap()
-        XCTAssertTrue(app.buttons["share.tiktok"].waitForExistence(timeout: 5))
-        XCTAssertTrue(app.segmentedControls["share.quality"].buttons["1080p"].isSelected)
-    }
-
-    func testProPicksFourK() {
-        let app = openShareTo(pro: true)
         let quality = app.segmentedControls["share.quality"]
         quality.buttons["4K"].tap()
         XCTAssertTrue(quality.buttons["4K"].isSelected)

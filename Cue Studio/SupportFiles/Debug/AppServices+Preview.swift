@@ -19,6 +19,7 @@ extension AppServices {
         options.scriptRepository = InMemoryScriptRepository(scripts: seeded ? SampleScripts.all : [])
         options.takeRepository = InMemoryTakeRepository(takes: seeded ? SampleTakes.all() : [])
         options.draftStore = InMemoryQuickEditDraftStore()
+        options.exportCounter = InMemoryExportCountStore()
         options.defaults = UserDefaults(suiteName: "studio.cue.previews") ?? .standard
         options.platformRules = PlatformRulesService(cacheURL: nil, remoteURL: nil)
         let services = AppServices(options: options)

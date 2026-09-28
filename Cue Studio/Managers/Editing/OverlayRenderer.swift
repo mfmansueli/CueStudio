@@ -6,8 +6,7 @@
 import CoreImage
 import UIKit
 
-/// Draws captions and the "Made with Cue" badge as images, sized to the output frame, so the
-/// compositor only has to place them.
+/// Draws captions as images, sized to the output frame, so the compositor only has to place them.
 nonisolated enum OverlayRenderer {
     /// One overlay per caption, at the chosen position, visible while its words are said.
     static func captions(_ cues: [CaptionCue], style: CaptionStyle, position: CaptionPosition, frame: CGSize) -> [FrameOverlay] {
@@ -19,27 +18,6 @@ nonisolated enum OverlayRenderer {
             let origin = CGPoint(x: ((frame.width - size.width) / 2).rounded(), y: (centerY - size.height / 2).rounded())
             return FrameOverlay(image: image, origin: origin, span: TimeSpan(start: cue.start, end: cue.end))
         }
-    }
-
-    /// The free plan's badge at the bottom right, for the whole video.
-    static func watermark(frame: CGSize) -> FrameOverlay? {
-        let unit = frame.width / 402
-        let font = UIFont.systemFont(ofSize: 12 * unit, weight: .bold)
-        let text = String(localized: "Made with Cue") as NSString
-        let textWidth = text.size(withAttributes: [.font: font]).width
-        let size = CGSize(width: (textWidth + 34 * unit).rounded(), height: (26 * unit).rounded())
-        let image = UIGraphicsImageRenderer(size: size, format: format).image { _ in
-            UIColor.black.withAlphaComponent(0.45).setFill()
-            UIBezierPath(roundedRect: CGRect(origin: .zero, size: size), cornerRadius: 8 * unit).fill()
-            UIColor(red: 1, green: 0.84, blue: 0.04, alpha: 1).setFill()
-            UIBezierPath(roundedRect: CGRect(x: 10 * unit, y: (size.height - 3 * unit) / 2, width: 12 * unit, height: 3 * unit), cornerRadius: 1.5 * unit).fill()
-            text.draw(at: CGPoint(x: 28 * unit, y: (size.height - font.lineHeight) / 2), withAttributes: [
-                .font: font, .foregroundColor: UIColor.white.withAlphaComponent(0.85),
-            ])
-        }
-        guard let ciImage = CIImage(image: image) else { return nil }
-        let margin = 18 * unit
-        return FrameOverlay(image: ciImage, origin: CGPoint(x: frame.width - size.width - margin, y: margin * 2), span: nil)
     }
 
     private static var format: UIGraphicsImageRendererFormat {

@@ -14,21 +14,7 @@
 
   ],
   "products" : [
-    {
-      "displayPrice" : "89.99",
-      "familyShareable" : false,
-      "internalID" : "6743000003",
-      "localizations" : [
-        {
-          "description" : "Pay once. Everything in Pro, forever.",
-          "displayName" : "Cue Pro Lifetime",
-          "locale" : "en_US"
-        }
-      ],
-      "productID" : "studio.cue.pro.lifetime",
-      "referenceName" : "Cue Pro Lifetime",
-      "type" : "NonConsumable"
-    }
+
   ],
   "settings" : {
     "_failTransactionsEnabled" : false,
@@ -65,7 +51,7 @@
           },
           "localizations" : [
             {
-              "description" : "Unlimited clean exports up to 4K and the full Creator Voice.",
+              "description" : "Unlimited video exports, up to 4K. 7 days free.",
               "displayName" : "Cue Pro Annual",
               "locale" : "en_US"
             }
@@ -90,9 +76,15 @@
           "familyShareable" : false,
           "groupNumber" : 2,
           "internalID" : "6743000002",
+          "introductoryOffer" : {
+            "internalID" : "6743000012",
+            "numberOfPeriods" : 1,
+            "paymentMode" : "free",
+            "subscriptionPeriod" : "P1W"
+          },
           "localizations" : [
             {
-              "description" : "Unlimited clean exports up to 4K and the full Creator Voice.",
+              "description" : "Unlimited video exports, up to 4K. 7 days free.",
               "displayName" : "Cue Pro Monthly",
               "locale" : "en_US"
             }

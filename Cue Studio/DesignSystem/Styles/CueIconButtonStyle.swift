@@ -18,6 +18,10 @@ struct CueIconButtonStyle: ButtonStyle {
         case tinted
         /// Solid yellow with a black icon (an active toggle or the main play button).
         case accent
+        /// White with a black icon: play in a tool panel, next to the screen's yellow action.
+        case light
+        /// Soft red with a red icon: delete, when there is something to delete.
+        case danger
     }
 
     var variant: Variant
@@ -46,6 +50,8 @@ struct CueIconButtonStyle: ButtonStyle {
         case .accent: Palette.accInk
         case .tinted: Palette.acc
         case .glass, .overlay, .surface: Palette.ink
+        case .light: Palette.bg
+        case .danger: Palette.danger
         }
     }
 
@@ -56,6 +62,8 @@ struct CueIconButtonStyle: ButtonStyle {
         case .surface: Palette.surface2
         case .tinted: Palette.accSoft
         case .accent: Palette.acc
+        case .light: Palette.ink
+        case .danger: Palette.dangerSoft
         }
     }
 }

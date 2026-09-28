@@ -5,11 +5,11 @@
 
 import SwiftUI
 
-/// Cue Pro upgrade. Full screen, dismissible, always offers Restore.
+/// Cue Pro: two subscriptions, each starting with a 7-day free trial. Opens only when the free
+/// exports run out or from Profile (never while recording). Full screen, dismissible, always offers
+/// Restore.
 struct PaywallView: View {
     let context: PaywallContext
-    /// Export context only: continue with a watermarked export instead of upgrading.
-    var onWatermarkInstead: (() -> Void)?
     var onPurchased: (() -> Void)?
 
     @Environment(StoreManager.self) private var store
@@ -23,7 +23,6 @@ struct PaywallView: View {
         VStack(spacing: 0) {
             ScrollView {
                 VStack(alignment: .leading, spacing: 0) {
-                    if context == .export { exportComparison }
                     Text("Cue Pro")
                         .font(.caption.weight(.bold))
                         .textCase(.uppercase)
@@ -76,7 +75,7 @@ struct PaywallView: View {
         }
         .task {
             await store.loadProducts()
-            for plan in ProPlan.allCases where plan.isSubscription {
+            for plan in ProPlan.allCases {
                 if let days = await store.freeTrialDays(for: plan) { trialDays[plan] = days }
             }
         }
@@ -88,32 +87,6 @@ struct PaywallView: View {
     }
 
     // MARK: - Sections
-
-    private var exportComparison: some View {
-        HStack(spacing: 10) {
-            RoundedRectangle(cornerRadius: 14, style: .continuous)
-                .fill(LinearGradient(colors: [Palette.thumbnailTop, Palette.thumbnailBottom], startPoint: .topLeading, endPoint: .bottomTrailing))
-                .frame(width: 78, height: 138)
-                .overlay(alignment: .bottomTrailing) {
-                    Text("Made with Cue")
-                        .font(.system(size: 7.5, weight: .bold))
-                        .padding(.horizontal, 5)
-                        .frame(height: 16)
-                        .background(Palette.durationBadge, in: RoundedRectangle(cornerRadius: 5))
-                        .padding(6)
-                }
-                .opacity(0.7)
-            RoundedRectangle(cornerRadius: 14, style: .continuous)
-                .fill(LinearGradient(colors: [Palette.thumbnailTop, Palette.thumbnailBottom], startPoint: .topLeading, endPoint: .bottomTrailing))
-                .frame(width: 78, height: 138)
-                .overlay(RoundedRectangle(cornerRadius: 14, style: .continuous).strokeBorder(Palette.acc, lineWidth: 2))
-                .overlay(alignment: .topLeading) {
-                    ProBadge().padding(6)
-                }
-        }
-        .padding(.bottom, 18)
-        .accessibilityHidden(true)
-    }
 
     private func planRow(_ plan: ProPlan) -> some View {
         let isSelected = selectedPlan == plan
@@ -182,16 +155,6 @@ struct PaywallView: View {
                 .font(.caption)
                 .foregroundStyle(Palette.ink.opacity(0.5))
                 .multilineTextAlignment(.center)
-            if let onWatermarkInstead {
-                Button("Save with watermark instead") {
-                    dismiss()
-                    onWatermarkInstead()
-                }
-                .font(.subheadline.weight(.semibold))
-                .foregroundStyle(Palette.ink)
-                .frame(minHeight: Metrics.hitTarget)
-                .accessibilityIdentifier("paywall.watermarkButton")
-            }
             HStack(spacing: 18) {
                 Button("Restore") { Task { await restore() } }
                 if let terms = AppLinks.termsOfUse { Link("Terms", destination: terms) }
@@ -216,9 +179,10 @@ struct PaywallView: View {
     // MARK: - Actions
 
     private func purchase() async {
+        let startsTrial = trialDays[selectedPlan] != nil
         guard await store.purchase(selectedPlan) else { return }
         dismiss()
-        toast.show(PaywallCopy.welcome(for: context))
+        toast.show(PaywallCopy.welcome(for: context, startedTrial: startsTrial))
         onPurchased?()
     }
 
@@ -235,7 +199,7 @@ struct PaywallView: View {
 
 #if DEBUG
 #Preview {
-    PaywallView(context: .export, onWatermarkInstead: {})
+    PaywallView(context: .export)
         .previewEnvironment()
 }
 #endif

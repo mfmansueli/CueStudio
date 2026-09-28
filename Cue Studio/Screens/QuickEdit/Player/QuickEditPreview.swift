@@ -5,9 +5,9 @@
 
 import SwiftUI
 
-/// The edit playing in its frame. Tap to play or pause; with the Crop tool, dragging moves the
-/// crop. Says so when the recording can't be opened, and shows "Processing…" when a change takes
-/// a moment to build.
+/// The edit playing in its frame. Tap to play or pause (a play sign shows while paused); with the
+/// Crop tool, dragging moves the crop. Says so when the recording can't be opened, and shows
+/// "Processing…" when a change takes a moment to build.
 struct QuickEditPreview: View {
     let viewModel: QuickEditViewModel
     let size: CGSize
@@ -27,9 +27,13 @@ struct QuickEditPreview: View {
                 }
             }
             .overlay { status }
+            .overlay { playBadge }
             .clipShape(RoundedRectangle(cornerRadius: Metrics.tileRadius, style: .continuous))
             .gesture(cropDrag, isEnabled: viewModel.tool == .crop)
-            .onTapGesture { viewModel.togglePlayback() }
+            .onTapGesture {
+                // With Crop, touches move the crop instead.
+                if viewModel.tool != .crop { viewModel.togglePlayback() }
+            }
             .animation(reduceMotion ? nil : .smooth(duration: 0.3), value: size)
             .accessibilityElement(children: .combine)
             .accessibilityLabel(Text("Preview"))
@@ -37,6 +41,23 @@ struct QuickEditPreview: View {
             .accessibilityHint(Text("Tap to play or pause"))
             .accessibilityAddTraits(.startsMediaSession)
             .accessibilityIdentifier("edit.preview")
+    }
+
+    /// A play sign in the middle while paused, so a tap's result is obvious. Not a button: the whole
+    /// preview is.
+    @ViewBuilder
+    private var playBadge: some View {
+        if viewModel.isReady, viewModel.player.state == .ready, !viewModel.player.isPlaying, viewModel.tool != .crop {
+            Image(systemName: "play.fill")
+                .font(.system(size: 22, weight: .semibold))
+                .foregroundStyle(Palette.ink)
+                .offset(x: 2)
+                .frame(width: 54, height: 54)
+                .glassEffect(.regular, in: Circle())
+                .allowsHitTesting(false)
+                .accessibilityHidden(true)
+                .transition(.opacity)
+        }
     }
 
     /// What VoiceOver reads after "Preview" when something is wrong or slow.

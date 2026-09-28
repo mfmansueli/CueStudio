@@ -14,9 +14,12 @@ nonisolated struct PrompterSettings: Codable, Hashable, Sendable {
     static let backgroundOpacityRange: ClosedRange<Double> = 0...1
     static let cameraBlurRange: ClosedRange<Double> = 0...20
     static let guideRange: ClosedRange<Double> = 0.1...0.7
-    static let readingWidthRange: ClosedRange<Double> = 0.5...0.75
+    static let readingWidthRange: ClosedRange<Double> = 0.5...0.93
     static let textWindowHeightRange: ClosedRange<Double> = 160...380
-    static let defaultTextWindowHeight: Double = 250
+    /// The text window starts as big as it goes, so lines fill the width at any font size; the
+    /// creator can narrow or shorten it.
+    static let defaultReadingWidth: Double = 0.93
+    static let defaultTextWindowHeight: Double = 380
     /// Studio mode is read from further away, so its text is bigger than the selfie panel's.
     static let studioScale: Double = 1.35
 
@@ -28,9 +31,9 @@ nonisolated struct PrompterSettings: Codable, Hashable, Sendable {
     var alignment: PrompterAlignment = .center
     var textColor: PrompterTextColor = .white
     var margin: Double = 8
-    /// Selfie text window width as a fraction of the screen. Each platform's preset sets it when a
-    /// script opens; the creator can fine-tune it between 50% and 75% (narrow keeps the eyes still).
-    var readingWidth: Double = 0.6
+    /// Selfie text window width as a fraction of the screen, 50% to 93%. A script opens at the
+    /// widest; narrowing it keeps the eyes stiller.
+    var readingWidth: Double = PrompterSettings.defaultReadingWidth
     /// Selfie text window height in points.
     var textWindowHeight: Double = PrompterSettings.defaultTextWindowHeight
     /// Where the Selfie reading line sits, as its distance below the front camera in points. Nil
@@ -39,7 +42,8 @@ nonisolated struct PrompterSettings: Codable, Hashable, Sendable {
     var readingLineOffset: Double?
     /// How dark the Selfie panel is behind the text. Preview only, never recorded.
     var backgroundOpacity: Double = 0.25
-    /// Blur of the camera behind the Selfie panel, 0 (off) to 20. Preview only, never recorded.
+    /// Blur of the camera behind the Selfie panel, 0 (off) to 20 (see `CameraBlurLevel`). Preview
+    /// only, never recorded.
     var cameraBlur: Double = 0
     var showsGuide: Bool = true
     /// Studio reading line position, as a fraction of the text area height.
@@ -47,8 +51,9 @@ nonisolated struct PrompterSettings: Codable, Hashable, Sendable {
     var isMirrored: Bool = false
     var scrollMode: ScrollMode = .steady
     var studioBackground: StudioBackground = .black
-    /// AI Coach: performance cues like PAUSE or SMILE in the prompter.
-    var showsCues: Bool = true
+    /// AI Coach: performance cues like PAUSE or SMILE in the prompter. Off until the creator turns
+    /// it on.
+    var showsCues: Bool = false
     /// "Custom" safe zone margins.
     var customSafeZone = SafeZoneMargins()
     /// Recording starts with only the text, the reading line, the clock and a stop button.
@@ -75,15 +80,8 @@ nonisolated struct PrompterSettings: Codable, Hashable, Sendable {
         clampedSpeed(speed * wordsPerMinute / ReadTime.wordsPerMinuteAtOneX)
     }
 
-    /// "Off", "Low", "Medium", "High".
-    var cameraBlurLabel: String {
-        switch cameraBlur {
-        case ...0: String(localized: "Off")
-        case ...6: String(localized: "Low")
-        case ...13: String(localized: "Medium")
-        default: String(localized: "High")
-        }
-    }
+    /// "Off", "Subtle", "Soft", "Medium".
+    var cameraBlurLabel: String { CameraBlurLevel(amount: cameraBlur).label }
 
     // MARK: - Coding
 

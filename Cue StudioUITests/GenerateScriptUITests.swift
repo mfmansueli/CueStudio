@@ -46,16 +46,6 @@ final class GenerateScriptUITests: XCTestCase {
         XCTAssertTrue((field.value as? String)?.contains("video:") == true)
     }
 
-    func testSponsoredAdIsPro() {
-        let app = CueApp.launch(seeded: true)
-        openNewScript(app)
-        app.buttons["newScript.formats"].tap()
-        let ad = app.buttons["generate.type.ad"]
-        XCTAssertTrue(ad.waitForExistence(timeout: 5))
-        ad.tap()
-        XCTAssertTrue(app.staticTexts["Brand deals, done right"].waitForExistence(timeout: 5))
-    }
-
     func testWithoutAppleIntelligenceThePromptIsOffButFormatsWork() {
         let app = CueApp.launch(seeded: true, ai: .none)
         openNewScript(app)
@@ -71,16 +61,11 @@ final class GenerateScriptUITests: XCTestCase {
         XCTAssertTrue(app.buttons["editor.doneButton"].waitForExistence(timeout: 10))
     }
 
-    func testEditorOffersInMyVoice() {
-        let app = CueApp.launch(seeded: true, pro: true)
-        openEditorVoiceTool(app).tap()
-        XCTAssertTrue(app.staticTexts.containing(NSPredicate(format: "label BEGINSWITH 'Rewrote in your voice'")).firstMatch.waitForExistence(timeout: 5))
-    }
-
-    func testInMyVoiceIsProOnTheFreePlan() {
+    func testEditorOffersInMyVoiceOnTheFreePlan() {
         let app = CueApp.launch(seeded: true)
         openEditorVoiceTool(app).tap()
-        XCTAssertTrue(app.staticTexts["AI that sounds like you"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.staticTexts.containing(NSPredicate(format: "label BEGINSWITH 'Rewrote in your voice'")).firstMatch.waitForExistence(timeout: 5))
+        XCTAssertFalse(app.buttons["paywall.closeButton"].exists)
     }
 
     // MARK: - Helpers

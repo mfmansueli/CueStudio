@@ -20,6 +20,8 @@ final class TakeEditService: TakeEditing {
     /// processing the whole take again.
     private var processedAudio: [AudioRecipe: URL] = [:]
     private var processedOrder: [AudioRecipe] = []
+    /// What was heard in a take, for captions and Clean Up, so it is transcribed once.
+    private var transcripts: [TranscriptKey: TakeTranscript] = [:]
 
     func sourceDuration(ofVideoAt url: URL) async throws -> TimeInterval {
         guard FileManager.default.fileExists(atPath: url.path(percentEncoded: false)) else { throw EditSourceError.missing }
@@ -30,24 +32,27 @@ final class TakeEditService: TakeEditing {
         return seconds
     }
 
-    func silences(inVideoAt url: URL) async throws -> [TimeSpan] {
+    func cleanUpSuggestions(forVideoAt url: URL, script: String) async throws -> [CleanUpSuggestion] {
         let audio: URL
         do {
             audio = try await audioFile(for: url)
         } catch AudioTrackExtractor.ExtractError.noAudio {
-            // Without sound there are no pauses to find; that isn't a failure.
+            // Without sound there is nothing to find; that isn't a failure.
             return []
         }
         let levels = try await Task.detached { try AudioLevelReader.levels(of: audio, interval: 0.05) }.value
-        return SilenceDetector.silences(levels: levels, interval: 0.05)
+        let silences = SilenceDetector.silences(levels: levels, interval: 0.05)
+        // Without a speech model Clean Up still offers the pauses.
+        let heard = try? await transcript(of: audio, script: script)
+        return CleanUpAnalyzer.suggestions(silences: silences, transcript: heard)
     }
 
     func captions(forVideoAt url: URL, script: String, duration: TimeInterval) async -> [CaptionCue] {
         guard !script.isEmpty else { return [] }
         if let audio = try? await audioFile(for: url),
-           let words = try? await CaptionTranscriber.words(in: audio, script: script),
-           !words.isEmpty {
-            return CaptionBuilder.captions(heard: words, script: script)
+           let heard = try? await transcript(of: audio, script: script),
+           !heard.words.isEmpty {
+            return CaptionBuilder.captions(heard: heard.words, script: script)
         }
         return CaptionBuilder.captions(script: script, duration: duration)
     }
@@ -56,7 +61,7 @@ final class TakeEditService: TakeEditing {
         let processed = try await processedAudio(for: url, edit: edit)
         let composition = try await EditedComposition.build(
             source: url, edit: edit, processedAudio: processed,
-            options: .init(burnsInCaptions: true, watermark: false, shortSide: 1080)
+            options: .init(burnsInCaptions: true, shortSide: 1080)
         )
         let item = AVPlayerItem(asset: composition.asset)
         item.videoComposition = composition.videoComposition
@@ -94,6 +99,14 @@ final class TakeEditService: TakeEditing {
         return audio
     }
 
+    private func transcript(of audio: URL, script: String) async throws -> TakeTranscript? {
+        let key = TranscriptKey(audio: audio, script: script)
+        if let cached = transcripts[key] { return cached }
+        guard let heard = try await CaptionTranscriber.transcript(in: audio, script: script) else { return nil }
+        transcripts[key] = heard
+        return heard
+    }
+
     private func remember(_ file: URL, for recipe: AudioRecipe) {
         processedAudio[recipe] = file
         processedOrder.removeAll { $0 == recipe }
@@ -104,6 +117,12 @@ final class TakeEditService: TakeEditing {
                 try? FileManager.default.removeItem(at: stale)
             }
         }
+    }
+
+    /// The script picks the language the take is heard in.
+    private struct TranscriptKey: Hashable {
+        let audio: URL
+        let script: String
     }
 
     private struct AudioRecipe: Hashable {

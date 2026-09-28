@@ -5,9 +5,8 @@
 
 import SwiftUI
 
-/// The recording's frames under the timeline. Each piece shows its own part of the take, and the
-/// dimmed ends show what the handles can bring back. Drawn in one Canvas that doesn't depend on
-/// the playhead, so it stays still while the video plays.
+/// The recording's frames under the timeline: each section shows its own part of the take. Drawn
+/// in one Canvas that doesn't depend on the playhead, so it stays still while the video plays.
 struct TimelineFramesView: View {
     let videoURL: URL
     let layout: TimelineLayout
@@ -37,9 +36,6 @@ struct TimelineFramesView: View {
                         regionContext.fill(Path(tile), with: placeholder)
                     }
                     x += max(1, tileWidth)
-                }
-                if region.kind == .head || region.kind == .tail {
-                    regionContext.fill(Path(rect), with: .color(Palette.trimDim))
                 }
             }
         }

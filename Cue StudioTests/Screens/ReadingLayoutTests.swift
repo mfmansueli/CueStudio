@@ -98,7 +98,7 @@ struct ReadingLayoutTests {
     @Test func windowSizeStaysInRange() {
         #expect(layout(offset: 250, height: 1000).windowRect.height == 380)
         #expect(layout(offset: 250, height: 20).windowRect.height == 160)
-        #expect(layout(width: 0.9).windowRect.width == (402 * 0.75).rounded())
+        #expect(layout(width: 0.99).windowRect.width == (402 * 0.93).rounded())
         #expect(layout(width: 0.2).windowRect.width == (402 * 0.5).rounded())
     }
 
