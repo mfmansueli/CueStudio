@@ -98,7 +98,7 @@ final class AudioInputManager: AudioLevelMetering {
             let input = engine.inputNode
             let format = input.outputFormat(forBus: 0)
             guard format.sampleRate > 0, format.channelCount > 0 else { return false }
-            input.installTap(onBus: 0, bufferSize: 2048, format: format, block: tap.tapBlock)
+            try input.installAudioTap(onBus: 0, bufferSize: 2048, format: format, tapProvider: tap.tapProvider)
             try engine.start()
         } catch {
             engine.inputNode.removeTap(onBus: 0)

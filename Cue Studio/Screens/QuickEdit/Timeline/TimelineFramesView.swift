@@ -103,7 +103,6 @@ struct TimelineFramesView: View {
               TimelineZoom.isFramePrecise(pointsPerSecond: layout.pointsPerSecond, frameRate: frameRate) else { return }
         let grid = FrameGrid(rate: frameRate)
         let height: CGFloat = 12
-        var ticks = context
         for region in layout.regions {
             let lo = max(region.minX, 0)
             let hi = min(region.maxX, size.width)
@@ -114,7 +113,7 @@ struct TimelineFramesView: View {
             )
             for start in grid.frameStarts(in: span) {
                 let x = region.minX + CGFloat(start - region.source.start) * layout.pointsPerSecond
-                ticks.fill(Path(CGRect(x: x - 0.5, y: size.height - height, width: 1, height: height)), with: .color(Palette.frameTick))
+                context.fill(Path(CGRect(x: x - 0.5, y: size.height - height, width: 1, height: height)), with: .color(Palette.frameTick))
             }
         }
     }

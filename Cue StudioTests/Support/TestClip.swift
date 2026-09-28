@@ -28,14 +28,11 @@ enum TestClip {
             AVVideoWidthKey: width,
             AVVideoHeightKey: height,
         ])
-        video.expectsMediaDataInRealTime = false
-        let adaptor = AVAssetWriterInputPixelBufferAdaptor(assetWriterInput: video, sourcePixelBufferAttributes: [
-            kCVPixelBufferPixelFormatTypeKey as String: kCVPixelFormatType_32BGRA,
-            kCVPixelBufferWidthKey as String: width,
-            kCVPixelBufferHeightKey as String: height,
-        ])
-        writer.add(video)
-        var audio: AVAssetWriterInput?
+        let videoReceiver = writer.inputPixelBufferReceiver(for: video, pixelBufferAttributes: CVPixelBufferCreationAttributes(
+            pixelFormatType: CVPixelFormatType(rawValue: kCVPixelFormatType_32BGRA),
+            size: CVImageSize(width: width, height: height)
+        ))
+        var audioReceiver: AVAssetWriterInput.SampleBufferReceiver?
         if loudSeconds != nil {
             let input = AVAssetWriterInput(mediaType: .audio, outputSettings: [
                 AVFormatIDKey: kAudioFormatMPEG4AAC,
@@ -43,41 +40,17 @@ enum TestClip {
                 AVNumberOfChannelsKey: 1,
                 AVEncoderBitRateKey: 96_000,
             ])
-            input.expectsMediaDataInRealTime = false
-            writer.add(input)
-            audio = input
+            audioReceiver = writer.inputReceiver(for: input)
         }
-        #expect(writer.startWriting())
+        try writer.start()
         writer.startSession(atSourceTime: .zero)
 
         let frames = seconds * Int(framesPerSecond)
-        let samplesPerFrame = sampleRate / Int(framesPerSecond)
         // The writer interleaves the tracks and may hold one back until the other catches up, so
-        // each turn feeds whichever input is ready instead of waiting on one of them.
-        var nextFrame = 0
-        var nextChunk = audio == nil ? frames : 0
-        while nextFrame < frames || nextChunk < frames {
-            // A failed writer never gets ready again: stop and say why instead of waiting forever.
-            if writer.status == .failed { throw writer.error ?? CocoaError(.fileWriteUnknown) }
-            var fed = false
-            if nextFrame < frames, video.isReadyForMoreMediaData {
-                let buffer = try #require(pixelBuffer(color: colors[nextFrame / Int(framesPerSecond) % colors.count], pool: adaptor.pixelBufferPool))
-                adaptor.append(buffer, withPresentationTime: CMTime(value: CMTimeValue(nextFrame), timescale: framesPerSecond))
-                nextFrame += 1
-                // Finished right away, or the writer keeps waiting for more of it before taking
-                // the rest of the other track.
-                if nextFrame == frames { video.markAsFinished() }
-                fed = true
-            }
-            if let audio, let loudSeconds, nextChunk < frames, audio.isReadyForMoreMediaData {
-                let sample = try #require(audioBuffer(start: nextChunk * samplesPerFrame, count: samplesPerFrame, loudSeconds: loudSeconds))
-                audio.append(sample)
-                nextChunk += 1
-                if nextChunk == frames { audio.markAsFinished() }
-                fed = true
-            }
-            if !fed { try await Task.sleep(for: .milliseconds(2)) }
-        }
+        // both are fed at once: each append waits only for its own input.
+        async let videoFed: Void = feedVideo(videoReceiver, frames: frames)
+        async let audioFed: Void = feedAudio(audioReceiver, frames: frames, loudSeconds: loudSeconds ?? [])
+        _ = try await (videoFed, audioFed)
         writer.endSession(atSourceTime: CMTime(value: CMTimeValue(seconds), timescale: 1))
         await writer.finishWriting()
         #expect(writer.status == .completed)
@@ -111,15 +84,19 @@ enum TestClip {
             AVLinearPCMIsBigEndianKey: false,
             AVLinearPCMIsNonInterleaved: false,
         ])
-        reader.add(output)
-        #expect(reader.startReading())
+        let provider = reader.outputProvider(for: output)
+        try reader.start()
         var sum = 0.0
         var count = 0
-        while let buffer = output.copyNextSampleBuffer(), let block = CMSampleBufferGetDataBuffer(buffer) {
-            let length = CMBlockBufferGetDataLength(block)
-            var samples = [Int16](repeating: 0, count: length / 2)
-            samples.withUnsafeMutableBytes { bytes in
-                _ = CMBlockBufferCopyDataBytes(block, atOffset: 0, dataLength: length, destination: bytes.baseAddress!)
+        while let buffer = try await provider.next() {
+            let samples = buffer.withUnsafeSampleBuffer { buffer -> [Int16] in
+                guard let block = CMSampleBufferGetDataBuffer(buffer) else { return [] }
+                let length = CMBlockBufferGetDataLength(block)
+                var samples = [Int16](repeating: 0, count: length / 2)
+                samples.withUnsafeMutableBytes { bytes in
+                    _ = CMBlockBufferCopyDataBytes(block, atOffset: 0, dataLength: length, destination: bytes.baseAddress!)
+                }
+                return samples
             }
             for sample in samples {
                 let value = Double(sample) / Double(Int16.max)
@@ -133,21 +110,39 @@ enum TestClip {
 
     // MARK: - Writing
 
-    private static func pixelBuffer(color: [Int], pool: CVPixelBufferPool?) -> CVPixelBuffer? {
-        guard let pool else { return nil }
-        var buffer: CVPixelBuffer?
-        CVPixelBufferPoolCreatePixelBuffer(nil, pool, &buffer)
-        guard let buffer else { return nil }
-        CVPixelBufferLockBaseAddress(buffer, [])
-        defer { CVPixelBufferUnlockBaseAddress(buffer, []) }
-        guard let base = CVPixelBufferGetBaseAddress(buffer) else { return nil }
-        var bgra: [UInt8] = [UInt8(color[2]), UInt8(color[1]), UInt8(color[0]), 255]
-        let bytesPerRow = CVPixelBufferGetBytesPerRow(buffer)
-        let rowLength = CVPixelBufferGetWidth(buffer) * 4
-        for row in 0..<CVPixelBufferGetHeight(buffer) {
-            memset_pattern4(base.advanced(by: row * bytesPerRow), &bgra, rowLength)
+    /// Every frame, one color per second, finishing the track right away: otherwise the writer
+    /// keeps waiting for more of it before taking the rest of the other one.
+    private static func feedVideo(_ receiver: AVAssetWriterInput.PixelBufferReceiver, frames: Int) async throws {
+        let pool = try #require(receiver.pixelBufferPool)
+        for frame in 0..<frames {
+            let buffer = try pixelBuffer(color: colors[frame / Int(framesPerSecond) % colors.count], pool: pool)
+            try await receiver.append(buffer, with: CMTime(value: CMTimeValue(frame), timescale: framesPerSecond))
         }
-        return buffer
+        receiver.finish()
+    }
+
+    /// One chunk of sound per video frame, if the clip has a sound track.
+    private static func feedAudio(_ receiver: AVAssetWriterInput.SampleBufferReceiver?, frames: Int, loudSeconds: Set<Int>) async throws {
+        guard let receiver else { return }
+        let samplesPerFrame = sampleRate / Int(framesPerSecond)
+        for chunk in 0..<frames {
+            let sample = try #require(audioBuffer(start: chunk * samplesPerFrame, count: samplesPerFrame, loudSeconds: loudSeconds))
+            try await receiver.append(CMReadySampleBuffer(unsafeBuffer: sample))
+        }
+        receiver.finish()
+    }
+
+    private static func pixelBuffer(color: [Int], pool: CVMutablePixelBuffer.Pool) throws -> CVReadOnlyPixelBuffer {
+        var buffer = try pool.makeMutablePixelBuffer()
+        var bgra: [UInt8] = [UInt8(color[2]), UInt8(color[1]), UInt8(color[0]), 255]
+        buffer.accessUnsafeMutableRawPlaneBytes { planes in
+            guard let plane = planes.first, let base = plane.bytes.baseAddress else { return }
+            let rowLength = plane.properties.size.width * 4
+            for row in 0..<plane.properties.size.height {
+                memset_pattern4(base.advanced(by: row * plane.properties.bytesPerRow), &bgra, rowLength)
+            }
+        }
+        return CVReadOnlyPixelBuffer(buffer)
     }
 
     /// 16-bit mono PCM: a 440 Hz tone in the loud seconds, silence in the others.

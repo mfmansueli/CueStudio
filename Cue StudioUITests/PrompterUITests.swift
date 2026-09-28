@@ -123,7 +123,7 @@ final class PrompterUITests: XCTestCase {
         XCTAssertTrue(summary.label.hasSuffix("recommended"))
         XCTAssertEqual(handle.frame.midY, lineY, accuracy: 1)
         app.buttons["display.doneButton"].tap()
-        XCTAssertFalse(tip.exists)
+        XCTAssertFalse(app.buttons["prompter.readingLineTip"].exists)
     }
 
     func testCustomSafeZoneFromDisplayLayout() {

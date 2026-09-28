@@ -34,13 +34,13 @@ nonisolated enum AudioEnhancer {
         engine.attach(player)
         engine.attach(equalizer)
         engine.attach(dynamics)
-        engine.connect(player, to: equalizer, format: format)
-        engine.connect(equalizer, to: dynamics, format: format)
-        engine.connect(dynamics, to: engine.mainMixerNode, format: format)
+        try engine.connectNode(player, to: equalizer, format: format)
+        try engine.connectNode(equalizer, to: dynamics, format: format)
+        try engine.connectNode(dynamics, to: engine.mainMixerNode, format: format)
         try engine.enableManualRenderingMode(.offline, format: format, maximumFrameCount: 4096)
         try engine.start()
         player.scheduleFile(input, at: nil)
-        player.play()
+        try player.playAudio()
 
         let outputURL = URL.temporaryDirectory.appending(path: "Cue-mix-\(UUID().uuidString.prefix(8)).caf")
         let output = try AVAudioFile(forWriting: outputURL, settings: format.settings, commonFormat: format.commonFormat, interleaved: format.isInterleaved)
@@ -89,13 +89,14 @@ nonisolated enum AudioEnhancer {
     }
 
     private static func configure(_ dynamics: AVAudioUnitEffect, enhancesVoice: Bool, reducesNoise: Bool) {
-        let unit = dynamics.audioUnit
-        // Compression evens out the voice; expansion quiets what's between words.
-        AudioUnitSetParameter(unit, kDynamicsProcessorParam_Threshold, kAudioUnitScope_Global, 0, enhancesVoice ? -22 : 0, 0)
-        AudioUnitSetParameter(unit, kDynamicsProcessorParam_HeadRoom, kAudioUnitScope_Global, 0, enhancesVoice ? 8 : 20, 0)
-        AudioUnitSetParameter(unit, kDynamicsProcessorParam_ExpansionRatio, kAudioUnitScope_Global, 0, reducesNoise ? 3 : 1, 0)
-        AudioUnitSetParameter(unit, kDynamicsProcessorParam_ExpansionThreshold, kAudioUnitScope_Global, 0, reducesNoise ? -48 : -100, 0)
-        AudioUnitSetParameter(unit, kDynamicsProcessorParam_OverallGain, kAudioUnitScope_Global, 0, enhancesVoice ? 3 : 0, 0)
+        dynamics.withAudioUnit { unit in
+            // Compression evens out the voice; expansion quiets what's between words.
+            AudioUnitSetParameter(unit, kDynamicsProcessorParam_Threshold, kAudioUnitScope_Global, 0, enhancesVoice ? -22 : 0, 0)
+            AudioUnitSetParameter(unit, kDynamicsProcessorParam_HeadRoom, kAudioUnitScope_Global, 0, enhancesVoice ? 8 : 20, 0)
+            AudioUnitSetParameter(unit, kDynamicsProcessorParam_ExpansionRatio, kAudioUnitScope_Global, 0, reducesNoise ? 3 : 1, 0)
+            AudioUnitSetParameter(unit, kDynamicsProcessorParam_ExpansionThreshold, kAudioUnitScope_Global, 0, reducesNoise ? -48 : -100, 0)
+            AudioUnitSetParameter(unit, kDynamicsProcessorParam_OverallGain, kAudioUnitScope_Global, 0, enhancesVoice ? 3 : 0, 0)
+        }
         dynamics.bypass = !(enhancesVoice || reducesNoise)
     }
 }

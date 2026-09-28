@@ -148,8 +148,8 @@ struct TimelineStripView: View {
     @ViewBuilder
     private func trimDims(_ layout: TimelineLayout, handles: (start: CGFloat, end: CGFloat)) -> some View {
         if let first = layout.regions.first, let last = layout.regions.last {
-            let head = onScreen(fromX: first.minX, toX: handles.start, in: layout)
-            let tail = onScreen(fromX: handles.end, toX: last.maxX, in: layout)
+            let head = onScreen(from: first.minX, to: handles.start, in: layout)
+            let tail = onScreen(from: handles.end, to: last.maxX, in: layout)
             Rectangle()
                 .fill(Palette.trimDim)
                 .frame(width: head.width, height: Self.framesHeight)
@@ -178,7 +178,7 @@ struct TimelineStripView: View {
     private func selection(_ layout: TimelineLayout) -> some View {
         if let index = viewModel.selectedSegmentIndex, layout.timeline.segments.count > 1, !isTrimming {
             let region = layout.piece(index)
-            let shown = onScreen(fromX: region.minX, toX: region.maxX, in: layout)
+            let shown = onScreen(from: region.minX, to: region.maxX, in: layout)
             let shape = RoundedRectangle(cornerRadius: 8, style: .continuous)
             shape
                 .fill(Palette.selectedSectionFill)
@@ -192,7 +192,7 @@ struct TimelineStripView: View {
     /// The yellow frame around what plays, with a handle at each end.
     private func trimBracket(_ layout: TimelineLayout, handles: (start: CGFloat, end: CGFloat)) -> some View {
         let height = Self.framesHeight + 6
-        let bars = onScreen(fromX: handles.start, toX: handles.end, in: layout)
+        let bars = onScreen(from: handles.start, to: handles.end, in: layout)
         return ZStack(alignment: .topLeading) {
             VStack(spacing: 0) {
                 Rectangle().fill(Palette.acc).frame(height: 3)
@@ -218,7 +218,7 @@ struct TimelineStripView: View {
         if let range = viewModel.removalRange {
             let start = layout.x(forEdited: range.lowerBound)
             let end = layout.x(forEdited: range.upperBound)
-            let shown = onScreen(fromX: start, toX: end, in: layout)
+            let shown = onScreen(from: start, to: end, in: layout)
             let shape = RoundedRectangle(cornerRadius: 6, style: .continuous)
             shape
                 .fill(Palette.removalFill)

@@ -50,42 +50,35 @@ struct VideoExportServiceTests {
             AVVideoWidthKey: width,
             AVVideoHeightKey: height,
         ])
-        let adaptor = AVAssetWriterInputPixelBufferAdaptor(assetWriterInput: input, sourcePixelBufferAttributes: [
-            kCVPixelBufferPixelFormatTypeKey as String: kCVPixelFormatType_32BGRA,
-            kCVPixelBufferWidthKey as String: width,
-            kCVPixelBufferHeightKey as String: height,
-        ])
-        writer.add(input)
-        #expect(writer.startWriting())
+        let receiver = writer.inputPixelBufferReceiver(for: input, pixelBufferAttributes: CVPixelBufferCreationAttributes(
+            pixelFormatType: CVPixelFormatType(rawValue: kCVPixelFormatType_32BGRA),
+            size: CVImageSize(width: width, height: height)
+        ))
+        try writer.start()
         writer.startSession(atSourceTime: .zero)
+        let pool = try #require(receiver.pixelBufferPool)
         for frame in 0..<frames {
-            while !input.isReadyForMoreMediaData { try await Task.sleep(for: .milliseconds(5)) }
-            let buffer = try #require(solidBuffer(pool: adaptor.pixelBufferPool, width: width, height: height))
-            adaptor.append(buffer, withPresentationTime: CMTime(value: CMTimeValue(frame), timescale: 30))
+            try await receiver.append(try solidBuffer(pool: pool), with: CMTime(value: CMTimeValue(frame), timescale: 30))
         }
-        input.markAsFinished()
+        receiver.finish()
         await writer.finishWriting()
         #expect(writer.status == .completed)
         return url
     }
 
-    private func solidBuffer(pool: CVPixelBufferPool?, width: Int, height: Int) -> CVPixelBuffer? {
-        guard let pool else { return nil }
-        var buffer: CVPixelBuffer?
-        CVPixelBufferPoolCreatePixelBuffer(nil, pool, &buffer)
-        guard let buffer else { return nil }
-        CVPixelBufferLockBaseAddress(buffer, [])
-        defer { CVPixelBufferUnlockBaseAddress(buffer, []) }
-        guard let base = CVPixelBufferGetBaseAddress(buffer) else { return nil }
-        let bytesPerRow = CVPixelBufferGetBytesPerRow(buffer)
-        let pixels = base.assumingMemoryBound(to: UInt8.self)
-        for y in 0..<height {
-            for x in 0..<width {
-                let offset = y * bytesPerRow + x * 4
-                for channel in 0..<4 { pixels[offset + channel] = Self.green[channel] }
+    private func solidBuffer(pool: CVMutablePixelBuffer.Pool) throws -> CVReadOnlyPixelBuffer {
+        var buffer = try pool.makeMutablePixelBuffer()
+        buffer.accessUnsafeMutableRawPlaneBytes { planes in
+            guard let plane = planes.first, let base = plane.bytes.baseAddress else { return }
+            let pixels = base.assumingMemoryBound(to: UInt8.self)
+            for y in 0..<plane.properties.size.height {
+                for x in 0..<plane.properties.size.width {
+                    let offset = y * plane.properties.bytesPerRow + x * 4
+                    for channel in 0..<4 { pixels[offset + channel] = Self.green[channel] }
+                }
             }
         }
-        return buffer
+        return CVReadOnlyPixelBuffer(buffer)
     }
 
     private func firstFrame(of url: URL) async throws -> CGImage {

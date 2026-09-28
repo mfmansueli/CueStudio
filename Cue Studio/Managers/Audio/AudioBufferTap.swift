@@ -29,10 +29,11 @@ nonisolated final class AudioBufferTap: NSObject, AVCaptureAudioDataOutputSample
         state.withLock { $0.level = nil }
     }
 
-    /// For `AVAudioNode.installTap`, which calls it on the audio thread. Built here, outside the
-    /// main actor, so the closure isn't main-actor isolated.
-    var tapBlock: AVAudioNodeTapBlock {
-        { [self] buffer, _ in receive(buffer) }
+    /// For `AVAudioNode.installAudioTap`, which calls it on the audio thread. Built here, outside
+    /// the main actor, so the closure isn't main-actor isolated. The tap's read-only buffer is
+    /// copied into an `AVAudioPCMBuffer`, the same type the camera's audio arrives as.
+    var tapProvider: @Sendable (AVReadOnlyAudioPCMBuffer, AVAudioTime) -> Void {
+        { [self] buffer, _ in receive(AVAudioPCMBuffer(copying: buffer)) }
     }
 
     func receive(_ buffer: AVAudioPCMBuffer) {
