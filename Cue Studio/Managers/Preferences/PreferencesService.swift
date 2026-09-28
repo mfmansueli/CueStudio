@@ -17,12 +17,18 @@ final class PreferencesService {
         didSet { store(camera, key: DefaultsKey.cameraSettings) }
     }
 
+    /// The Selfie reading line explains itself once.
+    var hasSeenReadingLineTip: Bool {
+        didSet { defaults.set(hasSeenReadingLineTip, forKey: DefaultsKey.readingLineTipSeen) }
+    }
+
     private let defaults: UserDefaults
 
     init(defaults: UserDefaults = .standard) {
         self.defaults = defaults
         prompter = Self.load(PrompterSettings.self, key: DefaultsKey.prompterSettings, from: defaults) ?? PrompterSettings()
         camera = Self.load(CameraSettings.self, key: DefaultsKey.cameraSettings, from: defaults) ?? CameraSettings()
+        hasSeenReadingLineTip = defaults.bool(forKey: DefaultsKey.readingLineTipSeen)
     }
 
     func resetPrompter() {

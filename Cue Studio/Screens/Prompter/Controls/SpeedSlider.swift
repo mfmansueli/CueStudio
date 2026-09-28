@@ -9,7 +9,7 @@ import SwiftUI
 struct SpeedSlider: View {
     let speed: Double
     let speedLabel: String
-    let onChange: (Double) -> Void
+    let onChange: @MainActor @Sendable (Double) -> Void
 
     var body: some View {
         HStack(spacing: 12) {

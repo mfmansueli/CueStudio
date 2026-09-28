@@ -5,8 +5,9 @@
 
 import Foundation
 
-/// Everything a destination sets up: capture settings, length goals, where the Selfie prompter sits
-/// and which parts of the frame the platform covers. Built from `PlatformRules`, never by hand.
+/// Everything a destination sets up: capture settings, length goals, how wide the Selfie text
+/// window is and which parts of the frame the platform covers. Built from `PlatformRules`, never by
+/// hand.
 nonisolated struct PlatformPreset: Hashable, Sendable {
     var aspect: AspectRatio
     var resolution: VideoResolution
@@ -18,11 +19,12 @@ nonisolated struct PlatformPreset: Hashable, Sendable {
     var goal: MonetizationGoal?
     /// Long-form content is usually read on a rig, so Studio mode becomes the primary action.
     var prefersStudio: Bool
-    var prompter: PrompterPanelLayout
-    /// Parts of the frame covered by the platform's buttons and captions.
-    var safeZones: [SafeZone]
+    /// Selfie text window width, as a fraction of the screen.
+    var readingWidth: Double
+    /// Parts of the frame covered by the platform's buttons and captions, in VideoSpace.
+    var safeZone: SocialSafeZonePreset?
 
-    var showsSafeZones: Bool { !safeZones.isEmpty }
+    var showsSafeZones: Bool { safeZone != nil }
 
     /// "9:16 · 1080p30"
     var captureSummary: String {

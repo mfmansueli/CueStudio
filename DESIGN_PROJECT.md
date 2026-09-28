@@ -2,8 +2,10 @@
 
 Fonte de verdade do design. Atualize junto com a UI (ver `ARCHITECTURE.md`, seção 5).
 
-Origem: projeto "iOS Teleprompter App Design" no Claude Design, arquivo `Cue Teleprompter v6.dc.html`
-(cópia local em `design/`, fora do git). A v1 do app seguia a v3; a migração para a v6 é feita por fases.
+Origem: projeto "iOS Teleprompter App Design" no Claude Design, arquivo `Cue Teleprompter v7.dc.html`
+(cópia local em `design/`, fora do git). A v1 do app seguia a v3; a v6 veio por fases, e a v7 muda a
+tela de gravação (frame real, zonas seguras em VideoSpace, linha de leitura, janela de texto, Hide UI)
+e a escala de velocidade.
 
 ---
 
@@ -50,7 +52,13 @@ tela branca atrapalha a gravação. Os tokens mantêm valores claros para o dia 
 | `info` | `#64D2FF` | Aviso de nova versão no editor |
 | `success` | `#34C759` | Toggles |
 | Plataformas | TikTok `#64D2FF` · Reels `#BF5AF2` · Shorts `#FF6961` · YouTube `#FF9F0A` · LinkedIn `#0A84FF` · Stories `#FF375F` | Ponto que marca o destino |
-| `safeZoneLine` / `safeZoneLabel` | branco 22% / 50% | Zonas seguras tracejadas sobre a câmera |
+| `frameMask` / `frameEdge` | preto 60% / branco 22% | Fora do frame gravado / bordas de 0,5 pt do frame |
+| `safeZoneLine` / `safeZoneLabel` | branco 40% / 62% | Contorno tracejado da área segura e a legenda |
+| `safeZoneShade` → `safeZoneShadeFaint` / `safeZoneSide` | preto 40% → 10% / 16% | Faixas de risco (degradê em cima e embaixo, sombra nas laterais) |
+| `readingLineGlow` | `#FFD60A` 45% | Brilho da linha de leitura sobre a câmera |
+| `readingLineHandle` / `…Active` / `…Border` | `#1E1E20` 55% / `#FFD60A` 55% / branco 28% | Alça da linha (em repouso / arrastando) |
+| `tipBackground` | `#141416` 88% | Dica "Talk to the line" |
+| `stopButtonRing` / `stopButtonFill` | branco 85% / preto 18% | Botão de parar mínimo (controles escondidos) |
 
 ### Tipografia
 
@@ -88,6 +96,7 @@ SF Symbols por significado: `doc.text` scripts · `film.stack` takes · `person.
 | `FilterChip`, `TagPill`, `ColorDot` | Chips de filtro/opção, tags, ponto do destino |
 | `SelectableCard` | Tiles selecionáveis (fontes, enquadramento, formato, plano) |
 | `ValueSlider`, `SwatchButton`, `UsageMeter` | Sliders com valor, amostras de cor, medidores |
+| `SettingToggleRow` | Linha de ajuste com título, detalhe e switch verde (Display, câmera) |
 | `SheetHeader`, `SectionHeading` | Cabeçalho de sheet e de grupo |
 | `FlowLayout` | Chips que quebram linha (nichos, frases) |
 | `ToastView` | Confirmação curta no topo (`ToastService` + `.toastHost()`) |
@@ -111,10 +120,10 @@ SF Symbols por significado: `doc.text` scripts · `film.stack` takes · `person.
 | Start recording | `StartRecordingSheet` | "Read from a script" (4 recentes com duração), "+ New script", "Record without a script →". Sobre a câmera vira "Add a script", sem o freestyle |
 | Importar | `ImportScriptSheet` | Files, Scan (câmera de documentos), Photo e Clipboard. Scan, Photo e PDFs escaneados passam por OCR do Vision no aparelho |
 | Gerar com IA | `GenerateScript/` | "Generate with AI · Apple Intelligence · private · no cost" + abas **Prompt** (texto livre, exemplos, Create for, Length, "Write in my voice", aviso de fatos), **Themes** (6 ideias do nicho, "New ideas", "Use" preenche o Prompt) e **Formats** (8 formatos; Sponsored ad é PRO) → briefing |
-| Selfie | `Screens/Prompter/Selfie` | Câmera em primeiro plano; painel do texto na posição e altura do preset (largura 50–75%, padrão do preset; fundo preto 25%; desfoque opcional da câmera); topo: fechar, Selfie \| Studio e o chip "{Plataforma} · 9:16" (abre Create for; em freestyle troca o enquadramento); barra de vidro: Voice Following \| Steady, slider de velocidade com o valor (0,3–2,0×) ou "AUTO · Listening/Paused", voltar ao topo, play, Aa; câmera: última take, ajustes, gravar, virar, timer |
+| Selfie | `Screens/Prompter/Selfie` | Câmera em primeiro plano, em camadas que nunca entram no vídeo: o **frame gravado** (o preview mostra exatamente o que é gravado; fora dele, preto 60% e bordas de 0,5 pt), a **zona segura** da plataforma (degradê em cima e embaixo, sombra nas laterais, contorno tracejado e "INSTAGRAM REELS SAFE AREA"), a **janela de texto** (largura 50–75%, padrão do preset; altura 160–380, padrão 250; fundo preto 25%; desfoque opcional; o texto já lido esmaece) e a **linha de leitura** fixa logo abaixo da lente (118 pt na frontal; 36% do frame na traseira), com alça de 44 pt para arrastar e, na primeira vez, "Don't read the text. Talk to the line.". A janela segue a linha (a linha fica ~25% abaixo do topo dela). Topo: fechar, Selfie \| Studio e o chip "{Plataforma} · 9:16" (abre Create for; em freestyle troca o enquadramento); gravando: olho (Hide UI), "● 00:42 \| 18s to 1:00" e o chip. Barra de vidro: Voice Following \| Steady, slider de velocidade com o valor (0,3–2,0×) ou "AUTO · Listening/Paused", voltar ao topo, play, Aa; câmera: última take, ajustes, gravar, virar, timer. Com os controles escondidos ficam só texto, linha, relógio e um botão de parar |
 | Studio | `Screens/Prompter/Studio` | Prompter em tela cheia sem câmera, barra de progresso no topo, fechar, Selfie \| Studio e espelhar; barra: Voice Following \| Steady, slider de velocidade (no Voice Following, "Listening/Paused" e "Speed follows your voice"), voltar ao topo, 3 linhas para trás/frente, play grande amarelo e Aa |
-| Display | `DisplaySettingsSheet` | "Display · ● Live preview". Quick: AI Coach, Text size, Reading width, Reading line (Top/Bottom), Background opacity, Camera blur (Off/Low/Medium/High) — no Studio, Background color no lugar dos três do Selfie. Advanced (recolhível): fonte, espaçamento, margens, alinhamento, cor, linha de leitura, espelhar. No Selfie, a altura máxima para logo abaixo do painel |
-| Câmera | `CameraSettingsSheet` | Lente, enquadramento, resolução, fps, grid, safe zones, estabilização, microfone, contagem, formato. No Selfie com script, a sheet para logo abaixo do painel do texto (não cresce além dele) e não escurece o fundo |
+| Display | `DisplaySettingsSheet` | "Display · ● Live preview". No Selfie, primeiro **Layout** (`DisplayLayoutSection`): Reading line com ↑/↓ e a distância da câmera, Text window height e width ("Narrow · less eye movement"), **Social safe zone** (chips Reels / TikTok / Shorts / Stories / Custom no 9:16, LinkedIn / Custom no 4:5, Custom no 1:1; no Custom, margens em %), Show safe zone, Hide controls while recording e "Reset to Recommended", com o aviso de que a zona é guia e não garantia. Quick: AI Coach, Text size e, no Selfie, Background opacity e Camera blur (Off/Low/Medium/High); no Studio, Reading line (Top/Bottom) e Background color. Advanced (recolhível): fonte, espaçamento, margens, alinhamento, cor, linha de leitura, espelhar. No Selfie, a altura máxima para logo abaixo da janela de texto (medida quando a sheet abre) |
+| Câmera | `CameraSettingsSheet` | Lente, enquadramento, resolução, fps, grid, safe zones, estabilização, microfone, contagem, formato. No Selfie com script, a sheet para logo abaixo da janela de texto (não cresce além dela) e não escurece o fundo |
 | Revisão do take | `Screens/TakeReview` | Vídeo no formato da take (barras pretas fora do 9:16); topo: voltar, "Take N · 0:44", estrela e lixeira; filmstrip, título (+ EDITED), meta, aviso de exportações; faixa "Your takes · N" (troca de take, "Tap ☆ to pick your best", "Suggest best" · PRO); Edit · Retake · Save · Share (Share amarelo, abre Share to). Só uma melhor take por roteiro |
 | Share to | `TakeReview/Share` | Miniatura, "SHARE TO", título, "0:44 · 9:16 · 1080p"; seis plataformas (a da take com anel amarelo e "recommended"), Save video e More; "Created for X — framed and safe-zoned for it"; Burn in captions; Quality 1080p / 4K (PRO); exportações limpas restantes + Go Pro. Plataforma: exporta, salva no Fotos e abre o app; "Ready to post on X · N of 5 clean left" |
 | Quick edit | `Screens/QuickEdit` | Cancel / "Quick edit 1:04 → 0:58" / Done; prévia ao vivo no formato; Trim (alças amarelas, playhead, Split, Delete da seção, "Remove silences"), Audio (volume 0–150%, Enhance voice, Reduce background noise), Adjust (exposição, contraste, temperatura −100…+100, Auto), Filters (Original, Vivid, Warm, Cool, Mono, Film), Crop (9:16, 4:5, 1:1, 16:9, arrastar, Reset), Captions (do roteiro, sincronizadas à fala; Classic, Bold, Highlight; Top, Middle, Bottom). Done guarda a receita (`TakeEdit`), a nova duração e marca Edited; o arquivo original não muda |
@@ -138,18 +147,24 @@ Full screen: Prompter (Selfie ⇄ Studio → Revisão do take) · Paywall
 ## 5.1 Regras por plataforma
 
 Todos os números por plataforma vêm de `SupportFiles/PlatformRules.json` (`PlatformRules` +
-`PlatformRulesService`): formato, qualidade, faixa ideal (com e sem monetização), mínimo que
-monetiza, posição do painel do Selfie (topo, altura, largura) e zonas seguras. As medidas de layout
-são pontos na tela de referência 402 × 874 (iPhone 17) e escalam com a tela real.
+`PlatformRulesService`, schema 2): formato, qualidade, faixa ideal (com e sem monetização), mínimo que
+monetiza, largura da janela de texto do Selfie e a zona segura (`SocialSafeZonePreset`). As zonas são
+margens em **pixels do vídeo exportado** (VideoSpace: 1080 × 1920 no 9:16, 1080 × 1350 no 4:5) e
+chegam à tela por `FrameGeometry`, derivada do retângulo onde o preview realmente desenha a imagem.
+Nada é posicionado com números de um iPhone.
 
-| Plataforma | Formato | Qualidade | Ideal | Mínimo (monetização) | Painel (topo · altura · largura) |
-|---|---|---|---|---|---|
-| TikTok | 9:16 | 1080p30 | 1:00–1:30 (sem metas: 0:15–1:00) | 1:00 | 118 · 280 · 58% |
-| Reels | 9:16 | 1080p30 | 0:15–1:00 | — | 104 · 290 · 60% |
-| Shorts | 9:16 | 1080p60 | 0:30–1:00 | — | 104 · 262 · 60% |
-| YouTube | 16:9 | 4K24 | 8:00–15:00 (sem metas: 4:00–10:00) | 8:00 | 104 · 210 · 70% (na faixa preta) |
-| LinkedIn | 4:5 | 1080p30 | 0:30–1:30 | — | 196 · 240 · 64% |
-| Stories | 9:16 | 1080p30 | 0:08–0:15 | — | 150 · 264 · 56% |
+| Plataforma | Formato | Qualidade | Ideal | Mínimo (monetização) | Janela (largura) | Zona segura (topo / base / esq. / dir., px) |
+|---|---|---|---|---|---|---|
+| TikTok | 9:16 | 1080p30 | 1:00–1:30 (sem metas: 0:15–1:00) | 1:00 | 58% | 160 / 480 / 60 / 140 |
+| Reels | 9:16 | 1080p30 | 0:15–1:00 | — | 60% | 220 / 420 / 60 / 120 |
+| Shorts | 9:16 | 1080p60 | 0:30–1:00 | — | 60% | 190 / 380 / 60 / 140 |
+| YouTube | 16:9 | 4K24 | 8:00–15:00 (sem metas: 4:00–10:00) | 8:00 | 70% | — (vídeo horizontal) |
+| LinkedIn | 4:5 | 1080p30 | 0:30–1:30 | — | 64% | 0 / 200 / 40 / 40 |
+| Stories | 9:16 | 1080p30 | 0:08–0:15 | — | 56% | 250 / 250 / 60 / 60 |
+
+A zona mostrada é a escolhida em Display › Layout (nesta sessão), senão a da plataforma do roteiro,
+senão Reels (9:16) ou LinkedIn (4:5); no 1:1, Custom; no 16:9, nenhuma. Custom usa margens do
+criador em % do frame (padrão 11 / 22 / 6 / 11), guardadas nos ajustes.
 
 O arquivo tem `revision`. Quando `AppLinks.platformRules` aponta para uma cópia publicada (um JSON
 estático), o app baixa uma vez por abertura e só adota uma revisão maior, completa e do mesmo
@@ -182,6 +197,7 @@ estático), o app baixa uma vez por abertura e só adota uma revisão maior, com
 - Botões só com ícone têm `accessibilityLabel`; toggles e opções marcam `.isSelected`.
 - Cards e linhas combinam os filhos em um elemento; tiles de take leem "Take 3, 0:44, best take".
 - Prompter: ajustável com VoiceOver (desliza 3 linhas), valor = progresso.
+- Alça da linha de leitura: ajustável com VoiceOver (8 pt por gesto), valor = distância da câmera.
 - Toasts são anunciados (`AccessibilityNotification.Announcement`).
 - Alvos de toque de 44×44 mesmo quando o visual é menor.
 - Identificadores para UI tests: `"<tela>.<elemento>"` (ex.: `hero.recordButton`, `editor.doneButton`).
@@ -239,9 +255,20 @@ O protótipo simulava várias coisas; o app implementa de verdade ou deixa de fo
   na tab bar.
 - **New script sobre a câmera:** não há editor no prompter, então o tile Write vira Paste.
 - **Desfoque da câmera:** o protótipo usa um blur contínuo de 0 a 20; o app usa os materiais do
-  sistema atrás do painel (Low/Medium/High), que desfocam o preview e nunca a gravação.
-- **Painel do YouTube:** a câmera preenche a tela com o sensor 9:16, então a faixa preta do 16:9 é
-  mais baixa que no protótipo; o painel encolhe para caber nela (mínimo 120 pt).
+  sistema atrás da janela de texto (Low/Medium/High), que desfocam o preview e nunca a gravação.
+- **Frame e VideoSpace:** o app grava o sensor inteiro em retrato e recorta 4:5, 1:1 e 16:9 no
+  export, então o VideoSpace do 16:9 é o recorte do sensor (1080 × 606 em 1080p), não 1920 × 1080
+  como diz o prompt da v7. O preview mostra o sensor com `resizeAspect` no retângulo do frame, nunca
+  `resizeAspectFill` em tela cheia.
+- **Lente:** não existe API para a posição da câmera frontal. O app estima a lente no meio da área
+  segura superior (Dynamic Island ou notch) e guarda a linha como distância até ela, então a linha fica
+  no mesmo lugar em qualquer iPhone. O app é só retrato no iPhone.
+- **Speed na Display › Layout:** o prompt coloca Speed no Layout; o protótipo (e o app) deixam o
+  slider só na barra.
+- **Zona no 16:9:** o protótipo mostra o chip Custom no 16:9 sem desenhar a zona; o app não mostra
+  chips e desliga "Show safe zone" ("Not needed for horizontal video").
+- **Sheets sobre a janela:** o limite de altura da Display é medido quando ela abre; mudar a altura
+  da janela com a sheet aberta não move a sheet sob o dedo.
 - **Quick edit:** a edição é uma receita aplicada na hora de tocar e exportar (composição do
   AVFoundation + compositor próprio com Core Image), nunca um arquivo novo. "Enhance voice" e
   "Reduce background noise" são aproximações com EQ e dinâmica no `AVAudioEngine` (não há API da

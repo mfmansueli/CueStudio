@@ -7,7 +7,7 @@ import Foundation
 import Testing
 @testable import Cue_Studio
 
-/// The bundled `PlatformRules.json` against the v6 "Create for" table.
+/// The bundled `PlatformRules.json` against the "Create for" table and the v7 safe zones.
 @Suite("PlatformRules")
 struct PlatformRulesTests {
     private let rules = TestData.rules
@@ -19,20 +19,20 @@ struct PlatformRulesTests {
         let frameRate: FrameRate
         let ideal: ClosedRange<TimeInterval>
         let minimum: TimeInterval?
-        let top: Double
-        let height: Double
-        let width: Double
+        let readingWidth: Double
+        /// Top, bottom, left, right in pixels of the video; nil for none.
+        let zone: [Double]?
 
         var testDescription: String { platform.rawValue }
     }
 
     static let table: [Row] = [
-        Row(platform: .tiktok, aspect: .portrait, resolution: .hd1080, frameRate: .fps30, ideal: 60...90, minimum: 60, top: 118, height: 280, width: 0.58),
-        Row(platform: .reels, aspect: .portrait, resolution: .hd1080, frameRate: .fps30, ideal: 15...60, minimum: nil, top: 104, height: 290, width: 0.60),
-        Row(platform: .shorts, aspect: .portrait, resolution: .hd1080, frameRate: .fps60, ideal: 30...60, minimum: nil, top: 104, height: 262, width: 0.60),
-        Row(platform: .youtube, aspect: .landscape, resolution: .uhd4K, frameRate: .fps24, ideal: 480...900, minimum: 480, top: 104, height: 210, width: 0.70),
-        Row(platform: .linkedin, aspect: .vertical, resolution: .hd1080, frameRate: .fps30, ideal: 30...90, minimum: nil, top: 196, height: 240, width: 0.64),
-        Row(platform: .stories, aspect: .portrait, resolution: .hd1080, frameRate: .fps30, ideal: 8...15, minimum: nil, top: 150, height: 264, width: 0.56),
+        Row(platform: .tiktok, aspect: .portrait, resolution: .hd1080, frameRate: .fps30, ideal: 60...90, minimum: 60, readingWidth: 0.58, zone: [160, 480, 60, 140]),
+        Row(platform: .reels, aspect: .portrait, resolution: .hd1080, frameRate: .fps30, ideal: 15...60, minimum: nil, readingWidth: 0.60, zone: [220, 420, 60, 120]),
+        Row(platform: .shorts, aspect: .portrait, resolution: .hd1080, frameRate: .fps60, ideal: 30...60, minimum: nil, readingWidth: 0.60, zone: [190, 380, 60, 140]),
+        Row(platform: .youtube, aspect: .landscape, resolution: .uhd4K, frameRate: .fps24, ideal: 480...900, minimum: 480, readingWidth: 0.70, zone: nil),
+        Row(platform: .linkedin, aspect: .vertical, resolution: .hd1080, frameRate: .fps30, ideal: 30...90, minimum: nil, readingWidth: 0.64, zone: [0, 200, 40, 40]),
+        Row(platform: .stories, aspect: .portrait, resolution: .hd1080, frameRate: .fps30, ideal: 8...15, minimum: nil, readingWidth: 0.56, zone: [250, 250, 60, 60]),
     ]
 
     @Test(arguments: table)
@@ -43,7 +43,8 @@ struct PlatformRulesTests {
         #expect(preset.frameRate == row.frameRate)
         #expect(preset.idealRange == row.ideal)
         #expect(preset.minimum == row.minimum)
-        #expect(preset.prompter == PrompterPanelLayout(top: row.top, height: row.height, width: row.width))
+        #expect(preset.readingWidth == row.readingWidth)
+        #expect(preset.safeZone.map { [$0.top, $0.bottom, $0.left, $0.right] } == row.zone)
     }
 
     @Test func withoutMonetizationTikTokAimsForFifteenToSixtySeconds() {
@@ -72,21 +73,40 @@ struct PlatformRulesTests {
         }
     }
 
-    @Test func storiesAreCoveredTopAndBottom() {
-        let kinds = rules.preset(for: .stories, monetizationGoals: true).safeZones.map(\.kind)
-        #expect(kinds == [.profile, .replyBar])
-    }
-
-    @Test func layoutReferenceIsTheDesignScreen() {
-        #expect(rules.reference.size == CGSize(width: 402, height: 874))
+    @Test func safeZonesAreMeasuredOnTheExportedFrame() {
+        for platform in Platform.allCases {
+            guard let zone = rules.safeZone(for: platform) else { continue }
+            #expect(zone.aspect == rules.preset(for: platform, monetizationGoals: true).aspect)
+            #expect(zone.videoWidth == 1080)
+            #expect(zone.videoHeight == (zone.aspect == .vertical ? 1350 : 1920))
+            #expect(zone.isValid)
+        }
     }
 
     // MARK: - Validation
 
     @Test func rejectsAnotherSchema() throws {
         var other = rules
-        other.schemaVersion = 2
-        #expect(throws: PlatformRules.ValidationError.unsupportedSchema(2)) { try other.validate() }
+        other.schemaVersion = 1
+        #expect(throws: PlatformRules.ValidationError.unsupportedSchema(1)) { try other.validate() }
+    }
+
+    @Test func rejectsASafeZoneThatCoversTheWholeFrame() {
+        var broken = rules
+        broken.platforms["reels"]?.safeZone?.top = 1000
+        broken.platforms["reels"]?.safeZone?.bottom = 1000
+        #expect(throws: PlatformRules.ValidationError.invalidSafeZone("reels")) { try broken.validate() }
+    }
+
+    @Test func rejectsASafeZoneMeasuredOnAnotherFrame() {
+        var broken = rules
+        broken.platforms["linkedin"]?.safeZone?.aspect = .portrait
+        #expect(throws: PlatformRules.ValidationError.invalidSafeZone("linkedin")) { try broken.validate() }
+    }
+
+    @Test func aV6RulesFileNoLongerDecodes() {
+        let v6 = #"{"schemaVersion":1,"revision":9,"reference":{"width":402,"height":874},"platforms":{}}"#
+        #expect(throws: (any Error).self) { try PlatformRules.decode(Data(v6.utf8)) }
     }
 
     @Test func rejectsAFileMissingAPlatform() {

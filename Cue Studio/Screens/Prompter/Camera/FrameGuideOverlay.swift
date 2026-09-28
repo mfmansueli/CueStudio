@@ -5,19 +5,28 @@
 
 import SwiftUI
 
-/// Darkens what falls outside the chosen frame (4:5, 1:1, 16:9).
+/// Darkens everything outside the recorded frame and marks its edges, so the preview shows exactly
+/// what ends up in the video. Only the preview: nothing here is ever recorded.
 struct FrameGuideOverlay: View {
-    let aspect: AspectRatio
+    /// The recorded frame, in screen points.
+    let frame: CGRect
 
     var body: some View {
-        GeometryReader { proxy in
-            let bar = FrameGuideLayout.barHeight(for: aspect, in: proxy.size)
-            VStack(spacing: 0) {
-                Palette.cameraScrim.frame(height: bar)
-                Spacer(minLength: 0)
-                Palette.cameraScrim.frame(height: bar)
+        Canvas { context, size in
+            var outside = Path(CGRect(origin: .zero, size: size))
+            outside.addRect(frame)
+            context.fill(outside, with: .color(Palette.frameMask), style: FillStyle(eoFill: true))
+
+            var edges = Path()
+            for y in [frame.minY, frame.maxY] where y > 0.5 && y < size.height - 0.5 {
+                edges.move(to: CGPoint(x: frame.minX, y: y))
+                edges.addLine(to: CGPoint(x: frame.maxX, y: y))
             }
-            .animation(.easeInOut(duration: 0.3), value: aspect)
+            for x in [frame.minX, frame.maxX] where x > 0.5 && x < size.width - 0.5 {
+                edges.move(to: CGPoint(x: x, y: frame.minY))
+                edges.addLine(to: CGPoint(x: x, y: frame.maxY))
+            }
+            context.stroke(edges, with: .color(Palette.frameEdge), lineWidth: 0.5)
         }
         .ignoresSafeArea()
         .allowsHitTesting(false)

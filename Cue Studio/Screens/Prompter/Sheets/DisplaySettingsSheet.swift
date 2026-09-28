@@ -5,11 +5,12 @@
 
 import SwiftUI
 
-/// "Aa": how the prompter reads, with a live preview behind the sheet. Quick settings first,
-/// the rest under Advanced. Over the Selfie camera the sheet never covers the script panel.
+/// "Aa": how the prompter reads, with a live preview behind the sheet. In Selfie mode the layout
+/// comes first (reading line, text window, safe zone); then quick settings, and the rest under
+/// Advanced. Over the Selfie camera the sheet never covers the text window.
 struct DisplaySettingsSheet: View {
-    let mode: PrompterMode
-    /// Tallest the sheet may grow in Selfie mode, so the script above stays in sight.
+    let viewModel: PrompterViewModel
+    /// Tallest the sheet may grow in Selfie mode, so the text window above stays in sight.
     var maxHeight: CGFloat?
 
     @Environment(PreferencesService.self) private var preferences
@@ -19,21 +20,28 @@ struct DisplaySettingsSheet: View {
     /// The medium detent, as in the design.
     private static let compactHeight: CGFloat = 330
 
+    private var mode: PrompterMode { viewModel.mode }
+
     var body: some View {
         @Bindable var preferences = preferences
         VStack(spacing: 0) {
             header
             ScrollView {
                 VStack(alignment: .leading, spacing: 10) {
+                    if mode == .selfie {
+                        DisplayLayoutSection(viewModel: viewModel)
+                            .padding(.bottom, 6)
+                    }
                     SectionHeading(text: String(localized: "Quick"))
                         .padding(EdgeInsets(top: 4, leading: 4, bottom: 0, trailing: 4))
-                    toggleRow(
-                        String(localized: "AI Coach"),
-                        detail: String(localized: "Performance cues like PAUSE or SMILE"),
-                        isOn: $preferences.prompter.showsCues
-                    )
-                    .background(Palette.surface2, in: RoundedRectangle(cornerRadius: 22, style: .continuous))
-                    .accessibilityIdentifier("display.aiCoachToggle")
+                    GroupedCard(background: Palette.surface2, radius: 22) {
+                        SettingToggleRow(
+                            title: String(localized: "AI Coach"),
+                            detail: String(localized: "Performance cues like PAUSE or SMILE"),
+                            isOn: $preferences.prompter.showsCues
+                        )
+                        .accessibilityIdentifier("display.aiCoachToggle")
+                    }
                     quickSliders
                     if mode == .selfie {
                         Text("Background and blur only change your preview — never the recording.")
@@ -80,6 +88,8 @@ struct DisplaySettingsSheet: View {
         .padding(EdgeInsets(top: 18, leading: 20, bottom: 10, trailing: 16))
     }
 
+    /// Selfie: text size, then how the window sits on the camera. Studio: text size, where the
+    /// line sits in the text, and the background color.
     private var quickSliders: some View {
         @Bindable var preferences = preferences
         return GroupedCard(background: Palette.surface2, radius: 22) {
@@ -88,25 +98,6 @@ struct DisplaySettingsSheet: View {
                 valueText: "\(Int(preferences.prompter.size))",
                 value: $preferences.prompter.size,
                 range: PrompterSettings.sizeRange
-            )
-            .padding(.horizontal, 16)
-            if mode == .selfie {
-                ValueSlider(
-                    title: String(localized: "Reading width"),
-                    valueText: preferences.prompter.readingWidth.formatted(.percent.precision(.fractionLength(0))),
-                    value: $preferences.prompter.readingWidth,
-                    range: PrompterPanelLayout.widthRange, step: 0.01,
-                    ends: (String(localized: "Narrow"), String(localized: "Wide")),
-                    identifier: "display.readingWidth"
-                )
-                .padding(.horizontal, 16)
-            }
-            ValueSlider(
-                title: String(localized: "Reading line"),
-                valueText: preferences.prompter.guidePosition.formatted(.percent.precision(.fractionLength(0))),
-                value: $preferences.prompter.guidePosition,
-                range: PrompterSettings.guideRange, step: 0.01,
-                ends: (String(localized: "Top"), String(localized: "Bottom"))
             )
             .padding(.horizontal, 16)
             if mode == .selfie {
@@ -125,6 +116,14 @@ struct DisplaySettingsSheet: View {
                 )
                 .padding(.horizontal, 16)
             } else {
+                ValueSlider(
+                    title: String(localized: "Reading line"),
+                    valueText: preferences.prompter.guidePosition.formatted(.percent.precision(.fractionLength(0))),
+                    value: $preferences.prompter.guidePosition,
+                    range: PrompterSettings.guideRange, step: 0.01,
+                    ends: (String(localized: "Top"), String(localized: "Bottom"))
+                )
+                .padding(.horizontal, 16)
                 row(String(localized: "Background color")) {
                     HStack(spacing: 0) {
                         ForEach(StudioBackground.allCases) { option in
@@ -204,8 +203,8 @@ struct DisplaySettingsSheet: View {
             }
         }
         GroupedCard(background: Palette.surface2, radius: 22) {
-            toggleRow(String(localized: "Show reading line"), isOn: $preferences.prompter.showsGuide)
-            toggleRow(String(localized: "Mirror text"), detail: String(localized: "For beam-splitter glass rigs"), isOn: $preferences.prompter.isMirrored)
+            SettingToggleRow(title: String(localized: "Show reading line"), isOn: $preferences.prompter.showsGuide)
+            SettingToggleRow(title: String(localized: "Mirror text"), detail: String(localized: "For beam-splitter glass rigs"), isOn: $preferences.prompter.isMirrored)
         }
     }
 
@@ -241,26 +240,18 @@ struct DisplaySettingsSheet: View {
         .frame(minHeight: 52)
         .padding(.horizontal, 16)
     }
-
-    private func toggleRow(_ title: String, detail: String? = nil, isOn: Binding<Bool>) -> some View {
-        Toggle(isOn: isOn) {
-            VStack(alignment: .leading, spacing: 2) {
-                Text(title)
-                if let detail {
-                    Text(detail).font(.footnote).foregroundStyle(Palette.ink2)
-                }
-            }
-        }
-        .tint(Palette.success)
-        .frame(minHeight: 58)
-        .padding(.horizontal, 16)
-    }
 }
 
 #if DEBUG
 #Preview {
     Color.black.sheet(isPresented: .constant(true)) {
-        DisplaySettingsSheet(mode: .selfie)
+        DisplaySettingsSheet(viewModel: PrompterViewModel(
+            launch: PrompterLaunch(scriptID: SampleScripts.morningHabits.id, mode: .selfie),
+            library: AppServices.preview.library, takes: AppServices.preview.takes,
+            preferences: AppServices.preview.preferences, profile: AppServices.preview.profile, rules: AppServices.preview.rules,
+            camera: AppServices.preview.camera, audio: AppServices.preview.audio,
+            speech: AppServices.preview.speech, toast: AppServices.preview.toast
+        ))
     }
     .previewEnvironment()
 }

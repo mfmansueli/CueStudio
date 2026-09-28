@@ -9,9 +9,8 @@ import UIKit
 /// Full-screen prompter session: Selfie or Studio mode, then the review of each take.
 struct PrompterView: View {
     @State private var viewModel: PrompterViewModel
-    /// Where the Selfie script panel ends and the safe area ends, both from the top of the screen:
-    /// the camera sheet stops between them so the script stays in sight.
-    @State private var scriptPanelBottom: CGFloat?
+    /// Where the safe area ends, from the top of the screen: Display and camera sheets stop between
+    /// the Selfie text window and here, so the script stays in sight.
     @State private var safeAreaBottom: CGFloat = 0
     private let services: AppServices
 
@@ -61,7 +60,7 @@ struct PrompterView: View {
             } else {
                 switch viewModel.mode {
                 case .selfie:
-                    SelfieModeView(viewModel: viewModel, scriptPanelBottom: $scriptPanelBottom, onClose: presentation.closePrompter)
+                    SelfieModeView(viewModel: viewModel, onClose: presentation.closePrompter)
                 case .studio:
                     StudioModeView(viewModel: viewModel, onClose: presentation.closePrompter)
                 }
@@ -94,15 +93,11 @@ struct PrompterView: View {
     private func sheetContent(_ sheet: PrompterSheet) -> some View {
         switch sheet {
         case .display:
-            DisplaySettingsSheet(mode: viewModel.mode, maxHeight: viewModel.mode == .selfie ? scriptPanelBottom.map {
-                ScriptPanelClearance.sheetHeight(panelBottom: $0, safeAreaBottom: safeAreaBottom)
-            } : nil)
+            DisplaySettingsSheet(viewModel: viewModel, maxHeight: sheetMaxHeight)
         case .destination:
             DestinationSheet(current: viewModel.script?.platform ?? profile.profile.defaultPlatform) { viewModel.setPlatform($0) }
         case .camera:
-            CameraSettingsSheet(maxHeight: scriptPanelBottom.map {
-                ScriptPanelClearance.sheetHeight(panelBottom: $0, safeAreaBottom: safeAreaBottom)
-            })
+            CameraSettingsSheet(maxHeight: sheetMaxHeight)
         case .addScript:
             StartRecordingSheet(
                 mode: .attach,
@@ -131,6 +126,11 @@ struct PrompterView: View {
         case .generateScript(let tab):
             GenerateScriptSheet(services: services, initialTab: tab) { viewModel.attach($0) }
         }
+    }
+
+    /// Tallest a Selfie sheet may grow while the text window above it stays in sight.
+    private var sheetMaxHeight: CGFloat? {
+        viewModel.sheetCeiling.map { ScriptPanelClearance.sheetHeight(panelBottom: $0, safeAreaBottom: safeAreaBottom) }
     }
 
     /// Back from a take: to the Takes tab when the review was opened from there, otherwise to the

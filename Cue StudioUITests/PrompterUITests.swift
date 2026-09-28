@@ -100,6 +100,63 @@ final class PrompterUITests: XCTestCase {
         done.tap()
     }
 
+    func testReadingLineExplainsItselfOnceAndMovesFromDisplay() {
+        let app = CueApp.launch(seeded: true)
+        let record = app.buttons["hero.recordButton"]
+        XCTAssertTrue(record.waitForExistence(timeout: 15))
+        record.tap()
+
+        let tip = app.buttons["prompter.readingLineTip"]
+        XCTAssertTrue(tip.waitForExistence(timeout: 5))
+        tip.tap()
+        XCTAssertTrue(tip.waitForNonExistence(timeout: 3))
+
+        let handle = element(app, "prompter.readingLineHandle")
+        XCTAssertTrue(handle.exists)
+        let lineY = handle.frame.midY
+        app.buttons["prompter.displayButton"].tap()
+        let summary = element(app, "display.readingLineSummary")
+        XCTAssertTrue(summary.waitForExistence(timeout: 5))
+        XCTAssertTrue(summary.label.hasSuffix("recommended"))
+        app.buttons["display.readingLineDown"].tap()
+        app.buttons["display.readingLineDown"].tap()
+        XCTAssertTrue(summary.label.contains("drag the handle"))
+        XCTAssertEqual(handle.frame.midY, lineY + 16, accuracy: 1)
+
+        app.buttons["display.resetLayoutButton"].tap()
+        XCTAssertTrue(summary.label.hasSuffix("recommended"))
+        XCTAssertEqual(handle.frame.midY, lineY, accuracy: 1)
+        app.buttons["display.doneButton"].tap()
+        XCTAssertFalse(tip.exists)
+    }
+
+    func testCustomSafeZoneFromDisplayLayout() {
+        let app = CueApp.launch(seeded: true)
+        let record = app.buttons["hero.recordButton"]
+        XCTAssertTrue(record.waitForExistence(timeout: 15))
+        record.tap()
+
+        XCTAssertTrue(app.buttons["prompter.displayButton"].waitForExistence(timeout: 5))
+        app.buttons["prompter.displayButton"].tap()
+        XCTAssertTrue(app.buttons["display.doneButton"].waitForExistence(timeout: 5))
+        XCTAssertTrue(element(app, "display.hideControlsToggle").exists)
+        XCTAssertTrue(element(app, "display.showSafeZoneToggle").exists)
+        let custom = app.buttons["display.safeZone.custom"]
+        XCTAssertTrue(custom.exists)
+        XCTAssertTrue(app.buttons["display.safeZone.reels"].exists)
+        XCTAssertFalse(app.sliders["Top risk"].exists)
+
+        app.swipeUp()
+        custom.tap()
+        XCTAssertTrue(custom.isSelected)
+        XCTAssertTrue(app.sliders["Top risk"].waitForExistence(timeout: 2))
+
+        app.buttons["display.resetLayoutButton"].tap()
+        XCTAssertFalse(custom.isSelected)
+        XCTAssertFalse(app.sliders["Top risk"].exists)
+        app.buttons["display.doneButton"].tap()
+    }
+
     func testPlatformChipOpensCreateFor() {
         let app = CueApp.launch(seeded: true)
         let record = app.buttons["hero.recordButton"]

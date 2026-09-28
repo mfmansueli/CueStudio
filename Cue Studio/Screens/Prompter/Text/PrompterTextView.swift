@@ -14,11 +14,36 @@ struct PrompterTextView: View {
     var guideArrowSize: CGFloat = 9
     /// Over the camera, a soft shadow keeps the text readable on bright backgrounds.
     var castsShadow = false
+    /// Where the reading line crosses the text, from the top. Selfie places it under the lens;
+    /// Studio (nil) uses the Display setting.
+    var guideOffset: CGFloat?
+    /// Selfie draws the reading line as a layer of its own, over the camera.
+    var drawsGuide = true
+    /// Selfie: what was already read fades above the line.
+    var fadesReadText = false
     var onTap: (() -> Void)?
 
     @State private var lastTranslation: CGFloat = 0
 
-    private var guideY: CGFloat { viewportHeight * settings.guidePosition }
+    private var guideY: CGFloat { guideOffset ?? viewportHeight * settings.guidePosition }
+
+    private var maskStops: [Gradient.Stop] {
+        guard fadesReadText, viewportHeight > 0 else {
+            return [
+                .init(color: .clear, location: 0),
+                .init(color: .black, location: 0.14),
+                .init(color: .black, location: 0.8),
+                .init(color: .clear, location: 1),
+            ]
+        }
+        let fadeEnd = max(0, guideY - viewModel.lineHeight * 0.9) / viewportHeight
+        return [
+            .init(color: .black.opacity(0.3), location: 0),
+            .init(color: .black, location: min(0.8, fadeEnd)),
+            .init(color: .black, location: 0.84),
+            .init(color: .clear, location: 1),
+        ]
+    }
 
     var body: some View {
         let lineHeight = viewModel.lineHeight
@@ -39,18 +64,10 @@ struct PrompterTextView: View {
             .scaleEffect(x: settings.isMirrored ? -1 : 1, y: 1)
             .clipped()
             .mask {
-                LinearGradient(
-                    stops: [
-                        .init(color: .clear, location: 0),
-                        .init(color: .black, location: 0.14),
-                        .init(color: .black, location: 0.8),
-                        .init(color: .clear, location: 1),
-                    ],
-                    startPoint: .top, endPoint: .bottom
-                )
+                LinearGradient(stops: maskStops, startPoint: .top, endPoint: .bottom)
             }
             .overlay(alignment: .top) {
-                if settings.showsGuide {
+                if drawsGuide && settings.showsGuide {
                     ReadingGuide(arrowSize: guideArrowSize)
                         .offset(y: guideY - guideArrowSize * 0.66)
                 }

@@ -97,9 +97,9 @@ struct CameraSettingsSheet: View {
         GroupedCard(background: Palette.surface2, radius: 22) {
             segmentedRow(String(localized: "Resolution"), selection: $preferences.camera.resolution, options: VideoResolution.allCases) { $0.label }
             segmentedRow(String(localized: "Frame rate"), selection: $preferences.camera.frameRate, options: FrameRate.allCases) { $0.label }
-            toggleRow(String(localized: "Grid"), isOn: $preferences.camera.showsGrid)
-            toggleRow(String(localized: "Platform safe zones"), detail: String(localized: "Shows where app buttons and captions cover the frame"), isOn: $preferences.camera.showsSafeZones)
-            toggleRow(String(localized: "Stabilization"), isOn: $preferences.camera.stabilization)
+            SettingToggleRow(title: String(localized: "Grid"), isOn: $preferences.camera.showsGrid, minHeight: 52)
+            SettingToggleRow(title: String(localized: "Platform safe zones"), detail: String(localized: "Shows where app buttons and captions cover the frame"), isOn: $preferences.camera.showsSafeZones, minHeight: 52)
+            SettingToggleRow(title: String(localized: "Stabilization"), isOn: $preferences.camera.stabilization, minHeight: 52)
         }
         .padding(.top, 10)
     }
@@ -124,8 +124,8 @@ struct CameraSettingsSheet: View {
         SectionHeading(text: String(localized: "Take")).padding(EdgeInsets(top: 12, leading: 4, bottom: 0, trailing: 4))
         GroupedCard(background: Palette.surface2, radius: 22) {
             segmentedRow(String(localized: "Countdown"), selection: $preferences.camera.countdown, options: Countdown.allCases) { $0.label }
-            toggleRow(String(localized: "Start scrolling with recording"), isOn: $preferences.camera.scrollsWithRecording)
-            toggleRow(String(localized: "Stop when script ends"), isOn: $preferences.camera.stopsWhenScriptEnds)
+            SettingToggleRow(title: String(localized: "Start scrolling with recording"), isOn: $preferences.camera.scrollsWithRecording, minHeight: 52)
+            SettingToggleRow(title: String(localized: "Stop when script ends"), isOn: $preferences.camera.stopsWhenScriptEnds, minHeight: 52)
             segmentedRow(String(localized: "Format"), selection: $preferences.camera.codec, options: VideoCodec.allCases) { $0.label }
         }
         Text("HEVC keeps files small. Choose H.264 if you edit on older software.")
@@ -174,20 +174,6 @@ struct CameraSettingsSheet: View {
             .pickerStyle(.segmented)
             .fixedSize()
         }
-        .frame(minHeight: 52)
-        .padding(.horizontal, 16)
-    }
-
-    private func toggleRow(_ title: String, detail: String? = nil, isOn: Binding<Bool>) -> some View {
-        Toggle(isOn: isOn) {
-            VStack(alignment: .leading, spacing: 2) {
-                Text(title)
-                if let detail {
-                    Text(detail).font(.footnote).foregroundStyle(Palette.ink2)
-                }
-            }
-        }
-        .tint(Palette.success)
         .frame(minHeight: 52)
         .padding(.horizontal, 16)
     }

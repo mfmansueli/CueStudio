@@ -9,15 +9,19 @@ import SwiftUI
 struct ReadingGuide: View {
     var arrowSize: CGFloat = 9
     var lineOpacity: Double = 0.55
+    var lineWidth: CGFloat = 1.5
+    /// Over the camera, a soft glow keeps the line visible on any background.
+    var glows = false
 
     var body: some View {
         HStack(spacing: 0) {
             Triangle(pointingRight: true)
                 .fill(Palette.acc)
                 .frame(width: arrowSize, height: arrowSize * 1.33)
-            Rectangle()
+            Capsule()
                 .fill(Palette.acc.opacity(lineOpacity))
-                .frame(height: 1.5)
+                .frame(height: lineWidth)
+                .shadow(color: glows ? Palette.readingLineGlow : .clear, radius: 4)
             Triangle(pointingRight: false)
                 .fill(Palette.acc)
                 .frame(width: arrowSize, height: arrowSize * 1.33)

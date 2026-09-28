@@ -5,86 +5,133 @@
 
 import SwiftUI
 
-/// The camera first, with the script in a floating panel close to the lens. The panel's position
-/// and height come from the platform preset, its width from the reading width.
+/// The camera first, in layers that never reach the video: the recorded frame (darkened outside),
+/// the platform's safe zone, the text window and the reading line, then the controls. The line sits
+/// just under the lens and the text scrolls past it; the window follows the line.
 struct SelfieModeView: View {
     let viewModel: PrompterViewModel
-    /// Bottom edge of the script panel, from the top of the screen; `nil` while there is no panel.
-    @Binding var scriptPanelBottom: CGFloat?
     let onClose: () -> Void
 
     @Environment(PreferencesService.self) private var preferences
 
     var body: some View {
-        let camera = preferences.camera
+        let geometry = viewModel.frameGeometry
         ZStack {
-            CameraBackdrop()
-            if camera.showsGrid { GridOverlay() }
-            FrameGuideOverlay(aspect: camera.aspect)
-            if let script = viewModel.script, let preset = viewModel.preset,
-               camera.showsSafeZones, camera.aspect == preset.aspect, preset.showsSafeZones {
-                SafeZoneOverlay(zones: preset.safeZones, reference: viewModel.layoutReference, platformName: script.platform.label)
-            }
-            if viewModel.hasScript, let layout = viewModel.preset?.prompter {
-                GeometryReader { proxy in
-                    let letterboxed = camera.aspect == .landscape && viewModel.preset?.aspect == .landscape
-                    let frame = SelfiePanelFrame.frame(
-                        layout: layout,
-                        readingWidth: preferences.prompter.readingWidth,
-                        screen: proxy.size,
-                        reference: viewModel.layoutReference,
-                        bottomLimit: letterboxed ? FrameGuideLayout.barHeight(for: .landscape, in: proxy.size) : nil
-                    )
-                    prompterPanel(height: frame.height)
-                        .frame(width: frame.width, height: frame.height)
-                        .position(x: frame.midX, y: frame.midY)
-                        .onGeometryChange(for: CGFloat.self) { $0.frame(in: .global).maxY } action: { scriptPanelBottom = $0 }
-                        .onDisappear { scriptPanelBottom = nil }
-                        .animation(.smooth(duration: 0.3), value: frame)
+            cameraLayers(geometry)
+            controls
+                .onGeometryChange(for: CGFloat.self) { $0.frame(in: .global).minY } action: { top in
+                    viewModel.measured { $0.topInset = top }
                 }
-                .ignoresSafeArea()
-            }
-            VStack(spacing: 0) {
-                SelfieTopBar(viewModel: viewModel, onClose: onClose)
-                    .padding(.horizontal, 14)
-                Spacer(minLength: 0)
-                if viewModel.showsStopWarning, let title = viewModel.stopWarningTitle, let message = viewModel.stopWarningMessage {
-                    StopWarningCard(
-                        title: title,
-                        message: message,
-                        onStop: { Task { await viewModel.stopAnyway() } },
-                        onKeepGoing: { viewModel.keepRecording() }
-                    )
-                    .padding(.horizontal, 18)
-                    .padding(.bottom, 12)
-                    .transition(.scale(scale: 0.9, anchor: .bottom).combined(with: .opacity))
-                }
-                SelfieControlPanel(viewModel: viewModel)
-                    .padding(.horizontal, 10)
-            }
-            .animation(.spring(duration: 0.3), value: viewModel.showsStopWarning)
             if let countdown = viewModel.countdown {
                 CountdownOverlay(value: countdown)
             }
         }
     }
 
-    /// Dark enough to read over any background, with the camera optionally blurred behind the text.
-    /// Both only change the preview, never the recording.
-    private func prompterPanel(height: CGFloat) -> some View {
-        let settings = preferences.prompter
-        let shape = RoundedRectangle(cornerRadius: Metrics.cardRadius, style: .continuous)
-        return PrompterTextView(viewModel: viewModel, settings: settings, viewportHeight: height, castsShadow: true)
-            .background {
-                ZStack {
-                    if let material = CameraBlurLevel(amount: settings.cameraBlur).material {
-                        Rectangle().fill(material)
-                    }
-                    Rectangle().fill(Color.black.opacity(settings.backgroundOpacity))
+    // MARK: - Layers
+
+    private func cameraLayers(_ geometry: FrameGeometry) -> some View {
+        ZStack {
+            CameraBackdrop(sensorRect: FrameGeometry.sensorRect(in: viewModel.screenMetrics.screen)) { rect in
+                viewModel.cameraImageMoved(to: rect)
+            }
+            if preferences.camera.showsGrid {
+                GridOverlay(frame: geometry.frameRect)
+            }
+            FrameGuideOverlay(frame: geometry.frameRect)
+            if viewModel.showsSafeZone, let zone = viewModel.safeZone, let content = viewModel.safeZoneContentRect {
+                SafeZoneOverlay(frame: geometry.frameRect, content: content, label: zone.overlayLabel)
+                    .transition(.opacity)
+            }
+            if viewModel.hasScript {
+                let layout = viewModel.readingLayout
+                textWindow(layout)
+                if preferences.prompter.showsGuide {
+                    ReadingLineLayer(
+                        layout: layout,
+                        showsTag: viewModel.sheet == .display,
+                        showsTip: viewModel.showsReadingLineTip,
+                        onMove: { viewModel.moveReadingLine(toY: $0) },
+                        onNudge: { viewModel.nudgeReadingLine(by: $0) },
+                        onDismissTip: { viewModel.dismissReadingLineTip() }
+                    )
                 }
             }
-            .clipShape(shape)
-            .overlay(shape.strokeBorder(Palette.panelBorder, lineWidth: 0.5))
+        }
+        // Measured inside `ignoresSafeArea`: outside it the size is the safe area's, not the screen's.
+        .onGeometryChange(for: CGSize.self) { $0.size } action: { size in
+            viewModel.measured { $0.screen = size }
+        }
+        .ignoresSafeArea()
+        .animation(.easeOut(duration: 0.2), value: viewModel.showsSafeZone)
+    }
+
+    /// Dark enough to read over any background, with the camera optionally blurred behind the text.
+    /// Both only change the preview, never the recording.
+    private func textWindow(_ layout: ReadingLayout) -> some View {
+        let settings = preferences.prompter
+        let shape = RoundedRectangle(cornerRadius: Metrics.cardRadius, style: .continuous)
+        let rect = layout.windowRect
+        return PrompterTextView(
+            viewModel: viewModel,
+            settings: settings,
+            viewportHeight: rect.height,
+            castsShadow: true,
+            guideOffset: layout.lead,
+            drawsGuide: false,
+            fadesReadText: true
+        )
+        .background {
+            ZStack {
+                if let material = CameraBlurLevel(amount: settings.cameraBlur).material {
+                    Rectangle().fill(material)
+                }
+                Rectangle().fill(Color.black.opacity(settings.backgroundOpacity))
+            }
+        }
+        .clipShape(shape)
+        .overlay(shape.strokeBorder(Palette.panelBorder, lineWidth: 0.5))
+        .frame(width: rect.width, height: rect.height)
+        .position(x: rect.midX, y: rect.midY)
+        .animation(.smooth(duration: 0.3), value: rect)
+    }
+
+    // MARK: - Controls
+
+    private var controls: some View {
+        VStack(spacing: 0) {
+            SelfieTopBar(viewModel: viewModel, onClose: onClose)
+                .padding(.horizontal, 14)
+                .onGeometryChange(for: CGFloat.self) { $0.frame(in: .global).maxY } action: { bottom in
+                    viewModel.measured { $0.topBarBottom = bottom }
+                }
+            Spacer(minLength: 0)
+            if viewModel.showsStopWarning, let title = viewModel.stopWarningTitle, let message = viewModel.stopWarningMessage {
+                StopWarningCard(
+                    title: title,
+                    message: message,
+                    onStop: { Task { await viewModel.stopAnyway() } },
+                    onKeepGoing: { viewModel.keepRecording() }
+                )
+                .padding(.horizontal, 18)
+                .padding(.bottom, 12)
+                .transition(.scale(scale: 0.9, anchor: .bottom).combined(with: .opacity))
+            }
+            if viewModel.hidesControls {
+                CompactStopButton { Task { await viewModel.recordButtonTapped() } }
+                    .padding(.bottom, 2)
+                    .transition(.opacity)
+            } else {
+                SelfieControlPanel(viewModel: viewModel)
+                    .padding(.horizontal, 10)
+                    .onGeometryChange(for: CGFloat.self) { $0.frame(in: .global).minY } action: { top in
+                        viewModel.measured { $0.toolbarTop = top }
+                    }
+                    .transition(.opacity)
+            }
+        }
+        .animation(.spring(duration: 0.3), value: viewModel.showsStopWarning)
+        .animation(.easeOut(duration: 0.25), value: viewModel.hidesControls)
     }
 }
 
@@ -98,7 +145,6 @@ struct SelfieModeView: View {
             camera: AppServices.preview.camera, audio: AppServices.preview.audio,
             speech: AppServices.preview.speech, toast: AppServices.preview.toast
         ),
-        scriptPanelBottom: .constant(nil),
         onClose: {}
     )
     .previewEnvironment()

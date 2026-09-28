@@ -3,23 +3,16 @@
 //  Cue Studio
 //
 
-import CoreGraphics
 import Foundation
 
 /// Every platform number Cue relies on — frame, quality, length goals, monetization minimums,
-/// prompter position and safe zones — decoded from `PlatformRules.json`. Platforms change their
-/// rules, so the file ships in the bundle and can be replaced by a newer copy from the web
-/// (see `PlatformRulesService`).
+/// reading width and safe zones — decoded from `PlatformRules.json`. Platforms change their rules
+/// and their apps' layout, so the file ships in the bundle and can be replaced by a newer copy from
+/// the web (see `PlatformRulesService`).
 nonisolated struct PlatformRules: Codable, Hashable, Sendable {
     /// The only file layout this build understands. Remote files with another schema are ignored.
-    static let supportedSchemaVersion = 1
-
-    struct Reference: Codable, Hashable, Sendable {
-        var width: Double
-        var height: Double
-
-        var size: CGSize { CGSize(width: width, height: height) }
-    }
+    /// Schema 2 (v7) measures safe zones in pixels of the video instead of points on a screen.
+    static let supportedSchemaVersion = 2
 
     struct Monetization: Codable, Hashable, Sendable {
         var ideal: [Double]
@@ -36,21 +29,22 @@ nonisolated struct PlatformRules: Codable, Hashable, Sendable {
         /// Only for platforms that pay by length.
         var monetization: Monetization?
         var prefersStudio: Bool
-        var prompter: PrompterPanelLayout
-        var safeZones: [SafeZone]
+        /// Selfie text window width, as a fraction of the screen.
+        var readingWidth: Double
+        /// Where the platform's UI covers the video. None for horizontal video.
+        var safeZone: SocialSafeZonePreset?
     }
 
     enum ValidationError: Error, Equatable {
         case unsupportedSchema(Int)
         case missingPlatform(String)
         case invalidRange(String)
+        case invalidSafeZone(String)
     }
 
     var schemaVersion: Int
     /// Bumped with every published change; a cached or downloaded file only wins when it is newer.
     var revision: Int
-    /// Screen the layout numbers were drawn on (iPhone 17: 402 × 874 pt).
-    var reference: Reference
     var platforms: [String: Entry]
 
     // MARK: - Decoding
@@ -74,6 +68,9 @@ nonisolated struct PlatformRules: Codable, Hashable, Sendable {
             let ranges = [entry.ideal] + (entry.monetization.map { [$0.ideal] } ?? [])
             for range in ranges where range.count != 2 || range[0] < 0 || range[0] > range[1] {
                 throw ValidationError.invalidRange(platform.rawValue)
+            }
+            if let zone = entry.safeZone, !zone.isValid || zone.aspect != entry.aspect {
+                throw ValidationError.invalidSafeZone(platform.rawValue)
             }
         }
     }
@@ -100,8 +97,14 @@ nonisolated struct PlatformRules: Codable, Hashable, Sendable {
             minimum: monetization?.minimum,
             goal: monetization?.goal,
             prefersStudio: entry.prefersStudio,
-            prompter: entry.prompter,
-            safeZones: entry.safeZones
+            readingWidth: entry.readingWidth,
+            safeZone: entry.safeZone
         )
+    }
+
+    /// The platform's safe zone, whatever the script is for: the Selfie camera lets the creator
+    /// check the frame against another app's layout.
+    func safeZone(for platform: Platform) -> SocialSafeZonePreset? {
+        entry(for: platform).safeZone
     }
 }

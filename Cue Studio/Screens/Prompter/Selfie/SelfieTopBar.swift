@@ -5,7 +5,8 @@
 
 import SwiftUI
 
-/// Close, mode switch and frame; while recording, the clock takes the middle.
+/// Close, mode switch and frame; while recording, the clock takes the middle and an eye button
+/// hides the controls (the platform chip goes with them).
 struct SelfieTopBar: View {
     let viewModel: PrompterViewModel
     let onClose: () -> Void
@@ -15,7 +16,7 @@ struct SelfieTopBar: View {
     var body: some View {
         HStack {
             if viewModel.isRecording {
-                Color.clear.frame(width: 40, height: 40)
+                hideButton
             } else {
                 Button(action: onClose) { Image(systemName: "xmark") }
                     .buttonStyle(.cueIcon(.glass, diameter: 40))
@@ -31,8 +32,23 @@ struct SelfieTopBar: View {
                 }
             }
             Spacer(minLength: 8)
-            aspectButton
+            if viewModel.hidesControls {
+                Color.clear.frame(width: 40, height: 40)
+            } else {
+                aspectButton
+            }
         }
+    }
+
+    private var hideButton: some View {
+        let hidden = viewModel.hidesControls
+        return Button { viewModel.toggleControls() } label: {
+            Image(systemName: hidden ? "eye" : "eye.slash")
+                .foregroundStyle(hidden ? Palette.acc : .white)
+        }
+        .buttonStyle(.cueIcon(.glass, diameter: 40))
+        .accessibilityLabel(Text(hidden ? "Show controls" : "Hide controls"))
+        .accessibilityIdentifier("prompter.hideControlsButton")
     }
 
     private var aspectButton: some View {

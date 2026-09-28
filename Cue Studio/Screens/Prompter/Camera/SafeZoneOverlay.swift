@@ -5,53 +5,65 @@
 
 import SwiftUI
 
-/// Where the platform's buttons and captions will cover the video, as quiet dashed outlines.
-/// Positions come from `PlatformRules` and scale from its reference screen to this one.
+/// Where a platform's buttons, caption and header will cover the video, kept quiet: soft shading
+/// at the top and bottom, lighter at the sides, and a thin dashed outline around the part that
+/// stays clear. A guide, not a guarantee, and never part of the recording.
 struct SafeZoneOverlay: View {
-    let zones: [SafeZone]
-    let reference: CGSize
-    let platformName: String
+    /// The recorded frame, in screen points.
+    let frame: CGRect
+    /// The part the platform leaves clear, in screen points.
+    let content: CGRect
+    /// "INSTAGRAM REELS SAFE AREA".
+    let label: String
 
     var body: some View {
-        GeometryReader { proxy in
-            ForEach(Array(zones.enumerated()), id: \.offset) { _, zone in
-                let frame = zone.frame(in: proxy.size, reference: reference)
-                RoundedRectangle(cornerRadius: 14, style: .continuous)
-                    .strokeBorder(Palette.safeZoneLine, style: StrokeStyle(lineWidth: 1.5, dash: [5, 4]))
-                    .frame(width: frame.width, height: frame.height)
-                    .overlay(alignment: zone.isVertical ? .top : .topLeading) {
-                        label(for: zone, frame: frame)
-                    }
-                    .position(x: frame.midX, y: frame.midY)
-            }
+        let top = max(0, content.minY - frame.minY)
+        let bottom = max(0, frame.maxY - content.maxY)
+        let left = max(0, content.minX - frame.minX)
+        let right = max(0, frame.maxX - content.maxX)
+        ZStack(alignment: .topLeading) {
+            LinearGradient(colors: [Palette.safeZoneShade, Palette.safeZoneShadeFaint], startPoint: .top, endPoint: .bottom)
+                .frame(width: frame.width, height: top)
+            LinearGradient(colors: [Palette.safeZoneShadeFaint, Palette.safeZoneShade], startPoint: .top, endPoint: .bottom)
+                .frame(width: frame.width, height: bottom)
+                .offset(y: frame.height - bottom)
+            Palette.safeZoneSide
+                .frame(width: left, height: content.height)
+                .offset(y: top)
+            Palette.safeZoneSide
+                .frame(width: right, height: content.height)
+                .offset(x: frame.width - right, y: top)
+            RoundedRectangle(cornerRadius: 12, style: .continuous)
+                .strokeBorder(Palette.safeZoneLine, style: StrokeStyle(lineWidth: 1, dash: [5, 4]))
+                .overlay(alignment: .bottomLeading) {
+                    Text(label)
+                        .font(.system(size: 9, weight: .bold))
+                        .kerning(0.6)
+                        .foregroundStyle(Palette.safeZoneLabel)
+                        .lineLimit(1)
+                        .padding(EdgeInsets(top: 0, leading: 9, bottom: 7, trailing: 9))
+                }
+                .frame(width: content.width, height: content.height)
+                .offset(x: left, y: top)
         }
+        .frame(width: frame.width, height: frame.height, alignment: .topLeading)
+        .position(x: frame.midX, y: frame.midY)
+        .animation(.easeInOut(duration: 0.3), value: content)
         .ignoresSafeArea()
         .allowsHitTesting(false)
         .accessibilityHidden(true)
-    }
-
-    @ViewBuilder
-    private func label(for zone: SafeZone, frame: CGRect) -> some View {
-        let text = Text(zone.label(platformName: platformName))
-            .font(.system(size: 9, weight: .bold))
-            .kerning(0.6)
-            .foregroundStyle(Palette.safeZoneLabel)
-            .fixedSize()
-        if zone.isVertical {
-            // Reads top to bottom along the button column.
-            text
-                .rotationEffect(.degrees(90))
-                .frame(width: frame.width, height: frame.height, alignment: .center)
-        } else {
-            text.padding(EdgeInsets(top: 8, leading: 10, bottom: 0, trailing: 0))
-        }
     }
 }
 
 #if DEBUG
 #Preview {
-    let preset = AppServices.preview.rules.preset(for: .tiktok, monetizationGoals: true)
-    SafeZoneOverlay(zones: preset.safeZones, reference: AppServices.preview.rules.rules.reference.size, platformName: "TikTok")
-        .background(Color.black)
+    let geometry = FrameGeometry(sensorRect: FrameGeometry.sensorRect(in: CGSize(width: 402, height: 874)), aspect: .portrait, resolution: .hd1080)
+    let zone = AppServices.preview.rules.rules.safeZone(for: .reels)!
+    SafeZoneOverlay(
+        frame: geometry.frameRect,
+        content: geometry.toScreen(zone.recommendedContentRect, in: zone.videoSize),
+        label: "INSTAGRAM REELS SAFE AREA"
+    )
+    .background(Color.gray)
 }
 #endif

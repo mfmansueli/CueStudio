@@ -1,7 +1,6 @@
 {
-  "schemaVersion": 1,
-  "revision": 1,
-  "reference": { "width": 402, "height": 874 },
+  "schemaVersion": 2,
+  "revision": 2,
   "platforms": {
     "tiktok": {
       "aspect": "9:16",
@@ -10,11 +9,8 @@
       "ideal": [15, 60],
       "monetization": { "ideal": [60, 90], "minimum": 60, "goal": "creatorRewards" },
       "prefersStudio": false,
-      "prompter": { "top": 118, "height": 280, "width": 0.58 },
-      "safeZones": [
-        { "kind": "buttons", "right": 8, "top": 386, "width": 56, "height": 242 },
-        { "kind": "caption", "left": 12, "right": 74, "top": 556, "height": 70 }
-      ]
+      "readingWidth": 0.58,
+      "safeZone": { "aspect": "9:16", "videoWidth": 1080, "videoHeight": 1920, "top": 160, "bottom": 480, "left": 60, "right": 140 }
     },
     "reels": {
       "aspect": "9:16",
@@ -22,11 +18,8 @@
       "frameRate": 30,
       "ideal": [15, 60],
       "prefersStudio": false,
-      "prompter": { "top": 104, "height": 290, "width": 0.60 },
-      "safeZones": [
-        { "kind": "buttons", "right": 10, "top": 396, "width": 58, "height": 232 },
-        { "kind": "caption", "left": 12, "right": 78, "top": 548, "height": 76 }
-      ]
+      "readingWidth": 0.60,
+      "safeZone": { "aspect": "9:16", "videoWidth": 1080, "videoHeight": 1920, "top": 220, "bottom": 420, "left": 60, "right": 120 }
     },
     "shorts": {
       "aspect": "9:16",
@@ -34,11 +27,8 @@
       "frameRate": 60,
       "ideal": [30, 60],
       "prefersStudio": false,
-      "prompter": { "top": 104, "height": 262, "width": 0.60 },
-      "safeZones": [
-        { "kind": "buttons", "right": 10, "top": 372, "width": 58, "height": 256 },
-        { "kind": "title", "left": 12, "right": 78, "top": 566, "height": 60 }
-      ]
+      "readingWidth": 0.60,
+      "safeZone": { "aspect": "9:16", "videoWidth": 1080, "videoHeight": 1920, "top": 190, "bottom": 380, "left": 60, "right": 140 }
     },
     "youtube": {
       "aspect": "16:9",
@@ -47,8 +37,7 @@
       "ideal": [240, 600],
       "monetization": { "ideal": [480, 900], "minimum": 480, "goal": "midRollAds" },
       "prefersStudio": true,
-      "prompter": { "top": 104, "height": 210, "width": 0.70 },
-      "safeZones": []
+      "readingWidth": 0.70
     },
     "linkedin": {
       "aspect": "4:5",
@@ -56,10 +45,8 @@
       "frameRate": 30,
       "ideal": [30, 90],
       "prefersStudio": false,
-      "prompter": { "top": 196, "height": 240, "width": 0.64 },
-      "safeZones": [
-        { "kind": "caption", "left": 12, "right": 12, "top": 560, "height": 64 }
-      ]
+      "readingWidth": 0.64,
+      "safeZone": { "aspect": "4:5", "videoWidth": 1080, "videoHeight": 1350, "top": 0, "bottom": 200, "left": 40, "right": 40 }
     },
     "stories": {
       "aspect": "9:16",
@@ -67,11 +54,8 @@
       "frameRate": 30,
       "ideal": [8, 15],
       "prefersStudio": false,
-      "prompter": { "top": 150, "height": 264, "width": 0.56 },
-      "safeZones": [
-        { "kind": "profile", "left": 12, "right": 12, "top": 104, "height": 38 },
-        { "kind": "replyBar", "left": 12, "right": 12, "top": 574, "height": 54 }
-      ]
+      "readingWidth": 0.56,
+      "safeZone": { "aspect": "9:16", "videoWidth": 1080, "videoHeight": 1920, "top": 250, "bottom": 250, "left": 60, "right": 60 }
     }
   }
 }

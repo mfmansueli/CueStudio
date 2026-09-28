@@ -5,16 +5,21 @@
 
 import SwiftUI
 
-/// Rule-of-thirds grid.
+/// Rule-of-thirds grid over the recorded frame.
 struct GridOverlay: View {
+    /// The recorded frame, in screen points.
+    let frame: CGRect
+
     var body: some View {
-        Canvas { context, size in
+        Canvas { context, _ in
             var path = Path()
             for fraction in [1.0 / 3.0, 2.0 / 3.0] {
-                path.move(to: CGPoint(x: size.width * fraction, y: 0))
-                path.addLine(to: CGPoint(x: size.width * fraction, y: size.height))
-                path.move(to: CGPoint(x: 0, y: size.height * fraction))
-                path.addLine(to: CGPoint(x: size.width, y: size.height * fraction))
+                let x = frame.minX + frame.width * fraction
+                let y = frame.minY + frame.height * fraction
+                path.move(to: CGPoint(x: x, y: frame.minY))
+                path.addLine(to: CGPoint(x: x, y: frame.maxY))
+                path.move(to: CGPoint(x: frame.minX, y: y))
+                path.addLine(to: CGPoint(x: frame.maxX, y: y))
             }
             context.stroke(path, with: .color(Palette.gridLine), lineWidth: 0.5)
         }

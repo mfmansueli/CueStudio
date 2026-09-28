@@ -47,6 +47,9 @@
         }
       }
     },
+    "%@ · buttons, caption & header" : {
+
+    },
     "%@ · renews %@" : {
       "localizations" : {
         "en" : {
@@ -79,9 +82,6 @@
     "%@ %@ video: %@" : {
 
     },
-    "%@ BUTTONS" : {
-
-    },
     "%@ Cue will build a structured draft from your bullets instead." : {
 
     },
@@ -98,6 +98,9 @@
 
     },
     "%@ over ideal" : {
+
+    },
+    "%@ SAFE AREA" : {
 
     },
     "%@ short of %@" : {
@@ -171,7 +174,16 @@
         }
       }
     },
+    "%lld points below the camera" : {
+
+    },
     "%lld pt" : {
+
+    },
+    "%lld pt below the camera · drag the handle on screen" : {
+
+    },
+    "%lld pt below the camera · recommended" : {
 
     },
     "%lld scripts · %lld takes" : {
@@ -424,6 +436,9 @@
     "Back three lines" : {
 
     },
+    "Back to recommended layout" : {
+
+    },
     "Back to the top" : {
 
     },
@@ -487,6 +502,9 @@
     "Bottom" : {
 
     },
+    "Bottom risk" : {
+
+    },
     "Brand & product" : {
 
     },
@@ -541,9 +559,6 @@
     "Cancel countdown" : {
 
     },
-    "CAPTION · %@ UI" : {
-
-    },
     "Captions" : {
 
     },
@@ -554,6 +569,9 @@
 
     },
     "Center" : {
+
+    },
+    "Centered for the rear camera · recommended" : {
 
     },
     "Changes the platform and its preset" : {
@@ -676,6 +694,12 @@
     "Current" : {
 
     },
+    "Custom" : {
+
+    },
+    "CUSTOM SAFE AREA" : {
+
+    },
     "Cyan" : {
 
     },
@@ -724,6 +748,9 @@
     "Disclosure added up front" : {
 
     },
+    "Dismisses the tip" : {
+
+    },
     "Display" : {
 
     },
@@ -731,6 +758,9 @@
 
     },
     "Don't buy this until you watch this." : {
+
+    },
+    "Don’t read the text. Talk to the line." : {
 
     },
     "Done" : {
@@ -752,6 +782,9 @@
 
     },
     "Drag the yellow handles to trim" : {
+
+    },
+    "Drag to move where you read" : {
 
     },
     "Drops Friday at 9 a.m." : {
@@ -1012,6 +1045,12 @@
     "Hey fam" : {
 
     },
+    "Hide controls" : {
+
+    },
+    "Hide controls while recording" : {
+
+    },
     "Hides this reminder" : {
 
     },
@@ -1148,6 +1187,9 @@
     "Is this worth the hype? Let's see." : {
 
     },
+    "It sits just under your camera, so your eyes stay on your viewer. Drag the handle to move it." : {
+
+    },
     "It went wrong at the worst possible moment." : {
 
     },
@@ -1167,6 +1209,9 @@
 
     },
     "Keep going" : {
+
+    },
+    "Keeps only the text, line and stop" : {
 
     },
     "Key detail" : {
@@ -1190,10 +1235,16 @@
     "Launch, drop, big news" : {
 
     },
+    "Layout" : {
+
+    },
     "Lead with the news, not the backstory. Add when it happens and one detail that makes people care." : {
 
     },
     "Left" : {
+
+    },
+    "Left risk" : {
 
     },
     "Legible" : {
@@ -1331,6 +1382,12 @@
     "Move the playhead inside the clip" : {
 
     },
+    "Move the reading line down" : {
+
+    },
+    "Move the reading line up" : {
+
+    },
     "Move to “%@”" : {
 
     },
@@ -1370,7 +1427,7 @@
     "Name" : {
 
     },
-    "Narrow" : {
+    "Narrow · less eye movement" : {
 
     },
     "Navy" : {
@@ -1434,6 +1491,9 @@
 
     },
     "Nobody talks about this, so I will." : {
+
+    },
+    "Not needed for horizontal video" : {
 
     },
     "Not shared" : {
@@ -1610,9 +1670,6 @@
     "Profile" : {
 
     },
-    "PROFILE · %@ UI" : {
-
-    },
     "Promise" : {
 
     },
@@ -1655,10 +1712,13 @@
     "Reading line" : {
 
     },
-    "Reading the text…" : {
+    "READING LINE" : {
 
     },
-    "Reading width" : {
+    "READING LINE · %lld PT BELOW CAMERA" : {
+
+    },
+    "Reading the text…" : {
 
     },
     "Ready to post on %@" : {
@@ -1712,9 +1772,6 @@
     "Renews yearly at %@. Cancel anytime in Settings." : {
 
     },
-    "REPLY BAR · %@ UI" : {
-
-    },
     "Requires Apple Intelligence" : {
 
     },
@@ -1728,6 +1785,9 @@
 
     },
     "Reset" : {
+
+    },
+    "Reset to Recommended" : {
 
     },
     "Resolution" : {
@@ -1757,6 +1817,9 @@
     "Right" : {
 
     },
+    "Right risk" : {
+
+    },
     "Rounded" : {
 
     },
@@ -1764,6 +1827,9 @@
 
     },
     "safe zones" : {
+
+    },
+    "Safe zones are a visual guide based on each app’s current layout — platforms change their UI, so they’re not a guarantee. Nothing on this screen appears in your video: Cue records the full frame only." : {
 
     },
     "Save" : {
@@ -1898,10 +1964,16 @@
     "Shorts" : {
 
     },
+    "Show controls" : {
+
+    },
     "Show it working" : {
 
     },
     "Show reading line" : {
+
+    },
+    "Show safe zone" : {
 
     },
     "Shown only on this device." : {
@@ -1938,6 +2010,9 @@
 
     },
     "So, real quick." : {
+
+    },
+    "Social safe zone" : {
 
     },
     "Some of you felt misled" : {
@@ -2126,6 +2201,12 @@
     "Text size" : {
 
     },
+    "Text window height" : {
+
+    },
+    "Text window width" : {
+
+    },
     "That folder already exists" : {
 
     },
@@ -2246,9 +2327,6 @@
     "Tips / list" : {
 
     },
-    "TITLE · %@ UI" : {
-
-    },
     "Today" : {
 
     },
@@ -2259,6 +2337,9 @@
 
     },
     "Top" : {
+
+    },
+    "Top risk" : {
 
     },
     "Topic" : {
@@ -2499,6 +2580,9 @@
 
     },
     "Your name" : {
+
+    },
+    "Your own margins" : {
 
     },
     "Your points, separated by commas" : {

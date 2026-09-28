@@ -31,20 +31,36 @@ final class PrompterViewModel {
     private(set) var followsSpeech = false
 
     // MARK: Presentation
-    var sheet: PrompterSheet?
+    var sheet: PrompterSheet? {
+        didSet {
+            if oldValue == nil, sheet != nil { sheetCeiling = textWindowBottom }
+        }
+    }
+    /// Bottom of the Selfie text window when the open sheet appeared: sheets stop below it so the
+    /// script stays in sight. Kept while the sheet is open, so changing the layout in Display
+    /// doesn't move the sheet under the finger.
+    private(set) var sheetCeiling: CGFloat?
     var reviewingTake: Take?
     /// True when the prompter opened straight on a take (from the Takes tab).
     private(set) var openedOnReview: Bool
 
+    // MARK: Selfie layout (see PrompterViewModel+Layout)
+    /// What the Selfie screen measured on this device.
+    private(set) var screenMetrics = SelfieScreenMetrics()
+    /// The safe zone picked in Display › Layout, for this session.
+    private(set) var safeZonePick: SafeZoneChoice?
+    /// Hidden with the eye button, or from the start with "Hide controls while recording".
+    private(set) var controlsHidden = false
+
     private let library: ScriptLibraryService
     private let takes: TakeLibraryService
-    private let preferences: PreferencesService
+    let preferences: PreferencesService
     private let profile: CreatorProfileService
-    private let rules: PlatformRulesService
+    let rules: PlatformRulesService
     private let camera: CameraControlling
     private let audio: AudioLevelMetering
     private let speech: SpeechTranscribing
-    private let toast: ToastService
+    let toast: ToastService
 
     private var driver: DisplayLinkDriver?
     private var countdownTask: Task<Void, Never>?
@@ -97,9 +113,6 @@ final class PrompterViewModel {
     var preset: PlatformPreset? {
         script.map { rules.preset(for: $0.platform, monetizationGoals: profile.profile.monetizationGoals) }
     }
-
-    /// Screen size the platform layout numbers were drawn on.
-    var layoutReference: CGSize { rules.rules.reference.size }
 
     /// Studio text is read from further away, so it is bigger.
     var fontSize: Double {
@@ -174,7 +187,7 @@ final class PrompterViewModel {
 
     private func apply(_ preset: PlatformPreset) {
         preferences.camera.apply(preset)
-        preferences.prompter.readingWidth = preset.prompter.width
+        preferences.prompter.readingWidth = preset.readingWidth
     }
 
     /// "Create for" from the camera: the script moves to the platform and the camera takes its preset.
@@ -232,6 +245,7 @@ final class PrompterViewModel {
             speechTracker.reset(to: 0)
         }
         isPlaying = true
+        dismissReadingLineTip()
         if driver == nil {
             driver = DisplayLinkDriver { [weak self] seconds in self?.advance(by: seconds) }
         }
@@ -357,6 +371,7 @@ final class PrompterViewModel {
         isRecording = true
         recordingSeconds = 0
         showsStopWarning = false
+        controlsHidden = preferences.prompter.hidesControlsWhileRecording
         if hasScript && preferences.camera.scrollsWithRecording {
             play()
         }
@@ -378,6 +393,7 @@ final class PrompterViewModel {
         pause()
         let clip = await camera.stopRecording()
         isRecording = false
+        controlsHidden = false
         guard let clip else {
             toast.show(String(localized: "The take couldn't be saved"))
             return
@@ -398,6 +414,31 @@ final class PrompterViewModel {
             guard let self, !Task.isCancelled, self.isRecording else { return }
             await self.stopRecording()
         }
+    }
+
+    // MARK: - Selfie layout state
+
+    /// Applies what the Selfie screen measured, only when something changed.
+    func measured(_ update: (inout SelfieScreenMetrics) -> Void) {
+        var metrics = screenMetrics
+        update(&metrics)
+        guard metrics != screenMetrics else { return }
+        screenMetrics = metrics
+    }
+
+    func pickSafeZone(_ choice: SafeZoneChoice) {
+        safeZonePick = choice
+    }
+
+    /// The eye button while recording.
+    func toggleControls() {
+        guard isRecording else { return }
+        controlsHidden.toggle()
+    }
+
+    /// "Reset to Recommended" also forgets the safe zone picked in this session.
+    func forgetSafeZonePick() {
+        safeZonePick = nil
     }
 
     // MARK: - Review

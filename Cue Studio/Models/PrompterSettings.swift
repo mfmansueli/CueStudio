@@ -14,6 +14,9 @@ nonisolated struct PrompterSettings: Codable, Hashable, Sendable {
     static let backgroundOpacityRange: ClosedRange<Double> = 0...1
     static let cameraBlurRange: ClosedRange<Double> = 0...20
     static let guideRange: ClosedRange<Double> = 0.1...0.7
+    static let readingWidthRange: ClosedRange<Double> = 0.5...0.75
+    static let textWindowHeightRange: ClosedRange<Double> = 160...380
+    static let defaultTextWindowHeight: Double = 250
     /// Studio mode is read from further away, so its text is bigger than the selfie panel's.
     static let studioScale: Double = 1.35
 
@@ -25,21 +28,31 @@ nonisolated struct PrompterSettings: Codable, Hashable, Sendable {
     var alignment: PrompterAlignment = .center
     var textColor: PrompterTextColor = .white
     var margin: Double = 8
-    /// Selfie panel width as a fraction of the screen. Each platform's preset sets it when a script
-    /// opens; the creator can fine-tune it between 50% and 75%.
+    /// Selfie text window width as a fraction of the screen. Each platform's preset sets it when a
+    /// script opens; the creator can fine-tune it between 50% and 75% (narrow keeps the eyes still).
     var readingWidth: Double = 0.6
+    /// Selfie text window height in points.
+    var textWindowHeight: Double = PrompterSettings.defaultTextWindowHeight
+    /// Where the Selfie reading line sits, as its distance below the front camera in points. Nil
+    /// keeps the recommended spot (just under the lens, or 36% down the frame with the rear camera).
+    /// Kept as a distance from the lens so the line lands in the same place on any iPhone.
+    var readingLineOffset: Double?
     /// How dark the Selfie panel is behind the text. Preview only, never recorded.
     var backgroundOpacity: Double = 0.25
     /// Blur of the camera behind the Selfie panel, 0 (off) to 20. Preview only, never recorded.
     var cameraBlur: Double = 0
     var showsGuide: Bool = true
-    /// Reading line position, as a fraction of the text area height.
+    /// Studio reading line position, as a fraction of the text area height.
     var guidePosition: Double = 0.3
     var isMirrored: Bool = false
     var scrollMode: ScrollMode = .steady
     var studioBackground: StudioBackground = .black
     /// AI Coach: performance cues like PAUSE or SMILE in the prompter.
     var showsCues: Bool = true
+    /// "Custom" safe zone margins.
+    var customSafeZone = SafeZoneMargins()
+    /// Recording starts with only the text, the reading line, the clock and a stop button.
+    var hidesControlsWhileRecording: Bool = false
     /// Words a minute that 1.0× meant when `speed` was saved. Builds before v7 read 150 at 1.0×;
     /// a saved speed is converted on load so the creator keeps the pace they chose.
     private(set) var speedCalibration: Double = ReadTime.wordsPerMinuteAtOneX
@@ -92,6 +105,8 @@ nonisolated struct PrompterSettings: Codable, Hashable, Sendable {
         let storedMargin = try container.decodeIfPresent(Double.self, forKey: .margin) ?? defaults.margin
         margin = min(Self.marginRange.upperBound, max(Self.marginRange.lowerBound, storedMargin))
         readingWidth = try container.decodeIfPresent(Double.self, forKey: .readingWidth) ?? defaults.readingWidth
+        textWindowHeight = try container.decodeIfPresent(Double.self, forKey: .textWindowHeight) ?? defaults.textWindowHeight
+        readingLineOffset = try container.decodeIfPresent(Double.self, forKey: .readingLineOffset)
         backgroundOpacity = try container.decodeIfPresent(Double.self, forKey: .backgroundOpacity) ?? defaults.backgroundOpacity
         cameraBlur = try container.decodeIfPresent(Double.self, forKey: .cameraBlur) ?? defaults.cameraBlur
         showsGuide = try container.decodeIfPresent(Bool.self, forKey: .showsGuide) ?? defaults.showsGuide
@@ -100,5 +115,8 @@ nonisolated struct PrompterSettings: Codable, Hashable, Sendable {
         scrollMode = (try? container.decodeIfPresent(ScrollMode.self, forKey: .scrollMode)) ?? defaults.scrollMode
         studioBackground = (try? container.decodeIfPresent(StudioBackground.self, forKey: .studioBackground)) ?? defaults.studioBackground
         showsCues = try container.decodeIfPresent(Bool.self, forKey: .showsCues) ?? defaults.showsCues
+        customSafeZone = (try? container.decodeIfPresent(SafeZoneMargins.self, forKey: .customSafeZone)) ?? defaults.customSafeZone
+        hidesControlsWhileRecording = try container.decodeIfPresent(Bool.self, forKey: .hidesControlsWhileRecording)
+            ?? defaults.hidesControlsWhileRecording
     }
 }

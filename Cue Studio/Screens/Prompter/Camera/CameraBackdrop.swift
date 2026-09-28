@@ -6,8 +6,14 @@
 import SwiftUI
 import UIKit
 
-/// The camera feed, or a calm placeholder that says why there is none.
+/// The camera feed, or a calm placeholder that says why there is none. The feed fills `sensorRect`,
+/// never the whole screen: the preview is the recorded image, and the rest of the screen stays black.
 struct CameraBackdrop: View {
+    /// Where the sensor image goes on screen (`FrameGeometry.sensorRect(in:)`).
+    let sensorRect: CGRect
+    /// Where the preview layer actually drew the image, in screen points.
+    var onVideoRectChange: (CGRect) -> Void = { _ in }
+
     @Environment(CameraManager.self) private var camera
     @Environment(\.openURL) private var openURL
 
@@ -15,14 +21,19 @@ struct CameraBackdrop: View {
         ZStack {
             switch camera.status {
             case .running, .starting, .idle:
-                CameraFeedPlaceholder()
                 if camera.status == .running {
+                    Color.black
                     CameraPreviewView(
                         session: camera.previewSession,
                         deviceID: camera.activeDeviceID,
-                        onCaptureRotationChange: { camera.captureRotationAngle = $0 }
+                        onCaptureRotationChange: { camera.captureRotationAngle = $0 },
+                        onVideoRectChange: onVideoRectChange
                     )
+                    .frame(width: sensorRect.width, height: sensorRect.height)
+                    .position(x: sensorRect.midX, y: sensorRect.midY)
                     .transition(.opacity)
+                } else {
+                    CameraFeedPlaceholder()
                 }
             case .unauthorized:
                 message(

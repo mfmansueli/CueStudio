@@ -26,6 +26,10 @@ struct PrompterSettingsTests {
         #expect(settings.backgroundOpacity == 0.25)
         #expect(settings.readingWidth == 0.6)
         #expect(settings.cameraBlur == 0)
+        #expect(settings.textWindowHeight == 250)
+        #expect(settings.readingLineOffset == nil)
+        #expect(settings.customSafeZone == SafeZoneMargins())
+        #expect(!settings.hidesControlsWhileRecording)
     }
 
     @Test func startsAtTheNaturalSpeed() {
@@ -60,6 +64,10 @@ struct PrompterSettingsTests {
         var settings = PrompterSettings()
         settings.readingWidth = 0.7
         settings.cameraBlur = 9
+        settings.textWindowHeight = 320
+        settings.readingLineOffset = 140
+        settings.customSafeZone.bottom = 30
+        settings.hidesControlsWhileRecording = true
         let decoded = try JSONDecoder().decode(PrompterSettings.self, from: JSONEncoder().encode(settings))
         #expect(decoded == settings)
     }
