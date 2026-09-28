@@ -29,6 +29,7 @@ struct AppServices {
     let photos: PhotoLibraryManager
     let thumbnails: VideoThumbnailService
     let editing: TakeEditService
+    let apps: ExternalAppService
 
     init(options: LaunchOptions) {
         library = ScriptLibraryService(repository: options.scriptRepository)
@@ -50,6 +51,7 @@ struct AppServices {
         photos = PhotoLibraryManager()
         thumbnails = VideoThumbnailService()
         editing = TakeEditService()
+        apps = ExternalAppService()
     }
 
     func load() {
@@ -84,5 +86,6 @@ extension View {
             .environment(services.photos)
             .environment(services.thumbnails)
             .environment(services.editing)
+            .environment(services.apps)
     }
 }

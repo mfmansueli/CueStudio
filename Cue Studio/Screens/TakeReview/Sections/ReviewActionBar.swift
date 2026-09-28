@@ -5,7 +5,8 @@
 
 import SwiftUI
 
-/// Edit · Retake · Save · Share, as four tiles; Share is the one primary action.
+/// Edit · Retake · Save · Share, as four tiles; Share (which opens "Share to") is the one primary
+/// action.
 struct ReviewActionBar: View {
     let runningAction: TakeReviewViewModel.ExportAction?
     var onEdit: (() -> Void)?
@@ -20,7 +21,7 @@ struct ReviewActionBar: View {
             }
             tile("Retake", systemImage: "arrow.counterclockwise", identifier: "review.retakeButton", action: onRetake)
             tile("Save", systemImage: "arrow.down.to.line", identifier: "review.saveButton", isRunning: runningAction == .save, action: onSave)
-            tile("Share", systemImage: "square.and.arrow.up", identifier: "review.shareButton", isPrimary: true, isRunning: runningAction == .share, action: onShare)
+            tile("Share", systemImage: "square.and.arrow.up", identifier: "review.shareButton", isPrimary: true, isRunning: runningAction.map { if case .share = $0 { true } else { false } } ?? false, action: onShare)
         }
         .disabled(runningAction != nil)
     }

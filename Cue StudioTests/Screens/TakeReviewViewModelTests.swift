@@ -14,27 +14,37 @@ struct TakeReviewViewModelTests {
         let viewModel: TakeReviewViewModel
         let exporter: FakeVideoExporter
         let photos: FakePhotoSaver
+        let apps: FakeAppOpener
+        let editor: FakeTakeEditor
         let quota: UsageQuotaService
         let takes: TakeLibraryService
         let toast: ToastService
         let defaults: TestDefaults
     }
 
-    private func makeScenario(tier: MembershipTier = .free, usedExports: Int = 0) -> Scenario {
+    private func makeScenario(tier: MembershipTier = .free, usedExports: Int = 0, take: Take? = nil) -> Scenario {
         let defaults = TestDefaults()
-        let take = TestData.take(scriptID: UUID())
+        let script = TestData.script(text: "Okay, real talk.")
+        let take = take ?? TestData.take(scriptID: script.id)
+        let library = ScriptLibraryService(repository: FakeScriptRepository(scripts: [script]))
+        library.load()
         let takes = TakeLibraryService(repository: FakeTakeRepository(takes: [take]))
         takes.load()
         let quota = UsageQuotaService(defaults: defaults.defaults)
         for _ in 0..<usedExports { quota.recordCleanExport(tier: .free) }
         let exporter = FakeVideoExporter()
         let photos = FakePhotoSaver()
+        let apps = FakeAppOpener()
+        let editor = FakeTakeEditor()
         let toast = ToastService()
         let viewModel = TakeReviewViewModel(
             takeID: take.id, takes: takes, quota: quota, tier: { tier },
-            exporter: exporter, photos: photos, toast: toast
+            exporter: exporter, photos: photos, apps: apps, editing: editor, library: library, toast: toast
         )
-        return Scenario(viewModel: viewModel, exporter: exporter, photos: photos, quota: quota, takes: takes, toast: toast, defaults: defaults)
+        return Scenario(
+            viewModel: viewModel, exporter: exporter, photos: photos, apps: apps, editor: editor,
+            quota: quota, takes: takes, toast: toast, defaults: defaults
+        )
     }
 
     @Test func freeSaveIsCleanAndCounted() async {
@@ -75,12 +85,112 @@ struct TakeReviewViewModelTests {
         #expect(scenario.viewModel.exportNotice == nil)
     }
 
-    @Test func shareHandsTheFileToTheShareSheet() async {
+    @Test func moreHandsTheFileToTheShareSheet() async {
         let scenario = makeScenario(tier: .subscriber)
         defer { scenario.defaults.tearDown() }
-        await scenario.viewModel.share()
+        await scenario.viewModel.share(to: nil)
         #expect(scenario.viewModel.shareURL != nil)
         #expect(scenario.photos.savedURLs.isEmpty)
+    }
+
+    @Test func sharingToAPlatformSavesThenOpensItsApp() async {
+        let scenario = makeScenario()
+        defer { scenario.defaults.tearDown() }
+        scenario.viewModel.showsShareSheet = true
+        await scenario.viewModel.share(to: .reels)
+        #expect(scenario.photos.savedURLs.count == 1)
+        #expect(scenario.apps.opened == [.reels])
+        #expect(scenario.viewModel.shareURL == nil)
+        #expect(!scenario.viewModel.showsShareSheet)
+        #expect(scenario.toast.message == "Ready to post on Reels · 4 of 5 clean left")
+        #expect(scenario.viewModel.take?.isExported == true)
+    }
+
+    @Test func aMissingAppFallsBackToTheShareSheet() async {
+        let scenario = makeScenario(tier: .subscriber)
+        defer { scenario.defaults.tearDown() }
+        scenario.apps.installed = []
+        scenario.viewModel.showsShareSheet = true
+        await scenario.viewModel.share(to: .tiktok)
+        #expect(scenario.photos.savedURLs.count == 1)
+        #expect(scenario.viewModel.shareURL != nil)
+        // The system share sheet opens on top of Share to.
+        #expect(scenario.viewModel.showsShareSheet)
+    }
+
+    @Test func sharingPastTheFreeLimitAsksFirst() async {
+        let scenario = makeScenario(usedExports: 5)
+        defer { scenario.defaults.tearDown() }
+        await scenario.viewModel.share(to: .shorts)
+        #expect(scenario.viewModel.paywall == .export)
+        #expect(scenario.apps.opened.isEmpty)
+        await scenario.viewModel.exportWithWatermark()
+        #expect(scenario.exporter.exports.first?.watermark == true)
+        #expect(scenario.apps.opened == [.shorts])
+        #expect(scenario.toast.message == "Ready to post on Shorts")
+    }
+
+    @Test func burnInCaptionsWritesThemFromTheScript() async {
+        let scenario = makeScenario(tier: .subscriber)
+        defer { scenario.defaults.tearDown() }
+        scenario.viewModel.burnsInCaptions = true
+        await scenario.viewModel.share(to: .tiktok)
+        let options = scenario.exporter.exports.first
+        #expect(options?.burnsInCaptions == true)
+        #expect(options?.edit?.showsCaptions == true)
+        #expect(options?.edit?.captions == scenario.editor.captions)
+        #expect(scenario.editor.captionScript == "Okay, real talk.")
+        // The captions are for this export only; the take isn't edited.
+        #expect(scenario.viewModel.take?.edit == nil)
+    }
+
+    @Test func burnInCaptionsKeepsTheEditsCaptions() async {
+        var take = TestData.take(scriptID: nil)
+        var edit = TakeEdit(sourceDuration: take.duration, aspect: .portrait)
+        edit.captions = [CaptionCue(text: "Mine.", start: 0, end: 1)]
+        take.edit = edit
+        let scenario = makeScenario(tier: .subscriber, take: take)
+        defer { scenario.defaults.tearDown() }
+        scenario.viewModel.burnsInCaptions = true
+        await scenario.viewModel.save()
+        #expect(scenario.exporter.exports.first?.edit?.captions.map(\.text) == ["Mine."])
+        #expect(scenario.editor.captionScript == nil)
+    }
+
+    @Test func fourKIsPro() {
+        let free = makeScenario()
+        defer { free.defaults.tearDown() }
+        free.viewModel.setQuality(.uhd4K)
+        #expect(free.viewModel.quality == .hd1080)
+        #expect(free.viewModel.paywall == .export)
+
+        let pro = makeScenario(tier: .subscriber)
+        defer { pro.defaults.tearDown() }
+        pro.viewModel.setQuality(.uhd4K)
+        #expect(pro.viewModel.quality == .uhd4K)
+        #expect(pro.viewModel.paywall == nil)
+    }
+
+    @Test func qualityOnlyScalesDown() async {
+        var take = TestData.take(scriptID: nil)
+        take.resolution = .uhd4K
+        let scenario = makeScenario(tier: .subscriber, take: take)
+        defer { scenario.defaults.tearDown() }
+        #expect(scenario.viewModel.shareMeta == "0:30 · 9:16 · 1080p")
+        await scenario.viewModel.save()
+        #expect(scenario.exporter.exports.last?.shortSide == 1080)
+
+        scenario.viewModel.setQuality(.uhd4K)
+        #expect(scenario.viewModel.shareMeta == "0:30 · 9:16 · 4K")
+        await scenario.viewModel.save()
+        #expect(scenario.exporter.exports.last?.shortSide == nil)
+    }
+
+    @Test func fourKOfA1080pTakeStays1080p() {
+        let scenario = makeScenario(tier: .subscriber)
+        defer { scenario.defaults.tearDown() }
+        scenario.viewModel.setQuality(.uhd4K)
+        #expect(scenario.viewModel.shareMeta == "0:30 · 9:16 · 1080p")
     }
 
     @Test func markingTheBestTake() {
@@ -110,7 +220,8 @@ struct TakeReviewViewModelTests {
         takes.load()
         let viewModel = TakeReviewViewModel(
             takeID: second.id, takes: takes, quota: UsageQuotaService(defaults: defaults.defaults), tier: { .free },
-            exporter: FakeVideoExporter(), photos: FakePhotoSaver(), toast: ToastService()
+            exporter: FakeVideoExporter(), photos: FakePhotoSaver(), apps: FakeAppOpener(), editing: FakeTakeEditor(),
+            library: ScriptLibraryService(repository: FakeScriptRepository()), toast: ToastService()
         )
         #expect(viewModel.siblings.map(\.number) == [1, 2, 3])
         #expect(viewModel.delete()?.id == third.id)

@@ -4,6 +4,9 @@
     "" : {
 
     },
+    "%lld of %lld clean left" : {
+
+    },
     "·" : {
 
     },
@@ -481,6 +484,9 @@
     "Bullets are enough. Open with your usual greeting, hit the product with one strong line, show it working in the middle, close with the code." : {
 
     },
+    "Burn in captions" : {
+
+    },
     "Buy lifetime for %@" : {
 
     },
@@ -589,9 +595,6 @@
     "Couldn't reach the App Store. Check your connection and try again." : {
 
     },
-    "Couldn't sign in with Apple. Try again." : {
-
-    },
     "Couldn't write the script" : {
 
     },
@@ -616,7 +619,10 @@
     "Create more. Sound like you." : {
 
     },
-    "Creator Voice" : {
+    "Created for %@ — framed and safe-zoned for it" : {
+
+    },
+    "Creator DNA" : {
 
     },
     "Crop" : {
@@ -646,13 +652,16 @@
     "Cue will scroll it under the lens. Your camera stays where it is." : {
 
     },
+    "Cue's AI uses this to write scripts that sound like you. One profile for every platform." : {
+
+    },
     "Current" : {
 
     },
     "Cyan" : {
 
     },
-    "Default “Create for”" : {
+    "Default destination" : {
 
     },
     "Delete" : {
@@ -1319,16 +1328,7 @@
     "My first preset pack" : {
 
     },
-    "My phrases" : {
-
-    },
-    "My style" : {
-
-    },
     "My Sunday reset in 60 seconds" : {
-
-    },
-    "My vocabulary" : {
 
     },
     "Myth-busting" : {
@@ -1490,6 +1490,9 @@
     "Photo" : {
 
     },
+    "Phrases you always say" : {
+
+    },
     "Pick a format. Cue builds the structure — you fill in bullets." : {
 
     },
@@ -1592,6 +1595,9 @@
     "Purchases restored" : {
 
     },
+    "Quality" : {
+
+    },
     "Question" : {
 
     },
@@ -1616,15 +1622,8 @@
     "Reading width" : {
 
     },
-    "Ready to post · %lld of %lld clean exports left" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Ready to post · %1$lld of %2$lld clean exports left"
-          }
-        }
-      }
+    "Ready to post on %@" : {
+
     },
     "Record" : {
 
@@ -1732,6 +1731,9 @@
 
     },
     "Save this before you need it." : {
+
+    },
+    "Save video" : {
 
     },
     "Save with watermark instead" : {
@@ -1842,6 +1844,9 @@
     "Share" : {
 
     },
+    "Share to" : {
+
+    },
     "Short sentences" : {
 
     },
@@ -1869,15 +1874,6 @@
     "Side margins" : {
 
     },
-    "Sign out" : {
-
-    },
-    "Signed in with Apple" : {
-
-    },
-    "Signed out" : {
-
-    },
     "Silences removed · −%llds" : {
 
     },
@@ -1903,9 +1899,6 @@
 
     },
     "Something you always say. The AI weaves it into new scripts." : {
-
-    },
-    "Sounds like you" : {
 
     },
     "Spanish" : {
@@ -2262,9 +2255,6 @@
     "Use" : {
 
     },
-    "Use my voice in AI scripts" : {
-
-    },
     "Uses the connected mic, or the iPhone's" : {
 
     },
@@ -2431,9 +2421,6 @@
 
     },
     "You've used your %lld free clean exports. Your takes are safe — export them clean anytime with Pro." : {
-
-    },
-    "Your AI identity. Cue writes and rewrites every script to sound like you — on every platform." : {
 
     },
     "Your first line matters more than your camera." : {

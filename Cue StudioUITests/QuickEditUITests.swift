@@ -19,6 +19,8 @@ final class QuickEditUITests: XCTestCase {
         XCTAssertEqual(duration.label, "1:02 → 1:02")
 
         app.buttons["edit.splitButton"].tap()
+        // After a split nothing is selected (as in the prototype): tap the section after the cut.
+        app.descendants(matching: .any)["edit.timeline"].coordinate(withNormalizedOffset: CGVector(dx: 0.7, dy: 0.5)).tap()
         app.buttons["edit.deleteButton"].tap()
         XCTAssertTrue(app.staticTexts["Section deleted"].waitForExistence(timeout: 5))
         XCTAssertNotEqual(app.staticTexts["edit.durationChange"].label, "1:02 → 1:02")
@@ -36,8 +38,10 @@ final class QuickEditUITests: XCTestCase {
         app.buttons["edit.tool.captions"].tap()
         let toggle = app.switches["edit.captionsToggle"]
         XCTAssertTrue(toggle.waitForExistence(timeout: 5))
-        toggle.tap()
-        XCTAssertEqual(app.switches["edit.captionsToggle"].value as? String, "1")
+        // The switch sits at the trailing edge; the row's center is its label.
+        toggle.coordinate(withNormalizedOffset: CGVector(dx: 0.9, dy: 0.5)).tap()
+        let on = NSPredicate(format: "value == '1'")
+        XCTAssertEqual(XCTWaiter.wait(for: [expectation(for: on, evaluatedWith: toggle)], timeout: 10), .completed)
         app.buttons["edit.cancelButton"].tap()
         XCTAssertTrue(app.buttons["review.editButton"].waitForExistence(timeout: 5))
     }

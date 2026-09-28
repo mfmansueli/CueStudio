@@ -5,18 +5,26 @@
 
 import Foundation
 
-/// Save and share a take. The free plan exports clean up to its limit, then offers Pro or a
-/// watermarked copy.
+/// Save a take, or share it to a platform ("Share to"). The free plan exports clean up to its limit,
+/// then offers Pro or a watermarked copy.
 @MainActor
 @Observable
 final class TakeReviewViewModel {
-    enum ExportAction { case save, share }
+    enum ExportAction: Equatable {
+        case save
+        /// A platform, or nil for "More" (the system share sheet).
+        case share(ShareDestination?)
+    }
 
     let takeID: UUID
     private(set) var runningAction: ExportAction?
-    /// Set when an export is ready for the share sheet.
+    /// Set when an export is ready for the system share sheet.
     var shareURL: URL?
     var paywall: PaywallContext?
+    /// "Share to".
+    var showsShareSheet = false
+    var burnsInCaptions = false
+    private(set) var quality: ExportQuality = .hd1080
 
     private var pendingAction: ExportAction?
 
@@ -25,6 +33,9 @@ final class TakeReviewViewModel {
     private let tier: () -> MembershipTier
     private let exporter: VideoExporting
     private let photos: PhotoSaving
+    private let apps: ExternalAppOpening
+    private let editing: TakeEditing
+    private let library: ScriptLibraryService
     private let toast: ToastService
 
     init(
@@ -34,6 +45,9 @@ final class TakeReviewViewModel {
         tier: @escaping () -> MembershipTier,
         exporter: VideoExporting,
         photos: PhotoSaving,
+        apps: ExternalAppOpening,
+        editing: TakeEditing,
+        library: ScriptLibraryService,
         toast: ToastService
     ) {
         self.takeID = takeID
@@ -42,6 +56,9 @@ final class TakeReviewViewModel {
         self.tier = tier
         self.exporter = exporter
         self.photos = photos
+        self.apps = apps
+        self.editing = editing
+        self.library = library
         self.toast = toast
     }
 
@@ -75,6 +92,32 @@ final class TakeReviewViewModel {
 
     var exportsExhausted: Bool { cleanExportsLeft == 0 }
 
+    var isPro: Bool { tier().isPro }
+
+    /// "0:44 · 9:16 · 1080p"
+    var shareMeta: String {
+        guard let take else { return "" }
+        return "\(DurationText.clock(take.edit?.editedDuration ?? take.duration)) · \(take.outputAspect.label) · \(outputResolutionLabel(for: take))"
+    }
+
+    /// 4K keeps the recording's resolution (a 1080p take isn't upscaled); 1080p scales 4K down.
+    private func outputShortSide(for take: Take) -> CGFloat? {
+        take.resolution == .uhd4K && quality == .hd1080 ? quality.shortSide : nil
+    }
+
+    private func outputResolutionLabel(for take: Take) -> String {
+        quality == .uhd4K ? take.resolution.label : quality.label
+    }
+
+    /// 4K is part of Pro; on the free plan it opens the paywall.
+    func setQuality(_ quality: ExportQuality) {
+        if quality.isPro && !isPro {
+            paywall = .export
+            return
+        }
+        self.quality = quality
+    }
+
     // MARK: - Actions
 
     func toggleBest() {
@@ -99,8 +142,10 @@ final class TakeReviewViewModel {
         await export(.save, allowWatermark: false)
     }
 
-    func share() async {
-        await export(.share, allowWatermark: false)
+    /// A platform: export, save to Photos and open its app to post (the share sheet when the app
+    /// isn't there). Nil is "More": the system share sheet.
+    func share(to destination: ShareDestination?) async {
+        await export(.share(destination), allowWatermark: false)
     }
 
     /// "Save with watermark instead" on the paywall.
@@ -131,7 +176,10 @@ final class TakeReviewViewModel {
         do {
             let url = try await exporter.export(
                 videoAt: takes.videoURL(for: take),
-                options: ExportOptions(aspect: take.outputAspect, watermark: !clean, edit: take.edit)
+                options: ExportOptions(
+                    aspect: take.outputAspect, watermark: !clean, edit: await editForExport(take),
+                    burnsInCaptions: burnsInCaptions, shortSide: outputShortSide(for: take)
+                )
             )
             if clean {
                 quota.recordCleanExport(tier: currentTier)
@@ -140,16 +188,41 @@ final class TakeReviewViewModel {
             switch action {
             case .save:
                 try await photos.saveVideo(at: url)
+                showsShareSheet = false
                 toast.show(savedMessage(clean: clean, tier: currentTier))
-            case .share:
+            case .share(nil):
                 shareURL = url
-                if clean, let left = quota.cleanExportsLeft(for: currentTier) {
-                    toast.show(String(localized: "Ready to post · \(left) of \(UsagePolicy.freeCleanExports) clean exports left"))
+            case .share(let destination?):
+                // The platform's app picks the video from Photos.
+                try await photos.saveVideo(at: url)
+                if await apps.open(destination) {
+                    showsShareSheet = false
+                    toast.show(readyMessage(for: destination, clean: clean, tier: currentTier))
+                } else {
+                    shareURL = url
                 }
             }
         } catch {
             toast.show(error.localizedDescription)
         }
+    }
+
+    /// Captions to burn in come from the edit; a take never captioned gets them now (not saved).
+    private func editForExport(_ take: Take) async -> TakeEdit? {
+        guard burnsInCaptions else { return take.edit }
+        var edit = take.edit ?? TakeEdit(sourceDuration: take.duration, aspect: take.aspect)
+        edit.showsCaptions = true
+        if edit.captions.isEmpty {
+            let script = library.script(id: take.scriptID)?.text ?? ""
+            edit.captions = await editing.captions(forVideoAt: takes.videoURL(for: take), script: script, duration: edit.sourceDuration)
+        }
+        return edit
+    }
+
+    private func readyMessage(for destination: ShareDestination, clean: Bool, tier: MembershipTier) -> String {
+        let ready = String(localized: "Ready to post on \(destination.platform.label)")
+        guard clean, let left = quota.cleanExportsLeft(for: tier) else { return ready }
+        return ready + " · " + String(localized: "\(left) of \(UsagePolicy.freeCleanExports) clean left")
     }
 
     private func savedMessage(clean: Bool, tier: MembershipTier) -> String {

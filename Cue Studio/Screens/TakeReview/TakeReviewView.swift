@@ -38,6 +38,9 @@ struct TakeReviewView: View {
             tier: { store.tier },
             exporter: services.exporter,
             photos: services.photos,
+            apps: services.apps,
+            editing: services.editing,
+            library: services.library,
             toast: services.toast
         ))
         self.services = services
@@ -71,19 +74,13 @@ struct TakeReviewView: View {
             Text("The video is removed from Cue. Copies you saved to Photos stay there.")
         }
         .onDisappear { player.pause() }
-        .sheet(isPresented: Binding(get: { viewModel.shareURL != nil }, set: { if !$0 { viewModel.shareURL = nil } })) {
-            if let url = viewModel.shareURL {
-                ActivityView(items: [url])
-                    .presentationDetents([.medium, .large])
+        .sheet(isPresented: $viewModel.showsShareSheet) {
+            if let take = viewModel.take {
+                ShareToSheet(viewModel: viewModel, take: take)
+                    .modifier(ExportPresentations(viewModel: viewModel, isActive: true))
             }
         }
-        .fullScreenCover(item: $viewModel.paywall) { context in
-            PaywallView(
-                context: context,
-                onWatermarkInstead: { Task { await viewModel.exportWithWatermark() } },
-                onPurchased: { Task { await viewModel.continueAfterPurchase() } }
-            )
-        }
+        .modifier(ExportPresentations(viewModel: viewModel, isActive: !viewModel.showsShareSheet))
     }
 
     // MARK: - Video
@@ -215,7 +212,10 @@ struct TakeReviewView: View {
                     },
                     onRetake: onRetake,
                     onSave: { Task { await viewModel.save() } },
-                    onShare: { Task { await viewModel.share() } }
+                    onShare: {
+                        player.pause()
+                        viewModel.showsShareSheet = true
+                    }
                 )
             }
             .padding(.horizontal, Metrics.gutter)
