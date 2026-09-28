@@ -209,7 +209,11 @@ O protótipo simulava várias coisas; o app implementa de verdade ou deixa de fo
 - **IA:** só Apple Intelligence (Foundation Models), sem custo e sem backend. No aparelho:
   reescritas, tom, hooks, CTA, "Fit to time", "In my voice" e ideias de tema. Private Cloud Compute:
   o Prompt livre (temas factuais incluídos); se o PCC não estiver disponível (ou falhar), o modelo do
-  aparelho escreve e o aviso de fatos continua. Os roteiros saem estruturados (`@Generable`
+  aparelho escreve e o aviso de fatos continua. O PCC exige o entitlement gerenciado
+  `com.apple.developer.private-cloud-compute` (a Apple concede ao time sob pedido); sem ele o
+  FoundationModels derruba o app na primeira chamada, então fica desligado
+  (`ScriptAIService.hasPrivateCloudComputeEntitlement`) e o Prompt livre roda no aparelho até o
+  entitlement entrar em `Cue Studio.entitlements`. Os roteiros saem estruturados (`@Generable`
   `ScriptDraft`: título + blocos), com o Creator Voice nas instructions quando "Write in my voice"
   está ligado. Prompts factuais (história, ciência, "como surgiu…") ganham `factCheck`.
 - **Sem Apple Intelligence:** Prompt e as reescritas mostram "Requires Apple Intelligence" e ficam

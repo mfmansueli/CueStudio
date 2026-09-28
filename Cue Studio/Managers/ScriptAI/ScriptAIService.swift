@@ -14,12 +14,24 @@ import os
 @MainActor
 @Observable
 final class ScriptAIService: ScriptWriting {
-    private let privateCloud = PrivateCloudComputeLanguageModel()
+    /// Private Cloud Compute needs the managed `com.apple.developer.private-cloud-compute`
+    /// entitlement, which Apple grants to the team on request. Without it FoundationModels stops the
+    /// app on the first request (a fatal error, not a thrown one) while `isAvailable` still says
+    /// yes, so it stays off until the entitlement is in `Cue Studio.entitlements` (a test keeps the
+    /// two in sync). Meanwhile free prompts are written on the device.
+    static let hasPrivateCloudComputeEntitlement = false
+
+    /// Nil while Private Cloud Compute is off.
+    private let privateCloud: PrivateCloudComputeLanguageModel?
     private let logger = Logger(subsystem: "studio.cue", category: "ScriptAI")
+
+    init(usesPrivateCloudCompute: Bool = ScriptAIService.hasPrivateCloudComputeEntitlement) {
+        privateCloud = usesPrivateCloudCompute ? PrivateCloudComputeLanguageModel() : nil
+    }
 
     var availability: AIAvailability {
         let onDevice = SystemLanguageModel.default.isAvailable
-        let cloud = privateCloud.isAvailable
+        let cloud = privateCloud?.isAvailable ?? false
         return AIAvailability(
             onDevice: onDevice,
             privateCloud: cloud,
@@ -138,10 +150,10 @@ final class ScriptAIService: ScriptWriting {
     }
 
     private func session(on model: AIModelRoute, instructions: String) -> LanguageModelSession {
-        switch model {
-        case .onDevice: LanguageModelSession(model: SystemLanguageModel.default, instructions: instructions)
-        case .privateCloud: LanguageModelSession(model: privateCloud, instructions: instructions)
+        if model == .privateCloud, let privateCloud {
+            return LanguageModelSession(model: privateCloud, instructions: instructions)
         }
+        return LanguageModelSession(model: SystemLanguageModel.default, instructions: instructions)
     }
 
     /// Runs `work` on `model`; when Private Cloud Compute fails (no network, quota reached, service
