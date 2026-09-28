@@ -18,7 +18,7 @@ struct FilmstripView: View {
     var body: some View {
         GeometryReader { proxy in
             ZStack(alignment: .leading) {
-                FilmstripFrames(videoURL: videoURL, duration: take.edit?.sourceDuration ?? take.duration, count: frameCount)
+                FilmstripFrames(videoURL: videoURL, timeline: take.edit?.timeline ?? EditTimeline(sourceDuration: take.duration), count: frameCount)
                 .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
                 .overlay(RoundedRectangle(cornerRadius: 10, style: .continuous).strokeBorder(Color.white.opacity(0.85), lineWidth: 1.5))
                 Capsule()

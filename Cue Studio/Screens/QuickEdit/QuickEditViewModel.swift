@@ -31,6 +31,8 @@ final class QuickEditViewModel {
     private(set) var isWritingCaptions = false
     /// Cancel with changes asks first.
     var confirmsDiscard = false
+    /// Clean Up's review of what it found is open.
+    var showsCleanUp = false
 
     let take: Take
     let player: EditPlayback
@@ -274,14 +276,28 @@ final class QuickEditViewModel {
         edit.timeline = timeline
     }
 
-    // MARK: - Clean Up: silences
+    // MARK: - Clean Up
+
+    /// How much of the take plays before a finding when it's previewed, so it's heard in context.
+    static let suggestionLeadIn: TimeInterval = 1
+
+    /// What Clean Up found between the handles, in the order it's heard, kept ones included.
+    /// Findings are suggestions: nothing leaves the edit until the creator removes it.
+    var cleanUpSuggestions: [CleanUpSuggestion] {
+        let timeline = edit.timeline
+        return edit.suggestions
+            .filter { $0.span.start >= timeline.trimStart && $0.span.end <= timeline.trimEnd }
+            .sorted { $0.span.start < $1.span.start }
+    }
+
+    /// Whether a finding no longer plays.
+    func isRemoved(_ suggestion: CleanUpSuggestion) -> Bool {
+        edit.timeline.isRemoved(suggestion.span)
+    }
 
     /// Pauses found in the take, between the handles, that the creator hasn't chosen to keep.
     private var pauses: [CleanUpSuggestion] {
-        let timeline = edit.timeline
-        return edit.suggestions.filter {
-            $0.kind == .pause && !$0.isKept && $0.span.start >= timeline.trimStart && $0.span.end <= timeline.trimEnd
-        }
+        cleanUpSuggestions.filter { $0.kind == .pause && !$0.isKept }
     }
 
     private var removedPauses: [TimeSpan] {
@@ -289,6 +305,11 @@ final class QuickEditViewModel {
     }
 
     var silencesAreRemoved: Bool { !removedPauses.isEmpty }
+
+    /// Pauses "Remove all" would take out: not kept and still playing.
+    var pausesLeftToRemove: Int {
+        pauses.filter { !edit.timeline.isRemoved($0.span) }.count
+    }
 
     /// "Remove silences · 4" or "Silences removed · −3s".
     var silenceLabel: String {
@@ -301,32 +322,81 @@ final class QuickEditViewModel {
         return found == 0 ? String(localized: "Remove silences") : String(localized: "Remove silences · \(found)")
     }
 
-    /// Finds the pauses the first time. Then removes them all in one step, or puts them back
-    /// when they're out; either way undo reverses it.
-    func toggleRemoveSilences() async {
-        guard isReady, !isFindingSilences else { return }
+    /// Finds the pauses the first time, then opens the review: each one can be kept or removed,
+    /// or all removed at once.
+    func reviewCleanUp() async {
+        guard isReady, !isFindingSilences, await findPausesIfNeeded() else { return }
+        showsCleanUp = true
+    }
+
+    /// "Remove all": the pauses not kept go, in one step undo takes back.
+    func removeAllPauses() {
+        var timeline = edit.timeline
+        guard timeline.remove(pauses.map(\.span)) else {
+            toast.show(String(localized: "No long pauses in this take"))
+            return
+        }
+        commit(timeline)
+    }
+
+    /// "Put all back": the removed pauses play again, in one step.
+    func restoreRemovedPauses() {
+        var timeline = edit.timeline
+        timeline.restore(removedPauses)
+        commit(timeline)
+    }
+
+    /// Takes one finding out of the edit, like any cut (undo brings it back).
+    func removeSuggestion(_ id: UUID) {
+        guard isReady, let index = edit.suggestions.firstIndex(where: { $0.id == id }) else { return }
+        let span = edit.suggestions[index].span
+        var timeline = edit.timeline
+        guard timeline.remove([span]) else {
+            if !edit.timeline.isRemoved(span) { toast.show(String(localized: "Keep at least one piece")) }
+            return
+        }
+        if edit.suggestions[index].isKept { edit.suggestions[index].isKept = false }
+        commit(timeline)
+    }
+
+    /// Keeps a finding: it plays again if it was removed, and "Remove all" leaves it alone.
+    func keepSuggestion(_ id: UUID) {
+        guard isReady, let index = edit.suggestions.firstIndex(where: { $0.id == id }) else { return }
+        let span = edit.suggestions[index].span
+        if !edit.suggestions[index].isKept { edit.suggestions[index].isKept = true }
+        var timeline = edit.timeline
+        timeline.restore([span])
+        commit(timeline)
+    }
+
+    /// Plays from a moment before a finding (or from where the edit picks up, when it's removed),
+    /// so the creator hears whether it helps.
+    func playSuggestion(_ id: UUID) {
+        guard isReady, let suggestion = edit.suggestions.first(where: { $0.id == id }) else { return }
+        let timeline = edit.timeline
+        let from = max(timeline.trimStart, suggestion.span.start - Self.suggestionLeadIn)
+        player.seek(to: timeline.editedTime(following: from))
+        player.play()
+    }
+
+    /// Looks for pauses once. False, with a message, when there are none between the handles.
+    private func findPausesIfNeeded() async -> Bool {
         if !edit.suggestions.contains(where: { $0.kind == .pause }) {
             isFindingSilences = true
             let found = try? await editing.silences(inVideoAt: videoURL)
             isFindingSilences = false
-            guard !isClosed else { return }
-            guard let found, !found.isEmpty else {
-                toast.show(String(localized: "No long pauses in this take"))
-                return
+            guard !isClosed else { return false }
+            guard let found else {
+                toast.show(String(localized: "Couldn't listen to this take"))
+                return false
             }
             edit.suggestions += found.map { CleanUpSuggestion(kind: .pause, span: $0, confidence: 1) }
         }
-        var timeline = edit.timeline
-        let removed = removedPauses
-        if removed.isEmpty {
-            guard timeline.remove(pauses.map(\.span)) else {
-                toast.show(String(localized: "No long pauses in this take"))
-                return
-            }
-        } else {
-            timeline.restore(removed)
+        guard cleanUpSuggestions.contains(where: { $0.kind == .pause }) else {
+            toast.show(String(localized: "No long pauses in this take"))
+            return false
         }
-        commit(timeline)
+        return true
     }
 
     // MARK: - Adjust

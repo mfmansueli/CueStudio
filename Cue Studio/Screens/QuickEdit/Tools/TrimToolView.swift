@@ -5,8 +5,8 @@
 
 import SwiftUI
 
-/// Trim: the timeline, then Cut at the playhead, Remove the selected piece and Remove silences.
-/// Undo and redo sit in the transport bar above.
+/// Trim: the timeline, then Cut at the playhead, Remove the selected piece and Remove silences
+/// (which opens the review of the pauses found). Undo and redo sit in the transport bar above.
 struct TrimToolView: View {
     let viewModel: QuickEditViewModel
 
@@ -28,7 +28,7 @@ struct TrimToolView: View {
                 .accessibilityHint(Text("Takes the selected piece out of the video"))
                 .accessibilityIdentifier("edit.removeButton")
                 Button {
-                    Task { await viewModel.toggleRemoveSilences() }
+                    Task { await viewModel.reviewCleanUp() }
                 } label: {
                     HStack(spacing: 7) {
                         if viewModel.isFindingSilences {
@@ -42,6 +42,7 @@ struct TrimToolView: View {
                 }
                 .buttonStyle(viewModel.silencesAreRemoved ? .cueTinted(.compact) : .cueSecondary(.compact))
                 .disabled(viewModel.isFindingSilences)
+                .accessibilityHint(Text("Finds long pauses to review, keep or remove"))
                 .accessibilityIdentifier("edit.silencesButton")
             }
             .padding(.top, 12)

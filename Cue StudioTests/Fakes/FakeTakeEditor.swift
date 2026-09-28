@@ -12,6 +12,8 @@ final class FakeTakeEditor: TakeEditing {
     /// Nil: the recording is missing.
     var duration: TimeInterval? = 64
     var silences: [TimeSpan] = [TimeSpan(start: 10, end: 12), TimeSpan(start: 30, end: 31)]
+    /// The take's sound can't be read.
+    var silencesFail = false
     var captions: [CaptionCue] = [CaptionCue(text: "Okay, real talk.", start: 0, end: 1)]
     private(set) var captionScript: String?
 
@@ -20,7 +22,10 @@ final class FakeTakeEditor: TakeEditing {
         return duration
     }
 
-    func silences(inVideoAt url: URL) async throws -> [TimeSpan] { silences }
+    func silences(inVideoAt url: URL) async throws -> [TimeSpan] {
+        guard !silencesFail else { throw EditSourceError.noDuration }
+        return silences
+    }
 
     func captions(forVideoAt url: URL, script: String, duration: TimeInterval) async -> [CaptionCue] {
         captionScript = script

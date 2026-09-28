@@ -6,7 +6,7 @@
 import XCTest
 
 /// Quick edit from a take's review, on a small real video: play and pause, seek, cut, remove,
-/// undo, redo, trim, captions, Done and Cancel.
+/// undo, redo, trim, Remove silences, captions, Done and Cancel.
 @MainActor
 final class QuickEditUITests: XCTestCase {
     override func setUp() {
@@ -96,6 +96,17 @@ final class QuickEditUITests: XCTestCase {
         let discard = app.buttons["Discard edits"]
         if discard.waitForExistence(timeout: 3) { discard.tap() }
         XCTAssertTrue(app.buttons["review.editButton"].waitForExistence(timeout: 5))
+    }
+
+    func testRemoveSilencesOnlySuggests() {
+        let app = openQuickEdit()
+        let time = app.staticTexts["edit.timeLabel"]
+        XCTAssertTrue(wait(for: time, value: "00:00:00 / 00:01:02"))
+        // The sample video is silent: nothing to suggest, and nothing is cut.
+        app.buttons["edit.silencesButton"].tap()
+        XCTAssertTrue(app.staticTexts["No long pauses in this take"].waitForExistence(timeout: 10))
+        XCTAssertFalse(app.buttons["cleanUp.removeAllButton"].exists)
+        XCTAssertEqual(app.staticTexts["edit.durationChange"].label, "1:02 → 1:02")
     }
 
     func testATakeWithoutItsVideoSaysSo() {

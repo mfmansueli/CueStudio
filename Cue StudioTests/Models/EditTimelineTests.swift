@@ -236,6 +236,16 @@ struct EditTimelineTests {
         #expect(timeline.reachable.continuousSpans == [TimeSpan(start: 0, end: 15), TimeSpan(start: 30, end: 60)])
     }
 
+    @Test func filmstripFramesComeOnlyFromWhatPlays() {
+        // [A][C] from [A][B][C][D]: 0–15 and 30–45.
+        var timeline = fourPieces()
+        timeline.removeSegment(id: timeline.segments[3].id)
+        timeline.removeSegment(id: timeline.segments[1].id)
+        #expect(timeline.sourceTimes(evenlyAcross: 3) == [5, 30, 40])
+        #expect(timeline.sourceTimes(evenlyAcross: 0).isEmpty)
+        #expect(EditTimeline(sourceDuration: 10).sourceTimes(evenlyAcross: 2) == [2.5, 7.5])
+    }
+
     @Test func fittingToTheFilesLength() {
         var timeline = EditTimeline(sourceDuration: 64)
         #expect(timeline.fitted(toSourceDuration: 64.0004) == timeline)

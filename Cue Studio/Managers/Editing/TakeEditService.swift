@@ -31,7 +31,13 @@ final class TakeEditService: TakeEditing {
     }
 
     func silences(inVideoAt url: URL) async throws -> [TimeSpan] {
-        let audio = try await audioFile(for: url)
+        let audio: URL
+        do {
+            audio = try await audioFile(for: url)
+        } catch AudioTrackExtractor.ExtractError.noAudio {
+            // Without sound there are no pauses to find; that isn't a failure.
+            return []
+        }
         let levels = try await Task.detached { try AudioLevelReader.levels(of: audio, interval: 0.05) }.value
         return SilenceDetector.silences(levels: levels, interval: 0.05)
     }

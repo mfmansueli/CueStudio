@@ -252,11 +252,19 @@ struct QuickEditViewModelTests {
 
     @Test func removeSilencesThenPutThemBack() async {
         let scenario = await makeScenario()
-        await scenario.viewModel.toggleRemoveSilences()
+        await scenario.viewModel.reviewCleanUp()
+        #expect(scenario.viewModel.showsCleanUp)
+        #expect(scenario.viewModel.silenceLabel == "Remove silences · 2")
+        // Finding pauses removes nothing: they're suggestions.
+        #expect(scenario.viewModel.edit.timeline.isWhole)
+        #expect(scenario.viewModel.pausesLeftToRemove == 2)
+
+        scenario.viewModel.removeAllPauses()
         #expect(scenario.viewModel.silencesAreRemoved)
         #expect(scenario.viewModel.silenceLabel == "Silences removed · −3s")
         #expect(scenario.viewModel.edit.editedDuration == 61)
-        await scenario.viewModel.toggleRemoveSilences()
+        #expect(scenario.viewModel.pausesLeftToRemove == 0)
+        scenario.viewModel.restoreRemovedPauses()
         #expect(scenario.viewModel.silenceLabel == "Remove silences · 2")
         #expect(scenario.viewModel.edit.timeline.isWhole)
         scenario.viewModel.undo()
@@ -267,9 +275,65 @@ struct QuickEditViewModelTests {
         let editor = FakeTakeEditor()
         editor.silences = []
         let scenario = await makeScenario(editor: editor)
-        await scenario.viewModel.toggleRemoveSilences()
+        await scenario.viewModel.reviewCleanUp()
+        #expect(!scenario.viewModel.showsCleanUp)
         #expect(scenario.toast.message == "No long pauses in this take")
         #expect(scenario.viewModel.edit.timeline.isWhole)
+    }
+
+    @Test func aTakeThatCantBeHeardSaysSo() async {
+        let editor = FakeTakeEditor()
+        editor.silencesFail = true
+        let scenario = await makeScenario(editor: editor)
+        await scenario.viewModel.reviewCleanUp()
+        #expect(!scenario.viewModel.showsCleanUp)
+        #expect(scenario.toast.message == "Couldn't listen to this take")
+    }
+
+    @Test func eachPauseCanBeRemovedOrKept() async {
+        let scenario = await makeScenario()
+        await scenario.viewModel.reviewCleanUp()
+        let found = scenario.viewModel.cleanUpSuggestions
+        #expect(found.map(\.span) == [TimeSpan(start: 10, end: 12), TimeSpan(start: 30, end: 31)])
+
+        scenario.viewModel.removeSuggestion(found[0].id)
+        #expect(scenario.viewModel.isRemoved(found[0]))
+        #expect(!scenario.viewModel.isRemoved(found[1]))
+        #expect(spans(scenario.viewModel) == [[0, 10], [12, 64]])
+
+        // Kept: it plays again, and "Remove all" leaves it alone.
+        scenario.viewModel.keepSuggestion(found[0].id)
+        #expect(scenario.viewModel.edit.timeline.isWhole)
+        #expect(scenario.viewModel.pausesLeftToRemove == 1)
+        scenario.viewModel.removeAllPauses()
+        #expect(spans(scenario.viewModel) == [[0, 30], [31, 64]])
+
+        // Each step is one undo.
+        scenario.viewModel.undo()
+        #expect(scenario.viewModel.edit.timeline.isWhole)
+        scenario.viewModel.undo()
+        #expect(spans(scenario.viewModel) == [[0, 10], [12, 64]])
+    }
+
+    @Test func playingAPauseStartsJustBeforeIt() async {
+        let scenario = await makeScenario()
+        await scenario.viewModel.reviewCleanUp()
+        let pause = scenario.viewModel.cleanUpSuggestions[1]
+        scenario.viewModel.playSuggestion(pause.id)
+        #expect(scenario.player.currentTime == 29)
+        #expect(scenario.player.isPlaying)
+
+        // Once removed, from where the edit picks up before it: 1 s earlier, minus the first cut.
+        scenario.viewModel.removeAllPauses()
+        scenario.viewModel.playSuggestion(pause.id)
+        #expect(scenario.player.currentTime == 27)
+    }
+
+    @Test func pausesOutsideTheHandlesArentOffered() async {
+        let scenario = await makeScenario()
+        dragHandle(.end, to: 20, on: scenario.viewModel)
+        await scenario.viewModel.reviewCleanUp()
+        #expect(scenario.viewModel.cleanUpSuggestions.map(\.span) == [TimeSpan(start: 10, end: 12)])
     }
 
     // MARK: - Captions and look

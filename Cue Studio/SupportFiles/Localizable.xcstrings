@@ -4,7 +4,139 @@
     "" : {
 
     },
+    "%@ · %@s" : {
+
+    },
+    "%@ · “%@”" : {
+
+    },
+    "Couldn't listen to this take" : {
+
+    },
+    "Cut" : {
+
+    },
+    "Cut at %@" : {
+
+    },
+    "Cuts the video in two at the playhead" : {
+
+    },
+    "Discard edits" : {
+
+    },
+    "Discard your edits?" : {
+
+    },
+    "Drag the yellow handles to trim. Cut at the playhead, then tap a piece to remove it." : {
+
+    },
+    "End of the edit" : {
+
+    },
+    "Filler word" : {
+
+    },
+    "Finds long pauses to review, keep or remove" : {
+
+    },
+    "It may have been deleted or damaged. The original take isn't changed." : {
+
+    },
+    "Keep" : {
+
+    },
+    "Keep at least one piece" : {
+
+    },
+    "Keep editing" : {
+
+    },
+    "Kept" : {
+
+    },
+    "Move the playhead away from the edges to cut" : {
+
+    },
+    "No pauses left between the handles." : {
+
+    },
     "Paste from clipboard" : {
+
+    },
+    "Pauses" : {
+
+    },
+    "Picked up where you left off" : {
+
+    },
+    "piece %lld of %lld" : {
+
+    },
+    "Piece removed" : {
+
+    },
+    "Play from just before" : {
+
+    },
+    "Possible retake" : {
+
+    },
+    "Processing…" : {
+
+    },
+    "Put all back" : {
+
+    },
+    "Puts this pause back in the video" : {
+
+    },
+    "Redo" : {
+
+    },
+    "Remove" : {
+
+    },
+    "Remove all · %lld" : {
+
+    },
+    "Removed" : {
+
+    },
+    "Select this piece" : {
+
+    },
+    "selected" : {
+
+    },
+    "Start of the edit" : {
+
+    },
+    "Suggestions only: a pause can be on purpose. Keep the ones that help." : {
+
+    },
+    "Takes the selected piece out of the video" : {
+
+    },
+    "Takes this pause out of the video" : {
+
+    },
+    "Tap a piece to select it" : {
+
+    },
+    "The preview couldn't be built" : {
+
+    },
+    "The take stays as it was before this edit." : {
+
+    },
+    "This video can't be opened" : {
+
+    },
+    "Time" : {
+
+    },
+    "Try another change, or cancel and open the take again." : {
 
     },
     "·" : {

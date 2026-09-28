@@ -148,6 +148,29 @@ struct QuickEditPlayerTests {
         player.stop()
     }
 
+    @Test func removingWhilePlayingHoldsTheOldItemThenPlaysOn() async throws {
+        let (player, edit, clip) = try await makePlayer()
+        defer { try? FileManager.default.removeItem(at: clip) }
+        var cut = edit
+        cut.timeline.split(atEdited: 1)
+        cut.timeline.split(atEdited: 2)
+        player.show(cut)
+        let item = player.avPlayer.currentItem
+        player.play()
+        try await waitUntil { player.currentTime > 0.3 }
+        // The middle piece: removing the last one would only move the end handle.
+        var removed = cut
+        removed.timeline.removeSegment(id: removed.timeline.segments[1].id)
+        player.show(removed)
+        // The old item stops at once: its times no longer match the edit.
+        #expect(player.avPlayer.rate == 0)
+        #expect(player.isPlaying)
+        try await waitUntil { player.avPlayer.currentItem !== item && player.avPlayer.rate > 0 }
+        #expect(player.isPlaying)
+        #expect(player.currentTime <= 2)
+        player.stop()
+    }
+
     @Test func aMissingFileFails() async throws {
         let player = QuickEditPlayer(videoURL: URL.temporaryDirectory.appending(path: "gone-\(UUID()).mov"), editing: TakeEditService())
         player.show(TakeEdit(sourceDuration: 3, aspect: .portrait))

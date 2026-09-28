@@ -49,6 +49,9 @@ struct QuickEditView: View {
             if phase != .active { viewModel.pauseAndKeepDraft() }
         }
         .onDisappear { viewModel.pauseAndKeepDraft() }
+        .sheet(isPresented: $viewModel.showsCleanUp) {
+            CleanUpSheet(viewModel: viewModel)
+        }
         .confirmationDialog("Discard your edits?", isPresented: $viewModel.confirmsDiscard, titleVisibility: .visible) {
             Button("Discard edits", role: .destructive) {
                 viewModel.discard()

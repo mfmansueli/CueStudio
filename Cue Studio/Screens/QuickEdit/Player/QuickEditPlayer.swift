@@ -38,6 +38,10 @@ final class QuickEditPlayer: EditPlayback {
     @ObservationIgnored private var isScrubbing = false
     /// Play again once the seek in progress lands.
     @ObservationIgnored private var resumesAfterSeek = false
+    /// New pieces are being built. The item on screen still plays the old ones, whose times no
+    /// longer map onto the edit, so it holds still and its ticks are ignored until the new one
+    /// is in.
+    @ObservationIgnored private var awaitsItem = false
 
     private static let blankTimeline = EditTimeline(sourceDuration: 0)
 
@@ -71,8 +75,12 @@ final class QuickEditPlayer: EditPlayback {
             // A new look or sound waits for the sliders to settle; new pieces show right away.
             let settles = itemKey?.spans == key.spans
             itemKey = key
+            if !settles, avPlayer.currentItem != nil {
+                awaitsItem = true
+                avPlayer.pause()
+            }
             rebuild(after: settles ? .milliseconds(250) : nil)
-        } else if state == .ready, let shown = itemTime, abs(shown - (windowStart + currentTime)) > 0.001 {
+        } else if state == .ready, !awaitsItem, let shown = itemTime, abs(shown - (windowStart + currentTime)) > 0.001 {
             requestSeek(to: currentTime)
         }
     }
@@ -87,7 +95,7 @@ final class QuickEditPlayer: EditPlayback {
             currentTime = 0
             resumesAfterSeek = true
             requestSeek(to: 0)
-        } else if isSeeking {
+        } else if isSeeking || awaitsItem {
             resumesAfterSeek = true
         } else {
             avPlayer.play()
@@ -99,7 +107,7 @@ final class QuickEditPlayer: EditPlayback {
         isPlaying = false
         avPlayer.pause()
         // The playhead stays on the frame that is showing (the last tick can trail it slightly).
-        if state == .ready, !isSeeking, let shown = itemTime {
+        if state == .ready, !isSeeking, !awaitsItem, let shown = itemTime {
             currentTime = clamped(shown - windowStart)
         }
     }
@@ -126,6 +134,7 @@ final class QuickEditPlayer: EditPlayback {
     func stop() {
         buildTask?.cancel()
         generation += 1
+        awaitsItem = false
         resumesAfterSeek = false
         isPlaying = false
         avPlayer.pause()
@@ -164,6 +173,7 @@ final class QuickEditPlayer: EditPlayback {
         guard generation == self.generation else { return }
         buildTask = nil
         isProcessing = false
+        awaitsItem = false
         // Paused while the new item finds the playhead, so it never plays from its start.
         avPlayer.pause()
         resumesAfterSeek = isPlaying
@@ -177,6 +187,7 @@ final class QuickEditPlayer: EditPlayback {
         guard generation == self.generation else { return }
         buildTask = nil
         isProcessing = false
+        awaitsItem = false
         // The next change tries again.
         itemKey = nil
         pause()
@@ -212,19 +223,20 @@ final class QuickEditPlayer: EditPlayback {
     private func runSeeks() async {
         while let target = pendingSeek {
             pendingSeek = nil
-            guard avPlayer.currentItem != nil else { continue }
+            // Waiting for new pieces: the new item seeks to the playhead when it's in.
+            guard avPlayer.currentItem != nil, !awaitsItem else { continue }
             let time = CMTime(seconds: windowStart + target, preferredTimescale: 600)
             await avPlayer.seek(to: time, toleranceBefore: .zero, toleranceAfter: .zero)
         }
         isSeeking = false
-        if resumesAfterSeek {
+        if resumesAfterSeek, !awaitsItem {
             resumesAfterSeek = false
             if isPlaying { avPlayer.play() }
         }
     }
 
     private func playerDidTick(_ time: CMTime) {
-        guard state == .ready, !isSeeking, !isScrubbing, time.isNumeric else { return }
+        guard state == .ready, !isSeeking, !isScrubbing, !awaitsItem, time.isNumeric else { return }
         let edited = time.seconds - windowStart
         let reachedEnd = edited >= duration - 0.001
         currentTime = clamped(edited)

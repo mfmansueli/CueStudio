@@ -152,15 +152,28 @@ nonisolated struct EditTimeline: Codable, Hashable, Sendable {
         return nil
     }
 
-    /// The playhead after an edit: `time` in `previous`, moved to the same moment of the recording
-    /// here. When that moment was cut, to where the edit picks up after it (or to its end).
-    func editedTime(matching time: TimeInterval, in previous: EditTimeline) -> TimeInterval {
-        let source = previous.sourceTime(forEdited: time)
+    /// Where a moment of the recording plays in the edit; when it was cut, where the edit picks up
+    /// after it (or its end).
+    func editedTime(following source: TimeInterval) -> TimeInterval {
         if let edited = editedTime(forSource: source) { return edited }
         if let next = segments.firstIndex(where: { $0.sourceStart >= source }) {
             return editedStart(ofSegmentAt: next)
         }
         return editedDuration
+    }
+
+    /// The playhead after an edit: `time` in `previous`, moved to the same moment of the recording
+    /// here. When that moment was cut, to where the edit picks up after it (or to its end).
+    func editedTime(matching time: TimeInterval, in previous: EditTimeline) -> TimeInterval {
+        editedTime(following: previous.sourceTime(forEdited: time))
+    }
+
+    /// `count` moments of the recording spread evenly across the edit, one from the middle of
+    /// each equal stretch: what a filmstrip of the edited video shows. Cut pieces never appear.
+    func sourceTimes(evenlyAcross count: Int) -> [TimeInterval] {
+        let length = editedDuration
+        guard count > 0, length > 0 else { return [] }
+        return (0..<count).map { sourceTime(forEdited: length * (Double($0) + 0.5) / Double(count)) }
     }
 
     /// Whether nothing of `span` plays any more.
