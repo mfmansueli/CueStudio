@@ -1,14 +1,14 @@
-# Prompt para o Claude Code — Cue Teleprompter: V1 → V7
+# Prompt para o Claude Code — Cue Teleprompter: V1 → V9
 
 > Copie tudo abaixo da linha e cole no Claude Code, na raiz do repositório do app.
-> Antes, coloque o arquivo de referência `Cue Teleprompter v7.dc.html` em `design/` no repositório.
+> Antes, coloque o arquivo de referência `Cue Teleprompter v9.dc.html` em `design/` no repositório.
 
 ---
 
-Você vai evoluir o app iOS **Cue** (teleprompter para criadores de conteúdo) da versão atual (V1) para a versão de design V7.
+Você vai evoluir o app iOS **Cue** (teleprompter para criadores de conteúdo) da versão atual (V1) para a versão de design V9.
 
 ## Referência de design
-- A fonte da verdade visual e de comportamento é `design/Cue Teleprompter v7.dc.html`, um protótipo HTML interativo.
+- A fonte da verdade visual e de comportamento é `design/Cue Teleprompter v9.dc.html`, um protótipo HTML interativo.
   - O template (markup) mostra o layout, os estilos e o texto de cada tela.
   - A classe `Component` no `<script>` mostra os estados, as regras e os dados de exemplo.
 - Leia esse arquivo inteiro antes de começar. Quando este prompt e o protótipo divergirem, siga o protótipo e me avise.
@@ -121,7 +121,7 @@ Use **apenas** a Apple Intelligence:
 
 ## Fase 5 — Teleprompter (Selfie)
 - **Câmera em primeiro plano:**
-  - Painel de texto flutuante com largura padrão de 60% (ajustável entre 50% e 75%) e fundo com 25% de opacidade.
+  - Painel de texto flutuante com largura padrão de 93% (ajustável entre 50% e 93%) e fundo com 25% de opacidade.
   - Sombra leve no texto para legibilidade.
   - A posição e a altura do painel vêm do preset da plataforma.
 - **Topo:** fechar, segmento **Selfie | Studio** e o chip "{Plataforma} · 9:16", que abre Create for.
@@ -136,13 +136,13 @@ Use **apenas** a Apple Intelligence:
   3. Controles de câmera: última take, ajustes de câmera, botão gravar, virar câmera e timer.
 - **Voice Following:** use `Speech` no aparelho para acompanhar a fala e rolar o texto até a palavra atual. Quando a fala pausa, a rolagem espera.
 - **Aviso ao parar antes do mínimo:** card com "18s short of 1:00" + explicação da regra da plataforma, e os botões "Stop anyway" / **"Keep going"**.
-- **AI Coach** (toggle no Display): mostra ou esconde as marcações de performance. Elas ficam discretas (caixa-alta, 0.42 em, amarelo translúcido), com o texto falado em destaque.
+- **AI Coach** (toggle no Display, **desligado por padrão**): mostra ou esconde as marcações de performance. Elas ficam discretas (caixa-alta, 0.42 em, amarelo translúcido), com o texto falado em destaque.
 - **Sem roteiro (Freestyle):** a linha do roteiro vira "Freestyle — No script, add one anytime" + botão "Add script".
 
 **Sheet Display:**
 - Detents média e máxima. A máxima **nunca cobre a área de leitura**: a borda de cima da sheet para exatamente onde o painel de texto termina. Arrastar para baixo fecha.
 - **Prévia ao vivo** (selo verde "Live preview").
-- **Quick:** AI Coach, Text size, Reading width, Reading line (Top/Bottom), Background opacity, Camera blur (Off/Low/Medium/High).
+- **Quick:** AI Coach, Text size, Reading width, Reading line (Top/Bottom), Background opacity, Camera blur (Off/Subtle/Soft/Medium, bem leve: no máximo ~6 pt de raio).
   - Nota: *"Background and blur only change your preview — never the recording."*
 - **Advanced** (recolhível): fonte, espaçamento entre linhas, margens, alinhamento, cor do texto, mostrar linha de leitura, espelhar texto.
 - **No Studio**, esconda largura, opacidade e desfoque, e mostre a cor de fundo.
@@ -207,10 +207,10 @@ struct SocialSafeZonePreset: Codable {
   - câmera traseira: por volta de 36% da altura do frame;
   - no Studio não há câmera.
 - **Ajuste:** o usuário arrasta a linha verticalmente pela alça (alvo de 44 pt) ou usa ↑/↓ nos ajustes, e tem **Reset**. A posição é guardada como distância da lente, para funcionar em qualquer iPhone.
-- **Primeira vez:** mostre a dica "Don't read the text. Talk to the line.", que some ao tocar ou ao dar play.
+- **Sem dica de primeiro uso** sobre a linha.
 
 ### Regra 5 — Text Window (camada própria)
-- **Altura** de 160 a 380 pt (padrão 250) e **largura** de 50 a 75% (padrão 60%, controlada para evitar movimento horizontal dos olhos).
+- **Altura** de 160 a 380 pt (**padrão 380, o máximo**) e **largura** de 50 a 93% (**padrão 93%, o máximo**; o usuário pode estreitar). As linhas quebram normalmente (sem balancear), para preencher o espaço horizontal em qualquer tamanho de fonte.
 - **A linha fica sempre dentro da janela**, por volta de 25% do topo, com as próximas frases aparecendo abaixo. Se a linha for movida, a janela acompanha. São duas camadas com estados separados, e a relação é só uma restrição de layout.
 - **O padding** do conteúdo é calculado para que a linha atual fique centrada na Reading Line.
 
@@ -259,22 +259,107 @@ struct SocialSafeZonePreset: Codable {
   - Ações **Edit · Retake · Save · Share**, com Share em amarelo.
   - Só uma take por roteiro pode ser a melhor.
 
-## Fase 8 — Quick edit
-- Cancel / "Quick edit 1:04 → 0:58" / Done. Prévia ao vivo e barra de ferramentas com 6 itens:
-  - **Trim:** alças amarelas, playhead, Split no playhead, Delete da seção selecionada, "Remove silences" (detectar silêncios com análise de áudio).
-  - **Audio:** volume de 0 a 150%, "Enhance voice", "Reduce background noise".
-  - **Adjust:** exposição, contraste e temperatura (−100 a +100), com botão Auto.
-  - **Filters:** Original, Vivid, Warm, Cool, Mono, Film.
-  - **Crop:** 9:16, 4:5, 1:1, 16:9, arrastar para reposicionar e Reset.
-  - **Captions:** gerar a partir do roteiro, sincronizadas com a transcrição do `Speech`, em 3 estilos (Classic, Bold, Highlight) e 3 posições.
-- Implemente com **AVFoundation** (`AVMutableComposition`, `AVVideoComposition` com Core Image), sem destruir o original.
-- Done salva a nova duração e marca a take como Edited.
+## Fase 8 — Quick edit: um editor pequeno e real (não uma tela que parece editor)
+
+Fluxo: **RECORD → QUICK EDIT → CLEAN UP → EXPORT**. Os princípios de interação vêm de editores consolidados (timeline, trim, edição orientada à fala), mas **sem copiar UI**. Nada na tela pode ser falso: se um controle aparece, ele funciona.
+
+**Antes de codificar**, mapeie e me reporte:
+- a tela e o player atuais;
+- a fonte do vídeo, `currentTime`/`duration` e os thumbnails;
+- o estado da timeline e dos handles;
+- a exportação, o gerenciamento de estado e a navegação.
+
+Reaproveite o que funciona. Refatore **só a camada de edição**, se ela impedir precisão.
+
+### Modelo (não destrutivo)
+- `SourceMedia` (URL, duração, fps, tamanho) é **imutável**.
+- `EditDecisionList = [Segment]`, com `Segment { sourceStart, sourceEnd }` em segundos do original.
+  - Trim altera o primeiro `sourceStart` e o último `sourceEnd`.
+  - Cut divide um segmento.
+  - Delete remove um segmento.
+  - Remover trecho corta um intervalo da timeline editada.
+  - Clean Up corta intervalos do original.
+  - **Tudo passa pelas mesmas funções puras** (`cutEdited`, `cutSource`, `split`, `trim`), com testes unitários.
+- **A timeline mostra a sequência editada.** Trechos removidos aparecem só como um ponto vermelho discreto na junção.
+- **Estados separados:** SourceMedia, Player, Timeline (EDL, seleção, faixa), History, Cleanup (sugestões) e Export.
+- **Invariantes:** `start < end`; o playhead fica sempre em [0, duração editada]; pelo menos um segmento com 0,3 s ou mais.
+
+### Player e playhead (a fonte da verdade é o AVPlayer)
+- Monte uma `AVMutableComposition` a partir da EDL e toque com `AVPlayer`.
+- A playhead lê o tempo por `addPeriodicTimeObserver`. **Nada de animação independente.**
+- Ao chegar ao fim, pausa.
+- **Scrub:** tocar ou arrastar a timeline faz `seek(to:toleranceBefore:.zero, toleranceAfter:.zero)` durante o arraste, sem tocar o vídeo. Ao soltar, fica pausado.
+- Tocar no preview faz play/pause.
+- Tempo exibido: `00:04.32 / 00:11.00`. Com 10 min ou mais: `HH:MM:SS`. **Uma única função de formatação.**
+
+### Gestos (prioridade)
+- **Ordem:** HANDLE (trim) > PLAYHEAD (scrub) > FAIXA (remover trecho) > TIMELINE (seek + selecionar segmento) > PREVIEW (play/pause).
+- Alças com hit area de 32 pt ou mais, visual fino, feedback de estado ativo e um balão com o tempo ("Start 00:02.14").
+- Durante o trim, a escala da timeline fica congelada; ela é recalculada ao soltar.
+- Mover o END para antes da playhead leva a playhead junto.
+
+### Ações (hierarquia)
+1. Play/Pause · 2. Scrub · 3. Trim · 4. **Remove part**. Remove part é a ação principal: arrasta-se uma faixa vermelha e confirma-se "Remove 00:02.10"; internamente são 2 splits + delete.
+5. **Cut** na playhead (secundária) + tocar num lado + **Delete**.
+6. **Clean Up** · 7. **Undo/Redo** · 8. Done (exportar).
+
+### Undo/Redo
+- Pilha de snapshots **reais**: EDL + status das sugestões, até 60 níveis.
+- Cobre trim, cut, delete, remover trecho e Clean Up.
+- Qualquer nova ação limpa o redo.
+
+### Clean Up (sugestões — o usuário decide)
+Tudo no aparelho e sem custo:
+- **Transcrição com tempo por palavra:** `SFSpeechRecognizer` com `requiresOnDeviceRecognition = true` (ou `SpeechAnalyzer`/`SpeechTranscriber` no iOS 26, se disponível).
+- **Silêncios:** RMS do áudio via `AVAudioFile`/Accelerate. O limiar é ajustável ("Ignore pauses under 0.7s"); pausas curtas ficam como naturais.
+- **Vícios de linguagem:** listas por idioma (um, uh, ah, é, né, tipo, like, you know), cada um com `startTime, endTime, text, confidence`. Casos ambíguos são classificados pelo Foundation Models no aparelho. Os de baixa confiança **não** entram no "Remove all".
+- **Regravações:** compare a transcrição com o **roteiro do Cue** (frases repetidas, falsos começos, "espera, deixa eu falar de novo"). É um diferencial que editores genéricos não têm.
+- **Na interface:**
+  - "Analyzing your take…" enquanto processa;
+  - uma lista com cor por tipo (pausa #64D2FF, vício #FF9F0A, regravação #FF453A);
+  - por item: Keep / Remove, e tocar no item leva a playhead até ele;
+  - "Remove all · N", só com os de alta confiança.
+- **Cortes naturais:** transição de áudio de 10 a 20 ms em cada junção (`AVMutableAudioMix`), para não dar estalo. Deixe preparado para ajustar o ponto de corte até o cruzamento por zero e, no futuro, suavizar os cortes secos.
+
+### Timeline
+- Thumbnails reais com `AVAssetImageGenerator` (entre 6 e 14, conforme a duração), em cache e gerados de forma assíncrona.
+- **Pronto para zoom:** a escala é um parâmetro (pontos por segundo). O pinch pode entrar no MVP, sem botão.
+
+### Exportação
+- **Exporta a EDL**, nunca o original.
+- Só com cortes: `AVAssetExportPresetPassthrough` (sem recomprimir).
+- Com filtro, crop ou legendas: recodifica mantendo a resolução, o fps e o áudio originais.
+- Mostre "Processing…" com progresso e trate os erros: vídeo inválido, sem duração, arquivo removido, falta de memória, falha no export.
+
+### Autosave
+- Salve em JSON por take: referência da mídia, EDL, playhead, sugestões e histórico.
+- Cancel guarda um rascunho e Edit o restaura. Done grava a EDL na take, que pode ser reeditada sem perda.
+
+### Demais ferramentas (secundárias)
+Audio (Studio Voice), Adjust, Filters, Crop e Captions continuam como no protótipo, aplicadas por `AVVideoComposition`/Core Image sobre a EDL.
+
+### Ordem de implementação (só avance quando a anterior funcionar)
+1. Player real · 2. Timeline e thumbnails · 3. Playhead sincronizada · 4. Scrub · 5. Trim · 6. Modelo de segmentos · 7. Cut/Split · 8. Delete · 9. Undo/Redo · 10. Exportação da EDL · 11. Clean Up
+
+### Testes obrigatórios
+- **Fluxo básico:** play e pause com a playhead exata; seek por toque; scrub fluido; trim à esquerda e à direita; tocar depois do trim sem entrar nas áreas cortadas.
+- **Segmentos:**
+  - Cut no meio gera 2 segmentos.
+  - Delete remove o segmento; Undo o traz de volta; Redo o remove de novo.
+  - Com [A][B][C][D], remover B e D resulta em [A][C].
+- **Exportação:** o arquivo exportado corresponde exatamente à timeline; ao reabrir, a duração, o áudio e o vídeo estão corretos e nenhum trecho deletado aparece.
+- **Casos-limite:**
+  - vídeos de 1 s, 5 s, 30 s e 5 min; trim até poucos frames; alças cruzando;
+  - cut no início e no fim; deletar o primeiro, o do meio e o último;
+  - tentar deletar todos; undo e redo múltiplos;
+  - pausar durante o scrub; tocar durante o trim; rotação; ir para segundo plano e voltar.
+- **Revisão final do código:** estados duplicados, race conditions entre `currentTime` e playhead, gestos conflitantes, handles presos, memory leaks e timeline divergente do vídeo real.
 
 ## Fase 9 — Share to
 - **Cabeçalho:** miniatura, "Share to" e título.
 - **Grade:** TikTok, Reels, Shorts, YouTube, LinkedIn, Stories, Save video e More. A plataforma de origem fica destacada com anel amarelo, e a nota diz "Created for {X} — framed and safe-zoned for it".
 - **Opções:** "Burn in captions" e Quality (1080p/4K).
-- No plano grátis, mostre o contador de exportações sem marca d'água.
+- No plano grátis, mostre o contador "x of 5 free exports".
 - Os destinos abrem o app correspondente, ou o `UIActivityViewController` como fallback.
 
 ## Fase 10 — Profile
@@ -290,21 +375,16 @@ struct SocialSafeZonePreset: Codable {
 - **Plano:** no grátis, medidor "Clean exports x of 5", a linha "Apple Intelligence · On-device · unlimited" e o botão "Try Pro free for 7 days". No Pro, o plano atual e "Manage".
 - **Settings:** Default "Create for", Monetization goals, Privacy & AI data, Restore purchases, Sign out.
 
-## Fase 11 — Monetização (StoreKit 2)
-- **Grátis:**
-  - Teleprompter completo (Selfie e Studio) e roteiros ilimitados.
-  - IA com Prompt, Themes e os formatos básicos.
-  - **5 exportações sem marca d'água**; depois, exportação ilimitada **com marca d'água discreta "Made with Cue"**.
-  - As takes nunca são bloqueadas e podem ser reexportadas sem marca depois de assinar.
-- **Pro:** exportação sem marca d'água até 4K, Creator Voice completo, Sponsored ad, variações de gancho, versões multiplataforma, sugestão de melhor take, controle remoto via Apple Watch e sincronização iPad/Mac.
-- **Produtos:** `pro.monthly` US$ 7,99 · `pro.annual` US$ 39,99 com 7 dias grátis (pré-selecionado, selo "SAVE 58%") · `pro.lifetime` US$ 89,99 (não consumível).
-  - Preços regionais sugeridos no Brasil: R$ 24,90 / R$ 119,90 / R$ 299,90.
-- **Paywall** em tela cheia, com título contextual:
-  - Exportar: "Post without the watermark", com a comparação com/sem marca e o link "Save with watermark instead".
-  - Formato PRO: "Brand deals, done right".
-  - Profile: "Create more. Sound like you."
-  - Rodapé: Restore, Terms, Privacy.
-  - Nunca mostre o paywall durante uma gravação.
+## Fase 11 — Modelo de negócio (StoreKit 2) — LEIA COM ATENÇÃO
+
+**Regra central: nenhuma função fica bloqueada para quem está experimentando.** Toda a IA roda com Apple Intelligence (no aparelho / Private Cloud Compute), então não tem custo por uso para nós. O único limite do plano grátis é a **exportação de vídeos**.
+
+- **Grátis:** TODOS os recursos liberados — teleprompter (Selfie e Studio), roteiros ilimitados, Generate with AI (Prompt, Themes e todos os Formats, inclusive Sponsored ad), Creator Voice, Studio Voice, Quick edit, Clean Up, legendas. **Inclui 5 exportações de vídeo** (salvar no Fotos ou compartilhar), sem marca d'água.
+- **Depois da 5ª exportação:** ao tentar exportar de novo, abra o paywall oferecendo **7 dias grátis** no plano **mensal** ou **anual**. Não existe opção com marca d'água e não existe plano vitalício. Gravar, editar e criar roteiros continuam liberados; só exportar exige a assinatura. As takes nunca são apagadas nem bloqueadas.
+- **Não use badges "PRO" nem bloqueios de recurso** em nenhuma tela. Remova qualquer lógica `isPro` que esconda funções; ela só deve controlar a exportação.
+- **Produtos:** `pro.monthly` US$ 7,99 e `pro.annual` US$ 39,99 (pré-selecionado, selo "SAVE 58%"), ambos com introductory offer de 7 dias grátis. Preços regionais sugeridos no Brasil: R$ 24,90 / R$ 119,90.
+- **Contador:** guarde o número de exportações grátis de forma que sobreviva a reinstalação (Keychain ou iCloud Key-Value Store). Mostre "x of 5 free exports" no Profile e na tela de revisão.
+- **Paywall:** título "Keep posting with Cue", aberto a partir do Export ou do Profile. Rodapé com Restore, Terms e Privacy. Nunca mostre o paywall durante uma gravação.
 
 ## Fora do escopo agora
 - Onboarding com Creator DNA no primeiro acesso.

@@ -42,7 +42,6 @@ struct ScriptActionsMenu: View {
                 }
             } label: {
                 Label("Make a version for…", systemImage: "rectangle.on.rectangle")
-                if actions.versionsAreLocked { Text("Pro") }
             }
         }
         ShareLink(item: script.shareText, subject: Text(script.displayTitle)) {

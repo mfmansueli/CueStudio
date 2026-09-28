@@ -7,7 +7,7 @@ import AVFoundation
 import CoreImage
 
 /// Renders each frame of an edited take with Core Image: upright, cropped to the take's frame,
-/// with Adjust and Filters, then captions and the watermark. Used by the Quick edit preview and by
+/// with Adjust and Filters, then captions. Used by the Quick edit preview and by
 /// exports, so both show exactly the same thing.
 final class CueVideoCompositor: NSObject, AVVideoCompositing, @unchecked Sendable {
     private let context = CIContext(options: [.cacheIntermediates: false])

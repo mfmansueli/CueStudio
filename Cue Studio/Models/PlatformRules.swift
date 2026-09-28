@@ -29,8 +29,6 @@ nonisolated struct PlatformRules: Codable, Hashable, Sendable {
         /// Only for platforms that pay by length.
         var monetization: Monetization?
         var prefersStudio: Bool
-        /// Selfie text window width, as a fraction of the screen.
-        var readingWidth: Double
         /// Where the platform's UI covers the video. None for horizontal video.
         var safeZone: SocialSafeZonePreset?
     }
@@ -97,7 +95,6 @@ nonisolated struct PlatformRules: Codable, Hashable, Sendable {
             minimum: monetization?.minimum,
             goal: monetization?.goal,
             prefersStudio: entry.prefersStudio,
-            readingWidth: entry.readingWidth,
             safeZone: entry.safeZone
         )
     }

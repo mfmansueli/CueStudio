@@ -5,13 +5,14 @@
 
 import Foundation
 
-/// Finds the pauses "Remove silences" cuts, from the loudness of the take over time. Pure, so it is
+/// Finds the pauses Clean Up suggests, from the loudness of the take over time. It finds them from
+/// 0.3 s up; Clean Up's "Ignore pauses under" decides which ones the creator sees. Pure, so it is
 /// tested with made-up levels.
 nonisolated enum SilenceDetector {
     /// Quieter than this (dBFS) counts as silence.
     static let threshold: Float = -42
-    /// Pauses shorter than this are part of speaking and stay.
-    static let minimumSilence: TimeInterval = 0.7
+    /// Pauses shorter than this are part of speaking and are never suggested.
+    static let minimumSilence: TimeInterval = 0.3
     /// Kept on each side of a cut so words never lose their first or last sound.
     static let padding: TimeInterval = 0.15
 
@@ -32,6 +33,11 @@ nonisolated enum SilenceDetector {
             }
         }
         return result
+    }
+
+    /// How long the silence around a cut really was: the cut keeps `padding` on each side.
+    static func silenceLength(ofCut span: TimeSpan) -> TimeInterval {
+        span.duration + 2 * padding
     }
 
     /// Total time the silences would cut.

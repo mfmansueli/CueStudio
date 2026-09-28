@@ -5,8 +5,8 @@
 
 import SwiftUI
 
-/// One yellow trim handle. Thin to look at; the strip gives it a wider reach for the finger.
-/// While dragged, its grip grows and it glows.
+/// One yellow trim handle. Thin to look at; the strip gives it a 32 pt reach for the finger.
+/// While dragged it turns white and its grip grows.
 struct TrimHandleView: View {
     let edge: TrimHandle
     let isActive: Bool
@@ -18,7 +18,7 @@ struct TrimHandleView: View {
             bottomTrailingRadius: isStart ? 0 : 6, topTrailingRadius: isStart ? 0 : 6,
             style: .continuous
         )
-        .fill(Palette.acc)
+        .fill(isActive ? Palette.ink : Palette.acc)
         .overlay {
             Capsule()
                 .fill(Palette.accInk.opacity(isActive ? 0.9 : 0.5))

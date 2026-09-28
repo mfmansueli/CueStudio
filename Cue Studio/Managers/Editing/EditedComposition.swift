@@ -19,7 +19,6 @@ nonisolated struct EditedComposition: @unchecked Sendable {
 
     struct Options: Sendable {
         var burnsInCaptions: Bool
-        var watermark: Bool
         /// Height of the output's short side in pixels (1080 or 2160); nil keeps the recording's.
         var shortSide: CGFloat?
     }
@@ -73,9 +72,6 @@ nonisolated struct EditedComposition: @unchecked Sendable {
         var overlays: [FrameOverlay] = []
         if options.burnsInCaptions, edit.showsCaptions {
             overlays += OverlayRenderer.captions(edit.editedCaptions, style: edit.captionStyle, position: edit.captionPosition, frame: crop.size)
-        }
-        if options.watermark, let badge = OverlayRenderer.watermark(frame: crop.size) {
-            overlays.append(badge)
         }
         let instruction = CompositionInstruction(
             timeRange: CMTimeRange(start: .zero, duration: cursor),

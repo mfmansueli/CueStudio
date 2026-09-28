@@ -84,12 +84,14 @@ struct PrompterViewModelTests {
         await scenario.viewModel.disappear()
     }
 
-    @Test func opensWithThePlatformsReadingWidth() async {
+    @Test func opensWithTheFullTextWindow() async {
         let scenario = makeScenario(script: TestData.script(platform: .linkedin))
         defer { scenario.defaults.tearDown() }
         scenario.preferences.prompter.readingWidth = 0.5
+        scenario.preferences.prompter.textWindowHeight = 200
         await scenario.viewModel.appear()
-        #expect(scenario.preferences.prompter.readingWidth == 0.64)
+        #expect(scenario.preferences.prompter.readingWidth == 0.93)
+        #expect(scenario.preferences.prompter.textWindowHeight == 380)
         #expect(scenario.preferences.camera.aspect == .vertical)
         await scenario.viewModel.disappear()
     }
@@ -103,7 +105,7 @@ struct PrompterViewModelTests {
         scenario.viewModel.setPlatform(.stories)
         #expect(scenario.viewModel.sheet == nil)
         #expect(scenario.viewModel.script?.platform == .stories)
-        #expect(scenario.preferences.prompter.readingWidth == 0.56)
+        #expect(scenario.preferences.prompter.readingWidth == 0.93)
         #expect(scenario.toast.message == "Create for Instagram Stories")
     }
 

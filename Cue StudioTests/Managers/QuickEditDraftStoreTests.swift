@@ -17,8 +17,8 @@ struct QuickEditDraftStoreTests {
 
     private func draft(takeID: UUID = UUID()) -> QuickEditDraft {
         var edit = TakeEdit(sourceDuration: 30, aspect: .portrait)
-        var history = EditHistory<EditTimeline>()
-        history.record(edit.timeline)
+        var history = EditHistory<EditSnapshot>()
+        history.record(EditSnapshot(timeline: edit.timeline, suggestions: edit.suggestions))
         edit.timeline.trimStart(to: 3)
         return QuickEditDraft(takeID: takeID, edit: edit, playhead: 4.2, history: history, savedAt: TestData.now)
     }

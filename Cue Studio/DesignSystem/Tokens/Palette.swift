@@ -98,10 +98,14 @@ enum Palette {
 
     // MARK: - Quick edit
 
-    /// A deleted section on the trim strip.
-    static let removedSection = Color(hex: 0xFF453A, opacity: 0.45)
-    /// The part of the strip outside the trim handles.
-    static let trimDim = Color.black.opacity(0.7)
+    /// Inside the red "Remove part" range.
+    static let removalFill = Color(hex: 0xFF453A, opacity: 0.3)
+    /// A selected section on the timeline.
+    static let selectedSectionFill = Color.white.opacity(0.14)
+    /// What a trim handle is about to cut, while it's dragged.
+    static let trimDim = Color.black.opacity(0.72)
+    /// Hairline around the time bubble above the timeline.
+    static let bubbleBorder = Color.white.opacity(0.25)
     /// Behind "Classic" captions.
     static let captionBox = Color.black.opacity(0.62)
     /// Behind the preview before the video loads.
@@ -129,8 +133,6 @@ enum Palette {
     static let readingLineHandle = Color(hex: 0x1E1E20, opacity: 0.55)
     static let readingLineHandleActive = Color(hex: 0xFFD60A, opacity: 0.55)
     static let readingLineHandleBorder = Color.white.opacity(0.28)
-    /// First-time tip under the reading line.
-    static let tipBackground = Color(hex: 0x141416, opacity: 0.88)
     /// The stop button left on screen while the controls are hidden.
     static let stopButtonRing = Color.white.opacity(0.85)
     static let stopButtonFill = Color.black.opacity(0.18)

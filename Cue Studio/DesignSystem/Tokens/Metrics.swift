@@ -20,6 +20,8 @@ enum Metrics {
     static let buttonHeight: CGFloat = 50
     static let largeButtonHeight: CGFloat = 54
     static let compactButtonHeight: CGFloat = 34
+    /// Tool buttons under a timeline (Remove part, Cut, Delete).
+    static let mediumButtonHeight: CGFloat = 42
     /// Minimum touch target.
     static let hitTarget: CGFloat = 44
     static let chipHeight: CGFloat = 34

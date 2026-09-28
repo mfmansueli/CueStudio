@@ -60,8 +60,7 @@ struct ProfileView: View {
                     onAddPhrase: {
                         newPhrase = ""
                         isAddingPhrase = true
-                    },
-                    onLocked: { paywall = .creatorVoice }
+                    }
                 )
             }
             Section {

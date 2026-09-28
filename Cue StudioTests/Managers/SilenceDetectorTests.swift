@@ -20,8 +20,15 @@ struct SilenceDetectorTests {
         #expect(abs(silences[0].end - 1.85) < 0.001)
     }
 
-    @Test func shortPausesStay() {
-        #expect(SilenceDetector.silences(levels: levels([(-20, 10), (-60, 5), (-20, 10)]), interval: 0.1).isEmpty)
+    @Test func breathsBetweenWordsAreNeverSuggested() {
+        #expect(SilenceDetector.silences(levels: levels([(-20, 10), (-60, 2), (-20, 10)]), interval: 0.1).isEmpty)
+    }
+
+    @Test func shortPausesAreFoundForTheThreshold() {
+        // Half a second: under the default "Ignore pauses under 0.7s", but found.
+        let silences = SilenceDetector.silences(levels: levels([(-20, 10), (-60, 5), (-20, 10)]), interval: 0.1)
+        #expect(silences.count == 1)
+        #expect(abs(SilenceDetector.silenceLength(ofCut: silences[0]) - 0.5) < 0.001)
     }
 
     @Test func trailingSilenceCounts() {

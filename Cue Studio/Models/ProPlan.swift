@@ -5,9 +5,10 @@
 
 import Foundation
 
-/// Cue Pro purchase options. Prices come from the App Store; these are identifiers and copy only.
+/// Cue Pro purchase options: two subscriptions, each with a 7-day free trial. Prices come from the
+/// App Store; these are identifiers and copy only.
 nonisolated enum ProPlan: String, Codable, CaseIterable, Identifiable, Sendable {
-    case annual, monthly, lifetime
+    case annual, monthly
 
     var id: String { rawValue }
 
@@ -15,7 +16,6 @@ nonisolated enum ProPlan: String, Codable, CaseIterable, Identifiable, Sendable 
         switch self {
         case .annual: "studio.cue.pro.annual"
         case .monthly: "studio.cue.pro.monthly"
-        case .lifetime: "studio.cue.pro.lifetime"
         }
     }
 
@@ -28,9 +28,6 @@ nonisolated enum ProPlan: String, Codable, CaseIterable, Identifiable, Sendable 
         switch self {
         case .annual: String(localized: "Annual")
         case .monthly: String(localized: "Monthly")
-        case .lifetime: String(localized: "Lifetime")
         }
     }
-
-    var isSubscription: Bool { self != .lifetime }
 }

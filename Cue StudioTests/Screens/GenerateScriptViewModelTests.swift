@@ -18,7 +18,7 @@ struct GenerateScriptViewModelTests {
         let defaults: TestDefaults
     }
 
-    private func makeScenario(tier: MembershipTier = .free, tab: GenerateTab = .prompt) -> Scenario {
+    private func makeScenario(tab: GenerateTab = .prompt) -> Scenario {
         let defaults = TestDefaults()
         let writer = FakeScriptWriter()
         let library = ScriptLibraryService(repository: FakeScriptRepository(), now: { TestData.now })
@@ -26,7 +26,7 @@ struct GenerateScriptViewModelTests {
         profile.addPhrase("Hey fam")
         let viewModel = GenerateScriptViewModel(
             initialTab: tab, writer: writer, library: library, profile: profile, rules: TestData.rulesService(),
-            tier: { tier }, toast: ToastService()
+            toast: ToastService()
         )
         return Scenario(viewModel: viewModel, writer: writer, library: library, profile: profile, defaults: defaults)
     }
@@ -178,21 +178,13 @@ struct GenerateScriptViewModelTests {
         #expect(scenario.writer.lastRequest?.voice == nil)
     }
 
-    @Test func sponsoredAdOpensThePaywallOnTheFreePlan() async {
+    @Test func sponsoredAdIsFree() async {
         let scenario = makeScenario(tab: .formats)
-        defer { scenario.defaults.tearDown() }
-        #expect(scenario.viewModel.isLocked(.ad))
-        scenario.viewModel.choose(.ad)
-        #expect(scenario.viewModel.selectedType == nil)
-        #expect(scenario.viewModel.paywall == .sponsoredAd)
-    }
-
-    @Test func sponsoredAdIsOpenOnPro() {
-        let scenario = makeScenario(tier: .subscriber, tab: .formats)
         defer { scenario.defaults.tearDown() }
         scenario.viewModel.choose(.ad)
         #expect(scenario.viewModel.selectedType == .ad)
-        #expect(scenario.viewModel.paywall == nil)
+        let script = await scenario.viewModel.generateFromBrief()
+        #expect(script?.type == .ad)
     }
 
     @Test func withoutTheModelFormatsStillGetTheStructuredDraft() async {
@@ -206,7 +198,7 @@ struct GenerateScriptViewModelTests {
     }
 
     @Test func choosingAFormatResetsTheBriefAndPicksAMatchingTone() {
-        let scenario = makeScenario(tier: .subscriber, tab: .formats)
+        let scenario = makeScenario(tab: .formats)
         defer { scenario.defaults.tearDown() }
         scenario.viewModel.choose(.ad)
         scenario.viewModel.setValue("Brand", for: ScriptType.ad.briefFields[0])

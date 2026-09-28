@@ -17,6 +17,4 @@ struct ScriptActions {
     var delete: (Script) -> Void
     /// "Make a version for…" another platform; nil hides it (the library menus).
     var makeVersion: ((Script, Platform) -> Void)? = nil
-    /// Versions are part of Pro: the menu says so on the free plan.
-    var versionsAreLocked = false
 }

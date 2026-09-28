@@ -11,8 +11,10 @@ protocol TakeEditing: AnyObject {
     /// Length of the recording, read from the file. Throws `EditSourceError` when the file is gone
     /// or can't be played.
     func sourceDuration(ofVideoAt url: URL) async throws -> TimeInterval
-    /// Pauses long enough to cut.
-    func silences(inVideoAt url: URL) async throws -> [TimeSpan]
+    /// Clean Up's findings: pauses from the take's loudness, and filler words and possible retakes
+    /// from its transcript in the script's language (pauses only when no speech model can listen).
+    /// None for a take without sound. Throws when the sound can't be read.
+    func cleanUpSuggestions(forVideoAt url: URL, script: String) async throws -> [CleanUpSuggestion]
     /// Captions from the script, timed to the voice; spread evenly when no speech model can listen.
     func captions(forVideoAt url: URL, script: String, duration: TimeInterval) async -> [CaptionCue]
     /// The edited take for a player.

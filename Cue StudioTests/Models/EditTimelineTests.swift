@@ -236,6 +236,24 @@ struct EditTimelineTests {
         #expect(timeline.reachable.continuousSpans == [TimeSpan(start: 0, end: 15), TimeSpan(start: 30, end: 60)])
     }
 
+    @Test func removePartTakesAnEditedRangeAcrossSections() {
+        // [A][C] from [A][B][C][D]: 0–15 and 30–45 play.
+        var timeline = fourPieces()
+        timeline.removeSegment(id: timeline.segments[3].id)
+        timeline.removeSegment(id: timeline.segments[1].id)
+        #expect(timeline.sourceSpans(forEdited: 10...20) == [TimeSpan(start: 10, end: 15), TimeSpan(start: 30, end: 35)])
+        #expect(timeline.removeEdited(10...20))
+        #expect(spans(timeline) == [[0, 10], [35, 45]])
+        #expect(timeline.editedDuration == 20)
+    }
+
+    @Test func removePartNeverTakesEverything() {
+        var timeline = EditTimeline(sourceDuration: 10)
+        #expect(!timeline.removeEdited(0...10))
+        #expect(timeline.isWhole)
+        #expect(timeline.sourceSpans(forEdited: 12...14).isEmpty)
+    }
+
     @Test func filmstripFramesComeOnlyFromWhatPlays() {
         // [A][C] from [A][B][C][D]: 0–15 and 30–45.
         var timeline = fourPieces()

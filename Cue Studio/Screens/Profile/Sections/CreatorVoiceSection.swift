@@ -6,16 +6,11 @@
 import SwiftUI
 
 /// How the creator sounds, which the AI writes with: sounds, phrases, vocabulary, style and niche.
-/// One profile for every platform. Vocabulary and style are part of Pro: on the free plan they
-/// carry the PRO badge and open the paywall.
+/// One profile for every platform, all of it free.
 struct CreatorVoiceSection: View {
     let onAddPhrase: () -> Void
-    let onLocked: () -> Void
 
     @Environment(CreatorProfileService.self) private var profile
-    @Environment(StoreManager.self) private var store
-
-    private var isLocked: Bool { !ProFeature.fullCreatorVoice.isUnlocked(for: store.tier) }
 
     var body: some View {
         @Bindable var profile = profile
@@ -60,24 +55,17 @@ struct CreatorVoiceSection: View {
                 .accessibilityIdentifier("profile.addPhraseButton")
             }
         }
-        group(String(localized: "My vocabulary"), isPro: true) {
-            Picker("My vocabulary", selection: Binding(
-                get: { profile.profile.vocabulary },
-                set: { vocabulary in
-                    if isLocked { onLocked() } else { profile.profile.vocabulary = vocabulary }
-                }
-            )) {
+        group(String(localized: "My vocabulary")) {
+            Picker("My vocabulary", selection: $profile.profile.vocabulary) {
                 ForEach(Vocabulary.allCases) { Text($0.label).tag($0) }
             }
             .pickerStyle(.segmented)
-            .opacity(isLocked ? 0.5 : 1)
             .accessibilityIdentifier("profile.vocabulary")
         }
-        group(String(localized: "My style"), isPro: true) {
-            chips(VoiceStyle.allCases, isOn: { !isLocked && profile.profile.styles.contains($0) }, label: \.label, identifier: "style") {
-                if isLocked { onLocked() } else { profile.toggleStyle($0) }
+        group(String(localized: "My style")) {
+            chips(VoiceStyle.allCases, isOn: { profile.profile.styles.contains($0) }, label: \.label, identifier: "style") {
+                profile.toggleStyle($0)
             }
-            .opacity(isLocked ? 0.5 : 1)
         }
         group(String(localized: "Niche")) {
             chips(Niche.allCases, isOn: { profile.profile.niches.contains($0) }, label: \.label, identifier: "niche") {
@@ -86,14 +74,11 @@ struct CreatorVoiceSection: View {
         }
     }
 
-    private func group<Content: View>(_ title: String, isPro: Bool = false, @ViewBuilder content: () -> Content) -> some View {
+    private func group<Content: View>(_ title: String, @ViewBuilder content: () -> Content) -> some View {
         VStack(alignment: .leading, spacing: 8) {
-            HStack(spacing: 6) {
-                Text(title)
-                    .font(.footnote.weight(.semibold))
-                    .foregroundStyle(Palette.ink2)
-                if isPro && isLocked { ProBadge() }
-            }
+            Text(title)
+                .font(.footnote.weight(.semibold))
+                .foregroundStyle(Palette.ink2)
             content()
         }
         .padding(.vertical, 6)

@@ -24,9 +24,9 @@ struct PrompterSettingsTests {
         #expect(!settings.showsCues)
         #expect(settings.margin == 24)
         #expect(settings.backgroundOpacity == 0.25)
-        #expect(settings.readingWidth == 0.6)
+        #expect(settings.readingWidth == 0.93)
         #expect(settings.cameraBlur == 0)
-        #expect(settings.textWindowHeight == 250)
+        #expect(settings.textWindowHeight == 380)
         #expect(settings.readingLineOffset == nil)
         #expect(settings.customSafeZone == SafeZoneMargins())
         #expect(!settings.hidesControlsWhileRecording)
@@ -34,6 +34,13 @@ struct PrompterSettingsTests {
 
     @Test func startsAtTheNaturalSpeed() {
         #expect(PrompterSettings().speed == 0.7)
+    }
+
+    @Test func startsWithTheWidestTallestWindowAndTheCoachOff() {
+        let settings = PrompterSettings()
+        #expect(settings.readingWidth == PrompterSettings.readingWidthRange.upperBound)
+        #expect(settings.textWindowHeight == PrompterSettings.textWindowHeightRange.upperBound)
+        #expect(!settings.showsCues)
     }
 
     @Test(arguments: [(1.0, 0.7), (0.5, 0.3), (2.0, 1.4), (3.0, 2.0)])
@@ -72,10 +79,11 @@ struct PrompterSettingsTests {
         #expect(decoded == settings)
     }
 
-    @Test(arguments: [(0.0, "Off"), (4.0, "Low"), (10.0, "Medium"), (20.0, "High")])
-    func cameraBlurHasFourLevels(_ amount: Double, _ label: String) {
+    @Test(arguments: [(0.0, "Off"), (4.0, "Subtle"), (10.0, "Soft"), (20.0, "Medium")])
+    func cameraBlurHasFourGentleLevels(_ amount: Double, _ label: String) {
         var settings = PrompterSettings()
         settings.cameraBlur = amount
         #expect(settings.cameraBlurLabel == label)
+        #expect(CameraBlurLevel(amount: amount).strength < 1)
     }
 }

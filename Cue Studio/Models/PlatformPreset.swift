@@ -19,8 +19,6 @@ nonisolated struct PlatformPreset: Hashable, Sendable {
     var goal: MonetizationGoal?
     /// Long-form content is usually read on a rig, so Studio mode becomes the primary action.
     var prefersStudio: Bool
-    /// Selfie text window width, as a fraction of the screen.
-    var readingWidth: Double
     /// Parts of the frame covered by the platform's buttons and captions, in VideoSpace.
     var safeZone: SocialSafeZonePreset?
 

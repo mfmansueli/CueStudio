@@ -20,6 +20,8 @@ final class ProfileUITests: XCTestCase {
         let close = app.buttons["paywall.closeButton"]
         XCTAssertTrue(close.waitForExistence(timeout: 5))
         XCTAssertTrue(app.buttons["paywall.plan.annual"].exists)
+        XCTAssertTrue(app.buttons["paywall.plan.monthly"].exists)
+        XCTAssertFalse(app.buttons["paywall.plan.lifetime"].exists)
         close.tap()
         XCTAssertTrue(upgrade.waitForExistence(timeout: 5))
     }

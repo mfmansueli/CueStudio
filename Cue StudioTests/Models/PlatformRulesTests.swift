@@ -19,7 +19,6 @@ struct PlatformRulesTests {
         let frameRate: FrameRate
         let ideal: ClosedRange<TimeInterval>
         let minimum: TimeInterval?
-        let readingWidth: Double
         /// Top, bottom, left, right in pixels of the video; nil for none.
         let zone: [Double]?
 
@@ -27,12 +26,12 @@ struct PlatformRulesTests {
     }
 
     static let table: [Row] = [
-        Row(platform: .tiktok, aspect: .portrait, resolution: .hd1080, frameRate: .fps30, ideal: 60...90, minimum: 60, readingWidth: 0.58, zone: [160, 480, 60, 140]),
-        Row(platform: .reels, aspect: .portrait, resolution: .hd1080, frameRate: .fps30, ideal: 15...60, minimum: nil, readingWidth: 0.60, zone: [220, 420, 60, 120]),
-        Row(platform: .shorts, aspect: .portrait, resolution: .hd1080, frameRate: .fps60, ideal: 30...60, minimum: nil, readingWidth: 0.60, zone: [190, 380, 60, 140]),
-        Row(platform: .youtube, aspect: .landscape, resolution: .uhd4K, frameRate: .fps24, ideal: 480...900, minimum: 480, readingWidth: 0.70, zone: nil),
-        Row(platform: .linkedin, aspect: .vertical, resolution: .hd1080, frameRate: .fps30, ideal: 30...90, minimum: nil, readingWidth: 0.64, zone: [0, 200, 40, 40]),
-        Row(platform: .stories, aspect: .portrait, resolution: .hd1080, frameRate: .fps30, ideal: 8...15, minimum: nil, readingWidth: 0.56, zone: [250, 250, 60, 60]),
+        Row(platform: .tiktok, aspect: .portrait, resolution: .hd1080, frameRate: .fps30, ideal: 60...90, minimum: 60, zone: [160, 480, 60, 140]),
+        Row(platform: .reels, aspect: .portrait, resolution: .hd1080, frameRate: .fps30, ideal: 15...60, minimum: nil, zone: [220, 420, 60, 120]),
+        Row(platform: .shorts, aspect: .portrait, resolution: .hd1080, frameRate: .fps60, ideal: 30...60, minimum: nil, zone: [190, 380, 60, 140]),
+        Row(platform: .youtube, aspect: .landscape, resolution: .uhd4K, frameRate: .fps24, ideal: 480...900, minimum: 480, zone: nil),
+        Row(platform: .linkedin, aspect: .vertical, resolution: .hd1080, frameRate: .fps30, ideal: 30...90, minimum: nil, zone: [0, 200, 40, 40]),
+        Row(platform: .stories, aspect: .portrait, resolution: .hd1080, frameRate: .fps30, ideal: 8...15, minimum: nil, zone: [250, 250, 60, 60]),
     ]
 
     @Test(arguments: table)
@@ -43,7 +42,6 @@ struct PlatformRulesTests {
         #expect(preset.frameRate == row.frameRate)
         #expect(preset.idealRange == row.ideal)
         #expect(preset.minimum == row.minimum)
-        #expect(preset.readingWidth == row.readingWidth)
         #expect(preset.safeZone.map { [$0.top, $0.bottom, $0.left, $0.right] } == row.zone)
     }
 

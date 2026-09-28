@@ -2,10 +2,11 @@
 
 Fonte de verdade do design. Atualize junto com a UI (ver `ARCHITECTURE.md`, seção 5).
 
-Origem: projeto "iOS Teleprompter App Design" no Claude Design, arquivo `Cue Teleprompter v7.dc.html`
-(cópia local em `design/`, fora do git). A v1 do app seguia a v3; a v6 veio por fases, e a v7 muda a
-tela de gravação (frame real, zonas seguras em VideoSpace, linha de leitura, janela de texto, Hide UI)
-e a escala de velocidade.
+Origem: projeto "iOS Teleprompter App Design" no Claude Design, arquivo `Cue Teleprompter v9.dc.html`
+(cópia em `design/`, com o prompt `Claude Code Prompt.md`). A v1 do app seguia a v3; a v6 veio por
+fases; a v7 mudou a tela de gravação (frame real, zonas seguras em VideoSpace, linha de leitura,
+janela de texto, Hide UI) e a escala de velocidade; a v9 abre todos os recursos no grátis (só a
+exportação tem limite), refaz o Quick edit (Remove part, aba Clean Up) e simplifica a janela de texto.
 
 ---
 
@@ -18,9 +19,12 @@ review, tutorial…) e a estrutura (Hook → Body → CTA).
 
 - Tom: direto, de criador para criador. Frases curtas, sem jargão.
 - Marca: três linhas de script com a do meio acesa em amarelo (`CueMark`).
-- O teleprompter, os roteiros e a IA (Prompt, Themes, formatos básicos) são grátis. O Pro destrava
-  exportações limpas até 4K, o Creator Voice completo, Sponsored ad, hooks escritos pela IA, versões
-  para outras plataformas e a sugestão de melhor take (`ProFeature`).
+- **Nenhum recurso fica bloqueado.** Teleprompter, roteiros, toda a IA (Apple Intelligence, sem custo
+  por uso), Creator Voice, Quick edit, Clean Up, legendas, 4K, versões e melhor take são grátis. O
+  único limite é **exportar vídeos**: 5 exportações grátis (salvar no Fotos ou compartilhar), sem marca
+  d'água; depois, o paywall oferece 7 dias grátis no mensal ou no anual. Gravar, editar e escrever
+  nunca param, e as takes nunca são apagadas nem bloqueadas (`UsagePolicy`, `UsageQuotaService`).
+  O contador fica no Keychain, então reinstalar não zera. Não há badges "PRO" nem marca d'água.
 
 ## 2. Aparência
 
@@ -50,15 +54,15 @@ tela branca atrapalha a gravação. Os tokens mantêm valores claros para o dia 
 | `danger` | `#FF453A` | Ações destrutivas |
 | `warn` | `#FF9F0A` | Fora da faixa ideal, hook longo, aviso de monetização |
 | `info` | `#64D2FF` | Aviso de nova versão no editor |
-| `success` | `#34C759` | Toggles |
+| `success` | `#34C759` | Toggles, "Kept" no Clean Up |
 | Plataformas | TikTok `#64D2FF` · Reels `#BF5AF2` · Shorts `#FF6961` · YouTube `#FF9F0A` · LinkedIn `#0A84FF` · Stories `#FF375F` | Ponto que marca o destino |
 | `frameMask` / `frameEdge` | preto 60% / branco 22% | Fora do frame gravado / bordas de 0,5 pt do frame |
 | `safeZoneLine` / `safeZoneLabel` | branco 40% / 62% | Contorno tracejado da área segura e a legenda |
 | `safeZoneShade` → `safeZoneShadeFaint` / `safeZoneSide` | preto 40% → 10% / 16% | Faixas de risco (degradê em cima e embaixo, sombra nas laterais) |
 | `readingLineGlow` | `#FFD60A` 45% | Brilho da linha de leitura sobre a câmera |
 | `readingLineHandle` / `…Active` / `…Border` | `#1E1E20` 55% / `#FFD60A` 55% / branco 28% | Alça da linha (em repouso / arrastando) |
-| `tipBackground` | `#141416` 88% | Dica "Talk to the line" |
 | `stopButtonRing` / `stopButtonFill` | branco 85% / preto 18% | Botão de parar mínimo (controles escondidos) |
+| `removalFill` · `selectedSectionFill` · `trimDim` · `bubbleBorder` | `#FF453A` 30% · branco 14% · preto 72% · branco 25% | Quick edit: faixa do Remove part, seção selecionada, o que a alça vai cortar, balão do tempo |
 
 ### Tipografia
 
@@ -90,8 +94,8 @@ SF Symbols por significado: `doc.text` scripts · `film.stack` takes · `person.
 
 | Componente | Uso |
 |------------|-----|
-| `CueStudioButtonStyle` (`.cuePrimary()`, `.cueSecondary()`, `.cueTinted()`, `.cueOutline()`, `.cueGlass()`) | Botões em cápsula; um primário por tela |
-| `CueIconButtonStyle` (`.cueIcon(.glass/.overlay/.surface/.tinted/.accent)`) | Botões redondos |
+| `CueStudioButtonStyle` (`.cuePrimary()`, `.cueSecondary()`, `.cueTinted()`, `.cueOutline()`, `.cueGlass()`, `.cueLight()`, `.cueDestructive()`, `.cueDestructiveTinted()`; tamanhos compact 34, medium 42, regular 50, large 54) | Botões em cápsula; um primário (amarelo) por tela. Branco (`light`) para a ação principal de uma ferramenta; vermelho para confirmar uma remoção |
+| `CueIconButtonStyle` (`.cueIcon(.glass/.overlay/.surface/.tinted/.accent/.light/.danger)`) | Botões redondos |
 | `surfaceCard()` / `GroupedCard` | Cards e grupos de linhas com separadores |
 | `FilterChip`, `TagPill`, `ColorDot` | Chips de filtro/opção, tags, ponto do destino |
 | `SelectableCard` | Tiles selecionáveis (fontes, enquadramento, formato, plano) |
@@ -104,7 +108,6 @@ SF Symbols por significado: `doc.text` scripts · `film.stack` takes · `person.
 | `RecordGlyph` | Anel branco com ponto vermelho da aba Record (imagem com cores originais) |
 | `fittedSheet()` | Sheet da altura do conteúdo, raio 38 (New script, Start recording) |
 | `PromptCard` (`Screens/Shared/PromptCard`) | Caixa de Prompt em destaque: selo Apple Intelligence, exemplo e botão enviar |
-| `ProBadge` | Pill amarela "PRO" em tudo que o Pro destrava (no grátis) |
 
 ## 4. Telas
 
@@ -112,25 +115,24 @@ SF Symbols por significado: `doc.text` scripts · `film.stack` takes · `person.
 |------|------|----------|
 | Scripts (home) | `Screens/Scripts` | "+" no topo (abre New script), título + resumo, busca, chips (All, destinos, pastas), card "Last edited", lista "All scripts" com swipe (Record / More / Delete), segurar mostra preview + menu, modo de seleção com barra (mover, duplicar, apagar) |
 | Primeiro uso | `EmptyLibraryView` | "Start with a script." + caixa de Prompt + Write / Import / Generate with AI + "Record without a script" |
-| Script (leitura) | `Screens/ScriptDetail` | Título, destino/formato/preset, medidor de duração, faixa de blocos, aviso de hook, banner laranja de checagem de fatos ("Checked" dispensa), texto com blocos e cues, takes, Studio mode + Record. Menu More: "Make a version for…" (PRO) cria uma cópia ajustada à duração de outra plataforma |
-| Script (edição) | `ScriptEditorView` | Título, faixa de blocos, editor com Writing Tools, painel com aviso de versão, atalhos de IA ("In my voice" com PRO no grátis + os do formato) e medidor |
+| Script (leitura) | `Screens/ScriptDetail` | Título, destino/formato/preset, medidor de duração, faixa de blocos, aviso de hook, banner laranja de checagem de fatos ("Checked" dispensa), texto com blocos e cues, takes, Studio mode + Record. Menu More: "Make a version for…" cria uma cópia ajustada à duração de outra plataforma |
+| Script (edição) | `ScriptEditorView` | Título, faixa de blocos, editor com Writing Tools, painel com aviso de versão, atalhos de IA ("In my voice" + os do formato) e medidor |
 | Create for | `DestinationSheet` | 6 plataformas com resumo do preset (formato · qualidade · safe zones · ideal) + "Monetization goals". Escolher mostra o toast "Create for {plataforma}" |
-| Hooks | `HooksSheet` | Hook atual + 3 opções escritas pelo modelo no aparelho (no grátis ou sem modelo, as do formato, e no grátis a linha "Write hooks for this script with AI" · PRO) + "More options" |
+| Hooks | `HooksSheet` | Hook atual + 3 opções escritas pelo modelo no aparelho (sem modelo, as do formato) + "More options" |
 | New script | `NewScriptSheet` | Caixa de Prompt + grade Write / Import / Themes / Formats. Sobre a câmera, Paste no lugar de Write |
 | Start recording | `StartRecordingSheet` | "Read from a script" (4 recentes com duração), "+ New script", "Record without a script →". Sobre a câmera vira "Add a script", sem o freestyle |
 | Importar | `ImportScriptSheet` | Files, Scan (câmera de documentos), Photo e Clipboard. Scan, Photo e PDFs escaneados passam por OCR do Vision no aparelho |
-| Gerar com IA | `GenerateScript/` | "Generate with AI · Apple Intelligence · private · no cost" + abas **Prompt** (texto livre, exemplos, Create for, Length, "Write in my voice", aviso de fatos), **Themes** (6 ideias do nicho, "New ideas", "Use" preenche o Prompt) e **Formats** (8 formatos; Sponsored ad é PRO) → briefing |
-| Selfie | `Screens/Prompter/Selfie` | Câmera em primeiro plano, em camadas que nunca entram no vídeo: o **frame gravado** (o preview mostra exatamente o que é gravado; fora dele, preto 60% e bordas de 0,5 pt), a **zona segura** da plataforma (degradê em cima e embaixo, sombra nas laterais, contorno tracejado e "INSTAGRAM REELS SAFE AREA"), a **janela de texto** (largura 50–75%, padrão do preset; altura 160–380, padrão 250; fundo preto 25%; desfoque opcional; o texto já lido esmaece) e a **linha de leitura** fixa logo abaixo da lente (118 pt na frontal; 36% do frame na traseira), com alça de 44 pt para arrastar e, na primeira vez, "Don't read the text. Talk to the line.". A janela segue a linha (a linha fica ~25% abaixo do topo dela). Topo: fechar, Selfie \| Studio e o chip "{Plataforma} · 9:16" (abre Create for; em freestyle troca o enquadramento); gravando: olho (Hide UI), "● 00:42 \| 18s to 1:00" e o chip. Barra de vidro: Voice Following \| Steady, slider de velocidade com o valor (0,3–2,0×) ou "AUTO · Listening/Paused", voltar ao topo, play, Aa; câmera: última take, ajustes, gravar, virar, timer. Com os controles escondidos ficam só texto, linha, relógio e um botão de parar |
+| Gerar com IA | `GenerateScript/` | "Generate with AI · Apple Intelligence · private · no cost" + abas **Prompt** (texto livre, exemplos, Create for, Length, "Write in my voice", aviso de fatos), **Themes** (6 ideias do nicho, "New ideas", "Use" preenche o Prompt) e **Formats** (8 formatos, Sponsored ad incluído) → briefing |
+| Selfie | `Screens/Prompter/Selfie` | Câmera em primeiro plano, em camadas que nunca entram no vídeo: o **frame gravado** (o preview mostra exatamente o que é gravado; fora dele, preto 60% e bordas de 0,5 pt), a **zona segura** da plataforma (degradê em cima e embaixo, sombra nas laterais, contorno tracejado e "INSTAGRAM REELS SAFE AREA"), a **janela de texto** (largura 50–93%, padrão 93%; altura 160–380, padrão 380: começa no máximo e o criador pode estreitar; as linhas quebram normalmente e preenchem a largura; fundo preto 25%; desfoque opcional; o texto já lido esmaece) e a **linha de leitura** fixa logo abaixo da lente (118 pt na frontal; 36% do frame na traseira), com uma alça fina (14 × 34, alvo de 44 pt) para arrastar, que some enquanto o texto roda ou a câmera grava. Sem dica de primeiro uso. A janela segue a linha (a linha fica ~25% abaixo do topo dela). Topo: fechar, Selfie \| Studio e o chip "{Plataforma} · 9:16" (abre Create for; em freestyle troca o enquadramento); gravando: olho (Hide UI), "● 00:42 \| 18s to 1:00" e o chip. Barra de vidro: Voice Following \| Steady, slider de velocidade com o valor (0,3–2,0×) ou "AUTO · Listening/Paused", voltar ao topo, play, Aa; câmera: última take, ajustes, gravar, virar, timer. Com os controles escondidos ficam só texto, linha, relógio e um botão de parar |
 | Studio | `Screens/Prompter/Studio` | Prompter em tela cheia sem câmera, barra de progresso no topo, fechar, Selfie \| Studio e espelhar; barra: Voice Following \| Steady, slider de velocidade (no Voice Following, "Listening/Paused" e "Speed follows your voice"), voltar ao topo, 3 linhas para trás/frente, play grande amarelo e Aa |
-| Display | `DisplaySettingsSheet` | "Display · ● Live preview". No Selfie, primeiro **Layout** (`DisplayLayoutSection`): Reading line com ↑/↓ e a distância da câmera, Text window height e width ("Narrow · less eye movement"), **Social safe zone** (chips Reels / TikTok / Shorts / Stories / Custom no 9:16, LinkedIn / Custom no 4:5, Custom no 1:1; no Custom, margens em %), Show safe zone, Hide controls while recording e "Reset to Recommended", com o aviso de que a zona é guia e não garantia. Quick: AI Coach, Text size e, no Selfie, Background opacity e Camera blur (Off/Low/Medium/High); no Studio, Reading line (Top/Bottom) e Background color. Advanced (recolhível): fonte, espaçamento, margens, alinhamento, cor, linha de leitura, espelhar. No Selfie, a altura máxima para logo abaixo da janela de texto (medida quando a sheet abre) |
+| Display | `DisplaySettingsSheet` | "Display · ● Live preview". No Selfie, primeiro **Layout** (`DisplayLayoutSection`): Reading line com ↑/↓ e a distância da câmera, Text window height e width ("Narrow · less eye movement"), **Social safe zone** (chips Reels / TikTok / Shorts / Stories / Custom no 9:16, LinkedIn / Custom no 4:5, Custom no 1:1; no Custom, margens em %), Show safe zone, Hide controls while recording e "Reset to Recommended", com o aviso de que a zona é guia e não garantia. Quick: AI Coach (desligado por padrão), Text size e, no Selfie, Background opacity e Camera blur (Off/Subtle/Soft/Medium, leve); no Studio, Reading line (Top/Bottom) e Background color. Advanced (recolhível): fonte, espaçamento, margens, alinhamento, cor, linha de leitura, espelhar. No Selfie, a altura máxima para logo abaixo da janela de texto (medida quando a sheet abre) |
 | Câmera | `CameraSettingsSheet` | Lente, enquadramento, resolução, fps, grid, safe zones, estabilização, microfone, contagem, formato. No Selfie com script, a sheet para logo abaixo da janela de texto (não cresce além dela) e não escurece o fundo |
-| Revisão do take | `Screens/TakeReview` | Vídeo no formato da take (barras pretas fora do 9:16); topo: voltar, "Take N · 0:44", estrela e lixeira; filmstrip, título (+ EDITED), meta, aviso de exportações; faixa "Your takes · N" (troca de take, "Tap ☆ to pick your best", "Suggest best" · PRO); Edit · Retake · Save · Share (Share amarelo, abre Share to). Só uma melhor take por roteiro |
-| Share to | `TakeReview/Share` | Miniatura, "SHARE TO", título, "0:44 · 9:16 · 1080p"; seis plataformas (a da take com anel amarelo e "recommended"), Save video e More; "Created for X — framed and safe-zoned for it"; Burn in captions; Quality 1080p / 4K (PRO); exportações limpas restantes + Go Pro. Plataforma: exporta, salva no Fotos e abre o app; "Ready to post on X · N of 5 clean left" |
-| Pausas | `CleanUpSheet` | Meia altura sobre o Quick edit (prévia e desfazer continuam usáveis): cada pausa encontrada com o trecho do original, ▶︎ (toca a partir de 1 s antes), Remove / Keep; "Remove all · N" (as não mantidas) ou "Put all back" |
-| Quick edit | `Screens/QuickEdit` | Cancel (com alterações, pergunta "Discard your edits?") / "Quick edit 1:04 → 0:58" / Done; prévia ao vivo no formato (toque = play/pause); barra de transporte com play/pause e "00:04.32 / 00:11.00" (playhead / duração editada) e, no Trim, desfazer/refazer; Trim (timeline com frames reais só da edição, trechos antes/depois das alças esmaecidos, fio vermelho onde algo foi removido, alças amarelas, playhead com botão arrastável, Cut no playhead, tocar um pedaço seleciona, Remove, "Remove silences" que abre a revisão das pausas), Audio (volume 0–150%, Enhance voice, Reduce background noise), Adjust (exposição, contraste, temperatura −100…+100, Auto), Filters (Original, Vivid, Warm, Cool, Mono, Film), Crop (9:16, 4:5, 1:1, 16:9, arrastar, Reset), Captions (do roteiro, sincronizadas à fala; Classic, Bold, Highlight; Top, Middle, Bottom). Done guarda a receita (`TakeEdit`), a nova duração e marca Edited; o arquivo original não muda |
+| Revisão do take | `Screens/TakeReview` | Vídeo no formato da take (barras pretas fora do 9:16); topo: voltar, "Take N · 0:44", estrela e lixeira; filmstrip, título (+ EDITED), meta, "3 of 5 free exports" + Go Pro (no grátis); faixa "Your takes · N" (troca de take, "Tap ☆ to pick your best", "Suggest best"); Edit · Retake · Save · Share (Share amarelo, abre Share to). Só uma melhor take por roteiro |
+| Share to | `TakeReview/Share` | Miniatura, "SHARE TO", título, "0:44 · 9:16 · 1080p"; seis plataformas (a da take com anel amarelo e "recommended"), Save video e More; "Created for X — framed and safe-zoned for it"; Burn in captions; Quality 1080p / 4K; exportações grátis restantes + Go Pro. Plataforma: exporta, salva no Fotos e abre o app; "Ready to post on X · N of 5 free exports left". Sem exportações grátis, qualquer exportação abre o paywall e continua sozinha depois da assinatura |
+| Quick edit | `Screens/QuickEdit` | Cancel (guarda um rascunho: "Draft kept — tap Edit to continue"; Edit o retoma com "Draft restored") / "Quick edit · Original 1:04" ou "1:04 → 0:58" / Done; prévia ao vivo no formato (toque = play/pause, com um ▶︎ no meio quando pausada; menor no Trim e no Clean Up para dar espaço à timeline); 7 ferramentas embaixo. **Trim:** play branco, "00:04.32 / 00:11.00" (playhead / duração editada), desfazer, refazer; timeline de 80 pt com frames reais só da edição (o que foi cortado não aparece; uma linha preta entre seções, com ponto vermelho onde algo saiu), alças amarelas (ficam brancas ao arrastar; a escala congela e escurece o que vai sair, e se ajusta ao soltar), playhead arrastável e um balão com o tempo ("Start 00:02.14", ou o tempo do scrub); botões **Remove part** (branco: faixa vermelha de 2 s em volta do playhead, bordas arrastáveis, depois Cancel / "Remove 00:02.10"), Cut no playhead (seleciona a segunda metade), Delete (vermelho quando há seção selecionada) e Clean Up (com o número a revisar); uma linha de dica. **Clean Up** (`CleanUpToolView`): mesma barra, timeline fina com marcas por tipo (pausa azul `info`, vício laranja `warn`, regravação vermelha `danger`; esmaecidas quando mantidas), "Analyzing your take…" na primeira vez, depois "N to review" / "All clean" com "Remove all · N" (só as de alta confiança) ou "Done", "Ignore pauses under 0.7s · N short pauses kept" com − / +, e a lista: cor, título ("Long pause", "“um”", "Possible retake"), "00:04.20 · 0.9s · nota", Keep / Remove, ou "Kept" / "Removed" (tocar em Kept volta a revisar; Removed volta com Undo); tocar no item leva o playhead até ele. Audio (volume 0–150%, Enhance voice, Reduce background noise), Adjust (exposição, contraste, temperatura −100…+100, Auto), Filters (Original, Vivid, Warm, Cool, Mono, Film), Crop (9:16, 4:5, 1:1, 16:9, arrastar, Reset), Captions (do roteiro, sincronizadas à fala; Classic, Bold, Highlight; Top, Middle, Bottom). Done guarda a receita (`TakeEdit`), a nova duração e marca Edited; o arquivo original não muda. Trim, remove part, cut, delete e as decisões do Clean Up desfazem e refazem juntas |
 | Takes | `Screens/Takes` | "Takes" + "N takes · N videos"; chips de plataforma e All takes / ★ Best / Not shared / Edited; seções Today / Yesterday / Earlier; cada linha é um vídeo (takes do mesmo roteiro): miniatura no formato certo com estrela e duração, plataforma · formato · qualidade, quando, chips "3 takes · Best: Take 3", "Edited", "Not shared" |
-| Profile | `Screens/Profile` | Card do criador ("@handle · Signed in with Apple") + botão Sign in with Apple quando fora; Creator Voice: "Sounds like you" (frase ao vivo + "Use my voice in AI scripts"), How I sound, My phrases, My vocabulary (PRO), My style (PRO), Niche; plano e uso; Settings (Default "Create for", Monetization goals, Privacy & AI data, Restore purchases); Sign out |
-| Paywall | `Screens/Shared/Paywall` | Tela cheia com título pelo contexto: exportação ("Post without the watermark", comparação com/sem marca e "Save with watermark instead"), Sponsored ad ("Brand deals, done right"), Profile ("Create more. Sound like you."), Creator Voice, hooks, versões, melhor take e 4K; benefícios, Annual (pré-selecionado, "SAVE 58%", 7 dias grátis) / Monthly / Lifetime; Restore, Terms, Privacy. Nunca abre durante a gravação |
+| Profile | `Screens/Profile` | Card do criador ("@handle · Signed in with Apple") + botão Sign in with Apple quando fora; Creator Voice: "Sounds like you" (frase ao vivo + "Use my voice in AI scripts"), How I sound, My phrases, My vocabulary, My style, Niche (tudo grátis); plano ("Free plan · Every feature included", "Free exports · 3 of 5 left", Apple Intelligence ilimitada, "Try Pro free for 7 days"; no Pro, "Cue Pro · Annual · renews…", "Unlimited exports, up to 4K", Manage); Settings (Default "Create for", Monetization goals, Privacy & AI data, Restore purchases); Sign out |
+| Paywall | `Screens/Shared/Paywall` | Tela cheia, aberta só pelo Export (depois da 5ª exportação: "Keep posting with Cue") ou pelo Profile ("Create more. Sound like you."); benefícios (exportações ilimitadas até 4K, tudo continua aberto, as takes são suas); Annual (pré-selecionado, "SAVE 58%", "$3.33/mo · 7 days free") / Monthly ("7 days free · cancel anytime"); "Start 7-day free trial" com o que acontece depois; Restore, Terms, Privacy. Sem opção com marca d'água e sem vitalício. Nunca abre durante a gravação |
 
 ## 5. Navegação
 
@@ -149,19 +151,20 @@ Full screen: Prompter (Selfie ⇄ Studio → Revisão do take) · Paywall
 
 Todos os números por plataforma vêm de `SupportFiles/PlatformRules.json` (`PlatformRules` +
 `PlatformRulesService`, schema 2): formato, qualidade, faixa ideal (com e sem monetização), mínimo que
-monetiza, largura da janela de texto do Selfie e a zona segura (`SocialSafeZonePreset`). As zonas são
+monetiza e a zona segura (`SocialSafeZonePreset`). A janela de texto do Selfie não depende mais da
+plataforma: abre sempre em 93% × 380 pt. As zonas são
 margens em **pixels do vídeo exportado** (VideoSpace: 1080 × 1920 no 9:16, 1080 × 1350 no 4:5) e
 chegam à tela por `FrameGeometry`, derivada do retângulo onde o preview realmente desenha a imagem.
 Nada é posicionado com números de um iPhone.
 
-| Plataforma | Formato | Qualidade | Ideal | Mínimo (monetização) | Janela (largura) | Zona segura (topo / base / esq. / dir., px) |
-|---|---|---|---|---|---|---|
-| TikTok | 9:16 | 1080p30 | 1:00–1:30 (sem metas: 0:15–1:00) | 1:00 | 58% | 160 / 480 / 60 / 140 |
-| Reels | 9:16 | 1080p30 | 0:15–1:00 | — | 60% | 220 / 420 / 60 / 120 |
-| Shorts | 9:16 | 1080p60 | 0:30–1:00 | — | 60% | 190 / 380 / 60 / 140 |
-| YouTube | 16:9 | 4K24 | 8:00–15:00 (sem metas: 4:00–10:00) | 8:00 | 70% | — (vídeo horizontal) |
-| LinkedIn | 4:5 | 1080p30 | 0:30–1:30 | — | 64% | 0 / 200 / 40 / 40 |
-| Stories | 9:16 | 1080p30 | 0:08–0:15 | — | 56% | 250 / 250 / 60 / 60 |
+| Plataforma | Formato | Qualidade | Ideal | Mínimo (monetização) | Zona segura (topo / base / esq. / dir., px) |
+|---|---|---|---|---|---|
+| TikTok | 9:16 | 1080p30 | 1:00–1:30 (sem metas: 0:15–1:00) | 1:00 | 160 / 480 / 60 / 140 |
+| Reels | 9:16 | 1080p30 | 0:15–1:00 | — | 220 / 420 / 60 / 120 |
+| Shorts | 9:16 | 1080p60 | 0:30–1:00 | — | 190 / 380 / 60 / 140 |
+| YouTube | 16:9 | 4K24 | 8:00–15:00 (sem metas: 4:00–10:00) | 8:00 | — (vídeo horizontal) |
+| LinkedIn | 4:5 | 1080p30 | 0:30–1:30 | — | 0 / 200 / 40 / 40 |
+| Stories | 9:16 | 1080p30 | 0:08–0:15 | — | 250 / 250 / 60 / 60 |
 
 A zona mostrada é a escolhida em Display › Layout (nesta sessão), senão a da plataforma do roteiro,
 senão Reels (9:16) ou LinkedIn (4:5); no 1:1, Custom; no 16:9, nenhuma. Custom usa margens do
@@ -182,8 +185,9 @@ estático), o app baixa uma vez por abertura e só adota uma revisão maior, com
   Apple Intelligence indisponível (explica e usa o rascunho estruturado); importação ilegível;
   compra pendente ou não verificada; take sem o arquivo de vídeo ou ilegível ("This video can't be
   opened", ferramentas desligadas), prévia que não montou ("The preview couldn't be built") e som
-  que não pôde ser analisado ("Couldn't listen to this take"). Sem pausas longas entre as alças:
-  "No long pauses in this take".
+  que não pôde ser analisado ("Couldn't listen to this take" + "Try again" no Clean Up). Clean Up
+  sem nada a sugerir: "All clean" e "Nothing to clean up here. Your take flows."
+- **Carregando (Clean Up):** "Analyzing your take…" enquanto ouve a take (volume e transcrição).
 
 ## 7. Movimento
 
@@ -203,8 +207,9 @@ estático), o app baixa uma vez por abertura e só adota uma revisão maior, com
 - Cards e linhas combinam os filhos em um elemento; tiles de take leem "Take 3, 0:44, best take".
 - Prompter: ajustável com VoiceOver (desliza 3 linhas), valor = progresso.
 - Alça da linha de leitura: ajustável com VoiceOver (8 pt por gesto), valor = distância da câmera.
-- Quick edit: a timeline é ajustável (1 s por gesto), valor = "tempo / duração, pedaço N de M",
-  com a ação "Select this piece"; as alças de trim também (0,5 s por gesto).
+- Quick edit: a timeline é ajustável (1 s por gesto), valor = "tempo / duração, seção N de M",
+  com a ação "Select this section"; as alças de trim e as bordas do Remove part também (0,5 s por
+  gesto). A timeline fina do Clean Up é ajustável como a do Trim.
 - Toasts são anunciados (`AccessibilityNotification.Announcement`).
 - Alvos de toque de 44×44 mesmo quando o visual é menor.
 - Identificadores para UI tests: `"<tela>.<elemento>"` (ex.: `hero.recordButton`, `editor.doneButton`).
@@ -226,11 +231,9 @@ O protótipo simulava várias coisas; o app implementa de verdade ou deixa de fo
 - **Sem Apple Intelligence:** Prompt e as reescritas mostram "Requires Apple Intelligence" e ficam
   desligados; Formats continua gerando o rascunho estruturado a partir do briefing (é um modelo de
   texto, não IA); Themes mostra as ideias locais. O teleprompter não depende de IA.
-- **Uso de IA:** ilimitado no grátis (o v1 tinha 5 roteiros/mês). No grátis a IA escreve com o som,
-  as frases e o nicho do Creator Voice; vocabulário, estilo e "In my voice" são Pro, assim como o
-  formato Sponsored ad, os hooks escritos pelo modelo e "Make a version for…". O Pro abre no
-  paywall do contexto (`PaywallContext`), nunca durante a gravação: no prompter, "Add script" fica
-  desligado enquanto grava.
+- **Uso de IA:** ilimitado e completo no grátis (o v1 tinha 5 roteiros/mês): o Creator Voice
+  inteiro, "In my voice", Sponsored ad, os hooks escritos pelo modelo e "Make a version for…". O
+  paywall só abre pela exportação ou pelo Profile, nunca durante a gravação.
 - **Themes:** as ideias iniciais são a lista local por nicho do protótipo (`ThemeCatalog`);
   "New ideas" pede ideias novas ao modelo do aparelho (sem ele, gira a lista).
 - **Import por foto:** não está no protótipo; vem do pedido (Vision OCR). Sai no simulador sem câmera.
@@ -248,25 +251,31 @@ O protótipo simulava várias coisas; o app implementa de verdade ou deixa de fo
   no launch confere o estado da credencial e sai se ela foi revogada. Nome e @ continuam editáveis
   e locais. O protótipo mostra "Signed in with Apple" sem botão de entrar; aqui ele aparece enquanto
   você não entrou.
-- **Paywall:** só lista o que o Pro realmente destrava. "Studio remote from Apple Watch, iPad & Mac
-  sync" ficou de fora porque não existe. Além dos três contextos do protótipo, há títulos para
-  Creator Voice, hooks, versões, melhor take e 4K. Enquanto `AppLinks.privacyPolicy` não tiver URL,
-  "Privacy" abre o resumo "Privacy & AI data" do app.
-- **Produtos:** `studio.cue.pro.annual` / `.monthly` / `.lifetime` (os IDs da v1, com prefixo, em vez
-  de `pro.annual` do pedido). Os preços regionais (ex.: R$ 24,90 / R$ 119,90 / R$ 299,90) são
-  definidos no App Store Connect; o `CueStudio.storekit` só tem os preços dos EUA.
+- **Paywall:** só promete o que o Pro muda (exportar sem limite). A v9 ainda desenha a comparação
+  com marca d'água, o selo "PRO" num formato e a lista antiga ("Studio remote from Apple Watch, iPad
+  & Mac sync"); o app segue o prompt da v9, que tirou marca d'água, badges e bloqueios. Enquanto
+  `AppLinks.privacyPolicy` não tiver URL, "Privacy" abre o resumo "Privacy & AI data" do app.
+- **Produtos:** `studio.cue.pro.annual` / `.monthly` (os IDs da v1, com prefixo, em vez de
+  `pro.annual` do pedido), ambos com oferta introdutória de 7 dias grátis; o vitalício saiu. Os
+  preços regionais (ex.: R$ 24,90 / R$ 119,90) são definidos no App Store Connect; o
+  `CueStudio.storekit` só tem os preços dos EUA.
+- **Contador de exportações:** o prompt sugere Keychain ou iCloud Key-Value Store; o app usa o
+  Keychain (só este aparelho), que sobrevive a reinstalar sem exigir iCloud. Contagens antigas em
+  UserDefaults migram sem devolver exportações.
 - **Melhor take:** "Suggest best" escolhe a take completa mais próxima da duração do roteiro, dentro
   da faixa ideal da plataforma (`BestTakeSuggester`); o app troca para ela e você confirma com ☆.
 - **"Save takes to Photos":** removido — salvar automaticamente contornaria o limite de exportações
-  limpas. Takes ficam no app; Save/Share exportam.
+  grátis. Takes ficam no app; Save/Share exportam.
 - **Pastas:** o "+" agora abre New script, então pastas nascem em "Move to a new folder…" (menu do
   script, More e barra de seleção) e aparecem como chips depois dos destinos.
 - **Tab bar:** a pill flutuante do protótipo é a própria tab bar nativa de Liquid Glass. A aba
   Record usa `RecordGlyph`, uma imagem com cores originais, porque SF Symbols viram monocromáticos
   na tab bar.
 - **New script sobre a câmera:** não há editor no prompter, então o tile Write vira Paste.
-- **Desfoque da câmera:** o protótipo usa um blur contínuo de 0 a 20; o app usa os materiais do
-  sistema atrás da janela de texto (Low/Medium/High), que desfocam o preview e nunca a gravação.
+- **Desfoque da câmera:** o protótipo usa um blur leve (no máximo ~6 pt); SwiftUI não desfoca a
+  camada da câmera por raio, então o app cobre a câmera atrás da janela de texto com o material mais
+  fino do sistema em três intensidades (Subtle 35%, Soft 60%, Medium 85%, `CameraBlurLevel`). Desfoca
+  só o preview, nunca a gravação.
 - **Frame e VideoSpace:** o app grava o sensor inteiro em retrato e recorta 4:5, 1:1 e 16:9 no
   export, então o VideoSpace do 16:9 é o recorte do sensor (1080 × 606 em 1080p), não 1920 × 1080
   como diz o prompt da v7. O preview mostra o sensor com `resizeAspect` no retângulo do frame, nunca
@@ -282,19 +291,26 @@ O protótipo simulava várias coisas; o app implementa de verdade ou deixa de fo
   da janela com a sheet aberta não move a sheet sob o dedo.
 - **Quick edit:** a edição é uma receita aplicada na hora de tocar e exportar (composição do
   AVFoundation + compositor próprio com Core Image), nunca um arquivo novo. A timeline é uma lista de
-  pedaços do original (`EditTimeline`): o trim move o começo do primeiro e o fim do último, Cut divide
-  um pedaço no playhead, Remove tira o selecionado, e as pausas encontradas saem do mesmo jeito.
-  Clean Up só sugere (`CleanUpSuggestion`): nada sai sem o criador revisar, uma pausa pode ser
-  intencional e "like" pode ter sentido. As pausas vêm do volume (`SilenceDetector`); filler words
-  (`FillerWordDetector`) e retakes (`RetakeDetector`, frases como "let me start again" e palavras
-  repetidas) já são detectados a partir da transcrição com tempo por palavra (`TimedWord`), com
-  confiança menor para palavras que só às vezes são filler, mas ainda não aparecem na tela.
-  Tudo isso desfaz e refaz. A prévia toca a edição com as pontas crescidas até o original inteiro e
+  pedaços do original (`EditTimeline`): o trim move o começo do primeiro e o fim do último, Remove
+  part corta um trecho do tempo editado (`removeEdited`, dois cortes e uma remoção), Cut divide uma
+  seção no playhead, Delete tira a selecionada, e as sugestões do Clean Up saem do mesmo jeito.
+  Clean Up só sugere (`CleanUpSuggestion`, com status pending / kept / removed): nada sai sem o
+  criador revisar, uma pausa pode ser intencional e "like" pode ter sentido. As pausas vêm do volume
+  (`SilenceDetector`, a partir de 0,3 s; "Ignore pauses under" escolhe quais aparecem); filler words
+  (`FillerWordDetector`) e possíveis regravações (`RetakeDetector`: frases como "deixa eu falar de
+  novo" e palavras repetidas) vêm da transcrição no idioma do roteiro (`CleanUpAnalyzer`). Pausas
+  longas e sons como "um" são de alta confiança e entram no "Remove all"; pausas curtas, palavras que
+  só às vezes são vício e regravações esperam o criador ouvir. O v9 pede comparar a transcrição com
+  o roteiro e usar o Foundation Models nos casos ambíguos; por enquanto as regravações vêm das frases
+  e repetições, e os ambíguos ficam de fora do "Remove all". Cada passo do desfazer guarda a timeline
+  e as decisões juntas (`EditSnapshot`). A prévia toca a edição com as pontas crescidas até o original inteiro e
   segura a reprodução entre as alças, então arrastar uma alça mostra o frame real sem reconstruir
   nada. O export junta os mesmos pedaços, com um mergulho de 12 ms no som em cada corte que removeu
-  algo (sem clique). Um rascunho guarda a edição, o playhead e o histórico enquanto a tela está
-  aberta; ao voltar, "Picked up where you left off". O relógio usa `DurationText.timecode`
-  (00:04.32 abaixo de 1 min, 00:01:04 a partir de 1 min). "Enhance voice" e
+  algo (sem clique). O prompt da v9 pede passthrough quando só há cortes; o app sempre renderiza
+  (mantendo resolução e fps), porque o mergulho no som, o recorte do frame e o Enhance voice (ligado
+  por padrão) precisam de uma nova codificação. Um rascunho guarda a edição, o playhead e o histórico enquanto a tela está
+  aberta e quando se sai com Cancel; ao voltar, "Draft restored". O relógio usa `DurationText.timecode`
+  (00:04.32 abaixo de 10 min, 00:12:04 a partir de 10 min). "Enhance voice" e
   "Reduce background noise" são aproximações com EQ e dinâmica no `AVAudioEngine` (não há API da
   Apple de redução de ruído para arquivo). Os filtros usam Core Image e ficam próximos, não
   idênticos, aos do protótipo. As legendas usam o texto do roteiro com o tempo do `SpeechAnalyzer`;
@@ -309,7 +325,7 @@ O protótipo simulava várias coisas; o app implementa de verdade ou deixa de fo
   de terceiros. Tocar numa plataforma exporta, salva o vídeo no Fotos e abre o app dela (URL scheme)
   para postar; sem o app, abre a share sheet do sistema. "Burn in captions" usa as legendas da edição
   ou, se a take nunca foi legendada, gera na hora só para essa exportação. 4K mantém a resolução
-  gravada (uma take 1080p não é ampliada) e é Pro.
+  gravada (uma take 1080p não é ampliada) e está em todos os planos.
 - **Regras remotas:** o protótipo diz "presets update automatically". Sem backend, a atualização é
   um JSON estático opcional (ver 5.1); até a URL existir, as regras mudam com o app.
 

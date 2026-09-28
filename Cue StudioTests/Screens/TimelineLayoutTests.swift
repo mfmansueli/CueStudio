@@ -50,24 +50,24 @@ struct TimelineLayoutTests {
         #expect(near(layout.sourceTime(atX: layout.piece(1).minX + scale), 7))
     }
 
-    @Test func trimmedEndsStayReachableAndDimmed() {
+    @Test func trimmedEndsAreNotDrawn() {
         var timeline = EditTimeline(sourceDuration: 10)
         timeline.trimStart(to: 2)
         let layout = TimelineLayout(timeline: timeline, width: width)
-        let scale = (width - 2 * inset) / 10
-        #expect(near(layout.startHandleX, inset + 2 * scale))
-        #expect(layout.regions.first?.kind == .head)
-        #expect(layout.sourceTime(atX: inset) == 0)
-        #expect(layout.segmentIndex(atX: inset + scale) == nil)
-        #expect(layout.editedTime(atX: inset + scale) == 0)
+        let scale = (width - 2 * inset) / 8
+        #expect(near(layout.pointsPerSecond, scale))
+        #expect(near(layout.startHandleX, inset))
+        #expect(layout.sourceTime(atX: inset) == 2)
+        #expect(layout.sourceTime(atX: 0) == 2)
+        #expect(layout.segmentIndex(atX: inset + scale) == 0)
+        #expect(near(layout.editedTime(atX: inset + scale), 1))
     }
 
-    @Test func trimmingNeverRescalesTheStrip() {
+    @Test func aTrimFitsTheStripAgain() {
         var timeline = EditTimeline(sourceDuration: 10)
-        let before = TimelineLayout(timeline: timeline, width: width).pointsPerSecond
         timeline.trimStart(to: 3)
         timeline.trimEnd(to: 8)
-        #expect(near(TimelineLayout(timeline: timeline, width: width).pointsPerSecond, before))
+        #expect(near(TimelineLayout(timeline: timeline, width: width).pointsPerSecond, (width - 2 * inset) / 5))
     }
 
     @Test func handlesComeBeforeThePlayheadAndThePlayheadBeforeTheTimeline() {
@@ -81,12 +81,27 @@ struct TimelineLayoutTests {
     }
 
     @Test func handlesCloseTogetherGoToTheNearerOne() {
-        var timeline = EditTimeline(sourceDuration: 100)
-        timeline.trimStart(to: 50)
-        timeline.trimEnd(to: 50.2)
-        let layout = TimelineLayout(timeline: timeline, width: width)
-        #expect(layout.target(atX: layout.startHandleX - 10, playheadX: 0) == .handle(.start))
-        #expect(layout.target(atX: layout.endHandleX + 10, playheadX: 0) == .handle(.end))
+        let layout = TimelineLayout(timeline: EditTimeline(sourceDuration: 10), width: 60)
+        #expect(layout.target(atX: 25, playheadX: 0) == .handle(.start))
+        #expect(layout.target(atX: 35, playheadX: 0) == .handle(.end))
+    }
+
+    @Test func theRedRangeTakesItsEdgesAndTurnsTrimmingOff() {
+        let layout = TimelineLayout(timeline: EditTimeline(sourceDuration: 10), width: width)
+        let removal: ClosedRange<TimeInterval> = 4...6
+        let startX = layout.x(forEdited: 4)
+        let endX = layout.x(forEdited: 6)
+        #expect(layout.target(atX: startX + 6, playheadX: 0, removal: removal) == .removalEdge(.start))
+        #expect(layout.target(atX: endX - 10, playheadX: 0, removal: removal) == .removalEdge(.end))
+        #expect(layout.target(atX: (startX + endX) / 2, playheadX: 0, removal: removal) == .timeline)
+        #expect(layout.target(atX: layout.startHandleX, playheadX: 300, removal: removal) == .timeline)
+    }
+
+    @Test func aStripWithoutHandlesUsesTheWholeWidth() {
+        let layout = TimelineLayout(timeline: EditTimeline(sourceDuration: 10), width: width, inset: 0)
+        #expect(near(layout.startHandleX, 0))
+        #expect(near(layout.endHandleX, width))
+        #expect(near(layout.x(forEdited: 5), width / 2))
     }
 
     @Test func zoomWidensEverySecond() {

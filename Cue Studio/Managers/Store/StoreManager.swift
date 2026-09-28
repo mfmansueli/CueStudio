@@ -5,7 +5,8 @@
 
 import StoreKit
 
-/// Cue Pro purchases (StoreKit 2).
+/// Cue Pro purchases (StoreKit 2): monthly and annual subscriptions, each with a 7-day free trial.
+/// Pro changes one thing, unlimited exports; every feature is open on the free plan too.
 ///
 /// There is no backend, so entitlements rely on StoreKit's own JWS verification (`.verified`).
 /// If Cue ever gets a server, purchases must be re-verified there before unlocking anything.
@@ -163,10 +164,7 @@ final class StoreManager {
                   transaction.revocationDate == nil,
                   let owned = ProPlan(productID: transaction.productID)
             else { continue }
-            if owned == .lifetime {
-                // A subscription wins over lifetime so the Profile shows its renewal.
-                if newTier == .free { newTier = .lifetime; plan = .lifetime }
-            } else if (transaction.expirationDate ?? .distantFuture) > .now {
+            if (transaction.expirationDate ?? .distantFuture) > .now {
                 newTier = .subscriber
                 plan = owned
                 renewal = transaction.expirationDate

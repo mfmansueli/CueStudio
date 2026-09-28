@@ -14,14 +14,12 @@ struct GenerateScriptSheet: View {
     @Environment(\.dismiss) private var dismiss
 
     init(services: AppServices, initialTab: GenerateTab = .prompt, onCreated: @escaping (Script) -> Void) {
-        let store = services.store
         _viewModel = State(initialValue: GenerateScriptViewModel(
             initialTab: initialTab,
             writer: services.writer,
             library: services.library,
             profile: services.profile,
             rules: services.rules,
-            tier: { store.tier },
             toast: services.toast
         ))
         self.onCreated = onCreated
@@ -73,9 +71,6 @@ struct GenerateScriptSheet: View {
         .presentationDetents([.large])
         .presentationBackground(Palette.surface)
         .presentationCornerRadius(Metrics.sheetRadius)
-        .fullScreenCover(item: $viewModel.paywall) { context in
-            PaywallView(context: context)
-        }
         .alert("Couldn't write the script", isPresented: Binding(
             get: { viewModel.errorMessage != nil },
             set: { if !$0 { viewModel.errorMessage = nil } }

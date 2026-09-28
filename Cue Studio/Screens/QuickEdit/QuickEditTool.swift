@@ -5,15 +5,16 @@
 
 import Foundation
 
-/// The six tools along the bottom of Quick edit.
+/// The seven tools along the bottom of Quick edit.
 enum QuickEditTool: String, CaseIterable, Identifiable {
-    case trim, audio, adjust, filters, crop, captions
+    case trim, cleanUp, audio, adjust, filters, crop, captions
 
     var id: String { rawValue }
 
     var label: String {
         switch self {
         case .trim: String(localized: "Trim")
+        case .cleanUp: String(localized: "Clean Up")
         case .audio: String(localized: "Audio")
         case .adjust: String(localized: "Adjust")
         case .filters: String(localized: "Filters")
@@ -25,6 +26,7 @@ enum QuickEditTool: String, CaseIterable, Identifiable {
     var systemImage: String {
         switch self {
         case .trim: "timeline.selection"
+        case .cleanUp: "sparkles"
         case .audio: "speaker.wave.2"
         case .adjust: "sun.max"
         case .filters: "camera.filters"

@@ -32,15 +32,17 @@ struct DurationTextTests {
         #expect(DurationText.recording(0) == "00:00")
     }
 
-    @Test func timecodeShowsHundredthsUnderAMinute() {
+    @Test func timecodeShowsHundredthsUnderTenMinutes() {
         #expect(DurationText.timecode(4.32, total: 11) == "00:04.32")
         #expect(DurationText.timecode(11, total: 11) == "00:11.00")
         #expect(DurationText.timecode(0, total: 9.4) == "00:00.00")
+        #expect(DurationText.timecode(64, total: 64) == "01:04.00")
+        #expect(DurationText.timecode(6.18, total: 64) == "00:06.18")
     }
 
-    @Test func timecodeShowsHoursFromAMinute() {
-        #expect(DurationText.timecode(64, total: 64) == "00:01:04")
-        #expect(DurationText.timecode(6.18, total: 64) == "00:00:06")
+    @Test func timecodeShowsHoursFromTenMinutes() {
+        #expect(DurationText.timecode(600, total: 600) == "00:10:00")
+        #expect(DurationText.timecode(6.18, total: 720) == "00:00:06")
         #expect(DurationText.timecode(3_725, total: 4_000) == "01:02:05")
     }
 

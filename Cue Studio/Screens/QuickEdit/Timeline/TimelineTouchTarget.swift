@@ -10,8 +10,10 @@ import Foundation
 nonisolated enum TimelineTouchTarget: Equatable, Sendable {
     /// Trims.
     case handle(TrimHandle)
+    /// Moves an edge of the red "Remove part" range.
+    case removalEdge(RemovalEdge)
     /// Drags the playhead from where it is.
     case playhead
-    /// Jumps the playhead to the finger and follows it; a tap also selects the piece there.
+    /// Jumps the playhead to the finger and follows it; a tap also selects the section there.
     case timeline
 }

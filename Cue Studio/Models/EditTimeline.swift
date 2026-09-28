@@ -176,6 +176,22 @@ nonisolated struct EditTimeline: Codable, Hashable, Sendable {
         return (0..<count).map { sourceTime(forEdited: length * (Double($0) + 0.5) / Double(count)) }
     }
 
+    /// The parts of the recording that play between two edited moments, in order: what "Remove
+    /// part" takes out. A range across a cut gives one span per piece.
+    func sourceSpans(forEdited range: ClosedRange<TimeInterval>) -> [TimeSpan] {
+        var spans: [TimeSpan] = []
+        var elapsed: TimeInterval = 0
+        for segment in segments {
+            let start = max(range.lowerBound, elapsed)
+            let end = min(range.upperBound, elapsed + segment.duration)
+            if end > start {
+                spans.append(TimeSpan(start: segment.sourceStart + (start - elapsed), end: segment.sourceStart + (end - elapsed)))
+            }
+            elapsed += segment.duration
+        }
+        return spans
+    }
+
     /// Whether nothing of `span` plays any more.
     func isRemoved(_ span: TimeSpan) -> Bool {
         !segments.contains { $0.span.overlaps(span) }
@@ -235,6 +251,13 @@ nonisolated struct EditTimeline: Codable, Hashable, Sendable {
         guard !result.isEmpty, result.map(\.span) != keptSpans else { return false }
         segments = result
         return true
+    }
+
+    /// "Remove part": takes out what plays between two edited moments (internally, two cuts and a
+    /// removal). False, and no change, when nothing would be left or the range is empty.
+    @discardableResult
+    mutating func removeEdited(_ range: ClosedRange<TimeInterval>) -> Bool {
+        remove(sourceSpans(forEdited: range))
     }
 
     /// Puts back what was removed of `spans` between the handles, joined to the pieces it

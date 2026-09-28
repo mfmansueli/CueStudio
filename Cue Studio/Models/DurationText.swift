@@ -31,12 +31,12 @@ nonisolated enum DurationText {
         return twoDigits(whole / 60) + ":" + twoDigits(whole % 60)
     }
 
-    /// Quick edit's clock: "00:04.32" (minutes, seconds, hundredths) for a video under a minute,
-    /// "00:01:04" (hours, minutes, seconds) from a minute up. `total` is the video's length and
-    /// picks the format, so the playhead and the length always read alike.
+    /// Quick edit's clock: "00:04.32" or "01:04.00" (minutes, seconds, hundredths) for a video under
+    /// ten minutes, "00:12:04" (hours, minutes, seconds) from ten minutes up. `total` is the video's
+    /// length and picks the format, so the playhead and the length always read alike.
     static func timecode(_ seconds: TimeInterval, total: TimeInterval) -> String {
         let value = seconds.isFinite ? max(0, seconds) : 0
-        if total < 60 {
+        if total < 600 {
             let hundredths = Int((value * 100).rounded())
             return twoDigits(hundredths / 6000) + ":" + twoDigits(hundredths / 100 % 60) + "." + twoDigits(hundredths % 100)
         }

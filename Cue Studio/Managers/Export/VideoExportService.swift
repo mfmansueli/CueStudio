@@ -6,7 +6,8 @@
 import AVFoundation
 import UIKit
 
-/// Crops takes to their frame and, when needed, burns in the "Made with Cue" badge.
+/// Crops takes to their frame, or renders their Quick edit. Exports carry no watermark: the free
+/// plan limits how many videos are exported, never how they look.
 @MainActor
 @Observable
 final class VideoExportService: VideoExporting {
@@ -28,7 +29,7 @@ final class VideoExportService: VideoExporting {
         let output = URL.temporaryDirectory.appending(path: "Cue-\(UUID().uuidString.prefix(8)).mov")
 
         let needsCrop = abs(crop.width - oriented.width) > 2 || abs(crop.height - oriented.height) > 2
-        guard needsCrop || options.watermark else {
+        guard needsCrop else {
             try FileManager.default.copyItem(at: source, to: output)
             return output
         }
@@ -40,14 +41,11 @@ final class VideoExportService: VideoExporting {
             layerInstructions: [AVVideoCompositionLayerInstruction(configuration: layer)],
             timeRange: CMTimeRange(start: .zero, duration: duration)
         ))
-        var configuration = AVVideoComposition.Configuration(
+        let configuration = AVVideoComposition.Configuration(
             frameDuration: CMTime(value: 1, timescale: CMTimeScale(max(24, frameRate.rounded()))),
             instructions: [instruction],
             renderSize: crop.size
         )
-        if options.watermark {
-            configuration.animationTool = watermarkTool(renderSize: crop.size)
-        }
 
         guard let session = AVAssetExportSession(asset: asset, presetName: AVAssetExportPresetHighestQuality) else {
             throw VideoExportError.exportUnavailable
@@ -71,7 +69,7 @@ final class VideoExportService: VideoExporting {
         }
         let composition = try await EditedComposition.build(
             source: source, edit: edit, processedAudio: processedAudio,
-            options: .init(burnsInCaptions: options.burnsInCaptions, watermark: options.watermark, shortSide: options.shortSide)
+            options: .init(burnsInCaptions: options.burnsInCaptions, shortSide: options.shortSide)
         )
         guard let session = AVAssetExportSession(asset: composition.asset, presetName: AVAssetExportPresetHEVCHighestQuality) else {
             throw VideoExportError.exportUnavailable
@@ -95,51 +93,5 @@ final class VideoExportService: VideoExporting {
         return try await Task.detached {
             try AudioEnhancer.process(audio, volume: volume, enhancesVoice: enhances, reducesNoise: reduces)
         }.value
-    }
-
-    // MARK: - Watermark
-
-    /// Bottom-right badge: a yellow line and "Made with Cue", sized relative to the frame width.
-    private func watermarkTool(renderSize: CGSize) -> AVVideoCompositionCoreAnimationTool {
-        let parent = CALayer()
-        parent.frame = CGRect(origin: .zero, size: renderSize)
-        let video = CALayer()
-        video.frame = parent.frame
-        parent.addSublayer(video)
-
-        let unit = renderSize.width / 402
-        let fontSize = 12 * unit
-        let text = String(localized: "Made with Cue")
-        let font = UIFont.systemFont(ofSize: fontSize, weight: .bold)
-        let textWidth = (text as NSString).size(withAttributes: [.font: font]).width
-        let badgeSize = CGSize(width: textWidth + 34 * unit, height: 26 * unit)
-        let margin = 18 * unit
-
-        let badge = CALayer()
-        // Core Animation's origin is bottom-left inside the video composition.
-        badge.frame = CGRect(
-            x: renderSize.width - badgeSize.width - margin, y: margin * 2,
-            width: badgeSize.width, height: badgeSize.height
-        )
-        badge.backgroundColor = UIColor.black.withAlphaComponent(0.45).cgColor
-        badge.cornerRadius = 8 * unit
-
-        let line = CALayer()
-        line.frame = CGRect(x: 10 * unit, y: (badgeSize.height - 3 * unit) / 2, width: 12 * unit, height: 3 * unit)
-        line.backgroundColor = UIColor(red: 1, green: 0.84, blue: 0.04, alpha: 1).cgColor
-        line.cornerRadius = 1.5 * unit
-        badge.addSublayer(line)
-
-        let label = CATextLayer()
-        label.string = NSAttributedString(string: text, attributes: [
-            .font: font,
-            .foregroundColor: UIColor.white.withAlphaComponent(0.85),
-        ])
-        label.contentsScale = 2
-        label.frame = CGRect(x: 28 * unit, y: (badgeSize.height - fontSize * 1.25) / 2, width: textWidth + 2, height: fontSize * 1.3)
-        badge.addSublayer(label)
-        parent.addSublayer(badge)
-
-        return AVVideoCompositionCoreAnimationTool(configuration: .init(postProcessingAsVideoLayer: video, containingLayer: parent))
     }
 }

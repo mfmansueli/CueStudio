@@ -37,7 +37,6 @@ struct FormatsTabView: View {
             Text(structure.label)
                 .font(.subheadline.weight(.semibold))
                 .foregroundStyle(Palette.ink)
-                .padding(.trailing, viewModel.isLocked(type) ? 34 : 0)
             Text(type.summary).font(.footnote).foregroundStyle(Palette.ink2)
             Spacer(minLength: 8)
             Text(structure.blocks.joined(separator: " → "))
@@ -51,11 +50,6 @@ struct FormatsTabView: View {
         .overlay {
             if structure.isSerious {
                 shape.strokeBorder(Palette.ink.opacity(0.18), lineWidth: 0.5)
-            }
-        }
-        .overlay(alignment: .topTrailing) {
-            if viewModel.isLocked(type) {
-                ProBadge().padding(10)
             }
         }
         .contentShape(shape)

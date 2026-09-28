@@ -9,10 +9,11 @@ import Foundation
 nonisolated enum DefaultsKey {
     static let prompterSettings = "prompterSettings"
     static let cameraSettings = "cameraSettings"
-    /// The Selfie reading line's first-time tip was dismissed.
-    static let readingLineTipSeen = "readingLineTipSeen"
+    /// The Selfie reading line's first-time tip was dismissed. The tip is gone; removed at launch.
+    static let legacyReadingLineTipSeen = "readingLineTipSeen"
     static let creatorProfile = "creatorProfile"
-    static let cleanExportsUsed = "cleanExportsUsed"
+    /// Free exports used, before the count moved to the Keychain; migrated and removed at launch.
+    static let legacyCleanExportsUsed = "cleanExportsUsed"
     /// The Sign in with Apple account (ID, and the name and email Apple shared once).
     static let appleAccount = "appleAccount"
     /// v1's monthly AI counters ("aiScriptsUsed_2026-09"), removed at launch.

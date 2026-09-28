@@ -100,19 +100,15 @@ final class PrompterUITests: XCTestCase {
         done.tap()
     }
 
-    func testReadingLineExplainsItselfOnceAndMovesFromDisplay() {
+    func testReadingLineMovesFromDisplayWithoutATip() {
         let app = CueApp.launch(seeded: true)
         let record = app.buttons["hero.recordButton"]
         XCTAssertTrue(record.waitForExistence(timeout: 15))
         record.tap()
 
-        let tip = app.buttons["prompter.readingLineTip"]
-        XCTAssertTrue(tip.waitForExistence(timeout: 5))
-        tip.tap()
-        XCTAssertTrue(tip.waitForNonExistence(timeout: 3))
-
         let handle = element(app, "prompter.readingLineHandle")
-        XCTAssertTrue(handle.exists)
+        XCTAssertTrue(handle.waitForExistence(timeout: 5))
+        XCTAssertFalse(app.buttons["prompter.readingLineTip"].exists)
         let lineY = handle.frame.midY
         app.buttons["prompter.displayButton"].tap()
         let summary = element(app, "display.readingLineSummary")

@@ -6,8 +6,8 @@
 import Foundation
 
 /// "Generate with AI": a free prompt, an idea for the creator's niche, or a format's brief. Apple
-/// Intelligence writes everything, on the device or with Private Cloud Compute, at no cost; only
-/// the Sponsored ad format is part of Pro.
+/// Intelligence writes everything, on the device or with Private Cloud Compute, at no cost, and
+/// every format is free.
 @MainActor
 @Observable
 final class GenerateScriptViewModel {
@@ -38,14 +38,12 @@ final class GenerateScriptViewModel {
 
     // MARK: State
     private(set) var isGenerating = false
-    var paywall: PaywallContext?
     var errorMessage: String?
 
     private let writer: ScriptWriting
     private let library: ScriptLibraryService
     private let profile: CreatorProfileService
     private let rules: PlatformRulesService
-    private let tier: () -> MembershipTier
     private let toast: ToastService
 
     init(
@@ -54,7 +52,6 @@ final class GenerateScriptViewModel {
         library: ScriptLibraryService,
         profile: CreatorProfileService,
         rules: PlatformRulesService,
-        tier: @escaping () -> MembershipTier,
         toast: ToastService
     ) {
         tab = initialTab
@@ -62,7 +59,6 @@ final class GenerateScriptViewModel {
         self.library = library
         self.profile = profile
         self.rules = rules
-        self.tier = tier
         self.toast = toast
         let defaultPlatform = profile.profile.defaultPlatform
         platform = Platform.primary.contains(defaultPlatform) ? defaultPlatform : .tiktok
@@ -93,11 +89,6 @@ final class GenerateScriptViewModel {
 
     var isSerious: Bool { selectedType?.structure.isSerious ?? false }
 
-    /// Formats are Pro only when they say so (Sponsored ad).
-    func isLocked(_ type: ScriptType) -> Bool {
-        type.isPro && !ProFeature.sponsoredAd.isUnlocked(for: tier())
-    }
-
     /// Shown in a brief when no model can run: the draft is built from the bullets.
     var modelNote: String? {
         guard !availability.isAvailable else { return nil }
@@ -126,7 +117,7 @@ final class GenerateScriptViewModel {
             source: .prompt(text),
             platform: platform,
             tone: nil,
-            voice: writesInMyVoice ? profile.profile.voice(unlocking: tier()) : nil,
+            voice: writesInMyVoice ? profile.profile.voice : nil,
             targetRange: effectiveLength.targetRange(ideal: preset.idealRange)
         )
         guard let generated = await run(request) else { return nil }
@@ -166,12 +157,8 @@ final class GenerateScriptViewModel {
 
     // MARK: - Formats
 
-    /// Opens a format's brief, or the paywall for a Pro format on the free plan.
+    /// Opens a format's brief. Every format is free, Sponsored ad included.
     func choose(_ type: ScriptType) {
-        if isLocked(type) {
-            paywall = .sponsoredAd
-            return
-        }
         brief = [:]
         let tones = type.structure.tones
         tone = profile.profile.sounds.compactMap(\.tone).first(where: tones.contains) ?? tones[0]
@@ -182,19 +169,15 @@ final class GenerateScriptViewModel {
         brief[field.key] = value
     }
 
-    /// Returns the new script, or nil when the paywall or an error was shown instead.
+    /// Returns the new script, or nil when an error was shown instead.
     func generateFromBrief() async -> Script? {
         guard let type = selectedType, !isGenerating else { return nil }
-        if isLocked(type) {
-            paywall = .sponsoredAd
-            return nil
-        }
         let preset = rules.preset(for: platform, monetizationGoals: profile.profile.monetizationGoals)
         let request = ScriptRequest(
             source: .format(type, brief: brief),
             platform: platform,
             tone: tone,
-            voice: writesInMyVoice && !type.structure.isSerious ? profile.profile.voice(unlocking: tier()) : nil,
+            voice: writesInMyVoice && !type.structure.isSerious ? profile.profile.voice : nil,
             targetRange: preset.idealRange
         )
         guard let generated = await run(request) else { return nil }

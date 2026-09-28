@@ -6,7 +6,7 @@
 import SwiftUI
 
 /// "Share to": the platforms (the one the take was made for ringed in yellow), Save video and More,
-/// then Burn in captions and Quality. On the free plan, how many clean exports are left.
+/// then Burn in captions and Quality. On the free plan, how many free exports are left.
 struct ShareToSheet: View {
     @Bindable var viewModel: TakeReviewViewModel
     let take: Take
@@ -134,7 +134,7 @@ struct ShareToSheet: View {
                 Spacer()
                 Picker("Quality", selection: Binding(get: { viewModel.quality }, set: { viewModel.setQuality($0) })) {
                     ForEach(ExportQuality.allCases) { quality in
-                        Text(quality.isPro && !viewModel.isPro ? "\(quality.label) · PRO" : quality.label).tag(quality)
+                        Text(quality.label).tag(quality)
                     }
                 }
                 .pickerStyle(.segmented)

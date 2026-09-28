@@ -17,9 +17,11 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
     // MARK: Timeline
     /// What plays: pieces of the recording, in order.
     var timeline: EditTimeline
-    /// Clean Up's findings (pauses for now). Suggestions only: removing one cuts it from the
-    /// timeline.
+    /// Clean Up's findings: pauses, filler words and possible retakes. Suggestions only: removing
+    /// one cuts it from the timeline.
     var suggestions: [CleanUpSuggestion] = []
+    /// Clean Up has listened to the take (so an empty list means it found nothing).
+    var cleanUpAnalyzed = false
 
     // MARK: Audio
     /// 0 to 1.5 (150%).
@@ -74,6 +76,7 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
         var untouched = TakeEdit(sourceDuration: sourceDuration, aspect: original)
         untouched.captions = captions
         untouched.suggestions = suggestions
+        untouched.cleanUpAnalyzed = cleanUpAnalyzed
         if timeline.isWhole { untouched.timeline = timeline }
         return self != untouched
     }
@@ -81,7 +84,7 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
     // MARK: - Coding
 
     private enum CodingKeys: String, CodingKey {
-        case timeline, suggestions, volume, enhancesVoice, reducesNoise, exposure, contrast, warmth, filter
+        case timeline, suggestions, cleanUpAnalyzed, volume, enhancesVoice, reducesNoise, exposure, contrast, warmth, filter
         case aspect, cropOffset, showsCaptions, captionStyle, captionPosition, captions
     }
 
@@ -96,6 +99,7 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
         if let timeline = try container.decodeIfPresent(EditTimeline.self, forKey: .timeline) {
             self.timeline = timeline
             suggestions = try container.decodeIfPresent([CleanUpSuggestion].self, forKey: .suggestions) ?? []
+            cleanUpAnalyzed = try container.decodeIfPresent(Bool.self, forKey: .cleanUpAnalyzed) ?? false
         } else {
             (timeline, suggestions) = try Self.legacyTimeline(from: decoder)
         }
