@@ -59,9 +59,7 @@ struct QuickEditPreview: View {
     }
 
     private func rebuild() async {
-        let time = player.currentTime()
         guard let item = try? await editing.previewItem(forVideoAt: viewModel.videoURL, edit: viewModel.edit) else { return }
-        player.replaceCurrentItem(with: item)
-        await player.seek(to: time, toleranceBefore: .zero, toleranceAfter: .zero)
+        await player.replaceCurrentItemKeepingTime(with: item)
     }
 }
