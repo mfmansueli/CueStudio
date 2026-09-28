@@ -61,13 +61,12 @@ struct StudioControlPanel: View {
     // MARK: - Rows
 
     private var speedRow: some View {
-        @Bindable var preferences = preferences
-        return HStack(spacing: 12) {
+        HStack(spacing: 12) {
             Text("Speed")
                 .font(.footnote.weight(.semibold))
                 .foregroundStyle(Palette.ink2)
                 .frame(width: 44, alignment: .leading)
-            Slider(value: $preferences.prompter.speed, in: PrompterSettings.speedRange, step: 0.1)
+            Slider(value: Binding(get: { preferences.prompter.speed }, set: { viewModel.setSpeed($0) }), in: PrompterSettings.speedRange, step: 0.1)
                 .tint(Palette.acc)
                 .accessibilityLabel(Text("Speed"))
                 .accessibilityValue(Text(preferences.prompter.speedLabel))

@@ -29,8 +29,9 @@ struct ScriptBlocksTests {
     }
 
     @Test func longHookIsFlagged() {
-        let blocks = ScriptBlocks.blocks(for: TestData.words(20) + "\n\nBody.", structure: .generic, speed: 1)
-        #expect(ScriptBlocks.hookOverrun(in: blocks, structure: .generic) == 8)
+        // 43 words take 12 seconds at 1.0× (215 words a minute).
+        let blocks = ScriptBlocks.blocks(for: TestData.words(43) + "\n\nBody.", structure: .generic, speed: 1)
+        #expect(ScriptBlocks.hookOverrun(in: blocks, structure: .generic) == 12)
     }
 
     @Test func shortHookIsFine() {

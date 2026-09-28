@@ -27,7 +27,7 @@ struct ScriptPromptBuilderTests {
     @Test func formatPromptCarriesStructureLengthAndBrief() {
         let prompt = ScriptPromptBuilder.prompt(for: formatRequest())
         #expect(prompt.contains("Hook → Tips → CTA"))
-        #expect(prompt.contains("between 150 and 225 spoken words"))
+        #expect(prompt.contains("between \(ReadTime.words(for: 60)) and \(ReadTime.words(for: 90)) spoken words"))
         #expect(prompt.contains("- Topic: Morning habits"))
         #expect(prompt.contains("Tone: casual."))
     }
@@ -35,7 +35,7 @@ struct ScriptPromptBuilderTests {
     @Test func freePromptCarriesTheIdeaAndItsLength() {
         let prompt = ScriptPromptBuilder.prompt(for: promptRequest("How the electric shower was invented"))
         #expect(prompt.contains("The video: How the electric shower was invented"))
-        #expect(prompt.contains("between 270 and 330 spoken words"))
+        #expect(prompt.contains("between \(ReadTime.words(for: 108)) and \(ReadTime.words(for: 132)) spoken words"))
         #expect(prompt.contains("YouTube · long-form"))
         #expect(!prompt.contains("Tone:"))
     }
@@ -98,7 +98,7 @@ struct ScriptPromptBuilderTests {
 
     @Test func fitToTimeTargetsTheIdealWordCount() {
         let context = RewriteContext(structure: .generic, platform: .tiktok, idealRange: 60...90)
-        #expect(ScriptPromptBuilder.instruction(for: .fitToTime, context: context).contains("between 150 and 225 spoken words"))
+        #expect(ScriptPromptBuilder.instruction(for: .fitToTime, context: context).contains("between \(ReadTime.words(for: 60)) and \(ReadTime.words(for: 90)) spoken words"))
     }
 
     @Test func withoutVocabularyThePromptSaysNothingAboutIt() {

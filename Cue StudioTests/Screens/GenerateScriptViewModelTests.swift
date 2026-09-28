@@ -62,8 +62,8 @@ struct GenerateScriptViewModelTests {
         scenario.viewModel.length = .minutes2
         _ = await scenario.viewModel.generateFromPrompt()
         let range = scenario.writer.lastRequest?.targetRange
-        #expect(range.map { ReadTime.words(for: $0.lowerBound) } == 270)
-        #expect(range.map { ReadTime.words(for: $0.upperBound) } == 330)
+        #expect(range.map { abs(ReadTime.words(for: $0.lowerBound) - 270) <= 2 } == true)
+        #expect(range.map { abs(ReadTime.words(for: $0.upperBound) - 330) <= 2 } == true)
     }
 
     @Test func autoLengthReadsTheLengthFromThePrompt() async {

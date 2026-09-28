@@ -63,13 +63,19 @@ final class PrompterUITests: XCTestCase {
 
         let voice = app.buttons["prompter.scrollMode.voice"]
         XCTAssertTrue(voice.waitForExistence(timeout: 5))
+        let speed = app.sliders["prompter.speedSlider"]
+        XCTAssertTrue(speed.exists)
+        // "0.7×" or "0,7×", depending on the simulator's locale.
+        XCTAssertTrue((speed.value as? String)?.hasSuffix("7×") == true)
         voice.tap()
         allowMicrophoneIfAsked()
         XCTAssertTrue(element(app, "prompter.voiceIndicator").waitForExistence(timeout: 5))
         XCTAssertTrue(voice.isSelected)
+        XCTAssertFalse(speed.exists)
 
         app.buttons["prompter.scrollMode.steady"].tap()
         XCTAssertFalse(element(app, "prompter.voiceIndicator").waitForExistence(timeout: 2))
+        XCTAssertTrue(speed.exists)
         app.buttons["prompter.closeButton"].tap()
         XCTAssertTrue(record.waitForExistence(timeout: 5))
     }

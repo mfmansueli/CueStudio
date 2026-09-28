@@ -4,10 +4,7 @@
     "" : {
 
     },
-    "%@ looks best — tap ☆ to keep it" : {
-
-    },
-    "%lld of %lld clean left" : {
+    "Paste from clipboard" : {
 
     },
     "·" : {
@@ -91,6 +88,9 @@
     "%@ deleted" : {
 
     },
+    "%@ looks best — tap ☆ to keep it" : {
+
+    },
     "%@ marked as best" : {
 
     },
@@ -157,6 +157,9 @@
           }
         }
       }
+    },
+    "%lld of %lld clean left" : {
+
     },
     "%lld of %lld left" : {
       "localizations" : {
@@ -250,9 +253,6 @@
     "1 min" : {
 
     },
-    "1080p" : {
-
-    },
     "2 min" : {
 
     },
@@ -268,16 +268,19 @@
     "3 things I stopped buying this year" : {
 
     },
+    "4K" : {
+
+    },
+    "4K exports are part of Pro, with unlimited clean exports." : {
+
+    },
     "12 presets made for phone footage" : {
 
     },
     "30s" : {
 
     },
-    "4K" : {
-
-    },
-    "4K exports are part of Pro, with unlimited clean exports." : {
+    "1080p" : {
 
     },
     "A 10-minute dinner I make every week" : {
@@ -395,6 +398,9 @@
 
     },
     "Auto" : {
+
+    },
+    "AUTO" : {
 
     },
     "Auto-enhanced" : {
@@ -829,9 +835,6 @@
 
     },
     "External" : {
-
-    },
-    "Faster" : {
 
     },
     "Files" : {
@@ -1412,10 +1415,10 @@
     "No purchases to restore" : {
 
     },
-    "No script to caption this take" : {
+    "No script — add one anytime" : {
 
     },
-    "No script — add one anytime" : {
+    "No script to caption this take" : {
 
     },
     "No scripts here yet." : {
@@ -1497,9 +1500,6 @@
 
     },
     "Paste" : {
-
-    },
-    "Paste from clipboard" : {
 
     },
     "Pasted · %lld words" : {
@@ -1937,9 +1937,6 @@
     "Skincare myths I believed for years" : {
 
     },
-    "Slower" : {
-
-    },
     "So, real quick." : {
 
     },
@@ -2090,16 +2087,13 @@
     "Takes" : {
 
     },
+    "Tap ☆ to pick your best" : {
+
+    },
     "Tap a section to select it" : {
 
     },
     "Tap a section to select it · Split at the playhead" : {
-
-    },
-    "Tap to play or pause" : {
-
-    },
-    "Tap ☆ to pick your best" : {
 
     },
     "Tap play, then start reading" : {
@@ -2109,6 +2103,9 @@
 
     },
     "Tap to open · Swipe for actions · Hold to preview" : {
+
+    },
+    "Tap to play or pause" : {
 
     },
     "Tech" : {

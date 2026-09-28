@@ -33,29 +33,27 @@ struct SelfieControlPanel: View {
         }
     }
 
+    /// Steady shows the speed slider; Voice Following shows "AUTO", since the voice sets the pace.
     private var scriptControls: some View {
-        HStack {
+        HStack(spacing: 8) {
             if preferences.prompter.scrollMode == .voice {
                 VoiceIndicator(level: viewModel.voiceLevel, isListening: viewModel.isPlaying && viewModel.isVoiceActive)
             } else {
-                SpeedStepper(
+                SpeedSlider(
+                    speed: preferences.prompter.speed,
                     speedLabel: preferences.prompter.speedLabel,
-                    onSlower: { viewModel.changeSpeed(by: -0.1) },
-                    onFaster: { viewModel.changeSpeed(by: 0.1) }
+                    onChange: { viewModel.setSpeed($0) }
                 )
             }
-            Spacer()
             Button { viewModel.rewind() } label: { Image(systemName: "arrow.up.to.line") }
                 .buttonStyle(.cueIcon(.overlay))
                 .accessibilityLabel(Text("Back to the top"))
-            Spacer()
             Button { viewModel.togglePlay() } label: {
                 Image(systemName: viewModel.isPlaying ? "pause.fill" : "play.fill")
             }
             .buttonStyle(.cueIcon(.overlay))
             .accessibilityLabel(Text(viewModel.isPlaying ? "Pause" : "Play"))
             .accessibilityIdentifier("prompter.playButton")
-            Spacer()
             Button { viewModel.sheet = .display } label: {
                 Text("Aa").font(.system(size: 17, weight: .semibold))
             }

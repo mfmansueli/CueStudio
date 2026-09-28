@@ -5,8 +5,9 @@
 
 import SwiftUI
 
-/// Voice Following's status in the toolbar: a small waveform that moves with the mic level, and
-/// "Listening" or "Paused".
+/// Voice Following's status: a small waveform that moves with the mic level, and "Listening" or
+/// "Paused". In the Selfie toolbar it takes the speed slider's place, led by "AUTO" (the voice sets
+/// the speed); in Studio it sits inline, without its own background.
 struct VoiceIndicator: View {
     /// 0...1
     let level: Double
@@ -26,12 +27,23 @@ struct VoiceIndicator: View {
             }
             .frame(height: 20)
             .animation(reduceMotion ? nil : .easeOut(duration: 0.12), value: level)
-            Text(isListening ? "Listening" : "Paused")
-                .font(.subheadline.weight(.semibold))
-                .foregroundStyle(Palette.acc)
+            if fillsWidth {
+                Text(isListening ? "Listening" : "Paused")
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(Palette.acc)
+            } else {
+                Text("AUTO")
+                    .font(.subheadline.weight(.bold))
+                    .kerning(0.5)
+                    .foregroundStyle(Palette.acc)
+                Text(isListening ? "Listening" : "Paused")
+                    .font(.footnote)
+                    .foregroundStyle(Palette.ink2)
+                    .lineLimit(1)
+            }
         }
-        .padding(.horizontal, 16)
-        .frame(minWidth: fillsWidth ? nil : 140, maxWidth: fillsWidth ? nil : 140, minHeight: 44)
+        .padding(.horizontal, fillsWidth ? 16 : 14)
+        .frame(maxWidth: fillsWidth ? nil : .infinity, minHeight: 44, alignment: .leading)
         .background(fillsWidth ? .clear : Palette.accSoft, in: Capsule())
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(Text("Voice Following"))

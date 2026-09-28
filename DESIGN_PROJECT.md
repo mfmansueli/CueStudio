@@ -111,7 +111,7 @@ SF Symbols por significado: `doc.text` scripts · `film.stack` takes · `person.
 | Start recording | `StartRecordingSheet` | "Read from a script" (4 recentes com duração), "+ New script", "Record without a script →". Sobre a câmera vira "Add a script", sem o freestyle |
 | Importar | `ImportScriptSheet` | Files, Scan (câmera de documentos), Photo e Clipboard. Scan, Photo e PDFs escaneados passam por OCR do Vision no aparelho |
 | Gerar com IA | `GenerateScript/` | "Generate with AI · Apple Intelligence · private · no cost" + abas **Prompt** (texto livre, exemplos, Create for, Length, "Write in my voice", aviso de fatos), **Themes** (6 ideias do nicho, "New ideas", "Use" preenche o Prompt) e **Formats** (8 formatos; Sponsored ad é PRO) → briefing |
-| Selfie | `Screens/Prompter/Selfie` | Câmera em primeiro plano; painel do texto na posição e altura do preset (largura 50–75%, padrão do preset; fundo preto 25%; desfoque opcional da câmera); topo: fechar, Selfie \| Studio e o chip "{Plataforma} · 9:16" (abre Create for; em freestyle troca o enquadramento); barra de vidro: Voice Following \| Steady, velocidade ou "Listening/Paused", voltar ao topo, play, Aa; câmera: última take, ajustes, gravar, virar, timer |
+| Selfie | `Screens/Prompter/Selfie` | Câmera em primeiro plano; painel do texto na posição e altura do preset (largura 50–75%, padrão do preset; fundo preto 25%; desfoque opcional da câmera); topo: fechar, Selfie \| Studio e o chip "{Plataforma} · 9:16" (abre Create for; em freestyle troca o enquadramento); barra de vidro: Voice Following \| Steady, slider de velocidade com o valor (0,3–2,0×) ou "AUTO · Listening/Paused", voltar ao topo, play, Aa; câmera: última take, ajustes, gravar, virar, timer |
 | Studio | `Screens/Prompter/Studio` | Prompter em tela cheia sem câmera, barra de progresso no topo, fechar, Selfie \| Studio e espelhar; barra: Voice Following \| Steady, slider de velocidade (no Voice Following, "Listening/Paused" e "Speed follows your voice"), voltar ao topo, 3 linhas para trás/frente, play grande amarelo e Aa |
 | Display | `DisplaySettingsSheet` | "Display · ● Live preview". Quick: AI Coach, Text size, Reading width, Reading line (Top/Bottom), Background opacity, Camera blur (Off/Low/Medium/High) — no Studio, Background color no lugar dos três do Selfie. Advanced (recolhível): fonte, espaçamento, margens, alinhamento, cor, linha de leitura, espelhar. No Selfie, a altura máxima para logo abaixo do painel |
 | Câmera | `CameraSettingsSheet` | Lente, enquadramento, resolução, fps, grid, safe zones, estabilização, microfone, contagem, formato. No Selfie com script, a sheet para logo abaixo do painel do texto (não cresce além dele) e não escurece o fundo |
@@ -168,7 +168,10 @@ estático), o app baixa uma vez por abertura e só adota uma revisão maior, com
 ## 7. Movimento
 
 - Sheets e toasts com mola curta (0,25–0,36 s). Contagem regressiva com "pop".
-- Rolagem do prompter por `CADisplayLink`, calibrada para 150 palavras/min em 1,0×.
+- Rolagem do prompter por `CADisplayLink`, calibrada para 215 palavras/min em 1,0×. O padrão é 0,7×
+  (≈150 palavras/min, o ritmo natural) e a faixa vai de 0,3× a 2,0×. As estimativas de duração usam a
+  mesma constante (`ReadTime`). Velocidades salvas antes da v7 (150 palavras/min em 1,0×) são
+  convertidas para manter o mesmo ritmo.
 - Voice follow: o texto desliza até a próxima palavra a ler (aproxima ~2/3 do caminho em 0,35 s),
   nunca para trás; a linha lida fica centrada na guia.
 - **Reduce Motion:** toasts só com fade, contagem sem escala, barras de voz e ponto de gravação

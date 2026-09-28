@@ -19,7 +19,8 @@ struct ScriptLengthTests {
 
     @Test func twoMinutesIsAboutThreeHundredWords() {
         let range = ScriptLength.minutes2.targetRange(ideal: 0...0)
-        #expect(ReadTime.words(for: (range.lowerBound + range.upperBound) / 2) == 300)
+        // At the natural 0.7× (≈150 words a minute).
+        #expect(abs(ReadTime.words(for: (range.lowerBound + range.upperBound) / 2) - 300) <= 2)
     }
 
     @Test(arguments: [

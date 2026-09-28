@@ -16,7 +16,8 @@ struct PrompterSettingsTests {
          "studioBackground":"#1C1C1E","showsCues":false}
         """
         let settings = try JSONDecoder().decode(PrompterSettings.self, from: Data(v1.utf8))
-        #expect(settings.speed == 1.4)
+        // Same pace on the new scale: 1.4 × 150 ÷ 215 ≈ 1.0.
+        #expect(settings.speed == 1)
         #expect(settings.font == .legible)
         #expect(settings.size == 40)
         #expect(settings.scrollMode == .voice)
@@ -25,6 +26,29 @@ struct PrompterSettingsTests {
         #expect(settings.backgroundOpacity == 0.25)
         #expect(settings.readingWidth == 0.6)
         #expect(settings.cameraBlur == 0)
+    }
+
+    @Test func startsAtTheNaturalSpeed() {
+        #expect(PrompterSettings().speed == 0.7)
+    }
+
+    @Test(arguments: [(1.0, 0.7), (0.5, 0.3), (2.0, 1.4), (3.0, 2.0)])
+    func speedsSavedBeforeTheNewScaleKeepTheirPace(_ saved: Double, _ expected: Double) throws {
+        let settings = try JSONDecoder().decode(PrompterSettings.self, from: Data(#"{"speed":\#(saved)}"#.utf8))
+        #expect(settings.speed == expected)
+    }
+
+    @Test func speedsSavedOnTheNewScaleStayPut() throws {
+        var settings = PrompterSettings()
+        settings.speed = 1.3
+        let decoded = try JSONDecoder().decode(PrompterSettings.self, from: JSONEncoder().encode(settings))
+        #expect(decoded.speed == 1.3)
+    }
+
+    @Test func clampedSpeedStepsInTenthsWithinTheRange() {
+        #expect(PrompterSettings.clampedSpeed(0.74) == 0.7)
+        #expect(PrompterSettings.clampedSpeed(0.1) == 0.3)
+        #expect(PrompterSettings.clampedSpeed(2.4) == 2)
     }
 
     @Test func marginsAboveTheNewRangeAreClamped() throws {

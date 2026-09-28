@@ -281,10 +281,11 @@ final class PrompterViewModel {
         }
     }
 
-    func changeSpeed(by step: Double) {
-        let range = PrompterSettings.speedRange
-        let next = ((preferences.prompter.speed + step) * 10).rounded() / 10
-        preferences.prompter.speed = min(range.upperBound, max(range.lowerBound, next))
+    /// The speed slider: tenths, within the range.
+    func setSpeed(_ value: Double) {
+        let speed = PrompterSettings.clampedSpeed(value)
+        guard speed != preferences.prompter.speed else { return }
+        preferences.prompter.speed = speed
     }
 
     // MARK: - Recording

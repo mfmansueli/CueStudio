@@ -30,7 +30,7 @@ nonisolated struct PrompterScrollEngine: Equatable, Sendable {
     /// reads at the same pace the read-time estimates assume, whatever the font size or margins.
     func pointsPerSecond(speed: Double) -> Double {
         guard wordCount > 0, contentHeight > 0 else { return 0 }
-        let wordsPerSecond = ReadTime.baseWordsPerMinute * speed / 60
+        let wordsPerSecond = ReadTime.wordsPerMinute(speed: speed) / 60
         return wordsPerSecond * contentHeight / Double(wordCount)
     }
 

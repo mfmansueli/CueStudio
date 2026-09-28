@@ -18,15 +18,20 @@ struct PrompterScrollEngineTests {
         #expect(makeEngine().endOffset == 960)
     }
 
-    @Test func normalSpeedReadsAt150WordsPerMinute() {
+    @Test func oneXReads215WordsPerMinute() {
+        // 10 points per word.
+        #expect(abs(makeEngine().pointsPerSecond(speed: 1) - 215.0 / 60 * 10) < 0.0001)
+    }
+
+    @Test func theDefaultSpeedReadsAbout150WordsPerMinute() {
         // 2.5 words per second over 10 points per word.
-        #expect(makeEngine().pointsPerSecond(speed: 1) == 25)
+        #expect(abs(makeEngine().pointsPerSecond(speed: ReadTime.naturalSpeed) - 25) < 0.1)
     }
 
     @Test func advanceMovesBySpeedAndTime() {
         var engine = makeEngine()
         engine.advance(by: 2, speed: 1)
-        #expect(engine.offset == 50)
+        #expect(abs(engine.offset - 2 * 215.0 / 60 * 10) < 0.0001)
     }
 
     @Test func advanceReportsTheEndOnce() {
