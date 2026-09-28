@@ -18,15 +18,7 @@ struct FilmstripFrames: View {
     var body: some View {
         HStack(spacing: 2) {
             ForEach(0..<count, id: \.self) { index in
-                Group {
-                    if index < frames.count {
-                        Image(uiImage: frames[index]).resizable().scaledToFill()
-                    } else {
-                        LinearGradient(colors: [Palette.thumbnailTop, Palette.thumbnailBottom], startPoint: .topLeading, endPoint: .bottomTrailing)
-                    }
-                }
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .clipped()
+                FilmstripCell(image: index < frames.count ? frames[index] : nil)
             }
         }
         .task(id: videoURL) {
