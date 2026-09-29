@@ -20,9 +20,23 @@ final class FakeTakeEditor: TakeEditing {
     var cleanUpFails = false
     /// The language Clean Up listened in.
     private(set) var cleanUpLanguage: SpeechLanguageRequest?
-    var captions: [CaptionCue] = [CaptionCue(text: "Okay, real talk.", start: 0, end: 1)]
+    /// The lines heard, with their words.
+    var captions: [CaptionCue] = [CaptionCue(words: [
+        CaptionWord(text: "Okay,", start: 0, end: 0.3),
+        CaptionWord(text: "real", start: 0.35, end: 0.6),
+        CaptionWord(text: "talk.", start: 0.65, end: 1),
+    ])]
+    /// How listening ends; nil gives `captions`.
+    var captionOutcome: CaptionOutcome?
+    /// Where listening goes, reported in order before it ends.
+    var captionProgress: [CaptionProgress] = [.preparing, .transcribing(0.5)]
+    /// How long listening takes, so a test can stop it halfway.
+    var captionDelay: Duration?
+    /// Listening fails (the sound can't be read).
+    var captionFails = false
     private(set) var captionScript: String?
     private(set) var captionLanguage: SpeechLanguageRequest?
+    private(set) var captionRequests = 0
 
     /// The script Clean Up read the language from, when it was left to detect it.
     var cleanUpScript: String? {
@@ -44,10 +58,17 @@ final class FakeTakeEditor: TakeEditing {
         return CleanUpAnalyzer.suggestions(silences: silences, transcript: transcript)
     }
 
-    func captions(forVideoAt url: URL, script: String, language: SpeechLanguageRequest, duration: TimeInterval) async -> [CaptionCue] {
+    func captions(
+        forVideoAt url: URL, script: String, language: SpeechLanguageRequest,
+        progress: @escaping @Sendable (CaptionProgress) -> Void
+    ) async throws -> CaptionOutcome {
         captionScript = script
         captionLanguage = language
-        return captions
+        captionRequests += 1
+        for step in captionProgress { progress(step) }
+        if let captionDelay { try await Task.sleep(for: captionDelay) }
+        if captionFails { throw EditSourceError.noDuration }
+        return captionOutcome ?? .captions(captions, transcript: CaptionTranscript(words: captions.flatMap(\.words), languageCode: "en"))
     }
 
     func previewItem(forVideoAt url: URL, edit: TakeEdit) async throws -> AVPlayerItem {

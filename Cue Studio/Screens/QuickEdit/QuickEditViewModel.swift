@@ -71,7 +71,15 @@ final class QuickEditViewModel {
     private(set) var removalRange: ClosedRange<TimeInterval>? {
         didSet { player.reviewedPart = removalRange }
     }
-    private(set) var isWritingCaptions = false
+    /// Captions listening to the take (see `QuickEditViewModel+Captions`).
+    var captionState: CaptionState = .idle
+    /// Asking before new captions replace lines the creator corrected or wrote.
+    var confirmsCaptionReplacement = false
+    /// The caption line open in its sheet.
+    var editingCaptionID: UUID?
+    @ObservationIgnored var captionTask: Task<Void, Never>?
+    /// The captions request whose result is still wanted: an older one finishing late is dropped.
+    @ObservationIgnored var captionRequest: UUID?
     /// Frames per second of the recording: read from the file when it opens, the take's setting
     /// until then. The timeline puts every edit on a frame (`FrameGrid`).
     private(set) var frameRate: Double
@@ -634,6 +642,7 @@ final class QuickEditViewModel {
         edit.textPreset = step.textPreset
         edit.captionLook = step.captionLook
         edit.captionPreset = step.captionPreset
+        if let captions = step.captions { edit.captions = captions }
     }
 
     // MARK: - Adjust
@@ -654,27 +663,6 @@ final class QuickEditViewModel {
 
     func resetCropPosition() {
         edit.cropOffset = 0
-    }
-
-    // MARK: - Captions
-
-    /// Captions come from the script (or, freestyle, from what the model hears), timed to the voice.
-    func setShowsCaptions(_ shows: Bool) async {
-        edit.showsCaptions = shows
-        guard shows, edit.captions.isEmpty else { return }
-        isWritingCaptions = true
-        defer { isWritingCaptions = false }
-        edit.captions = await editing.captions(forVideoAt: videoURL, script: scriptText, language: speechLanguage, duration: edit.sourceDuration)
-        if edit.captions.isEmpty {
-            edit.showsCaptions = false
-            toast.show(String(localized: "No script to caption this take"))
-        }
-    }
-
-    /// A preset for the captions (one undo step); turns them on when they were off.
-    func setCaptionPreset(_ preset: TypePreset) async {
-        applyPreset(preset, to: .allCaptions)
-        if !edit.showsCaptions { await setShowsCaptions(true) }
     }
 
     // MARK: - Filters
@@ -748,6 +736,8 @@ final class QuickEditViewModel {
         isClosed = true
         draftTask?.cancel()
         coverTask?.cancel()
+        captionTask?.cancel()
+        captionRequest = nil
         if !keepingDraft { drafts.discard(takeID: take.id) }
         player.stop()
     }

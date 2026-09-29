@@ -52,6 +52,12 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
     var captionPosition: CaptionPosition = .bottom
     /// Timed to the original recording.
     var captions: [CaptionCue] = []
+    /// What speech recognition heard, word by word, before any correction; nil until captions are
+    /// made from the voice.
+    var captionTranscript: CaptionTranscript?
+    /// The language spoken in the take, when the creator picked it for captions; nil listens in
+    /// the Voice Following language, or the script's.
+    var captionLanguage: CueLanguage?
 
     // MARK: Added
     /// Texts over the video, pinned to the recording.
@@ -85,12 +91,33 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
 
     var editedDuration: TimeInterval { timeline.editedDuration }
 
-    /// Captions timed to the edited video; lines said in cut pieces disappear.
+    /// Captions timed to the edited video. Lines said in cut pieces disappear; a line with word
+    /// times shows only the words still in the edit, each at its edited time.
     var editedCaptions: [CaptionCue] {
         captions.compactMap { cue in
+            if !cue.words.isEmpty {
+                let words = cue.words.compactMap { word -> CaptionWord? in
+                    // A word shows when its middle is still in the edit.
+                    let middle = (word.start + word.end) / 2
+                    guard timeline.editedTime(forSource: middle) != nil,
+                          let start = timeline.editedTime(forSource: word.start) ?? timeline.editedTime(forSource: middle) else { return nil }
+                    let end = timeline.editedTime(forSource: max(word.start, word.end - 0.01)).map { $0 + 0.01 } ?? timeline.editedTime(forSource: middle) ?? start
+                    return CaptionWord(text: word.text, start: start, end: max(start, end), isEstimated: word.isEstimated)
+                }
+                guard let first = words.first, let last = words.last else { return nil }
+                var mapped = cue
+                mapped.words = words
+                if words.count != cue.words.count { mapped.text = CaptionText.joined(words.map(\.text)) }
+                mapped.start = first.start
+                mapped.end = max(first.start + CaptionCue.minimumDuration, last.end)
+                return mapped
+            }
             guard let start = timeline.editedTime(forSource: cue.start) ?? timeline.editedTime(forSource: cue.end - 0.05) else { return nil }
             let end = timeline.editedTime(forSource: cue.end - 0.05).map { $0 + 0.05 } ?? start + (cue.end - cue.start)
-            return CaptionCue(text: cue.text, start: start, end: max(start + 0.2, end))
+            var mapped = cue
+            mapped.start = start
+            mapped.end = max(start + CaptionCue.minimumDuration, end)
+            return mapped
         }
     }
 
@@ -98,6 +125,8 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
     func differs(from original: AspectRatio) -> Bool {
         var untouched = TakeEdit(sourceDuration: sourceDuration, aspect: original)
         untouched.captions = captions
+        untouched.captionTranscript = captionTranscript
+        untouched.captionLanguage = captionLanguage
         untouched.suggestions = suggestions
         untouched.cleanUpAnalyzed = cleanUpAnalyzed
         if timeline.isWhole { untouched.timeline = timeline }
@@ -143,6 +172,7 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
     private enum CodingKeys: String, CodingKey {
         case timeline, suggestions, cleanUpAnalyzed, volume, enhancesVoice, reducesNoise, exposure, contrast, warmth, filter
         case aspect, cropOffset, showsCaptions, captionStyle, captionLook, captionPreset, captionPosition, captions
+        case captionTranscript, captionLanguage
         case texts, media, voiceOvers, creatorStyle, textLook, textPreset, cover
     }
 
@@ -176,6 +206,8 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
         captionPreset = try? container.decodeIfPresent(TypePreset.self, forKey: .captionPreset)
         captionPosition = try container.decodeIfPresent(CaptionPosition.self, forKey: .captionPosition) ?? .bottom
         captions = try container.decodeIfPresent([CaptionCue].self, forKey: .captions) ?? []
+        captionTranscript = try? container.decodeIfPresent(CaptionTranscript.self, forKey: .captionTranscript)
+        captionLanguage = try? container.decodeIfPresent(CueLanguage.self, forKey: .captionLanguage)
         // Added later: edits saved before have none, and a damaged one loses only that part.
         texts = (try? container.decodeIfPresent([TextOverlay].self, forKey: .texts)) ?? []
         media = (try? container.decodeIfPresent([MediaOverlay].self, forKey: .media)) ?? []

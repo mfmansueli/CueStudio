@@ -63,6 +63,14 @@ struct QuickEditView: View {
                 TextOverlaySheet(viewModel: viewModel, textID: id)
             }
         }
+        .sheet(isPresented: Binding(
+            get: { viewModel.editingCaptionID != nil },
+            set: { if !$0 { viewModel.endEditingCaption() } }
+        )) {
+            if let id = viewModel.editingCaptionID {
+                CaptionLineSheet(viewModel: viewModel, lineID: id)
+            }
+        }
         .onChange(of: scenePhase) { _, phase in
             if phase != .active { viewModel.pauseAndKeepDraft() }
         }
@@ -186,7 +194,8 @@ struct QuickEditView: View {
         case .transitions: 230
         case .style: 214
         case .cover: 196
-        case .audio, .adjust, .filters, .crop, .captions: 190
+        case .captions: 300
+        case .audio, .adjust, .filters, .crop: 190
         }
     }
 

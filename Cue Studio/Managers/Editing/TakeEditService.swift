@@ -55,14 +55,28 @@ final class TakeEditService: TakeEditing {
         return CleanUpAnalyzer.suggestions(silences: silences, transcript: heard)
     }
 
-    func captions(forVideoAt url: URL, script: String, language: SpeechLanguageRequest, duration: TimeInterval) async -> [CaptionCue] {
-        guard !script.isEmpty else { return [] }
-        if let audio = try? await audioFile(for: url),
-           let heard = try? await transcript(of: audio, language: language, script: script),
-           !heard.words.isEmpty {
-            return CaptionBuilder.captions(heard: heard.words, script: script)
+    func captions(
+        forVideoAt url: URL, script: String, language: SpeechLanguageRequest,
+        progress: @escaping @Sendable (CaptionProgress) -> Void
+    ) async throws -> CaptionOutcome {
+        progress(.preparing)
+        let audio: URL
+        do {
+            audio = try await audioFile(for: url)
+        } catch AudioTrackExtractor.ExtractError.noAudio {
+            return .noAudio
         }
-        return CaptionBuilder.captions(script: script, duration: duration)
+        let heard: TakeTranscript
+        do {
+            heard = try await transcript(of: audio, language: language, script: script, progress: progress)
+        } catch let reason as SpeechUnavailableReason {
+            return .unavailable(reason)
+        }
+        let words = heard.words.map { CaptionWord(text: $0.text, start: $0.start, end: $0.end, isEstimated: $0.isEstimated) }
+        guard !words.isEmpty else { return .noSpeech }
+        let cues = await Task.detached { CaptionBuilder.captions(heard: words, script: script) }.value
+        try Task.checkCancellation()
+        return .captions(cues, transcript: CaptionTranscript(words: words, languageCode: heard.languageCode))
     }
 
     func previewItem(forVideoAt url: URL, edit: TakeEdit) async throws -> AVPlayerItem {
@@ -115,10 +129,14 @@ final class TakeEditService: TakeEditing {
     }
 
     /// - Parameter script: what was read, so the words come back in the same letters (Hindi).
-    private func transcript(of audio: URL, language: SpeechLanguageRequest, script: String = "") async throws -> TakeTranscript? {
+    /// Throws `SpeechUnavailableReason` when no model can listen in the language.
+    private func transcript(
+        of audio: URL, language: SpeechLanguageRequest, script: String = "",
+        progress: (@Sendable (CaptionProgress) -> Void)? = nil
+    ) async throws -> TakeTranscript {
         let key = TranscriptKey(audio: audio, language: language, script: script)
         if let cached = transcripts[key] { return cached }
-        guard let heard = try await CaptionTranscriber.transcript(in: audio, language: language, script: script) else { return nil }
+        let heard = try await CaptionTranscriber.transcript(in: audio, language: language, script: script, progress: progress)
         transcripts[key] = heard
         return heard
     }

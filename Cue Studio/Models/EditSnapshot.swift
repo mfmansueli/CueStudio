@@ -24,10 +24,13 @@ nonisolated struct EditSnapshot: Codable, Hashable, Sendable {
     var textPreset: TypePreset?
     var captionLook: TextLook?
     var captionPreset: TypePreset?
+    /// The caption lines; nil in steps saved before captions could be corrected, which leave them
+    /// as they are.
+    var captions: [CaptionCue]?
 
     private enum CodingKeys: String, CodingKey {
         case timeline, suggestions, texts, media, voiceOvers, cover, creatorStyle, captionStyle, filter
-        case textLook, textPreset, captionLook, captionPreset
+        case textLook, textPreset, captionLook, captionPreset, captions
     }
 }
 
@@ -38,7 +41,8 @@ nonisolated extension EditSnapshot {
             timeline: edit.timeline, suggestions: edit.suggestions, texts: edit.texts, media: edit.media,
             voiceOvers: edit.voiceOvers, cover: edit.cover, creatorStyle: edit.creatorStyle,
             captionStyle: edit.captionStyle, filter: edit.filter,
-            textLook: edit.textLook, textPreset: edit.textPreset, captionLook: edit.captionLook, captionPreset: edit.captionPreset
+            textLook: edit.textLook, textPreset: edit.textPreset, captionLook: edit.captionLook, captionPreset: edit.captionPreset,
+            captions: edit.captions
         )
     }
 
@@ -58,7 +62,8 @@ nonisolated extension EditSnapshot {
             textLook: try? container.decodeIfPresent(TextLook.self, forKey: .textLook),
             textPreset: try? container.decodeIfPresent(TypePreset.self, forKey: .textPreset),
             captionLook: try? container.decodeIfPresent(TextLook.self, forKey: .captionLook),
-            captionPreset: try? container.decodeIfPresent(TypePreset.self, forKey: .captionPreset)
+            captionPreset: try? container.decodeIfPresent(TypePreset.self, forKey: .captionPreset),
+            captions: try? container.decodeIfPresent([CaptionCue].self, forKey: .captions)
         )
     }
 }

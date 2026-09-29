@@ -17,6 +17,23 @@ struct StyleToolView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
             scopes
+            ScrollView {
+                content
+            }
+            .scrollIndicators(.hidden)
+        }
+        .onAppear {
+            if viewModel.styledTextID != nil { scope = .selected }
+        }
+        .onChange(of: viewModel.styledTextID) { _, id in
+            if id == nil, scope == .selected { scope = .allTexts }
+        }
+    }
+
+    // MARK: - Sections
+
+    private var content: some View {
+        VStack(alignment: .leading, spacing: 10) {
             LazyVGrid(columns: [GridItem(.flexible(), spacing: 8), GridItem(.flexible(), spacing: 8)], spacing: 8) {
                 if let mine = viewModel.myStyle {
                     card(
@@ -60,15 +77,8 @@ struct StyleToolView: View {
                 .font(.caption)
                 .foregroundStyle(Palette.ink.opacity(0.45))
         }
-        .onAppear {
-            if viewModel.styledTextID != nil { scope = .selected }
-        }
-        .onChange(of: viewModel.styledTextID) { _, id in
-            if id == nil, scope == .selected { scope = .allTexts }
-        }
+        .padding(.bottom, 8)
     }
-
-    // MARK: - Sections
 
     private var scopes: some View {
         ScrollView(.horizontal) {

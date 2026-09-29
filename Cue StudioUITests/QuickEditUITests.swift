@@ -210,15 +210,26 @@ final class QuickEditUITests: XCTestCase {
         XCTAssertEqual(app.staticTexts["edit.durationChange"].label, "1:02 → 0:31")
     }
 
-    func testCaptionsComeFromTheScript() {
+    func testASilentTakeGetsNoInventedCaptionsAndCanBeCaptionedByHand() {
         let app = openQuickEdit()
         app.buttons["edit.category.captions"].tap()
         let toggle = app.switches["edit.captionsToggle"]
         XCTAssertTrue(toggle.waitForExistence(timeout: 5))
-        // The switch sits at the trailing edge; the row's center is its label.
         toggle.coordinate(withNormalizedOffset: CGVector(dx: 0.9, dy: 0.5)).tap()
-        let on = NSPredicate(format: "value == '1'")
-        XCTAssertEqual(XCTWaiter.wait(for: [expectation(for: on, evaluatedWith: toggle)], timeout: 10), .completed)
+        // The sample video is silent: captions say so instead of spreading the script over it.
+        let status = app.staticTexts["edit.captionsStatus"]
+        let silent = NSPredicate(format: "label == %@", "This take has no sound to caption.")
+        XCTAssertEqual(XCTWaiter.wait(for: [expectation(for: silent, evaluatedWith: status)], timeout: 15), .completed)
+        XCTAssertFalse(app.buttons["edit.captionLine"].exists)
+
+        app.buttons["edit.captionsAddButton"].tap()
+        let field = element(app, "captionSheet.field")
+        XCTAssertTrue(field.waitForExistence(timeout: 5))
+        field.typeText("Three habits")
+        app.buttons["captionSheet.done"].tap()
+        let line = app.buttons["edit.captionLine"]
+        XCTAssertTrue(line.waitForExistence(timeout: 5))
+        XCTAssertTrue(line.label.contains("Three habits"))
         app.buttons["edit.cancelButton"].tap()
         XCTAssertTrue(app.buttons["review.editButton"].waitForExistence(timeout: 5))
     }

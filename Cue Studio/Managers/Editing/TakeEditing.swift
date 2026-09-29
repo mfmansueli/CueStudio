@@ -17,9 +17,16 @@ protocol TakeEditing: AnyObject {
     /// from its transcript in `language` (pauses only when no speech model can listen). None for a
     /// take without sound. Throws when the sound can't be read.
     func cleanUpSuggestions(forVideoAt url: URL, language: SpeechLanguageRequest) async throws -> [CleanUpSuggestion]
-    /// Captions from the script, timed to the voice heard in `language`; spread evenly when no
-    /// speech model can listen.
-    func captions(forVideoAt url: URL, script: String, language: SpeechLanguageRequest, duration: TimeInterval) async -> [CaptionCue]
+    /// Captions from what is said in the take, heard in `language`. The voice decides the words and
+    /// when; `script` (empty for a take without one) only lends its spelling where it reliably
+    /// matches. Nothing is ever spread over the take: without sound, speech or a model for the
+    /// language, the outcome says so. Reports where it is through `progress`; throws
+    /// `CancellationError` when the task is cancelled, and other errors when the sound can't be
+    /// read.
+    func captions(
+        forVideoAt url: URL, script: String, language: SpeechLanguageRequest,
+        progress: @escaping @Sendable (CaptionProgress) -> Void
+    ) async throws -> CaptionOutcome
     /// The edited take for a player.
     func previewItem(forVideoAt url: URL, edit: TakeEdit) async throws -> AVPlayerItem
     /// The cover drawn as a JPEG (a frame or photo, cropped to the take's frame, with its title);

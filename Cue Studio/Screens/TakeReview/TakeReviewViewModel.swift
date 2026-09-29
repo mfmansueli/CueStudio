@@ -24,6 +24,8 @@ final class TakeReviewViewModel {
     /// "Share to".
     var showsShareSheet = false
     var burnsInCaptions = false
+    /// Why the video being exported has no captions although they were asked for.
+    @ObservationIgnored private var captionNotice: String?
     private(set) var quality: ExportQuality = .hd1080
 
     private var pendingAction: ExportAction?
@@ -219,7 +221,7 @@ final class TakeReviewViewModel {
                 try await photos.saveVideo(at: url)
                 let withCover = (try? await saveCoverIfChosen()) ?? false
                 showsShareSheet = false
-                toast.show(savedMessage(tier: currentTier, withCover: withCover))
+                announce(savedMessage(tier: currentTier, withCover: withCover))
             case .share(nil):
                 shareURL = url
             case .share(let destination?):
@@ -228,7 +230,7 @@ final class TakeReviewViewModel {
                 _ = try? await saveCoverIfChosen()
                 if await apps.open(destination) {
                     showsShareSheet = false
-                    toast.show(readyMessage(for: destination, tier: currentTier))
+                    announce(readyMessage(for: destination, tier: currentTier))
                 } else {
                     shareURL = url
                 }
@@ -238,19 +240,34 @@ final class TakeReviewViewModel {
         }
     }
 
-    /// Captions to burn in come from the edit; a take never captioned gets them now (not saved).
+    /// Captions to burn in come from the edit; a take never captioned gets them now from its voice
+    /// (not saved). When none can be made, the video exports without them and `captionNotice` says
+    /// why: nothing is ever spread over the take in their place.
     private func editForExport(_ take: Take) async -> TakeEdit? {
+        captionNotice = nil
         guard burnsInCaptions else { return take.edit }
         var edit = take.edit ?? TakeEdit(sourceDuration: take.duration, aspect: take.aspect)
         edit.showsCaptions = true
         if edit.captions.isEmpty {
             let script = library.script(id: take.scriptID)
-            edit.captions = await editing.captions(
-                forVideoAt: takes.videoURL(for: take), script: script?.text ?? "",
-                language: speechLanguageFor(script), duration: edit.sourceDuration
+            let language = edit.captionLanguage.map(SpeechLanguageRequest.language) ?? speechLanguageFor(script)
+            let outcome = try? await editing.captions(
+                forVideoAt: takes.videoURL(for: take), script: script?.text ?? "", language: language, progress: { _ in }
             )
+            switch outcome {
+            case .captions(let lines, _)?: edit.captions = lines
+            case .unavailable(let reason)?: captionNotice = reason.captionMessage
+            case .noSpeech?, .noAudio?: captionNotice = String(localized: "No speech to caption, so the video has none.")
+            case nil: captionNotice = String(localized: "Couldn’t listen to this take, so the video has no captions.")
+            }
         }
         return edit
+    }
+
+    /// A finished export's message, with why captions are missing when they were asked for.
+    private func announce(_ message: String) {
+        toast.show(captionNotice.map { message + " · " + $0 } ?? message)
+        captionNotice = nil
     }
 
     private func readyMessage(for destination: ShareDestination, tier: MembershipTier) -> String {
