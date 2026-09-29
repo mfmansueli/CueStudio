@@ -30,7 +30,8 @@ struct PrompterViewModelLayoutTests {
             launch: PrompterLaunch(scriptID: script?.id, mode: .selfie),
             library: library, takes: TakeLibraryService(repository: FakeTakeRepository()), preferences: preferences,
             profile: CreatorProfileService(defaults: defaults.defaults), rules: TestData.rulesService(),
-            camera: FakeCamera(), audio: FakeAudioMeter(), speech: FakeSpeechTranscriber(), toast: toast
+            camera: FakeCamera(), audio: FakeAudioMeter(), microphones: FakeMicrophones(), speech: FakeSpeechTranscriber(),
+            remote: RemoteControlService(transport: FakeRemoteTransport()), toast: toast
         )
         return Scenario(viewModel: viewModel, preferences: preferences, toast: toast, defaults: defaults)
     }
@@ -75,7 +76,9 @@ struct PrompterViewModelLayoutTests {
         let scenario = makeScenario()
         defer { scenario.defaults.tearDown() }
         scenario.viewModel.moveReadingLine(toY: 200)
-        #expect(scenario.preferences.prompter.readingLineOffset == 169)
+        #expect(scenario.viewModel.session.prompter.readingLineOffset == 169)
+        // A change for this take; Creator Setup keeps the recommended line.
+        #expect(scenario.preferences.prompter.readingLineOffset == nil)
         #expect(scenario.viewModel.readingLayout.lineY == 200)
     }
 
@@ -83,9 +86,9 @@ struct PrompterViewModelLayoutTests {
         let scenario = makeScenario()
         defer { scenario.defaults.tearDown() }
         scenario.viewModel.nudgeReadingLine(by: ReadingLayout.nudge)
-        #expect(scenario.preferences.prompter.readingLineOffset == 126)
+        #expect(scenario.viewModel.session.prompter.readingLineOffset == 126)
         scenario.viewModel.nudgeReadingLine(by: -2 * ReadingLayout.nudge)
-        #expect(scenario.preferences.prompter.readingLineOffset == 110)
+        #expect(scenario.viewModel.session.prompter.readingLineOffset == 110)
     }
 
     @Test func theLineIsMeasuredFromThisDevicesLens() {
@@ -115,12 +118,16 @@ struct PrompterViewModelLayoutTests {
 
         viewModel.resetLayout()
 
-        #expect(scenario.preferences.prompter.readingLineOffset == nil)
+        let session = viewModel.session
+        #expect(session.prompter.readingLineOffset == nil)
         #expect(scenario.preferences.prompter.textWindowHeight == 380)
         #expect(scenario.preferences.prompter.readingWidth == 0.93)
-        #expect(scenario.preferences.prompter.speed == 0.7)
+        #expect(session.prompter.speed == 0.7)
         #expect(!scenario.preferences.prompter.hidesControlsWhileRecording)
-        #expect(scenario.preferences.camera.showsSafeZones)
+        #expect(session.camera.showsSafeZones)
+        // Speed and safe zones are Creator Setup: the reset is for this session.
+        #expect(scenario.preferences.prompter.speed == 1.5)
+        #expect(!scenario.preferences.camera.showsSafeZones)
         #expect(viewModel.safeZone == .platform(.tiktok))
         #expect(scenario.toast.message == "Back to recommended layout")
     }
@@ -151,6 +158,9 @@ struct PrompterViewModelLayoutTests {
         let scenario = makeScenario(script: TestData.script(platform: .youtube))
         defer { scenario.defaults.tearDown() }
         await scenario.viewModel.appear()
+        // YouTube's 16:9 is recommended, not applied, until the creator accepts it.
+        #expect(scenario.viewModel.safeZone != nil)
+        scenario.viewModel.useRecommendedSetup()
         #expect(scenario.viewModel.safeZone == nil)
         #expect(!scenario.viewModel.showsSafeZone)
         #expect(scenario.viewModel.safeZoneOptions.isEmpty)

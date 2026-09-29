@@ -9,13 +9,13 @@ import SwiftUI
 struct StudioControlPanel: View {
     let viewModel: PrompterViewModel
 
-    @Environment(PreferencesService.self) private var preferences
+    @Environment(SessionSetupService.self) private var session
 
     var body: some View {
         VStack(spacing: 0) {
-            ScrollModePicker(selection: preferences.prompter.scrollMode) { viewModel.setScrollMode($0) }
+            ScrollModePicker(selection: session.prompter.scrollMode) { viewModel.setScrollMode($0) }
                 .padding(.bottom, 12)
-            if preferences.prompter.scrollMode == .voice {
+            if session.prompter.scrollMode == .voice {
                 voiceRow
             } else {
                 speedRow
@@ -66,11 +66,11 @@ struct StudioControlPanel: View {
                 .font(.footnote.weight(.semibold))
                 .foregroundStyle(Palette.ink2)
                 .frame(width: 44, alignment: .leading)
-            Slider(value: Binding(get: { preferences.prompter.speed }, set: { viewModel.setSpeed($0) }), in: PrompterSettings.speedRange, step: 0.1)
+            Slider(value: Binding(get: { session.prompter.speed }, set: { viewModel.setSpeed($0) }), in: PrompterSettings.speedRange, step: 0.1)
                 .tint(Palette.acc)
                 .accessibilityLabel(Text("Speed"))
-                .accessibilityValue(Text(preferences.prompter.speedLabel))
-            Text(preferences.prompter.speedLabel)
+                .accessibilityValue(Text(session.prompter.speedLabel))
+            Text(session.prompter.speedLabel)
                 .font(.body.weight(.semibold).monospacedDigit())
                 .frame(width: 44, alignment: .trailing)
         }

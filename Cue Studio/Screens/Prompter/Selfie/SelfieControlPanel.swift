@@ -6,11 +6,11 @@
 import SwiftUI
 
 /// One toolbar for prompter and camera: scroll controls on top, capture controls below, and between
-/// them the microphone the take records from.
+/// them the microphone and the setup the take records with.
 struct SelfieControlPanel: View {
     let viewModel: PrompterViewModel
 
-    @Environment(PreferencesService.self) private var preferences
+    @Environment(SessionSetupService.self) private var session
 
     var body: some View {
         VStack(spacing: 0) {
@@ -27,7 +27,7 @@ struct SelfieControlPanel: View {
 
     private var scriptRow: some View {
         VStack(spacing: 10) {
-            ScrollModePicker(selection: preferences.prompter.scrollMode) { viewModel.setScrollMode($0) }
+            ScrollModePicker(selection: session.prompter.scrollMode) { viewModel.setScrollMode($0) }
             scriptControls
         }
     }
@@ -35,12 +35,12 @@ struct SelfieControlPanel: View {
     /// Steady shows the speed slider; Voice Following shows "AUTO", since the voice sets the pace.
     private var scriptControls: some View {
         HStack(spacing: 8) {
-            if preferences.prompter.scrollMode == .voice {
+            if session.prompter.scrollMode == .voice {
                 VoiceIndicator(level: viewModel.voiceLevel, isListening: viewModel.isPlaying && viewModel.isVoiceActive)
             } else {
                 SpeedSlider(
-                    speed: preferences.prompter.speed,
-                    speedLabel: preferences.prompter.speedLabel,
+                    speed: session.prompter.speed,
+                    speedLabel: session.prompter.speedLabel,
                     onChange: { viewModel.setSpeed($0) }
                 )
             }
@@ -85,12 +85,20 @@ struct SelfieControlPanel: View {
         .frame(height: 44)
     }
 
-    /// The hairline between the rows, with the microphone pill in its middle.
+    /// The hairline between the rows, with what the take records with in its middle: the
+    /// microphone, then the quality and frame ("🎙 AirPods Pro · 4K · 9:16").
     private var audioRow: some View {
-        HStack(spacing: 10) {
+        HStack(spacing: 6) {
             hairline
             AudioInputPill(isEnabled: viewModel.canChangeAudioInput) { viewModel.openAudioInput() }
                 .layoutPriority(1)
+            SetupSummaryPill(
+                summary: viewModel.captureSummary,
+                source: viewModel.session.captureSource,
+                isEnabled: viewModel.canChangeSetup,
+                action: { viewModel.openRecordingSetup() }
+            )
+            .layoutPriority(2)
             hairline
         }
     }
@@ -140,7 +148,7 @@ struct SelfieControlPanel: View {
     }
 
     private var countdownButton: some View {
-        let countdown = preferences.camera.countdown
+        let countdown = session.camera.countdown
         return Button { viewModel.cycleCountdown() } label: {
             VStack(spacing: 1) {
                 Image(systemName: "timer").font(.system(size: 16, weight: .semibold))

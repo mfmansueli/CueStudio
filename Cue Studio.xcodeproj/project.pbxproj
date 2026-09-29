@@ -29,9 +29,22 @@
 		000000000000000000000122 /* Cue StudioUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Cue StudioUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		000000000000000000000013 /* Exceptions for "Cue Studio" folder in "Cue Studio" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				SupportFiles/Info.plist,
+			);
+			target = 000000000000000100000000 /* Cue Studio */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		000000000000000000000010 /* Cue Studio */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				000000000000000000000013 /* Exceptions for "Cue Studio" folder in "Cue Studio" target */,
+			);
 			path = "Cue Studio";
 			sourceTree = "<group>";
 		};
@@ -386,6 +399,7 @@
 				DEVELOPMENT_TEAM = 99U6584A9W;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Cue Studio/SupportFiles/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "Cue Studio";
 				INFOPLIST_KEY_NSCameraUsageDescription = "Cue records your takes with the camera while your script scrolls under the lens.";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Cue records your voice with each take and for voice-overs, and can follow your voice to scroll the script.";
@@ -435,6 +449,7 @@
 				DEVELOPMENT_TEAM = 99U6584A9W;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Cue Studio/SupportFiles/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "Cue Studio";
 				INFOPLIST_KEY_NSCameraUsageDescription = "Cue records your takes with the camera while your script scrolls under the lens.";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Cue records your voice with each take and for voice-overs, and can follow your voice to scroll the script.";

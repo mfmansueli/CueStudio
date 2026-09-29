@@ -32,6 +32,7 @@ struct AppServices {
     let editing: TakeEditService
     let drafts: QuickEditDraftStoring
     let apps: ExternalAppService
+    let remote: RemoteControlService
 
     init(options: LaunchOptions) {
         library = ScriptLibraryService(repository: options.scriptRepository)
@@ -56,6 +57,7 @@ struct AppServices {
         editing = TakeEditService()
         drafts = options.draftStore
         apps = ExternalAppService()
+        remote = RemoteControlService(transport: options.remoteTransport)
     }
 
     func load() {
@@ -92,5 +94,6 @@ extension View {
             .environment(services.thumbnails)
             .environment(services.editing)
             .environment(services.apps)
+            .environment(services.remote)
     }
 }

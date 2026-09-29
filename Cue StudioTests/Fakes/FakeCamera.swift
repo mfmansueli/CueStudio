@@ -10,21 +10,34 @@ import AVFAudio
 final class FakeCamera: CameraControlling {
     var status: CameraStatus = .running
     private(set) var isRecording = false
+    /// Nil until started; then the lens asked for, unless a test says this device lacks it.
+    var activeLens: CameraLens?
+    var missingLenses: Set<CameraLens> = []
     var audioLevel: Float?
     var failsToRecord = false
     var clipDuration: TimeInterval = 42
     private(set) var startCount = 0
     private(set) var stopCount = 0
     private(set) var appliedSettings: [CameraSettings] = []
+    private(set) var startedSettings: [CameraSettings] = []
+    private(set) var recordedSettings: [CameraSettings] = []
     private(set) var recordingsStarted = 0
     private(set) var audioHandler: (@Sendable (AVAudioPCMBuffer) -> Void)?
 
     func start(with settings: CameraSettings) async {
         startCount += 1
+        startedSettings.append(settings)
+        useLens(settings.lens)
     }
 
     func apply(_ settings: CameraSettings) async {
         appliedSettings.append(settings)
+        useLens(settings.lens)
+    }
+
+    /// Like the capture engine: a lens this device lacks falls back to the front camera.
+    private func useLens(_ lens: CameraLens) {
+        activeLens = missingLenses.contains(lens) ? .front : lens
     }
 
     func stop() async {
@@ -34,6 +47,7 @@ final class FakeCamera: CameraControlling {
     func startRecording(settings: CameraSettings) async throws {
         if failsToRecord { throw CaptureEngineError.notRunning }
         recordingsStarted += 1
+        recordedSettings.append(settings)
         isRecording = true
     }
 

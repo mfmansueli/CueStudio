@@ -17,6 +17,8 @@ struct PrompterViewModelTests {
         let speech: FakeSpeechTranscriber
         let takes: TakeLibraryService
         let preferences: PreferencesService
+        let microphones: FakeMicrophones
+        let remote: FakeRemoteTransport
         let toast: ToastService
         let defaults: TestDefaults
     }
@@ -33,15 +35,18 @@ struct PrompterViewModelTests {
         let camera = FakeCamera()
         let audio = FakeAudioMeter()
         let speech = FakeSpeechTranscriber()
+        let microphones = FakeMicrophones()
+        let remote = FakeRemoteTransport()
         let toast = ToastService()
         let viewModel = PrompterViewModel(
             launch: PrompterLaunch(scriptID: script?.id, mode: mode),
             library: library, takes: takes, preferences: preferences, profile: profile, rules: TestData.rulesService(),
-            camera: camera, audio: audio, speech: speech, toast: toast
+            camera: camera, audio: audio, microphones: microphones, speech: speech,
+            remote: RemoteControlService(transport: remote), toast: toast
         )
         return Scenario(
             viewModel: viewModel, camera: camera, audio: audio, speech: speech, takes: takes,
-            preferences: preferences, toast: toast, defaults: defaults
+            preferences: preferences, microphones: microphones, remote: remote, toast: toast, defaults: defaults
         )
     }
 
@@ -74,13 +79,28 @@ struct PrompterViewModelTests {
         for _ in 0..<300 { viewModel.advance(by: 1.0 / 60) }
     }
 
-    @Test func opensWithTheDestinationPreset() async {
+    @Test func offersTheDestinationPresetWithoutApplyingIt() async {
         let scenario = makeScenario(script: TestData.script(platform: .youtube))
         defer { scenario.defaults.tearDown() }
         await scenario.viewModel.appear()
-        #expect(scenario.preferences.camera.aspect == .landscape)
-        #expect(scenario.preferences.camera.resolution == .uhd4K)
+        #expect(scenario.viewModel.showsRecommendation)
+        #expect(scenario.viewModel.session.recommendation?.platform == .youtube)
+        #expect(scenario.camera.startedSettings.last?.aspect == .portrait)
+        #expect(scenario.camera.startedSettings.last?.resolution == .hd1080)
         #expect(scenario.camera.startCount == 1)
+        await scenario.viewModel.disappear()
+    }
+
+    @Test func acceptingTheDestinationPresetAppliesItToTheCamera() async {
+        let scenario = makeScenario(script: TestData.script(platform: .youtube))
+        defer { scenario.defaults.tearDown() }
+        await scenario.viewModel.appear()
+        scenario.viewModel.useRecommendedSetup()
+        await scenario.viewModel.cameraSettingsChanged()
+        #expect(scenario.camera.appliedSettings.last?.aspect == .landscape)
+        #expect(scenario.camera.appliedSettings.last?.resolution == .uhd4K)
+        #expect(scenario.preferences.camera.aspect == .portrait)
+        #expect(!scenario.viewModel.showsRecommendation)
         await scenario.viewModel.disappear()
     }
 
@@ -92,11 +112,12 @@ struct PrompterViewModelTests {
         await scenario.viewModel.appear()
         #expect(scenario.preferences.prompter.readingWidth == 0.93)
         #expect(scenario.preferences.prompter.textWindowHeight == 380)
-        #expect(scenario.preferences.camera.aspect == .vertical)
+        #expect(scenario.viewModel.session.camera.aspect == .portrait)
+        #expect(scenario.viewModel.session.conflicts.map(\.field) == [.format])
         await scenario.viewModel.disappear()
     }
 
-    @Test func createForFromTheCameraMovesTheScriptAndAppliesThePreset() async {
+    @Test func createForFromTheCameraMovesTheScriptAndOffersItsSetup() async {
         let script = TestData.script(platform: .tiktok)
         let scenario = makeScenario(script: script)
         defer { scenario.defaults.tearDown() }
@@ -105,7 +126,7 @@ struct PrompterViewModelTests {
         scenario.viewModel.setPlatform(.stories)
         #expect(scenario.viewModel.sheet == nil)
         #expect(scenario.viewModel.script?.platform == .stories)
-        #expect(scenario.preferences.prompter.readingWidth == 0.93)
+        #expect(scenario.viewModel.session.recommendation?.platform == .stories)
         #expect(scenario.toast.message == "Create for Instagram Stories")
     }
 
@@ -115,7 +136,8 @@ struct PrompterViewModelTests {
         scenario.preferences.camera.aspect = .portrait
         scenario.viewModel.platformChipTapped()
         #expect(scenario.viewModel.sheet == nil)
-        #expect(scenario.preferences.camera.aspect == .vertical)
+        #expect(scenario.viewModel.session.camera.aspect == .vertical)
+        #expect(scenario.preferences.camera.aspect == .portrait)
     }
 
     @Test func scrollModeSwitchesFromTheToolbar() {
@@ -354,11 +376,12 @@ struct PrompterViewModelTests {
         let scenario = makeScenario()
         defer { scenario.defaults.tearDown() }
         scenario.viewModel.setSpeed(1.04)
-        #expect(scenario.preferences.prompter.speed == 1)
+        #expect(scenario.viewModel.session.prompter.speed == 1)
         scenario.viewModel.setSpeed(5)
-        #expect(scenario.preferences.prompter.speed == 2)
+        #expect(scenario.viewModel.session.prompter.speed == 2)
         scenario.viewModel.setSpeed(0.1)
-        #expect(scenario.preferences.prompter.speed == 0.3)
+        #expect(scenario.viewModel.session.prompter.speed == 0.3)
+        #expect(scenario.preferences.prompter.speed == 0.7)
     }
 
     @Test func attachingAScriptToFreestyle() {
@@ -370,14 +393,18 @@ struct PrompterViewModelTests {
         #expect(scenario.toast.message == "Script added")
     }
 
-    @Test func cameraShortcutsUpdateTheSettings() {
+    @Test func cameraShortcutsChangeThisTakeAndSaveTheRest() {
         let scenario = makeScenario()
         defer { scenario.defaults.tearDown() }
         scenario.viewModel.cycleAspect()
         scenario.viewModel.flipCamera()
         scenario.viewModel.cycleCountdown()
-        #expect(scenario.preferences.camera.aspect == .vertical)
-        #expect(scenario.preferences.camera.lens == .wide)
+        #expect(scenario.viewModel.session.camera.aspect == .vertical)
+        #expect(scenario.viewModel.session.camera.lens == .wide)
+        // Frame and lens are Creator Setup: they change for this take only.
+        #expect(scenario.preferences.camera.aspect == .portrait)
+        #expect(scenario.preferences.camera.lens == .front)
+        // The countdown isn't part of it and is saved as before.
         #expect(scenario.preferences.camera.countdown == .three)
     }
 }

@@ -16,12 +16,13 @@ struct PlatformPresetTests {
         #expect(TestData.preset(.youtube).summary == "16:9 · 4K24 · ideal 8:00–15:00")
     }
 
-    @Test func cameraSettingsTakeFrameResolutionAndFrameRateFromThePreset() {
-        var settings = CameraSettings()
-        settings.countdown = .ten
-        settings.apply(TestData.preset(.shorts, monetizationGoals: false))
-        #expect(settings.frameRate == .fps60)
-        #expect(settings.aspect == .portrait)
-        #expect(settings.countdown == .ten)
+    @Test func theRecommendationTakesFrameResolutionAndFrameRateFromThePreset() {
+        var camera = CameraSettings()
+        camera.countdown = .ten
+        let recommendation = SetupRecommendation(platform: .shorts, preset: TestData.preset(.shorts, monetizationGoals: false))
+        let recommended = recommendation.applied(to: CreatorSetup(camera: camera)).applied(to: camera)
+        #expect(recommended.frameRate == .fps60)
+        #expect(recommended.aspect == .portrait)
+        #expect(recommended.countdown == .ten)
     }
 }

@@ -13,7 +13,7 @@ extension PrompterViewModel {
 
     /// The recorded frame on screen. Follows the real preview layer once the camera runs.
     var frameGeometry: FrameGeometry {
-        let camera = preferences.camera
+        let camera = session.camera
         return FrameGeometry(
             sensorRect: screenMetrics.videoRect ?? FrameGeometry.sensorRect(in: screenMetrics.screen),
             aspect: camera.aspect,
@@ -22,10 +22,10 @@ extension PrompterViewModel {
     }
 
     var readingLayout: ReadingLayout {
-        let prompter = preferences.prompter
+        let prompter = session.prompter
         return ReadingLayout(
             metrics: screenMetrics,
-            isFrontCamera: preferences.camera.lens.isFront,
+            isFrontCamera: session.camera.lens.isFront,
             frameRect: frameGeometry.frameRect,
             lineOffset: prompter.readingLineOffset,
             windowHeight: prompter.textWindowHeight,
@@ -42,13 +42,13 @@ extension PrompterViewModel {
 
     /// Chips in Display › Layout for the current frame.
     var safeZoneOptions: [SafeZoneChoice] {
-        SafeZoneChoice.options(for: preferences.camera.aspect, rules: rules.rules)
+        SafeZoneChoice.options(for: session.camera.aspect, rules: rules.rules)
     }
 
     /// The zone for this frame: the pick, else the script's platform, else Reels (9:16) or
     /// LinkedIn (4:5). None for horizontal video.
     var safeZone: SafeZoneChoice? {
-        SafeZoneChoice.resolve(pick: safeZonePick, scriptPlatform: script?.platform, aspect: preferences.camera.aspect, rules: rules.rules)
+        SafeZoneChoice.resolve(pick: safeZonePick, scriptPlatform: script?.platform, aspect: session.camera.aspect, rules: rules.rules)
     }
 
     /// The part of the frame the zone leaves clear, on screen.
@@ -60,13 +60,13 @@ extension PrompterViewModel {
             guard let preset = rules.rules.safeZone(for: platform) else { return nil }
             return geometry.toScreen(preset.recommendedContentRect, in: preset.videoSize)
         case .custom:
-            return geometry.toScreen(preferences.prompter.customSafeZone.unitContentRect, in: CGSize(width: 1, height: 1))
+            return geometry.toScreen(session.prompter.customSafeZone.unitContentRect, in: CGSize(width: 1, height: 1))
         }
     }
 
     /// Shown unless turned off or the controls are hidden while recording.
     var showsSafeZone: Bool {
-        preferences.camera.showsSafeZones && !hidesControls && safeZone != nil
+        session.camera.showsSafeZones && !hidesControls && safeZone != nil
     }
 
     // MARK: - Controls
@@ -78,25 +78,26 @@ extension PrompterViewModel {
 
     /// Dragging the handle: the line goes to `y` (in screen points), within reach.
     func moveReadingLine(toY y: CGFloat) {
-        preferences.prompter.readingLineOffset = readingLayout.offset(forLineAt: y)
+        session.prompter.readingLineOffset = readingLayout.offset(forLineAt: y)
     }
 
     /// ↑ / ↓ in Display: a few points at a time.
     func nudgeReadingLine(by delta: CGFloat) {
         let layout = readingLayout
-        preferences.prompter.readingLineOffset = layout.offset(forLineAt: layout.lineY + delta)
+        session.prompter.readingLineOffset = layout.offset(forLineAt: layout.lineY + delta)
     }
 
-    /// Line, window, speed and safe zone back to what Cue recommends for this script.
+    /// Line, window, speed and safe zone back to what Cue recommends for this script. Line, speed and
+    /// safe zone change for this session only; Creator Setup keeps the creator's defaults.
     func resetLayout() {
-        var prompter = preferences.prompter
+        var prompter = session.prompter
         prompter.readingLineOffset = nil
         prompter.textWindowHeight = PrompterSettings.defaultTextWindowHeight
         prompter.readingWidth = PrompterSettings.defaultReadingWidth
         prompter.speed = ReadTime.naturalSpeed
         prompter.hidesControlsWhileRecording = false
-        preferences.prompter = prompter
-        preferences.camera.showsSafeZones = true
+        session.prompter = prompter
+        session.camera.showsSafeZones = true
         forgetSafeZonePick()
         toast.show(String(localized: "Back to recommended layout"))
     }

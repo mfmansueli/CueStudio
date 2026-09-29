@@ -10,10 +10,10 @@ struct StudioModeView: View {
     let viewModel: PrompterViewModel
     let onClose: () -> Void
 
-    @Environment(PreferencesService.self) private var preferences
+    @Environment(SessionSetupService.self) private var session
 
     var body: some View {
-        let settings = preferences.prompter
+        let settings = session.prompter
         VStack(spacing: 0) {
             HStack {
                 Button(action: onClose) { Image(systemName: "xmark") }
@@ -25,8 +25,15 @@ struct StudioModeView: View {
                     Task { await viewModel.switchMode(to: mode) }
                 }
                 Spacer()
+                Button { viewModel.openRemoteControl() } label: {
+                    Image(systemName: "iphone.radiowaves.left.and.right")
+                }
+                .buttonStyle(.cueIcon(viewModel.isRemoteConnected ? .accent : .glass, diameter: 40))
+                .accessibilityLabel(Text("Remote Control"))
+                .accessibilityValue(Text(viewModel.remote.state.label))
+                .accessibilityIdentifier("prompter.remoteButton")
                 Button {
-                    preferences.prompter.isMirrored.toggle()
+                    session.prompter.isMirrored.toggle()
                 } label: {
                     Image(systemName: "arrow.left.and.right.righttriangle.left.righttriangle.right")
                 }
@@ -67,16 +74,9 @@ struct StudioModeView: View {
 
 #if DEBUG
 #Preview {
-    StudioModeView(
-        viewModel: PrompterViewModel(
-            launch: PrompterLaunch(scriptID: SampleScripts.weeklyQA.id, mode: .studio),
-            library: AppServices.preview.library, takes: AppServices.preview.takes,
-            preferences: AppServices.preview.preferences, profile: AppServices.preview.profile, rules: AppServices.preview.rules,
-            camera: AppServices.preview.camera, audio: AppServices.preview.audio,
-            speech: AppServices.preview.speech, toast: AppServices.preview.toast
-        ),
-        onClose: {}
-    )
-    .previewEnvironment()
+    let viewModel = PrompterViewModel.preview(scriptID: SampleScripts.weeklyQA.id, mode: .studio)
+    StudioModeView(viewModel: viewModel, onClose: {})
+        .environment(viewModel.session)
+        .previewEnvironment()
 }
 #endif

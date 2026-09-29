@@ -11,6 +11,11 @@ enum PrompterSheet: Identifiable, Hashable {
     case camera
     /// "Audio Input", from the microphone pill next to the capture controls.
     case audioInput
+    /// "This take": the setup in use and where each value comes from, from the pill next to the
+    /// microphone.
+    case recordingSetup
+    /// Pair or check the remote, without leaving the recording.
+    case remote
     /// "Create for", from the platform chip at the top of the camera.
     case destination
     /// Add a script to a freestyle recording: a recent one or a new one.
@@ -25,6 +30,8 @@ enum PrompterSheet: Identifiable, Hashable {
         case .display: "display"
         case .camera: "camera"
         case .audioInput: "audioInput"
+        case .recordingSetup: "recordingSetup"
+        case .remote: "remote"
         case .destination: "destination"
         case .addScript: "addScript"
         case .newScript: "newScript"

@@ -14,6 +14,8 @@ final class PresentationService {
     var scriptsPath: [ScriptRoute] = []
     var sheet: AppSheet?
     var prompter: PrompterLaunch?
+    /// This device is the remote of a teleprompter on another one.
+    var showsRemoteController = false
 
     // MARK: - Actions
 
@@ -49,5 +51,12 @@ final class PresentationService {
 
     func closePrompter() {
         prompter = nil
+    }
+
+    /// Full screen, over everything: a remote only needs its buttons.
+    func openRemoteController() {
+        sheet = nil
+        prompter = nil
+        showsRemoteController = true
     }
 }

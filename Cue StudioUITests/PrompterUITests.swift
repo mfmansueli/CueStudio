@@ -166,9 +166,17 @@ final class PrompterUITests: XCTestCase {
         let youtube = app.buttons["destination.youtube"]
         XCTAssertTrue(youtube.waitForExistence(timeout: 5))
         youtube.tap()
-        // The toast is brief; the chip is the lasting proof the preset changed.
+        // The toast is brief; the chip is the lasting proof the platform changed.
         let youtubeChip = app.buttons.matching(NSPredicate(format: "identifier == 'prompter.aspectButton' AND label CONTAINS 'YouTube'")).firstMatch
         XCTAssertTrue(youtubeChip.waitForExistence(timeout: 5))
+        // YouTube's 16:9 · 4K · 24 fps is offered, not applied: the frame stays 9:16 until the creator picks.
+        XCTAssertTrue(youtubeChip.label.contains("9:16"))
+        let use = app.buttons["prompter.useRecommendedButton"]
+        XCTAssertTrue(use.waitForExistence(timeout: 5))
+        XCTAssertEqual(use.label, "Use Recommended")
+        use.tap()
+        let landscape = app.buttons.matching(NSPredicate(format: "identifier == 'prompter.aspectButton' AND label CONTAINS '16:9'")).firstMatch
+        XCTAssertTrue(landscape.waitForExistence(timeout: 5))
         app.buttons["prompter.closeButton"].tap()
     }
 

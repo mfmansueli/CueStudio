@@ -5,7 +5,8 @@
 
 import SwiftUI
 
-/// Tabs (Scripts, Takes, Profile) plus the Record tab, the creation sheets and the prompter.
+/// Tabs (Scripts, Takes, Profile) plus the Record tab, the creation sheets, the prompter and the
+/// remote (when this device controls a teleprompter on another one).
 struct MainView: View {
     let services: AppServices
 
@@ -50,6 +51,9 @@ struct MainView: View {
         }
         .fullScreenCover(item: $presentation.prompter) { launch in
             PrompterView(launch: launch, services: services)
+        }
+        .fullScreenCover(isPresented: $presentation.showsRemoteController) {
+            RemoteControllerView()
         }
     }
 

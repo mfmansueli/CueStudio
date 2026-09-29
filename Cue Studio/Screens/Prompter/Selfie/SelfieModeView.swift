@@ -12,7 +12,7 @@ struct SelfieModeView: View {
     let viewModel: PrompterViewModel
     let onClose: () -> Void
 
-    @Environment(PreferencesService.self) private var preferences
+    @Environment(SessionSetupService.self) private var session
 
     var body: some View {
         let geometry = viewModel.frameGeometry
@@ -35,7 +35,7 @@ struct SelfieModeView: View {
             CameraBackdrop(sensorRect: FrameGeometry.sensorRect(in: viewModel.screenMetrics.screen)) { rect in
                 viewModel.cameraImageMoved(to: rect)
             }
-            if preferences.camera.showsGrid {
+            if session.camera.showsGrid {
                 GridOverlay(frame: geometry.frameRect)
             }
             FrameGuideOverlay(frame: geometry.frameRect)
@@ -46,7 +46,7 @@ struct SelfieModeView: View {
             if viewModel.hasScript {
                 let layout = viewModel.readingLayout
                 textWindow(layout)
-                if preferences.prompter.showsGuide {
+                if session.prompter.showsGuide {
                     ReadingLineLayer(
                         layout: layout,
                         showsTag: viewModel.sheet == .display,
@@ -68,7 +68,7 @@ struct SelfieModeView: View {
     /// Dark enough to read over any background, with the camera optionally blurred behind the text.
     /// Both only change the preview, never the recording.
     private func textWindow(_ layout: ReadingLayout) -> some View {
-        let settings = preferences.prompter
+        let settings = session.prompter
         let shape = RoundedRectangle(cornerRadius: Metrics.cardRadius, style: .continuous)
         let rect = layout.windowRect
         return PrompterTextView(
@@ -106,6 +106,18 @@ struct SelfieModeView: View {
                     viewModel.measured { $0.topBarBottom = bottom }
                 }
             Spacer(minLength: 0)
+            if viewModel.showsRecommendation, let recommendation = viewModel.session.recommendation {
+                SetupRecommendationCard(
+                    recommendation: recommendation,
+                    conflicts: viewModel.session.conflicts,
+                    usualSummary: viewModel.session.usualSummary,
+                    onUseRecommended: { viewModel.useRecommendedSetup() },
+                    onKeepSetup: { viewModel.keepCreatorSetup() }
+                )
+                .padding(.horizontal, 18)
+                .padding(.bottom, 12)
+                .transition(.scale(scale: 0.9, anchor: .bottom).combined(with: .opacity))
+            }
             if viewModel.showsStopWarning, let title = viewModel.stopWarningTitle, let message = viewModel.stopWarningMessage {
                 StopWarningCard(
                     title: title,
@@ -131,22 +143,16 @@ struct SelfieModeView: View {
             }
         }
         .animation(.spring(duration: 0.3), value: viewModel.showsStopWarning)
+        .animation(.spring(duration: 0.3), value: viewModel.showsRecommendation)
         .animation(.easeOut(duration: 0.25), value: viewModel.hidesControls)
     }
 }
 
 #if DEBUG
 #Preview {
-    SelfieModeView(
-        viewModel: PrompterViewModel(
-            launch: PrompterLaunch(scriptID: SampleScripts.morningHabits.id, mode: .selfie),
-            library: AppServices.preview.library, takes: AppServices.preview.takes,
-            preferences: AppServices.preview.preferences, profile: AppServices.preview.profile, rules: AppServices.preview.rules,
-            camera: AppServices.preview.camera, audio: AppServices.preview.audio,
-            speech: AppServices.preview.speech, toast: AppServices.preview.toast
-        ),
-        onClose: {}
-    )
-    .previewEnvironment()
+    let viewModel = PrompterViewModel.preview()
+    SelfieModeView(viewModel: viewModel, onClose: {})
+        .environment(viewModel.session)
+        .previewEnvironment()
 }
 #endif

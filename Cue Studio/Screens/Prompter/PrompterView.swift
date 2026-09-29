@@ -14,7 +14,6 @@ struct PrompterView: View {
     @State private var safeAreaBottom: CGFloat = 0
     private let services: AppServices
 
-    @Environment(PreferencesService.self) private var preferences
     @Environment(PresentationService.self) private var presentation
     @Environment(ScriptLibraryService.self) private var library
     @Environment(CreatorProfileService.self) private var profile
@@ -32,7 +31,9 @@ struct PrompterView: View {
             rules: services.rules,
             camera: services.camera,
             audio: services.audio,
+            microphones: services.audio,
             speech: services.speech,
+            remote: services.remote,
             toast: services.toast
         ))
     }
@@ -78,15 +79,18 @@ struct PrompterView: View {
             UIApplication.shared.isIdleTimerDisabled = false
             Task { await viewModel.disappear() }
         }
-        .onChange(of: preferences.camera) {
+        // The session's camera: the Creator Setup, an accepted recommendation or a change for this take.
+        .onChange(of: viewModel.session.camera) {
             Task { await viewModel.cameraSettingsChanged() }
         }
-        .onChange(of: preferences.prompter.scrollMode) {
+        .onChange(of: viewModel.session.prompter.scrollMode) {
             viewModel.scrollModeChanged()
         }
         .sheet(item: $viewModel.sheet) { sheet in
             sheetContent(sheet)
         }
+        // After the sheets, so they read the same session.
+        .environment(viewModel.session)
     }
 
     @ViewBuilder
@@ -100,11 +104,15 @@ struct PrompterView: View {
             CameraSettingsSheet(maxHeight: sheetMaxHeight)
         case .audioInput:
             AudioInputSheet()
+        case .recordingSetup:
+            RecordingSetupSheet(viewModel: viewModel)
+        case .remote:
+            RemoteControlSheet()
         case .addScript:
             StartRecordingSheet(
                 mode: .attach,
                 recent: Array(library.scripts.prefix(StartRecordingSheet.recentLimit)),
-                readSeconds: { ReadTime.seconds(for: $0.text, speed: preferences.prompter.speed) },
+                readSeconds: { ReadTime.seconds(for: $0.text, speed: viewModel.session.prompter.speed) },
                 onPick: { viewModel.attach($0) },
                 onNewScript: { viewModel.sheet = .newScript }
             )

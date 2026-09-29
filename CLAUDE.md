@@ -23,5 +23,6 @@ ao protótipo do Claude Design). Atualize-o junto com a UI.
 - O build Release também precisa compilar: previews usam dados de `SupportFiles/Debug/` e ficam em `#if DEBUG`.
 - Launch arguments (só em Debug, ver `SupportFiles/LaunchOptions.swift`): `-uiTestInMemory` (armazenamento
   em memória), `-uiTestSeedSamples` (scripts de exemplo), `-uiTestPro` (começa no Cue Pro),
-  `-uiTestSampleVideo` (vídeos reais pequenos atrás dos takes de "3 morning habits", para o Quick edit).
+  `-uiTestSampleVideo` (vídeos reais pequenos atrás dos takes de "3 morning habits", para o Quick edit),
+  `-uiTestRemoteConnects` (um iPad de mentira entra logo depois do pareamento do Remote Control).
 - Compras são testadas localmente com `CueStudio.storekit` (selecionado no scheme).

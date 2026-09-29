@@ -13,7 +13,7 @@ struct DisplaySettingsSheet: View {
     /// Tallest the sheet may grow in Selfie mode, so the text window above stays in sight.
     var maxHeight: CGFloat?
 
-    @Environment(PreferencesService.self) private var preferences
+    @Environment(SessionSetupService.self) private var session
     @Environment(\.dismiss) private var dismiss
     @State private var showsAdvanced = false
 
@@ -23,7 +23,7 @@ struct DisplaySettingsSheet: View {
     private var mode: PrompterMode { viewModel.mode }
 
     var body: some View {
-        @Bindable var preferences = preferences
+        @Bindable var session = session
         VStack(spacing: 0) {
             header
             ScrollView {
@@ -38,7 +38,7 @@ struct DisplaySettingsSheet: View {
                         SettingToggleRow(
                             title: String(localized: "AI Coach"),
                             detail: String(localized: "Performance cues like PAUSE or SMILE"),
-                            isOn: $preferences.prompter.showsCues
+                            isOn: $session.prompter.showsCues
                         )
                         .accessibilityIdentifier("display.aiCoachToggle")
                     }
@@ -91,35 +91,35 @@ struct DisplaySettingsSheet: View {
     /// Selfie: text size, then how the window sits on the camera. Studio: text size, where the
     /// line sits in the text, and the background color.
     private var quickSliders: some View {
-        @Bindable var preferences = preferences
+        @Bindable var session = session
         return GroupedCard(background: Palette.surface2, radius: 22) {
             ValueSlider(
                 title: String(localized: "Text size"),
-                valueText: "\(Int(preferences.prompter.size))",
-                value: $preferences.prompter.size,
+                valueText: "\(Int(session.prompter.size))",
+                value: $session.prompter.size,
                 range: PrompterSettings.sizeRange
             )
             .padding(.horizontal, 16)
             if mode == .selfie {
                 ValueSlider(
                     title: String(localized: "Background opacity"),
-                    valueText: preferences.prompter.backgroundOpacity.formatted(.percent.precision(.fractionLength(0))),
-                    value: $preferences.prompter.backgroundOpacity,
+                    valueText: session.prompter.backgroundOpacity.formatted(.percent.precision(.fractionLength(0))),
+                    value: $session.prompter.backgroundOpacity,
                     range: PrompterSettings.backgroundOpacityRange, step: 0.05
                 )
                 .padding(.horizontal, 16)
                 ValueSlider(
                     title: String(localized: "Camera blur"),
-                    valueText: preferences.prompter.cameraBlurLabel,
-                    value: $preferences.prompter.cameraBlur,
+                    valueText: session.prompter.cameraBlurLabel,
+                    value: $session.prompter.cameraBlur,
                     range: PrompterSettings.cameraBlurRange
                 )
                 .padding(.horizontal, 16)
             } else {
                 ValueSlider(
                     title: String(localized: "Reading line"),
-                    valueText: preferences.prompter.guidePosition.formatted(.percent.precision(.fractionLength(0))),
-                    value: $preferences.prompter.guidePosition,
+                    valueText: session.prompter.guidePosition.formatted(.percent.precision(.fractionLength(0))),
+                    value: $session.prompter.guidePosition,
                     range: PrompterSettings.guideRange, step: 0.01,
                     ends: (String(localized: "Top"), String(localized: "Bottom"))
                 )
@@ -127,8 +127,8 @@ struct DisplaySettingsSheet: View {
                 row(String(localized: "Background color")) {
                     HStack(spacing: 0) {
                         ForEach(StudioBackground.allCases) { option in
-                            SwatchButton(color: option.color, isSelected: preferences.prompter.studioBackground == option, accessibilityName: option.label) {
-                                preferences.prompter.studioBackground = option
+                            SwatchButton(color: option.color, isSelected: session.prompter.studioBackground == option, accessibilityName: option.label) {
+                                session.prompter.studioBackground = option
                             }
                         }
                     }
@@ -168,25 +168,25 @@ struct DisplaySettingsSheet: View {
 
     @ViewBuilder
     private var advanced: some View {
-        @Bindable var preferences = preferences
+        @Bindable var session = session
         fontPicker
         GroupedCard(background: Palette.surface2, radius: 22) {
             ValueSlider(
                 title: String(localized: "Line spacing"),
-                valueText: preferences.prompter.lineSpacing.formatted(.number.precision(.fractionLength(2))),
-                value: $preferences.prompter.lineSpacing,
+                valueText: session.prompter.lineSpacing.formatted(.number.precision(.fractionLength(2))),
+                value: $session.prompter.lineSpacing,
                 range: PrompterSettings.lineSpacingRange, step: 0.05
             )
             .padding(.horizontal, 16)
             ValueSlider(
                 title: String(localized: "Side margins"),
-                valueText: String(localized: "\(Int(preferences.prompter.margin)) pt"),
-                value: $preferences.prompter.margin,
+                valueText: String(localized: "\(Int(session.prompter.margin)) pt"),
+                value: $session.prompter.margin,
                 range: PrompterSettings.marginRange, step: 2
             )
             .padding(.horizontal, 16)
             row(String(localized: "Alignment")) {
-                Picker("Alignment", selection: $preferences.prompter.alignment) {
+                Picker("Alignment", selection: $session.prompter.alignment) {
                     ForEach(PrompterAlignment.allCases) { Text($0.label).tag($0) }
                 }
                 .pickerStyle(.segmented)
@@ -195,16 +195,16 @@ struct DisplaySettingsSheet: View {
             row(String(localized: "Text color")) {
                 HStack(spacing: 0) {
                     ForEach(PrompterTextColor.allCases) { option in
-                        SwatchButton(color: option.color, isSelected: preferences.prompter.textColor == option, accessibilityName: option.label) {
-                            preferences.prompter.textColor = option
+                        SwatchButton(color: option.color, isSelected: session.prompter.textColor == option, accessibilityName: option.label) {
+                            session.prompter.textColor = option
                         }
                     }
                 }
             }
         }
         GroupedCard(background: Palette.surface2, radius: 22) {
-            SettingToggleRow(title: String(localized: "Show reading line"), isOn: $preferences.prompter.showsGuide)
-            SettingToggleRow(title: String(localized: "Mirror text"), detail: String(localized: "For beam-splitter glass rigs"), isOn: $preferences.prompter.isMirrored)
+            SettingToggleRow(title: String(localized: "Show reading line"), isOn: $session.prompter.showsGuide)
+            SettingToggleRow(title: String(localized: "Mirror text"), detail: String(localized: "For beam-splitter glass rigs"), isOn: $session.prompter.isMirrored)
         }
     }
 
@@ -212,9 +212,9 @@ struct DisplaySettingsSheet: View {
         HStack(spacing: 8) {
             ForEach(PrompterFont.allCases) { font in
                 Button {
-                    preferences.prompter.font = font
+                    session.prompter.font = font
                 } label: {
-                    SelectableCard(isSelected: preferences.prompter.font == font, radius: 14) {
+                    SelectableCard(isSelected: session.prompter.font == font, radius: 14) {
                         VStack(spacing: 4) {
                             Text("Aa").font(font.font(size: 22))
                             Text(font.label).font(.caption2).foregroundStyle(Palette.ink2)
@@ -224,7 +224,7 @@ struct DisplaySettingsSheet: View {
                 }
                 .buttonStyle(.plain)
                 .accessibilityLabel(Text(font.label))
-                .accessibilityAddTraits(preferences.prompter.font == font ? .isSelected : [])
+                .accessibilityAddTraits(session.prompter.font == font ? .isSelected : [])
             }
         }
     }
@@ -244,15 +244,11 @@ struct DisplaySettingsSheet: View {
 
 #if DEBUG
 #Preview {
+    let viewModel = PrompterViewModel.preview()
     Color.black.sheet(isPresented: .constant(true)) {
-        DisplaySettingsSheet(viewModel: PrompterViewModel(
-            launch: PrompterLaunch(scriptID: SampleScripts.morningHabits.id, mode: .selfie),
-            library: AppServices.preview.library, takes: AppServices.preview.takes,
-            preferences: AppServices.preview.preferences, profile: AppServices.preview.profile, rules: AppServices.preview.rules,
-            camera: AppServices.preview.camera, audio: AppServices.preview.audio,
-            speech: AppServices.preview.speech, toast: AppServices.preview.toast
-        ))
+        DisplaySettingsSheet(viewModel: viewModel)
     }
+    .environment(viewModel.session)
     .previewEnvironment()
 }
 #endif

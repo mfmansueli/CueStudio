@@ -11,7 +11,7 @@ import SwiftUI
 struct DisplayLayoutSection: View {
     let viewModel: PrompterViewModel
 
-    @Environment(PreferencesService.self) private var preferences
+    @Environment(SessionSetupService.self) private var session
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
@@ -39,21 +39,21 @@ struct DisplayLayoutSection: View {
     // MARK: - Line and window
 
     private var lineAndWindow: some View {
-        @Bindable var preferences = preferences
+        @Bindable var session = session
         return GroupedCard(background: Palette.surface2, radius: 22) {
             readingLineRow
             ValueSlider(
                 title: String(localized: "Text window height"),
-                valueText: String(localized: "\(Int(preferences.prompter.textWindowHeight)) pt"),
-                value: $preferences.prompter.textWindowHeight,
+                valueText: String(localized: "\(Int(session.prompter.textWindowHeight)) pt"),
+                value: $session.prompter.textWindowHeight,
                 range: PrompterSettings.textWindowHeightRange, step: 10,
                 identifier: "display.textWindowHeight"
             )
             .padding(.horizontal, 16)
             ValueSlider(
                 title: String(localized: "Text window width"),
-                valueText: preferences.prompter.readingWidth.formatted(.percent.precision(.fractionLength(0))),
-                value: $preferences.prompter.readingWidth,
+                valueText: session.prompter.readingWidth.formatted(.percent.precision(.fractionLength(0))),
+                value: $session.prompter.readingWidth,
                 range: PrompterSettings.readingWidthRange, step: 0.01,
                 ends: (String(localized: "Narrow · less eye movement"), String(localized: "Wide")),
                 identifier: "display.readingWidth"
@@ -103,7 +103,7 @@ struct DisplayLayoutSection: View {
         guard layout.isRecommended else {
             return String(localized: "\(points) pt below the camera · drag the handle on screen")
         }
-        return preferences.camera.lens.isFront
+        return session.camera.lens.isFront
             ? String(localized: "\(points) pt below the camera · recommended")
             : String(localized: "Centered for the rear camera · recommended")
     }
@@ -111,7 +111,7 @@ struct DisplayLayoutSection: View {
     // MARK: - Safe zone
 
     private var safeZone: some View {
-        @Bindable var preferences = preferences
+        @Bindable var session = session
         let options = viewModel.safeZoneOptions
         let current = viewModel.safeZone
         return GroupedCard(background: Palette.surface2, radius: 22) {
@@ -134,7 +134,7 @@ struct DisplayLayoutSection: View {
             SettingToggleRow(
                 title: String(localized: "Show safe zone"),
                 detail: current?.detail ?? String(localized: "Not needed for horizontal video"),
-                isOn: $preferences.camera.showsSafeZones,
+                isOn: $session.camera.showsSafeZones,
                 minHeight: 56
             )
             .disabled(current == nil)
@@ -142,7 +142,7 @@ struct DisplayLayoutSection: View {
             SettingToggleRow(
                 title: String(localized: "Hide controls while recording"),
                 detail: String(localized: "Keeps only the text, line and stop"),
-                isOn: $preferences.prompter.hidesControlsWhileRecording,
+                isOn: $session.prompter.hidesControlsWhileRecording,
                 minHeight: 56
             )
             .accessibilityIdentifier("display.hideControlsToggle")
@@ -152,11 +152,11 @@ struct DisplayLayoutSection: View {
 
     @ViewBuilder
     private var customMargins: some View {
-        @Bindable var preferences = preferences
-        margin(String(localized: "Top risk"), value: $preferences.prompter.customSafeZone.top, range: SafeZoneMargins.topRange)
-        margin(String(localized: "Bottom risk"), value: $preferences.prompter.customSafeZone.bottom, range: SafeZoneMargins.bottomRange)
-        margin(String(localized: "Left risk"), value: $preferences.prompter.customSafeZone.left, range: SafeZoneMargins.leftRange)
-        margin(String(localized: "Right risk"), value: $preferences.prompter.customSafeZone.right, range: SafeZoneMargins.rightRange)
+        @Bindable var session = session
+        margin(String(localized: "Top risk"), value: $session.prompter.customSafeZone.top, range: SafeZoneMargins.topRange)
+        margin(String(localized: "Bottom risk"), value: $session.prompter.customSafeZone.bottom, range: SafeZoneMargins.bottomRange)
+        margin(String(localized: "Left risk"), value: $session.prompter.customSafeZone.left, range: SafeZoneMargins.leftRange)
+        margin(String(localized: "Right risk"), value: $session.prompter.customSafeZone.right, range: SafeZoneMargins.rightRange)
     }
 
     private func margin(_ title: String, value: Binding<Double>, range: ClosedRange<Double>) -> some View {

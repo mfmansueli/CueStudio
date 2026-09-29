@@ -34,6 +34,11 @@ struct RootView: View {
             .onChange(of: IntentRouter.shared.pending, initial: true) {
                 handleIntent()
             }
+            // A remote pairing code scanned with the Camera on this device.
+            .onOpenURL { url in
+                guard let code = RemotePairing.code(from: url), services.remote.join(code: code) else { return }
+                services.presentation.openRemoteController()
+            }
             .onChange(of: services.library.scripts.count, initial: true) {
                 // Keeps "Record {script}" phrases in step with the library.
                 CueShortcuts.updateAppShortcutParameters()

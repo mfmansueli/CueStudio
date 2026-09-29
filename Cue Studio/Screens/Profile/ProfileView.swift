@@ -7,12 +7,15 @@ import AuthenticationServices
 import StoreKit
 import SwiftUI
 
-/// The creator card (Sign in with Apple is optional), Creator Voice, the plan and settings.
+/// The creator card (Sign in with Apple is optional), Creator Voice, Creator Setup, the plan and
+/// settings.
 struct ProfileView: View {
     @Environment(CreatorProfileService.self) private var profile
     @Environment(StoreManager.self) private var store
     @Environment(SessionService.self) private var session
     @Environment(ToastService.self) private var toast
+    @Environment(PreferencesService.self) private var preferences
+    @Environment(AudioInputManager.self) private var audio
 
     @State private var showsEditProfile = false
     @State private var showsPrivacy = false
@@ -62,6 +65,21 @@ struct ProfileView: View {
                         isAddingPhrase = true
                     }
                 )
+            }
+            Section {
+                NavigationLink {
+                    CreatorSetupView(preferences: preferences, microphones: audio, toast: toast)
+                } label: {
+                    creatorSetupRow
+                }
+                .accessibilityIdentifier("profile.creatorSetupButton")
+            } header: {
+                Text("Creator Setup")
+                    .font(.title2.bold())
+                    .foregroundStyle(Palette.ink)
+                    .textCase(nil)
+            } footer: {
+                Text("Set it up once. Cue remembers how you create.")
             }
             Section {
                 PlanSection(
@@ -149,6 +167,27 @@ struct ProfileView: View {
                 toast.show(String(localized: "Couldn't sign in with Apple. Try again."))
             }
         }
+    }
+
+    /// "4K · 9:16 · Front · Large text": the usual setup at a glance.
+    private var creatorSetupRow: some View {
+        let setup = preferences.creatorSetup
+        return HStack(spacing: 12) {
+            Image(systemName: "slider.horizontal.3")
+                .foregroundStyle(Palette.acc)
+                .frame(width: 28, height: 28)
+                .background(Palette.accSoft, in: Circle())
+            VStack(alignment: .leading, spacing: 2) {
+                Text("Recording, teleprompter & remote")
+                    .foregroundStyle(Palette.ink)
+                Text(setup.summary(of: [.camera, .format, .quality, .textSize]))
+                    .font(.footnote)
+                    .foregroundStyle(Palette.ink2)
+                    .lineLimit(1)
+            }
+        }
+        .padding(.vertical, 4)
+        .accessibilityElement(children: .combine)
     }
 
     /// Behind "Sounds like you" and the Pro plan.

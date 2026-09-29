@@ -14,6 +14,8 @@ import Foundation
 /// - `-uiTestStubAI` / `-uiTestNoAI`: instant, predictable AI, or none at all.
 /// - `-uiTestSampleVideo`: with the sample takes, writes small real videos behind the "3 morning
 ///   habits" takes, so Quick edit can play, scrub and trim them.
+/// - `-uiTestRemoteConnects`: with the above, a remote "connects" right after pairing starts (UI
+///   tests have no second device). Without it the remote link stays offline.
 struct LaunchOptions {
     var scriptRepository: ScriptRepository = LocalScriptRepository()
     var takeRepository: TakeRepository = LocalTakeRepository()
@@ -24,6 +26,7 @@ struct LaunchOptions {
     var platformRules: PlatformRulesService = PlatformRulesService()
     var writer: ScriptWriting = ScriptAIService()
     var credentialChecker: AppleIDCredentialChecking = AppleIDCredentialChecker()
+    var remoteTransport: RemoteTransport = MultipeerRemoteTransport()
 
     static func fromProcess() -> LaunchOptions {
         var options = LaunchOptions()
@@ -49,6 +52,7 @@ struct LaunchOptions {
             UserDefaults().removePersistentDomain(forName: suite)
             options.defaults = UserDefaults(suiteName: suite) ?? .standard
             options.platformRules = PlatformRulesService(cacheURL: nil, remoteURL: nil)
+            options.remoteTransport = DemoRemoteTransport(connects: arguments.contains("-uiTestRemoteConnects"))
             if arguments.contains("-uiTestStubAI") || arguments.contains("-uiTestNoAI") {
                 options.writer = StubScriptWriter(available: !arguments.contains("-uiTestNoAI"))
             }

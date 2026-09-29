@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Viewer</string>
+			<key>CFBundleURLName</key>
+			<string>studio.cue.remote</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>cuestudio</string>
+			</array>
+		</dict>
+	</array>
+	<key>NSBonjourServices</key>
+	<array>
+		<string>_cue-remote._tcp</string>
+		<string>_cue-remote._udp</string>
+	</array>
+	<key>NSLocalNetworkUsageDescription</key>
+	<string>Cue connects to your other iPhone or iPad nearby, so one can control the teleprompter on the other.</string>
+</dict>
+</plist>

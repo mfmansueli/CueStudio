@@ -5,7 +5,9 @@
 
 import Foundation
 
-/// Prompter and camera settings, kept between sessions.
+/// Prompter and camera settings, kept between sessions. These are the creator's defaults: the
+/// Creator Setup (`creatorSetup`) plus how the prompter looks. A recording session reads them
+/// through `SessionSetupService`, which never writes a recommendation or a one-take change back.
 @MainActor
 @Observable
 final class PreferencesService {
@@ -25,6 +27,26 @@ final class PreferencesService {
         camera = Self.load(CameraSettings.self, key: DefaultsKey.cameraSettings, from: defaults) ?? CameraSettings()
         // The reading line's first-time tip is gone; so is the flag it left behind.
         defaults.removeObject(forKey: DefaultsKey.legacyReadingLineTipSeen)
+    }
+
+    // MARK: - Creator Setup
+
+    /// How the creator usually records: camera, microphone, quality, format and the teleprompter
+    /// defaults. Stored inside `camera` and `prompter`, so there is one copy of each value.
+    var creatorSetup: CreatorSetup {
+        get { CreatorSetup(camera: camera, prompter: prompter) }
+        set {
+            let camera = newValue.applied(to: self.camera)
+            if camera != self.camera { self.camera = camera }
+            let prompter = newValue.applied(to: self.prompter)
+            if prompter != self.prompter { self.prompter = prompter }
+        }
+    }
+
+    /// "Reset Creator Setup": Cue's defaults for the setup only. Scripts, takes, edits, the
+    /// prompter's look and the rest of the camera options stay.
+    func resetCreatorSetup() {
+        creatorSetup = CreatorSetup()
     }
 
     func resetPrompter() {

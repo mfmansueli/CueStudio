@@ -10,7 +10,7 @@ import AVFAudio
 /// audio) is off: the level, and the audio itself for speech recognition.
 @MainActor
 @Observable
-final class AudioInputManager: AudioLevelMetering {
+final class AudioInputManager: AudioLevelMetering, MicrophoneListing {
     private(set) var inputs: [MicrophoneOption] = []
     /// The input the audio comes from right now. Nil until the audio session reports one.
     private(set) var currentInput: MicrophoneOption?

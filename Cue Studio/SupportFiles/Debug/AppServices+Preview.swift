@@ -22,6 +22,7 @@ extension AppServices {
         options.exportCounter = InMemoryExportCountStore()
         options.defaults = UserDefaults(suiteName: "studio.cue.previews") ?? .standard
         options.platformRules = PlatformRulesService(cacheURL: nil, remoteURL: nil)
+        options.remoteTransport = DemoRemoteTransport(connects: false)
         let services = AppServices(options: options)
         services.load()
         return services

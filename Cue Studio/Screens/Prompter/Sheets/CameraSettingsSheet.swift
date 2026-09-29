@@ -5,11 +5,13 @@
 
 import SwiftUI
 
-/// Camera and recording options.
+/// Camera and recording options for this recording session. Lens, frame, quality, microphone and
+/// safe zones change for this take only (the usual ones are in Profile › Creator Setup); grid,
+/// stabilization, countdown and the rest are saved as before.
 struct CameraSettingsSheet: View {
     private enum Tab: Hashable { case camera, recording }
 
-    @Environment(PreferencesService.self) private var preferences
+    @Environment(SessionSetupService.self) private var session
     @Environment(CameraManager.self) private var camera
     @Environment(AudioInputManager.self) private var audio
     /// Tallest the sheet may grow, so the script above it stays readable. `nil` lets it go full height.
@@ -57,7 +59,7 @@ struct CameraSettingsSheet: View {
 
     @ViewBuilder
     private var cameraTab: some View {
-        @Bindable var preferences = preferences
+        @Bindable var session = session
         SectionHeading(text: String(localized: "Lens")).padding(EdgeInsets(top: 8, leading: 4, bottom: 0, trailing: 4))
         if camera.availableLenses.isEmpty {
             Text("Cameras appear here once the camera is running.")
@@ -67,8 +69,8 @@ struct CameraSettingsSheet: View {
         } else {
             GroupedCard(background: Palette.surface2, radius: 22) {
                 ForEach(camera.availableLenses) { lens in
-                    checkRow(title: lens.label, detail: lens.detail, isSelected: preferences.camera.lens == lens) {
-                        preferences.camera.lens = lens
+                    checkRow(title: lens.label, detail: lens.detail, isSelected: session.camera.lens == lens) {
+                        session.camera.lens = lens
                     }
                 }
             }
@@ -78,9 +80,9 @@ struct CameraSettingsSheet: View {
         HStack(spacing: 8) {
             ForEach(AspectRatio.allCases) { aspect in
                 Button {
-                    preferences.camera.aspect = aspect
+                    session.camera.aspect = aspect
                 } label: {
-                    SelectableCard(isSelected: preferences.camera.aspect == aspect) {
+                    SelectableCard(isSelected: session.camera.aspect == aspect) {
                         VStack(spacing: 8) {
                             RoundedRectangle(cornerRadius: 4)
                                 .strokeBorder(Color.white, lineWidth: 2)
@@ -95,38 +97,39 @@ struct CameraSettingsSheet: View {
         }
 
         GroupedCard(background: Palette.surface2, radius: 22) {
-            segmentedRow(String(localized: "Resolution"), selection: $preferences.camera.resolution, options: VideoResolution.allCases) { $0.label }
-            segmentedRow(String(localized: "Frame rate"), selection: $preferences.camera.frameRate, options: FrameRate.allCases) { $0.label }
-            SettingToggleRow(title: String(localized: "Grid"), isOn: $preferences.camera.showsGrid, minHeight: 52)
-            SettingToggleRow(title: String(localized: "Platform safe zones"), detail: String(localized: "Shows where app buttons and captions cover the frame"), isOn: $preferences.camera.showsSafeZones, minHeight: 52)
-            SettingToggleRow(title: String(localized: "Stabilization"), isOn: $preferences.camera.stabilization, minHeight: 52)
+            segmentedRow(String(localized: "Resolution"), selection: $session.camera.resolution, options: VideoResolution.allCases) { $0.label }
+            segmentedRow(String(localized: "Frame rate"), selection: $session.camera.frameRate, options: FrameRate.allCases) { $0.label }
+            SettingToggleRow(title: String(localized: "Grid"), isOn: $session.camera.showsGrid, minHeight: 52)
+            SettingToggleRow(title: String(localized: "Platform safe zones"), detail: String(localized: "Shows where app buttons and captions cover the frame"), isOn: $session.camera.showsSafeZones, minHeight: 52)
+            SettingToggleRow(title: String(localized: "Stabilization"), isOn: $session.camera.stabilization, minHeight: 52)
         }
         .padding(.top, 10)
+        setupNote
     }
 
     // MARK: - Recording
 
     @ViewBuilder
     private var recordingTab: some View {
-        @Bindable var preferences = preferences
+        @Bindable var session = session
         SectionHeading(text: String(localized: "Microphone")).padding(EdgeInsets(top: 8, leading: 4, bottom: 0, trailing: 4))
         GroupedCard(background: Palette.surface2, radius: 22) {
-            checkRow(title: String(localized: "Automatic"), detail: String(localized: "Uses the connected mic, or the iPhone's"), isSelected: preferences.camera.microphoneID == nil) {
+            checkRow(title: String(localized: "Automatic"), detail: String(localized: "Uses the connected mic, or the iPhone's"), isSelected: session.camera.microphoneID == nil) {
                 selectMicrophone(nil)
             }
             ForEach(audio.inputs) { input in
-                checkRow(title: input.name, detail: input.detail, isSelected: preferences.camera.microphoneID == input.id) {
-                    selectMicrophone(input.id)
+                checkRow(title: input.name, detail: input.detail, isSelected: session.camera.microphoneID == input.id) {
+                    selectMicrophone(input)
                 }
             }
         }
 
         SectionHeading(text: String(localized: "Take")).padding(EdgeInsets(top: 12, leading: 4, bottom: 0, trailing: 4))
         GroupedCard(background: Palette.surface2, radius: 22) {
-            segmentedRow(String(localized: "Countdown"), selection: $preferences.camera.countdown, options: Countdown.allCases) { $0.label }
-            SettingToggleRow(title: String(localized: "Start scrolling with recording"), isOn: $preferences.camera.scrollsWithRecording, minHeight: 52)
-            SettingToggleRow(title: String(localized: "Stop when script ends"), isOn: $preferences.camera.stopsWhenScriptEnds, minHeight: 52)
-            segmentedRow(String(localized: "Format"), selection: $preferences.camera.codec, options: VideoCodec.allCases) { $0.label }
+            segmentedRow(String(localized: "Countdown"), selection: $session.camera.countdown, options: Countdown.allCases) { $0.label }
+            SettingToggleRow(title: String(localized: "Start scrolling with recording"), isOn: $session.camera.scrollsWithRecording, minHeight: 52)
+            SettingToggleRow(title: String(localized: "Stop when script ends"), isOn: $session.camera.stopsWhenScriptEnds, minHeight: 52)
+            segmentedRow(String(localized: "Format"), selection: $session.camera.codec, options: VideoCodec.allCases) { $0.label }
         }
         Text("HEVC keeps files small. Choose H.264 if you edit on older software.")
             .font(.footnote)
@@ -134,9 +137,20 @@ struct CameraSettingsSheet: View {
             .padding(EdgeInsets(top: 4, leading: 4, bottom: 0, trailing: 4))
     }
 
-    private func selectMicrophone(_ id: String?) {
-        preferences.camera.microphoneID = id
-        audio.select(id)
+    /// Where the usual setup lives, so a change here isn't mistaken for a new default.
+    private var setupNote: some View {
+        Text("Lens, frame, quality and mic change for this take. Your usual setup stays in Profile › Creator Setup.")
+            .font(.footnote)
+            .foregroundStyle(Palette.ink2)
+            .padding(EdgeInsets(top: 4, leading: 4, bottom: 0, trailing: 4))
+    }
+
+    private func selectMicrophone(_ input: MicrophoneOption?) {
+        var camera = session.camera
+        camera.microphoneID = input?.id
+        camera.microphoneName = input?.name
+        session.camera = camera
+        audio.select(input?.id)
     }
 
     // MARK: - Rows
@@ -184,6 +198,7 @@ struct CameraSettingsSheet: View {
     Color.black.sheet(isPresented: .constant(true)) {
         CameraSettingsSheet()
     }
+    .environment(SessionSetupService(preferences: AppServices.preview.preferences))
     .previewEnvironment()
 }
 #endif

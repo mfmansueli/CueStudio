@@ -6,7 +6,9 @@
 import Foundation
 
 /// Everything that happens while the prompter is open: scrolling, the camera, recording and the
-/// hand-off to take review.
+/// hand-off to take review. Reads and changes settings through `session` (the Creator Setup, the
+/// platform recommendation the creator accepted and this take's changes), never the stored
+/// defaults directly.
 @MainActor
 @Observable
 final class PrompterViewModel {
@@ -52,14 +54,18 @@ final class PrompterViewModel {
     /// Hidden with the eye button, or from the start with "Hide controls while recording".
     private(set) var controlsHidden = false
 
+    /// This recording's setup. Views read and bind `session.camera` / `session.prompter`.
+    let session: SessionSetupService
+
     private let library: ScriptLibraryService
     private let takes: TakeLibraryService
-    let preferences: PreferencesService
     private let profile: CreatorProfileService
     let rules: PlatformRulesService
     private let camera: CameraControlling
     private let audio: AudioLevelMetering
+    private let microphones: MicrophoneListing
     private let speech: SpeechTranscribing
+    let remote: RemoteControlService
     let toast: ToastService
 
     private var driver: DisplayLinkDriver?
@@ -73,7 +79,10 @@ final class PrompterViewModel {
     private var speechTracker = ScriptSpeechTracker(words: [])
     /// Vertical extent of each paragraph in the text, for placing words on the guide.
     private var paragraphFrames: [Range<Double>] = []
-    private var hasAppliedPreset = false
+    private var hasStartedSession = false
+    /// The camera and mic the creator was already told are missing, so the notice shows once.
+    private var noticedLens: CameraLens?
+    private var noticedMicrophone: MicrophoneChoice?
 
     init(
         launch: PrompterLaunch,
@@ -84,19 +93,23 @@ final class PrompterViewModel {
         rules: PlatformRulesService,
         camera: CameraControlling,
         audio: AudioLevelMetering,
+        microphones: MicrophoneListing,
         speech: SpeechTranscribing,
+        remote: RemoteControlService,
         toast: ToastService
     ) {
         scriptID = launch.scriptID
         mode = launch.mode
+        session = SessionSetupService(preferences: preferences)
         self.library = library
         self.takes = takes
-        self.preferences = preferences
         self.profile = profile
         self.rules = rules
         self.camera = camera
         self.audio = audio
+        self.microphones = microphones
         self.speech = speech
+        self.remote = remote
         self.toast = toast
         reviewingTake = takes.take(id: launch.reviewTakeID)
         openedOnReview = launch.reviewTakeID != nil
@@ -114,13 +127,19 @@ final class PrompterViewModel {
         script.map { rules.preset(for: $0.platform, monetizationGoals: profile.profile.monetizationGoals) }
     }
 
+    /// What Cue recommends for this script's platform. Nil freestyle.
+    var recommendation: SetupRecommendation? {
+        guard let script, let preset else { return nil }
+        return SetupRecommendation(platform: script.platform, preset: preset)
+    }
+
     /// Studio text is read from further away, so it is bigger.
     var fontSize: Double {
-        let size = preferences.prompter.size
+        let size = session.prompter.size
         return mode == .studio ? (size * PrompterSettings.studioScale).rounded() : size
     }
 
-    var lineHeight: Double { fontSize * preferences.prompter.lineSpacing }
+    var lineHeight: Double { fontSize * session.prompter.lineSpacing }
 
     /// Newest take of this script (or of freestyle recordings).
     var lastTake: Take? {
@@ -143,7 +162,11 @@ final class PrompterViewModel {
     // MARK: - Lifecycle
 
     func appear() async {
-        applyPresetOnce()
+        startSessionOnce()
+        remote.attach(
+            onCommand: { [weak self] command in self?.handle(command) },
+            status: { [weak self] in self?.remoteStatus ?? .idle }
+        )
         guard reviewingTake == nil else { return }
         await enter(mode)
     }
@@ -155,6 +178,7 @@ final class PrompterViewModel {
         stopFollowingSpeech()
         pause()
         if isRecording { await stopRecording(openReview: false) }
+        remote.detach()
         audio.stopMetering()
         await camera.stop()
     }
@@ -170,33 +194,34 @@ final class PrompterViewModel {
         switch mode {
         case .selfie:
             audio.stopMetering()
-            await camera.start(with: preferences.camera)
+            await camera.start(with: session.camera)
+            noticeCaptureFallbacks()
         case .studio:
             await camera.stop()
         }
         updateVoiceMonitoring()
     }
 
-    /// A script opens with its platform's frame, resolution and frame rate, and the text window at
-    /// its full size, once per session; after that the creator's changes stand.
-    private func applyPresetOnce() {
-        guard !hasAppliedPreset, let preset else { return }
-        hasAppliedPreset = true
-        apply(preset)
+    /// Once per session: the recording starts from the Creator Setup, the script's platform
+    /// recommendation is offered (never applied on its own) and the text window opens at its full
+    /// size.
+    private func startSessionOnce() {
+        guard !hasStartedSession else { return }
+        hasStartedSession = true
+        session.recommend(recommendation)
+        guard hasScript else { return }
+        var prompter = session.prompter
+        prompter.readingWidth = PrompterSettings.defaultReadingWidth
+        prompter.textWindowHeight = PrompterSettings.defaultTextWindowHeight
+        session.prompter = prompter
     }
 
-    private func apply(_ preset: PlatformPreset) {
-        preferences.camera.apply(preset)
-        preferences.prompter.readingWidth = PrompterSettings.defaultReadingWidth
-        preferences.prompter.textWindowHeight = PrompterSettings.defaultTextWindowHeight
-    }
-
-    /// "Create for" from the camera: the script moves to the platform and the camera takes its preset.
+    /// "Create for" from the camera: the script moves to the platform, whose setup is offered.
     func setPlatform(_ platform: Platform) {
         guard let scriptID else { return }
         library.update(scriptID) { $0.platform = platform }
         sheet = nil
-        if let preset { apply(preset) }
+        session.recommend(recommendation)
         toast.show(String(localized: "Create for \(platform.destinationName)"))
     }
 
@@ -211,8 +236,8 @@ final class PrompterViewModel {
     }
 
     func setScrollMode(_ mode: ScrollMode) {
-        guard preferences.prompter.scrollMode != mode else { return }
-        preferences.prompter.scrollMode = mode
+        guard session.prompter.scrollMode != mode else { return }
+        session.prompter.scrollMode = mode
     }
 
     // MARK: - Scrolling
@@ -250,11 +275,13 @@ final class PrompterViewModel {
             driver = DisplayLinkDriver { [weak self] seconds in self?.advance(by: seconds) }
         }
         driver?.start()
+        publishRemoteStatus()
     }
 
     func pause() {
         isPlaying = false
         driver?.stop()
+        publishRemoteStatus()
     }
 
     func rewind() {
@@ -279,15 +306,16 @@ final class PrompterViewModel {
     func advance(by seconds: Double) {
         guard isPlaying else { return }
         let reachedEnd: Bool
-        switch preferences.prompter.scrollMode {
+        let settings = session.prompter
+        switch settings.scrollMode {
         case .voice where followsSpeech:
             guard let target = speechTarget else { return }
             reachedEnd = engine.glide(toward: target, by: seconds)
         case .voice:
             guard isVoiceActive else { return }
-            reachedEnd = engine.advance(by: seconds, speed: preferences.prompter.speed)
+            reachedEnd = engine.advance(by: seconds, speed: settings.speed)
         case .steady:
-            reachedEnd = engine.advance(by: seconds, speed: preferences.prompter.speed)
+            reachedEnd = engine.advance(by: seconds, speed: settings.speed)
         }
         if reachedEnd {
             pause()
@@ -295,11 +323,13 @@ final class PrompterViewModel {
         }
     }
 
-    /// The speed slider: tenths, within the range.
+    /// The speed slider: tenths, within the range. For this session; the default speed is in
+    /// Creator Setup.
     func setSpeed(_ value: Double) {
         let speed = PrompterSettings.clampedSpeed(value)
-        guard speed != preferences.prompter.speed else { return }
-        preferences.prompter.speed = speed
+        guard speed != session.prompter.speed else { return }
+        session.prompter.speed = speed
+        publishRemoteStatus()
     }
 
     // MARK: - Recording
@@ -324,7 +354,7 @@ final class PrompterViewModel {
             toast.show(String(localized: "The camera isn't ready"))
             return
         }
-        let seconds = preferences.camera.countdown.rawValue
+        let seconds = session.camera.countdown.rawValue
         if seconds > 0 {
             startCountdown(from: seconds)
         } else {
@@ -362,8 +392,11 @@ final class PrompterViewModel {
     }
 
     private func beginRecording() async {
+        // Recording without answering the recommendation keeps the Creator Setup, which is what the
+        // screen showed.
+        session.settleUndecided()
         do {
-            try await camera.startRecording(settings: preferences.camera)
+            try await camera.startRecording(settings: session.camera)
         } catch {
             toast.show(error.localizedDescription)
             return
@@ -371,9 +404,12 @@ final class PrompterViewModel {
         isRecording = true
         recordingSeconds = 0
         showsStopWarning = false
-        controlsHidden = preferences.prompter.hidesControlsWhileRecording
-        if hasScript && preferences.camera.scrollsWithRecording {
+        controlsHidden = session.prompter.hidesControlsWhileRecording
+        noticeCaptureFallbacks()
+        if hasScript && session.camera.scrollsWithRecording {
             play()
+        } else {
+            publishRemoteStatus()
         }
         recordingClock = Task { [weak self] in
             while !Task.isCancelled {
@@ -399,7 +435,7 @@ final class PrompterViewModel {
             return
         }
         do {
-            let take = try takes.addTake(fileAt: clip.url, duration: clip.duration, script: script, camera: preferences.camera)
+            let take = try takes.addTake(fileAt: clip.url, duration: clip.duration, script: script, camera: session.camera)
             if openReview { reviewingTake = take }
         } catch {
             toast.show(String(localized: "The take couldn't be saved"))
@@ -408,7 +444,7 @@ final class PrompterViewModel {
 
     /// "Stop when script ends": a short beat after the last line, then stop.
     private func scriptDidEnd() {
-        guard isRecording, preferences.camera.stopsWhenScriptEnds else { return }
+        guard isRecording, session.camera.stopsWhenScriptEnds else { return }
         autoStopTask = Task { [weak self] in
             try? await Task.sleep(for: .seconds(1.2))
             guard let self, !Task.isCancelled, self.isRecording else { return }
@@ -459,24 +495,27 @@ final class PrompterViewModel {
 
     // MARK: - Script
 
-    /// Adds a script to a freestyle session. The camera keeps its current frame.
+    /// Adds a script to a freestyle session. The camera keeps its current frame; the script's
+    /// platform setup is offered.
     func attach(_ script: Script) {
         scriptID = script.id
         engine = PrompterScrollEngine()
         paragraphFrames = []
         sheet = nil
+        session.recommend(recommendation)
         updateVoiceMonitoring()
         toast.show(String(localized: "Script added"))
     }
 
     // MARK: - Camera controls
 
+    /// Frame, lens and the rest change for this take; Creator Setup keeps the defaults.
     func cycleAspect() {
-        preferences.camera.aspect = preferences.camera.aspect.next
+        session.camera.aspect = session.camera.aspect.next
     }
 
     func flipCamera() {
-        preferences.camera.lens = preferences.camera.lens.isFront ? .wide : .front
+        session.camera.lens = session.camera.lens.isFront ? .wide : .front
     }
 
     /// The microphone pill: the input can't change mid-take (or while the countdown runs into one).
@@ -488,12 +527,31 @@ final class PrompterViewModel {
     }
 
     func cycleCountdown() {
-        preferences.camera.countdown = preferences.camera.countdown.next
+        session.camera.countdown = session.camera.countdown.next
     }
 
     func cameraSettingsChanged() async {
         guard mode == .selfie, !isRecording else { return }
-        await camera.apply(preferences.camera)
+        await camera.apply(session.camera)
+        noticeCaptureFallbacks()
+    }
+
+    /// When the camera or microphone asked for isn't on this device right now, the take records
+    /// with another one instead of failing, and a toast says so, once for each ("AirPods Pro
+    /// unavailable · Using iPhone Microphone instead"). Cue doesn't touch Bluetooth itself.
+    private func noticeCaptureFallbacks() {
+        let requested = session.camera
+        if let active = camera.activeLens, active != requested.lens, noticedLens != requested.lens {
+            noticedLens = requested.lens
+            toast.show(String(localized: "\(requested.lens.label) unavailable · Using \(active.label) instead"))
+            return
+        }
+        let microphone = MicrophoneChoice(id: requested.microphoneID, name: requested.microphoneName)
+        guard microphone != .automatic, microphone != noticedMicrophone else { return }
+        microphones.refreshInputs()
+        guard let notice = MicrophoneFallback.notice(for: microphone, available: microphones.inputs, inUse: microphones.inputInUse) else { return }
+        noticedMicrophone = microphone
+        toast.show(notice)
     }
 
     // MARK: - Voice follow
@@ -509,7 +567,7 @@ final class PrompterViewModel {
         voiceTask?.cancel()
         voiceTask = nil
         stopFollowingSpeech()
-        guard preferences.prompter.scrollMode == .voice, let script else {
+        guard session.prompter.scrollMode == .voice, let script else {
             isVoiceActive = false
             voiceLevel = 0
             audio.stopMetering()

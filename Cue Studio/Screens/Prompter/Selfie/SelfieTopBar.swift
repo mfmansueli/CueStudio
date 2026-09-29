@@ -11,7 +11,7 @@ struct SelfieTopBar: View {
     let viewModel: PrompterViewModel
     let onClose: () -> Void
 
-    @Environment(PreferencesService.self) private var preferences
+    @Environment(SessionSetupService.self) private var session
 
     var body: some View {
         HStack {
@@ -52,7 +52,7 @@ struct SelfieTopBar: View {
     }
 
     private var aspectButton: some View {
-        let aspect = preferences.camera.aspect
+        let aspect = session.camera.aspect
         let icon = iconSize(for: aspect)
         let label = viewModel.script.map { "\($0.platform.label) · \(aspect.label)" } ?? aspect.label
         return Button {

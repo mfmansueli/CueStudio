@@ -7,9 +7,10 @@ import SwiftUI
 import UIKit
 
 /// "Audio Input", from the pill on the recording screen: the microphones connected now, with the
-/// one in use selected. Picking one makes it the recording input and closes the sheet.
+/// one in use selected. Picking one makes it the input for this recording session and closes the
+/// sheet; Creator Setup keeps the usual one.
 struct AudioInputSheet: View {
-    @Environment(PreferencesService.self) private var preferences
+    @Environment(SessionSetupService.self) private var session
     @Environment(AudioInputManager.self) private var audio
     @Environment(\.dismiss) private var dismiss
     @Environment(\.openURL) private var openURL
@@ -96,9 +97,13 @@ struct AudioInputSheet: View {
 
     // MARK: - Actions
 
-    /// The camera applies the choice from the settings too, every time it starts.
+    /// For this take: the camera applies the choice from the session every time it starts. The
+    /// usual mic is set in Profile › Creator Setup.
     private func select(_ input: MicrophoneOption) {
-        preferences.camera.microphoneID = input.id
+        var camera = session.camera
+        camera.microphoneID = input.id
+        camera.microphoneName = input.name
+        session.camera = camera
         audio.select(input.id)
         dismiss()
     }
@@ -109,6 +114,7 @@ struct AudioInputSheet: View {
     Color.black.sheet(isPresented: .constant(true)) {
         AudioInputSheet()
     }
+    .environment(SessionSetupService(preferences: AppServices.preview.preferences))
     .previewEnvironment()
 }
 #endif
