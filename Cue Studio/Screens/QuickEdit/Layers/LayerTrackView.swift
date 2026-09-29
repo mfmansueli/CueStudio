@@ -32,6 +32,11 @@ struct LayerTrackView: View {
     }
 
     var body: some View {
+        drawing.keepsLeftToRight()
+    }
+
+    @ViewBuilder
+    private var drawing: some View {
         GeometryReader { proxy in
             let width = proxy.size.width
             let lanes = LayerLanes.lanes(for: bars)

@@ -20,7 +20,7 @@
 | Linguagem | Swift 6 com strict concurrency |
 | Estado | Observation (`@Observable`). Sem `ObservableObject`, `@Published` ou Combine |
 | Projeto Xcode | Pastas sincronizadas (*folder references* do Xcode 16+): a pasta no disco **é** o grupo no Xcode. Criar o arquivo na pasta certa já o coloca no target |
-| Localização | String Catalog (`Localizable.xcstrings`) + `String(localized:)` / `LocalizedStringKey` |
+| Localização | String Catalog (`Localizable.xcstrings`) + `String(localized:)` / `LocalizedStringKey`, no idioma escolhido em Language & Region (`LanguageService`; ver `LOCALIZATION.md`) |
 | Testes | Swift Testing (unitários) + XCUITest (UI) |
 | Dependências externas | Nenhuma obrigatória; prefira frameworks da Apple. Se entrar alguma (backend, analytics, anúncios...), ela fica encapsulada num Service/Manager, atrás de protocolo. Views e ViewModels nunca importam o SDK direto |
 

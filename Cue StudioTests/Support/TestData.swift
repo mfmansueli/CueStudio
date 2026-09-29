@@ -23,6 +23,25 @@ enum TestData {
         PlatformRulesService(bundled: rules, cacheURL: nil, remoteURL: nil)
     }
 
+    /// Language settings on `defaults`, with the interface language in memory (never the
+    /// simulator's). The iPhone is in `systemLanguages`, and nothing else is chosen.
+    @MainActor
+    static func languages(
+        defaults: UserDefaults, appLanguage: String? = nil,
+        systemLocalization: String = "en", systemLanguages: [String] = ["en-US"]
+    ) -> LanguageService {
+        let store = InMemoryAppLanguageStore(
+            chosenLocalization: appLanguage, systemLocalization: systemLocalization, systemLanguages: systemLanguages
+        )
+        return LanguageService(defaults: defaults, store: store)
+    }
+
+    /// "3.0" written the way the interface writes it: numbers follow the iPhone's region, so a
+    /// simulator in Italy reads "3,0".
+    static func decimal(_ text: String) -> String {
+        text.replacingOccurrences(of: ".", with: Locale.interface.decimalSeparator ?? ".")
+    }
+
     /// `count` spoken words.
     static func words(_ count: Int) -> String {
         Array(repeating: "word", count: count).joined(separator: " ")
@@ -35,9 +54,13 @@ enum TestData {
         type: ScriptType? = nil,
         version: Int = 1,
         folder: String? = nil,
-        updatedAt: Date = now
+        updatedAt: Date = now,
+        language: CueLanguage? = nil
     ) -> Script {
-        Script(title: title, text: text, platform: platform, type: type, version: version, folder: folder, createdAt: updatedAt, updatedAt: updatedAt)
+        Script(
+            title: title, text: text, platform: platform, type: type, version: version, folder: folder,
+            createdAt: updatedAt, updatedAt: updatedAt, language: language
+        )
     }
 
     static func take(

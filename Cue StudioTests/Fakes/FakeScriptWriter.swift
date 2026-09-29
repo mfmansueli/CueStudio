@@ -57,7 +57,7 @@ final class FakeScriptWriter: ScriptWriting {
         return hookIdeas
     }
 
-    func themeIdeas(for niches: [Niche]) async throws -> [ThemeIdea] {
+    func themeIdeas(for niches: [Niche], language: CueLanguage?) async throws -> [ThemeIdea] {
         if let error { throw error }
         guard availability.isAvailable else { throw ScriptAIError.modelUnavailable(availability.reason ?? "") }
         return ideas

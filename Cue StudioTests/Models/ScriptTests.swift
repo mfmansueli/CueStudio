@@ -28,6 +28,25 @@ struct ScriptTests {
         #expect(script.version == 2)
         #expect(!script.factCheck)
         #expect(script.type == nil)
+        // Saved before scripts had a language: Auto-detect, text untouched.
+        #expect(script.language == nil)
+        #expect(script.text == "Hi.")
+    }
+
+    @Test func theLanguageIsSavedWithTheScript() throws {
+        let script = TestData.script(text: "Oi, gente!", language: .portugueseBrazil)
+        let data = try JSONEncoder.library.encode(script)
+        #expect(String(decoding: data, as: UTF8.self).contains(#""language":"pt-BR""#))
+        let decoded = try JSONDecoder.library.decode(Script.self, from: data)
+        #expect(decoded.language == .portugueseBrazil)
+        #expect(decoded.text == "Oi, gente!")
+    }
+
+    @Test func aLanguageFromANewerBuildReadsAsAutoDetect() throws {
+        let saved = #"{"id":"00000000-0000-0000-0000-000000000009","title":"Nuevo","text":"Hola.","platform":"tiktok","language":"xx-XX"}"#
+        let script = try JSONDecoder.library.decode(Script.self, from: Data(saved.utf8))
+        #expect(script.language == nil)
+        #expect(script.text == "Hola.")
     }
 
     @Test func factCheckSurvivesSaving() throws {

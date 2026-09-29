@@ -15,7 +15,7 @@ extension PrompterViewModel {
             library: services.library, takes: services.takes,
             preferences: services.preferences, profile: services.profile, rules: services.rules,
             camera: services.camera, audio: services.audio, microphones: services.audio,
-            speech: services.speech, remote: services.remote, toast: services.toast
+            speech: services.speech, languages: services.languages, remote: services.remote, toast: services.toast
         )
     }
 }

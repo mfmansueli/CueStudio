@@ -93,6 +93,8 @@ struct PrompterTextView: View {
                 }
             }
             .accessibilityIdentifier("prompter.text")
+            // The script reads in its own language's direction, not the interface's.
+            .environment(\.layoutDirection, LayoutDirection(rightToLeft: viewModel.readsRightToLeft))
     }
 
     /// The text itself. Equatable so scrolling never re-lays it out.

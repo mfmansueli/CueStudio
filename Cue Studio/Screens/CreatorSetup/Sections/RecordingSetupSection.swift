@@ -65,7 +65,7 @@ struct RecordingSetupSection: View {
                 Text(viewModel.setup.microphone.label)
                     .foregroundStyle(Palette.ink2)
                     .lineLimit(1)
-                Image(systemName: "chevron.right")
+                Image(systemName: "chevron.forward")
                     .font(.footnote.weight(.semibold))
                     .foregroundStyle(Palette.ink3)
             }

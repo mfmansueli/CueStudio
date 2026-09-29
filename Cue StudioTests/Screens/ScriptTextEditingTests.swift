@@ -19,7 +19,8 @@ struct ScriptTextEditingTests {
 
     @Test func disclosureGoesUpFrontOnce() {
         let once = ScriptTextEditing.addingDisclosure(to: "Hello.")
-        #expect(once.hasPrefix(ScriptTextEditing.disclosureLine))
+        #expect(once.hasPrefix(ScriptTextEditing.disclosureLine(in: .english)))
+        #expect(once == "[paid partnership] Quick heads-up: this video is sponsored.\n\nHello.")
         #expect(ScriptTextEditing.addingDisclosure(to: once) == once)
     }
 

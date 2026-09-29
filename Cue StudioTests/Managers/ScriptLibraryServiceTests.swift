@@ -35,6 +35,35 @@ struct ScriptLibraryServiceTests {
         #expect(repository.snapshot.scripts.contains(created))
     }
 
+    @Test func createKeepsTheLanguage() {
+        let (service, _) = makeService()
+        let created = service.create(title: "Rotina", text: "Oi", platform: .reels, language: .portugueseBrazil)
+        #expect(created.language == .portugueseBrazil)
+    }
+
+    /// Setting a language is not an edit: no new version, no reorder, and the text stays as written.
+    @Test func settingTheLanguageNeverTouchesTheText() {
+        let first = TestData.script(title: "First", updatedAt: now)
+        let second = TestData.script(title: "Second", text: "Olá, pessoal.", version: 2, updatedAt: now.addingTimeInterval(-50))
+        let (service, repository) = makeService(scripts: [first, second])
+        service.setLanguage(.portugueseBrazil, of: second.id)
+        let changed = service.script(id: second.id)
+        #expect(changed?.language == .portugueseBrazil)
+        #expect(changed?.text == "Olá, pessoal.")
+        #expect(changed?.version == 2)
+        #expect(changed?.updatedAt == second.updatedAt)
+        #expect(service.scripts.map(\.title) == ["First", "Second"])
+        #expect(repository.saveCount == 1)
+        service.setLanguage(nil, of: second.id)
+        #expect(service.script(id: second.id)?.language == nil)
+    }
+
+    @Test func duplicatesKeepTheLanguage() {
+        let original = TestData.script(language: .japanese)
+        let (service, _) = makeService(scripts: [original])
+        #expect(service.duplicate([original.id]).first?.language == .japanese)
+    }
+
     @Test func updateMovesTheScriptToTheTop() {
         let first = TestData.script(title: "First", updatedAt: now)
         let second = TestData.script(title: "Second", updatedAt: now.addingTimeInterval(-50))

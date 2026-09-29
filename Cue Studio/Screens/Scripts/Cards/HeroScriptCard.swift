@@ -43,7 +43,8 @@ struct HeroScriptCard: View {
                     .lineLimit(2)
                     .multilineTextAlignment(.leading)
             }
-            HStack(spacing: 12) {
+            // Wraps instead of truncating: "~42s de leitura · 3 takes" runs longer than English.
+            FlowLayout(spacing: 12, lineSpacing: 6) {
                 HStack(spacing: 6) {
                     ColorDot(color: script.platform.tint)
                     Text(script.platform.label).foregroundStyle(Palette.ink)

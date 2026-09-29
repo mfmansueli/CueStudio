@@ -13,6 +13,8 @@ struct DisplaySettingsSheet: View {
     /// Tallest the sheet may grow in Selfie mode, so the text window above stays in sight.
     var maxHeight: CGFloat?
 
+    @Environment(\.layoutDirection) private var layoutDirection
+
     @Environment(SessionSetupService.self) private var session
     @Environment(\.dismiss) private var dismiss
     @State private var showsAdvanced = false
@@ -103,7 +105,7 @@ struct DisplaySettingsSheet: View {
             if mode == .selfie {
                 ValueSlider(
                     title: String(localized: "Background opacity"),
-                    valueText: session.prompter.backgroundOpacity.formatted(.percent.precision(.fractionLength(0))),
+                    valueText: session.prompter.backgroundOpacity.formatted(.percent.precision(.fractionLength(0)).locale(.interface)),
                     value: $session.prompter.backgroundOpacity,
                     range: PrompterSettings.backgroundOpacityRange, step: 0.05
                 )
@@ -118,7 +120,7 @@ struct DisplaySettingsSheet: View {
             } else {
                 ValueSlider(
                     title: String(localized: "Reading line"),
-                    valueText: session.prompter.guidePosition.formatted(.percent.precision(.fractionLength(0))),
+                    valueText: session.prompter.guidePosition.formatted(.percent.precision(.fractionLength(0)).locale(.interface)),
                     value: $session.prompter.guidePosition,
                     range: PrompterSettings.guideRange, step: 0.01,
                     ends: (String(localized: "Top"), String(localized: "Bottom"))
@@ -149,10 +151,11 @@ struct DisplaySettingsSheet: View {
                         .foregroundStyle(Palette.ink2)
                 }
                 Spacer()
-                Image(systemName: "chevron.right")
+                Image(systemName: "chevron.forward")
                     .font(.footnote.weight(.bold))
                     .foregroundStyle(Palette.ink.opacity(0.5))
-                    .rotationEffect(.degrees(showsAdvanced ? 90 : 0))
+                    // Forward points left in right to left, so it turns the other way to point down.
+                    .rotationEffect(.degrees(showsAdvanced ? (layoutDirection == .rightToLeft ? -90 : 90) : 0))
             }
             .foregroundStyle(Palette.ink)
             .padding(.horizontal, 16)
@@ -173,7 +176,7 @@ struct DisplaySettingsSheet: View {
         GroupedCard(background: Palette.surface2, radius: 22) {
             ValueSlider(
                 title: String(localized: "Line spacing"),
-                valueText: session.prompter.lineSpacing.formatted(.number.precision(.fractionLength(2))),
+                valueText: session.prompter.lineSpacing.formatted(.number.precision(.fractionLength(2)).locale(.interface)),
                 value: $session.prompter.lineSpacing,
                 range: PrompterSettings.lineSpacingRange, step: 0.05
             )

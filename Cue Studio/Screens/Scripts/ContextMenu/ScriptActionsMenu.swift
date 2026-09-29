@@ -35,6 +35,23 @@ struct ScriptActionsMenu: View {
             Divider()
             Button("New folder…", systemImage: "folder.badge.plus") { actions.moveToNewFolder(script) }
         }
+        Menu {
+            Picker(selection: Binding(get: { script.language }, set: { actions.setLanguage(script, $0) })) {
+                Text("Auto-detect").tag(CueLanguage?.none)
+                ForEach(CueLanguage.allCases) { language in
+                    Text(verbatim: language.nativeName).tag(Optional(language))
+                }
+            } label: {
+                Text("Script Language")
+            }
+        } label: {
+            Label {
+                Text("Script Language")
+                Text(verbatim: script.language?.nativeName ?? String(localized: "Auto-detect"))
+            } icon: {
+                Image(systemName: "character.bubble")
+            }
+        }
         if let makeVersion = actions.makeVersion {
             Menu {
                 ForEach(Platform.allCases.filter { $0 != script.platform }) { platform in

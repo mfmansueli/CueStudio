@@ -17,4 +17,6 @@ struct ScriptActions {
     var delete: (Script) -> Void
     /// "Make a version for…" another platform; nil hides it (the library menus).
     var makeVersion: ((Script, Platform) -> Void)? = nil
+    /// The language the script is written in; nil is Auto-detect. Never translates the text.
+    var setLanguage: (Script, CueLanguage?) -> Void
 }

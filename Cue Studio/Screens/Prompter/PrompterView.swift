@@ -19,6 +19,7 @@ struct PrompterView: View {
     @Environment(CreatorProfileService.self) private var profile
     @Environment(DocumentImportService.self) private var importer
     @Environment(ToastService.self) private var toast
+    @Environment(LanguageService.self) private var languages
 
     init(launch: PrompterLaunch, services: AppServices) {
         self.services = services
@@ -33,6 +34,7 @@ struct PrompterView: View {
             audio: services.audio,
             microphones: services.audio,
             speech: services.speech,
+            languages: services.languages,
             remote: services.remote,
             toast: services.toast
         ))
@@ -128,7 +130,10 @@ struct PrompterView: View {
         case .importScript:
             ImportScriptSheet(
                 onImported: { document in
-                    let script = library.create(title: document.title, text: document.text, platform: profile.profile.defaultPlatform)
+                    let script = library.create(
+                        title: document.title, text: document.text, platform: profile.profile.defaultPlatform,
+                        language: languages.scriptLanguage
+                    )
                     viewModel.attach(script)
                 },
                 onPaste: pasteAndAttach
@@ -161,7 +166,8 @@ struct PrompterView: View {
         let script = library.create(
             title: ScriptTextNormalizer.suggestedTitle(fileName: nil, text: text),
             text: text,
-            platform: profile.profile.defaultPlatform
+            platform: profile.profile.defaultPlatform,
+            language: languages.scriptLanguage
         )
         viewModel.attach(script)
     }

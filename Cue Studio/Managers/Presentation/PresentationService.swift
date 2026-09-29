@@ -12,6 +12,7 @@ import Foundation
 final class PresentationService {
     var selectedTab: AppTab = .scripts
     var scriptsPath: [ScriptRoute] = []
+    var profilePath: [ProfileRoute] = []
     var sheet: AppSheet?
     var prompter: PrompterLaunch?
     /// This device is the remote of a teleprompter on another one.

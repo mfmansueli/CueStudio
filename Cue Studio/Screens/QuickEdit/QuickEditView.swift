@@ -18,9 +18,11 @@ struct QuickEditView: View {
     @Environment(\.scenePhase) private var scenePhase
 
     init(take: Take, services: AppServices, onClose: @escaping () -> Void) {
+        let languages = services.languages
         _viewModel = State(initialValue: QuickEditViewModel(
             take: take, takes: services.takes, library: services.library,
-            editing: services.editing, drafts: services.drafts, toast: services.toast
+            editing: services.editing, drafts: services.drafts, toast: services.toast,
+            speechLanguage: { languages.speechRequest(for: $0) }
         ))
         self.onClose = onClose
     }

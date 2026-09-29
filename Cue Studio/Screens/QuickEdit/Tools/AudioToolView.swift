@@ -13,7 +13,7 @@ struct AudioToolView: View {
         VStack(spacing: 10) {
             ValueSlider(
                 title: String(localized: "Volume"),
-                valueText: viewModel.edit.volume.formatted(.percent.precision(.fractionLength(0))),
+                valueText: viewModel.edit.volume.formatted(.percent.precision(.fractionLength(0)).locale(.interface)),
                 value: $viewModel.edit.volume,
                 range: TakeEdit.volumeRange, step: 0.05,
                 identifier: "edit.volume"

@@ -9,6 +9,10 @@ import Foundation
 nonisolated enum DefaultsKey {
     static let prompterSettings = "prompterSettings"
     static let cameraSettings = "cameraSettings"
+    /// The language Voice Following listens for (`CueLanguage` raw value); absent = the script's.
+    static let voiceFollowingLanguage = "voiceFollowingLanguage"
+    /// The language new scripts are written in (`CueLanguage` raw value); absent = auto-detect.
+    static let scriptLanguage = "scriptLanguage"
     /// The Selfie reading line's first-time tip was dismissed. The tip is gone; removed at launch.
     static let legacyReadingLineTipSeen = "readingLineTipSeen"
     static let creatorProfile = "creatorProfile"

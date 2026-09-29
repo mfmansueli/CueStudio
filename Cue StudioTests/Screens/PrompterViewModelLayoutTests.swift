@@ -31,6 +31,7 @@ struct PrompterViewModelLayoutTests {
             library: library, takes: TakeLibraryService(repository: FakeTakeRepository()), preferences: preferences,
             profile: CreatorProfileService(defaults: defaults.defaults), rules: TestData.rulesService(),
             camera: FakeCamera(), audio: FakeAudioMeter(), microphones: FakeMicrophones(), speech: FakeSpeechTranscriber(),
+            languages: TestData.languages(defaults: defaults.defaults),
             remote: RemoteControlService(transport: FakeRemoteTransport()), toast: toast
         )
         return Scenario(viewModel: viewModel, preferences: preferences, toast: toast, defaults: defaults)
@@ -195,7 +196,7 @@ struct PrompterViewModelLayoutTests {
         let bottom = viewModel.readingLayout.windowRect.maxY
         viewModel.sheet = .display
         #expect(viewModel.sheetCeiling == bottom)
-        scenario.preferences.prompter.textWindowHeight = 380
+        scenario.preferences.prompter.textWindowHeight = 200
         #expect(viewModel.sheetCeiling == bottom)
         viewModel.sheet = nil
         viewModel.sheet = .display

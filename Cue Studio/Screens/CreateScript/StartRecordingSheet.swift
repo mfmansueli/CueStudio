@@ -62,7 +62,7 @@ struct StartRecordingSheet: View {
                     HStack(spacing: 10) {
                         Circle().fill(Palette.record).frame(width: 12, height: 12)
                         Text("Record without a script")
-                        Image(systemName: "chevron.right").font(.footnote.weight(.bold))
+                        Image(systemName: "chevron.forward").font(.footnote.weight(.bold))
                     }
                 }
                 .buttonStyle(.cueOutline(.large))

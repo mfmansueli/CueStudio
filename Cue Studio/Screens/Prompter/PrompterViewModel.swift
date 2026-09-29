@@ -28,9 +28,14 @@ final class PrompterViewModel {
     /// 0...1, for the live mic indicator.
     private(set) var voiceLevel: Double = 0
     /// True while speech recognition follows the reading word by word. Without it (no model for
-    /// the script's language, or still downloading), Voice follow scrolls at the set speed while
-    /// it hears speech.
+    /// the language, or still downloading), Voice follow scrolls at the set speed while it hears
+    /// speech.
     private(set) var followsSpeech = false
+    /// The language recognition listens in while `followsSpeech`.
+    private(set) var listeningLanguage: CueLanguage?
+    /// Why the words can't be followed in this language here, shown to the creator (once as a
+    /// toast, and under the Studio controls). Never replaced by another language.
+    private(set) var speechUnavailable: SpeechUnavailableReason?
 
     // MARK: Presentation
     var sheet: PrompterSheet? {
@@ -65,6 +70,7 @@ final class PrompterViewModel {
     private let audio: AudioLevelMetering
     private let microphones: MicrophoneListing
     private let speech: SpeechTranscribing
+    private let languages: LanguageService
     let remote: RemoteControlService
     let toast: ToastService
 
@@ -83,6 +89,8 @@ final class PrompterViewModel {
     /// The camera and mic the creator was already told are missing, so the notice shows once.
     private var noticedLens: CameraLens?
     private var noticedMicrophone: MicrophoneChoice?
+    /// The unavailable language the creator was already told about, so the toast shows once.
+    private var noticedSpeechUnavailable: SpeechUnavailableReason?
 
     init(
         launch: PrompterLaunch,
@@ -95,6 +103,7 @@ final class PrompterViewModel {
         audio: AudioLevelMetering,
         microphones: MicrophoneListing,
         speech: SpeechTranscribing,
+        languages: LanguageService,
         remote: RemoteControlService,
         toast: ToastService
     ) {
@@ -109,6 +118,7 @@ final class PrompterViewModel {
         self.audio = audio
         self.microphones = microphones
         self.speech = speech
+        self.languages = languages
         self.remote = remote
         self.toast = toast
         reviewingTake = takes.take(id: launch.reviewTakeID)
@@ -122,6 +132,24 @@ final class PrompterViewModel {
     var hasScript: Bool { script != nil }
 
     var paragraphs: [String] { CueParser.paragraphs(in: script?.text ?? "") }
+
+    /// Which way the script reads: its language's direction, whatever the interface's is. The
+    /// text view asks every frame, so the answer is kept until the script changes.
+    var readsRightToLeft: Bool {
+        guard let script else { return false }
+        let key = DirectionKey(language: script.language, text: script.text)
+        if let cached = directionCache, cached.key == key { return cached.rightToLeft }
+        let rightToLeft = ScriptDirection.isRightToLeft(language: script.language, text: script.text)
+        directionCache = (key, rightToLeft)
+        return rightToLeft
+    }
+
+    private struct DirectionKey: Equatable {
+        let language: CueLanguage?
+        let text: String
+    }
+
+    @ObservationIgnored private var directionCache: (key: DirectionKey, rightToLeft: Bool)?
 
     var preset: PlatformPreset? {
         script.map { rules.preset(for: $0.platform, monetizationGoals: profile.profile.monetizationGoals) }
@@ -570,12 +598,14 @@ final class PrompterViewModel {
         guard session.prompter.scrollMode == .voice, let script else {
             isVoiceActive = false
             voiceLevel = 0
+            speechUnavailable = nil
             audio.stopMetering()
             return
         }
         let text = script.text
+        let language = languages.speechRequest(for: script)
         speechTask = Task { [weak self] in
-            await self?.followSpeech(in: text)
+            await self?.followSpeech(in: text, language: language)
         }
         voiceTask = Task { [weak self] in
             if self?.mode == .studio {
@@ -591,9 +621,28 @@ final class PrompterViewModel {
         }
     }
 
-    /// Listens for the script being read and keeps the tracker on the next word to read.
-    private func followSpeech(in text: String) async {
-        guard let transcription = await speech.start(script: text), !Task.isCancelled else { return }
+    /// Listens for the script being read, in the Voice Following language (or the script's), and
+    /// keeps the tracker on the next word to read. A language this device can't recognize is never
+    /// swapped for another: the text follows the voice level and the creator is told why.
+    private func followSpeech(in text: String, language: SpeechLanguageRequest) async {
+        let transcription: SpeechTranscription
+        switch await speech.start(script: text, language: language) {
+        case .listening(let started, let route):
+            guard !Task.isCancelled else { return }
+            transcription = started
+            listeningLanguage = route.language
+            speechUnavailable = nil
+        case .unavailable(let reason):
+            guard !Task.isCancelled else { return }
+            speechUnavailable = reason
+            if noticedSpeechUnavailable != reason {
+                noticedSpeechUnavailable = reason
+                toast.show(reason.message)
+            }
+            return
+        case .cancelled:
+            return
+        }
         switch mode {
         case .selfie: camera.setAudioHandler(transcription.audio)
         case .studio: audio.setAudioHandler(transcription.audio)
@@ -613,6 +662,7 @@ final class PrompterViewModel {
         speechTask?.cancel()
         speechTask = nil
         followsSpeech = false
+        listeningLanguage = nil
         camera.setAudioHandler(nil)
         audio.setAudioHandler(nil)
         speech.stop()

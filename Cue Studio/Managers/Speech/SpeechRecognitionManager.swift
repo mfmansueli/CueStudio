@@ -4,12 +4,16 @@
 //
 
 import AVFAudio
-import NaturalLanguage
 import Speech
 
-/// Voice follow's ears: on-device transcription with the Speech framework (`SpeechAnalyzer`), in
-/// the script's language. Nothing leaves the device. The first time a language is used its model
-/// may need a download; until it's ready, Voice follow falls back to the microphone level.
+/// Voice follow's ears: on-device transcription with the Speech framework (`SpeechAnalyzer`), in the
+/// language Voice Following listens for (Profile › Language & Region, or the script's). Nothing
+/// leaves the device and nothing is paid per use.
+///
+/// `SpeechTranscriber` recognizes every language it supports here, exactly as it always has;
+/// `DictationTranscriber`, from the same framework, takes the languages (and devices) it doesn't.
+/// The first time a language is used its model may need a download; until it's ready, Voice follow
+/// falls back to the microphone level.
 @MainActor
 @Observable
 final class SpeechRecognitionManager: SpeechTranscribing {
@@ -20,29 +24,38 @@ final class SpeechRecognitionManager: SpeechTranscribing {
     /// something newer happened meanwhile.
     private var generation = 0
 
-    /// Characters of finalized text kept for matching; the tracker only looks at the last words.
-    private static let transcriptLimit = 400
+    private let resolver: SpeechLocaleResolver
 
-    func start(script: String) async -> SpeechTranscription? {
+    /// Characters of finalized text kept for matching; the tracker only looks at the last words.
+    private nonisolated static let transcriptLimit = 400
+
+    init(resolver: SpeechLocaleResolver = SpeechLocaleResolver()) {
+        self.resolver = resolver
+    }
+
+    func start(script: String, language: SpeechLanguageRequest) async -> SpeechStartResult {
         stop()
         let current = generation
-        guard SpeechTranscriber.isAvailable, let locale = await Self.locale(for: script) else { return nil }
-        let transcriber = SpeechTranscriber(
-            locale: locale,
-            transcriptionOptions: [],
-            reportingOptions: [.volatileResults, .fastResults],
-            attributeOptions: []
-        )
-        let modules: [any SpeechModule] = [transcriber]
+        let route: SpeechRoute
+        switch await resolver.resolve(language, scriptText: script) {
+        case .success(let resolved): route = resolved
+        case .failure(let reason): return current == generation ? .unavailable(reason) : .cancelled
+        }
+        let module = Self.module(for: route)
+        let modules: [any SpeechModule] = [module.speechModule]
         do {
-            if await !AssetInventory.reservedLocales.contains(where: { $0.identifier(.bcp47) == locale.identifier(.bcp47) }) {
-                _ = try? await AssetInventory.reserve(locale: locale)
-            }
+            await Self.reserve(route.locale)
             if let request = try await AssetInventory.assetInstallationRequest(supporting: modules) {
-                try await request.downloadAndInstall()
+                do {
+                    try await request.downloadAndInstall()
+                } catch {
+                    return current == generation ? .unavailable(.needsDownload(route.language)) : .cancelled
+                }
             }
-            guard current == generation,
-                  let format = await SpeechAnalyzer.bestAvailableAudioFormat(compatibleWith: modules) else { return nil }
+            let format = await SpeechAnalyzer.bestAvailableAudioFormat(compatibleWith: modules)
+            guard current == generation else { return .cancelled }
+            // Installed but unable to take audio: the model can't run here (the simulator).
+            guard let format else { return .unavailable(.noRecognition) }
             let analyzer = SpeechAnalyzer(modules: modules, options: SpeechAnalyzer.Options(priority: .userInitiated, modelRetention: .whileInUse))
             let context = AnalysisContext()
             context.contextualStrings[.general] = Self.vocabulary(in: script)
@@ -53,15 +66,15 @@ final class SpeechRecognitionManager: SpeechTranscribing {
             guard current == generation else {
                 input.finish()
                 await analyzer.cancelAndFinishNow()
-                return nil
+                return .cancelled
             }
             self.analyzer = analyzer
             self.input = input
-            let transcripts = listen(to: transcriber)
+            let transcripts = listen(to: module)
             let feed = AudioFeed(converter: AnalyzerInputConverter(analyzerFormat: format), input: input)
-            return SpeechTranscription(audio: { feed.append($0) }, transcripts: transcripts)
+            return .listening(SpeechTranscription(audio: { feed.append($0) }, transcripts: transcripts), route)
         } catch {
-            return nil
+            return current == generation ? .unavailable(.couldNotStart) : .cancelled
         }
     }
 
@@ -77,19 +90,80 @@ final class SpeechRecognitionManager: SpeechTranscribing {
         analyzer = nil
     }
 
+    // MARK: - Availability
+
+    /// Whether Voice Following can follow the words in `language` here, and whether its model is
+    /// already on the device.
+    func availability(of language: CueLanguage) async -> VoiceFollowingAvailability {
+        guard case .success(let route) = await resolver.resolve(.language(language)) else { return .unavailable }
+        let modules = [Self.module(for: route).speechModule]
+        switch await AssetInventory.status(forModules: modules) {
+        case .installed:
+            // Some devices list a model they can't run (the simulator): no audio format for it.
+            return await SpeechAnalyzer.bestAvailableAudioFormat(compatibleWith: modules) == nil ? .unavailable : .ready
+        case .unsupported: return .unavailable
+        default: return .downloadsOnFirstUse
+        }
+    }
+
+    // MARK: - Recognizers
+
+    /// The recognizer for a route, with Voice Following's options: words as they're being said
+    /// (volatile), finalized quickly.
+    private enum Module {
+        case transcriber(SpeechTranscriber)
+        case dictation(DictationTranscriber)
+
+        var speechModule: any SpeechModule {
+            switch self {
+            case .transcriber(let transcriber): transcriber
+            case .dictation(let dictation): dictation
+            }
+        }
+    }
+
+    private static func module(for route: SpeechRoute) -> Module {
+        switch route.engine {
+        case .transcriber:
+            .transcriber(SpeechTranscriber(
+                locale: route.locale,
+                transcriptionOptions: [],
+                reportingOptions: [.volatileResults, .fastResults],
+                attributeOptions: []
+            ))
+        case .dictation:
+            .dictation(DictationTranscriber(
+                locale: route.locale,
+                contentHints: [],
+                transcriptionOptions: [],
+                reportingOptions: [.volatileResults, .frequentFinalization],
+                attributeOptions: []
+            ))
+        }
+    }
+
     /// Finalized text plus the words still being recognized, as one running transcript.
-    private func listen(to transcriber: SpeechTranscriber) -> AsyncStream<String> {
+    private func listen(to module: Module) -> AsyncStream<String> {
         let (transcripts, output) = AsyncStream.makeStream(of: String.self, bufferingPolicy: .bufferingNewest(1))
         resultsTask = Task {
             var finalized = ""
+            func heard(_ text: String, isFinal: Bool) {
+                if isFinal {
+                    finalized = String((finalized + " " + text).suffix(Self.transcriptLimit))
+                    output.yield(finalized)
+                } else {
+                    output.yield(finalized + " " + text)
+                }
+            }
             do {
-                for try await result in transcriber.results {
-                    let text = String(result.text.characters)
-                    if result.isFinal {
-                        finalized = String((finalized + " " + text).suffix(Self.transcriptLimit))
-                        output.yield(finalized)
-                    } else {
-                        output.yield(finalized + " " + text)
+                switch module {
+                case .transcriber(let transcriber):
+                    for try await result in transcriber.results {
+                        heard(String(result.text.characters), isFinal: result.isFinal)
+                    }
+                case .dictation(let dictation):
+                    for try await result in dictation.results {
+                        heard(String(result.text.characters), isFinal: result.isFinal)
                     }
                 }
             } catch {
@@ -100,29 +174,18 @@ final class SpeechRecognitionManager: SpeechTranscribing {
         return transcripts
     }
 
-    // MARK: - Language
+    // MARK: - Assets
 
-    /// The script's language, in the creator's own region when they use it (pt-BR over pt-PT).
-    /// Without a clear language, the device's. Nil when the language isn't supported.
-    static func locale(for script: String) async -> Locale? {
-        let recognizer = NLLanguageRecognizer()
-        recognizer.processString(CueParser.stripCues(script))
-        var candidates: [Locale] = []
-        if let language = recognizer.dominantLanguage {
-            let code = Locale.Language(identifier: language.rawValue).languageCode
-            candidates += Locale.preferredLanguages
-                .map { Locale(identifier: $0) }
-                .filter { $0.language.languageCode == code }
-            candidates.append(Locale(identifier: language.rawValue))
-        } else {
-            candidates.append(.current)
+    /// Keeps the language's model on the device. The system holds a few reserved languages at a
+    /// time; when they're taken, the oldest other one makes room, so a new language still works.
+    private static func reserve(_ locale: Locale) async {
+        let reserved = await AssetInventory.reservedLocales
+        guard !reserved.contains(where: { $0.identifier(.bcp47) == locale.identifier(.bcp47) }) else { return }
+        if (try? await AssetInventory.reserve(locale: locale)) == true { return }
+        if reserved.count >= AssetInventory.maximumReservedLocales, let oldest = reserved.first {
+            await AssetInventory.release(reservedLocale: oldest)
+            _ = try? await AssetInventory.reserve(locale: locale)
         }
-        for candidate in candidates {
-            if let supported = await SpeechTranscriber.supportedLocale(equivalentTo: candidate) {
-                return supported
-            }
-        }
-        return nil
     }
 
     /// Names, brands and numbers a general model may not expect, as recognition hints.

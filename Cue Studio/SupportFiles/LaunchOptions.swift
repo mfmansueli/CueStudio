@@ -16,6 +16,9 @@ import Foundation
 ///   habits" takes, so Quick edit can play, scrub and trim them.
 /// - `-uiTestRemoteConnects`: with the above, a remote "connects" right after pairing starts (UI
 ///   tests have no second device). Without it the remote link stays offline.
+/// - `-uiTestAppLanguage <lproj>`: with `-uiTestInMemory`, Cue's interface starts in that language
+///   (as if picked in Language & Region) without changing the simulator's. The interface language
+///   always lives in memory under `-uiTestInMemory`.
 struct LaunchOptions {
     var scriptRepository: ScriptRepository = LocalScriptRepository()
     var takeRepository: TakeRepository = LocalTakeRepository()
@@ -27,6 +30,7 @@ struct LaunchOptions {
     var writer: ScriptWriting = ScriptAIService()
     var credentialChecker: AppleIDCredentialChecking = AppleIDCredentialChecker()
     var remoteTransport: RemoteTransport = MultipeerRemoteTransport()
+    var languageStore: AppLanguageStoring = SystemAppLanguageStore()
 
     static func fromProcess() -> LaunchOptions {
         var options = LaunchOptions()
@@ -53,6 +57,10 @@ struct LaunchOptions {
             options.defaults = UserDefaults(suiteName: suite) ?? .standard
             options.platformRules = PlatformRulesService(cacheURL: nil, remoteURL: nil)
             options.remoteTransport = DemoRemoteTransport(connects: arguments.contains("-uiTestRemoteConnects"))
+            let appLanguage = arguments.firstIndex(of: "-uiTestAppLanguage").flatMap { index in
+                arguments.indices.contains(index + 1) ? arguments[index + 1] : nil
+            }
+            options.languageStore = InMemoryAppLanguageStore(chosenLocalization: appLanguage)
             if arguments.contains("-uiTestStubAI") || arguments.contains("-uiTestNoAI") {
                 options.writer = StubScriptWriter(available: !arguments.contains("-uiTestNoAI"))
             }

@@ -20,7 +20,9 @@ struct GenerateScriptSheet: View {
             library: services.library,
             profile: services.profile,
             rules: services.rules,
-            toast: services.toast
+            toast: services.toast,
+            scriptLanguage: services.languages.scriptLanguage,
+            interfaceLanguage: services.languages.interfaceLanguage
         ))
         self.onCreated = onCreated
     }

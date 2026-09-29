@@ -148,7 +148,7 @@ struct RecordingSetupSheet: View {
                         .foregroundStyle(Palette.ink2)
                 }
                 Spacer()
-                Image(systemName: "chevron.right")
+                Image(systemName: "chevron.forward")
                     .font(.footnote.weight(.semibold))
                     .foregroundStyle(Palette.ink3)
             }

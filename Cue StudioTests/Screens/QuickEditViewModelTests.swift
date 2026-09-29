@@ -736,7 +736,7 @@ struct QuickEditViewModelTests {
         #expect(scenario.viewModel.cleanUpSuggestions.count == 1)
         #expect(scenario.viewModel.ignoredPausesLabel == "1 short pause kept")
         scenario.viewModel.lowerPauseThreshold()
-        #expect(scenario.viewModel.pauseThresholdLabel == "0.6s")
+        #expect(scenario.viewModel.pauseThresholdLabel == "\(TestData.decimal("0.6"))s")
         #expect(scenario.viewModel.cleanUpSuggestions.count == 2)
         #expect(scenario.viewModel.ignoredPausesLabel == "natural pauses stay")
 

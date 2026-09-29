@@ -21,6 +21,7 @@ struct PrompterViewModelTests {
         let remote: FakeRemoteTransport
         let toast: ToastService
         let defaults: TestDefaults
+        let languages: LanguageService
     }
 
     private func makeScenario(script: Script? = TestData.script(), mode: PrompterMode = .selfie, monetization: Bool = true) -> Scenario {
@@ -38,15 +39,17 @@ struct PrompterViewModelTests {
         let microphones = FakeMicrophones()
         let remote = FakeRemoteTransport()
         let toast = ToastService()
+        let languages = TestData.languages(defaults: defaults.defaults)
         let viewModel = PrompterViewModel(
             launch: PrompterLaunch(scriptID: script?.id, mode: mode),
             library: library, takes: takes, preferences: preferences, profile: profile, rules: TestData.rulesService(),
-            camera: camera, audio: audio, microphones: microphones, speech: speech,
+            camera: camera, audio: audio, microphones: microphones, speech: speech, languages: languages,
             remote: RemoteControlService(transport: remote), toast: toast
         )
         return Scenario(
             viewModel: viewModel, camera: camera, audio: audio, speech: speech, takes: takes,
-            preferences: preferences, microphones: microphones, remote: remote, toast: toast, defaults: defaults
+            preferences: preferences, microphones: microphones, remote: remote, toast: toast, defaults: defaults,
+            languages: languages
         )
     }
 
@@ -364,6 +367,69 @@ struct PrompterViewModelTests {
         await settle()
         #expect(!scenario.viewModel.followsSpeech)
         await scenario.viewModel.disappear()
+    }
+
+    // MARK: - Voice Following language
+
+    @Test func voiceFollowingListensInTheChosenLanguage() async {
+        let scenario = makeScenario(script: TestData.script(text: "Esses são três hábitos que mudaram as minhas manhãs."), mode: .studio)
+        defer { scenario.defaults.tearDown() }
+        scenario.languages.setAppLanguage(.english)
+        scenario.languages.voiceFollowingLanguage = .portugueseBrazil
+        scenario.preferences.prompter.scrollMode = .voice
+        scenario.viewModel.scrollModeChanged()
+        await waitUntil { scenario.viewModel.followsSpeech }
+        #expect(scenario.speech.requests.last == .language(.portugueseBrazil))
+        #expect(scenario.viewModel.listeningLanguage == .portugueseBrazil)
+        await scenario.viewModel.disappear()
+    }
+
+    @Test func sameAsScriptListensInTheScriptsLanguage() async {
+        let script = TestData.script(text: "Here are three habits.", language: .portugueseBrazil)
+        let scenario = makeScenario(script: script, mode: .studio)
+        defer { scenario.defaults.tearDown() }
+        scenario.languages.setAppLanguage(.japanese)
+        scenario.preferences.prompter.scrollMode = .voice
+        scenario.viewModel.scrollModeChanged()
+        await waitUntil { scenario.viewModel.followsSpeech }
+        #expect(scenario.speech.requests.last == .language(.portugueseBrazil))
+        await scenario.viewModel.disappear()
+    }
+
+    /// A language the device can't recognize is never swapped for another: the creator is told,
+    /// once, and the text scrolls with the voice level.
+    @Test func anUnavailableLanguageIsExplainedNotReplaced() async {
+        let scenario = makeScenario(script: TestData.script(text: TestData.words(100)), mode: .studio)
+        defer { scenario.defaults.tearDown() }
+        scenario.languages.voiceFollowingLanguage = .thai
+        scenario.speech.unavailable = .unsupported(.thai)
+        scenario.preferences.prompter.scrollMode = .voice
+        scenario.viewModel.scrollModeChanged()
+        await waitUntil { scenario.viewModel.speechUnavailable != nil }
+        #expect(scenario.speech.requests == [.language(.thai)])
+        #expect(scenario.viewModel.speechUnavailable == .unsupported(.thai))
+        #expect(!scenario.viewModel.followsSpeech)
+        #expect(scenario.toast.message == SpeechUnavailableReason.unsupported(.thai).message)
+        // Turning Voice Following off and on again doesn't repeat the toast.
+        scenario.toast.dismiss()
+        scenario.preferences.prompter.scrollMode = .steady
+        scenario.viewModel.scrollModeChanged()
+        #expect(scenario.viewModel.speechUnavailable == nil)
+        scenario.preferences.prompter.scrollMode = .voice
+        scenario.viewModel.scrollModeChanged()
+        await waitUntil { scenario.viewModel.speechUnavailable != nil }
+        #expect(scenario.toast.message == nil)
+        await scenario.viewModel.disappear()
+    }
+
+    @Test func anArabicScriptReadsRightToLeftInAnyInterface() {
+        let arabic = makeScenario(script: TestData.script(text: "هذه ثلاث عادات غيرت صباحي.", language: .arabic))
+        defer { arabic.defaults.tearDown() }
+        #expect(arabic.viewModel.readsRightToLeft)
+        let english = makeScenario(script: TestData.script(text: "Here are three habits."))
+        defer { english.defaults.tearDown() }
+        english.languages.setAppLanguage(.arabic)
+        #expect(!english.viewModel.readsRightToLeft)
     }
 
     @Test func speedStartsAtTheNaturalPace() {

@@ -87,7 +87,8 @@ struct TransitionWindowTests {
         var timeline = EditTimeline(sourceDuration: 30)
         timeline.split(atEdited: 10)
         timeline.split(atEdited: 10.12)
-        #expect(timeline.setTransition(.fade, atJoin: 1))
+        let changed = timeline.setTransition(.fade, atJoin: 1)
+        #expect(changed)
         // The 0.12 s piece leaves no room: less than `shortest` would show.
         #expect(TransitionWindow.windows(in: timeline).isEmpty)
     }

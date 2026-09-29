@@ -126,7 +126,7 @@ nonisolated struct CreatorSetup: Hashable, Sendable {
             guard let preset = PrompterTextSize(points: textSize) else { return String(localized: "\(points) pt") }
             return String(localized: "\(preset.label) · \(points) pt")
         case .speed:
-            return speed.formatted(.number.precision(.fractionLength(1))) + "×"
+            return speed.formatted(.number.precision(.fractionLength(1)).locale(.interface)) + "×"
         case .readingLine:
             guard let offset = readingLine.offset else { return String(localized: "Recommended") }
             return String(localized: "\(Int(offset)) pt below the camera")

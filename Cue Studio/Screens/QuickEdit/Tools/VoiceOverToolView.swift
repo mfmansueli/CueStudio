@@ -91,10 +91,11 @@ struct VoiceOverToolView: View {
                 .tint(Palette.acc)
                 .accessibilityLabel(Text("Voice-over volume"))
                 .accessibilityIdentifier("edit.voiceOverVolume")
-                Text(clip.volume.formatted(.percent.precision(.fractionLength(0))))
+                Text(clip.volume.formatted(.percent.precision(.fractionLength(0)).locale(.interface)))
                     .font(.footnote.monospacedDigit())
                     .foregroundStyle(Palette.ink2)
-                    .frame(width: 44, alignment: .trailing)
+                    .fixedSize()
+                    .frame(minWidth: 44, alignment: .trailing)
             }
         }
     }

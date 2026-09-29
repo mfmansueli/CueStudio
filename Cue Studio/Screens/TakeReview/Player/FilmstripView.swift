@@ -16,6 +16,11 @@ struct FilmstripView: View {
     private let frameCount = 7
 
     var body: some View {
+        drawing.keepsLeftToRight()
+    }
+
+    @ViewBuilder
+    private var drawing: some View {
         GeometryReader { proxy in
             ZStack(alignment: .leading) {
                 FilmstripFrames(videoURL: videoURL, timeline: take.edit?.timeline ?? EditTimeline(sourceDuration: take.duration), count: frameCount)

@@ -49,7 +49,11 @@ final class PrompterUITests: XCTestCase {
         XCTAssertFalse(app.sliders["Speed"].exists)
         let play = app.buttons["prompter.playButton"]
         play.tap()
-        XCTAssertTrue(app.staticTexts["Speed follows your voice"].waitForExistence(timeout: 5))
+        // The Simulator can't run speech recognition: there the text scrolls while you talk.
+        let status = app.staticTexts.matching(
+            NSPredicate(format: "label IN %@", ["Speed follows your voice", "Scrolls while you talk"])
+        ).firstMatch
+        XCTAssertTrue(status.waitForExistence(timeout: 5))
         play.tap()
         app.buttons["prompter.closeButton"].tap()
         XCTAssertTrue(studio.waitForExistence(timeout: 5))

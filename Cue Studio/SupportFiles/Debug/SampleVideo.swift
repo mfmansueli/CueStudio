@@ -26,19 +26,36 @@ enum SampleVideo {
     /// Deletes the videos behind `takes`, if an earlier launch wrote them.
     static func remove(for takes: [Take], in repository: TakeRepository) {
         for take in takes {
-            try? FileManager.default.removeItem(at: repository.videoURL(named: take.fileName))
+            let url = repository.videoURL(named: take.fileName)
+            try? FileManager.default.removeItem(at: url)
+            try? FileManager.default.removeItem(at: partialURL(for: url))
         }
     }
 
     /// Blocks until the file is written: UI tests open it right after launch. The writing itself
-    /// runs off the main actor, since appending waits for the writer to be ready.
+    /// runs off the main actor, since appending waits for the writer to be ready. The frames go to
+    /// a separate file that only takes the real name once complete: the iOS 27 Simulator's H.264
+    /// encoder sometimes stalls, the test runner kills the app, and a half-written file under the
+    /// real name was taken as done by every later launch (a video that can't be opened).
     static func write(to url: URL, seconds: TimeInterval) {
+        let partial = partialURL(for: url)
+        try? FileManager.default.removeItem(at: partial)
         let finished = DispatchSemaphore(value: 0)
         Task.detached {
-            try? await writeFrames(to: url, seconds: seconds)
+            do {
+                try await writeFrames(to: partial, seconds: seconds)
+                try FileManager.default.moveItem(at: partial, to: url)
+            } catch {
+                print("SampleVideo: couldn't write \(url.lastPathComponent): \(error)")
+                try? FileManager.default.removeItem(at: partial)
+            }
             finished.signal()
         }
         finished.wait()
+    }
+
+    nonisolated private static func partialURL(for url: URL) -> URL {
+        url.deletingPathExtension().appendingPathExtension("partial").appendingPathExtension("mov")
     }
 
     nonisolated private static func writeFrames(to url: URL, seconds: TimeInterval) async throws {
@@ -64,6 +81,7 @@ enum SampleVideo {
         receiver.finish()
         writer.endSession(atSourceTime: CMTime(seconds: seconds, preferredTimescale: 600))
         await writer.finishWriting()
+        guard writer.status == .completed else { throw writer.error ?? CocoaError(.fileWriteUnknown) }
     }
 
     nonisolated private static func buffer(second: Int, pool: CVMutablePixelBuffer.Pool) throws -> CVReadOnlyPixelBuffer {

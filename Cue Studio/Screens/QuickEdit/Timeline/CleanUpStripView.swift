@@ -15,6 +15,11 @@ struct CleanUpStripView: View {
     @GestureState private var isTouching = false
 
     var body: some View {
+        drawing.keepsLeftToRight()
+    }
+
+    @ViewBuilder
+    private var drawing: some View {
         GeometryReader { proxy in
             let layout = TimelineLayout(timeline: viewModel.edit.timeline, width: proxy.size.width, inset: 0, showsTrimmedEnds: false)
             ZStack(alignment: .topLeading) {

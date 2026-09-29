@@ -25,6 +25,6 @@ nonisolated struct RemoteStatus: Codable, Hashable, Sendable {
 
     /// "0.7×"
     var speedLabel: String {
-        speed.formatted(.number.precision(.fractionLength(1))) + "×"
+        speed.formatted(.number.precision(.fractionLength(1)).locale(.interface)) + "×"
     }
 }

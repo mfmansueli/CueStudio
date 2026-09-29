@@ -40,6 +40,8 @@ final class TakeReviewViewModel {
     private let profile: CreatorProfileService
     private let preferences: PreferencesService
     private let toast: ToastService
+    /// What a script is heard in (`LanguageService.speechRequest(for:)`).
+    private let speechLanguageFor: (Script?) -> SpeechLanguageRequest
 
     init(
         takeID: UUID,
@@ -54,8 +56,10 @@ final class TakeReviewViewModel {
         rules: PlatformRulesService,
         profile: CreatorProfileService,
         preferences: PreferencesService,
-        toast: ToastService
+        toast: ToastService,
+        speechLanguage: @escaping (Script?) -> SpeechLanguageRequest = SpeechLanguageRequest.script
     ) {
+        speechLanguageFor = speechLanguage
         self.takeID = takeID
         self.takes = takes
         self.quota = quota
@@ -81,7 +85,7 @@ final class TakeReviewViewModel {
     /// "Today · 9:25 AM · TikTok · 9:16 · 1080p"
     var metaLine: String {
         guard let take else { return "" }
-        let when = take.recordedAt.formatted(.relative(presentation: .named))
+        let when = take.recordedAt.formatted(.relative(presentation: .named).locale(.interface))
         let platform = take.platform?.label ?? String(localized: "Freestyle")
         return "\(when) · \(platform) · \(take.aspect.label) · \(take.resolution.label)"
     }
@@ -240,8 +244,11 @@ final class TakeReviewViewModel {
         var edit = take.edit ?? TakeEdit(sourceDuration: take.duration, aspect: take.aspect)
         edit.showsCaptions = true
         if edit.captions.isEmpty {
-            let script = library.script(id: take.scriptID)?.text ?? ""
-            edit.captions = await editing.captions(forVideoAt: takes.videoURL(for: take), script: script, duration: edit.sourceDuration)
+            let script = library.script(id: take.scriptID)
+            edit.captions = await editing.captions(
+                forVideoAt: takes.videoURL(for: take), script: script?.text ?? "",
+                language: speechLanguageFor(script), duration: edit.sourceDuration
+            )
         }
         return edit
     }

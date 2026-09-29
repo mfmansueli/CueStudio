@@ -16,6 +16,7 @@ struct ProfileView: View {
     @Environment(ToastService.self) private var toast
     @Environment(PreferencesService.self) private var preferences
     @Environment(AudioInputManager.self) private var audio
+    @Environment(LanguageService.self) private var languages
 
     @State private var showsEditProfile = false
     @State private var showsPrivacy = false
@@ -90,6 +91,16 @@ struct ProfileView: View {
             }
             .listRowBackground(store.tier.isPro ? AnyView(glow) : AnyView(Palette.surface))
             Section("Settings") {
+                NavigationLink(value: ProfileRoute.languageRegion) {
+                    HStack(spacing: 12) {
+                        Text("Language & Region").foregroundStyle(Palette.ink)
+                        Spacer(minLength: 8)
+                        Text(verbatim: languages.interfaceLanguage.nativeName)
+                            .foregroundStyle(Palette.ink2)
+                            .lineLimit(1)
+                    }
+                }
+                .accessibilityIdentifier("profile.languageRegionButton")
                 Picker("Default “Create for”", selection: $profile.profile.defaultPlatform) {
                     ForEach(Platform.allCases) { Text($0.destinationName).tag($0) }
                 }
@@ -101,7 +112,7 @@ struct ProfileView: View {
                     HStack {
                         Text("Privacy & AI data").foregroundStyle(Palette.ink)
                         Spacer()
-                        Image(systemName: "chevron.right")
+                        Image(systemName: "chevron.forward")
                             .font(.footnote.weight(.semibold))
                             .foregroundStyle(Palette.ink3)
                     }

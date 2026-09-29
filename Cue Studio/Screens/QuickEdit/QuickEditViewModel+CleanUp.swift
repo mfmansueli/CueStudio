@@ -15,7 +15,8 @@ extension QuickEditViewModel {
     // MARK: - Analysis
 
     /// Listens to the take the first time Clean Up opens: loudness for pauses, the transcript (in
-    /// the script's language) for filler words and retakes. Nothing is removed.
+    /// the Voice Following language, or the script's) for filler words and retakes. Nothing is
+    /// removed.
     func analyzeIfNeeded() async {
         guard isReady, analysis != .running else { return }
         guard !edit.cleanUpAnalyzed else {
@@ -25,7 +26,7 @@ extension QuickEditViewModel {
         analysis = .running
         let found: [CleanUpSuggestion]
         do {
-            found = try await editing.cleanUpSuggestions(forVideoAt: videoURL, script: scriptText)
+            found = try await editing.cleanUpSuggestions(forVideoAt: videoURL, language: speechLanguage)
         } catch {
             guard !isClosed else { return }
             analysis = .failed
@@ -91,7 +92,7 @@ extension QuickEditViewModel {
 
     /// "0.7s"
     var pauseThresholdLabel: String {
-        pauseThreshold.formatted(.number.precision(.fractionLength(1))) + "s"
+        pauseThreshold.formatted(.number.precision(.fractionLength(1)).locale(.interface)) + "s"
     }
 
     /// "2 short pauses kept" or "natural pauses stay".
@@ -109,7 +110,7 @@ extension QuickEditViewModel {
         let length = suggestion.kind == .pause ? SilenceDetector.silenceLength(ofCut: suggestion.span) : suggestion.span.duration
         let parts = [
             DurationText.timecode(suggestion.span.start, total: edit.sourceDuration),
-            length.formatted(.number.precision(.fractionLength(1))) + "s",
+            length.formatted(.number.precision(.fractionLength(1)).locale(.interface)) + "s",
             suggestion.note,
         ]
         return parts.compactMap { $0 }.joined(separator: " · ")

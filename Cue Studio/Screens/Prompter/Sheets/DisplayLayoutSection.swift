@@ -52,7 +52,7 @@ struct DisplayLayoutSection: View {
             .padding(.horizontal, 16)
             ValueSlider(
                 title: String(localized: "Text window width"),
-                valueText: session.prompter.readingWidth.formatted(.percent.precision(.fractionLength(0))),
+                valueText: session.prompter.readingWidth.formatted(.percent.precision(.fractionLength(0)).locale(.interface)),
                 value: $session.prompter.readingWidth,
                 range: PrompterSettings.readingWidthRange, step: 0.01,
                 ends: (String(localized: "Narrow · less eye movement"), String(localized: "Wide")),
@@ -162,7 +162,7 @@ struct DisplayLayoutSection: View {
     private func margin(_ title: String, value: Binding<Double>, range: ClosedRange<Double>) -> some View {
         ValueSlider(
             title: title,
-            valueText: "\(Int(value.wrappedValue))%",
+            valueText: (value.wrappedValue / 100).formatted(.percent.precision(.fractionLength(0)).locale(.interface)),
             value: value,
             range: range
         )

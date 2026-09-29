@@ -1,0 +1,141 @@
+# Cue Studio — Languages
+
+How Cue handles languages: the architecture, the terminology every translation follows, and what
+right to left and longer languages need. Read with `ARCHITECTURE.md` (strings are always localized)
+and `DESIGN_PROJECT.md` (Language & Region screen).
+
+## 1. Three languages, kept apart
+
+Cue has three language settings (Profile › Settings › Language & Region) and none follows another:
+
+| Setting | What it is | Stored in | Default |
+|---|---|---|---|
+| **App Language** | Cue's interface | the app's `AppleLanguages` (the list Settings › Cue › Language edits too) | the iPhone's language |
+| **Voice Following Language** | what Cue listens for while the creator reads | `DefaultsKey.voiceFollowingLanguage` | Same as Script |
+| **Script Language** | what new scripts are written in; each script keeps its own (`Script.language`, ••• › Script Language) | `DefaultsKey.scriptLanguage` | Auto-detect |
+
+An iPhone in Italian can run Cue in English for a script in Portuguese (Brazil) read aloud in
+Portuguese (Brazil). Changing the app language never changes the other two, never translates a
+script and never touches the iPhone's language. `LanguageService` owns the three.
+
+Every language is a `CueLanguage` (`Models/CueLanguage.swift`), the only list of languages in the
+app: script/speech locale (`pt-BR`, `zh-CN`, `ar-SA`…, the raw value saved with scripts), interface
+localization (`pt-BR`, `zh-Hans`…), native and localized names, English name (for AI instructions),
+direction and whether it's written without spaces.
+
+- **Interface:** String Catalogs (`Localizable`, `InfoPlist`, `AppShortcuts`) with
+  `String(localized:)` and `LocalizedStringKey`. The pick is written to `AppleLanguages`, so every
+  later launch is natively in that language (permission prompts, system sheets, formats, right to
+  left). The running app switches at once: `String(localized:)` resolves through
+  `String+InterfaceLanguage.swift` in `InterfaceLocale.current` (Foundation's own picks the language
+  once per launch and ignores `Bundle` overrides), SwiftUI reads `locale` and `layoutDirection` from
+  `RootView`'s environment, and `RootView` rebuilds the screens (`.id`). Navigation that must survive
+  lives in `PresentationService` (`profilePath`), so the creator stays on Language & Region.
+  Numbers and dates use `Locale.interface` (interface language, iPhone region).
+- **Voice Following:** `SpeechLanguageRequest` (the Voice Following language, else the script's,
+  else detected from the script's text) → `SpeechLocaleResolver` → Apple's on-device
+  `SpeechTranscriber` (the original engine, tried first for every language, so English and
+  Portuguese are recognized exactly as before), or `DictationTranscriber` from the same
+  `SpeechAnalyzer` framework for languages or devices `SpeechTranscriber` doesn't cover. Availability
+  is always asked of the device; an unavailable language says so (`SpeechUnavailableReason`) and is
+  never swapped for another one. The matching and scrolling (`ScriptSpeechTracker`) didn't change;
+  languages written without spaces are split into words by `WordSegmenter` (Natural Language).
+  Captions and Clean Up hear takes in the same language, through the same resolver.
+- **Scripts:** `Script.language` (nil = Auto-detect, read by `LanguageDetector`). The prompter reads
+  a script in its own direction whatever the interface's (`ScriptDirection`). Translate creates a
+  copy in the new language; the original is never changed. AI writing is told the language by its
+  English name (`ScriptPromptBuilder.languageRule`).
+
+Nothing here has a server, an API key or a cost per use: speech recognition, language detection and
+word segmentation all run on the device with Apple's frameworks.
+
+**To add a language:** add a `CueLanguage` case, add the language to the three String Catalogs and
+to `knownRegions` in the project. Nothing else is structural.
+
+## 2. Terminology
+
+One translation per concept, everywhere (buttons, alerts, accessibility labels). Brand and feature
+names in **bold** stay in English in every language.
+
+- Brand, unchanged: **Cue**, **Cue Pro**, **Pro**, **Apple Intelligence**, **Private Cloud Compute**,
+  **Creator Voice**, **Selfie**, **Studio**, **TikTok**, **Reels**, **Shorts**, **YouTube**,
+  **LinkedIn**, **Stories**, **Instagram**, **Lexend**.
+- Voice: talk to one creator (pt-BR *você*, es *tú*, fr *vous*, de *du*, it *tu*, id *kamu*,
+  tr *sen*, vi *bạn*, zh *你*, ar the singular, hi *आप*; ja and ko polite and neutral), short
+  sentences, no jargon.
+- Two pairs never share a word, because they sit on the same screens: **Record / Save** (fr
+  *Filmer* / *Enregistrer*, tr *Kayıt* / *Kaydet*, th *อัด* / *บันทึก*) and **Trim / Crop** (es
+  *Recortar* / *Encuadrar*, pt-BR *Aparar* / *Recortar*, id *Pangkas Durasi* / *Pangkas Bingkai*, tr
+  *Kısalt* / *Kırp*, vi *Cắt độ dài* / *Cắt khung*).
+- Arabic calls the hook *الافتتاحية* (the opening) and captions *الترجمة النصية*; *الخطّاف* reads as
+  a literal fishing hook.
+- Performance cues inside scripts are translated with the script text (`[pause]` → pt-BR
+  `[pausa]`, ja `[間]`…) and always use ASCII brackets, so the prompter still recognizes them.
+- "%@ to %@" is a countdown ("18s to 1:00", "12s to monetize"), not a range.
+
+| English | es | pt-BR | fr | de | it | ja | ko | zh-Hans | hi | id | ar | tr | th | vi |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| Teleprompter | Teleprompter | Teleprompter | Téléprompteur | Teleprompter | Teleprompter | プロンプター | 프롬프터 | 提词器 | टेलीप्रॉम्प्टर | Teleprompter | الملقّن | Teleprompter | เทเลพรอมป์เตอร์ | Teleprompter |
+| Voice Following | Seguimiento de voz | Seguir voz | Suivi vocal | Sprachfolge | Segui voce | 音声追従 | 음성 따라가기 | 语音跟随 | आवाज़ ट्रैकिंग | Ikuti Suara | تتبّع الصوت | Ses Takibi | ติดตามเสียง | Theo giọng nói |
+| Script | Guion | Roteiro | Script | Skript | Copione | 台本 | 대본 | 脚本 | स्क्रिप्ट | Naskah | النص | Senaryo | สคริปต์ | Kịch bản |
+| Take | Toma | Take | Prise | Take | Ripresa | テイク | 테이크 | 镜头 | टेक | Take | اللقطة | Çekim | เทค | Cảnh quay |
+| Record | Grabar | Gravar | Filmer | Aufnehmen | Registra | 録画 | 녹화 | 录制 | रिकॉर्ड | Rekam | تسجيل | Kayıt | อัด | Quay |
+| Save | Guardar | Salvar | Enregistrer | Sichern | Salva | 保存 | 저장 | 存储 | सेव करें | Simpan | حفظ | Kaydet | บันทึก | Lưu |
+| Quick edit | Edición rápida | Edição rápida | Montage rapide | Schnellschnitt | Modifica rapida | クイック編集 | 빠른 편집 | 快速剪辑 | क्विक एडिट | Edit cepat | تعديل سريع | Hızlı düzenleme | แก้ไขด่วน | Sửa nhanh |
+| Trim | Recortar | Aparar | Raccourcir | Kürzen | Accorcia | トリミング | 다듬기 | 修剪 | ट्रिम | Pangkas Durasi | التشذيب | Kısalt | ตัดความยาว | Cắt độ dài |
+| Crop | Encuadrar | Recortar | Recadrer | Zuschneiden | Ritaglia | 切り取り | 자르기 | 裁剪 | क्रॉप | Pangkas Bingkai | قص | Kırp | ครอบตัด | Cắt khung |
+| Captions | Subtítulos | Legendas | Sous-titres | Untertitel | Sottotitoli | 字幕 | 자막 | 字幕 | कैप्शन | Teks | الترجمة النصية | Altyazılar | คำบรรยาย | Phụ đề |
+| Free exports | Exportaciones gratis | Exportações grátis | Exports gratuits | Kostenlose Exporte | Esportazioni gratuite | 無料書き出し | 무료 내보내기 | 免费导出 | मुफ़्त एक्सपोर्ट | Ekspor gratis | عمليات تصدير مجانية | Ücretsiz dışa aktarma | การส่งออกฟรี | Lượt xuất miễn phí |
+| Camera | Cámara | Câmera | Caméra | Kamera | Fotocamera | カメラ | 카메라 | 相机 | कैमरा | Kamera | الكاميرا | Kamera | กล้อง | Camera |
+| Speed | Velocidad | Velocidade | Vitesse | Tempo | Velocità | 速度 | 속도 | 速度 | स्पीड | Kecepatan | السرعة | Hız | ความเร็ว | Tốc độ |
+| Play | Reproducir | Reproduzir | Lire | Abspielen | Riproduci | 再生 | 재생 | 播放 | चलाएँ | Putar | تشغيل | Oynat | เล่น | Phát |
+| Settings | Ajustes | Ajustes | Réglages | Einstellungen | Impostazioni | 設定 | 설정 | 设置 | सेटिंग्स | Pengaturan | الإعدادات | Ayarlar | การตั้งค่า | Cài đặt |
+| Profile | Perfil | Perfil | Profil | Profil | Profilo | プロフィール | 프로필 | 个人资料 | प्रोफ़ाइल | Profil | الملف الشخصي | Profil | โปรไฟล์ | Hồ sơ |
+| Hook | Gancho | Gancho | Accroche | Hook | Gancio | フック | 훅 | 钩子 | हुक | Hook | الافتتاحية | Kanca | ฮุก | Hook |
+| Clean Up | Limpieza | Limpeza | Nettoyage | Aufräumen | Pulizia | クリーンアップ | 정리 | 清理 | क्लीन अप | Bersihkan | تنظيف | Temizleme | เก็บกวาด | Dọn dẹp |
+| Creator Setup | Configuración de creador | Configuração de criador | Réglages créateur | Creator-Setup | Configurazione creator | クリエイター設定 | 크리에이터 설정 | 创作者设置 | क्रिएटर सेटअप | Setelan Kreator | إعداد صانع المحتوى | İçerik Üretici Ayarları | การตั้งค่าครีเอเตอร์ | Thiết lập nhà sáng tạo |
+| Safe zones | Zonas seguras | Zonas seguras | Zones sûres | Sichere Bereiche | Zone sicure | セーフゾーン | 세이프 존 | 安全区 | सेफ़ ज़ोन | Zona aman | المناطق الآمنة | Güvenli alanlar | พื้นที่ปลอดภัย | Vùng an toàn |
+| Reading line | Línea de lectura | Linha de leitura | Ligne de lecture | Leselinie | Linea di lettura | 読み取りライン | 읽기 선 | 阅读线 | रीडिंग लाइन | Garis baca | خط القراءة | Okuma çizgisi | เส้นอ่าน | Đường đọc |
+| Remote Control | Control remoto | Controle remoto | Télécommande | Fernbedienung | Telecomando | リモコン | 리모컨 | 遥控 | रिमोट कंट्रोल | Kendali Jarak Jauh | التحكم عن بُعد | Uzaktan Kumanda | รีโมตคอนโทรล | Điều khiển từ xa |
+| Steady | Constante | Constante | Constant | Gleichmäßig | Costante | 一定速度 | 일정 속도 | 匀速 | स्थिर | Stabil | ثابت | Sabit | คงที่ | Đều |
+| Language & Region | Idioma y región | Idioma e região | Langue et région | Sprache & Region | Lingua e area geografica | 言語と地域 | 언어 및 지역 | 语言与地区 | भाषा और क्षेत्र | Bahasa & Wilayah | اللغة والمنطقة | Dil ve Bölge | ภาษาและภูมิภาค | Ngôn ngữ & Vùng |
+
+## 3. Right to left and longer text
+
+- Arabic: SwiftUI mirrors the layout from the environment (`layoutDirection`); directional SF
+  Symbols (`chevron.forward`, `chevron.backward`) flip on their own, and nothing uses left/right
+  where leading/trailing is meant. Media never mirrors: the Quick edit timelines, layer tracks and
+  video run left to right, as time does. The prompter follows the script's direction, not the
+  interface's.
+- German, French and the other longer languages: labels wrap or shrink (`minimumScaleFactor`)
+  instead of clipping; buttons keep their height and grow in width; chips flow (`FlowLayout`); fixed
+  label widths are minimum widths.
+- Japanese, Chinese and Thai have no spaces between words: word counts, reading time and Voice
+  Following use `WordSegmenter`.
+
+## 4. Speech recognition by language
+
+Asked of the device at runtime (`SpeechLocaleResolver`, `SpeechRecognitionManager.availability`),
+never assumed. Language & Region shows, under each Voice Following language, whether it's ready on
+this iPhone, downloads the first time, or isn't available. An unavailable language can still be
+picked (an update or another iPhone may add it); the prompter then says so and scrolls at the set
+speed while the creator talks, in that language's place, never in another one.
+
+| Language | Locale | Recognizer (both on-device, Speech framework) | Measured on a Mac with Apple's models |
+|---|---|---|---|
+| English, Spanish, Portuguese (Brazil), French, German, Italian, Japanese, Korean, Chinese (Simplified) | en-US, es-ES, pt-BR, fr-FR, de-DE, it-IT, ja-JP, ko-KR, zh-CN | `SpeechTranscriber` (the original engine), else `DictationTranscriber` | 100% of the script followed |
+| Indonesian, Arabic, Turkish, Thai, Vietnamese | id-ID, ar-SA, tr-TR, th-TH, vi-VN | `DictationTranscriber` (`SpeechTranscriber` didn't offer them on the test Mac) | 100% |
+| Hindi | hi-IN | `DictationTranscriber` first when the script is in Devanagari: `SpeechTranscriber` writes Hindi in Latin letters, which can't match the script | 100% (0% through `SpeechTranscriber`) |
+
+Which locales a given iPhone has depends on the model, the iOS version and Apple Intelligence
+settings; the table is what the framework offers, and the app checks each time. The iOS Simulator
+lists the dictation locales but can't run either recognizer (no audio format), so Voice Following
+shows "This iPhone can't recognize speech" there; real recognition is tested on a device or on a
+Mac.
+
+Apple's Speech framework can't tell which language someone is speaking before recognizing it, so
+Voice Following has no spoken "auto-detect": it listens in the chosen language, or in the script's
+(detected from its text by `NLLanguageRecognizer` when the script is on Auto-detect).
+The opt-in `VoiceFollowingSpeechTests` plays a recording of each language
+(`Cue StudioTests/Fixtures/Speech/`) through the real recognizer and tracker
+(`TEST_RUNNER_CUE_SPEECH_E2E=1`, on a device).

@@ -44,7 +44,7 @@ final class StubScriptWriter: ScriptWriting {
         return ["Stub hook one.", "Stub hook two.", "Stub hook three."]
     }
 
-    func themeIdeas(for niches: [Niche]) async throws -> [ThemeIdea] {
+    func themeIdeas(for niches: [Niche], language: CueLanguage?) async throws -> [ThemeIdea] {
         guard availability.isAvailable else { throw ScriptAIError.modelUnavailable(availability.reason ?? "") }
         return [ThemeIdea(title: "A stub idea for testing", kind: "List", length: .minute1, niche: niches.first ?? .lifestyle)]
     }

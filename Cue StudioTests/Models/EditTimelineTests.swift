@@ -370,9 +370,12 @@ struct EditTimelineTests {
 
     @Test func aTransitionBelongsToItsCut() {
         var timeline = fourPieces()
-        #expect(timeline.setTransition(.dissolve, atJoin: 2))
-        #expect(!timeline.setTransition(.dissolve, atJoin: 2))
-        #expect(!timeline.setTransition(.fade, atJoin: 0))
+        let set = timeline.setTransition(.dissolve, atJoin: 2)
+        let setAgain = timeline.setTransition(.dissolve, atJoin: 2)
+        let setOnFirstPiece = timeline.setTransition(.fade, atJoin: 0)
+        #expect(set)
+        #expect(!setAgain)
+        #expect(!setOnFirstPiece)
         #expect(timeline.transition(atJoin: 2) == .dissolve)
         // Another cut elsewhere leaves it alone: [A][B][C1][C2][D].
         timeline.split(atEdited: 40)

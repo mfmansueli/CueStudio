@@ -18,6 +18,11 @@ struct QuickEditPreview: View {
     @State private var dragStartOffset: Double?
 
     var body: some View {
+        drawing.keepsLeftToRight()
+    }
+
+    @ViewBuilder
+    private var drawing: some View {
         PlayerView(player: viewModel.player.avPlayer)
             .frame(width: size.width, height: size.height)
             .background(Palette.previewWell)

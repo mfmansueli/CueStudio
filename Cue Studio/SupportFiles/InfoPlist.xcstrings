@@ -1,0 +1,511 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "CFBundleDisplayName" : {
+      "comment" : "The app's name on the Home Screen. A brand: not translated.",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Cue Studio"
+          }
+        }
+      },
+      "shouldTranslate" : false
+    },
+    "CFBundleName" : {
+      "comment" : "Bundle name",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Cue Studio"
+          }
+        }
+      }
+    },
+    "NSCameraUsageDescription" : {
+      "comment" : "Privacy description shown in the system permission prompt.",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يسجّل Cue لقطاتك بالكاميرا بينما يتحرك النص أسفل العدسة مباشرة."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue nimmt deine Takes mit der Kamera auf, während dein Skript unter dem Objektiv läuft."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Cue records your takes with the camera while your script scrolls under the lens."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue graba tus tomas con la cámara mientras tu guion se desplaza bajo el objetivo."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue enregistre vos prises avec la caméra pendant que votre script défile sous l’objectif."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue कैमरे से आपके टेक रिकॉर्ड करता है, जबकि आपकी स्क्रिप्ट लेंस के ठीक नीचे स्क्रॉल होती है।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue merekam take kamu dengan kamera sementara naskah bergulir tepat di bawah lensa."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue registra le tue riprese con la fotocamera mentre il copione scorre sotto l’obiettivo."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cueはカメラでテイクを録画し、そのあいだ台本をレンズのすぐ下でスクロールします。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue는 대본이 렌즈 바로 아래에서 스크롤되는 동안 카메라로 테이크를 녹화합니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Cue grava seus takes com a câmera enquanto o roteiro rola logo abaixo da lente."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue อัดเทคของคุณด้วยกล้อง ขณะที่สคริปต์เลื่อนอยู่ใต้เลนส์"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue, metin objektifin hemen altında kayarken çekimlerini kamerayla kaydeder."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue quay các bản quay của bạn bằng camera trong khi kịch bản cuộn ngay dưới ống kính."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue 会用相机录制你的镜头，同时让脚本在镜头下方滚动。"
+          }
+        }
+      }
+    },
+    "NSLocalNetworkUsageDescription" : {
+      "comment" : "Privacy description shown in the system permission prompt.",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يتصل Cue بجهاز iPhone أو iPad آخر لديك قريب منك، ليتحكم أحدهما في الملقّن على الآخر."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue verbindet sich mit deinem anderen iPhone oder iPad in der Nähe, damit eines den Teleprompter auf dem anderen steuern kann."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Cue connects to your other iPhone or iPad nearby, so one can control the teleprompter on the other."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue se conecta a tu otro iPhone o iPad cercano para que uno controle el teleprompter del otro."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue se connecte à votre autre iPhone ou iPad à proximité, pour que l’un contrôle le téléprompteur de l’autre."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue पास के आपके दूसरे iPhone या iPad से जुड़ता है, ताकि एक डिवाइस दूसरे के टेलीप्रॉम्प्टर को कंट्रोल कर सके।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue terhubung ke iPhone atau iPad lain milikmu di dekat sini, sehingga satu perangkat bisa mengendalikan teleprompter di perangkat lainnya."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue si collega al tuo altro iPhone o iPad nelle vicinanze, così uno può controllare il teleprompter dell’altro."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cueは近くにあるもう1台のiPhoneやiPadと接続し、一方からもう一方のプロンプターを操作できるようにします。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue는 근처의 다른 iPhone 또는 iPad와 연결되어 한 기기로 다른 기기의 프롬프터를 조작할 수 있게 합니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Cue se conecta ao seu outro iPhone ou iPad por perto, para que um controle o teleprompter do outro."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue เชื่อมต่อกับ iPhone หรือ iPad อีกเครื่องของคุณที่อยู่ใกล้ๆ เพื่อให้เครื่องหนึ่งควบคุมเทเลพรอมป์เตอร์ของอีกเครื่องได้"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue yakındaki diğer iPhone veya iPad'ine bağlanır, böylece biri diğerindeki teleprompter'ı kontrol edebilir."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue kết nối với iPhone hoặc iPad khác của bạn ở gần, để một thiết bị điều khiển máy nhắc chữ trên thiết bị kia."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue 会连接你附近的另一台 iPhone 或 iPad，让一台设备控制另一台上的提词器。"
+          }
+        }
+      }
+    },
+    "NSMicrophoneUsageDescription" : {
+      "comment" : "Privacy description shown in the system permission prompt.",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يسجّل Cue صوتك في كل لقطة وفي التعليق الصوتي، ويمكنه تتبّع صوتك لتمرير النص."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue nimmt deine Stimme bei jedem Take und für Voice-overs auf und kann deiner Stimme folgen, um das Skript laufen zu lassen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Cue records your voice with each take and for voice-overs, and can follow your voice to scroll the script."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue graba tu voz en cada toma y en las voces en off, y puede seguir tu voz para desplazar el guion."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue enregistre votre voix à chaque prise et pour les voix off, et peut suivre votre voix pour faire défiler le script."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue हर टेक और वॉइस-ओवर के लिए आपकी आवाज़ रिकॉर्ड करता है, और स्क्रिप्ट स्क्रॉल करने के लिए आपकी आवाज़ को फ़ॉलो कर सकता है।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue merekam suaramu di setiap take dan untuk sulih suara, dan bisa mengikuti suaramu untuk menggulir naskah."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue registra la tua voce in ogni ripresa e per le voci fuori campo, e può seguire la tua voce per far scorrere il copione."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cueはテイクごとの声やボイスオーバーを録音し、声に合わせて台本をスクロールできます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue는 테이크마다 목소리를 녹음하고 보이스오버도 녹음하며, 목소리에 맞춰 대본을 스크롤할 수 있습니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Cue grava sua voz em cada take e nas narrações, e pode seguir sua voz para rolar o roteiro."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue อัดเสียงของคุณในทุกเทคและสำหรับเสียงบรรยาย และติดตามเสียงของคุณเพื่อเลื่อนสคริปต์ได้"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue her çekimde ve seslendirmelerde sesini kaydeder; metni kaydırmak için sesini de takip edebilir."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue ghi âm giọng bạn trong mỗi bản quay và cho phần lồng tiếng, đồng thời có thể theo giọng bạn để cuộn kịch bản."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue 会录制每个镜头和画外音中的声音，还能跟随你的声音滚动脚本。"
+          }
+        }
+      }
+    },
+    "NSPhotoLibraryAddUsageDescription" : {
+      "comment" : "Privacy description shown in the system permission prompt.",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يحفظ Cue اللقطات التي تصدّرها في مكتبة الصور."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue sichert die Takes, die du exportierst, in deiner Fotomediathek."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Cue saves the takes you export to your photo library."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue guarda en tu fototeca las tomas que exportas."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue enregistre dans votre photothèque les prises que vous exportez."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue आपके एक्सपोर्ट किए गए टेक आपकी फ़ोटो लाइब्रेरी में सेव करता है।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue menyimpan take yang kamu ekspor ke perpustakaan foto."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue salva nella tua libreria foto le riprese che esporti."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cueは書き出したテイクを写真ライブラリに保存します。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue는 내보낸 테이크를 사진 보관함에 저장합니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Cue salva na sua fototeca os takes que você exporta."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue บันทึกเทคที่คุณส่งออกไว้ในคลังรูปภาพ"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue, dışa aktardığın çekimleri fotoğraf arşivine kaydeder."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue lưu các bản quay bạn xuất vào thư viện ảnh."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue 会将你导出的镜头存储到照片图库。"
+          }
+        }
+      }
+    },
+    "NSSpeechRecognitionUsageDescription" : {
+      "comment" : "Privacy description shown in the system permission prompt.",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يتعرّف Cue على كلامك على جهاز iPhone هذا ليبقي النص على السطر الذي تقرؤه. لا يغادر أي شيء الجهاز."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue erkennt deine Sprache auf diesem iPhone, damit das Skript bei der Zeile bleibt, die du gerade liest. Nichts verlässt das Gerät."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Cue recognizes your speech on this iPhone to keep the script on the line you're reading. Nothing leaves the device."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue reconoce tu voz en este iPhone para mantener el guion en la línea que estás leyendo. Nada sale del dispositivo."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue reconnaît votre voix sur cet iPhone pour garder le script sur la ligne que vous lisez. Rien ne quitte l’appareil."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue इसी iPhone पर आपकी आवाज़ पहचानता है, ताकि स्क्रिप्ट उसी लाइन पर रहे जो आप पढ़ रहे हैं। कुछ भी डिवाइस से बाहर नहीं जाता।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue mengenali ucapanmu di iPhone ini agar naskah tetap di baris yang sedang kamu baca. Tidak ada yang keluar dari perangkat."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue riconosce la tua voce su questo iPhone per tenere il copione sulla riga che stai leggendo. Nulla lascia il dispositivo."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CueはこのiPhone上で音声を認識し、読んでいる行に台本を合わせます。データがデバイスの外に出ることはありません。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue는 이 iPhone에서 음성을 인식해 읽고 있는 줄에 대본을 맞춥니다. 어떤 데이터도 기기 밖으로 나가지 않습니다."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Cue reconhece sua fala neste iPhone para manter o roteiro na linha que você está lendo. Nada sai do aparelho."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue จดจำเสียงพูดของคุณบน iPhone เครื่องนี้ เพื่อให้สคริปต์อยู่ตรงบรรทัดที่คุณกำลังอ่าน ไม่มีข้อมูลใดออกจากอุปกรณ์"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue, metni okuduğun satırda tutmak için konuşmanı bu iPhone'da tanır. Hiçbir şey aygıttan çıkmaz."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue nhận dạng giọng nói của bạn ngay trên iPhone này để giữ kịch bản ở dòng bạn đang đọc. Không có gì rời khỏi thiết bị."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue 在这台 iPhone 上识别你的语音，让脚本停在你正在读的那一行。数据不会离开设备。"
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}

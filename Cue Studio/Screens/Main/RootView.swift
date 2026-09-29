@@ -14,10 +14,16 @@ struct RootView: View {
     @Environment(\.scenePhase) private var scenePhase
 
     var body: some View {
+        let languages = services.languages
         MainView(services: services)
+            // A new interface language rebuilds the screens, so every string is read again in it.
+            // Navigation lives in PresentationService, so the creator stays where they were.
+            .id(languages.interfaceLanguage)
             // Inside the environment: the host reads ToastService from it.
             .toastHost()
             .environment(services)
+            .environment(\.locale, languages.interfaceLocale)
+            .environment(\.layoutDirection, LayoutDirection(rightToLeft: languages.interfaceLanguage.isRightToLeft))
             .task {
                 await services.store.start()
             }

@@ -76,11 +76,19 @@ nonisolated struct ScriptWords: Equatable, Sendable {
 
     private static let joiners: Set<Character> = ["'", "\u{2019}", "\u{2018}"]
 
-    /// Each word with the character offset where it starts.
+    /// Each word with the character offset where it starts. Languages written without spaces
+    /// (Japanese, Chinese, Thai) have their runs of letters split into dictionary words, so the
+    /// transcription can be matched word by word as in any other language.
     private static func words(in text: String) -> [(token: String, offset: Int)] {
         var result: [(token: String, offset: Int)] = []
         var current = ""
         var start = 0
+        func finish() {
+            for segment in WordSegmenter.segments(of: current) {
+                result.append((normalized(segment.word), start + segment.offset))
+            }
+            current = ""
+        }
         for (offset, character) in text.enumerated() {
             if character.isLetter || character.isNumber {
                 if current.isEmpty { start = offset }
@@ -88,12 +96,11 @@ nonisolated struct ScriptWords: Equatable, Sendable {
             } else if joiners.contains(character), !current.isEmpty {
                 continue
             } else if !current.isEmpty {
-                result.append((normalized(current), start))
-                current = ""
+                finish()
             }
         }
         if !current.isEmpty {
-            result.append((normalized(current), start))
+            finish()
         }
         return result
     }

@@ -214,7 +214,7 @@ struct QuickCreatorViewModelTests {
         await scenario.viewModel.analyzeIfNeeded()
         #expect(scenario.viewModel.removablePauses.count == 2)
         #expect(scenario.viewModel.pausesTitle == "Found 2 pauses")
-        #expect(scenario.viewModel.pausesTotalLabel == "Total: 3.0s")
+        #expect(scenario.viewModel.pausesTotalLabel == "Total: \(TestData.decimal("3.0"))s")
         #expect(scenario.viewModel.edit.timeline.isWhole)
     }
 
@@ -247,7 +247,7 @@ struct QuickCreatorViewModelTests {
         #expect(!viewModel.isPreviewingPauses)
         #expect(viewModel.edit.editedDuration == 61)
         #expect(viewModel.history.past.count == steps + 1)
-        #expect(scenario.toast.message == "Removed 2 pauses · 3.0s")
+        #expect(scenario.toast.message == "Removed 2 pauses · \(TestData.decimal("3.0"))s")
         viewModel.undo()
         #expect(viewModel.edit.timeline.isWhole)
         #expect(viewModel.removablePauses.count == 2)

@@ -18,9 +18,16 @@ final class FakeTakeEditor: TakeEditing {
     var transcript: TakeTranscript?
     /// The take's sound can't be read.
     var cleanUpFails = false
-    private(set) var cleanUpScript: String?
+    /// The language Clean Up listened in.
+    private(set) var cleanUpLanguage: SpeechLanguageRequest?
     var captions: [CaptionCue] = [CaptionCue(text: "Okay, real talk.", start: 0, end: 1)]
     private(set) var captionScript: String?
+    private(set) var captionLanguage: SpeechLanguageRequest?
+
+    /// The script Clean Up read the language from, when it was left to detect it.
+    var cleanUpScript: String? {
+        if case .detect(let text, _) = cleanUpLanguage { text } else { nil }
+    }
 
     func sourceDuration(ofVideoAt url: URL) async throws -> TimeInterval {
         guard let duration else { throw EditSourceError.missing }
@@ -31,14 +38,15 @@ final class FakeTakeEditor: TakeEditing {
         nominalFrameRate
     }
 
-    func cleanUpSuggestions(forVideoAt url: URL, script: String) async throws -> [CleanUpSuggestion] {
+    func cleanUpSuggestions(forVideoAt url: URL, language: SpeechLanguageRequest) async throws -> [CleanUpSuggestion] {
         guard !cleanUpFails else { throw EditSourceError.noDuration }
-        cleanUpScript = script
+        cleanUpLanguage = language
         return CleanUpAnalyzer.suggestions(silences: silences, transcript: transcript)
     }
 
-    func captions(forVideoAt url: URL, script: String, duration: TimeInterval) async -> [CaptionCue] {
+    func captions(forVideoAt url: URL, script: String, language: SpeechLanguageRequest, duration: TimeInterval) async -> [CaptionCue] {
         captionScript = script
+        captionLanguage = language
         return captions
     }
 

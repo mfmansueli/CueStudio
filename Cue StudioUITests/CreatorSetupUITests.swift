@@ -68,6 +68,9 @@ final class CreatorSetupUITests: XCTestCase {
         let app = CueApp.launch(seeded: true)
         openCreatorSetup(app)
         app.buttons["creatorSetup.quality.4K"].tap()
+        // Back to Profile: a tab keeps its screen, and the end of the test opens Creator Setup again.
+        app.navigationBars["Creator Setup"].buttons.element(boundBy: 0).tap()
+        XCTAssertTrue(app.buttons["profile.creatorSetupButton"].waitForExistence(timeout: 5))
 
         // "3 morning habits" is for TikTok, which recommends 1080p.
         app.tabBars.buttons["Scripts"].tap()

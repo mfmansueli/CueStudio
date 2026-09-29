@@ -65,7 +65,7 @@ nonisolated struct PrompterSettings: Codable, Hashable, Sendable {
     init() {}
 
     var speedLabel: String {
-        speed.formatted(.number.precision(.fractionLength(1))) + "×"
+        speed.formatted(.number.precision(.fractionLength(1)).locale(.interface)) + "×"
     }
 
     /// A speed on the slider: in tenths, within the range.

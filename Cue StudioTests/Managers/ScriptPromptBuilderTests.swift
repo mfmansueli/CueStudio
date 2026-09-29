@@ -24,6 +24,24 @@ struct ScriptPromptBuilderTests {
         ScriptRequest(source: .prompt(text), platform: .youtube, tone: nil, voice: voice, targetRange: 108...132)
     }
 
+    /// The model is told the language by its English name, whatever the interface is in.
+    @Test func instructionsNameTheLanguageToWriteIn() {
+        var request = promptRequest("Minha rotina de manhã")
+        #expect(!ScriptPromptBuilder.instructions(for: request).contains("Write the title and every block in"))
+        request.language = .portugueseBrazil
+        #expect(ScriptPromptBuilder.instructions(for: request).contains("Write the title and every block in Portuguese (Brazil)."))
+    }
+
+    @Test func rewritesKeepTheScriptsLanguage() {
+        #expect(ScriptPromptBuilder.rewriteInstructions().contains("Keep the script in the language it is written in"))
+        let context = RewriteContext(structure: .generic, platform: .tiktok, idealRange: 60...90, language: .japanese)
+        #expect(ScriptPromptBuilder.instruction(for: .translate, context: context).contains("into Japanese"))
+    }
+
+    @Test func themeIdeasAreWrittenInTheInterfaceLanguage() {
+        #expect(ScriptPromptBuilder.themesPrompt(for: [.wellness], language: .german).hasSuffix("Write the ideas in German."))
+    }
+
     @Test func formatPromptCarriesStructureLengthAndBrief() {
         let prompt = ScriptPromptBuilder.prompt(for: formatRequest())
         #expect(prompt.contains("Hook → Tips → CTA"))

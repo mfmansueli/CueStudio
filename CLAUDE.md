@@ -24,5 +24,10 @@ ao protótipo do Claude Design). Atualize-o junto com a UI.
 - Launch arguments (só em Debug, ver `SupportFiles/LaunchOptions.swift`): `-uiTestInMemory` (armazenamento
   em memória), `-uiTestSeedSamples` (scripts de exemplo), `-uiTestPro` (começa no Cue Pro),
   `-uiTestSampleVideo` (vídeos reais pequenos atrás dos takes de "3 morning habits", para o Quick edit),
-  `-uiTestRemoteConnects` (um iPad de mentira entra logo depois do pareamento do Remote Control).
+  `-uiTestRemoteConnects` (um iPad de mentira entra logo depois do pareamento do Remote Control),
+  `-uiTestAppLanguage <lproj>` (a interface começa nesse idioma, em memória, sem mudar o simulador).
+- Idiomas: `LOCALIZATION.md` (três idiomas independentes, terminologia, RTL). Todo texto novo entra
+  nos 15 idiomas dos String Catalogs. O teste de fala de verdade é opt-in:
+  `TEST_RUNNER_CUE_SPEECH_E2E=1 xcodebuild … -only-testing:"Cue StudioTests/VoiceFollowingSpeechTests" test`,
+  num aparelho: o Simulator lista os idiomas mas não roda o reconhecimento de fala.
 - Compras são testadas localmente com `CueStudio.storekit` (selecionado no scheme).

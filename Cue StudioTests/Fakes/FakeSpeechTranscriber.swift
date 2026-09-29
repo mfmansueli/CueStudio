@@ -9,18 +9,32 @@ import Foundation
 /// Recognition the test speaks through: `say(_:)` yields a transcript, as the real one does.
 @MainActor
 final class FakeSpeechTranscriber: SpeechTranscribing {
-    /// False acts like a device or language without speech recognition.
-    var isAvailable = true
+    /// Set, acts like a device or language without speech recognition, for this reason.
+    var unavailable: SpeechUnavailableReason?
     private(set) var startCount = 0
     private(set) var stopCount = 0
+    /// The language each start asked for.
+    private(set) var requests: [SpeechLanguageRequest] = []
     private var continuation: AsyncStream<String>.Continuation?
 
-    func start(script: String) async -> SpeechTranscription? {
+    /// Kept for tests written before the reason existed.
+    var isAvailable: Bool {
+        get { unavailable == nil }
+        set { unavailable = newValue ? nil : .noRecognition }
+    }
+
+    func start(script: String, language: SpeechLanguageRequest) async -> SpeechStartResult {
         startCount += 1
-        guard isAvailable else { return nil }
+        requests.append(language)
+        if let unavailable { return .unavailable(unavailable) }
         let (transcripts, continuation) = AsyncStream.makeStream(of: String.self)
         self.continuation = continuation
-        return SpeechTranscription(audio: { _ in }, transcripts: transcripts)
+        let listening: CueLanguage? = switch language {
+        case .language(let language): language
+        case .detect(let text, _): LanguageDetector.language(in: text)
+        }
+        let route = SpeechRoute(engine: .transcriber, locale: listening?.speechLocale ?? Locale(identifier: "en-US"), language: listening)
+        return .listening(SpeechTranscription(audio: { _ in }, transcripts: transcripts), route)
     }
 
     func stop() {

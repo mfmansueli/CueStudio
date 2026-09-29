@@ -33,8 +33,13 @@ struct AppServices {
     let drafts: QuickEditDraftStoring
     let apps: ExternalAppService
     let remote: RemoteControlService
+    let languages: LanguageService
 
     init(options: LaunchOptions) {
+        languages = LanguageService(defaults: options.defaults, store: options.languageStore) { language in
+            InterfaceLocale.current = Locale(identifier: language.interfaceLocalization)
+            InterfaceDirection.apply(rightToLeft: language.isRightToLeft)
+        }
         library = ScriptLibraryService(repository: options.scriptRepository)
         takes = TakeLibraryService(repository: options.takeRepository)
         preferences = PreferencesService(defaults: options.defaults)
@@ -95,5 +100,6 @@ extension View {
             .environment(services.editing)
             .environment(services.apps)
             .environment(services.remote)
+            .environment(services.languages)
     }
 }

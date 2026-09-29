@@ -40,7 +40,7 @@ final class TakeEditService: TakeEditing {
         return Double(rate)
     }
 
-    func cleanUpSuggestions(forVideoAt url: URL, script: String) async throws -> [CleanUpSuggestion] {
+    func cleanUpSuggestions(forVideoAt url: URL, language: SpeechLanguageRequest) async throws -> [CleanUpSuggestion] {
         let audio: URL
         do {
             audio = try await audioFile(for: url)
@@ -51,14 +51,14 @@ final class TakeEditService: TakeEditing {
         let levels = try await Task.detached { try AudioLevelReader.levels(of: audio, interval: 0.05) }.value
         let silences = SilenceDetector.silences(levels: levels, interval: 0.05)
         // Without a speech model Clean Up still offers the pauses.
-        let heard = try? await transcript(of: audio, script: script)
+        let heard = try? await transcript(of: audio, language: language)
         return CleanUpAnalyzer.suggestions(silences: silences, transcript: heard)
     }
 
-    func captions(forVideoAt url: URL, script: String, duration: TimeInterval) async -> [CaptionCue] {
+    func captions(forVideoAt url: URL, script: String, language: SpeechLanguageRequest, duration: TimeInterval) async -> [CaptionCue] {
         guard !script.isEmpty else { return [] }
         if let audio = try? await audioFile(for: url),
-           let heard = try? await transcript(of: audio, script: script),
+           let heard = try? await transcript(of: audio, language: language, script: script),
            !heard.words.isEmpty {
             return CaptionBuilder.captions(heard: heard.words, script: script)
         }
@@ -114,10 +114,11 @@ final class TakeEditService: TakeEditing {
         return audio
     }
 
-    private func transcript(of audio: URL, script: String) async throws -> TakeTranscript? {
-        let key = TranscriptKey(audio: audio, script: script)
+    /// - Parameter script: what was read, so the words come back in the same letters (Hindi).
+    private func transcript(of audio: URL, language: SpeechLanguageRequest, script: String = "") async throws -> TakeTranscript? {
+        let key = TranscriptKey(audio: audio, language: language, script: script)
         if let cached = transcripts[key] { return cached }
-        guard let heard = try await CaptionTranscriber.transcript(in: audio, script: script) else { return nil }
+        guard let heard = try await CaptionTranscriber.transcript(in: audio, language: language, script: script) else { return nil }
         transcripts[key] = heard
         return heard
     }
@@ -134,9 +135,10 @@ final class TakeEditService: TakeEditing {
         }
     }
 
-    /// The script picks the language the take is heard in.
+    /// The language the take is heard in (the Voice Following language, or the script's).
     private struct TranscriptKey: Hashable {
         let audio: URL
+        let language: SpeechLanguageRequest
         let script: String
     }
 

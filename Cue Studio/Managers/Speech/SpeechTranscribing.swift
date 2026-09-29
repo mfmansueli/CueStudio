@@ -7,8 +7,8 @@ import Foundation
 
 /// On-device speech recognition for Voice follow. Tests drive it with a fake.
 protocol SpeechTranscribing: AnyObject {
-    /// Starts recognizing speech in the language `script` is written in. Nil when that can't
-    /// happen here (no model for the language, unsupported device) or `stop()` came first.
-    func start(script: String) async -> SpeechTranscription?
+    /// Starts recognizing speech in the requested language; `script` gives recognition hints
+    /// (names, numbers). Never listens in another language than the one requested.
+    func start(script: String, language: SpeechLanguageRequest) async -> SpeechStartResult
     func stop()
 }

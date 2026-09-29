@@ -57,8 +57,8 @@ struct EditorToolsPanel: View {
         Group {
             if tool == .translate {
                 Menu {
-                    ForEach(TranslationLanguage.allCases) { language in
-                        Button(language.label) { Task { await viewModel.run(.translate, language: language) } }
+                    ForEach(viewModel.translationLanguages) { language in
+                        Button(language.localizedName) { Task { await viewModel.run(.translate, language: language) } }
                     }
                 } label: {
                     toolLabel(tool.label, systemImage: "sparkles", isRunning: isRunning)

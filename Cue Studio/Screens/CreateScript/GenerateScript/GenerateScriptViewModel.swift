@@ -45,6 +45,11 @@ final class GenerateScriptViewModel {
     private let profile: CreatorProfileService
     private let rules: PlatformRulesService
     private let toast: ToastService
+    /// Language & Region's script language; nil is Auto-detect.
+    private let scriptLanguage: CueLanguage?
+    /// What the interface is in: theme ideas are shown in it, and a draft with nothing else to go
+    /// by is written in it.
+    private let interfaceLanguage: CueLanguage?
 
     init(
         initialTab: GenerateTab = .prompt,
@@ -52,9 +57,13 @@ final class GenerateScriptViewModel {
         library: ScriptLibraryService,
         profile: CreatorProfileService,
         rules: PlatformRulesService,
-        toast: ToastService
+        toast: ToastService,
+        scriptLanguage: CueLanguage? = nil,
+        interfaceLanguage: CueLanguage? = nil
     ) {
         tab = initialTab
+        self.scriptLanguage = scriptLanguage
+        self.interfaceLanguage = interfaceLanguage
         self.writer = writer
         self.library = library
         self.profile = profile
@@ -118,11 +127,13 @@ final class GenerateScriptViewModel {
             platform: platform,
             tone: nil,
             voice: writesInMyVoice ? profile.profile.voice : nil,
-            targetRange: effectiveLength.targetRange(ideal: preset.idealRange)
+            targetRange: effectiveLength.targetRange(ideal: preset.idealRange),
+            language: writingLanguage(for: text)
         )
         guard let generated = await run(request) else { return nil }
         let script = library.create(
-            title: generated.title, text: generated.text, platform: platform, factCheck: generated.needsFactCheck
+            title: generated.title, text: generated.text, platform: platform, factCheck: generated.needsFactCheck,
+            language: scriptLanguage
         )
         toast.show(generated.needsFactCheck
             ? String(localized: "Draft ready — check facts before recording")
@@ -144,7 +155,7 @@ final class GenerateScriptViewModel {
         if availability.isAvailable {
             isLoadingThemes = true
             defer { isLoadingThemes = false }
-            if let ideas = try? await writer.themeIdeas(for: profile.profile.niches), !ideas.isEmpty {
+            if let ideas = try? await writer.themeIdeas(for: profile.profile.niches, language: interfaceLanguage), !ideas.isEmpty {
                 themes = Array(ideas.prefix(ThemeCatalog.pageSize))
                 toast.show(String(localized: "New ideas for your niche"))
                 return
@@ -178,15 +189,28 @@ final class GenerateScriptViewModel {
             platform: platform,
             tone: tone,
             voice: writesInMyVoice && !type.structure.isSerious ? profile.profile.voice : nil,
-            targetRange: preset.idealRange
+            targetRange: preset.idealRange,
+            language: writingLanguage(for: brief.values.joined(separator: " "))
         )
         guard let generated = await run(request) else { return nil }
-        let script = library.create(title: generated.title, text: generated.text, platform: platform, type: type)
+        let script = library.create(title: generated.title, text: generated.text, platform: platform, type: type, language: scriptLanguage)
         toast.show(String(localized: "Draft ready — structured as \(type.structure.blocks.count) blocks"))
         return script
     }
 
     // MARK: - Private
+
+    /// The script language when one is set; otherwise the language the creator typed in; otherwise
+    /// the interface's (a brief left on its examples is in it).
+    private func writingLanguage(for typed: String) -> CueLanguage? {
+        if let scriptLanguage { return scriptLanguage }
+        let typed = typed.trimmingCharacters(in: .whitespacesAndNewlines)
+        if typed.split(whereSeparator: \.isWhitespace).count >= 3 || WordSegmenter.containsUnspacedScript(typed),
+           let detected = LanguageDetector.language(in: typed) {
+            return detected
+        }
+        return interfaceLanguage
+    }
 
     private func run(_ request: ScriptRequest) async -> GeneratedScript? {
         isGenerating = true

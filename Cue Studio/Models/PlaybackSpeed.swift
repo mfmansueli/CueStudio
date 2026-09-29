@@ -18,7 +18,7 @@ nonisolated enum PlaybackSpeed: Double, CaseIterable, Identifiable, Sendable {
 
     /// "1.25×"
     var label: String {
-        rawValue.formatted(.number.precision(.fractionLength(0...2))) + "×"
+        rawValue.formatted(.number.precision(.fractionLength(0...2)).locale(.interface)) + "×"
     }
 
     /// The preset closest to `rate`.

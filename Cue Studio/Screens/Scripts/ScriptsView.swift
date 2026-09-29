@@ -15,6 +15,7 @@ struct ScriptsView: View {
     @Environment(PresentationService.self) private var presentation
     @Environment(PreferencesService.self) private var preferences
     @Environment(CreatorProfileService.self) private var profile
+    @Environment(LanguageService.self) private var languages
 
     init(library: ScriptLibraryService, toast: ToastService) {
         _viewModel = State(initialValue: ScriptsViewModel(library: library, toast: toast))
@@ -250,7 +251,8 @@ struct ScriptsView: View {
             duplicate: { viewModel.duplicate($0) },
             move: { viewModel.move([$0.id], to: $1) },
             moveToNewFolder: { viewModel.startNewFolder(moving: [$0.id]) },
-            delete: { viewModel.delete($0) }
+            delete: { viewModel.delete($0) },
+            setLanguage: { library.setLanguage($1, of: $0.id) }
         )
     }
 
@@ -259,7 +261,7 @@ struct ScriptsView: View {
     }
 
     private func newBlankScript() {
-        let script = library.create(title: "", text: "", platform: profile.profile.defaultPlatform)
+        let script = library.create(title: "", text: "", platform: profile.profile.defaultPlatform, language: languages.scriptLanguage)
         presentation.openScript(script.id, editing: true)
     }
 }

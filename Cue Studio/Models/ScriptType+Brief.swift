@@ -96,97 +96,102 @@ nonisolated extension ScriptType {
         return resolved
     }
 
-    func draftTitle(from values: [String: String]) -> String {
+    /// The draft's title, in the language the draft is written in (nil: the interface's).
+    func draftTitle(from values: [String: String], language: CueLanguage? = nil) -> String {
         let f = resolvedBrief(values)
         let v = { (key: String) in f[key] ?? "" }
         switch self {
         case .ad:
             let brand = v("brand").split(whereSeparator: { "—,.".contains($0) }).first.map(String.init) ?? v("brand")
-            return String(localized: "\(brand.trimmingCharacters(in: .whitespaces)) — sponsored")
+            return String(localized: "\(brand.trimmingCharacters(in: .whitespaces)) — sponsored", writtenIn: language)
         case .review:
-            return String(localized: "\(v("product")) — honest review")
+            return String(localized: "\(v("product")) — honest review", writtenIn: language)
         case .tutorial:
             return v("topic")
         case .list:
             let count = Self.commaList(v("items")).count
-            return String(localized: "\(count) \(v("topic").lowercased()) that work")
+            return String(localized: "\(count) \(v("topic").lowercased()) that work", writtenIn: language)
         case .story:
             let setup = v("setup").components(separatedBy: " — ").first ?? v("setup")
-            return String(localized: "Storytime: \(setup.lowercased())")
+            return String(localized: "Storytime: \(setup.lowercased())", writtenIn: language)
         case .opinion:
-            return String(localized: "Hot take: \(v("take").lowercased())")
+            return String(localized: "Hot take: \(v("take").lowercased())", writtenIn: language)
         case .launch:
-            return String(localized: "\(v("news")) — announcement")
+            return String(localized: "\(v("news")) — announcement", writtenIn: language)
         case .apology:
-            return String(localized: "A note about \(v("what").lowercased())")
+            return String(localized: "A note about \(v("what").lowercased())", writtenIn: language)
         }
     }
 
-    /// A structured first draft built only from the brief. Paragraphs are separated by blank lines.
-    func draft(from values: [String: String]) -> String {
+    /// A structured first draft built only from the brief, written in `language` (nil: the
+    /// interface's), cues included. Paragraphs are separated by blank lines.
+    func draft(from values: [String: String], language: CueLanguage? = nil) -> String {
         let f = resolvedBrief(values)
         let v = { (key: String) in f[key] ?? "" }
         let lc = { (key: String) in Self.lowercasedFirst(v(key)) }
+        let say = { (text: String.LocalizationValue) in
+            String(localized: text, writtenIn: language, comment: "A line of a script draft built from a brief. Words in [brackets] are stage cues: translate them too.")
+        }
         let paragraphs: [String]
         switch self {
         case .ad:
             paragraphs = [
-                "Okay, I have to tell you about \(v("brand")). [pause]",
-                "If you've ever dealt with \(lc("pain")), you know the struggle.",
-                "This fixes it. \(v("benefit")). [show product]",
-                "Watch this — \(lc("proof")). [demo]",
-                "\(v("offer")) — link in my bio. [look at camera] This video is a paid partnership.",
+                say("Okay, I have to tell you about \(v("brand")). [pause]"),
+                say("If you've ever dealt with \(lc("pain")), you know the struggle."),
+                say("This fixes it. \(v("benefit")). [show product]"),
+                say("Watch this — \(lc("proof")). [demo]"),
+                say("\(v("offer")) — link in my bio. [look at camera] This video is a paid partnership."),
             ]
         case .review:
             paragraphs = [
-                "I've been testing the \(v("product")). Here's my honest review. [pause]",
-                "First impression: \(lc("first")).",
-                "What I love: \(lc("pro")). What I don't: \(lc("con")).",
-                "Verdict? \(v("verdict")). [look at camera]",
+                say("I've been testing the \(v("product")). Here's my honest review. [pause]"),
+                say("First impression: \(lc("first"))."),
+                say("What I love: \(lc("pro")). What I don't: \(lc("con"))."),
+                say("Verdict? \(v("verdict")). [look at camera]"),
             ]
         case .tutorial:
             let steps = Self.commaList(v("steps")).enumerated().map { index, step in
-                "Step \(Self.numberWord(index + 1)): \(Self.lowercasedFirst(step))."
+                say("Step \(Self.numberWord(index + 1, language: language)): \(Self.lowercasedFirst(step)).")
             }
-            paragraphs = ["Here's how I do \(lc("topic")) — start to finish. [pause]", "By the end you'll have \(lc("result"))."]
+            paragraphs = [say("Here's how I do \(lc("topic")) — start to finish. [pause]"), say("By the end you'll have \(lc("result")).")]
                 + steps
-                + ["Save this so you have it when you need it. [smile]"]
+                + [say("Save this so you have it when you need it. [smile]")]
         case .list:
             let items = Self.commaList(v("items"))
             let points = items.enumerated().map { index, item in
-                "Number \(Self.numberWord(index + 1)): \(Self.lowercasedFirst(item))."
+                say("Number \(Self.numberWord(index + 1, language: language)): \(Self.lowercasedFirst(item)).")
             }
-            paragraphs = ["\(items.count) \(lc("topic")) that actually changed my life. [pause]"]
+            paragraphs = [say("\(items.count) \(lc("topic")) that actually changed my life. [pause]")]
                 + points
-                + ["Which one are you trying first? Tell me in the comments."]
+                + [say("Which one are you trying first? Tell me in the comments.")]
         case .story:
             paragraphs = [
-                "Okay, story time. [pause]",
+                say("Okay, story time. [pause]"),
                 "\(v("setup")).",
-                "And then — \(lc("twist")). [beat]",
-                "\(v("payoff")). [smile]",
+                say("And then — \(lc("twist")). [beat]"),
+                say("\(v("payoff")). [smile]"),
             ]
         case .opinion:
             paragraphs = [
-                "Unpopular opinion: \(lc("take")). [pause]",
-                "Hear me out.",
+                say("Unpopular opinion: \(lc("take")). [pause]"),
+                say("Hear me out."),
                 "\(v("why")).",
-                "\(v("ask"))? [look at camera]".replacingOccurrences(of: "??", with: "?"),
+                say("\(v("ask"))? [look at camera]").replacingOccurrences(of: "??", with: "?"),
             ]
         case .launch:
             paragraphs = [
-                "I've been keeping a secret. [pause]",
+                say("I've been keeping a secret. [pause]"),
                 "\(v("news")) — \(lc("when")).",
                 "\(v("details")).",
-                "\(v("cta")). [smile]",
+                say("\(v("cta")). [smile]"),
             ]
         case .apology:
             paragraphs = [
-                "I want to talk about \(lc("what")). [pause]",
-                "\(v("impact")), and that matters to me.",
-                "\(v("own")). That's on me. [pause]",
+                say("I want to talk about \(lc("what")). [pause]"),
+                say("\(v("impact")), and that matters to me."),
+                say("\(v("own")). That's on me. [pause]"),
                 "\(v("change")).",
-                "Thank you for holding me to a higher standard.",
+                say("Thank you for holding me to a higher standard."),
             ]
         }
         return paragraphs.joined(separator: "\n\n")
@@ -210,8 +215,13 @@ nonisolated extension ScriptType {
         return first.lowercased() + text.dropFirst()
     }
 
-    static func numberWord(_ value: Int) -> String {
-        let words = ["one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten"]
-        return value >= 1 && value <= words.count ? words[value - 1] : String(value)
+    /// "one", "dois", "trois": a step number as it's said aloud, in the draft's language (nil:
+    /// the interface's). Past ten, the numeral.
+    static func numberWord(_ value: Int, language: CueLanguage? = nil) -> String {
+        guard (1...10).contains(value) else { return String(value) }
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .spellOut
+        formatter.locale = language.map { Locale(identifier: $0.interfaceLocalization) } ?? InterfaceLocale.current ?? Locale(identifier: "en")
+        return formatter.string(from: NSNumber(value: value)) ?? String(value)
     }
 }

@@ -43,7 +43,7 @@ extension QuickEditViewModel {
     /// "Total: 2.8s"
     var pausesTotalLabel: String {
         let total = shownPauses.reduce(0) { $0 + $1.span.duration }
-        return String(localized: "Total: \(total.formatted(.number.precision(.fractionLength(1))))s")
+        return String(localized: "Total: \(total.formatted(.number.precision(.fractionLength(1)).locale(.interface)))s")
     }
 
     /// Plays the edit from the start without the pauses. Nothing is kept until Apply.
@@ -106,7 +106,7 @@ extension QuickEditViewModel {
     }
 
     private func removedPausesMessage(count: Int, total: TimeInterval) -> String {
-        let seconds = total.formatted(.number.precision(.fractionLength(1)))
+        let seconds = total.formatted(.number.precision(.fractionLength(1)).locale(.interface))
         return count == 1
             ? String(localized: "Removed 1 pause · \(seconds)s")
             : String(localized: "Removed \(count) pauses · \(seconds)s")

@@ -74,6 +74,17 @@ final class ScriptDetailViewModel {
 
     var structure: ScriptStructure { script?.structure ?? .generic }
 
+    /// What the Translate tool offers: every language but the one the script is written in.
+    var translationLanguages: [CueLanguage] {
+        let current = script?.language ?? LanguageDetector.language(in: workingText)
+        return CueLanguage.allCases.filter { $0 != current }
+    }
+
+    /// The script's language (Auto-detect when nil). Never translates the text.
+    func setLanguage(_ language: CueLanguage?) {
+        library.setLanguage(language, of: scriptID)
+    }
+
     var preset: PlatformPreset {
         rules.preset(for: script?.platform ?? .tiktok, monetizationGoals: profile.profile.monetizationGoals)
     }
@@ -235,7 +246,7 @@ final class ScriptDetailViewModel {
 
     // MARK: - Tools
 
-    func run(_ tool: ScriptTool, language: TranslationLanguage? = nil) async {
+    func run(_ tool: ScriptTool, language: CueLanguage? = nil) async {
         guard runningTool == nil else { return }
         switch tool {
         case .newHooks:
@@ -246,7 +257,7 @@ final class ScriptDetailViewModel {
                 return
             }
             undoText = draftText
-            draftText = ScriptTextEditing.addingDisclosure(to: draftText)
+            draftText = ScriptTextEditing.addingDisclosure(to: draftText, language: script?.language)
             toast.show(String(localized: "Disclosure added up front"))
         case .translate:
             await translate(into: language ?? .spanish)
@@ -281,7 +292,7 @@ final class ScriptDetailViewModel {
         }
     }
 
-    private func translate(into language: TranslationLanguage) async {
+    private func translate(into language: CueLanguage) async {
         guard let script else { return }
         guard writer.isLanguageModelAvailable else {
             toast.show(writer.unavailableReason ?? String(localized: "AI tools aren't available right now."))
@@ -291,13 +302,15 @@ final class ScriptDetailViewModel {
         defer { runningTool = nil }
         do {
             var context = rewriteContext
-            context.language = language.promptName
+            context.language = language
             let translated = try await writer.rewrite(workingText, with: .translate, context: context)
+            // A translation is a new script in the new language; the original stays as written.
             library.create(
-                title: String(localized: "\(script.displayTitle) (\(language.label))"),
-                text: translated, platform: script.platform, type: script.type, folder: script.folder
+                title: String(localized: "\(script.displayTitle) (\(language.localizedName))"),
+                text: translated, platform: script.platform, type: script.type, folder: script.folder,
+                language: language
             )
-            toast.show(String(localized: "\(language.label) version saved as a copy"))
+            toast.show(String(localized: "\(language.localizedName) version saved as a copy"))
         } catch {
             toast.show(error.localizedDescription)
         }
@@ -322,7 +335,8 @@ final class ScriptDetailViewModel {
             let text = try await writer.rewrite(script.text, with: .fitToTime, context: context)
             library.create(
                 title: String(localized: "\(script.displayTitle) (\(platform.label))"),
-                text: text, platform: platform, type: script.type, folder: script.folder
+                text: text, platform: platform, type: script.type, folder: script.folder,
+                language: script.language
             )
             toast.show(String(localized: "\(platform.label) version saved as a copy"))
         } catch {

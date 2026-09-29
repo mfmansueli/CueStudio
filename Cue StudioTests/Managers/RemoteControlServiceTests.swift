@@ -3,6 +3,7 @@
 //  Cue StudioTests
 //
 
+import Foundation
 import Testing
 @testable import Cue_Studio
 

@@ -22,7 +22,8 @@ protocol ScriptWriting: AnyObject {
     func hooks(for text: String, context: RewriteContext) async throws -> [String]
 
     /// Fresh video ideas for the creator's niches.
-    func themeIdeas(for niches: [Niche]) async throws -> [ThemeIdea]
+    /// Ideas written in `language` (the interface's, where they are shown), or the model's choice.
+    func themeIdeas(for niches: [Niche], language: CueLanguage?) async throws -> [ThemeIdea]
 }
 
 extension ScriptWriting {

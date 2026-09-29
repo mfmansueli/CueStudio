@@ -50,6 +50,8 @@ struct SetupRecommendationCard: View {
         .padding(16)
         .glassEffect(.regular, in: RoundedRectangle(cornerRadius: Metrics.cardRadius, style: .continuous))
         .shadow(color: .black.opacity(0.5), radius: 25, y: 20)
+        // A container of its own, so the card's identifier doesn't replace the buttons'.
+        .accessibilityElement(children: .contain)
         .accessibilityIdentifier("prompter.recommendationCard")
     }
 

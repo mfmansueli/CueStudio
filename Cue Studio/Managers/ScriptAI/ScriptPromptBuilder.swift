@@ -29,7 +29,16 @@ nonisolated enum ScriptPromptBuilder {
         if let voice = request.voice, !structure.isSerious {
             lines += voiceLines(voice)
         }
+        if let language = request.language {
+            lines.append(languageRule(language))
+        }
         return lines.joined(separator: "\n")
+    }
+
+    /// Which language to write in, named in English so the rule reads the same whatever the
+    /// interface language is.
+    static func languageRule(_ language: CueLanguage) -> String {
+        "Write the title and every block in \(language.englishName)."
     }
 
     static func prompt(for request: ScriptRequest) -> String {
@@ -105,16 +114,21 @@ nonisolated enum ScriptPromptBuilder {
     static func hooksPrompt(for text: String, context: RewriteContext) -> String {
         """
         Write three new opening lines for this \(context.structure.label.lowercased()) script for \(context.platform.destinationName). \
-        Each must grab attention in about three seconds and lead into the rest of the script.
+        Each must grab attention in about three seconds and lead into the rest of the script. \
+        Write them in the language the script is written in.
 
         Script:
         \(text)
         """
     }
 
-    static func themesPrompt(for niches: [Niche]) -> String {
+    static func themesPrompt(for niches: [Niche], language: CueLanguage? = nil) -> String {
         let names = (niches.isEmpty ? [Niche.lifestyle] : niches).map(\.label).joined(separator: ", ")
-        return "Suggest six fresh talking-head video ideas for a creator whose niche is: \(names). Mix the niches and the kinds of video. Use each niche name exactly as written."
+        var prompt = "Suggest six fresh talking-head video ideas for a creator whose niche is: \(names). Mix the niches and the kinds of video. Use each niche name exactly as written."
+        if let language {
+            prompt += " Write the ideas in \(language.englishName)."
+        }
+        return prompt
     }
 
     // MARK: - Rewrites
@@ -125,6 +139,7 @@ nonisolated enum ScriptPromptBuilder {
             "Keep the creator's voice and first person. Keep existing stage cues in square brackets unless the edit requires removing them.",
             "Return only the full edited script: no explanations, no headings, no markdown, no quotes around it.",
             "Separate paragraphs with a blank line.",
+            "Keep the script in the language it is written in, unless you are asked to translate it.",
         ]
         if let voice {
             lines += voiceLines(voice)
@@ -147,7 +162,7 @@ nonisolated enum ScriptPromptBuilder {
         case .fixGrammar:
             return "Fix grammar, spelling and punctuation only. Do not change the wording otherwise."
         case .translate:
-            return "Translate the script into \(context.language ?? "Spanish"), keeping the tone. Translate the stage cues too."
+            return "Translate the script into \((context.language ?? .spanish).englishName), keeping the tone. Translate the stage cues too."
         case .strongerCTA:
             return "Rewrite only the closing paragraph as a clearer, more direct call to action. Do not invent deadlines, discounts or facts that are not in the script."
         case .moreHuman:

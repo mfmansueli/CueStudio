@@ -15,8 +15,14 @@ nonisolated enum ReadTime {
     /// Default prompter speed: 0.7× ≈ 150 words a minute.
     static let naturalSpeed: Double = 0.7
 
+    /// Words separated by spaces. Scripts in languages written without spaces (Japanese, Chinese,
+    /// Thai) count dictionary words instead, which read at about the same pace.
     static func wordCount(in text: String) -> Int {
-        CueParser.stripCues(text)
+        let spoken = CueParser.stripCues(text)
+        if WordSegmenter.containsUnspacedScript(spoken) {
+            return WordSegmenter.wordCount(in: spoken)
+        }
+        return spoken
             .split(whereSeparator: { $0.isWhitespace || $0.isNewline })
             .count
     }

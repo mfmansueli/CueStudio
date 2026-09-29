@@ -62,7 +62,11 @@ final class ScriptAIService: ScriptWriting {
             guard case .format(let type, let brief) = request.source else {
                 throw ScriptAIError.modelUnavailable(unavailableReason)
             }
-            return GeneratedScript(title: type.draftTitle(from: brief), text: structuredDraft(type: type, brief: brief, voice: request.voice), usedLanguageModel: false)
+            return GeneratedScript(
+                title: type.draftTitle(from: brief, language: request.language),
+                text: structuredDraft(type: type, brief: brief, voice: request.voice, language: request.language),
+                usedLanguageModel: false
+            )
         }
         return try await withFallback(from: route) { model in
             try await self.draft(request, on: model)
@@ -75,7 +79,7 @@ final class ScriptAIService: ScriptWriting {
         let text = ScriptPromptBuilder.clean(draft.scriptText)
         guard !text.isEmpty else { throw ScriptAIError.emptyResponse }
         let title: String = switch request.source {
-        case .format(let type, let brief): type.draftTitle(from: brief)
+        case .format(let type, let brief): type.draftTitle(from: brief, language: request.language)
         case .prompt: ScriptPromptBuilder.cleanTitle(draft.title)
         }
         return GeneratedScript(
@@ -88,8 +92,8 @@ final class ScriptAIService: ScriptWriting {
     }
 
     /// The brief turned into the format's structure, with the creator's first catchphrase up front.
-    private func structuredDraft(type: ScriptType, brief: [String: String], voice: CreatorVoice?) -> String {
-        let draft = type.draft(from: brief)
+    private func structuredDraft(type: ScriptType, brief: [String: String], voice: CreatorVoice?, language: CueLanguage?) -> String {
+        let draft = type.draft(from: brief, language: language)
         guard let phrase = voice?.phrases.first, !type.structure.isSerious else { return draft }
         return "\(phrase) — \(ScriptType.lowercasedFirst(draft))"
     }
@@ -123,14 +127,14 @@ final class ScriptAIService: ScriptWriting {
         }
     }
 
-    func themeIdeas(for niches: [Niche]) async throws -> [ThemeIdea] {
+    func themeIdeas(for niches: [Niche], language: CueLanguage?) async throws -> [ThemeIdea] {
         guard let route = route(for: .themes) else {
             throw ScriptAIError.modelUnavailable(unavailableReason)
         }
         let known = niches.isEmpty ? [Niche.lifestyle] : niches
         return try await withFallback(from: route) { model in
             let session = self.session(on: model, instructions: "You suggest video ideas for creators who film themselves talking to camera.")
-            let suggestions = try await session.respond(to: ScriptPromptBuilder.themesPrompt(for: known), generating: ThemeSuggestions.self).content
+            let suggestions = try await session.respond(to: ScriptPromptBuilder.themesPrompt(for: known, language: language), generating: ThemeSuggestions.self).content
             let ideas = suggestions.ideas.compactMap { idea -> ThemeIdea? in
                 let title = ScriptPromptBuilder.cleanTitle(idea.title)
                 guard !title.isEmpty else { return nil }

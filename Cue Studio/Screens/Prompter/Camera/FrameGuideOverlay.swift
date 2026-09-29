@@ -12,6 +12,11 @@ struct FrameGuideOverlay: View {
     let frame: CGRect
 
     var body: some View {
+        drawing.keepsLeftToRight()
+    }
+
+    @ViewBuilder
+    private var drawing: some View {
         Canvas { context, size in
             var outside = Path(CGRect(origin: .zero, size: size))
             outside.addRect(frame)

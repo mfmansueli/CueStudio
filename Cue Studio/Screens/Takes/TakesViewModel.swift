@@ -51,11 +51,11 @@ final class TakesViewModel {
 
     /// "Today · 9:12 AM", "Sep 18 · 4:10 PM"
     func whenLabel(for take: Take) -> String {
-        let time = take.recordedAt.formatted(date: .omitted, time: .shortened)
+        let time = take.recordedAt.formatted(Date.FormatStyle(date: .omitted, time: .shortened, locale: .interface))
         switch TakeDay(date: take.recordedAt, now: now(), calendar: .current) {
         case .today: return String(localized: "Today · \(time)")
         case .yesterday: return String(localized: "Yesterday · \(time)")
-        case .earlier: return take.recordedAt.formatted(.dateTime.month(.abbreviated).day()) + " · " + time
+        case .earlier: return take.recordedAt.formatted(.dateTime.month(.abbreviated).day().locale(.interface)) + " · " + time
         }
     }
 

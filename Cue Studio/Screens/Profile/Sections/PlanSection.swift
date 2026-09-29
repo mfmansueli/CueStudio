@@ -85,7 +85,7 @@ struct PlanSection: View {
     private var planLine: String {
         guard let plan = store.activePlan else { return String(localized: "Active") }
         if let renewal = store.renewalDate {
-            return String(localized: "\(plan.label) · renews \(renewal.formatted(date: .abbreviated, time: .omitted))")
+            return String(localized: "\(plan.label) · renews \(renewal.formatted(Date.FormatStyle(date: .abbreviated, time: .omitted, locale: .interface)))")
         }
         return plan.label
     }

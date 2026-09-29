@@ -36,7 +36,7 @@ struct EmptyLibraryView: View {
                         HStack(spacing: 10) {
                             Circle().fill(Palette.record).frame(width: 12, height: 12)
                             Text("Record without a script")
-                            Image(systemName: "chevron.right").font(.footnote.weight(.bold))
+                            Image(systemName: "chevron.forward").font(.footnote.weight(.bold))
                         }
                     }
                     .buttonStyle(.cueOutline(.large))
@@ -69,7 +69,7 @@ struct EmptyLibraryView: View {
                     Text(detail).font(.footnote).foregroundStyle(Palette.ink2)
                 }
                 Spacer()
-                Image(systemName: "chevron.right")
+                Image(systemName: "chevron.forward")
                     .font(.footnote.weight(.semibold))
                     .foregroundStyle(Palette.ink3)
             }

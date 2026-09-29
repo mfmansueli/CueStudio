@@ -21,7 +21,9 @@ struct SpeedSlider: View {
                     .kerning(0.6)
                     .foregroundStyle(Palette.ink2)
             }
-            .frame(width: 36, alignment: .leading)
+            // Wider when "SPEED" is a longer word; the slider gives up the room.
+            .fixedSize()
+            .frame(minWidth: 36, alignment: .leading)
             .accessibilityHidden(true)
             Slider(value: Binding(get: { speed }, set: onChange), in: PrompterSettings.speedRange, step: 0.1)
                 .tint(Palette.acc)

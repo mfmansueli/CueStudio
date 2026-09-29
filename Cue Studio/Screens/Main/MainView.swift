@@ -16,6 +16,7 @@ struct MainView: View {
     @Environment(CreatorProfileService.self) private var profile
     @Environment(DocumentImportService.self) private var importer
     @Environment(ToastService.self) private var toast
+    @Environment(LanguageService.self) private var languages
 
     var body: some View {
         @Bindable var presentation = presentation
@@ -32,7 +33,14 @@ struct MainView: View {
                 NavigationStack { TakesView(services: services) }
             }
             Tab("Profile", systemImage: "person.crop.circle", value: AppTab.profile) {
-                NavigationStack { ProfileView() }
+                NavigationStack(path: $presentation.profilePath) {
+                    ProfileView()
+                        .navigationDestination(for: ProfileRoute.self) { route in
+                            switch route {
+                            case .languageRegion: LanguageRegionView()
+                            }
+                        }
+                }
             }
             // Not a destination: selecting it opens "Start recording".
             Tab(value: AppTab.record) {
@@ -91,7 +99,10 @@ struct MainView: View {
         case .importScript:
             ImportScriptSheet(
                 onImported: { document in
-                    let script = library.create(title: document.title, text: document.text, platform: profile.profile.defaultPlatform)
+                    let script = library.create(
+                        title: document.title, text: document.text, platform: profile.profile.defaultPlatform,
+                        language: languages.scriptLanguage
+                    )
                     presentation.openScript(script.id, editing: true)
                     toast.show(String(localized: "Imported \(document.kind.lowercased()) · \(document.wordCount) words"))
                 },
@@ -105,7 +116,7 @@ struct MainView: View {
     }
 
     private func writeNewScript() {
-        let script = library.create(title: "", text: "", platform: profile.profile.defaultPlatform)
+        let script = library.create(title: "", text: "", platform: profile.profile.defaultPlatform, language: languages.scriptLanguage)
         presentation.openScript(script.id, editing: true)
     }
 
@@ -117,7 +128,8 @@ struct MainView: View {
         let script = library.create(
             title: ScriptTextNormalizer.suggestedTitle(fileName: nil, text: text),
             text: text,
-            platform: profile.profile.defaultPlatform
+            platform: profile.profile.defaultPlatform,
+            language: languages.scriptLanguage
         )
         presentation.openScript(script.id, editing: true)
         toast.show(String(localized: "Pasted · \(ReadTime.wordCount(in: text)) words"))

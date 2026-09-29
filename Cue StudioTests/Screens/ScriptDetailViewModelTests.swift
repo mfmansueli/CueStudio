@@ -116,7 +116,7 @@ struct ScriptDetailViewModelTests {
         let scenario = makeScenario(script: script, startsEditing: true)
         defer { scenario.defaults.tearDown() }
         await scenario.viewModel.run(.addDisclosure)
-        #expect(scenario.viewModel.draftText.hasPrefix(ScriptTextEditing.disclosureLine))
+        #expect(scenario.viewModel.draftText.hasPrefix("[paid partnership] "))
         scenario.viewModel.undoRewrite()
         #expect(scenario.viewModel.draftText == "Buy this.")
     }
@@ -196,7 +196,7 @@ struct ScriptDetailViewModelTests {
         let copy = scenario.library.scripts.first { $0.id != script.id }
         #expect(copy?.title == "Habits (Spanish)")
         #expect(copy?.text == "Hola.")
-        #expect(scenario.writer.lastRewrite?.context.language == "Spanish")
+        #expect(scenario.writer.lastRewrite?.context.language == .spanish)
     }
 
     // MARK: - Everything is free

@@ -35,7 +35,7 @@ struct TakeVideoRow: View {
                 chips
             }
             .frame(maxWidth: .infinity, alignment: .leading)
-            Image(systemName: "chevron.right")
+            Image(systemName: "chevron.forward")
                 .font(.footnote.weight(.semibold))
                 .foregroundStyle(Palette.ink3)
         }

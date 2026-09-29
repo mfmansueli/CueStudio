@@ -31,6 +31,7 @@ struct TakeReviewView: View {
         onSelect: @escaping (Take) -> Void, onDeleted: @escaping (Take?) -> Void
     ) {
         let store = services.store
+        let languages = services.languages
         _viewModel = State(initialValue: TakeReviewViewModel(
             takeID: takeID,
             takes: services.takes,
@@ -44,7 +45,8 @@ struct TakeReviewView: View {
             rules: services.rules,
             profile: services.profile,
             preferences: services.preferences,
-            toast: services.toast
+            toast: services.toast,
+            speechLanguage: { languages.speechRequest(for: $0) }
         ))
         self.services = services
         self.onRetake = onRetake

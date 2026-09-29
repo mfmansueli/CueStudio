@@ -48,6 +48,7 @@ struct PrompterViewModelSetupTests {
             launch: PrompterLaunch(scriptID: script?.id, mode: mode),
             library: library, takes: takes, preferences: preferences, profile: profile, rules: TestData.rulesService(),
             camera: camera, audio: FakeAudioMeter(), microphones: microphones, speech: FakeSpeechTranscriber(),
+            languages: TestData.languages(defaults: defaults.defaults),
             remote: remote, toast: toast
         )
         return Scenario(

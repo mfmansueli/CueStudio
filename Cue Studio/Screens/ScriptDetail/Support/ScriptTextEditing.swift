@@ -7,7 +7,14 @@ import Foundation
 
 /// Plain text edits the editor offers without AI.
 nonisolated enum ScriptTextEditing {
-    static let disclosureLine = "[paid partnership] Quick heads-up: this video is sponsored."
+    /// The disclosure a sponsored script opens with, said in the script's language (the
+    /// interface's when it can't be told). The cue stays as is: cues are Cue's markup.
+    static func disclosureLine(in language: CueLanguage?) -> String {
+        "[paid partnership] " + String(
+            localized: "Quick heads-up: this video is sponsored.", writtenIn: language,
+            comment: "Written into a sponsored script, in the script's language, after the [paid partnership] cue."
+        )
+    }
 
     /// The first non-empty paragraph (the hook).
     static func opening(of text: String) -> String {
@@ -28,11 +35,13 @@ nonisolated enum ScriptTextEditing {
         opening(of: text).range(of: "paid partnership", options: .caseInsensitive) != nil
     }
 
-    /// Puts a sponsorship disclosure up front, where platforms and regulators expect it.
-    static func addingDisclosure(to text: String) -> String {
+    /// Puts a sponsorship disclosure up front, where platforms and regulators expect it, in the
+    /// script's language (`language`, else read from the text).
+    static func addingDisclosure(to text: String, language: CueLanguage? = nil) -> String {
         guard !hasDisclosure(text) else { return text }
+        let line = disclosureLine(in: language ?? LanguageDetector.language(in: text))
         let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
-        return trimmed.isEmpty ? disclosureLine : disclosureLine + "\n\n" + text
+        return trimmed.isEmpty ? line : line + "\n\n" + text
     }
 
     /// Three hook ideas starting at `rotation`, so "More options" walks through the list.

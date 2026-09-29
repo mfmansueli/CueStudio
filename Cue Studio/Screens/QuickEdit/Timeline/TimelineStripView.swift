@@ -84,6 +84,11 @@ struct TimelineStripView: View {
     }
 
     var body: some View {
+        drawing.keepsLeftToRight()
+    }
+
+    @ViewBuilder
+    private var drawing: some View {
         GeometryReader { proxy in
             let layout = makeLayout(width: proxy.size.width)
             let handles = (start: layout.startHandleX, end: layout.endHandleX)

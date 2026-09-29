@@ -48,12 +48,12 @@ final class ScriptLibraryService {
     @discardableResult
     func create(
         title: String, text: String, platform: Platform, type: ScriptType? = nil, folder: String? = nil,
-        factCheck: Bool = false
+        factCheck: Bool = false, language: CueLanguage? = nil
     ) -> Script {
         let date = now()
         let script = Script(
             title: title, text: text, platform: platform, type: type,
-            folder: folder, createdAt: date, updatedAt: date, factCheck: factCheck
+            folder: folder, createdAt: date, updatedAt: date, factCheck: factCheck, language: language
         )
         scripts.insert(script, at: 0)
         persist()
@@ -76,6 +76,14 @@ final class ScriptLibraryService {
     func markFactChecked(_ id: UUID) {
         guard let index = scripts.firstIndex(where: { $0.id == id }), scripts[index].factCheck else { return }
         scripts[index].factCheck = false
+        persist()
+    }
+
+    /// The language the script is written in (nil: auto-detect). Not an edit: the text, version
+    /// and order stay as they are.
+    func setLanguage(_ language: CueLanguage?, of id: UUID) {
+        guard let index = scripts.firstIndex(where: { $0.id == id }), scripts[index].language != language else { return }
+        scripts[index].language = language
         persist()
     }
 

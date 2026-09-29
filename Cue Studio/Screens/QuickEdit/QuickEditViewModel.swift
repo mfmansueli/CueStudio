@@ -114,6 +114,8 @@ final class QuickEditViewModel {
     let recorder: VoiceOverRecording
     private let takes: TakeLibraryService
     private let drafts: QuickEditDraftStoring
+    /// What a script is heard in (`LanguageService.speechRequest(for:)`).
+    private let speechLanguageFor: (Script?) -> SpeechLanguageRequest
     /// The take's edit when Quick edit opened.
     private var original: TakeEdit
     /// The timeline when a handle drag started. Every move of the drag starts again from it, so a
@@ -131,9 +133,11 @@ final class QuickEditViewModel {
     init(
         take: Take, takes: TakeLibraryService, library: ScriptLibraryService, editing: TakeEditing,
         drafts: QuickEditDraftStoring, toast: ToastService, player: EditPlayback? = nil,
-        mediaImporter: EditMediaImporting? = nil, recorder: VoiceOverRecording? = nil
+        mediaImporter: EditMediaImporting? = nil, recorder: VoiceOverRecording? = nil,
+        speechLanguage: @escaping (Script?) -> SpeechLanguageRequest = SpeechLanguageRequest.script
     ) {
         self.take = take
+        speechLanguageFor = speechLanguage
         self.mediaImporter = mediaImporter ?? EditMediaImporter()
         self.recorder = recorder ?? VoiceOverRecorder()
         self.takes = takes
@@ -651,7 +655,7 @@ final class QuickEditViewModel {
         guard shows, edit.captions.isEmpty else { return }
         isWritingCaptions = true
         defer { isWritingCaptions = false }
-        edit.captions = await editing.captions(forVideoAt: videoURL, script: scriptText, duration: edit.sourceDuration)
+        edit.captions = await editing.captions(forVideoAt: videoURL, script: scriptText, language: speechLanguage, duration: edit.sourceDuration)
         if edit.captions.isEmpty {
             edit.showsCaptions = false
             toast.show(String(localized: "No script to caption this take"))
@@ -673,6 +677,11 @@ final class QuickEditViewModel {
     /// The take's script, or nothing for a freestyle take.
     var scriptText: String {
         library.script(id: take.scriptID)?.text ?? ""
+    }
+
+    /// The language the take is heard in, for captions and Clean Up: Voice Following's.
+    var speechLanguage: SpeechLanguageRequest {
+        speechLanguageFor(library.script(id: take.scriptID))
     }
 
     // MARK: - Leaving

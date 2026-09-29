@@ -17,6 +17,11 @@ struct SafeZoneOverlay: View {
     let label: String
 
     var body: some View {
+        drawing.keepsLeftToRight()
+    }
+
+    @ViewBuilder
+    private var drawing: some View {
         let top = max(0, content.minY - frame.minY)
         let bottom = max(0, frame.maxY - content.maxY)
         let left = max(0, content.minX - frame.minX)

@@ -65,16 +65,25 @@ struct StudioControlPanel: View {
             Text("Speed")
                 .font(.footnote.weight(.semibold))
                 .foregroundStyle(Palette.ink2)
-                .frame(width: 44, alignment: .leading)
+                // At least the column width; longer words ("Velocidade") push the slider over.
+                .fixedSize()
+                .frame(minWidth: 44, alignment: .leading)
             Slider(value: Binding(get: { session.prompter.speed }, set: { viewModel.setSpeed($0) }), in: PrompterSettings.speedRange, step: 0.1)
                 .tint(Palette.acc)
                 .accessibilityLabel(Text("Speed"))
                 .accessibilityValue(Text(session.prompter.speedLabel))
             Text(session.prompter.speedLabel)
                 .font(.body.weight(.semibold).monospacedDigit())
-                .frame(width: 44, alignment: .trailing)
+                .fixedSize()
+                .frame(minWidth: 44, alignment: .trailing)
         }
         .frame(minHeight: 34)
+    }
+
+    /// Without word-by-word recognition in this language, the text moves while the creator talks.
+    private var voiceStatus: LocalizedStringKey {
+        guard viewModel.isPlaying else { return "Tap play, then start reading" }
+        return viewModel.speechUnavailable == nil ? "Speed follows your voice" : "Scrolls while you talk"
     }
 
     /// Following the reading, speed doesn't apply: the text moves at the creator's pace.
@@ -82,7 +91,7 @@ struct StudioControlPanel: View {
         HStack(spacing: 12) {
             VoiceIndicator(level: viewModel.voiceLevel, isListening: viewModel.isPlaying && viewModel.isVoiceActive, fillsWidth: true)
             Spacer(minLength: 0)
-            Text(viewModel.isPlaying ? "Speed follows your voice" : "Tap play, then start reading")
+            Text(voiceStatus)
                 .font(.footnote)
                 .foregroundStyle(Palette.ink2)
                 .lineLimit(2)

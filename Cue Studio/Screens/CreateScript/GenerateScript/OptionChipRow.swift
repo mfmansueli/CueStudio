@@ -18,7 +18,11 @@ struct OptionChipRow<Option: Hashable>: View {
             Text(title)
                 .font(.footnote.weight(.semibold))
                 .foregroundStyle(Palette.ink2)
-                .frame(width: 72, alignment: .leading)
+                // A column in English; longer labels wrap onto a second line or shrink a little.
+                .lineLimit(2)
+                .minimumScaleFactor(0.8)
+                .frame(minWidth: 72, maxWidth: 104, alignment: .leading)
+                .fixedSize(horizontal: true, vertical: false)
             FlowLayout(spacing: 6, lineSpacing: 6) {
                 ForEach(options, id: \.self) { option in
                     Button {
