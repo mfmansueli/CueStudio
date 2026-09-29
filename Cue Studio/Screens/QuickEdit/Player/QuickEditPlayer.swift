@@ -30,6 +30,10 @@ final class QuickEditPlayer: EditPlayback {
         }
     }
 
+    var isMuted = false {
+        didSet { avPlayer.isMuted = isMuted }
+    }
+
     @ObservationIgnored let avPlayer = AVPlayer()
     @ObservationIgnored private let videoURL: URL
     @ObservationIgnored private let editing: TakeEditing
@@ -70,8 +74,9 @@ final class QuickEditPlayer: EditPlayback {
     /// Edited seconds where playback stops: the end of the part under review, or of the edit.
     private var playbackEnd: TimeInterval { min(stopTime ?? duration, duration) }
 
-    /// Where the edit starts inside the item, which begins at the start of the recording.
-    private var windowStart: TimeInterval { edit?.timeline.trimStart ?? 0 }
+    /// Where the edit starts inside the item, which begins at the start of the recording (played
+    /// at the first piece's speed).
+    private var windowStart: TimeInterval { edit?.timeline.reachableLeadIn ?? 0 }
 
     // MARK: - Edit
 
@@ -86,7 +91,7 @@ final class QuickEditPlayer: EditPlayback {
         let key = ItemKey(edit)
         if key != itemKey {
             // A new look or sound waits for the sliders to settle; new pieces show right away.
-            let settles = itemKey?.spans == key.spans && itemKey?.transitions == key.transitions
+            let settles = itemKey?.spans == key.spans && itemKey?.speeds == key.speeds && itemKey?.transitions == key.transitions
             itemKey = key
             if !settles, avPlayer.currentItem != nil {
                 awaitsItem = true
@@ -295,20 +300,36 @@ final class QuickEditPlayer: EditPlayback {
         min(max(0, time.isFinite ? time : 0), duration)
     }
 
-    /// What an item depends on: the look, the sound, where the pieces join and how. Not where the
-    /// handles are, which only moves the playback window.
+    /// What an item depends on: the look, the sound, what is laid on top, where the pieces join,
+    /// how and at what speed. Not where the handles are, which only moves the playback window.
     private struct ItemKey: Equatable {
         let recipe: TakeEdit
         let spans: [TimeSpan]
+        /// One per span: pieces at different speeds never join.
+        let speeds: [Double]
         let transitions: [TransitionWindow]
 
         init(_ edit: TakeEdit) {
             var recipe = edit
             recipe.timeline = QuickEditPlayer.blankTimeline
             recipe.suggestions = []
+            // The cover is drawn apart from the video.
+            recipe.cover = nil
             self.recipe = recipe
-            spans = edit.timeline.reachable.continuousSpans
-            transitions = TransitionWindow.windows(in: edit.timeline.reachable)
+            let reachable = edit.timeline.reachable
+            var spans: [TimeSpan] = []
+            var speeds: [Double] = []
+            for (index, segment) in reachable.segments.enumerated() {
+                if reachable.isSeamless(index) {
+                    spans[spans.count - 1].end = segment.sourceEnd
+                } else {
+                    spans.append(segment.span)
+                    speeds.append(segment.speed)
+                }
+            }
+            self.spans = spans
+            self.speeds = speeds
+            transitions = TransitionWindow.windows(in: reachable)
         }
     }
 }

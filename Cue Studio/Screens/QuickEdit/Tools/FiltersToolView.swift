@@ -17,7 +17,7 @@ struct FiltersToolView: View {
             HStack(spacing: 10) {
                 ForEach(VideoFilter.allCases) { filter in
                     let isOn = viewModel.edit.filter == filter
-                    Button { viewModel.edit.filter = filter } label: {
+                    Button { viewModel.setFilter(filter) } label: {
                         VStack(spacing: 6) {
                             Group {
                                 if let image = previews[filter] {

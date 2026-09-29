@@ -122,6 +122,8 @@ final class TakeLibraryService {
         }
         takes.removeAll { $0.id == id }
         persist()
+        // What Quick edit added belongs to this take alone.
+        if let names = take.edit?.mediaFileNames, !names.isEmpty { EditMediaFiles.remove(names) }
     }
 
     /// Keeps take titles in step when a script is renamed.

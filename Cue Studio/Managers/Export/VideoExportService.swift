@@ -76,6 +76,8 @@ final class VideoExportService: VideoExporting {
         }
         session.videoComposition = composition.videoComposition
         session.audioMix = composition.audioMix
+        // Like the preview: speed changes keep the voice's pitch.
+        session.audioTimePitchAlgorithm = .spectral
         let output = URL.temporaryDirectory.appending(path: "Cue-\(UUID().uuidString.prefix(8)).mov")
         try await session.export(to: output, as: .mov)
         return output

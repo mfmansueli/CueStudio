@@ -7,9 +7,15 @@ import Foundation
 
 /// Quick edit of one take. The edit is a recipe (`TakeEdit`) on top of the recording, which is
 /// never changed, and the player (`EditPlayback`) plays it and owns the playhead. Timeline changes
-/// (trim, remove part, cut, delete, transitions, Clean Up) are undoable, together with what was
-/// decided about Clean Up's suggestions; the tools set the look and sound directly. A draft is
-/// kept while editing and when leaving with Cancel; Done saves the edit on the take.
+/// (trim, remove part, cut, delete, speed, transitions, Clean Up, Remove Pauses) are undoable,
+/// together with what was decided about Clean Up's suggestions, what was added on top (texts,
+/// media, voice-overs, cover) and the look a style sets (`EditSnapshot`); Audio and Adjust set the
+/// sound and light directly. A gesture or a sheet that changes something many times in a row is
+/// one undo step (`beginChange` / `endChange`). A draft is kept while editing and when leaving
+/// with Cancel; Done saves the edit on the take.
+///
+/// Each tool's work is in its own extension (`QuickEditViewModel+Text`, `+Media`, `+VoiceOver`,
+/// `+Speed`, `+Pauses`, `+Style`, `+Cover`, `+CleanUp`).
 @MainActor
 @Observable
 final class QuickEditViewModel {
@@ -36,8 +42,18 @@ final class QuickEditViewModel {
             removalRange = nil
             selectedSegmentID = nil
             selectedJoinID = nil
+            selectedTextID = nil
+            selectedMediaID = nil
+            endChange()
+            // Leaving Remove Pauses without Apply puts the pauses back.
+            cancelPausePreview()
+            if recorder.isRecording { stopVoiceOver() }
+            isPickingCoverFrame = false
+            lastTool[tool.category] = tool
         }
     }
+    /// The tool each category opens on: the one used last.
+    private(set) var lastTool: [QuickEditCategory: QuickEditTool] = [:]
     var edit: TakeEdit {
         didSet { editDidChange() }
     }
@@ -66,11 +82,36 @@ final class QuickEditViewModel {
     /// Clean Up's "Ignore pauses under": shorter pauses aren't listed and stay as natural ones.
     var pauseThreshold: TimeInterval = QuickEditViewModel.defaultPauseThreshold
 
+    // MARK: Added on top
+    /// The text picked on the preview or its track.
+    var selectedTextID: UUID?
+    /// The text being written in its sheet.
+    var editingTextID: UUID?
+    /// The photo or video picked on the preview or its track.
+    var selectedMediaID: UUID?
+    var isImportingMedia = false
+    /// The voice-over just recorded, waiting for Keep (or Redo / Delete).
+    var reviewedVoiceOverID: UUID?
+    /// Edited seconds where the voice-over being recorded started.
+    var recordingStart: TimeInterval?
+    /// The cover as drawn, for the preview; nil until drawn or without a cover.
+    var coverImage: Data?
+    var isDrawingCover = false
+    /// Cover: the video shows instead of the cover while another frame is picked.
+    var isPickingCoverFrame = false
+    /// Remove Pauses: the edit before its preview, while the result plays without the pauses. Apply
+    /// keeps it as one undo step; anything else puts it back.
+    var pausePreviewBase: EditSnapshot?
+    /// Speed: the section under the playhead (or selected), or the whole video.
+    var speedScope: SpeedScope = .whole
+
     let take: Take
     let player: EditPlayback
     let editing: TakeEditing
     let library: ScriptLibraryService
     let toast: ToastService
+    let mediaImporter: EditMediaImporting
+    let recorder: VoiceOverRecording
     private let takes: TakeLibraryService
     private let drafts: QuickEditDraftStoring
     /// The take's edit when Quick edit opened.
@@ -79,14 +120,22 @@ final class QuickEditViewModel {
     /// handle dragged past a cut and back brings the cut back, and the whole drag is one undo step.
     /// The timeline strip keeps drawing it until the finger lifts, so nothing shifts under it.
     private(set) var trimOrigin: EditTimeline?
+    /// The undo step a gesture or a sheet started from (see `beginChange`).
+    @ObservationIgnored private(set) var changeBase: EditSnapshot?
+    /// Media files copied in while Quick edit is open, so what the edit doesn't keep is removed.
+    @ObservationIgnored var importedFiles: Set<String> = []
+    @ObservationIgnored var coverTask: Task<Void, Never>?
     @ObservationIgnored private var draftTask: Task<Void, Never>?
     @ObservationIgnored private(set) var isClosed = false
 
     init(
         take: Take, takes: TakeLibraryService, library: ScriptLibraryService, editing: TakeEditing,
-        drafts: QuickEditDraftStoring, toast: ToastService, player: EditPlayback? = nil
+        drafts: QuickEditDraftStoring, toast: ToastService, player: EditPlayback? = nil,
+        mediaImporter: EditMediaImporting? = nil, recorder: VoiceOverRecording? = nil
     ) {
         self.take = take
+        self.mediaImporter = mediaImporter ?? EditMediaImporter()
+        self.recorder = recorder ?? VoiceOverRecorder()
         self.takes = takes
         self.library = library
         self.editing = editing
@@ -132,6 +181,9 @@ final class QuickEditViewModel {
     private func editDidChange() {
         guard source == .ready else { return }
         if let id = selectedSegmentID, edit.timeline.segment(id: id) == nil { selectedSegmentID = nil }
+        if let id = selectedTextID, !edit.texts.contains(where: { $0.id == id }) { selectedTextID = nil }
+        if let id = selectedMediaID, !edit.media.contains(where: { $0.id == id }) { selectedMediaID = nil }
+        if let id = reviewedVoiceOverID, !edit.voiceOvers.contains(where: { $0.id == id }) { reviewedVoiceOverID = nil }
         if selectedJoinID != nil, selectedJoinIndex == nil { selectedJoinID = nil }
         if let range = removalRange, range.upperBound > edit.editedDuration { removalRange = nil }
         player.show(edit)
@@ -176,8 +228,8 @@ final class QuickEditViewModel {
     /// "00:04.32 / 00:11.00"
     var timeLabel: String { currentTimeLabel + " / " + durationLabel }
 
-    var canUndo: Bool { history.canUndo && activeHandle == nil }
-    var canRedo: Bool { history.canRedo && activeHandle == nil }
+    var canUndo: Bool { (history.canUndo || pausePreviewBase != nil) && activeHandle == nil && !recorder.isRecording }
+    var canRedo: Bool { history.canRedo && activeHandle == nil && pausePreviewBase == nil && !recorder.isRecording }
     var canDeleteSelection: Bool { selectedSegmentID != nil && edit.timeline.segments.count > 1 }
     var hasUnsavedChanges: Bool { edit != original }
 
@@ -201,8 +253,9 @@ final class QuickEditViewModel {
         if removalRange != nil { return String(localized: "Drag the red edges over the part you want gone") }
         if let index = selectedJoinIndex {
             let timeline = edit.timeline
-            if timeline.transition(atJoin: index) == .dissolve, timeline.continuesFromPrevious(index) {
-                return String(localized: "Nothing was cut out here, so Dissolve won't show")
+            let transition = timeline.transition(atJoin: index)
+            if transition.showsBothSides, timeline.continuesFromPrevious(index) {
+                return String(localized: "Nothing was cut out here, so \(transition.label) won't show")
             }
             let cut = DurationText.timecode(timeline.editedStart(ofSegmentAt: index), total: timeline.editedDuration)
             return String(localized: "Cut at \(cut) · None keeps it a hard cut")
@@ -295,7 +348,14 @@ final class QuickEditViewModel {
     /// How the selected cut plays: a hard cut ("None"), a dissolve or a fade. An undo step; the
     /// playhead goes a moment before the cut so Play shows it.
     func setTransition(_ transition: EditTransition) {
-        guard isReady, let index = selectedJoinIndex else { return }
+        guard let index = selectedJoinIndex else { return }
+        setTransition(transition, atJoin: index)
+    }
+
+    /// Sets the transition of the cut before the section at `index` (the Transitions tool lists
+    /// every cut). An undo step; the playhead goes a moment before the cut so Play shows it.
+    func setTransition(_ transition: EditTransition, atJoin index: Int) {
+        guard isReady else { return }
         var timeline = edit.timeline
         guard timeline.setTransition(transition, atJoin: index) else { return }
         commit(timeline)
@@ -303,6 +363,26 @@ final class QuickEditViewModel {
             player.pause()
             player.seek(to: max(0, edit.timeline.editedStart(ofSegmentAt: index) - Self.transitionLeadIn))
         }
+    }
+
+    /// The same transition on every cut, in one undo step.
+    func setTransitionOnEveryCut(_ transition: EditTransition) {
+        guard isReady else { return }
+        var timeline = edit.timeline
+        var changed = false
+        for index in timeline.segments.indices.dropFirst() where timeline.setTransition(transition, atJoin: index) {
+            changed = true
+        }
+        guard changed else { return }
+        commit(timeline)
+        toast.show(transition == .hardCut
+            ? String(localized: "Every cut is a hard cut")
+            : String(localized: "\(transition.label) on every cut"))
+    }
+
+    /// Edited seconds of every cut, by the index of the section after it.
+    var cuts: [(index: Int, time: TimeInterval)] {
+        edit.timeline.segments.indices.dropFirst().map { ($0, edit.timeline.editedStart(ofSegmentAt: $0)) }
     }
 
     // MARK: - Trim
@@ -336,7 +416,11 @@ final class QuickEditViewModel {
         guard let origin = trimOrigin else { return }
         trimOrigin = nil
         activeHandle = nil
-        if origin != edit.timeline { history.record(EditSnapshot(timeline: origin, suggestions: edit.suggestions)) }
+        if origin != edit.timeline {
+            var before = snapshot
+            before.timeline = origin
+            history.record(before)
+        }
         player.endScrub()
     }
 
@@ -441,37 +525,82 @@ final class QuickEditViewModel {
     // MARK: - Undo
 
     func undo() {
-        guard canUndo, let previous = history.undo(from: snapshot) else { return }
+        guard canUndo else { return }
+        // A pauses preview is taken back first, like it was never applied.
+        if pausePreviewBase != nil {
+            cancelPausePreview()
+            return
+        }
+        endChange()
+        guard let previous = history.undo(from: snapshot) else { return }
         restore(previous)
     }
 
     func redo() {
-        guard canRedo, let next = history.redo(from: snapshot) else { return }
+        guard canRedo else { return }
+        endChange()
+        guard let next = history.redo(from: snapshot) else { return }
         restore(next)
     }
 
-    /// The timeline and the suggestions' decisions, as undo keeps them.
+    /// What undo keeps of the edit: the timeline, the suggestions' decisions, what was added on top
+    /// and the look a style sets.
     var snapshot: EditSnapshot {
-        EditSnapshot(timeline: edit.timeline, suggestions: edit.suggestions)
+        EditSnapshot(edit)
     }
 
     /// A change undo can take back: a new timeline, and new decisions about suggestions.
     func commit(_ timeline: EditTimeline, suggestions: [CleanUpSuggestion]? = nil) {
-        let next = EditSnapshot(timeline: timeline, suggestions: suggestions ?? edit.suggestions)
+        var next = snapshot
+        next.timeline = timeline
+        if let suggestions { next.suggestions = suggestions }
+        commit(next)
+    }
+
+    /// A change undo can take back. Inside a gesture or a sheet (`beginChange`), the step was
+    /// already taken when it began.
+    func commit(_ next: EditSnapshot) {
         guard next != snapshot else { return }
-        history.record(snapshot)
+        if changeBase == nil { history.record(snapshot) }
         var changed = edit
-        changed.timeline = next.timeline
-        changed.suggestions = next.suggestions
+        Self.apply(next, to: &changed)
         edit = changed
+    }
+
+    /// Keeps `step` as the state to go back to, without changing the edit (Remove Pauses' Apply,
+    /// after its preview already changed it).
+    func recordUndoStep(_ step: EditSnapshot) {
+        guard step != snapshot else { return }
+        history.record(step)
+    }
+
+    /// Changes what undo keeps (texts, media, voice-overs, the cover, the style) as one step.
+    func change(_ update: (inout EditSnapshot) -> Void) {
+        var next = snapshot
+        update(&next)
+        commit(next)
+    }
+
+    /// A gesture or a sheet starts changing something, maybe many times: all of it is one undo
+    /// step, taken when it ends (`endChange`).
+    func beginChange() {
+        guard changeBase == nil else { return }
+        changeBase = snapshot
+    }
+
+    /// The gesture or sheet is over: one undo step back to where it began, when anything changed.
+    func endChange() {
+        guard let base = changeBase else { return }
+        changeBase = nil
+        if base != snapshot { history.record(base) }
     }
 
     /// Goes back (or forward) to a step. Suggestions found since keep their place and take the
     /// step's decision, or wait for review when the step didn't know them yet.
-    private func restore(_ step: EditSnapshot) {
+    func restore(_ step: EditSnapshot) {
         let decisions = Dictionary(step.suggestions.map { ($0.id, $0.status) }, uniquingKeysWith: { first, _ in first })
         var changed = edit
-        changed.timeline = step.timeline
+        Self.apply(step, to: &changed)
         changed.suggestions = edit.suggestions.map { suggestion in
             var restored = suggestion
             restored.status = decisions[suggestion.id] ?? .pending
@@ -479,6 +608,19 @@ final class QuickEditViewModel {
         }
         removalRange = nil
         edit = changed
+    }
+
+    /// Everything undo keeps, set on `edit`.
+    private static func apply(_ step: EditSnapshot, to edit: inout TakeEdit) {
+        edit.timeline = step.timeline
+        edit.suggestions = step.suggestions
+        edit.texts = step.texts
+        edit.media = step.media
+        edit.voiceOvers = step.voiceOvers
+        edit.cover = step.cover
+        edit.creatorStyle = step.creatorStyle
+        edit.captionStyle = step.captionStyle
+        edit.filter = step.filter
     }
 
     // MARK: - Adjust
@@ -517,8 +659,15 @@ final class QuickEditViewModel {
     }
 
     func setCaptionStyle(_ style: CaptionStyle) async {
-        edit.captionStyle = style
+        change { $0.captionStyle = style }
         if !edit.showsCaptions { await setShowsCaptions(true) }
+    }
+
+    // MARK: - Filters
+
+    /// A filter (an undo step, since a style sets it too).
+    func setFilter(_ filter: VideoFilter) {
+        change { $0.filter = filter }
     }
 
     /// The take's script, or nothing for a freestyle take.
@@ -531,10 +680,15 @@ final class QuickEditViewModel {
     /// Saves the edit on the take (its new length, marked Edited) when anything changed.
     func done() {
         endTrim()
+        endChange()
+        if recorder.isRecording { stopVoiceOver() }
+        // Done while the pauses preview plays keeps what was heard.
+        if pausePreviewBase != nil { applyPauses() }
         if source == .ready, hasUnsavedChanges {
             takes.applyEdit(edit, to: take.id)
             toast.show(String(localized: "Edits saved to \(take.label)"))
         }
+        removeUnusedImports(keeping: edit.mediaFileNames)
         close(keepingDraft: false)
     }
 
@@ -542,8 +696,12 @@ final class QuickEditViewModel {
     /// is as it was.
     func cancel() {
         endTrim()
+        endChange()
+        if recorder.isRecording { cancelVoiceOver() }
+        cancelPausePreview()
         removalRange = nil
         guard source == .ready, hasUnsavedChanges else {
+            removeUnusedImports(keeping: original.mediaFileNames)
             close(keepingDraft: false)
             return
         }
@@ -554,13 +712,23 @@ final class QuickEditViewModel {
 
     /// Leaving the app or the screen without Done or Cancel: the draft keeps everything.
     func pauseAndKeepDraft() {
+        if recorder.isRecording { stopVoiceOver() }
         player.pause()
         saveDraft()
+    }
+
+    /// Files copied in during this visit that nothing kept names: the take's saved edit (and the
+    /// one it had) still point at theirs.
+    private func removeUnusedImports(keeping names: Set<String>) {
+        let unused = importedFiles.subtracting(names).subtracting(original.mediaFileNames)
+        importedFiles = []
+        EditMediaFiles.remove(unused)
     }
 
     private func close(keepingDraft: Bool) {
         isClosed = true
         draftTask?.cancel()
+        coverTask?.cancel()
         if !keepingDraft { drafts.discard(takeID: take.id) }
         player.stop()
     }
@@ -580,8 +748,11 @@ final class QuickEditViewModel {
     /// Keeps the edit, the playhead and the undo steps, or drops the draft when nothing changed.
     func saveDraft() {
         guard source == .ready, !isClosed else { return }
-        if hasUnsavedChanges {
-            drafts.save(QuickEditDraft(takeID: take.id, edit: edit, playhead: player.currentTime, history: history, savedAt: .now))
+        // A pauses preview that wasn't applied isn't part of the edit.
+        var kept = edit
+        if let base = pausePreviewBase { Self.apply(base, to: &kept) }
+        if kept != original {
+            drafts.save(QuickEditDraft(takeID: take.id, edit: kept, playhead: player.currentTime, history: history, savedAt: .now))
         } else {
             drafts.discard(takeID: take.id)
         }

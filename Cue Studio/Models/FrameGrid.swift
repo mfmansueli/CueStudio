@@ -37,8 +37,8 @@ nonisolated struct FrameGrid: Hashable, Sendable {
         let index = timeline.segmentIndex(atEdited: time)
         let segment = timeline.segments[index]
         let start = timeline.editedStart(ofSegmentAt: index)
-        let source = snapped(segment.sourceStart + (time - start), in: segment.span)
-        return min(max(0, start + source - segment.sourceStart), timeline.editedDuration)
+        let source = snapped(segment.sourceStart + (time - start) * segment.speed, in: segment.span)
+        return min(max(0, start + (source - segment.sourceStart) / segment.speed), timeline.editedDuration)
     }
 
     /// Where the frames inside `span` start (seconds of the recording), in order.

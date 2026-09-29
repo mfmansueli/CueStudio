@@ -120,6 +120,9 @@ final class TakeReviewViewModel {
         self.quality = quality
     }
 
+    /// A cover was chosen in Quick edit: it's saved to Photos with every export.
+    var hasCover: Bool { take?.edit?.cover != nil }
+
     // MARK: - Actions
 
     // MARK: - Best take
@@ -162,6 +165,18 @@ final class TakeReviewViewModel {
         await export(.save)
     }
 
+    /// Saves the cover to Photos on its own. A picture, not a video: it never counts as an export.
+    func saveCover() async {
+        guard runningAction == nil else { return }
+        do {
+            if try await saveCoverIfChosen() {
+                toast.show(String(localized: "Cover saved to Photos"))
+            }
+        } catch {
+            toast.show(error.localizedDescription)
+        }
+    }
+
     /// A platform: export, save to Photos and open its app to post (the share sheet when the app
     /// isn't there). Nil is "More": the system share sheet.
     func share(to destination: ShareDestination?) async {
@@ -198,13 +213,15 @@ final class TakeReviewViewModel {
             switch action {
             case .save:
                 try await photos.saveVideo(at: url)
+                let withCover = (try? await saveCoverIfChosen()) ?? false
                 showsShareSheet = false
-                toast.show(savedMessage(tier: currentTier))
+                toast.show(savedMessage(tier: currentTier, withCover: withCover))
             case .share(nil):
                 shareURL = url
             case .share(let destination?):
-                // The platform's app picks the video from Photos.
+                // The platform's app picks the video (and the cover) from Photos.
                 try await photos.saveVideo(at: url)
+                _ = try? await saveCoverIfChosen()
                 if await apps.open(destination) {
                     showsShareSheet = false
                     toast.show(readyMessage(for: destination, tier: currentTier))
@@ -235,10 +252,25 @@ final class TakeReviewViewModel {
         return ready + " · " + String(localized: "\(left) of \(UsagePolicy.freeExports) free exports left")
     }
 
-    private func savedMessage(tier: MembershipTier) -> String {
+    private func savedMessage(tier: MembershipTier, withCover: Bool) -> String {
+        let saved = withCover ? String(localized: "Video and cover saved to Photos") : String(localized: "Saved to Photos")
         if let left = quota.exportsLeft(for: tier) {
-            return String(localized: "Saved to Photos · \(left) of \(UsagePolicy.freeExports) free exports left")
+            return withCover
+                ? saved + " · " + String(localized: "\(left) of \(UsagePolicy.freeExports) free exports left")
+                : String(localized: "Saved to Photos · \(left) of \(UsagePolicy.freeExports) free exports left")
         }
-        return String(localized: "Saved to Photos")
+        return saved
+    }
+
+    /// Draws the take's cover and saves it to Photos. False when no cover was chosen.
+    private func saveCoverIfChosen() async throws -> Bool {
+        guard let take, let edit = take.edit, let cover = edit.cover else { return false }
+        guard let data = await editing.coverImage(cover, forVideoAt: takes.videoURL(for: take), edit: edit) else {
+            throw CoverError.unreadable
+        }
+        let url = URL.temporaryDirectory.appending(path: "Cue-cover-\(UUID().uuidString.prefix(8)).jpg")
+        try data.write(to: url, options: .atomic)
+        try await photos.saveImage(at: url)
+        return true
     }
 }

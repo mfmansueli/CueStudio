@@ -54,11 +54,16 @@ struct CleanUpStripView: View {
                 RoundedRectangle(cornerRadius: 3, style: .continuous)
                     .fill(CleanUpKindColor.color(for: suggestion.kind))
                     .opacity(suggestion.status == .kept ? 0.35 : 0.95)
-                    .frame(width: max(4, CGFloat(suggestion.span.duration) * layout.pointsPerSecond), height: Self.height - 6)
+                    .frame(width: max(4, CGFloat(editedLength(of: suggestion)) * layout.pointsPerSecond), height: Self.height - 6)
                     .offset(x: layout.x(forEdited: start), y: 3)
                     .allowsHitTesting(false)
             }
         }
+    }
+
+    /// How long the suggestion plays in the edit (a sped-up section plays it shorter).
+    private func editedLength(of suggestion: CleanUpSuggestion) -> TimeInterval {
+        viewModel.edit.timeline.editedSpan(forSource: suggestion.span)?.duration ?? suggestion.span.duration
     }
 
     private func playhead(_ layout: TimelineLayout) -> some View {

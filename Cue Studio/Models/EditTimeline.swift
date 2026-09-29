@@ -14,6 +14,10 @@ import Foundation
 /// passes leave the edit with their seams. Each seam carries how the next piece takes over
 /// (`EditSegment.transitionIn`), a hard cut unless the creator picks a transition.
 ///
+/// Each piece has a speed (the Speed tool): its length in the edit is its stretch of the recording
+/// over its speed, and every mapping between edited seconds and seconds of the recording goes
+/// through it.
+///
 /// Pieces stay in the recording's order, never overlap, and there is always at least one. The
 /// first piece's transition is always a hard cut: nothing comes before it.
 nonisolated struct EditTimeline: Codable, Hashable, Sendable {
@@ -50,7 +54,7 @@ nonisolated struct EditTimeline: Codable, Hashable, Sendable {
         for var segment in segments.sorted(by: { $0.sourceStart < $1.sourceStart }) {
             segment.sourceStart = max(segment.sourceStart, kept.last?.sourceEnd ?? 0)
             segment.sourceEnd = min(segment.sourceEnd, duration)
-            if segment.duration >= Self.minimumDuration - 0.000_1 { kept.append(segment) }
+            if segment.sourceLength >= Self.minimumDuration - 0.000_1 { kept.append(segment) }
         }
         if !kept.isEmpty { kept[0].transitionIn = .hardCut }
         self.segments = kept.isEmpty ? [EditSegment(sourceStart: 0, sourceEnd: duration)] : kept
@@ -98,12 +102,12 @@ nonisolated struct EditTimeline: Codable, Hashable, Sendable {
         return copy
     }
 
-    /// The kept spans with pieces that follow on in the recording joined: a cut that removed
-    /// nothing leaves no seam.
+    /// The kept spans with pieces that follow on in the recording at the same speed joined: a cut
+    /// that removed nothing leaves no seam.
     var continuousSpans: [TimeSpan] {
         var result: [TimeSpan] = []
         for (index, segment) in segments.enumerated() {
-            if continuesFromPrevious(index) {
+            if isSeamless(index) {
                 result[result.count - 1].end = segment.sourceEnd
             } else {
                 result.append(segment.span)
@@ -116,6 +120,40 @@ nonisolated struct EditTimeline: Codable, Hashable, Sendable {
     /// removed nothing).
     func continuesFromPrevious(_ index: Int) -> Bool {
         index > 0 && index < segments.count && abs(segments[index].sourceStart - segments[index - 1].sourceEnd) < 0.001
+    }
+
+    /// Whether the piece at `index` plays on from the one before it with nothing to hear or see at
+    /// the seam: nothing was removed and both play at the same speed.
+    func isSeamless(_ index: Int) -> Bool {
+        continuesFromPrevious(index) && segments[index].speed == segments[index - 1].speed
+    }
+
+    /// Edited seconds the trimmed start takes in `reachable` (where the preview's item begins):
+    /// the edit starts this far into it.
+    var reachableLeadIn: TimeInterval {
+        trimStart / segments[0].speed
+    }
+
+    /// Whether any piece plays at another speed than filmed.
+    var hasSpeedChanges: Bool {
+        segments.contains { abs($0.speed - 1) > 0.000_1 }
+    }
+
+    /// Where a stretch of the recording plays in the edit: from where its start plays (or where the
+    /// edit picks up after it) to where its end does. Nil when nothing of it plays. Texts, media and
+    /// captions are pinned to the recording this way, so they stay on what is being said when
+    /// something before them is cut or sped up.
+    func editedSpan(forSource span: TimeSpan) -> TimeSpan? {
+        let start = editedTime(following: span.start)
+        let end = editedTime(following: span.end)
+        guard end - start > 0.000_1 else { return nil }
+        return TimeSpan(start: start, end: end)
+    }
+
+    /// The stretch of the recording that plays between two edited moments: how an overlay placed
+    /// on the edit is pinned to the recording.
+    func sourceSpan(forEdited span: TimeSpan) -> TimeSpan {
+        TimeSpan(start: sourceTime(forEdited: span.start), end: sourceTime(forEdited: span.end))
     }
 
     /// How the piece at `index` takes over from the one before it (the seam before it). Always a
@@ -152,7 +190,7 @@ nonisolated struct EditTimeline: Codable, Hashable, Sendable {
         let index = segmentIndex(atEdited: time)
         let segment = segments[index]
         let offset = time - editedStart(ofSegmentAt: index)
-        return min(max(segment.sourceStart, segment.sourceStart + offset), segment.sourceEnd)
+        return min(max(segment.sourceStart, segment.sourceStart + offset * segment.speed), segment.sourceEnd)
     }
 
     /// Where a moment of the recording plays in the edit, or nil when it was cut. The end of the
@@ -163,7 +201,7 @@ nonisolated struct EditTimeline: Codable, Hashable, Sendable {
             let isLast = index == segments.count - 1
             let startsBefore = time >= segment.sourceStart - 0.000_001
             let endsAfter = time < segment.sourceEnd || (isLast && time <= segment.sourceEnd + 0.000_001)
-            if startsBefore, endsAfter { return elapsed + max(0, time - segment.sourceStart) }
+            if startsBefore, endsAfter { return elapsed + max(0, time - segment.sourceStart) / segment.speed }
             elapsed += segment.duration
         }
         return nil
@@ -202,7 +240,10 @@ nonisolated struct EditTimeline: Codable, Hashable, Sendable {
             let start = max(range.lowerBound, elapsed)
             let end = min(range.upperBound, elapsed + segment.duration)
             if end > start {
-                spans.append(TimeSpan(start: segment.sourceStart + (start - elapsed), end: segment.sourceStart + (end - elapsed)))
+                spans.append(TimeSpan(
+                    start: segment.sourceStart + (start - elapsed) * segment.speed,
+                    end: min(segment.sourceEnd, segment.sourceStart + (end - elapsed) * segment.speed)
+                ))
             }
             elapsed += segment.duration
         }
@@ -269,10 +310,27 @@ nonisolated struct EditTimeline: Codable, Hashable, Sendable {
         let segment = segments[index]
         let offset = time - editedStart(ofSegmentAt: index)
         guard offset >= Self.minimumDuration, segment.duration - offset >= Self.minimumDuration else { return false }
-        let cut = segment.sourceStart + offset
+        let cut = segment.sourceStart + offset * segment.speed
         segments[index].sourceEnd = cut
-        segments.insert(EditSegment(sourceStart: cut, sourceEnd: segment.sourceEnd), at: index + 1)
+        segments.insert(EditSegment(sourceStart: cut, sourceEnd: segment.sourceEnd, speed: segment.speed), at: index + 1)
         return true
+    }
+
+    /// Plays the piece at `index` at `speed`. False, and no change, when it already does.
+    @discardableResult
+    mutating func setSpeed(_ speed: Double, forSegmentAt index: Int) -> Bool {
+        let speed = EditSegment.clampedSpeed(speed)
+        guard segments.indices.contains(index), abs(segments[index].speed - speed) > 0.000_1 else { return false }
+        segments[index].speed = speed
+        return true
+    }
+
+    /// Plays every piece at `speed`. False, and no change, when they all already do.
+    @discardableResult
+    mutating func setSpeed(_ speed: Double) -> Bool {
+        var changed = false
+        for index in segments.indices where setSpeed(speed, forSegmentAt: index) { changed = true }
+        return changed
     }
 
     /// Drops a piece. False when it is the only one left: an edit always plays something.
@@ -295,7 +353,7 @@ nonisolated struct EditTimeline: Codable, Hashable, Sendable {
                 // The first piece left keeps the seam before it; new seams start as hard cuts.
                 result.append(EditSegment(
                     id: offset == 0 ? segment.id : UUID(), span: piece,
-                    transitionIn: offset == 0 ? segment.transitionIn : .hardCut
+                    transitionIn: offset == 0 ? segment.transitionIn : .hardCut, speed: segment.speed
                 ))
             }
         }
@@ -320,14 +378,19 @@ nonisolated struct EditTimeline: Codable, Hashable, Sendable {
             .flatMap { $0.subtracting(keptSpans) }
             .filter { $0.duration > 0.000_1 }
         guard !missing.isEmpty else { return }
-        let entries = (segments.map { Piece(segment: $0, isRestored: false) }
-            + TimeSpan.merged(missing).map { Piece(segment: EditSegment(span: $0), isRestored: true) })
+        // What comes back plays at the speed of the piece it joins (the one before it, else after).
+        let restored = TimeSpan.merged(missing).map { span in
+            let neighbor = segments.last { $0.sourceEnd <= span.start + 0.001 } ?? segments.first { $0.sourceStart >= span.end - 0.001 }
+            return Piece(segment: EditSegment(span: span, speed: neighbor?.speed ?? 1), isRestored: true)
+        }
+        let entries = (segments.map { Piece(segment: $0, isRestored: false) } + restored)
             .sorted { $0.segment.sourceStart < $1.segment.sourceStart }
         var joined: [Piece] = []
         for entry in entries {
             // `isRestored` on a joined piece says whether its end came back, so the next seam is
             // closed only when one side of it was restored.
-            if let last = joined.last, abs(last.segment.sourceEnd - entry.segment.sourceStart) < 0.001, last.isRestored || entry.isRestored {
+            if let last = joined.last, abs(last.segment.sourceEnd - entry.segment.sourceStart) < 0.001, last.isRestored || entry.isRestored,
+               last.segment.speed == entry.segment.speed {
                 joined[joined.count - 1].segment.sourceEnd = entry.segment.sourceEnd
                 joined[joined.count - 1].isRestored = entry.isRestored
             } else {

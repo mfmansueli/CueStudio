@@ -20,6 +20,8 @@ protocol EditPlayback: AnyObject {
     /// A part under review (edited seconds): "Remove part"'s red range. Playing from before its
     /// end stops exactly at its end instead of running on; from its end, it plays the part again.
     var reviewedPart: ClosedRange<TimeInterval>? { get set }
+    /// Silent while a voice-over is recorded, so the take's sound doesn't leak into it.
+    var isMuted: Bool { get set }
 
     /// Plays `edit` from now on, keeping the playhead on the same moment of the recording (or
     /// where the edit picks up, when that moment was cut).

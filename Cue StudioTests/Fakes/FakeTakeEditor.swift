@@ -45,4 +45,13 @@ final class FakeTakeEditor: TakeEditing {
     func previewItem(forVideoAt url: URL, edit: TakeEdit) async throws -> AVPlayerItem {
         AVPlayerItem(url: url)
     }
+
+    /// What `coverImage` hands back; nil when the picture can't be read.
+    var coverData: Data? = Data([0xFF, 0xD8, 0xFF])
+    private(set) var drawnCovers: [VideoCover] = []
+
+    func coverImage(_ cover: VideoCover, forVideoAt url: URL, edit: TakeEdit) async -> Data? {
+        drawnCovers.append(cover)
+        return coverData
+    }
 }

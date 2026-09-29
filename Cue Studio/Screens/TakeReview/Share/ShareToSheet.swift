@@ -6,7 +6,7 @@
 import SwiftUI
 
 /// "Share to": the platforms (the one the take was made for ringed in yellow), Save video and More,
-/// then Burn in captions and Quality. On the free plan, how many free exports are left.
+/// then Burn in captions, the cover (when one was chosen in Quick edit) and Quality. On the free plan, how many free exports are left.
 struct ShareToSheet: View {
     @Bindable var viewModel: TakeReviewViewModel
     let take: Take
@@ -129,6 +129,22 @@ struct ShareToSheet: View {
                 .padding(.horizontal, 16)
                 .frame(minHeight: 52)
                 .accessibilityIdentifier("share.captionsToggle")
+            if viewModel.hasCover {
+                HStack {
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("Cover")
+                        Text("Saved to Photos with the video")
+                            .font(.footnote)
+                            .foregroundStyle(Palette.ink2)
+                    }
+                    Spacer()
+                    Button("Save cover") { Task { await viewModel.saveCover() } }
+                        .buttonStyle(.cueSecondary(.compact, expands: false))
+                        .accessibilityIdentifier("share.saveCover")
+                }
+                .padding(.horizontal, 16)
+                .frame(minHeight: 56)
+            }
             HStack {
                 Text("Quality")
                 Spacer()

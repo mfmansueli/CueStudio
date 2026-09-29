@@ -46,6 +46,9 @@ nonisolated struct TimelineLayout {
         let maxX: CGFloat
         /// The part of the recording drawn there.
         let source: TimeSpan
+        /// How fast that part plays: a point on the strip covers this many times more of the
+        /// recording than of the edit.
+        var speed: Double = 1
 
         var width: CGFloat { max(0, maxX - minX) }
     }
@@ -101,7 +104,7 @@ nonisolated struct TimelineLayout {
         var x = inset - scrolled
         for (index, segment) in strip.segments.enumerated() {
             let end = x + CGFloat(segment.duration) * scale
-            regions.append(Region(index: index, minX: x, maxX: end, source: segment.span))
+            regions.append(Region(index: index, minX: x, maxX: end, source: segment.span, speed: segment.speed))
             x = end
         }
         self.regions = regions
@@ -123,7 +126,8 @@ nonisolated struct TimelineLayout {
             index: index,
             minX: x(forStrip: start),
             maxX: x(forStrip: start + segment.duration),
-            source: segment.span
+            source: segment.span,
+            speed: segment.speed
         )
     }
 

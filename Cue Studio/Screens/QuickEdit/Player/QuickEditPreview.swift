@@ -6,8 +6,10 @@
 import SwiftUI
 
 /// The edit playing in its frame. Tap to play or pause (a play sign shows while paused); with the
-/// Crop tool, dragging moves the crop. Says so when the recording can't be opened, and shows
-/// "Processing…" when a change takes a moment to build.
+/// Crop tool, dragging moves the crop; with Text or Media, handles move what is laid on the video
+/// (`OverlayEditingLayer`); with Cover, the cover shows instead (`CoverPreviewLayer`). Says so
+/// when the recording can't be opened, and shows "Processing…" when a change takes a moment to
+/// build.
 struct QuickEditPreview: View {
     let viewModel: QuickEditViewModel
     let size: CGSize
@@ -26,16 +28,28 @@ struct QuickEditPreview: View {
                         .allowsHitTesting(false)
                 }
             }
-            .overlay { status }
             .overlay { playBadge }
+            .overlay {
+                if viewModel.tool == .text || viewModel.tool == .media {
+                    OverlayEditingLayer(viewModel: viewModel, size: size)
+                }
+            }
+            .overlay {
+                if viewModel.showsCoverImage {
+                    CoverPreviewLayer(viewModel: viewModel, size: size)
+                }
+            }
+            .overlay { recordingBadge }
+            .overlay { status }
             .clipShape(RoundedRectangle(cornerRadius: Metrics.tileRadius, style: .continuous))
             .gesture(cropDrag, isEnabled: viewModel.tool == .crop)
             .onTapGesture {
                 // With Crop, touches move the crop instead.
-                if viewModel.tool != .crop { viewModel.togglePlayback() }
+                if viewModel.tool != .crop, !viewModel.showsCoverImage, !viewModel.isRecordingVoiceOver { viewModel.togglePlayback() }
             }
             .animation(reduceMotion ? nil : .smooth(duration: 0.3), value: size)
-            .accessibilityElement(children: .combine)
+            // With handles on it, they stay reachable on their own.
+            .accessibilityElement(children: [.text, .media, .cover].contains(viewModel.tool) ? .contain : .combine)
             .accessibilityLabel(Text("Preview"))
             .accessibilityValue(Text(statusDescription ?? ""))
             .accessibilityHint(Text("Tap to play or pause"))
@@ -47,7 +61,8 @@ struct QuickEditPreview: View {
     /// preview is.
     @ViewBuilder
     private var playBadge: some View {
-        if viewModel.isReady, viewModel.player.state == .ready, !viewModel.player.isPlaying, viewModel.tool != .crop {
+        if viewModel.isReady, viewModel.player.state == .ready, !viewModel.player.isPlaying, viewModel.tool != .crop,
+           !viewModel.showsCoverImage {
             Image(systemName: "play.fill")
                 .font(.system(size: 22, weight: .semibold))
                 .foregroundStyle(Palette.ink)
@@ -57,6 +72,25 @@ struct QuickEditPreview: View {
                 .allowsHitTesting(false)
                 .accessibilityHidden(true)
                 .transition(.opacity)
+        }
+    }
+
+    /// "● REC 00:04.20" at the top while a voice-over records.
+    @ViewBuilder
+    private var recordingBadge: some View {
+        if viewModel.isRecordingVoiceOver {
+            HStack(spacing: 6) {
+                Circle().fill(Palette.record).frame(width: 8, height: 8)
+                Text("REC \(viewModel.recordingElapsedLabel)")
+                    .font(.footnote.weight(.semibold).monospacedDigit())
+            }
+            .padding(.horizontal, 12)
+            .frame(height: 30)
+            .background(Palette.durationBadge, in: Capsule())
+            .frame(maxHeight: .infinity, alignment: .top)
+            .padding(.top, 12)
+            .allowsHitTesting(false)
+            .accessibilityIdentifier("edit.recordingBadge")
         }
     }
 

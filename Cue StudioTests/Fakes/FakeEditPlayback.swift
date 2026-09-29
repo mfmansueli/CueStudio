@@ -17,6 +17,7 @@ final class FakeEditPlayback: EditPlayback {
     var state: EditPlaybackState = .ready
     var isProcessing = false
     var reviewedPart: ClosedRange<TimeInterval>?
+    var isMuted = false
     private(set) var shown: [TakeEdit] = []
     private(set) var isScrubbing = false
     private(set) var isStopped = false

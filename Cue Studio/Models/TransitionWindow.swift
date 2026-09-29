@@ -27,6 +27,9 @@ nonisolated struct TransitionWindow: Hashable, Sendable {
     let outgoingEnd: TimeInterval
     /// Where the incoming piece starts in the recording: a dissolve shows it from before that.
     let incomingStart: TimeInterval
+    /// Speeds of the two pieces: the other side of the cut plays at its own piece's speed.
+    var outgoingSpeed: Double = 1
+    var incomingSpeed: Double = 1
 
     var start: TimeInterval { cut - halfDuration }
     var end: TimeInterval { cut + halfDuration }
@@ -43,7 +46,15 @@ nonisolated struct TransitionWindow: Hashable, Sendable {
         return max(0, 1 - abs(time - cut) / halfDuration)
     }
 
-    /// Every seam that isn't a hard cut, in order. A dissolve needs the recording on both sides of
+    /// How far the incoming piece has slid in at `time`: 0 before the window, 1 after it.
+    func slideProgress(at time: TimeInterval) -> Double {
+        guard transition == .slide else { return time < cut ? 0 : 1 }
+        let linear = progress(at: time)
+        // Ease in and out, so the slide starts and lands softly.
+        return linear * linear * (3 - 2 * linear)
+    }
+
+    /// Every seam that isn't a hard cut, in order. A dissolve (or a slide) needs the recording on both sides of
     /// its cut (the outgoing piece running on, the incoming one from before its start), so near the
     /// start or the end of the recording it gets shorter; when there's no room at all, it stays a
     /// hard cut.
@@ -58,13 +69,14 @@ nonisolated struct TransitionWindow: Hashable, Sendable {
             let outgoing = segments[index - 1]
             let incoming = segments[index]
             var half = min(transition.duration / 2, outgoing.duration / 2 - margin, incoming.duration / 2 - margin)
-            if transition == .dissolve {
-                half = min(half, timeline.sourceDuration - outgoing.sourceEnd, incoming.sourceStart)
+            if transition.showsBothSides {
+                half = min(half, (timeline.sourceDuration - outgoing.sourceEnd) / outgoing.speed, incoming.sourceStart / incoming.speed)
             }
             guard 2 * half >= shortest - 0.000_1 else { continue }
             windows.append(TransitionWindow(
                 transition: transition, join: index, cut: cut, halfDuration: half,
-                outgoingEnd: outgoing.sourceEnd, incomingStart: incoming.sourceStart
+                outgoingEnd: outgoing.sourceEnd, incomingStart: incoming.sourceStart,
+                outgoingSpeed: outgoing.speed, incomingSpeed: incoming.speed
             ))
         }
         return windows

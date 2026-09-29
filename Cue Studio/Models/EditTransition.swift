@@ -18,6 +18,8 @@ nonisolated enum EditTransition: String, Codable, CaseIterable, Identifiable, Se
     case dissolve
     /// A dip to black and back, sound included.
     case fade
+    /// The incoming section slides in from the right over the outgoing one.
+    case slide
 
     var id: String { rawValue }
 
@@ -27,7 +29,14 @@ nonisolated enum EditTransition: String, Codable, CaseIterable, Identifiable, Se
         case .hardCut: 0
         case .dissolve: 0.5
         case .fade: 0.6
+        case .slide: 0.4
         }
+    }
+
+    /// Whether it shows both sides of the cut at once: the compositor reads the recording on the
+    /// other side of the cut from a second track (see `EditedComposition`).
+    var showsBothSides: Bool {
+        self == .dissolve || self == .slide
     }
 
     var label: String {
@@ -35,6 +44,7 @@ nonisolated enum EditTransition: String, Codable, CaseIterable, Identifiable, Se
         case .hardCut: String(localized: "None")
         case .dissolve: String(localized: "Dissolve")
         case .fade: String(localized: "Fade")
+        case .slide: String(localized: "Slide")
         }
     }
 
@@ -43,6 +53,7 @@ nonisolated enum EditTransition: String, Codable, CaseIterable, Identifiable, Se
         case .hardCut: "plus"
         case .dissolve: "circle.lefthalf.filled"
         case .fade: "circle.fill"
+        case .slide: "arrow.left.square"
         }
     }
 }

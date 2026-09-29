@@ -388,7 +388,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = "Cue Studio";
 				INFOPLIST_KEY_NSCameraUsageDescription = "Cue records your takes with the camera while your script scrolls under the lens.";
-				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Cue records your voice with each take and can follow your voice to scroll the script.";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Cue records your voice with each take and for voice-overs, and can follow your voice to scroll the script.";
 				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Cue saves the takes you export to your photo library.";
 				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "Cue recognizes your speech on this iPhone to keep the script on the line you're reading. Nothing leaves the device.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -437,7 +437,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = "Cue Studio";
 				INFOPLIST_KEY_NSCameraUsageDescription = "Cue records your takes with the camera while your script scrolls under the lens.";
-				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Cue records your voice with each take and can follow your voice to scroll the script.";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Cue records your voice with each take and for voice-overs, and can follow your voice to scroll the script.";
 				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Cue saves the takes you export to your photo library.";
 				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "Cue recognizes your speech on this iPhone to keep the script on the line you're reading. Nothing leaves the device.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;

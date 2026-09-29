@@ -6,7 +6,8 @@
 import Foundation
 
 /// Quick edit as a recipe applied on top of the original recording, which is never changed: the
-/// timeline (trim, cuts, removed pieces), Clean Up's findings, audio, look, crop and captions.
+/// timeline (trim, cuts, removed pieces, speed), Clean Up's findings, audio, look, crop, captions,
+/// and what is added on top: texts, photos and videos (B-roll), voice-overs and the cover.
 /// Preview and export render the same recipe, and the take can be edited again from where it was
 /// left.
 nonisolated struct TakeEdit: Codable, Hashable, Sendable {
@@ -47,6 +48,19 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
     /// Timed to the original recording.
     var captions: [CaptionCue] = []
 
+    // MARK: Added
+    /// Texts over the video, pinned to the recording.
+    var texts: [TextOverlay] = []
+    /// Photos and videos over the take (B-roll), one at a time, pinned to the recording.
+    var media: [MediaOverlay] = []
+    /// Narrations recorded over the edit.
+    var voiceOvers: [VoiceOverClip] = []
+    /// The look applied to the whole video with Style; nil until one is picked. New texts start
+    /// from it (Clean without one).
+    var creatorStyle: CreatorStyle?
+    /// The cover saved with exports; nil when none was chosen.
+    var cover: VideoCover?
+
     init(sourceDuration: TimeInterval, aspect: AspectRatio) {
         timeline = EditTimeline(sourceDuration: sourceDuration)
         self.aspect = aspect
@@ -81,11 +95,41 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
         return self != untouched
     }
 
+    /// Texts that show somewhere in `timeline`, with where (edited seconds), in order.
+    func editedTexts(in timeline: EditTimeline) -> [(text: TextOverlay, span: TimeSpan)] {
+        texts.compactMap { text in
+            guard !text.isEmpty, let span = timeline.editedSpan(forSource: text.span) else { return nil }
+            return (text, span)
+        }
+    }
+
+    /// Photos and videos that show somewhere in `timeline`, with where (edited seconds), in order.
+    /// A video never shows longer than it lasts.
+    func editedMedia(in timeline: EditTimeline) -> [(media: MediaOverlay, span: TimeSpan)] {
+        media.compactMap { item -> (media: MediaOverlay, span: TimeSpan)? in
+            guard var span = timeline.editedSpan(forSource: item.span) else { return nil }
+            span.end = min(span.end, span.start + item.longestDuration)
+            return (item, span)
+        }
+        .sorted { $0.span.start < $1.span.start }
+    }
+
+    /// The style new texts start from.
+    var textStyle: CreatorStyle { creatorStyle ?? .clean }
+
+    /// Media files (B-roll, voice-overs, a cover photo) the edit reads.
+    var mediaFileNames: Set<String> {
+        var names = Set(media.map(\.fileName) + voiceOvers.map(\.fileName))
+        if case .photo(let name)? = cover?.source { names.insert(name) }
+        return names
+    }
+
     // MARK: - Coding
 
     private enum CodingKeys: String, CodingKey {
         case timeline, suggestions, cleanUpAnalyzed, volume, enhancesVoice, reducesNoise, exposure, contrast, warmth, filter
         case aspect, cropOffset, showsCaptions, captionStyle, captionPosition, captions
+        case texts, media, voiceOvers, creatorStyle, cover
     }
 
     /// Edits saved before the timeline had pieces: trim handles, cut points, deleted sections and
@@ -116,6 +160,12 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
         captionStyle = try container.decodeIfPresent(CaptionStyle.self, forKey: .captionStyle) ?? .bold
         captionPosition = try container.decodeIfPresent(CaptionPosition.self, forKey: .captionPosition) ?? .bottom
         captions = try container.decodeIfPresent([CaptionCue].self, forKey: .captions) ?? []
+        // Added later: edits saved before have none, and a damaged one loses only that part.
+        texts = (try? container.decodeIfPresent([TextOverlay].self, forKey: .texts)) ?? []
+        media = (try? container.decodeIfPresent([MediaOverlay].self, forKey: .media)) ?? []
+        voiceOvers = (try? container.decodeIfPresent([VoiceOverClip].self, forKey: .voiceOvers)) ?? []
+        creatorStyle = try? container.decodeIfPresent(CreatorStyle.self, forKey: .creatorStyle)
+        cover = try? container.decodeIfPresent(VideoCover.self, forKey: .cover)
     }
 
     /// The same pieces an old edit played, and its silences as pause suggestions.

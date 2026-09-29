@@ -21,4 +21,7 @@ protocol TakeEditing: AnyObject {
     func captions(forVideoAt url: URL, script: String, duration: TimeInterval) async -> [CaptionCue]
     /// The edited take for a player.
     func previewItem(forVideoAt url: URL, edit: TakeEdit) async throws -> AVPlayerItem
+    /// The cover drawn as a JPEG (a frame or photo, cropped to the take's frame, with its title);
+    /// nil when its picture can't be read.
+    func coverImage(_ cover: VideoCover, forVideoAt url: URL, edit: TakeEdit) async -> Data?
 }

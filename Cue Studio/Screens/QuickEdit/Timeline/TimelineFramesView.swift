@@ -108,11 +108,11 @@ struct TimelineFramesView: View {
             let hi = min(region.maxX, size.width)
             guard hi > lo else { continue }
             let span = TimeSpan(
-                start: region.source.start + Double((lo - region.minX) / layout.pointsPerSecond),
-                end: region.source.start + Double((hi - region.minX) / layout.pointsPerSecond)
+                start: region.source.start + Double((lo - region.minX) / layout.pointsPerSecond) * region.speed,
+                end: region.source.start + Double((hi - region.minX) / layout.pointsPerSecond) * region.speed
             )
             for start in grid.frameStarts(in: span) {
-                let x = region.minX + CGFloat(start - region.source.start) * layout.pointsPerSecond
+                let x = region.minX + CGFloat((start - region.source.start) / region.speed) * layout.pointsPerSecond
                 context.fill(Path(CGRect(x: x - 0.5, y: size.height - height, width: 1, height: height)), with: .color(Palette.frameTick))
             }
         }
@@ -146,7 +146,7 @@ struct TimelineFramesView: View {
             let first = Int(((lo - region.minX) / tileWidth).rounded(.down))
             let last = Int(((hi - region.minX) / tileWidth).rounded(.up))
             for index in first..<max(first, last) {
-                let time = region.source.start + (Double(index) + 0.5) * tileSeconds
+                let time = region.source.start + (Double(index) + 0.5) * tileSeconds * region.speed
                 times.append(min(time, region.source.end - 0.001))
             }
         }

@@ -617,13 +617,27 @@ struct QuickEditViewModelTests {
         #expect(saved.duration == 18)
     }
 
-    @Test func undoLeavesTheLookAlone() async {
+    @Test func undoLeavesTheLightAndSoundAlone() async {
         let scenario = await makeScenario()
         dragHandle(.start, to: 4, on: scenario.viewModel)
-        scenario.viewModel.edit.filter = .mono
+        scenario.viewModel.edit.exposure = 30
+        scenario.viewModel.edit.volume = 0.5
         scenario.viewModel.undo()
         #expect(scenario.viewModel.edit.timeline.isWhole)
-        #expect(scenario.viewModel.edit.filter == .mono)
+        #expect(scenario.viewModel.edit.exposure == 30)
+        #expect(scenario.viewModel.edit.volume == 0.5)
+    }
+
+    /// A filter is set by Style too, so it's an undo step of its own.
+    @Test func aFilterIsItsOwnUndoStep() async {
+        let scenario = await makeScenario()
+        dragHandle(.start, to: 4, on: scenario.viewModel)
+        scenario.viewModel.setFilter(.mono)
+        scenario.viewModel.undo()
+        #expect(scenario.viewModel.edit.filter == .original)
+        #expect(scenario.viewModel.edit.timeline.trimStart == 4)
+        scenario.viewModel.undo()
+        #expect(scenario.viewModel.edit.timeline.isWhole)
     }
 
     // MARK: - Clean Up

@@ -59,6 +59,7 @@ final class QuickEditUITests: XCTestCase {
         XCTAssertNotEqual(duration.label, "1:02 → 0:31")
         XCTAssertTrue((time.value as? String)?.hasPrefix("00:00") ?? false)
 
+        app.buttons["edit.category.polish"].tap()
         app.buttons["edit.tool.filters"].tap()
         XCTAssertTrue(app.buttons["edit.filter.mono"].waitForExistence(timeout: 5))
         app.buttons["edit.filter.mono"].tap()
@@ -211,7 +212,7 @@ final class QuickEditUITests: XCTestCase {
 
     func testCaptionsComeFromTheScript() {
         let app = openQuickEdit()
-        app.buttons["edit.tool.captions"].tap()
+        app.buttons["edit.category.captions"].tap()
         let toggle = app.switches["edit.captionsToggle"]
         XCTAssertTrue(toggle.waitForExistence(timeout: 5))
         // The switch sits at the trailing edge; the row's center is its label.

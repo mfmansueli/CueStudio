@@ -55,7 +55,7 @@ struct TrimToolView: View {
                 Image(systemName: "square.split.1x2")
             }
             .buttonStyle(.cueIcon(.surface, diameter: Metrics.mediumButtonHeight))
-            .accessibilityLabel(Text("Cut at playhead"))
+            .accessibilityLabel(Text("Split at playhead"))
             .accessibilityHint(Text("Cuts the video in two at the playhead"))
             .accessibilityIdentifier("edit.cutButton")
             Button(action: viewModel.removeSelection) {

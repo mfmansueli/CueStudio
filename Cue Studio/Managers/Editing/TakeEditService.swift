@@ -4,6 +4,7 @@
 //
 
 import AVFoundation
+import UIKit
 import Foundation
 
 /// Quick edit's media work with AVFoundation, Core Image and Speech, all on the device. The
@@ -73,7 +74,14 @@ final class TakeEditService: TakeEditing {
         let item = AVPlayerItem(asset: composition.asset)
         item.videoComposition = composition.videoComposition
         item.audioMix = composition.audioMix
+        // Sped-up or slowed-down pieces keep the voice's pitch.
+        item.audioTimePitchAlgorithm = .spectral
         return item
+    }
+
+    func coverImage(_ cover: VideoCover, forVideoAt url: URL, edit: TakeEdit) async -> Data? {
+        let image = await CoverRenderer.image(for: cover, videoURL: url, edit: edit)
+        return image?.jpegData(compressionQuality: 0.92)
     }
 
     /// The Audio tool's changes rendered to a file, or nil when the sound is untouched or the take
