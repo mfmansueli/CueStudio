@@ -6,9 +6,9 @@
 import Foundation
 
 /// One undo step of Quick edit: the timeline, what was decided about Clean Up's suggestions, what
-/// was added on top (texts, media, voice-overs, cover) and the look a style sets (style, caption
-/// style, filter), so undoing a "Remove" brings back both the piece and the suggestion to review,
-/// and undoing a style brings back every text as it was. Audio and Adjust's sliders aren't part
+/// was added on top (texts, media, voice-overs, cover), the type of texts and captions (presets,
+/// "My style") and the filter, so undoing a "Remove" brings back both the piece and the
+/// suggestion to review, and undoing a preset brings back every text as it was. Audio and Adjust's sliders aren't part
 /// of it: they set the sound and the light directly.
 nonisolated struct EditSnapshot: Codable, Hashable, Sendable {
     var timeline: EditTimeline
@@ -20,9 +20,14 @@ nonisolated struct EditSnapshot: Codable, Hashable, Sendable {
     var creatorStyle: CreatorStyle?
     var captionStyle: CaptionStyle = .bold
     var filter: VideoFilter = .original
+    var textLook: TextLook?
+    var textPreset: TypePreset?
+    var captionLook: TextLook?
+    var captionPreset: TypePreset?
 
     private enum CodingKeys: String, CodingKey {
         case timeline, suggestions, texts, media, voiceOvers, cover, creatorStyle, captionStyle, filter
+        case textLook, textPreset, captionLook, captionPreset
     }
 }
 
@@ -32,7 +37,8 @@ nonisolated extension EditSnapshot {
         self.init(
             timeline: edit.timeline, suggestions: edit.suggestions, texts: edit.texts, media: edit.media,
             voiceOvers: edit.voiceOvers, cover: edit.cover, creatorStyle: edit.creatorStyle,
-            captionStyle: edit.captionStyle, filter: edit.filter
+            captionStyle: edit.captionStyle, filter: edit.filter,
+            textLook: edit.textLook, textPreset: edit.textPreset, captionLook: edit.captionLook, captionPreset: edit.captionPreset
         )
     }
 
@@ -48,7 +54,11 @@ nonisolated extension EditSnapshot {
             cover: try? container.decodeIfPresent(VideoCover.self, forKey: .cover),
             creatorStyle: try? container.decodeIfPresent(CreatorStyle.self, forKey: .creatorStyle),
             captionStyle: (try? container.decodeIfPresent(CaptionStyle.self, forKey: .captionStyle)) ?? .bold,
-            filter: (try? container.decodeIfPresent(VideoFilter.self, forKey: .filter)) ?? .original
+            filter: (try? container.decodeIfPresent(VideoFilter.self, forKey: .filter)) ?? .original,
+            textLook: try? container.decodeIfPresent(TextLook.self, forKey: .textLook),
+            textPreset: try? container.decodeIfPresent(TypePreset.self, forKey: .textPreset),
+            captionLook: try? container.decodeIfPresent(TextLook.self, forKey: .captionLook),
+            captionPreset: try? container.decodeIfPresent(TypePreset.self, forKey: .captionPreset)
         )
     }
 }

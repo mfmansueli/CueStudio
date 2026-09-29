@@ -27,29 +27,44 @@ struct TextOverlaySheet: View {
                         .padding(14)
                         .background(Palette.surface2, in: RoundedRectangle(cornerRadius: Metrics.fieldRadius, style: .continuous))
                         .accessibilityIdentifier("textSheet.field")
-                    styles
+                    styles(text)
                     GroupedCard(background: Palette.surface2, radius: Metrics.innerRadius) {
-                        picker(String(localized: "Font"), selection: binding(\.font), options: TextOverlayFont.allCases) { $0.label }
-                        picker(String(localized: "Weight"), selection: binding(\.weight), options: TextOverlayWeight.allCases) { $0.label }
+                        picker(String(localized: "Font"), selection: binding(\.font, field: .font), options: TextOverlayFont.allCases) { $0.label }
+                        picker(String(localized: "Weight"), selection: binding(\.weight, field: .weight), options: TextOverlayWeight.allCases) { $0.label }
                         ValueSlider(
                             title: String(localized: "Size"),
                             valueText: "\(Int(text.size.rounded()))",
-                            value: binding(\.size),
+                            value: binding(\.size, field: .size),
                             range: TextOverlay.sizeRange, step: 1,
                             identifier: "textSheet.size"
                         )
                         .padding(.horizontal, 16)
+                        ValueSlider(
+                            title: String(localized: "Letter spacing"),
+                            valueText: text.tracking.formatted(.percent.precision(.fractionLength(0)).locale(.interface)),
+                            value: binding(\.tracking, field: .tracking),
+                            range: TextLook.trackingRange, step: 0.01,
+                            identifier: "textSheet.tracking"
+                        )
+                        .padding(.horizontal, 16)
                         alignment
                     }
-                    colors(String(localized: "Color"), selection: binding(\.color))
+                    colors(String(localized: "Color"), selection: binding(\.color, field: .color))
                     GroupedCard(background: Palette.surface2, radius: Metrics.innerRadius) {
-                        picker(String(localized: "Background"), selection: binding(\.background), options: TextOverlayBackground.allCases) { $0.label }
-                        SettingToggleRow(title: String(localized: "Shadow"), isOn: binding(\.hasShadow), minHeight: 50)
-                        SettingToggleRow(title: String(localized: "Outline"), isOn: binding(\.hasOutline), minHeight: 50)
-                        SettingToggleRow(title: String(localized: "All caps"), isOn: binding(\.isUppercase), minHeight: 50)
+                        picker(String(localized: "Background"), selection: binding(\.background, field: .background), options: TextOverlayBackground.allCases) { $0.label }
+                        SettingToggleRow(title: String(localized: "Shadow"), isOn: binding(\.hasShadow, field: .shadow), minHeight: 50)
+                        SettingToggleRow(title: String(localized: "Outline"), isOn: binding(\.hasOutline, field: .outline), minHeight: 50)
+                        SettingToggleRow(title: String(localized: "All caps"), isOn: binding(\.isUppercase, field: .letterCase), minHeight: 50)
                     }
                     if text.background != .none {
-                        colors(String(localized: "Background color"), selection: binding(\.backgroundColor))
+                        colors(String(localized: "Background color"), selection: binding(\.backgroundColor, field: .background))
+                        ValueSlider(
+                            title: String(localized: "Background opacity"),
+                            valueText: text.backgroundOpacity.formatted(.percent.precision(.fractionLength(0)).locale(.interface)),
+                            value: binding(\.backgroundOpacity, field: .background),
+                            range: 0.2...1, step: 0.05,
+                            identifier: "textSheet.backgroundOpacity"
+                        )
                     }
                     HStack(spacing: 10) {
                         Button {
@@ -81,18 +96,36 @@ struct TextOverlaySheet: View {
 
     // MARK: - Sections
 
-    private var styles: some View {
+    private func styles(_ text: TextOverlay) -> some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("Quick styles").font(.footnote.weight(.semibold)).foregroundStyle(Palette.ink2)
-            HStack(spacing: 8) {
-                ForEach(CreatorStyle.allCases) { style in
-                    Button { viewModel.applyStyle(style, toText: textID) } label: {
-                        FilterChip(label: style.label, isSelected: false)
+            Text("Presets").font(.footnote.weight(.semibold)).foregroundStyle(Palette.ink2)
+            ScrollView(.horizontal) {
+                HStack(spacing: 8) {
+                    if viewModel.myStyle != nil {
+                        Button { viewModel.applyMyStyle(to: .selected) } label: {
+                            FilterChip(label: String(localized: "My style"), isSelected: false)
+                        }
+                        .buttonStyle(.plain)
+                        .accessibilityIdentifier("textSheet.style.mine")
                     }
-                    .buttonStyle(.plain)
-                    .accessibilityIdentifier("textSheet.style.\(style.rawValue)")
+                    ForEach(TypePreset.allCases) { preset in
+                        Button { viewModel.applyPreset(preset, to: .selected) } label: {
+                            FilterChip(label: preset.label, isSelected: text.preset == preset)
+                        }
+                        .buttonStyle(.plain)
+                        .accessibilityAddTraits(text.preset == preset ? .isSelected : [])
+                        .accessibilityIdentifier("textSheet.style.\(preset.rawValue)")
+                    }
                 }
             }
+            .scrollIndicators(.hidden)
+            Button {
+                viewModel.saveMyStyle()
+            } label: {
+                Label("Save as My style", systemImage: "bookmark")
+            }
+            .buttonStyle(.cueSecondary(.compact))
+            .accessibilityIdentifier("textSheet.saveMyStyle")
         }
     }
 
@@ -100,7 +133,7 @@ struct TextOverlaySheet: View {
         HStack {
             Text("Alignment")
             Spacer()
-            Picker("Alignment", selection: binding(\.alignment)) {
+            Picker("Alignment", selection: binding(\.alignment, field: .alignment)) {
                 ForEach(TextOverlayAlignment.allCases) { alignment in
                     Image(systemName: alignment.systemImage)
                         .accessibilityLabel(Text(alignment.label))
@@ -145,8 +178,9 @@ struct TextOverlaySheet: View {
         }
     }
 
-    /// A field of the text, read from the edit and written through the view model.
-    private func binding<Value>(_ keyPath: WritableKeyPath<TextOverlay, Value>) -> Binding<Value> {
+    /// A field of the text, read from the edit and written through the view model. A part of the
+    /// look (`field`) changed here is remembered as the creator's own.
+    private func binding<Value>(_ keyPath: WritableKeyPath<TextOverlay, Value>, field: TextLookField? = nil) -> Binding<Value> {
         let fallback = TextOverlay(role: .title, style: .clean, span: TimeSpan(start: 0, end: 1))
         return Binding(
             get: {
@@ -154,7 +188,11 @@ struct TextOverlaySheet: View {
                 (viewModel.edit.texts.first { $0.id == textID } ?? fallback)[keyPath: keyPath]
             },
             set: { value in
-                viewModel.updateText(textID) { $0[keyPath: keyPath] = value }
+                if let field {
+                    viewModel.customizeText(textID, field) { $0[keyPath: keyPath] = value }
+                } else {
+                    viewModel.updateText(textID) { $0[keyPath: keyPath] = value }
+                }
             }
         )
     }

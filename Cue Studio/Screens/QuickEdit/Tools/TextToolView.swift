@@ -79,13 +79,22 @@ struct TextToolView: View {
             }
             ScrollView(.horizontal) {
                 HStack(spacing: 6) {
-                    ForEach(CreatorStyle.allCases) { style in
-                        Button { viewModel.applyStyle(style, toText: text.id) } label: {
-                            FilterChip(label: style.label, isSelected: false, height: 30)
+                    if viewModel.myStyle != nil {
+                        Button { viewModel.applyMyStyle(to: .selected) } label: {
+                            FilterChip(label: String(localized: "My style"), isSelected: false, height: 30)
                         }
                         .buttonStyle(.plain)
                         .accessibilityHint(Text("Restyles this text"))
-                        .accessibilityIdentifier("edit.textStyle.\(style.rawValue)")
+                        .accessibilityIdentifier("edit.textStyle.mine")
+                    }
+                    ForEach(TypePreset.allCases) { preset in
+                        Button { viewModel.applyPreset(preset, to: .selected) } label: {
+                            FilterChip(label: preset.label, isSelected: text.preset == preset, height: 30)
+                        }
+                        .buttonStyle(.plain)
+                        .accessibilityHint(Text("Restyles this text"))
+                        .accessibilityAddTraits(text.preset == preset ? .isSelected : [])
+                        .accessibilityIdentifier("edit.textStyle.\(preset.rawValue)")
                     }
                 }
             }

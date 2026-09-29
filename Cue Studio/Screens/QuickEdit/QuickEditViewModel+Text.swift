@@ -25,7 +25,7 @@ extension QuickEditViewModel {
         guard isReady else { return }
         player.pause()
         let span = placement(at: player.currentTime, length: role.defaultDuration)
-        let text = TextOverlay(role: role, style: edit.textStyle, span: edit.timeline.sourceSpan(forEdited: span))
+        let text = edit.newText(role, span: edit.timeline.sourceSpan(forEdited: span))
         change { $0.texts.append(text) }
         selectedTextID = text.id
         editingTextID = text.id
@@ -51,11 +51,6 @@ extension QuickEditViewModel {
         change { $0.texts.removeAll { $0.id == id } }
         if editingTextID == id { editingTextID = nil }
         toast.show(String(localized: "Text deleted"))
-    }
-
-    /// A quick style for one text: how it looks and where it sits, not what it says.
-    func applyStyle(_ style: CreatorStyle, toText id: UUID) {
-        updateText(id) { style.apply(to: &$0) }
     }
 
     /// Where the text plays (edited seconds); nil when none of it does.

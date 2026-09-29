@@ -801,11 +801,12 @@ struct QuickEditViewModelTests {
         #expect(scenario.viewModel.edit.captions.count == 1)
     }
 
-    @Test func pickingAStyleTurnsCaptionsOn() async {
+    @Test func pickingAPresetTurnsCaptionsOn() async {
         let scenario = await makeScenario()
-        await scenario.viewModel.setCaptionStyle(.highlight)
+        await scenario.viewModel.setCaptionPreset(.label)
         #expect(scenario.viewModel.edit.showsCaptions)
-        #expect(scenario.viewModel.edit.captionStyle == .highlight)
+        #expect(scenario.viewModel.edit.captionPreset == .label)
+        #expect(scenario.viewModel.edit.captionLook == TypePreset.label.look(for: .caption))
     }
 
     @Test func autoAdjustsTheLook() async {

@@ -29,26 +29,43 @@ struct CaptionsToolView: View {
             .frame(minHeight: 58)
             .background(Palette.surface, in: RoundedRectangle(cornerRadius: Metrics.innerRadius, style: .continuous))
             .accessibilityIdentifier("edit.captionsToggle")
-            HStack(spacing: 8) {
-                ForEach(CaptionStyle.allCases) { style in
-                    let isOn = viewModel.edit.captionStyle == style
-                    Button {
-                        Task { await viewModel.setCaptionStyle(style) }
-                    } label: {
-                        CaptionStyleSample(style: style)
-                            .frame(maxWidth: .infinity, minHeight: 54)
-                            .background(Palette.surface, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
-                            .overlay(RoundedRectangle(cornerRadius: 14, style: .continuous).strokeBorder(isOn ? Palette.acc : .clear, lineWidth: 1.5))
+            ScrollView(.horizontal) {
+                HStack(spacing: 8) {
+                    ForEach(TypePreset.allCases) { preset in
+                        let isOn = viewModel.edit.captionPreset == preset
+                        Button {
+                            Task { await viewModel.setCaptionPreset(preset) }
+                        } label: {
+                            captionSample(preset)
+                                .frame(width: 112, height: 54)
+                                .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+                                .overlay(RoundedRectangle(cornerRadius: 14, style: .continuous).strokeBorder(isOn ? Palette.acc : .clear, lineWidth: 1.5))
+                        }
+                        .buttonStyle(.plain)
+                        .accessibilityLabel(Text(preset.label))
+                        .accessibilityAddTraits(isOn ? .isSelected : [])
+                        .accessibilityIdentifier("edit.captionPreset.\(preset.rawValue)")
                     }
-                    .buttonStyle(.plain)
-                    .accessibilityLabel(Text(style.label))
-                    .accessibilityAddTraits(isOn ? .isSelected : [])
                 }
             }
+            .scrollIndicators(.hidden)
             Picker("Position", selection: $viewModel.edit.captionPosition) {
                 ForEach(CaptionPosition.allCases) { Text($0.label).tag($0) }
             }
             .pickerStyle(.segmented)
+        }
+    }
+
+    /// The preset drawn on captions exactly as the export draws them.
+    private func captionSample(_ preset: TypePreset) -> some View {
+        ZStack {
+            LinearGradient(colors: [Palette.thumbnailTop, Palette.thumbnailBottom], startPoint: .top, endPoint: .bottom)
+            if let image = TypeLookPreview.image(preset.look(for: .caption), use: .caption, sample: preset.label) {
+                Image(uiImage: image)
+                    .resizable()
+                    .scaledToFit()
+                    .padding(6)
+            }
         }
     }
 }

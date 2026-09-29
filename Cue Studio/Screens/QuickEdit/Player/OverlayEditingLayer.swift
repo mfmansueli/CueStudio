@@ -76,7 +76,7 @@ struct OverlayEditingLayer: View {
                         x: text.center.x + Double(value.translation.width / max(1, size.width)),
                         y: text.center.y + Double(value.translation.height / max(1, size.height))
                     ).clamped
-                    viewModel.updateText(text.id) { $0.center = moved }
+                    viewModel.customizeText(text.id, .position) { $0.center = moved }
                     draggedTextID = nil
                     dragOffset = .zero
                 }

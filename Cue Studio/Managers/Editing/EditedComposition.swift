@@ -104,7 +104,12 @@ nonisolated struct EditedComposition: @unchecked Sendable {
 
         var overlays = TextOverlayRenderer.overlays(edit.editedTexts(in: edit.timeline), frame: crop.size)
         if options.burnsInCaptions, edit.showsCaptions {
-            overlays += OverlayRenderer.captions(edit.editedCaptions, style: edit.captionStyle, position: edit.captionPosition, frame: crop.size)
+            if let look = edit.captionLook {
+                overlays += TextOverlayRenderer.captions(edit.editedCaptions, look: look, position: edit.captionPosition, frame: crop.size)
+            } else {
+                // Edits made before type presets keep their caption style.
+                overlays += OverlayRenderer.captions(edit.editedCaptions, style: edit.captionStyle, position: edit.captionPosition, frame: crop.size)
+            }
         }
         let (mediaTrack, mediaFrames) = await placeMedia(of: edit, frame: crop.size, in: composition, duration: cursor)
         let videoMedia = mediaFrames.filter(\.isVideo).map(\.span)

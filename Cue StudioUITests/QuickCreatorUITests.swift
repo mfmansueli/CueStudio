@@ -84,14 +84,18 @@ final class QuickCreatorUITests: XCTestCase {
         XCTAssertTrue(app.buttons["edit.cutButton"].waitForExistence(timeout: 5))
     }
 
-    func testAStyleSetsTheWholeVideo() {
+    func testAPresetSetsTheTypeOfTextsAndCaptions() {
         let app = openQuickEdit()
         app.buttons["edit.category.polish"].tap()
         let style = app.buttons["edit.tool.style"]
         XCTAssertTrue(style.waitForExistence(timeout: 5))
         style.tap()
-        app.buttons["edit.style.bold"].tap()
-        XCTAssertTrue(app.staticTexts["Bold style applied"].waitForExistence(timeout: 5))
+        app.buttons["edit.style.impact"].tap()
+        XCTAssertTrue(app.staticTexts["Impact on every text"].waitForExistence(timeout: 5))
+        app.buttons["edit.styleScope.allCaptions"].tap()
+        app.buttons["edit.style.pop"].tap()
+        XCTAssertTrue(app.staticTexts["Pop on the captions"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.buttons["edit.style.pop"].isSelected)
         app.buttons["edit.doneButton"].tap()
         XCTAssertTrue(app.staticTexts["EDITED"].waitForExistence(timeout: 5))
     }

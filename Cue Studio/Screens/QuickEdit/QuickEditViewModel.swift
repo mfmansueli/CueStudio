@@ -104,6 +104,8 @@ final class QuickEditViewModel {
     var pausePreviewBase: EditSnapshot?
     /// Speed: the section under the playhead (or selected), or the whole video.
     var speedScope: SpeedScope = .whole
+    /// The type the creator saved as "My style" (see `QuickEditViewModel+Style`).
+    var myStyle: TextLook?
 
     let take: Take
     let player: EditPlayback
@@ -112,6 +114,7 @@ final class QuickEditViewModel {
     let toast: ToastService
     let mediaImporter: EditMediaImporting
     let recorder: VoiceOverRecording
+    let styles: TextStyleStoring
     private let takes: TakeLibraryService
     private let drafts: QuickEditDraftStoring
     /// What a script is heard in (`LanguageService.speechRequest(for:)`).
@@ -133,10 +136,12 @@ final class QuickEditViewModel {
     init(
         take: Take, takes: TakeLibraryService, library: ScriptLibraryService, editing: TakeEditing,
         drafts: QuickEditDraftStoring, toast: ToastService, player: EditPlayback? = nil,
-        mediaImporter: EditMediaImporting? = nil, recorder: VoiceOverRecording? = nil,
+        mediaImporter: EditMediaImporting? = nil, recorder: VoiceOverRecording? = nil, styles: TextStyleStoring? = nil,
         speechLanguage: @escaping (Script?) -> SpeechLanguageRequest = SpeechLanguageRequest.script
     ) {
         self.take = take
+        self.styles = styles ?? TextStyleStore()
+        myStyle = self.styles.myStyle
         speechLanguageFor = speechLanguage
         self.mediaImporter = mediaImporter ?? EditMediaImporter()
         self.recorder = recorder ?? VoiceOverRecorder()
@@ -625,6 +630,10 @@ final class QuickEditViewModel {
         edit.creatorStyle = step.creatorStyle
         edit.captionStyle = step.captionStyle
         edit.filter = step.filter
+        edit.textLook = step.textLook
+        edit.textPreset = step.textPreset
+        edit.captionLook = step.captionLook
+        edit.captionPreset = step.captionPreset
     }
 
     // MARK: - Adjust
@@ -662,8 +671,9 @@ final class QuickEditViewModel {
         }
     }
 
-    func setCaptionStyle(_ style: CaptionStyle) async {
-        change { $0.captionStyle = style }
+    /// A preset for the captions (one undo step); turns them on when they were off.
+    func setCaptionPreset(_ preset: TypePreset) async {
+        applyPreset(preset, to: .allCaptions)
         if !edit.showsCaptions { await setShowsCaptions(true) }
     }
 

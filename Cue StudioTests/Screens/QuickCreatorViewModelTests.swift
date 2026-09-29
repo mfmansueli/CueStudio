@@ -20,6 +20,7 @@ struct QuickCreatorViewModelTests {
         let player: FakeEditPlayback
         let recorder: FakeVoiceRecorder
         let toast: ToastService
+        let styles: FakeTextStyleStore
     }
 
     private func makeScenario(editor: FakeTakeEditor = FakeTakeEditor()) async -> Scenario {
@@ -33,13 +34,14 @@ struct QuickCreatorViewModelTests {
         let player = FakeEditPlayback()
         let recorder = FakeVoiceRecorder()
         let toast = ToastService()
+        let styles = FakeTextStyleStore()
         let viewModel = QuickEditViewModel(
             take: takes.takes[0], takes: takes, library: library, editing: editor,
             drafts: FakeDraftStore(), toast: toast, player: player,
-            mediaImporter: FakeMediaImporter(), recorder: recorder
+            mediaImporter: FakeMediaImporter(), recorder: recorder, styles: styles
         )
         await viewModel.prepare()
-        return Scenario(viewModel: viewModel, takes: takes, editor: editor, player: player, recorder: recorder, toast: toast)
+        return Scenario(viewModel: viewModel, takes: takes, editor: editor, player: player, recorder: recorder, toast: toast, styles: styles)
     }
 
     private func photo(_ name: String = "photo-\(UUID().uuidString).jpg") -> ImportedMedia {
@@ -137,13 +139,19 @@ struct QuickCreatorViewModelTests {
         #expect(viewModel.history.past.count == steps + 2)
     }
 
-    @Test func aQuickStyleRestylesOneText() async {
+    @Test func aPresetRestylesOneText() async {
         let scenario = await makeScenario()
         scenario.viewModel.addText(.callout)
-        let id = scenario.viewModel.edit.texts[0].id
-        scenario.viewModel.applyStyle(.social, toText: id)
-        #expect(scenario.viewModel.edit.texts[0].background == .pill)
-        #expect(scenario.viewModel.edit.creatorStyle == nil)
+        scenario.viewModel.addText(.title)
+        scenario.viewModel.applyPreset(.label, to: .selected)
+        let texts = scenario.viewModel.edit.texts
+        #expect(texts[1].background == .box)
+        #expect(texts[1].backgroundColor == .yellow)
+        #expect(texts[1].preset == .label)
+        // Only the picked one, and new texts don't follow it.
+        #expect(texts[0].preset == .cue)
+        #expect(scenario.viewModel.edit.textPreset == nil)
+        #expect(scenario.toast.message == "Label on this text")
     }
 
     @Test func deletingATextIsUndoable() async {
@@ -159,25 +167,107 @@ struct QuickCreatorViewModelTests {
 
     // MARK: - Style
 
-    @Test func aStyleSetsTextsCaptionsAndFilterInOneStep() async {
+    @Test func newTextsStartInCuesPreset() async {
+        let scenario = await makeScenario()
+        scenario.viewModel.addText(.title)
+        let text = scenario.viewModel.edit.texts[0]
+        #expect(text.preset == .cue)
+        #expect(text.weight == .heavy)
+    }
+
+    @Test func aPresetOnEveryTextIsOneStepAndLeavesThePictureAlone() async {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
         viewModel.addText(.title)
-        viewModel.applyCreatorStyle(.bold)
-        #expect(viewModel.edit.creatorStyle == .bold)
-        #expect(viewModel.edit.captionStyle == .bold)
-        #expect(viewModel.edit.filter == .vivid)
+        viewModel.setFilter(.film)
+        viewModel.useFrameAsCover()
+        let cover = viewModel.edit.cover
+        let steps = viewModel.history.past.count
+        viewModel.applyPreset(.impact, to: .allTexts)
+        #expect(viewModel.history.past.count == steps + 1)
         #expect(viewModel.edit.texts[0].isUppercase)
-        #expect(scenario.toast.message == "Bold style applied")
+        #expect(viewModel.edit.texts[0].hasOutline)
+        #expect(viewModel.edit.textPreset == .impact)
+        #expect(scenario.toast.message == "Impact on every text")
+        // Type only: the filter, the cover and the captions stay.
+        #expect(viewModel.edit.filter == .film)
+        #expect(viewModel.edit.cover == cover)
+        #expect(viewModel.edit.captionLook == nil)
         // New texts start from it.
         viewModel.addText(.hook)
-        #expect(viewModel.edit.texts[1].hasOutline)
+        #expect(viewModel.edit.texts[1].preset == .impact)
 
         viewModel.undo()
         viewModel.undo()
-        #expect(viewModel.edit.creatorStyle == nil)
-        #expect(viewModel.edit.filter == .original)
+        #expect(viewModel.edit.textPreset == nil)
         #expect(!viewModel.edit.texts[0].isUppercase)
+    }
+
+    @Test func keepMyChangesKeepsWhatWasSetByHand() async {
+        let scenario = await makeScenario()
+        let viewModel = scenario.viewModel
+        viewModel.addText(.title)
+        let id = viewModel.edit.texts[0].id
+        viewModel.customizeText(id, .color) { $0.color = .pink }
+        #expect(viewModel.edit.texts[0].customized == [.color])
+
+        viewModel.applyPreset(.pop, to: .allTexts, keepingCustomizations: true)
+        #expect(viewModel.edit.texts[0].color == .pink)
+        #expect(viewModel.edit.texts[0].hasOutline)
+        #expect(viewModel.edit.texts[0].customized == [.color])
+
+        viewModel.applyPreset(.editorial, to: .allTexts, keepingCustomizations: false)
+        #expect(viewModel.edit.texts[0].color == .white)
+        #expect(viewModel.edit.texts[0].font == .serif)
+        #expect(viewModel.edit.texts[0].customized.isEmpty)
+    }
+
+    @Test func aPresetOnTheCaptionsLeavesTheTextsAlone() async {
+        let scenario = await makeScenario()
+        let viewModel = scenario.viewModel
+        viewModel.addText(.title)
+        let text = viewModel.edit.texts[0]
+        viewModel.applyPreset(.pop, to: .allCaptions)
+        #expect(viewModel.edit.captionLook == TypePreset.pop.look(for: .caption))
+        #expect(viewModel.edit.captionPreset == .pop)
+        #expect(viewModel.edit.texts[0] == text)
+        #expect(scenario.toast.message == "Pop on the captions")
+        viewModel.undo()
+        #expect(viewModel.edit.captionLook == nil)
+    }
+
+    @Test func myStyleIsSavedFromATextAndReused() async {
+        let scenario = await makeScenario()
+        let viewModel = scenario.viewModel
+        viewModel.addText(.title)
+        let id = viewModel.edit.texts[0].id
+        viewModel.customizeText(id, .color) { $0.color = .green }
+        viewModel.customizeText(id, .tracking) { $0.tracking = 0.1 }
+        viewModel.saveMyStyle()
+        #expect(scenario.styles.myStyle?.color == .green)
+        #expect(scenario.styles.myStyle?.tracking == 0.1)
+        #expect(viewModel.myStyle == scenario.styles.myStyle)
+        #expect(scenario.toast.message == "Saved as My style")
+
+        viewModel.addText(.hook)
+        viewModel.applyMyStyle(to: .allTexts)
+        #expect(viewModel.edit.texts.allSatisfy { $0.color == .green && $0.tracking == 0.1 })
+        #expect(viewModel.edit.textPreset == nil)
+        #expect(scenario.toast.message == "My style on every text")
+    }
+
+    @Test func myStyleOnCaptionsStaysReadable() async {
+        let scenario = await makeScenario()
+        scenario.styles.myStyle = TextLook(sizeScale: 2.2, color: .yellow)
+        let viewModel = QuickEditViewModel(
+            take: scenario.viewModel.take, takes: scenario.takes, library: scenario.viewModel.library, editing: scenario.editor,
+            drafts: FakeDraftStore(), toast: scenario.toast, player: scenario.player,
+            mediaImporter: FakeMediaImporter(), recorder: FakeVoiceRecorder(), styles: scenario.styles
+        )
+        await viewModel.prepare()
+        viewModel.applyMyStyle(to: .allCaptions)
+        #expect(viewModel.edit.captionLook?.color == .yellow)
+        #expect(viewModel.edit.captionLook?.sizeScale == 1.3)
     }
 
     // MARK: - Speed
@@ -451,13 +541,13 @@ struct QuickCreatorViewModelTests {
         #expect(viewModel.edit.cover == nil)
     }
 
-    @Test func theCoverFollowsTheProjectStyle() async {
+    @Test func theCoverKeepsItsStyleWhenTheTypeChanges() async {
         let scenario = await makeScenario()
-        scenario.viewModel.applyCreatorStyle(.minimal)
         scenario.viewModel.useFrameAsCover()
-        #expect(scenario.viewModel.edit.cover?.style == .minimal)
-        scenario.viewModel.applyCreatorStyle(.social)
-        #expect(scenario.viewModel.edit.cover?.style == .social)
+        let style = scenario.viewModel.edit.cover?.style
+        scenario.viewModel.applyPreset(.soft, to: .allTexts)
+        scenario.viewModel.applyPreset(.soft, to: .allCaptions)
+        #expect(scenario.viewModel.edit.cover?.style == style)
     }
 
     // MARK: - Done

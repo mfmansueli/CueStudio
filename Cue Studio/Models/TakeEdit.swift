@@ -43,7 +43,12 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
 
     // MARK: Captions
     var showsCaptions = false
+    /// How captions look in edits made before type presets; `captionLook` replaces it once set.
     var captionStyle: CaptionStyle = .bold
+    /// The captions' type (a preset or "My style"); nil draws them in `captionStyle`.
+    var captionLook: TextLook?
+    /// The preset `captionLook` came from, nil for "My style".
+    var captionPreset: TypePreset?
     var captionPosition: CaptionPosition = .bottom
     /// Timed to the original recording.
     var captions: [CaptionCue] = []
@@ -55,9 +60,13 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
     var media: [MediaOverlay] = []
     /// Narrations recorded over the edit.
     var voiceOvers: [VoiceOverClip] = []
-    /// The look applied to the whole video with Style; nil until one is picked. New texts start
-    /// from it (Clean without one).
+    /// The style picked with the old Style tool (it also set captions and the filter); kept so
+    /// edits made with it open as they were. New texts start from `textLook` instead.
     var creatorStyle: CreatorStyle?
+    /// The type new texts start from, set when a preset or "My style" goes on every text.
+    var textLook: TextLook?
+    /// The preset `textLook` came from, nil for "My style".
+    var textPreset: TypePreset?
     /// The cover saved with exports; nil when none was chosen.
     var cover: VideoCover?
 
@@ -114,8 +123,13 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
         .sorted { $0.span.start < $1.span.start }
     }
 
-    /// The style new texts start from.
-    var textStyle: CreatorStyle { creatorStyle ?? .clean }
+    /// The look a new text starts with: the one set on every text, else the old Style tool's,
+    /// else Cue's own preset.
+    func newText(_ role: TextOverlayRole, span: TimeSpan) -> TextOverlay {
+        if let textLook { return TextOverlay(role: role, look: textLook, preset: textPreset, span: span) }
+        if let creatorStyle { return TextOverlay(role: role, style: creatorStyle, span: span) }
+        return TextOverlay(role: role, look: TypePreset.cue.look(for: .title), preset: .cue, span: span)
+    }
 
     /// Media files (B-roll, voice-overs, a cover photo) the edit reads.
     var mediaFileNames: Set<String> {
@@ -128,8 +142,8 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
 
     private enum CodingKeys: String, CodingKey {
         case timeline, suggestions, cleanUpAnalyzed, volume, enhancesVoice, reducesNoise, exposure, contrast, warmth, filter
-        case aspect, cropOffset, showsCaptions, captionStyle, captionPosition, captions
-        case texts, media, voiceOvers, creatorStyle, cover
+        case aspect, cropOffset, showsCaptions, captionStyle, captionLook, captionPreset, captionPosition, captions
+        case texts, media, voiceOvers, creatorStyle, textLook, textPreset, cover
     }
 
     /// Edits saved before the timeline had pieces: trim handles, cut points, deleted sections and
@@ -158,6 +172,8 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
         cropOffset = try container.decodeIfPresent(Double.self, forKey: .cropOffset) ?? 0
         showsCaptions = try container.decodeIfPresent(Bool.self, forKey: .showsCaptions) ?? false
         captionStyle = try container.decodeIfPresent(CaptionStyle.self, forKey: .captionStyle) ?? .bold
+        captionLook = try? container.decodeIfPresent(TextLook.self, forKey: .captionLook)
+        captionPreset = try? container.decodeIfPresent(TypePreset.self, forKey: .captionPreset)
         captionPosition = try container.decodeIfPresent(CaptionPosition.self, forKey: .captionPosition) ?? .bottom
         captions = try container.decodeIfPresent([CaptionCue].self, forKey: .captions) ?? []
         // Added later: edits saved before have none, and a damaged one loses only that part.
@@ -165,6 +181,8 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
         media = (try? container.decodeIfPresent([MediaOverlay].self, forKey: .media)) ?? []
         voiceOvers = (try? container.decodeIfPresent([VoiceOverClip].self, forKey: .voiceOvers)) ?? []
         creatorStyle = try? container.decodeIfPresent(CreatorStyle.self, forKey: .creatorStyle)
+        textLook = try? container.decodeIfPresent(TextLook.self, forKey: .textLook)
+        textPreset = try? container.decodeIfPresent(TypePreset.self, forKey: .textPreset)
         cover = try? container.decodeIfPresent(VideoCover.self, forKey: .cover)
     }
 
