@@ -42,15 +42,17 @@ final class QuickCreatorUITests: XCTestCase {
         XCTAssertTrue(app.buttons["textSheet.done"].waitForExistence(timeout: 5))
         app.buttons["textSheet.done"].tap()
         app.buttons["edit.category.edit"].tap()
-        let track = element(app, "edit.track.text")
-        XCTAssertTrue(track.waitForExistence(timeout: 5))
-        let bar = track.descendants(matching: .any)["edit.layer.text"]
+        // The tracks sit under the video strip; each bar is a button.
+        let tracks = element(app, "edit.tracks")
+        XCTAssertTrue(tracks.waitForExistence(timeout: 5))
+        let bar = tracks.descendants(matching: .any)["edit.layer.text"]
         XCTAssertTrue(bar.waitForExistence(timeout: 5))
         bar.tap()
         let delete = app.buttons["edit.layerDeleteButton"]
         XCTAssertTrue(delete.waitForExistence(timeout: 5))
         delete.tap()
-        XCTAssertFalse(track.waitForExistence(timeout: 2))
+        // With nothing on them, the tracks take no room.
+        XCTAssertFalse(bar.waitForExistence(timeout: 2))
     }
 
     func testThePreviewEnlargesAndComesBack() {

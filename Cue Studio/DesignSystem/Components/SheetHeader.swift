@@ -33,6 +33,7 @@ struct SheetHeader: View {
                 }
                 .buttonStyle(.cueIcon(.surface, diameter: 32))
                 .accessibilityLabel(Text("Close"))
+                .accessibilityIdentifier("sheet.closeButton")
             }
         }
     }

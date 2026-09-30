@@ -60,6 +60,8 @@ final class CameraManager: CameraControlling {
             activeLens = try await engine.start(settings: settings, includeAudio: hasAudio)
             activeDeviceID = await engine.activeDeviceID
             status = .running
+            // A background chosen before the camera ran shows now.
+            if background.isActive { await showBackground() }
         } catch {
             status = .failed(error.localizedDescription)
         }

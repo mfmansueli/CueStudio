@@ -6,7 +6,7 @@
 import XCTest
 
 /// Sound and background in Quick edit, on a small real video: the Voice levels, the Music tool's
-/// rights note, and a background blurred and undone.
+/// rights note, and a background blurred, keyed and put back.
 @MainActor
 final class QuickEditSoundUITests: XCTestCase {
     override func setUp() {
@@ -33,7 +33,7 @@ final class QuickEditSoundUITests: XCTestCase {
         XCTAssertTrue(element(app, "edit.musicRightsNote").exists)
     }
 
-    func testABackgroundBlurIsOneUndoStep() {
+    func testABackgroundBlurAppliesToTheTakeAndGoesBack() {
         let app = openQuickEdit()
         app.buttons["edit.category.adjust"].tap()
         let tool = app.buttons["edit.tool.background"]
@@ -45,8 +45,13 @@ final class QuickEditSoundUITests: XCTestCase {
         blur.tap()
         XCTAssertTrue(blur.isSelected)
         XCTAssertTrue(element(app, "edit.backgroundBlur").waitForExistence(timeout: 5))
-        app.buttons["edit.undoButton"].tap()
-        XCTAssertTrue(app.buttons["edit.background.original"].isSelected)
+        // The color key has its own controls.
+        element(app, "edit.backgroundCutout").buttons["Color key"].tap()
+        XCTAssertTrue(element(app, "edit.keyTolerance").waitForExistence(timeout: 5))
+        let original = app.buttons["edit.background.original"]
+        original.tap()
+        XCTAssertTrue(original.isSelected)
+        XCTAssertFalse(element(app, "edit.backgroundBlur").exists)
     }
 
     private func openQuickEdit() -> XCUIApplication {

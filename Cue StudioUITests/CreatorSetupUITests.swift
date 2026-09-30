@@ -86,12 +86,18 @@ final class CreatorSetupUITests: XCTestCase {
         let pill = app.buttons["prompter.setupButton"]
         XCTAssertTrue((pill.value as? String)?.contains("TikTok setup") == true)
         pill.tap()
-        XCTAssertTrue(app.buttons["setup.backToMySetupButton"].waitForExistence(timeout: 5))
-        app.swipeDown()
+        let back = app.buttons["setup.backToMySetupButton"]
+        XCTAssertTrue(back.waitForExistence(timeout: 5))
+        // The sheet has to be gone before Close reaches the prompter. (A swipe from the middle of
+        // the screen starts above this short sheet, on the prompter.)
+        app.buttons["sheet.closeButton"].tap()
+        XCTAssertTrue(back.waitForNonExistence(timeout: 5))
         app.buttons["prompter.closeButton"].tap()
 
         // The Creator Setup is still 4K.
-        app.tabBars.buttons["Profile"].tap()
+        let profile = app.tabBars.buttons["Profile"]
+        XCTAssertTrue(profile.waitForExistence(timeout: 5))
+        profile.tap()
         let setup = app.buttons["profile.creatorSetupButton"]
         scroll(app, to: setup)
         setup.tap()

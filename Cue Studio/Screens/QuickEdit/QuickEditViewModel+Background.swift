@@ -33,6 +33,12 @@ extension QuickEditViewModel {
         return edit.backgrounds.first { $0.sourceID == id }?.effect ?? BackgroundEffect()
     }
 
+    /// Asks once whether this iPhone can find people in video.
+    func checkBackgroundSupport() async {
+        guard canFindPeople == nil else { return }
+        canFindPeople = await BackgroundSupport.canFindPeople()
+    }
+
     /// Changes the background of the recording under the playhead (one undo step, or part of the
     /// gesture's).
     func updateBackground(_ update: (inout BackgroundEffect) -> Void) {

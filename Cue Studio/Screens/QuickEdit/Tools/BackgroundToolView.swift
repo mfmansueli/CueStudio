@@ -46,9 +46,7 @@ struct BackgroundToolView: View {
             .padding(.bottom, 8)
         }
         .scrollIndicators(.hidden)
-        .task {
-            if viewModel.canFindPeople == nil { viewModel.canFindPeople = await BackgroundSupport.canFindPeople() }
-        }
+        .task { await viewModel.checkBackgroundSupport() }
         .onChange(of: pickedItem) { _, item in
             guard let item else { return }
             pickedItem = nil
