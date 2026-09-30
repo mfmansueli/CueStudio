@@ -1,5 +1,11 @@
 # Cue Studio — Languages
 
+Video caption collection: Cue / Impact / Clean / Pop / Editorial (`CaptionTheme`); Brazilian
+Portuguese uses **Impacto**, and **Clean** is the collection's proper name in every interface.
+The existing text presets and general "Clean" translation are unchanged. Caption settings use
+the same 15-language catalog. Bundled font licenses and local glyph fallbacks are documented in
+`Cue Studio/DesignSystem/Fonts/CAPTION-FONTS.md`; RTL shaping is preserved in the shared renderer.
+
 How Cue handles languages: the architecture, the terminology every translation follows, and what
 right to left and longer languages need. Read with `ARCHITECTURE.md` (strings are always localized)
 and `DESIGN_PROJECT.md` (Language & Region screen).

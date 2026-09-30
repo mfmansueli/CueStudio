@@ -6,10 +6,11 @@
 import SwiftUI
 
 /// Captions made from what is said in the take, then read and corrected line by line: the switch,
-/// the language spoken, where listening is (with Stop), the type presets and position, and the
+/// the language spoken, where listening is (with Stop), the caption collection and settings, and the
 /// lines. A take no model can hear can still be captioned by hand.
 struct CaptionsToolView: View {
     @Bindable var viewModel: QuickEditViewModel
+    @State private var showsSettings = false
 
     var body: some View {
         VStack(spacing: 10) {
@@ -19,17 +20,23 @@ struct CaptionsToolView: View {
             ScrollView {
                 VStack(spacing: 10) {
                     presets
-                    animations
-                    Picker("Position", selection: $viewModel.edit.captionPosition) {
-                        ForEach(CaptionPosition.allCases) { Text($0.label).tag($0) }
+                    if viewModel.edit.captionCollection == nil {
+                        Text("This project keeps its saved caption look. Pick a style to replace it.")
+                            .font(.caption).foregroundStyle(Palette.ink2)
+                    } else {
+                        Button { showsSettings = true } label: {
+                            Label("Caption settings", systemImage: "slider.horizontal.3")
+                        }
+                        .buttonStyle(.cueSecondary(.compact))
+                        .accessibilityIdentifier("edit.captionSettings")
                     }
-                    .pickerStyle(.segmented)
                     lines
                 }
                 .padding(.bottom, 8)
             }
             .scrollIndicators(.hidden)
         }
+        .sheet(isPresented: $showsSettings) { CaptionSettingsSheet(viewModel: viewModel) }
     }
 
     // MARK: - Sections
@@ -147,15 +154,19 @@ struct CaptionsToolView: View {
     private var presets: some View {
         ScrollView(.horizontal) {
             HStack(spacing: 8) {
-                ForEach(TypePreset.allCases) { preset in
-                    let isOn = viewModel.edit.captionPreset == preset
+                ForEach(CaptionTheme.allCases) { preset in
+                    let isOn = viewModel.edit.captionCollection?.theme == preset
                     Button {
-                        Task { await viewModel.setCaptionPreset(preset) }
+                        viewModel.setCaptionTheme(preset)
                     } label: {
-                        captionSample(preset)
-                            .frame(width: 112, height: 54)
-                            .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
-                            .overlay(RoundedRectangle(cornerRadius: 14, style: .continuous).strokeBorder(isOn ? Palette.acc : .clear, lineWidth: 1.5))
+                        VStack(spacing: 4) {
+                            captionSample(preset)
+                                .frame(width: 128, height: 62)
+                                .clipShape(RoundedRectangle(cornerRadius: Metrics.fieldRadius, style: .continuous))
+                                .overlay(RoundedRectangle(cornerRadius: Metrics.fieldRadius, style: .continuous)
+                                    .strokeBorder(isOn ? Palette.acc : .clear, lineWidth: 1.5))
+                            Text(preset.label).font(.caption).foregroundStyle(Palette.ink)
+                        }
                     }
                     .buttonStyle(.plain)
                     .accessibilityLabel(Text(preset.label))
@@ -165,33 +176,7 @@ struct CaptionsToolView: View {
             }
         }
         .scrollIndicators(.hidden)
-    }
-
-    /// How lines come and go; word effects say when some lines can't follow the words.
-    private var animations: some View {
-        VStack(alignment: .leading, spacing: 6) {
-            ScrollView(.horizontal) {
-                HStack(spacing: 6) {
-                    ForEach(CaptionAnimation.allCases) { animation in
-                        let isOn = viewModel.edit.captionAnimation == animation
-                        Button { viewModel.setCaptionAnimation(animation) } label: {
-                            FilterChip(label: animation.label, isSelected: isOn, height: 30)
-                        }
-                        .buttonStyle(.plain)
-                        .accessibilityAddTraits(isOn ? .isSelected : [])
-                        .accessibilityIdentifier("edit.captionAnimation.\(animation.rawValue)")
-                    }
-                }
-            }
-            .scrollIndicators(.hidden)
-            if viewModel.edit.captionAnimation.followsWords, viewModel.linesWithoutWordTiming > 0 {
-                Text("\(viewModel.linesWithoutWordTiming) lines show whole: their words don't have their own times.")
-                    .font(.caption)
-                    .foregroundStyle(Palette.warn)
-                    .fixedSize(horizontal: false, vertical: true)
-                    .accessibilityIdentifier("edit.captionAnimationNote")
-            }
-        }
+        .accessibilityIdentifier("edit.captionCatalog")
     }
 
     /// Each line with when it plays; tapping one shows it on the preview and opens it.
@@ -200,7 +185,7 @@ struct CaptionsToolView: View {
             ForEach(viewModel.editedCaptionLines) { line in
                 Button {
                     viewModel.showCaption(line.id)
-                    viewModel.editingCaptionID = line.id
+                    viewModel.editingCaptionID = viewModel.captionCueID(forLine: line.id)
                 } label: {
                     HStack(alignment: .firstTextBaseline, spacing: 10) {
                         Text(DurationText.timecode(line.start, total: viewModel.edit.editedDuration))
@@ -250,10 +235,10 @@ struct CaptionsToolView: View {
     }
 
     /// The preset drawn on captions exactly as the export draws them.
-    private func captionSample(_ preset: TypePreset) -> some View {
+    private func captionSample(_ preset: CaptionTheme) -> some View {
         ZStack {
             LinearGradient(colors: [Palette.thumbnailTop, Palette.thumbnailBottom], startPoint: .top, endPoint: .bottom)
-            if let image = TypeLookPreview.image(preset.look(for: .caption), use: .caption, sample: preset.label) {
+            if let image = CaptionThemePreview.image(preset) {
                 Image(uiImage: image)
                     .resizable()
                     .scaledToFit()

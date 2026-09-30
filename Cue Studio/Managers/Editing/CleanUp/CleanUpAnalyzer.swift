@@ -24,8 +24,12 @@ nonisolated enum CleanUpAnalyzer {
             )
         }
         if let transcript {
-            let retakes = RetakeDetector.suggestions(in: transcript.words, languageCode: transcript.languageCode)
-            let fillers = FillerWordDetector.suggestions(in: transcript.words, languageCode: transcript.languageCode)
+            // The shared recognizer can time a whole phrase, not its individual words. Such a
+            // phrase must never become a high-confidence word-sized removal of the whole audio.
+            // Keep pauses available, and only match within uninterrupted measured-word runs.
+            let measured = transcript.words.split(whereSeparator: \.isEstimated).map(Array.init)
+            let retakes = measured.flatMap { RetakeDetector.suggestions(in: $0, languageCode: transcript.languageCode) }
+            let fillers = measured.flatMap { FillerWordDetector.suggestions(in: $0, languageCode: transcript.languageCode) }
             // Removing a retake takes the pauses and fillers inside it too.
             found = (found + fillers).filter { suggestion in
                 !retakes.contains { $0.span.start <= suggestion.span.start && suggestion.span.end <= $0.span.end }

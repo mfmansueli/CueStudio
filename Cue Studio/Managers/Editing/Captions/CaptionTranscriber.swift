@@ -91,16 +91,16 @@ nonisolated enum CaptionTranscriber {
         return try await collector.value
     }
 
-    /// A run can hold several words; they share its time evenly and are marked as estimated.
+    /// A run can hold several words; keep its measured interval on all of them. There is no
+    /// evidence for where any individual word starts, so never divide the duration arbitrarily.
     /// Languages written without spaces (Japanese, Chinese, Thai) are split into dictionary words,
     /// in the language heard (`WordTokenizer`, the same cut as Voice Following's).
     static func spread(_ text: String, start: TimeInterval, end: TimeInterval, language: CueLanguage? = nil) -> [TimedWord] {
         let pieces = CaptionText.words(in: text, language: language)
         guard !pieces.isEmpty, end > start else { return [] }
-        let step = (end - start) / Double(pieces.count)
         let isEstimated = pieces.count > 1
-        return pieces.enumerated().map { index, word in
-            TimedWord(text: word, start: start + Double(index) * step, end: start + Double(index + 1) * step, isEstimated: isEstimated)
+        return pieces.map { word in
+            TimedWord(text: word, start: start, end: end, isEstimated: isEstimated)
         }
     }
 }

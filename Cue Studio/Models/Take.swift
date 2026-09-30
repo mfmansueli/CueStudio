@@ -15,6 +15,8 @@ nonisolated struct Take: Codable, Identifiable, Hashable, Sendable {
     var scriptTitle: String
     /// The script version that was read; editing the script later creates a new version.
     var scriptVersion: Int?
+    /// Immutable reference from recording time, so later script edits never change captions.
+    var scriptReference: Script?
     var number: Int
     var duration: TimeInterval
     /// When it was recorded ("createdAt").
@@ -72,6 +74,7 @@ nonisolated struct Take: Codable, Identifiable, Hashable, Sendable {
         scriptID = try container.decodeIfPresent(UUID.self, forKey: .scriptID)
         scriptTitle = try container.decode(String.self, forKey: .scriptTitle)
         scriptVersion = try container.decodeIfPresent(Int.self, forKey: .scriptVersion)
+        scriptReference = try container.decodeIfPresent(Script.self, forKey: .scriptReference)
         number = try container.decode(Int.self, forKey: .number)
         duration = try container.decode(TimeInterval.self, forKey: .duration)
         recordedAt = try container.decodeIfPresent(Date.self, forKey: .recordedAt) ?? .now
@@ -84,5 +87,11 @@ nonisolated struct Take: Codable, Identifiable, Hashable, Sendable {
         isEdited = try container.decodeIfPresent(Bool.self, forKey: .isEdited) ?? false
         isExported = try container.decodeIfPresent(Bool.self, forKey: .isExported) ?? false
         edit = try container.decodeIfPresent(TakeEdit.self, forKey: .edit)
+    }
+
+    func captionScript(current: Script?) -> Script? {
+        if let scriptReference { return scriptReference }
+        guard let current, current.id == scriptID, current.version == scriptVersion else { return nil }
+        return current
     }
 }

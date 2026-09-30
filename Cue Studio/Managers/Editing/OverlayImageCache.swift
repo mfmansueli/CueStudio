@@ -19,9 +19,16 @@ nonisolated final class OverlayImageCache: @unchecked Sendable {
     func image(for lazy: LazyText) -> CIImage? {
         let key = lazy.key as NSString
         if let cached = cache.object(forKey: key) { return cached }
-        guard let drawn = TextOverlayRenderer.image(
-            for: lazy.text, frameWidth: lazy.frameWidth, widthFraction: lazy.widthFraction, emphasis: lazy.emphasis
-        ), let image = CIImage(image: drawn) else { return nil }
+        let drawn: UIImage?
+        if let settings = lazy.collection {
+            drawn = CaptionCollectionRenderer.image(lazy.text.text, settings: settings,
+                                                     frame: CGSize(width: lazy.frameWidth, height: lazy.frameHeight), emphasis: lazy.emphasis)
+        } else {
+            drawn = TextOverlayRenderer.image(
+                for: lazy.text, frameWidth: lazy.frameWidth, widthFraction: lazy.widthFraction, emphasis: lazy.emphasis
+            )
+        }
+        guard let drawn, let image = CIImage(image: drawn) else { return nil }
         cache.setObject(image, forKey: key)
         return image
     }

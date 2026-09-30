@@ -61,6 +61,7 @@ nonisolated enum CaptionRevision {
                 text: CaptionText.joined(tail.map(\.text)), start: tail.first?.start ?? first.end, end: cue.end, words: tail,
                 origin: cue.origin, isRevised: true, needsTimingReview: cue.needsTimingReview
             )
+            second.sourceID = cue.sourceID
             second.start = max(second.start, first.end)
             first.isRevised = true
             return (first, second)
@@ -76,9 +77,10 @@ nonisolated enum CaptionRevision {
         first.text = CaptionText.joined(head)
         first.end = cut
         first.isRevised = true
-        let second = CaptionCue(
+        var second = CaptionCue(
             text: CaptionText.joined(tail), start: cut, end: cue.end, origin: cue.origin, isRevised: true, needsTimingReview: true
         )
+        second.sourceID = cue.sourceID
         first.needsTimingReview = true
         return (first, second)
     }

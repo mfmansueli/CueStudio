@@ -164,7 +164,7 @@ final class QuickEditViewModel {
     let takes: TakeLibraryService
     private let drafts: QuickEditDraftStoring
     /// What a script is heard in for captions and Clean Up (`LanguageService.captionRequest(for:)`).
-    private let speechLanguageFor: (Script?) -> SpeechLanguageRequest
+    let speechLanguageFor: (Script?) -> SpeechLanguageRequest
     /// Voice Following's language when it differs from the captions' (`LanguageService.languageConflict(for:)`).
     private let languageConflictFor: (Script?) -> SpeechLanguageConflict?
     /// The take's edit when Quick edit opened.
@@ -202,7 +202,8 @@ final class QuickEditViewModel {
         self.editing = editing
         self.drafts = drafts
         self.toast = toast
-        let edit = take.edit ?? TakeEdit(sourceDuration: take.duration, aspect: take.aspect)
+        var edit = take.edit ?? TakeEdit(sourceDuration: take.duration, aspect: take.aspect)
+        if take.edit == nil { edit.captionCollection?.safeMargins = Self.captionSafeMargins(for: take, aspect: take.aspect) }
         original = edit
         self.edit = edit
         frameRate = Double(take.frameRate.rawValue)
@@ -699,6 +700,8 @@ final class QuickEditViewModel {
         edit.textPreset = step.textPreset
         edit.captionLook = step.captionLook
         edit.captionPreset = step.captionPreset
+        if step.captionCollectionVersion != nil { edit.captionCollection = step.captionCollection }
+        if let position = step.captionPosition { edit.captionPosition = position }
         if let captions = step.captions { edit.captions = captions }
         if let sources = step.sources { edit.sources = sources }
         if let animation = step.captionAnimation { edit.captionAnimation = animation }
@@ -737,20 +740,23 @@ final class QuickEditViewModel {
 
     /// The take's script, or nothing for a freestyle take.
     var scriptText: String {
-        library.script(id: take.scriptID)?.text ?? ""
+        captionScript?.text ?? ""
     }
+
+    /// Old takes use a matching version only; a newer script is never an alignment reference.
+    var captionScript: Script? { take.captionScript(current: library.script(id: take.scriptID)) }
 
     /// The language the take is heard in, for captions and Clean Up: the script's (never Voice
     /// Following's or the interface's).
     var speechLanguage: SpeechLanguageRequest {
-        speechLanguageFor(library.script(id: take.scriptID))
+        speechLanguageFor(captionScript)
     }
 
     /// Said under Captions while they listen in the script's language (Automatic) and Voice
     /// Following listens in another one, so the two never disagree silently.
     var captionLanguageConflict: SpeechLanguageConflict? {
         guard edit.captionLanguage == nil else { return nil }
-        return languageConflictFor(library.script(id: take.scriptID))
+        return languageConflictFor(captionScript)
     }
 
     // MARK: - Leaving

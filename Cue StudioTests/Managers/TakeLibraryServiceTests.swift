@@ -35,6 +35,24 @@ struct TakeLibraryServiceTests {
         #expect(service.count(for: script.id) == 2)
     }
 
+    @Test func cachedRecognitionSurvivesReopeningWithoutMarkingTheTakeEdited() throws {
+        let take = TestData.take(scriptID: nil)
+        let (service, repository) = makeService(takes: [take])
+        let words = [CaptionWord(text: "Hello", start: 1, end: 2)]
+        let transcript = CaptionTranscript(words: words, languageCode: "en")
+        let lines = [CaptionCue(words: words)]
+        service.cacheCaptions(lines, transcript: transcript, for: take.id)
+        let reopened = TakeLibraryService(repository: repository)
+        reopened.load()
+        #expect(reopened.take(id: take.id)?.edit?.captionTranscript == transcript)
+        #expect(reopened.take(id: take.id)?.edit?.captions == lines)
+        #expect(reopened.take(id: take.id)?.isEdited == false)
+        #expect(reopened.take(id: take.id)?.duration == take.duration)
+        #expect(reopened.take(id: take.id)?.edit?.showsCaptions == false)
+        #expect(reopened.take(id: take.id)?.edit?.voiceProcessing.isNeeded == false)
+        #expect(reopened.take(id: take.id)?.edit?.captionCollection?.safeMargins == CaptionSafeArea.margins(for: take, aspect: take.aspect))
+    }
+
     @Test func takeRemembersTheCaptureSettings() throws {
         let (service, _) = makeService()
         var camera = CameraSettings()

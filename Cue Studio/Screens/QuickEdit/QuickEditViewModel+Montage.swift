@@ -122,7 +122,9 @@ extension QuickEditViewModel {
             let name = try EditMediaFiles.link(file)
             importedFiles.insert(name)
             let title = String(localized: "\(take.scriptTitle) · Take \(take.number)")
-            addSource(ClipSource(fileName: name, duration: duration, title: title, takeID: take.id))
+            var source = ClipSource(fileName: name, duration: duration, title: title, takeID: take.id)
+            source.scriptReference = take.captionScript(current: library.script(id: take.scriptID))
+            addSource(source)
         } catch {
             toast.show(String(localized: "This take can't be added"))
         }

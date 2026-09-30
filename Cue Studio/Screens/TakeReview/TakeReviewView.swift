@@ -67,6 +67,9 @@ struct TakeReviewView: View {
             }
         }
         .task(id: PlayerKey(takeID: viewModel.takeID, edit: viewModel.take?.edit)) { await runPlayer() }
+        .onChange(of: viewModel.take?.edit?.showsCaptions ?? false) { _, shown in
+            viewModel.burnsInCaptions = shown
+        }
         .fullScreenCover(item: $editingTake) { take in
             QuickEditView(take: take, services: services) { editingTake = nil }
         }

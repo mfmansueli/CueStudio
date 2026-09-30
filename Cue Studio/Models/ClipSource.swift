@@ -18,6 +18,7 @@ nonisolated struct ClipSource: Codable, Hashable, Identifiable, Sendable {
     var title: String
     /// The take it came from, when it came from the library.
     var takeID: UUID?
+    var scriptReference: Script?
 
     init(fileName: String, duration: TimeInterval, title: String, takeID: UUID? = nil) {
         self.fileName = fileName

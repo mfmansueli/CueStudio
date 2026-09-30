@@ -57,6 +57,16 @@ struct CleanUpAnalyzerTests {
         #expect(merged[0].id == kept.id)
     }
 
+    @Test func segmentOnlyTimingNeverRemovesAWholePhraseForOneFiller() {
+        let estimated = ["um", "today", "I", "want", "to", "talk"].map {
+            TimedWord(text: $0, start: 1, end: 4, isEstimated: true)
+        }
+        let transcript = TakeTranscript(words: estimated, languageCode: "en")
+        let found = CleanUpAnalyzer.suggestions(silences: [TimeSpan(start: 5, end: 6)], transcript: transcript)
+        #expect(found.map(\.kind) == [.pause])
+        #expect(found[0].span == TimeSpan(start: 5, end: 6))
+    }
+
     @Test func oldEditsKeepWhatWasKept() throws {
         let json = #"{"id":"6E0E6D3C-2B0B-4E47-9C3B-0B7E4A1F2C11","kind":"pause","span":{"start":1,"end":2},"confidence":1,"isKept":true}"#
         let decoded = try JSONDecoder().decode(CleanUpSuggestion.self, from: Data(json.utf8))
