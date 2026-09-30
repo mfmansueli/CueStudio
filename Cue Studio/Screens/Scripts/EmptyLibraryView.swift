@@ -7,6 +7,7 @@ import SwiftUI
 
 /// First run: nudges toward a script (the prompt box first), but recording right away is one tap too.
 struct EmptyLibraryView: View {
+    var animatesPromptBackground = true
     let onPrompt: () -> Void
     let onWrite: () -> Void
     let onImport: () -> Void
@@ -24,7 +25,7 @@ struct EmptyLibraryView: View {
                         .font(.body)
                         .foregroundStyle(Palette.ink2)
                 }
-                PromptCard(base: Palette.surface, action: onPrompt)
+                PromptCard(base: Palette.surface, animatesBackground: animatesPromptBackground, action: onPrompt)
                     .accessibilityIdentifier("empty.promptCard")
                 GroupedCard(dividerInset: 72) {
                     option(

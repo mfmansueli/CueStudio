@@ -47,6 +47,32 @@ final class ScriptLibraryUITests: XCTestCase {
         XCTAssertTrue(app.descendants(matching: .any)["generate.promptField"].firstMatch.waitForExistence(timeout: 5))
     }
 
+    func testAnimatedPromptKeepsItsFrameAndAction() {
+        let app = CueApp.launch(seeded: true)
+        let prompt = app.buttons["scripts.promptCard"]
+        XCTAssertTrue(prompt.waitForExistence(timeout: 15))
+        let frame = prompt.frame
+        let label = prompt.label
+        let before = XCTAttachment(screenshot: app.screenshot())
+        before.name = "Prompt light — initial frame"
+        before.lifetime = .keepAlways
+        add(before)
+
+        let moved = XCTNSPredicateExpectation(predicate: NSPredicate { _, _ in
+            prompt.frame != frame || prompt.label != label
+        }, object: nil)
+        moved.isInverted = true
+        wait(for: [moved], timeout: 6)
+        XCTAssertTrue(prompt.isHittable)
+        let after = XCTAttachment(screenshot: app.screenshot())
+        after.name = "Prompt light — after six seconds"
+        after.lifetime = .keepAlways
+        add(after)
+
+        prompt.tap()
+        XCTAssertTrue(app.descendants(matching: .any)["generate.promptField"].firstMatch.waitForExistence(timeout: 5))
+    }
+
     func testSearch() {
         let app = CueApp.launch(seeded: true)
         let search = app.descendants(matching: .any)["scripts.searchField"].firstMatch
