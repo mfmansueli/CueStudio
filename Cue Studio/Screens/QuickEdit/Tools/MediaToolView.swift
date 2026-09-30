@@ -57,6 +57,7 @@ struct MediaToolView: View {
 
     private func selectedActions(_ media: MediaOverlay) -> some View {
         VStack(spacing: 8) {
+            MotionControls(viewModel: viewModel, item: .media(media.id))
             HStack(spacing: 8) {
                 Picker("Layout", selection: Binding(
                     get: { media.layout },

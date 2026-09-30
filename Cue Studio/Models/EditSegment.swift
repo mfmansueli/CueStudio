@@ -22,12 +22,15 @@ nonisolated struct EditSegment: Codable, Hashable, Identifiable, Sendable {
     /// The recording it comes from: nil for the take being edited, else another take or video in
     /// the montage (`TakeEdit.sources`). `sourceStart` and `sourceEnd` are seconds of that one.
     var sourceID: UUID?
+    /// A slow zoom over the piece; nil plays it as filmed.
+    var zoom: SectionZoom?
 
     init(
         id: UUID = UUID(), sourceStart: TimeInterval, sourceEnd: TimeInterval,
-        transitionIn: EditTransition = .hardCut, speed: Double = 1, sourceID: UUID? = nil
+        transitionIn: EditTransition = .hardCut, speed: Double = 1, sourceID: UUID? = nil, zoom: SectionZoom? = nil
     ) {
         self.id = id
+        self.zoom = zoom
         self.sourceStart = sourceStart
         self.sourceEnd = sourceEnd
         self.transitionIn = transitionIn
@@ -35,8 +38,11 @@ nonisolated struct EditSegment: Codable, Hashable, Identifiable, Sendable {
         self.sourceID = sourceID
     }
 
-    init(id: UUID = UUID(), span: TimeSpan, transitionIn: EditTransition = .hardCut, speed: Double = 1, sourceID: UUID? = nil) {
-        self.init(id: id, sourceStart: span.start, sourceEnd: span.end, transitionIn: transitionIn, speed: speed, sourceID: sourceID)
+    init(
+        id: UUID = UUID(), span: TimeSpan, transitionIn: EditTransition = .hardCut, speed: Double = 1, sourceID: UUID? = nil,
+        zoom: SectionZoom? = nil
+    ) {
+        self.init(id: id, sourceStart: span.start, sourceEnd: span.end, transitionIn: transitionIn, speed: speed, sourceID: sourceID, zoom: zoom)
     }
 
     /// How long the piece plays in the edit (its stretch of the recording over its speed).
@@ -55,7 +61,7 @@ nonisolated struct EditSegment: Codable, Hashable, Identifiable, Sendable {
     // MARK: - Coding
 
     private enum CodingKeys: String, CodingKey {
-        case id, sourceStart, sourceEnd, transitionIn, speed, sourceID
+        case id, sourceStart, sourceEnd, transitionIn, speed, sourceID, zoom
     }
 
     /// Pieces saved before transitions or speed existed are hard cuts at 1×, and so is a
@@ -68,5 +74,6 @@ nonisolated struct EditSegment: Codable, Hashable, Identifiable, Sendable {
         transitionIn = (try? container.decodeIfPresent(EditTransition.self, forKey: .transitionIn)) ?? .hardCut
         speed = Self.clampedSpeed((try? container.decodeIfPresent(Double.self, forKey: .speed)) ?? 1)
         sourceID = try? container.decodeIfPresent(UUID.self, forKey: .sourceID)
+        zoom = try? container.decodeIfPresent(SectionZoom.self, forKey: .zoom)
     }
 }

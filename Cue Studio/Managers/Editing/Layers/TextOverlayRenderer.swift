@@ -28,18 +28,21 @@ nonisolated enum TextOverlayRenderer {
             let x = CGFloat(center.x) * frame.width - size.width / 2
             // Core Image measures y from the bottom.
             let y = frame.height * (1 - CGFloat(center.y)) - size.height / 2
-            return FrameOverlay(image: ciImage, origin: CGPoint(x: x.rounded(), y: y.rounded()), span: entry.span)
+            var overlay = FrameOverlay(image: ciImage, origin: CGPoint(x: x.rounded(), y: y.rounded()), span: entry.span)
+            if !entry.text.keyframes.isEmpty {
+                overlay.motion = OverlayMotion(entry.text.keyframes)
+                overlay.frameSize = frame
+            }
+            return overlay
         }
     }
 
     /// Captions drawn with a type look (a preset or "My style"), each line while it is said, at
-    /// `position`: the same drawing as a text's.
-    static func captions(_ cues: [CaptionCue], look: TextLook, position: CaptionPosition, frame: CGSize) -> [FrameOverlay] {
-        let lines = cues.map { cue in
-            let span = TimeSpan(start: cue.start, end: cue.end)
-            return (text: TextOverlay.caption(cue.text, look: look, position: position, span: span), span: span)
-        }
-        return overlays(lines, frame: frame, widthFraction: captionWidthFraction)
+    /// `position`, as `animation` shows them: the same drawing as a text's, made when it shows.
+    static func captions(
+        _ cues: [CaptionCue], look: TextLook, position: CaptionPosition, frame: CGSize, animation: CaptionAnimation = .line
+    ) -> [FrameOverlay] {
+        cues.flatMap { CaptionAnimator.overlays(for: $0, look: look, position: position, frame: frame, animation: animation) }
     }
 
     /// The text's box on a frame `frameWidth` wide (background and room for the shadow included).
@@ -47,18 +50,53 @@ nonisolated enum TextOverlayRenderer {
         layout(for: text, frameWidth: frameWidth, widthFraction: widthFraction)?.size ?? .zero
     }
 
-    /// The text drawn on a transparent image of its box, at 1 pixel per point.
-    static func image(for text: TextOverlay, frameWidth: CGFloat, widthFraction: CGFloat = maxWidthFraction) -> UIImage? {
+    /// The text drawn on a transparent image of its box, at 1 pixel per point. With `emphasis`,
+    /// the word being said stands out (the box and the size stay those of the plain line, so the
+    /// line doesn't move from one word to the next).
+    static func image(
+        for text: TextOverlay, frameWidth: CGFloat, widthFraction: CGFloat = maxWidthFraction, emphasis: WordEmphasis? = nil
+    ) -> UIImage? {
         guard let layout = layout(for: text, frameWidth: frameWidth, widthFraction: widthFraction) else { return nil }
         let format = UIGraphicsImageRendererFormat()
         format.scale = 1
         format.opaque = false
+        let range = emphasis?.range(in: text.displayText, uppercased: text.isUppercase)
         return UIGraphicsImageRenderer(size: layout.size, format: format).image { _ in
             if let fill = layout.background {
                 fill.setFill()
                 UIBezierPath(roundedRect: CGRect(origin: .zero, size: layout.size), cornerRadius: layout.cornerRadius).fill()
             }
-            layout.string.draw(with: layout.textRect, options: [.usesLineFragmentOrigin], context: nil)
+            guard let emphasis, let range else {
+                layout.string.draw(with: layout.textRect, options: [.usesLineFragmentOrigin], context: nil)
+                return
+            }
+            // Laid out once with TextKit, so the box sits exactly on the word it's drawn under.
+            let string = NSMutableAttributedString(attributedString: layout.string)
+            let storage = NSTextStorage(attributedString: string)
+            let manager = NSLayoutManager()
+            storage.addLayoutManager(manager)
+            let container = NSTextContainer(size: CGSize(width: layout.textRect.width, height: .greatestFiniteMagnitude))
+            container.lineFragmentPadding = 0
+            manager.addTextContainer(container)
+            switch emphasis.style {
+            case .color(let color):
+                storage.addAttribute(.foregroundColor, value: Self.color(color), range: range)
+            case .box(let fill, let ink):
+                let glyphs = manager.glyphRange(forCharacterRange: range, actualCharacterRange: nil)
+                let unit = frameWidth / referenceWidth
+                let word = manager.boundingRect(forGlyphRange: glyphs, in: container)
+                    .offsetBy(dx: layout.textRect.minX, dy: layout.textRect.minY)
+                    .insetBy(dx: -4 * unit, dy: -1 * unit)
+                Self.color(fill).setFill()
+                UIBezierPath(roundedRect: word, cornerRadius: 6 * unit).fill()
+                storage.addAttribute(.foregroundColor, value: Self.color(ink), range: range)
+                // No outline or shadow on the boxed word: it reads on its box.
+                storage.removeAttribute(.strokeWidth, range: range)
+                storage.removeAttribute(.shadow, range: range)
+            }
+            let all = manager.glyphRange(for: container)
+            manager.drawBackground(forGlyphRange: all, at: layout.textRect.origin)
+            manager.drawGlyphs(forGlyphRange: all, at: layout.textRect.origin)
         }
     }
 

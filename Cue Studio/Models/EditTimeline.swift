@@ -412,7 +412,10 @@ nonisolated struct EditTimeline: Codable, Hashable, Sendable {
         guard offset >= Self.minimumDuration, segment.duration - offset >= Self.minimumDuration else { return false }
         let cut = segment.sourceStart + offset * segment.speed
         segments[index].sourceEnd = cut
-        segments.insert(EditSegment(sourceStart: cut, sourceEnd: segment.sourceEnd, speed: segment.speed, sourceID: segment.sourceID), at: index + 1)
+        segments.insert(
+            EditSegment(sourceStart: cut, sourceEnd: segment.sourceEnd, speed: segment.speed, sourceID: segment.sourceID, zoom: segment.zoom),
+            at: index + 1
+        )
         return true
     }
 
@@ -422,6 +425,15 @@ nonisolated struct EditTimeline: Codable, Hashable, Sendable {
         let speed = EditSegment.clampedSpeed(speed)
         guard segments.indices.contains(index), abs(segments[index].speed - speed) > 0.000_1 else { return false }
         segments[index].speed = speed
+        return true
+    }
+
+    /// Sets a slow zoom on the piece at `index` (nil: none). False, and no change, when it already
+    /// has it.
+    @discardableResult
+    mutating func setZoom(_ zoom: SectionZoom?, forSegmentAt index: Int) -> Bool {
+        guard segments.indices.contains(index), segments[index].zoom != zoom else { return false }
+        segments[index].zoom = zoom
         return true
     }
 
@@ -458,7 +470,7 @@ nonisolated struct EditTimeline: Codable, Hashable, Sendable {
                 // The first piece left keeps the seam before it; new seams start as hard cuts.
                 result.append(EditSegment(
                     id: offset == 0 ? segment.id : UUID(), span: piece,
-                    transitionIn: offset == 0 ? segment.transitionIn : .hardCut, speed: segment.speed
+                    transitionIn: offset == 0 ? segment.transitionIn : .hardCut, speed: segment.speed, zoom: segment.zoom
                 ))
             }
         }
@@ -491,7 +503,8 @@ nonisolated struct EditTimeline: Codable, Hashable, Sendable {
             for (offset, piece) in pieces.enumerated() {
                 result.append(EditSegment(
                     id: offset == 0 ? segment.id : UUID(), span: piece,
-                    transitionIn: offset == 0 ? segment.transitionIn : .hardCut, speed: segment.speed, sourceID: segment.sourceID
+                    transitionIn: offset == 0 ? segment.transitionIn : .hardCut, speed: segment.speed, sourceID: segment.sourceID,
+                    zoom: segment.zoom
                 ))
             }
         }
@@ -554,7 +567,7 @@ nonisolated struct EditTimeline: Codable, Hashable, Sendable {
     mutating func duplicateSegment(id: UUID) -> UUID? {
         guard let index = index(ofSegment: id) else { return nil }
         let original = segments[index]
-        let copy = EditSegment(span: original.span, speed: original.speed, sourceID: original.sourceID)
+        let copy = EditSegment(span: original.span, speed: original.speed, sourceID: original.sourceID, zoom: original.zoom)
         isArranged = true
         segments.insert(copy, at: index + 1)
         return copy.id

@@ -13,6 +13,8 @@ import CoreImage.CIFilterBuiltins
 /// edit preview and by exports, so both show exactly the same thing.
 final class CueVideoCompositor: NSObject, AVVideoCompositing, @unchecked Sendable {
     private let context = CIContext(options: [.cacheIntermediates: false])
+    /// Captions drawn as they show, the last few kept.
+    private let overlayCache = OverlayImageCache()
     private let queue = DispatchQueue(label: "studio.cue.compositor")
 
     nonisolated let sourcePixelBufferAttributes: [String: any Sendable]? = [
@@ -25,7 +27,7 @@ final class CueVideoCompositor: NSObject, AVVideoCompositing, @unchecked Sendabl
     nonisolated func renderContextChanged(_ newRenderContext: AVVideoCompositionRenderContext) {}
 
     nonisolated func startRequest(_ request: AVAsynchronousVideoCompositionRequest) {
-        queue.async { [context] in
+        queue.async { [context, overlayCache] in
             guard let instruction = request.videoCompositionInstruction as? CompositionInstruction else {
                 request.finish(with: NSError(domain: "studio.cue.compositor", code: 1))
                 return
@@ -51,7 +53,7 @@ final class CueVideoCompositor: NSObject, AVVideoCompositing, @unchecked Sendabl
                     let scale = max(0.000_1, instruction.outputScale)
                     let frame = CGRect(x: 0, y: 0, width: size.width / scale, height: size.height / scale)
                     let black = CIImage(color: .black).cropped(to: frame)
-                    context.render(Self.decorated(black, instruction: instruction, at: time, scaled: true).cropped(to: bounds), to: output)
+                    context.render(Self.decorated(black, instruction: instruction, at: time, cache: overlayCache).cropped(to: bounds), to: output)
                 }
                 request.finish(withComposedPixelBuffer: CVReadOnlyPixelBuffer(output))
                 return
@@ -63,11 +65,11 @@ final class CueVideoCompositor: NSObject, AVVideoCompositing, @unchecked Sendabl
                     Self.withBuffers(media) { media in
                         if let other {
                             other.withUnsafeBuffer { other in
-                                let image = Self.composedImage(from: source, blending: other, media: media, instruction: instruction, at: time)
+                                let image = Self.composedImage(from: source, blending: other, media: media, instruction: instruction, at: time, cache: overlayCache)
                                 context.render(image.cropped(to: bounds), to: output)
                             }
                         } else {
-                            let image = Self.composedImage(from: source, blending: nil, media: media, instruction: instruction, at: time)
+                            let image = Self.composedImage(from: source, blending: nil, media: media, instruction: instruction, at: time, cache: overlayCache)
                             context.render(image.cropped(to: bounds), to: output)
                         }
                     }
@@ -100,9 +102,12 @@ final class CueVideoCompositor: NSObject, AVVideoCompositing, @unchecked Sendabl
     /// darkened inside a fade; then the texts and captions visible at `time` and the output scale.
     nonisolated private static func composedImage(
         from source: CVPixelBuffer, blending other: CVPixelBuffer?, media: [CMPersistentTrackID: CVPixelBuffer],
-        instruction: CompositionInstruction, at time: TimeInterval
+        instruction: CompositionInstruction, at time: TimeInterval, cache: OverlayImageCache
     ) -> CIImage {
         var image = framed(source, frame: instruction.frame, edit: instruction.edit)
+        if let zoom = instruction.zoom {
+            image = zoomed(image, by: CGFloat(zoom.scale(at: time)))
+        }
         if let other, let dissolve = instruction.dissolve {
             let otherSide = framed(other, frame: instruction.blendFrame ?? instruction.frame, edit: instruction.edit)
             // Before the cut the main track still shows the outgoing piece; after it, the incoming one.
@@ -115,24 +120,36 @@ final class CueVideoCompositor: NSObject, AVVideoCompositing, @unchecked Sendabl
         }
         // Every photo and video showing, lowest layer first.
         for shown in instruction.media.filter({ $0.isVisible(at: time) }).sorted(by: { $0.layer < $1.layer }) {
-            image = laid(shown, frame: shown.trackID.flatMap { media[$0] }, over: image)
+            image = laid(shown, frame: shown.trackID.flatMap { media[$0] }, over: image, at: time)
         }
-        return decorated(image, instruction: instruction, at: time, scaled: true)
+        return decorated(image, instruction: instruction, at: time, cache: cache)
+    }
+
+    /// `image` scaled around its center, cropped back to its frame (a section's slow zoom).
+    nonisolated private static func zoomed(_ image: CIImage, by scale: CGFloat) -> CIImage {
+        guard abs(scale - 1) > 0.000_1 else { return image }
+        let extent = image.extent
+        return image
+            .transformed(by: CGAffineTransform(translationX: -extent.midX, y: -extent.midY)
+                .concatenating(CGAffineTransform(scaleX: scale, y: scale))
+                .concatenating(CGAffineTransform(translationX: extent.midX, y: extent.midY)))
+            .cropped(to: extent)
     }
 
     /// Fades, texts and captions over `image`, then the output scale.
-    nonisolated private static func decorated(_ base: CIImage, instruction: CompositionInstruction, at time: TimeInterval, scaled: Bool = true) -> CIImage {
+    nonisolated private static func decorated(
+        _ base: CIImage, instruction: CompositionInstruction, at time: TimeInterval, cache: OverlayImageCache
+    ) -> CIImage {
         var image = base
         let blackness = instruction.fades.reduce(0) { max($0, $1.blackness(at: time)) }
         if blackness > 0 {
             image = blend(image, into: CIImage(color: .black).cropped(to: image.extent), amount: blackness)
         }
         for overlay in instruction.overlays where overlay.isVisible(at: time) {
-            image = overlay.image
-                .transformed(by: CGAffineTransform(translationX: overlay.origin.x, y: overlay.origin.y))
-                .composited(over: image)
+            guard let placed = overlay.placed(at: time, cache: cache) else { continue }
+            image = placed.composited(over: image)
         }
-        if scaled, instruction.outputScale != 1 {
+        if instruction.outputScale != 1 {
             image = image.transformed(by: CGAffineTransform(scaleX: instruction.outputScale, y: instruction.outputScale))
         }
         return image
@@ -151,9 +168,10 @@ final class CueVideoCompositor: NSObject, AVVideoCompositing, @unchecked Sendabl
         return FrameLook.apply(edit, to: image)
     }
 
-    /// A photo or video over the take: filling its place (cropped, centered), on top of `image`.
-    /// A video without a frame at this moment leaves the take showing.
-    nonisolated private static func laid(_ item: MediaFrame, frame: CVPixelBuffer?, over image: CIImage) -> CIImage {
+    /// A photo or video over the take: filling its place (cropped, centered), on top of `image`,
+    /// where its keyframes put it at `time`. A video without a frame at this moment leaves the take
+    /// showing.
+    nonisolated private static func laid(_ item: MediaFrame, frame: CVPixelBuffer?, over image: CIImage, at time: TimeInterval) -> CIImage {
         var picture: CIImage
         if let photo = item.image {
             picture = photo
@@ -169,6 +187,18 @@ final class CueVideoCompositor: NSObject, AVVideoCompositing, @unchecked Sendabl
             .transformed(by: CGAffineTransform(scaleX: fill.scale, y: fill.scale))
             .transformed(by: CGAffineTransform(translationX: item.rect.minX + fill.offset.x, y: item.rect.minY + fill.offset.y))
             .cropped(to: item.rect)
+        if let motion = item.motion, let state = motion.state(at: time - item.span.start) {
+            // Keyframes: the laid picture moved to their center, scaled around its own, faded.
+            let point = state.center.clamped
+            let center = CGPoint(x: CGFloat(point.x) * item.frameSize.width, y: (1 - CGFloat(point.y)) * item.frameSize.height)
+            let scale = CGFloat(state.scale)
+            picture = picture.transformed(by: CGAffineTransform(translationX: -item.rect.midX, y: -item.rect.midY)
+                .concatenating(CGAffineTransform(scaleX: scale, y: scale))
+                .concatenating(CGAffineTransform(translationX: center.x, y: center.y)))
+            if state.opacity < 0.999 {
+                picture = picture.applyingFilter("CIColorMatrix", parameters: ["inputAVector": CIVector(x: 0, y: 0, z: 0, w: CGFloat(state.opacity))])
+            }
+        }
         return picture.composited(over: image)
     }
 

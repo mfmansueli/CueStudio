@@ -24,6 +24,9 @@ nonisolated struct MediaFrame: @unchecked Sendable {
     var trackID: CMPersistentTrackID?
     /// Where it stacks: higher is drawn over lower.
     var layer: Int = 0
+    /// Keyframed motion over its own time, on a frame of `frameSize`.
+    var motion: OverlayMotion?
+    var frameSize: CGSize = .zero
 
     var isVideo: Bool { image == nil }
 

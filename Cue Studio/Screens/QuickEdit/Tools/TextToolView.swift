@@ -58,6 +58,7 @@ struct TextToolView: View {
 
     private func selectedActions(_ text: TextOverlay) -> some View {
         VStack(spacing: 8) {
+            MotionControls(viewModel: viewModel, item: .text(text.id))
             HStack(spacing: 8) {
                 Button { viewModel.editingTextID = text.id } label: {
                     Label("Edit text", systemImage: "pencil")

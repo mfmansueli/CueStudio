@@ -122,7 +122,9 @@ nonisolated struct EditedComposition: @unchecked Sendable {
         var overlays = TextOverlayRenderer.overlays(edit.editedTexts(in: edit.timeline), frame: crop.size)
         if options.burnsInCaptions, edit.showsCaptions {
             if let look = edit.captionLook {
-                overlays += TextOverlayRenderer.captions(edit.editedCaptions, look: look, position: edit.captionPosition, frame: crop.size)
+                overlays += TextOverlayRenderer.captions(
+                    edit.editedCaptions, look: look, position: edit.captionPosition, frame: crop.size, animation: edit.captionAnimation
+                )
             } else {
                 // Edits made before type presets keep their caption style.
                 overlays += OverlayRenderer.captions(edit.editedCaptions, style: edit.captionStyle, position: edit.captionPosition, frame: crop.size)
@@ -137,7 +139,11 @@ nonisolated struct EditedComposition: @unchecked Sendable {
         let stretches = splitBySource(stretches(for: dissolves, media: videoMedia, duration: cursor), in: timeline)
         let instructions = stretches.map { stretch in
             let middle = CMTimeMultiplyByRatio(stretch.range.start + stretch.range.end, multiplier: 1, divisor: 2).seconds
-            let played = timeline.segments[timeline.segmentIndex(atEdited: middle)].sourceID
+            let index = timeline.segmentIndex(atEdited: middle)
+            let played = timeline.segments[index].sourceID
+            let zoom = timeline.segments[index].zoom.map {
+                ZoomWindow(zoom: $0, start: timeline.editedStart(ofSegmentAt: index), duration: timeline.segments[index].duration)
+            }
             // Before the cut the blend track holds the incoming piece; after it, the outgoing one.
             let blendSource = stretch.dissolve.map { middle < $0.cut ? $0.incomingSource : $0.outgoingSource }
             // The media tracks with a video in this stretch.
@@ -159,6 +165,7 @@ nonisolated struct EditedComposition: @unchecked Sendable {
                 media: mediaFrames,
                 outputScale: outputScale,
                 dissolve: stretch.dissolve,
+                zoom: zoom,
                 fades: fadeWindows
             )
         }
@@ -204,14 +211,16 @@ nonisolated struct EditedComposition: @unchecked Sendable {
     }
 
     /// Stretches cut again where the main track moves to another recording (and, in a dissolve
-    /// between two recordings, at its cut), so each stretch reads one recording on each track.
-    /// An edit of the take alone stays as it was.
+    /// between two recordings, at its cut) and where a section with a slow zoom starts or ends, so
+    /// each stretch reads one recording on each track and has one zoom. An edit of the take alone
+    /// without zooms stays as it was.
     static func splitBySource(
         _ stretches: [(range: CMTimeRange, dissolve: TransitionWindow?, showsMedia: Bool)], in timeline: EditTimeline
     ) -> [(range: CMTimeRange, dissolve: TransitionWindow?, showsMedia: Bool)] {
         let segments = timeline.segments
         var marks: [CMTime] = []
-        for index in segments.indices.dropFirst() where segments[index].sourceID != segments[index - 1].sourceID {
+        for index in segments.indices.dropFirst()
+        where segments[index].sourceID != segments[index - 1].sourceID || segments[index].zoom != nil || segments[index - 1].zoom != nil {
             marks.append(CMTime(seconds: timeline.editedStart(ofSegmentAt: index), preferredTimescale: 600))
         }
         guard !marks.isEmpty else { return stretches }
@@ -343,7 +352,12 @@ nonisolated struct EditedComposition: @unchecked Sendable {
             switch entry.media.kind {
             case .photo:
                 guard let image = CIImage(contentsOf: url, options: [.applyOrientationProperty: true]) else { continue }
-                frames.append(MediaFrame(span: entry.span, rect: rect, image: image, transform: .identity, layer: entry.media.stackOrder))
+                var frame = MediaFrame(span: entry.span, rect: rect, image: image, transform: .identity, layer: entry.media.stackOrder)
+                if let keyframes = entry.media.keyframes, !keyframes.isEmpty {
+                    frame.motion = OverlayMotion(keyframes)
+                    frame.frameSize = size
+                }
+                frames.append(frame)
             case .video:
                 let asset = AVURLAsset(url: url)
                 guard let source = try? await asset.loadTracks(withMediaType: .video).first,
@@ -369,10 +383,15 @@ nonisolated struct EditedComposition: @unchecked Sendable {
                     continue
                 }
                 tracks[slot].filled = end
-                frames.append(MediaFrame(
+                var frame = MediaFrame(
                     span: TimeSpan(start: start.seconds, end: end.seconds), rect: rect, image: nil, transform: transform,
                     trackID: track.trackID, layer: entry.media.stackOrder
-                ))
+                )
+                if let keyframes = entry.media.keyframes, !keyframes.isEmpty {
+                    frame.motion = OverlayMotion(keyframes)
+                    frame.frameSize = size
+                }
+                frames.append(frame)
             }
         }
         let used = tracks.map(\.track).filter { track in frames.contains { $0.trackID == track.trackID } }

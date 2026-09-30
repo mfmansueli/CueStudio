@@ -36,6 +36,9 @@ nonisolated struct MediaOverlay: Codable, Hashable, Identifiable, Sendable {
     /// is the bottom, in the order they were added.
     var layer: Int?
 
+    /// Where it goes, how big and how opaque over its own time; nil or empty stands still.
+    var keyframes: [OverlayKeyframe]?
+
     /// `layer`, with media from before stacking at the bottom.
     var stackOrder: Int { layer ?? 0 }
     var layout: MediaLayout = .fullFrame

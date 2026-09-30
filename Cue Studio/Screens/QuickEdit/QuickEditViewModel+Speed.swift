@@ -52,4 +52,31 @@ extension QuickEditViewModel {
             ? String(localized: "Section at \(speed.label)")
             : String(localized: "Video at \(speed.label)"))
     }
+
+    // MARK: - Zoom
+
+    /// The slow zoom the chips show as picked (nil: none); nil too when the whole video mixes them.
+    var currentZoom: SectionZoom?? {
+        let segments = edit.timeline.segments
+        if speedScope == .section, hasSections {
+            return .some(segments[min(speedSectionIndex, segments.count - 1)].zoom)
+        }
+        let zooms = Set(segments.map(\.zoom))
+        return zooms.count == 1 ? .some(zooms.first ?? nil) : nil
+    }
+
+    /// Sets a slow zoom (nil: none) on the section, or on every section, as one undo step.
+    func setZoom(_ zoom: SectionZoom?) {
+        guard isReady else { return }
+        var timeline = edit.timeline
+        var changed = false
+        if speedScope == .section, hasSections {
+            changed = timeline.setZoom(zoom, forSegmentAt: speedSectionIndex)
+        } else {
+            for index in timeline.segments.indices where timeline.setZoom(zoom, forSegmentAt: index) { changed = true }
+        }
+        guard changed else { return }
+        commit(timeline)
+        toast.show(zoom.map { String(localized: "\($0.label) on this part") } ?? String(localized: "No zoom"))
+    }
 }

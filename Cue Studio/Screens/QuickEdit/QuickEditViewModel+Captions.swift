@@ -99,6 +99,23 @@ extension QuickEditViewModel {
         captionState = .idle
     }
 
+    /// How lines come and go (one undo step). Animations draw with a type preset: captions still in
+    /// the old caption style take Cue's.
+    func setCaptionAnimation(_ animation: CaptionAnimation) {
+        change { snapshot in
+            snapshot.captionAnimation = animation
+            if snapshot.captionLook == nil, animation != .line {
+                snapshot.captionLook = TypePreset.cue.look(for: .caption)
+                snapshot.captionPreset = .cue
+            }
+        }
+    }
+
+    /// Lines that show whole whatever the animation: their words don't have their own times.
+    var linesWithoutWordTiming: Int {
+        edit.captions.filter { !$0.hasWordTiming }.count
+    }
+
     /// A preset for the captions (one undo step); turns them on when they were off.
     func setCaptionPreset(_ preset: TypePreset) async {
         applyPreset(preset, to: .allCaptions)

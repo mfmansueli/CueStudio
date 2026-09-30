@@ -34,6 +34,8 @@ final class CompositionInstruction: NSObject, AVVideoCompositionInstructionProto
     let outputScale: CGFloat
     /// The dissolve this stretch is, if it is one.
     let dissolve: TransitionWindow?
+    /// The slow zoom of the section this stretch plays, if it has one.
+    let zoom: ZoomWindow?
     /// Every fade in the edit: a frame inside one darkens.
     let fades: [TransitionWindow]
 
@@ -41,8 +43,9 @@ final class CompositionInstruction: NSObject, AVVideoCompositionInstructionProto
         timeRange: CMTimeRange, trackID: CMPersistentTrackID, blendTrackID: CMPersistentTrackID? = nil,
         mediaTrackIDs: [CMPersistentTrackID] = [],
         frame: SourceFrame, blendFrame: SourceFrame? = nil, edit: TakeEdit, overlays: [FrameOverlay], media: [MediaFrame] = [],
-        outputScale: CGFloat, dissolve: TransitionWindow? = nil, fades: [TransitionWindow] = []
+        outputScale: CGFloat, dissolve: TransitionWindow? = nil, zoom: ZoomWindow? = nil, fades: [TransitionWindow] = []
     ) {
+        self.zoom = zoom
         self.timeRange = timeRange
         self.trackID = trackID
         self.blendTrackID = blendTrackID

@@ -18,6 +18,7 @@ struct CaptionsToolView: View {
             ScrollView {
                 VStack(spacing: 10) {
                     presets
+                    animations
                     Picker("Position", selection: $viewModel.edit.captionPosition) {
                         ForEach(CaptionPosition.allCases) { Text($0.label).tag($0) }
                     }
@@ -142,6 +143,33 @@ struct CaptionsToolView: View {
             }
         }
         .scrollIndicators(.hidden)
+    }
+
+    /// How lines come and go; word effects say when some lines can't follow the words.
+    private var animations: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            ScrollView(.horizontal) {
+                HStack(spacing: 6) {
+                    ForEach(CaptionAnimation.allCases) { animation in
+                        let isOn = viewModel.edit.captionAnimation == animation
+                        Button { viewModel.setCaptionAnimation(animation) } label: {
+                            FilterChip(label: animation.label, isSelected: isOn, height: 30)
+                        }
+                        .buttonStyle(.plain)
+                        .accessibilityAddTraits(isOn ? .isSelected : [])
+                        .accessibilityIdentifier("edit.captionAnimation.\(animation.rawValue)")
+                    }
+                }
+            }
+            .scrollIndicators(.hidden)
+            if viewModel.edit.captionAnimation.followsWords, viewModel.linesWithoutWordTiming > 0 {
+                Text("\(viewModel.linesWithoutWordTiming) lines show whole: their words don't have their own times.")
+                    .font(.caption)
+                    .foregroundStyle(Palette.warn)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .accessibilityIdentifier("edit.captionAnimationNote")
+            }
+        }
     }
 
     /// Each line with when it plays; tapping one shows it on the preview and opens it.

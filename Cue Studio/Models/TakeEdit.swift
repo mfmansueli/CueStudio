@@ -52,6 +52,8 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
     /// The preset `captionLook` came from, nil for "My style".
     var captionPreset: TypePreset?
     var captionPosition: CaptionPosition = .bottom
+    /// How lines come and go; `.line` (a still line) for edits made before animations.
+    var captionAnimation: CaptionAnimation = .line
     /// Timed to the original recording.
     var captions: [CaptionCue] = []
     /// What speech recognition heard, word by word, before any correction; nil until captions are
@@ -253,7 +255,7 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
     private enum CodingKeys: String, CodingKey {
         case timeline, sources, suggestions, cleanUpAnalyzed, volume, enhancesVoice, reducesNoise, exposure, contrast, warmth, filter
         case aspect, cropOffset, showsCaptions, captionStyle, captionLook, captionPreset, captionPosition, captions
-        case captionTranscript, sourceTranscripts, captionLanguage
+        case captionTranscript, sourceTranscripts, captionLanguage, captionAnimation
         case texts, media, voiceOvers, creatorStyle, textLook, textPreset, cover
     }
 
@@ -291,6 +293,7 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
         captionTranscript = try? container.decodeIfPresent(CaptionTranscript.self, forKey: .captionTranscript)
         sourceTranscripts = (try? container.decodeIfPresent([CaptionTranscript].self, forKey: .sourceTranscripts)) ?? []
         captionLanguage = try? container.decodeIfPresent(CueLanguage.self, forKey: .captionLanguage)
+        captionAnimation = (try? container.decodeIfPresent(CaptionAnimation.self, forKey: .captionAnimation)) ?? .line
         // Added later: edits saved before have none, and a damaged one loses only that part.
         texts = (try? container.decodeIfPresent([TextOverlay].self, forKey: .texts)) ?? []
         media = (try? container.decodeIfPresent([MediaOverlay].self, forKey: .media)) ?? []

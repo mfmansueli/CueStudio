@@ -37,6 +37,12 @@ struct SpeedToolView: View {
                     .accessibilityIdentifier("edit.speed.\(speed.rawValue)")
                 }
             }
+            HStack(spacing: 6) {
+                zoomChip(nil, label: String(localized: "No zoom"), identifier: "none")
+                ForEach(SectionZoom.allCases) { zoom in
+                    zoomChip(zoom, label: zoom.label, identifier: zoom.rawValue)
+                }
+            }
             Text(viewModel.hasSections
                 ? viewModel.speedDetail
                 : String(localized: "Split in Trim to change the speed of one part"))
@@ -45,5 +51,16 @@ struct SpeedToolView: View {
                 .lineLimit(1)
                 .accessibilityIdentifier("edit.speedDetail")
         }
+    }
+
+    /// A slow zoom on the section (or every section): no keyframes needed.
+    private func zoomChip(_ zoom: SectionZoom?, label: String, identifier: String) -> some View {
+        let isOn = viewModel.currentZoom == .some(zoom)
+        return Button { viewModel.setZoom(zoom) } label: {
+            FilterChip(label: label, isSelected: isOn, height: 30)
+        }
+        .buttonStyle(.plain)
+        .accessibilityAddTraits(isOn ? .isSelected : [])
+        .accessibilityIdentifier("edit.zoom.\(identifier)")
     }
 }

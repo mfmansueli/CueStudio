@@ -29,10 +29,12 @@ nonisolated struct EditSnapshot: Codable, Hashable, Sendable {
     var captions: [CaptionCue]?
     /// The montage's other recordings; nil in steps saved before montages.
     var sources: [ClipSource]?
+    /// How caption lines come and go; nil in steps saved before animations.
+    var captionAnimation: CaptionAnimation?
 
     private enum CodingKeys: String, CodingKey {
         case timeline, suggestions, texts, media, voiceOvers, cover, creatorStyle, captionStyle, filter
-        case textLook, textPreset, captionLook, captionPreset, captions, sources
+        case textLook, textPreset, captionLook, captionPreset, captions, sources, captionAnimation
     }
 }
 
@@ -44,7 +46,7 @@ nonisolated extension EditSnapshot {
             voiceOvers: edit.voiceOvers, cover: edit.cover, creatorStyle: edit.creatorStyle,
             captionStyle: edit.captionStyle, filter: edit.filter,
             textLook: edit.textLook, textPreset: edit.textPreset, captionLook: edit.captionLook, captionPreset: edit.captionPreset,
-            captions: edit.captions, sources: edit.sources
+            captions: edit.captions, sources: edit.sources, captionAnimation: edit.captionAnimation
         )
     }
 
@@ -66,7 +68,8 @@ nonisolated extension EditSnapshot {
             captionLook: try? container.decodeIfPresent(TextLook.self, forKey: .captionLook),
             captionPreset: try? container.decodeIfPresent(TypePreset.self, forKey: .captionPreset),
             captions: try? container.decodeIfPresent([CaptionCue].self, forKey: .captions),
-            sources: try? container.decodeIfPresent([ClipSource].self, forKey: .sources)
+            sources: try? container.decodeIfPresent([ClipSource].self, forKey: .sources),
+            captionAnimation: try? container.decodeIfPresent(CaptionAnimation.self, forKey: .captionAnimation)
         )
     }
 }

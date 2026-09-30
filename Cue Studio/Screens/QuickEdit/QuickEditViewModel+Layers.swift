@@ -14,14 +14,20 @@ extension QuickEditViewModel {
         edit.texts.compactMap { text in
             guard let span = TakeEdit.editedSpan(text.span, anchor: text.clipAnchor, in: edit.timeline) else { return nil }
             let title = text.isEmpty ? text.role.label : text.displayText
-            return LayerBar(id: text.id, kind: .text, span: span, title: title, isSelected: text.id == selectedTextID)
+            return LayerBar(
+                id: text.id, kind: .text, span: span, title: title, isSelected: text.id == selectedTextID,
+                keyframes: text.keyframes.map(\.time).filter { $0 <= span.duration }
+            )
         }
     }
 
     var mediaBars: [LayerBar] {
         edit.editedMedia(in: edit.timeline).map { entry in
             let title = entry.media.kind == .photo ? String(localized: "Photo") : String(localized: "Video")
-            return LayerBar(id: entry.media.id, kind: .media, span: entry.span, title: title, isSelected: entry.media.id == selectedMediaID)
+            return LayerBar(
+                id: entry.media.id, kind: .media, span: entry.span, title: title, isSelected: entry.media.id == selectedMediaID,
+                keyframes: (entry.media.keyframes ?? []).map(\.time).filter { $0 <= entry.span.duration }
+            )
         }
     }
 

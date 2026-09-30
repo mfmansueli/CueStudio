@@ -222,11 +222,12 @@ struct QuickEditView: View {
         switch viewModel.tool {
         case .trim: 262 + tracksHeight
         case .cleanUp: 360
-        case .text, .media, .voiceOver: 228
-        case .speed: 200
+        case .text, .media: 300
+        case .voiceOver: 228
+        case .speed: 244
         case .style: 250
         case .cover: 196
-        case .captions: 300
+        case .captions: 340
         case .audio, .adjust, .filters, .crop: 190
         }
     }

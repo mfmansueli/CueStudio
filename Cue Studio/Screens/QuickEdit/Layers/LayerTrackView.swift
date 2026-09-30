@@ -50,6 +50,7 @@ struct LayerTrackView: View {
                 sectionLines(width: width)
                 ForEach(bars) { bar in
                     barView(bar, lane: lanes[bar.id] ?? 0, lanes: laneCount, width: width)
+                    keyframeMarks(bar, lane: lanes[bar.id] ?? 0, lanes: laneCount, width: width)
                 }
                 playhead(width: width)
             }
@@ -115,6 +116,19 @@ struct LayerTrackView: View {
         .accessibilityAddTraits(bar.isSelected ? [.isButton, .isSelected] : .isButton)
         .accessibilityAction { viewModel.selectBar(bar) }
         .accessibilityIdentifier("edit.layer.\(bar.kind.rawValue)")
+    }
+
+    /// A small diamond where each of the bar's keyframes is.
+    private func keyframeMarks(_ bar: LayerBar, lane: Int, lanes: Int, width: CGFloat) -> some View {
+        let laneHeight = (height - 12 - CGFloat(lanes - 1) * 3) / CGFloat(lanes)
+        return ForEach(Array(bar.keyframes.enumerated()), id: \.offset) { _, offset in
+            Image(systemName: "diamond.fill")
+                .font(.system(size: 7, weight: .bold))
+                .foregroundStyle(bar.isSelected ? Palette.accInk : Palette.ink)
+                .position(x: x(for: bar.span.start + offset, width: width), y: 6 + CGFloat(lane) * (laneHeight + 3) + laneHeight / 2)
+                .allowsHitTesting(false)
+                .accessibilityHidden(true)
+        }
     }
 
     private var edgeGrip: some View {

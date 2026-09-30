@@ -121,6 +121,16 @@ extension QuickEditViewModel {
 
     /// Its place on a preview of `size` (from the top left), as the export places it.
     func frame(ofMedia media: MediaOverlay, in size: CGSize) -> CGRect {
-        MediaPlacement.rect(for: media, in: size)
+        let placed = MediaPlacement.rect(for: media, in: size)
+        guard media.keyframes?.isEmpty == false else { return placed }
+        // Where its keyframes have it at the playhead.
+        let state = motionState(of: .media(media.id))
+        let width = placed.width * CGFloat(state.scale)
+        let height = placed.height * CGFloat(state.scale)
+        return CGRect(
+            x: CGFloat(state.center.clamped.x) * size.width - width / 2,
+            y: CGFloat(state.center.clamped.y) * size.height - height / 2,
+            width: width, height: height
+        )
     }
 }

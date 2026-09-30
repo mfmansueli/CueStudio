@@ -76,7 +76,7 @@ struct QuickCreatorCompositionTests {
         let overlays = TextOverlayRenderer.overlays([(text, TimeSpan(start: 1, end: 2))], frame: CGSize(width: 1080, height: 1920))
         #expect(overlays.count == 1)
         let overlay = overlays[0]
-        let size = overlay.image.extent.size
+        let size = overlay.size
         // Core Image's y is from the bottom: a quarter from the top is three quarters up.
         #expect(abs(overlay.origin.y + size.height / 2 - 1440) < 1)
         #expect(abs(overlay.origin.x + size.width / 2 - 540) < 1)

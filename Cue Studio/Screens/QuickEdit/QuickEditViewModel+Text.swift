@@ -72,8 +72,14 @@ extension QuickEditViewModel {
     /// The text's box on a preview of `size` (from the top left), measured like the export draws
     /// it.
     func frame(ofText text: TextOverlay, in size: CGSize) -> CGRect {
-        let box = TextOverlayRenderer.size(for: text, frameWidth: size.width)
-        let center = text.center.clamped
+        var box = TextOverlayRenderer.size(for: text, frameWidth: size.width)
+        var center = text.center.clamped
+        if !text.keyframes.isEmpty {
+            // Where its keyframes have it at the playhead.
+            let state = motionState(of: .text(text.id))
+            center = state.center.clamped
+            box = CGSize(width: box.width * CGFloat(state.scale), height: box.height * CGFloat(state.scale))
+        }
         return CGRect(
             x: CGFloat(center.x) * size.width - box.width / 2,
             y: CGFloat(center.y) * size.height - box.height / 2,

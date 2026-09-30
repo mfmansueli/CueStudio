@@ -663,6 +663,7 @@ final class QuickEditViewModel {
         edit.captionPreset = step.captionPreset
         if let captions = step.captions { edit.captions = captions }
         if let sources = step.sources { edit.sources = sources }
+        if let animation = step.captionAnimation { edit.captionAnimation = animation }
     }
 
     // MARK: - Adjust
