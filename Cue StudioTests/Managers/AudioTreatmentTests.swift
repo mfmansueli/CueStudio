@@ -114,7 +114,7 @@ struct AudioTreatmentTests {
             withExtendedLifetime(asset) {}
         }
         let tracks = composition.tracks.filter { $0.mediaType == .audio }
-        let mixed = try await MasterMix.render(composition, tracks: tracks, audioMix: nil)
+        let mixed = try await Mixdown.render(composition, tracks: tracks, audioMix: nil)
         defer { try? FileManager.default.removeItem(at: mixed) }
         // Together they'd reach 1.6.
         #expect(try AudioCeiling.peak(of: mixed) > 1)

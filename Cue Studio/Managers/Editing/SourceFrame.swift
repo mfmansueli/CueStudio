@@ -14,5 +14,5 @@ nonisolated struct SourceFrame: Sendable {
     /// Core Image coordinates.
     let crop: CGRect
     let scale: CGFloat
-    var background: BackgroundRender? = nil
+    var background: BackgroundRender?
 }

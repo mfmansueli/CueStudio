@@ -8,7 +8,7 @@ import UIKit
 
 /// Plays a take filling its frame, the way the export crops it.
 final class PlayerUIView: UIView {
-    override class var layerClass: AnyClass { AVPlayerLayer.self }
+    override static var layerClass: AnyClass { AVPlayerLayer.self }
 
     // The layer class above guarantees the type.
     // swiftlint:disable:next force_cast

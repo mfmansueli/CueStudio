@@ -34,7 +34,7 @@ struct RemotePairingPanel: View {
 
     private var start: some View {
         VStack(alignment: .leading, spacing: 14) {
-            Text("Play, pause, change speed and move through the script from a second iPhone or iPad. Both need Cue, and Wi-Fi or Bluetooth on.")
+            Text("Play, pause, change speed and move through the script from a second iPhone or iPad. Both need Cue, and Wi-Fi on.")
                 .font(.subheadline)
                 .foregroundStyle(Palette.ink2)
                 .fixedSize(horizontal: false, vertical: true)

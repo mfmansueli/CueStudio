@@ -27,7 +27,10 @@ struct RecordingSetupSection: View {
                 VStack(alignment: .leading, spacing: 8) {
                     HStack(spacing: 8) {
                         ForEach(VideoResolution.allCases) { resolution in
-                            chip(resolution.label, isSelected: viewModel.setup.resolution == resolution, identifier: "creatorSetup.quality.\(resolution.rawValue)") {
+                            chip(
+                                resolution.label, isSelected: viewModel.setup.resolution == resolution,
+                                identifier: "creatorSetup.quality.\(resolution.rawValue)"
+                            ) {
                                 viewModel.setResolution(resolution)
                             }
                         }

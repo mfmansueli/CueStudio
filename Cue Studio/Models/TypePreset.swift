@@ -91,13 +91,19 @@ nonisolated enum TypePreset: String, Codable, CaseIterable, Identifiable, Sendab
     private var captionLook: TextLook {
         switch self {
         case .cue:
-            TextLook(font: .classic, weight: .semibold, sizeScale: 1, color: .white, background: .box, backgroundColor: .black, backgroundOpacity: 0.62, hasShadow: false)
+            TextLook(
+                font: .classic, weight: .semibold, sizeScale: 1, color: .white,
+                background: .box, backgroundColor: .black, backgroundOpacity: 0.62, hasShadow: false
+            )
         case .impact:
             TextLook(font: .classic, weight: .heavy, sizeScale: 1.15, isUppercase: true, color: .white, hasShadow: true, hasOutline: true)
         case .editorial:
             TextLook(font: .serif, weight: .regular, sizeScale: 1.05, color: .white, hasShadow: true)
         case .soft:
-            TextLook(font: .rounded, weight: .semibold, sizeScale: 1, color: .white, background: .pill, backgroundColor: .black, backgroundOpacity: 0.45, hasShadow: false)
+            TextLook(
+                font: .rounded, weight: .semibold, sizeScale: 1, color: .white,
+                background: .pill, backgroundColor: .black, backgroundOpacity: 0.45, hasShadow: false
+            )
         case .minimal:
             TextLook(font: .classic, weight: .regular, sizeScale: 0.9, tracking: 0.02, color: .white, hasShadow: true)
         case .label:

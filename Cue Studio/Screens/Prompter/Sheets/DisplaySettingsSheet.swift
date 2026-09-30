@@ -207,7 +207,10 @@ struct DisplaySettingsSheet: View {
         }
         GroupedCard(background: Palette.surface2, radius: 22) {
             SettingToggleRow(title: String(localized: "Show reading line"), isOn: $session.prompter.showsGuide)
-            SettingToggleRow(title: String(localized: "Mirror text"), detail: String(localized: "For beam-splitter glass rigs"), isOn: $session.prompter.isMirrored)
+            SettingToggleRow(
+                title: String(localized: "Mirror text"), detail: String(localized: "For beam-splitter glass rigs"),
+                isOn: $session.prompter.isMirrored
+            )
         }
     }
 

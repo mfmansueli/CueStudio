@@ -102,7 +102,11 @@ struct CameraSettingsSheet: View {
             segmentedRow(String(localized: "Resolution"), selection: $session.camera.resolution, options: VideoResolution.allCases) { $0.label }
             segmentedRow(String(localized: "Frame rate"), selection: $session.camera.frameRate, options: FrameRate.allCases) { $0.label }
             SettingToggleRow(title: String(localized: "Grid"), isOn: $session.camera.showsGrid, minHeight: 52)
-            SettingToggleRow(title: String(localized: "Platform safe zones"), detail: String(localized: "Shows where app buttons and captions cover the frame"), isOn: $session.camera.showsSafeZones, minHeight: 52)
+            SettingToggleRow(
+                title: String(localized: "Platform safe zones"),
+                detail: String(localized: "Shows where app buttons and captions cover the frame"),
+                isOn: $session.camera.showsSafeZones, minHeight: 52
+            )
             SettingToggleRow(title: String(localized: "Stabilization"), isOn: $session.camera.stabilization, minHeight: 52)
         }
         .padding(.top, 10)
@@ -174,7 +178,10 @@ struct CameraSettingsSheet: View {
         @Bindable var session = session
         SectionHeading(text: String(localized: "Microphone")).padding(EdgeInsets(top: 8, leading: 4, bottom: 0, trailing: 4))
         GroupedCard(background: Palette.surface2, radius: 22) {
-            checkRow(title: String(localized: "Automatic"), detail: String(localized: "Uses the connected mic, or the iPhone's"), isSelected: session.camera.microphoneID == nil) {
+            checkRow(
+                title: String(localized: "Automatic"), detail: String(localized: "Uses the connected mic, or the iPhone's"),
+                isSelected: session.camera.microphoneID == nil
+            ) {
                 selectMicrophone(nil)
             }
             ForEach(audio.inputs) { input in

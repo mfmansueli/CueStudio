@@ -26,7 +26,8 @@ final class KeychainExportCountStore: ExportCountStoring {
         var result: CFTypeRef?
         guard SecItemCopyMatching(query as CFDictionary, &result) == errSecSuccess,
               let data = result as? Data,
-              let value = Int(String(decoding: data, as: UTF8.self))
+              let text = String(bytes: data, encoding: .utf8),
+              let value = Int(text)
         else { return 0 }
         return max(0, value)
     }

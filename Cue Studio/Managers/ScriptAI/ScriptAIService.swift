@@ -8,17 +8,20 @@ import FoundationModels
 import os
 
 /// Writes scripts with Apple Intelligence and nothing else: the on-device model for rewrites, hooks
-/// and ideas (fast, offline), Private Cloud Compute for free prompts (more knowledge), each falling
-/// back to the other. Scripts come back structured (`ScriptDraft`), never as free text to parse.
-/// Without any model, formats still get their structured draft built from the brief.
+/// and ideas (fast, offline), Private Cloud Compute for free prompts (more knowledge), each covering
+/// for the other (`AIModelRoute.fallback(after:)`). Scripts come back structured (`ScriptDraft`),
+/// never as free text to parse. Without any model, formats still get their structured draft built
+/// from the brief.
 @MainActor
 @Observable
 final class ScriptAIService: ScriptWriting {
     /// Private Cloud Compute needs the managed `com.apple.developer.private-cloud-compute`
-    /// entitlement, which Apple grants to the team on request. Without it FoundationModels stops the
-    /// app on the first request (a fatal error, not a thrown one) while `isAvailable` still says
-    /// yes, so it stays off until the entitlement is in `Cue Studio.entitlements` (a test keeps the
-    /// two in sync). Meanwhile free prompts are written on the device.
+    /// entitlement, which Apple grants to the team on request: until then Xcode can't put it in a
+    /// provisioning profile ("Entitlement … not found and could not be included in profile"), and
+    /// without it FoundationModels stops the app on the first request (a fatal error, not a thrown
+    /// one) while `isAvailable` still says yes. So it stays off until the entitlement is in
+    /// `Cue Studio.entitlements` (a test keeps the two in sync). Meanwhile everything is written on
+    /// the device.
     static let hasPrivateCloudComputeEntitlement = false
 
     /// Nil while Private Cloud Compute is off.
@@ -29,9 +32,11 @@ final class ScriptAIService: ScriptWriting {
         privateCloud = usesPrivateCloudCompute ? PrivateCloudComputeLanguageModel() : nil
     }
 
+    /// Private Cloud Compute counts as available only while this person's quota has room, so a
+    /// used-up quota sends prompts to the device without a request that is bound to fail.
     var availability: AIAvailability {
         let onDevice = SystemLanguageModel.default.isAvailable
-        let cloud = privateCloud?.isAvailable ?? false
+        let cloud = privateCloud.map { $0.isAvailable && !$0.quotaUsage.isLimitReached } ?? false
         return AIAvailability(
             onDevice: onDevice,
             privateCloud: cloud,
@@ -134,7 +139,8 @@ final class ScriptAIService: ScriptWriting {
         let known = niches.isEmpty ? [Niche.lifestyle] : niches
         return try await withFallback(from: route) { model in
             let session = self.session(on: model, instructions: "You suggest video ideas for creators who film themselves talking to camera.")
-            let suggestions = try await session.respond(to: ScriptPromptBuilder.themesPrompt(for: known, language: language), generating: ThemeSuggestions.self).content
+            let prompt = ScriptPromptBuilder.themesPrompt(for: known, language: language)
+            let suggestions = try await session.respond(to: prompt, generating: ThemeSuggestions.self).content
             let ideas = suggestions.ideas.compactMap { idea -> ThemeIdea? in
                 let title = ScriptPromptBuilder.cleanTitle(idea.title)
                 guard !title.isEmpty else { return nil }
@@ -160,18 +166,48 @@ final class ScriptAIService: ScriptWriting {
         return LanguageModelSession(model: SystemLanguageModel.default, instructions: instructions)
     }
 
-    /// Runs `work` on `model`; when Private Cloud Compute fails (no network, quota reached, service
-    /// down) and the device model can run, tries again on the device.
+    /// Runs `work` on `model` and, when the other model can do what this one couldn't, tries once
+    /// more there: the device when Private Cloud Compute is out of reach (no network, quota
+    /// reached, service down), Private Cloud Compute when a script is too long or in a language
+    /// the device model doesn't write. What still fails is explained in Cue's words.
     private func withFallback<Result>(
         from model: AIModelRoute,
         _ work: (AIModelRoute) async throws -> Result
     ) async throws -> Result {
         do {
             return try await work(model)
-        } catch let error as PrivateCloudComputeLanguageModel.Error {
-            guard let fallback = model.fallback, SystemLanguageModel.default.isAvailable else { throw error }
-            logger.notice("Private Cloud Compute failed, writing on the device: \(error.localizedDescription)")
-            return try await work(fallback)
+        } catch {
+            let failure = AIFailure(error)
+            guard let fallback = model.fallback(after: failure), isAvailable(fallback) else {
+                throw Self.explained(error, failure: failure)
+            }
+            logger.notice("""
+                \(String(describing: model)) failed (\(String(describing: failure))), trying \(String(describing: fallback)): \
+                \(error.localizedDescription)
+                """)
+            do {
+                return try await work(fallback)
+            } catch {
+                throw Self.explained(error, failure: AIFailure(error))
+            }
+        }
+    }
+
+    private func isAvailable(_ model: AIModelRoute) -> Bool {
+        let availability = availability
+        return switch model {
+        case .onDevice: availability.onDevice
+        case .privateCloud: availability.privateCloud
+        }
+    }
+
+    /// The framework's own message for a long script or a missing language is written for
+    /// developers; the creator gets Cue's.
+    private static func explained(_ error: any Error, failure: AIFailure) -> any Error {
+        switch failure {
+        case .tooLong: ScriptAIError.tooLong
+        case .unsupportedLanguage: ScriptAIError.unsupportedLanguage
+        case .cloudUnreachable, .other: error
         }
     }
 }

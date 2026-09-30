@@ -1,16 +1,16 @@
 //
-//  MultipeerRemoteTransport.swift
+//  NearbyRemoteTransport.swift
 //  Cue Studio
 //
 
 import UIKit
 
-/// The remote link over Multipeer Connectivity (see `MultipeerLink`). Each pairing starts a new
-/// link; events from one that was replaced are dropped.
-final class MultipeerRemoteTransport: RemoteTransport {
+/// The remote link over the Network framework (see `NearbyLink`). Each pairing starts a new link;
+/// events from one that was replaced are dropped.
+final class NearbyRemoteTransport: RemoteTransport {
     var onEvent: ((RemoteTransportEvent) -> Void)?
 
-    private var link: MultipeerLink?
+    private var link: NearbyLink?
     private var linkID: UUID?
 
     func host(code: String) {
@@ -34,7 +34,7 @@ final class MultipeerRemoteTransport: RemoteTransport {
     private func start(hosting: Bool, code: String) {
         stop()
         let id = UUID()
-        let link = MultipeerLink(hosting: hosting, code: code, deviceName: UIDevice.current.name) { [weak self] event in
+        let link = NearbyLink(hosting: hosting, code: code, deviceName: UIDevice.current.name) { [weak self] event in
             Task { @MainActor [weak self] in
                 guard let self, self.linkID == id else { return }
                 self.onEvent?(event)

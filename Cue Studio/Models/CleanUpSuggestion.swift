@@ -37,7 +37,7 @@ nonisolated struct CleanUpSuggestion: Codable, Hashable, Identifiable, Sendable 
     /// "Long pause", "“um”", "Possible retake".
     var title: String {
         switch kind {
-        case .pause: isSure ? String(localized: "Long pause") : String(localized: "Short pause")
+        case .pause: if isSure { String(localized: "Long pause") } else { String(localized: "Short pause") }
         case .filler: text.map { "“\($0)”" } ?? kind.label
         case .retake: kind.label
         }

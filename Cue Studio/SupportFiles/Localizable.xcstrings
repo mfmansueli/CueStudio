@@ -8238,6 +8238,94 @@
         }
       }
     },
+    "AI can get facts wrong. Check dates, names and numbers before you record." : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "قد يخطئ الذكاء الاصطناعي في الحقائق. تحقق من التواريخ والأسماء والأرقام قبل التسجيل."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KI kann sich bei Fakten irren. Prüf Daten, Namen und Zahlen vor der Aufnahme."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La IA puede equivocarse con los datos. Revisa fechas, nombres y cifras antes de grabar."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "L’IA peut se tromper sur les faits. Vérifiez les dates, les noms et les chiffres avant d’enregistrer."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AI तथ्यों में गलती कर सकता है। रिकॉर्ड करने से पहले तारीख़ें, नाम और संख्याएँ जाँच लें।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AI bisa salah soal fakta. Cek tanggal, nama, dan angka sebelum merekam."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "L’IA può sbagliare i fatti. Controlla date, nomi e numeri prima di registrare."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AIは事実を間違えることがあります。録画の前に日付、名前、数字を確認してください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AI는 사실을 틀릴 수 있어요. 녹화 전에 날짜, 이름, 숫자를 확인하세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A IA pode errar fatos. Confira datas, nomes e números antes de gravar."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AI อาจให้ข้อมูลผิดได้ ตรวจวันที่ ชื่อ และตัวเลขก่อนอัด"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yapay zekâ gerçekleri yanlış verebilir. Kayda başlamadan önce tarihleri, isimleri ve sayıları kontrol et."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AI có thể sai thông tin. Hãy kiểm tra ngày tháng, tên và số liệu trước khi quay."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AI 可能会弄错事实。录制前请核对日期、人名和数字。"
+          }
+        }
+      }
+    },
     "AI can get facts wrong. Topics like history or science are written with Apple’s Private Cloud Compute — check dates, names and numbers before you record." : {
       "localizations" : {
         "ar" : {
@@ -12018,6 +12106,94 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Apple Intelligence"
+          }
+        }
+      }
+    },
+    "Apple Intelligence can't write in this script's language yet." : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "لا يستطيع Apple Intelligence الكتابة بلغة هذا النص بعد."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence kann noch nicht in der Sprache dieses Skripts schreiben."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence todavía no puede escribir en el idioma de este guion."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence ne peut pas encore écrire dans la langue de ce script."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence अभी इस स्क्रिप्ट की भाषा में नहीं लिख सकता।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence belum bisa menulis dalam bahasa naskah ini."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence non può ancora scrivere nella lingua di questo copione."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligenceはこの台本の言語ではまだ書けません。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence는 아직 이 대본의 언어로 쓸 수 없어요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A Apple Intelligence ainda não escreve no idioma deste roteiro."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence ยังเขียนเป็นภาษาของสคริปต์นี้ไม่ได้"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence henüz bu senaryonun dilinde yazamıyor."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence chưa thể viết bằng ngôn ngữ của kịch bản này."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence 暂时无法用这个脚本的语言写作。"
           }
         }
       }
@@ -47422,90 +47598,90 @@
         }
       }
     },
-    "Keep both devices close, with Wi-Fi or Bluetooth on." : {
+    "Keep both devices close, with Wi-Fi on." : {
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "أبقِ الجهازين قريبين مع تشغيل Wi-Fi أو Bluetooth."
+            "value" : "أبقِ الجهازين قريبين مع تشغيل Wi-Fi."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Halte beide Geräte nah beieinander, mit WLAN oder Bluetooth an."
+            "value" : "Halte beide Geräte nah beieinander, mit WLAN an."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mantén los dos dispositivos cerca, con Wi-Fi o Bluetooth activado."
+            "value" : "Mantén los dos dispositivos cerca, con el Wi-Fi activado."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Gardez les deux appareils proches, avec le Wi-Fi ou le Bluetooth activé."
+            "value" : "Gardez les deux appareils proches, avec le Wi-Fi activé."
           }
         },
         "hi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "दोनों डिवाइस पास रखें और Wi-Fi या Bluetooth चालू रखें।"
+            "value" : "दोनों डिवाइस पास रखें और Wi-Fi चालू रखें।"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dekatkan kedua perangkat, dengan Wi-Fi atau Bluetooth menyala."
+            "value" : "Dekatkan kedua perangkat, dengan Wi-Fi menyala."
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tieni vicini i due dispositivi, con Wi-Fi o Bluetooth attivi."
+            "value" : "Tieni vicini i due dispositivi, con il Wi-Fi attivo."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "両方のデバイスを近づけ、Wi-FiかBluetoothをオンにしてください。"
+            "value" : "両方のデバイスを近づけ、Wi-Fiをオンにしてください。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "두 기기를 가까이 두고 Wi-Fi나 Bluetooth를 켜세요."
+            "value" : "두 기기를 가까이 두고 Wi-Fi를 켜세요."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Deixe os dois aparelhos perto, com Wi-Fi ou Bluetooth ligado."
+            "value" : "Deixe os dois aparelhos perto, com o Wi-Fi ligado."
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "วางอุปกรณ์ทั้งสองไว้ใกล้กัน และเปิด Wi-Fi หรือ Bluetooth"
+            "value" : "วางอุปกรณ์ทั้งสองไว้ใกล้กัน และเปิด Wi-Fi"
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "İki aygıtı yakın tut, Wi-Fi veya Bluetooth açık olsun."
+            "value" : "İki aygıtı yakın tut, Wi-Fi açık olsun."
           }
         },
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Để hai thiết bị gần nhau, bật Wi-Fi hoặc Bluetooth."
+            "value" : "Để hai thiết bị gần nhau, bật Wi-Fi."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "让两台设备靠近，并打开无线局域网或蓝牙。"
+            "value" : "让两台设备靠近，并打开无线局域网。"
           }
         }
       }
@@ -65380,90 +65556,90 @@
         }
       }
     },
-    "Play, pause, change speed and move through the script from a second iPhone or iPad. Both need Cue, and Wi-Fi or Bluetooth on." : {
+    "Play, pause, change speed and move through the script from a second iPhone or iPad. Both need Cue, and Wi-Fi on." : {
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "شغّل وأوقف وغيّر السرعة وتنقّل في النص من iPhone أو iPad ثانٍ. يحتاج كلاهما إلى Cue مع تشغيل Wi-Fi أو Bluetooth."
+            "value" : "شغّل وأوقف وغيّر السرعة وتنقّل في النص من iPhone أو iPad ثانٍ. يحتاج كلاهما إلى Cue مع تشغيل Wi-Fi."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Starte, pausiere, ändere das Tempo und bewege dich durchs Skript – von einem zweiten iPhone oder iPad. Beide brauchen Cue und WLAN oder Bluetooth."
+            "value" : "Starte, pausiere, ändere das Tempo und bewege dich durchs Skript – von einem zweiten iPhone oder iPad. Beide brauchen Cue und WLAN."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Reproduce, pausa, cambia la velocidad y muévete por el guion desde un segundo iPhone o iPad. Los dos necesitan Cue y Wi-Fi o Bluetooth activado."
+            "value" : "Reproduce, pausa, cambia la velocidad y muévete por el guion desde un segundo iPhone o iPad. Los dos necesitan Cue y el Wi-Fi activado."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Lancez, mettez en pause, changez la vitesse et parcourez le script depuis un second iPhone ou iPad. Les deux ont besoin de Cue, et du Wi-Fi ou du Bluetooth."
+            "value" : "Lancez, mettez en pause, changez la vitesse et parcourez le script depuis un second iPhone ou iPad. Les deux ont besoin de Cue, et du Wi-Fi."
           }
         },
         "hi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "दूसरे iPhone या iPad से स्क्रिप्ट चलाएँ, रोकें, स्पीड बदलें और आगे-पीछे करें। दोनों में Cue और Wi-Fi या Bluetooth चालू होना चाहिए।"
+            "value" : "दूसरे iPhone या iPad से स्क्रिप्ट चलाएँ, रोकें, स्पीड बदलें और आगे-पीछे करें। दोनों में Cue और Wi-Fi चालू होना चाहिए।"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Putar, jeda, ubah kecepatan, dan gulir naskah dari iPhone atau iPad kedua. Keduanya butuh Cue, dan Wi-Fi atau Bluetooth menyala."
+            "value" : "Putar, jeda, ubah kecepatan, dan gulir naskah dari iPhone atau iPad kedua. Keduanya butuh Cue, dan Wi-Fi menyala."
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Avvia, metti in pausa, cambia velocità e scorri il copione da un secondo iPhone o iPad. Serve Cue su entrambi, con Wi-Fi o Bluetooth attivi."
+            "value" : "Avvia, metti in pausa, cambia velocità e scorri il copione da un secondo iPhone o iPad. Serve Cue su entrambi, con il Wi-Fi attivo."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "2台目のiPhoneやiPadから、再生、一時停止、速度の変更、台本の移動ができます。両方にCueが必要で、Wi-FiかBluetoothをオンにしてください。"
+            "value" : "2台目のiPhoneやiPadから、再生、一時停止、速度の変更、台本の移動ができます。両方にCueが必要で、Wi-Fiをオンにしてください。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "두 번째 iPhone이나 iPad에서 재생, 일시정지, 속도 변경, 대본 이동을 할 수 있어요. 두 기기 모두 Cue가 필요하고 Wi-Fi나 Bluetooth를 켜야 해요."
+            "value" : "두 번째 iPhone이나 iPad에서 재생, 일시정지, 속도 변경, 대본 이동을 할 수 있어요. 두 기기 모두 Cue가 필요하고 Wi-Fi를 켜야 해요."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Reproduza, pause, mude a velocidade e navegue pelo roteiro a partir de um segundo iPhone ou iPad. Os dois precisam do Cue e de Wi-Fi ou Bluetooth ligado."
+            "value" : "Reproduza, pause, mude a velocidade e navegue pelo roteiro a partir de um segundo iPhone ou iPad. Os dois precisam do Cue e do Wi-Fi ligado."
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "เล่น หยุด เปลี่ยนความเร็ว และเลื่อนสคริปต์จาก iPhone หรือ iPad เครื่องที่สอง ทั้งสองเครื่องต้องมี Cue และเปิด Wi-Fi หรือ Bluetooth"
+            "value" : "เล่น หยุด เปลี่ยนความเร็ว และเลื่อนสคริปต์จาก iPhone หรือ iPad เครื่องที่สอง ทั้งสองเครื่องต้องมี Cue และเปิด Wi-Fi"
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "İkinci bir iPhone veya iPad'den oynat, duraklat, hızı değiştir ve senaryoda ilerle. İkisinde de Cue olmalı, Wi-Fi veya Bluetooth açık olmalı."
+            "value" : "İkinci bir iPhone veya iPad'den oynat, duraklat, hızı değiştir ve senaryoda ilerle. İkisinde de Cue olmalı, Wi-Fi açık olmalı."
           }
         },
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Phát, tạm dừng, đổi tốc độ và di chuyển trong kịch bản từ một iPhone hoặc iPad thứ hai. Cả hai cần có Cue và bật Wi-Fi hoặc Bluetooth."
+            "value" : "Phát, tạm dừng, đổi tốc độ và di chuyển trong kịch bản từ một iPhone hoặc iPad thứ hai. Cả hai cần có Cue và bật Wi-Fi."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "在另一台 iPhone 或 iPad 上播放、暂停、调整速度和翻动脚本。两台设备都需要 Cue，并打开无线局域网或蓝牙。"
+            "value" : "在另一台 iPhone 或 iPad 上播放、暂停、调整速度和翻动脚本。两台设备都需要 Cue，并打开无线局域网。"
           }
         }
       }
@@ -78683,6 +78859,94 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "有脚本不跑题，少重拍。选一个来读吧。"
+          }
+        }
+      }
+    },
+    "Scripts, rewrites, hooks and theme ideas are all written on this iPhone. No other AI service is involved." : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "النصوص وإعادة الصياغة والافتتاحيات وأفكار المواضيع تُكتب كلها على هذا الـ iPhone. لا توجد أي خدمة ذكاء اصطناعي أخرى."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skripte, Umformulierungen, Hooks und Themenideen entstehen alle auf diesem iPhone. Kein anderer KI-Dienst ist beteiligt."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Los guiones, las reescrituras, los ganchos y las ideas de temas se escriben en este iPhone. No interviene ningún otro servicio de IA."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scripts, réécritures, accroches et idées de thèmes sont tous écrits sur cet iPhone. Aucun autre service d’IA n’intervient."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "स्क्रिप्ट, रीराइट, हुक और थीम आइडिया सब इसी iPhone पर लिखे जाते हैं। कोई दूसरी AI सर्विस शामिल नहीं है।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Naskah, penulisan ulang, hook, dan ide tema semuanya ditulis di iPhone ini. Tidak ada layanan AI lain yang terlibat."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copioni, riscritture, ganci e idee di temi vengono scritti tutti su questo iPhone. Nessun altro servizio IA è coinvolto."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "台本、書き直し、フック、テーマのアイデアはすべてこのiPhone上で書かれます。ほかのAIサービスは使いません。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "대본, 다시 쓰기, 훅, 주제 아이디어는 모두 이 iPhone에서 작성돼요. 다른 AI 서비스는 사용하지 않아요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Roteiros, reescritas, ganchos e ideias de tema são todos escritos neste iPhone. Nenhum outro serviço de IA é usado."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "สคริปต์ การเขียนใหม่ ฮุก และไอเดียหัวข้อ เขียนบน iPhone เครื่องนี้ทั้งหมด ไม่มีบริการ AI อื่นเกี่ยวข้อง"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Senaryolar, yeniden yazmalar, kancalar ve konu fikirleri bu iPhone’da yazılır. Başka hiçbir yapay zekâ hizmeti kullanılmaz."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kịch bản, bản viết lại, hook và ý tưởng chủ đề đều được viết trên iPhone này. Không có dịch vụ AI nào khác tham gia."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "脚本、改写、钩子和主题创意都在这台 iPhone 上撰写。不使用其他任何 AI 服务。"
           }
         }
       }
@@ -98777,6 +99041,94 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "语气"
+          }
+        }
+      }
+    },
+    "Too long for Apple Intelligence on this iPhone. Try a shorter script, or one part at a time." : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "النص طويل جدًا على Apple Intelligence في هذا الـ iPhone. جرّب نصًا أقصر، أو جزءًا واحدًا في كل مرة."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zu lang für Apple Intelligence auf diesem iPhone. Versuch ein kürzeres Skript oder einen Teil nach dem anderen."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Demasiado largo para Apple Intelligence en este iPhone. Prueba con un guion más corto o una parte cada vez."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trop long pour Apple Intelligence sur cet iPhone. Essayez un script plus court, ou une partie à la fois."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "इस iPhone पर Apple Intelligence के लिए यह बहुत लंबा है। छोटी स्क्रिप्ट आज़माएँ, या एक बार में एक हिस्सा।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Terlalu panjang untuk Apple Intelligence di iPhone ini. Coba naskah yang lebih pendek, atau satu bagian setiap kali."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Troppo lungo per Apple Intelligence su questo iPhone. Prova un copione più corto, o una parte alla volta."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このiPhoneのApple Intelligenceには長すぎます。短い台本にするか、一部ずつ試してください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이 iPhone의 Apple Intelligence에는 너무 길어요. 더 짧은 대본이나 한 부분씩 시도하세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Longo demais para a Apple Intelligence neste iPhone. Tente um roteiro mais curto, ou uma parte de cada vez."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ยาวเกินไปสำหรับ Apple Intelligence บน iPhone เครื่องนี้ ลองใช้สคริปต์ที่สั้นลง หรือทีละส่วน"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu iPhone’daki Apple Intelligence için çok uzun. Daha kısa bir senaryo dene ya da her seferinde bir bölüm."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quá dài với Apple Intelligence trên iPhone này. Hãy thử kịch bản ngắn hơn, hoặc từng phần một."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "对这台 iPhone 上的 Apple Intelligence 来说太长了。试试更短的脚本，或一次处理一部分。"
           }
         }
       }

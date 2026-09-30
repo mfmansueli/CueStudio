@@ -32,7 +32,10 @@ nonisolated enum CaptionTranscriber {
             let transcriber = SpeechTranscriber(locale: route.locale, transcriptionOptions: [], reportingOptions: [], attributeOptions: [.audioTimeRange])
             words = try await transcribe(audio, with: transcriber, results: transcriber.results, progress: progress) { $0.text }
         case .dictation:
-            let dictation = DictationTranscriber(locale: route.locale, contentHints: [], transcriptionOptions: [], reportingOptions: [], attributeOptions: [.audioTimeRange])
+            let dictation = DictationTranscriber(
+                locale: route.locale, contentHints: [], transcriptionOptions: [], reportingOptions: [],
+                attributeOptions: [.audioTimeRange]
+            )
             words = try await transcribe(audio, with: dictation, results: dictation.results, progress: progress) { $0.text }
         }
         return TakeTranscript(words: words, languageCode: route.locale.language.languageCode?.identifier ?? "en")

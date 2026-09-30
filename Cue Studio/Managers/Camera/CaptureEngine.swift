@@ -121,9 +121,7 @@ actor CaptureEngine {
                 session.commitConfiguration()
                 return false
             }
-            videoDataOutput.videoSettings = [kCVPixelBufferPixelFormatTypeKey as String: kCVPixelFormatType_32BGRA]
-            videoDataOutput.alwaysDiscardsLateVideoFrames = true
-            videoDataOutput.deliversPreviewSizedOutputBuffers = true
+            Self.configureForPreview(videoDataOutput)
             videoDataOutput.setSampleBufferDelegate(backgroundFeed, queue: videoQueue)
             session.addOutput(videoDataOutput)
             session.commitConfiguration()
@@ -131,6 +129,16 @@ actor CaptureEngine {
         configurePreviewConnection()
         backgroundFeed.configure(render: render, handler: handler)
         return true
+    }
+
+    /// Small BGRA frames, late ones dropped. Preview-sized buffers can only be asked for once the
+    /// output stops choosing its own dimensions: in the other order AVFoundation throws an
+    /// Objective-C exception and the app stops (turning on a background on an iPhone 15 Pro).
+    nonisolated static func configureForPreview(_ output: AVCaptureVideoDataOutput) {
+        output.videoSettings = [kCVPixelBufferPixelFormatTypeKey as String: kCVPixelFormatType_32BGRA]
+        output.alwaysDiscardsLateVideoFrames = true
+        output.automaticallyConfiguresOutputBufferDimensions = false
+        output.deliversPreviewSizedOutputBuffers = true
     }
 
     /// The preview frames upright (the app is portrait) and mirrored like the preview layer.

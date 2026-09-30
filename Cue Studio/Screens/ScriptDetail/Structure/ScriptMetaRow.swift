@@ -50,7 +50,10 @@ struct ScriptMetaRow: View {
 
 #if DEBUG
 #Preview {
-    ScriptMetaRow(platform: .tiktok, formatLabel: "Tips / list", preset: AppServices.preview.rules.preset(for: .tiktok, monetizationGoals: true), onDestination: {})
+    ScriptMetaRow(
+        platform: .tiktok, formatLabel: "Tips / list",
+        preset: AppServices.preview.rules.preset(for: .tiktok, monetizationGoals: true), onDestination: {}
+    )
         .padding()
         .background(Palette.bg)
 }

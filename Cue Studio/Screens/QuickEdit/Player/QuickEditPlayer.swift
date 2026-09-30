@@ -141,7 +141,7 @@ final class QuickEditPlayer: EditPlayback {
     }
 
     func togglePlayback() {
-        isPlaying ? pause() : play()
+        if isPlaying { pause() } else { play() }
     }
 
     func seek(to time: TimeInterval) {

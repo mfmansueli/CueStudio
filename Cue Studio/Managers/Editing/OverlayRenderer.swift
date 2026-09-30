@@ -55,14 +55,20 @@ nonisolated enum OverlayRenderer {
             .font: font, .foregroundColor: foreground, .paragraphStyle: paragraph, .shadow: shadow,
         ])
         let padding = CGSize(width: 10 * unit, height: 4 * unit)
-        let bounds = attributed.boundingRect(with: CGSize(width: maxWidth - padding.width * 2, height: .greatestFiniteMagnitude), options: [.usesLineFragmentOrigin], context: nil)
+        let bounds = attributed.boundingRect(
+            with: CGSize(width: maxWidth - padding.width * 2, height: .greatestFiniteMagnitude),
+            options: [.usesLineFragmentOrigin], context: nil
+        )
         let size = CGSize(width: ceil(bounds.width + padding.width * 2), height: ceil(bounds.height + padding.height * 2))
         let image = UIGraphicsImageRenderer(size: size, format: format).image { _ in
             if let background {
                 background.setFill()
                 UIBezierPath(roundedRect: CGRect(origin: .zero, size: size), cornerRadius: 8 * unit).fill()
             }
-            attributed.draw(with: CGRect(x: padding.width, y: padding.height, width: bounds.width, height: bounds.height), options: [.usesLineFragmentOrigin], context: nil)
+            attributed.draw(
+                with: CGRect(x: padding.width, y: padding.height, width: bounds.width, height: bounds.height),
+                options: [.usesLineFragmentOrigin], context: nil
+            )
         }
         return CIImage(image: image)
     }

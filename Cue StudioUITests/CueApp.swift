@@ -9,7 +9,7 @@ import XCTest
 /// and a predictable AI (or none) so tests never wait for a model.
 @MainActor
 enum CueApp {
-    enum AI {
+    enum AIMode {
         /// Instant, fixed answers.
         case stub
         /// A device without Apple Intelligence.
@@ -21,7 +21,7 @@ enum CueApp {
     /// `appLanguage` starts Cue's interface in that `.lproj` as if picked in Language & Region;
     /// `systemLanguage` launches as if the iPhone were in that language.
     static func launch(
-        seeded: Bool, pro: Bool = false, ai: AI = .stub, sampleVideo: Bool = false, remoteConnects: Bool = false,
+        seeded: Bool, pro: Bool = false, ai: AIMode = .stub, sampleVideo: Bool = false, remoteConnects: Bool = false,
         appLanguage: String? = nil, systemLanguage: String? = nil
     ) -> XCUIApplication {
         let app = XCUIApplication()

@@ -35,7 +35,10 @@ nonisolated extension ScriptType {
         case .list:
             [
                 BriefField(key: "topic", label: String(localized: "Topic"), example: String(localized: "Morning habits")),
-                BriefField(key: "items", label: String(localized: "Your points, separated by commas"), example: String(localized: "No phone for 20 minutes, write one goal, move for 5 minutes")),
+                BriefField(
+                    key: "items", label: String(localized: "Your points, separated by commas"),
+                    example: String(localized: "No phone for 20 minutes, write one goal, move for 5 minutes")
+                ),
             ]
         case .story:
             [
@@ -46,8 +49,14 @@ nonisolated extension ScriptType {
         case .opinion:
             [
                 BriefField(key: "take", label: String(localized: "Your take"), example: String(localized: "You don't need expensive gear")),
-                BriefField(key: "why", label: String(localized: "Why you think so"), example: String(localized: "Viewers remember your first sentence, not your camera")),
-                BriefField(key: "ask", label: String(localized: "Question for the comments"), example: String(localized: "What's one thing you can't film without?")),
+                BriefField(
+                    key: "why", label: String(localized: "Why you think so"),
+                    example: String(localized: "Viewers remember your first sentence, not your camera")
+                ),
+                BriefField(
+                    key: "ask", label: String(localized: "Question for the comments"),
+                    example: String(localized: "What's one thing you can't film without?")
+                ),
             ]
         case .launch:
             [
@@ -60,8 +69,14 @@ nonisolated extension ScriptType {
             [
                 BriefField(key: "what", label: String(localized: "What this is about"), example: String(localized: "Last week's giveaway video")),
                 BriefField(key: "impact", label: String(localized: "Who it affected and how"), example: String(localized: "Some of you felt misled")),
-                BriefField(key: "own", label: String(localized: "What you take responsibility for"), example: String(localized: "I should have said up front that it was sponsored")),
-                BriefField(key: "change", label: String(localized: "What changes now"), example: String(localized: "Every paid post will be clearly labeled from now on")),
+                BriefField(
+                    key: "own", label: String(localized: "What you take responsibility for"),
+                    example: String(localized: "I should have said up front that it was sponsored")
+                ),
+                BriefField(
+                    key: "change", label: String(localized: "What changes now"),
+                    example: String(localized: "Every paid post will be clearly labeled from now on")
+                ),
             ]
         }
     }

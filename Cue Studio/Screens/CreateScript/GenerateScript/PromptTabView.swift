@@ -64,7 +64,7 @@ struct PromptTabView: View {
 
             VoiceToggleRow(isOn: $viewModel.writesInMyVoice, summary: viewModel.voiceSummary)
                 .padding(.top, 14)
-            FactWarningNote()
+            FactWarningNote(usesPrivateCloudCompute: viewModel.availability.privateCloud)
                 .padding(.top, 12)
 
             if let reason = viewModel.availability.reason, !viewModel.canWriteFromPrompt {

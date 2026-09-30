@@ -56,7 +56,11 @@ struct TeleprompterSetupSection: View {
                     .tint(Palette.success)
                     .accessibilityIdentifier("creatorSetup.mirrorToggle")
             }
-            SetupRow(title: String(localized: "Safe zones"), detail: String(localized: "Shows where each app's buttons and captions cover the frame"), stacksControl: false) {
+            SetupRow(
+                title: String(localized: "Safe zones"),
+                detail: String(localized: "Shows where each app's buttons and captions cover the frame"),
+                stacksControl: false
+            ) {
                 Toggle("Safe zones", isOn: $viewModel.showsSafeZones)
                     .labelsHidden()
                     .tint(Palette.success)

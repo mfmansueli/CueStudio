@@ -21,11 +21,13 @@ final class FakeTakeEditor: TakeEditing {
     /// The language Clean Up listened in.
     private(set) var cleanUpLanguage: SpeechLanguageRequest?
     /// The lines heard, with their words.
-    var captions: [CaptionCue] = [CaptionCue(words: [
-        CaptionWord(text: "Okay,", start: 0, end: 0.3),
-        CaptionWord(text: "real", start: 0.35, end: 0.6),
-        CaptionWord(text: "talk.", start: 0.65, end: 1),
-    ])]
+    var captions: [CaptionCue] = [
+        CaptionCue(words: [
+            CaptionWord(text: "Okay,", start: 0, end: 0.3),
+            CaptionWord(text: "real", start: 0.35, end: 0.6),
+            CaptionWord(text: "talk.", start: 0.65, end: 1),
+        ]),
+    ]
     /// How listening ends; nil gives `captions`.
     var captionOutcome: CaptionOutcome?
     /// Where listening goes, reported in order before it ends.

@@ -10,7 +10,7 @@ import UIKit
 /// The layer shows the whole camera image (aspect fit), and reports where it landed so the overlays
 /// match what is really recorded.
 final class CameraPreviewUIView: UIView {
-    override class var layerClass: AnyClass { AVCaptureVideoPreviewLayer.self }
+    override static var layerClass: AnyClass { AVCaptureVideoPreviewLayer.self }
 
     // The layer class above guarantees the type.
     // swiftlint:disable:next force_cast

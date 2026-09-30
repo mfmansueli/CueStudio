@@ -83,7 +83,7 @@ struct RemoteControllerView: View {
             } else {
                 ProgressView().controlSize(.large).tint(Palette.ink2)
                 Text(remote.state.label).font(.headline)
-                Text("Keep both devices close, with Wi-Fi or Bluetooth on.")
+                Text("Keep both devices close, with Wi-Fi on.")
                     .font(.subheadline)
                     .foregroundStyle(Palette.ink2)
                     .multilineTextAlignment(.center)

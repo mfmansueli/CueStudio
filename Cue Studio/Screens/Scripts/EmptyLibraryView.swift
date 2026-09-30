@@ -27,9 +27,15 @@ struct EmptyLibraryView: View {
                 PromptCard(base: Palette.surface, action: onPrompt)
                     .accessibilityIdentifier("empty.promptCard")
                 GroupedCard(dividerInset: 72) {
-                    option(title: "Write a script", detail: "Blank page, with read-time as you type", systemImage: "pencil.line", identifier: "empty.writeButton", action: onWrite)
+                    option(
+                        title: "Write a script", detail: "Blank page, with read-time as you type",
+                        systemImage: "pencil.line", identifier: "empty.writeButton", action: onWrite
+                    )
                     option(title: "Import", detail: "Files or clipboard", systemImage: "doc.text", identifier: "empty.importButton", action: onImport)
-                    option(title: "Generate with AI", detail: "Describe the video, get a first draft", systemImage: "sparkles", identifier: "empty.generateButton", highlighted: true, action: onGenerate)
+                    option(
+                        title: "Generate with AI", detail: "Describe the video, get a first draft",
+                        systemImage: "sparkles", identifier: "empty.generateButton", highlighted: true, action: onGenerate
+                    )
                 }
                 VStack(spacing: 10) {
                     Button(action: onSkip) {

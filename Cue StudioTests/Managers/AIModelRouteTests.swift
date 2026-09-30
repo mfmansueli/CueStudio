@@ -29,8 +29,22 @@ struct AIModelRouteTests {
         #expect(AIModelRoute.choose(for: .freePrompt, onDeviceAvailable: false, privateCloudAvailable: false) == nil)
     }
 
-    @Test func onlyTheCloudHasAFallback() {
-        #expect(AIModelRoute.privateCloud.fallback == .onDevice)
-        #expect(AIModelRoute.onDevice.fallback == nil)
+    @Test func anUnreachableCloudFallsBackToTheDevice() {
+        #expect(AIModelRoute.privateCloud.fallback(after: .cloudUnreachable) == .onDevice)
+    }
+
+    @Test(arguments: [AIFailure.tooLong, .unsupportedLanguage])
+    func whatDoesNotFitTheDeviceGoesToTheCloud(_ failure: AIFailure) {
+        #expect(AIModelRoute.onDevice.fallback(after: failure) == .privateCloud)
+    }
+
+    @Test func theCloudDoesNotRetryWhatItCouldNotFit() {
+        #expect(AIModelRoute.privateCloud.fallback(after: .tooLong) == nil)
+        #expect(AIModelRoute.privateCloud.fallback(after: .unsupportedLanguage) == nil)
+    }
+
+    @Test(arguments: [AIModelRoute.onDevice, .privateCloud])
+    func otherFailuresAreNotRetried(_ route: AIModelRoute) {
+        #expect(route.fallback(after: .other) == nil)
     }
 }

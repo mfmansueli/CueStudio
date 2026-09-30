@@ -15,7 +15,9 @@ struct SafeZoneChoiceTests {
     }
 
     @Test func chipsFitTheFrame() {
-        #expect(SafeZoneChoice.options(for: .portrait, rules: rules) == [.platform(.reels), .platform(.tiktok), .platform(.shorts), .platform(.stories), .custom])
+        #expect(SafeZoneChoice.options(for: .portrait, rules: rules) == [
+            .platform(.reels), .platform(.tiktok), .platform(.shorts), .platform(.stories), .custom,
+        ])
         #expect(SafeZoneChoice.options(for: .vertical, rules: rules) == [.platform(.linkedin), .custom])
         #expect(SafeZoneChoice.options(for: .square, rules: rules) == [.custom])
         #expect(SafeZoneChoice.options(for: .landscape, rules: rules).isEmpty)

@@ -32,7 +32,10 @@ nonisolated enum ScriptType: String, Codable, CaseIterable, Identifiable, Sendab
         case .ad:
             return ScriptStructure(
                 label: String(localized: "Sponsored ad"),
-                blocks: [String(localized: "Hook"), String(localized: "Problem"), String(localized: "Product"), String(localized: "Proof"), String(localized: "Offer")],
+                blocks: [
+                    String(localized: "Hook"), String(localized: "Problem"), String(localized: "Product"),
+                    String(localized: "Proof"), String(localized: "Offer"),
+                ],
                 tones: [.energetic, .casual, .premium, .funny],
                 tools: [.newHooks, .strongerCTA, .addDisclosure, .fitToTime],
                 hooks: [
@@ -98,10 +101,15 @@ nonisolated enum ScriptType: String, Codable, CaseIterable, Identifiable, Sendab
         case .opinion:
             return ScriptStructure(
                 label: String(localized: "Hot take / reply"),
-                blocks: [String(localized: "Hook"), String(inInterfaceLanguage: LocalizedStringResource(
-                    "block.opinionTake", defaultValue: "Take",
-                    comment: "The opinion format's block where the creator states their opinion (their “take”), not a recording."
-                )), String(localized: "Why"), String(localized: "Question")],
+                blocks: [
+                    String(localized: "Hook"),
+                    String(inInterfaceLanguage: LocalizedStringResource(
+                        "block.opinionTake", defaultValue: "Take",
+                        comment: "The opinion format's block where the creator states their opinion (their “take”), not a recording."
+                    )),
+                    String(localized: "Why"),
+                    String(localized: "Question"),
+                ],
                 tones: generic.tones, tools: generic.tools,
                 hooks: [
                     String(localized: "Unpopular opinion, but hear me out."),
@@ -127,7 +135,10 @@ nonisolated enum ScriptType: String, Codable, CaseIterable, Identifiable, Sendab
         case .apology:
             return ScriptStructure(
                 label: String(localized: "Apology / statement"),
-                blocks: [String(localized: "Opening"), String(localized: "Acknowledge"), String(localized: "Own it"), String(localized: "What changes"), String(localized: "Close")],
+                blocks: [
+                    String(localized: "Opening"), String(localized: "Acknowledge"), String(localized: "Own it"),
+                    String(localized: "What changes"), String(localized: "Close"),
+                ],
                 tones: [.sincere, .calm, .direct],
                 tools: [.moreHuman, .lessDefensive, .shorterAndDirect, .fixGrammar],
                 hooks: [

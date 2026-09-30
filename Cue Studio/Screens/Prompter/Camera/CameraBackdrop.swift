@@ -37,7 +37,7 @@ struct CameraBackdrop: View {
                     if camera.background.isActive, let frame = camera.backgroundFrame {
                         Image(decorative: frame, scale: 1)
                             .resizable()
-                            .aspectRatio(contentMode: .fit)
+                            .scaledToFit()
                             .frame(width: sensorRect.width, height: sensorRect.height)
                             .position(x: sensorRect.midX, y: sensorRect.midY)
                             .allowsHitTesting(false)

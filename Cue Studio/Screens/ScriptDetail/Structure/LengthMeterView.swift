@@ -75,8 +75,14 @@ struct LengthMeterView: View {
 #if DEBUG
 #Preview {
     VStack {
-        LengthMeterView(zone: LengthZone(text: SampleScripts.morningHabits.text, preset: AppServices.preview.rules.preset(for: .tiktok, monetizationGoals: true), speed: 1))
-        LengthMeterView(zone: LengthZone(text: SampleScripts.lampReview.text, preset: AppServices.preview.rules.preset(for: .reels, monetizationGoals: true), speed: 1))
+        LengthMeterView(zone: LengthZone(
+            text: SampleScripts.morningHabits.text,
+            preset: AppServices.preview.rules.preset(for: .tiktok, monetizationGoals: true), speed: 1
+        ))
+        LengthMeterView(zone: LengthZone(
+            text: SampleScripts.lampReview.text,
+            preset: AppServices.preview.rules.preset(for: .reels, monetizationGoals: true), speed: 1
+        ))
     }
     .surfaceCard()
     .padding()

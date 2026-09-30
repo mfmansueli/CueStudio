@@ -29,7 +29,7 @@ struct LaunchOptions {
     var platformRules: PlatformRulesService = PlatformRulesService()
     var writer: ScriptWriting = ScriptAIService()
     var credentialChecker: AppleIDCredentialChecking = AppleIDCredentialChecker()
-    var remoteTransport: RemoteTransport = MultipeerRemoteTransport()
+    var remoteTransport: RemoteTransport = NearbyRemoteTransport()
     var languageStore: AppLanguageStoring = SystemAppLanguageStore()
 
     static func fromProcess() -> LaunchOptions {

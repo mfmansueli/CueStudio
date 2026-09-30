@@ -36,7 +36,7 @@ struct ScriptTests {
     @Test func theLanguageIsSavedWithTheScript() throws {
         let script = TestData.script(text: "Oi, gente!", language: .portugueseBrazil)
         let data = try JSONEncoder.library.encode(script)
-        #expect(String(decoding: data, as: UTF8.self).contains(#""language":"pt-BR""#))
+        #expect(String(bytes: data, encoding: .utf8)?.contains(#""language":"pt-BR""#) == true)
         let decoded = try JSONDecoder.library.decode(Script.self, from: data)
         #expect(decoded.language == .portugueseBrazil)
         #expect(decoded.text == "Oi, gente!")

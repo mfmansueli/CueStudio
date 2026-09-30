@@ -72,15 +72,15 @@ struct QuickCreatorViewModelTests {
 
     // MARK: - Text
 
-    @Test func aTextIsAddedAtThePlayheadInTheProjectsStyle() async {
+    @Test func aTextIsAddedAtThePlayheadInTheProjectsStyle() async throws {
         let scenario = await makeScenario()
         scenario.player.seek(to: 10)
         scenario.viewModel.addText(.title)
-        let text = try? #require(scenario.viewModel.edit.texts.first)
-        #expect(text?.span == TimeSpan(start: 10, end: 13))
-        #expect(text?.font == .classic)
-        #expect(scenario.viewModel.selectedTextID == text?.id)
-        #expect(scenario.viewModel.editingTextID == text?.id)
+        let text = try #require(scenario.viewModel.edit.texts.first)
+        #expect(text.span == TimeSpan(start: 10, end: 13))
+        #expect(text.font == .classic)
+        #expect(scenario.viewModel.selectedTextID == text.id)
+        #expect(scenario.viewModel.editingTextID == text.id)
         #expect(scenario.viewModel.textBars.map(\.span) == [TimeSpan(start: 10, end: 13)])
     }
 
@@ -465,7 +465,7 @@ struct QuickCreatorViewModelTests {
 
     // MARK: - Voice-over
 
-    @Test func aVoiceOverRecordsFromThePlayheadWithTheVideoSilent() async {
+    @Test func aVoiceOverRecordsFromThePlayheadWithTheVideoSilent() async throws {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
         scenario.player.seek(to: 12)
@@ -478,10 +478,10 @@ struct QuickCreatorViewModelTests {
         viewModel.stopVoiceOver()
         #expect(!viewModel.isRecordingVoiceOver)
         #expect(!scenario.player.isMuted)
-        let clip = try? #require(viewModel.edit.voiceOvers.first)
-        #expect(clip?.anchor == 12)
-        #expect(clip?.duration == 4)
-        #expect(viewModel.reviewedVoiceOverID == clip?.id)
+        let clip = try #require(viewModel.edit.voiceOvers.first)
+        #expect(clip.anchor == 12)
+        #expect(clip.duration == 4)
+        #expect(viewModel.reviewedVoiceOverID == clip.id)
         #expect(viewModel.voiceOverBars.map(\.span) == [TimeSpan(start: 12, end: 16)])
         // It plays back from where it starts.
         #expect(scenario.player.currentTime == 12)

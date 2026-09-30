@@ -74,7 +74,7 @@ struct AudioToolView: View {
     }
 
     private func strength(
-        _ title: String, detail: String, value: AudioStrength, identifier: String, set: @escaping (AudioStrength) -> Void
+        _ title: String, detail: String, value: AudioStrength, identifier: String, set: @escaping @MainActor @Sendable (AudioStrength) -> Void
     ) -> some View {
         VStack(alignment: .leading, spacing: 6) {
             VStack(alignment: .leading, spacing: 2) {

@@ -15,9 +15,10 @@ struct CreatorVoiceSection: View {
     var body: some View {
         @Bindable var profile = profile
         group(String(localized: "How I sound")) {
-            chips(VoiceSound.allCases, isOn: { profile.profile.sounds.contains($0) }, label: \.label, identifier: "sound") {
-                profile.toggleSound($0)
-            }
+            chips(
+                VoiceSound.allCases, isOn: { profile.profile.sounds.contains($0) }, label: \.label,
+                identifier: "sound", toggle: { profile.toggleSound($0) }
+            )
         }
         group(String(localized: "My phrases")) {
             FlowLayout(spacing: 6, lineSpacing: 6) {
@@ -63,14 +64,16 @@ struct CreatorVoiceSection: View {
             .accessibilityIdentifier("profile.vocabulary")
         }
         group(String(localized: "My style")) {
-            chips(VoiceStyle.allCases, isOn: { profile.profile.styles.contains($0) }, label: \.label, identifier: "style") {
-                profile.toggleStyle($0)
-            }
+            chips(
+                VoiceStyle.allCases, isOn: { profile.profile.styles.contains($0) }, label: \.label,
+                identifier: "style", toggle: { profile.toggleStyle($0) }
+            )
         }
         group(String(localized: "Niche")) {
-            chips(Niche.allCases, isOn: { profile.profile.niches.contains($0) }, label: \.label, identifier: "niche") {
-                profile.toggleNiche($0)
-            }
+            chips(
+                Niche.allCases, isOn: { profile.profile.niches.contains($0) }, label: \.label,
+                identifier: "niche", toggle: { profile.toggleNiche($0) }
+            )
         }
     }
 

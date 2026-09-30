@@ -48,7 +48,8 @@ struct PlatformRulesServiceTests {
     @Test func incompleteRemoteRulesAreIgnored() async throws {
         var partial = rules(revision: 5)
         partial.platforms["linkedin"] = nil
-        let service = PlatformRulesService(bundled: rules(revision: 1), cacheURL: nil, remoteURL: remote, fetcher: FakeRulesFetcher(result: .success(try JSONEncoder().encode(partial))))
+        let fetcher = FakeRulesFetcher(result: .success(try JSONEncoder().encode(partial)))
+        let service = PlatformRulesService(bundled: rules(revision: 1), cacheURL: nil, remoteURL: remote, fetcher: fetcher)
         await service.refresh()
         #expect(service.rules.revision == 1)
     }

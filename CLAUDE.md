@@ -20,6 +20,14 @@ ao protótipo do Claude Design). Atualize-o junto com a UI.
 
 - Scheme compartilhado `Cue Studio` (app + `Cue StudioTests` + `Cue StudioUITests`), Swift 6, iOS 27.
 - `xcodebuild -project "Cue Studio.xcodeproj" -scheme "Cue Studio" -destination "platform=iOS Simulator,name=iPhone 17" test`
+- **Zero warnings.** Todo build termina sem nenhum warning (compilador, SwiftLint, ferramentas do
+  Xcode): se um build mostrar um warning, corrija na mesma entrega, mesmo que não tenha vindo da sua
+  mudança. Build incremental não repete warnings de arquivos não recompilados, então confira com um
+  build limpo (`-derivedDataPath` novo) antes de dar por terminado. O SDK do simulador e o do
+  aparelho acusam coisas diferentes (anotações de concorrência): confira os dois.
+- **SwiftLint** (`brew install swiftlint`) roda em todo build do app (Build Phases › SwiftLint) com
+  `.swiftlint.yml`. Corrija o código em vez de afrouxar a configuração; `swiftlint --fix` resolve
+  parte, mas revise o formato do que ele muda.
 - O build Release também precisa compilar: previews usam dados de `SupportFiles/Debug/` e ficam em `#if DEBUG`.
 - Launch arguments (só em Debug, ver `SupportFiles/LaunchOptions.swift`): `-uiTestInMemory` (armazenamento
   em memória), `-uiTestSeedSamples` (scripts de exemplo), `-uiTestPro` (começa no Cue Pro),

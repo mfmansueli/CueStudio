@@ -43,7 +43,11 @@ struct MusicToolView: View {
                 } else {
                     Image(systemName: "music.note")
                 }
-                viewModel.isImportingMusic ? Text("Adding…") : Text("Add music")
+                if viewModel.isImportingMusic {
+                    Text("Adding…")
+                } else {
+                    Text("Add music")
+                }
             }
         }
         .buttonStyle(.cueLight(.medium))
@@ -98,7 +102,7 @@ struct MusicToolView: View {
 
     private func row(
         _ title: String, value: Double, range: ClosedRange<Double>, text: String, identifier: String,
-        set: @escaping (Double) -> Void
+        set: @escaping @MainActor @Sendable (Double) -> Void
     ) -> some View {
         HStack(spacing: 10) {
             Text(title)

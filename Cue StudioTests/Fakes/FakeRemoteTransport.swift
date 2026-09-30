@@ -29,7 +29,7 @@ final class FakeRemoteTransport: RemoteTransport {
         stopCount += 1
     }
 
-    /// What the other device (or Multipeer) would report.
+    /// What the other device (or the network) would report.
     func emit(_ event: RemoteTransportEvent) {
         onEvent?(event)
     }

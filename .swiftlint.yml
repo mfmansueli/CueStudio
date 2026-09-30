@@ -1,0 +1,50 @@
+# SwiftLint runs on every build of the app (Build Phases › SwiftLint) and must end with zero
+# violations: a build with a warning isn't done. Defaults stay on; only the rules below are tuned to
+# how this project is written.
+
+included:
+  - Cue Studio
+  - Cue StudioTests
+  - Cue StudioUITests
+
+# Multi-line collections and argument lists always end with a comma.
+trailing_comma:
+  mandatory_comma: true
+
+# Doc comments wrap at 100; code may run longer. Prompts for the model and localized strings are
+# one literal each (splitting them would change the catalog key or the prompt), so a line that is
+# long because of a long string literal doesn't count.
+line_length:
+  warning: 160
+  error: 200
+  excluded_lines_patterns:
+    - '"[^"]{60,}"'
+
+# x, y, a, b, t, i, lo, hi… are the names the math uses; `to`/`at` read as labels. The longest name
+# is an AVVideoCompositing requirement.
+identifier_name:
+  min_length: 1
+  max_length: 50
+
+# Colors (r, g, b, a) and time ranges are clearer as small tuples.
+large_tuple:
+  warning: 4
+  error: 5
+
+# The editor's composition, timeline and view models are big by nature; these limits stop them
+# from growing further. Splitting them is the way to lower the numbers.
+file_length:
+  warning: 900
+  error: 1200
+type_body_length:
+  warning: 800
+  error: 1000
+function_body_length:
+  warning: 150
+  error: 200
+cyclomatic_complexity:
+  warning: 16
+  error: 25
+function_parameter_count:
+  warning: 7
+  error: 9

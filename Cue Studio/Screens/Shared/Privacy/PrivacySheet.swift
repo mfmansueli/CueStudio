@@ -8,6 +8,9 @@ import SwiftUI
 /// What Cue does with the creator's data: it stays on the device, and the only AI is Apple
 /// Intelligence. Opened from the Profile and from the paywall's footer.
 struct PrivacySheet: View {
+    /// Private Cloud Compute is named only when the app can use it.
+    var usesPrivateCloudCompute = ScriptAIService.hasPrivateCloudComputeEntitlement
+
     @Environment(\.dismiss) private var dismiss
 
     var body: some View {
@@ -20,7 +23,9 @@ struct PrivacySheet: View {
                 )
                 item(
                     title: "Apple Intelligence, nothing else",
-                    detail: "Rewrites, hooks and theme ideas run on the device. A free-form Prompt is written with Apple's Private Cloud Compute, which uses your request only to answer it and doesn't keep it. No other AI service is involved.",
+                    detail: usesPrivateCloudCompute
+                        ? "Rewrites, hooks and theme ideas run on the device. A free-form Prompt is written with Apple's Private Cloud Compute, which uses your request only to answer it and doesn't keep it. No other AI service is involved."
+                        : "Scripts, rewrites, hooks and theme ideas are all written on this iPhone. No other AI service is involved.",
                     systemImage: "cpu"
                 )
                 item(

@@ -155,7 +155,7 @@ SF Symbols por significado: `doc.text` scripts · `film.stack` takes · `person.
 | Language & Region | `Screens/Profile/LanguageRegion` | Três linhas separadas, cada uma com sua explicação embaixo: **App Language** ("Controls the language of Cue’s interface."; iPhone Language + os 15 idiomas pelo nome nativo e, embaixo, no idioma da interface; muda a interface na hora e fica nesta tela), **Voice Following Language** ("Controls the language Cue listens for while you speak."; Same as Script + os 15, cada um com "Ready on this iPhone", "Downloads the first time you use it" ou "Not available on this iPhone" em laranja; um indisponível ainda pode ser escolhido, e o prompter avisa e rola na velocidade definida enquanto você fala) e **Script Language** (Auto-detect + os 15; é o idioma dos roteiros novos, e cada roteiro tem o seu em ••• › Script Language). Nenhuma muda a outra nem traduz nada (`LOCALIZATION.md`) |
 | Creator Setup | `Screens/CreatorSetup` | Opcional (um criador novo grava sem abrir). Card "This is what you usually use." + como as recomendações funcionam; **Recording**: Camera (Front / Back), Microphone (abre a lista: Automatic, as entradas conectadas e a salva quando não está conectada, com "pair it in Settings › Bluetooth"), Recording quality (720p / 1080p / 4K e 24 / 30 / 60 fps), Default format (9:16, 4:5, 1:1, 16:9); **Teleprompter**: Text size (Small / Medium / Large + slider 16–56), Scroll speed (0,3–2,0× e "about N words a minute"), Reading line (↑/↓ de 8 pt a partir de 118 pt da lente, Reset), Show reading line, Mirror text, Safe zones; **Remote Control**: Connect a Device (abre a página), Connected device, Remote status; **Reset Creator Setup** (tinto vermelho) com confirmação ("…Your scripts, takes and edits stay.") |
 | Remote Control | `Screens/RemoteControl/RemoteControlView` | "Control your teleprompter from another device."; **Connect a Device** (`RemotePairingPanel`: botão amarelo → QR code 200 pt + código "ABC 234" + "Waiting for your other device…" + Cancel → "Remote Connected" com ✓ verde, o nome do aparelho e Disconnect; erro de rede local com Try again); **Use this device as a remote** (Enter a code → alerta); "Keyboards, foot pedals and presentation remotes are coming next." |
-| Remote | `RemoteControllerView` | Tela cheia no outro aparelho (aberta pelo QR escaneado na Câmera, `cuestudio://remote?code=…`, ou pelo código digitado): fechar, "Remote" + ponto verde e o nome do teleprompter; card com o roteiro aberto, progresso, Playing / Paused / Recording e a velocidade (ou "Voice Following"); voltar ao topo, ‹‹, play/pause amarelo de 96 pt, ››; − velocidade +. Procurando: "Looking for the teleprompter…" + "Keep both devices close, with Wi-Fi or Bluetooth on." A tela não apaga |
+| Remote | `RemoteControllerView` | Tela cheia no outro aparelho (aberta pelo QR escaneado na Câmera, `cuestudio://remote?code=…`, ou pelo código digitado): fechar, "Remote" + ponto verde e o nome do teleprompter; card com o roteiro aberto, progresso, Playing / Paused / Recording e a velocidade (ou "Voice Following"); voltar ao topo, ‹‹, play/pause amarelo de 96 pt, ››; − velocidade +. Procurando: "Looking for the teleprompter…" + "Keep both devices close, with Wi-Fi on." A tela não apaga |
 | Paywall | `Screens/Shared/Paywall` | Tela cheia, aberta só pelo Export (depois da 5ª exportação: "Keep posting with Cue") ou pelo Profile ("Create more. Sound like you."); benefícios (exportações ilimitadas até 4K, tudo continua aberto, as takes são suas); Annual (pré-selecionado, "SAVE 58%", "$3.33/mo · 7 days free") / Monthly ("7 days free · cancel anytime"); "Start 7-day free trial" com o que acontece depois; Restore, Terms, Privacy. Sem opção com marca d'água e sem vitalício. Nunca abre durante a gravação |
 
 ## 5. Navegação
@@ -401,7 +401,7 @@ estático), o app baixa uma vez por abertura e só adota uma revisão maior, com
     API da Apple de redução de ruído para arquivos; "Reduce noise" reduz o que está entre as
     palavras e não remove ruído por cima da voz. **Picos:** um export que mistura mais que o som da
     take (música, voice-over, som de vídeo) é mixado uma vez como o export ouviria
-    (`MasterMix`: `AVAssetReaderAudioMixOutput` com o mesmo audio mix), passa pelo limitador e é
+    (`Mixdown`: `AVAssetReaderAudioMixOutput` com o mesmo audio mix), passa pelo limitador e é
     trazido para −1 dBFS se ainda passar; o export usa essa trilha única. A prévia mixa ao vivo,
     sem esse passo. "Compare with original" mede a fala dos dois (sem pausas) e toca o original com
     o volume que iguala os dois.
@@ -433,10 +433,15 @@ estático), o app baixa uma vez por abertura e só adota uma revisão maior, com
   (lente, formato, qualidade, mic, texto, velocidade, linha, espelho, safe zones mudados no prompter
   valem só para aquela gravação). A velocidade das estimativas de duração (Scripts, roteiro, takes)
   continua sendo a padrão. Sem aba nova: o fluxo continua Create → Script → Record → Edit → Export.
-- **Remote Control:** Multipeer Connectivity (Wi-Fi ou Bluetooth, sem rede nem conta, criptografado),
-  o mesmo app nos dois aparelhos. O teleprompter anuncia o código de pareamento; o remote procura esse
-  código e só entra com ele; um remote por vez, que volta sozinho se sair do alcance. O QR leva
-  `cuestudio://remote?code=…` (URL scheme e `NSBonjourServices` `_cue-remote._tcp/_udp` no
+- **Remote Control:** Network framework (`NearbyLink`: Bonjour + TCP com mensagens WebSocket, peer
+  to peer por Wi-Fi quando os dois não estão na mesma rede; sem conta), o mesmo app nos dois
+  aparelhos. O Multipeer Connectivity foi depreciado no iOS 27 e saiu. O teleprompter anuncia um
+  serviço com o nome derivado do código de pareamento (um hash, nunca o código, `RemoteCipher`); o
+  remote procura esse nome, cada mensagem vai selada com AES-GCM e uma chave derivada do código, e
+  o remote só entra respondendo ao desafio do teleprompter; um remote por vez, que volta sozinho se
+  sair do alcance. Bluetooth não é usado: os textos pedem só o Wi-Fi ligado. O código tem 6 letras,
+  então isso afasta quem está por perto, não quem grava o tráfego e testa códigos. O QR leva
+  `cuestudio://remote?code=…` (URL scheme e `NSBonjourServices` `_cue-remote._tcp` no
   `SupportFiles/Info.plist`, junto com `NSLocalNetworkUsageDescription`). O remote controla play,
   pause, velocidade, ‹‹ ›› (3 linhas) e voltar ao topo; gravar continua no aparelho da câmera. Teclado,
   pedal e controles Bluetooth/apresentação ficam para depois: cada um só precisa produzir
@@ -448,11 +453,19 @@ O protótipo simulava várias coisas; o app implementa de verdade ou deixa de fo
 - **IA:** só Apple Intelligence (Foundation Models), sem custo e sem backend. No aparelho:
   reescritas, tom, hooks, CTA, "Fit to time", "In my voice" e ideias de tema. Private Cloud Compute:
   o Prompt livre (temas factuais incluídos); se o PCC não estiver disponível (ou falhar), o modelo do
-  aparelho escreve e o aviso de fatos continua. O PCC exige o entitlement gerenciado
-  `com.apple.developer.private-cloud-compute` (a Apple concede ao time sob pedido); sem ele o
+  aparelho escreve e o aviso de fatos continua. Cada modelo cobre o outro (`AIModelRoute`,
+  `AIFailure`): sem rede, cota esgotada ou serviço fora, o aparelho escreve; um roteiro longo demais
+  para o contexto do aparelho ou num idioma que ele não escreve vai para o PCC; o que ainda falha
+  vira "Too long for Apple Intelligence on this iPhone…" / "Apple Intelligence can't write in this
+  script's language yet.". O PCC só conta como disponível enquanto a cota do usuário tem espaço
+  (`quotaUsage`). O PCC exige o entitlement gerenciado `com.apple.developer.private-cloud-compute`
+  (a Apple concede ao time sob pedido; em 30/09/2026 o portal ainda recusava para o time
+  X5392U638Q: "Entitlement … not found and could not be included in profile"); sem ele o
   FoundationModels derruba o app na primeira chamada, então fica desligado
-  (`ScriptAIService.hasPrivateCloudComputeEntitlement`) e o Prompt livre roda no aparelho até o
-  entitlement entrar em `Cue Studio.entitlements`. Os roteiros saem estruturados (`@Generable`
+  (`ScriptAIService.hasPrivateCloudComputeEntitlement`) e tudo roda no aparelho até o entitlement
+  entrar em `Cue Studio.entitlements`. Enquanto isso, o aviso de fatos e Privacy & AI data não citam
+  o PCC ("AI can get facts wrong. Check dates, names and numbers before you record."). Os roteiros
+  saem estruturados (`@Generable`
   `ScriptDraft`: título + blocos), com o Creator Voice nas instructions quando "Write in my voice"
   está ligado. Prompts factuais (história, ciência, "como surgiu…") ganham `factCheck`.
 - **Sem Apple Intelligence:** Prompt e as reescritas mostram "Requires Apple Intelligence" e ficam
@@ -485,9 +498,12 @@ O protótipo simulava várias coisas; o app implementa de verdade ou deixa de fo
   Language & Region independentemente do iPhone, do idioma de Voice Following e do idioma dos
   roteiros. Árabe espelha a interface; timelines, vídeo e zonas seguras nunca espelham, e o
   prompter segue a direção do roteiro. Detalhes, terminologia e limitações em `LOCALIZATION.md`.
-- **Conta:** Sign in with Apple é opcional e fica no Profile (não bloqueia nada). Sem backend, só
+- **Conta:** Sign in with Apple é opcional e fica no Profile (não bloqueia nada). Entitlement
+  `com.apple.developer.applesignin` (Default) em `Cue Studio.entitlements`, capability ligada no App
+  ID `com.cuestudioteleprompter` (exige o Apple Developer Program). Sem backend, só
   guarda o ID, o nome e o e-mail que a Apple manda na primeira vez (o nome preenche o perfil vazio);
-  no launch confere o estado da credencial e sai se ela foi revogada. Nome e @ continuam editáveis
+  no launch e a cada volta ao app confere o estado da credencial e sai se ela foi revogada (o
+  "Stop Using Apple ID" acontece nos Ajustes, fora do Cue). Nome e @ continuam editáveis
   e locais. O protótipo mostra "Signed in with Apple" sem botão de entrar; aqui ele aparece enquanto
   você não entrou.
 - **Paywall:** só promete o que o Pro muda (exportar sem limite). A v9 ainda desenha a comparação

@@ -76,7 +76,7 @@ struct CueLanguageTests {
 
     @Test func codableAsItsLocale() throws {
         let data = try JSONEncoder().encode([CueLanguage.portugueseBrazil])
-        #expect(String(decoding: data, as: UTF8.self) == #"["pt-BR"]"#)
+        #expect(String(bytes: data, encoding: .utf8) == #"["pt-BR"]"#)
         #expect(try JSONDecoder().decode([CueLanguage].self, from: data) == [.portugueseBrazil])
     }
 }

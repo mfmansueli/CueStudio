@@ -54,14 +54,21 @@ struct MediaToolView: View {
     }
 
     private var addButton: some View {
-        PhotosPicker(selection: $pickedItem, matching: .any(of: [.images, .videos]), photoLibrary: .shared()) {
+        // The picker builds its label off the main actor.
+        let isImporting = viewModel.isImportingMedia
+        let spinnerTint = Palette.bg
+        return PhotosPicker(selection: $pickedItem, matching: .any(of: [.images, .videos]), photoLibrary: .shared()) {
             HStack(spacing: 8) {
-                if viewModel.isImportingMedia {
-                    ProgressView().tint(Palette.bg)
+                if isImporting {
+                    ProgressView().tint(spinnerTint)
                 } else {
                     Image(systemName: "photo.badge.plus")
                 }
-                viewModel.isImportingMedia ? Text("Adding…") : Text("Add photo or video")
+                if isImporting {
+                    Text("Adding…")
+                } else {
+                    Text("Add photo or video")
+                }
             }
         }
         .buttonStyle(.cueLight(.medium))

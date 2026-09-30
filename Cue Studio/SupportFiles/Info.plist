@@ -18,7 +18,6 @@
 	<key>NSBonjourServices</key>
 	<array>
 		<string>_cue-remote._tcp</string>
-		<string>_cue-remote._udp</string>
 	</array>
 </dict>
 </plist>

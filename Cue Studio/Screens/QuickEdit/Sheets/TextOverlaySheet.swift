@@ -51,7 +51,10 @@ struct TextOverlaySheet: View {
                     }
                     colors(String(localized: "Color"), selection: binding(\.color, field: .color))
                     GroupedCard(background: Palette.surface2, radius: Metrics.innerRadius) {
-                        picker(String(localized: "Background"), selection: binding(\.background, field: .background), options: TextOverlayBackground.allCases) { $0.label }
+                        picker(
+                            String(localized: "Background"), selection: binding(\.background, field: .background),
+                            options: TextOverlayBackground.allCases
+                        ) { $0.label }
                         SettingToggleRow(title: String(localized: "Shadow"), isOn: binding(\.hasShadow, field: .shadow), minHeight: 50)
                         SettingToggleRow(title: String(localized: "Outline"), isOn: binding(\.hasOutline, field: .outline), minHeight: 50)
                         SettingToggleRow(title: String(localized: "All caps"), isOn: binding(\.isUppercase, field: .letterCase), minHeight: 50)

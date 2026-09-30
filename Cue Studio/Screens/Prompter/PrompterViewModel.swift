@@ -289,7 +289,7 @@ final class PrompterViewModel {
 
     func togglePlay() {
         guard hasScript else { return }
-        isPlaying ? pause() : play()
+        if isPlaying { pause() } else { play() }
     }
 
     func play() {

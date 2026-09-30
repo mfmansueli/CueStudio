@@ -50,8 +50,10 @@ struct ClipsSheet: View {
                         Label("Add a take", systemImage: "film.stack")
                     }
                     .accessibilityIdentifier("clips.addTakeButton")
+                    // The picker builds its label off the main actor.
+                    let isImporting = viewModel.isImportingMedia
                     PhotosPicker(selection: $pickedVideo, matching: .videos) {
-                        Label(viewModel.isImportingMedia ? String(localized: "Adding…") : String(localized: "Add a video"), systemImage: "video.badge.plus")
+                        Label(isImporting ? String(localized: "Adding…") : String(localized: "Add a video"), systemImage: "video.badge.plus")
                     }
                     .disabled(viewModel.isImportingMedia)
                     .accessibilityIdentifier("clips.addVideoButton")

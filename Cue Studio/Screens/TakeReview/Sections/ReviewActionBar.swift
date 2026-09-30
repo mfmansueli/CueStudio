@@ -21,7 +21,10 @@ struct ReviewActionBar: View {
             }
             tile("Retake", systemImage: "arrow.counterclockwise", identifier: "review.retakeButton", action: onRetake)
             tile("Save", systemImage: "arrow.down.to.line", identifier: "review.saveButton", isRunning: runningAction == .save, action: onSave)
-            tile("Share", systemImage: "square.and.arrow.up", identifier: "review.shareButton", isPrimary: true, isRunning: runningAction.map { if case .share = $0 { true } else { false } } ?? false, action: onShare)
+            tile(
+                "Share", systemImage: "square.and.arrow.up", identifier: "review.shareButton", isPrimary: true,
+                isRunning: runningAction.map { if case .share = $0 { true } else { false } } ?? false, action: onShare
+            )
         }
         .disabled(runningAction != nil)
     }

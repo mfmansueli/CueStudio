@@ -33,9 +33,17 @@ nonisolated enum PaywallCopy {
     static func welcome(for context: PaywallContext, startedTrial: Bool) -> String {
         switch context {
         case .export:
-            startedTrial ? String(localized: "Trial started — exporting now") : String(localized: "Welcome to Cue Pro — exporting now")
+            if startedTrial {
+                String(localized: "Trial started — exporting now")
+            } else {
+                String(localized: "Welcome to Cue Pro — exporting now")
+            }
         case .profile:
-            startedTrial ? String(localized: "Trial started — enjoy Cue Pro") : String(localized: "Welcome to Cue Pro")
+            if startedTrial {
+                String(localized: "Trial started — enjoy Cue Pro")
+            } else {
+                String(localized: "Welcome to Cue Pro")
+            }
         }
     }
 

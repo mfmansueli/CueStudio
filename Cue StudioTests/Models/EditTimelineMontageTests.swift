@@ -25,7 +25,12 @@ struct EditTimelineMontageTests {
     // MARK: - Old timelines
 
     @Test func aTimelineSavedBeforeMontagesIsTheTakesOwn() throws {
-        let json = #"{"sourceDuration": 30, "segments": [{"id": "\#(UUID().uuidString)", "sourceStart": 10, "sourceEnd": 20}, {"id": "\#(UUID().uuidString)", "sourceStart": 0, "sourceEnd": 5}]}"#
+        let json = #"""
+            {"sourceDuration": 30, "segments": [
+                {"id": "\#(UUID().uuidString)", "sourceStart": 10, "sourceEnd": 20},
+                {"id": "\#(UUID().uuidString)", "sourceStart": 0, "sourceEnd": 5}
+            ]}
+            """#
         let timeline = try JSONDecoder().decode(EditTimeline.self, from: Data(json.utf8))
         #expect(!timeline.isArranged)
         // Put back in the recording's order, as before.

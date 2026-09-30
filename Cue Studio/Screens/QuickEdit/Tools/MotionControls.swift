@@ -60,7 +60,9 @@ struct MotionControls: View {
     }
 
     /// A small slider; the whole drag is one undo step.
-    private func slider(_ title: String, value: Double, range: ClosedRange<Double>, set: @escaping (Double) -> Void) -> some View {
+    private func slider(
+        _ title: String, value: Double, range: ClosedRange<Double>, set: @escaping @MainActor @Sendable (Double) -> Void
+    ) -> some View {
         VStack(alignment: .leading, spacing: 0) {
             Text("\(title) \(value.formatted(.percent.precision(.fractionLength(0)).locale(.interface)))")
                 .font(.caption.monospacedDigit())

@@ -1,5 +1,5 @@
 //
-//  MasterMix.swift
+//  Mixdown.swift
 //  Cue Studio
 //
 
@@ -9,7 +9,7 @@ import AVFoundation
 /// video's own sound): the mix is rendered once, as the export would hear it, through a peak
 /// limiter and checked against `AudioCeiling`, and the export takes that one sound track instead
 /// of mixing on its own. Two loud things together can't clip.
-nonisolated enum MasterMix {
+nonisolated enum Mixdown {
     /// Every sound track of `composition` mixed as its audio mix says, limited, in place of them.
     /// Returns whether it did (then the audio mix no longer applies): a composition with one sound
     /// track or none is left as it is.

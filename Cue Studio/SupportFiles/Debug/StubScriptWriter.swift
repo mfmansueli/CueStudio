@@ -30,7 +30,10 @@ final class StubScriptWriter: ScriptWriting {
                 model: .privateCloud
             )
         case .format(let type, let brief):
-            return GeneratedScript(title: type.draftTitle(from: brief), text: type.draft(from: brief), usedLanguageModel: availability.isAvailable, model: .onDevice)
+            return GeneratedScript(
+                title: type.draftTitle(from: brief), text: type.draft(from: brief),
+                usedLanguageModel: availability.isAvailable, model: .onDevice
+            )
         }
     }
 

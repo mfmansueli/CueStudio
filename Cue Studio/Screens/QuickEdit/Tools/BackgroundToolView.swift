@@ -88,14 +88,21 @@ struct BackgroundToolView: View {
             }
             .accessibilityIdentifier("edit.backgroundColor")
         case .image:
+            // The picker builds its label off the main actor.
+            let isImporting = viewModel.isImportingBackground
+            let spinnerTint = Palette.bg
             PhotosPicker(selection: $pickedItem, matching: .images, photoLibrary: .shared()) {
                 HStack(spacing: 8) {
-                    if viewModel.isImportingBackground {
-                        ProgressView().tint(Palette.bg)
+                    if isImporting {
+                        ProgressView().tint(spinnerTint)
                     } else {
                         Image(systemName: "photo")
                     }
-                    effect.imageFileName == nil ? Text("Choose a photo") : Text("Change photo")
+                    if effect.imageFileName == nil {
+                        Text("Choose a photo")
+                    } else {
+                        Text("Change photo")
+                    }
                 }
             }
             .buttonStyle(.cueLight(.medium))
@@ -150,7 +157,7 @@ struct BackgroundToolView: View {
     }
 
     private func slider(
-        _ title: String, value: Double, range: ClosedRange<Double>, identifier: String, set: @escaping (Double) -> Void
+        _ title: String, value: Double, range: ClosedRange<Double>, identifier: String, set: @escaping @MainActor @Sendable (Double) -> Void
     ) -> some View {
         let text = value.formatted(.percent.precision(.fractionLength(0)).locale(.interface))
         return HStack(spacing: 10) {

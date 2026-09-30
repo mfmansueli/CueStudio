@@ -36,6 +36,8 @@ struct RootView: View {
             .onChange(of: scenePhase) { _, phase in
                 guard phase == .active else { return }
                 Task { await services.store.refreshEntitlements() }
+                // "Stop Using Apple ID" happens in Settings, outside Cue.
+                Task { await services.session.verify() }
             }
             .onChange(of: IntentRouter.shared.pending, initial: true) {
                 handleIntent()

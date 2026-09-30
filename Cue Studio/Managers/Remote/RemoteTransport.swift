@@ -5,7 +5,7 @@
 
 import Foundation
 
-/// The link between the teleprompter and the device that controls it: Multipeer Connectivity in the
+/// The link between the teleprompter and the device that controls it: the Network framework in the
 /// app, a fake in tests. Other controllers (keyboard, foot pedal, Bluetooth remote) won't need a
 /// transport: they only produce `RemoteCommand`s for the prompter.
 protocol RemoteTransport: AnyObject {

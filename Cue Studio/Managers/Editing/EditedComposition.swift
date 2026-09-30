@@ -41,7 +41,7 @@ nonisolated struct EditedComposition: @unchecked Sendable {
         var shortSide: CGFloat?
         /// Where the edit itself is in `edit.timeline`: the preview plays the timeline grown to the
         /// whole recording and holds playback here. Nil when the timeline is the edit.
-        var window: TimeSpan? = nil
+        var window: TimeSpan?
     }
 
     /// A volume ramp on the edited timeline.
@@ -111,7 +111,7 @@ nonisolated struct EditedComposition: @unchecked Sendable {
                 if recording(segment.sourceID) != nil { video.scaleTimeRange(inserted, toDuration: length) }
                 if soundInserted { audio?.scaleTimeRange(inserted, toDuration: length) }
             }
-            cursor = cursor + length
+            cursor = CMTimeAdd(cursor, length)
         }
 
         let windows = TransitionWindow.windows(in: edit.timeline)

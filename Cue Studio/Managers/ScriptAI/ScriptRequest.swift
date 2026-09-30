@@ -25,7 +25,7 @@ nonisolated struct ScriptRequest: Hashable, Sendable {
     var targetRange: ClosedRange<TimeInterval>
     /// The language to write in. The model is told explicitly, so the interface language (in which
     /// the format's labels reach the prompt) never decides it.
-    var language: CueLanguage? = nil
+    var language: CueLanguage?
 
     var type: ScriptType? {
         if case .format(let type, _) = source { type } else { nil }

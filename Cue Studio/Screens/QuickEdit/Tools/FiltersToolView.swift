@@ -28,7 +28,10 @@ struct FiltersToolView: View {
                             }
                             .frame(width: 58, height: 92)
                             .clipShape(RoundedRectangle(cornerRadius: Metrics.fieldRadius, style: .continuous))
-                            .overlay(RoundedRectangle(cornerRadius: Metrics.fieldRadius, style: .continuous).strokeBorder(isOn ? Palette.acc : .clear, lineWidth: 2))
+                            .overlay(
+                                RoundedRectangle(cornerRadius: Metrics.fieldRadius, style: .continuous)
+                                    .strokeBorder(isOn ? Palette.acc : .clear, lineWidth: 2)
+                            )
                             Text(filter.label)
                                 .font(.caption.weight(.semibold))
                                 .foregroundStyle(isOn ? Palette.acc : Palette.ink.opacity(0.7))

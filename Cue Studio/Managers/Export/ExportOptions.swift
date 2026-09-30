@@ -10,11 +10,11 @@ nonisolated struct ExportOptions: Hashable, Sendable {
     /// Output frame; the recording is cropped to it.
     var aspect: AspectRatio
     /// Quick edit's recipe; nil exports the recording as it was filmed.
-    var edit: TakeEdit? = nil
+    var edit: TakeEdit?
     /// "Burn in captions" when sharing, using the edit's captions.
     var burnsInCaptions = false
     /// Short side of the output in pixels (1080 or 2160); nil keeps the recording's.
-    var shortSide: CGFloat? = nil
+    var shortSide: CGFloat?
 
     /// Anything beyond a crop goes through the Quick edit renderer.
     var needsEditRenderer: Bool {

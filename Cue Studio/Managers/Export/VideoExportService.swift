@@ -72,7 +72,7 @@ final class VideoExportService: VideoExporting {
             options: .init(burnsInCaptions: options.burnsInCaptions, shortSide: options.shortSide)
         )
         // More than the take's sound: mixed once through a limiter so nothing clips.
-        let mixedDown = try await MasterMix.apply(to: composition)
+        let mixedDown = try await Mixdown.apply(to: composition)
         guard let session = AVAssetExportSession(asset: composition.asset, presetName: AVAssetExportPresetHEVCHighestQuality) else {
             throw VideoExportError.exportUnavailable
         }

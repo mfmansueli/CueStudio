@@ -106,6 +106,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 000000000000000110000000 /* Build configuration list for PBXNativeTarget "Cue Studio" */;
 			buildPhases = (
+				000000000000000150000000 /* SwiftLint */,
 				000000000000000120000000 /* Sources */,
 				000000000000000130000000 /* Frameworks */,
 				000000000000000140000000 /* Resources */,
@@ -237,6 +238,26 @@
 			);
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		000000000000000150000000 /* SwiftLint */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			name = SwiftLint;
+			shellPath = /bin/sh;
+			shellScript = (
+				"# Zero violations: the build shows every one as a warning or error (see .swiftlint.yml).",
+				"export PATH=\"/opt/homebrew/bin:/usr/local/bin:$PATH\"",
+				"if ! command -v swiftlint >/dev/null 2>&1; then",
+				"  echo \"error: SwiftLint is not installed. Run: brew install swiftlint\"",
+				"  exit 1",
+				"fi",
+				"cd \"$SRCROOT\" && swiftlint lint --quiet",
+				"",
+			);
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		000000000000000120000000 /* Sources */ = {
@@ -412,6 +433,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = X5392U638Q;
 				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "Cue Studio/SupportFiles/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "Cue Studio";
@@ -463,6 +485,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = X5392U638Q;
 				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "Cue Studio/SupportFiles/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "Cue Studio";
@@ -555,6 +578,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = X5392U638Q;
 				GENERATE_INFOPLIST_FILE = YES;
+				LM_SKIP_METADATA_EXTRACTION = YES;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "devplaceholder.$(PROJECT_UNIQUE_VALUE:identifier).$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -576,6 +600,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = X5392U638Q;
 				GENERATE_INFOPLIST_FILE = YES;
+				LM_SKIP_METADATA_EXTRACTION = YES;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "devplaceholder.$(PROJECT_UNIQUE_VALUE:identifier).$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";

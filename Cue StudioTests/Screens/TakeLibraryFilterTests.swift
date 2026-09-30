@@ -23,7 +23,10 @@ struct TakeLibraryFilterTests {
         _ scriptID: UUID?, _ number: Int, hoursAgo: Double, platform: Platform? = .tiktok,
         best: Bool = false, edited: Bool = false, exported: Bool = false
     ) -> Take {
-        var take = TestData.take(scriptID: scriptID, title: scriptID == nil ? "Freestyle recording" : "Script", number: number, recordedAt: now.addingTimeInterval(-hoursAgo * 3600), isBest: best)
+        var take = TestData.take(
+            scriptID: scriptID, title: scriptID == nil ? "Freestyle recording" : "Script", number: number,
+            recordedAt: now.addingTimeInterval(-hoursAgo * 3600), isBest: best
+        )
         take.platform = platform
         take.isEdited = edited
         take.isExported = exported
