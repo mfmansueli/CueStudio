@@ -13,9 +13,20 @@ import Testing
 @MainActor
 @Suite("QuickEditPlayer", .serialized, .timeLimit(.minutes(2)))
 struct QuickEditPlayerTests {
-    private func makePlayer(seconds: Int = 3) async throws -> (QuickEditPlayer, TakeEdit, URL) {
-        let clip = try await TestClip.make(seconds: seconds)
-        let player = QuickEditPlayer(videoURL: clip, editing: TakeEditService())
+    // Repeatedly starting the simulator's H.264 writer can stall before playback is exercised.
+    // Keep immutable sources per duration; every test owns and deletes its own file copy.
+    private static var fixtureTasks: [Int: Task<URL, Error>] = [:]
+
+    private func makePlayer(
+        seconds: Int = 3, audioSession: FakePlaybackAudioSession = FakePlaybackAudioSession()
+    ) async throws -> (QuickEditPlayer, TakeEdit, URL) {
+        if Self.fixtureTasks[seconds] == nil {
+            Self.fixtureTasks[seconds] = Task { try await TestClip.make(seconds: seconds) }
+        }
+        let fixture = try await Self.fixtureTasks[seconds]!.value
+        let clip = URL.temporaryDirectory.appending(path: "player-\(UUID()).mov")
+        try FileManager.default.copyItem(at: fixture, to: clip)
+        let player = QuickEditPlayer(videoURL: clip, editing: TakeEditService(), audioSession: audioSession)
         let edit = TakeEdit(sourceDuration: TimeInterval(seconds), aspect: .portrait)
         player.show(edit)
         try await waitUntil { player.state == .ready }
@@ -241,6 +252,73 @@ struct QuickEditPlayerTests {
         player.play()
         player.stop()
         #expect(!player.isPlaying)
+        #expect(player.avPlayer.currentItem == nil)
+    }
+
+    @Test func audiblePlaybackPreparesAudioAgainAfterPausing() async throws {
+        let audioSession = FakePlaybackAudioSession()
+        let (player, _, clip) = try await makePlayer(audioSession: audioSession)
+        defer { player.stop(); try? FileManager.default.removeItem(at: clip) }
+        #expect(audioSession.preparations == 0)
+        player.play()
+        try await waitUntil { player.currentTime > 0.1 }
+        #expect(audioSession.preparations == 1)
+        player.pause()
+        player.play()
+        try await waitUntil { audioSession.preparations == 2 }
+    }
+
+    @Test func mutedVoiceOverPlaybackDoesNotReplaceTheRecordingSession() async throws {
+        let audioSession = FakePlaybackAudioSession()
+        let (player, _, clip) = try await makePlayer(audioSession: audioSession)
+        defer { player.stop(); try? FileManager.default.removeItem(at: clip) }
+        player.isMuted = true
+        player.play()
+        try await waitUntil { player.currentTime > 0.1 }
+        #expect(audioSession.preparations == 0)
+        player.pause()
+        player.isMuted = false
+        player.play()
+        try await waitUntil { audioSession.preparations == 1 }
+    }
+
+    @Test func pausingDuringAudioActivationDoesNotRestartPlayback() async throws {
+        let audioSession = FakePlaybackAudioSession()
+        audioSession.delay = .seconds(1)
+        let (player, _, clip) = try await makePlayer(audioSession: audioSession)
+        defer { player.stop(); try? FileManager.default.removeItem(at: clip) }
+        player.play()
+        try await waitUntil { audioSession.preparations == 1 }
+        player.pause()
+        try await Task.sleep(for: .milliseconds(100))
+        #expect(!player.isPlaying)
+        #expect(player.avPlayer.rate == 0)
+    }
+
+    @Test func seekingDuringAudioActivationStillResumesAtTheRequestedFrame() async throws {
+        let audioSession = FakePlaybackAudioSession()
+        audioSession.delay = .milliseconds(200)
+        let (player, _, clip) = try await makePlayer(audioSession: audioSession)
+        defer { player.stop(); try? FileManager.default.removeItem(at: clip) }
+        player.play()
+        try await waitUntil { audioSession.preparations == 1 }
+        player.seek(to: 1)
+        try await waitUntil { player.currentTime > 1.1 }
+        #expect(player.isPlaying)
+        #expect(audioSession.preparations >= 2)
+    }
+
+    @Test func closingDuringAudioActivationDoesNotRestartThePlayer() async throws {
+        let audioSession = FakePlaybackAudioSession()
+        audioSession.delay = .seconds(1)
+        let (player, _, clip) = try await makePlayer(audioSession: audioSession)
+        defer { try? FileManager.default.removeItem(at: clip) }
+        player.play()
+        try await waitUntil { audioSession.preparations == 1 }
+        player.stop()
+        try await Task.sleep(for: .milliseconds(100))
+        #expect(!player.isPlaying)
+        #expect(player.avPlayer.rate == 0)
         #expect(player.avPlayer.currentItem == nil)
     }
 }

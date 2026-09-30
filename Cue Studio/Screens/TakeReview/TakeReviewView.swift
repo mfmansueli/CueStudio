@@ -17,6 +17,8 @@ struct TakeReviewView: View {
     let onDeleted: (Take?) -> Void
 
     @State private var player = AVPlayer()
+    @State private var audioSession = PlaybackAudioManager()
+    @State private var playbackTask: Task<Void, Never>?
     @State private var isPlaying = false
     @State private var progress: Double = 0
 
@@ -75,13 +77,13 @@ struct TakeReviewView: View {
         }
         .confirmationDialog("Delete this take?", isPresented: $confirmsDelete, titleVisibility: .visible) {
             Button("Delete take", role: .destructive) {
-                player.pause()
+                pausePlayback()
                 onDeleted(viewModel.delete())
             }
         } message: {
             Text("The video is removed from Cue. Copies you saved to Photos stay there.")
         }
-        .onDisappear { player.pause() }
+        .onDisappear { pausePlayback() }
         .sheet(isPresented: $viewModel.showsShareSheet) {
             if let take = viewModel.take {
                 ShareToSheet(viewModel: viewModel, take: take)
@@ -197,20 +199,20 @@ struct TakeReviewView: View {
                         onSuggest: viewModel.offersBestSuggestion ? { suggestBest(from: take) } : nil
                     ) { sibling in
                         guard sibling.id != take.id else { return }
-                        player.pause()
+                        pausePlayback()
                         onSelect(sibling)
                     }
                 }
                 ReviewActionBar(
                     runningAction: viewModel.runningAction,
                     onEdit: {
-                        player.pause()
+                        pausePlayback()
                         editingTake = take
                     },
                     onRetake: onRetake,
                     onSave: { Task { await viewModel.save() } },
                     onShare: {
-                        player.pause()
+                        pausePlayback()
                         viewModel.showsShareSheet = true
                     }
                 )
@@ -223,7 +225,7 @@ struct TakeReviewView: View {
     /// Switches to the suggested take (or opens the paywall on the free plan).
     private func suggestBest(from take: Take) {
         guard let best = viewModel.suggestBest(), best.id != take.id else { return }
-        player.pause()
+        pausePlayback()
         onSelect(best)
     }
 
@@ -236,18 +238,20 @@ struct TakeReviewView: View {
     }
 
     private func runPlayer() async {
+        pausePlayback()
         guard let url = viewModel.videoURL else { return }
         if let edit = viewModel.take?.edit, let item = try? await editing.previewItem(forVideoAt: url, edit: edit) {
             player.replaceCurrentItem(with: item)
         } else {
             player.replaceCurrentItem(with: AVPlayerItem(url: url))
         }
-        player.play()
+        guard !Task.isCancelled else { return }
+        startPlayback()
         while !Task.isCancelled {
             let duration = viewModel.take?.duration ?? 0
             let seconds = player.currentTime().seconds
             progress = duration > 0 && seconds.isFinite ? min(1, seconds / duration) : 0
-            isPlaying = player.timeControlStatus != .paused
+            isPlaying = playbackTask != nil || player.timeControlStatus != .paused
             if progress >= 0.999 && !isPlaying {
                 await player.seek(to: .zero)
                 progress = 0
@@ -257,13 +261,29 @@ struct TakeReviewView: View {
     }
 
     private func togglePlayback() {
-        if player.timeControlStatus == .paused {
-            player.play()
-            isPlaying = true
+        if isPlaying {
+            pausePlayback()
         } else {
-            player.pause()
-            isPlaying = false
+            startPlayback()
         }
+    }
+
+    private func startPlayback() {
+        playbackTask?.cancel()
+        isPlaying = true
+        playbackTask = Task {
+            await audioSession.prepareForPlayback()
+            guard !Task.isCancelled else { return }
+            playbackTask = nil
+            player.play()
+        }
+    }
+
+    private func pausePlayback() {
+        playbackTask?.cancel()
+        playbackTask = nil
+        player.pause()
+        isPlaying = false
     }
 
     private func seek(to fraction: Double, of take: Take) {
