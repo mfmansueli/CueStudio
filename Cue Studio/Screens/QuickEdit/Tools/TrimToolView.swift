@@ -70,23 +70,19 @@ struct TrimToolView: View {
             .accessibilityLabel(Text("Delete section"))
             .accessibilityHint(Text("Takes the selected section out of the video"))
             .accessibilityIdentifier("edit.removeButton")
-            Button { viewModel.tool = .cleanUp } label: {
-                HStack(spacing: 6) {
-                    Image(systemName: "sparkles")
-                    Text("Clean Up")
-                    if let badge = viewModel.cleanUpBadge {
-                        Text("\(badge)")
-                            .font(.caption2.weight(.heavy).monospacedDigit())
-                            .foregroundStyle(Palette.accInk)
-                            .padding(.horizontal, 6)
-                            .frame(minWidth: 18, minHeight: 18)
-                            .background(Palette.acc, in: Capsule())
-                    }
-                }
+            Button(action: viewModel.duplicateSection) {
+                Image(systemName: "plus.square.on.square")
+            }
+            .buttonStyle(.cueIcon(.surface, diameter: Metrics.mediumButtonHeight))
+            .accessibilityLabel(Text("Copy section"))
+            .accessibilityHint(Text("Copies the picked section, or the one at the playhead, right after it"))
+            .accessibilityIdentifier("edit.duplicateButton")
+            Button { viewModel.showsClips = true } label: {
+                Label("Clips", systemImage: "rectangle.stack")
             }
             .buttonStyle(.cueTinted(.medium, expands: false))
-            .accessibilityHint(Text("Finds pauses, filler words and retakes to review"))
-            .accessibilityIdentifier("edit.cleanUpButton")
+            .accessibilityHint(Text("Reorder, copy or remove sections, and add other takes or videos"))
+            .accessibilityIdentifier("edit.clipsButton")
         }
     }
 

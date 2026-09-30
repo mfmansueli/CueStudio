@@ -11,6 +11,8 @@ nonisolated struct CaptionTranscript: Codable, Hashable, Sendable {
     var words: [CaptionWord]
     /// The language it was heard in ("pt", "ja"…).
     var languageCode: String
+    /// The recording it was heard in: nil for the take itself, else a montage's other recording.
+    var sourceID: UUID?
 
     /// The words heard between two moments of the recording, as said.
     func text(in span: TimeSpan) -> String {

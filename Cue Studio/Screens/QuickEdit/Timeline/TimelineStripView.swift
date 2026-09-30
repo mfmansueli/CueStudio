@@ -96,7 +96,7 @@ struct TimelineStripView: View {
                 TimelineFramesView(
                     videoURL: viewModel.videoURL, layout: layout,
                     frameCount: TimelineLayout.frameCount(width: proxy.size.width, tileWidth: Self.framesHeight * 9 / 16),
-                    frameRate: viewModel.frameRate, readsZoomedFrames: true
+                    frameRate: viewModel.frameRate, readsZoomedFrames: true, otherSources: viewModel.clipSourceURLs
                 )
                 .frame(width: proxy.size.width, height: Self.framesHeight)
                 .offset(y: framesTop)

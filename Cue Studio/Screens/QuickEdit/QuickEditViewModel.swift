@@ -78,6 +78,8 @@ final class QuickEditViewModel {
     var confirmsCaptionReplacement = false
     /// The caption line open in its sheet.
     var editingCaptionID: UUID?
+    /// The Clips sheet (the montage's sections) is open.
+    var showsClips = false
     @ObservationIgnored var captionTask: Task<Void, Never>?
     /// The captions request whose result is still wanted: an older one finishing late is dropped.
     @ObservationIgnored var captionRequest: UUID?
@@ -130,7 +132,8 @@ final class QuickEditViewModel {
     let mediaImporter: EditMediaImporting
     let recorder: VoiceOverRecording
     let styles: TextStyleStoring
-    private let takes: TakeLibraryService
+    /// The library of takes (a montage adds others from it).
+    let takes: TakeLibraryService
     private let drafts: QuickEditDraftStoring
     /// What a script is heard in (`LanguageService.speechRequest(for:)`).
     private let speechLanguageFor: (Script?) -> SpeechLanguageRequest
@@ -659,6 +662,7 @@ final class QuickEditViewModel {
         edit.captionLook = step.captionLook
         edit.captionPreset = step.captionPreset
         if let captions = step.captions { edit.captions = captions }
+        if let sources = step.sources { edit.sources = sources }
     }
 
     // MARK: - Adjust

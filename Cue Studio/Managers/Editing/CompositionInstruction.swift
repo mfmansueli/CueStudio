@@ -19,12 +19,13 @@ final class CompositionInstruction: NSObject, AVVideoCompositionInstructionProto
     let trackID: CMPersistentTrackID
     /// The track with the other side of a dissolving cut; nil outside a dissolve.
     let blendTrackID: CMPersistentTrackID?
-    /// The track with the videos laid over the take; nil where none shows.
-    let mediaTrackID: CMPersistentTrackID?
-    /// The track's preferred transform, to turn portrait recordings upright.
-    let transform: CGAffineTransform
-    /// The part of the upright frame to keep (Core Image coordinates).
-    let crop: CGRect
+    /// The tracks with the videos laid over the take in this stretch (several when they overlap).
+    let mediaTrackIDs: [CMPersistentTrackID]
+    /// How the main track's frames become the edit's frame in this stretch (upright, cropped,
+    /// scaled): a stretch plays one recording.
+    let frame: SourceFrame
+    /// The same for the blend track's frames (the other side of a dissolve); nil outside one.
+    let blendFrame: SourceFrame?
     let edit: TakeEdit
     let overlays: [FrameOverlay]
     /// Every photo and video laid over the take.
@@ -38,22 +39,22 @@ final class CompositionInstruction: NSObject, AVVideoCompositionInstructionProto
 
     init(
         timeRange: CMTimeRange, trackID: CMPersistentTrackID, blendTrackID: CMPersistentTrackID? = nil,
-        mediaTrackID: CMPersistentTrackID? = nil,
-        transform: CGAffineTransform, crop: CGRect, edit: TakeEdit, overlays: [FrameOverlay], media: [MediaFrame] = [],
+        mediaTrackIDs: [CMPersistentTrackID] = [],
+        frame: SourceFrame, blendFrame: SourceFrame? = nil, edit: TakeEdit, overlays: [FrameOverlay], media: [MediaFrame] = [],
         outputScale: CGFloat, dissolve: TransitionWindow? = nil, fades: [TransitionWindow] = []
     ) {
         self.timeRange = timeRange
         self.trackID = trackID
         self.blendTrackID = blendTrackID
-        self.mediaTrackID = mediaTrackID
+        self.mediaTrackIDs = mediaTrackIDs
         self.media = media
-        self.transform = transform
-        self.crop = crop
+        self.frame = frame
+        self.blendFrame = blendFrame
         self.edit = edit
         self.overlays = overlays
         self.outputScale = outputScale
         self.dissolve = dissolve
         self.fades = fades
-        requiredSourceTrackIDs = ([trackID] + [blendTrackID, mediaTrackID].compactMap { $0 }).map { NSNumber(value: $0) }
+        requiredSourceTrackIDs = ([trackID] + [blendTrackID].compactMap { $0 } + mediaTrackIDs).map { NSNumber(value: $0) }
     }
 }

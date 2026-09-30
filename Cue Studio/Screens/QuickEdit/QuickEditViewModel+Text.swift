@@ -25,7 +25,9 @@ extension QuickEditViewModel {
         guard isReady else { return }
         player.pause()
         let span = placement(at: player.currentTime, length: role.defaultDuration)
-        let text = edit.newText(role, span: edit.timeline.sourceSpan(forEdited: span))
+        let pinned = edit.pin(span)
+        var text = edit.newText(role, span: pinned.span)
+        text.clipAnchor = pinned.anchor
         change { $0.texts.append(text) }
         selectedTextID = text.id
         editingTextID = text.id
@@ -55,14 +57,14 @@ extension QuickEditViewModel {
 
     /// Where the text plays (edited seconds); nil when none of it does.
     func editedSpan(ofText id: UUID) -> TimeSpan? {
-        edit.texts.first { $0.id == id }.flatMap { edit.timeline.editedSpan(forSource: $0.span) }
+        edit.texts.first { $0.id == id }.flatMap { TakeEdit.editedSpan($0.span, anchor: $0.clipAnchor, in: edit.timeline) }
     }
 
     /// Texts showing at the playhead, for the preview's handles.
     var visibleTexts: [TextOverlay] {
         let time = player.currentTime
         return edit.texts.filter { text in
-            guard let span = edit.timeline.editedSpan(forSource: text.span) else { return false }
+            guard let span = TakeEdit.editedSpan(text.span, anchor: text.clipAnchor, in: edit.timeline) else { return false }
             return span.contains(time) || (abs(time - edit.editedDuration) < 0.001 && abs(span.end - time) < 0.001)
         }
     }

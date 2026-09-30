@@ -36,6 +36,9 @@ nonisolated struct TextOverlay: Codable, Hashable, Identifiable, Sendable {
     var center: OverlayPoint
     /// Seconds of the recording it is pinned to.
     var span: TimeSpan
+    /// In an arranged edit, the piece it is pinned to (`span` is then of that piece's recording);
+    /// nil pins it to the take's own seconds.
+    var clipAnchor: ClipAnchor?
     /// The preset it was last set in; nil for a look set another way (a legacy style, "My
     /// style").
     var preset: TypePreset?
@@ -91,7 +94,7 @@ nonisolated struct TextOverlay: Codable, Hashable, Identifiable, Sendable {
 
     private enum CodingKeys: String, CodingKey {
         case id, text, role, font, weight, size, tracking, isUppercase, alignment, color, background, backgroundColor
-        case backgroundOpacity, hasShadow, hasOutline, center, span, preset, customized
+        case backgroundOpacity, hasShadow, hasOutline, center, span, preset, customized, clipAnchor
     }
 
     /// Texts saved before letter spacing, fill opacity and presets read with none of them.
@@ -116,6 +119,7 @@ nonisolated struct TextOverlay: Codable, Hashable, Identifiable, Sendable {
         span = try container.decode(TimeSpan.self, forKey: .span)
         preset = try? container.decodeIfPresent(TypePreset.self, forKey: .preset)
         customized = Set(((try? container.decodeIfPresent([String].self, forKey: .customized)) ?? []).compactMap(TextLookField.init(rawValue:)))
+        clipAnchor = try? container.decodeIfPresent(ClipAnchor.self, forKey: .clipAnchor)
     }
 
     func encode(to encoder: Encoder) throws {
@@ -140,5 +144,6 @@ nonisolated struct TextOverlay: Codable, Hashable, Identifiable, Sendable {
         try container.encodeIfPresent(preset, forKey: .preset)
         // Sorted, so the same text always encodes the same (drafts compare by value).
         try container.encode(customized.map(\.rawValue).sorted(), forKey: .customized)
+        try container.encodeIfPresent(clipAnchor, forKey: .clipAnchor)
     }
 }

@@ -31,8 +31,9 @@ extension QuickEditViewModel {
         await captionTask?.value
     }
 
-    /// Listens to the take and makes the lines. Asks first when that would replace lines the
-    /// creator corrected (`confirmsCaptionReplacement`), unless `replacingRevised`.
+    /// Listens to the take (and a montage's other recordings) and makes the lines. Asks first when
+    /// that would replace lines the creator corrected (`confirmsCaptionReplacement`), unless
+    /// `replacingRevised`.
     func makeCaptions(replacingRevised: Bool = false) {
         guard isReady, !captionState.isWorking else { return }
         if hasRevisedCaptions, !replacingRevised {
@@ -41,8 +42,7 @@ extension QuickEditViewModel {
         }
         let request = UUID()
         captionRequest = request
-        let url = videoURL
-        let script = scriptText
+        let recordings = captionRecordings
         let language = captionSpeechLanguage
         captionState = .working(.preparing)
         // Progress arrives from the recognizer's own tasks; it only lands while this request is on.
@@ -50,9 +50,14 @@ extension QuickEditViewModel {
             Task { @MainActor in self?.receiveCaptionProgress(progress, for: request) }
         }
         captionTask = Task { [editing] in
-            let outcome: CaptionOutcome
+            var outcomes: [(source: UUID?, outcome: CaptionOutcome)] = []
             do {
-                outcome = try await editing.captions(forVideoAt: url, script: script, language: language, progress: report)
+                for recording in recordings {
+                    let outcome = try await editing.captions(
+                        forVideoAt: recording.url, script: recording.script, language: language, progress: report
+                    )
+                    outcomes.append((recording.source, outcome))
+                }
             } catch is CancellationError {
                 finishCaptions(request, with: .cancelled)
                 return
@@ -60,8 +65,21 @@ extension QuickEditViewModel {
                 finishCaptions(request, with: .failed)
                 return
             }
-            finishCaptions(request, outcome: outcome)
+            finishCaptions(request, outcomes: outcomes)
         }
+    }
+
+    /// What captions listen to: the take (with its script), then each other recording the montage
+    /// plays (a library take with its own script, a video with none).
+    private var captionRecordings: [(source: UUID?, url: URL, script: String)] {
+        var result: [(source: UUID?, url: URL, script: String)] = [(nil, videoURL, scriptText)]
+        for source in edit.sources where edit.timeline.segments.contains(where: { $0.sourceID == source.id }) {
+            let script = source.takeID
+                .flatMap { id in takes.takes.first { $0.id == id } }
+                .flatMap { library.script(id: $0.scriptID)?.text } ?? ""
+            result.append((source.id, EditMediaFiles.url(for: source.fileName), script))
+        }
+        return result
     }
 
     /// Stops listening. The lines stay as they were.
@@ -99,23 +117,37 @@ extension QuickEditViewModel {
         captionState = state
     }
 
-    private func finishCaptions(_ request: UUID, outcome: CaptionOutcome) {
+    /// Lines from every recording that gave some; when none did, the take's own reason.
+    private func finishCaptions(_ request: UUID, outcomes: [(source: UUID?, outcome: CaptionOutcome)]) {
         guard captionRequest == request, !isClosed else { return }
         captionRequest = nil
-        switch outcome {
-        case .captions(let lines, let transcript):
-            change { $0.captions = lines }
-            edit.captionTranscript = transcript
-            edit.showsCaptions = true
-            captionState = .idle
-            toast.show(String(localized: "Captions made from your voice"))
-        case .noAudio:
-            captionState = .noAudio
-        case .noSpeech:
-            captionState = .noSpeech
-        case .unavailable(let reason):
-            captionState = .unavailable(reason)
+        var lines: [CaptionCue] = []
+        var takeTranscript: CaptionTranscript?
+        var others: [CaptionTranscript] = []
+        for (source, outcome) in outcomes {
+            guard case .captions(let found, var transcript) = outcome else { continue }
+            transcript.sourceID = source
+            lines += found.map { line in
+                var tagged = line
+                tagged.sourceID = source
+                return tagged
+            }
+            if source == nil { takeTranscript = transcript } else { others.append(transcript) }
         }
+        guard !lines.isEmpty else {
+            switch outcomes.first?.outcome {
+            case .noAudio?: captionState = .noAudio
+            case .unavailable(let reason)?: captionState = .unavailable(reason)
+            default: captionState = .noSpeech
+            }
+            return
+        }
+        change { $0.captions = lines.sorted { $0.start < $1.start } }
+        edit.captionTranscript = takeTranscript
+        edit.sourceTranscripts = others
+        edit.showsCaptions = true
+        captionState = .idle
+        toast.show(String(localized: "Captions made from your voice"))
     }
 
     // MARK: - Reading
@@ -126,6 +158,12 @@ extension QuickEditViewModel {
         edit.editedCaptions.sorted { $0.start < $1.start }
     }
 
+    /// The line a caption shown in the edit comes from (a copy of a section shows it again under
+    /// another identity).
+    func captionCueID(forLine id: UUID) -> UUID {
+        edit.editedCaptionInstances.first { $0.line.id == id }?.cueID ?? id
+    }
+
     var editingCaption: CaptionCue? {
         editingCaptionID.flatMap { id in edit.captions.first { $0.id == id } }
     }
@@ -133,7 +171,7 @@ extension QuickEditViewModel {
     /// What was heard over the line's time, before any correction; nil for a line written by hand
     /// or when nothing was heard there.
     func heardText(of cue: CaptionCue) -> String? {
-        guard cue.origin == .speech, let transcript = edit.captionTranscript else { return nil }
+        guard cue.origin == .speech, let transcript = transcript(of: cue.sourceID) else { return nil }
         let heard = transcript.text(in: cue.span)
         return heard.isEmpty ? nil : heard
     }
@@ -157,8 +195,10 @@ extension QuickEditViewModel {
     func addCaption() {
         guard isReady else { return }
         player.pause()
-        let span = edit.timeline.sourceSpan(forEdited: placement(at: player.currentTime, length: 2))
-        let cue = CaptionCue(text: "", start: span.start, end: span.end, origin: .manual)
+        // On the recording that plays there (another take's, in a montage).
+        let pinned = edit.timeline.anchoredSpan(forEdited: placement(at: player.currentTime, length: 2))
+        var cue = CaptionCue(text: "", start: pinned.span.start, end: pinned.span.end, origin: .manual)
+        cue.sourceID = pinned.anchor.sourceID
         change { snapshot in
             var lines = snapshot.captions ?? []
             lines.append(cue)
@@ -252,15 +292,22 @@ extension QuickEditViewModel {
 
     /// Puts back what was heard over the line's time (its correction undone as a new step).
     func restoreHeardText(_ id: UUID) {
-        guard let transcript = edit.captionTranscript,
-              let cue = edit.captions.first(where: { $0.id == id }), cue.origin == .speech else { return }
+        guard let cue = edit.captions.first(where: { $0.id == id }), cue.origin == .speech,
+              let transcript = transcript(of: cue.sourceID) else { return }
         let words = transcript.words.filter { $0.end > cue.start + 0.01 && $0.start < cue.end - 0.01 }
         guard !words.isEmpty else { return }
         updateCaption(id) { old in
             var heard = CaptionCue(words: words)
             heard.id = old.id
+            heard.sourceID = old.sourceID
             return heard
         }
+    }
+
+    /// What was heard in a recording (nil: the take itself).
+    private func transcript(of source: UUID?) -> CaptionTranscript? {
+        guard let source else { return edit.captionTranscript }
+        return edit.sourceTranscripts.first { $0.sourceID == source }
     }
 
     /// Whether the line can be joined with the next one.

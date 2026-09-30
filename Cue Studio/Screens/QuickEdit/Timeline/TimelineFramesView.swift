@@ -20,9 +20,13 @@ struct TimelineFramesView: View {
     var frameRate: Double?
     /// Reads the frames of what shows when zoomed in.
     var readsZoomedFrames = false
+    /// A montage's other recordings, by source: their sections show their own frames.
+    var otherSources: [UUID: URL] = [:]
 
     @Environment(VideoThumbnailService.self) private var thumbnails
     @State private var frames: [UIImage?] = []
+    /// Frames read evenly across each of the montage's other recordings.
+    @State private var otherFrames: [UUID: [UIImage?]] = [:]
     /// The frames read for the zoomed-in stretch, by time.
     @State private var zoomedFrames = ZoomedFrames(times: [], images: [], reach: 0)
     @State private var tileHeight: CGFloat = 0
@@ -46,7 +50,9 @@ struct TimelineFramesView: View {
                 var x = rect.minX + ((visibleMin - rect.minX) / step).rounded(.down) * step
                 while x < visibleMax {
                     let tile = CGRect(x: x, y: 0, width: tileWidth, height: size.height)
-                    if let image = frame(at: layout.sourceTime(atX: min(tile.midX, rect.maxX - 0.5))) {
+                    let offset = Double((min(tile.midX, rect.maxX - 0.5) - region.minX) / max(0.000_1, layout.pointsPerSecond))
+                    let time = region.source.start + offset * region.speed
+                    if let image = frame(at: time, source: region.sourceID) {
                         draw(image, filling: tile, in: regionContext)
                     } else {
                         regionContext.fill(Path(tile), with: placeholder)
@@ -58,6 +64,9 @@ struct TimelineFramesView: View {
         }
         .task(id: FramesKey(url: videoURL, count: frameCount, duration: layout.timeline.sourceDuration)) {
             await loadFrames()
+        }
+        .task(id: otherSources) {
+            await loadOtherFrames()
         }
         .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { tileHeight = $0 }
         .task(id: zoomedRequest) {
@@ -72,8 +81,25 @@ struct TimelineFramesView: View {
         return size.width / size.height
     }
 
-    private func frame(at time: TimeInterval) -> UIImage? {
-        zoomedFrames.image(at: time) ?? evenFrame(at: time)
+    private func frame(at time: TimeInterval, source: UUID?) -> UIImage? {
+        guard let source else { return zoomedFrames.image(at: time) ?? evenFrame(at: time) }
+        let duration = layout.timeline.duration(ofSource: source)
+        guard let images = otherFrames[source], !images.isEmpty, duration > 0 else { return nil }
+        return images[min(images.count - 1, max(0, Int(time / duration * Double(images.count))))]
+    }
+
+    /// A few frames of each other recording: enough for its sections.
+    private func loadOtherFrames() async {
+        var loaded: [UUID: [UIImage?]] = [:]
+        for (id, url) in otherSources {
+            let duration = layout.timeline.duration(ofSource: id)
+            guard duration > 0 else { continue }
+            let count = 12
+            let step = duration / Double(count)
+            loaded[id] = await thumbnails.frames(for: url, at: (0..<count).map { (Double($0) + 0.5) * step }, tolerance: step / 2)
+            guard !Task.isCancelled else { return }
+        }
+        otherFrames = loaded
     }
 
     /// The nearest of the frames read evenly across the recording.
@@ -139,7 +165,8 @@ struct TimelineFramesView: View {
         let tileSeconds = Double(tileWidth / layout.pointsPerSecond)
         guard tileSeconds < duration / Double(frameCount) * 0.75 else { return nil }
         var times: [TimeInterval] = []
-        for region in layout.regions where region.width > 0.5 {
+        // The take's own sections; a montage's other recordings keep their even frames.
+        for region in layout.regions where region.width > 0.5 && region.sourceID == nil {
             let lo = max(region.minX, -layout.width)
             let hi = min(region.maxX, 2 * layout.width)
             guard hi > lo else { continue }

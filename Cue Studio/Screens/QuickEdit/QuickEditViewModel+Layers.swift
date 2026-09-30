@@ -12,7 +12,7 @@ import Foundation
 extension QuickEditViewModel {
     var textBars: [LayerBar] {
         edit.texts.compactMap { text in
-            guard let span = edit.timeline.editedSpan(forSource: text.span) else { return nil }
+            guard let span = TakeEdit.editedSpan(text.span, anchor: text.clipAnchor, in: edit.timeline) else { return nil }
             let title = text.isEmpty ? text.role.label : text.displayText
             return LayerBar(id: text.id, kind: .text, span: span, title: title, isSelected: text.id == selectedTextID)
         }
@@ -37,10 +37,10 @@ extension QuickEditViewModel {
 
     /// Caption lines where they play, for the shared timeline.
     var captionBars: [LayerBar] {
-        editedCaptionLines.map { line in
+        edit.editedCaptionInstances.map { line, cueID in
             LayerBar(
                 id: line.id, kind: .caption, span: line.span,
-                title: line.text.isEmpty ? String(localized: "Empty line") : line.text, isSelected: line.id == selectedCaptionID
+                title: line.text.isEmpty ? String(localized: "Empty line") : line.text, isSelected: cueID == selectedCaptionID
             )
         }
     }
@@ -55,8 +55,9 @@ extension QuickEditViewModel {
         switch bar.kind {
         case .text: selectText(bar.id)
         case .caption:
-            selectedCaptionID = bar.id
-            showCaption(bar.id)
+            selectedCaptionID = captionCueID(forLine: bar.id)
+            player.pause()
+            player.seek(to: bar.span.start)
         case .media: selectMedia(bar.id)
         case .voiceOver: reviewedVoiceOverID = bar.id
         }
@@ -80,7 +81,7 @@ extension QuickEditViewModel {
         guard let bar = selectedLayer else { return }
         switch bar.kind {
         case .text: deleteText(bar.id)
-        case .caption: deleteCaption(bar.id)
+        case .caption: deleteCaption(captionCueID(forLine: bar.id))
         case .media: deleteMedia(bar.id)
         case .voiceOver: deleteVoiceOver(bar.id)
         }
@@ -91,7 +92,7 @@ extension QuickEditViewModel {
         guard let bar = selectedLayer else { return }
         switch bar.kind {
         case .text: editingTextID = bar.id
-        case .caption: editingCaptionID = bar.id
+        case .caption: editingCaptionID = captionCueID(forLine: bar.id)
         case .media:
             tool = .media
             selectedMediaID = bar.id
@@ -107,6 +108,7 @@ extension QuickEditViewModel {
         let limits = room(for: bar)
         let from = min(max(start, limits.start), max(limits.start, limits.end - length))
         let span = TimeSpan(start: from, end: min(limits.end, from + length))
+        guard fits(bar, at: span) else { return }
         place(bar, at: span)
     }
 
@@ -128,20 +130,23 @@ extension QuickEditViewModel {
             span.end = max(min(time, limits.end), span.start + shortest)
             if let longest = longestLength(of: bar) { span.end = min(span.end, span.start + longest) }
         }
-        guard span.duration >= shortest - 0.000_1 else { return }
+        guard span.duration >= shortest - 0.000_1, fits(bar, at: span) else { return }
         place(bar, at: span)
     }
 
     // MARK: - Private
 
-    /// Where a bar can go: the whole edit, or for media the gap between its neighbors.
+    /// Where a bar can go: the whole edit.
     private func room(for bar: LayerBar) -> TimeSpan {
-        let total = edit.editedDuration
-        guard bar.kind == .media else { return TimeSpan(start: 0, end: total) }
+        TimeSpan(start: 0, end: edit.editedDuration)
+    }
+
+    /// Photos and videos can overlap, up to `MediaOverlay.simultaneousLimit` at a time; a move or a
+    /// stretch past that stays where it was.
+    private func fits(_ bar: LayerBar, at span: TimeSpan) -> Bool {
+        guard bar.kind == .media else { return true }
         let others = mediaBars.filter { $0.id != bar.id }.map(\.span)
-        let before = others.filter { $0.end <= bar.span.start + 0.001 }.map(\.end).max() ?? 0
-        let after = others.filter { $0.start >= bar.span.end - 0.001 }.map(\.start).min() ?? total
-        return TimeSpan(start: before, end: after)
+        return LayerLanes.peak(of: others, within: span) < MediaOverlay.simultaneousLimit
     }
 
     private func longestLength(of bar: LayerBar) -> TimeInterval? {
@@ -149,19 +154,29 @@ extension QuickEditViewModel {
         return edit.media.first { $0.id == bar.id }?.mediaDuration
     }
 
+    /// Pins a bar to where it was dropped: to the take's seconds, or in an arranged edit to the
+    /// section it now starts on.
     private func place(_ bar: LayerBar, at span: TimeSpan) {
-        let source = edit.timeline.sourceSpan(forEdited: span)
+        let pinned = edit.pin(span)
         switch bar.kind {
         case .text:
-            updateText(bar.id) { $0.span = source }
+            updateText(bar.id) { text in
+                text.span = pinned.span
+                text.clipAnchor = pinned.anchor
+            }
         case .media:
-            updateMedia(bar.id) { $0.span = source }
+            updateMedia(bar.id) { item in
+                item.span = pinned.span
+                item.clipAnchor = pinned.anchor
+            }
         case .caption:
-            moveCaption(bar.id, to: source)
+            // A line stays with its recording: only its time on it changes.
+            moveCaption(captionCueID(forLine: bar.id), to: edit.timeline.anchoredSpan(forEdited: span).span)
         case .voiceOver:
             change { snapshot in
                 guard let index = snapshot.voiceOvers.firstIndex(where: { $0.id == bar.id }) else { return }
-                snapshot.voiceOvers[index].anchor = source.start
+                snapshot.voiceOvers[index].anchor = pinned.span.start
+                snapshot.voiceOvers[index].clipAnchor = pinned.anchor
             }
         }
     }

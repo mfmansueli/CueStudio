@@ -26,6 +26,9 @@ nonisolated struct CaptionCue: Codable, Hashable, Identifiable, Sendable {
     /// A correction left words whose time is a guess: the line shows, but its timing should be
     /// checked before lighting words one by one.
     var needsTimingReview: Bool
+    /// The recording it was heard in: nil for the take itself, else a montage's other recording.
+    /// It shows wherever that part of the recording plays (in each copy of a piece too).
+    var sourceID: UUID?
 
     init(
         id: UUID = UUID(), text: String, start: TimeInterval, end: TimeInterval, words: [CaptionWord] = [],
@@ -60,7 +63,7 @@ nonisolated struct CaptionCue: Codable, Hashable, Identifiable, Sendable {
     // MARK: - Coding
 
     private enum CodingKeys: String, CodingKey {
-        case id, text, start, end, words, origin, isRevised, needsTimingReview
+        case id, text, start, end, words, origin, isRevised, needsTimingReview, sourceID
     }
 
     /// Captions saved before they had an identity or words read as legacy lines.
@@ -74,5 +77,6 @@ nonisolated struct CaptionCue: Codable, Hashable, Identifiable, Sendable {
         origin = (try? container.decodeIfPresent(CaptionOrigin.self, forKey: .origin)) ?? .legacy
         isRevised = (try? container.decodeIfPresent(Bool.self, forKey: .isRevised)) ?? false
         needsTimingReview = (try? container.decodeIfPresent(Bool.self, forKey: .needsTimingReview)) ?? false
+        sourceID = try? container.decodeIfPresent(UUID.self, forKey: .sourceID)
     }
 }

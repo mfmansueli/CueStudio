@@ -406,7 +406,7 @@ struct QuickCreatorViewModelTests {
 
     // MARK: - Media
 
-    @Test func aPhotoIsAddedAtThePlayheadAndTheNextOneAfterIt() async {
+    @Test func aPhotoIsAddedAtThePlayheadOnTopOfWhatIsThere() async {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
         scenario.player.seek(to: 10)
@@ -415,21 +415,26 @@ struct QuickCreatorViewModelTests {
         #expect(viewModel.selectedMediaID == viewModel.edit.media[0].id)
         scenario.player.seek(to: 11)
         viewModel.addMedia(photo())
-        #expect(viewModel.mediaBars.map(\.span) == [TimeSpan(start: 10, end: 13), TimeSpan(start: 13, end: 16)])
+        // Photos and videos can overlap now; the newer one stacks on top.
+        #expect(viewModel.mediaBars.map(\.span) == [TimeSpan(start: 10, end: 13), TimeSpan(start: 11, end: 14)])
+        #expect(viewModel.edit.media.map(\.stackOrder) == [0, 1])
     }
 
-    @Test func mediaNeverOverlapsWhenMoved() async {
+    @Test func mediaMovesFreelyUpToThreeAtOnce() async {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
-        scenario.player.seek(to: 10)
+        for start in [10.0, 20, 30] {
+            scenario.player.seek(to: start)
+            viewModel.addMedia(photo())
+        }
+        viewModel.moveBar(viewModel.mediaBars[1], toStart: 11)
+        #expect(viewModel.mediaBars[1].span == TimeSpan(start: 11, end: 14))
+        // A third on the same moment still fits; stretching over it keeps it to three.
+        viewModel.moveBar(viewModel.mediaBars[2], toStart: 12)
+        #expect(viewModel.mediaBars[2].span == TimeSpan(start: 12, end: 15))
+        scenario.player.seek(to: 12.5)
         viewModel.addMedia(photo())
-        scenario.player.seek(to: 20)
-        viewModel.addMedia(photo())
-        let second = viewModel.mediaBars[1]
-        viewModel.moveBar(second, toStart: 5)
-        #expect(viewModel.mediaBars[1].span == TimeSpan(start: 13, end: 16))
-        viewModel.resizeBar(viewModel.mediaBars[0], edge: .end, to: 30)
-        #expect(viewModel.mediaBars[0].span.end == 13)
+        #expect(viewModel.edit.media.count == 3)
     }
 
     @Test func aVideoIsntStretchedPastItsLength() async {

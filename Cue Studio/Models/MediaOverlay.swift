@@ -14,6 +14,9 @@ nonisolated struct MediaOverlay: Codable, Hashable, Identifiable, Sendable {
     static let widthRange: ClosedRange<Double> = 0.25...1
     /// Shortest it can show.
     static let minimumDuration: TimeInterval = 0.3
+    /// Most photos and videos on screen at once: each video is one more track to decode for every
+    /// frame, and more than this drops frames on the iPhones Cue runs on.
+    static let simultaneousLimit = 3
     /// How long a photo shows when added.
     static let photoDuration: TimeInterval = 3
 
@@ -27,6 +30,14 @@ nonisolated struct MediaOverlay: Codable, Hashable, Identifiable, Sendable {
     var mediaDuration: TimeInterval?
     /// Seconds of the recording it is pinned to.
     var span: TimeSpan
+    /// In an arranged edit, the piece it is pinned to (`span` is then of that piece's recording).
+    var clipAnchor: ClipAnchor?
+    /// Where it stacks: higher is drawn over lower. Nil (media added before they could overlap)
+    /// is the bottom, in the order they were added.
+    var layer: Int?
+
+    /// `layer`, with media from before stacking at the bottom.
+    var stackOrder: Int { layer ?? 0 }
     var layout: MediaLayout = .fullFrame
     /// The window's center (unused full screen).
     var center: OverlayPoint = .center

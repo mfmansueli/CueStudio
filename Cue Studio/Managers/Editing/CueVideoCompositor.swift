@@ -26,9 +26,7 @@ final class CueVideoCompositor: NSObject, AVVideoCompositing, @unchecked Sendabl
 
     nonisolated func startRequest(_ request: AVAsynchronousVideoCompositionRequest) {
         queue.async { [context] in
-            guard let instruction = request.videoCompositionInstruction as? CompositionInstruction,
-                  let source = request.sourceReadOnlyPixelBuffer(byTrackID: instruction.trackID)
-            else {
+            guard let instruction = request.videoCompositionInstruction as? CompositionInstruction else {
                 request.finish(with: NSError(domain: "studio.cue.compositor", code: 1))
                 return
             }
@@ -44,33 +42,34 @@ final class CueVideoCompositor: NSObject, AVVideoCompositing, @unchecked Sendabl
             // Inside a dissolve, the other side of the cut (see `EditedComposition`); while a video
             // is laid over the take, its frame.
             let other = instruction.blendTrackID.flatMap { request.sourceReadOnlyPixelBuffer(byTrackID: $0) }
-            let media = instruction.mediaTrackID.flatMap { request.sourceReadOnlyPixelBuffer(byTrackID: $0) }
+            let media = instruction.mediaTrackIDs.compactMap { id in request.sourceReadOnlyPixelBuffer(byTrackID: id).map { (id, $0) } }
             let bounds = CGRect(origin: .zero, size: size)
+            // A piece whose recording is gone plays black for its length rather than failing.
+            guard let source = request.sourceReadOnlyPixelBuffer(byTrackID: instruction.trackID) else {
+                output.withUnsafeBuffer { output in
+                    // Black at the take's frame size, so texts and captions keep their places.
+                    let scale = max(0.000_1, instruction.outputScale)
+                    let frame = CGRect(x: 0, y: 0, width: size.width / scale, height: size.height / scale)
+                    let black = CIImage(color: .black).cropped(to: frame)
+                    context.render(Self.decorated(black, instruction: instruction, at: time, scaled: true).cropped(to: bounds), to: output)
+                }
+                request.finish(withComposedPixelBuffer: CVReadOnlyPixelBuffer(output))
+                return
+            }
             // The pixels are only valid inside each `withUnsafeBuffer`, so the frame is composed and
             // rendered in the innermost one.
             source.withUnsafeBuffer { source in
                 output.withUnsafeBuffer { output in
-                    switch (other, media) {
-                    case let (other?, media?):
-                        other.withUnsafeBuffer { other in
-                            media.withUnsafeBuffer { media in
+                    Self.withBuffers(media) { media in
+                        if let other {
+                            other.withUnsafeBuffer { other in
                                 let image = Self.composedImage(from: source, blending: other, media: media, instruction: instruction, at: time)
                                 context.render(image.cropped(to: bounds), to: output)
                             }
-                        }
-                    case let (other?, nil):
-                        other.withUnsafeBuffer { other in
-                            let image = Self.composedImage(from: source, blending: other, media: nil, instruction: instruction, at: time)
-                            context.render(image.cropped(to: bounds), to: output)
-                        }
-                    case let (nil, media?):
-                        media.withUnsafeBuffer { media in
+                        } else {
                             let image = Self.composedImage(from: source, blending: nil, media: media, instruction: instruction, at: time)
                             context.render(image.cropped(to: bounds), to: output)
                         }
-                    case (nil, nil):
-                        let image = Self.composedImage(from: source, blending: nil, media: nil, instruction: instruction, at: time)
-                        context.render(image.cropped(to: bounds), to: output)
                     }
                 }
             }
@@ -78,16 +77,34 @@ final class CueVideoCompositor: NSObject, AVVideoCompositing, @unchecked Sendabl
         }
     }
 
+    /// Opens each buffer in turn (their pixels are only valid inside `withUnsafeBuffer`) and hands
+    /// them all, by track, to `body`.
+    nonisolated private static func withBuffers(
+        _ buffers: [(CMPersistentTrackID, CVReadOnlyPixelBuffer)], opened: [CMPersistentTrackID: CVPixelBuffer] = [:],
+        _ body: ([CMPersistentTrackID: CVPixelBuffer]) -> Void
+    ) {
+        guard let (id, first) = buffers.first else {
+            body(opened)
+            return
+        }
+        first.withUnsafeBuffer { buffer in
+            var next = opened
+            next[id] = buffer
+            withBuffers(Array(buffers.dropFirst()), opened: next, body)
+        }
+    }
+
     /// The source frame upright, cropped to the take's frame, with Adjust and Filters; blended with
-    /// (or slid over by) the other side of a transition's cut; with the photo or video laid over it;
+    /// (or slid over by) the other side of a transition's cut; with the photos and videos laid over
+    /// it in their stacking order;
     /// darkened inside a fade; then the texts and captions visible at `time` and the output scale.
     nonisolated private static func composedImage(
-        from source: CVPixelBuffer, blending other: CVPixelBuffer?, media: CVPixelBuffer?,
+        from source: CVPixelBuffer, blending other: CVPixelBuffer?, media: [CMPersistentTrackID: CVPixelBuffer],
         instruction: CompositionInstruction, at time: TimeInterval
     ) -> CIImage {
-        var image = framed(source, instruction: instruction)
+        var image = framed(source, frame: instruction.frame, edit: instruction.edit)
         if let other, let dissolve = instruction.dissolve {
-            let otherSide = framed(other, instruction: instruction)
+            let otherSide = framed(other, frame: instruction.blendFrame ?? instruction.frame, edit: instruction.edit)
             // Before the cut the main track still shows the outgoing piece; after it, the incoming one.
             let (outgoing, incoming) = time < dissolve.cut ? (image, otherSide) : (otherSide, image)
             if dissolve.transition == .slide {
@@ -96,9 +113,16 @@ final class CueVideoCompositor: NSObject, AVVideoCompositing, @unchecked Sendabl
                 image = blend(outgoing, into: incoming, amount: dissolve.progress(at: time))
             }
         }
-        if let shown = instruction.media.first(where: { $0.isVisible(at: time) }) {
-            image = laid(shown, frame: media, over: image)
+        // Every photo and video showing, lowest layer first.
+        for shown in instruction.media.filter({ $0.isVisible(at: time) }).sorted(by: { $0.layer < $1.layer }) {
+            image = laid(shown, frame: shown.trackID.flatMap { media[$0] }, over: image)
         }
+        return decorated(image, instruction: instruction, at: time, scaled: true)
+    }
+
+    /// Fades, texts and captions over `image`, then the output scale.
+    nonisolated private static func decorated(_ base: CIImage, instruction: CompositionInstruction, at time: TimeInterval, scaled: Bool = true) -> CIImage {
+        var image = base
         let blackness = instruction.fades.reduce(0) { max($0, $1.blackness(at: time)) }
         if blackness > 0 {
             image = blend(image, into: CIImage(color: .black).cropped(to: image.extent), amount: blackness)
@@ -108,19 +132,23 @@ final class CueVideoCompositor: NSObject, AVVideoCompositing, @unchecked Sendabl
                 .transformed(by: CGAffineTransform(translationX: overlay.origin.x, y: overlay.origin.y))
                 .composited(over: image)
         }
-        if instruction.outputScale != 1 {
+        if scaled, instruction.outputScale != 1 {
             image = image.transformed(by: CGAffineTransform(scaleX: instruction.outputScale, y: instruction.outputScale))
         }
         return image
     }
 
-    /// A frame of the recording upright, cropped to the take's frame, with Adjust and Filters.
-    nonisolated private static func framed(_ source: CVPixelBuffer, instruction: CompositionInstruction) -> CIImage {
-        var image = CIImage(cvPixelBuffer: source).transformed(by: uprightTransform(instruction.transform, sourceHeight: CGFloat(CVPixelBufferGetHeight(source))))
+    /// A frame of a recording upright, cropped and scaled to the take's frame, with Adjust and
+    /// Filters.
+    nonisolated private static func framed(_ source: CVPixelBuffer, frame: SourceFrame, edit: TakeEdit) -> CIImage {
+        var image = CIImage(cvPixelBuffer: source).transformed(by: uprightTransform(frame.transform, sourceHeight: CGFloat(CVPixelBufferGetHeight(source))))
         image = image.transformed(by: CGAffineTransform(translationX: -image.extent.minX, y: -image.extent.minY))
-        image = image.cropped(to: instruction.crop)
-            .transformed(by: CGAffineTransform(translationX: -instruction.crop.minX, y: -instruction.crop.minY))
-        return FrameLook.apply(instruction.edit, to: image)
+        image = image.cropped(to: frame.crop)
+            .transformed(by: CGAffineTransform(translationX: -frame.crop.minX, y: -frame.crop.minY))
+        if abs(frame.scale - 1) > 0.000_1 {
+            image = image.transformed(by: CGAffineTransform(scaleX: frame.scale, y: frame.scale))
+        }
+        return FrameLook.apply(edit, to: image)
     }
 
     /// A photo or video over the take: filling its place (cropped, centered), on top of `image`.

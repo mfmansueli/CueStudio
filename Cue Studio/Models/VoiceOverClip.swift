@@ -19,6 +19,8 @@ nonisolated struct VoiceOverClip: Codable, Hashable, Identifiable, Sendable {
     /// Second of the take it starts on.
     var anchor: TimeInterval
     var volume: Double = 1
+    /// In an arranged edit, the piece it starts on (`anchor` is then of that piece's recording).
+    var clipAnchor: ClipAnchor?
 
     init(fileName: String, duration: TimeInterval, anchor: TimeInterval) {
         self.fileName = fileName
@@ -29,7 +31,9 @@ nonisolated struct VoiceOverClip: Codable, Hashable, Identifiable, Sendable {
     /// Where it plays in `timeline` (edited seconds), cut at the end of the edit; nil when none of
     /// it is heard.
     func editedSpan(in timeline: EditTimeline) -> TimeSpan? {
-        let start = timeline.editedTime(following: anchor)
+        let start = clipAnchor
+            .flatMap { timeline.editedSpan(forSource: TimeSpan(start: anchor, end: anchor + 0.05), anchoredTo: $0)?.start }
+            ?? timeline.editedTime(following: anchor)
         let end = min(start + duration, timeline.editedDuration)
         guard end - start > 0.05 else { return nil }
         return TimeSpan(start: start, end: end)

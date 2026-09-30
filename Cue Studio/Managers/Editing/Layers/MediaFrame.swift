@@ -5,6 +5,7 @@
 
 import CoreGraphics
 import CoreImage
+import CoreMedia
 import Foundation
 
 /// A photo or video over the take, ready for the compositor: when it shows, where, and its
@@ -19,6 +20,10 @@ nonisolated struct MediaFrame: @unchecked Sendable {
     let image: CIImage?
     /// A video's preferred transform, to turn its frames upright.
     let transform: CGAffineTransform
+    /// The composition track a video's frames come from; nil for a photo.
+    var trackID: CMPersistentTrackID?
+    /// Where it stacks: higher is drawn over lower.
+    var layer: Int = 0
 
     var isVideo: Bool { image == nil }
 
