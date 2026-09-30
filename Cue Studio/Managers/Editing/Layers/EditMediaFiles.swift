@@ -30,6 +30,19 @@ nonisolated enum EditMediaFiles {
         return (name, url(for: name))
     }
 
+    /// Brings a recording into the edit's media for a montage: a hard link to the same file (no
+    /// space used, and it stays if the take is deleted from the library), or a copy where a link
+    /// can't be made. Returns the new name.
+    static func link(_ source: URL) throws -> String {
+        let (name, destination) = try newFile(pathExtension: source.pathExtension)
+        do {
+            try FileManager.default.linkItem(at: source, to: destination)
+        } catch {
+            try FileManager.default.copyItem(at: source, to: destination)
+        }
+        return name
+    }
+
     /// Removes files nothing names any more (a deleted take's media, what an edit left behind).
     /// Never touches a take's recording, which lives elsewhere.
     static func remove(_ names: Set<String>) {

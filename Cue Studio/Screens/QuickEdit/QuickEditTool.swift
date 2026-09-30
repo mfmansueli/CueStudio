@@ -5,26 +5,35 @@
 
 import Foundation
 
-/// Quick edit's tools, in the order they show inside their category (`QuickEditCategory`).
+/// A tool in Quick edit, grouped by what the creator wants to do (`QuickEditCategory`).
+/// Transitions are picked on the cuts themselves, in the timeline; the cover is part of finishing.
 enum QuickEditTool: String, CaseIterable, Identifiable {
     // Edit
-    case trim, cleanUp, removePauses, speed
-    // Add
-    case text, media, voiceOver
-    // Polish
-    case style, audio, adjust, filters, crop, transitions
-    // One each
-    case captions, cover
+    case trim, cleanUp, speed
+    // Text
+    case text, style
+    // Captions
+    case captions
+    // Audio
+    case audio, music, voiceOver
+    // Media
+    case media
+    // Adjust
+    case adjust, filters, crop, background
+    // Finishing
+    case cover
 
     var id: String { rawValue }
 
     var category: QuickEditCategory {
         switch self {
-        case .trim, .cleanUp, .removePauses, .speed: .edit
-        case .text, .media, .voiceOver: .add
-        case .style, .audio, .adjust, .filters, .crop, .transitions: .polish
+        case .trim, .cleanUp, .speed: .edit
+        case .text, .style: .text
         case .captions: .captions
-        case .cover: .cover
+        case .audio, .music, .voiceOver: .audio
+        case .media: .media
+        case .adjust, .filters, .crop, .background: .adjust
+        case .cover: .finish
         }
     }
 
@@ -32,18 +41,18 @@ enum QuickEditTool: String, CaseIterable, Identifiable {
         switch self {
         case .trim: String(localized: "Trim")
         case .cleanUp: String(localized: "Clean Up")
-        case .removePauses: String(localized: "Remove Pauses")
         case .speed: String(localized: "Speed")
         case .text: String(localized: "Text")
-        case .media: String(localized: "Media")
+        case .style: String(localized: "Presets")
+        case .captions: String(localized: "Captions")
+        case .audio: String(localized: "Voice")
+        case .music: String(localized: "Music")
         case .voiceOver: String(localized: "Voice-over")
-        case .style: String(localized: "Style")
-        case .audio: String(localized: "Audio")
+        case .media: String(localized: "Media")
         case .adjust: String(localized: "Adjust")
         case .filters: String(localized: "Filters")
         case .crop: String(localized: "Crop")
-        case .transitions: String(localized: "Transitions")
-        case .captions: String(localized: "Captions")
+        case .background: String(localized: "Background")
         case .cover: String(localized: "Cover")
         }
     }
@@ -52,18 +61,18 @@ enum QuickEditTool: String, CaseIterable, Identifiable {
         switch self {
         case .trim: "timeline.selection"
         case .cleanUp: "sparkles"
-        case .removePauses: "waveform.badge.minus"
         case .speed: "gauge.with.dots.needle.67percent"
         case .text: "textformat"
-        case .media: "photo.badge.plus"
+        case .style: "textformat.alt"
+        case .captions: "captions.bubble"
+        case .audio: "waveform"
+        case .music: "music.note"
         case .voiceOver: "mic"
-        case .style: "paintpalette"
-        case .audio: "speaker.wave.2"
+        case .media: "photo.badge.plus"
         case .adjust: "sun.max"
         case .filters: "camera.filters"
         case .crop: "crop"
-        case .transitions: "square.on.square.dashed"
-        case .captions: "captions.bubble"
+        case .background: "person.and.background.dotted"
         case .cover: "photo.on.rectangle"
         }
     }
@@ -71,7 +80,7 @@ enum QuickEditTool: String, CaseIterable, Identifiable {
     /// Tools that show the edit on a timeline of their own and need the room.
     var usesTimeline: Bool {
         switch self {
-        case .trim, .cleanUp, .text, .media, .voiceOver: true
+        case .trim, .cleanUp, .text, .media, .music, .voiceOver: true
         default: false
         }
     }

@@ -214,6 +214,29 @@ struct PrompterViewModelTests {
         #expect(scenario.viewModel.reviewingTake?.duration == 42)
     }
 
+    @Test func aBackgroundChosenWhileRecordingGoesWithTheTake() async throws {
+        let scenario = makeScenario(script: TestData.script(platform: .reels))
+        defer { scenario.defaults.tearDown() }
+        var blur = BackgroundEffect()
+        blur.style = .blur
+        scenario.camera.background = blur
+        await scenario.viewModel.recordButtonTapped()
+        await scenario.viewModel.recordButtonTapped()
+        let take = try #require(scenario.takes.takes.first)
+        // A recipe: the recording keeps the camera's image, and it isn't marked Edited.
+        #expect(take.edit?.background(for: nil)?.style == .blur)
+        #expect(take.edit?.editedDuration == 42)
+        #expect(!take.isEdited)
+    }
+
+    @Test func withoutABackgroundTheTakeHasNoRecipe() async throws {
+        let scenario = makeScenario(script: TestData.script(platform: .reels))
+        defer { scenario.defaults.tearDown() }
+        await scenario.viewModel.recordButtonTapped()
+        await scenario.viewModel.recordButtonTapped()
+        #expect(try #require(scenario.takes.takes.first).edit == nil)
+    }
+
     @Test func keepGoingDismissesTheWarning() async {
         let scenario = makeScenario(script: TestData.script(platform: .tiktok))
         defer { scenario.defaults.tearDown() }

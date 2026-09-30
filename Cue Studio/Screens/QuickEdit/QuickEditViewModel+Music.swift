@@ -1,0 +1,129 @@
+//
+//  QuickEditViewModel+Music.swift
+//  Cue Studio
+//
+
+import Foundation
+
+/// Music: the creator's own sound files (from Files, copied into the app) under the video. Added at
+/// the playhead for as long as the file or the edit lasts, then moved or trimmed on the music
+/// track, with its volume, fades, mute and whether it goes down while someone speaks. Music is
+/// placed on the edit's own seconds: cutting something before it doesn't move it. Every change is
+/// an undo step; a slider is one.
+extension QuickEditViewModel {
+    var selectedMusic: MusicClip? {
+        selectedMusicID.flatMap { id in edit.music.first { $0.id == id } }
+    }
+
+    var musicBars: [LayerBar] {
+        edit.music.compactMap { clip in
+            guard let span = clip.span(inEditOf: edit.editedDuration) else { return nil }
+            return LayerBar(id: clip.id, kind: .music, span: span, title: clip.title, isSelected: clip.id == selectedMusicID)
+        }
+    }
+
+    /// Copies the sound file in and adds it at the playhead.
+    func importMusic(from url: URL) async {
+        guard isReady, !isImportingMusic else { return }
+        isImportingMusic = true
+        defer { isImportingMusic = false }
+        do {
+            let imported = try await mediaImporter.importAudio(from: url)
+            guard !isClosed else {
+                EditMediaFiles.remove([imported.fileName])
+                return
+            }
+            addMusic(imported)
+        } catch {
+            toast.show(error.localizedDescription)
+        }
+    }
+
+    /// Adds a sound file at the playhead (at the start when there's too little left after it), for
+    /// as long as the file or the edit lasts.
+    func addMusic(_ imported: ImportedAudio) {
+        importedFiles.insert(imported.fileName)
+        let total = edit.editedDuration
+        var start = player.currentTime
+        if total - start < MusicClip.minimumDuration * 2 { start = 0 }
+        let length = min(imported.duration, total - start)
+        guard length >= MusicClip.minimumDuration else {
+            EditMediaFiles.remove([imported.fileName])
+            importedFiles.remove(imported.fileName)
+            toast.show(String(localized: "This sound file can't be added"))
+            return
+        }
+        let clip = MusicClip(
+            fileName: imported.fileName, title: imported.title, fileDuration: imported.duration, start: start, length: length
+        )
+        change { $0.music = ($0.music ?? []) + [clip] }
+        selectedMusicID = clip.id
+        player.pause()
+        player.seek(to: start)
+        toast.show(String(localized: "Music added"))
+    }
+
+    func deleteMusic(_ id: UUID) {
+        change { $0.music?.removeAll { $0.id == id } }
+        if selectedMusicID == id { selectedMusicID = nil }
+    }
+
+    func setMusicVolume(_ id: UUID, _ volume: Double) {
+        updateMusic(id) { $0.volume = min(max(volume, MusicClip.volumeRange.lowerBound), MusicClip.volumeRange.upperBound) }
+    }
+
+    func setMusicFadeIn(_ id: UUID, _ seconds: TimeInterval) {
+        updateMusic(id) { $0.fadeIn = min(max(seconds, MusicClip.fadeRange.lowerBound), MusicClip.fadeRange.upperBound) }
+    }
+
+    func setMusicFadeOut(_ id: UUID, _ seconds: TimeInterval) {
+        updateMusic(id) { $0.fadeOut = min(max(seconds, MusicClip.fadeRange.lowerBound), MusicClip.fadeRange.upperBound) }
+    }
+
+    func setMusicMuted(_ id: UUID, _ muted: Bool) {
+        updateMusic(id) { $0.isMuted = muted }
+    }
+
+    func setMusicDucks(_ id: UUID, _ ducks: Bool) {
+        updateMusic(id) { $0.ducksUnderVoice = ducks }
+    }
+
+    /// Moves a clip so it starts at `start` (edited seconds), keeping its length, within the edit.
+    func moveMusic(_ id: UUID, toStart start: TimeInterval) {
+        guard let clip = edit.music.first(where: { $0.id == id }) else { return }
+        let latest = max(0, edit.editedDuration - min(clip.length, edit.editedDuration))
+        updateMusic(id) { $0.start = min(max(0, start), latest) }
+    }
+
+    /// Moves one end of a clip to `time` (edited seconds). The start takes the file along: moving
+    /// it later skips the file's beginning, and back brings it again.
+    func resizeMusic(_ id: UUID, edge: LayerEdge, to time: TimeInterval) {
+        guard let clip = edit.music.first(where: { $0.id == id }) else { return }
+        let shortest = MusicClip.minimumDuration
+        switch edge {
+        case .start:
+            let end = clip.start + clip.length
+            // No earlier than the file's own start or the edit's.
+            let earliest = max(0, clip.start - clip.offset)
+            let start = min(max(time, earliest), end - shortest)
+            updateMusic(id) { music in
+                music.offset += start - music.start
+                music.start = start
+                music.length = end - start
+            }
+        case .end:
+            let longest = min(clip.fileDuration - clip.offset, edit.editedDuration - clip.start)
+            let length = min(max(time - clip.start, shortest), max(shortest, longest))
+            updateMusic(id) { $0.length = length }
+        }
+    }
+
+    /// Changes a music clip (one undo step, or part of the gesture's).
+    func updateMusic(_ id: UUID, _ update: (inout MusicClip) -> Void) {
+        change { snapshot in
+            guard var music = snapshot.music, let index = music.firstIndex(where: { $0.id == id }) else { return }
+            update(&music[index])
+            snapshot.music = music
+        }
+    }
+}

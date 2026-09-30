@@ -72,11 +72,13 @@ struct OverlayEditingLayer: View {
                     dragOffset = value.translation
                 }
                 .onEnded { value in
+                    // From where it shows now (its keyframes may have moved it).
+                    let shown = viewModel.motionState(of: .text(text.id)).center
                     let moved = OverlayPoint(
-                        x: text.center.x + Double(value.translation.width / max(1, size.width)),
-                        y: text.center.y + Double(value.translation.height / max(1, size.height))
+                        x: shown.x + Double(value.translation.width / max(1, size.width)),
+                        y: shown.y + Double(value.translation.height / max(1, size.height))
                     ).clamped
-                    viewModel.updateText(text.id) { $0.center = moved }
+                    viewModel.moveText(text.id, to: moved)
                     draggedTextID = nil
                     dragOffset = .zero
                 }
@@ -116,7 +118,7 @@ struct OverlayEditingLayer: View {
                             x: Double(rect.midX + value.translation.width) / Double(max(1, size.width)),
                             y: Double(rect.midY + value.translation.height) / Double(max(1, size.height))
                         ).clamped
-                        viewModel.updateMedia(media.id) { $0.center = moved }
+                        viewModel.moveMedia(media.id, to: moved)
                         draggedTextID = nil
                         dragOffset = .zero
                     }
@@ -125,8 +127,7 @@ struct OverlayEditingLayer: View {
                 MagnifyGesture()
                     .onChanged { value in mediaScale = value.magnification }
                     .onEnded { value in
-                        let width = min(max(media.width * Double(value.magnification), MediaOverlay.widthRange.lowerBound), MediaOverlay.widthRange.upperBound)
-                        viewModel.updateMedia(media.id) { $0.width = width }
+                        viewModel.resizeMedia(media.id, by: Double(value.magnification))
                         mediaScale = 1
                     }
             )

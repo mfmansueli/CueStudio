@@ -30,6 +30,10 @@ nonisolated struct TransitionWindow: Hashable, Sendable {
     /// Speeds of the two pieces: the other side of the cut plays at its own piece's speed.
     var outgoingSpeed: Double = 1
     var incomingSpeed: Double = 1
+    /// The recordings the two pieces come from (nil: the take itself), so a dissolve reads each side
+    /// from its own.
+    var outgoingSource: UUID?
+    var incomingSource: UUID?
 
     var start: TimeInterval { cut - halfDuration }
     var end: TimeInterval { cut + halfDuration }
@@ -70,13 +74,15 @@ nonisolated struct TransitionWindow: Hashable, Sendable {
             let incoming = segments[index]
             var half = min(transition.duration / 2, outgoing.duration / 2 - margin, incoming.duration / 2 - margin)
             if transition.showsBothSides {
-                half = min(half, (timeline.sourceDuration - outgoing.sourceEnd) / outgoing.speed, incoming.sourceStart / incoming.speed)
+                let outgoingLength = timeline.duration(ofSource: outgoing.sourceID)
+                half = min(half, (outgoingLength - outgoing.sourceEnd) / outgoing.speed, incoming.sourceStart / incoming.speed)
             }
             guard 2 * half >= shortest - 0.000_1 else { continue }
             windows.append(TransitionWindow(
                 transition: transition, join: index, cut: cut, halfDuration: half,
                 outgoingEnd: outgoing.sourceEnd, incomingStart: incoming.sourceStart,
-                outgoingSpeed: outgoing.speed, incomingSpeed: incoming.speed
+                outgoingSpeed: outgoing.speed, incomingSpeed: incoming.speed,
+                outgoingSource: outgoing.sourceID, incomingSource: incoming.sourceID
             ))
         }
         return windows

@@ -23,6 +23,8 @@ final class TakeEditService: TakeEditing {
     private var processedOrder: [AudioRecipe] = []
     /// What was heard in a take, for captions and Clean Up, so it is transcribed once.
     private var transcripts: [TranscriptKey: TakeTranscript] = [:]
+    /// Where someone speaks in each recording, for music that ducks.
+    private var speech: [URL: [TimeSpan]] = [:]
 
     func sourceDuration(ofVideoAt url: URL) async throws -> TimeInterval {
         guard FileManager.default.fileExists(atPath: url.path(percentEncoded: false)) else { throw EditSourceError.missing }
@@ -55,21 +57,35 @@ final class TakeEditService: TakeEditing {
         return CleanUpAnalyzer.suggestions(silences: silences, transcript: heard)
     }
 
-    func captions(forVideoAt url: URL, script: String, language: SpeechLanguageRequest, duration: TimeInterval) async -> [CaptionCue] {
-        guard !script.isEmpty else { return [] }
-        if let audio = try? await audioFile(for: url),
-           let heard = try? await transcript(of: audio, language: language, script: script),
-           !heard.words.isEmpty {
-            return CaptionBuilder.captions(heard: heard.words, script: script)
+    func captions(
+        forVideoAt url: URL, script: String, language: SpeechLanguageRequest,
+        progress: @escaping @Sendable (CaptionProgress) -> Void
+    ) async throws -> CaptionOutcome {
+        progress(.preparing)
+        let audio: URL
+        do {
+            audio = try await audioFile(for: url)
+        } catch AudioTrackExtractor.ExtractError.noAudio {
+            return .noAudio
         }
-        return CaptionBuilder.captions(script: script, duration: duration)
+        let heard: TakeTranscript
+        do {
+            heard = try await transcript(of: audio, language: language, script: script, progress: progress)
+        } catch let reason as SpeechUnavailableReason {
+            return .unavailable(reason)
+        }
+        let words = heard.words.map { CaptionWord(text: $0.text, start: $0.start, end: $0.end, isEstimated: $0.isEstimated) }
+        guard !words.isEmpty else { return .noSpeech }
+        let cues = await Task.detached { CaptionBuilder.captions(heard: words, script: script) }.value
+        try Task.checkCancellation()
+        return .captions(cues, transcript: CaptionTranscript(words: words, languageCode: heard.languageCode))
     }
 
-    func previewItem(forVideoAt url: URL, edit: TakeEdit) async throws -> AVPlayerItem {
+    func previewItem(forVideoAt url: URL, edit: TakeEdit, window: TimeSpan?) async throws -> AVPlayerItem {
         let processed = try await processedAudio(for: url, edit: edit)
         let composition = try await EditedComposition.build(
-            source: url, edit: edit, processedAudio: processed,
-            options: .init(burnsInCaptions: true, shortSide: 1080)
+            source: url, edit: edit, processedAudio: processed, speech: await voiceActivity(for: url, edit: edit),
+            options: .init(burnsInCaptions: true, shortSide: 1080, window: window)
         )
         let item = AVPlayerItem(asset: composition.asset)
         item.videoComposition = composition.videoComposition
@@ -84,11 +100,22 @@ final class TakeEditService: TakeEditing {
         return image?.jpegData(compressionQuality: 0.92)
     }
 
-    /// The Audio tool's changes rendered to a file, or nil when the sound is untouched or the take
+    func matchedOriginalVolume(forVideoAt url: URL, edit: TakeEdit) async -> Double? {
+        guard let treated = try? await processedAudio(for: url, edit: edit),
+              let untreated = try? await audioFile(for: url) else { return nil }
+        let levels = await Task.detached {
+            (try? SpeechLoudness.level(ofAudio: treated), try? SpeechLoudness.level(ofAudio: untreated))
+        }.value
+        guard let target = levels.0 ?? nil, let level = levels.1 ?? nil else { return nil }
+        return min(SpeechLoudness.volume(matching: level, to: target), 4)
+    }
+
+    /// The Voice tool's changes rendered to a file, or nil when the sound is untouched or the take
     /// has none.
     func processedAudio(for url: URL, edit: TakeEdit) async throws -> URL? {
-        guard edit.volume != 1 || edit.enhancesVoice || edit.reducesNoise else { return nil }
-        let recipe = AudioRecipe(url: url, volume: edit.volume, enhancesVoice: edit.enhancesVoice, reducesNoise: edit.reducesNoise)
+        let processing = edit.voiceProcessing
+        guard processing.isNeeded else { return nil }
+        let recipe = AudioRecipe(url: url, processing: processing)
         if let cached = processedAudio[recipe], FileManager.default.fileExists(atPath: cached.path(percentEncoded: false)) {
             return cached
         }
@@ -99,10 +126,30 @@ final class TakeEditService: TakeEditing {
             return nil
         }
         let processed = try await Task.detached {
-            try AudioEnhancer.process(audio, volume: recipe.volume, enhancesVoice: recipe.enhancesVoice, reducesNoise: recipe.reducesNoise)
+            try AudioEnhancer.process(audio, processing: processing)
         }.value
         remember(processed, for: recipe)
         return processed
+    }
+
+    /// Where someone speaks in the take and the other recordings the edit plays; nothing when no
+    /// music ducks.
+    private func voiceActivity(for url: URL, edit: TakeEdit) async -> VoiceActivity {
+        guard edit.ducksMusic else { return .none }
+        var activity = VoiceActivity()
+        activity.take = await speechSpans(in: url)
+        for source in edit.playedSources {
+            activity.sources[source.id] = await speechSpans(in: EditMediaFiles.url(for: source.fileName))
+        }
+        return activity
+    }
+
+    private func speechSpans(in video: URL) async -> [TimeSpan] {
+        if let cached = speech[video] { return cached }
+        guard let audio = try? await audioFile(for: video) else { return [] }
+        let spans = await Task.detached { (try? VoiceActivity.spans(inAudio: audio)) ?? [] }.value
+        speech[video] = spans
+        return spans
     }
 
     // MARK: - Files
@@ -115,10 +162,14 @@ final class TakeEditService: TakeEditing {
     }
 
     /// - Parameter script: what was read, so the words come back in the same letters (Hindi).
-    private func transcript(of audio: URL, language: SpeechLanguageRequest, script: String = "") async throws -> TakeTranscript? {
+    /// Throws `SpeechUnavailableReason` when no model can listen in the language.
+    private func transcript(
+        of audio: URL, language: SpeechLanguageRequest, script: String = "",
+        progress: (@Sendable (CaptionProgress) -> Void)? = nil
+    ) async throws -> TakeTranscript {
         let key = TranscriptKey(audio: audio, language: language, script: script)
         if let cached = transcripts[key] { return cached }
-        guard let heard = try await CaptionTranscriber.transcript(in: audio, language: language, script: script) else { return nil }
+        let heard = try await CaptionTranscriber.transcript(in: audio, language: language, script: script, progress: progress)
         transcripts[key] = heard
         return heard
     }
@@ -144,8 +195,6 @@ final class TakeEditService: TakeEditing {
 
     private struct AudioRecipe: Hashable {
         let url: URL
-        let volume: Double
-        let enhancesVoice: Bool
-        let reducesNoise: Bool
+        let processing: VoiceProcessing
     }
 }

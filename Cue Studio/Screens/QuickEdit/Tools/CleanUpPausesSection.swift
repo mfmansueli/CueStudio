@@ -1,19 +1,19 @@
 //
-//  RemovePausesToolView.swift
+//  CleanUpPausesSection.swift
 //  Cue Studio
 //
 
 import SwiftUI
 
-/// Remove Pauses: listens to the take on the device, then "Found 3 pauses · Total: 2.8s", how long
-/// a pause has to be to count, Preview (plays the video without them) and Apply (one undo step).
-/// Cancel, or leaving the tool, puts them back.
-struct RemovePausesToolView: View {
+/// Clean Up's pauses: after listening to the take on the device, "Found 3 pauses · Total: 2.8s", how
+/// long a pause has to be to count, Preview (plays the video without them) and Apply (one undo
+/// step). Cancel, switching to Review or leaving Clean Up puts them back. Only pauses go: the sound
+/// of what stays is never touched.
+struct CleanUpPausesSection: View {
     let viewModel: QuickEditViewModel
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            QuickEditTransportBar(viewModel: viewModel)
             switch viewModel.analysis {
             case .idle, .running:
                 HStack(spacing: 10) {

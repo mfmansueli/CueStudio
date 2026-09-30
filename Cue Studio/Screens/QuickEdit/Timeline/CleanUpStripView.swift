@@ -25,7 +25,8 @@ struct CleanUpStripView: View {
             ZStack(alignment: .topLeading) {
                 TimelineFramesView(
                     videoURL: viewModel.videoURL, layout: layout,
-                    frameCount: TimelineLayout.frameCount(width: proxy.size.width, tileWidth: Self.height * 9 / 16)
+                    frameCount: TimelineLayout.frameCount(width: proxy.size.width, tileWidth: Self.height * 9 / 16),
+                    otherSources: viewModel.clipSourceURLs
                 )
                 .frame(width: proxy.size.width, height: Self.height)
                 .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))

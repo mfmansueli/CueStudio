@@ -183,6 +183,7 @@ final class QuickEditPlayer: EditPlayback {
         let generation = generation
         var playable = edit
         playable.timeline = edit.timeline.reachable
+        let window = ItemKey.musicWindow(of: edit)
         buildTask = Task { [weak self, editing, videoURL] in
             if let delay {
                 try? await Task.sleep(for: delay)
@@ -190,7 +191,7 @@ final class QuickEditPlayer: EditPlayback {
             }
             self?.showProcessingIfSlow(generation)
             do {
-                let item = try await editing.previewItem(forVideoAt: videoURL, edit: playable)
+                let item = try await editing.previewItem(forVideoAt: videoURL, edit: playable, window: window)
                 self?.install(item, generation: generation)
             } catch {
                 self?.buildFailed(generation: generation)
@@ -308,6 +309,16 @@ final class QuickEditPlayer: EditPlayback {
         /// One per span: pieces at different speeds never join.
         let speeds: [Double]
         let transitions: [TransitionWindow]
+        /// Music is placed on the edit's own seconds, so with music the item also depends on where
+        /// the edit starts and ends in it.
+        let musicWindow: TimeSpan?
+
+        /// Where the edit is in the item, when music needs it.
+        static func musicWindow(of edit: TakeEdit) -> TimeSpan? {
+            guard !edit.music.isEmpty else { return nil }
+            let leadIn = edit.timeline.reachableLeadIn
+            return TimeSpan(start: leadIn, end: leadIn + edit.editedDuration)
+        }
 
         init(_ edit: TakeEdit) {
             var recipe = edit
@@ -330,6 +341,7 @@ final class QuickEditPlayer: EditPlayback {
             self.spans = spans
             self.speeds = speeds
             transitions = TransitionWindow.windows(in: reachable)
+            musicWindow = Self.musicWindow(of: edit)
         }
     }
 }

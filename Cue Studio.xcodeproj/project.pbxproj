@@ -410,12 +410,13 @@
 				CODE_SIGN_ENTITLEMENTS = "Cue Studio/SupportFiles/Cue Studio.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 99U6584A9W;
+				DEVELOPMENT_TEAM = X5392U638Q;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "Cue Studio/SupportFiles/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "Cue Studio";
 				INFOPLIST_KEY_NSCameraUsageDescription = "Cue records your takes with the camera while your script scrolls under the lens.";
+				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "Cue connects to your other iPhone or iPad nearby, so one can control the teleprompter on the other.";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Cue records your voice with each take and for voice-overs, and can follow your voice to scroll the script.";
 				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Cue saves the takes you export to your photo library.";
 				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "Cue recognizes your speech on this iPhone to keep the script on the line you're reading. Nothing leaves the device.";
@@ -436,7 +437,7 @@
 				INFOPLIST_KEY_UIUserInterfaceStyle = Dark;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.CueStudio;
+				PRODUCT_BUNDLE_IDENTIFIER = com.cuestudioteleprompter;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
@@ -460,12 +461,13 @@
 				CODE_SIGN_ENTITLEMENTS = "Cue Studio/SupportFiles/Cue Studio.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 99U6584A9W;
+				DEVELOPMENT_TEAM = X5392U638Q;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "Cue Studio/SupportFiles/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "Cue Studio";
 				INFOPLIST_KEY_NSCameraUsageDescription = "Cue records your takes with the camera while your script scrolls under the lens.";
+				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "Cue connects to your other iPhone or iPad nearby, so one can control the teleprompter on the other.";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Cue records your voice with each take and for voice-overs, and can follow your voice to scroll the script.";
 				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Cue saves the takes you export to your photo library.";
 				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "Cue recognizes your speech on this iPhone to keep the script on the line you're reading. Nothing leaves the device.";
@@ -486,7 +488,7 @@
 				INFOPLIST_KEY_UIUserInterfaceStyle = Dark;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.CueStudio;
+				PRODUCT_BUNDLE_IDENTIFIER = com.cuestudioteleprompter;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
@@ -508,7 +510,7 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 99U6584A9W;
+				DEVELOPMENT_TEAM = X5392U638Q;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "devplaceholder.$(PROJECT_UNIQUE_VALUE:identifier).$(PRODUCT_NAME:rfc1034identifier)";
@@ -530,7 +532,7 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 99U6584A9W;
+				DEVELOPMENT_TEAM = X5392U638Q;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "devplaceholder.$(PROJECT_UNIQUE_VALUE:identifier).$(PRODUCT_NAME:rfc1034identifier)";
@@ -551,7 +553,7 @@
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 99U6584A9W;
+				DEVELOPMENT_TEAM = X5392U638Q;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "devplaceholder.$(PROJECT_UNIQUE_VALUE:identifier).$(PRODUCT_NAME:rfc1034identifier)";
@@ -572,7 +574,7 @@
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 99U6584A9W;
+				DEVELOPMENT_TEAM = X5392U638Q;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "devplaceholder.$(PROJECT_UNIQUE_VALUE:identifier).$(PRODUCT_NAME:rfc1034identifier)";

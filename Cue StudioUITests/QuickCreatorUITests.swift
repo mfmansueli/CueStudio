@@ -16,22 +16,59 @@ final class QuickCreatorUITests: XCTestCase {
     func testCategoriesShowTheirTools() {
         let app = openQuickEdit()
         XCTAssertTrue(app.buttons["edit.tool.trim"].waitForExistence(timeout: 5))
-        XCTAssertTrue(app.buttons["edit.tool.removePauses"].exists)
+        XCTAssertTrue(app.buttons["edit.tool.cleanUp"].exists)
         XCTAssertTrue(app.buttons["edit.tool.speed"].exists)
-        app.buttons["edit.category.add"].tap()
+        app.buttons["edit.category.text"].tap()
         XCTAssertTrue(app.buttons["edit.tool.text"].waitForExistence(timeout: 5))
-        XCTAssertTrue(app.buttons["edit.tool.media"].exists)
-        XCTAssertTrue(app.buttons["edit.tool.voiceOver"].exists)
-        app.buttons["edit.category.polish"].tap()
-        XCTAssertTrue(app.buttons["edit.tool.transitions"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.buttons["edit.tool.style"].exists)
+        app.buttons["edit.category.audio"].tap()
+        XCTAssertTrue(app.buttons["edit.tool.voiceOver"].waitForExistence(timeout: 5))
+        app.buttons["edit.category.adjust"].tap()
+        XCTAssertTrue(app.buttons["edit.tool.filters"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.buttons["edit.tool.crop"].exists)
+        // The cover is next to Done.
+        XCTAssertTrue(app.buttons["edit.tool.cover"].exists)
         // Back to Edit: it opens on the tool used last there.
         app.buttons["edit.category.edit"].tap()
         XCTAssertTrue(app.buttons["edit.cutButton"].waitForExistence(timeout: 5))
     }
 
+    func testTheTextShowsOnTheSharedTimelineAndDeletesFromIt() {
+        let app = openQuickEdit()
+        app.buttons["edit.category.text"].tap()
+        let title = app.buttons["edit.addText.title"]
+        XCTAssertTrue(title.waitForExistence(timeout: 5))
+        title.tap()
+        XCTAssertTrue(app.buttons["textSheet.done"].waitForExistence(timeout: 5))
+        app.buttons["textSheet.done"].tap()
+        app.buttons["edit.category.edit"].tap()
+        // The tracks sit under the video strip; each bar is a button.
+        let tracks = element(app, "edit.tracks")
+        XCTAssertTrue(tracks.waitForExistence(timeout: 5))
+        let bar = tracks.descendants(matching: .any)["edit.layer.text"]
+        XCTAssertTrue(bar.waitForExistence(timeout: 5))
+        bar.tap()
+        let delete = app.buttons["edit.layerDeleteButton"]
+        XCTAssertTrue(delete.waitForExistence(timeout: 5))
+        delete.tap()
+        // With nothing on them, the tracks take no room.
+        XCTAssertFalse(bar.waitForExistence(timeout: 2))
+    }
+
+    func testThePreviewEnlargesAndComesBack() {
+        let app = openQuickEdit()
+        let expand = app.buttons["edit.expandPreviewButton"]
+        XCTAssertTrue(expand.waitForExistence(timeout: 5))
+        expand.tap()
+        XCTAssertFalse(app.buttons["edit.category.edit"].waitForExistence(timeout: 1))
+        XCTAssertTrue(app.buttons["edit.playButton"].exists)
+        expand.tap()
+        XCTAssertTrue(app.buttons["edit.category.edit"].waitForExistence(timeout: 5))
+    }
+
     func testATextIsAddedWrittenAndUndone() {
         let app = openQuickEdit()
-        app.buttons["edit.category.add"].tap()
+        app.buttons["edit.category.text"].tap()
         let title = app.buttons["edit.addText.title"]
         XCTAssertTrue(title.waitForExistence(timeout: 5))
         title.tap()
@@ -62,9 +99,9 @@ final class QuickCreatorUITests: XCTestCase {
         XCTAssertEqual(app.staticTexts["edit.durationChange"].label, "Original · 1:02")
     }
 
-    func testRemovePausesListensFirst() {
+    func testCleanUpListensForPausesFirst() {
         let app = openQuickEdit()
-        let tool = app.buttons["edit.tool.removePauses"]
+        let tool = app.buttons["edit.tool.cleanUp"]
         XCTAssertTrue(tool.waitForExistence(timeout: 5))
         tool.tap()
         // The sample video is silent and has no voice: nothing to take out, nothing is cut.
@@ -74,40 +111,25 @@ final class QuickCreatorUITests: XCTestCase {
         XCTAssertEqual(app.staticTexts["edit.durationChange"].label, "Original · 1:02")
     }
 
-    func testTransitionsWithoutCutsPointToTrim() {
+    func testAPresetSetsTheTypeOfTextsAndCaptions() {
         let app = openQuickEdit()
-        app.buttons["edit.category.polish"].tap()
-        // The last tool in the row: the chips scroll sideways, so drag the row until it's on screen.
-        let transitions = app.buttons["edit.tool.transitions"]
-        XCTAssertTrue(transitions.waitForExistence(timeout: 5))
-        let origin = app.coordinate(withNormalizedOffset: .zero)
-        for _ in 0..<4 where transitions.frame.maxX > app.frame.maxX - 8 {
-            let row = transitions.frame.midY
-            origin.withOffset(CGVector(dx: app.frame.width * 0.8, dy: row))
-                .press(forDuration: 0.05, thenDragTo: origin.withOffset(CGVector(dx: app.frame.width * 0.2, dy: row)))
-        }
-        transitions.tap()
-        let goToTrim = app.buttons["edit.transitions.goToTrim"]
-        XCTAssertTrue(goToTrim.waitForExistence(timeout: 5))
-        goToTrim.tap()
-        XCTAssertTrue(app.buttons["edit.cutButton"].waitForExistence(timeout: 5))
-    }
-
-    func testAStyleSetsTheWholeVideo() {
-        let app = openQuickEdit()
-        app.buttons["edit.category.polish"].tap()
+        app.buttons["edit.category.text"].tap()
         let style = app.buttons["edit.tool.style"]
         XCTAssertTrue(style.waitForExistence(timeout: 5))
         style.tap()
-        app.buttons["edit.style.bold"].tap()
-        XCTAssertTrue(app.staticTexts["Bold style applied"].waitForExistence(timeout: 5))
+        app.buttons["edit.style.impact"].tap()
+        XCTAssertTrue(app.staticTexts["Impact on every text"].waitForExistence(timeout: 5))
+        app.buttons["edit.styleScope.allCaptions"].tap()
+        app.buttons["edit.style.pop"].tap()
+        XCTAssertTrue(app.staticTexts["Pop on the captions"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.buttons["edit.style.pop"].isSelected)
         app.buttons["edit.doneButton"].tap()
         XCTAssertTrue(app.staticTexts["EDITED"].waitForExistence(timeout: 5))
     }
 
     func testAFrameBecomesTheCover() {
         let app = openQuickEdit()
-        app.buttons["edit.category.cover"].tap()
+        app.buttons["edit.tool.cover"].tap()
         let useFrame = app.buttons["edit.coverFrameButton"]
         XCTAssertTrue(useFrame.waitForExistence(timeout: 5))
         useFrame.tap()

@@ -20,7 +20,8 @@ struct QuickCreatorExportTests {
     }
 
     private func videoDuration(of url: URL) async throws -> TimeInterval {
-        let track = try #require(try await AVURLAsset(url: url).loadTracks(withMediaType: .video).first)
+        let asset = AVURLAsset(url: url)
+        let track = try #require(try await asset.loadTracks(withMediaType: .video).first)
         return try await track.load(.timeRange).duration.seconds
     }
 
@@ -36,7 +37,7 @@ struct QuickCreatorExportTests {
         defer { try? FileManager.default.removeItem(at: clip) }
         var edit = TakeEdit(sourceDuration: 4, aspect: .portrait)
         edit.timeline.setSpeed(2)
-        edit.enhancesVoice = false
+        edit.voiceEnhancement = .off
 
         let output = try await export(edit, of: clip)
         defer { try? FileManager.default.removeItem(at: output) }
@@ -62,7 +63,7 @@ struct QuickCreatorExportTests {
         defer { EditMediaFiles.remove([file.name]) }
 
         var edit = TakeEdit(sourceDuration: 3, aspect: .portrait)
-        edit.enhancesVoice = false
+        edit.voiceEnhancement = .off
         edit.media = [MediaOverlay(kind: .photo, fileName: file.name, aspect: 90.0 / 160.0, mediaDuration: nil, span: TimeSpan(start: 1, end: 2))]
         let output = try await export(edit, of: clip)
         defer { try? FileManager.default.removeItem(at: output) }
@@ -82,7 +83,7 @@ struct QuickCreatorExportTests {
         defer { EditMediaFiles.remove([name]) }
 
         var edit = TakeEdit(sourceDuration: 4, aspect: .portrait)
-        edit.enhancesVoice = false
+        edit.voiceEnhancement = .off
         edit.media = [MediaOverlay(kind: .video, fileName: name, aspect: 9.0 / 16.0, mediaDuration: 2, span: TimeSpan(start: 1, end: 3))]
         let output = try await export(edit, of: clip)
         defer { try? FileManager.default.removeItem(at: output) }
@@ -97,7 +98,7 @@ struct QuickCreatorExportTests {
         let clip = try await TestClip.make(seconds: 3)
         defer { try? FileManager.default.removeItem(at: clip) }
         var edit = TakeEdit(sourceDuration: 3, aspect: .portrait)
-        edit.enhancesVoice = false
+        edit.voiceEnhancement = .off
         var text = TextOverlay(role: .title, style: .clean, span: TimeSpan(start: 1, end: 2))
         text.text = "█████"
         text.background = .box
@@ -123,7 +124,7 @@ struct QuickCreatorExportTests {
         defer { EditMediaFiles.remove([name]) }
 
         var edit = TakeEdit(sourceDuration: 4, aspect: .portrait)
-        edit.enhancesVoice = false
+        edit.voiceEnhancement = .off
         edit.voiceOvers = [VoiceOverClip(fileName: name, duration: 2, anchor: 2)]
         let output = try await export(edit, of: clip)
         defer { try? FileManager.default.removeItem(at: output) }

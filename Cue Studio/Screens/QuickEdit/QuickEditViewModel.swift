@@ -44,6 +44,9 @@ final class QuickEditViewModel {
             selectedJoinID = nil
             selectedTextID = nil
             selectedMediaID = nil
+            selectedCaptionID = nil
+            selectedMusicID = nil
+            if tool != .audio { endComparison() }
             endChange()
             // Leaving Remove Pauses without Apply puts the pauses back.
             cancelPausePreview()
@@ -71,7 +74,23 @@ final class QuickEditViewModel {
     private(set) var removalRange: ClosedRange<TimeInterval>? {
         didSet { player.reviewedPart = removalRange }
     }
-    private(set) var isWritingCaptions = false
+    /// Captions listening to the take (see `QuickEditViewModel+Captions`).
+    var captionState: CaptionState = .idle
+    /// Asking before new captions replace lines the creator corrected or wrote.
+    var confirmsCaptionReplacement = false
+    /// The caption line open in its sheet.
+    var editingCaptionID: UUID?
+    /// The Clips sheet (the montage's sections) is open.
+    var showsClips = false
+    /// The Translate sheet is open.
+    var showsTranslation = false
+    /// Translating the captions (see `QuickEditViewModel+Translation`).
+    var translationState: TranslationState = .idle
+    /// The translation the view asks the system for; nil when none is wanted.
+    var translationRequest: TranslationRequest?
+    @ObservationIgnored var captionTask: Task<Void, Never>?
+    /// The captions request whose result is still wanted: an older one finishing late is dropped.
+    @ObservationIgnored var captionRequest: UUID?
     /// Frames per second of the recording: read from the file when it opens, the take's setting
     /// until then. The timeline puts every edit on a frame (`FrameGrid`).
     private(set) var frameRate: Double
@@ -81,6 +100,10 @@ final class QuickEditViewModel {
     var analysis: Analysis = .idle
     /// Clean Up's "Ignore pauses under": shorter pauses aren't listed and stay as natural ones.
     var pauseThreshold: TimeInterval = QuickEditViewModel.defaultPauseThreshold
+    /// Clean Up's view: the pauses, or the words to review. Switching lets go of a pause preview.
+    var cleanUpSection: CleanUpSection = .pauses {
+        didSet { if cleanUpSection != oldValue { cancelPausePreview() } }
+    }
 
     // MARK: Added on top
     /// The text picked on the preview or its track.
@@ -89,6 +112,8 @@ final class QuickEditViewModel {
     var editingTextID: UUID?
     /// The photo or video picked on the preview or its track.
     var selectedMediaID: UUID?
+    /// The caption line picked on the timeline.
+    var selectedCaptionID: UUID?
     var isImportingMedia = false
     /// The voice-over just recorded, waiting for Keep (or Redo / Delete).
     var reviewedVoiceOverID: UUID?
@@ -104,6 +129,27 @@ final class QuickEditViewModel {
     var pausePreviewBase: EditSnapshot?
     /// Speed: the section under the playhead (or selected), or the whole video.
     var speedScope: SpeedScope = .whole
+    /// The type the creator saved as "My style" (see `QuickEditViewModel+Style`).
+    var myStyle: TextLook?
+
+    // MARK: Background
+    /// Whether this iPhone can find people in video; nil until checked.
+    var canFindPeople: Bool?
+    var isImportingBackground = false
+
+    // MARK: Sound
+    /// The music clip picked on its track.
+    var selectedMusicID: UUID?
+    var isImportingMusic = false
+    /// A video just added that has its own sound: Media asks whether to keep it.
+    var soundChoiceMediaID: UUID?
+    /// "Compare with original": the preview plays the take's untreated sound at `originalVolume`,
+    /// as loud as the treated one.
+    var comparesOriginal = false
+    var originalVolume: Double?
+    /// The treatment being compared; changing it ends the comparison.
+    @ObservationIgnored var comparedProcessing: VoiceProcessing?
+    @ObservationIgnored var comparisonTask: Task<Void, Never>?
 
     let take: Take
     let player: EditPlayback
@@ -112,7 +158,10 @@ final class QuickEditViewModel {
     let toast: ToastService
     let mediaImporter: EditMediaImporting
     let recorder: VoiceOverRecording
-    private let takes: TakeLibraryService
+    let styles: TextStyleStoring
+    let translations: TranslationAvailabilityChecking
+    /// The library of takes (a montage adds others from it).
+    let takes: TakeLibraryService
     private let drafts: QuickEditDraftStoring
     /// What a script is heard in (`LanguageService.speechRequest(for:)`).
     private let speechLanguageFor: (Script?) -> SpeechLanguageRequest
@@ -133,10 +182,14 @@ final class QuickEditViewModel {
     init(
         take: Take, takes: TakeLibraryService, library: ScriptLibraryService, editing: TakeEditing,
         drafts: QuickEditDraftStoring, toast: ToastService, player: EditPlayback? = nil,
-        mediaImporter: EditMediaImporting? = nil, recorder: VoiceOverRecording? = nil,
+        mediaImporter: EditMediaImporting? = nil, recorder: VoiceOverRecording? = nil, styles: TextStyleStoring? = nil,
+        translations: TranslationAvailabilityChecking = AppleTranslationAvailability(),
         speechLanguage: @escaping (Script?) -> SpeechLanguageRequest = SpeechLanguageRequest.script
     ) {
         self.take = take
+        self.styles = styles ?? TextStyleStore()
+        self.translations = translations
+        myStyle = self.styles.myStyle
         speechLanguageFor = speechLanguage
         self.mediaImporter = mediaImporter ?? EditMediaImporter()
         self.recorder = recorder ?? VoiceOverRecorder()
@@ -187,10 +240,15 @@ final class QuickEditViewModel {
         if let id = selectedSegmentID, edit.timeline.segment(id: id) == nil { selectedSegmentID = nil }
         if let id = selectedTextID, !edit.texts.contains(where: { $0.id == id }) { selectedTextID = nil }
         if let id = selectedMediaID, !edit.media.contains(where: { $0.id == id }) { selectedMediaID = nil }
+        if let id = selectedCaptionID, !edit.captions.contains(where: { $0.id == id }) { selectedCaptionID = nil }
         if let id = reviewedVoiceOverID, !edit.voiceOvers.contains(where: { $0.id == id }) { reviewedVoiceOverID = nil }
+        if let id = selectedMusicID, !edit.music.contains(where: { $0.id == id }) { selectedMusicID = nil }
+        if let id = soundChoiceMediaID, !edit.media.contains(where: { $0.id == id }) { soundChoiceMediaID = nil }
         if selectedJoinID != nil, selectedJoinIndex == nil { selectedJoinID = nil }
         if let range = removalRange, range.upperBound > edit.editedDuration { removalRange = nil }
-        player.show(edit)
+        // A new treatment isn't what was being compared.
+        if comparesOriginal, edit.voiceProcessing != comparedProcessing { endComparison() }
+        player.show(playedEdit)
         scheduleDraftSave()
     }
 
@@ -319,6 +377,7 @@ final class QuickEditViewModel {
     /// select while there is one section, or while "Remove part" is being placed.
     func tapTimeline(onPiece index: Int?) {
         guard removalRange == nil else { return }
+        clearLayerSelection()
         guard let index, edit.timeline.segments.count > 1, edit.timeline.segments.indices.contains(index) else {
             selectedSegmentID = nil
             selectedJoinID = nil
@@ -337,8 +396,15 @@ final class QuickEditViewModel {
 
     /// A tap on the mark of the cut before the section at `index`: selects that cut so its
     /// transition can be picked, or lets go of it when it was already selected.
+    /// Lets go of the section and the cut picked on the strip (a bar on a track was picked).
+    func clearStripSelection() {
+        selectedSegmentID = nil
+        selectedJoinID = nil
+    }
+
     func tapJoin(_ index: Int) {
         guard removalRange == nil, index > 0, edit.timeline.segments.indices.contains(index) else { return }
+        clearLayerSelection()
         let id = edit.timeline.segments[index].id
         selectedSegmentID = nil
         selectedJoinID = selectedJoinID == id ? nil : id
@@ -625,6 +691,17 @@ final class QuickEditViewModel {
         edit.creatorStyle = step.creatorStyle
         edit.captionStyle = step.captionStyle
         edit.filter = step.filter
+        edit.textLook = step.textLook
+        edit.textPreset = step.textPreset
+        edit.captionLook = step.captionLook
+        edit.captionPreset = step.captionPreset
+        if let captions = step.captions { edit.captions = captions }
+        if let sources = step.sources { edit.sources = sources }
+        if let animation = step.captionAnimation { edit.captionAnimation = animation }
+        if let translations = step.captionTranslations { edit.captionTranslations = translations }
+        if let display = step.captionDisplay { edit.captionDisplay = display }
+        if let music = step.music { edit.music = music }
+        if let backgrounds = step.backgrounds { edit.backgrounds = backgrounds }
     }
 
     // MARK: - Adjust
@@ -645,26 +722,6 @@ final class QuickEditViewModel {
 
     func resetCropPosition() {
         edit.cropOffset = 0
-    }
-
-    // MARK: - Captions
-
-    /// Captions come from the script (or, freestyle, from what the model hears), timed to the voice.
-    func setShowsCaptions(_ shows: Bool) async {
-        edit.showsCaptions = shows
-        guard shows, edit.captions.isEmpty else { return }
-        isWritingCaptions = true
-        defer { isWritingCaptions = false }
-        edit.captions = await editing.captions(forVideoAt: videoURL, script: scriptText, language: speechLanguage, duration: edit.sourceDuration)
-        if edit.captions.isEmpty {
-            edit.showsCaptions = false
-            toast.show(String(localized: "No script to caption this take"))
-        }
-    }
-
-    func setCaptionStyle(_ style: CaptionStyle) async {
-        change { $0.captionStyle = style }
-        if !edit.showsCaptions { await setShowsCaptions(true) }
     }
 
     // MARK: - Filters
@@ -738,6 +795,8 @@ final class QuickEditViewModel {
         isClosed = true
         draftTask?.cancel()
         coverTask?.cancel()
+        captionTask?.cancel()
+        captionRequest = nil
         if !keepingDraft { drafts.discard(takeID: take.id) }
         player.stop()
     }

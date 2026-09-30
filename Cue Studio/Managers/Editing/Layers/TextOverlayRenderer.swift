@@ -15,36 +15,98 @@ nonisolated enum TextOverlayRenderer {
     /// Widest a text can be, as a fraction of the frame's width.
     static let maxWidthFraction: CGFloat = 0.86
 
+    /// Widest a caption line can be: a little narrower than a text, so lines stay short.
+    static let captionWidthFraction: CGFloat = 0.8
+
     /// One overlay per text, at its place, visible while it shows.
-    static func overlays(_ texts: [(text: TextOverlay, span: TimeSpan)], frame: CGSize) -> [FrameOverlay] {
+    static func overlays(_ texts: [(text: TextOverlay, span: TimeSpan)], frame: CGSize, widthFraction: CGFloat = maxWidthFraction) -> [FrameOverlay] {
         texts.compactMap { entry in
-            guard let image = image(for: entry.text, frameWidth: frame.width), let ciImage = CIImage(image: image) else { return nil }
+            guard let image = image(for: entry.text, frameWidth: frame.width, widthFraction: widthFraction),
+                  let ciImage = CIImage(image: image) else { return nil }
             let size = ciImage.extent.size
             let center = entry.text.center.clamped
             let x = CGFloat(center.x) * frame.width - size.width / 2
             // Core Image measures y from the bottom.
             let y = frame.height * (1 - CGFloat(center.y)) - size.height / 2
-            return FrameOverlay(image: ciImage, origin: CGPoint(x: x.rounded(), y: y.rounded()), span: entry.span)
+            var overlay = FrameOverlay(image: ciImage, origin: CGPoint(x: x.rounded(), y: y.rounded()), span: entry.span)
+            if !entry.text.keyframes.isEmpty {
+                overlay.motion = OverlayMotion(entry.text.keyframes)
+                overlay.frameSize = frame
+            }
+            return overlay
         }
     }
 
-    /// The text's box on a frame `frameWidth` wide (background and room for the shadow included).
-    static func size(for text: TextOverlay, frameWidth: CGFloat) -> CGSize {
-        layout(for: text, frameWidth: frameWidth)?.size ?? .zero
+    /// Captions drawn with a type look (a preset or "My style"), each line while it is said, at
+    /// `position`, as `animation` shows them: the same drawing as a text's, made when it shows.
+    static func captions(
+        _ cues: [CaptionCue], look: TextLook, position: CaptionPosition, frame: CGSize, animation: CaptionAnimation = .line,
+        offset: Double = 0
+    ) -> [FrameOverlay] {
+        cues.flatMap { CaptionAnimator.overlays(for: $0, look: look, position: position, frame: frame, animation: animation, offset: offset) }
     }
 
-    /// The text drawn on a transparent image of its box, at 1 pixel per point.
-    static func image(for text: TextOverlay, frameWidth: CGFloat) -> UIImage? {
-        guard let layout = layout(for: text, frameWidth: frameWidth) else { return nil }
+    /// A translation shown with the original: smaller, just under it (over it at the bottom of
+    /// the frame, so it stays clear of the platforms' buttons), a still line.
+    static func secondCaptions(_ cues: [CaptionCue], look: TextLook, position: CaptionPosition, frame: CGSize) -> [FrameOverlay] {
+        var smaller = look
+        smaller.sizeScale = look.sizeScale * 0.8
+        let offset = position == .bottom ? -0.07 : 0.07
+        return captions(cues, look: smaller, position: position, frame: frame, animation: .line, offset: offset)
+    }
+
+    /// The text's box on a frame `frameWidth` wide (background and room for the shadow included).
+    static func size(for text: TextOverlay, frameWidth: CGFloat, widthFraction: CGFloat = maxWidthFraction) -> CGSize {
+        layout(for: text, frameWidth: frameWidth, widthFraction: widthFraction)?.size ?? .zero
+    }
+
+    /// The text drawn on a transparent image of its box, at 1 pixel per point. With `emphasis`,
+    /// the word being said stands out (the box and the size stay those of the plain line, so the
+    /// line doesn't move from one word to the next).
+    static func image(
+        for text: TextOverlay, frameWidth: CGFloat, widthFraction: CGFloat = maxWidthFraction, emphasis: WordEmphasis? = nil
+    ) -> UIImage? {
+        guard let layout = layout(for: text, frameWidth: frameWidth, widthFraction: widthFraction) else { return nil }
         let format = UIGraphicsImageRendererFormat()
         format.scale = 1
         format.opaque = false
+        let range = emphasis?.range(in: text.displayText, uppercased: text.isUppercase)
         return UIGraphicsImageRenderer(size: layout.size, format: format).image { _ in
             if let fill = layout.background {
                 fill.setFill()
                 UIBezierPath(roundedRect: CGRect(origin: .zero, size: layout.size), cornerRadius: layout.cornerRadius).fill()
             }
-            layout.string.draw(with: layout.textRect, options: [.usesLineFragmentOrigin], context: nil)
+            guard let emphasis, let range else {
+                layout.string.draw(with: layout.textRect, options: [.usesLineFragmentOrigin], context: nil)
+                return
+            }
+            // Laid out once with TextKit, so the box sits exactly on the word it's drawn under.
+            let string = NSMutableAttributedString(attributedString: layout.string)
+            let storage = NSTextStorage(attributedString: string)
+            let manager = NSLayoutManager()
+            storage.addLayoutManager(manager)
+            let container = NSTextContainer(size: CGSize(width: layout.textRect.width, height: .greatestFiniteMagnitude))
+            container.lineFragmentPadding = 0
+            manager.addTextContainer(container)
+            switch emphasis.style {
+            case .color(let color):
+                storage.addAttribute(.foregroundColor, value: Self.color(color), range: range)
+            case .box(let fill, let ink):
+                let glyphs = manager.glyphRange(forCharacterRange: range, actualCharacterRange: nil)
+                let unit = frameWidth / referenceWidth
+                let word = manager.boundingRect(forGlyphRange: glyphs, in: container)
+                    .offsetBy(dx: layout.textRect.minX, dy: layout.textRect.minY)
+                    .insetBy(dx: -4 * unit, dy: -1 * unit)
+                Self.color(fill).setFill()
+                UIBezierPath(roundedRect: word, cornerRadius: 6 * unit).fill()
+                storage.addAttribute(.foregroundColor, value: Self.color(ink), range: range)
+                // No outline or shadow on the boxed word: it reads on its box.
+                storage.removeAttribute(.strokeWidth, range: range)
+                storage.removeAttribute(.shadow, range: range)
+            }
+            let all = manager.glyphRange(for: container)
+            manager.drawBackground(forGlyphRange: all, at: layout.textRect.origin)
+            manager.drawGlyphs(forGlyphRange: all, at: layout.textRect.origin)
         }
     }
 
@@ -58,20 +120,27 @@ nonisolated enum TextOverlayRenderer {
         let cornerRadius: CGFloat
     }
 
-    private static func layout(for text: TextOverlay, frameWidth: CGFloat) -> Layout? {
+    private static func layout(for text: TextOverlay, frameWidth: CGFloat, widthFraction: CGFloat) -> Layout? {
         guard !text.isEmpty, frameWidth > 0 else { return nil }
         let unit = frameWidth / referenceWidth
-        let font = font(for: text, size: CGFloat(text.size) * unit)
+        let pointSize = CGFloat(text.size) * unit
+        let font = font(for: text, size: pointSize)
         let paragraph = NSMutableParagraphStyle()
+        // Leading is where a line starts: the right in Arabic.
+        let rightToLeft = ScriptDirection.isRightToLeft(language: nil, text: text.displayText)
+        paragraph.baseWritingDirection = rightToLeft ? .rightToLeft : .leftToRight
         paragraph.alignment = switch text.alignment {
-        case .leading: .left
+        case .leading: rightToLeft ? .right : .left
         case .center: .center
-        case .trailing: .right
+        case .trailing: rightToLeft ? .left : .right
         }
         paragraph.lineBreakMode = .byWordWrapping
         var attributes: [NSAttributedString.Key: Any] = [
             .font: font, .foregroundColor: color(text.color), .paragraphStyle: paragraph,
         ]
+        if abs(text.tracking) > 0.000_1 {
+            attributes[.kern] = CGFloat(text.tracking) * pointSize
+        }
         if text.hasShadow {
             let shadow = NSShadow()
             shadow.shadowColor = UIColor.black.withAlphaComponent(0.6)
@@ -90,14 +159,15 @@ nonisolated enum TextOverlayRenderer {
         case .box: CGSize(width: 12 * unit, height: 6 * unit)
         case .pill: CGSize(width: 16 * unit, height: 7 * unit)
         }
-        let maxWidth = frameWidth * maxWidthFraction - padding.width * 2
+        let maxWidth = frameWidth * widthFraction - padding.width * 2
         let bounds = string.boundingRect(
             with: CGSize(width: max(1, maxWidth), height: .greatestFiniteMagnitude),
             options: [.usesLineFragmentOrigin, .usesFontLeading], context: nil
         )
         let textSize = CGSize(width: ceil(bounds.width), height: ceil(bounds.height))
         let size = CGSize(width: textSize.width + padding.width * 2, height: textSize.height + padding.height * 2)
-        let background: UIColor? = text.background == .none ? nil : color(text.backgroundColor)
+        let background: UIColor? = text.background == .none || text.backgroundOpacity <= 0.001
+            ? nil : color(text.backgroundColor).withAlphaComponent(CGFloat(text.backgroundOpacity))
         let cornerRadius: CGFloat = switch text.background {
         case .none: 0
         case .box: 8 * unit

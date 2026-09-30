@@ -19,6 +19,12 @@ actor CaptureEngine {
     private let audioDataOutput = AVCaptureAudioDataOutput()
     private let audioTap = AudioBufferTap()
     private let audioQueue = DispatchSerialQueue(label: "studio.cue.capture.audio")
+    /// Small frames for the live background preview, next to the movie output (both at once since
+    /// iOS 16); only added while a background effect is on.
+    private let videoDataOutput = AVCaptureVideoDataOutput()
+    private let backgroundFeed = BackgroundPreviewFeed()
+    private let videoQueue = DispatchSerialQueue(label: "studio.cue.capture.video")
+    private var mirrorsPreview = false
     private var videoInput: AVCaptureDeviceInput?
     private var activeLens: CameraLens?
     private var isConfigured = false
@@ -94,6 +100,49 @@ actor CaptureEngine {
     }
 
     /// Applies changed settings to the running session. Returns the lens in use.
+    /// Starts (or stops, with nil) the live background preview, drawing `render` on each frame for
+    /// `handler`. Returns whether the camera can give frames next to the recording; never changes
+    /// anything while recording.
+    func setBackgroundPreview(_ render: BackgroundRender?, mirrored: Bool, handler: (@Sendable (CGImage) -> Void)?) -> Bool {
+        guard !movieOutput.isRecording else { return session.outputs.contains(videoDataOutput) }
+        mirrorsPreview = mirrored
+        guard let render, let handler else {
+            backgroundFeed.configure(render: nil, handler: nil)
+            if session.outputs.contains(videoDataOutput) {
+                session.beginConfiguration()
+                session.removeOutput(videoDataOutput)
+                session.commitConfiguration()
+            }
+            return true
+        }
+        if !session.outputs.contains(videoDataOutput) {
+            session.beginConfiguration()
+            guard session.canAddOutput(videoDataOutput) else {
+                session.commitConfiguration()
+                return false
+            }
+            videoDataOutput.videoSettings = [kCVPixelBufferPixelFormatTypeKey as String: kCVPixelFormatType_32BGRA]
+            videoDataOutput.alwaysDiscardsLateVideoFrames = true
+            videoDataOutput.deliversPreviewSizedOutputBuffers = true
+            videoDataOutput.setSampleBufferDelegate(backgroundFeed, queue: videoQueue)
+            session.addOutput(videoDataOutput)
+            session.commitConfiguration()
+        }
+        configurePreviewConnection()
+        backgroundFeed.configure(render: render, handler: handler)
+        return true
+    }
+
+    /// The preview frames upright (the app is portrait) and mirrored like the preview layer.
+    private func configurePreviewConnection() {
+        guard let connection = videoDataOutput.connection(with: .video) else { return }
+        if connection.isVideoRotationAngleSupported(90) { connection.videoRotationAngle = 90 }
+        if connection.isVideoMirroringSupported {
+            connection.automaticallyAdjustsVideoMirroring = false
+            connection.isVideoMirrored = mirrorsPreview
+        }
+    }
+
     func apply(settings: CameraSettings) -> CameraLens? {
         guard isConfigured, !movieOutput.isRecording else { return activeLens }
         if hasAudioInput {
@@ -104,6 +153,7 @@ actor CaptureEngine {
         configureFormat(settings)
         configureConnection(settings)
         session.commitConfiguration()
+        configurePreviewConnection()
         return activeLens
     }
 

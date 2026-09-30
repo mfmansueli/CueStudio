@@ -72,6 +72,12 @@ names in **bold** stay in English in every language.
 - Performance cues inside scripts are translated with the script text (`[pause]` → pt-BR
   `[pausa]`, ja `[間]`…) and always use ASCII brackets, so the prompter still recognizes them.
 - "%@ to %@" is a countdown ("18s to 1:00", "12s to monetize"), not a range.
+- Quick edit's Audio category holds Voice (the take's own speech), Music and Voice-over, and a
+  video over the take has its Sound: where a language has one word for all of them (ar *الصوت*, tr
+  *Ses*), the Voice tool uses the word for speech (ar *الكلام*, tr *Konuşma*) so the tool never
+  repeats its category's name.
+- Type preset names (Cue, Impact, Editorial, Soft, Minimal, Label, Pop) are translated where the
+  word has a natural equivalent; **Cue** stays as the brand.
 
 | English | es | pt-BR | fr | de | it | ja | ko | zh-Hans | hi | id | ar | tr | th | vi |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
@@ -98,6 +104,11 @@ names in **bold** stay in English in every language.
 | Reading line | Línea de lectura | Linha de leitura | Ligne de lecture | Leselinie | Linea di lettura | 読み取りライン | 읽기 선 | 阅读线 | रीडिंग लाइन | Garis baca | خط القراءة | Okuma çizgisi | เส้นอ่าน | Đường đọc |
 | Remote Control | Control remoto | Controle remoto | Télécommande | Fernbedienung | Telecomando | リモコン | 리모컨 | 遥控 | रिमोट कंट्रोल | Kendali Jarak Jauh | التحكم عن بُعد | Uzaktan Kumanda | รีโมตคอนโทรล | Điều khiển từ xa |
 | Steady | Constante | Constante | Constant | Gleichmäßig | Costante | 一定速度 | 일정 속도 | 匀速 | स्थिर | Stabil | ثابت | Sabit | คงที่ | Đều |
+| Keyframe | Fotograma clave | Quadro-chave | Image clé | Keyframe | Keyframe | キーフレーム | 키프레임 | 关键帧 | कीफ़्रेम | Keyframe | إطار رئيسي | Anahtar kare | คีย์เฟรม | Khung hình chính |
+| Music | Música | Música | Musique | Musik | Musica | 音楽 | 음악 | 音乐 | म्यूज़िक | Musik | الموسيقى | Müzik | เพลง | Nhạc |
+| Voice (Quick edit tool) | Voz | Voz | Voix | Stimme | Voce | 声 | 목소리 | 人声 | आवाज़ | Suara | الكلام | Konuşma | เสียงพูด | Giọng nói |
+| Background | Fondo | Fundo | Arrière-plan | Hintergrund | Sfondo | 背景 | 배경 | 背景 | बैकग्राउंड | Latar | الخلفية | Arka plan | พื้นหลัง | Nền |
+| Color key | Clave de color | Chroma key | Incrustation | Farbschlüssel | Chroma key | カラーキー | 컬러 키 | 色键抠像 | कलर की | Kunci warna | مفتاح اللون | Renk anahtarı | คีย์สี | Tách màu nền |
 | Language & Region | Idioma y región | Idioma e região | Langue et région | Sprache & Region | Lingua e area geografica | 言語と地域 | 언어 및 지역 | 语言与地区 | भाषा और क्षेत्र | Bahasa & Wilayah | اللغة والمنطقة | Dil ve Bölge | ภาษาและภูมิภาค | Ngôn ngữ & Vùng |
 
 ## 3. Right to left and longer text

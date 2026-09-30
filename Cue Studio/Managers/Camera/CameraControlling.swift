@@ -11,6 +11,9 @@ protocol CameraControlling: AnyObject {
     var isRecording: Bool { get }
     /// The camera in use. Can differ from the one asked for when that one isn't on this device.
     var activeLens: CameraLens? { get }
+    /// The background effect for the next takes (this session only): shown live while recording
+    /// and saved with the take as a recipe, the recording itself untouched.
+    var background: BackgroundEffect { get }
 
     func start(with settings: CameraSettings) async
     /// Applies lens, format and connection changes to a running session.

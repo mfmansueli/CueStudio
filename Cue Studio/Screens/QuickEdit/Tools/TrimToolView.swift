@@ -20,11 +20,15 @@ struct TrimToolView: View {
             QuickEditTransportBar(viewModel: viewModel)
             TimelineStripView(viewModel: viewModel, zoom: zoom)
                 .padding(.top, 4)
+            TimelineTracksView(viewModel: viewModel, zoom: zoom)
+                .padding(.top, TimelineTracksView.height(for: viewModel) > 0 ? 6 : 0)
             Group {
                 if viewModel.removalRange != nil {
                     removalActions
                 } else if let transition = viewModel.selectedTransition {
                     transitionActions(transition)
+                } else if let layer = viewModel.selectedLayer {
+                    layerActions(layer)
                 } else {
                     actions
                 }
@@ -66,23 +70,19 @@ struct TrimToolView: View {
             .accessibilityLabel(Text("Delete section"))
             .accessibilityHint(Text("Takes the selected section out of the video"))
             .accessibilityIdentifier("edit.removeButton")
-            Button { viewModel.tool = .cleanUp } label: {
-                HStack(spacing: 6) {
-                    Image(systemName: "sparkles")
-                    Text("Clean Up")
-                    if let badge = viewModel.cleanUpBadge {
-                        Text("\(badge)")
-                            .font(.caption2.weight(.heavy).monospacedDigit())
-                            .foregroundStyle(Palette.accInk)
-                            .padding(.horizontal, 6)
-                            .frame(minWidth: 18, minHeight: 18)
-                            .background(Palette.acc, in: Capsule())
-                    }
-                }
+            Button(action: viewModel.duplicateSection) {
+                Image(systemName: "plus.square.on.square")
+            }
+            .buttonStyle(.cueIcon(.surface, diameter: Metrics.mediumButtonHeight))
+            .accessibilityLabel(Text("Copy section"))
+            .accessibilityHint(Text("Copies the picked section, or the one at the playhead, right after it"))
+            .accessibilityIdentifier("edit.duplicateButton")
+            Button { viewModel.showsClips = true } label: {
+                Label("Clips", systemImage: "rectangle.stack")
             }
             .buttonStyle(.cueTinted(.medium, expands: false))
-            .accessibilityHint(Text("Finds pauses, filler words and retakes to review"))
-            .accessibilityIdentifier("edit.cleanUpButton")
+            .accessibilityHint(Text("Reorder, copy or remove sections, and add other takes or videos"))
+            .accessibilityIdentifier("edit.clipsButton")
         }
     }
 
@@ -99,12 +99,53 @@ struct TrimToolView: View {
                 .accessibilityIdentifier("edit.transition.\(transition.rawValue)")
             }
             Spacer(minLength: 0)
+            if viewModel.cuts.count > 1 {
+                Button { viewModel.setTransitionOnEveryCut(selected) } label: {
+                    Image(systemName: "rectangle.stack")
+                }
+                .buttonStyle(.cueIcon(.surface, diameter: Metrics.mediumButtonHeight))
+                .accessibilityLabel(Text("Use on every cut"))
+                .accessibilityIdentifier("edit.transition.everyCut")
+            }
             Button(action: viewModel.closeTransitions) {
                 Image(systemName: "checkmark")
             }
             .buttonStyle(.cueIcon(.surface, diameter: Metrics.mediumButtonHeight))
             .accessibilityLabel(Text("Done with this cut"))
             .accessibilityIdentifier("edit.transitionDoneButton")
+        }
+    }
+
+    /// The bar picked on a track: open it where it's edited, delete it, or let go.
+    private func layerActions(_ layer: LayerBar) -> some View {
+        HStack(spacing: 8) {
+            Button(action: viewModel.openSelectedLayer) {
+                Label(openLabel(for: layer.kind), systemImage: "slider.horizontal.3")
+            }
+            .buttonStyle(.cueLight(.medium))
+            .accessibilityIdentifier("edit.layerOpenButton")
+            Button(action: viewModel.deleteSelectedLayer) {
+                Image(systemName: "trash")
+            }
+            .buttonStyle(.cueIcon(.danger, diameter: Metrics.mediumButtonHeight))
+            .accessibilityLabel(Text("Delete"))
+            .accessibilityIdentifier("edit.layerDeleteButton")
+            Button(action: viewModel.clearLayerSelection) {
+                Image(systemName: "checkmark")
+            }
+            .buttonStyle(.cueIcon(.surface, diameter: Metrics.mediumButtonHeight))
+            .accessibilityLabel(Text("Done"))
+            .accessibilityIdentifier("edit.layerDoneButton")
+        }
+    }
+
+    private func openLabel(for kind: LayerKind) -> String {
+        switch kind {
+        case .text: String(localized: "Edit text")
+        case .caption: String(localized: "Edit line")
+        case .media: String(localized: "Edit media")
+        case .voiceOver: String(localized: "Edit voice-over")
+        case .music: String(localized: "Edit music")
         }
     }
 

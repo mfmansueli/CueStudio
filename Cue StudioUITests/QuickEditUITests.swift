@@ -59,7 +59,7 @@ final class QuickEditUITests: XCTestCase {
         XCTAssertNotEqual(duration.label, "1:02 → 0:31")
         XCTAssertTrue((time.value as? String)?.hasPrefix("00:00") ?? false)
 
-        app.buttons["edit.category.polish"].tap()
+        app.buttons["edit.category.adjust"].tap()
         app.buttons["edit.tool.filters"].tap()
         XCTAssertTrue(app.buttons["edit.filter.mono"].waitForExistence(timeout: 5))
         app.buttons["edit.filter.mono"].tap()
@@ -185,6 +185,10 @@ final class QuickEditUITests: XCTestCase {
         let time = app.staticTexts["edit.timeLabel"]
         XCTAssertTrue(wait(for: time, value: "00:00.00 / 01:02.00"))
         app.buttons["edit.tool.cleanUp"].tap()
+        // Pauses first; the words to review are in their own section.
+        let review = app.segmentedControls["cleanUp.section"].buttons.element(boundBy: 1)
+        XCTAssertTrue(review.waitForExistence(timeout: 5))
+        review.tap()
         // The sample video is silent: nothing to suggest, and nothing is cut.
         XCTAssertTrue(element(app, "cleanUp.empty").waitForExistence(timeout: 15))
         XCTAssertTrue(app.staticTexts["All clean"].exists)
@@ -211,15 +215,26 @@ final class QuickEditUITests: XCTestCase {
         XCTAssertEqual(app.staticTexts["edit.durationChange"].label, "1:02 → 0:31")
     }
 
-    func testCaptionsComeFromTheScript() {
+    func testASilentTakeGetsNoInventedCaptionsAndCanBeCaptionedByHand() {
         let app = openQuickEdit()
         app.buttons["edit.category.captions"].tap()
         let toggle = app.switches["edit.captionsToggle"]
         XCTAssertTrue(toggle.waitForExistence(timeout: 5))
-        // The switch sits at the trailing edge; the row's center is its label.
         toggle.coordinate(withNormalizedOffset: CGVector(dx: 0.9, dy: 0.5)).tap()
-        let on = NSPredicate(format: "value == '1'")
-        XCTAssertEqual(XCTWaiter.wait(for: [expectation(for: on, evaluatedWith: toggle)], timeout: 10), .completed)
+        // The sample video is silent: captions say so instead of spreading the script over it.
+        let status = app.staticTexts["edit.captionsStatus"]
+        let silent = NSPredicate(format: "label == %@", "This take has no sound to caption.")
+        XCTAssertEqual(XCTWaiter.wait(for: [expectation(for: silent, evaluatedWith: status)], timeout: 15), .completed)
+        XCTAssertFalse(app.buttons["edit.captionLine"].exists)
+
+        app.buttons["edit.captionsAddButton"].tap()
+        let field = element(app, "captionSheet.field")
+        XCTAssertTrue(field.waitForExistence(timeout: 5))
+        field.typeText("Three habits")
+        app.buttons["captionSheet.done"].tap()
+        let line = app.buttons["edit.captionLine"]
+        XCTAssertTrue(line.waitForExistence(timeout: 5))
+        XCTAssertTrue(line.label.contains("Three habits"))
         app.buttons["edit.cancelButton"].tap()
         XCTAssertTrue(app.buttons["review.editButton"].waitForExistence(timeout: 5))
     }

@@ -31,6 +31,13 @@ enum LayerLanes {
         return result
     }
 
+    /// The most of `spans` that play at the same moment anywhere inside `within`.
+    static func peak(of spans: [TimeSpan], within: TimeSpan) -> Int {
+        let inside = spans.filter { $0.overlaps(within) }
+        let moments = inside.map { max($0.start, within.start) } + [within.start]
+        return moments.map { moment in inside.filter { $0.start <= moment + 0.000_1 && moment < $0.end - 0.000_1 }.count }.max() ?? 0
+    }
+
     /// How many lanes `lanes` uses (at least one).
     static func count(_ lanes: [UUID: Int]) -> Int {
         (lanes.values.max() ?? 0) + 1

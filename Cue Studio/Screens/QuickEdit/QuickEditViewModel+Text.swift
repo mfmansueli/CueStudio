@@ -25,7 +25,9 @@ extension QuickEditViewModel {
         guard isReady else { return }
         player.pause()
         let span = placement(at: player.currentTime, length: role.defaultDuration)
-        let text = TextOverlay(role: role, style: edit.textStyle, span: edit.timeline.sourceSpan(forEdited: span))
+        let pinned = edit.pin(span)
+        var text = edit.newText(role, span: pinned.span)
+        text.clipAnchor = pinned.anchor
         change { $0.texts.append(text) }
         selectedTextID = text.id
         editingTextID = text.id
@@ -53,21 +55,16 @@ extension QuickEditViewModel {
         toast.show(String(localized: "Text deleted"))
     }
 
-    /// A quick style for one text: how it looks and where it sits, not what it says.
-    func applyStyle(_ style: CreatorStyle, toText id: UUID) {
-        updateText(id) { style.apply(to: &$0) }
-    }
-
     /// Where the text plays (edited seconds); nil when none of it does.
     func editedSpan(ofText id: UUID) -> TimeSpan? {
-        edit.texts.first { $0.id == id }.flatMap { edit.timeline.editedSpan(forSource: $0.span) }
+        edit.texts.first { $0.id == id }.flatMap { TakeEdit.editedSpan($0.span, anchor: $0.clipAnchor, in: edit.timeline) }
     }
 
     /// Texts showing at the playhead, for the preview's handles.
     var visibleTexts: [TextOverlay] {
         let time = player.currentTime
         return edit.texts.filter { text in
-            guard let span = edit.timeline.editedSpan(forSource: text.span) else { return false }
+            guard let span = TakeEdit.editedSpan(text.span, anchor: text.clipAnchor, in: edit.timeline) else { return false }
             return span.contains(time) || (abs(time - edit.editedDuration) < 0.001 && abs(span.end - time) < 0.001)
         }
     }
@@ -75,8 +72,14 @@ extension QuickEditViewModel {
     /// The text's box on a preview of `size` (from the top left), measured like the export draws
     /// it.
     func frame(ofText text: TextOverlay, in size: CGSize) -> CGRect {
-        let box = TextOverlayRenderer.size(for: text, frameWidth: size.width)
-        let center = text.center.clamped
+        var box = TextOverlayRenderer.size(for: text, frameWidth: size.width)
+        var center = text.center.clamped
+        if !text.keyframes.isEmpty {
+            // Where its keyframes have it at the playhead.
+            let state = motionState(of: .text(text.id))
+            center = state.center.clamped
+            box = CGSize(width: box.width * CGFloat(state.scale), height: box.height * CGFloat(state.scale))
+        }
         return CGRect(
             x: CGFloat(center.x) * size.width - box.width / 2,
             y: CGFloat(center.y) * size.height - box.height / 2,

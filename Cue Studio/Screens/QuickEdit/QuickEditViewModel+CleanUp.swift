@@ -165,18 +165,51 @@ extension QuickEditViewModel {
         }
     }
 
+    // MARK: - Review (words)
+
+    /// What Review lists: filler words and possible retakes (the pauses have their own section).
+    var wordSuggestions: [CleanUpSuggestion] {
+        cleanUpSuggestions.filter { $0.kind != .pause }
+    }
+
+    /// Words still to review.
+    var pendingWordSuggestions: [CleanUpSuggestion] {
+        pendingSuggestions.filter { $0.kind != .pause }
+    }
+
+    /// "3 to review" or "All clean", for the words.
+    var wordsReviewTitle: String {
+        let count = pendingWordSuggestions.count
+        return count == 0 ? String(localized: "All clean") : String(localized: "\(count) to review")
+    }
+
+    /// "Remove all · 2" for the words Clean Up is sure about, or "Done".
+    var removeAllWordsLabel: String {
+        let count = pendingWordSuggestions.filter(\.isSure).count
+        return count == 0 ? String(localized: "Done") : String(localized: "Remove all · \(count)")
+    }
+
+    /// "Remove all" in Review: the words Clean Up is sure about, in one undo step.
+    func removeAllSureWords() {
+        removeAllSure(pendingWordSuggestions.filter(\.isSure), among: pendingWordSuggestions)
+    }
+
     /// "Remove all": every pending suggestion Clean Up is sure about goes, in one undo step. The
     /// unsure ones stay for the creator to listen to.
     func removeAllSureSuggestions() {
+        removeAllSure(sureSuggestions, among: pendingSuggestions)
+    }
+
+    /// `pending`: what "left to review" counts.
+    private func removeAllSure(_ sure: [CleanUpSuggestion], among pending: [CleanUpSuggestion]) {
         guard isReady else { return }
-        let sure = sureSuggestions
         guard !sure.isEmpty else { return }
         var timeline = edit.timeline
         guard timeline.remove(sure.map(\.span)) else {
             toast.show(String(localized: "Keep at least one section"))
             return
         }
-        let left = pendingSuggestions.count - sure.count
+        let left = pending.count - sure.count
         commit(timeline, suggestions: deciding(Set(sure.map(\.id)), .removed))
         toast.show(left > 0
             ? String(localized: "Removed \(sure.count) · \(left) left to review")

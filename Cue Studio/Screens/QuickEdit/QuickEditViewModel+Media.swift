@@ -34,33 +34,54 @@ extension QuickEditViewModel {
         }
     }
 
-    /// Adds what was copied in, at the playhead or right after the photo or video already there,
-    /// for as long as there's room before the next one.
+    /// Adds what was copied in at the playhead, on top of what's there, for its length (a photo's
+    /// three seconds) or until the end. Up to `MediaOverlay.simultaneousLimit` show at once.
     func addMedia(_ imported: ImportedMedia) {
         importedFiles.insert(imported.fileName)
         let total = edit.editedDuration
         let wanted = imported.kind == .photo ? MediaOverlay.photoDuration : (imported.duration ?? MediaOverlay.photoDuration)
-        let taken = mediaBars.map(\.span)
-        var start = player.currentTime
-        if let covering = taken.first(where: { $0.contains(start) }) { start = covering.end }
-        let next = taken.filter { $0.start >= start - 0.001 }.map(\.start).min() ?? total
-        let end = min(start + wanted, next, total)
+        let start = min(player.currentTime, max(0, total - MediaOverlay.minimumDuration))
+        let end = min(start + wanted, total)
+        let placed = TimeSpan(start: start, end: end)
         guard end - start >= MediaOverlay.minimumDuration else {
             EditMediaFiles.remove([imported.fileName])
             importedFiles.remove(imported.fileName)
             toast.show(String(localized: "No room here — move the playhead to a free spot"))
             return
         }
-        let span = edit.timeline.sourceSpan(forEdited: TimeSpan(start: start, end: end))
-        let media = MediaOverlay(
+        guard LayerLanes.peak(of: mediaBars.map(\.span), within: placed) < MediaOverlay.simultaneousLimit else {
+            EditMediaFiles.remove([imported.fileName])
+            importedFiles.remove(imported.fileName)
+            toast.show(String(localized: "Up to 3 photos or videos at once here"))
+            return
+        }
+        let pinned = edit.pin(placed)
+        var media = MediaOverlay(
             kind: imported.kind, fileName: imported.fileName, aspect: imported.aspect,
-            mediaDuration: imported.duration, span: span
+            mediaDuration: imported.duration, span: pinned.span
         )
+        media.clipAnchor = pinned.anchor
+        media.hasSound = imported.kind == .video ? imported.hasSound : nil
+        media.layer = (edit.media.map(\.stackOrder).max() ?? -1) + 1
         change { $0.media.append(media) }
         selectedMediaID = media.id
+        // Muted until the creator says to keep its sound.
+        if imported.kind == .video, imported.hasSound { soundChoiceMediaID = media.id }
         player.pause()
         player.seek(to: start)
         toast.show(imported.kind == .photo ? String(localized: "Photo added") : String(localized: "Video added"))
+    }
+
+    /// Answers "keep its sound?" for a video just added: kept at full volume, or muted.
+    func chooseSound(for id: UUID, keeps: Bool) {
+        if soundChoiceMediaID == id { soundChoiceMediaID = nil }
+        if keeps { setMediaSoundVolume(id, 1) }
+    }
+
+    /// A video's own sound: 0 mutes it.
+    func setMediaSoundVolume(_ id: UUID, _ volume: Double) {
+        let clamped = min(max(volume, 0), 1)
+        updateMedia(id) { $0.audioVolume = clamped > 0.001 ? clamped : nil }
     }
 
     func selectMedia(_ id: UUID?) {
@@ -78,6 +99,29 @@ extension QuickEditViewModel {
         }
     }
 
+    /// Moves a photo or video one step up (over the one above it) or down, in one undo step.
+    func restack(_ id: UUID, up: Bool) {
+        change { snapshot in
+            // Normalize the order first (media from before stacking share the bottom).
+            let ordered = snapshot.media.enumerated().sorted { ($0.element.stackOrder, $0.offset) < ($1.element.stackOrder, $1.offset) }.map(\.element.id)
+            guard let position = ordered.firstIndex(of: id) else { return }
+            let target = up ? position + 1 : position - 1
+            guard ordered.indices.contains(target) else { return }
+            var order = ordered
+            order.swapAt(position, target)
+            for (layer, mediaID) in order.enumerated() {
+                if let index = snapshot.media.firstIndex(where: { $0.id == mediaID }) { snapshot.media[index].layer = layer }
+            }
+        }
+    }
+
+    /// Whether the picked photo or video can go up (or down) a step.
+    func canRestack(_ id: UUID, up: Bool) -> Bool {
+        let ordered = edit.media.enumerated().sorted { ($0.element.stackOrder, $0.offset) < ($1.element.stackOrder, $1.offset) }.map(\.element.id)
+        guard let position = ordered.firstIndex(of: id) else { return false }
+        return up ? position < ordered.count - 1 : position > 0
+    }
+
     func deleteMedia(_ id: UUID) {
         change { $0.media.removeAll { $0.id == id } }
         toast.show(String(localized: "Media removed"))
@@ -92,6 +136,16 @@ extension QuickEditViewModel {
 
     /// Its place on a preview of `size` (from the top left), as the export places it.
     func frame(ofMedia media: MediaOverlay, in size: CGSize) -> CGRect {
-        MediaPlacement.rect(for: media, in: size)
+        let placed = MediaPlacement.rect(for: media, in: size)
+        guard media.keyframes?.isEmpty == false else { return placed }
+        // Where its keyframes have it at the playhead.
+        let state = motionState(of: .media(media.id))
+        let width = placed.width * CGFloat(state.scale)
+        let height = placed.height * CGFloat(state.scale)
+        return CGRect(
+            x: CGFloat(state.center.clamped.x) * size.width - width / 2,
+            y: CGFloat(state.center.clamped.y) * size.height - height / 2,
+            width: width, height: height
+        )
     }
 }

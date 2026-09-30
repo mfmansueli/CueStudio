@@ -38,7 +38,26 @@ final class EditMediaImporter: EditMediaImporting {
         let upright = CGRect(origin: .zero, size: naturalSize).applying(transform)
         let aspect = abs(upright.height) > 0 ? abs(upright.width) / abs(upright.height) : 1
         guard duration.isFinite, duration > 0 else { throw EditMediaImportError.unreadable }
-        return ImportedMedia(kind: .video, fileName: url.lastPathComponent, aspect: Double(aspect), duration: duration)
+        let hasSound = (try? await asset.loadTracks(withMediaType: .audio).isEmpty == false) ?? false
+        return ImportedMedia(kind: .video, fileName: url.lastPathComponent, aspect: Double(aspect), duration: duration, hasSound: hasSound)
+    }
+
+    func importAudio(from url: URL) async throws -> ImportedAudio {
+        let scoped = url.startAccessingSecurityScopedResource()
+        defer { if scoped { url.stopAccessingSecurityScopedResource() } }
+        let file = try EditMediaFiles.newFile(pathExtension: url.pathExtension)
+        do {
+            try FileManager.default.copyItem(at: url, to: file.url)
+            let asset = AVURLAsset(url: file.url)
+            // A protected song has no track AVFoundation can read.
+            guard try await !asset.loadTracks(withMediaType: .audio).isEmpty else { throw EditMediaImportError.unreadableSound }
+            let duration = try await asset.load(.duration).seconds
+            guard duration.isFinite, duration >= MusicClip.minimumDuration else { throw EditMediaImportError.unreadableSound }
+            return ImportedAudio(fileName: file.name, title: url.deletingPathExtension().lastPathComponent, duration: duration)
+        } catch {
+            try? FileManager.default.removeItem(at: file.url)
+            throw EditMediaImportError.unreadableSound
+        }
     }
 
     nonisolated private static func storePhoto(_ data: Data) throws -> ImportedMedia {

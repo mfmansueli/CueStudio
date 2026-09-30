@@ -463,7 +463,9 @@ final class PrompterViewModel {
             return
         }
         do {
-            let take = try takes.addTake(fileAt: clip.url, duration: clip.duration, script: script, camera: session.camera)
+            let take = try takes.addTake(
+                fileAt: clip.url, duration: clip.duration, script: script, camera: session.camera, background: camera.background
+            )
             if openReview { reviewingTake = take }
         } catch {
             toast.show(String(localized: "The take couldn't be saved"))

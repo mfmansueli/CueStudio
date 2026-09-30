@@ -12,6 +12,7 @@ final class FakeCamera: CameraControlling {
     private(set) var isRecording = false
     /// Nil until started; then the lens asked for, unless a test says this device lacks it.
     var activeLens: CameraLens?
+    var background = BackgroundEffect()
     var missingLenses: Set<CameraLens> = []
     var audioLevel: Float?
     var failsToRecord = false

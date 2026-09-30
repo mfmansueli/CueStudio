@@ -64,11 +64,14 @@ final class TakeLibraryService {
 
     // MARK: - Actions
 
-    /// Moves the recording into the library and records its metadata.
+    /// Moves the recording into the library and records its metadata. A background effect chosen
+    /// while recording becomes the take's recipe (the recording keeps the camera's own image).
     @discardableResult
-    func addTake(fileAt url: URL, duration: TimeInterval, script: Script?, camera: CameraSettings) throws -> Take {
+    func addTake(
+        fileAt url: URL, duration: TimeInterval, script: Script?, camera: CameraSettings, background: BackgroundEffect? = nil
+    ) throws -> Take {
         let fileName = try repository.storeVideo(from: url)
-        let take = Take(
+        var take = Take(
             scriptID: script?.id,
             scriptTitle: script?.displayTitle ?? String(localized: "Freestyle recording"),
             scriptVersion: script?.version,
@@ -81,6 +84,11 @@ final class TakeLibraryService {
             aspect: camera.aspect,
             platform: script?.platform
         )
+        if let background, background.isActive {
+            var edit = TakeEdit(sourceDuration: duration, aspect: camera.aspect)
+            edit.setBackground(background, for: nil)
+            take.edit = edit
+        }
         takes.insert(take, at: 0)
         persist()
         return take

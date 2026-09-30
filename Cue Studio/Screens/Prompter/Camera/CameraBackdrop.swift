@@ -8,6 +8,8 @@ import UIKit
 
 /// The camera feed, or a calm placeholder that says why there is none. The feed fills `sensorRect`,
 /// never the whole screen: the preview is the recorded image, and the rest of the screen stays black.
+/// With a background effect on, its frames cover the feed (the recording keeps the camera's image;
+/// the effect goes with the take).
 struct CameraBackdrop: View {
     /// Where the sensor image goes on screen (`FrameGeometry.sensorRect(in:)`).
     let sensorRect: CGRect
@@ -32,6 +34,15 @@ struct CameraBackdrop: View {
                     .frame(width: sensorRect.width, height: sensorRect.height)
                     .position(x: sensorRect.midX, y: sensorRect.midY)
                     .transition(.opacity)
+                    if camera.background.isActive, let frame = camera.backgroundFrame {
+                        Image(decorative: frame, scale: 1)
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: sensorRect.width, height: sensorRect.height)
+                            .position(x: sensorRect.midX, y: sensorRect.midY)
+                            .allowsHitTesting(false)
+                            .accessibilityHidden(true)
+                    }
                 } else {
                     CameraFeedPlaceholder()
                 }

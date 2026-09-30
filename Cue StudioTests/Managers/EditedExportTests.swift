@@ -21,7 +21,8 @@ struct EditedExportTests {
     }
 
     private func videoDuration(of url: URL) async throws -> TimeInterval {
-        let track = try #require(try await AVURLAsset(url: url).loadTracks(withMediaType: .video).first)
+        let asset = AVURLAsset(url: url)
+        let track = try #require(try await asset.loadTracks(withMediaType: .video).first)
         return try await track.load(.timeRange).duration.seconds
     }
 
@@ -74,7 +75,8 @@ struct EditedExportTests {
         #expect(abs(try await videoDuration(of: output) - 2) < 0.05)
         #expect(try await TestClip.second(shownAt: 1.5, in: output) == 1)
         // The recording keeps its size.
-        let track = try #require(try await AVURLAsset(url: output).loadTracks(withMediaType: .video).first)
+        let asset = AVURLAsset(url: output)
+        let track = try #require(try await asset.loadTracks(withMediaType: .video).first)
         let size = try await track.load(.naturalSize)
         #expect(size == CGSize(width: 360, height: 640))
     }

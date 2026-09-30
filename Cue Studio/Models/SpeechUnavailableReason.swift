@@ -39,4 +39,25 @@ nonisolated enum SpeechUnavailableReason: Error, Equatable, Sendable {
             String(localized: "Voice Following couldn’t start listening. The script scrolls while you talk.")
         }
     }
+
+    /// The same reason, told in Captions: what's missing, and that lines can still be written by
+    /// hand.
+    var captionMessage: String {
+        switch self {
+        case .unsupported(let language):
+            String(localized: "Captions can’t listen in \(language.localizedName) on this iPhone. Pick the language spoken or write the lines yourself.")
+        case .unsupportedDetected(let name):
+            String(localized: "Captions can’t listen in \(name) on this iPhone. Pick the language spoken or write the lines yourself.")
+        case .unknownLanguage:
+            String(localized: "Pick the language spoken in this take to caption it.")
+        case .needsDownload(let language?):
+            String(localized: "Captions need to download \(language.localizedName). Connect to the internet and try again.")
+        case .needsDownload(nil):
+            String(localized: "Captions need to download this language. Connect to the internet and try again.")
+        case .noRecognition:
+            String(localized: "This iPhone can’t recognize speech. You can still write the lines yourself.")
+        case .couldNotStart:
+            String(localized: "Captions couldn’t start listening. Try again.")
+        }
+    }
 }

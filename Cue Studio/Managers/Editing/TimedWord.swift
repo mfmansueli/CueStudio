@@ -10,6 +10,8 @@ nonisolated struct TimedWord: Hashable, Sendable {
     var text: String
     var start: TimeInterval
     var end: TimeInterval
+    /// The recognizer timed several words as one stretch and this one got an even share of it.
+    var isEstimated = false
 
     /// The word as Clean Up compares it: lowercased, without punctuation, and a sound held long
     /// ("ummmm") the same as a short one ("umm").
