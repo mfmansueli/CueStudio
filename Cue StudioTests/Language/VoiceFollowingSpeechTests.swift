@@ -100,6 +100,23 @@ struct VoiceFollowingSpeechTests {
         #expect(reached >= Self.required, "\(language.rawValue) reached \(reading.tracker.position) of \(words.count) words; heard: \(reading.lastHeard)")
     }
 
+    /// What this device offers for each language, asked without downloading anything: ready,
+    /// downloads the first time, or not available, and through which recognizer.
+    @Test func availabilityOnThisDevice() async {
+        let speech = SpeechRecognitionManager()
+        let resolver = SpeechLocaleResolver()
+        var lines: [String] = []
+        for language in CueLanguage.allCases {
+            let availability = await speech.availability(of: language)
+            let engine: String = switch await resolver.resolve(.language(language)) {
+            case .success(let route): "\(route.engine) \(route.locale.identifier(.bcp47))"
+            case .failure: "no recognizer"
+            }
+            lines.append("\(language.rawValue): \(availability) (\(engine))")
+        }
+        print("VOICE AVAILABILITY \(lines.joined(separator: " · "))")
+    }
+
     /// Feeds the recording in 100 ms buffers at four times real speed, then a second of silence so
     /// the last words are finalized, like the microphone would.
     private func play(_ url: URL, into transcription: SpeechTranscription) async throws {

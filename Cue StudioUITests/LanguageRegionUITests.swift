@@ -99,6 +99,34 @@ final class LanguageRegionUITests: XCTestCase {
         }
     }
 
+    /// Captions listen in the script's language; when Voice Following listens in another one, the
+    /// Captions tool says so instead of disagreeing silently.
+    func testCaptionsSayWhenVoiceFollowingListensInAnotherLanguage() {
+        let app = CueApp.launch(seeded: true, sampleVideo: true)
+        openLanguageRegion(app)
+        app.buttons["languageRegion.voiceFollowingLanguageButton"].tap()
+        pick("pt-BR", in: app)
+        XCTAssertTrue(app.buttons["languageRegion.voiceFollowingLanguageButton"].waitForExistence(timeout: 5))
+
+        app.tabBars.buttons["Takes"].tap()
+        let row = app.buttons.matching(
+            NSPredicate(format: "identifier BEGINSWITH 'takes.video.' AND label CONTAINS '3 morning habits'")
+        ).firstMatch
+        XCTAssertTrue(row.waitForExistence(timeout: 5))
+        row.tap()
+        let edit = app.buttons["review.editButton"]
+        XCTAssertTrue(edit.waitForExistence(timeout: 5))
+        edit.tap()
+        let captions = app.buttons["edit.category.captions"]
+        XCTAssertTrue(captions.waitForExistence(timeout: 10))
+        captions.tap()
+        let note = app.staticTexts["edit.captionsLanguageNote"]
+        XCTAssertTrue(note.waitForExistence(timeout: 5))
+        XCTAssertTrue(note.label.contains("Portuguese (Brazil)"))
+        app.buttons["edit.cancelButton"].tap()
+        XCTAssertTrue(edit.waitForExistence(timeout: 5))
+    }
+
     // MARK: - Helpers
 
     private func openLanguageRegion(_ app: XCUIApplication) {

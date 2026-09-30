@@ -49,11 +49,13 @@ final class PrompterUITests: XCTestCase {
         XCTAssertFalse(app.sliders["Speed"].exists)
         let play = app.buttons["prompter.playButton"]
         play.tap()
-        // The Simulator can't run speech recognition: there the text scrolls while you talk.
-        let status = app.staticTexts.matching(
-            NSPredicate(format: "label IN %@", ["Speed follows your voice", "Scrolls while you talk"])
-        ).firstMatch
+        // The Simulator can't run speech recognition: there the text scrolls at the set speed while
+        // you talk, and says so, speed included. It never claims to follow the words.
+        let status = element(app, "prompter.voiceStatus")
         XCTAssertTrue(status.waitForExistence(timeout: 5))
+        let honest = NSPredicate(format: "label CONTAINS 'while you talk' AND label CONTAINS '7×'")
+        XCTAssertEqual(XCTWaiter.wait(for: [expectation(for: honest, evaluatedWith: status)], timeout: 10), .completed)
+        XCTAssertNotEqual(status.label, "Follows your words")
         play.tap()
         app.buttons["prompter.closeButton"].tap()
         XCTAssertTrue(studio.waitForExistence(timeout: 5))
@@ -73,9 +75,14 @@ final class PrompterUITests: XCTestCase {
         XCTAssertTrue((speed.value as? String)?.hasSuffix("7×") == true)
         voice.tap()
         allowMicrophoneIfAsked()
-        XCTAssertTrue(element(app, "prompter.voiceIndicator").waitForExistence(timeout: 5))
+        let indicator = element(app, "prompter.voiceIndicator")
+        XCTAssertTrue(indicator.waitForExistence(timeout: 5))
         XCTAssertTrue(voice.isSelected)
         XCTAssertFalse(speed.exists)
+        // Getting ready, then (the Simulator can't recognize speech) scrolling while you talk:
+        // never "Listening" to the words while paused, and never stuck getting ready.
+        let settled = NSPredicate(format: "value == 'Paused'")
+        XCTAssertEqual(XCTWaiter.wait(for: [expectation(for: settled, evaluatedWith: indicator)], timeout: 10), .completed)
 
         app.buttons["prompter.scrollMode.steady"].tap()
         XCTAssertFalse(element(app, "prompter.voiceIndicator").waitForExistence(timeout: 2))

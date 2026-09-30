@@ -781,8 +781,10 @@ final class PrompterViewModel {
 
     private func hear(_ sample: AudioLevelSample) {
         let speaking = voiceGate.hear(level: sample.level, at: sample.time, duration: sample.duration)
+        let changed = speaking != isVoiceActive
         showVoice(speaking, heardAt: sample.time)
-        guard sample.time - levelShownAt >= Self.levelInterval else { return }
+        // The meter jumps with the voice starting or stopping; in between it redraws at a steady pace.
+        guard changed || sample.time - levelShownAt >= Self.levelInterval else { return }
         levelShownAt = sample.time
         let level = VoiceFollowGate.normalized(sample.level)
         if level != voiceLevel { voiceLevel = level }

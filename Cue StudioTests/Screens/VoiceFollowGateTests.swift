@@ -20,35 +20,52 @@ struct VoiceFollowGateTests {
         }
     }
 
-    @Test func loudInputIsSpeechWithinTwoBuffers() {
+    /// A gate that has heard a quiet room for a second, as it has by the time anyone speaks.
+    private func quietRoom() -> VoiceFollowGate {
         var gate = VoiceFollowGate()
-        let first = gate.hear(level: -20, at: buffer, duration: buffer)
-        let second = gate.hear(level: -20, at: 2 * buffer, duration: buffer)
+        _ = feed(&gate, level: -70, from: 0, for: 1)
+        return gate
+    }
+
+    @Test func loudInputIsSpeechWithinTwoBuffers() {
+        var gate = quietRoom()
+        let first = gate.hear(level: -20, at: 1 + buffer, duration: buffer)
+        let second = gate.hear(level: -20, at: 1 + 2 * buffer, duration: buffer)
         #expect(!first)
         #expect(second)
     }
 
     /// Studio's meter delivers 100 ms buffers: one is long enough to count.
     @Test func aLongBufferCountsAtOnce() {
-        var gate = VoiceFollowGate()
-        let speaking = gate.hear(level: -20, at: 0.1, duration: 0.1)
+        var gate = quietRoom()
+        let speaking = gate.hear(level: -20, at: 1.1, duration: 0.1)
         #expect(speaking)
+    }
+
+    /// Until the room has been heard, even a voice waits: a noisy room would pass for one.
+    @Test func nothingCountsBeforeTheRoomIsHeard() {
+        var gate = VoiceFollowGate()
+        _ = feed(&gate, level: -70, from: 0, for: 0.3)
+        let early = feed(&gate, level: -20, from: 0.3, for: 0.15)
+        #expect(early.allSatisfy { !$0 })
+        let later = feed(&gate, level: -20, from: 0.45, for: 0.3)
+        #expect(later.last == true)
     }
 
     @Test func shortGapsKeepScrolling() {
-        var gate = VoiceFollowGate()
-        _ = feed(&gate, level: -20, from: 0, for: 0.2)
-        let speaking = gate.hear(level: -60, at: 0.7, duration: buffer)
+        var gate = quietRoom()
+        _ = feed(&gate, level: -20, from: 1, for: 0.2)
+        let speaking = gate.hear(level: -60, at: 1.7, duration: buffer)
         #expect(speaking)
-        #expect(gate.isSpeaking(at: 0.75))
+        #expect(gate.isSpeaking(at: 1.75))
     }
 
     @Test func realPausesStopScrolling() {
-        var gate = VoiceFollowGate()
-        _ = feed(&gate, level: -20, from: 0, for: 0.2)
-        let speaking = gate.hear(level: -60, at: 0.9, duration: buffer)
+        var gate = quietRoom()
+        _ = feed(&gate, level: -20, from: 1, for: 0.2)
+        let speaking = gate.hear(level: -60, at: 1.9, duration: buffer)
         #expect(!speaking)
-        #expect(!gate.isSpeaking(at: 0.9))
+        #expect(!gate.isSpeaking(at: 1.9))
     }
 
     @Test func silenceBeforeSpeakingIsNotSpeech() {
@@ -60,8 +77,7 @@ struct VoiceFollowGateTests {
 
     /// A click or a knock on the desk fills one buffer: not enough to light the indicator.
     @Test func aClickIsNotSpeech() {
-        var gate = VoiceFollowGate()
-        _ = feed(&gate, level: -70, from: 0, for: 1)
+        var gate = quietRoom()
         let click = gate.hear(level: -15, at: 1 + buffer, duration: buffer)
         let after = gate.hear(level: -70, at: 1 + 2 * buffer, duration: buffer)
         #expect(!click)
@@ -107,12 +123,12 @@ struct VoiceFollowGateTests {
     }
 
     @Test func quietTimeCountsFromTheLastLoudBuffer() {
-        var gate = VoiceFollowGate()
-        _ = feed(&gate, level: -20, from: 0, for: 0.2)
-        let last = gate.quietTime(at: 0.2)
+        var gate = quietRoom()
+        _ = feed(&gate, level: -20, from: 1, for: 0.2)
+        let last = gate.quietTime(at: 1.2)
         #expect(last != nil && last! < 0.03)
-        #expect(abs((gate.quietTime(at: 0.5) ?? 0) - 0.3) < 0.03)
-        #expect(gate.quietTime(at: 2) == nil)
+        #expect(abs((gate.quietTime(at: 1.5) ?? 0) - 0.3) < 0.03)
+        #expect(gate.quietTime(at: 3) == nil)
     }
 
     @Test func normalizedLevelMapsToZeroToOne() {

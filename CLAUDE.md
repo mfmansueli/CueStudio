@@ -37,5 +37,9 @@ ao protótipo do Claude Design). Atualize-o junto com a UI.
 - Idiomas: `LOCALIZATION.md` (três idiomas independentes, terminologia, RTL). Todo texto novo entra
   nos 15 idiomas dos String Catalogs. O teste de fala de verdade é opt-in:
   `TEST_RUNNER_CUE_SPEECH_E2E=1 xcodebuild … -only-testing:"Cue StudioTests/VoiceFollowingSpeechTests" test`,
-  num aparelho: o Simulator lista os idiomas mas não roda o reconhecimento de fala.
+  num aparelho: o Simulator lista os idiomas mas não roda o reconhecimento de fala. Com o mesmo
+  flag, `-only-testing:"Cue StudioTests/VoiceFollowingLatencyTests"` mede a latência do Voice
+  Following no aparelho (uma gravação tocada em tempo real pelo caminho de áudio da câmera: voz →
+  indicador, palavra → texto p50/p95, quanto o texto se adianta, sala com ruído) e
+  `VoiceFollowingSpeechTests/availabilityOnThisDevice()` lista os 15 idiomas sem baixar nada.
 - Compras são testadas localmente com `CueStudio.storekit` (selecionado no scheme).

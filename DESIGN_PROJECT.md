@@ -510,13 +510,14 @@ O protótipo simulava várias coisas; o app implementa de verdade ou deixa de fo
   à velocidade). O Speech não sabe dizer que idioma alguém está falando antes de reconhecer, então
   não há "auto-detect" falado.
 - **Voice follow, tempo de resposta:** o reconhecimento começa a se preparar junto com a câmera
-  (não depois dela), o modelo fica carregado um tempo depois de parar (`modelRetention: .lingering`)
-  e uma mesma sessão de reconhecimento atravessa a troca Selfie ⇄ Studio (só muda o microfone de
+  (não depois dela) e uma mesma sessão de reconhecimento atravessa a troca Selfie ⇄ Studio (só muda o microfone de
   onde ouve; um conversor por formato de áudio). O nível de cada buffer chega na hora em que o
   buffer chega (`AudioBufferTap` → `AudioLevelSample`, sem o polling de 80 ms de antes), e o
   `VoiceFollowGate` decide no main actor: −40 dBFS numa sala silenciosa como sempre; numa sala com
   ruído constante, aprende o ruído (o mais baixo de cada meio segundo nos últimos 3 s) e exige 10 dB
-  acima dele; um estalo de um buffer só (menos de 30 ms) não conta; 0,6 s de hangover. Nada roda
+  acima dele (nada conta antes de ouvir a sala por até meio segundo depois de começar a escutar);
+  um estalo de um buffer só (menos de 30 ms) não conta; 0,6 s de hangover. O medidor pula junto
+  com o início e o fim da voz e, no meio, redesenha no máximo 20 vezes por segundo. Nada roda
   no thread de áudio além de medir o nível, copiar e converter o buffer. O cancelamento de eco da
   Apple (voice processing) foi avaliado e deixado de fora: o prompter não toca som enquanto ouve, e
   o processamento mudaria o som gravado e o microfone externo. `VoiceFollowMetrics` mede no aparelho

@@ -4,6 +4,7 @@
 //
 
 import AVFAudio
+import os
 import Speech
 
 /// Voice follow's ears: on-device transcription with the Speech framework (`SpeechAnalyzer`), in the
@@ -14,8 +15,9 @@ import Speech
 /// `DictationTranscriber`, from the same framework, takes the languages (and devices) it doesn't.
 /// The first time a language is used its model may need a download, of that language only, and
 /// the prompter says so while it runs; until it's ready, Voice follow falls back to the microphone
-/// level. A model stays loaded for a while after a stop (`lingering`), so turning Voice Following
-/// off and on again, or reopening the prompter, doesn't load it again.
+/// level. The model is kept only while in use: keeping it loaded after a stop (`lingering`) was
+/// measured on an iPhone 18 Pro Max and restarted no faster (the system keeps it warm), so the
+/// original retention stays.
 @MainActor
 @Observable
 final class SpeechRecognitionManager: SpeechTranscribing {
@@ -62,7 +64,7 @@ final class SpeechRecognitionManager: SpeechTranscribing {
             guard current == generation else { return .cancelled }
             // Installed but unable to take audio: the model can't run here (the simulator).
             guard let format else { return .unavailable(.noRecognition) }
-            let analyzer = SpeechAnalyzer(modules: modules, options: SpeechAnalyzer.Options(priority: .userInitiated, modelRetention: .lingering))
+            let analyzer = SpeechAnalyzer(modules: modules, options: SpeechAnalyzer.Options(priority: .userInitiated, modelRetention: .whileInUse))
             let context = AnalysisContext()
             context.contextualStrings[.general] = Self.vocabulary(in: script)
             try? await analyzer.setContext(context)
@@ -80,6 +82,9 @@ final class SpeechRecognitionManager: SpeechTranscribing {
             let feed = AudioFeed(analyzerFormat: format, input: input)
             return .listening(SpeechTranscription(audio: { feed.append($0) }, transcripts: transcripts), route)
         } catch {
+            #if DEBUG
+            Logger(subsystem: "studio.cue", category: "VoiceFollowing").error("Recognition couldn't start: \(error, privacy: .public)")
+            #endif
             return current == generation ? .unavailable(.couldNotStart) : .cancelled
         }
     }
@@ -174,6 +179,9 @@ final class SpeechRecognitionManager: SpeechTranscribing {
                 }
             } catch {
                 // Cancelled or failed: the stream ends, and Voice follow falls back to the level.
+                #if DEBUG
+                Logger(subsystem: "studio.cue", category: "VoiceFollowing").error("Recognition ended: \(error, privacy: .public)")
+                #endif
             }
             output.finish()
         }

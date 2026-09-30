@@ -85,13 +85,19 @@ struct PrompterViewModelVoiceTests {
         await settle(5)
     }
 
-    /// Display frames for `seconds`, with a buffer at `level` each frame when given.
-    private func run(_ scenario: Scenario, for seconds: Double, level: Float? = nil) async {
+    /// Display frames for `seconds`, with a microphone buffer each frame: at `level`, or a quiet
+    /// room.
+    private func run(_ scenario: Scenario, for seconds: Double, level: Float = -70) async {
         for _ in 0..<Int((seconds * 60).rounded()) {
             scenario.clock.now += 1.0 / 60
-            if let level { await hear(scenario, level) }
+            await hear(scenario, level)
             scenario.viewModel.advance(by: 1.0 / 60)
         }
+    }
+
+    /// The room heard for a moment, as it is by the time anyone reads.
+    private func learnTheRoom(_ scenario: Scenario) async {
+        await run(scenario, for: 0.6)
     }
 
     // MARK: - Level as it arrives
@@ -101,6 +107,7 @@ struct PrompterViewModelVoiceTests {
         let scenario = makeScenario(mode: mode)
         defer { scenario.defaults.tearDown() }
         await startListening(scenario)
+        await learnTheRoom(scenario)
         #expect(!scenario.viewModel.isVoiceActive)
         await hear(scenario, -20, duration: 0.05)
         #expect(scenario.viewModel.isVoiceActive)
@@ -199,6 +206,7 @@ struct PrompterViewModelVoiceTests {
         await scenario.viewModel.appear()
         await waitUntil { scenario.viewModel.speechUnavailable != nil }
         #expect(scenario.viewModel.voiceFollowStatus == .scrollsWhileTalking)
+        await learnTheRoom(scenario)
         scenario.viewModel.play()
         await run(scenario, for: 0.5, level: -20)
         #expect(scenario.viewModel.engine.offset > 0)
@@ -234,6 +242,7 @@ struct PrompterViewModelVoiceTests {
         viewModel.play()
         scenario.speech.say("one two")
         await settle()
+        await learnTheRoom(scenario)
         await run(scenario, for: 0.3, level: -20)
         await run(scenario, for: 2, level: -70)
         let held = viewModel.engine.offset
@@ -251,6 +260,7 @@ struct PrompterViewModelVoiceTests {
         viewModel.play()
         scenario.speech.say("one two three four five six seven")
         await settle()
+        await learnTheRoom(scenario)
         await run(scenario, for: 3, level: -20)
         #expect(!viewModel.engine.isAtEnd)
         #expect(viewModel.isPlaying)

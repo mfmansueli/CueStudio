@@ -103,9 +103,11 @@ struct VoiceFollowingLatencyTests {
         viewModel.scrollModeChanged()
         viewModel.setScrollMode(.voice)
         viewModel.scrollModeChanged()
-        _ = try await waitUntil(timeout: 30) { viewModel.followsSpeech }
+        let restarted = try await waitUntil(timeout: 30) { viewModel.followsSpeech }
         let restart = uptime - restartStart
+        let restartProblem = viewModel.speechUnavailable?.message ?? "none"
         await viewModel.disappear()
+        #expect(restarted, "\(language.rawValue) didn't listen again after Voice Following was turned off and on: \(restartProblem)")
 
         let callbacks = run.callbacks.sorted()
         print(
@@ -116,6 +118,40 @@ struct VoiceFollowingLatencyTests {
         )
         print("VOICE METRICS \(language.rawValue) \(tuning.rawValue) · \(appMetrics)")
         #expect(metrics.reached >= 0.8, "\(language.rawValue) reached \(metrics.reached) of the words")
+    }
+
+    /// Voice Following turned off and on again and again (or the prompter opened and closed) in one
+    /// run of the app: every new recognition still hears the words.
+    @Test func everyNewRecognitionStillListens() async throws {
+        let script = try #require(VoiceFollowingSpeechTests.scripts[.english])
+        let fixture = try await makeFixture(.english, script: script, lead: 0.2)
+        var results: [String] = []
+        for round in 1...12 {
+            let speech = SpeechRecognitionManager()
+            guard case .listening(let transcription, _) = await speech.start(script: script, language: .language(.english)) else {
+                results.append("\(round): didn't start")
+                continue
+            }
+            let heard = Heard()
+            let listener = Task { @MainActor in
+                for await text in transcription.transcripts { heard.text = text }
+            }
+            // Two seconds of the recording, fed four times faster than real time.
+            for item in fixture.buffers.prefix(Int(2 / fixture.bufferDuration)) {
+                transcription.audio(item.buffer)
+                try await Task.sleep(for: .milliseconds(5))
+            }
+            _ = try await waitUntil(timeout: 5) { heard.text.contains { $0.isLetter } }
+            results.append("\(round): \(heard.text.contains { $0.isLetter } ? "heard" : "nothing")")
+            listener.cancel()
+            speech.stop()
+        }
+        print("VOICE SESSIONS \(results.joined(separator: " · "))")
+        #expect(results.allSatisfy { $0.hasSuffix("heard") })
+    }
+
+    private final class Heard {
+        var text = ""
     }
 
     /// The format recognition asks for, and whether knowing the microphone's own format would
@@ -170,11 +206,21 @@ struct VoiceFollowingLatencyTests {
 
     // MARK: - Running
 
+    /// Word times of each recording, heard once: every transcription is one more recognizer, and
+    /// the system allows only a few at a time.
+    private static var timedWords: [CueLanguage: [TimedWord]] = [:]
+
     private func makeFixture(_ language: CueLanguage, script: String, lead: TimeInterval = 1.5, noise: Float? = nil) async throws -> SpeechFixture {
         final class BundleToken {}
-        let url = try #require(Bundle(for: BundleToken.self).url(forResource: "speech-\(language.rawValue)", withExtension: "m4a"))
-        let transcript = try await CaptionTranscriber.transcript(in: url, language: .language(language), script: script)
-        return try SpeechFixture.load(language, script: script, lead: lead, noise: noise, timedWords: transcript.words)
+        let words: [TimedWord]
+        if let heard = Self.timedWords[language] {
+            words = heard
+        } else {
+            let url = try #require(Bundle(for: BundleToken.self).url(forResource: "speech-\(language.rawValue)", withExtension: "m4a"))
+            words = try await CaptionTranscriber.transcript(in: url, language: .language(language), script: script).words
+            Self.timedWords[language] = words
+        }
+        return try SpeechFixture.load(language, script: script, lead: lead, noise: noise, timedWords: words)
     }
 
     /// The prompter as the app builds it, with the real speech recognition and a camera that

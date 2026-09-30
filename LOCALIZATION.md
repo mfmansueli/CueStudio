@@ -157,7 +157,18 @@ speed while the creator talks, in that language's place, never in another one.
 | Hindi | hi-IN | `DictationTranscriber` first when the script is in Devanagari: `SpeechTranscriber` writes Hindi in Latin letters, which can't match the script | 100% (0% through `SpeechTranscriber`) |
 
 Which locales a given iPhone has depends on the model, the iOS version and Apple Intelligence
-settings; the table is what the framework offers, and the app checks each time. The iOS Simulator
+settings; the table is what the framework offers, and the app checks each time.
+
+On an **iPhone 18 Pro Max (iOS 27)**, 30 Sep 2026 (`VoiceFollowingSpeechTests/availabilityOnThisDevice`,
+nothing downloaded): English and Portuguese (Brazil) ready; the other 13 offered and downloaded
+the first time they're used; none unavailable. `SpeechTranscriber` for en, es, pt-BR, fr, de, it,
+ja, ko, zh-CN and hi (Hindi in Devanagari still goes to `DictationTranscriber` first, see above);
+`DictationTranscriber` for id, ar, tr, th and vi. Word-by-word following was measured on that
+iPhone in English and Portuguese only (`VoiceFollowingLatencyTests`); Japanese, Chinese and Thai
+are covered by the recordings on a Mac and by the tokenizer tests with partial results cut
+mid-word (`MultilingualVoiceFollowTests`), not yet by a reading on a device, so they shouldn't be
+advertised as fully supported until that runs (`TEST_RUNNER_CUE_SPEECH_E2E=1`, downloads each
+model). The iOS Simulator
 lists the dictation locales but can't run either recognizer (no audio format), so Voice Following
 shows "This iPhone can't recognize speech" there; real recognition is tested on a device or on a
 Mac.
