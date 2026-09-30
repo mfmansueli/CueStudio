@@ -45,6 +45,13 @@ struct CaptionsToolView: View {
             .fixedSize()
             .accessibilityIdentifier("edit.captionsToggle")
             Spacer(minLength: 4)
+            Button { viewModel.showsTranslation = true } label: {
+                Image(systemName: "character.bubble")
+            }
+            .buttonStyle(.cueIcon(viewModel.edit.captionDisplay == .original ? .surface : .tinted, diameter: Metrics.compactButtonHeight))
+            .disabled(viewModel.edit.captions.isEmpty)
+            .accessibilityLabel(Text("Translate captions"))
+            .accessibilityIdentifier("edit.captionsTranslateButton")
             languageMenu
             Button {
                 viewModel.makeCaptions()

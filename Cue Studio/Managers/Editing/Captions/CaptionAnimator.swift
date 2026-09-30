@@ -16,12 +16,13 @@ nonisolated enum CaptionAnimator {
     /// Letters shown together in Groups for languages written without spaces.
     static let unspacedGroupLength = 6
 
+    /// `offset`: where a translation shows next to the original (see `TextOverlay.caption`).
     static func overlays(
-        for cue: CaptionCue, look: TextLook, position: CaptionPosition, frame: CGSize, animation: CaptionAnimation
+        for cue: CaptionCue, look: TextLook, position: CaptionPosition, frame: CGSize, animation: CaptionAnimation, offset: Double = 0
     ) -> [FrameOverlay] {
         let span = cue.span
         guard animation.followsWords, cue.hasWordTiming, cue.words.count > 1 else {
-            guard var line = overlay(cue.text, look: look, position: position, span: span, frame: frame) else { return [] }
+            guard var line = overlay(cue.text, look: look, position: position, span: span, frame: frame, offset: offset) else { return [] }
             if animation == .fade { line.fade = CaptionAnimation.fadeDuration }
             return [line]
         }
@@ -82,9 +83,10 @@ nonisolated enum CaptionAnimator {
     }
 
     private static func overlay(
-        _ line: String, look: TextLook, position: CaptionPosition, span: TimeSpan, frame: CGSize, emphasis: WordEmphasis? = nil
+        _ line: String, look: TextLook, position: CaptionPosition, span: TimeSpan, frame: CGSize,
+        emphasis: WordEmphasis? = nil, offset: Double = 0
     ) -> FrameOverlay? {
-        let text = TextOverlay.caption(line, look: look, position: position, span: span)
+        let text = TextOverlay.caption(line, look: look, position: position, span: span, offset: offset)
         let fraction = TextOverlayRenderer.captionWidthFraction
         let size = TextOverlayRenderer.size(for: text, frameWidth: frame.width, widthFraction: fraction)
         guard size.width > 0, size.height > 0 else { return nil }

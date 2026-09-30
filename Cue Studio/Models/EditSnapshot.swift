@@ -31,10 +31,14 @@ nonisolated struct EditSnapshot: Codable, Hashable, Sendable {
     var sources: [ClipSource]?
     /// How caption lines come and go; nil in steps saved before animations.
     var captionAnimation: CaptionAnimation?
+    /// Translations and which captions show; nil in steps saved before translations.
+    var captionTranslations: [CaptionTranslation]?
+    var captionDisplay: CaptionDisplay?
 
     private enum CodingKeys: String, CodingKey {
         case timeline, suggestions, texts, media, voiceOvers, cover, creatorStyle, captionStyle, filter
         case textLook, textPreset, captionLook, captionPreset, captions, sources, captionAnimation
+        case captionTranslations, captionDisplay
     }
 }
 
@@ -46,7 +50,8 @@ nonisolated extension EditSnapshot {
             voiceOvers: edit.voiceOvers, cover: edit.cover, creatorStyle: edit.creatorStyle,
             captionStyle: edit.captionStyle, filter: edit.filter,
             textLook: edit.textLook, textPreset: edit.textPreset, captionLook: edit.captionLook, captionPreset: edit.captionPreset,
-            captions: edit.captions, sources: edit.sources, captionAnimation: edit.captionAnimation
+            captions: edit.captions, sources: edit.sources, captionAnimation: edit.captionAnimation,
+            captionTranslations: edit.captionTranslations, captionDisplay: edit.captionDisplay
         )
     }
 
@@ -69,7 +74,9 @@ nonisolated extension EditSnapshot {
             captionPreset: try? container.decodeIfPresent(TypePreset.self, forKey: .captionPreset),
             captions: try? container.decodeIfPresent([CaptionCue].self, forKey: .captions),
             sources: try? container.decodeIfPresent([ClipSource].self, forKey: .sources),
-            captionAnimation: try? container.decodeIfPresent(CaptionAnimation.self, forKey: .captionAnimation)
+            captionAnimation: try? container.decodeIfPresent(CaptionAnimation.self, forKey: .captionAnimation),
+            captionTranslations: try? container.decodeIfPresent([CaptionTranslation].self, forKey: .captionTranslations),
+            captionDisplay: try? container.decodeIfPresent(CaptionDisplay.self, forKey: .captionDisplay)
         )
     }
 }

@@ -24,6 +24,9 @@ final class TakeReviewViewModel {
     /// "Share to".
     var showsShareSheet = false
     var burnsInCaptions = false
+    /// Which captions this export burns in: the original, a translation or both (one export per
+    /// language).
+    var exportCaptionDisplay: CaptionDisplay = .original
     /// Why the video being exported has no captions although they were asked for.
     @ObservationIgnored private var captionNotice: String?
     private(set) var quality: ExportQuality = .hd1080
@@ -240,6 +243,11 @@ final class TakeReviewViewModel {
         }
     }
 
+    /// The take's caption translations, for the export's caption language.
+    var captionTranslations: [CaptionTranslation] {
+        take?.edit?.captionTranslations ?? []
+    }
+
     /// Captions to burn in come from the edit; a take never captioned gets them now from its voice
     /// (not saved). When none can be made, the video exports without them and `captionNotice` says
     /// why: nothing is ever spread over the take in their place.
@@ -248,6 +256,7 @@ final class TakeReviewViewModel {
         guard burnsInCaptions else { return take.edit }
         var edit = take.edit ?? TakeEdit(sourceDuration: take.duration, aspect: take.aspect)
         edit.showsCaptions = true
+        edit.captionDisplay = edit.captionTranslations.contains { $0.language == exportCaptionDisplay.language } ? exportCaptionDisplay : .original
         if edit.captions.isEmpty {
             let script = library.script(id: take.scriptID)
             let language = edit.captionLanguage.map(SpeechLanguageRequest.language) ?? speechLanguageFor(script)

@@ -72,11 +72,13 @@ nonisolated struct TextOverlay: Codable, Hashable, Identifiable, Sendable {
 
     /// A caption line drawn with `look` at `position`: captions and texts go through the same
     /// renderer, so a preset looks the same on both.
-    static func caption(_ line: String, look: TextLook, position: CaptionPosition, span: TimeSpan) -> TextOverlay {
+    /// `offset` moves it from its position (a fraction of the frame, down when positive): where a
+    /// translation shows next to the original.
+    static func caption(_ line: String, look: TextLook, position: CaptionPosition, span: TimeSpan, offset: Double = 0) -> TextOverlay {
         var overlay = TextOverlay(role: .subtitle, look: look, preset: nil, span: span)
         overlay.text = line
         overlay.size = min(max(TextLook.captionBaseSize * look.sizeScale, sizeRange.lowerBound), sizeRange.upperBound)
-        overlay.center = OverlayPoint(x: 0.5, y: position.verticalFraction)
+        overlay.center = OverlayPoint(x: 0.5, y: position.verticalFraction + offset)
         return overlay
     }
 

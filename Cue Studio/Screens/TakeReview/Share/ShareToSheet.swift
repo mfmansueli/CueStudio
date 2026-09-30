@@ -129,6 +129,19 @@ struct ShareToSheet: View {
                 .padding(.horizontal, 16)
                 .frame(minHeight: 52)
                 .accessibilityIdentifier("share.captionsToggle")
+            if viewModel.burnsInCaptions, !viewModel.captionTranslations.isEmpty {
+                // One export per language: pick which captions this one carries.
+                Picker("Captions", selection: $viewModel.exportCaptionDisplay) {
+                    Text("Original").tag(CaptionDisplay.original)
+                    ForEach(viewModel.captionTranslations) { translation in
+                        Text(verbatim: translation.language.nativeName).tag(CaptionDisplay.translation(translation.language))
+                        Text("Both · \(translation.language.nativeName)").tag(CaptionDisplay.bilingual(translation.language))
+                    }
+                }
+                .padding(.horizontal, 16)
+                .frame(minHeight: 52)
+                .accessibilityIdentifier("share.captionLanguage")
+            }
             if viewModel.hasCover {
                 HStack {
                     VStack(alignment: .leading, spacing: 2) {

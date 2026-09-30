@@ -54,6 +54,10 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
     var captionPosition: CaptionPosition = .bottom
     /// How lines come and go; `.line` (a still line) for edits made before animations.
     var captionAnimation: CaptionAnimation = .line
+    /// The captions in other languages, apart from the original lines.
+    var captionTranslations: [CaptionTranslation] = []
+    /// Which captions show and export.
+    var captionDisplay: CaptionDisplay = .original
     /// Timed to the original recording.
     var captions: [CaptionCue] = []
     /// What speech recognition heard, word by word, before any correction; nil until captions are
@@ -104,12 +108,28 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
 
     /// `editedCaptions`, each with the line it comes from (a copy of a piece shows the same line
     /// again, under another identity).
-    var editedCaptionInstances: [(line: CaptionCue, cueID: UUID)] {
+    var editedCaptionInstances: [(line: CaptionCue, cueID: UUID)] { editedInstances(of: captions) }
+
+    /// The captions that show (`captionDisplay`), timed to the edit: the main lines (the original
+    /// or a translation) and, in bilingual, the translation to show with them.
+    var shownCaptions: (main: [CaptionCue], second: [CaptionCue]) {
+        let translation = captionDisplay.language.flatMap { language in captionTranslations.first { $0.language == language } }
+        guard let translation else { return (editedCaptions, []) }
+        let translated = editedInstances(of: translation.lines.map(\.cue)).map(\.line)
+        switch captionDisplay {
+        case .original: return (editedCaptions, [])
+        case .translation: return (translated, [])
+        case .bilingual: return (editedCaptions, translated)
+        }
+    }
+
+    /// Lines timed to the edit, each with the line it comes from.
+    func editedInstances(of lines: [CaptionCue]) -> [(line: CaptionCue, cueID: UUID)] {
         guard timeline.isArranged else {
-            return captions.compactMap { cue in Self.mapped(cue, in: timeline, piece: nil).map { ($0, cue.id) } }
+            return lines.compactMap { cue in Self.mapped(cue, in: timeline, piece: nil).map { ($0, cue.id) } }
         }
         var result: [(line: CaptionCue, cueID: UUID)] = []
-        for cue in captions {
+        for cue in lines {
             var first = true
             for index in timeline.segments.indices where timeline.segments[index].sourceID == cue.sourceID {
                 guard timeline.segments[index].span.overlaps(cue.span), var line = Self.mapped(cue, in: timeline, piece: index) else { continue }
@@ -255,7 +275,7 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
     private enum CodingKeys: String, CodingKey {
         case timeline, sources, suggestions, cleanUpAnalyzed, volume, enhancesVoice, reducesNoise, exposure, contrast, warmth, filter
         case aspect, cropOffset, showsCaptions, captionStyle, captionLook, captionPreset, captionPosition, captions
-        case captionTranscript, sourceTranscripts, captionLanguage, captionAnimation
+        case captionTranscript, sourceTranscripts, captionLanguage, captionAnimation, captionTranslations, captionDisplay
         case texts, media, voiceOvers, creatorStyle, textLook, textPreset, cover
     }
 
@@ -294,6 +314,8 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
         sourceTranscripts = (try? container.decodeIfPresent([CaptionTranscript].self, forKey: .sourceTranscripts)) ?? []
         captionLanguage = try? container.decodeIfPresent(CueLanguage.self, forKey: .captionLanguage)
         captionAnimation = (try? container.decodeIfPresent(CaptionAnimation.self, forKey: .captionAnimation)) ?? .line
+        captionTranslations = (try? container.decodeIfPresent([CaptionTranslation].self, forKey: .captionTranslations)) ?? []
+        captionDisplay = (try? container.decodeIfPresent(CaptionDisplay.self, forKey: .captionDisplay)) ?? .original
         // Added later: edits saved before have none, and a damaged one loses only that part.
         texts = (try? container.decodeIfPresent([TextOverlay].self, forKey: .texts)) ?? []
         media = (try? container.decodeIfPresent([MediaOverlay].self, forKey: .media)) ?? []

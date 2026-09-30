@@ -83,6 +83,9 @@ struct QuickEditView: View {
         .sheet(isPresented: $viewModel.showsClips) {
             ClipsSheet(viewModel: viewModel)
         }
+        .sheet(isPresented: $viewModel.showsTranslation) {
+            CaptionTranslationSheet(viewModel: viewModel)
+        }
         .onChange(of: scenePhase) { _, phase in
             if phase != .active { viewModel.pauseAndKeepDraft() }
         }

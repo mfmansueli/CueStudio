@@ -40,9 +40,19 @@ nonisolated enum TextOverlayRenderer {
     /// Captions drawn with a type look (a preset or "My style"), each line while it is said, at
     /// `position`, as `animation` shows them: the same drawing as a text's, made when it shows.
     static func captions(
-        _ cues: [CaptionCue], look: TextLook, position: CaptionPosition, frame: CGSize, animation: CaptionAnimation = .line
+        _ cues: [CaptionCue], look: TextLook, position: CaptionPosition, frame: CGSize, animation: CaptionAnimation = .line,
+        offset: Double = 0
     ) -> [FrameOverlay] {
-        cues.flatMap { CaptionAnimator.overlays(for: $0, look: look, position: position, frame: frame, animation: animation) }
+        cues.flatMap { CaptionAnimator.overlays(for: $0, look: look, position: position, frame: frame, animation: animation, offset: offset) }
+    }
+
+    /// A translation shown with the original: smaller, just under it (over it at the bottom of
+    /// the frame, so it stays clear of the platforms' buttons), a still line.
+    static func secondCaptions(_ cues: [CaptionCue], look: TextLook, position: CaptionPosition, frame: CGSize) -> [FrameOverlay] {
+        var smaller = look
+        smaller.sizeScale = look.sizeScale * 0.8
+        let offset = position == .bottom ? -0.07 : 0.07
+        return captions(cues, look: smaller, position: position, frame: frame, animation: .line, offset: offset)
     }
 
     /// The text's box on a frame `frameWidth` wide (background and room for the shadow included).

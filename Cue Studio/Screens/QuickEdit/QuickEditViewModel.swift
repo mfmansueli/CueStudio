@@ -80,6 +80,12 @@ final class QuickEditViewModel {
     var editingCaptionID: UUID?
     /// The Clips sheet (the montage's sections) is open.
     var showsClips = false
+    /// The Translate sheet is open.
+    var showsTranslation = false
+    /// Translating the captions (see `QuickEditViewModel+Translation`).
+    var translationState: TranslationState = .idle
+    /// The translation the view asks the system for; nil when none is wanted.
+    var translationRequest: TranslationRequest?
     @ObservationIgnored var captionTask: Task<Void, Never>?
     /// The captions request whose result is still wanted: an older one finishing late is dropped.
     @ObservationIgnored var captionRequest: UUID?
@@ -132,6 +138,7 @@ final class QuickEditViewModel {
     let mediaImporter: EditMediaImporting
     let recorder: VoiceOverRecording
     let styles: TextStyleStoring
+    let translations: TranslationAvailabilityChecking
     /// The library of takes (a montage adds others from it).
     let takes: TakeLibraryService
     private let drafts: QuickEditDraftStoring
@@ -155,10 +162,12 @@ final class QuickEditViewModel {
         take: Take, takes: TakeLibraryService, library: ScriptLibraryService, editing: TakeEditing,
         drafts: QuickEditDraftStoring, toast: ToastService, player: EditPlayback? = nil,
         mediaImporter: EditMediaImporting? = nil, recorder: VoiceOverRecording? = nil, styles: TextStyleStoring? = nil,
+        translations: TranslationAvailabilityChecking = AppleTranslationAvailability(),
         speechLanguage: @escaping (Script?) -> SpeechLanguageRequest = SpeechLanguageRequest.script
     ) {
         self.take = take
         self.styles = styles ?? TextStyleStore()
+        self.translations = translations
         myStyle = self.styles.myStyle
         speechLanguageFor = speechLanguage
         self.mediaImporter = mediaImporter ?? EditMediaImporter()
@@ -664,6 +673,8 @@ final class QuickEditViewModel {
         if let captions = step.captions { edit.captions = captions }
         if let sources = step.sources { edit.sources = sources }
         if let animation = step.captionAnimation { edit.captionAnimation = animation }
+        if let translations = step.captionTranslations { edit.captionTranslations = translations }
+        if let display = step.captionDisplay { edit.captionDisplay = display }
     }
 
     // MARK: - Adjust
