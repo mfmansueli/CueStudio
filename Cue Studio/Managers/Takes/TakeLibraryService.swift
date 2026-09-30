@@ -84,6 +84,7 @@ final class TakeLibraryService {
             aspect: camera.aspect,
             platform: script?.platform
         )
+        take.scriptReference = script
         if let background, background.isActive {
             var edit = TakeEdit(sourceDuration: duration, aspect: camera.aspect)
             edit.setBackground(background, for: nil)
@@ -111,6 +112,23 @@ final class TakeLibraryService {
         takes[index].edit = edit
         takes[index].duration = edit.editedDuration
         takes[index].isEdited = true
+        persist()
+    }
+
+    /// Recognition is source data, not a destructive edit. Repeated exports and editor sessions
+    /// reuse it without changing the timeline, caption visibility, or the Edited mark.
+    func cacheCaptions(_ lines: [CaptionCue], transcript: CaptionTranscript, for id: UUID) {
+        guard let index = takes.firstIndex(where: { $0.id == id }) else { return }
+        var edit = takes[index].edit ?? TakeEdit(sourceDuration: takes[index].duration, aspect: takes[index].aspect)
+        guard edit.captions.isEmpty else { return }
+        if takes[index].edit == nil {
+            edit.captionCollection?.safeMargins = CaptionSafeArea.margins(for: takes[index], aspect: edit.aspect)
+            edit.voiceEnhancement = .off
+            edit.enhancesVoice = false
+        }
+        edit.captions = lines
+        edit.captionTranscript = transcript
+        takes[index].edit = edit
         persist()
     }
 

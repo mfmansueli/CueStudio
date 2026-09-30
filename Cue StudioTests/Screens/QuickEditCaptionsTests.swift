@@ -80,6 +80,28 @@ struct QuickEditCaptionsTests {
 
     // MARK: - Making captions
 
+    @Test func newStylesAndAdjustmentsDoNotTranscribeAndUndoTogether() async {
+        let scenario = await makeScenario()
+        let viewModel = scenario.viewModel
+        let initial = viewModel.edit.captionCollection
+        viewModel.setCaptionTheme(.pop)
+        #expect(viewModel.edit.captionCollection?.theme == .pop)
+        #expect(scenario.editor.captionScript == nil)
+        viewModel.undo()
+        #expect(viewModel.edit.captionCollection == initial)
+        viewModel.setCaptionTheme(.clean)
+        #expect(viewModel.edit.captionCollection?.followsWords == false)
+        viewModel.updateCaptionSettings {
+            $0.sizeScale = 1.2
+            $0.accent = .peach
+        }
+        #expect(scenario.editor.captionScript == nil)
+        viewModel.resetCaptionTheme()
+        var expected = CaptionSettings(theme: .clean)
+        expected.safeMargins = viewModel.captionSafeMargins
+        #expect(viewModel.edit.captionCollection == expected)
+    }
+
     @Test func captionsComeFromTheVoiceAsOneUndoStep() async {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
@@ -111,6 +133,7 @@ struct QuickEditCaptionsTests {
         await finish(viewModel)
         let lines = viewModel.edit.captions
         editor.captionOutcome = .noSpeech
+        viewModel.setCaptionLanguage(.portugueseBrazil) // A different language cannot reuse English recognition.
         viewModel.makeCaptions()
         await finish(viewModel)
         #expect(viewModel.captionState == .noSpeech)
@@ -173,6 +196,20 @@ struct QuickEditCaptionsTests {
         #expect(viewModel.captionState == .cancelled)
     }
 
+    @Test func turningCaptionsOffCancelsGenerationAndNeverReenablesThem() async {
+        let editor = FakeTakeEditor()
+        editor.captionDelay = .seconds(5)
+        let scenario = await makeScenario(editor: editor)
+        let viewModel = scenario.viewModel
+        viewModel.makeCaptions()
+        #expect(viewModel.captionState.isWorking)
+        await viewModel.setShowsCaptions(false)
+        await finish(viewModel)
+        #expect(!viewModel.edit.showsCaptions)
+        #expect(viewModel.edit.captions.isEmpty)
+        #expect(viewModel.captionState == .cancelled)
+    }
+
     @Test func changingTheLanguageStopsListeningInTheOldOne() async {
         let editor = FakeTakeEditor()
         let scenario = await makeScenario(editor: editor)
@@ -202,7 +239,7 @@ struct QuickEditCaptionsTests {
 
         viewModel.makeCaptions(replacingRevised: true)
         await finish(viewModel)
-        #expect(editor.captionRequests == 2)
+        #expect(editor.captionRequests == 1) // Regroup the saved recognition, don't listen again.
         #expect(viewModel.edit.captions[0].text == "Okay, real talk.")
     }
 
@@ -216,7 +253,8 @@ struct QuickEditCaptionsTests {
         scenario.viewModel.setCaptionLanguage(nil)
         scenario.viewModel.makeCaptions(replacingRevised: true)
         await finish(scenario.viewModel)
-        #expect(editor.captionLanguage == scenario.viewModel.speechLanguage)
+        #expect(scenario.viewModel.edit.captionTranscript?.languageCode == "en")
+        #expect(editor.captionRequests == 1) // The fake returned English; automatic reuses that result.
     }
 
     // MARK: - Correcting
@@ -287,9 +325,10 @@ struct QuickEditCaptionsTests {
         var timeline = viewModel.edit.timeline
         timeline.remove([TimeSpan(start: 0.32, end: 0.63)])
         viewModel.commit(timeline)
-        let line = viewModel.edit.editedCaptions[0]
-        #expect(line.text == "Okay, talk.")
-        #expect(line.id == viewModel.edit.captions[0].id)
+        let lines = viewModel.edit.editedCaptions
+        #expect(lines.map(\.text) == ["Okay,", "talk."])
+        #expect(lines[0].id == viewModel.edit.captions[0].id)
+        #expect(lines[0].end <= lines[1].start)
         #expect(viewModel.edit.captions[0].text == "Okay, real talk.")
     }
 }

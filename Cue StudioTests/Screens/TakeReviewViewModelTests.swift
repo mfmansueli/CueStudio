@@ -153,7 +153,7 @@ struct TakeReviewViewModelTests {
         #expect(scenario.exporter.exports.isEmpty)
     }
 
-    @Test func burnInCaptionsWritesThemFromTheScript() async {
+    @Test func burnInCaptionsUsesTheVoiceAndCachesItWithoutMarkingAnEdit() async {
         let scenario = makeScenario(tier: .subscriber)
         defer { scenario.defaults.tearDown() }
         scenario.viewModel.burnsInCaptions = true
@@ -161,10 +161,29 @@ struct TakeReviewViewModelTests {
         let options = scenario.exporter.exports.first
         #expect(options?.burnsInCaptions == true)
         #expect(options?.edit?.showsCaptions == true)
+        #expect(options?.edit?.voiceProcessing.isNeeded == false)
         #expect(options?.edit?.captions == scenario.editor.captions)
         #expect(scenario.editor.captionScript == "Okay, real talk.")
-        // The captions are for this export only; the take isn't edited.
-        #expect(scenario.viewModel.take?.edit == nil)
+        #expect(scenario.viewModel.take?.edit?.captions == scenario.editor.captions)
+        #expect(scenario.viewModel.take?.edit?.captionTranscript != nil)
+        #expect(scenario.viewModel.take?.isEdited == false)
+        await scenario.viewModel.share(to: .tiktok)
+        #expect(scenario.editor.captionRequests == 1)
+    }
+
+    @Test func exportDefaultsFollowSavedCaptionVisibility() {
+        var take = TestData.take(scriptID: nil)
+        var edit = TakeEdit(sourceDuration: take.duration, aspect: .portrait)
+        edit.showsCaptions = true
+        take.edit = edit
+        let shown = makeScenario(tier: .subscriber, take: take)
+        defer { shown.defaults.tearDown() }
+        #expect(shown.viewModel.burnsInCaptions)
+        edit.showsCaptions = false
+        take.edit = edit
+        let hidden = makeScenario(tier: .subscriber, take: take)
+        defer { hidden.defaults.tearDown() }
+        #expect(!hidden.viewModel.burnsInCaptions)
     }
 
     @Test func burnInCaptionsKeepsTheEditsCaptions() async {

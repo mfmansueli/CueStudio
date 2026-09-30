@@ -6,14 +6,19 @@
 import CoreText
 import SwiftUI
 
-/// Prompter typefaces. Lexend, Atkinson Hyperlegible and Source Serif 4 are bundled (OFL, see
-/// Fonts/); rounded uses the system design. Sizes are fixed because the prompter has its own slider.
+/// Bundled typefaces (OFL, see Fonts/), registered once for prompter and video renderers.
+/// Prompter helpers retain their original fonts; their own slider controls the fixed sizes.
 enum CueStudioFont {
     private static let bundledFiles = [
         "Lexend-Variable",
         "AtkinsonHyperlegible-Regular",
         "AtkinsonHyperlegible-Bold",
         "SourceSerif4-Variable",
+        "SpaceGrotesk-Variable",
+        "Anton-Regular",
+        "Inter-Variable",
+        "Poppins-ExtraBold",
+        "Manrope-Variable",
     ]
 
     /// Registers the bundled fonts for this process. Call once at launch.

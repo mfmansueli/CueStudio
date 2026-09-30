@@ -34,23 +34,10 @@ struct StyleToolView: View {
 
     private var content: some View {
         VStack(alignment: .leading, spacing: 10) {
-            LazyVGrid(columns: [GridItem(.flexible(), spacing: 8), GridItem(.flexible(), spacing: 8)], spacing: 8) {
-                if let mine = viewModel.myStyle {
-                    card(
-                        look: mine, title: String(localized: "My style"), detail: String(localized: "Saved from your text"),
-                        isSelected: false, identifier: "edit.style.mine"
-                    ) {
-                        viewModel.applyMyStyle(to: scope, keepingCustomizations: keepsChanges)
-                    }
-                }
-                ForEach(TypePreset.allCases) { preset in
-                    card(
-                        look: preset.look(for: scope.use), title: preset.label, detail: preset.detail,
-                        isSelected: viewModel.currentPreset(for: scope) == preset, identifier: "edit.style.\(preset.rawValue)"
-                    ) {
-                        viewModel.applyPreset(preset, to: scope, keepingCustomizations: keepsChanges)
-                    }
-                }
+            if scope == .allCaptions {
+                CaptionsToolView(viewModel: viewModel)
+            } else {
+                presetGrid
             }
             if scope == .allTexts, viewModel.edit.texts.contains(where: { !$0.customized.isEmpty }) {
                 Toggle(isOn: $keepsChanges) {
@@ -78,6 +65,27 @@ struct StyleToolView: View {
                 .foregroundStyle(Palette.ink.opacity(0.45))
         }
         .padding(.bottom, 8)
+    }
+
+    private var presetGrid: some View {
+        LazyVGrid(columns: [GridItem(.flexible(), spacing: 8), GridItem(.flexible(), spacing: 8)], spacing: 8) {
+            if let mine = viewModel.myStyle {
+                card(
+                    look: mine, title: String(localized: "My style"), detail: String(localized: "Saved from your text"),
+                    isSelected: false, identifier: "edit.style.mine"
+                ) {
+                    viewModel.applyMyStyle(to: scope, keepingCustomizations: keepsChanges)
+                }
+            }
+            ForEach(TypePreset.allCases) { preset in
+                card(
+                    look: preset.look(for: scope.use), title: preset.label, detail: preset.detail,
+                    isSelected: viewModel.currentPreset(for: scope) == preset, identifier: "edit.style.\(preset.rawValue)"
+                ) {
+                    viewModel.applyPreset(preset, to: scope, keepingCustomizations: keepsChanges)
+                }
+            }
+        }
     }
 
     private var scopes: some View {

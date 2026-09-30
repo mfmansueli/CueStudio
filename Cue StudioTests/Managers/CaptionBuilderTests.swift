@@ -95,7 +95,8 @@ struct CaptionBuilderTests {
     @Test func runsWithSeveralWordsShareTheirTimeAsAnEstimate() {
         let words = CaptionTranscriber.spread("hey there", start: 1, end: 2)
         #expect(words.map(\.text) == ["hey", "there"])
-        #expect(words.map(\.start) == [1, 1.5])
+        #expect(words.map(\.start) == [1, 1])
+        #expect(words.map(\.end) == [2, 2])
         #expect(words.allSatisfy { $0.isEstimated })
         let single = CaptionTranscriber.spread("hey", start: 1, end: 2)
         #expect(single.first?.isEstimated == false)

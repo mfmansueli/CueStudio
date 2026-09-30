@@ -120,11 +120,37 @@ final class QuickCreatorUITests: XCTestCase {
         app.buttons["edit.style.impact"].tap()
         XCTAssertTrue(app.staticTexts["Impact on every text"].waitForExistence(timeout: 5))
         app.buttons["edit.styleScope.allCaptions"].tap()
-        app.buttons["edit.style.pop"].tap()
+        element(app, "edit.captionCatalog").swipeLeft()
+        app.buttons["edit.captionPreset.pop"].tap()
         XCTAssertTrue(app.staticTexts["Pop on the captions"].waitForExistence(timeout: 5))
-        XCTAssertTrue(app.buttons["edit.style.pop"].isSelected)
+        XCTAssertTrue(app.buttons["edit.captionPreset.pop"].isSelected)
         app.buttons["edit.doneButton"].tap()
         XCTAssertTrue(app.staticTexts["EDITED"].waitForExistence(timeout: 5))
+    }
+
+    func testCaptionCollectionHasOnlyFiveStylesAndKeepsTheChoiceWhenReopened() {
+        let app = openQuickEdit()
+        app.buttons["edit.category.captions"].tap()
+        XCTAssertTrue(app.buttons["edit.captionPreset.cue"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.buttons["edit.captionPreset.cue"].isSelected)
+        XCTAssertFalse(app.buttons["edit.captionPreset.soft"].exists)
+        for name in ["cue", "impact", "clean", "pop", "editorial"] {
+            let button = app.buttons["edit.captionPreset.\(name)"]
+            if !button.isHittable { element(app, "edit.captionCatalog").swipeLeft() }
+            XCTAssertTrue(button.isHittable)
+            button.tap()
+            XCTAssertTrue(button.isSelected)
+        }
+        app.buttons["edit.captionSettings"].tap()
+        XCTAssertTrue(element(app, "edit.captionSize").waitForExistence(timeout: 5))
+        XCTAssertTrue(app.buttons["edit.captionReset"].exists)
+        app.swipeDown()
+        app.buttons["edit.doneButton"].tap()
+        XCTAssertTrue(app.buttons["review.editButton"].waitForExistence(timeout: 5))
+        app.buttons["review.editButton"].tap()
+        app.buttons["edit.category.captions"].tap()
+        element(app, "edit.captionCatalog").swipeLeft()
+        XCTAssertTrue(app.buttons["edit.captionPreset.editorial"].isSelected)
     }
 
     func testAFrameBecomesTheCover() {

@@ -26,7 +26,11 @@ extension QuickEditViewModel {
     /// Shows or hides the captions; the first time they show, they are made from the take.
     func setShowsCaptions(_ shows: Bool) async {
         edit.showsCaptions = shows
-        guard shows, edit.captions.isEmpty, !captionState.isWorking else { return }
+        if !shows {
+            cancelCaptions() // A late recognition result must not turn captions back on.
+            return
+        }
+        guard edit.captions.isEmpty, !captionState.isWorking else { return }
         makeCaptions()
         await captionTask?.value
     }
@@ -43,7 +47,6 @@ extension QuickEditViewModel {
         let request = UUID()
         captionRequest = request
         let recordings = captionRecordings
-        let language = captionSpeechLanguage
         captionState = .working(.preparing)
         // Progress arrives from the recognizer's own tasks; it only lands while this request is on.
         let report: @Sendable (CaptionProgress) -> Void = { [weak self] progress in
@@ -53,9 +56,17 @@ extension QuickEditViewModel {
             var outcomes: [(source: UUID?, outcome: CaptionOutcome)] = []
             do {
                 for recording in recordings {
-                    let outcome = try await editing.captions(
-                        forVideoAt: recording.url, script: recording.script, language: language, progress: report
-                    )
+                    try Task.checkCancellation()
+                    let outcome: CaptionOutcome
+                    if let cached = transcript(of: recording.source), canReuse(cached, for: recording.language) {
+                        let lines = CaptionBuilder.captions(heard: cached.words, script: recording.script,
+                                                          language: CueLanguage.matching(languageCode: cached.languageCode))
+                        outcome = .captions(lines, transcript: cached)
+                    } else {
+                        outcome = try await editing.captions(
+                            forVideoAt: recording.url, script: recording.script, language: recording.language, progress: report
+                        )
+                    }
                     outcomes.append((recording.source, outcome))
                 }
             } catch is CancellationError {
@@ -71,15 +82,23 @@ extension QuickEditViewModel {
 
     /// What captions listen to: the take (with its script), then each other recording the montage
     /// plays (a library take with its own script, a video with none).
-    private var captionRecordings: [(source: UUID?, url: URL, script: String)] {
-        var result: [(source: UUID?, url: URL, script: String)] = [(nil, videoURL, scriptText)]
+    private var captionRecordings: [(source: UUID?, url: URL, script: String, language: SpeechLanguageRequest)] {
+        var result: [(source: UUID?, url: URL, script: String, language: SpeechLanguageRequest)] = [(nil, videoURL, scriptText, captionSpeechLanguage)]
         for source in edit.sources where edit.timeline.segments.contains(where: { $0.sourceID == source.id }) {
-            let script = source.takeID
+            let script = source.scriptReference ?? source.takeID
                 .flatMap { id in takes.takes.first { $0.id == id } }
-                .flatMap { library.script(id: $0.scriptID)?.text } ?? ""
-            result.append((source.id, EditMediaFiles.url(for: source.fileName), script))
+                .flatMap { $0.captionScript(current: library.script(id: $0.scriptID)) }
+            let language = edit.captionLanguage.map(SpeechLanguageRequest.language) ?? speechLanguageFor(script)
+            result.append((source.id, EditMediaFiles.url(for: source.fileName), script?.text ?? "", language))
         }
         return result
+    }
+
+    private func canReuse(_ transcript: CaptionTranscript, for language: SpeechLanguageRequest) -> Bool {
+        switch language {
+        case .language(let chosen): CueLanguage.matching(languageCode: transcript.languageCode) == chosen
+        case .detect: true
+        }
     }
 
     /// Stops listening. The lines stay as they were.
@@ -120,6 +139,43 @@ extension QuickEditViewModel {
     func setCaptionPreset(_ preset: TypePreset) async {
         applyPreset(preset, to: .allCaptions)
         if !edit.showsCaptions { await setShowsCaptions(true) }
+    }
+
+    /// Selecting a look never enables transcription. Generation has its own explicit control.
+    func setCaptionTheme(_ theme: CaptionTheme) {
+        change { snapshot in
+            var settings = CaptionSettings(theme: theme)
+            settings.center = snapshot.captionCollection?.center
+            settings.safeMargins = snapshot.captionCollection?.safeMargins ?? captionSafeMargins
+            snapshot.captionCollection = settings
+        }
+        toast.show(String(localized: "\(theme.label) on the captions"))
+    }
+
+    func updateCaptionSettings(_ update: (inout CaptionSettings) -> Void) {
+        change { snapshot in
+            guard var settings = snapshot.captionCollection else { return }
+            update(&settings)
+            snapshot.captionCollection = settings
+        }
+    }
+
+    func resetCaptionTheme() {
+        guard let theme = edit.captionCollection?.theme else { return }
+        change { snapshot in
+            var settings = CaptionSettings(theme: theme)
+            settings.safeMargins = snapshot.captionCollection?.safeMargins ?? captionSafeMargins
+            snapshot.captionCollection = settings
+            snapshot.captionPosition = .bottom
+        }
+    }
+
+    var captionSafeMargins: SafeZoneMargins {
+        Self.captionSafeMargins(for: take, aspect: edit.aspect)
+    }
+
+    static func captionSafeMargins(for take: Take, aspect: AspectRatio) -> SafeZoneMargins {
+        CaptionSafeArea.margins(for: take, aspect: aspect)
     }
 
     private func receiveCaptionProgress(_ progress: CaptionProgress, for request: UUID) {

@@ -78,6 +78,7 @@ final class TakeReviewViewModel {
         self.profile = profile
         self.preferences = preferences
         self.toast = toast
+        burnsInCaptions = takes.take(id: takeID)?.edit?.showsCaptions ?? false
     }
 
     // MARK: - Reading
@@ -249,22 +250,31 @@ final class TakeReviewViewModel {
     }
 
     /// Captions to burn in come from the edit; a take never captioned gets them now from its voice
-    /// (not saved). When none can be made, the video exports without them and `captionNotice` says
+    /// (cached as source data). When none can be made, the video exports without them and `captionNotice` says
     /// why: nothing is ever spread over the take in their place.
     private func editForExport(_ take: Take) async -> TakeEdit? {
         captionNotice = nil
         guard burnsInCaptions else { return take.edit }
         var edit = take.edit ?? TakeEdit(sourceDuration: take.duration, aspect: take.aspect)
+        if take.edit == nil {
+            edit.captionCollection?.safeMargins = CaptionSafeArea.margins(for: take, aspect: edit.aspect)
+            // Captions on a never-edited take don't opt it into the editor's default voice effect.
+            edit.voiceEnhancement = .off
+            edit.enhancesVoice = false
+        }
         edit.showsCaptions = true
         edit.captionDisplay = edit.captionTranslations.contains { $0.language == exportCaptionDisplay.language } ? exportCaptionDisplay : .original
         if edit.captions.isEmpty {
-            let script = library.script(id: take.scriptID)
+            let script = take.captionScript(current: library.script(id: take.scriptID))
             let language = edit.captionLanguage.map(SpeechLanguageRequest.language) ?? speechLanguageFor(script)
             let outcome = try? await editing.captions(
                 forVideoAt: takes.videoURL(for: take), script: script?.text ?? "", language: language, progress: { _ in }
             )
             switch outcome {
-            case .captions(let lines, _)?: edit.captions = lines
+            case .captions(let lines, let transcript)?:
+                edit.captions = lines
+                edit.captionTranscript = transcript
+                takes.cacheCaptions(lines, transcript: transcript, for: take.id)
             case .unavailable(let reason)?: captionNotice = reason.captionMessage
             case .noSpeech?, .noAudio?: captionNotice = String(localized: "No speech to caption, so the video has none.")
             case nil: captionNotice = String(localized: "Couldn’t listen to this take, so the video has no captions.")

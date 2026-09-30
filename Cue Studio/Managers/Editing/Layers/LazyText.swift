@@ -13,6 +13,8 @@ nonisolated struct LazyText: Sendable {
     let emphasis: WordEmphasis?
     let frameWidth: CGFloat
     let widthFraction: CGFloat
+    var collection: CaptionSettings?
+    var frameHeight: CGFloat = 0
 
     /// Names this drawing in the compositor's cache.
     var key: String {

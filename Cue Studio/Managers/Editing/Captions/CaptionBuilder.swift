@@ -54,6 +54,8 @@ nonisolated enum CaptionBuilder {
             current = []
         }
         for word in words where !word.text.isEmpty {
+            if let last = current.last, last.isEstimated,
+               last.start != word.start || last.end != word.end { flush() }
             if let last = current.last, word.start - last.end > pauseBreak { flush() }
             current.append(word)
             let texts = current.map(\.text)
@@ -61,7 +63,7 @@ nonisolated enum CaptionBuilder {
             let isFull = unspaced
                 ? CaptionText.length(texts) >= maximumUnspacedCharacters
                 : current.count >= maximumWords || CaptionText.length(texts) >= maximumCharacters
-            if isFull || endsSentence(word.text) { flush() }
+            if !word.isEstimated, isFull || endsSentence(word.text) { flush() }
         }
         flush()
         return cues

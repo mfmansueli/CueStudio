@@ -38,11 +38,16 @@ nonisolated struct EditSnapshot: Codable, Hashable, Sendable {
     var music: [MusicClip]?
     /// Backgrounds per recording; nil in steps saved before them.
     var backgrounds: [RecordingBackground]?
+    var captionCollection: CaptionSettings?
+    /// Distinguishes an old undo step from a new step explicitly restoring a legacy look.
+    var captionCollectionVersion: Int?
+    var captionPosition: CaptionPosition?
 
     private enum CodingKeys: String, CodingKey {
         case timeline, suggestions, texts, media, voiceOvers, cover, creatorStyle, captionStyle, filter
         case textLook, textPreset, captionLook, captionPreset, captions, sources, captionAnimation
         case captionTranslations, captionDisplay, music, backgrounds
+        case captionCollection, captionCollectionVersion, captionPosition
     }
 }
 
@@ -56,7 +61,8 @@ nonisolated extension EditSnapshot {
             textLook: edit.textLook, textPreset: edit.textPreset, captionLook: edit.captionLook, captionPreset: edit.captionPreset,
             captions: edit.captions, sources: edit.sources, captionAnimation: edit.captionAnimation,
             captionTranslations: edit.captionTranslations, captionDisplay: edit.captionDisplay, music: edit.music,
-            backgrounds: edit.backgrounds
+            backgrounds: edit.backgrounds, captionCollection: edit.captionCollection,
+            captionCollectionVersion: 1, captionPosition: edit.captionPosition
         )
     }
 
@@ -83,7 +89,10 @@ nonisolated extension EditSnapshot {
             captionTranslations: try? container.decodeIfPresent([CaptionTranslation].self, forKey: .captionTranslations),
             captionDisplay: try? container.decodeIfPresent(CaptionDisplay.self, forKey: .captionDisplay),
             music: try? container.decodeIfPresent([MusicClip].self, forKey: .music),
-            backgrounds: try? container.decodeIfPresent([RecordingBackground].self, forKey: .backgrounds)
+            backgrounds: try? container.decodeIfPresent([RecordingBackground].self, forKey: .backgrounds),
+            captionCollection: try container.decodeIfPresent(CaptionSettings.self, forKey: .captionCollection),
+            captionCollectionVersion: try container.decodeIfPresent(Int.self, forKey: .captionCollectionVersion),
+            captionPosition: try container.decodeIfPresent(CaptionPosition.self, forKey: .captionPosition)
         )
     }
 }

@@ -145,26 +145,7 @@ nonisolated struct EditedComposition: @unchecked Sendable {
         }
         var overlays = TextOverlayRenderer.overlays(edit.editedTexts(in: edit.timeline), frame: crop.size)
         if options.burnsInCaptions, edit.showsCaptions {
-            let shown = edit.shownCaptions
-            if let look = edit.captionLook {
-                // A translation shown alone has no word times (they aren't tied to the voice): its
-                // lines show whole, fading when the animation fades.
-                let mainAnimation: CaptionAnimation = if case .translation = edit.captionDisplay {
-                    edit.captionAnimation == .fade ? .fade : .line
-                } else {
-                    edit.captionAnimation
-                }
-                overlays += TextOverlayRenderer.captions(
-                    shown.main, look: look, position: edit.captionPosition, frame: crop.size, animation: mainAnimation
-                )
-                overlays += TextOverlayRenderer.secondCaptions(shown.second, look: look, position: edit.captionPosition, frame: crop.size)
-            } else {
-                // Edits made before type presets keep their caption style.
-                overlays += OverlayRenderer.captions(shown.main, style: edit.captionStyle, position: edit.captionPosition, frame: crop.size)
-                overlays += TextOverlayRenderer.secondCaptions(
-                    shown.second, look: TypePreset.cue.look(for: .caption), position: edit.captionPosition, frame: crop.size
-                )
-            }
+            overlays += captionOverlays(for: edit, frame: crop.size)
         }
         let (mediaTracks, mediaFrames, mediaSounds) = await placeMedia(of: edit, frame: crop.size, in: composition, duration: cursor)
         let videoMedia = mediaFrames.filter(\.isVideo).map(\.span)

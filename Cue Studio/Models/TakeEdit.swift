@@ -55,6 +55,8 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
 
     // MARK: Captions
     var showsCaptions = false
+    /// New projects use Cue; decoding an absent key preserves the old renderer and appearance.
+    var captionCollection: CaptionSettings? = CaptionSettings()
     /// How captions look in edits made before type presets; `captionLook` replaces it once set.
     var captionStyle: CaptionStyle = .bold
     /// The captions' type (a preset or "My style"); nil draws them in `captionStyle`.
@@ -135,62 +137,7 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
 
     /// Lines timed to the edit, each with the line it comes from.
     func editedInstances(of lines: [CaptionCue]) -> [(line: CaptionCue, cueID: UUID)] {
-        guard timeline.isArranged else {
-            return lines.compactMap { cue in Self.mapped(cue, in: timeline, piece: nil).map { ($0, cue.id) } }
-        }
-        var result: [(line: CaptionCue, cueID: UUID)] = []
-        for cue in lines {
-            var first = true
-            for index in timeline.segments.indices where timeline.segments[index].sourceID == cue.sourceID {
-                guard timeline.segments[index].span.overlaps(cue.span), var line = Self.mapped(cue, in: timeline, piece: index) else { continue }
-                if !first { line.id = Self.instanceID(cue.id, timeline.segments[index].id) }
-                first = false
-                result.append((line, cue.id))
-            }
-        }
-        return result.sorted { $0.line.start < $1.line.start }
-    }
-
-    /// `cue` in the edit: in the whole timeline, or only in the piece at `piece` (arranged).
-    private static func mapped(_ cue: CaptionCue, in timeline: EditTimeline, piece: Int?) -> CaptionCue? {
-        func edited(_ time: TimeInterval) -> TimeInterval? {
-            guard let piece else { return timeline.editedTime(forSource: time) }
-            let segment = timeline.segments[piece]
-            guard segment.sourceStart - 0.000_001 <= time, time <= segment.sourceEnd + 0.000_001 else { return nil }
-            return timeline.editedStart(ofSegmentAt: piece) + (time - segment.sourceStart) / segment.speed
-        }
-        if !cue.words.isEmpty {
-            let words = cue.words.compactMap { word -> CaptionWord? in
-                // A word shows when its middle is still in the edit.
-                let middle = (word.start + word.end) / 2
-                guard let at = edited(middle), let start = edited(word.start) ?? Optional(at) else { return nil }
-                let end = edited(max(word.start, word.end - 0.01)).map { $0 + 0.01 } ?? at
-                return CaptionWord(text: word.text, start: start, end: max(start, end), isEstimated: word.isEstimated)
-            }
-            guard let first = words.first, let last = words.last else { return nil }
-            var mapped = cue
-            mapped.words = words
-            if words.count != cue.words.count { mapped.text = CaptionText.joined(words.map(\.text)) }
-            mapped.start = first.start
-            mapped.end = max(first.start + CaptionCue.minimumDuration, last.end)
-            return mapped
-        }
-        guard let start = edited(cue.start) ?? edited(cue.end - 0.05) else { return nil }
-        let end = edited(cue.end - 0.05).map { $0 + 0.05 } ?? start + (cue.end - cue.start)
-        var mapped = cue
-        mapped.start = start
-        mapped.end = max(start + CaptionCue.minimumDuration, end)
-        return mapped
-    }
-
-    /// A stable identity for a line shown again in a copy of a piece.
-    private static func instanceID(_ cue: UUID, _ piece: UUID) -> UUID {
-        let a = cue.uuid
-        let b = piece.uuid
-        return UUID(uuid: (
-            a.0 ^ b.0, a.1 ^ b.1, a.2 ^ b.2, a.3 ^ b.3, a.4 ^ b.4, a.5 ^ b.5, a.6 ^ b.6, a.7 ^ b.7,
-            a.8 ^ b.8, a.9 ^ b.9, a.10 ^ b.10, a.11 ^ b.11, a.12 ^ b.12, a.13 ^ b.13, a.14 ^ b.14, a.15 ^ b.15
-        ))
+        CaptionTimelineMapping.instances(lines, in: timeline)
     }
 
     /// Whether anything visible or audible differs from the original.
@@ -320,6 +267,7 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
         audioVersion, voiceEnhancement, noiseReduction, music, backgrounds, exposure, contrast, warmth, filter
         case aspect, cropOffset, showsCaptions, captionStyle, captionLook, captionPreset, captionPosition, captions
         case captionTranscript, sourceTranscripts, captionLanguage, captionAnimation, captionTranslations, captionDisplay
+        case captionCollection
         case texts, media, voiceOvers, creatorStyle, textLook, textPreset, cover
     }
 
@@ -355,6 +303,7 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
         aspect = try container.decode(AspectRatio.self, forKey: .aspect)
         cropOffset = try container.decodeIfPresent(Double.self, forKey: .cropOffset) ?? 0
         showsCaptions = try container.decodeIfPresent(Bool.self, forKey: .showsCaptions) ?? false
+        captionCollection = try container.decodeIfPresent(CaptionSettings.self, forKey: .captionCollection)
         captionStyle = try container.decodeIfPresent(CaptionStyle.self, forKey: .captionStyle) ?? .bold
         captionLook = try? container.decodeIfPresent(TextLook.self, forKey: .captionLook)
         captionPreset = try? container.decodeIfPresent(TypePreset.self, forKey: .captionPreset)

@@ -86,6 +86,7 @@ extension QuickEditViewModel {
             toast.show(String(localized: "\(name) on every text"))
         case .allCaptions:
             change { snapshot in
+                snapshot.captionCollection = nil
                 snapshot.captionLook = look
                 snapshot.captionPreset = preset
             }
