@@ -173,6 +173,13 @@ Full screen: Prompter (Selfie ⇄ Studio → Revisão do take) · Paywall · Rem
 Sheets do prompter: Display · Câmera · Audio Input · This take · Remote Control · Create for · scripts
 ```
 
+A lista de Scripts usa seleção por `UUID`: o cartão "Last edited" e as linhas comuns atribuem
+`script.id` como tag ao `NavigationLink`. A mesma identidade de seleção evita que a abertura
+do cartão acrescente duas rotas `ScriptRoute` para o mesmo roteiro. Salvar um roteiro pode
+promovê-lo a esse cartão sem mudar a hierarquia: Scripts → detalhe, e um único toque no voltar
+nativo retorna à lista. Leitura/edição continuam na mesma tela; Studio/Record continuam em
+`fullScreenCover`, sem adicionar destinos à pilha de Scripts.
+
 ## 5.1 Regras por plataforma
 
 Todos os números por plataforma vêm de `SupportFiles/PlatformRules.json` (`PlatformRules` +

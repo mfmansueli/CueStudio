@@ -69,6 +69,124 @@ final class ScriptLibraryUITests: XCTestCase {
         XCTAssertTrue(app.buttons["editor.doneButton"].waitForExistence(timeout: 5))
         app.buttons["editor.cancelButton"].tap()
         XCTAssertTrue(edit.waitForExistence(timeout: 5))
+        app.navigationBars.buttons.firstMatch.tap()
+        XCTAssertTrue(app.buttons["scripts.promptCard"].waitForExistence(timeout: 5))
+        XCTAssertFalse(edit.exists)
+    }
+
+    func testExistingScriptReturnsToScriptsWithOneBackTap() {
+        let app = CueApp.launch(seeded: true)
+        let row = app.staticTexts["Unboxing the Lumen desk lamp"]
+        XCTAssertTrue(row.waitForExistence(timeout: 15))
+        row.tap()
+        XCTAssertTrue(app.buttons["detail.editButton"].waitForExistence(timeout: 5))
+        let back = app.navigationBars.buttons.firstMatch
+        XCTAssertTrue(back.waitForExistence(timeout: 5), app.navigationBars.debugDescription)
+        back.tap()
+        XCTAssertTrue(app.buttons["scripts.promptCard"].waitForExistence(timeout: 5))
+        XCTAssertFalse(app.buttons["detail.editButton"].exists)
+    }
+
+    func testHeroScriptReturnsToScriptsWithOneBackTap() {
+        let app = CueApp.launch(seeded: true)
+        let hero = app.staticTexts["3 morning habits that changed my life"]
+        XCTAssertTrue(hero.waitForExistence(timeout: 15))
+        hero.tap()
+        XCTAssertTrue(app.buttons["detail.editButton"].waitForExistence(timeout: 5))
+        let back = app.navigationBars.buttons.firstMatch
+        XCTAssertTrue(back.waitForExistence(timeout: 5), app.navigationBars.debugDescription)
+        back.tap()
+        XCTAssertTrue(app.buttons["scripts.promptCard"].waitForExistence(timeout: 5))
+        XCTAssertFalse(app.buttons["detail.editButton"].exists)
+        app.buttons["scripts.selectButton"].tap()
+        let deleteSelection = app.buttons["scripts.deleteSelectionButton"]
+        XCTAssertTrue(deleteSelection.waitForExistence(timeout: 5))
+        app.buttons["scripts.selectButton"].tap()
+        XCTAssertTrue(app.buttons["scripts.promptCard"].exists)
+    }
+
+    func testSavingAnExistingScriptAndReopeningItStillNeedsOnlyOneBackTap() {
+        let app = CueApp.launch(seeded: true)
+        let title = "Unboxing the Lumen desk lamp"
+        let row = app.staticTexts[title]
+        XCTAssertTrue(row.waitForExistence(timeout: 15))
+        row.tap()
+        let edit = app.buttons["detail.editButton"]
+        XCTAssertTrue(edit.waitForExistence(timeout: 5))
+        edit.tap()
+        let text = app.textViews["editor.textEditor"]
+        XCTAssertTrue(text.waitForExistence(timeout: 5))
+        text.tap()
+        text.typeText(" Updated for navigation testing.")
+        app.buttons["editor.doneButton"].tap()
+        XCTAssertTrue(edit.waitForExistence(timeout: 5))
+        app.navigationBars.buttons.firstMatch.tap()
+        XCTAssertTrue(app.buttons["scripts.promptCard"].waitForExistence(timeout: 5))
+        XCTAssertFalse(edit.exists)
+
+        // Saving promotes this row to the hero, but must not create another detail destination.
+        app.staticTexts[title].tap()
+        XCTAssertTrue(edit.waitForExistence(timeout: 5))
+        app.navigationBars.buttons.firstMatch.tap()
+        XCTAssertTrue(app.buttons["scripts.promptCard"].waitForExistence(timeout: 5))
+        XCTAssertFalse(edit.exists)
+    }
+
+    func testDifferentScriptsAndRepeatedOpensDoNotAccumulateDetailScreens() {
+        let app = CueApp.launch(seeded: true)
+        for title in ["3 morning habits that changed my life", "Unboxing the Lumen desk lamp", "3 morning habits that changed my life"] {
+            let script = app.staticTexts[title]
+            XCTAssertTrue(script.waitForExistence(timeout: 15))
+            script.tap()
+            XCTAssertTrue(app.buttons["detail.editButton"].waitForExistence(timeout: 5))
+            XCTAssertTrue(app.staticTexts[title].exists)
+            app.navigationBars.buttons.firstMatch.tap()
+            XCTAssertTrue(app.buttons["scripts.promptCard"].waitForExistence(timeout: 5))
+            XCTAssertFalse(app.buttons["detail.editButton"].exists)
+        }
+    }
+
+    func testNewScriptAndItsReopenedDetailReturnWithOneBackTap() {
+        let app = CueApp.launch(seeded: true)
+        let plus = app.buttons["scripts.newButton"]
+        XCTAssertTrue(plus.waitForExistence(timeout: 15))
+        plus.tap()
+        let write = app.buttons["newScript.write"]
+        XCTAssertTrue(write.waitForExistence(timeout: 5))
+        write.tap()
+        let title = app.descendants(matching: .any)["editor.titleField"].firstMatch
+        XCTAssertTrue(title.waitForExistence(timeout: 5))
+        title.tap()
+        title.typeText("One-tap navigation script")
+        app.buttons["editor.doneButton"].tap()
+        XCTAssertTrue(app.buttons["detail.editButton"].waitForExistence(timeout: 5))
+        app.navigationBars.buttons.firstMatch.tap()
+        XCTAssertTrue(app.buttons["scripts.promptCard"].waitForExistence(timeout: 5))
+        XCTAssertFalse(app.buttons["detail.editButton"].exists)
+        app.staticTexts["One-tap navigation script"].tap()
+        XCTAssertTrue(app.buttons["detail.editButton"].waitForExistence(timeout: 5))
+        app.navigationBars.buttons.firstMatch.tap()
+        XCTAssertTrue(app.buttons["scripts.promptCard"].waitForExistence(timeout: 5))
+        XCTAssertFalse(app.buttons["detail.editButton"].exists)
+    }
+
+    func testStudioAndRecordReturnToTheSameDetailWithoutAddingAnotherRoute() {
+        let app = CueApp.launch(seeded: true)
+        for action in ["detail.studioButton", "detail.recordButton"] {
+            let hero = app.staticTexts["3 morning habits that changed my life"]
+            XCTAssertTrue(hero.waitForExistence(timeout: 15))
+            hero.tap()
+            let launch = app.buttons[action]
+            XCTAssertTrue(launch.waitForExistence(timeout: 5))
+            launch.tap()
+            let close = app.buttons["prompter.closeButton"]
+            XCTAssertTrue(close.waitForExistence(timeout: 10))
+            close.tap()
+            XCTAssertTrue(app.buttons["detail.editButton"].waitForExistence(timeout: 5))
+            app.navigationBars.buttons.firstMatch.tap()
+            XCTAssertTrue(app.buttons["scripts.promptCard"].waitForExistence(timeout: 5))
+            XCTAssertFalse(app.buttons["detail.editButton"].exists)
+        }
     }
 
     func testDestinationSheetChangesThePreset() {

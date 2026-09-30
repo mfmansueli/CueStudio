@@ -102,6 +102,9 @@ struct ScriptsView: View {
                         )
                     }
                     .navigationLinkIndicatorVisibility(.hidden)
+                    // Match the UUID selection type, just like the ordinary rows. Without this
+                    // tag List also infers a ScriptRoute selection and pushes the hero twice.
+                    .tag(hero.id)
                     .listRowInsets(EdgeInsets(top: 4, leading: Metrics.gutter, bottom: 4, trailing: Metrics.gutter))
                     .listRowBackground(Color.clear)
                     .contextMenu {
