@@ -246,12 +246,17 @@
 			name = SwiftLint;
 			shellPath = /bin/sh;
 			shellScript = (
+				"set -eu",
 				"# Zero violations: the build shows every one as a warning or error (see .swiftlint.yml).",
+				"# Keep PATH in sync with ci_scripts/ci_post_clone.sh; its exports do not carry over.",
 				"export PATH=\"/opt/homebrew/bin:/usr/local/bin:$PATH\"",
 				"if ! command -v swiftlint >/dev/null 2>&1; then",
-				"  echo \"error: SwiftLint is not installed. Run: brew install swiftlint\"",
+				"  echo \"error: SwiftLint was not found in PATH. Locally run: brew install swiftlint. In Xcode Cloud, check ci_scripts/ci_post_clone.sh logs.\"",
 				"  exit 1",
 				"fi",
+				"echo \"SwiftLint executable: $(command -v swiftlint)\"",
+				"echo \"SwiftLint version:\"",
+				"swiftlint version",
 				"cd \"$SRCROOT\" && swiftlint lint --quiet",
 				"",
 			);
