@@ -54,6 +54,7 @@ struct ScriptsView: View {
     private var content: some View {
         if library.hasLoaded && library.scripts.isEmpty {
             EmptyLibraryView(
+                animatesPromptBackground: animatesPromptBackground,
                 onPrompt: { presentation.present(.generateScript(.prompt)) },
                 onWrite: newBlankScript,
                 onImport: { presentation.present(.importScript) },
@@ -73,7 +74,7 @@ struct ScriptsView: View {
         return List(selection: $viewModel.selection) {
             Section {
                 VStack(spacing: 14) {
-                    PromptCard(base: Palette.surface, layout: .compact) {
+                    PromptCard(base: Palette.surface, layout: .compact, animatesBackground: animatesPromptBackground) {
                         presentation.present(.generateScript(.prompt))
                     }
                     .accessibilityIdentifier("scripts.promptCard")
@@ -245,6 +246,14 @@ struct ScriptsView: View {
     }
 
     // MARK: - Actions
+
+    /// Sheets can leave the home mounted underneath them; do not animate that covered card.
+    private var animatesPromptBackground: Bool {
+        presentation.selectedTab == .scripts && presentation.scriptsPath.isEmpty
+            && presentation.sheet == nil && presentation.prompter == nil
+            && !presentation.showsRemoteController && viewModel.shareTarget == nil
+            && viewModel.actionsTarget == nil && !viewModel.isNamingFolder
+    }
 
     private var actions: ScriptActions {
         ScriptActions(

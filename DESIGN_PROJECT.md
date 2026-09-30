@@ -588,6 +588,17 @@ O protótipo simulava várias coisas; o app implementa de verdade ou deixa de fo
 - **Prompt na home:** como no v9, a caixa de Prompt fica no topo de Scripts, acima da busca, e nunca
   some (filtro, busca ou seleção não a escondem). A busca da barra de navegação fica sempre acima do
   conteúdo, então a de Scripts é um `SearchField` logo abaixo da caixa.
+- **Luz do Prompt:** o mesmo `PromptCard` (home, biblioteca vazia e New script) mantém layout, campo,
+  borda e máscara de 26 pt. `AnimatedPromptBackground` combina a base original com duas luzes
+  radiais `#FFD60A` e uma sombra difusa, blur de 12 pt só no fundo e origens em ciclos de 16 e 19 s.
+  A luz principal percorre 48% da largura, com raio de 65% do lado maior; a sombra móvel marca a
+  passagem da luz sem aumentar a saturação. O wash fixo fica mais fraco para não esconder o movimento.
+  O efeito tem maior contraste: amarelo da marca com opacidade de 34% na luz principal e 13% na
+  secundária, contraposto à sombra preta móvel de 38%. A cápsula escura do campo permanece igual.
+  Um `TimelineView` limitado a 24 atualizações/s redesenha apenas o fundo; pausa sem saltar ao
+  retomar quando fora da área visível, em aba/tela encoberta ou com o app inativo. Reduce Motion
+  usa uma composição estática. O fundo não recebe toques nem aparece no VoiceOver; texto, botão,
+  cápsula escura e tokens de contraste permanecem os mesmos. O app continua só em modo escuro.
 - **Pastas:** o "+" agora abre New script, então pastas nascem em "Move to a new folder…" (menu do
   script, More e barra de seleção) e aparecem como chips depois dos destinos.
 - **Tab bar:** a pill flutuante do protótipo é a própria tab bar nativa de Liquid Glass. A aba

@@ -18,6 +18,7 @@ struct PromptCard: View {
     /// The card sits on the sheet (`surface`) or on the screen background, so its base follows.
     var base: Color = Palette.surface2
     var layout: Layout = .full
+    var animatesBackground = true
     let action: () -> Void
 
     var body: some View {
@@ -61,12 +62,8 @@ struct PromptCard: View {
             .padding(16)
             .frame(maxWidth: .infinity, alignment: .leading)
             .background {
-                shape.fill(base)
-                shape.fill(LinearGradient(
-                    stops: [.init(color: Palette.accWash, location: 0), .init(color: Palette.accWashFaint, location: 0.65)],
-                    startPoint: .topLeading,
-                    endPoint: .bottomTrailing
-                ))
+                AnimatedPromptBackground(base: base, isActive: animatesBackground)
+                    .clipShape(shape)
             }
             .overlay(shape.strokeBorder(Palette.accBorder, lineWidth: 0.5))
             .contentShape(shape)
