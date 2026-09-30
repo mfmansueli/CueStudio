@@ -204,7 +204,8 @@ final class QuickEditUITests: XCTestCase {
         app.buttons["edit.cancelButton"].tap()
         let edit = app.buttons["review.editButton"]
         XCTAssertTrue(edit.waitForExistence(timeout: 5))
-        XCTAssertFalse(app.staticTexts["EDITED"].exists)
+        // Cancel keeps a draft, not an edit: it comes back only through Edit. (This sample take
+        // was already edited, so its EDITED badge says nothing here.)
         edit.tap()
         XCTAssertTrue(app.staticTexts["Draft restored"].waitForExistence(timeout: 10))
         XCTAssertEqual(app.staticTexts["edit.durationChange"].label, "1:02 → 0:31")

@@ -10,6 +10,11 @@ import UIKit
 /// Small real videos behind sample takes, so UI tests can play, scrub, trim and cut in Quick
 /// edit. Each second has its own color, which makes cuts visible on the timeline. Silent and tiny
 /// (144 × 256 at 8 fps), written once at launch with `-uiTestSampleVideo`. Never shipped.
+///
+/// The frames are written uncompressed (about 70 MB a minute): the iOS 27 Simulator's H.264
+/// encoder stalls for good on about one write in four, which froze the launch until the test
+/// runner gave up, and it can't encode JPEG. Without an encoder the three sample videos take a
+/// couple of seconds, and AVFoundation plays, thumbnails and exports them like any other.
 enum SampleVideo {
     nonisolated private static let size = CGSize(width: 144, height: 256)
     nonisolated private static let framesPerSecond: Int32 = 8
@@ -34,9 +39,8 @@ enum SampleVideo {
 
     /// Blocks until the file is written: UI tests open it right after launch. The writing itself
     /// runs off the main actor, since appending waits for the writer to be ready. The frames go to
-    /// a separate file that only takes the real name once complete: the iOS 27 Simulator's H.264
-    /// encoder sometimes stalls, the test runner kills the app, and a half-written file under the
-    /// real name was taken as done by every later launch (a video that can't be opened).
+    /// a separate file that only takes the real name once complete, so a launch the test runner
+    /// cut short never leaves a half-written file that later launches would take as done.
     static func write(to url: URL, seconds: TimeInterval) {
         let partial = partialURL(for: url)
         try? FileManager.default.removeItem(at: partial)
@@ -60,11 +64,8 @@ enum SampleVideo {
 
     nonisolated private static func writeFrames(to url: URL, seconds: TimeInterval) async throws {
         let writer = try AVAssetWriter(outputURL: url, fileType: .mov)
-        let input = AVAssetWriterInput(mediaType: .video, outputSettings: [
-            AVVideoCodecKey: AVVideoCodecType.h264,
-            AVVideoWidthKey: Int(size.width),
-            AVVideoHeightKey: Int(size.height),
-        ])
+        // No output settings: the pixel buffers go into the file as they are, uncompressed.
+        let input = AVAssetWriterInput(mediaType: .video, outputSettings: nil)
         let attributes = CVPixelBufferCreationAttributes(
             pixelFormatType: CVPixelFormatType(rawValue: kCVPixelFormatType_32BGRA),
             size: CVImageSize(width: Int(size.width), height: Int(size.height))

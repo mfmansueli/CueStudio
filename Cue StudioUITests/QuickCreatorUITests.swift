@@ -77,7 +77,16 @@ final class QuickCreatorUITests: XCTestCase {
     func testTransitionsWithoutCutsPointToTrim() {
         let app = openQuickEdit()
         app.buttons["edit.category.polish"].tap()
-        app.buttons["edit.tool.transitions"].tap()
+        // The last tool in the row: the chips scroll sideways, so drag the row until it's on screen.
+        let transitions = app.buttons["edit.tool.transitions"]
+        XCTAssertTrue(transitions.waitForExistence(timeout: 5))
+        let origin = app.coordinate(withNormalizedOffset: .zero)
+        for _ in 0..<4 where transitions.frame.maxX > app.frame.maxX - 8 {
+            let row = transitions.frame.midY
+            origin.withOffset(CGVector(dx: app.frame.width * 0.8, dy: row))
+                .press(forDuration: 0.05, thenDragTo: origin.withOffset(CGVector(dx: app.frame.width * 0.2, dy: row)))
+        }
+        transitions.tap()
         let goToTrim = app.buttons["edit.transitions.goToTrim"]
         XCTAssertTrue(goToTrim.waitForExistence(timeout: 5))
         goToTrim.tap()

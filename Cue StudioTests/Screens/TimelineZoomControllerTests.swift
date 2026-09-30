@@ -47,7 +47,12 @@ struct TimelineZoomControllerTests {
         let zoom = makeController()
         zoom.glide(to: 16, keeping: 30, fromX: 100, toX: 170, in: layout, animated: true)
         #expect(zoom.targetZoom == 16)
-        try await Task.sleep(for: TimelineZoomController.glideDuration * 3)
+        // The glide runs on frames; a busy machine delivers them late, so wait for it to arrive.
+        let clock = ContinuousClock()
+        let deadline = clock.now + TimelineZoomController.glideDuration * 20
+        while abs(zoom.zoom - 16) >= 0.001, clock.now < deadline {
+            try await Task.sleep(for: .milliseconds(20))
+        }
         #expect(abs(zoom.zoom - 16) < 0.001)
         #expect(abs(x(of: 30, in: zoom) - 170) < 0.01)
     }
