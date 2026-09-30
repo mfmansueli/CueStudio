@@ -682,6 +682,13 @@ O protótipo simulava várias coisas; o app implementa de verdade ou deixa de fo
 
 ## 10. Do's & don'ts
 
+- **Áudio da prévia:** Review e Quick edit preparam a sessão `.playback` / `.moviePlayback`
+  antes de tocar, inclusive ao retomar: o modo silencioso do iPhone não silencia o vídeo.
+  A ativação é assíncrona e um Pause ou sair da tela cancela o início pendente. Durante uma
+  narração, o player continua mudo sem trocar a sessão de gravação; a câmera e o gravador
+  configuram a categoria de captura novamente ao iniciar. Volume e saída (alto-falante/fones)
+  continuam sendo os escolhidos no iPhone; não há reprodução em segundo plano adicionada.
+
 - ✅ Uma ação primária amarela por tela. ✅ Destino sempre visível com seu ponto colorido.
 - ✅ Cores, fontes e raios só dos tokens. ✅ Confirmações curtas em toast.
 - ❌ Valores hex, fontes ou raios soltos em `Screens/`. ❌ Prometer no paywall o que não existe.

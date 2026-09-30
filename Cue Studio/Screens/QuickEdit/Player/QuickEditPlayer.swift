@@ -37,6 +37,8 @@ final class QuickEditPlayer: EditPlayback {
     @ObservationIgnored let avPlayer = AVPlayer()
     @ObservationIgnored private let videoURL: URL
     @ObservationIgnored private let editing: TakeEditing
+    @ObservationIgnored private let audioSession: PlaybackAudioSession
+    @ObservationIgnored private var playbackTask: Task<Void, Never>?
     @ObservationIgnored private var edit: TakeEdit?
     /// What the current item (or the one being built) plays.
     @ObservationIgnored private var itemKey: ItemKey?
@@ -59,9 +61,10 @@ final class QuickEditPlayer: EditPlayback {
 
     private static let blankTimeline = EditTimeline(sourceDuration: 0)
 
-    init(videoURL: URL, editing: TakeEditing) {
+    init(videoURL: URL, editing: TakeEditing, audioSession: PlaybackAudioSession = PlaybackAudioManager()) {
         self.videoURL = videoURL
         self.editing = editing
+        self.audioSession = audioSession
         avPlayer.actionAtItemEnd = .pause
         timeObserver = avPlayer.addPeriodicTimeObserver(forInterval: CMTime(value: 1, timescale: 60), queue: .main) { [weak self] time in
             MainActor.assumeIsolated { self?.playerDidTick(time) }
@@ -95,6 +98,7 @@ final class QuickEditPlayer: EditPlayback {
             itemKey = key
             if !settles, avPlayer.currentItem != nil {
                 awaitsItem = true
+                playbackTask?.cancel()
                 avPlayer.pause()
             }
             rebuild(after: settles ? .milliseconds(250) : nil)
@@ -125,11 +129,13 @@ final class QuickEditPlayer: EditPlayback {
         } else if isSeeking || awaitsItem {
             resumesAfterSeek = true
         } else {
-            avPlayer.play()
+            startPlayback()
         }
     }
 
     func pause() {
+        playbackTask?.cancel()
+        playbackTask = nil
         resumesAfterSeek = false
         isPlaying = false
         avPlayer.pause()
@@ -160,6 +166,8 @@ final class QuickEditPlayer: EditPlayback {
     }
 
     func stop() {
+        playbackTask?.cancel()
+        playbackTask = nil
         buildTask?.cancel()
         generation += 1
         awaitsItem = false
@@ -175,6 +183,23 @@ final class QuickEditPlayer: EditPlayback {
     }
 
     // MARK: - Item
+
+    private func startPlayback() {
+        playbackTask?.cancel()
+        playbackTask = nil
+        // Voice-over records while this player runs silently. Do not replace its recording
+        // session with an output-only category, or the microphone would stop recording.
+        guard !isMuted else {
+            avPlayer.play()
+            return
+        }
+        playbackTask = Task { [weak self, audioSession] in
+            await audioSession.prepareForPlayback()
+            guard !Task.isCancelled, let self, self.isPlaying, !self.isSeeking, !self.awaitsItem else { return }
+            self.playbackTask = nil
+            self.avPlayer.play()
+        }
+    }
 
     private func rebuild(after delay: Duration?) {
         guard let edit else { return }
@@ -251,6 +276,11 @@ final class QuickEditPlayer: EditPlayback {
     /// Seeks exactly to `time` (edited seconds). While one seek runs only the latest target
     /// waits, so a fast drag never piles up requests and the frame keeps up with the finger.
     private func requestSeek(to time: TimeInterval) {
+        if playbackTask != nil {
+            playbackTask?.cancel()
+            playbackTask = nil
+            resumesAfterSeek = isPlaying
+        }
         pendingSeek = time
         guard !isSeeking else { return }
         isSeeking = true
@@ -268,7 +298,7 @@ final class QuickEditPlayer: EditPlayback {
         isSeeking = false
         if resumesAfterSeek, !awaitsItem {
             resumesAfterSeek = false
-            if isPlaying { avPlayer.play() }
+            if isPlaying { startPlayback() }
         }
     }
 
