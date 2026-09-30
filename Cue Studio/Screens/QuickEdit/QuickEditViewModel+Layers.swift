@@ -35,12 +35,69 @@ extension QuickEditViewModel {
         }
     }
 
-    /// Tapping a bar selects it (again: lets go).
+    /// Caption lines where they play, for the shared timeline.
+    var captionBars: [LayerBar] {
+        editedCaptionLines.map { line in
+            LayerBar(
+                id: line.id, kind: .caption, span: line.span,
+                title: line.text.isEmpty ? String(localized: "Empty line") : line.text, isSelected: line.id == selectedCaptionID
+            )
+        }
+    }
+
+    /// Tapping a bar selects it (again: lets go). Picking one lets go of the others, so Delete
+    /// always means the one shown as picked.
     func selectBar(_ bar: LayerBar) {
+        let wasSelected = selectedLayer?.id == bar.id
+        clearLayerSelection()
+        guard !wasSelected else { return }
+        clearStripSelection()
         switch bar.kind {
         case .text: selectText(bar.id)
+        case .caption:
+            selectedCaptionID = bar.id
+            showCaption(bar.id)
         case .media: selectMedia(bar.id)
-        case .voiceOver: reviewedVoiceOverID = reviewedVoiceOverID == bar.id ? nil : bar.id
+        case .voiceOver: reviewedVoiceOverID = bar.id
+        }
+    }
+
+    /// The bar picked on the timeline: a text, a caption line, a photo or video, or a voice-over.
+    var selectedLayer: LayerBar? {
+        (textBars + captionBars + mediaBars + voiceOverBars).first(where: \.isSelected)
+    }
+
+    /// Lets go of whatever bar is picked.
+    func clearLayerSelection() {
+        selectedTextID = nil
+        selectedCaptionID = nil
+        selectedMediaID = nil
+        reviewedVoiceOverID = nil
+    }
+
+    /// Deletes the picked bar (one undo step).
+    func deleteSelectedLayer() {
+        guard let bar = selectedLayer else { return }
+        switch bar.kind {
+        case .text: deleteText(bar.id)
+        case .caption: deleteCaption(bar.id)
+        case .media: deleteMedia(bar.id)
+        case .voiceOver: deleteVoiceOver(bar.id)
+        }
+    }
+
+    /// Opens the picked bar where it is edited: its sheet (text, caption line) or its tool.
+    func openSelectedLayer() {
+        guard let bar = selectedLayer else { return }
+        switch bar.kind {
+        case .text: editingTextID = bar.id
+        case .caption: editingCaptionID = bar.id
+        case .media:
+            tool = .media
+            selectedMediaID = bar.id
+        case .voiceOver:
+            tool = .voiceOver
+            reviewedVoiceOverID = bar.id
         }
     }
 
@@ -57,7 +114,11 @@ extension QuickEditViewModel {
     func resizeBar(_ bar: LayerBar, edge: LayerEdge, to time: TimeInterval) {
         guard bar.canResize else { return }
         let limits = room(for: bar)
-        let shortest = bar.kind == .text ? TextOverlay.minimumDuration : MediaOverlay.minimumDuration
+        let shortest = switch bar.kind {
+        case .text: TextOverlay.minimumDuration
+        case .caption: CaptionCue.minimumDuration
+        case .media, .voiceOver: MediaOverlay.minimumDuration
+        }
         var span = bar.span
         switch edge {
         case .start:
@@ -95,6 +156,8 @@ extension QuickEditViewModel {
             updateText(bar.id) { $0.span = source }
         case .media:
             updateMedia(bar.id) { $0.span = source }
+        case .caption:
+            moveCaption(bar.id, to: source)
         case .voiceOver:
             change { snapshot in
                 guard let index = snapshot.voiceOvers.firstIndex(where: { $0.id == bar.id }) else { return }

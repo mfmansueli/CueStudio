@@ -51,11 +51,15 @@ struct QuickCreatorViewModelTests {
     // MARK: - Tools
 
     @Test func toolsAreGroupedByIntent() {
-        #expect(QuickEditCategory.edit.tools == [.trim, .cleanUp, .removePauses, .speed])
-        #expect(QuickEditCategory.add.tools == [.text, .media, .voiceOver])
-        #expect(QuickEditCategory.polish.tools == [.style, .audio, .adjust, .filters, .crop, .transitions])
+        #expect(QuickEditCategory.toolbar == [.edit, .text, .captions, .audio, .media, .adjust])
+        #expect(QuickEditCategory.edit.tools == [.trim, .cleanUp, .speed])
+        #expect(QuickEditCategory.text.tools == [.text, .style])
         #expect(QuickEditCategory.captions.tools == [.captions])
-        #expect(QuickEditCategory.cover.tools == [.cover])
+        #expect(QuickEditCategory.audio.tools == [.audio, .voiceOver])
+        #expect(QuickEditCategory.media.tools == [.media])
+        #expect(QuickEditCategory.adjust.tools == [.adjust, .filters, .crop])
+        // The cover is part of finishing, next to Done.
+        #expect(QuickEditCategory.finish.tools == [.cover])
     }
 
     @Test func eachCategoryOpensOnTheToolUsedLast() async {
@@ -63,7 +67,7 @@ struct QuickCreatorViewModelTests {
         scenario.viewModel.tool = .speed
         scenario.viewModel.tool = .text
         #expect(scenario.viewModel.lastTool[.edit] == .speed)
-        #expect(scenario.viewModel.lastTool[.add] == .text)
+        #expect(scenario.viewModel.lastTool[.text] == .text)
     }
 
     // MARK: - Text
@@ -347,11 +351,16 @@ struct QuickCreatorViewModelTests {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
         await viewModel.analyzeIfNeeded()
-        viewModel.tool = .removePauses
+        viewModel.tool = .cleanUp
         viewModel.previewPauses()
         viewModel.tool = .trim
         #expect(viewModel.edit.timeline.isWhole)
-        viewModel.tool = .removePauses
+        viewModel.tool = .cleanUp
+        viewModel.previewPauses()
+        // Switching to Review puts the pauses back too.
+        viewModel.cleanUpSection = .review
+        #expect(viewModel.edit.timeline.isWhole)
+        viewModel.cleanUpSection = .pauses
         viewModel.previewPauses()
         #expect(viewModel.canUndo)
         viewModel.undo()

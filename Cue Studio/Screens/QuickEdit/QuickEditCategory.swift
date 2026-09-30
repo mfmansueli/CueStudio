@@ -5,31 +5,37 @@
 
 import Foundation
 
-/// Quick edit's tools grouped by intent, along the bottom: cut it down (Edit), put things on it
-/// (Add), make it look and sound finished (Polish), Captions and Cover. A category with one tool
-/// opens it straight away; the others show their tools in a row above.
+/// Quick edit's tools by intent, along the bottom: Edit, Text, Captions, Audio, Media and Adjust.
+/// Finishing (the cover) opens from the top bar, next to Done.
 enum QuickEditCategory: String, CaseIterable, Identifiable {
-    case edit, add, polish, captions, cover
+    case edit, text, captions, audio, media, adjust, finish
 
     var id: String { rawValue }
+
+    /// The categories along the bottom, in order.
+    static var toolbar: [QuickEditCategory] { [.edit, .text, .captions, .audio, .media, .adjust] }
 
     var label: String {
         switch self {
         case .edit: String(localized: "Edit")
-        case .add: String(localized: "Add")
-        case .polish: String(localized: "Polish")
+        case .text: String(localized: "Text")
         case .captions: String(localized: "Captions")
-        case .cover: String(localized: "Cover")
+        case .audio: String(localized: "Audio")
+        case .media: String(localized: "Media")
+        case .adjust: String(localized: "Adjust")
+        case .finish: String(localized: "Finish")
         }
     }
 
     var systemImage: String {
         switch self {
         case .edit: "scissors"
-        case .add: "plus.square.on.square"
-        case .polish: "wand.and.stars"
+        case .text: "textformat"
         case .captions: "captions.bubble"
-        case .cover: "photo.on.rectangle"
+        case .audio: "speaker.wave.2"
+        case .media: "photo.on.rectangle.angled"
+        case .adjust: "slider.horizontal.3"
+        case .finish: "checkmark.seal"
         }
     }
 

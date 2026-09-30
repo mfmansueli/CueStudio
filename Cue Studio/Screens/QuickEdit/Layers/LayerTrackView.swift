@@ -15,6 +15,9 @@ struct LayerTrackView: View {
     let tint: Color
     var identifier = "edit.layerTrack"
     var height = LayerTrackView.height
+    /// The shared timeline's scale (the Trim strip's, zoom and scroll included); nil spreads the
+    /// edit evenly across the track.
+    var scale: TrackScale?
 
     static let height: CGFloat = 58
     private static let inset: CGFloat = 8
@@ -52,6 +55,8 @@ struct LayerTrackView: View {
             }
             .contentShape(Rectangle())
             .gesture(gesture(width: width))
+            // Zoomed in, bars run on past both sides.
+            .clipped()
         }
         .frame(height: height)
         .accessibilityElement(children: .contain)
@@ -61,12 +66,14 @@ struct LayerTrackView: View {
     // MARK: - Drawing
 
     private func x(for time: TimeInterval, width: CGFloat) -> CGFloat {
+        if let scale { return scale.x(for: time) }
         let total = viewModel.edit.editedDuration
         guard total > 0 else { return Self.inset }
         return Self.inset + CGFloat(min(max(0, time), total) / total) * (width - 2 * Self.inset)
     }
 
     private func time(at x: CGFloat, width: CGFloat) -> TimeInterval {
+        if let scale { return scale.time(at: x) }
         let room = max(1, width - 2 * Self.inset)
         let fraction = Double(min(max(0, (x - Self.inset) / room), 1))
         return fraction * viewModel.edit.editedDuration
@@ -135,7 +142,7 @@ struct LayerTrackView: View {
 
     private func bar(at point: CGPoint, width: CGFloat) -> LayerBar? {
         let time = time(at: point.x, width: width)
-        let reach = Double(12 / max(1, width - 2 * Self.inset)) * viewModel.edit.editedDuration
+        let reach = scale?.seconds(for: 12) ?? Double(12 / max(1, width - 2 * Self.inset)) * viewModel.edit.editedDuration
         let touched = bars.filter { $0.span.start - reach <= time && time <= $0.span.end + reach }
         // The picked one first, then the shortest (it's the hardest to hit).
         return touched.first(where: \.isSelected) ?? touched.min { $0.span.duration < $1.span.duration }

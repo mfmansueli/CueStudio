@@ -201,6 +201,28 @@ extension QuickEditViewModel {
         }
     }
 
+    /// Moves or stretches a line on the timeline (`span` in seconds of the recording). A moved
+    /// line takes its words along, and asks for a timing check: they no longer sit on the voice.
+    func moveCaption(_ id: UUID, to span: TimeSpan) {
+        updateCaption(id) { cue in
+            var moved = cue
+            let shift = span.start - cue.start
+            let keepsLength = abs(span.duration - (cue.end - cue.start)) < 0.001
+            moved.start = span.start
+            moved.end = span.end
+            if keepsLength, abs(shift) > 0.001 {
+                moved.words = cue.words.map { word in
+                    CaptionWord(text: word.text, start: word.start + shift, end: word.end + shift, isEstimated: word.isEstimated)
+                }
+                if !cue.words.isEmpty { moved.needsTimingReview = true }
+            } else if moved.words.contains(where: { $0.start < moved.start - 0.01 || $0.end > moved.end + 0.01 }) {
+                moved.needsTimingReview = true
+            }
+            moved.isRevised = true
+            return moved
+        }
+    }
+
     /// Splits a line before its word at `index`.
     func splitCaption(_ id: UUID, beforeWord index: Int) {
         change { snapshot in

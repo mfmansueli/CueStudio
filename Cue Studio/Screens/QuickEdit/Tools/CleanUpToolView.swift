@@ -5,22 +5,36 @@
 
 import SwiftUI
 
-/// Clean Up: play, the time, undo and redo; a slim timeline with the suggestions marked; then,
-/// once the take has been listened to, "3 to review" with "Remove all" (only what Clean Up is sure
-/// about), "Ignore pauses under 0.7s" and the list. Each suggestion can be kept or removed; tapping
-/// one moves the playhead to it. Nothing is removed until the creator says so.
+/// Clean Up: play, the time, undo and redo; a slim timeline with the suggestions marked; then two
+/// views of the same listening. Pauses: how many, how long, Preview and Apply. Review: filler words
+/// and possible retakes, "3 to review" with "Remove all" (only what Clean Up is sure about), each
+/// kept or removed one by one; tapping one moves the playhead to it. Nothing is removed until the
+/// creator says so.
 struct CleanUpToolView: View {
     let viewModel: QuickEditViewModel
 
     var body: some View {
+        @Bindable var viewModel = viewModel
         VStack(alignment: .leading, spacing: 0) {
             QuickEditTransportBar(viewModel: viewModel)
             CleanUpStripView(viewModel: viewModel)
                 .padding(.top, 10)
-            switch viewModel.analysis {
-            case .idle, .running: analyzing.padding(.top, 14)
-            case .failed: failed.padding(.top, 14)
-            case .done: review
+            Picker("Clean Up", selection: $viewModel.cleanUpSection) {
+                ForEach(CleanUpSection.allCases) { Text($0.label).tag($0) }
+            }
+            .pickerStyle(.segmented)
+            .padding(.top, 10)
+            .accessibilityIdentifier("cleanUp.section")
+            switch viewModel.cleanUpSection {
+            case .pauses:
+                CleanUpPausesSection(viewModel: viewModel)
+                    .padding(.top, 10)
+            case .review:
+                switch viewModel.analysis {
+                case .idle, .running: analyzing.padding(.top, 14)
+                case .failed: failed.padding(.top, 14)
+                case .done: review
+                }
             }
         }
     }
@@ -64,24 +78,23 @@ struct CleanUpToolView: View {
     private var review: some View {
         VStack(alignment: .leading, spacing: 8) {
             header.padding(.top, 12)
-            threshold
             list
         }
     }
 
     private var header: some View {
-        let sure = viewModel.sureSuggestions.count
+        let sure = viewModel.pendingWordSuggestions.filter(\.isSure).count
         let style: CueStudioButtonStyle = sure > 0 ? .cueLight(.compact, expands: false) : .cueSecondary(.compact, expands: false)
         return HStack(spacing: 10) {
             VStack(alignment: .leading, spacing: 2) {
-                Text(viewModel.reviewTitle).font(.body.weight(.semibold))
+                Text(viewModel.wordsReviewTitle).font(.body.weight(.semibold))
                 Text(viewModel.reviewSubtitle)
                     .font(.caption)
                     .foregroundStyle(Palette.ink2)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             .accessibilityElement(children: .combine)
-            Button(viewModel.removeAllLabel, action: viewModel.removeAllSureSuggestions)
+            Button(viewModel.removeAllWordsLabel, action: viewModel.removeAllSureWords)
                 .buttonStyle(style)
                 .disabled(sure == 0)
                 .accessibilityHint(Text("Removes the suggestions Clean Up is sure about; the others wait for you"))
@@ -90,45 +103,11 @@ struct CleanUpToolView: View {
         .frame(minHeight: 40)
     }
 
-    private var threshold: some View {
-        HStack(spacing: 10) {
-            Text("Ignore pauses under \(Text(viewModel.pauseThresholdLabel).foregroundStyle(Palette.ink).fontWeight(.semibold)) · \(viewModel.ignoredPausesLabel)")
-                .font(.footnote.monospacedDigit())
-                .foregroundStyle(Palette.ink2)
-                .lineLimit(1)
-                .frame(maxWidth: .infinity, alignment: .leading)
-            HStack(spacing: 4) {
-                stepper("minus", label: Text("Shorter"), identifier: "cleanUp.thresholdDown", action: viewModel.lowerPauseThreshold)
-                stepper("plus", label: Text("Longer"), identifier: "cleanUp.thresholdUp", action: viewModel.raisePauseThreshold)
-            }
-        }
-        .padding(.leading, 12)
-        .padding(.trailing, 4)
-        .frame(height: 36)
-        .background(Palette.surface, in: Capsule())
-    }
-
-    private func stepper(_ systemImage: String, label: Text, identifier: String, action: @escaping () -> Void) -> some View {
-        Button(action: action) {
-            Image(systemName: systemImage)
-                .font(.subheadline.weight(.semibold))
-                .frame(width: 34, height: 28)
-                .background(Palette.overlayFill, in: Capsule())
-                .frame(minHeight: Metrics.hitTarget)
-                .contentShape(Rectangle())
-        }
-        .buttonStyle(.plain)
-        .foregroundStyle(Palette.ink)
-        .accessibilityLabel(label)
-        .accessibilityValue(Text(viewModel.pauseThresholdLabel))
-        .accessibilityIdentifier(identifier)
-    }
-
     @ViewBuilder
     private var list: some View {
-        let suggestions = viewModel.cleanUpSuggestions
+        let suggestions = viewModel.wordSuggestions
         if suggestions.isEmpty {
-            Text("Nothing to clean up here. Your take flows.")
+            Text("No filler words or retakes found. Your take flows.")
                 .font(.subheadline)
                 .foregroundStyle(Palette.ink2)
                 .frame(maxWidth: .infinity, minHeight: 90)

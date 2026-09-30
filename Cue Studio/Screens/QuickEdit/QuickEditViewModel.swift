@@ -44,6 +44,7 @@ final class QuickEditViewModel {
             selectedJoinID = nil
             selectedTextID = nil
             selectedMediaID = nil
+            selectedCaptionID = nil
             endChange()
             // Leaving Remove Pauses without Apply puts the pauses back.
             cancelPausePreview()
@@ -89,6 +90,10 @@ final class QuickEditViewModel {
     var analysis: Analysis = .idle
     /// Clean Up's "Ignore pauses under": shorter pauses aren't listed and stay as natural ones.
     var pauseThreshold: TimeInterval = QuickEditViewModel.defaultPauseThreshold
+    /// Clean Up's view: the pauses, or the words to review. Switching lets go of a pause preview.
+    var cleanUpSection: CleanUpSection = .pauses {
+        didSet { if cleanUpSection != oldValue { cancelPausePreview() } }
+    }
 
     // MARK: Added on top
     /// The text picked on the preview or its track.
@@ -97,6 +102,8 @@ final class QuickEditViewModel {
     var editingTextID: UUID?
     /// The photo or video picked on the preview or its track.
     var selectedMediaID: UUID?
+    /// The caption line picked on the timeline.
+    var selectedCaptionID: UUID?
     var isImportingMedia = false
     /// The voice-over just recorded, waiting for Keep (or Redo / Delete).
     var reviewedVoiceOverID: UUID?
@@ -200,6 +207,7 @@ final class QuickEditViewModel {
         if let id = selectedSegmentID, edit.timeline.segment(id: id) == nil { selectedSegmentID = nil }
         if let id = selectedTextID, !edit.texts.contains(where: { $0.id == id }) { selectedTextID = nil }
         if let id = selectedMediaID, !edit.media.contains(where: { $0.id == id }) { selectedMediaID = nil }
+        if let id = selectedCaptionID, !edit.captions.contains(where: { $0.id == id }) { selectedCaptionID = nil }
         if let id = reviewedVoiceOverID, !edit.voiceOvers.contains(where: { $0.id == id }) { reviewedVoiceOverID = nil }
         if selectedJoinID != nil, selectedJoinIndex == nil { selectedJoinID = nil }
         if let range = removalRange, range.upperBound > edit.editedDuration { removalRange = nil }
@@ -332,6 +340,7 @@ final class QuickEditViewModel {
     /// select while there is one section, or while "Remove part" is being placed.
     func tapTimeline(onPiece index: Int?) {
         guard removalRange == nil else { return }
+        clearLayerSelection()
         guard let index, edit.timeline.segments.count > 1, edit.timeline.segments.indices.contains(index) else {
             selectedSegmentID = nil
             selectedJoinID = nil
@@ -350,8 +359,15 @@ final class QuickEditViewModel {
 
     /// A tap on the mark of the cut before the section at `index`: selects that cut so its
     /// transition can be picked, or lets go of it when it was already selected.
+    /// Lets go of the section and the cut picked on the strip (a bar on a track was picked).
+    func clearStripSelection() {
+        selectedSegmentID = nil
+        selectedJoinID = nil
+    }
+
     func tapJoin(_ index: Int) {
         guard removalRange == nil, index > 0, edit.timeline.segments.indices.contains(index) else { return }
+        clearLayerSelection()
         let id = edit.timeline.segments[index].id
         selectedSegmentID = nil
         selectedJoinID = selectedJoinID == id ? nil : id
