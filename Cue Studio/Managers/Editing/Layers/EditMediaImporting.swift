@@ -12,4 +12,7 @@ import SwiftUI
 protocol EditMediaImporting: AnyObject {
     /// Copies the picked photo or video into `EditMediaFiles`. Throws when it can't be read.
     func importMedia(_ item: PhotosPickerItem) async throws -> ImportedMedia
+    /// Copies a sound file picked in Files into `EditMediaFiles`. Throws when it can't be read or
+    /// has no sound (a protected song, for one).
+    func importAudio(from url: URL) async throws -> ImportedAudio
 }

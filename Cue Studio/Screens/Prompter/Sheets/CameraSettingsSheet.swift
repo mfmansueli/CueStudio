@@ -19,6 +19,8 @@ struct CameraSettingsSheet: View {
 
     @Environment(\.dismiss) private var dismiss
     @State private var tab: Tab = .camera
+    /// Whether this iPhone can find people in video; nil until checked.
+    @State private var canFindPeople: Bool?
 
     var body: some View {
         VStack(spacing: 0) {
@@ -105,6 +107,64 @@ struct CameraSettingsSheet: View {
         }
         .padding(.top, 10)
         setupNote
+        backgroundSection
+    }
+
+    // MARK: - Background
+
+    /// The background behind the creator for the next takes: shown live, saved with the take as a
+    /// recipe, the recording untouched.
+    @ViewBuilder
+    private var backgroundSection: some View {
+        let effect = camera.background
+        SectionHeading(text: String(localized: "Background")).padding(EdgeInsets(top: 12, leading: 4, bottom: 0, trailing: 4))
+        HStack(spacing: 6) {
+            ForEach([BackgroundStyle.original, .blur, .color]) { style in
+                let isOn = effect.style == style
+                Button {
+                    var changed = effect
+                    changed.style = style
+                    changed.cutout = .person
+                    Task { await camera.setBackground(changed) }
+                } label: {
+                    FilterChip(label: style.label, isSelected: isOn, height: 32)
+                }
+                .buttonStyle(.plain)
+                .disabled(style != .original && canFindPeople == false)
+                .accessibilityAddTraits(isOn ? .isSelected : [])
+                .accessibilityIdentifier("camera.background.\(style.rawValue)")
+            }
+            Spacer(minLength: 0)
+        }
+        .disabled(camera.isRecording)
+        if effect.style == .color {
+            HStack(spacing: 10) {
+                ForEach(OverlayColor.allCases) { color in
+                    SwatchButton(color: color.color, isSelected: effect.color == color, accessibilityName: color.label) {
+                        var changed = effect
+                        changed.color = color
+                        Task { await camera.setBackground(changed) }
+                    }
+                }
+            }
+            .padding(.top, 4)
+        }
+        Group {
+            if canFindPeople == false {
+                Text("This iPhone can’t find people in video, so the background can’t change here.")
+                    .foregroundStyle(Palette.warn)
+            } else if effect.isActive, !camera.showsBackgroundLive {
+                Text("This camera can’t show the effect while recording. It’s added to the take after you record.")
+                    .foregroundStyle(Palette.warn)
+            }
+            Text("Your recording stays as filmed. The effect is added to the take, and you can change it in Quick edit.")
+                .foregroundStyle(Palette.ink2)
+        }
+        .font(.footnote)
+        .padding(EdgeInsets(top: 4, leading: 4, bottom: 0, trailing: 4))
+        .task {
+            if canFindPeople == nil { canFindPeople = await BackgroundSupport.canFindPeople() }
+        }
     }
 
     // MARK: - Recording

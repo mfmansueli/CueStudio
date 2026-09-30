@@ -37,6 +37,20 @@ struct MediaToolView: View {
             pickedItem = nil
             Task { await viewModel.importMedia(item) }
         }
+        .confirmationDialog(
+            "This video has its own sound",
+            isPresented: Binding(
+                get: { viewModel.soundChoiceMediaID != nil },
+                set: { if !$0 { viewModel.soundChoiceMediaID = nil } }
+            ),
+            titleVisibility: .visible,
+            presenting: viewModel.soundChoiceMediaID
+        ) { id in
+            Button("Keep its sound") { viewModel.chooseSound(for: id, keeps: true) }
+            Button("Mute it") { viewModel.chooseSound(for: id, keeps: false) }
+        } message: { _ in
+            Text("You can change it later with Sound.")
+        }
     }
 
     private var addButton: some View {
@@ -95,6 +109,9 @@ struct MediaToolView: View {
                 .buttonStyle(.cueIcon(.surface, diameter: 36))
                 .accessibilityLabel(Text("Done with this media"))
             }
+            if media.kind == .video, media.hasSound == true {
+                soundRow(media)
+            }
             if media.layout == .window {
                 HStack(spacing: 6) {
                     ForEach(MediaShape.allCases) { shape in
@@ -123,6 +140,30 @@ struct MediaToolView: View {
                     .foregroundStyle(Palette.ink.opacity(0.45))
                     .frame(maxWidth: .infinity, alignment: .leading)
             }
+        }
+    }
+
+    /// A video's own sound: muted at 0.
+    private func soundRow(_ media: MediaOverlay) -> some View {
+        let volume = media.audioVolume ?? 0
+        let text = volume > 0 ? volume.formatted(.percent.precision(.fractionLength(0)).locale(.interface)) : String(localized: "Muted")
+        return HStack(spacing: 10) {
+            Image(systemName: volume > 0 ? "speaker.wave.2" : "speaker.slash")
+                .foregroundStyle(Palette.ink2)
+                .frame(width: 22)
+            Slider(
+                value: Binding(get: { volume }, set: { viewModel.setMediaSoundVolume(media.id, $0) }), in: 0...1,
+                onEditingChanged: { editing in editing ? viewModel.beginChange() : viewModel.endChange() }
+            )
+            .tint(Palette.acc)
+            .accessibilityLabel(Text("Sound"))
+            .accessibilityValue(Text(text))
+            .accessibilityIdentifier("edit.mediaSound")
+            Text(text)
+                .font(.footnote.monospacedDigit())
+                .foregroundStyle(Palette.ink2)
+                .fixedSize()
+                .frame(minWidth: 48, alignment: .trailing)
         }
     }
 }

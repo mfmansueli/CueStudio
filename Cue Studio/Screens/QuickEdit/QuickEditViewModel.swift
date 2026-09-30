@@ -45,6 +45,8 @@ final class QuickEditViewModel {
             selectedTextID = nil
             selectedMediaID = nil
             selectedCaptionID = nil
+            selectedMusicID = nil
+            if tool != .audio { endComparison() }
             endChange()
             // Leaving Remove Pauses without Apply puts the pauses back.
             cancelPausePreview()
@@ -129,6 +131,25 @@ final class QuickEditViewModel {
     var speedScope: SpeedScope = .whole
     /// The type the creator saved as "My style" (see `QuickEditViewModel+Style`).
     var myStyle: TextLook?
+
+    // MARK: Background
+    /// Whether this iPhone can find people in video; nil until checked.
+    var canFindPeople: Bool?
+    var isImportingBackground = false
+
+    // MARK: Sound
+    /// The music clip picked on its track.
+    var selectedMusicID: UUID?
+    var isImportingMusic = false
+    /// A video just added that has its own sound: Media asks whether to keep it.
+    var soundChoiceMediaID: UUID?
+    /// "Compare with original": the preview plays the take's untreated sound at `originalVolume`,
+    /// as loud as the treated one.
+    var comparesOriginal = false
+    var originalVolume: Double?
+    /// The treatment being compared; changing it ends the comparison.
+    @ObservationIgnored var comparedProcessing: VoiceProcessing?
+    @ObservationIgnored var comparisonTask: Task<Void, Never>?
 
     let take: Take
     let player: EditPlayback
@@ -221,9 +242,13 @@ final class QuickEditViewModel {
         if let id = selectedMediaID, !edit.media.contains(where: { $0.id == id }) { selectedMediaID = nil }
         if let id = selectedCaptionID, !edit.captions.contains(where: { $0.id == id }) { selectedCaptionID = nil }
         if let id = reviewedVoiceOverID, !edit.voiceOvers.contains(where: { $0.id == id }) { reviewedVoiceOverID = nil }
+        if let id = selectedMusicID, !edit.music.contains(where: { $0.id == id }) { selectedMusicID = nil }
+        if let id = soundChoiceMediaID, !edit.media.contains(where: { $0.id == id }) { soundChoiceMediaID = nil }
         if selectedJoinID != nil, selectedJoinIndex == nil { selectedJoinID = nil }
         if let range = removalRange, range.upperBound > edit.editedDuration { removalRange = nil }
-        player.show(edit)
+        // A new treatment isn't what was being compared.
+        if comparesOriginal, edit.voiceProcessing != comparedProcessing { endComparison() }
+        player.show(playedEdit)
         scheduleDraftSave()
     }
 
@@ -675,6 +700,8 @@ final class QuickEditViewModel {
         if let animation = step.captionAnimation { edit.captionAnimation = animation }
         if let translations = step.captionTranslations { edit.captionTranslations = translations }
         if let display = step.captionDisplay { edit.captionDisplay = display }
+        if let music = step.music { edit.music = music }
+        if let backgrounds = step.backgrounds { edit.backgrounds = backgrounds }
     }
 
     // MARK: - Adjust

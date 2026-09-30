@@ -8,13 +8,16 @@ import CoreImage
 import CoreImage.CIFilterBuiltins
 
 /// Renders each frame of an edited take with Core Image: upright, cropped to the take's frame,
-/// with Adjust and Filters, blended, slid or darkened by a transition, with the photo or video laid
+/// with its background blurred or replaced (the person found by Vision, or a chroma key), with
+/// Adjust and Filters, blended, slid or darkened by a transition, with the photo or video laid
 /// over it (B-roll), then texts and captions. Used by the Quick
 /// edit preview and by exports, so both show exactly the same thing.
 final class CueVideoCompositor: NSObject, AVVideoCompositing, @unchecked Sendable {
     private let context = CIContext(options: [.cacheIntermediates: false])
     /// Captions drawn as they show, the last few kept.
     private let overlayCache = OverlayImageCache()
+    /// Where the person is, for background effects; the last masks kept.
+    private let masker = PersonMasker()
     private let queue = DispatchQueue(label: "studio.cue.compositor")
 
     nonisolated let sourcePixelBufferAttributes: [String: any Sendable]? = [
@@ -27,7 +30,7 @@ final class CueVideoCompositor: NSObject, AVVideoCompositing, @unchecked Sendabl
     nonisolated func renderContextChanged(_ newRenderContext: AVVideoCompositionRenderContext) {}
 
     nonisolated func startRequest(_ request: AVAsynchronousVideoCompositionRequest) {
-        queue.async { [context, overlayCache] in
+        queue.async { [context, overlayCache, masker] in
             guard let instruction = request.videoCompositionInstruction as? CompositionInstruction else {
                 request.finish(with: NSError(domain: "studio.cue.compositor", code: 1))
                 return
@@ -65,11 +68,17 @@ final class CueVideoCompositor: NSObject, AVVideoCompositing, @unchecked Sendabl
                     Self.withBuffers(media) { media in
                         if let other {
                             other.withUnsafeBuffer { other in
-                                let image = Self.composedImage(from: source, blending: other, media: media, instruction: instruction, at: time, cache: overlayCache)
+                                let image = Self.composedImage(
+                                    from: source, blending: other, media: media, instruction: instruction, at: time,
+                                    cache: overlayCache, masker: masker
+                                )
                                 context.render(image.cropped(to: bounds), to: output)
                             }
                         } else {
-                            let image = Self.composedImage(from: source, blending: nil, media: media, instruction: instruction, at: time, cache: overlayCache)
+                            let image = Self.composedImage(
+                                from: source, blending: nil, media: media, instruction: instruction, at: time,
+                                cache: overlayCache, masker: masker
+                            )
                             context.render(image.cropped(to: bounds), to: output)
                         }
                     }
@@ -102,14 +111,17 @@ final class CueVideoCompositor: NSObject, AVVideoCompositing, @unchecked Sendabl
     /// darkened inside a fade; then the texts and captions visible at `time` and the output scale.
     nonisolated private static func composedImage(
         from source: CVPixelBuffer, blending other: CVPixelBuffer?, media: [CMPersistentTrackID: CVPixelBuffer],
-        instruction: CompositionInstruction, at time: TimeInterval, cache: OverlayImageCache
+        instruction: CompositionInstruction, at time: TimeInterval, cache: OverlayImageCache, masker: PersonMasker
     ) -> CIImage {
-        var image = framed(source, frame: instruction.frame, edit: instruction.edit)
+        let moment = Int((time * 1000).rounded())
+        var image = framed(source, frame: instruction.frame, edit: instruction.edit, masker: masker, key: "main-\(moment)")
         if let zoom = instruction.zoom {
             image = zoomed(image, by: CGFloat(zoom.scale(at: time)))
         }
         if let other, let dissolve = instruction.dissolve {
-            let otherSide = framed(other, frame: instruction.blendFrame ?? instruction.frame, edit: instruction.edit)
+            let otherSide = framed(
+                other, frame: instruction.blendFrame ?? instruction.frame, edit: instruction.edit, masker: masker, key: "blend-\(moment)"
+            )
             // Before the cut the main track still shows the outgoing piece; after it, the incoming one.
             let (outgoing, incoming) = time < dissolve.cut ? (image, otherSide) : (otherSide, image)
             if dissolve.transition == .slide {
@@ -155,15 +167,22 @@ final class CueVideoCompositor: NSObject, AVVideoCompositing, @unchecked Sendabl
         return image
     }
 
-    /// A frame of a recording upright, cropped and scaled to the take's frame, with Adjust and
-    /// Filters.
-    nonisolated private static func framed(_ source: CVPixelBuffer, frame: SourceFrame, edit: TakeEdit) -> CIImage {
+    /// A frame of a recording upright, cropped and scaled to the take's frame, with its background
+    /// effect, Adjust and Filters. `key` names the moment, for the person masks kept.
+    nonisolated private static func framed(
+        _ source: CVPixelBuffer, frame: SourceFrame, edit: TakeEdit, masker: PersonMasker, key: String
+    ) -> CIImage {
         var image = CIImage(cvPixelBuffer: source).transformed(by: uprightTransform(frame.transform, sourceHeight: CGFloat(CVPixelBufferGetHeight(source))))
         image = image.transformed(by: CGAffineTransform(translationX: -image.extent.minX, y: -image.extent.minY))
         image = image.cropped(to: frame.crop)
             .transformed(by: CGAffineTransform(translationX: -frame.crop.minX, y: -frame.crop.minY))
         if abs(frame.scale - 1) > 0.000_1 {
             image = image.transformed(by: CGAffineTransform(scaleX: frame.scale, y: frame.scale))
+        }
+        if let background = frame.background {
+            image = BackgroundCompositing.apply(image, render: background) { image in
+                masker.mask(for: image, key: background.cacheKey + key)
+            }
         }
         return FrameLook.apply(edit, to: image)
     }

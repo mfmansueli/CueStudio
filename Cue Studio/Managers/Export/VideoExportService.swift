@@ -64,18 +64,21 @@ final class VideoExportService: VideoExporting {
         var edit = options.edit ?? TakeEdit(sourceDuration: duration, aspect: options.aspect)
         edit.aspect = options.aspect
         var processedAudio: URL?
-        if edit.volume != 1 || edit.enhancesVoice || edit.reducesNoise, options.edit != nil {
+        if edit.voiceProcessing.isNeeded, options.edit != nil {
             processedAudio = try await Self.processedAudio(for: source, edit: edit)
         }
         let composition = try await EditedComposition.build(
-            source: source, edit: edit, processedAudio: processedAudio,
+            source: source, edit: edit, processedAudio: processedAudio, speech: await Self.voiceActivity(for: source, edit: edit),
             options: .init(burnsInCaptions: options.burnsInCaptions, shortSide: options.shortSide)
         )
+        // More than the take's sound: mixed once through a limiter so nothing clips.
+        let mixedDown = try await MasterMix.apply(to: composition)
         guard let session = AVAssetExportSession(asset: composition.asset, presetName: AVAssetExportPresetHEVCHighestQuality) else {
             throw VideoExportError.exportUnavailable
         }
         session.videoComposition = composition.videoComposition
-        session.audioMix = composition.audioMix
+        // A mixed-down sound already has its volumes in it.
+        session.audioMix = mixedDown ? nil : composition.audioMix
         // Like the preview: speed changes keep the voice's pitch.
         session.audioTimePitchAlgorithm = .spectral
         let output = URL.temporaryDirectory.appending(path: "Cue-\(UUID().uuidString.prefix(8)).mov")
@@ -83,7 +86,24 @@ final class VideoExportService: VideoExporting {
         return output
     }
 
-    /// The Audio tool's sound for the whole recording; nil when the take has no sound.
+    /// Where someone speaks in the recordings the edit plays; nothing when no music ducks.
+    private static func voiceActivity(for source: URL, edit: TakeEdit) async -> VoiceActivity {
+        guard edit.ducksMusic else { return .none }
+        var activity = VoiceActivity()
+        activity.take = await speechSpans(in: source)
+        for clip in edit.playedSources {
+            activity.sources[clip.id] = await speechSpans(in: EditMediaFiles.url(for: clip.fileName))
+        }
+        return activity
+    }
+
+    private static func speechSpans(in video: URL) async -> [TimeSpan] {
+        guard let audio = try? await AudioTrackExtractor.extract(from: video) else { return [] }
+        defer { try? FileManager.default.removeItem(at: audio) }
+        return await Task.detached { (try? VoiceActivity.spans(inAudio: audio)) ?? [] }.value
+    }
+
+    /// The Voice tool's sound for the whole recording; nil when the take has no sound.
     private static func processedAudio(for source: URL, edit: TakeEdit) async throws -> URL? {
         let audio: URL
         do {
@@ -91,9 +111,9 @@ final class VideoExportService: VideoExporting {
         } catch AudioTrackExtractor.ExtractError.noAudio {
             return nil
         }
-        let volume = edit.volume, enhances = edit.enhancesVoice, reduces = edit.reducesNoise
+        let processing = edit.voiceProcessing
         return try await Task.detached {
-            try AudioEnhancer.process(audio, volume: volume, enhancesVoice: enhances, reducesNoise: reduces)
+            try AudioEnhancer.process(audio, processing: processing)
         }.value
     }
 }

@@ -6,7 +6,7 @@
 import SwiftUI
 
 /// The shared timeline's tracks under the video strip in Edit: texts, captions, photos and videos,
-/// and sound laid over the take (voice-overs). They use the strip's scale, zoom and scroll, so a
+/// and sound laid over the take (voice-overs and music). They use the strip's scale, zoom and scroll, so a
 /// bar sits under the frames it shows over. A track with nothing on it takes no room.
 ///
 /// Tapping a bar picks it (and lets go of any other); dragging it moves it in time; dragging an end
@@ -66,6 +66,7 @@ struct TimelineTracksView: View {
             (.caption, viewModel.captionBars, Palette.ink2),
             (.media, viewModel.mediaBars, Palette.info),
             (.voiceOver, viewModel.voiceOverBars, Palette.success),
+            (.music, viewModel.musicBars, Palette.music),
         ]
         return all.compactMap { kind, bars, tint in
             guard !bars.isEmpty else { return nil }

@@ -145,6 +145,7 @@ struct TrimToolView: View {
         case .caption: String(localized: "Edit line")
         case .media: String(localized: "Edit media")
         case .voiceOver: String(localized: "Edit voice-over")
+        case .music: String(localized: "Edit music")
         }
     }
 

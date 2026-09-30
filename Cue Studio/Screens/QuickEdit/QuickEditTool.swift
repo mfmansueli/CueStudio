@@ -15,11 +15,11 @@ enum QuickEditTool: String, CaseIterable, Identifiable {
     // Captions
     case captions
     // Audio
-    case audio, voiceOver
+    case audio, music, voiceOver
     // Media
     case media
     // Adjust
-    case adjust, filters, crop
+    case adjust, filters, crop, background
     // Finishing
     case cover
 
@@ -30,9 +30,9 @@ enum QuickEditTool: String, CaseIterable, Identifiable {
         case .trim, .cleanUp, .speed: .edit
         case .text, .style: .text
         case .captions: .captions
-        case .audio, .voiceOver: .audio
+        case .audio, .music, .voiceOver: .audio
         case .media: .media
-        case .adjust, .filters, .crop: .adjust
+        case .adjust, .filters, .crop, .background: .adjust
         case .cover: .finish
         }
     }
@@ -46,11 +46,13 @@ enum QuickEditTool: String, CaseIterable, Identifiable {
         case .style: String(localized: "Presets")
         case .captions: String(localized: "Captions")
         case .audio: String(localized: "Voice")
+        case .music: String(localized: "Music")
         case .voiceOver: String(localized: "Voice-over")
         case .media: String(localized: "Media")
         case .adjust: String(localized: "Adjust")
         case .filters: String(localized: "Filters")
         case .crop: String(localized: "Crop")
+        case .background: String(localized: "Background")
         case .cover: String(localized: "Cover")
         }
     }
@@ -64,11 +66,13 @@ enum QuickEditTool: String, CaseIterable, Identifiable {
         case .style: "textformat.alt"
         case .captions: "captions.bubble"
         case .audio: "waveform"
+        case .music: "music.note"
         case .voiceOver: "mic"
         case .media: "photo.badge.plus"
         case .adjust: "sun.max"
         case .filters: "camera.filters"
         case .crop: "crop"
+        case .background: "person.and.background.dotted"
         case .cover: "photo.on.rectangle"
         }
     }
@@ -76,7 +80,7 @@ enum QuickEditTool: String, CaseIterable, Identifiable {
     /// Tools that show the edit on a timeline of their own and need the room.
     var usesTimeline: Bool {
         switch self {
-        case .trim, .cleanUp, .text, .media, .voiceOver: true
+        case .trim, .cleanUp, .text, .media, .music, .voiceOver: true
         default: false
         }
     }

@@ -34,11 +34,15 @@ nonisolated struct EditSnapshot: Codable, Hashable, Sendable {
     /// Translations and which captions show; nil in steps saved before translations.
     var captionTranslations: [CaptionTranslation]?
     var captionDisplay: CaptionDisplay?
+    /// The creator's music and sounds; nil in steps saved before music.
+    var music: [MusicClip]?
+    /// Backgrounds per recording; nil in steps saved before them.
+    var backgrounds: [RecordingBackground]?
 
     private enum CodingKeys: String, CodingKey {
         case timeline, suggestions, texts, media, voiceOvers, cover, creatorStyle, captionStyle, filter
         case textLook, textPreset, captionLook, captionPreset, captions, sources, captionAnimation
-        case captionTranslations, captionDisplay
+        case captionTranslations, captionDisplay, music, backgrounds
     }
 }
 
@@ -51,7 +55,8 @@ nonisolated extension EditSnapshot {
             captionStyle: edit.captionStyle, filter: edit.filter,
             textLook: edit.textLook, textPreset: edit.textPreset, captionLook: edit.captionLook, captionPreset: edit.captionPreset,
             captions: edit.captions, sources: edit.sources, captionAnimation: edit.captionAnimation,
-            captionTranslations: edit.captionTranslations, captionDisplay: edit.captionDisplay
+            captionTranslations: edit.captionTranslations, captionDisplay: edit.captionDisplay, music: edit.music,
+            backgrounds: edit.backgrounds
         )
     }
 
@@ -76,7 +81,9 @@ nonisolated extension EditSnapshot {
             sources: try? container.decodeIfPresent([ClipSource].self, forKey: .sources),
             captionAnimation: try? container.decodeIfPresent(CaptionAnimation.self, forKey: .captionAnimation),
             captionTranslations: try? container.decodeIfPresent([CaptionTranslation].self, forKey: .captionTranslations),
-            captionDisplay: try? container.decodeIfPresent(CaptionDisplay.self, forKey: .captionDisplay)
+            captionDisplay: try? container.decodeIfPresent(CaptionDisplay.self, forKey: .captionDisplay),
+            music: try? container.decodeIfPresent([MusicClip].self, forKey: .music),
+            backgrounds: try? container.decodeIfPresent([RecordingBackground].self, forKey: .backgrounds)
         )
     }
 }

@@ -55,9 +55,9 @@ struct QuickCreatorViewModelTests {
         #expect(QuickEditCategory.edit.tools == [.trim, .cleanUp, .speed])
         #expect(QuickEditCategory.text.tools == [.text, .style])
         #expect(QuickEditCategory.captions.tools == [.captions])
-        #expect(QuickEditCategory.audio.tools == [.audio, .voiceOver])
+        #expect(QuickEditCategory.audio.tools == [.audio, .music, .voiceOver])
         #expect(QuickEditCategory.media.tools == [.media])
-        #expect(QuickEditCategory.adjust.tools == [.adjust, .filters, .crop])
+        #expect(QuickEditCategory.adjust.tools == [.adjust, .filters, .crop, .background])
         // The cover is part of finishing, next to Done.
         #expect(QuickEditCategory.finish.tools == [.cover])
     }

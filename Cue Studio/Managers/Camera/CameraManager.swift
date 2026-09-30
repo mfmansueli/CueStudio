@@ -20,6 +20,13 @@ final class CameraManager: CameraControlling {
     /// Rotation for recorded video, kept current by the preview's rotation coordinator.
     var captureRotationAngle: CGFloat = 90
 
+    /// The background effect for this session's takes.
+    private(set) var background = BackgroundEffect()
+    /// The camera's frames with the effect, for the preview; nil when off or not drawn yet.
+    private(set) var backgroundFrame: CGImage?
+    /// Whether this camera can give frames for the live preview next to the recording.
+    private(set) var showsBackgroundLive = true
+
     private let engine = CaptureEngine()
 
     /// For the preview layer only.
@@ -60,12 +67,40 @@ final class CameraManager: CameraControlling {
 
     func apply(_ settings: CameraSettings) async {
         guard status == .running, !isRecording else { return }
+        let lens = activeLens
         activeLens = await engine.apply(settings: settings)
         activeDeviceID = await engine.activeDeviceID
+        // The front camera's preview is mirrored; the effect's frames follow.
+        if activeLens != lens, background.isActive { await showBackground() }
+    }
+
+    /// Sets the background for the next takes and starts (or stops) its live preview. Not while
+    /// recording: the take keeps what it started with.
+    func setBackground(_ effect: BackgroundEffect) async {
+        guard !isRecording else { return }
+        background = effect
+        await showBackground()
+    }
+
+    private func showBackground() async {
+        let render = status == .running ? BackgroundRender.prepare(background, cacheKey: "live") : nil
+        if render == nil { backgroundFrame = nil }
+        var handler: (@Sendable (CGImage) -> Void)?
+        if render != nil {
+            handler = { [weak self] frame in
+                Task { @MainActor [weak self] in
+                    guard let self, self.background.isActive else { return }
+                    self.backgroundFrame = frame
+                }
+            }
+        }
+        showsBackgroundLive = await engine.setBackgroundPreview(render, mirrored: activeLens == .front, handler: handler)
     }
 
     func stop() async {
         if isRecording { _ = await stopRecording() }
+        _ = await engine.setBackgroundPreview(nil, mirrored: false, handler: nil)
+        backgroundFrame = nil
         await engine.stop()
         if status == .running || status == .starting { status = .idle }
     }

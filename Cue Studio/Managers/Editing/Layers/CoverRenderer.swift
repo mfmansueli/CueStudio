@@ -61,7 +61,12 @@ nonisolated enum CoverRenderer {
             aspect: edit.aspect.widthOverHeight, offset: edit.cropOffset
         )
         guard let cropped = full.cropping(to: crop) else { return full }
-        let looked = FrameLook.apply(edit, to: CIImage(cgImage: cropped))
+        var image = CIImage(cgImage: cropped)
+        // The take's background, like the video.
+        if let effect = edit.background(for: nil), let render = BackgroundRender.prepare(effect, cacheKey: "cover") {
+            image = BackgroundCompositing.apply(image, render: render) { PersonMasker.mask(for: $0) }
+        }
+        let looked = FrameLook.apply(edit, to: image)
         return CIContext(options: [.cacheIntermediates: false]).createCGImage(looked, from: looked.extent) ?? cropped
     }
 }

@@ -71,8 +71,17 @@ final class FakeTakeEditor: TakeEditing {
         return captionOutcome ?? .captions(captions, transcript: CaptionTranscript(words: captions.flatMap(\.words), languageCode: "en"))
     }
 
-    func previewItem(forVideoAt url: URL, edit: TakeEdit) async throws -> AVPlayerItem {
+    func previewItem(forVideoAt url: URL, edit: TakeEdit, window: TimeSpan?) async throws -> AVPlayerItem {
         AVPlayerItem(url: url)
+    }
+
+    /// What `matchedOriginalVolume` hands back.
+    var matchedVolume: Double? = 1.4
+    private(set) var matchRequests = 0
+
+    func matchedOriginalVolume(forVideoAt url: URL, edit: TakeEdit) async -> Double? {
+        matchRequests += 1
+        return matchedVolume
     }
 
     /// What `coverImage` hands back; nil when the picture can't be read.

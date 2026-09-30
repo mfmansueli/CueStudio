@@ -14,4 +14,6 @@ nonisolated struct ImportedMedia: Hashable, Sendable {
     let aspect: Double
     /// Length of a video; nil for a photo.
     let duration: TimeInterval?
+    /// A video with its own sound (the creator chooses whether it plays).
+    var hasSound = false
 }

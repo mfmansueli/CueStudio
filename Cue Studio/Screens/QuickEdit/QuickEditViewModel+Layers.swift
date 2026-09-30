@@ -5,10 +5,11 @@
 
 import Foundation
 
-/// The tracks under Text, Media and Voice-over: one bar per item where it plays in the edit.
+/// The tracks under Text, Media, Voice-over and Music: one bar per item where it plays in the edit.
 /// Dragging a bar moves it; dragging an end changes when it starts or stops (a voice-over only
-/// moves). Photos and videos never overlap: each stays in the gap it's in. Positions are kept on
-/// the recording (see `TextOverlay`), so the bars land where the finger left them.
+/// moves). Up to three photos or videos overlap. Positions are kept on the recording (see
+/// `TextOverlay`), so the bars land where the finger left them; music is kept on the edit's own
+/// seconds.
 extension QuickEditViewModel {
     var textBars: [LayerBar] {
         edit.texts.compactMap { text in
@@ -66,12 +67,14 @@ extension QuickEditViewModel {
             player.seek(to: bar.span.start)
         case .media: selectMedia(bar.id)
         case .voiceOver: reviewedVoiceOverID = bar.id
+        case .music: selectedMusicID = bar.id
         }
     }
 
-    /// The bar picked on the timeline: a text, a caption line, a photo or video, or a voice-over.
+    /// The bar picked on the timeline: a text, a caption line, a photo or video, a voice-over or
+    /// music.
     var selectedLayer: LayerBar? {
-        (textBars + captionBars + mediaBars + voiceOverBars).first(where: \.isSelected)
+        (textBars + captionBars + mediaBars + voiceOverBars + musicBars).first(where: \.isSelected)
     }
 
     /// Lets go of whatever bar is picked.
@@ -80,6 +83,7 @@ extension QuickEditViewModel {
         selectedCaptionID = nil
         selectedMediaID = nil
         reviewedVoiceOverID = nil
+        selectedMusicID = nil
     }
 
     /// Deletes the picked bar (one undo step).
@@ -90,6 +94,7 @@ extension QuickEditViewModel {
         case .caption: deleteCaption(captionCueID(forLine: bar.id))
         case .media: deleteMedia(bar.id)
         case .voiceOver: deleteVoiceOver(bar.id)
+        case .music: deleteMusic(bar.id)
         }
     }
 
@@ -105,11 +110,18 @@ extension QuickEditViewModel {
         case .voiceOver:
             tool = .voiceOver
             reviewedVoiceOverID = bar.id
+        case .music:
+            tool = .music
+            selectedMusicID = bar.id
         }
     }
 
     /// Moves a bar so it starts at `start` (edited seconds), keeping its length.
     func moveBar(_ bar: LayerBar, toStart start: TimeInterval) {
+        guard bar.kind != .music else {
+            moveMusic(bar.id, toStart: start)
+            return
+        }
         let length = bar.span.duration
         let limits = room(for: bar)
         let from = min(max(start, limits.start), max(limits.start, limits.end - length))
@@ -121,11 +133,16 @@ extension QuickEditViewModel {
     /// Moves one end of a bar to `time` (edited seconds).
     func resizeBar(_ bar: LayerBar, edge: LayerEdge, to time: TimeInterval) {
         guard bar.canResize else { return }
+        guard bar.kind != .music else {
+            resizeMusic(bar.id, edge: edge, to: time)
+            return
+        }
         let limits = room(for: bar)
         let shortest = switch bar.kind {
         case .text: TextOverlay.minimumDuration
         case .caption: CaptionCue.minimumDuration
         case .media, .voiceOver: MediaOverlay.minimumDuration
+        case .music: MusicClip.minimumDuration
         }
         var span = bar.span
         switch edge {
@@ -184,6 +201,8 @@ extension QuickEditViewModel {
                 snapshot.voiceOvers[index].anchor = pinned.span.start
                 snapshot.voiceOvers[index].clipAnchor = pinned.anchor
             }
+        case .music:
+            moveMusic(bar.id, toStart: span.start)
         }
     }
 }

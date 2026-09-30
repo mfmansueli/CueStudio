@@ -139,7 +139,7 @@ extension QuickEditViewModel {
         switch bar.kind {
         case .text: keyframes(of: .text(bar.id)).map(\.time).filter { $0 <= bar.span.duration }
         case .media: keyframes(of: .media(bar.id)).map(\.time).filter { $0 <= bar.span.duration }
-        case .caption, .voiceOver: []
+        case .caption, .voiceOver, .music: []
         }
     }
 

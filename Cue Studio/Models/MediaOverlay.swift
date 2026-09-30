@@ -39,6 +39,11 @@ nonisolated struct MediaOverlay: Codable, Hashable, Identifiable, Sendable {
     /// Where it goes, how big and how opaque over its own time; nil or empty stands still.
     var keyframes: [OverlayKeyframe]?
 
+    /// Whether a video has its own sound; nil for media added before sound could play.
+    var hasSound: Bool?
+    /// A video's own sound, 0 to 1; nil plays it muted (as every video over the take did before).
+    var audioVolume: Double?
+
     /// `layer`, with media from before stacking at the bottom.
     var stackOrder: Int { layer ?? 0 }
     var layout: MediaLayout = .fullFrame

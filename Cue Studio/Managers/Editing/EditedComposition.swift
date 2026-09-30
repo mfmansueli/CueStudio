@@ -8,8 +8,9 @@ import CoreImage
 
 /// A take with its Quick edit applied, ready to play or export: the timeline's pieces joined in
 /// order at their speed, the processed sound (dipped for a moment at each cut so it never clicks)
-/// with the voice-overs mixed in, and a video composition that crops, adjusts and overlays every
-/// frame: B-roll, texts and captions.
+/// with the voice-overs, the music (lower while someone speaks, when it ducks) and the sound of
+/// videos laid over the take mixed in, and a video composition that crops, adjusts and overlays
+/// every frame: B-roll, texts and captions.
 ///
 /// Everything added on top is placed with `edit.timeline`, which is the edit itself for an export
 /// and the edit grown to the whole recording (`EditTimeline.reachable`) for the preview: texts,
@@ -22,6 +23,9 @@ import CoreImage
 ///
 /// Photos and videos laid over the take show one at a time: videos share one more video track,
 /// read only while one shows.
+///
+/// Music belongs to the edit, not to what is said: it's placed on the edit's own seconds, which in
+/// the preview start `Options.window.start` into the grown timeline.
 nonisolated struct EditedComposition: @unchecked Sendable {
     /// How long the sound fades out and back in around a cut that removed something.
     static let cutFade: TimeInterval = 0.012
@@ -35,6 +39,9 @@ nonisolated struct EditedComposition: @unchecked Sendable {
         var burnsInCaptions: Bool
         /// Height of the output's short side in pixels (1080 or 2160); nil keeps the recording's.
         var shortSide: CGFloat?
+        /// Where the edit itself is in `edit.timeline`: the preview plays the timeline grown to the
+        /// whole recording and holds playback here. Nil when the timeline is the edit.
+        var window: TimeSpan? = nil
     }
 
     /// A volume ramp on the edited timeline.
@@ -49,13 +56,20 @@ nonisolated struct EditedComposition: @unchecked Sendable {
         case noVideoTrack
     }
 
-    /// `processedAudio` replaces the take's sound when the Audio tool changed it. A montage's
+    /// `processedAudio` replaces the take's sound when the Voice tool changed it. A montage's
     /// other recordings (`TakeEdit.sources`) are read from the edit's media; one that can't be read
-    /// plays black and silent for its length.
-    static func build(source: URL, edit: TakeEdit, processedAudio: URL?, options: Options) async throws -> EditedComposition {
+    /// plays black and silent for its length. `speech` is where someone speaks in the recordings,
+    /// for music that ducks.
+    static func build(
+        source: URL, edit: TakeEdit, processedAudio: URL?, speech: VoiceActivity = .none, options: Options
+    ) async throws -> EditedComposition {
         let take = try await Recording.load(AVURLAsset(url: source))
-        let takeAudio: AVAssetTrack? = if let processedAudio {
-            try await AVURLAsset(url: processedAudio).loadTracks(withMediaType: .audio).first
+        // A track can't be read once its asset is gone, so the processed sound's asset is kept
+        // until the composition is built (like each `Recording`'s).
+        let processedAsset = processedAudio.map { AVURLAsset(url: $0) }
+        defer { withExtendedLifetime(processedAsset) {} }
+        let takeAudio: AVAssetTrack? = if let processedAsset {
+            try await processedAsset.loadTracks(withMediaType: .audio).first
         } else {
             take.audio
         }
@@ -114,10 +128,20 @@ nonisolated struct EditedComposition: @unchecked Sendable {
         // same way and scaled to the take's crop.
         let crop = cropRect(for: take, edit: edit)
         let renderSize = outputSize(for: crop.size, shortSide: options.shortSide)
+        // Each recording's background, prepared once; masks of this build are kept apart from others'.
+        let build = UUID().uuidString
+        var backgrounds: [UUID?: BackgroundRender] = [:]
+        for id in [nil] + edit.playedSources.map(\.id) as [UUID?] {
+            guard let effect = edit.background(for: id) else { continue }
+            backgrounds[id] = BackgroundRender.prepare(effect, cacheKey: build + (id?.uuidString ?? "take"))
+        }
         func frame(_ id: UUID?) -> SourceFrame {
             guard let played = recording(id) else { return SourceFrame(transform: .identity, crop: crop, scale: 1) }
             let own = id == nil ? crop : cropRect(for: played, edit: edit)
-            return SourceFrame(transform: played.transform, crop: own, scale: own.width > 0 ? crop.width / own.width : 1)
+            return SourceFrame(
+                transform: played.transform, crop: own, scale: own.width > 0 ? crop.width / own.width : 1,
+                background: backgrounds[id] ?? nil
+            )
         }
         var overlays = TextOverlayRenderer.overlays(edit.editedTexts(in: edit.timeline), frame: crop.size)
         if options.burnsInCaptions, edit.showsCaptions {
@@ -142,9 +166,12 @@ nonisolated struct EditedComposition: @unchecked Sendable {
                 )
             }
         }
-        let (mediaTracks, mediaFrames) = await placeMedia(of: edit, frame: crop.size, in: composition, duration: cursor)
+        let (mediaTracks, mediaFrames, mediaSounds) = await placeMedia(of: edit, frame: crop.size, in: composition, duration: cursor)
         let videoMedia = mediaFrames.filter(\.isVideo).map(\.span)
         let voices = await placeVoiceOvers(of: edit, in: composition)
+        let window = options.window ?? TimeSpan(start: 0, end: cursor.seconds)
+        let spoken = speech.editedSpans(in: edit.timeline) + edit.voiceOvers.compactMap { $0.editedSpan(in: edit.timeline) }
+        let music = await placeMusic(of: edit, window: window, speech: spoken, in: composition)
         let fadeWindows = windows.filter { $0.transition == .fade }
         let outputScale = crop.width > 0 ? renderSize.width / crop.width : 1
         let timeline = edit.timeline
@@ -191,12 +218,14 @@ nonisolated struct EditedComposition: @unchecked Sendable {
         return EditedComposition(
             asset: composition,
             videoComposition: AVVideoComposition(configuration: configuration),
-            audioMix: audioMix(for: audio, fades: fades(for: edit.timeline), voices: voices)
+            audioMix: audioMix(for: audio, fades: fades(for: edit.timeline), voices: voices + mediaSounds, music: music)
         )
     }
 
-    /// A recording's video and sound, and how its frames stand.
+    /// A recording's video and sound, and how its frames stand. Keeps its asset: its tracks can't
+    /// be inserted once the asset is gone.
     private struct Recording {
+        let asset: AVURLAsset
         let video: AVAssetTrack
         let audio: AVAssetTrack?
         let transform: CGAffineTransform
@@ -208,7 +237,7 @@ nonisolated struct EditedComposition: @unchecked Sendable {
             let (naturalSize, transform, frameRate) = try await video.load(.naturalSize, .preferredTransform, .nominalFrameRate)
             let upright = CGRect(origin: .zero, size: naturalSize).applying(transform)
             return Recording(
-                video: video, audio: try await asset.loadTracks(withMediaType: .audio).first, transform: transform,
+                asset: asset, video: video, audio: try await asset.loadTracks(withMediaType: .audio).first, transform: transform,
                 uprightSize: CGSize(width: abs(upright.width), height: abs(upright.height)), frameRate: frameRate
             )
         }
@@ -351,10 +380,11 @@ nonisolated struct EditedComposition: @unchecked Sendable {
     /// can't be read, or would need one track too many, is left out rather than failing the edit.
     private static func placeMedia(
         of edit: TakeEdit, frame size: CGSize, in composition: AVMutableComposition, duration: CMTime
-    ) async -> (tracks: [AVMutableCompositionTrack], frames: [MediaFrame]) {
+    ) async -> (tracks: [AVMutableCompositionTrack], frames: [MediaFrame], sounds: [(track: AVMutableCompositionTrack, volume: Float)]) {
         let placed = edit.editedMedia(in: edit.timeline)
-        guard !placed.isEmpty else { return ([], []) }
+        guard !placed.isEmpty else { return ([], [], []) }
         var frames: [MediaFrame] = []
+        var sounds: [(track: AVMutableCompositionTrack, volume: Float)] = []
         var tracks: [(track: AVMutableCompositionTrack, filled: CMTime)] = []
         for entry in placed {
             let url = EditMediaFiles.url(for: entry.media.fileName)
@@ -395,6 +425,10 @@ nonisolated struct EditedComposition: @unchecked Sendable {
                     continue
                 }
                 tracks[slot].filled = end
+                if let volume = entry.media.audioVolume, volume > 0,
+                   let sound = await placeSound(of: asset, from: start, to: end, in: composition) {
+                    sounds.append((sound, Float(min(max(volume, 0), 1))))
+                }
                 var frame = MediaFrame(
                     span: TimeSpan(start: start.seconds, end: end.seconds), rect: rect, image: nil, transform: transform,
                     trackID: track.trackID, layer: entry.media.stackOrder
@@ -408,7 +442,57 @@ nonisolated struct EditedComposition: @unchecked Sendable {
         }
         let used = tracks.map(\.track).filter { track in frames.contains { $0.trackID == track.trackID } }
         for (track, _) in tracks where !used.contains(where: { $0.trackID == track.trackID }) { composition.removeTrack(track) }
-        return (used, frames)
+        return (used, frames, sounds)
+    }
+
+    /// A video's own sound on a sound track of its own, from its start for as long as it shows.
+    private static func placeSound(
+        of asset: AVURLAsset, from start: CMTime, to end: CMTime, in composition: AVMutableComposition
+    ) async -> AVMutableCompositionTrack? {
+        guard let source = try? await asset.loadTracks(withMediaType: .audio).first,
+              let track = composition.addMutableTrack(withMediaType: .audio, preferredTrackID: kCMPersistentTrackID_Invalid)
+        else { return nil }
+        let available = (try? await source.load(.timeRange).duration) ?? (end - start)
+        do {
+            try track.insertTimeRange(CMTimeRange(start: .zero, duration: CMTimeMinimum(end - start, available)), of: source, at: start)
+        } catch {
+            composition.removeTrack(track)
+            return nil
+        }
+        return track
+    }
+
+    /// Each music clip that isn't muted on its own sound track, on the edit's seconds within
+    /// `window`, with how loud it is over time.
+    private static func placeMusic(
+        of edit: TakeEdit, window: TimeSpan, speech: [TimeSpan], in composition: AVMutableComposition
+    ) async -> [(track: AVMutableCompositionTrack, points: [MusicEnvelope.Point])] {
+        var placed: [(track: AVMutableCompositionTrack, points: [MusicEnvelope.Point])] = []
+        for clip in edit.music where !clip.isMuted {
+            let start = window.start + clip.start
+            let end = min(window.end, start + clip.length)
+            guard end - start >= 0.05 else { continue }
+            let asset = AVURLAsset(url: EditMediaFiles.url(for: clip.fileName))
+            guard let source = try? await asset.loadTracks(withMediaType: .audio).first,
+                  let track = composition.addMutableTrack(withMediaType: .audio, preferredTrackID: kCMPersistentTrackID_Invalid)
+            else { continue }
+            let range = CMTimeRange(
+                start: CMTime(seconds: clip.offset, preferredTimescale: 600),
+                duration: CMTime(seconds: end - start, preferredTimescale: 600)
+            )
+            do {
+                try track.insertTimeRange(range, of: source, at: CMTime(seconds: start, preferredTimescale: 600))
+            } catch {
+                composition.removeTrack(track)
+                continue
+            }
+            let points = MusicEnvelope.points(
+                span: TimeSpan(start: start, end: end), volume: clip.volume, fadeIn: clip.fadeIn, fadeOut: clip.fadeOut,
+                speech: clip.ducksUnderVoice ? speech : nil
+            )
+            placed.append((track, points))
+        }
+        return placed
     }
 
     /// Each voice-over on its own sound track, from where it starts, cut at the end of the edit.
@@ -464,9 +548,11 @@ nonisolated struct EditedComposition: @unchecked Sendable {
         return fades
     }
 
-    /// The take's sound with its dips, and each voice-over at its volume; nil with no sound at all.
+    /// The take's sound with its dips, each voice-over and video sound at its volume, and the music
+    /// along its envelope; nil with no sound at all.
     private static func audioMix(
-        for track: AVMutableCompositionTrack?, fades: [Fade], voices: [(track: AVMutableCompositionTrack, volume: Float)]
+        for track: AVMutableCompositionTrack?, fades: [Fade], voices: [(track: AVMutableCompositionTrack, volume: Float)],
+        music: [(track: AVMutableCompositionTrack, points: [MusicEnvelope.Point])]
     ) -> AVAudioMix? {
         var inputs: [AVMutableAudioMixInputParameters] = []
         if let track {
@@ -485,6 +571,20 @@ nonisolated struct EditedComposition: @unchecked Sendable {
         for voice in voices {
             let parameters = AVMutableAudioMixInputParameters(track: voice.track)
             parameters.setVolume(voice.volume, at: .zero)
+            inputs.append(parameters)
+        }
+        for clip in music {
+            let parameters = AVMutableAudioMixInputParameters(track: clip.track)
+            if let first = clip.points.first { parameters.setVolume(Float(first.volume), at: .zero) }
+            for (from, to) in zip(clip.points, clip.points.dropFirst()) where to.time - from.time > 0.000_1 {
+                parameters.setVolumeRamp(
+                    fromStartVolume: Float(from.volume), toEndVolume: Float(to.volume),
+                    timeRange: CMTimeRange(
+                        start: CMTime(seconds: from.time, preferredTimescale: 600),
+                        end: CMTime(seconds: to.time, preferredTimescale: 600)
+                    )
+                )
+            }
             inputs.append(parameters)
         }
         guard !inputs.isEmpty else { return nil }

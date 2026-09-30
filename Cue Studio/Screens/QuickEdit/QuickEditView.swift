@@ -154,11 +154,13 @@ struct QuickEditView: View {
         case .adjust: AdjustToolView(viewModel: viewModel)
         case .filters: FiltersToolView(viewModel: viewModel)
         case .crop: CropToolView(viewModel: viewModel)
+        case .background: BackgroundToolView(viewModel: viewModel)
         case .captions: CaptionsToolView(viewModel: viewModel)
         case .speed: SpeedToolView(viewModel: viewModel)
         case .text: TextToolView(viewModel: viewModel)
         case .media: MediaToolView(viewModel: viewModel)
         case .voiceOver: VoiceOverToolView(viewModel: viewModel)
+        case .music: MusicToolView(viewModel: viewModel)
         case .style: StyleToolView(viewModel: viewModel)
         case .cover: CoverToolView(viewModel: viewModel)
         }
@@ -226,12 +228,15 @@ struct QuickEditView: View {
         case .trim: 262 + tracksHeight
         case .cleanUp: 360
         case .text, .media: 300
+        case .music: viewModel.selectedMusic == nil ? 236 : 300
         case .voiceOver: 228
         case .speed: 244
         case .style: 250
         case .cover: 196
         case .captions: 340
-        case .audio, .adjust, .filters, .crop: 190
+        case .audio: 318
+        case .background: 330
+        case .adjust, .filters, .crop: 190
         }
     }
 

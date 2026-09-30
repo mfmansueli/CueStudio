@@ -65,6 +65,8 @@ enum Palette {
     static let info = Color(light: Color(hex: 0x32ADE6), dark: Color(hex: 0x64D2FF))
     static let infoSoft = Color(hex: 0x64D2FF, opacity: 0.1)
     static let success = Color(hex: 0x34C759)
+    /// Quick edit: the music track.
+    static let music = Color(hex: 0xBF5AF2)
 
     // MARK: - Platforms
 

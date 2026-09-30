@@ -27,9 +27,20 @@ protocol TakeEditing: AnyObject {
         forVideoAt url: URL, script: String, language: SpeechLanguageRequest,
         progress: @escaping @Sendable (CaptionProgress) -> Void
     ) async throws -> CaptionOutcome
-    /// The edited take for a player.
-    func previewItem(forVideoAt url: URL, edit: TakeEdit) async throws -> AVPlayerItem
+    /// The edited take for a player. `window` is where the edit itself is when `edit`'s timeline
+    /// was grown to the whole recording (the edit's music is placed from its start).
+    func previewItem(forVideoAt url: URL, edit: TakeEdit, window: TimeSpan?) async throws -> AVPlayerItem
+    /// The volume at which the take's untreated sound is as loud as the Voice tool's result, for
+    /// "Compare with original"; nil when the take has no speech to measure.
+    func matchedOriginalVolume(forVideoAt url: URL, edit: TakeEdit) async -> Double?
     /// The cover drawn as a JPEG (a frame or photo, cropped to the take's frame, with its title);
     /// nil when its picture can't be read.
     func coverImage(_ cover: VideoCover, forVideoAt url: URL, edit: TakeEdit) async -> Data?
+}
+
+extension TakeEditing {
+    /// The edited take for a player, when the timeline is the edit itself.
+    func previewItem(forVideoAt url: URL, edit: TakeEdit) async throws -> AVPlayerItem {
+        try await previewItem(forVideoAt: url, edit: edit, window: nil)
+    }
 }

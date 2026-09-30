@@ -27,10 +27,20 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
     var cleanUpAnalyzed = false
 
     // MARK: Audio
-    /// 0 to 1.5 (150%).
+    /// 0 to 1.5 (150%): the take's own sound.
     var volume: Double = 1
+    /// Version 1 treatment switches (edits made before the levels).
     var enhancesVoice = true
     var reducesNoise = false
+    /// Which treatment the take's sound gets (`VoiceProcessing`): 1 for edits made before the
+    /// levels below, so they keep sounding as they did; 2 for new ones.
+    var audioVersion = 2
+    var voiceEnhancement: AudioStrength = .soft
+    var noiseReduction: AudioStrength = .off
+    /// The creator's music and sounds, under the video.
+    var music: [MusicClip] = []
+    /// Backgrounds blurred or replaced, per recording.
+    var backgrounds: [RecordingBackground] = []
 
     // MARK: Look
     var exposure: Double = 0
@@ -263,9 +273,42 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
         return TextOverlay(role: role, look: TypePreset.cue.look(for: .title), preset: .cue, span: span)
     }
 
+    /// The background effect of the take (`nil`) or another recording, when it changes the picture.
+    func background(for sourceID: UUID?) -> BackgroundEffect? {
+        backgrounds.first { $0.sourceID == sourceID }.map(\.effect).flatMap { $0.isActive ? $0 : nil }
+    }
+
+    /// Sets a recording's background effect.
+    mutating func setBackground(_ effect: BackgroundEffect, for sourceID: UUID?) {
+        backgrounds.removeAll { $0.sourceID == sourceID }
+        // Settings stay while it's Original, so switching back finds them.
+        if effect != BackgroundEffect() {
+            backgrounds.append(RecordingBackground(sourceID: sourceID, effect: effect))
+        }
+    }
+
+    /// Whether any music goes down while someone speaks, so the voices need listening to.
+    var ducksMusic: Bool {
+        music.contains { !$0.isMuted && $0.ducksUnderVoice }
+    }
+
+    /// The other recordings the timeline plays.
+    var playedSources: [ClipSource] {
+        sources.filter { source in timeline.segments.contains { $0.sourceID == source.id } }
+    }
+
+    /// How the take's own sound is treated.
+    var voiceProcessing: VoiceProcessing {
+        VoiceProcessing(
+            version: audioVersion, volume: volume, enhancesVoice: enhancesVoice, reducesNoise: reducesNoise,
+            enhancement: voiceEnhancement, noise: noiseReduction
+        )
+    }
+
     /// Media files (B-roll, voice-overs, a cover photo) the edit reads.
     var mediaFileNames: Set<String> {
-        var names = Set(media.map(\.fileName) + voiceOvers.map(\.fileName) + sources.map(\.fileName))
+        var names = Set(media.map(\.fileName) + voiceOvers.map(\.fileName) + sources.map(\.fileName) + music.map(\.fileName))
+        names.formUnion(backgrounds.compactMap(\.effect.imageFileName))
         if case .photo(let name)? = cover?.source { names.insert(name) }
         return names
     }
@@ -273,7 +316,8 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
     // MARK: - Coding
 
     private enum CodingKeys: String, CodingKey {
-        case timeline, sources, suggestions, cleanUpAnalyzed, volume, enhancesVoice, reducesNoise, exposure, contrast, warmth, filter
+        case timeline, sources, suggestions, cleanUpAnalyzed, volume, enhancesVoice, reducesNoise,
+        audioVersion, voiceEnhancement, noiseReduction, music, backgrounds, exposure, contrast, warmth, filter
         case aspect, cropOffset, showsCaptions, captionStyle, captionLook, captionPreset, captionPosition, captions
         case captionTranscript, sourceTranscripts, captionLanguage, captionAnimation, captionTranslations, captionDisplay
         case texts, media, voiceOvers, creatorStyle, textLook, textPreset, cover
@@ -298,6 +342,12 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
         volume = try container.decodeIfPresent(Double.self, forKey: .volume) ?? 1
         enhancesVoice = try container.decodeIfPresent(Bool.self, forKey: .enhancesVoice) ?? true
         reducesNoise = try container.decodeIfPresent(Bool.self, forKey: .reducesNoise) ?? false
+        // Edits saved before the levels keep the first treatment.
+        audioVersion = (try? container.decodeIfPresent(Int.self, forKey: .audioVersion)) ?? 1
+        voiceEnhancement = (try? container.decodeIfPresent(AudioStrength.self, forKey: .voiceEnhancement)) ?? (enhancesVoice ? .soft : .off)
+        noiseReduction = (try? container.decodeIfPresent(AudioStrength.self, forKey: .noiseReduction)) ?? (reducesNoise ? .soft : .off)
+        music = (try? container.decodeIfPresent([MusicClip].self, forKey: .music)) ?? []
+        backgrounds = (try? container.decodeIfPresent([RecordingBackground].self, forKey: .backgrounds)) ?? []
         exposure = try container.decodeIfPresent(Double.self, forKey: .exposure) ?? 0
         contrast = try container.decodeIfPresent(Double.self, forKey: .contrast) ?? 0
         warmth = try container.decodeIfPresent(Double.self, forKey: .warmth) ?? 0

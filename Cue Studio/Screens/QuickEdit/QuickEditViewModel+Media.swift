@@ -61,12 +61,27 @@ extension QuickEditViewModel {
             mediaDuration: imported.duration, span: pinned.span
         )
         media.clipAnchor = pinned.anchor
+        media.hasSound = imported.kind == .video ? imported.hasSound : nil
         media.layer = (edit.media.map(\.stackOrder).max() ?? -1) + 1
         change { $0.media.append(media) }
         selectedMediaID = media.id
+        // Muted until the creator says to keep its sound.
+        if imported.kind == .video, imported.hasSound { soundChoiceMediaID = media.id }
         player.pause()
         player.seek(to: start)
         toast.show(imported.kind == .photo ? String(localized: "Photo added") : String(localized: "Video added"))
+    }
+
+    /// Answers "keep its sound?" for a video just added: kept at full volume, or muted.
+    func chooseSound(for id: UUID, keeps: Bool) {
+        if soundChoiceMediaID == id { soundChoiceMediaID = nil }
+        if keeps { setMediaSoundVolume(id, 1) }
+    }
+
+    /// A video's own sound: 0 mutes it.
+    func setMediaSoundVolume(_ id: UUID, _ volume: Double) {
+        let clamped = min(max(volume, 0), 1)
+        updateMedia(id) { $0.audioVolume = clamped > 0.001 ? clamped : nil }
     }
 
     func selectMedia(_ id: UUID?) {
