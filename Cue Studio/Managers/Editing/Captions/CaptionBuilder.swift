@@ -24,14 +24,15 @@ nonisolated enum CaptionBuilder {
     /// A silence this long starts a new line.
     static let pauseBreak: TimeInterval = 0.6
     /// Lines from `heard`, with the script's spelling where it reliably matches.
-    static func captions(heard: [CaptionWord], script: String) -> [CaptionCue] {
-        group(aligned(heard: heard, script: script))
+    /// - Parameter language: what was heard, so the script is cut into words the same way.
+    static func captions(heard: [CaptionWord], script: String, language: CueLanguage? = nil) -> [CaptionCue] {
+        group(aligned(heard: heard, script: script, language: language))
     }
 
     /// `heard` with the script's spelling and punctuation on the words that reliably match it.
     /// Same words, same times, same order.
-    static func aligned(heard: [CaptionWord], script: String) -> [CaptionWord] {
-        let written = CaptionText.words(in: CueParser.stripCues(script))
+    static func aligned(heard: [CaptionWord], script: String, language: CueLanguage? = nil) -> [CaptionWord] {
+        let written = CaptionText.words(in: CueParser.stripCues(script), language: language)
         guard !heard.isEmpty, !written.isEmpty else { return heard }
         var result = heard
         let keys = heard.map { WordAlignment.key($0.text) }

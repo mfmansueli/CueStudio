@@ -45,7 +45,7 @@ final class TakeReviewViewModel {
     private let profile: CreatorProfileService
     private let preferences: PreferencesService
     private let toast: ToastService
-    /// What a script is heard in (`LanguageService.speechRequest(for:)`).
+    /// What a script is heard in for captions (`LanguageService.captionRequest(for:)`).
     private let speechLanguageFor: (Script?) -> SpeechLanguageRequest
 
     init(

@@ -14,6 +14,9 @@ import Foundation
 /// script matches nothing, so the text waits.
 nonisolated struct ScriptSpeechTracker: Equatable, Sendable {
     let words: [String]
+    /// The language it's read in: what's heard is cut into words the way the script was
+    /// (`ScriptWords(text:language:)`).
+    let language: CueLanguage?
     /// Index of the next word to read; `words.count` once the whole script has been read.
     private(set) var position = 0
 
@@ -29,8 +32,9 @@ nonisolated struct ScriptSpeechTracker: Equatable, Sendable {
     private static let mismatch = -1
     private static let gap = -1
 
-    init(words: [String]) {
+    init(words: [String], language: CueLanguage? = nil) {
         self.words = words
+        self.language = language
     }
 
     mutating func reset(to position: Int) {
@@ -41,7 +45,7 @@ nonisolated struct ScriptSpeechTracker: Equatable, Sendable {
     /// position moved.
     @discardableResult
     mutating func hear(_ transcript: String) -> Bool {
-        let heard = Array(ScriptWords.tokens(in: transcript).suffix(Self.heardWindow))
+        let heard = Array(ScriptWords.tokens(in: transcript, language: language).suffix(Self.heardWindow))
         guard !heard.isEmpty, position < words.count else { return false }
         let window = max(0, position - Self.lookBehind)..<min(words.count, position + Self.lookAhead)
         guard let lastRead = bestMatch(for: heard, in: window), lastRead + 1 > position else { return false }

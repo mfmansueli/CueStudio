@@ -12,8 +12,8 @@ import Foundation
 extension QuickEditViewModel {
     // MARK: - Making captions
 
-    /// The language captions listen in: the one picked for this take, else Voice Following's or the
-    /// script's. Never the interface's.
+    /// The language captions listen in: the one picked for this take, else the script's (its own,
+    /// or read from its text). Never Voice Following's or the interface's.
     var captionSpeechLanguage: SpeechLanguageRequest {
         edit.captionLanguage.map(SpeechLanguageRequest.language) ?? speechLanguage
     }
@@ -90,8 +90,8 @@ extension QuickEditViewModel {
         captionState = .cancelled
     }
 
-    /// Picks the language spoken in the take (nil: Voice Following's or the script's). Listening in
-    /// another language stops, so its result can't land on this choice.
+    /// Picks the language spoken in the take (nil: the script's). Listening in another language
+    /// stops, so its result can't land on this choice.
     func setCaptionLanguage(_ language: CueLanguage?) {
         guard language != edit.captionLanguage else { return }
         if captionState.isWorking { cancelCaptions() }

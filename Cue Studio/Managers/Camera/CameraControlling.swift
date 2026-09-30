@@ -22,9 +22,10 @@ protocol CameraControlling: AnyObject {
     func startRecording(settings: CameraSettings) async throws
     /// Nil when the recording failed.
     func stopRecording() async -> RecordedClip?
-    /// Recorded audio power in dBFS, for Voice follow. Nil without audio.
-    func audioPowerLevel() async -> Float?
     /// Sends the microphone audio to `handler` (on an audio queue), for Voice follow's speech
     /// recognition. Nil stops it.
     func setAudioHandler(_ handler: (@Sendable (AVAudioPCMBuffer) -> Void)?)
+    /// Sends each microphone buffer's level to `handler` (on an audio queue) as it arrives, for
+    /// Voice follow's speaking indicator. Nil stops it.
+    func setLevelHandler(_ handler: (@Sendable (AudioLevelSample) -> Void)?)
 }

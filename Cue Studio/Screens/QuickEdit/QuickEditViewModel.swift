@@ -163,8 +163,10 @@ final class QuickEditViewModel {
     /// The library of takes (a montage adds others from it).
     let takes: TakeLibraryService
     private let drafts: QuickEditDraftStoring
-    /// What a script is heard in (`LanguageService.speechRequest(for:)`).
+    /// What a script is heard in for captions and Clean Up (`LanguageService.captionRequest(for:)`).
     private let speechLanguageFor: (Script?) -> SpeechLanguageRequest
+    /// Voice Following's language when it differs from the captions' (`LanguageService.languageConflict(for:)`).
+    private let languageConflictFor: (Script?) -> SpeechLanguageConflict?
     /// The take's edit when Quick edit opened.
     private var original: TakeEdit
     /// The timeline when a handle drag started. Every move of the drag starts again from it, so a
@@ -184,9 +186,11 @@ final class QuickEditViewModel {
         drafts: QuickEditDraftStoring, toast: ToastService, player: EditPlayback? = nil,
         mediaImporter: EditMediaImporting? = nil, recorder: VoiceOverRecording? = nil, styles: TextStyleStoring? = nil,
         translations: TranslationAvailabilityChecking = AppleTranslationAvailability(),
-        speechLanguage: @escaping (Script?) -> SpeechLanguageRequest = SpeechLanguageRequest.script
+        speechLanguage: @escaping (Script?) -> SpeechLanguageRequest = SpeechLanguageRequest.script,
+        languageConflict: @escaping (Script?) -> SpeechLanguageConflict? = { _ in nil }
     ) {
         self.take = take
+        languageConflictFor = languageConflict
         self.styles = styles ?? TextStyleStore()
         self.translations = translations
         myStyle = self.styles.myStyle
@@ -736,9 +740,17 @@ final class QuickEditViewModel {
         library.script(id: take.scriptID)?.text ?? ""
     }
 
-    /// The language the take is heard in, for captions and Clean Up: Voice Following's.
+    /// The language the take is heard in, for captions and Clean Up: the script's (never Voice
+    /// Following's or the interface's).
     var speechLanguage: SpeechLanguageRequest {
         speechLanguageFor(library.script(id: take.scriptID))
+    }
+
+    /// Said under Captions while they listen in the script's language (Automatic) and Voice
+    /// Following listens in another one, so the two never disagree silently.
+    var captionLanguageConflict: SpeechLanguageConflict? {
+        guard edit.captionLanguage == nil else { return nil }
+        return languageConflictFor(library.script(id: take.scriptID))
     }
 
     // MARK: - Leaving

@@ -121,12 +121,12 @@ final class CameraManager: CameraControlling {
         return clip
     }
 
-    func audioPowerLevel() async -> Float? {
-        await engine.audioPowerLevel()
-    }
-
     func setAudioHandler(_ handler: (@Sendable (AVAudioPCMBuffer) -> Void)?) {
         engine.setAudioHandler(handler)
+    }
+
+    func setLevelHandler(_ handler: (@Sendable (AudioLevelSample) -> Void)?) {
+        engine.setLevelHandler(handler)
     }
 
     // MARK: - Permissions

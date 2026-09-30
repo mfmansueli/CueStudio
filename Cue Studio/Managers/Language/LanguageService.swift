@@ -84,6 +84,29 @@ final class LanguageService {
         )
     }
 
+    // MARK: - Captions and Clean Up
+
+    /// What a take is heard in for captions and Clean Up: the script's language, or read from its
+    /// text on Auto-detect; a take without a script, the Script Language new scripts start in, else
+    /// the iPhone's. Neither Voice Following's language nor the interface's takes part.
+    func captionRequest(for script: Script?) -> SpeechLanguageRequest {
+        SpeechLanguageRequest(
+            voiceFollowing: nil,
+            scriptLanguage: script == nil ? scriptLanguage : script?.language,
+            scriptText: script?.text ?? "",
+            systemLanguages: store.systemLanguages
+        )
+    }
+
+    /// When Voice Following listens for `script` in another language than its captions do (a
+    /// Voice Following language picked in Language & Region), which two. Nil when they agree.
+    func languageConflict(for script: Script?) -> SpeechLanguageConflict? {
+        guard let script, let listening = voiceFollowingLanguage,
+              let captions = script.language ?? LanguageDetector.language(in: script.text),
+              captions != listening else { return nil }
+        return SpeechLanguageConflict(voiceFollowing: listening, captions: captions)
+    }
+
     // MARK: - Storage
 
     private static func interfaceLanguage(chosen: CueLanguage?, store: AppLanguageStoring) -> CueLanguage {

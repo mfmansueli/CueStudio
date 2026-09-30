@@ -12,8 +12,10 @@ import Speech
 ///
 /// `SpeechTranscriber` recognizes every language it supports here, exactly as it always has;
 /// `DictationTranscriber`, from the same framework, takes the languages (and devices) it doesn't.
-/// The first time a language is used its model may need a download; until it's ready, Voice follow
-/// falls back to the microphone level.
+/// The first time a language is used its model may need a download, of that language only, and
+/// the prompter says so while it runs; until it's ready, Voice follow falls back to the microphone
+/// level. A model stays loaded for a while after a stop (`lingering`), so turning Voice Following
+/// off and on again, or reopening the prompter, doesn't load it again.
 @MainActor
 @Observable
 final class SpeechRecognitionManager: SpeechTranscribing {
@@ -33,9 +35,12 @@ final class SpeechRecognitionManager: SpeechTranscribing {
         self.resolver = resolver
     }
 
-    func start(script: String, language: SpeechLanguageRequest) async -> SpeechStartResult {
+    func start(
+        script: String, language: SpeechLanguageRequest, preparation: @escaping (SpeechPreparation) -> Void
+    ) async -> SpeechStartResult {
         stop()
         let current = generation
+        preparation(.preparing)
         let route: SpeechRoute
         switch await resolver.resolve(language, scriptText: script) {
         case .success(let resolved): route = resolved
@@ -46,17 +51,18 @@ final class SpeechRecognitionManager: SpeechTranscribing {
         do {
             await Self.reserve(route.locale)
             if let request = try await AssetInventory.assetInstallationRequest(supporting: modules) {
-                do {
-                    try await request.downloadAndInstall()
-                } catch {
+                guard current == generation else { return .cancelled }
+                guard await download(request, of: route.language, preparation: preparation) else {
                     return current == generation ? .unavailable(.needsDownload(route.language)) : .cancelled
                 }
+                guard current == generation else { return .cancelled }
+                preparation(.preparing)
             }
             let format = await SpeechAnalyzer.bestAvailableAudioFormat(compatibleWith: modules)
             guard current == generation else { return .cancelled }
             // Installed but unable to take audio: the model can't run here (the simulator).
             guard let format else { return .unavailable(.noRecognition) }
-            let analyzer = SpeechAnalyzer(modules: modules, options: SpeechAnalyzer.Options(priority: .userInitiated, modelRetention: .whileInUse))
+            let analyzer = SpeechAnalyzer(modules: modules, options: SpeechAnalyzer.Options(priority: .userInitiated, modelRetention: .lingering))
             let context = AnalysisContext()
             context.contextualStrings[.general] = Self.vocabulary(in: script)
             try? await analyzer.setContext(context)
@@ -71,7 +77,7 @@ final class SpeechRecognitionManager: SpeechTranscribing {
             self.analyzer = analyzer
             self.input = input
             let transcripts = listen(to: module)
-            let feed = AudioFeed(converter: AnalyzerInputConverter(analyzerFormat: format), input: input)
+            let feed = AudioFeed(analyzerFormat: format, input: input)
             return .listening(SpeechTranscription(audio: { feed.append($0) }, transcripts: transcripts), route)
         } catch {
             return current == generation ? .unavailable(.couldNotStart) : .cancelled
@@ -176,6 +182,26 @@ final class SpeechRecognitionManager: SpeechTranscribing {
 
     // MARK: - Assets
 
+    /// Downloads the language's model, telling `preparation` how far along it is. False when the
+    /// download failed (no internet, most often).
+    private func download(_ request: AssetInstallationRequest, of language: CueLanguage?, preparation: @escaping (SpeechPreparation) -> Void) async -> Bool {
+        preparation(.downloading(language, progress: nil))
+        let watcher = Task {
+            // The system's download reports its own progress; read it while it runs.
+            while !Task.isCancelled {
+                preparation(.downloading(language, progress: request.progress.fractionCompleted))
+                try? await Task.sleep(for: .milliseconds(250))
+            }
+        }
+        defer { watcher.cancel() }
+        do {
+            try await request.downloadAndInstall()
+            return true
+        } catch {
+            return false
+        }
+    }
+
     /// Keeps the language's model on the device. The system holds a few reserved languages at a
     /// time; when they're taken, the oldest other one makes room, so a new language still works.
     private static func reserve(_ locale: Locale) async {
@@ -188,13 +214,14 @@ final class SpeechRecognitionManager: SpeechTranscribing {
         }
     }
 
-    /// Names, brands and numbers a general model may not expect, as recognition hints.
+    /// Names, brands and numbers a general model may not expect, as recognition hints. Text
+    /// written without spaces has no word boundaries to cut a name out by, so it gives none.
     private static func vocabulary(in script: String) -> [String] {
         var seen = Set<String>()
         var result: [String] = []
         for word in CueParser.stripCues(script).split(whereSeparator: \.isWhitespace) {
             let trimmed = word.trimmingCharacters(in: .punctuationCharacters)
-            guard trimmed.count >= 3,
+            guard trimmed.count >= 3, !WordSegmenter.containsUnspacedScript(trimmed),
                   trimmed.first?.isUppercase == true || trimmed.contains(where: \.isNumber),
                   seen.insert(trimmed.lowercased()).inserted else { continue }
             result.append(trimmed)
@@ -205,22 +232,34 @@ final class SpeechRecognitionManager: SpeechTranscribing {
 
     // MARK: - Audio
 
-    /// Converts microphone buffers to the analyzer's format on the audio thread.
+    /// Converts microphone buffers to the analyzer's format on the audio thread. A new converter
+    /// takes over when the buffers change format (the camera's audio and Studio's meter differ), so
+    /// one recognition runs across a switch between Selfie and Studio.
     private nonisolated final class AudioFeed: Sendable {
         private let lock = NSLock()
-        // Only touched while holding `lock`. A `Mutex` can't hold it: converting ties each
+        // Only touched while holding `lock`. A `Mutex` can't hold them: converting ties each
         // caller's buffer to the converter, which region checking rejects.
-        private nonisolated(unsafe) let converter: AnalyzerInputConverter
+        private nonisolated(unsafe) var converter: AnalyzerInputConverter?
+        private nonisolated(unsafe) var sourceFormat: AVAudioFormat?
+        private let analyzerFormat: AVAudioFormat
         private let input: AsyncStream<AnalyzerInput>.Continuation
 
-        init(converter: AnalyzerInputConverter, input: AsyncStream<AnalyzerInput>.Continuation) {
-            self.converter = converter
+        init(analyzerFormat: AVAudioFormat, input: AsyncStream<AnalyzerInput>.Continuation) {
+            self.analyzerFormat = analyzerFormat
             self.input = input
         }
 
         func append(_ buffer: AVAudioPCMBuffer) {
             let converted = lock.withLock {
-                (try? converter.convert(buffer, at: nil)) ?? []
+                var items: [AnalyzerInput] = []
+                if converter == nil || sourceFormat != buffer.format {
+                    // What the old converter still holds goes first.
+                    items += (try? converter?.flush()) ?? []
+                    converter = AnalyzerInputConverter(analyzerFormat: analyzerFormat)
+                    sourceFormat = buffer.format
+                }
+                items += (try? converter?.convert(buffer, at: nil)) ?? []
+                return items
             }
             for item in converted {
                 input.yield(item)

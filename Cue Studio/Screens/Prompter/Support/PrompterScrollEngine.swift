@@ -42,19 +42,19 @@ nonisolated struct PrompterScrollEngine: Equatable, Sendable {
         return isAtEnd
     }
 
-    /// How quickly Voice follow catches up with the reader: about two thirds of the way in this
-    /// many seconds. Recognition arrives in bursts of a word or two; easing turns them into a
-    /// steady scroll.
+    /// How quickly Voice follow catches up with the reader by default: about two thirds of the way
+    /// in this many seconds. Recognition arrives in bursts of a word or two; easing turns them
+    /// into a steady scroll. `VoiceGlide` picks a time for each correction.
     static let glideTime: Double = 0.35
 
-    /// Eases toward `target` for Voice follow, never backward. Returns true when this step reached
-    /// the end.
+    /// Eases toward `target` for Voice follow, never backward: about two thirds of the way in
+    /// `glideTime` seconds. Returns true when this step reached the end.
     @discardableResult
-    mutating func glide(toward target: Double, by seconds: Double) -> Bool {
-        guard !isAtEnd, seconds > 0 else { return false }
+    mutating func glide(toward target: Double, by seconds: Double, glideTime: Double = Self.glideTime) -> Bool {
+        guard !isAtEnd, seconds > 0, glideTime > 0 else { return false }
         let goal = min(endOffset, target)
         guard goal > offset else { return false }
-        let remaining = (goal - offset) * exp(-seconds / Self.glideTime)
+        let remaining = (goal - offset) * exp(-seconds / glideTime)
         offset = remaining < 0.5 ? goal : goal - remaining
         return isAtEnd
     }

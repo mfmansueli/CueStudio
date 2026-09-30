@@ -21,7 +21,8 @@ struct QuickEditCaptionsTests {
     }
 
     private func makeScenario(
-        script: Script? = TestData.script(text: "Okay, real talk."), editor: FakeTakeEditor = FakeTakeEditor()
+        script: Script? = TestData.script(text: "Okay, real talk."), editor: FakeTakeEditor = FakeTakeEditor(),
+        languages: LanguageService? = nil
     ) async -> Scenario {
         var take = TestData.take(scriptID: script?.id, number: 3)
         take.duration = 64
@@ -34,10 +35,42 @@ struct QuickEditCaptionsTests {
         let viewModel = QuickEditViewModel(
             take: takes.takes[0], takes: takes, library: library, editing: editor,
             drafts: FakeDraftStore(), toast: toast, player: player,
-            mediaImporter: FakeMediaImporter(), recorder: FakeVoiceRecorder(), styles: FakeTextStyleStore()
+            mediaImporter: FakeMediaImporter(), recorder: FakeVoiceRecorder(), styles: FakeTextStyleStore(),
+            speechLanguage: { languages?.captionRequest(for: $0) ?? SpeechLanguageRequest.script($0) },
+            languageConflict: { languages?.languageConflict(for: $0) }
         )
         await viewModel.prepare()
         return Scenario(viewModel: viewModel, editor: editor, player: player, toast: toast)
+    }
+
+    // MARK: - Language
+
+    /// Captions and Clean Up hear the take in the script's language, even when Voice Following
+    /// listens in another one, and Captions say so until a language is picked.
+    @Test func captionsListenInTheScriptsLanguageAndSaySoWhenVoiceFollowingDiffers() async {
+        let defaults = TestDefaults()
+        defer { defaults.tearDown() }
+        let languages = TestData.languages(defaults: defaults.defaults)
+        languages.voiceFollowingLanguage = .english
+        let script = TestData.script(text: "Esses são três hábitos.", language: .portugueseBrazil)
+        let scenario = await makeScenario(script: script, languages: languages)
+        let viewModel = scenario.viewModel
+        viewModel.makeCaptions()
+        await finish(viewModel)
+        #expect(scenario.editor.captionLanguage == .language(.portugueseBrazil))
+        #expect(viewModel.captionLanguageConflict == SpeechLanguageConflict(voiceFollowing: .english, captions: .portugueseBrazil))
+        viewModel.setCaptionLanguage(.english)
+        #expect(viewModel.captionLanguageConflict == nil)
+    }
+
+    @Test func noNoteWhenVoiceFollowingListensInTheScriptsLanguage() async {
+        let defaults = TestDefaults()
+        defer { defaults.tearDown() }
+        let languages = TestData.languages(defaults: defaults.defaults)
+        let script = TestData.script(text: "Esses são três hábitos.", language: .portugueseBrazil)
+        let scenario = await makeScenario(script: script, languages: languages)
+        #expect(scenario.viewModel.captionLanguageConflict == nil)
+        #expect(scenario.viewModel.speechLanguage == .language(.portugueseBrazil))
     }
 
     /// Waits for the listening started by `makeCaptions`.

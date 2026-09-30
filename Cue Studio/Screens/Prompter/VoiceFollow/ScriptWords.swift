@@ -14,22 +14,28 @@ nonisolated struct ScriptWords: Equatable, Sendable {
         let fraction: Double
     }
 
-    /// Normalized words (see `tokens(in:)`). Cues are not spoken, so they are left out.
+    /// Matching keys of the words (see `tokens(in:language:)`). Cues are not spoken, so they are
+    /// left out.
     let tokens: [String]
     let locations: [Location]
 
     var count: Int { tokens.count }
 
     /// Paragraphs are the same ones the prompter shows (`CueParser.paragraphs(in:)`).
-    init(text: String) {
+    /// - Parameter language: the language it's read in, so words are cut and numbers spelled the
+    ///   way the transcription's will be.
+    init(text: String, language: CueLanguage? = nil) {
         var tokens: [String] = []
         var locations: [Location] = []
         for (index, paragraph) in CueParser.paragraphs(in: text).enumerated() {
             let spoken = CueParser.stripCues(paragraph)
             let length = Double(max(1, spoken.count))
-            for word in Self.words(in: spoken) {
-                tokens.append(word.token)
-                locations.append(Location(paragraph: index, fraction: Double(word.offset) / length))
+            for word in WordTokenizer.words(in: spoken, language: language) {
+                // A number spelled out is several words at the number's place.
+                for key in WordTokenizer.matchingKeys(of: word.text, language: language) {
+                    tokens.append(key)
+                    locations.append(Location(paragraph: index, fraction: Double(word.offset) / length))
+                }
             }
         }
         self.tokens = tokens
@@ -37,9 +43,10 @@ nonisolated struct ScriptWords: Equatable, Sendable {
     }
 
     /// Lowercased words without accents or punctuation, so the script's "Você," matches a
-    /// transcription's "voce". Apostrophes join ("don't" → "dont"); other symbols split.
-    static func tokens(in text: String) -> [String] {
-        words(in: text).map(\.token)
+    /// transcription's "voce". Apostrophes join ("don't" → "dont"); other symbols split. Cut and
+    /// folded by `WordTokenizer`, the same as captions and Clean Up.
+    static func tokens(in text: String, language: CueLanguage? = nil) -> [String] {
+        WordTokenizer.matchingKeys(in: text, language: language)
     }
 
     // MARK: - Positions
@@ -62,6 +69,21 @@ nonisolated struct ScriptWords: Equatable, Sendable {
         return min(endOffset, frame.lowerBound + line * (height - lineHeight) / (lines - 1))
     }
 
+    /// The offset for a position between words (`3.4` is 40% of the way from the fourth word to
+    /// the fifth), for a text running a little ahead of the last word heard.
+    func offset(forPosition position: Double, paragraphFrames: [Range<Double>], lineHeight: Double, endOffset: Double) -> Double? {
+        let word = Int(position.rounded(.down))
+        guard let from = offset(forWord: word, paragraphFrames: paragraphFrames, lineHeight: lineHeight, endOffset: endOffset) else {
+            return nil
+        }
+        let fraction = position - Double(word)
+        guard fraction > 0,
+              let to = offset(forWord: word + 1, paragraphFrames: paragraphFrames, lineHeight: lineHeight, endOffset: endOffset) else {
+            return from
+        }
+        return from + (to - from) * fraction
+    }
+
     /// The first word at or past the guide at `offset`, to pick up from after a manual scroll.
     func wordIndex(atOffset offset: Double, paragraphFrames: [Range<Double>], lineHeight: Double, endOffset: Double) -> Int {
         tokens.indices.first { index in
@@ -70,42 +92,5 @@ nonisolated struct ScriptWords: Equatable, Sendable {
             }
             return wordOffset >= offset - 1
         } ?? count
-    }
-
-    // MARK: - Tokenizing
-
-    private static let joiners: Set<Character> = ["'", "\u{2019}", "\u{2018}"]
-
-    /// Each word with the character offset where it starts. Languages written without spaces
-    /// (Japanese, Chinese, Thai) have their runs of letters split into dictionary words, so the
-    /// transcription can be matched word by word as in any other language.
-    private static func words(in text: String) -> [(token: String, offset: Int)] {
-        var result: [(token: String, offset: Int)] = []
-        var current = ""
-        var start = 0
-        func finish() {
-            for segment in WordSegmenter.segments(of: current) {
-                result.append((normalized(segment.word), start + segment.offset))
-            }
-            current = ""
-        }
-        for (offset, character) in text.enumerated() {
-            if character.isLetter || character.isNumber {
-                if current.isEmpty { start = offset }
-                current.append(character)
-            } else if joiners.contains(character), !current.isEmpty {
-                continue
-            } else if !current.isEmpty {
-                finish()
-            }
-        }
-        if !current.isEmpty {
-            finish()
-        }
-        return result
-    }
-
-    private static func normalized(_ word: String) -> String {
-        word.folding(options: [.caseInsensitive, .diacriticInsensitive, .widthInsensitive], locale: nil).lowercased()
     }
 }

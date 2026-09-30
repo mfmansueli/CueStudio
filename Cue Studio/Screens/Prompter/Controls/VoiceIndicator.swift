@@ -5,13 +5,18 @@
 
 import SwiftUI
 
-/// Voice Following's status: a small waveform that moves with the mic level, and "Listening" or
-/// "Paused". In the Selfie toolbar it takes the speed slider's place, led by "AUTO" (the voice sets
-/// the speed); in Studio it sits inline, without its own background.
+/// Voice Following's status: a small waveform that moves with the mic level, and what it's doing
+/// ("Listening", "Paused", "Getting ready", "Downloading 40%"). In the Selfie toolbar it takes the
+/// speed slider's place, led by "AUTO" while the voice sets the pace word by word, or by the speed
+/// ("0.7×") while the text scrolls at it as the creator talks; in Studio it sits inline, without
+/// its own background.
 struct VoiceIndicator: View {
     /// 0...1
     let level: Double
     let isListening: Bool
+    var status: VoiceFollowStatus = .followingWords
+    /// The set speed, shown when the text moves at it.
+    var speedLabel = ""
     var fillsWidth = false
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
@@ -28,18 +33,20 @@ struct VoiceIndicator: View {
             .frame(height: 20)
             .animation(reduceMotion ? nil : .easeOut(duration: 0.12), value: level)
             if fillsWidth {
-                Text(isListening ? "Listening" : "Paused")
+                Text(status.shortLabel(isListening: isListening))
                     .font(.subheadline.weight(.semibold))
                     .foregroundStyle(Palette.acc)
             } else {
-                Text("AUTO")
-                    .font(.subheadline.weight(.bold))
+                Text(status.tag(speedLabel: speedLabel))
+                    .font(.subheadline.weight(.bold).monospacedDigit())
                     .kerning(0.5)
                     .foregroundStyle(Palette.acc)
-                Text(isListening ? "Listening" : "Paused")
-                    .font(.footnote)
+                    .fixedSize()
+                Text(status.shortLabel(isListening: isListening))
+                    .font(.footnote.monospacedDigit())
                     .foregroundStyle(Palette.ink2)
                     .lineLimit(1)
+                    .minimumScaleFactor(0.8)
             }
         }
         .padding(.horizontal, fillsWidth ? 16 : 14)
@@ -47,7 +54,7 @@ struct VoiceIndicator: View {
         .background(fillsWidth ? .clear : Palette.accSoft, in: Capsule())
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(Text("Voice Following"))
-        .accessibilityValue(Text(isListening ? "Listening" : "Paused"))
+        .accessibilityValue(Text(status.accessibilityValue(isListening: isListening, speedLabel: speedLabel)))
         .accessibilityIdentifier("prompter.voiceIndicator")
     }
 
@@ -61,8 +68,12 @@ struct VoiceIndicator: View {
 
 #if DEBUG
 #Preview {
-    VoiceIndicator(level: 0.7, isListening: true)
-        .padding()
-        .background(Color.black)
+    VStack {
+        VoiceIndicator(level: 0.7, isListening: true)
+        VoiceIndicator(level: 0.4, isListening: true, status: .scrollsWhileTalking, speedLabel: "0.7×")
+        VoiceIndicator(level: 0, isListening: false, status: .downloading(.thai, progress: 0.4), speedLabel: "0.7×")
+    }
+    .padding()
+    .background(Color.black)
 }
 #endif

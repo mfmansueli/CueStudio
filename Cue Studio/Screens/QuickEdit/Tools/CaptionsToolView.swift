@@ -14,6 +14,7 @@ struct CaptionsToolView: View {
     var body: some View {
         VStack(spacing: 10) {
             header
+            languageConflict
             status
             ScrollView {
                 VStack(spacing: 10) {
@@ -77,7 +78,7 @@ struct CaptionsToolView: View {
         }
     }
 
-    /// The language spoken in the take: automatic (Voice Following's or the script's) or picked.
+    /// The language spoken in the take: automatic (the script's) or picked.
     private var languageMenu: some View {
         Menu {
             Picker("Spoken language", selection: Binding(
@@ -98,6 +99,20 @@ struct CaptionsToolView: View {
         .accessibilityLabel(Text("Spoken language"))
         .accessibilityValue(Text(viewModel.edit.captionLanguage?.nativeName ?? String(localized: "Automatic")))
         .accessibilityIdentifier("edit.captionsLanguage")
+    }
+
+    /// Voice Following listens in another language than captions do (Automatic follows the
+    /// script's): said here, next to the language to pick.
+    @ViewBuilder
+    private var languageConflict: some View {
+        if let conflict = viewModel.captionLanguageConflict {
+            Text(conflict.message)
+                .font(.caption)
+                .foregroundStyle(Palette.warn)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .fixedSize(horizontal: false, vertical: true)
+                .accessibilityIdentifier("edit.captionsLanguageNote")
+        }
     }
 
     @ViewBuilder

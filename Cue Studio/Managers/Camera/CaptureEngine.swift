@@ -14,8 +14,8 @@ actor CaptureEngine {
     nonisolated var unownedExecutor: UnownedSerialExecutor { queue.asUnownedSerialExecutor() }
 
     private let movieOutput = AVCaptureMovieFileOutput()
-    /// Hands the microphone audio to Voice follow's speech recognition while it listens. Sits next
-    /// to the movie output (both may be active together since iOS 16).
+    /// Hands the microphone audio (and its level) to Voice follow while it listens. Sits next to
+    /// the movie output (both may be active together since iOS 16), so the recording is untouched.
     private let audioDataOutput = AVCaptureAudioDataOutput()
     private let audioTap = AudioBufferTap()
     private let audioQueue = DispatchSerialQueue(label: "studio.cue.capture.audio")
@@ -251,13 +251,14 @@ actor CaptureEngine {
         return clip
     }
 
-    /// Average power of the recorded audio in dBFS.
-    func audioPowerLevel() -> Float? {
-        movieOutput.connection(with: .audio)?.audioChannels.first?.averagePowerLevel
-    }
-
     /// Sends the microphone audio to `handler` on the capture audio queue. Nil stops it.
     nonisolated func setAudioHandler(_ handler: (@Sendable (AVAudioPCMBuffer) -> Void)?) {
         audioTap.setHandler(handler)
+    }
+
+    /// Sends each microphone buffer's level to `handler` as it arrives, on the capture audio
+    /// queue. It's the audio the movie records, so the level is the take's. Nil stops it.
+    nonisolated func setLevelHandler(_ handler: (@Sendable (AudioLevelSample) -> Void)?) {
+        audioTap.setLevelHandler(handler)
     }
 }

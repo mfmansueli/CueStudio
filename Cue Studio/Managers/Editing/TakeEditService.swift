@@ -76,7 +76,8 @@ final class TakeEditService: TakeEditing {
         }
         let words = heard.words.map { CaptionWord(text: $0.text, start: $0.start, end: $0.end, isEstimated: $0.isEstimated) }
         guard !words.isEmpty else { return .noSpeech }
-        let cues = await Task.detached { CaptionBuilder.captions(heard: words, script: script) }.value
+        let language = CueLanguage.matching(languageCode: heard.languageCode)
+        let cues = await Task.detached { CaptionBuilder.captions(heard: words, script: script, language: language) }.value
         try Task.checkCancellation()
         return .captions(cues, transcript: CaptionTranscript(words: words, languageCode: heard.languageCode))
     }

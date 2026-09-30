@@ -138,4 +138,55 @@ struct LanguageServiceTests {
         let script = TestData.script(text: "Here are three habits that changed my mornings.")
         #expect(service.speechRequest(for: script) == .detect(text: script.text, systemLanguages: ["it-IT"]))
     }
+
+    // MARK: - Captions and Clean Up
+
+    /// Captions hear a take in the script's language, whatever Voice Following listens in.
+    @Test func captionsListenInTheScriptsLanguage() {
+        let defaults = TestDefaults()
+        defer { defaults.tearDown() }
+        let service = makeService(defaults: defaults)
+        service.setAppLanguage(.english)
+        service.voiceFollowingLanguage = .english
+        let script = TestData.script(text: "Oi, gente!", language: .portugueseBrazil)
+        #expect(service.speechRequest(for: script) == .language(.english))
+        #expect(service.captionRequest(for: script) == .language(.portugueseBrazil))
+    }
+
+    /// A script on Auto-detect is read from its text, as it always was.
+    @Test func captionsOfAnAutoDetectScriptReadItsText() {
+        let defaults = TestDefaults()
+        defer { defaults.tearDown() }
+        let service = makeService(defaults: defaults)
+        service.voiceFollowingLanguage = .japanese
+        let script = TestData.script(text: "Here are three habits that changed my mornings.")
+        #expect(service.captionRequest(for: script) == .detect(text: script.text, systemLanguages: ["it-IT"]))
+    }
+
+    /// A take without a script: the language new scripts start in, else the iPhone's.
+    @Test func captionsOfAFreestyleTakeUseTheScriptLanguage() {
+        let defaults = TestDefaults()
+        defer { defaults.tearDown() }
+        let service = makeService(defaults: defaults)
+        service.voiceFollowingLanguage = .english
+        #expect(service.captionRequest(for: nil) == .detect(text: "", systemLanguages: ["it-IT"]))
+        service.scriptLanguage = .spanish
+        #expect(service.captionRequest(for: nil) == .language(.spanish))
+    }
+
+    /// Voice Following and captions never disagree silently.
+    @Test func aDifferentVoiceFollowingLanguageIsAConflict() {
+        let defaults = TestDefaults()
+        defer { defaults.tearDown() }
+        let service = makeService(defaults: defaults)
+        let portuguese = TestData.script(text: "Esses são três hábitos que mudaram as minhas manhãs.")
+        #expect(service.languageConflict(for: portuguese) == nil)
+        service.voiceFollowingLanguage = .portugueseBrazil
+        #expect(service.languageConflict(for: portuguese) == nil)
+        service.voiceFollowingLanguage = .english
+        let conflict = service.languageConflict(for: portuguese)
+        #expect(conflict == SpeechLanguageConflict(voiceFollowing: .english, captions: .portugueseBrazil))
+        #expect(conflict?.message.contains(CueLanguage.portugueseBrazil.localizedName) == true)
+        #expect(service.languageConflict(for: nil) == nil)
+    }
 }

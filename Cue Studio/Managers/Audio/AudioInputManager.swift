@@ -28,9 +28,6 @@ final class AudioInputManager: AudioLevelMetering, MicrophoneListing {
     private let tap = AudioBufferTap()
     @ObservationIgnored private var routeObserver: (any NSObjectProtocol)?
 
-    /// Average input power in dBFS (-160...0). Nil while not metering.
-    var powerLevel: Float? { engine == nil ? nil : tap.level }
-
     // MARK: - Inputs
 
     /// Lists the inputs available now (built-in, wired, Bluetooth, USB).
@@ -112,10 +109,13 @@ final class AudioInputManager: AudioLevelMetering, MicrophoneListing {
         engine?.inputNode.removeTap(onBus: 0)
         engine?.stop()
         engine = nil
-        tap.resetLevel()
     }
 
     func setAudioHandler(_ handler: (@Sendable (AVAudioPCMBuffer) -> Void)?) {
         tap.setHandler(handler)
+    }
+
+    func setLevelHandler(_ handler: (@Sendable (AudioLevelSample) -> Void)?) {
+        tap.setLevelHandler(handler)
     }
 }

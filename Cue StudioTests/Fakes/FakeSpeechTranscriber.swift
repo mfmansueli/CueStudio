@@ -15,6 +15,11 @@ final class FakeSpeechTranscriber: SpeechTranscribing {
     private(set) var stopCount = 0
     /// The language each start asked for.
     private(set) var requests: [SpeechLanguageRequest] = []
+    /// What a start reports waiting for before it answers, in order.
+    var preparationSteps: [SpeechPreparation] = []
+    /// Set, a start waits until `finishPreparing()`, the way a model loads or downloads.
+    var holdsStart = false
+    private var heldStart: CheckedContinuation<Void, Never>?
     private var continuation: AsyncStream<String>.Continuation?
 
     /// Kept for tests written before the reason existed.
@@ -23,9 +28,15 @@ final class FakeSpeechTranscriber: SpeechTranscribing {
         set { unavailable = newValue ? nil : .noRecognition }
     }
 
-    func start(script: String, language: SpeechLanguageRequest) async -> SpeechStartResult {
+    func start(
+        script: String, language: SpeechLanguageRequest, preparation: @escaping (SpeechPreparation) -> Void
+    ) async -> SpeechStartResult {
         startCount += 1
         requests.append(language)
+        for step in preparationSteps { preparation(step) }
+        if holdsStart {
+            await withCheckedContinuation { heldStart = $0 }
+        }
         if let unavailable { return .unavailable(unavailable) }
         let (transcripts, continuation) = AsyncStream.makeStream(of: String.self)
         self.continuation = continuation
@@ -45,5 +56,11 @@ final class FakeSpeechTranscriber: SpeechTranscribing {
 
     func say(_ transcript: String) {
         continuation?.yield(transcript)
+    }
+
+    /// Lets a held start answer.
+    func finishPreparing() {
+        heldStart?.resume()
+        heldStart = nil
     }
 }

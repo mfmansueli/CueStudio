@@ -14,7 +14,6 @@ final class FakeCamera: CameraControlling {
     var activeLens: CameraLens?
     var background = BackgroundEffect()
     var missingLenses: Set<CameraLens> = []
-    var audioLevel: Float?
     var failsToRecord = false
     var clipDuration: TimeInterval = 42
     private(set) var startCount = 0
@@ -24,6 +23,7 @@ final class FakeCamera: CameraControlling {
     private(set) var recordedSettings: [CameraSettings] = []
     private(set) var recordingsStarted = 0
     private(set) var audioHandler: (@Sendable (AVAudioPCMBuffer) -> Void)?
+    private(set) var levelHandler: (@Sendable (AudioLevelSample) -> Void)?
 
     func start(with settings: CameraSettings) async {
         startCount += 1
@@ -58,9 +58,16 @@ final class FakeCamera: CameraControlling {
         return RecordedClip(url: url, duration: clipDuration)
     }
 
-    func audioPowerLevel() async -> Float? { audioLevel }
-
     func setAudioHandler(_ handler: (@Sendable (AVAudioPCMBuffer) -> Void)?) {
         audioHandler = handler
+    }
+
+    func setLevelHandler(_ handler: (@Sendable (AudioLevelSample) -> Void)?) {
+        levelHandler = handler
+    }
+
+    /// A microphone buffer `duration` long at `level` dBFS, arriving at `time`.
+    func hear(level: Float, at time: TimeInterval, duration: TimeInterval = 1024.0 / 48_000) {
+        levelHandler?(AudioLevelSample(level: level, time: time, duration: duration))
     }
 }

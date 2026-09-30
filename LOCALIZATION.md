@@ -38,9 +38,24 @@ direction and whether it's written without spaces.
   Portuguese are recognized exactly as before), or `DictationTranscriber` from the same
   `SpeechAnalyzer` framework for languages or devices `SpeechTranscriber` doesn't cover. Availability
   is always asked of the device; an unavailable language says so (`SpeechUnavailableReason`) and is
-  never swapped for another one. The matching and scrolling (`ScriptSpeechTracker`) didn't change;
-  languages written without spaces are split into words by `WordSegmenter` (Natural Language).
-  Captions and Clean Up hear takes in the same language, through the same resolver.
+  never swapped for another one: the prompter shows the speed instead of "AUTO" and says the text
+  scrolls while the creator talks (`VoiceFollowStatus`). While the one language asked for loads or
+  downloads, the prompter says that too. The matching (`ScriptSpeechTracker`) didn't change; the
+  words it matches come from `WordTokenizer` (below).
+- **Captions and Clean Up:** hear a take in the **script's** language (`LanguageService.captionRequest`:
+  the script's own, read from its text on Auto-detect; a take without a script, the Script Language,
+  else the iPhone's), through the same resolver and recognizers. Never Voice Following's language:
+  when Voice Following listens in another one (picked in Language & Region), Captions say so
+  (`SpeechLanguageConflict`) next to the language picker, so the two never disagree silently.
+- **Words:** `WordTokenizer` is the one tokenizer for the script, what Voice Following hears,
+  caption transcription and Clean Up. Text with spaces splits at anything that isn't a letter or a
+  number (English and Portuguese split exactly as before); Japanese, Chinese and Thai are split
+  into dictionary words by `WordSegmenter` (Natural Language), told the language when it's known,
+  with digits apart; caption words keep their punctuation ("。" still ends a line). Matching folds
+  case, accents and width, Arabic alef/hamza forms, taa marbuta, alef maqsura, vowel marks and
+  tatweel, and Hindi nukta and chandrabindu; Thai and Devanagari vowel signs are letters and stay.
+  Numbers in digits are spelled out in the language (up to 9999: "3" matches "three", "três",
+  "三"). Clean Up keeps accents (Portuguese "é" is a filler, "e" never is).
 - **Scripts:** `Script.language` (nil = Auto-detect, read by `LanguageDetector`). The prompter reads
   a script in its own direction whatever the interface's (`ScriptDirection`). Translate creates a
   copy in the new language; the original is never changed. AI writing is told the language by its
@@ -122,7 +137,10 @@ names in **bold** stay in English in every language.
   instead of clipping; buttons keep their height and grow in width; chips flow (`FlowLayout`); fixed
   label widths are minimum widths.
 - Japanese, Chinese and Thai have no spaces between words: word counts, reading time and Voice
-  Following use `WordSegmenter`.
+  Following use `WordSegmenter` (Voice Following, captions and Clean Up through `WordTokenizer`).
+- Arabic: the prompter reads the script right to left (`ScriptDirection`), and Voice Following
+  matches it whatever the interface's direction; only the text's layout mirrors, never the reading
+  guide, the timeline or the video.
 
 ## 4. Speech recognition by language
 

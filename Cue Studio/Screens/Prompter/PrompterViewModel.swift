@@ -4,6 +4,7 @@
 //
 
 import Foundation
+import os
 
 /// Everything that happens while the prompter is open: scrolling, the camera, recording and the
 /// hand-off to take review. Reads and changes settings through `session` (the Creator Setup, the
@@ -36,6 +37,19 @@ final class PrompterViewModel {
     /// Why the words can't be followed in this language here, shown to the creator (once as a
     /// toast, and under the Studio controls). Never replaced by another language.
     private(set) var speechUnavailable: SpeechUnavailableReason?
+    /// What recognition waits for before it can follow the words: its model loading, or
+    /// downloading. Nil once it listens, or when it can't.
+    private(set) var speechPreparation: SpeechPreparation?
+    /// How quickly the text catches up with the words heard.
+    var voiceGlide = VoiceGlide()
+    /// How far, in words, the text may run ahead of the last word recognized while the creator
+    /// speaks (0 waits for every word).
+    var maximumSpeechLead: Double {
+        get { speechLead.maximumWords }
+        set { speechLead.maximumWords = newValue }
+    }
+    /// This session's Voice Following timings, for tuning (see `VoiceFollowMetrics`).
+    private(set) var voiceMetrics = VoiceFollowMetrics()
 
     // MARK: Presentation
     var sheet: PrompterSheet? {
@@ -78,9 +92,18 @@ final class PrompterViewModel {
     private var countdownTask: Task<Void, Never>?
     private var recordingClock: Task<Void, Never>?
     private var autoStopTask: Task<Void, Never>?
-    private var voiceTask: Task<Void, Never>?
+    private var levelTask: Task<Void, Never>?
     private var speechTask: Task<Void, Never>?
+    /// What the running recognition listens for. Another script or language starts a new one;
+    /// switching between Selfie and Studio keeps it.
+    private var speechSession: SpeechSession?
+    /// Bumped whenever recognition stops, so what a stopped start still reports is ignored.
+    private var speechGeneration = 0
+    private var transcription: SpeechTranscription?
     private var voiceGate = VoiceFollowGate()
+    private var speechLead = SpeechLead()
+    /// When the level meter last changed, so it redraws at most `levelInterval` apart.
+    private var levelShownAt: TimeInterval = 0
     private var scriptWords = ScriptWords(text: "")
     private var speechTracker = ScriptSpeechTracker(words: [])
     /// Vertical extent of each paragraph in the text, for placing words on the guide.
@@ -91,6 +114,17 @@ final class PrompterViewModel {
     private var noticedMicrophone: MicrophoneChoice?
     /// The unavailable language the creator was already told about, so the toast shows once.
     private var noticedSpeechUnavailable: SpeechUnavailableReason?
+    /// Seconds on the same clock as the microphone's buffers (`AudioLevelSample.time`).
+    private let clock: () -> TimeInterval
+
+    /// Script text and language a recognition was started for.
+    private struct SpeechSession: Equatable {
+        let text: String
+        let language: SpeechLanguageRequest
+    }
+
+    /// The level meter redraws at most this often; buffers arrive every 20–100 ms.
+    private static let levelInterval: TimeInterval = 0.05
 
     init(
         launch: PrompterLaunch,
@@ -105,7 +139,8 @@ final class PrompterViewModel {
         speech: SpeechTranscribing,
         languages: LanguageService,
         remote: RemoteControlService,
-        toast: ToastService
+        toast: ToastService,
+        clock: @escaping () -> TimeInterval = { ProcessInfo.processInfo.systemUptime }
     ) {
         scriptID = launch.scriptID
         mode = launch.mode
@@ -121,6 +156,7 @@ final class PrompterViewModel {
         self.languages = languages
         self.remote = remote
         self.toast = toast
+        self.clock = clock
         reviewingTake = takes.take(id: launch.reviewTakeID)
         openedOnReview = launch.reviewTakeID != nil
     }
@@ -202,12 +238,10 @@ final class PrompterViewModel {
     func disappear() async {
         countdownTask?.cancel()
         autoStopTask?.cancel()
-        voiceTask?.cancel()
-        stopFollowingSpeech()
+        stopVoiceMonitoring()
         pause()
         if isRecording { await stopRecording(openReview: false) }
         remote.detach()
-        audio.stopMetering()
         await camera.stop()
     }
 
@@ -219,6 +253,8 @@ final class PrompterViewModel {
     }
 
     private func enter(_ mode: PrompterMode) async {
+        // Recognition gets ready while the camera starts: neither needs the other.
+        startSpeechIfNeeded()
         switch mode {
         case .selfie:
             audio.stopMetering()
@@ -298,6 +334,8 @@ final class PrompterViewModel {
             engine.rewind()
             speechTracker.reset(to: 0)
         }
+        // Nothing predicted carries over a pause.
+        speechLead.reset(to: speechTracker.position)
         isPlaying = true
         if driver == nil {
             driver = DisplayLinkDriver { [weak self] seconds in self?.advance(by: seconds) }
@@ -315,6 +353,7 @@ final class PrompterViewModel {
     func rewind() {
         engine.rewind()
         speechTracker.reset(to: 0)
+        speechLead.reset(to: 0)
         pause()
         toast.show(String(localized: "Back to the top"))
     }
@@ -337,11 +376,20 @@ final class PrompterViewModel {
         let settings = session.prompter
         switch settings.scrollMode {
         case .voice where followsSpeech:
+            let now = clock()
+            showVoice(voiceGate.isSpeaking(at: now), heardAt: now)
+            speechLead.advance(to: now, quiet: voiceGate.quietTime(at: now))
             guard let target = speechTarget else { return }
-            reachedEnd = engine.glide(toward: target, by: seconds)
+            let start = engine.offset
+            let glideTime = voiceGlide.time(forDistance: target - start, lineHeight: lineHeight)
+            reachedEnd = engine.glide(toward: target, by: seconds, glideTime: glideTime)
+            if engine.offset > start { voiceMetrics.moved(at: now) }
         case .voice:
+            let now = clock()
+            showVoice(voiceGate.isSpeaking(at: now), heardAt: now)
             guard isVoiceActive else { return }
             reachedEnd = engine.advance(by: seconds, speed: settings.speed)
+            voiceMetrics.moved(at: now)
         case .steady:
             reachedEnd = engine.advance(by: seconds, speed: settings.speed)
         }
@@ -590,52 +638,74 @@ final class PrompterViewModel {
         updateVoiceMonitoring()
     }
 
-    /// Speech recognition moves the text to the word being read (see `followSpeech`). The level
-    /// drives the mic indicator, and scrolling too when recognition isn't available. In Selfie mode
+    /// What the voice indicator and Studio's line say.
+    var voiceFollowStatus: VoiceFollowStatus {
+        VoiceFollowStatus(followsSpeech: followsSpeech, preparation: speechPreparation)
+    }
+
+    /// Speech recognition moves the text to the word being read (see `followSpeech`); the level of
+    /// each buffer, as it arrives, lights the indicator, lets the text run a little ahead of the
+    /// words (`SpeechLead`) and drives scrolling when recognition isn't available. In Selfie mode
     /// both come from the camera's audio; in Studio mode from a meter of their own.
     private func updateVoiceMonitoring() {
-        voiceTask?.cancel()
-        voiceTask = nil
-        stopFollowingSpeech()
-        guard session.prompter.scrollMode == .voice, let script else {
-            isVoiceActive = false
-            voiceLevel = 0
-            speechUnavailable = nil
-            audio.stopMetering()
+        guard session.prompter.scrollMode == .voice, script != nil else {
+            stopVoiceMonitoring()
             return
         }
-        let text = script.text
-        let language = languages.speechRequest(for: script)
+        startSpeechIfNeeded()
+        routeSpeechAudio()
+        listenForVoice()
+    }
+
+    private func stopVoiceMonitoring() {
+        levelTask?.cancel()
+        levelTask = nil
+        camera.setLevelHandler(nil)
+        audio.setLevelHandler(nil)
+        stopFollowingSpeech()
+        isVoiceActive = false
+        voiceLevel = 0
+        speechUnavailable = nil
+        voiceGate = VoiceFollowGate()
+        audio.stopMetering()
+    }
+
+    /// Starts recognition for the script in Voice Following's language, unless it already listens
+    /// (or gets ready to) for the same text and language.
+    private func startSpeechIfNeeded() {
+        guard session.prompter.scrollMode == .voice, let script else { return }
+        let wanted = SpeechSession(text: script.text, language: languages.speechRequest(for: script))
+        guard wanted != speechSession else { return }
+        stopFollowingSpeech()
+        speechSession = wanted
+        speechPreparation = .preparing
+        voiceMetrics.enabled(at: clock())
         speechTask = Task { [weak self] in
-            await self?.followSpeech(in: text, language: language)
-        }
-        voiceTask = Task { [weak self] in
-            if self?.mode == .studio {
-                _ = await self?.audio.startMetering()
-            }
-            while !Task.isCancelled {
-                guard let self else { return }
-                let level: Float? = self.mode == .selfie ? await self.camera.audioPowerLevel() : self.audio.powerLevel
-                self.isVoiceActive = self.voiceGate.isSpeaking(level: level, at: ProcessInfo.processInfo.systemUptime)
-                self.voiceLevel = VoiceFollowGate.normalized(level)
-                try? await Task.sleep(for: .milliseconds(80))
-            }
+            await self?.followSpeech(wanted)
         }
     }
 
     /// Listens for the script being read, in the Voice Following language (or the script's), and
     /// keeps the tracker on the next word to read. A language this device can't recognize is never
     /// swapped for another: the text follows the voice level and the creator is told why.
-    private func followSpeech(in text: String, language: SpeechLanguageRequest) async {
-        let transcription: SpeechTranscription
-        switch await speech.start(script: text, language: language) {
-        case .listening(let started, let route):
-            guard !Task.isCancelled else { return }
-            transcription = started
+    private func followSpeech(_ wanted: SpeechSession) async {
+        let generation = speechGeneration
+        let result = await speech.start(script: wanted.text, language: wanted.language) { [weak self] preparation in
+            guard let self, self.speechGeneration == generation else { return }
+            self.speechPreparation = preparation
+            if case .downloading = preparation { self.voiceMetrics.downloading() }
+        }
+        guard !Task.isCancelled, speechGeneration == generation else { return }
+        speechPreparation = nil
+        let started: SpeechTranscription
+        let language: CueLanguage?
+        switch result {
+        case .listening(let transcription, let route):
+            started = transcription
+            language = route.language
             listeningLanguage = route.language
             speechUnavailable = nil
         case .unavailable(let reason):
-            guard !Task.isCancelled else { return }
             speechUnavailable = reason
             if noticedSpeechUnavailable != reason {
                 noticedSpeechUnavailable = reason
@@ -645,39 +715,101 @@ final class PrompterViewModel {
         case .cancelled:
             return
         }
-        switch mode {
-        case .selfie: camera.setAudioHandler(transcription.audio)
-        case .studio: audio.setAudioHandler(transcription.audio)
-        }
-        scriptWords = ScriptWords(text: text)
-        speechTracker = ScriptSpeechTracker(words: scriptWords.tokens)
+        transcription = started
+        scriptWords = ScriptWords(text: wanted.text, language: language)
+        speechTracker = ScriptSpeechTracker(words: scriptWords.tokens, language: language)
+        speechLead.initialRate = ReadTime.wordsPerMinute(speed: session.prompter.speed) / 60
         followsSpeech = true
+        routeSpeechAudio()
         syncSpeechPosition()
-        for await heard in transcription.transcripts {
-            speechTracker.hear(heard)
+        voiceMetrics.listening(at: clock())
+        for await heard in started.transcripts {
+            let received = clock()
+            if speechTracker.hear(heard) {
+                voiceMetrics.confirmed(ahead: speechLead.position - Double(speechTracker.position))
+                speechLead.confirm(speechTracker.position, at: received)
+            }
+            voiceMetrics.transcript(heard, receivedAt: received, alignedAt: clock())
         }
         // Recognition ended on its own: fall back to the level. A cancelled task was replaced.
-        if !Task.isCancelled { followsSpeech = false }
+        guard !Task.isCancelled, speechGeneration == generation else { return }
+        followsSpeech = false
+        transcription = nil
+        routeSpeechAudio()
     }
 
     private func stopFollowingSpeech() {
+        logVoiceMetrics()
         speechTask?.cancel()
         speechTask = nil
+        speechSession = nil
+        speechGeneration += 1
+        transcription = nil
         followsSpeech = false
         listeningLanguage = nil
+        speechPreparation = nil
         camera.setAudioHandler(nil)
         audio.setAudioHandler(nil)
         speech.stop()
     }
 
-    /// Where the next word to read sits on the guide.
+    /// Sends the microphone to recognition: the camera's in Selfie, the meter's in Studio.
+    private func routeSpeechAudio() {
+        let handler = transcription?.audio
+        camera.setAudioHandler(mode == .selfie ? handler : nil)
+        audio.setAudioHandler(mode == .studio ? handler : nil)
+    }
+
+    /// Each buffer's level as it arrives, from this mode's microphone. Nothing polls: the
+    /// indicator lights within a buffer of the voice.
+    private func listenForVoice() {
+        levelTask?.cancel()
+        let (samples, continuation) = AsyncStream.makeStream(of: AudioLevelSample.self, bufferingPolicy: .bufferingNewest(64))
+        let handler: @Sendable (AudioLevelSample) -> Void = { continuation.yield($0) }
+        let mode = mode
+        camera.setLevelHandler(mode == .selfie ? handler : nil)
+        audio.setLevelHandler(mode == .studio ? handler : nil)
+        levelTask = Task { [weak self] in
+            if mode == .studio {
+                _ = await self?.audio.startMetering()
+            }
+            for await sample in samples {
+                self?.hear(sample)
+            }
+        }
+    }
+
+    private func hear(_ sample: AudioLevelSample) {
+        let speaking = voiceGate.hear(level: sample.level, at: sample.time, duration: sample.duration)
+        showVoice(speaking, heardAt: sample.time)
+        guard sample.time - levelShownAt >= Self.levelInterval else { return }
+        levelShownAt = sample.time
+        let level = VoiceFollowGate.normalized(sample.level)
+        if level != voiceLevel { voiceLevel = level }
+    }
+
+    private func showVoice(_ speaking: Bool, heardAt time: TimeInterval) {
+        guard speaking != isVoiceActive else { return }
+        isVoiceActive = speaking
+        voiceMetrics.voice(speaking, heardAt: time, shownAt: clock())
+    }
+
+    /// Where the text should be: the next word to read on the guide, run a little ahead while the
+    /// creator speaks (`SpeechLead`), never more than a fraction of a line past the last word
+    /// recognized, and never onto the end, which only the last word heard reaches.
     private var speechTarget: Double? {
-        scriptWords.offset(
-            forWord: speechTracker.position,
-            paragraphFrames: paragraphFrames,
-            lineHeight: lineHeight,
-            endOffset: engine.endOffset
-        )
+        let position = speechTracker.position
+        guard let confirmed = scriptWords.offset(
+            forWord: position, paragraphFrames: paragraphFrames, lineHeight: lineHeight, endOffset: engine.endOffset
+        ) else { return nil }
+        guard position < scriptWords.count else { return confirmed }
+        let predicted = min(speechLead.position, Double(scriptWords.count - 1))
+        guard predicted > Double(position),
+              let ahead = scriptWords.offset(
+                  forPosition: predicted, paragraphFrames: paragraphFrames, lineHeight: lineHeight, endOffset: engine.endOffset
+              ) else { return confirmed }
+        let limit = min(confirmed + lineHeight * speechLead.maximumLines, engine.endOffset - 1)
+        return max(confirmed, min(ahead, limit))
     }
 
     /// After a manual scroll, reading picks up from what's on the guide.
@@ -689,5 +821,15 @@ final class PrompterViewModel {
             lineHeight: lineHeight,
             endOffset: engine.endOffset
         ))
+        speechLead.reset(to: speechTracker.position)
+    }
+
+    /// Debug builds write the session's timings to the device's log (Console, "VoiceFollowing").
+    /// Nothing leaves the device.
+    private func logVoiceMetrics() {
+        #if DEBUG
+        guard voiceMetrics.startup != nil else { return }
+        Logger(subsystem: "studio.cue", category: "VoiceFollowing").debug("\(self.voiceMetrics.summary, privacy: .public)")
+        #endif
     }
 }

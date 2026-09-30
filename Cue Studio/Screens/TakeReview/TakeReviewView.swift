@@ -46,7 +46,7 @@ struct TakeReviewView: View {
             profile: services.profile,
             preferences: services.preferences,
             toast: services.toast,
-            speechLanguage: { languages.speechRequest(for: $0) }
+            speechLanguage: { languages.captionRequest(for: $0) }
         ))
         self.services = services
         self.onRetake = onRetake

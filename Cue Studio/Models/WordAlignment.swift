@@ -54,12 +54,10 @@ nonisolated enum WordAlignment {
         .map(\.element)
     }
 
-    /// A word as compared: lowercased, without accents or punctuation. Empty for punctuation alone,
-    /// which never matches.
+    /// A word as compared: lowercased, without accents or punctuation, folded like Voice
+    /// Following's words (`WordTokenizer.key`). Empty for punctuation alone, which never matches.
     static func key(_ word: String) -> String {
-        word.lowercased()
-            .folding(options: [.diacriticInsensitive, .widthInsensitive], locale: nil)
-            .filter { $0.isLetter || $0.isNumber }
+        WordTokenizer.key(word)
     }
 
     private static func longestCommon(_ first: [String], _ second: [String]) -> [Match] {

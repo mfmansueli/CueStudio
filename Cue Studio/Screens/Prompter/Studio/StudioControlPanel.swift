@@ -80,22 +80,33 @@ struct StudioControlPanel: View {
         .frame(minHeight: 34)
     }
 
-    /// Without word-by-word recognition in this language, the text moves while the creator talks.
-    private var voiceStatus: LocalizedStringKey {
-        guard viewModel.isPlaying else { return "Tap play, then start reading" }
-        return viewModel.speechUnavailable == nil ? "Speed follows your voice" : "Scrolls while you talk"
+    /// Following the words, or, without word-by-word recognition here (yet), scrolling at the set
+    /// speed while the creator talks. A model getting ready or downloading says so before play.
+    private var voiceStatus: String {
+        let status = viewModel.voiceFollowStatus
+        switch status {
+        case .preparing, .downloading:
+            return status.detail(speedLabel: session.prompter.speedLabel)
+        case .followingWords, .scrollsWhileTalking:
+            guard viewModel.isPlaying else { return String(localized: "Tap play, then start reading") }
+            return status.detail(speedLabel: session.prompter.speedLabel)
+        }
     }
 
     /// Following the reading, speed doesn't apply: the text moves at the creator's pace.
     private var voiceRow: some View {
         HStack(spacing: 12) {
-            VoiceIndicator(level: viewModel.voiceLevel, isListening: viewModel.isPlaying && viewModel.isVoiceActive, fillsWidth: true)
+            VoiceIndicator(
+                level: viewModel.voiceLevel, isListening: viewModel.isPlaying && viewModel.isVoiceActive,
+                status: viewModel.voiceFollowStatus, speedLabel: session.prompter.speedLabel, fillsWidth: true
+            )
             Spacer(minLength: 0)
             Text(voiceStatus)
-                .font(.footnote)
+                .font(.footnote.monospacedDigit())
                 .foregroundStyle(Palette.ink2)
-                .lineLimit(2)
+                .lineLimit(3)
                 .multilineTextAlignment(.trailing)
+                .accessibilityIdentifier("prompter.voiceStatus")
         }
         .frame(minHeight: 34)
     }

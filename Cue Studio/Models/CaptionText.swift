@@ -21,14 +21,10 @@ nonisolated enum CaptionText {
         return line
     }
 
-    /// A line split into words: at spaces, and runs written without spaces into dictionary words.
-    static func words(in line: String) -> [String] {
-        line.split(whereSeparator: \.isWhitespace).flatMap { piece -> [String] in
-            let piece = String(piece)
-            guard WordSegmenter.containsUnspacedScript(piece) else { return [piece] }
-            let segments = WordSegmenter.segments(of: piece).map(\.word)
-            return segments.isEmpty ? [piece] : segments
-        }
+    /// A line split into words: at spaces, and runs written without spaces into dictionary words
+    /// that keep their punctuation (`WordTokenizer.displayWords`).
+    static func words(in line: String, language: CueLanguage? = nil) -> [String] {
+        WordTokenizer.displayWords(in: line, language: language)
     }
 
     /// How long a line reads, in characters (spaces left out), for breaking lines evenly.

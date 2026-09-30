@@ -30,19 +30,19 @@ nonisolated enum CaptionTranscriber {
         switch route.engine {
         case .transcriber:
             let transcriber = SpeechTranscriber(locale: route.locale, transcriptionOptions: [], reportingOptions: [], attributeOptions: [.audioTimeRange])
-            words = try await transcribe(audio, with: transcriber, results: transcriber.results, progress: progress) { $0.text }
+            words = try await transcribe(audio, with: transcriber, results: transcriber.results, language: route.language, progress: progress) { $0.text }
         case .dictation:
             let dictation = DictationTranscriber(
                 locale: route.locale, contentHints: [], transcriptionOptions: [], reportingOptions: [],
                 attributeOptions: [.audioTimeRange]
             )
-            words = try await transcribe(audio, with: dictation, results: dictation.results, progress: progress) { $0.text }
+            words = try await transcribe(audio, with: dictation, results: dictation.results, language: route.language, progress: progress) { $0.text }
         }
         return TakeTranscript(words: words, languageCode: route.locale.language.languageCode?.identifier ?? "en")
     }
 
     private static func transcribe<Results: AsyncSequence & Sendable>(
-        _ audio: URL, with module: any SpeechModule, results: Results,
+        _ audio: URL, with module: any SpeechModule, results: Results, language: CueLanguage?,
         progress: (@Sendable (CaptionProgress) -> Void)?,
         text: @escaping @Sendable (Results.Element) -> AttributedString
     ) async throws -> [TimedWord] where Results.Element: Sendable {
@@ -70,7 +70,7 @@ nonisolated enum CaptionTranscriber {
                 for run in heard.runs {
                     guard let range = heard[run.range].audioTimeRange else { continue }
                     let text = String(heard[run.range].characters)
-                    words += spread(text, start: range.start.seconds, end: range.end.seconds)
+                    words += spread(text, start: range.start.seconds, end: range.end.seconds, language: language)
                     if length > 0 { progress?(.transcribing(min(1, range.end.seconds / length))) }
                 }
             }
@@ -92,9 +92,10 @@ nonisolated enum CaptionTranscriber {
     }
 
     /// A run can hold several words; they share its time evenly and are marked as estimated.
-    /// Languages written without spaces (Japanese, Chinese, Thai) are split into dictionary words.
-    static func spread(_ text: String, start: TimeInterval, end: TimeInterval) -> [TimedWord] {
-        let pieces = CaptionText.words(in: text)
+    /// Languages written without spaces (Japanese, Chinese, Thai) are split into dictionary words,
+    /// in the language heard (`WordTokenizer`, the same cut as Voice Following's).
+    static func spread(_ text: String, start: TimeInterval, end: TimeInterval, language: CueLanguage? = nil) -> [TimedWord] {
+        let pieces = CaptionText.words(in: text, language: language)
         guard !pieces.isEmpty, end > start else { return [] }
         let step = (end - start) / Double(pieces.count)
         let isEstimated = pieces.count > 1

@@ -6,41 +6,49 @@
 import AVFoundation
 import Synchronization
 
-/// Live microphone audio, from the audio thread to whoever listens (Voice follow's speech
-/// recognition), plus the latest level. Serves as the audio engine's tap in Studio mode and as the
-/// capture session's audio data delegate in Selfie mode.
+/// Live microphone audio, from the audio thread to whoever listens: the buffers for Voice
+/// follow's speech recognition, and each buffer's level the moment it arrives (no polling, so the
+/// voice indicator reacts within a buffer). Serves as the audio engine's tap in Studio mode and as
+/// the capture session's audio data delegate in Selfie mode.
+///
+/// The audio thread only measures the level and hands things on; deciding whether someone is
+/// speaking happens on the main actor (`VoiceFollowGate`).
 nonisolated final class AudioBufferTap: NSObject, AVCaptureAudioDataOutputSampleBufferDelegate, Sendable {
     private struct State {
         var handler: (@Sendable (AVAudioPCMBuffer) -> Void)?
-        var level: Float?
+        var levelHandler: (@Sendable (AudioLevelSample) -> Void)?
+
+        var isListening: Bool { handler != nil || levelHandler != nil }
     }
 
     private let state = Mutex(State())
-
-    /// Average power of the latest buffer in dBFS. Nil before any audio.
-    var level: Float? { state.withLock { $0.level } }
 
     /// Receives every buffer on the audio thread. Nil stops forwarding.
     func setHandler(_ handler: (@Sendable (AVAudioPCMBuffer) -> Void)?) {
         state.withLock { $0.handler = handler }
     }
 
-    func resetLevel() {
-        state.withLock { $0.level = nil }
+    /// Receives every buffer's level on the audio thread. Nil stops measuring.
+    func setLevelHandler(_ handler: (@Sendable (AudioLevelSample) -> Void)?) {
+        state.withLock { $0.levelHandler = handler }
     }
 
     /// For `AVAudioNode.installAudioTap`, which calls it on the audio thread. Built here, outside
     /// the main actor, so the closure isn't main-actor isolated. The tap's read-only buffer is
     /// copied into an `AVAudioPCMBuffer`, the same type the camera's audio arrives as.
     var tapProvider: @Sendable (AVReadOnlyAudioPCMBuffer, AVAudioTime) -> Void {
-        { [self] buffer, _ in receive(AVAudioPCMBuffer(copying: buffer)) }
+        { [self] buffer, _ in
+            guard state.withLock({ $0.isListening }) else { return }
+            receive(AVAudioPCMBuffer(copying: buffer))
+        }
     }
 
     func receive(_ buffer: AVAudioPCMBuffer) {
-        let level = Self.averagePower(of: buffer)
-        let handler = state.withLock { state in
-            state.level = level
-            return state.handler
+        let arrival = ProcessInfo.processInfo.systemUptime
+        let (handler, levelHandler) = state.withLock { ($0.handler, $0.levelHandler) }
+        if let levelHandler, let level = Self.averagePower(of: buffer) {
+            let duration = Double(buffer.frameLength) / max(1, buffer.format.sampleRate)
+            levelHandler(AudioLevelSample(level: level, time: arrival, duration: duration))
         }
         handler?(buffer)
     }
@@ -49,7 +57,7 @@ nonisolated final class AudioBufferTap: NSObject, AVCaptureAudioDataOutputSample
 
     func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
         // The camera always delivers audio; only convert it while someone listens.
-        guard state.withLock({ $0.handler != nil }), let buffer = Self.pcmBuffer(from: sampleBuffer) else { return }
+        guard state.withLock({ $0.isListening }), let buffer = Self.pcmBuffer(from: sampleBuffer) else { return }
         receive(buffer)
     }
 
@@ -67,7 +75,7 @@ nonisolated final class AudioBufferTap: NSObject, AVCaptureAudioDataOutputSample
         return status == noErr ? buffer : nil
     }
 
-    private static func averagePower(of buffer: AVAudioPCMBuffer) -> Float? {
+    static func averagePower(of buffer: AVAudioPCMBuffer) -> Float? {
         let frames = Int(buffer.frameLength)
         let stride = buffer.stride
         guard frames > 0 else { return nil }

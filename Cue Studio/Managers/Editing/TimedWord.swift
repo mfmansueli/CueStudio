@@ -16,13 +16,7 @@ nonisolated struct TimedWord: Hashable, Sendable {
     /// The word as Clean Up compares it: lowercased, without punctuation, and a sound held long
     /// ("ummmm") the same as a short one ("umm").
     var spoken: String {
-        var result = ""
-        var run = 0
-        for character in text.lowercased() where character.isLetter || character.isNumber || character == "'" {
-            run = character == result.last ? run + 1 : 1
-            if run <= 2 { result.append(character) }
-        }
-        return result
+        WordTokenizer.spokenForm(text)
     }
 
     /// Said as an exclamation or a question ("Ah!"), which usually means it matters.

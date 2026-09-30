@@ -37,16 +37,31 @@ nonisolated enum WordSegmenter {
 
     /// Splits a run of letters into words, each with the character offset where it starts in `run`.
     /// A run without unspaced letters is one word.
-    static func segments(of run: String) -> [(word: String, offset: Int)] {
+    /// - Parameter language: the text's language when it's known, so a script and what's heard in
+    ///   it are cut with the same dictionary (a few kanji alone could otherwise be read as Chinese).
+    static func segments(of run: String, language: CueLanguage? = nil) -> [(word: String, offset: Int)] {
         guard containsUnspacedScript(run) else { return [(run, 0)] }
-        let tokenizer = NLTokenizer(unit: .word)
-        tokenizer.string = run
-        var result: [(word: String, offset: Int)] = []
-        tokenizer.enumerateTokens(in: run.startIndex..<run.endIndex) { range, _ in
-            result.append((String(run[range]), run.distance(from: run.startIndex, to: range.lowerBound)))
-            return true
+        let result = wordRanges(in: run, language: language).map { range in
+            (String(run[range]), run.distance(from: run.startIndex, to: range.lowerBound))
         }
         return result.isEmpty ? [(run, 0)] : result
+    }
+
+    /// Where each dictionary word of `text` is. Punctuation and spaces are left between them.
+    static func wordRanges(in text: String, language: CueLanguage? = nil) -> [Range<String.Index>] {
+        let tokenizer = NLTokenizer(unit: .word)
+        tokenizer.string = text
+        if let language { tokenizer.setLanguage(naturalLanguage(for: language)) }
+        var result: [Range<String.Index>] = []
+        tokenizer.enumerateTokens(in: text.startIndex..<text.endIndex) { range, _ in
+            result.append(range)
+            return true
+        }
+        return result
+    }
+
+    private static func naturalLanguage(for language: CueLanguage) -> NLLanguage {
+        language == .chineseSimplified ? .simplifiedChinese : NLLanguage(rawValue: language.languageCode)
     }
 
     /// How many words `text` has: runs of letters and numbers, with unspaced runs split into words.

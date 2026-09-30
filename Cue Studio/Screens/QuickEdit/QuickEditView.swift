@@ -24,7 +24,8 @@ struct QuickEditView: View {
         _viewModel = State(initialValue: QuickEditViewModel(
             take: take, takes: services.takes, library: services.library,
             editing: services.editing, drafts: services.drafts, toast: services.toast,
-            speechLanguage: { languages.speechRequest(for: $0) }
+            speechLanguage: { languages.captionRequest(for: $0) },
+            languageConflict: { languages.languageConflict(for: $0) }
         ))
         self.onClose = onClose
     }

@@ -36,7 +36,10 @@ struct SelfieControlPanel: View {
     private var scriptControls: some View {
         HStack(spacing: 8) {
             if session.prompter.scrollMode == .voice {
-                VoiceIndicator(level: viewModel.voiceLevel, isListening: viewModel.isPlaying && viewModel.isVoiceActive)
+                VoiceIndicator(
+                    level: viewModel.voiceLevel, isListening: viewModel.isPlaying && viewModel.isVoiceActive,
+                    status: viewModel.voiceFollowStatus, speedLabel: session.prompter.speedLabel
+                )
             } else {
                 SpeedSlider(
                     speed: session.prompter.speed,

@@ -63,6 +63,58 @@ struct MultilingualVoiceFollowTests {
         #expect(result.position == result.count)
     }
 
+    /// Recognition writes numbers in digits or words as it likes; the script may do the other.
+    @Test(arguments: [
+        (CueLanguage.english, "I have 3 habits for you", "i have three habits for you"),
+        (.english, "I have three habits for you", "I have 3 habits for you"),
+        (.portugueseBrazil, "Eu tenho três hábitos para você", "eu tenho 3 habitos para voce"),
+        (.spanish, "Son 21 días de práctica", "son veintiuno dias de practica"),
+    ])
+    func numbersMatchInDigitsOrWords(language: CueLanguage, script: String, heard: String) {
+        let words = ScriptWords(text: script, language: language)
+        var tracker = ScriptSpeechTracker(words: words.tokens, language: language)
+        tracker.hear(heard)
+        #expect(tracker.position == words.count)
+    }
+
+    /// Arabic recognition leaves out the hamza and vowel marks a script may have.
+    @Test func arabicSpellingVariantsStillMatch() {
+        let script = "أولا، أشرب كوبًا من الماء قبل أن ألمس هاتفي"
+        let result = follow(script, hearing: ["اولا اشرب كوبا من الماء قبل ان المس هاتفي"])
+        #expect(result.position == result.count)
+    }
+
+    /// Partial results arrive a character or two at a time, cut mid-word, and are split into words
+    /// on their own. The text still reaches the end and never gets more than a word ahead of what
+    /// was actually said.
+    @Test(arguments: [
+        (CueLanguage.japanese, "朝の習慣を三つ紹介します。まず、スマホを見る前に水を一杯飲みます。次に、今日終わらせたいことを一つ書き出します。"),
+        (.chineseSimplified, "这是改变我早晨的三个习惯。第一，我在看手机之前先喝一杯水。第二，我写下今天想完成的一件事。"),
+        (.thai, "นี่คือสามนิสัยที่เปลี่ยนตอนเช้าของฉัน อย่างแรก ฉันดื่มน้ำหนึ่งแก้วก่อนจับโทรศัพท์ อย่างที่สอง ฉันเขียนสิ่งหนึ่งที่อยากทำให้เสร็จวันนี้"),
+    ])
+    func partialResultsInUnspacedLanguagesStayInStep(language: CueLanguage, script: String) {
+        let words = ScriptWords(text: script, language: language)
+        let tokens = WordTokenizer.words(in: script, language: language)
+        var tracker = ScriptSpeechTracker(words: words.tokens, language: language)
+        let spoken = Array(script.filter { $0.isLetter || $0.isNumber || $0 == " " })
+        var furthestAhead = 0
+        for length in 1...spoken.count {
+            tracker.hear(String(spoken[0..<length]))
+            // Words said in full so far, counted in the script's own words.
+            let letters = spoken[0..<length].count { $0 != " " }
+            var said = 0
+            var total = 0
+            for token in tokens {
+                total += token.text.count
+                guard total <= letters else { break }
+                said += 1
+            }
+            furthestAhead = max(furthestAhead, tracker.position - said)
+        }
+        #expect(tracker.position == words.count)
+        #expect(furthestAhead <= 1)
+    }
+
     @Test func readingTimeCountsWordsInEveryLanguage() {
         #expect(ReadTime.wordCount(in: "Here are three habits [pause] that changed.") == 6)
         let japanese = ReadTime.wordCount(in: "朝の習慣を三つ紹介します。")
