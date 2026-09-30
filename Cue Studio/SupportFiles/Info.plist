@@ -20,7 +20,5 @@
 		<string>_cue-remote._tcp</string>
 		<string>_cue-remote._udp</string>
 	</array>
-	<key>NSLocalNetworkUsageDescription</key>
-	<string>Cue connects to your other iPhone or iPad nearby, so one can control the teleprompter on the other.</string>
 </dict>
 </plist>
