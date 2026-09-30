@@ -14,6 +14,8 @@ import Foundation
 ///   quietest moments of the last few seconds (`noiseFloor`), and speech has to rise `margin`
 ///   above it, so steady noise never lights the indicator or moves the text.
 /// - A sound has to last `attack` before it counts, so a click or a bump on the desk doesn't.
+/// - Nothing counts until the room has been heard for a moment (up to half a second after
+///   listening starts): before its level is known, a noisy room would pass for a voice.
 nonisolated struct VoiceFollowGate: Sendable {
     /// Level above which the input counts as speech in a quiet room, in dBFS.
     var threshold: Float = -40
@@ -57,7 +59,7 @@ nonisolated struct VoiceFollowGate: Sendable {
     @discardableResult
     mutating func hear(level: Float, at time: TimeInterval, duration: TimeInterval) -> Bool {
         learnFloor(level, at: time)
-        if level > effectiveThreshold {
+        if noiseFloor != nil, level > effectiveThreshold {
             let start = loudSince ?? time - duration
             loudSince = start
             if isSpeaking(at: time) || time - start >= attack {
