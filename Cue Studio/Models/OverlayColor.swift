@@ -9,6 +9,14 @@ import Foundation
 /// they are content, not interface tokens.
 nonisolated enum OverlayColor: String, Codable, CaseIterable, Identifiable, Sendable {
     case white, black, yellow, red, blue, green, pink
+    case offBlack, orange, cyan, purple, paper
+
+    /// Text colors in Text style and Caption style.
+    static let textSwatches: [OverlayColor] = [.white, .offBlack, .yellow, .orange, .red, .green, .cyan, .purple]
+    /// Behind a text (Box or Pill).
+    static let backgroundSwatches: [OverlayColor] = [.yellow, .black, .white, .red, .blue, .paper]
+    /// Background › Color.
+    static let backdropSwatches: [OverlayColor] = [.white, .offBlack, .yellow, .red, .blue, .green, .purple]
 
     var id: String { rawValue }
 
@@ -22,6 +30,11 @@ nonisolated enum OverlayColor: String, Codable, CaseIterable, Identifiable, Send
         case .blue: (0.039, 0.518, 1)
         case .green: (0.204, 0.78, 0.349)
         case .pink: (1, 0.216, 0.373)
+        case .offBlack: (0.067, 0.067, 0.067)
+        case .orange: (1, 0.624, 0.039)
+        case .cyan: (0.392, 0.824, 1)
+        case .purple: (0.749, 0.353, 0.949)
+        case .paper: (0.957, 0.937, 0.902)
         }
     }
 
@@ -34,6 +47,11 @@ nonisolated enum OverlayColor: String, Codable, CaseIterable, Identifiable, Send
         case .blue: String(localized: "Blue")
         case .green: String(localized: "Green")
         case .pink: String(localized: "Pink")
+        case .offBlack: String(localized: "Ink")
+        case .orange: String(localized: "Orange")
+        case .cyan: String(localized: "Cyan")
+        case .purple: String(localized: "Purple")
+        case .paper: String(localized: "Paper")
         }
     }
 }

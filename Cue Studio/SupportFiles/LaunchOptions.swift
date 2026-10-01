@@ -12,6 +12,8 @@ import Foundation
 /// - `-uiTestSeedSamples`: with the above, starts with the sample scripts and takes.
 /// - `-uiTestPro`: starts on Cue Pro (read by `StoreManager`).
 /// - `-uiTestStubAI` / `-uiTestNoAI`: instant, predictable AI, or none at all.
+/// - `-uiTestDemoEdit`: "3 morning habits" Take 3 opens in the editor as the v10 design's demo
+///   (`SampleEdit`).
 /// - `-uiTestSampleVideo`: with the sample takes, writes small real videos behind the "3 morning
 ///   habits" takes, so Quick edit can play, scrub and trim them.
 /// - `-uiTestRemoteConnects`: with the above, a remote "connects" right after pairing starts (UI
@@ -39,7 +41,15 @@ struct LaunchOptions {
         if arguments.contains("-uiTestInMemory") {
             let seeded = arguments.contains("-uiTestSeedSamples")
             options.scriptRepository = InMemoryScriptRepository(scripts: seeded ? SampleScripts.all : [])
-            let takes = seeded ? SampleTakes.all() : []
+            var takes = seeded ? SampleTakes.all() : []
+            // The editor's demo: "3 morning habits" Take 3 becomes the design's 21.6 s edit.
+            if arguments.contains("-uiTestDemoEdit"), let index = takes.firstIndex(where: {
+                $0.scriptID == SampleScripts.morningHabits.id && $0.number == 3
+            }) {
+                takes[index].duration = SampleEdit.duration
+                takes[index].fileName = "sample-demo-edit.mov"
+                takes[index].edit = SampleEdit.make(aspect: takes[index].aspect)
+            }
             let repository = InMemoryTakeRepository(takes: takes)
             options.takeRepository = repository
             options.draftStore = InMemoryQuickEditDraftStore()

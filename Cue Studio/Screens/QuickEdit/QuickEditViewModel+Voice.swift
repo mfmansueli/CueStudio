@@ -8,15 +8,14 @@ import Foundation
 /// Voice: the take's own sound. Enhance Voice and Reduce Noise are each off, soft or strong, and
 /// independent. An edit from before the levels keeps its first treatment until one of them is
 /// touched. "Compare with original" plays the untreated sound as loud as the treated one, so the
-/// difference heard is the treatment, not the volume. These change the edit directly, like
-/// Adjust (not undo steps).
+/// difference heard is the treatment, not the volume. Each change is an undo step.
 extension QuickEditViewModel {
     /// What the preview plays: the edit, or while comparing, the take's sound untreated at the
     /// same loudness.
     var playedEdit: TakeEdit {
         guard comparesOriginal, let volume = originalVolume else { return edit }
         var played = edit
-        played.audioVersion = 2
+        played.audioVersion = VoiceProcessing.currentVersion
         played.voiceEnhancement = .off
         played.noiseReduction = .off
         played.volume = volume
@@ -29,17 +28,17 @@ extension QuickEditViewModel {
     }
 
     func setVoiceEnhancement(_ strength: AudioStrength) {
-        var changed = edit
-        Self.upgradeSound(&changed)
-        changed.voiceEnhancement = strength
-        edit = changed
+        changeLook { changed in
+            Self.upgradeSound(&changed)
+            changed.voiceEnhancement = strength
+        }
     }
 
     func setNoiseReduction(_ strength: AudioStrength) {
-        var changed = edit
-        Self.upgradeSound(&changed)
-        changed.noiseReduction = strength
-        edit = changed
+        changeLook { changed in
+            Self.upgradeSound(&changed)
+            changed.noiseReduction = strength
+        }
     }
 
     /// Plays the untreated sound (at the treated one's loudness) or the treated one again.
@@ -66,6 +65,17 @@ extension QuickEditViewModel {
         }
     }
 
+    /// "Compare with original": starts playing the untreated sound, or goes back to the treated.
+    func toggleComparison() {
+        if comparesOriginal {
+            endComparison()
+            player.pause()
+        } else {
+            setComparesOriginal(true)
+            if comparesOriginal { player.play() }
+        }
+    }
+
     /// Back to the treated sound.
     func endComparison() {
         comparisonTask?.cancel()
@@ -77,11 +87,13 @@ extension QuickEditViewModel {
         player.show(edit)
     }
 
-    /// An edit from before the levels moves to them: its switches become Soft.
+    /// An older edit moves to the current treatment once a level is touched: from before the
+    /// levels, its switches become Soft.
     private static func upgradeSound(_ edit: inout TakeEdit) {
-        guard edit.audioVersion < 2 else { return }
-        edit.audioVersion = 2
-        edit.voiceEnhancement = edit.enhancesVoice ? .soft : .off
-        edit.noiseReduction = edit.reducesNoise ? .soft : .off
+        if edit.audioVersion < 2 {
+            edit.voiceEnhancement = edit.enhancesVoice ? .soft : .off
+            edit.noiseReduction = edit.reducesNoise ? .soft : .off
+        }
+        edit.audioVersion = VoiceProcessing.currentVersion
     }
 }

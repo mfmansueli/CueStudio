@@ -28,7 +28,7 @@ struct TakeEditAudioTests {
 
     @Test func aNewEditUsesTheLevels() {
         let edit = TakeEdit(sourceDuration: 30, aspect: .portrait)
-        #expect(edit.audioVersion == 2)
+        #expect(edit.audioVersion == 3)
         #expect(edit.voiceEnhancement == .soft)
         #expect(edit.noiseReduction == .off)
         #expect(edit.voiceProcessing.isNeeded)
@@ -47,7 +47,7 @@ struct TakeEditAudioTests {
         video.audioVolume = 0.6
         edit.media = [video]
         let decoded = try JSONDecoder().decode(TakeEdit.self, from: JSONEncoder().encode(edit))
-        #expect(decoded.audioVersion == 2)
+        #expect(decoded.audioVersion == 3)
         #expect(decoded.voiceEnhancement == .strong)
         #expect(decoded.noiseReduction == .soft)
         #expect(decoded.music == [clip])

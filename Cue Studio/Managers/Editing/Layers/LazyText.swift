@@ -18,6 +18,6 @@ nonisolated struct LazyText: Sendable {
 
     /// Names this drawing in the compositor's cache.
     var key: String {
-        "\(text.id.uuidString)-\(emphasis?.index ?? -1)-\(Int(frameWidth.rounded()))"
+        "\(text.id.uuidString)-\(emphasis?.index ?? -1)-\(emphasis.map { "\($0.style)" } ?? "")-\(Int(frameWidth.rounded()))"
     }
 }

@@ -11,7 +11,11 @@ import Foundation
 /// they sound as they did. Only the take's sound is treated: music, voice-overs and videos over
 /// the take are left as they are. The recording itself never changes.
 nonisolated struct VoiceProcessing: Hashable, Sendable {
-    /// The treatment's version: 1 for edits made before the levels, 2 since.
+    /// What new edits get: 3, Reduce noise through Apple's voice isolation.
+    static let currentVersion = 3
+
+    /// The treatment's version: 1 for edits made before the levels, 2 for the equalizer and
+    /// expander alone, 3 with Apple's voice isolation for Reduce noise.
     let version: Int
     let volume: Double
     /// Version 1's switches.

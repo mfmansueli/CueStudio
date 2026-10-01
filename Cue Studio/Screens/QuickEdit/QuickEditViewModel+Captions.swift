@@ -220,7 +220,11 @@ extension QuickEditViewModel {
         edit.sourceTranscripts = others
         edit.showsCaptions = true
         captionState = .idle
-        toast.show(String(localized: "Captions made from your voice"))
+        // Auto captions turns into the list of the new lines.
+        if panel == .autoCaptions { panel = .captions }
+        toast.show(lines.count == 1
+            ? String(localized: "1 line ready — tap it to fix it")
+            : String(localized: "\(lines.count) lines ready — tap one to fix it"))
     }
 
     // MARK: - Reading
@@ -235,10 +239,6 @@ extension QuickEditViewModel {
     /// another identity).
     func captionCueID(forLine id: UUID) -> UUID {
         edit.editedCaptionInstances.first { $0.line.id == id }?.cueID ?? id
-    }
-
-    var editingCaption: CaptionCue? {
-        editingCaptionID.flatMap { id in edit.captions.first { $0.id == id } }
     }
 
     /// What was heard over the line's time, before any correction; nil for a line written by hand
@@ -283,7 +283,7 @@ extension QuickEditViewModel {
 
     /// New words for a line: the times the voice gave are kept where the words still match.
     func setCaptionText(_ id: UUID, _ text: String) {
-        updateCaption(id) { CaptionRevision.retimed($0, text: text) }
+        updateCaption(id, key: "captionText.\(id)") { CaptionRevision.retimed($0, text: text) }
     }
 
     /// Moves a line's start or end by `seconds` of the edit, never past its neighbors or the other
@@ -295,7 +295,7 @@ extension QuickEditViewModel {
         guard let index = lines.firstIndex(where: { $0.id == id }) else { return }
         let floor = index > 0 ? lines[index - 1].end : 0
         let ceiling = index + 1 < lines.count ? lines[index + 1].start : edit.editedDuration
-        updateCaption(id) { cue in
+        updateCaption(id, key: "captionNudge.\(id).\(edge)") { cue in
             var revised = cue
             switch edge {
             case .start:
@@ -403,20 +403,6 @@ extension QuickEditViewModel {
         toast.show(String(localized: "Line deleted"))
     }
 
-    /// Puts back what was heard over the line's time (its correction undone as a new step).
-    func restoreHeardText(_ id: UUID) {
-        guard let cue = edit.captions.first(where: { $0.id == id }), cue.origin == .speech,
-              let transcript = transcript(of: cue.sourceID) else { return }
-        let words = transcript.words.filter { $0.end > cue.start + 0.01 && $0.start < cue.end - 0.01 }
-        guard !words.isEmpty else { return }
-        updateCaption(id) { old in
-            var heard = CaptionCue(words: words)
-            heard.id = old.id
-            heard.sourceID = old.sourceID
-            return heard
-        }
-    }
-
     /// What was heard in a recording (nil: the take itself).
     private func transcript(of source: UUID?) -> CaptionTranscript? {
         guard let source else { return edit.captionTranscript }
@@ -440,8 +426,8 @@ extension QuickEditViewModel {
         endChange()
     }
 
-    private func updateCaption(_ id: UUID, _ update: (CaptionCue) -> CaptionCue) {
-        change { snapshot in
+    private func updateCaption(_ id: UUID, key: String? = nil, _ update: (CaptionCue) -> CaptionCue) {
+        change(key: key) { snapshot in
             guard var lines = snapshot.captions, let position = lines.firstIndex(where: { $0.id == id }) else { return }
             lines[position] = update(lines[position])
             snapshot.captions = lines

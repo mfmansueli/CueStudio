@@ -115,7 +115,7 @@ struct QuickEditCaptionsTests {
         #expect(viewModel.edit.captionTranscript?.words.count == 3)
         #expect(viewModel.edit.showsCaptions)
         #expect(viewModel.history.past.count == steps + 1)
-        #expect(scenario.toast.message == "Captions made from your voice")
+        #expect(scenario.toast.message == "1 line ready — tap it to fix it")
     }
 
     @Test func aTakeWithoutAScriptIsCaptionedFromItsVoice() async {

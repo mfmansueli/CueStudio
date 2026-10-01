@@ -38,6 +38,7 @@ struct MainView: View {
                         .navigationDestination(for: ProfileRoute.self) { route in
                             switch route {
                             case .languageRegion: LanguageRegionView()
+                            case .acknowledgements: AcknowledgementsView()
                             }
                         }
                 }

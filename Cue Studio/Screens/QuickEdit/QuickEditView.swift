@@ -20,13 +20,14 @@ import SwiftUI
 /// smallest screens the styling panels open as a sheet whose top stays under the preview.
 struct QuickEditView: View {
     @State private var viewModel: QuickEditViewModel
-    let onClose: (QuickEditExit) -> Void
+    private let services: AppServices
+    let onClose: () -> Void
 
     @Environment(\.scenePhase) private var scenePhase
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
-    init(take: Take, services: AppServices, onClose: @escaping (QuickEditExit) -> Void) {
+    init(take: Take, services: AppServices, onClose: @escaping () -> Void) {
         let languages = services.languages
         _viewModel = State(initialValue: QuickEditViewModel(
             take: take, takes: services.takes, library: services.library,
@@ -34,6 +35,7 @@ struct QuickEditView: View {
             speechLanguage: { languages.captionRequest(for: $0) },
             languageConflict: { languages.languageConflict(for: $0) }
         ))
+        self.services = services
         self.onClose = onClose
     }
 
@@ -48,9 +50,11 @@ struct QuickEditView: View {
                         .transition(.opacity)
                 }
             }
+            .modifier(EditorToastHost(top: layout.topBar))
             .sheet(isPresented: sheetPanelBinding(layout)) {
                 if let panel = viewModel.panel, case .sheet(let medium, let large) = layout.panelPresentation {
                     EditorPanelView(viewModel: viewModel, panel: panel)
+                        .environment(\.editorHeightClass, layout.heightClass)
                         .presentationDetents([.height(medium), .height(large)])
                         .presentationBackgroundInteraction(.enabled(upThrough: .height(large)))
                         .presentationCornerRadius(Metrics.editorSheetRadius)
@@ -60,7 +64,7 @@ struct QuickEditView: View {
             }
         }
         .background(Palette.bg.ignoresSafeArea())
-        .toastHost()
+        .modifier(CaptionTranslationRunner(viewModel: viewModel))
         .task { await viewModel.prepare() }
         .onChange(of: viewModel.panel) { _, panel in
             // Not tied to the panel: leaving Pauses doesn't stop it listening.
@@ -70,35 +74,39 @@ struct QuickEditView: View {
             switch sheet {
             case .music: AddMusicSheet(viewModel: viewModel)
             case .media: AddMediaSheet(viewModel: viewModel)
-            case .export: EmptyView()
+            case .export: QuickEditExportSheet(viewModel: viewModel, services: services)
             }
         }
-        .sheet(isPresented: Binding(
-            get: { viewModel.editingTextID != nil },
-            set: { if !$0 { viewModel.editingTextID = nil } }
-        )) {
-            if let id = viewModel.editingTextID {
-                TextOverlaySheet(viewModel: viewModel, textID: id)
-            }
+        .confirmationDialog(
+            "This video has its own sound",
+            isPresented: Binding(
+                get: { viewModel.soundChoiceMediaID != nil },
+                set: { if !$0 { viewModel.soundChoiceMediaID = nil } }
+            ),
+            titleVisibility: .visible,
+            presenting: viewModel.soundChoiceMediaID
+        ) { id in
+            Button("Keep its sound") { viewModel.chooseSound(for: id, keeps: true) }
+            Button("Mute it") { viewModel.chooseSound(for: id, keeps: false) }
+        } message: { _ in
+            Text("You can change it later in Media › Advanced.")
         }
-        .sheet(isPresented: Binding(
-            get: { viewModel.editingCaptionID != nil },
-            set: { if !$0 { viewModel.endEditingCaption() } }
-        )) {
-            if let id = viewModel.editingCaptionID {
-                CaptionLineSheet(viewModel: viewModel, lineID: id)
-            }
+        .confirmationDialog(
+            "Replace your edited captions?",
+            isPresented: $viewModel.confirmsCaptionReplacement,
+            titleVisibility: .visible
+        ) {
+            Button("Replace", role: .destructive) { viewModel.makeCaptions(replacingRevised: true) }
+                .accessibilityIdentifier("edit.captionsReplaceButton")
+            Button("Keep mine", role: .cancel) {}
+        } message: {
+            Text("New captions from your voice replace the lines you corrected or wrote.")
         }
         .sheet(isPresented: $viewModel.showsTranslation) {
             CaptionTranslationSheet(viewModel: viewModel)
         }
         .onChange(of: scenePhase) { _, phase in
             if phase != .active { viewModel.pauseAndKeepDraft() }
-        }
-        .onChange(of: viewModel.exportRequested) { _, requested in
-            guard requested else { return }
-            viewModel.done()
-            onClose(.export)
         }
         .onDisappear { viewModel.pauseAndKeepDraft() }
         .animation(reduceMotion ? nil : .easeOut(duration: 0.22), value: viewModel.panel)
@@ -120,7 +128,7 @@ struct QuickEditView: View {
         VStack(spacing: 0) {
             EditorTopBar(viewModel: viewModel) {
                 viewModel.done()
-                onClose(.done)
+                onClose()
             }
             .frame(height: layout.topBar)
             QuickEditPreview(viewModel: viewModel, size: previewSize(in: CGSize(width: width, height: layout.preview)))
@@ -139,6 +147,7 @@ struct QuickEditView: View {
             }
             if layout.panel > 0, let panel = viewModel.panel {
                 EditorPanelView(viewModel: viewModel, panel: panel)
+                    .environment(\.editorHeightClass, layout.heightClass)
                     .frame(height: layout.panel)
                     .transition(reduceMotion ? .opacity : .move(edge: .bottom).combined(with: .opacity))
             }
@@ -149,7 +158,7 @@ struct QuickEditView: View {
     @ViewBuilder
     private func timeline(_ layout: EditorLayout) -> some View {
         if layout.showsTimeline {
-            LegacyTimelineArea(viewModel: viewModel)
+            EditorTimelineView(viewModel: viewModel, heightClass: layout.heightClass)
         } else {
             Color.clear
         }

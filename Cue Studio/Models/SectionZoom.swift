@@ -25,16 +25,18 @@ nonisolated enum SectionZoom: String, Codable, CaseIterable, Identifiable, Senda
         }
     }
 
-    /// How much closer, at most.
-    static let depth: Double = 0.12
+    /// How much closer at full strength (amount 1): 1.3×.
+    static let maximumDepth: Double = 0.3
 
-    /// Times the frame's size, `progress` (0 to 1) through the section.
-    func scale(at progress: Double) -> Double {
-        let eased = KeyframeEasing.smooth.apply(progress)
+    /// Times the frame's size, `progress` (0 to 1) through the section, at `amount` (0 to 1) of
+    /// the full strength: push in grows to it, pull out starts from it, punch in holds it.
+    func scale(at progress: Double, amount: Double) -> Double {
+        let depth = Self.maximumDepth * min(max(amount, 0), 1)
+        let eased = KeyframeEasing.smooth.apply(min(max(progress, 0), 1))
         switch self {
-        case .pushIn: return 1 + Self.depth * eased
-        case .pullOut: return 1 + Self.depth * (1 - eased)
-        case .punchIn: return 1 + Self.depth * 1.25
+        case .pushIn: return 1 + depth * eased
+        case .pullOut: return 1 + depth * (1 - eased)
+        case .punchIn: return 1 + depth
         }
     }
 }

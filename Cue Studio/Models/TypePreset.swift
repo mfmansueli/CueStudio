@@ -5,39 +5,48 @@
 
 import Foundation
 
-/// Type presets for texts and captions. Each one is set twice: for short texts read at a glance
-/// (titles, hooks, callouts) and for captions read line after line. System fonts only, so every
-/// language the interface speaks (Arabic, Hindi, Thai, Japanese…) has its letters, and right to
-/// left text flows the right way.
+/// Type presets for texts (and for captions when a text's look goes on them too). The editor's
+/// eight, from the v10 design, each readable over any video with a solid background, a soft shadow
+/// or an outline: Cue, Editorial, Bold, Pop, Soft, Minimal, Label and Paper. Impact stays for
+/// texts styled with it before.
 ///
 /// A preset is type only: filters, Adjust and the cover stay as they are.
 nonisolated enum TypePreset: String, Codable, CaseIterable, Identifiable, Sendable {
-    /// Cue's own: clear, confident, a touch of yellow.
+    /// DM Sans heavy, black on a yellow box.
     case cue
-    /// Heavy capitals with an outline: loud and short.
+    /// Heavy capitals with an outline (before the v10 editor).
     case impact
-    /// A serif with room to breathe.
+    /// DM Serif Display with a soft shadow.
     case editorial
-    /// Rounded and friendly.
-    case soft
-    /// Light and spaced out.
-    case minimal
-    /// Words on a solid tag.
-    case label
-    /// Rounded, heavy, colorful.
+    /// Space Grotesk bold capitals with an outline.
+    case bold
+    /// Space Grotesk bold in yellow, outlined.
     case pop
+    /// DM Sans bold, dark on a white pill.
+    case soft
+    /// DM Sans medium, small, with a soft shadow.
+    case minimal
+    /// Space Grotesk capitals, widely spaced, on a dark tag.
+    case label
+    /// DM Serif Display, dark on paper.
+    case paper
 
     var id: String { rawValue }
+
+    /// The presets the editor offers, in order.
+    static let editorPresets: [TypePreset] = [.cue, .editorial, .bold, .pop, .soft, .minimal, .label, .paper]
 
     var label: String {
         switch self {
         case .cue: String(localized: "Cue")
         case .impact: String(localized: "Impact")
         case .editorial: String(localized: "Editorial")
+        case .bold: String(localized: "Bold")
         case .soft: String(localized: "Soft")
         case .minimal: String(localized: "Minimal")
         case .label: String(localized: "Label")
         case .pop: String(localized: "Pop")
+        case .paper: String(localized: "Paper")
         }
     }
 
@@ -46,10 +55,12 @@ nonisolated enum TypePreset: String, Codable, CaseIterable, Identifiable, Sendab
         case .cue: String(localized: "Clear and confident")
         case .impact: String(localized: "Loud, bold capitals")
         case .editorial: String(localized: "Calm, magazine serif")
+        case .bold: String(localized: "Outlined capitals")
         case .soft: String(localized: "Rounded and friendly")
         case .minimal: String(localized: "Light, lots of air")
         case .label: String(localized: "Words on a tag")
-        case .pop: String(localized: "Round, heavy, colorful")
+        case .pop: String(localized: "Yellow, outlined")
+        case .paper: String(localized: "Serif on paper")
         }
     }
 
@@ -64,25 +75,29 @@ nonisolated enum TypePreset: String, Codable, CaseIterable, Identifiable, Sendab
     private var titleLook: TextLook {
         switch self {
         case .cue:
-            TextLook(font: .classic, weight: .heavy, sizeScale: 1.05, tracking: -0.01, color: .white, hasShadow: true)
+            TextLook(
+                font: .dmSans, weight: .heavy, sizeScale: 1, tracking: -0.01, color: .black,
+                background: .box, backgroundColor: .yellow, hasShadow: false
+            )
         case .impact:
             TextLook(font: .classic, weight: .heavy, sizeScale: 1.25, tracking: -0.02, isUppercase: true, color: .white, hasShadow: true, hasOutline: true)
         case .editorial:
-            TextLook(font: .serif, weight: .semibold, sizeScale: 1, tracking: 0, color: .white, hasShadow: true, verticalOffset: 0.02)
+            TextLook(font: .dmSerif, weight: .regular, sizeScale: 1.12, color: .white, hasShadow: true)
+        case .bold:
+            TextLook(font: .spaceGrotesk, weight: .bold, sizeScale: 1, tracking: 0.01, isUppercase: true, color: .white, hasShadow: true, hasOutline: true)
+        case .pop:
+            TextLook(font: .spaceGrotesk, weight: .bold, sizeScale: 1.05, color: .yellow, hasShadow: true, hasOutline: true)
         case .soft:
-            TextLook(
-                font: .rounded, weight: .bold, sizeScale: 0.95, color: .black,
-                background: .pill, backgroundColor: .white, backgroundOpacity: 0.92, hasShadow: false
-            )
+            TextLook(font: .dmSans, weight: .bold, sizeScale: 0.9, color: .offBlack, background: .pill, backgroundColor: .white, hasShadow: false)
         case .minimal:
-            TextLook(font: .classic, weight: .regular, sizeScale: 0.8, tracking: 0.12, isUppercase: true, color: .white, hasShadow: true, verticalOffset: 0.03)
+            TextLook(font: .dmSans, weight: .medium, sizeScale: 0.85, tracking: 0.01, color: .white, hasShadow: true)
         case .label:
             TextLook(
-                font: .classic, weight: .bold, sizeScale: 0.85, tracking: 0.04, isUppercase: true, color: .black,
-                background: .box, backgroundColor: .yellow, hasShadow: false
+                font: .spaceGrotesk, weight: .semibold, sizeScale: 0.62, tracking: 0.08, isUppercase: true, color: .white,
+                background: .box, backgroundColor: .black, backgroundOpacity: 0.8, hasShadow: false
             )
-        case .pop:
-            TextLook(font: .rounded, weight: .heavy, sizeScale: 1.15, color: .yellow, hasShadow: true, hasOutline: true)
+        case .paper:
+            TextLook(font: .dmSerif, weight: .regular, sizeScale: 1, color: .offBlack, background: .box, backgroundColor: .paper, hasShadow: false)
         }
     }
 
@@ -90,26 +105,23 @@ nonisolated enum TypePreset: String, Codable, CaseIterable, Identifiable, Sendab
     /// outline or a fill to read over any background.
     private var captionLook: TextLook {
         switch self {
-        case .cue:
-            TextLook(
-                font: .classic, weight: .semibold, sizeScale: 1, color: .white,
-                background: .box, backgroundColor: .black, backgroundOpacity: 0.62, hasShadow: false
-            )
         case .impact:
             TextLook(font: .classic, weight: .heavy, sizeScale: 1.15, isUppercase: true, color: .white, hasShadow: true, hasOutline: true)
-        case .editorial:
-            TextLook(font: .serif, weight: .regular, sizeScale: 1.05, color: .white, hasShadow: true)
-        case .soft:
-            TextLook(
-                font: .rounded, weight: .semibold, sizeScale: 1, color: .white,
-                background: .pill, backgroundColor: .black, backgroundOpacity: 0.45, hasShadow: false
-            )
-        case .minimal:
-            TextLook(font: .classic, weight: .regular, sizeScale: 0.9, tracking: 0.02, color: .white, hasShadow: true)
         case .label:
-            TextLook(font: .classic, weight: .bold, sizeScale: 0.95, color: .black, background: .box, backgroundColor: .white, hasShadow: false)
-        case .pop:
-            TextLook(font: .rounded, weight: .heavy, sizeScale: 1.1, color: .white, hasShadow: true, hasOutline: true)
+            // A tag's small capitals are too small for a line read in a second: a little bigger.
+            TextLook(
+                font: .spaceGrotesk, weight: .semibold, sizeScale: 0.9, tracking: 0.04, isUppercase: true, color: .white,
+                background: .box, backgroundColor: .black, backgroundOpacity: 0.8, hasShadow: false
+            )
+        default:
+            {
+                var look = titleLook
+                look.sizeScale = min(look.sizeScale, 1.1)
+                look.verticalOffset = 0
+                // A heavy title face is too dense for a line read word by word: one step lighter.
+                if look.weight == .heavy { look.weight = .bold }
+                return look
+            }()
         }
     }
 }

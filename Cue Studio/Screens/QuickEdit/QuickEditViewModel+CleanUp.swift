@@ -10,7 +10,7 @@ import Foundation
 /// an undo step.
 extension QuickEditViewModel {
     static let defaultPauseThreshold: TimeInterval = 0.7
-    static let pauseThresholdRange: ClosedRange<TimeInterval> = 0.3...2
+    static let pauseThresholdRange: ClosedRange<TimeInterval> = 0.3...3
 
     // MARK: - Analysis
 

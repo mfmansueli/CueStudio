@@ -17,6 +17,10 @@ import AudioToolbox
 ///   cuts mud, lifts presence and a touch of air, and evens the level; Reduce Noise cuts rumble
 ///   and a little hiss and lowers the room between words (an expander, not a gate, so word ends
 ///   stay). A peak limiter ends the chain and the result is kept under `AudioCeiling`.
+/// - **Version 3**: the same, with Reduce Noise through Apple's voice isolation
+///   (`AUSoundIsolation`, the system's own on-device model): Soft blends half of it, Strong all of
+///   it; the expander then stays out. Where the unit isn't on the device or can't render offline,
+///   it falls back to version 2's treatment.
 nonisolated enum AudioEnhancer {
     enum RenderError: Error {
         case noBuffer
@@ -27,6 +31,19 @@ nonisolated enum AudioEnhancer {
     static func process(_ source: URL, processing: VoiceProcessing) throws -> URL {
         if processing.version == 1 {
             return try process(source, volume: processing.volume, enhancesVoice: processing.enhancesVoice, reducesNoise: processing.reducesNoise)
+        }
+        if processing.version >= 3, processing.noise != .off, let isolation = soundIsolation(processing.noise) {
+            do {
+                let rendered = try render(source, through: [
+                    isolation,
+                    equalizer(volume: processing.volume, enhancement: processing.enhancement, noise: processing.noise),
+                    dynamics(enhancement: processing.enhancement, noise: .off),
+                    limiter(),
+                ])
+                return try AudioCeiling.keepingUnder(rendered)
+            } catch {
+                // Falls through to the equalizer and expander alone.
+            }
         }
         let rendered = try render(source, through: [
             equalizer(volume: processing.volume, enhancement: processing.enhancement, noise: processing.noise),
@@ -110,6 +127,25 @@ nonisolated enum AudioEnhancer {
 
     private static func dynamicsProcessor() -> AVAudioUnitEffect {
         effect(kAudioUnitSubType_DynamicsProcessor)
+    }
+
+    /// Apple's voice isolation, mixed in by `strength`; nil when this device doesn't have it.
+    private static func soundIsolation(_ strength: AudioStrength) -> AVAudioUnitEffect? {
+        var description = AudioComponentDescription(
+            componentType: kAudioUnitType_Effect, componentSubType: kAudioUnitSubType_AUSoundIsolation,
+            componentManufacturer: kAudioUnitManufacturer_Apple, componentFlags: 0, componentFlagsMask: 0
+        )
+        guard AudioComponentFindNext(nil, &description) != nil else { return nil }
+        let isolation = effect(kAudioUnitSubType_AUSoundIsolation)
+        let mix: Float = strength == .strong ? 100 : 50
+        isolation.withAudioUnit { unit in
+            AudioUnitSetParameter(unit, kAUSoundIsolationParam_WetDryMixPercent, kAudioUnitScope_Global, 0, mix, 0)
+            AudioUnitSetParameter(
+                unit, kAUSoundIsolationParam_SoundToIsolate, kAudioUnitScope_Global, 0,
+                Float(kAUSoundIsolationSoundType_HighQualityVoice), 0
+            )
+        }
+        return isolation
     }
 
     /// Catches the peaks quickly and lets go smoothly.

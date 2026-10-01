@@ -19,7 +19,7 @@ extension QuickEditViewModel {
     }
 
     func tapJoin(_ index: Int) {
-        guard removalRange == nil, index > 0, edit.timeline.segments.indices.contains(index) else { return }
+        guard index > 0, edit.timeline.segments.indices.contains(index) else { return }
         clearLayerSelection()
         let id = edit.timeline.segments[index].id
         selectedSegmentID = nil
@@ -66,6 +66,17 @@ extension QuickEditViewModel {
             : String(localized: "\(transition.label) on every cut"))
     }
 
+    /// Under the transitions: a cut that removed nothing shows both sides as the same video.
+    var transitionNote: String? {
+        guard let index = selectedJoinIndex else { return nil }
+        let timeline = edit.timeline
+        let transition = timeline.transition(atJoin: index)
+        if transition.showsBothSides, timeline.continuesFromPrevious(index) {
+            return String(localized: "Nothing was cut out here, so \(transition.label) won't show")
+        }
+        return nil
+    }
+
     /// Edited seconds of every cut, by the index of the section after it.
     var cuts: [(index: Int, time: TimeInterval)] {
         edit.timeline.segments.indices.dropFirst().map { ($0, edit.timeline.editedStart(ofSegmentAt: $0)) }
@@ -78,7 +89,6 @@ extension QuickEditViewModel {
         endTrim()
         trimOrigin = edit.timeline
         activeHandle = handle
-        removalRange = nil
         selectedSegmentID = nil
         selectedJoinID = nil
         player.pause()
@@ -118,60 +128,6 @@ extension QuickEditViewModel {
         endTrim()
     }
 
-    // MARK: - Remove part
-
-    /// Shows the red range around the playhead, two seconds long, to drag over what should go.
-    func startRemovingPart() {
-        guard isReady else { return }
-        player.pause()
-        let length = edit.editedDuration
-        let start = max(0, min(length - Self.initialRemoval, player.currentTime - 1))
-        removalRange = start...min(length, start + Self.initialRemoval)
-        selectedSegmentID = nil
-        selectedJoinID = nil
-    }
-
-    /// Moves an edge of the red range to `time` (edited seconds); the preview shows that frame.
-    func moveRemovalEdge(_ edge: RemovalEdge, toEdited time: TimeInterval) {
-        guard let range = removalRange else { return }
-        let length = edit.editedDuration
-        let moved: ClosedRange<TimeInterval>
-        switch edge {
-        case .start:
-            let start = max(0, min(time, range.upperBound - Self.minimumRemoval))
-            moved = start...range.upperBound
-        case .end:
-            let end = min(length, max(time, range.lowerBound + Self.minimumRemoval))
-            moved = range.lowerBound...end
-        }
-        removalRange = moved
-        player.scrub(to: edge == .start ? moved.lowerBound : moved.upperBound)
-    }
-
-    func cancelRemovingPart() {
-        removalRange = nil
-    }
-
-    /// "Remove 00:02.10": takes the red range out (two cuts and a delete, one undo step).
-    func removePart() {
-        guard isReady, let range = removalRange else { return }
-        var timeline = edit.timeline
-        guard timeline.removeEdited(range) else {
-            toast.show(String(localized: "Keep at least one section"))
-            return
-        }
-        removalRange = nil
-        commit(timeline)
-        player.seek(to: range.lowerBound)
-        toast.show(String(localized: "Removed \(DurationText.timecode(range.upperBound - range.lowerBound, total: edit.sourceDuration))"))
-    }
-
-    /// "00:02.10": how much the red range takes out.
-    var removalLengthLabel: String {
-        guard let range = removalRange else { return "" }
-        return DurationText.timecode(range.upperBound - range.lowerBound, total: edit.editedDuration)
-    }
-
     // MARK: - Cut and delete
 
     /// Cuts the section under the playhead in two and selects the second half, ready for Delete.
@@ -184,7 +140,6 @@ extension QuickEditViewModel {
             toast.show(String(localized: "Move the playhead away from the edge"))
             return
         }
-        removalRange = nil
         selectedJoinID = nil
         commit(timeline)
         selectedSegmentID = edit.timeline.segments[index + 1].id

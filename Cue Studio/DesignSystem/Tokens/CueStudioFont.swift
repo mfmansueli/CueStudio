@@ -19,6 +19,8 @@ enum CueStudioFont {
         "Inter-Variable",
         "Poppins-ExtraBold",
         "Manrope-Variable",
+        "DMSans-Variable",
+        "DMSerifDisplay-Regular",
     ]
 
     /// Registers the bundled fonts for this process. Call once at launch.
@@ -42,6 +44,12 @@ enum CueStudioFont {
 
     static func rounded(size: CGFloat) -> Font {
         .system(size: size, design: .rounded)
+    }
+
+    /// A family's chip in Text style and Caption style, drawn in that family (the only place the
+    /// interface shows the fonts made for the video).
+    static func chip(_ face: TextOverlayFont) -> Font {
+        Font(TextFont.font(face, weight: face == .dmSerif ? .regular : .semibold, size: 15, text: face.label))
     }
 
     /// Countdown numerals over the camera.

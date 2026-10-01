@@ -18,6 +18,9 @@ nonisolated enum CaptionTimelineMapping {
         func edited(_ source: Double) -> Double { editedStart + (source - span.start) / speed }
     }
 
+    /// Shortest part of a line (seconds of its recording) that shows after a cut.
+    static let shortestShown: TimeInterval = 0.08
+
     static func instances(_ cues: [CaptionCue], in timeline: EditTimeline) -> [(line: CaptionCue, cueID: UUID)] {
         var windows: [Window] = []
         for (index, segment) in timeline.segments.enumerated() {
@@ -45,7 +48,8 @@ nonisolated enum CaptionTimelineMapping {
     private static func mapped(_ cue: CaptionCue, into window: Window) -> CaptionCue? {
         let start = max(cue.start, window.span.start)
         let end = min(cue.end, window.span.end)
-        guard end > start else { return nil }
+        // A sliver left at a cut isn't a line anyone can read: it doesn't show.
+        guard end - start >= shortestShown else { return nil }
         var mapped = cue
         mapped.start = window.edited(start)
         mapped.end = window.edited(end)

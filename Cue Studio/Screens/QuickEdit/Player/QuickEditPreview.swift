@@ -86,7 +86,8 @@ struct QuickEditPreview: View {
         }
     }
 
-    /// "● REC 00:04.20" at the top while a voice-over records.
+    /// "● REC 00:04.20" at the top while a voice-over records; "Original audio" while Voice
+    /// compares with the untreated sound.
     @ViewBuilder
     private var recordingBadge: some View {
         if viewModel.isRecordingVoiceOver {
@@ -102,6 +103,19 @@ struct QuickEditPreview: View {
             .padding(.top, 12)
             .allowsHitTesting(false)
             .accessibilityIdentifier("edit.recordingBadge")
+        } else if viewModel.comparesOriginal {
+            // Voice › Compare with original: what plays is the untreated sound.
+            HStack(spacing: 6) {
+                Image(systemName: "ear").font(.system(size: 11, weight: .bold)).foregroundStyle(Palette.acc)
+                Text("Original audio").font(.footnote.weight(.semibold))
+            }
+            .padding(.horizontal, 12)
+            .frame(height: 30)
+            .background(Palette.durationBadge, in: Capsule())
+            .frame(maxHeight: .infinity, alignment: .top)
+            .padding(.top, 12)
+            .allowsHitTesting(false)
+            .accessibilityIdentifier("edit.originalAudioBadge")
         }
     }
 

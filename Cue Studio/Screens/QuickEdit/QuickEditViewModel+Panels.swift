@@ -14,6 +14,15 @@ extension QuickEditViewModel {
         panel = nil
     }
 
+    /// Space plays and pauses, except while a panel with a text field is open.
+    var acceptsSpaceToPlay: Bool {
+        guard sheet == nil else { return false }
+        switch panel {
+        case .textStyle?, .captions?, .cover?: return false
+        default: return true
+        }
+    }
+
     func panelTitle(_ panel: EditorPanel) -> String {
         if panel == .textStyle, let text = selectedText { return text.role.label }
         return panel.title

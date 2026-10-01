@@ -49,8 +49,8 @@ extension QuickEditViewModel {
 
     /// Changes one part of a text's look by hand: it is remembered, so "Keep my changes" keeps it
     /// when a preset goes on every text.
-    func customizeText(_ id: UUID, _ field: TextLookField, _ update: (inout TextOverlay) -> Void) {
-        updateText(id) { text in
+    func customizeText(_ id: UUID, _ field: TextLookField, key: String? = nil, _ update: (inout TextOverlay) -> Void) {
+        updateText(id, key: key) { text in
             let before = text
             update(&text)
             if text != before { text.customized.insert(field) }

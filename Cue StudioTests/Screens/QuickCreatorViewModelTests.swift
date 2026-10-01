@@ -56,7 +56,7 @@ struct QuickCreatorViewModelTests {
         scenario.viewModel.addText(.title)
         let text = try #require(scenario.viewModel.edit.texts.first)
         #expect(text.span == TimeSpan(start: 10, end: 13))
-        #expect(text.font == .classic)
+        #expect(text.font == .dmSans)
         #expect(scenario.viewModel.selectedTextID == text.id)
         #expect(scenario.viewModel.editingTextID == text.id)
         #expect(scenario.viewModel.textBars.map(\.span) == [TimeSpan(start: 10, end: 13)])
@@ -96,9 +96,10 @@ struct QuickCreatorViewModelTests {
         let viewModel = scenario.viewModel
         scenario.player.seek(to: 20)
         viewModel.addText(.title)
-        scenario.player.seek(to: 5)
-        viewModel.startRemovingPart()
-        viewModel.removePart()
+        // Seconds 4 to 6 go.
+        var timeline = viewModel.edit.timeline
+        _ = timeline.removeEdited(4...6)
+        viewModel.commit(timeline)
         #expect(viewModel.textBars.first?.span == TimeSpan(start: 18, end: 21))
     }
 
@@ -123,12 +124,12 @@ struct QuickCreatorViewModelTests {
 
     @Test func aPresetRestylesOneText() async {
         let scenario = await makeScenario()
-        scenario.viewModel.addText(.callout)
         scenario.viewModel.addText(.title)
+        scenario.viewModel.addText(.subtitle)
         scenario.viewModel.applyPreset(.label, to: .selected)
         let texts = scenario.viewModel.edit.texts
         #expect(texts[1].background == .box)
-        #expect(texts[1].backgroundColor == .yellow)
+        #expect(texts[1].backgroundColor == .black)
         #expect(texts[1].preset == .label)
         // Only the picked one, and new texts don't follow it.
         #expect(texts[0].preset == .cue)
@@ -161,7 +162,7 @@ struct QuickCreatorViewModelTests {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
         viewModel.addText(.title)
-        viewModel.setFilter(.film)
+        viewModel.pickFilter(.film)
         viewModel.useFrameAsCover()
         let cover = viewModel.edit.cover
         let steps = viewModel.history.past.count
@@ -200,7 +201,7 @@ struct QuickCreatorViewModelTests {
 
         viewModel.applyPreset(.editorial, to: .allTexts, keepingCustomizations: false)
         #expect(viewModel.edit.texts[0].color == .white)
-        #expect(viewModel.edit.texts[0].font == .serif)
+        #expect(viewModel.edit.texts[0].font == .dmSerif)
         #expect(viewModel.edit.texts[0].customized.isEmpty)
     }
 
@@ -500,7 +501,7 @@ struct QuickCreatorViewModelTests {
         viewModel.stopVoiceOver()
         let id = viewModel.edit.voiceOvers[0].id
         viewModel.setVoiceOverVolume(id, volume: 3)
-        #expect(viewModel.edit.voiceOvers[0].volume == 1)
+        #expect(viewModel.edit.voiceOvers[0].volume == 2)
         viewModel.setVoiceOverVolume(id, volume: 0.4)
         #expect(viewModel.edit.voiceOvers[0].volume == 0.4)
         viewModel.deleteVoiceOver(id)

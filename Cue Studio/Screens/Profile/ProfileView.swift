@@ -117,6 +117,10 @@ struct ProfileView: View {
                             .foregroundStyle(Palette.ink3)
                     }
                 }
+                NavigationLink(value: ProfileRoute.acknowledgements) {
+                    Text("Acknowledgements").foregroundStyle(Palette.ink)
+                }
+                .accessibilityIdentifier("profile.acknowledgementsButton")
                 Button("Restore purchases") {
                     Task {
                         let restored = await store.restore()

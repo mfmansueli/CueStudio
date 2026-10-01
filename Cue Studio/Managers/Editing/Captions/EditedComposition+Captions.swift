@@ -9,7 +9,11 @@ nonisolated extension EditedComposition {
     static func captionOverlays(for edit: TakeEdit, frame: CGSize) -> [FrameOverlay] {
         let shown = edit.shownCaptions
         if let settings = edit.captionCollection {
-            var overlays = CaptionCollectionRenderer.overlays(shown.main, settings: settings, position: edit.captionPosition, frame: frame)
+            // Translated words aren't timed to the voice: they show whole.
+            let animation: CaptionAnimation = if case .translation = edit.captionDisplay { .line } else { edit.captionAnimation }
+            var overlays = CaptionCollectionRenderer.overlays(
+                shown.main, settings: settings, position: edit.captionPosition, frame: frame, animation: animation
+            )
             var secondary = settings
             secondary.sizeScale *= 0.8
             secondary.followsWords = false

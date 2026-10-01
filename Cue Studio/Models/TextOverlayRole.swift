@@ -40,13 +40,27 @@ nonisolated enum TextOverlayRole: String, Codable, CaseIterable, Identifiable, S
         }
     }
 
-    /// Size in points on a 402-point-wide frame, before the style's scale.
+    /// Size in points on a 402-point-wide frame, before the style's scale: the v10 design's 26,
+    /// 18, 30 and 22 points on its 196-point-wide preview.
     var baseSize: Double {
         switch self {
-        case .title: 30
-        case .subtitle: 19
-        case .hook: 32
-        case .callout: 18
+        case .title: 26 * Self.designScale
+        case .subtitle: 18 * Self.designScale
+        case .hook: 30 * Self.designScale
+        case .callout: 22 * Self.designScale
+        }
+    }
+
+    /// The design's text sizes are on a 196-point-wide frame; ours on 402.
+    static let designScale: Double = 402.0 / 196.0
+
+    /// The preset a new one starts with when the project has no style of its own.
+    var defaultPreset: TypePreset {
+        switch self {
+        case .title: .cue
+        case .subtitle: .minimal
+        case .hook: .pop
+        case .callout: .label
         }
     }
 
@@ -63,10 +77,10 @@ nonisolated enum TextOverlayRole: String, Codable, CaseIterable, Identifiable, S
     /// the face; callouts low, above the platforms' captions and buttons.
     var defaultY: Double {
         switch self {
-        case .title: 0.2
+        case .title: 0.22
         case .subtitle: 0.3
-        case .hook: 0.16
-        case .callout: 0.64
+        case .hook: 0.36
+        case .callout: 0.56
         }
     }
 }

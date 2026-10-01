@@ -25,6 +25,8 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
     var suggestions: [CleanUpSuggestion] = []
     /// Clean Up has listened to the take (so an empty list means it found nothing).
     var cleanUpAnalyzed = false
+    /// Pauses: only silences at least this long are listed ("Pauses longer than").
+    var pauseThreshold: TimeInterval = 0.7
 
     // MARK: Audio
     /// 0 to 1.5 (150%): the take's own sound.
@@ -33,8 +35,9 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
     var enhancesVoice = true
     var reducesNoise = false
     /// Which treatment the take's sound gets (`VoiceProcessing`): 1 for edits made before the
-    /// levels below, so they keep sounding as they did; 2 for new ones.
-    var audioVersion = 2
+    /// levels below and 2 for edits made before Apple's voice isolation, so they keep sounding as
+    /// they did; 3 for new ones.
+    var audioVersion = VoiceProcessing.currentVersion
     var voiceEnhancement: AudioStrength = .soft
     var noiseReduction: AudioStrength = .off
     /// The creator's music and sounds, under the video.
@@ -46,12 +49,21 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
     var exposure: Double = 0
     var contrast: Double = 0
     var warmth: Double = 0
+    var saturation: Double = 0
+    var highlights: Double = 0
+    var shadows: Double = 0
+    /// 0 to 100.
+    var sharpness: Double = 0
     var filter: VideoFilter = .original
+    /// How much of the filter shows, 0 to 1.
+    var filterAmount: Double = 1
 
     // MARK: Crop
     var aspect: AspectRatio
     /// Where the crop sits inside the recording, -1 (top or left) to 1 (bottom or right).
     var cropOffset: Double = 0
+    /// Fill (crop) or Fit (the whole recording, with bars).
+    var cropFit: CropFit = .fill
 
     // MARK: Captions
     var showsCaptions = false
@@ -213,11 +225,12 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
     }
 
     /// The look a new text starts with: the one set on every text, else the old Style tool's,
-    /// else Cue's own preset.
+    /// else its role's preset (Title Cue, Subtitle Minimal, Hook Pop, Callout Label).
     func newText(_ role: TextOverlayRole, span: TimeSpan) -> TextOverlay {
         if let textLook { return TextOverlay(role: role, look: textLook, preset: textPreset, span: span) }
         if let creatorStyle { return TextOverlay(role: role, style: creatorStyle, span: span) }
-        return TextOverlay(role: role, look: TypePreset.cue.look(for: .title), preset: .cue, span: span)
+        let preset = role.defaultPreset
+        return TextOverlay(role: role, look: preset.look(for: .title), preset: preset, span: span)
     }
 
     /// The background effect of the take (`nil`) or another recording, when it changes the picture.
@@ -265,6 +278,7 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
     private enum CodingKeys: String, CodingKey {
         case timeline, sources, suggestions, cleanUpAnalyzed, volume, enhancesVoice, reducesNoise,
         audioVersion, voiceEnhancement, noiseReduction, music, backgrounds, exposure, contrast, warmth, filter
+        case saturation, highlights, shadows, sharpness, filterAmount, cropFit, pauseThreshold
         case aspect, cropOffset, showsCaptions, captionStyle, captionLook, captionPreset, captionPosition, captions
         case captionTranscript, sourceTranscripts, captionLanguage, captionAnimation, captionTranslations, captionDisplay
         case captionCollection
@@ -300,6 +314,14 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
         contrast = try container.decodeIfPresent(Double.self, forKey: .contrast) ?? 0
         warmth = try container.decodeIfPresent(Double.self, forKey: .warmth) ?? 0
         filter = try container.decodeIfPresent(VideoFilter.self, forKey: .filter) ?? .original
+        // Added with the v10 editor: edits saved before have none of them.
+        saturation = (try? container.decodeIfPresent(Double.self, forKey: .saturation)) ?? 0
+        highlights = (try? container.decodeIfPresent(Double.self, forKey: .highlights)) ?? 0
+        shadows = (try? container.decodeIfPresent(Double.self, forKey: .shadows)) ?? 0
+        sharpness = (try? container.decodeIfPresent(Double.self, forKey: .sharpness)) ?? 0
+        filterAmount = (try? container.decodeIfPresent(Double.self, forKey: .filterAmount)) ?? 1
+        cropFit = (try? container.decodeIfPresent(CropFit.self, forKey: .cropFit)) ?? .fill
+        pauseThreshold = (try? container.decodeIfPresent(TimeInterval.self, forKey: .pauseThreshold)) ?? 0.7
         aspect = try container.decode(AspectRatio.self, forKey: .aspect)
         cropOffset = try container.decodeIfPresent(Double.self, forKey: .cropOffset) ?? 0
         showsCaptions = try container.decodeIfPresent(Bool.self, forKey: .showsCaptions) ?? false

@@ -296,7 +296,7 @@ struct QuickEditViewModelTests {
         #expect(viewModel.selectedJoinIndex == 1)
         #expect(viewModel.selectedSegmentIndex == nil)
         #expect(viewModel.selectedTransition == .hardCut)
-        #expect(viewModel.trimHint == "Cut at 00:20.00 · None keeps it a hard cut")
+        #expect(viewModel.transitionNote == nil)
 
         viewModel.setTransition(.fade)
         #expect(viewModel.edit.timeline.transition(atJoin: 1) == .fade)
@@ -321,7 +321,7 @@ struct QuickEditViewModelTests {
         cutAtTwenty(scenario)
         viewModel.tapJoin(1)
         viewModel.setTransition(.dissolve)
-        #expect(viewModel.trimHint == "Nothing was cut out here, so Dissolve won't show")
+        #expect(viewModel.transitionNote == "Nothing was cut out here, so Dissolve won't show")
     }
 
     @Test func aCutOrASectionIsSelectedNeverBoth() async {
@@ -338,10 +338,6 @@ struct QuickEditViewModelTests {
         viewModel.tapJoin(1)
         #expect(viewModel.selectedJoinIndex == nil)
         viewModel.tapJoin(0)
-        #expect(viewModel.selectedJoinIndex == nil)
-        // Nothing to pick while the red range shows.
-        viewModel.startRemovingPart()
-        viewModel.tapJoin(1)
         #expect(viewModel.selectedJoinIndex == nil)
     }
 
@@ -378,73 +374,6 @@ struct QuickEditViewModelTests {
         #expect(abs(scenario.viewModel.frameSnapped(edited: 10.44) - 313.0 / 30) < 0.000_1)
     }
 
-    // MARK: - Remove part
-
-    @Test func removePartTakesTheRedRangeOut() async {
-        let scenario = await makeScenario()
-        scenario.player.seek(to: 20)
-        scenario.viewModel.startRemovingPart()
-        #expect(scenario.viewModel.removalRange == 19...21)
-        #expect(scenario.viewModel.removalLengthLabel == "00:02.00")
-        #expect(scenario.viewModel.trimHint == "Drag the red edges over the part you want gone")
-        scenario.viewModel.removePart()
-        #expect(spans(scenario.viewModel) == [[0, 19], [21, 64]])
-        #expect(scenario.viewModel.removalRange == nil)
-        #expect(scenario.player.currentTime == 19)
-        #expect(scenario.toast.message == "Removed 00:02.00")
-        scenario.viewModel.undo()
-        #expect(scenario.viewModel.edit.timeline.isWhole)
-    }
-
-    @Test func theRedRangeIsThePartThePlayerReviews() async {
-        let scenario = await makeScenario()
-        scenario.player.seek(to: 20)
-        scenario.viewModel.startRemovingPart()
-        #expect(scenario.player.reviewedPart == 19...21)
-        scenario.viewModel.moveRemovalEdge(.end, toEdited: 30)
-        #expect(scenario.player.reviewedPart == 19...30)
-        scenario.viewModel.cancelRemovingPart()
-        #expect(scenario.player.reviewedPart == nil)
-        scenario.viewModel.startRemovingPart()
-        scenario.viewModel.removePart()
-        #expect(scenario.player.reviewedPart == nil)
-    }
-
-    @Test func theRedEdgesMoveAndNeverCross() async {
-        let scenario = await makeScenario()
-        scenario.player.seek(to: 20)
-        scenario.viewModel.startRemovingPart()
-        scenario.viewModel.moveRemovalEdge(.end, toEdited: 30)
-        #expect(scenario.viewModel.removalRange == 19...30)
-        #expect(scenario.player.currentTime == 30)
-        scenario.viewModel.moveRemovalEdge(.start, toEdited: 40)
-        #expect(scenario.viewModel.removalRange?.upperBound == 30)
-        #expect(abs((scenario.viewModel.removalRange?.lowerBound ?? 0) - 29.8) < 0.000_1)
-        scenario.viewModel.moveRemovalEdge(.end, toEdited: 100)
-        #expect(scenario.viewModel.removalRange?.upperBound == 64)
-    }
-
-    @Test func aPartAcrossACutTakesFromBothSides() async {
-        let scenario = await makeScenario()
-        scenario.player.seek(to: 20)
-        scenario.viewModel.cut()
-        scenario.viewModel.startRemovingPart()
-        scenario.viewModel.removePart()
-        #expect(spans(scenario.viewModel) == [[0, 19], [21, 64]])
-    }
-
-    @Test func cancellingOrChangingToolDropsTheRange() async {
-        let scenario = await makeScenario()
-        scenario.player.seek(to: 20)
-        scenario.viewModel.startRemovingPart()
-        scenario.viewModel.cancelRemovingPart()
-        #expect(scenario.viewModel.removalRange == nil)
-        scenario.viewModel.startRemovingPart()
-        scenario.viewModel.panel = .voice
-        #expect(scenario.viewModel.removalRange == nil)
-        #expect(scenario.viewModel.edit.timeline.isWhole)
-    }
-
     // MARK: - Cut and delete
 
     @Test func cutSplitsAtThePlayheadAndSelectsTheSecondHalf() async {
@@ -456,7 +385,6 @@ struct QuickEditViewModelTests {
         #expect(scenario.viewModel.selectedSegmentIndex == 1)
         #expect(scenario.viewModel.canDeleteSelection)
         #expect(scenario.toast.message == "Cut at 00:20.00 — tap a side, then Delete")
-        #expect(scenario.viewModel.trimHint == "Section 2 selected · Delete removes it")
     }
 
     @Test func cuttingAtAnEdgeExplains() async {
@@ -617,22 +545,27 @@ struct QuickEditViewModelTests {
         #expect(saved.duration == 18)
     }
 
-    @Test func undoLeavesTheLightAndSoundAlone() async {
+    /// The v10 editor undoes everything: the light and the sound too.
+    @Test func undoTakesBackTheLightAndTheSound() async {
         let scenario = await makeScenario()
         dragHandle(.start, to: 4, on: scenario.viewModel)
-        scenario.viewModel.edit.exposure = 30
-        scenario.viewModel.edit.volume = 0.5
+        scenario.viewModel.setAdjustment(.exposure, 30)
+        scenario.viewModel.setVoiceEnhancement(.strong)
+        scenario.viewModel.undo()
+        #expect(scenario.viewModel.edit.exposure == 30)
+        #expect(scenario.viewModel.edit.voiceEnhancement != .strong)
+        scenario.viewModel.undo()
+        #expect(scenario.viewModel.edit.exposure == 0)
+        #expect(scenario.viewModel.edit.timeline.trimStart == 4)
         scenario.viewModel.undo()
         #expect(scenario.viewModel.edit.timeline.isWhole)
-        #expect(scenario.viewModel.edit.exposure == 30)
-        #expect(scenario.viewModel.edit.volume == 0.5)
     }
 
     /// A filter is set by Style too, so it's an undo step of its own.
     @Test func aFilterIsItsOwnUndoStep() async {
         let scenario = await makeScenario()
         dragHandle(.start, to: 4, on: scenario.viewModel)
-        scenario.viewModel.setFilter(.mono)
+        scenario.viewModel.pickFilter(.mono)
         scenario.viewModel.undo()
         #expect(scenario.viewModel.edit.filter == .original)
         #expect(scenario.viewModel.edit.timeline.trimStart == 4)
@@ -728,15 +661,16 @@ struct QuickEditViewModelTests {
 
     @Test func removeAllTakesOnlyWhatCleanUpIsSureAbout() async {
         let editor = FakeTakeEditor()
-        // A 2.3 s pause and a 0.6 s one (the cut keeps 0.15 s each side).
+        // A 2.24 s pause and a 0.54 s one (the cut keeps 0.12 s each side).
         editor.silences = [TimeSpan(start: 10, end: 12), TimeSpan(start: 30, end: 30.3)]
         let scenario = await makeScenario(editor: editor)
         await scenario.viewModel.analyzeIfNeeded()
-        // The short one hides under "Ignore pauses under 0.7s".
+        // The short one hides under "Pauses longer than 0.7s".
         #expect(scenario.viewModel.cleanUpSuggestions.count == 1)
         #expect(scenario.viewModel.ignoredPausesLabel == "1 short pause kept")
         scenario.viewModel.lowerPauseThreshold()
-        #expect(scenario.viewModel.pauseThresholdLabel == "\(TestData.decimal("0.6"))s")
+        scenario.viewModel.lowerPauseThreshold()
+        #expect(scenario.viewModel.pauseThresholdLabel == "\(TestData.decimal("0.5"))s")
         #expect(scenario.viewModel.cleanUpSuggestions.count == 2)
         #expect(scenario.viewModel.ignoredPausesLabel == "natural pauses stay")
 
@@ -812,8 +746,13 @@ struct QuickEditViewModelTests {
     @Test func autoAdjustsTheLook() async {
         let scenario = await makeScenario()
         scenario.viewModel.autoAdjust()
-        #expect(scenario.viewModel.edit.exposure == 14)
-        #expect(scenario.toast.message == "Auto-enhanced")
+        #expect(scenario.viewModel.edit.exposure == 10)
+        #expect(scenario.viewModel.edit.contrast == 14)
+        #expect(scenario.viewModel.edit.saturation == 10)
+        #expect(scenario.toast.message == "Auto adjusted — fine-tune below")
+        // Adjust is an undo step now.
+        scenario.viewModel.undo()
+        #expect(scenario.viewModel.edit.exposure == 0)
     }
 
     // MARK: - Leaving
@@ -827,7 +766,7 @@ struct QuickEditViewModelTests {
         #expect(saved.isEdited)
         #expect(saved.duration == 60)
         #expect(saved.edit?.timeline.trimStart == 4)
-        #expect(scenario.toast.message == "Edits saved to Take 3")
+        #expect(scenario.toast.message == "Edits saved to this take")
         #expect(scenario.drafts.drafts.isEmpty)
         #expect(scenario.player.isStopped)
     }

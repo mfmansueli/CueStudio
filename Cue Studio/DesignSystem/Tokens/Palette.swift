@@ -65,8 +65,6 @@ enum Palette {
     static let info = Color(light: Color(hex: 0x32ADE6), dark: Color(hex: 0x64D2FF))
     static let infoSoft = Color(hex: 0x64D2FF, opacity: 0.1)
     static let success = Color(hex: 0x34C759)
-    /// Quick edit: the music track.
-    static let music = Color(hex: 0xBF5AF2)
 
     // MARK: - Platforms
 
@@ -100,18 +98,6 @@ enum Palette {
 
     // MARK: - Quick edit
 
-    /// Inside the red "Remove part" range.
-    static let removalFill = Color(hex: 0xFF453A, opacity: 0.3)
-    /// A selected section on the timeline.
-    static let selectedSectionFill = Color.white.opacity(0.14)
-    /// What a trim handle is about to cut, while it's dragged.
-    static let trimDim = Color.black.opacity(0.72)
-    /// Hairline around the time bubble above the timeline.
-    static let bubbleBorder = Color.white.opacity(0.25)
-    /// The tick at the start of each frame, when the timeline is zoomed in to frame precision.
-    static let frameTick = Color.white.opacity(0.7)
-    /// The thin line where one section cuts to the next on the timeline.
-    static let cutLine = Color.white.opacity(0.55)
     /// Behind the mark on a cut (a hard cut) that picks its transition.
     static let joinMark = Color.black.opacity(0.6)
     /// Behind "Classic" captions.
@@ -198,4 +184,11 @@ enum Palette {
     static let sliderTrack = Color(hex: 0x767680, opacity: 0.4)
     /// A switch that is off.
     static let toggleOff = Color(hex: 0x787880, opacity: 0.36)
+    /// A small delete button inside a panel (a caption line's trash).
+    static let dangerWash = Color(hex: 0xFF453A, opacity: 0.16)
+    /// The frame picked on Cover's strip: everything else dimmed.
+    static let coverDim = Color.black.opacity(0.5)
+    /// A preset card: the frame of the take under the sample, darkened, and the card's edge.
+    static let presetCardDim = Color.black.opacity(0.28)
+    static let presetCardBorder = Color.white.opacity(0.08)
 }

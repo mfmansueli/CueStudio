@@ -23,7 +23,7 @@ extension QuickEditViewModel {
             return TimelineGeometry.ClipInput(
                 id: segment.id, start: start, duration: segment.duration,
                 sourceStart: segment.sourceStart, sourceEnd: segment.sourceEnd, speed: segment.speed,
-                sourceID: segment.sourceID, badge: Self.badge(of: segment)
+                sourceID: segment.sourceID, badge: Self.badge(of: segment), transition: segment.transitionIn
             )
         }
         input.texts = edit.editedTexts(in: timeline).map { text, span in
@@ -52,6 +52,7 @@ extension QuickEditViewModel {
         }
         if panel == .pauses { input.pauses = timelinePauses }
         input.selection = selection
+        input.selectedJoin = selectedJoinID
         input.panelIsOpen = panel != nil
         input.focusedLane = panel?.focusedLane
         input.heightClass = heightClass
@@ -74,7 +75,7 @@ extension QuickEditViewModel {
     var timelinePauses: [TimelineGeometry.PauseInput] {
         pauseCandidates.compactMap { pause in
             guard let span = edit.timeline.editedSpan(forSource: pause.span) else { return nil }
-            return TimelineGeometry.PauseInput(id: pause.id, span: span, isMarked: !keptPauseIDs.contains(pause.id))
+            return TimelineGeometry.PauseInput(id: pause.id, span: span, isMarked: isMarked(pause))
         }
     }
 
@@ -117,6 +118,7 @@ extension QuickEditViewModel {
             panel = nil
             toolMenu = .audio
         case .pause(let id): togglePauseMark(id)
+        case .join(let id): pickJoin(id)
         case .clip(let id): pick(.clip(id))
         case .item(let kind, let id): Self.selection(of: kind, id).map(pick)
         }
@@ -132,6 +134,32 @@ extension QuickEditViewModel {
         case .voiceOver: .voiceOver(id)
         case .recording: nil
         }
+    }
+
+    /// A cut's mark: picks the cut and opens its transitions (tapped again, lets go).
+    func pickJoin(_ id: UUID) {
+        guard selectedJoinID != id else {
+            panel = nil
+            return
+        }
+        Haptics.selection()
+        selection = nil
+        toolMenu = nil
+        if panel != .transition { panel = nil }
+        selectedJoinID = id
+        panel = .transition
+    }
+
+    /// VoiceOver: the transitions of the cut nearest to the playhead.
+    func pickNearestJoin() {
+        let time = player.currentTime
+        guard let nearest = cuts.min(by: { abs($0.time - time) < abs($1.time - time) }) else {
+            toast.show(String(localized: "No cuts yet"))
+            return
+        }
+        player.pause()
+        player.seek(to: nearest.time)
+        pickJoin(edit.timeline.segments[nearest.index].id)
     }
 
     /// Picks an item; a panel that can't work on it closes, one that can stays.
@@ -151,12 +179,7 @@ extension QuickEditViewModel {
 
     /// Marks a pause to go, or to stay.
     func togglePauseMark(_ id: UUID) {
-        Haptics.selection()
-        if keptPauseIDs.contains(id) {
-            keptPauseIDs.remove(id)
-        } else {
-            keptPauseIDs.insert(id)
-        }
+        toggleMark(id)
     }
 
     // MARK: - Scrubbing

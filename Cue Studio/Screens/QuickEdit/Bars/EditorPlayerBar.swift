@@ -6,8 +6,8 @@
 import SwiftUI
 
 /// Under the preview: "00:01.2 / 00:21.6", play / pause in the middle, and undo, redo and full
-/// screen, always within reach. It reads the player's clock, so it redraws while the video plays
-/// and the rest of the screen doesn't.
+/// screen, always within reach (also space, ⌘Z and ⇧⌘Z on a keyboard). It reads the player's
+/// clock, so it redraws while the video plays and the rest of the screen doesn't.
 struct EditorPlayerBar: View {
     let viewModel: QuickEditViewModel
 
@@ -23,7 +23,9 @@ struct EditorPlayerBar: View {
                     .accessibilityIdentifier("edit.timeLabel")
                 Spacer(minLength: 0)
                 iconButton("arrow.uturn.backward", label: Text("Undo"), id: "edit.undoButton", enabled: viewModel.canUndo, action: viewModel.undo)
+                    .keyboardShortcut("z", modifiers: .command)
                 iconButton("arrow.uturn.forward", label: Text("Redo"), id: "edit.redoButton", enabled: viewModel.canRedo, action: viewModel.redo)
+                    .keyboardShortcut("z", modifiers: [.command, .shift])
                 iconButton(
                     "arrow.up.left.and.arrow.down.right", label: Text("Full screen"), id: "edit.fullScreenButton", enabled: viewModel.isReady
                 ) {
@@ -39,6 +41,8 @@ struct EditorPlayerBar: View {
             }
             .buttonStyle(.plain)
             .disabled(!viewModel.isReady || viewModel.isRecordingVoiceOver)
+            // Space plays, unless a field could be taking the keyboard.
+            .keyboardShortcut(viewModel.acceptsSpaceToPlay ? KeyboardShortcut(.space, modifiers: []) : nil)
             .accessibilityLabel(isPlaying ? Text("Pause") : Text("Play"))
             .accessibilityIdentifier("edit.playButton")
         }

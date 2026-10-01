@@ -16,10 +16,6 @@ extension QuickEditViewModel {
         selectedTextID.flatMap { id in edit.texts.first { $0.id == id } }
     }
 
-    var editingText: TextOverlay? {
-        editingTextID.flatMap { id in edit.texts.first { $0.id == id } }
-    }
-
     /// Adds a text at the playhead, selects it and opens it for writing.
     func addText(_ role: TextOverlayRole) {
         guard isReady else { return }
@@ -70,8 +66,8 @@ extension QuickEditViewModel {
         }
     }
 
-    func updateText(_ id: UUID, _ update: (inout TextOverlay) -> Void) {
-        change { snapshot in
+    func updateText(_ id: UUID, key: String? = nil, _ update: (inout TextOverlay) -> Void) {
+        change(key: key) { snapshot in
             guard let index = snapshot.texts.firstIndex(where: { $0.id == id }) else { return }
             update(&snapshot.texts[index])
         }

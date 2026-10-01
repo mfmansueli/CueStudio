@@ -13,16 +13,25 @@ nonisolated struct VideoCover: Codable, Hashable, Sendable {
     /// Vertical center of the title as a fraction of the frame, from the top.
     var titleY = 0.2
     var style: CreatorStyle = .bold
+    /// The title's preset (Cue for covers made in the v10 editor); nil keeps `style`, as covers
+    /// made before it.
+    var preset: TypePreset?
 
-    init(source: CoverSource, style: CreatorStyle = .bold) {
+    init(source: CoverSource, style: CreatorStyle = .bold, preset: TypePreset? = nil) {
         self.source = source
         self.style = style
+        self.preset = preset
     }
 
     /// The title as a text overlay, set like a title in the cover's style.
     var titleOverlay: TextOverlay? {
         guard !title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return nil }
-        var overlay = TextOverlay(role: .title, style: style, span: TimeSpan(start: 0, end: 1))
+        let span = TimeSpan(start: 0, end: 1)
+        var overlay = if let preset {
+            TextOverlay(role: .title, look: preset.look(for: .title), preset: preset, span: span)
+        } else {
+            TextOverlay(role: .title, style: style, span: span)
+        }
         overlay.text = title
         overlay.size = min(overlay.size * 1.2, TextOverlay.sizeRange.upperBound)
         overlay.center = OverlayPoint(x: 0.5, y: titleY).clamped

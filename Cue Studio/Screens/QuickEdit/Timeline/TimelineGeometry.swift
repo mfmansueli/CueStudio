@@ -35,6 +35,8 @@ nonisolated struct TimelineGeometry: Equatable, Sendable {
         /// Pauses to review (the Pauses panel), on the video track.
         var pauses: [PauseInput] = []
         var selection: EditorSelection?
+        /// The cut picked to choose its transition (named by the clip that starts there).
+        var selectedJoin: UUID?
         var panelIsOpen = false
         var focusedLane: TimelineLane?
         var heightClass: EditorHeightClass = .regular
@@ -54,6 +56,8 @@ nonisolated struct TimelineGeometry: Equatable, Sendable {
         var sourceID: UUID?
         /// "1.5×", "Push in", "Muted" (joined), or nil.
         var badge: String?
+        /// How the cut before it plays.
+        var transition: EditTransition = .hardCut
     }
 
     struct ItemInput: Equatable, Sendable {
@@ -126,11 +130,23 @@ nonisolated struct TimelineGeometry: Equatable, Sendable {
         var isMarked: Bool
     }
 
+    /// The mark in the middle of a cut: tap it to pick the cut's transition.
+    struct Join: Equatable, Sendable {
+        /// The clip that starts at the cut.
+        var id: UUID
+        var frame: CGRect
+        /// Where a finger takes hold of it.
+        var hitFrame: CGRect
+        var transition: EditTransition
+        var isSelected: Bool
+    }
+
     /// What a tap lands on.
     enum Hit: Equatable, Sendable {
         case clip(UUID)
         case item(ItemKind, UUID)
         case pause(UUID)
+        case join(UUID)
         case cover
         case addClip
         case addText
@@ -179,6 +195,9 @@ nonisolated struct TimelineGeometry: Equatable, Sendable {
     static let coverGap: CGFloat = 20
     static let addSize: CGFloat = 32
     static let addGap: CGFloat = 14
+    /// A cut's mark, and the least room each clip beside it needs for it to show.
+    static let joinSize: CGFloat = 20
+    static let joinRoom: CGFloat = 26
     /// A tap moves less than this.
     static let tapSlop: CGFloat = 4
     /// The voice-over being recorded has no id of its own yet.
@@ -191,6 +210,7 @@ nonisolated struct TimelineGeometry: Equatable, Sendable {
     let clips: [Clip]
     let items: [Item]
     let pauses: [Pause]
+    let joins: [Join]
     let handles: [Handle]
     let ghosts: [Ghost]
     let coverFrame: CGRect
@@ -275,6 +295,25 @@ nonisolated struct TimelineGeometry: Equatable, Sendable {
                 duration: clip.duration
             )
         }
+
+        // A cut's mark, unless a clip is picked (its handles sit there) or Pauses is open.
+        var joins: [Join] = []
+        if selection?.clipID == nil, input.pauses.isEmpty {
+            for (index, clip) in input.clips.enumerated() where index > 0 {
+                let before = CGFloat(input.clips[index - 1].duration) * pps
+                guard before >= Self.joinRoom, CGFloat(clip.duration) * pps >= Self.joinRoom else { continue }
+                let x = CGFloat(clip.start) * pps
+                let size = Self.joinSize
+                let frame = CGRect(x: x - size / 2, y: main.y + (main.height - size) / 2, width: size, height: size)
+                let reach = Self.handleReach
+                joins.append(Join(
+                    id: clip.id, frame: frame,
+                    hitFrame: CGRect(x: x - reach / 2, y: main.y, width: reach, height: main.height),
+                    transition: clip.transition, isSelected: input.selectedJoin == clip.id
+                ))
+            }
+        }
+        self.joins = joins
 
         pauses = input.pauses.map { pause in
             Pause(
@@ -376,6 +415,7 @@ nonisolated struct TimelineGeometry: Equatable, Sendable {
             return ghost.target
         }
         if let pause = pauses.first(where: { $0.frame.contains(point) }) { return .pause(pause.id) }
+        if let join = joins.first(where: { $0.hitFrame.contains(point) }) { return .join(join.id) }
         // The picked item first, then from the top layer down.
         if let item = items.last(where: { $0.isSelected && $0.frame.contains(point) }) { return .item(item.kind, item.id) }
         if let item = items.last(where: { $0.kind != .recording && $0.frame.contains(point) }) { return .item(item.kind, item.id) }

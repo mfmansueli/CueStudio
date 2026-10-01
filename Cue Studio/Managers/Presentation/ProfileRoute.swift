@@ -10,4 +10,6 @@ import Foundation
 enum ProfileRoute: Hashable {
     /// Profile › Settings › Language & Region.
     case languageRegion
+    /// Profile › Settings › Acknowledgements (the fonts' licenses).
+    case acknowledgements
 }

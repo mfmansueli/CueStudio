@@ -20,6 +20,12 @@ extension QuickEditViewModel {
         DurationText.timecode(recorder.elapsed, total: edit.editedDuration)
     }
 
+    /// Under the record button: where it will start, or how long it has been recording.
+    var voiceOverTimeLabel: String {
+        if let recordingStart { return DurationText.editor(max(0, player.currentTime - recordingStart)) }
+        return String(localized: "Starts at \(DurationText.editor(player.currentTime))")
+    }
+
     func startVoiceOver() async {
         guard isReady, !recorder.isRecording else { return }
         guard await recorder.requestPermission() else {
@@ -39,6 +45,7 @@ extension QuickEditViewModel {
             return
         }
         recordingStart = start
+        Haptics.record()
         player.isMuted = true
         player.play()
     }
@@ -50,6 +57,7 @@ extension QuickEditViewModel {
         player.pause()
         player.isMuted = false
         guard let recorded = recorder.stop(), let start else { return }
+        Haptics.record()
         importedFiles.insert(recorded.fileName)
         guard recorded.duration >= 0.3 else {
             EditMediaFiles.remove([recorded.fileName])

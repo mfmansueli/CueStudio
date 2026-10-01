@@ -11,6 +11,9 @@ import Foundation
 /// placed on the edit's own seconds: cutting something before it doesn't move it. Every change is
 /// an undo step; a slider is one.
 extension QuickEditViewModel {
+    /// New music goes in at 40%, under the voice.
+    static let newMusicVolume: Double = 0.4
+
     var selectedMusic: MusicClip? {
         selectedMusicID.flatMap { id in edit.music.first { $0.id == id } }
     }
@@ -53,14 +56,15 @@ extension QuickEditViewModel {
             toast.show(String(localized: "This sound file can't be added"))
             return
         }
-        let clip = MusicClip(
+        var clip = MusicClip(
             fileName: imported.fileName, title: imported.title, fileDuration: imported.duration, start: start, length: length
         )
+        clip.volume = Self.newMusicVolume
         change { $0.music = ($0.music ?? []) + [clip] }
         selectedMusicID = clip.id
         player.pause()
         player.seek(to: start)
-        toast.show(String(localized: "Music added"))
+        toast.show(String(localized: "Music added under your voice at 40%"))
     }
 
     func deleteMusic(_ id: UUID) {

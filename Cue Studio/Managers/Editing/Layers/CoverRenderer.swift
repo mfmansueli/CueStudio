@@ -62,6 +62,10 @@ nonisolated enum CoverRenderer {
         )
         guard let cropped = full.cropping(to: crop) else { return full }
         var image = CIImage(cgImage: cropped)
+        if edit.cropFit == .fit {
+            // Fit: the whole frame on black, like the video.
+            image = CueVideoCompositor.fitted(CIImage(cgImage: full), into: crop.size)
+        }
         // The take's background, like the video.
         if let effect = edit.background(for: nil), let render = BackgroundRender.prepare(effect, cacheKey: "cover") {
             image = BackgroundCompositing.apply(image, render: render) { PersonMasker.mask(for: $0) }

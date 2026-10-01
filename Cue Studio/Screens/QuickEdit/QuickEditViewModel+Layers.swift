@@ -98,24 +98,6 @@ extension QuickEditViewModel {
         }
     }
 
-    /// Opens the picked bar where it is edited: its sheet (text, caption line) or its tool.
-    func openSelectedLayer() {
-        guard let bar = selectedLayer else { return }
-        switch bar.kind {
-        case .text: editingTextID = bar.id
-        case .caption: editingCaptionID = captionCueID(forLine: bar.id)
-        case .media:
-            selectedMediaID = bar.id
-            panel = .media
-        case .voiceOver:
-            reviewedVoiceOverID = bar.id
-            panel = .volume
-        case .music:
-            selectedMusicID = bar.id
-            panel = .volume
-        }
-    }
-
     /// Moves a bar so it starts at `start` (edited seconds), keeping its length.
     func moveBar(_ bar: LayerBar, toStart start: TimeInterval) {
         guard bar.kind != .music else {
@@ -159,9 +141,16 @@ extension QuickEditViewModel {
 
     // MARK: - Private
 
-    /// Where a bar can go: the whole edit.
+    /// Where a bar can go: the whole edit; a caption line only up to its neighbors, so lines never
+    /// overlap.
     private func room(for bar: LayerBar) -> TimeSpan {
-        TimeSpan(start: 0, end: edit.editedDuration)
+        let whole = TimeSpan(start: 0, end: edit.editedDuration)
+        guard bar.kind == .caption else { return whole }
+        let lines = editedCaptionLines
+        guard let index = lines.firstIndex(where: { $0.id == bar.id }) else { return whole }
+        let floor = index > 0 ? lines[index - 1].end : 0
+        let ceiling = index + 1 < lines.count ? lines[index + 1].start : edit.editedDuration
+        return TimeSpan(start: floor, end: max(floor, ceiling))
     }
 
     /// Photos and videos can overlap, up to `MediaOverlay.simultaneousLimit` at a time; a move or a

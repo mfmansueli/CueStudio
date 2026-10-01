@@ -48,13 +48,6 @@ extension QuickEditViewModel {
         Dictionary(edit.sources.map { ($0.id, EditMediaFiles.url(for: $0.fileName)) }) { first, _ in first }
     }
 
-    /// Takes that can join the montage: every take in the library with its video, newest first.
-    var takesForMontage: [Take] {
-        takes.takes
-            .filter { FileManager.default.fileExists(atPath: takes.videoURL(for: $0).path(percentEncoded: false)) }
-            .sorted { $0.recordedAt > $1.recordedAt }
-    }
-
     // MARK: - Arranging
 
     /// Copies the picked section (or the one under the playhead) right after it, with what plays on
