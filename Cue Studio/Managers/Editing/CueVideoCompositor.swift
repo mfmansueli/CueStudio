@@ -174,8 +174,12 @@ final class CueVideoCompositor: NSObject, AVVideoCompositing, @unchecked Sendabl
     ) -> CIImage {
         var image = CIImage(cvPixelBuffer: source).transformed(by: uprightTransform(frame.transform, sourceHeight: CGFloat(CVPixelBufferGetHeight(source))))
         image = image.transformed(by: CGAffineTransform(translationX: -image.extent.minX, y: -image.extent.minY))
-        image = image.cropped(to: frame.crop)
-            .transformed(by: CGAffineTransform(translationX: -frame.crop.minX, y: -frame.crop.minY))
+        if edit.cropFit == .fit {
+            image = fitted(image, into: frame.crop.size)
+        } else {
+            image = image.cropped(to: frame.crop)
+                .transformed(by: CGAffineTransform(translationX: -frame.crop.minX, y: -frame.crop.minY))
+        }
         if abs(frame.scale - 1) > 0.000_1 {
             image = image.transformed(by: CGAffineTransform(scaleX: frame.scale, y: frame.scale))
         }
@@ -185,6 +189,20 @@ final class CueVideoCompositor: NSObject, AVVideoCompositing, @unchecked Sendabl
             }
         }
         return FrameLook.apply(edit, to: image)
+    }
+
+    /// Crop › Fit: the whole upright frame scaled to fit in `size`, centered on black.
+    nonisolated static func fitted(_ image: CIImage, into size: CGSize) -> CIImage {
+        let extent = image.extent
+        guard extent.width > 0, extent.height > 0, size.width > 0, size.height > 0 else { return image }
+        let scale = min(size.width / extent.width, size.height / extent.height)
+        let width = extent.width * scale
+        let height = extent.height * scale
+        let placed = image
+            .transformed(by: CGAffineTransform(scaleX: scale, y: scale))
+            .transformed(by: CGAffineTransform(translationX: (size.width - width) / 2, y: (size.height - height) / 2))
+        let black = CIImage(color: .black).cropped(to: CGRect(origin: .zero, size: size))
+        return placed.composited(over: black)
     }
 
     /// A photo or video over the take: filling its place (cropped, centered), on top of `image`,

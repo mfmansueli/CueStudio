@@ -13,10 +13,22 @@ import Testing
 struct TypePresetTests {
     private let span = TimeSpan(start: 1, end: 3)
 
-    @Test func everyPresetIsSetForTitlesAndForCaptions() {
-        for preset in TypePreset.allCases {
-            #expect(preset.look(for: .title) != preset.look(for: .caption), "\(preset)")
-        }
+    @Test func theEditorOffersTheEightPresetsOfTheDesign() {
+        #expect(TypePreset.editorPresets == [.cue, .editorial, .bold, .pop, .soft, .minimal, .label, .paper])
+        let cue = TypePreset.cue.look(for: .title)
+        #expect(cue.font == .dmSans && cue.weight == .heavy && cue.color == .black)
+        #expect(cue.background == .box && cue.backgroundColor == .yellow)
+        let label = TypePreset.label.look(for: .title)
+        #expect(label.isUppercase && abs(label.tracking - 0.08) < 0.000_001 && abs(label.sizeScale - 0.62) < 0.000_001)
+        #expect(TypePreset.editorial.look(for: .title).font == .dmSerif)
+        #expect(TypePreset.bold.look(for: .title).hasOutline)
+    }
+
+    @Test func aHeavyTitleIsOneStepLighterOnCaptions() {
+        // A line read word by word: Cue's heavy title face is too dense.
+        #expect(TypePreset.cue.look(for: .title).weight == .heavy)
+        #expect(TypePreset.cue.look(for: .caption).weight == .bold)
+        #expect(TypePreset.editorial.look(for: .caption).sizeScale <= 1.1)
     }
 
     @Test func captionsStayReadable() {
@@ -48,7 +60,7 @@ struct TypePresetTests {
         #expect(text.color == .pink)
         #expect(text.center == OverlayPoint(x: 0.3, y: 0.7))
         #expect(text.hasOutline)
-        #expect(text.font == .rounded)
+        #expect(text.font == .spaceGrotesk)
     }
 
     @Test func aTextsLookReadsBackTheSame() {

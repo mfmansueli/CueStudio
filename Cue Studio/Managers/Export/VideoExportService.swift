@@ -11,9 +11,9 @@ import UIKit
 @MainActor
 @Observable
 final class VideoExportService: VideoExporting {
-    func export(videoAt source: URL, options: ExportOptions) async throws -> URL {
+    func export(videoAt source: URL, options: ExportOptions, progress: (@MainActor (Double) -> Void)?) async throws -> URL {
         if options.needsEditRenderer {
-            return try await exportEdited(videoAt: source, options: options)
+            return try await exportEdited(videoAt: source, options: options, progress: progress)
         }
         let asset = AVURLAsset(url: source)
         guard let track = try await asset.loadTracks(withMediaType: .video).first else {
@@ -51,14 +51,33 @@ final class VideoExportService: VideoExporting {
             throw VideoExportError.exportUnavailable
         }
         session.videoComposition = AVVideoComposition(configuration: configuration)
-        try await session.export(to: output, as: .mov)
+        try await Self.run(session, to: output, progress: progress, from: 0)
         return output
+    }
+
+    /// Exports, telling `progress` how far it is: from `start` (what came before, like the sound
+    /// being prepared) to 1.
+    private static func run(
+        _ session: AVAssetExportSession, to output: URL, progress: (@MainActor (Double) -> Void)?, from start: Double
+    ) async throws {
+        guard let progress else {
+            try await session.export(to: output, as: .mov)
+            return
+        }
+        let watcher = Task { @MainActor in
+            for await state in session.states(updateInterval: 0.1) {
+                if case .exporting(let done) = state { progress(start + (1 - start) * done.fractionCompleted) }
+            }
+        }
+        defer { watcher.cancel() }
+        try await session.export(to: output, as: .mov)
+        progress(1)
     }
 
     // MARK: - Edited
 
     /// Quick edit, captions and quality: the same composition the preview plays, exported.
-    private func exportEdited(videoAt source: URL, options: ExportOptions) async throws -> URL {
+    private func exportEdited(videoAt source: URL, options: ExportOptions, progress: (@MainActor (Double) -> Void)?) async throws -> URL {
         let asset = AVURLAsset(url: source)
         let duration = try await asset.load(.duration).seconds
         var edit = options.edit ?? TakeEdit(sourceDuration: duration, aspect: options.aspect)
@@ -69,8 +88,9 @@ final class VideoExportService: VideoExporting {
         }
         let composition = try await EditedComposition.build(
             source: source, edit: edit, processedAudio: processedAudio, speech: await Self.voiceActivity(for: source, edit: edit),
-            options: .init(burnsInCaptions: options.burnsInCaptions, shortSide: options.shortSide)
+            options: .init(burnsInCaptions: options.burnsInCaptions, shortSide: options.shortSide, frameRate: options.frameRate)
         )
+        progress?(0.08)
         // More than the take's sound: mixed once through a limiter so nothing clips.
         let mixedDown = try await Mixdown.apply(to: composition)
         guard let session = AVAssetExportSession(asset: composition.asset, presetName: AVAssetExportPresetHEVCHighestQuality) else {
@@ -82,7 +102,7 @@ final class VideoExportService: VideoExporting {
         // Like the preview: speed changes keep the voice's pitch.
         session.audioTimePitchAlgorithm = .spectral
         let output = URL.temporaryDirectory.appending(path: "Cue-\(UUID().uuidString.prefix(8)).mov")
-        try await session.export(to: output, as: .mov)
+        try await Self.run(session, to: output, progress: progress, from: 0.1)
         return output
     }
 

@@ -7,7 +7,7 @@ import Foundation
 
 /// Local visual changes never request another transcription. Nil in TakeEdit means legacy.
 nonisolated struct CaptionSettings: Codable, Hashable, Sendable {
-    static let sizeRange: ClosedRange<Double> = 0.65...1.5
+    static let sizeRange: ClosedRange<Double> = 0.65...1.65
 
     var theme: CaptionTheme = .cue
     var sizeScale: Double = 1

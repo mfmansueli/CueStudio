@@ -103,6 +103,15 @@ nonisolated enum TextOverlayRenderer {
                 // No outline or shadow on the boxed word: it reads on its box.
                 storage.removeAttribute(.strokeWidth, range: range)
                 storage.removeAttribute(.shadow, range: range)
+            case .reveal:
+                // Only the words said so far; the rest keep their place, unseen.
+                let end = range.location + range.length
+                let hidden = NSRange(location: end, length: storage.length - end)
+                if hidden.length > 0 {
+                    storage.addAttribute(.foregroundColor, value: UIColor.clear, range: hidden)
+                    storage.removeAttribute(.strokeWidth, range: hidden)
+                    storage.removeAttribute(.shadow, range: hidden)
+                }
             }
             let all = manager.glyphRange(for: container)
             manager.drawBackground(forGlyphRange: all, at: layout.textRect.origin)
@@ -181,21 +190,7 @@ nonisolated enum TextOverlayRenderer {
     }
 
     private static func font(for text: TextOverlay, size: CGFloat) -> UIFont {
-        let weight: UIFont.Weight = switch text.weight {
-        case .regular: .regular
-        case .semibold: .semibold
-        case .bold: .bold
-        case .heavy: .heavy
-        }
-        let base = UIFont.systemFont(ofSize: size, weight: weight)
-        let design: UIFontDescriptor.SystemDesign = switch text.font {
-        case .classic: .default
-        case .rounded: .rounded
-        case .serif: .serif
-        case .mono: .monospaced
-        }
-        guard let descriptor = base.fontDescriptor.withDesign(design) else { return base }
-        return UIFont(descriptor: descriptor, size: size)
+        TextFont.font(text.font, weight: text.weight, size: size, text: text.displayText)
     }
 
     static func color(_ color: OverlayColor) -> UIColor {

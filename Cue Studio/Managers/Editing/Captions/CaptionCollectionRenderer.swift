@@ -18,8 +18,14 @@ nonisolated enum CaptionCollectionRenderer {
         let unit: CGFloat
     }
 
-    static func overlays(_ cues: [CaptionCue], settings: CaptionSettings, position: CaptionPosition, frame: CGSize) -> [FrameOverlay] {
-        cues.flatMap { cue in
+    /// How the collection's lines come and go: a still line, faded, words appearing, the word said
+    /// lit (the theme's own way: Cue boxes it, the others color it) or boxed. Lines whose words
+    /// have no times of their own always show whole.
+    static func overlays(
+        _ cues: [CaptionCue], settings: CaptionSettings, position: CaptionPosition, frame: CGSize, animation: CaptionAnimation = .line
+    ) -> [FrameOverlay] {
+        let reveal = effectiveAnimation(settings: settings, animation: animation)
+        return cues.flatMap { cue in
             let text = TextOverlay.caption(cue.text, look: TypePreset.cue.look(for: .caption), position: position, span: cue.span)
             guard let layout = layout(text.text, settings: settings, frame: frame) else { return [FrameOverlay]() }
             let size = layout.size
@@ -28,18 +34,27 @@ nonisolated enum CaptionCollectionRenderer {
             let x = min(max(CGFloat(requested.clamped.x) * frame.width, safe.minX + size.width / 2), safe.maxX - size.width / 2)
             let y = min(max(CGFloat(requested.clamped.y) * frame.height, safe.minY + size.height / 2), safe.maxY - size.height / 2)
             let origin = CGPoint(x: (x - size.width / 2).rounded(), y: (frame.height - y - size.height / 2).rounded())
+            let style: WordEmphasis.Style = switch reveal {
+            case .groups: .reveal
+            case .box: .box(fill: .yellow, text: .black)
+            default: .color(.yellow)
+            }
             func overlay(_ span: TimeSpan, index: Int?) -> FrameOverlay {
-                let emphasis = index.map { WordEmphasis(words: cue.words.map(\.text), index: $0, style: .color(.yellow)) }
-                return FrameOverlay(
+                let emphasis = index.map { WordEmphasis(words: cue.words.map(\.text), index: $0, style: style) }
+                var overlay = FrameOverlay(
                     lazyText: LazyText(text: text, emphasis: emphasis, frameWidth: frame.width, widthFraction: 0.8,
                                        collection: settings, frameHeight: frame.height),
                     size: size, origin: origin, span: span
                 )
+                if reveal == .fade { overlay.fade = CaptionAnimation.fadeDuration }
+                return overlay
             }
-            guard settings.followsWords, cue.hasWordTiming else { return [overlay(cue.span, index: nil)] }
+            guard reveal.followsWords, cue.hasWordTiming else { return [overlay(cue.span, index: nil)] }
             // Only measured intervals light a word. Gaps remain plain instead of extending a guess.
             var states: [FrameOverlay] = []
             var cursor = cue.start
+            // Words appearing: nothing shows before the first word is said.
+            if reveal == .groups, let first = cue.words.first { cursor = max(cue.start, first.start) }
             for index in cue.words.indices {
                 let word = cue.words[index]
                 let start = max(cursor, word.start, cue.start)
@@ -77,9 +92,18 @@ nonisolated enum CaptionCollectionRenderer {
                     UIBezierPath(roundedRect: line.insetBy(dx: -10 * layout.unit, dy: -2 * layout.unit), cornerRadius: 9 * layout.unit).fill()
                 }
             }
-            if let range {
+            if let range, emphasis?.style == .reveal {
+                // Only the words said so far.
+                let hidden = NSRange(location: range.location + range.length, length: (display as NSString).length - range.location - range.length)
+                if hidden.length > 0 {
+                    layout.storage.addAttribute(.foregroundColor, value: UIColor.clear, range: hidden)
+                    layout.storage.removeAttribute(.shadow, range: hidden)
+                    layout.storage.removeAttribute(.strokeWidth, range: hidden)
+                }
+            } else if let range {
                 let accent = color(settings.highlightColor)
-                if theme == .cue {
+                let boxes = if case .box = emphasis?.style { true } else { theme == .cue }
+                if boxes {
                     accent.setFill()
                     let glyphs = layout.manager.glyphRange(forCharacterRange: range, actualCharacterRange: nil)
                     layout.manager.enumerateEnclosingRects(forGlyphRange: glyphs, withinSelectedGlyphRange: NSRange(location: NSNotFound, length: 0),
@@ -93,6 +117,17 @@ nonisolated enum CaptionCollectionRenderer {
                 }
             }
             layout.manager.drawGlyphs(forGlyphRange: all, at: layout.origin)
+        }
+    }
+
+    /// What actually plays: a theme set not to follow words shows the line (faded or still);
+    /// one that follows them lights the word said unless words appear or a box is picked.
+    /// Edits made before Reveal (followsWords on, animation Line) keep lighting the word.
+    static func effectiveAnimation(settings: CaptionSettings, animation: CaptionAnimation) -> CaptionAnimation {
+        guard settings.followsWords else { return animation == .fade ? .fade : .line }
+        switch animation {
+        case .groups, .box, .highlight: return animation
+        case .line, .fade: return .highlight
         }
     }
 

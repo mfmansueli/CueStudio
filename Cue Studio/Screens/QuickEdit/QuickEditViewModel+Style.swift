@@ -43,13 +43,14 @@ extension QuickEditViewModel {
         case .selected: styledTextID.flatMap { id in edit.texts.first { $0.id == id } }?.preset
         case .allTexts: edit.textPreset
         case .allCaptions: edit.captionPreset
+        case .textsAndCaptions: edit.textPreset == edit.captionPreset ? edit.textPreset : nil
         }
     }
 
     /// Changes one part of a text's look by hand: it is remembered, so "Keep my changes" keeps it
     /// when a preset goes on every text.
-    func customizeText(_ id: UUID, _ field: TextLookField, _ update: (inout TextOverlay) -> Void) {
-        updateText(id) { text in
+    func customizeText(_ id: UUID, _ field: TextLookField, key: String? = nil, _ update: (inout TextOverlay) -> Void) {
+        updateText(id, key: key) { text in
             let before = text
             update(&text)
             if text != before { text.customized.insert(field) }
@@ -91,6 +92,23 @@ extension QuickEditViewModel {
                 snapshot.captionPreset = preset
             }
             toast.show(String(localized: "\(name) on the captions"))
+        case .textsAndCaptions:
+            var captionLook = look
+            captionLook.sizeScale = min(look.sizeScale, Self.largestCaptionScale)
+            change { snapshot in
+                snapshot.textLook = look
+                snapshot.textPreset = preset
+                for index in snapshot.texts.indices {
+                    let kept = keepingCustomizations ? snapshot.texts[index].customized : []
+                    look.apply(to: &snapshot.texts[index], keeping: kept)
+                    snapshot.texts[index].preset = preset
+                    if !keepingCustomizations { snapshot.texts[index].customized = [] }
+                }
+                snapshot.captionCollection = nil
+                snapshot.captionLook = captionLook
+                snapshot.captionPreset = preset
+            }
+            toast.show(String(localized: "\(name) on every text and the captions"))
         }
     }
 }

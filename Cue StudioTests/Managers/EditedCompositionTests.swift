@@ -41,6 +41,54 @@ struct EditedCompositionTests {
         }
     }
 
+    // MARK: - Clip volume
+
+    private func clipAt(_ volume: Double, muted: Bool = false, in timeline: inout EditTimeline, index: Int) {
+        var clip = timeline.segments[index]
+        clip.volume = volume
+        clip.isMuted = muted
+        timeline.replaceSegment(clip)
+    }
+
+    @Test func eachClipPlaysAtItsVolume() {
+        var timeline = EditTimeline(sourceDuration: 30)
+        timeline.split(atEdited: 10)
+        clipAt(0.5, in: &timeline, index: 1)
+        let length = EditedComposition.cutFade
+        // The two clips run on from each other: a quick ramp to the second one's level.
+        #expect(EditedComposition.levels(for: timeline) { _ in true } == [
+            EditedComposition.Fade(start: 0, duration: 0, fromVolume: 1, toVolume: 1),
+            EditedComposition.Fade(start: 10, duration: length, fromVolume: 1, toVolume: 0.5),
+        ])
+    }
+
+    @Test func aMutedClipIsSilentAndTheDipsFollowTheLevel() {
+        var timeline = EditTimeline(sourceDuration: 30)
+        timeline.split(atEdited: 10)
+        timeline.split(atEdited: 20)
+        timeline.removeSegment(id: timeline.segments[1].id)
+        clipAt(1.8, muted: true, in: &timeline, index: 1)
+        let levels = EditedComposition.levels(for: timeline) { _ in true }
+        #expect(levels.contains { $0.start == 10 && $0.fromVolume == 0 && $0.toVolume == 0 })
+        clipAt(1.8, in: &timeline, index: 1)
+        let louder = EditedComposition.levels(for: timeline) { _ in true }
+        #expect(louder.contains { $0.start == 10 && $0.toVolume == 1.8 })
+    }
+
+    @Test func clipsOnAnotherTrackAreSilentOnThisOne() {
+        var timeline = EditTimeline(sourceDuration: 30)
+        timeline.split(atEdited: 10)
+        let other = timeline.segments[1].id
+        let levels = EditedComposition.levels(for: timeline) { $0.id != other }
+        #expect(levels.last?.toVolume == 0)
+    }
+
+    @Test func fullVolumeEverywhereAddsNothingToTheDips() {
+        var timeline = EditTimeline(sourceDuration: 30)
+        timeline.split(atEdited: 10)
+        #expect(EditedComposition.levels(for: timeline) { _ in true }.isEmpty)
+    }
+
     // MARK: - Transitions
 
     @Test func aFadeTakesTheSoundDownAndBackAtItsCut() {

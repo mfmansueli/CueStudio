@@ -9,7 +9,7 @@ import Foundation
 /// stays with what it talks about when something before it is cut, and plays whole from there:
 /// cuts under it never chop the voice. What runs past the end of the edit isn't heard.
 nonisolated struct VoiceOverClip: Codable, Hashable, Identifiable, Sendable {
-    static let volumeRange: ClosedRange<Double> = 0...1
+    static let volumeRange: ClosedRange<Double> = 0...2
 
     var id = UUID()
     /// The recording's name in `EditMediaFiles`.

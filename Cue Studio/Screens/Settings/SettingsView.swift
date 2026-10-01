@@ -54,6 +54,10 @@ struct SettingsView: View {
                 }
                 .foregroundStyle(Palette.ink)
                 .accessibilityIdentifier("settings.restorePurchasesButton")
+                NavigationLink(value: SettingsRoute.acknowledgements) {
+                    Text("Acknowledgements").foregroundStyle(Palette.ink)
+                }
+                .accessibilityIdentifier("settings.acknowledgementsButton")
             }
         }
         .listStyle(.insetGrouped)

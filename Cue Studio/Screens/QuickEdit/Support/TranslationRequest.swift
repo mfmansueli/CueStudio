@@ -13,4 +13,6 @@ struct TranslationRequest: Equatable, Identifiable {
     let target: CueLanguage
     /// Lines the creator corrected are translated again too.
     let replacingRevised: Bool
+    /// The captions show in `target` once translated (picked under Translate in Captions).
+    var shows = false
 }

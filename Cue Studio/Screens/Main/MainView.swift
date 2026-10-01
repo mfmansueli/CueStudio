@@ -53,6 +53,7 @@ struct MainView: View {
                             case .languageRegion: LanguageRegionView()
                             case .creatorSetup:
                                 CreatorSetupView(preferences: preferences, microphones: services.audio, toast: toast)
+                            case .acknowledgements: AcknowledgementsView()
                             }
                         }
                 }

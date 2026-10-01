@@ -37,8 +37,10 @@ nonisolated struct EditedComposition: @unchecked Sendable {
 
     struct Options: Sendable {
         var burnsInCaptions: Bool
-        /// Height of the output's short side in pixels (1080 or 2160); nil keeps the recording's.
+        /// Height of the output's short side in pixels (720, 1080 or 2160); nil keeps the recording's.
         var shortSide: CGFloat?
+        /// Frames per second of the output; nil keeps the recording's.
+        var frameRate: Double?
         /// Where the edit itself is in `edit.timeline`: the preview plays the timeline grown to the
         /// whole recording and holds playback here. Nil when the timeline is the edit.
         var window: TimeSpan?
@@ -87,31 +89,22 @@ nonisolated struct EditedComposition: @unchecked Sendable {
         }
         let hasSound = takeAudio != nil || recordings.values.contains { $0.audio != nil }
         let audio = hasSound ? composition.addMutableTrack(withMediaType: .audio, preferredTrackID: kCMPersistentTrackID_Invalid) : nil
-        var cursor = CMTime.zero
-        for segment in edit.timeline.segments {
-            let range = CMTimeRange(
-                start: CMTime(seconds: segment.sourceStart, preferredTimescale: 600),
-                duration: CMTime(seconds: segment.sourceLength, preferredTimescale: 600)
-            )
-            var soundInserted = false
-            if let played = recording(segment.sourceID) {
-                try video.insertTimeRange(range, of: played.video, at: cursor)
-                let sound = segment.sourceID == nil ? takeAudio : played.audio
-                if let audio, let sound {
-                    soundInserted = (try? audio.insertTimeRange(range, of: sound, at: cursor)) != nil
-                }
-            } else {
-                video.insertEmptyTimeRange(CMTimeRange(start: cursor, duration: range.duration))
-            }
-            var length = range.duration
-            if abs(segment.speed - 1) > 0.000_1 {
-                // Faster or slower: the piece is stretched in place, picture and sound together.
-                let inserted = CMTimeRange(start: cursor, duration: range.duration)
-                length = CMTime(seconds: segment.duration, preferredTimescale: 600)
-                if recording(segment.sourceID) != nil { video.scaleTimeRange(inserted, toDuration: length) }
-                if soundInserted { audio?.scaleTimeRange(inserted, toDuration: length) }
-            }
-            cursor = CMTimeAdd(cursor, length)
+        // Clips sped up or slowed down without "Keep voice pitch" play on their own sound track,
+        // whose pitch follows the speed.
+        let playsVarispeed: (EditSegment) -> Bool = { !$0.keepsPitch && abs($0.speed - 1) > 0.000_1 }
+        let varispeed = hasSound && edit.timeline.segments.contains(where: playsVarispeed)
+            ? composition.addMutableTrack(withMediaType: .audio, preferredTrackID: kCMPersistentTrackID_Invalid)
+            : nil
+        let cursor = try insertPieces(
+            of: edit.timeline, recording: recording, takeAudio: takeAudio, video: video,
+            soundTrack: { playsVarispeed($0) ? varispeed : audio }
+        )
+        var takeTracks: [(track: AVMutableCompositionTrack, levels: [Fade], pitch: AVAudioTimePitchAlgorithm?)] = []
+        if let audio {
+            takeTracks.append((audio, levels(for: edit.timeline) { !playsVarispeed($0) }, nil))
+        }
+        if let varispeed {
+            takeTracks.append((varispeed, levels(for: edit.timeline, plays: playsVarispeed), .varispeed))
         }
 
         let windows = TransitionWindow.windows(in: edit.timeline)
@@ -162,7 +155,10 @@ nonisolated struct EditedComposition: @unchecked Sendable {
             let index = timeline.segmentIndex(atEdited: middle)
             let played = timeline.segments[index].sourceID
             let zoom = timeline.segments[index].zoom.map {
-                ZoomWindow(zoom: $0, start: timeline.editedStart(ofSegmentAt: index), duration: timeline.segments[index].duration)
+                ZoomWindow(
+                    zoom: $0, start: timeline.editedStart(ofSegmentAt: index), duration: timeline.segments[index].duration,
+                    amount: timeline.segments[index].zoomAmount
+                )
             }
             // Before the cut the blend track holds the incoming piece; after it, the outgoing one.
             let blendSource = stretch.dissolve.map { middle < $0.cut ? $0.incomingSource : $0.outgoingSource }
@@ -191,7 +187,7 @@ nonisolated struct EditedComposition: @unchecked Sendable {
         }
         let configuration = AVVideoComposition.Configuration(
             customVideoCompositorClass: CueVideoCompositor.self,
-            frameDuration: CMTime(value: 1, timescale: CMTimeScale(max(24, take.frameRate.rounded()))),
+            frameDuration: CMTime(value: 1, timescale: CMTimeScale(max(24, (options.frameRate ?? Double(take.frameRate)).rounded()))),
             instructions: instructions,
             renderScale: 1,
             renderSize: renderSize
@@ -199,8 +195,46 @@ nonisolated struct EditedComposition: @unchecked Sendable {
         return EditedComposition(
             asset: composition,
             videoComposition: AVVideoComposition(configuration: configuration),
-            audioMix: audioMix(for: audio, fades: fades(for: edit.timeline), voices: voices + mediaSounds, music: music)
+            audioMix: audioMix(for: takeTracks, voices: voices + mediaSounds, music: music)
         )
+    }
+
+    /// Lays the timeline's pieces one after the other: picture on `video`, sound on the track
+    /// `soundTrack` picks for each, each stretched to its speed. Returns where the edit ends.
+    private static func insertPieces(
+        of timeline: EditTimeline, recording: (UUID?) -> Recording?, takeAudio: AVAssetTrack?, video: AVMutableCompositionTrack,
+        soundTrack track: (EditSegment) -> AVMutableCompositionTrack?
+    ) throws -> CMTime {
+        var cursor = CMTime.zero
+        for segment in timeline.segments {
+            let range = CMTimeRange(
+                start: CMTime(seconds: segment.sourceStart, preferredTimescale: 600),
+                duration: CMTime(seconds: segment.sourceLength, preferredTimescale: 600)
+            )
+            let soundTrack = track(segment)
+            var soundInserted = false
+            if let played = recording(segment.sourceID) {
+                try video.insertTimeRange(range, of: played.video, at: cursor)
+                let sound = segment.sourceID == nil ? takeAudio : played.audio
+                if let soundTrack, let sound {
+                    let filled = soundTrack.timeRange.end
+                    if CMTimeCompare(cursor, filled) > 0 { soundTrack.insertEmptyTimeRange(CMTimeRange(start: filled, end: cursor)) }
+                    soundInserted = (try? soundTrack.insertTimeRange(range, of: sound, at: cursor)) != nil
+                }
+            } else {
+                video.insertEmptyTimeRange(CMTimeRange(start: cursor, duration: range.duration))
+            }
+            var length = range.duration
+            if abs(segment.speed - 1) > 0.000_1 {
+                // Faster or slower: the piece is stretched in place, picture and sound together.
+                let inserted = CMTimeRange(start: cursor, duration: range.duration)
+                length = CMTime(seconds: segment.duration, preferredTimescale: 600)
+                if recording(segment.sourceID) != nil { video.scaleTimeRange(inserted, toDuration: length) }
+                if soundInserted { soundTrack?.scaleTimeRange(inserted, toDuration: length) }
+            }
+            cursor = CMTimeAdd(cursor, length)
+        }
+        return cursor
     }
 
     /// A recording's video and sound, and how its frames stand. Keeps its asset: its tracks can't
@@ -494,7 +528,7 @@ nonisolated struct EditedComposition: @unchecked Sendable {
                 composition.removeTrack(track)
                 continue
             }
-            voices.append((track, Float(min(max(clip.volume, 0), 1))))
+            voices.append((track, Float(min(max(clip.volume, VoiceOverClip.volumeRange.lowerBound), VoiceOverClip.volumeRange.upperBound))))
         }
         return voices
     }
@@ -503,26 +537,51 @@ nonisolated struct EditedComposition: @unchecked Sendable {
 
     /// A short dip in the sound at each seam where something was removed, so joining two
     /// waveforms mid-cycle never clicks. Cuts that removed nothing play straight through. A fade
-    /// takes the sound down to silence and back with the picture instead.
+    /// takes the sound down to silence and back with the picture instead. (The ramps of `levels`,
+    /// with every clip at full volume.)
     static func fades(for timeline: EditTimeline) -> [Fade] {
+        levels(for: timeline) { _ in true }.filter { $0.duration > 0 }
+    }
+
+    /// The take's sound level along the edit on one sound track: each clip at its volume (silent
+    /// while muted, or where it plays on another track: `plays` says which clips this track
+    /// carries), the dips at the cuts scaled to it, and a quick ramp where two clips that run on
+    /// from each other have different volumes. A `Fade` without duration sets the level at its
+    /// start.
+    static func levels(for timeline: EditTimeline, plays: (EditSegment) -> Bool) -> [Fade] {
         var dips: [Int: TransitionWindow] = [:]
         for window in TransitionWindow.windows(in: timeline) where window.transition == .fade {
             dips[window.join] = window
         }
+        let segments = timeline.segments
+        func level(_ index: Int) -> Float {
+            let segment = segments[index]
+            guard plays(segment), !segment.isMuted else { return 0 }
+            return Float(min(max(segment.volume, EditSegment.volumeRange.lowerBound), EditSegment.volumeRange.upperBound))
+        }
+        let uniform = segments.indices.allSatisfy { level($0) == 1 }
         var fades: [Fade] = []
         var elapsed: TimeInterval = 0
-        for (index, segment) in timeline.segments.enumerated() {
+        for (index, segment) in segments.enumerated() {
             let end = elapsed + segment.duration
             let length = min(cutFade, segment.duration / 2)
+            let volume = level(index)
             if let dip = dips[index] {
-                fades.append(Fade(start: elapsed, duration: dip.halfDuration, fromVolume: 0, toVolume: 1))
+                fades.append(Fade(start: elapsed, duration: dip.halfDuration, fromVolume: 0, toVolume: volume))
             } else if index > 0, !timeline.isSeamless(index) {
-                fades.append(Fade(start: elapsed, duration: length, fromVolume: 0, toVolume: 1))
+                fades.append(Fade(start: elapsed, duration: length, fromVolume: 0, toVolume: volume))
+            } else if !uniform {
+                let previous = index > 0 ? level(index - 1) : volume
+                if index > 0, previous != volume {
+                    fades.append(Fade(start: elapsed, duration: length, fromVolume: previous, toVolume: volume))
+                } else {
+                    fades.append(Fade(start: elapsed, duration: 0, fromVolume: volume, toVolume: volume))
+                }
             }
             if let dip = dips[index + 1] {
-                fades.append(Fade(start: end - dip.halfDuration, duration: dip.halfDuration, fromVolume: 1, toVolume: 0))
-            } else if index < timeline.segments.count - 1, !timeline.isSeamless(index + 1) {
-                fades.append(Fade(start: end - length, duration: length, fromVolume: 1, toVolume: 0))
+                fades.append(Fade(start: end - dip.halfDuration, duration: dip.halfDuration, fromVolume: volume, toVolume: 0))
+            } else if index < segments.count - 1, !timeline.isSeamless(index + 1) {
+                fades.append(Fade(start: end - length, duration: length, fromVolume: volume, toVolume: 0))
             }
             elapsed = end
         }
@@ -532,20 +591,24 @@ nonisolated struct EditedComposition: @unchecked Sendable {
     /// The take's sound with its dips, each voice-over and video sound at its volume, and the music
     /// along its envelope; nil with no sound at all.
     private static func audioMix(
-        for track: AVMutableCompositionTrack?, fades: [Fade], voices: [(track: AVMutableCompositionTrack, volume: Float)],
+        for takeTracks: [(track: AVMutableCompositionTrack, levels: [Fade], pitch: AVAudioTimePitchAlgorithm?)],
+        voices: [(track: AVMutableCompositionTrack, volume: Float)],
         music: [(track: AVMutableCompositionTrack, points: [MusicEnvelope.Point])]
     ) -> AVAudioMix? {
         var inputs: [AVMutableAudioMixInputParameters] = []
-        if let track {
-            let parameters = AVMutableAudioMixInputParameters(track: track)
-            for fade in fades {
-                parameters.setVolumeRamp(
-                    fromStartVolume: fade.fromVolume, toEndVolume: fade.toVolume,
-                    timeRange: CMTimeRange(
-                        start: CMTime(seconds: fade.start, preferredTimescale: 600),
-                        duration: CMTime(seconds: fade.duration, preferredTimescale: 600)
+        for take in takeTracks {
+            let parameters = AVMutableAudioMixInputParameters(track: take.track)
+            if let pitch = take.pitch { parameters.audioTimePitchAlgorithm = pitch }
+            for fade in take.levels {
+                let start = CMTime(seconds: fade.start, preferredTimescale: 600)
+                if fade.duration <= 0 {
+                    parameters.setVolume(fade.toVolume, at: start)
+                } else {
+                    parameters.setVolumeRamp(
+                        fromStartVolume: fade.fromVolume, toEndVolume: fade.toVolume,
+                        timeRange: CMTimeRange(start: start, duration: CMTime(seconds: fade.duration, preferredTimescale: 600))
                     )
-                )
+                }
             }
             inputs.append(parameters)
         }

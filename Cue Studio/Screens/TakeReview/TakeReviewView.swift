@@ -73,7 +73,9 @@ struct TakeReviewView: View {
             viewModel.burnsInCaptions = shown
         }
         .fullScreenCover(item: $editingTake) { take in
-            QuickEditView(take: take, services: services) { editingTake = nil }
+            QuickEditView(take: take, services: services) {
+                editingTake = nil
+            }
         }
         .confirmationDialog("Delete this take?", isPresented: $confirmsDelete, titleVisibility: .visible) {
             Button("Delete take", role: .destructive) {

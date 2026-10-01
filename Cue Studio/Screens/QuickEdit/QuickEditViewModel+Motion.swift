@@ -69,11 +69,13 @@ extension QuickEditViewModel {
         player.pause()
         if let existing = keyframeAtPlayhead(of: item) {
             updateKeyframes(of: item) { $0.removeAll { $0.id == existing.id } }
+            toast.show(String(localized: "Keyframe removed"))
             return
         }
         let state = motionState(of: item)
         let keyframe = OverlayKeyframe(time: local, center: state.center, scale: state.scale, opacity: state.opacity)
         updateKeyframes(of: item) { $0.append(keyframe) }
+        toast.show(String(localized: "Keyframe added — move the playhead, then drag the text"))
     }
 
     /// Goes to the next keyframe (or the one before).

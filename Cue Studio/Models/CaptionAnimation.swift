@@ -13,7 +13,8 @@ nonisolated enum CaptionAnimation: String, Codable, CaseIterable, Identifiable, 
     case line
     /// The whole line, fading in and out.
     case fade
-    /// A few words at a time, as they are said.
+    /// The words as they are said: appearing one by one (a few at a time on a look from before
+    /// the collection).
     case groups
     /// The whole line, the word being said in another color.
     case highlight
@@ -26,7 +27,7 @@ nonisolated enum CaptionAnimation: String, Codable, CaseIterable, Identifiable, 
         switch self {
         case .line: String(localized: "Line")
         case .fade: String(localized: "Fade")
-        case .groups: String(localized: "Groups")
+        case .groups: String(localized: "Words")
         case .highlight: String(localized: "Highlight")
         case .box: String(localized: "Box")
         }

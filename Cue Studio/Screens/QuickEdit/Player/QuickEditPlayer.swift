@@ -339,6 +339,9 @@ final class QuickEditPlayer: EditPlayback {
         /// One per span: pieces at different speeds never join.
         let speeds: [Double]
         let transitions: [TransitionWindow]
+        /// Each piece's sound and zoom (its volume, mute, pitch, zoom and strength): they change
+        /// the item like a look does.
+        let pieceSettings: [[Double]]
         /// Music is placed on the edit's own seconds, so with music the item also depends on where
         /// the edit starts and ends in it.
         let musicWindow: TimeSpan?
@@ -371,6 +374,12 @@ final class QuickEditPlayer: EditPlayback {
             self.spans = spans
             self.speeds = speeds
             transitions = TransitionWindow.windows(in: reachable)
+            pieceSettings = edit.timeline.segments.map { segment in
+                [
+                    segment.volume, segment.isMuted ? 1 : 0, segment.keepsPitch ? 1 : 0,
+                    Double(SectionZoom.allCases.firstIndex { $0 == segment.zoom } ?? -1), segment.zoomAmount,
+                ]
+            }
             musicWindow = Self.musicWindow(of: edit)
         }
     }

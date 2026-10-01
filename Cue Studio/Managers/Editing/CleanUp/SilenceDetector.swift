@@ -14,7 +14,7 @@ nonisolated enum SilenceDetector {
     /// Pauses shorter than this are part of speaking and are never suggested.
     static let minimumSilence: TimeInterval = 0.3
     /// Kept on each side of a cut so words never lose their first or last sound.
-    static let padding: TimeInterval = 0.15
+    static let padding: TimeInterval = 0.12
 
     /// `levels` are dBFS readings, one every `interval` seconds from the start of the recording.
     static func silences(levels: [Float], interval: TimeInterval) -> [TimeSpan] {

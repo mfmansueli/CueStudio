@@ -1,0 +1,92 @@
+//
+//  EditorApp.swift
+//  Cue StudioUITests
+//
+
+import XCTest
+
+/// Opens the editor on the "3 morning habits" take (a small real video), from its review.
+@MainActor
+enum EditorApp {
+    /// `demo`: Take 3 is the v10 design's 21.6 s edit (`SampleEdit`): eight caption lines, a title
+    /// and a subtitle, and four pauses already found.
+    static func open(sampleVideo: Bool = true, demo: Bool = false, arguments: [String] = []) -> XCUIApplication {
+        let app = CueApp.launch(seeded: true, sampleVideo: sampleVideo, extraArguments: (demo ? ["-uiTestDemoEdit"] : []) + arguments)
+        let tab = app.tabBars.buttons["Takes"]
+        XCTAssertTrue(tab.waitForExistence(timeout: 15))
+        tab.tap()
+        let row = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH 'takes.video.' AND label CONTAINS '3 morning habits'")).firstMatch
+        XCTAssertTrue(row.waitForExistence(timeout: 5))
+        row.tap()
+        let edit = app.buttons["review.editButton"]
+        XCTAssertTrue(edit.waitForExistence(timeout: 5))
+        edit.tap()
+        XCTAssertTrue(app.buttons["edit.toolbar.edit"].waitForExistence(timeout: 10))
+        return app
+    }
+
+    /// Taps a toolbar tool, scrolling the toolbar to it first when it's off screen.
+    static func tapTool(_ app: XCUIApplication, _ id: String) {
+        let button = app.buttons["edit.toolbar.\(id)"]
+        XCTAssertTrue(button.waitForExistence(timeout: 5), id)
+        let screen = app.windows.firstMatch.frame
+        var swipes = 0
+        while !screen.contains(button.frame), swipes < 4 {
+            app.descendants(matching: .any)["edit.toolbar"].swipeLeft()
+            swipes += 1
+        }
+        button.tap()
+    }
+
+    /// Moves the playhead forward by dragging the timeline's content to the left, about
+    /// `points` (44 points per second at the starting zoom), slowly and held at the end so it
+    /// doesn't glide on.
+    static func scrub(_ app: XCUIApplication, points: CGFloat = 300) {
+        let timeline = app.descendants(matching: .any)["edit.timeline"]
+        XCTAssertTrue(timeline.waitForExistence(timeout: 5))
+        let width = timeline.frame.width
+        let start = timeline.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.06)).withOffset(CGVector(dx: points / 2, dy: 0))
+        let end = start.withOffset(CGVector(dx: -min(points, width - 20), dy: 0))
+        start.press(forDuration: 0.1, thenDragTo: end, withVelocity: 400, thenHoldForDuration: 0.4)
+    }
+
+    /// A point on the video track, `x` of the way across the timeline (the playhead is at 0.5).
+    static func mainTrack(_ app: XCUIApplication, at x: CGFloat) -> XCUICoordinate {
+        let timeline = app.descendants(matching: .any)["edit.timeline"]
+        XCTAssertTrue(timeline.waitForExistence(timeout: 5))
+        // The video track starts under the ruler (24–28 pt) and is 44–56 pt tall.
+        return timeline.coordinate(withNormalizedOffset: CGVector(dx: x, dy: 0)).withOffset(CGVector(dx: 0, dy: 50))
+    }
+
+    /// The top bar's "00:21.6 · Saved": the edit's length.
+    static func length(_ app: XCUIApplication) -> String {
+        let status = app.staticTexts["edit.durationChange"].label
+        return String(status.prefix(7))
+    }
+
+    /// Captions › the line at `index`: the playhead goes to its start. Closes the panel after.
+    static func goToCaption(_ app: XCUIApplication, _ index: Int) {
+        tapTool(app, "captions")
+        let line = app.descendants(matching: .any)["edit.captionLine.\(index)"]
+        XCTAssertTrue(line.waitForExistence(timeout: 5))
+        line.tap()
+        app.buttons["edit.panel.apply"].tap()
+        // The line stays picked: back to the main tools.
+        let back = app.buttons["edit.toolbar.back"]
+        if back.waitForExistence(timeout: 2) { back.tap() }
+        XCTAssertTrue(app.buttons["edit.toolbar.edit"].waitForExistence(timeout: 5))
+    }
+
+    /// The editor's toast, once it says something containing `text`.
+    static func toastSays(_ app: XCUIApplication, _ text: String) -> Bool {
+        let toast = app.descendants(matching: .any).matching(identifier: "toast").firstMatch
+        return toast.waitForExistence(timeout: 3) && toast.label.contains(text)
+    }
+
+    /// Plays for about `seconds`, then pauses.
+    static func play(_ app: XCUIApplication, for seconds: UInt32) {
+        app.buttons["edit.playButton"].tap()
+        sleep(seconds)
+        app.buttons["edit.playButton"].tap()
+    }
+}

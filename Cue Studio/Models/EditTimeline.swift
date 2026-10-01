@@ -393,6 +393,43 @@ nonisolated struct EditTimeline: Codable, Hashable, Sendable {
         segments = trimmed
     }
 
+    /// Puts `segment` in place of the piece with its id (its speed, zoom, sound or span changed).
+    /// False when there's no such piece.
+    @discardableResult
+    mutating func replaceSegment(_ segment: EditSegment) -> Bool {
+        guard let index = index(ofSegment: segment.id) else { return false }
+        segments[index] = segment
+        return true
+    }
+
+    /// Shortest a clip gets from its own handles.
+    static let minimumClipDuration: TimeInterval = 0.3
+
+    /// Moves one end of the clip `id` to `time` (seconds of its recording): its left handle moves
+    /// where it starts, its right one where it ends, and the clips after it follow (the video gets
+    /// longer or shorter). It never runs into the clip before or after it in the take (what lies
+    /// between them was cut and comes back), never past its recording, and keeps at least
+    /// `minimumClipDuration`. False, and no change, when nothing moves.
+    @discardableResult
+    mutating func trimSegment(id: UUID, edge: TrimHandle, toSource time: TimeInterval) -> Bool {
+        guard let index = index(ofSegment: id) else { return false }
+        let segment = segments[index]
+        let shortest = min(Self.minimumClipDuration, segment.sourceLength)
+        // Linear, the neighbors in the recording bound it; arranged, only its own recording does.
+        let floor = isArranged || index == 0 ? 0 : segments[index - 1].sourceEnd
+        let ceiling = isArranged || index == segments.count - 1
+            ? duration(ofSource: segment.sourceID)
+            : segments[index + 1].sourceStart
+        var moved = segment
+        switch edge {
+        case .start: moved.sourceStart = min(max(floor, time), segment.sourceEnd - shortest)
+        case .end: moved.sourceEnd = max(min(ceiling, time), segment.sourceStart + shortest)
+        }
+        guard abs(moved.sourceStart - segment.sourceStart) > 0.000_1 || abs(moved.sourceEnd - segment.sourceEnd) > 0.000_1 else { return false }
+        segments[index] = moved
+        return true
+    }
+
     /// Sets how the piece at `index` takes over from the one before it. False, and no change,
     /// for the first piece (no seam) or when it's already that transition.
     @discardableResult
@@ -412,10 +449,12 @@ nonisolated struct EditTimeline: Codable, Hashable, Sendable {
         guard offset >= Self.minimumDuration, segment.duration - offset >= Self.minimumDuration else { return false }
         let cut = segment.sourceStart + offset * segment.speed
         segments[index].sourceEnd = cut
-        segments.insert(
-            EditSegment(sourceStart: cut, sourceEnd: segment.sourceEnd, speed: segment.speed, sourceID: segment.sourceID, zoom: segment.zoom),
-            at: index + 1
-        )
+        // The right part is the same clip from the cut on: speed, zoom and sound go with it.
+        var right = segment
+        right.id = UUID()
+        right.sourceStart = cut
+        right.transitionIn = .hardCut
+        segments.insert(right, at: index + 1)
         return true
     }
 
@@ -468,9 +507,8 @@ nonisolated struct EditTimeline: Codable, Hashable, Sendable {
             let pieces = segment.span.subtracting(spans).filter { $0.duration >= Self.minimumDuration }
             for (offset, piece) in pieces.enumerated() {
                 // The first piece left keeps the seam before it; new seams start as hard cuts.
-                result.append(EditSegment(
-                    id: offset == 0 ? segment.id : UUID(), span: piece,
-                    transitionIn: offset == 0 ? segment.transitionIn : .hardCut, speed: segment.speed, zoom: segment.zoom
+                result.append(segment.piece(
+                    piece, id: offset == 0 ? segment.id : UUID(), transitionIn: offset == 0 ? segment.transitionIn : .hardCut
                 ))
             }
         }
@@ -501,10 +539,8 @@ nonisolated struct EditTimeline: Codable, Hashable, Sendable {
             )
             let pieces = segment.span.subtracting([cut]).filter { $0.duration >= Self.minimumDuration }
             for (offset, piece) in pieces.enumerated() {
-                result.append(EditSegment(
-                    id: offset == 0 ? segment.id : UUID(), span: piece,
-                    transitionIn: offset == 0 ? segment.transitionIn : .hardCut, speed: segment.speed, sourceID: segment.sourceID,
-                    zoom: segment.zoom
+                result.append(segment.piece(
+                    piece, id: offset == 0 ? segment.id : UUID(), transitionIn: offset == 0 ? segment.transitionIn : .hardCut
                 ))
             }
         }
@@ -529,7 +565,7 @@ nonisolated struct EditTimeline: Codable, Hashable, Sendable {
         // What comes back plays at the speed of the piece it joins (the one before it, else after).
         let restored = TimeSpan.merged(missing).map { span in
             let neighbor = segments.last { $0.sourceEnd <= span.start + 0.001 } ?? segments.first { $0.sourceStart >= span.end - 0.001 }
-            return Piece(segment: EditSegment(span: span, speed: neighbor?.speed ?? 1), isRestored: true)
+            return Piece(segment: neighbor?.piece(span) ?? EditSegment(span: span), isRestored: true)
         }
         let entries = (segments.map { Piece(segment: $0, isRestored: false) } + restored)
             .sorted { $0.segment.sourceStart < $1.segment.sourceStart }
@@ -538,7 +574,8 @@ nonisolated struct EditTimeline: Codable, Hashable, Sendable {
             // `isRestored` on a joined piece says whether its end came back, so the next seam is
             // closed only when one side of it was restored.
             if let last = joined.last, abs(last.segment.sourceEnd - entry.segment.sourceStart) < 0.001, last.isRestored || entry.isRestored,
-               last.segment.speed == entry.segment.speed {
+               last.segment.speed == entry.segment.speed, last.segment.volume == entry.segment.volume,
+               last.segment.isMuted == entry.segment.isMuted {
                 joined[joined.count - 1].segment.sourceEnd = entry.segment.sourceEnd
                 joined[joined.count - 1].isRestored = entry.isRestored
             } else {
@@ -567,7 +604,7 @@ nonisolated struct EditTimeline: Codable, Hashable, Sendable {
     mutating func duplicateSegment(id: UUID) -> UUID? {
         guard let index = index(ofSegment: id) else { return nil }
         let original = segments[index]
-        let copy = EditSegment(span: original.span, speed: original.speed, sourceID: original.sourceID, zoom: original.zoom)
+        let copy = original.piece(original.span)
         isArranged = true
         segments.insert(copy, at: index + 1)
         return copy.id

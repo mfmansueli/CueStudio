@@ -44,14 +44,21 @@ struct MotionTests {
     }
 
     @Test func sectionZoomsGoWhereTheySay() {
-        #expect(SectionZoom.pushIn.scale(at: 0) == 1)
-        #expect(abs(SectionZoom.pushIn.scale(at: 1) - (1 + SectionZoom.depth)) < 0.000_1)
-        #expect(abs(SectionZoom.pullOut.scale(at: 0) - (1 + SectionZoom.depth)) < 0.000_1)
-        #expect(SectionZoom.pullOut.scale(at: 1) == 1)
-        #expect(SectionZoom.punchIn.scale(at: 0) == SectionZoom.punchIn.scale(at: 1))
+        #expect(SectionZoom.pushIn.scale(at: 0, amount: 0.5) == 1)
+        #expect(abs(SectionZoom.pushIn.scale(at: 1, amount: 0.5) - 1.15) < 0.000_1)
+        #expect(abs(SectionZoom.pullOut.scale(at: 0, amount: 0.5) - 1.15) < 0.000_1)
+        #expect(SectionZoom.pullOut.scale(at: 1, amount: 0.5) == 1)
+        #expect(SectionZoom.punchIn.scale(at: 0, amount: 0.5) == SectionZoom.punchIn.scale(at: 1, amount: 0.5))
         let window = ZoomWindow(zoom: .pushIn, start: 10, duration: 4)
         #expect(window.scale(at: 10) == 1)
-        #expect(abs(window.scale(at: 14) - (1 + SectionZoom.depth)) < 0.000_1)
+        #expect(abs(window.scale(at: 14) - 1.15) < 0.000_1)
+    }
+
+    @Test func theZoomsStrengthGoesUpTo1point3() {
+        #expect(abs(SectionZoom.punchIn.scale(at: 0.5, amount: 1) - 1.3) < 0.000_1)
+        #expect(SectionZoom.pushIn.scale(at: 1, amount: 0) == 1)
+        // Saved before the strength: 1.12× pushed in, 1.15× punched in, as they were.
+        #expect(abs(SectionZoom.pushIn.scale(at: 1, amount: 0.4) - 1.12) < 0.000_1)
     }
 
     @Test func aZoomTravelsWithItsSection() throws {

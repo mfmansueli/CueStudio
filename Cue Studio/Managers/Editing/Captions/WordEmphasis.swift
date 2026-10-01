@@ -11,6 +11,8 @@ nonisolated struct WordEmphasis: Hashable, Sendable {
     enum Style: Hashable, Sendable {
         case color(OverlayColor)
         case box(fill: OverlayColor, text: OverlayColor)
+        /// Words appear as they are said: those after this one aren't drawn yet.
+        case reveal
     }
 
     /// The line's words, as heard (the line's text is them joined).

@@ -20,6 +20,12 @@ extension QuickEditViewModel {
         DurationText.timecode(recorder.elapsed, total: edit.editedDuration)
     }
 
+    /// Under the record button: where it will start, or how long it has been recording.
+    var voiceOverTimeLabel: String {
+        if let recordingStart { return DurationText.editor(max(0, player.currentTime - recordingStart)) }
+        return String(localized: "Starts at \(DurationText.editor(player.currentTime))")
+    }
+
     func startVoiceOver() async {
         guard isReady, !recorder.isRecording else { return }
         guard await recorder.requestPermission() else {
@@ -39,6 +45,7 @@ extension QuickEditViewModel {
             return
         }
         recordingStart = start
+        Haptics.record()
         player.isMuted = true
         player.play()
     }
@@ -50,6 +57,7 @@ extension QuickEditViewModel {
         player.pause()
         player.isMuted = false
         guard let recorded = recorder.stop(), let start else { return }
+        Haptics.record()
         importedFiles.insert(recorded.fileName)
         guard recorded.duration >= 0.3 else {
             EditMediaFiles.remove([recorded.fileName])
@@ -87,6 +95,18 @@ extension QuickEditViewModel {
             player.seek(to: span.start)
         }
         await startVoiceOver()
+    }
+
+    /// "Re-record": the narration goes, the playhead goes back to where it started and the
+    /// Voice-over panel opens to record again.
+    func reRecordVoiceOver(_ id: UUID) {
+        guard let clip = edit.voiceOvers.first(where: { $0.id == id }) else { return }
+        let start = clip.editedSpan(in: edit.timeline)?.start
+        selection = nil
+        change { $0.voiceOvers.removeAll { $0.id == id } }
+        player.pause()
+        if let start { player.seek(to: start) }
+        panel = .voiceOver
     }
 
     func deleteVoiceOver(_ id: UUID) {

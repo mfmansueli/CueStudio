@@ -9,7 +9,7 @@ import Foundation
 /// project, not to what is said: it's placed on the edit's own seconds and stays there when
 /// something is cut before it. Its file is copied into the edit's media.
 nonisolated struct MusicClip: Codable, Hashable, Identifiable, Sendable {
-    static let volumeRange: ClosedRange<Double> = 0...1
+    static let volumeRange: ClosedRange<Double> = 0...2
     static let fadeRange: ClosedRange<Double> = 0...5
     /// Shortest it can play.
     static let minimumDuration: TimeInterval = 0.5

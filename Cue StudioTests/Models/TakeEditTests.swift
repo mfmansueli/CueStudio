@@ -77,6 +77,27 @@ struct TakeEditTests {
         #expect(!edit.enhancesVoice)
     }
 
+    /// An edit saved before the v10 editor opens with its look, sound and clips as they were.
+    @Test func editsFromBeforeTheV10EditorKeepTheirLook() throws {
+        var old = edit()
+        old.exposure = 12
+        old.filter = .mono
+        old.timeline.split(atEdited: 12)
+        var object = try #require(JSONSerialization.jsonObject(with: JSONEncoder().encode(old)) as? [String: Any])
+        for key in ["saturation", "highlights", "shadows", "sharpness", "filterAmount", "cropFit", "pauseThreshold"] {
+            object.removeValue(forKey: key)
+        }
+        let decoded = try JSONDecoder().decode(TakeEdit.self, from: JSONSerialization.data(withJSONObject: object))
+        #expect(decoded.exposure == 12)
+        #expect(decoded.filter == .mono)
+        #expect(decoded.filterAmount == 1)
+        #expect(decoded.saturation == 0 && decoded.highlights == 0 && decoded.shadows == 0 && decoded.sharpness == 0)
+        #expect(decoded.cropFit == .fill)
+        #expect(decoded.pauseThreshold == 0.7)
+        #expect(decoded.keptSpans == old.keptSpans)
+        #expect(decoded.timeline.segments.allSatisfy { $0.volume == 1 && !$0.isMuted })
+    }
+
     @Test func olderSilencesBecomePauseSuggestions() throws {
         let json = """
         {"sourceDuration": 60, "trimStart": 0, "trimEnd": 60, "splits": [], "removed": [],

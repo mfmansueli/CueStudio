@@ -103,6 +103,22 @@ final class SettingsUITests: XCTestCase {
         capture(app, name: "Settings · German · Accessibility XXXL · Bottom")
     }
 
+    func testFontLicensesRemainReachableFromSettings() {
+        let app = CueApp.launch(seeded: true)
+        let settings = tab(app, label: "Settings")
+        XCTAssertTrue(settings.waitForExistence(timeout: 15))
+        settings.tap()
+        let acknowledgements = app.buttons["settings.acknowledgementsButton"]
+        scroll(app, to: acknowledgements)
+        acknowledgements.tap()
+        XCTAssertTrue(app.navigationBars["Acknowledgements"].waitForExistence(timeout: 5))
+        let font = app.buttons.matching(identifier: "acknowledgements.font").firstMatch
+        XCTAssertTrue(font.waitForExistence(timeout: 5))
+        font.tap()
+        XCTAssertTrue(app.descendants(matching: .any)["acknowledgements.license"].waitForExistence(timeout: 5))
+        XCTAssertTrue(settings.isSelected)
+    }
+
     // MARK: - Helpers
 
     private func assertTabs(_ app: XCUIApplication, labels: [String]) {

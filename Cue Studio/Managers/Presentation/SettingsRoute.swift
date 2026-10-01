@@ -9,4 +9,5 @@ import Foundation
 enum SettingsRoute: Hashable {
     case languageRegion
     case creatorSetup
+    case acknowledgements
 }

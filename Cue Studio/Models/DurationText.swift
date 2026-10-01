@@ -45,6 +45,25 @@ nonisolated enum DurationText {
         return twoDigits(whole / 3600) + ":" + twoDigits(whole / 60 % 60) + ":" + twoDigits(whole % 60)
     }
 
+    /// The editor's clock, to a tenth: "00:04.1", "12:04.0".
+    static func editor(_ seconds: TimeInterval) -> String {
+        let value = seconds.isFinite ? max(0, seconds) : 0
+        let tenths = Int((value * 10).rounded())
+        return twoDigits(tenths / 600) + ":" + twoDigits(tenths / 10 % 60) + "." + String(tenths % 10)
+    }
+
+    /// A length to a tenth of a second: "1.8s", "0.7s".
+    static func tenths(_ seconds: TimeInterval) -> String {
+        let value = seconds.isFinite ? max(0, seconds) : 0
+        return String(localized: "\(value.formatted(.number.precision(.fractionLength(1)).locale(.interface)))s")
+    }
+
+    /// A ruler label: "00:04", "01:12".
+    static func ruler(_ seconds: TimeInterval) -> String {
+        let whole = max(0, Int(seconds.rounded()))
+        return twoDigits(whole / 60) + ":" + twoDigits(whole % 60)
+    }
+
     private static func twoDigits(_ value: Int) -> String {
         value < 10 ? "0\(value)" : "\(value)"
     }

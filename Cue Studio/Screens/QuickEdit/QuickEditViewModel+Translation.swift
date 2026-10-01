@@ -35,8 +35,9 @@ extension QuickEditViewModel {
     }
 
     /// Asks whether this iPhone can translate the captions into `target`, then hands the request to
-    /// the view's translation task. `replacingRevised` translates corrected lines again too.
-    func translateCaptions(to target: CueLanguage, replacingRevised: Bool = false) async {
+    /// the view's translation task. `replacingRevised` translates corrected lines again too;
+    /// `shows` shows the captions in `target` when done.
+    func translateCaptions(to target: CueLanguage, replacingRevised: Bool = false, shows: Bool = false) async {
         guard isReady, !translationState.isWorking, !edit.captions.isEmpty else { return }
         guard let source = captionSourceLanguage else {
             translationState = .unknownSource
@@ -50,7 +51,7 @@ extension QuickEditViewModel {
             return
         }
         translationState = .translating
-        translationRequest = TranslationRequest(source: source, target: target, replacingRevised: replacingRevised)
+        translationRequest = TranslationRequest(source: source, target: target, replacingRevised: replacingRevised, shows: shows)
     }
 
     /// The view's translation task gave a session for `request`: translates every sentence and
@@ -72,6 +73,7 @@ extension QuickEditViewModel {
                 translations.removeAll { $0.language == request.target }
                 translations.append(CaptionTranslation(language: request.target, lines: merged))
                 snapshot.captionTranslations = translations
+                if request.shows { snapshot.captionDisplay = .translation(request.target) }
             }
             translationRequest = nil
             translationState = .idle

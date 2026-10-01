@@ -25,4 +25,19 @@ enum Metrics {
     /// Minimum touch target.
     static let hitTarget: CGFloat = 44
     static let chipHeight: CGFloat = 34
+
+    // MARK: Editor (v10)
+
+    /// Top corners of the panels under the timeline.
+    static let editorPanelRadius: CGFloat = 22
+    /// Top corners of the editor's sheets.
+    static let editorSheetRadius: CGFloat = 28
+    /// Clips on the video track.
+    static let clipRadius: CGFloat = 7
+    /// Items on the other tracks.
+    static let laneItemRadius: CGFloat = 6
+    /// The editor's preview frame.
+    static let editorPreviewRadius: CGFloat = 6
+    /// The ✓ that applies and closes a panel.
+    static let applyButtonSize: CGFloat = 40
 }

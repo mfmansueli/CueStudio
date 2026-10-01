@@ -60,7 +60,7 @@ struct QuickEditSoundTests {
         #expect(clip.length == 54)
         #expect(viewModel.selectedMusicID == clip.id)
         #expect(viewModel.musicBars.first?.span == TimeSpan(start: 10, end: 64))
-        #expect(scenario.toast.message == "Music added")
+        #expect(scenario.toast.message == "Music added under your voice at 40%")
         viewModel.undo()
         #expect(viewModel.edit.music.isEmpty)
     }
@@ -157,7 +157,7 @@ struct QuickEditSoundTests {
         let viewModel = scenario.viewModel
         #expect(viewModel.edit.audioVersion == 1)
         viewModel.setNoiseReduction(.strong)
-        #expect(viewModel.edit.audioVersion == 2)
+        #expect(viewModel.edit.audioVersion == 3)
         #expect(viewModel.edit.voiceEnhancement == .soft)
         #expect(viewModel.edit.noiseReduction == .strong)
     }
@@ -165,7 +165,7 @@ struct QuickEditSoundTests {
     @Test func comparingPlaysTheUntreatedSoundAsLoud() async throws {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
-        viewModel.tool = .audio
+        viewModel.panel = .voice
         viewModel.setVoiceEnhancement(.strong)
         viewModel.setComparesOriginal(true)
         await viewModel.comparisonTask?.value
@@ -184,10 +184,10 @@ struct QuickEditSoundTests {
     @Test func leavingVoiceEndsTheComparison() async {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
-        viewModel.tool = .audio
+        viewModel.panel = .voice
         viewModel.setComparesOriginal(true)
         await viewModel.comparisonTask?.value
-        viewModel.tool = .music
+        viewModel.panel = nil
         #expect(!viewModel.comparesOriginal)
         #expect(scenario.player.shown.last == viewModel.edit)
     }
@@ -196,7 +196,7 @@ struct QuickEditSoundTests {
         let scenario = await makeScenario()
         scenario.editor.matchedVolume = nil
         let viewModel = scenario.viewModel
-        viewModel.tool = .audio
+        viewModel.panel = .voice
         viewModel.setComparesOriginal(true)
         await viewModel.comparisonTask?.value
         #expect(!viewModel.comparesOriginal)

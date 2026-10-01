@@ -7,9 +7,9 @@ import Foundation
 
 /// One undo step of Quick edit: the timeline, what was decided about Clean Up's suggestions, what
 /// was added on top (texts, media, voice-overs, cover), the type of texts and captions (presets,
-/// "My style") and the filter, so undoing a "Remove" brings back both the piece and the
-/// suggestion to review, and undoing a preset brings back every text as it was. Audio and Adjust's sliders aren't part
-/// of it: they set the sound and the light directly.
+/// "My style"), the filter, and (since the v10 editor) light, color, frame and sound (`EditLook`),
+/// so undoing a "Remove" brings back both the piece and the suggestion to review, and undoing a
+/// preset brings back every text as it was.
 nonisolated struct EditSnapshot: Codable, Hashable, Sendable {
     var timeline: EditTimeline
     var suggestions: [CleanUpSuggestion]
@@ -42,12 +42,14 @@ nonisolated struct EditSnapshot: Codable, Hashable, Sendable {
     /// Distinguishes an old undo step from a new step explicitly restoring a legacy look.
     var captionCollectionVersion: Int?
     var captionPosition: CaptionPosition?
+    /// Light, color, frame and sound; nil in steps saved before the v10 editor.
+    var look: EditLook?
 
     private enum CodingKeys: String, CodingKey {
         case timeline, suggestions, texts, media, voiceOvers, cover, creatorStyle, captionStyle, filter
         case textLook, textPreset, captionLook, captionPreset, captions, sources, captionAnimation
         case captionTranslations, captionDisplay, music, backgrounds
-        case captionCollection, captionCollectionVersion, captionPosition
+        case captionCollection, captionCollectionVersion, captionPosition, look
     }
 }
 
@@ -62,7 +64,7 @@ nonisolated extension EditSnapshot {
             captions: edit.captions, sources: edit.sources, captionAnimation: edit.captionAnimation,
             captionTranslations: edit.captionTranslations, captionDisplay: edit.captionDisplay, music: edit.music,
             backgrounds: edit.backgrounds, captionCollection: edit.captionCollection,
-            captionCollectionVersion: 1, captionPosition: edit.captionPosition
+            captionCollectionVersion: 1, captionPosition: edit.captionPosition, look: EditLook(edit)
         )
     }
 
@@ -92,7 +94,8 @@ nonisolated extension EditSnapshot {
             backgrounds: try? container.decodeIfPresent([RecordingBackground].self, forKey: .backgrounds),
             captionCollection: try container.decodeIfPresent(CaptionSettings.self, forKey: .captionCollection),
             captionCollectionVersion: try container.decodeIfPresent(Int.self, forKey: .captionCollectionVersion),
-            captionPosition: try container.decodeIfPresent(CaptionPosition.self, forKey: .captionPosition)
+            captionPosition: try container.decodeIfPresent(CaptionPosition.self, forKey: .captionPosition),
+            look: try? container.decodeIfPresent(EditLook.self, forKey: .look)
         )
     }
 }

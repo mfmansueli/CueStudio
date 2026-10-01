@@ -10,7 +10,7 @@ import Foundation
 /// up something before it never moves it off what is being said. Rendered by the same code in the
 /// preview and the export (`TextOverlayRenderer`).
 nonisolated struct TextOverlay: Codable, Hashable, Identifiable, Sendable {
-    static let sizeRange: ClosedRange<Double> = 12...72
+    static let sizeRange: ClosedRange<Double> = 12...120
     /// Shortest a text can stay on screen.
     static let minimumDuration: TimeInterval = 0.3
 

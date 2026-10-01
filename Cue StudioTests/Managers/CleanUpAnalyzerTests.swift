@@ -15,8 +15,8 @@ struct CleanUpAnalyzerTests {
     }
 
     @Test func longPausesAreSureShortOnesWaitForTheCreator() {
-        // Cuts keep 0.15 s each side: a 0.5 s cut was a 0.8 s silence, a 0.25 s cut a 0.55 s one.
-        let found = CleanUpAnalyzer.suggestions(silences: [TimeSpan(start: 1, end: 1.5), TimeSpan(start: 4, end: 4.25)], transcript: nil)
+        // Cuts keep 0.12 s each side: a 0.6 s cut was a 0.84 s silence, a 0.25 s cut a 0.49 s one.
+        let found = CleanUpAnalyzer.suggestions(silences: [TimeSpan(start: 1, end: 1.6), TimeSpan(start: 4, end: 4.25)], transcript: nil)
         #expect(found.map(\.kind) == [.pause, .pause])
         #expect(found[0].isSure)
         #expect(found[0].title == "Long pause")

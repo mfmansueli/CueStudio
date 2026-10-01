@@ -24,6 +24,17 @@ nonisolated struct EditSegment: Codable, Hashable, Identifiable, Sendable {
     var sourceID: UUID?
     /// A slow zoom over the piece; nil plays it as filmed.
     var zoom: SectionZoom?
+    /// How strong the zoom is, 0 to 1 (1 is 1.3× at most); 0.5 for new clips.
+    var zoomAmount: Double = 0.5
+    /// The clip's own sound, 0 to 2 (200%), on top of the Voice tool's volume.
+    var volume: Double = 1
+    /// "Mute this clip".
+    var isMuted = false
+    /// "Keep voice pitch": a faster or slower clip keeps the voice's tone; off, it rises or falls
+    /// with the speed.
+    var keepsPitch = true
+
+    static let volumeRange: ClosedRange<Double> = 0...2
 
     init(
         id: UUID = UUID(), sourceStart: TimeInterval, sourceEnd: TimeInterval,
@@ -45,6 +56,17 @@ nonisolated struct EditSegment: Codable, Hashable, Identifiable, Sendable {
         self.init(id: id, sourceStart: span.start, sourceEnd: span.end, transitionIn: transitionIn, speed: speed, sourceID: sourceID, zoom: zoom)
     }
 
+    /// The same clip (speed, zoom, sound) over another stretch of its recording, as a new piece
+    /// unless `id` says otherwise.
+    func piece(_ span: TimeSpan, id: UUID = UUID(), transitionIn: EditTransition = .hardCut) -> EditSegment {
+        var piece = self
+        piece.id = id
+        piece.sourceStart = span.start
+        piece.sourceEnd = span.end
+        piece.transitionIn = transitionIn
+        return piece
+    }
+
     /// How long the piece plays in the edit (its stretch of the recording over its speed).
     var duration: TimeInterval { sourceLength / speed }
 
@@ -61,7 +83,7 @@ nonisolated struct EditSegment: Codable, Hashable, Identifiable, Sendable {
     // MARK: - Coding
 
     private enum CodingKeys: String, CodingKey {
-        case id, sourceStart, sourceEnd, transitionIn, speed, sourceID, zoom
+        case id, sourceStart, sourceEnd, transitionIn, speed, sourceID, zoom, zoomAmount, volume, isMuted, keepsPitch
     }
 
     /// Pieces saved before transitions or speed existed are hard cuts at 1×, and so is a
@@ -75,5 +97,10 @@ nonisolated struct EditSegment: Codable, Hashable, Identifiable, Sendable {
         speed = Self.clampedSpeed((try? container.decodeIfPresent(Double.self, forKey: .speed)) ?? 1)
         sourceID = try? container.decodeIfPresent(UUID.self, forKey: .sourceID)
         zoom = try? container.decodeIfPresent(SectionZoom.self, forKey: .zoom)
+        // Clips saved before the strength had a fixed zoom: 1.12× for push and pull, 1.15× punched in.
+        zoomAmount = (try? container.decodeIfPresent(Double.self, forKey: .zoomAmount)) ?? (zoom == .punchIn ? 0.5 : 0.4)
+        volume = min(max((try? container.decodeIfPresent(Double.self, forKey: .volume)) ?? 1, Self.volumeRange.lowerBound), Self.volumeRange.upperBound)
+        isMuted = (try? container.decodeIfPresent(Bool.self, forKey: .isMuted)) ?? false
+        keepsPitch = (try? container.decodeIfPresent(Bool.self, forKey: .keepsPitch)) ?? true
     }
 }

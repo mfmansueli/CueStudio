@@ -4,7 +4,6 @@
 //
 
 import SwiftUI
-import Translation
 
 /// Captions in another language: pick it, translate on the iPhone (the system asks before
 /// downloading a language), or write it by hand; read and correct each line under its original;
@@ -15,7 +14,6 @@ struct CaptionTranslationSheet: View {
 
     @Environment(\.dismiss) private var dismiss
     @State private var target: CueLanguage?
-    @State private var configuration: TranslationSession.Configuration?
     @State private var confirmsReplacing = false
 
     var body: some View {
@@ -73,20 +71,8 @@ struct CaptionTranslationSheet: View {
                 Button("Translate them again", role: .destructive) { start(replacingRevised: true) }
             }
         }
-        .translationTask(configuration) { session in
-            guard let request = viewModel.translationRequest else { return }
-            await viewModel.performTranslation(request, with: AppleTranslationSession(session))
-        }
-        .onChange(of: viewModel.translationRequest) { _, request in
-            guard let request else { return }
-            // A new configuration each time, so the same pair can be asked again.
-            configuration = TranslationSession.Configuration(source: request.source, target: request.target.locale.language)
-        }
         .onAppear {
             target = target ?? viewModel.edit.captionDisplay.language ?? viewModel.edit.captionTranslations.first?.language
-        }
-        .onDisappear {
-            if viewModel.translationState == .translating { viewModel.cancelTranslation() }
         }
         .presentationDetents([.medium, .large])
     }

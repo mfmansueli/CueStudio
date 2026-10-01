@@ -13,6 +13,8 @@ nonisolated enum TextStyleScope: String, CaseIterable, Identifiable, Sendable {
     case allTexts
     /// The captions.
     case allCaptions
+    /// Every text and the captions, together ("+ Captions").
+    case textsAndCaptions
 
     var id: String { rawValue }
 
@@ -21,6 +23,7 @@ nonisolated enum TextStyleScope: String, CaseIterable, Identifiable, Sendable {
         case .selected: String(localized: "This text")
         case .allTexts: String(localized: "All texts")
         case .allCaptions: String(localized: "All captions")
+        case .textsAndCaptions: String(localized: "+ Captions")
         }
     }
 

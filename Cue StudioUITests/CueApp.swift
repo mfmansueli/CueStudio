@@ -22,10 +22,10 @@ enum CueApp {
     /// `systemLanguage` launches as if the iPhone were in that language.
     static func launch(
         seeded: Bool, pro: Bool = false, ai: AIMode = .stub, sampleVideo: Bool = false, remoteConnects: Bool = false,
-        appLanguage: String? = nil, systemLanguage: String? = nil, contentSize: String? = nil
+        appLanguage: String? = nil, systemLanguage: String? = nil, contentSize: String? = nil, extraArguments: [String] = []
     ) -> XCUIApplication {
         let app = XCUIApplication()
-        app.launchArguments = ["-uiTestInMemory"]
+        app.launchArguments = ["-uiTestInMemory"] + extraArguments
         if seeded { app.launchArguments.append("-uiTestSeedSamples") }
         if sampleVideo { app.launchArguments.append("-uiTestSampleVideo") }
         if remoteConnects { app.launchArguments.append("-uiTestRemoteConnects") }

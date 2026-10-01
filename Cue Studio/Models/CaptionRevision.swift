@@ -85,6 +85,27 @@ nonisolated enum CaptionRevision {
         return (first, second)
     }
 
+    /// The line's words: its timed words, or its text's.
+    static func words(of cue: CaptionCue) -> [String] {
+        cue.words.isEmpty ? CaptionText.words(in: cue.text) : cue.words.map(\.text)
+    }
+
+    /// Where to split `cue` for a cut at `time` (seconds of the recording): before the first word
+    /// that ends after it; without word times, by how far into the line it is. Always leaves a
+    /// word on each side (the line needs two).
+    static func splitIndex(of cue: CaptionCue, atSource time: TimeInterval) -> Int {
+        let count = words(of: cue).count
+        guard count > 1 else { return 1 }
+        let index: Int
+        if cue.words.isEmpty {
+            let progress = (time - cue.start) / max(0.001, cue.end - cue.start)
+            index = Int((progress * Double(count)).rounded())
+        } else {
+            index = cue.words.firstIndex { ($0.start + $0.end) / 2 >= time } ?? count
+        }
+        return min(max(index, 1), count - 1)
+    }
+
     /// Two lines as one, from the start of the first to the end of the second.
     static func merged(_ first: CaptionCue, _ second: CaptionCue) -> CaptionCue {
         var merged = first
