@@ -15,7 +15,7 @@ import Foundation
 ///
 /// A recommendation is never applied on its own: until the creator answers, the Creator Setup is
 /// what records, and the question is on screen. Nothing here is saved; the Creator Setup only
-/// changes in Profile › Creator Setup.
+/// changes in Settings › Creator Setup.
 nonisolated struct SessionSetup: Hashable, Sendable {
     private(set) var recommendation: SetupRecommendation?
     private(set) var choice: RecommendationChoice = .undecided

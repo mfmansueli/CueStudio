@@ -5,7 +5,7 @@
 
 import Foundation
 
-/// Profile › Creator Setup: the creator's defaults for every recording ("Set it up once"). Writes
+/// Settings › Creator Setup: the creator's defaults for every recording ("Set it up once"). Writes
 /// the stored preferences directly; recordings start from them, and platform recommendations are
 /// offered on top without ever changing them.
 @MainActor
@@ -77,7 +77,7 @@ final class CreatorSetupViewModel {
 
     // MARK: - Teleprompter
 
-    /// The same settings and ranges used by Display in the recorder, saved only from Profile.
+    /// The same settings and ranges used by Display in the recorder, saved only from Creator Setup.
     var prompter: PrompterSettings {
         get { preferences.prompter }
         set { preferences.prompter = newValue }

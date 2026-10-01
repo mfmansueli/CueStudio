@@ -12,7 +12,7 @@ and `DESIGN_PROJECT.md` (Language & Region screen).
 
 ## 1. Three languages, kept apart
 
-Cue has three language settings (Profile › Settings › Language & Region) and none follows another:
+Cue has three language settings (Settings › Language & Region) and none follows another:
 
 | Setting | What it is | Stored in | Default |
 |---|---|---|---|
@@ -36,7 +36,7 @@ direction and whether it's written without spaces.
   `String+InterfaceLanguage.swift` in `InterfaceLocale.current` (Foundation's own picks the language
   once per launch and ignores `Bundle` overrides), SwiftUI reads `locale` and `layoutDirection` from
   `RootView`'s environment, and `RootView` rebuilds the screens (`.id`). Navigation that must survive
-  lives in `PresentationService` (`profilePath`), so the creator stays on Language & Region.
+  lives in `PresentationService` (`settingsPath`), so the creator stays on Language & Region.
   Numbers and dates use `Locale.interface` (interface language, iPhone region).
 - **Voice Following:** `SpeechLanguageRequest` (the Voice Following language, else the script's,
   else detected from the script's text) → `SpeechLocaleResolver` → Apple's on-device

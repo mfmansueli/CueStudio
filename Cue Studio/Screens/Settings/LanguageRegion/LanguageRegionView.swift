@@ -5,7 +5,7 @@
 
 import SwiftUI
 
-/// Profile › Settings › Language & Region: the three languages Cue keeps apart. The app language
+/// Settings › Language & Region: the three languages Cue keeps apart. The app language
 /// is the interface; the Voice Following language is what Cue listens for; the script language is
 /// what new scripts are written in. Changing one never changes another or translates anything.
 struct LanguageRegionView: View {

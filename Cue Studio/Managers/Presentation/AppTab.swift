@@ -6,7 +6,7 @@
 import Foundation
 
 enum AppTab: Hashable {
-    case scripts, takes, profile
+    case scripts, takes, profile, settings
     /// Not a real destination: selecting it opens "Start recording".
     case record
 }

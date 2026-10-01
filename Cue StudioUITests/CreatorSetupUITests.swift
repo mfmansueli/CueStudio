@@ -5,7 +5,7 @@
 
 import XCTest
 
-/// Profile › Creator Setup: defaults that stick, reset, remote pairing, and the recommendation the
+/// Settings › Creator Setup: defaults that stick, reset, remote pairing, and the recommendation the
 /// recording screen offers when a platform wants something else.
 @MainActor
 final class CreatorSetupUITests: XCTestCase {
@@ -68,9 +68,9 @@ final class CreatorSetupUITests: XCTestCase {
         let app = CueApp.launch(seeded: true)
         openCreatorSetup(app)
         app.buttons["creatorSetup.quality.4K"].tap()
-        // Back to Profile: a tab keeps its screen, and the end of the test opens Creator Setup again.
+        // Back to Settings: a tab keeps its screen, and the end of the test opens Creator Setup again.
         app.navigationBars["Creator Setup"].buttons.element(boundBy: 0).tap()
-        XCTAssertTrue(app.buttons["profile.creatorSetupButton"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.buttons["settings.creatorSetupButton"].waitForExistence(timeout: 5))
 
         // "3 morning habits" is for TikTok, which recommends 1080p.
         app.tabBars.buttons["Scripts"].tap()
@@ -95,17 +95,17 @@ final class CreatorSetupUITests: XCTestCase {
         app.buttons["prompter.closeButton"].tap()
 
         // The Creator Setup is still 4K.
-        let profile = app.tabBars.buttons["Profile"]
-        XCTAssertTrue(profile.waitForExistence(timeout: 5))
-        profile.tap()
-        let setup = app.buttons["profile.creatorSetupButton"]
+        let settings = app.tabBars.buttons["Settings"]
+        XCTAssertTrue(settings.waitForExistence(timeout: 5))
+        settings.tap()
+        let setup = app.buttons["settings.creatorSetupButton"]
         scroll(app, to: setup)
         setup.tap()
         XCTAssertTrue(app.buttons["creatorSetup.quality.4K"].waitForExistence(timeout: 5))
         XCTAssertTrue(app.buttons["creatorSetup.quality.4K"].isSelected)
     }
 
-    func testProfileDisplayUsesTheSharedEditorAndKeepsLocalRecordingEditsSeparate() {
+    func testSettingsDisplayUsesTheSharedEditorAndKeepsLocalRecordingEditsSeparate() {
         let app = CueApp.launch(seeded: true)
         openCreatorSetup(app)
         let display = app.buttons["creatorSetup.displayButton"]
@@ -165,13 +165,14 @@ final class CreatorSetupUITests: XCTestCase {
     // MARK: - Helpers
 
     private func openCreatorSetup(_ app: XCUIApplication) {
-        let tab = app.tabBars.buttons["Profile"]
+        let tab = app.tabBars.buttons["Settings"]
         XCTAssertTrue(tab.waitForExistence(timeout: 15))
         tab.tap()
-        let setup = app.buttons["profile.creatorSetupButton"]
+        let setup = app.buttons["settings.creatorSetupButton"]
         scroll(app, to: setup)
         setup.tap()
         XCTAssertTrue(app.navigationBars["Creator Setup"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.tabBars.buttons["Settings"].isSelected)
     }
 
     private func scroll(_ app: XCUIApplication, to element: XCUIElement) {

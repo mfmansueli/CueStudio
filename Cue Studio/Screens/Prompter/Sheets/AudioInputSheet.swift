@@ -98,7 +98,7 @@ struct AudioInputSheet: View {
     // MARK: - Actions
 
     /// For this take: the camera applies the choice from the session every time it starts. The
-    /// usual mic is set in Profile › Creator Setup.
+    /// usual mic is set in Settings › Creator Setup.
     private func select(_ input: MicrophoneOption) {
         var camera = session.camera
         camera.microphoneID = input.id

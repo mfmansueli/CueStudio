@@ -5,7 +5,7 @@
 
 import XCTest
 
-/// Profile › Language & Region: the app language, the Voice Following language and the script
+/// Settings › Language & Region: the app language, the Voice Following language and the script
 /// language are three settings, and changing one never changes another or translates a script.
 @MainActor
 final class LanguageRegionUITests: XCTestCase {
@@ -25,6 +25,7 @@ final class LanguageRegionUITests: XCTestCase {
 
         XCTAssertTrue(app.navigationBars["Idioma e região"].waitForExistence(timeout: 5))
         XCTAssertTrue(app.tabBars.buttons["Perfil"].exists)
+        XCTAssertTrue(app.tabBars.buttons["Ajustes"].isSelected)
         XCTAssertTrue(app.buttons["languageRegion.appLanguageButton"].label.contains("Português (Brasil)"))
         XCTAssertTrue(app.buttons["languageRegion.voiceFollowingLanguageButton"].label.contains("Igual ao roteiro"))
         XCTAssertTrue(app.buttons["languageRegion.scriptLanguageButton"].label.contains("Detectar automaticamente"))
@@ -130,11 +131,11 @@ final class LanguageRegionUITests: XCTestCase {
     // MARK: - Helpers
 
     private func openLanguageRegion(_ app: XCUIApplication) {
-        // Profile is the third tab in any language.
-        let profile = app.tabBars.buttons.element(boundBy: 2)
-        XCTAssertTrue(profile.waitForExistence(timeout: 15))
-        profile.tap()
-        let row = app.buttons["profile.languageRegionButton"]
+        // Settings is the fourth tab in any language.
+        let settings = app.tabBars.buttons.element(boundBy: 3)
+        XCTAssertTrue(settings.waitForExistence(timeout: 15))
+        settings.tap()
+        let row = app.buttons["settings.languageRegionButton"]
         for _ in 0..<8 where !(row.exists && row.isHittable) {
             app.swipeUp()
         }

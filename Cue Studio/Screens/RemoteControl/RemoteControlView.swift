@@ -5,7 +5,7 @@
 
 import SwiftUI
 
-/// Profile › Creator Setup › Remote Control: pair another iPhone or iPad to control this
+/// Settings › Creator Setup › Remote Control: pair another iPhone or iPad to control this
 /// teleprompter, or make this device the remote of another one.
 struct RemoteControlView: View {
     @Environment(RemoteControlService.self) private var remote

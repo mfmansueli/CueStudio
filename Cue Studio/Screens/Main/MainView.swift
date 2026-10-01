@@ -5,7 +5,7 @@
 
 import SwiftUI
 
-/// Tabs (Scripts, Takes, Profile) plus the Record tab, the creation sheets, the prompter and the
+/// Tabs (Scripts, Takes, Profile, Settings) plus Record, creation sheets, the prompter and the
 /// remote (when this device controls a teleprompter on another one).
 struct MainView: View {
     let services: AppServices
@@ -33,11 +33,16 @@ struct MainView: View {
                 NavigationStack { TakesView(services: services) }
             }
             Tab("Profile", systemImage: "person.crop.circle", value: AppTab.profile) {
-                NavigationStack(path: $presentation.profilePath) {
-                    ProfileView()
-                        .navigationDestination(for: ProfileRoute.self) { route in
+                NavigationStack { ProfileView() }
+            }
+            Tab("Settings", systemImage: "gearshape", value: AppTab.settings) {
+                NavigationStack(path: $presentation.settingsPath) {
+                    SettingsView()
+                        .navigationDestination(for: SettingsRoute.self) { route in
                             switch route {
                             case .languageRegion: LanguageRegionView()
+                            case .creatorSetup:
+                                CreatorSetupView(preferences: preferences, microphones: services.audio, toast: toast)
                             }
                         }
                 }

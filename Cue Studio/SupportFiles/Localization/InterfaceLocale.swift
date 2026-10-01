@@ -6,7 +6,7 @@
 import Foundation
 import Synchronization
 
-/// The locale of Cue's interface language (Profile › Language & Region), for strings resolved
+/// The locale of Cue's interface language (Settings › Language & Region), for strings resolved
 /// outside SwiftUI views (`String(localized:)` everywhere, from any thread). SwiftUI views read it
 /// from the environment instead. Set by `LanguageService` through `AppServices`; nil until then,
 /// which resolves strings the way Foundation does on its own (unit tests, previews).

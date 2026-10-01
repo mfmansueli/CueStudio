@@ -7,7 +7,7 @@ import Foundation
 
 /// Control the teleprompter from another device. The same app on both ends: the teleprompter shows
 /// a QR code (`startHosting`), the other iPhone or iPad scans it and becomes the remote (`join`).
-/// Lives for the app session, so a remote paired in Profile › Creator Setup is still there when
+/// Lives for the app session, so a remote paired in Settings › Creator Setup is still there when
 /// the prompter opens, and the prompter can pair one without leaving the recording.
 @MainActor
 @Observable

@@ -13,7 +13,7 @@ import Foundation
 /// Writing through it keeps the rule that matters most: a recommendation or a change for one take
 /// never rewrites the creator's defaults. All reading settings stay in the session. Other camera
 /// options (grid, countdown…) are still saved as before. Defaults are captured when the session
-/// opens, so editing the profile cannot change an open recording.
+/// opens, so editing Creator Setup cannot change an open recording.
 @MainActor
 @Observable
 final class SessionSetupService {
@@ -50,7 +50,7 @@ final class SessionSetupService {
     }
 
     /// Reading preferences start from the saved defaults. Every edit here is local to this
-    /// session; the profile is the only place that changes the defaults.
+    /// session; Creator Setup is the place that changes the defaults.
     var prompter: PrompterSettings {
         get { current.applied(to: sessionPrompter) }
         set {

@@ -6,7 +6,7 @@
 import SwiftUI
 
 /// Camera and recording options for this recording session. Lens, frame, quality, microphone and
-/// safe zones change for this take only (the usual ones are in Profile › Creator Setup); grid,
+/// safe zones change for this take only (the usual ones are in Settings › Creator Setup); grid,
 /// stabilization, countdown and the rest are saved as before.
 struct CameraSettingsSheet: View {
     private enum Tab: Hashable { case camera, recording }
@@ -206,7 +206,7 @@ struct CameraSettingsSheet: View {
 
     /// Where the usual setup lives, so a change here isn't mistaken for a new default.
     private var setupNote: some View {
-        Text("Lens, frame, quality and mic change for this take. Your usual setup stays in Profile › Creator Setup.")
+        Text("Lens, frame, quality and mic change for this take. Your usual setup stays in Settings › Creator Setup.")
             .font(.footnote)
             .foregroundStyle(Palette.ink2)
             .padding(EdgeInsets(top: 4, leading: 4, bottom: 0, trailing: 4))
