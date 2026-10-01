@@ -29,6 +29,16 @@ final class EditorScreenshotTests: XCTestCase {
             let back = app.buttons["edit.toolbar.back"]
             if back.waitForExistence(timeout: 2) { back.tap() }
         }
+        /// A panel tab; on a compact screen the tabs share a sideways row with the scope.
+        func tab(_ id: String) {
+            let tab = app.buttons["edit.panel.tab.\(id)"]
+            var swipes = 0
+            while !tab.isHittable, swipes < 3 {
+                app.buttons["edit.style.scope.allTexts"].swipeLeft(velocity: .slow)
+                swipes += 1
+            }
+            tab.tap()
+        }
         try capture("01-editor")
         EditorApp.goToCaption(app, 3)
         EditorApp.tapTool(app, "edit")
@@ -62,11 +72,11 @@ final class EditorScreenshotTests: XCTestCase {
         EditorApp.tapTool(app, "text")
         EditorApp.tapTool(app, "styleAll")
         try capture("11-text-style")
-        app.buttons["edit.panel.tab.font"].tap()
+        tab("font")
         try capture("12-text-font")
-        app.buttons["edit.panel.tab.color"].tap()
+        tab("color")
         try capture("13-text-color")
-        app.buttons["edit.panel.tab.motion"].tap()
+        tab("motion")
         try capture("14-text-motion")
         apply()
         back()
@@ -74,10 +84,12 @@ final class EditorScreenshotTests: XCTestCase {
         EditorApp.tapTool(app, "voice")
         try capture("15-voice")
         apply()
+        back()
         EditorApp.tapTool(app, "audio")
         EditorApp.tapTool(app, "voiceOver")
         try capture("16-voice-over")
         apply()
+        back()
         for (index, tool) in ["adjust", "filters", "background", "crop"].enumerated() {
             EditorApp.tapTool(app, tool)
             try capture("\(17 + index)-\(tool)")
