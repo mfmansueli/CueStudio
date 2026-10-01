@@ -5,7 +5,7 @@
 
 import SwiftUI
 
-/// Tabs (Scripts, Takes, Profile, Settings) plus Record, creation sheets, the prompter and the
+/// Tabs (Scripts, Takes, Record, Profile, Settings), creation sheets, the prompter and the
 /// remote (when this device controls a teleprompter on another one).
 struct MainView: View {
     let services: AppServices
@@ -32,6 +32,16 @@ struct MainView: View {
             Tab("Takes", systemImage: "film.stack", value: AppTab.takes) {
                 NavigationStack { TakesView(services: services) }
             }
+            // Not a destination: selecting it opens "Start recording".
+            Tab(value: AppTab.record) {
+                Color.clear
+            } label: {
+                Label {
+                    Text("Record")
+                } icon: {
+                    Image(uiImage: RecordGlyph.tabImage)
+                }
+            }
             Tab("Profile", systemImage: "person.crop.circle", value: AppTab.profile) {
                 NavigationStack { ProfileView() }
             }
@@ -45,16 +55,6 @@ struct MainView: View {
                                 CreatorSetupView(preferences: preferences, microphones: services.audio, toast: toast)
                             }
                         }
-                }
-            }
-            // Not a destination: selecting it opens "Start recording".
-            Tab(value: AppTab.record) {
-                Color.clear
-            } label: {
-                Label {
-                    Text("Record")
-                } icon: {
-                    Image(uiImage: RecordGlyph.tabImage)
                 }
             }
         }

@@ -131,8 +131,8 @@ final class LanguageRegionUITests: XCTestCase {
     // MARK: - Helpers
 
     private func openLanguageRegion(_ app: XCUIApplication) {
-        // Settings is the fourth tab in any language.
-        let settings = app.tabBars.buttons.element(boundBy: 3)
+        // Settings is the fifth tab in any language.
+        let settings = app.tabBars.buttons.element(boundBy: 4)
         XCTAssertTrue(settings.waitForExistence(timeout: 15))
         settings.tap()
         let row = app.buttons["settings.languageRegionButton"]

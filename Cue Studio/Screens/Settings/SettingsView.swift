@@ -60,6 +60,7 @@ struct SettingsView: View {
         .scrollContentBackground(.hidden)
         .background(Palette.bg)
         .navigationTitle("Settings")
+        .toolbarTitleDisplayMode(.inlineLarge)
         .sheet(isPresented: $showsPrivacy) { PrivacySheet() }
     }
 

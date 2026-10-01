@@ -96,6 +96,7 @@ struct ProfileView: View {
         .scrollContentBackground(.hidden)
         .background(Palette.bg)
         .navigationTitle("Profile")
+        .toolbarTitleDisplayMode(.inlineLarge)
         .task {
             await store.loadProducts()
             trialDays = await store.freeTrialDays(for: .annual)
