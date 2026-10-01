@@ -5,7 +5,7 @@
 
 import SwiftUI
 
-/// Profile › Acknowledgements: the fonts Cue ships, what each is for, and its license.
+/// Settings › Acknowledgements: the fonts Cue ships, what each is for, and its license.
 struct AcknowledgementsView: View {
     var body: some View {
         List {

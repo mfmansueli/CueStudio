@@ -6,7 +6,7 @@
 import SwiftUI
 
 /// What Cue does with the creator's data: it stays on the device, and the only AI is Apple
-/// Intelligence. Opened from the Profile and from the paywall's footer.
+/// Intelligence. Opened from Settings and from the paywall's footer.
 struct PrivacySheet: View {
     /// Private Cloud Compute is named only when the app can use it.
     var usesPrivateCloudCompute = ScriptAIService.hasPrivateCloudComputeEntitlement

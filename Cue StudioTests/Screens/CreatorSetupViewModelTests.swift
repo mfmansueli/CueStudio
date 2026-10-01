@@ -104,6 +104,41 @@ struct CreatorSetupViewModelTests {
         #expect(!scenario.preferences.camera.showsSafeZones)
     }
 
+    @Test func displayPreferencesPersistAndStartTheNextSessionWithoutCapture() {
+        let scenario = makeScenario()
+        defer { scenario.defaults.tearDown() }
+        let viewModel = scenario.viewModel
+        viewModel.prompter.font = .rounded
+        viewModel.prompter.textColor = .cyan
+        viewModel.prompter.alignment = .leading
+        viewModel.prompter.lineSpacing = 1.6
+        viewModel.prompter.margin = 24
+        viewModel.prompter.backgroundOpacity = 0.65
+        viewModel.prompter.cameraBlur = 8
+        viewModel.prompter.readingWidth = 0.72
+        viewModel.prompter.textWindowHeight = 240
+        viewModel.prompter.guidePosition = 0.5
+        viewModel.prompter.scrollMode = .voice
+        viewModel.prompter.studioBackground = .navy
+        viewModel.prompter.showsCues = true
+        viewModel.prompter.hidesControlsWhileRecording = true
+        viewModel.prompter.customSafeZone = SafeZoneMargins(top: 8, bottom: 16, left: 4, right: 12)
+        viewModel.textSize = 34
+        viewModel.speed = 1.1
+        viewModel.nudgeReadingLine(by: 16)
+        viewModel.showsReadingLine = false
+        viewModel.isMirrored = true
+        viewModel.showsSafeZones = false
+
+        let reloaded = PreferencesService(defaults: scenario.defaults.defaults)
+        #expect(reloaded.prompter == viewModel.prompter)
+        let session = SessionSetupService(preferences: reloaded)
+        #expect(session.prompter == viewModel.prompter)
+        #expect(!session.camera.showsSafeZones)
+        #expect(!session.hasChanges)
+        #expect(scenario.microphones.refreshCount == 0)
+    }
+
     @Test func resetRestoresTheDefaultsOnly() {
         let scenario = makeScenario()
         defer { scenario.defaults.tearDown() }

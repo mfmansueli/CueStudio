@@ -45,18 +45,23 @@ nonisolated struct ReadingLayout: Equatable, Sendable {
     ) {
         lensY = metrics.lensY
         screenWidth = metrics.screen.width
-        let topLimit = metrics.topBarBottom + Self.topBarGap
-        let bottomLimit = max(topLimit + Self.minimumLead + Self.minimumBelow, metrics.toolbarTop)
-        lineRange = (topLimit + Self.minimumLead)...(bottomLimit - Self.minimumBelow)
+        let topLimit = Self.clamp(metrics.topBarBottom + Self.topBarGap, to: 0...max(0, metrics.screen.height))
+        let bottomLimit = max(topLimit, min(metrics.toolbarTop, metrics.screen.height))
+        let availableHeight = bottomLimit - topLimit
+        // Short layouts keep the window visible instead of inventing space below the screen.
+        let minimumLead = min(Self.minimumLead, availableHeight * Self.leadFraction)
+        let minimumBelow = min(Self.minimumBelow, availableHeight - minimumLead)
+        lineRange = (topLimit + minimumLead)...(bottomLimit - minimumBelow)
 
         let recommended = isFrontCamera
             ? metrics.lensY + Self.recommendedFrontOffset
             : frameRect.minY + frameRect.height * Self.rearFrameFraction
         isRecommended = lineOffset == nil
-        lineY = Self.clamp(lineOffset.map { metrics.lensY + CGFloat($0) } ?? recommended, to: lineRange).rounded()
+        let requestedLine = lineOffset.map { metrics.lensY + CGFloat($0) } ?? recommended
+        lineY = Self.clamp(requestedLine.rounded(), to: lineRange)
 
-        let height = CGFloat(Self.clamp(windowHeight, to: PrompterSettings.textWindowHeightRange))
-        let lead = max(Self.minimumLead, min(height * Self.leadFraction, lineY - topLimit))
+        let height = min(availableHeight, CGFloat(Self.clamp(windowHeight, to: PrompterSettings.textWindowHeightRange)))
+        let lead = max(minimumLead, min(height * Self.leadFraction, lineY - topLimit))
         let top = lineY - lead
         let widthFraction = Self.clamp(readingWidth, to: PrompterSettings.readingWidthRange)
         let width = (metrics.screen.width * widthFraction).rounded()

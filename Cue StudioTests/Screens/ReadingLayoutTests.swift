@@ -112,4 +112,30 @@ struct ReadingLayoutTests {
         #expect(layout.lineSpan.lowerBound == layout.windowRect.minX - 16)
         #expect(layout.lineSpan.upperBound == 402 - layout.lineSpan.lowerBound)
     }
+
+    @Test func savedWindowAndOffsetsFitPhonesAndIPadOrientations() {
+        let portraitPad = SelfieScreenMetrics(
+            screen: CGSize(width: 834, height: 1194), topInset: 24, topBarBottom: 68, toolbarTop: 960
+        )
+        let landscapePad = SelfieScreenMetrics(
+            screen: CGSize(width: 1194, height: 834), topInset: 24, topBarBottom: 68, toolbarTop: 600
+        )
+        let shortLayout = SelfieScreenMetrics(
+            screen: CGSize(width: 667, height: 375), topInset: 20, topBarBottom: 64, toolbarTop: 130
+        )
+        for metrics in [iPhone17, iPhoneSE, proMax, portraitPad, landscapePad, shortLayout] {
+            for front in [true, false] {
+                for offset in [Double?.none, -200, 320, 2000] {
+                    let result = layout(metrics, front: front, offset: offset, height: 380, width: 0.93)
+                    #expect(result.windowRect.minX >= 0)
+                    #expect(result.windowRect.maxX <= metrics.screen.width)
+                    #expect(result.windowRect.minY >= metrics.topBarBottom)
+                    #expect(result.windowRect.maxY <= min(metrics.toolbarTop, metrics.screen.height))
+                    #expect(result.lineY >= result.windowRect.minY)
+                    #expect(result.lineY <= result.windowRect.maxY)
+                }
+            }
+        }
+    }
+
 }

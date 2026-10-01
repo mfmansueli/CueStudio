@@ -22,7 +22,7 @@ enum CueApp {
     /// `systemLanguage` launches as if the iPhone were in that language.
     static func launch(
         seeded: Bool, pro: Bool = false, ai: AIMode = .stub, sampleVideo: Bool = false, remoteConnects: Bool = false,
-        appLanguage: String? = nil, systemLanguage: String? = nil, extraArguments: [String] = []
+        appLanguage: String? = nil, systemLanguage: String? = nil, contentSize: String? = nil, extraArguments: [String] = []
     ) -> XCUIApplication {
         let app = XCUIApplication()
         app.launchArguments = ["-uiTestInMemory"] + extraArguments
@@ -32,6 +32,7 @@ enum CueApp {
         if pro { app.launchArguments.append("-uiTestPro") }
         if let appLanguage { app.launchArguments += ["-uiTestAppLanguage", appLanguage] }
         if let systemLanguage { app.launchArguments += ["-AppleLanguages", "(\(systemLanguage))"] }
+        if let contentSize { app.launchArguments += ["-UIPreferredContentSizeCategoryName", contentSize] }
         switch ai {
         case .stub: app.launchArguments.append("-uiTestStubAI")
         case .none: app.launchArguments.append("-uiTestNoAI")

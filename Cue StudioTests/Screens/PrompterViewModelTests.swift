@@ -24,13 +24,17 @@ struct PrompterViewModelTests {
         let languages: LanguageService
     }
 
-    private func makeScenario(script: Script? = TestData.script(), mode: PrompterMode = .selfie, monetization: Bool = true) -> Scenario {
+    private func makeScenario(
+        script: Script? = TestData.script(), mode: PrompterMode = .selfie,
+        monetization: Bool = true, prompter: PrompterSettings = PrompterSettings()
+    ) -> Scenario {
         let defaults = TestDefaults()
         let library = ScriptLibraryService(repository: FakeScriptRepository(scripts: script.map { [$0] } ?? []))
         library.load()
         let takes = TakeLibraryService(repository: FakeTakeRepository())
         let preferences = PreferencesService(defaults: defaults.defaults)
         preferences.camera.countdown = .off
+        preferences.prompter = prompter
         let profile = CreatorProfileService(defaults: defaults.defaults)
         profile.profile.monetizationGoals = monetization
         let camera = FakeCamera()
@@ -56,7 +60,7 @@ struct PrompterViewModelTests {
     /// Voice follow on a two-paragraph script, laid out as two lines, 50 pt of spacing, two lines.
     private func makeVoiceScenario(mode: PrompterMode = .studio) async -> Scenario {
         let scenario = makeScenario(script: TestData.script(text: "One two three four.\nFive six seven eight."), mode: mode)
-        scenario.preferences.prompter.scrollMode = .voice
+        scenario.viewModel.session.prompter.scrollMode = .voice
         let lineHeight = scenario.viewModel.lineHeight
         scenario.viewModel.updateLayout(contentHeight: 150 + 2 * lineHeight)
         scenario.viewModel.updateParagraphFrame(0..<(2 * lineHeight), at: 0)
@@ -107,14 +111,16 @@ struct PrompterViewModelTests {
         await scenario.viewModel.disappear()
     }
 
-    @Test func opensWithTheFullTextWindow() async {
-        let scenario = makeScenario(script: TestData.script(platform: .linkedin))
+    @Test func opensWithTheCreatorsSavedTextWindow() async {
+        var prompter = PrompterSettings()
+        prompter.readingWidth = 0.5
+        prompter.textWindowHeight = 200
+        let scenario = makeScenario(script: TestData.script(platform: .linkedin), prompter: prompter)
         defer { scenario.defaults.tearDown() }
-        scenario.preferences.prompter.readingWidth = 0.5
-        scenario.preferences.prompter.textWindowHeight = 200
         await scenario.viewModel.appear()
-        #expect(scenario.preferences.prompter.readingWidth == 0.93)
-        #expect(scenario.preferences.prompter.textWindowHeight == 380)
+        #expect(scenario.viewModel.session.prompter.readingWidth == 0.5)
+        #expect(scenario.viewModel.session.prompter.textWindowHeight == 200)
+        #expect(scenario.preferences.prompter == prompter)
         #expect(scenario.viewModel.session.camera.aspect == .portrait)
         #expect(scenario.viewModel.session.conflicts.map(\.field) == [.format])
         await scenario.viewModel.disappear()
@@ -147,7 +153,8 @@ struct PrompterViewModelTests {
         let scenario = makeScenario()
         defer { scenario.defaults.tearDown() }
         scenario.viewModel.setScrollMode(.voice)
-        #expect(scenario.preferences.prompter.scrollMode == .voice)
+        #expect(scenario.viewModel.session.prompter.scrollMode == .voice)
+        #expect(scenario.preferences.prompter.scrollMode == .steady)
     }
 
     @Test func recordStartsRightAwayWithoutCountdown() async {
@@ -302,7 +309,7 @@ struct PrompterViewModelTests {
     @Test func voiceFollowWaitsForSpeech() {
         let scenario = makeScenario(script: TestData.script(text: TestData.words(100)), mode: .studio)
         defer { scenario.defaults.tearDown() }
-        scenario.preferences.prompter.scrollMode = .voice
+        scenario.viewModel.session.prompter.scrollMode = .voice
         scenario.viewModel.updateLayout(contentHeight: 1000)
         scenario.viewModel.play()
         scenario.viewModel.advance(by: 1)
@@ -373,7 +380,7 @@ struct PrompterViewModelTests {
     @Test func steadyScrollingStopsListening() async {
         let scenario = await makeVoiceScenario()
         defer { scenario.defaults.tearDown() }
-        scenario.preferences.prompter.scrollMode = .steady
+        scenario.viewModel.session.prompter.scrollMode = .steady
         scenario.viewModel.scrollModeChanged()
         #expect(!scenario.viewModel.followsSpeech)
         #expect(scenario.audio.audioHandler == nil)
@@ -384,7 +391,7 @@ struct PrompterViewModelTests {
         let scenario = makeScenario(script: TestData.script(text: TestData.words(100)), mode: .studio)
         defer { scenario.defaults.tearDown() }
         scenario.speech.isAvailable = false
-        scenario.preferences.prompter.scrollMode = .voice
+        scenario.viewModel.session.prompter.scrollMode = .voice
         scenario.viewModel.scrollModeChanged()
         await waitUntil { scenario.speech.startCount > 0 }
         await settle()
@@ -399,7 +406,7 @@ struct PrompterViewModelTests {
         defer { scenario.defaults.tearDown() }
         scenario.languages.setAppLanguage(.english)
         scenario.languages.voiceFollowingLanguage = .portugueseBrazil
-        scenario.preferences.prompter.scrollMode = .voice
+        scenario.viewModel.session.prompter.scrollMode = .voice
         scenario.viewModel.scrollModeChanged()
         await waitUntil { scenario.viewModel.followsSpeech }
         #expect(scenario.speech.requests.last == .language(.portugueseBrazil))
@@ -412,7 +419,7 @@ struct PrompterViewModelTests {
         let scenario = makeScenario(script: script, mode: .studio)
         defer { scenario.defaults.tearDown() }
         scenario.languages.setAppLanguage(.japanese)
-        scenario.preferences.prompter.scrollMode = .voice
+        scenario.viewModel.session.prompter.scrollMode = .voice
         scenario.viewModel.scrollModeChanged()
         await waitUntil { scenario.viewModel.followsSpeech }
         #expect(scenario.speech.requests.last == .language(.portugueseBrazil))
@@ -426,7 +433,7 @@ struct PrompterViewModelTests {
         defer { scenario.defaults.tearDown() }
         scenario.languages.voiceFollowingLanguage = .thai
         scenario.speech.unavailable = .unsupported(.thai)
-        scenario.preferences.prompter.scrollMode = .voice
+        scenario.viewModel.session.prompter.scrollMode = .voice
         scenario.viewModel.scrollModeChanged()
         await waitUntil { scenario.viewModel.speechUnavailable != nil }
         #expect(scenario.speech.requests == [.language(.thai)])
@@ -435,10 +442,10 @@ struct PrompterViewModelTests {
         #expect(scenario.toast.message == SpeechUnavailableReason.unsupported(.thai).message)
         // Turning Voice Following off and on again doesn't repeat the toast.
         scenario.toast.dismiss()
-        scenario.preferences.prompter.scrollMode = .steady
+        scenario.viewModel.session.prompter.scrollMode = .steady
         scenario.viewModel.scrollModeChanged()
         #expect(scenario.viewModel.speechUnavailable == nil)
-        scenario.preferences.prompter.scrollMode = .voice
+        scenario.viewModel.session.prompter.scrollMode = .voice
         scenario.viewModel.scrollModeChanged()
         await waitUntil { scenario.viewModel.speechUnavailable != nil }
         #expect(scenario.toast.message == nil)

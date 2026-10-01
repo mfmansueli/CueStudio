@@ -6,7 +6,7 @@
 import SwiftUI
 
 /// Remote Control without leaving the recording: pair another iPhone or iPad, or check the one
-/// that's connected. The same panel as Profile › Creator Setup › Remote Control.
+/// that's connected. The same panel as Settings › Creator Setup › Remote Control.
 struct RemoteControlSheet: View {
     @Environment(\.dismiss) private var dismiss
 

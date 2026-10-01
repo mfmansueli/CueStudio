@@ -5,7 +5,7 @@
 
 import SwiftUI
 
-/// Tabs (Scripts, Takes, Profile) plus the Record tab, the creation sheets, the prompter and the
+/// Tabs (Scripts, Takes, Record, Profile, Settings), creation sheets, the prompter and the
 /// remote (when this device controls a teleprompter on another one).
 struct MainView: View {
     let services: AppServices
@@ -32,17 +32,6 @@ struct MainView: View {
             Tab("Takes", systemImage: "film.stack", value: AppTab.takes) {
                 NavigationStack { TakesView(services: services) }
             }
-            Tab("Profile", systemImage: "person.crop.circle", value: AppTab.profile) {
-                NavigationStack(path: $presentation.profilePath) {
-                    ProfileView()
-                        .navigationDestination(for: ProfileRoute.self) { route in
-                            switch route {
-                            case .languageRegion: LanguageRegionView()
-                            case .acknowledgements: AcknowledgementsView()
-                            }
-                        }
-                }
-            }
             // Not a destination: selecting it opens "Start recording".
             Tab(value: AppTab.record) {
                 Color.clear
@@ -51,6 +40,22 @@ struct MainView: View {
                     Text("Record")
                 } icon: {
                     Image(uiImage: RecordGlyph.tabImage)
+                }
+            }
+            Tab("Profile", systemImage: "person.crop.circle", value: AppTab.profile) {
+                NavigationStack { ProfileView() }
+            }
+            Tab("Settings", systemImage: "gearshape", value: AppTab.settings) {
+                NavigationStack(path: $presentation.settingsPath) {
+                    SettingsView()
+                        .navigationDestination(for: SettingsRoute.self) { route in
+                            switch route {
+                            case .languageRegion: LanguageRegionView()
+                            case .creatorSetup:
+                                CreatorSetupView(preferences: preferences, microphones: services.audio, toast: toast)
+                            case .acknowledgements: AcknowledgementsView()
+                            }
+                        }
                 }
             }
         }

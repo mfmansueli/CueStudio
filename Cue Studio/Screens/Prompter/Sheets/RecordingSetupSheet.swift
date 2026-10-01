@@ -47,7 +47,7 @@ struct RecordingSetupSheet: View {
 
             remoteRow
 
-            Text("Changes here are for this video. Your usual setup stays in Profile › Creator Setup.")
+            Text("Changes here are for this video. Your usual setup stays in Settings › Creator Setup.")
                 .font(.footnote)
                 .foregroundStyle(Palette.ink2)
                 .padding(.horizontal, 4)

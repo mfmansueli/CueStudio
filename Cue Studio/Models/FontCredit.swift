@@ -5,7 +5,7 @@
 
 import Foundation
 
-/// A font bundled with Cue and its license, for Profile › Acknowledgements. Every one is under the
+/// A font bundled with Cue and its license, for Settings › Acknowledgements. Every one is under the
 /// SIL Open Font License 1.1, which allows embedding it in an app; its text ships in the bundle.
 nonisolated struct FontCredit: Identifiable, Hashable, Sendable {
     let name: String

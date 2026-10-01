@@ -21780,90 +21780,90 @@
         }
       }
     },
-    "Changes here are for this video. Your usual setup stays in Profile › Creator Setup." : {
+    "Changes here are for this video. Your usual setup stays in Settings › Creator Setup." : {
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "التغييرات هنا لهذا الفيديو فقط. يبقى إعدادك المعتاد في الملف الشخصي › إعداد صانع المحتوى."
+            "value" : "التغييرات هنا لهذا الفيديو فقط. يبقى إعدادك المعتاد في الإعدادات › إعداد صانع المحتوى."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Änderungen hier gelten für dieses Video. Dein übliches Setup bleibt unter Profil › Creator-Setup."
+            "value" : "Änderungen hier gelten für dieses Video. Dein übliches Setup bleibt unter Einstellungen › Creator-Setup."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Los cambios aquí son solo para este vídeo. Tu configuración habitual sigue en Perfil › Configuración de creador."
+            "value" : "Los cambios aquí son solo para este vídeo. Tu configuración habitual sigue en Ajustes › Configuración de creador."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ces changements valent pour cette vidéo. Vos réglages habituels restent dans Profil › Réglages créateur."
+            "value" : "Ces changements valent pour cette vidéo. Vos réglages habituels restent dans Réglages › Réglages créateur."
           }
         },
         "hi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "यहाँ के बदलाव सिर्फ़ इस वीडियो के लिए हैं। आपका सामान्य सेटअप प्रोफ़ाइल › क्रिएटर सेटअप में रहता है।"
+            "value" : "यहाँ के बदलाव सिर्फ़ इस वीडियो के लिए हैं। आपका सामान्य सेटअप सेटिंग्स › क्रिएटर सेटअप में रहता है।"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Perubahan di sini hanya untuk video ini. Setelan biasamu tetap di Profil › Setelan Kreator."
+            "value" : "Perubahan di sini hanya untuk video ini. Setelan biasamu tetap di Pengaturan › Setelan Kreator."
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Le modifiche qui valgono per questo video. La tua configurazione abituale resta in Profilo › Configurazione creator."
+            "value" : "Le modifiche qui valgono per questo video. La tua configurazione abituale resta in Impostazioni › Configurazione creator."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ここでの変更はこの動画だけに適用されます。いつもの設定は「プロフィール › クリエイター設定」に残ります。"
+            "value" : "ここでの変更はこの動画だけに適用されます。いつもの設定は「設定 › クリエイター設定」に残ります。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "여기서 바꾼 내용은 이 동영상에만 적용돼요. 평소 설정은 ‘프로필 › 크리에이터 설정’에 그대로 있어요."
+            "value" : "여기서 바꾼 내용은 이 동영상에만 적용돼요. 평소 설정은 ‘설정 › 크리에이터 설정’에 그대로 있어요."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "As mudanças aqui valem só para este vídeo. Seu setup de sempre fica em Perfil › Configuração de criador."
+            "value" : "As mudanças aqui valem só para este vídeo. Seu setup de sempre fica em Ajustes › Configuração de criador."
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "การเปลี่ยนแปลงตรงนี้ใช้กับวิดีโอนี้เท่านั้น การตั้งค่าประจำของคุณยังอยู่ที่ โปรไฟล์ › การตั้งค่าครีเอเตอร์"
+            "value" : "การเปลี่ยนแปลงตรงนี้ใช้กับวิดีโอนี้เท่านั้น การตั้งค่าประจำของคุณยังอยู่ที่ การตั้งค่า › การตั้งค่าครีเอเตอร์"
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Buradaki değişiklikler yalnızca bu video için. Her zamanki ayarların Profil › İçerik Üretici Ayarları'nda kalır."
+            "value" : "Buradaki değişiklikler yalnızca bu video için. Her zamanki ayarların Ayarlar › İçerik Üretici Ayarları'nda kalır."
           }
         },
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Thay đổi ở đây chỉ cho video này. Thiết lập quen thuộc của bạn vẫn ở Hồ sơ › Thiết lập nhà sáng tạo."
+            "value" : "Thay đổi ở đây chỉ cho video này. Thiết lập quen thuộc của bạn vẫn ở Cài đặt › Thiết lập nhà sáng tạo."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "这里的更改只用于本视频。你的常用设置保留在“个人资料 › 创作者设置”中。"
+            "value" : "这里的更改只用于本视频。你的常用设置保留在“设置 › 创作者设置”中。"
           }
         }
       }
@@ -28215,6 +28215,94 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Creator Voice"
+          }
+        }
+      }
+    },
+    "Creator preferences" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تفضيلات صانع المحتوى"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Creator-Präferenzen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Preferencias del creador"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Préférences du créateur"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "क्रिएटर की पसंद"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Preferensi Kreator"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Preferenze del creator"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "クリエイターの好み"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "크리에이터 환경설정"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Preferências do criador"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ความต้องการของครีเอเตอร์"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "İçerik Üretici Tercihleri"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tùy chọn nhà sáng tạo"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "创作者偏好"
           }
         }
       }
@@ -54224,90 +54312,90 @@
         }
       }
     },
-    "Lens, frame, quality and mic change for this take. Your usual setup stays in Profile › Creator Setup." : {
+    "Lens, frame, quality and mic change for this take. Your usual setup stays in Settings › Creator Setup." : {
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "تتغير العدسة والإطار والجودة والميكروفون لهذه اللقطة. يبقى إعدادك المعتاد في الملف الشخصي › إعداد صانع المحتوى."
+            "value" : "تتغير العدسة والإطار والجودة والميكروفون لهذه اللقطة. يبقى إعدادك المعتاد في الإعدادات › إعداد صانع المحتوى."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Objektiv, Bildausschnitt, Qualität und Mikro ändern sich für diesen Take. Dein übliches Setup bleibt unter Profil › Creator-Setup."
+            "value" : "Objektiv, Bildausschnitt, Qualität und Mikro ändern sich für diesen Take. Dein übliches Setup bleibt unter Einstellungen › Creator-Setup."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "La lente, el encuadre, la calidad y el micro cambian para esta toma. Tu configuración habitual sigue en Perfil › Configuración de creador."
+            "value" : "La lente, el encuadre, la calidad y el micro cambian para esta toma. Tu configuración habitual sigue en Ajustes › Configuración de creador."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "L’objectif, le cadrage, la qualité et le micro changent pour cette prise. Vos réglages habituels restent dans Profil › Réglages créateur."
+            "value" : "L’objectif, le cadrage, la qualité et le micro changent pour cette prise. Vos réglages habituels restent dans Réglages › Réglages créateur."
           }
         },
         "hi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "लेंस, फ़्रेम, क्वालिटी और माइक इस टेक के लिए बदलते हैं। आपका सामान्य सेटअप प्रोफ़ाइल › क्रिएटर सेटअप में रहता है।"
+            "value" : "लेंस, फ़्रेम, क्वालिटी और माइक इस टेक के लिए बदलते हैं। आपका सामान्य सेटअप सेटिंग्स › क्रिएटर सेटअप में रहता है।"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Lensa, bingkai, kualitas, dan mikrofon berubah untuk take ini. Setelan biasamu tetap di Profil › Setelan Kreator."
+            "value" : "Lensa, bingkai, kualitas, dan mikrofon berubah untuk take ini. Setelan biasamu tetap di Pengaturan › Setelan Kreator."
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Obiettivo, inquadratura, qualità e microfono cambiano per questa ripresa. La tua configurazione abituale resta in Profilo › Configurazione creator."
+            "value" : "Obiettivo, inquadratura, qualità e microfono cambiano per questa ripresa. La tua configurazione abituale resta in Impostazioni › Configurazione creator."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "レンズ、フレーム、画質、マイクはこのテイクだけ変わります。いつもの設定は「プロフィール › クリエイター設定」に残ります。"
+            "value" : "レンズ、フレーム、画質、マイクはこのテイクだけ変わります。いつもの設定は「設定 › クリエイター設定」に残ります。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "렌즈, 프레임, 화질, 마이크는 이 테이크에만 바뀌어요. 평소 설정은 ‘프로필 › 크리에이터 설정’에 그대로 있어요."
+            "value" : "렌즈, 프레임, 화질, 마이크는 이 테이크에만 바뀌어요. 평소 설정은 ‘설정 › 크리에이터 설정’에 그대로 있어요."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Lente, enquadramento, qualidade e microfone mudam para este take. Seu setup de sempre fica em Perfil › Configuração de criador."
+            "value" : "Lente, enquadramento, qualidade e microfone mudam para este take. Seu setup de sempre fica em Ajustes › Configuração de criador."
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "เลนส์ เฟรม คุณภาพ และไมค์จะเปลี่ยนแค่เทคนี้ การตั้งค่าประจำของคุณยังอยู่ที่ โปรไฟล์ › การตั้งค่าครีเอเตอร์"
+            "value" : "เลนส์ เฟรม คุณภาพ และไมค์จะเปลี่ยนแค่เทคนี้ การตั้งค่าประจำของคุณยังอยู่ที่ การตั้งค่า › การตั้งค่าครีเอเตอร์"
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Lens, kadraj, kalite ve mikrofon bu çekim için değişir. Her zamanki ayarların Profil › İçerik Üretici Ayarları'nda kalır."
+            "value" : "Lens, kadraj, kalite ve mikrofon bu çekim için değişir. Her zamanki ayarların Ayarlar › İçerik Üretici Ayarları'nda kalır."
           }
         },
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ống kính, khung hình, chất lượng và micrô chỉ đổi cho cảnh quay này. Thiết lập quen thuộc của bạn vẫn ở Hồ sơ › Thiết lập nhà sáng tạo."
+            "value" : "Ống kính, khung hình, chất lượng và micrô chỉ đổi cho cảnh quay này. Thiết lập quen thuộc của bạn vẫn ở Cài đặt › Thiết lập nhà sáng tạo."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "镜头、画幅、画质和麦克风仅在这个镜头中更改。你的常用设置保留在“个人资料 › 创作者设置”中。"
+            "value" : "镜头、画幅、画质和麦克风仅在这个镜头中更改。你的常用设置保留在“设置 › 创作者设置”中。"
           }
         }
       }
@@ -66905,90 +66993,90 @@
         }
       }
     },
-    "On the other iPhone or iPad, scan this with the Camera — or open Cue › Profile › Creator Setup › Remote Control and enter the code." : {
+    "On the other iPhone or iPad, scan this with the Camera — or open Cue › Settings › Creator Setup › Remote Control and enter the code." : {
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "على الـ iPhone أو الـ iPad الآخر، امسح هذا بالكاميرا — أو افتح Cue › الملف الشخصي › إعداد صانع المحتوى › التحكم عن بُعد وأدخل الرمز."
+            "value" : "على الـ iPhone أو الـ iPad الآخر، امسح هذا بالكاميرا — أو افتح Cue › الإعدادات › إعداد صانع المحتوى › التحكم عن بُعد وأدخل الرمز."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Scann das auf dem anderen iPhone oder iPad mit der Kamera – oder öffne Cue › Profil › Creator-Setup › Fernbedienung und gib den Code ein."
+            "value" : "Scann das auf dem anderen iPhone oder iPad mit der Kamera – oder öffne Cue › Einstellungen › Creator-Setup › Fernbedienung und gib den Code ein."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "En el otro iPhone o iPad, escanea esto con la Cámara — o abre Cue › Perfil › Configuración de creador › Control remoto e introduce el código."
+            "value" : "En el otro iPhone o iPad, escanea esto con la Cámara — o abre Cue › Ajustes › Configuración de creador › Control remoto e introduce el código."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sur l’autre iPhone ou iPad, scannez ceci avec l’appareil photo — ou ouvrez Cue › Profil › Réglages créateur › Télécommande et saisissez le code."
+            "value" : "Sur l’autre iPhone ou iPad, scannez ceci avec l’appareil photo — ou ouvrez Cue › Réglages › Réglages créateur › Télécommande et saisissez le code."
           }
         },
         "hi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "दूसरे iPhone या iPad पर इसे कैमरा से स्कैन करें — या Cue › प्रोफ़ाइल › क्रिएटर सेटअप › रिमोट कंट्रोल खोलकर कोड डालें।"
+            "value" : "दूसरे iPhone या iPad पर इसे कैमरा से स्कैन करें — या Cue › सेटिंग्स › क्रिएटर सेटअप › रिमोट कंट्रोल खोलकर कोड डालें।"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Di iPhone atau iPad lain, pindai ini dengan Kamera — atau buka Cue › Profil › Setelan Kreator › Kendali Jarak Jauh dan masukkan kodenya."
+            "value" : "Di iPhone atau iPad lain, pindai ini dengan Kamera — atau buka Cue › Pengaturan › Setelan Kreator › Kendali Jarak Jauh dan masukkan kodenya."
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sull’altro iPhone o iPad, inquadra questo con la Fotocamera — oppure apri Cue › Profilo › Configurazione creator › Telecomando e inserisci il codice."
+            "value" : "Sull’altro iPhone o iPad, inquadra questo con la Fotocamera — oppure apri Cue › Impostazioni › Configurazione creator › Telecomando e inserisci il codice."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "もう1台のiPhoneやiPadのカメラでこれを読み取るか、「Cue › プロフィール › クリエイター設定 › リモコン」を開いてコードを入力してください。"
+            "value" : "もう1台のiPhoneやiPadのカメラでこれを読み取るか、「Cue › 設定 › クリエイター設定 › リモコン」を開いてコードを入力してください。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "다른 iPhone이나 iPad의 카메라로 이 코드를 스캔하거나, ‘Cue › 프로필 › 크리에이터 설정 › 리모컨’을 열고 코드를 입력하세요."
+            "value" : "다른 iPhone이나 iPad의 카메라로 이 코드를 스캔하거나, ‘Cue › 설정 › 크리에이터 설정 › 리모컨’을 열고 코드를 입력하세요."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "No outro iPhone ou iPad, escaneie isto com a Câmera — ou abra Cue › Perfil › Configuração de criador › Controle remoto e digite o código."
+            "value" : "No outro iPhone ou iPad, escaneie isto com a Câmera — ou abra Cue › Ajustes › Configuração de criador › Controle remoto e digite o código."
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "บน iPhone หรือ iPad อีกเครื่อง สแกนด้วยแอปกล้อง — หรือเปิด Cue › โปรไฟล์ › การตั้งค่าครีเอเตอร์ › รีโมตคอนโทรล แล้วป้อนโค้ด"
+            "value" : "บน iPhone หรือ iPad อีกเครื่อง สแกนด้วยแอปกล้อง — หรือเปิด Cue › การตั้งค่า › การตั้งค่าครีเอเตอร์ › รีโมตคอนโทรล แล้วป้อนโค้ด"
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Diğer iPhone veya iPad'de bunu Kamera ile tara — ya da Cue › Profil › İçerik Üretici Ayarları › Uzaktan Kumanda'yı açıp kodu gir."
+            "value" : "Diğer iPhone veya iPad'de bunu Kamera ile tara — ya da Cue › Ayarlar › İçerik Üretici Ayarları › Uzaktan Kumanda'yı açıp kodu gir."
           }
         },
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Trên iPhone hoặc iPad kia, quét mã này bằng Camera — hoặc mở Cue › Hồ sơ › Thiết lập nhà sáng tạo › Điều khiển từ xa và nhập mã."
+            "value" : "Trên iPhone hoặc iPad kia, quét mã này bằng Camera — hoặc mở Cue › Cài đặt › Thiết lập nhà sáng tạo › Điều khiển từ xa và nhập mã."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "在另一台 iPhone 或 iPad 上用“相机”扫描此码 — 或打开“Cue › 个人资料 › 创作者设置 › 遥控”并输入代码。"
+            "value" : "在另一台 iPhone 或 iPad 上用“相机”扫描此码 — 或打开“Cue › 设置 › 创作者设置 › 遥控”并输入代码。"
           }
         }
       }
@@ -76410,6 +76498,94 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "阅读线"
+          }
+        }
+      }
+    },
+    "Reading mode" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "وضع القراءة"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lesemodus"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Modo de lectura"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mode de lecture"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "पढ़ने का मोड"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mode membaca"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Modalità di lettura"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "読み上げモード"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "읽기 모드"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Modo de leitura"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "โหมดการอ่าน"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Okuma modu"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chế độ đọc"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "阅读模式"
           }
         }
       }

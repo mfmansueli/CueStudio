@@ -5,7 +5,7 @@
 
 import XCTest
 
-/// Profile › Creator Setup: defaults that stick, reset, remote pairing, and the recommendation the
+/// Settings › Creator Setup: defaults that stick, reset, remote pairing, and the recommendation the
 /// recording screen offers when a platform wants something else.
 @MainActor
 final class CreatorSetupUITests: XCTestCase {
@@ -68,9 +68,9 @@ final class CreatorSetupUITests: XCTestCase {
         let app = CueApp.launch(seeded: true)
         openCreatorSetup(app)
         app.buttons["creatorSetup.quality.4K"].tap()
-        // Back to Profile: a tab keeps its screen, and the end of the test opens Creator Setup again.
+        // Back to Settings: a tab keeps its screen, and the end of the test opens Creator Setup again.
         app.navigationBars["Creator Setup"].buttons.element(boundBy: 0).tap()
-        XCTAssertTrue(app.buttons["profile.creatorSetupButton"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.buttons["settings.creatorSetupButton"].waitForExistence(timeout: 5))
 
         // "3 morning habits" is for TikTok, which recommends 1080p.
         app.tabBars.buttons["Scripts"].tap()
@@ -95,31 +95,94 @@ final class CreatorSetupUITests: XCTestCase {
         app.buttons["prompter.closeButton"].tap()
 
         // The Creator Setup is still 4K.
-        let profile = app.tabBars.buttons["Profile"]
-        XCTAssertTrue(profile.waitForExistence(timeout: 5))
-        profile.tap()
-        let setup = app.buttons["profile.creatorSetupButton"]
+        let settings = app.tabBars.buttons["Settings"]
+        XCTAssertTrue(settings.waitForExistence(timeout: 5))
+        settings.tap()
+        let setup = app.buttons["settings.creatorSetupButton"]
         scroll(app, to: setup)
         setup.tap()
         XCTAssertTrue(app.buttons["creatorSetup.quality.4K"].waitForExistence(timeout: 5))
         XCTAssertTrue(app.buttons["creatorSetup.quality.4K"].isSelected)
     }
 
+    func testSettingsDisplayUsesTheSharedEditorAndKeepsLocalRecordingEditsSeparate() {
+        let app = CueApp.launch(seeded: true)
+        openCreatorSetup(app)
+        let display = app.buttons["creatorSetup.displayButton"]
+        scroll(app, to: display)
+        display.tap()
+        XCTAssertTrue(app.sliders["display.readingWidth"].waitForExistence(timeout: 5))
+        app.sliders["display.readingWidth"].adjust(toNormalizedSliderPosition: 0.4)
+        let savedWidth = app.sliders["display.readingWidth"].value as? String
+        let layout = XCTAttachment(screenshot: app.screenshot())
+        layout.name = "Creator Setup · Display layout"
+        layout.lifetime = .keepAlways
+        add(layout)
+        let advanced = app.buttons["display.advancedButton"]
+        scroll(app, to: advanced)
+        advanced.tap()
+        let serif = app.buttons["display.font.serif"]
+        scroll(app, to: serif)
+        serif.tap()
+        XCTAssertTrue(serif.isSelected)
+        let appearance = XCTAttachment(screenshot: app.screenshot())
+        appearance.name = "Creator Setup · Display appearance"
+        appearance.lifetime = .keepAlways
+        add(appearance)
+        XCTAssertFalse(app.alerts.firstMatch.exists)
+        app.buttons["display.doneButton"].tap()
+        app.navigationBars["Creator Setup"].buttons.firstMatch.tap()
+
+        app.tabBars.buttons["Scripts"].tap()
+        let record = app.buttons["hero.recordButton"]
+        XCTAssertTrue(record.waitForExistence(timeout: 15))
+        record.tap()
+        let aa = app.buttons["prompter.displayButton"]
+        XCTAssertTrue(aa.waitForExistence(timeout: 5))
+        aa.tap()
+        XCTAssertTrue(app.sliders["display.readingWidth"].waitForExistence(timeout: 5))
+        XCTAssertEqual(app.sliders["display.readingWidth"].value as? String, savedWidth)
+        scroll(app, to: advanced)
+        advanced.tap()
+        scroll(app, to: serif)
+        XCTAssertTrue(serif.isSelected)
+        let rounded = app.buttons["display.font.rounded"]
+        rounded.tap()
+        XCTAssertTrue(rounded.isSelected)
+        app.buttons["display.doneButton"].tap()
+        app.buttons["prompter.closeButton"].tap()
+
+        openCreatorSetup(app)
+        scroll(app, to: display)
+        display.tap()
+        scroll(app, to: advanced)
+        advanced.tap()
+        scroll(app, to: serif)
+        XCTAssertTrue(serif.isSelected)
+        XCTAssertFalse(rounded.isSelected)
+    }
+
     // MARK: - Helpers
 
     private func openCreatorSetup(_ app: XCUIApplication) {
-        let tab = app.tabBars.buttons["Profile"]
+        let tab = app.tabBars.buttons["Settings"]
         XCTAssertTrue(tab.waitForExistence(timeout: 15))
         tab.tap()
-        let setup = app.buttons["profile.creatorSetupButton"]
+        let setup = app.buttons["settings.creatorSetupButton"]
         scroll(app, to: setup)
         setup.tap()
         XCTAssertTrue(app.navigationBars["Creator Setup"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.tabBars.buttons["Settings"].isSelected)
     }
 
     private func scroll(_ app: XCUIApplication, to element: XCUIElement) {
         for _ in 0..<8 where !(element.exists && element.isHittable) {
-            app.swipeUp()
+            let display = app.scrollViews.containing(.button, identifier: "display.advancedButton").firstMatch
+            if display.exists {
+                display.swipeUp()
+            } else {
+                app.swipeUp()
+            }
         }
         XCTAssertTrue(element.waitForExistence(timeout: 5))
     }

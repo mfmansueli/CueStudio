@@ -64,7 +64,7 @@ struct PreferencesServiceTests {
         #expect(service.creatorSetup.microphone == .input(id: "usb-mic", name: "Microphone"))
     }
 
-    @Test func resetCreatorSetupRestoresOnlyTheSetup() {
+    @Test func resetCreatorSetupRestoresRecordingAndReadingDefaults() {
         let store = TestDefaults()
         defer { store.tearDown() }
         let service = PreferencesService(defaults: store.defaults)
@@ -74,7 +74,29 @@ struct PreferencesServiceTests {
         service.resetCreatorSetup()
         #expect(service.creatorSetup == CreatorSetup())
         #expect(service.camera.countdown == .ten)
-        #expect(service.prompter.font == .serif)
+        #expect(service.prompter == PrompterSettings())
+    }
+
+    @Test func existingStoredAppearanceBecomesTheCreatorDefaultWithoutRewritingIt() throws {
+        let store = TestDefaults()
+        defer { store.tearDown() }
+        var old = PrompterSettings()
+        old.font = .serif
+        old.size = 38
+        old.textColor = .cream
+        old.readingWidth = 0.63
+        old.textWindowHeight = 220
+        old.readingLineOffset = 190
+        old.cameraBlur = 6
+        old.scrollMode = .voice
+        let data = try JSONEncoder().encode(old)
+        store.defaults.set(data, forKey: DefaultsKey.prompterSettings)
+        let preferences = PreferencesService(defaults: store.defaults)
+        let session = SessionSetupService(preferences: preferences)
+        #expect(session.prompter == old)
+        #expect(store.defaults.data(forKey: DefaultsKey.prompterSettings) == data)
+        session.prompter.font = .rounded
+        #expect(store.defaults.data(forKey: DefaultsKey.prompterSettings) == data)
     }
 
     @Test func unreadableSettingsFallBackToDefaults() {
