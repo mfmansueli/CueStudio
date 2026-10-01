@@ -14,7 +14,7 @@ final class SettingsUITests: XCTestCase {
 
     func testFiveTabsKeepTheirOrderAndRecordKeepsSettingsSelected() {
         let app = CueApp.launch(seeded: true)
-        assertTabs(app, labels: ["Scripts", "Takes", "Profile", "Settings", "Record"])
+        assertTabs(app, labels: ["Scripts", "Takes", "Record", "Profile", "Settings"])
         tab(app, label: "Settings").tap()
         XCTAssertTrue(app.navigationBars["Settings"].waitForExistence(timeout: 5))
         capture(app, name: "Settings · English")
@@ -74,14 +74,14 @@ final class SettingsUITests: XCTestCase {
 
     func testLongTranslationsKeepAllFiveTabsVisible() {
         let locales = [
-            ("de", ["Skripte", "Takes", "Profil", "Einstellungen", "Aufnehmen"]),
-            ("pt-BR", ["Roteiros", "Takes", "Perfil", "Ajustes", "Gravar"]),
-            ("it", ["Copioni", "Riprese", "Profilo", "Impostazioni", "Registra"]),
+            ("de", ["Skripte", "Takes", "Aufnehmen", "Profil", "Einstellungen"]),
+            ("pt-BR", ["Roteiros", "Takes", "Gravar", "Perfil", "Ajustes"]),
+            ("it", ["Copioni", "Riprese", "Registra", "Profilo", "Impostazioni"]),
         ]
         for (language, labels) in locales {
             let app = CueApp.launch(seeded: true, appLanguage: language)
             assertTabs(app, labels: labels)
-            tab(app, label: labels[3], index: 3).tap()
+            tab(app, label: labels[4], index: 4).tap()
             XCTAssertTrue(app.buttons["settings.creatorSetupButton"].waitForExistence(timeout: 5))
             XCTAssertTrue(app.buttons["settings.restorePurchasesButton"].isHittable)
             capture(app, name: "Settings · \(language)")
@@ -91,8 +91,8 @@ final class SettingsUITests: XCTestCase {
 
     func testSettingsWithAccessibilityTextKeepsRowsReachable() {
         let app = CueApp.launch(seeded: true, appLanguage: "de", contentSize: "UICTContentSizeCategoryAccessibilityXXXL")
-        assertTabs(app, labels: ["Skripte", "Takes", "Profil", "Einstellungen", "Aufnehmen"])
-        tab(app, label: "Einstellungen", index: 3).tap()
+        assertTabs(app, labels: ["Skripte", "Takes", "Aufnehmen", "Profil", "Einstellungen"])
+        tab(app, label: "Einstellungen", index: 4).tap()
         let language = app.buttons["settings.languageRegionButton"]
         XCTAssertTrue(language.waitForExistence(timeout: 5))
         XCTAssertTrue(language.isHittable)
@@ -130,8 +130,8 @@ final class SettingsUITests: XCTestCase {
     private func tab(_ app: XCUIApplication, label: String, index: Int? = nil) -> XCUIElement {
         if app.tabBars.firstMatch.exists { return app.tabBars.buttons[label] }
         // On iPad the native top bar exposes nested Buttons instead of a TabBar.
-        let labels = ["Scripts", "Takes", "Profile", "Settings", "Record"]
-        let symbols = ["doc.text", "film.stack", "person.crop.circle", "gearshape", ""]
+        let labels = ["Scripts", "Takes", "Record", "Profile", "Settings"]
+        let symbols = ["doc.text", "film.stack", "", "person.crop.circle", "gearshape"]
         let symbol = symbols[index ?? labels.firstIndex(of: label) ?? 0]
         return app.buttons.matching(NSPredicate(format: "label == %@ AND identifier == %@", label, symbol)).firstMatch
     }
