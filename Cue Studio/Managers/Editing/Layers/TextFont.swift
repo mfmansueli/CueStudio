@@ -11,8 +11,8 @@ import UIKit
 /// weight, 300 to 700) except DM Serif Display. Text in a script the face doesn't cover uses the
 /// system font at the same weight, so every language keeps its letters.
 nonisolated enum TextFont {
-    private static let wght: NSNumber = 0x7767_6874
-    private static let opsz: NSNumber = 0x6F70_737A
+    nonisolated(unsafe) private static let wght: NSNumber = 0x7767_6874
+    nonisolated(unsafe) private static let opsz: NSNumber = 0x6F70_737A
 
     static func font(_ face: TextOverlayFont, weight: TextOverlayWeight, size: CGFloat, text: String) -> UIFont {
         let system = UIFont.systemFont(ofSize: size, weight: uiWeight(weight))
