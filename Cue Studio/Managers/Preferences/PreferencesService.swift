@@ -43,10 +43,11 @@ final class PreferencesService {
         }
     }
 
-    /// "Reset Creator Setup": Cue's defaults for the setup only. Scripts, takes, edits, the
-    /// prompter's look and the rest of the camera options stay.
+    /// "Reset Creator Setup": recording and reading defaults. Scripts, takes, edits and the
+    /// other camera options stay.
     func resetCreatorSetup() {
         creatorSetup = CreatorSetup()
+        resetPrompter()
     }
 
     func resetPrompter() {

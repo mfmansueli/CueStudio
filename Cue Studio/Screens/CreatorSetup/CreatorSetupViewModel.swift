@@ -77,6 +77,12 @@ final class CreatorSetupViewModel {
 
     // MARK: - Teleprompter
 
+    /// The same settings and ranges used by Display in the recorder, saved only from Profile.
+    var prompter: PrompterSettings {
+        get { preferences.prompter }
+        set { preferences.prompter = newValue }
+    }
+
     var textSizePreset: PrompterTextSize? { PrompterTextSize(points: setup.textSize) }
 
     func setTextSize(_ preset: PrompterTextSize) {

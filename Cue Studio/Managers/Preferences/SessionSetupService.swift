@@ -11,23 +11,27 @@ import Foundation
 /// from here instead of the stored preferences.
 ///
 /// Writing through it keeps the rule that matters most: a recommendation or a change for one take
-/// never rewrites the creator's defaults. Settings outside the Creator Setup (grid, countdown, font,
-/// window size…) are still saved as the creator changes them, as they always were.
+/// never rewrites the creator's defaults. All reading settings stay in the session. Other camera
+/// options (grid, countdown…) are still saved as before. Defaults are captured when the session
+/// opens, so editing the profile cannot change an open recording.
 @MainActor
 @Observable
 final class SessionSetupService {
     private(set) var setup = SessionSetup()
 
     private let preferences: PreferencesService
+    let creatorSetup: CreatorSetup
+    private let initialPrompter: PrompterSettings
+    private var sessionPrompter: PrompterSettings
 
     init(preferences: PreferencesService) {
         self.preferences = preferences
+        creatorSetup = preferences.creatorSetup
+        initialPrompter = preferences.prompter
+        sessionPrompter = preferences.prompter
     }
 
     // MARK: - Reading
-
-    /// How the creator usually records.
-    var creatorSetup: CreatorSetup { preferences.creatorSetup }
 
     /// What this session records with.
     var current: CreatorSetup { setup.resolved(from: creatorSetup) }
@@ -40,20 +44,20 @@ final class SessionSetupService {
             var changed = current
             changed.update(from: newValue)
             record(changed)
-            let stored = creatorSetup.applied(to: newValue)
+            let stored = preferences.creatorSetup.applied(to: newValue)
             if stored != preferences.camera { preferences.camera = stored }
         }
     }
 
-    /// Prompter settings for this session, with the same rule as `camera`.
+    /// Reading preferences start from the saved defaults. Every edit here is local to this
+    /// session; the profile is the only place that changes the defaults.
     var prompter: PrompterSettings {
-        get { current.applied(to: preferences.prompter) }
+        get { current.applied(to: sessionPrompter) }
         set {
             var changed = current
             changed.update(from: newValue)
             record(changed)
-            let stored = creatorSetup.applied(to: newValue)
-            if stored != preferences.prompter { preferences.prompter = stored }
+            sessionPrompter = newValue
         }
     }
 
@@ -70,7 +74,9 @@ final class SessionSetupService {
     var needsDecision: Bool { setup.needsDecision(with: creatorSetup) }
 
     /// Changed anything for this take.
-    var hasChanges: Bool { !setup.overrides.isEmpty }
+    var hasChanges: Bool {
+        !setup.overrides.isEmpty || creatorSetup.applied(to: sessionPrompter) != initialPrompter
+    }
 
     func source(of field: SetupField) -> SetupSource {
         setup.source(of: field)
@@ -104,6 +110,7 @@ final class SessionSetupService {
 
     func backToCreatorSetup() {
         setup.backToCreatorSetup()
+        sessionPrompter = initialPrompter
     }
 
     private func record(_ changed: CreatorSetup) {

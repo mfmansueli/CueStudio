@@ -5,10 +5,11 @@
 
 import SwiftUI
 
-/// Creator Setup › Teleprompter: text size, default speed, reading line, mirror and safe zones.
+/// Creator Setup › Teleprompter: reading defaults and an entry to the shared Display editor.
 /// These are the defaults; the prompter can still change any of them for one take.
 struct TeleprompterSetupSection: View {
     @Bindable var viewModel: CreatorSetupViewModel
+    @State private var showsDisplay = false
 
     var body: some View {
         GroupedCard {
@@ -44,6 +45,9 @@ struct TeleprompterSetupSection: View {
                     identifier: "creatorSetup.speedSlider"
                 )
             }
+            SetupRow(title: String(localized: "Reading mode")) {
+                ScrollModePicker(selection: viewModel.prompter.scrollMode) { viewModel.prompter.scrollMode = $0 }
+            }
             readingLineRow
             SetupRow(title: String(localized: "Show reading line"), stacksControl: false) {
                 Toggle("Show reading line", isOn: $viewModel.showsReadingLine)
@@ -66,6 +70,20 @@ struct TeleprompterSetupSection: View {
                     .tint(Palette.success)
                     .accessibilityIdentifier("creatorSetup.safeZonesToggle")
             }
+            SetupRow(title: String(localized: "Display"), detail: String(localized: "Font, spacing, margins, alignment, color"), stacksControl: false) {
+                Button { showsDisplay = true } label: {
+                    Image(systemName: "chevron.forward")
+                        .font(.footnote.weight(.bold))
+                        .foregroundStyle(Palette.ink2)
+                        .frame(width: Metrics.hitTarget, height: Metrics.hitTarget)
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel(Text("Display"))
+                .accessibilityIdentifier("creatorSetup.displayButton")
+            }
+        }
+        .sheet(isPresented: $showsDisplay) {
+            CreatorDisplaySettingsSheet(viewModel: viewModel)
         }
     }
 
