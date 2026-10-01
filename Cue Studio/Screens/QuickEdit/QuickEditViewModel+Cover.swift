@@ -14,7 +14,7 @@ extension QuickEditViewModel {
     /// The cover shows over the preview: the Cover tool is open, one was chosen and no other frame
     /// is being picked.
     var showsCoverImage: Bool {
-        tool == .cover && edit.cover != nil && !isPickingCoverFrame
+        panel == .cover && edit.cover != nil && !isPickingCoverFrame
     }
 
     /// Uses the frame under the playhead.

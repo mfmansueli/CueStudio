@@ -3,6 +3,7 @@
 //  Cue Studio
 //
 
+import CoreGraphics
 import Foundation
 
 /// Quick edit of one take. The edit is a recipe (`TakeEdit`) on top of the recording, which is
@@ -36,42 +37,83 @@ final class QuickEditViewModel {
     /// How long before a cut the playhead waits after a transition is picked, so Play shows it.
     static let transitionLeadIn: TimeInterval = 1
 
-    var tool: QuickEditTool = .trim {
+    // MARK: Editor
+    /// The panel open under the timeline, in place of the toolbar. Its ✓ closes it; changes show
+    /// live in the preview.
+    var panel: EditorPanel? {
         didSet {
-            guard tool != oldValue else { return }
+            guard panel != oldValue else { return }
             removalRange = nil
-            selectedSegmentID = nil
-            selectedJoinID = nil
-            selectedTextID = nil
-            selectedMediaID = nil
-            selectedCaptionID = nil
-            selectedMusicID = nil
-            if tool != .audio { endComparison() }
+            showsAdvanced = false
+            panelTab = panel.map(EditorPanelTab.first(for:)) ?? .presets
+            if oldValue == .voice { endComparison() }
             endChange()
-            // Leaving Remove Pauses without Apply puts the pauses back.
+            // Leaving Pauses without removing them puts them back.
             cancelPausePreview()
             if recorder.isRecording { stopVoiceOver() }
             isPickingCoverFrame = false
-            lastTool[tool.category] = tool
+            if oldValue == .transition { selectedJoinID = nil }
         }
     }
-    /// The tool each category opens on: the one used last.
-    private(set) var lastTool: [QuickEditCategory: QuickEditTool] = [:]
+    /// The one thing picked on the timeline or in the preview; its tools replace the toolbar's.
+    var selection: EditorSelection? {
+        didSet {
+            guard selection != oldValue else { return }
+            if selection != nil { toolMenu = nil }
+            selectedJoinID = nil
+            if let panel, panel.followsSelection, !(selection.map(panel.accepts) ?? false) { self.panel = nil }
+        }
+    }
+    /// The Text or Audio toolbar, opened from the main one with nothing selected.
+    var toolMenu: EditorToolMenu?
+    /// The open panel's tab (Text style and Caption style).
+    var panelTab: EditorPanelTab = .presets
+    /// The open panel's "Advanced" section is expanded.
+    var showsAdvanced = false
+    /// The preview fills the screen: tap the video to play or pause, outside to come back.
+    var isFullScreen = false
+    /// The sheet over the editor: Export, Add music, Add photo or video.
+    var sheet: EditorSheet?
+    /// Where "Add photo or video" puts what is picked.
+    var mediaInsertMode: MediaInsertMode = .overlay
+    /// The timeline's zoom (44 points per second at 1), from 0.35 to 5.
+    var timelineZoom: CGFloat = 1
+    /// Pauses the creator chose to keep (the rest are marked to go), while Pauses is open.
+    var keptPauseIDs: Set<UUID> = []
+    /// The timeline handle being dragged.
+    var handleDrag: TimelineHandleDrag?
+    /// Where the dragged handle last stuck, so the haptic plays once per snap.
+    @ObservationIgnored var lastHandleSnap: TimeInterval?
+    /// What Text style changes: this text, every text, or every text and the captions.
+    var textStyleScope: TextStyleScope = .selected
+    /// Export was tapped: the screen saves the edit and hands the take over to be shared.
+    private(set) var exportRequested = false
+    /// A change waits to be kept in the draft ("Saving…" in the top bar until it is).
+    private(set) var isSavingDraft = false
+    /// The Text style panel's field takes the keyboard (a text was just added, or Edit was tapped).
+    var focusesTextField = false
     var edit: TakeEdit {
         didSet { editDidChange() }
     }
     private(set) var source: Source = .loading
     private(set) var history = EditHistory<EditSnapshot>()
-    /// The section tapped on the timeline. Separate from the playhead: scrubbing doesn't change it.
-    private(set) var selectedSegmentID: UUID?
+    /// The clip tapped on the timeline. Separate from the playhead: scrubbing doesn't change it.
+    var selectedSegmentID: UUID? {
+        get { selection?.clipID }
+        set { select(newValue.map(EditorSelection.clip), replacing: \.clipID) }
+    }
     /// The cut tapped on the timeline, named by the section that starts there: its transition can
-    /// be picked. Never at the same time as a selected section.
-    private(set) var selectedJoinID: UUID?
+    /// be picked. Never at the same time as a selection.
+    var selectedJoinID: UUID? {
+        didSet {
+            if selectedJoinID == nil, panel == .transition { panel = nil }
+        }
+    }
     /// The trim handle being dragged.
-    private(set) var activeHandle: TrimHandle?
+    var activeHandle: TrimHandle?
     /// "Remove part": the red range, in edited seconds, while it is being placed. Playing from
     /// inside it stops at its end, to watch exactly what would go.
-    private(set) var removalRange: ClosedRange<TimeInterval>? {
+    var removalRange: ClosedRange<TimeInterval>? {
         didSet { player.reviewedPart = removalRange }
     }
     /// Captions listening to the take (see `QuickEditViewModel+Captions`).
@@ -107,16 +149,28 @@ final class QuickEditViewModel {
 
     // MARK: Added on top
     /// The text picked on the preview or its track.
-    var selectedTextID: UUID?
+    var selectedTextID: UUID? {
+        get { selection?.textID }
+        set { select(newValue.map(EditorSelection.text), replacing: \.textID) }
+    }
     /// The text being written in its sheet.
     var editingTextID: UUID?
     /// The photo or video picked on the preview or its track.
-    var selectedMediaID: UUID?
-    /// The caption line picked on the timeline.
-    var selectedCaptionID: UUID?
+    var selectedMediaID: UUID? {
+        get { selection?.mediaID }
+        set { select(newValue.map(EditorSelection.media), replacing: \.mediaID) }
+    }
+    /// The caption line picked on the timeline or in the Captions list.
+    var selectedCaptionID: UUID? {
+        get { selection?.captionID }
+        set { select(newValue.map(EditorSelection.caption), replacing: \.captionID) }
+    }
     var isImportingMedia = false
-    /// The voice-over just recorded, waiting for Keep (or Redo / Delete).
-    var reviewedVoiceOverID: UUID?
+    /// The voice-over picked on its track (or just recorded).
+    var reviewedVoiceOverID: UUID? {
+        get { selection?.voiceOverID }
+        set { select(newValue.map(EditorSelection.voiceOver), replacing: \.voiceOverID) }
+    }
     /// Edited seconds where the voice-over being recorded started.
     var recordingStart: TimeInterval?
     /// The cover as drawn, for the preview; nil until drawn or without a cover.
@@ -139,7 +193,10 @@ final class QuickEditViewModel {
 
     // MARK: Sound
     /// The music clip picked on its track.
-    var selectedMusicID: UUID?
+    var selectedMusicID: UUID? {
+        get { selection?.musicID }
+        set { select(newValue.map(EditorSelection.music), replacing: \.musicID) }
+    }
     var isImportingMusic = false
     /// A video just added that has its own sound: Media asks whether to keep it.
     var soundChoiceMediaID: UUID?
@@ -172,7 +229,7 @@ final class QuickEditViewModel {
     /// The timeline when a handle drag started. Every move of the drag starts again from it, so a
     /// handle dragged past a cut and back brings the cut back, and the whole drag is one undo step.
     /// The timeline strip keeps drawing it until the finger lifts, so nothing shifts under it.
-    private(set) var trimOrigin: EditTimeline?
+    var trimOrigin: EditTimeline?
     /// The undo step a gesture or a sheet started from (see `beginChange`).
     @ObservationIgnored private(set) var changeBase: EditSnapshot?
     /// Media files copied in while Quick edit is open, so what the edit doesn't keep is removed.
@@ -257,6 +314,16 @@ final class QuickEditViewModel {
         scheduleDraftSave()
     }
 
+    /// Sets the selection from one of the per-kind ids: a new id selects that item, and nil lets
+    /// go only if the selection is of that kind.
+    private func select(_ new: EditorSelection?, replacing id: KeyPath<EditorSelection, UUID?>) {
+        if let new {
+            selection = new
+        } else if selection?[keyPath: id] != nil {
+            selection = nil
+        }
+    }
+
     // MARK: - Reading
 
     var videoURL: URL { takes.videoURL(for: take) }
@@ -273,15 +340,21 @@ final class QuickEditViewModel {
         return source + " → " + DurationText.clock(edit.editedDuration)
     }
 
-    /// "00:04.32": where the playhead is. It reads the player's clock, so only the small views that
-    /// show it redraw while the video plays.
-    var currentTimeLabel: String {
-        DurationText.timecode(player.currentTime, total: edit.editedDuration, precise: showsPreciseTime)
+    /// "00:21.6 · Saved": the edit's length and whether the draft keeps the latest change.
+    var topBarStatus: String {
+        let length = DurationText.editor(edit.editedDuration)
+        return isSavingDraft ? String(localized: "\(length) · Saving…") : String(localized: "\(length) · Saved")
     }
 
-    /// "00:11.00": the edit's length.
+    /// "00:04.1": where the playhead is. It reads the player's clock, so only the small views that
+    /// show it redraw while the video plays.
+    var currentTimeLabel: String {
+        DurationText.editor(player.currentTime)
+    }
+
+    /// "00:11.0": the edit's length.
     var durationLabel: String {
-        DurationText.timecode(edit.editedDuration, total: edit.editedDuration, precise: showsPreciseTime)
+        DurationText.editor(edit.editedDuration)
     }
 
     /// The recording's frames in time.
@@ -292,7 +365,7 @@ final class QuickEditViewModel {
         frameGrid.snapped(edited: time, in: edit.timeline)
     }
 
-    /// "00:04.32 / 00:11.00"
+    /// "00:04.1 / 00:11.0"
     var timeLabel: String { currentTimeLabel + " / " + durationLabel }
 
     var canUndo: Bool { (history.canUndo || pausePreviewBase != nil) && activeHandle == nil && !recorder.isRecording }
@@ -333,14 +406,12 @@ final class QuickEditViewModel {
         return String(localized: "Tap to jump · drag the white line to scrub · handles trim")
     }
 
-    /// "00:04.32 / 00:11.00, section 2 of 3, selected"
+    /// "Clip 2 of 3, 4.2 seconds, playhead at 00:07.1": what VoiceOver reads on the timeline.
     var timelineAccessibilityValue: String {
         let timeline = edit.timeline
         let index = timeline.segmentIndex(atEdited: player.currentTime)
-        var value = timeLabel
-        if timeline.segments.count > 1 {
-            value += ", " + String(localized: "section \(index + 1) of \(timeline.segments.count)")
-        }
+        let length = DurationText.tenths(timeline.segments[index].duration)
+        var value = String(localized: "Clip \(index + 1) of \(timeline.segments.count), \(length), playhead at \(currentTimeLabel)")
         if selectedSegmentIndex == index { value += ", " + String(localized: "selected") }
         return value
     }
@@ -375,6 +446,32 @@ final class QuickEditViewModel {
         player.seek(to: player.currentTime + seconds)
     }
 
+    // MARK: - Screen
+
+    /// Export: saves the edit, then the take is shared from its screen.
+    func openExport() {
+        guard isReady else { return }
+        player.pause()
+        exportRequested = true
+    }
+
+    /// The preview fills the screen (or comes back); what was picked and the open panel are let go.
+    func toggleFullScreen() {
+        selection = nil
+        toolMenu = nil
+        panel = nil
+        isFullScreen.toggle()
+    }
+
+    /// A tap on the preview beside what's laid on the video: lets go of a picked text, caption or
+    /// photo.
+    func tapOutsideVideo() {
+        switch selection {
+        case .text, .caption, .media: selection = nil
+        default: break
+        }
+    }
+
     // MARK: - Selection
 
     /// A tap on the timeline (the playhead already went there): selects the section under it, or
@@ -395,206 +492,6 @@ final class QuickEditViewModel {
 
     func selectPieceAtPlayhead() {
         tapTimeline(onPiece: edit.timeline.segmentIndex(atEdited: player.currentTime))
-    }
-
-    // MARK: - Transitions
-
-    /// A tap on the mark of the cut before the section at `index`: selects that cut so its
-    /// transition can be picked, or lets go of it when it was already selected.
-    /// Lets go of the section and the cut picked on the strip (a bar on a track was picked).
-    func clearStripSelection() {
-        selectedSegmentID = nil
-        selectedJoinID = nil
-    }
-
-    func tapJoin(_ index: Int) {
-        guard removalRange == nil, index > 0, edit.timeline.segments.indices.contains(index) else { return }
-        clearLayerSelection()
-        let id = edit.timeline.segments[index].id
-        selectedSegmentID = nil
-        selectedJoinID = selectedJoinID == id ? nil : id
-    }
-
-    /// Lets go of the selected cut.
-    func closeTransitions() {
-        selectedJoinID = nil
-    }
-
-    /// How the selected cut plays: a hard cut ("None"), a dissolve or a fade. An undo step; the
-    /// playhead goes a moment before the cut so Play shows it.
-    func setTransition(_ transition: EditTransition) {
-        guard let index = selectedJoinIndex else { return }
-        setTransition(transition, atJoin: index)
-    }
-
-    /// Sets the transition of the cut before the section at `index` (the Transitions tool lists
-    /// every cut). An undo step; the playhead goes a moment before the cut so Play shows it.
-    func setTransition(_ transition: EditTransition, atJoin index: Int) {
-        guard isReady else { return }
-        var timeline = edit.timeline
-        guard timeline.setTransition(transition, atJoin: index) else { return }
-        commit(timeline)
-        if transition != .hardCut {
-            player.pause()
-            player.seek(to: max(0, edit.timeline.editedStart(ofSegmentAt: index) - Self.transitionLeadIn))
-        }
-    }
-
-    /// The same transition on every cut, in one undo step.
-    func setTransitionOnEveryCut(_ transition: EditTransition) {
-        guard isReady else { return }
-        var timeline = edit.timeline
-        var changed = false
-        for index in timeline.segments.indices.dropFirst() where timeline.setTransition(transition, atJoin: index) {
-            changed = true
-        }
-        guard changed else { return }
-        commit(timeline)
-        toast.show(transition == .hardCut
-            ? String(localized: "Every cut is a hard cut")
-            : String(localized: "\(transition.label) on every cut"))
-    }
-
-    /// Edited seconds of every cut, by the index of the section after it.
-    var cuts: [(index: Int, time: TimeInterval)] {
-        edit.timeline.segments.indices.dropFirst().map { ($0, edit.timeline.editedStart(ofSegmentAt: $0)) }
-    }
-
-    // MARK: - Trim
-
-    func beginTrim(_ handle: TrimHandle) {
-        guard isReady else { return }
-        endTrim()
-        trimOrigin = edit.timeline
-        activeHandle = handle
-        removalRange = nil
-        selectedSegmentID = nil
-        selectedJoinID = nil
-        player.pause()
-    }
-
-    /// Moves a handle to `time` (seconds of the recording) while it's dragged; the playhead and
-    /// the preview follow it. Cuts don't stop it: the sections it passes leave the edit, and come
-    /// back if it goes back before the finger lifts.
-    func trim(_ handle: TrimHandle, toSource time: TimeInterval) {
-        guard activeHandle == handle, let origin = trimOrigin else { return }
-        var timeline = origin
-        switch handle {
-        case .start: timeline.trimStart(to: time)
-        case .end: timeline.trimEnd(to: time)
-        }
-        if timeline != edit.timeline { edit.timeline = timeline }
-        player.scrub(to: handle == .start ? 0 : timeline.editedDuration)
-    }
-
-    func endTrim() {
-        guard let origin = trimOrigin else { return }
-        trimOrigin = nil
-        activeHandle = nil
-        if origin != edit.timeline {
-            var before = snapshot
-            before.timeline = origin
-            history.record(before)
-        }
-        player.endScrub()
-    }
-
-    /// VoiceOver: moves a handle by `seconds`.
-    func nudgeTrim(_ handle: TrimHandle, by seconds: TimeInterval) {
-        beginTrim(handle)
-        let from = handle == .start ? edit.timeline.trimStart : edit.timeline.trimEnd
-        trim(handle, toSource: from + seconds)
-        endTrim()
-    }
-
-    // MARK: - Remove part
-
-    /// Shows the red range around the playhead, two seconds long, to drag over what should go.
-    func startRemovingPart() {
-        guard isReady else { return }
-        player.pause()
-        let length = edit.editedDuration
-        let start = max(0, min(length - Self.initialRemoval, player.currentTime - 1))
-        removalRange = start...min(length, start + Self.initialRemoval)
-        selectedSegmentID = nil
-        selectedJoinID = nil
-    }
-
-    /// Moves an edge of the red range to `time` (edited seconds); the preview shows that frame.
-    func moveRemovalEdge(_ edge: RemovalEdge, toEdited time: TimeInterval) {
-        guard let range = removalRange else { return }
-        let length = edit.editedDuration
-        let moved: ClosedRange<TimeInterval>
-        switch edge {
-        case .start:
-            let start = max(0, min(time, range.upperBound - Self.minimumRemoval))
-            moved = start...range.upperBound
-        case .end:
-            let end = min(length, max(time, range.lowerBound + Self.minimumRemoval))
-            moved = range.lowerBound...end
-        }
-        removalRange = moved
-        player.scrub(to: edge == .start ? moved.lowerBound : moved.upperBound)
-    }
-
-    func cancelRemovingPart() {
-        removalRange = nil
-    }
-
-    /// "Remove 00:02.10": takes the red range out (two cuts and a delete, one undo step).
-    func removePart() {
-        guard isReady, let range = removalRange else { return }
-        var timeline = edit.timeline
-        guard timeline.removeEdited(range) else {
-            toast.show(String(localized: "Keep at least one section"))
-            return
-        }
-        removalRange = nil
-        commit(timeline)
-        player.seek(to: range.lowerBound)
-        toast.show(String(localized: "Removed \(DurationText.timecode(range.upperBound - range.lowerBound, total: edit.sourceDuration))"))
-    }
-
-    /// "00:02.10": how much the red range takes out.
-    var removalLengthLabel: String {
-        guard let range = removalRange else { return "" }
-        return DurationText.timecode(range.upperBound - range.lowerBound, total: edit.editedDuration)
-    }
-
-    // MARK: - Cut and delete
-
-    /// Cuts the section under the playhead in two and selects the second half, ready for Delete.
-    func cut() {
-        guard isReady else { return }
-        let time = player.currentTime
-        var timeline = edit.timeline
-        let index = timeline.segmentIndex(atEdited: time)
-        guard timeline.split(atEdited: time) else {
-            toast.show(String(localized: "Move the playhead away from the edge"))
-            return
-        }
-        removalRange = nil
-        selectedJoinID = nil
-        commit(timeline)
-        selectedSegmentID = edit.timeline.segments[index + 1].id
-        toast.show(String(localized: "Cut at \(DurationText.timecode(time, total: edit.editedDuration)) — tap a side, then Delete"))
-    }
-
-    /// Takes the selected section out of the edit.
-    func removeSelection() {
-        guard isReady else { return }
-        guard let id = selectedSegmentID else {
-            toast.show(String(localized: "Tap a section first"))
-            return
-        }
-        var timeline = edit.timeline
-        guard timeline.removeSegment(id: id) else {
-            toast.show(String(localized: "Keep at least one section"))
-            return
-        }
-        selectedSegmentID = nil
-        commit(timeline)
-        toast.show(String(localized: "Section deleted"))
     }
 
     // MARK: - Undo
@@ -823,6 +720,7 @@ final class QuickEditViewModel {
 
     private func scheduleDraftSave() {
         guard !isClosed else { return }
+        isSavingDraft = true
         draftTask?.cancel()
         draftTask = Task { [weak self] in
             try? await Task.sleep(for: .milliseconds(600))
@@ -833,6 +731,7 @@ final class QuickEditViewModel {
 
     /// Keeps the edit, the playhead and the undo steps, or drops the draft when nothing changed.
     func saveDraft() {
+        isSavingDraft = false
         guard source == .ready, !isClosed else { return }
         // A pauses preview that wasn't applied isn't part of the edit.
         var kept = edit

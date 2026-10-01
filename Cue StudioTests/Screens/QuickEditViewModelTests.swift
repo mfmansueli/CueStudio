@@ -60,7 +60,7 @@ struct QuickEditViewModelTests {
         let scenario = await makeScenario()
         #expect(scenario.viewModel.source == .ready)
         #expect(scenario.viewModel.durationChange == "Original · 1:04")
-        #expect(scenario.viewModel.timeLabel == "00:00.00 / 01:04.00")
+        #expect(scenario.viewModel.timeLabel == "00:00.0 / 01:04.0")
         #expect(scenario.viewModel.edit.aspect == .portrait)
         #expect(scenario.player.shown.last == scenario.viewModel.edit)
     }
@@ -98,7 +98,7 @@ struct QuickEditViewModelTests {
         dragHandle(.end, to: 9, on: scenario.viewModel)
         #expect(spans(scenario.viewModel) == [[2, 9]])
         #expect(scenario.player.currentTime == 7)
-        #expect(scenario.viewModel.timeLabel == "00:07.00 / 00:07.00")
+        #expect(scenario.viewModel.timeLabel == "00:07.0 / 00:07.0")
         #expect(scenario.viewModel.durationChange == "1:04 → 0:07")
         #expect(!scenario.player.isScrubbing)
     }
@@ -440,7 +440,7 @@ struct QuickEditViewModelTests {
         scenario.viewModel.cancelRemovingPart()
         #expect(scenario.viewModel.removalRange == nil)
         scenario.viewModel.startRemovingPart()
-        scenario.viewModel.tool = .audio
+        scenario.viewModel.panel = .voice
         #expect(scenario.viewModel.removalRange == nil)
         #expect(scenario.viewModel.edit.timeline.isWhole)
     }

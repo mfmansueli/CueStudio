@@ -363,6 +363,46 @@ extension QuickEditViewModel {
         if editingCaptionID == id { editingCaptionID = nil }
     }
 
+    /// Caption › Split: splits the line at the playhead, between the words nearest to it, and picks
+    /// the second part.
+    func splitCaptionAtPlayhead(_ id: UUID) {
+        guard let cue = edit.captions.first(where: { $0.id == id }), let span = editedSpan(ofCaption: id) else { return }
+        let time = player.currentTime
+        guard time > span.start + 0.15, time < span.end - 0.15 else {
+            toast.show(String(localized: "Move the playhead inside the line"))
+            return
+        }
+        let words = CaptionRevision.words(of: cue)
+        guard words.count > 1 else {
+            toast.show(String(localized: "Only one word here"))
+            return
+        }
+        let source = edit.timeline.sourceTime(forEdited: time)
+        let index = CaptionRevision.splitIndex(of: cue, atSource: source)
+        let before = Set(edit.captions.map(\.id))
+        splitCaption(id, beforeWord: index)
+        if let second = edit.captions.first(where: { !before.contains($0.id) }) { selection = .caption(second.id) }
+        toast.show(String(localized: "Line split"))
+    }
+
+    /// Caption › Join next.
+    func joinCaption(_ id: UUID) {
+        guard canMergeCaption(id) else {
+            toast.show(String(localized: "This is the last line"))
+            return
+        }
+        mergeCaptionWithNext(id)
+        toast.show(String(localized: "Joined with next line"))
+    }
+
+    /// Caption › Delete.
+    func deleteCaptionLine(_ id: UUID) {
+        selection = nil
+        deleteCaption(id)
+        Haptics.delete()
+        toast.show(String(localized: "Line deleted"))
+    }
+
     /// Puts back what was heard over the line's time (its correction undone as a new step).
     func restoreHeardText(_ id: UUID) {
         guard let cue = edit.captions.first(where: { $0.id == id }), cue.origin == .speech,

@@ -33,6 +33,34 @@ extension QuickEditViewModel {
         editingTextID = text.id
     }
 
+    /// Text menu › Title, Subtitle, Hook or Callout: adds it at the playhead, picks it and opens
+    /// Text style with the keyboard up.
+    func addStyledText(_ role: TextOverlayRole) {
+        addText(role)
+        editingTextID = nil
+        toolMenu = nil
+        textStyleScope = .selected
+        panel = .textStyle
+        focusesTextField = true
+    }
+
+    /// A copy of the text a little lower, picked.
+    func duplicateText(_ id: UUID) {
+        guard let original = edit.texts.first(where: { $0.id == id }) else { return }
+        var copy = original
+        copy.id = UUID()
+        copy.center = OverlayPoint(x: original.center.x, y: min(0.9, original.center.y + 0.08)).clamped
+        copy.keyframes = original.keyframes.map { keyframe in
+            var moved = keyframe
+            moved.id = UUID()
+            moved.center = OverlayPoint(x: keyframe.center.x, y: min(0.9, keyframe.center.y + 0.08)).clamped
+            return moved
+        }
+        change { $0.texts.append(copy) }
+        selection = .text(copy.id)
+        toast.show(String(localized: "Text duplicated"))
+    }
+
     func selectText(_ id: UUID?) {
         selectedTextID = selectedTextID == id ? nil : id
         if let id, let span = editedSpan(ofText: id), !span.contains(player.currentTime) {
@@ -51,6 +79,7 @@ extension QuickEditViewModel {
 
     func deleteText(_ id: UUID) {
         change { $0.texts.removeAll { $0.id == id } }
+        Haptics.delete()
         if editingTextID == id { editingTextID = nil }
         toast.show(String(localized: "Text deleted"))
     }

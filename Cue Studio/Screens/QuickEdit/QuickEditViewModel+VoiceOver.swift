@@ -89,6 +89,18 @@ extension QuickEditViewModel {
         await startVoiceOver()
     }
 
+    /// "Re-record": the narration goes, the playhead goes back to where it started and the
+    /// Voice-over panel opens to record again.
+    func reRecordVoiceOver(_ id: UUID) {
+        guard let clip = edit.voiceOvers.first(where: { $0.id == id }) else { return }
+        let start = clip.editedSpan(in: edit.timeline)?.start
+        selection = nil
+        change { $0.voiceOvers.removeAll { $0.id == id } }
+        player.pause()
+        if let start { player.seek(to: start) }
+        panel = .voiceOver
+    }
+
     func deleteVoiceOver(_ id: UUID) {
         change { $0.voiceOvers.removeAll { $0.id == id } }
         toast.show(String(localized: "Voice-over deleted"))

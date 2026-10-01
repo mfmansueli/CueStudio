@@ -16,6 +16,12 @@ extension QuickEditViewModel {
         pendingSuggestions.filter { $0.kind == .pause }
     }
 
+    /// The pauses Pauses lists and marks on the timeline: still playing, at least as long as the
+    /// threshold, to remove or kept.
+    var pauseCandidates: [CleanUpSuggestion] {
+        cleanUpSuggestions.filter { $0.kind == .pause && $0.status != .removed && !edit.timeline.isRemoved($0.span) }
+    }
+
     /// The pauses the preview took out (none when it isn't playing).
     var previewedPauses: [CleanUpSuggestion] {
         guard let base = pausePreviewBase else { return [] }

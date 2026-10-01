@@ -21,11 +21,10 @@ struct OverlayEditingLayer: View {
     var body: some View {
         ZStack(alignment: .topLeading) {
             Color.clear.allowsHitTesting(false)
-            if viewModel.tool == .text {
-                ForEach(viewModel.visibleTexts) { text in
-                    textHandle(text)
-                }
-            } else if viewModel.tool == .media, let media = viewModel.visibleMedia, media.layout == .window {
+            ForEach(viewModel.visibleTexts) { text in
+                textHandle(text)
+            }
+            if let media = viewModel.visibleMedia, media.layout == .window {
                 mediaHandle(media)
             }
         }

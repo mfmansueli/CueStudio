@@ -48,28 +48,6 @@ struct QuickCreatorViewModelTests {
         ImportedMedia(kind: .photo, fileName: name, aspect: 1, duration: nil)
     }
 
-    // MARK: - Tools
-
-    @Test func toolsAreGroupedByIntent() {
-        #expect(QuickEditCategory.toolbar == [.edit, .text, .captions, .audio, .media, .adjust])
-        #expect(QuickEditCategory.edit.tools == [.trim, .cleanUp, .speed])
-        #expect(QuickEditCategory.text.tools == [.text, .style])
-        #expect(QuickEditCategory.captions.tools == [.captions])
-        #expect(QuickEditCategory.audio.tools == [.audio, .music, .voiceOver])
-        #expect(QuickEditCategory.media.tools == [.media])
-        #expect(QuickEditCategory.adjust.tools == [.adjust, .filters, .crop, .background])
-        // The cover is part of finishing, next to Done.
-        #expect(QuickEditCategory.finish.tools == [.cover])
-    }
-
-    @Test func eachCategoryOpensOnTheToolUsedLast() async {
-        let scenario = await makeScenario()
-        scenario.viewModel.tool = .speed
-        scenario.viewModel.tool = .text
-        #expect(scenario.viewModel.lastTool[.edit] == .speed)
-        #expect(scenario.viewModel.lastTool[.text] == .text)
-    }
-
     // MARK: - Text
 
     @Test func aTextIsAddedAtThePlayheadInTheProjectsStyle() async throws {
@@ -291,7 +269,7 @@ struct QuickCreatorViewModelTests {
         let viewModel = scenario.viewModel
         scenario.player.seek(to: 32)
         viewModel.cut()
-        viewModel.tool = .speed
+        viewModel.panel = .speed
         viewModel.speedScope = .section
         scenario.player.seek(to: 40)
         viewModel.setSpeed(.half)
@@ -351,11 +329,11 @@ struct QuickCreatorViewModelTests {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
         await viewModel.analyzeIfNeeded()
-        viewModel.tool = .cleanUp
+        viewModel.panel = .pauses
         viewModel.previewPauses()
-        viewModel.tool = .trim
+        viewModel.panel = nil
         #expect(viewModel.edit.timeline.isWhole)
-        viewModel.tool = .cleanUp
+        viewModel.panel = .pauses
         viewModel.previewPauses()
         // Switching to Review puts the pauses back too.
         viewModel.cleanUpSection = .review

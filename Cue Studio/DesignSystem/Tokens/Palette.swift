@@ -151,4 +151,51 @@ enum Palette {
     /// Display sheet over the camera: nearly opaque, so settings stay readable, with the preview
     /// still visible above it.
     static let sheetGlass = Color(hex: 0x1C1C1E, opacity: 0.97)
+
+    // MARK: Editor (v10)
+
+    /// Panels under the editor's timeline.
+    static let editorPanel = Color(hex: 0x121214)
+    /// Done and the other glass buttons of the editor's top bar.
+    static let editorBarButton = Color(hex: 0x3A3A3C, opacity: 0.7)
+    /// The editor's toast: one line on a dark pill.
+    static let editorToast = Color(hex: 0x2C2C2E, opacity: 0.96)
+    /// Separators of the toolbar and the panels.
+    static let editorSeparator = Color(hex: 0x545458, opacity: 0.5)
+    /// A clip's waveform strip and its bars.
+    static let waveformWell = Color(hex: 0x232326)
+    static let waveformBar = Color(hex: 0xEBEBF5, opacity: 0.55)
+    /// Timeline tracks: a tinted fill with the text in the full color.
+    static let laneText = Color(hex: 0xFFD60A, opacity: 0.2)
+    static let laneTextSelected = Color(hex: 0xFFD60A, opacity: 0.32)
+    static let laneCaption = Color(hex: 0xEBEBF5, opacity: 0.14)
+    static let laneMusic = Color(hex: 0x0A84FF, opacity: 0.3)
+    static let laneMusicInk = Color(hex: 0x64D2FF)
+    static let laneVoiceOver = Color(hex: 0xFF9F0A, opacity: 0.3)
+    static let laneVoiceOverInk = Color(hex: 0xFFB340)
+    static let laneMedia = Color(hex: 0xBF5AF2, opacity: 0.3)
+    static let laneMediaInk = Color(hex: 0xDA8FFF)
+    /// A voice-over track while it records.
+    static let laneRecording = Color(hex: 0xFF453A, opacity: 0.5)
+    /// "+ Add text" and the other shortcuts on an empty track.
+    static let laneGhostBorder = Color(hex: 0xEBEBF5, opacity: 0.3)
+    static let laneGhostInk = Color(hex: 0xEBEBF5, opacity: 0.7)
+    /// Pauses on the video track: marked to go (yellow hatch) or kept (gray hatch).
+    static let pauseRemoveStripe = Color(hex: 0xFFD60A, opacity: 0.62)
+    static let pauseRemoveGap = Color(hex: 0xFFD60A, opacity: 0.2)
+    static let pauseKeepStripe = Color.white.opacity(0.25)
+    static let pauseKeepGap = Color.black.opacity(0.3)
+    static let pauseKeepBorder = Color.white.opacity(0.75)
+    /// Ruler labels and ticks.
+    static let rulerLabel = Color(hex: 0xEBEBF5, opacity: 0.55)
+    /// A selected card's wash (pauses to remove, a Zoom or Crop tile).
+    static let accTile = Color(hex: 0xFFD60A, opacity: 0.12)
+    /// A pause card to remove.
+    static let accCard = Color(hex: 0xFFD60A, opacity: 0.1)
+    /// Cards and rows inside panels.
+    static let panelCard = Color(hex: 0x767680, opacity: 0.16)
+    /// The slider's track.
+    static let sliderTrack = Color(hex: 0x767680, opacity: 0.4)
+    /// A switch that is off.
+    static let toggleOff = Color(hex: 0x787880, opacity: 0.36)
 }

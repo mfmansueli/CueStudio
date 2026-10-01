@@ -5,21 +5,28 @@
 
 import SwiftUI
 
-/// Quick edit: Cancel / "Quick edit · Original 1:04" (or "1:04 → 0:58") / Done, the live preview
-/// (tap to play or pause), the current tool, the tools of the current category in a row, and the
-/// categories along the bottom: Edit (Trim, Clean Up, Remove Pauses, Speed), Add (Text, Media,
-/// Voice-over), Polish (Style, Audio, Adjust, Filters, Crop, Transitions), Captions and Cover.
-/// Tools with a timeline carry their own play button, time, undo and redo, and make the preview
-/// smaller to give it room.
+/// The editor: a vertical stack whose heights come from the usable height (`EditorLayout`), never
+/// from fixed positions, so the video always shows on every iPhone.
+///
+/// ```
+/// [Top bar]       Done · Take 3 / 00:21.6 · Saved · Export
+/// [Preview]       the take in its frame, fitted
+/// [Player bar]    00:01.2 / 00:21.6 · ▶︎ · undo, redo, full screen
+/// [Timeline]      the clips and the tracks under them
+/// [Toolbar]       or the open panel
+/// ```
+///
+/// Full screen shows only the video: tap it to play or pause, tap outside to come back. On the
+/// smallest screens the styling panels open as a sheet whose top stays under the preview.
 struct QuickEditView: View {
     @State private var viewModel: QuickEditViewModel
-    let onClose: () -> Void
+    let onClose: (QuickEditExit) -> Void
 
     @Environment(\.scenePhase) private var scenePhase
-    /// The preview fills the screen; the tools come back where they were.
-    @State private var isPreviewExpanded = false
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
-    init(take: Take, services: AppServices, onClose: @escaping () -> Void) {
+    init(take: Take, services: AppServices, onClose: @escaping (QuickEditExit) -> Void) {
         let languages = services.languages
         _viewModel = State(initialValue: QuickEditViewModel(
             take: take, takes: services.takes, library: services.library,
@@ -32,38 +39,39 @@ struct QuickEditView: View {
 
     var body: some View {
         @Bindable var viewModel = viewModel
-        VStack(spacing: 0) {
-            topBar
-                .padding(.horizontal, Metrics.gutter)
-            GeometryReader { proxy in
-                QuickEditPreview(viewModel: viewModel, size: previewSize(in: proxy.size))
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+        GeometryReader { proxy in
+            let layout = layout(forUsableHeight: proxy.size.height)
+            ZStack {
+                editor(layout, width: proxy.size.width)
+                if viewModel.isFullScreen {
+                    fullScreenPreview(in: proxy)
+                        .transition(.opacity)
+                }
             }
-            .overlay(alignment: .topTrailing) { expandButton }
-            .padding(.top, 12)
-            if isPreviewExpanded {
-                QuickEditTransportBar(viewModel: viewModel)
-                    .padding(.horizontal, Metrics.gutter)
-                    .padding(.vertical, 10)
-            } else {
-                toolPanel
-                    .frame(height: panelHeight, alignment: .top)
-                    .padding(.horizontal, Metrics.gutter)
-                    .padding(.top, 14)
-                    .disabled(!viewModel.isReady)
-                    .opacity(viewModel.isReady ? 1 : 0.4)
-                toolRow
-                    .padding(.top, 6)
-                toolbar
-                    .padding(.horizontal, 10)
+            .sheet(isPresented: sheetPanelBinding(layout)) {
+                if let panel = viewModel.panel, case .sheet(let medium, let large) = layout.panelPresentation {
+                    EditorPanelView(viewModel: viewModel, panel: panel)
+                        .presentationDetents([.height(medium), .height(large)])
+                        .presentationBackgroundInteraction(.enabled(upThrough: .height(large)))
+                        .presentationCornerRadius(Metrics.editorSheetRadius)
+                        .presentationBackground(Palette.editorPanel)
+                        .presentationDragIndicator(.visible)
+                }
             }
         }
         .background(Palette.bg.ignoresSafeArea())
         .toastHost()
         .task { await viewModel.prepare() }
-        .onChange(of: viewModel.tool) { _, tool in
-            // Not tied to the tool: leaving Clean Up doesn't stop it listening.
-            if tool == .cleanUp { Task { await viewModel.analyzeIfNeeded() } }
+        .onChange(of: viewModel.panel) { _, panel in
+            // Not tied to the panel: leaving Pauses doesn't stop it listening.
+            if panel == .pauses { Task { await viewModel.analyzeIfNeeded() } }
+        }
+        .sheet(item: $viewModel.sheet) { sheet in
+            switch sheet {
+            case .music: AddMusicSheet(viewModel: viewModel)
+            case .media: AddMediaSheet(viewModel: viewModel)
+            case .export: EmptyView()
+            }
         }
         .sheet(isPresented: Binding(
             get: { viewModel.editingTextID != nil },
@@ -81,178 +89,77 @@ struct QuickEditView: View {
                 CaptionLineSheet(viewModel: viewModel, lineID: id)
             }
         }
-        .sheet(isPresented: $viewModel.showsClips) {
-            ClipsSheet(viewModel: viewModel)
-        }
         .sheet(isPresented: $viewModel.showsTranslation) {
             CaptionTranslationSheet(viewModel: viewModel)
         }
         .onChange(of: scenePhase) { _, phase in
             if phase != .active { viewModel.pauseAndKeepDraft() }
         }
+        .onChange(of: viewModel.exportRequested) { _, requested in
+            guard requested else { return }
+            viewModel.done()
+            onClose(.export)
+        }
         .onDisappear { viewModel.pauseAndKeepDraft() }
-        .animation(.smooth(duration: 0.3), value: viewModel.tool)
+        .animation(reduceMotion ? nil : .easeOut(duration: 0.22), value: viewModel.panel)
+        .animation(reduceMotion ? nil : .easeInOut(duration: 0.25), value: viewModel.isFullScreen)
     }
 
-    // MARK: - Sections
+    // MARK: - Layout
 
-    private var topBar: some View {
-        HStack {
-            Button("Cancel") {
-                viewModel.cancel()
-                onClose()
-            }
-            .buttonStyle(.cueGlass(.compact, expands: false))
-            .accessibilityIdentifier("edit.cancelButton")
-            Spacer()
-            VStack(spacing: 1) {
-                Text("Quick edit").font(.body.weight(.semibold))
-                Text(viewModel.durationChange)
-                    .font(.caption.monospacedDigit())
-                    .foregroundStyle(Palette.ink2)
-                    .accessibilityIdentifier("edit.durationChange")
-            }
-            Spacer()
-            HStack(spacing: 8) {
-                Button { viewModel.tool = .cover } label: {
-                    Image(systemName: QuickEditTool.cover.systemImage)
-                }
-                .buttonStyle(.cueIcon(viewModel.tool == .cover ? .tinted : .glass, diameter: Metrics.compactButtonHeight))
-                .accessibilityLabel(Text("Cover"))
-                .accessibilityAddTraits(viewModel.tool == .cover ? .isSelected : [])
-                .accessibilityIdentifier("edit.tool.cover")
-                Button("Done") {
-                    viewModel.done()
-                    onClose()
-                }
-                .buttonStyle(.cuePrimary(.compact, expands: false))
-                .accessibilityIdentifier("edit.doneButton")
-            }
-        }
-        .frame(height: Metrics.hitTarget)
+    private func layout(forUsableHeight height: CGFloat) -> EditorLayout {
+        EditorLayout(
+            usableHeight: height,
+            panel: viewModel.panel?.size,
+            panelFocusesLane: viewModel.panel?.focusedLane != nil,
+            largeText: dynamicTypeSize >= .xxLarge
+        )
     }
 
-    /// Makes the preview fill the screen, and back. Nothing else changes: the playhead, what's
-    /// picked and whether it plays stay as they are.
-    private var expandButton: some View {
-        Button {
-            withAnimation(.smooth(duration: 0.3)) { isPreviewExpanded.toggle() }
-        } label: {
-            Image(systemName: isPreviewExpanded ? "arrow.down.right.and.arrow.up.left" : "arrow.up.left.and.arrow.down.right")
+    private func editor(_ layout: EditorLayout, width: CGFloat) -> some View {
+        VStack(spacing: 0) {
+            EditorTopBar(viewModel: viewModel) {
+                viewModel.done()
+                onClose(.done)
+            }
+            .frame(height: layout.topBar)
+            QuickEditPreview(viewModel: viewModel, size: previewSize(in: CGSize(width: width, height: layout.preview)))
+                .frame(width: width, height: layout.preview)
+                .contentShape(Rectangle())
+                .onTapGesture { viewModel.tapOutsideVideo() }
+            EditorPlayerBar(viewModel: viewModel)
+                .frame(height: layout.playerBar)
+            timeline(layout)
+                .frame(height: layout.timeline)
+                .clipped()
+            if layout.toolbar > 0 {
+                EditorToolbar(viewModel: viewModel, heightClass: layout.heightClass)
+                    .frame(height: layout.toolbar)
+                    .transition(.opacity)
+            }
+            if layout.panel > 0, let panel = viewModel.panel {
+                EditorPanelView(viewModel: viewModel, panel: panel)
+                    .frame(height: layout.panel)
+                    .transition(reduceMotion ? .opacity : .move(edge: .bottom).combined(with: .opacity))
+            }
         }
-        .buttonStyle(.cueIcon(.glass, diameter: Metrics.compactButtonHeight))
-        .padding(.trailing, Metrics.gutter)
-        .accessibilityLabel(Text(isPreviewExpanded ? "Show the tools" : "Enlarge the preview"))
-        .accessibilityIdentifier("edit.expandPreviewButton")
+        .disabled(viewModel.isFullScreen)
     }
 
     @ViewBuilder
-    private var toolPanel: some View {
-        switch viewModel.tool {
-        case .trim: TrimToolView(viewModel: viewModel)
-        case .cleanUp: CleanUpToolView(viewModel: viewModel)
-        case .audio: AudioToolView(viewModel: viewModel)
-        case .adjust: AdjustToolView(viewModel: viewModel)
-        case .filters: FiltersToolView(viewModel: viewModel)
-        case .crop: CropToolView(viewModel: viewModel)
-        case .background: BackgroundToolView(viewModel: viewModel)
-        case .captions: CaptionsToolView(viewModel: viewModel)
-        case .speed: SpeedToolView(viewModel: viewModel)
-        case .text: TextToolView(viewModel: viewModel)
-        case .media: MediaToolView(viewModel: viewModel)
-        case .voiceOver: VoiceOverToolView(viewModel: viewModel)
-        case .music: MusicToolView(viewModel: viewModel)
-        case .style: StyleToolView(viewModel: viewModel)
-        case .cover: CoverToolView(viewModel: viewModel)
+    private func timeline(_ layout: EditorLayout) -> some View {
+        if layout.showsTimeline {
+            LegacyTimelineArea(viewModel: viewModel)
+        } else {
+            Color.clear
         }
     }
 
-    /// The tools of the current category, when it has more than one.
-    @ViewBuilder
-    private var toolRow: some View {
-        let tools = viewModel.tool.category.tools
-        if tools.count > 1 {
-            ScrollView(.horizontal) {
-                HStack(spacing: 6) {
-                    ForEach(tools) { tool in
-                        let isOn = viewModel.tool == tool
-                        Button { viewModel.tool = tool } label: {
-                            FilterChip(label: tool.label, isSelected: isOn, systemImage: tool.systemImage, height: 32)
-                        }
-                        .buttonStyle(.plain)
-                        .accessibilityAddTraits(isOn ? .isSelected : [])
-                        .accessibilityIdentifier("edit.tool.\(tool.rawValue)")
-                    }
-                }
-                .padding(.horizontal, Metrics.gutter)
-            }
-            .scrollIndicators(.hidden)
-            .frame(height: Metrics.hitTarget)
-            .disabled(!viewModel.isReady || viewModel.isRecordingVoiceOver)
-        }
-    }
-
-    /// The categories along the bottom. Each opens on the tool used last in it.
-    private var toolbar: some View {
-        HStack(spacing: 0) {
-            ForEach(QuickEditCategory.toolbar) { category in
-                let isOn = viewModel.tool.category == category
-                Button {
-                    viewModel.tool = viewModel.lastTool[category] ?? category.tools[0]
-                } label: {
-                    VStack(spacing: 4) {
-                        Image(systemName: category.systemImage).font(.system(size: 19, weight: .medium))
-                        Text(category.label)
-                            .font(.caption2.weight(.semibold))
-                            .lineLimit(1)
-                            // Six along a small screen, in longer languages too.
-                            .minimumScaleFactor(0.6)
-                    }
-                    .foregroundStyle(isOn ? Palette.acc : Palette.ink2)
-                    .frame(maxWidth: .infinity, minHeight: 60)
-                    .contentShape(Rectangle())
-                }
-                .buttonStyle(.plain)
-                .accessibilityAddTraits(isOn ? .isSelected : [])
-                .accessibilityIdentifier("edit.category.\(category.rawValue)")
-            }
-        }
-        .padding(.horizontal, 6)
-        .background(Palette.toolbarFill, in: Capsule())
-        .overlay(Capsule().strokeBorder(Palette.glassBorder, lineWidth: 0.5))
-        .disabled(!viewModel.isReady || viewModel.isRecordingVoiceOver)
-    }
-
-    /// Tools with a timeline or a list need room; the others are shorter.
-    private var panelHeight: CGFloat {
-        switch viewModel.tool {
-        case .trim: 262 + tracksHeight
-        case .cleanUp: 360
-        case .text, .media: 300
-        case .music: viewModel.selectedMusic == nil ? 236 : 300
-        case .voiceOver: 228
-        case .speed: 244
-        case .style: 250
-        case .cover: 196
-        case .captions: 340
-        case .audio: 318
-        case .background: 330
-        case .adjust, .filters, .crop: 190
-        }
-    }
-
-    /// The shared timeline's tracks under the strip, with their spacing (at most four slim tracks,
-    /// so the preview keeps most of the screen).
-    private var tracksHeight: CGFloat {
-        let height = TimelineTracksView.height(for: viewModel)
-        return height > 0 ? height + 6 : 0
-    }
-
-    /// The take's frame, as large as fits (up to 370 × 464 pt on the design's screen).
+    /// The take's frame, as large as fits in `available`, with a little room around it.
     private func previewSize(in available: CGSize) -> CGSize {
         let aspect = viewModel.edit.aspect.widthOverHeight
-        let maxWidth = min(available.width - 32, 370)
-        let maxHeight = available.height
+        let maxWidth = max(0, available.width - 16)
+        let maxHeight = max(0, available.height - 6)
         var width = maxHeight * aspect
         var height = maxHeight
         if width > maxWidth {
@@ -260,5 +167,53 @@ struct QuickEditView: View {
             height = maxWidth / aspect
         }
         return CGSize(width: width.rounded(), height: height.rounded())
+    }
+
+    // MARK: - Full screen
+
+    private func fullScreenPreview(in proxy: GeometryProxy) -> some View {
+        let screen = CGSize(
+            width: proxy.size.width + proxy.safeAreaInsets.leading + proxy.safeAreaInsets.trailing,
+            height: proxy.size.height + proxy.safeAreaInsets.top + proxy.safeAreaInsets.bottom
+        )
+        return ZStack {
+            Palette.bg
+                .contentShape(Rectangle())
+                .onTapGesture { viewModel.toggleFullScreen() }
+                .accessibilityAddTraits(.isButton)
+                .accessibilityLabel(Text("Exit full screen"))
+                .accessibilityIdentifier("edit.exitFullScreen")
+            QuickEditPreview(viewModel: viewModel, size: fullScreenSize(in: screen), isFullScreen: true)
+            Text("Tap video to play · tap outside to exit")
+                .font(.system(size: 13, weight: .semibold))
+                .padding(.horizontal, 14)
+                .frame(height: 30)
+                .background(Palette.durationBadge, in: Capsule())
+                .frame(maxHeight: .infinity, alignment: .bottom)
+                .padding(.bottom, 40)
+                .allowsHitTesting(false)
+        }
+        .ignoresSafeArea()
+    }
+
+    private func fullScreenSize(in screen: CGSize) -> CGSize {
+        let aspect = viewModel.edit.aspect.widthOverHeight
+        var width = screen.height * aspect
+        var height = screen.height
+        if width > screen.width {
+            width = screen.width
+            height = screen.width / aspect
+        }
+        return CGSize(width: width.rounded(), height: height.rounded())
+    }
+
+    private func sheetPanelBinding(_ layout: EditorLayout) -> Binding<Bool> {
+        Binding(
+            get: {
+                guard viewModel.panel != nil, case .sheet = layout.panelPresentation else { return false }
+                return true
+            },
+            set: { if !$0 { viewModel.panel = nil } }
+        )
     }
 }

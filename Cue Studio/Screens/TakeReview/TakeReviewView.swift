@@ -73,7 +73,11 @@ struct TakeReviewView: View {
             viewModel.burnsInCaptions = shown
         }
         .fullScreenCover(item: $editingTake) { take in
-            QuickEditView(take: take, services: services) { editingTake = nil }
+            QuickEditView(take: take, services: services) { exit in
+                editingTake = nil
+                // Export saved the edit: the take is shared from here, with its platforms.
+                if exit == .export { viewModel.showsShareSheet = true }
+            }
         }
         .confirmationDialog("Delete this take?", isPresented: $confirmsDelete, titleVisibility: .visible) {
             Button("Delete take", role: .destructive) {

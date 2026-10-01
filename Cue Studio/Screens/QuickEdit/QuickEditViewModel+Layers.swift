@@ -105,14 +105,14 @@ extension QuickEditViewModel {
         case .text: editingTextID = bar.id
         case .caption: editingCaptionID = captionCueID(forLine: bar.id)
         case .media:
-            tool = .media
             selectedMediaID = bar.id
+            panel = .media
         case .voiceOver:
-            tool = .voiceOver
             reviewedVoiceOverID = bar.id
+            panel = .volume
         case .music:
-            tool = .music
             selectedMusicID = bar.id
+            panel = .volume
         }
     }
 

@@ -13,6 +13,8 @@ import SwiftUI
 struct QuickEditPreview: View {
     let viewModel: QuickEditViewModel
     let size: CGSize
+    /// Full screen: a tap plays or pauses, and nothing laid on the video can be picked.
+    var isFullScreen = false
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var dragStartOffset: Double?
@@ -27,15 +29,17 @@ struct QuickEditPreview: View {
             .frame(width: size.width, height: size.height)
             .background(Palette.previewWell)
             .overlay {
-                if viewModel.tool == .crop {
+                if viewModel.panel == .crop {
                     ThirdsGrid()
                         .overlay(RoundedRectangle(cornerRadius: Metrics.tileRadius, style: .continuous).strokeBorder(Color.white.opacity(0.8), lineWidth: 2))
                         .allowsHitTesting(false)
                 }
             }
-            .overlay { playBadge }
             .overlay {
-                if viewModel.tool == .text || viewModel.tool == .media {
+                if isFullScreen { playBadge }
+            }
+            .overlay {
+                if !isFullScreen, viewModel.panel != .crop, !viewModel.showsCoverImage {
                     OverlayEditingLayer(viewModel: viewModel, size: size)
                 }
             }
@@ -46,18 +50,21 @@ struct QuickEditPreview: View {
             }
             .overlay { recordingBadge }
             .overlay { status }
-            .clipShape(RoundedRectangle(cornerRadius: Metrics.tileRadius, style: .continuous))
-            .gesture(cropDrag, isEnabled: viewModel.tool == .crop)
+            .clipShape(RoundedRectangle(cornerRadius: isFullScreen ? 0 : Metrics.editorPreviewRadius, style: .continuous))
+            .gesture(cropDrag, isEnabled: viewModel.panel == .crop && !isFullScreen)
             .onTapGesture {
-                // With Crop, touches move the crop instead.
-                if viewModel.tool != .crop, !viewModel.showsCoverImage, !viewModel.isRecordingVoiceOver { viewModel.togglePlayback() }
+                if isFullScreen {
+                    if !viewModel.isRecordingVoiceOver { viewModel.togglePlayback() }
+                } else if viewModel.panel != .crop {
+                    viewModel.tapOutsideVideo()
+                }
             }
             .animation(reduceMotion ? nil : .smooth(duration: 0.3), value: size)
             // With handles on it, they stay reachable on their own.
-            .accessibilityElement(children: [.text, .media, .cover].contains(viewModel.tool) ? .contain : .combine)
+            .accessibilityElement(children: isFullScreen ? .combine : .contain)
             .accessibilityLabel(Text("Preview"))
             .accessibilityValue(Text(statusDescription ?? ""))
-            .accessibilityHint(Text("Tap to play or pause"))
+            .accessibilityHint(isFullScreen ? Text("Tap to play or pause") : Text(""))
             .accessibilityAddTraits(.startsMediaSession)
             .accessibilityIdentifier("edit.preview")
     }
@@ -66,8 +73,7 @@ struct QuickEditPreview: View {
     /// preview is.
     @ViewBuilder
     private var playBadge: some View {
-        if viewModel.isReady, viewModel.player.state == .ready, !viewModel.player.isPlaying, viewModel.tool != .crop,
-           !viewModel.showsCoverImage {
+        if viewModel.isReady, viewModel.player.state == .ready, !viewModel.player.isPlaying, !viewModel.showsCoverImage {
             Image(systemName: "play.fill")
                 .font(.system(size: 22, weight: .semibold))
                 .foregroundStyle(Palette.ink)

@@ -165,7 +165,7 @@ struct QuickEditSoundTests {
     @Test func comparingPlaysTheUntreatedSoundAsLoud() async throws {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
-        viewModel.tool = .audio
+        viewModel.panel = .voice
         viewModel.setVoiceEnhancement(.strong)
         viewModel.setComparesOriginal(true)
         await viewModel.comparisonTask?.value
@@ -184,10 +184,10 @@ struct QuickEditSoundTests {
     @Test func leavingVoiceEndsTheComparison() async {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
-        viewModel.tool = .audio
+        viewModel.panel = .voice
         viewModel.setComparesOriginal(true)
         await viewModel.comparisonTask?.value
-        viewModel.tool = .music
+        viewModel.panel = nil
         #expect(!viewModel.comparesOriginal)
         #expect(scenario.player.shown.last == viewModel.edit)
     }
@@ -196,7 +196,7 @@ struct QuickEditSoundTests {
         let scenario = await makeScenario()
         scenario.editor.matchedVolume = nil
         let viewModel = scenario.viewModel
-        viewModel.tool = .audio
+        viewModel.panel = .voice
         viewModel.setComparesOriginal(true)
         await viewModel.comparisonTask?.value
         #expect(!viewModel.comparesOriginal)

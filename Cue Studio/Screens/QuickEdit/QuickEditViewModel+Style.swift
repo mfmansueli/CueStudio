@@ -43,6 +43,7 @@ extension QuickEditViewModel {
         case .selected: styledTextID.flatMap { id in edit.texts.first { $0.id == id } }?.preset
         case .allTexts: edit.textPreset
         case .allCaptions: edit.captionPreset
+        case .textsAndCaptions: edit.textPreset == edit.captionPreset ? edit.textPreset : nil
         }
     }
 
@@ -91,6 +92,23 @@ extension QuickEditViewModel {
                 snapshot.captionPreset = preset
             }
             toast.show(String(localized: "\(name) on the captions"))
+        case .textsAndCaptions:
+            var captionLook = look
+            captionLook.sizeScale = min(look.sizeScale, Self.largestCaptionScale)
+            change { snapshot in
+                snapshot.textLook = look
+                snapshot.textPreset = preset
+                for index in snapshot.texts.indices {
+                    let kept = keepingCustomizations ? snapshot.texts[index].customized : []
+                    look.apply(to: &snapshot.texts[index], keeping: kept)
+                    snapshot.texts[index].preset = preset
+                    if !keepingCustomizations { snapshot.texts[index].customized = [] }
+                }
+                snapshot.captionCollection = nil
+                snapshot.captionLook = captionLook
+                snapshot.captionPreset = preset
+            }
+            toast.show(String(localized: "\(name) on every text and the captions"))
         }
     }
 }
