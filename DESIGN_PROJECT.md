@@ -611,6 +611,12 @@ O protótipo simulava várias coisas; o app implementa de verdade ou deixa de fo
   retomar quando fora da área visível, em aba/tela encoberta ou com o app inativo. Reduce Motion
   usa uma composição estática. O fundo não recebe toques nem aparece no VoiceOver; texto, botão,
   cápsula escura e tokens de contraste permanecem os mesmos. O app continua só em modo escuro.
+- **Estrelas do Prompt:** os três `sparkle` ao lado do título mantêm posições e forma fixas. Uma
+  estrela por vez faz um twinkle curto e irregular com escala, brilho, núcleo branco e glow dourado.
+  A sequência repete em 21 s, com os intervalos entre inícios 30% menores e a duração de cada brilho
+  preservada (0,8–1,25 s), sem sobreposição;
+  a animação usa o mesmo relógio pausável do fundo, não afeta os demais elementos do card e fica
+  estática com Reduce Motion.
 - **Pastas:** o "+" agora abre New script, então pastas nascem em "Move to a new folder…" (menu do
   script, More e barra de seleção) e aparecem como chips depois dos destinos.
 - **Tab bar:** a pill flutuante do protótipo é a própria tab bar nativa de Liquid Glass. A aba

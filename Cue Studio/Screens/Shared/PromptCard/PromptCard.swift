@@ -26,8 +26,7 @@ struct PromptCard: View {
         Button(action: action) {
             VStack(alignment: .leading, spacing: 12) {
                 HStack(spacing: 8) {
-                    Image(systemName: "sparkles")
-                        .foregroundStyle(Palette.acc)
+                    PromptCardStarTwinkle(isActive: animatesBackground)
                     Text("Prompt")
                         .font(.title3.bold())
                         .foregroundStyle(Palette.ink)
