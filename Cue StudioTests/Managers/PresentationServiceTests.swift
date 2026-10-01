@@ -10,18 +10,20 @@ import Testing
 @MainActor
 @Suite("PresentationService")
 struct PresentationServiceTests {
-    @Test func recordTabOpensStartRecordingAndKeepsTheCurrentTab() {
+    @Test(arguments: [AppTab.scripts, .takes, .profile, .settings])
+    func recordTabOpensStartRecordingAndKeepsTheCurrentTab(tab: AppTab) {
         let presentation = PresentationService()
-        presentation.select(.takes)
+        presentation.select(tab)
         presentation.select(.record)
-        #expect(presentation.selectedTab == .takes)
+        #expect(presentation.selectedTab == tab)
         #expect(presentation.sheet == .startRecording)
     }
 
-    @Test func regularTabsChangeTheSelection() {
+    @Test(arguments: [AppTab.scripts, .takes, .profile, .settings])
+    func regularTabsChangeTheSelection(tab: AppTab) {
         let presentation = PresentationService()
-        presentation.select(.profile)
-        #expect(presentation.selectedTab == .profile)
+        presentation.select(tab)
+        #expect(presentation.selectedTab == tab)
         #expect(presentation.sheet == nil)
     }
 

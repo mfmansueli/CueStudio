@@ -5,7 +5,7 @@
 
 import Foundation
 
-/// The three languages Cue keeps apart (Profile › Language & Region):
+/// The three languages Cue keeps apart (Settings › Language & Region):
 /// - the **app language**, what Cue's interface is in;
 /// - the **Voice Following language**, what Cue listens for while the creator reads;
 /// - the **script language**, what new scripts are written in (each script keeps its own).

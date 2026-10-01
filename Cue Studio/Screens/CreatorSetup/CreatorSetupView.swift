@@ -5,7 +5,7 @@
 
 import SwiftUI
 
-/// Profile › Creator Setup: how the creator usually records ("Set it up once. Cue remembers how
+/// Settings › Creator Setup: how the creator usually records ("Set it up once. Cue remembers how
 /// you create."). Optional: a new creator records with Cue's defaults without ever opening it.
 /// Platform recommendations appear when a recording starts and never change what's set here.
 struct CreatorSetupView: View {

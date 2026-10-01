@@ -6,7 +6,7 @@
 import SwiftUI
 
 /// The teleprompter's side of pairing: "Connect a Device", then a QR code (and the same code in
-/// letters) until the other iPhone or iPad joins, then "Remote Connected ✓". Used in Profile ›
+/// letters) until the other iPhone or iPad joins, then "Remote Connected ✓". Used in Settings ›
 /// Creator Setup › Remote Control and over the prompter.
 struct RemotePairingPanel: View {
     @Environment(RemoteControlService.self) private var remote
@@ -61,7 +61,7 @@ struct RemotePairingPanel: View {
                     .accessibilityLabel(Text("Code \(code.map(String.init).joined(separator: " "))"))
                     .accessibilityIdentifier("remote.code")
             }
-            Text("On the other iPhone or iPad, scan this with the Camera — or open Cue › Profile › Creator Setup › Remote Control and enter the code.")
+            Text("On the other iPhone or iPad, scan this with the Camera — or open Cue › Settings › Creator Setup › Remote Control and enter the code.")
                 .font(.footnote)
                 .foregroundStyle(Palette.ink2)
                 .multilineTextAlignment(.center)

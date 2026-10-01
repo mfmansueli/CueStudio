@@ -8,7 +8,7 @@ import os
 import Speech
 
 /// Voice follow's ears: on-device transcription with the Speech framework (`SpeechAnalyzer`), in the
-/// language Voice Following listens for (Profile › Language & Region, or the script's). Nothing
+/// language Voice Following listens for (Settings › Language & Region, or the script's). Nothing
 /// leaves the device and nothing is paid per use.
 ///
 /// `SpeechTranscriber` recognizes every language it supports here, exactly as it always has;
