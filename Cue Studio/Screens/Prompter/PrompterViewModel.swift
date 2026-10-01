@@ -266,18 +266,12 @@ final class PrompterViewModel {
         updateVoiceMonitoring()
     }
 
-    /// Once per session: the recording starts from the Creator Setup, the script's platform
-    /// recommendation is offered (never applied on its own) and the text window opens at its full
-    /// size.
+    /// Once per session: offer the script's platform recommendation without changing the
+    /// creator's saved reading preferences or explicit session adjustments.
     private func startSessionOnce() {
         guard !hasStartedSession else { return }
         hasStartedSession = true
         session.recommend(recommendation)
-        guard hasScript else { return }
-        var prompter = session.prompter
-        prompter.readingWidth = PrompterSettings.defaultReadingWidth
-        prompter.textWindowHeight = PrompterSettings.defaultTextWindowHeight
-        session.prompter = prompter
     }
 
     /// "Create for" from the camera: the script moves to the platform, whose setup is offered.

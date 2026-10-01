@@ -42,23 +42,7 @@ struct DisplayLayoutSection: View {
         @Bindable var session = session
         return GroupedCard(background: Palette.surface2, radius: 22) {
             readingLineRow
-            ValueSlider(
-                title: String(localized: "Text window height"),
-                valueText: String(localized: "\(Int(session.prompter.textWindowHeight)) pt"),
-                value: $session.prompter.textWindowHeight,
-                range: PrompterSettings.textWindowHeightRange, step: 10,
-                identifier: "display.textWindowHeight"
-            )
-            .padding(.horizontal, 16)
-            ValueSlider(
-                title: String(localized: "Text window width"),
-                valueText: session.prompter.readingWidth.formatted(.percent.precision(.fractionLength(0)).locale(.interface)),
-                value: $session.prompter.readingWidth,
-                range: PrompterSettings.readingWidthRange, step: 0.01,
-                ends: (String(localized: "Narrow · less eye movement"), String(localized: "Wide")),
-                identifier: "display.readingWidth"
-            )
-            .padding(.horizontal, 16)
+            DisplayLayoutControls.window(settings: $session.prompter)
         }
     }
 
@@ -129,7 +113,7 @@ struct DisplayLayoutSection: View {
                 .padding(EdgeInsets(top: 12, leading: 16, bottom: 12, trailing: 16))
             }
             if current == .custom {
-                customMargins
+                DisplayLayoutControls.safeZoneMargins(settings: $session.prompter)
             }
             SettingToggleRow(
                 title: String(localized: "Show safe zone"),
@@ -148,24 +132,5 @@ struct DisplayLayoutSection: View {
             .accessibilityIdentifier("display.hideControlsToggle")
         }
         .animation(.smooth(duration: 0.25), value: current)
-    }
-
-    @ViewBuilder
-    private var customMargins: some View {
-        @Bindable var session = session
-        margin(String(localized: "Top risk"), value: $session.prompter.customSafeZone.top, range: SafeZoneMargins.topRange)
-        margin(String(localized: "Bottom risk"), value: $session.prompter.customSafeZone.bottom, range: SafeZoneMargins.bottomRange)
-        margin(String(localized: "Left risk"), value: $session.prompter.customSafeZone.left, range: SafeZoneMargins.leftRange)
-        margin(String(localized: "Right risk"), value: $session.prompter.customSafeZone.right, range: SafeZoneMargins.rightRange)
-    }
-
-    private func margin(_ title: String, value: Binding<Double>, range: ClosedRange<Double>) -> some View {
-        ValueSlider(
-            title: title,
-            valueText: (value.wrappedValue / 100).formatted(.percent.precision(.fractionLength(0)).locale(.interface)),
-            value: value,
-            range: range
-        )
-        .padding(.horizontal, 16)
     }
 }

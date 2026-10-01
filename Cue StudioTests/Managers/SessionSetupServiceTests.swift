@@ -38,15 +38,16 @@ struct SessionSetupServiceTests {
         #expect(PreferencesService(defaults: defaults.defaults).camera.resolution == .uhd4K)
     }
 
-    @Test func otherSettingsAreSavedAsBefore() {
+    @Test func cameraOptionsStillPersistButReadingEditsStayLocal() {
         let defaults = TestDefaults()
         defer { defaults.tearDown() }
         let (session, preferences) = makeService(defaults)
         session.camera.countdown = .ten
         session.prompter.font = .serif
         #expect(preferences.camera.countdown == .ten)
-        #expect(preferences.prompter.font == .serif)
-        #expect(!session.hasChanges)
+        #expect(session.prompter.font == .serif)
+        #expect(preferences.prompter.font == .lexend)
+        #expect(session.hasChanges)
     }
 
     @Test func acceptingARecommendationNeverTouchesTheDefault() {
@@ -72,14 +73,89 @@ struct SessionSetupServiceTests {
         #expect(!session.needsDecision)
     }
 
-    @Test func aNewDefaultShowsUpWhereTheSessionHasNoChange() {
+    @Test func aNewDefaultOnlyAffectsNewSessions() {
         let defaults = TestDefaults()
         defer { defaults.tearDown() }
         let (session, preferences) = makeService(defaults)
         session.camera.aspect = .square
         preferences.creatorSetup.resolution = .hd720
         preferences.creatorSetup.aspect = .landscape
-        #expect(session.camera.resolution == .hd720)
+        #expect(session.camera.resolution == .uhd4K)
         #expect(session.camera.aspect == .square)
+        let next = SessionSetupService(preferences: preferences)
+        #expect(next.camera.resolution == .hd720)
+        #expect(next.camera.aspect == .landscape)
     }
+
+    @Test func allLocalReadingEditsLeaveSavedDefaultsUntouched() {
+        let defaults = TestDefaults()
+        defer { defaults.tearDown() }
+        let (session, preferences) = makeService(defaults)
+        let saved = preferences.prompter
+        session.prompter.font = .serif
+        session.prompter.textColor = .yellow
+        session.prompter.lineSpacing = 1.8
+        session.prompter.alignment = .trailing
+        session.prompter.margin = 20
+        session.prompter.readingWidth = 0.6
+        session.prompter.textWindowHeight = 200
+        session.prompter.readingLineOffset = 200
+        session.prompter.backgroundOpacity = 0.8
+        session.prompter.cameraBlur = 12
+        session.prompter.guidePosition = 0.6
+        session.prompter.showsGuide = false
+        session.prompter.isMirrored = true
+        session.prompter.scrollMode = .voice
+        session.prompter.studioBackground = .navy
+        session.prompter.showsCues = true
+        session.prompter.hidesControlsWhileRecording = true
+        session.prompter.customSafeZone.top = 20
+        session.prompter.size = 40
+        session.prompter.speed = 1.8
+        #expect(session.hasChanges)
+        #expect(preferences.prompter == saved)
+        let reloaded = PreferencesService(defaults: defaults.defaults)
+        #expect(reloaded.prompter == saved)
+        #expect(SessionSetupService(preferences: reloaded).prompter == saved)
+        session.backToCreatorSetup()
+        #expect(session.prompter == saved)
+        #expect(!session.hasChanges)
+    }
+
+    @Test func profileEditsCannotChangeAnOpenSessionOrItsExplicitValues() {
+        let defaults = TestDefaults()
+        defer { defaults.tearDown() }
+        let (session, preferences) = makeService(defaults)
+        session.prompter.textColor = .cream
+        session.prompter.size = 42
+        session.prompter.readingWidth = 0.7
+        let before = session.prompter
+        preferences.prompter.font = .serif
+        preferences.prompter.textColor = .green
+        preferences.prompter.size = 20
+        preferences.prompter.readingWidth = 0.9
+        preferences.prompter.scrollMode = .voice
+        #expect(session.prompter == before)
+        #expect(SessionSetupService(preferences: preferences).prompter == preferences.prompter)
+    }
+
+    @Test func platformRecommendationsPreservePersonalAppearanceAndLocalEdits() {
+        let defaults = TestDefaults()
+        defer { defaults.tearDown() }
+        let preferences = PreferencesService(defaults: defaults.defaults)
+        preferences.prompter.font = .rounded
+        preferences.prompter.textColor = .cyan
+        preferences.prompter.backgroundOpacity = 0.6
+        let session = SessionSetupService(preferences: preferences)
+        session.prompter.margin = 24
+        session.prompter.size = 40
+        let before = session.prompter
+        session.recommend(SetupRecommendation(platform: .youtube, preset: TestData.preset(.youtube)))
+        session.useRecommended()
+        #expect(session.camera.aspect == .landscape)
+        #expect(session.prompter == before)
+        #expect(session.source(of: .textSize) == .thisTake)
+        #expect(preferences.prompter.margin == 8)
+    }
+
 }

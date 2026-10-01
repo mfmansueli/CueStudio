@@ -16,8 +16,8 @@ nonisolated struct PrompterSettings: Codable, Hashable, Sendable {
     static let guideRange: ClosedRange<Double> = 0.1...0.7
     static let readingWidthRange: ClosedRange<Double> = 0.5...0.93
     static let textWindowHeightRange: ClosedRange<Double> = 160...380
-    /// The text window starts as big as it goes, so lines fill the width at any font size; the
-    /// creator can narrow or shorten it.
+    /// Original window defaults when the creator has not saved another size. New sessions keep
+    /// the saved dimensions, and layout clamps them to the space on the current device.
     static let defaultReadingWidth: Double = 0.93
     static let defaultTextWindowHeight: Double = 380
     /// Studio mode is read from further away, so its text is bigger than the selfie panel's.
@@ -31,8 +31,8 @@ nonisolated struct PrompterSettings: Codable, Hashable, Sendable {
     var alignment: PrompterAlignment = .center
     var textColor: PrompterTextColor = .white
     var margin: Double = 8
-    /// Selfie text window width as a fraction of the screen, 50% to 93%. A script opens at the
-    /// widest; narrowing it keeps the eyes stiller.
+    /// Selfie text window width as a fraction of the screen, 50% to 93%. Narrowing it keeps the
+    /// eyes stiller. The same fraction fits other screen sizes.
     var readingWidth: Double = PrompterSettings.defaultReadingWidth
     /// Selfie text window height in points.
     var textWindowHeight: Double = PrompterSettings.defaultTextWindowHeight

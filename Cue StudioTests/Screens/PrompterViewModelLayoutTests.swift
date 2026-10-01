@@ -20,11 +20,14 @@ struct PrompterViewModelLayoutTests {
         let defaults: TestDefaults
     }
 
-    private func makeScenario(script: Script? = TestData.script(platform: .tiktok), defaults: TestDefaults = TestDefaults()) -> Scenario {
+    private func makeScenario(script: Script? = TestData.script(platform: .tiktok), defaults: TestDefaults = TestDefaults(),
+                              prompter: PrompterSettings = PrompterSettings(), showsSafeZones: Bool = true) -> Scenario {
         let library = ScriptLibraryService(repository: FakeScriptRepository(scripts: script.map { [$0] } ?? []))
         library.load()
         let preferences = PreferencesService(defaults: defaults.defaults)
         preferences.camera.countdown = .off
+        preferences.camera.showsSafeZones = showsSafeZones
+        preferences.prompter = prompter
         let toast = ToastService()
         let viewModel = PrompterViewModel(
             launch: PrompterLaunch(scriptID: script?.id, mode: .selfie),
@@ -62,9 +65,10 @@ struct PrompterViewModelLayoutTests {
     }
 
     @Test func hideControlsWhileRecordingStartsTheTakeWithThemHidden() async {
-        let scenario = makeScenario(script: TestData.script(text: TestData.words(2000), platform: .reels))
+        var prompter = PrompterSettings()
+        prompter.hidesControlsWhileRecording = true
+        let scenario = makeScenario(script: TestData.script(text: TestData.words(2000), platform: .reels), prompter: prompter)
         defer { scenario.defaults.tearDown() }
-        scenario.preferences.prompter.hidesControlsWhileRecording = true
         await scenario.viewModel.recordButtonTapped()
         #expect(scenario.viewModel.hidesControls)
         await scenario.viewModel.stopRecording()
@@ -106,28 +110,28 @@ struct PrompterViewModelLayoutTests {
     // MARK: - Reset
 
     @Test func resetBringsBackTheRecommendedLayout() {
-        let scenario = makeScenario()
+        var prompter = PrompterSettings()
+        prompter.textWindowHeight = 200
+        prompter.readingWidth = 0.6
+        prompter.speed = 1.5
+        prompter.hidesControlsWhileRecording = true
+        let scenario = makeScenario(prompter: prompter, showsSafeZones: false)
         defer { scenario.defaults.tearDown() }
         let viewModel = scenario.viewModel
         viewModel.moveReadingLine(toY: 300)
-        scenario.preferences.prompter.textWindowHeight = 200
-        scenario.preferences.prompter.readingWidth = 0.6
-        scenario.preferences.prompter.speed = 1.5
-        scenario.preferences.prompter.hidesControlsWhileRecording = true
-        scenario.preferences.camera.showsSafeZones = false
         viewModel.pickSafeZone(.custom)
 
         viewModel.resetLayout()
 
         let session = viewModel.session
         #expect(session.prompter.readingLineOffset == nil)
-        #expect(scenario.preferences.prompter.textWindowHeight == 380)
-        #expect(scenario.preferences.prompter.readingWidth == 0.93)
+        #expect(session.prompter.textWindowHeight == 380)
+        #expect(session.prompter.readingWidth == 0.93)
         #expect(session.prompter.speed == 0.7)
-        #expect(!scenario.preferences.prompter.hidesControlsWhileRecording)
+        #expect(!session.prompter.hidesControlsWhileRecording)
         #expect(session.camera.showsSafeZones)
         // Speed and safe zones are Creator Setup: the reset is for this session.
-        #expect(scenario.preferences.prompter.speed == 1.5)
+        #expect(scenario.preferences.prompter == prompter)
         #expect(!scenario.preferences.camera.showsSafeZones)
         #expect(viewModel.safeZone == .platform(.tiktok))
         #expect(scenario.toast.message == "Back to recommended layout")
@@ -172,7 +176,7 @@ struct PrompterViewModelLayoutTests {
         let scenario = makeScenario()
         defer { scenario.defaults.tearDown() }
         scenario.viewModel.pickSafeZone(.custom)
-        scenario.preferences.prompter.customSafeZone = SafeZoneMargins(top: 10, bottom: 20, left: 5, right: 5)
+        scenario.viewModel.session.prompter.customSafeZone = SafeZoneMargins(top: 10, bottom: 20, left: 5, right: 5)
         let frame = scenario.viewModel.frameGeometry.frameRect
         let content = scenario.viewModel.safeZoneContentRect
         #expect(content.map { abs($0.minY - (frame.minY + frame.height * 0.1)) < 0.01 } == true)
@@ -196,7 +200,7 @@ struct PrompterViewModelLayoutTests {
         let bottom = viewModel.readingLayout.windowRect.maxY
         viewModel.sheet = .display
         #expect(viewModel.sheetCeiling == bottom)
-        scenario.preferences.prompter.textWindowHeight = 200
+        scenario.viewModel.session.prompter.textWindowHeight = 200
         #expect(viewModel.sheetCeiling == bottom)
         viewModel.sheet = nil
         viewModel.sheet = .display
