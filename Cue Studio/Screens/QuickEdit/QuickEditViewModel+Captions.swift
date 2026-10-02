@@ -95,6 +95,7 @@ extension QuickEditViewModel {
     }
 
     private func canReuse(_ transcript: CaptionTranscript, for language: SpeechLanguageRequest) -> Bool {
+        guard transcript.isCurrent else { return false }
         switch language {
         case .language(let chosen): CueLanguage.matching(languageCode: transcript.languageCode) == chosen
         case .detect: true

@@ -839,12 +839,25 @@ O protótipo simulava várias coisas; o app implementa de verdade ou deixa de fo
   **improvisada**, só as palavras que se alinham com segurança (a mesma palavra numa sequência de 2+ ou com
   5+ letras) pegam a grafia do roteiro e uma palavra só é trocada quando é quase a mesma. Em qualquer
   caso números, negações, palavras diferentes, improvisos e repetições ficam como foram ditos, e linhas
-  do roteiro que não foram ditas nunca aparecem. **Idiomas misturados** (um criador fala português com frases em inglês): o idioma de um roteiro em
-  Auto-detect é o que a maioria das **palavras** diz, frase a frase, com o idioma do iPhone só como leve
-  inclinação (`LanguageDetector`), então quatro palavras em inglês no começo não viram o roteiro inglês; e
-  numa take lida do roteiro, uma frase do roteiro claramente em outro idioma que o reconhecedor ouviu como
-  palavras sem sentido, com quase o mesmo número de palavras, é escrita como o roteiro a tem
-  (`LanguageDetector.isForeign`, tempos da voz mantidos). Japonês, chinês e tailandês usam a mesma regra, com as
+  do roteiro que não foram ditas nunca aparecem. **Idiomas misturados** (um criador abre em inglês e segue em português, ou fala português com
+  frases em inglês): um reconhecedor escuta numa língua só, então o que está em outra sai como palavras
+  sem sentido. O idioma principal de um roteiro em Auto-detect é o que a maioria das **palavras** diz,
+  frase a frase, com o idioma do iPhone só como leve inclinação (`LanguageDetector`), então quatro
+  palavras em inglês no começo não viram o roteiro inglês. E **a take é escutada em cada idioma que o
+  roteiro usa** (`ScriptLanguageRuns`: o roteiro em trechos por idioma, frase a frase; só conta uma frase
+  de 3+ palavras de que o Natural Language tem 75% de certeza, e uma frase duvidosa fica com a vizinha;
+  um idioma com 3+ palavras entra, no máximo 2 além do principal; um que o iPhone não escuta fica de
+  fora): cada trecho vem do reconhecedor cujas palavras se alinham a ele, no momento em que foram
+  ouvidas (`MixedLanguageMerge`: vence o de maior alinhamento, com pelo menos 2 palavras e 40% do
+  trecho; o resto da take é do reconhecedor principal, como antes). Não adivinha pelo som: o criador
+  leu o roteiro, então quem ouve aquelas palavras é quem as ouviu na língua certa. Um idioma extra
+  custa outra escuta (e o download do modelo, com o progresso de sempre). Uma transcrição guardada
+  por um jeito mais antigo de escutar (`CaptionTranscript.version`) é escutada de novo ao gerar as
+  legendas. Sem roteiro (fala improvisada) vale a língua principal. E numa take lida do roteiro, uma
+  frase do roteiro claramente em outro idioma que o reconhecedor ouviu como palavras sem sentido, com
+  quase o mesmo número de palavras, ainda é escrita como o roteiro a tem (`LanguageDetector.isForeign`,
+  tempos da voz mantidos): é o que cobre uma expressão no meio de uma frase ou um idioma que o iPhone
+  não escuta. Japonês, chinês e tailandês usam a mesma regra, com as
   palavras cortadas pelo mesmo dicionário nos dois lados (palavras de 2+ letras). Antes de ouvir, o
   reconhecedor recebe os nomes e as palavras longas do roteiro como dica de vocabulário
   (`ScriptVocabulary`, `AnalysisContext.contextualStrings`, até 100 termos): isso só inclina a escuta,

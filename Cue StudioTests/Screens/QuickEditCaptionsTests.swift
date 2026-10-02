@@ -257,6 +257,24 @@ struct QuickEditCaptionsTests {
         #expect(editor.captionRequests == 1) // The fake returned English; automatic reuses that result.
     }
 
+    /// What was heard by an older way (one language for the whole take) is heard again, so a take
+    /// with an English opening and a Portuguese rest is not stuck with the old, wrong words.
+    @Test func aTranscriptHeardTheOldWayIsHeardAgainAndANewOneIsReused() async {
+        let editor = FakeTakeEditor()
+        let scenario = await makeScenario(editor: editor)
+        let viewModel = scenario.viewModel
+        viewModel.makeCaptions()
+        await finish(viewModel)
+        #expect(editor.captionRequests == 1)
+        viewModel.makeCaptions(replacingRevised: true)
+        await finish(viewModel)
+        #expect(editor.captionRequests == 1)
+        viewModel.edit.captionTranscript?.version = nil
+        viewModel.makeCaptions(replacingRevised: true)
+        await finish(viewModel)
+        #expect(editor.captionRequests == 2)
+    }
+
     // MARK: - Correcting
 
     @Test func aCorrectionKeepsTheVoicesTimesAndTheOriginal() async {
