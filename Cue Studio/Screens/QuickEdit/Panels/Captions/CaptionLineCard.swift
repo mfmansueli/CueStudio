@@ -25,7 +25,7 @@ struct CaptionLineCard: View {
             } else {
                 Text(line.text.isEmpty ? String(localized: "Empty line") : line.text)
                     .font(.system(.subheadline))
-                    .foregroundStyle(isActive ? Palette.acc : (line.text.isEmpty ? Palette.ink3 : Palette.ink))
+                    .foregroundStyle(isActive ? Palette.accText : (line.text.isEmpty ? Palette.ink2 : Palette.ink))
                     .multilineTextAlignment(.leading)
                     .frame(maxWidth: .infinity, alignment: .leading)
             }
@@ -54,12 +54,12 @@ struct CaptionLineCard: View {
                     Circle().fill(Palette.warn).frame(width: 6, height: 6)
                     Text("Check timing")
                 }
-                .foregroundStyle(Palette.warn)
+                .foregroundStyle(Palette.warnText)
             }
             Text(verbatim: DurationText.tenths(line.end - line.start))
         }
         .font(.system(.caption).monospacedDigit())
-        .foregroundStyle(isActive || isSelected ? Palette.acc : Palette.ink2)
+        .foregroundStyle(isActive || isSelected ? Palette.accText : Palette.ink2)
     }
 
     private var editor: some View {
@@ -91,7 +91,7 @@ struct CaptionLineCard: View {
                 Button { viewModel.deleteCaptionLine(cueID) } label: {
                     Image(systemName: "trash")
                         .font(.system(size: 14, weight: .semibold))
-                        .foregroundStyle(Palette.danger)
+                        .foregroundStyle(Palette.dangerText)
                         .frame(width: 36, height: 32)
                         .background(Palette.dangerWash, in: Capsule())
                         .frame(minWidth: Metrics.hitTarget, minHeight: Metrics.hitTarget)

@@ -23,8 +23,8 @@ struct FilterChip: View {
         .lineLimit(1)
         .padding(.horizontal, 14)
         .frame(height: height)
-        .foregroundStyle(isSelected ? Color.black : Palette.ink)
-        .background(isSelected ? Color.white : Palette.fill, in: Capsule())
+        .foregroundStyle(isSelected ? Palette.bg : Palette.ink)
+        .background(isSelected ? Palette.ink : Palette.fill, in: Capsule())
         .contentShape(Capsule())
         .accessibilityAddTraits(isSelected ? .isSelected : [])
     }

@@ -35,7 +35,7 @@ struct PanelInlineList<Value: Hashable>: View {
                         if isOn {
                             Image(systemName: "checkmark")
                                 .font(.system(size: 14, weight: .bold))
-                                .foregroundStyle(Palette.acc)
+                                .foregroundStyle(Palette.accText)
                         }
                     }
                     .padding(.horizontal, 14)

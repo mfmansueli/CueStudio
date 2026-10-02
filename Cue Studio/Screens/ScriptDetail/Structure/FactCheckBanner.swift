@@ -13,7 +13,7 @@ struct FactCheckBanner: View {
         let shape = RoundedRectangle(cornerRadius: 16, style: .continuous)
         HStack(alignment: .top, spacing: 10) {
             Image(systemName: "sparkles")
-                .foregroundStyle(Palette.warn)
+                .foregroundStyle(Palette.warnText)
                 .accessibilityHidden(true)
             Text("Written with Apple Intelligence. AI can get facts wrong — check dates, names and numbers before you record.")
                 .font(.footnote)
@@ -22,7 +22,7 @@ struct FactCheckBanner: View {
                 .fixedSize(horizontal: false, vertical: true)
             Button("Checked", action: onChecked)
                 .font(.footnote.weight(.semibold))
-                .foregroundStyle(Palette.acc)
+                .foregroundStyle(Palette.accText)
                 .frame(minHeight: Metrics.hitTarget)
                 .accessibilityHint(Text("Hides this reminder"))
                 .accessibilityIdentifier("detail.factCheckedButton")

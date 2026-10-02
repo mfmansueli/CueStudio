@@ -130,15 +130,48 @@ struct QuickEditToolbarTests {
         #expect(viewModel.panel == .captions)
     }
 
-    @Test func musicOpensFilesUntilThereIsMusic() async {
+    @Test func musicAlwaysOpensFilesToAddAClipAtThePlayhead() async {
         let viewModel = await makeScenario().viewModel
         viewModel.perform(.openMusic)
         #expect(viewModel.sheet == .music)
+        #expect(viewModel.musicReplacementID == nil)
         viewModel.sheet = nil
         let music = MusicClip(fileName: "m.m4a", title: "Morning loop", fileDuration: 60, start: 0, length: 10)
         viewModel.edit.music = [music]
         viewModel.perform(.openMusic)
-        #expect(viewModel.selection == .music(music.id))
+        #expect(viewModel.sheet == .music)
+        #expect(viewModel.selection == nil)
+    }
+
+    @Test func replaceAsksForAFileForThePickedClipOnly() async {
+        let viewModel = await makeScenario().viewModel
+        let music = MusicClip(fileName: "m.m4a", title: "Morning loop", fileDuration: 60, start: 0, length: 10)
+        viewModel.edit.music = [music]
+        viewModel.selection = .music(music.id)
+        viewModel.perform(.replaceMusic)
+        #expect(viewModel.sheet == .music)
+        #expect(viewModel.musicReplacementID == music.id)
+        viewModel.sheet = nil
+        #expect(viewModel.musicReplacementID == nil)
+    }
+
+    @Test func theCaptionsMenuMakesOrManagesTheLines() async {
+        let viewModel = await makeScenario().viewModel
+        viewModel.perform(.openMenu(.captions))
+        #expect(viewModel.toolbarContextLabel == "Captions")
+        #expect(ids(viewModel) == ["autoCaptions", "writeCaptions"])
+        viewModel.edit.captions = [CaptionCue(text: "Oi", start: 1, end: 2, origin: .manual)]
+        #expect(ids(viewModel) == ["addLine", "allLines", "style"])
+        #expect(viewModel.toolbarItems.last?.action == .open(.captionStyle))
+    }
+
+    @Test func deleteIsPinnedAndTheOtherToolsScroll() async {
+        let viewModel = await makeScenario().viewModel
+        viewModel.perform(.selectClipAtPlayhead)
+        #expect(viewModel.toolbarItems.filter(\.isPinned).map(\.id) == ["delete"])
+        #expect(viewModel.toolbarItems.last?.isPinned == true)
+        viewModel.leaveToolbarContext()
+        #expect(viewModel.toolbarItems.allSatisfy { !$0.isPinned })
     }
 
     // MARK: - Panels and selection

@@ -33,7 +33,7 @@ struct PausesPanel: View {
                     Text("Couldn't listen to this take").font(.system(.subheadline, weight: .semibold))
                     Button("Try again") { Task { await viewModel.analyzeIfNeeded() } }
                         .font(.system(.subheadline, weight: .semibold))
-                        .foregroundStyle(Palette.acc)
+                        .foregroundStyle(Palette.accText)
                         .frame(minHeight: Metrics.hitTarget)
                 }
                 .frame(maxWidth: .infinity, minHeight: 92)
@@ -91,7 +91,7 @@ struct PausesPanel: View {
             VStack(alignment: .leading, spacing: 1) {
                 Text(viewModel.cleanUpSavingLabel)
                     .font(.system(.body, weight: .bold).monospacedDigit())
-                    .foregroundStyle(Palette.acc)
+                    .foregroundStyle(Palette.accText)
                     .accessibilityIdentifier("edit.pauses.saving")
                 Text(viewModel.cleanUpResultLabel)
                     .font(.system(.caption).monospacedDigit())

@@ -26,6 +26,24 @@ nonisolated enum ScriptBlocks {
         return blocks
     }
 
+    /// The editor's version of `blocks`: every paragraph, the empty one being typed in included, with
+    /// the label it will play and, on the first of each block, the block's read time.
+    static func editorLabels(for paragraphs: [String], structure: ScriptStructure, speed: Double) -> [EditorBlockLabel] {
+        let labels = paragraphs.indices.map { structure.blockLabel(forParagraph: $0, of: paragraphs.count) }
+        let seconds = paragraphs.map { ReadTime.seconds(for: $0, speed: speed) }
+        return paragraphs.indices.map { index in
+            let starts = index == 0 || labels[index - 1] != labels[index]
+            guard starts else { return EditorBlockLabel(label: labels[index], showsLabel: false, groupSeconds: nil) }
+            var total: TimeInterval = 0
+            var next = index
+            while next < paragraphs.count, labels[next] == labels[index] {
+                total += seconds[next]
+                next += 1
+            }
+            return EditorBlockLabel(label: labels[index], showsLabel: true, groupSeconds: total)
+        }
+    }
+
     /// Consecutive blocks with the same label merged into one chip.
     static func summaries(of blocks: [ScriptBlock]) -> [BlockSummary] {
         var summaries: [BlockSummary] = []

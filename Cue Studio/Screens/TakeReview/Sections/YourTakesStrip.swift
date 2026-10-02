@@ -45,7 +45,7 @@ struct YourTakesStrip: View {
         let shape = RoundedRectangle(cornerRadius: 16, style: .continuous)
         return Button(action: action) {
             HStack(spacing: 6) {
-                Image(systemName: "sparkles").foregroundStyle(Palette.acc)
+                Image(systemName: "sparkles").foregroundStyle(Palette.accText)
                 Text("Suggest best").font(.subheadline.weight(.semibold))
             }
             .foregroundStyle(Palette.ink)
@@ -71,7 +71,7 @@ struct YourTakesStrip: View {
                     HStack(spacing: 4) {
                         Text(take.label).font(.subheadline.weight(.semibold))
                         if take.isBest {
-                            Image(systemName: "star.fill").font(.caption2).foregroundStyle(Palette.acc)
+                            Image(systemName: "star.fill").font(.caption2).foregroundStyle(Palette.accText)
                         }
                     }
                     Text(DurationText.short(take.duration))

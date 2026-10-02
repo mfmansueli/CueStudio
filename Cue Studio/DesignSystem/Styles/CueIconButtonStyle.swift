@@ -51,7 +51,7 @@ struct CueIconButtonStyle: ButtonStyle {
         case .tinted: Palette.acc
         case .glass, .overlay, .surface: Palette.ink
         case .light: Palette.bg
-        case .danger: Palette.danger
+        case .danger: Palette.dangerText
         }
     }
 
@@ -63,7 +63,7 @@ struct CueIconButtonStyle: ButtonStyle {
         case .tinted: Palette.accSoft
         case .accent: Palette.acc
         case .light: Palette.ink
-        case .danger: Palette.dangerSoft
+        case .danger: Palette.dangerTextSoft
         }
     }
 }

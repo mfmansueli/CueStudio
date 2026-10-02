@@ -55,6 +55,7 @@ extension QuickEditViewModel {
         input.selectedJoin = selectedJoinID
         input.panelIsOpen = panel != nil
         input.focusedLane = panel?.focusedLane
+        input.activeLanes = toolMenu?.lanes ?? []
         input.heightClass = heightClass
         input.pointsPerSecond = TimelineGeometry.basePointsPerSecond * timelineZoom
         return input
@@ -89,13 +90,20 @@ extension QuickEditViewModel {
     // MARK: - Tapping
 
     /// A tap on the timeline (a move under `TimelineGeometry.tapSlop`): picks what it lands on, or
-    /// lets go on empty space. While Pauses is open only the pauses answer.
+    /// lets go on empty space. A track's strip opens (or closes) that track's tools. While Pauses
+    /// is open only the pauses answer.
     func tapTimeline(_ hit: TimelineGeometry.Hit?) {
         guard isReady, !recorder.isRecording else { return }
         if panel == .pauses {
             if case .pause(let id) = hit { togglePauseMark(id) }
             return
         }
+        // Anything but a track's own strip closes the tools it opened.
+        if case .lane(let lane)? = hit {
+            tapLane(lane)
+            return
+        }
+        toolMenu = nil
         guard let hit else {
             selection = nil
             return
@@ -103,25 +111,26 @@ extension QuickEditViewModel {
         switch hit {
         case .cover:
             selection = nil
-            toolMenu = nil
             panel = .cover
         case .addClip:
             mediaInsertMode = .clip
             sheet = .media
-        case .addText:
-            selection = nil
-            panel = nil
-            toolMenu = .text
-        case .captions: openCaptions()
-        case .addAudio:
-            selection = nil
-            panel = nil
-            toolMenu = .audio
         case .pause(let id): togglePauseMark(id)
         case .join(let id): pickJoin(id)
         case .clip(let id): pick(.clip(id))
         case .item(let kind, let id): Self.selection(of: kind, id).map(pick)
+        case .lane: break
         }
+    }
+
+    /// A track's strip: its tools replace the toolbar's, and a second tap puts the toolbar back.
+    private func tapLane(_ lane: TimelineLane) {
+        guard let menu = EditorToolMenu(lane: lane) else { return }
+        player.pause()
+        selection = nil
+        panel = nil
+        toolMenu = toolMenu == menu ? nil : menu
+        Haptics.selection()
     }
 
     /// What picking a track item selects (nothing for the voice-over being recorded).

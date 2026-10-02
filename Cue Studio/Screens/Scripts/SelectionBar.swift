@@ -39,7 +39,7 @@ struct SelectionBar: View {
                 .buttonStyle(.cueIcon(.overlay, diameter: 48))
                 .accessibilityLabel(Text("Duplicate"))
                 Button(action: onDelete) {
-                    Image(systemName: "trash").foregroundStyle(Palette.danger)
+                    Image(systemName: "trash").foregroundStyle(Palette.dangerText)
                 }
                 .buttonStyle(.cueIcon(.overlay, diameter: 48))
                 .accessibilityLabel(Text("Delete"))

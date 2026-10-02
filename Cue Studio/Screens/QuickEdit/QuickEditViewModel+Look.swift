@@ -8,7 +8,7 @@ import Foundation
 /// Adjust, Filters and Crop for the whole take. Each change shows live and is an undo step; a
 /// slider's quick moves are one (`EditHistory.coalescingInterval`).
 extension QuickEditViewModel {
-    /// Adjust's sliders, −100…+100 (Sharpness 0…100).
+    /// Adjust's settings, −100…+100 (Sharpness 0…100).
     enum Adjustment: String, CaseIterable, Identifiable {
         case exposure, contrast, warmth, saturation, highlights, shadows, sharpness
 
@@ -27,9 +27,6 @@ extension QuickEditViewModel {
         }
 
         var isBipolar: Bool { self != .sharpness }
-
-        /// In the Advanced section.
-        var isAdvanced: Bool { [.saturation, .highlights, .shadows, .sharpness].contains(self) }
     }
 
     /// Changes light, color, frame or sound (`EditLook`) as an undo step.

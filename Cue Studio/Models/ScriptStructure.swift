@@ -18,7 +18,7 @@ nonisolated struct ScriptStructure: Hashable, Sendable {
 
     /// Used by scripts without a format.
     static let generic = ScriptStructure(
-        label: String(localized: "Script"),
+        label: String(localized: "Talking video"),
         blocks: [String(localized: "Hook"), String(localized: "Body"), String(localized: "CTA")],
         tones: [.casual, .energetic, .expert, .funny],
         tools: [.newHooks, .fitToTime, .moreEnergy, .fixGrammar, .translate],

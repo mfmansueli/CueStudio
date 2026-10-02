@@ -44,7 +44,7 @@ struct PromptCard: View {
                 HStack(spacing: 10) {
                     Text(placeholder)
                         .font(.subheadline)
-                        .foregroundStyle(Palette.ink3)
+                        .foregroundStyle(Palette.ink2)
                         .lineLimit(1)
                         .frame(maxWidth: .infinity, alignment: .leading)
                     Image(systemName: "arrow.up")

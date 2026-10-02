@@ -21,7 +21,7 @@ struct SetupSummaryPill: View {
             HStack(spacing: 5) {
                 if source != .creatorSetup {
                     Text(source.label)
-                        .foregroundStyle(Palette.acc)
+                        .foregroundStyle(Palette.accText)
                     Text("·")
                         .foregroundStyle(Palette.ink3)
                 }

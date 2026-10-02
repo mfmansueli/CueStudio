@@ -106,7 +106,7 @@ struct QuickEditPreview: View {
         } else if viewModel.comparesOriginal {
             // Voice › Compare with original: what plays is the untreated sound.
             HStack(spacing: 6) {
-                Image(systemName: "ear").font(.system(size: 11, weight: .bold)).foregroundStyle(Palette.acc)
+                Image(systemName: "ear").font(.system(size: 11, weight: .bold)).foregroundStyle(Palette.accText)
                 Text("Original audio").font(.footnote.weight(.semibold))
             }
             .padding(.horizontal, 12)
@@ -159,7 +159,7 @@ struct QuickEditPreview: View {
         VStack(spacing: 6) {
             Image(systemName: "exclamationmark.triangle")
                 .font(.title2)
-                .foregroundStyle(Palette.warn)
+                .foregroundStyle(Palette.warnText)
             title.font(.subheadline.weight(.semibold))
             detail.font(.footnote).foregroundStyle(Palette.ink2)
         }

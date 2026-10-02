@@ -14,6 +14,17 @@ nonisolated enum TimelineLane: String, CaseIterable, Hashable, Sendable {
     case captions
     case music
     case voiceOver
-    /// "+ Add audio" while there is neither music nor a voice-over.
+    /// "Tap to add music or voice-over" while there is neither music nor a voice-over.
     case audio
+
+    /// The icon in the gutter beside the track's strip (none for the video track).
+    var gutterSymbol: String? {
+        switch self {
+        case .main: nil
+        case .text: "textformat"
+        case .captions: "captions.bubble"
+        case .music, .audio: "music.note"
+        case .voiceOver: "mic"
+        }
+    }
 }

@@ -85,7 +85,7 @@ struct RemotePairingPanel: View {
         HStack(spacing: 12) {
             Image(systemName: "checkmark.circle.fill")
                 .font(.title2)
-                .foregroundStyle(Palette.success)
+                .foregroundStyle(Palette.successText)
             VStack(alignment: .leading, spacing: 2) {
                 Text("Remote Connected").font(.headline)
                 Text(deviceName)
@@ -107,7 +107,7 @@ struct RemotePairingPanel: View {
         VStack(alignment: .leading, spacing: 12) {
             Label(message, systemImage: "exclamationmark.triangle.fill")
                 .font(.subheadline)
-                .foregroundStyle(Palette.warn)
+                .foregroundStyle(Palette.warnText)
                 .fixedSize(horizontal: false, vertical: true)
             Button("Try again") { remote.startHosting() }
                 .buttonStyle(.cueSecondary(.compact, expands: false))

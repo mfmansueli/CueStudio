@@ -209,7 +209,7 @@ struct ScriptsView: View {
                 viewModel.toggleSelecting()
             }
             .font(.body.weight(.medium))
-            .foregroundStyle(Palette.acc)
+            .foregroundStyle(Palette.accText)
             .accessibilityIdentifier("scripts.selectButton")
         }
         .textCase(nil)

@@ -69,7 +69,14 @@ final class QuickEditViewModel {
     /// The preview fills the screen: tap the video to play or pause, outside to come back.
     var isFullScreen = false
     /// The sheet over the editor: Export, Add music, Add photo or video.
-    var sheet: EditorSheet?
+    var sheet: EditorSheet? {
+        didSet {
+            // "Replace" asks for the file only for the sheet it opened.
+            if sheet != .music { musicReplacementID = nil }
+        }
+    }
+    /// The music clip the next sound file replaces ("Replace"); nil adds a new clip.
+    var musicReplacementID: UUID?
     /// Where "Add photo or video" puts what is picked.
     var mediaInsertMode: MediaInsertMode = .overlay
     /// The timeline's zoom (44 points per second at 1), from 0.35 to 5.

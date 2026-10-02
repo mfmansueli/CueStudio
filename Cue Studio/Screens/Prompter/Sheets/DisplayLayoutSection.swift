@@ -19,7 +19,7 @@ struct DisplayLayoutSection: View {
                 SectionHeading(text: String(localized: "Layout"))
                 Button("Reset to Recommended") { viewModel.resetLayout() }
                     .font(.subheadline.weight(.semibold))
-                    .foregroundStyle(Palette.acc)
+                    .foregroundStyle(Palette.accText)
                     .buttonStyle(.plain)
                     .fixedSize()
                     .accessibilityIdentifier("display.resetLayoutButton")
@@ -31,7 +31,7 @@ struct DisplayLayoutSection: View {
             safeZone
             Text("Safe zones are a visual guide based on each app’s current layout — platforms change their UI, so they’re not a guarantee. Nothing on this screen appears in your video: Cue records the full frame only.")
                 .font(.caption)
-                .foregroundStyle(Palette.ink.opacity(0.45))
+                .foregroundStyle(Palette.ink2)
                 .padding(.horizontal, 6)
         }
     }

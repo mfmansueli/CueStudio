@@ -21,7 +21,7 @@ struct PanelSaveStyleCard: View {
                         .lineLimit(2)
                         .minimumScaleFactor(0.8)
                 }
-                .foregroundStyle(Palette.acc)
+                .foregroundStyle(Palette.accText)
                 .padding(.horizontal, 6)
                 .frame(width: 84, height: 74)
                 .overlay(

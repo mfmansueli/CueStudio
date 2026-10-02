@@ -15,13 +15,16 @@ struct ToastHost: ViewModifier {
         content
             .overlay(alignment: .top) {
                 if let message = toast.message {
-                    ToastView(message: message)
-                        .padding(.horizontal, Metrics.gutter)
-                        .padding(.top, 8)
-                        .id(message)
-                        .transition(reduceMotion ? .opacity : .move(edge: .top).combined(with: .opacity))
-                        .onTapGesture { toast.dismiss() }
-                        .accessibilityIdentifier("toast")
+                    ToastView(message: message, action: toast.action) {
+                        toast.action?.perform()
+                        toast.dismiss()
+                    }
+                    .padding(.horizontal, Metrics.gutter)
+                    .padding(.top, 8)
+                    .id(message)
+                    .transition(reduceMotion ? .opacity : .move(edge: .top).combined(with: .opacity))
+                    .onTapGesture { toast.dismiss() }
+                    .accessibilityIdentifier("toast")
                 }
             }
             .animation(.spring(duration: 0.3), value: toast.message)

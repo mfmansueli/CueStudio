@@ -77,7 +77,7 @@ struct CaptionStylePanel: View {
         if viewModel.captionReveal.followsWords, viewModel.linesWithoutWordTiming > 0 {
             PanelNote(
                 text: String(localized: "\(viewModel.linesWithoutWordTiming) lines show whole: their words don't have their own times."),
-                tint: Palette.warn
+                tint: Palette.warnText
             )
         }
     }

@@ -71,6 +71,49 @@ struct QuickEditSoundTests {
         #expect(scenario.viewModel.edit.music.first?.length == 12)
     }
 
+    @Test func aSecondSongGoesAfterTheFirstInsteadOfOnTopOfIt() async throws {
+        let scenario = await makeScenario()
+        let viewModel = scenario.viewModel
+        viewModel.addMusic(song(20))
+        scenario.player.currentTime = 5
+        viewModel.addMusic(song(20))
+        let second = try #require(viewModel.edit.music.last)
+        #expect(viewModel.edit.music.count == 2)
+        #expect(second.start == 20)
+        #expect(second.length == 20)
+    }
+
+    @Test func withNoFreeRoomAtThePlayheadNothingIsAdded() async {
+        let scenario = await makeScenario()
+        let viewModel = scenario.viewModel
+        viewModel.addMusic(song(95))
+        scenario.player.currentTime = 30
+        viewModel.addMusic(song())
+        #expect(viewModel.edit.music.count == 1)
+        #expect(scenario.toast.message == "No room here — move the playhead to a free spot")
+    }
+
+    @Test func replaceKeepsThePlaceVolumeAndFadesOfTheClip() async throws {
+        let scenario = await makeScenario()
+        let viewModel = scenario.viewModel
+        scenario.player.currentTime = 10
+        viewModel.addMusic(song())
+        let original = try #require(viewModel.edit.music.first)
+        viewModel.setMusicVolume(original.id, 0.8)
+        viewModel.musicReplacementID = original.id
+        let other = ImportedAudio(fileName: "other.m4a", title: "Other loop", duration: 30)
+        viewModel.addMusic(other)
+        let clip = try #require(viewModel.edit.music.first)
+        #expect(viewModel.edit.music.count == 1)
+        #expect(clip.id == original.id)
+        #expect(clip.title == "Other loop" && clip.fileName == "other.m4a")
+        #expect(clip.start == 10 && clip.length == 30 && clip.offset == 0)
+        #expect(abs(clip.volume - 0.8) < 0.001)
+        #expect(viewModel.musicReplacementID == nil)
+        viewModel.undo()
+        #expect(viewModel.edit.music.first?.title == "Morning song")
+    }
+
     @Test func importingASoundFileGoesThroughTheImporter() async {
         let scenario = await makeScenario()
         let url = URL(filePath: "/tmp/song.m4a")

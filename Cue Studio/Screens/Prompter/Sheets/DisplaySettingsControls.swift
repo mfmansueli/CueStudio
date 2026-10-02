@@ -31,7 +31,7 @@ struct DisplaySettingsControls: View {
             if mode == .selfie {
                 Text("Background and blur only change your preview — never the recording.")
                     .font(.caption)
-                    .foregroundStyle(Palette.ink.opacity(0.45))
+                    .foregroundStyle(Palette.ink2)
                     .padding(.horizontal, 4)
             }
             advancedToggle
@@ -107,7 +107,7 @@ struct DisplaySettingsControls: View {
                 Spacer()
                 Image(systemName: "chevron.forward")
                     .font(.footnote.weight(.bold))
-                    .foregroundStyle(Palette.ink.opacity(0.5))
+                    .foregroundStyle(Palette.ink2)
                     // Forward points left in right to left, so it turns the other way to point down.
                     .rotationEffect(.degrees(showsAdvanced ? (layoutDirection == .rightToLeft ? -90 : 90) : 0))
             }

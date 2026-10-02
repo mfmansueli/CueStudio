@@ -37,7 +37,7 @@ struct CleanUpCard: View {
                 Spacer(minLength: 4)
                 Text(isMarked ? String(localized: "Remove") : String(localized: "Keep"))
                     .font(.system(.caption, weight: .bold))
-                    .foregroundStyle(isMarked ? Palette.acc : Palette.ink2)
+                    .foregroundStyle(isMarked ? Palette.accText : Palette.ink2)
             }
             Button(action: onListen) {
                 HStack(spacing: 5) {

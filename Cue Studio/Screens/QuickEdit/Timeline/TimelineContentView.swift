@@ -8,8 +8,10 @@ import UIKit
 
 /// Draws the timeline's geometry with layers, only for a window around what shows (zoomed in, a
 /// take can be tens of thousands of points wide): the ruler, the cover, the clips with their
-/// frames, waveform and badges, the pauses, the track items and their keyframes, the shortcuts on
-/// empty tracks, the "+" and the handles. Lives inside the scroll view, so it scrolls with it.
+/// frames, waveform and badges, the pauses, the track items and their keyframes, the hints on
+/// empty tracks, the "+" and the handles. Lives inside the scroll view, so it scrolls with it. The
+/// track strips and their gutter are not here: they stay on screen (`TimelineLaneBackdropView`,
+/// `TimelineLaneGutterView`).
 @MainActor
 final class TimelineContentView: UIView {
     /// What the clips' frames and waveforms come from.
@@ -31,9 +33,7 @@ final class TimelineContentView: UIView {
     private var drawn: CGRect = .null
     /// What shows now (scroll bounds, in content points).
     private var visible: CGRect = .zero
-    private var ghostLayers: [(layer: CALayer, width: CGFloat)] = []
-    /// Where the shortcuts are, for tapping.
-    private(set) var ghostFrames: [CGRect] = []
+    private var ghostLayers: [CALayer] = []
     private let layersRoot = CALayer()
 
     override init(frame: CGRect) {
@@ -334,42 +334,21 @@ final class TimelineContentView: UIView {
         layersRoot.addSublayer(box)
     }
 
+    /// What an empty track says: plain text, since a tap anywhere on the track does the job.
     private func drawGhost(_ ghost: TimelineGeometry.Ghost) {
-        let ink = UIColor(Palette.laneGhostInk)
-        let label = textLayer(ghost.label, size: 12, weight: .semibold, color: ink)
-        let icon = symbolLayer("plus", size: 10, weight: .bold, color: ink)
-        let iconWidth = icon?.frame.width ?? 0
-        let width = 9 + iconWidth + 5 + label.frame.width + 12
-        let box = CALayer()
-        box.frame = CGRect(x: 0, y: ghost.lane.y, width: width, height: ghost.lane.height)
-        let border = CAShapeLayer()
-        border.path = UIBezierPath(roundedRect: box.bounds.insetBy(dx: 0.5, dy: 0.5), cornerRadius: Metrics.laneItemRadius).cgPath
-        border.fillColor = nil
-        border.strokeColor = UIColor(Palette.laneGhostBorder).cgColor
-        border.lineWidth = 1
-        border.lineDashPattern = [4, 3]
-        box.addSublayer(border)
-        if let icon {
-            icon.frame.origin = CGPoint(x: 9, y: (ghost.lane.height - icon.frame.height) / 2)
-            box.addSublayer(icon)
-        }
-        label.frame.origin = CGPoint(x: 9 + iconWidth + 5, y: (ghost.lane.height - label.frame.height) / 2)
-        box.addSublayer(label)
-        layersRoot.addSublayer(box)
-        ghostLayers.append((box, width))
+        let label = textLayer(ghost.label, size: 12, weight: .medium, color: UIColor(Palette.laneHintInk))
+        label.frame.origin = CGPoint(x: 0, y: ghost.lane.y + (ghost.lane.height - label.frame.height) / 2)
+        label.zPosition = 2
+        layersRoot.addSublayer(label)
+        ghostLayers.append(label)
     }
 
-    /// Shortcuts sit at the start of the video, or 10 pt in from the left edge once it's scrolled
-    /// away.
+    /// Hints stay at a fixed place on screen, past the gutter, whatever the scroll.
     private func layoutGhosts() {
-        guard let geometry else { return }
         CATransaction.begin()
         CATransaction.setDisableActions(true)
-        ghostFrames = zip(geometry.ghosts, ghostLayers).map { ghost, entry in
-            let x = max(0, visible.minX + 10)
-            let frame = CGRect(x: x, y: ghost.lane.y, width: entry.width, height: ghost.lane.height)
-            entry.layer.frame = frame
-            return frame
+        for layer in ghostLayers {
+            layer.frame.origin.x = visible.minX + TimelineGeometry.hintLeading
         }
         CATransaction.commit()
     }

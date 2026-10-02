@@ -21,7 +21,7 @@ struct SetupRecommendationCard: View {
             HStack(alignment: .top, spacing: 12) {
                 Image(systemName: "sparkles")
                     .font(.body.weight(.semibold))
-                    .foregroundStyle(Palette.acc)
+                    .foregroundStyle(Palette.accText)
                     .frame(width: 36, height: 36)
                     .background(Palette.accSoft, in: Circle())
                     .accessibilityHidden(true)

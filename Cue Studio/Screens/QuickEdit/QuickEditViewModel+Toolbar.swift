@@ -6,8 +6,9 @@
 import Foundation
 
 /// The toolbar by context: the main tools with nothing picked; the picked item's own tools (Clip,
-/// Text, Caption, Music, Voice-over, Media) with a yellow "‹" back to the main ones; and the Text
-/// and Audio menus. Speed and Zoom stay two separate tools.
+/// Text, Caption, Music, Voice-over, Media) with a yellow "‹" back to the main ones; and the Text,
+/// Captions and Audio menus, which a tap on their track opens too. Speed and Zoom stay two
+/// separate tools. Delete is always the last tool and stays put (see `EditorToolbarItem.isPinned`).
 extension QuickEditViewModel {
     /// The name next to the back button; nil on the main toolbar.
     var toolbarContextLabel: String? {
@@ -18,6 +19,7 @@ extension QuickEditViewModel {
         if let selection { return items(for: selection) }
         switch toolMenu {
         case .text: return textMenuItems
+        case .captions: return captionsMenuItems
         case .audio: return audioMenuItems
         case nil: return mainItems
         }
@@ -59,6 +61,21 @@ extension QuickEditViewModel {
             items.append(EditorToolbarItem(id: "styleAll", label: String(localized: "Style all"), systemImage: "square.grid.2x2", action: .styleAllTexts))
         }
         return items
+    }
+
+    /// With lines: add one, the list, the style. Without: make them, or write them.
+    private var captionsMenuItems: [EditorToolbarItem] {
+        if edit.captions.isEmpty {
+            return [
+                EditorToolbarItem(id: "autoCaptions", label: String(localized: "Auto captions"), systemImage: "captions.bubble", action: .openCaptions),
+                EditorToolbarItem(id: "writeCaptions", label: String(localized: "Write them"), systemImage: "pencil", action: .writeCaptionsByHand),
+            ]
+        }
+        return [
+            EditorToolbarItem(id: "addLine", label: String(localized: "Add line"), systemImage: "captions.bubble", action: .openCaptions),
+            EditorToolbarItem(id: "allLines", label: String(localized: "All lines"), systemImage: "list.bullet", action: .openCaptions),
+            EditorToolbarItem(id: "style", label: String(localized: "Style"), systemImage: "textformat.alt", action: .open(.captionStyle)),
+        ]
     }
 
     private var audioMenuItems: [EditorToolbarItem] {
@@ -145,13 +162,17 @@ extension QuickEditViewModel {
         case .editText:
             panel = .textStyle
             focusesTextField = true
+        case .writeCaptionsByHand:
+            toolMenu = nil
+            writeCaptionsByHand()
         case .openMusic:
-            if let first = edit.music.first {
-                selection = .music(first.id)
-            } else {
-                sheet = .music
-            }
-        case .replaceMusic: sheet = .music
+            // Always adds: a clip already there is picked on its track, and "Replace" swaps it.
+            musicReplacementID = nil
+            sheet = .music
+        case .replaceMusic:
+            guard let id = selection?.musicID else { return }
+            sheet = .music
+            musicReplacementID = id
         default: break
         }
     }

@@ -26,7 +26,7 @@ struct HeroScriptCard: View {
                     .font(.caption.weight(.bold))
                     .textCase(.uppercase)
                     .kerning(0.8)
-                    .foregroundStyle(Palette.acc)
+                    .foregroundStyle(Palette.accText)
                 Spacer()
                 Text(script.updatedAt, format: .relative(presentation: .named))
                     .font(.footnote)

@@ -1,0 +1,193 @@
+//
+//  PaletteContrastTests.swift
+//  Cue StudioTests
+//
+
+import SwiftUI
+import Testing
+import UIKit
+@testable import Cue_Studio
+
+/// The palette against Apple's contrast guidelines (4.5:1 for text, 3:1 for the parts of a control)
+/// in the light and the dark appearance, with and without Increase Contrast. Cue runs dark, but
+/// the light values are kept right so the day the appearance lock goes, no screen turns pale yellow
+/// on white.
+@MainActor
+@Suite("Palette contrast")
+struct PaletteContrastTests {
+    private enum Appearance: CaseIterable, CustomStringConvertible {
+        case light, dark, lightIncreased, darkIncreased
+
+        var traits: UITraitCollection {
+            let style: UIUserInterfaceStyle = self == .light || self == .lightIncreased ? .light : .dark
+            let contrast: UIAccessibilityContrast = self == .lightIncreased || self == .darkIncreased ? .high : .normal
+            return UITraitCollection(traitsFrom: [
+                UITraitCollection(userInterfaceStyle: style),
+                UITraitCollection(accessibilityContrast: contrast),
+            ])
+        }
+
+        var isLight: Bool { self == .light || self == .lightIncreased }
+
+        var description: String {
+            switch self {
+            case .light: "light"
+            case .dark: "dark"
+            case .lightIncreased: "light + Increase Contrast"
+            case .darkIncreased: "dark + Increase Contrast"
+            }
+        }
+    }
+
+    /// What a token looks like in an appearance, over `background` when it's translucent.
+    private func rgb(_ color: Color, in appearance: Appearance, over background: ColorContrast.RGB? = nil) -> ColorContrast.RGB {
+        let resolved = UIColor(color).resolvedColor(with: appearance.traits)
+        var red: CGFloat = 0
+        var green: CGFloat = 0
+        var blue: CGFloat = 0
+        var alpha: CGFloat = 0
+        resolved.getRed(&red, green: &green, blue: &blue, alpha: &alpha)
+        let solid = ColorContrast.RGB(red: Double(red), green: Double(green), blue: Double(blue))
+        return ColorContrast.composite(solid, alpha: Double(alpha), over: background ?? ColorContrast.RGB(red: 0, green: 0, blue: 0))
+    }
+
+    private func ratio(_ foreground: Color, on background: Color, in appearance: Appearance) -> Double {
+        let base = rgb(background, in: appearance)
+        return ColorContrast.ratio(rgb(foreground, in: appearance, over: base), base)
+    }
+
+    /// `foreground` on a translucent `tint` laid over `surface`.
+    private func ratio(_ foreground: Color, onTint tint: Color, over surface: Color, in appearance: Appearance) -> Double {
+        let base = rgb(surface, in: appearance)
+        let tinted = rgb(tint, in: appearance, over: base)
+        return ColorContrast.ratio(rgb(foreground, in: appearance, over: tinted), tinted)
+    }
+
+    private let surfaces: [(name: String, color: Color)] = [
+        ("bg", Palette.bg), ("surface", Palette.surface), ("surface2", Palette.surface2),
+    ]
+
+    /// Plus the one the tiles sit on, for what only has to be seen.
+    private let surfacesWithTiles: [(name: String, color: Color)] = [
+        ("bg", Palette.bg), ("surface", Palette.surface), ("surface2", Palette.surface2), ("surface3", Palette.surface3),
+    ]
+
+    private let textTokens: [(name: String, color: Color)] = [
+        ("ink", Palette.ink), ("ink2", Palette.ink2), ("accText", Palette.accText), ("warnText", Palette.warnText),
+        ("dangerText", Palette.dangerText), ("infoText", Palette.infoText), ("successText", Palette.successText),
+    ]
+
+    private let tertiaryToken: [(name: String, color: Color)] = [("ink3", Palette.ink3)]
+
+    // MARK: - Text
+
+    @Test func textTokensMeetTheTextMinimumOnEverySurface() {
+        for appearance in Appearance.allCases {
+            for token in textTokens {
+                for surface in surfaces {
+                    let value = ratio(token.color, on: surface.color, in: appearance)
+                    #expect(
+                        value >= ColorContrast.textMinimum,
+                        "\(token.name) on \(surface.name), \(appearance): \(value.formatted(.number.precision(.fractionLength(2))))"
+                    )
+                }
+            }
+        }
+    }
+
+    @Test func inkAndSecondaryInkAlsoReadOnTheTileSurface() {
+        for appearance in Appearance.allCases {
+            for token in [Palette.ink, Palette.ink2] {
+                #expect(ratio(token, on: Palette.surface3, in: appearance) >= ColorContrast.textMinimum, "\(appearance)")
+            }
+        }
+    }
+
+    @Test func coloredTextReadsOnItsOwnSoftFill() {
+        let pairs: [(name: String, text: Color, tint: Color)] = [
+            ("accText", Palette.accText, Palette.accSoft), ("warnText", Palette.warnText, Palette.warnSoft),
+            ("infoText", Palette.infoText, Palette.infoSoft), ("dangerText", Palette.dangerText, Palette.dangerSoft),
+        ]
+        for appearance in Appearance.allCases {
+            for pair in pairs {
+                for surface in surfaces {
+                    let value = ratio(pair.text, onTint: pair.tint, over: surface.color, in: appearance)
+                    #expect(value >= ColorContrast.textMinimum, "\(pair.name) on its fill over \(surface.name), \(appearance): \(value)")
+                }
+            }
+        }
+    }
+
+    // MARK: - Fills with text on them
+
+    @Test func labelsOnTheBrightFillsAreReadable() {
+        for appearance in Appearance.allCases {
+            #expect(ratio(Palette.accInk, on: Palette.acc, in: appearance) >= ColorContrast.textMinimum, "accInk on acc, \(appearance)")
+            #expect(ratio(Palette.accInk, on: Palette.warn, in: appearance) >= ColorContrast.textMinimum, "accInk on warn, \(appearance)")
+            #expect(ratio(.white, on: Palette.dangerFill, in: appearance) >= ColorContrast.textMinimum, "white on dangerFill, \(appearance)")
+            #expect(ratio(Palette.bg, on: Palette.ink, in: appearance) >= ColorContrast.textMinimum, "a selected chip, \(appearance)")
+            #expect(ratio(.white, on: Palette.neutralAction, in: appearance) >= ColorContrast.textMinimum, "white on neutralAction, \(appearance)")
+        }
+    }
+
+    // MARK: - Parts of controls
+
+    @Test func tertiaryInkIsAtLeastAVisibleOutlineOnEverySurface() {
+        for appearance in Appearance.allCases {
+            for surface in surfacesWithTiles {
+                let value = ratio(Palette.ink3, on: surface.color, in: appearance)
+                #expect(value >= ColorContrast.componentMinimum, "ink3 on \(surface.name), \(appearance): \(value)")
+            }
+        }
+    }
+
+    // MARK: - Increase Contrast
+
+    @Test func increaseContrastIsStrongerNotWeaker() {
+        for (normal, increased) in [(Appearance.light, Appearance.lightIncreased), (.dark, .darkIncreased)] {
+            for token in textTokens + tertiaryToken {
+                for surface in surfaces {
+                    let before = ratio(token.color, on: surface.color, in: normal)
+                    let after = ratio(token.color, on: surface.color, in: increased)
+                    #expect(after >= before - 0.001, "\(token.name) on \(surface.name), \(normal) → \(increased): \(before) → \(after)")
+                }
+            }
+        }
+    }
+
+    @Test func theSecondaryTextStepsUpWithIncreaseContrast() {
+        for (normal, increased) in [(Appearance.light, Appearance.lightIncreased), (.dark, .darkIncreased)] {
+            #expect(ratio(Palette.ink2, on: Palette.surface, in: increased) > ratio(Palette.ink2, on: Palette.surface, in: normal))
+            #expect(ratio(Palette.ink3, on: Palette.surface, in: increased) > ratio(Palette.ink3, on: Palette.surface, in: normal))
+        }
+    }
+
+    // MARK: - The editor (always dark)
+
+    @Test func theEditorsHintsAndIconsReadOnTheirTracks() {
+        let strip = rgb(Palette.laneStrip, in: .dark)
+        let active = rgb(Palette.laneStripActive, in: .dark)
+        for background in [strip, active] {
+            let hint = rgb(Palette.laneHintInk, in: .dark, over: background)
+            #expect(ColorContrast.ratio(hint, background) >= ColorContrast.textMinimum, "the hint on an empty track")
+        }
+        let black = ColorContrast.RGB(red: 0, green: 0, blue: 0)
+        let icon = rgb(Palette.laneGutterInk, in: .dark, over: black)
+        #expect(ColorContrast.ratio(icon, black) >= ColorContrast.componentMinimum, "a track's icon in the gutter")
+    }
+
+    // MARK: - The math
+
+    @Test func theRatioIsTheStandardOne() {
+        let black = ColorContrast.RGB(red: 0, green: 0, blue: 0)
+        let white = ColorContrast.RGB(red: 1, green: 1, blue: 1)
+        #expect(abs(ColorContrast.ratio(black, white) - 21) < 0.001)
+        #expect(abs(ColorContrast.ratio(white, white) - 1) < 0.001)
+        // #767676 on white is the classic 4.54:1.
+        let gray = ColorContrast.RGB(hex: 0x767676)
+        #expect(abs(ColorContrast.ratio(gray, white) - 4.54) < 0.01)
+        // Translucent white over black is the gray it looks like.
+        let half = ColorContrast.composite(white, alpha: 0.5, over: black)
+        #expect(abs(half.red - 0.5) < 0.001)
+    }
+}

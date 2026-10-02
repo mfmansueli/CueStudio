@@ -16,7 +16,7 @@ struct RemoteSetupSection: View {
             } label: {
                 HStack(spacing: 12) {
                     Image(systemName: "iphone.radiowaves.left.and.right")
-                        .foregroundStyle(Palette.acc)
+                        .foregroundStyle(Palette.accText)
                         .frame(width: 24)
                     VStack(alignment: .leading, spacing: 2) {
                         Text("Connect a Device").foregroundStyle(Palette.ink)
@@ -36,7 +36,7 @@ struct RemoteSetupSection: View {
             .buttonStyle(.plain)
             .accessibilityIdentifier("creatorSetup.remoteButton")
             valueRow(String(localized: "Connected device"), value: remote.state.deviceName ?? String(localized: "None"))
-            valueRow(String(localized: "Remote status"), value: statusText, color: remote.isConnected ? Palette.success : Palette.ink2)
+            valueRow(String(localized: "Remote status"), value: statusText, color: remote.isConnected ? Palette.successText : Palette.ink2)
                 .accessibilityIdentifier("creatorSetup.remoteStatus")
         }
     }

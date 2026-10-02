@@ -24,7 +24,7 @@ final class FirstRunUITests: XCTestCase {
         title.tap()
         title.typeText("My first script")
 
-        let text = element(app, "editor.textEditor")
+        let text = element(app, "editor.paragraph.0")
         text.tap()
         text.typeText("Hello there. [pause]\nThis is my first script.")
 

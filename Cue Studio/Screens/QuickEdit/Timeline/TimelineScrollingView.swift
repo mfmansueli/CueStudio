@@ -34,8 +34,10 @@ final class TimelineScrollingView: UIView, UIScrollViewDelegate, UIGestureRecogn
 
     var actions = Actions()
 
+    private let backdrop = TimelineLaneBackdropView()
     private let scrollView = UIScrollView()
     private let content = TimelineContentView()
+    private let gutter = TimelineLaneGutterView()
     private let playhead = UIView()
     private let bubble = PaddedLabel()
     private var input: TimelineGeometry.Input?
@@ -66,7 +68,9 @@ final class TimelineScrollingView: UIView, UIScrollViewDelegate, UIGestureRecogn
         scrollView.decelerationRate = .normal
         scrollView.clipsToBounds = true
         scrollView.addSubview(content)
+        addSubview(backdrop)
         addSubview(scrollView)
+        addSubview(gutter)
 
         playhead.backgroundColor = .white
         playhead.layer.cornerRadius = 1
@@ -169,7 +173,9 @@ final class TimelineScrollingView: UIView, UIScrollViewDelegate, UIGestureRecogn
 
     override func layoutSubviews() {
         super.layoutSubviews()
+        backdrop.frame = bounds
         scrollView.frame = bounds
+        gutter.frame = bounds
         let half = bounds.width / 2
         if scrollView.contentInset.left != half {
             scrollView.contentInset = UIEdgeInsets(top: 0, left: half, bottom: 0, right: half)
@@ -184,6 +190,8 @@ final class TimelineScrollingView: UIView, UIScrollViewDelegate, UIGestureRecogn
 
     private func apply(_ geometry: TimelineGeometry, sources: TimelineContentView.Sources) {
         self.geometry = geometry
+        backdrop.show(geometry)
+        gutter.show(geometry)
         content.frame = CGRect(x: 0, y: 0, width: geometry.contentWidth, height: bounds.height)
         scrollView.contentSize = CGSize(width: geometry.contentWidth, height: bounds.height)
         content.show(geometry, sources: sources)
@@ -279,9 +287,16 @@ final class TimelineScrollingView: UIView, UIScrollViewDelegate, UIGestureRecogn
     @objc private func tapped(_ recognizer: UITapGestureRecognizer) {
         guard let geometry else { return }
         let point = recognizer.location(in: content)
+        let onScreen = recognizer.location(in: self)
+        let lane = geometry.laneHit(atViewportX: onScreen.x, y: onScreen.y, viewportWidth: bounds.width)
+        // Items scroll under the gutter: a tap there is for the track.
+        if onScreen.x <= TimelineGeometry.gutterWidth, let lane {
+            actions.tap(lane)
+            return
+        }
         // A tap on a handle does nothing (the handle is for dragging).
         guard geometry.handle(at: point) == nil else { return }
-        actions.tap(geometry.hit(at: point, ghostFrames: content.ghostFrames))
+        actions.tap(geometry.hit(at: point) ?? lane)
     }
 
     @objc private func handlePanned(_ recognizer: UIPanGestureRecognizer) {

@@ -93,7 +93,7 @@ struct TeleprompterSetupSection: View {
                 if !viewModel.isReadingLineRecommended {
                     Button("Reset") { viewModel.resetReadingLine() }
                         .font(.subheadline.weight(.semibold))
-                        .foregroundStyle(Palette.acc)
+                        .foregroundStyle(Palette.accText)
                         .buttonStyle(.plain)
                         .frame(minHeight: Metrics.hitTarget)
                         .accessibilityLabel(Text("Reset the reading line"))

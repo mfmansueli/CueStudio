@@ -34,7 +34,7 @@ struct BackgroundPanel: View {
             if effect.cutout == .person, effect.style != .original, viewModel.canFindPeople == false {
                 PanelNote(
                     text: String(localized: "This iPhone can’t find people in video. Use a color key with a green or blue screen."),
-                    tint: Palette.warn
+                    tint: Palette.warnText
                 )
                 .accessibilityIdentifier("edit.backgroundUnavailable")
             }

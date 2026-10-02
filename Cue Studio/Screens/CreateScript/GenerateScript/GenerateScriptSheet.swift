@@ -90,7 +90,7 @@ struct GenerateScriptSheet: View {
                     .font(.title2.bold())
                     .foregroundStyle(Palette.ink)
                 HStack(spacing: 6) {
-                    Image(systemName: "sparkles").foregroundStyle(Palette.acc)
+                    Image(systemName: "sparkles").foregroundStyle(Palette.accText)
                     Text("Apple Intelligence").fontWeight(.semibold).foregroundStyle(Palette.ink)
                     Text("· private · no cost").foregroundStyle(Palette.ink2)
                 }

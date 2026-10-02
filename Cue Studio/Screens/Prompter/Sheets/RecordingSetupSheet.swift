@@ -62,7 +62,7 @@ struct RecordingSetupSheet: View {
         let conflicts = session.conflicts
         return VStack(alignment: .leading, spacing: 10) {
             HStack(spacing: 8) {
-                Image(systemName: "sparkles").foregroundStyle(Palette.acc)
+                Image(systemName: "sparkles").foregroundStyle(Palette.accText)
                 Text(recommendation.title).font(.subheadline.weight(.semibold))
             }
             Text(recommendation.summary)
@@ -139,7 +139,7 @@ struct RecordingSetupSheet: View {
         } label: {
             HStack(spacing: 12) {
                 Image(systemName: "iphone.radiowaves.left.and.right")
-                    .foregroundStyle(viewModel.isRemoteConnected ? Palette.acc : Palette.ink2)
+                    .foregroundStyle(viewModel.isRemoteConnected ? Palette.accText : Palette.ink2)
                     .frame(width: 24)
                 VStack(alignment: .leading, spacing: 1) {
                     Text("Remote Control").foregroundStyle(Palette.ink)

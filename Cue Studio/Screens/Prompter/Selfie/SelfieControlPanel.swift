@@ -157,7 +157,7 @@ struct SelfieControlPanel: View {
                 Image(systemName: "timer").font(.system(size: 16, weight: .semibold))
                 Text(countdown.shortLabel).font(.system(size: 9, weight: .bold))
             }
-            .foregroundStyle(countdown == .off ? Color.white : Palette.acc)
+            .foregroundStyle(countdown == .off ? Color.white : Palette.accText)
             .frame(width: 44, height: 44)
             .background(countdown == .off ? Palette.overlayFill : Palette.acc.opacity(0.18), in: Circle())
         }

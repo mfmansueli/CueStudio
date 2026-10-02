@@ -68,7 +68,7 @@ struct EmptyLibraryView: View {
             HStack(spacing: 14) {
                 Image(systemName: systemImage)
                     .font(.title3)
-                    .foregroundStyle(highlighted ? Palette.acc : Palette.ink)
+                    .foregroundStyle(highlighted ? Palette.accText : Palette.ink)
                     .frame(width: 42, height: 42)
                     .background(highlighted ? Palette.accSoft : Palette.surface2, in: RoundedRectangle(cornerRadius: 13, style: .continuous))
                 VStack(alignment: .leading, spacing: 2) {

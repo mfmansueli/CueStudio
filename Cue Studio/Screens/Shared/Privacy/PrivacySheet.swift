@@ -55,7 +55,7 @@ struct PrivacySheet: View {
             }
             .padding(.vertical, 4)
         } icon: {
-            Image(systemName: systemImage).foregroundStyle(Palette.acc)
+            Image(systemName: systemImage).foregroundStyle(Palette.accText)
         }
     }
 }

@@ -93,7 +93,7 @@ struct SettingsView: View {
         let setup = preferences.creatorSetup
         return HStack(spacing: 12) {
             Image(systemName: "slider.horizontal.3")
-                .foregroundStyle(Palette.acc)
+                .foregroundStyle(Palette.accText)
                 .frame(width: 28, height: 28)
                 .background(Palette.accSoft, in: Circle())
             VStack(alignment: .leading, spacing: 2) {

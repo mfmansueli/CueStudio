@@ -17,7 +17,7 @@ struct PromptTabView: View {
             ZStack(alignment: .topLeading) {
                 if viewModel.promptText.isEmpty {
                     Text("Describe your video… what it’s about, how long, who it’s for.")
-                        .foregroundStyle(Palette.ink3)
+                        .foregroundStyle(Palette.ink2)
                         .padding(EdgeInsets(top: 14 + 8, leading: 16 + 5, bottom: 0, trailing: 16))
                         .allowsHitTesting(false)
                 }

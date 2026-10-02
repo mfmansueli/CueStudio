@@ -29,7 +29,7 @@ struct ThemesTabView: View {
                         Text("New ideas")
                     }
                     .font(.subheadline.weight(.semibold))
-                    .foregroundStyle(Palette.acc)
+                    .foregroundStyle(Palette.accText)
                     .frame(minHeight: Metrics.hitTarget)
                     .contentShape(Rectangle())
                 }
@@ -56,7 +56,7 @@ struct ThemesTabView: View {
                             .frame(maxWidth: .infinity, alignment: .leading)
                             Text("Use")
                                 .font(.footnote.weight(.semibold))
-                                .foregroundStyle(Palette.acc)
+                                .foregroundStyle(Palette.accText)
                                 .padding(.horizontal, 12)
                                 .frame(height: 30)
                                 .background(Palette.accSoft, in: Capsule())
@@ -70,7 +70,7 @@ struct ThemesTabView: View {
             }
             Text("Ideas come from your Creator Voice niche. Tap one to fine-tune it in Prompt.")
                 .font(.caption)
-                .foregroundStyle(Palette.ink.opacity(0.45))
+                .foregroundStyle(Palette.ink2)
                 .multilineTextAlignment(.center)
                 .frame(maxWidth: .infinity)
                 .padding(.top, 10)

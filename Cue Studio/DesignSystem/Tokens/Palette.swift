@@ -7,6 +7,14 @@ import SwiftUI
 
 /// Semantic colors. Cue runs in dark appearance (a camera app should not flash white), but every
 /// token keeps a light value so the app stays correct if the appearance lock is ever removed.
+///
+/// **Contrast.** Text tokens meet the Human Interface Guidelines' 4.5:1 against the surfaces they
+/// sit on, in both appearances, and parts of controls 3:1 (`PaletteContrastTests` measures it, with
+/// `ColorContrast`). That is why yellow, orange, red, blue and green each have a second token for
+/// text and icons (`accText`, `warnText`, `dangerText`, `infoText`, `successText`): the bright
+/// ones are fills, and on white they disappear. Translucent text tokens (`ink2`, `ink3`) step up
+/// when Increase Contrast is on. `ink3` is for what needn't be read (disclosure chevrons, dashed
+/// outlines, disabled controls), never for a sentence.
 enum Palette {
     // MARK: - Surfaces
 
@@ -23,7 +31,10 @@ enum Palette {
     static let fill = Color(light: Color(hex: 0x767680, opacity: 0.12), dark: Color(hex: 0x767680, opacity: 0.24))
     /// Buttons floating over the camera and prompter.
     static let overlayFill = Color.white.opacity(0.1)
-    static let separator = Color(light: Color(hex: 0x3C3C43, opacity: 0.29), dark: Color(hex: 0x545458, opacity: 0.6))
+    static let separator = Color(
+        light: Color(hex: 0x3C3C43, opacity: 0.29), dark: Color(hex: 0x545458, opacity: 0.6),
+        lightIncreasedContrast: Color(hex: 0x3C3C43, opacity: 0.6), darkIncreasedContrast: Color(hex: 0x8E8E93, opacity: 0.8)
+    )
     /// Secondary swipe actions ("More") and the selected segment of a segmented control.
     static let neutralAction = Color(hex: 0x636366)
     /// Hairline around glass surfaces: the tab bar, the camera toolbar, floating buttons.
@@ -34,12 +45,28 @@ enum Palette {
     // MARK: - Text
 
     static let ink = Color(light: .black, dark: .white)
-    static let ink2 = Color(light: Color(hex: 0x3C3C43, opacity: 0.6), dark: Color(hex: 0xEBEBF5, opacity: 0.6))
-    static let ink3 = Color(light: Color(hex: 0x3C3C43, opacity: 0.3), dark: Color(hex: 0xEBEBF5, opacity: 0.3))
+    /// Secondary text: 4.5:1 or more on every surface. In light it is opaque, since a translucent
+    /// gray measures worse on the darker surfaces.
+    static let ink2 = Color(
+        light: Color(hex: 0x55555A), dark: Color(hex: 0xEBEBF5, opacity: 0.6),
+        lightIncreasedContrast: Color(hex: 0x3C3C43), darkIncreasedContrast: Color(hex: 0xEBEBF5, opacity: 0.78)
+    )
+    /// What needn't be read: chevrons, dashed outlines, rings, disabled controls. 3:1 on every
+    /// surface, not enough for text.
+    static let ink3 = Color(
+        light: Color(hex: 0x6E6E73), dark: Color(hex: 0xEBEBF5, opacity: 0.45),
+        lightIncreasedContrast: Color(hex: 0x4F4F54), darkIncreasedContrast: Color(hex: 0xEBEBF5, opacity: 0.62)
+    )
 
     // MARK: - Accents
 
     static let acc = Color(light: Color(hex: 0xFFCC00), dark: Color(hex: 0xFFD60A))
+    /// Yellow for text and icons on the app's own surfaces. `acc` is a fill: as text it is 12:1 on
+    /// the dark surfaces but 1.5:1 on the light ones, so in the light appearance this is a dark gold.
+    static let accText = Color(
+        light: Color(hex: 0x7A5C00), dark: Color(hex: 0xFFD60A),
+        lightIncreasedContrast: Color(hex: 0x5E4700), darkIncreasedContrast: Color(hex: 0xFFD60A)
+    )
     /// Text and icons on top of `acc`.
     static let accInk = Color.black
     static let accSoft = Color(hex: 0xFFD60A, opacity: 0.16)
@@ -56,15 +83,31 @@ enum Palette {
     static let accGlowFaint = Color(hex: 0xFFD60A, opacity: 0.02)
     static let record = Color(hex: 0xFF3B30)
     static let danger = Color(light: Color(hex: 0xFF3B30), dark: Color(hex: 0xFF453A))
+    /// Red for text and icons on the app's own surfaces (see `accText`).
+    static let dangerText = Color(
+        light: Color(hex: 0xA8001A), dark: Color(hex: 0xFF8078),
+        lightIncreasedContrast: Color(hex: 0x9C0010), darkIncreasedContrast: Color(hex: 0xFF9A93)
+    )
+    /// Behind white text: a button that removes something. `danger` is 3.4:1 under white; this is 5.4:1.
+    static let dangerFill = Color(hex: 0xD70015)
     static let dangerSoft = Color(hex: 0xFF3B30, opacity: 0.2)
     static let warn = Color(light: Color(hex: 0xFF9500), dark: Color(hex: 0xFF9F0A))
+    /// Orange for text and icons on the app's own surfaces (see `accText`).
+    static let warnText = Color(
+        light: Color(hex: 0x9A4A00), dark: Color(hex: 0xFF9F0A),
+        lightIncreasedContrast: Color(hex: 0x7A3A00), darkIncreasedContrast: Color(hex: 0xFFB340)
+    )
     static let warnSoft = Color(hex: 0xFF9F0A, opacity: 0.16)
     /// Fact-check warnings: a faint orange card with a hairline.
     static let warnWash = Color(hex: 0xFF9F0A, opacity: 0.08)
     static let warnBorder = Color(hex: 0xFF9F0A, opacity: 0.28)
     static let info = Color(light: Color(hex: 0x32ADE6), dark: Color(hex: 0x64D2FF))
+    /// Blue for text and icons on the app's own surfaces (see `accText`).
+    static let infoText = Color(light: Color(hex: 0x00638F), dark: Color(hex: 0x64D2FF))
     static let infoSoft = Color(hex: 0x64D2FF, opacity: 0.1)
     static let success = Color(hex: 0x34C759)
+    /// Green for text and icons on the app's own surfaces (see `accText`).
+    static let successText = Color(light: Color(hex: 0x1A6F2E), dark: Color(hex: 0x34C759))
 
     // MARK: - Platforms
 
@@ -90,11 +133,6 @@ enum Palette {
     static let durationBadge = Color.black.opacity(0.6)
     /// Tiles of the "Your takes" strip over the video.
     static let stripTile = Color(hex: 0x2C2C2E, opacity: 0.85)
-
-    // MARK: - Editor
-
-    /// The tools panel above the keyboard.
-    static let toolsPanel = Color(hex: 0x0E0E10)
 
     // MARK: - Quick edit
 
@@ -163,9 +201,17 @@ enum Palette {
     static let laneMediaInk = Color(hex: 0xDA8FFF)
     /// A voice-over track while it records.
     static let laneRecording = Color(hex: 0xFF453A, opacity: 0.5)
-    /// "+ Add text" and the other shortcuts on an empty track.
+    /// The dashed outline of "Save as my style" and "Add a line".
     static let laneGhostBorder = Color(hex: 0xEBEBF5, opacity: 0.3)
-    static let laneGhostInk = Color(hex: 0xEBEBF5, opacity: 0.7)
+    /// The strip each track sits on, and the same strip while its tools are open (with its ring).
+    static let laneStrip = Color(hex: 0x1C1C1E)
+    static let laneStripActive = Color(hex: 0x24231C)
+    static let laneStripRing = Color(hex: 0xFFD60A, opacity: 0.75)
+    /// A track's icon in the gutter beside its strip.
+    static let laneGutterInk = Color(hex: 0xEBEBF5, opacity: 0.85)
+    /// "Tap to add text" and the other hints on an empty track. The prototype draws them at 45%,
+    /// which is 3.9:1 on the strip; 60% is 5.9:1, past the 4.5:1 text needs.
+    static let laneHintInk = Color(hex: 0xEBEBF5, opacity: 0.6)
     /// Pauses on the video track: marked to go (yellow hatch) or kept (gray hatch).
     static let pauseRemoveStripe = Color(hex: 0xFFD60A, opacity: 0.62)
     static let pauseRemoveGap = Color(hex: 0xFFD60A, opacity: 0.2)
@@ -176,12 +222,16 @@ enum Palette {
     static let rulerLabel = Color(hex: 0xEBEBF5, opacity: 0.55)
     /// A selected card's wash (pauses to remove, a Zoom or Crop tile).
     static let accTile = Color(hex: 0xFFD60A, opacity: 0.12)
+    /// The row of a list the caret or the choice is in (Sections).
+    static let selectedRow = Color(hex: 0xFFD60A, opacity: 0.08)
     /// A pause card to remove.
     static let accCard = Color(hex: 0xFFD60A, opacity: 0.1)
     /// Cards and rows inside panels.
     static let panelCard = Color(hex: 0x767680, opacity: 0.16)
     /// The slider's track.
     static let sliderTrack = Color(hex: 0x767680, opacity: 0.4)
+    /// The ring of an Adjust dial that is still at zero.
+    static let adjustDialRing = Color(hex: 0xEBEBF5, opacity: 0.35)
     /// A switch that is off.
     static let toggleOff = Color(hex: 0x787880, opacity: 0.36)
     /// A small delete button inside a panel (a caption line's trash).

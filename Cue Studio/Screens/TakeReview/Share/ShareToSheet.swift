@@ -52,7 +52,7 @@ struct ShareToSheet: View {
                     .font(.caption.weight(.bold))
                     .textCase(.uppercase)
                     .kerning(0.8)
-                    .foregroundStyle(Palette.acc)
+                    .foregroundStyle(Palette.accText)
                 Text(take.scriptTitle).font(.headline).lineLimit(1)
                 Text(viewModel.shareMeta)
                     .font(.footnote)
@@ -95,7 +95,7 @@ struct ShareToSheet: View {
                 }
                 Text(destination.platform.label)
                     .font(.caption.weight(.semibold))
-                    .foregroundStyle(isRecommended ? Palette.acc : Palette.ink)
+                    .foregroundStyle(isRecommended ? Palette.accText : Palette.ink)
             }
             .frame(maxWidth: .infinity)
             .contentShape(Rectangle())
@@ -174,11 +174,11 @@ struct ShareToSheet: View {
             .frame(minHeight: 52)
             if let notice = viewModel.exportNotice {
                 HStack {
-                    Text(notice).foregroundStyle(viewModel.exportsExhausted ? Palette.warn : Palette.ink2)
+                    Text(notice).foregroundStyle(viewModel.exportsExhausted ? Palette.warnText : Palette.ink2)
                     Spacer()
                     Button("Go Pro") { viewModel.paywall = .export }
                         .fontWeight(.semibold)
-                        .foregroundStyle(Palette.acc)
+                        .foregroundStyle(Palette.accText)
                 }
                 .font(.footnote)
                 .padding(.horizontal, 16)

@@ -33,7 +33,7 @@ struct PlanSection: View {
                 limit: UsagePolicy.freeExports
             )
             HStack(spacing: 8) {
-                Image(systemName: "sparkles").foregroundStyle(Palette.acc)
+                Image(systemName: "sparkles").foregroundStyle(Palette.accText)
                 Text("Apple Intelligence")
                 Spacer()
                 Text("On-device · unlimited").foregroundStyle(Palette.ink2)

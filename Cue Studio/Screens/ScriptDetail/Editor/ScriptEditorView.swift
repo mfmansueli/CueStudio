@@ -4,77 +4,57 @@
 //
 
 import SwiftUI
+import UIKit
 
-/// Edit mode: title, structure and the text, with tools above the keyboard.
+/// Writing mode: the title, the text as blocks and one bar above the keyboard, nothing else. The
+/// rest opens when asked, in the keyboard's place: AI, cues, sections and the script's options.
 struct ScriptEditorView: View {
     @Bindable var viewModel: ScriptDetailViewModel
-    let script: Script
 
-    @FocusState private var focus: Field?
+    @AppStorage(DefaultsKey.scriptEditorTextSize) private var textSizeValue = ScriptTextSize.medium.rawValue
+    /// What the keyboard measured last, so a panel is as tall as it and nothing jumps.
+    @State private var keyboardHeight: CGFloat = 336
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
-    private enum Field { case title, text }
+    private var textSize: Binding<ScriptTextSize> {
+        Binding(
+            get: { ScriptTextSize(rawValue: textSizeValue) ?? .medium },
+            set: { textSizeValue = $0.rawValue }
+        )
+    }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            TextField("Untitled script", text: $viewModel.draftTitle, axis: .vertical)
-                .font(.title2.bold())
-                .foregroundStyle(Palette.ink)
-                .lineLimit(1...2)
-                .focused($focus, equals: .title)
-                .submitLabel(.next)
-                .onSubmit { focus = .text }
-                .padding(.horizontal, Metrics.textGutter)
-                .padding(.top, 8)
-                .accessibilityIdentifier("editor.titleField")
-            ScriptMetaRow(
-                platform: script.platform,
-                formatLabel: viewModel.structure.label,
-                preset: viewModel.preset,
-                onDestination: { viewModel.sheet = .destination }
-            )
-            .padding(.horizontal, Metrics.textGutter)
-            .padding(.top, 4)
-            BlockStripView(
-                summaries: viewModel.summaries,
-                isSerious: viewModel.structure.isSerious,
-                hookRunsLong: viewModel.hookOverrun != nil,
-                onHookTap: { Task { await viewModel.openHooks() } }
-            )
-            .padding(.top, 4)
-            Rectangle()
-                .fill(Palette.separator)
-                .frame(height: 0.5)
-                .padding(.horizontal, Metrics.textGutter)
-                .padding(.top, 10)
-            ZStack(alignment: .topLeading) {
-                if viewModel.draftText.isEmpty {
-                    Text("Start writing what you want to say… Add cues like [pause] or [smile].")
-                        .font(.system(size: 19))
-                        .foregroundStyle(Palette.ink3)
-                        .padding(.horizontal, Metrics.textGutter + 5)
-                        .padding(.top, 16 + 8)
-                        .allowsHitTesting(false)
-                }
-                TextEditor(text: $viewModel.draftText)
-                    .font(.system(size: 19))
-                    .lineSpacing(6)
-                    .foregroundStyle(Palette.ink.opacity(0.92))
-                    .tint(Palette.acc)
-                    .scrollContentBackground(.hidden)
-                    // Writing Tools (proofread, rewrite) from the system, on top of Cue's own tools.
-                    .writingToolsBehavior(.complete)
-                    .focused($focus, equals: .text)
-                    .padding(.horizontal, Metrics.textGutter)
-                    .padding(.top, 16)
-                    .accessibilityLabel(Text("Script text"))
-                    .accessibilityIdentifier("editor.textEditor")
-            }
+        VStack(spacing: 0) {
+            ScriptEditorHeader(viewModel: viewModel)
+            ScriptBlockEditor(viewModel: viewModel, size: textSize.wrappedValue)
         }
         .safeAreaInset(edge: .bottom, spacing: 0) {
-            EditorToolsPanel(viewModel: viewModel)
+            VStack(spacing: 0) {
+                EditorAccessoryBar(viewModel: viewModel)
+                if let tool = viewModel.tool {
+                    EditorToolPanel(viewModel: viewModel, textSize: textSize, tool: tool, height: panelHeight)
+                }
+            }
+            .background(alignment: .bottom) {
+                // Under the home indicator too, in the color of what is above it.
+                (viewModel.tool == nil ? Palette.surface : Palette.editorPanel).ignoresSafeArea(edges: .bottom)
+            }
         }
-        .onAppear {
-            focus = script.title.isEmpty && script.isEmpty ? .title : .text
+        .animation(reduceMotion ? nil : .easeOut(duration: 0.15), value: viewModel.tool)
+        .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardWillShowNotification)) { note in
+            guard let frame = note.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect, frame.height > 100 else { return }
+            keyboardHeight = frame.height
         }
+    }
+
+    /// As tall as the keyboard, less the home indicator's room, which the bar's inset already keeps.
+    private var panelHeight: CGFloat {
+        max(240, keyboardHeight - Self.homeIndicatorInset)
+    }
+
+    private static var homeIndicatorInset: CGFloat {
+        UIApplication.shared.connectedScenes
+            .compactMap { ($0 as? UIWindowScene)?.keyWindow }
+            .first?.safeAreaInsets.bottom ?? 0
     }
 }

@@ -75,6 +75,8 @@ final class GenerateScriptUITests: XCTestCase {
         XCTAssertTrue(row.waitForExistence(timeout: 15))
         row.tap()
         app.buttons["detail.editButton"].tap()
+        // AI is one of the bar's panels; its tools are in the grid.
+        app.buttons["editor.tool.ai"].tap()
         let voice = element(app, "editor.tool.inMyVoice")
         XCTAssertTrue(voice.waitForExistence(timeout: 5))
         return voice

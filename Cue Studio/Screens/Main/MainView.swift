@@ -65,9 +65,11 @@ struct MainView: View {
         }
         .fullScreenCover(item: $presentation.prompter) { launch in
             PrompterView(launch: launch, services: services)
+                .videoContext()
         }
         .fullScreenCover(isPresented: $presentation.showsRemoteController) {
             RemoteControllerView()
+                .videoContext()
         }
     }
 

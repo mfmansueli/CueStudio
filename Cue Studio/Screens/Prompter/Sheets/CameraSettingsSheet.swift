@@ -156,10 +156,10 @@ struct CameraSettingsSheet: View {
         Group {
             if canFindPeople == false {
                 Text("This iPhone can’t find people in video, so the background can’t change here.")
-                    .foregroundStyle(Palette.warn)
+                    .foregroundStyle(Palette.warnText)
             } else if effect.isActive, !camera.showsBackgroundLive {
                 Text("This camera can’t show the effect while recording. It’s added to the take after you record.")
-                    .foregroundStyle(Palette.warn)
+                    .foregroundStyle(Palette.warnText)
             }
             Text("Your recording stays as filmed. The effect is added to the take, and you can change it in Quick edit.")
                 .foregroundStyle(Palette.ink2)
@@ -231,7 +231,7 @@ struct CameraSettingsSheet: View {
                 }
                 Spacer()
                 if isSelected {
-                    Image(systemName: "checkmark").fontWeight(.semibold).foregroundStyle(Palette.acc)
+                    Image(systemName: "checkmark").fontWeight(.semibold).foregroundStyle(Palette.accText)
                 }
             }
             .foregroundStyle(Palette.ink)

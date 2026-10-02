@@ -44,7 +44,7 @@ struct DestinationSheet: View {
                 .accessibilityIdentifier("destination.monetizationToggle")
                 Text("Platform rules change — presets update automatically.")
                     .font(.caption)
-                    .foregroundStyle(Palette.ink3)
+                    .foregroundStyle(Palette.ink2)
                     .frame(maxWidth: .infinity)
                     .multilineTextAlignment(.center)
             }
@@ -69,7 +69,7 @@ struct DestinationSheet: View {
                 if platform == current {
                     Image(systemName: "checkmark")
                         .font(.body.weight(.semibold))
-                        .foregroundStyle(Palette.acc)
+                        .foregroundStyle(Palette.accText)
                 }
             }
             .foregroundStyle(Palette.ink)

@@ -29,10 +29,24 @@ nonisolated extension Color {
 
     /// A color that resolves per appearance.
     init(light: Color, dark: Color) {
+        self.init(light: light, dark: dark, lightIncreasedContrast: light, darkIncreasedContrast: dark)
+    }
+
+    /// A color that resolves per appearance and per Increase Contrast (Settings › Accessibility ›
+    /// Display & Text Size). The increased-contrast values are for the text and lines that carry
+    /// information while translucent: with the setting on they should be plainly stronger.
+    init(light: Color, dark: Color, lightIncreasedContrast: Color, darkIncreasedContrast: Color) {
         let lightColor = UIColor(light)
         let darkColor = UIColor(dark)
+        let lightHigh = UIColor(lightIncreasedContrast)
+        let darkHigh = UIColor(darkIncreasedContrast)
         self.init(uiColor: UIColor { @Sendable traits in
-            traits.userInterfaceStyle == .dark ? darkColor : lightColor
+            let isHigh = traits.accessibilityContrast == .high
+            return if traits.userInterfaceStyle == .dark {
+                isHigh ? darkHigh : darkColor
+            } else {
+                isHigh ? lightHigh : lightColor
+            }
         })
     }
 }

@@ -83,7 +83,7 @@ final class ScriptLibraryUITests: XCTestCase {
         XCTAssertFalse(app.staticTexts["Unboxing the Lumen desk lamp"].exists)
     }
 
-    func testOpeningAndCancellingAnEdit() {
+    func testOpeningAndDiscardingAnEdit() {
         let app = CueApp.launch(seeded: true)
         let row = app.staticTexts["Unboxing the Lumen desk lamp"]
         XCTAssertTrue(row.waitForExistence(timeout: 15))
@@ -93,7 +93,11 @@ final class ScriptLibraryUITests: XCTestCase {
         XCTAssertTrue(edit.waitForExistence(timeout: 5))
         edit.tap()
         XCTAssertTrue(app.buttons["editor.doneButton"].waitForExistence(timeout: 5))
-        app.buttons["editor.cancelButton"].tap()
+        // Options › Discard changes is how writing is given up.
+        app.buttons["editor.tool.options"].tap()
+        let discard = app.buttons["editor.discardButton"]
+        XCTAssertTrue(discard.waitForExistence(timeout: 5))
+        discard.tap()
         XCTAssertTrue(edit.waitForExistence(timeout: 5))
         app.navigationBars.buttons.firstMatch.tap()
         XCTAssertTrue(app.buttons["scripts.promptCard"].waitForExistence(timeout: 5))
@@ -140,7 +144,7 @@ final class ScriptLibraryUITests: XCTestCase {
         let edit = app.buttons["detail.editButton"]
         XCTAssertTrue(edit.waitForExistence(timeout: 5))
         edit.tap()
-        let text = app.textViews["editor.textEditor"]
+        let text = app.textViews["editor.paragraph.0"]
         XCTAssertTrue(text.waitForExistence(timeout: 5))
         text.tap()
         text.typeText(" Updated for navigation testing.")
@@ -221,11 +225,17 @@ final class ScriptLibraryUITests: XCTestCase {
         XCTAssertTrue(row.waitForExistence(timeout: 15))
         row.tap()
 
-        app.buttons["detail.destinationButton"].firstMatch.tap()
+        app.buttons["detail.summaryRow"].tap()
+        let destination = app.buttons["details.destination"]
+        XCTAssertTrue(destination.waitForExistence(timeout: 5))
+        destination.tap()
         let youtube = app.buttons.containing(NSPredicate(format: "label CONTAINS 'YouTube · long-form'")).firstMatch
         XCTAssertTrue(youtube.waitForExistence(timeout: 5))
         youtube.tap()
-        XCTAssertTrue(app.staticTexts["16:9 · 4K24"].waitForExistence(timeout: 5))
+        // The details show the format the destination sets.
+        app.buttons["detail.summaryRow"].tap()
+        let format = app.descendants(matching: .any).matching(NSPredicate(format: "label CONTAINS '16:9 · 4K24'")).firstMatch
+        XCTAssertTrue(format.waitForExistence(timeout: 5))
     }
 
     func testSwipingForMoreOffersShare() {
@@ -242,14 +252,14 @@ final class ScriptLibraryUITests: XCTestCase {
         XCTAssertTrue(app.otherElements["ActivityListView"].waitForExistence(timeout: 5))
     }
 
-    func testDoubleTappingTheTextStartsEditing() {
+    func testTappingAParagraphStartsEditingThere() {
         let app = CueApp.launch(seeded: true)
         let row = app.staticTexts["Unboxing the Lumen desk lamp"]
         XCTAssertTrue(row.waitForExistence(timeout: 15))
         row.tap()
         let text = app.descendants(matching: .any).matching(NSPredicate(format: "label CONTAINS %@", "it folds flat")).firstMatch
         XCTAssertTrue(text.waitForExistence(timeout: 5))
-        text.doubleTap()
+        text.tap()
         XCTAssertTrue(app.buttons["editor.doneButton"].waitForExistence(timeout: 5))
     }
 
@@ -259,7 +269,11 @@ final class ScriptLibraryUITests: XCTestCase {
         XCTAssertTrue(row.waitForExistence(timeout: 15))
         row.tap()
 
-        app.buttons["detail.destinationButton"].firstMatch.tap()
+        // The summary line opens the details, where "Create for" is the first row.
+        app.buttons["detail.summaryRow"].tap()
+        let destination = app.buttons["details.destination"]
+        XCTAssertTrue(destination.waitForExistence(timeout: 5))
+        destination.tap()
         for platform in ["tiktok", "reels", "shorts", "youtube", "linkedin", "stories"] {
             XCTAssertTrue(app.buttons["destination.\(platform)"].waitForExistence(timeout: 5), "Missing \(platform)")
         }

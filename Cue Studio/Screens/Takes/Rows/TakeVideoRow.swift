@@ -83,10 +83,10 @@ struct TakeVideoRow: View {
                     chip(label, foreground: Palette.ink.opacity(0.85), background: Palette.surface2)
                 }
                 if video.isEdited {
-                    chip(String(localized: "Edited"), foreground: Palette.info, background: Palette.infoSoft)
+                    chip(String(localized: "Edited"), foreground: Palette.infoText, background: Palette.infoSoft)
                 }
                 if video.isNotShared {
-                    chip(String(localized: "Not shared"), foreground: Palette.warn, background: Palette.warnSoft)
+                    chip(String(localized: "Not shared"), foreground: Palette.warnText, background: Palette.warnSoft)
                 }
             }
             .padding(.top, 2)

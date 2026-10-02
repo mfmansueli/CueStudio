@@ -39,7 +39,7 @@ struct ValueSlider: View {
                     Text(ends.max)
                 }
                 .font(.caption2)
-                .foregroundStyle(Palette.ink.opacity(0.4))
+                .foregroundStyle(Palette.ink2)
                 .accessibilityHidden(true)
             }
         }

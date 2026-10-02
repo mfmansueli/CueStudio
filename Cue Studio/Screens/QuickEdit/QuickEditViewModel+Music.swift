@@ -42,29 +42,65 @@ extension QuickEditViewModel {
         }
     }
 
-    /// Adds a sound file at the playhead (at the start when there's too little left after it), for
-    /// as long as the file or the edit lasts.
+    /// Adds a sound file at the playhead, in the free room around it (see `MusicPlacement`), for as
+    /// long as the file or that room lasts. When "Replace" asked for the file, it takes the place
+    /// of that clip instead.
     func addMusic(_ imported: ImportedAudio) {
         importedFiles.insert(imported.fileName)
-        let total = edit.editedDuration
-        var start = player.currentTime
-        if total - start < MusicClip.minimumDuration * 2 { start = 0 }
-        let length = min(imported.duration, total - start)
+        if let replacing = musicReplacementID {
+            replaceMusic(replacing, with: imported)
+            return
+        }
+        let occupied = edit.music.compactMap { $0.span(inEditOf: edit.editedDuration) }
+        guard let slot = MusicPlacement.slot(playhead: player.currentTime, editDuration: edit.editedDuration, occupied: occupied) else {
+            discard(imported)
+            toast.show(String(localized: "No room here — move the playhead to a free spot"))
+            return
+        }
+        let length = min(imported.duration, slot.duration)
         guard length >= MusicClip.minimumDuration else {
-            EditMediaFiles.remove([imported.fileName])
-            importedFiles.remove(imported.fileName)
+            discard(imported)
             toast.show(String(localized: "This sound file can't be added"))
             return
         }
         var clip = MusicClip(
-            fileName: imported.fileName, title: imported.title, fileDuration: imported.duration, start: start, length: length
+            fileName: imported.fileName, title: imported.title, fileDuration: imported.duration, start: slot.start, length: length
         )
         clip.volume = Self.newMusicVolume
         change { $0.music = ($0.music ?? []) + [clip] }
         selectedMusicID = clip.id
         player.pause()
-        player.seek(to: start)
+        player.seek(to: slot.start)
         toast.show(String(localized: "Music added under your voice at 40%"))
+    }
+
+    /// "Replace": the clip keeps its place, volume and fades, and plays the new file from its
+    /// start (shortened when the file is shorter).
+    private func replaceMusic(_ id: UUID, with imported: ImportedAudio) {
+        musicReplacementID = nil
+        guard edit.music.contains(where: { $0.id == id }) else {
+            discard(imported)
+            return
+        }
+        guard imported.duration >= MusicClip.minimumDuration else {
+            discard(imported)
+            toast.show(String(localized: "This sound file can't be added"))
+            return
+        }
+        updateMusic(id) { clip in
+            clip.fileName = imported.fileName
+            clip.title = imported.title
+            clip.fileDuration = imported.duration
+            clip.offset = 0
+            clip.length = min(clip.length, imported.duration)
+        }
+        selectedMusicID = id
+        toast.show(String(localized: "Music replaced"))
+    }
+
+    private func discard(_ imported: ImportedAudio) {
+        EditMediaFiles.remove([imported.fileName])
+        importedFiles.remove(imported.fileName)
     }
 
     func deleteMusic(_ id: UUID) {

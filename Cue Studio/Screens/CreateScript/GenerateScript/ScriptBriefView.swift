@@ -17,7 +17,7 @@ struct ScriptBriefView: View {
                 Label {
                     Text(type.briefTip)
                 } icon: {
-                    Image(systemName: "lightbulb").foregroundStyle(Palette.acc)
+                    Image(systemName: "lightbulb").foregroundStyle(Palette.accText)
                 }
                 .font(.subheadline)
                 .foregroundStyle(Palette.ink.opacity(0.88))
@@ -30,7 +30,7 @@ struct ScriptBriefView: View {
                     .font(.caption2.weight(.bold))
                     .textCase(.uppercase)
                     .kerning(0.8)
-                    .foregroundStyle(Palette.ink.opacity(0.45))
+                    .foregroundStyle(Palette.ink2)
                     .padding(EdgeInsets(top: 14, leading: 4, bottom: 0, trailing: 4))
                 Text(type.structure.blocks.joined(separator: "  →  "))
                     .font(.footnote)

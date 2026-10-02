@@ -52,7 +52,7 @@ struct FiltersPanel: View {
                 .overlay(RoundedRectangle(cornerRadius: 10, style: .continuous).strokeBorder(isOn ? Palette.acc : .clear, lineWidth: 2))
                 Text(filter.label)
                     .font(.system(.caption, weight: .semibold))
-                    .foregroundStyle(isOn ? Palette.acc : Palette.ink.opacity(0.75))
+                    .foregroundStyle(isOn ? Palette.accText : Palette.ink.opacity(0.75))
             }
             .contentShape(Rectangle())
         }

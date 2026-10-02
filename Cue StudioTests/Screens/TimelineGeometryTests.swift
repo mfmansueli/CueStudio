@@ -74,7 +74,7 @@ struct TimelineGeometryTests {
             input.voiceOvers = [TimelineGeometry.ItemInput(id: UUID(), span: TimeSpan(start: 2, end: 4), label: "Voice-over")]
         })
         #expect(geometry.lanes.map(\.lane) == [.main, .text, .captions, .music, .voiceOver])
-        #expect(!geometry.ghosts.contains { $0.target == .addAudio })
+        #expect(!geometry.ghosts.contains { $0.target == .lane(.audio) })
     }
 
     @Test func aPanelBringsItsTrackUpAndShrinksTheVideo() {
@@ -167,13 +167,33 @@ struct TimelineGeometryTests {
             input.showsCaptions = false
         })
         #expect(!geometry.items.contains { $0.kind == .caption })
-        #expect(geometry.ghosts.contains { $0.target == .captions && $0.label == "Captions off" })
+        #expect(geometry.ghosts.contains { $0.target == .lane(.captions) && $0.label == "Captions off" })
     }
 
-    @Test func emptyTracksShowShortcuts() {
+    @Test func emptyTracksSayWhatATapDoes() {
         let geometry = TimelineGeometry(input())
-        #expect(geometry.ghosts.map(\.target) == [.addText, .captions, .addAudio])
-        #expect(geometry.ghosts.map(\.label) == ["Add text", "Auto captions", "Add audio"])
+        #expect(geometry.ghosts.map(\.target) == [.lane(.text), .lane(.captions), .lane(.audio)])
+        #expect(geometry.ghosts.map(\.label) == ["Tap to add text", "Tap to add captions", "Tap to add music or voice-over"])
+    }
+
+    @Test func aTapOnATracksStripOrGutterOpensThatTrack() throws {
+        let geometry = TimelineGeometry(input())
+        let text = try #require(geometry.lane(.text))
+        let captions = try #require(geometry.lane(.captions))
+        // The gutter, the strip, and the right end of the strip.
+        #expect(geometry.laneHit(atViewportX: 10, y: text.y + 4, viewportWidth: 402) == .lane(.text))
+        #expect(geometry.laneHit(atViewportX: 200, y: captions.y + 4, viewportWidth: 402) == .lane(.captions))
+        #expect(geometry.laneHit(atViewportX: 390, y: text.y + 4, viewportWidth: 402) == .lane(.text))
+        // Past the strip, in the gap between tracks, and on the video track: nothing.
+        #expect(geometry.laneHit(atViewportX: 398, y: text.y + 4, viewportWidth: 402) == nil)
+        #expect(geometry.laneHit(atViewportX: 200, y: text.y + text.height + 4, viewportWidth: 402) == nil)
+        #expect(geometry.laneHit(atViewportX: 200, y: (geometry.lane(.main)?.y ?? 0) + 4, viewportWidth: 402) == nil)
+    }
+
+    @Test func openToolsLightUpTheirTracks() {
+        let geometry = TimelineGeometry(input { $0.activeLanes = [.music, .voiceOver, .audio] })
+        #expect(geometry.input.activeLanes.contains(.audio))
+        #expect(!geometry.input.activeLanes.contains(.text))
     }
 
     @Test func musicAndVoiceOverHaveNoHandles() {
