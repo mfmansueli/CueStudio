@@ -7,11 +7,12 @@ import Foundation
 
 /// Adjust, Filters and Crop. Adjust and Filters change the whole take, or one clip when opened from
 /// it (`QuickEditViewModel+ClipLook`); Crop is the take's frame. Each change shows live and is an undo
-/// step; a slider's quick moves are one (`EditHistory.coalescingInterval`).
+/// step; a slider's quick moves are one (`EditHistory.coalescingInterval`). Auto, the measured
+/// correction, is in `QuickEditViewModel+AutoLook`.
 extension QuickEditViewModel {
-    /// Adjust's settings, −100…+100 (Sharpness 0…100).
+    /// Adjust's settings, −100…+100 (Sharpness 0…100), in the order of the dials.
     enum Adjustment: String, CaseIterable, Identifiable {
-        case exposure, contrast, warmth, saturation, highlights, shadows, sharpness
+        case exposure, contrast, warmth, tint, saturation, vibrance, highlights, shadows, sharpness
 
         var id: String { rawValue }
 
@@ -20,7 +21,9 @@ extension QuickEditViewModel {
             case .exposure: String(localized: "Exposure")
             case .contrast: String(localized: "Contrast")
             case .warmth: String(localized: "Warmth")
+            case .tint: String(localized: "Tint")
             case .saturation: String(localized: "Saturation")
+            case .vibrance: String(localized: "Vibrance")
             case .highlights: String(localized: "Highlights")
             case .shadows: String(localized: "Shadows")
             case .sharpness: String(localized: "Sharpness")
@@ -49,7 +52,9 @@ extension QuickEditViewModel {
         case .exposure: return look.exposure
         case .contrast: return look.contrast
         case .warmth: return look.warmth
+        case .tint: return look.tint
         case .saturation: return look.saturation
+        case .vibrance: return look.vibrance
         case .highlights: return look.highlights
         case .shadows: return look.shadows
         case .sharpness: return look.sharpness
@@ -80,7 +85,9 @@ extension QuickEditViewModel {
             case .exposure: edit.exposure = clamped
             case .contrast: edit.contrast = clamped
             case .warmth: edit.warmth = clamped
+            case .tint: edit.tint = clamped
             case .saturation: edit.saturation = clamped
+            case .vibrance: edit.vibrance = clamped
             case .highlights: edit.highlights = clamped
             case .shadows: edit.shadows = clamped
             case .sharpness: edit.sharpness = clamped
@@ -97,26 +104,6 @@ extension QuickEditViewModel {
         }
     }
 
-    /// "Auto": a little brighter, punchier, warmer and more colorful, to fine-tune from.
-    func autoAdjust() {
-        if lookClip != nil {
-            updateClipLook { look in
-                look.exposure = 10
-                look.contrast = 14
-                look.warmth = 8
-                look.saturation = 10
-            }
-        } else {
-            changeLook { edit in
-                edit.exposure = 10
-                edit.contrast = 14
-                edit.warmth = 8
-                edit.saturation = 10
-            }
-        }
-        toast.show(String(localized: "Auto adjusted — fine-tune below"))
-    }
-
     /// Every dial back to where it starts: all zero for the take; for a clip, none set by the clip,
     /// so it plays with the take's.
     func resetAdjustments() {
@@ -125,12 +112,16 @@ extension QuickEditViewModel {
             return
         }
         changeLook { edit in
+            edit.autoCorrection = nil
+            edit.autoAmount = 1
             for adjustment in Adjustment.allCases {
                 switch adjustment {
                 case .exposure: edit.exposure = 0
                 case .contrast: edit.contrast = 0
                 case .warmth: edit.warmth = 0
+                case .tint: edit.tint = 0
                 case .saturation: edit.saturation = 0
+                case .vibrance: edit.vibrance = 0
                 case .highlights: edit.highlights = 0
                 case .shadows: edit.shadows = 0
                 case .sharpness: edit.sharpness = 0
@@ -142,7 +133,7 @@ extension QuickEditViewModel {
     /// Something to reset: a dial off zero for the take, a dial the clip sets for a clip.
     var hasAdjustments: Bool {
         if let clip = lookClip { return clip.look?.overridesAdjustment ?? false }
-        return Adjustment.allCases.contains { adjustment($0) != 0 }
+        return Adjustment.allCases.contains { adjustment($0) != 0 } || edit.autoCorrection != nil
     }
 
     private static func overrideValue(of adjustment: Adjustment, in look: ClipLook) -> Double? {
@@ -150,7 +141,9 @@ extension QuickEditViewModel {
         case .exposure: look.exposure
         case .contrast: look.contrast
         case .warmth: look.warmth
+        case .tint: look.tint
         case .saturation: look.saturation
+        case .vibrance: look.vibrance
         case .highlights: look.highlights
         case .shadows: look.shadows
         case .sharpness: look.sharpness
@@ -162,7 +155,9 @@ extension QuickEditViewModel {
         case .exposure: look.exposure = value
         case .contrast: look.contrast = value
         case .warmth: look.warmth = value
+        case .tint: look.tint = value
         case .saturation: look.saturation = value
+        case .vibrance: look.vibrance = value
         case .highlights: look.highlights = value
         case .shadows: look.shadows = value
         case .sharpness: look.sharpness = value

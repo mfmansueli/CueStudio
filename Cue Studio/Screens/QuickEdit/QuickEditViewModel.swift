@@ -42,6 +42,9 @@ final class QuickEditViewModel {
             showsAdvanced = false
             panelTab = panel.map(EditorPanelTab.first(for:)) ?? .presets
             if oldValue == .voice { endComparison() }
+            // Leaving Adjust (or opening it again) never leaves a measurement running or the picture compared.
+            if panel != .adjust { cancelAuto() }
+            comparesPicture = false
             endChange()
             // Leaving Pauses without removing them puts them back.
             cancelPausePreview()
@@ -125,6 +128,18 @@ final class QuickEditViewModel {
     var translationState: TranslationState = .idle
     /// The translation the view asks the system for; nil when none is wanted.
     var translationRequest: TranslationRequest?
+    /// Auto measuring the clip (see `QuickEditViewModel+AutoLook`).
+    var autoState: AutoAdjustState = .idle
+    /// Adjust › Compare: the preview shows the picture without Auto, Adjust and Filters.
+    var comparesPicture = false {
+        didSet {
+            guard comparesPicture != oldValue else { return }
+            player.show(playedEdit)
+        }
+    }
+    @ObservationIgnored var autoTask: Task<Void, Never>?
+    /// The measuring whose result is still wanted: an older one finishing late is dropped.
+    @ObservationIgnored var autoRequest: UUID?
     @ObservationIgnored var captionTask: Task<Void, Never>?
     /// The captions request whose result is still wanted: an older one finishing late is dropped.
     @ObservationIgnored var captionRequest: UUID?
@@ -320,6 +335,8 @@ final class QuickEditViewModel {
         if selectedJoinID != nil, selectedJoinIndex == nil { selectedJoinID = nil }
         // A new treatment isn't what was being compared.
         if comparesOriginal, edit.voiceProcessing != comparedProcessing { endComparison() }
+        // A change is no longer what was being compared.
+        if comparesPicture { comparesPicture = false }
         player.show(playedEdit)
         scheduleDraftSave()
     }
@@ -680,6 +697,7 @@ final class QuickEditViewModel {
         coverTask?.cancel()
         captionTask?.cancel()
         captionRequest = nil
+        cancelAuto()
         if !keepingDraft { drafts.discard(takeID: take.id) }
         player.stop()
     }

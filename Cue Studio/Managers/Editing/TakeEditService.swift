@@ -25,6 +25,26 @@ final class TakeEditService: TakeEditing {
     private var transcripts: [TranscriptKey: TakeTranscript] = [:]
     /// Where someone speaks in each recording, for music that ducks.
     private var speech: [URL: [TimeSpan]] = [:]
+    /// What Auto measured, per recording and stretch, so measuring the same clip twice is free.
+    private var autoCorrections: [AutoKey: AutoCorrection] = [:]
+    private var autoOrder: [AutoKey] = []
+    private static let autoCorrectionLimit = 24
+
+    private struct AutoKey: Hashable {
+        let url: URL
+        let spans: [TimeSpan]
+    }
+
+    func autoCorrection(forVideoAt url: URL, spans: [TimeSpan]) async throws -> AutoCorrection? {
+        let key = AutoKey(url: url, spans: spans)
+        if let cached = autoCorrections[key] { return cached }
+        guard let measured = try await AutoAdjustAnalyzer.correction(forVideoAt: url, spans: spans) else { return nil }
+        autoCorrections[key] = measured
+        autoOrder.removeAll { $0 == key }
+        autoOrder.append(key)
+        while autoOrder.count > Self.autoCorrectionLimit { autoCorrections[autoOrder.removeFirst()] = nil }
+        return measured
+    }
 
     func sourceDuration(ofVideoAt url: URL) async throws -> TimeInterval {
         guard FileManager.default.fileExists(atPath: url.path(percentEncoded: false)) else { throw EditSourceError.missing }

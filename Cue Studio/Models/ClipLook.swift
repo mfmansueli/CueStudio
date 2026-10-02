@@ -19,6 +19,12 @@ nonisolated struct ClipLook: Codable, Hashable, Sendable {
     var highlights: Double?
     var shadows: Double?
     var sharpness: Double?
+    var vibrance: Double?
+    var tint: Double?
+    /// The clip's own Auto (what was measured on this clip), and how much of it shows; an amount of
+    /// 0 with no correction turns the take's Auto off for this clip.
+    var auto: AutoCorrection?
+    var autoAmount: Double?
     var filter: VideoFilter?
     /// How much of the filter shows, 0 to 1.
     var filterAmount: Double?
@@ -32,8 +38,12 @@ nonisolated struct ClipLook: Codable, Hashable, Sendable {
 
     /// Adjust changes something on this clip.
     var overridesAdjustment: Bool {
-        [exposure, contrast, warmth, saturation, highlights, shadows, sharpness].contains { $0 != nil }
+        [exposure, contrast, warmth, saturation, highlights, shadows, sharpness, vibrance, tint].contains { $0 != nil }
+            || overridesAuto
     }
+
+    /// Auto is set for this clip: measured on it, or turned down or off.
+    var overridesAuto: Bool { auto != nil || autoAmount != nil }
 
     /// A filter is picked for this clip (the "Original" filter is a pick too: no filter here).
     var overridesFilter: Bool { filter != nil }
@@ -50,6 +60,15 @@ nonisolated struct ClipLook: Codable, Hashable, Sendable {
         highlights = nil
         shadows = nil
         sharpness = nil
+        vibrance = nil
+        tint = nil
+        removeAuto()
+    }
+
+    /// Gives the clip the take's Auto again.
+    mutating func removeAuto() {
+        auto = nil
+        autoAmount = nil
     }
 
     /// Gives the clip the take's filter again.

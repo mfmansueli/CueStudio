@@ -54,9 +54,20 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
     var shadows: Double = 0
     /// 0 to 100.
     var sharpness: Double = 0
+    /// −100…+100 (`CIVibrance`).
+    var vibrance: Double = 0
+    /// −100…+100, green to magenta.
+    var tint: Double = 0
+    /// What Auto measured on the take, played before the dials; nil until Auto is used.
+    var autoCorrection: AutoCorrection?
+    /// How much of `autoCorrection` shows, 0 to 1.
+    var autoAmount: Double = 1
     var filter: VideoFilter = .original
     /// How much of the filter shows, 0 to 1.
     var filterAmount: Double = 1
+    /// How the dials are read (`LookSettings.version`). An edit saved before the calibrated dials
+    /// keeps the first reading, so it looks as it did; one with nothing adjusted starts on the new.
+    var lookVersion = LookSettings.currentVersion
 
     // MARK: Crop
     var aspect: AspectRatio
@@ -286,12 +297,19 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
         return names
     }
 
+    /// A dial is off zero, here or on a clip.
+    private var usesAdjustDials: Bool {
+        [exposure, contrast, warmth, saturation, highlights, shadows, sharpness].contains { $0 != 0 }
+            || timeline.segments.contains { $0.look?.overridesAdjustment ?? false }
+    }
+
     // MARK: - Coding
 
     private enum CodingKeys: String, CodingKey {
         case timeline, sources, suggestions, cleanUpAnalyzed, volume, enhancesVoice, reducesNoise,
         audioVersion, voiceEnhancement, noiseReduction, music, backgrounds, exposure, contrast, warmth, filter
         case saturation, highlights, shadows, sharpness, filterAmount, cropFit, pauseThreshold
+        case vibrance, tint, autoCorrection, autoAmount, lookVersion
         case aspect, cropOffset, showsCaptions, captionStyle, captionLook, captionPreset, captionPosition, captions
         case captionTranscript, sourceTranscripts, captionLanguage, captionAnimation, captionTranslations, captionDisplay
         case captionCollection
@@ -333,6 +351,11 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
         shadows = (try? container.decodeIfPresent(Double.self, forKey: .shadows)) ?? 0
         sharpness = (try? container.decodeIfPresent(Double.self, forKey: .sharpness)) ?? 0
         filterAmount = (try? container.decodeIfPresent(Double.self, forKey: .filterAmount)) ?? 1
+        // Added with the calibrated look: edits saved before have none of them.
+        vibrance = (try? container.decodeIfPresent(Double.self, forKey: .vibrance)) ?? 0
+        tint = (try? container.decodeIfPresent(Double.self, forKey: .tint)) ?? 0
+        autoCorrection = try? container.decodeIfPresent(AutoCorrection.self, forKey: .autoCorrection)
+        autoAmount = (try? container.decodeIfPresent(Double.self, forKey: .autoAmount)) ?? 1
         cropFit = (try? container.decodeIfPresent(CropFit.self, forKey: .cropFit)) ?? .fill
         pauseThreshold = (try? container.decodeIfPresent(TimeInterval.self, forKey: .pauseThreshold)) ?? 0.7
         aspect = try container.decode(AspectRatio.self, forKey: .aspect)
@@ -358,6 +381,8 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
         textLook = try? container.decodeIfPresent(TextLook.self, forKey: .textLook)
         textPreset = try? container.decodeIfPresent(TypePreset.self, forKey: .textPreset)
         cover = try? container.decodeIfPresent(VideoCover.self, forKey: .cover)
+        // An edit saved before the calibrated dials reads them the first way, unless it never used them.
+        lookVersion = (try? container.decodeIfPresent(Int.self, forKey: .lookVersion)) ?? (usesAdjustDials ? 1 : LookSettings.currentVersion)
     }
 
     /// The same pieces an old edit played, and its silences as pause suggestions.

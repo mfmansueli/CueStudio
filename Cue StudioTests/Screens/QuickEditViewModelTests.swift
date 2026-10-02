@@ -743,18 +743,6 @@ struct QuickEditViewModelTests {
         #expect(scenario.viewModel.edit.captionLook == TypePreset.label.look(for: .caption))
     }
 
-    @Test func autoAdjustsTheLook() async {
-        let scenario = await makeScenario()
-        scenario.viewModel.autoAdjust()
-        #expect(scenario.viewModel.edit.exposure == 10)
-        #expect(scenario.viewModel.edit.contrast == 14)
-        #expect(scenario.viewModel.edit.saturation == 10)
-        #expect(scenario.toast.message == "Auto adjusted — fine-tune below")
-        // Adjust is an undo step now.
-        scenario.viewModel.undo()
-        #expect(scenario.viewModel.edit.exposure == 0)
-    }
-
     // MARK: - Leaving
 
     @Test func doneSavesTheEditTheNewLengthAndMarksTheTakeEdited() async {

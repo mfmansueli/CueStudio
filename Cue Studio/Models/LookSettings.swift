@@ -16,8 +16,18 @@ nonisolated struct LookSettings: Hashable, Sendable {
     var highlights: Double = 0
     var shadows: Double = 0
     var sharpness: Double = 0
+    var vibrance: Double = 0
+    var tint: Double = 0
+    /// What Auto measured, and how much of it shows (0 to 1); applied first, before the dials.
+    var auto: AutoCorrection?
+    var autoAmount: Double = 1
     var filter: VideoFilter = .original
     var filterAmount: Double = 1
+    /// How the dials are read (`currentVersion`: calibrated, gentle near zero; 1: the first numbers,
+    /// kept for edits saved with them so they look the same).
+    var version = LookSettings.currentVersion
+
+    static let currentVersion = 2
 
     init() {}
 
@@ -30,8 +40,22 @@ nonisolated struct LookSettings: Hashable, Sendable {
         highlights = edit.highlights
         shadows = edit.shadows
         sharpness = edit.sharpness
+        vibrance = edit.vibrance
+        tint = edit.tint
+        auto = edit.autoCorrection
+        autoAmount = edit.autoAmount
         filter = edit.filter
         filterAmount = edit.filterAmount
+        version = edit.lookVersion
+    }
+
+    /// Nothing is changed: the frame is drawn as recorded.
+    var isNeutral: Bool {
+        var neutral = self
+        neutral.version = LookSettings.currentVersion
+        neutral.filterAmount = 1
+        neutral.autoAmount = 1
+        return neutral == LookSettings()
     }
 
     /// These settings with what `override` sets on top; whatever it leaves alone is these.
@@ -45,6 +69,10 @@ nonisolated struct LookSettings: Hashable, Sendable {
         result.highlights = override.highlights ?? highlights
         result.shadows = override.shadows ?? shadows
         result.sharpness = override.sharpness ?? sharpness
+        result.vibrance = override.vibrance ?? vibrance
+        result.tint = override.tint ?? tint
+        result.auto = override.auto ?? auto
+        result.autoAmount = override.autoAmount ?? autoAmount
         result.filter = override.filter ?? filter
         result.filterAmount = override.filterAmount ?? filterAmount
         return result

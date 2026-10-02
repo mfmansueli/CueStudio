@@ -690,3 +690,21 @@ nonisolated struct EditTimeline: Codable, Hashable, Sendable {
         var isRestored: Bool
     }
 }
+
+extension EditTimeline {
+    /// The same pieces without their own Auto, Adjust or filter, for "Compare": a clip's background
+    /// stays, since it isn't part of the look being compared.
+    func withoutPictureLooks() -> EditTimeline {
+        var plain = self
+        plain.segments = segments.map { segment in
+            var segment = segment
+            if var look = segment.look {
+                look.removeAdjustment()
+                look.removeFilter()
+                segment.look = look.normalized
+            }
+            return segment
+        }
+        return plain
+    }
+}

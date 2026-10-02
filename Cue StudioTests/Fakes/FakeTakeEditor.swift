@@ -45,6 +45,34 @@ final class FakeTakeEditor: TakeEditing {
         if case .detect(let text, _) = cleanUpLanguage { text } else { nil }
     }
 
+    /// What Auto measured; nil when no frame could be read.
+    var autoResult: AutoCorrection? = FakeTakeEditor.measuredCorrection
+    /// Measuring takes this long, so a test can change the selection meanwhile.
+    var autoDelay: Duration?
+    var autoFails = false
+    private(set) var autoRequests = 0
+    private(set) var autoVideo: URL?
+    private(set) var autoSpans: [TimeSpan] = []
+
+    /// A correction that brightens the shadows and lifts the colors a little.
+    nonisolated static var measuredCorrection: AutoCorrection {
+        var correction = AutoCorrection()
+        correction.vibrance = 0.3
+        correction.shadows = 0.3
+        correction.highlights = 0.9
+        correction.tone = AutoCorrection.neutralTone.map { AutoCorrection.Point(x: $0.x, y: $0.y + ($0.y == 0 || $0.y == 1 ? 0 : 0.04)) }
+        return correction
+    }
+
+    func autoCorrection(forVideoAt url: URL, spans: [TimeSpan]) async throws -> AutoCorrection? {
+        autoRequests += 1
+        autoVideo = url
+        autoSpans = spans
+        if let autoDelay { try await Task.sleep(for: autoDelay) }
+        if autoFails { throw EditSourceError.noDuration }
+        return autoResult
+    }
+
     func sourceDuration(ofVideoAt url: URL) async throws -> TimeInterval {
         guard let duration else { throw EditSourceError.missing }
         return duration
