@@ -32,7 +32,7 @@ struct ScriptDetailView: View {
         Group {
             if let script = viewModel.script {
                 if viewModel.isEditing {
-                    ScriptEditorView(viewModel: viewModel, script: script)
+                    ScriptEditorView(viewModel: viewModel)
                 } else {
                     ScriptReadView(
                         viewModel: viewModel,
