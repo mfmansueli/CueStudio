@@ -3,7 +3,6 @@
 //  Cue Studio
 //
 
-import PhotosUI
 import SwiftUI
 import UIKit
 
@@ -15,8 +14,6 @@ struct CoverPanel: View {
 
     @Environment(VideoThumbnailService.self) private var thumbnails
     @State private var strip: [UIImage?] = []
-    @State private var pickedItem: PhotosPickerItem?
-    @State private var choosesPhoto = false
     @State private var dragTime: TimeInterval?
 
     private static let stripCount = 10
@@ -30,7 +27,7 @@ struct CoverPanel: View {
                 ],
                 selection: viewModel.coverIsPhoto, identifier: "edit.coverSource"
             ) { photo in
-                if photo { choosesPhoto = true } else { viewModel.useVideoFrameForCover() }
+                if photo { viewModel.requestPhoto(.cover) } else { viewModel.useVideoFrameForCover() }
             }
             if !viewModel.coverIsPhoto {
                 frameStrip
@@ -46,12 +43,6 @@ struct CoverPanel: View {
             .frame(height: Metrics.hitTarget)
             .background(Palette.surface2, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
             .accessibilityIdentifier("edit.coverTitleField")
-        }
-        .photosPicker(isPresented: $choosesPhoto, selection: $pickedItem, matching: .images, photoLibrary: .shared())
-        .onChange(of: pickedItem) { _, item in
-            guard let item else { return }
-            pickedItem = nil
-            Task { await viewModel.useCoverPhoto(item) }
         }
         .onAppear { viewModel.drawCover() }
         .onChange(of: viewModel.edit.cover) { _, _ in viewModel.drawCover() }

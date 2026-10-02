@@ -47,7 +47,7 @@ struct StartRecordingSheet: View {
             Button(action: onNewScript) {
                 Label("New script", systemImage: "plus")
                     .font(.body.weight(.semibold))
-                    .foregroundStyle(Palette.acc)
+                    .foregroundStyle(Palette.accText)
                     .frame(maxWidth: .infinity, minHeight: Metrics.hitTarget + 4, alignment: .leading)
                     .padding(.horizontal, 14)
                     .background(Palette.surface2, in: RoundedRectangle(cornerRadius: Metrics.innerRadius, style: .continuous))

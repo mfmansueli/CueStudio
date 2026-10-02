@@ -81,14 +81,14 @@ struct LanguagePickerView: View {
                     if let status {
                         Text(status.label)
                             .font(.footnote)
-                            .foregroundStyle(status == .unavailable ? Palette.warn : Palette.ink3)
+                            .foregroundStyle(status == .unavailable ? Palette.warnText : Palette.ink2)
                     }
                 }
                 Spacer(minLength: 8)
                 if isSelected {
                     Image(systemName: "checkmark")
                         .font(.body.weight(.semibold))
-                        .foregroundStyle(Palette.acc)
+                        .foregroundStyle(Palette.accText)
                 }
             }
             .contentShape(Rectangle())

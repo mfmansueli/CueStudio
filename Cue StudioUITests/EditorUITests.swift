@@ -44,6 +44,75 @@ final class EditorUITests: XCTestCase {
         XCTAssertTrue(app.buttons["edit.toolbar.adjust"].waitForExistence(timeout: 5))
     }
 
+    func testAdjustPicksASettingAndMovesItsRuler() {
+        let app = EditorApp.open()
+        EditorApp.tapTool(app, "adjust")
+        let warmth = app.buttons["edit.adjust.warmth"]
+        XCTAssertTrue(warmth.waitForExistence(timeout: 5))
+        warmth.tap()
+        XCTAssertTrue(warmth.isSelected)
+        let ruler = app.sliders["edit.adjust.ruler"]
+        XCTAssertTrue(ruler.waitForExistence(timeout: 5))
+        ruler.adjust(toNormalizedSliderPosition: 0.75)
+        // Off zero: the dial says so and its own Reset shows.
+        XCTAssertTrue(app.buttons["edit.adjust.resetOne"].waitForExistence(timeout: 5))
+        app.buttons["edit.adjust.resetOne"].tap()
+        XCTAssertFalse(app.buttons["edit.adjust.resetOne"].exists)
+    }
+
+    /// Auto measures the real frames of the clip: it ends with a correction to dial down, or says the picture is
+    /// already balanced; either way the picture is never left half-done.
+    func testAutoMeasuresTheClipAndCompareShowsTheOriginal() {
+        let app = EditorApp.open()
+        EditorApp.tapTool(app, "adjust")
+        let auto = app.buttons["edit.adjust.auto"]
+        XCTAssertTrue(auto.waitForExistence(timeout: 5))
+        auto.tap()
+        let amount = app.sliders["edit.adjust.autoAmount"]
+        let balanced = EditorApp.toastSays(app, "Already balanced")
+        if amount.waitForExistence(timeout: 20) {
+            // Intensity is its own ruler; Compare shows the picture as recorded, and Reset takes Auto away.
+            let compare = app.buttons["edit.adjust.compare"]
+            XCTAssertTrue(compare.exists)
+            compare.tap()
+            XCTAssertTrue(compare.isSelected)
+            compare.tap()
+            XCTAssertFalse(compare.isSelected)
+            XCTAssertTrue(app.buttons["edit.adjust.resetOne"].waitForExistence(timeout: 5))
+            app.buttons["edit.adjust.resetOne"].tap()
+            XCTAssertFalse(amount.exists)
+        } else {
+            XCTAssertTrue(balanced || EditorApp.toastSays(app, "Couldn’t measure"))
+        }
+        XCTAssertTrue(auto.isEnabled)
+    }
+
+    func testFiltersOfferTheCollectionAndStartAtTheirOwnIntensity() {
+        let app = EditorApp.open()
+        EditorApp.tapTool(app, "filters")
+        for id in ["original", "natural", "studio", "soft", "cinema", "warmEditorial", "retro", "monoSoft", "monoContrast"] {
+            XCTAssertTrue(app.buttons["edit.filter.\(id)"].waitForExistence(timeout: 5), id)
+        }
+        // The first filters only show while one of them is picked.
+        XCTAssertFalse(app.buttons["edit.filter.vivid"].exists)
+        let cinema = app.buttons["edit.filter.cinema"]
+        cinema.tap()
+        XCTAssertTrue(cinema.isSelected)
+        XCTAssertTrue(app.sliders["edit.filter.intensity"].waitForExistence(timeout: 5))
+    }
+
+    /// The ruler is the panel's lowest control: it stays above the bottom safe area (the Home
+    /// Indicator's strip) and the clearance the panel keeps under its controls, on any iPhone.
+    func testAdjustRulerStaysAboveTheBottomEdge() {
+        let app = EditorApp.open()
+        EditorApp.tapTool(app, "adjust")
+        let ruler = app.sliders["edit.adjust.ruler"]
+        XCTAssertTrue(ruler.waitForExistence(timeout: 5))
+        let window = app.windows.firstMatch.frame
+        XCTAssertLessThanOrEqual(ruler.frame.maxY, window.maxY - 20)
+        XCTAssertTrue(ruler.isHittable)
+    }
+
     func testFullScreenShowsOnlyTheVideoAndComesBack() {
         let app = EditorApp.open()
         app.buttons["edit.fullScreenButton"].tap()

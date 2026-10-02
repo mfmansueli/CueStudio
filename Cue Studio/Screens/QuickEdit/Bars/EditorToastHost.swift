@@ -22,7 +22,7 @@ struct EditorToastHost: ViewModifier {
                     HStack(spacing: 6) {
                         Image(systemName: "star.fill")
                             .font(.system(size: 10, weight: .bold))
-                            .foregroundStyle(Palette.acc)
+                            .foregroundStyle(Palette.accText)
                             .accessibilityHidden(true)
                         Text(message)
                             .font(.system(size: 13.5, weight: .semibold))

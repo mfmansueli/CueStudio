@@ -18,6 +18,11 @@ import Foundation
 ///   habits" takes, so Quick edit can play, scrub and trim them.
 /// - `-uiTestRemoteConnects`: with the above, a remote "connects" right after pairing starts (UI
 ///   tests have no second device). Without it the remote link stays offline.
+/// - `-uiTestDictation <speech|denied|unavailable|silence>`: dictation without a microphone or a
+///   model (the simulator has neither): it hears `-uiTestDictationText <words>` a word at a time
+///   (`speech`), or is refused the microphone, can't recognize the language, or hears nothing.
+/// - `-uiTestAppearance <light|dark>`: with `-uiTestInMemory`, Cue's screens start light or dark
+///   (as if picked in Settings › Appearance) whatever the simulator is set to.
 /// - `-uiTestAppLanguage <lproj>`: with `-uiTestInMemory`, Cue's interface starts in that language
 ///   (as if picked in Language & Region) without changing the simulator's. The interface language
 ///   always lives in memory under `-uiTestInMemory`.
@@ -33,6 +38,8 @@ struct LaunchOptions {
     var credentialChecker: AppleIDCredentialChecking = AppleIDCredentialChecker()
     var remoteTransport: RemoteTransport = NearbyRemoteTransport()
     var languageStore: AppLanguageStoring = SystemAppLanguageStore()
+    /// Nil is the real microphone and recognizer.
+    var dictation: DictationService?
 
     static func fromProcess() -> LaunchOptions {
         var options = LaunchOptions()
@@ -65,12 +72,24 @@ struct LaunchOptions {
             let suite = "studio.cue.uitests"
             UserDefaults().removePersistentDomain(forName: suite)
             options.defaults = UserDefaults(suiteName: suite) ?? .standard
+            if let index = arguments.firstIndex(of: "-uiTestAppearance"), arguments.indices.contains(index + 1),
+               AppAppearance(rawValue: arguments[index + 1]) != nil {
+                options.defaults.set(arguments[index + 1], forKey: DefaultsKey.appAppearance)
+            }
             options.platformRules = PlatformRulesService(cacheURL: nil, remoteURL: nil)
             options.remoteTransport = DemoRemoteTransport(connects: arguments.contains("-uiTestRemoteConnects"))
             let appLanguage = arguments.firstIndex(of: "-uiTestAppLanguage").flatMap { index in
                 arguments.indices.contains(index + 1) ? arguments[index + 1] : nil
             }
             options.languageStore = InMemoryAppLanguageStore(chosenLocalization: appLanguage)
+            if let index = arguments.firstIndex(of: "-uiTestDictation"), arguments.indices.contains(index + 1),
+               let scenario = ScriptedDictation.Scenario(rawValue: arguments[index + 1]) {
+                let text = arguments.firstIndex(of: "-uiTestDictationText").flatMap { textIndex in
+                    arguments.indices.contains(textIndex + 1) ? arguments[textIndex + 1] : nil
+                } ?? "a video about my morning coffee routine"
+                let scripted = ScriptedDictation(scenario: scenario, text: text)
+                options.dictation = DictationService(audio: scripted, speech: scripted, microphone: scripted.microphone)
+            }
             if arguments.contains("-uiTestStubAI") || arguments.contains("-uiTestNoAI") {
                 options.writer = StubScriptWriter(available: !arguments.contains("-uiTestNoAI"))
             }

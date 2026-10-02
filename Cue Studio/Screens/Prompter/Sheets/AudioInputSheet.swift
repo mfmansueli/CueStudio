@@ -54,7 +54,7 @@ struct AudioInputSheet: View {
             HStack(spacing: 14) {
                 Image(systemName: isSelected ? "largecircle.fill.circle" : "circle")
                     .font(.title3)
-                    .foregroundStyle(isSelected ? Palette.acc : Palette.ink3)
+                    .foregroundStyle(isSelected ? Palette.accText : Palette.ink3)
                 VStack(alignment: .leading, spacing: 1) {
                     Text(input.name)
                         .foregroundStyle(Palette.ink)

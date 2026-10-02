@@ -9,18 +9,20 @@ import SwiftUI
 struct LengthMeterView: View {
     let zone: LengthZone
 
-    private var color: Color { zone.isInIdealRange ? Palette.acc : Palette.warn }
+    private var color: Color { zone.isInIdealRange ? Palette.accText : Palette.warnText }
+    /// The same two colors for the words next to the meter, dark enough on a light surface.
+    private var textColor: Color { zone.isInIdealRange ? Palette.accText : Palette.warnText }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             HStack(alignment: .firstTextBaseline) {
-                Text("\(zone.words) words · \(Text(zone.durationLabel).foregroundStyle(color).fontWeight(.semibold))")
+                Text("\(zone.words) words · \(Text(zone.durationLabel).foregroundStyle(textColor).fontWeight(.semibold))")
                     .foregroundStyle(Palette.ink2)
                     .lineLimit(1)
                 Spacer(minLength: 8)
                 Text(zone.status)
                     .fontWeight(.semibold)
-                    .foregroundStyle(color)
+                    .foregroundStyle(textColor)
                     .lineLimit(1)
             }
             .font(.footnote)
@@ -37,7 +39,7 @@ struct LengthMeterView: View {
                         .frame(width: width * zone.fillFraction)
                     if let minimum = zone.minimumFraction {
                         Capsule()
-                            .fill(Color.white)
+                            .fill(Palette.ink)
                             .frame(width: 2, height: 14)
                             .offset(x: width * minimum - 1)
                     }
@@ -53,7 +55,7 @@ struct LengthMeterView: View {
                     Text("0:00")
                     if let minimum = zone.minimumFraction, let label = zone.minimumLabel {
                         Text(label)
-                            .foregroundStyle(Color.white.opacity(0.85))
+                            .foregroundStyle(Palette.ink)
                             .fixedSize()
                             .position(x: proxy.size.width * minimum, y: proxy.size.height / 2)
                     }
@@ -63,7 +65,7 @@ struct LengthMeterView: View {
             }
             .frame(height: 14)
             .font(.caption2.monospacedDigit())
-            .foregroundStyle(Palette.ink.opacity(0.35))
+            .foregroundStyle(Palette.ink2)
             .padding(.top, 4)
         }
         .accessibilityElement(children: .ignore)

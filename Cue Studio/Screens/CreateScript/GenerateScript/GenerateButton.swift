@@ -17,7 +17,7 @@ struct GenerateButton: View {
         if isGenerating {
             Text("Writing with Apple Intelligence…")
                 .font(.body.weight(.semibold))
-                .foregroundStyle(Palette.acc)
+                .foregroundStyle(Palette.accText)
                 .frame(maxWidth: .infinity, minHeight: Metrics.largeButtonHeight)
                 .phaseAnimator(reduceMotion ? [0.2] : [0.14, 0.38]) { view, phase in
                     view.background(Palette.acc.opacity(phase), in: Capsule())

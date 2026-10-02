@@ -61,10 +61,34 @@ struct CaptionAnimatorTests {
         #expect(Set(drawn.map(\.origin.x)).count == 1)
     }
 
-    @Test func wordEffectsNeedRealWordTimes() {
-        let drawn = overlays(line("one two three", timed: false), .box)
-        #expect(drawn.count == 1)
-        #expect(drawn[0].lazyText?.emphasis == nil)
+    @Test func aLineWithoutTimesOfItsOwnGetsTheEffectsOverItsWordsSharedAcrossItsTime() {
+        let cue = line("one two three", timed: false)
+        let drawn = overlays(cue, .box)
+        #expect(drawn.count == 3)
+        #expect(drawn.map { $0.lazyText?.emphasis?.index } == [0, 1, 2])
+        #expect(drawn.first?.span?.start == cue.start)
+        #expect(drawn.last?.span?.end == cue.end)
+    }
+
+    @Test func aLineWrittenByHandFollowsTheStyleToo() {
+        let written = CaptionCue(text: "Write it  yourself ", start: 2, end: 5, origin: .manual)
+        let drawn = overlays(written, .highlight)
+        #expect(drawn.count == 3)
+        #expect(drawn.map { $0.lazyText?.emphasis?.index } == [0, 1, 2])
+        // Stray spaces from typing never keep the word from being found in the drawn line.
+        #expect(drawn.allSatisfy { $0.lazyText?.text.text == "Write it yourself" })
+        let words = written.lineWords
+        #expect(words.first?.start == 2 && words.last?.end == 5)
+        #expect(zip(words, words.dropFirst()).allSatisfy { $0.end == $1.start })
+    }
+
+    @Test func aCorrectedLineKeepsItsMeasuredTimesWhenTheyStillFitItsText() {
+        let cue = line("one two three")
+        #expect(cue.lineWords == cue.words)
+        var typed = cue
+        typed.text = "one two three "
+        #expect(typed.lineWords == cue.words)
+        #expect(typed.shownText == "one two three")
     }
 
     @Test func theWordBeingSaidIsFoundInTheDrawnLine() {

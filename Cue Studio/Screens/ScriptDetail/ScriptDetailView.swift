@@ -32,7 +32,7 @@ struct ScriptDetailView: View {
         Group {
             if let script = viewModel.script {
                 if viewModel.isEditing {
-                    ScriptEditorView(viewModel: viewModel, script: script)
+                    ScriptEditorView(viewModel: viewModel)
                 } else {
                     ScriptReadView(
                         viewModel: viewModel,
@@ -49,6 +49,8 @@ struct ScriptDetailView: View {
         .background(Palette.bg)
         .navigationBarTitleDisplayMode(.inline)
         .navigationBarBackButtonHidden(viewModel.isEditing)
+        // Writing has its own header (the title, the length and Done), so nothing sits above it.
+        .toolbarVisibility(viewModel.isEditing ? .hidden : .automatic, for: .navigationBar)
         .toolbar { toolbarContent }
         .toolbarVisibility(.hidden, for: .tabBar)
         .alert("New folder", isPresented: $viewModel.isNamingFolder) {
@@ -69,34 +71,26 @@ struct ScriptDetailView: View {
                     onPick: { viewModel.replaceHook(with: $0) },
                     onMore: { Task { await viewModel.showMoreHooks() } }
                 )
+            case .improve:
+                ImproveScriptSheet(viewModel: viewModel)
+            case .details:
+                ScriptDetailsSheet(viewModel: viewModel)
+            case .scriptType:
+                ScriptTypeSheet(current: viewModel.script?.type) { viewModel.setType($0) }
             }
         }
     }
 
     @ToolbarContentBuilder
     private var toolbarContent: some ToolbarContent {
-        if viewModel.isEditing {
-            ToolbarItem(placement: .cancellationAction) {
-                Button("Cancel") { viewModel.cancelEditing() }
-                    .accessibilityIdentifier("editor.cancelButton")
-            }
-            ToolbarItem(placement: .confirmationAction) {
-                Button {
-                    viewModel.finishEditing()
-                } label: {
-                    Text("Done").foregroundStyle(Palette.accInk)
-                }
-                .buttonStyle(.glassProminent)
-                .tint(Palette.acc)
-                .accessibilityIdentifier("editor.doneButton")
-            }
-        } else if let script = viewModel.script {
+        if !viewModel.isEditing, let script = viewModel.script {
             ToolbarItem(placement: .topBarTrailing) {
                 Button("Edit") { viewModel.startEditing() }
                     .accessibilityIdentifier("detail.editButton")
             }
             ToolbarItem(placement: .topBarTrailing) {
                 Menu {
+                    Button("Script details", systemImage: "info.circle") { viewModel.sheet = .details }
                     ScriptActionsMenu(script: script, folders: library.folders, actions: actions)
                 } label: {
                     Label("More", systemImage: "ellipsis")

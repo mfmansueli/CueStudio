@@ -128,6 +128,7 @@ nonisolated struct EditedComposition: @unchecked Sendable {
             guard let effect = edit.background(for: id) else { continue }
             backgrounds[id] = BackgroundRender.prepare(effect, cacheKey: build + (id?.uuidString ?? "take"))
         }
+        let ownBackgrounds = clipBackgrounds(of: edit.timeline, build: build)
         func frame(_ id: UUID?) -> SourceFrame {
             guard let played = recording(id) else { return SourceFrame(transform: .identity, crop: crop, scale: 1) }
             let own = id == nil ? crop : cropRect(for: played, edit: edit)
@@ -135,6 +136,11 @@ nonisolated struct EditedComposition: @unchecked Sendable {
                 transform: played.transform, crop: own, scale: own.width > 0 ? crop.width / own.width : 1,
                 background: backgrounds[id] ?? nil
             )
+        }
+        func frame(of segment: EditSegment) -> SourceFrame {
+            var result = frame(segment.sourceID)
+            if let own = ownBackgrounds[segment.id] { result.background = own }
+            return result
         }
         var overlays = TextOverlayRenderer.overlays(edit.editedTexts(in: edit.timeline), frame: crop.size)
         if options.burnsInCaptions, edit.showsCaptions {
@@ -153,7 +159,7 @@ nonisolated struct EditedComposition: @unchecked Sendable {
         let instructions = stretches.map { stretch in
             let middle = CMTimeMultiplyByRatio(stretch.range.start + stretch.range.end, multiplier: 1, divisor: 2).seconds
             let index = timeline.segmentIndex(atEdited: middle)
-            let played = timeline.segments[index].sourceID
+            let playedSegment = timeline.segments[index]
             let zoom = timeline.segments[index].zoom.map {
                 ZoomWindow(
                     zoom: $0, start: timeline.editedStart(ofSegmentAt: index), duration: timeline.segments[index].duration,
@@ -161,7 +167,7 @@ nonisolated struct EditedComposition: @unchecked Sendable {
                 )
             }
             // Before the cut the blend track holds the incoming piece; after it, the outgoing one.
-            let blendSource = stretch.dissolve.map { middle < $0.cut ? $0.incomingSource : $0.outgoingSource }
+            let blendSegment = stretch.dissolve.map { timeline.segments[middle < $0.cut ? $0.join : $0.join - 1] }
             // The media tracks with a video in this stretch.
             let showing = mediaFrames.filter { frame in
                 frame.isVideo && frame.span.overlaps(TimeSpan(start: stretch.range.start.seconds, end: stretch.range.end.seconds))
@@ -174,9 +180,11 @@ nonisolated struct EditedComposition: @unchecked Sendable {
                 trackID: video.trackID,
                 blendTrackID: stretch.dissolve == nil ? nil : blendTrack?.trackID,
                 mediaTrackIDs: mediaTrackIDs,
-                frame: frame(played),
-                blendFrame: stretch.dissolve == nil ? nil : frame(blendSource ?? nil),
+                frame: frame(of: playedSegment),
+                blendFrame: blendSegment.map { frame(of: $0) },
                 edit: edit,
+                look: edit.lookSettings(for: playedSegment),
+                blendLook: blendSegment.map { edit.lookSettings(for: $0) },
                 overlays: overlays,
                 media: mediaFrames,
                 outputScale: outputScale,
@@ -197,6 +205,17 @@ nonisolated struct EditedComposition: @unchecked Sendable {
             videoComposition: AVVideoComposition(configuration: configuration),
             audioMix: audioMix(for: takeTracks, voices: voices + mediaSounds, music: music)
         )
+    }
+
+    /// The backgrounds clips set for themselves, prepared once, by clip. A clip with one is drawn with
+    /// it instead of its recording's; an Original one is a choice too (no effect: `nil`).
+    private static func clipBackgrounds(of timeline: EditTimeline, build: String) -> [UUID: BackgroundRender?] {
+        var result: [UUID: BackgroundRender?] = [:]
+        for segment in timeline.segments {
+            guard let effect = segment.look?.background else { continue }
+            result.updateValue(BackgroundRender.prepare(effect, cacheKey: build + "clip-" + segment.id.uuidString), forKey: segment.id)
+        }
+        return result
     }
 
     /// Lays the timeline's pieces one after the other: picture on `video`, sound on the track
@@ -268,15 +287,17 @@ nonisolated struct EditedComposition: @unchecked Sendable {
 
     /// Stretches cut again where the main track moves to another recording (and, in a dissolve
     /// between two recordings, at its cut) and where a section with a slow zoom starts or ends, so
-    /// each stretch reads one recording on each track and has one zoom. An edit of the take alone
-    /// without zooms stays as it was.
+    /// each stretch reads one recording on each track and has one zoom, and where the next clip has
+    /// another look or background (`EditSegment.look`), so each stretch is drawn one way. An edit of
+    /// the take alone without zooms or clip looks stays as it was.
     static func splitBySource(
         _ stretches: [(range: CMTimeRange, dissolve: TransitionWindow?, showsMedia: Bool)], in timeline: EditTimeline
     ) -> [(range: CMTimeRange, dissolve: TransitionWindow?, showsMedia: Bool)] {
         let segments = timeline.segments
         var marks: [CMTime] = []
         for index in segments.indices.dropFirst()
-        where segments[index].sourceID != segments[index - 1].sourceID || segments[index].zoom != nil || segments[index - 1].zoom != nil {
+        where segments[index].sourceID != segments[index - 1].sourceID || segments[index].zoom != nil || segments[index - 1].zoom != nil
+            || segments[index].look != segments[index - 1].look {
             marks.append(CMTime(seconds: timeline.editedStart(ofSegmentAt: index), preferredTimescale: 600))
         }
         guard !marks.isEmpty else { return stretches }

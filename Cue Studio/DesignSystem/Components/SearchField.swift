@@ -24,7 +24,7 @@ struct SearchField: View {
             TextField(prompt, text: $text)
                 .font(.body)
                 .foregroundStyle(Palette.ink)
-                .tint(Palette.acc)
+                .tint(Palette.accText)
                 .focused($isFocused)
                 .submitLabel(.search)
                 .autocorrectionDisabled()

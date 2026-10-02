@@ -65,6 +65,7 @@ struct QuickEditView: View {
         }
         .background(Palette.bg.ignoresSafeArea())
         .modifier(CaptionTranslationRunner(viewModel: viewModel))
+        .editorPhotoPicker(viewModel)
         .task { await viewModel.prepare() }
         .onChange(of: viewModel.panel) { _, panel in
             // Not tied to the panel: leaving Pauses doesn't stop it listening.

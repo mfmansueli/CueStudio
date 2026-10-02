@@ -8,6 +8,12 @@ import Foundation
 /// The video caption collection. Separate identities keep saved TypePreset looks unchanged.
 nonisolated enum CaptionTheme: String, Codable, CaseIterable, Identifiable, Sendable {
     case cue, impact, clean, pop, editorial
+    /// Added with the complete presets (`CaptionStyleSpec` version 2).
+    case educational, interview
+
+    /// The presets Caption style offers, in order. Clean stays for edits that picked it, and shows
+    /// only while it is the one in use: Interview is its sober successor.
+    static let catalog: [CaptionTheme] = [.cue, .educational, .interview, .impact, .pop, .editorial]
 
     var id: String { rawValue }
 
@@ -18,33 +24,18 @@ nonisolated enum CaptionTheme: String, Codable, CaseIterable, Identifiable, Send
         case .clean: String(inInterfaceLanguage: LocalizedStringResource("Clean caption style", defaultValue: "Clean"))
         case .pop: String(localized: "Pop")
         case .editorial: String(localized: "Editorial")
+        case .educational: String(localized: "Educational")
+        case .interview: String(localized: "Interview")
         }
     }
 
-    var fontName: String {
-        switch self {
-        case .cue: "SpaceGrotesk-Light" // Variable font's registered PostScript name; wght selects Bold.
-        case .impact: "Anton-Regular"
-        case .clean: "Inter-Regular"
-        case .pop: "Poppins-ExtraBold"
-        case .editorial: "Manrope-Regular"
-        }
-    }
+    /// The first reading of the preset (`CaptionStyleSpec`); what a new look is drawn with is
+    /// `CaptionSettings.spec`.
+    private var firstReading: CaptionStyleSpec { CaptionStyleSpec.spec(for: self, version: 1) }
 
-    var fontWeight: Double {
-        switch self {
-        case .cue, .editorial: 700
-        case .clean: 600
-        case .pop: 800
-        case .impact: 400 // Anton's single cut is already heavy and condensed.
-        }
-    }
+    var fontName: String { firstReading.fontName }
 
-    var defaultAccent: CaptionAccent {
-        switch self {
-        case .cue, .clean, .pop: .yellow
-        case .impact: .lime
-        case .editorial: .peach
-        }
-    }
+    var fontWeight: Double { firstReading.fontWeight }
+
+    var defaultAccent: CaptionAccent { firstReading.defaultAccent }
 }

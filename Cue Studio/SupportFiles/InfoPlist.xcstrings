@@ -225,91 +225,91 @@
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "يسجّل Cue صوتك في كل لقطة وفي التعليق الصوتي، ويمكنه تتبّع صوتك لتمرير النص."
+            "value" : "يسجّل Cue صوتك في كل لقطة وفي التعليق الصوتي، ويمكنه تتبّع صوتك لتمرير النص، ويستمع إليك حين تُملي فكرة."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue nimmt deine Stimme bei jedem Take und für Voice-overs auf und kann deiner Stimme folgen, um das Skript laufen zu lassen."
+            "value" : "Cue nimmt deine Stimme bei jedem Take und für Voice-overs auf, kann deiner Stimme folgen, um das Skript laufen zu lassen, und hört zu, wenn du eine Idee diktierst."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "new",
-            "value" : "Cue records your voice with each take and for voice-overs, and can follow your voice to scroll the script."
+            "value" : "Cue records your voice with each take and for voice-overs, can follow your voice to scroll the script, and listens when you dictate an idea."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue graba tu voz en cada toma y en las voces en off, y puede seguir tu voz para desplazar el guion."
+            "value" : "Cue graba tu voz en cada toma y en las voces en off, puede seguir tu voz para desplazar el guion y te escucha cuando dictas una idea."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue enregistre votre voix à chaque prise et pour les voix off, et peut suivre votre voix pour faire défiler le script."
+            "value" : "Cue enregistre votre voix à chaque prise et pour les voix off, peut suivre votre voix pour faire défiler le script et vous écoute lorsque vous dictez une idée."
           }
         },
         "hi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue हर टेक और वॉइस-ओवर के लिए आपकी आवाज़ रिकॉर्ड करता है, और स्क्रिप्ट स्क्रॉल करने के लिए आपकी आवाज़ को फ़ॉलो कर सकता है।"
+            "value" : "Cue हर टेक और वॉइस-ओवर के लिए आपकी आवाज़ रिकॉर्ड करता है, स्क्रिप्ट स्क्रॉल करने के लिए आपकी आवाज़ को फ़ॉलो कर सकता है, और जब आप कोई आइडिया बोलकर लिखवाते हैं तब सुनता है।"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue merekam suaramu di setiap take dan untuk sulih suara, dan bisa mengikuti suaramu untuk menggulir naskah."
+            "value" : "Cue merekam suaramu di setiap take dan untuk sulih suara, bisa mengikuti suaramu untuk menggulir naskah, dan mendengarkan saat kamu mendiktekan ide."
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue registra la tua voce in ogni ripresa e per le voci fuori campo, e può seguire la tua voce per far scorrere il copione."
+            "value" : "Cue registra la tua voce in ogni ripresa e per le voci fuori campo, può seguire la tua voce per far scorrere il copione e ti ascolta quando detti un’idea."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cueはテイクごとの声やボイスオーバーを録音し、声に合わせて台本をスクロールできます。"
+            "value" : "Cueはテイクごとの声やボイスオーバーを録音し、声に合わせて台本をスクロールでき、アイデアを音声入力するときにも声を聞き取ります。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue는 테이크마다 목소리를 녹음하고 보이스오버도 녹음하며, 목소리에 맞춰 대본을 스크롤할 수 있습니다."
+            "value" : "Cue는 테이크마다 목소리를 녹음하고 보이스오버도 녹음하며, 목소리에 맞춰 대본을 스크롤할 수 있고, 아이디어를 음성으로 입력할 때 소리를 듣습니다."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "O Cue grava sua voz em cada take e nas narrações, e pode seguir sua voz para rolar o roteiro."
+            "value" : "O Cue grava sua voz em cada take e nas narrações, pode seguir sua voz para rolar o roteiro e ouve você quando dita uma ideia."
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue อัดเสียงของคุณในทุกเทคและสำหรับเสียงบรรยาย และติดตามเสียงของคุณเพื่อเลื่อนสคริปต์ได้"
+            "value" : "Cue อัดเสียงของคุณในทุกเทคและสำหรับเสียงบรรยาย ติดตามเสียงของคุณเพื่อเลื่อนสคริปต์ได้ และรับฟังเมื่อคุณพูดไอเดียเป็นข้อความ"
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue her çekimde ve seslendirmelerde sesini kaydeder; metni kaydırmak için sesini de takip edebilir."
+            "value" : "Cue her çekimde ve seslendirmelerde sesini kaydeder; metni kaydırmak için sesini de takip edebilir ve bir fikri sesle yazdığında seni dinler."
           }
         },
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue ghi âm giọng bạn trong mỗi bản quay và cho phần lồng tiếng, đồng thời có thể theo giọng bạn để cuộn kịch bản."
+            "value" : "Cue ghi âm giọng bạn trong mỗi bản quay và cho phần lồng tiếng, có thể theo giọng bạn để cuộn kịch bản, và lắng nghe khi bạn đọc to một ý tưởng."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue 会录制每个镜头和画外音中的声音，还能跟随你的声音滚动脚本。"
+            "value" : "Cue 会录制每个镜头和画外音中的声音，还能跟随你的声音滚动脚本，并在你语音输入想法时聆听。"
           }
         }
       }
@@ -417,91 +417,91 @@
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "يتعرّف Cue على كلامك على جهاز iPhone هذا ليبقي النص على السطر الذي تقرؤه. لا يغادر أي شيء الجهاز."
+            "value" : "يتعرّف Cue على كلامك على جهاز iPhone هذا ليبقي النص على السطر الذي تقرؤه ويحوّل فكرتك المُملاة إلى نص. لا يغادر أي شيء الجهاز."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue erkennt deine Sprache auf diesem iPhone, damit das Skript bei der Zeile bleibt, die du gerade liest. Nichts verlässt das Gerät."
+            "value" : "Cue erkennt deine Sprache auf diesem iPhone, damit das Skript bei der Zeile bleibt, die du gerade liest, und um eine diktierte Idee in Text umzuwandeln. Nichts verlässt das Gerät."
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "new",
-            "value" : "Cue recognizes your speech on this iPhone to keep the script on the line you're reading. Nothing leaves the device."
+            "value" : "Cue recognizes your speech on this iPhone to keep the script on the line you're reading and to turn an idea you dictate into text. Nothing leaves the device."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue reconoce tu voz en este iPhone para mantener el guion en la línea que estás leyendo. Nada sale del dispositivo."
+            "value" : "Cue reconoce tu voz en este iPhone para mantener el guion en la línea que estás leyendo y convertir en texto una idea que dictas. Nada sale del dispositivo."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue reconnaît votre voix sur cet iPhone pour garder le script sur la ligne que vous lisez. Rien ne quitte l’appareil."
+            "value" : "Cue reconnaît votre voix sur cet iPhone pour garder le script sur la ligne que vous lisez et transformer en texte une idée que vous dictez. Rien ne quitte l’appareil."
           }
         },
         "hi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue इसी iPhone पर आपकी आवाज़ पहचानता है, ताकि स्क्रिप्ट उसी लाइन पर रहे जो आप पढ़ रहे हैं। कुछ भी डिवाइस से बाहर नहीं जाता।"
+            "value" : "Cue इसी iPhone पर आपकी आवाज़ पहचानता है, ताकि स्क्रिप्ट उसी लाइन पर रहे जो आप पढ़ रहे हैं और बोलकर लिखवाया गया आइडिया टेक्स्ट बन सके। कुछ भी डिवाइस से बाहर नहीं जाता।"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue mengenali ucapanmu di iPhone ini agar naskah tetap di baris yang sedang kamu baca. Tidak ada yang keluar dari perangkat."
+            "value" : "Cue mengenali ucapanmu di iPhone ini agar naskah tetap di baris yang sedang kamu baca dan untuk mengubah ide yang kamu diktekan menjadi teks. Tidak ada yang keluar dari perangkat."
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue riconosce la tua voce su questo iPhone per tenere il copione sulla riga che stai leggendo. Nulla lascia il dispositivo."
+            "value" : "Cue riconosce la tua voce su questo iPhone per tenere il copione sulla riga che stai leggendo e per trasformare in testo un’idea che detti. Nulla lascia il dispositivo."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "CueはこのiPhone上で音声を認識し、読んでいる行に台本を合わせます。データがデバイスの外に出ることはありません。"
+            "value" : "CueはこのiPhone上で音声を認識し、読んでいる行に台本を合わせたり、音声入力したアイデアをテキストにしたりします。データがデバイスの外に出ることはありません。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue는 이 iPhone에서 음성을 인식해 읽고 있는 줄에 대본을 맞춥니다. 어떤 데이터도 기기 밖으로 나가지 않습니다."
+            "value" : "Cue는 이 iPhone에서 음성을 인식해 읽고 있는 줄에 대본을 맞추고, 음성으로 입력한 아이디어를 텍스트로 바꿉니다. 어떤 데이터도 기기 밖으로 나가지 않습니다."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "O Cue reconhece sua fala neste iPhone para manter o roteiro na linha que você está lendo. Nada sai do aparelho."
+            "value" : "O Cue reconhece sua fala neste iPhone para manter o roteiro na linha que você está lendo e transformar em texto uma ideia que você dita. Nada sai do aparelho."
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue จดจำเสียงพูดของคุณบน iPhone เครื่องนี้ เพื่อให้สคริปต์อยู่ตรงบรรทัดที่คุณกำลังอ่าน ไม่มีข้อมูลใดออกจากอุปกรณ์"
+            "value" : "Cue จดจำเสียงพูดของคุณบน iPhone เครื่องนี้ เพื่อให้สคริปต์อยู่ตรงบรรทัดที่คุณกำลังอ่าน และเปลี่ยนไอเดียที่คุณพูดให้เป็นข้อความ ไม่มีข้อมูลใดออกจากอุปกรณ์"
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue, metni okuduğun satırda tutmak için konuşmanı bu iPhone'da tanır. Hiçbir şey aygıttan çıkmaz."
+            "value" : "Cue, metni okuduğun satırda tutmak ve sesle söylediğin fikri metne çevirmek için konuşmanı bu iPhone'da tanır. Hiçbir şey aygıttan çıkmaz."
           }
         },
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue nhận dạng giọng nói của bạn ngay trên iPhone này để giữ kịch bản ở dòng bạn đang đọc. Không có gì rời khỏi thiết bị."
+            "value" : "Cue nhận dạng giọng nói của bạn ngay trên iPhone này để giữ kịch bản ở dòng bạn đang đọc và chuyển ý tưởng bạn đọc thành văn bản. Không có gì rời khỏi thiết bị."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue 在这台 iPhone 上识别你的语音，让脚本停在你正在读的那一行。数据不会离开设备。"
+            "value" : "Cue 在这台 iPhone 上识别你的语音，让脚本停在你正在读的那一行，并把你语音输入的想法转成文字。数据不会离开设备。"
           }
         }
       }

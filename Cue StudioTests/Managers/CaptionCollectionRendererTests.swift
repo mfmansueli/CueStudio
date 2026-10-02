@@ -22,22 +22,27 @@ struct CaptionCollectionRendererTests {
         })
     }
 
-    @Test func onlyTheApprovedFiveStylesAreSelectable() {
-        #expect(CaptionTheme.allCases == [.cue, .impact, .clean, .pop, .editorial])
+    @Test func theCatalogOffersTheCompletePresetsAndKeepsCleanForSavedEdits() {
+        #expect(CaptionTheme.catalog == [.cue, .educational, .interview, .impact, .pop, .editorial])
+        #expect(Set(CaptionTheme.allCases) == Set(CaptionTheme.catalog + [.clean]))
         #expect(CaptionSettings().theme == .cue)
-        #expect(!CaptionSettings(theme: .clean).followsWords)
+        #expect(!CaptionSettings(theme: .clean).followsWords && !CaptionSettings(theme: .interview).followsWords)
+        #expect(CaptionSettings(theme: .educational).followsWords)
     }
 
     @Test(arguments: CaptionTheme.allCases)
     func fontsAreBundledAndEveryActiveWordKeepsItsLayout(_ theme: CaptionTheme) throws {
-        let font = CaptionFont.font(theme: theme, size: 26, text: cue.text)
-        let names: [CaptionTheme: String] = [.cue: "SpaceGrotesk", .impact: "Anton", .clean: "Inter", .pop: "Poppins", .editorial: "Manrope"]
-        #expect(font.fontName.contains(names[theme] ?? "missing"))
-        if theme == .cue || theme == .clean || theme == .editorial {
-            let axes = try #require(CTFontCopyVariation(font as CTFont) as? [NSNumber: NSNumber])
-            #expect(axes[0x77676874]?.doubleValue == theme.fontWeight)
-        }
         let settings = CaptionSettings(theme: theme)
+        let font = CaptionFont.font(spec: settings.spec, size: 26, text: cue.text)
+        let names: [CaptionTheme: String] = [
+            .cue: "SpaceGrotesk", .impact: "Anton", .clean: "Inter", .pop: "Poppins", .editorial: "DMSerif",
+            .educational: "Manrope", .interview: "Inter",
+        ]
+        #expect(font.fontName.contains(names[theme] ?? "missing"))
+        if [.cue, .clean, .educational, .interview].contains(theme) {
+            let axes = try #require(CTFontCopyVariation(font as CTFont) as? [NSNumber: NSNumber])
+            #expect(axes[0x77676874]?.doubleValue == settings.spec.fontWeight)
+        }
         let plain = try #require(CaptionCollectionRenderer.image(cue.text, settings: settings, frame: frame))
         let states = CaptionCollectionRenderer.overlays([cue], settings: settings, position: .bottom, frame: frame)
         #expect(Set(states.map(\.origin.x)).count == 1)
@@ -57,16 +62,37 @@ struct CaptionCollectionRendererTests {
         Attachment.record(try #require(sample.pngData()), named: "\(theme.rawValue).png")
     }
 
-    @Test func unknownWordTimingAndManualCorrectionsStayStatic() {
+    @Test func unknownWordTimingStillFollowsTheStyleByAnApproximation() {
         var estimated = cue
         estimated.words[1].isEstimated = true
         let settings = CaptionSettings()
         let states = CaptionCollectionRenderer.overlays([estimated], settings: settings, position: .bottom, frame: frame)
-        #expect(states.count == 1)
-        #expect(states[0].lazyText?.emphasis == nil)
-        let revised = CaptionRevision.retimed(cue, text: "Sua nova ideia merece ganhar vida.")
-        #expect(revised.needsTimingReview)
-        #expect(CaptionCollectionRenderer.overlays([revised], settings: settings, position: .bottom, frame: frame).count == 1)
+        #expect(states.count == words.count)
+        #expect(states.allSatisfy { $0.lazyText?.emphasis != nil })
+    }
+
+    @Test func aLineTypedWithStraySpacesOrWrittenFromScratchKeepsTheEffects() {
+        let settings = CaptionSettings()
+        var typed = CaptionRevision.retimed(cue, text: "Sua  ideia merece ganhar vida. ")
+        #expect(CaptionCollectionRenderer.overlays([typed], settings: settings, position: .bottom, frame: frame).count == words.count)
+        typed = CaptionCue(text: "Brand new line", start: 1, end: 3, origin: .manual)
+        let states = CaptionCollectionRenderer.overlays([typed], settings: settings, position: .bottom, frame: frame)
+        #expect(states.count == 3)
+        #expect(states.allSatisfy { $0.lazyText?.emphasis != nil })
+    }
+
+    @Test func aCorrectedLineStillLightsItsWordsOneByOne() {
+        let settings = CaptionSettings()
+        let original = CaptionCollectionRenderer.overlays([cue], settings: settings, position: .bottom, frame: frame)
+        for text in ["Sua nova ideia merece ganhar vida.", "Sua ideia merece vida.", "Tua ideia merece ganhar vida."] {
+            let revised = CaptionRevision.retimed(cue, text: text)
+            #expect(!revised.needsTimingReview)
+            #expect(revised.hasWordTiming)
+            let states = CaptionCollectionRenderer.overlays([revised], settings: settings, position: .bottom, frame: frame)
+            #expect(states.count > 1)
+            #expect(states.contains { $0.lazyText?.emphasis != nil })
+        }
+        #expect(original.count > 1)
     }
 
     @Test func gapsNeverPretendAWordIsBeingSpoken() {
@@ -83,7 +109,7 @@ struct CaptionCollectionRendererTests {
             "당신의 아이디어", "आपका विचार", "فكرتك تستحق الحياة", "ความคิดของคุณ",
         ]
         for sample in samples {
-            let font = CaptionFont.font(theme: theme, size: 26, text: sample)
+            let font = CaptionFont.font(spec: CaptionSettings(theme: theme).spec, size: 26, text: sample)
             #expect(font.pointSize == 26)
             let line = CTLineCreateWithAttributedString(NSAttributedString(string: sample, attributes: [.font: font]))
             for run in CTLineGetGlyphRuns(line) as? [CTRun] ?? [] {

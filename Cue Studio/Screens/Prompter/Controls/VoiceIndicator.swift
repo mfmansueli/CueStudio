@@ -35,12 +35,12 @@ struct VoiceIndicator: View {
             if fillsWidth {
                 Text(status.shortLabel(isListening: isListening))
                     .font(.subheadline.weight(.semibold))
-                    .foregroundStyle(Palette.acc)
+                    .foregroundStyle(Palette.accText)
             } else {
                 Text(status.tag(speedLabel: speedLabel))
                     .font(.subheadline.weight(.bold).monospacedDigit())
                     .kerning(0.5)
-                    .foregroundStyle(Palette.acc)
+                    .foregroundStyle(Palette.accText)
                     .fixedSize()
                 Text(status.shortLabel(isListening: isListening))
                     .font(.footnote.monospacedDigit())

@@ -189,4 +189,37 @@ struct LanguageServiceTests {
         #expect(conflict?.message.contains(CueLanguage.portugueseBrazil.localizedName) == true)
         #expect(service.languageConflict(for: nil) == nil)
     }
+
+    // MARK: - Dictation
+
+    @Test func anIdeaIsHeardInTheScriptLanguageWhenOneIsSet() {
+        let defaults = TestDefaults()
+        defer { defaults.tearDown() }
+        let service = makeService(defaults: defaults)
+        service.scriptLanguage = .portugueseBrazil
+        // Even over a typed English idea: the script is what gets written in it.
+        #expect(service.dictationRequest(existingText: "A video about my morning coffee") == .language(.portugueseBrazil))
+        #expect(service.dictationRequest(existingText: "") == .language(.portugueseBrazil))
+    }
+
+    @Test func withoutAScriptLanguageTheTypedIdeaDecidesAndTheInterfaceIsTheFallback() {
+        let defaults = TestDefaults()
+        defer { defaults.tearDown() }
+        let service = makeService(defaults: defaults)
+        // Nothing typed: the interface's language (Italian here), as the generated script would be.
+        #expect(service.dictationRequest(existingText: "") == .language(.italian))
+        #expect(service.dictationRequest(existingText: "  ") == .language(.italian))
+        // Too little to tell a language from.
+        #expect(service.dictationRequest(existingText: "café") == .language(.italian))
+        // Enough typed: its language, whatever the interface is.
+        #expect(service.dictationRequest(existingText: "Esses são três hábitos que mudaram as minhas manhãs") == .language(.portugueseBrazil))
+    }
+
+    @Test func voiceFollowingsLanguageNeverDecidesWhatAnIdeaIsHeardIn() {
+        let defaults = TestDefaults()
+        defer { defaults.tearDown() }
+        let service = makeService(defaults: defaults)
+        service.voiceFollowingLanguage = .japanese
+        #expect(service.dictationRequest(existingText: "") == .language(.italian))
+    }
 }

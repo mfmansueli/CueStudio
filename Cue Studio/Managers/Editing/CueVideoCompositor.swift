@@ -114,13 +114,16 @@ final class CueVideoCompositor: NSObject, AVVideoCompositing, @unchecked Sendabl
         instruction: CompositionInstruction, at time: TimeInterval, cache: OverlayImageCache, masker: PersonMasker
     ) -> CIImage {
         let moment = Int((time * 1000).rounded())
-        var image = framed(source, frame: instruction.frame, edit: instruction.edit, masker: masker, key: "main-\(moment)")
+        var image = framed(
+            source, frame: instruction.frame, cropFit: instruction.edit.cropFit, look: instruction.look, masker: masker, key: "main-\(moment)"
+        )
         if let zoom = instruction.zoom {
             image = zoomed(image, by: CGFloat(zoom.scale(at: time)))
         }
         if let other, let dissolve = instruction.dissolve {
             let otherSide = framed(
-                other, frame: instruction.blendFrame ?? instruction.frame, edit: instruction.edit, masker: masker, key: "blend-\(moment)"
+                other, frame: instruction.blendFrame ?? instruction.frame, cropFit: instruction.edit.cropFit,
+                look: instruction.blendLook ?? instruction.look, masker: masker, key: "blend-\(moment)"
             )
             // Before the cut the main track still shows the outgoing piece; after it, the incoming one.
             let (outgoing, incoming) = time < dissolve.cut ? (image, otherSide) : (otherSide, image)
@@ -168,13 +171,14 @@ final class CueVideoCompositor: NSObject, AVVideoCompositing, @unchecked Sendabl
     }
 
     /// A frame of a recording upright, cropped and scaled to the take's frame, with its background
-    /// effect, Adjust and Filters. `key` names the moment, for the person masks kept.
+    /// effect, Adjust and Filters (`look`: the clip's own over the take's). `key` names the moment,
+    /// for the person masks kept.
     nonisolated private static func framed(
-        _ source: CVPixelBuffer, frame: SourceFrame, edit: TakeEdit, masker: PersonMasker, key: String
+        _ source: CVPixelBuffer, frame: SourceFrame, cropFit: CropFit, look: LookSettings, masker: PersonMasker, key: String
     ) -> CIImage {
         var image = CIImage(cvPixelBuffer: source).transformed(by: uprightTransform(frame.transform, sourceHeight: CGFloat(CVPixelBufferGetHeight(source))))
         image = image.transformed(by: CGAffineTransform(translationX: -image.extent.minX, y: -image.extent.minY))
-        if edit.cropFit == .fit {
+        if cropFit == .fit {
             image = fitted(image, into: frame.crop.size)
         } else {
             image = image.cropped(to: frame.crop)
@@ -188,7 +192,7 @@ final class CueVideoCompositor: NSObject, AVVideoCompositing, @unchecked Sendabl
                 masker.mask(for: image, key: background.cacheKey + key)
             }
         }
-        return FrameLook.apply(edit, to: image)
+        return FrameLook.apply(look, to: image)
     }
 
     /// Crop › Fit: the whole upright frame scaled to fit in `size`, centered on black.

@@ -26,6 +26,9 @@ enum EditorAction: Hashable {
     case toggleKeyframe
     case duplicateText
     case deleteText
+    // Captions menu
+    case writeCaptionsByHand
+    case deleteAllCaptions
     // Caption
     case editCaption
     case splitCaption
@@ -38,5 +41,6 @@ enum EditorAction: Hashable {
     case reRecordVoiceOver
     case deleteVoiceOver
     // Media
+    case replaceMedia
     case deleteMedia
 }

@@ -18,7 +18,7 @@ nonisolated enum EditorPanelSize: Equatable, Sendable {
     func height(for usable: CGFloat) -> CGFloat {
         switch self {
         case .mini: Self.clamp(0.27 * usable, 200, 250)
-        case .medium: Self.clamp(0.35 * usable, 250, 330)
+        case .medium: Self.clamp(0.38 * usable, 250, 340)
         case .full: Self.clamp(0.44 * usable, 300, 380)
         }
     }

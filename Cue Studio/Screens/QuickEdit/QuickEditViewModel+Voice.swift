@@ -13,8 +13,9 @@ extension QuickEditViewModel {
     /// What the preview plays: the edit, or while comparing, the take's sound untreated at the
     /// same loudness.
     var playedEdit: TakeEdit {
-        guard comparesOriginal, let volume = originalVolume else { return edit }
-        var played = edit
+        let shown = comparesPicture ? edit.withoutPictureLook() : edit
+        guard comparesOriginal, let volume = originalVolume else { return shown }
+        var played = shown
         played.audioVersion = VoiceProcessing.currentVersion
         played.voiceEnhancement = .off
         played.noiseReduction = .off

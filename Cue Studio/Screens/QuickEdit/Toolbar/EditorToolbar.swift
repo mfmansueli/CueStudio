@@ -5,10 +5,11 @@
 
 import SwiftUI
 
-/// The toolbar under the timeline. With something picked (or the Text or Audio menu open), it
-/// swaps its whole content for that context's tools, with a yellow "‹ Clip" back to the main
-/// ones. It scrolls sideways, with a fade on the right while more tools wait there. On the
-/// smallest screens it keeps only the icons; their labels stay for VoiceOver and a long press.
+/// The toolbar under the timeline. With something picked (or the Text, Captions or Audio menu
+/// open), it swaps its whole content for that context's tools, with a yellow "‹ Clip" back to the
+/// main ones. It scrolls sideways, with a fade on the right while more tools wait there; Delete,
+/// in red, stays at the right end whatever the scroll. On the smallest screens it keeps only the
+/// icons; their labels stay for VoiceOver and a long press.
 struct EditorToolbar: View {
     let viewModel: QuickEditViewModel
     let heightClass: EditorHeightClass
@@ -53,8 +54,9 @@ struct EditorToolbar: View {
             if let context {
                 backButton(context)
             }
+            let pinned = viewModel.toolbarItems.filter(\.isPinned)
             GeometryReader { proxy in
-                let items = viewModel.toolbarItems
+                let items = viewModel.toolbarItems.filter { !$0.isPinned }
                 let overflows = CGFloat(items.count) * heightClass.toolbarItemWidth + 8 > proxy.size.width
                 ScrollView(.horizontal) {
                     HStack(spacing: 0) {
@@ -78,6 +80,14 @@ struct EditorToolbar: View {
                     }
                 }
             }
+            ForEach(pinned) { item in
+                itemButton(item)
+                    .padding(.horizontal, 4)
+                    // The tools that scroll away fade out under it.
+                    .background(
+                        LinearGradient(colors: [Palette.bg.opacity(0), Palette.bg], startPoint: .leading, endPoint: .init(x: 0.3, y: 0.5))
+                    )
+            }
         }
     }
 
@@ -91,7 +101,7 @@ struct EditorToolbar: View {
                     .lineLimit(1)
                     .minimumScaleFactor(0.7)
             }
-            .foregroundStyle(Palette.acc)
+            .foregroundStyle(Palette.accText)
             .frame(width: 58)
             .frame(maxHeight: .infinity)
             .contentShape(Rectangle())
@@ -109,12 +119,12 @@ struct EditorToolbar: View {
         let tint: Color = switch item.style {
         case .normal: Palette.ink
         case .dimmed: Palette.ink3
-        case .destructive: Palette.danger
+        case .destructive: Palette.dangerText
         }
         let labelTint: Color = switch item.style {
         case .normal: Palette.ink2
         case .dimmed: Palette.ink3
-        case .destructive: Palette.danger
+        case .destructive: Palette.dangerText
         }
         return Button {
             viewModel.perform(item.action)

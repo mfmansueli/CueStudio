@@ -41,12 +41,18 @@ struct CaptionStylePanel: View {
         return { viewModel.resetCaptionTheme() }
     }
 
+    /// The collection; Clean too while it is the one in use (it is kept for edits that picked it).
+    private var shownThemes: [CaptionTheme] {
+        let current = viewModel.captionTheme
+        return current == .clean ? CaptionTheme.catalog + [.clean] : CaptionTheme.catalog
+    }
+
     // MARK: - Tabs
 
     private var presets: some View {
         ScrollView(.horizontal) {
             HStack(spacing: 8) {
-                ForEach(CaptionTheme.allCases) { theme in
+                ForEach(shownThemes) { theme in
                     PanelPresetCard(
                         name: theme.label, sample: CaptionThemePreview.image(theme), frame: frame,
                         isSelected: viewModel.captionTheme == theme, identifier: "edit.captionPreset.\(theme.rawValue)"
@@ -76,8 +82,7 @@ struct CaptionStylePanel: View {
         PanelNote(text: String(localized: "Tap a style to preview it on the current line."))
         if viewModel.captionReveal.followsWords, viewModel.linesWithoutWordTiming > 0 {
             PanelNote(
-                text: String(localized: "\(viewModel.linesWithoutWordTiming) lines show whole: their words don't have their own times."),
-                tint: Palette.warn
+                text: String(localized: "\(viewModel.linesWithoutWordTiming) lines follow the voice approximately: their words don't have their own times.")
             )
         }
     }

@@ -11,8 +11,9 @@ import Foundation
 /// y is from the top of the timeline. Pure, so the layout is tested without a screen.
 ///
 /// - The ruler on top, then the video track (frames over a waveform), then the tracks under it:
-///   texts (and photos or videos over the take), captions, music and voice-over. An empty track
-///   shows a dashed shortcut ("+ Add text", "+ Auto captions", "+ Add audio").
+///   texts (and photos or videos over the take), captions, music and voice-over. Each track sits
+///   on a strip that stays on screen, with its icon in a gutter on the left; an empty one says
+///   what a tap on it does ("Tap to add text"). Tapping a track opens its tools.
 /// - With a panel open the timeline is compact: the video track shrinks to 40 pt and the track the
 ///   panel is about (if any) comes up under the ruler, alone with the video.
 /// - The picked item has a yellow outline and handles (16 pt on a clip, 12 on a track item, held
@@ -39,6 +40,8 @@ nonisolated struct TimelineGeometry: Equatable, Sendable {
         var selectedJoin: UUID?
         var panelIsOpen = false
         var focusedLane: TimelineLane?
+        /// The tracks whose tools are open on the toolbar (their strips light up).
+        var activeLanes: Set<TimelineLane> = []
         var heightClass: EditorHeightClass = .regular
         var pointsPerSecond: CGFloat = TimelineGeometry.basePointsPerSecond
     }
@@ -149,9 +152,8 @@ nonisolated struct TimelineGeometry: Equatable, Sendable {
         case join(UUID)
         case cover
         case addClip
-        case addText
-        case captions
-        case addAudio
+        /// A track's strip or gutter, or its hint: opens the track's tools.
+        case lane(TimelineLane)
     }
 
     /// A handle being dragged: an end of a clip or of a track item.
@@ -174,8 +176,8 @@ nonisolated struct TimelineGeometry: Equatable, Sendable {
         var hitFrame: CGRect
     }
 
-    /// A dashed shortcut on an empty track. Its x follows the visible area (it sticks to the left
-    /// edge while the start of the video is scrolled away); its width depends on its label.
+    /// What an empty track says about a tap on it. Its x follows the visible area (it stays at the
+    /// left edge of the strip while the start of the video is scrolled away).
     struct Ghost: Equatable, Sendable {
         var lane: LaneFrame
         var label: String
@@ -191,6 +193,13 @@ nonisolated struct TimelineGeometry: Equatable, Sendable {
     static let itemHandleWidth: CGFloat = 12
     /// The least a handle can be held from.
     static let handleReach: CGFloat = 32
+    /// The gutter with each track's icon, and where its strip starts and ends (from the right
+    /// edge of the timeline). Items scroll under the gutter.
+    static let gutterWidth: CGFloat = 38
+    static let stripLeading: CGFloat = 40
+    static let stripTrailing: CGFloat = 8
+    /// Where an empty track's hint starts, from the left edge of the timeline.
+    static let hintLeading: CGFloat = 50
     static let coverWidth: CGFloat = 50
     static let coverGap: CGFloat = 20
     static let addSize: CGFloat = 32
@@ -366,14 +375,14 @@ nonisolated struct TimelineGeometry: Equatable, Sendable {
 
         var ghosts: [Ghost] = []
         if input.texts.isEmpty, input.media.isEmpty, let lane = lanes.first(where: { $0.lane == .text }) {
-            ghosts.append(Ghost(lane: lane, label: String(localized: "Add text"), target: .addText))
+            ghosts.append(Ghost(lane: lane, label: String(localized: "Tap to add text"), target: .lane(.text)))
         }
         if !input.showsCaptions || input.captions.isEmpty, let lane = lanes.first(where: { $0.lane == .captions }) {
-            let label = input.captions.isEmpty ? String(localized: "Auto captions") : String(localized: "Captions off")
-            ghosts.append(Ghost(lane: lane, label: label, target: .captions))
+            let label = input.captions.isEmpty ? String(localized: "Tap to add captions") : String(localized: "Captions off")
+            ghosts.append(Ghost(lane: lane, label: label, target: .lane(.captions)))
         }
         if !hasMusic, !hasVoice, let lane = lanes.first(where: { $0.lane == .audio }) {
-            ghosts.append(Ghost(lane: lane, label: String(localized: "Add audio"), target: .addAudio))
+            ghosts.append(Ghost(lane: lane, label: String(localized: "Tap to add music or voice-over"), target: .lane(.audio)))
         }
         self.ghosts = ghosts
 
@@ -406,14 +415,11 @@ nonisolated struct TimelineGeometry: Equatable, Sendable {
         handles.first { $0.hitFrame.contains(point) }
     }
 
-    /// What a tap at `point` lands on, after handles: the cover, the "+", a shortcut, a pause, a
-    /// track item, a clip. Nil is empty space. `ghostFrames` are where the shortcuts were drawn.
-    func hit(at point: CGPoint, ghostFrames: [CGRect] = []) -> Hit? {
+    /// What a tap at `point` lands on, after handles: the cover, the "+", a pause, a cut's mark, a
+    /// track item, a clip. Nil is empty space (`laneHit` says whether it was on a track).
+    func hit(at point: CGPoint) -> Hit? {
         if coverFrame.contains(point) { return .cover }
         if addFrame.insetBy(dx: -6, dy: -6).contains(point) { return .addClip }
-        for (ghost, frame) in zip(ghosts, ghostFrames) where frame.contains(point) {
-            return ghost.target
-        }
         if let pause = pauses.first(where: { $0.frame.contains(point) }) { return .pause(pause.id) }
         if let join = joins.first(where: { $0.hitFrame.contains(point) }) { return .join(join.id) }
         // The picked item first, then from the top layer down.
@@ -421,6 +427,14 @@ nonisolated struct TimelineGeometry: Equatable, Sendable {
         if let item = items.last(where: { $0.kind != .recording && $0.frame.contains(point) }) { return .item(item.kind, item.id) }
         if let clip = clips.first(where: { $0.frame.insetBy(dx: -1, dy: 0).contains(point) }) { return .clip(clip.id) }
         return nil
+    }
+
+    /// The track under a tap on its strip or its gutter. `x` is where the finger is on the
+    /// timeline's own width (not in the scrolled content), `width` that width. The video track has
+    /// no strip.
+    func laneHit(atViewportX x: CGFloat, y: CGFloat, viewportWidth width: CGFloat) -> Hit? {
+        guard x >= 0, x <= width - Self.stripTrailing else { return nil }
+        return lanes.first { $0.lane != .main && y >= $0.y && y <= $0.y + $0.height }.map { Hit.lane($0.lane) }
     }
 
     // MARK: - Snapping

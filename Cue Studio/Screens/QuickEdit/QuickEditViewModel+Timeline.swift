@@ -23,7 +23,7 @@ extension QuickEditViewModel {
             return TimelineGeometry.ClipInput(
                 id: segment.id, start: start, duration: segment.duration,
                 sourceStart: segment.sourceStart, sourceEnd: segment.sourceEnd, speed: segment.speed,
-                sourceID: segment.sourceID, badge: Self.badge(of: segment), transition: segment.transitionIn
+                sourceID: segment.sourceID, badge: Self.badge(of: segment, background: edit.background(for: segment)), transition: segment.transitionIn
             )
         }
         input.texts = edit.editedTexts(in: timeline).map { text, span in
@@ -34,7 +34,7 @@ extension QuickEditViewModel {
         }
         input.media = edit.editedMedia(in: timeline).map { item, span in
             TimelineGeometry.ItemInput(
-                id: item.id, span: span, label: item.kind == .photo ? String(localized: "Photo") : String(localized: "Video")
+                id: item.id, span: span, label: Self.label(of: item)
             )
         }
         input.captions = edit.editedCaptionInstances.map { line, cueID in
@@ -55,19 +55,32 @@ extension QuickEditViewModel {
         input.selectedJoin = selectedJoinID
         input.panelIsOpen = panel != nil
         input.focusedLane = panel?.focusedLane
+        input.activeLanes = toolMenu?.lanes ?? []
         input.heightClass = heightClass
         input.pointsPerSecond = TimelineGeometry.basePointsPerSecond * timelineZoom
         return input
     }
 
-    /// "1.5×", "Push in", "Muted", joined: the yellow badge on a clip.
-    static func badge(of segment: EditSegment) -> String? {
+    /// "Photo · Full screen", "Video · Window": what the item on the media track is and how it
+    /// shows, so a photo that fills the frame doesn't read as a plain strip.
+    static func label(of media: MediaOverlay) -> String {
+        let kind = media.kind == .photo ? String(localized: "Photo") : String(localized: "Video")
+        return "\(kind) · \(media.layout.label)"
+    }
+
+    /// "1.5×", "Push in", "Muted", the clip's own filter and "Adjusted", and the background's style
+    /// (the clip's, or its recording's), joined: the yellow badge on a clip. A clip that plays with
+    /// the take's look says nothing of it.
+    static func badge(of segment: EditSegment, background: BackgroundEffect? = nil) -> String? {
         var parts: [String] = []
         if abs(segment.speed - 1) > 0.001 {
             parts.append(segment.speed.formatted(.number.precision(.fractionLength(0...2)).locale(.interface)) + "×")
         }
         if let zoom = segment.zoom { parts.append(zoom.label) }
         if segment.isMuted { parts.append(String(localized: "Muted")) }
+        if let filter = segment.look?.filter { parts.append(filter.label) }
+        if segment.look?.overridesAdjustment == true { parts.append(String(localized: "Adjusted")) }
+        if let background { parts.append(background.style.label) }
         return parts.isEmpty ? nil : parts.joined(separator: " · ")
     }
 
@@ -89,13 +102,20 @@ extension QuickEditViewModel {
     // MARK: - Tapping
 
     /// A tap on the timeline (a move under `TimelineGeometry.tapSlop`): picks what it lands on, or
-    /// lets go on empty space. While Pauses is open only the pauses answer.
+    /// lets go on empty space. A track's strip opens (or closes) that track's tools. While Pauses
+    /// is open only the pauses answer.
     func tapTimeline(_ hit: TimelineGeometry.Hit?) {
         guard isReady, !recorder.isRecording else { return }
         if panel == .pauses {
             if case .pause(let id) = hit { togglePauseMark(id) }
             return
         }
+        // Anything but a track's own strip closes the tools it opened.
+        if case .lane(let lane)? = hit {
+            tapLane(lane)
+            return
+        }
+        toolMenu = nil
         guard let hit else {
             selection = nil
             return
@@ -103,25 +123,26 @@ extension QuickEditViewModel {
         switch hit {
         case .cover:
             selection = nil
-            toolMenu = nil
             panel = .cover
         case .addClip:
             mediaInsertMode = .clip
             sheet = .media
-        case .addText:
-            selection = nil
-            panel = nil
-            toolMenu = .text
-        case .captions: openCaptions()
-        case .addAudio:
-            selection = nil
-            panel = nil
-            toolMenu = .audio
         case .pause(let id): togglePauseMark(id)
         case .join(let id): pickJoin(id)
         case .clip(let id): pick(.clip(id))
         case .item(let kind, let id): Self.selection(of: kind, id).map(pick)
+        case .lane: break
         }
+    }
+
+    /// A track's strip: its tools replace the toolbar's, and a second tap puts the toolbar back.
+    private func tapLane(_ lane: TimelineLane) {
+        guard let menu = EditorToolMenu(lane: lane) else { return }
+        player.pause()
+        selection = nil
+        panel = nil
+        toolMenu = toolMenu == menu ? nil : menu
+        Haptics.selection()
     }
 
     /// What picking a track item selects (nothing for the voice-over being recorded).

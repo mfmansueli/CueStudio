@@ -44,7 +44,7 @@ struct SelfieTopBar: View {
         let hidden = viewModel.hidesControls
         return Button { viewModel.toggleControls() } label: {
             Image(systemName: hidden ? "eye" : "eye.slash")
-                .foregroundStyle(hidden ? Palette.acc : .white)
+                .foregroundStyle(hidden ? Palette.accText : .white)
         }
         .buttonStyle(.cueIcon(.glass, diameter: 40))
         .accessibilityLabel(Text(hidden ? "Show controls" : "Hide controls"))

@@ -48,7 +48,7 @@ struct RemoteControlView: View {
 
                 Text("Keyboards, foot pedals and presentation remotes are coming next.")
                     .font(.footnote)
-                    .foregroundStyle(Palette.ink3)
+                    .foregroundStyle(Palette.ink2)
                     .padding(EdgeInsets(top: 8, leading: 4, bottom: 0, trailing: 4))
             }
             .padding(EdgeInsets(top: 8, leading: Metrics.gutter, bottom: 40, trailing: Metrics.gutter))

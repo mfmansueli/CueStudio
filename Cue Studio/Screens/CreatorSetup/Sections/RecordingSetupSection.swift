@@ -61,7 +61,7 @@ struct RecordingSetupSection: View {
                     Text("Microphone").foregroundStyle(Palette.ink)
                     Text(viewModel.microphoneDetail)
                         .font(.footnote)
-                        .foregroundStyle(viewModel.isPreferredMicrophoneMissing ? Palette.warn : Palette.ink2)
+                        .foregroundStyle(viewModel.isPreferredMicrophoneMissing ? Palette.warnText : Palette.ink2)
                         .fixedSize(horizontal: false, vertical: true)
                 }
                 Spacer(minLength: 8)

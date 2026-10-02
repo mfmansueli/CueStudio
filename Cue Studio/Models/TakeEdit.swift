@@ -54,9 +54,20 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
     var shadows: Double = 0
     /// 0 to 100.
     var sharpness: Double = 0
+    /// −100…+100 (`CIVibrance`).
+    var vibrance: Double = 0
+    /// −100…+100, green to magenta.
+    var tint: Double = 0
+    /// What Auto measured on the take, played before the dials; nil until Auto is used.
+    var autoCorrection: AutoCorrection?
+    /// How much of `autoCorrection` shows, 0 to 1.
+    var autoAmount: Double = 1
     var filter: VideoFilter = .original
     /// How much of the filter shows, 0 to 1.
     var filterAmount: Double = 1
+    /// How the dials are read (`LookSettings.version`). An edit saved before the calibrated dials
+    /// keeps the first reading, so it looks as it did; one with nothing adjusted starts on the new.
+    var lookVersion = LookSettings.currentVersion
 
     // MARK: Crop
     var aspect: AspectRatio
@@ -238,6 +249,18 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
         backgrounds.first { $0.sourceID == sourceID }.map(\.effect).flatMap { $0.isActive ? $0 : nil }
     }
 
+    /// How a clip is drawn: the take's Adjust and Filters, with what the clip overrides on top.
+    func lookSettings(for segment: EditSegment) -> LookSettings {
+        LookSettings(self).overridden(by: segment.look)
+    }
+
+    /// The background effect a clip is drawn with: its own when it has one (an Original one means
+    /// none), else its recording's; nil when none changes the picture.
+    func background(for segment: EditSegment) -> BackgroundEffect? {
+        if let own = segment.look?.background { return own.isActive ? own : nil }
+        return background(for: segment.sourceID)
+    }
+
     /// Sets a recording's background effect.
     mutating func setBackground(_ effect: BackgroundEffect, for sourceID: UUID?) {
         backgrounds.removeAll { $0.sourceID == sourceID }
@@ -269,8 +292,15 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
     var mediaFileNames: Set<String> {
         var names = Set(media.map(\.fileName) + voiceOvers.map(\.fileName) + sources.map(\.fileName) + music.map(\.fileName))
         names.formUnion(backgrounds.compactMap(\.effect.imageFileName))
+        names.formUnion(timeline.segments.compactMap { $0.look?.background?.imageFileName })
         if case .photo(let name)? = cover?.source { names.insert(name) }
         return names
+    }
+
+    /// A dial is off zero, here or on a clip.
+    private var usesAdjustDials: Bool {
+        [exposure, contrast, warmth, saturation, highlights, shadows, sharpness].contains { $0 != 0 }
+            || timeline.segments.contains { $0.look?.overridesAdjustment ?? false }
     }
 
     // MARK: - Coding
@@ -279,6 +309,7 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
         case timeline, sources, suggestions, cleanUpAnalyzed, volume, enhancesVoice, reducesNoise,
         audioVersion, voiceEnhancement, noiseReduction, music, backgrounds, exposure, contrast, warmth, filter
         case saturation, highlights, shadows, sharpness, filterAmount, cropFit, pauseThreshold
+        case vibrance, tint, autoCorrection, autoAmount, lookVersion
         case aspect, cropOffset, showsCaptions, captionStyle, captionLook, captionPreset, captionPosition, captions
         case captionTranscript, sourceTranscripts, captionLanguage, captionAnimation, captionTranslations, captionDisplay
         case captionCollection
@@ -320,6 +351,11 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
         shadows = (try? container.decodeIfPresent(Double.self, forKey: .shadows)) ?? 0
         sharpness = (try? container.decodeIfPresent(Double.self, forKey: .sharpness)) ?? 0
         filterAmount = (try? container.decodeIfPresent(Double.self, forKey: .filterAmount)) ?? 1
+        // Added with the calibrated look: edits saved before have none of them.
+        vibrance = (try? container.decodeIfPresent(Double.self, forKey: .vibrance)) ?? 0
+        tint = (try? container.decodeIfPresent(Double.self, forKey: .tint)) ?? 0
+        autoCorrection = try? container.decodeIfPresent(AutoCorrection.self, forKey: .autoCorrection)
+        autoAmount = (try? container.decodeIfPresent(Double.self, forKey: .autoAmount)) ?? 1
         cropFit = (try? container.decodeIfPresent(CropFit.self, forKey: .cropFit)) ?? .fill
         pauseThreshold = (try? container.decodeIfPresent(TimeInterval.self, forKey: .pauseThreshold)) ?? 0.7
         aspect = try container.decode(AspectRatio.self, forKey: .aspect)
@@ -345,6 +381,8 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
         textLook = try? container.decodeIfPresent(TextLook.self, forKey: .textLook)
         textPreset = try? container.decodeIfPresent(TypePreset.self, forKey: .textPreset)
         cover = try? container.decodeIfPresent(VideoCover.self, forKey: .cover)
+        // An edit saved before the calibrated dials reads them the first way, unless it never used them.
+        lookVersion = (try? container.decodeIfPresent(Int.self, forKey: .lookVersion)) ?? (usesAdjustDials ? 1 : LookSettings.currentVersion)
     }
 
     /// The same pieces an old edit played, and its silences as pause suggestions.

@@ -53,7 +53,7 @@ struct ReadingLineLayer: View {
         return Text(text)
             .font(.system(size: 9.5, weight: .bold))
             .kerning(0.7)
-            .foregroundStyle(Palette.acc)
+            .foregroundStyle(Palette.accText)
             .shadow(color: Palette.textShadow, radius: 1.5, y: 1)
             .fixedSize()
             // `position` centers its view: a zero-wide frame makes the tag start at the line's end.

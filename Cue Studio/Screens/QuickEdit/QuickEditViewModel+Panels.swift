@@ -31,10 +31,10 @@ extension QuickEditViewModel {
     func panelSubtitle(_ panel: EditorPanel) -> String {
         switch panel {
         case .speed, .zoom, .volume: clipSubtitle(panel)
-        case .voice, .adjust, .filters: String(localized: "Whole take")
+        case .voice: String(localized: "Whole take")
+        case .adjust, .filters, .background: lookSubtitle(for: panel)
         case .pauses: String(localized: "Marked in yellow on the timeline")
         case .crop: String(localized: "Format for where you post")
-        case .background: String(localized: "Whole take · your recording stays untouched")
         case .cover: String(localized: "Shown before the video plays")
         case .captions, .autoCaptions, .captionStyle: captionSubtitle(panel)
         case .textStyle: textStyleSubtitle

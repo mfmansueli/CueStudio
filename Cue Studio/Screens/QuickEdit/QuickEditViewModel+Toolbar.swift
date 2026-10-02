@@ -6,8 +6,9 @@
 import Foundation
 
 /// The toolbar by context: the main tools with nothing picked; the picked item's own tools (Clip,
-/// Text, Caption, Music, Voice-over, Media) with a yellow "‹" back to the main ones; and the Text
-/// and Audio menus. Speed and Zoom stay two separate tools.
+/// Text, Caption, Music, Voice-over, Media) with a yellow "‹" back to the main ones; and the Text,
+/// Captions and Audio menus, which a tap on their track opens too. Speed and Zoom stay two
+/// separate tools. Delete is always the last tool and stays put (see `EditorToolbarItem.isPinned`).
 extension QuickEditViewModel {
     /// The name next to the back button; nil on the main toolbar.
     var toolbarContextLabel: String? {
@@ -18,6 +19,7 @@ extension QuickEditViewModel {
         if let selection { return items(for: selection) }
         switch toolMenu {
         case .text: return textMenuItems
+        case .captions: return captionsMenuItems
         case .audio: return audioMenuItems
         case nil: return mainItems
         }
@@ -61,6 +63,24 @@ extension QuickEditViewModel {
         return items
     }
 
+    /// With lines: add one, the list, the style. Without: make them, or write them.
+    private var captionsMenuItems: [EditorToolbarItem] {
+        if edit.captions.isEmpty {
+            return [
+                EditorToolbarItem(id: "autoCaptions", label: String(localized: "Auto captions"), systemImage: "captions.bubble", action: .openCaptions),
+                EditorToolbarItem(id: "writeCaptions", label: String(localized: "Write them"), systemImage: "pencil", action: .writeCaptionsByHand),
+            ]
+        }
+        return [
+            EditorToolbarItem(id: "addLine", label: String(localized: "Add line"), systemImage: "captions.bubble", action: .openCaptions),
+            EditorToolbarItem(id: "allLines", label: String(localized: "All lines"), systemImage: "list.bullet", action: .openCaptions),
+            EditorToolbarItem(id: "style", label: String(localized: "Style"), systemImage: "textformat.alt", action: .open(.captionStyle)),
+            EditorToolbarItem(
+                id: "deleteAll", label: String(localized: "Delete all"), systemImage: "trash", style: .destructive, action: .deleteAllCaptions
+            ),
+        ]
+    }
+
     private var audioMenuItems: [EditorToolbarItem] {
         [
             EditorToolbarItem(id: "voice", label: String(localized: "Voice"), systemImage: "waveform.and.mic", action: .open(.voice)),
@@ -79,6 +99,11 @@ extension QuickEditViewModel {
                     style: canSplitSelectedClip ? .normal : .dimmed, action: .splitClip
                 ),
                 EditorToolbarItem(id: "speed", label: String(localized: "Speed"), systemImage: "gauge.with.dots.needle.67percent", action: .open(.speed)),
+                EditorToolbarItem(id: "adjust", label: String(localized: "Adjust"), systemImage: "slider.horizontal.3", action: .open(.adjust)),
+                EditorToolbarItem(id: "filters", label: String(localized: "Filters"), systemImage: "camera.filters", action: .open(.filters)),
+                EditorToolbarItem(
+                    id: "background", label: String(localized: "Background"), systemImage: "person.and.background.dotted", action: .open(.background)
+                ),
                 EditorToolbarItem(id: "zoom", label: String(localized: "Zoom"), systemImage: "arrow.up.left.and.arrow.down.right", action: .open(.zoom)),
                 EditorToolbarItem(id: "volume", label: String(localized: "Volume"), systemImage: "speaker.wave.2", action: .open(.volume)),
                 EditorToolbarItem(id: "voice", label: String(localized: "Voice"), systemImage: "waveform.and.mic", action: .open(.voice)),
@@ -120,6 +145,7 @@ extension QuickEditViewModel {
         case .media:
             return [
                 EditorToolbarItem(id: "editMedia", label: String(localized: "Edit"), systemImage: "pencil", action: .open(.media)),
+                EditorToolbarItem(id: "replaceMedia", label: String(localized: "Replace"), systemImage: "arrow.left.arrow.right", action: .replaceMedia),
                 EditorToolbarItem(id: "delete", label: delete, systemImage: "trash", style: .destructive, action: .deleteMedia),
             ]
         }
@@ -136,7 +162,10 @@ extension QuickEditViewModel {
             selection = nil
             toolMenu = menu
         case .openCaptions: openCaptions()
-        case .open(let panel): self.panel = panel
+        case .open(let panel):
+            // From a picked clip, Adjust, Filters and Background change that clip only.
+            lookScopeIsClip = panel.hasClipScope && selection?.clipID != nil
+            self.panel = panel
         case .addMedia:
             mediaInsertMode = .overlay
             sheet = .media
@@ -145,13 +174,18 @@ extension QuickEditViewModel {
         case .editText:
             panel = .textStyle
             focusesTextField = true
+        case .deleteAllCaptions: deleteAllCaptions()
+        case .writeCaptionsByHand:
+            toolMenu = nil
+            writeCaptionsByHand()
         case .openMusic:
-            if let first = edit.music.first {
-                selection = .music(first.id)
-            } else {
-                sheet = .music
-            }
-        case .replaceMusic: sheet = .music
+            // Always adds: a clip already there is picked on its track, and "Replace" swaps it.
+            musicReplacementID = nil
+            sheet = .music
+        case .replaceMusic:
+            guard let id = selection?.musicID else { return }
+            sheet = .music
+            musicReplacementID = id
         default: break
         }
     }
@@ -172,10 +206,16 @@ extension QuickEditViewModel {
         case .deleteMusic: selection?.musicID.map(deleteMusic)
         case .reRecordVoiceOver: selection?.voiceOverID.map(reRecordVoiceOver)
         case .deleteVoiceOver: selection?.voiceOverID.map(deleteVoiceOver)
+        case .replaceMedia: replaceSelectedMedia()
         case .deleteMedia: selection?.mediaID.map(deleteMedia)
         default: return false
         }
         return true
+    }
+
+    private func replaceSelectedMedia() {
+        guard let media = selectedMedia else { return }
+        requestPhoto(.replaceMedia(media.id, kind: media.kind))
     }
 
     /// Captions: the list when the take has lines, else Auto captions to make them.

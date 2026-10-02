@@ -342,6 +342,9 @@ final class QuickEditPlayer: EditPlayback {
         /// Each piece's sound and zoom (its volume, mute, pitch, zoom and strength): they change
         /// the item like a look does.
         let pieceSettings: [[Double]]
+        /// What each piece changes of the take's look (Adjust, Filters, Background): a clip's own
+        /// overrides change what the item draws, like the take's look does.
+        let clipLooks: [ClipLook?]
         /// Music is placed on the edit's own seconds, so with music the item also depends on where
         /// the edit starts and ends in it.
         let musicWindow: TimeSpan?
@@ -380,6 +383,7 @@ final class QuickEditPlayer: EditPlayback {
                     Double(SectionZoom.allCases.firstIndex { $0 == segment.zoom } ?? -1), segment.zoomAmount,
                 ]
             }
+            clipLooks = edit.timeline.segments.map(\.look)
             musicWindow = Self.musicWindow(of: edit)
         }
     }

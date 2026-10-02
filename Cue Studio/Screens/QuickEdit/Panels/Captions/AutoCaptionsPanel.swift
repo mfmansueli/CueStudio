@@ -22,7 +22,7 @@ struct AutoCaptionsPanel: View {
                 ) { viewModel.setCaptionLanguage($0) }
             }
             if let conflict = viewModel.captionLanguageConflict {
-                PanelNote(text: conflict.message, tint: Palette.warn)
+                PanelNote(text: conflict.message, tint: Palette.warnText)
                     .accessibilityIdentifier("edit.captionsLanguageNote")
             }
             CaptionStatusRow(viewModel: viewModel)

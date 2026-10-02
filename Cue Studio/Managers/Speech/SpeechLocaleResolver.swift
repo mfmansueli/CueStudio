@@ -80,7 +80,7 @@ nonisolated struct SpeechLocaleResolver: Sendable {
         case .language(let language):
             return Target(candidates: [language.speechLocale], language: language, languageCode: language.languageCode, isDetected: false)
         case .detect(let text, let systemLanguages):
-            let detected = LanguageDetector.dominantLanguageCode(in: text)
+            let detected = LanguageDetector.dominantLanguageCode(in: text, preferring: systemLanguages)
                 ?? (text.isEmpty ? systemLanguages.first.flatMap { Locale.Language(identifier: $0).languageCode?.identifier } : nil)
             guard let code = detected else { return nil }
             let language = CueLanguage.matching(languageCode: code)

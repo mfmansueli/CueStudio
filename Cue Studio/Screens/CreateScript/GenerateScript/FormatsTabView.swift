@@ -41,7 +41,7 @@ struct FormatsTabView: View {
             Spacer(minLength: 8)
             Text(structure.blocks.joined(separator: " → "))
                 .font(.caption2)
-                .foregroundStyle(Palette.ink.opacity(0.4))
+                .foregroundStyle(Palette.ink2)
                 .multilineTextAlignment(.leading)
         }
         .frame(maxWidth: .infinity, minHeight: 96, alignment: .topLeading)

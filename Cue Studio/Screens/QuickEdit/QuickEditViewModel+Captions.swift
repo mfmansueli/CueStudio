@@ -95,9 +95,10 @@ extension QuickEditViewModel {
     }
 
     private func canReuse(_ transcript: CaptionTranscript, for language: SpeechLanguageRequest) -> Bool {
+        guard transcript.isCurrent else { return false }
         switch language {
-        case .language(let chosen): CueLanguage.matching(languageCode: transcript.languageCode) == chosen
-        case .detect: true
+        case .language(let chosen): return CueLanguage.matching(languageCode: transcript.languageCode) == chosen
+        case .detect: return true
         }
     }
 
@@ -130,7 +131,8 @@ extension QuickEditViewModel {
         }
     }
 
-    /// Lines that show whole whatever the animation: their words don't have their own times.
+    /// Lines whose words don't have their own times (written or corrected by hand): the effects go by
+    /// their words shared across the line's time.
     var linesWithoutWordTiming: Int {
         edit.captions.filter { !$0.hasWordTiming }.count
     }
@@ -306,16 +308,14 @@ extension QuickEditViewModel {
                 revised.end = timeline.sourceTime(forEdited: edited)
             }
             revised.isRevised = true
-            // Words now outside the line's time can't be lit where they were.
-            if revised.words.contains(where: { $0.start < revised.start - 0.01 || $0.end > revised.end + 0.01 }) {
-                revised.needsTimingReview = true
-            }
-            return revised
+            // Words now outside the line's time fold into it; the line keeps its look and its words.
+            return CaptionRevision.fitted(revised)
         }
     }
 
     /// Moves or stretches a line on the timeline (`span` in seconds of the recording). A moved
-    /// line takes its words along, and asks for a timing check: they no longer sit on the voice.
+    /// line takes its words along, so the word that lights up stays where it was in the line; a
+    /// stretched one folds its words into the new time.
     func moveCaption(_ id: UUID, to span: TimeSpan) {
         updateCaption(id) { cue in
             var moved = cue
@@ -327,12 +327,9 @@ extension QuickEditViewModel {
                 moved.words = cue.words.map { word in
                     CaptionWord(text: word.text, start: word.start + shift, end: word.end + shift, isEstimated: word.isEstimated)
                 }
-                if !cue.words.isEmpty { moved.needsTimingReview = true }
-            } else if moved.words.contains(where: { $0.start < moved.start - 0.01 || $0.end > moved.end + 0.01 }) {
-                moved.needsTimingReview = true
             }
             moved.isRevised = true
-            return moved
+            return CaptionRevision.fitted(moved)
         }
     }
 

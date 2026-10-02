@@ -10,7 +10,8 @@ import SwiftUI
 /// Background: blur the creator's background, or put a color or a photo behind them, found by
 /// Vision on the iPhone or by a green or blue screen (a chroma key). It belongs to a recording: the
 /// one under the playhead (the take, or another take or video of a montage), on every section of
-/// it. Every change is an undo step; a slider is one. The recording itself never changes.
+/// it, unless a clip sets its own (opened from a picked clip, `QuickEditViewModel+ClipLook`). Every
+/// change is an undo step; a slider is one. The recording itself never changes.
 extension QuickEditViewModel {
     /// The recording under the playhead: nil for the take.
     var backgroundSourceID: UUID? {
@@ -27,10 +28,29 @@ extension QuickEditViewModel {
         return source.title
     }
 
-    /// The recording's settings, kept even while Original.
+    /// The settings the panel shows, kept even while Original: the picked clip's own, or its
+    /// recording's where the clip sets none, when Background is changing a clip; else the recording's
+    /// under the playhead.
     var currentBackground: BackgroundEffect {
+        if let clip = lookClip { return clip.look?.background ?? inheritedBackground(of: clip) }
         let id = backgroundSourceID
         return edit.backgrounds.first { $0.sourceID == id }?.effect ?? BackgroundEffect()
+    }
+
+    /// What a clip's recording does to its background, which the clip shows through until it sets
+    /// its own.
+    private func inheritedBackground(of clip: EditSegment) -> BackgroundEffect {
+        edit.backgrounds.first { $0.sourceID == clip.sourceID }?.effect ?? BackgroundEffect()
+    }
+
+    /// The picked clip sets its own background.
+    var clipOverridesBackground: Bool {
+        lookClip?.look?.background != nil
+    }
+
+    /// The clip's recording's background again.
+    func resetClipBackground() {
+        updateClipLook { $0.background = nil }
     }
 
     /// Asks once whether this iPhone can find people in video.
@@ -49,6 +69,11 @@ extension QuickEditViewModel {
         effect.key.tolerance = min(max(effect.key.tolerance, 0), 1)
         effect.key.softness = min(max(effect.key.softness, 0), 1)
         effect.key.spill = min(max(effect.key.spill, 0), 1)
+        if let clip = lookClip {
+            // The clip's own; one that comes to be what its recording has goes, so it inherits again.
+            updateClipLook { $0.background = effect == inheritedBackground(of: clip) ? nil : effect }
+            return
+        }
         var changed = edit
         changed.setBackground(effect, for: id)
         let backgrounds = changed.backgrounds

@@ -76,6 +76,7 @@ struct TakeReviewView: View {
             QuickEditView(take: take, services: services) {
                 editingTake = nil
             }
+            .videoContext()
         }
         .confirmationDialog("Delete this take?", isPresented: $confirmsDelete, titleVisibility: .visible) {
             Button("Delete take", role: .destructive) {
@@ -174,7 +175,7 @@ struct TakeReviewView: View {
                         if take.isEdited {
                             Text("EDITED")
                                 .font(.caption2.weight(.bold))
-                                .foregroundStyle(Palette.info)
+                                .foregroundStyle(Palette.infoText)
                                 .padding(.horizontal, 7)
                                 .frame(height: 20)
                                 .background(Palette.infoSoft, in: Capsule())
@@ -185,10 +186,10 @@ struct TakeReviewView: View {
                         .foregroundStyle(Palette.ink2)
                     if let notice = viewModel.exportNotice {
                         HStack(spacing: 8) {
-                            Text(notice).foregroundStyle(viewModel.exportsExhausted ? Palette.warn : Palette.ink2)
+                            Text(notice).foregroundStyle(viewModel.exportsExhausted ? Palette.warnText : Palette.ink2)
                             Button("Go Pro") { viewModel.paywall = .export }
                                 .fontWeight(.semibold)
-                                .foregroundStyle(Palette.acc)
+                                .foregroundStyle(Palette.accText)
                         }
                         .font(.footnote)
                         .padding(.top, 4)

@@ -16,6 +16,13 @@ nonisolated struct EditLook: Codable, Hashable, Sendable {
     var highlights: Double
     var shadows: Double
     var sharpness: Double
+    /// Added with the calibrated look: nil in steps saved before, which leave them as they are.
+    var vibrance: Double?
+    var tint: Double?
+    var autoCorrection: AutoCorrection?
+    /// Set in every step that has Auto (it tells a step with no correction from one saved before).
+    var autoAmount: Double?
+    var lookVersion: Int?
     var filterAmount: Double
     var aspect: AspectRatio
     var cropOffset: Double
@@ -37,6 +44,11 @@ nonisolated struct EditLook: Codable, Hashable, Sendable {
         highlights = edit.highlights
         shadows = edit.shadows
         sharpness = edit.sharpness
+        vibrance = edit.vibrance
+        tint = edit.tint
+        autoCorrection = edit.autoCorrection
+        autoAmount = edit.autoAmount
+        lookVersion = edit.lookVersion
         filterAmount = edit.filterAmount
         aspect = edit.aspect
         cropOffset = edit.cropOffset
@@ -60,6 +72,13 @@ nonisolated struct EditLook: Codable, Hashable, Sendable {
         edit.highlights = highlights
         edit.shadows = shadows
         edit.sharpness = sharpness
+        if let autoAmount {
+            edit.vibrance = vibrance ?? 0
+            edit.tint = tint ?? 0
+            edit.autoCorrection = autoCorrection
+            edit.autoAmount = autoAmount
+            edit.lookVersion = lookVersion ?? edit.lookVersion
+        }
         edit.filterAmount = filterAmount
         edit.aspect = aspect
         edit.cropOffset = cropOffset

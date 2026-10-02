@@ -9,10 +9,16 @@ import Speech
 /// Transcribes a take on the device, word by word with timings, so captions follow the voice and
 /// Clean Up can find filler words and retakes. Same recognizers and languages as Voice Following
 /// (`SpeechLocaleResolver`): nothing leaves the iPhone and nothing is paid per use.
+///
+/// A recognizer listens in one language, and creators mix them: an English opening and a Portuguese
+/// rest, or English phrases in Portuguese. When the take's script uses another language for a
+/// stretch of its own (`ScriptLanguageRuns`), the take is heard in that language too and each
+/// stretch comes from the recognizer that lines up with it (`MixedLanguageMerge`). A language this
+/// iPhone can't listen in is left out, and the take is heard in the main one alone.
 nonisolated enum CaptionTranscriber {
-    /// The words and the language they were heard in. Throws `SpeechUnavailableReason` when no
-    /// speech model on this device can listen in that language (never another language instead),
-    /// and `CancellationError` when the task is cancelled. Runs off the main actor.
+    /// The words and the language they were heard in (the main one). Throws `SpeechUnavailableReason`
+    /// when no speech model on this device can listen in the main language (never another language
+    /// instead), and `CancellationError` when the task is cancelled. Runs off the main actor.
     @concurrent
     static func transcript(
         in audio: URL, language: SpeechLanguageRequest, script: String = "",
@@ -26,23 +32,68 @@ nonisolated enum CaptionTranscriber {
         case .failure(let reason): throw reason
         }
         try Task.checkCancellation()
-        let words: [TimedWord]
+        let code = route.locale.language.languageCode?.identifier ?? "en"
+        let reading = ScriptLanguageRuns.reading(of: script, language: route.language)
+        var routes = [(code: code, route: route)]
+        for other in ScriptLanguageRuns.foreignCodes(in: reading, besides: code) {
+            guard let cue = CueLanguage.matching(languageCode: other),
+                  case .success(let found) = await resolver.resolve(.language(cue), scriptText: script) else { continue }
+            routes.append((other, found))
+        }
+        var heard: [MixedLanguageMerge.Heard] = []
+        for (index, entry) in routes.enumerated() {
+            try Task.checkCancellation()
+            do {
+                let words = try await listen(in: audio, route: entry.route, script: script, progress: share(progress, pass: index, of: routes.count))
+                heard.append(.init(code: entry.code, words: words))
+            } catch {
+                // The main language must be heard; another one this iPhone can't download or run only costs its stretch.
+                if index == 0 || error is CancellationError { throw error }
+            }
+        }
+        let words = MixedLanguageMerge.merge(heard, primary: code, reading: reading)
+        return TakeTranscript(words: words, languageCode: code)
+    }
+
+    /// The take heard in one language.
+    private static func listen(
+        in audio: URL, route: SpeechRoute, script: String, progress: (@Sendable (CaptionProgress) -> Void)?
+    ) async throws -> [TimedWord] {
+        // The script's names and long words, so the recognizer listens for them (it still writes what it hears).
+        let terms = ScriptVocabulary.terms(in: script, language: route.language)
         switch route.engine {
         case .transcriber:
             let transcriber = SpeechTranscriber(locale: route.locale, transcriptionOptions: [], reportingOptions: [], attributeOptions: [.audioTimeRange])
-            words = try await transcribe(audio, with: transcriber, results: transcriber.results, language: route.language, progress: progress) { $0.text }
+            return try await transcribe(
+                audio, with: transcriber, results: transcriber.results, language: route.language, terms: terms, progress: progress
+            ) { $0.text }
         case .dictation:
             let dictation = DictationTranscriber(
                 locale: route.locale, contentHints: [], transcriptionOptions: [], reportingOptions: [],
                 attributeOptions: [.audioTimeRange]
             )
-            words = try await transcribe(audio, with: dictation, results: dictation.results, language: route.language, progress: progress) { $0.text }
+            return try await transcribe(
+                audio, with: dictation, results: dictation.results, language: route.language, terms: terms, progress: progress
+            ) { $0.text }
         }
-        return TakeTranscript(words: words, languageCode: route.locale.language.languageCode?.identifier ?? "en")
+    }
+
+    /// Progress of one of several passes over the take, as a share of the whole.
+    private static func share(
+        _ progress: (@Sendable (CaptionProgress) -> Void)?, pass: Int, of count: Int
+    ) -> (@Sendable (CaptionProgress) -> Void)? {
+        guard let progress, count > 1 else { return progress }
+        return { update in
+            if case .transcribing(let done) = update {
+                progress(.transcribing((Double(pass) + done) / Double(count)))
+            } else {
+                progress(update)
+            }
+        }
     }
 
     private static func transcribe<Results: AsyncSequence & Sendable>(
-        _ audio: URL, with module: any SpeechModule, results: Results, language: CueLanguage?,
+        _ audio: URL, with module: any SpeechModule, results: Results, language: CueLanguage?, terms: [String],
         progress: (@Sendable (CaptionProgress) -> Void)?,
         text: @escaping @Sendable (Results.Element) -> AttributedString
     ) async throws -> [TimedWord] where Results.Element: Sendable {
@@ -77,6 +128,12 @@ nonisolated enum CaptionTranscriber {
             return words
         }
         let analyzer = SpeechAnalyzer(modules: modules)
+        if !terms.isEmpty {
+            let context = AnalysisContext()
+            context.contextualStrings[.general] = terms
+            // Only a hint: a model that ignores it still listens.
+            try? await analyzer.setContext(context)
+        }
         try await withTaskCancellationHandler {
             if let last = try await analyzer.analyzeSequence(from: file) {
                 try await analyzer.finalizeAndFinish(through: last)

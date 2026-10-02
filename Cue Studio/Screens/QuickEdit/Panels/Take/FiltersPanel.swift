@@ -5,8 +5,11 @@
 
 import SwiftUI
 
-/// Filters (whole take): Original, Vivid, Warm, Cool, Mono and Fade, each shown on a real frame of
-/// the take; Intensity for the picked one.
+/// Filters (whole take, or the picked clip alone when opened from it): Original and the collection
+/// (Natural, Studio, Soft, Cinema, Warm Editorial, Retro, Mono Soft, Mono Contrast), each shown on a
+/// real frame of the video in scope, at the intensity it starts with; Intensity for the picked one.
+/// A filter from before the collection shows only while it is the one picked. For a clip, Reset
+/// gives it the take's filter again.
 struct FiltersPanel: View {
     @Bindable var viewModel: QuickEditViewModel
 
@@ -14,10 +17,10 @@ struct FiltersPanel: View {
     @State private var previews: [VideoFilter: UIImage] = [:]
 
     var body: some View {
-        PanelFrame(viewModel: viewModel, panel: .filters) {
+        PanelFrame(viewModel: viewModel, panel: .filters, onReset: reset) {
             ScrollView(.horizontal) {
                 HStack(spacing: 8) {
-                    ForEach(VideoFilter.editorFilters) { filter in
+                    ForEach(shownFilters) { filter in
                         card(filter)
                     }
                 }
@@ -26,18 +29,35 @@ struct FiltersPanel: View {
             }
             .scrollIndicators(.hidden)
             .padding(.horizontal, -16)
-            if viewModel.edit.filter != .original {
+            if viewModel.currentFilter != .original {
                 PanelSlider(
-                    label: String(localized: "Intensity"), value: viewModel.edit.filterAmount * 100, range: 0...100,
+                    label: String(localized: "Intensity"), value: viewModel.currentFilterAmount * 100, range: 0...100,
                     format: .percent, identifier: "edit.filter.intensity"
                 ) { viewModel.setFilterAmount($0 / 100) }
             }
         }
-        .task { await loadPreviews() }
+        .task(id: previewKey) { await loadPreviews() }
+    }
+
+    /// Original and the collection; a filter from before it, too, while it is the one picked.
+    private var shownFilters: [VideoFilter] {
+        viewModel.currentFilter.isLegacy ? VideoFilter.editorFilters + [viewModel.currentFilter] : VideoFilter.editorFilters
+    }
+
+    /// The frame the thumbnails are drawn from: it changes with the clip in scope.
+    private var previewKey: String {
+        let source = viewModel.filterPreviewSource
+        return "\(source.url.path(percentEncoded: false))@\(Int(source.time * 10))"
+    }
+
+    /// Only for a clip, and only once it sets its own filter.
+    private var reset: (() -> Void)? {
+        guard viewModel.clipOverridesFilter else { return nil }
+        return { viewModel.resetClipFilter() }
     }
 
     private func card(_ filter: VideoFilter) -> some View {
-        let isOn = viewModel.edit.filter == filter
+        let isOn = viewModel.currentFilter == filter
         return Button { viewModel.pickFilter(filter) } label: {
             VStack(spacing: 6) {
                 Group {
@@ -52,7 +72,11 @@ struct FiltersPanel: View {
                 .overlay(RoundedRectangle(cornerRadius: 10, style: .continuous).strokeBorder(isOn ? Palette.acc : .clear, lineWidth: 2))
                 Text(filter.label)
                     .font(.system(.caption, weight: .semibold))
-                    .foregroundStyle(isOn ? Palette.acc : Palette.ink.opacity(0.75))
+                    .foregroundStyle(isOn ? Palette.accText : Palette.ink.opacity(0.75))
+                    .lineLimit(2)
+                    .minimumScaleFactor(0.8)
+                    .multilineTextAlignment(.center)
+                    .frame(width: 62)
             }
             .contentShape(Rectangle())
         }
@@ -62,7 +86,20 @@ struct FiltersPanel: View {
     }
 
     private func loadPreviews() async {
-        guard previews.isEmpty, let frame = await thumbnails.thumbnail(for: viewModel.videoURL, maxPixelSize: 240) else { return }
-        previews = await Task.detached { FilterPreviews.render(frame) }.value
+        let key = previewKey
+        if let kept = FilterPreviews.kept(for: key) {
+            previews = kept
+            return
+        }
+        let source = viewModel.filterPreviewSource
+        let frame: UIImage?
+        if source.time == 0.3 && source.url == viewModel.videoURL {
+            frame = await thumbnails.thumbnail(for: source.url, maxPixelSize: 240)
+        } else {
+            frame = await thumbnails.frames(for: source.url, at: [source.time], tolerance: 0.25, maxPixelSize: 240).first ?? nil
+        }
+        guard let frame, !Task.isCancelled else { return }
+        let rendered = await Task.detached { FilterPreviews.render(frame, key: key) }.value
+        if !Task.isCancelled { previews = rendered }
     }
 }

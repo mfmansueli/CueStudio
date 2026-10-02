@@ -7,6 +7,8 @@ import Foundation
 
 /// Every UserDefaults key in one place, so no screen repeats a raw string.
 nonisolated enum DefaultsKey {
+    /// How Cue's own screens look (`AppAppearance` raw value); absent = the iPhone's.
+    static let appAppearance = "appAppearance"
     static let prompterSettings = "prompterSettings"
     static let cameraSettings = "cameraSettings"
     /// The language Voice Following listens for (`CueLanguage` raw value); absent = the script's.
@@ -16,6 +18,8 @@ nonisolated enum DefaultsKey {
     /// The Selfie reading line's first-time tip was dismissed. The tip is gone; removed at launch.
     static let legacyReadingLineTipSeen = "readingLineTipSeen"
     static let creatorProfile = "creatorProfile"
+    /// How big the script's text is while writing (`ScriptTextSize` raw value).
+    static let scriptEditorTextSize = "scriptEditorTextSize"
     /// The type the creator saved as "My style" in Quick edit (`TextLook`, JSON).
     static let myTextStyle = "myTextStyle"
     /// Free exports used, before the count moved to the Keychain; migrated and removed at launch.

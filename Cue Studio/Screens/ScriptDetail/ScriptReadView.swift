@@ -5,7 +5,9 @@
 
 import SwiftUI
 
-/// Read mode: the script with its structure, length and takes. Editing is an explicit step.
+/// Read mode: the script, under a title and one line about its length. Everything else is one tap
+/// away: "Improve script" for the AI tools, the summary line for the details, any paragraph to
+/// start writing there.
 struct ScriptReadView: View {
     let viewModel: ScriptDetailViewModel
     let script: Script
@@ -14,100 +16,81 @@ struct ScriptReadView: View {
     let onOpenTake: (Take) -> Void
 
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 0) {
-                header
-                LengthMeterView(zone: viewModel.zone)
-                    .padding(EdgeInsets(top: 14, leading: 16, bottom: 10, trailing: 16))
-                    .background(Palette.surface, in: RoundedRectangle(cornerRadius: 22, style: .continuous))
-                    .padding(.horizontal, Metrics.gutter)
-                    .padding(.top, 18)
-                BlockStripView(
-                    summaries: viewModel.summaries,
-                    isSerious: viewModel.structure.isSerious,
-                    hookRunsLong: viewModel.hookOverrun != nil,
-                    onHookTap: { Task { await viewModel.openHooks() } }
-                )
-                .padding(.top, 14)
-                if let overrun = viewModel.hookOverrun {
-                    Button {
-                        Task { await viewModel.openHooks() }
-                    } label: {
-                        Label("Hook runs ~\(DurationText.short(overrun)) — aim for 3s. Tap Hook for options.", systemImage: "stopwatch")
-                            .font(.footnote)
-                            .foregroundStyle(Palette.warn)
-                            .frame(minHeight: Metrics.hitTarget)
-                    }
-                    .buttonStyle(.plain)
-                    .padding(.horizontal, Metrics.textGutter)
-                }
-                if viewModel.needsFactCheck {
-                    FactCheckBanner(onChecked: viewModel.markFactChecked)
+        ScrollViewReader { proxy in
+            ScrollView {
+                VStack(alignment: .leading, spacing: 0) {
+                    header
+                    ImproveScriptButton(hasTip: viewModel.hookOverrun != nil) { viewModel.sheet = .improve }
                         .padding(.horizontal, Metrics.gutter)
-                        .padding(.top, 14)
+                        .padding(.top, 12)
+                    if viewModel.needsFactCheck {
+                        FactCheckBanner(onChecked: viewModel.markFactChecked)
+                            .padding(.horizontal, Metrics.gutter)
+                            .padding(.top, 10)
+                    }
+                    paragraphs
+                    if !viewModel.scriptTakes.isEmpty {
+                        takesSection
+                    }
                 }
-                paragraphs
-                if !viewModel.scriptTakes.isEmpty {
-                    takesSection
-                }
+                .padding(.bottom, 24)
             }
-            .padding(.bottom, 24)
+            .scrollIndicators(.hidden)
+            // A block picked in the details: the reader goes there.
+            .onChange(of: viewModel.readScrollTarget) { _, target in
+                guard let target else { return }
+                viewModel.readScrollTarget = nil
+                withAnimation(.easeInOut(duration: 0.3)) { proxy.scrollTo(target, anchor: .top) }
+            }
         }
-        .scrollIndicators(.hidden)
         .safeAreaInset(edge: .bottom) { actionBar }
     }
 
     private var header: some View {
-        VStack(alignment: .leading, spacing: 12) {
+        VStack(alignment: .leading, spacing: 4) {
             Text(script.displayTitle)
                 .font(.title.bold())
                 .foregroundStyle(Palette.ink)
                 .accessibilityAddTraits(.isHeader)
-            ScriptMetaRow(
-                platform: script.platform,
-                formatLabel: viewModel.structure.label,
-                preset: viewModel.preset,
-                onDestination: { viewModel.sheet = .destination }
-            )
+            ScriptSummaryRow(platform: script.platform, zone: viewModel.zone) { viewModel.sheet = .details }
         }
         .padding(.horizontal, Metrics.textGutter)
         .padding(.top, 8)
     }
 
     private var paragraphs: some View {
-        VStack(alignment: .leading, spacing: 18) {
+        let blocks = viewModel.blocks
+        let summaries = viewModel.summaries
+        return VStack(alignment: .leading, spacing: 18) {
             if script.isEmpty {
-                Text("This script is empty. Tap Edit to start writing.")
+                Text("This script is empty. Tap to start writing.")
                     .font(.body)
-                    .foregroundStyle(Palette.ink3)
+                    .foregroundStyle(Palette.ink2)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .contentShape(Rectangle())
+                    .onTapGesture { viewModel.startEditing() }
+                    .accessibilityAddTraits(.isButton)
+                    .accessibilityIdentifier("detail.emptyText")
             }
-            ForEach(viewModel.blocks) { block in
-                VStack(alignment: .leading, spacing: 6) {
-                    if block.showsLabel {
-                        Text(block.label)
-                            .font(.caption2.weight(.bold))
-                            .textCase(.uppercase)
-                            .kerning(0.9)
-                            .foregroundStyle(block.index == 0 && viewModel.hookOverrun != nil ? Palette.warn : Palette.ink.opacity(0.45))
-                    }
-                    Text(CueAttributedText.make(block.text, cueFont: .caption.weight(.bold)))
-                        .font(.system(size: 19))
-                        .lineSpacing(6)
-                        .foregroundStyle(Palette.ink.opacity(0.92))
-                        .fixedSize(horizontal: false, vertical: true)
-                }
+            ForEach(blocks) { block in
+                ScriptParagraphView(
+                    block: block,
+                    isLongHook: block.index == 0 && viewModel.hookOverrun != nil,
+                    blockSeconds: summaries.first { $0.firstParagraph == block.index }?.seconds,
+                    onEdit: { viewModel.startEditing(atParagraph: block.index) }
+                )
+                .id(block.index)
             }
-            Text("Double-tap the text to edit")
-                .font(.caption)
-                .foregroundStyle(Palette.ink3)
-                .frame(maxWidth: .infinity)
-                .padding(.top, 4)
+            if !script.isEmpty {
+                Text("Tap any line to edit")
+                    .font(.caption)
+                    .foregroundStyle(Palette.ink2)
+                    .frame(maxWidth: .infinity)
+                    .padding(.top, 4)
+            }
         }
         .padding(.horizontal, Metrics.textGutter)
         .padding(.top, 24)
-        .contentShape(Rectangle())
-        .onTapGesture(count: 2) { viewModel.startEditing() }
-        .accessibilityAction(named: Text("Edit")) { viewModel.startEditing() }
     }
 
     private var takesSection: some View {

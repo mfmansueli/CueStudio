@@ -22,4 +22,7 @@ struct EditorToolbarItem: Identifiable, Hashable {
     let systemImage: String
     var style: Style = .normal
     let action: EditorAction
+
+    /// Delete stays at the end of the bar while the other tools scroll.
+    var isPinned: Bool { style == .destructive }
 }

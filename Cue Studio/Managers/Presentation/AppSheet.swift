@@ -13,6 +13,9 @@ enum AppSheet: Identifiable, Hashable {
     case startRecording
     case importScript
     case generateScript(GenerateTab)
+    /// The empty Scripts screen's idea: the generation sheet opens with the text (and the kind of
+    /// video) and writes it, using the same flow as Generate › Prompt.
+    case generateIdea(ScriptIdeaSeed)
 
     var id: String {
         switch self {
@@ -20,6 +23,7 @@ enum AppSheet: Identifiable, Hashable {
         case .startRecording: "startRecording"
         case .importScript: "importScript"
         case .generateScript(let tab): "generateScript.\(tab.rawValue)"
+        case .generateIdea: "generateIdea"
         }
     }
 }

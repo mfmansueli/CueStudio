@@ -17,7 +17,7 @@ struct AcknowledgementsView: View {
                         VStack(alignment: .leading, spacing: 3) {
                             Text(verbatim: credit.name).foregroundStyle(Palette.ink)
                             Text(credit.use).font(.footnote).foregroundStyle(Palette.ink2)
-                            Text("SIL Open Font License 1.1").font(.caption).foregroundStyle(Palette.ink3)
+                            Text("SIL Open Font License 1.1").font(.caption).foregroundStyle(Palette.ink2)
                         }
                         .padding(.vertical, 2)
                     }

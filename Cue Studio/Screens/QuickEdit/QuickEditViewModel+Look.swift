@@ -5,12 +5,14 @@
 
 import Foundation
 
-/// Adjust, Filters and Crop for the whole take. Each change shows live and is an undo step; a
-/// slider's quick moves are one (`EditHistory.coalescingInterval`).
+/// Adjust, Filters and Crop. Adjust and Filters change the whole take, or one clip when opened from
+/// it (`QuickEditViewModel+ClipLook`); Crop is the take's frame. Each change shows live and is an undo
+/// step; a slider's quick moves are one (`EditHistory.coalescingInterval`). Auto, the measured
+/// correction, is in `QuickEditViewModel+AutoLook`.
 extension QuickEditViewModel {
-    /// Adjust's sliders, −100…+100 (Sharpness 0…100).
+    /// Adjust's settings, −100…+100 (Sharpness 0…100), in the order of the dials.
     enum Adjustment: String, CaseIterable, Identifiable {
-        case exposure, contrast, warmth, saturation, highlights, shadows, sharpness
+        case exposure, contrast, warmth, tint, saturation, vibrance, highlights, shadows, sharpness
 
         var id: String { rawValue }
 
@@ -19,7 +21,9 @@ extension QuickEditViewModel {
             case .exposure: String(localized: "Exposure")
             case .contrast: String(localized: "Contrast")
             case .warmth: String(localized: "Warmth")
+            case .tint: String(localized: "Tint")
             case .saturation: String(localized: "Saturation")
+            case .vibrance: String(localized: "Vibrance")
             case .highlights: String(localized: "Highlights")
             case .shadows: String(localized: "Shadows")
             case .sharpness: String(localized: "Sharpness")
@@ -27,9 +31,6 @@ extension QuickEditViewModel {
         }
 
         var isBipolar: Bool { self != .sharpness }
-
-        /// In the Advanced section.
-        var isAdvanced: Bool { [.saturation, .highlights, .shadows, .sharpness].contains(self) }
     }
 
     /// Changes light, color, frame or sound (`EditLook`) as an undo step.
@@ -43,27 +44,50 @@ extension QuickEditViewModel {
 
     // MARK: - Adjust
 
+    /// The value the dial shows: the clip's (or the take's, where the clip sets none) when Adjust
+    /// is changing a clip, else the take's.
     func adjustment(_ adjustment: Adjustment) -> Double {
+        let look = effectiveLook
         switch adjustment {
-        case .exposure: edit.exposure
-        case .contrast: edit.contrast
-        case .warmth: edit.warmth
-        case .saturation: edit.saturation
-        case .highlights: edit.highlights
-        case .shadows: edit.shadows
-        case .sharpness: edit.sharpness
+        case .exposure: return look.exposure
+        case .contrast: return look.contrast
+        case .warmth: return look.warmth
+        case .tint: return look.tint
+        case .saturation: return look.saturation
+        case .vibrance: return look.vibrance
+        case .highlights: return look.highlights
+        case .shadows: return look.shadows
+        case .sharpness: return look.sharpness
         }
+    }
+
+    /// Whether the picked clip sets this dial itself (it shows the take's value otherwise); false
+    /// when Adjust changes the whole take.
+    func clipOverrides(_ adjustment: Adjustment) -> Bool {
+        guard let look = lookClip?.look else { return false }
+        return Self.overrideValue(of: adjustment, in: look) != nil
+    }
+
+    /// The dial has something to reset: off zero for the take, set by the clip for a clip.
+    func canResetAdjustment(_ adjustment: Adjustment) -> Bool {
+        lookClip != nil ? clipOverrides(adjustment) : self.adjustment(adjustment) != 0
     }
 
     func setAdjustment(_ adjustment: Adjustment, _ value: Double) {
         let range: ClosedRange<Double> = adjustment.isBipolar ? TakeEdit.adjustmentRange : 0...100
         let clamped = min(max(value.rounded(), range.lowerBound), range.upperBound)
+        if lookClip != nil {
+            updateClipLook(key: "adjust.\(adjustment.rawValue)") { Self.setOverride(of: adjustment, to: clamped, in: &$0) }
+            return
+        }
         changeLook(key: "adjust.\(adjustment.rawValue)") { edit in
             switch adjustment {
             case .exposure: edit.exposure = clamped
             case .contrast: edit.contrast = clamped
             case .warmth: edit.warmth = clamped
+            case .tint: edit.tint = clamped
             case .saturation: edit.saturation = clamped
+            case .vibrance: edit.vibrance = clamped
             case .highlights: edit.highlights = clamped
             case .shadows: edit.shadows = clamped
             case .sharpness: edit.sharpness = clamped
@@ -71,25 +95,33 @@ extension QuickEditViewModel {
         }
     }
 
-    /// "Auto": a little brighter, punchier, warmer and more colorful, to fine-tune from.
-    func autoAdjust() {
-        changeLook { edit in
-            edit.exposure = 10
-            edit.contrast = 14
-            edit.warmth = 8
-            edit.saturation = 10
+    /// One dial back to where it starts: zero for the take, the take's value for a clip.
+    func resetAdjustment(_ adjustment: Adjustment) {
+        if lookClip != nil {
+            updateClipLook(key: "adjust.\(adjustment.rawValue)") { Self.setOverride(of: adjustment, to: nil, in: &$0) }
+        } else {
+            setAdjustment(adjustment, 0)
         }
-        toast.show(String(localized: "Auto adjusted — fine-tune below"))
     }
 
+    /// Every dial back to where it starts: all zero for the take; for a clip, none set by the clip,
+    /// so it plays with the take's.
     func resetAdjustments() {
+        if lookClip != nil {
+            updateClipLook { $0.removeAdjustment() }
+            return
+        }
         changeLook { edit in
+            edit.autoCorrection = nil
+            edit.autoAmount = 1
             for adjustment in Adjustment.allCases {
                 switch adjustment {
                 case .exposure: edit.exposure = 0
                 case .contrast: edit.contrast = 0
                 case .warmth: edit.warmth = 0
+                case .tint: edit.tint = 0
                 case .saturation: edit.saturation = 0
+                case .vibrance: edit.vibrance = 0
                 case .highlights: edit.highlights = 0
                 case .shadows: edit.shadows = 0
                 case .sharpness: edit.sharpness = 0
@@ -98,25 +130,94 @@ extension QuickEditViewModel {
         }
     }
 
+    /// Something to reset: a dial off zero for the take, a dial the clip sets for a clip.
     var hasAdjustments: Bool {
-        Adjustment.allCases.contains { adjustment($0) != 0 }
+        if let clip = lookClip { return clip.look?.overridesAdjustment ?? false }
+        return Adjustment.allCases.contains { adjustment($0) != 0 } || edit.autoCorrection != nil
+    }
+
+    private static func overrideValue(of adjustment: Adjustment, in look: ClipLook) -> Double? {
+        switch adjustment {
+        case .exposure: look.exposure
+        case .contrast: look.contrast
+        case .warmth: look.warmth
+        case .tint: look.tint
+        case .saturation: look.saturation
+        case .vibrance: look.vibrance
+        case .highlights: look.highlights
+        case .shadows: look.shadows
+        case .sharpness: look.sharpness
+        }
+    }
+
+    private static func setOverride(of adjustment: Adjustment, to value: Double?, in look: inout ClipLook) {
+        switch adjustment {
+        case .exposure: look.exposure = value
+        case .contrast: look.contrast = value
+        case .warmth: look.warmth = value
+        case .tint: look.tint = value
+        case .saturation: look.saturation = value
+        case .vibrance: look.vibrance = value
+        case .highlights: look.highlights = value
+        case .shadows: look.shadows = value
+        case .sharpness: look.sharpness = value
+        }
     }
 
     // MARK: - Filters
 
-    /// A filter, at full intensity the first time it's picked.
+    /// The filter and its intensity Filters shows: the clip's (or the take's, where the clip sets
+    /// none) when it is changing a clip, else the take's.
+    var currentFilter: VideoFilter { effectiveLook.filter }
+
+    var currentFilterAmount: Double { effectiveLook.filterAmount }
+
+    /// The picked clip sets its own filter or intensity.
+    var clipOverridesFilter: Bool {
+        guard let look = lookClip?.look else { return false }
+        return look.filter != nil || look.filterAmount != nil
+    }
+
+    /// A filter, at the intensity it starts with (`VideoFilter.defaultAmount`) the first time it's
+    /// picked; picking it again keeps the intensity the creator set.
     func pickFilter(_ filter: VideoFilter) {
+        if lookClip != nil {
+            let isNew = filter != currentFilter
+            updateClipLook { look in
+                look.filter = filter
+                if isNew { look.filterAmount = filter.defaultAmount }
+            }
+            return
+        }
         var next = snapshot
         next.filter = filter
         var changed = edit
         changed.filter = filter
-        if filter != edit.filter { changed.filterAmount = 1 }
+        if filter != edit.filter { changed.filterAmount = filter.defaultAmount }
         next.look = EditLook(changed)
         commit(next)
     }
 
+    /// Where the Filters thumbnails come from: a frame of the clip in scope, or of the take.
+    var filterPreviewSource: (url: URL, time: TimeInterval) {
+        if let clip = lookClip, let url = recordingURL(of: clip.sourceID) {
+            return (url, clip.sourceStart + min(0.5, clip.span.duration / 2))
+        }
+        return (videoURL, 0.3)
+    }
+
     func setFilterAmount(_ amount: Double) {
-        changeLook(key: "filter.amount") { $0.filterAmount = min(max(amount, 0), 1) }
+        let clamped = min(max(amount, 0), 1)
+        if lookClip != nil {
+            updateClipLook(key: "filter.amount") { $0.filterAmount = clamped }
+        } else {
+            changeLook(key: "filter.amount") { $0.filterAmount = clamped }
+        }
+    }
+
+    /// The clip plays with the take's filter again.
+    func resetClipFilter() {
+        updateClipLook { $0.removeFilter() }
     }
 
     // MARK: - Crop

@@ -75,7 +75,7 @@ struct QuickEditEdgeCaseTests {
         viewModel.openCaptions()
         #expect(viewModel.panel == .autoCaptions)
         let geometry = TimelineGeometry(viewModel.timelineInput(heightClass: .regular))
-        #expect(geometry.ghosts.contains { $0.target == .captions && $0.label == "Auto captions" })
+        #expect(geometry.ghosts.contains { $0.target == .lane(.captions) && $0.label == "Tap to add captions" })
         viewModel.undo()
         #expect(viewModel.edit.captions.count == 1)
     }

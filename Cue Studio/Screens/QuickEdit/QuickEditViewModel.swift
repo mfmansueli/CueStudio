@@ -42,6 +42,9 @@ final class QuickEditViewModel {
             showsAdvanced = false
             panelTab = panel.map(EditorPanelTab.first(for:)) ?? .presets
             if oldValue == .voice { endComparison() }
+            // Leaving Adjust (or opening it again) never leaves a measurement running or the picture compared.
+            if panel != .adjust { cancelAuto() }
+            comparesPicture = false
             endChange()
             // Leaving Pauses without removing them puts them back.
             cancelPausePreview()
@@ -49,6 +52,7 @@ final class QuickEditViewModel {
             isPickingCoverFrame = false
             if oldValue == .transition { selectedJoinID = nil }
             if panel == .pauses { cleanUpMarks = [:] }
+            if panel == nil { lookScopeIsClip = false }
         }
     }
     /// The one thing picked on the timeline or in the preview; its tools replace the toolbar's.
@@ -57,7 +61,7 @@ final class QuickEditViewModel {
             guard selection != oldValue else { return }
             if selection != nil { toolMenu = nil }
             selectedJoinID = nil
-            if let panel, panel.followsSelection, !(selection.map(panel.accepts) ?? false) { self.panel = nil }
+            if let panel, followsSelection(panel), !(selection.map { accepts($0, in: panel) } ?? false) { self.panel = nil }
         }
     }
     /// The Text or Audio toolbar, opened from the main one with nothing selected.
@@ -69,7 +73,14 @@ final class QuickEditViewModel {
     /// The preview fills the screen: tap the video to play or pause, outside to come back.
     var isFullScreen = false
     /// The sheet over the editor: Export, Add music, Add photo or video.
-    var sheet: EditorSheet?
+    var sheet: EditorSheet? {
+        didSet {
+            // "Replace" asks for the file only for the sheet it opened.
+            if sheet != .music { musicReplacementID = nil }
+        }
+    }
+    /// The music clip the next sound file replaces ("Replace"); nil adds a new clip.
+    var musicReplacementID: UUID?
     /// Where "Add photo or video" puts what is picked.
     var mediaInsertMode: MediaInsertMode = .overlay
     /// The timeline's zoom (44 points per second at 1), from 0.35 to 5.
@@ -117,6 +128,18 @@ final class QuickEditViewModel {
     var translationState: TranslationState = .idle
     /// The translation the view asks the system for; nil when none is wanted.
     var translationRequest: TranslationRequest?
+    /// Auto measuring the clip (see `QuickEditViewModel+AutoLook`).
+    var autoState: AutoAdjustState = .idle
+    /// Adjust › Compare: the preview shows the picture without Auto, Adjust and Filters.
+    var comparesPicture = false {
+        didSet {
+            guard comparesPicture != oldValue else { return }
+            player.show(playedEdit)
+        }
+    }
+    @ObservationIgnored var autoTask: Task<Void, Never>?
+    /// The measuring whose result is still wanted: an older one finishing late is dropped.
+    @ObservationIgnored var autoRequest: UUID?
     @ObservationIgnored var captionTask: Task<Void, Never>?
     /// The captions request whose result is still wanted: an older one finishing late is dropped.
     @ObservationIgnored var captionRequest: UUID?
@@ -184,6 +207,11 @@ final class QuickEditViewModel {
     /// Whether this iPhone can find people in video; nil until checked.
     var canFindPeople: Bool?
     var isImportingBackground = false
+    /// Why the photo library is open, if it is (`EditorPhotoPicker`).
+    var photoRequest: PhotoRequest?
+    /// Adjust, Filters or Background was opened from a picked clip: it changes that clip only, and
+    /// follows the picked clip. Opened from the main toolbar it changes the whole take.
+    var lookScopeIsClip = false
 
     // MARK: Sound
     /// The music clip picked on its track.
@@ -257,6 +285,7 @@ final class QuickEditViewModel {
         self.toast = toast
         var edit = take.edit ?? TakeEdit(sourceDuration: take.duration, aspect: take.aspect)
         if take.edit == nil { edit.captionCollection?.safeMargins = Self.captionSafeMargins(for: take, aspect: take.aspect) }
+        edit.captions = edit.captions.map(CaptionRevision.withoutContinuation)
         original = edit
         self.edit = edit
         frameRate = Double(take.frameRate.rawValue)
@@ -281,6 +310,7 @@ final class QuickEditViewModel {
         var playhead: TimeInterval = 0
         if let draft = drafts.draft(for: take.id), draft.edit != original {
             start = draft.edit
+            start.captions = start.captions.map(CaptionRevision.withoutContinuation)
             start.timeline = start.timeline.fitted(toSourceDuration: duration)
             history = draft.history
             playhead = draft.playhead
@@ -305,6 +335,8 @@ final class QuickEditViewModel {
         if selectedJoinID != nil, selectedJoinIndex == nil { selectedJoinID = nil }
         // A new treatment isn't what was being compared.
         if comparesOriginal, edit.voiceProcessing != comparedProcessing { endComparison() }
+        // A change is no longer what was being compared.
+        if comparesPicture { comparesPicture = false }
         player.show(playedEdit)
         scheduleDraftSave()
     }
@@ -665,6 +697,7 @@ final class QuickEditViewModel {
         coverTask?.cancel()
         captionTask?.cancel()
         captionRequest = nil
+        cancelAuto()
         if !keepingDraft { drafts.discard(takeID: take.id) }
         player.stop()
     }

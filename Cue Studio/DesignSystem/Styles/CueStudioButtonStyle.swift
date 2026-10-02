@@ -80,10 +80,10 @@ struct CueStudioButtonStyle: ButtonStyle {
         private var foreground: Color {
             switch variant {
             case .primary: Palette.accInk
-            case .tinted: Palette.acc
+            case .tinted: Palette.accText
             case .secondary, .outline, .glass, .destructive: Palette.ink
             case .light: Palette.bg
-            case .destructiveTinted: Palette.danger
+            case .destructiveTinted: Palette.dangerText
             }
         }
 
@@ -94,7 +94,7 @@ struct CueStudioButtonStyle: ButtonStyle {
             case .tinted: Palette.accSoft
             case .outline, .glass: .clear
             case .light: Palette.ink
-            case .destructive: Palette.danger
+            case .destructive: Palette.dangerFill
             case .destructiveTinted: Palette.dangerSoft
             }
         }

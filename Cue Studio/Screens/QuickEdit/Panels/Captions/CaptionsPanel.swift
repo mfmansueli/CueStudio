@@ -32,7 +32,7 @@ struct CaptionsPanel: View {
                         if viewModel.player.isPlaying, picker == nil, let id { scroll(proxy, to: id) }
                     }
                     if let conflict = viewModel.captionLanguageConflict {
-                        PanelNote(text: conflict.message, tint: Palette.warn)
+                        PanelNote(text: conflict.message, tint: Palette.warnText)
                             .accessibilityIdentifier("edit.captionsLanguageNote")
                     }
                     CaptionStatusRow(viewModel: viewModel)
@@ -117,7 +117,7 @@ struct CaptionsPanel: View {
                 Image(systemName: systemImage).font(.system(size: 12, weight: .semibold))
                 Text(label).font(.system(.footnote, weight: .semibold)).lineLimit(1)
             }
-            .foregroundStyle(tinted ? Palette.acc : Palette.ink)
+            .foregroundStyle(tinted ? Palette.accText : Palette.ink)
             .padding(.horizontal, 11)
             .frame(height: 32)
             .background(tinted ? Palette.accSoft : (isOn ? Palette.neutralAction : Palette.fill), in: Capsule())
@@ -150,7 +150,7 @@ struct CaptionsPanel: View {
                 if viewModel.translationState.isWorking { ProgressView().controlSize(.small).tint(Palette.ink) }
                 Text(message)
                     .font(.system(.footnote))
-                    .foregroundStyle(viewModel.translationState.isWorking ? Palette.ink2 : Palette.warn)
+                    .foregroundStyle(viewModel.translationState.isWorking ? Palette.ink2 : Palette.warnText)
                     .fixedSize(horizontal: false, vertical: true)
                     .accessibilityIdentifier("translation.status")
             }
@@ -194,6 +194,18 @@ struct CaptionsPanel: View {
             }
             .buttonStyle(.plain)
             .accessibilityIdentifier("edit.captionsAddButton")
+            if !lines.isEmpty {
+                // Every line at once; Undo in the toast brings them back.
+                Button(action: viewModel.deleteAllCaptions) {
+                    Label("Delete all captions", systemImage: "trash")
+                        .font(.system(.subheadline, weight: .semibold))
+                        .foregroundStyle(Palette.dangerText)
+                        .frame(maxWidth: .infinity, minHeight: Metrics.hitTarget)
+                        .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+                .accessibilityIdentifier("edit.captionsDeleteAll")
+            }
         }
     }
 

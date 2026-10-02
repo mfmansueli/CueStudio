@@ -97,12 +97,32 @@ struct QuickEditTimelineTests {
         #expect(viewModel.selection == nil)
         viewModel.tapTimeline(.cover)
         #expect(viewModel.panel == .cover)
-        viewModel.tapTimeline(.addText)
+        viewModel.tapTimeline(.lane(.text))
         #expect(viewModel.toolMenu == .text)
         #expect(viewModel.panel == nil)
+        viewModel.tapTimeline(nil)
+        #expect(viewModel.toolMenu == nil)
         viewModel.tapTimeline(.addClip)
         #expect(viewModel.sheet == .media)
         #expect(viewModel.mediaInsertMode == .clip)
+    }
+
+    @Test func aTrackOpensItsToolsAndASecondTapPutsTheMainOnesBack() async {
+        let viewModel = await makeScenario().viewModel
+        viewModel.tapTimeline(.lane(.captions))
+        #expect(viewModel.toolMenu == .captions)
+        #expect(viewModel.timelineInput(heightClass: .regular).activeLanes == [.captions])
+        viewModel.tapTimeline(.lane(.captions))
+        #expect(viewModel.toolMenu == nil)
+        // Music, voice-over and the audio shortcut all open Audio, which lights all three.
+        viewModel.tapTimeline(.lane(.voiceOver))
+        #expect(viewModel.toolMenu == .audio)
+        #expect(viewModel.timelineInput(heightClass: .regular).activeLanes == [.music, .voiceOver, .audio])
+        // Another track swaps the tools; a clip lets go of them.
+        viewModel.tapTimeline(.lane(.text))
+        #expect(viewModel.toolMenu == .text)
+        viewModel.tapTimeline(.clip(viewModel.edit.timeline.segments[0].id))
+        #expect(viewModel.toolMenu == nil)
     }
 
     @Test func aClipPanelStaysWhenAnotherClipIsPicked() async {

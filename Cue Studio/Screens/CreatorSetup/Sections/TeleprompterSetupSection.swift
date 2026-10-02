@@ -52,12 +52,12 @@ struct TeleprompterSetupSection: View {
             SetupRow(title: String(localized: "Show reading line"), stacksControl: false) {
                 Toggle("Show reading line", isOn: $viewModel.showsReadingLine)
                     .labelsHidden()
-                    .tint(Palette.success)
+                    .tint(Palette.successText)
             }
             SetupRow(title: String(localized: "Mirror text"), detail: String(localized: "For beam-splitter glass rigs"), stacksControl: false) {
                 Toggle("Mirror text", isOn: $viewModel.isMirrored)
                     .labelsHidden()
-                    .tint(Palette.success)
+                    .tint(Palette.successText)
                     .accessibilityIdentifier("creatorSetup.mirrorToggle")
             }
             SetupRow(
@@ -67,7 +67,7 @@ struct TeleprompterSetupSection: View {
             ) {
                 Toggle("Safe zones", isOn: $viewModel.showsSafeZones)
                     .labelsHidden()
-                    .tint(Palette.success)
+                    .tint(Palette.successText)
                     .accessibilityIdentifier("creatorSetup.safeZonesToggle")
             }
             SetupRow(title: String(localized: "Display"), detail: String(localized: "Font, spacing, margins, alignment, color"), stacksControl: false) {
@@ -93,7 +93,7 @@ struct TeleprompterSetupSection: View {
                 if !viewModel.isReadingLineRecommended {
                     Button("Reset") { viewModel.resetReadingLine() }
                         .font(.subheadline.weight(.semibold))
-                        .foregroundStyle(Palette.acc)
+                        .foregroundStyle(Palette.accText)
                         .buttonStyle(.plain)
                         .frame(minHeight: Metrics.hitTarget)
                         .accessibilityLabel(Text("Reset the reading line"))

@@ -33,6 +33,10 @@ protocol TakeEditing: AnyObject {
     /// The volume at which the take's untreated sound is as loud as the Voice tool's result, for
     /// "Compare with original"; nil when the take has no speech to measure.
     func matchedOriginalVolume(forVideoAt url: URL, edit: TakeEdit) async -> Double?
+    /// What Auto measured on a clip: a correction from a few frames of the stretches of the
+    /// recording it plays (`spans`), analyzed on the device. The same clip gives the same
+    /// correction. Nil when no frame can be read; throws `CancellationError` when cancelled.
+    func autoCorrection(forVideoAt url: URL, spans: [TimeSpan]) async throws -> AutoCorrection?
     /// The cover drawn as a JPEG (a frame or photo, cropped to the take's frame, with its title);
     /// nil when its picture can't be read.
     func coverImage(_ cover: VideoCover, forVideoAt url: URL, edit: TakeEdit) async -> Data?

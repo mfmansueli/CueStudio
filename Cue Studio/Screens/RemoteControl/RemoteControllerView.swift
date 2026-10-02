@@ -75,7 +75,7 @@ struct RemoteControllerView: View {
             if case .failed(let message) = remote.state {
                 Image(systemName: "exclamationmark.triangle.fill")
                     .font(.title)
-                    .foregroundStyle(Palette.warn)
+                    .foregroundStyle(Palette.warnText)
                 Text(message)
                     .font(.subheadline)
                     .foregroundStyle(Palette.ink2)

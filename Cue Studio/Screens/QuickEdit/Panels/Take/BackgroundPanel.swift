@@ -3,22 +3,19 @@
 //  Cue Studio
 //
 
-import PhotosUI
 import SwiftUI
 import UIKit
 
-/// Background (the recording under the playhead; the file never changes): Original, Blur, Color or
-/// Image behind the person Vision finds on the iPhone. Advanced: the blur's strength, and Color
-/// key for a green or blue screen with Tolerance, Edge and Spill.
+/// Background (the recording under the playhead, or the picked clip alone when opened from it; the
+/// file never changes): Original, Blur, Color or Image behind the person Vision finds on the
+/// iPhone. Advanced: the blur's strength, and Color key for a green or blue screen with Tolerance,
+/// Edge and Spill. For a clip, Reset gives it its recording's background again.
 struct BackgroundPanel: View {
     @Bindable var viewModel: QuickEditViewModel
 
-    @State private var pickedItem: PhotosPickerItem?
-    @State private var choosesPhoto = false
-
     var body: some View {
         let effect = viewModel.currentBackground
-        PanelFrame(viewModel: viewModel, panel: .background) {
+        PanelFrame(viewModel: viewModel, panel: .background, onReset: reset) {
             PanelTiles(
                 options: [
                     PanelOption(BackgroundStyle.original, BackgroundStyle.original.label, systemImage: "person"),
@@ -29,12 +26,12 @@ struct BackgroundPanel: View {
                 selection: effect.style, identifier: "edit.background"
             ) { style in
                 viewModel.setBackgroundStyle(style)
-                if style == .image, effect.imageFileName == nil { choosesPhoto = true }
+                if style == .image, effect.imageFileName == nil { viewModel.requestPhoto(.background) }
             }
             if effect.cutout == .person, effect.style != .original, viewModel.canFindPeople == false {
                 PanelNote(
                     text: String(localized: "This iPhone can’t find people in video. Use a color key with a green or blue screen."),
-                    tint: Palette.warn
+                    tint: Palette.warnText
                 )
                 .accessibilityIdentifier("edit.backgroundUnavailable")
             }
@@ -50,7 +47,7 @@ struct BackgroundPanel: View {
                         ? String(localized: "Adding…")
                         : (effect.imageFileName == nil ? String(localized: "Choose a photo") : String(localized: "Change photo")),
                     systemImage: "photo", isEnabled: !viewModel.isImportingBackground, identifier: "edit.backgroundPhotoButton"
-                ) { choosesPhoto = true }
+                ) { viewModel.requestPhoto(.background) }
             default:
                 EmptyView()
             }
@@ -60,12 +57,12 @@ struct BackgroundPanel: View {
             }
         }
         .task { await viewModel.checkBackgroundSupport() }
-        .photosPicker(isPresented: $choosesPhoto, selection: $pickedItem, matching: .images, photoLibrary: .shared())
-        .onChange(of: pickedItem) { _, item in
-            guard let item else { return }
-            pickedItem = nil
-            Task { await viewModel.importBackgroundImage(item) }
-        }
+    }
+
+    /// Only for a clip, and only once it sets its own background: back to its recording's.
+    private var reset: (() -> Void)? {
+        guard viewModel.clipOverridesBackground else { return nil }
+        return { viewModel.resetClipBackground() }
     }
 
     @ViewBuilder

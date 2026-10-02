@@ -91,7 +91,7 @@ extension QuickEditViewModel {
     // MARK: - Private
 
     /// Changes the picked clip (or the one under the playhead) as an undo step.
-    private func updateClip(key: String? = nil, _ update: (inout EditSegment) -> Void) {
+    func updateClip(key: String? = nil, _ update: (inout EditSegment) -> Void) {
         guard var clip = targetClip else { return }
         update(&clip)
         var timeline = edit.timeline

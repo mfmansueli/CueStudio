@@ -9,7 +9,8 @@ import Foundation
 /// A caption line as the overlays its animation shows: the line itself (still or fading), a few
 /// words at a time, or one state per word with the word being said standing out. Each overlay is
 /// drawn when it shows (`LazyText`). A line whose words don't have their own times from speech
-/// recognition shows whole: its words' times would be a guess.
+/// recognition (written or corrected by hand) gets the same animation over its words shared
+/// across its time (`CaptionCue.lineWords`).
 nonisolated enum CaptionAnimator {
     /// Words shown together in Groups.
     static let groupSize = 3
@@ -21,12 +22,13 @@ nonisolated enum CaptionAnimator {
         for cue: CaptionCue, look: TextLook, position: CaptionPosition, frame: CGSize, animation: CaptionAnimation, offset: Double = 0
     ) -> [FrameOverlay] {
         let span = cue.span
-        guard animation.followsWords, cue.hasWordTiming, cue.words.count > 1 else {
-            guard var line = overlay(cue.text, look: look, position: position, span: span, frame: frame, offset: offset) else { return [] }
+        let words = cue.lineWords
+        guard animation.followsWords, words.count > 1 else {
+            let shown = CaptionText.joined(words.map(\.text))
+            guard var line = overlay(shown, look: look, position: position, span: span, frame: frame, offset: offset) else { return [] }
             if animation == .fade { line.fade = CaptionAnimation.fadeDuration }
             return [line]
         }
-        let words = cue.words
         switch animation {
         case .groups:
             let chunks = groups(of: words)

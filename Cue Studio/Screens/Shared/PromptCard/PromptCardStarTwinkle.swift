@@ -26,7 +26,7 @@ struct PromptCardStarTwinkle: View {
                     ZStack {
                         Image(systemName: "sparkle")
                             .font(.system(size: star.size, weight: .medium))
-                            .foregroundStyle(Palette.acc)
+                            .foregroundStyle(Palette.accText)
                             .opacity(0.86 + twinkle * 0.14)
                             .scaleEffect(1 + twinkle * 0.40)
                             .shadow(
@@ -35,7 +35,7 @@ struct PromptCardStarTwinkle: View {
                             )
                         Image(systemName: "sparkle")
                             .font(.system(size: star.size, weight: .medium))
-                            .foregroundStyle(Palette.acc.opacity(twinkle * 0.60))
+                            .foregroundStyle(Palette.accText.opacity(twinkle * 0.60))
                             .scaleEffect(1 + twinkle * 0.14)
                             .blur(radius: 0.9 + twinkle * 1.2)
                         Circle()

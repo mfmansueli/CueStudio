@@ -44,7 +44,7 @@ struct CreatorVoiceSection: View {
                 Button(action: onAddPhrase) {
                     Text("+ Add")
                         .font(.subheadline.weight(.semibold))
-                        .foregroundStyle(Palette.acc)
+                        .foregroundStyle(Palette.accText)
                         .padding(.horizontal, 12)
                         .frame(height: 30)
                         .overlay(Capsule().strokeBorder(Palette.ink3, style: StrokeStyle(lineWidth: 1, dash: [3, 3])))
@@ -97,7 +97,7 @@ struct CreatorVoiceSection: View {
                 Button { toggle(option) } label: {
                     Text(label(option))
                         .font(.subheadline.weight(.semibold))
-                        .foregroundStyle(selected ? Palette.acc : Palette.ink.opacity(0.75))
+                        .foregroundStyle(selected ? Palette.accText : Palette.ink.opacity(0.75))
                         .padding(.horizontal, 12)
                         .frame(height: 30)
                         .background(selected ? Palette.accSoft : Palette.surface2, in: Capsule())

@@ -27,7 +27,7 @@ struct PaywallView: View {
                         .font(.caption.weight(.bold))
                         .textCase(.uppercase)
                         .kerning(1)
-                        .foregroundStyle(Palette.acc)
+                        .foregroundStyle(Palette.accText)
                     Text(PaywallCopy.title(for: context))
                         .font(.largeTitle.bold())
                         .padding(.top, 8)
@@ -40,7 +40,7 @@ struct PaywallView: View {
                             Label {
                                 Text(feature)
                             } icon: {
-                                Image(systemName: "checkmark").fontWeight(.bold).foregroundStyle(Palette.acc)
+                                Image(systemName: "checkmark").fontWeight(.bold).foregroundStyle(Palette.accText)
                             }
                             .font(.subheadline)
                         }
@@ -153,7 +153,7 @@ struct PaywallView: View {
             .accessibilityIdentifier("paywall.buyButton")
             Text(PaywallCopy.finePrint(for: selectedPlan, displayPrice: price, trialDays: trialDays[selectedPlan]))
                 .font(.caption)
-                .foregroundStyle(Palette.ink.opacity(0.5))
+                .foregroundStyle(Palette.ink2)
                 .multilineTextAlignment(.center)
             HStack(spacing: 18) {
                 Button("Restore") { Task { await restore() } }
@@ -167,7 +167,7 @@ struct PaywallView: View {
                 }
             }
             .font(.caption)
-            .foregroundStyle(Palette.ink.opacity(0.5))
+            .foregroundStyle(Palette.ink2)
             .frame(minHeight: Metrics.hitTarget)
         }
         .padding(EdgeInsets(top: 12, leading: 20, bottom: 12, trailing: 20))

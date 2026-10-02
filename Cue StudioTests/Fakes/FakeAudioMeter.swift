@@ -8,13 +8,14 @@ import AVFAudio
 
 @MainActor
 final class FakeAudioMeter: AudioLevelMetering {
+    var canStart = true
     private(set) var isMetering = false
     private(set) var audioHandler: (@Sendable (AVAudioPCMBuffer) -> Void)?
     private(set) var levelHandler: (@Sendable (AudioLevelSample) -> Void)?
 
     func startMetering() async -> Bool {
-        isMetering = true
-        return true
+        isMetering = canStart
+        return canStart
     }
 
     func stopMetering() {

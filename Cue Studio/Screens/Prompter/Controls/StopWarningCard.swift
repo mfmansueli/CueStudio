@@ -17,7 +17,7 @@ struct StopWarningCard: View {
             HStack(alignment: .top, spacing: 12) {
                 Image(systemName: "stopwatch")
                     .font(.body.weight(.semibold))
-                    .foregroundStyle(Palette.warn)
+                    .foregroundStyle(Palette.warnText)
                     .frame(width: 36, height: 36)
                     .background(Palette.warn.opacity(0.18), in: Circle())
                 VStack(alignment: .leading, spacing: 3) {

@@ -11,6 +11,7 @@ struct MainView: View {
     let services: AppServices
 
     @Environment(PresentationService.self) private var presentation
+    @Environment(\.colorScheme) private var colorScheme
     @Environment(ScriptLibraryService.self) private var library
     @Environment(PreferencesService.self) private var preferences
     @Environment(CreatorProfileService.self) private var profile
@@ -23,7 +24,7 @@ struct MainView: View {
         TabView(selection: tabSelection) {
             Tab("Scripts", systemImage: "doc.text", value: AppTab.scripts) {
                 NavigationStack(path: $presentation.scriptsPath) {
-                    ScriptsView(library: services.library, toast: services.toast)
+                    ScriptsView(library: services.library, toast: services.toast, writer: services.writer)
                         .navigationDestination(for: ScriptRoute.self) { route in
                             ScriptDetailView(route: route, services: services)
                         }
@@ -39,7 +40,7 @@ struct MainView: View {
                 Label {
                     Text("Record")
                 } icon: {
-                    Image(uiImage: RecordGlyph.tabImage)
+                    Image(uiImage: RecordGlyph.tabImage(for: colorScheme))
                 }
             }
             Tab("Profile", systemImage: "person.crop.circle", value: AppTab.profile) {
@@ -59,15 +60,17 @@ struct MainView: View {
                 }
             }
         }
-        .tint(Palette.acc)
+        .tint(Palette.accText)
         .sheet(item: $presentation.sheet) { sheet in
             sheetContent(sheet)
         }
         .fullScreenCover(item: $presentation.prompter) { launch in
             PrompterView(launch: launch, services: services)
+                .videoContext()
         }
         .fullScreenCover(isPresented: $presentation.showsRemoteController) {
             RemoteControllerView()
+                .videoContext()
         }
     }
 
@@ -116,6 +119,10 @@ struct MainView: View {
             )
         case .generateScript(let tab):
             GenerateScriptSheet(services: services, initialTab: tab) { script in
+                presentation.openScript(script.id, editing: true)
+            }
+        case .generateIdea(let seed):
+            GenerateScriptSheet(services: services, seed: seed) { script in
                 presentation.openScript(script.id, editing: true)
             }
         }

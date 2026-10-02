@@ -20,7 +20,7 @@ struct VoiceToggleRow: View {
                     .lineLimit(1)
             }
         }
-        .tint(Palette.success)
+        .tint(Palette.successText)
         .padding(EdgeInsets(top: 10, leading: 14, bottom: 10, trailing: 14))
         .background(Palette.surface2, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
         .accessibilityIdentifier("generate.voiceToggle")

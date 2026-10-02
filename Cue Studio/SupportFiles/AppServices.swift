@@ -23,6 +23,7 @@ struct AppServices {
     let camera: CameraManager
     let audio: AudioInputManager
     let speech: SpeechRecognitionManager
+    let dictation: DictationService
     let writer: ScriptWriting
     let textRecognizer: TextRecognitionManager
     let importer: DocumentImportService
@@ -34,12 +35,14 @@ struct AppServices {
     let apps: ExternalAppService
     let remote: RemoteControlService
     let languages: LanguageService
+    let appearance: AppearanceService
 
     init(options: LaunchOptions) {
         languages = LanguageService(defaults: options.defaults, store: options.languageStore) { language in
             InterfaceLocale.current = Locale(identifier: language.interfaceLocalization)
             InterfaceDirection.apply(rightToLeft: language.isRightToLeft)
         }
+        appearance = AppearanceService(defaults: options.defaults)
         library = ScriptLibraryService(repository: options.scriptRepository)
         takes = TakeLibraryService(repository: options.takeRepository)
         preferences = PreferencesService(defaults: options.defaults)
@@ -53,6 +56,7 @@ struct AppServices {
         camera = CameraManager()
         audio = AudioInputManager()
         speech = SpeechRecognitionManager()
+        dictation = options.dictation ?? DictationService(audio: AudioInputManager(), speech: SpeechRecognitionManager(use: .dictation))
         writer = options.writer
         textRecognizer = TextRecognitionManager()
         importer = DocumentImportService()
@@ -92,6 +96,7 @@ extension View {
             .environment(services.camera)
             .environment(services.audio)
             .environment(services.speech)
+            .environment(services.dictation)
             .environment(services.textRecognizer)
             .environment(services.importer)
             .environment(services.exporter)
@@ -101,5 +106,6 @@ extension View {
             .environment(services.apps)
             .environment(services.remote)
             .environment(services.languages)
+            .environment(services.appearance)
     }
 }

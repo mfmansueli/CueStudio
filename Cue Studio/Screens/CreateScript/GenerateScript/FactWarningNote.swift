@@ -24,7 +24,7 @@ struct FactWarningNote: View {
             .fixedSize(horizontal: false, vertical: true)
         } icon: {
             Image(systemName: "exclamationmark.circle")
-                .foregroundStyle(Palette.warn)
+                .foregroundStyle(Palette.warnText)
         }
         .font(.footnote)
         .padding(EdgeInsets(top: 12, leading: 14, bottom: 12, trailing: 14))

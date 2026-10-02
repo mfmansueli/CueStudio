@@ -33,7 +33,7 @@ struct PlanSection: View {
                 limit: UsagePolicy.freeExports
             )
             HStack(spacing: 8) {
-                Image(systemName: "sparkles").foregroundStyle(Palette.acc)
+                Image(systemName: "sparkles").foregroundStyle(Palette.accText)
                 Text("Apple Intelligence")
                 Spacer()
                 Text("On-device · unlimited").foregroundStyle(Palette.ink2)
@@ -59,7 +59,7 @@ struct PlanSection: View {
                     .foregroundStyle(Palette.ink2)
             }
             .font(.subheadline)
-            UsageMeter(fraction: Double(left) / Double(max(1, limit)), color: left > 0 ? Palette.acc : Palette.warn)
+            UsageMeter(fraction: Double(left) / Double(max(1, limit)), color: left > 0 ? Palette.accText : Palette.warnText)
         }
         .accessibilityElement(children: .combine)
     }

@@ -109,7 +109,7 @@ struct TakesView: View {
                         Button { viewModel.filter.view = view } label: {
                             Text(view.label)
                                 .font(.footnote.weight(.semibold))
-                                .foregroundStyle(isOn ? Palette.acc : Palette.ink.opacity(0.75))
+                                .foregroundStyle(isOn ? Palette.accText : Palette.ink.opacity(0.75))
                                 .padding(.horizontal, 12)
                                 .frame(height: 30)
                                 .background(isOn ? Palette.acc.opacity(0.1) : .clear, in: Capsule())

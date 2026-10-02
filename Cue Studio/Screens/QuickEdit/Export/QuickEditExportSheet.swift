@@ -188,7 +188,7 @@ struct QuickEditExportSheet: View {
     @ViewBuilder
     private func failed(_ message: String) -> some View {
         VStack(spacing: 10) {
-            Image(systemName: "exclamationmark.triangle.fill").font(.system(size: 30)).foregroundStyle(Palette.warn)
+            Image(systemName: "exclamationmark.triangle.fill").font(.system(size: 30)).foregroundStyle(Palette.warnText)
             Text("Couldn't export").font(.system(.title3, weight: .bold))
             Text(message).font(.system(.subheadline)).foregroundStyle(Palette.ink2).multilineTextAlignment(.center)
         }

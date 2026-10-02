@@ -17,14 +17,14 @@ struct PromptTabView: View {
             ZStack(alignment: .topLeading) {
                 if viewModel.promptText.isEmpty {
                     Text("Describe your video… what it’s about, how long, who it’s for.")
-                        .foregroundStyle(Palette.ink3)
+                        .foregroundStyle(Palette.ink2)
                         .padding(EdgeInsets(top: 14 + 8, leading: 16 + 5, bottom: 0, trailing: 16))
                         .allowsHitTesting(false)
                 }
                 TextEditor(text: $viewModel.promptText)
                     .focused($isEditing)
                     .scrollContentBackground(.hidden)
-                    .tint(Palette.acc)
+                    .tint(Palette.accText)
                     .padding(EdgeInsets(top: 14, leading: 16, bottom: 14, trailing: 16))
                     .writingToolsBehavior(.limited)
                     .accessibilityLabel(Text("Describe your video"))
@@ -33,6 +33,17 @@ struct PromptTabView: View {
             .font(.body)
             .frame(height: 112)
             .background(Palette.surface2, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
+
+            if let idea = viewModel.idea {
+                // The kind of video picked on the empty Scripts screen; tapping it takes it off.
+                Button { viewModel.idea = nil } label: {
+                    FilterChip(label: idea.label, isSelected: true, systemImage: "xmark")
+                        .frame(minHeight: Metrics.hitTarget)
+                }
+                .buttonStyle(.plain)
+                .padding(.top, 4)
+                .accessibilityIdentifier("generate.idea")
+            }
 
             ScrollView(.horizontal) {
                 HStack(spacing: 6) {

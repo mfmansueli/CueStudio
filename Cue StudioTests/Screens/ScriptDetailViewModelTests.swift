@@ -95,11 +95,15 @@ struct ScriptDetailViewModelTests {
         #expect(scenario.toast.message == nil)
     }
 
-    @Test func versionNoticeWhileEditingAScriptWithTakes() {
-        let script = TestData.script(version: 2)
+    @Test func spacingBetweenParagraphsAloneIsNotAChange() {
+        // A script saved with single line breaks keeps them, and no version, when nothing was said.
+        let script = TestData.script(text: "One.\nTwo.\n\nThree.")
         let scenario = makeScenario(script: script, takeCount: 2, startsEditing: true)
         defer { scenario.defaults.tearDown() }
-        #expect(scenario.viewModel.versionNotice == "Editing creates v3 · your 2 takes stay linked to v2")
+        scenario.viewModel.finishEditing()
+        #expect(scenario.library.script(id: script.id)?.text == "One.\nTwo.\n\nThree.")
+        #expect(scenario.library.script(id: script.id)?.version == script.version)
+        #expect(scenario.toast.message == nil)
     }
 
     @Test func replacingTheHookInReadModeSavesRightAway() {
@@ -243,5 +247,175 @@ struct ScriptDetailViewModelTests {
         scenario.viewModel.setPlatform(.youtube)
         #expect(scenario.library.script(id: script.id)?.platform == .youtube)
         #expect(scenario.viewModel.preset.prefersStudio)
+    }
+
+    // MARK: - Writing
+
+    @Test func editingStartsWithTheCaretAtTheEndOfTheParagraphTapped() {
+        let script = TestData.script(text: "First line.\n\nSecond line.")
+        let scenario = makeScenario(script: script)
+        defer { scenario.defaults.tearDown() }
+        scenario.viewModel.startEditing(atParagraph: 1)
+        #expect(scenario.viewModel.draftParagraphs == ["First line.", "Second line."])
+        #expect(scenario.viewModel.focus?.index == 1)
+        #expect(scenario.viewModel.focus?.offset == "Second line.".utf16.count)
+    }
+
+    @Test func returnSplitsTheParagraphAndBackspaceJoinsItAgain() {
+        let script = TestData.script(text: "Hello world.")
+        let scenario = makeScenario(script: script, startsEditing: true)
+        defer { scenario.defaults.tearDown() }
+        let viewModel = scenario.viewModel
+        // Return after "Hello": the new text has the break in it, the caret just after it.
+        viewModel.replaceParagraph(0, with: "Hello\n world.", caret: 6)
+        #expect(viewModel.draftParagraphs == ["Hello", " world."])
+        #expect(viewModel.focus?.index == 1 && viewModel.focus?.offset == 0)
+        viewModel.mergeWithPrevious(1)
+        #expect(viewModel.draftParagraphs == ["Hello  world."])
+        #expect(viewModel.focus?.index == 0 && viewModel.focus?.offset == 6)
+    }
+
+    @Test func emptyParagraphsAreNotSaved() {
+        let script = TestData.script(text: "Words.")
+        let scenario = makeScenario(script: script, startsEditing: true)
+        defer { scenario.defaults.tearDown() }
+        scenario.viewModel.replaceParagraph(0, with: "Words.\n", caret: 7)
+        #expect(scenario.viewModel.draftParagraphs == ["Words.", ""])
+        #expect(scenario.viewModel.draftText == "Words.")
+        scenario.viewModel.setParagraph(1, to: "More.")
+        scenario.viewModel.finishEditing()
+        #expect(scenario.library.script(id: script.id)?.text == "Words.\n\nMore.")
+    }
+
+    @Test func aCueGoesAtTheCaretAndThePanelStaysOpen() {
+        let script = TestData.script(text: "Okay, real talk.")
+        let scenario = makeScenario(script: script, startsEditing: true)
+        defer { scenario.defaults.tearDown() }
+        let viewModel = scenario.viewModel
+        viewModel.noteCaret(paragraph: 0, offset: 6)
+        viewModel.toggle(.cues)
+        viewModel.insertCue(.pause)
+        #expect(viewModel.draftParagraphs == ["Okay, [pause] real talk."])
+        #expect(viewModel.tool == .cues)
+        #expect(viewModel.caret == ScriptParagraphs.Caret(index: 0, offset: 6 + "[pause] ".utf16.count))
+    }
+
+    @Test func panelsTakeTheKeyboardsPlaceAndGiveItBack() {
+        let scenario = makeScenario(script: TestData.script(), startsEditing: true)
+        defer { scenario.defaults.tearDown() }
+        let viewModel = scenario.viewModel
+        viewModel.noteFocus(paragraph: 0)
+        #expect(viewModel.isInputVisible)
+        viewModel.toggle(.ai)
+        #expect(viewModel.tool == .ai)
+        #expect(viewModel.focus?.index == nil)
+        // Another tool swaps; the same one again closes and the caret is asked for.
+        viewModel.toggle(.sections)
+        #expect(viewModel.tool == .sections)
+        viewModel.toggle(.sections)
+        #expect(viewModel.tool == nil)
+        #expect(viewModel.focus?.index == viewModel.caret.index)
+        // The keyboard button puts everything away, then brings the keyboard back.
+        viewModel.toggle(.options)
+        viewModel.toggleKeyboard()
+        #expect(viewModel.tool == nil && viewModel.focus?.index == nil)
+        viewModel.noteBlur(paragraph: 0)
+        #expect(!viewModel.isInputVisible)
+        viewModel.toggleKeyboard()
+        #expect(viewModel.focus?.index == viewModel.caret.index)
+        // A paragraph taking focus puts a panel away.
+        viewModel.toggle(.cues)
+        viewModel.noteFocus(paragraph: 0)
+        #expect(viewModel.tool == nil)
+    }
+
+    @Test func aNewSectionSplitsAtTheCaret() {
+        let script = TestData.script(text: "One two.")
+        let scenario = makeScenario(script: script, startsEditing: true)
+        defer { scenario.defaults.tearDown() }
+        scenario.viewModel.noteCaret(paragraph: 0, offset: 3)
+        scenario.viewModel.toggle(.sections)
+        scenario.viewModel.addSectionAtCaret()
+        #expect(scenario.viewModel.draftParagraphs == ["One", "two."])
+        #expect(scenario.viewModel.tool == nil)
+        #expect(scenario.viewModel.focus?.index == 1)
+    }
+
+    @Test func sectionsFollowTheBlocksIncludingTheEmptyParagraph() {
+        let script = TestData.script(text: "Hook.\n\nBody one.\n\nBody two.\n\nClose.", type: .list)
+        let scenario = makeScenario(script: script, startsEditing: true)
+        defer { scenario.defaults.tearDown() }
+        let viewModel = scenario.viewModel
+        #expect(viewModel.editorSummaries.map(\.firstParagraph) == [0, 1, 3])
+        viewModel.noteCaret(paragraph: 2, offset: 0)
+        #expect(viewModel.activeSummary?.firstParagraph == 1)
+        viewModel.goToSection(viewModel.editorSummaries[2])
+        #expect(viewModel.focus?.index == 3)
+    }
+
+    @Test func discardChangesBringsTheScriptBackAndSaysSo() {
+        let script = TestData.script(text: "Original.")
+        let scenario = makeScenario(script: script, startsEditing: true)
+        defer { scenario.defaults.tearDown() }
+        scenario.viewModel.setParagraph(0, to: "Changed.")
+        scenario.viewModel.discardChanges()
+        #expect(!scenario.viewModel.isEditing)
+        #expect(scenario.library.script(id: script.id)?.text == "Original.")
+        #expect(scenario.toast.message == "Changes discarded")
+    }
+
+    @Test func anAIToolOffersUndoAndClosesThePanel() async {
+        let script = TestData.script(text: "Calm words.")
+        let scenario = makeScenario(script: script, startsEditing: true)
+        defer { scenario.defaults.tearDown() }
+        scenario.viewModel.toggle(.ai)
+        await scenario.viewModel.run(.moreEnergy)
+        #expect(scenario.viewModel.tool == nil)
+        #expect(scenario.toast.action?.title == "Undo")
+        scenario.toast.action?.perform()
+        #expect(scenario.viewModel.draftText == "Calm words.")
+        #expect(scenario.toast.message == "Undone")
+    }
+
+    @Test func anAIToolWhileReadingSavesTheTextAndUndoPutsItBack() async {
+        let script = TestData.script(text: "Calm words.", version: 1)
+        let scenario = makeScenario(script: script, takeCount: 2)
+        defer { scenario.defaults.tearDown() }
+        await scenario.viewModel.run(.moreEnergy)
+        #expect(scenario.library.script(id: script.id)?.text == "Rewritten with energy!")
+        // Takes were made from the old words: the new ones are a new version.
+        #expect(scenario.library.script(id: script.id)?.version == 2)
+        scenario.toast.action?.perform()
+        #expect(scenario.library.script(id: script.id)?.text == "Calm words.")
+        #expect(scenario.library.script(id: script.id)?.version == 1)
+    }
+
+    @Test func theTypeCanBeChangedAndGoesBackToGeneral() {
+        let script = TestData.script(type: .list)
+        let scenario = makeScenario(script: script)
+        defer { scenario.defaults.tearDown() }
+        scenario.viewModel.setType(.review)
+        #expect(scenario.library.script(id: script.id)?.type == .review)
+        scenario.viewModel.setType(nil)
+        #expect(scenario.library.script(id: script.id)?.type == nil)
+        #expect(scenario.viewModel.structure == ScriptStructure.generic)
+    }
+
+    @Test func aBlockPickedInTheDetailsScrollsTheReader() {
+        let script = TestData.script(text: "Hook.\n\nBody.\n\nClose.")
+        let scenario = makeScenario(script: script)
+        defer { scenario.defaults.tearDown() }
+        scenario.viewModel.sheet = .details
+        scenario.viewModel.showBlock(scenario.viewModel.summaries[1])
+        #expect(scenario.viewModel.sheet == nil)
+        #expect(scenario.viewModel.readScrollTarget == 1)
+    }
+
+    @Test func cuesWhileRecordingFollowTheTeleprompterSetting() {
+        let scenario = makeScenario(script: TestData.script())
+        defer { scenario.defaults.tearDown() }
+        #expect(!scenario.viewModel.showsCues)
+        scenario.viewModel.showsCues = true
+        #expect(scenario.viewModel.showsCues)
     }
 }

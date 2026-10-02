@@ -32,12 +32,12 @@ struct HooksSheet: View {
                         Text("Current")
                         Spacer()
                         Text("~\(DurationText.short(ReadTime.seconds(for: currentHook, speed: speed)))")
-                            .foregroundStyle(Palette.warn)
+                            .foregroundStyle(Palette.warnText)
                     }
                     .font(.caption2.weight(.bold))
                     .textCase(.uppercase)
                     .kerning(0.8)
-                    .foregroundStyle(Palette.ink.opacity(0.45))
+                    .foregroundStyle(Palette.ink2)
                     Text(currentHook.isEmpty ? String(localized: "No opening line yet") : CueParser.stripCues(currentHook))
                         .font(.subheadline)
                         .foregroundStyle(Palette.ink.opacity(0.7))
@@ -49,10 +49,10 @@ struct HooksSheet: View {
                 )
                 if isLoading {
                     HStack(spacing: 10) {
-                        ProgressView().tint(Palette.acc)
+                        ProgressView().tint(Palette.accText)
                         Text("Writing hooks with Apple Intelligence…")
                             .font(.subheadline)
-                            .foregroundStyle(Palette.acc)
+                            .foregroundStyle(Palette.accText)
                     }
                     .frame(maxWidth: .infinity, minHeight: 120)
                     .background(Palette.surface2, in: RoundedRectangle(cornerRadius: 22, style: .continuous))
@@ -67,7 +67,7 @@ struct HooksSheet: View {
                                         .frame(maxWidth: .infinity, alignment: .leading)
                                     Text("~\(DurationText.short(ReadTime.seconds(for: hook, speed: speed)))")
                                         .font(.footnote.weight(.semibold).monospacedDigit())
-                                        .foregroundStyle(Palette.acc)
+                                        .foregroundStyle(Palette.accText)
                                 }
                                 .padding(.horizontal, 16)
                                 .padding(.vertical, 14)
@@ -80,7 +80,7 @@ struct HooksSheet: View {
                 }
                 Button(action: onMore) {
                     Label("More options", systemImage: "sparkles")
-                        .foregroundStyle(Palette.acc)
+                        .foregroundStyle(Palette.accText)
                 }
                 .buttonStyle(.cueOutline())
                 .disabled(isLoading)

@@ -92,6 +92,10 @@ names in **bold** stay in English in every language.
   a literal fishing hook.
 - Performance cues inside scripts are translated with the script text (`[pause]` → pt-BR
   `[pausa]`, ja `[間]`…) and always use ASCII brackets, so the prompter still recognizes them.
+  The script editor's Cues panel (`ScriptCue`) offers the nine cues by those names, in the
+  interface's language, and inserts them between ASCII brackets; the panel's own name is "Cues" /
+  *Indicaciones* / *Marcações* / *Hinweise*…, never a word another tab already uses (pt-BR *Dicas*
+  and tr *İpuçları* are Tips).
 - "%@ to %@" is a countdown ("18s to 1:00", "12s to monetize"), not a range.
 - Quick edit's Audio category holds Voice (the take's own speech), Music and Voice-over, and a
   video over the take has its Sound: where a language has one word for all of them (ar *الصوت*, tr
@@ -161,6 +165,15 @@ speed while the creator talks, in that language's place, never in another one.
 | English, Spanish, Portuguese (Brazil), French, German, Italian, Japanese, Korean, Chinese (Simplified) | en-US, es-ES, pt-BR, fr-FR, de-DE, it-IT, ja-JP, ko-KR, zh-CN | `SpeechTranscriber` (the original engine), else `DictationTranscriber` | 100% of the script followed |
 | Indonesian, Arabic, Turkish, Thai, Vietnamese | id-ID, ar-SA, tr-TR, th-TH, vi-VN | `DictationTranscriber` (`SpeechTranscriber` didn't offer them on the test Mac) | 100% |
 | Hindi | hi-IN | `DictationTranscriber` first when the script is in Devanagari: `SpeechTranscriber` writes Hindi in Latin letters, which can't match the script | 100% (0% through `SpeechTranscriber`) |
+
+**Dictating an idea** (the empty Scripts card) uses the same recognizers and the same table, in a
+fourth, separate choice: the language the script will be written in (`LanguageService.dictationRequest`:
+the Script Language, else the language of what is already typed there when it's three words or more,
+else the interface's). Voice Following's language never takes part, and a language this iPhone can't
+recognize is said ("Dictation can’t listen in Thai on this iPhone…"), never swapped for another; the
+idea can always be typed. Writing without spaces (Japanese, Chinese, Thai) is joined without them.
+What was said and what is written can differ only by the recognizer's own mistakes: Cue adds nothing,
+and the text can be corrected before it is sent.
 
 Which locales a given iPhone has depends on the model, the iOS version and Apple Intelligence
 settings; the table is what the framework offers, and the app checks each time.

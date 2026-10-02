@@ -37,7 +37,7 @@ struct AddMusicSheet: View {
                     } else {
                         Image(systemName: "plus")
                             .font(.system(size: 17, weight: .semibold))
-                            .foregroundStyle(Palette.acc)
+                            .foregroundStyle(Palette.accText)
                     }
                 }
                 .padding(.horizontal, 14)

@@ -11,6 +11,7 @@ struct SettingsView: View {
     @Environment(ToastService.self) private var toast
     @Environment(PreferencesService.self) private var preferences
     @Environment(LanguageService.self) private var languages
+    @Environment(AppearanceService.self) private var appearance
 
     @State private var showsPrivacy = false
 
@@ -21,6 +22,11 @@ struct SettingsView: View {
                     languageRegionRow
                 }
                 .accessibilityIdentifier("settings.languageRegionButton")
+            }
+            Section {
+                appearanceRow
+            } footer: {
+                Text("The camera, the prompter and the editor stay dark, so nothing washes out while you record or edit.")
             }
             Section {
                 NavigationLink(value: SettingsRoute.creatorSetup) {
@@ -88,12 +94,27 @@ struct SettingsView: View {
         .accessibilityElement(children: .combine)
     }
 
+    /// Light, dark or the iPhone's: one row, one menu.
+    private var appearanceRow: some View {
+        @Bindable var appearance = appearance
+        return Picker(selection: $appearance.appearance) {
+            ForEach(AppAppearance.allCases) { option in
+                Label(option.label, systemImage: option.symbol).tag(option)
+            }
+        } label: {
+            Text("Appearance").foregroundStyle(Palette.ink)
+        }
+        .pickerStyle(.menu)
+        .tint(Palette.ink2)
+        .accessibilityIdentifier("settings.appearancePicker")
+    }
+
     /// "4K · 9:16 · Front · Large text": the usual setup at a glance.
     private var creatorSetupRow: some View {
         let setup = preferences.creatorSetup
         return HStack(spacing: 12) {
             Image(systemName: "slider.horizontal.3")
-                .foregroundStyle(Palette.acc)
+                .foregroundStyle(Palette.accText)
                 .frame(width: 28, height: 28)
                 .background(Palette.accSoft, in: Circle())
             VStack(alignment: .leading, spacing: 2) {
