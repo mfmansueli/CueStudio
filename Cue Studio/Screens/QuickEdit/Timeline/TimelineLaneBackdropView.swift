@@ -4,6 +4,7 @@
 //
 
 import UIKit
+import SwiftUI
 
 /// The strip each track sits on, behind the scrolling content. It stays on screen while the
 /// content moves, so an empty track is still something to tap; the strip of a track whose tools

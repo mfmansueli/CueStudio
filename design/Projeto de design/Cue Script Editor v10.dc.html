@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0;background:#E9E7E2;-webkit-font-smoothing:antialiased}
+*{box-sizing:border-box}
+a{color:#1C1B19}a:hover{color:#000}
+textarea::placeholder,input::placeholder{color:rgba(235,235,245,0.3)}
+@keyframes sheetUp{from{transform:translateY(100%)}to{transform:none}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes popIn{from{opacity:0;transform:scale(.94)}to{opacity:1;transform:none}}
+@keyframes toastIn{from{opacity:0;transform:translate(-50%,-6px)}to{opacity:1;transform:translate(-50%,0)}}
+@keyframes panelIn{from{opacity:0}to{opacity:1}}
+</style>
+</helmet>
+<div style="min-height:100vh;display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:center;gap:48px;padding:40px 28px;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',system-ui,sans-serif">
+
+<div style="width:320px;max-width:100%;display:flex;flex-direction:column;gap:22px;color:#1C1B19;padding-top:16px">
+  <div style="display:flex;flex-direction:column;gap:12px">
+    <div style="display:flex;align-items:center;gap:10px">
+      <div style="width:38px;height:38px;border-radius:11px;background:#111;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px">
+        <div style="width:18px;height:2.5px;border-radius:2px;background:rgba(255,255,255,0.35)"></div>
+        <div style="width:22px;height:3px;border-radius:2px;background:#FFD60A"></div>
+        <div style="width:14px;height:2.5px;border-radius:2px;background:rgba(255,255,255,0.35)"></div>
+      </div>
+      <div style="display:flex;flex-direction:column"><div style="font-size:22px;font-weight:700;letter-spacing:-0.4px;line-height:1.1">Cue Studio</div><div style="font-size:12.5px;color:#8A857C">Script editor · redesign v10</div></div>
+    </div>
+    <div style="font-size:14.5px;line-height:1.5;color:#57534C;text-wrap:pretty">Modo de escrita focado: só o título, o texto e uma barra compacta acima do teclado. O resto abre quando você pede.</div>
+  </div>
+  <div style="display:flex;align-items:baseline;gap:10px;padding:14px 16px;border-radius:14px;background:#1C1B19;color:#fff">
+    <div style="font-size:40px;font-weight:700;letter-spacing:-1px;font-variant-numeric:tabular-nums;color:#FFD60A">{{ g.lines }}</div>
+    <div style="display:flex;flex-direction:column;gap:2px"><div style="font-size:14px;font-weight:600">linhas visíveis com o teclado aberto</div><div style="font-size:12.5px;color:rgba(255,255,255,0.6)">antes eram cerca de 3 · {{ g.dev }}</div></div>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:6px">
+    <div style="font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#8A857C;padding:0 4px 4px">Ver estado</div>
+    <div style="display:flex;flex-wrap:wrap;gap:6px">
+      <sc-for list="{{ g.jumps }}" as="j" hint-placeholder-count="5">
+        <div onClick="{{ j.act }}" style="height:32px;padding:0 13px;border-radius:16px;border:1px solid #CFCAC0;font-size:13px;font-weight:600;display:flex;align-items:center;cursor:pointer" style-hover="background:rgba(0,0,0,0.05)">{{ j.l }}</div>
+      </sc-for>
+    </div>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:8px;padding:0 4px">
+    <div style="font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#8A857C">Onde ficou cada coisa</div>
+    <div style="display:grid;grid-template-columns:auto 1fr;gap:6px 12px;font-size:12.5px;line-height:1.4;color:#57534C">
+      <b style="color:#1C1B19;font-weight:600">Metadados</b><span>Linha-resumo → toque abre Detalhes (plataforma, tipo, formato, versão)</span>
+      <b style="color:#1C1B19;font-weight:600">Duração / monetização</b><span>Detalhes do roteiro; na escrita, só “~49s” no status</span>
+      <b style="color:#1C1B19;font-weight:600">Recomendações</b><span>Dentro de Improve script (dica do hook no topo)</span>
+      <b style="color:#1C1B19;font-weight:600">Chips de IA</b><span>✦ na barra do teclado · Improve script na leitura</span>
+      <b style="color:#1C1B19;font-weight:600">Marcações</b><span>Botão [ ] insere no cursor</span>
+      <b style="color:#1C1B19;font-weight:600">Cancel</b><span>Aa › Discard changes</span>
+      <b style="color:#1C1B19;font-weight:600">Aviso de versão</b><span>Um único toast ao concluir, só se houver takes</span>
+    </div>
+  </div>
+  <div style="font-size:12.5px;line-height:1.5;color:#7A756C;padding:0 4px 20px;text-wrap:pretty">Digite pelo teclado desenhado ou pelo seu. Return cria uma nova seção; ↑/↓ nas bordas navegam entre seções. Tweaks: tamanho do iPhone e roteiro escrito por IA.</div>
+</div>
+
+<div style="padding:{{ dv.pad }};border-radius:{{ dv.orad }};background:#0B0B0C;box-shadow:inset 0 0 0 1.5px #2B2B2E,0 50px 100px -24px rgba(0,0,0,0.45),0 30px 60px -30px rgba(0,0,0,0.5);flex-shrink:0;position:relative">
+<sc-if value="{{ dv.notIsland }}"><div style="position:absolute;left:50%;bottom:10px;width:44px;height:44px;margin-left:-22px;border-radius:22px;border:2px solid #2B2B2E"></div></sc-if>
+<div style="position:relative;width:{{ dv.wpx }};height:{{ dv.hpx }};border-radius:{{ dv.irad }};overflow:hidden;background:#000;color:#fff;isolation:isolate">
+  <sc-if value="{{ dv.island }}" hint-placeholder-val="{{ true }}">
+    <div style="position:absolute;top:0;left:0;right:0;height:54px;display:flex;align-items:center;justify-content:space-between;padding:6px 32px 0 44px;z-index:70;pointer-events:none;font-size:17px;font-weight:600">
+      <span>9:41</span>
+      <div style="position:absolute;left:50%;top:11px;width:124px;height:36px;border-radius:18px;background:#000;transform:translateX(-50%)"></div>
+      <div style="display:flex;gap:6px;align-items:center"><svg width="18" height="12" viewBox="0 0 18 12" fill="#fff"><rect x="0" y="8" width="3" height="4" rx="1"></rect><rect x="5" y="5.5" width="3" height="6.5" rx="1"></rect><rect x="10" y="3" width="3" height="9" rx="1"></rect><rect x="15" y="0" width="3" height="12" rx="1"></rect></svg><div style="width:27px;height:13px;border-radius:4px;border:1px solid rgba(255,255,255,0.45);padding:1.5px"><div style="width:80%;height:100%;border-radius:2px;background:#fff"></div></div></div>
+    </div>
+  </sc-if>
+  <sc-if value="{{ dv.notIsland }}">
+    <div style="position:absolute;top:0;left:0;right:0;height:20px;display:flex;align-items:center;justify-content:center;z-index:70;pointer-events:none;font-size:12px;font-weight:600">9:41</div>
+  </sc-if>
+
+  <sc-if value="{{ isRead }}" hint-placeholder-val="{{ true }}">
+    <div ref="{{ setReadEl }}" style="position:absolute;inset:0;overflow-y:auto;scrollbar-width:none;padding-top:{{ rd.padT }};padding-bottom:{{ rd.padB }}">
+      <div style="padding:0 20px;display:flex;flex-direction:column;gap:10px">
+        <div style="font-size:28px;font-weight:700;letter-spacing:-0.5px;line-height:1.15;text-wrap:pretty">{{ rd.title }}</div>
+        <div onClick="{{ openDetails }}" style="display:flex;align-items:center;flex-wrap:wrap;gap:4px 10px;font-size:14px;cursor:pointer;min-height:28px">
+          <span style="display:flex;align-items:center;gap:6px;color:rgba(235,235,245,0.75);white-space:nowrap"><span style="width:7px;height:7px;border-radius:4px;background:{{ rd.dot }}"></span>{{ rd.platform }} · {{ rd.words }} words · {{ rd.dur }}</span>
+          <span style="display:flex;align-items:center;gap:4px;color:{{ rd.zc }};font-weight:600;white-space:nowrap">{{ rd.status }}<svg width="8" height="12" viewBox="0 0 8 14" fill="none" stroke="currentColor" style="stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round"><path d="M1 1l6 6-6 6"></path></svg></span>
+        </div>
+      </div>
+      <div onClick="{{ openImprove }}" style="margin:16px 16px 0;height:48px;border-radius:24px;background:rgba(255,214,10,0.12);border:0.5px solid rgba(255,214,10,0.3);color:#FFD60A;display:flex;align-items:center;justify-content:center;gap:8px;font-size:16px;font-weight:600;cursor:pointer" style-active="opacity:0.7">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M11 3l1.9 5.1L18 10l-5.1 1.9L11 17l-1.9-5.1L4 10l5.1-1.9zM18.5 14l.9 2.1 2.1.9-2.1.9-.9 2.1-.9-2.1-2.1-.9 2.1-.9z"></path></svg>Improve script
+        <sc-if value="{{ rd.hasTip }}"><span style="height:20px;padding:0 7px;border-radius:10px;background:#FF9F0A;color:#000;font-size:11.5px;font-weight:700;display:flex;align-items:center">1 tip</span></sc-if>
+      </div>
+      <sc-if value="{{ rd.fact }}">
+        <div style="margin:10px 16px 0;min-height:40px;border-radius:12px;background:rgba(255,159,10,0.1);display:flex;align-items:center;gap:8px;padding:8px 12px;font-size:13px;line-height:1.35">
+          <span style="color:#FF9F0A;flex:1;text-wrap:pretty">Written with AI — check dates, names and numbers.</span>
+          <span onClick="{{ rd.factOk }}" style="color:#FFD60A;font-weight:600;cursor:pointer;flex-shrink:0">Checked</span>
+        </div>
+      </sc-if>
+      <div style="padding:26px 20px 0;display:flex;flex-direction:column;gap:18px">
+        <sc-for list="{{ rd.paras }}" as="pa" hint-placeholder-count="5">
+          <div data-ri="{{ pa.ri }}" onClick="{{ pa.edit }}" style="display:flex;flex-direction:column;gap:8px;cursor:text">
+            <sc-if value="{{ pa.showLabel }}">
+              <div style="display:flex;align-items:center;gap:8px;font-size:11px;font-weight:700;letter-spacing:0.9px;text-transform:uppercase;color:rgba(235,235,245,0.4)">
+                <span>{{ pa.label }}</span><div style="flex:1;height:0.5px;background:rgba(84,84,88,0.6)"></div><span style="font-variant-numeric:tabular-nums;letter-spacing:0;font-weight:600;color:{{ pa.sc }}">{{ pa.secs }}</span>
+              </div>
+            </sc-if>
+            <div style="font-size:19px;line-height:1.5;color:rgba(255,255,255,0.92);text-wrap:pretty"><sc-for list="{{ pa.segs }}" as="sg"><span style="color:{{ sg.c }};font-size:{{ sg.f }};text-transform:{{ sg.tt }};letter-spacing:{{ sg.ls }};background:{{ sg.bg }};padding:{{ sg.pad }};border-radius:6px;font-weight:{{ sg.w }};vertical-align:{{ sg.va }};white-space:{{ sg.ws }}">{{ sg.t }}</span></sc-for></div>
+          </div>
+        </sc-for>
+        <sc-if value="{{ rd.empty }}"><div onClick="{{ editEnd }}" style="font-size:17px;color:rgba(235,235,245,0.3);cursor:text">This script is empty. Tap to start writing.</div></sc-if>
+      </div>
+      <div style="text-align:center;font-size:12px;color:rgba(235,235,245,0.3);padding:22px 0 0">Tap any line to edit</div>
+      <sc-if value="{{ rd.hasTakes }}">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;padding:28px 20px 10px">
+          <div style="font-size:20px;font-weight:700">Takes</div>
+          <div style="font-size:13px;color:rgba(235,235,245,0.6)">{{ rd.takesL }}</div>
+        </div>
+        <div style="display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding:0 16px">
+          <sc-for list="{{ rd.tiles }}" as="t" hint-placeholder-count="3">
+            <div onClick="{{ t.open }}" style="flex-shrink:0;width:96px;height:170px;border-radius:18px;background:{{ t.bg }};position:relative;overflow:hidden;cursor:pointer">
+              <div style="position:absolute;inset:auto 0 0 0;height:70px;background:linear-gradient(to bottom,transparent,rgba(0,0,0,0.7))"></div>
+              <sc-if value="{{ t.best }}"><div style="position:absolute;top:8px;left:8px;height:22px;padding:0 7px;border-radius:11px;background:#FFD60A;color:#000;font-size:11px;font-weight:700;display:flex;align-items:center">Best</div></sc-if>
+              <div style="position:absolute;left:10px;right:10px;bottom:9px;display:flex;justify-content:space-between;font-size:12px;font-weight:600"><span>{{ t.n }}</span><span style="font-variant-numeric:tabular-nums;color:rgba(255,255,255,0.8)">{{ t.dur }}</span></div>
+            </div>
+          </sc-for>
+        </div>
+      </sc-if>
+    </div>
+    <div style="position:absolute;top:0;left:0;right:0;height:{{ rd.fadeH }};background:linear-gradient(to bottom,#000 60%,rgba(0,0,0,0));pointer-events:none"></div>
+    <div style="position:absolute;top:{{ rd.hdrT }};left:16px;right:16px;height:44px;display:flex;align-items:center;justify-content:space-between">
+      <div onClick="{{ goBack }}" style="width:44px;height:44px;border-radius:22px;background:rgba(58,58,60,0.6);border:0.5px solid rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;cursor:pointer"><svg width="12" height="20" viewBox="0 0 12 20" fill="none" stroke="#fff" style="stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round"><path d="M10 2L2 10l8 8"></path></svg></div>
+      <div style="display:flex;align-items:center;height:44px;border-radius:22px;background:rgba(58,58,60,0.6);border:0.5px solid rgba(255,255,255,0.1);padding:0 4px 0 16px;gap:4px">
+        <div onClick="{{ editTop }}" style="font-size:17px;font-weight:600;cursor:pointer;padding:0 6px">Edit</div>
+        <div onClick="{{ openMenu }}" style="width:36px;height:36px;display:flex;align-items:center;justify-content:center;gap:3px;cursor:pointer"><span style="width:4.5px;height:4.5px;border-radius:3px;background:#fff"></span><span style="width:4.5px;height:4.5px;border-radius:3px;background:#fff"></span><span style="width:4.5px;height:4.5px;border-radius:3px;background:#fff"></span></div>
+      </div>
+    </div>
+    <div style="position:absolute;left:0;right:0;bottom:0;padding:26px 16px {{ rd.btnPad }};background:linear-gradient(to bottom,rgba(0,0,0,0),#000 40%);display:flex;gap:10px">
+      <div onClick="{{ openStudio }}" style="flex:1;height:54px;border-radius:27px;background:#2C2C2E;display:flex;align-items:center;justify-content:center;gap:8px;font-size:16px;font-weight:600;cursor:pointer"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" style="stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round"><rect x="4" y="3" width="16" height="18" rx="3"></rect><path d="M8 8h8M8 12h8M8 16h5"></path></svg>Studio mode</div>
+      <div onClick="{{ openRecord }}" style="flex:1;height:54px;border-radius:27px;background:#FFD60A;color:#000;display:flex;align-items:center;justify-content:center;gap:8px;font-size:16px;font-weight:600;cursor:pointer"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" style="stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><rect x="2.5" y="6" width="13.5" height="12" rx="3"></rect><path d="M16 10.5l5.5-3v9l-5.5-3z"></path></svg>Record</div>
+    </div>
+    <sc-if value="{{ menuOn }}">
+      <div onClick="{{ closeMenu }}" style="position:absolute;inset:0;z-index:40"></div>
+      <div style="position:absolute;right:16px;top:{{ rd.menuT }};z-index:41;width:236px;border-radius:14px;background:rgba(44,44,46,0.97);box-shadow:0 18px 50px rgba(0,0,0,0.55);overflow:hidden;transform-origin:top right;animation:popIn .16s ease">
+        <sc-for list="{{ menu }}" as="m" hint-placeholder-count="5">
+          <div onClick="{{ m.act }}" style="height:46px;padding:0 16px;display:flex;align-items:center;justify-content:space-between;font-size:16px;color:{{ m.c }};border-top:{{ m.bd }};cursor:pointer" style-hover="background:rgba(255,255,255,0.06)">{{ m.l }}<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" style="stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round"><path d="{{ m.d }}"></path></svg></div>
+        </sc-for>
+      </div>
+    </sc-if>
+  </sc-if>
+
+  <sc-if value="{{ isEdit }}">
+    <div style="position:absolute;left:0;right:0;top:{{ ed.hdrT }};height:52px;display:flex;align-items:center;gap:12px;padding:0 14px 0 20px;border-bottom:0.5px solid rgba(84,84,88,0.5)">
+      <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:1px">
+        <input value="{{ ed.title }}" onChange="{{ ed.onTitle }}" onFocus="{{ ed.titleFocus }}" onBlur="{{ ed.titleBlur }}" onKeyDown="{{ ed.titleKey }}" placeholder="Untitled script" style="width:100%;height:24px;background:transparent;border:none;outline:none;color:#fff;font-family:inherit;font-size:17px;font-weight:600;padding:0;text-overflow:ellipsis;caret-color:#FFD60A">
+        <div style="display:flex;align-items:center;gap:5px;font-size:12px;color:rgba(235,235,245,0.55);white-space:nowrap;font-variant-numeric:tabular-nums">
+          <span style="width:6px;height:6px;border-radius:3px;background:{{ ed.dot }};transition:background .3s"></span>{{ ed.status }}
+        </div>
+      </div>
+      <div onMouseDown="{{ keep }}" onClick="{{ done }}" style="height:36px;padding:0 18px;border-radius:18px;background:#FFD60A;color:#000;display:flex;align-items:center;font-size:16px;font-weight:600;cursor:pointer;flex-shrink:0">Done</div>
+    </div>
+    <div ref="{{ setEdEl }}" style="position:absolute;left:0;right:0;top:{{ ed.top }};height:{{ ed.h }};overflow-y:auto;scrollbar-width:none;overscroll-behavior:contain">
+      <div style="padding:14px 20px 28px;display:flex;flex-direction:column;gap:14px">
+        <sc-for list="{{ ed.blocks }}" as="b" hint-placeholder-count="5">
+          <div data-bw="{{ b.i }}" style="display:flex;flex-direction:column;gap:6px">
+            <sc-if value="{{ b.showLabel }}">
+              <div style="display:flex;align-items:center;gap:8px;font-size:11px;font-weight:700;letter-spacing:0.9px;text-transform:uppercase;color:rgba(235,235,245,0.38);user-select:none;padding-top:2px">
+                <span>{{ b.label }}</span><div style="flex:1;height:0.5px;background:rgba(84,84,88,0.5)"></div><span style="font-variant-numeric:tabular-nums;letter-spacing:0;font-weight:600">{{ b.secs }}</span>
+              </div>
+            </sc-if>
+            <textarea data-pi="{{ b.i }}" rows="1" value="{{ b.val }}" onChange="{{ b.onCh }}" onKeyDown="{{ b.onKey }}" onFocus="{{ b.onFocus }}" onClick="{{ b.onTap }}" onKeyUp="{{ b.onUp }}" placeholder="{{ b.ph }}" style="display:block;width:100%;margin:0;padding:0;background:transparent;border:none;outline:none;resize:none;overflow:hidden;color:rgba(255,255,255,0.93);font-family:inherit;font-size:{{ ed.fs }};line-height:1.55;caret-color:#FFD60A"></textarea>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+    <div style="position:absolute;left:0;right:0;top:{{ ed.top }};height:14px;background:linear-gradient(to bottom,#000,rgba(0,0,0,0));pointer-events:none"></div>
+    <div style="position:absolute;left:0;right:0;top:{{ ed.fadeB }};height:22px;background:linear-gradient(to top,#000,rgba(0,0,0,0));pointer-events:none"></div>
+
+    <div onMouseDown="{{ keep }}" style="position:absolute;left:0;right:0;top:{{ ed.accT }};height:48px;background:#1C1C1E;border-top:0.5px solid rgba(84,84,88,0.55);display:flex;align-items:center;gap:4px;padding:0 8px;z-index:5">
+      <div onClick="{{ tb.ai.act }}" style="height:36px;padding:0 12px 0 10px;border-radius:18px;background:{{ tb.ai.bg }};color:#FFD60A;display:flex;align-items:center;gap:6px;font-size:14px;font-weight:600;cursor:pointer;flex-shrink:0">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M11 3l1.9 5.1L18 10l-5.1 1.9L11 17l-1.9-5.1L4 10l5.1-1.9zM18.5 14l.9 2.1 2.1.9-2.1.9-.9 2.1-.9-2.1-2.1-.9 2.1-.9z"></path></svg>AI
+      </div>
+      <sc-for list="{{ tb.items }}" as="ti" hint-placeholder-count="3">
+        <div onClick="{{ ti.act }}" title="{{ ti.l }}" style="width:44px;height:36px;border-radius:10px;background:{{ ti.bg }};display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0">
+          <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#fff" style="stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round"><path d="{{ ti.d }}"></path></svg>
+        </div>
+      </sc-for>
+      <div style="flex:1"></div>
+      <div onClick="{{ tb.kbAct }}" title="{{ tb.kbL }}" style="width:44px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0">
+        <svg width="24" height="22" viewBox="0 0 26 24" fill="none" stroke="#fff" style="stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round"><rect x="2" y="3" width="22" height="13" rx="2.5"></rect><path d="M6 7h.01M10 7h.01M14 7h.01M18 7h.01M6 10.5h.01M10 10.5h.01M14 10.5h.01M18 10.5h.01M8.5 13h9"></path><path d="{{ tb.kbD }}"></path></svg>
+      </div>
+    </div>
+
+    <sc-if value="{{ kbd.on }}" hint-placeholder-val="{{ true }}">
+      <div onMouseDown="{{ keep }}" style="position:absolute;left:0;right:0;bottom:0;height:{{ kbd.h }};background:#2A2A2D;display:flex;flex-direction:column;user-select:none;z-index:4">
+        <div style="height:44px;display:flex;align-items:center;flex-shrink:0">
+          <sc-for list="{{ kbd.sugg }}" as="sg" hint-placeholder-count="3">
+            <div onClick="{{ sg.act }}" style="flex:1;height:32px;display:flex;align-items:center;justify-content:center;font-size:16px;color:rgba(255,255,255,0.9);border-left:{{ sg.bd }};cursor:pointer">{{ sg.l }}</div>
+          </sc-for>
+        </div>
+        <div style="flex:1;display:flex;flex-direction:column;justify-content:flex-start;gap:{{ kbd.gap }};padding:6px 3px 0">
+          <sc-for list="{{ kbd.rows }}" as="row" hint-placeholder-count="4">
+            <div style="display:flex;gap:6px;padding-left:{{ row.pl }};padding-right:{{ row.pl }}">
+              <sc-for list="{{ row.keys }}" as="k">
+                <div onClick="{{ k.act }}" style="width:{{ k.w }};height:{{ kbd.kh }};flex-shrink:0;border-radius:6px;background:{{ k.bg }};box-shadow:0 1px 0 rgba(0,0,0,0.45);display:flex;align-items:center;justify-content:center;font-size:{{ k.fs }};color:#fff;cursor:pointer" style-active="background:#8E8E93">
+                  <sc-if value="{{ k.hasL }}">{{ k.l }}</sc-if>
+                  <sc-if value="{{ k.hasIc }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="{{ k.fill }}" stroke="#fff" style="stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round"><path d="{{ k.d }}"></path></svg></sc-if>
+                </div>
+              </sc-for>
+            </div>
+          </sc-for>
+        </div>
+        <sc-if value="{{ kbd.strip }}">
+          <div style="height:{{ kbd.stripH }};display:flex;justify-content:space-between;padding:6px 26px 0;flex-shrink:0">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.8)" style="stroke-width:1.6"><circle cx="12" cy="12" r="9"></circle><path d="M3 12h18M12 3c2.5 2.5 3.8 5.5 3.8 9s-1.3 6.5-3.8 9c-2.5-2.5-3.8-5.5-3.8-9S9.5 5.5 12 3z"></path></svg>
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.8)" style="stroke-width:1.7;stroke-linecap:round"><path d="M12 3a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V6a3 3 0 0 0-3-3zM19 11a7 7 0 0 1-14 0M12 18v3"></path></svg>
+          </div>
+        </sc-if>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ tp.on }}">
+      <div style="position:absolute;left:0;right:0;bottom:0;height:{{ tp.h }};background:#121214;display:flex;flex-direction:column;z-index:4;animation:panelIn .15s ease">
+        <div style="flex:1;min-height:0;overflow-y:auto;scrollbar-width:none;padding:14px 16px {{ tp.padB }};display:flex;flex-direction:column;gap:12px">
+          <sc-if value="{{ tp.isAi }}">
+            <div style="display:flex;justify-content:space-between;align-items:baseline"><div style="font-size:15px;font-weight:700">Improve with AI</div><div style="font-size:12px;color:rgba(235,235,245,0.5)">Apple Intelligence · on device</div></div>
+            <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px">
+              <sc-for list="{{ ai.acts }}" as="a" hint-placeholder-count="6">
+                <div onMouseDown="{{ keep }}" onClick="{{ a.act }}" style="min-height:52px;border-radius:14px;background:#1F1F21;padding:8px 12px;display:flex;align-items:center;gap:10px;cursor:pointer" style-active="opacity:0.7">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFD60A" style="stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0"><path d="{{ a.d }}"></path></svg>
+                  <div style="font-size:14px;font-weight:600;line-height:1.2">{{ a.t }}</div>
+                </div>
+              </sc-for>
+            </div>
+          </sc-if>
+          <sc-if value="{{ tp.isCues }}">
+            <div style="display:flex;justify-content:space-between;align-items:baseline"><div style="font-size:15px;font-weight:700">Cues</div><div style="font-size:12px;color:rgba(235,235,245,0.5)">Inserted at the cursor · not read aloud</div></div>
+            <div style="display:flex;flex-wrap:wrap;gap:8px">
+              <sc-for list="{{ cuesL }}" as="c" hint-placeholder-count="8">
+                <div onMouseDown="{{ keep }}" onClick="{{ c.act }}" style="height:38px;padding:0 14px;border-radius:19px;background:rgba(255,214,10,0.12);color:#FFD60A;display:flex;align-items:center;font-size:12.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;cursor:pointer" style-active="opacity:0.7">{{ c.l }}</div>
+              </sc-for>
+            </div>
+          </sc-if>
+          <sc-if value="{{ tp.isNav }}">
+            <div style="display:flex;justify-content:space-between;align-items:baseline"><div style="font-size:15px;font-weight:700">Sections</div><div style="font-size:12px;color:rgba(235,235,245,0.5);font-variant-numeric:tabular-nums">{{ nav.sum }}</div></div>
+            <div style="border-radius:14px;background:#1F1F21;overflow:hidden">
+              <sc-for list="{{ nav.rows }}" as="n" hint-placeholder-count="3">
+                <div onMouseDown="{{ keep }}" onClick="{{ n.act }}" style="min-height:50px;padding:6px 14px;display:flex;align-items:center;gap:12px;border-top:{{ n.bd }};cursor:pointer;background:{{ n.bg }}">
+                  <div style="width:78px;flex-shrink:0;font-size:11px;font-weight:700;letter-spacing:0.8px;text-transform:uppercase;color:{{ n.lc }}">{{ n.label }}</div>
+                  <div style="flex:1;min-width:0;font-size:14px;color:rgba(235,235,245,0.8);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ n.first }}</div>
+                  <div style="font-size:12.5px;color:rgba(235,235,245,0.5);font-variant-numeric:tabular-nums">{{ n.secs }}</div>
+                </div>
+              </sc-for>
+            </div>
+            <div onMouseDown="{{ keep }}" onClick="{{ nav.add }}" style="height:42px;border-radius:21px;border:1px dashed rgba(235,235,245,0.3);display:flex;align-items:center;justify-content:center;gap:6px;font-size:14px;font-weight:600;color:rgba(235,235,245,0.85);cursor:pointer;flex-shrink:0"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" style="stroke-width:2.6;stroke-linecap:round"><path d="M12 5v14M5 12h14"></path></svg>New section at cursor</div>
+          </sc-if>
+          <sc-if value="{{ tp.isOpts }}">
+            <div style="font-size:15px;font-weight:700">Script options</div>
+            <div style="border-radius:14px;background:#1F1F21;overflow:hidden">
+              <div onMouseDown="{{ keep }}" onClick="{{ openDest }}" style="height:48px;padding:0 14px;display:flex;align-items:center;justify-content:space-between;font-size:15px;cursor:pointer"><span>Create for</span><span style="display:flex;align-items:center;gap:6px;color:rgba(235,235,245,0.6)"><span style="width:7px;height:7px;border-radius:4px;background:{{ rd.dot }}"></span>{{ rd.platform }} ›</span></div>
+              <div onMouseDown="{{ keep }}" onClick="{{ openType }}" style="height:48px;padding:0 14px;display:flex;align-items:center;justify-content:space-between;font-size:15px;border-top:0.5px solid rgba(84,84,88,0.5);cursor:pointer"><span>Script type</span><span style="color:rgba(235,235,245,0.6)">{{ rd.typeL }} ›</span></div>
+              <div onMouseDown="{{ keep }}" onClick="{{ opt.cues.act }}" style="height:48px;padding:0 14px;display:flex;align-items:center;justify-content:space-between;font-size:15px;border-top:0.5px solid rgba(84,84,88,0.5);cursor:pointer"><span>Show cues while recording</span><div style="width:51px;height:31px;border-radius:16px;background:{{ opt.cues.bg }};padding:2px"><div style="width:27px;height:27px;border-radius:14px;background:#fff;transform:translateX({{ opt.cues.x }});transition:transform .18s"></div></div></div>
+              <div style="min-height:52px;padding:0 14px;display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:15px;border-top:0.5px solid rgba(84,84,88,0.5)"><span>Text size</span>
+                <div style="display:flex;gap:2px;padding:2px;border-radius:10px;background:rgba(118,118,128,0.24)"><sc-for list="{{ opt.sizes }}" as="o"><div onMouseDown="{{ keep }}" onClick="{{ o.act }}" style="width:44px;height:30px;border-radius:8px;background:{{ o.bg }};display:flex;align-items:center;justify-content:center;font-size:{{ o.fs }};font-weight:600;cursor:pointer">A</div></sc-for></div>
+              </div>
+            </div>
+            <div onClick="{{ discard }}" style="height:46px;border-radius:14px;background:#1F1F21;display:flex;align-items:center;justify-content:center;font-size:15px;color:#FF453A;cursor:pointer;flex-shrink:0">Discard changes</div>
+          </sc-if>
+        </div>
+      </div>
+    </sc-if>
+  </sc-if>
+
+  <sc-if value="{{ toastOn }}">
+    <div style="position:absolute;left:50%;top:{{ toastT }};transform:translateX(-50%);z-index:60;min-height:36px;max-width:92%;padding:0 6px 0 14px;border-radius:18px;background:rgba(44,44,46,0.97);border:0.5px solid rgba(255,255,255,0.12);display:flex;align-items:center;gap:10px;font-size:13.5px;font-weight:600;box-shadow:0 8px 24px rgba(0,0,0,0.45);animation:toastIn .2s ease;white-space:nowrap">
+      <span style="overflow:hidden;text-overflow:ellipsis;padding:8px 0">{{ toastL }}</span>
+      <sc-if value="{{ toastUndo }}"><span onMouseDown="{{ keep }}" onClick="{{ undoAI }}" style="height:28px;padding:0 10px;border-radius:14px;background:rgba(255,214,10,0.16);color:#FFD60A;display:flex;align-items:center;cursor:pointer">Undo</span></sc-if>
+      <sc-if value="{{ toastPad }}"><span style="width:8px"></span></sc-if>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ shOn }}">
+    <div onMouseDown="{{ keep }}" onClick="{{ closeSheet }}" style="position:absolute;inset:0;background:rgba(0,0,0,0.5);z-index:50;animation:fadeIn .2s ease"></div>
+    <div onMouseDown="{{ keep }}" style="position:absolute;left:0;right:0;bottom:0;z-index:51;max-height:88%;overflow-y:auto;scrollbar-width:none;background:#1C1C1E;border-radius:28px 28px 0 0;padding:8px 16px {{ shPadB }};display:flex;flex-direction:column;gap:14px;animation:sheetUp .3s cubic-bezier(.2,.8,.2,1)">
+      <div style="width:36px;height:5px;border-radius:3px;background:rgba(235,235,245,0.3);align-self:center;flex-shrink:0"></div>
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-shrink:0">
+        <div><div style="font-size:20px;font-weight:700">{{ sh.title }}</div><div style="font-size:13px;color:rgba(235,235,245,0.6);margin-top:3px">{{ sh.sub }}</div></div>
+        <div onClick="{{ closeSheet }}" style="width:32px;height:32px;border-radius:16px;background:rgba(118,118,128,0.3);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" style="stroke-width:3;stroke-linecap:round"><path d="M6 6l12 12M18 6L6 18"></path></svg></div>
+      </div>
+
+      <sc-if value="{{ sh.improve }}">
+        <sc-if value="{{ rd.hasTip }}">
+          <div onClick="{{ openHooks }}" style="border-radius:16px;background:rgba(255,159,10,0.12);border:0.5px solid rgba(255,159,10,0.35);padding:12px 14px;display:flex;align-items:center;gap:12px;cursor:pointer;flex-shrink:0">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FF9F0A" style="stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0"><circle cx="12" cy="13" r="8"></circle><path d="M12 9v4M9.5 2.5h5"></path></svg>
+            <div style="flex:1;min-width:0"><div style="font-size:15px;font-weight:600">{{ imp.tipT }}</div><div style="font-size:13px;color:rgba(235,235,245,0.65);margin-top:2px">Aim for about 3s. See shorter openings.</div></div>
+            <svg width="8" height="14" viewBox="0 0 8 14" fill="none" stroke="rgba(235,235,245,0.4)" style="stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><path d="M1 1l6 6-6 6"></path></svg>
+          </div>
+        </sc-if>
+        <div style="border-radius:16px;background:#2C2C2E;overflow:hidden;flex-shrink:0">
+          <sc-for list="{{ ai.acts }}" as="a" hint-placeholder-count="6">
+            <div onClick="{{ a.act }}" style="min-height:58px;padding:8px 14px;display:flex;align-items:center;gap:12px;border-top:{{ a.bd }};cursor:pointer" style-hover="background:rgba(255,255,255,0.04)">
+              <div style="width:34px;height:34px;border-radius:10px;background:rgba(255,214,10,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFD60A" style="stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round"><path d="{{ a.d }}"></path></svg></div>
+              <div style="flex:1;min-width:0"><div style="font-size:15.5px;font-weight:600">{{ a.t }}</div><div style="font-size:13px;color:rgba(235,235,245,0.6);margin-top:1px">{{ a.s }}</div></div>
+              <svg width="8" height="14" viewBox="0 0 8 14" fill="none" stroke="rgba(235,235,245,0.3)" style="stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><path d="M1 1l6 6-6 6"></path></svg>
+            </div>
+          </sc-for>
+        </div>
+        <div style="font-size:12.5px;color:rgba(235,235,245,0.5);text-align:center;flex-shrink:0">{{ imp.left }}</div>
+      </sc-if>
+
+      <sc-if value="{{ sh.hooks }}">
+        <div style="border-radius:16px;background:#2C2C2E;padding:12px 14px;flex-shrink:0"><div style="display:flex;justify-content:space-between;font-size:12px;color:rgba(235,235,245,0.55)"><span>Current hook</span><span style="color:{{ hk.cc }};font-weight:600">{{ hk.curSecs }}</span></div><div style="font-size:15px;line-height:1.4;margin-top:4px">{{ hk.current }}</div></div>
+        <div style="border-radius:16px;background:#2C2C2E;overflow:hidden;flex-shrink:0">
+          <sc-for list="{{ hk.opts }}" as="h" hint-placeholder-count="3">
+            <div onClick="{{ h.pick }}" style="padding:12px 14px;display:flex;align-items:center;gap:12px;border-top:{{ h.bd }};cursor:pointer" style-hover="background:rgba(255,255,255,0.04)"><div style="flex:1;font-size:15px;line-height:1.4;text-wrap:pretty">{{ h.t }}</div><div style="font-size:12.5px;color:#FFD60A;font-weight:600;font-variant-numeric:tabular-nums;flex-shrink:0">{{ h.secs }}</div></div>
+          </sc-for>
+        </div>
+        <div onClick="{{ hk.more }}" style="height:44px;border-radius:22px;background:rgba(118,118,128,0.24);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:600;cursor:pointer;flex-shrink:0">More options</div>
+      </sc-if>
+
+      <sc-if value="{{ sh.details }}">
+        <div style="border-radius:16px;background:#2C2C2E;overflow:hidden;flex-shrink:0">
+          <div onClick="{{ openDest }}" style="height:50px;padding:0 14px;display:flex;align-items:center;justify-content:space-between;font-size:15.5px;cursor:pointer"><span>Create for</span><span style="display:flex;align-items:center;gap:6px;color:rgba(235,235,245,0.6)"><span style="width:7px;height:7px;border-radius:4px;background:{{ rd.dot }}"></span>{{ rd.platform }} ›</span></div>
+          <div onClick="{{ openType }}" style="height:50px;padding:0 14px;display:flex;align-items:center;justify-content:space-between;font-size:15.5px;border-top:0.5px solid rgba(84,84,88,0.55);cursor:pointer"><span>Script type</span><span style="color:rgba(235,235,245,0.6)">{{ rd.typeL }} ›</span></div>
+        </div>
+        <div style="border-radius:16px;background:#2C2C2E;padding:14px 14px 10px;flex-shrink:0">
+          <div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px;font-size:13px"><span style="color:rgba(235,235,245,0.6);white-space:nowrap">{{ z.words }} words · <span style="color:{{ z.c }};font-weight:600">{{ z.dur }}</span></span><span style="color:{{ z.c }};font-weight:600;white-space:nowrap">{{ z.status }}</span></div>
+          <div style="position:relative;height:6px;border-radius:3px;background:rgba(120,120,128,0.3);margin-top:9px">
+            <div style="position:absolute;top:0;bottom:0;left:{{ z.idealL }};width:{{ z.idealW }};background:rgba(255,214,10,0.28);border-radius:3px"></div>
+            <div style="position:absolute;top:0;bottom:0;left:0;width:{{ z.fill }};background:{{ z.c }};border-radius:3px"></div>
+            <sc-if value="{{ z.hasMin }}"><div style="position:absolute;top:-4px;bottom:-4px;left:{{ z.minL }};width:2px;margin-left:-1px;background:#fff;border-radius:1px"></div></sc-if>
+          </div>
+          <div style="position:relative;height:14px;margin-top:6px;font-size:11px;color:rgba(235,235,245,0.4);font-variant-numeric:tabular-nums"><span style="position:absolute;left:0">0:00</span><sc-if value="{{ z.hasMin }}"><span style="position:absolute;left:{{ z.minL }};transform:translateX(-50%);color:rgba(255,255,255,0.85);white-space:nowrap">{{ z.minLabel }}</span></sc-if><span style="position:absolute;right:0">{{ z.maxL }}</span></div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:12px">
+            <sc-for list="{{ strip }}" as="b" hint-placeholder-count="3"><div onClick="{{ b.tap }}" style="height:28px;padding:0 10px;border-radius:14px;background:{{ b.bg }};color:{{ b.fg }};display:flex;align-items:center;gap:6px;font-size:11.5px;font-weight:600;cursor:pointer;white-space:nowrap"><span style="text-transform:uppercase;letter-spacing:0.6px">{{ b.label }}</span><span style="opacity:0.75;font-variant-numeric:tabular-nums">{{ b.secs }}</span></div></sc-for>
+          </div>
+        </div>
+        <div style="border-radius:16px;background:#2C2C2E;overflow:hidden;flex-shrink:0">
+          <div style="height:48px;padding:0 14px;display:flex;align-items:center;justify-content:space-between;font-size:15.5px"><span>Format</span><span style="color:rgba(235,235,245,0.6)">{{ rd.preset }}</span></div>
+          <div style="height:48px;padding:0 14px;display:flex;align-items:center;justify-content:space-between;font-size:15.5px;border-top:0.5px solid rgba(84,84,88,0.55)"><span>Version</span><span style="color:rgba(235,235,245,0.6)">{{ rd.verL }}</span></div>
+          <div onClick="{{ opt.mon.act }}" style="height:52px;padding:0 14px;display:flex;align-items:center;justify-content:space-between;font-size:15.5px;border-top:0.5px solid rgba(84,84,88,0.55);cursor:pointer"><span>Monetization goals</span><div style="width:51px;height:31px;border-radius:16px;background:{{ opt.mon.bg }};padding:2px"><div style="width:27px;height:27px;border-radius:14px;background:#fff;transform:translateX({{ opt.mon.x }});transition:transform .18s"></div></div></div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ sh.dest }}">
+        <div style="border-radius:16px;background:#2C2C2E;overflow:hidden;flex-shrink:0">
+          <sc-for list="{{ destOpts }}" as="o" hint-placeholder-count="6">
+            <div onClick="{{ o.pick }}" style="min-height:56px;padding:8px 14px;display:flex;align-items:center;gap:12px;border-top:{{ o.bd }};cursor:pointer"><span style="width:9px;height:9px;border-radius:5px;background:{{ o.dot }};flex-shrink:0"></span><div style="flex:1;min-width:0"><div style="font-size:15.5px">{{ o.name }}</div><div style="font-size:12.5px;color:rgba(235,235,245,0.55);margin-top:1px">{{ o.sum }}</div></div><sc-if value="{{ o.on }}"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#FFD60A" style="stroke-width:2.8;stroke-linecap:round;stroke-linejoin:round"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg></sc-if></div>
+          </sc-for>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ sh.type }}">
+        <div style="border-radius:16px;background:#2C2C2E;overflow:hidden;flex-shrink:0">
+          <sc-for list="{{ typeOpts }}" as="o" hint-placeholder-count="8">
+            <div onClick="{{ o.pick }}" style="min-height:56px;padding:8px 14px;display:flex;align-items:center;gap:12px;border-top:{{ o.bd }};cursor:pointer"><div style="flex:1;min-width:0"><div style="font-size:15.5px">{{ o.l }}</div><div style="font-size:12.5px;color:rgba(235,235,245,0.55);margin-top:1px">{{ o.flow }}</div></div><sc-if value="{{ o.on }}"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#FFD60A" style="stroke-width:2.8;stroke-linecap:round;stroke-linejoin:round"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg></sc-if></div>
+          </sc-for>
+        </div>
+      </sc-if>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ dv.island }}" hint-placeholder-val="{{ true }}"><div style="position:absolute;left:50%;bottom:8px;width:134px;height:5px;border-radius:3px;background:#fff;transform:translateX(-50%);z-index:80;pointer-events:none"></div></sc-if>
+</div>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;device&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;iPhone SE&quot;,&quot;iPhone 16 Pro&quot;,&quot;iPhone 16 Pro Max&quot;],&quot;default&quot;:&quot;iPhone 16 Pro&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Preview&quot;},&quot;aiWritten&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Script&quot;}}">
+class Component extends DCLogic {
+  static DEV = {
+    'iPhone SE': { w:375, h:667, top:20, bot:0, kb:260, strip:0, kh:40, island:false, pad:'64px 12px 64px', orad:'52px', irad:'4px' },
+    'iPhone 16 Pro': { w:402, h:874, top:54, bot:34, kb:336, strip:74, kh:42, island:true, pad:'12px', orad:'68px', irad:'56px' },
+    'iPhone 16 Pro Max': { w:440, h:956, top:59, bot:34, kb:346, strip:76, kh:44, island:true, pad:'12px', orad:'72px', irad:'60px' }
+  };
+  static PCOL = { TikTok:'#64D2FF', Reels:'#BF5AF2', Shorts:'#FF6961', YouTube:'#FF9F0A', LinkedIn:'#0A84FF', Stories:'#FF375F' };
+  static PNAME = { TikTok:'TikTok', Reels:'Instagram Reels', Shorts:'YouTube Shorts', YouTube:'YouTube · long-form', LinkedIn:'LinkedIn', Stories:'Instagram Stories' };
+  static HOOKS = ['Three tiny habits. Five minutes. Totally different mornings.', 'I tried 30 morning routines — these 3 stuck.', 'Your mornings are hard because you skip this. [pause]', 'If you only change one thing tomorrow, make it this.', 'Five minutes. That’s all this takes.', 'Nobody talks about the first twenty minutes.'];
+  static TYPES = {
+    general:{ label:'Talking video', blocks:['Hook','Body','CTA'] },
+    list:{ label:'Tips / list', blocks:['Hook','Tips','CTA'] },
+    tutorial:{ label:'Tutorial', blocks:['Hook','Promise','Steps','CTA'] },
+    story:{ label:'Storytime', blocks:['Hook','Setup','Twist','Payoff'] },
+    ad:{ label:'Sponsored ad', blocks:['Hook','Problem','Product','Proof','Offer'], chips:['Stronger CTA','Add disclosure','Fit to time','Fix grammar'] },
+    review:{ label:'Review', blocks:['Hook','First look','Pros & cons','Verdict'] },
+    opinion:{ label:'Hot take / reply', blocks:['Hook','Take','Why','Question'] },
+    launch:{ label:'Announcement', blocks:['Hook','News','Details','CTA'] },
+    apology:{ label:'Apology / statement', serious:true, blocks:['Opening','Acknowledge','Own it','What changes','Close'], chips:['More human','Less defensive','Shorter & direct','Fix grammar'] }
+  };
+  static DEFCHIPS = ['Fit to time','More energy','Fix grammar','Translate'];
+  static ACT = {
+    voice:['In my voice','Rewrite so it sounds like you','M12 3a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V6a3 3 0 0 0-3-3zM19 11a7 7 0 0 1-14 0M12 18v3'],
+    hooks:['New hooks','Shorter openings to test','M13 2L4 14h7l-1 8 9-12h-7z'],
+    'Fit to time':['Fit to time','Match the ideal length','M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM12 7v5l3 2'],
+    'More energy':['More energy','Punchier lines, same message','M12 3c1 4 5 5.5 5 10a5 5 0 0 1-10 0c0-2.5 1.5-3.8 2-6 1 1.2 2 1.8 3 2 0-2-.3-4-0-6z'],
+    'Fix grammar':['Fix grammar','Typos and punctuation','M4 12.5l5 5L20 6.5'],
+    Translate:['Translate','Saves a translated copy','M4 5h9M8.5 3v2M6 5c.8 3.5 3 6.5 6.5 8M11 5c-.8 3.5-3 6.5-6.5 8M13 21l4-9 4 9M14.3 18h5.4'],
+    'Stronger CTA':['Stronger CTA','A clearer next step','M5 12h14M13 6l6 6-6 6'],
+    'Add disclosure':['Add disclosure','Paid-partnership line up front','M3 12V4h8l10 10-8 8zM7.5 7.5h.01'],
+    'More human':['More human','Warmer, less scripted','M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.5-7 10-7 10z'],
+    'Less defensive':['Less defensive','Removes excuses and “but”s','M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z'],
+    'Shorter & direct':['Shorter & direct','Cuts filler words','M6 9a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM6 21a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM20 4L8.1 15.9M14.5 14.5L20 20M8.1 8.1L12 12'],
+    facts:['Check facts','Flags dates, names and numbers','M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14zM20 20l-4-4']
+  };
+  static CUES = ['pause','beat','smile','look at camera','confident','slow down','breathe','show product','demo'];
+  static SAMPLE = { id:1, title:'3 morning habits that changed my life', platform:'TikTok', type:'general', version:1, takes:3,
+    text:"[confident] Okay, real talk. [pause] Three tiny habits completely changed how my mornings feel.\n\nNumber one: no phone for the first twenty minutes. I leave it charging in the kitchen, so the first thing I see is daylight, not notifications.\n\nNumber two: I write one goal on a sticky note. Just one. If I get that done, the day is already a win, no matter what else happens.\n\nNumber three: I move for five minutes. [smile] Not a workout — a walk around the block, some stretching, dancing in the kitchen while the coffee brews.\n\nNone of this costs anything, and none of it takes more than half an hour.\n\nWhich one are you trying first? [look at camera] Tell me in the comments." };
+
+  state = { mode:'read', script:{ ...Component.SAMPLE }, snap:null, paras:[], kb:true, tool:null, save:'saved', sheet:null, menu:false, toast:null, hookRot:0, edSize:19, cues:true, monetize:true, factOk:false, shift:true, sym:false };
+
+  words(t) { return t.replace(/\[[^\]]*\]/g, ' ').split(/\s+/).filter(Boolean).length; }
+  est(t) { return this.words(t) / 150 * 60; }
+  fmt(x) { x = Math.max(1, Math.round(x)); return x < 60 ? x + 's' : Math.floor(x / 60) + ':' + String(x % 60).padStart(2, '0'); }
+  cl(x) { x = Math.round(x); return Math.floor(x / 60) + ':' + String(x % 60).padStart(2, '0'); }
+  left(x) { x = Math.max(1, Math.ceil(x)); return x < 60 ? x + 's' : this.cl(x); }
+  parasOf(t) { return t.split(/\n+/).filter(p => p.trim()); }
+  preset(pl) { const m = this.state.monetize; const P = {
+      TikTok:{ aspect:'9:16', res:'1080p', fps:30, ideal:m ? [60, 90] : [15, 60], min:m ? 60 : 0, goal:'monetize' }, Reels:{ aspect:'9:16', res:'1080p', fps:30, ideal:[15, 60], min:0 },
+      Shorts:{ aspect:'9:16', res:'1080p', fps:60, ideal:[30, 60], min:0 }, YouTube:{ aspect:'16:9', res:'4K', fps:24, ideal:m ? [480, 900] : [240, 600], min:m ? 480 : 0, goal:'mid-rolls' },
+      LinkedIn:{ aspect:'4:5', res:'1080p', fps:30, ideal:[30, 90], min:0 }, Stories:{ aspect:'9:16', res:'1080p', fps:30, ideal:[8, 15], min:0 } }; return P[pl] || P.TikTok; }
+  zone(x) { const pr = this.preset(x.platform), e = this.est(x.text), mx = Math.max(pr.ideal[1] * 1.2, e * 1.08); const below = pr.min && e < pr.min; const inI = !below && e >= pr.ideal[0] && e <= pr.ideal[1];
+    const status = below ? this.left(pr.min - e) + ' to ' + (pr.goal === 'mid-rolls' ? 'mid-roll ads' : 'monetize') : e < pr.ideal[0] ? this.left(pr.ideal[0] - e) + ' under ideal' : e > pr.ideal[1] ? this.left(e - pr.ideal[1]) + ' over ideal' : 'In the ideal range';
+    return { words:this.words(x.text), dur:'~' + this.fmt(e), status, c:inI ? '#FFD60A' : '#FF9F0A', fill:Math.min(100, e / mx * 100) + '%', idealL:pr.ideal[0] / mx * 100 + '%', idealW:(pr.ideal[1] - pr.ideal[0]) / mx * 100 + '%', hasMin:!!pr.min, minL:pr.min / mx * 100 + '%', minLabel:this.cl(pr.min) + (pr.goal === 'mid-rolls' ? ' · mid-rolls' : ' · monetizes'), maxL:this.cl(mx) }; }
+  labelsOf(ps, T) { const b = T.blocks, n = ps.length; const lab = ps.map((p, i) => i === 0 ? b[0] : (i === n - 1 && n > 1) ? b[b.length - 1] : b[Math.min(i, b.length - 2)]);
+    const secs = ps.map(p => this.est(p)); const grp = lab.map((l, i) => { if (i > 0 && lab[i - 1] === l) return null; let s = 0; for (let j = i; j < n && lab[j] === l; j++) s += secs[j]; return s; }); return { lab, grp, secs }; }
+  segsOf(p) { return p.split(/(\[[^\]]*\])/).filter(Boolean).map(t => /^\[.*\]$/.test(t)
+    ? { t:t.slice(1, -1), c:'#FFD60A', f:'0.6em', tt:'uppercase', ls:'0.1em', bg:'rgba(255,214,10,0.12)', pad:'0.25em 0.7em', w:'700', va:'middle', ws:'nowrap' }
+    : { t, c:'inherit', f:'1em', tt:'none', ls:'normal', bg:'transparent', pad:'0', w:'inherit', va:'baseline', ws:'normal' }); }
+  dev() { return Component.DEV[this.props.device] || Component.DEV['iPhone 16 Pro']; }
+  toast(msg, undo) { clearTimeout(this._tt); this.setState({ toast:{ msg, undo:undo == null ? null : undo } }); this._tt = setTimeout(() => this.setState({ toast:null }), undo != null ? 4000 : 2400); }
+  keep = e => e.preventDefault();
+
+  // editing
+  enterEdit(i, pos) { const sc = this.state.script; const paras = this.parasOf(sc.text); if (!paras.length) paras.push('');
+    const idx = Math.min(i == null ? this.firstVisible() : i, paras.length - 1); this.pendingFocus = { i:idx, pos:pos == null ? 'end' : pos }; this._scrollTo = idx;
+    this.setState({ mode:'edit', paras, snap:{ title:sc.title, text:sc.text }, kb:true, tool:null, save:'saved', sheet:null, menu:false, toast:null }); }
+  firstVisible() { const r = this.readEl; if (!r || r.scrollTop < 60) return 0; const els = [...r.querySelectorAll('[data-ri]')]; const lim = r.scrollTop + 140; const el = els.find(e => e.offsetTop + e.offsetHeight > lim); return el ? Number(el.getAttribute('data-ri')) : 0; }
+  markDirty() { clearTimeout(this._sv); if (this.state.save !== 'saving') this.setState({ save:'saving' }); this._sv = setTimeout(() => this.setState({ save:'saved' }), 800); }
+  setParas(paras, focus) { const text = paras.filter(p => p.trim()).join('\n\n'); if (focus) this.pendingFocus = focus; this._ensure = true; this.setState(s => ({ paras, script:{ ...s.script, text } })); this.markDirty(); }
+  caret() { const ta = this.activeTa, n = this.state.paras.length; const i = Math.min(this.activeI == null ? n - 1 : this.activeI, n - 1); if (ta && document.contains(ta)) return { i, pos:ta.selectionStart, end:ta.selectionEnd }; const l = (this.state.paras[i] || '').length; return { i, pos:l, end:l }; }
+  insert(str) { if (this.titleOn) { const t = this.state.script.title + str; this.setState(s => ({ script:{ ...s.script, title:t } })); this.markDirty(); return; }
+    const { i, pos, end } = this.caret(); const paras = [...this.state.paras]; const v = paras[i] || ''; const nv = v.slice(0, pos) + str + v.slice(end); paras[i] = nv; const np = pos + str.length;
+    this.setState({ shift:/^\s*$|[.!?]\s$/.test(nv.slice(0, np)) }); this.setParas(paras, { i, pos:np }); }
+  backspace() { if (this.titleOn) { this.setState(s => ({ script:{ ...s.script, title:s.script.title.slice(0, -1) } })); this.markDirty(); return; }
+    const { i, pos, end } = this.caret(); const paras = [...this.state.paras]; const v = paras[i] || '';
+    if (pos !== end) { paras[i] = v.slice(0, pos) + v.slice(end); return this.setParas(paras, { i, pos }); }
+    if (pos === 0) { if (i === 0) return; const prev = paras[i - 1]; const sep = prev && v ? ' ' : ''; paras.splice(i - 1, 2, prev + sep + v); return this.setParas(paras, { i:i - 1, pos:prev.length + sep.length }); }
+    paras[i] = v.slice(0, pos - 1) + v.slice(pos); this.setParas(paras, { i, pos:pos - 1 }); }
+  splitAt() { if (this.titleOn) { this.pendingFocus = { i:0, pos:0 }; this.forceUpdate(); return; }
+    const { i, pos, end } = this.caret(); const paras = [...this.state.paras]; const v = paras[i] || ''; paras.splice(i, 1, v.slice(0, pos).replace(/\s+$/, ''), v.slice(end).replace(/^\s+/, '')); this.setState({ shift:true }); this.setParas(paras, { i:i + 1, pos:0 }); }
+  keyTap(k) { if (k === 'shift') return this.setState(s => ({ shift:!s.shift })); if (k === 'sym') return this.setState(s => ({ sym:!s.sym })); if (k === 'del') return this.backspace(); if (k === 'ret') return this.splitAt();
+    const st = this.state; this.insert(k === 'space' ? ' ' : (st.shift && !st.sym ? k.toUpperCase() : k)); }
+  onCh = i => e => { const v = e.target.value; const paras = [...this.state.paras];
+    if (/\n/.test(v)) { const parts = v.split(/\n+/); paras.splice(i, 1, ...parts); return this.setParas(paras, { i:i + parts.length - 1, pos:parts[parts.length - 1].length }); }
+    paras[i] = v; this.setParas(paras); };
+  onKey = i => e => { const ta = e.target; this.activeI = i; this.activeTa = ta; const at0 = ta.selectionStart === 0 && ta.selectionEnd === 0, atEnd = ta.selectionStart === ta.value.length;
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); this.splitAt(); return; }
+    if (e.key === 'Backspace' && at0 && i > 0) { e.preventDefault(); this.backspace(); return; }
+    if (e.key === 'ArrowUp' && at0 && i > 0) { e.preventDefault(); this.pendingFocus = { i:i - 1, pos:'end' }; this.forceUpdate(); return; }
+    if (e.key === 'ArrowDown' && atEnd && i < this.state.paras.length - 1) { e.preventDefault(); this.pendingFocus = { i:i + 1, pos:0 }; this.forceUpdate(); } };
+  onFocusTa = i => e => { this.activeI = i; this.activeTa = e.target; this.titleOn = false; this._ensure = true; if (!this.state.kb || this.state.tool) this.setState({ kb:true, tool:null }); else this.forceUpdate(); };
+  onTapTa = i => e => { this.activeI = i; this.activeTa = e.target; this._ensure = true; if (!this.state.kb || this.state.tool) this.setState({ kb:true, tool:null }); else this.forceUpdate(); };
+  onUpTa = i => e => { this.activeI = i; this.activeTa = e.target; if (/Arrow|Home|End|Page/.test(e.key)) { this._ensure = true; this.forceUpdate(); } };
+  toggleTool(t) { this.setState(s => ({ tool:s.tool === t ? null : t })); }
+  toggleKb = () => { const st = this.state; if (st.kb || st.tool) { if (this.activeTa) this.activeTa.blur(); this.setState({ kb:false, tool:null }); } else { const c = this.caret(); this.pendingFocus = { i:c.i, pos:c.pos }; this.setState({ kb:true }); } };
+  done = () => { const s = this.state, sc = s.script, sn = s.snap; const text = s.paras.filter(p => p.trim()).join('\n\n'); const changed = sn && (sn.text !== text || sn.title !== sc.title); if (this.activeTa) this.activeTa.blur();
+    const script = { ...sc, text, title:sc.title.trim() || 'Untitled script' }; let msg = null;
+    if (changed && sc.takes > 0) { script.version = (sc.version || 1) + 1; msg = `Saved as v${script.version} · ${sc.takes} takes stay with v${sc.version}`; } else if (changed) msg = 'Saved';
+    clearTimeout(this._sv); this.setState({ mode:'read', script, tool:null, sheet:null, save:'saved' }); if (msg) this.toast(msg); };
+  discard = () => { const sn = this.state.snap; if (this.activeTa) this.activeTa.blur(); this.setState(s => ({ mode:'read', script:{ ...s.script, title:sn.title, text:sn.text }, tool:null, sheet:null })); this.toast('Changes discarded'); };
+
+  curText() { const s = this.state; return s.mode === 'edit' ? s.paras.filter(p => p.trim()).join('\n\n') : s.script.text; }
+  setText(nt) { if (this.state.mode === 'edit') { const ps = this.parasOf(nt); if (!ps.length) ps.push(''); const c = this.caret(); this.setParas(ps, { i:Math.min(c.i, ps.length - 1), pos:'end' }); } else this.setState(s => ({ script:{ ...s.script, text:nt } })); }
+  applyAI(k) { const s = this.state; const text = this.curText(); let nt = text, msg;
+    if (k === 'hooks') { this.setState({ sheet:'hooks', tool:null }); return; }
+    if (k === 'voice') { nt = text.replace('Okay, real talk.', 'Hey fam — real talk.'); msg = nt !== text ? 'Rewrote in your voice · casual, confident' : 'Already sounds like you'; }
+    else if (k === 'Fit to time') { const pr = this.preset(s.script.platform), e = this.est(text);
+      if (e < pr.ideal[0] && !/Bonus:/.test(text)) { const ps = this.parasOf(text); ps.splice(Math.max(1, ps.length - 1), 0, "Bonus: I do all three before I read a single message. That's the whole trick."); nt = ps.join('\n\n'); msg = 'Added a line · now ~' + this.fmt(this.est(nt)); }
+      else if (e > pr.ideal[1]) msg = 'Trimmed to fit ' + this.cl(pr.ideal[0]) + '–' + this.cl(pr.ideal[1]); else msg = 'Length looks right for ' + s.script.platform; }
+    else if (k === 'More energy') { nt = text.replace('None of this costs anything', 'The best part? None of this costs anything'); msg = nt !== text ? 'Punched up 1 line' : 'Already high energy'; }
+    else if (k === 'Fix grammar') msg = 'No typos found';
+    else if (k === 'Translate') msg = 'Spanish copy saved to Scripts';
+    else if (k === 'Stronger CTA') { if (!/Try one tomorrow/.test(text)) nt = text.trim() + ' Try one tomorrow and tell me how it went.'; msg = 'CTA strengthened'; }
+    else if (k === 'Add disclosure') { if (!/paid partnership/i.test(text)) nt = '[paid partnership] Quick heads-up: this video is sponsored.\n\n' + text; msg = 'Disclosure added up front'; }
+    else if (k === 'facts') { this.setState({ factOk:true }); msg = 'Nothing to verify — no dates, names or numbers'; }
+    else msg = { 'More human':'Softened 2 lines', 'Less defensive':'Removed 1 “but”', 'Shorter & direct':'Cut 12 words' }[k] || 'Done';
+    const changed = nt !== text; if (changed) this.setText(nt); this.setState({ sheet:null, tool:null }); this.toast(msg, changed ? text : null); }
+  undoAI = () => { const t = this.state.toast; if (!t || t.undo == null) return; this.setText(t.undo); this.toast('Undone'); };
+  pickHook(t) { const ps = this.parasOf(this.curText()); ps[0] = t; this.setText(ps.join('\n\n')); this.setState({ sheet:null }); this.toast('Hook replaced · ~' + this.fmt(this.est(t)), this.curText()); }
+  scrollReadTo(i) { this.setState({ sheet:null }); setTimeout(() => { const r = this.readEl; const el = r && r.querySelector('[data-ri="' + i + '"]'); if (el) r.scrollTo({ top:Math.max(0, el.offsetTop - 130), behavior:'smooth' }); }, 60); }
+  jump(k) { if (this.activeTa) this.activeTa.blur(); const base = { sheet:null, menu:false, tool:null };
+    if (k === 'read') this.setState({ ...base, mode:'read' });
+    if (k === 'edit') { this.setState(base); this.enterEdit(1, 'end'); }
+    if (k === 'nokb') { this.enterEdit(1, 'end'); setTimeout(() => { if (this.activeTa) this.activeTa.blur(); this.setState({ kb:false }); }, 80); }
+    if (k === 'tool') { this.enterEdit(1, 'end'); setTimeout(() => this.setState({ tool:'ai' }), 80); }
+    if (k === 'improve') this.setState({ ...base, mode:'read', sheet:'improve' });
+    if (k === 'details') this.setState({ ...base, mode:'read', sheet:'details' }); }
+
+  setReadEl = el => { this.readEl = el; };
+  setEdEl = el => { this.edEl = el; };
+  caretY(ta, pos) { let m = this._mirror; if (!m) { m = this._mirror = document.createElement('div'); m.style.cssText = 'position:absolute;visibility:hidden;left:-9999px;top:0;white-space:pre-wrap;overflow-wrap:break-word;word-wrap:break-word'; document.body.appendChild(m); }
+    const cs = getComputedStyle(ta); m.style.width = ta.clientWidth + 'px'; m.style.font = cs.font; m.style.lineHeight = cs.lineHeight; m.style.letterSpacing = cs.letterSpacing; m.textContent = ta.value.slice(0, pos); const sp = document.createElement('span'); sp.textContent = '\u200b'; m.appendChild(sp); return sp.offsetTop; }
+  ensureCaret() { const ta = this.activeTa, c = this.edEl; if (!ta || !c || !document.contains(ta)) return; const wrap = ta.parentElement; const base = wrap.offsetTop + ta.offsetTop - (ta.offsetParent === c ? 0 : 0);
+    const y = (ta.offsetParent === c ? ta.offsetTop : wrap.offsetTop + ta.offsetTop) + this.caretY(ta, ta.selectionEnd); const lh = this.state.edSize * 1.55; const top = c.scrollTop, h = c.clientHeight;
+    if (y < top + 12) c.scrollTop = Math.max(0, y - 12 - lh * 0.5); else if (y + lh > top + h - 20) c.scrollTop = y + lh * 2 - h + 20; }
+  componentDidUpdate() { if (this.state.mode !== 'edit' || !this.edEl) return; const c = this.edEl;
+    c.querySelectorAll('textarea').forEach(t => { t.style.height = '0px'; t.style.height = t.scrollHeight + 'px'; });
+    const pf = this.pendingFocus; if (pf) { const ta = c.querySelector('textarea[data-pi="' + pf.i + '"]'); if (ta) { this.pendingFocus = null; const p = pf.pos === 'end' ? ta.value.length : Math.min(pf.pos, ta.value.length); this.activeI = pf.i; this.activeTa = ta; this.titleOn = false; if (document.activeElement !== ta) ta.focus({ preventScroll:true }); ta.setSelectionRange(p, p); this._ensure = true; } }
+    if (this._scrollTo != null) { const w = c.querySelector('[data-bw="' + this._scrollTo + '"]'); this._scrollTo = null; if (w) { c.scrollTop = Math.max(0, w.offsetTop - 10); this._ensure = false; return; } }
+    if (this._ensure) { this._ensure = false; this.ensureCaret(); } }
+  componentDidMount() { const s = this.props.start; if (s && s !== 'read') setTimeout(() => this.jump(s), 50); }
+  componentWillUnmount() { clearTimeout(this._tt); clearTimeout(this._sv); if (this._mirror) this._mirror.remove(); }
+  kbView(dv) { const st = this.state; const W = dv.w - 6, g = 6, L = (W - 9 * g) / 10, S = (W - 7 * L - 8 * g) / 2; const SP = '#46464A', LT = '#6D6D71';
+    const k = (l, key, w, sp, o = {}) => ({ l, act:() => this.keyTap(key), w:w + 'px', bg:sp ? SP : LT, fs:o.fs || '23px', hasL:!o.d, hasIc:!!o.d, d:o.d || '', fill:o.fill || 'none' });
+    const up = st.shift && !st.sym; const Lt = c => k(up ? c.toUpperCase() : c, c, L, false);
+    const del = k('', 'del', S, true, { d:'M21 5H9l-6 7 6 7h12a1 1 0 0 0 1-1V6a1 1 0 0 0-1-1zM17 9l-6 6M11 9l6 6' });
+    const r4 = [k(st.sym ? 'ABC' : '123', 'sym', 2 * L + g, true, { fs:'16px' }), k('space', 'space', W - (2 * L + g) - (2.4 * L + g) - 2 * g, false, { fs:'16px' }), k('return', 'ret', 2.4 * L + g, true, { fs:'16px' })];
+    let rows;
+    if (!st.sym) rows = [{ pl:'0px', keys:'qwertyuiop'.split('').map(Lt) }, { pl:((W - 9 * L - 8 * g) / 2) + 'px', keys:'asdfghjkl'.split('').map(Lt) },
+      { pl:'0px', keys:[k('', 'shift', S, !st.shift, { d:'M12 4l8 8h-4.5v7h-7v-7H4z', fill:st.shift ? '#fff' : 'none' }), ...'zxcvbnm'.split('').map(Lt), del] }, { pl:'0px', keys:r4 }];
+    else { const w5 = (W - 2 * S - 6 * g) / 5; rows = [{ pl:'0px', keys:'1234567890'.split('').map(c => k(c, c, L, false)) }, { pl:'0px', keys:['-', '/', ':', ';', '(', ')', '$', '&', '@', '"'].map(c => k(c, c, L, false)) },
+      { pl:'0px', keys:[k('#+=', 'sym', S, true, { fs:'15px' }), ...['.', ',', '?', '!', "'"].map(c => k(c, c, w5, false)), del] }, { pl:'0px', keys:r4 }]; }
+    const keysArea = dv.kb - 44 - dv.strip; const gap = (keysArea - 14 - 4 * dv.kh) / 3;
+    const sugg = ['I', 'and', 'my'].map((w, i) => ({ l:w, bd:i ? '0.5px solid rgba(255,255,255,0.18)' : 'none', act:() => this.insert(w + ' ') }));
+    return { h:dv.kb + 'px', kh:dv.kh + 'px', gap:gap + 'px', rows, sugg, strip:dv.strip > 0, stripH:dv.strip + 'px' }; }
+  renderVals() {
+    const K = Component, st = this.state, dv = this.dev(), sc = st.script, T = K.TYPES[sc.type] || K.TYPES.general, pr = this.preset(sc.platform);
+    const isEdit = st.mode === 'edit', paras = isEdit ? st.paras : this.parasOf(sc.text);
+    const { lab, grp, secs } = this.labelsOf(paras, T); const fmt = v => this.fmt(v);
+    const z = this.zone(sc); const hookSecs = grp[0] || 0; const hookWarn = !T.serious && paras.length > 1 && hookSecs > 3.5;
+    const ai = !!this.props.aiWritten;
+    const actKeys = ['voice', ...(T.serious ? [] : ['hooks']), ...(T.chips || K.DEFCHIPS), ...(ai ? ['facts'] : [])];
+    const acts = actKeys.map((k, i) => { const a = K.ACT[k]; let sub = a[1]; if (k === 'Fit to time') sub = 'Ideal for ' + sc.platform + ': ' + this.cl(pr.ideal[0]) + '–' + this.cl(pr.ideal[1]); return { t:a[0], s:sub, d:a[2], bd:i ? '0.5px solid rgba(84,84,88,0.55)' : 'none', act:() => this.applyAI(k) }; });
+    const I = { cue:'M8 4H5v16h3M16 4h3v16h-3', nav:'M4 6h16M4 12h10M4 18h16', opts:'M4 19l5-14 5 14M6 14h6M17 19a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM20 13v6' };
+    const toolBtn = (t, l) => ({ l, d:I[t], bg:st.tool === t ? 'rgba(255,255,255,0.14)' : 'transparent', act:() => this.toggleTool(t) });
+    const inputArea = isEdit && (st.tool || st.kb); const edTop = dv.top + 52; const bottomH = inputArea ? dv.kb : dv.bot; const accT = dv.h - bottomH - 48; const edH = accT - edTop;
+    const kbLines = Math.floor((dv.h - dv.top - 52 - 48 - dv.kb - 14) / (st.edSize * 1.55));
+    const caretI = this.activeI == null ? -1 : this.activeI;
+    const phFor = l => ({ Hook:'Open with the line that stops the scroll', CTA:'Tell them what to do next', Opening:'Start plainly and directly' }[l] || 'Keep going…');
+    const blocks = paras.map((p, i) => ({ i:String(i), showLabel:i === 0 || lab[i] !== lab[i - 1], label:lab[i], secs:grp[i] != null ? '~' + fmt(grp[i]) : '', val:p,
+      ph:paras.length === 1 && !p ? 'Start writing what you want to say… Tap [ ] to add cues.' : phFor(lab[i]), onCh:this.onCh(i), onKey:this.onKey(i), onFocus:this.onFocusTa(i), onTap:this.onTapTa(i), onUp:this.onUpTa(i) }));
+    const stripRaw = []; lab.forEach((l, i) => { const last = stripRaw[stripRaw.length - 1]; if (last && last.label === l) last.secs += secs[i]; else stripRaw.push({ label:l, secs:secs[i], i }); });
+    const strip = stripRaw.map((b, j) => { const warn = j === 0 && hookWarn; return { label:b.label, secs:fmt(b.secs), bg:warn ? 'rgba(255,159,10,0.16)' : j === 0 && !T.serious ? 'rgba(255,214,10,0.12)' : 'rgba(118,118,128,0.24)', fg:warn ? '#FF9F0A' : j === 0 && !T.serious ? '#FFD60A' : 'rgba(235,235,245,0.8)', tap:() => this.scrollReadTo(b.i) }; });
+    const hk = K.HOOKS; const first = paras[0] || ''; const saving = st.save === 'saving';
+    const sheetT = { improve:['Improve script', 'Apple Intelligence · runs on your iPhone'], hooks:['New hooks', 'Tap one to replace your opening'], details:['Script details', sc.title], dest:['Create for', 'Sets format, safe zones and ideal length'], type:['Script type', 'Sets the sections and AI suggestions'] }[st.sheet] || ['', ''];
+    const tgl = on => ({ bg:on ? '#34C759' : 'rgba(120,120,128,0.36)', x:on ? '20px' : '0px' });
+    const Y = [['Reading', 'read'], ['Writing', 'edit'], ['Keyboard hidden', 'nokb'], ['AI panel', 'tool'], ['Improve script', 'improve'], ['Details', 'details']];
+    return {
+      g:{ lines:String(kbLines), dev:this.props.device || 'iPhone 16 Pro', jumps:Y.map(([l, k]) => ({ l, act:() => this.jump(k) })) },
+      dv:{ wpx:dv.w + 'px', hpx:dv.h + 'px', pad:dv.pad, orad:dv.orad, irad:dv.irad, island:dv.island, notIsland:!dv.island },
+      isRead:!isEdit, isEdit, keep:this.keep,
+      rd:{ padT:(dv.top + 62) + 'px', padB:(120 + dv.bot) + 'px', hdrT:(dv.top + 4) + 'px', fadeH:(dv.top + 58) + 'px', btnPad:(dv.bot ? dv.bot : 16) + 'px', menuT:(dv.top + 54) + 'px',
+        title:sc.title || 'Untitled script', dot:K.PCOL[sc.platform], platform:sc.platform, words:String(z.words), dur:z.dur, status:z.status, zc:z.c, hasTip:hookWarn, typeL:T.label,
+        fact:ai && !st.factOk, factOk:() => this.setState({ factOk:true }), preset:pr.aspect + ' · ' + pr.res + pr.fps, verL:'v' + (sc.version || 1) + ' · ' + sc.takes + ' takes',
+        paras:paras.map((p, i) => ({ ri:String(i), showLabel:i === 0 || lab[i] !== lab[i - 1], label:lab[i], secs:grp[i] != null ? '~' + fmt(grp[i]) : '', sc:i === 0 && hookWarn ? '#FF9F0A' : 'rgba(235,235,245,0.4)', segs:this.segsOf(p), edit:() => this.enterEdit(i, 'end') })),
+        empty:!paras.length, hasTakes:sc.takes > 0, takesL:sc.takes + ' takes · v' + (sc.version || 1),
+        tiles:[['Take 1', '0:52', false, 'linear-gradient(160deg,#3A3430,#171514)'], ['Take 2', '0:49', true, 'linear-gradient(160deg,#2F3438,#141618)'], ['Take 3', '0:55', false, 'linear-gradient(160deg,#39352E,#161512)']].map(([n, d, b, bg]) => ({ n, dur:d, best:b, bg, open:() => this.toast('Opens ' + n) })) },
+      editEnd:() => this.enterEdit(0, 'end'), editTop:() => this.enterEdit(null), openDetails:() => this.setState({ sheet:'details' }), openImprove:() => this.setState({ sheet:'improve' }),
+      goBack:() => this.toast('Back to Scripts'), openStudio:() => this.toast('Opens Studio mode'), openRecord:() => this.toast('Opens the camera with this script'),
+      menuOn:st.menu, openMenu:() => this.setState({ menu:true }), closeMenu:() => this.setState({ menu:false }),
+      menu:[['Edit', 'M4 20h4L19 9l-4-4L4 16zM13.5 6.5l4 4', () => this.enterEdit(null)], ['Script details', 'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM12 11v5M12 8h.01', () => this.setState({ menu:false, sheet:'details' })], ['Duplicate', 'M9 9h10a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H11a2 2 0 0 1-2-2zM5 15H4a1 1 0 0 1-1-1V5a2 2 0 0 1 2-2h9a1 1 0 0 1 1 1v1', () => { this.setState({ menu:false }); this.toast('Duplicated'); }], ['Share', 'M12 15V3M7 8l5-5 5 5M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6', () => { this.setState({ menu:false }); this.toast('Opening share sheet'); }], ['Move to folder', 'M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z', () => { this.setState({ menu:false }); this.toast('Moved to “Morning series”'); }], ['Delete', 'M4 7h16M10 11v6M14 11v6M5.5 7l1 12a2 2 0 0 0 2 2h7a2 2 0 0 0 2-2l1-12M9 7V4h6v3', () => { this.setState({ menu:false }); this.toast('Deleted — in the prototype it stays'); }]].map(([l, d, act], i) => ({ l, d, act, c:l === 'Delete' ? '#FF453A' : '#fff', bd:i ? (l === 'Delete' ? '6px solid rgba(0,0,0,0.25)' : '0.5px solid rgba(84,84,88,0.6)') : 'none' })),
+      ed:{ hdrT:dv.top + 'px', top:edTop + 'px', h:edH + 'px', fadeB:(accT - 22) + 'px', accT:accT + 'px', fs:st.edSize + 'px', blocks, title:sc.title,
+        onTitle:e => { const v = e.target.value; this.setState(s => ({ script:{ ...s.script, title:v } })); this.markDirty(); },
+        titleFocus:() => { this.titleOn = true; if (!st.kb || st.tool) this.setState({ kb:true, tool:null }); }, titleBlur:() => { this.titleOn = false; },
+        titleKey:e => { if (e.key === 'Enter') { e.preventDefault(); this.pendingFocus = { i:0, pos:0 }; this.forceUpdate(); } },
+        status:(saving ? 'Saving…' : 'Saved') + ' · ~' + fmt(this.est(this.curText())), dot:saving ? '#FFD60A' : 'rgba(235,235,245,0.4)' },
+      tb:{ ai:{ bg:st.tool === 'ai' ? 'rgba(255,214,10,0.24)' : 'rgba(255,214,10,0.12)', act:() => this.toggleTool('ai') }, items:[toolBtn('cue', 'Cues'), toolBtn('nav', 'Sections'), toolBtn('opts', 'Options')],
+        kbAct:this.toggleKb, kbL:inputArea ? 'Hide keyboard' : 'Show keyboard', kbD:inputArea ? 'M9 19.5l4 2.5 4-2.5' : 'M9 22l4-2.5 4 2.5' },
+      kbd:isEdit && st.kb && !st.tool ? { on:true, ...this.kbView(dv) } : { on:false },
+      tp:{ on:isEdit && !!st.tool, h:dv.kb + 'px', padB:(dv.bot + 12) + 'px', isAi:st.tool === 'ai', isCues:st.tool === 'cue', isNav:st.tool === 'nav', isOpts:st.tool === 'opts' },
+      ai:{ acts }, imp:{ tipT:'Your hook runs ~' + fmt(hookSecs), left:ai ? 'Written with Apple Intelligence · check facts before recording' : '4 of 5 free AI edits left this month' },
+      cuesL:K.CUES.map(c => ({ l:c, act:() => { const { i, pos } = this.caret(); const v = st.paras[i] || ''; const pre = pos > 0 && !/\s$/.test(v.slice(0, pos)) ? ' ' : ''; this.insert(pre + '[' + c + '] '); } })),
+      nav:{ sum:paras.length + ' paragraphs · ~' + fmt(this.est(this.curText())), add:() => { this.setState({ tool:null }); this.splitAt(); },
+        rows:stripRaw.map((b, j) => { const on = caretI >= b.i && (j === stripRaw.length - 1 || caretI < stripRaw[j + 1].i); return { label:b.label, first:(paras[b.i] || '').replace(/\[[^\]]*\]\s*/g, '') || '—', secs:'~' + fmt(b.secs), bd:j ? '0.5px solid rgba(84,84,88,0.5)' : 'none', bg:on ? 'rgba(255,214,10,0.08)' : 'transparent', lc:on ? '#FFD60A' : 'rgba(235,235,245,0.5)', act:() => { this._scrollTo = b.i; this.pendingFocus = { i:b.i, pos:0 }; this.setState({ tool:null, kb:true }); } }; }) },
+      opt:{ cues:{ ...tgl(st.cues), act:() => this.setState(s => ({ cues:!s.cues })) }, mon:{ ...tgl(st.monetize), act:() => this.setState(s => ({ monetize:!s.monetize })) },
+        sizes:[[17, '14px'], [19, '17px'], [22, '20px']].map(([v, fs]) => ({ fs, bg:st.edSize === v ? '#636366' : 'transparent', act:() => { this._ensure = true; this.setState({ edSize:v }); } })) },
+      openDest:() => this.setState({ sheet:'dest' }), openType:() => this.setState({ sheet:'type' }), openHooks:() => this.setState({ sheet:'hooks' }), discard:this.discard, done:this.done, undoAI:this.undoAI,
+      toastOn:!!st.toast, toastL:st.toast ? st.toast.msg : '', toastUndo:!!(st.toast && st.toast.undo != null), toastPad:!(st.toast && st.toast.undo != null), toastT:(dv.top + (isEdit ? 60 : 56)) + 'px',
+      shOn:!!st.sheet, shPadB:(dv.bot + 16) + 'px', closeSheet:() => this.setState({ sheet:null }),
+      sh:{ title:sheetT[0], sub:sheetT[1], improve:st.sheet === 'improve', hooks:st.sheet === 'hooks', details:st.sheet === 'details', dest:st.sheet === 'dest', type:st.sheet === 'type' },
+      z, strip,
+      hk:{ current:first.replace(/\[[^\]]*\]\s*/g, '').trim() || '—', curSecs:'~' + fmt(this.est(first)), cc:hookWarn ? '#FF9F0A' : '#FFD60A',
+        opts:[0, 1, 2].map(i => hk[(i + st.hookRot) % hk.length]).map((t, i) => ({ t:t.replace(/\s*\[[^\]]*\]/g, ''), secs:'~' + fmt(this.est(t)), bd:i ? '0.5px solid rgba(84,84,88,0.55)' : 'none', pick:() => this.pickHook(t) })), more:() => this.setState(s => ({ hookRot:s.hookRot + 3 })) },
+      destOpts:Object.keys(K.PNAME).map((pl, i) => { const p = this.preset(pl); return { name:K.PNAME[pl], dot:K.PCOL[pl], sum:p.aspect + ' · ' + p.res + p.fps + ' · ideal ' + this.cl(p.ideal[0]) + '–' + this.cl(p.ideal[1]), on:sc.platform === pl, bd:i ? '0.5px solid rgba(84,84,88,0.55)' : 'none', pick:() => { this.setState(s => ({ script:{ ...s.script, platform:pl }, sheet:null })); this.toast('Create for ' + K.PNAME[pl]); } }; }),
+      typeOpts:Object.keys(K.TYPES).map((k, i) => ({ l:K.TYPES[k].label, flow:K.TYPES[k].blocks.join(' → '), on:sc.type === k, bd:i ? '0.5px solid rgba(84,84,88,0.55)' : 'none', pick:() => { this.setState(s => ({ script:{ ...s.script, type:k }, sheet:null })); this.toast('Sections: ' + K.TYPES[k].blocks.join(' · ')); } }))
+    };
+  }
+}
+</script>
+</body>
+</html>

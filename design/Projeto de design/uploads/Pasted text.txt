@@ -1,0 +1,1275 @@
+QUICK EDIT — IMPLEMENTAÇÃO COMPLETA DA CAMADA DE EDIÇÃO
+
+Agora quero transformar a tela atual de Quick Edit em uma ferramenta de edição de vídeo REAL, FUNCIONAL e CONFIÁVEL.
+
+IMPORTANTE:
+
+Não quero apenas melhorias visuais.
+
+Quero que você implemente a mecânica real de edição, reprodução, timeline, trim, cut/split, seleção, undo/redo e exportação.
+
+Use como referência de comportamento os padrões consolidados de editores como:
+
+- CapCut
+- Adobe Premiere Rush
+- Descript
+
+Mas NÃO transforme nosso produto em um editor complexo.
+
+Nosso conceito é:
+
+RECORD → QUICK EDIT → CLEAN UP → EXPORT
+
+O usuário é um criador de conteúdo que gravou um vídeo falando para a câmera e quer limpá-lo rapidamente antes de publicar.
+
+A prioridade é velocidade, simplicidade e precisão.
+
+====================================================
+1. ANTES DE ALTERAR O CÓDIGO
+====================================================
+
+Primeiro analise profundamente a implementação atual.
+
+Identifique:
+
+- componente da tela Quick Edit;
+- componente do player;
+- fonte do vídeo;
+- mecanismo atual de reprodução;
+- currentTime;
+- duration;
+- geração dos thumbnails;
+- estado atual da timeline;
+- estado dos handles amarelos;
+- lógica atual dos botões;
+- mecanismo de exportação;
+- gerenciamento de estado;
+- navegação;
+- qualquer código relacionado à edição.
+
+Não recrie a arquitetura sem necessidade.
+
+Reutilize o que já funciona.
+
+Mas, se a arquitetura atual impedir uma edição confiável, refatore a camada de edição.
+
+Antes de terminar, certifique-se de que não existem controles "fake".
+
+Se um botão aparece na UI, ele precisa funcionar.
+
+====================================================
+2. MODELO MENTAL DA EDIÇÃO
+====================================================
+
+Não trate o vídeo apenas como:
+
+originalVideo + startTime + endTime
+
+Precisamos preparar a arquitetura para edição não destrutiva baseada em segmentos.
+
+Inicialmente teremos:
+
+SOURCE VIDEO
+
+e uma lista de segmentos:
+
+[
+  {
+    sourceStart,
+    sourceEnd
+  }
+]
+
+Exemplo:
+
+[
+  { sourceStart: 0, sourceEnd: 4.2 },
+  { sourceStart: 6.0, sourceEnd: 11.5 }
+]
+
+Isso significa:
+
+manter 0–4.2s
+remover 4.2–6.0s
+manter 6.0–11.5s
+
+A timeline deve representar a edição resultante.
+
+Isso é importante porque futuramente:
+
+Trim
+Split
+Cut
+Remove Silence
+Remove Filler Words
+Remove Retakes
+
+deverão utilizar o mesmo sistema.
+
+====================================================
+3. PLAYER
+====================================================
+
+O player precisa ser a fonte real de reprodução.
+
+Implementar:
+
+currentTime
+duration
+isPlaying
+
+com sincronização confiável.
+
+Quando:
+
+PLAY
+
+for pressionado:
+
+- vídeo reproduz;
+- playhead acompanha o currentTime;
+- timeline acompanha;
+- tempo atualiza;
+- ao chegar ao final da edição, pausa automaticamente.
+
+Quando:
+
+PAUSE
+
+for pressionado:
+
+- reprodução para;
+- playhead permanece exatamente no frame atual.
+
+Nunca usar animação independente para simular a playhead.
+
+A playhead deve refletir o tempo real do vídeo.
+
+====================================================
+4. PLAYHEAD
+====================================================
+
+Criar uma playhead vertical claramente visível.
+
+Visual:
+
+        │
+        │
+        │
+        ▼
+[frame][frame][frame][frame][frame][frame]
+
+Ela deve:
+
+- ficar sobre os thumbnails;
+- acompanhar a reprodução;
+- ser arrastável;
+- atualizar o vídeo durante o drag;
+- atualizar currentTime;
+- permitir scrubbing;
+- permanecer dentro da área editável.
+
+IMPORTANTE:
+
+A playhead NÃO é decoração.
+
+Ela representa o ponto temporal real da edição.
+
+Durante:
+
+VIDEO currentTime = 5.32
+
+a posição da playhead deve representar exatamente 5.32 segundos dentro da timeline.
+
+====================================================
+5. SCRUBBING
+====================================================
+
+O usuário deve conseguir tocar ou arrastar qualquer ponto da timeline.
+
+Ao tocar:
+
+timeline position → video currentTime
+
+Ao arrastar:
+
+pointer/touch position → video currentTime
+
+O preview deve atualizar imediatamente.
+
+O comportamento precisa ser fluido no iPhone.
+
+Não esperar o usuário soltar o dedo para atualizar.
+
+Enquanto estiver arrastando:
+
+- atualizar frame;
+- atualizar tempo;
+- atualizar playhead;
+- NÃO iniciar reprodução automaticamente.
+
+Ao soltar:
+
+manter o vídeo pausado.
+
+====================================================
+6. TRIM
+====================================================
+
+A seleção amarela atual precisa funcionar de verdade.
+
+Ter:
+
+LEFT HANDLE
+RIGHT HANDLE
+
+Exemplo:
+
+◀️ ┃==============================┃ ▶️
+   START                        END
+
+O usuário deve poder arrastar:
+
+LEFT HANDLE
+
+para alterar sourceStart.
+
+RIGHT HANDLE
+
+para alterar sourceEnd.
+
+Os handles precisam ter uma hit area grande:
+
+mínimo aproximadamente 24–32px de área de toque.
+
+O visual pode continuar fino.
+
+Não exigir precisão de pixel.
+
+====================================================
+7. TRIM NÃO DEVE DESTRUIR O ORIGINAL
+====================================================
+
+O vídeo original nunca deve ser alterado.
+
+Trim significa alterar os limites da edição.
+
+Exemplo:
+
+original:
+
+0 ───────────────────────── 11s
+
+trim:
+
+2 ─────────────────── 9s
+
+A edição passa a usar:
+
+sourceStart = 2
+sourceEnd = 9
+
+O original continua intacto.
+
+Isso permitirá desfazer e ajustar o trim posteriormente.
+
+====================================================
+8. PLAYHEAD + TRIM
+====================================================
+
+Esses sistemas precisam estar perfeitamente sincronizados.
+
+Se:
+
+start = 2
+end = 9
+
+a playhead não pode ficar em:
+
+1.4
+
+nem em:
+
+10.2
+
+Se o usuário estiver em 10.2 e mover o END para 9:
+
+automaticamente:
+
+currentTime = 9
+playhead = 9
+
+Se o usuário mover START para 3 enquanto currentTime = 2:
+
+currentTime = 3
+playhead = 3
+
+Nunca permitir:
+
+start >= end
+
+====================================================
+9. SPLIT / CUT
+====================================================
+
+O motor precisa suportar SPLIT.
+
+Porém, a UI não deve parecer um editor profissional.
+
+O conceito para o usuário deve ser:
+
+CUT
+
+ou:
+
+REMOVE
+
+Internamente, o comportamento é:
+
+CURRENT SEGMENT
+
+[==============================]
+
+playhead:
+
+[============│=================]
+
+Split:
+
+[============] [================]
+
+Cada parte vira um segmento independente.
+
+Depois:
+
+Delete
+
+remove o segmento selecionado.
+
+Exemplo:
+
+[ A ][ B ][ C ]
+
+Delete B:
+
+[ A ][ C ]
+
+O vídeo final precisa reproduzir A + C sem B.
+
+====================================================
+10. POR QUE SPLIT EXISTE
+====================================================
+
+Split é uma ferramenta estrutural.
+
+Ela permite:
+
+- remover um erro no meio;
+- remover uma pausa;
+- remover uma frase;
+- remover uma repetição;
+- remover uma parte indesejada;
+- criar cortes múltiplos.
+
+Mas não quero obrigar o usuário a entender "Split".
+
+Por isso:
+
+ENGINE = SPLIT
+
+USER EXPERIENCE = CUT / REMOVE
+
+====================================================
+11. SELEÇÃO DE SEGMENTO
+====================================================
+
+Quando houver múltiplos segmentos:
+
+[ A ][ B ][ C ]
+
+o usuário deve conseguir tocar em um segmento.
+
+Mostrar visualmente qual está selecionado.
+
+A seleção deve permitir:
+
+- Delete;
+- Cut;
+- eventualmente Duplicate no futuro.
+
+Não confundir:
+
+PLAYHEAD
+
+com:
+
+SELECTED SEGMENT.
+
+São estados diferentes.
+
+====================================================
+12. DELETE
+====================================================
+
+Delete deve remover o segmento real da edição.
+
+Não apenas escondê-lo visualmente.
+
+Depois de:
+
+[A][B][C]
+
+Delete B:
+
+[A][C]
+
+A timeline precisa atualizar.
+
+A duração efetiva precisa atualizar.
+
+O player precisa respeitar a nova sequência.
+
+O export precisa respeitar a nova sequência.
+
+====================================================
+13. UNDO / REDO
+====================================================
+
+Implementar histórico de edição.
+
+Suportar:
+
+Undo
+Redo
+
+Para:
+
+- trim;
+- split;
+- delete;
+- futuros Clean Up edits.
+
+Exemplo:
+
+Original
+↓
+Trim
+↓
+Split
+↓
+Delete
+
+Undo:
+
+Delete revertido
+
+Undo:
+
+Split revertido
+
+Undo:
+
+Trim revertido
+
+Redo:
+
+restaura cada operação.
+
+Não utilizar apenas estado visual.
+
+O histórico deve representar estados reais da timeline.
+
+====================================================
+14. TIMELINE
+====================================================
+
+A timeline deve apresentar thumbnails reais do vídeo.
+
+Não utilizar apenas imagens decorativas.
+
+Gerar thumbnails distribuídos ao longo da duração.
+
+Exemplo:
+
+[frame][frame][frame][frame][frame][frame][frame][frame]
+
+A quantidade deve se adaptar à duração.
+
+Para vídeos longos:
+
+reduzir a quantidade de thumbnails para manter performance.
+
+Para vídeos curtos:
+
+usar thumbnails suficientes para permitir precisão.
+
+====================================================
+15. TIMELINE VIRTUAL
+====================================================
+
+A timeline deve representar:
+
+EDITED TIMELINE
+
+e não apenas:
+
+SOURCE VIDEO.
+
+Se houver:
+
+[A][B][C]
+
+e B for removido:
+
+timeline:
+
+[A][C]
+
+Não mostrar B como parte da área reproduzível.
+
+Pode existir uma indicação visual discreta de trecho removido, mas a timeline ativa deve representar a edição final.
+
+====================================================
+16. ZOOM / PRECISÃO
+====================================================
+
+Preparar a timeline para futuramente permitir zoom.
+
+Não necessariamente precisamos expor um botão de zoom no MVP.
+
+Mas a arquitetura deve permitir:
+
+zoom out
+zoom in
+
+para edição precisa.
+
+Isso será especialmente importante para:
+
+- filler words;
+- silêncios;
+- pequenos erros;
+- cortes de fala.
+
+====================================================
+17. TEMPO
+====================================================
+
+Mostrar:
+
+CURRENT TIME / EDITED DURATION
+
+Exemplo:
+
+00:04.32 / 00:11.00
+
+Durante scrub:
+
+00:06.18 / 00:11.00
+
+Depois de editar:
+
+00:06.18 / 00:09.40
+
+A duração deve representar a edição atual.
+
+====================================================
+18. FORMATO DO TEMPO
+====================================================
+
+Para vídeos curtos:
+
+00:04.32
+
+Para vídeos maiores:
+
+00:01:04
+
+Usar uma função única de formatação.
+
+Não duplicar lógica de formatação em vários componentes.
+
+====================================================
+19. CLEAN UP
+====================================================
+
+Depois que a edição manual básica estiver funcionando, preparar a arquitetura para:
+
+CLEAN UP
+
+Essa será uma das funções centrais do produto.
+
+A ideia:
+
+CLEAN UP
+
+Detectar:
+
+- long pauses;
+- silence;
+- filler words;
+- repeated words;
+- false starts;
+- retakes;
+- obvious mistakes.
+
+Mas NÃO apagar automaticamente tudo sem revisão.
+
+====================================================
+20. REMOVE SILENCE
+====================================================
+
+Preparar:
+
+Remove Silence
+
+O sistema deve futuramente detectar regiões de silêncio.
+
+Exemplo:
+
+[ SPEECH ] [ SILENCE ] [ SPEECH ]
+
+mostrar:
+
+Detected pause
+00:04.20 – 00:05.12
+
+O usuário deve poder:
+
+KEEP
+REMOVE
+
+ou:
+
+Remove all
+
+IMPORTANTE:
+
+silêncio não é automaticamente um erro.
+
+Pausas dramáticas, naturais ou intencionais devem poder ser mantidas.
+
+Por isso, a detecção deve gerar SUGESTÕES.
+
+Não assumir que todo silêncio deve ser removido.
+
+Descript atualmente utiliza remoção de silêncio com limiar ajustável justamente porque remoção agressiva pode deixar a fala artificial. 
+
+====================================================
+21. REMOVE FILLER WORDS
+====================================================
+
+Preparar arquitetura para:
+
+Remove filler words
+
+Exemplos:
+
+um
+uh
+ah
+mmm
+like
+you know
+né
+tipo
+
+Dependendo do idioma do vídeo.
+
+O sistema deve trabalhar com transcript + timestamps.
+
+Exemplo:
+
+"Hoje eu queria... um... falar sobre isso."
+
+Transcript:
+
+Hoje eu queria
+[um]
+falar sobre isso.
+
+O filler deve possuir:
+
+startTime
+endTime
+text
+confidence
+
+Assim podemos futuramente mostrar:
+
+Remove 4 filler words
+
+e permitir:
+
+Review
+
+====================================================
+22. NÃO APAGAR FILLERS SEM CONTEXTO
+====================================================
+
+IMPORTANTE.
+
+Uma palavra detectada como filler não significa automaticamente que deve ser removida.
+
+O sistema deve tratar a detecção como sugestão.
+
+Exemplo:
+
+"Eu, uh, acho que..."
+
+provavelmente é um filler.
+
+Mas:
+
+"Ah! Agora entendi!"
+
+"like" usado com significado real
+
+não deve ser automaticamente removido.
+
+Portanto:
+
+AI DETECTION = SUGGESTION
+
+USER = FINAL DECISION
+
+====================================================
+23. REMOVE RETAKES
+====================================================
+
+Preparar arquitetura para identificar no futuro:
+
+"Não, deixa eu falar de novo..."
+
+"Vamos começar novamente..."
+
+"Espera..."
+
+"Errei."
+
+e outras tentativas repetidas.
+
+Esses trechos poderão aparecer como:
+
+Possible retake
+
+com opção:
+
+Review
+
+====================================================
+24. CUTS NATURAIS
+====================================================
+
+Quando removemos:
+
+filler
+silêncio
+erro
+retake
+
+precisamos evitar que o resultado fique extremamente artificial.
+
+Preparar a arquitetura para:
+
+- pequenos ajustes de áudio;
+- crossfade quando necessário;
+- cortes em regiões adequadas;
+- eventualmente jump-cut smoothing no futuro.
+
+Não implementar IA avançada agora se isso exigir infraestrutura que não existe.
+
+Mas não construir a arquitetura de maneira que impossibilite isso depois.
+
+====================================================
+25. EXPORT
+====================================================
+
+O botão final precisa exportar a edição REAL.
+
+Se timeline:
+
+[A][C]
+
+o arquivo exportado deve conter:
+
+A + C
+
+e NÃO:
+
+A + B + C.
+
+Se houver:
+
+trim + split + delete
+
+todas as operações precisam aparecer no arquivo final.
+
+Não aceitar uma implementação onde a timeline muda mas o export continua usando o vídeo original.
+
+====================================================
+26. PRESERVAR QUALIDADE
+====================================================
+
+Não degradar desnecessariamente:
+
+- resolução;
+- frame rate;
+- áudio.
+
+Sempre que possível:
+
+preservar propriedades do arquivo original.
+
+Evitar recompressões desnecessárias.
+
+====================================================
+27. TOUCH UX
+====================================================
+
+Isso será usado principalmente no iPhone.
+
+Portanto:
+
+- handles grandes;
+- targets de toque confortáveis;
+- sem controles minúsculos;
+- gestures previsíveis;
+- feedback visual imediato.
+
+Não permitir que um gesto destinado ao handle seja interpretado como scrub.
+
+Prioridade:
+
+HANDLE
+→ trim
+
+PLAYHEAD
+→ scrub
+
+TIMELINE
+→ seek
+
+SEGMENT
+→ select
+
+PLAYER
+→ play/pause
+
+====================================================
+28. FEEDBACK VISUAL
+====================================================
+
+Quando o usuário toca/arrasta:
+
+HANDLE:
+
+mostrar claramente que está ativo.
+
+PLAYHEAD:
+
+mostrar posição atual.
+
+SEGMENT:
+
+mostrar seleção.
+
+CUT:
+
+mostrar resultado imediatamente.
+
+DELETE:
+
+mostrar timeline atualizada.
+
+Não utilizar animações excessivas.
+
+A interface deve parecer rápida.
+
+====================================================
+29. LOADING / PROCESSING
+====================================================
+
+Quando uma operação realmente exigir processamento:
+
+mostrar estado:
+
+Processing…
+
+Nunca deixar o usuário sem saber se o comando funcionou.
+
+Para operações instantâneas:
+
+não adicionar loaders desnecessários.
+
+====================================================
+30. ERROS
+====================================================
+
+Tratar:
+
+vídeo inválido;
+vídeo sem duração;
+falha de thumbnail;
+falha de export;
+arquivo removido;
+memória insuficiente;
+edição inválida.
+
+Nunca deixar a UI travada.
+
+====================================================
+31. AUTOSAVE
+====================================================
+
+Preparar estado para que a edição atual possa ser recuperada.
+
+Se o usuário sair da tela:
+
+não perder imediatamente todas as edições.
+
+Guardar:
+
+source video reference
+timeline segments
+playhead
+history quando apropriado
+
+====================================================
+32. ARQUITETURA DE ESTADO
+====================================================
+
+Separar claramente:
+
+SOURCE MEDIA STATE
+
+PLAYER STATE
+
+TIMELINE STATE
+
+EDIT HISTORY STATE
+
+AI CLEANUP STATE
+
+EXPORT STATE
+
+Não colocar tudo em um único estado gigante.
+
+====================================================
+33. PRINCÍPIO FUNDAMENTAL
+====================================================
+
+Não construir:
+
+"uma tela que parece um editor."
+
+Construir:
+
+"um editor pequeno que tem uma tela simples."
+
+Toda interação visual precisa corresponder a um estado real.
+
+====================================================
+34. TESTES FUNCIONAIS
+====================================================
+
+Depois da implementação, teste obrigatoriamente:
+
+TEST 1
+Importar vídeo.
+
+TEST 2
+Play.
+
+Confirmar que:
+
+playhead acompanha o vídeo.
+
+TEST 3
+Pause.
+
+Confirmar:
+
+playhead para exatamente no currentTime.
+
+TEST 4
+Tap na timeline.
+
+Confirmar:
+
+vídeo vai exatamente para aquele ponto.
+
+TEST 5
+Drag da playhead.
+
+Confirmar:
+
+scrubbing fluido.
+
+TEST 6
+Drag do LEFT HANDLE.
+
+Confirmar:
+
+startTime muda.
+
+TEST 7
+Drag do RIGHT HANDLE.
+
+Confirmar:
+
+endTime muda.
+
+TEST 8
+Play depois do trim.
+
+Confirmar:
+
+vídeo não reproduz áreas cortadas.
+
+TEST 9
+Split no meio.
+
+Confirmar:
+
+dois segmentos reais.
+
+TEST 10
+Delete segundo segmento.
+
+Confirmar:
+
+segmento desaparece da edição.
+
+TEST 11
+Undo.
+
+Confirmar:
+
+segmento volta.
+
+TEST 12
+Redo.
+
+Confirmar:
+
+segmento é removido novamente.
+
+TEST 13
+Múltiplos cuts.
+
+[A][B][C][D]
+
+remover B e D.
+
+Confirmar:
+
+[A][C]
+
+TEST 14
+Export.
+
+Confirmar que o arquivo exportado corresponde EXATAMENTE à timeline.
+
+TEST 15
+Abrir novamente o resultado exportado.
+
+Confirmar:
+
+duração correta;
+áudio correto;
+vídeo correto;
+nenhum trecho deletado aparece.
+
+====================================================
+35. TESTES DE EDGE CASES
+====================================================
+
+Testar:
+
+- vídeo de 1 segundo;
+- vídeo de 5 segundos;
+- vídeo de 30 segundos;
+- vídeo de 5 minutos;
+- trim para poucos frames;
+- tentativa de cruzar handles;
+- split no início;
+- split no fim;
+- split múltiplo;
+- delete primeiro segmento;
+- delete último segmento;
+- delete segmento intermediário;
+- delete de todos os segmentos;
+- undo múltiplo;
+- redo múltiplo;
+- pausa durante scrub;
+- play durante trim;
+- mudança de orientação;
+- background/foreground do app.
+
+====================================================
+36. O QUE NÃO FAZER
+====================================================
+
+NÃO:
+
+- criar animação falsa de playhead;
+- criar handles que apenas parecem arrastáveis;
+- criar botões sem função;
+- simular edição sem alterar o vídeo real;
+- usar valores hardcoded para duração;
+- sincronizar timeline apenas visualmente;
+- exportar o vídeo original ignorando a edição;
+- apagar todos os silêncios automaticamente;
+- remover todos os fillers sem revisão;
+- adicionar features novas antes de estabilizar o básico.
+
+====================================================
+37. DESIGN / UX
+====================================================
+
+Manter a identidade visual atual.
+
+Não quero um clone do CapCut.
+
+Quero:
+
+clean
+minimal
+fast
+iOS-native
+creator-focused
+
+A timeline deve continuar compacta.
+
+O usuário deve conseguir entender a tela sem tutorial.
+
+====================================================
+38. HIERARQUIA DE AÇÕES
+====================================================
+
+A UX deve priorizar:
+
+1. PLAY / PAUSE
+2. SCRUB
+3. TRIM
+4. CUT / REMOVE
+5. CLEAN UP
+6. UNDO / REDO
+7. EXPORT
+
+Split pode existir no motor, mas não precisa ser a ação principal da interface.
+
+====================================================
+39. INSPIRAÇÃO DE PRODUTO
+====================================================
+
+Use os seguintes padrões como referência:
+
+Premiere Rush:
+- timeline;
+- playhead;
+- trim handles;
+- split;
+- seleção de clips.
+
+Descript:
+- edição orientada à fala;
+- remoção de filler words;
+- remoção de retakes;
+- remoção de silêncio;
+- revisão das sugestões;
+- foco em transformar gravação bruta em conteúdo pronto.
+
+CapCut:
+- edição rápida;
+- trim;
+- split;
+- limpeza de fala;
+- workflow voltado para conteúdo social.
+
+NÃO copiar UI.
+
+Copiar apenas os PRINCÍPIOS DE INTERAÇÃO que comprovadamente fazem sentido.
+
+====================================================
+40. ORDEM DE IMPLEMENTAÇÃO
+====================================================
+
+IMPLEMENTE NESTA ORDEM:
+
+PHASE 1
+Player real.
+
+PHASE 2
+Timeline + thumbnails.
+
+PHASE 3
+Playhead sincronizada.
+
+PHASE 4
+Scrubbing.
+
+PHASE 5
+Trim funcional.
+
+PHASE 6
+Segment model.
+
+PHASE 7
+Cut/Split.
+
+PHASE 8
+Delete.
+
+PHASE 9
+Undo/Redo.
+
+PHASE 10
+Export real da timeline editada.
+
+PHASE 11
+Preparação da arquitetura Clean Up.
+
+NÃO avance para a próxima fase se a anterior não estiver funcionando.
+
+====================================================
+41. DEFINITION OF DONE
+====================================================
+
+Considerar esta tarefa concluída SOMENTE quando:
+
+- playhead acompanha o vídeo;
+- playhead pode ser arrastada;
+- timeline responde ao toque;
+- handles amarelos podem ser arrastados;
+- trim altera a edição real;
+- cut/split cria segmentos reais;
+- delete remove segmentos reais;
+- undo funciona;
+- redo funciona;
+- preview respeita a edição;
+- export respeita a edição;
+- nenhuma dessas funções é apenas visual;
+- a experiência é fluida no iPhone.
+
+Depois disso, podemos começar a implementar:
+
+CLEAN UP
+
+como a camada inteligente do produto.
+
+Antes de terminar, faça uma revisão do código procurando especificamente por:
+
+- estados duplicados;
+- race conditions;
+- problemas de sincronização currentTime/playhead;
+- gestos conflitantes;
+- renders desnecessários;
+- memory leaks;
+- problemas de export;
+- estados impossíveis;
+- handles que podem ficar presos;
+- timeline divergente do vídeo real.
+
+Corrija esses problemas antes de considerar a implementação concluída.

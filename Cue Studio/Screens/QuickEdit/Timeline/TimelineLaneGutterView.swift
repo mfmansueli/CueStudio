@@ -4,6 +4,7 @@
 //
 
 import UIKit
+import SwiftUI
 
 /// The icons at the left of each track, on black: the content scrolls under them. A tap goes
 /// through to the timeline (which opens the track's tools); the icons turn yellow while those
