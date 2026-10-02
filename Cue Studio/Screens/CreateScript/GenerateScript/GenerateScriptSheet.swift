@@ -6,21 +6,19 @@
 import SwiftUI
 
 /// "Generate with AI · Apple Intelligence · private · no cost": Prompt, Themes or Formats (which
-/// pushes the format's brief). Calls `onCreated` with the new script.
+/// pushes the format's brief). Calls `onCreated` with the new script. Opened from the idea card
+/// (`ideaDraft`), it shows the request filled in, with the platform, length and voice to confirm;
+/// nothing is written until "Generate script" is tapped.
 struct GenerateScriptSheet: View {
     @State private var viewModel: GenerateScriptViewModel
-    /// Opened with an idea (the empty Scripts screen): the sheet writes it as soon as it shows.
-    private let writesAtOnce: Bool
-    @State private var hasStarted = false
     let onCreated: (Script) -> Void
 
     @Environment(\.dismiss) private var dismiss
 
-    init(services: AppServices, initialTab: GenerateTab = .prompt, seed: ScriptIdeaSeed? = nil, onCreated: @escaping (Script) -> Void) {
-        writesAtOnce = seed != nil
+    init(services: AppServices, initialTab: GenerateTab = .prompt, ideaDraft: IdeaDraftService? = nil, onCreated: @escaping (Script) -> Void) {
         _viewModel = State(initialValue: GenerateScriptViewModel(
             initialTab: initialTab,
-            seed: seed,
+            ideaDraft: ideaDraft,
             writer: services.writer,
             library: services.library,
             profile: services.profile,
@@ -46,9 +44,7 @@ struct GenerateScriptSheet: View {
                     switch viewModel.tab {
                     case .prompt:
                         PromptTabView(viewModel: viewModel) {
-                            Task {
-                                if let script = await viewModel.generateFromPrompt() { onCreated(script) }
-                            }
+                            viewModel.startPromptGeneration(onCreated: onCreated)
                         }
                     case .themes:
                         ThemesTabView(viewModel: viewModel)
@@ -63,9 +59,7 @@ struct GenerateScriptSheet: View {
             .toolbarVisibility(.hidden, for: .navigationBar)
             .navigationDestination(item: $viewModel.selectedType) { type in
                 ScriptBriefView(viewModel: viewModel, type: type) {
-                    Task {
-                        if let script = await viewModel.generateFromBrief() { onCreated(script) }
-                    }
+                    viewModel.startBriefGeneration(onCreated: onCreated)
                 }
                 .toolbar {
                     ToolbarItem(placement: .topBarTrailing) {
@@ -75,12 +69,8 @@ struct GenerateScriptSheet: View {
                 }
             }
         }
-        .task {
-            // The same call as Generate script; without a model the sheet just shows why, as always.
-            guard writesAtOnce, !hasStarted, viewModel.canWriteFromPrompt else { return }
-            hasStarted = true
-            if let script = await viewModel.generateFromPrompt() { onCreated(script) }
-        }
+        // Closing the screen stops a request that is still running: nothing is created behind its back.
+        .onDisappear { viewModel.cancelGeneration() }
         .presentationDetents([.large])
         .presentationBackground(Palette.surface)
         .presentationCornerRadius(Metrics.sheetRadius)
@@ -88,6 +78,7 @@ struct GenerateScriptSheet: View {
             get: { viewModel.errorMessage != nil },
             set: { if !$0 { viewModel.errorMessage = nil } }
         )) {
+            Button("Try again") { viewModel.retryGeneration(onCreated: onCreated) }
             Button("OK", role: .cancel) {}
         } message: {
             Text(viewModel.errorMessage ?? "")

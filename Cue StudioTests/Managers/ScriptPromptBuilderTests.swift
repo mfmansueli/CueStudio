@@ -68,6 +68,7 @@ struct ScriptPromptBuilderTests {
         #expect(instructions.contains("\"Hey fam\""))
         #expect(instructions.contains("They sound casual and confident."))
         #expect(instructions.contains("Gen Z slang"))
+        #expect(instructions.contains("Their audience is young"))
         #expect(instructions.contains("short sentences, storytelling"))
         #expect(instructions.contains("Their niche: Wellness."))
     }

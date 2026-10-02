@@ -40,14 +40,28 @@ final class CreatorProfileService {
         }
     }
 
-    /// Keeps at least one sound: an empty voice would tell the AI nothing.
+    /// Keeps at least one sound: an empty voice would tell the AI nothing. Choosing one is the
+    /// creator answering "How do you talk?"; the first time, it starts from nothing, so the default
+    /// tones of a new profile never ride along with the one picked.
     func toggleSound(_ sound: VoiceSound) {
-        if let index = profile.sounds.firstIndex(of: sound) {
-            guard profile.sounds.count > 1 else { return }
-            profile.sounds.remove(at: index)
+        var updated = profile
+        if !updated.isChosen(.tone) { updated.sounds = [] }
+        if let index = updated.sounds.firstIndex(of: sound) {
+            guard updated.sounds.count > 1 else { return }
+            updated.sounds.remove(at: index)
         } else {
-            profile.sounds.append(sound)
+            updated.sounds.append(sound)
         }
+        updated.confirm(.tone)
+        profile = updated
+    }
+
+    /// Choosing a vocabulary is the creator answering "Who do you talk to?", even when it is the default one.
+    func setVocabulary(_ vocabulary: Vocabulary) {
+        var updated = profile
+        updated.vocabulary = vocabulary
+        updated.confirm(.audience)
+        profile = updated
     }
 
     func toggleStyle(_ style: VoiceStyle) {
@@ -73,5 +87,38 @@ final class CreatorProfileService {
 
     func removePhrase(_ phrase: String) {
         profile.phrases.removeAll { $0 == phrase }
+    }
+
+    // MARK: - Write in my voice
+
+    /// The one state behind every "Write in my voice" switch (the Prompt card, Generate, Profile):
+    /// on when the creator asked for it and the profile has what the AI needs. The defaults a new
+    /// profile starts with are not enough, so the voice is never applied from them.
+    var writesInMyVoice: Bool { profile.usesVoiceInAI && profile.hasMinimumVoice }
+
+    /// Turns the voice off or on. Returns false, and changes nothing, when it can't be turned on
+    /// yet: the setup has to run first (`saveVoiceSetup`).
+    @discardableResult
+    func setWritesInMyVoice(_ isOn: Bool) -> Bool {
+        if isOn, !profile.hasMinimumVoice { return false }
+        profile.usesVoiceInAI = isOn
+        return true
+    }
+
+    /// Saves the answers of the short setup into the same profile fields Profile edits, marks them
+    /// as the creator's own and turns the voice on. A step passed as nil (or an empty list) is left as it was.
+    func saveVoiceSetup(niches: [Niche]? = nil, vocabulary: Vocabulary? = nil, sounds: [VoiceSound]? = nil) {
+        var updated = profile
+        if let niches, !niches.isEmpty { updated.niches = niches }
+        if let vocabulary {
+            updated.vocabulary = vocabulary
+            updated.confirm(.audience)
+        }
+        if let sounds, !sounds.isEmpty {
+            updated.sounds = sounds
+            updated.confirm(.tone)
+        }
+        updated.usesVoiceInAI = true
+        profile = updated
     }
 }

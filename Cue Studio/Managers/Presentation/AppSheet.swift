@@ -13,9 +13,9 @@ enum AppSheet: Identifiable, Hashable {
     case startRecording
     case importScript
     case generateScript(GenerateTab)
-    /// The empty Scripts screen's idea: the generation sheet opens with the text (and the kind of
-    /// video) and writes it, using the same flow as Generate › Prompt.
-    case generateIdea(ScriptIdeaSeed)
+    /// The idea card's arrow: Generate with AI opens with the card's draft (`IdeaDraftService`) filled
+    /// in, to confirm platform, length and voice. It writes only when its own button is tapped.
+    case generateIdea
 
     var id: String {
         switch self {

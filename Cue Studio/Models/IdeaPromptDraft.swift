@@ -4,15 +4,13 @@
 //
 
 import Foundation
-import SwiftUI
 
-/// What the creator has put in the empty Scripts screen's card: the text, and the kind of video
-/// picked with it. The rules are here, apart from the view: a chip never touches the text, one
-/// kind at a time, the same chip again goes back to a free idea, nothing can be sent while the
-/// field holds only spaces, and a dictation only ever writes its own segment of the text.
+/// What the creator has put in the idea card of the empty Scripts screen: the text, shared by the
+/// card, the composer sheet and the generation flow (`IdeaDraftService` holds the one copy). The
+/// rules are here, apart from the views: nothing can be sent while the field holds only spaces or a
+/// dictation is still writing, and a dictation only ever writes its own segment of the text.
 struct IdeaPromptDraft: Equatable {
     var text = ""
-    var idea: ScriptIdea?
     /// Set from the moment dictation starts until the last word has been written; nil otherwise.
     private(set) var dictation: DictationSegment?
 
@@ -25,22 +23,9 @@ struct IdeaPromptDraft: Equatable {
         isAvailable && !isDictating && !trimmedText.isEmpty
     }
 
-    /// Picks `option`, or takes it off when it was the one picked. Returns whether the field should
-    /// take the keyboard (it should when a kind is picked, not when one is let go). The text is
-    /// never changed.
-    @discardableResult
-    mutating func toggle(_ option: ScriptIdea) -> Bool {
-        if idea == option {
-            idea = nil
-            return false
-        }
-        idea = option
-        return true
-    }
-
     /// What goes to the generation flow; nil while there is nothing to send.
-    var seed: ScriptIdeaSeed? {
-        trimmedText.isEmpty ? nil : ScriptIdeaSeed(text: trimmedText, idea: idea)
+    var submission: String? {
+        trimmedText.isEmpty ? nil : trimmedText
     }
 
     // MARK: - Dictation
@@ -71,19 +56,5 @@ struct IdeaPromptDraft: Equatable {
     /// dictation stops writing, so it can never overwrite what the creator just did.
     mutating func textChanged() {
         if let dictation, dictation.text != text { self.dictation = nil }
-    }
-
-    /// The character offset of the insertion point in `text`; nil when the field has none (it was
-    /// never focused). A selected range counts from its end: dictation adds after it, never over it.
-    static func caretOffset(of selection: TextSelection?, in text: String) -> Int? {
-        guard let selection else { return nil }
-        let end: String.Index?
-        switch selection.indices {
-        case .selection(let range): end = range.upperBound
-        case .multiSelection(let ranges): end = ranges.ranges.last?.upperBound
-        @unknown default: end = nil
-        }
-        guard let end, end <= text.endIndex else { return nil }
-        return text.distance(from: text.startIndex, to: end)
     }
 }

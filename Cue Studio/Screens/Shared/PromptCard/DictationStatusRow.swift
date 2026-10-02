@@ -32,7 +32,7 @@ struct DictationStatusRow: View {
         }
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(Text(label))
-        .accessibilityIdentifier("empty.dictationStatus")
+        .accessibilityIdentifier("ideaCard.dictationStatus")
     }
 
     var label: String {

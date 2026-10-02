@@ -14,4 +14,6 @@ nonisolated struct GeneratedScript: Hashable, Sendable {
     var needsFactCheck: Bool = false
     /// Which model wrote it; nil for the structured draft.
     var model: AIModelRoute?
+    /// Where the time went, when a model wrote it.
+    var timings: GenerationTimings?
 }

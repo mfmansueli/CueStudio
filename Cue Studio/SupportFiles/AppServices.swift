@@ -24,6 +24,7 @@ struct AppServices {
     let audio: AudioInputManager
     let speech: SpeechRecognitionManager
     let dictation: DictationService
+    let ideaDraft: IdeaDraftService
     let writer: ScriptWriting
     let textRecognizer: TextRecognitionManager
     let importer: DocumentImportService
@@ -57,6 +58,7 @@ struct AppServices {
         audio = AudioInputManager()
         speech = SpeechRecognitionManager()
         dictation = options.dictation ?? DictationService(audio: AudioInputManager(), speech: SpeechRecognitionManager(use: .dictation))
+        ideaDraft = IdeaDraftService()
         writer = options.writer
         textRecognizer = TextRecognitionManager()
         importer = DocumentImportService()
@@ -97,6 +99,7 @@ extension View {
             .environment(services.audio)
             .environment(services.speech)
             .environment(services.dictation)
+            .environment(services.ideaDraft)
             .environment(services.textRecognizer)
             .environment(services.importer)
             .environment(services.exporter)

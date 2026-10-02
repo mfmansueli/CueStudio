@@ -62,6 +62,7 @@ final class ScriptAIService: ScriptWriting {
     // MARK: - Scripts
 
     func generate(_ request: ScriptRequest) async throws -> GeneratedScript {
+        let begin = ContinuousClock.now
         let task: AIModelRoute.Task = request.isFreePrompt ? .freePrompt : .format
         guard let route = route(for: task) else {
             guard case .format(let type, let brief) = request.source else {
@@ -74,13 +75,30 @@ final class ScriptAIService: ScriptWriting {
             )
         }
         return try await withFallback(from: route) { model in
-            try await self.draft(request, on: model)
+            try await self.draft(request, on: model, since: begin)
         }
     }
 
-    private func draft(_ request: ScriptRequest, on model: AIModelRoute) async throws -> GeneratedScript {
+    /// Streams the draft so the time to the first words can be told apart from the time to the last.
+    /// `begin` is when `generate` was called: choosing the model and building the request count as
+    /// preparation, up to the moment the request goes out.
+    private func draft(_ request: ScriptRequest, on model: AIModelRoute, since begin: ContinuousClock.Instant) async throws -> GeneratedScript {
+        let clock = ContinuousClock()
         let session = session(on: model, instructions: ScriptPromptBuilder.instructions(for: request))
-        let draft = try await session.respond(to: ScriptPromptBuilder.prompt(for: request), generating: ScriptDraft.self).content
+        let prompt = ScriptPromptBuilder.prompt(for: request)
+        let started = clock.now
+        var firstResponse: Duration?
+        var latest: GeneratedContent?
+        for try await snapshot in session.streamResponse(to: prompt, generating: ScriptDraft.self) {
+            if firstResponse == nil { firstResponse = started.duration(to: clock.now) }
+            latest = snapshot.rawContent
+        }
+        try Task.checkCancellation()
+        guard let latest else { throw ScriptAIError.emptyResponse }
+        let draft = try ScriptDraft(latest)
+        let timings = GenerationTimings(
+            prepare: begin.duration(to: started), firstResponse: firstResponse, generation: started.duration(to: clock.now)
+        )
         let text = ScriptPromptBuilder.clean(draft.scriptText)
         guard !text.isEmpty else { throw ScriptAIError.emptyResponse }
         let title: String = switch request.source {
@@ -92,7 +110,8 @@ final class ScriptAIService: ScriptWriting {
             text: text,
             usedLanguageModel: true,
             needsFactCheck: request.isFreePrompt && (request.isFactualTopic || draft.statesFacts),
-            model: model
+            model: model,
+            timings: timings
         )
     }
 

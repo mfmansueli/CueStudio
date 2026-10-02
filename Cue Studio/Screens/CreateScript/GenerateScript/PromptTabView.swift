@@ -12,6 +12,10 @@ struct PromptTabView: View {
 
     @FocusState private var isEditing: Bool
 
+    private var showsExamples: Bool {
+        viewModel.promptText.isEmpty && !viewModel.isGenerating
+    }
+
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             ZStack(alignment: .topLeading) {
@@ -34,46 +38,39 @@ struct PromptTabView: View {
             .frame(height: 112)
             .background(Palette.surface2, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
 
-            if let idea = viewModel.idea {
-                // The kind of video picked on the empty Scripts screen; tapping it takes it off.
-                Button { viewModel.idea = nil } label: {
-                    FilterChip(label: idea.label, isSelected: true, systemImage: "xmark")
-                        .frame(minHeight: Metrics.hitTarget)
-                }
-                .buttonStyle(.plain)
-                .padding(.top, 4)
-                .accessibilityIdentifier("generate.idea")
-            }
-
-            ScrollView(.horizontal) {
-                HStack(spacing: 6) {
-                    ForEach(GenerateScriptViewModel.examples, id: \.self) { example in
-                        Button { viewModel.useExample(example) } label: {
-                            Text(example)
-                                .font(.footnote)
-                                .foregroundStyle(Palette.ink.opacity(0.85))
-                                .padding(.horizontal, 12)
-                                .frame(height: 30)
-                                .background(Palette.overlayFill.opacity(0.6), in: Capsule())
-                                .overlay(Capsule().strokeBorder(Palette.ink.opacity(0.14), lineWidth: 0.5))
-                                .frame(minHeight: Metrics.hitTarget)
-                                .contentShape(Capsule())
+            // Ideas to start from, never content: they are shown only while the prompt is empty, and one
+            // becomes the prompt only when it is tapped.
+            if showsExamples {
+                ScrollView(.horizontal) {
+                    HStack(spacing: 6) {
+                        ForEach(GenerateScriptViewModel.examples, id: \.self) { example in
+                            Button { viewModel.useExample(example) } label: {
+                                Text(example)
+                                    .font(.footnote)
+                                    .foregroundStyle(Palette.ink.opacity(0.85))
+                                    .padding(.horizontal, 12)
+                                    .frame(height: 30)
+                                    .background(Palette.overlayFill.opacity(0.6), in: Capsule())
+                                    .overlay(Capsule().strokeBorder(Palette.ink.opacity(0.14), lineWidth: 0.5))
+                                    .frame(minHeight: Metrics.hitTarget)
+                                    .contentShape(Capsule())
+                            }
+                            .buttonStyle(.plain)
                         }
-                        .buttonStyle(.plain)
                     }
+                    .padding(.horizontal, Metrics.gutter)
                 }
-                .padding(.horizontal, Metrics.gutter)
+                .scrollIndicators(.hidden)
+                .padding(.horizontal, -Metrics.gutter)
+                .padding(.top, 4)
             }
-            .scrollIndicators(.hidden)
-            .padding(.horizontal, -Metrics.gutter)
-            .padding(.top, 4)
 
             OptionChipRow(title: "Create for", options: Platform.primary, selection: $viewModel.platform, label: \.label, identifier: "generate.platform")
                 .padding(.top, 10)
             OptionChipRow(title: "Length", options: ScriptLength.allCases, selection: $viewModel.length, label: \.label, identifier: "generate.length")
                 .padding(.top, 14)
 
-            VoiceToggleRow(isOn: $viewModel.writesInMyVoice, summary: viewModel.voiceSummary)
+            VoiceToggleRow(summary: viewModel.voiceSummary)
                 .padding(.top, 14)
             FactWarningNote(usesPrivateCloudCompute: viewModel.availability.privateCloud)
                 .padding(.top, 12)
@@ -84,7 +81,8 @@ struct PromptTabView: View {
             }
             GenerateButton(
                 isGenerating: viewModel.isGenerating,
-                isEnabled: viewModel.canWriteFromPrompt && !viewModel.promptText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+                isEnabled: viewModel.canWriteFromPrompt && !viewModel.promptText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty,
+                onCancel: viewModel.cancelGeneration
             ) {
                 isEditing = false
                 onGenerate()

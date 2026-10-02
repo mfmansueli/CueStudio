@@ -24,6 +24,8 @@ struct GenerateScriptViewModelTests {
         let library = ScriptLibraryService(repository: FakeScriptRepository(), now: { TestData.now })
         let profile = CreatorProfileService(defaults: defaults.defaults)
         profile.addPhrase("Hey fam")
+        // A voice the creator set up: the defaults a new profile starts with are never applied.
+        profile.saveVoiceSetup(niches: [.tech], vocabulary: .simple, sounds: [.casual])
         let viewModel = GenerateScriptViewModel(
             initialTab: tab, writer: writer, library: library, profile: profile, rules: TestData.rulesService(),
             toast: ToastService()
@@ -90,6 +92,43 @@ struct GenerateScriptViewModelTests {
         scenario.viewModel.writesInMyVoice = false
         _ = await scenario.viewModel.generateFromPrompt()
         #expect(scenario.writer.lastRequest?.voice == nil)
+    }
+
+    @Test func theVoiceIsNeverAppliedFromTheDefaultsOfANewProfile() async {
+        let scenario = makeScenario()
+        defer { scenario.defaults.tearDown() }
+        let freshStore = TestDefaults()
+        defer { freshStore.tearDown() }
+        let fresh = CreatorProfileService(defaults: freshStore.defaults)
+        let viewModel = GenerateScriptViewModel(
+            writer: scenario.writer, library: scenario.library, profile: fresh, rules: TestData.rulesService(), toast: ToastService()
+        )
+        // The switch is nominally on (the profile's default), but there is nothing of the creator to write like.
+        #expect(fresh.profile.usesVoiceInAI)
+        #expect(!viewModel.writesInMyVoice)
+        #expect(viewModel.voiceSummary == "Set up your voice in Profile")
+        viewModel.promptText = "My desk setup"
+        _ = await viewModel.generateFromPrompt()
+        #expect(scenario.writer.lastRequest?.voice == nil)
+        // It can't be switched on from here either: the setup has to run first.
+        viewModel.writesInMyVoice = true
+        #expect(!viewModel.writesInMyVoice)
+    }
+
+    @Test func theVoiceSwitchIsTheProfilesSharedState() async {
+        let scenario = makeScenario()
+        defer { scenario.defaults.tearDown() }
+        #expect(scenario.viewModel.writesInMyVoice)
+        // Turned off on this screen, it is off everywhere that reads the profile (the card, Profile).
+        scenario.viewModel.writesInMyVoice = false
+        #expect(!scenario.profile.writesInMyVoice && !scenario.profile.profile.usesVoiceInAI)
+        // Turned on from the card or Profile, it is on here.
+        #expect(scenario.profile.setWritesInMyVoice(true))
+        #expect(scenario.viewModel.writesInMyVoice)
+        scenario.viewModel.promptText = "My desk setup"
+        _ = await scenario.viewModel.generateFromPrompt()
+        #expect(scenario.writer.lastRequest?.voice?.niches == [.tech])
+        #expect(scenario.writer.lastRequest?.voice?.sounds == [.casual])
     }
 
     @Test func emptyPromptDoesNothing() async {
@@ -214,4 +253,113 @@ struct GenerateScriptViewModelTests {
         scenario.viewModel.choose(.review)
         #expect(scenario.viewModel.tone == .energetic)
     }
+
+    // MARK: - Writing: once, cancelable, retryable
+
+    /// Where the scripts a request created end up.
+    private final class Created {
+        var scripts: [Script] = []
+    }
+
+    private struct GatedScenario {
+        let viewModel: GenerateScriptViewModel
+        let writer: GatedScriptWriter
+        let library: ScriptLibraryService
+        let created = Created()
+        let defaults: TestDefaults
+    }
+
+    private func makeGatedScenario() -> GatedScenario {
+        let defaults = TestDefaults()
+        let writer = GatedScriptWriter()
+        let library = ScriptLibraryService(repository: FakeScriptRepository(), now: { TestData.now })
+        let viewModel = GenerateScriptViewModel(
+            writer: writer, library: library, profile: CreatorProfileService(defaults: defaults.defaults),
+            rules: TestData.rulesService(), toast: ToastService()
+        )
+        viewModel.promptText = "My desk setup"
+        return GatedScenario(viewModel: viewModel, writer: writer, library: library, defaults: defaults)
+    }
+
+    /// Lets the tasks the view model started run until `condition` holds.
+    private func wait(until condition: () -> Bool) async {
+        for _ in 0..<300 where !condition() {
+            try? await Task.sleep(for: .milliseconds(10))
+        }
+    }
+
+    @Test func openingTheScreenWritesNothing() async {
+        let scenario = makeGatedScenario()
+        defer { scenario.defaults.tearDown() }
+        try? await Task.sleep(for: .milliseconds(50))
+        #expect(scenario.writer.started == 0 && !scenario.viewModel.isGenerating)
+    }
+
+    @Test func askingAgainWhileWritingStartsOnlyOneRequest() async {
+        let scenario = makeGatedScenario()
+        defer { scenario.defaults.tearDown() }
+        let created = scenario.created
+        scenario.viewModel.startPromptGeneration { created.scripts.append($0) }
+        scenario.viewModel.startPromptGeneration { created.scripts.append($0) }
+        await wait { scenario.writer.started > 0 }
+        #expect(scenario.writer.started == 1 && scenario.viewModel.isGenerating)
+        scenario.writer.release()
+        await wait { !scenario.viewModel.isGenerating && !created.scripts.isEmpty }
+        #expect(scenario.writer.started == 1 && scenario.writer.finished == 1)
+        #expect(created.scripts.count == 1 && scenario.library.scripts.count == 1)
+        #expect(!scenario.viewModel.isGenerating && scenario.viewModel.errorMessage == nil)
+    }
+
+    @Test func cancellingEndsTheLoadingWithoutAScriptOrAnError() async {
+        let scenario = makeGatedScenario()
+        defer { scenario.defaults.tearDown() }
+        let created = scenario.created
+        scenario.viewModel.startPromptGeneration { created.scripts.append($0) }
+        await wait { scenario.writer.started > 0 }
+        #expect(scenario.viewModel.isGenerating)
+        scenario.viewModel.cancelGeneration()
+        #expect(!scenario.viewModel.isGenerating)
+        await wait { scenario.writer.cancelled > 0 }
+        #expect(scenario.writer.cancelled == 1)
+        #expect(created.scripts.isEmpty && scenario.library.scripts.isEmpty)
+        #expect(scenario.viewModel.errorMessage == nil && !scenario.viewModel.isGenerating)
+    }
+
+    @Test func aRequestCanBeAskedAgainRightAfterACancellation() async {
+        let scenario = makeGatedScenario()
+        defer { scenario.defaults.tearDown() }
+        let created = scenario.created
+        scenario.viewModel.startPromptGeneration { created.scripts.append($0) }
+        await wait { scenario.writer.started == 1 }
+        scenario.viewModel.cancelGeneration()
+        scenario.viewModel.startPromptGeneration { created.scripts.append($0) }
+        await wait { scenario.writer.started == 2 }
+        #expect(scenario.writer.started == 2 && scenario.viewModel.isGenerating)
+        scenario.writer.release()
+        await wait { !created.scripts.isEmpty }
+        // The cancelled one never makes a script, and its end doesn't end the new one's loading early.
+        #expect(created.scripts.count == 1)
+        await wait { !scenario.viewModel.isGenerating }
+        #expect(!scenario.viewModel.isGenerating)
+    }
+
+    @Test func aFailureEndsTheLoadingSaysWhyAndCanBeTriedAgain() async {
+        let scenario = makeGatedScenario()
+        defer { scenario.defaults.tearDown() }
+        let created = scenario.created
+        scenario.writer.failure = ScriptAIError.emptyResponse
+        scenario.writer.release()
+        scenario.viewModel.startPromptGeneration { created.scripts.append($0) }
+        await wait { scenario.viewModel.errorMessage != nil }
+        #expect(scenario.viewModel.errorMessage == ScriptAIError.emptyResponse.errorDescription)
+        await wait { !scenario.viewModel.isGenerating }
+        #expect(!scenario.viewModel.isGenerating && created.scripts.isEmpty)
+        // Trying again runs the same request again, once, and clears the message.
+        scenario.writer.failure = nil
+        scenario.viewModel.retryGeneration { created.scripts.append($0) }
+        await wait { !created.scripts.isEmpty }
+        #expect(scenario.writer.started == 2 && created.scripts.count == 1)
+        #expect(scenario.viewModel.errorMessage == nil)
+    }
 }
+

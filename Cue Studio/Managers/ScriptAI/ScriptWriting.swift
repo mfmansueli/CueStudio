@@ -29,4 +29,10 @@ protocol ScriptWriting: AnyObject {
 extension ScriptWriting {
     var isLanguageModelAvailable: Bool { availability.isAvailable }
     var unavailableReason: String? { availability.reason }
+
+    /// Why Apple Intelligence can't write now, in words for the creator; nil when it can.
+    var writingUnavailableReason: String? {
+        guard !availability.isAvailable else { return nil }
+        return availability.reason ?? AIAvailability.unavailable.reason
+    }
 }

@@ -23,6 +23,9 @@ struct QuickEditView: View {
     private let services: AppServices
     let onClose: () -> Void
 
+    /// The height the editor has with no keyboard (see `measuresStableHeight`).
+    @State private var stableHeight: CGFloat = 0
+
     @Environment(\.scenePhase) private var scenePhase
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
@@ -64,6 +67,7 @@ struct QuickEditView: View {
             }
         }
         .background(Palette.bg.ignoresSafeArea())
+        .background { measuresStableHeight }
         .modifier(CaptionTranslationRunner(viewModel: viewModel))
         .editorPhotoPicker(viewModel)
         .task { await viewModel.prepare() }
@@ -116,9 +120,24 @@ struct QuickEditView: View {
 
     // MARK: - Layout
 
+    /// The editor's height as if the keyboard were never up. The editor itself lays out in what the
+    /// keyboard leaves (the system's own avoidance, the only one at work: nothing here moves anything
+    /// by hand), but how it is laid out (class, tracks, panel as a panel or as a sheet) must not
+    /// depend on the keyboard, or opening it would change the layout under the field being typed in.
+    private var measuresStableHeight: some View {
+        GeometryReader { proxy in
+            Color.clear
+                .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { stableHeight = $0 }
+        }
+        .ignoresSafeArea(.keyboard)
+        .allowsHitTesting(false)
+        .accessibilityHidden(true)
+    }
+
     private func layout(forUsableHeight height: CGFloat) -> EditorLayout {
         EditorLayout(
             usableHeight: height,
+            stableHeight: stableHeight > 0 ? stableHeight : nil,
             panel: viewModel.panel?.size,
             panelFocusesLane: viewModel.panel?.focusedLane != nil,
             largeText: dynamicTypeSize >= .xxLarge
