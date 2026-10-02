@@ -268,6 +268,94 @@
         }
       }
     },
+    "Confirm what’s here, or change it." : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "أكّد ما هو موجود أو غيّره."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bestätige, was da ist, oder ändere es."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Confirma lo que hay o cámbialo."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Confirmez ce qui est là, ou changez-le."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "जो भरा है उसे पक्का करें, या बदलें।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Konfirmasi yang sudah ada, atau ubah."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Conferma quello che c’è, oppure cambialo."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "今の内容を確認するか、変更してください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "현재 내용을 확인하거나 바꿔 주세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Confirme o que já está aqui ou mude."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ยืนยันสิ่งที่มีอยู่ หรือเปลี่ยนได้เลย"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mevcut olanı onayla ya da değiştir."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Xác nhận những gì đang có, hoặc thay đổi."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "确认现有内容，或进行修改。"
+          }
+        }
+      }
+    },
     "Create script" : {
       "localizations" : {
         "ar" : {
@@ -555,7 +643,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Modifie ton style"
+            "value" : "Modifiez votre style"
           }
         },
         "hi" : {
@@ -819,7 +907,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Comment parles-tu ?"
+            "value" : "Comment parlez-vous ?"
           }
         },
         "hi" : {
@@ -1259,7 +1347,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Choisis-en jusqu’à %lld"
+            "value" : "Choisissez-en jusqu’à %lld"
           }
         },
         "hi" : {
@@ -1523,7 +1611,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Enregistré dans ton Profil."
+            "value" : "Enregistré dans votre Profil."
           }
         },
         "hi" : {
@@ -1611,7 +1699,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Configure ton style"
+            "value" : "Configurez votre style"
           }
         },
         "hi" : {
@@ -1699,7 +1787,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dis-nous ton idée"
+            "value" : "Dites-nous votre idée"
           }
         },
         "hi" : {
@@ -1963,7 +2051,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Utilise ton profil de créateur."
+            "value" : "Utilise votre profil de créateur."
           }
         },
         "hi" : {
@@ -2051,7 +2139,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Que crées-tu ?"
+            "value" : "Que créez-vous ?"
           }
         },
         "hi" : {
@@ -2139,7 +2227,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "À qui parles-tu ?"
+            "value" : "À qui parlez-vous ?"
           }
         },
         "hi" : {
@@ -2200,6 +2288,94 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "你在对谁说话？"
+          }
+        }
+      }
+    },
+    "Who I talk to" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "لمن أتحدّث"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zu wem ich spreche"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A quién le hablo"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "À qui je parle"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "मेरी ऑडियंस"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Untuk siapa aku bicara"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A chi parlo"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "話しかける相手"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "내가 이야기하는 대상"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Para quem eu falo"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ฉันพูดกับใคร"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kime hitap ediyorum"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tôi nói với ai"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "我的受众"
           }
         }
       }
@@ -2315,7 +2491,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ton idée"
+            "value" : "Votre idée"
           }
         },
         "hi" : {
@@ -33563,7 +33739,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue n’a pas pu savoir dans quelle langue écouter. Tu peux écrire ton idée à la place."
+            "value" : "Cue n’a pas pu savoir dans quelle langue écouter. Vous pouvez écrire votre idée à la place."
           }
         },
         "hi" : {
@@ -36909,7 +37085,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dicte ton idée"
+            "value" : "Dictez votre idée"
           }
         },
         "hi" : {
@@ -36997,7 +37173,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "La dictée ne peut pas écouter en %@ sur cet iPhone. Tu peux écrire ton idée à la place."
+            "value" : "La dictée ne peut pas écouter en %@ sur cet iPhone. Vous pouvez écrire votre idée à la place."
           }
         },
         "hi" : {
@@ -37085,7 +37261,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "La dictée n’a pas pu commencer à écouter. Tu peux écrire ton idée à la place."
+            "value" : "La dictée n’a pas pu commencer à écouter. Vous pouvez écrire votre idée à la place."
           }
         },
         "hi" : {
@@ -37173,7 +37349,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "La dictée doit télécharger %@. Connecte-toi à internet et réessaie."
+            "value" : "La dictée doit télécharger %@. Connectez-vous à internet et réessayez."
           }
         },
         "hi" : {
@@ -37261,7 +37437,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "La dictée doit télécharger cette langue. Connecte-toi à internet et réessaie."
+            "value" : "La dictée doit télécharger cette langue. Connectez-vous à internet et réessayez."
           }
         },
         "hi" : {
@@ -37349,7 +37525,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "La dictée s’est arrêtée. Ce que tu as dit jusqu’ici est conservé."
+            "value" : "La dictée s’est arrêtée. Ce que vous avez dit jusqu’ici est conservé."
           }
         },
         "hi" : {
@@ -37437,7 +37613,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Rien n’a été entendu. Réessaie, ou écris ton idée."
+            "value" : "Rien n’a été entendu. Réessayez, ou écrivez votre idée."
           }
         },
         "hi" : {
@@ -69849,94 +70025,6 @@
         }
       }
     },
-    "My vocabulary" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "مفرداتي"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mein Wortschatz"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mi vocabulario"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mon vocabulaire"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "मेरी शब्दावली"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kosakataku"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Il mio vocabolario"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "私の語彙"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "나의 어휘"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Meu vocabulário"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "คำศัพท์ของฉัน"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kelime dağarcığım"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Từ vựng của tôi"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "我的用词"
-          }
-        }
-      }
-    },
     "Myth-busting" : {
       "localizations" : {
         "ar" : {
@@ -78151,7 +78239,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Colle ou choisis un fichier"
+            "value" : "Collez ou choisissez un fichier"
           }
         },
         "hi" : {
@@ -105047,7 +105135,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Commence avec tes mots"
+            "value" : "Commencez avec vos mots"
           }
         },
         "hi" : {
@@ -110870,7 +110958,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dis ou écris ton idée…"
+            "value" : "Dites ou écrivez votre idée…"
           }
         },
         "hi" : {
@@ -111046,7 +111134,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dis-nous ce que tu veux filmer. Cue écrit le script."
+            "value" : "Dites-nous ce que vous voulez filmer. Cue écrit le script."
           }
         },
         "hi" : {
@@ -113070,7 +113158,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Le micro est désactivé pour Cue. Active-le dans Réglages pour dicter, ou écris ton idée."
+            "value" : "Le micro est désactivé pour Cue. Activez-le dans Réglages pour dicter, ou écrivez votre idée."
           }
         },
         "hi" : {
@@ -115986,7 +116074,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cet iPhone ne peut pas transformer la voix en texte ici. Tu peux écrire ton idée à la place."
+            "value" : "Cet iPhone ne peut pas transformer la voix en texte ici. Vous pouvez écrire votre idée à la place."
           }
         },
         "hi" : {
@@ -121884,7 +121972,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Transforme une idée en script."
+            "value" : "Transformez une idée en script."
           }
         },
         "hi" : {
@@ -129640,7 +129728,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "C’est quoi, l’idée ?"
+            "value" : "Quelle est l’idée ?"
           }
         },
         "hi" : {
@@ -134304,7 +134392,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ta prochaine vidéo commence ici."
+            "value" : "Votre prochaine vidéo commence ici."
           }
         },
         "hi" : {
@@ -135624,7 +135712,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tes mots apparaissent ici pour que tu les relises avant d’envoyer."
+            "value" : "Vos mots apparaissent ici pour que vous les relisiez avant d’envoyer."
           }
         },
         "hi" : {

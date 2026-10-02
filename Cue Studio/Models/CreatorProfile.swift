@@ -25,13 +25,17 @@ nonisolated struct CreatorProfile: Codable, Hashable, Sendable {
     /// The voice steps (`.audience`, `.tone`) the creator answered, as opposed to the defaults above.
     /// Niches are not stored here: they start empty, so having one is the answer.
     var confirmedVoiceSteps: Set<VoiceSetupStep>
+    /// Steps (`.audience`, `.tone`) whose values were saved by a build that didn't track the creator's
+    /// answers: they may be choices or the defaults, so they are kept, shown as the current values,
+    /// and confirmed with one tap before the voice is first used.
+    var unverifiedVoiceSteps: Set<VoiceSetupStep>
 
     init(
         name: String = "", handle: String = "", niches: [Niche] = [], phrases: [String] = [],
         sounds: [VoiceSound] = [.casual, .confident], vocabulary: Vocabulary = .simple,
         styles: [VoiceStyle] = [.shortSentences, .conversational], usesVoiceInAI: Bool = true,
         defaultPlatform: Platform = .tiktok, monetizationGoals: Bool = true,
-        confirmedVoiceSteps: Set<VoiceSetupStep> = []
+        confirmedVoiceSteps: Set<VoiceSetupStep> = [], unverifiedVoiceSteps: Set<VoiceSetupStep> = []
     ) {
         self.name = name
         self.handle = handle
@@ -44,6 +48,7 @@ nonisolated struct CreatorProfile: Codable, Hashable, Sendable {
         self.defaultPlatform = defaultPlatform
         self.monetizationGoals = monetizationGoals
         self.confirmedVoiceSteps = confirmedVoiceSteps
+        self.unverifiedVoiceSteps = unverifiedVoiceSteps
     }
 
     var voice: CreatorVoice {
@@ -64,7 +69,7 @@ nonisolated struct CreatorProfile: Codable, Hashable, Sendable {
 
     private enum CodingKeys: String, CodingKey {
         case name, handle, niches, phrases, sounds, vocabulary, styles, usesVoiceInAI, defaultPlatform, monetizationGoals
-        case confirmedVoiceSteps
+        case confirmedVoiceSteps, unverifiedVoiceSteps
         /// v1 kept a single tone; it becomes the first "How I sound".
         case legacyTone = "tone"
     }
@@ -91,6 +96,17 @@ nonisolated struct CreatorProfile: Codable, Hashable, Sendable {
         defaultPlatform = try container.decodeIfPresent(Platform.self, forKey: .defaultPlatform) ?? defaults.defaultPlatform
         monetizationGoals = try container.decodeIfPresent(Bool.self, forKey: .monetizationGoals) ?? defaults.monetizationGoals
         confirmedVoiceSteps = try container.decodeIfPresent(Set<VoiceSetupStep>.self, forKey: .confirmedVoiceSteps) ?? defaults.confirmedVoiceSteps
+        if let unverified = try container.decodeIfPresent(Set<VoiceSetupStep>.self, forKey: .unverifiedVoiceSteps) {
+            unverifiedVoiceSteps = unverified
+        } else if container.contains(.confirmedVoiceSteps) {
+            unverifiedVoiceSteps = []
+        } else {
+            // Saved before answers were tracked: whatever it holds may be the creator's own choice.
+            var legacy: Set<VoiceSetupStep> = []
+            if container.contains(.vocabulary) { legacy.insert(.audience) }
+            if container.contains(.sounds) || container.contains(.legacyTone) { legacy.insert(.tone) }
+            unverifiedVoiceSteps = legacy
+        }
     }
 
     func encode(to encoder: Encoder) throws {
@@ -106,6 +122,7 @@ nonisolated struct CreatorProfile: Codable, Hashable, Sendable {
         try container.encode(defaultPlatform, forKey: .defaultPlatform)
         try container.encode(monetizationGoals, forKey: .monetizationGoals)
         try container.encode(confirmedVoiceSteps, forKey: .confirmedVoiceSteps)
+        try container.encode(unverifiedVoiceSteps, forKey: .unverifiedVoiceSteps)
     }
 
     static func sounds(migratingFrom tone: Tone) -> [VoiceSound] {

@@ -5,7 +5,7 @@
 
 import Foundation
 
-/// "My vocabulary" in Creator Voice.
+/// "Who I talk to" in Creator Voice: the audience, which decides the words the AI uses.
 nonisolated enum Vocabulary: String, Codable, CaseIterable, Identifiable, Sendable {
     case simple, technical, genZ, professional
 

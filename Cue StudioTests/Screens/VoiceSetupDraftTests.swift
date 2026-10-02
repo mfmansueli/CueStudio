@@ -20,6 +20,32 @@ struct VoiceSetupDraftTests {
         #expect(!draft.canSave)
     }
 
+    @Test func anOlderProfilesValuesAreShownPickedAndCanBeConfirmedAsTheyAre() {
+        let profile = CreatorProfile(
+            niches: [.tech], sounds: [.funny, .energetic], vocabulary: .technical, unverifiedVoiceSteps: [.audience, .tone]
+        )
+        let draft = VoiceSetupDraft(profile: profile)
+        #expect(draft.steps == [.audience, .tone])
+        #expect(draft.vocabulary == .technical && draft.sounds == [.funny, .energetic])
+        #expect(draft.confirmsExistingValues)
+        // Nothing to pick again: it can be confirmed right away.
+        #expect(draft.canSave)
+    }
+
+    @Test func aNewProfileConfirmsNothing() {
+        #expect(!VoiceSetupDraft(profile: CreatorProfile()).confirmsExistingValues)
+        #expect(!VoiceSetupDraft(profile: CreatorProfile(niches: [.tech], confirmedVoiceSteps: [.audience])).confirmsExistingValues)
+    }
+
+    @Test func anOlderProfileStillNeedsTheNicheItNeverHad() {
+        let profile = CreatorProfile(sounds: [.funny], vocabulary: .technical, unverifiedVoiceSteps: [.audience, .tone])
+        var draft = VoiceSetupDraft(profile: profile)
+        #expect(draft.steps == [.niche, .audience, .tone])
+        #expect(!draft.canSave)
+        draft.toggle(Niche.tech)
+        #expect(draft.canSave)
+    }
+
     @Test func onlyWhatIsMissingIsAskedAndWhatWasAnsweredIsKept() {
         let profile = CreatorProfile(niches: [.tech], confirmedVoiceSteps: [.audience])
         let draft = VoiceSetupDraft(profile: profile)

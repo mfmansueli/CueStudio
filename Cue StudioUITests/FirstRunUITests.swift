@@ -80,8 +80,9 @@ final class FirstRunUITests: XCTestCase {
         XCTAssertEqual(text.value as? String, "Three ways to focus " + long)
     }
 
-    /// "Create script" and the card's arrow go to the same generation flow, once, with the idea written.
-    func testCreateScriptSendsTheDraftOnceThroughGenerateWithAI() {
+    /// "Create script" and the card's arrow open Generate with AI with the idea filled in; nothing is
+    /// written until its own "Generate script" is tapped.
+    func testCreateScriptOpensGenerateWithAIAndWritesOnlyAfterItsButton() {
         let app = CueApp.launch(seeded: false)
         let field = element(app, "empty.ideaField")
         XCTAssertTrue(field.waitForExistence(timeout: 15))
@@ -90,7 +91,17 @@ final class FirstRunUITests: XCTestCase {
         XCTAssertTrue(text.waitForExistence(timeout: 5))
         text.typeText("Carnival in Salvador")
         app.buttons["ideaComposer.createButton"].tap()
-        // The stub model writes at once, and the script opens for editing.
+        // Generate with AI shows the request, the options and the final button, and has not started.
+        let prompt = element(app, "generate.promptField")
+        XCTAssertTrue(prompt.waitForExistence(timeout: 5))
+        XCTAssertEqual(prompt.value as? String, "Carnival in Salvador")
+        XCTAssertFalse(app.buttons["2 minutes on how the electric shower was invented in Brazil"].exists)
+        let generate = app.buttons["generate.generateButton"]
+        XCTAssertTrue(generate.exists)
+        XCTAssertFalse(app.buttons["editor.doneButton"].waitForExistence(timeout: 2))
+        // The voice is off for a profile that was never set up, and writing works without it.
+        XCTAssertEqual(app.switches["generate.voiceToggle"].value as? String, "0")
+        generate.tap()
         XCTAssertTrue(app.buttons["editor.doneButton"].waitForExistence(timeout: 15))
         app.buttons["editor.doneButton"].tap()
         XCTAssertTrue(app.buttons["detail.recordButton"].waitForExistence(timeout: 5))
@@ -108,6 +119,16 @@ final class FirstRunUITests: XCTestCase {
         let send = app.buttons["empty.ideaSubmit"]
         XCTAssertTrue(send.waitForExistence(timeout: 5))
         send.tap()
+        let prompt = element(app, "generate.promptField")
+        XCTAssertTrue(prompt.waitForExistence(timeout: 5))
+        XCTAssertEqual(prompt.value as? String, "Why I quit coffee")
+        XCTAssertFalse(app.buttons["editor.doneButton"].waitForExistence(timeout: 2))
+        // Closing without generating keeps the draft in the card.
+        app.buttons["Close"].firstMatch.tap()
+        XCTAssertEqual(field.value as? String, "Why I quit coffee")
+        send.tap()
+        XCTAssertTrue(app.buttons["generate.generateButton"].waitForExistence(timeout: 5))
+        app.buttons["generate.generateButton"].tap()
         XCTAssertTrue(app.buttons["editor.doneButton"].waitForExistence(timeout: 15))
     }
 

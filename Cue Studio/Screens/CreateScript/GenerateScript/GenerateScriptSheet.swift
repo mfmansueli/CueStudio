@@ -6,18 +6,16 @@
 import SwiftUI
 
 /// "Generate with AI · Apple Intelligence · private · no cost": Prompt, Themes or Formats (which
-/// pushes the format's brief). Calls `onCreated` with the new script.
+/// pushes the format's brief). Calls `onCreated` with the new script. Opened from the idea card
+/// (`ideaDraft`), it shows the request filled in, with the platform, length and voice to confirm;
+/// nothing is written until "Generate script" is tapped.
 struct GenerateScriptSheet: View {
     @State private var viewModel: GenerateScriptViewModel
-    /// Opened with the empty Scripts screen's idea: the sheet writes it as soon as it shows (once).
-    private let writesAtOnce: Bool
-    @State private var hasStarted = false
     let onCreated: (Script) -> Void
 
     @Environment(\.dismiss) private var dismiss
 
     init(services: AppServices, initialTab: GenerateTab = .prompt, ideaDraft: IdeaDraftService? = nil, onCreated: @escaping (Script) -> Void) {
-        writesAtOnce = ideaDraft != nil
         _viewModel = State(initialValue: GenerateScriptViewModel(
             initialTab: initialTab,
             ideaDraft: ideaDraft,
@@ -74,12 +72,6 @@ struct GenerateScriptSheet: View {
                     }
                 }
             }
-        }
-        .task {
-            // The same call as Generate script; without a model the sheet just shows why, as always.
-            guard writesAtOnce, !hasStarted, viewModel.canWriteFromPrompt else { return }
-            hasStarted = true
-            if let script = await viewModel.generateFromPrompt() { onCreated(script) }
         }
         .presentationDetents([.large])
         .presentationBackground(Palette.surface)

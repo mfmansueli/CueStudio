@@ -16,7 +16,7 @@ struct CreatorVoiceSection: View {
         @Bindable var profile = profile
         group(String(localized: "How I sound")) {
             chips(
-                VoiceSound.allCases, isOn: { profile.profile.sounds.contains($0) }, label: \.label,
+                VoiceSound.allCases, isOn: { profile.profile.isChosen(.tone) && profile.profile.sounds.contains($0) }, label: \.label,
                 identifier: "sound", toggle: { profile.toggleSound($0) }
             )
         }
@@ -56,12 +56,12 @@ struct CreatorVoiceSection: View {
                 .accessibilityIdentifier("profile.addPhraseButton")
             }
         }
-        group(String(localized: "My vocabulary")) {
-            Picker("My vocabulary", selection: Binding(get: { profile.profile.vocabulary }, set: { profile.setVocabulary($0) })) {
-                ForEach(Vocabulary.allCases) { Text($0.label).tag($0) }
-            }
-            .pickerStyle(.segmented)
-            .accessibilityIdentifier("profile.vocabulary")
+        // The same choice the voice setup asks as "Who do you talk to?", shown in the same words.
+        group(String(localized: "Who I talk to")) {
+            chips(
+                Vocabulary.allCases, isOn: { profile.profile.isChosen(.audience) && profile.profile.vocabulary == $0 },
+                label: \.audienceLabel, identifier: "audience", toggle: { profile.setVocabulary($0) }
+            )
         }
         group(String(localized: "My style")) {
             chips(

@@ -17,6 +17,19 @@ nonisolated extension CreatorProfile {
         }
     }
 
+    /// Whether the value held for `step` can be shown as the creator's: answered, or saved by an older
+    /// build that can't tell a choice from a default (it is kept, and confirmed before first use).
+    /// A new profile's defaults are neither.
+    func isChosen(_ step: VoiceSetupStep) -> Bool {
+        hasAnswered(step) || unverifiedVoiceSteps.contains(step)
+    }
+
+    /// The creator answered `step`, by choosing or confirming.
+    mutating func confirm(_ step: VoiceSetupStep) {
+        confirmedVoiceSteps.insert(step)
+        unverifiedVoiceSteps.remove(step)
+    }
+
     /// What "Write in my voice" still needs, in the order it is asked.
     var missingVoiceSteps: [VoiceSetupStep] {
         VoiceSetupStep.allCases.filter { !hasAnswered($0) }

@@ -23,11 +23,14 @@ struct VoiceSetupSheet: View {
     @Environment(CreatorProfileService.self) private var profile
     @Environment(\.dismiss) private var dismiss
     @State private var draft: VoiceSetupDraft
+    private let confirmsExistingValues: Bool
 
     init(mode: Mode, profile: CreatorProfile, onSaved: @escaping () -> Void = {}) {
         self.mode = mode
         self.onSaved = onSaved
-        _draft = State(initialValue: VoiceSetupDraft(profile: profile, steps: mode == .edit ? VoiceSetupStep.allCases : nil))
+        let draft = VoiceSetupDraft(profile: profile, steps: mode == .edit ? VoiceSetupStep.allCases : nil)
+        confirmsExistingValues = draft.confirmsExistingValues
+        _draft = State(initialValue: draft)
     }
 
     var body: some View {
@@ -36,7 +39,9 @@ struct VoiceSetupSheet: View {
                 VStack(alignment: .leading, spacing: 22) {
                     SheetHeader(
                         title: mode == .edit ? String(localized: "Edit your style") : String(localized: "Set up your style"),
-                        subtitle: String(localized: "Saved to your Profile."),
+                        subtitle: confirmsExistingValues
+                            ? String(localized: "Confirm what’s here, or change it.")
+                            : String(localized: "Saved to your Profile."),
                         onClose: { dismiss() }
                     )
                     ForEach(draft.steps) { step in

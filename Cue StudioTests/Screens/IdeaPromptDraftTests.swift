@@ -115,6 +115,39 @@ struct IdeaPromptDraftTests {
         #expect(ideaDraft.text == "The card's idea")
     }
 
+    @Test func theDraftSurvivesOpeningCancellingAndConfirmingTheVoiceSetup() {
+        let scenario = makeScenario(text: "Carnival in Salvador,\nwith the trios elétricos")
+        defer { scenario.defaults.tearDown() }
+        let text = scenario.ideaDraft.text
+        // Opened and cancelled: nothing was saved and the text is untouched.
+        let cancelled = VoiceSetupDraft(profile: scenario.profile.profile)
+        #expect(!cancelled.canSave)
+        #expect(scenario.ideaDraft.text == text && scenario.viewModel.promptText == text)
+        #expect(!scenario.profile.writesInMyVoice)
+        // Confirmed: the voice turns on and the text is exactly as it was.
+        var confirmed = VoiceSetupDraft(profile: scenario.profile.profile)
+        confirmed.toggle(Niche.lifestyle)
+        confirmed.choose(.genZ)
+        confirmed.toggle(VoiceSound.funny)
+        confirmed.save(to: scenario.profile)
+        #expect(scenario.profile.writesInMyVoice)
+        #expect(scenario.ideaDraft.text == text && scenario.viewModel.promptText == text)
+    }
+
+    @Test func withoutAnyPersonalizationTheIdeaStillWritesAScriptAndKeepsTheDraftUntilThen() async {
+        let scenario = makeScenario(text: "Carnival in Salvador")
+        defer { scenario.defaults.tearDown() }
+        #expect(!scenario.viewModel.writesInMyVoice)
+        // Opening the generation screen starts nothing: the draft is there to confirm.
+        #expect(scenario.writer.lastRequest == nil && scenario.viewModel.promptText == "Carnival in Salvador")
+        let script = await scenario.viewModel.generateFromPrompt()
+        #expect(script != nil)
+        #expect(scenario.writer.lastRequest?.voice == nil)
+        #expect(scenario.writer.lastRequest?.source == .prompt("Carnival in Salvador"))
+        // The card clears the draft only once the script exists (MainView does it on creation).
+        #expect(scenario.ideaDraft.text == "Carnival in Salvador")
+    }
+
     @Test func ideaSheetsHaveTheirOwnIdentity() {
         #expect(AppSheet.generateIdea.id == "generateIdea")
         #expect(AppSheet.composeIdea(dictating: true).id == AppSheet.composeIdea(dictating: false).id)

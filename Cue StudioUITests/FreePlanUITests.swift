@@ -18,11 +18,12 @@ final class FreePlanUITests: XCTestCase {
         let tab = app.tabBars.buttons["Profile"]
         XCTAssertTrue(tab.waitForExistence(timeout: 15))
         tab.tap()
-        let vocabulary = app.segmentedControls["profile.vocabulary"]
-        for _ in 0..<6 where !(vocabulary.exists && vocabulary.isHittable) { app.swipeUp() }
-        vocabulary.buttons["Technical"].tap()
+        // "Who I talk to" is the vocabulary, in the same words as the voice setup's audience question.
+        let technical = app.buttons["profile.audience.People who know the field"]
+        for _ in 0..<6 where !(technical.exists && technical.isHittable) { app.swipeUp() }
+        technical.tap()
         XCTAssertFalse(app.buttons["paywall.closeButton"].waitForExistence(timeout: 2))
-        XCTAssertTrue(vocabulary.buttons["Technical"].isSelected)
+        XCTAssertTrue(technical.isSelected)
     }
 
     func testMakingAVersionForAnotherPlatform() {

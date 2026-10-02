@@ -20,14 +20,19 @@ struct VoiceSetupDraft: Equatable {
     private(set) var sounds: [VoiceSound]
     let nicheCap: Int
     let soundCap: Int
+    /// An asked step is showing values an older build saved (maybe choices, maybe defaults): the setup
+    /// asks the creator to confirm them, with nothing to pick again.
+    let confirmsExistingValues: Bool
 
     /// - Parameter steps: what to ask; nil asks what the profile still lacks.
     init(profile: CreatorProfile, steps: [VoiceSetupStep]? = nil) {
         self.steps = steps ?? profile.missingVoiceSteps
-        // Defaults are not answers: only what the creator chose is shown picked.
+        // A new profile's defaults are not answers, so nothing is shown picked; what the creator chose,
+        // or an older build saved, is shown picked and can be confirmed as it is.
         niches = profile.hasAnswered(.niche) ? profile.niches : []
-        vocabulary = profile.hasAnswered(.audience) ? profile.vocabulary : nil
-        sounds = profile.hasAnswered(.tone) ? profile.sounds : []
+        vocabulary = profile.isChosen(.audience) ? profile.vocabulary : nil
+        sounds = profile.isChosen(.tone) ? profile.sounds : []
+        confirmsExistingValues = self.steps.contains { !profile.hasAnswered($0) && profile.isChosen($0) }
         nicheCap = max(Self.nicheLimit, niches.count)
         soundCap = max(Self.soundLimit, sounds.count)
     }

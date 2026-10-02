@@ -41,16 +41,18 @@ final class CreatorProfileService {
     }
 
     /// Keeps at least one sound: an empty voice would tell the AI nothing. Choosing one is the
-    /// creator answering "How do you talk?".
+    /// creator answering "How do you talk?"; the first time, it starts from nothing, so the default
+    /// tones of a new profile never ride along with the one picked.
     func toggleSound(_ sound: VoiceSound) {
         var updated = profile
+        if !updated.isChosen(.tone) { updated.sounds = [] }
         if let index = updated.sounds.firstIndex(of: sound) {
             guard updated.sounds.count > 1 else { return }
             updated.sounds.remove(at: index)
         } else {
             updated.sounds.append(sound)
         }
-        updated.confirmedVoiceSteps.insert(.tone)
+        updated.confirm(.tone)
         profile = updated
     }
 
@@ -58,7 +60,7 @@ final class CreatorProfileService {
     func setVocabulary(_ vocabulary: Vocabulary) {
         var updated = profile
         updated.vocabulary = vocabulary
-        updated.confirmedVoiceSteps.insert(.audience)
+        updated.confirm(.audience)
         profile = updated
     }
 
@@ -110,11 +112,11 @@ final class CreatorProfileService {
         if let niches, !niches.isEmpty { updated.niches = niches }
         if let vocabulary {
             updated.vocabulary = vocabulary
-            updated.confirmedVoiceSteps.insert(.audience)
+            updated.confirm(.audience)
         }
         if let sounds, !sounds.isEmpty {
             updated.sounds = sounds
-            updated.confirmedVoiceSteps.insert(.tone)
+            updated.confirm(.tone)
         }
         updated.usesVoiceInAI = true
         profile = updated

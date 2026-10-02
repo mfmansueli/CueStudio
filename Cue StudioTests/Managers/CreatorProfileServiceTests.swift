@@ -113,7 +113,54 @@ struct CreatorProfileServiceTests {
     @Test func aProfileSavedBeforeThisSetupDecodesWithNothingConfirmed() throws {
         let old = #"{"name":"Maya","niches":["wellness"],"sounds":["funny"],"vocabulary":"technical"}"#
         let profile = try JSONDecoder().decode(CreatorProfile.self, from: Data(old.utf8))
-        // Only the niche is proof; the tone and vocabulary might be defaults, so they are asked (and shown picked later).
+        // Only the niche is proof; the tone and vocabulary might be defaults, so they are asked,
+        // with what is saved kept and shown as the current values.
         #expect(profile.missingVoiceSteps == [.audience, .tone])
+        #expect(profile.unverifiedVoiceSteps == [.audience, .tone])
+        #expect(profile.sounds == [.funny] && profile.vocabulary == .technical)
+        #expect(profile.isChosen(.audience) && profile.isChosen(.tone))
+    }
+
+    @Test func aNewProfileHasNothingToConfirm() {
+        let profile = CreatorProfile()
+        #expect(profile.unverifiedVoiceSteps.isEmpty)
+        #expect(!profile.isChosen(.audience) && !profile.isChosen(.tone))
+    }
+
+    @Test func confirmingWhatAnOlderProfileHeldKeepsItAndIsRemembered() throws {
+        let store = TestDefaults()
+        defer { store.tearDown() }
+        let old = #"{"name":"Maya","niches":["wellness"],"sounds":["funny","energetic"],"vocabulary":"genZ","phrases":["Hey fam"]}"#
+        store.defaults.set(Data(old.utf8), forKey: DefaultsKey.creatorProfile)
+        let service = CreatorProfileService(defaults: store.defaults)
+        #expect(!service.writesInMyVoice)
+        // Confirmed as it is, without picking anything again: the data is untouched.
+        service.saveVoiceSetup(vocabulary: .genZ, sounds: [.funny, .energetic])
+        #expect(service.writesInMyVoice)
+        #expect(service.profile.phrases == ["Hey fam"] && service.profile.niches == [.wellness])
+        // It is remembered: nothing is asked again after a relaunch.
+        let reloaded = CreatorProfileService(defaults: store.defaults)
+        #expect(reloaded.profile.unverifiedVoiceSteps.isEmpty)
+        #expect(reloaded.profile.missingVoiceSteps.isEmpty && reloaded.writesInMyVoice)
+        #expect(reloaded.profile.sounds == [.funny, .energetic] && reloaded.profile.vocabulary == .genZ)
+    }
+
+    @Test func theFirstToneAPersonPicksStartsFromNothingSoTheDefaultsNeverRideAlong() {
+        let store = TestDefaults()
+        defer { store.tearDown() }
+        let service = CreatorProfileService(defaults: store.defaults)
+        service.toggleSound(.funny)
+        #expect(service.profile.sounds == [.funny])
+        service.toggleSound(.casual)
+        #expect(service.profile.sounds == [.funny, .casual])
+    }
+
+    @Test func anOlderProfilesTonesAreKeptWhenOneIsToggled() throws {
+        let store = TestDefaults()
+        defer { store.tearDown() }
+        store.defaults.set(Data(#"{"sounds":["funny","energetic"],"vocabulary":"simple"}"#.utf8), forKey: DefaultsKey.creatorProfile)
+        let service = CreatorProfileService(defaults: store.defaults)
+        service.toggleSound(.confident)
+        #expect(service.profile.sounds == [.funny, .energetic, .confident])
     }
 }

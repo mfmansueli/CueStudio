@@ -93,10 +93,10 @@ nonisolated enum ScriptPromptBuilder {
 
     private static func vocabularyRule(_ vocabulary: Vocabulary) -> String {
         switch vocabulary {
-        case .simple: "Use simple, everyday words."
-        case .technical: "Technical terms are fine; this audience knows the field."
-        case .genZ: "Use casual Gen Z slang where it fits, without overdoing it."
-        case .professional: "Use polished, professional wording."
+        case .simple: "Their audience is everyday people: use simple, everyday words."
+        case .technical: "Their audience knows the field: technical terms are fine."
+        case .genZ: "Their audience is young: use casual Gen Z slang where it fits, without overdoing it."
+        case .professional: "Their audience is professionals: use polished, professional wording."
         }
     }
 
