@@ -5,6 +5,7 @@
 
 import Foundation
 import PhotosUI
+import _PhotosUI_SwiftUI
 
 /// Asking for a photo: the panels and the toolbar only say what for (`PhotoRequest`), the editor
 /// shows the picker once (`EditorPhotoPicker`), and the pick comes back here to be put where it was
