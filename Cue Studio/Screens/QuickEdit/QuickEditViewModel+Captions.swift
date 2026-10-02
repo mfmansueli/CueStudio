@@ -130,7 +130,8 @@ extension QuickEditViewModel {
         }
     }
 
-    /// Lines that show whole whatever the animation: their words don't have their own times.
+    /// Lines whose words don't have their own times (written or corrected by hand): the effects go by
+    /// their words shared across the line's time.
     var linesWithoutWordTiming: Int {
         edit.captions.filter { !$0.hasWordTiming }.count
     }

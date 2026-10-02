@@ -194,6 +194,18 @@ struct CaptionsPanel: View {
             }
             .buttonStyle(.plain)
             .accessibilityIdentifier("edit.captionsAddButton")
+            if !lines.isEmpty {
+                // Every line at once; Undo in the toast brings them back.
+                Button(action: viewModel.deleteAllCaptions) {
+                    Label("Delete all captions", systemImage: "trash")
+                        .font(.system(.subheadline, weight: .semibold))
+                        .foregroundStyle(Palette.dangerText)
+                        .frame(maxWidth: .infinity, minHeight: Metrics.hitTarget)
+                        .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+                .accessibilityIdentifier("edit.captionsDeleteAll")
+            }
         }
     }
 

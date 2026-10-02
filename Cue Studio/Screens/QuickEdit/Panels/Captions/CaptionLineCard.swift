@@ -6,8 +6,10 @@
 import SwiftUI
 
 /// A line in Captions: when it plays ("00:05.2 → 00:07.1 · 1.9s") and what it says, yellow while
-/// it plays. Picked, it opens: the words in a field outlined in yellow, Start and End −/+ in
-/// tenths, and Play, Split, Join next and delete.
+/// it plays. Picked, it opens for working line by line: the words in a field outlined in yellow
+/// (Return goes on to the next line, with the keyboard still up), ‹ 3/12 › to step between lines,
+/// Play and delete; More opens Start and End −/+ in tenths, Split and Join next, and opens by
+/// itself on a line whose timing needs a look. A long press on any line offers Play and Delete.
 struct CaptionLineCard: View {
     let viewModel: QuickEditViewModel
     let line: CaptionCue
@@ -16,6 +18,11 @@ struct CaptionLineCard: View {
     let isActive: Bool
     let index: Int
     var focusesField: FocusState<Bool>.Binding
+
+    /// The creator's choice for More; nil follows the line (open when its timing needs a look).
+    @State private var moreOverride: Bool?
+
+    private var showsMore: Bool { moreOverride ?? line.needsTimingReview }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
@@ -35,6 +42,10 @@ struct CaptionLineCard: View {
         .background(background, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
         .contentShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
         .onTapGesture { if !isSelected { viewModel.pickCaptionLine(cueID, at: line.start) } }
+        .contextMenu {
+            Button("Play", systemImage: "play.fill") { viewModel.playCaptionLine(start: line.start, end: line.end) }
+            Button("Delete line", systemImage: "trash", role: .destructive) { viewModel.deleteCaptionLine(cueID) }
+        }
         .accessibilityElement(children: isSelected ? .contain : .combine)
         .accessibilityAddTraits(isSelected ? .isSelected : .isButton)
         .accessibilityIdentifier("edit.captionLine.\(index)")
@@ -66,10 +77,11 @@ struct CaptionLineCard: View {
         VStack(alignment: .leading, spacing: 8) {
             TextField(String(localized: "What's said here"), text: Binding(
                 get: { viewModel.edit.captions.first { $0.id == cueID }?.text ?? line.text },
-                set: { viewModel.setCaptionText(cueID, $0) }
+                set: { write($0) }
             ), axis: .vertical)
             .font(.system(.subheadline))
             .lineLimit(1...4)
+            .submitLabel(.next)
             .focused(focusesField)
             .padding(.horizontal, 12)
             .padding(.vertical, 10)
@@ -77,16 +89,14 @@ struct CaptionLineCard: View {
             .background(Palette.surface, in: RoundedRectangle(cornerRadius: 10, style: .continuous))
             .overlay(RoundedRectangle(cornerRadius: 10, style: .continuous).strokeBorder(Palette.acc, lineWidth: 1.5))
             .accessibilityIdentifier("edit.captionField")
-            HStack(spacing: 8) {
-                nudger(String(localized: "Start"), edge: .start)
-                nudger(String(localized: "End"), edge: .end)
-            }
             HStack(spacing: 6) {
-                chip(String(localized: "Play"), systemImage: "play.fill", identifier: "edit.captionPlay") {
+                stepper
+                iconChip("play.fill", label: Text("Play"), identifier: "edit.captionPlay") {
                     viewModel.playCaptionLine(start: line.start, end: line.end)
                 }
-                chip(String(localized: "Split"), identifier: "edit.captionSplit") { viewModel.splitCaptionAtPlayhead(cueID) }
-                chip(String(localized: "Join next"), identifier: "edit.captionJoin") { viewModel.joinCaption(cueID) }
+                chip(String(localized: "More"), systemImage: showsMore ? "chevron.up" : "ellipsis", identifier: "edit.captionMore") {
+                    moreOverride = !showsMore
+                }
                 Spacer(minLength: 0)
                 Button { viewModel.deleteCaptionLine(cueID) } label: {
                     Image(systemName: "trash")
@@ -101,7 +111,63 @@ struct CaptionLineCard: View {
                 .accessibilityLabel(Text("Delete line"))
                 .accessibilityIdentifier("edit.captionDelete")
             }
+            if showsMore {
+                HStack(spacing: 8) {
+                    nudger(String(localized: "Start"), edge: .start)
+                    nudger(String(localized: "End"), edge: .end)
+                }
+                HStack(spacing: 6) {
+                    chip(String(localized: "Split"), identifier: "edit.captionSplit") { viewModel.splitCaptionAtPlayhead(cueID) }
+                    chip(String(localized: "Join next"), identifier: "edit.captionJoin") { viewModel.joinCaption(cueID) }
+                }
+            }
         }
+    }
+
+    /// Typing goes to the line; Return (a new line in the field) goes on to the next one with the
+    /// keyboard still up, and at the last line puts the keyboard away.
+    private func write(_ typed: String) {
+        guard typed.contains("\n") else {
+            viewModel.setCaptionText(cueID, typed)
+            return
+        }
+        viewModel.setCaptionText(cueID, typed.replacingOccurrences(of: "\n", with: ""))
+        if !viewModel.goToCaptionLine(from: cueID, by: 1, keepsTyping: true) { focusesField.wrappedValue = false }
+    }
+
+    /// "‹ 3/12 ›": the line before and the one after.
+    private var stepper: some View {
+        let position = viewModel.captionPosition(of: cueID)
+        return HStack(spacing: 0) {
+            stepButton("chevron.left", label: Text("Previous line"), identifier: "edit.captionPrev", step: -1)
+            Text(verbatim: position.map { "\($0.number)/\($0.total)" } ?? "–")
+                .font(.system(.footnote, weight: .semibold).monospacedDigit())
+                .foregroundStyle(Palette.ink2)
+                .frame(minWidth: 36)
+                .accessibilityLabel(position.map { Text("Line \($0.number) of \($0.total)") } ?? Text(verbatim: ""))
+            stepButton("chevron.right", label: Text("Next line"), identifier: "edit.captionNext", step: 1)
+        }
+        .frame(height: 32)
+        .background(Palette.fill, in: Capsule())
+        .frame(minHeight: Metrics.hitTarget)
+    }
+
+    private func stepButton(_ symbol: String, label: Text, identifier: String, step: Int) -> some View {
+        let isAvailable = viewModel.neighborCaptionLine(of: cueID, by: step) != nil
+        return Button {
+            viewModel.goToCaptionLine(from: cueID, by: step, keepsTyping: focusesField.wrappedValue)
+        } label: {
+            Image(systemName: symbol)
+                .font(.system(size: 13, weight: .bold))
+                .frame(width: 34, height: 32)
+                .opacity(isAvailable ? 1 : 0.35)
+                .frame(minHeight: Metrics.hitTarget)
+                .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .disabled(!isAvailable)
+        .accessibilityLabel(label)
+        .accessibilityIdentifier(identifier)
     }
 
     /// "Start − +": a tenth earlier or later, never over a neighbor.
@@ -151,6 +217,20 @@ struct CaptionLineCard: View {
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
+        .accessibilityIdentifier(identifier)
+    }
+
+    private func iconChip(_ symbol: String, label: Text, identifier: String, action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            Image(systemName: symbol)
+                .font(.system(size: 12, weight: .bold))
+                .frame(width: 40, height: 32)
+                .background(Palette.fill, in: Capsule())
+                .frame(minWidth: Metrics.hitTarget, minHeight: Metrics.hitTarget)
+                .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel(label)
         .accessibilityIdentifier(identifier)
     }
 }

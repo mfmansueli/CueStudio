@@ -75,6 +75,9 @@ extension QuickEditViewModel {
             EditorToolbarItem(id: "addLine", label: String(localized: "Add line"), systemImage: "captions.bubble", action: .openCaptions),
             EditorToolbarItem(id: "allLines", label: String(localized: "All lines"), systemImage: "list.bullet", action: .openCaptions),
             EditorToolbarItem(id: "style", label: String(localized: "Style"), systemImage: "textformat.alt", action: .open(.captionStyle)),
+            EditorToolbarItem(
+                id: "deleteAll", label: String(localized: "Delete all"), systemImage: "trash", style: .destructive, action: .deleteAllCaptions
+            ),
         ]
     }
 
@@ -171,6 +174,7 @@ extension QuickEditViewModel {
         case .editText:
             panel = .textStyle
             focusesTextField = true
+        case .deleteAllCaptions: deleteAllCaptions()
         case .writeCaptionsByHand:
             toolMenu = nil
             writeCaptionsByHand()

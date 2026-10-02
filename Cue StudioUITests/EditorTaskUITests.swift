@@ -88,7 +88,10 @@ final class EditorTaskUITests: XCTestCase {
         let line = app.descendants(matching: .any)["edit.captionLine.6"]
         XCTAssertTrue(line.waitForExistence(timeout: 5))
         line.tap()
-        // The end first, before the keyboard comes up.
+        // The end first, before the keyboard comes up (More holds the timing).
+        let more = app.buttons["edit.captionMore"]
+        XCTAssertTrue(more.waitForExistence(timeout: 5))
+        more.tap()
         let later = app.buttons["edit.captionEnd.plus"]
         XCTAssertTrue(later.waitForExistence(timeout: 5))
         later.tap()
@@ -102,6 +105,21 @@ final class EditorTaskUITests: XCTestCase {
         field.typeText(String(repeating: XCUIKeyboardKey.delete.rawValue, count: text.count + 2))
         field.typeText("e caldo de cana do lado.")
         XCTAssertEqual(field.value as? String, "e caldo de cana do lado.")
+    }
+
+    /// Every caption goes at once, and Undo in the toast brings them back.
+    func testDeletingAllCaptionsAtOnceCanBeUndone() {
+        let app = EditorApp.open(demo: true)
+        EditorApp.tapTool(app, "captions")
+        let first = app.descendants(matching: .any)["edit.captionLine.1"]
+        XCTAssertTrue(first.waitForExistence(timeout: 5))
+        let deleteAll = app.buttons["edit.captionsDeleteAll"]
+        XCTAssertTrue(deleteAll.waitForExistence(timeout: 5))
+        deleteAll.tap()
+        XCTAssertTrue(EditorApp.toastSays(app, "lines deleted"))
+        XCTAssertFalse(first.exists)
+        app.buttons["toast.action"].tap()
+        XCTAssertTrue(first.waitForExistence(timeout: 5))
     }
 
     /// Editorial on the title only, then on every text.

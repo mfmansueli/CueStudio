@@ -28,6 +28,7 @@ enum EditorAction: Hashable {
     case deleteText
     // Captions menu
     case writeCaptionsByHand
+    case deleteAllCaptions
     // Caption
     case editCaption
     case splitCaption

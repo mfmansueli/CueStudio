@@ -60,6 +60,34 @@ nonisolated struct CaptionCue: Codable, Hashable, Identifiable, Sendable {
         !words.isEmpty && !words.contains(where: \.isEstimated) && !needsTimingReview
     }
 
+    // MARK: - Drawing
+
+    /// The words an effect that follows the voice (a word lit as it is said, words appearing) goes
+    /// by, always the line's own text: the voice's measured times when it has them for every word,
+    /// else the words shared over the line's time by their length (an approximation, which
+    /// "Check timing" says). A line written or corrected by hand gets the style's effects too, and
+    /// the words never fall out of step with the text.
+    var lineWords: [CaptionWord] {
+        let texts = CaptionText.words(in: text)
+        guard !texts.isEmpty else { return [] }
+        if hasWordTiming, CaptionText.joined(words.map(\.text)) == CaptionText.joined(texts) { return words }
+        let weights = texts.map { Double(max(1, $0.count)) }
+        let total = weights.reduce(0, +)
+        let duration = max(0, end - start)
+        var cursor = start
+        return zip(texts, weights).map { word, weight in
+            let finish = cursor + duration * weight / total
+            defer { cursor = finish }
+            return CaptionWord(text: word, start: cursor, end: finish, isEstimated: true)
+        }
+    }
+
+    /// The line as drawn: its words one space apart (no stray spaces or breaks from typing), which
+    /// is also what a word being lit is found in.
+    var shownText: String {
+        CaptionText.joined(lineWords.map(\.text))
+    }
+
     // MARK: - Coding
 
     private enum CodingKeys: String, CodingKey {

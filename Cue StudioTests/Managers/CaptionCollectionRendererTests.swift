@@ -57,13 +57,23 @@ struct CaptionCollectionRendererTests {
         Attachment.record(try #require(sample.pngData()), named: "\(theme.rawValue).png")
     }
 
-    @Test func unknownWordTimingStaysStatic() {
+    @Test func unknownWordTimingStillFollowsTheStyleByAnApproximation() {
         var estimated = cue
         estimated.words[1].isEstimated = true
         let settings = CaptionSettings()
         let states = CaptionCollectionRenderer.overlays([estimated], settings: settings, position: .bottom, frame: frame)
-        #expect(states.count == 1)
-        #expect(states[0].lazyText?.emphasis == nil)
+        #expect(states.count == words.count)
+        #expect(states.allSatisfy { $0.lazyText?.emphasis != nil })
+    }
+
+    @Test func aLineTypedWithStraySpacesOrWrittenFromScratchKeepsTheEffects() {
+        let settings = CaptionSettings()
+        var typed = CaptionRevision.retimed(cue, text: "Sua  ideia merece ganhar vida. ")
+        #expect(CaptionCollectionRenderer.overlays([typed], settings: settings, position: .bottom, frame: frame).count == words.count)
+        typed = CaptionCue(text: "Brand new line", start: 1, end: 3, origin: .manual)
+        let states = CaptionCollectionRenderer.overlays([typed], settings: settings, position: .bottom, frame: frame)
+        #expect(states.count == 3)
+        #expect(states.allSatisfy { $0.lazyText?.emphasis != nil })
     }
 
     @Test func aCorrectedLineStillLightsItsWordsOneByOne() {

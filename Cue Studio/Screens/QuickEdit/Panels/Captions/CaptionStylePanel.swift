@@ -76,8 +76,7 @@ struct CaptionStylePanel: View {
         PanelNote(text: String(localized: "Tap a style to preview it on the current line."))
         if viewModel.captionReveal.followsWords, viewModel.linesWithoutWordTiming > 0 {
             PanelNote(
-                text: String(localized: "\(viewModel.linesWithoutWordTiming) lines show whole: their words don't have their own times."),
-                tint: Palette.warnText
+                text: String(localized: "\(viewModel.linesWithoutWordTiming) lines follow the voice approximately: their words don't have their own times.")
             )
         }
     }

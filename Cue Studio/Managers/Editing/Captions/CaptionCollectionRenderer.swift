@@ -19,14 +19,16 @@ nonisolated enum CaptionCollectionRenderer {
     }
 
     /// How the collection's lines come and go: a still line, faded, words appearing, the word said
-    /// lit (the theme's own way: Cue boxes it, the others color it) or boxed. Lines whose words
-    /// have no times of their own always show whole.
+    /// lit (the theme's own way: Cue boxes it, the others color it) or boxed. A line whose words
+    /// have no times of their own (written or corrected by hand) gets the same effects over its
+    /// words shared across its time (`CaptionCue.lineWords`).
     static func overlays(
         _ cues: [CaptionCue], settings: CaptionSettings, position: CaptionPosition, frame: CGSize, animation: CaptionAnimation = .line
     ) -> [FrameOverlay] {
         let reveal = effectiveAnimation(settings: settings, animation: animation)
         return cues.flatMap { cue in
-            let text = TextOverlay.caption(cue.text, look: TypePreset.cue.look(for: .caption), position: position, span: cue.span)
+            let words = cue.lineWords
+            let text = TextOverlay.caption(CaptionText.joined(words.map(\.text)), look: TypePreset.cue.look(for: .caption), position: position, span: cue.span)
             guard let layout = layout(text.text, settings: settings, frame: frame) else { return [FrameOverlay]() }
             let size = layout.size
             let safe = contentRect(settings, frame: frame)
@@ -40,7 +42,7 @@ nonisolated enum CaptionCollectionRenderer {
             default: .color(.yellow)
             }
             func overlay(_ span: TimeSpan, index: Int?) -> FrameOverlay {
-                let emphasis = index.map { WordEmphasis(words: cue.words.map(\.text), index: $0, style: style) }
+                let emphasis = index.map { WordEmphasis(words: words.map(\.text), index: $0, style: style) }
                 var overlay = FrameOverlay(
                     lazyText: LazyText(text: text, emphasis: emphasis, frameWidth: frame.width, widthFraction: 0.8,
                                        collection: settings, frameHeight: frame.height),
@@ -49,16 +51,16 @@ nonisolated enum CaptionCollectionRenderer {
                 if reveal == .fade { overlay.fade = CaptionAnimation.fadeDuration }
                 return overlay
             }
-            guard reveal.followsWords, cue.hasWordTiming else { return [overlay(cue.span, index: nil)] }
-            // Only measured intervals light a word. Gaps remain plain instead of extending a guess.
+            guard reveal.followsWords, !words.isEmpty else { return [overlay(cue.span, index: nil)] }
+            // Each word lights over its own interval; gaps between measured words remain plain.
             var states: [FrameOverlay] = []
             var cursor = cue.start
             // Words appearing: nothing shows before the first word is said.
-            if reveal == .groups, let first = cue.words.first { cursor = max(cue.start, first.start) }
-            for index in cue.words.indices {
-                let word = cue.words[index]
+            if reveal == .groups, let first = words.first { cursor = max(cue.start, first.start) }
+            for index in words.indices {
+                let word = words[index]
                 let start = max(cursor, word.start, cue.start)
-                let end = min(cue.end, word.end, index + 1 < cue.words.count ? cue.words[index + 1].start : cue.end)
+                let end = min(cue.end, word.end, index + 1 < words.count ? words[index + 1].start : cue.end)
                 if start > cursor { states.append(overlay(TimeSpan(start: cursor, end: start), index: nil)) }
                 if end > start { states.append(overlay(TimeSpan(start: start, end: end), index: index)) }
                 cursor = max(cursor, end)

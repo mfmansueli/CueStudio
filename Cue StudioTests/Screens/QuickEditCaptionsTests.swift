@@ -303,6 +303,81 @@ struct QuickEditCaptionsTests {
         #expect(viewModel.edit.captionCollection == style)
     }
 
+    // MARK: - Line by line and clearing
+
+    @Test func linesAreWalkedThroughOneByOneAndTheKeyboardStaysWhenAsked() async {
+        let scenario = await makeScenario()
+        let viewModel = scenario.viewModel
+        viewModel.makeCaptions()
+        await finish(viewModel)
+        let first = viewModel.edit.captions[0].id
+        viewModel.splitCaption(first, beforeWord: 1)
+        let lines = viewModel.captionListLines
+        #expect(lines.count == 2)
+        #expect(viewModel.captionPosition(of: lines[0].cueID)?.number == 1)
+        #expect(viewModel.captionPosition(of: lines[1].cueID)?.total == 2)
+        #expect(viewModel.neighborCaptionLine(of: lines[0].cueID, by: -1) == nil)
+        #expect(viewModel.goToCaptionLine(from: lines[0].cueID, by: 1, keepsTyping: true))
+        #expect(viewModel.selection == .caption(lines[1].cueID))
+        #expect(viewModel.focusesCaptionField)
+        #expect(!viewModel.goToCaptionLine(from: lines[1].cueID, by: 1))
+        #expect(viewModel.selection == .caption(lines[1].cueID))
+        #expect(viewModel.goToCaptionLine(from: lines[1].cueID, by: -1))
+        #expect(viewModel.selection == .caption(lines[0].cueID))
+    }
+
+    @Test func everyLineGoesAtOnceAndUndoBringsThemBack() async {
+        let scenario = await makeScenario()
+        let viewModel = scenario.viewModel
+        viewModel.makeCaptions()
+        await finish(viewModel)
+        viewModel.splitCaption(viewModel.edit.captions[0].id, beforeWord: 1)
+        let before = viewModel.edit.captions
+        viewModel.selection = .caption(before[0].id)
+        viewModel.deleteAllCaptions()
+        #expect(viewModel.edit.captions.isEmpty)
+        #expect(viewModel.selection == nil)
+        #expect(scenario.toast.message == "2 lines deleted")
+        #expect(scenario.toast.action?.title == "Undo")
+        // The transcript of what was heard stays, so Auto captions can make them again.
+        #expect(viewModel.edit.captionTranscript != nil)
+        scenario.toast.action?.perform()
+        #expect(viewModel.edit.captions == before)
+    }
+
+    @Test func clearingNeedsLinesAndTheCaptionsMenuOffersIt() async {
+        let scenario = await makeScenario()
+        let viewModel = scenario.viewModel
+        viewModel.deleteAllCaptions()
+        #expect(scenario.toast.message == nil)
+        viewModel.makeCaptions()
+        await finish(viewModel)
+        viewModel.perform(.openMenu(.captions))
+        let last = viewModel.toolbarItems.last
+        #expect(last?.id == "deleteAll" && last?.style == .destructive && last?.isPinned == true)
+        viewModel.perform(.deleteAllCaptions)
+        #expect(viewModel.edit.captions.isEmpty)
+    }
+
+    @Test func aLineKeepsTheStyleAndItsEffectsWhateverIsTypedOrWritten() async {
+        let scenario = await makeScenario()
+        let viewModel = scenario.viewModel
+        viewModel.makeCaptions()
+        await finish(viewModel)
+        viewModel.setCaptionTheme(.pop)
+        let style = viewModel.edit.captionCollection
+        let line = viewModel.edit.captions[0]
+        viewModel.setCaptionText(line.id, "Okay,   brand new words here ")
+        let typed = viewModel.edit.captions[0]
+        #expect(viewModel.edit.captionCollection == style)
+        #expect(typed.shownText == "Okay, brand new words here")
+        let states = CaptionCollectionRenderer.overlays(
+            [typed], settings: style ?? CaptionSettings(theme: .pop), position: .bottom, frame: CGSize(width: 1080, height: 1920)
+        )
+        #expect(states.count == typed.lineWords.count)
+        #expect(states.allSatisfy { $0.lazyText?.emphasis != nil })
+    }
+
     @Test func splitMergeAndDeleteAreUndoable() async {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
