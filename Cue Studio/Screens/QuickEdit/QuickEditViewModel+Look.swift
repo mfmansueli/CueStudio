@@ -178,13 +178,14 @@ extension QuickEditViewModel {
         return look.filter != nil || look.filterAmount != nil
     }
 
-    /// A filter, at full intensity the first time it's picked.
+    /// A filter, at the intensity it starts with (`VideoFilter.defaultAmount`) the first time it's
+    /// picked; picking it again keeps the intensity the creator set.
     func pickFilter(_ filter: VideoFilter) {
         if lookClip != nil {
             let isNew = filter != currentFilter
             updateClipLook { look in
                 look.filter = filter
-                if isNew { look.filterAmount = 1 }
+                if isNew { look.filterAmount = filter.defaultAmount }
             }
             return
         }
@@ -192,9 +193,17 @@ extension QuickEditViewModel {
         next.filter = filter
         var changed = edit
         changed.filter = filter
-        if filter != edit.filter { changed.filterAmount = 1 }
+        if filter != edit.filter { changed.filterAmount = filter.defaultAmount }
         next.look = EditLook(changed)
         commit(next)
+    }
+
+    /// Where the Filters thumbnails come from: a frame of the clip in scope, or of the take.
+    var filterPreviewSource: (url: URL, time: TimeInterval) {
+        if let clip = lookClip, let url = recordingURL(of: clip.sourceID) {
+            return (url, clip.sourceStart + min(0.5, clip.span.duration / 2))
+        }
+        return (videoURL, 0.3)
     }
 
     func setFilterAmount(_ amount: Double) {

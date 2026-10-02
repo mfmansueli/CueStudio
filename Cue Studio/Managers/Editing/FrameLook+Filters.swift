@@ -6,7 +6,9 @@
 import CoreImage
 import CoreImage.CIFilterBuiltins
 
-/// The filter step: the preset drawn on the adjusted frame, mixed in at the intensity picked.
+/// The filter step: the preset drawn on the adjusted frame, mixed in at the intensity picked. The
+/// first filters (Vivid, Warm, Cool, Mono, Film, Fade) are drawn as they always were
+/// (`FrameLook+Legacy`); the collection is a graded color cube (`FilterGrade`, `FilterLUT`).
 extension FrameLook {
     static func filtered(_ look: LookSettings, _ image: CIImage) -> CIImage {
         guard look.filter != .original else { return image }
@@ -21,6 +23,8 @@ extension FrameLook {
     }
 
     private static func applyPreset(_ preset: VideoFilter, to image: CIImage) -> CIImage {
-        legacyPreset(preset, to: image) ?? image
+        if let legacy = legacyPreset(preset, to: image) { return legacy }
+        guard let grade = FilterGrade.grade(for: preset) else { return image }
+        return FilterLUT.apply(grade, key: preset.rawValue, to: image)
     }
 }

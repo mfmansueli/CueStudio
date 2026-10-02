@@ -242,4 +242,36 @@ struct QuickEditAutoLookTests {
         viewModel.panel = nil
         #expect(!viewModel.comparesPicture)
     }
+
+    // MARK: - Filters start balanced
+
+    @Test func aFilterStartsAtItsOwnIntensityAndKeepsWhatTheCreatorSets() async {
+        let scenario = await makeScenario()
+        let viewModel = scenario.viewModel
+        viewModel.perform(.open(.filters))
+        viewModel.pickFilter(.cinema)
+        #expect(viewModel.edit.filter == .cinema && viewModel.edit.filterAmount == VideoFilter.cinema.defaultAmount)
+        viewModel.setFilterAmount(0.3)
+        viewModel.pickFilter(.cinema)
+        #expect(viewModel.edit.filterAmount == 0.3)
+        viewModel.pickFilter(.studio)
+        #expect(viewModel.edit.filterAmount == VideoFilter.studio.defaultAmount)
+        // The first filters start at full strength, as they always did.
+        viewModel.pickFilter(.vivid)
+        #expect(viewModel.edit.filterAmount == 1)
+    }
+
+    @Test func aClipsFilterStartsAtItsOwnIntensityToo() async {
+        let scenario = await makeScenario()
+        let viewModel = scenario.viewModel
+        split(scenario)
+        pick(viewModel, clip: 1)
+        viewModel.perform(.open(.filters))
+        viewModel.pickFilter(.retro)
+        #expect(viewModel.edit.timeline.segments[1].look?.filter == .retro)
+        #expect(viewModel.edit.timeline.segments[1].look?.filterAmount == VideoFilter.retro.defaultAmount)
+        #expect(viewModel.edit.filter == .original)
+        // The thumbnails come from the clip.
+        #expect(viewModel.filterPreviewSource.time > 7.1 && viewModel.filterPreviewSource.time < 10.1)
+    }
 }
