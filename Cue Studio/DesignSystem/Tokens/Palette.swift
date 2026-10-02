@@ -89,6 +89,12 @@ enum Palette {
     /// Creator Voice and Pro cards: a yellow glow from the top corner, fading into the surface.
     static let accGlow = Color(hex: 0xFFD60A, opacity: 0.14)
     static let accGlowFaint = Color(hex: 0xFFD60A, opacity: 0.02)
+    /// Aurora behind the Prompt and "Sounds like you" cards: the gold and the amber that drift across
+    /// the dark surface (lighter on a white one, so the text stays as readable as it is on dark).
+    static let auroraGold = Color(light: Color(hex: 0xFFD60A, opacity: 0.22), dark: Color(hex: 0xFFD60A, opacity: 0.30))
+    static let auroraAmber = Color(light: Color(hex: 0xFFB020, opacity: 0.16), dark: Color(hex: 0xFF9F0A, opacity: 0.20))
+    /// The light that runs around those cards' border: soft gold in dark, a deeper gold in light.
+    static let auroraBorderLight = Color(light: Color(hex: 0xB07A00), dark: Color(hex: 0xFFE27A))
     static let record = Color(hex: 0xFF3B30)
     static let danger = Color(light: Color(hex: 0xFF3B30), dark: Color(hex: 0xFF453A))
     /// Red for text and icons on the app's own surfaces (see `accText`).

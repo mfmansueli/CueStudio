@@ -17,12 +17,18 @@ protocol SpeechTranscribing: AnyObject {
     /// Stops listening but lets what was heard in the last words be finalized first; returns when
     /// the transcript has ended. Dictation uses it so no word is lost at the stop.
     func finish() async
+    /// Starts the transcript over without stopping: what was heard so far no longer shows in it.
+    /// The prompter calls it when the place being read changes (swapping Selfie and Studio), so
+    /// words read somewhere else can't pull the text there.
+    func discardHeard()
 }
 
 extension SpeechTranscribing {
     func finish() async {
         stop()
     }
+
+    func discardHeard() {}
 
     func start(script: String, language: SpeechLanguageRequest) async -> SpeechStartResult {
         await start(script: script, language: language, preparation: { _ in })

@@ -32,6 +32,12 @@ struct LanguageDetectorTests {
         #expect(LanguageDetector.dominantLanguageCode(in: "Here are three habits that changed my mornings.", preferring: ["pt-BR"]) == "en")
     }
 
+    @Test func anEnglishIPhoneDoesntMakeAPortugueseScriptEnglish() {
+        let script = "Olá! Hoje eu trouxe dicas incríveis de Paris. Coisas pra fazer e comer. Comece com uma caminhada no Museu de Orsay. Explore os cafés charmosos."
+        #expect(LanguageDetector.dominantLanguageCode(in: script, preferring: ["en-US"]) == "pt")
+        #expect(LanguageDetector.dominantLanguageCode(in: "Olá, tudo bem com você hoje?", preferring: ["en-US"]) == "pt")
+    }
+
     @Test func aPhraseIsForeignOnlyWhenItIsClearlyAnotherLanguage() {
         #expect(LanguageDetector.isForeign(["Welcome", "back", "to", "my", "channel"], to: "pt"))
         #expect(!LanguageDetector.isForeign(["Bem", "vindos", "ao", "meu", "canal"], to: "pt"))

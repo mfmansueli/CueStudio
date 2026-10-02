@@ -51,7 +51,7 @@ struct IdeaPromptCard: View {
     }
 
     var body: some View {
-        PromptCardSurface(base: base, animatesBackground: animatesBackground) {
+        PromptCardSurface(base: base, animatesBackground: animatesBackground, usesAurora: true) {
             VStack(alignment: .leading, spacing: 12) {
                 PromptCardHeader(title: "Let’s Cue!", animatesBackground: animatesBackground)
                 intro

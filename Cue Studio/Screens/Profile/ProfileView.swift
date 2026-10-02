@@ -54,7 +54,7 @@ struct ProfileView: View {
                 .textCase(nil)
                 .padding(.bottom, 4)
             }
-            .listRowBackground(glow)
+            .listRowBackground(AuroraCardBackground(base: Palette.surface))
             Section {
                 CreatorVoiceSection(
                     onAddPhrase: {
@@ -137,7 +137,7 @@ struct ProfileView: View {
         }
     }
 
-    /// Behind "Sounds like you" and the Pro plan.
+    /// Behind the Pro plan.
     private var glow: some View {
         Palette.surface.overlay(
             LinearGradient(

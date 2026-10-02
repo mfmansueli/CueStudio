@@ -155,6 +155,111 @@ struct PrompterViewModelVoiceTests {
         await scenario.viewModel.disappear()
     }
 
+    /// The second paragraph's frames for a layout that starts it at `top`, as the mode just entered reports them.
+    private func layOut(_ viewModel: PrompterViewModel, secondParagraphAt top: Double) {
+        let lineHeight = viewModel.lineHeight
+        viewModel.updateLayout(contentHeight: top + 2 * lineHeight)
+        viewModel.updateParagraphFrame(0..<(2 * lineHeight), at: 0)
+        viewModel.updateParagraphFrame(top..<(top + 2 * lineHeight), at: 1)
+        viewModel.updateLayout(contentHeight: top + 2 * lineHeight)
+    }
+
+    @Test func eachModeKeepsItsOwnPlace() async {
+        let scenario = makeScenario(mode: .studio)
+        defer { scenario.defaults.tearDown() }
+        let viewModel = scenario.viewModel
+        await startListening(scenario)
+        // Studio: "Five" (the second paragraph) is on the guide.
+        viewModel.drag(by: -150)
+        #expect(viewModel.engine.offset == 150)
+        // Selfie has not been visited: it starts at the top, whatever Studio did.
+        await viewModel.switchMode(to: .selfie)
+        layOut(viewModel, secondParagraphAt: 100)
+        #expect(viewModel.engine.offset == 0)
+        // Selfie reads on to its own second paragraph.
+        viewModel.drag(by: -100)
+        #expect(viewModel.engine.offset == 100)
+        // Back in Studio, where it was left: 150 in Studio's layout, not Selfie's 100.
+        await viewModel.switchMode(to: .studio)
+        layOut(viewModel, secondParagraphAt: 150)
+        #expect(viewModel.engine.offset == 150)
+        // And Selfie is where Selfie was left.
+        await viewModel.switchMode(to: .selfie)
+        layOut(viewModel, secondParagraphAt: 100)
+        #expect(viewModel.engine.offset == 100)
+        await viewModel.disappear()
+    }
+
+    @Test func followingContinuesFromTheModesOwnPlace() async {
+        let scenario = makeScenario(mode: .studio)
+        defer { scenario.defaults.tearDown() }
+        let viewModel = scenario.viewModel
+        await startListening(scenario)
+        viewModel.drag(by: -150)
+        await viewModel.switchMode(to: .selfie)
+        layOut(viewModel, secondParagraphAt: 100)
+        // Selfie starts at the top: the words of the first line move it there, not to Studio's place.
+        viewModel.play()
+        scenario.speech.say("one two three four")
+        await settle()
+        await run(scenario, for: 5)
+        #expect(viewModel.engine.offset == 100)
+        await viewModel.disappear()
+    }
+
+    @Test func wordsReadInTheOtherModeDontPullTheTextThere() async {
+        let scenario = makeScenario(mode: .studio)
+        defer { scenario.defaults.tearDown() }
+        let viewModel = scenario.viewModel
+        await startListening(scenario)
+        // Studio read through the second paragraph.
+        viewModel.play()
+        scenario.speech.say("one two three four five six seven eight")
+        await settle()
+        await run(scenario, for: 5)
+        let before = scenario.speech.discardCount
+        // Selfie starts at the top, with a fresh transcript: the recognizer is told to start over.
+        await viewModel.switchMode(to: .selfie)
+        layOut(viewModel, secondParagraphAt: 100)
+        #expect(scenario.speech.discardCount == before + 1)
+        #expect(viewModel.engine.offset == 0)
+        await viewModel.disappear()
+    }
+
+    @Test func backToTheTopStartsTheTranscriptOver() async {
+        let scenario = makeScenario(mode: .selfie)
+        defer { scenario.defaults.tearDown() }
+        let viewModel = scenario.viewModel
+        await startListening(scenario)
+        viewModel.play()
+        scenario.speech.say("one two three four five six")
+        await settle()
+        await run(scenario, for: 5)
+        #expect(viewModel.engine.offset > 0)
+        // Rewinding while it plays: the words just heard must not match where they were read.
+        let before = scenario.speech.discardCount
+        viewModel.rewind()
+        #expect(viewModel.engine.offset == 0)
+        #expect(scenario.speech.discardCount == before + 1)
+        viewModel.play()
+        await run(scenario, for: 2)
+        #expect(viewModel.engine.offset == 0)
+        await viewModel.disappear()
+    }
+
+    @Test func aScrollAfterTheSwapIsNotPutBack() async {
+        let scenario = makeScenario(mode: .studio)
+        defer { scenario.defaults.tearDown() }
+        let viewModel = scenario.viewModel
+        await startListening(scenario)
+        viewModel.drag(by: -150)
+        await viewModel.switchMode(to: .selfie)
+        viewModel.drag(by: -30)
+        layOut(viewModel, secondParagraphAt: 100)
+        #expect(viewModel.engine.offset != 0)
+        await viewModel.disappear()
+    }
+
     @Test func anotherLanguageStartsListeningAgain() async {
         let scenario = makeScenario()
         defer { scenario.defaults.tearDown() }

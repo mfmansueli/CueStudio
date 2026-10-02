@@ -14,6 +14,7 @@ final class FakeSpeechTranscriber: SpeechTranscribing {
     private(set) var startCount = 0
     private(set) var stopCount = 0
     private(set) var finishCount = 0
+    private(set) var discardCount = 0
     /// What the recognizer hears in the last moment, delivered when a `finish` finalizes it.
     var finalWords: String?
     /// The language each start asked for.
@@ -71,6 +72,10 @@ final class FakeSpeechTranscriber: SpeechTranscribing {
         if let finalWords { continuation?.yield(finalWords) }
         continuation?.finish()
         continuation = nil
+    }
+
+    func discardHeard() {
+        discardCount += 1
     }
 
     /// The recognizer gives up on its own: the transcript just ends.
