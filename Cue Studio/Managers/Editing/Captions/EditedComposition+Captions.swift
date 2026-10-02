@@ -11,8 +11,11 @@ nonisolated extension EditedComposition {
         if let settings = edit.captionCollection {
             // Translated words aren't timed to the voice: they show whole.
             let animation: CaptionAnimation = if case .translation = edit.captionDisplay { .line } else { edit.captionAnimation }
+            var main = settings
+            // The same goes for the style's own way of showing words: a translation is shown whole.
+            if case .translation = edit.captionDisplay { main.followsWords = false }
             var overlays = CaptionCollectionRenderer.overlays(
-                shown.main, settings: settings, position: edit.captionPosition, frame: frame, animation: animation
+                shown.main, settings: main, position: edit.captionPosition, frame: frame, animation: animation
             )
             var secondary = settings
             secondary.sizeScale *= 0.8
