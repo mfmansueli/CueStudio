@@ -5,8 +5,9 @@
 
 import SwiftUI
 
-/// Filters (whole take): Original, Vivid, Warm, Cool, Mono and Fade, each shown on a real frame of
-/// the take; Intensity for the picked one.
+/// Filters (whole take, or the picked clip alone when opened from it): Original, Vivid, Warm, Cool,
+/// Mono and Fade, each shown on a real frame of the take; Intensity for the picked one. For a clip,
+/// Reset gives it the take's filter again.
 struct FiltersPanel: View {
     @Bindable var viewModel: QuickEditViewModel
 
@@ -14,7 +15,7 @@ struct FiltersPanel: View {
     @State private var previews: [VideoFilter: UIImage] = [:]
 
     var body: some View {
-        PanelFrame(viewModel: viewModel, panel: .filters) {
+        PanelFrame(viewModel: viewModel, panel: .filters, onReset: reset) {
             ScrollView(.horizontal) {
                 HStack(spacing: 8) {
                     ForEach(VideoFilter.editorFilters) { filter in
@@ -26,9 +27,9 @@ struct FiltersPanel: View {
             }
             .scrollIndicators(.hidden)
             .padding(.horizontal, -16)
-            if viewModel.edit.filter != .original {
+            if viewModel.currentFilter != .original {
                 PanelSlider(
-                    label: String(localized: "Intensity"), value: viewModel.edit.filterAmount * 100, range: 0...100,
+                    label: String(localized: "Intensity"), value: viewModel.currentFilterAmount * 100, range: 0...100,
                     format: .percent, identifier: "edit.filter.intensity"
                 ) { viewModel.setFilterAmount($0 / 100) }
             }
@@ -36,8 +37,14 @@ struct FiltersPanel: View {
         .task { await loadPreviews() }
     }
 
+    /// Only for a clip, and only once it sets its own filter.
+    private var reset: (() -> Void)? {
+        guard viewModel.clipOverridesFilter else { return nil }
+        return { viewModel.resetClipFilter() }
+    }
+
     private func card(_ filter: VideoFilter) -> some View {
-        let isOn = viewModel.edit.filter == filter
+        let isOn = viewModel.currentFilter == filter
         return Button { viewModel.pickFilter(filter) } label: {
             VStack(spacing: 6) {
                 Group {

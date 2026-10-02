@@ -238,6 +238,18 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
         backgrounds.first { $0.sourceID == sourceID }.map(\.effect).flatMap { $0.isActive ? $0 : nil }
     }
 
+    /// How a clip is drawn: the take's Adjust and Filters, with what the clip overrides on top.
+    func lookSettings(for segment: EditSegment) -> LookSettings {
+        LookSettings(self).overridden(by: segment.look)
+    }
+
+    /// The background effect a clip is drawn with: its own when it has one (an Original one means
+    /// none), else its recording's; nil when none changes the picture.
+    func background(for segment: EditSegment) -> BackgroundEffect? {
+        if let own = segment.look?.background { return own.isActive ? own : nil }
+        return background(for: segment.sourceID)
+    }
+
     /// Sets a recording's background effect.
     mutating func setBackground(_ effect: BackgroundEffect, for sourceID: UUID?) {
         backgrounds.removeAll { $0.sourceID == sourceID }
@@ -269,6 +281,7 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
     var mediaFileNames: Set<String> {
         var names = Set(media.map(\.fileName) + voiceOvers.map(\.fileName) + sources.map(\.fileName) + music.map(\.fileName))
         names.formUnion(backgrounds.compactMap(\.effect.imageFileName))
+        names.formUnion(timeline.segments.compactMap { $0.look?.background?.imageFileName })
         if case .photo(let name)? = cover?.source { names.insert(name) }
         return names
     }

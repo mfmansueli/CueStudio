@@ -33,6 +33,9 @@ nonisolated struct EditSegment: Codable, Hashable, Identifiable, Sendable {
     /// "Keep voice pitch": a faster or slower clip keeps the voice's tone; off, it rises or falls
     /// with the speed.
     var keepsPitch = true
+    /// What this clip changes of the take's look (Adjust, Filters, Background); nil plays it with
+    /// the take's own. Cutting or duplicating the clip copies it to the pieces.
+    var look: ClipLook?
 
     static let volumeRange: ClosedRange<Double> = 0...2
 
@@ -56,7 +59,7 @@ nonisolated struct EditSegment: Codable, Hashable, Identifiable, Sendable {
         self.init(id: id, sourceStart: span.start, sourceEnd: span.end, transitionIn: transitionIn, speed: speed, sourceID: sourceID, zoom: zoom)
     }
 
-    /// The same clip (speed, zoom, sound) over another stretch of its recording, as a new piece
+    /// The same clip (speed, zoom, sound, look) over another stretch of its recording, as a new piece
     /// unless `id` says otherwise.
     func piece(_ span: TimeSpan, id: UUID = UUID(), transitionIn: EditTransition = .hardCut) -> EditSegment {
         var piece = self
@@ -83,7 +86,7 @@ nonisolated struct EditSegment: Codable, Hashable, Identifiable, Sendable {
     // MARK: - Coding
 
     private enum CodingKeys: String, CodingKey {
-        case id, sourceStart, sourceEnd, transitionIn, speed, sourceID, zoom, zoomAmount, volume, isMuted, keepsPitch
+        case id, sourceStart, sourceEnd, transitionIn, speed, sourceID, zoom, zoomAmount, volume, isMuted, keepsPitch, look
     }
 
     /// Pieces saved before transitions or speed existed are hard cuts at 1×, and so is a
@@ -102,5 +105,7 @@ nonisolated struct EditSegment: Codable, Hashable, Identifiable, Sendable {
         volume = min(max((try? container.decodeIfPresent(Double.self, forKey: .volume)) ?? 1, Self.volumeRange.lowerBound), Self.volumeRange.upperBound)
         isMuted = (try? container.decodeIfPresent(Bool.self, forKey: .isMuted)) ?? false
         keepsPitch = (try? container.decodeIfPresent(Bool.self, forKey: .keepsPitch)) ?? true
+        // Clips saved before clips could look different play with the take's look.
+        look = (try? container.decodeIfPresent(ClipLook.self, forKey: .look))?.normalized
     }
 }

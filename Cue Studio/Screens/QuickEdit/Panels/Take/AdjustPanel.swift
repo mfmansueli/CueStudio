@@ -5,9 +5,10 @@
 
 import SwiftUI
 
-/// Adjust (whole take): one ruler for the setting picked in a row of dials (Exposure, Contrast,
+/// Adjust (whole take, or the picked clip alone when opened from it): one ruler for the setting picked in a row of dials (Exposure, Contrast,
 /// Warmth, Saturation, Highlights, Shadows, Sharpness), each showing its value; a dial that is off
-/// zero is yellow. Auto sits on the line of the picked setting's name and value, so the controls
+/// zero is yellow; for a clip a dial shows the take's value until the clip sets its own, and Reset
+/// gives the clip the take's values again. Auto sits on the line of the picked setting's name and value, so the controls
 /// fit the panel without scrolling on an ordinary iPhone. Reset puts them all back, and the setting
 /// on the ruler has its own.
 struct AdjustPanel: View {
@@ -100,8 +101,15 @@ struct AdjustPanel: View {
                     .foregroundStyle(Palette.accText)
             }
             .accessibilityElement(children: .combine)
-            if value != 0 {
-                Button("Reset") { viewModel.setAdjustment(current, 0) }
+            if let note = inheritedNote {
+                Text(note)
+                    .font(.system(.footnote))
+                    .foregroundStyle(Palette.ink2)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.8)
+            }
+            if viewModel.canResetAdjustment(current) {
+                Button("Reset") { viewModel.resetAdjustment(current) }
                     .font(.system(.footnote, weight: .semibold))
                     .foregroundStyle(Palette.ink2)
                     .buttonStyle(.plain)
@@ -115,6 +123,12 @@ struct AdjustPanel: View {
             autoButton
         }
         .frame(maxWidth: .infinity, minHeight: Metrics.hitTarget)
+    }
+
+    /// For a clip, where the dial's value comes from while the clip hasn't set it.
+    private var inheritedNote: String? {
+        guard viewModel.lookClip != nil, !viewModel.clipOverrides(current) else { return nil }
+        return String(localized: "From the whole take")
     }
 
     private var autoButton: some View {

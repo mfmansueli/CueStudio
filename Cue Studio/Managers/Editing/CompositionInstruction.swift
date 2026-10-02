@@ -27,6 +27,11 @@ final class CompositionInstruction: NSObject, AVVideoCompositionInstructionProto
     /// The same for the blend track's frames (the other side of a dissolve); nil outside one.
     let blendFrame: SourceFrame?
     let edit: TakeEdit
+    /// The light, color and filter of the clip this stretch plays: the take's, with that clip's own
+    /// overrides on top.
+    let look: LookSettings
+    /// The same for the other side of a dissolve (its own clip's); nil outside one.
+    let blendLook: LookSettings?
     let overlays: [FrameOverlay]
     /// Every photo and video laid over the take.
     let media: [MediaFrame]
@@ -42,7 +47,8 @@ final class CompositionInstruction: NSObject, AVVideoCompositionInstructionProto
     init(
         timeRange: CMTimeRange, trackID: CMPersistentTrackID, blendTrackID: CMPersistentTrackID? = nil,
         mediaTrackIDs: [CMPersistentTrackID] = [],
-        frame: SourceFrame, blendFrame: SourceFrame? = nil, edit: TakeEdit, overlays: [FrameOverlay], media: [MediaFrame] = [],
+        frame: SourceFrame, blendFrame: SourceFrame? = nil, edit: TakeEdit, look: LookSettings? = nil, blendLook: LookSettings? = nil,
+        overlays: [FrameOverlay], media: [MediaFrame] = [],
         outputScale: CGFloat, dissolve: TransitionWindow? = nil, zoom: ZoomWindow? = nil, fades: [TransitionWindow] = []
     ) {
         self.zoom = zoom
@@ -54,6 +60,8 @@ final class CompositionInstruction: NSObject, AVVideoCompositionInstructionProto
         self.frame = frame
         self.blendFrame = blendFrame
         self.edit = edit
+        self.look = look ?? LookSettings(edit)
+        self.blendLook = blendLook
         self.overlays = overlays
         self.outputScale = outputScale
         self.dissolve = dissolve

@@ -49,6 +49,7 @@ final class QuickEditViewModel {
             isPickingCoverFrame = false
             if oldValue == .transition { selectedJoinID = nil }
             if panel == .pauses { cleanUpMarks = [:] }
+            if panel == nil { lookScopeIsClip = false }
         }
     }
     /// The one thing picked on the timeline or in the preview; its tools replace the toolbar's.
@@ -57,7 +58,7 @@ final class QuickEditViewModel {
             guard selection != oldValue else { return }
             if selection != nil { toolMenu = nil }
             selectedJoinID = nil
-            if let panel, panel.followsSelection, !(selection.map(panel.accepts) ?? false) { self.panel = nil }
+            if let panel, followsSelection(panel), !(selection.map { accepts($0, in: panel) } ?? false) { self.panel = nil }
         }
     }
     /// The Text or Audio toolbar, opened from the main one with nothing selected.
@@ -193,6 +194,9 @@ final class QuickEditViewModel {
     var isImportingBackground = false
     /// Why the photo library is open, if it is (`EditorPhotoPicker`).
     var photoRequest: PhotoRequest?
+    /// Adjust, Filters or Background was opened from a picked clip: it changes that clip only, and
+    /// follows the picked clip. Opened from the main toolbar it changes the whole take.
+    var lookScopeIsClip = false
 
     // MARK: Sound
     /// The music clip picked on its track.

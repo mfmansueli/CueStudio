@@ -51,6 +51,14 @@ enum EditorPanel: String, CaseIterable, Identifiable {
         }
     }
 
+    /// The panels that change the take's look, or one clip's when opened from a picked clip.
+    var hasClipScope: Bool {
+        switch self {
+        case .adjust, .filters, .background: true
+        default: false
+        }
+    }
+
     /// Whether the panel works on `selection` (a panel that follows the selection closes when
     /// something it can't work on is picked).
     func accepts(_ selection: EditorSelection) -> Bool {

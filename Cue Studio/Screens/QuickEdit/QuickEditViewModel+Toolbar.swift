@@ -96,6 +96,11 @@ extension QuickEditViewModel {
                     style: canSplitSelectedClip ? .normal : .dimmed, action: .splitClip
                 ),
                 EditorToolbarItem(id: "speed", label: String(localized: "Speed"), systemImage: "gauge.with.dots.needle.67percent", action: .open(.speed)),
+                EditorToolbarItem(id: "adjust", label: String(localized: "Adjust"), systemImage: "slider.horizontal.3", action: .open(.adjust)),
+                EditorToolbarItem(id: "filters", label: String(localized: "Filters"), systemImage: "camera.filters", action: .open(.filters)),
+                EditorToolbarItem(
+                    id: "background", label: String(localized: "Background"), systemImage: "person.and.background.dotted", action: .open(.background)
+                ),
                 EditorToolbarItem(id: "zoom", label: String(localized: "Zoom"), systemImage: "arrow.up.left.and.arrow.down.right", action: .open(.zoom)),
                 EditorToolbarItem(id: "volume", label: String(localized: "Volume"), systemImage: "speaker.wave.2", action: .open(.volume)),
                 EditorToolbarItem(id: "voice", label: String(localized: "Voice"), systemImage: "waveform.and.mic", action: .open(.voice)),
@@ -154,7 +159,10 @@ extension QuickEditViewModel {
             selection = nil
             toolMenu = menu
         case .openCaptions: openCaptions()
-        case .open(let panel): self.panel = panel
+        case .open(let panel):
+            // From a picked clip, Adjust, Filters and Background change that clip only.
+            lookScopeIsClip = panel.hasClipScope && selection?.clipID != nil
+            self.panel = panel
         case .addMedia:
             mediaInsertMode = .overlay
             sheet = .media

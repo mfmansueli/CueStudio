@@ -66,11 +66,13 @@ nonisolated enum CoverRenderer {
             // Fit: the whole frame on black, like the video.
             image = CueVideoCompositor.fitted(CIImage(cgImage: full), into: crop.size)
         }
-        // The take's background, like the video.
-        if let effect = edit.background(for: nil), let render = BackgroundRender.prepare(effect, cacheKey: "cover") {
+        // The clip's background and look at that moment of the take, like the video.
+        let clip = edit.timeline.segments.first { $0.sourceID == nil && $0.sourceStart <= time && time < $0.sourceEnd }
+        let effect = clip.map { edit.background(for: $0) } ?? edit.background(for: nil)
+        if let effect, let render = BackgroundRender.prepare(effect, cacheKey: "cover") {
             image = BackgroundCompositing.apply(image, render: render) { PersonMasker.mask(for: $0) }
         }
-        let looked = FrameLook.apply(edit, to: image)
+        let looked = FrameLook.apply(clip.map { edit.lookSettings(for: $0) } ?? LookSettings(edit), to: image)
         return CIContext(options: [.cacheIntermediates: false]).createCGImage(looked, from: looked.extent) ?? cropped
     }
 }

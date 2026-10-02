@@ -23,7 +23,7 @@ extension QuickEditViewModel {
             return TimelineGeometry.ClipInput(
                 id: segment.id, start: start, duration: segment.duration,
                 sourceStart: segment.sourceStart, sourceEnd: segment.sourceEnd, speed: segment.speed,
-                sourceID: segment.sourceID, badge: Self.badge(of: segment, background: backgroundEffect(forSource: segment.sourceID)), transition: segment.transitionIn
+                sourceID: segment.sourceID, badge: Self.badge(of: segment, background: edit.background(for: segment)), transition: segment.transitionIn
             )
         }
         input.texts = edit.editedTexts(in: timeline).map { text, span in
@@ -68,13 +68,9 @@ extension QuickEditViewModel {
         return "\(kind) · \(media.layout.label)"
     }
 
-    /// What the recording's background does to its clips ("Blur", "Color", "Image"), if anything.
-    func backgroundEffect(forSource id: UUID?) -> BackgroundEffect? {
-        guard let effect = edit.backgrounds.first(where: { $0.sourceID == id })?.effect, effect.isActive else { return nil }
-        return effect
-    }
-
-    /// "1.5×", "Push in", "Muted", and the background's style, joined: the yellow badge on a clip.
+    /// "1.5×", "Push in", "Muted", the clip's own filter and "Adjusted", and the background's style
+    /// (the clip's, or its recording's), joined: the yellow badge on a clip. A clip that plays with
+    /// the take's look says nothing of it.
     static func badge(of segment: EditSegment, background: BackgroundEffect? = nil) -> String? {
         var parts: [String] = []
         if abs(segment.speed - 1) > 0.001 {
@@ -82,6 +78,8 @@ extension QuickEditViewModel {
         }
         if let zoom = segment.zoom { parts.append(zoom.label) }
         if segment.isMuted { parts.append(String(localized: "Muted")) }
+        if let filter = segment.look?.filter { parts.append(filter.label) }
+        if segment.look?.overridesAdjustment == true { parts.append(String(localized: "Adjusted")) }
         if let background { parts.append(background.style.label) }
         return parts.isEmpty ? nil : parts.joined(separator: " · ")
     }
