@@ -24,7 +24,7 @@ struct MainView: View {
         TabView(selection: tabSelection) {
             Tab("Scripts", systemImage: "doc.text", value: AppTab.scripts) {
                 NavigationStack(path: $presentation.scriptsPath) {
-                    ScriptsView(library: services.library, toast: services.toast)
+                    ScriptsView(library: services.library, toast: services.toast, writer: services.writer)
                         .navigationDestination(for: ScriptRoute.self) { route in
                             ScriptDetailView(route: route, services: services)
                         }
@@ -119,6 +119,10 @@ struct MainView: View {
             )
         case .generateScript(let tab):
             GenerateScriptSheet(services: services, initialTab: tab) { script in
+                presentation.openScript(script.id, editing: true)
+            }
+        case .generateIdea(let seed):
+            GenerateScriptSheet(services: services, seed: seed) { script in
                 presentation.openScript(script.id, editing: true)
             }
         }

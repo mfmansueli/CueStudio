@@ -17,8 +17,12 @@ struct ScriptsView: View {
     @Environment(CreatorProfileService.self) private var profile
     @Environment(LanguageService.self) private var languages
 
-    init(library: ScriptLibraryService, toast: ToastService) {
+    /// Tells the empty screen's idea card whether Apple Intelligence can write.
+    private let writer: ScriptWriting?
+
+    init(library: ScriptLibraryService, toast: ToastService, writer: ScriptWriting? = nil) {
         _viewModel = State(initialValue: ScriptsViewModel(library: library, toast: toast))
+        self.writer = writer
     }
 
     var body: some View {
@@ -55,15 +59,21 @@ struct ScriptsView: View {
         if library.hasLoaded && library.scripts.isEmpty {
             EmptyLibraryView(
                 animatesPromptBackground: animatesPromptBackground,
-                onPrompt: { presentation.present(.generateScript(.prompt)) },
+                unavailableReason: writerUnavailableReason,
+                onSubmit: { presentation.present(.generateIdea($0)) },
                 onWrite: newBlankScript,
                 onImport: { presentation.present(.importScript) },
-                onGenerate: { presentation.present(.generateScript(.prompt)) },
                 onSkip: { presentation.openPrompter(scriptID: nil, mode: .selfie) }
             )
         } else {
             scriptList
         }
+    }
+
+    /// Why Apple Intelligence can't write now (the creator's own words), or nil when it can.
+    private var writerUnavailableReason: String? {
+        guard let availability = writer?.availability, !availability.isAvailable else { return nil }
+        return availability.reason ?? AIAvailability.unavailable.reason
     }
 
     private var scriptList: some View {

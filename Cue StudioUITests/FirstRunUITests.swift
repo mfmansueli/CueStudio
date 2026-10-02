@@ -16,7 +16,7 @@ final class FirstRunUITests: XCTestCase {
         let app = CueApp.launch(seeded: false)
         let write = app.buttons["empty.writeButton"]
         XCTAssertTrue(write.waitForExistence(timeout: 15))
-        XCTAssertTrue(app.buttons["empty.promptCard"].exists)
+        XCTAssertTrue(element(app, "empty.promptCard").exists)
         write.tap()
 
         let title = element(app, "editor.titleField")
@@ -31,6 +31,43 @@ final class FirstRunUITests: XCTestCase {
         app.buttons["editor.doneButton"].tap()
         XCTAssertTrue(app.staticTexts["My first script"].waitForExistence(timeout: 5))
         XCTAssertTrue(app.buttons["detail.recordButton"].exists)
+    }
+
+    /// "What's the idea?" is answered in the card; a chip only picks the question and never touches the text.
+    func testTheIdeaCardTakesTheTextAndKeepsItWhenTheKindChanges() {
+        let app = CueApp.launch(seeded: false)
+        let field = element(app, "empty.ideaField")
+        XCTAssertTrue(field.waitForExistence(timeout: 15))
+        // The "+" stays at the top right, and the rows below the card are the quiet ones.
+        XCTAssertTrue(app.buttons["scripts.newButton"].exists)
+        XCTAssertTrue(app.buttons["empty.writeButton"].exists && app.buttons["empty.importButton"].exists)
+        XCTAssertFalse(app.buttons["empty.generateButton"].exists)
+        // Nothing can be sent from an empty field.
+        let send = app.buttons["empty.ideaSubmit"]
+        XCTAssertFalse(send.isEnabled)
+
+        let tip = app.buttons["empty.idea.tip"]
+        let story = app.buttons["empty.idea.story"]
+        tip.tap()
+        XCTAssertTrue(element(app, "empty.ideaQuestion").waitForExistence(timeout: 5))
+        XCTAssertEqual(element(app, "empty.ideaQuestion").label, "What do you want to teach?")
+        XCTAssertTrue(tip.isSelected)
+        XCTAssertFalse(send.isEnabled)
+
+        field.typeText("Three ways to focus")
+        XCTAssertEqual(field.value as? String, "Three ways to focus")
+        // Another kind: the question changes, one chip at a time, and the text stays.
+        story.tap()
+        XCTAssertEqual(element(app, "empty.ideaQuestion").label, "What happened?")
+        XCTAssertTrue(story.isSelected && !tip.isSelected)
+        XCTAssertEqual(field.value as? String, "Three ways to focus")
+        // The same chip again goes back to a free idea.
+        story.tap()
+        XCTAssertFalse(element(app, "empty.ideaQuestion").exists)
+        XCTAssertEqual(field.value as? String, "Three ways to focus")
+        // The arrow is on when something can write the script; without Apple Intelligence it says why instead.
+        let unavailable = element(app, "generate.unavailableNote").exists
+        XCTAssertEqual(send.isEnabled, !unavailable)
     }
 
     func testRecordingWithoutAScript() {

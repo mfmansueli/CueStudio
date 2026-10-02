@@ -22,6 +22,8 @@ final class GenerateScriptViewModel {
 
     // MARK: Prompt
     var promptText = ""
+    /// The kind of video picked with the text on the empty Scripts screen; sent with it.
+    var idea: ScriptIdea?
     var length: ScriptLength = .auto
     var platform: Platform
     var writesInMyVoice: Bool
@@ -53,6 +55,7 @@ final class GenerateScriptViewModel {
 
     init(
         initialTab: GenerateTab = .prompt,
+        seed: ScriptIdeaSeed? = nil,
         writer: ScriptWriting,
         library: ScriptLibraryService,
         profile: CreatorProfileService,
@@ -62,6 +65,8 @@ final class GenerateScriptViewModel {
         interfaceLanguage: CueLanguage? = nil
     ) {
         tab = initialTab
+        promptText = seed?.text ?? ""
+        idea = seed?.idea
         self.scriptLanguage = scriptLanguage
         self.interfaceLanguage = interfaceLanguage
         self.writer = writer
@@ -128,7 +133,8 @@ final class GenerateScriptViewModel {
             tone: nil,
             voice: writesInMyVoice ? profile.profile.voice : nil,
             targetRange: effectiveLength.targetRange(ideal: preset.idealRange),
-            language: writingLanguage(for: text)
+            language: writingLanguage(for: text),
+            idea: idea
         )
         guard let generated = await run(request) else { return nil }
         let script = library.create(

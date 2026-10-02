@@ -34,6 +34,17 @@ struct PromptTabView: View {
             .frame(height: 112)
             .background(Palette.surface2, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
 
+            if let idea = viewModel.idea {
+                // The kind of video picked on the empty Scripts screen; tapping it takes it off.
+                Button { viewModel.idea = nil } label: {
+                    FilterChip(label: idea.label, isSelected: true, systemImage: "xmark")
+                        .frame(minHeight: Metrics.hitTarget)
+                }
+                .buttonStyle(.plain)
+                .padding(.top, 4)
+                .accessibilityIdentifier("generate.idea")
+            }
+
             ScrollView(.horizontal) {
                 HStack(spacing: 6) {
                     ForEach(GenerateScriptViewModel.examples, id: \.self) { example in

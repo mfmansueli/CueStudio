@@ -9,13 +9,18 @@ import SwiftUI
 /// pushes the format's brief). Calls `onCreated` with the new script.
 struct GenerateScriptSheet: View {
     @State private var viewModel: GenerateScriptViewModel
+    /// Opened with an idea (the empty Scripts screen): the sheet writes it as soon as it shows.
+    private let writesAtOnce: Bool
+    @State private var hasStarted = false
     let onCreated: (Script) -> Void
 
     @Environment(\.dismiss) private var dismiss
 
-    init(services: AppServices, initialTab: GenerateTab = .prompt, onCreated: @escaping (Script) -> Void) {
+    init(services: AppServices, initialTab: GenerateTab = .prompt, seed: ScriptIdeaSeed? = nil, onCreated: @escaping (Script) -> Void) {
+        writesAtOnce = seed != nil
         _viewModel = State(initialValue: GenerateScriptViewModel(
             initialTab: initialTab,
+            seed: seed,
             writer: services.writer,
             library: services.library,
             profile: services.profile,
@@ -69,6 +74,12 @@ struct GenerateScriptSheet: View {
                     }
                 }
             }
+        }
+        .task {
+            // The same call as Generate script; without a model the sheet just shows why, as always.
+            guard writesAtOnce, !hasStarted, viewModel.canWriteFromPrompt else { return }
+            hasStarted = true
+            if let script = await viewModel.generateFromPrompt() { onCreated(script) }
         }
         .presentationDetents([.large])
         .presentationBackground(Palette.surface)
