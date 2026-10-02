@@ -153,7 +153,6 @@ SF Symbols por significado: `doc.text` scripts · `film.stack` takes · `person.
 | Improve script | `ImproveScriptSheet` | "Improve script · Apple Intelligence · runs on your iPhone"; dica do hook (laranja, abre as opções); as ferramentas em lista com ícone, nome e o que fazem ("Fit to time · Ideal for TikTok: 1:00–1:30"); na leitura, uma ferramenta grava o texto na hora (nova versão quando há takes) e o toast oferece Undo |
 | Script details | `ScriptDetailsSheet` | Create for e Script type (abrem suas sheets); o medidor de duração com a faixa ideal e o mínimo de monetização; os blocos em chips (tocar fecha a sheet e leva a leitura até o bloco); Format ("9:16 · 1080p30"), Version ("v2 · 3 takes") e Monetization goals |
 | Script type | `ScriptTypeSheet` | "Talking video" (sem formato) e os 8 formatos, cada um com o fluxo ("Hook → Tips → CTA"); define os blocos e as sugestões de IA, nunca as palavras |
-| Script (edição) | `ScriptEditorView` | Título, faixa de blocos, editor com Writing Tools, painel com aviso de versão, atalhos de IA ("In my voice" + os do formato) e medidor |
 | Create for | `DestinationSheet` | 6 plataformas com resumo do preset (formato · qualidade · safe zones · ideal) + "Monetization goals". Escolher mostra o toast "Create for {plataforma}" |
 | Hooks | `HooksSheet` | Hook atual + 3 opções escritas pelo modelo no aparelho (sem modelo, as do formato) + "More options" |
 | New script | `NewScriptSheet` | Caixa de Prompt + grade Write / Import / Themes / Formats. Sobre a câmera, Paste no lugar de Write |
