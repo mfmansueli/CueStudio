@@ -142,4 +142,62 @@ final class EditorTaskUITests: XCTestCase {
         app.buttons["edit.panel.apply"].tap()
         XCTAssertTrue(app.buttons["edit.toolbar.back"].waitForExistence(timeout: 5))
     }
+
+    /// The keyboard over the Text style panel: it opens, stays one panel (never a second copy, never a
+    /// sheet), keeps the field, the scope and ✓ in reach, and neither closing the keyboard nor
+    /// switching tabs closes the panel or loses what was typed. Repeated, because it used to flip the
+    /// layout under the field and close the panel on the way.
+    func testTypingInTheTextPanelKeepsOnePanelStableAndKeepsTheWords() {
+        let app = EditorApp.open(demo: true)
+        EditorApp.tapTool(app, "text")
+        EditorApp.tapTool(app, "styleAll")
+        let panels = app.descendants(matching: .any).matching(identifier: "edit.panel.textStyle")
+        XCTAssertTrue(panels.firstMatch.waitForExistence(timeout: 5))
+        let field = app.textFields["edit.textField"]
+        XCTAssertTrue(field.waitForExistence(timeout: 5))
+        let apply = app.buttons["edit.panel.apply"]
+
+        for round in 1...3 {
+            field.tap()
+            XCTAssertTrue(app.keyboards.firstMatch.waitForExistence(timeout: 5), "round \(round)")
+            // Give any layout flip the time it would have taken to show itself.
+            XCTAssertFalse(app.buttons["edit.toolbar.edit"].waitForExistence(timeout: 1.5), "the panel closed, round \(round)")
+            XCTAssertEqual(panels.count, 1, "a second panel, round \(round)")
+            XCTAssertTrue(field.exists && apply.exists && app.buttons["edit.style.scope.selected"].exists, "round \(round)")
+            // Over the keyboard, not under it.
+            let keyboardTop = app.keyboards.firstMatch.frame.minY
+            XCTAssertLessThanOrEqual(field.frame.maxY, keyboardTop + 1, "round \(round)")
+            XCTAssertLessThanOrEqual(apply.frame.maxY, keyboardTop + 1, "round \(round)")
+
+            field.typeText("ab")
+            let typed = field.value as? String ?? ""
+            XCTAssertTrue(typed.hasSuffix("ab"), "round \(round)")
+            field.typeText(XCUIKeyboardKey.delete.rawValue)
+            XCTAssertEqual(field.value as? String, String(typed.dropLast()), "round \(round)")
+            field.typeText("b")
+            XCTAssertEqual(field.value as? String, typed, "round \(round)")
+
+            // Put the keyboard away: the panel and the words stay.
+            app.keyboards.buttons["Done"].firstMatch.tap()
+            XCTAssertTrue(waitForGone(app.keyboards.firstMatch), "round \(round)")
+            XCTAssertTrue(panels.firstMatch.exists && field.exists, "round \(round)")
+            XCTAssertEqual(field.value as? String, typed, "round \(round)")
+            // A tab of the style tools, and back to the field.
+            app.buttons["edit.panel.tab.font"].tap()
+            XCTAssertTrue(panels.firstMatch.exists && !app.buttons["edit.toolbar.edit"].exists)
+            app.buttons["edit.panel.tab.presets"].tap()
+        }
+        apply.tap()
+        XCTAssertTrue(app.buttons["edit.toolbar.back"].waitForExistence(timeout: 5))
+    }
+
+    private func waitForGone(_ element: XCUIElement, timeout: TimeInterval = 5) -> Bool {
+        let deadline = Date().addingTimeInterval(timeout)
+        while Date() < deadline {
+            if !element.exists { return true }
+            Thread.sleep(forTimeInterval: 0.1)
+        }
+        return false
+    }
 }
+

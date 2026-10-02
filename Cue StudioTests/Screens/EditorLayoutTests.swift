@@ -158,4 +158,75 @@ struct EditorLayoutTests {
         #expect(tight.preview >= EditorLayout.previewMinimum(for: 600) - 0.01)
         #expect(abs(tight.topBar + tight.preview + tight.playerBar + tight.timeline + tight.panel - 600) < 0.5)
     }
+
+    // MARK: - Keyboard
+
+    /// What a software keyboard takes from the usable height (about 336 pt, less the bottom safe area
+    /// the usable height already leaves out).
+    private let keyboard: CGFloat = 302
+
+    /// Opening the keyboard in a panel's field must not change what kind of screen this is, or how the
+    /// panel is shown: that was what turned it into a sheet and closed it.
+    @Test func theKeyboardNeverChangesTheClassOrTurnsAPanelIntoASheet() {
+        for screen in Screen.allCases where screen != .iPhoneSE {
+            for size in sizes {
+                let still = EditorLayout(usableHeight: screen.rawValue, panel: size)
+                let typing = EditorLayout(usableHeight: screen.rawValue - keyboard, stableHeight: screen.rawValue, panel: size)
+                #expect(typing.heightClass == still.heightClass, "\(screen) \(size)")
+                #expect(typing.panelPresentation == .inline, "\(screen) \(size)")
+                #expect(typing.topBar == still.topBar && typing.playerBar == still.playerBar, "\(screen) \(size)")
+                #expect(typing.keyboardIsUp)
+            }
+        }
+    }
+
+    @Test func withTheKeyboardUpTheHeightIsSharedWithoutOverlapAndKeepsTheFieldRoom() {
+        for screen in Screen.allCases where screen != .iPhoneSE {
+            let usable = screen.rawValue - keyboard
+            for size in sizes {
+                let layout = EditorLayout(usableHeight: usable, stableHeight: screen.rawValue, panel: size, panelFocusesLane: true)
+                let total = layout.topBar + layout.preview + layout.playerBar + layout.timeline + layout.panel
+                #expect(abs(total - usable) < 0.5, "\(screen) \(size)")
+                #expect(layout.timeline == 0 && layout.toolbar == 0, "\(screen) \(size)")
+                // The video still shows the text being typed, and the panel has room for its header and its field.
+                #expect(layout.preview >= EditorLayout.previewMinimumWithKeyboard(for: usable) - 0.01, "\(screen) \(size)")
+                #expect(layout.panel >= min(EditorPanelSize.mini.height(for: usable), 150), "\(screen) \(size)")
+            }
+        }
+    }
+
+    @Test func aFullPanelGetsRoomForItsFieldAndTabsOverTheKeyboardOnEveryInlineScreen() {
+        for screen in Screen.allCases where screen != .iPhoneSE {
+            let layout = EditorLayout(usableHeight: screen.rawValue - keyboard, stableHeight: screen.rawValue, panel: .full)
+            // Header 56 + field 52 + the scope and tabs row of the compact layout, 152 pt, is the least.
+            #expect(layout.panel >= 152, "\(screen)")
+        }
+    }
+
+    @Test func onTheSEASheetPanelStaysExactlyAsItWasWhenTheKeyboardComesUp() {
+        let se = Screen.iPhoneSE.rawValue
+        let still = EditorLayout(usableHeight: se, panel: .full)
+        let typing = EditorLayout(usableHeight: se - keyboard, stableHeight: se, panel: .full)
+        #expect(typing.panelPresentation == still.panelPresentation)
+        #expect(typing.preview == still.preview && typing.timeline == still.timeline)
+        guard case .sheet = typing.panelPresentation else {
+            Issue.record("Expected a sheet")
+            return
+        }
+    }
+
+    @Test func aSmallInsetIsNotAKeyboard() {
+        let usable = Screen.iPhone16.rawValue
+        let bar = EditorLayout(usableHeight: usable - 55, stableHeight: usable, panel: .full)
+        #expect(!bar.keyboardIsUp)
+        #expect(!EditorLayout(usableHeight: usable, panel: .full).keyboardIsUp)
+    }
+
+    @Test func closingTheKeyboardGivesTheSameLayoutBack() {
+        let usable = Screen.iPhone16Pro.rawValue
+        let before = EditorLayout(usableHeight: usable, stableHeight: usable, panel: .full)
+        let after = EditorLayout(usableHeight: usable, panel: .full)
+        #expect(before == after)
+    }
 }
+
