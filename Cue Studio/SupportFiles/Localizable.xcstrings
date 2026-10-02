@@ -3,7 +3,7 @@
   "strings" : {
     "" : {
 
-    },
+},
     "A young crowd" : {
       "localizations" : {
         "ar" : {
@@ -884,6 +884,94 @@
         }
       }
     },
+    "Let’s Cue!" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "هيا نبدأ مع Cue!"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Los geht’s mit Cue!"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¡Vamos con Cue!"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "C’est parti avec Cue !"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "चलिए, Cue करें!"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ayo Cue!"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Si parte con Cue!"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "さあ、Cue しよう！"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue 시작해요!"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vamos de Cue!"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ไปกับ Cue กัน!"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Haydi Cue!"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cùng Cue nào!"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "来 Cue 吧！"
+          }
+        }
+      }
+    },
     "Light" : {
       "localizations" : {
         "ar" : {
@@ -1496,6 +1584,94 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "设置你的风格"
+          }
+        }
+      }
+    },
+    "Speak or type your idea…" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تحدّث بفكرتك أو اكتبها…"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sprich oder tippe deine Idee …"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Habla o escribe tu idea…"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dites ou saisissez votre idée…"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "अपना आइडिया बोलें या टाइप करें…"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ucapkan atau ketik idemu…"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Parla o scrivi la tua idea…"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アイデアを話すか、入力してください…"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "아이디어를 말하거나 입력해 주세요…"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fale ou digite sua ideia…"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "พูดหรือพิมพ์ไอเดียของคุณ…"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fikrini söyle ya da yaz…"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hãy nói hoặc nhập ý tưởng của bạn…"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "说出或输入你的想法…"
           }
         }
       }
@@ -2292,12 +2468,100 @@
         }
       }
     },
+    "Your idea, ready to record." : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "فكرتك، جاهزة للتسجيل."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deine Idee, bereit zum Drehen."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tu idea, lista para grabar."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Votre idée, prête à filmer."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "आपका आइडिया, रिकॉर्ड के लिए तैयार।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Idemu, siap direkam."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La tua idea, pronta da registrare."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "あなたのアイデアを、撮れる形に。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "아이디어를 바로 녹화할 수 있게."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sua ideia, pronta para gravar."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ไอเดียของคุณ พร้อมถ่าย"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fikrin, kayda hazır."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ý tưởng của bạn, sẵn sàng để quay."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你的想法，随时可录。"
+          }
+        }
+      }
+    },
     "·" : {
 
-    },
+},
     "· %@ · %@" : {
 
-    },
+},
     "· private · no cost" : {
       "localizations" : {
         "ar" : {
@@ -2388,7 +2652,7 @@
     },
     "“%@”" : {
 
-    },
+},
     "“3 things that…”" : {
       "localizations" : {
         "ar" : {
@@ -2479,13 +2743,13 @@
     },
     "[ ]" : {
 
-    },
+},
     "@" : {
 
-    },
+},
     "%@" : {
 
-    },
+},
     "%@ — announcement" : {
       "localizations" : {
         "ar" : {
@@ -6614,10 +6878,10 @@
     },
     "%@s" : {
 
-    },
+},
     "%lld" : {
 
-    },
+},
     "%lld %@ that actually changed my life. [pause]" : {
       "localizations" : {
         "ar" : {
@@ -9566,7 +9830,7 @@
     },
     "~%@" : {
 
-    },
+},
     "~%@ read" : {
       "localizations" : {
         "ar" : {
@@ -9921,7 +10185,7 @@
     },
     "0:00" : {
 
-    },
+},
     "0s" : {
       "localizations" : {
         "ar" : {
@@ -11420,7 +11684,7 @@
     },
     "A" : {
 
-    },
+},
     "A 10-minute dinner I make every week" : {
       "localizations" : {
         "ar" : {
@@ -110671,94 +110935,6 @@
         }
       }
     },
-    "Tell or write your idea…" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "احكِ فكرتك أو اكتبها…"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Erzähl oder schreib deine Idee …"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cuenta o escribe tu idea…"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dites ou écrivez votre idée…"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "अपना आइडिया बोलें या लिखें…"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ceritakan atau tulis idemu…"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Racconta o scrivi la tua idea…"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "アイデアを話すか、書いてください…"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "아이디어를 말하거나 적어 주세요…"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Conte ou escreva sua ideia…"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "เล่าหรือพิมพ์ไอเดียของคุณ…"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Fikrini anlat ya da yaz…"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hãy kể hoặc viết ý tưởng của bạn…"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "说出或写下你的想法…"
-          }
-        }
-      }
-    },
     "Tell them what to do next" : {
       "localizations" : {
         "ar" : {
@@ -110843,94 +111019,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "告诉他们下一步做什么"
-          }
-        }
-      }
-    },
-    "Tell us what you want to record. Cue writes the script." : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "أخبرنا بما تريد تسجيله، ويكتب Cue النص."
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sag uns, was du aufnehmen willst. Cue schreibt das Skript."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cuéntanos qué quieres grabar. Cue escribe el guion."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dites-nous ce que vous voulez filmer. Cue écrit le script."
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "बताइए आप क्या रिकॉर्ड करना चाहते हैं। Cue स्क्रिप्ट लिख देगा।"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ceritakan apa yang ingin kamu rekam. Cue yang menulis naskahnya."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Raccontaci cosa vuoi registrare. Cue scrive il copione."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "撮りたいことを教えてください。Cue が台本を書きます。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "녹화하고 싶은 내용을 알려 주세요. Cue가 대본을 써 드려요."
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Conte o que quer gravar. O Cue cria o roteiro."
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "บอกเราว่าอยากถ่ายอะไร แล้ว Cue จะเขียนสคริปต์ให้"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ne kaydetmek istediğini anlat. Senaryoyu Cue yazsın."
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hãy cho chúng tôi biết bạn muốn quay gì. Cue sẽ viết kịch bản."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "告诉我们你想录什么，Cue 来写脚本。"
           }
         }
       }
@@ -129437,94 +129525,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "这里说的话"
-          }
-        }
-      }
-    },
-    "What’s the idea?" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ما هي الفكرة؟"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Was ist die Idee?"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "¿Cuál es la idea?"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Quelle est l’idée ?"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "आइडिया क्या है?"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Apa idenya?"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Qual è l’idea?"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "どんなアイデア？"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "어떤 아이디어인가요?"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Qual é a ideia?"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ไอเดียคืออะไร?"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Fikir ne?"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ý tưởng là gì?"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "你的想法是什么？"
           }
         }
       }

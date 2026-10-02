@@ -5,8 +5,8 @@
 
 import SwiftUI
 
-/// A library with no scripts (not loading, not an empty search): one question, "What's the idea?",
-/// answered in the card (`IdeaPromptCard`, the same one the list shows: typed or dictated in place,
+/// A library with no scripts (not loading, not an empty search): one card, "Let's Cue!",
+/// whose idea is answered in the card (`IdeaPromptCard`, the same one the list shows: typed or dictated in place,
 /// its arrow opens Generate with AI), then writing and importing as quiet rows, and recording
 /// without a script as a small link. The "+" in the navigation bar stays, as in every state, and
 /// keeps Generate, Themes and Formats.

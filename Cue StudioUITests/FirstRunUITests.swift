@@ -33,7 +33,7 @@ final class FirstRunUITests: XCTestCase {
         XCTAssertTrue(app.buttons["detail.recordButton"].exists)
     }
 
-    /// "What's the idea?" is answered in the card itself: tapping the field takes the keyboard, no
+    /// The idea is answered in the card itself: tapping the field takes the keyboard, no
     /// sheet opens, the field keeps its three lines however long the idea gets, and the draft stays.
     func testTheIdeaIsTypedInTheCardWithoutASheetAndTheCardNeverGrows() {
         let app = CueApp.launch(seeded: false)

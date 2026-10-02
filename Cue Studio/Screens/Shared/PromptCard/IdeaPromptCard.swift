@@ -5,8 +5,8 @@
 
 import SwiftUI
 
-/// The AI card on Scripts, the same one with and without scripts: "What's the idea?" and a field to
-/// answer it, written or spoken right in the card. The field is three lines tall (it follows
+/// The AI card on Scripts, the same one with and without scripts: "Let's Cue!", a one-line promise
+/// ("Your idea, ready to record.") and a field for the idea, written or spoken right in the card. The field is three lines tall (it follows
 /// Dynamic Type) and a longer idea scrolls inside it, so the card never grows with the text. The
 /// microphone dictates into the field (speak, see the words, review, edit: it never sends anything
 /// itself) and the arrow opens Generate with AI with the idea filled in, where platform, length and
@@ -53,7 +53,7 @@ struct IdeaPromptCard: View {
     var body: some View {
         PromptCardSurface(base: base, animatesBackground: animatesBackground) {
             VStack(alignment: .leading, spacing: 12) {
-                PromptCardHeader(title: "What’s the idea?", animatesBackground: animatesBackground)
+                PromptCardHeader(title: "Let’s Cue!", animatesBackground: animatesBackground)
                 intro
                 field
                 if let notice = dictation.notice, !dictation.isActive {
@@ -101,10 +101,11 @@ struct IdeaPromptCard: View {
 
     // MARK: - Pieces
 
-    /// The explanation, or while dictating "Listening…" in its place. The explanation stays laid out
+    /// The one-line description, or while dictating "Listening…" in its place. It fits one line at the
+    /// default size and wraps at larger Dynamic Type sizes instead of being cut. It stays laid out
     /// (hidden) so the card keeps its height when the dictation starts and stops.
     private var intro: some View {
-        Text("Tell us what you want to record. Cue writes the script.")
+        Text("Your idea, ready to record.")
             .font(.subheadline)
             .foregroundStyle(Palette.ink2)
             .fixedSize(horizontal: false, vertical: true)
@@ -184,7 +185,7 @@ struct IdeaPromptCard: View {
     }
 
     private var placeholder: Text {
-        Text("Tell or write your idea…").foregroundStyle(Palette.ink2)
+        Text("Speak or type your idea…").foregroundStyle(Palette.ink2)
     }
 
     private var sendButton: some View {
