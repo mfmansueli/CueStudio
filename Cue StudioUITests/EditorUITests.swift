@@ -44,6 +44,22 @@ final class EditorUITests: XCTestCase {
         XCTAssertTrue(app.buttons["edit.toolbar.adjust"].waitForExistence(timeout: 5))
     }
 
+    func testAdjustPicksASettingAndMovesItsRuler() {
+        let app = EditorApp.open()
+        EditorApp.tapTool(app, "adjust")
+        let warmth = app.buttons["edit.adjust.warmth"]
+        XCTAssertTrue(warmth.waitForExistence(timeout: 5))
+        warmth.tap()
+        XCTAssertTrue(warmth.isSelected)
+        let ruler = app.sliders["edit.adjust.ruler"]
+        XCTAssertTrue(ruler.waitForExistence(timeout: 5))
+        ruler.adjust(toNormalizedSliderPosition: 0.75)
+        // Off zero: the dial says so and its own Reset shows.
+        XCTAssertTrue(app.buttons["edit.adjust.resetOne"].waitForExistence(timeout: 5))
+        app.buttons["edit.adjust.resetOne"].tap()
+        XCTAssertFalse(app.buttons["edit.adjust.resetOne"].exists)
+    }
+
     func testFullScreenShowsOnlyTheVideoAndComesBack() {
         let app = EditorApp.open()
         app.buttons["edit.fullScreenButton"].tap()

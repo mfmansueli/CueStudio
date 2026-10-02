@@ -92,6 +92,10 @@ names in **bold** stay in English in every language.
   a literal fishing hook.
 - Performance cues inside scripts are translated with the script text (`[pause]` → pt-BR
   `[pausa]`, ja `[間]`…) and always use ASCII brackets, so the prompter still recognizes them.
+  The script editor's Cues panel (`ScriptCue`) offers the nine cues by those names, in the
+  interface's language, and inserts them between ASCII brackets; the panel's own name is "Cues" /
+  *Indicaciones* / *Marcações* / *Hinweise*…, never a word another tab already uses (pt-BR *Dicas*
+  and tr *İpuçları* are Tips).
 - "%@ to %@" is a countdown ("18s to 1:00", "12s to monetize"), not a range.
 - Quick edit's Audio category holds Voice (the take's own speech), Music and Voice-over, and a
   video over the take has its Sound: where a language has one word for all of them (ar *الصوت*, tr
