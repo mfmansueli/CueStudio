@@ -82,6 +82,29 @@ struct ScriptSpellingTests {
         #expect(merged.isEstimated)
     }
 
+    @Test func anEnglishPhraseTheRecognizerHeardAsPortugueseGibberishIsWrittenAsTheScriptHasIt() {
+        let script = "Hey guys welcome back. Hoje vou mostrar três hábitos que mudaram minhas manhãs."
+        let words = heard("rei gais uélcam béqui hoje vou mostrar três hábitos que mudaram minhas manhãs")
+        let result = ScriptSpelling.apply(to: words, script: script, language: .portugueseBrazil)
+        #expect(result.followsScript)
+        #expect(text(result).hasPrefix("Hey guys welcome back. Hoje vou mostrar"))
+        // The voice's times stay on the words.
+        #expect(result.words.prefix(4).map(\.start) == words.prefix(4).map(\.start))
+    }
+
+    @Test func anEnglishPhraseIsLeftAsHeardWhenTheTakeDidntFollowTheScriptOrTheLengthsDiffer() {
+        let script = "Hey guys welcome back. Hoje vou mostrar três hábitos que mudaram minhas manhãs."
+        let different = ScriptSpelling.apply(
+            to: heard("rei hoje vou mostrar três hábitos que mudaram minhas manhãs"), script: script, language: .portugueseBrazil
+        )
+        #expect(text(different).hasPrefix("rei hoje vou mostrar"))
+        let improvised = ScriptSpelling.apply(
+            to: heard("rei gais uélcam béqui e agora uma história totalmente diferente sobre outra coisa"), script: script, language: .portugueseBrazil
+        )
+        #expect(!improvised.followsScript)
+        #expect(text(improvised).hasPrefix("rei gais"))
+    }
+
     @Test func skippedLinesNeverAppear() {
         let script = "First point here. Second point is long and careful. Third point here."
         let result = ScriptSpelling.apply(to: heard("first point here third point here"), script: script)

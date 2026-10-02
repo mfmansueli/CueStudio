@@ -839,7 +839,12 @@ O protótipo simulava várias coisas; o app implementa de verdade ou deixa de fo
   **improvisada**, só as palavras que se alinham com segurança (a mesma palavra numa sequência de 2+ ou com
   5+ letras) pegam a grafia do roteiro e uma palavra só é trocada quando é quase a mesma. Em qualquer
   caso números, negações, palavras diferentes, improvisos e repetições ficam como foram ditos, e linhas
-  do roteiro que não foram ditas nunca aparecem. Japonês, chinês e tailandês usam a mesma regra, com as
+  do roteiro que não foram ditas nunca aparecem. **Idiomas misturados** (um criador fala português com frases em inglês): o idioma de um roteiro em
+  Auto-detect é o que a maioria das **palavras** diz, frase a frase, com o idioma do iPhone só como leve
+  inclinação (`LanguageDetector`), então quatro palavras em inglês no começo não viram o roteiro inglês; e
+  numa take lida do roteiro, uma frase do roteiro claramente em outro idioma que o reconhecedor ouviu como
+  palavras sem sentido, com quase o mesmo número de palavras, é escrita como o roteiro a tem
+  (`LanguageDetector.isForeign`, tempos da voz mantidos). Japonês, chinês e tailandês usam a mesma regra, com as
   palavras cortadas pelo mesmo dicionário nos dois lados (palavras de 2+ letras). Antes de ouvir, o
   reconhecedor recebe os nomes e as palavras longas do roteiro como dica de vocabulário
   (`ScriptVocabulary`, `AnalysisContext.contextualStrings`, até 100 termos): isso só inclina a escuta,

@@ -17,6 +17,10 @@ import Foundation
 ///   written as the script has it ("mostra" → "mostrar").
 /// - **Improvised** (little lines up): only words that line up reliably take the script's spelling,
 ///   and a heard word is replaced only when it is nearly the same word.
+/// **Mixed languages.** A recognizer listens in one language, so an English phrase inside a Portuguese
+/// take comes out as Portuguese-sounding words that mean nothing. When the take was read from the
+/// script and the script has a phrase clearly in another language (`LanguageDetector.isForeign`)
+/// where the voice gave about as many words of gibberish, the phrase is written as the script has it.
 /// Words are compared by `WordTokenizer.key` (case, accents, width and the letters recognizers
 /// write in more than one way are folded), so Arabic, Hindi, Japanese, Chinese and Thai are
 /// compared the same way as Latin scripts.
@@ -36,6 +40,8 @@ nonisolated enum ScriptSpelling {
     static let followingMinimumMatches = 3
     /// Longest gap, in words, that is corrected word by word.
     static let longestGap = 3
+    /// Longest stretch, in words, of a phrase in another language that is written as the script has it.
+    static let longestForeignGap = 8
     /// How alike two words must be (1 is identical) for the heard one to be written as the script's.
     static let similarity = (improvised: 0.75, following: 0.65)
     /// How alike two stretches must be when the same letters are split into a different number of words.
@@ -64,7 +70,8 @@ nonisolated enum ScriptSpelling {
         for anchor in anchors + [end] {
             guard anchor.first >= heardFrom, anchor.second >= writtenFrom else { continue }
             words += corrected(
-                Array(heard[heardFrom..<anchor.first]), toward: Array(written[writtenFrom..<anchor.second]), following: follows
+                Array(heard[heardFrom..<anchor.first]), toward: Array(written[writtenFrom..<anchor.second]), following: follows,
+                language: language
             )
             if anchor.first < heard.count {
                 var word = heard[anchor.first]
@@ -99,8 +106,15 @@ nonisolated enum ScriptSpelling {
 
     /// The heard words between two matches, written as the script has them when they are nearly the
     /// same words. Nothing changes when the voice and the script say different things there.
-    private static func corrected(_ heard: [CaptionWord], toward written: [String], following: Bool) -> [CaptionWord] {
-        guard !heard.isEmpty, !written.isEmpty, heard.count <= longestGap, written.count <= longestGap else { return heard }
+    private static func corrected(
+        _ heard: [CaptionWord], toward written: [String], following: Bool, language: CueLanguage?
+    ) -> [CaptionWord] {
+        guard !heard.isEmpty, !written.isEmpty else { return heard }
+        if following, let language, abs(heard.count - written.count) <= 1, heard.count <= longestForeignGap, written.count <= longestForeignGap,
+           LanguageDetector.isForeign(written, to: language.languageCode) {
+            return rewritten(heard, as: written)
+        }
+        guard heard.count <= longestGap, written.count <= longestGap else { return heard }
         let wordLimit = following ? similarity.following : similarity.improvised
         if heard.count == written.count {
             return zip(heard, written).map { word, spelling in
@@ -117,6 +131,19 @@ nonisolated enum ScriptSpelling {
               !hasDigit(heardLetters), !hasDigit(writtenLetters),
               ratio(heardLetters, writtenLetters) >= (following ? stretchSimilarity.following : stretchSimilarity.improvised),
               let first = heard.first, let last = heard.last else { return heard }
+        return share(written, over: TimeSpan(start: first.start, end: max(first.start, last.end)))
+    }
+
+    /// `heard` written as `written`: word for word in the voice's own times when there are as many,
+    /// else the words share the stretch the voice took (a guess, so marked estimated).
+    private static func rewritten(_ heard: [CaptionWord], as written: [String]) -> [CaptionWord] {
+        guard heard.count != written.count, let first = heard.first, let last = heard.last else {
+            return zip(heard, written).map { word, spelling in
+                var word = word
+                word.text = spelling
+                return word
+            }
+        }
         return share(written, over: TimeSpan(start: first.start, end: max(first.start, last.end)))
     }
 
