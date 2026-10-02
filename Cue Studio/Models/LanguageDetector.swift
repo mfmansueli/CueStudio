@@ -19,6 +19,9 @@ nonisolated enum LanguageDetector {
     static let weighingMinimumWords = 8
     /// How sure the recognizer must be that a short phrase is in another language to call it one.
     static let foreignConfidence = 0.75
+    /// How much of a text's weight the creator's languages add, and how close a second language
+    /// must be to win by it: enough to settle text that could be either, far from enough to outvote clear text.
+    static let leanWeight = 0.15
 
     /// ISO 639 code of the dominant language ("pt", "ja"), or nil when there's nothing to tell by.
     /// Cues aren't spoken, so they don't count. `preferring` (the creator's languages, such as the
@@ -26,12 +29,12 @@ nonisolated enum LanguageDetector {
     static func dominantLanguageCode(in text: String, preferring preferred: [String] = []) -> String? {
         let spoken = CueParser.stripCues(text)
         guard spoken.contains(where: { $0.isLetter }) else { return nil }
-        let hints = hints(for: preferred)
+        let lean = lean(for: preferred)
         let whole = NLLanguageRecognizer()
-        whole.languageHints = hints
         whole.processString(spoken)
-        let wholeLanguage = whole.dominantLanguage.flatMap { $0 == .undetermined ? nil : $0 }
-        let language = weighed(spoken, hints: hints, fallback: wholeLanguage) ?? wholeLanguage
+        let wholeLanguage = whole.languageHypotheses(withMaximum: 2).sorted { $0.value > $1.value }
+            .map(\.key).first { $0 != .undetermined }
+        let language = weighed(spoken, lean: lean, fallback: wholeLanguage) ?? leaning(whole, to: lean) ?? wholeLanguage
         return language.flatMap { Locale.Language(identifier: $0.rawValue).languageCode?.identifier }
     }
 
@@ -58,7 +61,7 @@ nonisolated enum LanguageDetector {
 
     /// The language most of the words are in, each sentence counting for its words: nil when the
     /// text is too short for that to mean more than reading it whole.
-    private static func weighed(_ text: String, hints: [NLLanguage: Double], fallback: NLLanguage?) -> NLLanguage? {
+    private static func weighed(_ text: String, lean: Set<NLLanguage>, fallback: NLLanguage?) -> NLLanguage? {
         var total = 0.0
         var weights: [NLLanguage: Double] = [:]
         let tokenizer = NLTokenizer(unit: .sentence)
@@ -68,7 +71,6 @@ nonisolated enum LanguageDetector {
             let count = Double(wordCount(of: sentence))
             guard count > 0 else { return true }
             let recognizer = NLLanguageRecognizer()
-            recognizer.languageHints = hints
             recognizer.processString(sentence)
             total += count
             for (language, probability) in recognizer.languageHypotheses(withMaximum: 2) where language != .undetermined {
@@ -77,6 +79,9 @@ nonisolated enum LanguageDetector {
             return true
         }
         guard total >= Double(weighingMinimumWords) else { return nil }
+        for language in lean where weights[language] != nil {
+            weights[language, default: 0] += total * leanWeight
+        }
         return weights.max { $0.value < $1.value }?.key ?? fallback
     }
 
@@ -86,12 +91,20 @@ nonisolated enum LanguageDetector {
         return sentence.split(whereSeparator: \.isWhitespace).filter { $0.contains(where: \.isLetter) }.count
     }
 
-    private static func hints(for preferred: [String]) -> [NLLanguage: Double] {
-        var hints: [NLLanguage: Double] = [:]
-        for code in preferred {
-            guard let language = Locale.Language(identifier: code).languageCode?.identifier else { continue }
-            hints[NLLanguage(rawValue: language)] = 0.25
-        }
-        return hints
+    /// The creator's languages as a lean. It is added to the read of the text, never fed to the
+    /// recognizer as a prior: `NLLanguageRecognizer.languageHints` replaces what the text says (an
+    /// English-only hint reads a clear Portuguese text as English), and an iPhone set to English
+    /// belongs to many creators who write in another language.
+    private static func lean(for preferred: [String]) -> Set<NLLanguage> {
+        Set(preferred.compactMap { Locale.Language(identifier: $0).languageCode?.identifier }.map { NLLanguage(rawValue: $0) })
+    }
+
+    /// For a text too short to weigh by sentence: the leaning language when it is a close second
+    /// to the text's own, so a lean can settle a tie and nothing more.
+    private static func leaning(_ recognizer: NLLanguageRecognizer, to lean: Set<NLLanguage>) -> NLLanguage? {
+        let hypotheses = recognizer.languageHypotheses(withMaximum: 2).sorted { $0.value > $1.value }
+        guard let top = hypotheses.first, let second = hypotheses.dropFirst().first,
+              lean.contains(second.key), top.value - second.value < leanWeight else { return nil }
+        return second.key
     }
 }

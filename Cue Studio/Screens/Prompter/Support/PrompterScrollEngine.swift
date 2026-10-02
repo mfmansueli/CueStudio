@@ -59,6 +59,11 @@ nonisolated struct PrompterScrollEngine: Equatable, Sendable {
         return isAtEnd
     }
 
+    /// Puts the text at `offset` (a layout changed under it), within the text.
+    mutating func seek(to offset: Double) {
+        self.offset = min(endOffset, max(0, offset))
+    }
+
     /// Positive moves the text up (forward).
     mutating func scroll(by delta: Double) {
         offset = min(endOffset, max(0, offset + delta))

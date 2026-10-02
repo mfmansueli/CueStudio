@@ -108,6 +108,10 @@ final class PrompterViewModel {
     private var speechTracker = ScriptSpeechTracker(words: [])
     /// Vertical extent of each paragraph in the text, for placing words on the guide.
     private var paragraphFrames: [Range<Double>] = []
+    /// The word each mode was left on (see `keepPlace`).
+    private var readingPlaces: [PrompterMode: Int] = [:]
+    /// The word to put back on the guide until the layout of the mode just entered has settled.
+    private var layoutAnchor: LayoutAnchor?
     private var hasStartedSession = false
     /// The camera and mic the creator was already told are missing, so the notice shows once.
     private var noticedLens: CameraLens?
@@ -248,7 +252,9 @@ final class PrompterViewModel {
     func switchMode(to newMode: PrompterMode) async {
         guard newMode != mode, !isRecording, countdown == nil else { return }
         pause()
+        if let word = wordOnTheGuide() { readingPlaces[mode] = word }
         mode = newMode
+        putBackPlace(of: newMode)
         await enter(newMode)
     }
 
@@ -306,6 +312,7 @@ final class PrompterViewModel {
             lineHeight: lineHeight,
             wordCount: ReadTime.wordCount(in: script?.text ?? "")
         )
+        reanchorToReadingWord()
     }
 
     /// Where paragraph `index` sits in the text (top..<bottom), for Voice follow.
@@ -315,6 +322,59 @@ final class PrompterViewModel {
             paragraphFrames += Array(repeating: frame, count: index + 1 - paragraphFrames.count)
         }
         paragraphFrames[index] = frame
+        reanchorToReadingWord()
+    }
+
+    /// The words the script is counted in, the ones recognition follows while it does.
+    private func currentWords() -> ScriptWords? {
+        guard let script else { return nil }
+        let words = followsSpeech ? scriptWords : ScriptWords(text: script.text, language: script.language)
+        return words.count > 0 ? words : nil
+    }
+
+    /// The word on the guide now, in this mode's layout.
+    private func wordOnTheGuide() -> Int? {
+        guard !paragraphFrames.isEmpty, let words = currentWords() else { return nil }
+        return words.wordIndex(
+            atOffset: engine.offset, paragraphFrames: paragraphFrames, lineHeight: lineHeight, endOffset: engine.endOffset
+        )
+    }
+
+    /// Each mode keeps its own place (`readingPlaces`, noted before the mode changes, while the
+    /// layout is still its own): coming back puts that word on the guide again, and a mode not
+    /// visited yet starts at the top, so what one does never moves the other.
+    private func putBackPlace(of newMode: PrompterMode) {
+        guard let words = currentWords() else { return }
+        let word = readingPlaces[newMode] ?? 0
+        layoutAnchor = LayoutAnchor(words: words, word: word, until: clock() + LayoutAnchor.settling)
+        resumeSpeech(at: word)
+    }
+
+    /// Reads on from `word` with a fresh transcript: the words heard before are still in the
+    /// transcript's last words, and would match where they were read.
+    private func resumeSpeech(at word: Int) {
+        guard followsSpeech else { return }
+        speech.discardHeard()
+        speechTracker.reset(to: word)
+        speechLead.reset(to: word)
+    }
+
+    /// Puts the word that was on the guide back on it, each time the new layout reports a part of
+    /// itself, until the swap has settled. The last report has the final measures.
+    private func reanchorToReadingWord() {
+        guard let anchor = layoutAnchor else { return }
+        guard clock() < anchor.until else {
+            layoutAnchor = nil
+            return
+        }
+        guard let offset = anchor.words.offset(
+            forWord: anchor.word, paragraphFrames: paragraphFrames, lineHeight: lineHeight, endOffset: engine.endOffset
+        ) else { return }
+        engine.seek(to: offset)
+        if followsSpeech {
+            speechTracker.reset(to: anchor.word)
+            speechLead.reset(to: anchor.word)
+        }
     }
 
     func togglePlay() {
@@ -326,7 +386,7 @@ final class PrompterViewModel {
         guard hasScript else { return }
         if engine.isAtEnd {
             engine.rewind()
-            speechTracker.reset(to: 0)
+            resumeSpeech(at: 0)
         }
         // Nothing predicted carries over a pause.
         speechLead.reset(to: speechTracker.position)
@@ -345,20 +405,22 @@ final class PrompterViewModel {
     }
 
     func rewind() {
+        layoutAnchor = nil
         engine.rewind()
-        speechTracker.reset(to: 0)
-        speechLead.reset(to: 0)
+        resumeSpeech(at: 0)
         pause()
         toast.show(String(localized: "Back to the top"))
     }
 
     func jump(lines: Int) {
+        layoutAnchor = nil
         engine.jump(lines: lines)
         syncSpeechPosition()
     }
 
     /// Dragging the text: finger up moves the script forward.
     func drag(by translation: Double) {
+        layoutAnchor = nil
         engine.scroll(by: -translation)
         syncSpeechPosition()
     }
@@ -555,6 +617,7 @@ final class PrompterViewModel {
         reviewingTake = nil
         openedOnReview = false
         engine.rewind()
+        resumeSpeech(at: 0)
         mode = .selfie
         await enter(.selfie)
     }
@@ -573,6 +636,8 @@ final class PrompterViewModel {
         scriptID = script.id
         engine = PrompterScrollEngine()
         paragraphFrames = []
+        readingPlaces = [:]
+        layoutAnchor = nil
         sheet = nil
         session.recommend(recommendation)
         updateVoiceMonitoring()
@@ -811,6 +876,8 @@ final class PrompterViewModel {
     /// After a manual scroll, reading picks up from what's on the guide.
     private func syncSpeechPosition() {
         guard followsSpeech else { return }
+        // A new place to read from: the words heard before it must not match back where they were read.
+        speech.discardHeard()
         speechTracker.reset(to: scriptWords.wordIndex(
             atOffset: engine.offset,
             paragraphFrames: paragraphFrames,
