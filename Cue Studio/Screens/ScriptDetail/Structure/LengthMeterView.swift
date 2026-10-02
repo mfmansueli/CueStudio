@@ -9,7 +9,7 @@ import SwiftUI
 struct LengthMeterView: View {
     let zone: LengthZone
 
-    private var color: Color { zone.isInIdealRange ? Palette.acc : Palette.warn }
+    private var color: Color { zone.isInIdealRange ? Palette.accText : Palette.warnText }
     /// The same two colors for the words next to the meter, dark enough on a light surface.
     private var textColor: Color { zone.isInIdealRange ? Palette.accText : Palette.warnText }
 

@@ -9,7 +9,7 @@ import SwiftUI
 struct UsageMeter: View {
     /// 0...1
     var fraction: Double
-    var color: Color = Palette.acc
+    var color: Color = Palette.accText
     var height: CGFloat = 6
     /// Off for meters that update every frame (scroll progress).
     var animated = true

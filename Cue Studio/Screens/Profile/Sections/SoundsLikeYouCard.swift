@@ -34,7 +34,7 @@ struct SoundsLikeYouCard: View {
             Toggle("Use my voice in AI scripts", isOn: $profile.profile.usesVoiceInAI)
                 .font(.subheadline)
                 .foregroundStyle(Palette.ink.opacity(0.8))
-                .tint(Palette.success)
+                .tint(Palette.successText)
                 .accessibilityIdentifier("profile.useVoiceToggle")
         }
         .padding(.vertical, 6)

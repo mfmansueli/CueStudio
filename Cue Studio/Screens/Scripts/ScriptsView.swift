@@ -180,7 +180,7 @@ struct ScriptsView: View {
             Button { actions.record(script) } label: {
                 Label("Record", systemImage: "video.fill")
             }
-            .tint(Palette.acc)
+            .tint(Palette.accAction)
         }
         .swipeActions(edge: .trailing) {
             Button(role: .destructive) { actions.delete(script) } label: {

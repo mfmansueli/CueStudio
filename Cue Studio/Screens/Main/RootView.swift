@@ -23,6 +23,8 @@ struct RootView: View {
             .toastHost()
             .environment(services)
             .environment(\.locale, languages.interfaceLocale)
+            // Nil follows the iPhone. The camera, prompter, review and editor pin themselves dark.
+            .preferredColorScheme(services.appearance.appearance.colorScheme)
             .environment(\.layoutDirection, LayoutDirection(rightToLeft: languages.interfaceLanguage.isRightToLeft))
             .task {
                 await services.store.start()

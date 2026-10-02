@@ -34,7 +34,7 @@ struct ParagraphTextView: UIViewRepresentable {
         view.backgroundColor = .clear
         view.textContainerInset = .zero
         view.textContainer.lineFragmentPadding = 0
-        view.tintColor = UIColor(Palette.acc)
+        view.tintColor = UIColor(Palette.accText)
         view.adjustsFontForContentSizeCategory = true
         view.autocapitalizationType = .sentences
         view.writingToolsBehavior = .complete

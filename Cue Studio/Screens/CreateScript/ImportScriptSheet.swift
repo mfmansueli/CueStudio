@@ -36,7 +36,7 @@ struct ImportScriptSheet: View {
                 }
                 if isReading {
                     HStack(spacing: 10) {
-                        ProgressView().tint(Palette.acc)
+                        ProgressView().tint(Palette.accText)
                         Text("Reading the text…").foregroundStyle(Palette.accText)
                     }
                     .font(.subheadline)

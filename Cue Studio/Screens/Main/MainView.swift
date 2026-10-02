@@ -11,6 +11,7 @@ struct MainView: View {
     let services: AppServices
 
     @Environment(PresentationService.self) private var presentation
+    @Environment(\.colorScheme) private var colorScheme
     @Environment(ScriptLibraryService.self) private var library
     @Environment(PreferencesService.self) private var preferences
     @Environment(CreatorProfileService.self) private var profile
@@ -39,7 +40,7 @@ struct MainView: View {
                 Label {
                     Text("Record")
                 } icon: {
-                    Image(uiImage: RecordGlyph.tabImage)
+                    Image(uiImage: RecordGlyph.tabImage(for: colorScheme))
                 }
             }
             Tab("Profile", systemImage: "person.crop.circle", value: AppTab.profile) {
@@ -59,7 +60,7 @@ struct MainView: View {
                 }
             }
         }
-        .tint(Palette.acc)
+        .tint(Palette.accText)
         .sheet(item: $presentation.sheet) { sheet in
             sheetContent(sheet)
         }

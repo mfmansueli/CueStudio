@@ -21,7 +21,7 @@ struct SettingToggleRow: View {
                 }
             }
         }
-        .tint(Palette.success)
+        .tint(Palette.successText)
         .frame(minHeight: minHeight)
         .padding(.horizontal, 16)
     }

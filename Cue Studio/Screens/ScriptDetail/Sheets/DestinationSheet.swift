@@ -37,7 +37,7 @@ struct DestinationSheet: View {
                             .foregroundStyle(Palette.ink2)
                     }
                 }
-                .tint(Palette.success)
+                .tint(Palette.successText)
                 .padding(.horizontal, 16)
                 .padding(.vertical, 12)
                 .background(Palette.surface2, in: RoundedRectangle(cornerRadius: 22, style: .continuous))

@@ -48,7 +48,7 @@ struct ScriptBriefView: View {
                                 set: { viewModel.setValue($0, for: field) }
                             ))
                             .font(.body)
-                            .tint(Palette.acc)
+                            .tint(Palette.accText)
                             .padding(.horizontal, 14)
                             .frame(height: Metrics.hitTarget)
                             .background(Palette.surface2, in: RoundedRectangle(cornerRadius: Metrics.fieldRadius, style: .continuous))

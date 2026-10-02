@@ -28,7 +28,7 @@ struct ValueSlider: View {
             .font(.body)
             .frame(minHeight: 36)
             Slider(value: $value, in: range, step: step)
-                .tint(Palette.acc)
+                .tint(Palette.accText)
                 .accessibilityLabel(Text(title))
                 .accessibilityValue(Text(valueText))
                 .accessibilityIdentifier(identifier ?? "")

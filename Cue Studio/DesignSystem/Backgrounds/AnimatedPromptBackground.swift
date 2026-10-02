@@ -45,7 +45,7 @@ struct AnimatedPromptBackground: View {
                             endRadius: radius * 0.56
                         )
                         RadialGradient(
-                            colors: [Palette.insetField, .clear],
+                            colors: [Palette.insetShade, .clear],
                             center: UnitPoint(x: 0.55 + 0.2 * cos(secondPhase), y: 0.7 + 0.14 * sin(phase)),
                             startRadius: 0,
                             endRadius: radius * 0.58

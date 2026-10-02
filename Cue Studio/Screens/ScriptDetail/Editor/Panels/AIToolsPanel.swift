@@ -29,7 +29,7 @@ struct AIToolsPanel: View {
         let dimmed = tool.needsLanguageModel && !viewModel.isLanguageModelAvailable
         let label = HStack(spacing: 10) {
             if isRunning {
-                ProgressView().controlSize(.small).tint(Palette.acc)
+                ProgressView().controlSize(.small).tint(Palette.accText)
             } else {
                 Image(systemName: tool.systemImage)
                     .font(.system(size: 16, weight: .medium))

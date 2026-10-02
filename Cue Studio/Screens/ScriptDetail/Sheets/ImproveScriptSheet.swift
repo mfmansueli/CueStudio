@@ -85,7 +85,7 @@ struct ImproveScriptSheet: View {
         let label = HStack(spacing: 12) {
             Group {
                 if isRunning {
-                    ProgressView().tint(Palette.acc)
+                    ProgressView().tint(Palette.accText)
                 } else {
                     Image(systemName: tool.systemImage)
                         .font(.system(size: 17, weight: .medium))

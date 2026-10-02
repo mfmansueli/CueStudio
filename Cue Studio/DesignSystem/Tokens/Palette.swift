@@ -5,8 +5,9 @@
 
 import SwiftUI
 
-/// Semantic colors. Cue runs in dark appearance (a camera app should not flash white), but every
-/// token keeps a light value so the app stays correct if the appearance lock is ever removed.
+/// Semantic colors. Cue's own screens follow the iPhone (or Settings › Appearance); the camera,
+/// the prompter, the take review and the editor stay dark in any appearance (`videoContext()`: a
+/// camera app should not flash white), so the tokens only they use are dark values.
 ///
 /// **Contrast.** Text tokens meet the Human Interface Guidelines' 4.5:1 against the surfaces they
 /// sit on, in both appearances, and parts of controls 3:1 (`PaletteContrastTests` measures it, with
@@ -30,7 +31,7 @@ enum Palette {
     /// Inactive chips, search fields and meter tracks.
     static let fill = Color(light: Color(hex: 0x767680, opacity: 0.12), dark: Color(hex: 0x767680, opacity: 0.24))
     /// Buttons floating over the camera and prompter.
-    static let overlayFill = Color.white.opacity(0.1)
+    static let overlayFill = Color(light: Color.black.opacity(0.08), dark: Color.white.opacity(0.1))
     static let separator = Color(
         light: Color(hex: 0x3C3C43, opacity: 0.29), dark: Color(hex: 0x545458, opacity: 0.6),
         lightIncreasedContrast: Color(hex: 0x3C3C43, opacity: 0.6), darkIncreasedContrast: Color(hex: 0x8E8E93, opacity: 0.8)
@@ -39,8 +40,12 @@ enum Palette {
     static let neutralAction = Color(hex: 0x636366)
     /// Hairline around glass surfaces: the tab bar, the camera toolbar, floating buttons.
     static let glassBorder = Color.white.opacity(0.12)
-    /// Field sunk into a tinted card, like the prompt box.
-    static let insetField = Color.black.opacity(0.38)
+    /// Field sunk into a tinted card, like the prompt box: a dark well in dark, a white one in light.
+    static let insetField = Color(light: Color.white.opacity(0.72), dark: Color.black.opacity(0.38))
+    /// The soft shadow that drifts across the prompt box's golden wash.
+    static let insetShade = Color(light: Color.black.opacity(0.05), dark: Color.black.opacity(0.38))
+    /// Ring around a color swatch, so a white one is still seen on a white card.
+    static let swatchRing = Color(light: Color.black.opacity(0.25), dark: Color.white.opacity(0.25))
 
     // MARK: - Text
 
@@ -67,6 +72,9 @@ enum Palette {
         light: Color(hex: 0x7A5C00), dark: Color(hex: 0xFFD60A),
         lightIncreasedContrast: Color(hex: 0x5E4700), darkIncreasedContrast: Color(hex: 0xFFD60A)
     )
+    /// Behind white text: the swipe action that records. `acc` is 1.4:1 under white; this is 5.3:1
+    /// in either appearance.
+    static let accAction = Color(hex: 0x8A6500)
     /// Text and icons on top of `acc`.
     static let accInk = Color.black
     static let accSoft = Color(hex: 0xFFD60A, opacity: 0.16)
@@ -174,12 +182,12 @@ enum Palette {
     static let textShadow = Color.black.opacity(0.6)
     /// Display sheet over the camera: nearly opaque, so settings stay readable, with the preview
     /// still visible above it.
-    static let sheetGlass = Color(hex: 0x1C1C1E, opacity: 0.97)
+    static let sheetGlass = Color(light: Color.white.opacity(0.97), dark: Color(hex: 0x1C1C1E, opacity: 0.97))
 
     // MARK: Editor (v10)
 
     /// Panels under the editor's timeline.
-    static let editorPanel = Color(hex: 0x121214)
+    static let editorPanel = Color(light: Color(hex: 0xF2F2F7), dark: Color(hex: 0x121214))
     /// Done and the other glass buttons of the editor's top bar.
     static let editorBarButton = Color(hex: 0x3A3A3C, opacity: 0.7)
     /// The editor's toast: one line on a dark pill.
@@ -202,7 +210,7 @@ enum Palette {
     /// A voice-over track while it records.
     static let laneRecording = Color(hex: 0xFF453A, opacity: 0.5)
     /// The dashed outline of "Save as my style" and "Add a line".
-    static let laneGhostBorder = Color(hex: 0xEBEBF5, opacity: 0.3)
+    static let laneGhostBorder = Color(light: Color(hex: 0x6E6E73), dark: Color(hex: 0xEBEBF5, opacity: 0.45))
     /// The strip each track sits on, and the same strip while its tools are open (with its ring).
     static let laneStrip = Color(hex: 0x1C1C1E)
     static let laneStripActive = Color(hex: 0x24231C)

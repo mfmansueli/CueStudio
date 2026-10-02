@@ -34,7 +34,7 @@ struct OptionsPanel: View {
                 }
                 Toggle("Show cues while recording", isOn: $viewModel.showsCues)
                     .font(.subheadline)
-                    .tint(Palette.success)
+                    .tint(Palette.successText)
                     .padding(.horizontal, 14)
                     .frame(minHeight: 48)
                     .accessibilityIdentifier("editor.option.cues")
@@ -74,7 +74,7 @@ struct OptionsPanel: View {
                         .font(.system(size: size == .small ? 14 : size == .medium ? 17 : 20, weight: .semibold))
                         .foregroundStyle(Palette.ink)
                         .frame(width: 44, height: 30)
-                        .background(textSize == size ? Palette.neutralAction : .clear, in: RoundedRectangle(cornerRadius: 8, style: .continuous))
+                        .background(textSize == size ? Palette.surface3 : .clear, in: RoundedRectangle(cornerRadius: 8, style: .continuous))
                         .frame(minHeight: Metrics.hitTarget)
                         .contentShape(Rectangle())
                 }

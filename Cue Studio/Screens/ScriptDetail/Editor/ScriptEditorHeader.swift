@@ -18,7 +18,7 @@ struct ScriptEditorHeader: View {
                 TextField("Untitled script", text: $viewModel.draftTitle)
                     .font(.system(.body, weight: .semibold))
                     .foregroundStyle(Palette.ink)
-                    .tint(Palette.acc)
+                    .tint(Palette.accText)
                     .lineLimit(1)
                     .focused($titleHasFocus)
                     .submitLabel(.next)

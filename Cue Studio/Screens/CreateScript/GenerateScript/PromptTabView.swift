@@ -24,7 +24,7 @@ struct PromptTabView: View {
                 TextEditor(text: $viewModel.promptText)
                     .focused($isEditing)
                     .scrollContentBackground(.hidden)
-                    .tint(Palette.acc)
+                    .tint(Palette.accText)
                     .padding(EdgeInsets(top: 14, leading: 16, bottom: 14, trailing: 16))
                     .writingToolsBehavior(.limited)
                     .accessibilityLabel(Text("Describe your video"))

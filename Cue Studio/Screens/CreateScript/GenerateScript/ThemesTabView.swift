@@ -22,7 +22,7 @@ struct ThemesTabView: View {
                 } label: {
                     HStack(spacing: 5) {
                         if viewModel.isLoadingThemes {
-                            ProgressView().controlSize(.mini).tint(Palette.acc)
+                            ProgressView().controlSize(.mini).tint(Palette.accText)
                         } else {
                             Image(systemName: "sparkles").font(.caption.weight(.bold))
                         }

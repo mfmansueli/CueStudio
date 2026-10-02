@@ -11,7 +11,7 @@ enum CueAttributedText {
         _ paragraph: String,
         showsCues: Bool = true,
         cueFont: Font,
-        cueColor: Color = Palette.acc,
+        cueColor: Color = Palette.accText,
         cueBackground: Color = Palette.accSoft
     ) -> AttributedString {
         guard showsCues else { return AttributedString(CueParser.stripCues(paragraph)) }

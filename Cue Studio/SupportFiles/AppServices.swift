@@ -34,12 +34,14 @@ struct AppServices {
     let apps: ExternalAppService
     let remote: RemoteControlService
     let languages: LanguageService
+    let appearance: AppearanceService
 
     init(options: LaunchOptions) {
         languages = LanguageService(defaults: options.defaults, store: options.languageStore) { language in
             InterfaceLocale.current = Locale(identifier: language.interfaceLocalization)
             InterfaceDirection.apply(rightToLeft: language.isRightToLeft)
         }
+        appearance = AppearanceService(defaults: options.defaults)
         library = ScriptLibraryService(repository: options.scriptRepository)
         takes = TakeLibraryService(repository: options.takeRepository)
         preferences = PreferencesService(defaults: options.defaults)
@@ -101,5 +103,6 @@ extension View {
             .environment(services.apps)
             .environment(services.remote)
             .environment(services.languages)
+            .environment(services.appearance)
     }
 }

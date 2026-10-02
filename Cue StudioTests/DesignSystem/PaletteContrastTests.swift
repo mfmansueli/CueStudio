@@ -9,9 +9,9 @@ import UIKit
 @testable import Cue_Studio
 
 /// The palette against Apple's contrast guidelines (4.5:1 for text, 3:1 for the parts of a control)
-/// in the light and the dark appearance, with and without Increase Contrast. Cue runs dark, but
-/// the light values are kept right so the day the appearance lock goes, no screen turns pale yellow
-/// on white.
+/// in the light and the dark appearance, with and without Increase Contrast. Cue's screens follow
+/// the iPhone (or Settings › Appearance), so every pair that can show in light is measured there
+/// too: no screen turns pale yellow on white. The camera, prompter, review and editor stay dark.
 @MainActor
 @Suite("Palette contrast")
 struct PaletteContrastTests {
@@ -137,6 +137,82 @@ struct PaletteContrastTests {
             for surface in surfacesWithTiles {
                 let value = ratio(Palette.ink3, on: surface.color, in: appearance)
                 #expect(value >= ColorContrast.componentMinimum, "ink3 on \(surface.name), \(appearance): \(value)")
+            }
+        }
+    }
+
+    @Test func theSwipeToRecordKeepsItsWhiteLabelReadable() {
+        for appearance in Appearance.allCases {
+            #expect(ratio(.white, on: Palette.accAction, in: appearance) >= ColorContrast.textMinimum, "white on accAction, \(appearance)")
+        }
+    }
+
+    // MARK: - Light screens that used to assume dark
+
+    /// The prompt box: the title sits where the golden light is brightest (34%), the caption and the
+    /// description where it is dimmer (13%), and the field is sunk into it. In light the secondary
+    /// ink is held to the text minimum everywhere on the card.
+    @Test func thePromptBoxReadsOverItsGoldenWash() {
+        for appearance in Appearance.allCases {
+            for base in [Palette.surface, Palette.surface2] {
+                let card = rgb(base, in: appearance)
+                let bright = rgb(Palette.acc.opacity(0.34), in: appearance, over: card)
+                let dim = rgb(Palette.acc.opacity(0.13), in: appearance, over: card)
+                #expect(ColorContrast.ratio(rgb(Palette.ink, in: appearance, over: bright), bright) >= ColorContrast.textMinimum, "the title, \(appearance)")
+                if appearance.isLight {
+                    #expect(ColorContrast.ratio(rgb(Palette.ink2, in: appearance, over: dim), dim) >= ColorContrast.textMinimum, "the caption, \(appearance)")
+                }
+                let field = rgb(Palette.insetField, in: appearance, over: dim)
+                for token in [Palette.ink, Palette.ink2] {
+                    let text = rgb(token, in: appearance, over: field)
+                    #expect(ColorContrast.ratio(text, field) >= ColorContrast.textMinimum, "text in the field, \(appearance)")
+                }
+            }
+        }
+    }
+
+    /// The panels that stand in for the keyboard in the script editor.
+    @Test func theScriptEditorsPanelReadsInBothAppearances() {
+        for appearance in Appearance.allCases {
+            for token in textTokens {
+                let value = ratio(token.color, on: Palette.editorPanel, in: appearance)
+                #expect(value >= ColorContrast.textMinimum, "\(token.name) on the panel, \(appearance): \(value)")
+            }
+            #expect(ratio(Palette.laneGhostBorder, on: Palette.editorPanel, in: appearance) >= ColorContrast.componentMinimum, "a dashed outline, \(appearance)")
+        }
+    }
+
+    @Test func settingsSheetsOverTheCameraReadInBothAppearances() {
+        for appearance in Appearance.allCases {
+            for token in textTokens {
+                let value = ratio(token.color, on: Palette.sheetGlass, in: appearance)
+                #expect(value >= ColorContrast.textMinimum, "\(token.name) on the glass sheet, \(appearance): \(value)")
+            }
+        }
+    }
+
+    @Test func aPressedOrOpenControlKeepsItsLabelReadable() {
+        for appearance in Appearance.allCases {
+            for surface in surfaces {
+                let base = rgb(surface.color, in: appearance)
+                let fill = rgb(Palette.overlayFill, in: appearance, over: base)
+                #expect(ColorContrast.ratio(rgb(Palette.ink, in: appearance, over: fill), fill) >= ColorContrast.textMinimum, "\(surface.name), \(appearance)")
+            }
+            // The chosen text size in the script editor.
+            #expect(ratio(Palette.ink, on: Palette.surface3, in: appearance) >= ColorContrast.textMinimum, "the picked size, \(appearance)")
+        }
+    }
+
+    /// The meters (length, free exports): their fills are what the eye reads, so they need 3:1 on their track.
+    @Test func meterFillsStandOutFromTheirTrack() {
+        for appearance in Appearance.allCases {
+            for surface in surfaces {
+                let base = rgb(surface.color, in: appearance)
+                let track = rgb(Palette.fill, in: appearance, over: base)
+                for fill in [Palette.accText, Palette.warnText] {
+                    let value = ColorContrast.ratio(rgb(fill, in: appearance, over: track), track)
+                    #expect(value >= ColorContrast.componentMinimum, "a meter on \(surface.name), \(appearance): \(value)")
+                }
             }
         }
     }

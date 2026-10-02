@@ -33,6 +33,7 @@ ao protótipo do Claude Design). Atualize-o junto com a UI.
   em memória), `-uiTestSeedSamples` (scripts de exemplo), `-uiTestPro` (começa no Cue Pro),
   `-uiTestSampleVideo` (vídeos reais pequenos atrás dos takes de "3 morning habits", para o Quick edit),
   `-uiTestRemoteConnects` (um iPad de mentira entra logo depois do pareamento do Remote Control),
+  `-uiTestAppearance <light|dark>` (as telas do Cue começam claras ou escuras, como em Settings › Appearance),
   `-uiTestAppLanguage <lproj>` (a interface começa nesse idioma, em memória, sem mudar o simulador).
 - Idiomas: `LOCALIZATION.md` (três idiomas independentes, terminologia, RTL). Todo texto novo entra
   nos 15 idiomas dos String Catalogs. O teste de fala de verdade é opt-in:

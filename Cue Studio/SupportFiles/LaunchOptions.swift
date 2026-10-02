@@ -18,6 +18,8 @@ import Foundation
 ///   habits" takes, so Quick edit can play, scrub and trim them.
 /// - `-uiTestRemoteConnects`: with the above, a remote "connects" right after pairing starts (UI
 ///   tests have no second device). Without it the remote link stays offline.
+/// - `-uiTestAppearance <light|dark>`: with `-uiTestInMemory`, Cue's screens start light or dark
+///   (as if picked in Settings › Appearance) whatever the simulator is set to.
 /// - `-uiTestAppLanguage <lproj>`: with `-uiTestInMemory`, Cue's interface starts in that language
 ///   (as if picked in Language & Region) without changing the simulator's. The interface language
 ///   always lives in memory under `-uiTestInMemory`.
@@ -65,6 +67,10 @@ struct LaunchOptions {
             let suite = "studio.cue.uitests"
             UserDefaults().removePersistentDomain(forName: suite)
             options.defaults = UserDefaults(suiteName: suite) ?? .standard
+            if let index = arguments.firstIndex(of: "-uiTestAppearance"), arguments.indices.contains(index + 1),
+               AppAppearance(rawValue: arguments[index + 1]) != nil {
+                options.defaults.set(arguments[index + 1], forKey: DefaultsKey.appAppearance)
+            }
             options.platformRules = PlatformRulesService(cacheURL: nil, remoteURL: nil)
             options.remoteTransport = DemoRemoteTransport(connects: arguments.contains("-uiTestRemoteConnects"))
             let appLanguage = arguments.firstIndex(of: "-uiTestAppLanguage").flatMap { index in

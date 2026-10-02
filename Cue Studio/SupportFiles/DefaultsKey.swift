@@ -7,6 +7,8 @@ import Foundation
 
 /// Every UserDefaults key in one place, so no screen repeats a raw string.
 nonisolated enum DefaultsKey {
+    /// How Cue's own screens look (`AppAppearance` raw value); absent = the iPhone's.
+    static let appAppearance = "appAppearance"
     static let prompterSettings = "prompterSettings"
     static let cameraSettings = "cameraSettings"
     /// The language Voice Following listens for (`CueLanguage` raw value); absent = the script's.

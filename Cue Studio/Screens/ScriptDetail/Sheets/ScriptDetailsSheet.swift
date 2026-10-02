@@ -45,7 +45,7 @@ struct ScriptDetailsSheet: View {
                         valueRow(String(localized: "Version"), versionLabel(script))
                         Toggle("Monetization goals", isOn: $profile.profile.monetizationGoals)
                             .font(.body)
-                            .tint(Palette.success)
+                            .tint(Palette.successText)
                             .padding(.horizontal, 14)
                             .frame(minHeight: 52)
                             .accessibilityIdentifier("details.monetizationToggle")

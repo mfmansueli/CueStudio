@@ -59,7 +59,7 @@ struct PlanSection: View {
                     .foregroundStyle(Palette.ink2)
             }
             .font(.subheadline)
-            UsageMeter(fraction: Double(left) / Double(max(1, limit)), color: left > 0 ? Palette.acc : Palette.warn)
+            UsageMeter(fraction: Double(left) / Double(max(1, limit)), color: left > 0 ? Palette.accText : Palette.warnText)
         }
         .accessibilityElement(children: .combine)
     }

@@ -48,7 +48,7 @@ struct CueIconButtonStyle: ButtonStyle {
     private var foreground: Color {
         switch variant {
         case .accent: Palette.accInk
-        case .tinted: Palette.acc
+        case .tinted: Palette.accText
         case .glass, .overlay, .surface: Palette.ink
         case .light: Palette.bg
         case .danger: Palette.dangerText
