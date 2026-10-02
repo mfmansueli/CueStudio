@@ -16,13 +16,20 @@ nonisolated struct CaptionSettings: Codable, Hashable, Sendable {
     var followsWords = true
     /// Captured from the project's platform, independent of later rules updates.
     var safeMargins = SafeZoneMargins()
+    /// Which reading of the preset draws (`CaptionStyleSpec`): nil in settings saved before the
+    /// complete presets, which keep the look they were made with.
+    var styleVersion: Int?
 
     init(theme: CaptionTheme = .cue) {
         self.theme = theme
-        followsWords = theme != .clean
+        styleVersion = CaptionStyleSpec.currentVersion
+        followsWords = CaptionStyleSpec.spec(for: theme, version: CaptionStyleSpec.currentVersion).animation.followsWords
     }
 
-    var highlightColor: CaptionAccent { accent ?? theme.defaultAccent }
+    /// The recipe the preset is drawn with.
+    var spec: CaptionStyleSpec { CaptionStyleSpec.spec(for: theme, version: styleVersion ?? 1) }
+
+    var highlightColor: CaptionAccent { accent ?? spec.defaultAccent }
     var clampedScale: Double {
         min(max(sizeScale.isFinite ? sizeScale : 1, Self.sizeRange.lowerBound), Self.sizeRange.upperBound)
     }

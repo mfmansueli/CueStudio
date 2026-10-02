@@ -118,10 +118,33 @@ struct QuickEditCaptionPanelTests {
         #expect(viewModel.edit.captionCollection?.followsWords == true)
         viewModel.pickCaptionReveal(.groups)
         #expect(viewModel.captionReveal == .groups)
-        // A preset keeps the reveal picked.
+        // A preset is a complete recipe: it brings its own reveal, which Reveal can change after.
         viewModel.pickCaptionTheme(.pop)
         #expect(viewModel.captionTheme == .pop)
+        #expect(viewModel.captionReveal == .highlight)
+        viewModel.pickCaptionReveal(.groups)
         #expect(viewModel.captionReveal == .groups)
+    }
+
+    @Test func eachCompletePresetBringsItsOwnWayOfShowingWords() async {
+        let scenario = await makeScenario(lines: [(0, 2, "First")])
+        let viewModel = scenario.viewModel
+        viewModel.pickCaptionTheme(.interview)
+        #expect(viewModel.captionTheme == .interview && viewModel.captionReveal == .line)
+        #expect(viewModel.edit.captionCollection?.followsWords == false)
+        viewModel.pickCaptionTheme(.educational)
+        #expect(viewModel.captionReveal == .highlight && viewModel.edit.captionCollection?.followsWords == true)
+        #expect(viewModel.edit.captionCollection?.styleVersion == CaptionStyleSpec.currentVersion)
+        viewModel.undo()
+        #expect(viewModel.captionTheme == .interview)
+    }
+
+    @Test func aPresetKeepsWhereTheCaptionsSit() async {
+        let scenario = await makeScenario(lines: [(0, 2, "First")])
+        let viewModel = scenario.viewModel
+        viewModel.setCaptionPositionStop(.top)
+        viewModel.pickCaptionTheme(.editorial)
+        #expect(viewModel.captionPositionStop == .top)
     }
 
     @Test func positionAndSizeChangeEveryLine() async {

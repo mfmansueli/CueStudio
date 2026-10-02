@@ -41,12 +41,18 @@ struct CaptionStylePanel: View {
         return { viewModel.resetCaptionTheme() }
     }
 
+    /// The collection; Clean too while it is the one in use (it is kept for edits that picked it).
+    private var shownThemes: [CaptionTheme] {
+        let current = viewModel.captionTheme
+        return current == .clean ? CaptionTheme.catalog + [.clean] : CaptionTheme.catalog
+    }
+
     // MARK: - Tabs
 
     private var presets: some View {
         ScrollView(.horizontal) {
             HStack(spacing: 8) {
-                ForEach(CaptionTheme.allCases) { theme in
+                ForEach(shownThemes) { theme in
                     PanelPresetCard(
                         name: theme.label, sample: CaptionThemePreview.image(theme), frame: frame,
                         isSelected: viewModel.captionTheme == theme, identifier: "edit.captionPreset.\(theme.rawValue)"

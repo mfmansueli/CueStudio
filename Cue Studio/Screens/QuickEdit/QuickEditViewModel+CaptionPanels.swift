@@ -142,13 +142,13 @@ extension QuickEditViewModel {
     /// look (set from Text style's "+ Captions") or the old caption style.
     var captionTheme: CaptionTheme? { edit.captionCollection?.theme }
 
-    /// A collection preset on every line (one undo step).
+    /// A collection preset on every line (one undo step). A preset is a complete recipe, so it
+    /// brings its own reveal with it (Educational lights the word said, Interview only fades the
+    /// line); Reveal can change it after.
     func pickCaptionTheme(_ theme: CaptionTheme) {
         guard captionTheme != theme else { return }
-        let reveal = captionReveal
         setCaptionTheme(theme)
-        // The reveal picked stays with the new look.
-        applyCaptionReveal(reveal)
+        applyCaptionReveal(CaptionStyleSpec.spec(for: theme, version: CaptionStyleSpec.currentVersion).animation)
         previewCurrentCaptionLine()
     }
 

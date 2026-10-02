@@ -22,22 +22,27 @@ struct CaptionCollectionRendererTests {
         })
     }
 
-    @Test func onlyTheApprovedFiveStylesAreSelectable() {
-        #expect(CaptionTheme.allCases == [.cue, .impact, .clean, .pop, .editorial])
+    @Test func theCatalogOffersTheCompletePresetsAndKeepsCleanForSavedEdits() {
+        #expect(CaptionTheme.catalog == [.cue, .educational, .interview, .impact, .pop, .editorial])
+        #expect(Set(CaptionTheme.allCases) == Set(CaptionTheme.catalog + [.clean]))
         #expect(CaptionSettings().theme == .cue)
-        #expect(!CaptionSettings(theme: .clean).followsWords)
+        #expect(!CaptionSettings(theme: .clean).followsWords && !CaptionSettings(theme: .interview).followsWords)
+        #expect(CaptionSettings(theme: .educational).followsWords)
     }
 
     @Test(arguments: CaptionTheme.allCases)
     func fontsAreBundledAndEveryActiveWordKeepsItsLayout(_ theme: CaptionTheme) throws {
-        let font = CaptionFont.font(theme: theme, size: 26, text: cue.text)
-        let names: [CaptionTheme: String] = [.cue: "SpaceGrotesk", .impact: "Anton", .clean: "Inter", .pop: "Poppins", .editorial: "Manrope"]
-        #expect(font.fontName.contains(names[theme] ?? "missing"))
-        if theme == .cue || theme == .clean || theme == .editorial {
-            let axes = try #require(CTFontCopyVariation(font as CTFont) as? [NSNumber: NSNumber])
-            #expect(axes[0x77676874]?.doubleValue == theme.fontWeight)
-        }
         let settings = CaptionSettings(theme: theme)
+        let font = CaptionFont.font(spec: settings.spec, size: 26, text: cue.text)
+        let names: [CaptionTheme: String] = [
+            .cue: "SpaceGrotesk", .impact: "Anton", .clean: "Inter", .pop: "Poppins", .editorial: "DMSerif",
+            .educational: "Manrope", .interview: "Inter",
+        ]
+        #expect(font.fontName.contains(names[theme] ?? "missing"))
+        if [.cue, .clean, .educational, .interview].contains(theme) {
+            let axes = try #require(CTFontCopyVariation(font as CTFont) as? [NSNumber: NSNumber])
+            #expect(axes[0x77676874]?.doubleValue == settings.spec.fontWeight)
+        }
         let plain = try #require(CaptionCollectionRenderer.image(cue.text, settings: settings, frame: frame))
         let states = CaptionCollectionRenderer.overlays([cue], settings: settings, position: .bottom, frame: frame)
         #expect(Set(states.map(\.origin.x)).count == 1)
@@ -104,7 +109,7 @@ struct CaptionCollectionRendererTests {
             "당신의 아이디어", "आपका विचार", "فكرتك تستحق الحياة", "ความคิดของคุณ",
         ]
         for sample in samples {
-            let font = CaptionFont.font(theme: theme, size: 26, text: sample)
+            let font = CaptionFont.font(spec: CaptionSettings(theme: theme).spec, size: 26, text: sample)
             #expect(font.pointSize == 26)
             let line = CTLineCreateWithAttributedString(NSAttributedString(string: sample, attributes: [.font: font]))
             for run in CTLineGetGlyphRuns(line) as? [CTRun] ?? [] {

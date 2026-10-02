@@ -9,7 +9,13 @@ nem na exportação. Interface e teleprompter continuam com sua tipografia exist
 | Impacto | Anton-Regular.ttf | corte único | [Anton](https://github.com/google/fonts/tree/main/ofl/anton), anton-OFL.txt |
 | Clean | Inter-Variable.ttf | 600 | [Inter](https://github.com/google/fonts/tree/main/ofl/inter), inter-OFL.txt |
 | Pop | Poppins-ExtraBold.ttf | 800 | [Poppins](https://github.com/google/fonts/tree/main/ofl/poppins), poppins-OFL.txt |
-| Editorial | Manrope-Variable.ttf | 700 | [Manrope](https://github.com/google/fonts/tree/main/ofl/manrope), manrope-OFL.txt |
+| Editorial | Manrope-Variable.ttf (edits saved antes: v1) · DMSerifDisplay-Regular.ttf (v2) | 700 · corte único | [Manrope](https://github.com/google/fonts/tree/main/ofl/manrope), manrope-OFL.txt · [DM Serif Display](https://github.com/google/fonts/tree/main/ofl/dmserifdisplay), dmserifdisplay-OFL.txt |
+| Educational | Manrope-Variable.ttf | 700 | Manrope (a mesma do Editorial v1) |
+| Interview | Inter-Variable.ttf | 600 | Inter (a mesma do Clean) |
+
+Nenhuma fonte nova entrou no bundle: os presets completos (`CaptionStyleSpec`, versão 2) reaproveitam as
+cinco da coleção e a DM Serif Display, já incorporada para os textos. Os edits salvos antes (`styleVersion`
+ausente) continuam com os números e as fontes da primeira leitura.
 
 Distribuições oficiais do Google Fonts baixadas em 2026-09-30, sob SIL Open Font License 1.1,
 com os avisos de copyright preservados. Fontes anteriores não foram removidas: atendem ao
