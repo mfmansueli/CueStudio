@@ -10,10 +10,10 @@ import Foundation
 /// The voice decides what is said and when: every heard word is kept, in its own time, and words of
 /// the script that weren't said never appear (an improvised line shows as said, a skipped one is
 /// left out, a word said twice shows twice until it is cut). The script only lends its spelling and
-/// punctuation to heard words it lines up with reliably (the same word, in order, inside a run of
-/// two or more, or long enough not to match by chance), so a different number, a negation or
-/// another word is never replaced by what was written. Nothing is ever spread over the take when
-/// nothing was heard.
+/// punctuation (`ScriptSpelling`): to heard words it lines up with reliably, and, when the take was
+/// read from it, also to the recognizer's near misses, so a different number, a negation or another
+/// word is never replaced by what was written. Nothing is ever spread over the take when nothing
+/// was heard.
 nonisolated enum CaptionBuilder {
     /// Words per line at most, so each one reads at a glance.
     static let maximumWords = 5
@@ -40,18 +40,10 @@ nonisolated enum CaptionBuilder {
         }
     }
 
-    /// `heard` with the script's spelling and punctuation on the words that reliably match it.
-    /// Same words, same times, same order.
+    /// `heard` with the script's spelling and punctuation where the take follows it (see
+    /// `ScriptSpelling`): the same words, in the same order, in their own times.
     static func aligned(heard: [CaptionWord], script: String, language: CueLanguage? = nil) -> [CaptionWord] {
-        let written = CaptionText.words(in: CueParser.stripCues(script), language: language)
-        guard !heard.isEmpty, !written.isEmpty else { return heard }
-        var result = heard
-        let keys = heard.map { WordAlignment.key($0.text) }
-        let pairs = WordAlignment.matches(keys, written.map(WordAlignment.key))
-        for pair in WordAlignment.reliable(pairs, keys: keys) {
-            result[pair.first].text = written[pair.second]
-        }
-        return result
+        ScriptSpelling.apply(to: heard, script: script, language: language).words
     }
 
     /// Words grouped into lines: a new line after a sentence ends, after a pause, and when a line is

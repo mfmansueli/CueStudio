@@ -26,23 +26,29 @@ nonisolated enum CaptionTranscriber {
         case .failure(let reason): throw reason
         }
         try Task.checkCancellation()
+        // The script's names and long words, so the recognizer listens for them (it still writes what it hears).
+        let terms = ScriptVocabulary.terms(in: script, language: route.language)
         let words: [TimedWord]
         switch route.engine {
         case .transcriber:
             let transcriber = SpeechTranscriber(locale: route.locale, transcriptionOptions: [], reportingOptions: [], attributeOptions: [.audioTimeRange])
-            words = try await transcribe(audio, with: transcriber, results: transcriber.results, language: route.language, progress: progress) { $0.text }
+            words = try await transcribe(
+                audio, with: transcriber, results: transcriber.results, language: route.language, terms: terms, progress: progress
+            ) { $0.text }
         case .dictation:
             let dictation = DictationTranscriber(
                 locale: route.locale, contentHints: [], transcriptionOptions: [], reportingOptions: [],
                 attributeOptions: [.audioTimeRange]
             )
-            words = try await transcribe(audio, with: dictation, results: dictation.results, language: route.language, progress: progress) { $0.text }
+            words = try await transcribe(
+                audio, with: dictation, results: dictation.results, language: route.language, terms: terms, progress: progress
+            ) { $0.text }
         }
         return TakeTranscript(words: words, languageCode: route.locale.language.languageCode?.identifier ?? "en")
     }
 
     private static func transcribe<Results: AsyncSequence & Sendable>(
-        _ audio: URL, with module: any SpeechModule, results: Results, language: CueLanguage?,
+        _ audio: URL, with module: any SpeechModule, results: Results, language: CueLanguage?, terms: [String],
         progress: (@Sendable (CaptionProgress) -> Void)?,
         text: @escaping @Sendable (Results.Element) -> AttributedString
     ) async throws -> [TimedWord] where Results.Element: Sendable {
@@ -77,6 +83,12 @@ nonisolated enum CaptionTranscriber {
             return words
         }
         let analyzer = SpeechAnalyzer(modules: modules)
+        if !terms.isEmpty {
+            let context = AnalysisContext()
+            context.contextualStrings[.general] = terms
+            // Only a hint: a model that ignores it still listens.
+            try? await analyzer.setContext(context)
+        }
         try await withTaskCancellationHandler {
             if let last = try await analyzer.analyzeSequence(from: file) {
                 try await analyzer.finalizeAndFinish(through: last)

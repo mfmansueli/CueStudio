@@ -808,9 +808,20 @@ O protótipo simulava várias coisas; o app implementa de verdade ou deixa de fo
   "Reduce noise" são aproximações com EQ e dinâmica no `AVAudioEngine` (não há API da
   Apple de redução de ruído para arquivo; ver "Som do projeto"). Os filtros usam Core Image e ficam próximos, não
   idênticos, aos do protótipo. As legendas vêm da fala (`SpeechAnalyzer`, no aparelho), com
-  ou sem roteiro: o áudio decide o que foi dito e quando; o roteiro só empresta grafia e pontuação
-  onde a correspondência é confiável (`CaptionBuilder`, `WordAlignment`: a mesma palavra numa sequência
-  de 2+ ou com 5+ letras), então números, negações, improvisos e repetições ficam como foram ditos.
+  ou sem roteiro: o áudio decide **o que foi dito e quando**; o roteiro decide só **como cada palavra
+  ouvida se escreve** (grafia, acento, maiúscula, pontuação), e com quanta confiança depende da take
+  (`ScriptSpelling`): se a take foi **lida do roteiro** (≥ 60% das palavras ouvidas se alinham, em
+  ordem), os escorregões do reconhecedor são corrigidos (uma palavra parecida, de 4+ letras, entre
+  palavras que se alinham — "mostra" → "mostrar" —, uma palavra curta entre alinhadas, letras iguais
+  divididas em outro número de palavras, com o tempo dividido e marcado como estimativa); se foi
+  **improvisada**, só as palavras que se alinham com segurança (a mesma palavra numa sequência de 2+ ou com
+  5+ letras) pegam a grafia do roteiro e uma palavra só é trocada quando é quase a mesma. Em qualquer
+  caso números, negações, palavras diferentes, improvisos e repetições ficam como foram ditos, e linhas
+  do roteiro que não foram ditas nunca aparecem. Japonês, chinês e tailandês usam a mesma regra, com as
+  palavras cortadas pelo mesmo dicionário nos dois lados (palavras de 2+ letras). Antes de ouvir, o
+  reconhecedor recebe os nomes e as palavras longas do roteiro como dica de vocabulário
+  (`ScriptVocabulary`, `AnalysisContext.contextualStrings`, até 100 termos): isso só inclina a escuta,
+  nunca escreve por cima do que foi dito.
   Sem áudio, sem fala ou sem modelo para o idioma, o app diz por quê e nunca distribui o roteiro pela
   duração. A transcrição original fica guardada à parte (`CaptionTranscript`); cada linha tem
   identidade, palavras com tempo (marcadas como estimadas quando o reconhecedor deu um trecho a
