@@ -13,7 +13,7 @@ struct PromptCardStarTwinkle: View {
     @Environment(\.scenePhase) private var scenePhase
     @State private var isOnScreen = false
     @State private var isScrollVisible = true
-    @State private var clock = AnimatedPromptBackground.MotionClock()
+    @State private var clock = MotionClock()
 
     var body: some View {
         TimelineView(.animation(minimumInterval: 1.0 / 24, paused: !isRunning)) { context in

@@ -74,23 +74,4 @@ struct AnimatedPromptBackground: View {
     private var isRunning: Bool {
         isActive && isOnScreen && isScrollVisible && scenePhase == .active && !reduceMotion
     }
-
-    /// Keeps the last frame while paused, then resumes without counting time spent off screen.
-    struct MotionClock {
-        private var accumulated: TimeInterval = 0
-        private var startedAt: Date?
-
-        func elapsed(at date: Date) -> TimeInterval {
-            accumulated + (startedAt.map { max(0, date.timeIntervalSince($0)) } ?? 0)
-        }
-
-        mutating func setRunning(_ running: Bool, at date: Date) {
-            if running {
-                if startedAt == nil { startedAt = date }
-            } else if startedAt != nil {
-                accumulated = elapsed(at: date)
-                startedAt = nil
-            }
-        }
-    }
 }

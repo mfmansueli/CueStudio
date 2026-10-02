@@ -1,5 +1,5 @@
 //
-//  PromptBackgroundClockTests.swift
+//  MotionClockTests.swift
 //  Cue StudioTests
 //
 
@@ -8,9 +8,9 @@ import Testing
 @testable import Cue_Studio
 
 @MainActor
-struct PromptBackgroundClockTests {
+struct MotionClockTests {
     @Test func pausesWithoutAdvancingAndResumesFromTheSameFrame() {
-        var clock = AnimatedPromptBackground.MotionClock()
+        var clock = MotionClock()
         let start = Date(timeIntervalSinceReferenceDate: 1_000)
         clock.setRunning(true, at: start)
         clock.setRunning(false, at: start.addingTimeInterval(7))
@@ -22,7 +22,7 @@ struct PromptBackgroundClockTests {
     }
 
     @Test func repeatedVisibilityNotificationsDoNotRestartMotion() {
-        var clock = AnimatedPromptBackground.MotionClock()
+        var clock = MotionClock()
         let start = Date(timeIntervalSinceReferenceDate: 1_000)
         #expect(clock.elapsed(at: start) == 0)
         clock.setRunning(true, at: start)
