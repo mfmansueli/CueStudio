@@ -100,8 +100,13 @@ nonisolated struct AutoCorrection: Codable, Hashable, Sendable {
         result.vibrance = min(max(vibrance, Self.vibranceRange.lowerBound), Self.vibranceRange.upperBound)
         result.highlights = min(max(highlights, Self.highlightRange.lowerBound), 1)
         result.shadows = min(max(shadows, Self.shadowRange.lowerBound), Self.shadowRange.upperBound)
-        result.tone = tone.map { Point(x: $0.x, y: min(max($0.y, $0.x - Self.toneShift), $0.x + Self.toneShift)) }
-        result.face = face.map { FaceBalance(originI: $0.originI, originQ: $0.originQ, strength: min(max($0.strength, 0), 1), warmth: min(max($0.warmth, 0), 1)) }
+        result.tone = tone.map { Point(x: $0.x, y: min(max($0.y, $0.x - Self.toneShift, 0), $0.x + Self.toneShift, 1)) }
+        result.face = face.map { face in
+            FaceBalance(
+                originI: face.originI, originQ: face.originQ,
+                strength: min(max(face.strength, 0), 1), warmth: min(max(face.warmth, 0), 1)
+            )
+        }
         return result
     }
 

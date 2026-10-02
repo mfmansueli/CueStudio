@@ -175,7 +175,8 @@ struct CaptionStyleSpecTests {
         #expect(pop.first?.popScale == 0.86 && pop.first?.popDuration == 0.18)
         #expect(pop.dropFirst().allSatisfy { $0.popDuration == 0 && $0.fadeIn == 0 })
         let editorial = CaptionCollectionRenderer.overlays([cue], settings: CaptionSettings(theme: .editorial), position: .bottom, frame: frame)
-        #expect(editorial.first?.fadeIn == 0.2 && editorial.last?.fadeOut == 0.2 && editorial.dropFirst().dropLast().allSatisfy { $0.fadeIn == 0 && $0.fadeOut == 0 })
+        #expect(editorial.first?.fadeIn == 0.2 && editorial.last?.fadeOut == 0.2)
+        #expect(editorial.dropFirst().dropLast().allSatisfy { $0.fadeIn == 0 && $0.fadeOut == 0 })
         let interview = CaptionCollectionRenderer.overlays([cue], settings: CaptionSettings(theme: .interview), position: .bottom, frame: frame)
         #expect(interview.count == 1 && interview[0].fadeIn == 0.1 && interview[0].fadeOut == 0.1)
         // Cue comes in as it always did.
