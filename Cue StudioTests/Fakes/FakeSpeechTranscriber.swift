@@ -13,6 +13,9 @@ final class FakeSpeechTranscriber: SpeechTranscribing {
     var unavailable: SpeechUnavailableReason?
     private(set) var startCount = 0
     private(set) var stopCount = 0
+    private(set) var finishCount = 0
+    /// What the recognizer hears in the last moment, delivered when a `finish` finalizes it.
+    var finalWords: String?
     /// The language each start asked for.
     private(set) var requests: [SpeechLanguageRequest] = []
     /// What a start reports waiting for before it answers, in order.
@@ -20,6 +23,9 @@ final class FakeSpeechTranscriber: SpeechTranscribing {
     /// Set, a start waits until `finishPreparing()`, the way a model loads or downloads.
     var holdsStart = false
     private var heldStart: CheckedContinuation<Void, Never>?
+    /// Set, a `finish` never finalizes by itself (a recognizer that hangs); only `stop()` ends it.
+    var holdsFinish = false
+    private var heldFinish: CheckedContinuation<Void, Never>?
     private var continuation: AsyncStream<String>.Continuation?
 
     /// Kept for tests written before the reason existed.
@@ -50,6 +56,25 @@ final class FakeSpeechTranscriber: SpeechTranscribing {
 
     func stop() {
         stopCount += 1
+        heldFinish?.resume()
+        heldFinish = nil
+        continuation?.finish()
+        continuation = nil
+    }
+
+    func finish() async {
+        finishCount += 1
+        if holdsFinish {
+            await withCheckedContinuation { heldFinish = $0 }
+            return
+        }
+        if let finalWords { continuation?.yield(finalWords) }
+        continuation?.finish()
+        continuation = nil
+    }
+
+    /// The recognizer gives up on its own: the transcript just ends.
+    func endOnItsOwn() {
         continuation?.finish()
         continuation = nil
     }

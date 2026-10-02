@@ -31868,6 +31868,94 @@
         }
       }
     },
+    "Cue couldn’t tell which language to listen in. You can type your idea instead." : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "لم يتمكن Cue من تحديد اللغة التي يستمع بها. يمكنك كتابة فكرتك بدلًا من ذلك."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue konnte nicht erkennen, in welcher Sprache es zuhören soll. Du kannst deine Idee stattdessen tippen."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue no pudo saber en qué idioma escuchar. Puedes escribir tu idea."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue n’a pas pu savoir dans quelle langue écouter. Tu peux écrire ton idée à la place."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue यह नहीं पहचान सका कि किस भाषा में सुनना है। इसके बजाय आप अपना आइडिया लिख सकते हैं।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue tidak bisa menentukan bahasa yang harus didengarkan. Kamu bisa mengetik idemu."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue non ha capito in che lingua ascoltare. Puoi scrivere la tua idea."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue が聞き取る言語を判別できませんでした。代わりにアイデアを入力できます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue가 어떤 언어로 들어야 할지 알 수 없었어요. 대신 아이디어를 직접 입력할 수 있어요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Cue não conseguiu saber em que idioma ouvir. Você pode digitar sua ideia."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue ระบุไม่ได้ว่าต้องฟังเป็นภาษาอะไร คุณพิมพ์ไอเดียแทนได้"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue hangi dilde dinleyeceğini anlayamadı. Bunun yerine fikrini yazabilirsin."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue không xác định được nên nghe bằng ngôn ngữ nào. Bạn có thể gõ ý tưởng của mình."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue 无法判断该用哪种语言聆听。你可以改为直接输入想法。"
+          }
+        }
+      }
+    },
     "Cue has no server. Your scripts, takes and Creator Voice are stored on this device and in your device backups. Sign in with Apple is optional and only keeps your Apple ID on this iPhone." : {
       "localizations" : {
         "ar" : {
@@ -35122,6 +35210,622 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "详情"
+          }
+        }
+      }
+    },
+    "Dictate your idea" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "أملِ فكرتك بصوتك"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Idee diktieren"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dicta tu idea"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dicte ton idée"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "अपना आइडिया बोलकर लिखवाएँ"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dikte idemu"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Detta la tua idea"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アイデアを音声入力"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "아이디어를 음성으로 입력"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dite sua ideia"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "พูดไอเดียของคุณ"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fikrini sesle yaz"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Đọc ý tưởng của bạn"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "语音输入你的想法"
+          }
+        }
+      }
+    },
+    "Dictation can’t listen in %@ on this iPhone. You can type your idea instead." : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "لا يستطيع الإملاء الاستماع بلغة %@ على هذا الـ iPhone. يمكنك كتابة فكرتك بدلًا من ذلك."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ wird auf diesem iPhone nicht zum Diktieren unterstützt. Du kannst deine Idee stattdessen tippen."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El dictado no puede escuchar en %@ en este iPhone. Puedes escribir tu idea."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La dictée ne peut pas écouter en %@ sur cet iPhone. Tu peux écrire ton idée à la place."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "इस iPhone पर %@ में बोलकर लिखवाना संभव नहीं है। इसके बजाय आप अपना आइडिया लिख सकते हैं।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dikte tidak bisa mendengarkan dalam %@ di iPhone ini. Kamu bisa mengetik idemu."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La dettatura non può ascoltare in %@ su questo iPhone. Puoi scrivere la tua idea."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "この iPhone では %@ の音声入力に対応していません。代わりにアイデアを入力できます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이 iPhone에서는 %@ 음성 입력을 사용할 수 없어요. 대신 아이디어를 직접 입력할 수 있어요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O ditado não consegue ouvir em %@ neste iPhone. Você pode digitar sua ideia."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iPhone เครื่องนี้ยังไม่รองรับการพูดเป็นข้อความในภาษา %@ คุณพิมพ์ไอเดียแทนได้"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu iPhone’da sesle yazma %@ dilini dinleyemiyor. Bunun yerine fikrini yazabilirsin."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iPhone này chưa thể nghe bằng %@ để đọc. Bạn có thể gõ ý tưởng của mình."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "这台 iPhone 暂不支持用 %@ 语音输入。你可以改为直接输入想法。"
+          }
+        }
+      }
+    },
+    "Dictation couldn’t start listening. You can type your idea instead." : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تعذّر على الإملاء بدء الاستماع. يمكنك كتابة فكرتك بدلًا من ذلك."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Das Diktat konnte nicht mit dem Zuhören beginnen. Du kannst deine Idee stattdessen tippen."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El dictado no pudo empezar a escuchar. Puedes escribir tu idea."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La dictée n’a pas pu commencer à écouter. Tu peux écrire ton idée à la place."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "बोलकर लिखवाना सुनना शुरू नहीं कर सका। इसके बजाय आप अपना आइडिया लिख सकते हैं।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dikte tidak bisa mulai mendengarkan. Kamu bisa mengetik idemu."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La dettatura non è riuscita a mettersi in ascolto. Puoi scrivere la tua idea."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "音声入力を開始できませんでした。代わりにアイデアを入力できます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "음성 입력을 시작하지 못했어요. 대신 아이디어를 직접 입력할 수 있어요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O ditado não conseguiu começar a ouvir. Você pode digitar sua ideia."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "เริ่มฟังเพื่อพูดเป็นข้อความไม่ได้ คุณพิมพ์ไอเดียแทนได้"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sesle yazma dinlemeye başlayamadı. Bunun yerine fikrini yazabilirsin."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Không thể bắt đầu nghe để đọc. Bạn có thể gõ ý tưởng của mình."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "语音输入无法开始聆听。你可以改为直接输入想法。"
+          }
+        }
+      }
+    },
+    "Dictation needs to download %@. Connect to the internet and try again." : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يحتاج الإملاء إلى تنزيل %@. اتصل بالإنترنت وحاول مرة أخرى."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Das Diktat muss %@ herunterladen. Verbinde dich mit dem Internet und versuche es erneut."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El dictado necesita descargar %@. Conéctate a internet e inténtalo de nuevo."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La dictée doit télécharger %@. Connecte-toi à internet et réessaie."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "बोलकर लिखवाने के लिए %@ डाउनलोड करनी होगी। इंटरनेट से जुड़ें और फिर कोशिश करें।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dikte perlu mengunduh %@. Hubungkan ke internet lalu coba lagi."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La dettatura deve scaricare %@. Connettiti a internet e riprova."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "音声入力には %@ のダウンロードが必要です。インターネットに接続して、もう一度お試しください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "음성 입력을 위해 %@ 다운로드가 필요해요. 인터넷에 연결한 뒤 다시 시도하세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O ditado precisa baixar %@. Conecte-se à internet e tente de novo."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "การพูดเป็นข้อความต้องดาวน์โหลด %@ เชื่อมต่ออินเทอร์เน็ตแล้วลองใหม่อีกครั้ง"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sesle yazma için %@ indirilmeli. İnternete bağlanıp tekrar dene."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tính năng đọc cần tải %@. Hãy kết nối internet rồi thử lại."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "语音输入需要先下载%@。请连接互联网后重试。"
+          }
+        }
+      }
+    },
+    "Dictation needs to download this language. Connect to the internet and try again." : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يحتاج الإملاء إلى تنزيل هذه اللغة. اتصل بالإنترنت وحاول مرة أخرى."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Das Diktat muss diese Sprache herunterladen. Verbinde dich mit dem Internet und versuche es erneut."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El dictado necesita descargar este idioma. Conéctate a internet e inténtalo de nuevo."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La dictée doit télécharger cette langue. Connecte-toi à internet et réessaie."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "बोलकर लिखवाने के लिए यह भाषा डाउनलोड करनी होगी। इंटरनेट से जुड़ें और फिर कोशिश करें।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dikte perlu mengunduh bahasa ini. Hubungkan ke internet lalu coba lagi."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La dettatura deve scaricare questa lingua. Connettiti a internet e riprova."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "音声入力にはこの言語のダウンロードが必要です。インターネットに接続して、もう一度お試しください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "음성 입력을 위해 이 언어를 다운로드해야 해요. 인터넷에 연결한 뒤 다시 시도하세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O ditado precisa baixar este idioma. Conecte-se à internet e tente de novo."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "การพูดเป็นข้อความต้องดาวน์โหลดภาษานี้ เชื่อมต่ออินเทอร์เน็ตแล้วลองใหม่อีกครั้ง"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sesle yazma için bu dil indirilmeli. İnternete bağlanıp tekrar dene."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tính năng đọc cần tải ngôn ngữ này. Hãy kết nối internet rồi thử lại."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "语音输入需要先下载此语言。请连接互联网后重试。"
+          }
+        }
+      }
+    },
+    "Dictation stopped. What you said so far is kept." : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "توقف الإملاء. ما قلته حتى الآن محفوظ."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diktat beendet. Was du bisher gesagt hast, bleibt erhalten."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El dictado se detuvo. Lo que dijiste hasta ahora se conserva."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La dictée s’est arrêtée. Ce que tu as dit jusqu’ici est conservé."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "बोलकर लिखवाना रुक गया। अब तक जो आपने कहा, वह सुरक्षित है।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dikte berhenti. Apa yang sudah kamu ucapkan tetap tersimpan."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dettatura interrotta. Quello che hai detto finora è stato conservato."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "音声入力が止まりました。ここまでの内容は残っています。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "음성 입력이 멈췄어요. 지금까지 말한 내용은 그대로 남아 있어요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O ditado parou. O que você disse até agora foi mantido."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "การพูดเป็นข้อความหยุดลงแล้ว สิ่งที่คุณพูดไปก่อนหน้านี้ยังอยู่"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sesle yazma durdu. Şimdiye kadar söylediklerin korundu."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Đã dừng đọc. Những gì bạn đã nói vẫn được giữ lại."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "语音输入已停止。你之前说的内容都已保留。"
+          }
+        }
+      }
+    },
+    "Didn’t catch anything. Try again, or type your idea." : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "لم أسمع شيئًا. حاول مرة أخرى، أو اكتب فكرتك."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ich habe nichts verstanden. Versuch es noch einmal oder tippe deine Idee."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se escuchó nada. Inténtalo de nuevo o escribe tu idea."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rien n’a été entendu. Réessaie, ou écris ton idée."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "कुछ सुनाई नहीं दिया। फिर कोशिश करें, या अपना आइडिया लिखें।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tidak ada yang terdengar. Coba lagi, atau ketik idemu."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Non ho sentito nulla. Riprova, oppure scrivi la tua idea."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "何も聞き取れませんでした。もう一度試すか、アイデアを入力してください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "아무것도 들리지 않았어요. 다시 시도하거나 아이디어를 직접 입력하세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não captei nada. Tente de novo ou digite sua ideia."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ไม่ได้ยินอะไรเลย ลองใหม่อีกครั้ง หรือพิมพ์ไอเดียของคุณ"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hiçbir şey duyulmadı. Tekrar dene ya da fikrini yaz."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Không nghe thấy gì. Hãy thử lại, hoặc gõ ý tưởng của bạn."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "没有听到内容。请再试一次，或直接输入你的想法。"
           }
         }
       }
@@ -42809,6 +43513,94 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "完成"
+          }
+        }
+      }
+    },
+    "Finishing…" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "جارٍ الإنهاء…"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wird abgeschlossen …"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Terminando…"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Finalisation…"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "पूरा हो रहा है…"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Menyelesaikan…"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Completamento…"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "仕上げています…"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "마무리하는 중…"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Finalizando…"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "กำลังสรุป…"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tamamlanıyor…"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Đang hoàn tất…"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在完成…"
           }
         }
       }
@@ -104151,6 +104943,94 @@
         }
       }
     },
+    "Stop dictation" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "إيقاف الإملاء"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diktat beenden"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Detener el dictado"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Arrêter la dictée"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "बोलकर लिखवाना रोकें"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hentikan dikte"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Interrompi la dettatura"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "音声入力を停止"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "음성 입력 중지"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Parar o ditado"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "หยุดการพูดเป็นข้อความ"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sesle yazmayı durdur"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dừng đọc"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "停止语音输入"
+          }
+        }
+      }
+    },
     "Stop recording" : {
       "localizations" : {
         "ar" : {
@@ -108559,6 +109439,94 @@
         }
       }
     },
+    "Tell or write your idea…" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "احكِ فكرتك أو اكتبها…"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Erzähl oder schreib deine Idee …"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cuenta o escribe tu idea…"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dis ou écris ton idée…"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "अपना आइडिया बोलें या लिखें…"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ceritakan atau tulis idemu…"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Racconta o scrivi la tua idea…"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アイデアを話すか、書いてください…"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "아이디어를 말하거나 적어 주세요…"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Conte ou escreva sua ideia…"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "เล่าหรือพิมพ์ไอเดียของคุณ…"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fikrini anlat ya da yaz…"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hãy kể hoặc viết ý tưởng của bạn…"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "说出或写下你的想法…"
+          }
+        }
+      }
+    },
     "Tell them what to do next" : {
       "localizations" : {
         "ar" : {
@@ -110667,6 +111635,94 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "钩子决定了整个视频的完播率。"
+          }
+        }
+      }
+    },
+    "The microphone is off for Cue. Turn it on in Settings to dictate, or type your idea." : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الميكروفون متوقف لـ Cue. شغّله من الإعدادات للإملاء، أو اكتب فكرتك."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Das Mikrofon ist für Cue ausgeschaltet. Aktiviere es in den Einstellungen, um zu diktieren, oder tippe deine Idee."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El micrófono está desactivado para Cue. Actívalo en Ajustes para dictar, o escribe tu idea."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le micro est désactivé pour Cue. Active-le dans Réglages pour dicter, ou écris ton idée."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue के लिए माइक्रोफ़ोन बंद है। बोलने के लिए इसे सेटिंग्स में चालू करें, या अपना आइडिया लिखें।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mikrofon dimatikan untuk Cue. Aktifkan di Pengaturan untuk berdikte, atau ketik idemu."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Il microfono è disattivato per Cue. Attivalo in Impostazioni per dettare, oppure scrivi la tua idea."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue のマイクがオフです。音声入力するには「設定」でオンにするか、アイデアを入力してください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue의 마이크가 꺼져 있어요. 음성 입력하려면 설정에서 켜거나, 아이디어를 직접 입력하세요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O microfone está desativado para o Cue. Ative em Ajustes para ditar ou digite sua ideia."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ไมโครโฟนของ Cue ถูกปิดอยู่ เปิดในการตั้งค่าเพื่อพูดเป็นข้อความ หรือพิมพ์ไอเดียของคุณ"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue için mikrofon kapalı. Sesle yazmak için Ayarlar’dan aç ya da fikrini yaz."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Micrô đang tắt với Cue. Hãy bật trong Cài đặt để đọc, hoặc gõ ý tưởng của bạn."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue 的麦克风已关闭。请在“设置”中打开以语音输入，或直接输入你的想法。"
           }
         }
       }
@@ -113495,6 +114551,94 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "此 iPhone 无法将%1$@翻译成%2$@。你可以自己写译文。"
+          }
+        }
+      }
+    },
+    "This iPhone can’t turn speech into text here. You can type your idea instead." : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "لا يستطيع هذا الـ iPhone تحويل الكلام إلى نص هنا. يمكنك كتابة فكرتك بدلًا من ذلك."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dieses iPhone kann hier keine Sprache in Text umwandeln. Du kannst deine Idee stattdessen tippen."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Este iPhone no puede convertir la voz en texto aquí. Puedes escribir tu idea."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cet iPhone ne peut pas transformer la voix en texte ici. Tu peux écrire ton idée à la place."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "यह iPhone यहाँ आवाज़ को टेक्स्ट में नहीं बदल सकता। इसके बजाय आप अपना आइडिया लिख सकते हैं।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iPhone ini tidak bisa mengubah suara menjadi teks di sini. Kamu bisa mengetik idemu."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Questo iPhone non può trasformare la voce in testo qui. Puoi scrivere la tua idea."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "この iPhone ではここで音声をテキストに変換できません。代わりにアイデアを入力できます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이 iPhone에서는 여기서 음성을 텍스트로 바꿀 수 없어요. 대신 아이디어를 직접 입력할 수 있어요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Este iPhone não consegue transformar fala em texto aqui. Você pode digitar sua ideia."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iPhone เครื่องนี้แปลงเสียงพูดเป็นข้อความที่นี่ไม่ได้ คุณพิมพ์ไอเดียแทนได้"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu iPhone burada konuşmayı metne çeviremiyor. Bunun yerine fikrini yazabilirsin."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iPhone này không thể chuyển giọng nói thành văn bản ở đây. Bạn có thể gõ ý tưởng của mình."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "这台 iPhone 在这里无法把语音转成文字。你可以改为直接输入想法。"
           }
         }
       }
@@ -127329,94 +128473,6 @@
         }
       }
     },
-    "What’s your video about?" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "عن ماذا يدور فيديوك؟"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Worum geht es in deinem Video?"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "¿De qué trata tu video?"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "De quoi parle ta vidéo ?"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "आपका वीडियो किस बारे में है?"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Video kamu tentang apa?"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Di cosa parla il tuo video?"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "動画のテーマは？"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "영상은 어떤 내용인가요?"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sobre o que é seu vídeo?"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "วิดีโอของคุณเกี่ยวกับอะไร?"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Videon ne hakkında?"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Video của bạn nói về gì?"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "你的视频是关于什么的？"
-          }
-        }
-      }
-    },
     "When" : {
       "localizations" : {
         "ar" : {
@@ -133397,6 +134453,94 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "你的常用设置是%@。"
+          }
+        }
+      }
+    },
+    "Your words appear here to review before you send." : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تظهر كلماتك هنا لتراجعها قبل الإرسال."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deine Worte erscheinen hier, damit du sie vor dem Senden prüfen kannst."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tus palabras aparecen aquí para que las revises antes de enviarlas."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tes mots apparaissent ici pour que tu les relises avant d’envoyer."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "आपके शब्द यहाँ दिखते हैं, ताकि भेजने से पहले आप उन्हें जाँच सकें।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kata-katamu muncul di sini agar bisa kamu periksa sebelum dikirim."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le tue parole compaiono qui, così puoi rivederle prima di inviare."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "話した言葉がここに表示されます。送信する前に確認できます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "말한 내용이 여기에 표시되며, 보내기 전에 확인할 수 있어요."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Suas palavras aparecem aqui para você revisar antes de enviar."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "คำที่คุณพูดจะแสดงที่นี่ให้ตรวจดูก่อนส่ง"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Söylediklerin burada görünür, göndermeden önce gözden geçirebilirsin."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lời bạn nói hiện ở đây để bạn xem lại trước khi gửi."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你说的话会显示在这里，发送前可以先检查。"
           }
         }
       }

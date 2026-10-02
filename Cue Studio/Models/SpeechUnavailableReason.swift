@@ -60,4 +60,24 @@ nonisolated enum SpeechUnavailableReason: Error, Equatable, Sendable {
             String(localized: "Captions couldn’t start listening. Try again.")
         }
     }
+
+    /// The same reason, told in dictation: what's missing, and that the idea can still be typed.
+    var dictationMessage: String {
+        switch self {
+        case .unsupported(let language):
+            String(localized: "Dictation can’t listen in \(language.localizedName) on this iPhone. You can type your idea instead.")
+        case .unsupportedDetected(let name):
+            String(localized: "Dictation can’t listen in \(name) on this iPhone. You can type your idea instead.")
+        case .unknownLanguage:
+            String(localized: "Cue couldn’t tell which language to listen in. You can type your idea instead.")
+        case .needsDownload(let language?):
+            String(localized: "Dictation needs to download \(language.localizedName). Connect to the internet and try again.")
+        case .needsDownload(nil):
+            String(localized: "Dictation needs to download this language. Connect to the internet and try again.")
+        case .noRecognition:
+            String(localized: "This iPhone can’t turn speech into text here. You can type your idea instead.")
+        case .couldNotStart:
+            String(localized: "Dictation couldn’t start listening. You can type your idea instead.")
+        }
+    }
 }

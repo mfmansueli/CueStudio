@@ -19,7 +19,16 @@ struct EmptyLibraryView: View {
     let onImport: () -> Void
     let onSkip: () -> Void
 
+    @Environment(DictationService.self) private var dictation
+    @Environment(PresentationService.self) private var presentation
+    @Environment(\.scenePhase) private var scenePhase
     @State private var draft = IdeaPromptDraft()
+
+    /// Something else has the screen (a sheet, the camera, another tab): the microphone is theirs.
+    private var isCovered: Bool {
+        presentation.sheet != nil || presentation.prompter != nil
+            || presentation.showsRemoteController || presentation.selectedTab != .scripts
+    }
 
     var body: some View {
         ScrollViewReader { proxy in
@@ -59,8 +68,19 @@ struct EmptyLibraryView: View {
                 .padding(.bottom, 40)
             }
             .scrollDismissesKeyboard(.interactively)
-            // Typing or picking a kind of video keeps the field, the arrow and the chips in view.
+            // Typing, dictating or picking a kind of video keeps the field, the arrow and the chips in view.
             .onChange(of: draft.idea) { _, _ in withAnimation { proxy.scrollTo(Self.cardID, anchor: .center) } }
+            .onChange(of: dictation.isActive) { _, _ in withAnimation { proxy.scrollTo(Self.cardID, anchor: .center) } }
+            // Dictation lets go of the microphone the moment this screen isn't the one in use: the
+            // app in the background (told, once), another screen, or leaving. The words stay.
+            .onChange(of: scenePhase) { _, phase in
+                // Not on `.inactive`: the system's microphone prompt makes the app inactive.
+                if phase == .background { dictation.interrupt() }
+            }
+            .onChange(of: isCovered) { _, covered in
+                if covered { dictation.cancel() }
+            }
+            .onDisappear { dictation.cancel() }
         }
     }
 

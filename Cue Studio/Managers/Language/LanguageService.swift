@@ -98,6 +98,22 @@ final class LanguageService {
         )
     }
 
+    // MARK: - Dictation
+
+    /// What an idea spoken into the empty Scripts card is heard in: the language the script will be
+    /// written in (`GenerateScriptViewModel` decides it the same way), so what is said and what comes
+    /// back agree. The Script Language when one is set; else the language of what is already typed
+    /// there (three words or more); else the interface's. Voice Following's language never takes part.
+    func dictationRequest(existingText: String) -> SpeechLanguageRequest {
+        if let scriptLanguage { return .language(scriptLanguage) }
+        let typed = existingText.trimmingCharacters(in: .whitespacesAndNewlines)
+        if typed.split(whereSeparator: \.isWhitespace).count >= 3 || WordSegmenter.containsUnspacedScript(typed),
+           let detected = LanguageDetector.language(in: typed) {
+            return .language(detected)
+        }
+        return .language(interfaceLanguage)
+    }
+
     /// When Voice Following listens for `script` in another language than its captions do (a
     /// Voice Following language picked in Language & Region), which two. Nil when they agree.
     func languageConflict(for script: Script?) -> SpeechLanguageConflict? {

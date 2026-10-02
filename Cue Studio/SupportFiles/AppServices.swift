@@ -23,6 +23,7 @@ struct AppServices {
     let camera: CameraManager
     let audio: AudioInputManager
     let speech: SpeechRecognitionManager
+    let dictation: DictationService
     let writer: ScriptWriting
     let textRecognizer: TextRecognitionManager
     let importer: DocumentImportService
@@ -55,6 +56,7 @@ struct AppServices {
         camera = CameraManager()
         audio = AudioInputManager()
         speech = SpeechRecognitionManager()
+        dictation = options.dictation ?? DictationService(audio: AudioInputManager(), speech: SpeechRecognitionManager(use: .dictation))
         writer = options.writer
         textRecognizer = TextRecognitionManager()
         importer = DocumentImportService()
@@ -94,6 +96,7 @@ extension View {
             .environment(services.camera)
             .environment(services.audio)
             .environment(services.speech)
+            .environment(services.dictation)
             .environment(services.textRecognizer)
             .environment(services.importer)
             .environment(services.exporter)

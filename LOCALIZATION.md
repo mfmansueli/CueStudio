@@ -166,6 +166,15 @@ speed while the creator talks, in that language's place, never in another one.
 | Indonesian, Arabic, Turkish, Thai, Vietnamese | id-ID, ar-SA, tr-TR, th-TH, vi-VN | `DictationTranscriber` (`SpeechTranscriber` didn't offer them on the test Mac) | 100% |
 | Hindi | hi-IN | `DictationTranscriber` first when the script is in Devanagari: `SpeechTranscriber` writes Hindi in Latin letters, which can't match the script | 100% (0% through `SpeechTranscriber`) |
 
+**Dictating an idea** (the empty Scripts card) uses the same recognizers and the same table, in a
+fourth, separate choice: the language the script will be written in (`LanguageService.dictationRequest`:
+the Script Language, else the language of what is already typed there when it's three words or more,
+else the interface's). Voice Following's language never takes part, and a language this iPhone can't
+recognize is said ("Dictation can’t listen in Thai on this iPhone…"), never swapped for another; the
+idea can always be typed. Writing without spaces (Japanese, Chinese, Thai) is joined without them.
+What was said and what is written can differ only by the recognizer's own mistakes: Cue adds nothing,
+and the text can be corrected before it is sent.
+
 Which locales a given iPhone has depends on the model, the iOS version and Apple Intelligence
 settings; the table is what the framework offers, and the app checks each time.
 

@@ -29,12 +29,11 @@ final class SpeechRecognitionManager: SpeechTranscribing {
     private var generation = 0
 
     private let resolver: SpeechLocaleResolver
+    private let use: SpeechUse
 
-    /// Characters of finalized text kept for matching; the tracker only looks at the last words.
-    private nonisolated static let transcriptLimit = 400
-
-    init(resolver: SpeechLocaleResolver = SpeechLocaleResolver()) {
+    init(resolver: SpeechLocaleResolver = SpeechLocaleResolver(), use: SpeechUse = .following) {
         self.resolver = resolver
+        self.use = use
     }
 
     func start(
@@ -101,6 +100,29 @@ final class SpeechRecognitionManager: SpeechTranscribing {
         analyzer = nil
     }
 
+    /// Stops listening and lets the recognizer say what it heard in the last words before it
+    /// closes, so the transcript ends up whole (the words still being worked out are finalized).
+    /// Returns when the transcript stream has ended. Dictation uses it; Voice Following just stops.
+    func finish() async {
+        generation += 1
+        input?.finish()
+        input = nil
+        let results = resultsTask
+        resultsTask = nil
+        guard let analyzer else {
+            results?.cancel()
+            return
+        }
+        self.analyzer = nil
+        do {
+            try await analyzer.finalizeAndFinishThroughEndOfInput()
+        } catch {
+            results?.cancel()
+            await analyzer.cancelAndFinishNow()
+        }
+        await results?.value
+    }
+
     // MARK: - Availability
 
     /// Whether Voice Following can follow the words in `language` here, and whether its model is
@@ -156,14 +178,19 @@ final class SpeechRecognitionManager: SpeechTranscribing {
     /// Finalized text plus the words still being recognized, as one running transcript.
     private func listen(to module: Module) -> AsyncStream<String> {
         let (transcripts, output) = AsyncStream.makeStream(of: String.self, bufferingPolicy: .bufferingNewest(1))
+        let use = use
         resultsTask = Task {
             var finalized = ""
+            func joined(_ text: String) -> String {
+                finalized + use.separator(after: finalized, before: text) + text
+            }
             func heard(_ text: String, isFinal: Bool) {
                 if isFinal {
-                    finalized = String((finalized + " " + text).suffix(Self.transcriptLimit))
+                    finalized = joined(text)
+                    if let limit = use.transcriptLimit { finalized = String(finalized.suffix(limit)) }
                     output.yield(finalized)
                 } else {
-                    output.yield(finalized + " " + text)
+                    output.yield(joined(text))
                 }
             }
             do {
