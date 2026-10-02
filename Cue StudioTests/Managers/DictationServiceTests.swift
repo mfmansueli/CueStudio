@@ -3,6 +3,7 @@
 //  Cue StudioTests
 //
 
+import AVFAudio
 import Foundation
 import Testing
 @testable import Cue_Studio
@@ -14,6 +15,7 @@ import Testing
 @Suite("Dictation")
 struct DictationServiceTests {
     /// What the microphone permission says, moved by the test.
+    @MainActor
     private final class Permission {
         var denied = false
         /// What the system prompt answers when it is asked.
@@ -36,17 +38,20 @@ struct DictationServiceTests {
         var texts: [String] = []
     }
 
+    @MainActor
     private struct Rig {
         let service: DictationService
         let audio = FakeAudioMeter()
         let speech = FakeSpeechTranscriber()
         let permission = Permission()
         let heard = Heard()
+        let notificationCenter = NotificationCenter()
 
         init(silenceTimeout: Duration = .seconds(4), watchInterval: Duration = .seconds(1), finishTimeout: Duration = .seconds(3)) {
             service = DictationService(
                 audio: audio, speech: speech, microphone: permission.access,
-                finishTimeout: finishTimeout, silenceTimeout: silenceTimeout, watchInterval: watchInterval
+                finishTimeout: finishTimeout, silenceTimeout: silenceTimeout, watchInterval: watchInterval,
+                notificationCenter: notificationCenter
             )
         }
 
@@ -156,6 +161,25 @@ struct DictationServiceTests {
             #expect(!message.contains("Voice Following") && !message.contains("Captions"))
         }
         #expect(SpeechUnavailableReason.unsupported(.thai).dictationMessage.contains(CueLanguage.thai.localizedName))
+    }
+
+    @Test func aMicrophoneThatCannotStartReleasesTheRecognizerAndCanBeRetried() async {
+        let rig = Rig()
+        rig.audio.canStart = false
+        await rig.start()
+        #expect(rig.service.state == .idle)
+        #expect(rig.service.notice == .unavailable(.couldNotStart))
+        #expect(rig.speech.stopCount == 1)
+        #expect(rig.audio.audioHandler == nil && rig.audio.levelHandler == nil)
+        rig.speech.say("words after the failure")
+        await settle()
+        #expect(rig.heard.texts.isEmpty)
+
+        rig.audio.canStart = true
+        await rig.start()
+        #expect(rig.service.state == .listening)
+        #expect(rig.service.notice == nil)
+        rig.service.cancel()
     }
 
     @Test func gettingReadyAndDownloadingShowWhileThePreparationRuns() async {
@@ -309,6 +333,21 @@ struct DictationServiceTests {
         let rig = Rig()
         rig.service.interrupt()
         #expect(rig.service.state == .idle && rig.service.notice == nil)
+    }
+
+    @Test(arguments: [AVAudioSession.didBecomeInactiveNotification, AVAudioSession.mediaServicesWereResetNotification])
+    func losingTheAudioSessionStopsDictation(_ notification: Notification.Name) async {
+        let rig = Rig()
+        await rig.start()
+        rig.speech.say("words before the interruption")
+        await settle()
+        rig.notificationCenter.post(name: notification, object: nil)
+        await waitUntil { rig.service.state == .idle }
+        #expect(rig.service.state == .idle)
+        #expect(rig.service.notice == .interrupted)
+        #expect(!rig.audio.isMetering)
+        #expect(rig.audio.audioHandler == nil && rig.audio.levelHandler == nil)
+        #expect(rig.heard.texts == ["words before the interruption"])
     }
 
     @Test func aRecognizerThatEndsOnItsOwnWhileListeningIsAnInterruption() async {

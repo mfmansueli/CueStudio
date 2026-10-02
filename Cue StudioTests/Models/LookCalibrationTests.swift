@@ -51,8 +51,10 @@ struct LookCalibrationTests {
 
     @Test func everyDialGrowsWithItsValue() {
         let values = stride(from: -100.0, through: 100.0, by: 10.0).map { $0 }
-        for function in [LookCalibration.exposureStops, LookCalibration.saturationScale, LookCalibration.vibranceAmount,
-                         LookCalibration.warmthKelvin, LookCalibration.shadowAmount, LookCalibration.contrastStrength] {
+        for function in [
+            LookCalibration.exposureStops, LookCalibration.saturationScale, LookCalibration.vibranceAmount,
+            LookCalibration.warmthKelvin, LookCalibration.shadowAmount, LookCalibration.contrastStrength,
+        ] {
             let results = values.map(function)
             #expect(zip(results, results.dropFirst()).allSatisfy { $0 < $1 })
         }

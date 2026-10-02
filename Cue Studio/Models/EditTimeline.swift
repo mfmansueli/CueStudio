@@ -691,7 +691,7 @@ nonisolated struct EditTimeline: Codable, Hashable, Sendable {
     }
 }
 
-extension EditTimeline {
+nonisolated extension EditTimeline {
     /// The same pieces without their own Auto, Adjust or filter, for "Compare": a clip's background
     /// stays, since it isn't part of the look being compared.
     func withoutPictureLooks() -> EditTimeline {

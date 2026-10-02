@@ -22,11 +22,11 @@ struct EditorPhotoPicker: ViewModifier {
             .onChange(of: viewModel.photoRequest) { _, request in
                 isPresented = request != nil
             }
-            .onChange(of: picked, perform: { item in
+            .onChange(of: picked) { _, item in
                 guard let item else { return }
                 picked = nil
                 Task { await viewModel.importPickedPhoto(item) }
-            })
+            }
     }
 }
 

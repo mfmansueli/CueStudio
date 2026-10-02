@@ -21,10 +21,9 @@ struct PaletteContrastTests {
         var traits: UITraitCollection {
             let style: UIUserInterfaceStyle = self == .light || self == .lightIncreased ? .light : .dark
             let contrast: UIAccessibilityContrast = self == .lightIncreased || self == .darkIncreased ? .high : .normal
-            return UITraitCollection(traitsFrom: [
-                UITraitCollection(userInterfaceStyle: style),
-                UITraitCollection(accessibilityContrast: contrast),
-            ])
+            return UITraitCollection(userInterfaceStyle: style).modifyingTraits { traits in
+                traits.accessibilityContrast = contrast
+            }
         }
 
         var isLight: Bool { self == .light || self == .lightIncreased }
@@ -178,7 +177,10 @@ struct PaletteContrastTests {
                 let value = ratio(token.color, on: Palette.editorPanel, in: appearance)
                 #expect(value >= ColorContrast.textMinimum, "\(token.name) on the panel, \(appearance): \(value)")
             }
-            #expect(ratio(Palette.laneGhostBorder, on: Palette.editorPanel, in: appearance) >= ColorContrast.componentMinimum, "a dashed outline, \(appearance)")
+            #expect(
+                ratio(Palette.laneGhostBorder, on: Palette.editorPanel, in: appearance) >= ColorContrast.componentMinimum,
+                "a dashed outline, \(appearance)"
+            )
         }
     }
 

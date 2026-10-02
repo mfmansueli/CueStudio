@@ -206,12 +206,16 @@ extension QuickEditViewModel {
         case .deleteMusic: selection?.musicID.map(deleteMusic)
         case .reRecordVoiceOver: selection?.voiceOverID.map(reRecordVoiceOver)
         case .deleteVoiceOver: selection?.voiceOverID.map(deleteVoiceOver)
-        case .replaceMedia:
-            if let media = selectedMedia { requestPhoto(.replaceMedia(media.id, kind: media.kind)) }
+        case .replaceMedia: replaceSelectedMedia()
         case .deleteMedia: selection?.mediaID.map(deleteMedia)
         default: return false
         }
         return true
+    }
+
+    private func replaceSelectedMedia() {
+        guard let media = selectedMedia else { return }
+        requestPhoto(.replaceMedia(media.id, kind: media.kind))
     }
 
     /// Captions: the list when the take has lines, else Auto captions to make them.

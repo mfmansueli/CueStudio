@@ -30,7 +30,9 @@ struct ScriptSpellingTests {
     }
 
     @Test func anImprovisedTakeIsNot() {
-        let result = ScriptSpelling.apply(to: heard("so today I want to talk about something else entirely"), script: "Hoje vou mostrar duas ferramentas simples.")
+        let result = ScriptSpelling.apply(
+            to: heard("so today I want to talk about something else entirely"), script: "Hoje vou mostrar duas ferramentas simples."
+        )
         #expect(!result.followsScript)
         #expect(result.words.map(\.text) == "so today I want to talk about something else entirely".split(separator: " ").map(String.init))
     }

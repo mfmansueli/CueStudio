@@ -40,12 +40,15 @@ struct IdeaPromptDraftTests {
 
     @Test func oneKindAtATimeAndTheSameOneAgainLetsGo() {
         var draft = IdeaPromptDraft()
-        #expect(draft.toggle(.tip))
+        let pickedTip = draft.toggle(.tip)
+        #expect(pickedTip)
         #expect(draft.idea == .tip)
-        #expect(draft.toggle(.story))
+        let pickedStory = draft.toggle(.story)
+        #expect(pickedStory)
         #expect(draft.idea == .story)
         // Letting go goes back to a free idea and doesn't ask for the keyboard.
-        #expect(!draft.toggle(.story))
+        let pickedAgain = draft.toggle(.story)
+        #expect(!pickedAgain)
         #expect(draft.idea == nil)
     }
 

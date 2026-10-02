@@ -30,6 +30,7 @@ final class DictationService {
     @ObservationIgnored private let audio: AudioLevelMetering
     @ObservationIgnored private let speech: SpeechTranscribing
     @ObservationIgnored private let microphone: MicrophoneAccess
+    @ObservationIgnored private let notificationCenter: NotificationCenter
     /// How long the last words get to be finalized after a stop before it lets go anyway.
     @ObservationIgnored private let finishTimeout: Duration
     /// How long without audio before the microphone is taken as gone (an unplugged mic, a call),
@@ -51,11 +52,13 @@ final class DictationService {
 
     init(
         audio: AudioLevelMetering, speech: SpeechTranscribing, microphone: MicrophoneAccess = MicrophoneAccess(),
-        finishTimeout: Duration = .seconds(3), silenceTimeout: Duration = .seconds(4), watchInterval: Duration = .seconds(1)
+        finishTimeout: Duration = .seconds(3), silenceTimeout: Duration = .seconds(4), watchInterval: Duration = .seconds(1),
+        notificationCenter: NotificationCenter = .default
     ) {
         self.audio = audio
         self.speech = speech
         self.microphone = microphone
+        self.notificationCenter = notificationCenter
         self.finishTimeout = finishTimeout
         self.silenceTimeout = silenceTimeout
         self.watchInterval = watchInterval
@@ -106,7 +109,6 @@ final class DictationService {
         audio.setLevelHandler { levelInput.yield($0) }
         guard await audio.startMetering() else {
             guard current == generation else { return }
-            release()
             fail(microphone.isDenied() ? .microphoneDenied : .unavailable(.couldNotStart))
             return
         }
@@ -248,7 +250,9 @@ final class DictationService {
 
     // MARK: - Letting go
 
-    private func finish(with notice: DictationNotice) {
+    private func fail(_ notice: DictationNotice) {
+        generation += 1
+        release()
         self.notice = notice
         state = .idle
         onTranscript = nil
@@ -270,12 +274,10 @@ final class DictationService {
     }
 
     private func observeInterruptions() {
-        let center = NotificationCenter.default
-        for name in [AVAudioSession.interruptionNotification, AVAudioSession.mediaServicesWereResetNotification] {
-            observers.append(center.addObserver(forName: name, object: nil, queue: nil) { [weak self] notification in
-                let began = (notification.userInfo?[AVAudioSessionInterruptionTypeKey] as? UInt)
-                    .map { $0 == AVAudioSession.InterruptionType.began.rawValue } ?? true
-                guard began else { return }
+        for name in [AVAudioSession.didBecomeInactiveNotification, AVAudioSession.mediaServicesWereResetNotification] {
+            observers.append(notificationCenter.addObserver(forName: name, object: nil, queue: nil) { [weak self] notification in
+                let context = notification.userInfo?[AVAudioSession.deactivationContextKey] as? AVAudioSession.DeactivationContext
+                guard context?.source != .app else { return }
                 Task { @MainActor [weak self] in self?.interrupt() }
             })
         }

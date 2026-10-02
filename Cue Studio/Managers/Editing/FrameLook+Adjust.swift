@@ -11,7 +11,7 @@ import CoreImage.CIFilterBuiltins
 /// sharpness last. How far each dial goes is `LookCalibration`. Contrast and the lift of the
 /// highlights are curves drawn in sRGB-encoded values (Core Image works in linear light, where a
 /// curve around the middle would be far too strong in the shadows).
-extension FrameLook {
+nonisolated extension FrameLook {
     static func adjusted(_ look: LookSettings, _ image: CIImage) -> CIImage {
         var output = image
         output = exposure(look.exposure, on: output)

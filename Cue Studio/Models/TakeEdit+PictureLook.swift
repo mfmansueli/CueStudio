@@ -5,7 +5,7 @@
 
 import Foundation
 
-extension TakeEdit {
+nonisolated extension TakeEdit {
     /// The take drawn as recorded: no Auto, no Adjust and no filter, on the take or on any clip.
     /// What "Compare" in Adjust shows; never what is saved or exported.
     func withoutPictureLook() -> TakeEdit {

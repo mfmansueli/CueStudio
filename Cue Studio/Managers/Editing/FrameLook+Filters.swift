@@ -9,7 +9,7 @@ import CoreImage.CIFilterBuiltins
 /// The filter step: the preset drawn on the adjusted frame, mixed in at the intensity picked. The
 /// first filters (Vivid, Warm, Cool, Mono, Film, Fade) are drawn as they always were
 /// (`FrameLook+Legacy`); the collection is a graded color cube (`FilterGrade`, `FilterLUT`).
-extension FrameLook {
+nonisolated extension FrameLook {
     static func filtered(_ look: LookSettings, _ image: CIImage) -> CIImage {
         guard look.filter != .original else { return image }
         let filtered = applyPreset(look.filter, to: image)

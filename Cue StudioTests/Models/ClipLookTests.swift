@@ -156,7 +156,8 @@ struct ClipLookTests {
         look.exposure = 10
         clip.look = look
         take.timeline.replaceSegment(clip)
-        #expect(take.timeline.split(atEdited: 8))
+        let didSplit = take.timeline.split(atEdited: 8)
+        #expect(didSplit)
         #expect(take.timeline.segments.count == 2)
         #expect(take.timeline.segments.allSatisfy { $0.look == look })
     }
@@ -168,7 +169,8 @@ struct ClipLookTests {
         look.contrast = 30
         clip.look = look
         take.timeline.replaceSegment(clip)
-        let copy = try #require(take.timeline.duplicateSegment(id: clip.id))
+        let duplicatedID = take.timeline.duplicateSegment(id: clip.id)
+        let copy = try #require(duplicatedID)
         #expect(take.timeline.segment(id: copy)?.look == look)
     }
 
@@ -179,7 +181,8 @@ struct ClipLookTests {
         look.saturation = -40
         clip.look = look
         take.timeline.replaceSegment(clip)
-        #expect(take.timeline.remove([TimeSpan(start: 5, end: 8)]))
+        let didRemove = take.timeline.remove([TimeSpan(start: 5, end: 8)])
+        #expect(didRemove)
         #expect(take.timeline.segments.count == 2)
         #expect(take.timeline.segments.allSatisfy { $0.look == look })
     }
@@ -188,9 +191,13 @@ struct ClipLookTests {
 
     @Test func stretchesCutWhereTheNextClipLooksDifferentAndOnlyThere() {
         var take = edit()
-        #expect(take.timeline.split(atEdited: 5))
-        #expect(take.timeline.split(atEdited: 12))
-        let whole = [(range: CMTimeRange(start: .zero, end: CMTime(seconds: 20, preferredTimescale: 600)), dissolve: nil as TransitionWindow?, showsMedia: false)]
+        let didSplitFirst = take.timeline.split(atEdited: 5)
+        #expect(didSplitFirst)
+        let didSplitSecond = take.timeline.split(atEdited: 12)
+        #expect(didSplitSecond)
+        let whole = [
+            (range: CMTimeRange(start: .zero, end: CMTime(seconds: 20, preferredTimescale: 600)), dissolve: nil as TransitionWindow?, showsMedia: false),
+        ]
         #expect(EditedComposition.splitBySource(whole, in: take.timeline).count == 1)
         var middle = take.timeline.segments[1]
         var look = ClipLook()

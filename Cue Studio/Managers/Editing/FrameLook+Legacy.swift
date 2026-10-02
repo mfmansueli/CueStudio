@@ -10,7 +10,7 @@ import CoreImage.CIFilterBuiltins
 /// always been there. Edits saved with them keep drawing with these exact numbers, so a project
 /// never changes how it looks because the app learned to do it better. Do not tune this file: the
 /// calibrated reading is in `FrameLook+Adjust`.
-extension FrameLook {
+nonisolated extension FrameLook {
     static func adjustedLegacy(_ look: LookSettings, _ image: CIImage) -> CIImage {
         var output = image
         if look.exposure != 0 {
