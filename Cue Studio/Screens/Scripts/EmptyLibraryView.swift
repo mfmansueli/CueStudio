@@ -6,10 +6,10 @@
 import SwiftUI
 
 /// A library with no scripts (not loading, not an empty search): one question, "What's the idea?",
-/// answered in the card (its field opens the composer to type, its microphone to dictate, its arrow
-/// sends the draft), then writing and importing as quiet rows, and recording without a script as a
-/// small link. The "+" in the navigation bar stays, as in every state, and keeps Generate, Themes
-/// and Formats.
+/// answered in the card (`IdeaPromptCard`, the same one the list shows: typed or dictated in place,
+/// its arrow opens Generate with AI), then writing and importing as quiet rows, and recording
+/// without a script as a small link. The "+" in the navigation bar stays, as in every state, and
+/// keeps Generate, Themes and Formats.
 struct EmptyLibraryView: View {
     var animatesPromptBackground = true
     /// Why Apple Intelligence can't write now; nil when it can.
@@ -19,17 +19,6 @@ struct EmptyLibraryView: View {
     let onWrite: () -> Void
     let onImport: () -> Void
     let onSkip: () -> Void
-
-    @Environment(DictationService.self) private var dictation
-    @Environment(PresentationService.self) private var presentation
-    @Environment(\.scenePhase) private var scenePhase
-
-    /// Something else has the screen (a sheet, the camera, another tab): the microphone is theirs.
-    /// The idea composer is the exception: it is where the card's dictation happens.
-    private var isCovered: Bool {
-        (presentation.sheet.map { !$0.isIdeaComposer } ?? false) || presentation.prompter != nil
-            || presentation.showsRemoteController || presentation.selectedTab != .scripts
-    }
 
     var body: some View {
         ScrollView {
@@ -45,10 +34,7 @@ struct EmptyLibraryView: View {
                 }
                 IdeaPromptCard(
                     base: Palette.surface, animatesBackground: animatesPromptBackground,
-                    unavailableReason: unavailableReason,
-                    onCompose: { presentation.present(.composeIdea(dictating: false)) },
-                    onDictate: { presentation.present(.composeIdea(dictating: true)) },
-                    onSubmit: onSubmit
+                    unavailableReason: unavailableReason, onSubmit: onSubmit
                 )
                 .accessibilityIdentifier("empty.promptCard")
                 GroupedCard(dividerInset: 72) {
@@ -67,16 +53,7 @@ struct EmptyLibraryView: View {
             .padding(.top, 24)
             .padding(.bottom, 40)
         }
-        // A dictation lets go of the microphone the moment this screen isn't the one in use: the
-        // app in the background (told, once), another screen, or leaving. The words stay.
-        .onChange(of: scenePhase) { _, phase in
-            // Not on `.inactive`: the system's microphone prompt makes the app inactive.
-            if phase == .background { dictation.interrupt() }
-        }
-        .onChange(of: isCovered) { _, covered in
-            if covered { dictation.cancel() }
-        }
-        .onDisappear { dictation.cancel() }
+        .scrollDismissesKeyboard(.interactively)
     }
 
     // MARK: - Pieces

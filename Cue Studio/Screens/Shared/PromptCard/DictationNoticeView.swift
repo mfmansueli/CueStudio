@@ -31,7 +31,7 @@ struct DictationNoticeView: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(Palette.surface2, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
         .accessibilityElement(children: .contain)
-        .accessibilityIdentifier("empty.dictationNotice")
+        .accessibilityIdentifier("ideaCard.dictationNotice")
     }
 }
 

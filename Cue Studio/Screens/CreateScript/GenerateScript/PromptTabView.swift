@@ -81,7 +81,8 @@ struct PromptTabView: View {
             }
             GenerateButton(
                 isGenerating: viewModel.isGenerating,
-                isEnabled: viewModel.canWriteFromPrompt && !viewModel.promptText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+                isEnabled: viewModel.canWriteFromPrompt && !viewModel.promptText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty,
+                onCancel: viewModel.cancelGeneration
             ) {
                 isEditing = false
                 onGenerate()

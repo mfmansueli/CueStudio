@@ -28,7 +28,7 @@ struct WriteInMyVoiceRow: View {
             }
             .tint(Palette.successText)
             .frame(minHeight: Metrics.hitTarget)
-            .accessibilityIdentifier("empty.voiceToggle")
+            .accessibilityIdentifier("ideaCard.voiceToggle")
             if profile.writesInMyVoice {
                 Button { setup = .edit } label: {
                     Text("Edit style")
@@ -38,7 +38,7 @@ struct WriteInMyVoiceRow: View {
                         .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
-                .accessibilityIdentifier("empty.editStyleButton")
+                .accessibilityIdentifier("ideaCard.editStyleButton")
             }
         }
         .animation(.smooth(duration: 0.2), value: profile.writesInMyVoice)

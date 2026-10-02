@@ -7,12 +7,17 @@ import Foundation
 
 /// The idea the creator is writing or dictating on the empty Scripts screen: one copy of the text,
 /// read and written by the card, the composer sheet and the generation flow, so a draft is never
-/// lost or duplicated on its way from one to another. It lives with the app session, so closing the
-/// composer keeps the draft in the card, and only a script written from it clears it.
+/// lost or duplicated on its way from one to another. It lives with the app session, so closing
+/// Generate with AI keeps the draft in the card, and only a script written from it clears it.
 @MainActor
 @Observable
 final class IdeaDraftService {
     private(set) var draft = IdeaPromptDraft()
+
+    /// What the creator chose on Generate with AI for this idea (nil: their default platform), kept
+    /// here so closing that screen and opening it again finds the same choices.
+    var platform: Platform?
+    var length: ScriptLength = .auto
 
     /// The text as the creator sees it. Writing it here (typing, paste, an example) ends a dictation
     /// that was still writing into it.
@@ -52,8 +57,10 @@ final class IdeaDraftService {
 
     // MARK: - Clearing
 
-    /// The idea became a script: the next one starts empty.
+    /// The idea became a script: the next one starts empty, with the choices back to the defaults.
     func clear() {
         draft = IdeaPromptDraft()
+        platform = nil
+        length = .auto
     }
 }

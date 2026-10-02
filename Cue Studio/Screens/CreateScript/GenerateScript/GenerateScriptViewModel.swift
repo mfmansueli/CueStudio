@@ -21,9 +21,9 @@ final class GenerateScriptViewModel {
     var tab: GenerateTab
 
     // MARK: Prompt
-    /// What to write about. Opened from the empty Scripts screen's idea card, this is the card's own
-    /// draft (`IdeaDraftService`), not a copy of it: the card, the composer and this screen can't
-    /// disagree. Otherwise the VM's own text.
+    /// What to write about. Opened from the idea card, this is the card's own draft
+    /// (`IdeaDraftService`), not a copy of it: the card and this screen can't disagree. Otherwise
+    /// the VM's own text.
     var promptText: String {
         get { ideaDraft?.text ?? ownPromptText }
         set {
@@ -34,8 +34,28 @@ final class GenerateScriptViewModel {
             }
         }
     }
-    var length: ScriptLength = .auto
-    var platform: Platform
+    /// Length and platform follow the same rule: with the idea card's draft they are kept there, so
+    /// closing this screen and opening it again finds the choices made.
+    var length: ScriptLength {
+        get { ideaDraft?.length ?? ownLength }
+        set {
+            if let ideaDraft {
+                ideaDraft.length = newValue
+            } else {
+                ownLength = newValue
+            }
+        }
+    }
+    var platform: Platform {
+        get { ideaDraft?.platform ?? ownPlatform }
+        set {
+            if let ideaDraft {
+                ideaDraft.platform = newValue
+            } else {
+                ownPlatform = newValue
+            }
+        }
+    }
     /// "Write in my voice": the profile's shared state, so the card, this screen and Profile agree.
     /// Without enough in the profile it stays off (see `CreatorProfileService.writesInMyVoice`).
     var writesInMyVoice: Bool {
@@ -58,6 +78,15 @@ final class GenerateScriptViewModel {
     var errorMessage: String?
 
     private var ownPromptText = ""
+    private var ownLength: ScriptLength = .auto
+    private var ownPlatform: Platform
+    /// The request being written, if any: one at a time, and it can be cancelled.
+    private var generationTask: Task<Void, Never>?
+    private var generationToken = UUID()
+    private var lastAttempt: Attempt?
+    private var requestedAt: ContinuousClock.Instant?
+    private var writerReturnedAt: ContinuousClock.Instant?
+    private var requestedWords: ClosedRange<Int> = 0...0
     private let ideaDraft: IdeaDraftService?
     private let writer: ScriptWriting
     private let library: ScriptLibraryService
@@ -91,7 +120,7 @@ final class GenerateScriptViewModel {
         self.rules = rules
         self.toast = toast
         let defaultPlatform = profile.profile.defaultPlatform
-        platform = Platform.primary.contains(defaultPlatform) ? defaultPlatform : .tiktok
+        ownPlatform = Platform.primary.contains(defaultPlatform) ? defaultPlatform : .tiktok
         tone = ScriptStructure.generic.tones[0]
         themes = ThemeCatalog.page(for: profile.profile.niches, rotation: 0)
     }
@@ -131,6 +160,59 @@ final class GenerateScriptViewModel {
         brief[field.key] ?? ""
     }
 
+    // MARK: - Writing
+
+    /// What a retry runs again.
+    private enum Attempt {
+        case prompt, brief
+    }
+
+    /// Starts writing from the prompt, once: asked again while a request is running, it does
+    /// nothing. Only the button that says "Generate script" calls this; opening the screen never does.
+    func startPromptGeneration(onCreated: @escaping (Script) -> Void) {
+        start(.prompt, onCreated: onCreated) { await self.generateFromPrompt() }
+    }
+
+    func startBriefGeneration(onCreated: @escaping (Script) -> Void) {
+        start(.brief, onCreated: onCreated) { await self.generateFromBrief() }
+    }
+
+    /// Runs the last request again, after an error.
+    func retryGeneration(onCreated: @escaping (Script) -> Void) {
+        switch lastAttempt {
+        case .prompt: startPromptGeneration(onCreated: onCreated)
+        case .brief: startBriefGeneration(onCreated: onCreated)
+        case nil: break
+        }
+    }
+
+    /// Stops the request: nothing is created, no error is shown, and the screen is ready to ask again.
+    func cancelGeneration() {
+        guard generationTask != nil || isGenerating else { return }
+        GenerationLog.note("cancelled by the creator")
+        generationTask?.cancel()
+        generationTask = nil
+        generationToken = UUID()
+        isGenerating = false
+    }
+
+    private func start(_ attempt: Attempt, onCreated: @escaping (Script) -> Void, work: @escaping () async -> Script?) {
+        guard generationTask == nil, !isGenerating else {
+            GenerationLog.note("ignored a second request while one was running")
+            return
+        }
+        lastAttempt = attempt
+        errorMessage = nil
+        let token = UUID()
+        generationToken = token
+        generationTask = Task { [weak self] in
+            let script = await work()
+            guard let self, self.generationToken == token else { return }
+            self.generationTask = nil
+            if let script, !Task.isCancelled { onCreated(script) }
+        }
+    }
+
     // MARK: - Prompt
 
     func useExample(_ example: String) {
@@ -160,6 +242,7 @@ final class GenerateScriptViewModel {
         toast.show(generated.needsFactCheck
             ? String(localized: "Draft ready — check facts before recording")
             : String(localized: "Draft ready — edit anything"))
+        report(generated)
         return script
     }
 
@@ -217,6 +300,7 @@ final class GenerateScriptViewModel {
         guard let generated = await run(request) else { return nil }
         let script = library.create(title: generated.title, text: generated.text, platform: platform, type: type, language: scriptLanguage)
         toast.show(String(localized: "Draft ready — structured as \(type.structure.blocks.count) blocks"))
+        report(generated)
         return script
     }
 
@@ -234,14 +318,40 @@ final class GenerateScriptViewModel {
         return interfaceLanguage
     }
 
+    /// Writes the request. Success, error and cancellation all end the loading state; a cancelled
+    /// request returns nil without an error, and one cancelled while the model was still answering
+    /// is dropped even if the answer arrives.
     private func run(_ request: ScriptRequest) async -> GeneratedScript? {
+        let token = generationToken
+        requestedAt = ContinuousClock.now
+        requestedWords = ReadTime.words(for: request.targetRange.lowerBound)...ReadTime.words(for: request.targetRange.upperBound)
         isGenerating = true
-        defer { isGenerating = false }
+        defer {
+            // A request cancelled and replaced meanwhile must not end the new one's loading state.
+            if generationToken == token { isGenerating = false }
+        }
         do {
-            return try await writer.generate(request)
+            let generated = try await writer.generate(request)
+            guard !Task.isCancelled, generationToken == token else { return nil }
+            writerReturnedAt = ContinuousClock.now
+            return generated
         } catch {
+            guard !Task.isCancelled, !(error is CancellationError), generationToken == token else { return nil }
+            let elapsed = Int((requestedAt?.duration(to: .now) ?? .zero).inSeconds)
+            GenerationLog.note("failed after \(elapsed) s")
             errorMessage = error.localizedDescription
             return nil
         }
+    }
+
+    /// Adds what happens after the model answered (creating the script and showing it) to the
+    /// model's own timings and logs the request.
+    private func report(_ generated: GeneratedScript) {
+        guard let requestedAt, let writerReturnedAt else { return }
+        let now = ContinuousClock.now
+        GenerationLog.report(
+            timings: generated.timings, ui: writerReturnedAt.duration(to: now), total: requestedAt.duration(to: now),
+            requestedWords: requestedWords, writtenWords: ReadTime.wordCount(in: generated.text)
+        )
     }
 }

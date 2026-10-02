@@ -44,9 +44,7 @@ struct GenerateScriptSheet: View {
                     switch viewModel.tab {
                     case .prompt:
                         PromptTabView(viewModel: viewModel) {
-                            Task {
-                                if let script = await viewModel.generateFromPrompt() { onCreated(script) }
-                            }
+                            viewModel.startPromptGeneration(onCreated: onCreated)
                         }
                     case .themes:
                         ThemesTabView(viewModel: viewModel)
@@ -61,9 +59,7 @@ struct GenerateScriptSheet: View {
             .toolbarVisibility(.hidden, for: .navigationBar)
             .navigationDestination(item: $viewModel.selectedType) { type in
                 ScriptBriefView(viewModel: viewModel, type: type) {
-                    Task {
-                        if let script = await viewModel.generateFromBrief() { onCreated(script) }
-                    }
+                    viewModel.startBriefGeneration(onCreated: onCreated)
                 }
                 .toolbar {
                     ToolbarItem(placement: .topBarTrailing) {
@@ -73,6 +69,8 @@ struct GenerateScriptSheet: View {
                 }
             }
         }
+        // Closing the screen stops a request that is still running: nothing is created behind its back.
+        .onDisappear { viewModel.cancelGeneration() }
         .presentationDetents([.large])
         .presentationBackground(Palette.surface)
         .presentationCornerRadius(Metrics.sheetRadius)
@@ -80,6 +78,7 @@ struct GenerateScriptSheet: View {
             get: { viewModel.errorMessage != nil },
             set: { if !$0 { viewModel.errorMessage = nil } }
         )) {
+            Button("Try again") { viewModel.retryGeneration(onCreated: onCreated) }
             Button("OK", role: .cancel) {}
         } message: {
             Text(viewModel.errorMessage ?? "")

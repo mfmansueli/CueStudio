@@ -17,7 +17,7 @@ struct ScriptsView: View {
     @Environment(CreatorProfileService.self) private var profile
     @Environment(LanguageService.self) private var languages
 
-    /// Tells the empty screen's idea card whether Apple Intelligence can write.
+    /// Tells the idea card whether Apple Intelligence can write.
     private let writer: ScriptWriting?
 
     init(library: ScriptLibraryService, toast: ToastService, writer: ScriptWriting? = nil) {
@@ -83,9 +83,11 @@ struct ScriptsView: View {
         return List(selection: $viewModel.selection) {
             Section {
                 VStack(spacing: 14) {
-                    PromptCard(base: Palette.surface, layout: .compact, animatesBackground: animatesPromptBackground) {
-                        presentation.present(.generateScript(.prompt))
-                    }
+                    // The same card as the empty screen's: typed or dictated in place, the arrow opens Generate with AI.
+                    IdeaPromptCard(
+                        base: Palette.surface, animatesBackground: animatesPromptBackground,
+                        unavailableReason: writerUnavailableReason, onSubmit: { presentation.present(.generateIdea) }
+                    )
                     .accessibilityIdentifier("scripts.promptCard")
                     SearchField(text: $viewModel.query, prompt: "Search scripts")
                         .accessibilityIdentifier("scripts.searchField")

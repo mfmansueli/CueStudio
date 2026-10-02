@@ -148,12 +148,27 @@ struct IdeaPromptDraftTests {
         #expect(scenario.ideaDraft.text == "Carnival in Salvador")
     }
 
-    @Test func ideaSheetsHaveTheirOwnIdentity() {
+    @Test func theIdeaSheetHasItsOwnIdentity() {
         #expect(AppSheet.generateIdea.id == "generateIdea")
-        #expect(AppSheet.composeIdea(dictating: true).id == AppSheet.composeIdea(dictating: false).id)
-        #expect(AppSheet.composeIdea(dictating: false).id != AppSheet.generateIdea.id)
-        #expect(AppSheet.composeIdea(dictating: false).isIdeaComposer)
-        #expect(!AppSheet.generateIdea.isIdeaComposer && !AppSheet.newScript.isIdeaComposer)
+        #expect(AppSheet.generateIdea.id != AppSheet.generateScript(.prompt).id)
+    }
+
+    @Test func platformAndLengthChosenForTheIdeaSurviveClosingAndReopeningGenerate() {
+        let scenario = makeScenario(text: "Carnival in Salvador")
+        defer { scenario.defaults.tearDown() }
+        scenario.viewModel.platform = .reels
+        scenario.viewModel.length = .minutes2
+        // A new Generate screen over the same draft (the old one was closed) finds the same choices.
+        let reopened = GenerateScriptViewModel(
+            ideaDraft: scenario.ideaDraft, writer: scenario.writer,
+            library: ScriptLibraryService(repository: FakeScriptRepository(), now: { TestData.now }),
+            profile: scenario.profile, rules: TestData.rulesService(), toast: ToastService()
+        )
+        #expect(reopened.platform == .reels && reopened.length == .minutes2)
+        #expect(reopened.promptText == "Carnival in Salvador")
+        // Once the idea is a script, the next one starts from the defaults.
+        scenario.ideaDraft.clear()
+        #expect(scenario.ideaDraft.platform == nil && scenario.ideaDraft.length == .auto)
     }
 
     @Test func aDictationEndingAfterTheComposerClosedStillWritesIntoTheDraft() {

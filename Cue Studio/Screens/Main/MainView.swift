@@ -121,8 +121,6 @@ struct MainView: View {
             GenerateScriptSheet(services: services, initialTab: tab) { script in
                 presentation.openScript(script.id, editing: true)
             }
-        case .composeIdea(let dictating):
-            IdeaComposerSheet(startsDictating: dictating, unavailableReason: services.writer.writingUnavailableReason)
         case .generateIdea:
             GenerateScriptSheet(services: services, ideaDraft: services.ideaDraft) { script in
                 // The idea is a script now: the card starts empty the next time.

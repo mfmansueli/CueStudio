@@ -29,7 +29,7 @@ final class ScriptLibraryUITests: XCTestCase {
 
     func testPromptBoxStaysOnTop() {
         let app = CueApp.launch(seeded: true)
-        let prompt = app.buttons["scripts.promptCard"]
+        let prompt = app.descendants(matching: .any)["scripts.promptCard"].firstMatch
         XCTAssertTrue(prompt.waitForExistence(timeout: 15))
         let search = app.descendants(matching: .any)["scripts.searchField"].firstMatch
         XCTAssertLessThan(prompt.frame.minY, search.frame.minY)
@@ -43,13 +43,19 @@ final class ScriptLibraryUITests: XCTestCase {
         XCTAssertTrue(app.staticTexts["No scripts here yet."].waitForExistence(timeout: 5))
         XCTAssertTrue(prompt.exists)
 
-        prompt.tap()
-        XCTAssertTrue(app.descendants(matching: .any)["generate.promptField"].firstMatch.waitForExistence(timeout: 5))
+        // The card's own field takes the text, and its arrow opens Generate with AI with it filled in.
+        let field = app.descendants(matching: .any)["ideaCard.field"].firstMatch
+        field.tap()
+        field.typeText("A day in my life")
+        app.buttons["ideaCard.submit"].tap()
+        let generateField = app.descendants(matching: .any)["generate.promptField"].firstMatch
+        XCTAssertTrue(generateField.waitForExistence(timeout: 5))
+        XCTAssertEqual(generateField.value as? String, "A day in my life")
     }
 
     func testAnimatedPromptKeepsItsFrameAndAction() {
         let app = CueApp.launch(seeded: true)
-        let prompt = app.buttons["scripts.promptCard"]
+        let prompt = app.descendants(matching: .any)["scripts.promptCard"].firstMatch
         XCTAssertTrue(prompt.waitForExistence(timeout: 15))
         let frame = prompt.frame
         let label = prompt.label
@@ -69,8 +75,10 @@ final class ScriptLibraryUITests: XCTestCase {
         after.lifetime = .keepAlways
         add(after)
 
-        prompt.tap()
-        XCTAssertTrue(app.descendants(matching: .any)["generate.promptField"].firstMatch.waitForExistence(timeout: 5))
+        // Its field takes the keyboard in place; no sheet opens until the arrow is tapped.
+        app.descendants(matching: .any)["ideaCard.field"].firstMatch.tap()
+        XCTAssertTrue(app.keyboards.firstMatch.waitForExistence(timeout: 5))
+        XCTAssertFalse(app.descendants(matching: .any)["generate.promptField"].firstMatch.exists)
     }
 
     func testSearch() {
@@ -100,7 +108,7 @@ final class ScriptLibraryUITests: XCTestCase {
         discard.tap()
         XCTAssertTrue(edit.waitForExistence(timeout: 5))
         app.navigationBars.buttons.firstMatch.tap()
-        XCTAssertTrue(app.buttons["scripts.promptCard"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.descendants(matching: .any)["scripts.promptCard"].firstMatch.waitForExistence(timeout: 5))
         XCTAssertFalse(edit.exists)
     }
 
@@ -113,7 +121,7 @@ final class ScriptLibraryUITests: XCTestCase {
         let back = app.navigationBars.buttons.firstMatch
         XCTAssertTrue(back.waitForExistence(timeout: 5), app.navigationBars.debugDescription)
         back.tap()
-        XCTAssertTrue(app.buttons["scripts.promptCard"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.descendants(matching: .any)["scripts.promptCard"].firstMatch.waitForExistence(timeout: 5))
         XCTAssertFalse(app.buttons["detail.editButton"].exists)
     }
 
@@ -126,13 +134,13 @@ final class ScriptLibraryUITests: XCTestCase {
         let back = app.navigationBars.buttons.firstMatch
         XCTAssertTrue(back.waitForExistence(timeout: 5), app.navigationBars.debugDescription)
         back.tap()
-        XCTAssertTrue(app.buttons["scripts.promptCard"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.descendants(matching: .any)["scripts.promptCard"].firstMatch.waitForExistence(timeout: 5))
         XCTAssertFalse(app.buttons["detail.editButton"].exists)
         app.buttons["scripts.selectButton"].tap()
         let deleteSelection = app.buttons["scripts.deleteSelectionButton"]
         XCTAssertTrue(deleteSelection.waitForExistence(timeout: 5))
         app.buttons["scripts.selectButton"].tap()
-        XCTAssertTrue(app.buttons["scripts.promptCard"].exists)
+        XCTAssertTrue(app.descendants(matching: .any)["scripts.promptCard"].firstMatch.exists)
     }
 
     func testSavingAnExistingScriptAndReopeningItStillNeedsOnlyOneBackTap() {
@@ -151,14 +159,14 @@ final class ScriptLibraryUITests: XCTestCase {
         app.buttons["editor.doneButton"].tap()
         XCTAssertTrue(edit.waitForExistence(timeout: 5))
         app.navigationBars.buttons.firstMatch.tap()
-        XCTAssertTrue(app.buttons["scripts.promptCard"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.descendants(matching: .any)["scripts.promptCard"].firstMatch.waitForExistence(timeout: 5))
         XCTAssertFalse(edit.exists)
 
         // Saving promotes this row to the hero, but must not create another detail destination.
         app.staticTexts[title].tap()
         XCTAssertTrue(edit.waitForExistence(timeout: 5))
         app.navigationBars.buttons.firstMatch.tap()
-        XCTAssertTrue(app.buttons["scripts.promptCard"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.descendants(matching: .any)["scripts.promptCard"].firstMatch.waitForExistence(timeout: 5))
         XCTAssertFalse(edit.exists)
     }
 
@@ -171,7 +179,7 @@ final class ScriptLibraryUITests: XCTestCase {
             XCTAssertTrue(app.buttons["detail.editButton"].waitForExistence(timeout: 5))
             XCTAssertTrue(app.staticTexts[title].exists)
             app.navigationBars.buttons.firstMatch.tap()
-            XCTAssertTrue(app.buttons["scripts.promptCard"].waitForExistence(timeout: 5))
+            XCTAssertTrue(app.descendants(matching: .any)["scripts.promptCard"].firstMatch.waitForExistence(timeout: 5))
             XCTAssertFalse(app.buttons["detail.editButton"].exists)
         }
     }
@@ -191,12 +199,12 @@ final class ScriptLibraryUITests: XCTestCase {
         app.buttons["editor.doneButton"].tap()
         XCTAssertTrue(app.buttons["detail.editButton"].waitForExistence(timeout: 5))
         app.navigationBars.buttons.firstMatch.tap()
-        XCTAssertTrue(app.buttons["scripts.promptCard"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.descendants(matching: .any)["scripts.promptCard"].firstMatch.waitForExistence(timeout: 5))
         XCTAssertFalse(app.buttons["detail.editButton"].exists)
         app.staticTexts["One-tap navigation script"].tap()
         XCTAssertTrue(app.buttons["detail.editButton"].waitForExistence(timeout: 5))
         app.navigationBars.buttons.firstMatch.tap()
-        XCTAssertTrue(app.buttons["scripts.promptCard"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.descendants(matching: .any)["scripts.promptCard"].firstMatch.waitForExistence(timeout: 5))
         XCTAssertFalse(app.buttons["detail.editButton"].exists)
     }
 
@@ -214,7 +222,7 @@ final class ScriptLibraryUITests: XCTestCase {
             close.tap()
             XCTAssertTrue(app.buttons["detail.editButton"].waitForExistence(timeout: 5))
             app.navigationBars.buttons.firstMatch.tap()
-            XCTAssertTrue(app.buttons["scripts.promptCard"].waitForExistence(timeout: 5))
+            XCTAssertTrue(app.descendants(matching: .any)["scripts.promptCard"].firstMatch.waitForExistence(timeout: 5))
             XCTAssertFalse(app.buttons["detail.editButton"].exists)
         }
     }

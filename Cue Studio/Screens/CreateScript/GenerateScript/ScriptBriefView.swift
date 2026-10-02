@@ -85,7 +85,7 @@ struct ScriptBriefView: View {
                         .padding(.top, 14)
                 }
 
-                GenerateButton(isGenerating: viewModel.isGenerating, action: onGenerate)
+                GenerateButton(isGenerating: viewModel.isGenerating, onCancel: viewModel.cancelGeneration, action: onGenerate)
                     .padding(.top, 18)
             }
             .padding(EdgeInsets(top: 8, leading: Metrics.gutter, bottom: 24, trailing: Metrics.gutter))
