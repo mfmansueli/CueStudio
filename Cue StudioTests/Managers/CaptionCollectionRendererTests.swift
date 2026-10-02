@@ -57,16 +57,27 @@ struct CaptionCollectionRendererTests {
         Attachment.record(try #require(sample.pngData()), named: "\(theme.rawValue).png")
     }
 
-    @Test func unknownWordTimingAndManualCorrectionsStayStatic() {
+    @Test func unknownWordTimingStaysStatic() {
         var estimated = cue
         estimated.words[1].isEstimated = true
         let settings = CaptionSettings()
         let states = CaptionCollectionRenderer.overlays([estimated], settings: settings, position: .bottom, frame: frame)
         #expect(states.count == 1)
         #expect(states[0].lazyText?.emphasis == nil)
-        let revised = CaptionRevision.retimed(cue, text: "Sua nova ideia merece ganhar vida.")
-        #expect(revised.needsTimingReview)
-        #expect(CaptionCollectionRenderer.overlays([revised], settings: settings, position: .bottom, frame: frame).count == 1)
+    }
+
+    @Test func aCorrectedLineStillLightsItsWordsOneByOne() {
+        let settings = CaptionSettings()
+        let original = CaptionCollectionRenderer.overlays([cue], settings: settings, position: .bottom, frame: frame)
+        for text in ["Sua nova ideia merece ganhar vida.", "Sua ideia merece vida.", "Tua ideia merece ganhar vida."] {
+            let revised = CaptionRevision.retimed(cue, text: text)
+            #expect(!revised.needsTimingReview)
+            #expect(revised.hasWordTiming)
+            let states = CaptionCollectionRenderer.overlays([revised], settings: settings, position: .bottom, frame: frame)
+            #expect(states.count > 1)
+            #expect(states.contains { $0.lazyText?.emphasis != nil })
+        }
+        #expect(original.count > 1)
     }
 
     @Test func gapsNeverPretendAWordIsBeingSpoken() {

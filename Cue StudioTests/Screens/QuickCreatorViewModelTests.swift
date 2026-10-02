@@ -442,6 +442,68 @@ struct QuickCreatorViewModelTests {
         #expect(viewModel.edit.media.isEmpty)
     }
 
+    @Test func replacingAPhotoKeepsWhereItShowsAndHowItIsLaidOut() async {
+        let scenario = await makeScenario()
+        let viewModel = scenario.viewModel
+        viewModel.addMedia(photo())
+        let id = viewModel.edit.media[0].id
+        viewModel.updateMedia(id) {
+            $0.layout = .window
+            $0.width = 0.4
+        }
+        let before = viewModel.edit.media[0]
+        viewModel.replaceMedia(id, with: ImportedMedia(kind: .photo, fileName: "other.jpg", aspect: 2, duration: nil))
+        let after = viewModel.edit.media[0]
+        #expect(after.fileName == "other.jpg" && after.aspect == 2)
+        #expect(after.id == before.id && after.span == before.span && after.layout == .window && after.width == 0.4)
+        #expect(after.layer == before.layer)
+        viewModel.undo()
+        #expect(viewModel.edit.media[0].fileName == before.fileName)
+    }
+
+    @Test func aPhotoIsOnlyReplacedByAPhotoAndAVideoByAVideo() async {
+        let scenario = await makeScenario()
+        let viewModel = scenario.viewModel
+        let original = photo()
+        viewModel.addMedia(original)
+        let id = viewModel.edit.media[0].id
+        viewModel.replaceMedia(id, with: ImportedMedia(kind: .video, fileName: "clip.mov", aspect: 1, duration: 2))
+        #expect(viewModel.edit.media[0].fileName == original.fileName)
+        #expect(viewModel.edit.media[0].kind == .photo)
+    }
+
+    @Test func aShorterVideoShowsForItsOwnLengthWhenItReplacesALongerOne() async {
+        let scenario = await makeScenario()
+        let viewModel = scenario.viewModel
+        viewModel.addMedia(ImportedMedia(kind: .video, fileName: "long.mov", aspect: 1, duration: 8))
+        let id = viewModel.edit.media[0].id
+        viewModel.replaceMedia(id, with: ImportedMedia(kind: .video, fileName: "short.mov", aspect: 1, duration: 3))
+        #expect(viewModel.edit.media[0].span.duration == 3)
+        #expect(viewModel.edit.media[0].mediaDuration == 3)
+    }
+
+    @Test func aSelectedMediaOffersEditReplaceAndDeleteAndReplaceAsksForTheLibrary() async {
+        let scenario = await makeScenario()
+        let viewModel = scenario.viewModel
+        viewModel.addMedia(photo())
+        let id = viewModel.edit.media[0].id
+        viewModel.selection = .media(id)
+        #expect(viewModel.toolbarItems.map(\.id) == ["editMedia", "replaceMedia", "delete"])
+        viewModel.perform(.replaceMedia)
+        #expect(viewModel.photoRequest?.purpose == .replaceMedia(id, kind: .photo))
+        #expect(viewModel.photoRequest?.offersVideos == false)
+    }
+
+    @Test func theMediaTrackSaysWhatItIsAndHowItShows() async {
+        let scenario = await makeScenario()
+        let viewModel = scenario.viewModel
+        viewModel.addMedia(photo())
+        let id = viewModel.edit.media[0].id
+        #expect(viewModel.timelineInput(heightClass: .regular).media[0].label == "Photo · Full screen")
+        viewModel.updateMedia(id) { $0.layout = .window }
+        #expect(viewModel.timelineInput(heightClass: .regular).media[0].label == "Photo · Window")
+    }
+
     // MARK: - Voice-over
 
     @Test func aVoiceOverRecordsFromThePlayheadWithTheVideoSilent() async throws {

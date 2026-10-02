@@ -31,4 +31,29 @@ nonisolated enum CaptionText {
     static func length(_ words: [String]) -> Int {
         words.reduce(0) { $0 + $1.count }
     }
+
+    /// `word` without the ellipsis a recognizer ends a stretch of speech with when the sentence
+    /// carries on in the next one ("interessante..." → "interessante"). Empty when the word was
+    /// only the ellipsis. A single period, a comma or a question mark stays, and so does an
+    /// ellipsis the creator wrote (corrections never go through here).
+    static func withoutContinuation(_ word: String) -> String {
+        var end = word.endIndex
+        var dots = 0
+        while end > word.startIndex {
+            let previous = word.index(before: end)
+            if word[previous] == "…" {
+                end = previous
+                dots = 0
+            } else if word[previous] == "." {
+                end = previous
+                dots += 1
+            } else {
+                break
+            }
+        }
+        // Dots alone are a period; two or more (or a "…" among them) are a continuation.
+        let trailing = word[end...]
+        guard trailing.contains("…") || dots >= 2 else { return word }
+        return String(word[..<end])
+    }
 }

@@ -5,13 +5,20 @@
 
 import Foundation
 
-/// Corrections to caption lines: new words, a split, a merge. Times the voice gave are kept
-/// wherever the words still line up; anything new gets a time between its neighbors, marked as a
-/// guess, and the line says its timing needs a look, so a word-by-word effect never follows a time
-/// that isn't real.
+/// Corrections to caption lines: new words, a split, a merge, a move. A correction changes what a
+/// line says or where it sits, never how it looks: the line keeps its identity, so the style
+/// (preset, colors, the word that lights up as it is said) stays on it. Times the voice gave are
+/// kept wherever the words still line up; words that replace or join others share the stretch the
+/// voice spent on what they replace, so a word-by-word effect keeps following the voice. Only a
+/// word with no stretch of the voice to stand on is a guess, and the line then says its timing
+/// needs a look.
 nonisolated enum CaptionRevision {
-    /// `cue` saying `text`. A line with word times keeps the times of the words that still match
-    /// and guesses the rest; a line timed as a whole keeps its time.
+    /// The least a new word is given, in seconds, when it has to take its room from a neighbor.
+    private static let minimumWordDuration: TimeInterval = 0.08
+
+    /// `cue` saying `text`. A line with word times keeps the times of the words that still match;
+    /// words that replace others (a spelling fix, a different word) take the place of the ones they
+    /// replace, and extra words share it, by length; a line timed as a whole keeps its time.
     static func retimed(_ cue: CaptionCue, text: String) -> CaptionCue {
         var revised = cue
         revised.text = text
@@ -23,27 +30,91 @@ nonisolated enum CaptionRevision {
             return revised
         }
         let pairs = WordAlignment.matches(newWords.map(WordAlignment.key), cue.words.map { WordAlignment.key($0.text) })
-        var kept: [Int: CaptionWord] = [:]
-        for pair in pairs { kept[pair.first] = cue.words[pair.second] }
         var words: [CaptionWord] = []
         var guessed = false
-        for (index, word) in newWords.enumerated() {
-            if let old = kept[index] {
-                words.append(CaptionWord(text: word, start: old.start, end: old.end, isEstimated: old.isEstimated))
-            } else {
-                guessed = true
-                // Between the word before (or the line's start) and the next kept one (or its end).
-                let from = words.last?.end ?? cue.start
-                let nextKept = (index + 1..<newWords.count).lazy.compactMap { kept[$0] }.first
-                let until = max(from, nextKept?.start ?? cue.end)
-                let unkept = (index..<newWords.count).prefix { kept[$0] == nil }.count
-                let step = (until - from) / Double(max(1, unkept))
-                words.append(CaptionWord(text: word, start: from, end: from + step, isEstimated: true))
+        var newFrom = 0
+        var oldFrom = 0
+        for anchor in pairs + [WordAlignment.Match(first: newWords.count, second: cue.words.count)] {
+            let fresh = Array(newWords[newFrom..<max(newFrom, anchor.first)])
+            let replaced = Array(cue.words[oldFrom..<max(oldFrom, anchor.second)])
+            if !fresh.isEmpty {
+                let after = anchor.second < cue.words.count ? cue.words[anchor.second].start : cue.end
+                var (stretch, isGuess) = room(for: replaced, before: words.last?.end ?? cue.start, after: after, needs: fresh.count)
+                // Words said back to back: a new one takes the second half of the word before it.
+                if isGuess, let last = words.last, last.end - last.start >= 2 * minimumWordDuration * Double(fresh.count) {
+                    let middle = (last.start + last.end) / 2
+                    stretch = TimeSpan(start: middle, end: last.end)
+                    words[words.count - 1] = CaptionWord(text: last.text, start: last.start, end: middle, isEstimated: last.isEstimated)
+                    isGuess = false
+                }
+                guessed = guessed || isGuess
+                words += share(fresh, over: stretch, isEstimated: isGuess || replaced.contains(where: \.isEstimated))
             }
+            if anchor.first < newWords.count {
+                let old = cue.words[anchor.second]
+                words.append(CaptionWord(text: newWords[anchor.first], start: old.start, end: old.end, isEstimated: old.isEstimated))
+            }
+            newFrom = anchor.first + 1
+            oldFrom = anchor.second + 1
         }
         revised.words = words
         revised.needsTimingReview = cue.needsTimingReview || guessed
         return revised
+    }
+
+    /// Where `needs` new words go: the stretch of the words they replace, else the silence between
+    /// their neighbors. No room at all is a guess.
+    private static func room(
+        for replaced: [CaptionWord], before: TimeInterval, after: TimeInterval, needs: Int
+    ) -> (span: TimeSpan, isGuess: Bool) {
+        if let first = replaced.first, let last = replaced.last {
+            return (TimeSpan(start: first.start, end: max(first.start, last.end)), false)
+        }
+        let gap = TimeSpan(start: before, end: max(before, after))
+        return (gap, gap.duration < minimumWordDuration * Double(needs))
+    }
+
+    /// `words` one after the other over `span`, each as long as its share of the letters.
+    private static func share(_ words: [String], over span: TimeSpan, isEstimated: Bool) -> [CaptionWord] {
+        let weights = words.map { Double(max(1, $0.count)) }
+        let total = weights.reduce(0, +)
+        var cursor = span.start
+        return zip(words, weights).map { word, weight in
+            let end = cursor + span.duration * weight / total
+            defer { cursor = end }
+            return CaptionWord(text: word, start: cursor, end: end, isEstimated: isEstimated)
+        }
+    }
+
+    /// `cue` after its start or end moved: the words stay on the voice, folded into the line's new
+    /// time when it shrank. The line asks for a look only when a word has no time left.
+    static func fitted(_ cue: CaptionCue) -> CaptionCue {
+        var fitted = cue
+        fitted.words = cue.words.map { word in
+            let start = min(max(word.start, cue.start), cue.end)
+            let end = min(max(word.end, start), cue.end)
+            return CaptionWord(text: word.text, start: start, end: end, isEstimated: word.isEstimated)
+        }
+        if fitted.words.contains(where: { $0.end - $0.start < 0.02 }) { fitted.needsTimingReview = true }
+        return fitted
+    }
+
+    /// Lines heard before the recognizer's continuation ellipses were left out, without them. Only
+    /// a line that is still as it was heard: whatever the creator typed or corrected stays.
+    static func withoutContinuation(_ cue: CaptionCue) -> CaptionCue {
+        guard cue.origin == .speech, !cue.isRevised else { return cue }
+        var cleaned = cue
+        cleaned.words = cue.words.compactMap { word in
+            var word = word
+            word.text = CaptionText.withoutContinuation(word.text)
+            return word.text.isEmpty ? nil : word
+        }
+        let text = cue.words.isEmpty
+            ? CaptionText.joined(CaptionText.words(in: cue.text).map(CaptionText.withoutContinuation))
+            : CaptionText.joined(cleaned.words.map(\.text))
+        guard !text.isEmpty else { return cue }
+        cleaned.text = text
+        return cleaned
     }
 
     /// `cue` split before its word at `index` (or, for a line without word times, before that

@@ -38,6 +38,9 @@ struct EditorPanelContainer<Fixed: View, Content: View, Footer: View>: View {
                 .padding(.horizontal, 16)
                 .padding(.bottom, Footer.self == EmptyView.self ? 0 : 10)
         }
+        // The background below runs to the screen's edge; the controls stop above the bottom safe
+        // area (the Home Indicator), wherever the panel is shown: under the timeline or in a sheet.
+        .safeAreaPadding(.bottom, Metrics.editorPanelBottomClearance)
         .background(alignment: .top) {
             UnevenRoundedRectangle(topLeadingRadius: Metrics.editorPanelRadius, topTrailingRadius: Metrics.editorPanelRadius, style: .continuous)
                 .fill(Palette.editorPanel)

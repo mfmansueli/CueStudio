@@ -23,7 +23,7 @@ extension QuickEditViewModel {
             return TimelineGeometry.ClipInput(
                 id: segment.id, start: start, duration: segment.duration,
                 sourceStart: segment.sourceStart, sourceEnd: segment.sourceEnd, speed: segment.speed,
-                sourceID: segment.sourceID, badge: Self.badge(of: segment), transition: segment.transitionIn
+                sourceID: segment.sourceID, badge: Self.badge(of: segment, background: backgroundEffect(forSource: segment.sourceID)), transition: segment.transitionIn
             )
         }
         input.texts = edit.editedTexts(in: timeline).map { text, span in
@@ -34,7 +34,7 @@ extension QuickEditViewModel {
         }
         input.media = edit.editedMedia(in: timeline).map { item, span in
             TimelineGeometry.ItemInput(
-                id: item.id, span: span, label: item.kind == .photo ? String(localized: "Photo") : String(localized: "Video")
+                id: item.id, span: span, label: Self.label(of: item)
             )
         }
         input.captions = edit.editedCaptionInstances.map { line, cueID in
@@ -61,14 +61,28 @@ extension QuickEditViewModel {
         return input
     }
 
-    /// "1.5×", "Push in", "Muted", joined: the yellow badge on a clip.
-    static func badge(of segment: EditSegment) -> String? {
+    /// "Photo · Full screen", "Video · Window": what the item on the media track is and how it
+    /// shows, so a photo that fills the frame doesn't read as a plain strip.
+    static func label(of media: MediaOverlay) -> String {
+        let kind = media.kind == .photo ? String(localized: "Photo") : String(localized: "Video")
+        return "\(kind) · \(media.layout.label)"
+    }
+
+    /// What the recording's background does to its clips ("Blur", "Color", "Image"), if anything.
+    func backgroundEffect(forSource id: UUID?) -> BackgroundEffect? {
+        guard let effect = edit.backgrounds.first(where: { $0.sourceID == id })?.effect, effect.isActive else { return nil }
+        return effect
+    }
+
+    /// "1.5×", "Push in", "Muted", and the background's style, joined: the yellow badge on a clip.
+    static func badge(of segment: EditSegment, background: BackgroundEffect? = nil) -> String? {
         var parts: [String] = []
         if abs(segment.speed - 1) > 0.001 {
             parts.append(segment.speed.formatted(.number.precision(.fractionLength(0...2)).locale(.interface)) + "×")
         }
         if let zoom = segment.zoom { parts.append(zoom.label) }
         if segment.isMuted { parts.append(String(localized: "Muted")) }
+        if let background { parts.append(background.style.label) }
         return parts.isEmpty ? nil : parts.joined(separator: " · ")
     }
 

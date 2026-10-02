@@ -3,7 +3,6 @@
 //  Cue Studio
 //
 
-import PhotosUI
 import SwiftUI
 import UIKit
 
@@ -12,9 +11,6 @@ import UIKit
 /// key for a green or blue screen with Tolerance, Edge and Spill.
 struct BackgroundPanel: View {
     @Bindable var viewModel: QuickEditViewModel
-
-    @State private var pickedItem: PhotosPickerItem?
-    @State private var choosesPhoto = false
 
     var body: some View {
         let effect = viewModel.currentBackground
@@ -29,7 +25,7 @@ struct BackgroundPanel: View {
                 selection: effect.style, identifier: "edit.background"
             ) { style in
                 viewModel.setBackgroundStyle(style)
-                if style == .image, effect.imageFileName == nil { choosesPhoto = true }
+                if style == .image, effect.imageFileName == nil { viewModel.requestPhoto(.background) }
             }
             if effect.cutout == .person, effect.style != .original, viewModel.canFindPeople == false {
                 PanelNote(
@@ -50,7 +46,7 @@ struct BackgroundPanel: View {
                         ? String(localized: "Adding…")
                         : (effect.imageFileName == nil ? String(localized: "Choose a photo") : String(localized: "Change photo")),
                     systemImage: "photo", isEnabled: !viewModel.isImportingBackground, identifier: "edit.backgroundPhotoButton"
-                ) { choosesPhoto = true }
+                ) { viewModel.requestPhoto(.background) }
             default:
                 EmptyView()
             }
@@ -60,12 +56,6 @@ struct BackgroundPanel: View {
             }
         }
         .task { await viewModel.checkBackgroundSupport() }
-        .photosPicker(isPresented: $choosesPhoto, selection: $pickedItem, matching: .images, photoLibrary: .shared())
-        .onChange(of: pickedItem) { _, item in
-            guard let item else { return }
-            pickedItem = nil
-            Task { await viewModel.importBackgroundImage(item) }
-        }
     }
 
     @ViewBuilder

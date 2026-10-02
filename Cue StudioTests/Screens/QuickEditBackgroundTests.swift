@@ -93,4 +93,27 @@ struct QuickEditBackgroundTests {
         #expect(viewModel.edit.background(for: nil)?.imageFileName == "beach.jpg")
         #expect(viewModel.importedFiles.contains("beach.jpg"))
     }
+
+    @Test func aRecordingWithABackgroundShowsItOnItsClips() async {
+        let scenario = await makeScenario()
+        let viewModel = scenario.viewModel
+        #expect(viewModel.timelineInput(heightClass: .regular).clips[0].badge == nil)
+        viewModel.setBackgroundStyle(.blur)
+        #expect(viewModel.timelineInput(heightClass: .regular).clips[0].badge == "Blur")
+        // A photo style with no photo picked yet changes nothing, so the clip says nothing.
+        viewModel.setBackgroundStyle(.image)
+        #expect(viewModel.timelineInput(heightClass: .regular).clips[0].badge == nil)
+        viewModel.setBackgroundImage("photo.jpg")
+        #expect(viewModel.timelineInput(heightClass: .regular).clips[0].badge == "Image")
+    }
+
+    @Test func thePhotoLibraryIsAskedForByPurposeAndEachAskIsItsOwn() async {
+        let scenario = await makeScenario()
+        let viewModel = scenario.viewModel
+        viewModel.requestPhoto(.background)
+        let first = viewModel.photoRequest
+        viewModel.requestPhoto(.background)
+        #expect(viewModel.photoRequest?.purpose == .background)
+        #expect(viewModel.photoRequest != first)
+    }
 }

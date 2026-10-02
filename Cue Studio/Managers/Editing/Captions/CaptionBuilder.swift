@@ -26,7 +26,18 @@ nonisolated enum CaptionBuilder {
     /// Lines from `heard`, with the script's spelling where it reliably matches.
     /// - Parameter language: what was heard, so the script is cut into words the same way.
     static func captions(heard: [CaptionWord], script: String, language: CueLanguage? = nil) -> [CaptionCue] {
-        group(aligned(heard: heard, script: script, language: language))
+        group(aligned(heard: withoutContinuations(heard), script: script, language: language))
+    }
+
+    /// `heard` without the ellipses the recognizer puts where speech goes on in the next stretch:
+    /// they say nothing the voice said, and a line shouldn't end "…" because the next one follows.
+    /// A word that was only an ellipsis goes. The script's own punctuation is never touched.
+    static func withoutContinuations(_ heard: [CaptionWord]) -> [CaptionWord] {
+        heard.compactMap { word in
+            var word = word
+            word.text = CaptionText.withoutContinuation(word.text)
+            return word.text.isEmpty ? nil : word
+        }
     }
 
     /// `heard` with the script's spelling and punctuation on the words that reliably match it.

@@ -278,6 +278,31 @@ struct QuickEditCaptionsTests {
         #expect(viewModel.edit.captions[0].text == "Okay, real talk.")
     }
 
+    @Test func correctingALineKeepsTheStyleAndTheWordHighlight() async {
+        let scenario = await makeScenario()
+        let viewModel = scenario.viewModel
+        viewModel.makeCaptions()
+        await finish(viewModel)
+        viewModel.setCaptionTheme(.pop)
+        viewModel.updateCaptionSettings { $0.accent = .peach }
+        let style = viewModel.edit.captionCollection
+        let line = viewModel.edit.captions[0]
+        viewModel.setCaptionText(line.id, "Okay, really real talk")
+        viewModel.setCaptionText(line.id, "Okay, so real talk")
+        let fixed = viewModel.edit.captions[0]
+        #expect(viewModel.edit.captionCollection == style)
+        #expect(fixed.id == line.id)
+        #expect(fixed.hasWordTiming)
+        #expect(fixed.words.count == 4)
+        viewModel.nudgeCaption(line.id, edge: .end, by: -0.1)
+        #expect(viewModel.edit.captionCollection == style)
+        #expect(viewModel.edit.captions[0].words.count == 4)
+        viewModel.splitCaption(line.id, beforeWord: 2)
+        #expect(viewModel.edit.captionCollection == style)
+        viewModel.mergeCaptionWithNext(line.id)
+        #expect(viewModel.edit.captionCollection == style)
+    }
+
     @Test func splitMergeAndDeleteAreUndoable() async {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel

@@ -30,6 +30,9 @@ enum Metrics {
 
     /// Top corners of the panels under the timeline.
     static let editorPanelRadius: CGFloat = 22
+    /// Room kept under a panel's last control, on top of the bottom safe area (the Home Indicator's
+    /// strip): the panel's background runs to the screen's edge, its controls stop above both.
+    static let editorPanelBottomClearance: CGFloat = 8
     /// Top corners of the editor's sheets.
     static let editorSheetRadius: CGFloat = 28
     /// Clips on the video track.

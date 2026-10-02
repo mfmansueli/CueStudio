@@ -137,6 +137,7 @@ extension QuickEditViewModel {
         case .media:
             return [
                 EditorToolbarItem(id: "editMedia", label: String(localized: "Edit"), systemImage: "pencil", action: .open(.media)),
+                EditorToolbarItem(id: "replaceMedia", label: String(localized: "Replace"), systemImage: "arrow.left.arrow.right", action: .replaceMedia),
                 EditorToolbarItem(id: "delete", label: delete, systemImage: "trash", style: .destructive, action: .deleteMedia),
             ]
         }
@@ -193,6 +194,8 @@ extension QuickEditViewModel {
         case .deleteMusic: selection?.musicID.map(deleteMusic)
         case .reRecordVoiceOver: selection?.voiceOverID.map(reRecordVoiceOver)
         case .deleteVoiceOver: selection?.voiceOverID.map(deleteVoiceOver)
+        case .replaceMedia:
+            if let media = selectedMedia { requestPhoto(.replaceMedia(media.id, kind: media.kind)) }
         case .deleteMedia: selection?.mediaID.map(deleteMedia)
         default: return false
         }

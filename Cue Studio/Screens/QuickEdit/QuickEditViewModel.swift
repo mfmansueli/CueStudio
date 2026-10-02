@@ -191,6 +191,8 @@ final class QuickEditViewModel {
     /// Whether this iPhone can find people in video; nil until checked.
     var canFindPeople: Bool?
     var isImportingBackground = false
+    /// Why the photo library is open, if it is (`EditorPhotoPicker`).
+    var photoRequest: PhotoRequest?
 
     // MARK: Sound
     /// The music clip picked on its track.
@@ -264,6 +266,7 @@ final class QuickEditViewModel {
         self.toast = toast
         var edit = take.edit ?? TakeEdit(sourceDuration: take.duration, aspect: take.aspect)
         if take.edit == nil { edit.captionCollection?.safeMargins = Self.captionSafeMargins(for: take, aspect: take.aspect) }
+        edit.captions = edit.captions.map(CaptionRevision.withoutContinuation)
         original = edit
         self.edit = edit
         frameRate = Double(take.frameRate.rawValue)
@@ -288,6 +291,7 @@ final class QuickEditViewModel {
         var playhead: TimeInterval = 0
         if let draft = drafts.draft(for: take.id), draft.edit != original {
             start = draft.edit
+            start.captions = start.captions.map(CaptionRevision.withoutContinuation)
             start.timeline = start.timeline.fitted(toSourceDuration: duration)
             history = draft.history
             playhead = draft.playhead

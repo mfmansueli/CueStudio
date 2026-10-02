@@ -60,6 +60,18 @@ final class EditorUITests: XCTestCase {
         XCTAssertFalse(app.buttons["edit.adjust.resetOne"].exists)
     }
 
+    /// The ruler is the panel's lowest control: it stays above the bottom safe area (the Home
+    /// Indicator's strip) and the clearance the panel keeps under its controls, on any iPhone.
+    func testAdjustRulerStaysAboveTheBottomEdge() {
+        let app = EditorApp.open()
+        EditorApp.tapTool(app, "adjust")
+        let ruler = app.sliders["edit.adjust.ruler"]
+        XCTAssertTrue(ruler.waitForExistence(timeout: 5))
+        let window = app.windows.firstMatch.frame
+        XCTAssertLessThanOrEqual(ruler.frame.maxY, window.maxY - 20)
+        XCTAssertTrue(ruler.isHittable)
+    }
+
     func testFullScreenShowsOnlyTheVideoAndComesBack() {
         let app = EditorApp.open()
         app.buttons["edit.fullScreenButton"].tap()

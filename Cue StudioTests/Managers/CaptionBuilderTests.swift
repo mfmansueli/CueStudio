@@ -30,6 +30,34 @@ struct CaptionBuilderTests {
         #expect(captions.first?.words.count == 3)
     }
 
+    @Test func theRecognizersContinuationEllipsesAreLeftOut() {
+        let words = [
+            CaptionWord(text: "é", start: 0, end: 0.2),
+            CaptionWord(text: "bem", start: 0.3, end: 0.5),
+            CaptionWord(text: "interessante...", start: 0.6, end: 1.2),
+            CaptionWord(text: "…", start: 1.2, end: 1.3),
+            CaptionWord(text: "mas", start: 1.4, end: 1.6),
+        ]
+        let captions = CaptionBuilder.captions(heard: words, script: "")
+        #expect(captions.map(\.text) == ["é bem interessante mas"])
+        #expect(captions.first?.words.count == 4)
+    }
+
+    @Test func onlyEllipsesAtTheEndOfAHeardWordGo() {
+        #expect(CaptionText.withoutContinuation("interessante...") == "interessante")
+        #expect(CaptionText.withoutContinuation("interessante…") == "interessante")
+        #expect(CaptionText.withoutContinuation("interessante....") == "interessante")
+        #expect(CaptionText.withoutContinuation("…") == "")
+        #expect(CaptionText.withoutContinuation("fim.") == "fim.")
+        #expect(CaptionText.withoutContinuation("fim?") == "fim?")
+        #expect(CaptionText.withoutContinuation("3.5") == "3.5")
+    }
+
+    @Test func theScriptsOwnEllipsisIsKept() {
+        let captions = CaptionBuilder.captions(heard: heard("bem interessante"), script: "Bem interessante... mesmo.")
+        #expect(captions.first?.text.contains("...") == true)
+    }
+
     @Test func theVoiceWinsOverTheScript() {
         // Said: "two" and "show", written: "three" and "present".
         let line = text(heard("hoje vou mostrar duas ferramentas"), script: "Hoje vou apresentar três ferramentas.")

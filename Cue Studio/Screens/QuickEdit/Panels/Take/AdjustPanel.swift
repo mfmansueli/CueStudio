@@ -5,9 +5,11 @@
 
 import SwiftUI
 
-/// Adjust (whole take): Auto, then one ruler for the setting picked in a row of dials (Exposure,
-/// Contrast, Warmth, Saturation, Highlights, Shadows, Sharpness), each showing its value; a dial
-/// that is off zero is yellow. Reset puts them all back, and the setting on the ruler has its own.
+/// Adjust (whole take): one ruler for the setting picked in a row of dials (Exposure, Contrast,
+/// Warmth, Saturation, Highlights, Shadows, Sharpness), each showing its value; a dial that is off
+/// zero is yellow. Auto sits on the line of the picked setting's name and value, so the controls
+/// fit the panel without scrolling on an ordinary iPhone. Reset puts them all back, and the setting
+/// on the ruler has its own.
 struct AdjustPanel: View {
     @Bindable var viewModel: QuickEditViewModel
 
@@ -15,7 +17,6 @@ struct AdjustPanel: View {
 
     var body: some View {
         PanelFrame(viewModel: viewModel, panel: .adjust, onReset: reset) {
-            PanelButton(label: String(localized: "Auto"), systemImage: "sparkles", identifier: "edit.adjust.auto", action: viewModel.autoAdjust)
             dials
             readout
             PanelRulerSlider(
@@ -88,14 +89,17 @@ struct AdjustPanel: View {
         .accessibilityIdentifier("edit.adjust.\(adjustment.rawValue)")
     }
 
-    /// "Exposure  +10" with its own Reset once it is off zero.
+    /// "Exposure  +10" with its own Reset once it is off zero, and Auto at the other end.
     private var readout: some View {
         let value = viewModel.adjustment(current)
-        return HStack(alignment: .firstTextBaseline, spacing: 10) {
-            Text(current.label).font(.system(.subheadline, weight: .semibold))
-            Text(format(of: current).text(value))
-                .font(.system(.subheadline, weight: .bold).monospacedDigit())
-                .foregroundStyle(Palette.accText)
+        return HStack(alignment: .center, spacing: 10) {
+            HStack(alignment: .firstTextBaseline, spacing: 10) {
+                Text(current.label).font(.system(.subheadline, weight: .semibold))
+                Text(format(of: current).text(value))
+                    .font(.system(.subheadline, weight: .bold).monospacedDigit())
+                    .foregroundStyle(Palette.accText)
+            }
+            .accessibilityElement(children: .combine)
             if value != 0 {
                 Button("Reset") { viewModel.setAdjustment(current, 0) }
                     .font(.system(.footnote, weight: .semibold))
@@ -107,7 +111,23 @@ struct AdjustPanel: View {
                     .accessibilityValue(Text(current.label))
                     .accessibilityIdentifier("edit.adjust.resetOne")
             }
+            Spacer(minLength: 0)
+            autoButton
         }
-        .frame(maxWidth: .infinity, minHeight: 22)
+        .frame(maxWidth: .infinity, minHeight: Metrics.hitTarget)
+    }
+
+    private var autoButton: some View {
+        Button(action: viewModel.autoAdjust) {
+            Label("Auto", systemImage: "sparkles")
+                .font(.system(.subheadline, weight: .semibold))
+                .foregroundStyle(Palette.ink)
+                .padding(.horizontal, 14)
+                .frame(minHeight: Metrics.hitTarget)
+                .background(Palette.fill, in: Capsule())
+                .contentShape(Capsule())
+        }
+        .buttonStyle(.plain)
+        .accessibilityIdentifier("edit.adjust.auto")
     }
 }

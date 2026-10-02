@@ -40,5 +40,6 @@ enum EditorAction: Hashable {
     case reRecordVoiceOver
     case deleteVoiceOver
     // Media
+    case replaceMedia
     case deleteMedia
 }

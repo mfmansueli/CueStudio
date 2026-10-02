@@ -95,7 +95,7 @@ struct EditorLayoutTests {
     @Test func panelsHaveTheirSizesOnTheDesignScreen() {
         let usable = Screen.iPhone16Pro.rawValue
         #expect(EditorLayout(usableHeight: usable, panel: .mini).panel == EditorPanelSize.clamp(0.27 * usable, 200, 250))
-        #expect(EditorLayout(usableHeight: usable, panel: .medium).panel == 0.35 * usable)
+        #expect(EditorLayout(usableHeight: usable, panel: .medium).panel == 0.38 * usable)
         #expect(EditorLayout(usableHeight: usable, panel: .full).panel == 0.44 * usable)
         #expect(EditorPanelSize.mini.height(for: 2_000) == 250)
         #expect(EditorPanelSize.medium.height(for: 400) == 250)
