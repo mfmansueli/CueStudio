@@ -24,6 +24,8 @@ struct GenerateScriptViewModelTests {
         let library = ScriptLibraryService(repository: FakeScriptRepository(), now: { TestData.now })
         let profile = CreatorProfileService(defaults: defaults.defaults)
         profile.addPhrase("Hey fam")
+        // A voice the creator set up: the defaults a new profile starts with are never applied.
+        profile.saveVoiceSetup(niches: [.tech], vocabulary: .simple, sounds: [.casual])
         let viewModel = GenerateScriptViewModel(
             initialTab: tab, writer: writer, library: library, profile: profile, rules: TestData.rulesService(),
             toast: ToastService()
@@ -90,6 +92,43 @@ struct GenerateScriptViewModelTests {
         scenario.viewModel.writesInMyVoice = false
         _ = await scenario.viewModel.generateFromPrompt()
         #expect(scenario.writer.lastRequest?.voice == nil)
+    }
+
+    @Test func theVoiceIsNeverAppliedFromTheDefaultsOfANewProfile() async {
+        let scenario = makeScenario()
+        defer { scenario.defaults.tearDown() }
+        let freshStore = TestDefaults()
+        defer { freshStore.tearDown() }
+        let fresh = CreatorProfileService(defaults: freshStore.defaults)
+        let viewModel = GenerateScriptViewModel(
+            writer: scenario.writer, library: scenario.library, profile: fresh, rules: TestData.rulesService(), toast: ToastService()
+        )
+        // The switch is nominally on (the profile's default), but there is nothing of the creator to write like.
+        #expect(fresh.profile.usesVoiceInAI)
+        #expect(!viewModel.writesInMyVoice)
+        #expect(viewModel.voiceSummary == "Set up your voice in Profile")
+        viewModel.promptText = "My desk setup"
+        _ = await viewModel.generateFromPrompt()
+        #expect(scenario.writer.lastRequest?.voice == nil)
+        // It can't be switched on from here either: the setup has to run first.
+        viewModel.writesInMyVoice = true
+        #expect(!viewModel.writesInMyVoice)
+    }
+
+    @Test func theVoiceSwitchIsTheProfilesSharedState() async {
+        let scenario = makeScenario()
+        defer { scenario.defaults.tearDown() }
+        #expect(scenario.viewModel.writesInMyVoice)
+        // Turned off on this screen, it is off everywhere that reads the profile (the card, Profile).
+        scenario.viewModel.writesInMyVoice = false
+        #expect(!scenario.profile.writesInMyVoice && !scenario.profile.profile.usesVoiceInAI)
+        // Turned on from the card or Profile, it is on here.
+        #expect(scenario.profile.setWritesInMyVoice(true))
+        #expect(scenario.viewModel.writesInMyVoice)
+        scenario.viewModel.promptText = "My desk setup"
+        _ = await scenario.viewModel.generateFromPrompt()
+        #expect(scenario.writer.lastRequest?.voice?.niches == [.tech])
+        #expect(scenario.writer.lastRequest?.voice?.sounds == [.casual])
     }
 
     @Test func emptyPromptDoesNothing() async {

@@ -60,7 +60,7 @@ struct ScriptsView: View {
             EmptyLibraryView(
                 animatesPromptBackground: animatesPromptBackground,
                 unavailableReason: writerUnavailableReason,
-                onSubmit: { presentation.present(.generateIdea($0)) },
+                onSubmit: { presentation.present(.generateIdea) },
                 onWrite: newBlankScript,
                 onImport: { presentation.present(.importScript) },
                 onSkip: { presentation.openPrompter(scriptID: nil, mode: .selfie) }
@@ -72,8 +72,7 @@ struct ScriptsView: View {
 
     /// Why Apple Intelligence can't write now (the creator's own words), or nil when it can.
     private var writerUnavailableReason: String? {
-        guard let availability = writer?.availability, !availability.isAvailable else { return nil }
-        return availability.reason ?? AIAvailability.unavailable.reason
+        writer?.writingUnavailableReason
     }
 
     private var scriptList: some View {

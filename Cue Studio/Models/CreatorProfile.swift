@@ -22,12 +22,16 @@ nonisolated struct CreatorProfile: Codable, Hashable, Sendable {
     var defaultPlatform: Platform
     /// Aims length goals at what earns money (TikTok 1:00+, YouTube 8:00+).
     var monetizationGoals: Bool
+    /// The voice steps (`.audience`, `.tone`) the creator answered, as opposed to the defaults above.
+    /// Niches are not stored here: they start empty, so having one is the answer.
+    var confirmedVoiceSteps: Set<VoiceSetupStep>
 
     init(
         name: String = "", handle: String = "", niches: [Niche] = [], phrases: [String] = [],
         sounds: [VoiceSound] = [.casual, .confident], vocabulary: Vocabulary = .simple,
         styles: [VoiceStyle] = [.shortSentences, .conversational], usesVoiceInAI: Bool = true,
-        defaultPlatform: Platform = .tiktok, monetizationGoals: Bool = true
+        defaultPlatform: Platform = .tiktok, monetizationGoals: Bool = true,
+        confirmedVoiceSteps: Set<VoiceSetupStep> = []
     ) {
         self.name = name
         self.handle = handle
@@ -39,6 +43,7 @@ nonisolated struct CreatorProfile: Codable, Hashable, Sendable {
         self.usesVoiceInAI = usesVoiceInAI
         self.defaultPlatform = defaultPlatform
         self.monetizationGoals = monetizationGoals
+        self.confirmedVoiceSteps = confirmedVoiceSteps
     }
 
     var voice: CreatorVoice {
@@ -59,6 +64,7 @@ nonisolated struct CreatorProfile: Codable, Hashable, Sendable {
 
     private enum CodingKeys: String, CodingKey {
         case name, handle, niches, phrases, sounds, vocabulary, styles, usesVoiceInAI, defaultPlatform, monetizationGoals
+        case confirmedVoiceSteps
         /// v1 kept a single tone; it becomes the first "How I sound".
         case legacyTone = "tone"
     }
@@ -84,6 +90,7 @@ nonisolated struct CreatorProfile: Codable, Hashable, Sendable {
         usesVoiceInAI = try container.decodeIfPresent(Bool.self, forKey: .usesVoiceInAI) ?? defaults.usesVoiceInAI
         defaultPlatform = try container.decodeIfPresent(Platform.self, forKey: .defaultPlatform) ?? defaults.defaultPlatform
         monetizationGoals = try container.decodeIfPresent(Bool.self, forKey: .monetizationGoals) ?? defaults.monetizationGoals
+        confirmedVoiceSteps = try container.decodeIfPresent(Set<VoiceSetupStep>.self, forKey: .confirmedVoiceSteps) ?? defaults.confirmedVoiceSteps
     }
 
     func encode(to encoder: Encoder) throws {
@@ -98,6 +105,7 @@ nonisolated struct CreatorProfile: Codable, Hashable, Sendable {
         try container.encode(usesVoiceInAI, forKey: .usesVoiceInAI)
         try container.encode(defaultPlatform, forKey: .defaultPlatform)
         try container.encode(monetizationGoals, forKey: .monetizationGoals)
+        try container.encode(confirmedVoiceSteps, forKey: .confirmedVoiceSteps)
     }
 
     static func sounds(migratingFrom tone: Tone) -> [VoiceSound] {

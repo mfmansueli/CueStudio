@@ -59,7 +59,6 @@ nonisolated enum ScriptPromptBuilder {
         switch request.source {
         case .prompt(let text):
             lines.append("The video: \(text)")
-            if let idea = request.idea { lines.append(idea.instruction) }
         case .format(let type, let brief):
             let resolved = type.resolvedBrief(brief)
             lines.append("Brief:")

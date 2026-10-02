@@ -6,15 +6,16 @@
 import SwiftUI
 
 /// A library with no scripts (not loading, not an empty search): one question, "What's the idea?",
-/// answered right in the card, then writing and importing as quiet rows, and recording without a
-/// script as a small link. The "+" in the navigation bar stays, as in every state, and keeps
-/// Generate, Themes and Formats.
+/// answered in the card (its field opens the composer to type, its microphone to dictate, its arrow
+/// sends the draft), then writing and importing as quiet rows, and recording without a script as a
+/// small link. The "+" in the navigation bar stays, as in every state, and keeps Generate, Themes
+/// and Formats.
 struct EmptyLibraryView: View {
     var animatesPromptBackground = true
     /// Why Apple Intelligence can't write now; nil when it can.
     var unavailableReason: String?
-    /// The idea, and the kind of video picked with it, sent to the generation flow.
-    let onSubmit: (ScriptIdeaSeed) -> Void
+    /// The card's draft goes to the generation flow.
+    let onSubmit: () -> Void
     let onWrite: () -> Void
     let onImport: () -> Void
     let onSkip: () -> Void
@@ -22,69 +23,61 @@ struct EmptyLibraryView: View {
     @Environment(DictationService.self) private var dictation
     @Environment(PresentationService.self) private var presentation
     @Environment(\.scenePhase) private var scenePhase
-    @State private var draft = IdeaPromptDraft()
 
     /// Something else has the screen (a sheet, the camera, another tab): the microphone is theirs.
+    /// The idea composer is the exception: it is where the card's dictation happens.
     private var isCovered: Bool {
-        presentation.sheet != nil || presentation.prompter != nil
+        (presentation.sheet.map { !$0.isIdeaComposer } ?? false) || presentation.prompter != nil
             || presentation.showsRemoteController || presentation.selectedTab != .scripts
     }
 
     var body: some View {
-        ScrollViewReader { proxy in
-            ScrollView {
-                VStack(alignment: .leading, spacing: 24) {
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text("Your next video starts here.")
-                            .font(.title.bold())
-                            .foregroundStyle(Palette.ink)
-                            .accessibilityAddTraits(.isHeader)
-                        Text("Turn an idea into a script.")
-                            .font(.body)
-                            .foregroundStyle(Palette.ink2)
-                    }
-                    IdeaPromptCard(
-                        draft: $draft, base: Palette.surface, animatesBackground: animatesPromptBackground,
-                        unavailableReason: unavailableReason
-                    ) {
-                        if let seed = draft.seed { onSubmit(seed) }
-                    }
-                    .id(Self.cardID)
-                    .accessibilityIdentifier("empty.promptCard")
-                    GroupedCard(dividerInset: 72) {
-                        option(
-                            title: "Write a script", detail: "Start with your own words",
-                            systemImage: "pencil.line", identifier: "empty.writeButton", action: onWrite
-                        )
-                        option(
-                            title: "Import text", detail: "Paste or choose a file",
-                            systemImage: "doc.text", identifier: "empty.importButton", action: onImport
-                        )
-                    }
-                    skipLink
+        ScrollView {
+            VStack(alignment: .leading, spacing: 24) {
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("Your next video starts here.")
+                        .font(.title.bold())
+                        .foregroundStyle(Palette.ink)
+                        .accessibilityAddTraits(.isHeader)
+                    Text("Turn an idea into a script.")
+                        .font(.body)
+                        .foregroundStyle(Palette.ink2)
                 }
-                .padding(.horizontal, Metrics.textGutter)
-                .padding(.top, 24)
-                .padding(.bottom, 40)
+                IdeaPromptCard(
+                    base: Palette.surface, animatesBackground: animatesPromptBackground,
+                    unavailableReason: unavailableReason,
+                    onCompose: { presentation.present(.composeIdea(dictating: false)) },
+                    onDictate: { presentation.present(.composeIdea(dictating: true)) },
+                    onSubmit: onSubmit
+                )
+                .accessibilityIdentifier("empty.promptCard")
+                GroupedCard(dividerInset: 72) {
+                    option(
+                        title: "Write a script", detail: "Start with your own words",
+                        systemImage: "pencil.line", identifier: "empty.writeButton", action: onWrite
+                    )
+                    option(
+                        title: "Import text", detail: "Paste or choose a file",
+                        systemImage: "doc.text", identifier: "empty.importButton", action: onImport
+                    )
+                }
+                skipLink
             }
-            .scrollDismissesKeyboard(.interactively)
-            // Typing, dictating or picking a kind of video keeps the field, the arrow and the chips in view.
-            .onChange(of: draft.idea) { _, _ in withAnimation { proxy.scrollTo(Self.cardID, anchor: .center) } }
-            .onChange(of: dictation.isActive) { _, _ in withAnimation { proxy.scrollTo(Self.cardID, anchor: .center) } }
-            // Dictation lets go of the microphone the moment this screen isn't the one in use: the
-            // app in the background (told, once), another screen, or leaving. The words stay.
-            .onChange(of: scenePhase) { _, phase in
-                // Not on `.inactive`: the system's microphone prompt makes the app inactive.
-                if phase == .background { dictation.interrupt() }
-            }
-            .onChange(of: isCovered) { _, covered in
-                if covered { dictation.cancel() }
-            }
-            .onDisappear { dictation.cancel() }
+            .padding(.horizontal, Metrics.textGutter)
+            .padding(.top, 24)
+            .padding(.bottom, 40)
         }
+        // A dictation lets go of the microphone the moment this screen isn't the one in use: the
+        // app in the background (told, once), another screen, or leaving. The words stay.
+        .onChange(of: scenePhase) { _, phase in
+            // Not on `.inactive`: the system's microphone prompt makes the app inactive.
+            if phase == .background { dictation.interrupt() }
+        }
+        .onChange(of: isCovered) { _, covered in
+            if covered { dictation.cancel() }
+        }
+        .onDisappear { dictation.cancel() }
     }
-
-    private static let cardID = "ideaCard"
 
     // MARK: - Pieces
 
@@ -137,7 +130,7 @@ struct EmptyLibraryView: View {
 
 #if DEBUG
 #Preview {
-    EmptyLibraryView(onSubmit: { _ in }, onWrite: {}, onImport: {}, onSkip: {})
+    EmptyLibraryView(onSubmit: {}, onWrite: {}, onImport: {}, onSkip: {})
         .background(Palette.bg)
         .previewEnvironment(seeded: false)
 }

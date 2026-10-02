@@ -74,7 +74,7 @@ struct ScriptBriefView: View {
                             .padding(.top, 14)
                     }
                 } else {
-                    VoiceToggleRow(isOn: $viewModel.writesInMyVoice, summary: viewModel.voiceSummary)
+                    VoiceToggleRow(summary: viewModel.voiceSummary)
                         .padding(.top, 14)
                 }
 

@@ -8,28 +8,45 @@ import SwiftUI
 import Testing
 @testable import Cue_Studio
 
-/// The empty Scripts screen's card: a chip picks a question and never touches the text, and nothing is
-/// sent from an empty field.
+/// The empty Scripts screen's idea card: one draft, shared by the card, the composer and the
+/// generation flow, and nothing is sent from an empty field or while a dictation is still writing.
 @MainActor
 @Suite("Idea prompt card")
 struct IdeaPromptDraftTests {
-    @Test func nothingIsSentFromAnEmptyFieldOrOneWithOnlySpaces() {
-        var draft = IdeaPromptDraft()
-        #expect(!draft.canSubmit(isAvailable: true) && draft.seed == nil)
-        draft.text = "  \n  "
-        #expect(!draft.canSubmit(isAvailable: true) && draft.seed == nil)
-        // A kind alone is not an idea either: the placeholder and the question are never content.
-        draft.toggle(.tip)
-        #expect(!draft.canSubmit(isAvailable: true) && draft.seed == nil)
+    private struct Scenario {
+        let viewModel: GenerateScriptViewModel
+        let writer: FakeScriptWriter
+        let profile: CreatorProfileService
+        let ideaDraft: IdeaDraftService
+        let defaults: TestDefaults
     }
 
-    @Test func theTextAndTheKindGoTogetherWithoutTheSpacesAroundThem() {
+    private func makeScenario(text: String = "") -> Scenario {
+        let defaults = TestDefaults()
+        let writer = FakeScriptWriter()
+        let profile = CreatorProfileService(defaults: defaults.defaults)
+        let ideaDraft = IdeaDraftService()
+        ideaDraft.text = text
+        let viewModel = GenerateScriptViewModel(
+            ideaDraft: ideaDraft, writer: writer,
+            library: ScriptLibraryService(repository: FakeScriptRepository(), now: { TestData.now }),
+            profile: profile, rules: TestData.rulesService(), toast: ToastService()
+        )
+        return Scenario(viewModel: viewModel, writer: writer, profile: profile, ideaDraft: ideaDraft, defaults: defaults)
+    }
+
+    @Test func nothingIsSentFromAnEmptyFieldOrOneWithOnlySpaces() {
+        var draft = IdeaPromptDraft()
+        #expect(!draft.canSubmit(isAvailable: true) && draft.submission == nil)
+        draft.text = "  \n  "
+        #expect(!draft.canSubmit(isAvailable: true) && draft.submission == nil)
+    }
+
+    @Test func theTextIsSentWithoutTheSpacesAroundIt() {
         var draft = IdeaPromptDraft()
         draft.text = "  Three ways to focus  "
         #expect(draft.canSubmit(isAvailable: true))
-        #expect(draft.seed == ScriptIdeaSeed(text: "Three ways to focus", idea: nil))
-        draft.toggle(.tip)
-        #expect(draft.seed == ScriptIdeaSeed(text: "Three ways to focus", idea: .tip))
+        #expect(draft.submission == "Three ways to focus")
     }
 
     @Test func withoutAModelTheArrowStaysOffEvenWithText() {
@@ -38,80 +55,94 @@ struct IdeaPromptDraftTests {
         #expect(!draft.canSubmit(isAvailable: false))
     }
 
-    @Test func oneKindAtATimeAndTheSameOneAgainLetsGo() {
-        var draft = IdeaPromptDraft()
-        let pickedTip = draft.toggle(.tip)
-        #expect(pickedTip)
-        #expect(draft.idea == .tip)
-        let pickedStory = draft.toggle(.story)
-        #expect(pickedStory)
-        #expect(draft.idea == .story)
-        // Letting go goes back to a free idea and doesn't ask for the keyboard.
-        let pickedAgain = draft.toggle(.story)
-        #expect(!pickedAgain)
-        #expect(draft.idea == nil)
+    // MARK: - One draft
+
+    @Test func theServiceIsTheOneCopyOfTheText() {
+        let service = IdeaDraftService()
+        #expect(service.isEmpty && service.submission == nil)
+        service.text = "  Carnival in Salvador  "
+        #expect(service.text == "  Carnival in Salvador  ")
+        #expect(service.submission == "Carnival in Salvador")
+        #expect(service.canSubmit(isAvailable: true, isDictating: false))
+        #expect(!service.canSubmit(isAvailable: true, isDictating: true))
+        service.clear()
+        #expect(service.isEmpty && service.text.isEmpty)
     }
 
-    @Test func switchingKindsNeverChangesWhatWasTyped() {
-        var draft = IdeaPromptDraft()
-        draft.text = "My morning routine\nin three steps"
-        for option in [ScriptIdea.tip, .product, .story, .story, .tip] {
-            draft.toggle(option)
-            #expect(draft.text == "My morning routine\nin three steps")
-        }
-    }
-
-    @Test func eachKindAsksItsOwnQuestionInTheInterfaceLanguage() {
-        #expect(ScriptIdea.allCases.map(\.rawValue) == ["tip", "product", "story"])
-        #expect(ScriptIdea.tip.question == "What do you want to teach?")
-        #expect(ScriptIdea.product.question == "Which product, and what do you like about it?")
-        #expect(ScriptIdea.story.question == "What happened?")
-        #expect(ScriptIdea.allCases.map(\.label) == ["Share a tip", "Show a product", "Tell a story"])
-        #expect(Set(ScriptIdea.allCases.map(\.instruction)).count == 3)
-    }
-
-    @Test func theKindReachesTheModelWithTheText() async {
-        let writer = FakeScriptWriter()
-        let defaults = TestDefaults()
-        defer { defaults.tearDown() }
-        let viewModel = GenerateScriptViewModel(
-            seed: ScriptIdeaSeed(text: "Why I quit coffee", idea: .story), writer: writer,
-            library: ScriptLibraryService(repository: FakeScriptRepository(), now: { TestData.now }),
-            profile: CreatorProfileService(defaults: defaults.defaults), rules: TestData.rulesService(), toast: ToastService()
-        )
-        #expect(viewModel.promptText == "Why I quit coffee" && viewModel.idea == .story)
-        let script = await viewModel.generateFromPrompt()
+    @Test func theGenerationFlowReadsAndWritesTheCardsDraft() async {
+        let scenario = makeScenario(text: "Why I quit coffee")
+        defer { scenario.defaults.tearDown() }
+        #expect(scenario.viewModel.promptText == "Why I quit coffee")
+        // Edited on the generation screen, it is the card's text too: there is no second copy.
+        scenario.viewModel.promptText = "Why I quit coffee for 30 days"
+        #expect(scenario.ideaDraft.text == "Why I quit coffee for 30 days")
+        scenario.ideaDraft.text = "Carnival in Salvador"
+        #expect(scenario.viewModel.promptText == "Carnival in Salvador")
+        let script = await scenario.viewModel.generateFromPrompt()
         #expect(script != nil)
-        #expect(writer.lastRequest?.idea == .story)
-        #expect(writer.lastRequest?.source == .prompt("Why I quit coffee"))
-        let prompt = ScriptPromptBuilder.prompt(for: writer.lastRequest!)
-        #expect(prompt.contains("The video: Why I quit coffee"))
-        #expect(prompt.contains(ScriptIdea.story.instruction))
+        #expect(scenario.writer.lastRequest?.source == .prompt("Carnival in Salvador"))
     }
 
-    @Test func aFreeIdeaSendsNoKindAndTheSheetStaysEmptyWithoutASeed() async {
-        let writer = FakeScriptWriter()
+    @Test func theRequestCarriesTheCurrentIdeaAndNoExampleOrOldText() async {
+        let scenario = makeScenario(text: "Carnival in Salvador")
+        defer { scenario.defaults.tearDown() }
+        scenario.viewModel.platform = .reels
+        scenario.viewModel.length = .minutes2
+        _ = await scenario.viewModel.generateFromPrompt()
+        let request = scenario.writer.lastRequest
+        #expect(request?.source == .prompt("Carnival in Salvador"))
+        #expect(request?.platform == .reels)
+        let prompt = ScriptPromptBuilder.prompt(for: request!)
+        #expect(prompt.contains("The video: Carnival in Salvador"))
+        for example in GenerateScriptViewModel.examples {
+            #expect(!prompt.contains(example))
+        }
+        // The chips are gone with their guidance: nothing but the idea says what the video is.
+        #expect(!prompt.contains("useful tip") && !prompt.contains("shows a product") && !prompt.contains("tells a story"))
+    }
+
+    @Test func aGenerateSheetOpenedOnItsOwnHasItsOwnTextAndTheCardsStaysUntouched() {
         let defaults = TestDefaults()
         defer { defaults.tearDown() }
+        let ideaDraft = IdeaDraftService()
+        ideaDraft.text = "The card's idea"
         let viewModel = GenerateScriptViewModel(
-            writer: writer, library: ScriptLibraryService(repository: FakeScriptRepository(), now: { TestData.now }),
+            writer: FakeScriptWriter(), library: ScriptLibraryService(repository: FakeScriptRepository(), now: { TestData.now }),
             profile: CreatorProfileService(defaults: defaults.defaults), rules: TestData.rulesService(), toast: ToastService()
         )
-        #expect(viewModel.promptText.isEmpty && viewModel.idea == nil)
-        // Nothing is written from an empty prompt.
-        #expect(await viewModel.generateFromPrompt() == nil)
-        #expect(writer.lastRequest == nil)
-        viewModel.promptText = "A day in my life"
-        _ = await viewModel.generateFromPrompt()
-        #expect(writer.lastRequest?.idea == nil)
-        let prompt = ScriptPromptBuilder.prompt(for: writer.lastRequest!)
-        #expect(!prompt.contains(ScriptIdea.tip.instruction) && !prompt.contains(ScriptIdea.story.instruction))
+        #expect(viewModel.promptText.isEmpty)
+        viewModel.promptText = "Something else"
+        #expect(ideaDraft.text == "The card's idea")
     }
 
-    @Test func theIdeaSheetHasItsOwnIdentity() {
-        let seed = ScriptIdeaSeed(text: "x", idea: .tip)
-        #expect(AppSheet.generateIdea(seed).id == "generateIdea")
-        #expect(AppSheet.generateIdea(seed).id != AppSheet.generateScript(.prompt).id)
+    @Test func ideaSheetsHaveTheirOwnIdentity() {
+        #expect(AppSheet.generateIdea.id == "generateIdea")
+        #expect(AppSheet.composeIdea(dictating: true).id == AppSheet.composeIdea(dictating: false).id)
+        #expect(AppSheet.composeIdea(dictating: false).id != AppSheet.generateIdea.id)
+        #expect(AppSheet.composeIdea(dictating: false).isIdeaComposer)
+        #expect(!AppSheet.generateIdea.isIdeaComposer && !AppSheet.newScript.isIdeaComposer)
+    }
+
+    @Test func aDictationEndingAfterTheComposerClosedStillWritesIntoTheDraft() {
+        let service = IdeaDraftService()
+        service.text = "Carnival"
+        service.beginDictation(caret: nil)
+        service.hear("in Salvador")
+        // The sheet is gone; the last words arrive later.
+        service.hear("in Salvador, with the trios")
+        #expect(service.text == "Carnival in Salvador, with the trios")
+        #expect(service.endDictation() == 36)
+        service.hear("late")
+        #expect(service.text == "Carnival in Salvador, with the trios")
+    }
+
+    @Test func typingInTheComposerEndsADictationThatWasStillWriting() {
+        let service = IdeaDraftService()
+        service.beginDictation(caret: nil)
+        service.hear("spoken")
+        service.text = "spoken and typed"
+        service.hear("spoken words")
+        #expect(service.text == "spoken and typed")
     }
 
     // MARK: - Dictation
@@ -284,23 +315,15 @@ struct IdeaPromptDraftTests {
         #expect(!draft.canSubmit(isAvailable: true, isDictating: true))
     }
 
-    @Test func aSpokenIdeaTakesTheSameRoadAsATypedOneWithTheKindKept() {
+    @Test func aSpokenIdeaTakesTheSameRoadAsATypedOne() {
         var spoken = IdeaPromptDraft()
-        spoken.toggle(.story)
         spoken.beginDictation(caret: nil)
         spoken.hear("why I quit coffee ")
         spoken.endDictation()
         var typed = IdeaPromptDraft()
-        typed.toggle(.story)
         typed.text = "why I quit coffee"
-        #expect(spoken.seed == typed.seed)
-        #expect(spoken.seed == ScriptIdeaSeed(text: "why I quit coffee", idea: .story))
-        // Picking a kind while it listens changes the question only.
-        var listening = IdeaPromptDraft()
-        listening.beginDictation(caret: nil)
-        listening.hear("a product review")
-        listening.toggle(.product)
-        #expect(listening.text == "a product review" && listening.dictation != nil && listening.idea == .product)
+        #expect(spoken.submission == typed.submission)
+        #expect(spoken.submission == "why I quit coffee")
     }
 
     @Test func theInsertionPointComesFromTheSelectionAndASelectedRangeIsAddedAfterNeverOver() {

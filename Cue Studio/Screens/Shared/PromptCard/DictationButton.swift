@@ -5,11 +5,13 @@
 
 import SwiftUI
 
-/// The microphone inside the idea field, next to the arrow: it starts dictating, and while Cue
-/// prepares or listens it becomes a stop control (a red square in a red ring, as in recording), so
-/// one tap always ends it. No press and hold: a creator who pauses to think keeps talking.
+/// The microphone next to the idea field, in the card and in the composer: it starts dictating, and
+/// while Cue prepares or listens it becomes a stop control (a red square in a red ring, as in
+/// recording), so one tap always ends it. No press and hold: a creator who pauses to think keeps talking.
 struct DictationButton: View {
     let state: DictationState
+    var identifier = "empty.ideaDictate"
+    var hint: LocalizedStringKey = "Your words appear here to review before you send."
     let action: () -> Void
 
     private var isStop: Bool { state.isActive }
@@ -38,8 +40,8 @@ struct DictationButton: View {
         .disabled(state == .finishing)
         .opacity(state == .finishing ? 0.5 : 1)
         .accessibilityLabel(isStop ? Text("Stop dictation") : Text("Dictate your idea"))
-        .accessibilityHint(isStop ? Text(verbatim: "") : Text("Your words appear here to review before you send."))
-        .accessibilityIdentifier("empty.ideaDictate")
+        .accessibilityHint(isStop ? Text(verbatim: "") : Text(hint))
+        .accessibilityIdentifier(identifier)
     }
 }
 

@@ -6,12 +6,13 @@
 import SwiftUI
 
 /// A line in the creator's voice that updates as they change it, and the switch that sends the
-/// voice to the AI. It reads the voice the AI gets on the current plan.
+/// voice to the AI. It reads the voice the AI gets on the current plan. The switch is the shared
+/// "Write in my voice" state: turning it on before the profile has enough opens the short setup.
 struct SoundsLikeYouCard: View {
     @Environment(CreatorProfileService.self) private var profile
+    @State private var setup: VoiceSetupSheet.Mode?
 
     var body: some View {
-        @Bindable var profile = profile
         VStack(alignment: .leading, spacing: 10) {
             HStack {
                 Label("Sounds like you", systemImage: "sparkles")
@@ -31,13 +32,16 @@ struct SoundsLikeYouCard: View {
                 .contentTransition(.opacity)
                 .animation(.smooth(duration: 0.25), value: sampleLine)
                 .accessibilityIdentifier("profile.voiceSample")
-            Toggle("Use my voice in AI scripts", isOn: $profile.profile.usesVoiceInAI)
+            Toggle("Use my voice in AI scripts", isOn: profile.writesInMyVoiceBinding { setup = .missing })
                 .font(.subheadline)
                 .foregroundStyle(Palette.ink.opacity(0.8))
                 .tint(Palette.successText)
                 .accessibilityIdentifier("profile.useVoiceToggle")
         }
         .padding(.vertical, 6)
+        .sheet(item: $setup) { mode in
+            VoiceSetupSheet(mode: mode, profile: profile.profile)
+        }
     }
 
     private var sampleLine: String {

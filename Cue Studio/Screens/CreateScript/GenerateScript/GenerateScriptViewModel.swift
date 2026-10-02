@@ -21,12 +21,27 @@ final class GenerateScriptViewModel {
     var tab: GenerateTab
 
     // MARK: Prompt
-    var promptText = ""
-    /// The kind of video picked with the text on the empty Scripts screen; sent with it.
-    var idea: ScriptIdea?
+    /// What to write about. Opened from the empty Scripts screen's idea card, this is the card's own
+    /// draft (`IdeaDraftService`), not a copy of it: the card, the composer and this screen can't
+    /// disagree. Otherwise the VM's own text.
+    var promptText: String {
+        get { ideaDraft?.text ?? ownPromptText }
+        set {
+            if let ideaDraft {
+                ideaDraft.text = newValue
+            } else {
+                ownPromptText = newValue
+            }
+        }
+    }
     var length: ScriptLength = .auto
     var platform: Platform
-    var writesInMyVoice: Bool
+    /// "Write in my voice": the profile's shared state, so the card, this screen and Profile agree.
+    /// Without enough in the profile it stays off (see `CreatorProfileService.writesInMyVoice`).
+    var writesInMyVoice: Bool {
+        get { profile.writesInMyVoice }
+        set { profile.setWritesInMyVoice(newValue) }
+    }
 
     // MARK: Themes
     private(set) var themes: [ThemeIdea] = []
@@ -42,6 +57,8 @@ final class GenerateScriptViewModel {
     private(set) var isGenerating = false
     var errorMessage: String?
 
+    private var ownPromptText = ""
+    private let ideaDraft: IdeaDraftService?
     private let writer: ScriptWriting
     private let library: ScriptLibraryService
     private let profile: CreatorProfileService
@@ -55,7 +72,7 @@ final class GenerateScriptViewModel {
 
     init(
         initialTab: GenerateTab = .prompt,
-        seed: ScriptIdeaSeed? = nil,
+        ideaDraft: IdeaDraftService? = nil,
         writer: ScriptWriting,
         library: ScriptLibraryService,
         profile: CreatorProfileService,
@@ -65,8 +82,7 @@ final class GenerateScriptViewModel {
         interfaceLanguage: CueLanguage? = nil
     ) {
         tab = initialTab
-        promptText = seed?.text ?? ""
-        idea = seed?.idea
+        self.ideaDraft = ideaDraft
         self.scriptLanguage = scriptLanguage
         self.interfaceLanguage = interfaceLanguage
         self.writer = writer
@@ -76,7 +92,6 @@ final class GenerateScriptViewModel {
         self.toast = toast
         let defaultPlatform = profile.profile.defaultPlatform
         platform = Platform.primary.contains(defaultPlatform) ? defaultPlatform : .tiktok
-        writesInMyVoice = profile.profile.usesVoiceInAI
         tone = ScriptStructure.generic.tones[0]
         themes = ThemeCatalog.page(for: profile.profile.niches, rotation: 0)
     }
@@ -88,9 +103,11 @@ final class GenerateScriptViewModel {
     /// Prompts and theme ideas need a model; formats fall back to the structured draft.
     var canWriteFromPrompt: Bool { availability.isAvailable }
 
+    /// What "Write in my voice" would use; until the profile has enough to write like the creator,
+    /// the defaults it starts with are not shown as if they were theirs.
     var voiceSummary: String {
         let summary = profile.profile.voice.summary
-        return summary.isEmpty ? String(localized: "Set up your voice in Profile") : summary
+        return summary.isEmpty || !profile.profile.hasMinimumVoice ? String(localized: "Set up your voice in Profile") : summary
     }
 
     /// "Lifestyle, Wellness"
@@ -133,8 +150,7 @@ final class GenerateScriptViewModel {
             tone: nil,
             voice: writesInMyVoice ? profile.profile.voice : nil,
             targetRange: effectiveLength.targetRange(ideal: preset.idealRange),
-            language: writingLanguage(for: text),
-            idea: idea
+            language: writingLanguage(for: text)
         )
         guard let generated = await run(request) else { return nil }
         let script = library.create(

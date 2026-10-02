@@ -57,7 +57,7 @@ struct CreatorVoiceSection: View {
             }
         }
         group(String(localized: "My vocabulary")) {
-            Picker("My vocabulary", selection: $profile.profile.vocabulary) {
+            Picker("My vocabulary", selection: Binding(get: { profile.profile.vocabulary }, set: { profile.setVocabulary($0) })) {
                 ForEach(Vocabulary.allCases) { Text($0.label).tag($0) }
             }
             .pickerStyle(.segmented)

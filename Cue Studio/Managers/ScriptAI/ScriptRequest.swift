@@ -26,8 +26,6 @@ nonisolated struct ScriptRequest: Hashable, Sendable {
     /// The language to write in. The model is told explicitly, so the interface language (in which
     /// the format's labels reach the prompt) never decides it.
     var language: CueLanguage?
-    /// The kind of video picked with a free prompt (a tip, a product, a story); nil for none.
-    var idea: ScriptIdea?
 
     var type: ScriptType? {
         if case .format(let type, _) = source { type } else { nil }
