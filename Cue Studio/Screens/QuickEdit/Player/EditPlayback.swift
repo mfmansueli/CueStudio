@@ -36,4 +36,7 @@ protocol EditPlayback: AnyObject {
     func endScrub()
     /// Stops for good, when Quick edit closes.
     func stop()
+    /// `hold` gets the picture on screen right before the player swaps to an item with other pieces
+    /// or tracks, to show until the new item has a picture of its own. Kept while `owner` lives.
+    func addFrameHolder(_ owner: AnyObject, hold: @escaping @MainActor (CGImage) -> Void)
 }

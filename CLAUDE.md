@@ -43,4 +43,7 @@ ao protótipo do Claude Design). Atualize-o junto com a UI.
   Following no aparelho (uma gravação tocada em tempo real pelo caminho de áudio da câmera: voz →
   indicador, palavra → texto p50/p95, quanto o texto se adianta, sala com ruído) e
   `VoiceFollowingSpeechTests/availabilityOnThisDevice()` lista os 15 idiomas sem baixar nada.
+- A prévia do Quick edit tem uma medição opt-in no aparelho: `TEST_RUNNER_CUE_PREVIEW_LATENCY=1 xcodebuild …
+  -only-testing:"Cue StudioTests/QuickEditPreviewLatencyTests" test` (quanto uma mudança leva para
+  aparecer e se a imagem some, com filtro, texto, fundo Blur, 4K e corte).
 - Compras são testadas localmente com `CueStudio.storekit` (selecionado no scheme).

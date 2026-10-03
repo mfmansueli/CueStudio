@@ -25,7 +25,7 @@ struct QuickEditPreview: View {
 
     @ViewBuilder
     private var drawing: some View {
-        PlayerView(player: viewModel.player.avPlayer)
+        QuickEditPlayerView(player: viewModel.player)
             .frame(width: size.width, height: size.height)
             .background(Palette.previewWell)
             .overlay {

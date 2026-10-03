@@ -16,8 +16,16 @@ nonisolated struct LazyText: Sendable {
     var collection: CaptionSettings?
     var frameHeight: CGFloat = 0
 
-    /// Names this drawing in the compositor's cache.
+    /// Names this drawing in the compositor's cache: the line, its word and size, and everything the
+    /// drawing depends on, so a corrected word or a new style is drawn again when the compositor
+    /// (and its cache) outlives the change, as in the preview.
     var key: String {
-        "\(text.id.uuidString)-\(emphasis?.index ?? -1)-\(emphasis.map { "\($0.style)" } ?? "")-\(Int(frameWidth.rounded()))"
+        var drawing = Hasher()
+        drawing.combine(text)
+        drawing.combine(emphasis)
+        drawing.combine(collection)
+        drawing.combine(widthFraction)
+        drawing.combine(frameHeight)
+        return "\(text.id.uuidString)-\(emphasis?.index ?? -1)-\(Int(frameWidth.rounded()))-\(drawing.finalize())"
     }
 }

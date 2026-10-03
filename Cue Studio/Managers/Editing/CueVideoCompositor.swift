@@ -6,6 +6,7 @@
 import AVFoundation
 import CoreImage
 import CoreImage.CIFilterBuiltins
+import os
 
 /// Renders each frame of an edited take with Core Image: upright, cropped to the take's frame,
 /// with its background blurred or replaced (the person found by Vision, or a chroma key), with
@@ -18,6 +19,8 @@ final class CueVideoCompositor: NSObject, AVVideoCompositing, @unchecked Sendabl
     private let overlayCache = OverlayImageCache()
     /// Where the person is, for background effects; the last masks kept.
     private let masker = PersonMasker()
+    /// The frame composed last, which the preview holds on screen while it swaps to a new item.
+    private let lastComposed = OSAllocatedUnfairLock<CVReadOnlyPixelBuffer?>(initialState: nil)
     private let queue = DispatchQueue(label: "studio.cue.compositor")
 
     nonisolated let sourcePixelBufferAttributes: [String: any Sendable]? = [
@@ -30,7 +33,7 @@ final class CueVideoCompositor: NSObject, AVVideoCompositing, @unchecked Sendabl
     nonisolated func renderContextChanged(_ newRenderContext: AVVideoCompositionRenderContext) {}
 
     nonisolated func startRequest(_ request: AVAsynchronousVideoCompositionRequest) {
-        queue.async { [context, overlayCache, masker] in
+        queue.async { [context, overlayCache, masker, lastComposed] in
             guard let instruction = request.videoCompositionInstruction as? CompositionInstruction else {
                 request.finish(with: NSError(domain: "studio.cue.compositor", code: 1))
                 return
@@ -58,7 +61,9 @@ final class CueVideoCompositor: NSObject, AVVideoCompositing, @unchecked Sendabl
                     let black = CIImage(color: .black).cropped(to: frame)
                     context.render(Self.decorated(black, instruction: instruction, at: time, cache: overlayCache).cropped(to: bounds), to: output)
                 }
-                request.finish(withComposedPixelBuffer: CVReadOnlyPixelBuffer(output))
+                let composed = CVReadOnlyPixelBuffer(output)
+                lastComposed.withLock { $0 = composed }
+                request.finish(withComposedPixelBuffer: composed)
                 return
             }
             // The pixels are only valid inside each `withUnsafeBuffer`, so the frame is composed and
@@ -84,7 +89,19 @@ final class CueVideoCompositor: NSObject, AVVideoCompositing, @unchecked Sendabl
                     }
                 }
             }
-            request.finish(withComposedPixelBuffer: CVReadOnlyPixelBuffer(output))
+            let composed = CVReadOnlyPixelBuffer(output)
+            lastComposed.withLock { $0 = composed }
+            request.finish(withComposedPixelBuffer: composed)
+        }
+    }
+
+    /// A copy of the frame composed last; nil before the first one. While paused it's the frame on
+    /// screen, and while playing at most a few frames ahead of it.
+    nonisolated func lastFrame() -> CGImage? {
+        guard let frame = lastComposed.withLock({ $0 }) else { return nil }
+        return frame.withUnsafeBuffer { buffer in
+            let image = CIImage(cvPixelBuffer: buffer)
+            return context.createCGImage(image, from: image.extent)
         }
     }
 

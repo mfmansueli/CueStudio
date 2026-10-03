@@ -11,9 +11,13 @@ import Foundation
 ///
 /// The player item is the edit with its outer ends grown to the whole recording
 /// (`EditTimeline.reachable`), and playback is held between the handles. A trim only moves that
-/// window, so dragging a handle scrubs real frames and nothing is rebuilt. Removing something,
-/// the look and the sound rebuild the item, and the playhead stays on the same moment of the
-/// recording.
+/// window, so dragging a handle scrubs real frames and nothing is rebuilt. Any other change builds
+/// the edit again, one build at a time (the newest edit wins), and the playhead stays on the same
+/// moment of the recording. When the build has the same pieces on the same tracks
+/// (`CompositionShape`), as after a look, text, caption or volume change, the item stays and only
+/// takes the new drawing and mix, so the picture never leaves the screen. New pieces or tracks
+/// (a cut, a speed, music, Voice) need a new item: the views hold the picture that was on screen
+/// until the new item shows its own.
 @MainActor
 @Observable
 final class QuickEditPlayer: EditPlayback {
@@ -45,6 +49,10 @@ final class QuickEditPlayer: EditPlayback {
     /// Bumped by every rebuild, so a slow build never replaces a newer one.
     @ObservationIgnored private var generation = 0
     @ObservationIgnored private var buildTask: Task<Void, Never>?
+    /// The edit changed while a build ran: build again as soon as it's in.
+    @ObservationIgnored private var rebuildsAfterBuild = false
+    /// The views showing the preview, which hold its picture while the item is swapped.
+    @ObservationIgnored private var frameHolders: [FrameHolder] = []
     @ObservationIgnored private var timeObserver: Any?
     @ObservationIgnored private var pendingSeek: TimeInterval?
     @ObservationIgnored private var isSeeking = false
@@ -93,15 +101,16 @@ final class QuickEditPlayer: EditPlayback {
         applyWindow()
         let key = ItemKey(edit)
         if key != itemKey {
-            // A new look or sound waits for the sliders to settle; new pieces show right away.
-            let settles = itemKey?.spans == key.spans && itemKey?.speeds == key.speeds && itemKey?.transitions == key.transitions
+            // New pieces: the item on screen can't play them, so it holds still until the new one is
+            // in, and a build still running for the old ones is dropped.
+            let newPieces = itemKey?.spans != key.spans || itemKey?.speeds != key.speeds || itemKey?.transitions != key.transitions
             itemKey = key
-            if !settles, avPlayer.currentItem != nil {
+            if newPieces, avPlayer.currentItem != nil {
                 awaitsItem = true
                 playbackTask?.cancel()
                 avPlayer.pause()
             }
-            rebuild(after: settles ? .milliseconds(250) : nil)
+            rebuild(restarting: newPieces)
         } else if state == .ready, !awaitsItem, let shown = itemTime, abs(shown - (windowStart + currentTime)) > 0.001 {
             requestSeek(to: currentTime)
         }
@@ -169,6 +178,7 @@ final class QuickEditPlayer: EditPlayback {
         playbackTask?.cancel()
         playbackTask = nil
         buildTask?.cancel()
+        rebuildsAfterBuild = false
         generation += 1
         awaitsItem = false
         resumesAfterSeek = false
@@ -201,19 +211,40 @@ final class QuickEditPlayer: EditPlayback {
         }
     }
 
-    private func rebuild(after delay: Duration?) {
+    // MARK: - Frame holders
+
+    func addFrameHolder(_ owner: AnyObject, hold: @escaping @MainActor (CGImage) -> Void) {
+        frameHolders.removeAll { $0.owner == nil || $0.owner === owner }
+        frameHolders.append(FrameHolder(owner: owner, hold: hold))
+    }
+
+    /// Hands the picture on screen to the views right before the item is swapped, so the preview
+    /// never goes blank while the new item gets its first frame ready.
+    private func holdFrame() {
+        frameHolders.removeAll { $0.owner == nil }
+        guard !frameHolders.isEmpty,
+              let compositor = avPlayer.currentItem?.customVideoCompositor as? CueVideoCompositor,
+              let frame = compositor.lastFrame() else { return }
+        for holder in frameHolders { holder.hold(frame) }
+    }
+
+    /// Builds the item for the edit as it is now. New pieces drop a build still running; a new
+    /// look, text or sound lets it finish and builds again right after, so dragging a slider redraws
+    /// as fast as builds go without them piling up.
+    private func rebuild(restarting: Bool) {
         guard let edit else { return }
+        if buildTask != nil, !restarting {
+            rebuildsAfterBuild = true
+            return
+        }
         buildTask?.cancel()
+        rebuildsAfterBuild = false
         generation += 1
         let generation = generation
         var playable = edit
         playable.timeline = edit.timeline.reachable
         let window = ItemKey.musicWindow(of: edit)
         buildTask = Task { [weak self, editing, videoURL] in
-            if let delay {
-                try? await Task.sleep(for: delay)
-                guard !Task.isCancelled else { return }
-            }
             self?.showProcessingIfSlow(generation)
             do {
                 let item = try await editing.previewItem(forVideoAt: videoURL, edit: playable, window: window)
@@ -228,14 +259,32 @@ final class QuickEditPlayer: EditPlayback {
         guard generation == self.generation else { return }
         buildTask = nil
         isProcessing = false
+        let wasHeld = awaitsItem
         awaitsItem = false
-        // Paused while the new item finds the playhead, so it never plays from its start.
-        avPlayer.pause()
-        resumesAfterSeek = isPlaying
-        avPlayer.replaceCurrentItem(with: item)
-        state = .ready
-        applyWindow()
-        requestSeek(to: currentTime)
+        if let current = avPlayer.currentItem, let shape = CompositionShape(of: item.asset), shape == CompositionShape(of: current.asset) {
+            // The same pieces on the same tracks: only what is drawn or mixed changed. The item
+            // stays, so the picture never leaves the screen.
+            current.videoComposition = item.videoComposition
+            current.audioMix = item.audioMix
+            state = .ready
+            applyWindow()
+            // Playing, the next frames take the new look. Paused, the frame on screen is drawn
+            // again; held for new pieces, it plays on from the playhead.
+            if !isPlaying || wasHeld {
+                resumesAfterSeek = isPlaying
+                requestSeek(to: currentTime)
+            }
+        } else {
+            holdFrame()
+            // Paused while the new item finds the playhead, so it never plays from its start.
+            avPlayer.pause()
+            resumesAfterSeek = isPlaying
+            avPlayer.replaceCurrentItem(with: item)
+            state = .ready
+            applyWindow()
+            requestSeek(to: currentTime)
+        }
+        if rebuildsAfterBuild { rebuild(restarting: true) }
     }
 
     private func buildFailed(generation: Int) {
@@ -243,11 +292,12 @@ final class QuickEditPlayer: EditPlayback {
         buildTask = nil
         isProcessing = false
         awaitsItem = false
-        // The next change tries again.
+        // The next change tries again; one already waiting tries now.
         itemKey = nil
         pause()
         avPlayer.replaceCurrentItem(with: nil)
         state = .failed
+        if rebuildsAfterBuild { rebuild(restarting: true) }
     }
 
     /// "Processing…" only when a rebuild is slow enough to notice.
@@ -329,6 +379,12 @@ final class QuickEditPlayer: EditPlayback {
 
     private func clamped(_ time: TimeInterval) -> TimeInterval {
         min(max(0, time.isFinite ? time : 0), duration)
+    }
+
+    /// A view showing the preview, for as long as `owner` lives.
+    private struct FrameHolder {
+        weak var owner: AnyObject?
+        let hold: @MainActor (CGImage) -> Void
     }
 
     /// What an item depends on: the look, the sound, what is laid on top, where the pieces join,

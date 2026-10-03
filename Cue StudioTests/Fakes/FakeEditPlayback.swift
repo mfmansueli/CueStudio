@@ -52,4 +52,6 @@ final class FakeEditPlayback: EditPlayback {
         isStopped = true
         isPlaying = false
     }
+
+    func addFrameHolder(_ owner: AnyObject, hold: @escaping @MainActor (CGImage) -> Void) {}
 }

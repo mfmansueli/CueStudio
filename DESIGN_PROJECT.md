@@ -507,8 +507,8 @@ estático), o app baixa uma vez por abertura e só adota uma revisão maior, com
     não pode garantir direitos); a nota de direitos fica na ferramenta, e músicas protegidas do
     Apple Music não abrem (sem trilha legível). Cada `MusicClip` tem trilha de som própria, nos
     segundos da edição: na prévia, que toca a timeline crescida até o original inteiro, ela começa
-    em `Options.window.start` (o player passa a janela, e com música mudar as pontas reconstrói a
-    prévia depois de 0,25 s). O volume ao longo do tempo é um envelope (`MusicEnvelope`): fades
+    em `Options.window.start` (o player passa a janela, e com música mudar as pontas monta a prévia
+    de novo, com o quadro segurado na tela). O volume ao longo do tempo é um envelope (`MusicEnvelope`): fades
     lineares e, com "Lower under voice", −12 dB (×0,25) enquanto alguém fala, descendo 0,25 s antes
     da voz e voltando 0,2 s depois dela, sem bombear entre falas próximas (junta intervalos curtos).
     A fala vem do nível do som de cada gravação que a edição toca (`VoiceActivity`, −40 dBFS,
@@ -748,8 +748,8 @@ O protótipo simulava várias coisas; o app implementa de verdade ou deixa de fo
   de cada trecho (`CompositionInstruction.look`/`blendLook`, também no outro lado de um dissolve), os
   trechos se cortam onde o look do clipe seguinte difere (`EditedComposition.splitBySource`, como no zoom),
   e o fundo de um clipe vira um `BackgroundRender` próprio por clipe (a mesma máscara do Vision e o
-  mesmo chroma key, sem segundo pipeline); a prévia reconstrói o item quando um look de clipe muda
-  (`ItemKey.clipLooks`) e o export usa a mesma composição. A capa usa o look e o fundo do clipe do
+  mesmo chroma key, sem segundo pipeline); a prévia monta a edição de novo quando um look de clipe
+  muda (`ItemKey.clipLooks`), mantendo o item (só o desenho muda), e o export usa a mesma composição. A capa usa o look e o fundo do clipe do
   quadro escolhido. Projetos antigos abrem sem `look`. **Escopo das ferramentas:** só vídeo todo — Crop
   (formato de saída), Voice, Captions, Text, Cover, Pauses, Music e Media; só clipe — Split, Speed, Zoom,
   Volume, Duplicate, Delete e a transição de cada corte; os dois — Adjust, Filters e Background. Voice
@@ -881,7 +881,18 @@ O protótipo simulava várias coisas; o app implementa de verdade ou deixa de fo
   e repetições, e os ambíguos ficam de fora do "Remove all". Cada passo do desfazer guarda a timeline
   e as decisões juntas (`EditSnapshot`). A prévia toca a edição com as pontas crescidas até o original inteiro e
   segura a reprodução entre as alças, então arrastar uma alça mostra o frame real sem reconstruir
-  nada. As alças atravessam cortes (`EditTimeline.trimStart/trimEnd`): cada passo do arraste parte
+  nada. **A prévia nunca pisca:** qualquer outra mudança monta a edição de novo, um build por vez e
+  sem espera fixa (uma mudança que chega durante um build espera por ele e a mais nova vence, então
+  um slider redesenha enquanto o dedo anda, sem empilhar builds). Quando a montagem nova tem as
+  mesmas faixas e os mesmos trechos (`CompositionShape`: look, Adjust, filtros, fundo, textos,
+  legendas, volume), o item do player fica e só recebe a composição de vídeo e o mix novos, e o
+  quadro parado é desenhado de novo; trocar o item apagava a imagem por 40 ms (1080p) a 110 ms (4K)
+  no iPhone 18 Pro Max. Trechos ou faixas novos (corte, velocidade, música, Voice) trocam o item, e
+  a view da prévia (`FrameHoldingPlayerView`) segura o último quadro composto
+  (`CueVideoCompositor.lastFrame`) por cima até o item novo ter imagem (no máximo 1 s). O cache de
+  desenhos do compositor é nomeado pelo conteúdo (`LazyText.key`), então um compositor que continua
+  depois da mudança nunca devolve um texto velho. `QuickEditPreviewLatencyTests` (opt-in, no
+  aparelho) mede o tempo até a mudança aparecer e se a imagem some. As alças atravessam cortes (`EditTimeline.trimStart/trimEnd`): cada passo do arraste parte
   da timeline do começo do arraste (`trimOrigin`), as seções que a alça passa saem, e num corte que
   não removeu nada a alça cai exatamente onde está o dedo (num trecho removido, no começo da seção
   seguinte). Cada corte guarda a transição da seção que começa nele (`EditSegment.transitionIn`,

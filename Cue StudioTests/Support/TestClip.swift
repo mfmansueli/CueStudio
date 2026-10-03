@@ -15,7 +15,7 @@ enum TestClip {
     static let colors: [[Int]] = [
         [220, 40, 40], [40, 200, 60], [40, 80, 220], [230, 210, 40], [200, 60, 200], [40, 200, 200],
     ]
-    private static let sampleRate = 44_100
+    static let sampleRate = 44_100
     private static let framesPerSecond: Int32 = 30
 
     /// A portrait clip `seconds` long. With `loudSeconds`, it has a mono sound track: a tone during
@@ -122,7 +122,7 @@ enum TestClip {
     }
 
     /// One chunk of sound per video frame, if the clip has a sound track.
-    private static func feedAudio(_ receiver: AVAssetWriterInput.SampleBufferReceiver?, frames: Int, loudSeconds: Set<Int>) async throws {
+    static func feedAudio(_ receiver: AVAssetWriterInput.SampleBufferReceiver?, frames: Int, loudSeconds: Set<Int>) async throws {
         guard let receiver else { return }
         let samplesPerFrame = sampleRate / Int(framesPerSecond)
         for chunk in 0..<frames {
@@ -182,7 +182,7 @@ enum TestClip {
         return sample
     }
 
-    private static func centerColor(of image: CGImage) throws -> [Int] {
+    static func centerColor(of image: CGImage) throws -> [Int] {
         let width = image.width, height = image.height
         let context = try #require(CGContext(
             data: nil, width: width, height: height, bitsPerComponent: 8, bytesPerRow: width * 4,
