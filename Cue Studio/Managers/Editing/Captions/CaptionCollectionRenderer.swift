@@ -149,6 +149,7 @@ nonisolated enum CaptionCollectionRenderer {
         }
     }
 
+    
     static func color(_ color: CaptionStyleSpec.RGB) -> UIColor {
         UIColor(red: color.red, green: color.green, blue: color.blue, alpha: color.alpha)
     }
