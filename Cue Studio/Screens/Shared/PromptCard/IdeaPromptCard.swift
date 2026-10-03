@@ -34,6 +34,8 @@ struct IdeaPromptCard: View {
     @State private var scrollPosition = ScrollPosition(edge: .bottom)
     /// Tapping the words while they are being dictated stops the dictation and takes the keyboard.
     @State private var focusesWhenDone = false
+    /// The "Write in my voice" setup over the card, if it is open.
+    @State private var voiceSetup: VoiceSetupSheet.Mode?
     /// The height of a line of the field's text, which grows with Dynamic Type.
     @ScaledMetric(relativeTo: .subheadline) private var lineHeight = 20.0
 
@@ -48,19 +50,25 @@ struct IdeaPromptCard: View {
     private var isCovered: Bool {
         presentation.sheet != nil || presentation.prompter != nil
             || presentation.showsRemoteController || presentation.selectedTab != .scripts
+            || voiceSetup != nil
+    }
+
+    /// The light moves only while the card can be seen: not under its own setup sheet either.
+    private var animates: Bool {
+        animatesBackground && voiceSetup == nil
     }
 
     var body: some View {
-        PromptCardSurface(base: base, animatesBackground: animatesBackground, usesAurora: true) {
+        PromptCardSurface(base: base, animatesBackground: animates, usesAurora: true) {
             VStack(alignment: .leading, spacing: 12) {
-                PromptCardHeader(title: "Let’s Cue!", animatesBackground: animatesBackground)
+                PromptCardHeader(title: "Let’s Cue!", animatesBackground: animates)
                 intro
                 field
                 if let notice = dictation.notice, !dictation.isActive {
                     DictationNoticeView(notice: notice)
                         .transition(.opacity)
                 }
-                WriteInMyVoiceRow()
+                WriteInMyVoiceRow(setup: $voiceSetup)
                 if let unavailableReason {
                     AIUnavailableNote(reason: unavailableReason)
                 }

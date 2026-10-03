@@ -129,6 +129,10 @@ struct LookVersionTests {
         warm.warmth = 60
         let warmer = pixel(FrameLook.apply(warm, to: image))
         #expect(warmer.red > before.red && warmer.blue < before.blue)
+        var cool = LookSettings()
+        cool.warmth = -60
+        let cooler = pixel(FrameLook.apply(cool, to: image))
+        #expect(cooler.red < before.red && cooler.blue > before.blue)
         var magenta = LookSettings()
         magenta.tint = 100
         let tinted = pixel(FrameLook.apply(magenta, to: image))
@@ -153,6 +157,20 @@ struct LookVersionTests {
         #expect(pixel(FrameLook.apply(look, to: shadow)).green < pixel(shadow).green)
         #expect(pixel(FrameLook.apply(look, to: light)).green > pixel(light).green)
         #expect(abs(pixel(FrameLook.apply(look, to: middle)).green - pixel(middle).green) <= 2)
+        // Less contrast: the other way round, the middle still where it was.
+        look.contrast = -80
+        #expect(pixel(FrameLook.apply(look, to: shadow)).green > pixel(shadow).green)
+        #expect(pixel(FrameLook.apply(look, to: light)).green < pixel(light).green)
+        #expect(abs(pixel(FrameLook.apply(look, to: middle)).green - pixel(middle).green) <= 2)
+    }
+
+    @Test func positiveHighlightsLiftTheBrightPartsAndLeaveTheShadows() {
+        var look = LookSettings()
+        look.highlights = 80
+        let shadow = source(0.2, 0.2, 0.2)
+        let light = source(0.8, 0.8, 0.8)
+        #expect(abs(pixel(FrameLook.apply(look, to: shadow)).green - pixel(shadow).green) <= 2)
+        #expect(pixel(FrameLook.apply(look, to: light)).green > pixel(light).green + 3)
     }
 
     // MARK: - Auto

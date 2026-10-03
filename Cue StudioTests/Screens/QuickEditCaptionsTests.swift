@@ -392,8 +392,9 @@ struct QuickEditCaptionsTests {
         let states = CaptionCollectionRenderer.overlays(
             [typed], settings: style ?? CaptionSettings(theme: .pop), position: .bottom, frame: CGSize(width: 1080, height: 1920)
         )
-        #expect(states.count == typed.lineWords.count)
-        #expect(states.allSatisfy { $0.lazyText?.emphasis != nil })
+        // Every word lights once, in order (a pause the voice left between two words stays plain).
+        #expect(states.compactMap { $0.lazyText?.emphasis?.index } == Array(typed.lineWords.indices))
+        #expect(typed.lineWords.map(\.text) == ["Okay,", "brand", "new", "words", "here"])
     }
 
     @Test func splitMergeAndDeleteAreUndoable() async {

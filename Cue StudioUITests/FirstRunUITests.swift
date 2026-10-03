@@ -148,7 +148,7 @@ final class FirstRunUITests: XCTestCase {
         XCTAssertFalse(app.buttons["ideaCard.editStyleButton"].exists)
 
         // Cancel: the switch stays off and the text is kept.
-        toggle.tap()
+        flip(toggle)
         let save = app.buttons["voiceSetup.saveButton"]
         XCTAssertTrue(save.waitForExistence(timeout: 5))
         XCTAssertFalse(save.isEnabled)
@@ -158,7 +158,7 @@ final class FirstRunUITests: XCTestCase {
         XCTAssertEqual(field.value as? String, "Carnival in Salvador")
 
         // Answer the three questions: the switch turns on and the style can be edited.
-        toggle.tap()
+        flip(toggle)
         XCTAssertTrue(save.waitForExistence(timeout: 5))
         app.buttons["voiceSetup.niche.lifestyle"].tap()
         XCTAssertFalse(save.isEnabled)
@@ -176,13 +176,13 @@ final class FirstRunUITests: XCTestCase {
         let generateToggle = app.switches["generate.voiceToggle"]
         XCTAssertTrue(generateToggle.waitForExistence(timeout: 5))
         XCTAssertEqual(generateToggle.value as? String, "1")
-        generateToggle.tap()
+        flip(generateToggle)
         XCTAssertEqual(generateToggle.value as? String, "0")
         app.buttons["Close"].firstMatch.tap()
         XCTAssertTrue(toggle.waitForExistence(timeout: 5))
         XCTAssertEqual(toggle.value as? String, "0")
         // With the profile complete it turns on directly, with no questions.
-        toggle.tap()
+        flip(toggle)
         XCTAssertEqual(toggle.value as? String, "1")
         XCTAssertFalse(app.buttons["voiceSetup.saveButton"].exists)
         XCTAssertEqual(field.value as? String, "Carnival in Salvador")
@@ -210,7 +210,7 @@ final class FirstRunUITests: XCTestCase {
         XCTAssertTrue(waitForLabel(status, "Listening…"))
         XCTAssertEqual(mic.label, "Stop dictation")
         XCTAssertFalse(send.isEnabled)
-        XCTAssertTrue(app.staticTexts.containing(NSPredicate(format: "label CONTAINS 'coffee'")).firstMatch.waitForExistence(timeout: 10))
+        XCTAssertTrue(dictatedWords(app, saying: "coffee").waitForExistence(timeout: 10))
         XCTAssertEqual(card.frame.height, height, accuracy: 1)
         XCTAssertFalse(send.isEnabled)
 
@@ -241,7 +241,7 @@ final class FirstRunUITests: XCTestCase {
         app.buttons["ideaCard.dictate"].tap()
         let transcript = element(app, "ideaCard.transcript")
         XCTAssertTrue(transcript.waitForExistence(timeout: 10))
-        XCTAssertTrue(app.staticTexts.containing(NSPredicate(format: "label CONTAINS 'idea'")).firstMatch.waitForExistence(timeout: 10))
+        XCTAssertTrue(dictatedWords(app, saying: "long idea").waitForExistence(timeout: 10))
         transcript.tap()
         XCTAssertTrue(field.waitForExistence(timeout: 10))
         XCTAssertTrue(app.keyboards.firstMatch.waitForExistence(timeout: 5))
@@ -255,13 +255,35 @@ final class FirstRunUITests: XCTestCase {
         let field = element(app, "ideaCard.field")
         XCTAssertTrue(field.waitForExistence(timeout: 15))
         app.buttons["ideaCard.dictate"].tap()
-        XCTAssertTrue(app.staticTexts.containing(NSPredicate(format: "label CONTAINS 'idea'")).firstMatch.waitForExistence(timeout: 10))
+        XCTAssertTrue(dictatedWords(app, saying: "long idea").waitForExistence(timeout: 10))
         app.tabBars.buttons.element(boundBy: 1).tap()
         app.tabBars.buttons.element(boundBy: 0).tap()
         XCTAssertTrue(field.waitForExistence(timeout: 10))
         XCTAssertEqual(app.buttons["ideaCard.dictate"].label, "Dictate your idea")
         XCTAssertFalse(element(app, "ideaCard.dictationStatus").exists)
         XCTAssertTrue((field.value as? String ?? "").hasPrefix("a very long idea"))
+    }
+
+    /// Asking for the voice setup while dictating lets the dictation write its last words first: the
+    /// setup opens once the microphone is off, and every word is still in the field after it.
+    func testTheVoiceSetupWaitsForTheDictationToWriteItsLastWords() {
+        let app = dictationApp("speech", text: "a video about my morning coffee routine")
+        let field = element(app, "ideaCard.field")
+        XCTAssertTrue(field.waitForExistence(timeout: 15))
+        app.buttons["ideaCard.dictate"].tap()
+        XCTAssertTrue(waitForLabel(element(app, "ideaCard.dictationStatus"), "Listening…"))
+        XCTAssertTrue(dictatedWords(app, saying: "video about").waitForExistence(timeout: 10))
+
+        flip(app.switches["ideaCard.voiceToggle"])
+        let save = app.buttons["voiceSetup.saveButton"]
+        XCTAssertTrue(save.waitForExistence(timeout: 10))
+        app.buttons["sheet.closeButton"].tap()
+
+        XCTAssertTrue(field.waitForExistence(timeout: 5))
+        XCTAssertEqual(field.value as? String, "a video about my morning coffee routine")
+        XCTAssertFalse(element(app, "ideaCard.dictationStatus").exists)
+        XCTAssertEqual(app.buttons["ideaCard.dictate"].label, "Dictate your idea")
+        XCTAssertEqual(app.switches["ideaCard.voiceToggle"].value as? String, "0")
     }
 
     /// A silent dictation says so; typing still works.
@@ -333,5 +355,18 @@ final class FirstRunUITests: XCTestCase {
 
     private func element(_ app: XCUIApplication, _ identifier: String) -> XCUIElement {
         app.descendants(matching: .any)[identifier].firstMatch
+    }
+
+    /// The words being dictated, as the card shows them while it listens (one element, read-only).
+    /// Matched there, not anywhere on screen: "idea" and "video" are also in the card's own texts.
+    private func dictatedWords(_ app: XCUIApplication, saying words: String) -> XCUIElement {
+        app.descendants(matching: .any).matching(identifier: "ideaCard.transcript")
+            .matching(NSPredicate(format: "label CONTAINS %@", words)).firstMatch
+    }
+
+    /// Flips a switch by its control. The element spans the whole row, and a tap in its middle
+    /// lands on the label, which doesn't flip a SwiftUI switch.
+    private func flip(_ toggle: XCUIElement) {
+        toggle.coordinate(withNormalizedOffset: CGVector(dx: 0.93, dy: 0.5)).tap()
     }
 }

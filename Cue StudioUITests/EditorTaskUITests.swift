@@ -118,7 +118,11 @@ final class EditorTaskUITests: XCTestCase {
         deleteAll.tap()
         XCTAssertTrue(EditorApp.toastSays(app, "lines deleted"))
         XCTAssertFalse(first.exists)
-        app.buttons["toast.action"].tap()
+        // The editor's toast has its Undo; the app's own toast host under the editor shows one too,
+        // out of sight, so the one tapped is the one on screen.
+        let undo = app.buttons.matching(identifier: "toast.action").allElementsBoundByIndex.first { $0.isHittable }
+        XCTAssertNotNil(undo)
+        undo?.tap()
         XCTAssertTrue(first.waitForExistence(timeout: 5))
     }
 
@@ -177,8 +181,8 @@ final class EditorTaskUITests: XCTestCase {
             field.typeText("b")
             XCTAssertEqual(field.value as? String, typed, "round \(round)")
 
-            // Put the keyboard away: the panel and the words stay.
-            app.keyboards.buttons["Done"].firstMatch.tap()
+            // Put the keyboard away with its Done key (Return): the panel and the words stay.
+            field.typeText(XCUIKeyboardKey.return.rawValue)
             XCTAssertTrue(waitForGone(app.keyboards.firstMatch), "round \(round)")
             XCTAssertTrue(panels.firstMatch.exists && field.exists, "round \(round)")
             XCTAssertEqual(field.value as? String, typed, "round \(round)")
@@ -200,4 +204,3 @@ final class EditorTaskUITests: XCTestCase {
         return false
     }
 }
-

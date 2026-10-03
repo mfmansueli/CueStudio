@@ -125,7 +125,7 @@ struct QuickEditView: View {
     /// by hand), but how it is laid out (class, tracks, panel as a panel or as a sheet) must not
     /// depend on the keyboard, or opening it would change the layout under the field being typed in.
     private var measuresStableHeight: some View {
-        GeometryReader { proxy in
+        GeometryReader { _ in
             Color.clear
                 .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { stableHeight = $0 }
         }

@@ -21,6 +21,8 @@ struct AIToolsPanel: View {
                 }
             }
         }
+        // A container of its own: the panel's identifier would otherwise replace every control's.
+        .accessibilityElement(children: .contain)
         .accessibilityIdentifier("editor.panel.ai")
     }
 

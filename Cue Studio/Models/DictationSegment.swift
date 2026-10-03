@@ -9,7 +9,7 @@ import Foundation
 /// insertion point into what comes `before` and what comes `after`; every transcript, partial or
 /// final, then replaces only what sits between them. So words heard twice never repeat, and nothing
 /// the creator had written is overwritten, moved or lost.
-struct DictationSegment: Equatable {
+nonisolated struct DictationSegment: Equatable, Sendable {
     let before: String
     let after: String
     /// The transcript so far, as the recognizer wrote it (it grows, and may rewrite its last words).

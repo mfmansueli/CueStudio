@@ -59,8 +59,13 @@ extension QuickEditViewModel {
                     try Task.checkCancellation()
                     let outcome: CaptionOutcome
                     if let cached = transcript(of: recording.source), canReuse(cached, for: recording.language) {
-                        let lines = CaptionBuilder.captions(heard: cached.words, script: recording.script,
-                                                          language: CueLanguage.matching(languageCode: cached.languageCode))
+                        // Lining the words up with the script (spelling, languages) is the same work
+                        // `TakeEditService` does after listening: off the main actor, like there.
+                        let words = cached.words
+                        let script = recording.script
+                        let language = CueLanguage.matching(languageCode: cached.languageCode)
+                        let lines = await Task.detached { CaptionBuilder.captions(heard: words, script: script, language: language) }.value
+                        try Task.checkCancellation()
                         outcome = .captions(lines, transcript: cached)
                     } else {
                         outcome = try await editing.captions(
@@ -144,11 +149,17 @@ extension QuickEditViewModel {
     }
 
     /// Selecting a look never enables transcription. Generation has its own explicit control.
-    func setCaptionTheme(_ theme: CaptionTheme) {
+    /// With `reveal` (the way of showing words a complete preset brings), both change in the same
+    /// undo step, so one Undo goes back to the look before, never to a mix of the two.
+    func setCaptionTheme(_ theme: CaptionTheme, reveal: CaptionAnimation? = nil) {
         change { snapshot in
             var settings = CaptionSettings(theme: theme)
             settings.center = snapshot.captionCollection?.center
             settings.safeMargins = snapshot.captionCollection?.safeMargins ?? captionSafeMargins
+            if let reveal {
+                settings.followsWords = reveal.followsWords
+                snapshot.captionAnimation = reveal
+            }
             snapshot.captionCollection = settings
         }
         toast.show(String(localized: "\(theme.label) on the captions"))

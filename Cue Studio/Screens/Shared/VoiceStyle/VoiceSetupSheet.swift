@@ -63,6 +63,8 @@ struct VoiceSetupSheet: View {
         .presentationBackground(Palette.surface)
         .presentationCornerRadius(Metrics.sheetRadius)
         .presentationDragIndicator(.visible)
+        // A container of its own: the sheet's identifier would otherwise replace its controls' (Save's).
+        .accessibilityElement(children: .contain)
         .accessibilityIdentifier("voiceSetup.sheet")
     }
 
@@ -77,12 +79,21 @@ struct VoiceSetupSheet: View {
                 .accessibilityAddTraits(.isHeader)
             switch step {
             case .niche:
-                chips(Niche.allCases, label: \.label, isPicked: { draft.isPicked($0) }, isOn: draft.canAddNiche, key: "niche") { draft.toggle($0) }
+                chips(
+                    Niche.allCases, label: \.label, isPicked: { draft.isPicked($0) }, isOn: draft.canAddNiche, key: "niche",
+                    pick: { draft.toggle($0) }
+                )
                 limitNote(draft.nicheCap)
             case .audience:
-                chips(Vocabulary.allCases, label: \.audienceLabel, isPicked: { draft.isPicked($0) }, isOn: true, key: "audience") { draft.choose($0) }
+                chips(
+                    Vocabulary.allCases, label: \.audienceLabel, isPicked: { draft.isPicked($0) }, isOn: true, key: "audience",
+                    pick: { draft.choose($0) }
+                )
             case .tone:
-                chips(VoiceSound.allCases, label: \.label, isPicked: { draft.isPicked($0) }, isOn: draft.canAddSound, key: "tone") { draft.toggle($0) }
+                chips(
+                    VoiceSound.allCases, label: \.label, isPicked: { draft.isPicked($0) }, isOn: draft.canAddSound, key: "tone",
+                    pick: { draft.toggle($0) }
+                )
                 limitNote(draft.soundCap)
             }
         }

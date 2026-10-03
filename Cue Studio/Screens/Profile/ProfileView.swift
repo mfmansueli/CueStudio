@@ -21,6 +21,13 @@ struct ProfileView: View {
     @State private var isAddingPhrase = false
     @State private var newPhrase = ""
     @State private var trialDays: Int?
+    /// The "Write in my voice" setup opened from "Sounds like you".
+    @State private var voiceSetup: VoiceSetupSheet.Mode?
+
+    /// Something of this screen's own covers it: the moving light behind "Sounds like you" rests.
+    private var isCovered: Bool {
+        showsEditProfile || paywall != nil || showsManageSubscriptions || voiceSetup != nil
+    }
 
     var body: some View {
         @Bindable var profile = profile
@@ -41,7 +48,7 @@ struct ProfileView: View {
                 }
             }
             Section {
-                SoundsLikeYouCard()
+                SoundsLikeYouCard(setup: $voiceSetup)
             } header: {
                 VStack(alignment: .leading, spacing: 4) {
                     Text("Creator Voice")
@@ -54,7 +61,7 @@ struct ProfileView: View {
                 .textCase(nil)
                 .padding(.bottom, 4)
             }
-            .listRowBackground(AuroraCardBackground(base: Palette.surface))
+            .listRowBackground(AuroraCardBackground(base: Palette.surface, isActive: !isCovered))
             Section {
                 CreatorVoiceSection(
                     onAddPhrase: {

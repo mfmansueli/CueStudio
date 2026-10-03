@@ -55,9 +55,14 @@ final class ProfileUITests: XCTestCase {
         let sample = app.staticTexts["profile.voiceSample"]
         XCTAssertTrue(sample.waitForExistence(timeout: 5))
         XCTAssertTrue(sample.label.contains("So, real quick."))
-        let casual = app.buttons["profile.sound.Casual"]
-        scroll(app, to: casual)
-        casual.tap()
+        // A new profile shows no tone as picked (its defaults aren't the creator's); the first tap
+        // picks that one alone, and the preview speaks in it.
+        let confident = app.buttons["profile.sound.Confident"]
+        scroll(app, to: confident)
+        XCTAssertFalse(confident.isSelected)
+        confident.tap()
+        XCTAssertTrue(confident.isSelected)
+        XCTAssertFalse(app.buttons["profile.sound.Casual"].isSelected)
         XCTAssertTrue(app.staticTexts["profile.voiceSample"].label.contains("I'll say it"))
     }
 

@@ -164,8 +164,22 @@ struct GenerateScriptViewModelTests {
         let scenario = makeScenario(tab: .themes)
         defer { scenario.defaults.tearDown() }
         #expect(scenario.viewModel.tab == .themes)
+        // The scenario's creator makes tech videos: the starter ideas are theirs.
         #expect(scenario.viewModel.themes.count == 3)
-        #expect(scenario.viewModel.themeNiches == "Lifestyle")
+        #expect(scenario.viewModel.themes.allSatisfy { $0.niche == .tech })
+        #expect(scenario.viewModel.themeNiches == "Tech")
+    }
+
+    @Test func withoutANicheThemesStartWithLifestyle() {
+        let defaults = TestDefaults()
+        defer { defaults.tearDown() }
+        let viewModel = GenerateScriptViewModel(
+            initialTab: .themes, writer: FakeScriptWriter(),
+            library: ScriptLibraryService(repository: FakeScriptRepository(), now: { TestData.now }),
+            profile: CreatorProfileService(defaults: defaults.defaults), rules: TestData.rulesService(), toast: ToastService()
+        )
+        #expect(viewModel.themes.count == 3 && viewModel.themes.allSatisfy { $0.niche == .lifestyle })
+        #expect(viewModel.themeNiches == "Lifestyle")
     }
 
     @Test func usingAThemeFillsThePrompt() {
@@ -174,7 +188,7 @@ struct GenerateScriptViewModelTests {
         let idea = scenario.viewModel.themes[0]
         scenario.viewModel.useTheme(idea)
         #expect(scenario.viewModel.tab == .prompt)
-        #expect(scenario.viewModel.promptText == "1 min list video: 3 things I stopped buying this year")
+        #expect(scenario.viewModel.promptText == "1 min list video: iPhone settings I change on day one")
         #expect(scenario.viewModel.length == .minute1)
     }
 
@@ -362,4 +376,3 @@ struct GenerateScriptViewModelTests {
         #expect(scenario.viewModel.errorMessage == nil)
     }
 }
-

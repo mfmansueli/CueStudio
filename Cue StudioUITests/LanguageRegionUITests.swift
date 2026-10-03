@@ -118,13 +118,13 @@ final class LanguageRegionUITests: XCTestCase {
         let edit = app.buttons["review.editButton"]
         XCTAssertTrue(edit.waitForExistence(timeout: 5))
         edit.tap()
-        let captions = app.buttons["edit.category.captions"]
-        XCTAssertTrue(captions.waitForExistence(timeout: 10))
-        captions.tap()
+        // The take has no captions yet: Captions opens Auto captions, where the language is chosen.
+        XCTAssertTrue(app.buttons["edit.toolbar.edit"].waitForExistence(timeout: 10))
+        EditorApp.tapTool(app, "captions")
         let note = app.staticTexts["edit.captionsLanguageNote"]
         XCTAssertTrue(note.waitForExistence(timeout: 5))
         XCTAssertTrue(note.label.contains("Portuguese (Brazil)"))
-        app.buttons["edit.cancelButton"].tap()
+        app.buttons["edit.doneButton"].tap()
         XCTAssertTrue(edit.waitForExistence(timeout: 5))
     }
 

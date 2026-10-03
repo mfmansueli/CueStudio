@@ -239,6 +239,9 @@ final class GenerateScriptViewModel {
             title: generated.title, text: generated.text, platform: platform, factCheck: generated.needsFactCheck,
             language: scriptLanguage
         )
+        // The idea card's draft became this script: the card starts empty the next time. A script
+        // written from a format's brief leaves the idea where it was.
+        ideaDraft?.clear()
         toast.show(generated.needsFactCheck
             ? String(localized: "Draft ready — check facts before recording")
             : String(localized: "Draft ready — edit anything"))
