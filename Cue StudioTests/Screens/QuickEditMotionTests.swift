@@ -143,7 +143,12 @@ struct QuickEditMotionTests {
         viewModel.makeCaptions()
         await viewModel.captionTask?.value
         #expect(viewModel.linesWithoutWordTiming == 0)
-        viewModel.setCaptionText(viewModel.edit.captions[0].id, "Okay, so real talk.")
+        let id = viewModel.edit.captions[0].id
+        // A word slipped in takes the room the word before it leaves: the line still follows the voice.
+        viewModel.setCaptionText(id, "Okay, so real talk.")
+        #expect(viewModel.linesWithoutWordTiming == 0)
+        // Words where the voice left no room at all are a guess: the line is counted ("Check timing").
+        viewModel.setCaptionText(id, "Okay, so let's be real talk.")
         #expect(viewModel.linesWithoutWordTiming == 1)
     }
 }

@@ -147,8 +147,7 @@ extension QuickEditViewModel {
     /// line); Reveal can change it after.
     func pickCaptionTheme(_ theme: CaptionTheme) {
         guard captionTheme != theme else { return }
-        setCaptionTheme(theme)
-        applyCaptionReveal(CaptionStyleSpec.spec(for: theme, version: CaptionStyleSpec.currentVersion).animation)
+        setCaptionTheme(theme, reveal: CaptionStyleSpec.spec(for: theme, version: CaptionStyleSpec.currentVersion).animation)
         previewCurrentCaptionLine()
     }
 

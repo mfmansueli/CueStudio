@@ -51,9 +51,12 @@ final class EditorUITests: XCTestCase {
         XCTAssertTrue(warmth.waitForExistence(timeout: 5))
         warmth.tap()
         XCTAssertTrue(warmth.isSelected)
-        let ruler = app.sliders["edit.adjust.ruler"]
+        // The ruler is one adjustable element (not a system slider): a touch sets the value under it.
+        let ruler = app.descendants(matching: .any)["edit.adjust.ruler"]
         XCTAssertTrue(ruler.waitForExistence(timeout: 5))
-        ruler.adjust(toNormalizedSliderPosition: 0.75)
+        XCTAssertEqual(ruler.label, "Warmth")
+        ruler.coordinate(withNormalizedOffset: CGVector(dx: 0.75, dy: 0.5)).tap()
+        XCTAssertNotEqual(warmth.value as? String, "0")
         // Off zero: the dial says so and its own Reset shows.
         XCTAssertTrue(app.buttons["edit.adjust.resetOne"].waitForExistence(timeout: 5))
         app.buttons["edit.adjust.resetOne"].tap()
@@ -68,9 +71,16 @@ final class EditorUITests: XCTestCase {
         let auto = app.buttons["edit.adjust.auto"]
         XCTAssertTrue(auto.waitForExistence(timeout: 5))
         auto.tap()
-        let amount = app.sliders["edit.adjust.autoAmount"]
-        let balanced = EditorApp.toastSays(app, "Already balanced")
-        if amount.waitForExistence(timeout: 20) {
+        // Measuring takes a moment; it ends with the intensity ruler, or a note when there's nothing to do.
+        let amount = app.descendants(matching: .any)["edit.adjust.autoAmount"]
+        var balanced = false
+        var failed = false
+        let deadline = Date().addingTimeInterval(20)
+        while Date() < deadline, !amount.exists, !balanced, !failed {
+            balanced = EditorApp.toastSays(app, "Already balanced", timeout: 0.5)
+            failed = EditorApp.toastSays(app, "Couldn’t measure", timeout: 0.5)
+        }
+        if amount.exists {
             // Intensity is its own ruler; Compare shows the picture as recorded, and Reset takes Auto away.
             let compare = app.buttons["edit.adjust.compare"]
             XCTAssertTrue(compare.exists)
@@ -82,7 +92,7 @@ final class EditorUITests: XCTestCase {
             app.buttons["edit.adjust.resetOne"].tap()
             XCTAssertFalse(amount.exists)
         } else {
-            XCTAssertTrue(balanced || EditorApp.toastSays(app, "Couldn’t measure"))
+            XCTAssertTrue(balanced || failed)
         }
         XCTAssertTrue(auto.isEnabled)
     }
@@ -98,7 +108,7 @@ final class EditorUITests: XCTestCase {
         let cinema = app.buttons["edit.filter.cinema"]
         cinema.tap()
         XCTAssertTrue(cinema.isSelected)
-        XCTAssertTrue(app.sliders["edit.filter.intensity"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.descendants(matching: .any)["edit.filter.intensity"].waitForExistence(timeout: 5))
     }
 
     /// The ruler is the panel's lowest control: it stays above the bottom safe area (the Home
@@ -106,7 +116,7 @@ final class EditorUITests: XCTestCase {
     func testAdjustRulerStaysAboveTheBottomEdge() {
         let app = EditorApp.open()
         EditorApp.tapTool(app, "adjust")
-        let ruler = app.sliders["edit.adjust.ruler"]
+        let ruler = app.descendants(matching: .any)["edit.adjust.ruler"]
         XCTAssertTrue(ruler.waitForExistence(timeout: 5))
         let window = app.windows.firstMatch.frame
         XCTAssertLessThanOrEqual(ruler.frame.maxY, window.maxY - 20)

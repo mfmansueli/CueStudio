@@ -9,8 +9,8 @@ import CoreImage.CIFilterBuiltins
 /// The calibrated reading of the Adjust dials (`LookSettings.version` 2), in the order a colorist
 /// would use: exposure, white balance, highlights and shadows, contrast, saturation, vibrance, and
 /// sharpness last. How far each dial goes is `LookCalibration`. Contrast and the lift of the
-/// highlights are curves drawn in sRGB-encoded values (Core Image works in linear light, where a
-/// curve around the middle would be far too strong in the shadows).
+/// highlights are tone curves, which `CIToneCurve` draws in sRGB-encoded values (not in Core
+/// Image's linear light, where a curve around the middle would be far too strong in the shadows).
 nonisolated extension FrameLook {
     static func adjusted(_ look: LookSettings, _ image: CIImage) -> CIImage {
         var output = image
@@ -18,9 +18,11 @@ nonisolated extension FrameLook {
         if look.warmth != 0 {
             let filter = CIFilter.temperatureAndTint()
             filter.inputImage = output
-            filter.neutral = CIVector(x: 6500, y: 0)
-            // Warmer means rendering as if lit by a cooler source.
-            filter.targetNeutral = CIVector(x: CGFloat(LookCalibration.warmthKelvin(look.warmth)), y: 0)
+            // The picture is taken as lit by the dial's light and balanced back to daylight: a
+            // bluer light (more kelvin) comes out warmer, a yellower one cooler. The other way
+            // round, `CITemperatureAndTint` turns the picture blue for a positive Warmth.
+            filter.neutral = CIVector(x: CGFloat(LookCalibration.warmthKelvin(look.warmth)), y: 0)
+            filter.targetNeutral = CIVector(x: 6500, y: 0)
             output = filter.outputImage ?? output
         }
         output = whiteBalanceTint(look.tint, on: output)
@@ -79,20 +81,17 @@ nonisolated extension FrameLook {
         }
         let lift = CGFloat(LookCalibration.highlightLift(highlights))
         if lift > 0 {
-            output = inSRGB(output) { encoded in
-                curve(
-                    [CGPoint(x: 0, y: 0), CGPoint(x: 0.25, y: 0.25), CGPoint(x: 0.5, y: 0.5 + lift / 3), CGPoint(x: 0.75, y: 0.75 + lift), CGPoint(x: 1, y: 1)],
-                    on: encoded
-                )
-            }
+            output = curve(
+                [CGPoint(x: 0, y: 0), CGPoint(x: 0.25, y: 0.25), CGPoint(x: 0.5, y: 0.5 + lift / 3), CGPoint(x: 0.75, y: 0.75 + lift), CGPoint(x: 1, y: 1)],
+                on: output
+            )
         }
         return output
     }
 
     private static func contrast(_ value: Double, on image: CIImage) -> CIImage {
         guard value != 0 else { return image }
-        let points = LookCalibration.contrastCurve(strength: LookCalibration.contrastStrength(value))
-        return inSRGB(image) { curve(points, on: $0) }
+        return curve(LookCalibration.contrastCurve(strength: LookCalibration.contrastStrength(value)), on: image)
     }
 
     /// `CIVibrance`: lifts the muted colors and spares skin and the colors already strong.
@@ -107,7 +106,9 @@ nonisolated extension FrameLook {
 
     // MARK: - Curves
 
-    /// A five-point tone curve (`points` left to right).
+    /// A five-point tone curve (`points` left to right), in sRGB-encoded values: `CIToneCurve`
+    /// encodes the linear picture before it reads the curve and decodes it after, so the middle
+    /// gray (0.5) stays where a curve through (0.5, 0.5) puts it. Encoding it again here would move it.
     static func curve(_ points: [CGPoint], on image: CIImage) -> CIImage {
         guard points.count == 5 else { return image }
         let filter = CIFilter.toneCurve()
@@ -118,15 +119,5 @@ nonisolated extension FrameLook {
         filter.point3 = points[3]
         filter.point4 = points[4]
         return filter.outputImage ?? image
-    }
-
-    /// `work` on the picture in sRGB-encoded values, back to linear after.
-    static func inSRGB(_ image: CIImage, _ work: (CIImage) -> CIImage) -> CIImage {
-        let encode = CIFilter.linearToSRGBToneCurve()
-        encode.inputImage = image
-        guard let encoded = encode.outputImage else { return image }
-        let decode = CIFilter.sRGBToneCurveToLinear()
-        decode.inputImage = work(encoded)
-        return decode.outputImage ?? image
     }
 }

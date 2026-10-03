@@ -8,9 +8,11 @@ import SwiftUI
 /// A line in the creator's voice that updates as they change it, and the switch that sends the
 /// voice to the AI. It reads the voice the AI gets on the current plan. The switch is the shared
 /// "Write in my voice" state: turning it on before the profile has enough opens the short setup.
+/// Profile owns `setup`, so the card's moving light rests while the setup covers the screen.
 struct SoundsLikeYouCard: View {
+    @Binding var setup: VoiceSetupSheet.Mode?
+
     @Environment(CreatorProfileService.self) private var profile
-    @State private var setup: VoiceSetupSheet.Mode?
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {

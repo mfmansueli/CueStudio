@@ -74,7 +74,10 @@ struct CaptionCollectionRendererTests {
     @Test func aLineTypedWithStraySpacesOrWrittenFromScratchKeepsTheEffects() {
         let settings = CaptionSettings()
         var typed = CaptionRevision.retimed(cue, text: "Sua  ideia merece ganhar vida. ")
-        #expect(CaptionCollectionRenderer.overlays([typed], settings: settings, position: .bottom, frame: frame).count == words.count)
+        // Every word still lights once, in order; the pauses between measured words stay plain.
+        let lit = CaptionCollectionRenderer.overlays([typed], settings: settings, position: .bottom, frame: frame)
+            .compactMap { $0.lazyText?.emphasis?.index }
+        #expect(lit == Array(words.indices))
         typed = CaptionCue(text: "Brand new line", start: 1, end: 3, origin: .manual)
         let states = CaptionCollectionRenderer.overlays([typed], settings: settings, position: .bottom, frame: frame)
         #expect(states.count == 3)

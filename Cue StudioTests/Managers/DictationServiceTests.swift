@@ -47,7 +47,9 @@ struct DictationServiceTests {
         let heard = Heard()
         let notificationCenter = NotificationCenter()
 
-        init(silenceTimeout: Duration = .seconds(4), watchInterval: Duration = .seconds(1), finishTimeout: Duration = .seconds(3)) {
+        /// The microphone watch and the finishing run on real time. Tests that aren't about them keep
+        /// them far away, so a busy test run (the whole suite in parallel) can't fire them midway.
+        init(silenceTimeout: Duration = .seconds(600), watchInterval: Duration = .seconds(1), finishTimeout: Duration = .seconds(600)) {
             service = DictationService(
                 audio: audio, speech: speech, microphone: permission.access,
                 finishTimeout: finishTimeout, silenceTimeout: silenceTimeout, watchInterval: watchInterval,
@@ -68,11 +70,14 @@ struct DictationServiceTests {
         for _ in 0..<400 where !condition() {
             await Task.yield()
         }
+        await waitUntilSlow(condition)
     }
 
-    /// For a wait that depends on a real timer.
+    /// For a wait that depends on a real timer: up to a deadline far beyond any timeout under test,
+    /// so a busy machine only makes it slower, never wrong.
     private func waitUntilSlow(_ condition: () -> Bool) async {
-        for _ in 0..<200 where !condition() {
+        let deadline = ContinuousClock.now + .seconds(10)
+        while !condition(), ContinuousClock.now < deadline {
             try? await Task.sleep(for: .milliseconds(10))
         }
     }
@@ -363,12 +368,12 @@ struct DictationServiceTests {
         #expect(rig.heard.texts == ["some words"])
     }
 
-    @Test func aMicrophoneThatGoesSilentIsTakenAsGone() async throws {
+    @Test func aMicrophoneThatGoesSilentIsTakenAsGone() async {
         let rig = Rig(silenceTimeout: .milliseconds(80), watchInterval: .milliseconds(20))
         await rig.start()
         #expect(rig.service.state == .listening)
         // No buffers arrive (an unplugged mic, a call): it lets go by itself.
-        try await Task.sleep(for: .milliseconds(500))
+        await waitUntilSlow { rig.service.state == .idle }
         #expect(rig.service.state == .idle)
         #expect(rig.service.notice == .interrupted)
         #expect(!rig.audio.isMetering)

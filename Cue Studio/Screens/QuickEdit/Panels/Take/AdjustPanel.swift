@@ -122,7 +122,7 @@ struct AdjustPanel: View {
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(Text("Auto"))
         .accessibilityValue(hasAuto ? Text(PanelValueFormat.percent.text(viewModel.autoAmount * 100)) : Text("Not measured"))
-        .accessibilityAddTraits(isPicked ? .isSelected : [])
+        .accessibilityAddTraits(isPicked ? [.isButton, .isSelected] : .isButton)
         .accessibilityIdentifier("edit.adjust.autoDial")
     }
 
@@ -144,7 +144,7 @@ struct AdjustPanel: View {
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(Text(adjustment.label))
         .accessibilityValue(Text(format(of: adjustment).text(value)))
-        .accessibilityAddTraits(isPicked ? .isSelected : [])
+        .accessibilityAddTraits(isPicked ? [.isButton, .isSelected] : .isButton)
         .accessibilityIdentifier("edit.adjust.\(adjustment.rawValue)")
     }
 

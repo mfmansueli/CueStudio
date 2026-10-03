@@ -34,7 +34,9 @@ struct ScriptSummaryRow: View {
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
+        // One element for VoiceOver, read as the button it is: "Script details", with the summary as its value.
         .accessibilityElement(children: .ignore)
+        .accessibilityAddTraits(.isButton)
         .accessibilityLabel(Text("Script details"))
         .accessibilityValue(Text("\(platform.label), \(zone.words) words, \(zone.durationLabel). \(zone.status)"))
         .accessibilityIdentifier("detail.summaryRow")

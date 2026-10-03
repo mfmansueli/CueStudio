@@ -122,9 +122,8 @@ struct MainView: View {
                 presentation.openScript(script.id, editing: true)
             }
         case .generateIdea:
+            // The view model clears the idea once it is written into a script.
             GenerateScriptSheet(services: services, ideaDraft: services.ideaDraft) { script in
-                // The idea is a script now: the card starts empty the next time.
-                services.ideaDraft.clear()
                 presentation.openScript(script.id, editing: true)
             }
         }

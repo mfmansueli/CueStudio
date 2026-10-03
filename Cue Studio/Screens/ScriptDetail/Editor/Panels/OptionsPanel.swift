@@ -60,6 +60,8 @@ struct OptionsPanel: View {
             .buttonStyle(.plain)
             .accessibilityIdentifier("editor.discardButton")
         }
+        // A container of its own: the panel's identifier would otherwise replace every control's.
+        .accessibilityElement(children: .contain)
         .accessibilityIdentifier("editor.panel.options")
     }
 

@@ -250,6 +250,10 @@ final class ScriptLibraryUITests: XCTestCase {
         let app = CueApp.launch(seeded: true)
         let row = app.staticTexts["Unboxing the Lumen desk lamp"]
         XCTAssertTrue(row.waitForExistence(timeout: 15))
+        // The AI card sits over the list: bring the row into view first (a swipe doesn't scroll to it).
+        for _ in 0..<4 where !row.isHittable {
+            app.swipeUp()
+        }
         row.swipeLeft()
         let more = app.buttons["More"]
         XCTAssertTrue(more.waitForExistence(timeout: 5))

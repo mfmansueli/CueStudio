@@ -144,8 +144,23 @@ struct IdeaPromptDraftTests {
         #expect(script != nil)
         #expect(scenario.writer.lastRequest?.voice == nil)
         #expect(scenario.writer.lastRequest?.source == .prompt("Carnival in Salvador"))
-        // The card clears the draft only once the script exists (MainView does it on creation).
-        #expect(scenario.ideaDraft.text == "Carnival in Salvador")
+        // The idea is a script now: the card starts empty, with the choices back to the defaults.
+        #expect(scenario.ideaDraft.isEmpty && scenario.ideaDraft.platform == nil && scenario.ideaDraft.length == .auto)
+    }
+
+    @Test func theDraftStaysUntilItIsWrittenAndAScriptFromABriefLeavesIt() async {
+        let scenario = makeScenario(text: "Carnival in Salvador")
+        defer { scenario.defaults.tearDown() }
+        scenario.viewModel.platform = .reels
+        // A failed request keeps it, to try again.
+        scenario.writer.error = ScriptAIError.emptyResponse
+        #expect(await scenario.viewModel.generateFromPrompt() == nil)
+        #expect(scenario.ideaDraft.text == "Carnival in Salvador" && scenario.ideaDraft.platform == .reels)
+        scenario.writer.error = nil
+        // Formats, opened from the same screen, writes from its brief: the idea wasn't used, so it stays.
+        scenario.viewModel.choose(.review)
+        #expect(await scenario.viewModel.generateFromBrief() != nil)
+        #expect(scenario.ideaDraft.text == "Carnival in Salvador" && scenario.ideaDraft.platform == .reels)
     }
 
     @Test func theIdeaSheetHasItsOwnIdentity() {

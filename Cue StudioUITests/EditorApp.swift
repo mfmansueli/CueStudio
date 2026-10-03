@@ -78,9 +78,12 @@ enum EditorApp {
     }
 
     /// The editor's toast, once it says something containing `text`.
-    static func toastSays(_ app: XCUIApplication, _ text: String) -> Bool {
-        let toast = app.descendants(matching: .any).matching(identifier: "toast").firstMatch
-        return toast.waitForExistence(timeout: 3) && toast.label.contains(text)
+    /// A toast saying `text` shows. Matched by its words, not by the first toast found: the screen
+    /// under the editor has a toast host of its own, and a toast with a button reads as a group there.
+    static func toastSays(_ app: XCUIApplication, _ text: String, timeout: TimeInterval = 3) -> Bool {
+        app.descendants(matching: .any).matching(identifier: "toast")
+            .matching(NSPredicate(format: "label CONTAINS %@", text)).firstMatch
+            .waitForExistence(timeout: timeout)
     }
 
     /// Plays for about `seconds`, then pauses.

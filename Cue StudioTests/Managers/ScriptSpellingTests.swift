@@ -99,7 +99,8 @@ struct ScriptSpellingTests {
         let different = ScriptSpelling.apply(
             to: heard("rei hoje vou mostrar três hábitos que mudaram minhas manhãs"), script: script, language: .portugueseBrazil
         )
-        #expect(text(different).hasPrefix("rei hoje vou mostrar"))
+        // "rei" stays as heard; the words that line up still take the script's spelling ("Hoje").
+        #expect(text(different).hasPrefix("rei Hoje vou mostrar"))
         let improvised = ScriptSpelling.apply(
             to: heard("rei gais uélcam béqui e agora uma história totalmente diferente sobre outra coisa"), script: script, language: .portugueseBrazil
         )
@@ -151,8 +152,11 @@ struct ScriptVocabularyTests {
     }
 
     @Test func theListIsCapped() {
-        let script = (0..<300).map { "word\($0)long" }.joined(separator: " ")
+        // 300 distinct words of letters only: words with digits are never handed over.
+        let letters = Array("abcdefghijklmnopqrstuvwxyz")
+        let script = (0..<300).map { "word" + String(letters[$0 / 26]) + String(letters[$0 % 26]) }.joined(separator: " ")
         #expect(ScriptVocabulary.terms(in: script).count == ScriptVocabulary.limit)
+        #expect(ScriptVocabulary.terms(in: "word1 word2 word3").isEmpty)
     }
 
     @Test func aScriptWithNoWordsHasNoTerms() {

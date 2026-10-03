@@ -54,9 +54,10 @@ nonisolated enum LookCalibration {
         eased(value, exponent: 1.2) * 0.9
     }
 
-    /// The temperature (kelvin) the picture is rendered as if lit by, for Warmth: a shift in
-    /// mireds, which is how warmth is perceived, up to 35 mireds from daylight (about +1900 K and
-    /// −1200 K). A higher number is warmer, as in the first version.
+    /// The light (kelvin) the picture is taken as lit by, for Warmth: a shift in mireds, which is
+    /// how warmth is perceived, up to 35 mireds from daylight (about +1900 K and −1200 K). A higher
+    /// number is warmer: `FrameLook` balances that light back to daylight, as a photo editor's
+    /// temperature slider does.
     static func warmthKelvin(_ value: Double) -> Double {
         let mired = 1_000_000 / 6500.0 - eased(value, exponent: 1.2) * 35
         return 1_000_000 / mired

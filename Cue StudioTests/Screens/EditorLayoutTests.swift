@@ -229,4 +229,3 @@ struct EditorLayoutTests {
         #expect(before == after)
     }
 }
-

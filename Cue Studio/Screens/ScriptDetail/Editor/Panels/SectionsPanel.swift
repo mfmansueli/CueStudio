@@ -37,6 +37,8 @@ struct SectionsPanel: View {
             .buttonStyle(.plain)
             .accessibilityIdentifier("editor.newSectionButton")
         }
+        // A container of its own: the panel's identifier would otherwise replace every control's.
+        .accessibilityElement(children: .contain)
         .accessibilityIdentifier("editor.panel.sections")
     }
 
@@ -72,7 +74,7 @@ struct SectionsPanel: View {
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(Text(verbatim: "\(summary.label), \(first)"))
         .accessibilityValue(Text("~\(DurationText.short(summary.seconds))"))
-        .accessibilityAddTraits(isActive ? .isSelected : [])
+        .accessibilityAddTraits(isActive ? [.isButton, .isSelected] : .isButton)
         .accessibilityIdentifier("editor.section.\(summary.firstParagraph)")
     }
 }

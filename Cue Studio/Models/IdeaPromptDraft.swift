@@ -9,7 +9,7 @@ import Foundation
 /// card, the composer sheet and the generation flow (`IdeaDraftService` holds the one copy). The
 /// rules are here, apart from the views: nothing can be sent while the field holds only spaces or a
 /// dictation is still writing, and a dictation only ever writes its own segment of the text.
-struct IdeaPromptDraft: Equatable {
+nonisolated struct IdeaPromptDraft: Equatable, Sendable {
     var text = ""
     /// Set from the moment dictation starts until the last word has been written; nil otherwise.
     private(set) var dictation: DictationSegment?

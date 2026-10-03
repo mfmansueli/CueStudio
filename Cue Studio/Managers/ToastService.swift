@@ -14,10 +14,12 @@ final class ToastService {
     private(set) var action: ToastAction?
     /// How long a toast stays when none is given: the editor's last 2 s.
     var defaultDuration: Duration = .seconds(2.4)
+    /// How long a toast with a button ("Undo") stays when none is given: long enough to reach it.
+    static let actionDuration: Duration = .seconds(4)
     private var dismissTask: Task<Void, Never>?
 
     func show(_ message: String, duration: Duration? = nil, action: ToastAction? = nil) {
-        let duration = duration ?? defaultDuration
+        let duration = self.duration(for: duration, hasAction: action != nil)
         dismissTask?.cancel()
         self.message = message
         self.action = action
@@ -28,6 +30,11 @@ final class ToastService {
             self?.message = nil
             self?.action = nil
         }
+    }
+
+    /// How long a toast stays: what was asked for, else 4 s for one with a button, else the default.
+    func duration(for requested: Duration?, hasAction: Bool) -> Duration {
+        requested ?? (hasAction ? Self.actionDuration : defaultDuration)
     }
 
     func dismiss() {
