@@ -21,11 +21,15 @@ nonisolated struct Script: Codable, Identifiable, Hashable, Sendable {
     /// Written by AI about a factual topic: the read view asks for a fact check until the creator
     /// taps "Checked".
     var factCheck: Bool = false
+    /// The language the script is written in. Nil is "Auto-detect": Voice Following reads the
+    /// language from the text. Only ever set by the creator (or a translation); changing
+    /// it or the app's language never touches the text.
+    var language: CueLanguage?
 
     init(
         id: UUID = UUID(), title: String, text: String, platform: Platform, type: ScriptType? = nil,
         version: Int = 1, folder: String? = nil, createdAt: Date = .now, updatedAt: Date = .now,
-        factCheck: Bool = false
+        factCheck: Bool = false, language: CueLanguage? = nil
     ) {
         self.id = id
         self.title = title
@@ -37,6 +41,7 @@ nonisolated struct Script: Codable, Identifiable, Hashable, Sendable {
         self.createdAt = createdAt
         self.updatedAt = updatedAt
         self.factCheck = factCheck
+        self.language = language
     }
 
     /// Fields added after v1 are optional, so libraries saved by older builds still open.
@@ -52,6 +57,8 @@ nonisolated struct Script: Codable, Identifiable, Hashable, Sendable {
         createdAt = try container.decodeIfPresent(Date.self, forKey: .createdAt) ?? .now
         updatedAt = try container.decodeIfPresent(Date.self, forKey: .updatedAt) ?? createdAt
         factCheck = try container.decodeIfPresent(Bool.self, forKey: .factCheck) ?? false
+        // A language this build doesn't know reads as Auto-detect instead of failing the library.
+        language = try container.decodeIfPresent(String.self, forKey: .language).flatMap(CueLanguage.init(rawValue:))
     }
 
     var structure: ScriptStructure { type?.structure ?? .generic }

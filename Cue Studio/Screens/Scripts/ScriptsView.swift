@@ -250,7 +250,8 @@ struct ScriptsView: View {
             duplicate: { viewModel.duplicate($0) },
             move: { viewModel.move([$0.id], to: $1) },
             moveToNewFolder: { viewModel.startNewFolder(moving: [$0.id]) },
-            delete: { viewModel.delete($0) }
+            delete: { viewModel.delete($0) },
+            setLanguage: { library.setLanguage($1, of: $0.id) }
         )
     }
 

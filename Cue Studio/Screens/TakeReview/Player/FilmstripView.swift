@@ -16,6 +16,11 @@ struct FilmstripView: View {
     private let frameCount = 7
 
     var body: some View {
+        leftToRightContent.environment(\.layoutDirection, .leftToRight)
+    }
+
+    /// Time, video and the camera frame run left to right in every language, Arabic included.
+    @ViewBuilder private var leftToRightContent: some View {
         GeometryReader { proxy in
             ZStack(alignment: .leading) {
                 FilmstripFrames(videoURL: videoURL, timeline: take.edit?.timeline ?? EditTimeline(sourceDuration: take.duration), count: frameCount)

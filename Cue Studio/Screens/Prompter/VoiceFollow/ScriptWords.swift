@@ -4,6 +4,7 @@
 //
 
 import Foundation
+import NaturalLanguage
 
 /// The spoken words of a script in reading order, and where each one sits in the prompter text.
 /// Voice follow matches what it hears against `tokens`, then scrolls to that word's position.
@@ -37,7 +38,8 @@ nonisolated struct ScriptWords: Equatable, Sendable {
     }
 
     /// Lowercased words without accents or punctuation, so the script's "Você," matches a
-    /// transcription's "voce". Apostrophes join ("don't" → "dont"); other symbols split.
+    /// transcription's "voce". Apostrophes join ("don't" → "dont"); other symbols split. Japanese,
+    /// Chinese and Thai, written without spaces, are split into words by the system's tokenizer.
     static func tokens(in text: String) -> [String] {
         words(in: text).map(\.token)
     }
@@ -88,14 +90,44 @@ nonisolated struct ScriptWords: Equatable, Sendable {
             } else if joiners.contains(character), !current.isEmpty {
                 continue
             } else if !current.isEmpty {
-                result.append((normalized(current), start))
+                result += split(current, at: start)
                 current = ""
             }
         }
         if !current.isEmpty {
-            result.append((normalized(current), start))
+            result += split(current, at: start)
         }
         return result
+    }
+
+    /// A run of letters is one word, except in scripts written without spaces between words: there
+    /// the run is a whole phrase, so it is cut into words. The script and what's heard go through
+    /// the same cut, so their words line up.
+    private static func split(_ run: String, at start: Int) -> [(token: String, offset: Int)] {
+        guard run.unicodeScalars.contains(where: isUnspacedScript) else {
+            return [(normalized(run), start)]
+        }
+        let tokenizer = NLTokenizer(unit: .word)
+        tokenizer.string = run
+        var pieces: [(token: String, offset: Int)] = []
+        tokenizer.enumerateTokens(in: run.startIndex..<run.endIndex) { range, _ in
+            let offset = start + run.distance(from: run.startIndex, to: range.lowerBound)
+            pieces.append((normalized(String(run[range])), offset))
+            return true
+        }
+        return pieces.isEmpty ? [(normalized(run), start)] : pieces
+    }
+
+    /// Han, Hiragana, Katakana, Thai, Lao, Khmer and Myanmar: scripts that don't put spaces between
+    /// words.
+    private static func isUnspacedScript(_ scalar: Unicode.Scalar) -> Bool {
+        switch scalar.value {
+        case 0x3040...0x30FF, 0x31F0...0x31FF, 0xFF66...0xFF9F: true // Hiragana, Katakana
+        case 0x3400...0x4DBF, 0x4E00...0x9FFF, 0xF900...0xFAFF, 0x20000...0x2FA1F: true // Han
+        case 0x0E00...0x0E7F, 0x0E80...0x0EFF: true // Thai, Lao
+        case 0x1780...0x17FF, 0x1000...0x109F: true // Khmer, Myanmar
+        default: false
+        }
     }
 
     private static func normalized(_ word: String) -> String {

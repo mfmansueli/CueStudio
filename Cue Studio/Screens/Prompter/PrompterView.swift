@@ -34,7 +34,8 @@ struct PrompterView: View {
             microphones: services.audio,
             speech: services.speech,
             remote: services.remote,
-            toast: services.toast
+            toast: services.toast,
+            voiceFollowingLanguage: services.languages.voiceFollowingLanguage
         ))
     }
 

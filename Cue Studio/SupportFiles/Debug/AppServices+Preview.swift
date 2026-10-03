@@ -23,6 +23,7 @@ extension AppServices {
         options.defaults = UserDefaults(suiteName: "studio.cue.previews") ?? .standard
         options.platformRules = PlatformRulesService(cacheURL: nil, remoteURL: nil)
         options.remoteTransport = DemoRemoteTransport(connects: false)
+        options.interfaceLanguage = InterfaceLanguageStore(persists: false)
         let services = AppServices(options: options)
         services.load()
         return services

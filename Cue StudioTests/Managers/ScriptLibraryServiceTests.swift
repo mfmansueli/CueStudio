@@ -27,6 +27,33 @@ struct ScriptLibraryServiceTests {
         #expect(service.hasLoaded)
     }
 
+    @Test func newScriptsStartInTheScriptLanguage() {
+        let repository = FakeScriptRepository(scripts: [])
+        let service = ScriptLibraryService(repository: repository, now: { now }, defaultLanguage: { .portugueseBrazil })
+        service.load()
+        #expect(service.create(title: "A", text: "Oi.", platform: .reels).language == .portugueseBrazil)
+        #expect(service.create(title: "B", text: "Hola.", platform: .reels, language: .spanish).language == .spanish)
+    }
+
+    @Test func newScriptsAreAutoDetectByDefault() {
+        let (service, _) = makeService()
+        #expect(service.create(title: "A", text: "Hi.", platform: .reels).language == nil)
+    }
+
+    @Test func settingTheLanguageKeepsTheTextAndOrder() {
+        let first = TestData.script(title: "First", text: "Bom dia, pessoal.", updatedAt: now)
+        let second = TestData.script(title: "Second", updatedAt: now.addingTimeInterval(-100))
+        let (service, repository) = makeService(scripts: [first, second])
+        service.setLanguage(.portugueseBrazil, of: second.id)
+        #expect(service.script(id: second.id)?.language == .portugueseBrazil)
+        #expect(service.script(id: second.id)?.text == second.text)
+        #expect(service.script(id: second.id)?.updatedAt == second.updatedAt)
+        #expect(service.scripts.map(\.title) == ["First", "Second"])
+        #expect(repository.saveCount == 1)
+        service.setLanguage(nil, of: second.id)
+        #expect(service.script(id: second.id)?.language == nil)
+    }
+
     @Test func createPutsTheScriptOnTopAndSaves() {
         let (service, repository) = makeService(scripts: [TestData.script(title: "Existing")])
         let created = service.create(title: "Fresh", text: "Hi", platform: .reels, type: .review)

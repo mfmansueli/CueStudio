@@ -197,6 +197,18 @@ struct ScriptDetailViewModelTests {
         #expect(copy?.title == "Habits (Spanish)")
         #expect(copy?.text == "Hola.")
         #expect(scenario.writer.lastRewrite?.context.language == "Spanish")
+        // The copy is marked as Spanish; the original keeps its language and text.
+        #expect(copy?.language == .spanish)
+        #expect(scenario.library.script(id: script.id)?.language == nil)
+        #expect(scenario.library.script(id: script.id)?.text == script.text)
+    }
+
+    @Test func translateOffersEveryLanguageButTheScripts() {
+        let script = TestData.script(language: .portugueseBrazil)
+        let scenario = makeScenario(script: script)
+        defer { scenario.defaults.tearDown() }
+        #expect(scenario.viewModel.translationLanguages.count == CueLanguage.allCases.count - 1)
+        #expect(!scenario.viewModel.translationLanguages.contains(.portugueseBrazil))
     }
 
     // MARK: - Everything is free

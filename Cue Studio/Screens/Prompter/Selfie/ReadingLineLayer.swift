@@ -26,6 +26,11 @@ struct ReadingLineLayer: View {
     private static let gripSize = CGSize(width: 14, height: 34)
 
     var body: some View {
+        leftToRightContent.environment(\.layoutDirection, .leftToRight)
+    }
+
+    /// Time, video and the camera frame run left to right in every language, Arabic included.
+    @ViewBuilder private var leftToRightContent: some View {
         let span = layout.lineSpan
         ZStack(alignment: .topLeading) {
             ReadingGuide(arrowSize: Self.arrowSize, lineOpacity: 0.7, lineWidth: 2, glows: true)

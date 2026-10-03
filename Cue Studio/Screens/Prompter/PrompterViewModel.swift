@@ -67,6 +67,8 @@ final class PrompterViewModel {
     private let speech: SpeechTranscribing
     let remote: RemoteControlService
     let toast: ToastService
+    /// Language & Region › Voice Following Language, as it was when the prompter opened.
+    private let voiceFollowingLanguage: VoiceFollowingLanguage
 
     private var driver: DisplayLinkDriver?
     private var countdownTask: Task<Void, Never>?
@@ -83,6 +85,10 @@ final class PrompterViewModel {
     /// The camera and mic the creator was already told are missing, so the notice shows once.
     private var noticedLens: CameraLens?
     private var noticedMicrophone: MicrophoneChoice?
+    /// The language Voice Following already said it can't listen in, so the notice shows once.
+    private var noticedSpeechLanguage: CueLanguage?
+    /// `isScriptRightToLeft` is read every frame; the letters are only counted when the text changes.
+    @ObservationIgnored private var directionCache: (text: String, language: CueLanguage?, isRightToLeft: Bool)?
 
     init(
         launch: PrompterLaunch,
@@ -96,7 +102,8 @@ final class PrompterViewModel {
         microphones: MicrophoneListing,
         speech: SpeechTranscribing,
         remote: RemoteControlService,
-        toast: ToastService
+        toast: ToastService,
+        voiceFollowingLanguage: VoiceFollowingLanguage = .sameAsScript
     ) {
         scriptID = launch.scriptID
         mode = launch.mode
@@ -111,6 +118,7 @@ final class PrompterViewModel {
         self.speech = speech
         self.remote = remote
         self.toast = toast
+        self.voiceFollowingLanguage = voiceFollowingLanguage
         reviewingTake = takes.take(id: launch.reviewTakeID)
         openedOnReview = launch.reviewTakeID != nil
     }
@@ -122,6 +130,17 @@ final class PrompterViewModel {
     var hasScript: Bool { script != nil }
 
     var paragraphs: [String] { CueParser.paragraphs(in: script?.text ?? "") }
+
+    /// An Arabic script reads right to left whatever language Cue's interface is in.
+    var isScriptRightToLeft: Bool {
+        guard let script else { return false }
+        if let cached = directionCache, cached.text == script.text, cached.language == script.language {
+            return cached.isRightToLeft
+        }
+        let isRightToLeft = ScriptDirection.isRightToLeft(script)
+        directionCache = (script.text, script.language, isRightToLeft)
+        return isRightToLeft
+    }
 
     var preset: PlatformPreset? {
         script.map { rules.preset(for: $0.platform, monetizationGoals: profile.profile.monetizationGoals) }
@@ -574,8 +593,9 @@ final class PrompterViewModel {
             return
         }
         let text = script.text
+        let language = SpeechLanguageRequest.resolve(voiceFollowing: voiceFollowingLanguage, scriptLanguage: script.language)
         speechTask = Task { [weak self] in
-            await self?.followSpeech(in: text)
+            await self?.followSpeech(in: text, language: language)
         }
         voiceTask = Task { [weak self] in
             if self?.mode == .studio {
@@ -591,9 +611,14 @@ final class PrompterViewModel {
         }
     }
 
-    /// Listens for the script being read and keeps the tracker on the next word to read.
-    private func followSpeech(in text: String) async {
-        guard let transcription = await speech.start(script: text), !Task.isCancelled else { return }
+    /// Listens for the script being read, in the Voice Following language, and keeps the tracker
+    /// on the next word to read.
+    private func followSpeech(in text: String, language: SpeechLanguageRequest) async {
+        guard let transcription = await speech.start(script: text, language: language) else {
+            if !Task.isCancelled { await noticeSpeechUnavailable(for: language, script: text) }
+            return
+        }
+        guard !Task.isCancelled else { return }
         switch mode {
         case .selfie: camera.setAudioHandler(transcription.audio)
         case .studio: audio.setAudioHandler(transcription.audio)
@@ -607,6 +632,22 @@ final class PrompterViewModel {
         }
         // Recognition ended on its own: fall back to the level. A cancelled task was replaced.
         if !Task.isCancelled { followsSpeech = false }
+    }
+
+    /// Recognition couldn't start: the text keeps moving with the voice level, and a toast says
+    /// why when the language is the reason, once. Cue never switches to another language instead.
+    private func noticeSpeechUnavailable(for request: SpeechLanguageRequest, script: String) async {
+        let detected = request == .detectFromScript ? SpeechLocaleResolver.detectedLanguageCode(in: script) : nil
+        guard let language = SpeechLocaleResolver.language(for: request, detectedLanguageCode: detected),
+              language != noticedSpeechLanguage else { return }
+        let availability = await speech.availability(of: language)
+        guard !Task.isCancelled, availability != .ready else { return }
+        noticedSpeechLanguage = language
+        toast.show(
+            availability == .unavailable
+                ? String(localized: "Voice Following can't listen in \(language.label) on this device. The text moves while you speak.")
+                : String(localized: "Voice Following couldn't get \(language.label) ready. Check your connection. The text moves while you speak.")
+        )
     }
 
     private func stopFollowingSpeech() {

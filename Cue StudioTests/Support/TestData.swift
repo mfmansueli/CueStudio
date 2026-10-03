@@ -35,9 +35,13 @@ enum TestData {
         type: ScriptType? = nil,
         version: Int = 1,
         folder: String? = nil,
-        updatedAt: Date = now
+        updatedAt: Date = now,
+        language: CueLanguage? = nil
     ) -> Script {
-        Script(title: title, text: text, platform: platform, type: type, version: version, folder: folder, createdAt: updatedAt, updatedAt: updatedAt)
+        Script(
+            title: title, text: text, platform: platform, type: type, version: version, folder: folder,
+            createdAt: updatedAt, updatedAt: updatedAt, language: language
+        )
     }
 
     static func take(

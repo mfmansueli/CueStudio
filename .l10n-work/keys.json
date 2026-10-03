@@ -1,0 +1,3786 @@
+{
+"New script": [
+"DesignSystem/Components/GroupedCard.swift:37",
+"Screens/CreateScript/NewScriptSheet.swift:26",
+"Screens/CreateScript/StartRecordingSheet.swift:48",
+"Screens/Scripts/ScriptsView.swift:236",
+"SupportFiles/AppIntents/NewScriptIntent.swift:11"
+],
+"Paste from clipboard": [
+"DesignSystem/Components/GroupedCard.swift:38"
+],
+"Clear search": [
+"DesignSystem/Components/SearchField.swift:42"
+],
+"Search scripts": [
+"DesignSystem/Components/SearchField.swift:58",
+"Screens/Scripts/ScriptsView.swift:79"
+],
+"Aa": [
+"DesignSystem/Components/SelectableCard.swift:29",
+"DesignSystem/Components/SelectableCard.swift:30",
+"Screens/Prompter/Selfie/SelfieControlPanel.swift:57",
+"Screens/Prompter/Sheets/DisplaySettingsSheet.swift:219",
+"Screens/Prompter/Studio/StudioControlPanel.swift:50"
+],
+"Close": [
+"DesignSystem/Components/SheetHeader.swift:35",
+"Models/ScriptType.swift:127",
+"Screens/CreateScript/GenerateScript/GenerateScriptSheet.swift:66",
+"Screens/CreateScript/GenerateScript/GenerateScriptSheet.swift:105",
+"Screens/Prompter/Selfie/SelfieTopBar.swift:23",
+"Screens/Prompter/Studio/StudioModeView.swift:21",
+"Screens/Shared/Paywall/PaywallView.swift:73",
+"Screens/TakeReview/Share/ShareToSheet.swift:66"
+],
+"Built-in": [
+"Managers/Audio/MicrophoneOption.swift:40"
+],
+"Wired headset": [
+"Managers/Audio/MicrophoneOption.swift:41"
+],
+"Bluetooth": [
+"Managers/Audio/MicrophoneOption.swift:42"
+],
+"USB": [
+"Managers/Audio/MicrophoneOption.swift:43"
+],
+"Car audio": [
+"Managers/Audio/MicrophoneOption.swift:44"
+],
+"External": [
+"Managers/Audio/MicrophoneOption.swift:45"
+],
+"This device has no camera Cue can use.": [
+"Managers/Camera/CaptureEngineError.swift:15"
+],
+"Cue couldn't switch to this camera.": [
+"Managers/Camera/CaptureEngineError.swift:16"
+],
+"The camera isn't ready yet.": [
+"Managers/Camera/CaptureEngineError.swift:17"
+],
+"Couldn't draw the cover": [
+"Managers/Editing/Layers/CoverError.swift:13"
+],
+"This photo or video can't be added": [
+"Managers/Editing/Layers/EditMediaImportError.swift:13"
+],
+"Couldn't start recording": [
+"Managers/Editing/Layers/VoiceOverError.swift:13"
+],
+"Cue can't save to Photos. Allow access in Settings › Privacy › Photos.": [
+"Managers/Export/PhotoLibraryError.swift:12"
+],
+"This take has no video.": [
+"Managers/Export/VideoExportError.swift:14"
+],
+"This take can't be exported on this device.": [
+"Managers/Export/VideoExportError.swift:15"
+],
+"Cue couldn't open this file.": [
+"Managers/Import/DocumentImportError.swift:14"
+],
+"This file has no text Cue can read. Scanned PDFs need text recognition first.": [
+"Managers/Import/DocumentImportError.swift:15"
+],
+"Photo": [
+"Managers/Import/TextRecognitionManager.swift:35",
+"Screens/CreateScript/ImportScriptSheet.swift:34",
+"Screens/QuickEdit/Player/OverlayEditingLayer.swift:135",
+"Screens/QuickEdit/QuickEditViewModel+Layers.swift:23",
+"Screens/QuickEdit/Tools/CoverToolView.swift:47"
+],
+"iPhone Language": [
+"Managers/Language/LanguageSettingsService.swift:81",
+"Screens/LanguageSettings/Pickers/AppLanguagePickerView.swift:18"
+],
+"Auto-detect": [
+"Managers/Language/LanguageSettingsService.swift:85",
+"Screens/LanguageSettings/Pickers/ScriptLanguagePickerView.swift:17",
+"Screens/Scripts/ContextMenu/ScriptActionsMenu.swift:50"
+],
+"Prompt": [
+"Managers/Presentation/GenerateTab.swift:17",
+"Screens/Shared/PromptCard/PromptCard.swift:30"
+],
+"Themes": [
+"Managers/Presentation/GenerateTab.swift:18",
+"Screens/CreateScript/NewScriptSheet.swift:44"
+],
+"Formats": [
+"Managers/Presentation/GenerateTab.swift:19",
+"Screens/CreateScript/NewScriptSheet.swift:45"
+],
+"Cue can't reach nearby devices. Turn on Local Network for Cue in Settings.": [
+"Managers/Remote/MultipeerLink.swift:135"
+],
+"Requires Apple Intelligence.": [
+"Managers/ScriptAI/AIAvailability.swift:20",
+"Managers/ScriptAI/ScriptAIService.swift:53"
+],
+"The model didn't return any text. Try again.": [
+"Managers/ScriptAI/ScriptAIError.swift:15"
+],
+"Apple Intelligence isn't available right now.": [
+"Managers/ScriptAI/ScriptAIService.swift:45"
+],
+"Requires Apple Intelligence. This device doesn't support it.": [
+"Managers/ScriptAI/ScriptAIService.swift:47"
+],
+"Requires Apple Intelligence. Turn it on in Settings to use AI tools.": [
+"Managers/ScriptAI/ScriptAIService.swift:49"
+],
+"Apple Intelligence is still getting ready. Try again in a few minutes.": [
+"Managers/ScriptAI/ScriptAIService.swift:51"
+],
+"%@ (copy)": [
+"Managers/Scripts/ScriptLibraryService.swift:112"
+],
+"Ready on this iPhone": [
+"Managers/Speech/SpeechLanguageAvailability.swift:22"
+],
+"Downloads the first time you use it": [
+"Managers/Speech/SpeechLanguageAvailability.swift:23"
+],
+"Not available on this iPhone": [
+"Managers/Speech/SpeechLanguageAvailability.swift:24"
+],
+"Couldn't reach the App Store. Check your connection and try again.": [
+"Managers/Store/StoreManager.swift:69"
+],
+"This plan isn't available right now.": [
+"Managers/Store/StoreManager.swift:114"
+],
+"The App Store couldn't verify this purchase.": [
+"Managers/Store/StoreManager.swift:123"
+],
+"Your purchase is waiting for approval.": [
+"Managers/Store/StoreManager.swift:130"
+],
+"Freestyle recording": [
+"Managers/Takes/TakeLibraryService.swift:73",
+"Screens/Takes/Support/TakeLibraryFilter.swift:34"
+],
+"Off": [
+"Models/CameraBlurLevel.swift:26",
+"Models/Countdown.swift:18",
+"Models/CreatorSetup.swift:134",
+"Models/CreatorSetup.swift:136",
+"Screens/CreatorSetup/Sections/RemoteSetupSection.swift:48",
+"Screens/Prompter/Studio/StudioModeView.swift:42",
+"Screens/TakeReview/Sections/ReviewTopBar.swift:39"
+],
+"Subtle": [
+"Models/CameraBlurLevel.swift:27"
+],
+"Soft": [
+"Models/CameraBlurLevel.swift:28"
+],
+"Medium": [
+"Models/CameraBlurLevel.swift:29",
+"Models/PrompterTextSize.swift:18"
+],
+"Front": [
+"Models/CameraLens.swift:15",
+"Models/CreatorSetup.swift:115",
+"Screens/CreatorSetup/Sections/RecordingSetupSection.swift:17"
+],
+"Back · Wide": [
+"Models/CameraLens.swift:16"
+],
+"Back · Ultra Wide": [
+"Models/CameraLens.swift:17"
+],
+"Back · Telephoto": [
+"Models/CameraLens.swift:18"
+],
+"TrueDepth": [
+"Models/CameraLens.swift:24"
+],
+"Zoom": [
+"Models/CameraLens.swift:27"
+],
+"Top": [
+"Models/CaptionPosition.swift:15",
+"Screens/Prompter/Sheets/DisplaySettingsSheet.swift:124"
+],
+"Middle": [
+"Models/CaptionPosition.swift:16"
+],
+"Bottom": [
+"Models/CaptionPosition.swift:17",
+"Screens/Prompter/Sheets/DisplaySettingsSheet.swift:124"
+],
+"Classic": [
+"Models/CaptionStyle.swift:21",
+"Models/TextOverlayFont.swift:17"
+],
+"Bold": [
+"Models/CaptionStyle.swift:22",
+"Models/CreatorStyle.swift:27",
+"Models/TextOverlayWeight.swift:17"
+],
+"Highlight": [
+"Models/CaptionStyle.swift:23"
+],
+"Pause": [
+"Models/CleanUpKind.swift:17",
+"Models/RemoteCommand.swift:23",
+"Screens/Prompter/Selfie/SelfieControlPanel.swift:54",
+"Screens/Prompter/Studio/StudioControlPanel.swift:41",
+"Screens/QuickEdit/QuickEditTransportBar.swift:21",
+"Screens/RemoteControl/RemoteControllerView.swift:133"
+],
+"Filler word": [
+"Models/CleanUpKind.swift:18"
+],
+"Possible retake": [
+"Models/CleanUpKind.swift:19"
+],
+"Long pause": [
+"Models/CleanUpSuggestion.swift:40"
+],
+"Short pause": [
+"Models/CleanUpSuggestion.swift:40"
+],
+"May be intentional — for emphasis": [
+"Models/CleanUpSuggestion.swift:49"
+],
+"Might carry meaning — listen first": [
+"Models/CleanUpSuggestion.swift:50"
+],
+"%llds": [
+"Models/Countdown.swift:18",
+"Models/Countdown.swift:23",
+"Models/DurationText.swift:13",
+"Models/DurationText.swift:25"
+],
+"OFF": [
+"Models/Countdown.swift:23"
+],
+"Your name": [
+"Models/CreatorProfile.swift:55"
+],
+"Back": [
+"Models/CreatorSetup.swift:115",
+"Screens/CreatorSetup/Sections/RecordingSetupSection.swift:20",
+"Screens/TakeReview/Sections/ReviewTopBar.swift:19"
+],
+"%lld fps": [
+"Models/CreatorSetup.swift:123",
+"Screens/CreatorSetup/Sections/RecordingSetupSection.swift:37"
+],
+"%lld pt": [
+"Models/CreatorSetup.swift:126",
+"Screens/CreatorSetup/Sections/TeleprompterSetupSection.swift:31",
+"Screens/Prompter/Sheets/DisplayLayoutSection.swift:47",
+"Screens/Prompter/Sheets/DisplaySettingsSheet.swift:183"
+],
+"%@ · %lld pt": [
+"Models/CreatorSetup.swift:127"
+],
+"Recommended": [
+"Models/CreatorSetup.swift:131"
+],
+"%lld pt below the camera": [
+"Models/CreatorSetup.swift:132",
+"Screens/CreatorSetup/CreatorSetupViewModel.swift:111"
+],
+"On": [
+"Models/CreatorSetup.swift:134",
+"Models/CreatorSetup.swift:136",
+"Screens/Prompter/Studio/StudioModeView.swift:42",
+"Screens/TakeReview/Sections/ReviewTopBar.swift:39"
+],
+"Clean": [
+"Models/CreatorStyle.swift:26"
+],
+"Minimal": [
+"Models/CreatorStyle.swift:28"
+],
+"Social": [
+"Models/CreatorStyle.swift:29"
+],
+"Simple and clear": [
+"Models/CreatorStyle.swift:35"
+],
+"Bigger, louder text": [
+"Models/CreatorStyle.swift:36"
+],
+"Quiet and elegant": [
+"Models/CreatorStyle.swift:37"
+],
+"Made for vertical feeds": [
+"Models/CreatorStyle.swift:38"
+],
+"Okay, this is huge!": [
+"Models/CreatorVoice.swift:29"
+],
+"Here's what most people miss.": [
+"Models/CreatorVoice.swift:30"
+],
+"I did something ridiculous so you don't have to.": [
+"Models/CreatorVoice.swift:31"
+],
+"Let me explain this in 30 seconds.": [
+"Models/CreatorVoice.swift:32"
+],
+"I'll say it: you don't need more gear.": [
+"Models/CreatorVoice.swift:33"
+],
+"So, real quick.": [
+"Models/CreatorVoice.swift:34"
+],
+"Last week I filmed five videos in one afternoon.": [
+"Models/CreatorVoice.swift:37"
+],
+"Most creators overthink the camera and underthink the first line.": [
+"Models/CreatorVoice.swift:39"
+],
+"Your first line matters more than your camera.": [
+"Models/CreatorVoice.swift:41"
+],
+"No cap.": [
+"Models/CreatorVoice.swift:44"
+],
+"The hook sets retention for the whole video.": [
+"Models/CreatorVoice.swift:45"
+],
+"That is what drives retention.": [
+"Models/CreatorVoice.swift:46"
+],
+"English": [
+"Models/CueLanguage.swift:100"
+],
+"Spanish": [
+"Models/CueLanguage.swift:101"
+],
+"Portuguese (Brazil)": [
+"Models/CueLanguage.swift:102"
+],
+"French": [
+"Models/CueLanguage.swift:103"
+],
+"German": [
+"Models/CueLanguage.swift:104"
+],
+"Italian": [
+"Models/CueLanguage.swift:105"
+],
+"Japanese": [
+"Models/CueLanguage.swift:106"
+],
+"Korean": [
+"Models/CueLanguage.swift:107"
+],
+"Chinese (Simplified)": [
+"Models/CueLanguage.swift:108"
+],
+"Hindi": [
+"Models/CueLanguage.swift:109"
+],
+"Indonesian": [
+"Models/CueLanguage.swift:110"
+],
+"Arabic": [
+"Models/CueLanguage.swift:111"
+],
+"Turkish": [
+"Models/CueLanguage.swift:112"
+],
+"Thai": [
+"Models/CueLanguage.swift:113"
+],
+"Vietnamese": [
+"Models/CueLanguage.swift:114"
+],
+"None": [
+"Models/EditTransition.swift:44",
+"Models/TextOverlayBackground.swift:16",
+"Screens/CreatorSetup/Sections/RemoteSetupSection.swift:38"
+],
+"Dissolve": [
+"Models/EditTransition.swift:45"
+],
+"Fade": [
+"Models/EditTransition.swift:46"
+],
+"Slide": [
+"Models/EditTransition.swift:47"
+],
+"1080p": [
+"Models/ExportQuality.swift:17"
+],
+"4K": [
+"Models/ExportQuality.swift:18"
+],
+"Full screen": [
+"Models/MediaLayout.swift:19"
+],
+"Window": [
+"Models/MediaLayout.swift:20"
+],
+"Original": [
+"Models/MediaShape.swift:16",
+"Models/VideoFilter.swift:16"
+],
+"Microphone": [
+"Models/MicrophoneChoice.swift:18",
+"Models/SetupField.swift:18",
+"Screens/CreatorSetup/Sections/RecordingSetupSection.swift:58",
+"Screens/CreatorSetup/Sheets/CreatorMicrophoneSheet.swift:19",
+"Screens/Prompter/Controls/AudioInputPill.swift:51",
+"Screens/Prompter/Sheets/CameraSettingsSheet.swift:115"
+],
+"Automatic": [
+"Models/MicrophoneChoice.swift:39",
+"Screens/CreatorSetup/Sheets/CreatorMicrophoneSheet.swift:28",
+"Screens/Prompter/Sheets/CameraSettingsSheet.swift:117"
+],
+"monetize": [
+"Models/MonetizationGoal.swift:16"
+],
+"mid-roll ads": [
+"Models/MonetizationGoal.swift:17"
+],
+"monetizes": [
+"Models/MonetizationGoal.swift:24"
+],
+"mid-rolls": [
+"Models/MonetizationGoal.swift:25"
+],
+"TikTok only pays Creator Rewards on videos longer than one minute.": [
+"Models/MonetizationGoal.swift:33"
+],
+"YouTube only allows mid-roll ads on videos 8 minutes or longer.": [
+"Models/MonetizationGoal.swift:35"
+],
+"Lifestyle": [
+"Models/Niche.swift:15"
+],
+"Wellness": [
+"Models/Niche.swift:16"
+],
+"Beauty": [
+"Models/Niche.swift:17"
+],
+"Fitness": [
+"Models/Niche.swift:18"
+],
+"Food": [
+"Models/Niche.swift:19"
+],
+"Tech": [
+"Models/Niche.swift:20"
+],
+"Finance": [
+"Models/Niche.swift:21"
+],
+"Education": [
+"Models/Niche.swift:22"
+],
+"White": [
+"Models/OverlayColor.swift:30",
+"Models/PrompterTextColor.swift:22"
+],
+"Black": [
+"Models/OverlayColor.swift:31",
+"Models/StudioBackground.swift:20"
+],
+"Yellow": [
+"Models/OverlayColor.swift:32",
+"Models/PrompterTextColor.swift:24"
+],
+"Red": [
+"Models/OverlayColor.swift:33"
+],
+"Blue": [
+"Models/OverlayColor.swift:34"
+],
+"Green": [
+"Models/OverlayColor.swift:35",
+"Models/PrompterTextColor.swift:26"
+],
+"Pink": [
+"Models/OverlayColor.swift:36"
+],
+"TikTok": [
+"Models/Platform.swift:21",
+"Models/Platform.swift:33"
+],
+"Reels": [
+"Models/Platform.swift:22"
+],
+"Shorts": [
+"Models/Platform.swift:23"
+],
+"YouTube": [
+"Models/Platform.swift:24"
+],
+"LinkedIn": [
+"Models/Platform.swift:25",
+"Models/Platform.swift:37"
+],
+"Stories": [
+"Models/Platform.swift:26"
+],
+"Instagram Reels": [
+"Models/Platform.swift:34"
+],
+"YouTube Shorts": [
+"Models/Platform.swift:35"
+],
+"YouTube · long-form": [
+"Models/Platform.swift:36"
+],
+"Instagram Stories": [
+"Models/Platform.swift:38"
+],
+"safe zones": [
+"Models/PlatformPreset.swift:35"
+],
+"ideal %@": [
+"Models/PlatformPreset.swift:36"
+],
+"Annual": [
+"Models/ProPlan.swift:29"
+],
+"Monthly": [
+"Models/ProPlan.swift:30"
+],
+"Left": [
+"Models/PrompterAlignment.swift:15",
+"Models/TextOverlayAlignment.swift:16"
+],
+"Center": [
+"Models/PrompterAlignment.swift:16",
+"Models/TextOverlayAlignment.swift:17"
+],
+"Right": [
+"Models/PrompterAlignment.swift:17",
+"Models/TextOverlayAlignment.swift:18"
+],
+"Lexend": [
+"Models/PrompterFont.swift:15"
+],
+"Legible": [
+"Models/PrompterFont.swift:16"
+],
+"Serif": [
+"Models/PrompterFont.swift:17",
+"Models/TextOverlayFont.swift:19"
+],
+"Rounded": [
+"Models/PrompterFont.swift:18",
+"Models/TextOverlayFont.swift:18"
+],
+"Selfie": [
+"Models/PrompterMode.swift:18"
+],
+"Studio": [
+"Models/PrompterMode.swift:19",
+"Screens/Scripts/Cards/HeroScriptCard.swift:60"
+],
+"Cream": [
+"Models/PrompterTextColor.swift:23"
+],
+"Cyan": [
+"Models/PrompterTextColor.swift:25"
+],
+"Small": [
+"Models/PrompterTextSize.swift:17"
+],
+"Large": [
+"Models/PrompterTextSize.swift:19"
+],
+"Play or pause": [
+"Models/RemoteCommand.swift:21"
+],
+"Play": [
+"Models/RemoteCommand.swift:22",
+"Screens/Prompter/Selfie/SelfieControlPanel.swift:54",
+"Screens/Prompter/Studio/StudioControlPanel.swift:41",
+"Screens/QuickEdit/QuickEditTransportBar.swift:21",
+"Screens/RemoteControl/RemoteControllerView.swift:133",
+"Screens/TakeReview/TakeReviewView.swift:121"
+],
+"Faster": [
+"Models/RemoteCommand.swift:24"
+],
+"Slower": [
+"Models/RemoteCommand.swift:25"
+],
+"Forward three lines": [
+"Models/RemoteCommand.swift:26",
+"Screens/Prompter/Studio/StudioControlPanel.swift:46"
+],
+"Back three lines": [
+"Models/RemoteCommand.swift:27",
+"Screens/Prompter/Studio/StudioControlPanel.swift:34"
+],
+"Back to the top": [
+"Models/RemoteCommand.swift:28",
+"Screens/Prompter/PrompterViewModel.swift:310",
+"Screens/Prompter/Selfie/SelfieControlPanel.swift:49",
+"Screens/Prompter/Studio/StudioControlPanel.swift:30"
+],
+"Not connected": [
+"Models/RemoteConnectionState.swift:32"
+],
+"Waiting for your other device…": [
+"Models/RemoteConnectionState.swift:33"
+],
+"Looking for the teleprompter…": [
+"Models/RemoteConnectionState.swift:34"
+],
+"Remote Connected": [
+"Models/RemoteConnectionState.swift:35",
+"Screens/Shared/RemoteControl/RemotePairingPanel.swift:90"
+],
+"Untitled script": [
+"Models/Script.swift:78",
+"Models/ScriptTextNormalizer.swift:47",
+"Screens/ScriptDetail/Editor/ScriptEditorView.swift:19"
+],
+"Auto": [
+"Models/ScriptLength.swift:16",
+"Screens/QuickEdit/Tools/AdjustToolView.swift:15"
+],
+"30s": [
+"Models/ScriptLength.swift:17"
+],
+"1 min": [
+"Models/ScriptLength.swift:18"
+],
+"2 min": [
+"Models/ScriptLength.swift:19"
+],
+"3 min": [
+"Models/ScriptLength.swift:20"
+],
+"Script": [
+"Models/ScriptStructure.swift:21",
+"Screens/Prompter/Text/PrompterTextView.swift:87"
+],
+"Hook": [
+"Models/ScriptStructure.swift:22",
+"Models/ScriptType.swift:35",
+"Models/ScriptType.swift:49",
+"Models/ScriptType.swift:62",
+"Models/ScriptType.swift:75",
+"Models/ScriptType.swift:88",
+"Models/ScriptType.swift:101",
+"Models/ScriptType.swift:114",
+"Models/TextOverlayRole.swift:19"
+],
+"Body": [
+"Models/ScriptStructure.swift:22"
+],
+"CTA": [
+"Models/ScriptStructure.swift:22",
+"Models/ScriptType.swift:62",
+"Models/ScriptType.swift:75",
+"Models/ScriptType.swift:114"
+],
+"Okay, real talk — this one matters.": [
+"Models/ScriptStructure.swift:26"
+],
+"Nobody talks about this, so I will.": [
+"Models/ScriptStructure.swift:27"
+],
+"Stop scrolling for ten seconds.": [
+"Models/ScriptStructure.swift:28"
+],
+"I tested this so you don't have to.": [
+"Models/ScriptStructure.swift:29"
+],
+"In my voice": [
+"Models/ScriptTool.swift:27"
+],
+"3 new hooks": [
+"Models/ScriptTool.swift:28"
+],
+"Fit to time": [
+"Models/ScriptTool.swift:29"
+],
+"More energy": [
+"Models/ScriptTool.swift:30"
+],
+"Fix grammar": [
+"Models/ScriptTool.swift:31"
+],
+"Translate": [
+"Models/ScriptTool.swift:32"
+],
+"Stronger CTA": [
+"Models/ScriptTool.swift:33"
+],
+"Add disclosure": [
+"Models/ScriptTool.swift:34"
+],
+"More human": [
+"Models/ScriptTool.swift:35"
+],
+"Less defensive": [
+"Models/ScriptTool.swift:36"
+],
+"Shorter & direct": [
+"Models/ScriptTool.swift:37"
+],
+"Brand & product": [
+"Models/ScriptType+Brief.swift:15"
+],
+"Oat & Co. barista oat milk": [
+"Models/ScriptType+Brief.swift:15"
+],
+"Problem it solves": [
+"Models/ScriptType+Brief.swift:16"
+],
+"Oat milk that never foams": [
+"Models/ScriptType+Brief.swift:16"
+],
+"Main benefit": [
+"Models/ScriptType+Brief.swift:17"
+],
+"Foams like dairy, zero aftertaste": [
+"Models/ScriptType+Brief.swift:17"
+],
+"Show it working": [
+"Models/ScriptType+Brief.swift:18"
+],
+"A latte-art pour on camera": [
+"Models/ScriptType+Brief.swift:18"
+],
+"Code or link": [
+"Models/ScriptType+Brief.swift:19"
+],
+"Code MORNING for 20% off": [
+"Models/ScriptType+Brief.swift:19"
+],
+"Product": [
+"Models/ScriptType+Brief.swift:23",
+"Models/ScriptType.swift:35"
+],
+"Lumen desk lamp": [
+"Models/ScriptType+Brief.swift:23"
+],
+"First impression": [
+"Models/ScriptType+Brief.swift:24"
+],
+"Heavier than it looks and folds flat": [
+"Models/ScriptType+Brief.swift:24"
+],
+"Best thing": [
+"Models/ScriptType+Brief.swift:25"
+],
+"Flicker-free light on camera": [
+"Models/ScriptType+Brief.swift:25"
+],
+"Worst thing": [
+"Models/ScriptType+Brief.swift:26"
+],
+"Pricey for a lamp": [
+"Models/ScriptType+Brief.swift:26"
+],
+"Verdict": [
+"Models/ScriptType+Brief.swift:27",
+"Models/ScriptType.swift:49"
+],
+"Worth it if you film at a desk": [
+"Models/ScriptType+Brief.swift:27"
+],
+"What you're teaching": [
+"Models/ScriptType+Brief.swift:31"
+],
+"Batch-filming a week of content": [
+"Models/ScriptType+Brief.swift:31"
+],
+"What they'll get": [
+"Models/ScriptType+Brief.swift:32"
+],
+"Five videos from one afternoon": [
+"Models/ScriptType+Brief.swift:32"
+],
+"Steps, separated by commas": [
+"Models/ScriptType+Brief.swift:33"
+],
+"Plan the hooks, pick one outfit, set one light, film in order": [
+"Models/ScriptType+Brief.swift:33"
+],
+"Topic": [
+"Models/ScriptType+Brief.swift:37"
+],
+"Morning habits": [
+"Models/ScriptType+Brief.swift:37"
+],
+"Your points, separated by commas": [
+"Models/ScriptType+Brief.swift:38"
+],
+"No phone for 20 minutes, write one goal, move for 5 minutes": [
+"Models/ScriptType+Brief.swift:38"
+],
+"What happened": [
+"Models/ScriptType+Brief.swift:42"
+],
+"My first brand call — and my camera froze": [
+"Models/ScriptType+Brief.swift:42"
+],
+"The twist": [
+"Models/ScriptType+Brief.swift:43"
+],
+"They said it was the most real pitch all week": [
+"Models/ScriptType+Brief.swift:43"
+],
+"How it ended": [
+"Models/ScriptType+Brief.swift:44"
+],
+"We signed a three-month deal": [
+"Models/ScriptType+Brief.swift:44"
+],
+"Your take": [
+"Models/ScriptType+Brief.swift:48"
+],
+"You don't need expensive gear": [
+"Models/ScriptType+Brief.swift:48"
+],
+"Why you think so": [
+"Models/ScriptType+Brief.swift:49"
+],
+"Viewers remember your first sentence, not your camera": [
+"Models/ScriptType+Brief.swift:49"
+],
+"Question for the comments": [
+"Models/ScriptType+Brief.swift:50"
+],
+"What's one thing you can't film without?": [
+"Models/ScriptType+Brief.swift:50"
+],
+"The news": [
+"Models/ScriptType+Brief.swift:54"
+],
+"My first preset pack": [
+"Models/ScriptType+Brief.swift:54"
+],
+"When": [
+"Models/ScriptType+Brief.swift:55"
+],
+"Drops Friday at 9 a.m.": [
+"Models/ScriptType+Brief.swift:55"
+],
+"Key detail": [
+"Models/ScriptType+Brief.swift:56"
+],
+"12 presets made for phone footage": [
+"Models/ScriptType+Brief.swift:56"
+],
+"What to do next": [
+"Models/ScriptType+Brief.swift:57"
+],
+"Join the waitlist — link in bio": [
+"Models/ScriptType+Brief.swift:57"
+],
+"What this is about": [
+"Models/ScriptType+Brief.swift:61"
+],
+"Last week's giveaway video": [
+"Models/ScriptType+Brief.swift:61"
+],
+"Who it affected and how": [
+"Models/ScriptType+Brief.swift:62"
+],
+"Some of you felt misled": [
+"Models/ScriptType+Brief.swift:62"
+],
+"What you take responsibility for": [
+"Models/ScriptType+Brief.swift:63"
+],
+"I should have said up front that it was sponsored": [
+"Models/ScriptType+Brief.swift:63"
+],
+"What changes now": [
+"Models/ScriptType+Brief.swift:64"
+],
+"Every paid post will be clearly labeled from now on": [
+"Models/ScriptType+Brief.swift:64"
+],
+"Bullets are enough. Open with your usual greeting, hit the product with one strong line, show it working in the middle, close with the code.": [
+"Models/ScriptType+Brief.swift:71"
+],
+"Say it like you would to a friend: one line on first impressions, one thing you love, one thing you don't, and a clear yes or no.": [
+"Models/ScriptType+Brief.swift:72"
+],
+"List the steps in plain words, separated by commas. Cue turns them into a numbered walkthrough with a hook up top and a save-this ending.": [
+"Models/ScriptType+Brief.swift:73"
+],
+"Just the topic and your points. Cue writes a numbered list with a hook up top and a comment prompt at the end.": [
+"Models/ScriptType+Brief.swift:74"
+],
+"Three beats are enough: what happened, the moment it turned, how it ended. Cue adds a cliffhanger hook and pacing cues.": [
+"Models/ScriptType+Brief.swift:75"
+],
+"State the opinion in one line, give one reason, end with a question — questions drive comments.": [
+"Models/ScriptType+Brief.swift:76"
+],
+"Lead with the news, not the backstory. Add when it happens and one detail that makes people care.": [
+"Models/ScriptType+Brief.swift:77"
+],
+"Be specific and brief. Name what happened, own it without a “but”, and say what changes. Cue removes hype, jokes and calls to action.": [
+"Models/ScriptType+Brief.swift:78"
+],
+"Serious mode: no hooks, jokes, hype or “follow for more”.": [
+"Models/ScriptType+Brief.swift:84"
+],
+"%@ — sponsored": [
+"Models/ScriptType+Brief.swift:105"
+],
+"%@ — honest review": [
+"Models/ScriptType+Brief.swift:107"
+],
+"%lld %@ that work": [
+"Models/ScriptType+Brief.swift:112"
+],
+"Storytime: %@": [
+"Models/ScriptType+Brief.swift:115"
+],
+"Hot take: %@": [
+"Models/ScriptType+Brief.swift:117"
+],
+"%@ — announcement": [
+"Models/ScriptType+Brief.swift:119"
+],
+"A note about %@": [
+"Models/ScriptType+Brief.swift:121"
+],
+"Brand deal · UGC ad": [
+"Models/ScriptType.swift:18"
+],
+"Unboxing, first look": [
+"Models/ScriptType.swift:19"
+],
+"How-to, step by step": [
+"Models/ScriptType.swift:20"
+],
+"“3 things that…”": [
+"Models/ScriptType.swift:21"
+],
+"Setup, twist, payoff": [
+"Models/ScriptType.swift:22"
+],
+"Opinion or comment reply": [
+"Models/ScriptType.swift:23"
+],
+"Launch, drop, big news": [
+"Models/ScriptType.swift:24"
+],
+"Serious — no hype": [
+"Models/ScriptType.swift:25"
+],
+"Sponsored ad": [
+"Models/ScriptType.swift:34"
+],
+"Problem": [
+"Models/ScriptType.swift:35"
+],
+"Proof": [
+"Models/ScriptType.swift:35"
+],
+"Offer": [
+"Models/ScriptType.swift:35"
+],
+"Stop buying the version that does this. [pause]": [
+"Models/ScriptType.swift:39"
+],
+"I found the only one that actually works.": [
+"Models/ScriptType.swift:40"
+],
+"A friend made me try this — I owe her.": [
+"Models/ScriptType.swift:41"
+],
+"POV: it finally looks like the ad.": [
+"Models/ScriptType.swift:42"
+],
+"Review": [
+"Models/ScriptType.swift:48",
+"Models/ThemeCatalog.swift:28"
+],
+"First look": [
+"Models/ScriptType.swift:49"
+],
+"Pros & cons": [
+"Models/ScriptType.swift:49"
+],
+"Honest verdict, no sponsor.": [
+"Models/ScriptType.swift:52"
+],
+"Is this worth the hype? Let's see.": [
+"Models/ScriptType.swift:53"
+],
+"I didn't expect to like this one. [pause]": [
+"Models/ScriptType.swift:54"
+],
+"Don't buy this until you watch this.": [
+"Models/ScriptType.swift:55"
+],
+"Tutorial": [
+"Models/ScriptType.swift:61",
+"Models/ThemeCatalog.swift:27",
+"Models/ThemeCatalog.swift:37",
+"Models/ThemeCatalog.swift:48"
+],
+"Promise": [
+"Models/ScriptType.swift:62"
+],
+"Steps": [
+"Models/ScriptType.swift:62"
+],
+"Here's the whole process in under a minute.": [
+"Models/ScriptType.swift:65"
+],
+"Steal my system — it's simpler than you think.": [
+"Models/ScriptType.swift:66"
+],
+"You're doing this wrong. Here's the fix. [pause]": [
+"Models/ScriptType.swift:67"
+],
+"Save this before you need it.": [
+"Models/ScriptType.swift:68"
+],
+"Tips / list": [
+"Models/ScriptType.swift:74"
+],
+"Tips": [
+"Models/ScriptType.swift:75",
+"Models/ThemeCatalog.swift:53"
+],
+"Three tiny changes. Totally different results.": [
+"Models/ScriptType.swift:78"
+],
+"I tried everything — these are the ones that stuck.": [
+"Models/ScriptType.swift:79"
+],
+"This is hard because you skip this. [pause]": [
+"Models/ScriptType.swift:80"
+],
+"If you only change one thing tomorrow, make it this.": [
+"Models/ScriptType.swift:81"
+],
+"Storytime": [
+"Models/ScriptType.swift:87",
+"Models/ThemeCatalog.swift:33",
+"Models/ThemeCatalog.swift:39",
+"Models/ThemeCatalog.swift:49"
+],
+"Setup": [
+"Models/ScriptType.swift:88"
+],
+"Twist": [
+"Models/ScriptType.swift:88"
+],
+"Payoff": [
+"Models/ScriptType.swift:88"
+],
+"This is the most embarrassing thing that's happened to me.": [
+"Models/ScriptType.swift:91"
+],
+"It went wrong at the worst possible moment.": [
+"Models/ScriptType.swift:92"
+],
+"I almost didn't post this. [pause]": [
+"Models/ScriptType.swift:93"
+],
+"Story time — and yes, it ends well.": [
+"Models/ScriptType.swift:94"
+],
+"Hot take / reply": [
+"Models/ScriptType.swift:100"
+],
+"Take": [
+"Models/ScriptType.swift:101",
+"Screens/Prompter/Sheets/CameraSettingsSheet.swift:127"
+],
+"Why": [
+"Models/ScriptType.swift:101"
+],
+"Question": [
+"Models/ScriptType.swift:101"
+],
+"Unpopular opinion, but hear me out.": [
+"Models/ScriptType.swift:104"
+],
+"Someone asked this in the comments — let me answer.": [
+"Models/ScriptType.swift:105"
+],
+"I'm going to get hate for this. [pause]": [
+"Models/ScriptType.swift:106"
+],
+"Can we talk about this for a second?": [
+"Models/ScriptType.swift:107"
+],
+"Announcement": [
+"Models/ScriptType.swift:113"
+],
+"News": [
+"Models/ScriptType.swift:114"
+],
+"Details": [
+"Models/ScriptType.swift:114"
+],
+"I've been keeping a secret. [pause]": [
+"Models/ScriptType.swift:117"
+],
+"It's finally happening.": [
+"Models/ScriptType.swift:118"
+],
+"You asked for this — here it is.": [
+"Models/ScriptType.swift:119"
+],
+"Big news. Stay till the end.": [
+"Models/ScriptType.swift:120"
+],
+"Apology / statement": [
+"Models/ScriptType.swift:126"
+],
+"Opening": [
+"Models/ScriptType.swift:127"
+],
+"Acknowledge": [
+"Models/ScriptType.swift:127"
+],
+"Own it": [
+"Models/ScriptType.swift:127"
+],
+"What changes": [
+"Models/ScriptType.swift:127"
+],
+"I want to talk about last week, directly.": [
+"Models/ScriptType.swift:131"
+],
+"Before anything else — I'm sorry.": [
+"Models/ScriptType.swift:132"
+],
+"I owe you an explanation. [pause]": [
+"Models/ScriptType.swift:133"
+],
+"This video is overdue.": [
+"Models/ScriptType.swift:134"
+],
+"Steady": [
+"Models/ScrollMode.swift:18"
+],
+"Voice Following": [
+"Models/ScrollMode.swift:19",
+"Screens/LanguageSettings/Pickers/VoiceFollowingLanguagePickerView.swift:51",
+"Screens/Prompter/Controls/VoiceIndicator.swift:49",
+"Screens/RemoteControl/RemoteControllerView.swift:112"
+],
+"%@ instead of your usual %@.": [
+"Models/SetupConflict.swift:20"
+],
+"Camera": [
+"Models/SetupField.swift:17",
+"Screens/CreatorSetup/Sections/RecordingSetupSection.swift:15",
+"Screens/Prompter/Sheets/CameraSettingsSheet.swift:27"
+],
+"Format": [
+"Models/SetupField.swift:19",
+"Screens/Prompter/Sheets/CameraSettingsSheet.swift:132"
+],
+"Quality": [
+"Models/SetupField.swift:20",
+"Screens/TakeReview/Share/ShareToSheet.swift:149",
+"Screens/TakeReview/Share/ShareToSheet.swift:151"
+],
+"Frame rate": [
+"Models/SetupField.swift:21",
+"Screens/Prompter/Sheets/CameraSettingsSheet.swift:101"
+],
+"Text size": [
+"Models/SetupField.swift:22",
+"Screens/CreatorSetup/Sections/TeleprompterSetupSection.swift:15",
+"Screens/Prompter/Sheets/DisplaySettingsSheet.swift:97"
+],
+"Scroll speed": [
+"Models/SetupField.swift:23",
+"Screens/CreatorSetup/Sections/TeleprompterSetupSection.swift:38"
+],
+"Reading line": [
+"Models/SetupField.swift:24",
+"Screens/CreatorSetup/Sections/TeleprompterSetupSection.swift:69",
+"Screens/Prompter/Selfie/ReadingLineLayer.swift:88",
+"Screens/Prompter/Sheets/DisplayLayoutSection.swift:68",
+"Screens/Prompter/Sheets/DisplaySettingsSheet.swift:120"
+],
+"Mirror text": [
+"Models/SetupField.swift:25",
+"Screens/CreatorSetup/Sections/TeleprompterSetupSection.swift:53",
+"Screens/CreatorSetup/Sections/TeleprompterSetupSection.swift:54",
+"Screens/Prompter/Sheets/DisplaySettingsSheet.swift:207",
+"Screens/Prompter/Studio/StudioModeView.swift:41"
+],
+"Safe zones": [
+"Models/SetupField.swift:26",
+"Screens/CreatorSetup/Sections/TeleprompterSetupSection.swift:59",
+"Screens/CreatorSetup/Sections/TeleprompterSetupSection.swift:60"
+],
+"Recommended for %@": [
+"Models/SetupRecommendation.swift:54"
+],
+"%@ safe zone": [
+"Models/SetupRecommendation.swift:61"
+],
+"%@ setup": [
+"Models/SetupRecommendation.swift:66",
+"Models/SetupSource.swift:21"
+],
+"Your setup": [
+"Models/SetupSource.swift:20"
+],
+"This take": [
+"Models/SetupSource.swift:22",
+"Screens/Prompter/Sheets/RecordingSetupSheet.swift:23"
+],
+"Graphite": [
+"Models/StudioBackground.swift:21"
+],
+"Navy": [
+"Models/StudioBackground.swift:22"
+],
+"Take %lld": [
+"Models/Take.swift:62"
+],
+"Box": [
+"Models/TextOverlayBackground.swift:17"
+],
+"Pill": [
+"Models/TextOverlayBackground.swift:18"
+],
+"Mono": [
+"Models/TextOverlayFont.swift:20",
+"Models/VideoFilter.swift:20"
+],
+"Title": [
+"Models/TextOverlayRole.swift:17"
+],
+"Subtitle": [
+"Models/TextOverlayRole.swift:18"
+],
+"Callout": [
+"Models/TextOverlayRole.swift:20"
+],
+"Your title": [
+"Models/TextOverlayRole.swift:27"
+],
+"A line to explain it": [
+"Models/TextOverlayRole.swift:28"
+],
+"Wait for it…": [
+"Models/TextOverlayRole.swift:29"
+],
+"Link in bio": [
+"Models/TextOverlayRole.swift:30"
+],
+"Regular": [
+"Models/TextOverlayWeight.swift:15"
+],
+"Semibold": [
+"Models/TextOverlayWeight.swift:16"
+],
+"Heavy": [
+"Models/TextOverlayWeight.swift:18"
+],
+"3 things I stopped buying this year": [
+"Models/ThemeCatalog.swift:17"
+],
+"List": [
+"Models/ThemeCatalog.swift:17",
+"Models/ThemeCatalog.swift:32",
+"Models/ThemeCatalog.swift:34",
+"Models/ThemeCatalog.swift:38",
+"Models/ThemeCatalog.swift:42",
+"Models/ThemeCatalog.swift:44"
+],
+"My Sunday reset in 60 seconds": [
+"Models/ThemeCatalog.swift:18"
+],
+"Routine": [
+"Models/ThemeCatalog.swift:18",
+"Models/ThemeCatalog.swift:24"
+],
+"What a normal Tuesday really looks like": [
+"Models/ThemeCatalog.swift:19"
+],
+"Vlog": [
+"Models/ThemeCatalog.swift:19"
+],
+"The 5-minute habit that fixed my sleep": [
+"Models/ThemeCatalog.swift:22"
+],
+"Tip": [
+"Models/ThemeCatalog.swift:22"
+],
+"Hydration myths, busted": [
+"Models/ThemeCatalog.swift:23"
+],
+"Myth-busting": [
+"Models/ThemeCatalog.swift:23",
+"Models/ThemeCatalog.swift:29"
+],
+"What I eat on a busy workday": [
+"Models/ThemeCatalog.swift:24"
+],
+"My 5-minute everyday makeup": [
+"Models/ThemeCatalog.swift:27"
+],
+"Products I regret buying": [
+"Models/ThemeCatalog.swift:28"
+],
+"Skincare myths I believed for years": [
+"Models/ThemeCatalog.swift:29"
+],
+"The only 3 exercises you need at home": [
+"Models/ThemeCatalog.swift:32"
+],
+"What nobody tells you about starting to run": [
+"Models/ThemeCatalog.swift:33"
+],
+"Gym mistakes I made for years": [
+"Models/ThemeCatalog.swift:34"
+],
+"A 10-minute dinner I make every week": [
+"Models/ThemeCatalog.swift:37"
+],
+"Kitchen hacks that actually work": [
+"Models/ThemeCatalog.swift:38"
+],
+"The story behind my grandma’s recipe": [
+"Models/ThemeCatalog.swift:39"
+],
+"iPhone settings I change on day one": [
+"Models/ThemeCatalog.swift:42"
+],
+"Is it worth upgrading this year?": [
+"Models/ThemeCatalog.swift:43"
+],
+"Opinion": [
+"Models/ThemeCatalog.swift:43"
+],
+"Apps that replaced my notebook": [
+"Models/ThemeCatalog.swift:44"
+],
+"Compound interest, explained simply": [
+"Models/ThemeCatalog.swift:47"
+],
+"Explainer": [
+"Models/ThemeCatalog.swift:47",
+"Models/ThemeCatalog.swift:52",
+"Models/ThemeCatalog.swift:54"
+],
+"How I budget without spreadsheets": [
+"Models/ThemeCatalog.swift:48"
+],
+"Money mistakes I made in my 20s": [
+"Models/ThemeCatalog.swift:49"
+],
+"A history fact that sounds fake": [
+"Models/ThemeCatalog.swift:52"
+],
+"How to learn anything faster": [
+"Models/ThemeCatalog.swift:53"
+],
+"Where the word “OK” comes from": [
+"Models/ThemeCatalog.swift:54"
+],
+"%@ %@ video: %@": [
+"Models/ThemeIdea.swift:25"
+],
+"Casual": [
+"Models/Tone.swift:15",
+"Models/VoiceSound.swift:16"
+],
+"Energetic": [
+"Models/Tone.swift:16",
+"Models/VoiceSound.swift:17"
+],
+"Expert": [
+"Models/Tone.swift:17"
+],
+"Funny": [
+"Models/Tone.swift:18",
+"Models/VoiceSound.swift:19"
+],
+"Premium": [
+"Models/Tone.swift:19"
+],
+"Sincere": [
+"Models/Tone.swift:20"
+],
+"Calm": [
+"Models/Tone.swift:21"
+],
+"Direct": [
+"Models/Tone.swift:22"
+],
+"Vivid": [
+"Models/VideoFilter.swift:17"
+],
+"Warm": [
+"Models/VideoFilter.swift:18"
+],
+"Cool": [
+"Models/VideoFilter.swift:19"
+],
+"Film": [
+"Models/VideoFilter.swift:21"
+],
+"Simple": [
+"Models/Vocabulary.swift:16"
+],
+"Technical": [
+"Models/Vocabulary.swift:17"
+],
+"Gen Z": [
+"Models/Vocabulary.swift:18"
+],
+"Professional": [
+"Models/Vocabulary.swift:19",
+"Models/VoiceSound.swift:18"
+],
+"Same as script": [
+"Models/VoiceFollowingLanguage.swift:41",
+"Screens/LanguageSettings/Pickers/VoiceFollowingLanguagePickerView.swift:20"
+],
+"Educational": [
+"Models/VoiceSound.swift:20",
+"Models/VoiceStyle.swift:18"
+],
+"Confident": [
+"Models/VoiceSound.swift:21"
+],
+"Short sentences": [
+"Models/VoiceStyle.swift:16"
+],
+"Storytelling": [
+"Models/VoiceStyle.swift:17"
+],
+"Opinion-driven": [
+"Models/VoiceStyle.swift:19"
+],
+"Conversational": [
+"Models/VoiceStyle.swift:20"
+],
+"AI can get facts wrong. Topics like history or science are written with Apple’s Private Cloud Compute — check dates, names and numbers before you record.": [
+"Screens/CreateScript/GenerateScript/FactWarningNote.swift:13"
+],
+"Pick a format. Cue builds the structure — you fill in bullets.": [
+"Screens/CreateScript/GenerateScript/FormatsTabView.swift:14"
+],
+"Writing with Apple Intelligence…": [
+"Screens/CreateScript/GenerateScript/GenerateButton.swift:18"
+],
+"Writing your script": [
+"Screens/CreateScript/GenerateScript/GenerateButton.swift:25"
+],
+"Generate script": [
+"Screens/CreateScript/GenerateScript/GenerateButton.swift:28"
+],
+"Generate from": [
+"Screens/CreateScript/GenerateScript/GenerateScriptSheet.swift:34"
+],
+"Couldn't write the script": [
+"Screens/CreateScript/GenerateScript/GenerateScriptSheet.swift:74"
+],
+"OK": [
+"Screens/CreateScript/GenerateScript/GenerateScriptSheet.swift:78",
+"Screens/CreateScript/ImportScriptSheet.swift:86",
+"Screens/Shared/Paywall/PaywallView.swift:83"
+],
+"": [
+"Screens/CreateScript/GenerateScript/GenerateScriptSheet.swift:80",
+"Screens/CreateScript/ImportScriptSheet.swift:88",
+"Screens/CreatorSetup/Rows/SetupRow.swift:57",
+"Screens/QuickEdit/Player/QuickEditPreview.swift:54",
+"Screens/ScriptDetail/Editor/EditorToolsPanel.swift:77",
+"Screens/Scripts/ScriptsView.swift:37",
+"Screens/Shared/Paywall/PaywallView.swift:85",
+"Screens/Takes/TakesView.swift:42"
+],
+"Generate with AI": [
+"Screens/CreateScript/GenerateScript/GenerateScriptSheet.swift:87",
+"Screens/Scripts/EmptyLibraryView.swift:32"
+],
+"Apple Intelligence": [
+"Screens/CreateScript/GenerateScript/GenerateScriptSheet.swift:92",
+"Screens/Profile/Sections/PlanSection.swift:37",
+"Screens/Shared/PromptCard/PromptCard.swift:34"
+],
+"· private · no cost": [
+"Screens/CreateScript/GenerateScript/GenerateScriptSheet.swift:93"
+],
+"2 minutes on how the electric shower was invented in Brazil": [
+"Screens/CreateScript/GenerateScript/GenerateScriptViewModel.swift:15"
+],
+"Why I quit coffee for 30 days": [
+"Screens/CreateScript/GenerateScript/GenerateScriptViewModel.swift:16"
+],
+"Explain compound interest like I’m 12": [
+"Screens/CreateScript/GenerateScript/GenerateScriptViewModel.swift:17"
+],
+"A day in my life as a creator": [
+"Screens/CreateScript/GenerateScript/GenerateScriptViewModel.swift:18"
+],
+"Set up your voice in Profile": [
+"Screens/CreateScript/GenerateScript/GenerateScriptViewModel.swift:79"
+],
+"%@ Cue will build a structured draft from your bullets instead.": [
+"Screens/CreateScript/GenerateScript/GenerateScriptViewModel.swift:96"
+],
+"Draft ready — check facts before recording": [
+"Screens/CreateScript/GenerateScript/GenerateScriptViewModel.swift:128"
+],
+"Draft ready — edit anything": [
+"Screens/CreateScript/GenerateScript/GenerateScriptViewModel.swift:129"
+],
+"New ideas for your niche": [
+"Screens/CreateScript/GenerateScript/GenerateScriptViewModel.swift:149",
+"Screens/CreateScript/GenerateScript/GenerateScriptViewModel.swift:155"
+],
+"Draft ready — structured as %lld blocks": [
+"Screens/CreateScript/GenerateScript/GenerateScriptViewModel.swift:185"
+],
+"Describe your video… what it’s about, how long, who it’s for.": [
+"Screens/CreateScript/GenerateScript/PromptTabView.swift:19"
+],
+"Describe your video": [
+"Screens/CreateScript/GenerateScript/PromptTabView.swift:30"
+],
+"Create for": [
+"Screens/CreateScript/GenerateScript/PromptTabView.swift:60",
+"Screens/CreateScript/GenerateScript/ScriptBriefView.swift:61",
+"Screens/ScriptDetail/Sheets/DestinationSheet.swift:22"
+],
+"Length": [
+"Screens/CreateScript/GenerateScript/PromptTabView.swift:62",
+"Screens/ScriptDetail/Structure/LengthMeterView.swift:70"
+],
+"Structure": [
+"Screens/CreateScript/GenerateScript/ScriptBriefView.swift:29"
+],
+"Tone": [
+"Screens/CreateScript/GenerateScript/ScriptBriefView.swift:63"
+],
+"For your niche · %@": [
+"Screens/CreateScript/GenerateScript/ThemesTabView.swift:15"
+],
+"New ideas": [
+"Screens/CreateScript/GenerateScript/ThemesTabView.swift:29"
+],
+"Use": [
+"Screens/CreateScript/GenerateScript/ThemesTabView.swift:57"
+],
+"Ideas come from your Creator Voice niche. Tap one to fine-tune it in Prompt.": [
+"Screens/CreateScript/GenerateScript/ThemesTabView.swift:71"
+],
+"Write in my voice": [
+"Screens/CreateScript/GenerateScript/VoiceToggleRow.swift:16"
+],
+"Import a script": [
+"Screens/CreateScript/ImportScriptSheet.swift:28"
+],
+"Files": [
+"Screens/CreateScript/ImportScriptSheet.swift:30"
+],
+"Scan": [
+"Screens/CreateScript/ImportScriptSheet.swift:32"
+],
+"Clipboard": [
+"Screens/CreateScript/ImportScriptSheet.swift:35"
+],
+"Reading the text…": [
+"Screens/CreateScript/ImportScriptSheet.swift:40"
+],
+"Writing in Google Docs, Notion or Pages? Export the script as .txt, .rtf or .pdf to Files — or copy the text and use Clipboard. A printed brief? Scan it or pick a photo.": [
+"Screens/CreateScript/ImportScriptSheet.swift:46"
+],
+"Supports .txt, .md, .rtf, .html, .pdf and .fountain": [
+"Screens/CreateScript/ImportScriptSheet.swift:54"
+],
+"Couldn't import": [
+"Screens/CreateScript/ImportScriptSheet.swift:85"
+],
+"Start from an idea, a blank page or a document.": [
+"Screens/CreateScript/NewScriptSheet.swift:27"
+],
+"Write": [
+"Screens/CreateScript/NewScriptSheet.swift:39"
+],
+"Blank page": [
+"Screens/CreateScript/NewScriptSheet.swift:39"
+],
+"Paste": [
+"Screens/CreateScript/NewScriptSheet.swift:41"
+],
+"From clipboard": [
+"Screens/CreateScript/NewScriptSheet.swift:41"
+],
+"Import": [
+"Screens/CreateScript/NewScriptSheet.swift:43",
+"Screens/Scripts/EmptyLibraryView.swift:31"
+],
+"Files or clipboard": [
+"Screens/CreateScript/NewScriptSheet.swift:43",
+"Screens/Scripts/EmptyLibraryView.swift:31"
+],
+"Ideas for your niche": [
+"Screens/CreateScript/NewScriptSheet.swift:44"
+],
+"Ad, review, tutorial…": [
+"Screens/CreateScript/NewScriptSheet.swift:45"
+],
+"Add a script": [
+"Screens/CreateScript/StartRecordingSheet.swift:28"
+],
+"Start recording": [
+"Screens/CreateScript/StartRecordingSheet.swift:28"
+],
+"Cue will scroll it under the lens. Your camera stays where it is.": [
+"Screens/CreateScript/StartRecordingSheet.swift:30"
+],
+"Scripts keep you on track and cut retakes. Pick one to read from.": [
+"Screens/CreateScript/StartRecordingSheet.swift:31"
+],
+"Read from a script": [
+"Screens/CreateScript/StartRecordingSheet.swift:38"
+],
+"Record without a script": [
+"Screens/CreateScript/StartRecordingSheet.swift:64",
+"Screens/Scripts/EmptyLibraryView.swift:38"
+],
+"Freestyle now — add a script anytime from the camera.": [
+"Screens/CreateScript/StartRecordingSheet.swift:71",
+"Screens/Scripts/EmptyLibraryView.swift:44"
+],
+"~%@": [
+"Screens/CreateScript/StartRecordingSheet.swift:90",
+"Screens/ScriptDetail/Sheets/HooksSheet.swift:34",
+"Screens/ScriptDetail/Sheets/HooksSheet.swift:68",
+"Screens/Scripts/Rows/ScriptRow.swift:28"
+],
+"Recording": [
+"Screens/CreatorSetup/CreatorSetupView.swift:24",
+"Screens/Prompter/Controls/RecordingBadge.swift:43",
+"Screens/Prompter/Sheets/CameraSettingsSheet.swift:28",
+"Screens/RemoteControl/RemoteControllerView.swift:105"
+],
+"Teleprompter": [
+"Screens/CreatorSetup/CreatorSetupView.swift:26"
+],
+"Remote Control": [
+"Screens/CreatorSetup/CreatorSetupView.swift:28",
+"Screens/Prompter/Sheets/RecordingSetupSheet.swift:145",
+"Screens/Prompter/Sheets/RemoteControlSheet.swift:16",
+"Screens/Prompter/Studio/StudioModeView.swift:32",
+"Screens/RemoteControl/RemoteControlView.swift:57"
+],
+"Creator Setup": [
+"Screens/CreatorSetup/CreatorSetupView.swift:35",
+"Screens/Profile/ProfileView.swift:78"
+],
+"Reset Creator Setup?": [
+"Screens/CreatorSetup/CreatorSetupView.swift:40"
+],
+"Reset Creator Setup": [
+"Screens/CreatorSetup/CreatorSetupView.swift:41",
+"Screens/CreatorSetup/CreatorSetupView.swift:80"
+],
+"Cancel": [
+"Screens/CreatorSetup/CreatorSetupView.swift:43",
+"Screens/Profile/ProfileView.swift:154",
+"Screens/QuickEdit/QuickEditView.swift:75",
+"Screens/QuickEdit/Tools/CoverToolView.swift:34",
+"Screens/QuickEdit/Tools/RemovePausesToolView.swift:84",
+"Screens/QuickEdit/Tools/TrimToolView.swift:113",
+"Screens/RemoteControl/RemoteControlView.swift:63",
+"Screens/ScriptDetail/ScriptDetailView.swift:56",
+"Screens/ScriptDetail/ScriptDetailView.swift:80",
+"Screens/Scripts/ScriptsView.swift:33",
+"Screens/Shared/RemoteControl/RemotePairingPanel.swift:77"
+],
+"Camera, microphone, quality, format and teleprompter go back to Cue's defaults. Your scripts, takes and edits stay.": [
+"Screens/CreatorSetup/CreatorSetupView.swift:45"
+],
+"This is what you usually use.": [
+"Screens/CreatorSetup/CreatorSetupView.swift:53"
+],
+"Every recording starts from here. When a video is for a platform, Cue recommends its setup — you choose, and your setup stays the same.": [
+"Screens/CreatorSetup/CreatorSetupView.swift:56"
+],
+"The connected mic, or the iPhone's": [
+"Screens/CreatorSetup/CreatorSetupViewModel.swift:68",
+"Screens/CreatorSetup/Sheets/CreatorMicrophoneSheet.swift:29"
+],
+"Not connected · takes use another mic until it's back": [
+"Screens/CreatorSetup/CreatorSetupViewModel.swift:69"
+],
+"Used for every take": [
+"Screens/CreatorSetup/CreatorSetupViewModel.swift:70"
+],
+"%@ · about %lld words a minute": [
+"Screens/CreatorSetup/CreatorSetupViewModel.swift:103"
+],
+"%lld pt below the camera · recommended": [
+"Screens/CreatorSetup/CreatorSetupViewModel.swift:109",
+"Screens/Prompter/Sheets/DisplayLayoutSection.swift:107"
+],
+"Creator Setup is back to Cue's defaults": [
+"Screens/CreatorSetup/CreatorSetupViewModel.swift:148"
+],
+"Where every recording starts. Flip it anytime while recording.": [
+"Screens/CreatorSetup/Sections/RecordingSetupSection.swift:15"
+],
+"Recording quality": [
+"Screens/CreatorSetup/Sections/RecordingSetupSection.swift:26"
+],
+"A platform can recommend another for a video — you choose.": [
+"Screens/CreatorSetup/Sections/RecordingSetupSection.swift:26"
+],
+"Default format": [
+"Screens/CreatorSetup/Sections/RecordingSetupSection.swift:44"
+],
+"Framing, safe zones, editing and export follow it.": [
+"Screens/CreatorSetup/Sections/RecordingSetupSection.swift:44"
+],
+"Connect a Device": [
+"Screens/CreatorSetup/Sections/RemoteSetupSection.swift:22",
+"Screens/RemoteControl/RemoteControlView.swift:26",
+"Screens/Shared/RemoteControl/RemotePairingPanel.swift:44"
+],
+"Control your teleprompter from another iPhone or iPad.": [
+"Screens/CreatorSetup/Sections/RemoteSetupSection.swift:23"
+],
+"Connected device": [
+"Screens/CreatorSetup/Sections/RemoteSetupSection.swift:38"
+],
+"Remote status": [
+"Screens/CreatorSetup/Sections/RemoteSetupSection.swift:39"
+],
+"Connected ✓": [
+"Screens/CreatorSetup/Sections/RemoteSetupSection.swift:47"
+],
+"Size": [
+"Screens/CreatorSetup/Sections/TeleprompterSetupSection.swift:30",
+"Screens/QuickEdit/Sheets/TextOverlaySheet.swift:35",
+"Screens/QuickEdit/Tools/MediaToolView.swift:100"
+],
+"Default speed": [
+"Screens/CreatorSetup/Sections/TeleprompterSetupSection.swift:40"
+],
+"Show reading line": [
+"Screens/CreatorSetup/Sections/TeleprompterSetupSection.swift:48",
+"Screens/CreatorSetup/Sections/TeleprompterSetupSection.swift:49",
+"Screens/Prompter/Sheets/DisplaySettingsSheet.swift:206"
+],
+"For beam-splitter glass rigs": [
+"Screens/CreatorSetup/Sections/TeleprompterSetupSection.swift:53",
+"Screens/Prompter/Sheets/DisplaySettingsSheet.swift:207"
+],
+"Shows where each app's buttons and captions cover the frame": [
+"Screens/CreatorSetup/Sections/TeleprompterSetupSection.swift:59"
+],
+"Reset": [
+"Screens/CreatorSetup/Sections/TeleprompterSetupSection.swift:72",
+"Screens/QuickEdit/Tools/CropToolView.swift:37"
+],
+"Reset the reading line": [
+"Screens/CreatorSetup/Sections/TeleprompterSetupSection.swift:77"
+],
+"Move the reading line up": [
+"Screens/CreatorSetup/Sections/TeleprompterSetupSection.swift:83",
+"Screens/Prompter/Sheets/DisplayLayoutSection.swift:79"
+],
+"Move the reading line down": [
+"Screens/CreatorSetup/Sections/TeleprompterSetupSection.swift:91",
+"Screens/Prompter/Sheets/DisplayLayoutSection.swift:87"
+],
+"What Cue listens with in every take.": [
+"Screens/CreatorSetup/Sheets/CreatorMicrophoneSheet.swift:20"
+],
+"Not connected right now": [
+"Screens/CreatorSetup/Sheets/CreatorMicrophoneSheet.swift:35"
+],
+"To use AirPods or a Bluetooth mic, pair it in Settings › Bluetooth. It shows up here once it's connected. If it isn't there when you record, Cue uses the iPhone's mic and lets you know.": [
+"Screens/CreatorSetup/Sheets/CreatorMicrophoneSheet.swift:45"
+],
+"App Language": [
+"Screens/LanguageSettings/LanguageSettingsView.swift:20",
+"Screens/LanguageSettings/Pickers/AppLanguagePickerView.swift:44"
+],
+"Controls the language of Cue's interface.": [
+"Screens/LanguageSettings/LanguageSettingsView.swift:24"
+],
+"Voice Following Language": [
+"Screens/LanguageSettings/LanguageSettingsView.swift:28"
+],
+"Controls the language Cue listens for while you speak.": [
+"Screens/LanguageSettings/LanguageSettingsView.swift:33"
+],
+"Listens in each script's language.": [
+"Screens/LanguageSettings/LanguageSettingsView.swift:37"
+],
+"Script Language": [
+"Screens/LanguageSettings/LanguageSettingsView.swift:43",
+"Screens/LanguageSettings/Pickers/ScriptLanguagePickerView.swift:43"
+],
+"Controls the language of new scripts. To change one script, use Language in its More menu. Scripts are never translated.": [
+"Screens/LanguageSettings/LanguageSettingsView.swift:47"
+],
+"Language & Region": [
+"Screens/LanguageSettings/LanguageSettingsView.swift:53",
+"Screens/Profile/ProfileView.swift:96"
+],
+"%@ isn't available for Voice Following on this device. The text moves while you speak instead.": [
+"Screens/LanguageSettings/LanguageSettingsView.swift:74"
+],
+"%@ · %@": [
+"Screens/LanguageSettings/LanguageSettingsView.swift:75"
+],
+"Checking…": [
+"Screens/LanguageSettings/LanguageSettingsViewModel.swift:33"
+],
+"Cue follows the language your iPhone is in": [
+"Screens/LanguageSettings/Pickers/AppLanguagePickerView.swift:19"
+],
+"Your scripts stay exactly as you wrote them. Voice Following and Script Language keep their own settings.": [
+"Screens/LanguageSettings/Pickers/AppLanguagePickerView.swift:38"
+],
+"Cue is now in %@": [
+"Screens/LanguageSettings/Pickers/AppLanguagePickerView.swift:52"
+],
+"Cue reads the language from what you write": [
+"Screens/LanguageSettings/Pickers/ScriptLanguagePickerView.swift:18"
+],
+"Write in any language, whatever language Cue is in. Changing this never translates a script.": [
+"Screens/LanguageSettings/Pickers/ScriptLanguagePickerView.swift:37"
+],
+"Listens in each script's language": [
+"Screens/LanguageSettings/Pickers/VoiceFollowingLanguagePickerView.swift:21"
+],
+"Recommended. A script in Portuguese is followed in Portuguese, one in English in English.": [
+"Screens/LanguageSettings/Pickers/VoiceFollowingLanguagePickerView.swift:28"
+],
+"Cue listens on this device with Apple's speech recognition. Nothing is sent to a server. Cue never guesses the language you speak, and never switches to another one.": [
+"Screens/LanguageSettings/Pickers/VoiceFollowingLanguagePickerView.swift:45"
+],
+"Scripts": [
+"Screens/Main/MainView.swift:23",
+"Screens/Scripts/ScriptsView.swift:27"
+],
+"Takes": [
+"Screens/Main/MainView.swift:31",
+"Screens/ScriptDetail/ScriptReadView.swift:116",
+"Screens/Takes/TakesView.swift:38"
+],
+"Profile": [
+"Screens/Main/MainView.swift:34",
+"Screens/Profile/ProfileView.swift:143"
+],
+"Record": [
+"Screens/Main/MainView.swift:47",
+"Screens/QuickEdit/Tools/VoiceOverToolView.swift:44",
+"Screens/ScriptDetail/ScriptReadView.swift:148",
+"Screens/Scripts/Cards/HeroScriptCard.swift:65",
+"Screens/Scripts/ContextMenu/ScriptActionsMenu.swift:15",
+"Screens/Scripts/Rows/ScriptRow.swift:49",
+"Screens/Scripts/ScriptsView.swift:176",
+"Screens/Scripts/ScriptsView.swift:216"
+],
+"Imported %@ · %lld words": [
+"Screens/Main/MainView.swift:101"
+],
+"Copy your script first, then paste it here": [
+"Screens/Main/MainView.swift:119",
+"Screens/Prompter/PrompterView.swift:159"
+],
+"Pasted · %lld words": [
+"Screens/Main/MainView.swift:128"
+],
+"Creator Voice": [
+"Screens/Profile/ProfileView.swift:51"
+],
+"Your AI identity. Cue writes and rewrites every script to sound like you — on every platform.": [
+"Screens/Profile/ProfileView.swift:54"
+],
+"Set it up once. Cue remembers how you create.": [
+"Screens/Profile/ProfileView.swift:83"
+],
+"Settings": [
+"Screens/Profile/ProfileView.swift:93",
+"Screens/Prompter/Sheets/CameraSettingsSheet.swift:26"
+],
+"Default “Create for”": [
+"Screens/Profile/ProfileView.swift:105"
+],
+"Monetization goals": [
+"Screens/Profile/ProfileView.swift:110",
+"Screens/ScriptDetail/Sheets/DestinationSheet.swift:34"
+],
+"Privacy & AI data": [
+"Screens/Profile/ProfileView.swift:114",
+"Screens/Shared/Privacy/PrivacySheet.swift:35"
+],
+"Restore purchases": [
+"Screens/Profile/ProfileView.swift:121"
+],
+"Purchases restored": [
+"Screens/Profile/ProfileView.swift:124",
+"Screens/Shared/Paywall/PaywallView.swift:192"
+],
+"No purchases to restore": [
+"Screens/Profile/ProfileView.swift:124",
+"Screens/Shared/Paywall/PaywallView.swift:195"
+],
+"Sign out": [
+"Screens/Profile/ProfileView.swift:131"
+],
+"Signed out": [
+"Screens/Profile/ProfileView.swift:133"
+],
+"Add a phrase": [
+"Screens/Profile/ProfileView.swift:152",
+"Screens/Profile/Sections/CreatorVoiceSection.swift:54"
+],
+"Hey fam": [
+"Screens/Profile/ProfileView.swift:153"
+],
+"Add": [
+"Screens/Profile/ProfileView.swift:155",
+"Screens/QuickEdit/QuickEditCategory.swift:19"
+],
+"Added “%@” — AI will use it": [
+"Screens/Profile/ProfileView.swift:158"
+],
+"Something you always say. The AI weaves it into new scripts.": [
+"Screens/Profile/ProfileView.swift:162"
+],
+"Signed in with Apple": [
+"Screens/Profile/ProfileView.swift:176",
+"Screens/Profile/Sections/CreatorCard.swift:52"
+],
+"Couldn't sign in with Apple. Try again.": [
+"Screens/Profile/ProfileView.swift:179"
+],
+"Recording, teleprompter & remote": [
+"Screens/Profile/ProfileView.swift:193"
+],
+"PRO": [
+"Screens/Profile/Sections/CreatorCard.swift:35"
+],
+"FREE": [
+"Screens/Profile/Sections/CreatorCard.swift:35"
+],
+"Edits your name and handle": [
+"Screens/Profile/Sections/CreatorCard.swift:46"
+],
+"Tap to add your name and handle": [
+"Screens/Profile/Sections/CreatorCard.swift:54"
+],
+"How I sound": [
+"Screens/Profile/Sections/CreatorVoiceSection.swift:17"
+],
+"My phrases": [
+"Screens/Profile/Sections/CreatorVoiceSection.swift:22"
+],
+"“%@”": [
+"Screens/Profile/Sections/CreatorVoiceSection.swift:26",
+"Screens/Profile/Sections/SoundsLikeYouCard.swift:27"
+],
+"Remove %@": [
+"Screens/Profile/Sections/CreatorVoiceSection.swift:36",
+"Screens/QuickEdit/Tools/TrimToolView.swift:117"
+],
+"+ Add": [
+"Screens/Profile/Sections/CreatorVoiceSection.swift:44"
+],
+"My vocabulary": [
+"Screens/Profile/Sections/CreatorVoiceSection.swift:58",
+"Screens/Profile/Sections/CreatorVoiceSection.swift:59"
+],
+"My style": [
+"Screens/Profile/Sections/CreatorVoiceSection.swift:65"
+],
+"Niche": [
+"Screens/Profile/Sections/CreatorVoiceSection.swift:70"
+],
+"Free plan": [
+"Screens/Profile/Sections/PlanSection.swift:24"
+],
+"Every feature included": [
+"Screens/Profile/Sections/PlanSection.swift:26"
+],
+"Free exports": [
+"Screens/Profile/Sections/PlanSection.swift:31"
+],
+"On-device · unlimited": [
+"Screens/Profile/Sections/PlanSection.swift:39"
+],
+"Try Pro free for %lld days": [
+"Screens/Profile/Sections/PlanSection.swift:44"
+],
+"Upgrade to Cue Pro": [
+"Screens/Profile/Sections/PlanSection.swift:44"
+],
+"%lld of %lld left": [
+"Screens/Profile/Sections/PlanSection.swift:57"
+],
+"Cue Pro": [
+"Screens/Profile/Sections/PlanSection.swift:70",
+"Screens/Shared/Paywall/PaywallView.swift:26"
+],
+"Unlimited exports, up to 4K": [
+"Screens/Profile/Sections/PlanSection.swift:74"
+],
+"Manage": [
+"Screens/Profile/Sections/PlanSection.swift:79"
+],
+"Active": [
+"Screens/Profile/Sections/PlanSection.swift:86"
+],
+"%@ · renews %@": [
+"Screens/Profile/Sections/PlanSection.swift:88"
+],
+"Sounds like you": [
+"Screens/Profile/Sections/SoundsLikeYouCard.swift:17"
+],
+"Live preview": [
+"Screens/Profile/Sections/SoundsLikeYouCard.swift:23",
+"Screens/Prompter/Sheets/DisplaySettingsSheet.swift:79"
+],
+"Use my voice in AI scripts": [
+"Screens/Profile/Sections/SoundsLikeYouCard.swift:34"
+],
+"Name": [
+"Screens/Profile/Sheets/EditProfileSheet.swift:17"
+],
+"@": [
+"Screens/Profile/Sheets/EditProfileSheet.swift:21"
+],
+"handle": [
+"Screens/Profile/Sheets/EditProfileSheet.swift:22"
+],
+"Shown only on this device.": [
+"Screens/Profile/Sheets/EditProfileSheet.swift:28"
+],
+"Your profile": [
+"Screens/Profile/Sheets/EditProfileSheet.swift:31"
+],
+"Done": [
+"Screens/Profile/Sheets/EditProfileSheet.swift:35",
+"Screens/Prompter/Sheets/CameraSettingsSheet.swift:33",
+"Screens/Prompter/Sheets/DisplaySettingsSheet.swift:84",
+"Screens/QuickEdit/QuickEditView.swift:90",
+"Screens/QuickEdit/QuickEditViewModel+CleanUp.swift:89",
+"Screens/QuickEdit/Sheets/TextOverlaySheet.swift:63",
+"Screens/ScriptDetail/ScriptDetailView.swift:87",
+"Screens/ScriptDetail/ScriptDetailViewModel.swift:353",
+"Screens/Scripts/ScriptsView.swift:203",
+"Screens/Shared/Privacy/PrivacySheet.swift:39"
+],
+"Camera access is off": [
+"Screens/Prompter/Camera/CameraBackdrop.swift:40"
+],
+"Allow Camera and Microphone for Cue in Settings to record takes. Studio mode works without them.": [
+"Screens/Prompter/Camera/CameraBackdrop.swift:41"
+],
+"No camera here": [
+"Screens/Prompter/Camera/CameraBackdrop.swift:46"
+],
+"This device has no camera Cue can use. Studio mode still works.": [
+"Screens/Prompter/Camera/CameraBackdrop.swift:47"
+],
+"The camera stopped": [
+"Screens/Prompter/Camera/CameraBackdrop.swift:51"
+],
+"Open Settings": [
+"Screens/Prompter/Camera/CameraBackdrop.swift:71",
+"Screens/Prompter/Sheets/AudioInputSheet.swift:84"
+],
+"%lld": [
+"Screens/Prompter/Camera/CountdownOverlay.swift:16",
+"Screens/QuickEdit/Tools/TrimToolView.swift:74"
+],
+"Recording in %lld": [
+"Screens/Prompter/Camera/CountdownOverlay.swift:27"
+],
+"Audio Input": [
+"Screens/Prompter/Controls/AudioInputPill.swift:39",
+"Screens/Prompter/Sheets/AudioInputSheet.swift:21"
+],
+"Choose the microphone to record with": [
+"Screens/Prompter/Controls/AudioInputPill.swift:41"
+],
+"Microphone off": [
+"Screens/Prompter/Controls/AudioInputPill.swift:50"
+],
+"Stop recording": [
+"Screens/Prompter/Controls/CompactStopButton.swift:23",
+"Screens/Prompter/Controls/RecordButton.swift:28"
+],
+"Your usual setup is %@.": [
+"Screens/Prompter/Controls/SetupRecommendationCard.swift:59",
+"Screens/Prompter/Sheets/RecordingSetupSheet.swift:76"
+],
+"Use %@": [
+"Screens/Prompter/Controls/SetupRecommendationCard.swift:63"
+],
+"Use Recommended": [
+"Screens/Prompter/Controls/SetupRecommendationCard.swift:64",
+"Screens/Prompter/Sheets/RecordingSetupSheet.swift:80"
+],
+"Keep %@": [
+"Screens/Prompter/Controls/SetupRecommendationCard.swift:68"
+],
+"Keep My Setup": [
+"Screens/Prompter/Controls/SetupRecommendationCard.swift:69",
+"Screens/Prompter/Sheets/RecordingSetupSheet.swift:83"
+],
+"·": [
+"Screens/Prompter/Controls/SetupSummaryPill.swift:25",
+"Screens/Scripts/ContextMenu/ScriptPreviewCard.swift:18",
+"Screens/Scripts/Rows/ScriptRow.swift:25",
+"Screens/Scripts/Rows/ScriptRow.swift:27",
+"Screens/Scripts/Rows/ScriptRow.swift:30"
+],
+"Recording setup": [
+"Screens/Prompter/Controls/SetupSummaryPill.swift:44"
+],
+"%@, %@": [
+"Screens/Prompter/Controls/SetupSummaryPill.swift:45"
+],
+"Shows what this take records with and where it comes from": [
+"Screens/Prompter/Controls/SetupSummaryPill.swift:46"
+],
+"SPEED": [
+"Screens/Prompter/Controls/SpeedSlider.swift:19"
+],
+"Speed": [
+"Screens/Prompter/Controls/SpeedSlider.swift:28",
+"Screens/Prompter/Studio/StudioControlPanel.swift:65",
+"Screens/Prompter/Studio/StudioControlPanel.swift:71",
+"Screens/QuickEdit/QuickEditTool.swift:36",
+"Screens/RemoteControl/RemoteControllerView.swift:144"
+],
+"Stop anyway": [
+"Screens/Prompter/Controls/StopWarningCard.swift:29"
+],
+"Keep going": [
+"Screens/Prompter/Controls/StopWarningCard.swift:32"
+],
+"Listening": [
+"Screens/Prompter/Controls/VoiceIndicator.swift:31",
+"Screens/Prompter/Controls/VoiceIndicator.swift:39",
+"Screens/Prompter/Controls/VoiceIndicator.swift:50"
+],
+"Paused": [
+"Screens/Prompter/Controls/VoiceIndicator.swift:31",
+"Screens/Prompter/Controls/VoiceIndicator.swift:39",
+"Screens/Prompter/Controls/VoiceIndicator.swift:50",
+"Screens/RemoteControl/RemoteControllerView.swift:108"
+],
+"AUTO": [
+"Screens/Prompter/Controls/VoiceIndicator.swift:35"
+],
+"Custom": [
+"Screens/Prompter/Layout/SafeZoneChoice.swift:38"
+],
+"%@ SAFE AREA": [
+"Screens/Prompter/Layout/SafeZoneChoice.swift:45"
+],
+"CUSTOM SAFE AREA": [
+"Screens/Prompter/Layout/SafeZoneChoice.swift:46"
+],
+"%@ · buttons, caption & header": [
+"Screens/Prompter/Layout/SafeZoneChoice.swift:53"
+],
+"Your own margins": [
+"Screens/Prompter/Layout/SafeZoneChoice.swift:54"
+],
+"Back to recommended layout": [
+"Screens/Prompter/PrompterViewModel+Layout.swift:102"
+],
+"%@ for this video": [
+"Screens/Prompter/PrompterViewModel+Setup.swift:22"
+],
+"Keeping your setup": [
+"Screens/Prompter/PrompterViewModel+Setup.swift:28"
+],
+"Back to your setup": [
+"Screens/Prompter/PrompterViewModel+Setup.swift:34"
+],
+"Create for %@": [
+"Screens/Prompter/PrompterViewModel.swift:244",
+"Screens/ScriptDetail/ScriptDetailViewModel.swift:186"
+],
+"The camera isn't ready": [
+"Screens/Prompter/PrompterViewModel.swift:373"
+],
+"The take couldn't be saved": [
+"Screens/Prompter/PrompterViewModel.swift:453",
+"Screens/Prompter/PrompterViewModel.swift:460"
+],
+"Script added": [
+"Screens/Prompter/PrompterViewModel.swift:526"
+],
+"%@ unavailable · Using %@ instead": [
+"Screens/Prompter/PrompterViewModel.swift:565",
+"Screens/Prompter/Support/MicrophoneFallback.swift:18"
+],
+"Voice Following can't listen in %@ on this device. The text moves while you speak.": [
+"Screens/Prompter/PrompterViewModel.swift:648"
+],
+"Voice Following couldn't get %@ ready. Check your connection. The text moves while you speak.": [
+"Screens/Prompter/PrompterViewModel.swift:649"
+],
+"READING LINE · %lld PT BELOW CAMERA": [
+"Screens/Prompter/Selfie/ReadingLineLayer.swift:51"
+],
+"READING LINE": [
+"Screens/Prompter/Selfie/ReadingLineLayer.swift:52"
+],
+"%lld points below the camera": [
+"Screens/Prompter/Selfie/ReadingLineLayer.swift:89"
+],
+"Drag to move where you read": [
+"Screens/Prompter/Selfie/ReadingLineLayer.swift:90"
+],
+"Display settings": [
+"Screens/Prompter/Selfie/SelfieControlPanel.swift:60",
+"Screens/Prompter/Studio/StudioControlPanel.swift:53"
+],
+"Freestyle": [
+"Screens/Prompter/Selfie/SelfieControlPanel.swift:69",
+"Screens/TakeReview/TakeReviewViewModel.swift:85",
+"Screens/Takes/Rows/TakeVideoRow.swift:24",
+"Screens/Takes/Rows/TakeVideoRow.swift:117"
+],
+"No script — add one anytime": [
+"Screens/Prompter/Selfie/SelfieControlPanel.swift:70"
+],
+"Add script": [
+"Screens/Prompter/Selfie/SelfieControlPanel.swift:78"
+],
+"Last take": [
+"Screens/Prompter/Selfie/SelfieControlPanel.swift:129"
+],
+"Camera settings": [
+"Screens/Prompter/Selfie/SelfieControlPanel.swift:134"
+],
+"Switch camera": [
+"Screens/Prompter/Selfie/SelfieControlPanel.swift:144"
+],
+"Countdown": [
+"Screens/Prompter/Selfie/SelfieControlPanel.swift:163",
+"Screens/Prompter/Sheets/CameraSettingsSheet.swift:129"
+],
+"Show controls": [
+"Screens/Prompter/Selfie/SelfieTopBar.swift:50"
+],
+"Hide controls": [
+"Screens/Prompter/Selfie/SelfieTopBar.swift:50"
+],
+"Create for %@, %@": [
+"Screens/Prompter/Selfie/SelfieTopBar.swift:78"
+],
+"Frame %@": [
+"Screens/Prompter/Selfie/SelfieTopBar.swift:79"
+],
+"Changes the platform and its preset": [
+"Screens/Prompter/Selfie/SelfieTopBar.swift:81"
+],
+"Switches to the next frame": [
+"Screens/Prompter/Selfie/SelfieTopBar.swift:81"
+],
+"Where Cue hears you in this take.": [
+"Screens/Prompter/Sheets/AudioInputSheet.swift:22"
+],
+"No microphone found. Connect one and it shows up here.": [
+"Screens/Prompter/Sheets/AudioInputSheet.swift:31"
+],
+"Plug in or pair a mic and it shows up here.": [
+"Screens/Prompter/Sheets/AudioInputSheet.swift:39"
+],
+"Cue can't hear you. Allow the microphone in Settings to record sound.": [
+"Screens/Prompter/Sheets/AudioInputSheet.swift:79"
+],
+"Lens": [
+"Screens/Prompter/Sheets/CameraSettingsSheet.swift:63"
+],
+"Cameras appear here once the camera is running.": [
+"Screens/Prompter/Sheets/CameraSettingsSheet.swift:65"
+],
+"Frame": [
+"Screens/Prompter/Sheets/CameraSettingsSheet.swift:79"
+],
+"Resolution": [
+"Screens/Prompter/Sheets/CameraSettingsSheet.swift:100"
+],
+"Grid": [
+"Screens/Prompter/Sheets/CameraSettingsSheet.swift:102"
+],
+"Platform safe zones": [
+"Screens/Prompter/Sheets/CameraSettingsSheet.swift:103"
+],
+"Shows where app buttons and captions cover the frame": [
+"Screens/Prompter/Sheets/CameraSettingsSheet.swift:103"
+],
+"Stabilization": [
+"Screens/Prompter/Sheets/CameraSettingsSheet.swift:104"
+],
+"Uses the connected mic, or the iPhone's": [
+"Screens/Prompter/Sheets/CameraSettingsSheet.swift:117"
+],
+"Start scrolling with recording": [
+"Screens/Prompter/Sheets/CameraSettingsSheet.swift:130"
+],
+"Stop when script ends": [
+"Screens/Prompter/Sheets/CameraSettingsSheet.swift:131"
+],
+"HEVC keeps files small. Choose H.264 if you edit on older software.": [
+"Screens/Prompter/Sheets/CameraSettingsSheet.swift:134"
+],
+"Lens, frame, quality and mic change for this take. Your usual setup stays in Profile › Creator Setup.": [
+"Screens/Prompter/Sheets/CameraSettingsSheet.swift:142"
+],
+"Layout": [
+"Screens/Prompter/Sheets/DisplayLayoutSection.swift:19",
+"Screens/QuickEdit/Tools/MediaToolView.swift:60"
+],
+"Reset to Recommended": [
+"Screens/Prompter/Sheets/DisplayLayoutSection.swift:20"
+],
+"Social safe zone": [
+"Screens/Prompter/Sheets/DisplayLayoutSection.swift:29"
+],
+"Safe zones are a visual guide based on each app’s current layout — platforms change their UI, so they’re not a guarantee. Nothing on this screen appears in your video: Cue records the full frame only.": [
+"Screens/Prompter/Sheets/DisplayLayoutSection.swift:32"
+],
+"Text window height": [
+"Screens/Prompter/Sheets/DisplayLayoutSection.swift:46"
+],
+"Text window width": [
+"Screens/Prompter/Sheets/DisplayLayoutSection.swift:54"
+],
+"Narrow · less eye movement": [
+"Screens/Prompter/Sheets/DisplayLayoutSection.swift:58"
+],
+"Wide": [
+"Screens/Prompter/Sheets/DisplayLayoutSection.swift:58"
+],
+"%lld pt below the camera · drag the handle on screen": [
+"Screens/Prompter/Sheets/DisplayLayoutSection.swift:104"
+],
+"Centered for the rear camera · recommended": [
+"Screens/Prompter/Sheets/DisplayLayoutSection.swift:108"
+],
+"Show safe zone": [
+"Screens/Prompter/Sheets/DisplayLayoutSection.swift:135"
+],
+"Not needed for horizontal video": [
+"Screens/Prompter/Sheets/DisplayLayoutSection.swift:136"
+],
+"Hide controls while recording": [
+"Screens/Prompter/Sheets/DisplayLayoutSection.swift:143"
+],
+"Keeps only the text, line and stop": [
+"Screens/Prompter/Sheets/DisplayLayoutSection.swift:144"
+],
+"Top risk": [
+"Screens/Prompter/Sheets/DisplayLayoutSection.swift:156"
+],
+"Bottom risk": [
+"Screens/Prompter/Sheets/DisplayLayoutSection.swift:157"
+],
+"Left risk": [
+"Screens/Prompter/Sheets/DisplayLayoutSection.swift:158"
+],
+"Right risk": [
+"Screens/Prompter/Sheets/DisplayLayoutSection.swift:159"
+],
+"Quick": [
+"Screens/Prompter/Sheets/DisplaySettingsSheet.swift:35"
+],
+"AI Coach": [
+"Screens/Prompter/Sheets/DisplaySettingsSheet.swift:39"
+],
+"Performance cues like PAUSE or SMILE": [
+"Screens/Prompter/Sheets/DisplaySettingsSheet.swift:40"
+],
+"Background and blur only change your preview — never the recording.": [
+"Screens/Prompter/Sheets/DisplaySettingsSheet.swift:47"
+],
+"Display": [
+"Screens/Prompter/Sheets/DisplaySettingsSheet.swift:76"
+],
+"Background opacity": [
+"Screens/Prompter/Sheets/DisplaySettingsSheet.swift:105"
+],
+"Camera blur": [
+"Screens/Prompter/Sheets/DisplaySettingsSheet.swift:112"
+],
+"Background color": [
+"Screens/Prompter/Sheets/DisplaySettingsSheet.swift:127",
+"Screens/QuickEdit/Sheets/TextOverlaySheet.swift:52"
+],
+"Advanced": [
+"Screens/Prompter/Sheets/DisplaySettingsSheet.swift:146"
+],
+"Font, spacing, margins, alignment, color": [
+"Screens/Prompter/Sheets/DisplaySettingsSheet.swift:147"
+],
+"Expanded": [
+"Screens/Prompter/Sheets/DisplaySettingsSheet.swift:165"
+],
+"Collapsed": [
+"Screens/Prompter/Sheets/DisplaySettingsSheet.swift:165"
+],
+"Line spacing": [
+"Screens/Prompter/Sheets/DisplaySettingsSheet.swift:175"
+],
+"Side margins": [
+"Screens/Prompter/Sheets/DisplaySettingsSheet.swift:182"
+],
+"Alignment": [
+"Screens/Prompter/Sheets/DisplaySettingsSheet.swift:188",
+"Screens/Prompter/Sheets/DisplaySettingsSheet.swift:189",
+"Screens/QuickEdit/Sheets/TextOverlaySheet.swift:101",
+"Screens/QuickEdit/Sheets/TextOverlaySheet.swift:103"
+],
+"Text color": [
+"Screens/Prompter/Sheets/DisplaySettingsSheet.swift:195"
+],
+"What Cue records with, and why.": [
+"Screens/Prompter/Sheets/RecordingSetupSheet.swift:24"
+],
+"Back to my setup": [
+"Screens/Prompter/Sheets/RecordingSetupSheet.swift:41"
+],
+"Changes here are for this video. Your usual setup stays in Profile › Creator Setup.": [
+"Screens/Prompter/Sheets/RecordingSetupSheet.swift:50"
+],
+"Your setup already matches it.": [
+"Screens/Prompter/Sheets/RecordingSetupSheet.swift:72"
+],
+"Control your teleprompter from another device.": [
+"Screens/Prompter/Sheets/RemoteControlSheet.swift:17",
+"Screens/RemoteControl/RemoteControlView.swift:21"
+],
+"Speed follows your voice": [
+"Screens/Prompter/Studio/StudioControlPanel.swift:85"
+],
+"Tap play, then start reading": [
+"Screens/Prompter/Studio/StudioControlPanel.swift:85"
+],
+"%@ to %@": [
+"Screens/Prompter/Support/MonetizationCheck.swift:20",
+"Screens/ScriptDetail/Support/LengthZone.swift:46"
+],
+"✓ Monetizable": [
+"Screens/Prompter/Support/MonetizationCheck.swift:22"
+],
+"%@ short of %@": [
+"Screens/Prompter/Support/MonetizationCheck.swift:28"
+],
+"%@ – %@": [
+"Screens/QuickEdit/Layers/LayerTrackView.swift:102"
+],
+"Playhead": [
+"Screens/QuickEdit/Layers/LayerTrackView.swift:122"
+],
+"Cover": [
+"Screens/QuickEdit/Player/CoverPreviewLayer.swift:28",
+"Screens/QuickEdit/QuickEditCategory.swift:22",
+"Screens/QuickEdit/QuickEditTool.swift:47",
+"Screens/TakeReview/Share/ShareToSheet.swift:135"
+],
+"Drag up or down to move the title": [
+"Screens/QuickEdit/Player/CoverPreviewLayer.swift:29"
+],
+"Tap to write": [
+"Screens/QuickEdit/Player/OverlayEditingLayer.swift:87"
+],
+"Tap to select": [
+"Screens/QuickEdit/Player/OverlayEditingLayer.swift:87"
+],
+"Video": [
+"Screens/QuickEdit/Player/OverlayEditingLayer.swift:135",
+"Screens/QuickEdit/QuickEditViewModel+Layers.swift:23"
+],
+"Drag to move, pinch to resize": [
+"Screens/QuickEdit/Player/OverlayEditingLayer.swift:136"
+],
+"Preview": [
+"Screens/QuickEdit/Player/QuickEditPreview.swift:53",
+"Screens/QuickEdit/Tools/RemovePausesToolView.swift:96"
+],
+"Tap to play or pause": [
+"Screens/QuickEdit/Player/QuickEditPreview.swift:55"
+],
+"REC %@": [
+"Screens/QuickEdit/Player/QuickEditPreview.swift:84"
+],
+"This video can't be opened": [
+"Screens/QuickEdit/Player/QuickEditPreview.swift:99",
+"Screens/QuickEdit/Player/QuickEditPreview.swift:109"
+],
+"The preview couldn't be built": [
+"Screens/QuickEdit/Player/QuickEditPreview.swift:100",
+"Screens/QuickEdit/Player/QuickEditPreview.swift:114"
+],
+"Processing…": [
+"Screens/QuickEdit/Player/QuickEditPreview.swift:101",
+"Screens/QuickEdit/Player/QuickEditPreview.swift:122"
+],
+"It may have been deleted or damaged. The original take isn't changed.": [
+"Screens/QuickEdit/Player/QuickEditPreview.swift:110"
+],
+"Try another change, or cancel and open the take again.": [
+"Screens/QuickEdit/Player/QuickEditPreview.swift:115"
+],
+"Edit": [
+"Screens/QuickEdit/QuickEditCategory.swift:18",
+"Screens/ScriptDetail/ScriptDetailView.swift:95",
+"Screens/ScriptDetail/ScriptReadView.swift:110",
+"Screens/Scripts/ContextMenu/ScriptActionsMenu.swift:17",
+"Screens/Scripts/ScriptsView.swift:218",
+"Screens/TakeReview/Sections/ReviewActionBar.swift:20"
+],
+"Polish": [
+"Screens/QuickEdit/QuickEditCategory.swift:20"
+],
+"Captions": [
+"Screens/QuickEdit/QuickEditCategory.swift:21",
+"Screens/QuickEdit/QuickEditTool.swift:46",
+"Screens/QuickEdit/Tools/CaptionsToolView.swift:20"
+],
+"Trim": [
+"Screens/QuickEdit/QuickEditTool.swift:33"
+],
+"Clean Up": [
+"Screens/QuickEdit/QuickEditTool.swift:34",
+"Screens/QuickEdit/Tools/TrimToolView.swift:72"
+],
+"Remove Pauses": [
+"Screens/QuickEdit/QuickEditTool.swift:35"
+],
+"Text": [
+"Screens/QuickEdit/QuickEditTool.swift:37"
+],
+"Media": [
+"Screens/QuickEdit/QuickEditTool.swift:38"
+],
+"Voice-over": [
+"Screens/QuickEdit/QuickEditTool.swift:39"
+],
+"Style": [
+"Screens/QuickEdit/QuickEditTool.swift:40"
+],
+"Audio": [
+"Screens/QuickEdit/QuickEditTool.swift:41"
+],
+"Adjust": [
+"Screens/QuickEdit/QuickEditTool.swift:42"
+],
+"Filters": [
+"Screens/QuickEdit/QuickEditTool.swift:43"
+],
+"Crop": [
+"Screens/QuickEdit/QuickEditTool.swift:44"
+],
+"Transitions": [
+"Screens/QuickEdit/QuickEditTool.swift:45"
+],
+"Time": [
+"Screens/QuickEdit/QuickEditTransportBar.swift:27"
+],
+"Undo": [
+"Screens/QuickEdit/QuickEditTransportBar.swift:35",
+"Screens/ScriptDetail/Editor/EditorToolsPanel.swift:29"
+],
+"Redo": [
+"Screens/QuickEdit/QuickEditTransportBar.swift:42",
+"Screens/QuickEdit/Tools/VoiceOverToolView.swift:70"
+],
+"Quick edit": [
+"Screens/QuickEdit/QuickEditView.swift:83"
+],
+"Couldn't listen to this take": [
+"Screens/QuickEdit/QuickEditViewModel+CleanUp.swift:32",
+"Screens/QuickEdit/Tools/CleanUpToolView.swift:51",
+"Screens/QuickEdit/Tools/RemovePausesToolView.swift:26"
+],
+"All clean": [
+"Screens/QuickEdit/QuickEditViewModel+CleanUp.swift:77"
+],
+"%lld to review": [
+"Screens/QuickEdit/QuickEditViewModel+CleanUp.swift:77"
+],
+"Every suggestion reviewed": [
+"Screens/QuickEdit/QuickEditViewModel+CleanUp.swift:82"
+],
+"Suggestions only — you decide what goes": [
+"Screens/QuickEdit/QuickEditViewModel+CleanUp.swift:83"
+],
+"Remove all · %lld": [
+"Screens/QuickEdit/QuickEditViewModel+CleanUp.swift:89"
+],
+"natural pauses stay": [
+"Screens/QuickEdit/QuickEditViewModel+CleanUp.swift:101"
+],
+"1 short pause kept": [
+"Screens/QuickEdit/QuickEditViewModel+CleanUp.swift:102"
+],
+"%lld short pauses kept": [
+"Screens/QuickEdit/QuickEditViewModel+CleanUp.swift:103"
+],
+"Already removed": [
+"Screens/QuickEdit/QuickEditViewModel+CleanUp.swift:130"
+],
+"Keep at least one section": [
+"Screens/QuickEdit/QuickEditViewModel+CleanUp.swift:143",
+"Screens/QuickEdit/QuickEditViewModel+CleanUp.swift:175",
+"Screens/QuickEdit/QuickEditViewModel+Pauses.swift:57",
+"Screens/QuickEdit/QuickEditViewModel+Pauses.swift:85",
+"Screens/QuickEdit/QuickEditViewModel.swift:474",
+"Screens/QuickEdit/QuickEditViewModel.swift:517"
+],
+"Use Undo to bring it back": [
+"Screens/QuickEdit/QuickEditViewModel+CleanUp.swift:162"
+],
+"Removed %lld · %lld left to review": [
+"Screens/QuickEdit/QuickEditViewModel+CleanUp.swift:181"
+],
+"Removed %lld": [
+"Screens/QuickEdit/QuickEditViewModel+CleanUp.swift:182"
+],
+"Pause removed": [
+"Screens/QuickEdit/QuickEditViewModel+CleanUp.swift:221"
+],
+"%@ removed": [
+"Screens/QuickEdit/QuickEditViewModel+CleanUp.swift:222"
+],
+"Retake removed": [
+"Screens/QuickEdit/QuickEditViewModel+CleanUp.swift:223"
+],
+"Cover set to this frame": [
+"Screens/QuickEdit/QuickEditViewModel+Cover.swift:27"
+],
+"Pick a photo for the cover": [
+"Screens/QuickEdit/QuickEditViewModel+Cover.swift:40"
+],
+"Voice-over %lld": [
+"Screens/QuickEdit/QuickEditViewModel+Layers.swift:33"
+],
+"No room here — move the playhead to a free spot": [
+"Screens/QuickEdit/QuickEditViewModel+Media.swift:51"
+],
+"Photo added": [
+"Screens/QuickEdit/QuickEditViewModel+Media.swift:63"
+],
+"Video added": [
+"Screens/QuickEdit/QuickEditViewModel+Media.swift:63"
+],
+"Media removed": [
+"Screens/QuickEdit/QuickEditViewModel+Media.swift:83"
+],
+"No long pauses": [
+"Screens/QuickEdit/QuickEditViewModel+Pauses.swift:37"
+],
+"Found 1 pause": [
+"Screens/QuickEdit/QuickEditViewModel+Pauses.swift:38"
+],
+"Found %lld pauses": [
+"Screens/QuickEdit/QuickEditViewModel+Pauses.swift:39"
+],
+"Total: %@s": [
+"Screens/QuickEdit/QuickEditViewModel+Pauses.swift:46"
+],
+"Removed 1 pause · %@s": [
+"Screens/QuickEdit/QuickEditViewModel+Pauses.swift:111"
+],
+"Removed %lld pauses · %@s": [
+"Screens/QuickEdit/QuickEditViewModel+Pauses.swift:112"
+],
+"Section %lld of %lld · %@": [
+"Screens/QuickEdit/QuickEditViewModel+Speed.swift:38"
+],
+"Whole video · %@": [
+"Screens/QuickEdit/QuickEditViewModel+Speed.swift:40"
+],
+"Section at %@": [
+"Screens/QuickEdit/QuickEditViewModel+Speed.swift:52"
+],
+"Video at %@": [
+"Screens/QuickEdit/QuickEditViewModel+Speed.swift:53"
+],
+"%@ style applied": [
+"Screens/QuickEdit/QuickEditViewModel+Style.swift:20"
+],
+"Text deleted": [
+"Screens/QuickEdit/QuickEditViewModel+Text.swift:53"
+],
+"Turn on the microphone for Cue in Settings to record a voice-over": [
+"Screens/QuickEdit/QuickEditViewModel+VoiceOver.swift:26"
+],
+"Too short to keep": [
+"Screens/QuickEdit/QuickEditViewModel+VoiceOver.swift:56"
+],
+"Voice-over kept": [
+"Screens/QuickEdit/QuickEditViewModel+VoiceOver.swift:79"
+],
+"Voice-over deleted": [
+"Screens/QuickEdit/QuickEditViewModel+VoiceOver.swift:94"
+],
+"Draft restored": [
+"Screens/QuickEdit/QuickEditViewModel.swift:172"
+],
+"Original · %@": [
+"Screens/QuickEdit/QuickEditViewModel.swift:204"
+],
+"Drag the red edges over the part you want gone": [
+"Screens/QuickEdit/QuickEditViewModel.swift:253"
+],
+"Nothing was cut out here, so %@ won't show": [
+"Screens/QuickEdit/QuickEditViewModel.swift:258"
+],
+"Cut at %@ · None keeps it a hard cut": [
+"Screens/QuickEdit/QuickEditViewModel.swift:261"
+],
+"Section %lld selected · Delete removes it": [
+"Screens/QuickEdit/QuickEditViewModel.swift:264"
+],
+"Tap to jump · drag the white line to scrub · handles trim": [
+"Screens/QuickEdit/QuickEditViewModel.swift:266"
+],
+"section %lld of %lld": [
+"Screens/QuickEdit/QuickEditViewModel.swift:275"
+],
+"selected": [
+"Screens/QuickEdit/QuickEditViewModel.swift:277"
+],
+"Every cut is a hard cut": [
+"Screens/QuickEdit/QuickEditViewModel.swift:379"
+],
+"%@ on every cut": [
+"Screens/QuickEdit/QuickEditViewModel.swift:380"
+],
+"Removed %@": [
+"Screens/QuickEdit/QuickEditViewModel.swift:480"
+],
+"Move the playhead away from the edge": [
+"Screens/QuickEdit/QuickEditViewModel.swift:498"
+],
+"Cut at %@ — tap a side, then Delete": [
+"Screens/QuickEdit/QuickEditViewModel.swift:505"
+],
+"Tap a section first": [
+"Screens/QuickEdit/QuickEditViewModel.swift:512"
+],
+"Section deleted": [
+"Screens/QuickEdit/QuickEditViewModel.swift:522"
+],
+"Auto-enhanced": [
+"Screens/QuickEdit/QuickEditViewModel.swift:632"
+],
+"No script to caption this take": [
+"Screens/QuickEdit/QuickEditViewModel.swift:657"
+],
+"Edits saved to %@": [
+"Screens/QuickEdit/QuickEditViewModel.swift:689"
+],
+"Draft kept — tap Edit to continue": [
+"Screens/QuickEdit/QuickEditViewModel.swift:710"
+],
+"Font": [
+"Screens/QuickEdit/Sheets/TextOverlaySheet.swift:32"
+],
+"Weight": [
+"Screens/QuickEdit/Sheets/TextOverlaySheet.swift:33"
+],
+"Color": [
+"Screens/QuickEdit/Sheets/TextOverlaySheet.swift:44"
+],
+"Background": [
+"Screens/QuickEdit/Sheets/TextOverlaySheet.swift:46"
+],
+"Shadow": [
+"Screens/QuickEdit/Sheets/TextOverlaySheet.swift:47"
+],
+"Outline": [
+"Screens/QuickEdit/Sheets/TextOverlaySheet.swift:48"
+],
+"All caps": [
+"Screens/QuickEdit/Sheets/TextOverlaySheet.swift:49"
+],
+"Delete": [
+"Screens/QuickEdit/Sheets/TextOverlaySheet.swift:59",
+"Screens/Scripts/ContextMenu/ScriptActionsMenu.swift:71",
+"Screens/Scripts/ScriptsView.swift:182",
+"Screens/Scripts/ScriptsView.swift:225",
+"Screens/Scripts/SelectionBar.swift:45",
+"Screens/TakeReview/Sections/ReviewTopBar.swift:43"
+],
+"Quick styles": [
+"Screens/QuickEdit/Sheets/TextOverlaySheet.swift:86"
+],
+"This section": [
+"Screens/QuickEdit/Support/SpeedScope.swift:18"
+],
+"Whole video": [
+"Screens/QuickEdit/Support/SpeedScope.swift:19"
+],
+"Timeline": [
+"Screens/QuickEdit/Timeline/CleanUpStripView.swift:38",
+"Screens/QuickEdit/Timeline/TimelinePlayheadView.swift:38",
+"Screens/TakeReview/Player/FilmstripView.swift:39"
+],
+"Select this section": [
+"Screens/QuickEdit/Timeline/TimelinePlayheadView.swift:43"
+],
+"Zoom in": [
+"Screens/QuickEdit/Timeline/TimelinePlayheadView.swift:44"
+],
+"Zoom out": [
+"Screens/QuickEdit/Timeline/TimelinePlayheadView.swift:45"
+],
+"Start %@": [
+"Screens/QuickEdit/Timeline/TimelineStripView.swift:324"
+],
+"End %@": [
+"Screens/QuickEdit/Timeline/TimelineStripView.swift:325"
+],
+"Start of the edit": [
+"Screens/QuickEdit/Timeline/TimelineStripView.swift:355"
+],
+"End of the edit": [
+"Screens/QuickEdit/Timeline/TimelineStripView.swift:355"
+],
+"Start of the part to remove": [
+"Screens/QuickEdit/Timeline/TimelineStripView.swift:375"
+],
+"End of the part to remove": [
+"Screens/QuickEdit/Timeline/TimelineStripView.swift:375"
+],
+"Transition at cut %lld": [
+"Screens/QuickEdit/Timeline/TimelineStripView.swift:400"
+],
+"Frame by frame · drag the red edges": [
+"Screens/QuickEdit/Timeline/TimelineZoomController.swift:50"
+],
+"Zoomed in · drag the red edges": [
+"Screens/QuickEdit/Timeline/TimelineZoomController.swift:51"
+],
+"Frame by frame · pinch to zoom out": [
+"Screens/QuickEdit/Timeline/TimelineZoomController.swift:52"
+],
+"Zoomed in · pinch to zoom out": [
+"Screens/QuickEdit/Timeline/TimelineZoomController.swift:53"
+],
+"Exposure": [
+"Screens/QuickEdit/Tools/AdjustToolView.swift:20"
+],
+"Contrast": [
+"Screens/QuickEdit/Tools/AdjustToolView.swift:21"
+],
+"Warmth": [
+"Screens/QuickEdit/Tools/AdjustToolView.swift:22"
+],
+"Volume": [
+"Screens/QuickEdit/Tools/AudioToolView.swift:15"
+],
+"Enhance voice": [
+"Screens/QuickEdit/Tools/AudioToolView.swift:25"
+],
+"Clearer, fuller speech": [
+"Screens/QuickEdit/Tools/AudioToolView.swift:25"
+],
+"Reduce background noise": [
+"Screens/QuickEdit/Tools/AudioToolView.swift:26"
+],
+"Listening to your take…": [
+"Screens/QuickEdit/Tools/CaptionsToolView.swift:21"
+],
+"From your script, synced to your voice": [
+"Screens/QuickEdit/Tools/CaptionsToolView.swift:21"
+],
+"Position": [
+"Screens/QuickEdit/Tools/CaptionsToolView.swift:48"
+],
+"Analyzing your take…": [
+"Screens/QuickEdit/Tools/CleanUpToolView.swift:32"
+],
+"Transcript, pauses and your script, compared on your iPhone. Nothing is removed until you say so.": [
+"Screens/QuickEdit/Tools/CleanUpToolView.swift:35"
+],
+"Try again": [
+"Screens/QuickEdit/Tools/CleanUpToolView.swift:53",
+"Screens/QuickEdit/Tools/RemovePausesToolView.swift:27",
+"Screens/Shared/RemoteControl/RemotePairingPanel.swift:112"
+],
+"Removes the suggestions Clean Up is sure about; the others wait for you": [
+"Screens/QuickEdit/Tools/CleanUpToolView.swift:87"
+],
+"Ignore pauses under %@ · %@": [
+"Screens/QuickEdit/Tools/CleanUpToolView.swift:95"
+],
+"Shorter": [
+"Screens/QuickEdit/Tools/CleanUpToolView.swift:101"
+],
+"Longer": [
+"Screens/QuickEdit/Tools/CleanUpToolView.swift:102"
+],
+"Nothing to clean up here. Your take flows.": [
+"Screens/QuickEdit/Tools/CleanUpToolView.swift:131"
+],
+"Moves the playhead here": [
+"Screens/QuickEdit/Tools/CleanUpToolView.swift:170"
+],
+"Keep": [
+"Screens/QuickEdit/Tools/CleanUpToolView.swift:173",
+"Screens/QuickEdit/Tools/VoiceOverToolView.swift:64"
+],
+"Remove": [
+"Screens/QuickEdit/Tools/CleanUpToolView.swift:176"
+],
+"Removed": [
+"Screens/QuickEdit/Tools/CleanUpToolView.swift:181"
+],
+"Kept": [
+"Screens/QuickEdit/Tools/CleanUpToolView.swift:181"
+],
+"Undo brings it back": [
+"Screens/QuickEdit/Tools/CleanUpToolView.swift:187"
+],
+"Puts it back up for review": [
+"Screens/QuickEdit/Tools/CleanUpToolView.swift:187"
+],
+"Use this frame": [
+"Screens/QuickEdit/Tools/CoverToolView.swift:29"
+],
+"Change frame": [
+"Screens/QuickEdit/Tools/CoverToolView.swift:41"
+],
+"Title on the cover": [
+"Screens/QuickEdit/Tools/CoverToolView.swift:55"
+],
+"Remove cover": [
+"Screens/QuickEdit/Tools/CoverToolView.swift:67"
+],
+"Move the playhead to the frame you want, or pick a photo": [
+"Screens/QuickEdit/Tools/CoverToolView.swift:96"
+],
+"Drag on the cover to move the title · saved to Photos when you export": [
+"Screens/QuickEdit/Tools/CoverToolView.swift:97"
+],
+"Drag the video to reposition": [
+"Screens/QuickEdit/Tools/CropToolView.swift:33"
+],
+"Shows over your take at the playhead · one at a time": [
+"Screens/QuickEdit/Tools/MediaToolView.swift:27"
+],
+"Tap a bar to change it · drag to move": [
+"Screens/QuickEdit/Tools/MediaToolView.swift:28"
+],
+"Adding…": [
+"Screens/QuickEdit/Tools/MediaToolView.swift:49"
+],
+"Add photo or video": [
+"Screens/QuickEdit/Tools/MediaToolView.swift:49"
+],
+"Remove media": [
+"Screens/QuickEdit/Tools/MediaToolView.swift:72"
+],
+"Done with this media": [
+"Screens/QuickEdit/Tools/MediaToolView.swift:78"
+],
+"Fills the frame · switch to Window to place and size it": [
+"Screens/QuickEdit/Tools/MediaToolView.swift:103"
+],
+"Listening for pauses…": [
+"Screens/QuickEdit/Tools/RemovePausesToolView.swift:21"
+],
+"Nothing to take out. Your take flows.": [
+"Screens/QuickEdit/Tools/RemovePausesToolView.swift:51"
+],
+"Pauses longer than %@": [
+"Screens/QuickEdit/Tools/RemovePausesToolView.swift:66"
+],
+"Shorter pauses": [
+"Screens/QuickEdit/Tools/RemovePausesToolView.swift:72"
+],
+"Longer pauses only": [
+"Screens/QuickEdit/Tools/RemovePausesToolView.swift:75"
+],
+"Apply": [
+"Screens/QuickEdit/Tools/RemovePausesToolView.swift:88",
+"Screens/QuickEdit/Tools/RemovePausesToolView.swift:101"
+],
+"Applies to": [
+"Screens/QuickEdit/Tools/SpeedToolView.swift:18"
+],
+"Split in Trim to change the speed of one part": [
+"Screens/QuickEdit/Tools/SpeedToolView.swift:42"
+],
+"Sets your texts, captions and filter in one tap": [
+"Screens/QuickEdit/Tools/StyleToolView.swift:36"
+],
+"Drag it on the video · drag its bar to change when it shows": [
+"Screens/QuickEdit/Tools/TextToolView.swift:32"
+],
+"Adds at the playhead · styled like your project": [
+"Screens/QuickEdit/Tools/TextToolView.swift:35"
+],
+"Tap a text on the video or its bar to change it": [
+"Screens/QuickEdit/Tools/TextToolView.swift:36"
+],
+"Add %@": [
+"Screens/QuickEdit/Tools/TextToolView.swift:53"
+],
+"Edit text": [
+"Screens/QuickEdit/Tools/TextToolView.swift:63"
+],
+"Delete text": [
+"Screens/QuickEdit/Tools/TextToolView.swift:71"
+],
+"Done with this text": [
+"Screens/QuickEdit/Tools/TextToolView.swift:77"
+],
+"Restyles this text": [
+"Screens/QuickEdit/Tools/TextToolView.swift:87"
+],
+"No cuts yet": [
+"Screens/QuickEdit/Tools/TransitionsToolView.swift:20"
+],
+"Split the video in Trim, then pick how each part hands over.": [
+"Screens/QuickEdit/Tools/TransitionsToolView.swift:21"
+],
+"Go to Trim": [
+"Screens/QuickEdit/Tools/TransitionsToolView.swift:25"
+],
+"Cut %lld · %@": [
+"Screens/QuickEdit/Tools/TransitionsToolView.swift:36"
+],
+"Every cut": [
+"Screens/QuickEdit/Tools/TransitionsToolView.swift:50"
+],
+"Remove part": [
+"Screens/QuickEdit/Tools/TrimToolView.swift:49"
+],
+"Shows a red range to drag over the part to take out": [
+"Screens/QuickEdit/Tools/TrimToolView.swift:52"
+],
+"Split at playhead": [
+"Screens/QuickEdit/Tools/TrimToolView.swift:58"
+],
+"Cuts the video in two at the playhead": [
+"Screens/QuickEdit/Tools/TrimToolView.swift:59"
+],
+"Delete section": [
+"Screens/QuickEdit/Tools/TrimToolView.swift:66"
+],
+"Takes the selected section out of the video": [
+"Screens/QuickEdit/Tools/TrimToolView.swift:67"
+],
+"Finds pauses, filler words and retakes to review": [
+"Screens/QuickEdit/Tools/TrimToolView.swift:84"
+],
+"Done with this cut": [
+"Screens/QuickEdit/Tools/TrimToolView.swift:106"
+],
+"Records from the playhead while the video plays silent": [
+"Screens/QuickEdit/Tools/VoiceOverToolView.swift:27"
+],
+"Tap a voice-over's bar to change its volume": [
+"Screens/QuickEdit/Tools/VoiceOverToolView.swift:28"
+],
+"Stop · %@": [
+"Screens/QuickEdit/Tools/VoiceOverToolView.swift:54"
+],
+"Delete voice-over": [
+"Screens/QuickEdit/Tools/VoiceOverToolView.swift:78"
+],
+"Voice-over volume": [
+"Screens/QuickEdit/Tools/VoiceOverToolView.swift:92"
+],
+"Use this device as a remote": [
+"Screens/RemoteControl/RemoteControlView.swift:31"
+],
+"Scan the code on the teleprompter with the Camera, or enter it here.": [
+"Screens/RemoteControl/RemoteControlView.swift:34"
+],
+"Enter a code": [
+"Screens/RemoteControl/RemoteControlView.swift:42"
+],
+"Keyboards, foot pedals and presentation remotes are coming next.": [
+"Screens/RemoteControl/RemoteControlView.swift:49"
+],
+"Enter the code": [
+"Screens/RemoteControl/RemoteControlView.swift:59"
+],
+"ABC 234": [
+"Screens/RemoteControl/RemoteControlView.swift:60"
+],
+"Connect": [
+"Screens/RemoteControl/RemoteControlView.swift:64"
+],
+"The six letters and numbers under the QR code on the teleprompter.": [
+"Screens/RemoteControl/RemoteControlView.swift:66"
+],
+"That code doesn't look right. Check it and try again.": [
+"Screens/RemoteControl/RemoteControlView.swift:72"
+],
+"Close remote": [
+"Screens/RemoteControl/RemoteControllerView.swift:53"
+],
+"Remote": [
+"Screens/RemoteControl/RemoteControllerView.swift:57"
+],
+"Keep both devices close, with Wi-Fi or Bluetooth on.": [
+"Screens/RemoteControl/RemoteControllerView.swift:86"
+],
+"Open a script on the teleprompter": [
+"Screens/RemoteControl/RemoteControllerView.swift:97"
+],
+"Playing": [
+"Screens/RemoteControl/RemoteControllerView.swift:108"
+],
+"–": [
+"Screens/RemoteControl/RemoteControllerView.swift:142"
+],
+"Requires Apple Intelligence": [
+"Screens/ScriptDetail/Editor/EditorToolsPanel.swift:77"
+],
+"Start writing what you want to say… Add cues like [pause] or [smile].": [
+"Screens/ScriptDetail/Editor/ScriptEditorView.swift:51"
+],
+"Script text": [
+"Screens/ScriptDetail/Editor/ScriptEditorView.swift:69"
+],
+"This script was deleted": [
+"Screens/ScriptDetail/ScriptDetailView.swift:46"
+],
+"New folder": [
+"Screens/ScriptDetail/ScriptDetailView.swift:54",
+"Screens/Scripts/ScriptsView.swift:31"
+],
+"Folder name": [
+"Screens/ScriptDetail/ScriptDetailView.swift:55",
+"Screens/Scripts/ScriptsView.swift:32"
+],
+"Create": [
+"Screens/ScriptDetail/ScriptDetailView.swift:57",
+"Screens/Scripts/ScriptsView.swift:34"
+],
+"More": [
+"Screens/ScriptDetail/ScriptDetailView.swift:102",
+"Screens/Scripts/ScriptsView.swift:185",
+"Screens/TakeReview/Share/ShareToSheet.swift:26"
+],
+"Editing creates v%lld · your take stays linked to v%lld": [
+"Screens/ScriptDetail/ScriptDetailViewModel.swift:110"
+],
+"Editing creates v%lld · your %lld takes stay linked to v%lld": [
+"Screens/ScriptDetail/ScriptDetailViewModel.swift:111"
+],
+"Saved as v%lld — your take stays with v%lld": [
+"Screens/ScriptDetail/ScriptDetailViewModel.swift:174"
+],
+"Saved as v%lld — %lld takes stay with v%lld": [
+"Screens/ScriptDetail/ScriptDetailViewModel.swift:175"
+],
+"Saved": [
+"Screens/ScriptDetail/ScriptDetailViewModel.swift:177"
+],
+"Hook replaced · ~%@": [
+"Screens/ScriptDetail/ScriptDetailViewModel.swift:198"
+],
+"Marked as fact-checked": [
+"Screens/ScriptDetail/ScriptDetailViewModel.swift:233"
+],
+"The disclosure is already up front": [
+"Screens/ScriptDetail/ScriptDetailViewModel.swift:250"
+],
+"Disclosure added up front": [
+"Screens/ScriptDetail/ScriptDetailViewModel.swift:255"
+],
+"AI tools aren't available right now.": [
+"Screens/ScriptDetail/ScriptDetailViewModel.swift:272",
+"Screens/ScriptDetail/ScriptDetailViewModel.swift:292",
+"Screens/ScriptDetail/ScriptDetailViewModel.swift:318"
+],
+"%@ (%@)": [
+"Screens/ScriptDetail/ScriptDetailViewModel.swift:302",
+"Screens/ScriptDetail/ScriptDetailViewModel.swift:330"
+],
+"%@ version saved as a copy": [
+"Screens/ScriptDetail/ScriptDetailViewModel.swift:306",
+"Screens/ScriptDetail/ScriptDetailViewModel.swift:333"
+],
+"Writing the %@ version…": [
+"Screens/ScriptDetail/ScriptDetailViewModel.swift:323"
+],
+"Fitted to %@": [
+"Screens/ScriptDetail/ScriptDetailViewModel.swift:343"
+],
+"Rewrote in your voice · %@": [
+"Screens/ScriptDetail/ScriptDetailViewModel.swift:346"
+],
+"Rewrote with more energy": [
+"Screens/ScriptDetail/ScriptDetailViewModel.swift:347"
+],
+"Grammar fixed": [
+"Screens/ScriptDetail/ScriptDetailViewModel.swift:348"
+],
+"Call to action strengthened": [
+"Screens/ScriptDetail/ScriptDetailViewModel.swift:349"
+],
+"Made it sound more human": [
+"Screens/ScriptDetail/ScriptDetailViewModel.swift:350"
+],
+"Removed defensive lines": [
+"Screens/ScriptDetail/ScriptDetailViewModel.swift:351"
+],
+"Made it shorter and more direct": [
+"Screens/ScriptDetail/ScriptDetailViewModel.swift:352"
+],
+"Duplicated": [
+"Screens/ScriptDetail/ScriptDetailViewModel.swift:361",
+"Screens/Scripts/ScriptsViewModel.swift:59",
+"Screens/Scripts/ScriptsViewModel.swift:89"
+],
+"Moved to “%@”": [
+"Screens/ScriptDetail/ScriptDetailViewModel.swift:366",
+"Screens/Scripts/ScriptsViewModel.swift:65"
+],
+"Removed from folder": [
+"Screens/ScriptDetail/ScriptDetailViewModel.swift:366",
+"Screens/Scripts/ScriptsViewModel.swift:67"
+],
+"That folder already exists": [
+"Screens/ScriptDetail/ScriptDetailViewModel.swift:377",
+"Screens/Scripts/ScriptsViewModel.swift:109"
+],
+"Script deleted": [
+"Screens/ScriptDetail/ScriptDetailViewModel.swift:386",
+"Screens/Scripts/ScriptsViewModel.swift:54"
+],
+"Hook runs ~%@ — aim for 3s. Tap Hook for options.": [
+"Screens/ScriptDetail/ScriptReadView.swift:36"
+],
+"This script is empty. Tap Edit to start writing.": [
+"Screens/ScriptDetail/ScriptReadView.swift:80"
+],
+"Double-tap the text to edit": [
+"Screens/ScriptDetail/ScriptReadView.swift:100"
+],
+"%lld takes · v%lld": [
+"Screens/ScriptDetail/ScriptReadView.swift:118"
+],
+"Studio mode": [
+"Screens/ScriptDetail/ScriptReadView.swift:143",
+"Screens/Scripts/ContextMenu/ScriptActionsMenu.swift:16",
+"Screens/Scripts/Rows/ScriptRow.swift:44",
+"Screens/Scripts/ScriptsView.swift:217"
+],
+"Cue sets the frame, safe zones, teleprompter position and length goals. Fine-tune anytime.": [
+"Screens/ScriptDetail/Sheets/DestinationSheet.swift:23"
+],
+"Aim for lengths that earn: TikTok 1:00+, YouTube 8:00+ for mid-roll ads": [
+"Screens/ScriptDetail/Sheets/DestinationSheet.swift:35"
+],
+"Platform rules change — presets update automatically.": [
+"Screens/ScriptDetail/Sheets/DestinationSheet.swift:45"
+],
+"Pick a new hook": [
+"Screens/ScriptDetail/Sheets/HooksSheet.swift:25"
+],
+"Viewers decide in the first 3 seconds.": [
+"Screens/ScriptDetail/Sheets/HooksSheet.swift:26"
+],
+"Current": [
+"Screens/ScriptDetail/Sheets/HooksSheet.swift:32"
+],
+"No opening line yet": [
+"Screens/ScriptDetail/Sheets/HooksSheet.swift:41"
+],
+"Writing hooks with Apple Intelligence…": [
+"Screens/ScriptDetail/Sheets/HooksSheet.swift:53"
+],
+"More options": [
+"Screens/ScriptDetail/Sheets/HooksSheet.swift:82"
+],
+"Shows other hooks": [
+"Screens/ScriptDetail/Structure/BlockStripView.swift:23"
+],
+"Written with Apple Intelligence. AI can get facts wrong — check dates, names and numbers before you record.": [
+"Screens/ScriptDetail/Structure/FactCheckBanner.swift:18"
+],
+"Checked": [
+"Screens/ScriptDetail/Structure/FactCheckBanner.swift:23"
+],
+"Hides this reminder": [
+"Screens/ScriptDetail/Structure/FactCheckBanner.swift:27"
+],
+"%lld words · %@": [
+"Screens/ScriptDetail/Structure/LengthMeterView.swift:17"
+],
+"0:00": [
+"Screens/ScriptDetail/Structure/LengthMeterView.swift:53"
+],
+"%lld words, %@. %@": [
+"Screens/ScriptDetail/Structure/LengthMeterView.swift:71"
+],
+"Destination: %@": [
+"Screens/ScriptDetail/Structure/ScriptMetaRow.swift:34"
+],
+"Changes where this script will be posted": [
+"Screens/ScriptDetail/Structure/ScriptMetaRow.swift:35"
+],
+"0s": [
+"Screens/ScriptDetail/Support/LengthZone.swift:40"
+],
+"%@ under ideal": [
+"Screens/ScriptDetail/Support/LengthZone.swift:49"
+],
+"%@ over ideal": [
+"Screens/ScriptDetail/Support/LengthZone.swift:52"
+],
+"In the ideal range": [
+"Screens/ScriptDetail/Support/LengthZone.swift:54"
+],
+"Last edited": [
+"Screens/Scripts/Cards/HeroScriptCard.swift:25"
+],
+"Empty script": [
+"Screens/Scripts/Cards/HeroScriptCard.swift:40",
+"Screens/Scripts/ContextMenu/ScriptPreviewCard.swift:26"
+],
+"~%@ read": [
+"Screens/Scripts/Cards/HeroScriptCard.swift:52"
+],
+"No takes": [
+"Screens/Scripts/Cards/HeroScriptCard.swift:53"
+],
+"%lld takes": [
+"Screens/Scripts/Cards/HeroScriptCard.swift:53",
+"Screens/Takes/Support/TakeVideo.swift:34"
+],
+"Duplicate": [
+"Screens/Scripts/ContextMenu/ScriptActionsMenu.swift:19",
+"Screens/Scripts/ScriptsView.swift:219",
+"Screens/Scripts/SelectionBar.swift:40"
+],
+"Move to folder": [
+"Screens/Scripts/ContextMenu/ScriptActionsMenu.swift:20",
+"Screens/Scripts/SelectionBar.swift:35"
+],
+"Remove from folder": [
+"Screens/Scripts/ContextMenu/ScriptActionsMenu.swift:33",
+"Screens/Scripts/SelectionBar.swift:28"
+],
+"New folder…": [
+"Screens/Scripts/ContextMenu/ScriptActionsMenu.swift:36",
+"Screens/Scripts/SelectionBar.swift:30"
+],
+"Make a version for…": [
+"Screens/Scripts/ContextMenu/ScriptActionsMenu.swift:44"
+],
+"Language · %@": [
+"Screens/Scripts/ContextMenu/ScriptActionsMenu.swift:60"
+],
+"Share": [
+"Screens/Scripts/ContextMenu/ScriptActionsMenu.swift:68",
+"Screens/Scripts/ScriptsView.swift:224",
+"Screens/TakeReview/Sections/ReviewActionBar.swift:24"
+],
+"%@ · ~%@": [
+"Screens/Scripts/ContextMenu/ScriptPreviewCard.swift:19"
+],
+"Start with a script.\nSound like you rehearsed.": [
+"Screens/Scripts/EmptyLibraryView.swift:20"
+],
+"Write, paste or import what you want to say. Cue scrolls it right under the lens while you record.": [
+"Screens/Scripts/EmptyLibraryView.swift:23"
+],
+"Write a script": [
+"Screens/Scripts/EmptyLibraryView.swift:30"
+],
+"Blank page, with read-time as you type": [
+"Screens/Scripts/EmptyLibraryView.swift:30"
+],
+"Describe the video, get a first draft": [
+"Screens/Scripts/EmptyLibraryView.swift:32"
+],
+"Tap to open · Swipe for actions · Hold to preview": [
+"Screens/Scripts/ScriptsView.swift:123"
+],
+"No scripts here yet.": [
+"Screens/Scripts/ScriptsView.swift:130"
+],
+"All scripts": [
+"Screens/Scripts/ScriptsView.swift:199"
+],
+"Select": [
+"Screens/Scripts/ScriptsView.swift:203"
+],
+"Move to “%@”": [
+"Screens/Scripts/ScriptsView.swift:221"
+],
+"Move to a new folder…": [
+"Screens/Scripts/ScriptsView.swift:223"
+],
+"%lld scripts · %lld takes": [
+"Screens/Scripts/ScriptsViewModel.swift:47"
+],
+"%lld deleted": [
+"Screens/Scripts/ScriptsViewModel.swift:82"
+],
+"Folder created": [
+"Screens/Scripts/ScriptsViewModel.swift:115"
+],
+"Select scripts": [
+"Screens/Scripts/SelectionBar.swift:19"
+],
+"%lld selected": [
+"Screens/Scripts/SelectionBar.swift:19"
+],
+"All": [
+"Screens/Scripts/Support/ScriptFilter.swift:16",
+"Screens/Takes/TakesView.swift:92"
+],
+"Keep posting with Cue": [
+"Screens/Shared/Paywall/PaywallCopy.swift:12"
+],
+"Create more. Sound like you.": [
+"Screens/Shared/Paywall/PaywallCopy.swift:13"
+],
+"You've used your %lld free exports. Every feature stays open — start 7 days free to keep exporting. Your takes are safe.": [
+"Screens/Shared/Paywall/PaywallCopy.swift:20"
+],
+"Everything in Cue is free while you try it — %lld exports included. After that, 7 days free, then monthly or annual.": [
+"Screens/Shared/Paywall/PaywallCopy.swift:22"
+],
+"Unlimited video exports, up to 4K": [
+"Screens/Shared/Paywall/PaywallCopy.swift:28"
+],
+"Every feature stays open: AI, Creator Voice, Quick edit, Clean Up, captions": [
+"Screens/Shared/Paywall/PaywallCopy.swift:29"
+],
+"Your takes are always yours — nothing is ever locked or deleted": [
+"Screens/Shared/Paywall/PaywallCopy.swift:30"
+],
+"Trial started — exporting now": [
+"Screens/Shared/Paywall/PaywallCopy.swift:36"
+],
+"Welcome to Cue Pro — exporting now": [
+"Screens/Shared/Paywall/PaywallCopy.swift:36"
+],
+"Trial started — enjoy Cue Pro": [
+"Screens/Shared/Paywall/PaywallCopy.swift:38"
+],
+"Welcome to Cue Pro": [
+"Screens/Shared/Paywall/PaywallCopy.swift:38"
+],
+"%@ / year": [
+"Screens/Shared/Paywall/PaywallCopy.swift:45"
+],
+"%@ / month": [
+"Screens/Shared/Paywall/PaywallCopy.swift:46"
+],
+"%@/mo": [
+"Screens/Shared/Paywall/PaywallCopy.swift:53"
+],
+"%lld days free": [
+"Screens/Shared/Paywall/PaywallCopy.swift:54"
+],
+"Cancel anytime": [
+"Screens/Shared/Paywall/PaywallCopy.swift:57"
+],
+"%lld days free · cancel anytime": [
+"Screens/Shared/Paywall/PaywallCopy.swift:58"
+],
+"Start %lld-day free trial": [
+"Screens/Shared/Paywall/PaywallCopy.swift:63"
+],
+"Subscribe for %@/year": [
+"Screens/Shared/Paywall/PaywallCopy.swift:66"
+],
+"Subscribe for %@/month": [
+"Screens/Shared/Paywall/PaywallCopy.swift:67"
+],
+"Free for %lld days, then %@/year. Cancel anytime in Settings.": [
+"Screens/Shared/Paywall/PaywallCopy.swift:76"
+],
+"Renews yearly at %@. Cancel anytime in Settings.": [
+"Screens/Shared/Paywall/PaywallCopy.swift:78"
+],
+"Free for %lld days, then %@/month. Cancel anytime in Settings.": [
+"Screens/Shared/Paywall/PaywallCopy.swift:81"
+],
+"Renews monthly at %@. Cancel anytime in Settings.": [
+"Screens/Shared/Paywall/PaywallCopy.swift:83"
+],
+"SAVE %lld%%": [
+"Screens/Shared/Paywall/PaywallCopy.swift:89"
+],
+"Purchase": [
+"Screens/Shared/Paywall/PaywallView.swift:82"
+],
+"Restore": [
+"Screens/Shared/Paywall/PaywallView.swift:159"
+],
+"Terms": [
+"Screens/Shared/Paywall/PaywallView.swift:160"
+],
+"Privacy": [
+"Screens/Shared/Paywall/PaywallView.swift:163",
+"Screens/Shared/Paywall/PaywallView.swift:165"
+],
+"Scripts and takes stay on this iPhone": [
+"Screens/Shared/Privacy/PrivacySheet.swift:17"
+],
+"Cue has no server. Your scripts, takes and Creator Voice are stored on this device and in your device backups. Sign in with Apple is optional and only keeps your Apple ID on this iPhone.": [
+"Screens/Shared/Privacy/PrivacySheet.swift:18"
+],
+"Apple Intelligence, nothing else": [
+"Screens/Shared/Privacy/PrivacySheet.swift:22"
+],
+"Rewrites, hooks and theme ideas run on the device. A free-form Prompt is written with Apple's Private Cloud Compute, which uses your request only to answer it and doesn't keep it. No other AI service is involved.": [
+"Screens/Shared/Privacy/PrivacySheet.swift:23"
+],
+"You decide what leaves": [
+"Screens/Shared/Privacy/PrivacySheet.swift:27"
+],
+"Videos leave Cue only when you save them to Photos or share them. Camera and microphone are used only while the camera is open.": [
+"Screens/Shared/Privacy/PrivacySheet.swift:28"
+],
+"Privacy policy": [
+"Screens/Shared/Privacy/PrivacySheet.swift:32"
+],
+"Describe any video and get a ready-to-read script — in your voice.": [
+"Screens/Shared/PromptCard/PromptCard.swift:39"
+],
+"Prompt, with Apple Intelligence": [
+"Screens/Shared/PromptCard/PromptCard.swift:76"
+],
+"Describe any video and get a ready-to-read script": [
+"Screens/Shared/PromptCard/PromptCard.swift:77"
+],
+"Play, pause, change speed and move through the script from a second iPhone or iPad. Both need Cue, and Wi-Fi or Bluetooth on.": [
+"Screens/Shared/RemoteControl/RemotePairingPanel.swift:37"
+],
+"Pairing QR code": [
+"Screens/Shared/RemoteControl/RemotePairingPanel.swift:56"
+],
+"Code %@": [
+"Screens/Shared/RemoteControl/RemotePairingPanel.swift:61"
+],
+"On the other iPhone or iPad, scan this with the Camera — or open Cue › Profile › Creator Setup › Remote Control and enter the code.": [
+"Screens/Shared/RemoteControl/RemotePairingPanel.swift:64"
+],
+"Disconnect": [
+"Screens/Shared/RemoteControl/RemotePairingPanel.swift:96"
+],
+"This device is a remote right now.": [
+"Screens/Shared/RemoteControl/RemotePairingPanel.swift:121"
+],
+"Open remote": [
+"Screens/Shared/RemoteControl/RemotePairingPanel.swift:125"
+],
+"Stop": [
+"Screens/Shared/RemoteControl/RemotePairingPanel.swift:127"
+],
+"Best": [
+"Screens/Shared/TakeTile/BestBadge.swift:11"
+],
+"best take": [
+"Screens/Shared/TakeTile/TakeTile.swift:46"
+],
+"Retake": [
+"Screens/TakeReview/Sections/ReviewActionBar.swift:22"
+],
+"Save": [
+"Screens/TakeReview/Sections/ReviewActionBar.swift:23"
+],
+"Best take": [
+"Screens/TakeReview/Sections/ReviewTopBar.swift:38"
+],
+"Your takes · %lld": [
+"Screens/TakeReview/Sections/YourTakesStrip.swift:20"
+],
+"Tap ☆ to pick your best": [
+"Screens/TakeReview/Sections/YourTakesStrip.swift:25"
+],
+"Suggest best": [
+"Screens/TakeReview/Sections/YourTakesStrip.swift:49"
+],
+"%@, best take": [
+"Screens/TakeReview/Sections/YourTakesStrip.swift:91"
+],
+"Save video": [
+"Screens/TakeReview/Share/ShareToSheet.swift:23"
+],
+"Created for %@ — framed and safe-zoned for it": [
+"Screens/TakeReview/Share/ShareToSheet.swift:31"
+],
+"Share to": [
+"Screens/TakeReview/Share/ShareToSheet.swift:51"
+],
+"%@, recommended": [
+"Screens/TakeReview/Share/ShareToSheet.swift:104"
+],
+"Burn in captions": [
+"Screens/TakeReview/Share/ShareToSheet.swift:127"
+],
+"Saved to Photos with the video": [
+"Screens/TakeReview/Share/ShareToSheet.swift:136"
+],
+"Save cover": [
+"Screens/TakeReview/Share/ShareToSheet.swift:141"
+],
+"Go Pro": [
+"Screens/TakeReview/Share/ShareToSheet.swift:166",
+"Screens/TakeReview/TakeReviewView.swift:180"
+],
+"This take was deleted": [
+"Screens/TakeReview/TakeReviewView.swift:64"
+],
+"Delete this take?": [
+"Screens/TakeReview/TakeReviewView.swift:71"
+],
+"Delete take": [
+"Screens/TakeReview/TakeReviewView.swift:72",
+"Screens/Takes/TakesView.swift:47",
+"Screens/Takes/TakesView.swift:140"
+],
+"The video is removed from Cue. Copies you saved to Photos stay there.": [
+"Screens/TakeReview/TakeReviewView.swift:77"
+],
+"EDITED": [
+"Screens/TakeReview/TakeReviewView.swift:166"
+],
+"%lld of %lld free exports": [
+"Screens/TakeReview/TakeReviewViewModel.swift:98"
+],
+"Free exports used — 7 days free to keep exporting": [
+"Screens/TakeReview/TakeReviewViewModel.swift:99"
+],
+"%@ looks best — tap ☆ to keep it": [
+"Screens/TakeReview/TakeReviewViewModel.swift:142"
+],
+"%@ marked as best": [
+"Screens/TakeReview/TakeReviewViewModel.swift:150"
+],
+"%@ deleted": [
+"Screens/TakeReview/TakeReviewViewModel.swift:160"
+],
+"Cover saved to Photos": [
+"Screens/TakeReview/TakeReviewViewModel.swift:173"
+],
+"Ready to post on %@": [
+"Screens/TakeReview/TakeReviewViewModel.swift:250"
+],
+"%lld of %lld free exports left": [
+"Screens/TakeReview/TakeReviewViewModel.swift:252",
+"Screens/TakeReview/TakeReviewViewModel.swift:259"
+],
+"Video and cover saved to Photos": [
+"Screens/TakeReview/TakeReviewViewModel.swift:256"
+],
+"Saved to Photos": [
+"Screens/TakeReview/TakeReviewViewModel.swift:256"
+],
+"Saved to Photos · %lld of %lld free exports left": [
+"Screens/TakeReview/TakeReviewViewModel.swift:260"
+],
+"· %@ · %@": [
+"Screens/Takes/Rows/TakeVideoRow.swift:26"
+],
+"Edited": [
+"Screens/Takes/Rows/TakeVideoRow.swift:86",
+"Screens/Takes/Rows/TakeVideoRow.swift:119",
+"Screens/Takes/Support/TakeLibraryView.swift:20"
+],
+"Not shared": [
+"Screens/Takes/Rows/TakeVideoRow.swift:89",
+"Screens/Takes/Rows/TakeVideoRow.swift:120",
+"Screens/Takes/Support/TakeLibraryView.swift:19"
+],
+"Today": [
+"Screens/Takes/Support/TakeDay.swift:16"
+],
+"Yesterday": [
+"Screens/Takes/Support/TakeDay.swift:17"
+],
+"Earlier": [
+"Screens/Takes/Support/TakeDay.swift:18"
+],
+"All takes": [
+"Screens/Takes/Support/TakeLibraryView.swift:17"
+],
+"★ Best": [
+"Screens/Takes/Support/TakeLibraryView.swift:18"
+],
+"Best: %@": [
+"Screens/Takes/Support/TakeVideo.swift:36"
+],
+"No takes yet": [
+"Screens/Takes/TakesView.swift:25"
+],
+"Your recordings show up here, one row per video.": [
+"Screens/Takes/TakesView.swift:27"
+],
+"Record a take": [
+"Screens/Takes/TakesView.swift:29"
+],
+"Delete %lld takes": [
+"Screens/Takes/TakesView.swift:47"
+],
+"The videos are removed from Cue. Copies you saved to Photos stay there.": [
+"Screens/Takes/TakesView.swift:51"
+],
+"No takes here yet.": [
+"Screens/Takes/TakesView.swift:61"
+],
+"Delete takes": [
+"Screens/Takes/TakesView.swift:140"
+],
+"%lld takes · %lld videos": [
+"Screens/Takes/TakesViewModel.swift:43"
+],
+"Today · %@": [
+"Screens/Takes/TakesViewModel.swift:56"
+],
+"Yesterday · %@": [
+"Screens/Takes/TakesViewModel.swift:57"
+],
+"Take deleted": [
+"Screens/Takes/TakesViewModel.swift:69"
+],
+"%lld takes deleted": [
+"Screens/Takes/TakesViewModel.swift:70"
+],
+"Record script": [
+"SupportFiles/AppIntents/RecordScriptIntent.swift:11"
+],
+"Cancel countdown": [
+"manual"
+],
+"Describe your next video…": [
+"manual"
+],
+"Starts a new script from a prompt, a blank page or a document.": [
+"manual"
+],
+"Opens the camera with the script ready to scroll under the lens.": [
+"manual"
+]
+}

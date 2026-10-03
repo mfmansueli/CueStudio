@@ -54,6 +54,7 @@ struct PrompterTextView: View {
             onParagraphFrame: { viewModel.updateParagraphFrame($1, at: $0) }
         )
             .equatable()
+            .environment(\.layoutDirection, viewModel.isScriptRightToLeft ? .rightToLeft : .leftToRight)
             .shadow(color: castsShadow ? Palette.textShadow : .clear, radius: 1.5, x: 0, y: 1)
             .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { height in
                 viewModel.updateLayout(contentHeight: height)

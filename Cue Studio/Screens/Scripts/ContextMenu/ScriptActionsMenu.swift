@@ -44,6 +44,26 @@ struct ScriptActionsMenu: View {
                 Label("Make a version for…", systemImage: "rectangle.on.rectangle")
             }
         }
+        if let setLanguage = actions.setLanguage {
+            Menu {
+                Picker(selection: Binding(get: { script.language }, set: { setLanguage(script, $0) })) {
+                    Text("Auto-detect").tag(CueLanguage?.none)
+                    ForEach(CueLanguage.allCases) { language in
+                        Text(language.nativeName).tag(CueLanguage?.some(language))
+                    }
+                } label: {
+                    EmptyView()
+                }
+                .pickerStyle(.inline)
+            } label: {
+                Label {
+                    Text("Language · \(script.language?.nativeName ?? String(localized: "Auto-detect"))")
+                } icon: {
+                    Image(systemName: "character.bubble")
+                }
+            }
+            .accessibilityIdentifier("script.languageMenu")
+        }
         ShareLink(item: script.shareText, subject: Text(script.displayTitle)) {
             Label("Share", systemImage: "square.and.arrow.up")
         }

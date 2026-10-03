@@ -32,6 +32,11 @@ struct LayerTrackView: View {
     }
 
     var body: some View {
+        leftToRightContent.environment(\.layoutDirection, .leftToRight)
+    }
+
+    /// Time, video and the camera frame run left to right in every language, Arabic included.
+    @ViewBuilder private var leftToRightContent: some View {
         GeometryReader { proxy in
             let width = proxy.size.width
             let lanes = LayerLanes.lanes(for: bars)

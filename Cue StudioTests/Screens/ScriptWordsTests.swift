@@ -21,6 +21,29 @@ struct ScriptWordsTests {
         #expect(ScriptWords.tokens(in: "It’s 10x") == ["its", "10x"])
     }
 
+    @Test func languagesWithSpacesKeepOneTokenPerWord() {
+        #expect(ScriptWords.tokens(in: "Bom dia, pessoal!") == ["bom", "dia", "pessoal"])
+        #expect(ScriptWords.tokens(in: "Merhaba arkadaşlar") == ["merhaba", "arkadaslar"])
+        #expect(ScriptWords.tokens(in: "मेरे दोस्तों नमस्ते").count == 3)
+        #expect(ScriptWords.tokens(in: "مرحبا بكم").count == 2)
+    }
+
+    @Test func languagesWithoutSpacesAreSplitIntoWords() {
+        // A whole Japanese, Chinese or Thai sentence has no spaces; it must not be one token.
+        #expect(ScriptWords.tokens(in: "今日はいい天気ですね").count > 1)
+        #expect(ScriptWords.tokens(in: "大家好欢迎来到我的频道").count > 1)
+        #expect(ScriptWords.tokens(in: "สวัสดีครับทุกคน").count > 1)
+        // The script and what's heard are split the same way, so they match word for word.
+        #expect(ScriptWords.tokens(in: "今日はいい天気ですね。") == ScriptWords.tokens(in: "今日はいい天気ですね"))
+    }
+
+    @Test func splitWordsKeepTheirPlaceInTheParagraph() {
+        let words = ScriptWords(text: "大家好欢迎来到我的频道")
+        #expect(words.count > 1)
+        #expect(words.locations.map(\.fraction) == words.locations.map(\.fraction).sorted())
+        #expect(words.locations.first?.fraction == 0)
+    }
+
     @Test func cuesAreNotSpoken() {
         let words = ScriptWords(text: "Hey there [pause]\n[smile] Second line")
         #expect(words.tokens == ["hey", "there", "second", "line"])

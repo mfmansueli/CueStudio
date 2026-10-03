@@ -7,8 +7,8 @@ import Foundation
 
 /// Storage the app starts with. Release builds always use the real stores; Debug builds accept
 /// launch arguments so UI tests start from a known state:
-/// - `-uiTestInMemory`: in-memory scripts, takes and export count, and a throwaway UserDefaults
-///   suite.
+/// - `-uiTestInMemory`: in-memory scripts, takes and export count, a throwaway UserDefaults
+///   suite, and an interface language that isn't kept for the next launch.
 /// - `-uiTestSeedSamples`: with the above, starts with the sample scripts and takes.
 /// - `-uiTestPro`: starts on Cue Pro (read by `StoreManager`).
 /// - `-uiTestStubAI` / `-uiTestNoAI`: instant, predictable AI, or none at all.
@@ -27,6 +27,7 @@ struct LaunchOptions {
     var writer: ScriptWriting = ScriptAIService()
     var credentialChecker: AppleIDCredentialChecking = AppleIDCredentialChecker()
     var remoteTransport: RemoteTransport = MultipeerRemoteTransport()
+    var interfaceLanguage: InterfaceLanguageApplying = InterfaceLanguageStore()
 
     static func fromProcess() -> LaunchOptions {
         var options = LaunchOptions()
@@ -53,6 +54,8 @@ struct LaunchOptions {
             options.defaults = UserDefaults(suiteName: suite) ?? .standard
             options.platformRules = PlatformRulesService(cacheURL: nil, remoteURL: nil)
             options.remoteTransport = DemoRemoteTransport(connects: arguments.contains("-uiTestRemoteConnects"))
+            // Switching languages in a test changes this run only, never the next launch.
+            options.interfaceLanguage = InterfaceLanguageStore(persists: false)
             if arguments.contains("-uiTestStubAI") || arguments.contains("-uiTestNoAI") {
                 options.writer = StubScriptWriter(available: !arguments.contains("-uiTestNoAI"))
             }

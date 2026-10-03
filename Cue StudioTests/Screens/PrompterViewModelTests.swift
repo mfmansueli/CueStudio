@@ -23,7 +23,10 @@ struct PrompterViewModelTests {
         let defaults: TestDefaults
     }
 
-    private func makeScenario(script: Script? = TestData.script(), mode: PrompterMode = .selfie, monetization: Bool = true) -> Scenario {
+    private func makeScenario(
+        script: Script? = TestData.script(), mode: PrompterMode = .selfie, monetization: Bool = true,
+        voiceLanguage: VoiceFollowingLanguage = .sameAsScript
+    ) -> Scenario {
         let defaults = TestDefaults()
         let library = ScriptLibraryService(repository: FakeScriptRepository(scripts: script.map { [$0] } ?? []))
         library.load()
@@ -42,7 +45,7 @@ struct PrompterViewModelTests {
             launch: PrompterLaunch(scriptID: script?.id, mode: mode),
             library: library, takes: takes, preferences: preferences, profile: profile, rules: TestData.rulesService(),
             camera: camera, audio: audio, microphones: microphones, speech: speech,
-            remote: RemoteControlService(transport: remote), toast: toast
+            remote: RemoteControlService(transport: remote), toast: toast, voiceFollowingLanguage: voiceLanguage
         )
         return Scenario(
             viewModel: viewModel, camera: camera, audio: audio, speech: speech, takes: takes,
@@ -364,6 +367,65 @@ struct PrompterViewModelTests {
         await settle()
         #expect(!scenario.viewModel.followsSpeech)
         await scenario.viewModel.disappear()
+    }
+
+    // MARK: - Voice Following language
+
+    /// Voice follow on `script` with the given Voice Following language, until recognition was asked.
+    private func startListening(to script: Script, voiceLanguage: VoiceFollowingLanguage) async -> Scenario {
+        let scenario = makeScenario(script: script, mode: .studio, voiceLanguage: voiceLanguage)
+        scenario.preferences.prompter.scrollMode = .voice
+        scenario.viewModel.scrollModeChanged()
+        await waitUntil { scenario.speech.startCount > 0 }
+        await settle()
+        return scenario
+    }
+
+    @Test func scriptsWithoutALanguageAreDetectedAsBefore() async {
+        let scenario = await startListening(to: TestData.script(), voiceLanguage: .sameAsScript)
+        defer { scenario.defaults.tearDown() }
+        #expect(scenario.speech.requestedLanguages == [.detectFromScript])
+        #expect(scenario.viewModel.followsSpeech)
+        await scenario.viewModel.disappear()
+    }
+
+    @Test func voiceFollowingListensInTheScriptsLanguage() async {
+        let script = TestData.script(text: "Bom dia, pessoal.", language: .portugueseBrazil)
+        let scenario = await startListening(to: script, voiceLanguage: .sameAsScript)
+        defer { scenario.defaults.tearDown() }
+        #expect(scenario.speech.requestedLanguages == [.language(.portugueseBrazil)])
+        await scenario.viewModel.disappear()
+    }
+
+    @Test func voiceFollowingLanguageWinsOverTheScripts() async {
+        let script = TestData.script(text: "Bom dia, pessoal.", language: .portugueseBrazil)
+        let scenario = await startListening(to: script, voiceLanguage: .language(.english))
+        defer { scenario.defaults.tearDown() }
+        #expect(scenario.speech.requestedLanguages == [.language(.english)])
+        #expect(scenario.viewModel.followsSpeech)
+        await scenario.viewModel.disappear()
+    }
+
+    @Test func anUnavailableLanguageSaysSoAndNeverSwitches() async {
+        let scenario = makeScenario(script: TestData.script(language: .thai), mode: .studio)
+        defer { scenario.defaults.tearDown() }
+        scenario.speech.availability[.thai] = .unavailable
+        scenario.preferences.prompter.scrollMode = .voice
+        scenario.viewModel.scrollModeChanged()
+        await waitUntil { scenario.toast.message != nil }
+        #expect(scenario.speech.requestedLanguages == [.language(.thai)])
+        #expect(!scenario.viewModel.followsSpeech)
+        #expect(scenario.toast.message == "Voice Following can't listen in Thai on this device. The text moves while you speak.")
+        await scenario.viewModel.disappear()
+    }
+
+    @Test func arabicScriptsReadRightToLeft() {
+        let arabic = makeScenario(script: TestData.script(text: "مرحبا بكم في القناة"))
+        defer { arabic.defaults.tearDown() }
+        #expect(arabic.viewModel.isScriptRightToLeft)
+        let english = makeScenario(script: TestData.script(text: "Hello everyone"))
+        defer { english.defaults.tearDown() }
+        #expect(!english.viewModel.isScriptRightToLeft)
     }
 
     @Test func speedStartsAtTheNaturalPace() {

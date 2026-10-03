@@ -18,11 +18,18 @@ final class ScriptLibraryService {
 
     private let repository: ScriptRepository
     private let now: () -> Date
+    /// Language & Region › Script Language: what a new script starts in (nil is Auto-detect).
+    private let defaultLanguage: () -> CueLanguage?
     private let logger = Logger(subsystem: "studio.cue", category: "ScriptLibrary")
 
-    init(repository: ScriptRepository = LocalScriptRepository(), now: @escaping () -> Date = Date.init) {
+    init(
+        repository: ScriptRepository = LocalScriptRepository(),
+        now: @escaping () -> Date = Date.init,
+        defaultLanguage: @escaping () -> CueLanguage? = { nil }
+    ) {
         self.repository = repository
         self.now = now
+        self.defaultLanguage = defaultLanguage
     }
 
     // MARK: - Loading
@@ -45,15 +52,17 @@ final class ScriptLibraryService {
 
     // MARK: - Scripts
 
+    /// A new script is in `language`, or in the Script Language from Language & Region.
     @discardableResult
     func create(
         title: String, text: String, platform: Platform, type: ScriptType? = nil, folder: String? = nil,
-        factCheck: Bool = false
+        factCheck: Bool = false, language: CueLanguage? = nil
     ) -> Script {
         let date = now()
         let script = Script(
             title: title, text: text, platform: platform, type: type,
-            folder: folder, createdAt: date, updatedAt: date, factCheck: factCheck
+            folder: folder, createdAt: date, updatedAt: date, factCheck: factCheck,
+            language: language ?? defaultLanguage()
         )
         scripts.insert(script, at: 0)
         persist()
@@ -76,6 +85,14 @@ final class ScriptLibraryService {
     func markFactChecked(_ id: UUID) {
         guard let index = scripts.firstIndex(where: { $0.id == id }), scripts[index].factCheck else { return }
         scripts[index].factCheck = false
+        persist()
+    }
+
+    /// Tells Cue which language the script is in (nil is Auto-detect). The text stays exactly as
+    /// written, and it isn't an edit, so the order stays the same.
+    func setLanguage(_ language: CueLanguage?, of id: UUID) {
+        guard let index = scripts.firstIndex(where: { $0.id == id }), scripts[index].language != language else { return }
+        scripts[index].language = language
         persist()
     }
 

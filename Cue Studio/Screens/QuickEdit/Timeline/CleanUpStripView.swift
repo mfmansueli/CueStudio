@@ -15,6 +15,11 @@ struct CleanUpStripView: View {
     @GestureState private var isTouching = false
 
     var body: some View {
+        leftToRightContent.environment(\.layoutDirection, .leftToRight)
+    }
+
+    /// Time, video and the camera frame run left to right in every language, Arabic included.
+    @ViewBuilder private var leftToRightContent: some View {
         GeometryReader { proxy in
             let layout = TimelineLayout(timeline: viewModel.edit.timeline, width: proxy.size.width, inset: 0, showsTrimmedEnds: false)
             ZStack(alignment: .topLeading) {

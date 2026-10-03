@@ -235,7 +235,12 @@ final class ScriptDetailViewModel {
 
     // MARK: - Tools
 
-    func run(_ tool: ScriptTool, language: TranslationLanguage? = nil) async {
+    /// Translate offers every Cue language but the one the script is already in.
+    var translationLanguages: [CueLanguage] {
+        CueLanguage.allCases.filter { $0 != script?.language }
+    }
+
+    func run(_ tool: ScriptTool, language: CueLanguage? = nil) async {
         guard runningTool == nil else { return }
         switch tool {
         case .newHooks:
@@ -281,7 +286,7 @@ final class ScriptDetailViewModel {
         }
     }
 
-    private func translate(into language: TranslationLanguage) async {
+    private func translate(into language: CueLanguage) async {
         guard let script else { return }
         guard writer.isLanguageModelAvailable else {
             toast.show(writer.unavailableReason ?? String(localized: "AI tools aren't available right now."))
@@ -291,11 +296,12 @@ final class ScriptDetailViewModel {
         defer { runningTool = nil }
         do {
             var context = rewriteContext
-            context.language = language.promptName
+            context.language = language.englishName
             let translated = try await writer.rewrite(workingText, with: .translate, context: context)
             library.create(
                 title: String(localized: "\(script.displayTitle) (\(language.label))"),
-                text: translated, platform: script.platform, type: script.type, folder: script.folder
+                text: translated, platform: script.platform, type: script.type, folder: script.folder,
+                language: language
             )
             toast.show(String(localized: "\(language.label) version saved as a copy"))
         } catch {

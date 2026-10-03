@@ -11,6 +11,11 @@ struct GridOverlay: View {
     let frame: CGRect
 
     var body: some View {
+        leftToRightContent.environment(\.layoutDirection, .leftToRight)
+    }
+
+    /// Time, video and the camera frame run left to right in every language, Arabic included.
+    @ViewBuilder private var leftToRightContent: some View {
         Canvas { context, _ in
             var path = Path()
             for fraction in [1.0 / 3.0, 2.0 / 3.0] {

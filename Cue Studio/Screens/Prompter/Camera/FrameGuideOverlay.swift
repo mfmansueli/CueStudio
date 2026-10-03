@@ -12,6 +12,11 @@ struct FrameGuideOverlay: View {
     let frame: CGRect
 
     var body: some View {
+        leftToRightContent.environment(\.layoutDirection, .leftToRight)
+    }
+
+    /// Time, video and the camera frame run left to right in every language, Arabic included.
+    @ViewBuilder private var leftToRightContent: some View {
         Canvas { context, size in
             var outside = Path(CGRect(origin: .zero, size: size))
             outside.addRect(frame)

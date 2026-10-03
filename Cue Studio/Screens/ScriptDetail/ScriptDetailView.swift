@@ -117,7 +117,8 @@ struct ScriptDetailView: View {
                 viewModel.delete()
                 dismiss()
             },
-            makeVersion: { _, platform in Task { await viewModel.makeVersion(for: platform) } }
+            makeVersion: { _, platform in Task { await viewModel.makeVersion(for: platform) } },
+            setLanguage: { library.setLanguage($1, of: $0.id) }
         )
     }
 }

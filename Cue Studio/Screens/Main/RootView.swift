@@ -12,9 +12,17 @@ struct RootView: View {
     let services: AppServices
 
     @Environment(\.scenePhase) private var scenePhase
+    @Environment(\.locale) private var systemLocale
+    @Environment(\.layoutDirection) private var systemLayoutDirection
 
     var body: some View {
         MainView(services: services)
+            // Language & Region › App Language: a new language rebuilds the interface, so every
+            // string is read again in it. Navigation and the selected tab live in
+            // PresentationService, so the creator stays where they were.
+            .id(services.languages.interfaceLocalization)
+            .environment(\.locale, services.languages.interfaceLocale ?? systemLocale)
+            .environment(\.layoutDirection, services.languages.layoutDirection ?? systemLayoutDirection)
             // Inside the environment: the host reads ToastService from it.
             .toastHost()
             .environment(services)

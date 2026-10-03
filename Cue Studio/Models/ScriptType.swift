@@ -98,7 +98,13 @@ nonisolated enum ScriptType: String, Codable, CaseIterable, Identifiable, Sendab
         case .opinion:
             return ScriptStructure(
                 label: String(localized: "Hot take / reply"),
-                blocks: [String(localized: "Hook"), String(localized: "Take"), String(localized: "Why"), String(localized: "Question")],
+                blocks: [
+                    String(localized: "Hook"),
+                    // Its own key: "Take" alone is also a recording ("this take") in other languages.
+                    String(localized: "script.block.take", defaultValue: "Take", comment: "Opinion script block: the creator's opinion, as in “hot take”."),
+                    String(localized: "Why"),
+                    String(localized: "Question"),
+                ],
                 tones: generic.tones, tools: generic.tools,
                 hooks: [
                     String(localized: "Unpopular opinion, but hear me out."),

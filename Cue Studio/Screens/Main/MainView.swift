@@ -32,7 +32,12 @@ struct MainView: View {
                 NavigationStack { TakesView(services: services) }
             }
             Tab("Profile", systemImage: "person.crop.circle", value: AppTab.profile) {
-                NavigationStack { ProfileView() }
+                NavigationStack(path: $presentation.profilePath) {
+                    ProfileView()
+                        .navigationDestination(for: ProfileRoute.self) { route in
+                            LanguageSettingsDestination(route: route)
+                        }
+                }
             }
             // Not a destination: selecting it opens "Start recording".
             Tab(value: AppTab.record) {

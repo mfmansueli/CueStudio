@@ -19,6 +19,11 @@ struct OverlayEditingLayer: View {
     @State private var mediaScale: CGFloat = 1
 
     var body: some View {
+        leftToRightContent.environment(\.layoutDirection, .leftToRight)
+    }
+
+    /// Time, video and the camera frame run left to right in every language, Arabic included.
+    @ViewBuilder private var leftToRightContent: some View {
         ZStack(alignment: .topLeading) {
             Color.clear.allowsHitTesting(false)
             if viewModel.tool == .text {
