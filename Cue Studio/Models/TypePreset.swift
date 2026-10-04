@@ -147,6 +147,9 @@ nonisolated enum TypePreset: String, Codable, CaseIterable, Identifiable, Sendab
                 font: .spaceGrotesk, weight: .semibold, sizeScale: 0.9, tracking: 0.04, isUppercase: true, color: .white,
                 background: .box, backgroundColor: .black, backgroundOpacity: 0.8, hasShadow: false
             )
+        case .nebula:
+            // The violet glow alone doesn't separate a line from a bright picture: a soft shadow under it does.
+            TextLook(font: .syne, weight: .bold, sizeScale: 1, color: .lavender, hasShadow: true, glow: 0.6)
         default:
             {
                 var look = titleLook

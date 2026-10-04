@@ -35,14 +35,16 @@ ao protótipo do Claude Design). Atualize-o junto com a UI.
   `-uiTestRemoteConnects` (um iPad de mentira entra logo depois do pareamento do Remote Control),
   `-uiTestAppearance <light|dark>` (as telas do Cue começam claras ou escuras, como em Settings › Appearance),
   `-uiTestAppLanguage <lproj>` (a interface começa nesse idioma, em memória, sem mudar o simulador).
+  v27: `-uiTestOnboarding`, `-uiTestPermissions granted|denied`, `-uiTestSky off|calm|lively` (off por padrão nos testes), `-uiTestAppsInstalled`,
+  `-uiTestCatalogue <seção>` (ver `DESIGN_PROJECT.md`, seção 12).
 - Idiomas: `LOCALIZATION.md` (três idiomas independentes, terminologia, RTL). Todo texto novo entra
-  nos 15 idiomas dos String Catalogs. O teste de fala de verdade é opt-in:
+  nos 20 idiomas dos String Catalogs. O teste de fala de verdade é opt-in:
   `TEST_RUNNER_CUE_SPEECH_E2E=1 xcodebuild … -only-testing:"Cue StudioTests/VoiceFollowingSpeechTests" test`,
   num aparelho: o Simulator lista os idiomas mas não roda o reconhecimento de fala. Com o mesmo
   flag, `-only-testing:"Cue StudioTests/VoiceFollowingLatencyTests"` mede a latência do Voice
   Following no aparelho (uma gravação tocada em tempo real pelo caminho de áudio da câmera: voz →
   indicador, palavra → texto p50/p95, quanto o texto se adianta, sala com ruído) e
-  `VoiceFollowingSpeechTests/availabilityOnThisDevice()` lista os 15 idiomas sem baixar nada.
+  `VoiceFollowingSpeechTests/availabilityOnThisDevice()` lista os 20 idiomas sem baixar nada.
 - A prévia do Quick edit tem uma medição opt-in no aparelho: `TEST_RUNNER_CUE_PREVIEW_LATENCY=1 xcodebuild …
   -only-testing:"Cue StudioTests/QuickEditPreviewLatencyTests" test` (quanto uma mudança leva para
   aparecer e se a imagem some, com filtro, texto, fundo Blur, 4K e corte).

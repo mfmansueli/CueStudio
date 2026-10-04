@@ -10,6 +10,12 @@
             "value" : "نص جديد في ${applicationName}"
           }
         },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nyt manuskript i ${applicationName}"
+          }
+        },
         "de" : {
           "stringUnit" : {
             "state" : "needs_review",
@@ -67,10 +73,28 @@
             "value" : "${applicationName}에서 새 대본"
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nytt manus i ${applicationName}"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nieuw script in ${applicationName}"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Novo roteiro no ${applicationName}"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nytt manus i ${applicationName}"
           }
         },
         "th" : {
@@ -96,6 +120,12 @@
             "state" : "needs_review",
             "value" : "在${applicationName}中新建脚本"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在 ${applicationName} 中建立新腳本"
+          }
         }
       }
     },
@@ -106,6 +136,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "اقرأ ${script} مع ${applicationName}"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Læs ${script} med ${applicationName}"
           }
         },
         "de" : {
@@ -156,10 +192,28 @@
             "value" : "${applicationName}에서 ${script} 읽기"
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les ${script} med ${applicationName}"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lees ${script} met ${applicationName}"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ler ${script} com o ${applicationName}"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Läs ${script} med ${applicationName}"
           }
         },
         "th" : {
@@ -185,6 +239,12 @@
             "state" : "translated",
             "value" : "用${applicationName}读${script}"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "用 ${applicationName} 朗讀 ${script}"
+          }
         }
       }
     },
@@ -195,6 +255,12 @@
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "سجّل ${script} في ${applicationName}"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Optag ${script} i ${applicationName}"
           }
         },
         "de" : {
@@ -254,10 +320,28 @@
             "value" : "${applicationName}에서 ${script} 녹화"
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ta opp ${script} i ${applicationName}"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Neem ${script} op in ${applicationName}"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Gravar ${script} no ${applicationName}"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spela in ${script} i ${applicationName}"
           }
         },
         "th" : {
@@ -283,6 +367,12 @@
             "state" : "needs_review",
             "value" : "在${applicationName}中录制${script}"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在 ${applicationName} 中錄製 ${script}"
+          }
         }
       }
     },
@@ -293,6 +383,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "اكتب نصًا مع ${applicationName}"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skriv et manuskript med ${applicationName}"
           }
         },
         "de" : {
@@ -343,10 +439,28 @@
             "value" : "${applicationName}에서 대본 쓰기"
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skriv et manus med ${applicationName}"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schrijf een script met ${applicationName}"
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Escrever um roteiro com o ${applicationName}"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skriv ett manus med ${applicationName}"
           }
         },
         "th" : {
@@ -371,6 +485,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "用${applicationName}写脚本"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "用 ${applicationName} 撰寫腳本"
           }
         }
       }

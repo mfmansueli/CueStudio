@@ -26,7 +26,10 @@ final class ScriptLibraryUITests: XCTestCase {
         XCTAssertTrue(app.buttons["Studio mode"].firstMatch.exists)
         // Its takes put it at a stage on the way to a posted video; a script with no take is ready to record.
         XCTAssertTrue(app.descendants(matching: .any).matching(NSPredicate(format: "label CONTAINS '3 takes'")).firstMatch.exists)
-        XCTAssertTrue(app.descendants(matching: .any).matching(NSPredicate(format: "label CONTAINS 'Ready to record'")).firstMatch.exists)
+        // The script without a take is further down the list: scroll to it (rows are built as they come into view).
+        let waiting = app.descendants(matching: .any).matching(NSPredicate(format: "label CONTAINS[c] 'Ready to record'")).firstMatch
+        for _ in 0..<4 where !waiting.exists { app.swipeUp() }
+        XCTAssertTrue(waiting.exists)
     }
 
     func testFilteringByDestination() {

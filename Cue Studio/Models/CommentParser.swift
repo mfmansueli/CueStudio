@@ -29,7 +29,8 @@ nonisolated enum CommentParser {
             if author == nil, body.isEmpty, let name = handle(in: line) {
                 author = name
                 // A handle with the comment after it, on the same line.
-                let rest = line.replacingOccurrences(of: name, with: "").trimmingCharacters(in: CharacterSet.whitespaces.union(.punctuationCharacters))
+                // Only the separators after the handle go ("@ana: …", "@ana – …"); the comment's own "?" and "!" stay.
+                let rest = String(line.dropFirst(name.count)).trimmingCharacters(in: CharacterSet.whitespaces.union(CharacterSet(charactersIn: ":,;–—-|·•")))
                 if !rest.isEmpty, !isNoise(rest), !isTimestamp(rest) { body.append(rest) }
                 continue
             }

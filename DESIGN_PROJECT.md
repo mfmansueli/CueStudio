@@ -20,6 +20,12 @@ identidade para **Night Session** (fundo índigo-preto, superfícies com tom vio
 violeta) e chega por fases; as **fases 1 a 7** (tokens, nomes, recorder, Takes e revisão, editor, página do script,
 My Cue Voice, Profile, Settings e Pro) estão feitas, e o que falta está nas seções 2 e 9 ("v26").
 
+A **v27 — Cue Universe** (`design/cue-universe-v27/`: `01 Direção de design`, `06 Specs/DESIGN-SPEC.md` e `SCREENS.md`, os
+boards em HTML/PNG, os ícones e os prompts) substitui a identidade pela metáfora do universo: o app é **só escuro** (a seção 2
+sobre o modo claro, a fase 8 da v26 e o ajuste Appearance **saíram**), a IA é violeta, o amarelo é ação e sinal, o vermelho é só
+gravação, cada **tópico** é um mundo (cor) e cada **plataforma** é uma galáxia. O que mudou e por quê está na **seção 12**; onde
+esta seção diz "claro" ou "Appearance", vale a 12.
+
 ---
 
 ## 1. Identidade
@@ -209,7 +215,7 @@ SF Symbols por significado: `doc.text` scripts · `film.stack` takes · `person.
 | Takes | `Screens/Takes` | v26: título grande "Takes" e, à direita, o alternador **Lista \| Grade** (`TakesLayoutToggle`, o escolhido em `segmentOn`; a escolha fica guardada, `DefaultsKey.takesLayout`) e o menu de plataforma "All ⌄" (`TakesPlatformMenu`). Sob o título, a contagem em amarelo mono ("12 TAKES / 05 VIDEOS", `HUDLine`) e o **card do pipeline** (`TakePipelineCard`): **TO PICK › IN EDIT › READY › SHARED** com a quantidade de vídeos em cada etapa, cada uma tocável (filtra; tocar de novo limpa) e, abaixo de um fio, a linha **NEXT** ("NEXT  POST IT · 3 MORNING HABITS ›": a primeira etapa com vídeo esperando, na ordem pick, edit, ready, com o vídeo que espera há mais tempo; tocar abre a revisão). Os números do pipeline respeitam a plataforma escolhida e não mudam quando uma etapa é escolhida. Seções Today / Yesterday / Earlier. **Grade** (padrão, 2 colunas): cada vídeo é um pôster 9:16 (`TakeVideoCard`) com a etapa no topo ("● READY", pílula escura com anel na cor da etapa; "×3" com várias takes), o título embaixo sobre quatro passos acesos até a etapa, e, sob o pôster, "● TIKTOK · 1:02"; o anel é amarelo em PICK BEST. **Lista**: `TakeVideoRow` com a etapa, o chip de takes e Edited; deslizar mostra **Share** (amarelo) e **Delete** (vermelho). **Segurar** (peek, nas duas) mostra o pôster e as ações Share, Edit, Retake, Mark as best e Delete (Share e Edit abrem a revisão já no "Share to" ou no Quick edit, `ReviewLaunchAction`). Uma etapa sem vídeos diz por quê ("All caught up", "Nothing ready yet"…). Sem takes: "No takes yet" + Record a take. **A etapa é derivada, nunca marcada à mão** (`TakeStage`): mais de uma take e nenhuma ★ → PICK; um rascunho do Quick edit aberto em alguma take → IN EDIT; nada exportado → READY; senão SHARED (a lista é recalculada quando a aba aparece). Os chips antigos (All takes / ★ Best / Not shared / Edited) saíram |
 | Profile | `Screens/Profile` | v26: o card do criador (avatar amarelo com a inicial, "Your name" / "@handle · Signed in with Apple", a pílula FREE/PRO) e o botão Sign in with Apple quando fora, no mesmo grupo; **My Cue Voice** (`MyCueVoiceCard`, sobre a aurora violeta): **sem o mínimo**, "Make scripts sound like you." / "4 quick questions — about 20 seconds. No typing needed." e o botão amarelo **Set up My Cue Voice** (abre as quatro perguntas); **com ele**, "✦ SOUNDS LIKE YOU · Live preview" (uma frase na voz do criador), o interruptor "Use my voice in AI scripts" (o mesmo estado do chip do card de Scripts) e **"WHAT CUE USES"**: as linhas **I am · Topics · Audience · Voice** com o valor, cada uma **abre a pergunta que a guarda** (`VoiceSetupSheet` com `startAt`, modo edit). Abaixo ficam os grupos de ajuste fino (How I sound, My phrases, Who I talk to, My style, Niche; tudo grátis); **Creator preferences** (Default "Create for", Monetization goals); o **card do plano** sobre a aurora noturna (`NightAuroraBackground`): **FREE PLAN** em mono com "Every feature included", "Free exports · 4 of 5 left" com a barra amarela, "✦ Apple Intelligence · On-device · unlimited" e o botão amarelo "Try Pro free for 7 days"; no Pro, **"● PRO ACTIVE"**, "Cue Pro · Annual · renews…", "Unlimited exports, up to 4K" e Manage (com um toque de amarelo na aurora); Sign out |
 | Settings | `Screens/Settings` | v26: título grande "Settings" e "How you record, every time."; o card **YOUR SETUP** (`SetupSummaryCard`, aurora violeta): a miniatura do formato padrão ("9:16") e quatro valores tocáveis (**Camera** Front · **Quality** 1080p 30 · **Mic** Automatic · **Text** 28 pt; os três primeiros abrem Recording, o último Prompter) com "Platforms can recommend another setup per video — you choose."; os **três tiles** (`SettingsTile`) **Recording** ("Front · Automatic"), **Prompter** ("Steady · 28 pt") e **Remote** ("Off" / "Connected"), cada um uma página; "Set it up once. Cue remembers how you create."; **GENERAL**: Language & Region (ícone azul, o idioma), **Appearance** (a faixa segmentada Automatic \| Light \| Dark com ícones, `AppearancePicker`, e a nota de que câmera, prompter e editor ficam escuros) e Privacy & AI data; **PURCHASES & ABOUT**: Restore purchases e Acknowledgements; e **Reset Creator Setup** (tinto vermelho, com confirmação: "…Your scripts, takes and edits stay."). Não inicia câmera, microfone ou pareamento ao abrir |
-| Language & Region | `Screens/Settings/LanguageRegion` | Três linhas separadas, cada uma com sua explicação embaixo: **App Language** ("Controls the language of Cue’s interface."; iPhone Language + os 15 idiomas pelo nome nativo e, embaixo, no idioma da interface; muda a interface na hora e fica nesta tela), **Voice Following Language** ("Controls the language Cue listens for while you speak."; Same as Script + os 15, cada um com "Ready on this iPhone", "Downloads the first time you use it" ou "Not available on this iPhone" em laranja; um indisponível ainda pode ser escolhido, e o prompter avisa e rola na velocidade definida enquanto você fala) e **Script Language** (Auto-detect + os 15; é o idioma dos roteiros novos, e cada roteiro tem o seu em ••• › Script Language). Nenhuma muda a outra nem traduz nada (`LOCALIZATION.md`) |
+| Language & Region | `Screens/Settings/LanguageRegion` | Três linhas separadas, cada uma com sua explicação embaixo: **App Language** ("Controls the language of Cue’s interface."; iPhone Language + os 20 idiomas pelo nome nativo e, embaixo, no idioma da interface; muda a interface na hora e fica nesta tela), **Voice Following Language** ("Controls the language Cue listens for while you speak."; Same as Script + os 20, cada um com "Ready on this iPhone", "Downloads the first time you use it" ou "Not available on this iPhone" em laranja; um indisponível ainda pode ser escolhido, e o prompter avisa e rola na velocidade definida enquanto você fala) e **Script Language** (Auto-detect + os 20; é o idioma dos roteiros novos, e cada roteiro tem o seu em ••• › Script Language). Nenhuma muda a outra nem traduz nada (`LOCALIZATION.md`) |
 | Recording / Prompter (Settings) | `Screens/Settings/Pages`, `Screens/CreatorSetup` | **Recording** (G2, `SettingsRecordingView`): "CAMERA & FORMAT" com Camera (Front / Back), Microphone (abre a lista: Automatic, as entradas conectadas e a salva quando não está conectada, com "pair it in Settings › Bluetooth"), Recording quality (720p / 1080p / 4K e 24 / 30 / 60 fps) e Default format (9:16, 4:5, 1:1, 16:9, em tiles com a proporção), e "Lens, mic, quality and format can still change for one take while recording.". **Prompter** (G3, `SettingsPrompterView`): no alto e fixa, a **prévia estática** em proporção (`TeleprompterPreview`: o texto no tamanho escolhido, a linha de leitura e o espelho) ao lado do seletor **Selfie \| Studio** ("Text over your camera, right under the lens." / "Full-screen text, no camera.") e "Shows proportions on your screen — not the final look."; abaixo, os **chips de seção** Reading · Text · Line · Window · Safe zones, que rolam até as linhas (`SetupRow.anchor`): Text size (Small / Medium / Large + slider 16–56), Scroll speed (0,3–2,0× e "about N words a minute"), Reading mode (Voice \| Steady), Reading line (↑/↓ de 8 pt a partir de 118 pt da lente, Reset), Show reading line, Mirror text, Safe zones e Display (abre os mesmos controles Aa, sem câmera/áudio). O que se muda aqui é o padrão; a recomendação por plataforma e as mudanças de uma take continuam como em 5.1 |
 | Remote (Settings) | `Screens/RemoteControl/RemoteControlView` | **Remote Control** (G4): no alto o **status** (`RemoteStatusHero`, aurora noturna): um anel **cinza** sem remote ("No remote connected"), **amarelo** enquanto espera ou procura ("Waiting for your other device…") e **verde** conectado ("Remote connected" e o nome do aparelho); **Connect a Device** (`RemotePairingPanel`: botão amarelo → QR code 200 pt + código "ABC 234" + "Waiting for your other device…" + Cancel → "Remote Connected" com ✓ verde, o nome do aparelho e Disconnect; erro de rede local com Try again); **Use this device as a remote** (Enter a code → alerta); "Keyboards, foot pedals and presentation remotes are coming next." |
 | Remote | `RemoteControllerView` | Tela cheia no outro aparelho (aberta pelo QR escaneado na Câmera, `cuestudio://remote?code=…`, ou pelo código digitado): fechar, "Remote" + ponto verde e o nome do teleprompter; card com o roteiro aberto, progresso, Playing / Paused / Recording e a velocidade (ou "Voice Following"); voltar ao topo, ‹‹, play/pause amarelo de 96 pt, ››; − velocidade +. Procurando: "Looking for the teleprompter…" + "Keep both devices close, with Wi-Fi on." A tela não apaga |
@@ -435,7 +441,7 @@ estático), o app baixa uma vez por abertura e só adota uma revisão maior, com
 
 - **v27, fase 1b (primeiro voo):** o onboarding "first voyage" (1.1–1.5 e 1.6 como treino no prompter real). **Decisões:** é uma camada sobre o app (não `fullScreenCover`) para o prompter do treino poder abrir por cima; o roteiro de reserva é **um modelo localizado** com o nome do tema, não oito roteiros; temas digitados ficam em `CreatorProfile.customTopics` (perfis antigos abrem sem o campo); quem já usa o app (roteiros, takes ou temas) nunca vê o voo; o "first star" (1.7) e as animações finas de cada capítulo (comet, ignite) seguem nas fases 1c–1g. **Diferenças:** o protótipo tem a animação do íris abrindo para o rosto ao permitir a câmera; o app mostra o ✓ Allowed sem o íris (o alerta do sistema cobre a cena).
 - **v26, fase 7 (Settings, Profile e Pro):** o Profile com o card de My Cue Voice (sem o mínimo, um botão; com ele, a prévia e as linhas "What Cue uses"), o card do plano sobre a aurora noturna, o Settings com o card "Your setup", os três tiles e as páginas Recording, Prompter e Remote, o paywall noturno com o card de benefícios e o medidor de exportações. **Decisões:** a página única Creator Setup virou **três páginas** (Recording, Prompter e Remote), e o Reset Creator Setup passou para a raiz do Settings; o paywall **só promete o que o Pro muda** (exportar), então os benefícios do protótipo ("Full My Cue Voice", "Hook variations", "Cover styles", "Remote from Apple Watch") não entram: tudo isso é grátis no app, e a linha que o diz usa a etiqueta FREE; a prévia do prompter é estática e em proporção, como no protótipo. **Diferenças:** o G3 do protótipo tem um chip "Background" para o Studio e "While recording"; o app mantém Display (janela, fundo e o resto) numa sheet e não tem mais "esconder controles" (saiu na fase 2); o P1 do protótipo mostra "voice examples" nas linhas do card, e o app mostra uma frase só (a de "Sounds like you"); "Language & Region" e "Acknowledgements" (G5, G6) mantêm as telas de antes.
-- **v26, fase 6 (página do script, home e My Cue Voice):** a página única Draft \| Shaped, a home com o card Let’s Cue em chips e a lista Recent com o status de cada roteiro, as sheets Need an idea? e Format no lugar da sheet de três abas, a IA escrevendo na página e o My Cue Voice em quatro perguntas com o roteiro como prévia. **Decisões:** o roteiro **salva sozinho** (sem Done) e a versão nova (com takes) é **uma por visita**, para a escrita não criar uma versão por tecla; "Stronger hook" usa a ferramenta More energy e "Rewrite" a More human (não há ferramenta própria); "¶ Cue break" põe a marca [pause] do app (o protótipo desenha um ¶); "Without" escreve a ideia sem a voz só quando o criador pede; o **tipo de criador** (8 cartões) é novo e opcional, e o resto do fluxo usa os campos que o app já tinha (temas, audiência, tom). **Diferenças:** o protótipo tem 20 categorias de tema com subnichos, "+ More topics", audiência livre, nível do público, o que vêm buscar e o que os segura, 8 tons e a sheet "Example" (colar, falar ou escolher um roteiro): o app mantém os 8 temas, as 4 audiências e os 6 tons que o modelo de IA já usa (acrescentar categorias pediria novas ideias iniciais e traduções nos 15 idiomas); a faixa "Does it sound like you?" mostra "Sounds like me" e "Adjust" sem a lista de diferenças por clique; **o progresso parcial não é guardado** ("Not now" fecha e o chip volta a "Set up"); sem Apple Intelligence a seta e o ↑ das ideias ficam desligados (os briefs por formato, que geravam sem modelo, saíram da interface); o menu ••• é o `Menu` nativo, não o popover do protótipo.
+- **v26, fase 6 (página do script, home e My Cue Voice):** a página única Draft \| Shaped, a home com o card Let’s Cue em chips e a lista Recent com o status de cada roteiro, as sheets Need an idea? e Format no lugar da sheet de três abas, a IA escrevendo na página e o My Cue Voice em quatro perguntas com o roteiro como prévia. **Decisões:** o roteiro **salva sozinho** (sem Done) e a versão nova (com takes) é **uma por visita**, para a escrita não criar uma versão por tecla; "Stronger hook" usa a ferramenta More energy e "Rewrite" a More human (não há ferramenta própria); "¶ Cue break" põe a marca [pause] do app (o protótipo desenha um ¶); "Without" escreve a ideia sem a voz só quando o criador pede; o **tipo de criador** (8 cartões) é novo e opcional, e o resto do fluxo usa os campos que o app já tinha (temas, audiência, tom). **Diferenças:** o protótipo tem 20 categorias de tema com subnichos, "+ More topics", audiência livre, nível do público, o que vêm buscar e o que os segura, 8 tons e a sheet "Example" (colar, falar ou escolher um roteiro): o app mantém os 8 temas, as 4 audiências e os 6 tons que o modelo de IA já usa (acrescentar categorias pediria novas ideias iniciais e traduções nos 20 idiomas); a faixa "Does it sound like you?" mostra "Sounds like me" e "Adjust" sem a lista de diferenças por clique; **o progresso parcial não é guardado** ("Not now" fecha e o chip volta a "Set up"); sem Apple Intelligence a seta e o ↑ das ideias ficam desligados (os briefs por formato, que geravam sem modelo, saíram da interface); o menu ••• é o `Menu` nativo, não o popover do protótipo.
 - **Alça de redimensionar a janela de texto (Selfie):** vem do protótipo v26 (`rz` em `Cue App v26.dc.html`), que a desenha no canto inferior direito da janela, e não era pinça de dois dedos. **Diferenças:** o protótipo grava o tamanho como padrão do criador ("Saved as your default"); o app o muda só para a take, como todo o Layout (o padrão fica em Settings › Prompter e em Display); os limites são os do app (50–93% de largura, 160–380 pt de altura), não os 50–100% e a altura até o fim da tela do protótipo; a janela segue a linha de leitura (a linha fica 25% abaixo do topo), então a altura que o dedo pede é dividida por 0,75 para o canto ficar sob o dedo.
 - **My Cue Voice no card (chip e perguntas):** o protótipo faz do chip o próprio interruptor ("My Cue Voice" aceso / "· Off"); no app o chip abre as perguntas e o liga/desliga é um switch de verdade dentro dele, e a primeira pergunta (tipo de criador) não avança sozinha ao tocar num cartão como no protótipo: todas as perguntas têm o botão Continue, para o criador sempre ver como seguir.
 - **v27, fase 1a (cara das abas):** a tab bar flutuante com o orb que viaja, o céu estrelado atrás de Scripts, Takes, Profile e Settings (`skyBackground()`) e os **filtros de Scripts por rede** (`PlatformFilterChips`: "All 5 · TikTok 2 · Reels 1…", o escolhido em branco, pastas depois, no lugar do menu "All ⌄"), com o resumo mono "5 SCRIPTS · 1 READY TO RECORD". **Decisões:** a barra fica fora do quadro das telas (em vez de sobre elas, como na maquete) para que a lista nunca passe por baixo dela e `isHittable` seja honesto; o ponto de cor do tema nos roteiros espera a etiqueta automática (fase U1); o "Go Pro" da revisão e da sheet Share to abre o paywall do Profile enquanto sobram exportações grátis.
@@ -451,7 +457,7 @@ estático), o app baixa uma vez por abertura e só adota uma revisão maior, com
 - **v26, fase 4 (Takes e revisão):** o `TakeStage` (PICK/EDIT/READY/SHARED) é **derivado** e testado, e alimenta o pipeline, o selo de cada vídeo, o NEXT e a barra da revisão. **Decisões para ficar perto do protótipo:** a grade 9:16 é o padrão e a lista é opcional (a escolha fica guardada); o menu de plataforma é um `Menu` nativo (sem os pontos coloridos nos itens, que o menu não desenha); o peek usa o `contextMenu` com pré-visualização do sistema; deslizar na lista é o `swipeActions` do `List` (só na lista; na grade o atalho é segurar); a revisão não tem mais a faixa "Your takes" nem a sugestão automática de tocar: o chip, o deslizar e o ✦ Suggest best (que leva à take sugerida e deixa a ★ para o criador) a substituem. **Rascunho:** a etapa IN EDIT vem de um rascunho do Quick edit aberto numa take; a pergunta do Done ("Is it ready to post?") e o voltar sem perguntar são da fase 5.
 - **v26, fase 3 (barra do recorder):** o Selfie ganhou a barra de vidro noturno (seletor Voice \| Steady, SPEED, linha HUD, última take com a quantidade, •••) e a **barra compacta da gravação** (tocar na tela mostra a inteira por 4 s), o pill REC passou para a esquerda, o cartão de recomendação ficou violeta e o `CueSlider` entrou no recorder. **Decisões para ficar perto do protótipo:** o segmento diz "Voice" (a chave de "Voice" do Quick edit; o nome completo fica no VoiceOver); em Voice a linha traz também a onda ao vivo e, quando o modelo carrega ou não segue as palavras, o estado (informação que o app tem e o protótipo não); o countdown e o Remote saíram dos botões para a •••, um menu nativo. **Diferenças:** o Studio não grava, então fica sem a fileira de captura e a barra compacta; o `CueSlider` só está no recorder (o Display e o Creator Setup mantêm o `Slider` nativo); o vidro é um material fino com o preenchimento noturno, sem o `backdrop-filter` do protótipo.
 - **v26, fase 2 (nomes e recursos que saem):** **Creator Voice virou My Cue Voice** em toda a interface (nome de marca, igual
-  nos 15 idiomas; os nomes de tipos e as chaves salvas não mudaram). **"Hide controls while recording" e o botão
+  nos 20 idiomas; os nomes de tipos e as chaves salvas não mudaram). **"Hide controls while recording" e o botão
   do olho saíram** (os ajustes salvos com a chave antiga continuam abrindo; até a fase 3 a barra de controles
   fica na tela gravando). **New script** tem só Write my own e Import (a IA vive no card "Let’s Cue!"), como no
   protótipo. **Decisões tomadas para ficar mais perto do protótipo:** a seta do card com o campo vazio abre as
@@ -705,8 +711,8 @@ O protótipo simulava várias coisas; o app implementa de verdade ou deixa de fo
   (início, primeira palavra, voz → indicador, voz → texto, transcrição → alinhamento, quanto o
   texto andou à frente, falsos inícios), grava no log do aparelho em Debug e nunca envia nada.
 - **Idiomas:** não estão no protótipo; vêm do pedido "Multilingual architecture". A interface tem
-  15 idiomas (inglês, espanhol, português do Brasil, francês, alemão, italiano, japonês, coreano,
-  chinês simplificado, hindi, indonésio, árabe, turco, tailandês, vietnamita), escolhidos em
+  20 idiomas (inglês, espanhol, português do Brasil, francês, alemão, italiano, japonês, coreano,
+  chinês simplificado, hindi, indonésio, árabe, turco, tailandês, vietnamita, chinês tradicional, holandês, sueco, dinamarquês, norueguês), escolhidos em
   Language & Region independentemente do iPhone, do idioma de Voice Following e do idioma dos
   roteiros. Árabe espelha a interface; timelines, vídeo e zonas seguras nunca espelham, e o
   prompter segue a direção do roteiro. Detalhes, terminologia e limitações em `LOCALIZATION.md`.
@@ -789,7 +795,7 @@ O protótipo simulava várias coisas; o app implementa de verdade ou deixa de fo
   mentira; (2) o teclado é o do sistema (a barra de cima é a do protótipo, o teclado desenhado não),
   e o painel de uma ferramenta tem a altura do último teclado medido; (3) "Check facts" não existe:
   o app não verifica fatos, só pede que o criador confirme ("Checked"); (4) os cues são traduzidos nos
-  15 idiomas e entram no texto na língua da interface (`[pausa]`, `[間]`), como o `LOCALIZATION.md`
+  20 idiomas e entram no texto na língua da interface (`[pausa]`, `[間]`), como o `LOCALIZATION.md`
   pede; (5) o rodapé "4 of 5 free AI edits left" não existe (a IA é grátis e ilimitada); (6) em vez de
   Cancel, **Discard changes** (Options) devolve o roteiro como era; (7) o título do formato sem tipo é
   "Talking video"; (8) o texto de leitura e a escrita escalam com o Dynamic Type; (9) uma ferramenta da
@@ -919,7 +925,7 @@ O protótipo simulava várias coisas; o app implementa de verdade ou deixa de fo
     `.accurate` no export), para o arquivo ser igual à prévia.
   - **Export:** 4K só de uma take 4K e 60 fps só de uma take a 50 fps ou mais; o que não dá aparece
     apagado com o motivo. A sheet Share to da revisão continua como era.
-  - **Auto captions:** o idioma falado tem os 15 idiomas do app (o protótipo mostra 4).
+  - **Auto captions:** o idioma falado tem os 20 idiomas do app (o protótipo mostra 4).
   - **Pausas:** o respiro de cada lado passou de 0,15 s para os 0,12 s do v10; as pausas vêm da
     análise de volume (o protótipo usa os intervalos entre legendas só para a demo).
   - **Fontes:** DM Sans e DM Serif Display entram no bundle (OFL, licenças em `DesignSystem/Fonts/`),
@@ -1053,3 +1059,105 @@ O protótipo simulava várias coisas; o app implementa de verdade ou deixa de fo
 - [ ] Textos localizáveis; labels e identifiers de acessibilidade
 - [ ] Reduce Motion respeitado
 - [ ] Este documento atualizado
+
+## 12. v27 — Cue Universe
+
+Fonte: `design/cue-universe-v27/`. O app segue a arquitetura de sempre; a v27 é uma camada visual e de movimento sobre a lógica da v26,
+mais telas novas. Decisões tomadas sem perguntar (as regras de negócio — 5 exportações grátis, preços, cota de IA, pipeline das takes —
+**não mudaram**).
+
+### Fundação (fase 0)
+- **Só escuro** (`UIUserInterfaceStyle = Dark`, `.preferredColorScheme(.dark)`): `Palette` tem um valor só por token; `AppearanceService`,
+  o seletor e os testes do claro saíram. Tokens novos: mundos (`worldWarm/Mint/Pink/Sky`) e galáxias (`Platform.tint`).
+- **`CueIcon`**: os 53 ícones "orbit line" (SVG em `Assets.xcassets/Icons`), na tab bar, no editor, na gravação e nos ajustes.
+- **`OrbSlider`** (`DesignSystem/Controls`): todo slider do app. Estilos `full`, `row` e `compact`; origem na ponta ou no centro; contínuo ou em
+  passos (estrelas), com tique no padrão (detent), controle fino ao deslizar para baixo (½ e ¼ da velocidade, rótulo FINE), duplo toque que volta
+  ao padrão, valor sempre escrito, VoiceOver ajustável e teclado. `OrbSliderMath` é testado. O `PanelSlider` do editor, o `SpeedSlider` do
+  prompter, as ajustes de Settings › Prompter e o Personalize são `OrbSlider`.
+- **Céu** (`StarfieldView`, `.skyBackground()`): `Canvas` + `TimelineView` a 30 fps, três camadas, brilhos em cruz, estrela cadente e nebulosas;
+  só nas telas de navegação (nunca sobre câmera, take ou editor); para fora da tela, com Low Power, Reduce Motion ou **Starry sky: Off**.
+- **Efeitos de luz** (`DesignSystem/Effects`): `HorizonLine` (a linha de leitura), `IgniteEffect`, `CometTravel`/`CometPlayer`, `WordsFromLight`,
+  `AIAura`, `ShineSweep`, `HorizonParticles`; todos com versão estática para Reduce Motion. `CueMotion` guarda curvas, molas e durações;
+  `Haptics` tem um interruptor global (Personalize).
+- **Tab bar** (`CueTabBar`): pílula de vidro com o orbe amarelo que viaja até a aba escolhida; Record é o anel com o ponto vermelho.
+  Está num `VStack` abaixo do conteúdo (nunca flutua sobre ele), e some em telas de tela cheia (`hidesTabBar`).
+
+### Primeiro voo (onboarding, `Screens/Onboarding`)
+Mostrado **uma vez**, por cima do app inteiro e só numa biblioteca vazia (`OnboardingService.resolve`): **Welcome** (constelação, *Get started* /
+*I already use Cue*, que leva ao Profile) e cinco capítulos com barra de cinco segmentos e **Skip** (vai ao vazio de Scripts com o que já foi
+escolhido): **1 · Your universe** (até 3 tópicos ou "+ Your own", que viram mundos em órbita e alimentam o My Cue Voice: `CreatorProfile.niches`
+e `customTopics`), **2 · Your first voyage** (a plataforma é uma galáxia; mostra formato, faixa ideal e zonas seguras do `PlatformRules`),
+**3 · Your first script** (≈15 s no tema e na plataforma, pelo modelo do aparelho; **sem Apple Intelligence** é o roteiro nosso, rotulado
+"TELEPROMPTER PRACTICE"; *Use this script* cria o roteiro de verdade), **4 · Give it a voice** (microfone, depois reconhecimento de fala só
+se o microfone foi permitido, depois câmera; **o único botão é Continue**, seguido do alerta do sistema, sem Skip nem "Not now"; recusar nunca
+bloqueia) e **5 · Practice** (o prompter real sobre a câmera frontal com `PrompterLaunch.isPractice`, **sem gravar**; *Record it for real* /
+*Not now — take me to my studio*). Depois da primeira take de verdade, **First star** (`FirstStarView`): a take vira luz, um cometa a leva ao
+universo e acende a primeira estrela ligada a "YOU"; uma vez só. Quem já tem roteiros, takes ou temas nunca vê o voo.
+
+### Teleprompter (gravação, Studio e treino)
+- **Horizonte** (`ReadingGuide` = `HorizonLine` + `HorizonParticles`): linha amarela de 2 pt com setinha, brilho que respira (2,4 s) e, com
+  Voice Following, pisca com o nível da voz; até 4 faíscas sobem 34 pt enquanto o texto anda.
+- **Palavras acesas** (`PrompterHighlighter`, `WordSpans`, `HighlightedParagraph`): com o reconhecimento seguindo as palavras, o texto descansa a
+  42%, as ~7 últimas palavras ditas vão a 100% e a mais nova em amarelo. Só no parágrafo lido; Steady e o fallback por volume não acendem nada.
+- **Trilho de seções** (`SectionRail`, `PrompterSections`): 2 pt à direita com uma estrela por seção (Hook · Body · CTA, as do formato do roteiro),
+  que enche com a leitura; entrar numa seção faz a estrela "pular" (1,7 → 1 em 0,55 s) com háptico de seleção; o rótulo "HOOK · 1 OF 3" muda
+  com fade. O chip "✦ FOLLOWING YOUR VOICE" fica no canto de baixo à esquerda.
+- **Contagem** (`CountdownOverlay`): "LET'S CUE" e os segundos num anel de 12 estrelas que acendem enquanto um arco amarelo enche; o número entra
+  de 1,35× com blur e sai em 0,2 s; háptico leve a cada número e médio no fim; um clarão (`CountdownFlare`); tocar em qualquer lugar cancela.
+  A duração vem de Settings › Prompter (Off, 3, 5 ou 10 s).
+- **Velocidade**: `SpeedSlider` é o `OrbSlider` compacto ("SPEED 0.7×"), com tique no ritmo natural.
+
+### Pick your best take, exportação e celebrações
+- **`PickBestTakeView`** (✦ Suggest best): as takes lado a lado, a sugerida no meio com a faixa violeta que a escaneia, o selo "✦ Best take" que acende
+  com uma onda e os motivos que aparecem um a um. **Os motivos vêm só do que se mede** (`BestTakeReason`: cabe na faixa da plataforma, leu o roteiro
+  inteiro, mais perto da duração do roteiro); o protótipo diz "No stumbles" e "Eyes on camera", que o app não mede e por isso não afirma.
+  *Use take N* marca a melhor (`markBest`); *Record again* volta à gravação.
+- **Ready to travel** (`ReadyToTravelView`, depois de salvar): o vídeo, "EXPORTED · 1080P · 9:16", o medidor de exportações grátis e *Share to
+  {plataforma}* (abre o app **sem exportar de novo**, `TakeReviewViewModel.send`), *Saved to Photos* e *Other apps*.
+- **Send-off** (`SendOffView`, depois de abrir o app da plataforma): o vídeo se dobra em luz, um cometa o leva até a estrela da plataforma, ela
+  pisca e "On its way." sobe; "It's now a star in your universe ›" leva ao Profile. Toca uma vez. Com Reduce Motion só chega.
+- **Marcos** (`MilestoneService`, `MilestoneView`): cada vídeo conta **uma vez** como compartilhado; em 1, 10, 25 e 50 chega a tela "A new icon is yours."
+  com **Use {ícone}** / **Keep my current icon**. Ícones (`AppIconChoice`, geradas dos SVG do pacote, `ASSETCATALOG_COMPILER_ALTERNATE_APPICON_NAMES`):
+  **Aurora** (1, grátis), **First Light** (10), **Deep Space** (25) e **Constellation** (50), os três últimos **do Pro**. Celebrations desligado: nada
+  toca, mas a contagem continua.
+
+### Editor (fase 1e)
+- Todo slider dos painéis é um `OrbSlider` (Speed, Zoom, Volume, Filters, Crop, Background, Media, Size e Glow); o Adjust mantém a régua.
+- **Text style**: 7 estilos com fontes livres embutidas (OFL, em `DesignSystem/Fonts`): **Orbit** (Unbounded), **Logbook** (Instrument Serif itálico),
+  **Signal** (Space Mono), **Launch** (Anton), **Nebula** (Syne), **Comet** (Space Grotesk), **Postcard** (Caveat); a aba Presets traz as cartas, **Size**,
+  **Glow** (`TextOverlay.glow` / `TextLook.glow`, desenhado pelo mesmo `TextOverlayRenderer` na prévia e no export, no lugar da sombra) e as cores
+  (branco, amarelo, lavanda, azul, rosa, menta, tinta). Os 8 presets antigos continuam existindo nas edições que os usaram. Letras que a fonte não cobre
+  caem na fonte do sistema (`TextFont`).
+- **Captions**: "Impact" virou **Bold** (Anton); **Size** é um orb em S · M · L · XL (`CaptionSize`).
+- **Sound**: *Your voice* 0–150% (tique em 100%), *Music* 0–100% e *Clean up voice* em Off · Light · Strong (`AudioStrength`: Soft virou "Light").
+- **Opening your edit** (`EditorOpeningOverlay`): enquanto a take é lida; sem porcentagem inventada (o protótipo mostra "Adding captions… 82%").
+- **Comment card**: se o roteiro responde a um comentário, o menu Text ganha *Comment*, que põe o comentário num cartão sobre os 4 primeiros segundos.
+
+### Settings, Personalize e Pro
+- **Settings › Prompter**: a prévia no alto, depois **Speed** (wpm), **Text size** (S · M · L · XL, `PrompterTextSize` ganhou o XL de 48 pt), **Reading line**
+  (Near the camera · Upper third · Middle, `ReadingLinePreset`), **Margins** (`MarginPreset`), **Follow my voice** e **Countdown**; o resto (ajuste fino da
+  linha, espelho, zonas seguras, Display) fica em "More options".
+- **Settings › Personalize** (`PersonalizeView`): ícone do app (os de marco aparecem trancados com o número), tópicos e cores (abre o My Cue Voice no passo
+  dos temas), **Tag new scripts automatically**, **Starry sky** (Off · Calm · Lively), **Celebrations** e **Haptics**.
+- **Paywall**: "Take your universe further."; a lista só promete o que o Pro muda (exportar e agora **todos os ícones de marco**); o item sobre IA **não
+  aparece onde o aparelho não roda Apple Intelligence** (`AIStatus`).
+
+### Universo (U1) e Fase 3
+- **Tópicos automáticos** (`TopicTaggingService`, `Script.topic`): o modelo **no aparelho** escolhe um dos tópicos do criador para cada roteiro novo (com um
+  tópico só, não há o que escolher); aparece como um ponto colorido na lista; o criador muda em ••• › Topic e uma escolha dele nunca é refeita.
+- **Your universe** (`YourUniverseView`, `UniverseMap`, `UniverseSnapshot`): "YOU" no meio, uma órbita por tópico com um ponto por vídeo compartilhado, as
+  plataformas nas bordas ligadas por rotas, a estrela nova pulsando, o próximo marco e **Share my universe** / **My year in Cue** (imagens geradas no aparelho,
+  sem nome nem @). O cartão do Profile (`UniverseProfileCard`) abre a tela.
+- **Logbook** (`LogbookView`, `LogbookService`): segure e fale uma ideia (reconhecimento no aparelho; **só as palavras ficam, nunca o som**) ou digite;
+  cada ideia espera como um cartão com **✦ Shape**, que a escreve numa página nova. Entrada: o ícone do livro em Scripts.
+- **Start a video** (o "+"): Let Cue write it (foca o cartão), Write it myself, Import text, **Answer a comment** e "Record without a script".
+- **Answer a comment** (`AnswerCommentSheet`): escolha um screenshot (Vision lê **no aparelho**, `CommentParser` separa @nome e comentário) ou cole o texto,
+  confirme (autor, texto, plataforma) e o Cue escreve a resposta na voz do criador; o comentário fica no roteiro (`ScriptComment`). **Diferença:** o
+  protótipo recebe o screenshot por uma **extensão de compartilhamento** do app social; o app tem o fluxo dentro dele (a extensão pede um alvo novo no projeto).
+- **Year in review**: a imagem "My year in Cue" da tela Your universe (vídeos compartilhados no ano, plataforma mais usada, mundo mais ativo).
+- **IA ligada ao aparelho**: Shape, Answer a comment, o paywall e o resto checam a disponibilidade antes de chamar e dizem por quê quando não dá.
+
+### Argumentos de lançamento (Debug)
+`-uiTestOnboarding` (liga o primeiro voo), `-uiTestPermissions granted|denied` (troca os pedidos reais por um stub), `-uiTestSky off|calm|lively` (os testes
+começam com o céu **desligado**: uma animação que nunca para impede o XCUITest de achar o app ocioso), `-uiTestAppsInstalled` (os apps das plataformas
+"abrem", para o send-off), `-uiTestCatalogue <seção>` (o catálogo de design).

@@ -36,6 +36,12 @@
             "value" : "يسجّل Cue لقطاتك بالكاميرا بينما يتحرك النص أسفل العدسة مباشرة."
           }
         },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue optager dine optagelser med kameraet, mens dit manuskript ruller under linsen."
+          }
+        },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
@@ -90,10 +96,28 @@
             "value" : "Cue는 대본이 렌즈 바로 아래에서 스크롤되는 동안 카메라로 테이크를 녹화합니다."
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue tar opp opptakene dine med kameraet mens manuset ditt ruller under linsen."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue neemt je opnames op met de camera terwijl je script onder de lens scrolt."
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "O Cue grava seus takes com a câmera enquanto o roteiro rola logo abaixo da lente."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue spelar in dina tagningar med kameran medan ditt manus skrollar under linsen."
           }
         },
         "th" : {
@@ -119,6 +143,12 @@
             "state" : "translated",
             "value" : "Cue 会用相机录制你的镜头，同时让脚本在镜头下方滚动。"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue 會使用相機錄製你的鏡頭，同時讓腳本在鏡頭下方捲動。"
+          }
         }
       }
     },
@@ -130,6 +160,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "يتصل Cue بجهاز iPhone أو iPad آخر لديك قريب منك، ليتحكم أحدهما في الملقّن على الآخر."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue opretter forbindelse til din anden iPhone eller iPad i nærheden, så den ene kan styre teleprompteren på den anden."
           }
         },
         "de" : {
@@ -186,10 +222,28 @@
             "value" : "Cue는 근처의 다른 iPhone 또는 iPad와 연결되어 한 기기로 다른 기기의 프롬프터를 조작할 수 있게 합니다."
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue kobler til den andre iPhonen eller iPaden din i nærheten, slik at den ene kan styre teleprompteren på den andre."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue maakt verbinding met je andere iPhone of iPad in de buurt, zodat je de teleprompter op het ene apparaat met het andere kunt bedienen."
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "O Cue se conecta ao seu outro iPhone ou iPad por perto, para que um controle o teleprompter do outro."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue ansluter till din andra iPhone eller iPad i närheten, så att den ena kan styra teleprompter på den andra."
           }
         },
         "th" : {
@@ -215,6 +269,12 @@
             "state" : "translated",
             "value" : "Cue 会连接你附近的另一台 iPhone 或 iPad，让一台设备控制另一台上的提词器。"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue 會連線到附近你的另一部 iPhone 或 iPad，讓其中一部能控制另一部上的提詞機。"
+          }
         }
       }
     },
@@ -226,6 +286,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "يسجّل Cue صوتك في كل لقطة وفي التعليق الصوتي، ويمكنه تتبّع صوتك لتمرير النص، ويستمع إليك حين تُملي فكرة."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue optager din stemme i hver optagelse og til voiceovers, kan følge din stemme for at rulle manuskriptet og lytter, når du dikterer en idé."
           }
         },
         "de" : {
@@ -282,10 +348,28 @@
             "value" : "Cue는 테이크마다 목소리를 녹음하고 보이스오버도 녹음하며, 목소리에 맞춰 대본을 스크롤할 수 있고, 아이디어를 음성으로 입력할 때 소리를 듣습니다."
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue tar opp stemmen din i hvert opptak og til voiceovers, kan følge stemmen din for å rulle manuset og lytter når du dikterer en idé."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue neemt je stem op bij elke opname en voor voice-overs, kan je stem volgen om het script te scrollen en luistert mee wanneer je een idee dicteert."
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "O Cue grava sua voz em cada take e nas narrações, pode seguir sua voz para rolar o roteiro e ouve você quando dita uma ideia."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue spelar in din röst i varje tagning och för voiceovers, kan följa din röst för att skrolla manuset och lyssnar när du dikterar en idé."
           }
         },
         "th" : {
@@ -311,6 +395,12 @@
             "state" : "translated",
             "value" : "Cue 会录制每个镜头和画外音中的声音，还能跟随你的声音滚动脚本，并在你语音输入想法时聆听。"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue 會在每個鏡頭與旁白中錄下你的聲音，可跟隨你的聲音捲動腳本，並在你口述想法時聆聽。"
+          }
         }
       }
     },
@@ -322,6 +412,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "يحفظ Cue اللقطات التي تصدّرها في مكتبة الصور."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue gemmer de optagelser, du eksporterer, i dit fotobibliotek."
           }
         },
         "de" : {
@@ -378,10 +474,28 @@
             "value" : "Cue는 내보낸 테이크를 사진 보관함에 저장합니다."
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue lagrer opptakene du eksporterer i bildebiblioteket ditt."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue bewaart de opnames die je exporteert in je fotobibliotheek."
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "O Cue salva na sua fototeca os takes que você exporta."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue sparar de tagningar du exporterar i ditt fotobibliotek."
           }
         },
         "th" : {
@@ -407,6 +521,12 @@
             "state" : "translated",
             "value" : "Cue 会将你导出的镜头存储到照片图库。"
           }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue 會將你匯出的鏡頭儲存到你的照片圖庫。"
+          }
         }
       }
     },
@@ -418,6 +538,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "يتعرّف Cue على كلامك على جهاز iPhone هذا ليبقي النص على السطر الذي تقرؤه ويحوّل فكرتك المُملاة إلى نص. لا يغادر أي شيء الجهاز."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue genkender din tale på denne iPhone for at holde manuskriptet på den linje, du læser, og for at omsætte en idé, du dikterer, til tekst. Intet forlader enheden."
           }
         },
         "de" : {
@@ -474,10 +600,28 @@
             "value" : "Cue는 이 iPhone에서 음성을 인식해 읽고 있는 줄에 대본을 맞추고, 음성으로 입력한 아이디어를 텍스트로 바꿉니다. 어떤 데이터도 기기 밖으로 나가지 않습니다."
           }
         },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue gjenkjenner talen din på denne iPhonen for å holde manuset på linjen du leser og for å gjøre en idé du dikterer om til tekst. Ingenting forlater enheten."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue herkent je spraak op deze iPhone om het script op de regel te houden die je leest en om een idee dat je dicteert in tekst om te zetten. Niets verlaat het apparaat."
+          }
+        },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "O Cue reconhece sua fala neste iPhone para manter o roteiro na linha que você está lendo e transformar em texto uma ideia que você dita. Nada sai do aparelho."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue känner igen ditt tal på den här iPhonen för att hålla manuset på den rad du läser och för att göra en idé du dikterar till text. Inget lämnar enheten."
           }
         },
         "th" : {
@@ -502,6 +646,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Cue 在这台 iPhone 上识别你的语音，让脚本停在你正在读的那一行，并把你语音输入的想法转成文字。数据不会离开设备。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue 會在這部 iPhone 上辨識你的語音，讓腳本停在你正在朗讀的那一行，並把你口述的想法轉成文字。不會有任何內容離開裝置。"
           }
         }
       }

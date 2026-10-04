@@ -3,7 +3,7 @@
 Video caption collection: Cue / Impact / Clean / Pop / Editorial (`CaptionTheme`); Brazilian
 Portuguese uses **Impacto**, and **Clean** is the collection's proper name in every interface.
 The existing text presets and general "Clean" translation are unchanged. Caption settings use
-the same 15-language catalog. Bundled font licenses and local glyph fallbacks are documented in
+the same 20-language catalog. Bundled font licenses and local glyph fallbacks are documented in
 `Cue Studio/DesignSystem/Fonts/CAPTION-FONTS.md`; RTL shaping is preserved in the shared renderer.
 
 How Cue handles languages: the architecture, the terminology every translation follows, and what
@@ -82,8 +82,8 @@ names in **bold** stay in English in every language.
   **My Cue Voice**, **Selfie**, **Studio**, **TikTok**, **Reels**, **Shorts**, **YouTube**,
   **LinkedIn**, **Stories**, **Instagram**, **Lexend**.
 - Voice: talk to one creator (pt-BR *você*, es *tú*, fr *vous*, de *du*, it *tu*, id *kamu*,
-  tr *sen*, vi *bạn*, zh *你*, ar the singular, hi *आप*; ja and ko polite and neutral), short
-  sentences, no jargon.
+  tr *sen*, vi *bạn*, zh *你*, ar the singular, hi *आप*, nl *je*, sv *du*, da *du*, nb *du*; ja and ko
+  polite and neutral), short sentences, no jargon.
 - Two pairs never share a word, because they sit on the same screens: **Record / Save** (fr
   *Filmer* / *Enregistrer*, tr *Kayıt* / *Kaydet*, th *อัด* / *บันทึก*) and **Trim / Crop** (es
   *Recortar* / *Encuadrar*, pt-BR *Aparar* / *Recortar*, id *Pangkas Durasi* / *Pangkas Bingkai*, tr
@@ -103,6 +103,18 @@ names in **bold** stay in English in every language.
   repeats its category's name.
 - Type preset names (Cue, Impact, Editorial, Soft, Minimal, Label, Pop) are translated where the
   word has a natural equivalent; **Cue** stays as the brand.
+
+**v27: five more languages** (Dutch `nl`, Swedish `sv`, Danish `da`, Norwegian Bokmål `nb`, Traditional
+Chinese `zh-Hant`), for 20 in total. Terminology, in the same order: Take *opname / tagning / optagelse /
+opptak / 鏡頭*, Script *script / manus / manuskript / manus / 腳本*, Captions *ondertitels / undertexter /
+undertekster / undertekster / 字幕*, Settings *Instellingen / Inställningar / Indstillinger / Innstillinger /
+設定*, Record *Opnemen / Spela in / Optag / Ta opp / 錄影*, Teleprompter *Teleprompter / Teleprompter /
+Teleprompter / Teleprompter / 提詞機*, Hook stays *hook* in nl/sv/da/nb (zh-Hant 開場鉤子), Voice Following
+*Stem volgen / Följ rösten / Følg stemmen / Følg stemmen / 跟隨語音*. Brand and feature names stay in
+English as above. zh-Hant uses Taiwan wording (照片, 檔案, 儲存, 螢幕), not the zh-Hans glyph swap. None
+of the five is right to left; Traditional Chinese is written without spaces (`WordSegmenter`).
+Strings are translated by the model that built the app and marked for review by a native speaker
+before a public release.
 
 | English | es | pt-BR | fr | de | it | ja | ko | zh-Hans | hi | id | ar | tr | th | vi |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|

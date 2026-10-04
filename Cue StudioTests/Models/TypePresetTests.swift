@@ -13,8 +13,9 @@ import Testing
 struct TypePresetTests {
     private let span = TimeSpan(start: 1, end: 3)
 
-    @Test func theEditorOffersTheEightPresetsOfTheDesign() {
-        #expect(TypePreset.editorPresets == [.cue, .editorial, .bold, .pop, .soft, .minimal, .label, .paper])
+    @Test func theEditorOffersTheSevenStylesOfTheUniverse() {
+        #expect(TypePreset.editorPresets == [.orbit, .logbook, .signal, .launch, .nebula, .comet, .postcard])
+        // The eight presets of before still exist for the edits that used them.
         let cue = TypePreset.cue.look(for: .title)
         #expect(cue.font == .dmSans && cue.weight == .heavy && cue.color == .black)
         #expect(cue.background == .box && cue.backgroundColor == .yellow)

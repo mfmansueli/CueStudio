@@ -61,7 +61,11 @@ nonisolated enum WordSegmenter {
     }
 
     private static func naturalLanguage(for language: CueLanguage) -> NLLanguage {
-        language == .chineseSimplified ? .simplifiedChinese : NLLanguage(rawValue: language.languageCode)
+        switch language {
+        case .chineseSimplified: .simplifiedChinese
+        case .chineseTraditional: .traditionalChinese
+        default: NLLanguage(rawValue: language.languageCode)
+        }
     }
 
     /// How many words `text` has: runs of letters and numbers, with unspaced runs split into words.

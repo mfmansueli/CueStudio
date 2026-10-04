@@ -27,6 +27,11 @@ nonisolated enum CueLanguage: String, CaseIterable, Identifiable, Codable, Hasha
     case turkish = "tr-TR"
     case thai = "th-TH"
     case vietnamese = "vi-VN"
+    case chineseTraditional = "zh-TW"
+    case dutch = "nl-NL"
+    case swedish = "sv-SE"
+    case danish = "da-DK"
+    case norwegian = "nb-NO"
 
     var id: String { rawValue }
 
@@ -60,6 +65,11 @@ nonisolated enum CueLanguage: String, CaseIterable, Identifiable, Codable, Hasha
         case .turkish: "tr"
         case .thai: "th"
         case .vietnamese: "vi"
+        case .chineseTraditional: "zh-Hant"
+        case .dutch: "nl"
+        case .swedish: "sv"
+        case .danish: "da"
+        case .norwegian: "nb"
         }
     }
 
@@ -89,6 +99,11 @@ nonisolated enum CueLanguage: String, CaseIterable, Identifiable, Codable, Hasha
         case .turkish: "Türkçe"
         case .thai: "ไทย"
         case .vietnamese: "Tiếng Việt"
+        case .chineseTraditional: "繁體中文"
+        case .dutch: "Nederlands"
+        case .swedish: "Svenska"
+        case .danish: "Dansk"
+        case .norwegian: "Norsk bokmål"
         }
     }
 
@@ -118,7 +133,7 @@ nonisolated enum CueLanguage: String, CaseIterable, Identifiable, Codable, Hasha
     /// rather than by whitespace.
     var writesWithoutSpaces: Bool {
         switch self {
-        case .japanese, .chineseSimplified, .thai: true
+        case .japanese, .chineseSimplified, .chineseTraditional, .thai: true
         default: false
         }
     }
@@ -129,6 +144,13 @@ nonisolated enum CueLanguage: String, CaseIterable, Identifiable, Codable, Hasha
     static func matching(languageCode code: String) -> CueLanguage? {
         let language = Locale.Language(identifier: code)
         guard let code = language.languageCode?.identifier else { return nil }
+        // "no" is Norwegian in general; Cue offers Bokmål.
+        if code == "no" || code == "nb" || code == "nn" { return .norwegian }
+        // Chinese is two languages here: Traditional by script or region, Simplified otherwise.
+        if code == "zh" {
+            let isTraditional = language.script?.identifier == "Hant" || ["TW", "HK", "MO"].contains(language.region?.identifier ?? "")
+            return isTraditional ? .chineseTraditional : .chineseSimplified
+        }
         return allCases.first { $0.languageCode == code }
     }
 
@@ -150,6 +172,11 @@ nonisolated enum CueLanguage: String, CaseIterable, Identifiable, Codable, Hasha
         case .chineseSimplified:
             let script = locale.language.maximalIdentifier
             return locale.region?.identifier == "CN" || script.contains("Hans")
+        case .chineseTraditional:
+            let script = locale.language.maximalIdentifier
+            return ["TW", "HK", "MO"].contains(locale.region?.identifier ?? "") || script.contains("Hant")
+        case .norwegian:
+            return ["nb", "no"].contains(locale.language.languageCode?.identifier ?? "")
         default:
             return true
         }
