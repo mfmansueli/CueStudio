@@ -19,7 +19,6 @@ struct TakesLayoutToggle: View {
                         .foregroundStyle(isOn ? Palette.ink : Palette.ink2)
                         .frame(width: 40, height: 30)
                         .background(isOn ? Palette.segmentOn : .clear, in: Capsule())
-                        .shadow(color: isOn ? Palette.segmentShadow : .clear, radius: 1.5, y: 1)
                         .contentShape(Capsule())
                 }
                 .buttonStyle(.plain)

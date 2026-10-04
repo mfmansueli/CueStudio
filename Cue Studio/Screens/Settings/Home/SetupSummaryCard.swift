@@ -38,8 +38,7 @@ struct SetupSummaryCard: View {
                 .foregroundStyle(Palette.ink2)
         }
         .padding(16)
-        .heroCardContent()
-        .nightAurora(in: shape, hero: true)
+        .nightAurora(in: shape)
         .overlay(shape.strokeBorder(Palette.aiBorder, lineWidth: 0.5))
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("settings.setupCard")

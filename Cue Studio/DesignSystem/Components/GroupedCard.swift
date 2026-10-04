@@ -30,7 +30,6 @@ struct GroupedCard<Content: View>: View {
         .background {
             RoundedRectangle(cornerRadius: radius, style: .continuous)
                 .fill(background)
-                .shadow(color: Palette.cardShadow, radius: 1, y: 1)
         }
     }
 }

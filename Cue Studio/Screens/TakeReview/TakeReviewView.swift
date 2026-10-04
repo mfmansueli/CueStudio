@@ -102,7 +102,6 @@ struct TakeReviewView: View {
                 pendingOutcome = outcome
                 editingTake = nil
             }
-            .videoContext()
         }
         .confirmationDialog("Delete this take?", isPresented: $confirmsDelete, titleVisibility: .visible) {
             Button("Delete take", role: .destructive) {

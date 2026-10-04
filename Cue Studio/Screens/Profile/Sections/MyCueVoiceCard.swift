@@ -20,7 +20,6 @@ struct MyCueVoiceCard: View {
         Group {
             if isSet { setUpCard } else { newCard }
         }
-        .heroCardContent()
     }
 
     // MARK: - Not set up

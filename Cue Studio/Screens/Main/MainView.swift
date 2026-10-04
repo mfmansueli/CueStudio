@@ -11,7 +11,6 @@ struct MainView: View {
     let services: AppServices
 
     @Environment(PresentationService.self) private var presentation
-    @Environment(\.colorScheme) private var colorScheme
     @Environment(ScriptLibraryService.self) private var library
     @Environment(PreferencesService.self) private var preferences
     @Environment(CreatorProfileService.self) private var profile
@@ -40,7 +39,7 @@ struct MainView: View {
                 Label {
                     Text("Record")
                 } icon: {
-                    Image(uiImage: RecordGlyph.tabImage(for: colorScheme))
+                    Image(uiImage: RecordGlyph.tabImage)
                 }
             }
             Tab("Profile", systemImage: "person.crop.circle", value: AppTab.profile) {
@@ -69,11 +68,9 @@ struct MainView: View {
         }
         .fullScreenCover(item: $presentation.prompter) { launch in
             PrompterView(launch: launch, services: services)
-                .videoContext()
         }
         .fullScreenCover(isPresented: $presentation.showsRemoteController) {
             RemoteControllerView()
-                .videoContext()
         }
     }
 

@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=390">
+<title>Cue — Opening the editor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&amp;family=Geist+Mono:wght@500;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+.sk{background:linear-gradient(90deg,#1A1C2A 0%,#262A40 40%,#1A1C2A 80%);background-size:300% 100%;animation:sk 1.6s linear infinite}
+@keyframes sk{from{background-position:100% 0}to{background-position:-100% 0}}
+@keyframes grow{0%{transform:scale(0.62);border-radius:26px}55%,100%{transform:scale(1);border-radius:18px}}
+.grow{transform-origin:50% 60%;animation:grow 3s cubic-bezier(.2,.9,.25,1) infinite}
+@keyframes fill{0%{width:8%}70%,100%{width:82%}}
+.fill{animation:fill 3s ease-out infinite}
+@keyframes word{0%,20%{opacity:0;transform:translateY(4px)}35%,100%{opacity:1;transform:translateY(0)}}
+.w1{animation:word 3s ease-out infinite}
+.w2{animation:word 3s ease-out .25s infinite}
+@media (prefers-reduced-motion: reduce){.sk,.grow,.fill,.w1,.w2{animation:none}}
+</style>
+<style>html,body{background:#000}</style>
+</head>
+<body>
+<div style="width: 390px; height: 844px; position: relative; overflow: hidden; background: #0A0B12; font-family: Geist, -apple-system, sans-serif; color: #fff">
+  <div style="position: absolute; left: 16px; right: 16px; top: 54px; height: 38px; display: flex; align-items: center; justify-content: space-between">
+    <div style="width: 38px; height: 38px; border-radius: 19px; background: rgba(20,22,36,0.72)"></div>
+    <div style="font-family: 'Geist Mono', monospace; font-size: 11px; font-weight: 600; letter-spacing: 0.1em; color: rgba(225,228,245,0.55)">OPENING YOUR EDIT</div>
+    <div style="width: 70px; height: 34px; border-radius: 17px; background: rgba(255,214,10,0.25)"></div>
+  </div>
+
+  <div class="grow" style="position: absolute; left: 78px; top: 104px; width: 234px; height: 416px; overflow: hidden; box-shadow: 0 0 0 1px rgba(180,167,255,0.35), 0 30px 70px rgba(40,20,120,0.45)">
+    <img src="assets/creator.jpg" alt="Take 2" style="width: 100%; height: 100%; object-fit: cover; object-position: 42% 30%">
+    <div style="position: absolute; left: 10px; right: 10px; top: 306px; display: flex; flex-direction: column; align-items: center; gap: 4px; font-weight: 800; font-size: 20px; line-height: 25px; text-transform: uppercase">
+      <div class="w1" style="color: #fff; text-shadow: 0 2px 0 #000">okay, real talk.</div>
+      <div class="w2" style="padding: 0 8px; border-radius: 6px; background: #FFD60A; color: #0A0B12">three tiny habits</div>
+    </div>
+  </div>
+
+  <div style="position: absolute; left: 40px; right: 40px; top: 470px; height: 66px; border-radius: 18px; background: rgba(22,20,52,0.94); box-shadow: inset 0 0 0 0.5px rgba(180,167,255,0.5), 0 16px 40px rgba(0,0,0,0.5); padding: 12px 14px; box-sizing: border-box; display: flex; flex-direction: column; gap: 8px">
+    <div style="display: flex; align-items: center; justify-content: space-between; font-size: 13px; font-weight: 600; color: #E4DEFF"><span><span style="color: #B4A7FF">✦</span> Adding captions in your words</span><span style="font-family: 'Geist Mono', monospace; font-size: 11px; color: #B4A7FF">82%</span></div>
+    <div style="height: 4px; border-radius: 2px; background: rgba(180,167,255,0.2); overflow: hidden"><div class="fill" style="width: 82%; height: 100%; border-radius: 2px; background: linear-gradient(90deg,#9D8CFF,#FFD60A)"></div></div>
+  </div>
+
+  <div style="position: absolute; left: 0; right: 0; top: 562px; height: 196px; background: #101119; border-top: 0.5px solid rgba(80,86,120,0.4)">
+    <div class="sk" style="position: absolute; left: 12px; top: 26px; width: 46px; height: 50px; border-radius: 8px"></div>
+    <div class="sk" style="position: absolute; left: 66px; right: 0; top: 26px; height: 50px; border-radius: 8px"></div>
+    <div class="sk" style="position: absolute; left: 66px; top: 86px; width: 150px; height: 22px; border-radius: 6px"></div>
+    <div class="sk" style="position: absolute; left: 66px; top: 114px; width: 240px; height: 22px; border-radius: 6px"></div>
+    <div class="sk" style="position: absolute; left: 66px; right: 12px; top: 142px; height: 22px; border-radius: 6px"></div>
+  </div>
+  <div style="position: absolute; left: 0; right: 0; top: 774px; text-align: center; font-size: 12.5px; color: rgba(225,228,245,0.5)">Hook title, captions and cuts from your script are ready in a moment.</div>
+</div>
+</body>
+</html>

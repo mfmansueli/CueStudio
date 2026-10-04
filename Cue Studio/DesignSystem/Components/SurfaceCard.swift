@@ -18,7 +18,6 @@ struct SurfaceCard: ViewModifier {
             .background {
                 RoundedRectangle(cornerRadius: radius, style: .continuous)
                     .fill(color)
-                    .shadow(color: Palette.cardShadow, radius: 1, y: 1)
             }
     }
 }

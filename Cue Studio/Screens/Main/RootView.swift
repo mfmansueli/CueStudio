@@ -15,7 +15,7 @@ struct RootView: View {
 
     var body: some View {
         let languages = services.languages
-        MainView(services: services)
+        content
             // A new interface language rebuilds the screens, so every string is read again in it.
             // Navigation lives in PresentationService, so the creator stays where they were.
             .id(languages.interfaceLanguage)
@@ -23,8 +23,8 @@ struct RootView: View {
             .toastHost()
             .environment(services)
             .environment(\.locale, languages.interfaceLocale)
-            // Nil follows the iPhone. The camera, prompter, review and editor pin themselves dark.
-            .preferredColorScheme(services.appearance.appearance.colorScheme)
+            // Dark only: the night is the identity.
+            .preferredColorScheme(.dark)
             .environment(\.layoutDirection, LayoutDirection(rightToLeft: languages.interfaceLanguage.isRightToLeft))
             .task {
                 await services.store.start()
@@ -54,6 +54,28 @@ struct RootView: View {
                 CueShortcuts.updateAppShortcutParameters()
             }
     }
+
+    @ViewBuilder
+    private var content: some View {
+        #if DEBUG
+        if CommandLine.arguments.contains("-uiTestCatalogue") {
+            DesignCatalogueView(section: Self.catalogueSection)
+        } else {
+            MainView(services: services)
+        }
+        #else
+        MainView(services: services)
+        #endif
+    }
+
+    #if DEBUG
+    /// `-uiTestCatalogue <section>` opens the design catalogue on that section.
+    private static var catalogueSection: DesignCatalogueView.Section {
+        let arguments = CommandLine.arguments
+        guard let index = arguments.firstIndex(of: "-uiTestCatalogue"), arguments.indices.contains(index + 1) else { return .colors }
+        return DesignCatalogueView.Section.allCases.first { $0.rawValue.lowercased() == arguments[index + 1].lowercased() } ?? .colors
+    }
+    #endif
 
     private func handleIntent() {
         guard let route = IntentRouter.shared.take() else { return }

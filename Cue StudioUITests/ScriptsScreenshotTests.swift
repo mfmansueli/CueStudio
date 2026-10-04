@@ -15,11 +15,10 @@ final class ScriptsScreenshotTests: XCTestCase {
         }
         let directory = URL(fileURLWithPath: folder, isDirectory: true)
         try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
-        let appearance = ProcessInfo.processInfo.environment["CUE_SCREENSHOT_APPEARANCE"] ?? "dark"
-        let app = CueApp.launch(seeded: true, appearance: appearance)
+        let app = CueApp.launch(seeded: true)
         func capture(_ name: String) throws {
             sleep(1)
-            try app.screenshot().pngRepresentation.write(to: directory.appending(path: "\(appearance)-\(name).png"))
+            try app.screenshot().pngRepresentation.write(to: directory.appending(path: "dark-\(name).png"))
         }
         XCTAssertTrue(app.buttons["ideaCard.submit"].waitForExistence(timeout: 15))
         try capture("01-scripts")
@@ -53,11 +52,10 @@ final class ScriptsScreenshotTests: XCTestCase {
         }
         let directory = URL(fileURLWithPath: folder, isDirectory: true)
         try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
-        let appearance = ProcessInfo.processInfo.environment["CUE_SCREENSHOT_APPEARANCE"] ?? "dark"
-        let app = CueApp.launch(seeded: true, appearance: appearance)
+        let app = CueApp.launch(seeded: true)
         func capture(_ name: String) throws {
             sleep(1)
-            try app.screenshot().pngRepresentation.write(to: directory.appending(path: "\(appearance)-\(name).png"))
+            try app.screenshot().pngRepresentation.write(to: directory.appending(path: "dark-\(name).png"))
         }
         let field = app.descendants(matching: .any)["ideaCard.field"].firstMatch
         XCTAssertTrue(field.waitForExistence(timeout: 15))
@@ -93,11 +91,10 @@ final class ScriptsScreenshotTests: XCTestCase {
         }
         let directory = URL(fileURLWithPath: folder, isDirectory: true)
         try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
-        let appearance = ProcessInfo.processInfo.environment["CUE_SCREENSHOT_APPEARANCE"] ?? "dark"
-        let app = CueApp.launch(seeded: true, appearance: appearance)
+        let app = CueApp.launch(seeded: true)
         func capture(_ name: String) throws {
             sleep(1)
-            try app.screenshot().pngRepresentation.write(to: directory.appending(path: "\(appearance)-\(name).png"))
+            try app.screenshot().pngRepresentation.write(to: directory.appending(path: "dark-\(name).png"))
         }
         XCTAssertTrue(app.tabBars.buttons["Profile"].waitForExistence(timeout: 15))
         app.tabBars.buttons["Profile"].tap()

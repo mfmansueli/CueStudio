@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=390">
+<title>Cue — Studio mode</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&amp;family=Geist+Mono:wght@500;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+.glass{background:rgba(28,30,46,0.7);box-shadow:inset 0 0 0 0.5px rgba(255,255,255,0.14)}
+@keyframes horizon{0%,100%{opacity:0.75}50%{opacity:1}}
+.horizon{animation:horizon 2.4s ease-in-out infinite}
+@keyframes rec{0%,100%{opacity:1}50%{opacity:0.35}}
+.recdot{animation:rec 1.2s ease-in-out infinite}
+@media (prefers-reduced-motion: reduce){.horizon,.recdot{animation:none}}
+@property --p{syntax:'<number>';inherits:true;initial-value:0}@property --v{syntax:'<integer>';inherits:true;initial-value:0}@property --g{syntax:'<number>';inherits:true;initial-value:0}.ot{position:relative}.rail{position:absolute;left:0;right:0;border-radius:3px;background:rgba(110,116,150,0.32)}.trail{position:absolute;left:0;border-radius:3px;background:linear-gradient(90deg,rgba(255,214,10,0.12),rgba(255,214,10,0.55) 55%,#FFD60A);box-shadow:0 0 10px rgba(255,214,10,0.35)}.orb{position:absolute;border-radius:50%;background:radial-gradient(circle at 34% 30%,#FFFDF2 0%,#FFE680 24%,#F2C200 58%,#8A6400 100%);box-shadow:0 0 0 1px rgba(8,9,16,0.55),0 0 12px rgba(255,214,10,0.5),0 3px 8px rgba(0,0,0,0.5)}.orb.off{background:radial-gradient(circle at 34% 30%,#F4F5FA 0%,#B9BCCF 45%,#5B5F78 100%);box-shadow:0 0 0 1px rgba(8,9,16,0.55),0 3px 8px rgba(0,0,0,0.5)}.oring{position:absolute;left:50%;top:50%;border-radius:50%;border:1px solid rgba(255,236,160,0.75);box-shadow:0 0 6px rgba(255,214,10,0.45);pointer-events:none}.obub{position:absolute;left:50%;transform:translateX(-50%);height:24px;padding:0 9px;border-radius:12px;background:rgba(20,22,38,0.92);box-shadow:inset 0 0 0 0.5px rgba(255,214,10,0.5),0 6px 16px rgba(0,0,0,0.4);font-family:'Geist Mono',monospace;font-size:11px;font-weight:600;color:#FFE680;display:flex;align-items:center;white-space:nowrap}.cv::after{content:counter(v)}.tick{position:absolute;width:8px;height:8px;margin:-4px 0 0 -4px}.olab{font-family:'Geist Mono',monospace;font-size:10px;font-weight:600;letter-spacing:0.08em;color:rgba(225,228,245,0.45)}@keyframes ringspin{from{transform:rotate(-18deg) scaleY(.38)}to{transform:rotate(342deg) scaleY(.38)}}
+</style>
+<style>html,body{background:#000}</style>
+</head>
+<body>
+<div style="width: 390px; height: 844px; position: relative; overflow: hidden; background: radial-gradient(70% 30% at 50% 50%,rgba(94,78,224,0.10),rgba(0,0,0,0) 70%),#000; font-family: Geist, -apple-system, sans-serif; color: #fff">
+  <div style="position: absolute; left: 16px; right: 16px; top: 54px; height: 36px; display: flex; align-items: center; gap: 8px">
+    <button aria-label="Close" class="glass" style="width: 36px; height: 36px; border-radius: 18px; border: 0; display: flex; align-items: center; justify-content: center; padding: 0"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round"><path d="M1.5 1.5l9 9M10.5 1.5l-9 9"></path></svg></button>
+    <div class="glass" style="display: flex; height: 32px; padding: 2px; box-sizing: border-box; border-radius: 16px">
+      <div style="padding: 0 12px; display: flex; align-items: center; font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.7)">Selfie</div>
+      <div style="padding: 0 12px; border-radius: 14px; background: #fff; color: #000; display: flex; align-items: center; font-size: 13px; font-weight: 700">Studio</div>
+    </div>
+    <div style="flex: 1"></div>
+    <div style="position: relative; width: 66px; height: 110px; border-radius: 12px; overflow: hidden; margin-top: 74px; box-shadow: 0 0 0 1px rgba(255,255,255,0.3), 0 10px 24px rgba(0,0,0,0.6)">
+      <img src="assets/creator.jpg" alt="Rear camera preview" style="width: 100%; height: 100%; object-fit: cover; object-position: 38% 35%">
+      <span style="position: absolute; left: 6px; top: 6px; display: flex; align-items: center; gap: 4px; height: 16px; padding: 0 5px; border-radius: 8px; background: #FF3B30; font-family: 'Geist Mono', monospace; font-size: 8.5px; font-weight: 600"><span class="recdot" style="width: 5px; height: 5px; border-radius: 3px; background: #fff"></span>0:41</span>
+    </div>
+  </div>
+
+  <div style="position: absolute; left: 22px; right: 40px; top: 200px; display: flex; flex-direction: column; gap: 16px; font-size: 32px; line-height: 41px; font-weight: 700; letter-spacing: -0.01em">
+    <div style="color: rgba(255,255,255,0.28)">Two: I write down one thing.</div>
+    <div style="position: relative; padding-bottom: 16px">Not a to-do list.
+      <div class="horizon" style="position: absolute; left: -22px; right: -40px; bottom: 0; height: 2px; background: linear-gradient(90deg,rgba(255,214,10,0),#FFD60A 10%,#FFD60A 90%,rgba(255,214,10,0)); box-shadow: 0 0 16px rgba(255,214,10,0.8), 0 0 50px rgba(255,214,10,0.3)"></div>
+    </div>
+    <div style="color: rgba(255,255,255,0.62)">One thing that would make today a win. <span style="display: inline-flex; align-items: center; height: 26px; padding: 0 8px; border-radius: 8px; background: rgba(255,214,10,0.16); color: #FFD60A; font-family: 'Geist Mono', monospace; font-size: 14px; font-weight: 600; vertical-align: 6px">smile</span></div>
+  </div>
+
+  <div style="position: absolute; right: 14px; top: 210px; height: 340px; width: 12px; display: flex; flex-direction: column; align-items: center">
+    <span style="width: 1px; flex: 1; background: linear-gradient(rgba(255,214,10,0.8),rgba(255,214,10,0.8) 55%,rgba(255,255,255,0.18) 55%)"></span>
+  </div>
+  <span style="position: absolute; right: 16px; top: 208px; width: 8px; height: 8px; border-radius: 4px; background: #FFD60A"></span>
+  <span style="position: absolute; right: 15px; top: 390px; width: 10px; height: 10px; border-radius: 5px; background: #fff; box-shadow: 0 0 10px #FFD60A, 0 0 0 3px rgba(255,214,10,0.35)"></span>
+  <span style="position: absolute; right: 17px; top: 544px; width: 6px; height: 6px; border-radius: 3px; background: rgba(255,255,255,0.35)"></span>
+
+  <div style="position: absolute; left: 16px; right: 16px; top: 632px; display: flex; align-items: center; gap: 8px">
+    <div class="glass" style="height: 36px; padding: 0 12px; border-radius: 18px; display: flex; align-items: center; gap: 8px; font-family: 'Geist Mono', monospace; font-size: 11px; font-weight: 600; letter-spacing: 0.06em"><span style="color: rgba(255,255,255,0.6)">SPEED</span><div class="ot" style="width: 84px; height: 28px"><div class="rail" style="top: 12.5px; height: 3px"></div><div class="trail" style="top: 12.5px; height: 3px; width: calc(0.55 * 84px)"></div><div style="position: absolute; left: calc(0.55 * 84px - 8.0px); top: 6.0px; width: 16px; height: 16px; "><div class="orb" style="inset: 0; "></div><span class="oring" style="width: 38px; height: 38px; margin: -19.0px 0 0 -19.0px; transform: rotate(-18deg) scaleY(.38); opacity: 0; "></span></div></div><span style="color: #FFD60A">0.8×</span></div>
+    <div style="flex: 1"></div>
+    <div class="glass" style="height: 36px; padding: 0 12px; border-radius: 18px; display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M8 7L3 12l5 5V7zM16 7l5 5-5 5V7z"></path></svg>Mirror</div>
+  </div>
+  <div style="position: absolute; left: 0; right: 0; top: 682px; text-align: center; font-family: 'Geist Mono', monospace; font-size: 10px; font-weight: 600; letter-spacing: 0.08em; color: rgba(255,255,255,0.55)">REAR CAMERA · 4K 30 · REMOTE CONNECTED</div>
+
+  <div style="position: absolute; left: 0; right: 0; bottom: 34px; display: flex; justify-content: center; align-items: center; gap: 40px">
+    <button aria-label="Restart" class="glass" style="width: 46px; height: 46px; border-radius: 23px; border: 0; display: flex; align-items: center; justify-content: center; padding: 0"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12a8 8 0 1 0 2.5-5.8"></path><path d="M4 4v4h4"></path></svg></button>
+    <button aria-label="Stop recording" style="width: 80px; height: 80px; border-radius: 40px; border: 4px solid #fff; background: transparent; display: flex; align-items: center; justify-content: center; padding: 0; box-shadow: 0 0 24px rgba(255,59,48,0.45)"><span style="width: 30px; height: 30px; border-radius: 8px; background: #FF3B30"></span></button>
+    <button aria-label="Text size" class="glass" style="width: 46px; height: 46px; border-radius: 23px; border: 0; color: #fff; font-family: inherit; font-size: 15px; font-weight: 700; padding: 0">Aa</button>
+  </div>
+</div>
+</body>
+</html>

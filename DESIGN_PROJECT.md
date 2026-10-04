@@ -46,77 +46,70 @@ review, tutorial…) e a estrutura (Hook → Body → CTA).
 
 ## 2. Aparência
 
-O app tem **modo claro e escuro**. As telas do próprio Cue (Scripts, Takes, Profile, Settings, roteiro,
-sheets, paywall) seguem o iPhone, ou o que o criador escolhe em **Settings › Appearance** (Automatic /
-Light / Dark, `AppearanceService`, aplicado por `RootView` com `preferredColorScheme`; sem o travamento
-`UIUserInterfaceStyle = Dark`). **Câmera, prompter, revisão da take, Quick edit e o Remote** ficam
-**sempre escuros** (`.videoContext()`): são vistos sobre vídeo, e uma tela branca atrapalha a gravação;
-as sheets abertas de dentro deles herdam o escuro. Todos os pares de cores passam nas regras de contraste
-da Apple nas duas aparências (seção 8, "Contraste"; `PaletteContrastTests` falha quando um sai do mínimo).
+**O app é só escuro** (v27 "Cue Universe"): a noite é a identidade. `UIUserInterfaceStyle = Dark` no Info.plist e
+`.preferredColorScheme(.dark)` na raiz (`RootView`); não há mais **Settings › Appearance**, `AppearanceService`,
+paleta clara nem `.videoContext()`. Câmera, prompter, revisão da take, Quick edit e o Remote já eram escuros; agora
+tudo é. Todos os pares de cores passam nas regras de contraste da Apple, com e sem Increase Contrast (seção 8,
+"Contraste"; `PaletteContrastTests` falha quando um sai do mínimo). Os valores claros da v26 (fundo `#F4F5FA`, cards
+brancos, ouro escuro `#7A5C00`, os cards de IA em violeta sólido) saíram junto: ver o histórico do git.
 
-**Como o claro é** (v26): fundo `#F4F5FA` (com um véu violeta suave nos cards de IA), cards brancos com
-sombra de 1 pt, controles em `#E6E8F2`, texto `#0F1020` com secundário `#53566C`; o amarelo da marca continua sendo
-**preenchimento** (botão primário, ponto, medidor com `accText`), e vira **ouro escuro** (`#7A5C00`) como
-texto, ícone e controle (tint dos switches, sliders, abas, campos); verde, laranja, vermelho e azul
-idem (tokens `…Text`). O campo do Prompt é um poço branco sobre o brilho dourado (no escuro, um poço
-preto); o anel da aba Record é quase preto no claro e branco no escuro (`RecordGlyph`); o botão Sign in with
-Apple troca de estilo; swipe "Record" usa `accAction` (branco 5,3:1). Sombra e brilho do Prompt, anéis
-de amostras e preenchimentos translúcidos (`overlayFill`, `insetShade`, `swatchRing`) invertem com a aparência.
-**Cards de IA no claro** (v26, fase 8): o card de ideias (Scripts), o My Cue Voice do Profile e o "Your setup" do
-Settings são **violeta sólido** (degradê `heroTop` → `heroBottom`, `#271C84` → `#2E2290`) com conteúdo branco: o
-conteúdo do card roda em `.heroCardContent()` (esquema escuro dentro do card, então `ink`, `ink2`, `accText` e as aurora
-resolvem para os tokens da noite) e a aurora usa as luzes da noite nas duas aparências. No escuro nada muda.
+**Papéis das cores** (valem em toda tela): **amarelo `#FFD60A` é ação e sinal** (botão primário, linha de leitura,
+orbs, aba ativa), **violeta `#B4A7FF` é IA**, **vermelho é só gravação**, **verde é pronto**, **ciano é em edição**;
+**temas são mundos** (âmbar, menta, rosa e azul-céu) e **redes são galáxias** (cores por plataforma). O céu estrelado
+(`StarfieldView`, `skyBackground()`) só aparece nas telas de navegação e no onboarding: **nunca sobre a câmera, uma take
+ou o editor**.
 
 ### Cores (`Palette`)
 
 | Token | Escuro | Uso |
 |-------|--------|-----|
-| `bg` | `#0A0B12` (claro `#F4F5FA`) | Fundo das telas (Night Session) |
-| `surface` | `#161826` (claro branco, com sombra `cardShadow`) | Cards, linhas agrupadas, sheets |
-| `surface2` | `#1F2236` (claro `#E6E8F2`) | Controles e linhas dentro de cards/sheets |
-| `surface3` | `#2B2F48` (claro `#D5D8E6`) | Tiles um nível acima de `surface2` (destinos de compartilhamento, "More"); derivado, não está na v26 |
-| `surfaceMuted` | `#1B1D2E` (claro `#EDEEF5`) | Formatos sérios (pedido de desculpas) |
-| `fill` | `#6E7496` 26% (claro `#E6E8F2`) | Chips inativos, trilho dos segmentados, botões redondos, trilhos de medidores |
-| `chipOn` / `chipOnInk` | branco / preto (claro `#0F1020` / branco) | Chip de texto selecionado (`FilterChip`): nunca amarelo |
-| `segmentOn` · `segmentShadow` | `#636366` (claro branco + sombra) | Segmento ativo (Voice \| Steady, `PanelSegmented`) |
-| `glassFill` · `glassBase` | `#0E101C` 72% / opaco (claro branco 94%) | Vidro noturno das barras e controles flutuantes (`GlassNight`: 60% / 72% / 88% sobre vídeo, sempre 94% no claro) |
-| `overlayFill` | branco 10% (claro: preto 8%) | Botões sobre a câmera/prompter; item aberto da barra do editor de roteiro |
+| `bg` | `#0A0B12` | Fundo das telas (Night Session) |
+| `surface` | `#161826` | Cards, linhas agrupadas, sheets |
+| `surface2` | `#1F2236` | Controles e linhas dentro de cards/sheets |
+| `surface3` | `#2B2F48` | Tiles um nível acima de `surface2` (destinos de compartilhamento, "More"); derivado, não está na v26 |
+| `surfaceMuted` | `#1B1D2E` | Formatos sérios (pedido de desculpas) |
+| `fill` | `#6E7496` 26% | Chips inativos, trilho dos segmentados, botões redondos, trilhos de medidores |
+| `chipOn` / `chipOnInk` | branco / preto | Chip de texto selecionado (`FilterChip`): nunca amarelo |
+| `segmentOn` · `segmentShadow` | `#636366` | Segmento ativo (Voice \| Steady, `PanelSegmented`) |
+| `glassFill` · `glassBase` | `#0E101C` 72% / opaco | Vidro noturno das barras e controles flutuantes (`GlassNight`: 60% / 72% / 88% sobre vídeo, sempre 94% no claro) |
+| `overlayFill` | branco 10% | Botões sobre a câmera/prompter; item aberto da barra do editor de roteiro |
 | `neutralAction` | `#636366` | Swipe "More" |
-| `glassBorder` | violeta `#B4A7FF` 22% (claro `#3C3C5A` 12%) | Borda de 0,5 pt das superfícies de vidro |
-| `separator` | `#505678` 50% (claro `#3C3C5A` 14%) | Separadores de 0,5 pt |
-| `ink` / `ink2` / `ink3` | branco / `#E1E4F5` 62% / 45% (claro: `#0F1020` / `#53566C` / `#6A6D82`; o protótipo usa `#8A8DA2` no terciário, que dá 2,7:1 sobre `surface2`) | Texto principal; texto secundário (4,5:1 em toda superfície); o que não precisa ser lido (chevrons, contornos, desligado, 3:1) |
+| `glassBorder` | violeta `#B4A7FF` 22% | Borda de 0,5 pt das superfícies de vidro |
+| `separator` | `#505678` 50% | Separadores de 0,5 pt |
+| `ink` / `ink2` / `ink3` | branco / `#E1E4F5` 62% / 45% | Texto principal; texto secundário (4,5:1 em toda superfície); o que não precisa ser lido (chevrons, contornos, desligado, 3:1) |
 | `acc` | `#FFD60A` | Acento como **preenchimento**: ação primária, hook, guia de leitura |
-| `accText` / `warnText` / `dangerText` / `infoText` / `successText` | escuro: o próprio acc/warn/`#FF8078`/info/success · claro: `#7A5C00` / `#9A4A00` / `#A8001A` / `#00638F` / `#1A6F2E` | Amarelo, laranja, vermelho, azul e verde **como texto ou ícone**: os preenchimentos somem sobre o branco, estes passam 4,5:1 nas superfícies do app. Com Increase Contrast ficam um degrau mais fortes |
-| `heroTop` → `heroBottom` | `#271C84` → `#2E2290` (igual nos dois; só aparece no claro) | Fundo dos cards de IA no claro; `ink2` sobre o fim do degradê dá 4,5:1 (`PaletteContrastTests`) |
+| `accText` / `warnText` / `dangerText` / `infoText` / `successText` | escuro: o próprio acc/warn/`#FF8078`/info/success | Amarelo, laranja, vermelho, azul e verde **como texto ou ícone**: os preenchimentos somem sobre o branco, estes passam 4,5:1 nas superfícies do app. Com Increase Contrast ficam um degrau mais fortes |
+| `inkHint` | `#E1E4F5` 55% (72% com Increase Contrast) | Dicas pequenas e rótulos mono (v27: nunca abaixo de 55% sobre `bg`, uns 5:1) |
+| `worldWarm` / `worldMint` / `worldPink` / `worldSky` | `#FFC46B` / `#7EE0B8` / `#FF9BD2` / `#8FB8FF` | **Temas = mundos**: a cor de cada tema do criador (até três, nessa ordem); ponto de cor nos roteiros, órbitas do onboarding |
 | `accInk` | `#000000` | Texto sobre `acc` |
 | `accAction` | `#8A6500` (igual nos dois) | Fundo do swipe "Record" sob texto branco (5,3:1; o `acc` dá 1,4:1) |
-| `insetField` / `insetShade` / `swatchRing` | preto 38% / preto 38% / branco 25% (claro: branco 72% / preto 5% / preto 25%) | Poço do campo do Prompt, a sombra móvel do brilho dourado e o anel das amostras de cor |
+| `insetField` / `insetShade` / `swatchRing` | preto 38% / preto 38% / branco 25% | Poço do campo do Prompt, a sombra móvel do brilho dourado e o anel das amostras de cor |
 | `accSoft` | `#FFD60A` 16% | Fundos tingidos (tags de cue, botões secundários de gravação) |
 | `accWash` → `accWashFaint` / `accBorder` | `#FFD60A` 22% → 5% / 38% | Card da recomendação (This take), plano escolhido e brilho do paywall, tira "Your takes" |
 | `accGlow` → `accGlowFaint` | `#FFD60A` 14% → 2% | Toque de amarelo do card do plano Pro (Profile) e do paywall |
-| `aiText` / `aiTextStrong` | `#B4A7FF` / `#E4DEFF` (claro `#5644D4` / `#3E2DB8`; o `#5B48D9` do protótipo dá 4,45:1 sobre o próprio `aiFill`; com Increase Contrast um degrau mais forte) | **Violeta é IA**: ✦, My Cue Voice, Smart, sugestões; texto e ícone (4,5:1 em toda superfície) |
-| `aiFill` · `aiBorder` · `aiGlow` → `aiGlowFaint` | `#9D8CFF` 17% · `#B4A7FF` 30% · `#9D8CFF` 20% → 2% (claro `#5B48D9` 10% · 28% · 12% → 2%) | Chips e tiles de IA, borda do card de IA, brilho do card (Your setup, plano Pro) |
-| `auroraViolet` / `auroraIndigo` · `auroraBorderLight` · `auroraScanLine` | `#9D8CFF` 30% / `#5E4EE0` 30% · `#B4A7FF` · `#FFD60A` (claro: 20% / 12% · `#5B48D9` · `#B07A00`) | Aurora do card de ideias (Scripts) e do "Sounds like you" (Profile): o violeta e o índigo que deslizam sobre o fundo, o reflexo que percorre a borda e a **linha de varredura amarela** de 1,5 pt na base (12 s para cruzar; parada e discreta no meio com Reduce Motion) |
+| `aiText` / `aiTextStrong` | `#B4A7FF` / `#E4DEFF` | **Violeta é IA**: ✦, My Cue Voice, Smart, sugestões; texto e ícone (4,5:1 em toda superfície) |
+| `aiFill` · `aiBorder` · `aiGlow` → `aiGlowFaint` | `#9D8CFF` 17% · `#B4A7FF` 30% · `#9D8CFF` 20% → 2% | Chips e tiles de IA, borda do card de IA, brilho do card (Your setup, plano Pro) |
+| `auroraViolet` / `auroraIndigo` · `auroraBorderLight` · `auroraScanLine` | `#9D8CFF` 30% / `#5E4EE0` 30% · `#B4A7FF` · `#FFD60A` | Aurora do card de ideias (Scripts) e do "Sounds like you" (Profile): o violeta e o índigo que deslizam sobre o fundo, o reflexo que percorre a borda e a **linha de varredura amarela** de 1,5 pt na base (12 s para cruzar; parada e discreta no meio com Reduce Motion) |
 | `record` | `#FF3B30` | Botão de gravar, badge de gravação |
 | `danger` / `dangerFill` | `#FF453A` / `#D70015` | Ações destrutivas (ícone); fundo do botão que remove, sob texto branco (5,4:1) |
 | `warn` | `#FF9F0A` | Fora da faixa ideal, hook longo, aviso de monetização |
 | `info` | `#64D2FF` | Aviso de nova versão no editor |
 | `success` | `#34C759` | Toggles, "Kept" no Clean Up, ponto do microfone conectado |
-| Plataformas | TikTok `#64D2FF` · Reels `#BF5AF2` · Shorts `#FF6961` · YouTube `#FF9F0A` · LinkedIn `#0A84FF` · Stories `#FF375F` | Ponto que marca o destino |
+| Plataformas (galáxias) | TikTok `#64D2FF` · Reels `#BF5AF2` · Shorts `#FF6B5A` · YouTube `#FF9F0A` · LinkedIn `#0A84FF` · Stories `#FF6FA8` | Ponto que marca o destino |
 | `recommendationTop` → `recommendationBottom` · `recommendationRim` · `recommendationIconFill` / `recommendationIcon` · `recommendationShadow` · `warningCard` | `#3E3096` 90% → `#1E1650` 90% · `#C4B8FF` 45% · `#C9BEFF` 20% / `#C9BEFF` · `#1E0F64` 50% · `#161826` 97% | Cartão de recomendação da plataforma (violeta, as linhas em `aiTextStrong`) e o aviso de parada sobre a câmera |
-| `posterPill` | `#0E101C` 70% | A pílula escura sobre um pôster (a etapa, "×3"); o texto nela é claro em qualquer aparência |
+| `posterPill` | `#0E101C` 70% | A pílula escura sobre um pôster (a etapa, "×3"); o texto nela é claro |
 | `frameMask` / `frameEdge` | preto 60% / branco 22% | Fora do frame gravado / bordas de 0,5 pt do frame |
 | `safeZoneLine` / `safeZoneLabel` | branco 40% / 62% | Contorno tracejado da área segura e a legenda |
 | `safeZoneShade` → `safeZoneShadeFaint` / `safeZoneSide` | preto 40% → 10% / 16% | Faixas de risco (degradê em cima e embaixo, sombra nas laterais) |
 | `readingLineGlow` | `#FFD60A` 45% | Brilho da linha de leitura sobre a câmera |
 | `readingLineHandle` / `…Active` / `…Border` | `#1E1E20` 55% / `#FFD60A` 55% / branco 28% | Alça da linha (em repouso / arrastando) |
 | `stopButtonRing` / `stopButtonFill` | branco 85% / preto 18% | Botão de parar mínimo (controles escondidos) |
-| `editorPanel` · `editorSeparator` · `editorToast` · `editorBarButton` | `#0E101C` (claro `#F4F5FA`, no painel do editor de roteiro) · `#505678` 50% · `#1F2236` 96% · `#2B2F48` 70% | Editor: painéis, separadores, toast (com estrela amarela) e botões da barra superior |
+| `editorPanel` · `editorSeparator` · `editorToast` · `editorBarButton` | `#0E101C` · `#505678` 50% · `#1F2236` 96% · `#2B2F48` 70% | Editor: painéis, separadores, toast (com estrela amarela) e botões da barra superior |
 | `laneText` / `laneTextSelected` + `laneTextInk` · `laneCaption` + `laneCaptionInk` · `laneMusic` + `laneMusicInk` · `laneVoiceOver` + `laneVoiceOverInk` · `laneMedia` + `laneMediaInk` · `laneRecording` | branco 20% / 32% + branco · `#9D8CFF` 30% + `#C9BFFF` · `#34C759` 30% + `#7CE59A` · `#FF9F0A` 30% + `#FFB340` · `#64D2FF` 30% + `#9FE3FF` · `#FF453A` 50% | Faixas da timeline (v26): **Aa branco, legendas violeta, música verde, voice-over âmbar, mídia azul-claro**; fundo + texto numa cor mais clara (4,5:1 sobre as duas faixas, `PaletteContrastTests`) |
 | `pauseRemoveStripe`/`Gap` · `pauseKeepStripe`/`Gap`/`Border` | amarelo 62% / 20% · branco 25% / preto 30% / branco 75% | Pausas na trilha principal: a remover (hachurado amarelo) e a manter (cinza tracejado) |
-| `waveformWell` · `waveformBar` · `rulerLabel` · `laneGhostBorder` / `laneGhostInk` · `joinMark` | `#232326` · `#EBEBF5` 55% · `#EBEBF5` 55% · `#EBEBF5` 45% (claro `#6E6E73`) / 70% · preto 60% | Forma de onda, régua, atalhos tracejados das faixas vazias, marca de um corte seco |
+| `waveformWell` · `waveformBar` · `rulerLabel` · `laneGhostBorder` / `laneGhostInk` · `joinMark` | `#232326` · `#EBEBF5` 55% · `#EBEBF5` 55% · `#EBEBF5` 45% / 70% · preto 60% | Forma de onda, régua, atalhos tracejados das faixas vazias, marca de um corte seco |
 | `laneStrip` · `laneStripActive` · `laneStripRing` · `laneGutterInk` · `laneHintInk` · `adjustDialRing` · `selectedRow` | `#1C1C1E` · `#24231C` · `#FFD60A` 75% · `#EBEBF5` 85% · `#EBEBF5` 60% · `#EBEBF5` 35% · `#FFD60A` 8% | Editor v12: faixa de cada track, a mesma com as ferramentas abertas (com anel), ícone da faixa, dica da faixa vazia (o protótipo usa 45%, 3,9:1; 60% dá 5,9:1), anel de um dial de Adjust em zero, linha da lista em que o cursor está |
-| `panelCard` · `sliderTrack` (v26: `#6E7496` 45%, claro `#D5D8E6`) · `sliderThumbRim` · `toggleOff` · `accTile` · `accCard` · `dangerWash` · `presetCardDim` / `presetCardBorder` · `coverDim` | `#767680` 16% · 40% · `#787880` 36% · amarelo 12% · 10% · `#FF453A` 16% · preto 28% / branco 8% · preto 50% | Controles dos painéis: cards, trilho do slider, switch desligado, tile e card escolhidos, lixeira de uma linha, cards de preset, quadro da capa |
+| `panelCard` · `sliderTrack` (`#6E7496` 45%) · `toggleOff` · `accTile` · `accCard` · `dangerWash` · `presetCardDim` / `presetCardBorder` · `coverDim` | `#767680` 16% · 40% · `#787880` 36% · amarelo 12% · 10% · `#FF453A` 16% · preto 28% / branco 8% · preto 50% | Controles dos painéis: cards, trilho do slider, switch desligado, tile e card escolhidos, lixeira de uma linha, cards de preset, quadro da capa |
 
 Cores de **conteúdo** (queimadas no vídeo, não tokens de interface): os textos do Quick edit usam
 `OverlayColor` (texto: branco, `#111`, amarelo, laranja, vermelho, verde, ciano, roxo; fundos: amarelo,
@@ -160,7 +153,7 @@ SF Symbols por significado: `doc.text` scripts · `film.stack` takes · `person.
 | `CueStudioButtonStyle` variante `.ai` (`.cueAI()`) | O botão violeta da IA ("✦ Shape", "✦ Rewrite", "Adjust"): fundo `aiFill`, texto `aiTextStrong` |
 | `CueIconButtonStyle` (`.cueIcon(.glass/.overlay/.surface/.tinted/.accent/.light/.danger)`) | Botões redondos |
 | `surfaceCard()` / `GroupedCard` | Cards e grupos de linhas com separadores |
-| `FilterChip`, `TagPill`, `ColorDot` | Chips de filtro/opção (selecionado = branco com texto preto, `chipOn`; no claro, `#0F1020` com branco), tags, ponto do destino |
+| `FilterChip`, `TagPill`, `ColorDot` | Chips de filtro/opção (selecionado = branco com texto preto, `chipOn`), tags, ponto do destino |
 | `SelectableCard` | Tiles selecionáveis (fontes, enquadramento, formato, plano): anel amarelo de 2 pt sobre 12% de amarelo |
 | `GlassNight` (`.glassNight(in:density:)`) | Vidro noturno de barras e controles flutuantes: `glassFill` + borda de 0,5 pt (`glassBorder`); `thin` / `regular` / `solid` sobre vídeo |
 | `HUDLine` | Linha de status em monoespaçada e caixa-alta, com ponto opcional ("● MIC · SETUP ›", "✓ FITS"); amarelo é sinal de HUD (`accText`) |
@@ -170,6 +163,11 @@ SF Symbols por significado: `doc.text` scripts · `film.stack` takes · `person.
 | `SettingToggleRow` | Linha de ajuste com título, detalhe e switch verde `#34C759` (`success`, nos dois modos; Display, câmera) |
 | `SheetHeader`, `SectionHeading` | Cabeçalho de sheet e de grupo |
 | `FlowLayout` | Chips que quebram linha (nichos, frases) |
+| `CueIcon` / `CueIconView` (`DesignSystem/Tokens`, `Assets.xcassets/Icons`) | Os **53 ícones "orbit line" da v27** (grade de 24 pt, traço de 1,75 pt, três motivos: o orb, a órbita e a estrela de quatro pontas), como assets vetoriais em template: a cor vem do contexto (62% branco em repouso, amarelo ativo, violeta IA, vermelho só gravação). Gerados dos SVGs de `design/cue-universe-v27/05 Icons/in-app` |
+| `OrbSlider` (`DesignSystem/Controls`, `OrbSliderMath`, `OrbThumb`) | **Todo slider do app (v27)**: um planeta dourado de polegar e uma linha de luz de trilho; variantes `.full` (26 pt), `.row` (20 pt) e `.compact` (16 pt, pílula de vidro sobre o vídeo), contínua ou por passos (estrelas marcam cada passo e a mola 0,28/0,72 encaixa), origem à esquerda ou no centro. Segurar faz o orb crescer 14%, aparece o anel de órbita (uma volta a cada 4 s) e o valor acende; **deslizar o dedo para baixo segura a velocidade em ½ e ¼ ("FINE · ½")**; toque duplo volta ao padrão; o padrão tem um tique tátil; tocar no valor abre um campo para digitar. O valor é sempre escrito, o elemento é ajustável para o VoiceOver (um passo, ou 5% do intervalo) e tem foco tracejado ciano. Háptico: seleção a cada passo, impacto suave nos extremos |
+| `StarfieldView` / `skyBackground()` (`DesignSystem/Sky`, `StarfieldMath`) | O **céu das telas de navegação**: três camadas de estrelas (16, 12 e 7 por bloco, deriva de 260, 160 e 85 s), 3 a 8 cintilares (metade com o brilho em cruz), uma estrela cadente a cada 11–14 s e uma ou duas nebulosas violeta, num só `Canvas` a 30 fps. Para parado fora da tela, em Low Power Mode, com Reduce Motion ou com o app inativo. Calm (padrão), Lively (dobra) ou Off (Personalize) |
+| Efeitos de luz (`DesignSystem/Effects`) | `HorizonLine` (a linha de leitura que respira em 2,4 s), `IgniteEffect` (núcleo 0 → 1,8 → 1, duas ondas e brilho em cruz), `CometTravel` / `CometPlayer` (cometa com cauda ao longo de uma rota), `WordsFromLight` (palavras que nascem da luz, 0,3 s cada, 0,16 s de intervalo, só para o texto que chega da IA), `aiAura(isActive:)` (luz violeta/amarela que gira na borda a cada 2,8 s) e `shineSweep()` (faixa branca de 70 pt a cada 4–8 s, no máximo um por tela). Todos têm versão de fade com Reduce Motion |
+| `CueMotion` (`DesignSystem/Motion`) | As durações, molas e curvas da v27 (orb 0,28/0,72, aba 0,35/0,7, luz `(.16,1,.3,1)`, glide `(.45,0,.25,1)`…) e `animation(_:reduced:)` |
 | `SearchField` | Busca em cápsula (`fill`, 40 pt) dentro do conteúdo, para quando algo vem acima dela (Scripts) |
 | `ToastView` | Confirmação curta no topo (`ToastService` + `.toastHost()`); com `ToastAction` ganha um botão ("Undo", 4 s) |
 | `CueMark`, `CameraFeedPlaceholder` | Marca e fundo quando não há câmera |
@@ -413,15 +411,14 @@ estático), o app baixa uma vez por abertura e só adota uma revisão maior, com
 - Toasts são anunciados (`AccessibilityNotification.Announcement`).
 - Alvos de toque de 44×44 mesmo quando o visual é menor.
 - **Contraste** (Human Interface Guidelines › Accessibility, que pede 4,5:1 para texto e 3:1 para o
-  que identifica um controle): vale nos dois modos, claro e escuro, e com **Increase Contrast** ligado.
+  que identifica um controle): vale com e sem **Increase Contrast** (o app é só escuro).
   `ColorContrast` mede (luminância relativa, composição de cores translúcidas) e
   `PaletteContrastTests` falha se um token sair do mínimo: `ink`, `ink2` e os textos coloridos
   (`accText`, `warnText`, `dangerText`, `infoText`, `successText`) em `bg`, `surface` e `surface2`;
   `ink` e `ink2` também em `surface3`; os textos coloridos sobre o próprio `…Soft`; os rótulos sobre
   os preenchimentos vivos (`accInk` sobre `acc` e `warn`, branco sobre `dangerFill`); `ink3` a 3:1 em
   toda superfície. **Regras:** (1) `acc`, `warn`, `danger`, `info` e `success` são preenchimentos e
-  pontos; texto e ícone usam o token `…Text` (no claro o amarelo vira ouro escuro; sobre o branco o
-  `acc` dá 1,5:1); (2) `ink3` nunca é frase: é chevron, contorno tracejado, anel, desligado; texto
+  pontos; texto e ícone usam o token `…Text`; (2) `ink3` nunca é frase: é chevron, contorno tracejado, anel, desligado; texto
   terciário usa `ink2`; (3) nada de `Color.white`/`.black` solto em tela que muda de aparência: use
   `ink`/`bg`; (4) cor nunca é o único sinal (a faixa de duração diz o texto, o selecionado muda de
   peso e preenchimento); (5) `Color(light:dark:lightIncreasedContrast:darkIncreasedContrast:)` dá a cada
@@ -439,13 +436,14 @@ estático), o app baixa uma vez por abertura e só adota uma revisão maior, com
 - **v26, fase 6 (página do script, home e My Cue Voice):** a página única Draft \| Shaped, a home com o card Let’s Cue em chips e a lista Recent com o status de cada roteiro, as sheets Need an idea? e Format no lugar da sheet de três abas, a IA escrevendo na página e o My Cue Voice em quatro perguntas com o roteiro como prévia. **Decisões:** o roteiro **salva sozinho** (sem Done) e a versão nova (com takes) é **uma por visita**, para a escrita não criar uma versão por tecla; "Stronger hook" usa a ferramenta More energy e "Rewrite" a More human (não há ferramenta própria); "¶ Cue break" põe a marca [pause] do app (o protótipo desenha um ¶); "Without" escreve a ideia sem a voz só quando o criador pede; o **tipo de criador** (8 cartões) é novo e opcional, e o resto do fluxo usa os campos que o app já tinha (temas, audiência, tom). **Diferenças:** o protótipo tem 20 categorias de tema com subnichos, "+ More topics", audiência livre, nível do público, o que vêm buscar e o que os segura, 8 tons e a sheet "Example" (colar, falar ou escolher um roteiro): o app mantém os 8 temas, as 4 audiências e os 6 tons que o modelo de IA já usa (acrescentar categorias pediria novas ideias iniciais e traduções nos 15 idiomas); a faixa "Does it sound like you?" mostra "Sounds like me" e "Adjust" sem a lista de diferenças por clique; **o progresso parcial não é guardado** ("Not now" fecha e o chip volta a "Set up"); sem Apple Intelligence a seta e o ↑ das ideias ficam desligados (os briefs por formato, que geravam sem modelo, saíram da interface); o menu ••• é o `Menu` nativo, não o popover do protótipo.
 - **Alça de redimensionar a janela de texto (Selfie):** vem do protótipo v26 (`rz` em `Cue App v26.dc.html`), que a desenha no canto inferior direito da janela, e não era pinça de dois dedos. **Diferenças:** o protótipo grava o tamanho como padrão do criador ("Saved as your default"); o app o muda só para a take, como todo o Layout (o padrão fica em Settings › Prompter e em Display); os limites são os do app (50–93% de largura, 160–380 pt de altura), não os 50–100% e a altura até o fim da tela do protótipo; a janela segue a linha de leitura (a linha fica 25% abaixo do topo), então a altura que o dedo pede é dividida por 0,75 para o canto ficar sob o dedo.
 - **My Cue Voice no card (chip e perguntas):** o protótipo faz do chip o próprio interruptor ("My Cue Voice" aceso / "· Off"); no app o chip abre as perguntas e o liga/desliga é um switch de verdade dentro dele, e a primeira pergunta (tipo de criador) não avança sozinha ao tocar num cartão como no protótipo: todas as perguntas têm o botão Continue, para o criador sempre ver como seguir.
+- **v27, fase 0 (fundação):** o pacote "Cue Universe" (`design/cue-universe-v27/`, com direção, specs, mapa de telas e prompts; as imagens PNG @3x ficam fora do repositório) entra por fases. A fase 0 traz **o app só escuro** (some o modo claro, o `AppearanceService`, o seletor do Settings, os argumentos de teste e `videoContext()`), os **tokens v27** (`inkHint`, mundos, as novas cores de Shorts e Stories), `CueIcon`, `OrbSlider`, `StarfieldView`, os efeitos de luz, `CueMotion`, o `PersonalizationService` (céu, celebrações, haptics e a etiqueta automática de tema, que a tela Personalize usa) e o **catálogo de design** de debug (`-uiTestCatalogue <colors|icons|orbs|effects|sky>`). **Decisões:** os tokens da v27 evoluem o `Palette` (as mesmas funções, outros valores) em vez de criar `CueColor`, `CueFont` e `CueSpacing` em paralelo; `Haptics` ganhou `soft` e `success` e um interruptor global, em vez de uma classe nova; os ícones viram assets vetoriais e não SF Symbols personalizados. **Diferenças:** o orb ainda não está ligado às telas (isso é a fase 1); a medida de CPU do céu (menos de 2% num iPhone 12) só se faz no aparelho; as fontes do editor entram na fase do editor.
 - **Passada de bugs (depois da fase 8):** o "Go Pro" da revisão abre o paywall do Profile enquanto ainda há exportações
   grátis (o texto "You've used your 5 free exports" é só para quando acabaram); a sheet do My Cue Voice sai do conteúdo
   sempre escuro do card, então segue a aparência no claro; Stop antes da primeira palavra mantém a ideia no card, e um
   erro não reinicia a geração só porque a página reapareceu; em árabe, "takes" e "vídeos" voltaram ao formato "N rótulo"
   dos outros idiomas. O preview em branco do editor e da revisão no Simulator **não é bug**: o mesmo acontece no
   commit anterior, o compositor de vídeo só renderiza no aparelho.
-- **v26, fase 8 (claro):** os três cards de IA ficam violeta sólido com texto branco (ver seção 2) e o resto do claro já vinha dos tokens da fase 1; as telas foram conferidas contra `screens/light/` (Scripts, Profile, Settings, Paywall, sheets). **Diferenças:** o violeta é mais escuro que o do protótipo (`#271C84`–`#2E2290` contra um roxo médio) porque o texto secundário a 62% precisa de 4,5:1 sobre ele, e o teste vale mais que o protótipo; o card do Settings mostra os quatro valores em tiles translúcidos brancos em vez dos cinza do protótipo.
+- **v26, fase 8:** os três cards de IA ficam violeta sólido com texto branco (ver seção 2) e o resto do claro já vinha dos tokens da fase 1; as telas foram conferidas contra `screens/light/` (Scripts, Profile, Settings, Paywall, sheets). **Diferenças:** o violeta é mais escuro que o do protótipo (`#271C84`–`#2E2290` contra um roxo médio) porque o texto secundário a 62% precisa de 4,5:1 sobre ele, e o teste vale mais que o protótipo; o card do Settings mostra os quatro valores em tiles translúcidos brancos em vez dos cinza do protótipo.
 - **v26, fase 5 (editor):** a barra do topo (voltar, chip de rascunho, Done que pergunta), a toolbar na ordem do protótipo com o ✦ Smart em violeta, o Adjust em chips com o ◐ de segurar, a moldura branca do clipe e o Cover em quatro abas com layouts, elementos, efeitos e "My cover style". **Decisões:** o **voltar** usa o `cancel()` de antes (guarda o rascunho e toca o aviso "Draft kept"); "Not yet" guarda o rascunho mesmo sem mudanças (é o que põe o vídeo em IN EDIT); a sheet de Export saiu do alcance, como no protótipo (I02); "Studio Voice" é o novo nome de Voice no editor; o tile Auto adjust do Smart roda a medição real do Adjust (não os números fixos do protótipo). **Diferenças:** as alturas dos painéis continuam por tamanho (mini, médio, cheio) e o conteúdo só rola, como segurança, em telas compactas ou com texto grande — o protótipo fixa 280 pt e quebra em abas, e isso não foi reconstruído painel por painel; "Text behind me" é real (Vision), enquanto o protótipo simula com uma máscara fixa (I09); o destaque da palavra se escolhe por chips, não tocando na palavra da prévia.
 - **v26, fase 4 (Takes e revisão):** o `TakeStage` (PICK/EDIT/READY/SHARED) é **derivado** e testado, e alimenta o pipeline, o selo de cada vídeo, o NEXT e a barra da revisão. **Decisões para ficar perto do protótipo:** a grade 9:16 é o padrão e a lista é opcional (a escolha fica guardada); o menu de plataforma é um `Menu` nativo (sem os pontos coloridos nos itens, que o menu não desenha); o peek usa o `contextMenu` com pré-visualização do sistema; deslizar na lista é o `swipeActions` do `List` (só na lista; na grade o atalho é segurar); a revisão não tem mais a faixa "Your takes" nem a sugestão automática de tocar: o chip, o deslizar e o ✦ Suggest best (que leva à take sugerida e deixa a ★ para o criador) a substituem. **Rascunho:** a etapa IN EDIT vem de um rascunho do Quick edit aberto numa take; a pergunta do Done ("Is it ready to post?") e o voltar sem perguntar são da fase 5.
 - **v26, fase 3 (barra do recorder):** o Selfie ganhou a barra de vidro noturno (seletor Voice \| Steady, SPEED, linha HUD, última take com a quantidade, •••) e a **barra compacta da gravação** (tocar na tela mostra a inteira por 4 s), o pill REC passou para a esquerda, o cartão de recomendação ficou violeta e o `CueSlider` entrou no recorder. **Decisões para ficar perto do protótipo:** o segmento diz "Voice" (a chave de "Voice" do Quick edit; o nome completo fica no VoiceOver); em Voice a linha traz também a onda ao vivo e, quando o modelo carrega ou não segue as palavras, o estado (informação que o app tem e o protótipo não); o countdown e o Remote saíram dos botões para a •••, um menu nativo. **Diferenças:** o Studio não grava, então fica sem a fileira de captura e a barra compacta; o `CueSlider` só está no recorder (o Display e o Creator Setup mantêm o `Slider` nativo); o vidro é um material fino com o preenchimento noturno, sem o `backdrop-filter` do protótipo.

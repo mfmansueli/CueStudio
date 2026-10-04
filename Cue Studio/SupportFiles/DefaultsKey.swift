@@ -7,8 +7,6 @@ import Foundation
 
 /// Every UserDefaults key in one place, so no screen repeats a raw string.
 nonisolated enum DefaultsKey {
-    /// How Cue's own screens look (`AppAppearance` raw value); absent = the iPhone's.
-    static let appAppearance = "appAppearance"
     static let prompterSettings = "prompterSettings"
     static let cameraSettings = "cameraSettings"
     /// The language Voice Following listens for (`CueLanguage` raw value); absent = the script's.
@@ -30,6 +28,12 @@ nonisolated enum DefaultsKey {
     static let takesLayout = "takesLayout"
     /// The Sign in with Apple account (ID, and the name and email Apple shared once).
     static let appleAccount = "appleAccount"
+    /// Settings › Personalize: the sky (`SkyDensity` raw value; absent = calm), the story moments, the
+    /// haptics and the automatic topic tag (absent = on).
+    static let skyDensity = "skyDensity"
+    static let celebrations = "celebrations"
+    static let hapticsEnabled = "hapticsEnabled"
+    static let autoTagTopics = "autoTagTopics"
     /// v1's monthly AI counters ("aiScriptsUsed_2026-09"), removed at launch.
     static let legacyAIScriptsUsedPrefix = "aiScriptsUsed_"
 }

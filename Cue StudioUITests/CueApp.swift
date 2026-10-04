@@ -19,11 +19,10 @@ enum CueApp {
     /// `sampleVideo` puts small real videos behind the "3 morning habits" takes (for Quick edit).
     /// `remoteConnects` makes a pretend iPad join as soon as remote pairing starts.
     /// `appLanguage` starts Cue's interface in that `.lproj` as if picked in Language & Region;
-    /// `systemLanguage` launches as if the iPhone were in that language; `appearance` ("light" or
-    /// "dark") starts Cue's screens in it as if picked in Settings › Appearance.
+    /// `systemLanguage` launches as if the iPhone were in that language.
     static func launch(
         seeded: Bool, pro: Bool = false, ai: AIMode = .stub, sampleVideo: Bool = false, remoteConnects: Bool = false,
-        appLanguage: String? = nil, systemLanguage: String? = nil, contentSize: String? = nil, appearance: String? = nil, extraArguments: [String] = []
+        appLanguage: String? = nil, systemLanguage: String? = nil, contentSize: String? = nil, extraArguments: [String] = []
     ) -> XCUIApplication {
         let app = XCUIApplication()
         app.launchArguments = ["-uiTestInMemory"] + extraArguments
@@ -32,7 +31,6 @@ enum CueApp {
         if remoteConnects { app.launchArguments.append("-uiTestRemoteConnects") }
         if pro { app.launchArguments.append("-uiTestPro") }
         if let appLanguage { app.launchArguments += ["-uiTestAppLanguage", appLanguage] }
-        if let appearance { app.launchArguments += ["-uiTestAppearance", appearance] }
         if let systemLanguage { app.launchArguments += ["-AppleLanguages", "(\(systemLanguage))"] }
         if let contentSize { app.launchArguments += ["-UIPreferredContentSizeCategoryName", contentSize] }
         switch ai {

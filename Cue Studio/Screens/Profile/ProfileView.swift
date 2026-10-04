@@ -10,7 +10,6 @@ import SwiftUI
 /// Identity, My Cue Voice, creative preferences and the plan. Sign in with Apple is optional.
 struct ProfileView: View {
     @Environment(CreatorProfileService.self) private var profile
-    @Environment(\.colorScheme) private var colorScheme
     @Environment(StoreManager.self) private var store
     @Environment(SessionService.self) private var session
     @Environment(ToastService.self) private var toast
@@ -40,7 +39,7 @@ struct ProfileView: View {
                 .accessibilityIdentifier("profile.creatorCard")
                 if !session.isSignedIn {
                     SignInWithAppleButton(.signIn, onRequest: { $0.requestedScopes = [.fullName, .email] }, onCompletion: signedIn)
-                        .signInWithAppleButtonStyle(colorScheme == .dark ? .white : .black)
+                        .signInWithAppleButtonStyle(.white)
                         .frame(height: Metrics.buttonHeight)
                         .clipShape(Capsule())
                         .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))

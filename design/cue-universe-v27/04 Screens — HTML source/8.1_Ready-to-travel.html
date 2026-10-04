@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=390">
+<title>Cue — Ready to travel</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&amp;family=Geist+Mono:wght@500;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+.night{background:radial-gradient(80% 38% at 50% 28%,rgba(157,140,255,0.22),rgba(157,140,255,0) 70%),radial-gradient(55% 28% at 85% 75%,rgba(94,78,224,0.12),rgba(94,78,224,0) 70%),#0A0B12}
+.stars{background-image:radial-gradient(1.3px 1.3px at 22px 38px,rgba(255,255,255,0.75),transparent),radial-gradient(1px 1px at 88px 142px,rgba(228,222,255,0.6),transparent),radial-gradient(1.6px 1.6px at 151px 64px,rgba(255,255,255,0.55),transparent),radial-gradient(1px 1px at 203px 211px,rgba(255,255,255,0.45),transparent),radial-gradient(1.2px 1.2px at 262px 30px,rgba(228,222,255,0.7),transparent),radial-gradient(1px 1px at 318px 168px,rgba(255,255,255,0.5),transparent),radial-gradient(1.4px 1.4px at 360px 92px,rgba(255,236,170,0.55),transparent),radial-gradient(1px 1px at 45px 250px,rgba(255,255,255,0.4),transparent),radial-gradient(1px 1px at 128px 290px,rgba(228,222,255,0.45),transparent),radial-gradient(1.2px 1.2px at 290px 268px,rgba(255,255,255,0.5),transparent);background-size:390px 310px;animation:drift 160s linear infinite}
+@keyframes drift{from{background-position:0 0}to{background-position:0 310px}}
+@keyframes twk2{0%,100%{transform:scale(0.5) rotate(0deg);opacity:0.2}50%{transform:scale(1) rotate(20deg);opacity:1}}
+.tw1{animation:twk2 2.4s ease-in-out infinite}
+.tw2{animation:twk2 2.4s ease-in-out 0.8s infinite}
+.tw3{animation:twk2 2.4s ease-in-out 1.6s infinite}
+@media (prefers-reduced-motion: reduce){.stars,.tw1,.tw2,.tw3{animation:none}}
+.shade{background:linear-gradient(rgba(0,0,0,0) 55%,rgba(0,0,0,0.75))}
+.tw{position:absolute;border-radius:50%;background:#fff;box-shadow:0 0 6px 1px rgba(255,255,255,0.75);animation:twinkle 3.2s ease-in-out infinite}@keyframes twinkle{0%,100%{opacity:0.2;transform:scale(0.7)}12%{opacity:1;transform:scale(1.25)}22%{opacity:0.45;transform:scale(0.85)}38%{opacity:0.95;transform:scale(1.1)}55%{opacity:0.25;transform:scale(0.75)}72%{opacity:1;transform:scale(1.3)}86%{opacity:0.5;transform:scale(0.9)}}.tw.x::before{content:'';position:absolute;left:50%;top:50%;width:16px;height:1px;transform:translate(-50%,-50%);background:linear-gradient(90deg,rgba(255,255,255,0),rgba(255,255,255,0.9),rgba(255,255,255,0))}.tw.x::after{content:'';position:absolute;left:50%;top:50%;width:1px;height:16px;transform:translate(-50%,-50%);background:linear-gradient(rgba(255,255,255,0),rgba(255,255,255,0.9),rgba(255,255,255,0))}.shoot{position:absolute;width:130px;height:1.5px;border-radius:1px;background:linear-gradient(90deg,rgba(255,255,255,0),rgba(228,222,255,0.55) 60%,#fff);box-shadow:0 0 8px rgba(255,255,255,0.55);transform-origin:100% 50%;opacity:0;animation:shoot 11s linear infinite}@keyframes shoot{0%{opacity:0;transform:rotate(160deg) translateX(-60px)}1%{opacity:1}6%{opacity:0;transform:rotate(160deg) translateX(320px)}100%{opacity:0;transform:rotate(160deg) translateX(320px)}}@media (prefers-reduced-motion: reduce){.tw,.shoot{animation:none}.shoot{display:none}}
+/*sky3*/.sky{position:absolute;inset:0;overflow:hidden;pointer-events:none}.l1,.l2,.l3{position:absolute;left:0;top:0;width:100%;height:100%}.l1{background-image:radial-gradient(0.9px 0.9px at 115px 143px,rgba(255,255,255,0.57),transparent),radial-gradient(0.9px 0.9px at 115px 130px,rgba(228,222,255,0.37),transparent),radial-gradient(0.9px 0.9px at 131px 121px,rgba(255,255,255,0.58),transparent),radial-gradient(0.7px 0.7px at 24px 114px,rgba(255,236,170,0.33),transparent),radial-gradient(0.6px 0.6px at 177px 162px,rgba(255,255,255,0.64),transparent),radial-gradient(0.9px 0.9px at 115px 167px,rgba(228,222,255,0.53),transparent),radial-gradient(0.9px 0.9px at 159px 3px,rgba(255,255,255,0.32),transparent),radial-gradient(1.0px 1.0px at 9px 48px,rgba(255,236,170,0.51),transparent),radial-gradient(0.8px 0.8px at 118px 83px,rgba(255,255,255,0.59),transparent),radial-gradient(0.9px 0.9px at 132px 59px,rgba(228,222,255,0.47),transparent),radial-gradient(0.8px 0.8px at 169px 21px,rgba(255,255,255,0.4),transparent),radial-gradient(0.9px 0.9px at 141px 21px,rgba(255,236,170,0.41),transparent),radial-gradient(0.7px 0.7px at 58px 131px,rgba(255,255,255,0.32),transparent),radial-gradient(0.6px 0.6px at 27px 102px,rgba(228,222,255,0.4),transparent),radial-gradient(0.9px 0.9px at 17px 4px,rgba(255,255,255,0.3),transparent),radial-gradient(0.8px 0.8px at 53px 13px,rgba(255,236,170,0.64),transparent);background-size:180px 170px;animation:d1 260s linear infinite}.l2{background-image:radial-gradient(1.3px 1.3px at 242px 137px,rgba(255,255,255,0.68),transparent),radial-gradient(1.0px 1.0px at 73px 195px,rgba(228,222,255,0.58),transparent),radial-gradient(1.3px 1.3px at 140px 235px,rgba(255,255,255,0.66),transparent),radial-gradient(1.3px 1.3px at 285px 0px,rgba(255,236,170,0.5),transparent),radial-gradient(1.1px 1.1px at 225px 188px,rgba(255,255,255,0.77),transparent),radial-gradient(1.4px 1.4px at 30px 295px,rgba(228,222,255,0.48),transparent),radial-gradient(1.3px 1.3px at 351px 172px,rgba(255,255,255,0.73),transparent),radial-gradient(1.5px 1.5px at 44px 9px,rgba(255,236,170,0.74),transparent),radial-gradient(1.1px 1.1px at 338px 260px,rgba(255,255,255,0.8),transparent),radial-gradient(1.1px 1.1px at 216px 227px,rgba(228,222,255,0.6),transparent),radial-gradient(1.2px 1.2px at 69px 276px,rgba(255,255,255,0.67),transparent),radial-gradient(1.3px 1.3px at 83px 26px,rgba(255,236,170,0.63),transparent);background-size:390px 310px;opacity:.9;animation:d2 160s linear infinite}.l3{background-image:radial-gradient(2.1px 2.1px at 132px 297px,rgba(255,255,255,0.84),transparent),radial-gradient(2.1px 2.1px at 95px 236px,rgba(228,222,255,0.9),transparent),radial-gradient(1.7px 1.7px at 328px 191px,rgba(255,255,255,0.79),transparent),radial-gradient(1.6px 1.6px at 109px 301px,rgba(255,236,170,0.64),transparent),radial-gradient(2.4px 2.4px at 350px 14px,rgba(255,255,255,0.89),transparent),radial-gradient(2.3px 2.3px at 43px 268px,rgba(228,222,255,0.86),transparent),radial-gradient(1.9px 1.9px at 71px 262px,rgba(255,255,255,0.68),transparent);background-size:390px 600px;animation:d3 85s linear infinite}@keyframes d1{from{background-position:0 0}to{background-position:0 170px}}@keyframes d2{from{background-position:0 0}to{background-position:0 310px}}@keyframes d3{from{background-position:0 0}to{background-position:0 600px}}.neb{position:absolute;border-radius:50%;filter:blur(38px);animation:neb 26s ease-in-out infinite alternate}@keyframes neb{from{transform:translate(0,0) scale(1)}to{transform:translate(22px,-16px) scale(1.16)}}@media (prefers-reduced-motion: reduce){.l1,.l2,.l3,.neb{animation:none}}
+</style>
+<style>html,body{background:#000}</style>
+</head>
+<body>
+<div class="night" style="width: 390px; height: 844px; position: relative; overflow: hidden; font-family: Geist, -apple-system, sans-serif; color: #fff">
+  <div class="sky" style="position: absolute; inset: 0; opacity: 0.7"><div class="l1"></div><div class="l2"></div><div class="l3"></div></div>
+  <div aria-hidden="true" style="position: absolute; left: 0; top: 0; width: 390px; height: 844px; pointer-events: none"><span class="tw x" style="left: 64px; top: 128px; width: 2.6px; height: 2.6px; animation-duration: 3.4s"></span><span class="tw" style="left: 152px; top: 30px; width: 2px; height: 2px; animation-duration: 2.6s; animation-delay: 0.8s"></span><span class="tw x" style="left: 300px; top: 150px; width: 3px; height: 3px; animation-duration: 4.1s; animation-delay: 1.3s; background: #FFF3C4"></span><span class="tw" style="left: 222px; top: 232px; width: 2px; height: 2px; animation-duration: 3s; animation-delay: 2.1s; background: #E4DEFF"></span><span class="tw x" style="left: 186px; top: 196px; width: 2.2px; height: 2.2px; animation-duration: 3.7s; animation-delay: 0.4s"></span><span class="tw" style="left: 28px; top: 262px; width: 1.8px; height: 1.8px; animation-duration: 2.8s; animation-delay: 1.7s"></span><span class="shoot" style="left: 230px; top: 64px; animation-delay: 5s"></span></div>
+
+  <div style="position: absolute; left: 16px; right: 16px; top: 54px; display: flex; align-items: center; justify-content: space-between">
+    <div style="width: 34px"></div>
+    <div style="font-family: 'Geist Mono', monospace; font-size: 11px; font-weight: 600; letter-spacing: 0.1em; color: #34C759">EXPORTED · 1080 × 1920</div>
+    <button aria-label="Close" style="width: 34px; height: 34px; border-radius: 17px; border: 0.5px solid rgba(180,167,255,0.22); background: rgba(14,16,28,0.7); display: flex; align-items: center; justify-content: center; padding: 0">
+      <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="rgba(225,228,245,0.8)" stroke-width="1.8" stroke-linecap="round"><path d="M1.5 1.5l9 9M10.5 1.5l-9 9"></path></svg>
+    </button>
+  </div>
+
+  <div style="position: absolute; left: 55px; top: 120px; width: 280px; height: 380px; border-radius: 140px; background: radial-gradient(closest-side,rgba(255,214,10,0.22),rgba(255,214,10,0))"></div>
+  <div style="position: absolute; left: 100px; top: 112px; width: 190px; height: 338px; border-radius: 22px; overflow: hidden; border: 1.5px solid rgba(255,214,10,0.75); box-shadow: 0 28px 70px rgba(0,0,0,0.6)">
+    <img src="assets/creator.jpg" alt="Exported video" style="width: 100%; height: 100%; object-fit: cover; object-position: 42% 30%">
+    <div class="shade" style="position: absolute; inset: 0"></div>
+    <div style="position: absolute; left: 50%; top: 50%; width: 52px; height: 52px; margin: -26px 0 0 -26px; border-radius: 26px; background: rgba(10,11,18,0.55); border: 0.5px solid rgba(255,255,255,0.4); display: flex; align-items: center; justify-content: center">
+      <svg width="16" height="18" viewBox="0 0 16 18" fill="#fff"><path d="M3 1.5v15l12-7.5z"></path></svg>
+    </div>
+    <div style="position: absolute; right: 10px; bottom: 10px; height: 20px; padding: 0 7px; border-radius: 10px; background: rgba(10,11,18,0.72); display: flex; align-items: center; font-family: 'Geist Mono', monospace; font-size: 10px; font-weight: 600">0:52</div>
+  </div>
+
+  <svg class="tw1" style="position: absolute; left: 304px; top: 140px" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C12.8 8.5 15.5 11.2 22 12C15.5 12.8 12.8 15.5 12 22C11.2 15.5 8.5 12.8 2 12C8.5 11.2 11.2 8.5 12 2Z" fill="#FFD60A"></path></svg>
+  <svg class="tw2" style="position: absolute; left: 70px; top: 300px" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C12.8 8.5 15.5 11.2 22 12C15.5 12.8 12.8 15.5 12 22C11.2 15.5 8.5 12.8 2 12C8.5 11.2 11.2 8.5 12 2Z" fill="#E4DEFF"></path></svg>
+  <svg class="tw3" style="position: absolute; left: 300px; top: 410px" width="12" height="12" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C12.8 8.5 15.5 11.2 22 12C15.5 12.8 12.8 15.5 12 22C11.2 15.5 8.5 12.8 2 12C8.5 11.2 11.2 8.5 12 2Z" fill="#FFD60A"></path></svg>
+
+  <div style="position: absolute; left: 24px; right: 24px; top: 476px; display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center">
+    <h1 style="margin: 0; font-size: 30px; line-height: 36px; font-weight: 700; letter-spacing: -0.02em">Ready to travel.</h1>
+    <div style="font-size: 15px; color: rgba(225,228,245,0.75)">3 habits that fixed my mornings</div>
+    <div style="font-family: 'Geist Mono', monospace; font-size: 10px; font-weight: 600; letter-spacing: 0.1em; color: rgba(225,228,245,0.5)">0:52 · CAPTIONS ON · NO WATERMARK</div>
+  </div>
+
+  <div style="position: absolute; left: 16px; right: 16px; top: 600px; height: 52px; border-radius: 16px; background: #161826; border: 0.5px solid rgba(80,86,120,0.5); display: flex; align-items: center; gap: 12px; padding: 0 14px; box-sizing: border-box">
+    <div style="flex-grow: 1; font-family: 'Geist Mono', monospace; font-size: 10px; font-weight: 600; letter-spacing: 0.1em; color: rgba(225,228,245,0.62)">FREE EXPORTS · <span style="color: #FF9F0A">3 OF 5 LEFT</span></div>
+    <div style="display: flex; gap: 4px">
+      <div style="width: 18px; height: 6px; border-radius: 3px; background: #FF9F0A"></div>
+      <div style="width: 18px; height: 6px; border-radius: 3px; background: #FF9F0A"></div>
+      <div style="width: 18px; height: 6px; border-radius: 3px; background: rgba(110,116,150,0.4)"></div>
+      <div style="width: 18px; height: 6px; border-radius: 3px; background: rgba(110,116,150,0.4)"></div>
+      <div style="width: 18px; height: 6px; border-radius: 3px; background: rgba(110,116,150,0.4)"></div>
+    </div>
+  </div>
+
+  <button style="position: absolute; left: 16px; right: 16px; bottom: 92px; height: 54px; border-radius: 27px; border: 0; background: #FFD60A; color: #000; display: flex; align-items: center; justify-content: center; gap: 8px; font-family: Geist, sans-serif; font-size: 17px; font-weight: 700">
+    <svg width="13" height="15" viewBox="0 0 12 14" fill="none" stroke="#000" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V1.5M2.8 4.5L6 1.5l3.2 3M1 8v4.5h10V8"></path></svg>Share to TikTok
+  </button>
+  <div style="position: absolute; left: 16px; right: 16px; bottom: 30px; display: flex; gap: 10px">
+    <button style="flex: 1; height: 50px; border-radius: 25px; border: 0; background: rgba(110,116,150,0.26); color: #fff; font-family: Geist, sans-serif; font-size: 15px; font-weight: 600">Save to Photos</button>
+    <button style="flex: 1; height: 50px; border-radius: 25px; border: 0; background: rgba(110,116,150,0.26); color: #fff; font-family: Geist, sans-serif; font-size: 15px; font-weight: 600">Other apps</button>
+  </div>
+</div>
+</body>
+</html>

@@ -35,7 +35,6 @@ struct CueSlider: View {
                 Circle()
                     .fill(Color.white)
                     .frame(width: Self.thumbSize, height: Self.thumbSize)
-                    .overlay(Circle().strokeBorder(Palette.sliderThumbRim, lineWidth: 0.5))
                     .shadow(color: .black.opacity(0.4), radius: 3, y: 2)
                     .offset(x: offset)
             }

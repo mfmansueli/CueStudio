@@ -6,34 +6,9 @@
 import SwiftUI
 
 extension View {
-    /// The night aurora behind this view, cut to `shape`. A `hero` card is the solid violet one in light.
-    func nightAurora<S: Shape>(in shape: S, yellowTouch: Bool = false, hero: Bool = false) -> some View {
-        background {
-            if hero {
-                HeroCardFill().clipShape(shape)
-            } else {
-                NightAuroraBackground(yellowTouch: yellowTouch).clipShape(shape)
-            }
-        }
-    }
-
-    /// The content of an AI hero card: always night, so in the light appearance it is white on the
-    /// solid violet behind it.
-    func heroCardContent() -> some View {
-        environment(\.colorScheme, .dark)
-    }
-}
-
-/// The hero card's fill: the night aurora in dark, the solid violet gradient in light.
-struct HeroCardFill: View {
-    @Environment(\.colorScheme) private var colorScheme
-
-    var body: some View {
-        if colorScheme == .light {
-            LinearGradient(colors: [Palette.heroTop, Palette.heroBottom], startPoint: .topLeading, endPoint: .bottomTrailing)
-        } else {
-            NightAuroraBackground()
-        }
+    /// The night aurora behind this view, cut to `shape`.
+    func nightAurora<S: Shape>(in shape: S, yellowTouch: Bool = false) -> some View {
+        background { NightAuroraBackground(yellowTouch: yellowTouch).clipShape(shape) }
     }
 }
 

@@ -5,15 +5,14 @@
 
 import SwiftUI
 
-/// The surface of bars and floating controls in v26: night glass with a 0.5 pt rim (violet in dark,
-/// gray in light). Over video it is thinner (`Density`); in the light appearance it is always the
-/// 94% white of `Palette.glassFill`.
+/// The surface of bars and floating controls: night glass with a 0.5 pt violet rim. Over video it
+/// is thinner (`Density`).
 struct GlassNight<S: InsettableShape>: ViewModifier {
-    /// How much of the video shows through: 60%, 72% or 88% of night glass in dark.
+    /// How much of the video shows through: 60%, 72% or 88% of night glass.
     enum Density {
         case thin, regular, solid
 
-        var darkOpacity: Double {
+        var opacity: Double {
             switch self {
             case .thin: 0.6
             case .regular: 0.72
@@ -25,8 +24,6 @@ struct GlassNight<S: InsettableShape>: ViewModifier {
     var shape: S
     var density: Density = .regular
 
-    @Environment(\.colorScheme) private var colorScheme
-
     func body(content: Content) -> some View {
         content
             .background(fill, in: shape)
@@ -34,7 +31,7 @@ struct GlassNight<S: InsettableShape>: ViewModifier {
     }
 
     private var fill: Color {
-        colorScheme == .dark && density != .regular ? Palette.glassBase.opacity(density.darkOpacity) : Palette.glassFill
+        Palette.glassBase.opacity(density.opacity)
     }
 }
 

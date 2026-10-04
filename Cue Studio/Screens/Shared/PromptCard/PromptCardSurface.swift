@@ -17,7 +17,6 @@ struct PromptCardSurface<Content: View>: View {
     var body: some View {
         let shape = RoundedRectangle(cornerRadius: Metrics.cardRadius, style: .continuous)
         content()
-            .heroCardContent()
             .padding(16)
             .frame(maxWidth: .infinity, alignment: .leading)
             .background {

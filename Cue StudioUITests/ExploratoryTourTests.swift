@@ -103,7 +103,7 @@ final class ExploratoryTourTests: XCTestCase {
         // Intelligence, CUE_TOUR_PRO=1 on the Pro plan.
         app = CueApp.launch(
             seeded: env["CUE_TOUR_SEEDED"] != "0", pro: env["CUE_TOUR_PRO"] == "1", ai: env["CUE_TOUR_NOAI"] == "1" ? .none : .stub,
-            sampleVideo: true, appLanguage: env["CUE_TOUR_LANG"], contentSize: env["CUE_TOUR_SIZE"], appearance: env["CUE_TOUR_APPEARANCE"]
+            sampleVideo: true, appLanguage: env["CUE_TOUR_LANG"], contentSize: env["CUE_TOUR_SIZE"]
         )
         continueAfterFailure = true
         _ = app.buttons["ideaCard.submit"].waitForExistence(timeout: 20)

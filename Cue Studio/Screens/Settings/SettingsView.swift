@@ -12,7 +12,6 @@ struct SettingsView: View {
     @Environment(ToastService.self) private var toast
     @Environment(PreferencesService.self) private var preferences
     @Environment(LanguageService.self) private var languages
-    @Environment(AppearanceService.self) private var appearance
     @Environment(PresentationService.self) private var presentation
     @Environment(RemoteControlService.self) private var remote
 
@@ -20,7 +19,6 @@ struct SettingsView: View {
     @State private var confirmsReset = false
 
     var body: some View {
-        @Bindable var appearance = appearance
         let setup = preferences.creatorSetup
         ScrollView {
             VStack(alignment: .leading, spacing: 14) {
@@ -49,29 +47,12 @@ struct SettingsView: View {
                     }
                     .buttonStyle(.plain)
                     .accessibilityIdentifier("settings.languageRegionButton")
-                    VStack(alignment: .leading, spacing: 10) {
-                        HStack(spacing: 12) {
-                            Image(systemName: "circle.lefthalf.filled")
-                                .font(.system(size: 14, weight: .semibold))
-                                .foregroundStyle(.white)
-                                .frame(width: 30, height: 30)
-                                .background(Palette.neutralAction, in: RoundedRectangle(cornerRadius: 8, style: .continuous))
-                                .accessibilityHidden(true)
-                            Text("Appearance").foregroundStyle(Palette.ink)
-                        }
-                        AppearancePicker(selection: $appearance.appearance)
-                    }
-                    .padding(EdgeInsets(top: 12, leading: 16, bottom: 12, trailing: 16))
                     Button { showsPrivacy = true } label: {
                         SettingsRow(systemImage: "lock.fill", tint: Palette.neutralAction, title: String(localized: "Privacy & AI data"))
                     }
                     .buttonStyle(.plain)
                     .accessibilityIdentifier("settings.privacyButton")
                 }
-                Text("The camera, the prompter and the editor stay dark, so nothing washes out while you record or edit.")
-                    .font(.footnote)
-                    .foregroundStyle(Palette.ink2)
-                    .padding(.horizontal, 4)
 
                 heading(String(localized: "Purchases & About"))
                 GroupedCard(dividerInset: 58) {

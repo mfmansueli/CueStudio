@@ -21,7 +21,6 @@ struct AuroraCardBackground: View {
     var cornerRadius: CGFloat = Metrics.cardRadius
     var isActive = true
 
-    @Environment(\.colorScheme) private var colorScheme
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.scenePhase) private var scenePhase
     @State private var isOnScreen = false
@@ -34,12 +33,7 @@ struct AuroraCardBackground: View {
     var body: some View {
         let shape = RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
         ZStack {
-            // In light the card is the solid violet of the hero cards, with white content (`heroCardContent`).
-            if colorScheme == .light {
-                LinearGradient(colors: [Palette.heroTop, Palette.heroBottom], startPoint: .topLeading, endPoint: .bottomTrailing)
-            } else {
-                base
-            }
+            base
             TimelineView(.animation(minimumInterval: 1.0 / 30, paused: !isRunning)) { context in
                 let time = reduceMotion ? 0 : clock.elapsed(at: context.date)
                 ZStack {
@@ -49,8 +43,6 @@ struct AuroraCardBackground: View {
                         scanLine(width: geometry.size.width, height: geometry.size.height, time: time)
                     }
                 }
-                // The lights are the night ones in both appearances: the card is night, even in light.
-                .environment(\.colorScheme, .dark)
             }
         }
         .clipShape(shape)
