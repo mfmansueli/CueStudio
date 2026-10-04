@@ -53,6 +53,26 @@ nonisolated struct FontCredit: Identifiable, Hashable, Sendable {
             copyright: "Copyright 2018 The Manrope Project Authors", licenseFile: "manrope-OFL"
         ),
         FontCredit(
+            name: "Unbounded", use: String(localized: "Texts on the video"),
+            copyright: "Copyright 2022 The Unbounded Project Authors", licenseFile: "unbounded-OFL"
+        ),
+        FontCredit(
+            name: "Instrument Serif", use: String(localized: "Texts on the video"),
+            copyright: "Copyright 2022 The Instrument Serif Project Authors", licenseFile: "instrumentserif-OFL"
+        ),
+        FontCredit(
+            name: "Space Mono", use: String(localized: "Texts on the video"),
+            copyright: "Copyright 2016 The Space Mono Project Authors", licenseFile: "spacemono-OFL"
+        ),
+        FontCredit(
+            name: "Syne", use: String(localized: "Texts on the video"),
+            copyright: "Copyright 2017 The Syne Project Authors", licenseFile: "syne-OFL"
+        ),
+        FontCredit(
+            name: "Caveat", use: String(localized: "Texts on the video"),
+            copyright: "Copyright 2014 The Caveat Project Authors", licenseFile: "caveat-OFL"
+        ),
+        FontCredit(
             name: "Lexend · Atkinson Hyperlegible · Source Serif 4", use: String(localized: "The teleprompter's text"),
             copyright: "The Lexend Project Authors · Braille Institute of America · The Source Serif 4 Project Authors",
             licenseFile: "FONTS_LICENSE"

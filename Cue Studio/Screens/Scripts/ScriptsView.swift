@@ -16,6 +16,7 @@ struct ScriptsView: View {
     @Environment(PreferencesService.self) private var preferences
     @Environment(CreatorProfileService.self) private var profile
     @Environment(LanguageService.self) private var languages
+    @Environment(TopicTaggingService.self) private var tagging
 
     /// Tells the idea card whether Apple Intelligence can write.
     private let writer: ScriptWriting?
@@ -32,6 +33,8 @@ struct ScriptsView: View {
         @Bindable var viewModel = viewModel
         content
             .skyBackground()
+            // New scripts get their topic (on this iPhone) once they are long enough to say what they are about.
+            .task(id: library.scripts.filter { $0.topic == nil }.map(\.id)) { await tagging.tagUntagged() }
             .navigationTitle("Scripts")
             .toolbarTitleDisplayMode(.inlineLarge)
             .toolbar { toolbarContent }
@@ -228,6 +231,15 @@ struct ScriptsView: View {
 
     @ToolbarContentBuilder
     private var toolbarContent: some ToolbarContent {
+        ToolbarItem(placement: .topBarTrailing) {
+            Button {
+                presentation.present(.logbook)
+            } label: {
+                Label("Logbook", systemImage: "book.closed")
+            }
+            .tint(Palette.ink)
+            .accessibilityIdentifier("scripts.logbookButton")
+        }
         ToolbarItem(placement: .topBarTrailing) {
             Button {
                 viewModel.isSearching.toggle()

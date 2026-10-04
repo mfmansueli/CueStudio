@@ -20,7 +20,7 @@ nonisolated enum CaptionTheme: String, Codable, CaseIterable, Identifiable, Send
     var label: String {
         switch self {
         case .cue: String(localized: "Cue")
-        case .impact: String(localized: "Impact")
+        case .impact: String(localized: "Bold")
         case .clean: String(inInterfaceLanguage: LocalizedStringResource("Clean caption style", defaultValue: "Clean"))
         case .pop: String(localized: "Pop")
         case .editorial: String(localized: "Editorial")

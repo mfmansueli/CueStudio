@@ -280,8 +280,9 @@ final class PrompterUITests: XCTestCase {
         let speed = element(app, "prompter.speedSlider")
         XCTAssertTrue(speed.exists)
         let before = speed.value as? String
-        let start = speed.coordinate(withNormalizedOffset: CGVector(dx: 0.2, dy: 0.5))
-        start.press(forDuration: 0.1, thenDragTo: speed.coordinate(withNormalizedOffset: CGVector(dx: 0.9, dy: 0.5)))
+        // The orb sits a little past the middle of the pill at the natural pace.
+        let start = speed.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5))
+        start.press(forDuration: 0.1, thenDragTo: start.withOffset(CGVector(dx: 70, dy: 0)))
         XCTAssertNotEqual(speed.value as? String, before)
         app.buttons["prompter.closeButton"].tap()
     }

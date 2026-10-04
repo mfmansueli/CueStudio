@@ -21,6 +21,11 @@ enum CueStudioFont {
         "Manrope-Variable",
         "DMSans-Variable",
         "DMSerifDisplay-Regular",
+        "Unbounded-Variable",
+        "InstrumentSerif-Italic",
+        "SpaceMono-Bold",
+        "Syne-Variable",
+        "Caveat-Variable",
     ]
 
     /// Registers the bundled fonts for this process. Call once at launch.

@@ -34,6 +34,15 @@ nonisolated enum DefaultsKey {
     static let celebrations = "celebrations"
     static let hapticsEnabled = "hapticsEnabled"
     static let autoTagTopics = "autoTagTopics"
+    /// The first flight (onboarding) is over, and its "first star" has been told.
+    static let onboardingCompleted = "onboardingCompleted"
+    static let firstStarShown = "firstStarShown"
+    /// The videos shared (once each), the day of the first one, and the milestones already told.
+    static let sharedTakeIDs = "sharedTakeIDs"
+    static let firstShareDate = "firstShareDate"
+    static let celebratedMilestones = "celebratedMilestones"
+    /// The Logbook's ideas (JSON).
+    static let logbook = "logbook"
     /// v1's monthly AI counters ("aiScriptsUsed_2026-09"), removed at launch.
     static let legacyAIScriptsUsedPrefix = "aiScriptsUsed_"
 }

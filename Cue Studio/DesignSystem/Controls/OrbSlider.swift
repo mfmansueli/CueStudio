@@ -38,6 +38,8 @@ struct OrbSlider: View {
     /// Turns what was typed into a value; nil rejects it.
     var parse: ((String) -> Double?)?
     var accessibilityIdentifier: String?
+    /// Called when a finger lands on the orb (true) and when it lets go (false), so a drag can be one undo step.
+    var onEditingChanged: (Bool) -> Void = { _ in }
 
     @Environment(\.isEnabled) private var isEnabled
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
@@ -240,6 +242,7 @@ struct OrbSlider: View {
                 guard isEnabled else { return }
                 if dragAnchor == nil {
                     isHeld = true
+                    onEditingChanged(true)
                     // A touch on the rail itself moves the orb there.
                     let touched = math.value(atFraction: Double((drag.startLocation.x - orbDiameter / 2) / length))
                     let old = value
@@ -264,6 +267,7 @@ struct OrbSlider: View {
             .onEnded { _ in
                 dragAnchor = nil
                 isHeld = false
+                onEditingChanged(false)
                 precision = .full
             }
     }

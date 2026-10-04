@@ -21,6 +21,8 @@ enum EditorAction: Hashable {
     case deleteClip
     // Text
     case addText(TextOverlayRole)
+    /// The comment this script answers, as a card over the first seconds.
+    case addCommentCard
     case styleAllTexts
     case editText
     case toggleKeyframe

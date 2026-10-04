@@ -48,12 +48,12 @@ final class ScriptLibraryService {
     @discardableResult
     func create(
         title: String, text: String, platform: Platform, type: ScriptType? = nil, folder: String? = nil,
-        factCheck: Bool = false, language: CueLanguage? = nil
+        factCheck: Bool = false, language: CueLanguage? = nil, comment: ScriptComment? = nil
     ) -> Script {
         let date = now()
         let script = Script(
             title: title, text: text, platform: platform, type: type,
-            folder: folder, createdAt: date, updatedAt: date, factCheck: factCheck, language: language
+            folder: folder, createdAt: date, updatedAt: date, factCheck: factCheck, language: language, comment: comment
         )
         scripts.insert(script, at: 0)
         persist()
@@ -84,6 +84,13 @@ final class ScriptLibraryService {
     func setLanguage(_ language: CueLanguage?, of id: UUID) {
         guard let index = scripts.firstIndex(where: { $0.id == id }), scripts[index].language != language else { return }
         scripts[index].language = language
+        persist()
+    }
+
+    /// The topic a script belongs to (`OnboardingTopic.id`; empty is "no topic"). Not an edit: the order stays.
+    func setTopic(_ topic: String?, of id: UUID) {
+        guard let index = scripts.firstIndex(where: { $0.id == id }), scripts[index].topic != topic else { return }
+        scripts[index].topic = topic
         persist()
     }
 

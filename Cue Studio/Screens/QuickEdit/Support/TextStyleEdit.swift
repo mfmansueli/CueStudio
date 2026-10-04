@@ -16,6 +16,8 @@ nonisolated enum TextStyleEdit: Equatable, Sendable {
     case background(TextOverlayBackground)
     case backgroundColor(OverlayColor)
     case shadow(TextShadowStyle)
+    /// 0 to 1 (Text style › Glow).
+    case glow(Double)
 
     /// Sizes Text style offers, in points on the design's frame.
     static let sizeRange: ClosedRange<Double> = 12...56
@@ -29,6 +31,7 @@ nonisolated enum TextStyleEdit: Equatable, Sendable {
         case .color: .color
         case .background, .backgroundColor: .background
         case .shadow: .shadow
+        case .glow: .glow
         }
     }
 
@@ -52,6 +55,8 @@ nonisolated enum TextStyleEdit: Equatable, Sendable {
         case .shadow(let shadow):
             text.hasShadow = shadow.hasShadow
             text.hasOutline = shadow.hasOutline
+        case .glow(let glow):
+            text.glow = min(max(glow, 0), 1)
         }
     }
 
@@ -74,6 +79,8 @@ nonisolated enum TextStyleEdit: Equatable, Sendable {
         case .shadow(let shadow):
             look.hasShadow = shadow.hasShadow
             look.hasOutline = shadow.hasOutline
+        case .glow(let glow):
+            look.glow = min(max(glow, 0), 1)
         }
     }
 }

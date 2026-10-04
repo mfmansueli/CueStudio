@@ -15,6 +15,7 @@ struct PaywallView: View {
     @Environment(StoreManager.self) private var store
     @Environment(ToastService.self) private var toast
     @Environment(UsageQuotaService.self) private var quota
+    @Environment(AIStatus.self) private var aiStatus
     @Environment(\.dismiss) private var dismiss
     @State private var selectedPlan: ProPlan = .annual
     @State private var trialDays: [ProPlan: Int] = [:]
@@ -43,7 +44,7 @@ struct PaywallView: View {
                         PaywallExportsMeter(used: UsagePolicy.freeExports - (quota.exportsLeft(for: .free) ?? 0), limit: UsagePolicy.freeExports)
                             .padding(.top, 18)
                     }
-                    PaywallBenefitsCard()
+                    PaywallBenefitsCard(aiIsAvailable: aiStatus.isAvailable)
                         .padding(.top, 20)
                     VStack(spacing: 10) {
                         ForEach(ProPlan.allCases) { plan in planRow(plan) }

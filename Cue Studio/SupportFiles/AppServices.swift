@@ -40,6 +40,13 @@ struct AppServices {
     let remote: RemoteControlService
     let languages: LanguageService
     let personalization: PersonalizationService
+    let onboarding: OnboardingService
+    let milestones: MilestoneService
+    let topicTagging: TopicTaggingService
+    let logbook: LogbookService
+    let aiStatus: AIStatus
+    let appIcon: AppIconService
+    let permissions: PermissionRequesting
 
     init(options: LaunchOptions) {
         languages = LanguageService(defaults: options.defaults, store: options.languageStore) { language in
@@ -50,6 +57,10 @@ struct AppServices {
         takes = TakeLibraryService(repository: options.takeRepository)
         preferences = PreferencesService(defaults: options.defaults)
         personalization = PersonalizationService(defaults: options.defaults)
+        onboarding = OnboardingService(defaults: options.defaults, isEnabled: options.showsOnboarding)
+        milestones = MilestoneService(defaults: options.defaults)
+        appIcon = AppIconService(switcher: options.isInMemory ? InMemoryAppIcon() : SystemAppIcon())
+        permissions = options.permissions ?? SystemPermissions()
         profile = CreatorProfileService(defaults: options.defaults)
         session = SessionService(defaults: options.defaults, checker: options.credentialChecker)
         rules = options.platformRules
@@ -75,13 +86,20 @@ struct AppServices {
         thumbnails = VideoThumbnailService()
         editing = TakeEditService()
         drafts = options.draftStore
-        apps = ExternalAppService()
+        apps = ExternalAppService(pretendsInstalled: options.appsAreInstalled)
         remote = RemoteControlService(transport: options.remoteTransport)
+        logbook = LogbookService(defaults: options.defaults)
+        aiStatus = AIStatus(writer: options.writer)
+        topicTagging = TopicTaggingService(library: library, profile: profile, personalization: personalization, writer: writer)
     }
 
     func load() {
         library.load()
         takes.load()
+        // A creator who already has scripts, takes or a profile skips the first flight.
+        onboarding.resolve(
+            hasExistingContent: !library.scripts.isEmpty || !takes.takes.isEmpty || !profile.profile.niches.isEmpty
+        )
     }
 
     /// Lets App Intents (Siri, Shortcuts) read the same script library the app shows.
@@ -119,5 +137,11 @@ extension View {
             .environment(services.remote)
             .environment(services.languages)
             .environment(services.personalization)
+            .environment(services.onboarding)
+            .environment(services.milestones)
+            .environment(services.appIcon)
+            .environment(services.topicTagging)
+            .environment(services.logbook)
+            .environment(services.aiStatus)
     }
 }

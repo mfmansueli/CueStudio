@@ -12,13 +12,21 @@ import Foundation
 nonisolated enum TextOverlayFont: String, Codable, CaseIterable, Identifiable, Sendable {
     case classic, rounded, serif, mono
     case dmSans, spaceGrotesk, dmSerif, sfPro
+    /// The faces of the v27 text styles: Orbit, Logbook, Signal, Launch, Nebula and Postcard.
+    case unbounded, instrumentSerif, spaceMono, anton, syne, caveat
 
     /// The families Text style offers, each chip drawn in its own face.
-    static let editorFonts: [TextOverlayFont] = [.dmSans, .spaceGrotesk, .dmSerif, .sfPro]
+    static let editorFonts: [TextOverlayFont] = [
+        .unbounded, .instrumentSerif, .spaceMono, .anton, .syne, .spaceGrotesk, .caveat, .dmSans, .dmSerif, .sfPro,
+    ]
 
     /// The weights it comes in: DM Serif Display has only its regular.
     var weights: [TextOverlayWeight] {
-        self == .dmSerif ? [.regular] : TextOverlayWeight.editorWeights
+        switch self {
+        case .dmSerif, .instrumentSerif, .anton: [.regular]
+        case .spaceMono: [.bold]
+        default: TextOverlayWeight.editorWeights
+        }
     }
 
     var id: String { rawValue }
@@ -33,6 +41,12 @@ nonisolated enum TextOverlayFont: String, Codable, CaseIterable, Identifiable, S
         case .spaceGrotesk: "Space Grotesk"
         case .dmSerif: "DM Serif Display"
         case .sfPro: "SF Pro"
+        case .unbounded: "Unbounded"
+        case .instrumentSerif: "Instrument Serif"
+        case .spaceMono: "Space Mono"
+        case .anton: "Anton"
+        case .syne: "Syne"
+        case .caveat: "Caveat"
         }
     }
 }

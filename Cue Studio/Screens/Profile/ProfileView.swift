@@ -47,6 +47,12 @@ struct ProfileView: View {
                 }
             }
             Section {
+                NavigationLink { YourUniverseView() } label: { UniverseProfileCard() }
+                    .buttonStyle(.plain)
+                    .accessibilityIdentifier("profile.universeLink")
+            }
+            .listRowBackground(Color.clear)
+            Section {
                 MyCueVoiceCard(setup: $voiceSetup)
             } header: {
                 VStack(alignment: .leading, spacing: 4) {

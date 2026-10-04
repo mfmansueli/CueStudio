@@ -11,6 +11,8 @@ nonisolated struct CreatorProfile: Codable, Hashable, Sendable {
     var name: String
     var handle: String
     var niches: [Niche]
+    /// Topics the creator typed in the first flight ("+ Your own"); with `niches` they make the universe (at most three).
+    var customTopics: [String]
     /// Catchphrases the creator always says ("Hey fam").
     var phrases: [String]
     /// "What kind of creator are you?": the first question of My Cue Voice. Optional.
@@ -36,7 +38,7 @@ nonisolated struct CreatorProfile: Codable, Hashable, Sendable {
     var unverifiedVoiceSteps: Set<VoiceSetupStep>
 
     init(
-        name: String = "", handle: String = "", niches: [Niche] = [], phrases: [String] = [],
+        name: String = "", handle: String = "", niches: [Niche] = [], customTopics: [String] = [], phrases: [String] = [],
         role: CreatorRole? = nil, voiceApproved: Bool = false,
         sounds: [VoiceSound] = [.casual, .confident], vocabulary: Vocabulary = .simple,
         styles: [VoiceStyle] = [.shortSentences, .conversational], usesVoiceInAI: Bool = true,
@@ -46,6 +48,7 @@ nonisolated struct CreatorProfile: Codable, Hashable, Sendable {
         self.name = name
         self.handle = handle
         self.niches = niches
+        self.customTopics = customTopics
         self.phrases = phrases
         self.role = role
         self.voiceApproved = voiceApproved
@@ -76,7 +79,7 @@ nonisolated struct CreatorProfile: Codable, Hashable, Sendable {
     // MARK: - Coding
 
     private enum CodingKeys: String, CodingKey {
-        case name, handle, niches, phrases, role, voiceApproved, sounds, vocabulary, styles, usesVoiceInAI, defaultPlatform, monetizationGoals
+        case name, handle, niches, customTopics, phrases, role, voiceApproved, sounds, vocabulary, styles, usesVoiceInAI, defaultPlatform, monetizationGoals
         case confirmedVoiceSteps, unverifiedVoiceSteps
         /// v1 kept a single tone; it becomes the first "How I sound".
         case legacyTone = "tone"
@@ -90,6 +93,7 @@ nonisolated struct CreatorProfile: Codable, Hashable, Sendable {
         name = try container.decodeIfPresent(String.self, forKey: .name) ?? defaults.name
         handle = try container.decodeIfPresent(String.self, forKey: .handle) ?? defaults.handle
         niches = try container.decodeIfPresent([Niche].self, forKey: .niches) ?? defaults.niches
+        customTopics = try container.decodeIfPresent([String].self, forKey: .customTopics) ?? defaults.customTopics
         phrases = try container.decodeIfPresent([String].self, forKey: .phrases) ?? defaults.phrases
         role = try container.decodeIfPresent(CreatorRole.self, forKey: .role)
         voiceApproved = try container.decodeIfPresent(Bool.self, forKey: .voiceApproved) ?? defaults.voiceApproved
@@ -124,6 +128,7 @@ nonisolated struct CreatorProfile: Codable, Hashable, Sendable {
         try container.encode(name, forKey: .name)
         try container.encode(handle, forKey: .handle)
         try container.encode(niches, forKey: .niches)
+        try container.encode(customTopics, forKey: .customTopics)
         try container.encode(phrases, forKey: .phrases)
         try container.encodeIfPresent(role, forKey: .role)
         try container.encode(voiceApproved, forKey: .voiceApproved)

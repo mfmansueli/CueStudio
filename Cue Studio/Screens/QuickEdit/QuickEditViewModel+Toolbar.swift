@@ -59,6 +59,9 @@ extension QuickEditViewModel {
             EditorToolbarItem(id: "hook", label: String(localized: "Hook"), systemImage: "bolt", action: .addText(.hook)),
             EditorToolbarItem(id: "callout", label: String(localized: "Callout"), systemImage: "text.bubble", action: .addText(.callout)),
         ]
+        if commentForCard != nil {
+            items.append(EditorToolbarItem(id: "comment", label: String(localized: "Comment"), systemImage: "text.bubble.fill", action: .addCommentCard))
+        }
         if !edit.texts.isEmpty {
             items.append(EditorToolbarItem(id: "styleAll", label: String(localized: "Style all"), systemImage: "square.grid.2x2", action: .styleAllTexts))
         }
@@ -172,6 +175,7 @@ extension QuickEditViewModel {
             mediaInsertMode = .overlay
             sheet = .media
         case .addText(let role): addStyledText(role)
+        case .addCommentCard: addCommentCard()
         case .styleAllTexts: styleAllTexts()
         case .editText:
             panel = .textStyle
@@ -180,16 +184,16 @@ extension QuickEditViewModel {
         case .writeCaptionsByHand:
             toolMenu = nil
             writeCaptionsByHand()
-        case .openMusic:
-            // Always adds: a clip already there is picked on its track, and "Replace" swaps it.
-            musicReplacementID = nil
-            sheet = .music
-        case .replaceMusic:
-            guard let id = selection?.musicID else { return }
-            sheet = .music
-            musicReplacementID = id
+        case .openMusic, .replaceMusic: openMusicSheet(replacing: action == .replaceMusic)
         default: break
         }
+    }
+
+    /// Always adds: a clip already there is picked on its track, and "Replace" swaps it.
+    private func openMusicSheet(replacing: Bool) {
+        guard !replacing || selection?.musicID != nil else { return }
+        musicReplacementID = replacing ? selection?.musicID : nil
+        sheet = .music
     }
 
     /// The actions on the picked item. False when `action` isn't one of them.

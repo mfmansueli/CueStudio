@@ -73,6 +73,7 @@ struct MainView: View {
                         .navigationDestination(for: SettingsRoute.self) { route in
                             switch route {
                             case .languageRegion: LanguageRegionView()
+                            case .personalize: PersonalizeView()
                             case .recording:
                                 SettingsRecordingView(preferences: preferences, microphones: services.audio, toast: toast)
                             case .prompter:
@@ -104,8 +105,18 @@ struct MainView: View {
         case .newScript:
             NewScriptSheet(
                 mode: .new,
+                onLetCue: {
+                    presentation.sheet = nil
+                    presentation.selectedTab = .scripts
+                    services.ideaDraft.wantsFocus = true
+                },
                 onWrite: writeNewScript,
-                onImport: { presentation.present(.importScript) }
+                onImport: { presentation.present(.importScript) },
+                onAnswer: { presentation.present(.answerComment) },
+                onFreestyle: {
+                    presentation.sheet = nil
+                    presentation.openPrompter(scriptID: nil, mode: .selfie)
+                }
             )
         case .startRecording:
             StartRecordingSheet(
@@ -137,6 +148,20 @@ struct MainView: View {
                 },
                 onWrite: { idea in services.starter.write(idea: idea.prompt, length: idea.length) }
             )
+        case .logbook:
+            LogbookView()
+                .presentationDetents([.large])
+                .presentationCornerRadius(Metrics.editorSheetRadius)
+        case .answerComment:
+            AnswerCommentSheet(model: AnswerCommentViewModel(
+                defaultPlatform: profile.profile.defaultPlatform, recognizer: services.textRecognizer,
+                clipboard: { services.importer.clipboardText() },
+                starter: { comment, platform in
+                    presentation.sheet = nil
+                    services.starter.write(idea: AnswerCommentViewModel.idea(for: comment), comment: comment, platform: platform)
+                }
+            ))
+            .presentationDetents([.large])
         case .format:
             FormatSheet(current: services.ideaDraft.format) { services.ideaDraft.format = $0 }
         case .createFor:

@@ -146,6 +146,45 @@ final class CreatorSetupViewModel {
         set { update { $0.showsSafeZones = newValue } }
     }
 
+    // MARK: - Orb controls (Settings › Prompter)
+
+    /// The four text sizes as a position 0...3 on a stepped orb; a size set in Display lands on the nearest.
+    var textSizeStep: Double {
+        get {
+            let sizes = PrompterTextSize.allCases
+            return Double(sizes.indices.min { abs(sizes[$0].points - setup.textSize) < abs(sizes[$1].points - setup.textSize) } ?? 1)
+        }
+        set { setTextSize(PrompterTextSize.allCases[max(0, min(PrompterTextSize.allCases.count - 1, Int(newValue.rounded())))]) }
+    }
+
+    var textSizeLabel: String {
+        PrompterTextSize.allCases[Int(textSizeStep)].label
+    }
+
+    var readingLineStep: Double {
+        get { Double(ReadingLinePreset(setup.readingLine)?.rawValue ?? ReadingLinePreset.nearCamera.rawValue) }
+        set { update { $0.readingLine = (ReadingLinePreset(rawValue: Int(newValue.rounded())) ?? .nearCamera).placement } }
+    }
+
+    /// Words a minute, the speed the prompter scrolls at when it isn't following the voice.
+    var wordsPerMinute: Int { Int((setup.speed * ReadTime.wordsPerMinuteAtOneX).rounded()) }
+
+    var marginStep: Double {
+        get { Double(MarginPreset(points: preferences.prompter.margin).rawValue) }
+        set { preferences.prompter.margin = (MarginPreset(rawValue: Int(newValue.rounded())) ?? .medium).points }
+    }
+
+    var countdownStep: Double {
+        get { Double(Countdown.allCases.firstIndex(of: preferences.camera.countdown) ?? 0) }
+        set { preferences.camera.countdown = Countdown.allCases[max(0, min(Countdown.allCases.count - 1, Int(newValue.rounded())))] }
+    }
+
+    /// "Follow my voice": the text goes where the voice goes. Off, it scrolls at the speed above.
+    var followsVoice: Bool {
+        get { preferences.prompter.scrollMode == .voice }
+        set { preferences.prompter.scrollMode = newValue ? .voice : .steady }
+    }
+
     // MARK: - Reset
 
     /// Preferences only: scripts, takes and edits stay.

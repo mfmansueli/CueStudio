@@ -8,6 +8,9 @@ import SwiftUI
 /// What Pro changes, and what stays free, as rows in one card: an icon tile, the line and a mono tag.
 /// Only exporting is Pro's; the rest says it stays open.
 struct PaywallBenefitsCard: View {
+    /// Apple Intelligence can write here: only then is it listed.
+    var aiIsAvailable = true
+
     private struct Benefit: Identifiable {
         let id: Int
         let systemImage: String
@@ -17,8 +20,11 @@ struct PaywallBenefitsCard: View {
     }
 
     private var benefits: [Benefit] {
-        PaywallCopy.features.enumerated().map { index, text in
-            Benefit(id: index, systemImage: PaywallCopy.featureImages[index], text: text, tag: PaywallCopy.featureTags[index], isAI: index == 1)
+        PaywallCopy.visibleFeatureIndices(aiIsAvailable: aiIsAvailable).enumerated().map { position, index in
+            Benefit(
+                id: position, systemImage: PaywallCopy.featureImages[index], text: PaywallCopy.features[index],
+                tag: PaywallCopy.featureTags[index], isAI: index == 1
+            )
         }
     }
 

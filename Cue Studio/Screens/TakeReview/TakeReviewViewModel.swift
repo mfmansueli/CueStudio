@@ -21,6 +21,8 @@ final class TakeReviewViewModel {
     /// Set when an export is ready for the system share sheet.
     var shareURL: URL?
     var paywall: PaywallContext?
+    /// "Ready to travel" after a save, "On its way" once a platform's app is open.
+    var celebration: ExportCelebration?
     /// "Share to".
     var showsShareSheet = false
     var burnsInCaptions = false
@@ -179,17 +181,27 @@ final class TakeReviewViewModel {
     /// "Suggest best" sits after a script's takes once there are two or more.
     var offersBestSuggestion: Bool { take?.isFreestyle == false && siblings.count > 1 }
 
-    /// The complete take closest to the script's timing, preferring the platform's ideal range. The
-    /// review switches to it; the creator still keeps it with ☆.
-    func suggestBest() -> Take? {
+    /// The complete take closest to the script's timing, preferring the platform's ideal range, with why. The
+    /// "Pick your best take" screen shows it; the creator still decides.
+    func bestProposal() -> BestTakeProposal? {
         guard let take, let script = library.script(id: take.scriptID) else { return nil }
-        let preset = rules.preset(for: take.platform ?? script.platform, monetizationGoals: profile.profile.monetizationGoals)
+        let platform = take.platform ?? script.platform
+        let preset = rules.preset(for: platform, monetizationGoals: profile.profile.monetizationGoals)
         let expected = ReadTime.seconds(for: script.text, speed: preferences.prompter.speed)
         guard let best = BestTakeSuggester.suggestion(among: siblings, expectedDuration: expected, idealRange: preset.idealRange) else {
             return nil
         }
-        toast.show(String(localized: "\(best.label) looks best — tap ☆ to keep it"))
-        return best
+        return BestTakeProposal(
+            takes: siblings, best: best,
+            reasons: BestTakeReason.reasons(for: best, among: siblings, expectedDuration: expected, idealRange: preset.idealRange),
+            platformLabel: platform.label, ideal: preset.idealRange
+        )
+    }
+
+    /// "Use take 2": it becomes the video's best take.
+    func markBest(_ chosen: Take) {
+        takes.setBest(chosen.id, isBest: true)
+        toast.show(String(localized: "\(chosen.label) marked as best"))
     }
 
     func toggleBest() {
@@ -264,7 +276,9 @@ final class TakeReviewViewModel {
                 try await photos.saveVideo(at: url)
                 let withCover = (try? await saveCoverIfChosen()) ?? false
                 showsShareSheet = false
+                let video = exported(take, url: url, tier: currentTier)
                 announce(savedMessage(tier: currentTier, withCover: withCover))
+                celebration = .readyToTravel(video)
             case .share(nil):
                 shareURL = url
             case .share(let destination?):
@@ -273,13 +287,32 @@ final class TakeReviewViewModel {
                 _ = try? await saveCoverIfChosen()
                 if await apps.open(destination) {
                     showsShareSheet = false
+                    let video = exported(take, url: url, tier: currentTier)
                     announce(readyMessage(for: destination, tier: currentTier))
+                    celebration = .sentOff(video, destination)
                 } else {
                     shareURL = url
                 }
             }
         } catch {
             toast.show(error.localizedDescription)
+        }
+    }
+
+    private func exported(_ take: Take, url: URL, tier: MembershipTier) -> ExportedVideo {
+        ExportedVideo(
+            take: take, url: url, formatLabel: "\(outputResolutionLabel(for: take).uppercased()) · \(take.outputAspect.label)",
+            hasCaptions: burnsInCaptions && captionNotice == nil, exportsLeft: quota.exportsLeft(for: tier), platform: take.platform
+        )
+    }
+
+    /// "Ready to travel" → "Share to TikTok": the video is already in Photos, so its app opens without exporting
+    /// again (the system share sheet when the app isn't there).
+    func send(_ video: ExportedVideo, to destination: ShareDestination) async {
+        if await apps.open(destination) {
+            celebration = .sentOff(video, destination)
+        } else {
+            shareURL = video.url
         }
     }
 

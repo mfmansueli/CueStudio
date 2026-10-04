@@ -18,6 +18,9 @@ nonisolated struct ScriptWords: Equatable, Sendable {
     /// left out.
     let tokens: [String]
     let locations: [Location]
+    /// Per paragraph, the index of its first token; one more at the end, so a paragraph's tokens are
+    /// `starts[i]..<starts[i + 1]`.
+    let paragraphStarts: [Int]
 
     var count: Int { tokens.count }
 
@@ -27,7 +30,9 @@ nonisolated struct ScriptWords: Equatable, Sendable {
     init(text: String, language: CueLanguage? = nil) {
         var tokens: [String] = []
         var locations: [Location] = []
+        var starts: [Int] = []
         for (index, paragraph) in CueParser.paragraphs(in: text).enumerated() {
+            starts.append(tokens.count)
             let spoken = CueParser.stripCues(paragraph)
             let length = Double(max(1, spoken.count))
             for word in WordTokenizer.words(in: spoken, language: language) {
@@ -40,6 +45,7 @@ nonisolated struct ScriptWords: Equatable, Sendable {
         }
         self.tokens = tokens
         self.locations = locations
+        paragraphStarts = starts + [tokens.count]
     }
 
     /// Lowercased words without accents or punctuation, so the script's "Você," matches a

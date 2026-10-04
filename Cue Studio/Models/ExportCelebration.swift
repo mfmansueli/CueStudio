@@ -1,0 +1,39 @@
+//
+//  ExportCelebration.swift
+//  Cue Studio
+//
+
+import Foundation
+
+/// A video that was just exported, with what the celebration screens say about it.
+nonisolated struct ExportedVideo: Equatable, Sendable {
+    let take: Take
+    /// The exported file (already in Photos when it was saved).
+    let url: URL
+    /// "1080P · 9:16".
+    let formatLabel: String
+    let hasCaptions: Bool
+    /// Free exports left, nil for subscribers.
+    let exportsLeft: Int?
+    /// Where the creator is likely to post it: the take's platform.
+    let platform: Platform?
+}
+
+/// What follows an export: "Ready to travel" after a save, "On its way" once a platform's app is opened.
+nonisolated enum ExportCelebration: Equatable, Identifiable, Sendable {
+    case readyToTravel(ExportedVideo)
+    case sentOff(ExportedVideo, ShareDestination)
+
+    var id: String {
+        switch self {
+        case .readyToTravel(let video): "ready-\(video.take.id)"
+        case .sentOff(let video, let destination): "sent-\(video.take.id)-\(destination.rawValue)"
+        }
+    }
+
+    var video: ExportedVideo {
+        switch self {
+        case .readyToTravel(let video), .sentOff(let video, _): video
+        }
+    }
+}

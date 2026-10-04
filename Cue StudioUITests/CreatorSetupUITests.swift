@@ -22,10 +22,14 @@ final class CreatorSetupUITests: XCTestCase {
         XCTAssertTrue(fourK.isSelected)
         app.navigationBars.buttons.firstMatch.tap()
         openCreatorSetup(app, page: "prompter")
-        let large = app.buttons["creatorSetup.textSize.large"]
-        XCTAssertTrue(large.waitForExistence(timeout: 5))
-        large.tap()
-        XCTAssertTrue(large.isSelected)
+        let size = app.descendants(matching: .any)["creatorSetup.textSize"].firstMatch
+        XCTAssertTrue(size.waitForExistence(timeout: 5))
+        XCTAssertEqual(size.value as? String, "Medium")
+        // Drag the orb from Medium toward the right end of its rail.
+        let start = size.coordinate(withNormalizedOffset: CGVector(dx: 0.36, dy: 0.75))
+        start.press(forDuration: 0.1, thenDragTo: start.withOffset(CGVector(dx: 120, dy: 0)))
+        let chosen = size.value as? String
+        XCTAssertNotEqual(chosen, "Medium")
 
         // The card on Settings says what was chosen, and both pages remember it.
         app.navigationBars.buttons.firstMatch.tap()
@@ -35,7 +39,7 @@ final class CreatorSetupUITests: XCTestCase {
         XCTAssertTrue(app.buttons["creatorSetup.quality.4K"].isSelected)
         app.navigationBars.buttons.firstMatch.tap()
         openCreatorSetup(app, page: "prompter")
-        XCTAssertTrue(app.buttons["creatorSetup.textSize.large"].isSelected)
+        XCTAssertEqual(app.descendants(matching: .any)["creatorSetup.textSize"].firstMatch.value as? String, chosen)
     }
 
     func testResetAsksBeforeRestoringTheDefaults() {

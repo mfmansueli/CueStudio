@@ -41,12 +41,17 @@ final class ScriptStarter {
     var platform: Platform { ideaDraft.platform ?? factory.defaultPlatform }
 
     /// Writes `idea` (the card's own text when nil), for the platform and format chosen on the card.
-    func write(idea: String? = nil, length: ScriptLength? = nil) {
-        guard let text = idea ?? ideaDraft.submission, !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return }
-        let request = factory.request(idea: text, platform: ideaDraft.platform, format: ideaDraft.format, length: length ?? ideaDraft.length)
+    /// - Parameter comment: the audience comment the script answers, kept on the script.
+    @discardableResult
+    func write(idea: String? = nil, length: ScriptLength? = nil, comment: ScriptComment? = nil, platform: Platform? = nil) -> UUID? {
+        guard let text = idea ?? ideaDraft.submission, !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return nil }
+        let request = factory.request(
+            idea: text, platform: platform ?? ideaDraft.platform, format: ideaDraft.format, length: length ?? ideaDraft.length
+        )
         let script = library.create(
-            title: "", text: "", platform: request.platform, type: request.format, language: languages.scriptLanguage
+            title: "", text: "", platform: request.platform, type: request.format, language: languages.scriptLanguage, comment: comment
         )
         presentation.openScript(script.id, writing: request)
+        return script.id
     }
 }

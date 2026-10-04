@@ -47,6 +47,14 @@ struct SettingsView: View {
                     }
                     .buttonStyle(.plain)
                     .accessibilityIdentifier("settings.languageRegionButton")
+                    NavigationLink(value: SettingsRoute.personalize) {
+                        SettingsRow(
+                            systemImage: "sparkles", tint: Palette.aiText, title: String(localized: "Personalize"),
+                            detail: String(localized: "App icon · starry sky · celebrations"), badge: String(localized: "NEW")
+                        )
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityIdentifier("settings.personalizeButton")
                     Button { showsPrivacy = true } label: {
                         SettingsRow(systemImage: "lock.fill", tint: Palette.neutralAction, title: String(localized: "Privacy & AI data"))
                     }

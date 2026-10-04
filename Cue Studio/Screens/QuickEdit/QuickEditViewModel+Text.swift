@@ -127,3 +127,32 @@ extension QuickEditViewModel {
         return TimeSpan(start: from, end: from + length)
     }
 }
+
+// MARK: - Comment card
+
+extension QuickEditViewModel {
+    /// The audience comment the take's script answers, if it does.
+    var commentForCard: ScriptComment? { library.script(id: take.scriptID)?.comment }
+
+    /// The comment as a card for the first seconds: a paper-white pill with dark type, high on the frame (Text menu ›
+    /// Comment). It is an ordinary text afterwards: restyle, move or delete it like any other.
+    func addCommentCard() {
+        guard isReady, let comment = commentForCard else { return }
+        player.pause()
+        let span = placement(at: 0, length: 4)
+        let pinned = edit.pin(span)
+        var text = edit.newText(.callout, span: pinned.span)
+        text.text = comment.cardText
+        text.clipAnchor = pinned.anchor
+        var look = TextLook(
+            font: .dmSans, weight: .semibold, sizeScale: 0.75, color: .offBlack, background: .pill, backgroundColor: .paper, hasShadow: true
+        )
+        look.alignment = .leading
+        look.apply(to: &text)
+        text.preset = nil
+        text.center = OverlayPoint(x: 0.5, y: 0.2).clamped
+        change { $0.texts.append(text) }
+        selectedTextID = text.id
+        toolMenu = nil
+    }
+}

@@ -77,5 +77,6 @@ struct CreatorSetupTests {
     @Test func textSizePresetsMatchTheirPoints() {
         #expect(PrompterTextSize(points: 28) == .medium)
         #expect(PrompterTextSize(points: 30) == nil)
+        #expect(PrompterTextSize(points: 48) == .extraLarge)
     }
 }

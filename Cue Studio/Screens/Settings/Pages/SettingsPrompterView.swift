@@ -19,8 +19,11 @@ struct SettingsPrompterView: View {
         ScrollViewReader { proxy in
             ScrollView {
                 VStack(alignment: .leading, spacing: 10) {
-                    SectionHeading(text: String(localized: "Teleprompter"))
+                    PrompterOrbControls(viewModel: viewModel)
+                        .id(PrompterSettingsSection.reading)
+                    SectionHeading(text: String(localized: "More options"))
                         .padding(.horizontal, 4)
+                        .padding(.top, 8)
                     TeleprompterSetupSection(viewModel: viewModel)
                 }
                 .padding(EdgeInsets(top: 8, leading: Metrics.gutter, bottom: 40, trailing: Metrics.gutter))
@@ -28,7 +31,7 @@ struct SettingsPrompterView: View {
             .safeAreaInset(edge: .top, spacing: 0) { header(proxy) }
         }
         .background(Palette.bg)
-        .navigationTitle("Teleprompter")
+        .navigationTitle("Prompter")
         .navigationBarTitleDisplayMode(.inline)
     }
 

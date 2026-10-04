@@ -5,10 +5,10 @@
 
 import Foundation
 
-/// The three text sizes Creator Setup offers. The slider in Display still reaches any size in
+/// The four text sizes Creator Setup offers (S · M · L · XL). The slider in Display still reaches any size in
 /// `PrompterSettings.sizeRange`.
 nonisolated enum PrompterTextSize: String, CaseIterable, Identifiable, Sendable {
-    case small, medium, large
+    case small, medium, large, extraLarge
 
     var id: String { rawValue }
 
@@ -17,6 +17,7 @@ nonisolated enum PrompterTextSize: String, CaseIterable, Identifiable, Sendable 
         case .small: String(localized: "Small")
         case .medium: String(localized: "Medium")
         case .large: String(localized: "Large")
+        case .extraLarge: String(localized: "Extra large")
         }
     }
 
@@ -26,6 +27,7 @@ nonisolated enum PrompterTextSize: String, CaseIterable, Identifiable, Sendable 
         case .small: 22
         case .medium: 28
         case .large: 36
+        case .extraLarge: 48
         }
     }
 

@@ -5,36 +5,24 @@
 
 import SwiftUI
 
-/// Steady mode's speed in the toolbar: "SPEED", the v26 slider (0.3× to 2.0×) and the value in
-/// yellow, on a faint 44 pt capsule.
+/// "SPEED  0.7×": the compact orb pill of the prompter's controls (v27). A soft tick marks the natural pace
+/// (150 words a minute); the value is always written.
 struct SpeedSlider: View {
     let speed: Double
     let speedLabel: String
     let onChange: @MainActor @Sendable (Double) -> Void
 
     var body: some View {
-        HStack(spacing: 6) {
-            Text("SPEED")
-                .font(.system(size: 11, weight: .heavy, design: .monospaced))
-                .tracking(0.8)
-                .foregroundStyle(Palette.ink2)
-                .fixedSize()
-                .accessibilityHidden(true)
-            CueSlider(
-                title: String(localized: "Speed"), value: speed, range: PrompterSettings.speedRange, step: 0.1,
-                valueText: speedLabel, identifier: "prompter.speedSlider", onChange: { onChange($0) }
-            )
-            .padding(.horizontal, 6)
-            Text(speedLabel)
-                .font(.system(size: 13, weight: .heavy, design: .monospaced))
-                .foregroundStyle(Palette.accText)
-                .fixedSize()
-                .accessibilityHidden(true)
-        }
-        .padding(.leading, 12)
-        .padding(.trailing, 14)
-        .frame(maxWidth: .infinity, minHeight: Metrics.hitTarget)
-        .background(Palette.overlayFill.opacity(0.6), in: Capsule())
+        OrbSlider(
+            value: Binding(get: { speed }, set: { onChange(PrompterSettings.clampedSpeed($0)) }),
+            range: PrompterSettings.speedRange,
+            defaultValue: ReadTime.naturalSpeed,
+            style: .compact,
+            label: String(localized: "Speed"),
+            valueText: speedLabel,
+            accessibilityIdentifier: "prompter.speedSlider"
+        )
+        .frame(maxWidth: .infinity)
     }
 }
 

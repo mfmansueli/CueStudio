@@ -50,9 +50,9 @@ struct StudioModeView: View {
                     viewModel: viewModel,
                     settings: settings,
                     viewportHeight: proxy.size.height,
-                    guideArrowSize: 11,
                     onTap: { viewModel.togglePlay() }
                 )
+                .overlay { PrompterTextOverlays(viewModel: viewModel) }
             }
             .padding(.top, 5)
             StudioControlPanel(viewModel: viewModel)

@@ -15,7 +15,15 @@ struct RootView: View {
 
     var body: some View {
         let languages = services.languages
-        content
+        ZStack {
+            content
+            // The first flight, over the whole app, until it is told or skipped.
+            if services.onboarding.isActive {
+                OnboardingView(services: services)
+                    .transition(.opacity)
+            }
+        }
+            .animation(.easeInOut(duration: 0.5), value: services.onboarding.isActive)
             // A new interface language rebuilds the screens, so every string is read again in it.
             // Navigation lives in PresentationService, so the creator stays where they were.
             .id(languages.interfaceLanguage)

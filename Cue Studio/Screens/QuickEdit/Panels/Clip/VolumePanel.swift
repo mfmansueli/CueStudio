@@ -12,10 +12,13 @@ struct VolumePanel: View {
 
     var body: some View {
         PanelFrame(viewModel: viewModel, panel: .volume) {
-            PanelSlider(
-                label: String(localized: "Volume"), value: viewModel.targetVolume * 100, range: 0...200,
-                format: .percent, identifier: "edit.volume"
-            ) { viewModel.setTargetVolume($0 / 100) }
+            OrbSlider(
+                value: Binding(get: { viewModel.targetVolume * 100 }, set: { viewModel.setTargetVolume(($0 / 5).rounded() * 5 / 100) }),
+                range: 0...volumeCeiling, defaultValue: 100, style: .full, label: volumeLabel,
+                valueText: PanelValueFormat.percent.text(viewModel.targetVolume * 100), systemIcon: volumeIcon,
+                minCaption: PanelValueFormat.percent.text(0), maxCaption: PanelValueFormat.percent.text(volumeCeiling),
+                accessibilityIdentifier: "edit.volume", onEditingChanged: { _ in }
+            )
             switch viewModel.selection {
             case .music(let id):
                 if let music = viewModel.edit.music.first(where: { $0.id == id }) { musicAdvanced(music) }
@@ -28,6 +31,25 @@ struct VolumePanel: View {
                 ) { viewModel.setClipMuted(!(viewModel.targetClip?.isMuted ?? false)) }
             }
         }
+    }
+
+    /// Your voice and a voice-over go to 150% (a soft tick at 100%); music, which sits under the voice, to 100%.
+    private var volumeCeiling: Double {
+        if case .music = viewModel.selection { return 100 }
+        return max(150, (viewModel.targetVolume * 100).rounded(.up))
+    }
+
+    private var volumeLabel: String {
+        switch viewModel.selection {
+        case .music: String(localized: "Music")
+        case .voiceOver: String(localized: "Voice-over")
+        default: String(localized: "Your voice")
+        }
+    }
+
+    private var volumeIcon: CueIcon {
+        if case .music = viewModel.selection { return .volume }
+        return .audio
     }
 
     @ViewBuilder

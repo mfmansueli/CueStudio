@@ -10,7 +10,7 @@ nonisolated enum PaywallCopy {
     static func title(for context: PaywallContext) -> String {
         switch context {
         case .export: String(localized: "Keep posting with Cue")
-        case .profile: String(localized: "Create more. Sound like you.")
+        case .profile: String(localized: "Take your universe further.")
         }
     }
 
@@ -28,11 +28,18 @@ nonisolated enum PaywallCopy {
         String(localized: "Unlimited video exports, up to 4K"),
         String(localized: "Every feature stays open: AI, My Cue Voice, Quick edit, Clean Up, captions"),
         String(localized: "Your takes are always yours — nothing is ever locked or deleted"),
+        String(localized: "Every milestone app icon"),
     ]
 
     /// The icon and the mono tag of each line of `features`.
-    static let featureImages = ["square.and.arrow.up", "sparkles", "lock.open"]
-    static let featureTags = [String(localized: "Export"), String(localized: "Free"), String(localized: "Yours")]
+    static let featureImages = ["square.and.arrow.up", "sparkles", "lock.open", "sparkle"]
+    static let featureTags = [String(localized: "Export"), String(localized: "Free"), String(localized: "Yours"), String(localized: "Universe")]
+
+    /// The lines for this iPhone: the one about AI stays out where Apple Intelligence can't run, so the paywall never
+    /// sells what the device cannot do.
+    static func visibleFeatureIndices(aiIsAvailable: Bool) -> [Int] {
+        features.indices.filter { aiIsAvailable || $0 != 1 }
+    }
 
     static func welcome(for context: PaywallContext, startedTrial: Bool) -> String {
         switch context {

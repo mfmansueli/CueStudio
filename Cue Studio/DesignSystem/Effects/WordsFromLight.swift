@@ -17,6 +17,8 @@ struct WordsFromLight: View {
     var stagger = CueMotion.Duration.wordStagger
     /// Change to play again.
     var trigger = 0
+    /// The violet glow each word carries as it arrives (the AI's own words); ours fade in plainly.
+    var glows = true
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var elapsed = 0.0
@@ -32,7 +34,7 @@ struct WordsFromLight: View {
         Self.marked(words: words)
             .font(font)
             .foregroundStyle(color)
-            .textRenderer(WordsRenderer(elapsed: elapsed, stagger: stagger, reduceMotion: reduceMotion))
+            .textRenderer(WordsRenderer(elapsed: elapsed, stagger: stagger, reduceMotion: reduceMotion, glows: glows))
             .accessibilityLabel(Text(text))
             .task(id: "\(text)\(trigger)") {
                 elapsed = 0
@@ -59,6 +61,7 @@ private struct WordsRenderer: TextRenderer {
     var elapsed: Double
     var stagger: Double
     var reduceMotion: Bool
+    var glows: Bool
 
     var animatableData: Double {
         get { elapsed }
@@ -71,7 +74,7 @@ private struct WordsRenderer: TextRenderer {
                 let index = run[WordIndexAttribute.self]?.index ?? 0
                 let age = elapsed - Double(index) * stagger
                 let progress = reduceMotion ? min(1, max(0, elapsed / 0.4)) : min(1, max(0, age / CueMotion.Duration.wordFromLight))
-                let glow = reduceMotion ? 0 : max(0, 1 - max(0, age - CueMotion.Duration.wordFromLight) / 0.9)
+                let glow = reduceMotion || !glows ? 0 : max(0, 1 - max(0, age - CueMotion.Duration.wordFromLight) / 0.9)
                 var copy = context
                 copy.opacity = progress
                 if !reduceMotion {

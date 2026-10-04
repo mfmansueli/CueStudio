@@ -12,17 +12,20 @@ struct NewScriptSheet: View {
     enum Mode { case new, attach }
 
     let mode: Mode
+    var onLetCue: () -> Void = {}
     var onWrite: () -> Void = {}
     var onPaste: () -> Void = {}
     let onImport: () -> Void
+    var onAnswer: () -> Void = {}
+    var onFreestyle: () -> Void = {}
 
     @Environment(\.dismiss) private var dismiss
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             SheetHeader(
-                title: String(localized: "New script"),
-                subtitle: String(localized: "Your words, your way."),
+                title: mode == .new ? String(localized: "Start a video") : String(localized: "New script"),
+                subtitle: mode == .new ? nil : String(localized: "Your words, your way."),
                 onClose: { dismiss() }
             )
             .padding(.horizontal, 4)
@@ -32,25 +35,38 @@ struct NewScriptSheet: View {
                 switch mode {
                 case .new:
                     row(
-                        "Write my own", detail: "A blank page. Shape it later.", systemImage: "pencil.line",
-                        isPrimary: true, identifier: "newScript.write", action: onWrite
+                        "Let Cue write it", detail: "Say or type an idea · in your voice", systemImage: "sparkles",
+                        style: .ai, identifier: "newScript.letCue", action: onLetCue
+                    )
+                    row(
+                        "Write it myself", detail: "Start with your own words", systemImage: "pencil",
+                        style: .plain, identifier: "newScript.write", action: onWrite
                     )
                 case .attach:
                     row(
                         "Paste", detail: "From clipboard", systemImage: "doc.on.clipboard",
-                        isPrimary: true, identifier: "newScript.paste", action: onPaste
+                        style: .primary, identifier: "newScript.paste", action: onPaste
                     )
                 }
                 row(
-                    "Import", detail: "Scan, photo, file or paste", systemImage: "square.and.arrow.down",
-                    isPrimary: false, identifier: "newScript.import", action: onImport
+                    mode == .new ? "Import text" : "Import", detail: "Scan, photo, file or paste", systemImage: "square.and.arrow.down",
+                    style: .plain, identifier: "newScript.import", action: onImport
                 )
                 if mode == .new {
-                    Text("Want Cue to write it? Use the Let’s Cue card.")
-                        .font(.footnote)
-                        .foregroundStyle(Palette.ink2)
-                        .padding(.horizontal, 4)
-                        .padding(.top, 4)
+                    row(
+                        "Answer a comment", detail: "Turn a question from your audience into a script", systemImage: "text.bubble",
+                        style: .plain, badge: "NEW", identifier: "newScript.answer", action: onAnswer
+                    )
+                    Button(action: onFreestyle) {
+                        HStack(spacing: 10) {
+                            Circle().fill(Palette.record).frame(width: 10, height: 10)
+                            Text("Record without a script").font(.system(size: 18, weight: .medium)).foregroundStyle(Palette.ink2)
+                        }
+                        .frame(maxWidth: .infinity, minHeight: Metrics.hitTarget)
+                    }
+                    .buttonStyle(.plain)
+                    .padding(.top, 6)
+                    .accessibilityIdentifier("newScript.freestyle")
                 }
             }
         }
@@ -58,32 +74,46 @@ struct NewScriptSheet: View {
         .fittedSheet()
     }
 
-    /// A full-width row: the way to write in a yellow ring and a yellow icon, the other in white.
+    private enum RowStyle { case ai, primary, plain }
+
+    /// A full-width row: Let Cue write it in violet, the others in the sheet's grey.
     private func row(
-        _ title: LocalizedStringKey, detail: LocalizedStringKey, systemImage: String,
-        isPrimary: Bool, identifier: String, action: @escaping () -> Void
+        _ title: LocalizedStringKey, detail: LocalizedStringKey, systemImage: String, style: RowStyle,
+        badge: LocalizedStringKey? = nil, identifier: String, action: @escaping () -> Void
     ) -> some View {
         let shape = RoundedRectangle(cornerRadius: Metrics.innerRadius, style: .continuous)
         return Button(action: action) {
             HStack(spacing: 14) {
                 Image(systemName: systemImage)
                     .font(.title3)
-                    .foregroundStyle(isPrimary ? Palette.accText : Palette.ink)
+                    .foregroundStyle(style == .ai ? Palette.aiTextStrong : (style == .primary ? Palette.accText : Palette.ink))
                     .frame(width: 42, height: 42)
-                    .background(isPrimary ? Palette.accSoft : Palette.overlayFill, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+                    .background(
+                        style == .ai ? Palette.aiFill : (style == .primary ? Palette.accSoft : Palette.overlayFill),
+                        in: RoundedRectangle(cornerRadius: 12, style: .continuous)
+                    )
                 VStack(alignment: .leading, spacing: 2) {
-                    Text(title).font(.body.weight(.semibold))
+                    HStack(spacing: 8) {
+                        Text(title).font(.body.weight(.semibold))
+                        if let badge {
+                            Text(badge)
+                                .font(.system(size: 10, weight: .heavy, design: .monospaced))
+                                .foregroundStyle(Palette.accText)
+                                .padding(.horizontal, 7).frame(height: 20)
+                                .background(Palette.accSoft, in: Capsule())
+                        }
+                    }
                     Text(detail)
                         .font(.footnote)
-                        .foregroundStyle(Palette.ink2)
+                        .foregroundStyle(style == .ai ? Palette.aiText : Palette.ink2)
                 }
                 Spacer(minLength: 0)
             }
             .foregroundStyle(Palette.ink)
             .padding(16)
             .frame(maxWidth: .infinity, minHeight: Metrics.hitTarget, alignment: .leading)
-            .background(Palette.surface2, in: shape)
-            .overlay(shape.strokeBorder(isPrimary ? Palette.acc : .clear, lineWidth: 1.5))
+            .background(style == .ai ? Palette.aiFill : Palette.surface2, in: shape)
+            .overlay(shape.strokeBorder(style == .ai ? Palette.aiBorder : (style == .primary ? Palette.acc : .clear), lineWidth: style == .primary ? 1.5 : 0.5))
             .contentShape(shape)
         }
         .buttonStyle(.plain)

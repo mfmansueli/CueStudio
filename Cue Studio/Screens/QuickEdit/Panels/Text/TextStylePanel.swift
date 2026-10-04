@@ -29,7 +29,7 @@ struct TextStylePanel: View {
                 case .font: font(text)
                 case .color: color(text)
                 case .motion: MotionKeyframeControls(viewModel: viewModel)
-                default: presets
+                default: presets(text)
                 }
             }
             .task {
@@ -92,7 +92,24 @@ struct TextStylePanel: View {
 
     // MARK: - Tabs
 
-    private var presets: some View {
+    /// The styles in a row, then Size and Glow as orbs and the colors: the whole look in one place.
+    @ViewBuilder
+    private func presets(_ text: TextOverlay) -> some View {
+        styleCards
+        PanelSlider(
+            label: String(localized: "Size"), value: viewModel.pickedTextPointSize, range: TextStyleEdit.sizeRange,
+            format: .points, identifier: "edit.textSize"
+        ) { viewModel.restyleText(.size($0), key: "textSize") }
+        PanelSlider(
+            label: String(localized: "Glow"), value: text.glow * 100, range: 0...100, step: 5, format: .percent,
+            identifier: "edit.textGlow"
+        ) { viewModel.restyleText(.glow($0 / 100), key: "textGlow") }
+        PanelSwatches(
+            label: String(localized: "Text"), colors: OverlayColor.textSwatches, selection: text.color, identifier: "edit.textColor"
+        ) { viewModel.restyleText(.color($0)) }
+    }
+
+    private var styleCards: some View {
         ScrollView(.horizontal) {
             HStack(alignment: .top, spacing: 8) {
                 PanelSaveStyleCard(action: viewModel.saveMyStyle)
@@ -127,10 +144,6 @@ struct TextStylePanel: View {
             label: String(localized: "Weight"), options: text.font.weights.map { PanelOption($0, $0.label) },
             selection: text.weight, identifier: "edit.textWeight"
         ) { viewModel.restyleText(.weight($0)) }
-        PanelSlider(
-            label: String(localized: "Size"), value: viewModel.pickedTextPointSize, range: TextStyleEdit.sizeRange,
-            format: .points, identifier: "edit.textSize"
-        ) { viewModel.restyleText(.size($0), key: "textSize") }
     }
 
     @ViewBuilder

@@ -105,6 +105,16 @@ final class CreatorProfileService {
         return true
     }
 
+    /// The first flight's picks: the topics (known ones feed My Cue Voice; typed ones are kept for the
+    /// universe) and the platform new scripts start for. Nothing is changed when nothing was picked.
+    func applyFirstFlight(niches: [Niche], customTopics: [String], platform: Platform) {
+        var updated = profile
+        if !niches.isEmpty { updated.niches = niches }
+        if !customTopics.isEmpty { updated.customTopics = customTopics }
+        if Platform.primary.contains(platform) { updated.defaultPlatform = platform }
+        profile = updated
+    }
+
     /// Saves the answers of the short setup into the same profile fields Profile edits, marks them
     /// as the creator's own and turns the voice on. A step passed as nil (or an empty list) is left as it was.
     func saveVoiceSetup(role: CreatorRole? = nil, niches: [Niche]? = nil, vocabulary: Vocabulary? = nil, sounds: [VoiceSound]? = nil) {

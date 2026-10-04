@@ -13,6 +13,10 @@ struct ReadingLineLayer: View {
     /// "READING LINE" above the line, while Display is open.
     let showsTag: Bool
     let showsHandle: Bool
+    /// The voice level while recognition follows it (the horizon's glow flickers with it).
+    var level: Double?
+    /// Specks rise from the line while the text moves.
+    var showsParticles = false
     /// The line's new position while dragging, in screen points.
     let onMove: (CGFloat) -> Void
     /// ↑ / ↓ from VoiceOver.
@@ -21,14 +25,13 @@ struct ReadingLineLayer: View {
     @State private var dragStart: CGFloat?
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
-    private static let arrowSize: CGFloat = 10
     private static let handleTarget: CGFloat = 44
     private static let gripSize = CGSize(width: 14, height: 34)
 
     var body: some View {
         let span = layout.lineSpan
         ZStack(alignment: .topLeading) {
-            ReadingGuide(arrowSize: Self.arrowSize, lineOpacity: 0.7, lineWidth: 2, glows: true)
+            ReadingGuide(level: level, showsParticles: showsParticles)
                 .frame(width: span.upperBound - span.lowerBound)
                 .position(x: (span.lowerBound + span.upperBound) / 2, y: layout.lineY)
             if showsTag || dragStart != nil {

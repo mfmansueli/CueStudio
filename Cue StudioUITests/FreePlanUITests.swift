@@ -52,7 +52,11 @@ final class FreePlanUITests: XCTestCase {
         let suggest = app.buttons["review.suggestBestButton"]
         XCTAssertTrue(suggest.waitForExistence(timeout: 5))
         suggest.tap()
-        let toast = app.staticTexts.matching(NSPredicate(format: "label CONTAINS 'looks best'")).firstMatch
+        // "Pick your best take": Cue's suggestion in the middle, with why; "Use take N" keeps it.
+        XCTAssertTrue(app.descendants(matching: .any)["pick.sheet"].firstMatch.waitForExistence(timeout: 5))
+        XCTAssertTrue(app.descendants(matching: .any)["pick.reasons"].firstMatch.waitForExistence(timeout: 5))
+        app.buttons["pick.use"].tap()
+        let toast = app.staticTexts.matching(NSPredicate(format: "label CONTAINS 'marked as best'")).firstMatch
         XCTAssertTrue(toast.waitForExistence(timeout: 5))
     }
 

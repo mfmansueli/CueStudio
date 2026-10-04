@@ -18,6 +18,10 @@ enum AppSheet: Identifiable, Hashable {
     case format
     /// "For TikTok ⌄" on the idea card: the platform the idea is for.
     case createFor
+    /// Ideas caught now, shaped later.
+    case logbook
+    /// A question from the audience, turned into a script.
+    case answerComment
 
     var id: String {
         switch self {
@@ -27,6 +31,8 @@ enum AppSheet: Identifiable, Hashable {
         case .ideas: "ideas"
         case .format: "format"
         case .createFor: "createFor"
+        case .logbook: "logbook"
+        case .answerComment: "answerComment"
         }
     }
 }

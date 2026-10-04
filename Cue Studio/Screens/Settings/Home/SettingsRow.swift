@@ -11,6 +11,10 @@ struct SettingsRow: View {
     var tint: Color = Palette.infoText
     let title: String
     var value: String?
+    /// A second line under the title.
+    var detail: String?
+    /// A small tag after the title ("NEW").
+    var badge: String?
     var showsChevron = true
 
     var body: some View {
@@ -21,7 +25,20 @@ struct SettingsRow: View {
                 .frame(width: 30, height: 30)
                 .background(tint, in: RoundedRectangle(cornerRadius: 8, style: .continuous))
                 .accessibilityHidden(true)
-            Text(title).foregroundStyle(Palette.ink)
+            VStack(alignment: .leading, spacing: 2) {
+                HStack(spacing: 8) {
+                    Text(title).foregroundStyle(Palette.ink)
+                    if let badge {
+                        Text(badge)
+                            .font(.system(size: 10, weight: .heavy, design: .monospaced))
+                            .foregroundStyle(Palette.accText)
+                            .padding(.horizontal, 7)
+                            .frame(height: 20)
+                            .background(Palette.accSoft, in: Capsule())
+                    }
+                }
+                if let detail { Text(detail).font(.footnote).foregroundStyle(Palette.ink2).lineLimit(2) }
+            }
             Spacer(minLength: 8)
             if let value {
                 Text(verbatim: value).foregroundStyle(Palette.ink2).lineLimit(1)

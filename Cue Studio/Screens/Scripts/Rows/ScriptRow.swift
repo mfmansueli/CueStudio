@@ -15,6 +15,8 @@ struct ScriptRow: View {
     let onStudio: () -> Void
     let onRecord: () -> Void
 
+    @Environment(TopicTaggingService.self) private var tagging
+
     var body: some View {
         HStack(spacing: 10) {
             VStack(alignment: .leading, spacing: 5) {
@@ -35,6 +37,11 @@ struct ScriptRow: View {
                 }
                 HStack(spacing: 6) {
                     ColorDot(color: script.platform.tint, size: 6)
+                    if let topic = tagging.color(for: script) {
+                        // The topic's world: a bigger, softer dot than the platform's.
+                        Circle().fill(topic).frame(width: 9, height: 9)
+                            .accessibilityElement().accessibilityLabel(Text("Topic"))
+                    }
                     HUDLine(values: status.values, dotColor: status.stage?.tint ?? Palette.accText, tint: status.stage?.tint ?? Palette.accText)
                     if let folder = script.folder {
                         Image(systemName: "folder").font(.caption2).foregroundStyle(Palette.ink2)

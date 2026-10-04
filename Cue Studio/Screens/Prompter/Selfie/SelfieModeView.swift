@@ -11,6 +11,8 @@ import SwiftUI
 struct SelfieModeView: View {
     let viewModel: PrompterViewModel
     let onClose: () -> Void
+    /// The practice's two ways out (the first flight): record for real, or go to the studio.
+    var onPractice: (PracticeOutcome) -> Void = { _ in }
 
     @Environment(SessionSetupService.self) private var session
     /// A finger is on the window's corner: the window follows it right away instead of gliding.
@@ -36,8 +38,14 @@ struct SelfieModeView: View {
                     viewModel.measured { $0.topInset = top }
                 }
             if let countdown = viewModel.countdown {
-                CountdownOverlay(value: countdown)
+                CountdownOverlay(
+                    value: countdown, total: session.camera.countdown.rawValue,
+                    hint: session.prompter.scrollMode == .voice && viewModel.hasScript ? String(localized: "Just talk. The text follows your voice.") : nil,
+                    onCancel: { Task { await viewModel.recordButtonTapped() } }
+                )
+                .transition(.opacity)
             }
+            CountdownFlare(trigger: viewModel.countdownFlares)
         }
     }
 
@@ -67,6 +75,8 @@ struct SelfieModeView: View {
                         layout: layout,
                         showsTag: viewModel.sheet == .display,
                         showsHandle: !viewModel.isPlaying && !viewModel.isRecording,
+                        level: viewModel.followsSpeech ? viewModel.voiceLevel : nil,
+                        showsParticles: viewModel.isPlaying,
                         onMove: { viewModel.moveReadingLine(toY: $0) },
                         onNudge: { viewModel.nudgeReadingLine(by: $0) }
                     )
@@ -105,6 +115,7 @@ struct SelfieModeView: View {
                 Rectangle().fill(Color.black.opacity(settings.backgroundOpacity))
             }
         }
+        .overlay { PrompterTextOverlays(viewModel: viewModel) }
         .clipShape(shape)
         .overlay(shape.strokeBorder(Palette.panelBorder, lineWidth: 0.5))
         .frame(width: rect.width, height: rect.height)
@@ -116,7 +127,13 @@ struct SelfieModeView: View {
 
     private var controls: some View {
         VStack(spacing: 0) {
-            SelfieTopBar(viewModel: viewModel, onClose: onClose)
+            Group {
+                if viewModel.isPractice {
+                    PracticeTopBar(onClose: onClose)
+                } else {
+                    SelfieTopBar(viewModel: viewModel, onClose: onClose)
+                }
+            }
                 .padding(.horizontal, 14)
                 .onGeometryChange(for: CGFloat.self) { $0.frame(in: .global).maxY } action: { bottom in
                     viewModel.measured { $0.topBarBottom = bottom }
@@ -145,7 +162,13 @@ struct SelfieModeView: View {
                 .padding(.bottom, 12)
                 .transition(.scale(scale: 0.9, anchor: .bottom).combined(with: .opacity))
             }
-            SelfieControlPanel(viewModel: viewModel)
+            Group {
+                if viewModel.isPractice {
+                    PracticeBottomBar(onChoose: onPractice)
+                } else {
+                    SelfieControlPanel(viewModel: viewModel)
+                }
+            }
                 .padding(.horizontal, 10)
                 .onGeometryChange(for: CGFloat.self) { $0.frame(in: .global).minY } action: { top in
                     viewModel.measured { $0.toolbarTop = top }

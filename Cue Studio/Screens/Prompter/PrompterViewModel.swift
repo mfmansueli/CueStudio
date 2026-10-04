@@ -4,7 +4,6 @@
 //
 
 import Foundation
-import os
 
 /// Everything that happens while the prompter is open: scrolling, the camera, recording and the
 /// hand-off to take review. Reads and changes settings through `session` (the Creator Setup, the
@@ -22,6 +21,8 @@ final class PrompterViewModel {
     private(set) var isRecording = false
     private(set) var recordingSeconds = 0
     private(set) var countdown: Int?
+    /// Bumped when a countdown ends, for the flare.
+    private(set) var countdownFlares = 0
     private(set) var showsStopWarning = false
     /// The compact recording bar and the whole one a tap brings back.
     let bar = RecordingBarState()
@@ -33,7 +34,9 @@ final class PrompterViewModel {
     /// True while speech recognition follows the reading word by word. Without it (no model for
     /// the language, or still downloading), Voice follow scrolls at the set speed while it hears
     /// speech.
-    private(set) var followsSpeech = false
+    private(set) var followsSpeech = false { didSet { highlighter.isActive = followsSpeech } }
+    /// The words lit as they are said (see `PrompterHighlighter`).
+    let highlighter = PrompterHighlighter()
     /// The language recognition listens in while `followsSpeech`.
     private(set) var listeningLanguage: CueLanguage?
     /// Why the words can't be followed in this language here, shown to the creator (once as a
@@ -66,6 +69,8 @@ final class PrompterViewModel {
     var reviewingTake: Take?
     /// True when the prompter opened straight on a take (from the Takes tab).
     private(set) var openedOnReview: Bool
+    /// The first flight's practice run: nothing is recorded.
+    private(set) var isPractice: Bool
 
     // MARK: Selfie layout (see PrompterViewModel+Layout)
     /// What the Selfie screen measured on this device.
@@ -105,9 +110,9 @@ final class PrompterViewModel {
     /// When the level meter last changed, so it redraws at most `levelInterval` apart.
     private var levelShownAt: TimeInterval = 0
     private var scriptWords = ScriptWords(text: "")
-    private var speechTracker = ScriptSpeechTracker(words: [])
+    private var speechTracker = ScriptSpeechTracker(words: []) { didSet { highlighter.position = speechTracker.position } }
     /// Vertical extent of each paragraph in the text, for placing words on the guide.
-    private var paragraphFrames: [Range<Double>] = []
+    private(set) var paragraphFrames: [Range<Double>] = []
     /// The word each mode was left on (see `keepPlace`).
     private var readingPlaces: [PrompterMode: Int] = [:]
     /// The word to put back on the guide until the layout of the mode just entered has settled.
@@ -163,6 +168,7 @@ final class PrompterViewModel {
         self.clock = clock
         reviewingTake = takes.take(id: launch.reviewTakeID)
         openedOnReview = launch.reviewTakeID != nil
+        isPractice = launch.isPractice
     }
 
     // MARK: - Reading
@@ -404,6 +410,15 @@ final class PrompterViewModel {
         publishRemoteStatus()
     }
 
+    /// "Record it for real": the practice ends and the text goes back to the top.
+    func leavePractice() {
+        guard isPractice else { return }
+        pause(); isPractice = false; layoutAnchor = nil; engine.rewind(); resumeSpeech(at: 0)
+    }
+
+    /// The practice starts on its own: the text follows the voice from the first word.
+    func startPractice() { if isPractice, !isPlaying { play() } }
+
     func rewind() {
         layoutAnchor = nil
         engine.rewind()
@@ -513,6 +528,7 @@ final class PrompterViewModel {
                 if Task.isCancelled { return }
             }
             self?.countdown = nil
+            self?.countdownFlares += 1
             await self?.beginRecording()
         }
     }
@@ -770,6 +786,7 @@ final class PrompterViewModel {
         }
         transcription = started
         scriptWords = ScriptWords(text: wanted.text, language: language)
+        highlighter.words = scriptWords
         speechTracker = ScriptSpeechTracker(words: scriptWords.tokens, language: language)
         speechLead.initialRate = ReadTime.wordsPerMinute(speed: session.prompter.speed) / 60
         followsSpeech = true
@@ -873,20 +890,8 @@ final class PrompterViewModel {
         // A new place to read from: the words heard before it must not match back where they were read.
         speech.discardHeard()
         speechTracker.reset(to: scriptWords.wordIndex(
-            atOffset: engine.offset,
-            paragraphFrames: paragraphFrames,
-            lineHeight: lineHeight,
-            endOffset: engine.endOffset
+            atOffset: engine.offset, paragraphFrames: paragraphFrames, lineHeight: lineHeight, endOffset: engine.endOffset
         ))
         speechLead.reset(to: speechTracker.position)
-    }
-
-    /// Debug builds write the session's timings to the device's log (Console, "VoiceFollowing").
-    /// Nothing leaves the device.
-    private func logVoiceMetrics() {
-        #if DEBUG
-        guard voiceMetrics.startup != nil else { return }
-        Logger(subsystem: "studio.cue", category: "VoiceFollowing").debug("\(self.voiceMetrics.summary, privacy: .public)")
-        #endif
     }
 }

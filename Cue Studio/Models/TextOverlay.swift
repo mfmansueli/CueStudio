@@ -32,6 +32,8 @@ nonisolated struct TextOverlay: Codable, Hashable, Identifiable, Sendable {
     var backgroundOpacity: Double = 1
     var hasShadow = true
     var hasOutline = false
+    /// 0 to 1: a soft light in the text's color around it (`TextLook.glow`).
+    var glow: Double = 0
     /// The center of the text on the frame.
     var center: OverlayPoint
     /// Seconds of the recording it is pinned to.
@@ -98,7 +100,7 @@ nonisolated struct TextOverlay: Codable, Hashable, Identifiable, Sendable {
 
     private enum CodingKeys: String, CodingKey {
         case id, text, role, font, weight, size, tracking, isUppercase, alignment, color, background, backgroundColor
-        case backgroundOpacity, hasShadow, hasOutline, center, span, preset, customized, clipAnchor, keyframes
+        case backgroundOpacity, hasShadow, hasOutline, glow, center, span, preset, customized, clipAnchor, keyframes
     }
 
     /// Texts saved before letter spacing, fill opacity and presets read with none of them.
@@ -119,6 +121,7 @@ nonisolated struct TextOverlay: Codable, Hashable, Identifiable, Sendable {
         backgroundOpacity = min(max((try? container.decodeIfPresent(Double.self, forKey: .backgroundOpacity)) ?? 1, 0), 1)
         hasShadow = try container.decodeIfPresent(Bool.self, forKey: .hasShadow) ?? true
         hasOutline = try container.decodeIfPresent(Bool.self, forKey: .hasOutline) ?? false
+        glow = min(max((try? container.decodeIfPresent(Double.self, forKey: .glow)) ?? 0, 0), 1)
         center = try container.decode(OverlayPoint.self, forKey: .center)
         span = try container.decode(TimeSpan.self, forKey: .span)
         preset = try? container.decodeIfPresent(TypePreset.self, forKey: .preset)
@@ -144,6 +147,8 @@ nonisolated struct TextOverlay: Codable, Hashable, Identifiable, Sendable {
         try container.encode(backgroundOpacity, forKey: .backgroundOpacity)
         try container.encode(hasShadow, forKey: .hasShadow)
         try container.encode(hasOutline, forKey: .hasOutline)
+        // Absent when none, so an edit made without glow encodes as it always did.
+        if glow > 0 { try container.encode(glow, forKey: .glow) }
         try container.encode(center, forKey: .center)
         try container.encode(span, forKey: .span)
         try container.encodeIfPresent(preset, forKey: .preset)

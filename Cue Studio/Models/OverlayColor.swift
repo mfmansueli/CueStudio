@@ -10,9 +10,11 @@ import Foundation
 nonisolated enum OverlayColor: String, Codable, CaseIterable, Identifiable, Sendable {
     case white, black, yellow, red, blue, green, pink
     case offBlack, orange, cyan, purple, paper
+    /// The v27 swatches: lavender (the AI's violet), blush and mint (the worlds' pink and green).
+    case lavender, blush, mint
 
     /// Text colors in Text style and Caption style.
-    static let textSwatches: [OverlayColor] = [.white, .offBlack, .yellow, .orange, .red, .green, .cyan, .purple]
+    static let textSwatches: [OverlayColor] = [.white, .yellow, .lavender, .cyan, .blush, .mint, .offBlack]
     /// Behind a text (Box or Pill).
     static let backgroundSwatches: [OverlayColor] = [.yellow, .black, .white, .red, .blue, .paper]
     /// Background › Color.
@@ -35,6 +37,9 @@ nonisolated enum OverlayColor: String, Codable, CaseIterable, Identifiable, Send
         case .cyan: (0.392, 0.824, 1)
         case .purple: (0.749, 0.353, 0.949)
         case .paper: (0.957, 0.937, 0.902)
+        case .lavender: (0.706, 0.655, 1)
+        case .blush: (1, 0.608, 0.824)
+        case .mint: (0.494, 0.878, 0.722)
         }
     }
 
@@ -52,6 +57,9 @@ nonisolated enum OverlayColor: String, Codable, CaseIterable, Identifiable, Send
         case .cyan: String(localized: "Cyan")
         case .purple: String(localized: "Purple")
         case .paper: String(localized: "Paper")
+        case .lavender: String(localized: "Lavender")
+        case .blush: String(localized: "Blush")
+        case .mint: String(localized: "Mint")
         }
     }
 }

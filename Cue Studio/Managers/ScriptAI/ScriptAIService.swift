@@ -171,6 +171,18 @@ final class ScriptAIService: ScriptWriting {
         }
     }
 
+    func pickTopic(for text: String, among topics: [String]) async -> String? {
+        // The small on-device model is enough, and nothing about the script leaves the iPhone.
+        guard !topics.isEmpty, availability.onDevice else { return nil }
+        let session = LanguageModelSession(
+            model: SystemLanguageModel.default,
+            instructions: "You file a creator's video script under one of their topics. Answer with one topic exactly as given, or none."
+        )
+        let prompt = "Topics: \(topics.joined(separator: " | "))\n\nScript:\n\(text.prefix(1500))"
+        guard let choice = try? await session.respond(to: prompt, generating: TopicChoice.self).content.topic else { return nil }
+        return topics.first { $0.caseInsensitiveCompare(choice.trimmingCharacters(in: .whitespacesAndNewlines)) == .orderedSame }
+    }
+
     // MARK: - Models
 
     private func route(for task: AIModelRoute.Task) -> AIModelRoute? {

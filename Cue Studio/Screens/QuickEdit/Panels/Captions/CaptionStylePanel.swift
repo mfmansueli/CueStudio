@@ -94,10 +94,15 @@ struct CaptionStylePanel: View {
             options: CaptionPosition.allCases.map { PanelOption($0, $0.label) },
             selection: viewModel.captionPositionStop, identifier: "edit.captionPosition"
         ) { viewModel.setCaptionPositionStop($0) }
-        PanelSlider(
-            label: String(localized: "Size"), value: viewModel.captionPointSize, range: QuickEditViewModel.captionSizeRange,
-            format: .points, identifier: "edit.captionSize"
-        ) { viewModel.setCaptionPointSize($0) }
+        OrbSlider(
+            value: Binding(
+                get: { Double(CaptionSize.nearest(to: viewModel.captionPointSize).rawValue) },
+                set: { viewModel.setCaptionPointSize((CaptionSize(rawValue: Int($0.rounded())) ?? .medium).points) }
+            ),
+            range: 0...Double(CaptionSize.allCases.count - 1), step: 1, defaultValue: Double(CaptionSize.medium.rawValue), style: .full,
+            label: String(localized: "Size"), valueText: CaptionSize.nearest(to: viewModel.captionPointSize).label, systemIcon: .textSize,
+            accessibilityIdentifier: "edit.captionSize"
+        )
         PanelNote(text: String(localized: "You can also drag the caption in the video."))
     }
 

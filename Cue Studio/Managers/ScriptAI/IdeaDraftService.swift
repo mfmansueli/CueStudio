@@ -20,6 +20,8 @@ final class IdeaDraftService {
     var length: ScriptLength = .auto
     /// How Cue structures the script (Format ⌄ on the card); nil is Auto, which picks from the idea.
     var format: ScriptType?
+    /// "Let Cue write it" in Start a video: the card takes the keyboard (it turns false again once it has).
+    var wantsFocus = false
 
     /// The text as the creator sees it. Writing it here (typing, paste, an example) ends a dictation
     /// that was still writing into it.

@@ -9,6 +9,7 @@ import Foundation
 /// keep their Settings context when the app language rebuilds the UI.
 enum SettingsRoute: Hashable {
     case languageRegion
+    case personalize
     case recording
     case prompter
     case remote

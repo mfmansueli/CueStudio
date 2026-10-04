@@ -16,11 +16,16 @@ import Foundation
 ///   (`SampleEdit`).
 /// - `-uiTestSampleVideo`: with the sample takes, writes small real videos behind the "3 morning
 ///   habits" takes, so Quick edit can play, scrub and trim them.
+/// - `-uiTestAppsInstalled`: with the above, the platforms' apps count as installed (the send-off after "Share to").
+/// - `-uiTestSky <off|calm|lively>`: with the above, the sky starts like that (off otherwise: an endless animation
+///   keeps UI tests from finding the app idle).
 /// - `-uiTestRemoteConnects`: with the above, a remote "connects" right after pairing starts (UI
 ///   tests have no second device). Without it the remote link stays offline.
 /// - `-uiTestDictation <speech|denied|unavailable|silence>`: dictation without a microphone or a
 ///   model (the simulator has neither): it hears `-uiTestDictationText <words>` a word at a time
 ///   (`speech`), or is refused the microphone, can't recognize the language, or hears nothing.
+/// - `-uiTestOnboarding`: with the above, the first flight shows (it is off in UI tests otherwise).
+/// - `-uiTestPermissions <granted|denied>`: the first flight's permission prompts are answered at once.
 /// - `-uiTestAppLanguage <lproj>`: with `-uiTestInMemory`, Cue's interface starts in that language
 ///   (as if picked in Language & Region) without changing the simulator's. The interface language
 ///   always lives in memory under `-uiTestInMemory`.
@@ -40,12 +45,22 @@ struct LaunchOptions {
     var dictation: DictationService?
     /// How long each few words of a script the AI writes stay on screen before the next arrive.
     var scriptRevealPause: Duration = .milliseconds(55)
+    /// The first flight (onboarding) shows on a fresh install. UI tests turn it off unless `-uiTestOnboarding`.
+    var showsOnboarding = true
+    /// The system's permission prompts; UI tests answer them at once (`-uiTestPermissions granted|denied`).
+    var permissions: PermissionRequesting?
+    /// UI tests must not bring up the system's "icon changed" alert: the icon choice stays in memory.
+    var isInMemory = false
+    /// UI tests: the platforms' apps count as installed (`-uiTestAppsInstalled`).
+    var appsAreInstalled = false
 
     static func fromProcess() -> LaunchOptions {
         var options = LaunchOptions()
         #if DEBUG
         let arguments = ProcessInfo.processInfo.arguments
         if arguments.contains("-uiTestInMemory") {
+            options.isInMemory = true
+            options.appsAreInstalled = arguments.contains("-uiTestAppsInstalled")
             let seeded = arguments.contains("-uiTestSeedSamples")
             options.scriptRepository = InMemoryScriptRepository(scripts: seeded ? SampleScripts.all : [])
             var takes = seeded ? SampleTakes.all() : []
@@ -72,7 +87,18 @@ struct LaunchOptions {
             let suite = "studio.cue.uitests"
             UserDefaults().removePersistentDomain(forName: suite)
             options.defaults = UserDefaults(suiteName: suite) ?? .standard
+            // A sky that never stops drawing keeps a UI test from ever finding the app idle: tests start with it off
+            // (`-uiTestSky calm|lively` brings it back for the ones that look at it).
+            if let flag = arguments.firstIndex(of: "-uiTestSky"), arguments.indices.contains(flag + 1) {
+                options.defaults.set(arguments[flag + 1], forKey: DefaultsKey.skyDensity)
+            } else {
+                options.defaults.set(SkyDensity.off.rawValue, forKey: DefaultsKey.skyDensity)
+            }
             options.platformRules = PlatformRulesService(cacheURL: nil, remoteURL: nil)
+            options.showsOnboarding = arguments.contains("-uiTestOnboarding")
+            if let index = arguments.firstIndex(of: "-uiTestPermissions"), arguments.indices.contains(index + 1) {
+                options.permissions = StubPermissions(grants: arguments[index + 1] != "denied")
+            }
             options.remoteTransport = DemoRemoteTransport(connects: arguments.contains("-uiTestRemoteConnects"))
             let appLanguage = arguments.firstIndex(of: "-uiTestAppLanguage").flatMap { index in
                 arguments.indices.contains(index + 1) ? arguments[index + 1] : nil

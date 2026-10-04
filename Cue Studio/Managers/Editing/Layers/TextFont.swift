@@ -27,6 +27,18 @@ nonisolated enum TextFont {
             return bundled("SpaceGrotesk-Light", size: size, axes: [wght: min(max(weight.value, 300), 700)], text: text, fallback: system)
         case .dmSerif:
             return bundled("DMSerifDisplay-Regular", size: size, axes: [:], text: text, fallback: designed(system, .serif))
+        case .unbounded:
+            return bundled("Unbounded-Regular", size: size, axes: [wght: min(max(weight.value, 200), 900)], text: text, fallback: system)
+        case .instrumentSerif:
+            return bundled("InstrumentSerif-Italic", size: size, axes: [:], text: text, fallback: designed(system, .serif))
+        case .spaceMono:
+            return bundled("SpaceMono-Bold", size: size, axes: [:], text: text, fallback: designed(system, .monospaced))
+        case .anton:
+            return bundled("Anton-Regular", size: size, axes: [:], text: text, fallback: system)
+        case .syne:
+            return bundled("Syne-Regular", size: size, axes: [wght: min(max(weight.value, 400), 800)], text: text, fallback: system)
+        case .caveat:
+            return bundled("Caveat-Regular", size: size, axes: [wght: min(max(weight.value, 400), 700)], text: text, fallback: system)
         }
     }
 

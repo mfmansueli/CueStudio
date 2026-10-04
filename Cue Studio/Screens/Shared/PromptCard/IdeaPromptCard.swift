@@ -88,6 +88,11 @@ struct IdeaPromptCard: View {
                 if writesScript { starter.write() }
             }
         }
+        .onChange(of: ideaDraft.wantsFocus) { _, wants in
+            guard wants else { return }
+            ideaDraft.wantsFocus = false
+            isFocused = true
+        }
         .onChange(of: dictation.state) { _, state in
             if state == .idle { finishDictation() }
             if state == .listening { AccessibilityNotification.Announcement(String(localized: "Listening…")).post() }

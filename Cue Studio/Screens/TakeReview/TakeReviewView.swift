@@ -32,6 +32,8 @@ struct TakeReviewView: View {
     @State private var progress: Double = 0
 
     @State private var confirmsDelete = false
+    /// "Pick your best take", opened by ✦ Suggest best.
+    @State private var proposal: BestTakeProposal?
     @State private var editingTake: Take?
     /// How the editor was left, acted on once its cover is gone (share, download, ready later).
     @State private var pendingOutcome: EditorOutcome?
@@ -42,6 +44,15 @@ struct TakeReviewView: View {
     @State private var editorVisits = 0
     private let services: AppServices
     @Environment(TakeEditService.self) private var editing
+    @Environment(PersonalizationService.self) private var personalization
+    @Environment(MilestoneService.self) private var milestones
+    @Environment(AppIconService.self) private var appIcon
+    @Environment(StoreManager.self) private var store
+    /// The milestone a share just reached, told once the send-off is done.
+    @State private var reachedMilestone: Int?
+    @State private var tellsMilestone = false
+    /// The first take ever: its star, told once.
+    @State private var tellsFirstStar = false
 
     init(
         takeID: UUID, services: AppServices,
@@ -103,6 +114,52 @@ struct TakeReviewView: View {
                 editingTake = nil
             }
         }
+        .fullScreenCover(item: $proposal) { proposal in
+            PickBestTakeView(
+                proposal: proposal,
+                onUse: { chosen in
+                    viewModel.markBest(chosen)
+                    self.proposal = nil
+                    if chosen.id != viewModel.takeID { onSelect(chosen) }
+                },
+                onRecordAgain: {
+                    self.proposal = nil
+                    onRetake()
+                },
+                onOpen: { opened in
+                    self.proposal = nil
+                    if opened.id != viewModel.takeID { onSelect(opened) }
+                },
+                onClose: { self.proposal = nil }
+            )
+        }
+        .fullScreenCover(item: $viewModel.celebration) { celebration in
+            celebrationView(celebration)
+        }
+        .onChange(of: viewModel.celebration) { _, new in
+            guard case .sentOff(let video, _)? = new else { return }
+            // Every platform share counts, whether or not the story plays.
+            if let reached = milestones.recordShare(of: video.take.id) { reachedMilestone = reached }
+            if !personalization.celebrations { viewModel.celebration = nil }
+        }
+        .fullScreenCover(isPresented: $tellsFirstStar) {
+            if let take = viewModel.take {
+                FirstStarView(
+                    take: take, topics: universeTopics,
+                    onStudio: { finishFirstStar() },
+                    onEdit: { finishFirstStar(thenEdit: take) }
+                )
+            }
+        }
+        .fullScreenCover(isPresented: $tellsMilestone) {
+            if let reached = reachedMilestone, let icon = AppIconChoice(milestone: reached) {
+                MilestoneView(
+                    milestone: reached, icon: icon, since: milestones.firstShareDate, isAvailable: !icon.needsPro || store.tier.isPro,
+                    onUse: { useMilestoneIcon(icon, reached: reached) },
+                    onKeep: { finishMilestone(reached) }
+                )
+            }
+        }
         .confirmationDialog("Delete this take?", isPresented: $confirmsDelete, titleVisibility: .visible) {
             Button("Delete take", role: .destructive) {
                 pausePlayback()
@@ -111,7 +168,7 @@ struct TakeReviewView: View {
         } message: {
             Text("The video is removed from Cue. Copies you saved to Photos stay there.")
         }
-        .onAppear { applyLaunchAction() }
+        .onAppear { applyLaunchAction(); considerFirstStar() }
         .onDisappear { pausePlayback() }
         .sheet(isPresented: $viewModel.showsShareSheet) {
             if let take = viewModel.take {
@@ -301,11 +358,92 @@ struct TakeReviewView: View {
         }
     }
 
-    /// Switches to the suggested take (or opens the paywall on the free plan).
+    @ViewBuilder
+    private func celebrationView(_ celebration: ExportCelebration) -> some View {
+        switch celebration {
+        case .readyToTravel(let video):
+            ReadyToTravelView(
+                video: video,
+                onShare: { destination in Task { await viewModel.send(video, to: destination) } },
+                onOtherApps: { shareAfterClosing(video.url) },
+                onClose: { viewModel.celebration = nil }
+            )
+        case .sentOff(let video, let destination):
+            SendOffView(
+                video: video, destination: destination,
+                onShareAgain: { shareAfterClosing(video.url) },
+                onUniverse: { viewModel.celebration = nil; services.presentation.selectedTab = .profile; onBack() },
+                onDone: { doneWithSendOff() }
+            )
+        }
+    }
+
+    /// The first take Cue ever recorded lights the first star (once, and only when the creator has done the first flight).
+    private func considerFirstStar() {
+        let onboarding = services.onboarding
+        guard onboarding.isCompleted, !onboarding.firstStarShown, personalization.celebrations,
+              services.takes.takes.count == 1 else { return }
+        onboarding.markFirstStarShown()
+        tellsFirstStar = true
+    }
+
+    private func finishFirstStar(thenEdit take: Take? = nil) {
+        tellsFirstStar = false
+        guard let take else { return }
+        Task {
+            try? await Task.sleep(for: .milliseconds(600))
+            editingTake = take
+        }
+    }
+
+    /// The creator's topics, as the worlds around them.
+    private var universeTopics: [OnboardingTopic] {
+        let profile = services.profile.profile
+        return Array((profile.niches.map(OnboardingTopic.niche) + profile.customTopics.map(OnboardingTopic.custom)).prefix(OnboardingTopic.limit))
+    }
+
+    /// "Done" on the send-off: the milestone it reached, if any, comes next.
+    private func doneWithSendOff() {
+        viewModel.celebration = nil
+        guard reachedMilestone != nil, personalization.celebrations else { return }
+        Task {
+            try? await Task.sleep(for: .milliseconds(600))
+            tellsMilestone = true
+        }
+    }
+
+    private func finishMilestone(_ reached: Int) {
+        milestones.markCelebrated(reached)
+        reachedMilestone = nil
+        tellsMilestone = false
+    }
+
+    private func useMilestoneIcon(_ icon: AppIconChoice, reached: Int) {
+        guard !icon.needsPro || store.tier.isPro else {
+            finishMilestone(reached)
+            viewModel.paywall = .profile
+            return
+        }
+        Task {
+            await appIcon.choose(icon)
+            finishMilestone(reached)
+        }
+    }
+
+    /// The system share sheet, once the celebration cover is gone (a view can't present while another cover leaves).
+    private func shareAfterClosing(_ url: URL) {
+        viewModel.celebration = nil
+        Task {
+            try? await Task.sleep(for: .milliseconds(600))
+            viewModel.shareURL = url
+        }
+    }
+
+    /// Opens "Pick your best take" with Cue's suggestion.
     private func suggestBest(from take: Take) {
-        guard let best = viewModel.suggestBest(), best.id != take.id else { return }
+        guard let found = viewModel.bestProposal() else { return }
         pausePlayback()
-        onSelect(best)
+        proposal = found
     }
 
     // MARK: - Playback

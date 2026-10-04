@@ -24,9 +24,16 @@ protocol ScriptWriting: AnyObject {
     /// Fresh video ideas for the creator's niches.
     /// Ideas written in `language` (the interface's, where they are shown), or the model's choice.
     func themeIdeas(for niches: [Niche], language: CueLanguage?) async throws -> [ThemeIdea]
+
+    /// Which of the creator's topics (their names) a script is about, chosen on this iPhone; nil when none fits or
+    /// no model can tell.
+    func pickTopic(for text: String, among topics: [String]) async -> String?
 }
 
 extension ScriptWriting {
+    /// Writers that can't choose (tests, a device without Apple Intelligence) leave the script untagged.
+    func pickTopic(for text: String, among topics: [String]) async -> String? { nil }
+
     var isLanguageModelAvailable: Bool { availability.isAvailable }
     var unavailableReason: String? { availability.reason }
 

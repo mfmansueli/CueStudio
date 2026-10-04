@@ -30,11 +30,14 @@ nonisolated enum TypePreset: String, Codable, CaseIterable, Identifiable, Sendab
     case label
     /// DM Serif Display, dark on paper.
     case paper
+    /// The v27 styles, each its own free typeface: Unbounded, Instrument Serif italic, Space Mono, Anton, Syne,
+    /// Space Grotesk and Caveat.
+    case orbit, logbook, signal, launch, nebula, comet, postcard
 
     var id: String { rawValue }
 
     /// The presets the editor offers, in order.
-    static let editorPresets: [TypePreset] = [.cue, .editorial, .bold, .pop, .soft, .minimal, .label, .paper]
+    static let editorPresets: [TypePreset] = [.orbit, .logbook, .signal, .launch, .nebula, .comet, .postcard]
 
     var label: String {
         switch self {
@@ -47,6 +50,13 @@ nonisolated enum TypePreset: String, Codable, CaseIterable, Identifiable, Sendab
         case .label: String(localized: "Label")
         case .pop: String(localized: "Pop")
         case .paper: String(localized: "Paper")
+        case .orbit: String(localized: "Orbit")
+        case .logbook: String(localized: "Logbook")
+        case .signal: String(localized: "Signal")
+        case .launch: String(localized: "Launch")
+        case .nebula: String(localized: "Nebula")
+        case .comet: String(localized: "Comet")
+        case .postcard: String(localized: "Postcard")
         }
     }
 
@@ -61,6 +71,13 @@ nonisolated enum TypePreset: String, Codable, CaseIterable, Identifiable, Sendab
         case .label: String(localized: "Words on a tag")
         case .pop: String(localized: "Yellow, outlined")
         case .paper: String(localized: "Serif on paper")
+        case .orbit: String(localized: "Wide and glowing")
+        case .logbook: String(localized: "An italic note")
+        case .signal: String(localized: "Mono on a tag")
+        case .launch: String(localized: "Tall, loud capitals")
+        case .nebula: String(localized: "Soft violet light")
+        case .comet: String(localized: "Sharp and blue")
+        case .postcard: String(localized: "Handwritten")
         }
     }
 
@@ -98,6 +115,23 @@ nonisolated enum TypePreset: String, Codable, CaseIterable, Identifiable, Sendab
             )
         case .paper:
             TextLook(font: .dmSerif, weight: .regular, sizeScale: 1, color: .offBlack, background: .box, backgroundColor: .paper, hasShadow: false)
+        case .orbit:
+            TextLook(font: .unbounded, weight: .heavy, sizeScale: 0.85, tracking: 0.01, color: .white, hasShadow: true, glow: 0.35)
+        case .logbook:
+            TextLook(font: .instrumentSerif, weight: .regular, sizeScale: 1.3, color: .white, hasShadow: true)
+        case .signal:
+            TextLook(
+                font: .spaceMono, weight: .bold, sizeScale: 0.8, tracking: 0.02, color: .mint, background: .box,
+                backgroundColor: .black, backgroundOpacity: 0.78, hasShadow: false
+            )
+        case .launch:
+            TextLook(font: .anton, weight: .regular, sizeScale: 1.25, tracking: 0.02, isUppercase: true, color: .white, hasShadow: true, hasOutline: true)
+        case .nebula:
+            TextLook(font: .syne, weight: .heavy, sizeScale: 1.1, color: .lavender, hasShadow: false, glow: 0.75)
+        case .comet:
+            TextLook(font: .spaceGrotesk, weight: .bold, sizeScale: 1, tracking: 0.01, color: .cyan, hasShadow: true, glow: 0.3)
+        case .postcard:
+            TextLook(font: .caveat, weight: .bold, sizeScale: 1.45, color: .paper, hasShadow: true)
         }
     }
 

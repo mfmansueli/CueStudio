@@ -5,9 +5,8 @@
 
 import SwiftUI
 
-/// A slider with its name and value: a thin track, the fill in yellow (from the middle for
-/// −100…+100 settings) and a white knob. A drag is one undo step (`onEditingChanged`); VoiceOver
-/// adjusts it by `step`.
+/// A slider of the editor's panels (v27): the orb on a rail, its name and its value written above. Filled from the
+/// middle for −100…+100 settings. A drag is one undo step (`onEditingChanged`); VoiceOver adjusts it by `step`.
 struct PanelSlider: View {
     let label: String
     let value: Double
@@ -20,66 +19,21 @@ struct PanelSlider: View {
     let onChange: (Double) -> Void
     var onEditingChanged: (Bool) -> Void = { _ in }
 
-    @State private var isDragging = false
-
     var body: some View {
-        VStack(alignment: .leading, spacing: 4) {
-            HStack {
-                Text(label).font(.system(.subheadline, weight: .semibold))
-                Spacer()
-                Text(format.text(value))
-                    .font(.system(.subheadline).monospacedDigit())
-                    .foregroundStyle(Palette.ink2)
-            }
-            GeometryReader { proxy in
-                let width = proxy.size.width
-                let fraction = (value - range.lowerBound) / (range.upperBound - range.lowerBound)
-                let zero = bipolar ? (0 - range.lowerBound) / (range.upperBound - range.lowerBound) : 0
-                ZStack(alignment: .leading) {
-                    Capsule().fill(Palette.sliderTrack).frame(height: 4)
-                    Capsule().fill(Palette.acc)
-                        .frame(width: max(0, abs(fraction - zero) * width), height: 4)
-                        .offset(x: min(fraction, zero) * width)
-                    Circle().fill(Color.white)
-                        .frame(width: 24, height: 24)
-                        .shadow(color: Palette.textShadow, radius: 2.5, y: 1)
-                        .offset(x: fraction * width - 12)
-                }
-                .frame(height: 30)
-                .contentShape(Rectangle())
-                .gesture(
-                    DragGesture(minimumDistance: 0)
-                        .onChanged { drag in
-                            if !isDragging {
-                                isDragging = true
-                                onEditingChanged(true)
-                            }
-                            onChange(snapped(at: drag.location.x, width: width))
-                        }
-                        .onEnded { _ in
-                            isDragging = false
-                            onEditingChanged(false)
-                        }
-                )
-            }
-            .frame(height: 30)
-        }
-        .accessibilityElement(children: .ignore)
-        .accessibilityLabel(Text(label))
-        .accessibilityValue(Text(format.text(value)))
-        .accessibilityAdjustableAction { direction in
-            switch direction {
-            case .increment: onChange(min(range.upperBound, value + step))
-            case .decrement: onChange(max(range.lowerBound, value - step))
-            @unknown default: break
-            }
-        }
-        .accessibilityIdentifier(identifier)
-    }
-
-    private func snapped(at x: CGFloat, width: CGFloat) -> Double {
-        let fraction = min(max(Double(x / max(1, width)), 0), 1)
-        let raw = range.lowerBound + fraction * (range.upperBound - range.lowerBound)
-        return min(max((raw / step).rounded() * step, range.lowerBound), range.upperBound)
+        OrbSlider(
+            value: Binding(get: { value }, set: { new in
+                // Whole steps (the old slider's), and only when the value really moved: a drag is one undo step.
+                let snapped = (new / step).rounded() * step
+                if abs(snapped - value) > step / 1000 { onChange(snapped) }
+            }),
+            range: range,
+            defaultValue: bipolar ? 0 : nil,
+            style: .full,
+            origin: bipolar ? .center : .leading,
+            label: label,
+            valueText: format.text(value),
+            accessibilityIdentifier: identifier,
+            onEditingChanged: onEditingChanged
+        )
     }
 }

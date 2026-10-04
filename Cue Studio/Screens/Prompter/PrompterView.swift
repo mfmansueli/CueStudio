@@ -71,7 +71,7 @@ struct PrompterView: View {
             } else {
                 switch viewModel.mode {
                 case .selfie:
-                    SelfieModeView(viewModel: viewModel, onClose: presentation.closePrompter)
+                    SelfieModeView(viewModel: viewModel, onClose: presentation.closePrompter, onPractice: finishPractice)
                 case .studio:
                     StudioModeView(viewModel: viewModel, onClose: presentation.closePrompter)
                 }
@@ -84,6 +84,7 @@ struct PrompterView: View {
             // Reading a long script must not let the screen sleep.
             UIApplication.shared.isIdleTimerDisabled = true
             await viewModel.appear()
+            viewModel.startPractice()
         }
         .onDisappear {
             UIApplication.shared.isIdleTimerDisabled = false
@@ -101,6 +102,17 @@ struct PrompterView: View {
         }
         // After the sheets, so they read the same session.
         .environment(viewModel.session)
+    }
+
+    /// The practice run's end: the first flight is over, and the prompter either records for real or goes to the studio.
+    private func finishPractice(_ outcome: PracticeOutcome) {
+        services.onboarding.complete()
+        switch outcome {
+        case .recordForReal:
+            viewModel.leavePractice()
+        case .studio:
+            presentation.closePrompter()
+        }
     }
 
     @ViewBuilder

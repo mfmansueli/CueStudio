@@ -56,6 +56,12 @@ struct QuickEditView: View {
                         .transition(.opacity)
                 }
             }
+            .overlay {
+                if viewModel.source == .loading {
+                    EditorOpeningOverlay().transition(.opacity)
+                }
+            }
+            .animation(reduceMotion ? nil : .easeOut(duration: 0.35), value: viewModel.source == .loading)
             .modifier(EditorToastHost(top: layout.topBar))
             .sheet(isPresented: sheetPanelBinding(layout)) {
                 if let panel = viewModel.panel, case .sheet(let medium, let large) = layout.panelPresentation {

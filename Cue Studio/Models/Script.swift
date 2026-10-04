@@ -25,11 +25,17 @@ nonisolated struct Script: Codable, Identifiable, Hashable, Sendable {
     /// captions and the prompter's direction follow it. Never changes the text: a script is never
     /// translated in place.
     var language: CueLanguage?
+    /// The creator's topic this script belongs to (`OnboardingTopic.id`), picked by Cue on this iPhone or by the creator.
+    /// Nil is not tagged yet; an empty string is "no topic", which Cue leaves alone.
+    var topic: String?
+    /// The audience comment this script answers ("Answer a comment").
+    var comment: ScriptComment?
 
     init(
         id: UUID = UUID(), title: String, text: String, platform: Platform, type: ScriptType? = nil,
         version: Int = 1, folder: String? = nil, createdAt: Date = .now, updatedAt: Date = .now,
-        factCheck: Bool = false, language: CueLanguage? = nil
+        factCheck: Bool = false, language: CueLanguage? = nil, topic: String? = nil,
+        comment: ScriptComment? = nil
     ) {
         self.id = id
         self.title = title
@@ -42,6 +48,8 @@ nonisolated struct Script: Codable, Identifiable, Hashable, Sendable {
         self.updatedAt = updatedAt
         self.factCheck = factCheck
         self.language = language
+        self.topic = topic
+        self.comment = comment
     }
 
     /// Fields added after v1 are optional, so libraries saved by older builds still open.
@@ -59,6 +67,8 @@ nonisolated struct Script: Codable, Identifiable, Hashable, Sendable {
         factCheck = try container.decodeIfPresent(Bool.self, forKey: .factCheck) ?? false
         // A language this build doesn't know (saved by a newer one) reads as auto-detect.
         language = (try? container.decodeIfPresent(CueLanguage.self, forKey: .language)) ?? nil
+        topic = try container.decodeIfPresent(String.self, forKey: .topic)
+        comment = try? container.decodeIfPresent(ScriptComment.self, forKey: .comment)
     }
 
     var structure: ScriptStructure { type?.structure ?? .generic }

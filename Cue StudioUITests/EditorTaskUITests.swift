@@ -126,8 +126,8 @@ final class EditorTaskUITests: XCTestCase {
         XCTAssertTrue(first.waitForExistence(timeout: 5))
     }
 
-    /// Editorial on the title only, then on every text.
-    func testEditorialOnTheTitleThenOnEveryText() {
+    /// Logbook on the title only, then on every text.
+    func testLogbookOnTheTitleThenOnEveryText() {
         let app = EditorApp.open(demo: true)
         EditorApp.tapTool(app, "text")
         EditorApp.tapTool(app, "styleAll")
@@ -135,14 +135,14 @@ final class EditorTaskUITests: XCTestCase {
         XCTAssertTrue(subtitle.waitForExistence(timeout: 5))
         app.buttons["edit.style.scope.selected"].tap()
         XCTAssertEqual(subtitle.label, "Only this title changes")
-        let editorial = app.buttons["edit.style.editorial"]
-        XCTAssertFalse(editorial.isSelected)
-        editorial.tap()
-        XCTAssertTrue(editorial.isSelected)
+        let logbook = app.buttons["edit.style.logbook"]
+        XCTAssertFalse(logbook.isSelected)
+        logbook.tap()
+        XCTAssertTrue(logbook.isSelected)
         app.buttons["edit.style.scope.allTexts"].tap()
         XCTAssertEqual(subtitle.label, "All 2 texts change together")
-        editorial.tap()
-        XCTAssertTrue(EditorApp.toastSays(app, "Editorial on every text"))
+        logbook.tap()
+        XCTAssertTrue(EditorApp.toastSays(app, "Logbook on every text"))
         app.buttons["edit.panel.apply"].tap()
         XCTAssertTrue(app.buttons["edit.toolbar.back"].waitForExistence(timeout: 5))
     }

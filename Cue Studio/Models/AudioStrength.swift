@@ -15,7 +15,7 @@ nonisolated enum AudioStrength: String, Codable, CaseIterable, Identifiable, Sen
     var label: String {
         switch self {
         case .off: String(localized: "Off")
-        case .soft: String(localized: "Soft")
+        case .soft: String(localized: "Light")
         case .strong: String(localized: "Strong")
         }
     }

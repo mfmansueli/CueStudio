@@ -131,7 +131,7 @@ final class ScriptsScreenshotTests: XCTestCase {
         try capture("24-recording")
         app.navigationBars.buttons.firstMatch.tap()
         app.buttons["settings.prompterTile"].tap()
-        XCTAssertTrue(app.buttons["creatorSetup.textSize.large"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.descendants(matching: .any)["creatorSetup.textSize"].firstMatch.waitForExistence(timeout: 5))
         try capture("25-prompter")
         app.navigationBars.buttons.firstMatch.tap()
         app.buttons["settings.remoteTile"].tap()

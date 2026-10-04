@@ -3,6 +3,7 @@
 //  Cue StudioTests
 //
 
+import Foundation
 import Testing
 @testable import Cue_Studio
 
@@ -49,12 +50,25 @@ struct PaywallCopyTests {
 
     @Test func titlesByContext() {
         #expect(PaywallCopy.title(for: .export) == "Keep posting with Cue")
-        #expect(PaywallCopy.title(for: .profile) == "Create more. Sound like you.")
+        #expect(PaywallCopy.title(for: .profile) == "Take your universe further.")
         #expect(PaywallCopy.subtitle(for: .export).contains("5 free exports"))
     }
 
     @Test func everyBenefitHasAnIconAndAMonoTag() {
         #expect(PaywallCopy.featureImages.count == PaywallCopy.features.count)
         #expect(PaywallCopy.featureTags.count == PaywallCopy.features.count)
+    }
+
+    @Test func theLineAboutAIStaysOutWhereItCannotRun() {
+        let withAI = PaywallCopy.visibleFeatureIndices(aiIsAvailable: true)
+        let without = PaywallCopy.visibleFeatureIndices(aiIsAvailable: false)
+        #expect(withAI.count == PaywallCopy.features.count)
+        #expect(without.count == withAI.count - 1)
+        #expect(!without.contains(1), "the AI line is the second one")
+        #expect(PaywallCopy.features[1].localizedCaseInsensitiveContains("AI"))
+    }
+
+    @Test func theMilestoneIconsAreListedAsWhatProChanges() {
+        #expect(PaywallCopy.features.contains("Every milestone app icon"))
     }
 }

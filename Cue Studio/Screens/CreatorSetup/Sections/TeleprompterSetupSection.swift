@@ -13,41 +13,6 @@ struct TeleprompterSetupSection: View {
 
     var body: some View {
         GroupedCard {
-            SetupRow(title: String(localized: "Text size"), anchor: .text) {
-                VStack(alignment: .leading, spacing: 6) {
-                    HStack(spacing: 8) {
-                        ForEach(PrompterTextSize.allCases) { size in
-                            Button {
-                                viewModel.setTextSize(size)
-                            } label: {
-                                FilterChip(label: size.label, isSelected: viewModel.textSizePreset == size)
-                            }
-                            .buttonStyle(.plain)
-                            .accessibilityAddTraits(viewModel.textSizePreset == size ? .isSelected : [])
-                            .accessibilityIdentifier("creatorSetup.textSize.\(size.rawValue)")
-                        }
-                    }
-                    ValueSlider(
-                        title: String(localized: "Size"),
-                        valueText: String(localized: "\(Int(viewModel.textSize)) pt"),
-                        value: $viewModel.textSize,
-                        range: PrompterSettings.sizeRange,
-                        identifier: "creatorSetup.textSizeSlider"
-                    )
-                }
-            }
-            SetupRow(title: String(localized: "Scroll speed"), detail: viewModel.speedDetail) {
-                ValueSlider(
-                    title: String(localized: "Default speed"),
-                    valueText: viewModel.setup.label(for: .speed),
-                    value: $viewModel.speed,
-                    range: PrompterSettings.speedRange, step: 0.1,
-                    identifier: "creatorSetup.speedSlider"
-                )
-            }
-            SetupRow(title: String(localized: "Reading mode"), anchor: .reading) {
-                ScrollModePicker(selection: viewModel.prompter.scrollMode) { viewModel.prompter.scrollMode = $0 }
-            }
             readingLineRow
             SetupRow(title: String(localized: "Show reading line"), stacksControl: false) {
                 Toggle("Show reading line", isOn: $viewModel.showsReadingLine)
@@ -92,7 +57,7 @@ struct TeleprompterSetupSection: View {
     }
 
     private var readingLineRow: some View {
-        SetupRow(title: String(localized: "Reading line"), detail: viewModel.readingLineSummary, stacksControl: false, anchor: .line) {
+        SetupRow(title: String(localized: "Fine-tune the reading line"), detail: viewModel.readingLineSummary, stacksControl: false, anchor: .line) {
             HStack(spacing: 8) {
                 if !viewModel.isReadingLineRecommended {
                     Button("Reset") { viewModel.resetReadingLine() }

@@ -150,7 +150,14 @@ nonisolated enum TextOverlayRenderer {
         if abs(text.tracking) > 0.000_1 {
             attributes[.kern] = CGFloat(text.tracking) * pointSize
         }
-        if text.hasShadow {
+        if text.glow > 0.001 {
+            // A glow stands in for the drop shadow: the text's own light, spreading as far as the creator asks.
+            let glow = NSShadow()
+            glow.shadowColor = color(text.color).withAlphaComponent(CGFloat(0.55 + 0.4 * text.glow))
+            glow.shadowBlurRadius = glowRadius(text, unit: unit)
+            glow.shadowOffset = .zero
+            attributes[.shadow] = glow
+        } else if text.hasShadow {
             let shadow = NSShadow()
             shadow.shadowColor = UIColor.black.withAlphaComponent(0.6)
             shadow.shadowBlurRadius = 6 * unit
@@ -163,8 +170,9 @@ nonisolated enum TextOverlayRenderer {
             attributes[.strokeColor] = text.color == .black ? UIColor.white : UIColor.black
         }
         let string = NSAttributedString(string: text.displayText, attributes: attributes)
+        let room = text.background == .none ? glowRadius(text, unit: unit) * 0.9 : 0
         let padding: CGSize = switch text.background {
-        case .none: CGSize(width: 8 * unit, height: 6 * unit)
+        case .none: CGSize(width: 8 * unit + room, height: 6 * unit + room)
         case .box: CGSize(width: 12 * unit, height: 6 * unit)
         case .pill: CGSize(width: 16 * unit, height: 7 * unit)
         }
@@ -187,6 +195,11 @@ nonisolated enum TextOverlayRenderer {
             textRect: CGRect(origin: CGPoint(x: padding.width, y: padding.height), size: textSize),
             background: background, cornerRadius: cornerRadius
         )
+    }
+
+    /// How far a glow spreads: up to 26 pt on the design's frame.
+    private static func glowRadius(_ text: TextOverlay, unit: CGFloat) -> CGFloat {
+        CGFloat(text.glow) * 26 * unit
     }
 
     private static func font(for text: TextOverlay, size: CGFloat) -> UIFont {

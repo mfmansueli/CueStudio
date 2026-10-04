@@ -275,10 +275,14 @@ struct TakeReviewViewModelTests {
         let scenario = makeBestTakeScenario(tier: .free)
         defer { scenario.defaults.tearDown() }
         #expect(scenario.viewModel.offersBestSuggestion)
-        #expect(scenario.viewModel.suggestBest()?.id == scenario.takes[1].id)
-        #expect(scenario.toast.message == "Take 2 looks best — tap ☆ to keep it")
-        // A suggestion, not a pick: the creator keeps it with the star.
+        let proposal = scenario.viewModel.bestProposal()
+        #expect(proposal?.best.id == scenario.takes[1].id)
+        #expect(proposal?.takes.count == scenario.takes.count)
+        // A suggestion, not a pick: the creator decides with "Use take 2".
         #expect(scenario.viewModel.siblings.allSatisfy { !$0.isBest })
+        scenario.viewModel.markBest(scenario.takes[1])
+        #expect(scenario.viewModel.siblings.filter(\.isBest).map(\.id) == [scenario.takes[1].id])
+        #expect(scenario.toast.message == "Take 2 marked as best")
     }
 
     @Test func aSingleTakeHasNothingToCompare() {
