@@ -5,35 +5,41 @@
 
 import SwiftUI
 
-/// One format: its name, what it is for, and its blocks in mono ("HOOK · PROBLEM · PRODUCT").
+/// One format: its name, what it is for, and its sections in mono ("HOOK › PROBLEM › PRODUCT"). A sponsored ad says it
+/// needs brand info; a serious format sits on the quieter surface.
 struct FormatTile: View {
-    let title: String
-    let summary: String
-    let blocks: [String]
-    let isSerious: Bool
+    let choice: FormatChoice
     let isSelected: Bool
 
     var body: some View {
-        SelectableCard(isSelected: isSelected, radius: Metrics.tileRadius, background: isSerious ? Palette.surfaceMuted : Palette.surface2) {
-            VStack(alignment: .leading, spacing: 3) {
-                Text(title)
-                    .font(.subheadline.weight(.semibold))
-                    .foregroundStyle(Palette.ink)
-                Text(summary)
-                    .font(.footnote)
+        SelectableCard(isSelected: isSelected, radius: Metrics.tileRadius, background: choice.isSerious ? Palette.surfaceMuted : Palette.surface2) {
+            VStack(alignment: .leading, spacing: 4) {
+                HStack(spacing: 5) {
+                    Text(choice.title)
+                        .font(.system(size: 14, weight: .semibold))
+                        .foregroundStyle(Palette.ink)
+                    if choice.needsBrandBrief {
+                        Text("· needs brand info")
+                            .font(.system(size: 11))
+                            .foregroundStyle(Palette.aiText)
+                    }
+                }
+                Text(choice.summary)
+                    .font(.system(size: 12))
                     .foregroundStyle(Palette.ink2)
                     .multilineTextAlignment(.leading)
-                Spacer(minLength: 8)
-                Text(blocks.joined(separator: " · "))
-                    .font(.system(size: 10, weight: .bold, design: .monospaced))
+                Spacer(minLength: 6)
+                Text(choice.sections.joined(separator: " › "))
+                    .font(.system(size: 9, weight: .semibold, design: .monospaced))
                     .textCase(.uppercase)
-                    .tracking(0.8)
-                    .foregroundStyle(isSelected ? Palette.accText : Palette.ink2)
+                    .tracking(0.5)
+                    .foregroundStyle(isSelected ? Palette.accText : Palette.inkHint)
                     .multilineTextAlignment(.leading)
             }
-            .frame(maxWidth: .infinity, minHeight: 104, alignment: .topLeading)
-            .padding(13)
+            .frame(maxWidth: .infinity, minHeight: 92, alignment: .topLeading)
+            .padding(12)
         }
         .accessibilityElement(children: .combine)
+        .accessibilityAddTraits(isSelected ? .isSelected : [])
     }
 }

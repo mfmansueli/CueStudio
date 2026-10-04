@@ -773,7 +773,7 @@ struct QuickEditViewModelTests {
         first.viewModel.cancel()
         #expect(first.takes.takes[0].edit == nil)
         #expect(drafts.drafts.count == 1)
-        #expect(first.toast.message == "Draft kept · Tap Edit")
+        #expect(first.toast.message == "Draft saved")
         #expect(first.player.isStopped)
 
         let second = await makeScenario(drafts: drafts, takes: first.takes)

@@ -3,37 +3,65 @@
 //  Cue Studio
 //
 
+import AVFoundation
 import PhotosUI
 import SwiftUI
 
-/// Brings an existing script in: a file, a scan or photo of a printed brief (read on the device
-/// with Vision), or the clipboard.
+/// Import (v29 · I): Paste, Scan, Photo or File brings the text into an editable box; the creator fixes what the OCR
+/// misread, and "Use this script" makes it a real script (it counts as Done: READY). A scan or a photo is read on the
+/// iPhone with Vision. Without the camera's permission the Scan source says so and leads to Settings.
 struct ImportScriptSheet: View {
     let onImported: (ImportedDocument) -> Void
-    let onPaste: () -> Void
+
+    enum Source: String, CaseIterable, Identifiable {
+        case paste, scan, photo, file
+        var id: String { rawValue }
+
+        var title: LocalizedStringKey {
+            switch self {
+            case .paste: "Paste"
+            case .scan: "Scan"
+            case .photo: "Photo"
+            case .file: "File"
+            }
+        }
+    }
 
     @Environment(DocumentImportService.self) private var importer
     @Environment(TextRecognitionManager.self) private var recognizer
+    @Environment(ToastService.self) private var toast
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.openURL) private var openURL
+    @State private var source: Source = .paste
+    @State private var text = ""
+    @State private var kind = ""
+    @State private var fileName: String?
     @State private var showsFilePicker = false
     @State private var showsScanner = false
     @State private var showsPhotoPicker = false
     @State private var photoItems: [PhotosPickerItem] = []
     @State private var isReading = false
+    @State private var cameraIsOff = false
     @State private var errorMessage: String?
+    @FocusState private var isEditing: Bool
+
+    private var canUse: Bool { !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty && !isReading }
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 18) {
-                SheetHeader(title: String(localized: "Import a script"), onClose: { dismiss() })
-                LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 10), count: 4), spacing: 10) {
-                    source("Files", systemImage: "folder", identifier: "import.files") { showsFilePicker = true }
-                    if DocumentScannerView.isSupported {
-                        source("Scan", systemImage: "doc.viewfinder", identifier: "import.scan") { showsScanner = true }
-                    }
-                    source("Photo", systemImage: "photo", identifier: "import.photo") { showsPhotoPicker = true }
-                    source("Clipboard", systemImage: "doc.on.clipboard", identifier: "import.clipboard", action: onPaste)
+            VStack(alignment: .leading, spacing: Metrics.blockGap) {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Import · Scan · Photo · File · Paste")
+                        .font(CueStudioFont.hud).textCase(.uppercase).tracking(1.2)
+                        .foregroundStyle(Palette.accText)
+                    Text("Bring a script in")
+                        .font(.title2.bold())
+                        .foregroundStyle(Palette.ink)
+                        .accessibilityAddTraits(.isHeader)
                 }
+                sourcePicker
+                if cameraIsOff { cameraCard }
+                editor
                 if isReading {
                     HStack(spacing: 10) {
                         ProgressView().tint(Palette.accText)
@@ -42,25 +70,19 @@ struct ImportScriptSheet: View {
                     .font(.subheadline)
                     .frame(maxWidth: .infinity)
                 }
-                Label {
-                    Text("Export as .txt, .rtf or .pdf, or use Clipboard.")
-                } icon: {
-                    Image(systemName: "lightbulb")
-                }
-                .font(.footnote)
-                .foregroundStyle(Palette.ink2)
-                .padding(14)
-                .background(Palette.surface2, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
-                Text("Supports .txt, .md, .rtf, .html, .pdf and .fountain")
-                    .font(.footnote)
-                    .foregroundStyle(Palette.ink2)
-                    .frame(maxWidth: .infinity)
+                Button(action: use) { Text("Use this script") }
+                    .buttonStyle(.cuePrimary(.large))
+                    .disabled(!canUse)
+                    .opacity(canUse ? 1 : 0.4)
+                    .accessibilityIdentifier("import.use")
             }
-            .padding(EdgeInsets(top: 20, leading: Metrics.gutter, bottom: 24, trailing: Metrics.gutter))
+            .padding(EdgeInsets(top: 20, leading: Metrics.gutter, bottom: 28, trailing: Metrics.gutter))
         }
-        .presentationDetents([.medium, .large])
+        .scrollDismissesKeyboard(.interactively)
+        .presentationDetents([.large])
         .presentationBackground(Palette.surface)
         .presentationCornerRadius(Metrics.sheetRadius)
+        .presentationDragIndicator(.visible)
         .fileImporter(isPresented: $showsFilePicker, allowedContentTypes: importer.supportedTypes) { result in
             switch result {
             case .success(let url): importFile(at: url)
@@ -71,7 +93,7 @@ struct ImportScriptSheet: View {
             DocumentScannerView(
                 onScanned: { images in
                     showsScanner = false
-                    recognize(images)
+                    recognize(images, as: String(localized: "Scan"))
                 },
                 onCancel: { showsScanner = false }
             )
@@ -87,44 +109,117 @@ struct ImportScriptSheet: View {
         } message: {
             Text(errorMessage ?? "")
         }
+        .accessibilityIdentifier("import.sheet")
+    }
+
+    // MARK: - Pieces
+
+    /// Paste · Scan · Photo · File: choosing one brings the text in (Paste reads the clipboard at once).
+    private var sourcePicker: some View {
+        HStack(spacing: 4) {
+            ForEach(Source.allCases) { option in
+                Button { choose(option) } label: {
+                    Text(option.title)
+                        .font(.system(size: 15, weight: source == option ? .semibold : .medium))
+                        .foregroundStyle(source == option ? Palette.chipOnInk : Palette.ink)
+                        .frame(maxWidth: .infinity, minHeight: 36)
+                        .background(source == option ? Palette.chipOn : .clear, in: Capsule())
+                        .frame(minHeight: Metrics.hitTarget)
+                        .contentShape(Capsule())
+                }
+                .buttonStyle(.plain)
+                .disabled(isReading || (option == .scan && !DocumentScannerView.isSupported))
+                .accessibilityAddTraits(source == option ? [.isSelected] : [])
+                .accessibilityIdentifier("import.source.\(option.rawValue)")
+            }
+        }
+        .padding(3)
+        .background(Palette.fill, in: Capsule())
+    }
+
+    private var editor: some View {
+        ZStack(alignment: .topLeading) {
+            TextEditor(text: $text)
+                .focused($isEditing)
+                .scrollContentBackground(.hidden)
+                .font(.system(size: 16))
+                .foregroundStyle(Palette.ink)
+                .tint(Palette.accText)
+                .padding(10)
+                .accessibilityLabel(Text("Script text"))
+                .accessibilityIdentifier("import.editor")
+            if text.isEmpty {
+                Text("Paste, scan or pick a script. You can fix it before you use it.")
+                    .font(.system(size: 16))
+                    .foregroundStyle(Palette.inkHint)
+                    .padding(.horizontal, 15).padding(.vertical, 18)
+                    .allowsHitTesting(false)
+                    .accessibilityHidden(true)
+            }
+        }
+        .frame(minHeight: 220)
+        .background(Palette.surface2, in: RoundedRectangle(cornerRadius: Metrics.innerRadius, style: .continuous))
+    }
+
+    /// Scan without the camera's permission: why, and the way to Settings.
+    private var cameraCard: some View {
+        HStack(spacing: 12) {
+            Text("Allow camera in Settings")
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(Palette.ink)
+            Spacer(minLength: 8)
+            Button("Open Settings") {
+                if let url = URL(string: UIApplication.openSettingsURLString) { openURL(url) }
+            }
+            .font(.subheadline.weight(.semibold))
+            .foregroundStyle(Palette.accText)
+            .frame(minHeight: Metrics.hitTarget)
+            .accessibilityIdentifier("import.openSettings")
+        }
+        .padding(.horizontal, 14)
+        .background(Palette.surface2, in: RoundedRectangle(cornerRadius: Metrics.innerRadius, style: .continuous))
+        .accessibilityIdentifier("import.cameraOff")
     }
 
     // MARK: - Sources
 
-    private func source(
-        _ title: LocalizedStringKey, systemImage: String, identifier: String, action: @escaping () -> Void
-    ) -> some View {
-        Button(action: action) {
-            sourceLabel(title, systemImage: systemImage)
+    private func choose(_ option: Source) {
+        source = option
+        cameraIsOff = false
+        switch option {
+        case .paste: pasteFromClipboard()
+        case .scan: startScan()
+        case .photo: showsPhotoPicker = true
+        case .file: showsFilePicker = true
         }
-        .buttonStyle(.plain)
-        .disabled(isReading)
-        .accessibilityIdentifier(identifier)
     }
 
-    private func sourceLabel(_ title: LocalizedStringKey, systemImage: String) -> some View {
-        VStack(spacing: 8) {
-            Image(systemName: systemImage)
-                .font(.title2)
-                .foregroundStyle(Palette.ink)
-                .frame(width: 64, height: 64)
-                .background(Palette.surface2, in: RoundedRectangle(cornerRadius: Metrics.tileRadius, style: .continuous))
-            Text(title)
-                .font(.caption.weight(.medium))
-                .foregroundStyle(Palette.ink)
+    private func pasteFromClipboard() {
+        guard let pasted = importer.clipboardText() else {
+            toast.show(String(localized: "Copy your script first"))
+            isEditing = true
+            return
         }
-        .frame(maxWidth: .infinity)
-        .contentShape(Rectangle())
+        text = pasted
+        kind = String(localized: "Pasted text")
+        fileName = nil
     }
 
-    // MARK: - Reading
+    private func startScan() {
+        let status = AVCaptureDevice.authorizationStatus(for: .video)
+        if status == .denied || status == .restricted {
+            cameraIsOff = true
+        } else {
+            showsScanner = true
+        }
+    }
 
     private func importFile(at url: URL) {
         do {
-            onImported(try importer.importDocument(at: url))
+            take(try importer.importDocument(at: url))
         } catch DocumentImportError.noText where url.pathExtension.lowercased() == "pdf" {
             // A scanned PDF has no text layer: read its pages like photos.
-            recognize(importer.pageImages(ofPDFAt: url, maxPages: 10))
+            recognize(importer.pageImages(ofPDFAt: url, maxPages: 10), as: "PDF")
         } catch {
             errorMessage = error.localizedDescription
         }
@@ -139,10 +234,10 @@ struct ImportScriptSheet: View {
             }
         }
         photoItems = []
-        recognize(images)
+        recognize(images, as: String(localized: "Photo"))
     }
 
-    private func recognize(_ images: [CGImage]) {
+    private func recognize(_ images: [CGImage], as kind: String) {
         guard !images.isEmpty else {
             errorMessage = DocumentImportError.noText.localizedDescription
             return
@@ -151,18 +246,32 @@ struct ImportScriptSheet: View {
         Task {
             defer { isReading = false }
             do {
-                onImported(try await recognizer.recognizeText(in: images))
+                take(try await recognizer.recognizeText(in: images))
             } catch {
                 errorMessage = error.localizedDescription
             }
         }
+    }
+
+    /// The text read goes into the box to review.
+    private func take(_ document: ImportedDocument) {
+        text = document.text
+        kind = document.kind
+        fileName = document.title
+        isEditing = false
+    }
+
+    /// "Use this script": the box's text, as the creator left it.
+    private func use() {
+        let title = fileName ?? ScriptTextNormalizer.suggestedTitle(fileName: nil, text: text)
+        onImported(ImportedDocument(title: title, text: text, kind: kind.isEmpty ? String(localized: "Pasted text") : kind))
     }
 }
 
 #if DEBUG
 #Preview {
     Color.black.sheet(isPresented: .constant(true)) {
-        ImportScriptSheet(onImported: { _ in }, onPaste: {})
+        ImportScriptSheet(onImported: { _ in })
     }
     .previewEnvironment()
 }

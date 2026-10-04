@@ -16,8 +16,12 @@ struct NewScriptSheet: View {
     var onWrite: () -> Void = {}
     var onPaste: () -> Void = {}
     let onImport: () -> Void
+    var onStartFromFormat: () -> Void = {}
     var onAnswer: () -> Void = {}
     var onFreestyle: () -> Void = {}
+    /// Whether Apple Intelligence can write: without it, "Let Cue write it" and "Answer a comment" aren't offered as
+    /// AI (the first goes away; a reply is written by hand).
+    var hasAI = true
 
     @Environment(\.dismiss) private var dismiss
 
@@ -34,13 +38,19 @@ struct NewScriptSheet: View {
             VStack(spacing: 10) {
                 switch mode {
                 case .new:
-                    row(
-                        "Let Cue write it", detail: "Say or type an idea · in your voice", systemImage: "sparkles",
-                        style: .ai, identifier: "newScript.letCue", action: onLetCue
-                    )
+                    if hasAI {
+                        row(
+                            "Let Cue write it", detail: "Say or type an idea · in your voice", systemImage: "sparkles",
+                            style: .ai, identifier: "newScript.letCue", action: onLetCue
+                        )
+                    }
                     row(
                         "Write it myself", detail: "Start with your own words", systemImage: "pencil",
                         style: .plain, identifier: "newScript.write", action: onWrite
+                    )
+                    row(
+                        "Start from a format", detail: "Talking head, tutorial, sponsored ad… you write it",
+                        systemImage: "rectangle.3.group", style: .plain, identifier: "newScript.format", action: onStartFromFormat
                     )
                 case .attach:
                     row(
@@ -49,13 +59,13 @@ struct NewScriptSheet: View {
                     )
                 }
                 row(
-                    mode == .new ? "Import text" : "Import", detail: "Scan, photo, file or paste", systemImage: "square.and.arrow.down",
+                    "Import", detail: "Scan, photo, file or paste", systemImage: "square.and.arrow.down",
                     style: .plain, identifier: "newScript.import", action: onImport
                 )
                 if mode == .new {
                     row(
                         "Answer a comment", detail: "Turn a question from your audience into a script", systemImage: "text.bubble",
-                        style: .plain, badge: "NEW", identifier: "newScript.answer", action: onAnswer
+                        style: .plain, identifier: "newScript.answer", action: onAnswer
                     )
                     Button(action: onFreestyle) {
                         HStack(spacing: 10) {

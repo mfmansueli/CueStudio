@@ -36,6 +36,20 @@ nonisolated struct CreatorProfile: Codable, Hashable, Sendable {
     /// answers: they may be choices or the defaults, so they are kept, shown as the current values,
     /// and confirmed with one tap before the voice is first used.
     var unverifiedVoiceSteps: Set<VoiceSetupStep>
+    // My Cue Voice, layers 2 and 3 (v29). Absent in a profile saved before: empty / nil.
+    /// How they like to open a video ("Okay, real talk.").
+    var openings: [String]
+    /// How they usually end one ("Save this for later.").
+    var endings: [String]
+    /// What they film most.
+    var formats: [ScriptType]
+    var swearing: Swearing?
+    /// Up to three of their own writings (`VoiceExample.limit`).
+    var examples: [VoiceExample]
+    /// Free tags added with "+ Something else" (2–40 characters each).
+    var customTags: [String]
+    /// Personality questions the creator answered "None of these" to: they are not asked again (and don't count as filled).
+    var declinedVoiceItems: Set<VoicePersonalityItem>
 
     init(
         name: String = "", handle: String = "", niches: [Niche] = [], customTopics: [String] = [], phrases: [String] = [],
@@ -43,7 +57,9 @@ nonisolated struct CreatorProfile: Codable, Hashable, Sendable {
         sounds: [VoiceSound] = [.casual, .confident], vocabulary: Vocabulary = .simple,
         styles: [VoiceStyle] = [.shortSentences, .conversational], usesVoiceInAI: Bool = true,
         defaultPlatform: Platform = .tiktok, monetizationGoals: Bool = true,
-        confirmedVoiceSteps: Set<VoiceSetupStep> = [], unverifiedVoiceSteps: Set<VoiceSetupStep> = []
+        confirmedVoiceSteps: Set<VoiceSetupStep> = [], unverifiedVoiceSteps: Set<VoiceSetupStep> = [],
+        openings: [String] = [], endings: [String] = [], formats: [ScriptType] = [], swearing: Swearing? = nil,
+        examples: [VoiceExample] = [], customTags: [String] = [], declinedVoiceItems: Set<VoicePersonalityItem> = []
     ) {
         self.name = name
         self.handle = handle
@@ -60,10 +76,21 @@ nonisolated struct CreatorProfile: Codable, Hashable, Sendable {
         self.monetizationGoals = monetizationGoals
         self.confirmedVoiceSteps = confirmedVoiceSteps
         self.unverifiedVoiceSteps = unverifiedVoiceSteps
+        self.openings = openings
+        self.endings = endings
+        self.formats = formats
+        self.swearing = swearing
+        self.examples = examples
+        self.customTags = customTags
+        self.declinedVoiceItems = declinedVoiceItems
     }
 
     var voice: CreatorVoice {
-        CreatorVoice(sounds: sounds, phrases: phrases, vocabulary: vocabulary, styles: styles, niches: niches, role: role)
+        CreatorVoice(
+            sounds: sounds, phrases: phrases, vocabulary: vocabulary, styles: styles, niches: niches, role: role,
+            openings: openings, endings: endings, formats: formats, swearing: swearing, examples: examples,
+            customTags: customTags
+        )
     }
 
     var initials: String {
@@ -81,6 +108,7 @@ nonisolated struct CreatorProfile: Codable, Hashable, Sendable {
     private enum CodingKeys: String, CodingKey {
         case name, handle, niches, customTopics, phrases, role, voiceApproved, sounds, vocabulary, styles, usesVoiceInAI, defaultPlatform, monetizationGoals
         case confirmedVoiceSteps, unverifiedVoiceSteps
+        case openings, endings, formats, swearing, examples, customTags, declinedVoiceItems
         /// v1 kept a single tone; it becomes the first "How I sound".
         case legacyTone = "tone"
     }
@@ -110,6 +138,14 @@ nonisolated struct CreatorProfile: Codable, Hashable, Sendable {
         defaultPlatform = try container.decodeIfPresent(Platform.self, forKey: .defaultPlatform) ?? defaults.defaultPlatform
         monetizationGoals = try container.decodeIfPresent(Bool.self, forKey: .monetizationGoals) ?? defaults.monetizationGoals
         confirmedVoiceSteps = try container.decodeIfPresent(Set<VoiceSetupStep>.self, forKey: .confirmedVoiceSteps) ?? defaults.confirmedVoiceSteps
+        openings = try container.decodeIfPresent([String].self, forKey: .openings) ?? defaults.openings
+        endings = try container.decodeIfPresent([String].self, forKey: .endings) ?? defaults.endings
+        // A format a newer build added reads as absent, so the rest of the profile still opens.
+        formats = (try? container.decodeIfPresent([String].self, forKey: .formats))?.compactMap(ScriptType.init(rawValue:)) ?? defaults.formats
+        swearing = (try? container.decodeIfPresent(Swearing.self, forKey: .swearing)) ?? nil
+        examples = Array(((try? container.decodeIfPresent([VoiceExample].self, forKey: .examples)) ?? []).prefix(VoiceExample.limit))
+        customTags = try container.decodeIfPresent([String].self, forKey: .customTags) ?? defaults.customTags
+        declinedVoiceItems = (try? container.decodeIfPresent(Set<VoicePersonalityItem>.self, forKey: .declinedVoiceItems)) ?? []
         if let unverified = try container.decodeIfPresent(Set<VoiceSetupStep>.self, forKey: .unverifiedVoiceSteps) {
             unverifiedVoiceSteps = unverified
         } else if container.contains(.confirmedVoiceSteps) {
@@ -140,6 +176,13 @@ nonisolated struct CreatorProfile: Codable, Hashable, Sendable {
         try container.encode(monetizationGoals, forKey: .monetizationGoals)
         try container.encode(confirmedVoiceSteps, forKey: .confirmedVoiceSteps)
         try container.encode(unverifiedVoiceSteps, forKey: .unverifiedVoiceSteps)
+        try container.encode(openings, forKey: .openings)
+        try container.encode(endings, forKey: .endings)
+        try container.encode(formats.map(\.rawValue), forKey: .formats)
+        try container.encodeIfPresent(swearing, forKey: .swearing)
+        try container.encode(examples, forKey: .examples)
+        try container.encode(customTags, forKey: .customTags)
+        try container.encode(declinedVoiceItems, forKey: .declinedVoiceItems)
     }
 
     static func sounds(migratingFrom tone: Tone) -> [VoiceSound] {

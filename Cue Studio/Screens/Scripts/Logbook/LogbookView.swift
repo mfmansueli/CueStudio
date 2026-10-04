@@ -5,8 +5,9 @@
 
 import SwiftUI
 
-/// The Logbook: "Catch it now. Shape it later." Hold the button and say an idea, or type it; each waits as a card with
-/// "✦ Shape", which turns it into a script on the script page. Speaking is on-device recognition: only the words are
+/// The Logbook: "Catch it now. Write it later." Hold the button and say an idea, or type it; each waits as a card with
+/// "✦ Write", which turns it into a script on the script page (Shape is only for adding cues). Without Apple Intelligence
+/// the card says "Write it" and opens a blank draft titled with the idea. Speaking is on-device recognition: only the words are
 /// kept, never the sound.
 struct LogbookView: View {
     @Environment(\.dismiss) private var dismiss
@@ -63,7 +64,7 @@ struct LogbookView: View {
         HStack(alignment: .top) {
             VStack(alignment: .leading, spacing: 6) {
                 Text("Logbook").font(.system(size: 34, weight: .bold)).foregroundStyle(Palette.ink)
-                Text("Catch it now. Shape it later.").font(.system(size: 18)).foregroundStyle(Palette.ink2)
+                Text("Catch it now. Write it later.").font(.system(size: 18)).foregroundStyle(Palette.ink2)
             }
             Spacer()
             Button("Done") { dismiss() }
@@ -131,12 +132,20 @@ struct LogbookView: View {
         .tracking(1.2)
         .foregroundStyle(Palette.ink2)
         if waiting.isEmpty {
-            Text("Ideas you catch wait here until you shape them.")
-                .font(.subheadline).foregroundStyle(Palette.ink2).padding(.top, 14)
-        }
-        if !aiStatus.isAvailable {
-            Text("Apple Intelligence isn't available right now.")
-                .font(.footnote).foregroundStyle(Palette.warnText).padding(.top, 10)
+            // The empty state (E): the mark, what this is for and how to start; the capture button above is its action.
+            VStack(spacing: 14) {
+                EmptyStateMark(icon: .book)
+                Text("Your Logbook is empty")
+                    .font(.system(size: 22, weight: .bold)).tracking(-0.44).foregroundStyle(Palette.ink)
+                    .accessibilityAddTraits(.isHeader)
+                Text("Hold the mic to catch an idea. Write it later.")
+                    .font(.system(size: 15)).foregroundStyle(Palette.ink2)
+                    .multilineTextAlignment(.center)
+            }
+            .frame(maxWidth: .infinity)
+            .padding(.top, 24)
+            .accessibilityElement(children: .combine)
+            .accessibilityIdentifier("logbook.empty")
         }
         VStack(spacing: 10) {
             ForEach(waiting) { entry in card(entry) }
@@ -160,19 +169,20 @@ struct LogbookView: View {
                 }
             }
             Spacer(minLength: 6)
-            Button { shapeIdea(entry) } label: {
-                HStack(spacing: 4) { Text("✦"); Text("Shape") }
-                    .font(.system(size: 16, weight: .semibold))
-                    .foregroundStyle(Palette.aiTextStrong)
-                    .padding(.horizontal, 14)
-                    .frame(height: 40)
-                    .background(Palette.aiFill, in: Capsule())
-                    .overlay(Capsule().strokeBorder(Palette.aiBorder, lineWidth: 0.5))
+            Button { writeIdea(entry) } label: {
+                HStack(spacing: 4) {
+                    if aiStatus.isAvailable { Text(verbatim: "✦") }
+                    Text(aiStatus.isAvailable ? "Write" : "Write it")
+                }
+                .font(.system(size: 16, weight: .semibold))
+                .foregroundStyle(aiStatus.isAvailable ? Palette.aiTextStrong : Palette.ink)
+                .padding(.horizontal, 14)
+                .frame(height: 40)
+                .background(aiStatus.isAvailable ? Palette.aiFill : Palette.fill, in: Capsule())
+                .overlay { if aiStatus.isAvailable { Capsule().strokeBorder(Palette.aiBorder, lineWidth: 0.5) } }
             }
             .buttonStyle(.plain)
-            .disabled(!aiStatus.isAvailable)
-            .opacity(aiStatus.isAvailable ? 1 : 0.45)
-            .accessibilityIdentifier("logbook.shape")
+            .accessibilityIdentifier("logbook.write")
         }
         .padding(14)
         .background(Palette.surface, in: shape)
@@ -239,8 +249,8 @@ struct LogbookView: View {
         }
     }
 
-    private func shapeIdea(_ entry: LogbookEntry) {
-        let scriptID = starter.write(idea: entry.text)
+    private func writeIdea(_ entry: LogbookEntry) {
+        let scriptID = aiStatus.isAvailable ? starter.write(idea: entry.text) : starter.writeByHand(idea: entry.text)
         logbook.markShaped(entry.id, as: scriptID)
         dismiss()
     }

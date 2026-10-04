@@ -46,8 +46,6 @@ nonisolated enum CueMotion {
 
     /// A slider's thumb snapping to a step.
     static let sliderSnap = Animation.spring(response: 0.28, dampingFraction: 0.72)
-    /// The capsule that slides to the chosen tab (0.32 s).
-    static let tabCapsule = Animation.spring(duration: 0.32, bounce: 0.15)
     /// Cards, sheets and rows.
     static let card = Animation.smooth(duration: 0.3)
 

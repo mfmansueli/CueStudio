@@ -43,20 +43,30 @@ struct QuickEditToolbarTests {
 
     @Test func theMainToolbarHasEveryToolWithNothingPicked() async {
         let viewModel = await makeScenario().viewModel
-        #expect(ids(viewModel) == ["edit", "audio", "text", "captions", "filters", "adjust", "crop", "background", "media", "smart"])
+        #expect(ids(viewModel) == ["edit", "audio", "text", "captions", "filters", "smart", "cover"])
         #expect(viewModel.toolbarContextLabel == nil)
     }
 
-    @Test func smartIsTheLastToolAndTheOnlyVioletOne() async {
+    @Test func smartComesBeforeCoverAndIsTheOnlyVioletOne() async {
         let viewModel = await makeScenario().viewModel
         let items = viewModel.toolbarItems
-        #expect(items.last?.id == "smart")
-        #expect(items.last?.style == .smart)
-        #expect(items.last?.action == .open(.smart))
-        #expect(items.dropLast().allSatisfy { $0.style == .normal })
-        // Overlay is Media's tool, and pauses live in Smart now.
-        #expect(items.first { $0.id == "media" }?.label == "Overlay")
+        #expect(items.map(\.id).suffix(2) == ["smart", "cover"])
+        let smart = items.first { $0.id == "smart" }
+        #expect(smart?.style == .smart)
+        #expect(smart?.action == .open(.smart))
+        #expect(items.filter { $0.id != "smart" }.allSatisfy { $0.style == .normal })
+        #expect(items.first { $0.id == "cover" }?.action == .open(.cover))
+        // Pauses live in Smart.
         #expect(!items.contains { $0.id == "pauses" })
+    }
+
+    @Test func adjustCropBackgroundAndOverlayAreInEditsClipToolsAndOverlayIsNamedOverlay() async {
+        let viewModel = await makeScenario().viewModel
+        viewModel.perform(.selectClipAtPlayhead)
+        let items = viewModel.toolbarItems
+        #expect(["adjust", "crop", "background", "media"].allSatisfy { id in items.contains { $0.id == id } })
+        #expect(items.first { $0.id == "media" }?.label == "Overlay")
+        #expect(items.last?.id == "delete")
     }
 
     @Test func theAudioMenuNamesStudioVoice() async {
@@ -71,7 +81,7 @@ struct QuickEditToolbarTests {
         viewModel.perform(.selectClipAtPlayhead)
         #expect(viewModel.selection == .clip(viewModel.edit.timeline.segments[0].id))
         #expect(viewModel.toolbarContextLabel == "Clip")
-        #expect(ids(viewModel) == ["split", "speed", "adjust", "filters", "background", "zoom", "volume", "voice", "duplicate", "delete"])
+        #expect(ids(viewModel) == ["split", "speed", "adjust", "filters", "background", "zoom", "volume", "voice", "duplicate", "crop", "media", "delete"])
         #expect(viewModel.toolbarItems.last?.style == .destructive)
     }
 

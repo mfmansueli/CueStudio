@@ -111,7 +111,7 @@ final class StoreManager {
     /// Returns true when the purchase unlocked Pro.
     func purchase(_ plan: ProPlan) async -> Bool {
         guard let product = products[plan] else {
-            errorMessage = String(localized: "This plan isn't available right now.")
+            errorMessage = String(localized: "Can't reach the App Store")
             return false
         }
         purchasingPlan = plan
@@ -135,9 +135,18 @@ final class StoreManager {
                 return false
             }
         } catch {
-            errorMessage = error.localizedDescription
+            errorMessage = Self.message(for: error)
             return false
         }
+    }
+
+    /// 04 · F7: no internet is "Can't reach the App Store"; anything else is "Purchase didn't go through".
+    nonisolated static func message(for error: Error) -> String {
+        if let store = error as? StoreKitError, case .networkError = store { return String(localized: "Can't reach the App Store") }
+        if let url = error as? URLError, [.notConnectedToInternet, .networkConnectionLost, .timedOut, .cannotConnectToHost].contains(url.code) {
+            return String(localized: "Can't reach the App Store")
+        }
+        return String(localized: "Purchase didn't go through")
     }
 
     /// Syncs with the App Store. Returns true when Pro is active afterwards.
@@ -145,7 +154,7 @@ final class StoreManager {
         do {
             try await AppStore.sync()
         } catch {
-            errorMessage = error.localizedDescription
+            errorMessage = Self.message(for: error)
         }
         await refreshEntitlements()
         return tier.isPro

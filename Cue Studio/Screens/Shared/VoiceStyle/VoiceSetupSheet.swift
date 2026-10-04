@@ -27,6 +27,7 @@ struct VoiceSetupSheet: View {
 
     @Environment(CreatorProfileService.self) private var profile
     @Environment(\.dismiss) private var dismiss
+    @Environment(ToastService.self) private var toast
     @State private var draft: VoiceSetupDraft
     @State private var index = 0
     private let confirmsExistingValues: Bool
@@ -119,7 +120,7 @@ struct VoiceSetupSheet: View {
         case .niche:
             VoiceNicheStep(draft: draft) { niche in
                 Haptics.selection()
-                draft.toggle(niche)
+                if !draft.toggle(niche) { toast.show(VoiceLimits.message(max: draft.nicheCap, noun: String(localized: "topics"))) }
             }
         case .audience:
             VoiceAudienceStep(draft: draft) { vocabulary in
@@ -129,7 +130,7 @@ struct VoiceSetupSheet: View {
         case .tone:
             VoiceToneStep(draft: draft) { sound in
                 Haptics.selection()
-                draft.toggle(sound)
+                if !draft.toggle(sound) { toast.show(String(localized: "Max \(draft.soundCap) · tap to remove")) }
             }
         }
     }

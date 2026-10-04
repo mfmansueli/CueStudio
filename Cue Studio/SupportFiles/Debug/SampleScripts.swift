@@ -92,6 +92,15 @@ enum SampleScripts {
         createdAt: .now.addingTimeInterval(-90_000), updatedAt: .now.addingTimeInterval(-90_000)
     )
 
-    static let all = [morningHabits, lampReview, brandDeals, sponsoredRead, weeklyQA]
+    /// A draft (left without Done): it shows under DRAFTS, with "Continue ›".
+    static let coldShowers = Script(
+        id: UUID(uuidString: "00000000-0000-0000-0000-000000000006")!,
+        title: "Cold showers: one month in",
+        text: "Okay, so I did cold showers for thirty days.",
+        platform: .shorts, type: .story,
+        createdAt: .now.addingTimeInterval(-5 * 3600), updatedAt: .now.addingTimeInterval(-5 * 3600), isFinished: false
+    )
+
+    static let all = [morningHabits, lampReview, brandDeals, sponsoredRead, weeklyQA, coldShowers]
 }
 #endif

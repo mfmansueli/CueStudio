@@ -92,4 +92,27 @@ extension PrompterViewModel {
     func publishRemoteStatus() {
         remote.publish(remoteStatus)
     }
+
+    // MARK: - Camera controls
+
+    /// Frame, lens and the rest change for this take; Creator Setup keeps the defaults.
+    func cycleAspect() {
+        session.camera.aspect = session.camera.aspect.next
+    }
+
+    func flipCamera() {
+        session.camera.lens = session.camera.lens.isFront ? .wide : .front
+    }
+
+    /// The microphone pill: the input can't change mid-take (or while the countdown runs into one).
+    var canChangeAudioInput: Bool { !isRecording && countdown == nil }
+
+    func openAudioInput() {
+        guard canChangeAudioInput else { return }
+        sheet = .audioInput
+    }
+
+    func cycleCountdown() {
+        session.camera.countdown = session.camera.countdown.next
+    }
 }

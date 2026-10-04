@@ -30,8 +30,11 @@ final class LanguageRegionUITests: XCTestCase {
         XCTAssertTrue(app.buttons["languageRegion.voiceFollowingLanguageButton"].label.contains("Igual ao roteiro"))
         XCTAssertTrue(app.buttons["languageRegion.scriptLanguageButton"].label.contains("Detectar automaticamente"))
 
+        // Language & Region is a sheet: close it to reach the tabs.
+        app.buttons["settings.sheetDone"].tap()
         app.cueTabBar.buttons["Roteiros"].tap()
-        XCTAssertTrue(app.staticTexts[Self.sampleTitle].waitForExistence(timeout: 5))
+        let sample = app.descendants(matching: .any).matching(NSPredicate(format: "label CONTAINS %@", Self.sampleTitle)).firstMatch
+        XCTAssertTrue(sample.waitForExistence(timeout: 5))
     }
 
     func testVoiceFollowingLanguageChangesNothingElse() {
@@ -109,6 +112,7 @@ final class LanguageRegionUITests: XCTestCase {
         pick("pt-BR", in: app)
         XCTAssertTrue(app.buttons["languageRegion.voiceFollowingLanguageButton"].waitForExistence(timeout: 5))
 
+        app.buttons["settings.sheetDone"].tap()
         app.cueTabBar.buttons["Takes"].tap()
         let row = app.buttons.matching(
             NSPredicate(format: "identifier BEGINSWITH 'takes.video.' AND label CONTAINS '3 morning habits'")

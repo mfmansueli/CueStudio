@@ -23,7 +23,9 @@ struct ScriptRequestFactory {
         return Platform.primary.contains(platform) ? platform : .tiktok
     }
 
-    func request(idea: String, platform: Platform?, format: ScriptType?, length: ScriptLength = .auto) -> ScriptRequest {
+    func request(
+        idea: String, platform: Platform?, format: ScriptType?, length: ScriptLength = .auto, brand: BrandBrief? = nil
+    ) -> ScriptRequest {
         let text = idea.trimmingCharacters(in: .whitespacesAndNewlines)
         let platform = platform ?? defaultPlatform
         let effectiveLength = length == .auto ? (ScriptLength.detected(in: text) ?? .auto) : length
@@ -36,7 +38,9 @@ struct ScriptRequestFactory {
             voice: profile.writesInMyVoice && !isSerious ? profile.profile.voice : nil,
             targetRange: effectiveLength.targetRange(ideal: preset.idealRange),
             language: writingLanguage(for: text),
-            format: format
+            format: format,
+            // A brand brief only means something for a sponsored ad.
+            brand: format == .ad ? brand : nil
         )
     }
 

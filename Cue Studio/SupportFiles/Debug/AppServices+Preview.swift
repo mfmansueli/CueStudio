@@ -18,6 +18,7 @@ extension AppServices {
         var options = LaunchOptions()
         options.scriptRepository = InMemoryScriptRepository(scripts: seeded ? SampleScripts.all : [])
         options.takeRepository = InMemoryTakeRepository(takes: seeded ? SampleTakes.all() : [])
+        options.brandRepository = InMemoryBrandRepository()
         options.draftStore = InMemoryQuickEditDraftStore()
         options.exportCounter = InMemoryExportCountStore()
         options.defaults = UserDefaults(suiteName: "studio.cue.previews") ?? .standard

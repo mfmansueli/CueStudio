@@ -29,7 +29,8 @@ extension PrompterViewModel {
             frameRect: frameGeometry.frameRect,
             lineOffset: prompter.readingLineOffset,
             windowHeight: prompter.textWindowHeight,
-            readingWidth: prompter.readingWidth
+            readingWidth: prompter.readingWidth,
+            isRecording: isRecording
         )
     }
 
@@ -73,6 +74,22 @@ extension PrompterViewModel {
 
     /// Recording with the compact bar: the whole one is back for a few seconds after a tap.
     var showsCompactBar: Bool { isRecording && !bar.isExpanded }
+
+    /// The v29 name for the compact bar (`PrompterViewModel.isCompact` = recording and not peeking).
+    var isCompact: Bool { showsCompactBar }
+
+    /// The reading line as a fraction of the screen's height, 0.10 to 0.50 (the pinch on the right edge moves it).
+    var readingLineFraction: Double {
+        let screen = screenMetrics.screen
+        guard screen.height > 0 else { return PrompterSettings.defaultReadingLine }
+        return Double(readingLayout.lineY / screen.height)
+    }
+
+    /// The pinch: the line goes to `fraction` of the screen's height, within reach.
+    func moveReadingLine(toFraction fraction: Double) {
+        let clamped = min(PrompterSettings.readingLineRange.upperBound, max(PrompterSettings.readingLineRange.lowerBound, fraction))
+        moveReadingLine(toY: CGFloat(clamped) * screenMetrics.screen.height)
+    }
 
     // MARK: - Layout actions
 
@@ -141,5 +158,24 @@ extension PrompterViewModel {
     /// The preview layer reports where it drew the camera image.
     func cameraImageMoved(to rect: CGRect) {
         measured { $0.videoRect = rect }
+    }
+
+    // MARK: - Selfie layout state
+
+    /// Applies what the Selfie screen measured, only when something changed.
+    func measured(_ update: (inout SelfieScreenMetrics) -> Void) {
+        var metrics = screenMetrics
+        update(&metrics)
+        guard metrics != screenMetrics else { return }
+        screenMetrics = metrics
+    }
+
+    func pickSafeZone(_ choice: SafeZoneChoice) {
+        safeZonePick = choice
+    }
+
+    /// "Reset to Recommended" also forgets the safe zone picked in this session.
+    func forgetSafeZonePick() {
+        safeZonePick = nil
     }
 }

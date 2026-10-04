@@ -12,6 +12,10 @@ enum Metrics {
     /// Side margin for titles and loose text.
     static let textGutter: CGFloat = 20
     static let cardRadius: CGFloat = 26
+    /// The blocks of the v29 Profile (identity, universe, voice, plan).
+    static let profileBlockRadius: CGFloat = 22
+    /// The idea card on Scripts (the board's `.hero`).
+    static let heroRadius: CGFloat = 22
     static let innerRadius: CGFloat = 20
     static let tileRadius: CGFloat = 18
     static let fieldRadius: CGFloat = 12
@@ -51,16 +55,9 @@ enum Metrics {
     /// The bottom strip with no controls (the Home Indicator's).
     static let homeIndicatorClearance: CGFloat = 34
 
-    /// The tab bar: a 64 pt capsule 16 pt from the sides and 26 pt from the bottom edge, with the active
-    /// tab in a 56 pt capsule inset 4 pt. Icons are 26 pt, Record's 30 pt, labels 10 pt.
-    static let tabBarHeight: CGFloat = 64
-    static let tabBarSideMargin: CGFloat = 16
-    static let tabBarBottomMargin: CGFloat = 26
-    static let tabCapsuleHeight: CGFloat = 56
-    static let tabCapsuleInset: CGFloat = 4
+    /// The system tab bar draws the icons from images: 26 pt, Record's 30 pt (`CueTabImage`).
     static let tabIconSize: CGFloat = 26
     static let tabRecordSize: CGFloat = 30
-    static let tabLabelSize: CGFloat = 10
 
     /// A topic's marker: a 3 pt bar, 30 pt tall in a list row and 14 pt in chips and legends.
     static let themeRailWidth: CGFloat = 3

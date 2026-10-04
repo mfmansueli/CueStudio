@@ -30,6 +30,12 @@ actor CaptureEngine {
     private var isConfigured = false
     private var hasAudioInput = false
     private var recordingDelegate: RecordingDelegate?
+    /// Told when a take ends without Stop (storage full, an interruption).
+    private var endedByItself: (@Sendable (RecordedClip?, RecordingEndReason) -> Void)?
+
+    func setRecordingEndedHandler(_ handler: (@Sendable (RecordedClip?, RecordingEndReason) -> Void)?) {
+        endedByItself = handler
+    }
 
     var isRecording: Bool { movieOutput.isRecording }
 
@@ -237,12 +243,14 @@ actor CaptureEngine {
             connection.videoRotationAngle = rotationAngle
         }
         let delegate = RecordingDelegate()
+        delegate.setEndedByItself(endedByItself)
         recordingDelegate = delegate
         movieOutput.startRecording(to: url, recordingDelegate: delegate)
     }
 
     func stopRecording() async -> RecordedClip? {
         guard let delegate = recordingDelegate else { return nil }
+        delegate.markStopRequested()
         if movieOutput.isRecording {
             movieOutput.stopRecording()
         }

@@ -24,15 +24,22 @@ final class AnswerCommentViewModel {
     private let recognizer: TextRecognizing
     private let clipboard: () -> String?
     private let starter: (ScriptComment, Platform) -> Void
+    /// "Write it myself": a blank draft with the comment kept (the only way without Apple Intelligence).
+    private let writesByHand: ((ScriptComment, Platform) -> Void)?
+    /// "Save to Logbook": keeps the comment as an idea for later.
+    private let savesToLogbook: ((String) -> Void)?
 
     init(
         defaultPlatform: Platform, recognizer: TextRecognizing, clipboard: @escaping () -> String?,
-        starter: @escaping (ScriptComment, Platform) -> Void
+        starter: @escaping (ScriptComment, Platform) -> Void,
+        writesByHand: ((ScriptComment, Platform) -> Void)? = nil, savesToLogbook: ((String) -> Void)? = nil
     ) {
         platform = defaultPlatform
         self.recognizer = recognizer
         self.clipboard = clipboard
         self.starter = starter
+        self.writesByHand = writesByHand
+        self.savesToLogbook = savesToLogbook
     }
 
     /// The words are enough to write from.
@@ -89,6 +96,27 @@ final class AnswerCommentViewModel {
         let name = author.trimmingCharacters(in: .whitespaces)
         let handle = name.isEmpty ? nil : (name.hasPrefix("@") ? name : "@" + name)
         starter(ScriptComment(author: handle, text: text.trimmingCharacters(in: .whitespacesAndNewlines), platform: platform), platform)
+    }
+
+    private var comment: ScriptComment? {
+        guard canWrite else { return nil }
+        let name = author.trimmingCharacters(in: .whitespaces)
+        let handle = name.isEmpty ? nil : (name.hasPrefix("@") ? name : "@" + name)
+        return ScriptComment(author: handle, text: text.trimmingCharacters(in: .whitespacesAndNewlines), platform: platform)
+    }
+
+    var offersLogbook: Bool { savesToLogbook != nil }
+    var offersWritingByHand: Bool { writesByHand != nil }
+
+    func writeMyself() {
+        guard let comment else { return }
+        writesByHand?(comment, platform)
+    }
+
+    /// The comment, as an idea waiting in the Logbook.
+    func saveForLater() {
+        guard let comment else { return }
+        savesToLogbook?(comment.author.map { "\($0): \(comment.text)" } ?? comment.text)
     }
 
     /// What the model is asked: an answer to the comment, spoken to the person who wrote it.

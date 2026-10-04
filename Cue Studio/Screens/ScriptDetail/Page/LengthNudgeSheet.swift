@@ -5,14 +5,15 @@
 
 import SwiftUI
 
-/// "A bit long for TikTok": asked once, when Rec is tapped on a Draft past the platform's range.
-/// Shape it to see where to cut, or record anyway.
+/// "A bit long for TikTok": asked once, when Record is tapped on a script past the platform's range. Make it shorter with Cue
+/// (Apple Intelligence only), or record anyway.
 struct LengthNudgeSheet: View {
     let platform: Platform
     let seconds: TimeInterval
     let idealUpper: TimeInterval
     let onRecordAnyway: () -> Void
-    let onShape: () -> Void
+    let offersShorter: Bool
+    let onShorter: () -> Void
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -20,7 +21,7 @@ struct LengthNudgeSheet: View {
             Text("A bit long for \(platform.label)")
                 .font(.title3.bold())
                 .foregroundStyle(Palette.ink)
-            Text("Shape it to see where to cut, or record as is — you can trim later.")
+            Text("Make it shorter, or record as is — you can trim later.")
                 .font(.subheadline)
                 .foregroundStyle(Palette.ink2)
             Button(action: onRecordAnyway) {
@@ -31,9 +32,16 @@ struct LengthNudgeSheet: View {
             }
             .buttonStyle(.cuePrimary())
             .accessibilityIdentifier("page.nudge.record")
-            Button(action: onShape) { Text("✦ Shape it") }
+            if offersShorter {
+                Button(action: onShorter) {
+                    HStack(spacing: 6) {
+                        Image(systemName: "sparkles")
+                        Text("Make it shorter")
+                    }
+                }
                 .buttonStyle(.cueAI())
-                .accessibilityIdentifier("page.nudge.shape")
+                .accessibilityIdentifier("page.nudge.shorter")
+            }
         }
         .padding(EdgeInsets(top: 24, leading: Metrics.gutter, bottom: 12, trailing: Metrics.gutter))
         .frame(maxWidth: .infinity, alignment: .leading)

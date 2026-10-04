@@ -153,16 +153,3 @@ struct CountdownOverlay: View {
         }
     }
 }
-
-/// The flare when the countdown ends and recording starts: a burst of light, over in 0.6 s.
-struct CountdownFlare: View {
-    let trigger: Int
-
-    var body: some View {
-        IgniteEffect(trigger: trigger, diameter: 28)
-            .scaleEffect(4)
-            .onChange(of: trigger) { Haptics.record() }
-            .allowsHitTesting(false)
-            .accessibilityHidden(true)
-    }
-}

@@ -32,7 +32,7 @@ struct PrompterView: View {
             preferences: services.preferences,
             profile: services.profile,
             rules: services.rules,
-            camera: services.camera,
+            camera: services.recorderCamera,
             audio: services.audio,
             microphones: services.audio,
             speech: services.speech,
@@ -63,7 +63,7 @@ struct PrompterView: View {
                         presentation.closePrompter()
                         presentation.openScript(id)
                     },
-                    launchAction: launchActionTaken ? nil : presentation.prompter?.reviewAction,
+                    launchAction: launchActionTaken ? nil : (viewModel.reviewStartsWithPick ? .pickBest : presentation.prompter?.reviewAction),
                     onLaunchActionDone: { launchActionTaken = true }
                 )
                 .id(take.id)
@@ -152,8 +152,7 @@ struct PrompterView: View {
                         language: languages.scriptLanguage
                     )
                     viewModel.attach(script)
-                },
-                onPaste: pasteAndAttach
+                }
             )
         }
     }

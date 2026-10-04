@@ -92,8 +92,9 @@ final class TakesUITests: XCTestCase {
         let delete = app.buttons["review.deleteButton"]
         XCTAssertTrue(delete.waitForExistence(timeout: 5))
         delete.tap()
-        app.buttons["Delete take"].tap()
+        // No question first: it is gone at once, and the toast brings Undo for 4 s (04 · F4).
         XCTAssertTrue(app.staticTexts["Take 3 deleted"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.buttons["toast.action"].exists)
         XCTAssertTrue(element(app, "review.takeLabel").label.localizedCaseInsensitiveContains("Take 2"))
     }
 

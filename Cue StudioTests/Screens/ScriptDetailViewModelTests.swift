@@ -295,7 +295,7 @@ struct ScriptDetailViewModelTests {
         let viewModel = scenario.viewModel
         viewModel.noteCaret(paragraph: 0, offset: 6)
         viewModel.toggle(.cues)
-        viewModel.insertCue(.pause)
+        viewModel.insertEditorCue(.pause)
         #expect(viewModel.draftParagraphs == ["Okay, [pause] real talk."])
         #expect(viewModel.tool == .cues)
         #expect(viewModel.caret == ScriptParagraphs.Caret(index: 0, offset: 6 + "[pause] ".utf16.count))

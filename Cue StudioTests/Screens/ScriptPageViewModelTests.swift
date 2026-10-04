@@ -8,7 +8,7 @@ import SwiftUI
 import Testing
 @testable import Cue_Studio
 
-/// The script page: Draft and Shaped over one set of words, saved as the creator writes, and the AI
+/// The script page (v29): one page of words saved as the creator writes, its state, Done, the AI bar on a selection and the AI
 /// writing into it.
 @MainActor
 @Suite("Script page")
@@ -51,26 +51,16 @@ struct ScriptPageViewModelTests {
 
     // MARK: - Opening
 
-    @Test func aScriptWithWordsOpensShapedAndANewOneOpensInTheDraft() {
-        let scenario = makeScenario()
-        defer { scenario.defaults.tearDown() }
-        #expect(scenario.viewModel.page.isLoaded && scenario.viewModel.page.mode == .shaped)
+    @Test func aBlankScriptTakesTheTitleAndADraftOpenedWithContinueTakesTheText() {
         let blank = makeScenario(script: TestData.script(title: "", text: ""))
         defer { blank.defaults.tearDown() }
-        #expect(blank.viewModel.page.mode == .draft && blank.viewModel.page.focusesTitle)
-        let imported = makeScenario(startsEditing: true)
-        defer { imported.defaults.tearDown() }
-        #expect(imported.viewModel.page.mode == .draft && !imported.viewModel.page.focusesTitle)
-    }
-
-    @Test func switchingFacesNeverChangesTheWords() {
-        let scenario = makeScenario()
-        defer { scenario.defaults.tearDown() }
-        let text = scenario.viewModel.page.text
-        scenario.viewModel.setMode(.draft)
-        scenario.viewModel.shape()
-        #expect(scenario.viewModel.page.mode == .shaped && scenario.viewModel.page.text == text)
-        #expect(scenario.library.script(id: scenario.viewModel.scriptID)?.text == text)
+        #expect(blank.viewModel.page.isLoaded && blank.viewModel.page.focusesTitle && !blank.viewModel.page.focusesText)
+        let continuing = makeScenario(startsEditing: true)
+        defer { continuing.defaults.tearDown() }
+        #expect(continuing.viewModel.page.focusesText && !continuing.viewModel.page.focusesTitle)
+        let reading = makeScenario()
+        defer { reading.defaults.tearDown() }
+        #expect(!reading.viewModel.page.focusesText && !reading.viewModel.page.focusesTitle)
     }
 
     // MARK: - Saving as it goes
@@ -161,37 +151,47 @@ struct ScriptPageViewModelTests {
         #expect(scenario.viewModel.page.text.hasSuffix(ScriptShape.suggestedCTA))
     }
 
-    @Test func recordingAPastTheIdealRangeScriptFromTheDraftAsksOnce() {
+    @Test func recordingAPastTheIdealRangeScriptAsksOnce() {
         let long = TestData.script(text: TestData.words(400))
         let scenario = makeScenario(script: long)
         defer { scenario.defaults.tearDown() }
-        scenario.viewModel.setMode(.draft)
         #expect(scenario.viewModel.isLongForPlatform)
         #expect(!scenario.viewModel.recordsNow())
         #expect(scenario.viewModel.page.showsLengthNudge)
-        // Asked once: the second Rec goes through.
+        // Asked once: the second Record goes through.
         scenario.viewModel.page.showsLengthNudge = false
         #expect(scenario.viewModel.recordsNow())
     }
 
-    @Test func recordingFromShapedOrAShortScriptNeverAsks() {
-        let long = makeScenario(script: TestData.script(text: TestData.words(400)))
-        defer { long.defaults.tearDown() }
-        #expect(long.viewModel.recordsNow())
+    @Test func recordingAShortOrAlreadyRecordedScriptNeverAsks() {
         let short = makeScenario()
         defer { short.defaults.tearDown() }
-        short.viewModel.setMode(.draft)
         #expect(!short.viewModel.isLongForPlatform && short.viewModel.recordsNow())
+        let recorded = makeScenario(script: TestData.script(text: TestData.words(400)), takeCount: 1)
+        defer { recorded.defaults.tearDown() }
+        #expect(recorded.viewModel.recordsNow())
     }
 
-    // MARK: - Draft helpers
+    // MARK: - Cues
 
-    @Test func aCueBreakIsAPauseMarkAtTheEndWhenThereIsNoCaret() {
+    @Test func aCueFromTheBarGoesAtTheEndWhenThereIsNoCaret() {
         let scenario = makeScenario(script: TestData.script(text: "Hello there"))
         defer { scenario.defaults.tearDown() }
-        scenario.viewModel.setMode(.draft)
-        scenario.viewModel.insertCueBreak()
+        scenario.viewModel.insertCue(.pause)
         #expect(scenario.viewModel.page.text == "Hello there [pause] ")
+    }
+
+    @Test func aCueGoesWhereTheCaretIsAndTheCaretMovesAfterIt() {
+        let scenario = makeScenario(script: TestData.script(text: "Hello world"))
+        defer { scenario.defaults.tearDown() }
+        scenario.viewModel.page.selection = 5..<5
+        scenario.viewModel.insertCue(.smile)
+        #expect(scenario.viewModel.page.text == "Hello [smile]  world")
+        #expect(scenario.viewModel.page.selection == 14..<14)
+    }
+
+    @Test func theBarHasTheFourCuesOfTheBoard() {
+        #expect(ScriptCue.bar.map(\.name) == ["pause", "smile", "emphasis", "look at camera"])
     }
 
     @Test func theTextSizeCyclesThroughTheThree() {
@@ -207,43 +207,172 @@ struct ScriptPageViewModelTests {
     @Test func aSelectionNeedsMoreThanEightCharactersToOfferRewrites() {
         let scenario = makeScenario(script: TestData.script(text: "Hello there my friend"))
         defer { scenario.defaults.tearDown() }
-        scenario.viewModel.setMode(.draft)
-        let text = scenario.viewModel.page.text
-        scenario.viewModel.page.selection = TextSelection(range: text.startIndex..<text.index(text.startIndex, offsetBy: 5))
-        #expect(scenario.viewModel.selectedText == nil)
-        scenario.viewModel.page.selection = TextSelection(range: text.startIndex..<text.endIndex)
+        scenario.viewModel.page.selection = 0..<5
+        #expect(scenario.viewModel.selectedText == nil && !scenario.viewModel.showsSelectionBar)
+        scenario.viewModel.page.selection = 0..<21
         #expect(scenario.viewModel.selectedText == "Hello there my friend")
+        #expect(scenario.viewModel.showsSelectionBar)
     }
 
-    @Test func aRewriteWaitsForUseAndKeepMineLeavesTheWordsAlone() async {
-        let scenario = makeScenario(script: TestData.script(text: "Hello there my friend"))
-        defer { scenario.defaults.tearDown() }
-        scenario.viewModel.setMode(.draft)
-        let text = scenario.viewModel.page.text
-        scenario.viewModel.page.selection = TextSelection(range: text.startIndex..<text.endIndex)
-        await scenario.viewModel.rewriteSelection(.shorter)
-        #expect(scenario.writer.lastRewrite?.tool == .shorterAndDirect)
-        #expect(scenario.viewModel.page.candidate?.rewritten == "Rewritten with energy!")
-        #expect(scenario.viewModel.page.text == "Hello there my friend")
-        scenario.viewModel.keepMine()
-        #expect(scenario.viewModel.page.candidate == nil && scenario.viewModel.page.text == "Hello there my friend")
-
-        scenario.viewModel.page.selection = TextSelection(range: text.startIndex..<text.endIndex)
-        await scenario.viewModel.rewriteSelection(.inMyVoice)
-        scenario.viewModel.useCandidate()
-        #expect(scenario.viewModel.page.text == "Rewritten with energy!")
-        #expect(scenario.library.script(id: scenario.viewModel.scriptID)?.text == "Rewritten with energy!")
-    }
-
-    @Test func withoutAModelARewriteSaysWhy() async {
+    @Test func withoutAppleIntelligenceThereIsNoBar() {
         let scenario = makeScenario(script: TestData.script(text: "Hello there my friend"))
         defer { scenario.defaults.tearDown() }
         scenario.writer.isAvailable = false
-        scenario.viewModel.setMode(.draft)
-        let text = scenario.viewModel.page.text
-        scenario.viewModel.page.selection = TextSelection(range: text.startIndex..<text.endIndex)
+        scenario.viewModel.page.selection = 0..<21
+        #expect(!scenario.viewModel.showsSelectionBar)
+    }
+
+    @Test func aRewriteReplacesTheWordsInPlaceAndWaitsForKeep() async {
+        let scenario = makeScenario(script: TestData.script(text: "Hello there my friend. More words follow."))
+        defer { scenario.defaults.tearDown() }
+        scenario.viewModel.page.selection = 0..<21
+        await scenario.viewModel.rewriteSelection(.shorter)
+        #expect(scenario.writer.lastRewrite?.tool == .shorterAndDirect)
+        #expect(scenario.viewModel.page.text == "Rewritten with energy!. More words follow.")
+        #expect(scenario.viewModel.page.passage?.original == "Hello there my friend")
+        #expect(scenario.viewModel.page.passage?.range == 0..<22)
+        let beforeKeep = scenario.library.script(id: scenario.viewModel.scriptID)?.text
+        #expect(beforeKeep == "Hello there my friend. More words follow.", "not saved until kept or edited on")
+        scenario.viewModel.keepPassage()
+        #expect(scenario.viewModel.page.passage == nil)
+        #expect(scenario.library.script(id: scenario.viewModel.scriptID)?.text == "Rewritten with energy!. More words follow.")
+    }
+
+    @Test func undoPutsTheOldWordsBack() async {
+        let scenario = makeScenario(script: TestData.script(text: "Hello there my friend. More words follow."))
+        defer { scenario.defaults.tearDown() }
+        scenario.viewModel.page.selection = 0..<21
         await scenario.viewModel.rewriteSelection(.rewrite)
-        #expect(scenario.viewModel.page.candidate == nil && scenario.toast.message != nil)
+        scenario.viewModel.undoPassage()
+        #expect(scenario.viewModel.page.text == "Hello there my friend. More words follow.")
+        #expect(scenario.viewModel.page.passage == nil)
+    }
+
+    @Test func tryAgainAsksTheSameChangeOfTheSameWords() async {
+        let scenario = makeScenario(script: TestData.script(text: "Hello there my friend. More words follow."))
+        defer { scenario.defaults.tearDown() }
+        scenario.viewModel.page.selection = 0..<21
+        await scenario.viewModel.rewriteSelection(.punchier)
+        scenario.writer.rewrittenText = "Hi!"
+        await scenario.viewModel.retryPassage()
+        #expect(scenario.writer.lastRewrite?.tool == .moreEnergy)
+        #expect(scenario.viewModel.page.text == "Hi!. More words follow.")
+        #expect(scenario.viewModel.page.passage?.original == "Hello there my friend")
+    }
+
+    @Test func moreMeUsesTheCreatorsVoice() async {
+        let scenario = makeScenario(script: TestData.script(text: "Hello there my friend"))
+        defer { scenario.defaults.tearDown() }
+        scenario.viewModel.page.selection = 0..<21
+        await scenario.viewModel.rewriteSelection(.moreMe)
+        #expect(scenario.writer.lastRewrite?.tool == .inMyVoice)
+    }
+
+    @Test func cutRemovesTheWordsWithoutTheAIAndCanBeUndone() async throws {
+        let scenario = makeScenario(script: TestData.script(text: "Hello there my friend. More words follow."))
+        defer { scenario.defaults.tearDown() }
+        scenario.writer.isAvailable = false
+        scenario.viewModel.page.selection = 0..<22
+        await scenario.viewModel.rewriteSelection(.cut)
+        #expect(scenario.viewModel.page.text == " More words follow.")
+        #expect(scenario.writer.lastRewrite == nil)
+        try #require(scenario.toast.action).perform()
+        #expect(scenario.viewModel.page.text == "Hello there my friend. More words follow.")
+    }
+
+    @Test func aFailedRewriteSaysSoAndKeepsTheWords() async {
+        let scenario = makeScenario(script: TestData.script(text: "Hello there my friend"))
+        defer { scenario.defaults.tearDown() }
+        scenario.writer.error = ScriptAIError.emptyResponse
+        scenario.viewModel.page.selection = 0..<21
+        await scenario.viewModel.rewriteSelection(.rewrite)
+        #expect(scenario.viewModel.page.passage == nil && scenario.viewModel.page.text == "Hello there my friend")
+        #expect(scenario.toast.message == "Couldn’t write it · Try again")
+    }
+
+    // MARK: - State (04 · F2)
+
+    @Test func doneMakesADraftReadyAndKeepsTheWords() {
+        let scenario = makeScenario(script: TestData.script(text: "One.\n\nTwo.", isFinished: false))
+        defer { scenario.defaults.tearDown() }
+        #expect(scenario.viewModel.strip?.state == .draft)
+        scenario.viewModel.done()
+        #expect(scenario.library.script(id: scenario.viewModel.scriptID)?.isFinished == true)
+        #expect(scenario.viewModel.strip?.state == .ready)
+        #expect(scenario.toast.message?.hasPrefix("Ready to record") == true)
+    }
+
+    @Test func doneWithNoTextSavesNothing() {
+        let scenario = makeScenario(script: TestData.script(title: "", text: ""))
+        defer { scenario.defaults.tearDown() }
+        scenario.viewModel.done()
+        #expect(scenario.toast.message == "Nothing to save yet")
+        #expect(scenario.library.script(id: scenario.viewModel.scriptID)?.isFinished == false)
+    }
+
+    @Test func doneWithEmptySectionsAsksFirstAndDoneAnywayFinishes() {
+        let scenario = makeScenario(script: TestData.script(text: "Only a hook.", type: .tutorial, isFinished: false))
+        defer { scenario.defaults.tearDown() }
+        scenario.viewModel.done()
+        #expect(scenario.viewModel.page.emptySectionsToConfirm == 3)
+        #expect(scenario.library.script(id: scenario.viewModel.scriptID)?.isFinished == false)
+        scenario.viewModel.finish()
+        #expect(scenario.viewModel.page.emptySectionsToConfirm == nil)
+        #expect(scenario.library.script(id: scenario.viewModel.scriptID)?.isFinished == true)
+    }
+
+    @Test func editingAReadyScriptAndLeavingWithoutDoneMakesItADraft() {
+        let scenario = makeScenario(script: TestData.script(text: "One.\n\nTwo."))
+        defer { scenario.defaults.tearDown() }
+        #expect(scenario.viewModel.strip?.state == .ready)
+        scenario.viewModel.page.text = "One.\n\nTwo and more."
+        scenario.viewModel.pageDidEdit()
+        #expect(scenario.viewModel.strip?.isEdited == true)
+        scenario.viewModel.leavePage()
+        #expect(scenario.library.script(id: scenario.viewModel.scriptID)?.isFinished == false)
+        #expect(scenario.toast.message == "Saved as draft")
+    }
+
+    @Test func editingThenDoneThenLeavingStaysReady() {
+        let scenario = makeScenario(script: TestData.script(text: "One.\n\nTwo."))
+        defer { scenario.defaults.tearDown() }
+        scenario.viewModel.page.text = "One.\n\nTwo and more."
+        scenario.viewModel.pageDidEdit()
+        scenario.viewModel.done()
+        scenario.viewModel.leavePage()
+        #expect(scenario.library.script(id: scenario.viewModel.scriptID)?.isFinished == true)
+        #expect(scenario.toast.message?.hasPrefix("Ready to record") == true)
+    }
+
+    @Test func editingAfterRecordingStaysRecordedAndTheStripSaysChanged() {
+        let scenario = makeScenario(script: TestData.script(text: "One.\n\nTwo."), takeCount: 2)
+        defer { scenario.defaults.tearDown() }
+        scenario.viewModel.page.text = "One.\n\nTwo, changed."
+        scenario.viewModel.pageDidEdit()
+        scenario.viewModel.commitPage()
+        scenario.viewModel.leavePage()
+        let strip = scenario.viewModel.strip
+        #expect(strip?.state == .recorded)
+        #expect(strip?.changedSinceTake == 2)
+        #expect(strip?.info == ["Changed since take 2"])
+        #expect(scenario.toast.message != "Saved as draft")
+    }
+
+    @Test func recordingADraftSendsItToTheCameraAsReady() {
+        let scenario = makeScenario(script: TestData.script(text: "One.\n\nTwo.", isFinished: false))
+        defer { scenario.defaults.tearDown() }
+        #expect(scenario.viewModel.recordsNow())
+        #expect(scenario.library.script(id: scenario.viewModel.scriptID)?.isFinished == true)
+    }
+
+    @Test func shapeAddsCuesAndNeverChangesTheState() {
+        let scenario = makeScenario(script: TestData.script(text: "First hook line. More hook.\n\nThe point is here. Another.\n\nTry it out. Follow me.", isFinished: false))
+        defer { scenario.defaults.tearDown() }
+        scenario.viewModel.shape()
+        #expect(CueParser.count(in: scenario.viewModel.page.text) == 4)
+        #expect(scenario.library.script(id: scenario.viewModel.scriptID)?.isFinished == false)
+        #expect(scenario.toast.message == "4 cues added")
+        #expect(scenario.viewModel.strip?.canShape == false)
     }
 
     // MARK: - The AI writes into the page
@@ -257,7 +386,7 @@ struct ScriptPageViewModelTests {
         #expect(scenario.viewModel.page.isWriting)
         await scenario.viewModel.pageWritingTask?.value
         #expect(!scenario.viewModel.page.isWriting && scenario.viewModel.page.revealed == nil)
-        #expect(scenario.viewModel.page.mode == .draft)
+        #expect(scenario.library.script(id: scenario.viewModel.scriptID)?.isFinished == true, "the AI delivered a complete script: READY")
         let saved = scenario.library.script(id: scenario.viewModel.scriptID)
         #expect(saved?.title == "Carnival" && saved?.text == scenario.writer.generatedText)
         #expect(scenario.ideaDraft.isEmpty)

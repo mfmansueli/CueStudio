@@ -25,7 +25,6 @@ struct DesignCatalogueView: View {
     @State private var words = 0
     @State private var aura = false
     @State private var density: SkyDensity = .lively
-    @State private var tab: AppTab = .scripts
 
     init(section: Section = .colors) {
         _section = State(initialValue: section)
@@ -72,7 +71,7 @@ struct DesignCatalogueView: View {
             ("warm", Palette.worldWarm), ("mint", Palette.worldMint), ("pink", Palette.worldPink), ("sky", Palette.worldSky),
             ("TikTok", Palette.platformTikTok), ("Reels", Palette.platformReels), ("Shorts", Palette.platformShorts),
             ("YouTube", Palette.platformYouTube), ("LinkedIn", Palette.platformLinkedIn), ("Stories", Palette.platformStories),
-            ("glassBarBase", Palette.glassBarBase), ("glassBarRim", Palette.glassBarRim), ("recPillRing", Palette.recPillRing),
+            ("recPillRing", Palette.recPillRing),
             ("sliderTrack", Palette.sliderTrack), ("sliderFill", Palette.sliderFill), ("sliderThumb", Palette.sliderThumb),
             ("selectionBar", Palette.selectionBar), ("aiReplacedFill", Palette.aiReplacedFill), ("stripFill", Palette.stripFill),
             ("stateReady", Palette.stateReadyFill), ("stateDraft", Palette.stateDraftFill), ("adTag", Palette.adTagFill),
@@ -195,13 +194,13 @@ struct DesignCatalogueView: View {
 
     private var tabBar: some View {
         VStack(alignment: .leading, spacing: 20) {
-            heading("Each tab active")
-            ForEach([AppTab.scripts, .takes, .profile, .settings], id: \.self) { active in
-                CueTabBar(selection: active) { _ in }
-                    .accessibilityIdentifier("catalogue.tabBar.\(String(describing: active))")
+            heading("The system tab bar's icons (the bar itself is native: see any tab)")
+            HStack(spacing: 24) {
+                ForEach([CueIcon.scripts, .takes, .profile, .settings], id: \.self) { icon in
+                    Image(uiImage: CueTabImage.template(icon)).foregroundStyle(Palette.accText)
+                }
+                Image(uiImage: CueTabImage.record)
             }
-            heading("Live: tap to slide")
-            CueTabBar(selection: tab) { if $0 != .record { tab = $0 } }
         }
         .padding(.vertical, 8)
     }

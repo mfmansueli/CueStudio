@@ -13,6 +13,9 @@ nonisolated final class RecordingDelegate: NSObject, AVCaptureFileOutputRecordin
         var continuation: CheckedContinuation<RecordedClip?, Never>?
         var finished = false
         var clip: RecordedClip?
+        /// `stopRecording` was asked for: the end is expected.
+        var stopRequested = false
+        var onEndedByItself: (@Sendable (RecordedClip?, RecordingEndReason) -> Void)?
     }
 
     private let state = Mutex(State())
@@ -28,13 +31,26 @@ nonisolated final class RecordingDelegate: NSObject, AVCaptureFileOutputRecordin
         let clip = (error == nil || finishedAnyway)
             ? RecordedClip(url: outputFileURL, duration: output.recordedDuration.seconds)
             : nil
-        let waiting = state.withLock { state -> CheckedContinuation<RecordedClip?, Never>? in
+        typealias Ended = @Sendable (RecordedClip?, RecordingEndReason) -> Void
+        let (waiting, endedByItself) = state.withLock { state -> (CheckedContinuation<RecordedClip?, Never>?, Ended?) in
             state.finished = true
             state.clip = clip
             defer { state.continuation = nil }
-            return state.continuation
+            return (state.continuation, state.stopRequested ? nil : state.onEndedByItself)
         }
         waiting?.resume(returning: clip)
+        // The system ended it (storage full, an interruption): tell the recorder so it can save the take.
+        endedByItself?(clip, RecordingEndReason(error: error))
+    }
+
+    /// The creator stopped the take: its end is expected.
+    func markStopRequested() {
+        state.withLock { $0.stopRequested = true }
+    }
+
+    /// Called when the take ends without a stop (storage full, a call).
+    func setEndedByItself(_ handler: (@Sendable (RecordedClip?, RecordingEndReason) -> Void)?) {
+        state.withLock { $0.onEndedByItself = handler }
     }
 
     /// Returns when the file is finalized.

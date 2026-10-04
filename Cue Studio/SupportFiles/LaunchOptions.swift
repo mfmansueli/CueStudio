@@ -16,6 +16,7 @@ import Foundation
 ///   (`SampleEdit`).
 /// - `-uiTestSampleVideo`: with the sample takes, writes small real videos behind the "3 morning
 ///   habits" takes, so Quick edit can play, scrub and trim them.
+/// - `-uiTestDemoCamera`: the recorder's camera records with no hardware (a small real video per take), for the Simulator.
 /// - `-uiTestAppsInstalled`: with the above, the platforms' apps count as installed (the send-off after "Share to").
 /// - `-uiTestSky <off|calm|lively>`: with the above, the sky starts like that (off otherwise: an endless animation
 ///   keeps UI tests from finding the app idle).
@@ -32,6 +33,9 @@ import Foundation
 struct LaunchOptions {
     var scriptRepository: ScriptRepository = LocalScriptRepository()
     var takeRepository: TakeRepository = LocalTakeRepository()
+    var brandRepository: BrandRepository = LocalBrandRepository()
+    /// The camera the recorder uses; nil is the real one (`AppServices.camera`).
+    var recorderCamera: CameraControlling?
     var draftStore: QuickEditDraftStoring = QuickEditDraftStore()
     var exportCounter: ExportCountStoring = KeychainExportCountStore()
     var defaults: UserDefaults = .standard
@@ -63,6 +67,8 @@ struct LaunchOptions {
             options.appsAreInstalled = arguments.contains("-uiTestAppsInstalled")
             let seeded = arguments.contains("-uiTestSeedSamples")
             options.scriptRepository = InMemoryScriptRepository(scripts: seeded ? SampleScripts.all : [])
+            options.brandRepository = InMemoryBrandRepository()
+            if arguments.contains("-uiTestDemoCamera") { options.recorderCamera = DemoCamera() }
             var takes = seeded ? SampleTakes.all() : []
             // The editor's demo: "3 morning habits" Take 3 becomes the design's 21.6 s edit.
             if arguments.contains("-uiTestDemoEdit"), let index = takes.firstIndex(where: {

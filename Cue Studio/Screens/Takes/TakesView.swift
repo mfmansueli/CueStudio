@@ -31,15 +31,14 @@ struct TakesView: View {
         @Bindable var viewModel = viewModel
         Group {
             if viewModel.isEmpty {
-                ContentUnavailableView {
-                    Label("No takes yet", systemImage: "film.stack")
-                } description: {
-                    Text("Your recordings show up here, one row per video.")
-                } actions: {
-                    Button("Record a take") { presentation.present(.startRecording) }
-                        .buttonStyle(.cuePrimary(.regular, expands: false))
-                        .accessibilityIdentifier("takes.recordButton")
-                }
+                // The empty state (E): the mark, one line, one action and a way to a script.
+                EmptyState(
+                    icon: .takes, title: "No takes yet", message: "Record a script. Every take lands here.", actionTitle: "Record",
+                    actionDot: Palette.record, action: { presentation.present(.startRecording) },
+                    linkTitle: "Pick a script ›", link: { presentation.selectedTab = .scripts },
+                    accessibilityPrefix: "takes.empty"
+                )
+                .frame(maxHeight: .infinity)
             } else if layout.wrappedValue == .grid {
                 grid
             } else {
@@ -87,6 +86,7 @@ struct TakesView: View {
                 onSelect: { viewModel.toggle($0) },
                 onNext: { viewModel.open($0.video) }
             )
+            VoiceNudgeSlot()
         }
     }
 

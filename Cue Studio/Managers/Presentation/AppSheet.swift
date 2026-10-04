@@ -16,6 +16,10 @@ enum AppSheet: Identifiable, Hashable {
     case ideas
     /// "Format ⌄" on the idea card: how Cue builds the script.
     case format
+    /// "Start from a format" in "+": a blank draft with a format's sections, which you write.
+    case startFromFormat
+    /// A sponsored ad's brand brief (what the ad may say), from the format sheet.
+    case brandBrief(BrandBriefPurpose)
     /// "For TikTok ⌄" on the idea card: the platform the idea is for.
     case createFor
     /// Ideas caught now, shaped later.
@@ -30,9 +34,17 @@ enum AppSheet: Identifiable, Hashable {
         case .importScript: "importScript"
         case .ideas: "ideas"
         case .format: "format"
+        case .startFromFormat: "startFromFormat"
+        case .brandBrief(let purpose): "brandBrief.\(purpose)"
         case .createFor: "createFor"
         case .logbook: "logbook"
         case .answerComment: "answerComment"
         }
     }
+}
+
+/// What the brand brief is for: "✦ Write the ad" now (from the card's format), or the sections of a draft to write by hand.
+enum BrandBriefPurpose: Hashable {
+    case writeFromCard
+    case draft
 }

@@ -70,9 +70,7 @@ final class CueUniverseScreenshotTests: XCTestCase {
     /// Studio has no camera, so the text, the rail and the label show in the simulator.
     func testTheStudioRail() {
         let app = CueApp.launch(seeded: true)
-        let studio = app.buttons["row.studioButton"].firstMatch
-        XCTAssertTrue(studio.waitForExistence(timeout: 15))
-        studio.tap()
+        app.openStudio(titled: "Oat & Co. — sponsored read")
         XCTAssertTrue(element(app, "prompter.sectionRail").waitForExistence(timeout: 10))
         capture(app, "prompter-1-studio-rail")
         app.buttons["prompter.playButton"].tap()

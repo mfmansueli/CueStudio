@@ -95,6 +95,12 @@ final class EditorScreenshotTests: XCTestCase {
             try capture("\(17 + index)-\(tool)")
             apply()
         }
+        back()
+        for tool in ["smart", "cover"] {
+            EditorApp.tapTool(app, tool)
+            try capture("23-\(tool)")
+            apply()
+        }
         app.buttons["edit.doneButton"].tap()
         XCTAssertTrue(app.buttons["edit.done.share"].waitForExistence(timeout: 5))
         try capture("21-done-question")

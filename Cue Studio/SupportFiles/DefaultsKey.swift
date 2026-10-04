@@ -41,6 +41,11 @@ nonisolated enum DefaultsKey {
     static let sharedTakeIDs = "sharedTakeIDs"
     static let firstShareDate = "firstShareDate"
     static let celebratedMilestones = "celebratedMilestones"
+    /// "Your stars" in the sky above Scripts (`[StarPoint]`, JSON, up to 50) and how many were ever added.
+    static let skyMemory = "skyMemory"
+    static let skyMemoryAdded = "skyMemoryAdded"
+    /// My Cue Voice nudges the creator put off with "Not now" (`VoiceNudgeSnoozes`, JSON).
+    static let voiceNudgeSnoozes = "voiceNudgeSnoozes"
     /// The Logbook's ideas (JSON).
     static let logbook = "logbook"
     /// v1's monthly AI counters ("aiScriptsUsed_2026-09"), removed at launch.

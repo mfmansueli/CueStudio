@@ -11,7 +11,6 @@ struct YourUniverseView: View {
     @Environment(MilestoneService.self) private var milestones
     @Environment(TakeLibraryService.self) private var takes
     @Environment(ScriptLibraryService.self) private var library
-    @Environment(CreatorProfileService.self) private var profile
     @Environment(TopicTaggingService.self) private var tagging
     @Environment(PresentationService.self) private var presentation
     @State private var shareImage: Image?
@@ -33,11 +32,11 @@ struct YourUniverseView: View {
                     .tracking(1.2)
                     .foregroundStyle(Palette.accText)
                     .padding(.horizontal, 4)
+                UniverseMap(snapshot: snapshot)
+                    .frame(height: snapshot.total == 0 ? 190 : 400)
                 if snapshot.total == 0 {
-                    emptyNote
+                    emptyState
                 }
-                UniverseMap(snapshot: snapshot, initial: initial)
-                    .frame(height: 400)
                 legend(snapshot)
                 nextMilestone
                 Button { presentation.selectedTab = .scripts } label: { scriptsRow }
@@ -56,22 +55,19 @@ struct YourUniverseView: View {
 
     // MARK: - Pieces
 
-    private var initial: String {
-        let name = profile.profile.name.trimmingCharacters(in: .whitespaces)
-        return String(name.first ?? "C").uppercased()
-    }
-
     private func headline(_ snapshot: UniverseSnapshot) -> String {
-        guard snapshot.total > 0 else { return String(localized: "NOTHING SHARED YET") }
+        guard snapshot.total > 0 else { return String(localized: "NO VIDEOS SHARED YET") }
         let month = snapshot.firstShare.map { $0.formatted(.dateTime.month(.wide).locale(.interface)).uppercased() } ?? ""
         return String(localized: "\(snapshot.total) VIDEOS SHARED · SINCE \(month)")
     }
 
-    private var emptyNote: some View {
-        Text("Share your first video and it becomes a star here, joined to the platform it travelled to.")
-            .font(.subheadline)
-            .foregroundStyle(Palette.ink2)
-            .padding(.horizontal, 4)
+    /// E-9.2: nothing shared yet.
+    private var emptyState: some View {
+        EmptyState(
+            icon: .star, title: "Your first star is one video away", message: "Share a video and it lights up here.",
+            actionTitle: "Go to Takes", action: { presentation.selectedTab = .takes },
+            accessibilityPrefix: "universe.empty"
+        )
     }
 
     private func legend(_ snapshot: UniverseSnapshot) -> some View {
@@ -146,12 +142,11 @@ struct YourUniverseView: View {
     @MainActor
     private func renderImages(_ snapshot: UniverseSnapshot) {
         guard snapshot.total > 0 else { return }
-        let initial = initial
-        let card = UniverseShareCard(snapshot: snapshot, initial: initial, mode: .universe)
+        let card = UniverseShareCard(snapshot: snapshot, mode: .universe)
         let renderer = ImageRenderer(content: card)
         renderer.scale = 3
         shareImage = renderer.uiImage.map(Image.init(uiImage:))
-        let year = ImageRenderer(content: UniverseShareCard(snapshot: snapshot, initial: initial, mode: .year))
+        let year = ImageRenderer(content: UniverseShareCard(snapshot: snapshot, mode: .year))
         year.scale = 3
         yearImage = year.uiImage.map(Image.init(uiImage:))
     }

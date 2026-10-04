@@ -65,7 +65,10 @@ final class ProfileUITests: XCTestCase {
         app.buttons["voiceSetup.saveButton"].tap()
         // The card now says what Cue uses; a row opens the question that holds it.
         XCTAssertTrue(app.staticTexts["profile.voiceSample"].waitForExistence(timeout: 5))
-        let audience = app.buttons["profile.voiceRow.audience"]
+        let edit = app.buttons["profile.editVoice"]
+        scroll(app, to: edit)
+        edit.tap()
+        let audience = app.buttons["voicePage.row.audience"]
         XCTAssertTrue(audience.waitForExistence(timeout: 5))
         audience.tap()
         XCTAssertTrue(app.buttons["voiceSetup.audience.technical"].waitForExistence(timeout: 5))

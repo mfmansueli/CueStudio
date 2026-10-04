@@ -5,8 +5,8 @@
 
 import SwiftUI
 
-/// ✦ Smart: the four things Cue can do for the take with one tap, as violet tiles: Auto captions,
-/// Remove pauses, Studio Voice and Auto adjust. Each opens the panel that does it (Auto adjust
+/// ✦ Smart: what Cue can do for the take with one tap, as violet tiles: Auto captions,
+/// Remove pauses, Studio Voice, Auto adjust and the take's Background. Each opens the panel that does it (Auto adjust
 /// opens Adjust and measures the picture), so nothing happens that the creator can't see and undo.
 /// Violet is the AI's color; everything here runs on the iPhone.
 struct SmartPanel: View {
@@ -36,6 +36,11 @@ struct SmartPanel: View {
                 tile(id: "autoAdjust", title: "Auto adjust", systemImage: "wand.and.stars", status: viewModel.smartAdjustStatus) {
                     viewModel.panel = .adjust
                     viewModel.autoAdjust()
+                }
+                tile(id: "background", title: "Background", systemImage: "person.and.background.dotted", status: nil) {
+                    // The whole take's background; a picked clip's own is in its tools.
+                    viewModel.lookScopeIsClip = false
+                    viewModel.panel = .background
                 }
             }
             .padding(.horizontal, 16)

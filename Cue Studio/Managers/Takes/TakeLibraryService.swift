@@ -152,6 +152,39 @@ final class TakeLibraryService {
         if let names = take.edit?.mediaFileNames, !names.isEmpty { EditMediaFiles.remove(names) }
     }
 
+    /// A take taken out of the library whose video is still on disk, so "Undo" can bring it back (the review's trash).
+    struct RemovedTake: Equatable {
+        let take: Take
+        let position: Int
+    }
+
+    /// Removes a take at once, **keeping its video** until `purge` (Delete with 4 s of Undo).
+    func remove(_ id: UUID) -> RemovedTake? {
+        guard let index = takes.firstIndex(where: { $0.id == id }) else { return nil }
+        let removed = RemovedTake(take: takes[index], position: index)
+        takes.remove(at: index)
+        persist()
+        return removed
+    }
+
+    /// Undo: the take is back where it was, with its video.
+    func restore(_ removed: RemovedTake) {
+        guard !takes.contains(where: { $0.id == removed.take.id }) else { return }
+        takes.insert(removed.take, at: min(removed.position, takes.count))
+        persist()
+    }
+
+    /// The 4 seconds are over: the video and what Quick edit added go for good (unless the take came back).
+    func purge(_ removed: RemovedTake) {
+        guard !takes.contains(where: { $0.id == removed.take.id }) else { return }
+        do {
+            try repository.deleteVideo(named: removed.take.fileName)
+        } catch {
+            logger.error("Could not delete take video: \(error.localizedDescription)")
+        }
+        if let names = removed.take.edit?.mediaFileNames, !names.isEmpty { EditMediaFiles.remove(names) }
+    }
+
     /// Keeps take titles in step when a script is renamed.
     func renameScript(_ scriptID: UUID, to title: String) {
         var changed = false

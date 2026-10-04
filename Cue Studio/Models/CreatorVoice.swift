@@ -16,6 +16,13 @@ nonisolated struct CreatorVoice: Hashable, Sendable {
     var niches: [Niche]
     /// Who is talking; nil when the creator didn't say.
     var role: CreatorRole?
+    // The Personality and Proof layers (v29).
+    var openings: [String] = []
+    var endings: [String] = []
+    var formats: [ScriptType] = []
+    var swearing: Swearing?
+    var examples: [VoiceExample] = []
+    var customTags: [String] = []
 
     /// "Casual · Confident · “Hey fam”", the one-line summary under "Write in my voice".
     var summary: String {

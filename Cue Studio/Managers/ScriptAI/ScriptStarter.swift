@@ -46,12 +46,36 @@ final class ScriptStarter {
     func write(idea: String? = nil, length: ScriptLength? = nil, comment: ScriptComment? = nil, platform: Platform? = nil) -> UUID? {
         guard let text = idea ?? ideaDraft.submission, !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return nil }
         let request = factory.request(
-            idea: text, platform: platform ?? ideaDraft.platform, format: ideaDraft.format, length: length ?? ideaDraft.length
+            idea: text, platform: platform ?? ideaDraft.platform, format: ideaDraft.format, length: length ?? ideaDraft.length,
+            brand: ideaDraft.brand
         )
         let script = library.create(
             title: "", text: "", platform: request.platform, type: request.format, language: languages.scriptLanguage, comment: comment
         )
         presentation.openScript(script.id, writing: request)
+        return script.id
+    }
+
+    /// With no Apple Intelligence, "Write it": the idea becomes the title of a blank draft, opened to write in (04 · F2).
+    @discardableResult
+    func writeByHand(idea: String? = nil, format: ScriptType? = nil, comment: ScriptComment? = nil) -> UUID? {
+        let title = (idea ?? ideaDraft.submission ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
+        let script = library.create(
+            title: title, text: "", platform: comment?.platform ?? platform, type: format ?? ideaDraft.format,
+            language: languages.scriptLanguage, comment: comment, isFinished: false
+        )
+        presentation.openScript(script.id, editing: true)
+        ideaDraft.clear()
+        return script.id
+    }
+
+    /// "Start from a format": a blank draft with the format's sections, to write in.
+    @discardableResult
+    func startFromFormat(_ choice: FormatChoice) -> UUID {
+        let script = library.create(
+            title: "", text: "", platform: platform, type: choice.scriptType, language: languages.scriptLanguage, isFinished: false
+        )
+        presentation.openScript(script.id, editing: true)
         return script.id
     }
 }

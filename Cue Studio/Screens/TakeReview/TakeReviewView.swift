@@ -31,7 +31,6 @@ struct TakeReviewView: View {
     @State private var isMuted = false
     @State private var progress: Double = 0
 
-    @State private var confirmsDelete = false
     /// "Pick your best take", opened by ✦ Suggest best.
     @State private var proposal: BestTakeProposal?
     @State private var editingTake: Take?
@@ -160,14 +159,6 @@ struct TakeReviewView: View {
                 )
             }
         }
-        .confirmationDialog("Delete this take?", isPresented: $confirmsDelete, titleVisibility: .visible) {
-            Button("Delete take", role: .destructive) {
-                pausePlayback()
-                onDeleted(viewModel.delete())
-            }
-        } message: {
-            Text("The video is removed from Cue. Copies you saved to Photos stay there.")
-        }
         .onAppear { applyLaunchAction(); considerFirstStar() }
         .onDisappear { pausePlayback() }
         .sheet(isPresented: $viewModel.showsShareSheet) {
@@ -239,7 +230,11 @@ struct TakeReviewView: View {
                 take: take,
                 onBack: onBack,
                 onToggleBest: viewModel.toggleBest,
-                onDelete: { confirmsDelete = true }
+                // Gone at once, with 4 s of Undo in the toast (04 · F4): no question first.
+                onDelete: {
+                    pausePlayback()
+                    onDeleted(viewModel.delete())
+                }
             )
             .padding(.horizontal, 14)
             if let place = viewModel.placeLabel, let index = viewModel.siblings.firstIndex(where: { $0.id == take.id }) {
@@ -277,6 +272,9 @@ struct TakeReviewView: View {
                         viewModel.showsShareSheet = true
                     }
                 )
+                if viewModel.photosDenied {
+                    PhotosDeniedCard { viewModel.photosDenied = false }
+                }
                 if let notice = viewModel.exportNotice {
                     ReviewExportFooter(notice: notice, isExhausted: viewModel.exportsExhausted) {
                         // "You've used your 5 free exports" is for when they are gone; with some left it is just browsing.
@@ -355,6 +353,7 @@ struct TakeReviewView: View {
         switch launchAction {
         case .share: viewModel.showsShareSheet = true
         case .edit: editingTake = take
+        case .pickBest: suggestBest(from: take)
         }
     }
 

@@ -25,6 +25,9 @@ nonisolated struct ReadingLayout: Equatable, Sendable {
     static let topBarGap: CGFloat = 8
     /// One tap on ↑ or ↓ in Display.
     static let nudge: CGFloat = 8
+    /// While a take records the box shrinks: 10 pt in on each side and 16% shorter.
+    static let recordingInset: CGFloat = 10
+    static let recordingHeightFactor: CGFloat = 0.84
 
     let lensY: CGFloat
     let lineY: CGFloat
@@ -41,7 +44,8 @@ nonisolated struct ReadingLayout: Equatable, Sendable {
         frameRect: CGRect,
         lineOffset: Double?,
         windowHeight: Double,
-        readingWidth: Double
+        readingWidth: Double,
+        isRecording: Bool = false
     ) {
         lensY = metrics.lensY
         screenWidth = metrics.screen.width
@@ -60,11 +64,13 @@ nonisolated struct ReadingLayout: Equatable, Sendable {
         let requestedLine = lineOffset.map { metrics.lensY + CGFloat($0) } ?? recommended
         lineY = Self.clamp(requestedLine.rounded(), to: lineRange)
 
-        let height = min(availableHeight, CGFloat(Self.clamp(windowHeight, to: PrompterSettings.textWindowHeightRange)))
+        // Recording puts the focus on the words: the box is a little narrower and 16% shorter (v29 · 5.2).
+        let chosenHeight = CGFloat(Self.clamp(windowHeight, to: PrompterSettings.textWindowHeightRange))
+        let height = min(availableHeight, isRecording ? (chosenHeight * Self.recordingHeightFactor).rounded() : chosenHeight)
         let lead = max(minimumLead, min(height * Self.leadFraction, lineY - topLimit))
         let top = lineY - lead
         let widthFraction = Self.clamp(readingWidth, to: PrompterSettings.readingWidthRange)
-        let width = (metrics.screen.width * widthFraction).rounded()
+        let width = max(0, (metrics.screen.width * widthFraction).rounded() - (isRecording ? Self.recordingInset * 2 : 0))
         windowRect = CGRect(
             x: ((metrics.screen.width - width) / 2).rounded(),
             y: top,

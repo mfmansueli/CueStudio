@@ -114,13 +114,24 @@ struct AnswerCommentSheet: View {
                     }
                 }
             }
-            Button { model.write(); dismiss() } label: { Text("✦ Write my answer") }
-                .buttonStyle(.cuePrimary(.large))
-                .disabled(!model.canWrite || !aiStatus.isAvailable)
-                .accessibilityIdentifier("answer.write")
-            if !aiStatus.isAvailable {
-                Text("Apple Intelligence isn't available right now.")
-                    .font(.footnote).foregroundStyle(Palette.warnText).accessibilityIdentifier("answer.aiNote")
+            if aiStatus.isAvailable {
+                Button { model.write(); dismiss() } label: { Text("✦ Draft my reply") }
+                    .buttonStyle(.cuePrimary(.large))
+                    .disabled(!model.canWrite)
+                    .accessibilityIdentifier("answer.write")
+            }
+            // Without Apple Intelligence this is the only way, and the primary one (10.2).
+            if model.offersWritingByHand {
+                Button { model.writeMyself(); dismiss() } label: { Text("Write it myself") }
+                    .buttonStyle(aiStatus.isAvailable ? .cueSecondary(.large) : .cuePrimary(.large))
+                    .disabled(!model.canWrite)
+                    .accessibilityIdentifier("answer.writeMyself")
+            }
+            if model.offersLogbook {
+                Button { model.saveForLater(); dismiss() } label: { Text("Save to Logbook") }
+                    .buttonStyle(.cueSecondary(.large))
+                    .disabled(!model.canWrite)
+                    .accessibilityIdentifier("answer.saveToLogbook")
             }
             Button("Choose another") { model.startOver() }
                 .font(.system(size: 16, weight: .medium))

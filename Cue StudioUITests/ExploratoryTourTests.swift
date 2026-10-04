@@ -198,7 +198,7 @@ final class ExploratoryTourTests: XCTestCase {
         if row.waitForExistence(timeout: 5) {
             row.tap()
             shot("script-shaped")
-            if tap("page.mode.draft") { shot("script-draft") }
+            shot("script-draft")
             if tap("page.menuButton") {
             shot("script-menu")
             // Tapping below everything closes the menu without choosing anything in it.

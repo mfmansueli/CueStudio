@@ -58,7 +58,7 @@ extension ScriptDetailViewModel {
     // MARK: - Cues and sections
 
     /// A cue at the caret. The keyboard stays away: the panel stays open for the next one.
-    func insertCue(_ cue: ScriptCue) {
+    func insertEditorCue(_ cue: ScriptCue) {
         let index = min(max(0, caret.index), draftParagraphs.count - 1)
         apply(ScriptParagraphs.cue(cue.name, atOffset: caret.offset, inParagraph: index, of: draftParagraphs), focusing: false)
     }

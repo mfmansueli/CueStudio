@@ -38,4 +38,34 @@ nonisolated extension CreatorProfile {
 
     /// Enough of the creator is known for the AI to write like them. With less, the voice is not applied.
     var hasMinimumVoice: Bool { missingVoiceSteps.isEmpty }
+
+    // MARK: - Strength (v29 · 04 F9)
+
+    /// How much of the creator Cue knows, 0–100: Essentials 60% (kind of creator, topics, audience and tone, 15 each),
+    /// Personality 25% (openings, endings, catchphrases, formats and swearing, 5 each) and Proof 15% (1–3 examples
+    /// the creator wrote, 5 each). Computed, so it follows every change to the profile.
+    var voiceStrength: Int {
+        let essentials = VoiceSetupStep.allCases.filter { isChosen($0) }.count * 15
+        let personality = VoicePersonalityItem.allCases.filter { isFilled($0) }.count * 5
+        let proof = min(VoiceExample.limit, examples.count) * 5
+        return essentials + personality + proof
+    }
+
+    /// Whether the creator has given Cue this Personality item.
+    func isFilled(_ item: VoicePersonalityItem) -> Bool {
+        switch item {
+        case .endings: !endings.isEmpty
+        case .openings: !openings.isEmpty
+        case .formats: !formats.isEmpty
+        case .swearing: swearing != nil
+        case .phrases: !phrases.isEmpty
+        }
+    }
+
+    /// The next question to ask: the first Personality item still empty, skipping the ones put off ("Not now").
+    func nextQuestion(excluding snoozed: Set<VoicePersonalityItem> = []) -> VoicePersonalityItem? {
+        VoicePersonalityItem.allCases.first { !isFilled($0) && !snoozed.contains($0) && !declinedVoiceItems.contains($0) }
+    }
+
+    var nextQuestion: VoicePersonalityItem? { nextQuestion() }
 }

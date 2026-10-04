@@ -78,6 +78,24 @@ nonisolated extension ScriptType {
                     example: String(localized: "Every paid post will be clearly labeled from now on")
                 ),
             ]
+        case .mythFact:
+            [
+                BriefField(
+                    key: "myth", label: String(localized: "The myth"),
+                    example: String(localized: "You need expensive gear to look professional")
+                ),
+                BriefField(
+                    key: "why", label: String(localized: "Why people believe it"),
+                    example: String(localized: "Every big channel shows off a huge setup")
+                ),
+                BriefField(key: "fact", label: String(localized: "The fact"), example: String(localized: "Good light and clear sound matter far more")),
+            ]
+        case .pov:
+            [
+                BriefField(key: "pov", label: String(localized: "The POV line"), example: String(localized: "POV: you finally hit record")),
+                BriefField(key: "scene", label: String(localized: "The scene"), example: String(localized: "A quiet room, a phone on a stack of books")),
+                BriefField(key: "twist", label: String(localized: "The twist"), example: String(localized: "The first take was the one you kept")),
+            ]
         }
     }
 
@@ -91,6 +109,8 @@ nonisolated extension ScriptType {
         case .opinion: String(localized: "State the opinion in one line, give one reason, end with a question — questions drive comments.")
         case .launch: String(localized: "Lead with the news, not the backstory. Add when it happens and one detail that makes people care.")
         case .apology: String(localized: "Be specific and brief. Name what happened, own it without a “but”, and say what changes. Cue removes hype, jokes and calls to action.")
+        case .mythFact: String(localized: "State the myth in one line, say why people believe it, then give the fact. Keep to one belief per video.")
+        case .pov: String(localized: "Open with the POV line, set the scene in a few words, and end on a twist. Short and visual.")
         }
     }
 
@@ -135,6 +155,10 @@ nonisolated extension ScriptType {
             return String(localized: "\(v("news")) — announcement", writtenIn: language)
         case .apology:
             return String(localized: "A note about \(v("what").lowercased())", writtenIn: language)
+        case .mythFact:
+            return String(localized: "Myth: \(v("myth").lowercased())", writtenIn: language)
+        case .pov:
+            return v("pov")
         }
     }
 
@@ -207,6 +231,19 @@ nonisolated extension ScriptType {
                 say("\(v("own")). That's on me. [pause]"),
                 "\(v("change")).",
                 say("Thank you for holding me to a higher standard."),
+            ]
+        case .mythFact:
+            paragraphs = [
+                say("Myth: \(v("myth")). [pause]"),
+                say("Here's why people believe it: \(lc("why"))."),
+                say("The fact: \(v("fact")). [look at camera]"),
+                say("Send this to someone who still believes it."),
+            ]
+        case .pov:
+            paragraphs = [
+                "\(v("pov")). [pause]",
+                "\(v("scene")).",
+                say("And then — \(lc("twist")). [smile]"),
             ]
         }
         return paragraphs.joined(separator: "\n\n")

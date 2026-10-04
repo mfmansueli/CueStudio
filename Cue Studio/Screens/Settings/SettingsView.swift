@@ -8,6 +8,12 @@ import SwiftUI
 /// How the app behaves (v26): the "Your setup" card with what every recording starts from, the
 /// three pages under it (Recording, Prompter, Remote), then General, Purchases & About and Reset.
 struct SettingsView: View {
+    /// A tile opens a pushed page or a sheet.
+    private enum SettingsTarget {
+        case page(SettingsRoute)
+        case sheet(SettingsSheet)
+    }
+
     @Environment(StoreManager.self) private var store
     @Environment(ToastService.self) private var toast
     @Environment(PreferencesService.self) private var preferences
@@ -17,6 +23,7 @@ struct SettingsView: View {
 
     @State private var showsPrivacy = false
     @State private var confirmsReset = false
+    @State private var paywall: PaywallContext?
 
     var body: some View {
         let setup = preferences.creatorSetup
@@ -28,7 +35,7 @@ struct SettingsView: View {
                     .padding(.horizontal, 4)
                 SetupSummaryCard(
                     setup: setup,
-                    onOpenRecording: { presentation.settingsPath.append(.recording) },
+                    onOpenRecording: { presentation.settingsSheet = .recording },
                     onOpenPrompter: { presentation.settingsPath.append(.prompter) }
                 )
                 tiles(setup)
@@ -39,7 +46,7 @@ struct SettingsView: View {
 
                 heading(String(localized: "General"))
                 GroupedCard(dividerInset: 58) {
-                    NavigationLink(value: SettingsRoute.languageRegion) {
+                    Button { presentation.settingsSheet = .languageRegion } label: {
                         SettingsRow(
                             systemImage: "globe", title: String(localized: "Language & Region"),
                             value: languages.interfaceLanguage.nativeName
@@ -64,6 +71,15 @@ struct SettingsView: View {
 
                 heading(String(localized: "Purchases & About"))
                 GroupedCard(dividerInset: 58) {
+                    // 11.4: the plans, from where the creator looks for them.
+                    Button { paywall = .profile } label: {
+                        SettingsRow(
+                            systemImage: "star", tint: Palette.accText, title: String(localized: "Cue Pro"),
+                            value: store.tier.isPro ? String(localized: "Active") : String(localized: "Free plan")
+                        )
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityIdentifier("settings.proButton")
                     Button {
                         Task {
                             let restored = await store.restore()
@@ -95,6 +111,7 @@ struct SettingsView: View {
         .navigationTitle("Settings")
         .toolbarTitleDisplayMode(.inlineLarge)
         .sheet(isPresented: $showsPrivacy) { PrivacySheet() }
+        .fullScreenCover(item: $paywall) { PaywallView(context: $0) }
         .confirmationDialog("Reset Creator Setup?", isPresented: $confirmsReset, titleVisibility: .visible) {
             Button("Reset Creator Setup", role: .destructive) {
                 preferences.resetCreatorSetup()
@@ -113,22 +130,27 @@ struct SettingsView: View {
     private func tiles(_ setup: CreatorSetup) -> some View {
         HStack(spacing: 10) {
             tile(
-                .recording, "video", String(localized: "Recording"),
+                .sheet(.recording), "video", String(localized: "Recording"),
                 "\(setup.label(for: .camera)) · \(setup.microphone.label)", "recording"
             )
             tile(
-                .prompter, "text.alignleft", String(localized: "Prompter"),
+                .page(.prompter), "text.alignleft", String(localized: "Prompter"),
                 "\(preferences.prompter.scrollMode.shortLabel) · \(Int(setup.textSize.rounded())) pt", "prompter"
             )
             tile(
-                .remote, "iphone.radiowaves.left.and.right", String(localized: "Remote"),
+                .sheet(.remote), "iphone.radiowaves.left.and.right", String(localized: "Remote"),
                 remote.state.isConnected ? String(localized: "Connected") : String(localized: "Off"), "remote"
             )
         }
     }
 
-    private func tile(_ route: SettingsRoute, _ image: String, _ title: String, _ detail: String, _ id: String) -> some View {
-        NavigationLink(value: route) {
+    private func tile(_ target: SettingsTarget, _ image: String, _ title: String, _ detail: String, _ id: String) -> some View {
+        Button {
+            switch target {
+            case .page(let route): presentation.settingsPath.append(route)
+            case .sheet(let sheet): presentation.settingsSheet = sheet
+            }
+        } label: {
             SettingsTile(systemImage: image, title: title, detail: detail)
         }
         .buttonStyle(.plain)

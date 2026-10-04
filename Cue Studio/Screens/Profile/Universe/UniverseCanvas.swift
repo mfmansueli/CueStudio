@@ -5,13 +5,11 @@
 
 import SwiftUI
 
-/// The creator's universe in one picture: "YOU" in the middle, an orbit for each topic with a dot for every video
+/// The creator's universe in one picture: the animated core "YOU" in the middle (no photo, no initial), an orbit for each topic with a dot for every video
 /// shared from it, and the platforms as stars at the edges, joined to the middle by dashed routes. The newest video
 /// is a yellow star that pulses. Slow orbits; still under Reduce Motion.
 struct UniverseMap: View {
     let snapshot: UniverseSnapshot
-    /// The first letter of the creator's name, in the middle.
-    let initial: String
     var animates = true
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
@@ -43,7 +41,7 @@ struct UniverseMap: View {
         let center = CGPoint(x: size.width / 2, y: size.height / 2)
         drawRoutes(in: &canvas, size: size, center: center)
         for (index, entry) in snapshot.topics.enumerated() { drawOrbit(entry, index: index, in: &canvas, center: center, size: size, time: time) }
-        drawYou(in: &canvas, center: center)
+        drawYou(in: &canvas, center: center, time: time)
         for item in snapshot.platforms { drawPlatform(item.platform, count: item.count, in: &canvas, size: size) }
         drawNewest(in: &canvas, center: center, size: size, time: time)
     }
@@ -76,21 +74,27 @@ struct UniverseMap: View {
         }
     }
 
-    private func drawYou(in canvas: inout GraphicsContext, center: CGPoint) {
+    /// The core: a soft violet glow that breathes (4 s), a gradient ring and a small star that circles it (12 s).
+    private func drawYou(in canvas: inout GraphicsContext, center: CGPoint, time: TimeInterval) {
+        let breath = 1 + 0.08 * sin(time * 2 * .pi / 4)
+        let glow = 60 * breath
         canvas.fill(
-            Path(ellipseIn: CGRect(x: center.x - 60, y: center.y - 60, width: 120, height: 120)),
-            with: .radialGradient(Gradient(colors: [Color(hex: 0x9D8CFF).opacity(0.5), .clear]), center: center, startRadius: 0, endRadius: 60)
+            Path(ellipseIn: CGRect(x: center.x - glow, y: center.y - glow, width: glow * 2, height: glow * 2)),
+            with: .radialGradient(Gradient(colors: [Color(hex: 0x9D8CFF).opacity(0.5), .clear]), center: center, startRadius: 0, endRadius: glow)
         )
-        let disc = CGRect(x: center.x - 28, y: center.y - 28, width: 56, height: 56)
-        let rim = GraphicsContext.Shading.linearGradient(
-            Gradient(colors: [Palette.acc, Palette.aiText]), startPoint: disc.origin, endPoint: CGPoint(x: disc.maxX, y: disc.maxY)
-        )
-        canvas.fill(Path(ellipseIn: disc), with: .color(Palette.surface2))
-        canvas.stroke(Path(ellipseIn: disc), with: rim, lineWidth: 3)
-        canvas.draw(Text(initial).font(.system(size: 24, weight: .bold)).foregroundStyle(Palette.ink), at: center)
+        let core = 26 * breath
+        let disc = CGRect(x: center.x - core, y: center.y - core, width: core * 2, height: core * 2)
+        canvas.fill(Path(ellipseIn: disc), with: .radialGradient(
+            Gradient(colors: [Palette.acc, Palette.aiText.opacity(0.9)]), center: center, startRadius: 0, endRadius: core
+        ))
+        let ring = CGRect(x: center.x - 38, y: center.y - 38, width: 76, height: 76)
+        canvas.stroke(Path(ellipseIn: ring), with: .color(Palette.aiText.opacity(0.5)), lineWidth: 1)
+        let angle = time * 2 * .pi / 12
+        let star = CGPoint(x: center.x + 38 * CGFloat(cos(angle)), y: center.y + 38 * CGFloat(sin(angle)))
+        canvas.fill(Path(ellipseIn: CGRect(x: star.x - 3, y: star.y - 3, width: 6, height: 6)), with: .color(.white))
         canvas.draw(
             Text("YOU").font(.system(size: 10, weight: .bold, design: .monospaced)).foregroundStyle(Palette.ink2),
-            at: CGPoint(x: center.x, y: center.y + 44)
+            at: CGPoint(x: center.x, y: center.y + 54)
         )
     }
 

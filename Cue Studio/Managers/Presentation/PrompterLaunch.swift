@@ -24,4 +24,6 @@ enum ReviewLaunchAction: Hashable {
     case share
     /// Opens Quick edit.
     case edit
+    /// Opens "Pick your best take" (6.1): after a stop that leaves two or more takes and no ★.
+    case pickBest
 }

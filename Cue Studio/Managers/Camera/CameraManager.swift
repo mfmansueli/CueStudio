@@ -29,6 +29,9 @@ final class CameraManager: CameraControlling {
 
     private let engine = CaptureEngine()
 
+    /// A take ended without Stop (storage full, an interruption): the recorder files what was saved.
+    var onRecordingEnded: (@MainActor (RecordedClip?, RecordingEndReason) -> Void)?
+
     /// For the preview layer only.
     var previewSession: AVCaptureSession { engine.session }
 
@@ -111,6 +114,13 @@ final class CameraManager: CameraControlling {
 
     func startRecording(settings: CameraSettings) async throws {
         let url = URL.temporaryDirectory.appending(path: "take-\(UUID().uuidString).mov")
+        await engine.setRecordingEndedHandler { [weak self] clip, reason in
+            Task { @MainActor in
+                guard let self, self.isRecording else { return }
+                self.isRecording = false
+                self.onRecordingEnded?(clip, reason)
+            }
+        }
         try await engine.startRecording(to: url, rotationAngle: captureRotationAngle)
         isRecording = true
     }

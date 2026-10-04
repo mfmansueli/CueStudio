@@ -29,6 +29,8 @@ nonisolated struct ScriptRequest: Hashable, Sendable {
     /// The format the creator picked for a free prompt (nil: Cue picks from the idea). A format's
     /// own brief carries its type in the source.
     var format: ScriptType?
+    /// The brand brief of a sponsored ad: the only claims the ad may make. Nil for everything else.
+    var brand: BrandBrief?
 
     var type: ScriptType? {
         if case .format(let type, _) = source { type } else { format }

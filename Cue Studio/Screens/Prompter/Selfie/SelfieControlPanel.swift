@@ -5,15 +5,18 @@
 
 import SwiftUI
 
-/// One toolbar for prompter and camera, in night glass. Ready to record it is whole: the mode switch
+/// One toolbar for prompter and camera, in night glass, for Selfie and Studio. Ready to record it is whole: the mode switch
 /// with back to the top, play and Aa, the speed (or what Voice Following is doing), the HUD line
 /// with the microphone and the setup the take records with, and the capture row. While a take
 /// records it shrinks to `RecordingCompactBar`; a tap on the screen brings the whole one back for
 /// a few seconds.
 struct SelfieControlPanel: View {
     let viewModel: PrompterViewModel
+    /// Studio's bar: the same one, with jump back and forward three lines beside play.
+    var isStudio = false
 
     @Environment(SessionSetupService.self) private var session
+    @Environment(AudioInputManager.self) private var audio
 
     var body: some View {
         let compact = viewModel.showsCompactBar
@@ -46,15 +49,28 @@ struct SelfieControlPanel: View {
         VStack(spacing: 10) {
             HStack(spacing: 8) {
                 ScrollModePicker(selection: session.prompter.scrollMode) { viewModel.setScrollMode($0) }
-                Button { viewModel.rewind() } label: { Image(systemName: "arrow.up.to.line") }
-                    .buttonStyle(.cueIcon(.overlay))
-                    .accessibilityLabel(Text("Back to the top"))
+                if isStudio {
+                    Button { viewModel.jump(lines: -3) } label: { Image(systemName: "chevron.backward.2") }
+                        .buttonStyle(.cueIcon(.overlay))
+                        .accessibilityLabel(Text("Back three lines"))
+                        .accessibilityIdentifier("prompter.backButton")
+                } else {
+                    Button { viewModel.rewind() } label: { Image(systemName: "arrow.up.to.line") }
+                        .buttonStyle(.cueIcon(.overlay))
+                        .accessibilityLabel(Text("Back to the top"))
+                }
                 Button { viewModel.togglePlay() } label: {
                     Image(systemName: viewModel.isPlaying ? "pause.fill" : "play.fill")
                 }
                 .buttonStyle(.cueIcon(.overlay))
                 .accessibilityLabel(Text(viewModel.isPlaying ? "Pause" : "Play"))
                 .accessibilityIdentifier("prompter.playButton")
+                if isStudio {
+                    Button { viewModel.jump(lines: 3) } label: { Image(systemName: "chevron.forward.2") }
+                        .buttonStyle(.cueIcon(.overlay))
+                        .accessibilityLabel(Text("Forward three lines"))
+                        .accessibilityIdentifier("prompter.forwardButton")
+                }
                 Button { viewModel.sheet = .display } label: {
                     Text("Aa").font(.system(size: 15, weight: .semibold))
                 }
@@ -68,12 +84,33 @@ struct SelfieControlPanel: View {
                     level: viewModel.voiceLevel, isListening: viewModel.isPlaying && viewModel.isVoiceActive,
                     status: viewModel.voiceFollowStatus, speedLabel: session.prompter.speedLabel
                 )
+                if isStudio {
+                    Text(voiceStatus)
+                        .font(.footnote.monospacedDigit())
+                        .foregroundStyle(Palette.ink2)
+                        .lineLimit(2)
+                        .multilineTextAlignment(.center)
+                        .accessibilityIdentifier("prompter.voiceStatus")
+                }
             } else {
                 SpeedSlider(
                     speed: session.prompter.speed,
                     onChange: { viewModel.setSpeed($0) }
                 )
             }
+        }
+    }
+
+    /// Following the words, or, without word-by-word recognition here (yet), scrolling at the set speed while the creator
+    /// talks. A model getting ready or downloading says so before play.
+    private var voiceStatus: String {
+        let status = viewModel.voiceFollowStatus
+        switch status {
+        case .preparing, .downloading:
+            return status.detail(speedLabel: session.prompter.speedLabel)
+        case .followingWords, .scrollsWhileTalking:
+            guard viewModel.isPlaying else { return String(localized: "Tap play, then start reading") }
+            return status.detail(speedLabel: session.prompter.speedLabel)
         }
     }
 
@@ -134,6 +171,9 @@ struct SelfieControlPanel: View {
             RecordButton(isRecording: viewModel.isRecording, isCountingDown: viewModel.countdown != nil) {
                 Task { await viewModel.recordButtonTapped() }
             }
+            // No microphone, no recording: the card above says why.
+            .disabled(!audio.isMicrophoneAllowed && !viewModel.isRecording)
+            .opacity(!audio.isMicrophoneAllowed && !viewModel.isRecording ? 0.4 : 1)
             Spacer()
             Button { viewModel.flipCamera() } label: { Image(systemName: "arrow.triangle.2.circlepath.camera") }
                 .buttonStyle(.cueIcon(.overlay, diameter: 40))

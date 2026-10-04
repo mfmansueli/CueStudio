@@ -33,8 +33,8 @@ extension QuickEditViewModel {
 
     // MARK: - Contexts
 
-    /// The main tools, in the order a creator's hand expects (v26): cut, sound, words, look, shape,
-    /// then what goes on top, and last the AI's, in violet.
+    /// The main tools, in CapCut's order (v29 · 7.2): Edit, sound, words, look, then the AI's in violet, and the cover. Adjust, Crop,
+    /// Background and Overlay are in Edit's clip tools; the take's own Adjust and Background are in ✦ Smart.
     private var mainItems: [EditorToolbarItem] {
         [
             EditorToolbarItem(id: "edit", label: String(localized: "Edit"), systemImage: "scissors", action: .selectClipAtPlayhead),
@@ -42,13 +42,8 @@ extension QuickEditViewModel {
             EditorToolbarItem(id: "text", label: String(localized: "Text"), systemImage: "textformat", action: .openMenu(.text)),
             EditorToolbarItem(id: "captions", label: String(localized: "Captions"), systemImage: "captions.bubble", action: .openCaptions),
             EditorToolbarItem(id: "filters", label: String(localized: "Filters"), systemImage: "camera.filters", action: .open(.filters)),
-            EditorToolbarItem(id: "adjust", label: String(localized: "Adjust"), systemImage: "slider.horizontal.3", action: .open(.adjust)),
-            EditorToolbarItem(id: "crop", label: String(localized: "Crop"), systemImage: "crop", action: .open(.crop)),
-            EditorToolbarItem(
-                id: "background", label: String(localized: "Background"), systemImage: "person.and.background.dotted", action: .open(.background)
-            ),
-            EditorToolbarItem(id: "media", label: String(localized: "Overlay"), systemImage: "photo.badge.plus", action: .addMedia),
             EditorToolbarItem(id: "smart", label: String(localized: "✦ Smart"), systemImage: "sparkles", style: .smart, action: .open(.smart)),
+            EditorToolbarItem(id: "cover", label: String(localized: "Cover"), systemImage: "photo.artframe", action: .open(.cover)),
         ]
     }
 
@@ -113,6 +108,9 @@ extension QuickEditViewModel {
                 EditorToolbarItem(id: "volume", label: String(localized: "Volume"), systemImage: "speaker.wave.2", action: .open(.volume)),
                 EditorToolbarItem(id: "voice", label: String(localized: "Studio Voice"), systemImage: "waveform.and.mic", action: .open(.voice)),
                 EditorToolbarItem(id: "duplicate", label: String(localized: "Duplicate"), systemImage: "plus.square.on.square", action: .duplicateClip),
+                // The output's own: the frame of the whole take, and a photo or video on top.
+                EditorToolbarItem(id: "crop", label: String(localized: "Crop"), systemImage: "crop", action: .open(.crop)),
+                EditorToolbarItem(id: "media", label: String(localized: "Overlay"), systemImage: "photo.badge.plus", action: .addMedia),
                 EditorToolbarItem(id: "delete", label: delete, systemImage: "trash", style: .destructive, action: .deleteClip),
             ]
         case .text:

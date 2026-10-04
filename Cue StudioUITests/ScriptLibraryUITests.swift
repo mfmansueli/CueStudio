@@ -16,27 +16,25 @@ final class ScriptLibraryUITests: XCTestCase {
         continueAfterFailure = false
     }
 
-    func testRecentListShowsEachScriptAtItsStage() {
+    func testTheListShowsEachScriptAtItsState() {
         let app = CueApp.launch(seeded: true)
-        XCTAssertTrue(app.staticTexts[Self.habits].waitForExistence(timeout: 15))
-        XCTAssertTrue(element(app, "scripts.summary").exists)
-        // The script edited last says Continue; each row has Record and Studio mode.
-        XCTAssertTrue(app.staticTexts["Continue"].exists)
-        XCTAssertTrue(app.buttons["Record"].firstMatch.exists)
-        XCTAssertTrue(app.buttons["Studio mode"].firstMatch.exists)
-        // Its takes put it at a stage on the way to a posted video; a script with no take is ready to record.
+        XCTAssertTrue(element(app, "scripts.summary").waitForExistence(timeout: 15))
+        // READY TO RECORD first, then DRAFTS, then RECORDED; each has its way forward.
+        XCTAssertTrue(element(app, "scripts.group.ready").exists)
+        XCTAssertTrue(app.buttons["row.recordButton"].firstMatch.exists)
+        for _ in 0..<4 where !element(app, "scripts.group.recorded").exists { app.swipeUp() }
+        XCTAssertTrue(element(app, "scripts.group.draft").exists)
+        XCTAssertTrue(element(app, "scripts.group.recorded").exists)
+        XCTAssertTrue(element(app, "row.takes").exists)
+        // A recorded script's line carries its takes and the stage of its video.
         XCTAssertTrue(app.descendants(matching: .any).matching(NSPredicate(format: "label CONTAINS '3 takes'")).firstMatch.exists)
-        // The script without a take is further down the list: scroll to it (rows are built as they come into view).
-        let waiting = app.descendants(matching: .any).matching(NSPredicate(format: "label CONTAINS[c] 'Ready to record'")).firstMatch
-        for _ in 0..<4 where !waiting.exists { app.swipeUp() }
-        XCTAssertTrue(waiting.exists)
     }
 
     func testFilteringByDestination() {
         let app = CueApp.launch(seeded: true)
-        XCTAssertTrue(app.staticTexts[Self.lamp].waitForExistence(timeout: 15))
+        XCTAssertTrue(app.buttons["scripts.filter.reels"].waitForExistence(timeout: 15))
         app.buttons["scripts.filter.reels"].tap()
-        XCTAssertTrue(app.staticTexts[Self.lamp].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.scriptRow(Self.lamp).exists)
         XCTAssertFalse(app.staticTexts["Oat & Co. — sponsored read"].exists)
     }
 
@@ -55,7 +53,7 @@ final class ScriptLibraryUITests: XCTestCase {
         app.buttons["scripts.selectButton"].tap()
         search.tap()
         search.typeText("nothing matches this")
-        XCTAssertTrue(app.staticTexts["No scripts here yet."].waitForExistence(timeout: 5))
+        XCTAssertTrue(element(app, "scripts.empty").waitForExistence(timeout: 5))
         XCTAssertTrue(prompt.exists)
     }
 
@@ -68,8 +66,8 @@ final class ScriptLibraryUITests: XCTestCase {
         app.buttons["ideaCard.submit"].tap()
         // The page opens and the words arrive on it, in the Draft; the card is empty again.
         XCTAssertTrue(app.buttons["page.backButton"].waitForExistence(timeout: 10))
-        XCTAssertTrue(element(app, "page.draftEditor").waitForExistence(timeout: 10))
-        XCTAssertTrue((element(app, "page.draftEditor").value as? String)?.contains("Save this for later") == true)
+        XCTAssertTrue(element(app, "page.editor").waitForExistence(timeout: 10))
+        XCTAssertTrue((element(app, "page.editor").value as? String)?.contains("Save this for later") == true)
         XCTAssertEqual((element(app, "page.titleField").value as? String), "A day in my life")
         app.buttons["page.backButton"].tap()
         XCTAssertTrue(element(app, "ideaCard.field").waitForExistence(timeout: 5))
@@ -130,8 +128,7 @@ final class ScriptLibraryUITests: XCTestCase {
     func testSavingAnExistingScriptAndReopeningItStillNeedsOnlyOneBackTap() {
         let app = CueApp.launch(seeded: true)
         openScript(app, Self.lamp)
-        app.buttons["page.mode.draft"].tap()
-        let text = element(app, "page.draftEditor")
+        let text = element(app, "page.editor")
         XCTAssertTrue(text.waitForExistence(timeout: 5))
         text.tap()
         text.typeText(" Updated for navigation testing.")
@@ -140,8 +137,7 @@ final class ScriptLibraryUITests: XCTestCase {
         XCTAssertFalse(app.buttons["detail.recordButton"].exists)
 
         // Saving promotes this row to the one edited last, but must not create another page.
-        app.staticTexts[Self.lamp].tap()
-        XCTAssertTrue(app.buttons["detail.recordButton"].waitForExistence(timeout: 5))
+        openScript(app, Self.lamp)
         app.buttons["page.backButton"].tap()
         XCTAssertTrue(element(app, "scripts.promptCard").waitForExistence(timeout: 5))
         XCTAssertFalse(app.buttons["detail.recordButton"].exists)
@@ -168,16 +164,17 @@ final class ScriptLibraryUITests: XCTestCase {
         write.tap()
         let title = element(app, "page.titleField")
         XCTAssertTrue(title.waitForExistence(timeout: 5))
-        XCTAssertTrue(element(app, "page.draftEditor").exists)
+        XCTAssertTrue(element(app, "page.editor").exists)
         title.typeText("One-tap navigation script")
         app.buttons["page.backButton"].tap()
         XCTAssertTrue(element(app, "scripts.promptCard").waitForExistence(timeout: 5))
         XCTAssertFalse(app.buttons["detail.recordButton"].exists)
+        // A blank draft opens straight into writing (Continue ›), with the keyboard up.
         app.staticTexts["One-tap navigation script"].tap()
-        XCTAssertTrue(app.buttons["detail.recordButton"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.buttons["page.backButton"].waitForExistence(timeout: 5))
         app.buttons["page.backButton"].tap()
         XCTAssertTrue(element(app, "scripts.promptCard").waitForExistence(timeout: 5))
-        XCTAssertFalse(app.buttons["detail.recordButton"].exists)
+        XCTAssertFalse(app.buttons["page.backButton"].exists)
     }
 
     func testStudioAndRecordReturnToTheSamePageWithoutAddingAnotherRoute() {
@@ -202,36 +199,33 @@ final class ScriptLibraryUITests: XCTestCase {
 
     // MARK: - The page
 
-    func testThePageOpensShapedWithSectionsAndTheLength() {
+    func testThePageHasTheStripTheLengthAndExactlyOneRecordButton() {
         let app = CueApp.launch(seeded: true)
-        openScript(app, Self.lamp)
-        XCTAssertTrue(element(app, "page.lengthBar").waitForExistence(timeout: 5))
-        XCTAssertTrue(element(app, "page.section.0").exists)
+        openScript(app, "Oat & Co. — sponsored read")
+        XCTAssertTrue(element(app, "page.strip").waitForExistence(timeout: 5))
+        XCTAssertTrue(element(app, "page.lengthBar").exists)
         XCTAssertTrue(element(app, "page.meter").label.localizedCaseInsensitiveContains("words"))
-        XCTAssertFalse(element(app, "page.draftEditor").exists)
-        // Shaping never rewrites the words: the way back to the Draft is one tap.
-        app.buttons["page.toDraft"].tap()
-        XCTAssertTrue(element(app, "page.draftEditor").waitForExistence(timeout: 5))
-        XCTAssertTrue(app.buttons["page.shapeButton"].exists && app.buttons["page.cueBreakButton"].exists && app.buttons["page.textSizeButton"].exists)
-        app.buttons["page.shapeButton"].tap()
-        XCTAssertTrue(element(app, "page.lengthBar").waitForExistence(timeout: 5))
+        XCTAssertTrue(element(app, "page.editor").exists)
+        // The Draft | Shaped switch is gone; Record is the page's only one.
+        XCTAssertFalse(app.buttons["page.mode.draft"].exists || app.buttons["page.mode.shaped"].exists)
+        XCTAssertEqual(app.buttons.matching(identifier: "detail.recordButton").count, 1)
     }
 
-    func testACueBreakGoesIntoTheDraftAndShowsAsATagWhenShaped() {
+    func testACueFromTheBarGoesIntoTheText() {
         let app = CueApp.launch(seeded: true)
         openScript(app, Self.lamp)
-        app.buttons["page.mode.draft"].tap()
-        let text = element(app, "page.draftEditor")
+        let text = element(app, "page.editor")
         XCTAssertTrue(text.waitForExistence(timeout: 5))
         text.tap()
-        app.buttons["page.cueBreakButton"].tap()
+        XCTAssertTrue(element(app, "page.cuesBar").waitForExistence(timeout: 5))
+        app.buttons["page.cue.pause"].tap()
         XCTAssertTrue((text.value as? String)?.contains("[pause]") == true)
     }
 
-    func testTheHookOpensTheHooksSheetAndPickingOneChangesTheOpening() {
+    func testTheHookButtonOpensTheHooksSheetAndPickingOneChangesTheOpening() {
         let app = CueApp.launch(seeded: true)
         openScript(app, Self.lamp)
-        let hook = element(app, "page.sectionText.0")
+        let hook = app.buttons["page.hookButton"]
         XCTAssertTrue(hook.waitForExistence(timeout: 5))
         hook.tap()
         let option = element(app, "hooks.option")
@@ -240,16 +234,14 @@ final class ScriptLibraryUITests: XCTestCase {
         XCTAssertTrue(app.staticTexts.matching(NSPredicate(format: "label BEGINSWITH 'Hook replaced'")).firstMatch.waitForExistence(timeout: 5))
     }
 
-    /// The rewrite bar only shows over a selection (covered by the page tests), never over a caret.
-    func testTheDraftOffersNoRewriteBarUntilWordsAreSelected() {
+    /// The AI bar only shows over a selection, never over a caret.
+    func testThePageOffersNoAIBarUntilWordsAreSelected() {
         let app = CueApp.launch(seeded: true)
         openScript(app, Self.lamp)
-        app.buttons["page.mode.draft"].tap()
-        let text = element(app, "page.draftEditor")
+        let text = element(app, "page.editor")
         XCTAssertTrue(text.waitForExistence(timeout: 5))
         text.tap()
         XCTAssertFalse(element(app, "page.selectionBar").exists)
-        XCTAssertFalse(element(app, "page.candidate").exists)
     }
 
     func testPlatformChipOffersEveryPlatformAndChangesThePreset() {
@@ -341,12 +333,8 @@ final class ScriptLibraryUITests: XCTestCase {
 
     func testSwipingForMoreOffersShare() {
         let app = CueApp.launch(seeded: true)
-        let row = app.staticTexts[Self.lamp]
-        XCTAssertTrue(row.waitForExistence(timeout: 15))
         // The AI card sits over the list: bring the row into view first (a swipe doesn't scroll to it).
-        for _ in 0..<4 where !row.isHittable {
-            app.swipeUp()
-        }
+        let row = app.scriptRow(Self.lamp)
         row.swipeLeft()
         let more = app.buttons["More"]
         XCTAssertTrue(more.waitForExistence(timeout: 5))
@@ -362,7 +350,7 @@ final class ScriptLibraryUITests: XCTestCase {
         let select = app.buttons["scripts.selectButton"]
         XCTAssertTrue(select.waitForExistence(timeout: 15))
         select.tap()
-        app.staticTexts[Self.lamp].tap()
+        app.scriptRow(Self.lamp).tap()
         app.buttons["scripts.deleteSelectionButton"].tap()
         XCTAssertTrue(app.staticTexts["1 deleted"].waitForExistence(timeout: 5))
         XCTAssertFalse(app.staticTexts[Self.lamp].exists)
@@ -371,12 +359,7 @@ final class ScriptLibraryUITests: XCTestCase {
     // MARK: - Helpers
 
     private func openScript(_ app: XCUIApplication, _ title: String) {
-        let row = app.staticTexts[title]
-        XCTAssertTrue(row.waitForExistence(timeout: 15), title)
-        for _ in 0..<4 where !row.isHittable {
-            app.swipeUp()
-        }
-        row.tap()
+        app.openScriptPage(titled: title)
         XCTAssertTrue(app.buttons["detail.recordButton"].waitForExistence(timeout: 5))
     }
 

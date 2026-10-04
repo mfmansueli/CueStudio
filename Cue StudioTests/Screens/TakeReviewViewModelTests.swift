@@ -28,13 +28,13 @@ struct TakeReviewViewModelTests {
         init(_ tier: MembershipTier) { self.tier = tier }
     }
 
-    private func makeScenario(tier: MembershipTier = .free, usedExports: Int = 0, take: Take? = nil) -> Scenario {
-        makeScenario(plan: Plan(tier), usedExports: usedExports, take: take)
+    private func makeScenario(tier: MembershipTier = .free, usedExports: Int = 0, take: Take? = nil, type: ScriptType? = nil) -> Scenario {
+        makeScenario(plan: Plan(tier), usedExports: usedExports, take: take, type: type)
     }
 
-    private func makeScenario(plan: Plan, usedExports: Int = 0, take: Take? = nil) -> Scenario {
+    private func makeScenario(plan: Plan, usedExports: Int = 0, take: Take? = nil, type: ScriptType? = nil) -> Scenario {
         let defaults = TestDefaults()
-        let script = TestData.script(text: "Okay, real talk.")
+        let script = TestData.script(text: "Okay, real talk.", type: type)
         let take = take ?? TestData.take(scriptID: script.id)
         let library = ScriptLibraryService(repository: FakeScriptRepository(scripts: [script]))
         library.load()
@@ -318,6 +318,59 @@ struct TakeReviewViewModelTests {
         #expect(scenario.viewModel.delete() == nil)
         #expect(scenario.takes.takes.isEmpty)
         #expect(scenario.toast.message == "Take 1 deleted")
+    }
+
+    @Test func deleteIsUndoneWithinTheToastAndTheVideoGoesAfterwards() throws {
+        let scenario = makeScenario()
+        defer { scenario.defaults.tearDown() }
+        _ = scenario.viewModel.delete()
+        #expect(scenario.takes.takes.isEmpty)
+        let action = try #require(scenario.toast.action)
+        action.perform()
+        #expect(scenario.takes.takes.count == 1)
+    }
+
+    @Test func aRefusedPhotosPermissionShowsTheCardAndNoToast() async {
+        let scenario = makeScenario()
+        defer { scenario.defaults.tearDown() }
+        scenario.photos.error = PhotoLibraryError.notAuthorized
+        await scenario.viewModel.save()
+        #expect(scenario.viewModel.photosDenied)
+        #expect(scenario.toast.message == nil)
+    }
+
+    @Test func aFailedExportDoesNotCountAndSaysSo() async {
+        let scenario = makeScenario()
+        defer { scenario.defaults.tearDown() }
+        scenario.exporter.error = URLError(.unknown)
+        await scenario.viewModel.save()
+        #expect(scenario.toast.message == "Couldn't export · Try again")
+        #expect(scenario.quota.exportsLeft(for: .free) == 5)
+        #expect(!scenario.viewModel.photosDenied)
+    }
+
+    @Test func aRefusedPhotosSaveDoesNotCountTheExportEither() async {
+        let scenario = makeScenario()
+        defer { scenario.defaults.tearDown() }
+        scenario.photos.error = PhotoLibraryError.notAuthorized
+        await scenario.viewModel.save()
+        #expect(scenario.quota.exportsLeft(for: .free) == 5)
+    }
+
+    @Test func aSponsoredVideoCarriesHashtagAdAndOthersDoNot() async {
+        let ad = makeScenario(type: .ad)
+        defer { ad.defaults.tearDown() }
+        var copied: [String] = []
+        ad.viewModel.copiesCaption = { copied.append($0) }
+        #expect(ad.viewModel.isSponsored)
+        await ad.viewModel.save()
+        #expect(copied == ["#ad"])
+        let plain = makeScenario()
+        defer { plain.defaults.tearDown() }
+        plain.viewModel.copiesCaption = { copied.append($0) }
+        #expect(!plain.viewModel.isSponsored)
+        await plain.viewModel.save()
+        #expect(copied == ["#ad"])
     }
 
     @Test func metaLineShowsWhenPlatformFrameAndQuality() {

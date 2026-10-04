@@ -4,7 +4,6 @@
 //
 
 import SwiftUI
-import UIKit
 
 /// Tabs (Scripts, Takes, Record, Profile, Settings), creation sheets, the prompter and the
 /// remote (when this device controls a teleprompter on another one).
@@ -18,78 +17,89 @@ struct MainView: View {
     @Environment(DocumentImportService.self) private var importer
     @Environment(ToastService.self) private var toast
     @Environment(LanguageService.self) private var languages
-    @State private var isKeyboardUp = false
-    @State private var bottomInset: CGFloat = 0
 
     var body: some View {
         @Bindable var presentation = presentation
-        VStack(spacing: 0) {
-            tabs
-            if !presentation.hidesTabBar && !isKeyboardUp {
-                CueTabBar(selection: presentation.selectedTab) { presentation.select($0) }
-                    .padding(.top, 6)
-                    // The bar floats 26 pt from the screen's edge: with a Home Indicator strip under it (34 pt) that is
-                    // a little lower than the strip's top, without one it is lifted by the whole 26 pt.
-                    .padding(.bottom, bottomInset > 0 ? 0 : Metrics.tabBarBottomMargin)
-                    .offset(y: max(0, bottomInset - Metrics.tabBarBottomMargin))
-                    .frame(maxWidth: .infinity)
-                    .transition(.move(edge: .bottom).combined(with: .opacity))
+        tabs
+            .sheet(item: $presentation.sheet) { sheet in
+                sheetContent(sheet)
             }
-        }
-        .background(Palette.bg.ignoresSafeArea())
-        .onGeometryChange(for: CGFloat.self) { $0.safeAreaInsets.bottom } action: { bottomInset = $0 }
-        .animation(CueMotion.card, value: presentation.hidesTabBar)
-        .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardWillShowNotification)) { _ in isKeyboardUp = true }
-        .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardWillHideNotification)) { _ in isKeyboardUp = false }
-        .sheet(item: $presentation.sheet) { sheet in
-            sheetContent(sheet)
-        }
-        .fullScreenCover(item: $presentation.prompter) { launch in
-            PrompterView(launch: launch, services: services)
-        }
-        .fullScreenCover(isPresented: $presentation.showsRemoteController) {
-            RemoteControllerView()
-        }
+            .fullScreenCover(item: $presentation.prompter) { launch in
+                PrompterView(launch: launch, services: services)
+            }
+            .fullScreenCover(isPresented: $presentation.showsRemoteController) {
+                RemoteControllerView()
+            }
     }
 
-    /// The four destinations. The tab bar is ours (below), so the system's is hidden in each tab.
+    /// The system's tab bar (Liquid Glass on iOS 26+): content scrolls under it, the selection slides with a drag
+    /// across it, and it steps out of the way when a screen asks (`hidesCueTabBar`). Record is not a destination:
+    /// selecting it opens "Start recording" and the selection stays where it was.
     private var tabs: some View {
         @Bindable var presentation = presentation
+        let barVisibility: Visibility = presentation.hidesTabBar ? .hidden : .automatic
         return TabView(selection: tabSelection) {
-            Tab("Scripts", systemImage: "doc.text", value: AppTab.scripts) {
+            Tab(value: AppTab.scripts) {
                 NavigationStack(path: $presentation.scriptsPath) {
                     ScriptsView(library: services.library, toast: services.toast, writer: services.writer, drafts: services.drafts)
                         .navigationDestination(for: ScriptRoute.self) { route in
                             ScriptDetailView(route: route, services: services)
                         }
                 }
-                .toolbarVisibility(.hidden, for: .tabBar)
+                .toolbarVisibility(barVisibility, for: .tabBar)
+            } label: {
+                Label { Text("Scripts") } icon: { Image(uiImage: CueTabImage.template(.scripts)) }
             }
-            Tab("Takes", systemImage: "film.stack", value: AppTab.takes) {
+            Tab(value: AppTab.takes) {
                 NavigationStack { TakesView(services: services) }
-                    .toolbarVisibility(.hidden, for: .tabBar)
+                    .toolbarVisibility(barVisibility, for: .tabBar)
+            } label: {
+                Label { Text("Takes") } icon: { Image(uiImage: CueTabImage.template(.takes)) }
             }
-            Tab("Profile", systemImage: "person.crop.circle", value: AppTab.profile) {
+            Tab(value: AppTab.record) {
+                Color.clear
+            } label: {
+                Label { Text("Record") } icon: { Image(uiImage: CueTabImage.record) }
+            }
+            Tab(value: AppTab.profile) {
                 NavigationStack { ProfileView() }
-                    .toolbarVisibility(.hidden, for: .tabBar)
+                    .toolbarVisibility(barVisibility, for: .tabBar)
+            } label: {
+                Label { Text("Profile") } icon: { Image(uiImage: CueTabImage.template(.profile)) }
             }
-            Tab("Settings", systemImage: "gearshape", value: AppTab.settings) {
+            Tab(value: AppTab.settings) {
                 NavigationStack(path: $presentation.settingsPath) {
                     SettingsView()
                         .navigationDestination(for: SettingsRoute.self) { route in
                             switch route {
-                            case .languageRegion: LanguageRegionView()
                             case .personalize: PersonalizeView()
-                            case .recording:
-                                SettingsRecordingView(preferences: preferences, microphones: services.audio, toast: toast)
                             case .prompter:
                                 SettingsPrompterView(preferences: preferences, microphones: services.audio, toast: toast)
-                            case .remote: RemoteControlView()
                             case .acknowledgements: AcknowledgementsView()
                             }
                         }
+                        .sheet(item: $presentation.settingsSheet) { sheet in
+                            NavigationStack {
+                                Group {
+                                    switch sheet {
+                                    case .recording:
+                                        SettingsRecordingView(preferences: preferences, microphones: services.audio, toast: toast)
+                                    case .remote: RemoteControlView()
+                                    case .languageRegion: LanguageRegionView()
+                                    }
+                                }
+                                .toolbar {
+                                    ToolbarItem(placement: .confirmationAction) {
+                                        Button("Done") { presentation.settingsSheet = nil }
+                                            .accessibilityIdentifier("settings.sheetDone")
+                                    }
+                                }
+                            }
+                        }
                 }
-                .toolbarVisibility(.hidden, for: .tabBar)
+                .toolbarVisibility(barVisibility, for: .tabBar)
+            } label: {
+                Label { Text("Settings") } icon: { Image(uiImage: CueTabImage.template(.settings)) }
             }
         }
         .tint(Palette.accText)
@@ -111,18 +121,16 @@ struct MainView: View {
         case .newScript:
             NewScriptSheet(
                 mode: .new,
-                onLetCue: {
-                    presentation.sheet = nil
-                    presentation.selectedTab = .scripts
-                    services.ideaDraft.wantsFocus = true
-                },
+                onLetCue: { presentation.present(.ideas) },
                 onWrite: writeNewScript,
                 onImport: { presentation.present(.importScript) },
+                onStartFromFormat: { presentation.present(.startFromFormat) },
                 onAnswer: { presentation.present(.answerComment) },
                 onFreestyle: {
                     presentation.sheet = nil
                     presentation.openPrompter(scriptID: nil, mode: .selfie)
-                }
+                },
+                hasAI: services.aiStatus.isAvailable
             )
         case .startRecording:
             StartRecordingSheet(
@@ -138,12 +146,11 @@ struct MainView: View {
                 onImported: { document in
                     let script = library.create(
                         title: document.title, text: document.text, platform: profile.profile.defaultPlatform,
-                        language: languages.scriptLanguage
+                        language: languages.scriptLanguage, isFinished: true
                     )
-                    presentation.openScript(script.id, editing: true)
+                    presentation.openScript(script.id)
                     toast.show(String(localized: "Imported \(document.kind.lowercased()) · \(document.wordCount) words"))
-                },
-                onPaste: pasteScript
+                }
             )
         case .ideas:
             IdeasSheet(
@@ -165,11 +172,49 @@ struct MainView: View {
                 starter: { comment, platform in
                     presentation.sheet = nil
                     services.starter.write(idea: AnswerCommentViewModel.idea(for: comment), comment: comment, platform: platform)
+                },
+                writesByHand: { comment, _ in
+                    presentation.sheet = nil
+                    services.starter.writeByHand(idea: comment.text, comment: comment)
+                },
+                savesToLogbook: { text in
+                    services.logbook.add(text)
+                    toast.show(String(localized: "Saved to Logbook"))
                 }
             ))
             .presentationDetents([.large])
         case .format:
-            FormatSheet(current: services.ideaDraft.format) { services.ideaDraft.format = $0 }
+            FormatSheet(mode: .card, current: services.ideaDraft.formatChoice) { choice in
+                if choice.needsBrandBrief {
+                    presentation.present(.brandBrief(.writeFromCard))
+                } else {
+                    services.ideaDraft.formatChoice = choice
+                    presentation.sheet = nil
+                }
+            }
+        case .startFromFormat:
+            FormatSheet(mode: .blank, current: .talkingHead) { choice in
+                if choice.needsBrandBrief {
+                    presentation.present(.brandBrief(.draft))
+                } else {
+                    presentation.sheet = nil
+                    services.starter.startFromFormat(choice)
+                }
+            }
+        case .brandBrief(let purpose):
+            BrandBriefSheet(store: services.brands, purpose: purpose, canWriteWithAI: services.aiStatus.isAvailable) { brief in
+                presentation.sheet = nil
+                switch purpose {
+                case .writeFromCard where services.aiStatus.isAvailable:
+                    // The ad is written from the brief and nothing else: the card's idea, or the product itself.
+                    services.ideaDraft.formatChoice = .type(.ad)
+                    services.ideaDraft.brand = brief
+                    let idea = services.ideaDraft.submission ?? String(localized: "A sponsored ad for \(brief.product) by \(brief.name)")
+                    services.starter.write(idea: idea)
+                case .writeFromCard, .draft:
+                    services.starter.startFromFormat(.type(.ad))
+                }
+            }
         case .createFor:
             DestinationSheet(current: services.starter.platform) {
                 services.ideaDraft.platform = $0
@@ -179,23 +224,10 @@ struct MainView: View {
     }
 
     private func writeNewScript() {
-        let script = library.create(title: "", text: "", platform: profile.profile.defaultPlatform, language: languages.scriptLanguage)
-        presentation.openScript(script.id, editing: true)
-    }
-
-    private func pasteScript() {
-        guard let text = importer.clipboardText() else {
-            toast.show(String(localized: "Copy your script first"))
-            return
-        }
         let script = library.create(
-            title: ScriptTextNormalizer.suggestedTitle(fileName: nil, text: text),
-            text: text,
-            platform: profile.profile.defaultPlatform,
-            language: languages.scriptLanguage
+            title: "", text: "", platform: profile.profile.defaultPlatform, language: languages.scriptLanguage, isFinished: false
         )
         presentation.openScript(script.id, editing: true)
-        toast.show(String(localized: "Pasted · \(ReadTime.wordCount(in: text)) words"))
     }
 }
 

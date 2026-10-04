@@ -11,13 +11,21 @@ import SwiftUI
 /// page's own copy; `ScriptDetailViewModel.commitPage()` is what writes it back.
 struct ScriptPageState {
     var isLoaded = false
-    var mode: ScriptPageMode = .shaped
     var title = ""
     var text = ""
     var textSize: ScriptTextSize = .medium
-    /// What the creator has selected in the Draft, to rewrite.
-    var selection: TextSelection?
-    var candidate: RewriteCandidate?
+    /// What the creator has selected (characters from the start of the text), for the AI bar.
+    var selection: Range<Int>?
+    /// The AI's words in place of a selection, waiting for Keep, Undo or Try again.
+    var passage: AIPassage?
+    /// The words were edited this visit (not just opened): leaving without Done makes the script a draft.
+    var isEdited = false
+    /// Done was tapped this visit.
+    var isDone = false
+    /// "{n} sections are still empty": Done anyway / Keep writing.
+    var emptySectionsToConfirm: Int?
+    /// Asked for the text to take the keyboard (a draft opened with "Continue").
+    var focusesText = false
     var dismissedTips: Set<String> = []
     /// The "A bit long for TikTok" question was asked once for this page.
     var askedAboutLength = false

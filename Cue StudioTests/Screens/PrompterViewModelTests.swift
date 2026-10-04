@@ -38,6 +38,8 @@ struct PrompterViewModelTests {
         let profile = CreatorProfileService(defaults: defaults.defaults)
         profile.profile.monetizationGoals = monetization
         let camera = FakeCamera()
+        // Studio with no camera (a Mac, no permission) listens through the meter, as before it recorded.
+        if mode == .studio { camera.status = .unavailable }
         let audio = FakeAudioMeter()
         let speech = FakeSpeechTranscriber()
         let microphones = FakeMicrophones()

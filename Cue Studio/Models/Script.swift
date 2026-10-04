@@ -30,12 +30,15 @@ nonisolated struct Script: Codable, Identifiable, Hashable, Sendable {
     var topic: String?
     /// The audience comment this script answers ("Answer a comment").
     var comment: ScriptComment?
+    /// The creator finished it (Done), or the AI delivered a complete script. With takes the script is RECORDED
+    /// whatever this says (`ScriptState`). Saved before v29: finished when there is text.
+    var isFinished: Bool
 
     init(
         id: UUID = UUID(), title: String, text: String, platform: Platform, type: ScriptType? = nil,
         version: Int = 1, folder: String? = nil, createdAt: Date = .now, updatedAt: Date = .now,
         factCheck: Bool = false, language: CueLanguage? = nil, topic: String? = nil,
-        comment: ScriptComment? = nil
+        comment: ScriptComment? = nil, isFinished: Bool? = nil
     ) {
         self.id = id
         self.title = title
@@ -50,6 +53,7 @@ nonisolated struct Script: Codable, Identifiable, Hashable, Sendable {
         self.language = language
         self.topic = topic
         self.comment = comment
+        self.isFinished = isFinished ?? !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
     }
 
     /// Fields added after v1 are optional, so libraries saved by older builds still open.
@@ -59,7 +63,8 @@ nonisolated struct Script: Codable, Identifiable, Hashable, Sendable {
         title = try container.decode(String.self, forKey: .title)
         text = try container.decode(String.self, forKey: .text)
         platform = try container.decode(Platform.self, forKey: .platform)
-        type = try container.decodeIfPresent(ScriptType.self, forKey: .type)
+        // A format this build doesn't know (saved by a newer one) reads as no format, never as a library that won't open.
+        type = (try? container.decodeIfPresent(ScriptType.self, forKey: .type)) ?? nil
         version = try container.decodeIfPresent(Int.self, forKey: .version) ?? 1
         folder = try container.decodeIfPresent(String.self, forKey: .folder)
         createdAt = try container.decodeIfPresent(Date.self, forKey: .createdAt) ?? .now
@@ -69,6 +74,9 @@ nonisolated struct Script: Codable, Identifiable, Hashable, Sendable {
         language = (try? container.decodeIfPresent(CueLanguage.self, forKey: .language)) ?? nil
         topic = try container.decodeIfPresent(String.self, forKey: .topic)
         comment = try? container.decodeIfPresent(ScriptComment.self, forKey: .comment)
+        // Saved before v29: a script with text is finished (READY), an empty one is a draft.
+        isFinished = try container.decodeIfPresent(Bool.self, forKey: .isFinished)
+            ?? !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
     }
 
     var structure: ScriptStructure { type?.structure ?? .generic }

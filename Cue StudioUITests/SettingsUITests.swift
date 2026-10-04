@@ -30,19 +30,24 @@ final class SettingsUITests: XCTestCase {
         let settings = tab(app, label: "Settings")
         XCTAssertTrue(settings.waitForExistence(timeout: 15))
         settings.tap()
+        // Recording and Language & Region are sheets over Settings (v29 · L14); Prompter is still pushed.
         app.buttons["settings.recordingTile"].tap()
         XCTAssertTrue(app.navigationBars["Recording"].waitForExistence(timeout: 5))
         XCTAssertTrue(settings.isSelected)
+        app.buttons["settings.sheetDone"].tap()
+        XCTAssertTrue(app.navigationBars["Settings"].waitForExistence(timeout: 5))
+        app.buttons["settings.prompterTile"].tap()
+        XCTAssertTrue(app.navigationBars["Prompter"].waitForExistence(timeout: 5))
         tab(app, label: "Profile").tap()
         XCTAssertTrue(app.navigationBars["Profile"].waitForExistence(timeout: 5))
         settings.tap()
-        XCTAssertTrue(app.navigationBars["Recording"].waitForExistence(timeout: 5))
-        app.navigationBars["Recording"].buttons.firstMatch.tap()
+        XCTAssertTrue(app.navigationBars["Prompter"].waitForExistence(timeout: 5))
+        app.navigationBars["Prompter"].buttons.firstMatch.tap()
         XCTAssertTrue(app.navigationBars["Settings"].waitForExistence(timeout: 5))
         app.buttons["settings.languageRegionButton"].tap()
         XCTAssertTrue(app.navigationBars["Language & Region"].waitForExistence(timeout: 5))
         XCTAssertTrue(settings.isSelected)
-        app.navigationBars["Language & Region"].buttons.firstMatch.tap()
+        app.buttons["settings.sheetDone"].tap()
         XCTAssertTrue(app.buttons["settings.privacyButton"].waitForExistence(timeout: 5))
         app.buttons["settings.privacyButton"].tap()
         XCTAssertTrue(app.navigationBars["Privacy & AI data"].waitForExistence(timeout: 5))
@@ -167,5 +172,40 @@ final class SettingsUITests: XCTestCase {
         attachment.name = name
         attachment.lifetime = .keepAlways
         add(attachment)
+    }
+
+    /// F8 · Privacy & AI data: "Delete my Cue data" asks first (irreversible), and cancelling changes nothing.
+    func testDeleteMyDataAsksForConfirmationAndCancelKeepsEverything() {
+        let app = CueApp.launch(seeded: true)
+        let settings = tab(app, label: "Settings")
+        XCTAssertTrue(settings.waitForExistence(timeout: 15))
+        settings.tap()
+        app.buttons["settings.privacyButton"].tap()
+        let delete = app.buttons["privacy.deleteButton"]
+        XCTAssertTrue(delete.waitForExistence(timeout: 5))
+        delete.tap()
+        XCTAssertTrue(app.alerts["Delete all your Cue data?"].waitForExistence(timeout: 5))
+        app.alerts.buttons["Cancel"].tap()
+        app.buttons["Done"].tap()
+        tab(app, label: "Scripts").tap()
+        XCTAssertTrue(sampleScript(app).waitForExistence(timeout: 5))
+    }
+
+    func testDeleteMyDataRemovesTheScripts() {
+        let app = CueApp.launch(seeded: true)
+        let settings = tab(app, label: "Settings")
+        XCTAssertTrue(settings.waitForExistence(timeout: 15))
+        settings.tap()
+        app.buttons["settings.privacyButton"].tap()
+        app.buttons["privacy.deleteButton"].tap()
+        app.alerts.firstMatch.buttons["privacy.confirmDelete"].firstMatch.tap()
+        // The sheet closes by itself and the library is empty: the first-visit screen is back.
+        tab(app, label: "Scripts").tap()
+        XCTAssertTrue(app.descendants(matching: .any)["empty.promptCard"].waitForExistence(timeout: 5))
+        XCTAssertFalse(sampleScript(app).exists)
+    }
+
+    private func sampleScript(_ app: XCUIApplication) -> XCUIElement {
+        app.descendants(matching: .any).matching(NSPredicate(format: "label CONTAINS '3 morning habits'")).firstMatch
     }
 }

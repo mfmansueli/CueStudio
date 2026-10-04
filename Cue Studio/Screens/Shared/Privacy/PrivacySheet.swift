@@ -12,6 +12,9 @@ struct PrivacySheet: View {
     var usesPrivateCloudCompute = ScriptAIService.hasPrivateCloudComputeEntitlement
 
     @Environment(\.dismiss) private var dismiss
+    @Environment(DataEraserService.self) private var eraser
+    @Environment(ToastService.self) private var toast
+    @State private var confirmsErase = false
 
     var body: some View {
         NavigationStack {
@@ -36,6 +39,23 @@ struct PrivacySheet: View {
                 if let url = AppLinks.privacyPolicy {
                     Link("Privacy policy", destination: url)
                 }
+                Section {
+                    Button("Delete my Cue data", role: .destructive) { confirmsErase = true }
+                        .accessibilityIdentifier("privacy.deleteButton")
+                } footer: {
+                    Text("Removes your scripts, takes, edits and My Cue Voice from this iPhone. Videos saved to Photos stay there.")
+                }
+            }
+            .alert("Delete all your Cue data?", isPresented: $confirmsErase) {
+                Button("Delete everything", role: .destructive) {
+                    eraser.eraseEverything()
+                    toast.show(String(localized: "Your Cue data is deleted"))
+                    dismiss()
+                }
+                .accessibilityIdentifier("privacy.confirmDelete")
+                Button("Cancel", role: .cancel) {}
+            } message: {
+                Text("Your scripts, takes, edits and My Cue Voice are removed from this iPhone. This can't be undone.")
             }
             .navigationTitle("Privacy & AI data")
             .navigationBarTitleDisplayMode(.inline)

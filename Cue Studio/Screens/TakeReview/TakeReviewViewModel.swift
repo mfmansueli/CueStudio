@@ -4,6 +4,7 @@
 //
 
 import Foundation
+import UIKit
 
 /// Save a take, or share it to a platform ("Share to"). Every feature is free; the free plan
 /// includes five exports, then exporting asks for Cue Pro (7 days free). Takes are never locked.
@@ -25,6 +26,10 @@ final class TakeReviewViewModel {
     var celebration: ExportCelebration?
     /// "Share to".
     var showsShareSheet = false
+    /// Photos refused the save: the review shows a card with Open Settings instead of a toast.
+    var photosDenied = false
+    /// Where "#ad" goes for a sponsored video (the system pasteboard; a test swaps it).
+    @ObservationIgnored var copiesCaption: (String) -> Void = { UIPasteboard.general.string = $0 }
     var burnsInCaptions = false
     /// Which captions this export burns in: the original, a translation or both (one export per
     /// language).
@@ -217,8 +222,16 @@ final class TakeReviewViewModel {
     func delete() -> Take? {
         guard let take else { return nil }
         let rest = siblings.filter { $0.id != take.id }
-        takes.delete(take.id)
-        toast.show(String(localized: "\(take.label) deleted"))
+        guard let removed = takes.remove(take.id) else { return nil }
+        // Gone at once, with 4 s to take it back; its video is deleted for good after that.
+        let library = takes
+        toast.show(String(localized: "\(take.label) deleted"), action: ToastAction(title: String(localized: "Undo")) {
+            library.restore(removed)
+        })
+        Task { @MainActor in
+            try? await Task.sleep(for: ToastService.actionDuration + .milliseconds(600))
+            library.purge(removed)
+        }
         return rest.last
     }
 
@@ -234,9 +247,24 @@ final class TakeReviewViewModel {
                 toast.show(String(localized: "Cover saved to Photos"))
             }
         } catch {
-            toast.show(error.localizedDescription)
+            report(error)
         }
     }
+
+    /// A refused Photos permission is a card with the way out; anything else is "Couldn't export · Try again" and the export
+    /// count stays where it was (04 · F6).
+    private func report(_ error: Error) {
+        if case PhotoLibraryError.notAuthorized = error {
+            photosDenied = true
+        } else {
+            toast.show(String(localized: "Couldn't export · Try again"))
+        }
+    }
+
+    /// A sponsored script (8.1): the share sheet warns, and "#ad" travels in the caption.
+    var isSponsored: Bool { library.script(id: take?.scriptID)?.type == .ad }
+
+    static let adCaption = "#ad"
 
     /// A platform: export, save to Photos and open its app to post (the share sheet when the app
     /// isn't there). Nil is "More": the system share sheet.
@@ -269,21 +297,22 @@ final class TakeReviewViewModel {
                     burnsInCaptions: burnsInCaptions, shortSide: outputShortSide(for: take)
                 )
             )
-            quota.recordExport(tier: currentTier)
-            takes.markExported(take.id)
             switch action {
             case .save:
                 try await photos.saveVideo(at: url)
+                countExport(take, tier: currentTier)
                 let withCover = (try? await saveCoverIfChosen()) ?? false
                 showsShareSheet = false
                 let video = exported(take, url: url, tier: currentTier)
                 announce(savedMessage(tier: currentTier, withCover: withCover))
                 celebration = .readyToTravel(video)
             case .share(nil):
+                countExport(take, tier: currentTier)
                 shareURL = url
             case .share(let destination?):
                 // The platform's app picks the video (and the cover) from Photos.
                 try await photos.saveVideo(at: url)
+                countExport(take, tier: currentTier)
                 _ = try? await saveCoverIfChosen()
                 if await apps.open(destination) {
                     showsShareSheet = false
@@ -295,8 +324,15 @@ final class TakeReviewViewModel {
                 }
             }
         } catch {
-            toast.show(error.localizedDescription)
+            report(error)
         }
+    }
+
+    /// The export worked and the video is where it was going: only now does it count, and a sponsored one carries "#ad".
+    private func countExport(_ take: Take, tier: MembershipTier) {
+        quota.recordExport(tier: tier)
+        takes.markExported(take.id)
+        if isSponsored { copiesCaption(Self.adCaption) }
     }
 
     private func exported(_ take: Take, url: URL, tier: MembershipTier) -> ExportedVideo {

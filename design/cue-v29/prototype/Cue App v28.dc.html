@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<style>
+html,body{margin:0;background:#05060B}
+body{font-family:-apple-system,"SF Pro Text",system-ui,sans-serif;-webkit-font-smoothing:antialiased;color:#fff}
+a{color:#FFD60A;text-decoration:none}a:hover{color:#FFE680}
+@keyframes v28In{from{opacity:0;transform:scale(.985)}to{opacity:1;transform:none}}
+@keyframes v28Toast{from{opacity:0;transform:translate(-50%,-8px)}to{opacity:1;transform:translate(-50%,0)}}
+</style>
+</helmet>
+<div style="min-height:100vh;display:flex;gap:40px;align-items:flex-start;justify-content:center;padding:40px 40px 80px;box-sizing:border-box;background:radial-gradient(60% 40% at 50% 0%,rgba(157,140,255,0.10),rgba(157,140,255,0) 70%),#05060B">
+
+  <div style="width:280px;flex-shrink:0;display:flex;flex-direction:column;gap:14px">
+    <div style="display:flex;flex-direction:column;gap:6px">
+      <div style="font-family:ui-monospace,'SF Mono',Menlo,monospace;font-size:11px;font-weight:700;letter-spacing:1.2px;color:#FFD60A">CUE STUDIO · APP v28</div>
+      <div style="font-size:24px;font-weight:700;letter-spacing:-0.4px;line-height:1.15">Cue Universe — the full flow</div>
+      <div style="font-size:13px;line-height:1.5;color:rgba(225,228,245,0.6)">All 47 screens, built from the reference. Tap anything tappable inside the phone; every button follows the workflow.</div>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <div onClick="{{ startFirst }}" style="height:34px;padding:0 14px;border-radius:17px;background:#FFD60A;color:#000;font-size:13px;font-weight:700;display:flex;align-items:center;cursor:pointer">First launch</div>
+      <div onClick="{{ startHome }}" style="height:34px;padding:0 14px;border-radius:17px;background:rgba(110,116,150,0.26);font-size:13px;font-weight:600;display:flex;align-items:center;cursor:pointer">Returning creator</div>
+      <div onClick="{{ back }}" style="height:34px;padding:0 14px;border-radius:17px;background:rgba(110,116,150,0.26);font-size:13px;font-weight:600;display:flex;align-items:center;cursor:pointer;opacity:{{ backOp }}">‹ Back</div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px;max-height:720px;overflow-y:auto;scrollbar-width:thin;padding-right:4px">
+      <sc-for list="{{ groups }}" as="g" hint-placeholder-count="11">
+        <div style="display:flex;flex-direction:column;gap:2px">
+          <div style="font-family:ui-monospace,'SF Mono',Menlo,monospace;font-size:10.5px;font-weight:700;letter-spacing:1px;color:rgba(225,228,245,0.5);padding:4px 8px">{{ g.t }}</div>
+          <sc-for list="{{ g.items }}" as="it" hint-placeholder-count="4">
+            <div onClick="{{ it.go }}" style="display:flex;align-items:center;gap:10px;min-height:32px;padding:0 8px;border-radius:9px;background:{{ it.bg }};cursor:pointer" style-hover="background:rgba(255,255,255,0.05)">
+              <span style="font-family:ui-monospace,'SF Mono',Menlo,monospace;font-size:11px;font-weight:700;color:{{ it.c }};width:30px;flex-shrink:0">{{ it.id }}</span>
+              <span style="font-size:13px;color:{{ it.tc }};white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ it.n }}</span>
+            </div>
+          </sc-for>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+
+  <div style="position:relative;width:390px;height:844px;flex-shrink:0;border-radius:54px;overflow:hidden;background:#07080E;box-shadow:0 0 0 10px #15161E,0 0 0 11px #2A2C3A,0 40px 90px rgba(0,0,0,0.6)">
+    <div style="position:absolute;inset:0;animation:v28In .28s ease-out" data-screen-label="{{ cur }}">
+      <sc-if value="{{ notRecUI }}" hint-placeholder-val="{{ true }}"><dc-import name="CueBoard28" id="{{ cur }}" files="{{ files }}" on-action="{{ act }}" style="position:absolute;inset:0" hint-size="390px,844px"></dc-import></sc-if>
+      <sc-if value="{{ isRecUI }}" hint-placeholder-val="{{ false }}"><dc-import name="CueRecorder28" id="{{ cur }}" mode="{{ recMode }}" on-action="{{ act }}" style="position:absolute;inset:0" hint-size="390px,844px"></dc-import></sc-if>
+    </div>
+    <div style="position:absolute;top:11px;left:50%;margin-left:-62px;width:124px;height:36px;border-radius:18px;background:#000;z-index:20;pointer-events:none"></div>
+    <sc-if value="{{ hasToast }}" hint-placeholder-val="{{ false }}">
+      <div style="position:absolute;top:58px;left:50%;transform:translateX(-50%);z-index:30;height:38px;padding:0 16px;border-radius:19px;background:rgba(20,21,31,0.96);box-shadow:inset 0 0 0 0.5px rgba(180,167,255,0.35),0 10px 30px rgba(0,0,0,0.5);display:flex;align-items:center;gap:8px;font-size:13.5px;font-weight:600;white-space:nowrap;animation:v28Toast .25s ease-out"><span style="color:#34C759">✓</span>{{ toast }}</div>
+    </sc-if>
+  </div>
+
+  <div style="width:280px;flex-shrink:0;display:flex;flex-direction:column;gap:14px">
+    <div style="border-radius:20px;background:#12131D;box-shadow:inset 0 0 0 0.5px rgba(180,167,255,0.16);padding:16px;display:flex;flex-direction:column;gap:8px">
+      <div style="font-family:ui-monospace,'SF Mono',Menlo,monospace;font-size:11px;font-weight:700;letter-spacing:1px;color:#FFD60A">NOW · {{ cur }}</div>
+      <div style="font-size:18px;font-weight:700;line-height:1.25">{{ curName }}</div>
+      <div style="font-size:12.5px;line-height:1.5;color:rgba(225,228,245,0.62)">{{ curGroup }}</div>
+      <div style="height:0.5px;background:rgba(180,167,255,0.16);margin:4px 0"></div>
+      <div style="font-family:ui-monospace,'SF Mono',Menlo,monospace;font-size:10.5px;font-weight:700;letter-spacing:1px;color:rgba(225,228,245,0.5)">TRY TAPPING</div>
+      <sc-for list="{{ hints }}" as="h" hint-placeholder-count="3"><div style="font-size:12.5px;line-height:1.45;color:rgba(225,228,245,0.8)">{{ h }}</div></sc-for>
+    </div>
+    <div style="border-radius:20px;background:#12131D;box-shadow:inset 0 0 0 0.5px rgba(180,167,255,0.16);padding:16px;display:flex;flex-direction:column;gap:10px">
+      <div style="font-family:ui-monospace,'SF Mono',Menlo,monospace;font-size:10.5px;font-weight:700;letter-spacing:1px;color:rgba(225,228,245,0.5)">APP DATA</div>
+      <div style="display:flex;gap:2px;padding:2px;border-radius:10px;background:rgba(110,116,150,0.26)"><sc-for list="{{ dataSeg }}" as="o" hint-placeholder-count="2"><div onClick="{{ o.pick }}" style="flex:1;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:{{ o.fw }};background:{{ o.bg }};color:#fff;cursor:pointer">{{ o.l }}</div></sc-for></div>
+      <div style="font-size:12px;line-height:1.45;color:rgba(225,228,245,0.55)">New account shows every empty state: Scripts, Takes, Logbook, Your universe.</div>
+    </div>
+    <div style="border-radius:20px;background:#12131D;box-shadow:inset 0 0 0 0.5px rgba(180,167,255,0.16);padding:16px;display:flex;flex-direction:column;gap:8px;font-size:12.5px;line-height:1.5;color:rgba(225,228,245,0.62)">
+      <div style="font-family:ui-monospace,'SF Mono',Menlo,monospace;font-size:10.5px;font-weight:700;letter-spacing:1px;color:rgba(225,228,245,0.5)">ALSO IN THIS PROJECT</div>
+      <a href="Cue Design System v28.dc.html">Cue Design System v28 ›</a>
+      <a href="Cue App v27.dc.html">Cue App v27 · live interactive logic ›</a>
+      <a href="Cue v28 Report.dc.html">Overnight report ›</a>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;start&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;1.1&quot;,&quot;3.1&quot;,&quot;3.2&quot;],&quot;default&quot;:&quot;3.2&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
+class Component extends DCLogic {
+  static F = {"0.1":"Concept-summary","0.2":"Icon-set-v2","0.3":"Orb-controls","1.1":"Welcome-every-creator-has-a-universe","1.2":"Your-universe-topics-become-worlds","1.3":"Your-first-voyage-pick-a-galaxy","1.4":"Your-first-script-in-your-voice","1.5":"Give-it-a-voice-permissions-in-the-story","1.6":"Practice-run-record-or-not","1.7":"Your-first-star","2.1":"My-Cue-Voice-creator-type","2.2":"My-Cue-Voice-topics-your-colors","2.3":"My-Cue-Voice-audience","2.4":"My-Cue-Voice-tone","2.5":"Does-this-sound-like-you","3.1":"Scripts-first-visit","3.2":"Scripts","3.3":"Need-an-idea","3.4":"Create-for-platform","3.5":"Start-a-video","3.6":"Logbook","4.1":"Script-page-AI-writing-in-your-voice","4.2":"Editing-a-script-AI-on-selection","4.3":"Pick-a-hook","4.4":"Improve-this-script","5.1":"Countdown-a-ring-of-stars","5.2":"Teleprompter-the-text-follows-your-voice","5.3":"Studio-mode-rear-camera-orb-speed","6.1":"Pick-your-best-take-Cue-picks-a-star","6.2":"Takes","6.3":"Selected-video","7.1":"Opening-the-editor","7.2":"Editor-close-to-v26","7.3":"Text-styles-free-fonts-and-orb-sliders","7.4":"Caption-styles-size-orb","7.5":"Sound-voice-music-and-clean-up","7.6":"Is-it-ready-to-post","8.1":"Ready-to-travel","8.2":"The-send-off","8.3":"Milestone-unlocked","9.1":"Profile","9.2":"Your-universe","9.3":"My-Cue-Voice","10.1":"Send-a-comment-to-Cue","10.2":"Is-this-right","10.3":"Draft-in-your-voice","10.4":"Comment-card-in-the-editor","11.1":"Settings","11.2":"Prompter-settings-orb-sliders","11.3":"Personalize-sky-orb","11.4":"Cue-Pro"};
+  static G = [['1', 'FIRST LAUNCH · THE VOYAGE BEGINS'], ['2', 'MY CUE VOICE'], ['3', 'SCRIPTS & IDEAS'], ['4', 'WRITE A SCRIPT'], ['5', 'RECORD'], ['6', 'PICK, REVIEW & TAKES'], ['7', 'EDIT'], ['8', 'SHARE & CELEBRATE'], ['9', 'PROFILE & UNIVERSE'], ['10', 'ANSWER YOUR AUDIENCE'], ['11', 'SETTINGS & PRO']];
+  static TABS = ['3.1', '3.2', '6.2', '9.1', '9.2', '11.1'];
+  static HINTS = { '1.1': ['Get started', 'I already use Cue'], '1.2': ['Topic chips', 'Continue'], '1.3': ['Head to TikTok'], '1.4': ['Use this script', 'I’ll write my own'], '1.5': ['Continue'], '1.6': ['Record it for real', 'Not now'], '1.7': ['Go to my studio', 'Edit this take first'], '2.1': ['Continue · Not now'], '2.4': ['Write my script', 'Just save my voice'], '2.5': ['Sounds like me', 'Adjust'], '3.1': ['My Cue Voice', 'For TikTok', 'An idea row', '+'], '3.2': ['Type in LET’S CUE! + Enter', 'Filter: All · TikTok · Reels · Shorts', 'A script row → open', '● REC → record', 'Logbook (header)'], '3.3': ['An idea'], '3.4': ['A platform'], '3.5': ['Let Cue write it', 'Write it myself', 'Answer a comment', 'Record without a script'], '3.6': ['✦ Write → script', 'Done'], '4.1': ['Select text → ✦ Rewrite bar', 'Edit text → DRAFT', 'Done · Record'], '4.2': ['Rewrite · Shorter · Punchier on the selected line', 'Select any other text → same bar', 'Keep / Undo / Try again'], '4.3': ['A hook'], '4.4': ['An improvement'], '5.1': ['Waits 3 s, or tap'], '5.2': ['Drag the corner ⌟ to resize the box', 'Drag the right pinch to move the reading line', 'Voice following | Steady', '● Record → countdown → box tightens, bar shrinks', 'Tap the screen while recording → full bar for 4 s'], '5.3': ['Studio: full-screen prompter + back-camera PiP', 'Same handles: corner ⌟ and reading-line pinch', '••• → mirror text for glass rigs'], '6.1': ['Use take 2', 'Record again'], '6.2': ['Share', 'A video', 'Tabs'], '6.3': ['Edit · Retake · Save · Script', 'Share to TikTok', 'Go Pro'], '7.1': ['Waits 3 s, or tap'], '7.2': ['Every tool opens: Edit · Audio · Text · Captions · Filters · ✦ Smart · Cover', 'Edit › Speed / Volume sliders', 'Done → Is it ready to post?', '‹ → take → ‹ → Takes'], '7.3': ['Drag the sliders', 'Done', '‹ Back'], '7.6': ['Yes — share', 'Download video', 'Ready, I’ll post later', 'Not yet', 'Tap above the sheet → back to the editor'], '8.1': ['Share to TikTok', 'Save to Photos'], '8.2': ['Done', 'It’s now a star in your universe'], '8.3': ['Use Deep Space', 'Keep my current icon'], '9.1': ['Your universe card', 'My Cue Voice → Edit voice / ✦ Preview / Answer', 'Plan row → Pro'], '9.3': ['Tap any row to edit', 'What Cue sends', '‹ Profile'], '9.2': ['Share my universe', 'Tabs'], '10.1': ['Continue'], '10.2': ['Draft my reply'], '10.3': ['Record reply', 'Edit'], '10.4': ['Done'], '11.1': ['Recording · Remote · Language · Privacy open their sheets', 'Your setup card → Recording', 'Prompter · Personalize'], '11.2': ['Drag any slider — real min/max, value stays', '‹ Settings'], '11.3': ['‹ Settings'], '11.4': ['Start 7-day free trial', '✕'] };
+  state = { cur: (this.props && this.props.start) || '3.2', stack: [], toast: null, msSeen: false };
+  componentWillUnmount() { clearTimeout(this._tt); }
+  nm(id) { return (Component.F[id] || '').replace(/-/g, ' ').replace(/\bAI\b/, 'AI').replace(/\s*\borb sliders\b/i, ' sliders').replace(/\s*\borb\b/ig, '').replace(/\s+/g, ' ').trim(); }
+  go(id) { if (window.__cueEmpty && id === '3.2') id = '3.1'; if (!Component.F[id] || id === this.state.cur) return; this.setState(s => { const i = s.stack.indexOf(id); if ((s.cur === '6.1' || s.cur === '7.6') && id === '6.3') return { cur: id, stack: ['6.2'] }; return { cur: id, stack: i >= 0 ? s.stack.slice(0, i) : [...s.stack, s.cur].slice(-30) }; }); }
+  tab(id) { if (window.__cueEmpty && id === '3.2') id = '3.1'; this.setState({ cur: id, stack: [] }); }
+  setEmpty(on) { window.__cueEmpty = on; this.setState({ empty: on, cur: on ? '3.1' : '3.2', stack: [] }); this.toastMsg(on ? 'New account · empty app' : 'Sample data'); }
+  static PARENT = { '7.2': '6.3', '7.3': '7.2', '7.4': '7.2', '7.5': '7.2', '10.4': '7.2', '6.3': '6.2', '6.1': '6.2', '4.1': '3.2', '4.2': '4.1', '4.3': '4.1', '4.4': '4.1', '3.3': '3.2', '3.4': '3.2', '3.5': '3.2', '3.6': '3.2', '8.1': '6.3', '8.3': '6.2', '9.2': '9.1', '11.2': '11.1', '11.3': '11.1', '10.1': '3.5', '10.2': '10.1', '10.3': '10.2', '2.2': '2.1', '2.3': '2.2', '2.4': '2.3', '2.5': '2.4', '1.2': '1.1', '1.3': '1.2', '1.4': '1.3', '1.5': '1.4', '1.6': '1.5' };
+  static TRANSIENT = ['5.1', '7.1', '8.2', '7.6', '4.3', '4.4', '3.3', '3.4', '3.5', '8.3', '11.4'];
+  static ROOTS = ['1.1', '3.1', '3.2', '6.2', '9.1', '11.1'];
+  static FALLBACK = { '5.2': '4.1', '5.3': '4.1', '11.4': '9.1', '2.1': '9.1', '6.1': '6.2', '7.6': '7.2', '8.2': '6.2' };
+  backTarget(s) { s = s || this.state; const K = Component; if (K.ROOTS.includes(s.cur)) return null; const st = s.stack.filter(x => !K.TRANSIENT.includes(x) && x !== s.cur); if (st.length) return st[st.length - 1]; return K.PARENT[s.cur] || K.FALLBACK[s.cur] || null; }
+  back() { const s = this.state, to = this.backTarget(s); if (!to) return; const idx = s.stack.lastIndexOf(to); this.setState({ cur: to, stack: idx >= 0 ? s.stack.slice(0, idx) : s.stack.filter(x => !Component.TRANSIENT.includes(x)) });
+    if (s.cur === '7.2') this.toastMsg('Draft saved'); }
+  toastMsg(m) { clearTimeout(this._tt); this.setState({ toast: m }); this._tt = setTimeout(() => this.setState({ toast: null }), 2200); }
+  rec(studio) { this.setState({ studio: !!studio }); this.go(studio ? '5.3' : '5.2'); return true; }
+  route(id, T, p) {
+    const go = x => (this.go(x), true), tab = x => (this.tab(x), true), back = () => (this.back(), true), t = m => (this.toastMsg(m), true);
+    const R = re => re.test(T), both = (x, m) => (this.go(x), this.toastMsg(m), true);
+    if (T === '__toast') return t((p && p.msg) || '');
+    if (T === '__voiceflow') return go('2.1');
+    if (T === '__back') return back();
+    if (T.startsWith('__goto:')) return go(T.slice(7));
+    if (T === '__rec') { this.rec(false); return true; }
+    if (T === '__go') return go('6.3');
+    if (T === '__send') return both('4.1', (p && p.msg) || '✦ Writing in your voice');
+    if (id === '5.1') { if (R(/^cancel$/i)) return back(); this.go(this.state.studio ? '5.3' : '5.2'); return true; }
+    if (id === '7.1') return go('7.2');
+    if (R(/^(back|close|cancel|✕|×|‹|‹ ?back|‹ ?settings)$/i)) { if (id === '6.1') return tab('6.2'); return back(); }
+    if (R(/^scripts$/i)) return tab('3.2'); if (R(/^takes$/i)) return tab('6.2'); if (R(/^profile$/i)) return tab('9.1'); if (R(/^settings$/i)) return tab('11.1'); if (R(/^record$/i) && !['4.1'].includes(id)) return go('3.5');
+    if (R(/^skip$/i)) return tab('3.1');
+    if (R(/^not now$/i)) { if (/^1\./.test(id)) return tab('3.1'); if (/^2\./.test(id)) { const s0 = this.state, keep = s0.stack.filter(x => !/^2\./.test(x)); const to = [...keep].reverse().find(x => !Component.TRANSIENT.includes(x)) || '9.1'; const i = keep.lastIndexOf(to); this.setState({ cur: to, stack: i >= 0 ? keep.slice(0, i) : keep }); return true; } return back(); }
+    switch (id) {
+      case '1.1': if (R(/^get started$/i)) return go('1.2'); if (R(/already use cue/i)) return tab('3.2'); break;
+      case '1.2': if (R(/^continue$/i)) return go('1.3'); if (R(/^\+ your own$/i)) return t('Type your own topic'); break;
+      case '1.3': if (R(/head to|choose a galaxy/i)) return go('1.4'); break;
+      case '1.4': if (R(/^another$/i)) return t('✦ Another first script'); if (R(/^use this script$/i)) return go('1.5'); if (R(/write my own/i)) return go('4.2'); break;
+      case '1.5': if (R(/^continue$/i)) return go('1.6'); if (R(/^allow$/i)) return t('✓ Allowed'); if (R(/^don.t allow$/i)) return t('Change it in Settings'); break;
+      case '1.6': if (R(/record it for real/i)) { this.setState({ first: true }); return this.rec(false); } if (R(/take me to my studio/i)) return tab('3.2'); break;
+      case '1.7': if (R(/go to my studio/i)) return tab('3.2'); if (R(/edit this take/i)) return go('7.1'); break;
+      case '2.1': if (R(/^continue$/i)) return go('2.2'); break;
+      case '2.2': if (R(/^continue$/i)) return go('2.3'); break;
+      case '2.3': if (R(/^continue$/i)) return go('2.4'); break;
+      case '2.4': if (R(/write my script/i)) return go('2.5'); if (R(/just save my voice/i)) { this.tab('9.1'); return t('Saved to My Cue Voice'); } if (R(/^add a voice example/i)) return t('Paste, speak or pick a script'); break;
+      case '2.5': if (R(/sounds like me/i)) return both('4.1', 'Saved to My Cue Voice'); if (R(/^adjust$/i)) return go('2.4'); break;
+      case '3.1': case '3.2':
+        if (R(/^write my own/i)) return go('4.2'); if (R(/^import ›$/i)) return go('3.5');
+        if (R(/^new script$/i) || R(/^\+$/)) return go('3.5'); if (R(/^dictate an idea$/i) || R(/type or say an idea/i)) return go('3.3'); if (R(/^write it$/i) || R(/^let.s cue!/i)) return both('4.1', '✦ Writing in your voice');
+        if (R(/^logbook/i)) return go('3.6'); if (R(/my cue voice/i)) return go('2.1'); if (R(/^for tiktok/i)) return go('3.4');
+        if (R(/morning routine in 60|money habit|5-minute reset|cheap flights|3 habits that fixed|24-hour rule|weekday budget/i)) return go('4.1');
+        break;
+      case '3.3': if (R(/^more ideas$/i)) return t('5 new ideas'); if (T.length > 18 && !/need an idea|from your topics|tap an idea/i.test(T)) return both('4.1', '✦ Writing in your voice'); break;
+      case '3.4': if (R(/^(tiktok|instagram reels|reels|youtube shorts|shorts|youtube.*|linkedin|instagram stories)$/i)) { this.back(); return t('Creating for ' + T); } break;
+      case '3.5': if (R(/^let cue write it/i)) return go('3.3'); if (R(/^write it myself/i)) return go('4.2'); if (R(/^import text/i)) return t('Scan · Photo · File · Paste'); if (R(/^answer a comment/i)) return go('10.1'); if (R(/record without a script/i)) return this.rec(false); break;
+      case '3.6': if (R(/^done$/i)) return back(); if (R(/hold to capture/i)) return t('Hold to talk'); if (R(/^✦ ?(shape|write)$/i) || R(/^✦$/)) return both('4.1', '✦ Writing your script'); if (T.length > 14 && T.length < 60 && !/logbook|ideas you|captured/i.test(T)) return go('4.1'); break;
+      case '4.1': if (R(/^(rec|record)$/i)) return this.rec(false); if (R(/^studio$/i)) return this.rec(true); if (R(/^more$/i)) return t('Versions · Script language · Duplicate'); if (R(/^hook/i)) return go('4.3'); if (R(/improve|writing in your voice/i)) return go('4.4'); break;
+      case '4.2': if (R(/^(done|shaped)$/i)) return back(); if (R(/^draft$/i)) return true; if (R(/^(pause|smile|emphasis|look at camera)$/i)) return t('Cue added: ' + T); break;
+      case '4.3': if (R(/^more hooks$/i)) return t('5 more hooks'); if (T.length > 18 && /\d:\d\d/.test(T)) { this.back(); return t(/^current/i.test(T) ? 'Kept your current hook' : 'Hook swapped'); } break;
+      case '4.4': if (R(/^punchier hook/i)) return go('4.3'); if (R(/pro$/i) || R(/^(versions for reels|turn into a series)/i)) return go('11.4'); if (R(/^(make it shorter|sound more like me|add a call to action|add performance cues|simpler words)/i)) { this.back(); return t('✦ Applied · ' + T.replace(/\s+[A-Z−0-9·\s]+$/, '')); } break;
+      case '5.2': case '5.3': if (R(/^stop recording$/i)) return go('6.1'); if (R(/^(text size|aa)$/i)) return go('11.2'); if (R(/^pause prompter$/i)) return t('Prompter paused'); if (R(/^restart$/i)) return t('Back to the top'); if (R(/^mirror$/i)) return t('Text mirrored'); if (R(/^flip camera$/i)) return t('Camera flipped'); if (id === '5.3' && R(/^selfie$/i)) { this.setState(s => ({ cur: '5.2' })); return true; } break;
+      case '6.1': if (R(/^play take/i)) return t('▶ Playing take 2 · 0:58'); if (R(/^record again$/i)) return this.rec(false); if (R(/^use take 2$/i)) { if (this.state.first) { this.setState({ first: false }); return go('1.7'); } return both('6.3', '★ Take 2 is your best'); } break;
+      case '6.2': if (R(/^select$/i)) return t('Select videos'); if (R(/^share$/i)) return go('8.1'); break;
+      case '6.3': if (R(/^play$/i)) return t('▶ Playing · 1:02'); if (R(/^favorite$/i)) return t('★ Marked as best'); if (R(/^delete$/i)) { this.tab('6.2'); return t('Take deleted · Undo'); } if (R(/^edit$/i) || R(/^continue$/i)) return go('7.1'); if (R(/^retake$/i)) return this.rec(false); if (R(/^save$/i)) return t('Saved to Photos'); if (R(/^script$/i)) return go('4.1'); if (R(/^share to/i)) return go('8.1'); if (R(/go pro|of 5/i)) return go('11.4'); break;
+      case '7.2': if (R(/^done$/i)) return go('7.6'); if (R(/^text$/i)) return go('7.3'); if (R(/^captions$/i) || R(/first 20 minutes|no phone for the/i)) return go('7.4'); if (R(/^audio$/i) || R(/add music|voiceover/i)) return go('7.5'); break;
+      case '7.3': case '7.4': case '7.5': case '10.4': if (R(/^done$/i)) return go('7.6'); break;
+      case '7.6': if (R(/share to social/i)) return go('8.1'); if (R(/^download video/i)) return both('6.3', 'Saved to Photos'); if (R(/post later/i)) { this.tab('6.2'); return t('✓ Ready to post'); } if (R(/^not yet/i)) return both('6.3', 'Draft saved'); break;
+      case '8.1': if (R(/^share to|^other apps$/i)) return go('8.2'); if (R(/^save to photos$/i)) return t('Saved to Photos'); if (R(/of 5 left|free exports/i)) return go('11.4'); break;
+      case '8.2': if (R(/^share again$/i)) return go('8.1'); if (R(/^done$/i)) return go('8.3'); if (R(/star in your universe/i)) return go('9.2'); break;
+      case '8.3': if (R(/use deep space/i)) return both('9.2', 'App icon: Deep Space'); if (R(/keep my current icon/i)) return tab('6.2'); break;
+      case '9.1': if (R(/try pro|^free$/i)) return go('11.4'); if (R(/your universe/i)) return go('9.2'); if (R(/^my cue voice$/i)) return go('2.1'); break;
+      case '9.2': if (R(/share my universe/i)) return t('Share sheet'); if (R(/share 2 more|unlocks the deep/i)) return tab('6.2'); break;
+      case '10.1': if (R(/^continue$/i)) return go('10.2'); if (R(/save to logbook|keep it with/i)) return both('3.6', 'Saved to Logbook'); break;
+      case '10.2': if (R(/draft my reply/i)) return go('10.3'); if (R(/write it myself/i)) return go('4.2'); break;
+      case '10.3': if (R(/^edit$/i)) return go('4.2'); if (R(/^record reply$/i)) return this.rec(false); break;
+      case '11.1': if (R(/^prompter/i)) return go('11.2'); if (R(/^personalize/i)) return go('11.3'); break;
+      case '11.3': if (R(/your topics|edit them in my/i)) return go('2.2'); break;
+      case '11.4': if (R(/free trial/i)) { this.back(); return t('Trial started · 7 days free'); } if (R(/^(restore|terms|privacy)/i)) return t(T); break;
+    }
+    return false;
+  }
+  regions(id, p) { if (p && p.x < 70 && p.y > 36 && p.y < 118 && !Component.ROOTS.includes(id) && !/^1\./.test(id)) { this.back(); return true; } if (id === '7.6' && p && p.y < 330) { this.back(); return true; } if (id === '6.2' && p.y > 230 && p.y < 760 && p.x > 10) { this.go('6.3'); return true; } return false; }
+  act = (id, texts, p) => {
+    const list = [...(texts || [])];
+    if (window.__cueDry) { const rec = [], sv = [this.go, this.tab, this.back, this.toastMsg, this.setState, this.rec]; this.go = x => rec.push('go ' + x); this.tab = x => rec.push('tab ' + x); this.back = () => rec.push('back→' + this.backTarget()); this.toastMsg = () => rec.push('toast'); this.setState = () => rec.push('state'); this.rec = s => (rec.push('rec' + (s ? ' studio' : '')), true);
+      let hit = false; try { for (const T of list) if (this.route(id, T, p)) { hit = true; break; } if (!hit && p) hit = !!this.regions(id, p); } catch (e) { rec.push('err ' + e.message); } finally { [this.go, this.tab, this.back, this.toastMsg, this.setState, this.rec] = sv; }
+      window.__cueDry.push({ id, t: list[0] || '', hit, rec: rec.join(',') }); return hit; }
+    for (const T of list) if (this.route(id, T, p)) return true;
+    return p ? !!this.regions(id, p) : false;
+  };
+  renderVals() {
+    const s = this.state, K = Component, Y = '#FFD60A', grp = s.cur.split('.')[0], G = K.G.find(g => g[0] === grp);
+    return {
+      cur: s.cur, files: K.F, act: this.act, isRecUI: s.cur === '5.2' || s.cur === '5.3', notRecUI: !(s.cur === '5.2' || s.cur === '5.3'), recMode: s.cur === '5.3' ? 'studio' : 'selfie', curName: this.nm(s.cur), curGroup: G ? G[1] : 'SYSTEM',
+      hints: K.HINTS[s.cur] || ['Tap any button — it follows the flow'],
+      dataSeg: [['full', 'Sample data'], ['empty', 'New account']].map(([k, l]) => { const on = (k === 'empty') === !!s.empty; return { l, bg: on ? '#636366' : 'transparent', fw: on ? 600 : 400, pick: () => this.setEmpty(k === 'empty') }; }),
+      hasToast: !!s.toast, toast: s.toast,
+      back: () => this.back(), backOp: this.backTarget() ? 1 : 0.4,
+      startFirst: () => this.tab('1.1'), startHome: () => this.tab('3.2'),
+      groups: K.G.map(([g, title]) => ({ t: title, items: Object.keys(K.F).filter(id => id.split('.')[0] === g).sort((a, b) => parseFloat(a.split('.')[1]) - parseFloat(b.split('.')[1])).map(id => { const on = id === s.cur; return { id, n: this.nm(id), bg: on ? 'rgba(255,214,10,0.12)' : 'transparent', c: on ? Y : 'rgba(225,228,245,0.5)', tc: on ? '#fff' : 'rgba(225,228,245,0.75)', go: () => this.tab(id) }; }) }))
+    };
+  }
+}
+</script>
+</body>
+</html>

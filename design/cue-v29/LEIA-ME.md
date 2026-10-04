@@ -6,9 +6,12 @@ v29 brings the **v28 prototype** (`Cue App v28.dc.html`) into the app with high 
 1. `01-Direction.md`: the idea, the tone, what changes from v27 and why.
 2. `02-Tokens.md`: colours, type, radii, spacing, materials, light effects, and the "never do" list.
 3. `03-Screen-map.md`: every screen, how you get there, what each element does, transitions, back, failure, status.
-4. *(Stage 2)* `04-Flows-and-states.md`, `05-Function-and-logic-changes.md`, `06-Data-map.md`, `screens/`, `prototype/`
-5. *(Stage 3)* `motion/`: the HTML for each animation plus a text description.
-6. *(Stage 4)* `strings-en.csv`, `icons/`, `07-Accessibility.md`, `08-Phases.md`, `PROMPT-Claude-Code.md`
+4. `04-Flows-and-states.md` · `05-Function-and-logic-changes.md` · `06-Data-map.md`
+5. `prototype/`: open `prototype/Cue App v28.dc.html` in a browser (local server). Side panel: *Jump to any screen*, *TRY TAPPING* and **APP DATA › New account** (empty states). It is a check, not the source of truth: the map and the tables win.
+   - The screens live in `prototype/cue-universe-v28/boards/` (same IDs as the map). The recorder (5.2/5.3) is native in the prototype: `CueRecorder28.dc.html`.
+6. *(Stage 2b)* `screens/`: PNG @3x per screen and state
+7. *(Stage 3)* `motion/`: the HTML for each animation plus a text description.
+8. *(Stage 4)* `strings-en.csv`, `icons/`, `07-Accessibility.md`, `08-Phases.md`, `PROMPT-Claude-Code.md`
 
 ## Rules of the package
 - **Decision means decision.** Nothing in here is "consider" or "maybe". If the prototype and the current code disagree, the prototype wins.
@@ -19,6 +22,7 @@ v29 brings the **v28 prototype** (`Cue App v28.dc.html`) into the app with high 
 | Stage | Content | Status |
 |---|---|---|
 | 1 | Direction, tokens, screen map | ✅ this delivery |
-| 2 | Flows and state machines, changes, PNGs, prototype, data map | pending |
+| 2 | Flows and state machines, changes, data map, prototype | ✅ |
+| 2b | PNG @3x per screen and state (normal, empty, loading, error, no AI, XL, RTL) | pending |
 | 3 | Motion | pending |
 | 4 | Strings, icons, accessibility, phases, prompt | pending |

@@ -36,22 +36,27 @@ struct PlatformFilterChips: View {
         .accessibilityIdentifier("scripts.filters")
     }
 
+    /// 34 pt, 14 / 600; the dot (7 pt) after 10 pt of padding, the count in mono 11 at 50% (the selected one is white with black text).
     private func chip(_ filter: ScriptFilter) -> some View {
         let isSelected = selection == filter
-        return HStack(spacing: 7) {
+        var hasLeading = true
+        if case .all = filter { hasLeading = false }
+        return HStack(spacing: 6) {
             switch filter {
-            case .platform(let platform): ColorDot(color: platform.tint, size: 8)
-            case .folder: Image(systemName: "folder").font(.footnote.weight(.semibold))
+            case .platform(let platform): PlatformDot(color: platform.tint)
+            case .folder: Image(systemName: "folder").font(.system(size: 12, weight: .semibold))
             case .all: EmptyView()
             }
             Text(filter.label)
-            Text("\(count(filter))")
-                .foregroundStyle(isSelected ? Palette.chipOnInk.opacity(0.55) : Palette.inkHint)
+            Text(verbatim: "\(count(filter))")
+                .font(.system(size: 11, design: .monospaced))
+                .foregroundStyle(isSelected ? Color.black.opacity(0.5) : Palette.ink.opacity(0.5))
         }
-        .font(.system(size: 17, weight: isSelected ? .semibold : .medium))
+        .font(.system(size: 14, weight: .semibold))
         .lineLimit(1)
-        .padding(.horizontal, 16)
-        .frame(height: 40)
+        .padding(.leading, hasLeading ? 10 : 14)
+        .padding(.trailing, hasLeading ? 12 : 14)
+        .frame(height: 34)
         .foregroundStyle(isSelected ? Palette.chipOnInk : Palette.ink)
         .background(isSelected ? Palette.chipOn : Palette.fill, in: Capsule())
         .frame(minHeight: Metrics.hitTarget)

@@ -55,11 +55,12 @@ enum TestData {
         version: Int = 1,
         folder: String? = nil,
         updatedAt: Date = now,
-        language: CueLanguage? = nil
+        language: CueLanguage? = nil,
+        isFinished: Bool? = nil
     ) -> Script {
         Script(
             title: title, text: text, platform: platform, type: type, version: version, folder: folder,
-            createdAt: updatedAt, updatedAt: updatedAt, language: language
+            createdAt: updatedAt, updatedAt: updatedAt, language: language, isFinished: isFinished
         )
     }
 

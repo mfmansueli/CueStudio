@@ -14,6 +14,13 @@ struct UniverseChapter: View {
 
     @State private var isNamingTopic = false
     @State private var customName = ""
+    /// What the typed topic got wrong (04 · F9, 1.2): a refused word, or a "did you mean".
+    @State private var customFeedback: CustomFeedback?
+
+    private enum CustomFeedback: Equatable {
+        case message(String)
+        case typo(suggestion: String, original: String)
+    }
     /// When each topic was picked, to play its birth.
     @State private var born: [String: Date] = [:]
 
@@ -38,6 +45,7 @@ struct UniverseChapter: View {
                     ForEach(topicChoices) { topic in chip(topic) }
                     yourOwnChip
                 }
+                if let customFeedback { feedbackView(customFeedback) }
             }
             .padding(.horizontal, 20)
             Spacer(minLength: 12)
@@ -90,6 +98,7 @@ struct UniverseChapter: View {
     private var yourOwnChip: some View {
         Button {
             customName = ""
+            customFeedback = nil
             isNamingTopic = true
         } label: {
             Text("+ Your own")
@@ -118,10 +127,53 @@ struct UniverseChapter: View {
         }
     }
 
-    private func addCustom() {
-        let before = Set(onboarding.topics.map(\.id))
-        onboarding.addCustom(customName)
-        for topic in onboarding.topics where !before.contains(topic.id) { born[topic.id] = .now }
+    private func addCustom(keepingTyped: Bool = false) {
+        let existing = onboarding.topics.map(\.label)
+        let vocabulary = keepingTyped ? [] : topicChoices.map(\.label)
+        switch VoiceTextValidator.check(customName, existing: existing, vocabulary: vocabulary) {
+        case .accepted(let name):
+            customFeedback = nil
+            let before = Set(onboarding.topics.map(\.id))
+            onboarding.addCustom(name)
+            for topic in onboarding.topics where !before.contains(topic.id) { born[topic.id] = .now }
+        case .typo(let suggestion, let original):
+            customFeedback = .typo(suggestion: suggestion, original: original)
+        case .duplicate:
+            customFeedback = .message(String(localized: "Already added."))
+        case let other:
+            customFeedback = other.message.map(CustomFeedback.message)
+        }
+    }
+
+    @ViewBuilder
+    private func feedbackView(_ feedback: CustomFeedback) -> some View {
+        switch feedback {
+        case .message(let text):
+            Text(text)
+                .font(.footnote)
+                .foregroundStyle(Palette.warnText)
+                .accessibilityIdentifier("onboarding.topic.feedback")
+        case .typo(let suggestion, let original):
+            HStack(spacing: 10) {
+                Text("Did you mean “\(suggestion)”?")
+                    .font(.footnote)
+                    .foregroundStyle(Palette.ink)
+                Button("Use") {
+                    customName = suggestion
+                    addCustom()
+                }
+                .font(.footnote.weight(.semibold))
+                .foregroundStyle(Palette.accText)
+                Button("Keep mine") {
+                    customName = original
+                    addCustom(keepingTyped: true)
+                }
+                .font(.footnote.weight(.semibold))
+                .foregroundStyle(Palette.ink2)
+            }
+            .accessibilityElement(children: .contain)
+            .accessibilityIdentifier("onboarding.topic.feedback")
+        }
     }
 }
 

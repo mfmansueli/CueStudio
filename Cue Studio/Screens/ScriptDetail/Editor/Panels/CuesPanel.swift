@@ -16,7 +16,7 @@ struct CuesPanel: View {
             FlowLayout(spacing: 8, lineSpacing: 8) {
                 ForEach(ScriptCue.allCases) { cue in
                     Button {
-                        viewModel.insertCue(cue)
+                        viewModel.insertEditorCue(cue)
                         Haptics.selection()
                     } label: {
                         Text(cue.name)

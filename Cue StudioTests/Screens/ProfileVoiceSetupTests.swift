@@ -28,9 +28,12 @@ struct ProfileVoiceSetupTests {
     }
 
     @MainActor
-    @Test func theSettingsPagesAreTheThreeUnderYourSetup() {
-        let routes: Set<SettingsRoute> = [.recording, .prompter, .remote, .languageRegion, .acknowledgements]
-        #expect(routes.count == 5)
+    @Test func settingsPushesThreePagesAndOpensThreeSheets() {
+        let routes: Set<SettingsRoute> = [.personalize, .prompter, .acknowledgements]
+        #expect(routes.count == 3)
+        // v29 · L14: Recording, Remote and Language & Region are sheets.
+        let sheets: Set<SettingsSheet> = [.recording, .remote, .languageRegion]
+        #expect(sheets.count == 3)
     }
 
     @MainActor

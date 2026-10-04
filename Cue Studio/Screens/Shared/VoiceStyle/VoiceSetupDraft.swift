@@ -11,8 +11,8 @@ import Foundation
 struct VoiceSetupDraft: Equatable {
     /// Niches a creator can pick here, and tones: few, so the voice stays clear for the model
     /// (`CreatorVoice.summary` reads two sounds). A profile that already holds more keeps them.
-    static let nicheLimit = 3
-    static let soundLimit = 2
+    static let nicheLimit = VoiceLimits.topics
+    static let soundLimit = VoiceLimits.tones
 
     let steps: [VoiceSetupStep]
     private(set) var role: CreatorRole?

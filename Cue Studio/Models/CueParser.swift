@@ -35,6 +35,14 @@ nonisolated enum CueParser {
         return result
     }
 
+    /// How many stage cues the text has (`[pause]`, `[smile]`…): the "4 CUES" of a script's row and strip. An empty
+    /// pair of brackets isn't one.
+    static func count(in text: String) -> Int {
+        text.matches(of: /\[[^\]]*\]/).filter { match in
+            !text[match.range].dropFirst().dropLast().trimmingCharacters(in: .whitespaces).isEmpty
+        }.count
+    }
+
     /// The text without cues, with the spaces around removed cues collapsed.
     static func stripCues(_ text: String) -> String {
         text.replacing(/[ \t]*\[[^\]]*\][ \t]*/, with: " ")

@@ -227,9 +227,11 @@ SF Symbols por significado: `doc.text` scripts · `film.stack` takes · `person.
 
 ## 5. Navegação
 
-**Tab bar própria (v27, `CueTabBar`)**, não a nativa: uma pílula de vidro flutuante de 64 pt (16 pt dos lados) **abaixo** do conteúdo (fora do quadro das telas, sobre `bg`, para o conteúdo nunca rolar por baixo dela e os toques não acertarem a barra), com os ícones v2 de 22 pt, rótulos de 10,5 pt, as abas em repouso a 65% de branco e a ativa em amarelo, e um **orb amarelo de 6 pt sob o rótulo que viaja até a aba escolhida** (`matchedGeometryEffect`, mola 0,35/0,7 com overshoot; instantâneo com Reduce Motion). Record mantém o anel com o orb vermelho e abre "Start recording" sem virar a aba escolhida. Some na página do script, no modo de seleção de Scripts e com o teclado aberto (`hidesCueTabBar()`). Cada aba é um elemento único para o VoiceOver e para os testes (`tab.<aba>`, `app.cueTabBar`); o `.accessibilityAddTraits(.isTabBar)` foi tirado porque duplica os elementos. Ordem: **Scripts → Takes → Record → Profile → Settings** (como no protótipo: Record
-no meio). Settings usa `gearshape`, depois de Profile; Record mantém `RecordGlyph` e abre a sheet sem
-mudar a aba selecionada. Materiais, transparência, cor e tamanhos continuam os nativos existentes.
+**Tab bar nativa (v29, `TabView`)**: a do sistema, com o Liquid Glass do iOS 27 (nunca uma view própria). O conteúdo das abas rola por baixo dela, a
+seleção desliza ao arrastar o dedo sobre a barra e a cápsula da aba ativa é a do sistema; o `.tint` é o amarelo (`accText`). Os ícones são os `CueIcon`
+rasterizados como imagens template (`CueTabImage`, 26 pt, traço ≈1,6 pt) e Record é uma imagem com as duas cores (anel + ponto vermelho, 30 pt), porque a
+barra só desenha imagens. Ordem: **Scripts → Takes → Record → Profile → Settings**. Record não é destino: selecionar abre "Start recording" e a aba
+escolhida continua. A barra some (`toolbarVisibility(.hidden, for: .tabBar)`, via `PresentationService.hidesTabBar`) na página do script e no modo de seleção de Scripts.
 
 ```
 RootView
@@ -1083,7 +1085,7 @@ mais telas novas. Decisões tomadas sem perguntar (as regras de negócio — 5 e
 - **Efeitos de luz** (`DesignSystem/Effects`): `HorizonLine` (a linha de leitura), `IgniteEffect`, `CometTravel`/`CometPlayer`, `WordsFromLight`,
   `AIAura`, `ShineSweep`, `HorizonParticles`; todos com versão estática para Reduce Motion. `CueMotion` guarda curvas, molas e durações;
   `Haptics` tem um interruptor global (Personalize).
-- **Tab bar** (`CueTabBar`): pílula de vidro com o orbe amarelo que viaja até a aba escolhida; Record é o anel com o ponto vermelho.
+- **Tab bar**: a nativa do sistema (ver a seção 13); Record é o anel com o ponto vermelho.
   Está num `VStack` abaixo do conteúdo (nunca flutua sobre ele), e some em telas de tela cheia (`hidesTabBar`).
 
 ### Primeiro voo (onboarding, `Screens/Onboarding`)
@@ -1107,7 +1109,7 @@ universo e acende a primeira estrela ligada a "YOU"; uma vez só. Quem já tem r
   que enche com a leitura; entrar numa seção faz a estrela "pular" (1,7 → 1 em 0,55 s) com háptico de seleção; o rótulo "HOOK · 1 OF 3" muda
   com fade. O chip "✦ FOLLOWING YOUR VOICE" fica no canto de baixo à esquerda.
 - **Contagem** (`CountdownOverlay`): "LET'S CUE" e os segundos num anel de 12 estrelas que acendem enquanto um arco amarelo enche; o número entra
-  de 1,35× com blur e sai em 0,2 s; háptico leve a cada número e médio no fim; um clarão (`CountdownFlare`); tocar em qualquer lugar cancela.
+  de 1,35× com blur e sai em 0,2 s; háptico leve a cada número e médio no fim; sem clarão ao fim (a bola amarela foi removida); tocar em qualquer lugar cancela.
   A duração vem de Settings › Prompter (Off, 3, 5 ou 10 s).
 - **Velocidade**: `SpeedSlider` é o `OrbSlider` compacto ("SPEED 0.7×"), com tique no ritmo natural.
 
@@ -1178,11 +1180,11 @@ Todos os "New in v29" de `02-Tokens.md` §1.2 existem: `bgWash*` (e a view `BgWa
 v27 ficam; **uma exceção**: `sliderTrack` passou de `#6E7496` 45% para 35% (o v29 redefine o mesmo papel). `PaletteContrastTests` ganhou os pares
 novos (chips de estado, texto reescrito pela IA, barra de seleção, faixa de estado, rótulos da tab bar, partes do slider, REC e estado vazio).
 
-### Tab bar (`CueTabBar`)
-Liquid Glass de verdade (`glassEffect(.regular.interactive())` numa cápsula de 64 pt, 16 pt dos lados, **26 pt da borda de baixo**, medidos além da
-faixa do Home Indicator: `MainView`), sobre `glassBarBase`. A aba ativa fica numa cápsula de vidro de 56 pt com 4 pt de respiro (`tabCapsuleFill`) que
-desliza com mola de 0,32 s (`CueMotion.tabCapsule`; fade com Reduce Motion). O orb amarelo saiu. Ícones de 26 pt, Record de 30 pt (`RecordGlyph`:
-anel fino + ponto vermelho sólido, sem brilho), rótulos de 10 pt; a aba ativa continua em amarelo (`accText`).
+### Tab bar (nativa)
+**`TabView` do sistema** (Liquid Glass; conteúdo sob a barra, seleção por arrasto). A primeira versão da fase 1 era uma view própria num `VStack` abaixo do
+conteúdo, e foi trocada: a barra tem que ser a nativa. Saíram `CueTabBar`, os tokens `glassBar*`/`tabCapsule*` e o teste de contraste da barra (o sistema
+decide o vidro e o rótulo). Ficam `CueTabImage` (ícones como imagens), `Metrics.tabIconSize` (26) e `tabRecordSize` (30), e o amarelo no `tint`. `TabBarUITests` confere a
+barra nativa (`app.tabBars`), a aba selecionada e que Record não vira seleção.
 
 ### Ícones (`CueIcon`, `CueIconGeometry`, `SVGPathParser`)
 Os 53 ícones deixaram de ser assets vetoriais e passaram a ser **desenhados em código** a partir da geometria dos SVG (gerada por
@@ -1213,3 +1215,185 @@ uma ação amarela e um link). Todos aparecem no catálogo de debug (`-uiTestCat
 Toasts de até ~28 caracteres e textos de ajuda de uma frase de até ~60, resultado primeiro, "·" para juntar fatos, sem travessão + explicação
 (95 chaves novas nos 20 idiomas; as 88 antigas saíram do catálogo). Fora do alcance: o texto da folha Privacy & AI data (descreve a política, não é
 ajuda) e mensagens de erro que vêm do sistema (`error.localizedDescription`).
+
+## 14. v29 — fase 2: modelos e migração
+
+Sem mudança visível: os dados que as telas da v29 vão ler. Nenhuma regra de negócio mudou. Os arquivos da v27 abrem com os mesmos valores
+(`V29MigrationTests`, com um `scripts.json`, um perfil e ajustes do prompter no formato da v27).
+
+- **`Script.isFinished`** (L1): gravado; ausente = `true` se o roteiro tem texto, `false` se está vazio. **`ScriptState`** (`ready`, `draft`,
+  `recorded`) é derivado (`ScriptState.resolve(isFinished:takeCount:)`, `Script.state(takeCount:)`): com ≥ 1 take é RECORDED, senão READY se
+  `isFinished`, senão DRAFT. Shape, cues e "Remove all cues" nunca o mudam. `ScriptLibraryService.setFinished(_:of:)` não conta como edição
+  (texto, versão e ordem ficam) e `create(…, isFinished:)` recebe o estado explícito (omitido, vale a regra da migração). Uma cópia herda o estado.
+  Um formato que esta versão não conhece (gravado por uma mais nova) lê como "sem formato" em vez de impedir a biblioteca de abrir.
+- **`ScriptType.mythFact` e `.pov`** (L3): estrutura (Myth · Why people think it · Fact · CTA; POV line · Scene · Twist), briefing, dica, título e
+  rascunho sem IA. Os 8 formatos de antes ficam com os mesmos valores.
+- **`BrandBrief`** e **`BrandStore`** (L4): marca, produto, "Must say", "Never say", link e código; só vale com marca **e** produto
+  (`isUsable`). `BrandStore` guarda as marcas em `Application Support/Library/brands.json` (`BrandRepository`), a mais recente primeiro, sem
+  duplicar pelo nome. `adopt(legacyAdBrief:)` transforma o briefing antigo do formato `ad` numa marca **uma vez** (a marca e o produto antigos viram a
+  marca, o benefício vira o produto e o "Must say", o código ou o link ficam). `ScriptRequest.brand` leva a marca ao `ScriptPromptBuilder`:
+  "use only the facts below", "never invent claims" e "#ad" sempre.
+- **`CreatorProfile`**: `openings`, `endings`, `formats`, `swearing` (`Swearing`: never · mild), `examples` (≤ 3, `VoiceExample`, 300 caracteres
+  enviados de cada) e `customTags`; as frases (`phrases`) já existiam. Ausentes = vazios. **`voiceStrength`** (0–100, 04 §F9): Essentials 60%
+  (tipo, tópicos, público, tom: 15 cada), Personality 25% (aberturas, finais, frases, formatos, palavrões: 5 cada) e Proof 15% (1–3 exemplos, 5
+  cada). **`nextQuestion`**: o primeiro item de Personality vazio, na ordem endings → openings → formats → swearing → phrases (a do protótipo),
+  pulando os que ficaram para depois (`nextQuestion(excluding:)`). `ScriptPromptBuilder.voiceBrief(profile)` expõe o que a IA recebe ("What Cue sends").
+- **`PrompterSettings.boxWidth` / `boxHeight` / `readingLine`** (L8): **a mesma caixa de antes** (`readingWidth`, `textWindowHeight`) e a mesma linha
+  (`readingLineOffset`), expostas pelos nomes da v29; nada é guardado duas vezes e os ajustes da v27 abrem no mesmo tamanho. A largura é uma
+  **fração** da tela (0,5–0,93), não pontos, para valer em qualquer iPhone; a linha é uma fração da altura (0,10–0,50) convertida pela tela onde é lida
+  (`readingLine(on:)`, `setReadingLine(_:on:)`). Ausente, a linha continua onde está hoje (118 pt sob a lente), não nos 22% do protótipo.
+- **`SkyMemory`** (L16): `StarPoint` normalizado 0–1; cada ideia enviada acrescenta uma estrela, até 50 guardadas (UserDefaults) e as 14 mais novas
+  desenhadas; o lugar sai do número da estrela (sequência de baixa discrepância), então nunca repete nem empilha.
+- **Ferramentas** (`design/cue-v29/tools`): `add_strings.py` (junta traduções no catálogo, no formato do Xcode, nos 20 idiomas) e
+  `missing_strings.py` (lista o texto novo da árvore de trabalho que ainda não está nos 20 idiomas).
+
+## 15. v29 — fase 3: Scripts e criação
+
+Onde a seção 4 descreve a home de Scripts, o primeiro uso, o card "Let’s Cue", "New script", o formato, o Importar ou o Logbook, vale esta seção.
+Nenhuma regra de negócio mudou.
+
+- **Scripts (3.2)** (`ScriptsView`, `ScriptsViewModel`, `ScriptRow`, `ScriptGroup`, `ScriptRowLine`): título "Scripts" com Logbook, busca e "+"; o resumo
+  mono "8 SCRIPTS · 3 READY" (`ScriptState.ready`); os filtros por rede (como antes); o card Let’s Cue; e **três grupos** sob cabeçalhos mono:
+  **READY TO RECORD · n** (verde), **DRAFTS · n · IN PROGRESS** e **RECORDED · n** (cinza), cada um só existe com roteiros. Cada linha: a barra do tópico
+  (`ThemeRail`, na cor do mundo; cinza sem tópico), o título (até 2 linhas), o ponto da rede e a linha mono ("TIKTOK · 0:47 · 4 CUES" pronto,
+  "SHORTS · 5H AGO" rascunho, "TIKTOK · 3 TAKES · READY" gravado, com a etapa do vídeo) e o que fazer: **● REC** (`RecPill`) no pronto, **Continue ›** no
+  rascunho (abre direto escrevendo), **×n ›** no gravado (vai para a aba Takes; "Open script" no menu de segurar abre a página). **Select** fica no fim
+  do primeiro cabeçalho; deslizar para a esquerda mostra **Record** e **More**; segurar mostra a prévia e o menu (Studio mode, Edit, Duplicate, mover,
+  idioma, Share, Delete). **Delete tem Undo por 4 s** (`ScriptLibraryService.restore`), também na seleção. Sem resultado (busca, rede ou pasta
+  vazia): o estado vazio E ("No {Platform} scripts yet" + **Create for {Platform}**, que põe a rede no card e leva o foco a ele).
+- **Card Let’s Cue** (`IdeaPromptCard`): "↻ ANOTHER IDEA" no canto (com o campo vazio), o campo mostra a **ideia sugerida** dos tópicos do criador
+  (`IdeaDraftService.suggestion`, a seta a escreve se nada foi digitado) e os chips **Format ⌄ · For {Rede} ⌄ · ✦ Voice nn%** (`MyCueVoiceChip`:
+  `CreatorProfile.voiceStrength`, "Voice · Set up" antes do mínimo; abre as perguntas, o liga/desliga da voz fica no Profile). O chip Format mostra a
+  tag **AD** quando o anúncio patrocinado está escolhido. **Sem Apple Intelligence** o card é neutro (sem aurora, sem estrelas, sem chip da voz): a seta
+  vira **Write it** e abre um rascunho em branco com a ideia no título. "Need an idea?" saiu do card: vive em "+" › Let Cue write it (3.3).
+- **A estrela sobe** (`SkyMemory.launchStar`, `StarFlightOverlay`, `SkyStarsLayer`): ao enviar uma ideia, uma estrela branca de 7 pt sai da seta, percorre uma
+  curva em 760 ms (encolhendo a 55%, com rastro), brilha em cruz por 380 ms e fica no céu acima de Scripts como uma das "suas estrelas" (as 14 mais novas,
+  3 pt amarelo-claro, piscando em 4 s); só depois a página do roteiro abre. Com Reduce Motion a estrela só aparece depois de 150 ms; parada com Low Power.
+- **Primeiro uso (3.1)** (`EmptyLibraryView`): "NO SCRIPTS YET", o card, a marca do estado vazio com "Every universe starts with an idea.", "✦ IDEAS FOR YOU ·
+  TAP TO START" com 3 ideias (tocar escreve; a estrela sobe da seta da linha; sem IA a linha diz "Write it" e abre o rascunho com a ideia no título),
+  "Write my own ›" e "Import ›", e "Record without a script" como o link mais discreto.
+- **"+" › Start a video (3.5)**: Let Cue write it (3.3, some sem IA) · Write it myself · **Start from a format** · Import · Answer a comment · Record
+  without a script.
+- **Formatos (F)** (`FormatChoice`, `FormatSheet`, `FormatTile`): 12 tiles (Auto, Talking head, Tutorial, Storytime, List / tips, Review, Myth vs fact, POV,
+  Sponsored ad, Hot take / reply, Announcement, Apology; o quadro tem 11, **Hot take** fica como 12º para nenhum formato se perder), cada um com as seções em
+  mono. Escolher só seleciona; **Done** (do card) ou **Open** ("Start from a format": um rascunho em branco, sem Auto) confirma. Sponsored ad vai ao brief.
+- **Brand brief (B)** (`BrandBriefSheet`, `BrandBriefViewModel`): marcas salvas em chips (+ New brand), Brand* e Product or offer*, Must say, Never say, Link,
+  Code, "Paid partnership label · ALWAYS ON" (#ad, sem interruptor), **Save brand** e **✦ Write the ad** (amarelo só com marca e produto; senão o toast
+  "Add brand and product"). Do card, escreve o anúncio **só** com o brief (`ScriptRequest.brand`); em "Start from a format" ou sem IA o botão é "Open the draft".
+- **Importar (I)** (`ImportScriptSheet`): **Paste | Scan | Photo | File** põe o texto numa caixa editável (o OCR roda no aparelho) e **Use this script** o cria
+  (conta como Done: READY) e abre a página. Scan sem permissão da câmera: "Allow camera in Settings" + Open Settings.
+- **Logbook (3.6)**: o botão do cartão é **✦ Write** (sem IA, "Write it": um rascunho com a ideia no título); "Catch it now. Write it later."; vazio com a marca E.
+- **Estados ao criar** (04 · F2): "Write it myself" e "Start from a format" nascem DRAFT; a IA que entrega um roteiro completo (card, ideias, Logbook, resposta a
+  comentário) o marca como `isFinished` ao terminar; Importar e colar nascem READY.
+
+## 16. v29 — fase 4: página do roteiro
+
+Onde a seção 4 descreve a página do roteiro (Draft | Shaped), o Rec do topo e a barra sobre uma seleção, vale esta seção.
+
+- **Uma página só** (`ScriptPageView`): barra com **voltar**, o chip da plataforma e **•••** (`ScriptPageTopBar`, sem o seletor Draft | Shaped e sem Rec);
+  título (27 pt) e a linha mono "113 WORDS · ~0:45"; a **faixa de estado**; a faixa de duração; **Hook** e **✦ Improve** (4.3 e 4.4; o Improve some
+  sem IA) e **Aa**; as palavras, sempre editáveis (`ScriptTextEditor`); as dicas; as takes; e **um Record** embaixo.
+- **Faixa de estado** (`ScriptStateStrip`, `ScriptStrip`, 44 pt, raio 16): o chip READY / DRAFT / RECORDED, a linha mono ("LIST · 4 CUES", "EDITED · TAP
+  DONE", "CHANGED SINCE TAKE 3" em amarelo), **✦ Shape** quando não há cues (só com IA) e **Done**: um botão cinza no DRAFT, texto no READY (sem
+  mudanças, só volta), nenhum no RECORDED. O Record da faixa fica de fora: **só há um botão Record por tela**, o de baixo (`ScriptRecordBar`), e ele é o
+  único preenchimento amarelo; num roteiro gravado que não mudou desde a take ("Retake") fica cinza, e amarelo depois de editado.
+- **Shape é uma ferramenta** (`ScriptCueShaper`): acrescenta até 4 cues (pausa depois do gancho, ênfase no meio, olhar para a câmera antes do fecho e
+  sorriso no fim); nunca muda as palavras nem o estado. Os cues aparecem como etiquetas amarelas no texto e a barra sobre o teclado traz **pause · smile ·
+  emphasis · look at camera** (`ScriptCuesBar`).
+- **Estados** (04 · F2, `ScriptPageRules`): **Done** marca READY (com o toast "Ready to record"); sem texto, "Nothing to save yet" e nada é salvo; com as
+  seções de um formato vazias, "{n} sections are still empty." → **Done anyway / Keep writing**; editar e sair sem Done volta o roteiro para DRAFT com o toast
+  "Saved as draft" (também ao ir para o segundo plano); um roteiro gravado continua RECORDED e a faixa diz "Changed since take n"; gravar um rascunho o manda
+  à câmera como READY.
+- **Barra de IA sobre uma seleção** (`AISelectionBar`, `AIPassage`): com Apple Intelligence e mais de 8 caracteres selecionados, uma pílula violeta de 40 pt:
+  **✦ Rewrite · Shorter · Punchier · More me · Cut**. A IA troca as palavras **no lugar**, em violeta (`aiReplaced`), e a barra vira **✓ Keep · ↺ Undo · ✦ Try
+  again** (escrever, digitar ou selecionar outras palavras mantém; "Try again" refaz a mesma mudança nas palavras de antes). **Cut** só remove, com Undo no toast.
+  Sem IA a barra não existe.
+- **Sem IA**: a faixa não tem ✦ Shape, a página não tem Improve nem barra, ••• não tem "Improve with Cue"; Hook (as ideias do formato) continua.
+- As dicas (gancho longo, frase longa, "No CTA yet · Suggest one") são neutras (leitura do texto, não IA). O editor de blocos antigo continua em ••• › Versions & options.
+
+## 17. v29 — fase 5: gravador
+
+- **Caixa que encolhe** (`ReadingLayout`): gravando, a caixa de texto fica 10 pt mais estreita de cada lado e 16% mais baixa (a linha de leitura não se mexe).
+  **Pinça na borda direita** (`ReadingLinePinch`, 56 pt): abrir os dedos leva a linha para baixo, fechar leva para cima, entre 10% e 50% da altura; a alça fina na
+  linha continua. Tudo vai para o `PrompterSettings` da sessão (a caixa e a linha são `boxWidth`/`boxHeight`/`readingLine`, ver a seção 14).
+  `PrompterViewModel.isCompact` = gravando e sem espiar a barra inteira (os 4 s do toque na tela). "Hide controls while recording" já não existe.
+- **Studio grava (5.3)** (`StudioModeView`, `StudioCameraThumbnail`): a câmera **traseira** filma através do vidro do rig enquanto a tela mostra o texto no fundo
+  escuro (espelhável); uma miniatura de 64 × 114 pt no canto (anel vermelho gravando) e uma margem de 78 pt à direita para o texto nunca ser coberto. A barra é
+  a do Selfie (`SelfieControlPanel(isStudio: true)`, com ‹‹ e ›› ao lado do play): trocar de modo guarda a lente do Selfie e a devolve; sem câmera (Mac, sem
+  permissão) o Studio escuta por um medidor próprio, como antes.
+- **F3 (04)**: sem microfone, o cartão "Cue needs the microphone" + Open Settings e o Record desligado (`MicrophoneNeededCard`); **armazenamento cheio** ou **uma
+  interrupção** (ligação) terminam a take sozinhos: o que o sistema conseguiu fechar vira uma take e o toast diz "Storage full · Take saved" / "Interrupted · Take
+  saved" (`RecordingEndReason`, `RecordingDelegate`, `CameraControlling.onRecordingEnded`).
+- **Teste sem câmera**: `-uiTestDemoCamera` troca a câmera do gravador por uma que "grava" um vídeo pequeno de verdade (`DemoCamera`, só em Debug).
+
+## 18. v29 — fase 6: Takes, revisão e editor
+
+- **Pick your best take automático (6.1, 04 · F3)**: parar uma gravação que deixa **duas takes ou mais** do roteiro e nenhuma ★ abre a revisão já em "Pick
+  your best take" (`ReviewLaunchAction.pickBest`, `PrompterViewModel.shouldPickBest`); uma take só (ou freestyle) vai direto à revisão (6.3).
+- **Delete com Undo de 4 s (6.3, F4)**: a lixeira da revisão tira a take da biblioteca na hora (`TakeLibraryService.remove`) e o toast traz **Undo**
+  (`restore`); o vídeo e o que o Quick edit guardou só são apagados depois dos 4 s (`purge`).
+- **Fotos negadas (6.3)**: salvar sem a permissão do Fotos mostra o cartão "Photos is off for Cue · Allow it to save your video." com **Open Settings**
+  (`PhotosDeniedCard`) sobre as ações, em vez de um toast; fechar o cartão ou o próximo salvamento que funciona o tira.
+- **Takes vazio (E)**: `EmptyState` ("No takes yet" · "Record one and it shows up here." · **Record a take** · "Write a script first ›").
+- **Editor (7.2)**: a toolbar principal é **Edit · Audio · Text · Captions · Filters · ✦ Smart · Cover** (a ordem do CapCut; o Smart em violeta, o Cover no
+  fim). **Adjust, Crop, Background e Overlay** ficam nas ferramentas do clipe (Edit): Adjust, Filters e Background mudam esse clipe; Crop (o formato da saída)
+  e Overlay (foto ou vídeo por cima) são do vídeo todo, mas moram ali. O **Background do vídeo todo** é o 5º tile do ✦ Smart (Auto captions · Remove pauses ·
+  Studio Voice · Auto adjust · Background). Voltar guarda o rascunho e mostra "Draft saved".
+- **Legendas sem reconhecimento de fala (7.4)**: "Captions need speech recognition. You can still write the lines yourself." (a ação é "Write them myself").
+- **Diferenças**: os painéis do editor têm altura fixa por tamanho (mini, médio, cheio), e o conteúdo ainda **rola por dentro como segurança** em telas
+  compactas e com texto grande (o quadro pede "nada rola", mas cortaria controles); a abertura do editor (7.1) mostra o overlay enquanto a take é lida, sem
+  esperar 2,8 s fixos; a zona de 34–44 pt sem controles é a área segura de baixo mais `Metrics.editorPanelBottomClearance` (8 pt).
+
+## 19. v29 — fase 7: compartilhar, universo e Pro
+
+- **8.1 anúncio** (`ShareToSheet.adWarning`, `TakeReviewViewModel.isSponsored`): para um roteiro `ad`, a sheet "Share to" mostra a barra "AD · #ad is copied · paste it
+  in your caption" e **"#ad" vai para a área de transferência** a cada exportação que dá certo (salvar, uma plataforma ou More); o formato patrocinado já escreve com
+  "#ad" sempre ligado (fase 3).
+- **Exportar (F6)**: a exportação **só conta depois de o vídeo estar onde ia** (salvo no Fotos ou entregue ao share sheet): uma falha, ou o Fotos negado, deixa o
+  contador onde estava. Falha = toast "Couldn't export · Try again"; Fotos negado = o cartão da fase 6. O paywall abre na 6ª exportação e ela continua sozinha
+  depois da compra.
+- **9.2 Your universe**: o **núcleo animado "YOU"** no meio (brilho violeta que respira em 4 s, disco amarelo → violeta e uma estrela branca que o circula em 12 s;
+  parado com Reduce Motion): **sem foto e sem inicial** (L12). Vazio: o núcleo sozinho e o estado E "Your first star is one video away" · "Share a video and it
+  becomes a star here." · **Open Takes**. A imagem de "Share my universe" usa o mesmo núcleo.
+- **11.4 Pro (F7)**: sem mudança de regras. Compra cancelada volta sem mensagem; sem internet "Can't reach the App Store"; qualquer outro erro "Purchase didn't go
+  through" (`StoreManager.message(for:)`); Restore continua visível no rodapé.
+
+## 20. v29 — fase 8: Profile e My Cue Voice
+
+Onde a seção 4 descreve o card de My Cue Voice no Profile ("What Cue uses"), vale esta seção. Nenhuma regra de negócio mudou.
+
+- **9.1 Profile**: o card do My Cue Voice (`MyCueVoiceCard`) mostra o **medidor** ("VOICE 65% · GOOD START", `VoiceMeter`: Just started < 30 · Getting there < 60 ·
+  Good start < 85 · Sounds like you), **uma frase** com o que o criador respondeu (`CreatorProfile.voiceSentence`), a prévia ao vivo, **a próxima pergunta** com
+  **Answer** (abre a sheet dela) e o interruptor "Use my voice in AI scripts"; **Edit voice ›** abre a página 9.3. As linhas "What Cue uses" saíram do card.
+- **9.3 My Cue Voice** (`MyCueVoicePage`, `Screens/Profile/Voice`): o medidor, a frase, o interruptor, a próxima pergunta e as **três camadas**, cada uma com
+  seus pontos ("ESSENTIALS 45 / 60", "PERSONALITY 10 / 25", "PROOF 5 / 15", os pesos de `voiceStrength`): **Essentials** (I am · Topics · Audience · Voice, cada
+  linha abre as perguntas do My Cue Voice naquele ponto), **Personality** (Ends with · Opens with · Usual formats · Swearing · My phrases,
+  `VoicePersonalitySheet`) e **Proof** (Examples, até 3, `VoiceExamplesSheet`); no fim **"What Cue sends"**: o `ScriptPromptBuilder.voiceBrief` em monoespaçada,
+  como o modelo o lê ("What Cue tells Apple Intelligence · on device"). Sem Apple Intelligence a página diz "My Cue Voice needs Apple Intelligence · Your answers
+  stay saved and you can still edit them", sem nudges, e tudo continua editável.
+- **Validação (04 · F9, `VoiceTextValidator`, `CreatorProfileService+Personality`)**: texto livre de 2 a 40 caracteres; um **erro de digitação** de uma opção
+  (distância de edição 1, ou 2 em palavras longas) pergunta **"Did you mean “…”? Use · Keep mine"**; uma **palavra que o Apple Intelligence não usa** (palavrões
+  fortes em vários idiomas e frases de autodano, com lista de exceções para "hello", "computador"…) não é salva ("Apple Intelligence can’t use this word.");
+  **repetido** (sem caixa nem acento) não soma e diz "Already added."; **limites**: tópicos ≤ 3, tons ≤ 2 ("Max 2 · tap to remove"), aberturas ≤ 2, finais ≤ 2, frases ≤ 5,
+  formatos ≤ 3, exemplos ≤ 3 → toast "Max n …" (`VoiceLimits`). Exemplos: ≥ 20 caracteres e, com palavras bloqueadas, "…Bleep them (f***) or pick another example.".
+- **Nudges (`VoiceNudgeService`, `VoiceNudgeCard`, `VoiceNudgeSlot`)**: uma pergunta de cada vez em **Scripts** (abaixo do card Let’s Cue) e **Takes** (sob o pipeline),
+  sobre o primeiro item de Personality vazio (endings → openings → formats → swearing → phrases); só com o mínimo do My Cue Voice e **com Apple Intelligence**.
+  Respostas de um toque, **None of these** (a pergunta não volta e não conta como preenchida: `CreatorProfile.declinedVoiceItems`), **+ Something else** (a sheet da
+  pergunta com o campo) e **Not now** (segura por 3 dias, `DefaultsKey.voiceNudgeSnoozes`).
+
+## 21. v29 — fase 9: Settings, estados vazios e passada final
+
+- **Settings em sheets (L14, 11.1)**: **Recording**, **Remote** e **Language & Region** abrem como sheets sobre o Settings (`SettingsSheet`, guardado no
+  `PresentationService`, então sobrevive à troca de idioma que reconstrói a interface), cada uma numa `NavigationStack` com **Done**; **Prompter** (11.2),
+  **Personalize** (11.3) e **Acknowledgements** continuam empurradas. **Privacy & AI data** já era sheet. Um novo item **Cue Pro** (Active / Free plan) em
+  Purchases & About abre o paywall (11.4), ao lado de Restore purchases.
+- **Delete my Cue data (F8)** (`DataEraserService`, em Privacy & AI data): um alerta "Delete all your Cue data?" → **Delete everything** (irreversível) remove
+  roteiros, takes (vídeos, edições e rascunhos), Logbook, marcas, "suas estrelas", My Cue Voice e o setup de gravação. **Não** mexe na compra, no contador das
+  5 exportações grátis (fica no Keychain, para apagar os dados não devolver exportações), no idioma nem no que já está no Fotos. "Help improve" não existe: o app
+  não envia nada a lugar nenhum.
+- **1.2 tópico próprio**: o campo de "+ Your own" usa a mesma validação do My Cue Voice (palavra bloqueada, "Did you mean…", repetido) com a mensagem inline.
+- **3.2 chip ✦ Voice**: com a voz pronta, o chip abre a página 9.3 (numa sheet com Done); sem ela, as perguntas.
+- **10.2 Answer a comment**: "✦ Draft my reply" (com Apple Intelligence), **Write it myself** (um rascunho em branco com o comentário; o único caminho sem IA) e
+  **Save to Logbook** (guarda o comentário como ideia).
+- **Estados vazios (L13, padrão E)**: Scripts (3.1), Scripts com filtro sem resultado, Takes, Logbook e Your universe usam o `EmptyState`.
+- **Modo claro**: o app é só escuro desde a v27, então não há modo claro a revisar.

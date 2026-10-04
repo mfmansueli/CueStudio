@@ -176,7 +176,8 @@ struct SkyBackground: ViewModifier {
     func body(content: Content) -> some View {
         content.background {
             ZStack {
-                Palette.bg
+                // The night glow (v29): a violet light from the top left, the same on every browse screen, sky on or off.
+                BgWash()
                 StarfieldView(density: personalization.sky)
             }
             .ignoresSafeArea()

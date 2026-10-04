@@ -19,8 +19,12 @@ final class EditorUITests: XCTestCase {
         XCTAssertTrue(app.buttons["edit.backButton"].exists)
         XCTAssertFalse(app.buttons["edit.exportButton"].exists)
         XCTAssertTrue(app.buttons["edit.playButton"].exists)
-        for tool in ["edit", "audio", "text", "captions", "filters", "adjust", "crop", "background", "media", "smart"] {
+        // v29 · 7.2: CapCut's order, Smart before Cover; Adjust, Crop, Background and Overlay are Edit's clip tools.
+        for tool in ["edit", "audio", "text", "captions", "filters", "smart", "cover"] {
             XCTAssertTrue(app.buttons["edit.toolbar.\(tool)"].exists, tool)
+        }
+        for tool in ["adjust", "crop", "background", "media"] {
+            XCTAssertFalse(app.buttons["edit.toolbar.\(tool)"].exists, tool)
         }
         XCTAssertFalse(app.buttons["edit.toolbar.back"].exists)
     }

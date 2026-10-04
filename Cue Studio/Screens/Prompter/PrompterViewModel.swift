@@ -21,8 +21,7 @@ final class PrompterViewModel {
     private(set) var isRecording = false
     private(set) var recordingSeconds = 0
     private(set) var countdown: Int?
-    /// Bumped when a countdown ends, for the flare.
-    private(set) var countdownFlares = 0
+    var reviewStartsWithPick = false
     private(set) var showsStopWarning = false
     /// The compact recording bar and the whole one a tap brings back.
     let bar = RecordingBarState()
@@ -74,15 +73,15 @@ final class PrompterViewModel {
 
     // MARK: Selfie layout (see PrompterViewModel+Layout)
     /// What the Selfie screen measured on this device.
-    private(set) var screenMetrics = SelfieScreenMetrics()
+    var screenMetrics = SelfieScreenMetrics()
     /// The safe zone picked in Display › Layout, for this session.
-    private(set) var safeZonePick: SafeZoneChoice?
+    var safeZonePick: SafeZoneChoice?
 
     /// This recording's setup. Views read and bind `session.camera` / `session.prompter`.
     let session: SessionSetupService
 
     private let library: ScriptLibraryService
-    private let takes: TakeLibraryService
+    let takes: TakeLibraryService
     private let profile: CreatorProfileService
     let rules: PlatformRulesService
     private let camera: CameraControlling
@@ -195,6 +194,8 @@ final class PrompterViewModel {
         let text: String
     }
 
+    /// The lens Selfie had, kept while Studio records through the rear camera.
+    @ObservationIgnored private var studioReturnLens: CameraLens?
     @ObservationIgnored private var directionCache: (key: DirectionKey, rightToLeft: Bool)?
 
     var preset: PlatformPreset? {
@@ -241,6 +242,7 @@ final class PrompterViewModel {
             onCommand: { [weak self] command in self?.handle(command) },
             status: { [weak self] in self?.remoteStatus ?? .idle }
         )
+        camera.onRecordingEnded = { [weak self] clip, reason in self?.recordingEndedByItself(clip, reason: reason) }
         guard reviewingTake == nil else { return }
         await enter(mode)
     }
@@ -252,6 +254,7 @@ final class PrompterViewModel {
         pause()
         if isRecording { await stopRecording(openReview: false) }
         remote.detach()
+        camera.onRecordingEnded = nil
         await camera.stop()
     }
 
@@ -270,10 +273,21 @@ final class PrompterViewModel {
         switch mode {
         case .selfie:
             audio.stopMetering()
+            // Back from Studio: the lens the creator had.
+            if let lens = studioReturnLens {
+                session.camera.lens = lens
+                studioReturnLens = nil
+            }
             await camera.start(with: session.camera)
             noticeCaptureFallbacks()
         case .studio:
-            await camera.stop()
+            // Studio records too (v29 · 5.3): through the rear camera, behind the glass of a rig, while the screen
+            // shows the text. Its lens is for this take only.
+            audio.stopMetering()
+            if studioReturnLens == nil { studioReturnLens = session.camera.lens }
+            session.camera.lens = .wide
+            await camera.start(with: session.camera)
+            noticeCaptureFallbacks()
         }
         updateVoiceMonitoring()
     }
@@ -528,7 +542,7 @@ final class PrompterViewModel {
                 if Task.isCancelled { return }
             }
             self?.countdown = nil
-            self?.countdownFlares += 1
+            Haptics.record()
             await self?.beginRecording()
         }
     }
@@ -578,6 +592,24 @@ final class PrompterViewModel {
         let clip = await camera.stopRecording()
         isRecording = false
         bar.collapse()
+        file(clip, openReview: openReview, message: nil)
+    }
+
+    /// The take ended on its own: the storage filled up or a call took the camera. What the system could finish is filed as a take,
+    /// and a toast says why it stopped (04 · F3).
+    func recordingEndedByItself(_ clip: RecordedClip?, reason: RecordingEndReason) {
+        guard isRecording else { return }
+        recordingClock?.cancel()
+        autoStopTask?.cancel()
+        showsStopWarning = false
+        pause()
+        isRecording = false
+        bar.collapse()
+        file(clip, openReview: true, message: reason.toast)
+    }
+
+    /// The recorded clip becomes a take; `message` (why it stopped) replaces nothing when the take can't be saved.
+    private func file(_ clip: RecordedClip?, openReview: Bool, message: String?) {
         guard let clip else {
             toast.show(String(localized: "The take couldn't be saved"))
             return
@@ -586,7 +618,11 @@ final class PrompterViewModel {
             let take = try takes.addTake(
                 fileAt: clip.url, duration: clip.duration, script: script, camera: session.camera, background: camera.background
             )
-            if openReview { reviewingTake = take }
+            if openReview {
+                reviewStartsWithPick = shouldPickBest(after: take)
+                reviewingTake = take
+            }
+            if let message { toast.show(message) }
         } catch {
             toast.show(String(localized: "The take couldn't be saved"))
         }
@@ -600,25 +636,6 @@ final class PrompterViewModel {
             guard let self, !Task.isCancelled, self.isRecording else { return }
             await self.stopRecording()
         }
-    }
-
-    // MARK: - Selfie layout state
-
-    /// Applies what the Selfie screen measured, only when something changed.
-    func measured(_ update: (inout SelfieScreenMetrics) -> Void) {
-        var metrics = screenMetrics
-        update(&metrics)
-        guard metrics != screenMetrics else { return }
-        screenMetrics = metrics
-    }
-
-    func pickSafeZone(_ choice: SafeZoneChoice) {
-        safeZonePick = choice
-    }
-
-    /// "Reset to Recommended" also forgets the safe zone picked in this session.
-    func forgetSafeZonePick() {
-        safeZonePick = nil
     }
 
     // MARK: - Review
@@ -656,29 +673,8 @@ final class PrompterViewModel {
 
     // MARK: - Camera controls
 
-    /// Frame, lens and the rest change for this take; Creator Setup keeps the defaults.
-    func cycleAspect() {
-        session.camera.aspect = session.camera.aspect.next
-    }
-
-    func flipCamera() {
-        session.camera.lens = session.camera.lens.isFront ? .wide : .front
-    }
-
-    /// The microphone pill: the input can't change mid-take (or while the countdown runs into one).
-    var canChangeAudioInput: Bool { !isRecording && countdown == nil }
-
-    func openAudioInput() {
-        guard canChangeAudioInput else { return }
-        sheet = .audioInput
-    }
-
-    func cycleCountdown() {
-        session.camera.countdown = session.camera.countdown.next
-    }
-
     func cameraSettingsChanged() async {
-        guard mode == .selfie, !isRecording else { return }
+        guard !isRecording else { return }
         await camera.apply(session.camera)
         noticeCaptureFallbacks()
     }
@@ -823,11 +819,17 @@ final class PrompterViewModel {
         speech.stop()
     }
 
-    /// Sends the microphone to recognition: the camera's in Selfie, the meter's in Studio.
+    /// The camera hears the creator while it runs (Selfie and Studio both record); with no camera (a Mac, the Simulator,
+    /// no permission) Studio listens through a meter of its own, as it did before it recorded.
+    private var listensThroughCamera: Bool {
+        mode == .selfie || camera.status == .running
+    }
+
+    /// Sends the microphone to recognition: the camera's, or the meter's when there is no camera.
     private func routeSpeechAudio() {
         let handler = transcription?.audio
-        camera.setAudioHandler(mode == .selfie ? handler : nil)
-        audio.setAudioHandler(mode == .studio ? handler : nil)
+        camera.setAudioHandler(listensThroughCamera ? handler : nil)
+        audio.setAudioHandler(listensThroughCamera ? nil : handler)
     }
 
     /// Each buffer's level as it arrives, from this mode's microphone. Nothing polls: the
@@ -836,11 +838,11 @@ final class PrompterViewModel {
         levelTask?.cancel()
         let (samples, continuation) = AsyncStream.makeStream(of: AudioLevelSample.self, bufferingPolicy: .bufferingNewest(64))
         let handler: @Sendable (AudioLevelSample) -> Void = { continuation.yield($0) }
-        let mode = mode
-        camera.setLevelHandler(mode == .selfie ? handler : nil)
-        audio.setLevelHandler(mode == .studio ? handler : nil)
+        let throughCamera = listensThroughCamera
+        camera.setLevelHandler(throughCamera ? handler : nil)
+        audio.setLevelHandler(throughCamera ? nil : handler)
         levelTask = Task { [weak self] in
-            if mode == .studio {
+            if !throughCamera {
                 _ = await self?.audio.startMetering()
             }
             for await sample in samples {

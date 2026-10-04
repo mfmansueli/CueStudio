@@ -15,6 +15,7 @@ struct SelfieModeView: View {
     var onPractice: (PracticeOutcome) -> Void = { _ in }
 
     @Environment(SessionSetupService.self) private var session
+    @Environment(AudioInputManager.self) private var audio
     /// A finger is on the window's corner: the window follows it right away instead of gliding.
     @State private var isResizingWindow = false
 
@@ -45,7 +46,6 @@ struct SelfieModeView: View {
                 )
                 .transition(.opacity)
             }
-            CountdownFlare(trigger: viewModel.countdownFlares)
         }
     }
 
@@ -67,6 +67,10 @@ struct SelfieModeView: View {
             if viewModel.hasScript {
                 let layout = viewModel.readingLayout
                 textWindow(layout)
+                // The pinch's edge sits under the handles: the corner and the line's handle keep their own touches.
+                if !viewModel.isRecording, viewModel.sheet == nil {
+                    ReadingLinePinch(viewModel: viewModel, layout: layout)
+                }
                 if viewModel.showsTextWindowHandle {
                     TextWindowResizeHandle(viewModel: viewModel, layout: layout, isResizing: $isResizingWindow)
                 }
@@ -150,6 +154,12 @@ struct SelfieModeView: View {
                 .padding(.horizontal, 18)
                 .padding(.bottom, 12)
                 .transition(.scale(scale: 0.9, anchor: .bottom).combined(with: .opacity))
+            }
+            if !audio.isMicrophoneAllowed, !viewModel.isPractice, !viewModel.isRecording {
+                MicrophoneNeededCard()
+                    .padding(.horizontal, 18)
+                    .padding(.bottom, 12)
+                    .transition(.opacity)
             }
             if viewModel.showsStopWarning, let title = viewModel.stopWarningTitle, let message = viewModel.stopWarningMessage {
                 StopWarningCard(

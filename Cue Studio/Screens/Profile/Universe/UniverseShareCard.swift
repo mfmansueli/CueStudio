@@ -11,7 +11,6 @@ struct UniverseShareCard: View {
     enum Mode { case universe, year }
 
     let snapshot: UniverseSnapshot
-    let initial: String
     let mode: Mode
 
     var body: some View {
@@ -22,7 +21,7 @@ struct UniverseShareCard: View {
                     .font(.system(size: 16, weight: .bold, design: .monospaced)).tracking(2).foregroundStyle(Palette.acc)
                 switch mode {
                 case .universe:
-                    UniverseMap(snapshot: snapshot, initial: initial, animates: false).frame(height: 520)
+                    UniverseMap(snapshot: snapshot, animates: false).frame(height: 520)
                     Text("\(snapshot.total) videos shared").font(.system(size: 34, weight: .bold)).foregroundStyle(.white)
                 case .year:
                     year

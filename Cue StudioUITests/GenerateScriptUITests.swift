@@ -22,9 +22,8 @@ final class GenerateScriptUITests: XCTestCase {
         app.buttons["ideaCard.submit"].tap()
 
         // The words are written into the page; a factual topic asks for a check.
-        XCTAssertTrue(element(app, "page.draftEditor").waitForExistence(timeout: 10))
+        XCTAssertTrue(element(app, "page.editor").waitForExistence(timeout: 10))
         let checked = app.buttons["detail.factCheckedButton"]
-        app.buttons["page.mode.shaped"].tap()
         XCTAssertTrue(checked.waitForExistence(timeout: 10))
         checked.tap()
         XCTAssertFalse(checked.waitForExistence(timeout: 2))
@@ -47,7 +46,7 @@ final class GenerateScriptUITests: XCTestCase {
         app.openIdeas()
         app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH 'ideas.write.'")).firstMatch.tap()
         XCTAssertTrue(app.buttons["page.backButton"].waitForExistence(timeout: 10))
-        XCTAssertTrue(element(app, "page.draftEditor").waitForExistence(timeout: 10))
+        XCTAssertTrue(element(app, "page.editor").waitForExistence(timeout: 10))
     }
 
     func testTheFormatChipChoosesHowCueBuildsTheScript() {
@@ -57,12 +56,14 @@ final class GenerateScriptUITests: XCTestCase {
         chip.tap()
         XCTAssertTrue(element(app, "format.sheet").waitForExistence(timeout: 5))
         XCTAssertTrue(app.buttons["format.auto"].exists)
-        for type in ["ad", "review", "tutorial", "list", "story", "opinion", "launch", "apology"] {
+        for type in ["talking", "ad", "review", "tutorial", "list", "story", "opinion", "launch", "apology", "mythFact", "pov"] {
             XCTAssertTrue(app.buttons["format.\(type)"].exists, type)
         }
         XCTAssertFalse(app.staticTexts["PRO"].exists)
         app.buttons["format.review"].tap()
-        // The card says which one is chosen.
+        // Picking only selects; Done puts it on the card.
+        app.buttons["format.confirm"].tap()
+        XCTAssertTrue(app.buttons["ideaCard.formatChip"].waitForExistence(timeout: 5))
         XCTAssertTrue(app.buttons["ideaCard.formatChip"].label.contains("Review"))
         XCTAssertFalse(app.buttons["paywall.closeButton"].waitForExistence(timeout: 2))
     }
@@ -79,20 +80,20 @@ final class GenerateScriptUITests: XCTestCase {
         XCTAssertTrue(app.buttons["ideaCard.platformChip"].label.contains("YouTube"))
     }
 
-    func testWithoutAppleIntelligenceTheArrowStaysOffForATypedIdeaButIdeasAreStillThere() {
+    func testWithoutAppleIntelligenceTheArrowSaysWriteItAndOpensADraftWithTheIdeaAsItsTitle() {
         let app = CueApp.launch(seeded: true, ai: .none)
         let field = element(app, "ideaCard.field")
         XCTAssertTrue(field.waitForExistence(timeout: 15))
         XCTAssertTrue(element(app, "generate.unavailableNote").waitForExistence(timeout: 5))
+        XCTAssertEqual(app.buttons["ideaCard.submit"].label, "Write it")
+        XCTAssertFalse(app.buttons["ideaCard.submit"].isEnabled, "Nothing typed yet")
         field.tap()
         field.typeText("A day in my life")
-        XCTAssertFalse(app.buttons["ideaCard.submit"].isEnabled)
-        // The ideas are local: they open, and ↑ is off since nothing can write them.
-        app.buttons["ideaCard.ideasChip"].tap()
-        XCTAssertTrue(element(app, "ideas.sheet").waitForExistence(timeout: 5))
-        let write = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH 'ideas.write.'")).firstMatch
-        XCTAssertTrue(write.waitForExistence(timeout: 5))
-        XCTAssertFalse(write.isEnabled)
+        XCTAssertTrue(app.buttons["ideaCard.submit"].isEnabled)
+        app.buttons["ideaCard.submit"].tap()
+        let title = element(app, "page.titleField")
+        XCTAssertTrue(title.waitForExistence(timeout: 10))
+        XCTAssertEqual(title.value as? String, "A day in my life")
     }
 
     func testStopKeepsWhatHasArrived() {
@@ -110,10 +111,7 @@ final class GenerateScriptUITests: XCTestCase {
 
     func testTheFullEditorOffersInMyVoiceOnTheFreePlan() {
         let app = CueApp.launch(seeded: true)
-        let row = app.staticTexts["Unboxing the Lumen desk lamp"]
-        XCTAssertTrue(row.waitForExistence(timeout: 15))
-        for _ in 0..<4 where !row.isHittable { app.swipeUp() }
-        row.tap()
+        app.openScriptPage(titled: "Unboxing the Lumen desk lamp")
         app.buttons["page.menuButton"].tap()
         app.buttons["Versions & options"].tap()
         // AI is one of the bar's panels; its tools are in the grid.

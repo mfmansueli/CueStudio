@@ -51,6 +51,15 @@ enum Palette {
     static let glassBorder = Color(hex: 0xB4A7FF, opacity: 0.22)
     /// Field sunk into a tinted card, like the prompt box: a dark well.
     static let insetField = Color.black.opacity(0.38)
+    /// The idea card (3.2 `.hero`): `#1A1840` under a violet light from the top-left and an indigo one from the bottom-right.
+    static let heroBase = Color(hex: 0x1A1840)
+    static let heroViolet = Color(hex: 0x9D8CFF, opacity: 0.55)
+    static let heroIndigo = Color(hex: 0x5E4EE0, opacity: 0.6)
+    static let heroBorder = Color(hex: 0xB4A7FF, opacity: 0.4)
+    /// A chip on the idea card (`rgba(5,6,12,0.42)`) and the voice chip's violet.
+    static let heroChip = Color(hex: 0x05060C, opacity: 0.42)
+    static let heroChipAI = Color(hex: 0x9D8CFF, opacity: 0.2)
+    static let heroChipAIStroke = Color(hex: 0xC4B8FF, opacity: 0.4)
     /// The soft shadow that drifts across the prompt box's golden wash.
     static let insetShade = Color.black.opacity(0.38)
     /// Ring around a color swatch, so a white one is still seen on a white card.
@@ -294,32 +303,6 @@ enum Palette {
     /// one on the right, over `bg`. The same on every screen, empty states included.
     static let bgWashViolet = Color(hex: 0x9D8CFF, opacity: 0.2)
     static let bgWashIndigo = Color(hex: 0x5E4EE0, opacity: 0.12)
-
-    // The tab bar (Liquid Glass): `glassEffect(.regular.interactive())` on iOS 27 draws the glass itself;
-    // these are the recipe's values, for the light on its edges and the fallback.
-    /// What sits under the sheen: the surface at 42%.
-    static let glassBarBase = Color(hex: 0x161826, opacity: 0.42)
-    /// The sheen, top to bottom: white 10% → 3% at 45% → 5%.
-    static let glassBarFill = LinearGradient(
-        stops: [
-            .init(color: Color.white.opacity(0.10), location: 0),
-            .init(color: Color.white.opacity(0.03), location: 0.45),
-            .init(color: Color.white.opacity(0.05), location: 1),
-        ],
-        startPoint: .top, endPoint: .bottom
-    )
-    /// The edge of the bar, 0.5 pt.
-    static let glassBarRim = Color.white.opacity(0.18)
-    /// Light on the top edge and, fainter, on the bottom one.
-    static let glassBarHighlight = Color.white.opacity(0.22)
-    static let glassBarLowlight = Color.white.opacity(0.05)
-    static let glassBarShadow = Color.black.opacity(0.35)
-    /// The active tab's capsule: white 16% → 6% from top to bottom, with a 0.5 pt edge and a light on top.
-    static let tabCapsuleFill = LinearGradient(
-        colors: [Color.white.opacity(0.16), Color.white.opacity(0.06)], startPoint: .top, endPoint: .bottom
-    )
-    static let tabCapsuleBorder = Color.white.opacity(0.2)
-    static let tabCapsuleHighlight = Color.white.opacity(0.25)
 
     // Markers: a topic is a bar (`themeRail`, in the topic's `world*` color), a network is a dot
     // (`platformDot`, in the platform's galaxy color). Sizes are in `Metrics`.

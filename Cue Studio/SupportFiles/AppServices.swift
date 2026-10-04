@@ -21,6 +21,8 @@ struct AppServices {
     let presentation: PresentationService
     let toast: ToastService
     let camera: CameraManager
+    /// What the recorder films with: the camera, or a stand-in under UI tests.
+    let recorderCamera: any CameraControlling
     let audio: AudioInputManager
     let speech: SpeechRecognitionManager
     let dictation: DictationService
@@ -44,7 +46,11 @@ struct AppServices {
     let milestones: MilestoneService
     let topicTagging: TopicTaggingService
     let logbook: LogbookService
+    let brands: BrandStore
+    let sky: SkyMemory
     let aiStatus: AIStatus
+    let voiceNudges: VoiceNudgeService
+    let eraser: DataEraserService
     let appIcon: AppIconService
     let permissions: PermissionRequesting
 
@@ -68,7 +74,9 @@ struct AppServices {
         store = StoreManager()
         presentation = PresentationService()
         toast = ToastService()
-        camera = CameraManager()
+        let realCamera = CameraManager()
+        camera = realCamera
+        recorderCamera = options.recorderCamera ?? realCamera
         audio = AudioInputManager()
         speech = SpeechRecognitionManager()
         dictation = options.dictation ?? DictationService(audio: AudioInputManager(), speech: SpeechRecognitionManager(use: .dictation))
@@ -89,13 +97,21 @@ struct AppServices {
         apps = ExternalAppService(pretendsInstalled: options.appsAreInstalled)
         remote = RemoteControlService(transport: options.remoteTransport)
         logbook = LogbookService(defaults: options.defaults)
+        brands = BrandStore(repository: options.brandRepository)
+        sky = SkyMemory(defaults: options.defaults)
         aiStatus = AIStatus(writer: options.writer)
+        voiceNudges = VoiceNudgeService(profile: profile, defaults: options.defaults)
+        eraser = DataEraserService(
+            library: library, takes: takes, drafts: options.draftStore, logbook: logbook, brands: brands, sky: sky,
+            profile: profile, preferences: preferences, defaults: options.defaults
+        )
         topicTagging = TopicTaggingService(library: library, profile: profile, personalization: personalization, writer: writer)
     }
 
     func load() {
         library.load()
         takes.load()
+        brands.load()
         // A creator who already has scripts, takes or a profile skips the first flight.
         onboarding.resolve(
             hasExistingContent: !library.scripts.isEmpty || !takes.takes.isEmpty || !profile.profile.niches.isEmpty
@@ -142,6 +158,10 @@ extension View {
             .environment(services.appIcon)
             .environment(services.topicTagging)
             .environment(services.logbook)
+            .environment(services.brands)
+            .environment(services.sky)
             .environment(services.aiStatus)
+            .environment(services.voiceNudges)
+            .environment(services.eraser)
     }
 }

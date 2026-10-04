@@ -76,9 +76,7 @@ final class FreePlanUITests: XCTestCase {
 
     private func openScript() -> XCUIApplication {
         let app = CueApp.launch(seeded: true)
-        let row = app.staticTexts["Unboxing the Lumen desk lamp"]
-        XCTAssertTrue(row.waitForExistence(timeout: 15))
-        row.tap()
+        app.openScriptPage(titled: "Unboxing the Lumen desk lamp")
         XCTAssertTrue(app.buttons["detail.recordButton"].waitForExistence(timeout: 5))
         return app
     }

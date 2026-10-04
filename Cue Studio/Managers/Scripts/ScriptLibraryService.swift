@@ -48,12 +48,13 @@ final class ScriptLibraryService {
     @discardableResult
     func create(
         title: String, text: String, platform: Platform, type: ScriptType? = nil, folder: String? = nil,
-        factCheck: Bool = false, language: CueLanguage? = nil, comment: ScriptComment? = nil
+        factCheck: Bool = false, language: CueLanguage? = nil, comment: ScriptComment? = nil, isFinished: Bool? = nil
     ) -> Script {
         let date = now()
         let script = Script(
             title: title, text: text, platform: platform, type: type,
-            folder: folder, createdAt: date, updatedAt: date, factCheck: factCheck, language: language, comment: comment
+            folder: folder, createdAt: date, updatedAt: date, factCheck: factCheck, language: language, comment: comment,
+            isFinished: isFinished
         )
         scripts.insert(script, at: 0)
         persist()
@@ -94,9 +95,26 @@ final class ScriptLibraryService {
         persist()
     }
 
+    /// Done / "Use this script" / the AI delivering a complete script (`true`), or leaving after an edit without Done
+    /// (`false`). Not an edit: the text, version and order stay as they are. Whether the script reads as RECORDED
+    /// depends on its takes, never on this (`ScriptState`).
+    func setFinished(_ finished: Bool, of id: UUID) {
+        guard let index = scripts.firstIndex(where: { $0.id == id }), scripts[index].isFinished != finished else { return }
+        scripts[index].isFinished = finished
+        persist()
+    }
+
     func delete(_ ids: Set<UUID>) {
         guard !ids.isEmpty else { return }
         scripts.removeAll { ids.contains($0.id) }
+        persist()
+    }
+
+    /// Puts back what "Delete" took out, with its Undo: the scripts return exactly as they were, in their place by date.
+    func restore(_ restored: [Script]) {
+        let missing = restored.filter { script in !scripts.contains { $0.id == script.id } }
+        guard !missing.isEmpty else { return }
+        scripts = (scripts + missing).sorted { $0.updatedAt > $1.updatedAt }
         persist()
     }
 

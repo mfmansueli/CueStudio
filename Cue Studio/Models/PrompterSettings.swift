@@ -56,6 +56,37 @@ nonisolated struct PrompterSettings: Codable, Hashable, Sendable {
     var showsCues: Bool = false
     /// "Custom" safe zone margins.
     var customSafeZone = SafeZoneMargins()
+    // MARK: - The text box and the reading line (v29 · L8)
+
+    /// The recorder's text box, as the v29 handle (⌟) resizes it. The box is the Selfie text window: these are the
+    /// same stored values as `readingWidth` and `textWindowHeight`, so nothing is saved twice and settings saved by v27
+    /// open at today's size. The width is a fraction of the screen (0.5–0.93), not points, so one value fits every iPhone.
+    var boxWidth: Double {
+        get { readingWidth }
+        set { readingWidth = min(Self.readingWidthRange.upperBound, max(Self.readingWidthRange.lowerBound, newValue)) }
+    }
+
+    /// The box's height in points (160–380).
+    var boxHeight: Double {
+        get { textWindowHeight }
+        set { textWindowHeight = min(Self.textWindowHeightRange.upperBound, max(Self.textWindowHeightRange.lowerBound, newValue)) }
+    }
+
+    /// The reading line as a fraction of the screen's height, 0.10 (by the camera) to 0.50 (the middle). Stored, like
+    /// before, as points below the lens (`readingLineOffset`), so it follows the screen it is read on; nil keeps the
+    /// recommended spot (0.22 of a typical iPhone).
+    static let readingLineRange: ClosedRange<Double> = 0.10...0.50
+    static let defaultReadingLine: Double = 0.22
+
+    func readingLine(on screen: ReadingLinePercent) -> Double {
+        screen.percent(for: ReadingLinePlacement(offset: readingLineOffset)) / 100
+    }
+
+    mutating func setReadingLine(_ fraction: Double, on screen: ReadingLinePercent) {
+        let clamped = min(Self.readingLineRange.upperBound, max(Self.readingLineRange.lowerBound, fraction))
+        readingLineOffset = screen.placement(forPercent: clamped * 100).offset
+    }
+
     /// Words a minute that 1.0× meant when `speed` was saved. Builds before v7 read 150 at 1.0×;
     /// a saved speed is converted on load so the creator keeps the pace they chose.
     private(set) var speedCalibration: Double = ReadTime.wordsPerMinuteAtOneX

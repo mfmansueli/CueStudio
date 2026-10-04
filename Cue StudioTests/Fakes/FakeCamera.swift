@@ -13,6 +13,7 @@ final class FakeCamera: CameraControlling {
     /// Nil until started; then the lens asked for, unless a test says this device lacks it.
     var activeLens: CameraLens?
     var background = BackgroundEffect()
+    var onRecordingEnded: (@MainActor (RecordedClip?, RecordingEndReason) -> Void)?
     var missingLenses: Set<CameraLens> = []
     var failsToRecord = false
     var clipDuration: TimeInterval = 42

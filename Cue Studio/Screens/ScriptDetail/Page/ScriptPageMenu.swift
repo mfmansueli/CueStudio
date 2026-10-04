@@ -5,12 +5,14 @@
 
 import SwiftUI
 
-/// The ••• of the script page: ✦ Improve with Cue, Versions & options (the full editor), Script
+/// The ••• of the script page: ✦ Improve with Cue (with Apple Intelligence), Versions & options (the full editor), Script
 /// details and Studio mode, then what every script menu has.
 struct ScriptPageMenu: View {
     let script: Script
     let folders: [String]
     let actions: ScriptActions
+    /// Apple Intelligence can write: without it there is no Improve.
+    var hasAI = true
     let onImprove: () -> Void
     let onVersions: () -> Void
     let onDetails: () -> Void
@@ -19,7 +21,7 @@ struct ScriptPageMenu: View {
     @Environment(ScriptLibraryService.self) private var library
 
     var body: some View {
-        Button(action: onImprove) { Label("Improve with Cue", systemImage: "sparkles") }
+        if hasAI { Button(action: onImprove) { Label("Improve with Cue", systemImage: "sparkles") } }
         Button(action: onVersions) { Label("Versions & options", systemImage: "square.stack") }
         Button(action: onDetails) { Label("Script details", systemImage: "info.circle") }
         Button { actions.studio(script) } label: { Label("Studio mode", systemImage: "text.alignleft") }

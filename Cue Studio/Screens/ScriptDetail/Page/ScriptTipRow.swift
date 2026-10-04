@@ -5,7 +5,7 @@
 
 import SwiftUI
 
-/// Advice under a section, in violet: "✦ Hook is 5 s — under 3 s holds more viewers", the fix and ✕.
+/// Advice under the words: "Hook is 5 s — under 3 s holds more viewers", the fix and ✕. Plain advice, not the AI's: neutral.
 struct ScriptTipRow: View {
     let tip: ScriptShape.Tip
     let onFix: () -> Void
@@ -35,21 +35,17 @@ struct ScriptTipRow: View {
             }
         }
         .font(.footnote)
-        .foregroundStyle(Palette.aiTextStrong)
-        .padding(.leading, 10)
+        .foregroundStyle(Palette.ink2)
+        .padding(.leading, 12)
         .padding(.trailing, 2)
-        .background(Palette.aiFill, in: shape)
-        .overlay(shape.strokeBorder(Palette.aiBorder, lineWidth: 0.5))
+        .background(Palette.surface, in: shape)
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("page.tip.\(tip.id)")
     }
 
     private var messageLine: some View {
-        HStack(alignment: .top, spacing: 8) {
-            Text("✦").foregroundStyle(Palette.aiText)
-            message
-                .frame(maxWidth: .infinity, alignment: .leading)
-        }
+        message
+            .frame(maxWidth: .infinity, alignment: .leading)
         .padding(.vertical, typeSize.isAccessibilitySize ? 8 : 0)
     }
 
@@ -57,7 +53,7 @@ struct ScriptTipRow: View {
         Button(action: onFix) {
             fixLabel
                 .font(.footnote.weight(.bold))
-                .foregroundStyle(Palette.ink)
+                .foregroundStyle(Palette.accText)
                 .padding(.horizontal, 4)
                 .frame(minHeight: Metrics.hitTarget)
                 .contentShape(Rectangle())

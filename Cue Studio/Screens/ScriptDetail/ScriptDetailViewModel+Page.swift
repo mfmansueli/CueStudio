@@ -6,7 +6,7 @@
 import Foundation
 import SwiftUI
 
-/// The script page (v26): Draft and Shaped over one set of words, saved as the creator writes.
+/// The script page (v29): one page of words with a state strip, saved as the creator writes.
 extension ScriptDetailViewModel {
     /// A selection shorter than this isn't worth a rewrite bar.
     static let minimumSelection = 8
@@ -15,14 +15,14 @@ extension ScriptDetailViewModel {
 
     // MARK: - Loading and saving
 
-    /// Opens the page on the script's words. A script with words opens Shaped, as the prototype
-    /// does; one being written (new, imported) opens in Draft, the title ready when it has none.
+    /// Opens the page on the script's words. One being written (a draft opened with "Continue", a new or imported one) takes the
+    /// keyboard, in the title when it has none.
     func loadPage(startsInDraft: Bool) {
         guard let script else { return }
         page.title = script.title
         page.text = script.text
-        page.mode = startsInDraft || script.isEmpty ? .draft : .shaped
         page.focusesTitle = script.title.isEmpty && script.isEmpty
+        page.focusesText = startsInDraft && !page.focusesTitle
         page.isLoaded = true
     }
 
@@ -65,6 +65,10 @@ extension ScriptDetailViewModel {
 
     /// Something was typed: the words are saved when the creator pauses.
     func pageDidEdit() {
+        if page.isLoaded, !page.isWriting, page.text != (script?.text ?? "") || page.title != (script?.title ?? "") {
+            page.isEdited = true
+            page.isDone = false
+        }
         pageCommitTask?.cancel()
         pageCommitTask = Task { [weak self] in
             try? await Task.sleep(for: Self.commitDelay)
@@ -78,20 +82,64 @@ extension ScriptDetailViewModel {
         endVoicePreview()
         stopWriting()
         commitPage()
+        leaveAsDraftIfEdited()
     }
 
-    // MARK: - Faces
-
-    func setMode(_ mode: ScriptPageMode) {
-        guard page.mode != mode, !page.isWriting else { return }
-        commitPage()
-        page.selection = nil
-        page.mode = mode
+    /// Leaving after edits without Done: a script that isn't recorded becomes a draft, once, with a toast (04 · F2).
+    /// A recorded script stays recorded and its strip says "Changed since take".
+    func leaveAsDraftIfEdited() {
+        guard let script, page.isEdited, !page.isDone else { return }
+        page.isEdited = false
+        guard ScriptPageRules.leavesAsDraft(state: script.state(takeCount: scriptTakes.count), wasEdited: true) else { return }
+        if script.isFinished { library.setFinished(false, of: scriptID) }
+        toast.show(String(localized: "Saved as draft"))
     }
 
-    /// "✦ Shape": the same words, as sections.
+    // MARK: - The strip
+
+    /// What the state strip says, now.
+    var strip: ScriptStrip? {
+        guard let script else { return nil }
+        var current = script
+        // The strip reads the words on the page, which may be ahead of what was saved a moment ago.
+        if page.isLoaded, !page.isWriting { current.text = page.text }
+        return ScriptStrip(script: current, takes: scriptTakes, hasAI: writer.isLanguageModelAvailable, isEdited: page.isEdited && !page.isDone)
+    }
+
+    /// "✦ Shape": adds cues where they help the delivery (never changes the words, never changes the state).
     func shape() {
-        setMode(.shaped)
+        guard !page.isWriting else { return }
+        let result = ScriptCueShaper.shaped(page.text)
+        guard result.added > 0 else { return }
+        page.text = result.text
+        page.selection = nil
+        commitPage()
+        toast.show(String(localized: "\(result.added) cues added"))
+    }
+
+    /// Done: READY. With no text nothing is saved; with a format's sections still empty it asks first.
+    func done() {
+        guard !page.isWriting else { return }
+        switch ScriptPageRules.done(text: page.text, type: script?.type) {
+        case .nothingToSave:
+            toast.show(String(localized: "Nothing to save yet"))
+        case .confirmEmptySections(let count):
+            page.emptySectionsToConfirm = count
+        case .finish:
+            finish()
+        }
+    }
+
+    /// "Done anyway", or Done with everything filled in.
+    func finish() {
+        page.emptySectionsToConfirm = nil
+        commitPage()
+        library.setFinished(true, of: scriptID)
+        page.isDone = true
+        page.isEdited = false
+        toast.show(strip?.canShape == true
+            ? String(localized: "Ready to record · Shape adds cues")
+            : String(localized: "Ready to record"))
     }
 
     // MARK: - Reading
@@ -137,32 +185,34 @@ extension ScriptDetailViewModel {
     /// Rec: the question about the length comes once, in the Draft; otherwise it records.
     /// Returns whether to go on and record.
     func recordsNow() -> Bool {
-        if isLongForPlatform, page.mode == .draft, !page.askedAboutLength {
+        if isLongForPlatform, !page.askedAboutLength, script?.state(takeCount: scriptTakes.count) != .recorded {
             page.askedAboutLength = true
             page.showsLengthNudge = true
             return false
         }
         commitPage()
+        // Recording is using the script as it is: a draft goes to the camera as ready (04 · F2).
+        if page.isEdited { page.isDone = true }
+        if script?.isFinished == false { library.setFinished(true, of: scriptID) }
         return true
     }
 
     // MARK: - Writing
 
-    /// "¶ Cue break": a pause mark where the caret is (over the selection, if there is one).
-    func insertCueBreak() {
+    /// A cue from the bar above the keyboard, where the caret is (over the selection, if there is one).
+    func insertCue(_ cue: ScriptCue) {
+        guard !page.isWriting else { return }
         var text = page.text
-        let place: Range<String.Index>
-        if case .selection(let range) = page.selection?.indices {
-            place = range
-        } else {
-            place = text.endIndex..<text.endIndex
-        }
-        let offset = text.distance(from: text.startIndex, to: place.lowerBound)
-        let needsSpace = offset > 0 && !text[text.index(before: place.lowerBound)].isWhitespace
-        let insertion = (needsSpace ? " " : "") + "[\(ScriptCue.pause.name)] "
-        text.replaceSubrange(place, with: insertion)
+        let characters = text.count
+        let range = page.selection ?? characters..<characters
+        let lower = text.index(text.startIndex, offsetBy: min(range.lowerBound, characters))
+        let upper = text.index(text.startIndex, offsetBy: min(range.upperBound, characters))
+        let offset = text.distance(from: text.startIndex, to: lower)
+        let needsSpace = offset > 0 && !text[text.index(before: lower)].isWhitespace
+        let insertion = (needsSpace ? " " : "") + "[\(cue.name)] "
+        text.replaceSubrange(lower..<upper, with: insertion)
         page.text = text
-        page.selection = TextSelection(insertionPoint: text.index(text.startIndex, offsetBy: offset + insertion.count))
+        page.selection = (offset + insertion.count)..<(offset + insertion.count)
         pageDidEdit()
     }
 
@@ -172,45 +222,101 @@ extension ScriptDetailViewModel {
         page.textSize = sizes[next % sizes.count]
     }
 
-    // MARK: - Selection
+    // MARK: - Selection and the AI bar
 
     /// The selected words, when there are enough of them to be worth a rewrite.
     var selectedText: String? {
-        guard case .selection(let range) = page.selection?.indices, !range.isEmpty else { return nil }
-        let selected = String(page.text[range])
+        guard let range = page.selection, !range.isEmpty, range.upperBound <= page.text.count else { return nil }
+        let text = page.text
+        let lower = text.index(text.startIndex, offsetBy: range.lowerBound)
+        let upper = text.index(text.startIndex, offsetBy: range.upperBound)
+        let selected = String(text[lower..<upper])
         return selected.count > Self.minimumSelection ? selected : nil
     }
 
-    /// The four rewrites of the selection: the new words wait for "Use".
+    /// The bar over a selection: with Apple Intelligence only (it doesn't exist without it), not while the AI writes the page.
+    var showsSelectionBar: Bool {
+        selectedText != nil && writer.isLanguageModelAvailable && !page.isWriting
+    }
+
+    /// Rewrite · Shorter · Punchier · More me change the selected words in place, in violet, and wait for Keep, Undo or Try
+    /// again; Cut removes them (with Undo).
     func rewriteSelection(_ action: SelectionAction) async {
-        guard let selected = selectedText, case .selection(let range) = page.selection?.indices, !page.isRewriting else { return }
+        guard let selected = selectedText, let range = page.selection, !page.isRewriting else { return }
+        keepPassage()
+        guard let tool = action.tool else {
+            cut(selected, range: range)
+            return
+        }
         guard writer.isLanguageModelAvailable else {
             toast.show(writer.unavailableReason ?? String(localized: "AI isn't available now"))
             return
         }
-        let start = page.text.distance(from: page.text.startIndex, to: range.lowerBound)
         page.isRewriting = true
         defer { page.isRewriting = false }
         do {
-            let rewritten = try await writer.rewrite(selected, with: action.tool, context: rewriteContext)
-            page.candidate = RewriteCandidate(
-                action: action, original: selected, rewritten: rewritten, offsets: start..<(start + selected.count)
-            )
+            let rewritten = try await writer.rewrite(selected, with: tool, context: rewriteContext)
+            replace(range, with: rewritten, action: action, original: selected)
         } catch {
-            toast.show(error.localizedDescription)
+            toast.show(String(localized: "Couldn’t write it · Try again"))
         }
     }
 
-    func useCandidate() {
-        guard let candidate = page.candidate else { return }
-        page.text = candidate.applied(to: page.text)
-        page.candidate = nil
+    /// Puts the AI's words where the old ones were and holds them as the passage.
+    private func replace(_ range: Range<Int>, with rewritten: String, action: SelectionAction, original: String) {
+        var text = page.text
+        let characters = text.count
+        guard range.upperBound <= characters else { return }
+        let lower = text.index(text.startIndex, offsetBy: range.lowerBound)
+        let upper = text.index(text.startIndex, offsetBy: range.upperBound)
+        text.replaceSubrange(lower..<upper, with: rewritten)
+        page.text = text
+        page.passage = AIPassage(action: action, original: original, replacement: rewritten, range: range.lowerBound..<(range.lowerBound + rewritten.count))
         page.selection = nil
+        pageDidEdit()
+    }
+
+    private func cut(_ selected: String, range: Range<Int>) {
+        var text = page.text
+        let lower = text.index(text.startIndex, offsetBy: range.lowerBound)
+        let upper = text.index(text.startIndex, offsetBy: range.upperBound)
+        text.removeSubrange(lower..<upper)
+        page.text = text
+        page.selection = nil
+        pageDidEdit()
+        toast.show(String(localized: "Cut"), action: ToastAction(title: String(localized: "Undo")) { [weak self] in
+            guard let self else { return }
+            var restored = page.text
+            let spot = restored.index(restored.startIndex, offsetBy: min(range.lowerBound, restored.count))
+            restored.insert(contentsOf: selected, at: spot)
+            page.text = restored
+            pageDidEdit()
+        })
+    }
+
+    /// ✓ Keep, or a tap outside: the new words are the creator's.
+    func keepPassage() {
+        page.passage = nil
         commitPage()
     }
 
-    func keepMine() {
-        page.candidate = nil
+    /// ↺ Undo: the old words come back.
+    func undoPassage() {
+        guard let passage = page.passage else { return }
+        page.text = passage.undone(in: page.text)
+        page.passage = nil
+        pageDidEdit()
+    }
+
+    /// ✦ Try again: the old words go back and the same change is asked of them once more.
+    func retryPassage() async {
+        guard let passage = page.passage else { return }
+        let range = passage.range
+        let action = passage.action
+        undoPassage()
+        let end = range.lowerBound + passage.original.count
+        page.selection = range.lowerBound..<end
+        await rewriteSelection(action)
     }
 }
 
@@ -232,7 +338,6 @@ extension ScriptDetailViewModel {
         pendingRequest = request
         page.writingError = nil
         page.isWriting = true
-        page.mode = .draft
         page.revealed = ""
         let startedAt = ContinuousClock.now
         pageWritingTask = Task { [weak self] in
@@ -286,6 +391,8 @@ extension ScriptDetailViewModel {
             script.title = generated.title
             script.text = generated.text
             script.factCheck = generated.needsFactCheck
+            // The AI delivered a complete script: it is READY to record (04 · F2).
+            script.isFinished = true
         }
         // The idea became a script: the card starts empty the next time.
         ideaDraft?.clear()

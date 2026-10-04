@@ -355,23 +355,6 @@ struct PaletteContrastTests {
         }
     }
 
-    /// The tab bar's glass over the screen's night, and the active tab's capsule (white 16%, the brightest
-    /// point of its gradient) on top of that: both labels read.
-    @Test func theTabBarsLabelsReadOnTheGlassAndOnTheActiveCapsule() {
-        for appearance in Appearance.allCases {
-            for surface in surfaces {
-                let glass = rgb(Palette.glassBarBase, in: appearance, over: rgb(surface.color, in: appearance))
-                let capsule = ColorContrast.composite(ColorContrast.RGB(red: 1, green: 1, blue: 1), alpha: 0.16, over: glass)
-                for token in [Palette.ink2, Palette.accText] {
-                    let onGlass = ColorContrast.ratio(rgb(token, in: appearance, over: glass), glass)
-                    #expect(onGlass >= ColorContrast.textMinimum, "label on the bar over \(surface.name), \(appearance): \(onGlass)")
-                }
-                let active = ColorContrast.ratio(rgb(Palette.accText, in: appearance, over: capsule), capsule)
-                #expect(active >= ColorContrast.textMinimum, "the active label over \(surface.name), \(appearance): \(active)")
-            }
-        }
-    }
-
     /// The slider: the white thumb and the yellow fill stand out from the track and from every surface (3:1).
     @Test func theSliderPartsStandOutFromTheirSurface() {
         for appearance in Appearance.allCases {

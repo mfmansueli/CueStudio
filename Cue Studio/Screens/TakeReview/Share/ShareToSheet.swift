@@ -16,6 +16,7 @@ struct ShareToSheet: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             header
+            if viewModel.isSponsored { adWarning.padding(.bottom, 14) }
             LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 8), count: 4), spacing: 16) {
                 ForEach(ShareDestination.allCases) { destination in
                     destinationTile(destination)
@@ -69,6 +70,27 @@ struct ShareToSheet: View {
         }
         .padding(.horizontal, 4)
         .padding(.bottom, 18)
+    }
+
+    /// 8.1: a sponsored video says so, and "#ad" is copied for the caption.
+    private var adWarning: some View {
+        HStack(spacing: 10) {
+            Text("AD")
+                .font(.system(size: 11, weight: .heavy, design: .monospaced))
+                .foregroundStyle(Palette.adTagInk)
+                .padding(.horizontal, 7)
+                .frame(height: 20)
+                .background(Palette.adTagFill, in: Capsule())
+            Text("#ad is copied · paste it in your caption")
+                .font(.footnote)
+                .foregroundStyle(Palette.ink)
+                .frame(maxWidth: .infinity, alignment: .leading)
+        }
+        .padding(.horizontal, 14)
+        .frame(minHeight: 44)
+        .background(Palette.surface2, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+        .accessibilityElement(children: .combine)
+        .accessibilityIdentifier("share.adWarning")
     }
 
     private func destinationTile(_ destination: ShareDestination) -> some View {

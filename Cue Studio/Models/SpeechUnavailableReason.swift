@@ -55,7 +55,7 @@ nonisolated enum SpeechUnavailableReason: Error, Equatable, Sendable {
         case .needsDownload(nil):
             String(localized: "Captions need to download this language. Connect to the internet and try again.")
         case .noRecognition:
-            String(localized: "This iPhone can’t recognize speech. You can still write the lines yourself.")
+            String(localized: "Captions need speech recognition. You can still write the lines yourself.")
         case .couldNotStart:
             String(localized: "Captions couldn’t start listening. Try again.")
         }

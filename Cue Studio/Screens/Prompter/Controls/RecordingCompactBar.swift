@@ -125,6 +125,8 @@ struct RecordingCompactBar: View {
         .frame(height: Metrics.hitTarget)
         .background(isVoice ? Palette.accSoft : Palette.overlayFill, in: Capsule())
         .overlay(Capsule().strokeBorder(isVoice ? Palette.acc.opacity(0.45) : Palette.glassBorder, lineWidth: 1))
+        // The chip says the mode in full; the slider next to it gives way.
+        .fixedSize(horizontal: true, vertical: false)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(Text(chipTitle))
         .accessibilityIdentifier("prompter.modeChip")

@@ -28,4 +28,6 @@ protocol CameraControlling: AnyObject {
     /// Sends each microphone buffer's level to `handler` (on an audio queue) as it arrives, for
     /// Voice follow's speaking indicator. Nil stops it.
     func setLevelHandler(_ handler: (@Sendable (AudioLevelSample) -> Void)?)
+    /// Called when a take ends without Stop: the storage filled up or a call took the camera. The clip is what could be saved.
+    var onRecordingEnded: (@MainActor (RecordedClip?, RecordingEndReason) -> Void)? { get set }
 }

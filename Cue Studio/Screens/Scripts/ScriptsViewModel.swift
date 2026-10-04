@@ -45,12 +45,34 @@ final class ScriptsViewModel {
         [.all] + ScriptFilter.platformFilters(for: library.scripts) + library.folders.map(ScriptFilter.folder)
     }
 
-    /// "14 SCRIPTS · 3 READY TO RECORD": what is in the library and how much of it still waits for a take.
-    /// `readyToRecord` counts the scripts that have no take yet.
-    func summaryValues(readyToRecord: Int) -> [String] {
-        let count = library.scripts.count
-        guard count > 0 else { return [] }
-        return [String(localized: "\(count) scripts"), String(localized: "\(readyToRecord) ready to record")]
+    /// "8 SCRIPTS · 3 READY": what is in the library and how many can be recorded right now.
+    func summaryValues(takeCount: (UUID) -> Int) -> [String] {
+        let scripts = library.scripts
+        guard !scripts.isEmpty else { return [] }
+        let ready = scripts.filter { $0.state(takeCount: takeCount($0.id)) == .ready }.count
+        return [String(localized: "\(scripts.count) scripts"), String(localized: "\(ready) ready")]
+    }
+
+    /// The visible scripts in READY TO RECORD, DRAFTS and RECORDED.
+    func groups(takeCount: (UUID) -> Int) -> [ScriptGroup] {
+        ScriptGroup.groups(of: visibleScripts, takeCount: takeCount)
+    }
+
+    /// Why the list is empty under the card, when it is: nothing matches the search, the platform or the folder.
+    var emptyResult: EmptyResult? {
+        guard visibleScripts.isEmpty else { return nil }
+        if !query.trimmingCharacters(in: .whitespaces).isEmpty { return .search }
+        switch filter {
+        case .all: return nil
+        case .platform(let platform): return .platform(platform)
+        case .folder(let name): return .folder(name)
+        }
+    }
+
+    enum EmptyResult: Equatable {
+        case search
+        case platform(Platform)
+        case folder(String)
     }
 
     /// How many scripts a filter chip stands for ("TikTok 7").
@@ -60,9 +82,14 @@ final class ScriptsViewModel {
 
     // MARK: - Single script
 
+    /// Deletes, with Undo for 4 s: nothing is lost by a slip.
     func delete(_ script: Script) {
-        library.delete([script.id])
-        toast.show(String(localized: "Script deleted"))
+        remove([script], message: String(localized: "Script deleted"))
+    }
+
+    private func remove(_ scripts: [Script], message: String) {
+        library.delete(Set(scripts.map(\.id)))
+        toast.show(message, action: ToastAction(title: String(localized: "Undo")) { [library] in library.restore(scripts) })
     }
 
     func duplicate(_ script: Script) {
@@ -86,11 +113,10 @@ final class ScriptsViewModel {
     }
 
     func deleteSelection() {
-        let count = selection.count
-        guard count > 0 else { return }
-        library.delete(selection)
+        let doomed = library.scripts.filter { selection.contains($0.id) }
+        guard !doomed.isEmpty else { return }
         isSelecting = false
-        toast.show(String(localized: "\(count) deleted"))
+        remove(doomed, message: String(localized: "\(doomed.count) deleted"))
     }
 
     func duplicateSelection() {

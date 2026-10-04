@@ -60,9 +60,14 @@ nonisolated enum ScriptPromptBuilder {
         case .prompt(let text):
             lines.append("The video: \(text)")
         case .format(let type, let brief):
-            let resolved = type.resolvedBrief(brief)
-            lines.append("Brief:")
-            lines += type.briefFields.map { "- \($0.label): \(resolved[$0.key] ?? $0.example)" }
+            if request.brand == nil {
+                let resolved = type.resolvedBrief(brief)
+                lines.append("Brief:")
+                lines += type.briefFields.map { "- \($0.label): \(resolved[$0.key] ?? $0.example)" }
+            }
+        }
+        if let brand = request.brand {
+            lines += brandLines(brand)
         }
         return lines.joined(separator: "\n")
     }
@@ -92,6 +97,61 @@ nonisolated enum ScriptPromptBuilder {
         if !voice.niches.isEmpty {
             lines.append("Their niche: \(voice.niches.map(\.label).joined(separator: ", ")).")
         }
+        if !voice.openings.isEmpty {
+            lines.append("They like to open a video like this: \(quoted(voice.openings)).")
+        }
+        if !voice.endings.isEmpty {
+            lines.append("They usually end a video like this: \(quoted(voice.endings)).")
+        }
+        if !voice.formats.isEmpty {
+            lines.append("They film mostly: \(voice.formats.map { $0.structure.label.lowercased() }.joined(separator: ", ")).")
+        }
+        if let swearing = voice.swearing {
+            lines.append(swearingRule(swearing))
+        }
+        if !voice.customTags.isEmpty {
+            lines.append("Also true of them: \(voice.customTags.joined(separator: ", ")).")
+        }
+        if !voice.examples.isEmpty {
+            lines.append("Here is how they write. Match the voice, never copy the content:")
+            lines += voice.examples.prefix(VoiceExample.limit).map { "- \"\($0.sentText)\"" }
+        }
+        return lines
+    }
+
+    /// "What Cue sends" (My Cue Voice, 9.3): the voice as the instructions the model reads, shown to the creator
+    /// as it is sent. Empty when the creator's voice has nothing to say yet.
+    static func voiceBrief(_ profile: CreatorProfile) -> String {
+        guard profile.hasMinimumVoice else { return "" }
+        return voiceLines(profile.voice).joined(separator: "\n")
+    }
+
+    private static func quoted(_ items: [String]) -> String {
+        items.map { "\"\($0)\"" }.joined(separator: ", ")
+    }
+
+    private static func swearingRule(_ swearing: Swearing) -> String {
+        switch swearing {
+        case .never: "Never swear."
+        case .mild: "Mild swearing is fine now and then. Never write strong swearing or slurs."
+        }
+    }
+
+    // MARK: - Sponsored ads
+
+    /// The brand brief of a sponsored ad: the only things the ad may claim. Nothing is invented, and the paid
+    /// partnership is always disclosed (#ad).
+    static func brandLines(_ brand: BrandBrief) -> [String] {
+        var lines = [
+            "This is a sponsored ad. Use only the facts below. Never invent claims, results, prices, discounts or guarantees.",
+            "- Brand: \(brand.name)",
+            "- Product or offer: \(brand.product)",
+        ]
+        if !brand.mustSay.isEmpty { lines.append("- Must say: \(brand.mustSay)") }
+        if !brand.neverSay.isEmpty { lines.append("- Never say or mention: \(brand.neverSay)") }
+        if !brand.link.isEmpty { lines.append("- Link: \(brand.link)") }
+        if !brand.code.isEmpty { lines.append("- Code: \(brand.code)") }
+        lines.append("Say that this is a paid partnership (#ad) within the script.")
         return lines
     }
 

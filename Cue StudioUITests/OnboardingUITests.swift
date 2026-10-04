@@ -99,7 +99,7 @@ final class OnboardingUITests: XCTestCase {
         XCTAssertTrue(element(app, "practice.chip").waitForExistence(timeout: 10))
         shot(app, "6-practice")
         app.buttons["practice.notNow"].tap()
-        XCTAssertTrue(app.buttons["tab.scripts"].waitForExistence(timeout: 10))
+        XCTAssertTrue(app.tabBars.buttons["Scripts"].waitForExistence(timeout: 10))
         XCTAssertFalse(element(app, "onboarding.root").exists)
         // The script it wrote is in the library, and the platform stuck.
         XCTAssertTrue(app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH 'scripts.row.'")).firstMatch.waitForExistence(timeout: 5))
@@ -153,5 +153,18 @@ final class OnboardingUITests: XCTestCase {
         app.buttons["Add"].tap()
         XCTAssertTrue(app.buttons["onboarding.topic.custom.budget travel"].waitForExistence(timeout: 5) || app.buttons["onboarding.continue"].isEnabled)
         XCTAssertTrue(app.buttons["onboarding.continue"].isEnabled)
+    }
+
+    /// 1.2: a word Apple Intelligence won't use is refused inline, and nothing is added.
+    func testABlockedWordInATopicOfTheirOwnIsRefused() {
+        let app = launch()
+        startFlight(app)
+        pick(app, "onboarding.topic.own")
+        let field = app.textFields.firstMatch
+        XCTAssertTrue(field.waitForExistence(timeout: 5))
+        field.typeText("holy shit")
+        app.buttons["Add"].tap()
+        XCTAssertTrue(app.staticTexts["Apple Intelligence can’t use this word."].waitForExistence(timeout: 5))
+        XCTAssertFalse(app.buttons["onboarding.continue"].isEnabled)
     }
 }

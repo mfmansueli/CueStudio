@@ -13,6 +13,8 @@ final class PresentationService {
     var selectedTab: AppTab = .scripts
     var scriptsPath: [ScriptRoute] = []
     var settingsPath: [SettingsRoute] = []
+    /// Recording, Remote or Language & Region, open as a sheet over Settings.
+    var settingsSheet: SettingsSheet?
     var sheet: AppSheet?
     var prompter: PrompterLaunch?
     /// This device is the remote of a teleprompter on another one.

@@ -7,7 +7,7 @@ import Foundation
 
 /// The video formats creators post most. Each one carries its own structure.
 nonisolated enum ScriptType: String, Codable, CaseIterable, Identifiable, Sendable {
-    case ad, review, tutorial, list, story, opinion, launch, apology
+    case ad, review, tutorial, list, story, opinion, launch, apology, mythFact, pov
 
     var id: String { rawValue }
 
@@ -23,6 +23,8 @@ nonisolated enum ScriptType: String, Codable, CaseIterable, Identifiable, Sendab
         case .opinion: String(localized: "Opinion or comment reply")
         case .launch: String(localized: "Launch, drop, big news")
         case .apology: String(localized: "Serious — no hype")
+        case .mythFact: String(localized: "Bust one belief")
+        case .pov: String(localized: "Put the viewer in a moment")
         }
     }
 
@@ -148,6 +150,34 @@ nonisolated enum ScriptType: String, Codable, CaseIterable, Identifiable, Sendab
                     String(localized: "This video is overdue."),
                 ],
                 isSerious: true
+            )
+        case .mythFact:
+            return ScriptStructure(
+                label: String(localized: "Myth vs fact"),
+                blocks: [
+                    String(localized: "Myth"), String(localized: "Why people think it"), String(localized: "Fact"), String(localized: "CTA"),
+                ],
+                tones: generic.tones, tools: generic.tools,
+                hooks: [
+                    String(localized: "You've been told this your whole life. It's wrong. [pause]"),
+                    String(localized: "Stop believing this one thing."),
+                    String(localized: "Everyone repeats this myth. Here's the truth."),
+                    String(localized: "I believed this for years — until I checked."),
+                ],
+                isSerious: false
+            )
+        case .pov:
+            return ScriptStructure(
+                label: String(localized: "POV"),
+                blocks: [String(localized: "POV line"), String(localized: "Scene"), String(localized: "Twist")],
+                tones: generic.tones, tools: generic.tools,
+                hooks: [
+                    String(localized: "POV: you finally hit record. [pause]"),
+                    String(localized: "POV: it's 7 a.m. and the idea just landed."),
+                    String(localized: "POV: your first video goes better than planned."),
+                    String(localized: "POV: you're the one they all ask for advice."),
+                ],
+                isSerious: false
             )
         }
     }

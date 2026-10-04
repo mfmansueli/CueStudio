@@ -15,6 +15,7 @@ final class PlaybackCamera: CameraControlling {
     private(set) var isRecording = false
     var activeLens: CameraLens? = .front
     var background = BackgroundEffect()
+    var onRecordingEnded: (@MainActor (RecordedClip?, RecordingEndReason) -> Void)?
     let tap = AudioBufferTap()
 
     func start(with settings: CameraSettings) async {}
