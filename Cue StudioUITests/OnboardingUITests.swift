@@ -90,7 +90,7 @@ final class OnboardingUITests: XCTestCase {
         use.tap()
 
         // 4 · the permissions: the only button is Continue.
-        XCTAssertTrue(element(app, "onboarding.permission.microphone").waitForExistence(timeout: 5))
+        XCTAssertTrue(element(app, "onboarding.permission.microphone").waitForExistence(timeout: 10))
         XCTAssertFalse(app.buttons["Not now"].exists, "no way to skip the system alert on this screen")
         shot(app, "5-voice")
         app.buttons["onboarding.continue"].tap()

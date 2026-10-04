@@ -57,6 +57,7 @@ struct AnswerCommentSheet: View {
                     icon: "photo.on.rectangle", primary: true
                 )
             }
+            .buttonStyle(.plain)
             .accessibilityIdentifier("answer.pickScreenshot")
             Button { model.pasteFromClipboard() } label: {
                 AnswerOptionRow(
@@ -144,8 +145,11 @@ private struct AnswerOptionRow: View {
                 .frame(width: 42, height: 42)
                 .background(primary ? Palette.accSoft : Palette.overlayFill, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
             VStack(alignment: .leading, spacing: 2) {
+                // Long words and large text wrap; they never end in "…" (German at the accessibility sizes did).
                 Text(title).font(.body.weight(.semibold)).foregroundStyle(Palette.ink)
+                    .multilineTextAlignment(.leading).fixedSize(horizontal: false, vertical: true)
                 Text(detail).font(.footnote).foregroundStyle(Palette.ink2)
+                    .multilineTextAlignment(.leading).fixedSize(horizontal: false, vertical: true)
             }
             Spacer(minLength: 0)
         }

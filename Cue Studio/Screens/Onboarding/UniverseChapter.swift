@@ -28,7 +28,7 @@ struct UniverseChapter: View {
             .padding(.horizontal, 20)
             UniverseCanvas(topics: onboarding.topics, born: born)
                 .frame(maxWidth: .infinity)
-                .frame(minHeight: 200, maxHeight: 280)
+                .frame(minHeight: 120, maxHeight: 280)
                 .accessibilityElement(children: .ignore)
                 .accessibilityLabel(Text("Your universe"))
                 .accessibilityValue(Text(onboarding.topics.map(\.label).joined(separator: ", ")))

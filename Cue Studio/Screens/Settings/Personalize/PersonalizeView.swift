@@ -171,6 +171,7 @@ struct PersonalizeView: View {
             Image(systemName: "chevron.forward").font(.footnote.weight(.semibold)).foregroundStyle(Palette.ink3)
         }
         .padding(.horizontal, 16)
+        .padding(.vertical, 10)
         .frame(minHeight: 64)
         .contentShape(Rectangle())
     }

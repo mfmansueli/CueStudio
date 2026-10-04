@@ -22,6 +22,8 @@ struct SettingToggleRow: View {
             }
         }
         .tint(Palette.success)
+        // Room above and below the text for large type: the minimum height alone left it touching the edges.
+        .padding(.vertical, 10)
         .frame(minHeight: minHeight)
         .padding(.horizontal, 16)
     }

@@ -93,6 +93,76 @@ final class ExploratoryTourTests: XCTestCase {
         try finish("-prompter")
     }
 
+    /// The v27 screens: the "+" sheet, the Logbook, Answer a comment, Your universe, Personalize, the paywall and
+    /// the first voyage. Same opt-in as the tour above.
+    func testUniverseTour() throws {
+        try begin()
+        shot("universe-scripts")
+        if tap("scripts.newButton") {
+            shot("start-a-video")
+            if tap("newScript.answer") { shot("answer-1"); _ = tap("answer.paste"); shot("answer-2-paste"); closeSheet() }
+            closeSheet()
+        }
+        if tap("scripts.logbookButton") {
+            shot("logbook")
+            if let field = Optional(app.descendants(matching: .any)["logbook.field"].firstMatch), field.exists {
+                field.tap(); field.typeText("A long idea about how I stopped planning every single video in advance"); shot("logbook-typed")
+            }
+            closeSheet()
+        }
+        tab(3)
+        if tap("profile.universeCard") || tap("profile.universeLink") {
+            sleep(2)
+            shot("your-universe")
+            app.swipeUp(); shot("your-universe-2")
+            _ = tap("universe.share"); shot("universe-share"); closeSheet()
+            app.navigationBars.buttons.firstMatch.tap()
+        }
+        tab(4)
+        app.swipeUp()
+        if tap("settings.personalizeButton") {
+            shot("personalize"); app.swipeUp(); shot("personalize-2"); app.navigationBars.buttons.firstMatch.tap()
+        }
+        if tap("settings.prompterTile") {
+            sleep(1)
+            shot("prompter-settings")
+            app.swipeUp(); shot("prompter-settings-2")
+            app.swipeUp(); shot("prompter-settings-3")
+        }
+        try finish("-universe")
+    }
+
+    /// The first voyage, chapter by chapter, from a fresh launch.
+    func testOnboardingTour() throws {
+        let env = ProcessInfo.processInfo.environment
+        guard let folder = env["CUE_TOUR_DIR"] else { throw XCTSkip("Set TEST_RUNNER_CUE_TOUR_DIR to run the tour") }
+        directory = URL(fileURLWithPath: folder, isDirectory: true)
+        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+        tourName = env["CUE_TOUR_NAME"] ?? "tour"
+        continueAfterFailure = true
+        app = CueApp.launch(
+            seeded: false, ai: .stub, appLanguage: env["CUE_TOUR_LANG"], contentSize: env["CUE_TOUR_SIZE"],
+            extraArguments: ["-uiTestOnboarding", "-uiTestPermissions", "granted"]
+        )
+        sleep(6)
+        shot("onb-1-welcome")
+        _ = tap("onboarding.getStarted")
+        sleep(2); shot("onb-2-universe")
+        _ = tap("onboarding.topic.niche.food"); _ = tap("onboarding.topic.niche.fitness")
+        sleep(1); shot("onb-2b-picked")
+        _ = tap("onboarding.continue")
+        sleep(2); shot("onb-3-voyage")
+        _ = tap("onboarding.platform.reels")
+        sleep(1); shot("onb-3b-reels")
+        _ = tap("onboarding.continue")
+        sleep(5); shot("onb-4-script")
+        _ = tap("onboarding.useScript")
+        sleep(2); shot("onb-5-voice")
+        _ = tap("onboarding.continue")
+        sleep(4); shot("onb-6-practice")
+        try finish("-onboarding")
+    }
+
     private func begin() throws {
         let env = ProcessInfo.processInfo.environment
         guard let folder = env["CUE_TOUR_DIR"] else { throw XCTSkip("Set TEST_RUNNER_CUE_TOUR_DIR to run the tour") }
@@ -248,7 +318,7 @@ final class ExploratoryTourTests: XCTestCase {
     }
 
     private func closeSheet() {
-        for id in ["sheet.closeButton", "display.doneButton"] where app.buttons[id].exists {
+        for id in ["sheet.closeButton", "display.doneButton", "logbook.doneButton"] where app.buttons[id].exists {
             app.buttons[id].tap(); sleep(1); return
         }
         let done = app.buttons["Done"]

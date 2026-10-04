@@ -19,11 +19,15 @@ struct OnboardingChrome: View {
                     .frame(width: 26, height: 4)
             }
             .animation(CueMotion.card, value: step)
-            Spacer()
+            Spacer(minLength: 8)
             Button(action: onSkip) {
                 Text("Skip")
                     .font(.body)
                     .foregroundStyle(Palette.ink2)
+                    // A word, never two lines: it shrinks before it breaks ("Überspringen" at the largest sizes).
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.5)
+                    .fixedSize(horizontal: true, vertical: false)
                     .frame(minWidth: Metrics.hitTarget, minHeight: Metrics.hitTarget)
                     .contentShape(Rectangle())
             }
@@ -49,6 +53,8 @@ struct OnboardingHeading: View {
                 .textCase(.uppercase)
                 .tracking(1.4)
                 .foregroundStyle(Palette.accText)
+                // The chapter's name wraps rather than ending in "…" when a long language or large type squeezes the page.
+                .fixedSize(horizontal: false, vertical: true)
             Text(title)
                 .font(.system(size: 30, weight: .bold))
                 .tracking(-0.6)
