@@ -49,13 +49,13 @@ struct CameraBackdrop: View {
             case .unauthorized:
                 message(
                     title: String(localized: "Camera access is off"),
-                    detail: String(localized: "Allow Camera and Microphone for Cue in Settings to record takes. Studio mode works without them."),
+                    detail: String(localized: "Allow Camera and Microphone in Settings to record."),
                     showsSettings: true
                 )
             case .unavailable:
                 message(
                     title: String(localized: "No camera here"),
-                    detail: String(localized: "This device has no camera Cue can use. Studio mode still works."),
+                    detail: String(localized: "No camera found · Studio mode still works"),
                     showsSettings: false
                 )
             case .failed(let reason):

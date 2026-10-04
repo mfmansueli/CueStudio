@@ -31,7 +31,8 @@ struct FiltersPanel: View {
             .padding(.horizontal, -16)
             if viewModel.currentFilter != .original {
                 PanelSlider(
-                    label: String(localized: "Intensity"), value: viewModel.currentFilterAmount * 100, range: 0...100,
+                    label: String(localized: "Intensity"), value: viewModel.currentFilterAmount * 100, range: CueSliderSpec.filterIntensity.range,
+                    step: CueSliderSpec.filterIntensity.step ?? 1, defaultValue: CueSliderSpec.filterIntensity.defaultValue,
                     format: .percent, identifier: "edit.filter.intensity"
                 ) { viewModel.setFilterAmount($0 / 100) }
             }

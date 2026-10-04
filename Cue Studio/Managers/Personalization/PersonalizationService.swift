@@ -35,7 +35,7 @@ final class PersonalizationService {
 
     init(defaults: UserDefaults = .standard) {
         self.defaults = defaults
-        sky = defaults.string(forKey: DefaultsKey.skyDensity).flatMap(SkyDensity.init(rawValue:)) ?? .calm
+        sky = defaults.string(forKey: DefaultsKey.skyDensity).flatMap(SkyDensity.init(rawValue:)) ?? .lively
         celebrations = defaults.object(forKey: DefaultsKey.celebrations) as? Bool ?? true
         haptics = defaults.object(forKey: DefaultsKey.hapticsEnabled) as? Bool ?? true
         autoTagsTopics = defaults.object(forKey: DefaultsKey.autoTagTopics) as? Bool ?? true

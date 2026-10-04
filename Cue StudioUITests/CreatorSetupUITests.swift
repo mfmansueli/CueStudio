@@ -24,12 +24,12 @@ final class CreatorSetupUITests: XCTestCase {
         openCreatorSetup(app, page: "prompter")
         let size = app.descendants(matching: .any)["creatorSetup.textSize"].firstMatch
         XCTAssertTrue(size.waitForExistence(timeout: 5))
-        XCTAssertEqual(size.value as? String, "Medium")
-        // Drag the orb from Medium toward the right end of its rail.
-        let start = size.coordinate(withNormalizedOffset: CGVector(dx: 0.36, dy: 0.75))
-        start.press(forDuration: 0.1, thenDragTo: start.withOffset(CGVector(dx: 120, dy: 0)))
+        XCTAssertEqual(size.value as? String, "Large")
+        // Drag the thumb from Large toward the left end of its track.
+        let start = size.coordinate(withNormalizedOffset: CGVector(dx: 0.66, dy: 0.75))
+        start.press(forDuration: 0.1, thenDragTo: start.withOffset(CGVector(dx: -200, dy: 0)))
         let chosen = size.value as? String
-        XCTAssertNotEqual(chosen, "Medium")
+        XCTAssertNotEqual(chosen, "Large")
 
         // The card on Settings says what was chosen, and both pages remember it.
         app.navigationBars.buttons.firstMatch.tap()

@@ -133,7 +133,7 @@ struct PrompterViewModelLayoutTests {
         #expect(session.prompter.readingLineOffset == nil)
         #expect(session.prompter.textWindowHeight == 380)
         #expect(session.prompter.readingWidth == 0.93)
-        #expect(session.prompter.speed == 0.7)
+        #expect(session.prompter.speed == ReadTime.naturalSpeed)
         #expect(session.camera.showsSafeZones)
         // Speed and safe zones are Creator Setup: the reset is for this session.
         #expect(scenario.preferences.prompter == prompter)

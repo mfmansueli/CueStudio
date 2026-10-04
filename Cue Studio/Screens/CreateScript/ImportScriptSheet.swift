@@ -43,7 +43,7 @@ struct ImportScriptSheet: View {
                     .frame(maxWidth: .infinity)
                 }
                 Label {
-                    Text("Writing in Google Docs, Notion or Pages? Export the script as .txt, .rtf or .pdf to Files — or copy the text and use Clipboard. A printed brief? Scan it or pick a photo.")
+                    Text("Export as .txt, .rtf or .pdf, or use Clipboard.")
                 } icon: {
                     Image(systemName: "lightbulb")
                 }

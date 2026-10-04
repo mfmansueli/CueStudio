@@ -137,13 +137,13 @@ extension QuickEditViewModel {
         var timeline = edit.timeline
         let index = timeline.segmentIndex(atEdited: time)
         guard timeline.split(atEdited: time) else {
-            toast.show(String(localized: "Move the playhead away from the edge"))
+            toast.show(String(localized: "Move playhead off the edge"))
             return
         }
         selectedJoinID = nil
         commit(timeline)
         selectedSegmentID = edit.timeline.segments[index + 1].id
-        toast.show(String(localized: "Cut at \(DurationText.timecode(time, total: edit.editedDuration)) — tap a side, then Delete"))
+        toast.show(String(localized: "Cut at \(DurationText.timecode(time, total: edit.editedDuration)) · Tap a side"))
     }
 
     /// Takes the selected section out of the edit.

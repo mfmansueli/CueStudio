@@ -299,8 +299,8 @@ struct PrompterViewModelTests {
         scenario.viewModel.updateLayout(contentHeight: 1000)
         scenario.viewModel.play()
         scenario.viewModel.advance(by: 1)
-        // The default 0.7×, 10 points per word.
-        #expect(abs(scenario.viewModel.engine.offset - ReadTime.wordsPerMinute(speed: 0.7) / 60 * 10) < 0.0001)
+        // The default pace, 10 points per word.
+        #expect(abs(scenario.viewModel.engine.offset - ReadTime.wordsPerMinute(speed: ReadTime.naturalSpeed) / 60 * 10) < 0.0001)
         scenario.viewModel.advance(by: 1000)
         #expect(scenario.viewModel.engine.isAtEnd)
         #expect(!scenario.viewModel.isPlaying)
@@ -465,19 +465,19 @@ struct PrompterViewModelTests {
     @Test func speedStartsAtTheNaturalPace() {
         let scenario = makeScenario()
         defer { scenario.defaults.tearDown() }
-        #expect(scenario.preferences.prompter.speed == 0.7)
+        #expect(scenario.preferences.prompter.speed == ReadTime.naturalSpeed)
     }
 
-    @Test func speedMovesInTenthsWithinRange() {
+    @Test func speedMovesInFiveWordsAMinuteWithinRange() {
         let scenario = makeScenario()
         defer { scenario.defaults.tearDown() }
         scenario.viewModel.setSpeed(1.04)
-        #expect(scenario.viewModel.session.prompter.speed == 1)
+        #expect(scenario.viewModel.session.prompter.speed == 225 / ReadTime.wordsPerMinuteAtOneX)
         scenario.viewModel.setSpeed(5)
         #expect(scenario.viewModel.session.prompter.speed == 2)
         scenario.viewModel.setSpeed(0.1)
         #expect(scenario.viewModel.session.prompter.speed == 0.3)
-        #expect(scenario.preferences.prompter.speed == 0.7)
+        #expect(scenario.preferences.prompter.speed == ReadTime.naturalSpeed)
     }
 
     @Test func attachingAScriptToFreestyle() {

@@ -6,11 +6,11 @@
 #if DEBUG
 import SwiftUI
 
-/// Debug only: every token, icon, orb variant and effect of the v27 design system on one screen, to check
+/// Debug only: every token, icon, slider, tab bar state, shared component and effect of the design system, to check
 /// them by eye and by screenshot (`-uiTestCatalogue` opens it at launch; Settings has a row for it).
 struct DesignCatalogueView: View {
     enum Section: String, CaseIterable, Identifiable {
-        case colors = "Colors", icons = "Icons", orbs = "Orbs", effects = "Effects", sky = "Sky"
+        case colors = "Colors", icons = "Icons", sliders = "Sliders", tabBar = "Tabbar", components = "Parts", effects = "Effects", sky = "Sky"
         var id: String { rawValue }
     }
 
@@ -25,6 +25,7 @@ struct DesignCatalogueView: View {
     @State private var words = 0
     @State private var aura = false
     @State private var density: SkyDensity = .lively
+    @State private var tab: AppTab = .scripts
 
     init(section: Section = .colors) {
         _section = State(initialValue: section)
@@ -45,7 +46,9 @@ struct DesignCatalogueView: View {
                     switch section {
                     case .colors: colors
                     case .icons: icons
-                    case .orbs: orbs
+                    case .sliders: sliders
+                    case .tabBar: tabBar
+                    case .components: components
                     case .effects: effects
                     case .sky: skyDemo
                     }
@@ -69,21 +72,55 @@ struct DesignCatalogueView: View {
             ("warm", Palette.worldWarm), ("mint", Palette.worldMint), ("pink", Palette.worldPink), ("sky", Palette.worldSky),
             ("TikTok", Palette.platformTikTok), ("Reels", Palette.platformReels), ("Shorts", Palette.platformShorts),
             ("YouTube", Palette.platformYouTube), ("LinkedIn", Palette.platformLinkedIn), ("Stories", Palette.platformStories),
+            ("glassBarBase", Palette.glassBarBase), ("glassBarRim", Palette.glassBarRim), ("recPillRing", Palette.recPillRing),
+            ("sliderTrack", Palette.sliderTrack), ("sliderFill", Palette.sliderFill), ("sliderThumb", Palette.sliderThumb),
+            ("selectionBar", Palette.selectionBar), ("aiReplacedFill", Palette.aiReplacedFill), ("stripFill", Palette.stripFill),
+            ("stateReady", Palette.stateReadyFill), ("stateDraft", Palette.stateDraftFill), ("adTag", Palette.adTagFill),
+            ("emptyRing", Palette.emptyRing), ("emptyOrbiter", Palette.emptyOrbiter), ("skyStarYou", Palette.skyStarYou),
         ]
-        return LazyVGrid(columns: columns, spacing: 12) {
-            ForEach(swatches, id: \.0) { name, color in
-                VStack(spacing: 4) {
-                    RoundedRectangle(cornerRadius: 12, style: .continuous).fill(color).frame(height: 44)
-                        .overlay(RoundedRectangle(cornerRadius: 12, style: .continuous).strokeBorder(Palette.glassBorder, lineWidth: 0.5))
-                    Text(name).font(.caption2).foregroundStyle(Palette.ink2).lineLimit(1)
+        return VStack(alignment: .leading, spacing: 16) {
+            LazyVGrid(columns: columns, spacing: 12) {
+                ForEach(swatches, id: \.0) { name, color in
+                    VStack(spacing: 4) {
+                        RoundedRectangle(cornerRadius: 12, style: .continuous).fill(color).frame(height: 44)
+                            .overlay(RoundedRectangle(cornerRadius: 12, style: .continuous).strokeBorder(Palette.glassBorder, lineWidth: 0.5))
+                        Text(name).font(.caption2).foregroundStyle(Palette.ink2).lineLimit(1)
+                    }
                 }
             }
+            heading("bgWash")
+            BgWash()
+                .frame(height: 220)
+                .clipShape(RoundedRectangle(cornerRadius: Metrics.innerRadius, style: .continuous))
         }
     }
 
     // MARK: - Icons
 
     private var icons: some View {
+        VStack(alignment: .leading, spacing: 18) {
+            heading("Stroke ≈ 1.6 pt at every size")
+            HStack(alignment: .bottom, spacing: 18) {
+                ForEach([12.0, 16, 20, 22, 26, 30, 44], id: \.self) { size in
+                    VStack(spacing: 4) {
+                        CueIconView(.editCut, size: size).foregroundStyle(Palette.ink)
+                        Text("\(Int(size))").font(.system(size: 9, design: .monospaced)).foregroundStyle(Palette.inkHint)
+                    }
+                }
+            }
+            heading("Filled: play · Takes · marked best take")
+            HStack(spacing: 24) {
+                CueIconView(.play, size: 26).foregroundStyle(Palette.ink)
+                CueIconView(.takes, size: 26).foregroundStyle(Palette.ink)
+                CueIconView(.bestTake, size: 26).foregroundStyle(Palette.ink)
+                CueIconView(.bestTake, size: 26, isFilled: true).foregroundStyle(Palette.acc)
+                RecordGlyph().foregroundStyle(Palette.ink2)
+            }
+            iconGrid
+        }
+    }
+
+    private var iconGrid: some View {
         LazyVGrid(columns: columns, spacing: 14) {
             ForEach(CueIcon.allCases, id: \.rawValue) { icon in
                 VStack(spacing: 6) {
@@ -105,34 +142,99 @@ struct DesignCatalogueView: View {
         }
     }
 
-    // MARK: - Orbs
+    // MARK: - Sliders
 
-    private var orbs: some View {
+    private var sliders: some View {
         VStack(alignment: .leading, spacing: 26) {
+            heading("Min · default · max")
+            CueSlider(
+                value: .constant(80), range: CueSliderSpec.speed.range, step: CueSliderSpec.speed.step,
+                defaultValue: CueSliderSpec.speed.defaultValue, label: "Speed", valueText: "80 wpm", systemIcon: .speed,
+                minCaption: "80 wpm", maxCaption: "220 wpm", accessibilityIdentifier: "catalogue.slider.min"
+            )
+            CueSlider(
+                value: .constant(150), range: CueSliderSpec.speed.range, step: CueSliderSpec.speed.step,
+                defaultValue: CueSliderSpec.speed.defaultValue, label: "Speed", valueText: "150 wpm", systemIcon: .speed,
+                minCaption: "80 wpm", maxCaption: "220 wpm", accessibilityIdentifier: "catalogue.slider.default"
+            )
+            CueSlider(
+                value: .constant(220), range: CueSliderSpec.speed.range, step: CueSliderSpec.speed.step,
+                defaultValue: CueSliderSpec.speed.defaultValue, label: "Speed", valueText: "220 wpm", systemIcon: .speed,
+                minCaption: "80 wpm", maxCaption: "220 wpm", accessibilityIdentifier: "catalogue.slider.max"
+            )
             heading("Continuous · default detent")
-            OrbSlider(
+            CueSlider(
                 value: $speed, range: 80...220, defaultValue: 150, label: "Speed", valueText: "\(Int(speed)) wpm",
-                spokenValue: "\(Int(speed)) words per minute", systemIcon: .speed, minCaption: "Slow", maxCaption: "Fast",
-                allowsTyping: true, accessibilityIdentifier: "catalogue.orb.speed"
+                spokenValue: "\(Int(speed)) words per minute", systemIcon: .speed, minCaption: "80 wpm", maxCaption: "220 wpm",
+                allowsTyping: true, accessibilityIdentifier: "catalogue.slider.speed"
             )
             heading("Stepped")
-            OrbSlider(
-                value: $size, range: 0...3, step: 1, defaultValue: 1, label: "Text size", valueText: ["S", "M", "L", "XL"][Int(size)],
-                systemIcon: .textSize, accessibilityIdentifier: "catalogue.orb.size"
+            CueSlider(
+                value: $size, range: 0...3, step: 1, defaultValue: 2, label: "Text size", valueText: ["S", "M", "L", "XL"][Int(size)],
+                systemIcon: .textSize, accessibilityIdentifier: "catalogue.slider.size"
             )
             heading("From center")
-            OrbSlider(
+            CueSlider(
                 value: $timing, range: -300...300, defaultValue: 0, origin: .center, label: "Caption timing",
                 valueText: "\(Int(timing)) ms", systemIcon: .captions, minCaption: "Earlier", maxCaption: "Later"
             )
             heading("In a row")
-            OrbSlider(
+            CueSlider(
                 value: $sky, range: 0...2, step: 1, style: .row, label: "Sky", valueText: SkyDensity.allCases[Int(sky)].label
             )
             heading("On camera")
-            OrbSlider(value: $volume, range: 0...150, defaultValue: 100, style: .compact, label: "Speed", valueText: "\(Int(volume))%")
+            CueSlider(value: $volume, range: 0...200, defaultValue: 100, style: .compact, label: "Voice", valueText: "\(Int(volume))%")
+                .padding(10)
+                .background(LinearGradient(colors: [.orange, .purple], startPoint: .top, endPoint: .bottom), in: RoundedRectangle(cornerRadius: 16))
             heading("Disabled")
-            OrbSlider(value: $volume, range: 0...150, label: "Music", valueText: "\(Int(volume))%").disabled(true)
+            CueSlider(value: $volume, range: 0...200, label: "Music", valueText: "\(Int(volume))%").disabled(true)
+        }
+    }
+
+    // MARK: - Tab bar
+
+    private var tabBar: some View {
+        VStack(alignment: .leading, spacing: 20) {
+            heading("Each tab active")
+            ForEach([AppTab.scripts, .takes, .profile, .settings], id: \.self) { active in
+                CueTabBar(selection: active) { _ in }
+                    .accessibilityIdentifier("catalogue.tabBar.\(String(describing: active))")
+            }
+            heading("Live: tap to slide")
+            CueTabBar(selection: tab) { if $0 != .record { tab = $0 } }
+        }
+        .padding(.vertical, 8)
+    }
+
+    // MARK: - Components
+
+    private var components: some View {
+        VStack(alignment: .leading, spacing: 22) {
+            heading("ThemeRail · row 3 × 30 · chip 3 × 14")
+            HStack(spacing: 14) {
+                ForEach([Palette.worldWarm, Palette.worldMint, Palette.worldPink, Palette.worldSky], id: \.self) { ThemeRail(color: $0) }
+                ForEach([Palette.worldWarm, Palette.worldMint, Palette.worldPink], id: \.self) { ThemeRail(color: $0, size: .chip) }
+            }
+            heading("PlatformDot · 7 · 6")
+            HStack(spacing: 14) {
+                PlatformDot(color: Palette.platformTikTok)
+                PlatformDot(color: Palette.platformReels)
+                PlatformDot(color: Palette.platformShorts, isSmall: true)
+                PlatformDot(color: Palette.platformYouTube, isSmall: true)
+            }
+            heading("RecPill · 26 to see · 44 to touch")
+            RecPill {}
+            heading("StateChip")
+            HStack(spacing: 8) {
+                ForEach(StateChip.Kind.allCases, id: \.self) { StateChip(kind: $0) }
+            }
+            heading("EmptyState")
+            EmptyState(
+                title: "No takes yet", message: "Record one and it shows up here.", actionTitle: "Record a take", action: {},
+                linkTitle: "Write a script first", link: {}, accessibilityPrefix: "catalogue.emptyState"
+            )
+            .padding(.vertical, 12)
+            .background(Palette.surface, in: RoundedRectangle(cornerRadius: Metrics.cardRadius, style: .continuous))
         }
     }
 

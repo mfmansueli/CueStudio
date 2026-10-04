@@ -212,7 +212,7 @@ extension QuickEditViewModel {
         let left = pending.count - sure.count
         commit(timeline, suggestions: deciding(Set(sure.map(\.id)), .removed))
         toast.show(left > 0
-            ? String(localized: "Removed \(sure.count) · \(left) left to review")
+            ? String(localized: "Removed \(sure.count) · \(left) to review")
             : String(localized: "Removed \(sure.count)"))
     }
 

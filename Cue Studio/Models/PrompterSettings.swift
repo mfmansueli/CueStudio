@@ -10,7 +10,7 @@ nonisolated struct PrompterSettings: Codable, Hashable, Sendable {
     static let speedRange: ClosedRange<Double> = 0.3...2
     static let sizeRange: ClosedRange<Double> = 16...56
     static let lineSpacingRange: ClosedRange<Double> = 1...2
-    static let marginRange: ClosedRange<Double> = 0...32
+    static let marginRange: ClosedRange<Double> = 8...40
     static let backgroundOpacityRange: ClosedRange<Double> = 0...1
     static let cameraBlurRange: ClosedRange<Double> = 0...20
     static let guideRange: ClosedRange<Double> = 0.1...0.7
@@ -23,14 +23,14 @@ nonisolated struct PrompterSettings: Codable, Hashable, Sendable {
     /// Studio mode is read from further away, so its text is bigger than the selfie panel's.
     static let studioScale: Double = 1.35
 
-    /// 1.0× is 215 words a minute (`ReadTime`); the default 0.7× is a natural ~150.
+    /// 1.0× is 215 words a minute (`ReadTime`); the default is a natural 150 (0.698×, written 0.7×).
     var speed: Double = ReadTime.naturalSpeed
     var font: PrompterFont = .lexend
-    var size: Double = 28
+    var size: Double = 36
     var lineSpacing: Double = 1.35
     var alignment: PrompterAlignment = .center
     var textColor: PrompterTextColor = .white
-    var margin: Double = 8
+    var margin: Double = 20
     /// Selfie text window width as a fraction of the screen, 50% to 93%. Narrowing it keeps the
     /// eyes stiller. The same fraction fits other screen sizes.
     var readingWidth: Double = PrompterSettings.defaultReadingWidth
@@ -66,16 +66,32 @@ nonisolated struct PrompterSettings: Codable, Hashable, Sendable {
         speed.formatted(.number.precision(.fractionLength(1)).locale(.interface)) + "×"
     }
 
-    /// A speed on the slider: in tenths, within the range.
+    /// A speed on the slider: on a step of 5 words a minute, within the range.
     static func clampedSpeed(_ value: Double) -> Double {
-        let tenths = (value * 10).rounded() / 10
-        return min(speedRange.upperBound, max(speedRange.lowerBound, tenths))
+        let snapped = (value * ReadTime.wordsPerMinuteAtOneX / wordsPerMinuteStep).rounded() * wordsPerMinuteStep / ReadTime.wordsPerMinuteAtOneX
+        return min(speedRange.upperBound, max(speedRange.lowerBound, snapped))
+    }
+
+    /// The speed slider moves in steps of this many words a minute.
+    static let wordsPerMinuteStep: Double = 5
+
+    /// The stored speed for a pace in words a minute, and back.
+    static func speed(forWordsPerMinute wordsPerMinute: Double) -> Double {
+        clampedSpeed(wordsPerMinute / ReadTime.wordsPerMinuteAtOneX)
+    }
+
+    static func wordsPerMinute(forSpeed speed: Double) -> Double {
+        speed * ReadTime.wordsPerMinuteAtOneX
     }
 
     /// The same reading pace, expressed on the current scale: 1.0× saved at 150 words a minute
     /// becomes 0.7× at 215.
     static func recalibrated(_ speed: Double, savedAt wordsPerMinute: Double) -> Double {
-        clampedSpeed(speed * wordsPerMinute / ReadTime.wordsPerMinuteAtOneX)
+        // Saved on the current scale: kept exactly as it was (only held to the range).
+        guard wordsPerMinute != ReadTime.wordsPerMinuteAtOneX else {
+            return min(speedRange.upperBound, max(speedRange.lowerBound, speed))
+        }
+        return clampedSpeed(speed * wordsPerMinute / ReadTime.wordsPerMinuteAtOneX)
     }
 
     /// "Off", "Subtle", "Soft", "Medium".

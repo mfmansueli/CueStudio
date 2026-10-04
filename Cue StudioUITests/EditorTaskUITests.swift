@@ -69,7 +69,7 @@ final class EditorTaskUITests: XCTestCase {
             XCTAssertTrue(app.descendants(matching: .any)["edit.pause.\(index)"].exists)
         }
         app.buttons["edit.pause.1.listen"].tap()
-        XCTAssertTrue(EditorApp.toastSays(app, "Hearing it without this pause"))
+        XCTAssertTrue(EditorApp.toastSays(app, "Playing without this pause"))
         // Keep the one heard, once it has played.
         sleep(3)
         let card = app.descendants(matching: .any)["edit.pause.1"]

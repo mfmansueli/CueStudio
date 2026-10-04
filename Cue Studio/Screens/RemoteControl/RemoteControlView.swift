@@ -44,7 +44,7 @@ struct RemoteControlView: View {
                 }
                 .surfaceCard()
 
-                Text("Keyboards, foot pedals and presentation remotes are coming next.")
+                Text("Keyboards and pedals are coming next.")
                     .font(.footnote)
                     .foregroundStyle(Palette.ink2)
                     .padding(EdgeInsets(top: 8, leading: 4, bottom: 0, trailing: 4))
@@ -67,7 +67,7 @@ struct RemoteControlView: View {
 
     private func join() {
         guard remote.join(code: typedCode) else {
-            toast.show(String(localized: "That code doesn't look right. Check it and try again."))
+            toast.show(String(localized: "Wrong code · Try again"))
             return
         }
         presentation.openRemoteController()

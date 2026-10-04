@@ -20,7 +20,7 @@ struct SettingsRecordingView: View {
                 SectionHeading(text: String(localized: "Camera & format"))
                     .padding(.horizontal, 4)
                 RecordingSetupSection(viewModel: viewModel) { showsMicrophones = true }
-                Text("Lens, mic, quality and format can still change for one take while recording.")
+                Text("Lens, mic and quality can change per take.")
                     .font(.footnote)
                     .foregroundStyle(Palette.ink2)
                     .padding(EdgeInsets(top: 6, leading: 4, bottom: 0, trailing: 4))

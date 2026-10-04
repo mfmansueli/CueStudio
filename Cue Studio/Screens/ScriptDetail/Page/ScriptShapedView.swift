@@ -41,7 +41,7 @@ struct ScriptShapedView: View {
             }
             .padding(.top, 16)
             Button { viewModel.setMode(.draft) } label: {
-                Text("Edit the text in Draft — shaping never rewrites it.")
+                Text("Edit in Draft · Shaping never rewrites.")
                     .font(.footnote)
                     .foregroundStyle(Palette.ink2)
                     .multilineTextAlignment(.leading)

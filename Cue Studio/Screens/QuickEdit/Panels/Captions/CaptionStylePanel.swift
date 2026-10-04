@@ -82,7 +82,7 @@ struct CaptionStylePanel: View {
         PanelNote(text: String(localized: "Tap a style to preview it on the current line."))
         if viewModel.captionReveal.followsWords, viewModel.linesWithoutWordTiming > 0 {
             PanelNote(
-                text: String(localized: "\(viewModel.linesWithoutWordTiming) lines follow the voice approximately: their words don't have their own times.")
+                text: String(localized: "\(viewModel.linesWithoutWordTiming) lines follow the voice approximately.")
             )
         }
     }
@@ -94,14 +94,15 @@ struct CaptionStylePanel: View {
             options: CaptionPosition.allCases.map { PanelOption($0, $0.label) },
             selection: viewModel.captionPositionStop, identifier: "edit.captionPosition"
         ) { viewModel.setCaptionPositionStop($0) }
-        OrbSlider(
+        CueSlider(
             value: Binding(
                 get: { Double(CaptionSize.nearest(to: viewModel.captionPointSize).rawValue) },
                 set: { viewModel.setCaptionPointSize((CaptionSize(rawValue: Int($0.rounded())) ?? .medium).points) }
             ),
-            range: 0...Double(CaptionSize.allCases.count - 1), step: 1, defaultValue: Double(CaptionSize.medium.rawValue), style: .full,
+            range: CueSliderSpec.captionSize.range, step: CueSliderSpec.captionSize.step, defaultValue: CueSliderSpec.captionSize.defaultValue,
+            style: .full,
             label: String(localized: "Size"), valueText: CaptionSize.nearest(to: viewModel.captionPointSize).label, systemIcon: .textSize,
-            accessibilityIdentifier: "edit.captionSize"
+            minCaption: CaptionSize.small.label, maxCaption: CaptionSize.extraLarge.label, accessibilityIdentifier: "edit.captionSize"
         )
         PanelNote(text: String(localized: "You can also drag the caption in the video."))
     }

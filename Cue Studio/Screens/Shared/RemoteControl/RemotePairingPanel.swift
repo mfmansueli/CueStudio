@@ -61,7 +61,7 @@ struct RemotePairingPanel: View {
                     .accessibilityLabel(Text("Code \(code.map(String.init).joined(separator: " "))"))
                     .accessibilityIdentifier("remote.code")
             }
-            Text("On the other iPhone or iPad, scan this with the Camera — or open Cue › Settings › Creator Setup › Remote Control and enter the code.")
+            Text("Scan this on the other device with the Camera.")
                 .font(.footnote)
                 .foregroundStyle(Palette.ink2)
                 .multilineTextAlignment(.center)

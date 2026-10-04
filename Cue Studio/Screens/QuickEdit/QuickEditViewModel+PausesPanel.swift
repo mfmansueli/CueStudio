@@ -84,7 +84,7 @@ extension QuickEditViewModel {
         let removed = Set(marked.map(\.id))
         var timeline = edit.timeline
         guard timeline.remove(marked.map(\.span)) else {
-            toast.show(String(localized: "A video needs at least one clip"))
+            toast.show(String(localized: "Keep at least one clip"))
             return
         }
         let decided = edit.suggestions.map { suggestion in
@@ -100,8 +100,8 @@ extension QuickEditViewModel {
         let seconds = DurationText.tenths(saving)
         let pauses = marked.filter { $0.kind == .pause }.count
         toast.show(pauses == marked.count
-            ? (pauses == 1 ? String(localized: "Removed 1 pause · \(seconds) shorter") : String(localized: "Removed \(pauses) pauses · \(seconds) shorter"))
-            : String(localized: "Removed \(marked.count) · \(seconds) shorter"))
+            ? (pauses == 1 ? String(localized: "Removed 1 pause · \(seconds)") : String(localized: "Removed \(pauses) pauses · \(seconds)"))
+            : String(localized: "Removed \(marked.count) · \(seconds)"))
     }
 
     /// Listen: 1.2 s before to 1.2 s after; a marked one is skipped, so what plays is the result.
@@ -113,7 +113,7 @@ extension QuickEditViewModel {
         let after = span.end...min(total, span.end + Self.listenMargin)
         let back = max(0, span.start - 0.3)
         listeningID = id
-        toast.show(isMarked(suggestion) ? String(localized: "Hearing it without this pause") : String(localized: "Hearing the pause as it is"))
+        toast.show(isMarked(suggestion) ? String(localized: "Playing without this pause") : String(localized: "Hearing the pause as it is"))
         previewTask?.cancel()
         let parts = isMarked(suggestion) ? [before, after] : [before.lowerBound...after.upperBound]
         previewTask = Task { [weak self] in

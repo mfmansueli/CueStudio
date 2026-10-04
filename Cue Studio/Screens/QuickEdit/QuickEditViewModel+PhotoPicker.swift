@@ -49,7 +49,7 @@ extension QuickEditViewModel {
         }
         guard imported.kind == old.kind else {
             EditMediaFiles.remove([imported.fileName])
-            toast.show(String(localized: "This photo or video can't be added"))
+            toast.show(String(localized: "Can't add this file"))
             return
         }
         importedFiles.insert(imported.fileName)

@@ -59,7 +59,7 @@ extension QuickEditViewModel {
     func autoAdjust() {
         guard isReady, !isClosed, autoState != .analyzing else { return }
         guard let target = autoTarget else {
-            toast.show(String(localized: "Couldn’t measure the picture — it stays as it is"))
+            toast.show(String(localized: "Couldn’t measure · No change"))
             return
         }
         comparesPicture = false
@@ -97,12 +97,12 @@ extension QuickEditViewModel {
         // The picked clip (or the whole take) is still what it was measured for.
         guard panel == .adjust, target.clipID == lookClip?.id else { return }
         guard let found else {
-            toast.show(String(localized: "Couldn’t measure the picture — it stays as it is"))
+            toast.show(String(localized: "Couldn’t measure · No change"))
             return
         }
         let correction = found.limited()
         guard !correction.isNeutral else {
-            toast.show(String(localized: "Already balanced — nothing to correct"))
+            toast.show(String(localized: "Already balanced"))
             return
         }
         if lookClip != nil {
@@ -116,7 +116,7 @@ extension QuickEditViewModel {
                 $0.autoAmount = 1
             }
         }
-        toast.show(String(localized: "Auto applied — adjust it below"))
+        toast.show(String(localized: "Auto applied · Adjust below"))
     }
 
     // MARK: - Intensity, reset, compare

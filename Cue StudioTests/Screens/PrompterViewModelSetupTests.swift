@@ -115,7 +115,7 @@ struct PrompterViewModelSetupTests {
         #expect(PreferencesService(defaults: scenario.defaults.defaults).camera.resolution == .uhd4K)
         #expect(scenario.viewModel.session.captureSource == .recommended(.tiktok))
         #expect(!scenario.viewModel.showsRecommendation)
-        #expect(scenario.toast.message == "TikTok setup for this video")
+        #expect(scenario.toast.message == "Using TikTok setup")
 
         await scenario.viewModel.recordButtonTapped()
         #expect(scenario.camera.recordedSettings.last?.resolution == .hd1080)
@@ -199,7 +199,7 @@ struct PrompterViewModelSetupTests {
         defer { scenario.defaults.tearDown() }
         scenario.microphones.inputs = [FakeMicrophones.iPhone]
         await scenario.viewModel.appear()
-        #expect(scenario.toast.message == "AirPods Pro unavailable · Using iPhone Microphone instead")
+        #expect(scenario.toast.message == "No AirPods Pro · Using iPhone Microphone")
         scenario.toast.dismiss()
         await scenario.viewModel.recordButtonTapped()
         #expect(scenario.viewModel.isRecording)
@@ -225,7 +225,7 @@ struct PrompterViewModelSetupTests {
         defer { scenario.defaults.tearDown() }
         scenario.camera.missingLenses = [.telephoto]
         await scenario.viewModel.appear()
-        #expect(scenario.toast.message == "Back · Telephoto unavailable · Using Front instead")
+        #expect(scenario.toast.message == "No Back · Telephoto · Using Front")
         await scenario.viewModel.disappear()
     }
 
@@ -240,18 +240,22 @@ struct PrompterViewModelSetupTests {
 
         scenario.transport.emit(.received(.command(.togglePlay)))
         #expect(scenario.viewModel.isPlaying)
+        // Each press is 0.1×, held on the 5 words-a-minute step.
+        let faster = PrompterSettings.clampedSpeed(1.2 + 0.1)
         scenario.transport.emit(.received(.command(.faster)))
-        #expect(scenario.viewModel.session.prompter.speed == 1.3)
+        #expect(scenario.viewModel.session.prompter.speed == faster)
         scenario.transport.emit(.received(.command(.slower)))
+        let slower = PrompterSettings.clampedSpeed(faster - 0.1)
         scenario.transport.emit(.received(.command(.slower)))
-        #expect(scenario.viewModel.session.prompter.speed == 1.1)
+        let slowest = PrompterSettings.clampedSpeed(slower - 0.1)
+        #expect(scenario.viewModel.session.prompter.speed == slowest)
         scenario.transport.emit(.received(.command(.pause)))
         #expect(!scenario.viewModel.isPlaying)
 
         let last = scenario.transport.sentStatuses.last
         #expect(last?.scriptTitle == "Test script")
         #expect(last?.isPlaying == false)
-        #expect(last?.speed == 1.1)
+        #expect(last?.speed == slowest)
         // Speed from the remote is for this session too.
         #expect(scenario.preferences.prompter.speed == 1.2)
 

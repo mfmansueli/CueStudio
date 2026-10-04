@@ -88,7 +88,7 @@ struct QuickEditTextStyleTests {
         // Size only changes texts: the captions keep a size a line of five words fits in.
         let captionScale = viewModel.edit.captionLook?.sizeScale
         viewModel.restyleText(.size(40))
-        #expect(viewModel.edit.texts.allSatisfy { abs($0.size - 40 * TextOverlayRole.designScale) < 0.001 })
+        #expect(viewModel.edit.texts.allSatisfy { abs($0.size - 40) < 0.001 })
         #expect(viewModel.edit.captionLook?.sizeScale == captionScale)
     }
 

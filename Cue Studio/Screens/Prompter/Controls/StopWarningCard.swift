@@ -46,7 +46,7 @@ struct StopWarningCard: View {
 #Preview {
     StopWarningCard(
         title: "18s short of 1:00",
-        message: "TikTok only pays Creator Rewards on videos longer than one minute.",
+        message: "TikTok pays Creator Rewards over one minute.",
         onStop: {}, onKeepGoing: {}
     )
     .padding()

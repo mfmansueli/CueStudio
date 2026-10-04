@@ -39,16 +39,16 @@ extension QuickEditViewModel {
         let timeline = edit.timeline
         let index = clipIndexAtPlayhead
         if let id = selection?.clipID, timeline.index(ofSegment: id) != index {
-            toast.show(String(localized: "Move the playhead over this clip"))
+            toast.show(String(localized: "Move playhead onto the clip"))
             return
         }
         guard let time = splitPoint(in: index) else {
-            toast.show(String(localized: "Move the playhead inside the clip"))
+            toast.show(String(localized: "Move playhead onto the clip"))
             return
         }
         var next = timeline
         guard next.split(atEdited: time) else {
-            toast.show(String(localized: "Move the playhead inside the clip"))
+            toast.show(String(localized: "Move playhead onto the clip"))
             return
         }
         commit(next)
@@ -69,7 +69,7 @@ extension QuickEditViewModel {
     func deleteClip(_ id: UUID) {
         guard isReady else { return }
         guard edit.timeline.segments.count > 1 else {
-            toast.show(String(localized: "A video needs at least one clip"))
+            toast.show(String(localized: "Keep at least one clip"))
             return
         }
         var next = edit.timeline
@@ -77,7 +77,7 @@ extension QuickEditViewModel {
         selection = nil
         commit(next)
         Haptics.delete()
-        toast.show(String(localized: "Clip deleted — tap Undo to bring it back"))
+        toast.show(String(localized: "Clip deleted · Tap Undo"))
     }
 
     // MARK: - Private

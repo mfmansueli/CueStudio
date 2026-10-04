@@ -268,7 +268,7 @@ struct QuickEditToolbarTests {
         #expect(viewModel.toolbarItems.first?.style == .dimmed)
         viewModel.perform(.splitClip)
         #expect(viewModel.edit.timeline.segments.count == 1)
-        #expect(scenario.toast.message == "Move the playhead inside the clip")
+        #expect(scenario.toast.message == "Move playhead onto the clip")
     }
 
     @Test func splitAsksForThePlayheadOverThePickedClip() async {
@@ -282,7 +282,7 @@ struct QuickEditToolbarTests {
         scenario.player.seek(to: 15)
         viewModel.perform(.splitClip)
         #expect(viewModel.edit.timeline.segments.count == 2)
-        #expect(scenario.toast.message == "Move the playhead over this clip")
+        #expect(scenario.toast.message == "Move playhead onto the clip")
     }
 
     /// Task 1 of the prototype: cut "não, pera" out with Split + Delete.
@@ -310,7 +310,7 @@ struct QuickEditToolbarTests {
         viewModel.perform(.selectClipAtPlayhead)
         viewModel.perform(.deleteClip)
         #expect(viewModel.edit.timeline.segments.count == 1)
-        #expect(scenario.toast.message == "A video needs at least one clip")
+        #expect(scenario.toast.message == "Keep at least one clip")
     }
 
     @Test func duplicatePutsACopyRightAfterAndPicksIt() async {

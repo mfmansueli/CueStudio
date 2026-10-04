@@ -7,7 +7,7 @@ import CoreGraphics
 import Testing
 @testable import Cue_Studio
 
-/// What an orb control does with its value.
+/// What a slider does with its value.
 @Suite("OrbSliderMath")
 struct OrbSliderMathTests {
     private let speed = OrbSliderMath(range: 80...220, defaultValue: 150)
@@ -48,7 +48,7 @@ struct OrbSliderMathTests {
 
     // MARK: - Dragging
 
-    @Test func theOrbFollowsTheFingerOneToOne() {
+    @Test func theThumbFollowsTheFingerOneToOne() {
         // A 280 pt rail over a 140-wide range: 28 pt is 14 units.
         let value = speed.value(anchor: 100, translation: 28, railLength: 280)
         #expect(abs(value - 114) < 0.0001)
@@ -68,8 +68,21 @@ struct OrbSliderMathTests {
         #expect(OrbSliderMath.Precision.half.label == "FINE · ½" && OrbSliderMath.Precision.full.label == nil)
     }
 
-    @Test func aSteppedControlHasNoFineMode() {
+    @Test func aControlWithAFewStepsHasNoFineMode() {
         #expect(size.precision(forVerticalDrag: 500) == .full)
+    }
+
+    @Test func aControlWithManyStepsHasFineModeAndNoDots() {
+        let wpm = OrbSliderMath(range: 80...220, step: 5, defaultValue: 150)
+        #expect(wpm.stepCount == 29 && !wpm.showsStepDots)
+        #expect(wpm.precision(forVerticalDrag: OrbSliderMath.quarterDistance + 1) == .quarter)
+        #expect(size.showsStepDots && !speed.showsStepDots)
+    }
+
+    @Test func steppedValuesAreFreeOfFloatingPointDust() {
+        let clipSpeed = OrbSliderMath(range: 0.5...3, step: 0.1, defaultValue: 1)
+        #expect(clipSpeed.snapped(0.5 + 0.1 * 3) == 0.8)
+        #expect(clipSpeed.snapped(2.04) == 2)
     }
 
     @Test func aDragNeverLeavesTheRange() {
@@ -80,7 +93,7 @@ struct OrbSliderMathTests {
 
     // MARK: - Detent and ends
 
-    @Test func theDetentTicksWhenTheOrbPassesOrLandsOnTheDefault() {
+    @Test func theDetentTicksWhenTheThumbPassesOrLandsOnTheDefault() {
         #expect(speed.crossesDetent(from: 140, to: 160))
         #expect(speed.crossesDetent(from: 160, to: 140))
         #expect(speed.crossesDetent(from: 140, to: 150))
@@ -103,6 +116,15 @@ struct OrbSliderMathTests {
         #expect(size.decremented(1) == 0)
         #expect(size.incremented(3) == 3)
         #expect(size.decremented(0) == 0)
+    }
+
+    @Test func voiceOverMovesAWholeNumberOfStepsOnAControlWithManySteps() {
+        let percent = OrbSliderMath(range: 0...100, step: 1, defaultValue: 70)
+        #expect(percent.accessibilityStep == 5)
+        let wpm = OrbSliderMath(range: 80...220, step: 5)
+        #expect(wpm.accessibilityStep == 5 && wpm.incremented(150) == 155)
+        let clipSpeed = OrbSliderMath(range: 0.5...3, step: 0.1)
+        #expect(abs(clipSpeed.accessibilityStep - 0.1) < 1e-9 || abs(clipSpeed.accessibilityStep - 0.2) < 1e-9)
     }
 
     @Test func voiceOverMovesFivePercentOnAContinuousControl() {

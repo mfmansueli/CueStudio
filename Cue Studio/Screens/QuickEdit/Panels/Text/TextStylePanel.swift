@@ -97,11 +97,12 @@ struct TextStylePanel: View {
     private func presets(_ text: TextOverlay) -> some View {
         styleCards
         PanelSlider(
-            label: String(localized: "Size"), value: viewModel.pickedTextPointSize, range: TextStyleEdit.sizeRange,
-            format: .points, identifier: "edit.textSize"
+            label: String(localized: "Size"), value: viewModel.pickedTextPointSize, range: CueSliderSpec.textPoints.range,
+            step: CueSliderSpec.textPoints.step ?? 2, defaultValue: CueSliderSpec.textPoints.defaultValue, format: .points, identifier: "edit.textSize"
         ) { viewModel.restyleText(.size($0), key: "textSize") }
         PanelSlider(
-            label: String(localized: "Glow"), value: text.glow * 100, range: 0...100, step: 5, format: .percent,
+            label: String(localized: "Glow"), value: text.glow * 100, range: CueSliderSpec.textGlow.range,
+            step: CueSliderSpec.textGlow.step ?? 5, defaultValue: CueSliderSpec.textGlow.defaultValue, format: .percent,
             identifier: "edit.textGlow"
         ) { viewModel.restyleText(.glow($0 / 100), key: "textGlow") }
         PanelSwatches(

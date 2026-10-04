@@ -384,14 +384,14 @@ struct QuickEditViewModelTests {
         #expect(scenario.viewModel.edit.editedDuration == 64)
         #expect(scenario.viewModel.selectedSegmentIndex == 1)
         #expect(scenario.viewModel.canDeleteSelection)
-        #expect(scenario.toast.message == "Cut at 00:20.00 — tap a side, then Delete")
+        #expect(scenario.toast.message == "Cut at 00:20.00 · Tap a side")
     }
 
     @Test func cuttingAtAnEdgeExplains() async {
         let scenario = await makeScenario()
         scenario.viewModel.cut()
         #expect(scenario.viewModel.edit.timeline.segments.count == 1)
-        #expect(scenario.toast.message == "Move the playhead away from the edge")
+        #expect(scenario.toast.message == "Move playhead off the edge")
     }
 
     @Test func cuttingAtTheEndExplainsToo() async {
@@ -399,7 +399,7 @@ struct QuickEditViewModelTests {
         scenario.player.seek(to: 64)
         scenario.viewModel.cut()
         #expect(scenario.viewModel.edit.timeline.segments.count == 1)
-        #expect(scenario.toast.message == "Move the playhead away from the edge")
+        #expect(scenario.toast.message == "Move playhead off the edge")
         #expect(!scenario.viewModel.canUndo)
     }
 
@@ -676,7 +676,7 @@ struct QuickEditViewModelTests {
 
         scenario.viewModel.removeAllSureSuggestions()
         #expect(spans(scenario.viewModel) == [[0, 10], [12, 64]])
-        #expect(scenario.toast.message == "Removed 1 · 1 left to review")
+        #expect(scenario.toast.message == "Removed 1 · 1 to review")
         #expect(scenario.viewModel.pendingSuggestions.map(\.span.start) == [30])
         #expect(scenario.viewModel.removeAllLabel == "Done")
     }
@@ -773,7 +773,7 @@ struct QuickEditViewModelTests {
         first.viewModel.cancel()
         #expect(first.takes.takes[0].edit == nil)
         #expect(drafts.drafts.count == 1)
-        #expect(first.toast.message == "Draft kept — tap Edit to continue")
+        #expect(first.toast.message == "Draft kept · Tap Edit")
         #expect(first.player.isStopped)
 
         let second = await makeScenario(drafts: drafts, takes: first.takes)

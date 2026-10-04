@@ -26,9 +26,9 @@ struct TextStyleEditTests {
     @Test func sizeIsInTheDesignsPointsAndOnlyForTexts() {
         var changed = text
         TextStyleEdit.size(30).apply(to: &changed)
-        #expect(abs(changed.size - 30 * TextOverlayRole.designScale) < 0.000_1)
-        TextStyleEdit.size(90).apply(to: &changed)
-        #expect(abs(changed.size - 56 * TextOverlayRole.designScale) < 0.000_1)
+        #expect(abs(changed.size - 30) < 0.000_1)
+        TextStyleEdit.size(300).apply(to: &changed)
+        #expect(changed.size == TextOverlay.sizeRange.upperBound)
         var look = TypePreset.cue.look(for: .caption)
         let before = look
         TextStyleEdit.size(30).apply(to: &look)

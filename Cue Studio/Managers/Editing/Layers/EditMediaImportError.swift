@@ -11,8 +11,8 @@ nonisolated enum EditMediaImportError: LocalizedError {
 
     var errorDescription: String? {
         switch self {
-        case .unreadable: String(localized: "This photo or video can't be added")
-        case .unreadableSound: String(localized: "This sound file can't be added")
+        case .unreadable: String(localized: "Can't add this file")
+        case .unreadableSound: String(localized: "Can't add this file")
         }
     }
 }

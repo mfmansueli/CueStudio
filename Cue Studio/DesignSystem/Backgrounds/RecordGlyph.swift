@@ -4,23 +4,27 @@
 //
 
 import SwiftUI
-import UIKit
 
-/// The camera's record button in miniature: a white ring around a red dot. Tab bars
-/// render SF Symbols as templates (one color), so the glyph is drawn as an image that keeps its colors.
-enum RecordGlyph {
-    static let tabImage = tabImage(ring: .white)
+/// The record button in miniature (v29): a thin ring around a solid red dot, with no glow. Two colors, so it is
+/// drawn rather than a template icon. The ring follows the foreground style; the dot is always `record`
+/// (red is for recording only).
+struct RecordGlyph: View {
+    var size: CGFloat = Metrics.tabRecordSize
 
-    private static func tabImage(ring color: UIColor) -> UIImage {
-        let size = CGSize(width: 26, height: 26)
-        let image = UIGraphicsImageRenderer(size: size).image { _ in
-            let ring = UIBezierPath(ovalIn: CGRect(x: 2, y: 2, width: 22, height: 22))
-            ring.lineWidth = 2
-            color.setStroke()
-            ring.stroke()
-            UIColor(Palette.record).setFill()
-            UIBezierPath(ovalIn: CGRect(x: 6, y: 6, width: 14, height: 14)).fill()
+    var body: some View {
+        ZStack {
+            Circle().strokeBorder(.foreground, lineWidth: 1.5)
+            Circle()
+                .fill(Palette.record)
+                .frame(width: size * 0.56, height: size * 0.56)
         }
-        return image.withRenderingMode(.alwaysOriginal)
+        .frame(width: size, height: size)
+        .accessibilityHidden(true)
     }
 }
+
+#if DEBUG
+#Preview {
+    RecordGlyph().foregroundStyle(Palette.ink2).padding().background(Palette.bg)
+}
+#endif

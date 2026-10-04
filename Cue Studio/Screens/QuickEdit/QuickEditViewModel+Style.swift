@@ -108,7 +108,7 @@ extension QuickEditViewModel {
                 snapshot.captionLook = captionLook
                 snapshot.captionPreset = preset
             }
-            toast.show(String(localized: "\(name) on every text and the captions"))
+            toast.show(String(localized: "\(name) on all text + captions"))
         }
     }
 }

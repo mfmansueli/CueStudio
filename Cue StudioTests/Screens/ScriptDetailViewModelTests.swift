@@ -52,7 +52,7 @@ struct ScriptDetailViewModelTests {
         scenario.viewModel.finishEditing()
         #expect(scenario.library.script(id: script.id)?.version == 2)
         #expect(scenario.library.script(id: script.id)?.text == "New words.")
-        #expect(scenario.toast.message == "Saved as v2 — 3 takes stay with v1")
+        #expect(scenario.toast.message == "Saved as v2 · 3 takes on v1")
         #expect(!scenario.viewModel.isEditing)
     }
 
@@ -238,7 +238,7 @@ struct ScriptDetailViewModelTests {
         #expect(scenario.writer.lastRewrite?.context.platform == .reels)
         #expect(scenario.writer.lastRewrite?.context.idealRange == TestData.rules.preset(for: .reels, monetizationGoals: true).idealRange)
         #expect(scenario.library.script(id: script.id)?.text == script.text)
-        #expect(scenario.toast.message == "Reels version saved as a copy")
+        #expect(scenario.toast.message == "Reels version saved")
     }
 
     @Test func destinationChangeAppliesThePreset() {

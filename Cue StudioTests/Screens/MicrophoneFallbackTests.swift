@@ -14,7 +14,7 @@ struct MicrophoneFallbackTests {
 
     @Test func saysWhichMicIsMissingAndWhatRecordsInstead() {
         let notice = MicrophoneFallback.notice(for: preferred, available: [iPhone], inUse: nil)
-        #expect(notice == "AirPods Pro unavailable · Using iPhone Microphone instead")
+        #expect(notice == "No AirPods Pro · Using iPhone Microphone")
     }
 
     @Test func staysQuietWhenThePreferredMicIsThere() {

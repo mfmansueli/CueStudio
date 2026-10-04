@@ -70,7 +70,7 @@ struct EmptyLibraryView: View {
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
-        .accessibilityHint(Text("Freestyle now — add a script anytime from the camera."))
+        .accessibilityHint(Text("Freestyle · Add a script anytime"))
         .accessibilityIdentifier("empty.skipButton")
     }
 

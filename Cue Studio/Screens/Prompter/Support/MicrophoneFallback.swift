@@ -15,6 +15,6 @@ nonisolated enum MicrophoneFallback {
               !available.contains(where: { $0.id == id }),
               let fallback = inUse ?? available.first(where: \.isBuiltIn) ?? available.first
         else { return nil }
-        return String(localized: "\(name) unavailable · Using \(fallback.name) instead")
+        return String(localized: "No \(name) · Using \(fallback.name)")
     }
 }

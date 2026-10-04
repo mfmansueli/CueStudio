@@ -29,7 +29,7 @@ struct DisplayLayoutSection: View {
             SectionHeading(text: String(localized: "Social safe zone"))
                 .padding(EdgeInsets(top: 6, leading: 4, bottom: 0, trailing: 4))
             safeZone
-            Text("Safe zones are a visual guide based on each app’s current layout — platforms change their UI, so they’re not a guarantee. Nothing on this screen appears in your video: Cue records the full frame only.")
+            Text("A guide, not a guarantee · Never recorded")
                 .font(.caption)
                 .foregroundStyle(Palette.ink2)
                 .padding(.horizontal, 6)

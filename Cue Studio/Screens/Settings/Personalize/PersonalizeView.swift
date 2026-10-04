@@ -24,7 +24,7 @@ struct PersonalizeView: View {
             VStack(alignment: .leading, spacing: 12) {
                 heading(String(localized: "App icon"))
                 iconCard
-                Text("Unlocked by milestones in your universe. First Light, Deep Space and Constellation come with Pro.")
+                Text("Milestones unlock icons · Pro unlocks all")
                     .font(.footnote)
                     .foregroundStyle(Palette.ink2)
                     .padding(.horizontal, 4)
@@ -43,12 +43,13 @@ struct PersonalizeView: View {
 
                 heading(String(localized: "Motion")).padding(.top, 10)
                 GroupedCard(dividerInset: 16) {
-                    OrbSlider(
+                    CueSlider(
                         value: Binding(
                             get: { Double(personalization.sky.step) },
                             set: { personalization.sky = SkyDensity.allCases[max(0, min(2, Int($0.rounded())))] }
                         ),
-                        range: 0...2, step: 1, defaultValue: 1, style: .row, label: String(localized: "Starry sky"),
+                        range: CueSliderSpec.starrySky.range, step: CueSliderSpec.starrySky.step,
+                        defaultValue: CueSliderSpec.starrySky.defaultValue, style: .row, label: String(localized: "Starry sky"),
                         valueText: personalization.sky.label, systemIcon: .starrySky, accessibilityIdentifier: "personalize.sky"
                     )
                     .padding(.horizontal, 16)
@@ -58,7 +59,7 @@ struct PersonalizeView: View {
                     SettingToggleRow(title: String(localized: "Haptics"), isOn: $personalization.haptics)
                         .accessibilityIdentifier("personalize.haptics")
                 }
-                Text("The sky shows only while you browse, never over your face or your edit. Everything turns off when Reduce Motion is on.")
+                Text("The sky shows only while you browse.")
                     .font(.footnote)
                     .foregroundStyle(Palette.ink2)
                     .padding(.horizontal, 4)

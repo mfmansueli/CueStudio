@@ -43,7 +43,7 @@ struct PreferencesServiceTests {
         service.creatorSetup.isMirrored = true
         service.creatorSetup.showsSafeZones = false
         let reloaded = PreferencesService(defaults: store.defaults).creatorSetup
-        #expect(reloaded.textSize == 22)
+        #expect(reloaded.textSize == 24)
         #expect(reloaded.speed == 1.1)
         #expect(reloaded.readingLine == .offset(150))
         #expect(reloaded.isMirrored)

@@ -553,7 +553,7 @@ struct QuickCreatorViewModelTests {
         scenario.recorder.allowed = false
         await scenario.viewModel.startVoiceOver()
         #expect(!scenario.viewModel.isRecordingVoiceOver)
-        #expect(scenario.toast.message == "Turn on the microphone for Cue in Settings to record a voice-over")
+        #expect(scenario.toast.message == "Mic is off · See Settings")
     }
 
     @Test func aVoiceOverKeepsItsVolumeAndCanBeDeleted() async {

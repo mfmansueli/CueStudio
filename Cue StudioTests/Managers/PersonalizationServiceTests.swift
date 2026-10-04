@@ -18,29 +18,29 @@ struct PersonalizationServiceTests {
         return defaults
     }
 
-    @Test func itStartsCalmWithEverythingOn() {
+    @Test func itStartsWithAFullSkyAndEverythingOn() {
         let service = PersonalizationService(defaults: store())
-        #expect(service.sky == .calm)
+        #expect(service.sky == .lively)
         #expect(service.celebrations && service.haptics && service.autoTagsTopics)
     }
 
     @Test func theChoicesAreKept() {
         let defaults = store()
         let service = PersonalizationService(defaults: defaults)
-        service.sky = .lively
+        service.sky = .calm
         service.celebrations = false
         service.haptics = false
         service.autoTagsTopics = false
         let again = PersonalizationService(defaults: defaults)
-        #expect(again.sky == .lively)
+        #expect(again.sky == .calm)
         #expect(!again.celebrations && !again.haptics && !again.autoTagsTopics)
         Haptics.isEnabled = true
     }
 
-    @Test func anUnknownSkyFallsBackToCalm() {
+    @Test func anUnknownSkyFallsBackToFull() {
         let defaults = store()
         defaults.set("stormy", forKey: DefaultsKey.skyDensity)
-        #expect(PersonalizationService(defaults: defaults).sky == .calm)
+        #expect(PersonalizationService(defaults: defaults).sky == .lively)
     }
 
     @Test func theHapticsSwitchReachesTheHapticsHelper() {

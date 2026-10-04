@@ -236,8 +236,8 @@ extension QuickEditViewModel {
         // Auto captions turns into the list of the new lines.
         if panel == .autoCaptions { panel = .captions }
         toast.show(lines.count == 1
-            ? String(localized: "1 line ready — tap it to fix it")
-            : String(localized: "\(lines.count) lines ready — tap one to fix it"))
+            ? String(localized: "1 line to check")
+            : String(localized: "\(lines.count) lines to check"))
     }
 
     // MARK: - Reading
@@ -377,7 +377,7 @@ extension QuickEditViewModel {
         guard let cue = edit.captions.first(where: { $0.id == id }), let span = editedSpan(ofCaption: id) else { return }
         let time = player.currentTime
         guard time > span.start + 0.15, time < span.end - 0.15 else {
-            toast.show(String(localized: "Move the playhead inside the line"))
+            toast.show(String(localized: "Move playhead into the line"))
             return
         }
         let words = CaptionRevision.words(of: cue)

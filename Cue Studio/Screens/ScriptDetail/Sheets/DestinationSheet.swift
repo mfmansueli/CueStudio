@@ -32,7 +32,7 @@ struct DestinationSheet: View {
                 Toggle(isOn: $profile.profile.monetizationGoals) {
                     VStack(alignment: .leading, spacing: 2) {
                         Text("Monetization goals").font(.body.weight(.semibold))
-                        Text("Aim for lengths that earn: TikTok 1:00+, YouTube 8:00+ for mid-roll ads")
+                        Text("Longer videos earn: TikTok 1:00+, YouTube 8:00+")
                             .font(.footnote)
                             .foregroundStyle(Palette.ink2)
                     }
@@ -42,7 +42,7 @@ struct DestinationSheet: View {
                 .padding(.vertical, 12)
                 .background(Palette.surface2, in: RoundedRectangle(cornerRadius: 22, style: .continuous))
                 .accessibilityIdentifier("destination.monetizationToggle")
-                Text("Platform rules change — presets update automatically.")
+                Text("Presets update as platforms change.")
                     .font(.caption)
                     .foregroundStyle(Palette.ink2)
                     .frame(maxWidth: .infinity)

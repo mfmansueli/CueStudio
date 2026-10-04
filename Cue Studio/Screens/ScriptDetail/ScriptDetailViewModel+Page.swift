@@ -58,8 +58,8 @@ extension ScriptDetailViewModel {
         if bumpsVersion {
             page.bumpedVersion = true
             toast.show(takeCount == 1
-                ? String(localized: "Saved as v\(script.version + 1) — your take stays with v\(script.version)")
-                : String(localized: "Saved as v\(script.version + 1) — \(takeCount) takes stay with v\(script.version)"))
+                ? String(localized: "Saved as v\(script.version + 1) · Take on v\(script.version)")
+                : String(localized: "Saved as v\(script.version + 1) · \(takeCount) takes on v\(script.version)"))
         }
     }
 
@@ -185,7 +185,7 @@ extension ScriptDetailViewModel {
     func rewriteSelection(_ action: SelectionAction) async {
         guard let selected = selectedText, case .selection(let range) = page.selection?.indices, !page.isRewriting else { return }
         guard writer.isLanguageModelAvailable else {
-            toast.show(writer.unavailableReason ?? String(localized: "AI tools aren't available right now."))
+            toast.show(writer.unavailableReason ?? String(localized: "AI isn't available now"))
             return
         }
         let start = page.text.distance(from: page.text.startIndex, to: range.lowerBound)
@@ -291,8 +291,8 @@ extension ScriptDetailViewModel {
         ideaDraft?.clear()
         if let request { beginVoicePreview(for: request) }
         toast.show(generated.needsFactCheck
-            ? String(localized: "Draft ready — check facts before recording")
-            : String(localized: "Draft ready — edit anything"))
+            ? String(localized: "Draft ready · Check facts")
+            : String(localized: "Draft ready · Edit anything"))
     }
 
     /// "Stop": the words that have arrived stay; the rest isn't written.

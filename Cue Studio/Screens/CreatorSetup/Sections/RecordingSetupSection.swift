@@ -12,7 +12,7 @@ struct RecordingSetupSection: View {
 
     var body: some View {
         GroupedCard {
-            SetupRow(title: String(localized: "Camera"), detail: String(localized: "Where every recording starts. Flip it anytime while recording.")) {
+            SetupRow(title: String(localized: "Camera"), detail: String(localized: "Where every recording starts · Flip it anytime")) {
                 HStack(spacing: 8) {
                     chip(String(localized: "Front"), isSelected: viewModel.usesFrontCamera, identifier: "creatorSetup.camera.front") {
                         viewModel.setFrontCamera(true)
@@ -23,7 +23,7 @@ struct RecordingSetupSection: View {
                 }
             }
             microphoneRow
-            SetupRow(title: String(localized: "Recording quality"), detail: String(localized: "A platform can recommend another for a video — you choose.")) {
+            SetupRow(title: String(localized: "Recording quality"), detail: String(localized: "Platforms may suggest a setup · You choose")) {
                 VStack(alignment: .leading, spacing: 8) {
                     HStack(spacing: 8) {
                         ForEach(VideoResolution.allCases) { resolution in

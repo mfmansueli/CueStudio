@@ -690,7 +690,7 @@ final class PrompterViewModel {
         let requested = session.camera
         if let active = camera.activeLens, active != requested.lens, noticedLens != requested.lens {
             noticedLens = requested.lens
-            toast.show(String(localized: "\(requested.lens.label) unavailable · Using \(active.label) instead"))
+            toast.show(String(localized: "No \(requested.lens.label) · Using \(active.label)"))
             return
         }
         let microphone = MicrophoneChoice(id: requested.microphoneID, name: requested.microphoneName)

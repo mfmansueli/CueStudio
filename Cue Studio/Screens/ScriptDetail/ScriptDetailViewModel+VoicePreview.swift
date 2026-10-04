@@ -51,7 +51,7 @@ extension ScriptDetailViewModel {
     func approveVoice() {
         profile.profile.voiceApproved = true
         page.voicePreview = nil
-        toast.show(String(localized: "Got it — Cue will keep writing like this"))
+        toast.show(String(localized: "Got it · Writing like this"))
     }
 
     func openVoiceAdjust() {
@@ -74,7 +74,7 @@ extension ScriptDetailViewModel {
             page.voicePreview?.showing = .mine
             page.voicePreview?.without = nil
             commitPage()
-            toast.show(keepsInProfile ? String(localized: "Profile updated · script rewritten") : String(localized: "Script rewritten"))
+            toast.show(keepsInProfile ? String(localized: "Profile updated · Rewritten") : String(localized: "Script rewritten"))
         } catch {
             toast.show(error.localizedDescription)
         }

@@ -29,7 +29,7 @@ extension QuickEditViewModel {
     func startVoiceOver() async {
         guard isReady, !recorder.isRecording else { return }
         guard await recorder.requestPermission() else {
-            toast.show(String(localized: "Turn on the microphone for Cue in Settings to record a voice-over"))
+            toast.show(String(localized: "Mic is off · See Settings"))
             return
         }
         guard !isClosed else { return }

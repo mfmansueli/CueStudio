@@ -71,7 +71,6 @@ struct SelfieControlPanel: View {
             } else {
                 SpeedSlider(
                     speed: session.prompter.speed,
-                    speedLabel: session.prompter.speedLabel,
                     onChange: { viewModel.setSpeed($0) }
                 )
             }
@@ -82,7 +81,7 @@ struct SelfieControlPanel: View {
         HStack {
             VStack(alignment: .leading, spacing: 1) {
                 Text("Freestyle").font(.subheadline.weight(.semibold))
-                Text("No script — add one anytime")
+                Text("Freestyle · Add a script anytime")
                     .font(.caption)
                     .foregroundStyle(Palette.ink2)
             }

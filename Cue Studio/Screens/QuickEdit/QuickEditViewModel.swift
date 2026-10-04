@@ -704,7 +704,7 @@ final class QuickEditViewModel {
         }
         saveDraft()
         close(keepingDraft: true)
-        toast.show(String(localized: "Draft kept — tap Edit to continue"))
+        toast.show(String(localized: "Draft kept · Tap Edit"))
     }
 
     /// Leaving the app or the screen without Done or Cancel: the draft keeps everything.

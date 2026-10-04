@@ -96,7 +96,7 @@ struct SessionSetupServiceTests {
         session.prompter.textColor = .yellow
         session.prompter.lineSpacing = 1.8
         session.prompter.alignment = .trailing
-        session.prompter.margin = 20
+        session.prompter.margin = 24
         session.prompter.readingWidth = 0.6
         session.prompter.textWindowHeight = 200
         session.prompter.readingLineOffset = 200
@@ -154,7 +154,7 @@ struct SessionSetupServiceTests {
         #expect(session.camera.aspect == .landscape)
         #expect(session.prompter == before)
         #expect(session.source(of: .textSize) == .thisTake)
-        #expect(preferences.prompter.margin == 8)
+        #expect(preferences.prompter.margin == PrompterSettings().margin)
     }
 
 }

@@ -21,13 +21,13 @@ nonisolated enum PrompterTextSize: String, CaseIterable, Identifiable, Sendable 
         }
     }
 
-    /// Selfie size in points (Studio reads it 1.35× bigger). Medium is the prompter's default.
+    /// Selfie size in points (Studio reads it 1.35× bigger). Large is the prompter's default.
     var points: Double {
         switch self {
-        case .small: 22
-        case .medium: 28
+        case .small: 24
+        case .medium: 30
         case .large: 36
-        case .extraLarge: 48
+        case .extraLarge: 44
         }
     }
 

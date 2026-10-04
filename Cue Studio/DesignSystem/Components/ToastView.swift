@@ -45,7 +45,7 @@ struct ToastView: View {
 
 #if DEBUG
 #Preview {
-    ToastView(message: "Saved as v2 — 3 takes stay with v1")
+    ToastView(message: "Saved as v2 · 3 takes on v1")
         .padding()
         .background(Palette.bg)
 }

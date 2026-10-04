@@ -12,8 +12,8 @@ nonisolated enum ReadTime {
     /// use this one constant.
     static let wordsPerMinuteAtOneX: Double = 215
 
-    /// Default prompter speed: 0.7× ≈ 150 words a minute.
-    static let naturalSpeed: Double = 0.7
+    /// Default prompter speed: 150 words a minute (0.698×, shown as 0.7×), a step of the 5 wpm slider.
+    static let naturalSpeed: Double = 150 / wordsPerMinuteAtOneX
 
     /// Words separated by spaces. Scripts in languages written without spaces (Japanese, Chinese,
     /// Thai) count dictionary words instead, which read at about the same pace.

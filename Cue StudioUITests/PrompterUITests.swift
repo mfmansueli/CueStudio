@@ -71,8 +71,8 @@ final class PrompterUITests: XCTestCase {
         XCTAssertTrue(voice.waitForExistence(timeout: 5))
         let speed = element(app, "prompter.speedSlider")
         XCTAssertTrue(speed.exists)
-        // "0.7×" or "0,7×", depending on the simulator's locale.
-        XCTAssertTrue((speed.value as? String)?.hasSuffix("7×") == true)
+        // The natural pace, in words a minute.
+        XCTAssertEqual(speed.value as? String, "150 words a minute")
         voice.tap()
         allowMicrophoneIfAsked()
         let indicator = element(app, "prompter.voiceIndicator")

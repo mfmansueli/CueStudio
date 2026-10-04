@@ -29,7 +29,7 @@ struct DisplaySettingsControls: View {
             }
             quickSliders
             if mode == .selfie {
-                Text("Background and blur only change your preview — never the recording.")
+                Text("Changes the preview only, never the recording.")
                     .font(.caption)
                     .foregroundStyle(Palette.ink2)
                     .padding(.horizontal, 4)

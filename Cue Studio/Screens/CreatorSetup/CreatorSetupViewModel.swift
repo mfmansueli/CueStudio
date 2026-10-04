@@ -14,6 +14,9 @@ final class CreatorSetupViewModel {
     /// How far below the front camera the reading line may be set here. The prompter still keeps
     /// it on screen on any iPhone.
     static let readingLineRange: ClosedRange<Double> = 40...320
+
+    /// The screen the reading line slider is measured against; the view sets it from what it sees.
+    var screenScale = ReadingLinePercent.standard
     static let readingLineStep: Double = 8
 
     private let preferences: PreferencesService
@@ -146,9 +149,9 @@ final class CreatorSetupViewModel {
         set { update { $0.showsSafeZones = newValue } }
     }
 
-    // MARK: - Orb controls (Settings › Prompter)
+    // MARK: - Slider controls (Settings › Prompter)
 
-    /// The four text sizes as a position 0...3 on a stepped orb; a size set in Display lands on the nearest.
+    /// The four text sizes as a position 0...3 on a stepped slider; a size set in Display lands on the nearest.
     var textSizeStep: Double {
         get {
             let sizes = PrompterTextSize.allCases
@@ -161,17 +164,33 @@ final class CreatorSetupViewModel {
         PrompterTextSize.allCases[Int(textSizeStep)].label
     }
 
-    var readingLineStep: Double {
-        get { Double(ReadingLinePreset(setup.readingLine)?.rawValue ?? ReadingLinePreset.nearCamera.rawValue) }
-        set { update { $0.readingLine = (ReadingLinePreset(rawValue: Int(newValue.rounded())) ?? .nearCamera).placement } }
+    /// Where the reading line sits as a percent of the screen's height (10% by the camera, 50% in the middle).
+    var readingLinePercent: Double {
+        get { screenScale.percent(for: setup.readingLine) }
+        set { update { $0.readingLine = screenScale.placement(forPercent: newValue) } }
+    }
+
+    var readingLineLabel: String {
+        let percent = Int(readingLinePercent)
+        return isReadingLineRecommended ? String(localized: "\(percent)% · camera") : String(localized: "\(percent)%")
     }
 
     /// Words a minute, the speed the prompter scrolls at when it isn't following the voice.
-    var wordsPerMinute: Int { Int((setup.speed * ReadTime.wordsPerMinuteAtOneX).rounded()) }
+    var wordsPerMinute: Int { Int(wordsPerMinuteValue) }
 
-    var marginStep: Double {
-        get { Double(MarginPreset(points: preferences.prompter.margin).rawValue) }
-        set { preferences.prompter.margin = (MarginPreset(rawValue: Int(newValue.rounded())) ?? .medium).points }
+    /// The speed slider's value: 80–220, in steps of 5.
+    var wordsPerMinuteValue: Double {
+        get { PrompterSettings.wordsPerMinute(forSpeed: setup.speed).rounded() }
+        set { speed = PrompterSettings.speed(forWordsPerMinute: newValue) }
+    }
+
+    /// The margins in points, 8–40 in steps of 2.
+    var marginPoints: Double {
+        get { preferences.prompter.margin }
+        set {
+            let range = PrompterSettings.marginRange
+            preferences.prompter.margin = min(range.upperBound, max(range.lowerBound, newValue))
+        }
     }
 
     var countdownStep: Double {
@@ -190,7 +209,7 @@ final class CreatorSetupViewModel {
     /// Preferences only: scripts, takes and edits stay.
     func reset() {
         preferences.resetCreatorSetup()
-        toast.show(String(localized: "Creator Setup is back to Cue's defaults"))
+        toast.show(String(localized: "Back to Cue's defaults"))
     }
 
     private func update(_ change: (inout CreatorSetup) -> Void) {

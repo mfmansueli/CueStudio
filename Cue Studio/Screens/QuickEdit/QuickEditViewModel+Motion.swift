@@ -63,7 +63,7 @@ extension QuickEditViewModel {
     /// Adds a keyframe at the playhead where the item is now, or takes away the one there.
     func toggleKeyframe() {
         guard let item = motionItem, let local = localTime(of: item) else {
-            toast.show(String(localized: "Move the playhead over it to add a keyframe"))
+            toast.show(String(localized: "Move playhead onto it first"))
             return
         }
         player.pause()
@@ -75,7 +75,7 @@ extension QuickEditViewModel {
         let state = motionState(of: item)
         let keyframe = OverlayKeyframe(time: local, center: state.center, scale: state.scale, opacity: state.opacity)
         updateKeyframes(of: item) { $0.append(keyframe) }
-        toast.show(String(localized: "Keyframe added — move the playhead, then drag the text"))
+        toast.show(String(localized: "Keyframe added · Now drag"))
     }
 
     /// Goes to the next keyframe (or the one before).

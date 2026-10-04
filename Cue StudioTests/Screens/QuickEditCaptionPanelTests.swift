@@ -74,7 +74,7 @@ struct QuickEditCaptionPanelTests {
         scenario.player.seek(to: 1)
         viewModel.addCaptionAtPlayhead()
         #expect(viewModel.edit.captions.count == 3)
-        #expect(scenario.toast.message == "There is a line here — move to a gap")
+        #expect(scenario.toast.message == "Line here · Move to a gap")
         scenario.player.seek(to: 5.05)
         viewModel.addCaptionAtPlayhead()
         #expect(viewModel.edit.captions.count == 3)

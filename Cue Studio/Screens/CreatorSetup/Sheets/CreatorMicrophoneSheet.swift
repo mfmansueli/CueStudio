@@ -42,7 +42,7 @@ struct CreatorMicrophoneSheet: View {
             }
             .accessibilityIdentifier("creatorSetup.microphoneList")
 
-            Text("To use AirPods or a Bluetooth mic, pair it in Settings › Bluetooth. It shows up here once it's connected. If it isn't there when you record, Cue uses the iPhone's mic and lets you know.")
+            Text("Pair a Bluetooth mic in Settings › Bluetooth.")
                 .font(.footnote)
                 .foregroundStyle(Palette.ink2)
                 .fixedSize(horizontal: false, vertical: true)

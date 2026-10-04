@@ -19,7 +19,7 @@ final class ShareToUITests: XCTestCase {
         for identifier in ["share.reels", "share.shorts", "share.youtube", "share.linkedin", "share.stories", "share.save", "share.more"] {
             XCTAssertTrue(app.buttons[identifier].exists, identifier)
         }
-        XCTAssertTrue(app.staticTexts["Created for TikTok — framed and safe-zoned for it"].exists)
+        XCTAssertTrue(app.staticTexts["Framed and safe-zoned for TikTok"].exists)
         XCTAssertTrue(app.switches["share.captionsToggle"].exists)
     }
 

@@ -138,7 +138,7 @@ final class EditorUITests: XCTestCase {
         EditorApp.tapTool(app, "edit")
         // At the very start the playhead can't split: a toast says why.
         EditorApp.tapTool(app, "split")
-        XCTAssertTrue(app.staticTexts["Move the playhead inside the clip"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.staticTexts["Move playhead onto the clip"].waitForExistence(timeout: 5))
         EditorApp.tapTool(app, "back")
 
         EditorApp.scrub(app)

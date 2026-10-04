@@ -43,4 +43,56 @@ enum Metrics {
     static let editorPreviewRadius: CGFloat = 6
     /// The ✓ that applies and closes a panel.
     static let applyButtonSize: CGFloat = 40
+
+    // MARK: - v29
+
+    /// The gap between stacked blocks: nothing touches the block before it.
+    static let blockGap: CGFloat = 16
+    /// The bottom strip with no controls (the Home Indicator's).
+    static let homeIndicatorClearance: CGFloat = 34
+
+    /// The tab bar: a 64 pt capsule 16 pt from the sides and 26 pt from the bottom edge, with the active
+    /// tab in a 56 pt capsule inset 4 pt. Icons are 26 pt, Record's 30 pt, labels 10 pt.
+    static let tabBarHeight: CGFloat = 64
+    static let tabBarSideMargin: CGFloat = 16
+    static let tabBarBottomMargin: CGFloat = 26
+    static let tabCapsuleHeight: CGFloat = 56
+    static let tabCapsuleInset: CGFloat = 4
+    static let tabIconSize: CGFloat = 26
+    static let tabRecordSize: CGFloat = 30
+    static let tabLabelSize: CGFloat = 10
+
+    /// A topic's marker: a 3 pt bar, 30 pt tall in a list row and 14 pt in chips and legends.
+    static let themeRailWidth: CGFloat = 3
+    static let themeRailRowHeight: CGFloat = 30
+    static let themeRailChipHeight: CGFloat = 14
+    static let themeRailRadius: CGFloat = 2
+    /// A network's marker: a 7 pt dot (6 pt in dense lines).
+    static let platformDotSize: CGFloat = 7
+    static let platformDotSmallSize: CGFloat = 6
+
+    /// The "● REC" pill: 26 pt to see, 44 pt to touch.
+    static let recPillHeight: CGFloat = 26
+    static let recPillPadding: CGFloat = 9
+    static let recPillRadius: CGFloat = 13
+    static let recPillDotSize: CGFloat = 6
+
+    /// The slider: a 4 pt track and a 24 pt thumb.
+    static let sliderTrackHeight: CGFloat = 4
+    static let sliderThumbSize: CGFloat = 24
+
+    /// The AI bar over a selection.
+    static let selectionBarHeight: CGFloat = 40
+    static let selectionBarRadius: CGFloat = 20
+    /// The state strip of the script page.
+    static let stripHeight: CGFloat = 44
+    static let stripRadius: CGFloat = 16
+    /// The state chip.
+    static let stateChipHeight: CGFloat = 22
+
+    /// The empty-state mark and the star that orbits it.
+    static let emptyRingSize: CGFloat = 88
+    static let emptyOrbiterSize: CGFloat = 5
+    /// "Your stars" in the sky.
+    static let skyStarYouSize: CGFloat = 3
 }

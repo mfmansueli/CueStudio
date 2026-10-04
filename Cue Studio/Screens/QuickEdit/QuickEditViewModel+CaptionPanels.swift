@@ -66,7 +66,7 @@ extension QuickEditViewModel {
         let time = player.currentTime
         let lines = editedCaptionLines
         if lines.contains(where: { $0.start <= time && time < $0.end }) {
-            toast.show(String(localized: "There is a line here — move to a gap"))
+            toast.show(String(localized: "Line here · Move to a gap"))
             return
         }
         let next = lines.first { $0.start > time }?.start ?? edit.editedDuration

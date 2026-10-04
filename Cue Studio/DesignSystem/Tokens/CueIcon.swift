@@ -5,12 +5,14 @@
 
 import SwiftUI
 
-/// The v27 "orbit line" icon set: 53 icons on a 24 pt grid with a 1.75 pt round stroke and three quiet
-/// motifs (the orb, the orbit, the 4-point star). They are template vector assets in
-/// `Assets.xcassets/Icons`, so the color comes from the context: 62% white at rest, yellow when
-/// active or a signal, violet for AI, red only for recording.
+/// The icon set (v29): 53 icons on a 24 pt grid, round caps and joins, one color that comes from the context (62%
+/// white at rest, yellow when active or a signal, violet for AI, red only for recording). Filled where the
+/// design says: play, the triangle inside Takes, a marked best take. They are drawn in code from the SVG
+/// geometry (`CueIconGeometry`), because the stroke has to stay about 1.6 pt at every size, which an asset that
+/// scales as a whole can't do.
 ///
-/// Generated from `design/cue-universe-v27/05 Icons/in-app`; keep the case names in step with the files.
+/// Generated from `design/cue-universe-v27/05 Icons/in-app` (`design/cue-v29/tools/generate_cue_icons.py`); keep
+/// the case names in step with the files.
 enum CueIcon: String, CaseIterable, Sendable {
     // MARK: Create and AI
 
@@ -85,32 +87,54 @@ enum CueIcon: String, CaseIterable, Sendable {
     case sendOff = "cueicon.universe-thematic.send-off"
     case topicWorld = "cueicon.universe-thematic.topic-world"
     case yourUniverse = "cueicon.universe-thematic.your-universe"
-
-    /// The asset's name in the catalog.
-    var assetName: String { rawValue }
-
-    /// The icon as an image that takes the surrounding foreground style, at `size` points.
-    var image: some View {
-        Image(rawValue)
-            .renderingMode(.template)
-            .resizable()
-            .scaledToFit()
-    }
 }
 
-/// An icon at a size, tinted by the foreground style: `CueIconView(.speed, size: 22)`.
+/// An icon at a size, tinted by the foreground style: `CueIconView(.speed, size: 22)`. The stroke is 1.6 pt
+/// at any size (`CueIconGeometry.strokeWidth(forSize:)`). `isFilled` fills the closed shapes too, for a state
+/// that is "on" (the best take, once marked).
 struct CueIconView: View {
     let icon: CueIcon
     var size: CGFloat = 24
+    var isFilled = false
 
-    init(_ icon: CueIcon, size: CGFloat = 24) {
+    init(_ icon: CueIcon, size: CGFloat = 24, isFilled: Bool = false) {
         self.icon = icon
         self.size = size
+        self.isFilled = isFilled
     }
 
     var body: some View {
-        icon.image
-            .frame(width: size, height: size)
-            .accessibilityHidden(true)
+        let elements = CueIconGeometry.elements(for: icon)
+        let width = CueIconGeometry.strokeWidth(forSize: size)
+        let hasShell = elements.contains { $0.closed && $0.stroked }
+        Canvas { context, canvasSize in
+            let scale = canvasSize.width / CueIconGeometry.grid
+            let transform = CGAffineTransform(scaleX: scale, y: scale)
+            // In a layer, so a detail of a filled icon (the star in a marked best take) can be knocked out of
+            // the fill without erasing what is behind the icon.
+            context.drawLayer { layer in
+                for element in elements {
+                    let path = element.path.applying(transform)
+                    if element.filled, isFilled, hasShell, !element.stroked {
+                        layer.blendMode = .destinationOut
+                        layer.fill(path, with: .color(.black))
+                        layer.blendMode = .normal
+                        continue
+                    }
+                    if element.filled || (isFilled && element.closed) {
+                        layer.fill(path, with: .foreground)
+                    }
+                    if element.stroked {
+                        let dash = element.dash.map { $0.map { $0 * scale } } ?? []
+                        layer.stroke(
+                            path, with: .foreground,
+                            style: StrokeStyle(lineWidth: width, lineCap: .round, lineJoin: .round, dash: dash)
+                        )
+                    }
+                }
+            }
+        }
+        .frame(width: size, height: size)
+        .accessibilityHidden(true)
     }
 }

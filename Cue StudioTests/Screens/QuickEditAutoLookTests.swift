@@ -66,7 +66,7 @@ struct QuickEditAutoLookTests {
         #expect(viewModel.autoState == .idle)
         #expect(viewModel.edit.autoCorrection == FakeTakeEditor.measuredCorrection)
         #expect(viewModel.edit.autoAmount == 1 && viewModel.hasAuto)
-        #expect(scenario.toast.message == "Auto applied — adjust it below")
+        #expect(scenario.toast.message == "Auto applied · Adjust below")
         #expect(scenario.editor.autoSpans == [TimeSpan(start: 0, end: 21.6)])
         // The dials were not touched: Auto is a step of its own.
         #expect(viewModel.edit.exposure == 0 && viewModel.edit.contrast == 0 && viewModel.edit.saturation == 0)
@@ -115,7 +115,7 @@ struct QuickEditAutoLookTests {
         scenario.viewModel.autoAdjust()
         await finish(scenario.viewModel)
         #expect(scenario.viewModel.edit.autoCorrection == nil)
-        #expect(scenario.toast.message == "Already balanced — nothing to correct")
+        #expect(scenario.toast.message == "Already balanced")
     }
 
     @Test func ifMeasuringFailsThePictureStaysAndTheCreatorIsToldQuietly() async {
@@ -127,7 +127,7 @@ struct QuickEditAutoLookTests {
         viewModel.autoAdjust()
         await finish(viewModel)
         #expect(viewModel.edit.autoCorrection == nil && viewModel.autoState == .idle)
-        #expect(scenario.toast.message == "Couldn’t measure the picture — it stays as it is")
+        #expect(scenario.toast.message == "Couldn’t measure · No change")
         editor.autoFails = false
         editor.autoResult = nil
         viewModel.autoAdjust()

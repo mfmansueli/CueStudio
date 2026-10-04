@@ -19,6 +19,7 @@ struct MainView: View {
     @Environment(ToastService.self) private var toast
     @Environment(LanguageService.self) private var languages
     @State private var isKeyboardUp = false
+    @State private var bottomInset: CGFloat = 0
 
     var body: some View {
         @Bindable var presentation = presentation
@@ -27,11 +28,16 @@ struct MainView: View {
             if !presentation.hidesTabBar && !isKeyboardUp {
                 CueTabBar(selection: presentation.selectedTab) { presentation.select($0) }
                     .padding(.top, 6)
+                    // The bar floats 26 pt from the screen's edge: with a Home Indicator strip under it (34 pt) that is
+                    // a little lower than the strip's top, without one it is lifted by the whole 26 pt.
+                    .padding(.bottom, bottomInset > 0 ? 0 : Metrics.tabBarBottomMargin)
+                    .offset(y: max(0, bottomInset - Metrics.tabBarBottomMargin))
                     .frame(maxWidth: .infinity)
-                    .background(Palette.bg)
                     .transition(.move(edge: .bottom).combined(with: .opacity))
             }
         }
+        .background(Palette.bg.ignoresSafeArea())
+        .onGeometryChange(for: CGFloat.self) { $0.safeAreaInsets.bottom } action: { bottomInset = $0 }
         .animation(CueMotion.card, value: presentation.hidesTabBar)
         .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardWillShowNotification)) { _ in isKeyboardUp = true }
         .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardWillHideNotification)) { _ in isKeyboardUp = false }
@@ -179,7 +185,7 @@ struct MainView: View {
 
     private func pasteScript() {
         guard let text = importer.clipboardText() else {
-            toast.show(String(localized: "Copy your script first, then paste it here"))
+            toast.show(String(localized: "Copy your script first"))
             return
         }
         let script = library.create(

@@ -30,7 +30,7 @@ struct ImproveScriptSheet: View {
                     }
                 }
                 if viewModel.needsFactCheck {
-                    Text("Written with Apple Intelligence · check facts before recording")
+                    Text("Apple Intelligence · Check facts before recording")
                         .font(.footnote)
                         .foregroundStyle(Palette.ink2)
                         .frame(maxWidth: .infinity)

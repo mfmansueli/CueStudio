@@ -54,13 +54,13 @@ extension QuickEditViewModel {
         let occupied = edit.music.compactMap { $0.span(inEditOf: edit.editedDuration) }
         guard let slot = MusicPlacement.slot(playhead: player.currentTime, editDuration: edit.editedDuration, occupied: occupied) else {
             discard(imported)
-            toast.show(String(localized: "No room here — move the playhead to a free spot"))
+            toast.show(String(localized: "No room · Move the playhead"))
             return
         }
         let length = min(imported.duration, slot.duration)
         guard length >= MusicClip.minimumDuration else {
             discard(imported)
-            toast.show(String(localized: "This sound file can't be added"))
+            toast.show(String(localized: "Can't add this file"))
             return
         }
         var clip = MusicClip(
@@ -71,7 +71,7 @@ extension QuickEditViewModel {
         selectedMusicID = clip.id
         player.pause()
         player.seek(to: slot.start)
-        toast.show(String(localized: "Music added under your voice at 40%"))
+        toast.show(String(localized: "Music added at 40%"))
     }
 
     /// "Replace": the clip keeps its place, volume and fades, and plays the new file from its
@@ -84,7 +84,7 @@ extension QuickEditViewModel {
         }
         guard imported.duration >= MusicClip.minimumDuration else {
             discard(imported)
-            toast.show(String(localized: "This sound file can't be added"))
+            toast.show(String(localized: "Can't add this file"))
             return
         }
         updateMusic(id) { clip in

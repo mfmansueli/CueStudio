@@ -22,7 +22,6 @@ struct StudioControlPanel: View {
             } else {
                 SpeedSlider(
                     speed: session.prompter.speed,
-                    speedLabel: session.prompter.speedLabel,
                     onChange: { viewModel.setSpeed($0) }
                 )
             }

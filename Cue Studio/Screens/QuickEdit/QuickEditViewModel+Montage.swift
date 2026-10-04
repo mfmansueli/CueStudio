@@ -119,7 +119,7 @@ extension QuickEditViewModel {
             source.scriptReference = take.captionScript(current: library.script(id: take.scriptID))
             addSource(source)
         } catch {
-            toast.show(String(localized: "This take can't be added"))
+            toast.show(String(localized: "Can't add this take"))
         }
     }
 
@@ -132,12 +132,12 @@ extension QuickEditViewModel {
             let imported = try await mediaImporter.importMedia(item)
             importedFiles.insert(imported.fileName)
             guard imported.kind == .video, let duration = imported.duration else {
-                toast.show(String(localized: "Pick a video to add a section"))
+                toast.show(String(localized: "Pick a video first"))
                 return
             }
             addSource(ClipSource(fileName: imported.fileName, duration: duration, title: String(localized: "Video")))
         } catch {
-            toast.show(String(localized: "This photo or video can't be added"))
+            toast.show(String(localized: "Can't add this file"))
         }
     }
 
@@ -145,7 +145,7 @@ extension QuickEditViewModel {
         var next = arranged(edit)
         let at = selectedSegmentIndex.map { $0 + 1 }
         guard let id = next.timeline.insertClip(source: source.id, duration: source.duration, at: at) else {
-            toast.show(String(localized: "This video is too short to add"))
+            toast.show(String(localized: "Video too short to add"))
             return
         }
         next.sources.append(source)

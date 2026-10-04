@@ -70,7 +70,7 @@ struct AnswerCommentSheet: View {
             if let failure = model.failure {
                 Text(failure).font(.footnote).foregroundStyle(Palette.warnText).accessibilityIdentifier("answer.failure")
             }
-            Text("Nothing leaves your iPhone: the picture is read here and never kept.")
+            Text("The picture is read here, never kept.")
                 .font(.footnote).foregroundStyle(Palette.inkHint)
         }
     }
@@ -119,7 +119,7 @@ struct AnswerCommentSheet: View {
                 .disabled(!model.canWrite || !aiStatus.isAvailable)
                 .accessibilityIdentifier("answer.write")
             if !aiStatus.isAvailable {
-                Text("Writing the answer needs Apple Intelligence, which this iPhone can’t run right now.")
+                Text("Apple Intelligence isn't available right now.")
                     .font(.footnote).foregroundStyle(Palette.warnText).accessibilityIdentifier("answer.aiNote")
             }
             Button("Choose another") { model.startOver() }

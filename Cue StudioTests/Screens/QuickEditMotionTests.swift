@@ -104,7 +104,7 @@ struct QuickEditMotionTests {
         scenario.player.currentTime = 40
         viewModel.toggleKeyframe()
         #expect(viewModel.edit.texts[0].keyframes.isEmpty)
-        #expect(scenario.toast.message == "Move the playhead over it to add a keyframe")
+        #expect(scenario.toast.message == "Move playhead onto it first")
     }
 
     // MARK: - Zooms

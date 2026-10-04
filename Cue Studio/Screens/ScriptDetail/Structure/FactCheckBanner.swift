@@ -15,7 +15,7 @@ struct FactCheckBanner: View {
             Image(systemName: "sparkles")
                 .foregroundStyle(Palette.warnText)
                 .accessibilityHidden(true)
-            Text("Written with Apple Intelligence. AI can get facts wrong — check dates, names and numbers before you record.")
+            Text("AI can get facts wrong · Check before you record")
                 .font(.footnote)
                 .foregroundStyle(Palette.ink.opacity(0.86))
                 .frame(maxWidth: .infinity, alignment: .leading)

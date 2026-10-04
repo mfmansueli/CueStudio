@@ -29,16 +29,17 @@ struct VoicePanel: View {
         }
     }
 
-    /// Off · Light · Strong as an orb that snaps from one to the next.
+    /// Off · Light · Strong as a slider that snaps from one to the next.
     private func strength(
         _ label: String, _ value: AudioStrength, _ identifier: String, icon: CueIcon, onChange: @escaping (AudioStrength) -> Void
     ) -> some View {
-        OrbSlider(
+        CueSlider(
             value: Binding(
                 get: { Double(AudioStrength.allCases.firstIndex(of: value) ?? 0) },
                 set: { onChange(AudioStrength.allCases[max(0, min(AudioStrength.allCases.count - 1, Int($0.rounded())))]) }
             ),
-            range: 0...Double(AudioStrength.allCases.count - 1), step: 1, defaultValue: 0, style: .full, label: label,
+            range: CueSliderSpec.cleanUpVoice.range, step: CueSliderSpec.cleanUpVoice.step,
+            defaultValue: CueSliderSpec.cleanUpVoice.defaultValue, style: .full, label: label,
             valueText: value.label, systemIcon: icon, accessibilityIdentifier: identifier
         )
     }

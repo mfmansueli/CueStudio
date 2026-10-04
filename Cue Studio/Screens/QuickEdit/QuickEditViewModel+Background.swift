@@ -102,7 +102,7 @@ extension QuickEditViewModel {
             let imported = try await mediaImporter.importMedia(item)
             guard imported.kind == .photo, !isClosed else {
                 EditMediaFiles.remove([imported.fileName])
-                if !isClosed { toast.show(String(localized: "This photo or video can't be added")) }
+                if !isClosed { toast.show(String(localized: "Can't add this file")) }
                 return
             }
             setBackgroundImage(imported.fileName)

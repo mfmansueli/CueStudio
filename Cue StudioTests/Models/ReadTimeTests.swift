@@ -17,7 +17,8 @@ struct ReadTimeTests {
     }
 
     @Test func theDefaultSpeedIsANaturalPaceOfAbout150WordsPerMinute() {
-        #expect(ReadTime.naturalSpeed == 0.7)
+        #expect(abs(ReadTime.naturalSpeed - 0.7) < 0.005)
+        #expect(ReadTime.wordsPerMinute(speed: ReadTime.naturalSpeed) == 150)
         #expect(abs(ReadTime.wordsPerMinute(speed: ReadTime.naturalSpeed) - 150) < 1)
         #expect(abs(ReadTime.seconds(for: TestData.words(150)) - 60) < 0.5)
     }

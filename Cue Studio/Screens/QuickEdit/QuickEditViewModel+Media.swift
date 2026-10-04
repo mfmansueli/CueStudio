@@ -46,13 +46,13 @@ extension QuickEditViewModel {
         guard end - start >= MediaOverlay.minimumDuration else {
             EditMediaFiles.remove([imported.fileName])
             importedFiles.remove(imported.fileName)
-            toast.show(String(localized: "No room here — move the playhead to a free spot"))
+            toast.show(String(localized: "No room · Move the playhead"))
             return
         }
         guard LayerLanes.peak(of: mediaBars.map(\.span), within: placed) < MediaOverlay.simultaneousLimit else {
             EditMediaFiles.remove([imported.fileName])
             importedFiles.remove(imported.fileName)
-            toast.show(String(localized: "Up to 3 photos or videos at once here"))
+            toast.show(String(localized: "Max 3 photos or videos"))
             return
         }
         let pinned = edit.pin(placed)

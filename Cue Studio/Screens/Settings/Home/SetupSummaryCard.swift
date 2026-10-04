@@ -33,7 +33,7 @@ struct SetupSummaryCard: View {
                     }
                 }
             }
-            Text("Platforms can recommend another setup per video — you choose.")
+            Text("Platforms may suggest a setup · You choose")
                 .font(.footnote)
                 .foregroundStyle(Palette.ink2)
         }

@@ -6,7 +6,7 @@
 import SwiftUI
 
 /// Speed (this clip): 0.5× to 2× in one tap, the picked one in yellow. With one clip, "Split at
-/// playhead to change one part". Advanced: any speed from 0.25× to 4× and "Keep voice pitch".
+/// playhead to change one part". Advanced: any speed from 0.5× to 3× and "Keep voice pitch".
 struct SpeedPanel: View {
     @Bindable var viewModel: QuickEditViewModel
 
@@ -29,7 +29,8 @@ struct SpeedPanel: View {
             PanelAdvancedButton(isOpen: viewModel.showsAdvanced) { viewModel.showsAdvanced.toggle() }
             if viewModel.showsAdvanced {
                 PanelSlider(
-                    label: String(localized: "Custom speed"), value: speed, range: EditSegment.speedRange, step: 0.05,
+                    label: String(localized: "Custom speed"), value: speed, range: CueSliderSpec.clipSpeed.range,
+                    step: CueSliderSpec.clipSpeed.step ?? 0.1, defaultValue: CueSliderSpec.clipSpeed.defaultValue,
                     format: .speed, identifier: "edit.speed.custom"
                 ) { viewModel.setClipSpeed($0) }
                 PanelToggleRow(

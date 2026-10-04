@@ -161,7 +161,7 @@ struct CameraSettingsSheet: View {
                 Text("This camera can’t show the effect while recording. It’s added to the take after you record.")
                     .foregroundStyle(Palette.warnText)
             }
-            Text("Your recording stays as filmed. The effect is added to the take, and you can change it in Quick edit.")
+            Text("Added after filming · Change it in Quick edit.")
                 .foregroundStyle(Palette.ink2)
         }
         .font(.footnote)
@@ -198,7 +198,7 @@ struct CameraSettingsSheet: View {
             SettingToggleRow(title: String(localized: "Stop when script ends"), isOn: $session.camera.stopsWhenScriptEnds, minHeight: 52)
             segmentedRow(String(localized: "Format"), selection: $session.camera.codec, options: VideoCodec.allCases) { $0.label }
         }
-        Text("HEVC keeps files small. Choose H.264 if you edit on older software.")
+        Text("HEVC keeps files small · H.264 suits older editors")
             .font(.footnote)
             .foregroundStyle(Palette.ink2)
             .padding(EdgeInsets(top: 4, leading: 4, bottom: 0, trailing: 4))
@@ -206,7 +206,7 @@ struct CameraSettingsSheet: View {
 
     /// Where the usual setup lives, so a change here isn't mistaken for a new default.
     private var setupNote: some View {
-        Text("Lens, frame, quality and mic change for this take. Your usual setup stays in Settings › Creator Setup.")
+        Text("Changes apply to this take only.")
             .font(.footnote)
             .foregroundStyle(Palette.ink2)
             .padding(EdgeInsets(top: 4, leading: 4, bottom: 0, trailing: 4))

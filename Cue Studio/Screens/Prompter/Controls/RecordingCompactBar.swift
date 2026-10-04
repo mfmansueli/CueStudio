@@ -34,9 +34,14 @@ struct RecordingCompactBar: View {
             if viewModel.hasScript {
                 if isSteady {
                     CueSlider(
-                        title: String(localized: "Speed"), value: session.prompter.speed,
-                        range: PrompterSettings.speedRange, step: 0.1, valueText: session.prompter.speedLabel,
-                        identifier: "prompter.speedSlider", onChange: { viewModel.setSpeed($0) }
+                        value: Binding(
+                            get: { PrompterSettings.wordsPerMinute(forSpeed: session.prompter.speed).rounded() },
+                            set: { viewModel.setSpeed(PrompterSettings.speed(forWordsPerMinute: $0)) }
+                        ),
+                        range: CueSliderSpec.speed.range, step: CueSliderSpec.speed.step, defaultValue: CueSliderSpec.speed.defaultValue,
+                        style: .bare, label: String(localized: "Speed"),
+                        valueText: String(localized: "\(Int(PrompterSettings.wordsPerMinute(forSpeed: session.prompter.speed).rounded())) wpm"),
+                        accessibilityIdentifier: "prompter.speedSlider"
                     )
                     .padding(.horizontal, 6)
                 } else {

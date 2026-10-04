@@ -30,7 +30,7 @@ nonisolated enum MonetizationGoal: String, Codable, Sendable {
     var stopWarning: String {
         switch self {
         case .creatorRewards:
-            String(localized: "TikTok only pays Creator Rewards on videos longer than one minute.")
+            String(localized: "TikTok pays Creator Rewards over one minute.")
         case .midRollAds:
             String(localized: "YouTube only allows mid-roll ads on videos 8 minutes or longer.")
         }

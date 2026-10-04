@@ -233,8 +233,8 @@ final class ScriptDetailViewModel {
         }
         if bumpsVersion {
             toast.show(takeCount == 1
-                ? String(localized: "Saved as v\(script.version + 1) — your take stays with v\(script.version)")
-                : String(localized: "Saved as v\(script.version + 1) — \(takeCount) takes stay with v\(script.version)"))
+                ? String(localized: "Saved as v\(script.version + 1) · Take on v\(script.version)")
+                : String(localized: "Saved as v\(script.version + 1) · \(takeCount) takes on v\(script.version)"))
         } else {
             toast.show(String(localized: "Saved"))
         }
@@ -306,7 +306,7 @@ final class ScriptDetailViewModel {
             await openHooks()
         case .addDisclosure:
             guard !ScriptTextEditing.hasDisclosure(workingText) else {
-                toast.show(String(localized: "The disclosure is already up front"))
+                toast.show(String(localized: "Disclosure is already first"))
                 return
             }
             adopt(
@@ -375,7 +375,7 @@ final class ScriptDetailViewModel {
     private func rewrite(with tool: ScriptTool) async {
         guard script != nil else { return }
         guard writer.isLanguageModelAvailable else {
-            toast.show(writer.unavailableReason ?? String(localized: "AI tools aren't available right now."))
+            toast.show(writer.unavailableReason ?? String(localized: "AI isn't available now"))
             return
         }
         runningTool = tool
@@ -391,7 +391,7 @@ final class ScriptDetailViewModel {
     private func translate(into language: CueLanguage) async {
         guard let script else { return }
         guard writer.isLanguageModelAvailable else {
-            toast.show(writer.unavailableReason ?? String(localized: "AI tools aren't available right now."))
+            toast.show(writer.unavailableReason ?? String(localized: "AI isn't available now"))
             return
         }
         runningTool = .translate
@@ -408,7 +408,7 @@ final class ScriptDetailViewModel {
             )
             closeToolPanel()
             sheet = nil
-            toast.show(String(localized: "\(language.localizedName) version saved as a copy"))
+            toast.show(String(localized: "\(language.localizedName) version saved"))
         } catch {
             toast.show(error.localizedDescription)
         }
@@ -420,7 +420,7 @@ final class ScriptDetailViewModel {
     func makeVersion(for platform: Platform) async {
         guard let script, versionInProgress == nil else { return }
         guard writer.isLanguageModelAvailable else {
-            toast.show(writer.unavailableReason ?? String(localized: "AI tools aren't available right now."))
+            toast.show(writer.unavailableReason ?? String(localized: "AI isn't available now"))
             return
         }
         versionInProgress = platform
@@ -436,7 +436,7 @@ final class ScriptDetailViewModel {
                 text: text, platform: platform, type: script.type, folder: script.folder,
                 language: script.language
             )
-            toast.show(String(localized: "\(platform.label) version saved as a copy"))
+            toast.show(String(localized: "\(platform.label) version saved"))
         } catch {
             toast.show(error.localizedDescription)
         }

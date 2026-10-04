@@ -68,7 +68,7 @@ struct StartRecordingSheet: View {
                 .buttonStyle(.cueOutline(.large))
                 .padding(.top, 18)
                 .accessibilityIdentifier("startRecording.skip")
-                Text("Freestyle now — add a script anytime from the camera.")
+                Text("Freestyle · Add a script anytime")
                     .font(.footnote)
                     .foregroundStyle(Palette.ink2)
                     .multilineTextAlignment(.center)

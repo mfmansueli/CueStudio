@@ -98,7 +98,7 @@ struct SettingsView: View {
         .confirmationDialog("Reset Creator Setup?", isPresented: $confirmsReset, titleVisibility: .visible) {
             Button("Reset Creator Setup", role: .destructive) {
                 preferences.resetCreatorSetup()
-                toast.show(String(localized: "Creator Setup is back to Cue's defaults"))
+                toast.show(String(localized: "Back to Cue's defaults"))
             }
             .accessibilityIdentifier("creatorSetup.confirmResetButton")
             Button("Cancel", role: .cancel) {}

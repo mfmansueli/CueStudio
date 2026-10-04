@@ -26,6 +26,10 @@ sobre o modo claro, a fase 8 da v26 e o ajuste Appearance **saíram**), a IA é 
 gravação, cada **tópico** é um mundo (cor) e cada **plataforma** é uma galáxia. O que mudou e por quê está na **seção 12**; onde
 esta seção diz "claro" ou "Appearance", vale a 12.
 
+A **v29** (`design/cue-v29/`: `01-Direction.md`, `02-Tokens.md`, `03-Screen-map.md`) leva o protótipo v28 ao app em fases. A **fase 1 (fundação)**
+está feita e está na **seção 13**: onde esta seção e a 12 falam do orb que viaja na tab bar, do `OrbSlider` (planeta, trilha de luz) ou dos
+ícones como assets, vale a 13.
+
 ---
 
 ## 1. Identidade
@@ -1161,3 +1165,51 @@ universo e acende a primeira estrela ligada a "YOU"; uma vez só. Quem já tem r
 `-uiTestOnboarding` (liga o primeiro voo), `-uiTestPermissions granted|denied` (troca os pedidos reais por um stub), `-uiTestSky off|calm|lively` (os testes
 começam com o céu **desligado**: uma animação que nunca para impede o XCUITest de achar o app ocioso), `-uiTestAppsInstalled` (os apps das plataformas
 "abrem", para o send-off), `-uiTestCatalogue <seção>` (o catálogo de design).
+
+## 13. v29 — fase 1: fundação
+
+Fonte: `design/cue-v29/` (os arquivos `04`–`06`, o protótipo `Cue App v28.dc.html` e `icons/` ainda não vieram no pacote: o que segue vem de
+`01`–`03`). Nenhuma regra de negócio nem modelo de dados mudou; as telas ainda não foram refeitas (só tab bar, ícones, sliders e microcopy).
+
+### Tokens (`Palette`, `Metrics`)
+Todos os "New in v29" de `02-Tokens.md` §1.2 existem: `bgWash*` (e a view `BgWash`, ainda sem uso nas telas), `glassBar*`, `tabCapsule*`, `recPill*`,
+`slider*`, `selectionBar*`, `aiReplaced*`, `strip*`, `state*` (READY/DRAFT/RECORDED), `adTag*`, `empty*`, `skyStarYou*`; tamanhos em `Metrics`
+(`tabBar*`, `themeRail*`, `platformDot*`, `recPill*`, `slider*`, `selectionBar*`, `strip*`, `stateChip*`, `empty*`, `blockGap`). Os tokens da
+v27 ficam; **uma exceção**: `sliderTrack` passou de `#6E7496` 45% para 35% (o v29 redefine o mesmo papel). `PaletteContrastTests` ganhou os pares
+novos (chips de estado, texto reescrito pela IA, barra de seleção, faixa de estado, rótulos da tab bar, partes do slider, REC e estado vazio).
+
+### Tab bar (`CueTabBar`)
+Liquid Glass de verdade (`glassEffect(.regular.interactive())` numa cápsula de 64 pt, 16 pt dos lados, **26 pt da borda de baixo**, medidos além da
+faixa do Home Indicator: `MainView`), sobre `glassBarBase`. A aba ativa fica numa cápsula de vidro de 56 pt com 4 pt de respiro (`tabCapsuleFill`) que
+desliza com mola de 0,32 s (`CueMotion.tabCapsule`; fade com Reduce Motion). O orb amarelo saiu. Ícones de 26 pt, Record de 30 pt (`RecordGlyph`:
+anel fino + ponto vermelho sólido, sem brilho), rótulos de 10 pt; a aba ativa continua em amarelo (`accText`).
+
+### Ícones (`CueIcon`, `CueIconGeometry`, `SVGPathParser`)
+Os 53 ícones deixaram de ser assets vetoriais e passaram a ser **desenhados em código** a partir da geometria dos SVG (gerada por
+`design/cue-v29/tools/generate_cue_icons.py`), porque um asset escala o traço junto com o ícone e a regra do v29 é **≈1,6 pt em qualquer tamanho**
+(`1,6 × 24 / tamanho` unidades da grade, entre 1,7 e 3,4; terminações e junções redondas; uma cor, a do contexto). Cheios: play, o triângulo do
+Takes, e `isFilled:` para a melhor take marcada. **Diferença:** as formas são as da v27: os quadros de ícones do protótipo v28 não vieram; trocar
+uma forma é trocar o SVG e rodar o gerador.
+
+### Slider (`CueSlider`, `CueSliderSpec`)
+`OrbSlider` virou `CueSlider` (e o `CueSlider` da v26 saiu): trilha de 4 pt (`sliderTrack`), preenchimento amarelo de 4 pt, polegar branco de 24 pt,
+valor em SF Mono; sem orb, planeta, anel de órbita nem estrelas. `OrbSliderMath` ficou (detentes, controle fino ½ e ¼ com "FINE", toque duplo
+= padrão, VoiceOver ajustável em 5% ou um múltiplo do passo); controles com poucos passos mostram pontinhos e encaixam com mola, os de muitos passos
+(velocidade em 5 wpm, 0–100%) não têm pontinhos e **ganham o controle fino**. Estilos `full`, `row`, `compact` e `bare` (só a trilha, na barra
+compacta da gravação). As faixas de §6 estão em `CueSliderSpec` (testada contra a tabela) e valem para: Velocidade 80–220 wpm (passo 5, padrão 150;
+o valor guardado continua sendo o multiplicador, `PrompterSettings.speed(forWordsPerMinute:)`), Tamanho do texto 24/30/36/44 pt (padrão 36), Linha de
+leitura 10–50% da altura (`ReadingLinePercent`, medida na tela onde o slider está; guarda os mesmos pontos abaixo da câmera), Margens 8–40 pt (passo 2,
+padrão 20), Contagem, Céu (Off / Soft / Full, padrão Full: os valores salvos `calm`/`lively` continuam), Texto no vídeo 24–120 (agora em pontos de
+`TextOverlay.size`, sem o fator de escala do design), Glow, Tamanho das legendas (padrão L), Sua voz 0–200%, Música 0–100% (tique em 20%),
+Limpar voz, Velocidade do clipe 0,5–3×, Intensidade do filtro (padrão 70). **Não mudaram** (fora da tabela): os `ValueSlider` nativos do Display, a
+régua do Adjust e os sliders dos painéis que não estão em §6 (Zoom, Mídia, Fundo, fades).
+
+### Componentes novos (`DesignSystem/Components`)
+`ThemeRail` (3×30 / 3×14), `PlatformDot` (7 / 6 pt), `RecPill` ("● REC", 26 pt visuais, 44 pt de toque), `StateChip` (READY · DRAFT · RECORDED),
+`EmptyState` + `EmptyStateMark` (anel de 88 pt, estrela que orbita em 9 s; parada com Reduce Motion, Low Power e app inativo; título, uma linha,
+uma ação amarela e um link). Todos aparecem no catálogo de debug (`-uiTestCatalogue sliders|tabbar|parts|icons|colors`).
+
+### Microcopy
+Toasts de até ~28 caracteres e textos de ajuda de uma frase de até ~60, resultado primeiro, "·" para juntar fatos, sem travessão + explicação
+(95 chaves novas nos 20 idiomas; as 88 antigas saíram do catálogo). Fora do alcance: o texto da folha Privacy & AI data (descreve a política, não é
+ajuda) e mensagens de erro que vêm do sistema (`error.localizedDescription`).

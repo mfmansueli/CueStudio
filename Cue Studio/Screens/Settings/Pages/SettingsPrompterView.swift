@@ -19,7 +19,7 @@ struct SettingsPrompterView: View {
         ScrollViewReader { proxy in
             ScrollView {
                 VStack(alignment: .leading, spacing: 10) {
-                    PrompterOrbControls(viewModel: viewModel)
+                    PrompterSliderControls(viewModel: viewModel)
                         .id(PrompterSettingsSection.reading)
                     SectionHeading(text: String(localized: "More options"))
                         .padding(.horizontal, 4)
@@ -30,6 +30,9 @@ struct SettingsPrompterView: View {
             }
             .safeAreaInset(edge: .top, spacing: 0) { header(proxy) }
         }
+        .onGeometryChange(for: ReadingLinePercent.self) { proxy in
+            ReadingLinePercent(screenHeight: proxy.size.height + proxy.safeAreaInsets.top + proxy.safeAreaInsets.bottom, lensY: proxy.safeAreaInsets.top / 2)
+        } action: { viewModel.screenScale = $0 }
         .background(Palette.bg)
         .navigationTitle("Prompter")
         .navigationBarTitleDisplayMode(.inline)
@@ -52,7 +55,7 @@ struct SettingsPrompterView: View {
                     Text(isStudio ? "Full-screen text, no camera." : "Text over your camera, right under the lens.")
                         .font(.footnote)
                         .foregroundStyle(Palette.ink2)
-                    Text("Shows proportions on your screen — not the final look.")
+                    Text("Preview shows proportions, not the final look.")
                         .font(.caption)
                         .foregroundStyle(Palette.ink3)
                 }

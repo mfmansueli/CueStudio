@@ -5,28 +5,28 @@
 
 import XCTest
 
-/// The debug design catalogue: every section opens, and an orb control follows a drag.
+/// The debug design catalogue: every section opens, and a slider follows a drag.
 /// `TEST_RUNNER_CUE_SCREENSHOT_DIR=<folder>` also saves a picture of each section.
 @MainActor
 final class DesignCatalogueUITests: XCTestCase {
-    func testEverySectionOpensAndAnOrbCanBeAdjusted() throws {
+    func testEverySectionOpensAndASliderCanBeAdjusted() throws {
         let app = XCUIApplication()
-        app.launchArguments = ["-uiTestInMemory", "-uiTestCatalogue", "orbs"]
+        app.launchArguments = ["-uiTestInMemory", "-uiTestCatalogue", "sliders"]
         app.launch()
         XCTAssertTrue(app.descendants(matching: .any)["catalogue.root"].waitForExistence(timeout: 15))
 
-        let orb = app.descendants(matching: .any)["catalogue.orb.speed"].firstMatch
-        XCTAssertTrue(orb.waitForExistence(timeout: 5))
-        XCTAssertEqual(orb.value as? String, "140 words per minute")
-        // Drag the orb toward the right end of its rail.
-        let start = orb.coordinate(withNormalizedOffset: CGVector(dx: 0.45, dy: 0.7))
+        let slider = app.descendants(matching: .any)["catalogue.slider.speed"].firstMatch
+        XCTAssertTrue(slider.waitForExistence(timeout: 5))
+        XCTAssertEqual(slider.value as? String, "140 words per minute")
+        // Drag the thumb toward the right end of its track.
+        let start = slider.coordinate(withNormalizedOffset: CGVector(dx: 0.45, dy: 0.7))
         start.press(forDuration: 0.1, thenDragTo: start.withOffset(CGVector(dx: 120, dy: 0)))
-        XCTAssertNotEqual(orb.value as? String, "140 words per minute")
+        XCTAssertNotEqual(slider.value as? String, "140 words per minute")
 
-        let size = app.descendants(matching: .any)["catalogue.orb.size"].firstMatch
+        let size = app.descendants(matching: .any)["catalogue.slider.size"].firstMatch
         XCTAssertEqual(size.value as? String, "L")
         let folder = ProcessInfo.processInfo.environment["CUE_SCREENSHOT_DIR"]
-        for name in ["Colors", "Icons", "Orbs", "Effects", "Sky"] {
+        for name in ["Colors", "Icons", "Sliders", "Tabbar", "Parts", "Effects", "Sky"] {
             app.buttons[name].firstMatch.tap()
             sleep(1)
             if let folder {

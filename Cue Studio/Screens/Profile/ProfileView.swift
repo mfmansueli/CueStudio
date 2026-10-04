@@ -126,7 +126,7 @@ struct ProfileView: View {
             Button("Add") {
                 let phrase = newPhrase.trimmingCharacters(in: .whitespacesAndNewlines)
                 if profile.addPhrase(phrase) {
-                    toast.show(String(localized: "Added “\(phrase)” — AI will use it"))
+                    toast.show(String(localized: "Added “\(phrase)”"))
                 }
             }
         } message: {
@@ -147,7 +147,7 @@ struct ProfileView: View {
             toast.show(String(localized: "Signed in with Apple"))
         case .failure(let error):
             if (error as? ASAuthorizationError)?.code != .canceled {
-                toast.show(String(localized: "Couldn't sign in with Apple. Try again."))
+                toast.show(String(localized: "Couldn't sign in · Try again"))
             }
         }
     }

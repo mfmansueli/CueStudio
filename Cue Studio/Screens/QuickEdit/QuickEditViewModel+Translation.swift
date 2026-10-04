@@ -77,7 +77,7 @@ extension QuickEditViewModel {
             }
             translationRequest = nil
             translationState = .idle
-            toast.show(String(localized: "Captions translated to \(request.target.localizedName)"))
+            toast.show(String(localized: "Translated to \(request.target.localizedName)"))
         } catch is CancellationError {
             guard translationRequest == request else { return }
             translationRequest = nil

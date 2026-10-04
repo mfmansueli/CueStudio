@@ -156,7 +156,7 @@ struct CaptionsPanel: View {
             }
         }
         PanelInlineList(
-            note: String(localized: "Translated on your iPhone with Apple Translation. Nothing is sent anywhere."),
+            note: String(localized: "Translated on your iPhone · Nothing is sent"),
             options: [PanelOption(CueLanguage?.none, String(localized: "Off"), key: "off")]
                 + viewModel.translationTargets.map { PanelOption(Optional($0), $0.nativeName, key: $0.rawValue) },
             selection: viewModel.edit.captionDisplay.language, identifier: "edit.captionsTranslation"

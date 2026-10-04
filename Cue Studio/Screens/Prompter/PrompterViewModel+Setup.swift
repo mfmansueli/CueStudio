@@ -19,7 +19,7 @@ extension PrompterViewModel {
     func useRecommendedSetup() {
         guard let recommendation = session.recommendation else { return }
         session.useRecommended()
-        toast.show(String(localized: "\(recommendation.setupName) for this video"))
+        toast.show(String(localized: "Using \(recommendation.setupName)"))
     }
 
     /// "Keep My Setup".

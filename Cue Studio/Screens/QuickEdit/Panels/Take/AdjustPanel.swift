@@ -42,7 +42,7 @@ struct AdjustPanel: View {
                     onChange: { viewModel.setAutoAmount($0) }
                 )
             } else {
-                PanelNote(text: String(localized: "Auto measures the picture and corrects its light and color. Your own adjustments stay on top."))
+                PanelNote(text: String(localized: "Auto fixes light and color · Your edits stay on top"))
             }
         case .dial(let adjustment):
             PanelRulerSlider(

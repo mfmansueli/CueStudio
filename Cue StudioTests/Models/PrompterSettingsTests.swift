@@ -16,8 +16,8 @@ struct PrompterSettingsTests {
          "studioBackground":"#1C1C1E","showsCues":false}
         """
         let settings = try JSONDecoder().decode(PrompterSettings.self, from: Data(v1.utf8))
-        // Same pace on the new scale: 1.4 × 150 ÷ 215 ≈ 1.0.
-        #expect(settings.speed == 1)
+        // Same pace on the new scale: 1.4 × 150 = 210 words a minute.
+        #expect(settings.speed == 210.0 / 215)
         #expect(settings.font == .legible)
         #expect(settings.size == 40)
         #expect(settings.scrollMode == .voice)
@@ -32,7 +32,7 @@ struct PrompterSettingsTests {
     }
 
     @Test func startsAtTheNaturalSpeed() {
-        #expect(PrompterSettings().speed == 0.7)
+        #expect(PrompterSettings().speed == ReadTime.naturalSpeed)
     }
 
     @Test func startsWithTheWidestTallestWindowAndTheCoachOff() {
@@ -42,7 +42,8 @@ struct PrompterSettingsTests {
         #expect(!settings.showsCues)
     }
 
-    @Test(arguments: [(1.0, 0.7), (0.5, 0.3), (2.0, 1.4), (3.0, 2.0)])
+    // 1.0× meant 150 words a minute before the scale changed; the pace is kept on the 5 wpm step nearest it.
+    @Test(arguments: [(1.0, 150.0 / 215), (0.5, 75.0 / 215), (2.0, 300.0 / 215), (3.0, 2.0)])
     func speedsSavedBeforeTheNewScaleKeepTheirPace(_ saved: Double, _ expected: Double) throws {
         let settings = try JSONDecoder().decode(PrompterSettings.self, from: Data(#"{"speed":\#(saved)}"#.utf8))
         #expect(settings.speed == expected)
@@ -55,15 +56,16 @@ struct PrompterSettingsTests {
         #expect(decoded.speed == 1.3)
     }
 
-    @Test func clampedSpeedStepsInTenthsWithinTheRange() {
-        #expect(PrompterSettings.clampedSpeed(0.74) == 0.7)
+    @Test func clampedSpeedStepsInFiveWordsAMinuteWithinTheRange() {
+        // 0.74× is 159 words a minute: the step of 5 nearest is 160.
+        #expect(PrompterSettings.clampedSpeed(0.74) == 160 / ReadTime.wordsPerMinuteAtOneX)
         #expect(PrompterSettings.clampedSpeed(0.1) == 0.3)
         #expect(PrompterSettings.clampedSpeed(2.4) == 2)
     }
 
     @Test func marginsAboveTheNewRangeAreClamped() throws {
         let settings = try JSONDecoder().decode(PrompterSettings.self, from: Data(#"{"margin":64}"#.utf8))
-        #expect(settings.margin == 32)
+        #expect(settings.margin == 40)
     }
 
     @Test func roundTrips() throws {

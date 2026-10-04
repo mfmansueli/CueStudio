@@ -276,8 +276,6 @@ enum Palette {
     static let accCard = Color(hex: 0xFFD60A, opacity: 0.1)
     /// Cards and rows inside panels.
     static let panelCard = Color(hex: 0x767680, opacity: 0.16)
-    /// The slider's track (`#6E7496` at 45%).
-    static let sliderTrack = Color(hex: 0x6E7496, opacity: 0.45)
     /// The ring of an Adjust dial that is still at zero.
     static let adjustDialRing = Color(hex: 0xEBEBF5, opacity: 0.35)
     /// A switch that is off.
@@ -289,4 +287,83 @@ enum Palette {
     /// A preset card: the frame of the take under the sample, darkened, and the card's edge.
     static let presetCardDim = Color.black.opacity(0.28)
     static let presetCardBorder = Color.white.opacity(0.08)
+
+    // MARK: - v29
+
+    /// Night glow of the navigation screens (`BgWash`): a violet light from the top left and an indigo
+    /// one on the right, over `bg`. The same on every screen, empty states included.
+    static let bgWashViolet = Color(hex: 0x9D8CFF, opacity: 0.2)
+    static let bgWashIndigo = Color(hex: 0x5E4EE0, opacity: 0.12)
+
+    // The tab bar (Liquid Glass): `glassEffect(.regular.interactive())` on iOS 27 draws the glass itself;
+    // these are the recipe's values, for the light on its edges and the fallback.
+    /// What sits under the sheen: the surface at 42%.
+    static let glassBarBase = Color(hex: 0x161826, opacity: 0.42)
+    /// The sheen, top to bottom: white 10% → 3% at 45% → 5%.
+    static let glassBarFill = LinearGradient(
+        stops: [
+            .init(color: Color.white.opacity(0.10), location: 0),
+            .init(color: Color.white.opacity(0.03), location: 0.45),
+            .init(color: Color.white.opacity(0.05), location: 1),
+        ],
+        startPoint: .top, endPoint: .bottom
+    )
+    /// The edge of the bar, 0.5 pt.
+    static let glassBarRim = Color.white.opacity(0.18)
+    /// Light on the top edge and, fainter, on the bottom one.
+    static let glassBarHighlight = Color.white.opacity(0.22)
+    static let glassBarLowlight = Color.white.opacity(0.05)
+    static let glassBarShadow = Color.black.opacity(0.35)
+    /// The active tab's capsule: white 16% → 6% from top to bottom, with a 0.5 pt edge and a light on top.
+    static let tabCapsuleFill = LinearGradient(
+        colors: [Color.white.opacity(0.16), Color.white.opacity(0.06)], startPoint: .top, endPoint: .bottom
+    )
+    static let tabCapsuleBorder = Color.white.opacity(0.2)
+    static let tabCapsuleHighlight = Color.white.opacity(0.25)
+
+    // Markers: a topic is a bar (`themeRail`, in the topic's `world*` color), a network is a dot
+    // (`platformDot`, in the platform's galaxy color). Sizes are in `Metrics`.
+
+    /// The "● REC" pill: a 1 pt inset ring, a 6 pt red dot (`record`) and the label in `ink`.
+    static let recPillRing = Color(hex: 0xE1E4F5, opacity: 0.22)
+    static let recPillDot = record
+
+    // The slider: a 4 pt track, a 4 pt yellow fill and a 24 pt white thumb (`Metrics.slider*`).
+    /// `#6E7496` at 35%.
+    static let sliderTrack = Color(hex: 0x6E7496, opacity: 0.35)
+    static let sliderFill = acc
+    static let sliderThumb = Color.white
+    static let sliderThumbShadow = Color.black.opacity(0.4)
+
+    /// The AI bar over a text selection: a night violet at 97% with a 0.5 pt violet rim.
+    static let selectionBar = Color(hex: 0x161434, opacity: 0.97)
+    static let selectionBarRim = Color(hex: 0xB4A7FF, opacity: 0.45)
+    static let selectionBarShadow = Color.black.opacity(0.5)
+    /// Text the AI rewrote and the creator hasn't kept yet: `aiReplacedInk` on `aiReplacedFill`.
+    static let aiReplacedInk = Color(hex: 0xE4DEFF)
+    static let aiReplacedFill = Color(hex: 0x9D8CFF, opacity: 0.16)
+    /// The state strip of the script page: night at 92% over a blur, with a 0.5 pt violet rim.
+    static let stripFill = Color(hex: 0x0E101C, opacity: 0.92)
+    static let stripRim = Color(hex: 0xB4A7FF, opacity: 0.3)
+
+    // The state chip (READY · DRAFT · RECORDED): ink on a fill, 4.5:1 over every surface.
+    static let stateReadyInk = Color(hex: 0x34C759)
+    static let stateReadyFill = Color(hex: 0x34C759, opacity: 0.14)
+    static let stateDraftInk = Color(hex: 0xE1E4F5, opacity: 0.8)
+    static let stateDraftFill = fill
+    static let stateRecordedInk = Color(hex: 0xE1E4F5, opacity: 0.85)
+    static let stateRecordedFill = fill
+
+    /// The "#AD" / "AD" tag: black on yellow.
+    static let adTagFill = acc
+    static let adTagInk = Color.black
+
+    // The empty-state mark: a ring, a violet core and a star that orbits it.
+    static let emptyRing = Color(hex: 0xB4A7FF, opacity: 0.22)
+    static let emptyRingCore = Color(hex: 0x9D8CFF, opacity: 0.22)
+    static let emptyOrbiter = Color(hex: 0xFFE680)
+    static let emptyOrbiterGlow = Color(hex: 0xFFD60A, opacity: 0.7)
+    /// "Your stars" in the sky above Scripts.
+    static let skyStarYou = Color(hex: 0xFFE680)
+    static let skyStarYouGlow = Color(hex: 0xFFD60A, opacity: 0.6)
 }

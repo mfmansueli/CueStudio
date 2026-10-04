@@ -89,7 +89,7 @@ extension QuickEditViewModel {
         let look = coverDesign.look
         styles.myCoverLook = look
         myCoverLook = look
-        toast.show(String(localized: "Saved · new covers start in this style"))
+        toast.show(String(localized: "Saved · Used for new covers"))
     }
 
     /// "Apply my cover style": the saved look on this cover (the words stay).

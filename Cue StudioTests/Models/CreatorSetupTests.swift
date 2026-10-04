@@ -27,7 +27,7 @@ struct CreatorSetupTests {
         #expect(setup.resolution == .hd1080)
         #expect(setup.frameRate == .fps30)
         #expect(setup.aspect == .portrait)
-        #expect(setup.textSize == 28)
+        #expect(setup.textSize == 36)
         #expect(setup.speed == ReadTime.naturalSpeed)
         #expect(setup.readingLine == .recommended)
         #expect(!setup.isMirrored)
@@ -75,8 +75,8 @@ struct CreatorSetupTests {
     }
 
     @Test func textSizePresetsMatchTheirPoints() {
-        #expect(PrompterTextSize(points: 28) == .medium)
-        #expect(PrompterTextSize(points: 30) == nil)
-        #expect(PrompterTextSize(points: 48) == .extraLarge)
+        #expect(PrompterTextSize(points: 30) == .medium)
+        #expect(PrompterTextSize(points: 28) == nil)
+        #expect(PrompterTextSize(points: 44) == .extraLarge)
     }
 }

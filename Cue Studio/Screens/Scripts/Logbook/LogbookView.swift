@@ -135,7 +135,7 @@ struct LogbookView: View {
                 .font(.subheadline).foregroundStyle(Palette.ink2).padding(.top, 14)
         }
         if !aiStatus.isAvailable {
-            Text("Shaping an idea into a script needs Apple Intelligence, which this iPhone can’t run right now.")
+            Text("Apple Intelligence isn't available right now.")
                 .font(.footnote).foregroundStyle(Palette.warnText).padding(.top, 10)
         }
         VStack(spacing: 10) {

@@ -160,7 +160,7 @@ struct QuickEditMontageTests {
         #expect(viewModel.edit.media.map(\.stackOrder) == [0, 1, 2])
         viewModel.addMedia(photo())
         #expect(viewModel.edit.media.count == 3)
-        #expect(scenario.toast.message == "Up to 3 photos or videos at once here")
+        #expect(scenario.toast.message == "Max 3 photos or videos")
     }
 
     @Test func thePickedOneMovesUpOrDownTheStack() async {

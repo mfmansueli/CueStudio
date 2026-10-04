@@ -5,8 +5,8 @@
 
 import SwiftUI
 
-/// The motion language of v27: short interactions (120–400 ms) with springs for physical things (orbs,
-/// tabs, cards) and decelerating curves for light, and longer durations only for the story moments
+/// The motion language of v27: short interactions (120–400 ms) with springs for physical things (the slider's
+/// thumb, the tab capsule, cards) and decelerating curves for light, and longer durations only for the story moments
 /// (onboarding, send-off, milestones). Every value here is from `DESIGN-SPEC.md` §7.
 ///
 /// With Reduce Motion on, the sky, the orbits, the comets and the glows stop and state changes become
@@ -15,10 +15,6 @@ nonisolated enum CueMotion {
     // MARK: - Durations (seconds)
 
     enum Duration {
-        /// An orb ring appearing under the finger.
-        static let orbRingIn = 0.12
-        /// An orb ring leaving.
-        static let orbRingOut = 0.22
         static let tap = 0.12
         static let standard = 0.35
         static let chapterOut = 0.35
@@ -41,8 +37,6 @@ nonisolated enum CueMotion {
         static let countdownStep = 1.0
         /// The AI aura turning once.
         static let auraTurn = 2.8
-        /// The orb's orbit ring turning once.
-        static let orbitTurn = 4.0
         /// The reading line breathing.
         static let horizonBreath = 2.4
         static let shineSweep = 0.8
@@ -50,12 +44,10 @@ nonisolated enum CueMotion {
 
     // MARK: - Springs
 
-    /// The orb snapping to a step.
-    static let orbSnap = Animation.spring(response: 0.28, dampingFraction: 0.72)
-    /// The orb growing under the finger and returning.
-    static let orbHold = Animation.spring(response: 0.25, dampingFraction: 0.7)
-    /// The orb that travels to the chosen tab, with a little overshoot.
-    static let tabOrb = Animation.spring(response: 0.35, dampingFraction: 0.7)
+    /// A slider's thumb snapping to a step.
+    static let sliderSnap = Animation.spring(response: 0.28, dampingFraction: 0.72)
+    /// The capsule that slides to the chosen tab (0.32 s).
+    static let tabCapsule = Animation.spring(duration: 0.32, bounce: 0.15)
     /// Cards, sheets and rows.
     static let card = Animation.smooth(duration: 0.3)
 

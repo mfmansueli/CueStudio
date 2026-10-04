@@ -54,7 +54,7 @@ struct QuickEditTranslationTests {
         #expect(viewModel.translation(.portugueseBrazil)?.lines.map(\.text) == ["EN Okay, real talk."])
         #expect(viewModel.translationState == .idle)
         #expect(viewModel.history.past.count == steps + 1)
-        #expect(scenario.toast.message?.hasPrefix("Captions translated to") == true)
+        #expect(scenario.toast.message?.hasPrefix("Translated to") == true)
         // The original lines are untouched.
         #expect(viewModel.edit.captions.map(\.text) == ["Okay, real talk."])
     }

@@ -12,11 +12,11 @@ struct VolumePanel: View {
 
     var body: some View {
         PanelFrame(viewModel: viewModel, panel: .volume) {
-            OrbSlider(
+            CueSlider(
                 value: Binding(get: { viewModel.targetVolume * 100 }, set: { viewModel.setTargetVolume(($0 / 5).rounded() * 5 / 100) }),
-                range: 0...volumeCeiling, defaultValue: 100, style: .full, label: volumeLabel,
+                range: spec.range, step: spec.step, defaultValue: spec.defaultValue, style: .full, label: volumeLabel,
                 valueText: PanelValueFormat.percent.text(viewModel.targetVolume * 100), systemIcon: volumeIcon,
-                minCaption: PanelValueFormat.percent.text(0), maxCaption: PanelValueFormat.percent.text(volumeCeiling),
+                minCaption: PanelValueFormat.percent.text(spec.range.lowerBound), maxCaption: PanelValueFormat.percent.text(spec.range.upperBound),
                 accessibilityIdentifier: "edit.volume", onEditingChanged: { _ in }
             )
             switch viewModel.selection {
@@ -33,10 +33,11 @@ struct VolumePanel: View {
         }
     }
 
-    /// Your voice and a voice-over go to 150% (a soft tick at 100%); music, which sits under the voice, to 100%.
-    private var volumeCeiling: Double {
-        if case .music = viewModel.selection { return 100 }
-        return max(150, (viewModel.targetVolume * 100).rounded(.up))
+    /// Your voice and a voice-over go to 200% (a soft tick at 100%, as recorded); music, which sits under the
+    /// voice, to 100% (a soft tick at 20%).
+    private var spec: CueSliderSpec {
+        if case .music = viewModel.selection { return .music }
+        return .voice
     }
 
     private var volumeLabel: String {

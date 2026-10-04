@@ -24,19 +24,19 @@ nonisolated enum SpeechUnavailableReason: Error, Equatable, Sendable {
     var message: String {
         switch self {
         case .unsupported(let language):
-            String(localized: "Voice Following can’t listen in \(language.localizedName) on this iPhone. The script scrolls while you talk.")
+            String(localized: "Can't follow \(language.localizedName) · Scrolling")
         case .unsupportedDetected(let name):
-            String(localized: "Voice Following can’t listen in \(name) on this iPhone. The script scrolls while you talk.")
+            String(localized: "Can't follow \(name) · Scrolling")
         case .unknownLanguage:
-            String(localized: "Set this script’s language to follow your words. The script scrolls while you talk.")
+            String(localized: "Set a script language first")
         case .needsDownload(let language?):
-            String(localized: "Voice Following needs to download \(language.localizedName). Connect to the internet and try again.")
+            String(localized: "Go online to get \(language.localizedName)")
         case .needsDownload(nil):
-            String(localized: "Voice Following needs to download this language. Connect to the internet and try again.")
+            String(localized: "Go online to get this language")
         case .noRecognition:
-            String(localized: "This iPhone can’t recognize speech. The script scrolls while you talk.")
+            String(localized: "No speech recognition here")
         case .couldNotStart:
-            String(localized: "Voice Following couldn’t start listening. The script scrolls while you talk.")
+            String(localized: "Couldn't start listening")
         }
     }
 

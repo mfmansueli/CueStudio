@@ -60,7 +60,7 @@ struct QuickEditSoundTests {
         #expect(clip.length == 54)
         #expect(viewModel.selectedMusicID == clip.id)
         #expect(viewModel.musicBars.first?.span == TimeSpan(start: 10, end: 64))
-        #expect(scenario.toast.message == "Music added under your voice at 40%")
+        #expect(scenario.toast.message == "Music added at 40%")
         viewModel.undo()
         #expect(viewModel.edit.music.isEmpty)
     }
@@ -90,7 +90,7 @@ struct QuickEditSoundTests {
         scenario.player.currentTime = 30
         viewModel.addMusic(song())
         #expect(viewModel.edit.music.count == 1)
-        #expect(scenario.toast.message == "No room here — move the playhead to a free spot")
+        #expect(scenario.toast.message == "No room · Move the playhead")
     }
 
     @Test func replaceKeepsThePlaceVolumeAndFadesOfTheClip() async throws {
@@ -122,7 +122,7 @@ struct QuickEditSoundTests {
         #expect(scenario.viewModel.edit.music.count == 1)
         scenario.importer.audio = nil
         await scenario.viewModel.importMusic(from: url)
-        #expect(scenario.toast.message == "This sound file can't be added")
+        #expect(scenario.toast.message == "Can't add this file")
         #expect(scenario.viewModel.edit.music.count == 1)
     }
 

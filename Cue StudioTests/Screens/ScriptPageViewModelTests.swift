@@ -92,7 +92,7 @@ struct ScriptPageViewModelTests {
         scenario.viewModel.page.text = "First change."
         scenario.viewModel.commitPage()
         #expect(scenario.library.script(id: scenario.viewModel.scriptID)?.version == 2)
-        #expect(scenario.toast.message == "Saved as v2 — 2 takes stay with v1")
+        #expect(scenario.toast.message == "Saved as v2 · 2 takes on v1")
         scenario.viewModel.page.text = "Second change."
         scenario.viewModel.commitPage()
         #expect(scenario.library.script(id: scenario.viewModel.scriptID)?.version == 2)
@@ -261,7 +261,7 @@ struct ScriptPageViewModelTests {
         let saved = scenario.library.script(id: scenario.viewModel.scriptID)
         #expect(saved?.title == "Carnival" && saved?.text == scenario.writer.generatedText)
         #expect(scenario.ideaDraft.isEmpty)
-        #expect(scenario.toast.message == "Draft ready — edit anything")
+        #expect(scenario.toast.message == "Draft ready · Edit anything")
     }
 
     @Test func aFactualIdeaAsksForACheck() async {

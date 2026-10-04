@@ -308,6 +308,99 @@ struct PaletteContrastTests {
         }
     }
 
+    // MARK: - v29
+
+    /// Colored text inside a chip: the ink on the chip's fill, over each surface it can sit on.
+    @Test func theStateChipsReadOnTheirFillsOverEverySurface() {
+        let chips: [(name: String, ink: Color, fill: Color)] = [
+            ("READY", Palette.stateReadyInk, Palette.stateReadyFill), ("DRAFT", Palette.stateDraftInk, Palette.stateDraftFill),
+            ("RECORDED", Palette.stateRecordedInk, Palette.stateRecordedFill),
+        ]
+        for appearance in Appearance.allCases {
+            for chip in chips {
+                for surface in surfaces {
+                    let value = ratio(chip.ink, onTint: chip.fill, over: surface.color, in: appearance)
+                    #expect(value >= ColorContrast.textMinimum, "\(chip.name) on \(surface.name), \(appearance): \(value)")
+                }
+            }
+            #expect(ratio(Palette.adTagInk, on: Palette.adTagFill, in: appearance) >= ColorContrast.textMinimum, "the #AD tag, \(appearance)")
+        }
+    }
+
+    @Test func textRewrittenByTheAIReadsBeforeItIsKept() {
+        for appearance in Appearance.allCases {
+            for surface in surfaces {
+                let value = ratio(Palette.aiReplacedInk, onTint: Palette.aiReplacedFill, over: surface.color, in: appearance)
+                #expect(value >= ColorContrast.textMinimum, "pending AI text on \(surface.name), \(appearance): \(value)")
+            }
+        }
+    }
+
+    /// The AI bar over a selection (a night violet at 97%, over the page or a card) and the state strip (night at
+    /// 92%): their labels read over any surface behind them.
+    @Test func theSelectionBarAndTheStateStripReadOverTheScreen() {
+        let bars: [(name: String, fill: Color, text: [Color])] = [
+            ("selection bar", Palette.selectionBar, [Palette.ink, Palette.aiText, Palette.aiTextStrong]),
+            ("state strip", Palette.stripFill, [Palette.ink, Palette.ink2, Palette.accText, Palette.successText, Palette.aiText]),
+        ]
+        for appearance in Appearance.allCases {
+            for bar in bars {
+                for surface in surfaces {
+                    for token in bar.text {
+                        let value = ratio(token, onTint: bar.fill, over: surface.color, in: appearance)
+                        #expect(value >= ColorContrast.textMinimum, "text on the \(bar.name) over \(surface.name), \(appearance): \(value)")
+                    }
+                }
+            }
+        }
+    }
+
+    /// The tab bar's glass over the screen's night, and the active tab's capsule (white 16%, the brightest
+    /// point of its gradient) on top of that: both labels read.
+    @Test func theTabBarsLabelsReadOnTheGlassAndOnTheActiveCapsule() {
+        for appearance in Appearance.allCases {
+            for surface in surfaces {
+                let glass = rgb(Palette.glassBarBase, in: appearance, over: rgb(surface.color, in: appearance))
+                let capsule = ColorContrast.composite(ColorContrast.RGB(red: 1, green: 1, blue: 1), alpha: 0.16, over: glass)
+                for token in [Palette.ink2, Palette.accText] {
+                    let onGlass = ColorContrast.ratio(rgb(token, in: appearance, over: glass), glass)
+                    #expect(onGlass >= ColorContrast.textMinimum, "label on the bar over \(surface.name), \(appearance): \(onGlass)")
+                }
+                let active = ColorContrast.ratio(rgb(Palette.accText, in: appearance, over: capsule), capsule)
+                #expect(active >= ColorContrast.textMinimum, "the active label over \(surface.name), \(appearance): \(active)")
+            }
+        }
+    }
+
+    /// The slider: the white thumb and the yellow fill stand out from the track and from every surface (3:1).
+    @Test func theSliderPartsStandOutFromTheirSurface() {
+        for appearance in Appearance.allCases {
+            for surface in surfaces {
+                let thumb = ratio(Palette.sliderThumb, on: surface.color, in: appearance)
+                #expect(thumb >= ColorContrast.componentMinimum, "thumb on \(surface.name)")
+                let base = rgb(surface.color, in: appearance)
+                let track = rgb(Palette.sliderTrack, in: appearance, over: base)
+                let fill = rgb(Palette.sliderFill, in: appearance, over: track)
+                #expect(ColorContrast.ratio(fill, track) >= ColorContrast.componentMinimum, "fill on the track over \(surface.name), \(appearance)")
+                let thumbOnTrack = ColorContrast.ratio(rgb(Palette.sliderThumb, in: appearance, over: track), track)
+                #expect(thumbOnTrack >= ColorContrast.componentMinimum, "thumb on the track")
+            }
+        }
+    }
+
+    /// The "● REC" label, and the empty state's title and line, over the night.
+    @Test func theRecPillAndTheEmptyStateRead() {
+        for appearance in Appearance.allCases {
+            for surface in surfaces {
+                #expect(ratio(Palette.ink, on: surface.color, in: appearance) >= ColorContrast.textMinimum, "REC on \(surface.name)")
+                #expect(ratio(Palette.ink2, on: surface.color, in: appearance) >= ColorContrast.textMinimum, "the empty state's line on \(surface.name)")
+            }
+            // The violet core of the ring sits behind the title at its strongest.
+            let core = rgb(Palette.emptyRingCore, in: appearance, over: rgb(Palette.bg, in: appearance))
+            #expect(ColorContrast.ratio(rgb(Palette.ink, in: appearance, over: core), core) >= ColorContrast.textMinimum)
+        }
+    }
+
     // MARK: - The math
 
     @Test func theRatioIsTheStandardOne() {

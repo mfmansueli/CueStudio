@@ -19,8 +19,8 @@ nonisolated enum TextStyleEdit: Equatable, Sendable {
     /// 0 to 1 (Text style › Glow).
     case glow(Double)
 
-    /// Sizes Text style offers, in points on the design's frame.
-    static let sizeRange: ClosedRange<Double> = 12...56
+    /// Sizes Text style can set, in the points of `TextOverlay.size` (the slider shows 24–120).
+    static let sizeRange: ClosedRange<Double> = TextOverlay.sizeRange
 
     /// What it is remembered as when changed by hand on one text.
     var field: TextLookField {
@@ -44,7 +44,7 @@ nonisolated enum TextStyleEdit: Equatable, Sendable {
             if text.font.weights.contains(weight) { text.weight = weight }
         case .size(let points):
             let clamped = min(max(points, Self.sizeRange.lowerBound), Self.sizeRange.upperBound)
-            text.size = clamped * TextOverlayRole.designScale
+            text.size = clamped
         case .color(let color):
             text.color = color
         case .background(let background):

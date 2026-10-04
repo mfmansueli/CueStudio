@@ -58,7 +58,7 @@ final class CueUniverseScreenshotTests: XCTestCase {
         // Aurora is locked until a video is shared; Default is the one lit.
         XCTAssertTrue(app.buttons["personalize.icon.standard"].isSelected)
         let sky = element(app, "personalize.sky")
-        XCTAssertEqual(sky.value as? String, "Calm")
+        XCTAssertEqual(sky.value as? String, "Soft")
         app.navigationBars.buttons.firstMatch.tap()
         app.buttons["settings.prompterTile"].tap()
         XCTAssertTrue(element(app, "creatorSetup.speed").waitForExistence(timeout: 5))

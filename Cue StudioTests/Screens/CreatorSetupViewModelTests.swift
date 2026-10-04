@@ -65,9 +65,9 @@ struct CreatorSetupViewModelTests {
         let scenario = makeScenario()
         defer { scenario.defaults.tearDown() }
         let viewModel = scenario.viewModel
-        #expect(viewModel.textSizePreset == .medium)
-        viewModel.setTextSize(.large)
-        #expect(scenario.preferences.prompter.size == 36)
+        #expect(viewModel.textSizePreset == .large)
+        viewModel.setTextSize(.small)
+        #expect(scenario.preferences.prompter.size == 24)
         viewModel.textSize = 40.4
         #expect(scenario.preferences.prompter.size == 40)
         #expect(viewModel.textSizePreset == nil)
@@ -75,12 +75,13 @@ struct CreatorSetupViewModelTests {
         #expect(scenario.preferences.prompter.size == PrompterSettings.sizeRange.upperBound)
     }
 
-    @Test func speedIsKeptInTenths() {
+    @Test func speedIsKeptOnTheFiveWordStep() {
         let scenario = makeScenario()
         defer { scenario.defaults.tearDown() }
+        // 1.04× is 223.6 words a minute: the step nearest is 225.
         scenario.viewModel.speed = 1.04
-        #expect(scenario.preferences.prompter.speed == 1)
-        #expect(scenario.viewModel.speedDetail.hasSuffix("× · about 215 words a minute"))
+        #expect(scenario.preferences.prompter.speed == 225.0 / 215)
+        #expect(scenario.viewModel.speedDetail.hasSuffix("× · about 225 words a minute"))
     }
 
     @Test func theReadingLineMovesFromTheRecommendedSpot() {
@@ -146,6 +147,6 @@ struct CreatorSetupViewModelTests {
         scenario.viewModel.reset()
         #expect(scenario.preferences.creatorSetup == CreatorSetup())
         #expect(scenario.preferences.camera.codec == .h264)
-        #expect(scenario.toast.message == "Creator Setup is back to Cue's defaults")
+        #expect(scenario.toast.message == "Back to Cue's defaults")
     }
 }

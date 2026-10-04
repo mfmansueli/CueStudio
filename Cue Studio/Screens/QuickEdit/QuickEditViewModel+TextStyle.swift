@@ -95,9 +95,9 @@ extension QuickEditViewModel {
         }
     }
 
-    /// The size Text style shows, in points on the design's frame.
+    /// The size Text style shows: `TextOverlay.size`, 24–120 pt.
     var pickedTextPointSize: Double {
-        ((selectedText?.size ?? TextOverlayRole.title.baseSize) / TextOverlayRole.designScale).rounded()
+        (selectedText?.size ?? TextOverlayRole.title.baseSize).rounded()
     }
 
     // MARK: - Motion
