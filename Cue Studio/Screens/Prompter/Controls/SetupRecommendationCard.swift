@@ -21,18 +21,18 @@ struct SetupRecommendationCard: View {
             HStack(alignment: .top, spacing: 12) {
                 Image(systemName: "sparkles")
                     .font(.body.weight(.semibold))
-                    .foregroundStyle(Palette.accText)
+                    .foregroundStyle(Palette.recommendationIcon)
                     .frame(width: 36, height: 36)
-                    .background(Palette.accSoft, in: Circle())
+                    .background(Palette.recommendationIconFill, in: Circle())
                     .accessibilityHidden(true)
                 VStack(alignment: .leading, spacing: 3) {
                     Text(recommendation.title).font(.headline)
                     Text(recommendation.summary)
                         .font(.subheadline.monospacedDigit())
-                        .foregroundStyle(Palette.ink2)
+                        .foregroundStyle(Palette.aiTextStrong)
                     Text(detail)
                         .font(.footnote)
-                        .foregroundStyle(Palette.ink2)
+                        .foregroundStyle(Palette.aiTextStrong)
                         .padding(.top, 2)
                 }
                 .fixedSize(horizontal: false, vertical: true)
@@ -40,7 +40,7 @@ struct SetupRecommendationCard: View {
             .accessibilityElement(children: .combine)
             HStack(spacing: 8) {
                 Button(keepTitle, action: onKeepSetup)
-                    .buttonStyle(.cueSecondary())
+                    .buttonStyle(.cueGlass())
                     .accessibilityIdentifier("prompter.keepSetupButton")
                 Button(useTitle, action: onUseRecommended)
                     .buttonStyle(.cuePrimary())
@@ -48,8 +48,16 @@ struct SetupRecommendationCard: View {
             }
         }
         .padding(16)
-        .glassEffect(.regular, in: RoundedRectangle(cornerRadius: Metrics.cardRadius, style: .continuous))
-        .shadow(color: .black.opacity(0.5), radius: 25, y: 20)
+        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: Metrics.cardRadius, style: .continuous))
+        .background(
+            LinearGradient(
+                colors: [Palette.recommendationTop, Palette.recommendationBottom],
+                startPoint: .topLeading, endPoint: .bottomTrailing
+            ),
+            in: RoundedRectangle(cornerRadius: Metrics.cardRadius, style: .continuous)
+        )
+        .overlay(RoundedRectangle(cornerRadius: Metrics.cardRadius, style: .continuous).strokeBorder(Palette.recommendationRim, lineWidth: 0.5))
+        .shadow(color: Palette.recommendationShadow, radius: 25, y: 20)
         // A container of its own, so the card's identifier doesn't replace the buttons'.
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("prompter.recommendationCard")

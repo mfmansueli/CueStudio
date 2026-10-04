@@ -64,15 +64,15 @@ extension PrompterViewModel {
         }
     }
 
-    /// Shown unless turned off or the controls are hidden while recording.
+    /// Shown unless turned off.
     var showsSafeZone: Bool {
-        session.camera.showsSafeZones && !hidesControls && safeZone != nil
+        session.camera.showsSafeZones && safeZone != nil
     }
 
-    // MARK: - Controls
+    // MARK: - Recording bar
 
-    /// Recording with only the text, the reading line, the clock and a stop button.
-    var hidesControls: Bool { isRecording && controlsHidden }
+    /// Recording with the compact bar: the whole one is back for a few seconds after a tap.
+    var showsCompactBar: Bool { isRecording && !bar.isExpanded }
 
     // MARK: - Layout actions
 
@@ -95,7 +95,6 @@ extension PrompterViewModel {
         prompter.textWindowHeight = PrompterSettings.defaultTextWindowHeight
         prompter.readingWidth = PrompterSettings.defaultReadingWidth
         prompter.speed = ReadTime.naturalSpeed
-        prompter.hidesControlsWhileRecording = false
         session.prompter = prompter
         session.camera.showsSafeZones = true
         forgetSafeZonePick()

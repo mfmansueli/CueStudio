@@ -27,9 +27,19 @@ struct PresentationServiceTests {
         #expect(presentation.sheet == nil)
     }
 
-    @Test func generateSheetsAreDistinctPerTab() {
-        #expect(AppSheet.generateScript(.prompt).id != AppSheet.generateScript(.themes).id)
-        #expect(AppSheet.generateScript(.formats) == .generateScript(.formats))
+    @Test func theIdeaCardsSheetsAreDistinct() {
+        let sheets: [AppSheet] = [.ideas, .format, .createFor]
+        #expect(Set(sheets.map(\.id)).count == 3)
+    }
+
+    @Test func writingAnIdeaOpensTheScriptInTheDraftWithTheRequest() {
+        let presentation = PresentationService()
+        presentation.present(.ideas)
+        let id = UUID()
+        let request = ScriptRequest(source: .prompt("Carnival"), platform: .reels, tone: nil, voice: nil, targetRange: 30...60)
+        presentation.openScript(id, writing: request)
+        #expect(presentation.sheet == nil)
+        #expect(presentation.scriptsPath == [ScriptRoute(scriptID: id, startsEditing: true, writing: request)])
     }
 
     @Test func openingAScriptClosesTheSheetAndShowsScripts() {

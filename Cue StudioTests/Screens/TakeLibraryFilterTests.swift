@@ -63,16 +63,45 @@ struct TakeLibraryFilterTests {
         #expect(videos[0].platform == .youtube)
     }
 
-    @Test func platformAndViewFiltersCombine() {
+    @Test func platformAndStageFiltersCombine() {
         let videos = TakeLibraryFilter.videos(from: [
             take(scriptA, 1, hoursAgo: 1, platform: .reels, best: true, exported: true),
             take(scriptB, 1, hoursAgo: 1, platform: .tiktok, edited: true),
         ])
         #expect(TakeLibraryFilter(platform: .reels).apply(to: videos).count == 1)
-        #expect(TakeLibraryFilter(view: .best).apply(to: videos).map(\.platform) == [.reels])
-        #expect(TakeLibraryFilter(view: .notShared).apply(to: videos).map(\.platform) == [.tiktok])
-        #expect(TakeLibraryFilter(view: .edited).apply(to: videos).map(\.platform) == [.tiktok])
-        #expect(TakeLibraryFilter(platform: .reels, view: .edited).apply(to: videos).isEmpty)
+        #expect(TakeLibraryFilter(stage: .shared).apply(to: videos).map(\.platform) == [.reels])
+        #expect(TakeLibraryFilter(stage: .ready).apply(to: videos).map(\.platform) == [.tiktok])
+        #expect(TakeLibraryFilter(platform: .reels, stage: .ready).apply(to: videos).isEmpty)
+    }
+
+    @Test func everyVideoCarriesTheStageItsTakesPutItIn() {
+        let open = UUID()
+        let videos = TakeLibraryFilter.videos(
+            from: [
+                take(scriptA, 1, hoursAgo: 3), take(scriptA, 2, hoursAgo: 2),
+                take(scriptB, 1, hoursAgo: 1),
+            ],
+            hasDraft: { _ in false }
+        )
+        #expect(videos.first { $0.takes.first?.scriptID == scriptA }?.stage == .pick)
+        #expect(videos.first { $0.takes.first?.scriptID == scriptB }?.stage == .ready)
+        // An edit open on any take of the video puts it in edit.
+        let draft = take(scriptB, 1, hoursAgo: 1)
+        let editing = TakeLibraryFilter.videos(from: [draft], hasDraft: { $0 == draft.id })
+        #expect(editing[0].stage == .edit)
+        #expect(open != draft.id)
+    }
+
+    @Test func thePipelineCountsIgnoreTheStagePickedButNotThePlatform() {
+        let videos = TakeLibraryFilter.videos(from: [
+            take(scriptA, 1, hoursAgo: 2, platform: .reels, exported: true),
+            take(scriptB, 1, hoursAgo: 1, platform: .tiktok),
+        ])
+        let filter = TakeLibraryFilter(platform: .tiktok, stage: .shared)
+        #expect(filter.apply(to: videos).isEmpty)
+        let pipeline = TakePipeline(videos: filter.onPlatform(videos))
+        #expect(pipeline.count(of: .ready) == 1)
+        #expect(pipeline.count(of: .shared) == 0)
     }
 
     @Test func sectionsFollowTheNewestTakeOfEachVideo() {

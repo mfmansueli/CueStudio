@@ -145,6 +145,12 @@ extension QuickEditViewModel {
     }
 
     /// "Compare": the preview shows the picture as recorded, or comes back to the edit.
+    /// ◐ held: the picture as recorded while the finger is down, the edit again when it lifts.
+    func holdPictureComparison(_ isHeld: Bool) {
+        guard comparesPicture != isHeld, !isHeld || edit.hasPictureLook else { return }
+        comparesPicture = isHeld
+    }
+
     func togglePictureComparison() {
         guard comparesPicture || edit.hasPictureLook else { return }
         comparesPicture.toggle()

@@ -41,6 +41,7 @@ extension QuickEditViewModel {
         case .voiceOver: String(localized: "Records from the playhead · the video plays muted")
         case .media: String(localized: "On top of the video")
         case .transition: transitionSubtitle
+        case .smart: String(localized: "Quick fixes, made on your iPhone")
         }
     }
 

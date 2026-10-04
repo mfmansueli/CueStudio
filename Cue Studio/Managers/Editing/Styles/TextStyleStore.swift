@@ -14,6 +14,19 @@ final class TextStyleStore: TextStyleStoring {
         self.defaults = defaults
     }
 
+    var myCoverLook: CoverLook? {
+        get {
+            defaults.data(forKey: DefaultsKey.myCoverStyle).flatMap { try? JSONDecoder().decode(CoverLook.self, from: $0) }
+        }
+        set {
+            if let newValue, let data = try? JSONEncoder().encode(newValue) {
+                defaults.set(data, forKey: DefaultsKey.myCoverStyle)
+            } else {
+                defaults.removeObject(forKey: DefaultsKey.myCoverStyle)
+            }
+        }
+    }
+
     var myStyle: TextLook? {
         get {
             defaults.data(forKey: DefaultsKey.myTextStyle).flatMap { try? JSONDecoder().decode(TextLook.self, from: $0) }

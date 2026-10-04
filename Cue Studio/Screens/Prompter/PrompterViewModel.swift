@@ -23,6 +23,8 @@ final class PrompterViewModel {
     private(set) var recordingSeconds = 0
     private(set) var countdown: Int?
     private(set) var showsStopWarning = false
+    /// The compact recording bar and the whole one a tap brings back.
+    let bar = RecordingBarState()
 
     // MARK: Voice follow
     private(set) var isVoiceActive = false
@@ -70,8 +72,6 @@ final class PrompterViewModel {
     private(set) var screenMetrics = SelfieScreenMetrics()
     /// The safe zone picked in Display › Layout, for this session.
     private(set) var safeZonePick: SafeZoneChoice?
-    /// Hidden with the eye button, or from the start with "Hide controls while recording".
-    private(set) var controlsHidden = false
 
     /// This recording's setup. Views read and bind `session.camera` / `session.prompter`.
     let session: SessionSetupService
@@ -536,7 +536,7 @@ final class PrompterViewModel {
         isRecording = true
         recordingSeconds = 0
         showsStopWarning = false
-        controlsHidden = session.prompter.hidesControlsWhileRecording
+        bar.collapse()
         noticeCaptureFallbacks()
         if hasScript && session.camera.scrollsWithRecording {
             play()
@@ -561,7 +561,7 @@ final class PrompterViewModel {
         pause()
         let clip = await camera.stopRecording()
         isRecording = false
-        controlsHidden = false
+        bar.collapse()
         guard let clip else {
             toast.show(String(localized: "The take couldn't be saved"))
             return
@@ -598,12 +598,6 @@ final class PrompterViewModel {
 
     func pickSafeZone(_ choice: SafeZoneChoice) {
         safeZonePick = choice
-    }
-
-    /// The eye button while recording.
-    func toggleControls() {
-        guard isRecording else { return }
-        controlsHidden.toggle()
     }
 
     /// "Reset to Recommended" also forgets the safe zone picked in this session.

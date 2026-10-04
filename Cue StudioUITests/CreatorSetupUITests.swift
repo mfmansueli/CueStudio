@@ -5,8 +5,8 @@
 
 import XCTest
 
-/// Settings › Creator Setup: defaults that stick, reset, remote pairing, and the recommendation the
-/// recording screen offers when a platform wants something else.
+/// Settings › Recording, Prompter and Remote: defaults that stick, reset, remote pairing, and the
+/// recommendation the recording screen offers when a platform wants something else.
 @MainActor
 final class CreatorSetupUITests: XCTestCase {
     override func setUp() {
@@ -20,13 +20,21 @@ final class CreatorSetupUITests: XCTestCase {
         XCTAssertTrue(fourK.waitForExistence(timeout: 5))
         fourK.tap()
         XCTAssertTrue(fourK.isSelected)
-        app.buttons["creatorSetup.textSize.large"].tap()
-        XCTAssertTrue(app.buttons["creatorSetup.textSize.large"].isSelected)
-
         app.navigationBars.buttons.firstMatch.tap()
+        openCreatorSetup(app, page: "prompter")
+        let large = app.buttons["creatorSetup.textSize.large"]
+        XCTAssertTrue(large.waitForExistence(timeout: 5))
+        large.tap()
+        XCTAssertTrue(large.isSelected)
+
+        // The card on Settings says what was chosen, and both pages remember it.
+        app.navigationBars.buttons.firstMatch.tap()
+        XCTAssertTrue(app.buttons["settings.setup.quality"].label.contains("4K"))
         openCreatorSetup(app)
         XCTAssertTrue(app.buttons["creatorSetup.quality.4K"].waitForExistence(timeout: 5))
         XCTAssertTrue(app.buttons["creatorSetup.quality.4K"].isSelected)
+        app.navigationBars.buttons.firstMatch.tap()
+        openCreatorSetup(app, page: "prompter")
         XCTAssertTrue(app.buttons["creatorSetup.textSize.large"].isSelected)
     }
 
@@ -34,6 +42,7 @@ final class CreatorSetupUITests: XCTestCase {
         let app = CueApp.launch(seeded: true)
         openCreatorSetup(app)
         app.buttons["creatorSetup.quality.4K"].tap()
+        app.navigationBars.buttons.firstMatch.tap()
         let reset = app.buttons["creatorSetup.resetButton"]
         scroll(app, to: reset)
         reset.tap()
@@ -43,17 +52,15 @@ final class CreatorSetupUITests: XCTestCase {
             .firstMatch
         XCTAssertTrue(confirm.waitForExistence(timeout: 5))
         confirm.tap()
-        let fullHD = app.buttons["creatorSetup.quality.1080p"]
-        scrollUp(app, to: fullHD)
-        XCTAssertTrue(fullHD.isSelected)
+        scrollUp(app, to: app.buttons["settings.recordingTile"])
+        openCreatorSetup(app)
+        XCTAssertTrue(app.buttons["creatorSetup.quality.1080p"].isSelected)
     }
 
     func testConnectADeviceShowsACodeThenTheConnection() {
         let app = CueApp.launch(seeded: true, remoteConnects: true)
-        openCreatorSetup(app)
-        let remote = app.buttons["creatorSetup.remoteButton"]
-        scroll(app, to: remote)
-        remote.tap()
+        openCreatorSetup(app, page: "remote")
+        XCTAssertTrue(app.descendants(matching: .any)["remote.statusHero"].waitForExistence(timeout: 5))
         let connect = app.buttons["remote.connectButton"]
         XCTAssertTrue(connect.waitForExistence(timeout: 5))
         connect.tap()
@@ -69,12 +76,12 @@ final class CreatorSetupUITests: XCTestCase {
         openCreatorSetup(app)
         app.buttons["creatorSetup.quality.4K"].tap()
         // Back to Settings: a tab keeps its screen, and the end of the test opens Creator Setup again.
-        app.navigationBars["Creator Setup"].buttons.element(boundBy: 0).tap()
-        XCTAssertTrue(app.buttons["settings.creatorSetupButton"].waitForExistence(timeout: 5))
+        app.navigationBars["Recording"].buttons.element(boundBy: 0).tap()
+        XCTAssertTrue(app.buttons["settings.recordingTile"].waitForExistence(timeout: 5))
 
         // "3 morning habits" is for TikTok, which recommends 1080p.
         app.tabBars.buttons["Scripts"].tap()
-        let record = app.buttons["hero.recordButton"]
+        let record = app.buttons["row.recordButton"].firstMatch
         XCTAssertTrue(record.waitForExistence(timeout: 15))
         record.tap()
         let use = app.buttons["prompter.useRecommendedButton"]
@@ -98,16 +105,14 @@ final class CreatorSetupUITests: XCTestCase {
         let settings = app.tabBars.buttons["Settings"]
         XCTAssertTrue(settings.waitForExistence(timeout: 5))
         settings.tap()
-        let setup = app.buttons["settings.creatorSetupButton"]
-        scroll(app, to: setup)
-        setup.tap()
+        openCreatorSetup(app)
         XCTAssertTrue(app.buttons["creatorSetup.quality.4K"].waitForExistence(timeout: 5))
         XCTAssertTrue(app.buttons["creatorSetup.quality.4K"].isSelected)
     }
 
     func testSettingsDisplayUsesTheSharedEditorAndKeepsLocalRecordingEditsSeparate() {
         let app = CueApp.launch(seeded: true)
-        openCreatorSetup(app)
+        openCreatorSetup(app, page: "prompter")
         let display = app.buttons["creatorSetup.displayButton"]
         scroll(app, to: display)
         display.tap()
@@ -131,10 +136,10 @@ final class CreatorSetupUITests: XCTestCase {
         add(appearance)
         XCTAssertFalse(app.alerts.firstMatch.exists)
         app.buttons["display.doneButton"].tap()
-        app.navigationBars["Creator Setup"].buttons.firstMatch.tap()
+        app.navigationBars.buttons.firstMatch.tap()
 
         app.tabBars.buttons["Scripts"].tap()
-        let record = app.buttons["hero.recordButton"]
+        let record = app.buttons["row.recordButton"].firstMatch
         XCTAssertTrue(record.waitForExistence(timeout: 15))
         record.tap()
         let aa = app.buttons["prompter.displayButton"]
@@ -152,7 +157,7 @@ final class CreatorSetupUITests: XCTestCase {
         app.buttons["display.doneButton"].tap()
         app.buttons["prompter.closeButton"].tap()
 
-        openCreatorSetup(app)
+        openCreatorSetup(app, page: "prompter")
         scroll(app, to: display)
         display.tap()
         scroll(app, to: advanced)
@@ -164,14 +169,14 @@ final class CreatorSetupUITests: XCTestCase {
 
     // MARK: - Helpers
 
-    private func openCreatorSetup(_ app: XCUIApplication) {
+    /// Settings, then one of the three pages under "Your setup" (recording by default).
+    private func openCreatorSetup(_ app: XCUIApplication, page: String = "recording") {
         let tab = app.tabBars.buttons["Settings"]
         XCTAssertTrue(tab.waitForExistence(timeout: 15))
         tab.tap()
-        let setup = app.buttons["settings.creatorSetupButton"]
-        scroll(app, to: setup)
-        setup.tap()
-        XCTAssertTrue(app.navigationBars["Creator Setup"].waitForExistence(timeout: 5))
+        let tile = app.buttons["settings.\(page)Tile"]
+        scroll(app, to: tile)
+        tile.tap()
         XCTAssertTrue(app.tabBars.buttons["Settings"].isSelected)
     }
 

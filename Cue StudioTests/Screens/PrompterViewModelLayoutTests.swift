@@ -8,8 +8,8 @@ import Foundation
 import Testing
 @testable import Cue_Studio
 
-/// The Selfie layout in `PrompterViewModel+Layout`: safe zone, reading line, text window, hidden
-/// controls and "Reset to Recommended".
+/// The Selfie layout in `PrompterViewModel+Layout`: safe zone, the compact recording bar, reading
+/// line, text window and "Reset to Recommended".
 @MainActor
 @Suite("PrompterViewModel layout")
 struct PrompterViewModelLayoutTests {
@@ -40,39 +40,46 @@ struct PrompterViewModelLayoutTests {
         return Scenario(viewModel: viewModel, preferences: preferences, toast: toast, defaults: defaults)
     }
 
-    // MARK: - Hidden controls
+    // MARK: - Recording
 
-    @Test func theEyeButtonHidesTheControlsUntilTheTakeStops() async {
+    @Test func theSafeZoneStaysOnWhileRecordingAndAfterTheTakeStops() async {
         // Reels has no monetization minimum, so the second tap stops without a warning.
         let scenario = makeScenario(script: TestData.script(text: TestData.words(2000), platform: .reels))
         defer { scenario.defaults.tearDown() }
         let viewModel = scenario.viewModel
-        viewModel.toggleControls()
-        #expect(!viewModel.hidesControls)
+        #expect(viewModel.showsSafeZone)
 
         await viewModel.recordButtonTapped()
         #expect(viewModel.isRecording)
-        #expect(!viewModel.hidesControls)
         #expect(viewModel.showsSafeZone)
-        viewModel.toggleControls()
-        #expect(viewModel.hidesControls)
-        #expect(!viewModel.showsSafeZone)
 
         await viewModel.recordButtonTapped()
         #expect(!viewModel.isRecording)
-        #expect(!viewModel.hidesControls)
         #expect(viewModel.showsSafeZone)
     }
 
-    @Test func hideControlsWhileRecordingStartsTheTakeWithThemHidden() async {
-        var prompter = PrompterSettings()
-        prompter.hidesControlsWhileRecording = true
-        let scenario = makeScenario(script: TestData.script(text: TestData.words(2000), platform: .reels), prompter: prompter)
+    @Test func recordingStartsWithTheCompactBarAndATapBringsTheWholeOneBack() async {
+        let scenario = makeScenario(script: TestData.script(text: TestData.words(2000), platform: .reels))
         defer { scenario.defaults.tearDown() }
-        await scenario.viewModel.recordButtonTapped()
-        #expect(scenario.viewModel.hidesControls)
-        await scenario.viewModel.stopRecording()
-        #expect(!scenario.viewModel.hidesControls)
+        let viewModel = scenario.viewModel
+        // Not recording: the whole bar, never the compact one.
+        #expect(!viewModel.showsCompactBar)
+
+        await viewModel.recordButtonTapped()
+        #expect(viewModel.isRecording)
+        #expect(viewModel.showsCompactBar)
+
+        viewModel.bar.expand()
+        #expect(!viewModel.showsCompactBar)
+        viewModel.bar.collapse()
+        #expect(viewModel.showsCompactBar)
+
+        // Stopping closes the bar again, and the next take starts compact.
+        viewModel.bar.expand()
+        await viewModel.recordButtonTapped()
+        #expect(!viewModel.isRecording)
+        #expect(!viewModel.bar.isExpanded)
+        #expect(!viewModel.showsCompactBar)
     }
 
     // MARK: - Reading line
@@ -114,7 +121,6 @@ struct PrompterViewModelLayoutTests {
         prompter.textWindowHeight = 200
         prompter.readingWidth = 0.6
         prompter.speed = 1.5
-        prompter.hidesControlsWhileRecording = true
         let scenario = makeScenario(prompter: prompter, showsSafeZones: false)
         defer { scenario.defaults.tearDown() }
         let viewModel = scenario.viewModel
@@ -128,7 +134,6 @@ struct PrompterViewModelLayoutTests {
         #expect(session.prompter.textWindowHeight == 380)
         #expect(session.prompter.readingWidth == 0.93)
         #expect(session.prompter.speed == 0.7)
-        #expect(!session.prompter.hidesControlsWhileRecording)
         #expect(session.camera.showsSafeZones)
         // Speed and safe zones are Creator Setup: the reset is for this session.
         #expect(scenario.preferences.prompter == prompter)

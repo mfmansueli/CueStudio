@@ -23,6 +23,12 @@ nonisolated struct IdeaPromptDraft: Equatable, Sendable {
         isAvailable && !isDictating && !trimmedText.isEmpty
     }
 
+    /// With nothing written, the arrow asks for ideas instead ("Need an idea?"): it is on unless a
+    /// dictation is still writing, and it needs no Apple Intelligence (the ideas are local too).
+    func canAskForIdea(isDictating: Bool = false) -> Bool {
+        !isDictating && trimmedText.isEmpty
+    }
+
     /// What goes to the generation flow; nil while there is nothing to send.
     var submission: String? {
         trimmedText.isEmpty ? nil : trimmedText

@@ -5,7 +5,7 @@
 
 import XCTest
 
-/// Account, Creator Voice, plan and paywall.
+/// Account, My Cue Voice, plan and paywall.
 @MainActor
 final class ProfileUITests: XCTestCase {
     override func setUp() {
@@ -50,18 +50,50 @@ final class ProfileUITests: XCTestCase {
         XCTAssertTrue(app.staticTexts["“Bora”"].waitForExistence(timeout: 5))
     }
 
+    func testANewProfileOffersToSetUpMyCueVoiceAndThenShowsWhatCueUses() {
+        let app = openProfile()
+        let setUp = app.buttons["profile.setUpVoiceButton"]
+        XCTAssertTrue(setUp.waitForExistence(timeout: 5))
+        XCTAssertFalse(app.staticTexts["profile.voiceSample"].exists)
+        setUp.tap()
+        app.buttons["voiceSetup.skipRole"].tap()
+        app.buttons["voiceSetup.niche.food"].tap()
+        app.buttons["voiceSetup.saveButton"].tap()
+        app.buttons["voiceSetup.audience.simple"].tap()
+        app.buttons["voiceSetup.saveButton"].tap()
+        app.buttons["voiceSetup.tone.casual"].tap()
+        app.buttons["voiceSetup.saveButton"].tap()
+        // The card now says what Cue uses; a row opens the question that holds it.
+        XCTAssertTrue(app.staticTexts["profile.voiceSample"].waitForExistence(timeout: 5))
+        let audience = app.buttons["profile.voiceRow.audience"]
+        XCTAssertTrue(audience.waitForExistence(timeout: 5))
+        audience.tap()
+        XCTAssertTrue(app.buttons["voiceSetup.audience.technical"].waitForExistence(timeout: 5))
+        app.buttons["sheet.closeButton"].tap()
+    }
+
     func testVoicePreviewFollowsHowYouSound() {
         let app = openProfile()
+        // The card shows the preview once My Cue Voice is set up.
+        app.buttons["profile.setUpVoiceButton"].tap()
+        app.buttons["voiceSetup.skipRole"].tap()
+        app.buttons["voiceSetup.niche.food"].tap()
+        app.buttons["voiceSetup.saveButton"].tap()
+        app.buttons["voiceSetup.audience.simple"].tap()
+        app.buttons["voiceSetup.saveButton"].tap()
+        app.buttons["voiceSetup.tone.casual"].tap()
+        app.buttons["voiceSetup.saveButton"].tap()
         let sample = app.staticTexts["profile.voiceSample"]
         XCTAssertTrue(sample.waitForExistence(timeout: 5))
         XCTAssertTrue(sample.label.contains("So, real quick."))
-        // A new profile shows no tone as picked (its defaults aren't the creator's); the first tap
-        // picks that one alone, and the preview speaks in it.
+        // The tone chosen in the questions is picked in "How I sound"; changing it changes the preview.
         let confident = app.buttons["profile.sound.Confident"]
         scroll(app, to: confident)
+        XCTAssertTrue(app.buttons["profile.sound.Casual"].isSelected)
         XCTAssertFalse(confident.isSelected)
         confident.tap()
         XCTAssertTrue(confident.isSelected)
+        app.buttons["profile.sound.Casual"].tap()
         XCTAssertFalse(app.buttons["profile.sound.Casual"].isSelected)
         XCTAssertTrue(app.staticTexts["profile.voiceSample"].label.contains("I'll say it"))
     }

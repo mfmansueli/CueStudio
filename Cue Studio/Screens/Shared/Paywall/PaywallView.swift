@@ -14,6 +14,7 @@ struct PaywallView: View {
 
     @Environment(StoreManager.self) private var store
     @Environment(ToastService.self) private var toast
+    @Environment(UsageQuotaService.self) private var quota
     @Environment(\.dismiss) private var dismiss
     @State private var selectedPlan: ProPlan = .annual
     @State private var trialDays: [ProPlan: Int] = [:]
@@ -23,29 +24,27 @@ struct PaywallView: View {
         VStack(spacing: 0) {
             ScrollView {
                 VStack(alignment: .leading, spacing: 0) {
-                    Text("Cue Pro")
-                        .font(.caption.weight(.bold))
-                        .textCase(.uppercase)
-                        .kerning(1)
-                        .foregroundStyle(Palette.accText)
+                    HStack(spacing: 7) {
+                        Circle().fill(Palette.acc).frame(width: 7, height: 7)
+                        Text("Cue Pro")
+                            .font(CueStudioFont.hud)
+                            .textCase(.uppercase)
+                            .tracking(1)
+                            .foregroundStyle(Palette.accText)
+                    }
                     Text(PaywallCopy.title(for: context))
-                        .font(.largeTitle.bold())
+                        .font(.system(size: 32, weight: .bold))
                         .padding(.top, 8)
                     Text(PaywallCopy.subtitle(for: context))
                         .font(.subheadline)
                         .foregroundStyle(Palette.ink.opacity(0.65))
                         .padding(.top, 10)
-                    VStack(alignment: .leading, spacing: 11) {
-                        ForEach(PaywallCopy.features, id: \.self) { feature in
-                            Label {
-                                Text(feature)
-                            } icon: {
-                                Image(systemName: "checkmark").fontWeight(.bold).foregroundStyle(Palette.accText)
-                            }
-                            .font(.subheadline)
-                        }
+                    if context == .export {
+                        PaywallExportsMeter(used: UsagePolicy.freeExports - (quota.exportsLeft(for: .free) ?? 0), limit: UsagePolicy.freeExports)
+                            .padding(.top, 18)
                     }
-                    .padding(.top, 20)
+                    PaywallBenefitsCard()
+                        .padding(.top, 20)
                     VStack(spacing: 10) {
                         ForEach(ProPlan.allCases) { plan in planRow(plan) }
                     }
@@ -59,10 +58,12 @@ struct PaywallView: View {
         .foregroundStyle(Palette.ink)
         .background {
             ZStack(alignment: .top) {
-                Palette.bg
-                RadialGradient(colors: [Palette.accWash, .clear], center: .top, startRadius: 0, endRadius: 360)
-                    .frame(height: 420)
+                NightAuroraBackground(base: Palette.bg, yellowTouch: true)
+                    .mask(LinearGradient(colors: [.black, .black.opacity(0.4), .clear], startPoint: .top, endPoint: .bottom))
+                    .frame(height: 560)
+                    .frame(maxHeight: .infinity, alignment: .top)
             }
+            .background(Palette.bg)
             .ignoresSafeArea()
         }
         .overlay(alignment: .topTrailing) {
@@ -171,8 +172,8 @@ struct PaywallView: View {
             .frame(minHeight: Metrics.hitTarget)
         }
         .padding(EdgeInsets(top: 12, leading: 20, bottom: 12, trailing: 20))
-        .background(Palette.bg)
-        .overlay(alignment: .top) { Rectangle().fill(Palette.separator).frame(height: 0.5) }
+        .background { Rectangle().fill(Palette.glassBase.opacity(0.94)).ignoresSafeArea(edges: .bottom) }
+        .overlay(alignment: .top) { Rectangle().fill(Palette.glassBorder).frame(height: 0.5) }
         .sheet(isPresented: $showsPrivacy) { PrivacySheet() }
     }
 

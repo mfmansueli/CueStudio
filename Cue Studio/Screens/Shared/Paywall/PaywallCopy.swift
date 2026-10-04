@@ -26,9 +26,13 @@ nonisolated enum PaywallCopy {
     /// Only what Pro actually changes: exporting. Every feature is open on the free plan too.
     static let features: [String] = [
         String(localized: "Unlimited video exports, up to 4K"),
-        String(localized: "Every feature stays open: AI, Creator Voice, Quick edit, Clean Up, captions"),
+        String(localized: "Every feature stays open: AI, My Cue Voice, Quick edit, Clean Up, captions"),
         String(localized: "Your takes are always yours — nothing is ever locked or deleted"),
     ]
+
+    /// The icon and the mono tag of each line of `features`.
+    static let featureImages = ["square.and.arrow.up", "sparkles", "lock.open"]
+    static let featureTags = [String(localized: "Export"), String(localized: "Free"), String(localized: "Yours")]
 
     static func welcome(for context: PaywallContext, startedTrial: Bool) -> String {
         switch context {

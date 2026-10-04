@@ -62,7 +62,7 @@ final class EditorTaskUITests: XCTestCase {
     /// Listen to one pause, keep it, remove the other three.
     func testRemovingThreeOfFourPausesAfterListening() {
         let app = EditorApp.open(demo: true)
-        EditorApp.tapTool(app, "pauses")
+        EditorApp.openPauses(app)
         let first = app.descendants(matching: .any)["edit.pause.0"]
         XCTAssertTrue(first.waitForExistence(timeout: 5))
         for index in 1...3 {

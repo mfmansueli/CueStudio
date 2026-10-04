@@ -17,6 +17,9 @@ struct ScriptDetailView: View {
         _viewModel = State(initialValue: ScriptDetailViewModel(
             scriptID: route.scriptID,
             startsEditing: route.startsEditing,
+            writing: route.writing,
+            ideaDraft: services.ideaDraft,
+            revealPause: UIAccessibility.isReduceMotionEnabled ? .zero : services.scriptRevealPause,
             library: services.library,
             takes: services.takes,
             preferences: services.preferences,
@@ -34,10 +37,12 @@ struct ScriptDetailView: View {
                 if viewModel.isEditing {
                     ScriptEditorView(viewModel: viewModel)
                 } else {
-                    ScriptReadView(
+                    ScriptPageView(
                         viewModel: viewModel,
                         script: script,
-                        onStudio: { presentation.openPrompter(scriptID: script.id, mode: .studio) },
+                        folders: library.folders,
+                        actions: actions,
+                        onBack: { dismiss() },
                         onRecord: { presentation.openPrompter(scriptID: script.id, mode: .selfie) },
                         onOpenTake: { presentation.openReview(of: $0) }
                     )
@@ -47,12 +52,21 @@ struct ScriptDetailView: View {
             }
         }
         .background(Palette.bg)
-        .navigationBarTitleDisplayMode(.inline)
-        .navigationBarBackButtonHidden(viewModel.isEditing)
-        // Writing has its own header (the title, the length and Done), so nothing sits above it.
-        .toolbarVisibility(viewModel.isEditing ? .hidden : .automatic, for: .navigationBar)
-        .toolbar { toolbarContent }
+        // The page has its own bar (back, platform, Draft | Shaped, •••, Rec) and the writing
+        // editor its own header: nothing sits above either.
+        .toolbarVisibility(.hidden, for: .navigationBar)
+        .navigationBarBackButtonHidden()
         .toolbarVisibility(.hidden, for: .tabBar)
+        .task { viewModel.beginWritingIfNeeded() }
+        .alert("Couldn't write the script", isPresented: Binding(
+            get: { viewModel.page.writingError != nil },
+            set: { if !$0 { viewModel.page.writingError = nil } }
+        )) {
+            Button("Try again") { viewModel.retryWriting() }
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text(viewModel.page.writingError ?? "")
+        }
         .alert("New folder", isPresented: $viewModel.isNamingFolder) {
             TextField("Folder name", text: $viewModel.newFolderName)
             Button("Cancel", role: .cancel) {}
@@ -77,24 +91,6 @@ struct ScriptDetailView: View {
                 ScriptDetailsSheet(viewModel: viewModel)
             case .scriptType:
                 ScriptTypeSheet(current: viewModel.script?.type) { viewModel.setType($0) }
-            }
-        }
-    }
-
-    @ToolbarContentBuilder
-    private var toolbarContent: some ToolbarContent {
-        if !viewModel.isEditing, let script = viewModel.script {
-            ToolbarItem(placement: .topBarTrailing) {
-                Button("Edit") { viewModel.startEditing() }
-                    .accessibilityIdentifier("detail.editButton")
-            }
-            ToolbarItem(placement: .topBarTrailing) {
-                Menu {
-                    Button("Script details", systemImage: "info.circle") { viewModel.sheet = .details }
-                    ScriptActionsMenu(script: script, folders: library.folders, actions: actions)
-                } label: {
-                    Label("More", systemImage: "ellipsis")
-                }
             }
         }
     }

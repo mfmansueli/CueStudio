@@ -12,6 +12,7 @@ nonisolated extension CreatorProfile {
     /// so having one is the answer.
     func hasAnswered(_ step: VoiceSetupStep) -> Bool {
         switch step {
+        case .role: role != nil
         case .niche: !niches.isEmpty
         case .audience, .tone: confirmedVoiceSteps.contains(step)
         }
@@ -32,7 +33,7 @@ nonisolated extension CreatorProfile {
 
     /// What "Write in my voice" still needs, in the order it is asked.
     var missingVoiceSteps: [VoiceSetupStep] {
-        VoiceSetupStep.allCases.filter { !hasAnswered($0) }
+        VoiceSetupStep.allCases.filter { $0.isRequired && !hasAnswered($0) }
     }
 
     /// Enough of the creator is known for the AI to write like them. With less, the voice is not applied.

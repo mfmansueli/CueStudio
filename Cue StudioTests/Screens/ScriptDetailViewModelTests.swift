@@ -30,7 +30,6 @@ struct ScriptDetailViewModelTests {
         let toast = ToastService()
         let viewModel = ScriptDetailViewModel(
             scriptID: script.id,
-            startsEditing: startsEditing,
             library: library,
             takes: takes,
             preferences: PreferencesService(defaults: defaults.defaults),
@@ -39,6 +38,8 @@ struct ScriptDetailViewModelTests {
             writer: writer,
             toast: toast
         )
+        // The writing editor ("Versions & options") is what these tests drive.
+        if startsEditing { viewModel.startEditing() }
         return Scenario(viewModel: viewModel, library: library, writer: writer, toast: toast, defaults: defaults)
     }
 

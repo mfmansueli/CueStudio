@@ -29,7 +29,6 @@ struct PrompterSettingsTests {
         #expect(settings.textWindowHeight == 380)
         #expect(settings.readingLineOffset == nil)
         #expect(settings.customSafeZone == SafeZoneMargins())
-        #expect(!settings.hidesControlsWhileRecording)
     }
 
     @Test func startsAtTheNaturalSpeed() {
@@ -74,9 +73,19 @@ struct PrompterSettingsTests {
         settings.textWindowHeight = 320
         settings.readingLineOffset = 140
         settings.customSafeZone.bottom = 30
-        settings.hidesControlsWhileRecording = true
         let decoded = try JSONDecoder().decode(PrompterSettings.self, from: JSONEncoder().encode(settings))
         #expect(decoded == settings)
+    }
+
+    /// "Hide controls while recording" is gone: settings saved while it existed still load, with
+    /// everything else kept, and the old key is not written back.
+    @Test func settingsSavedWithTheRemovedHideControlsKeyStillLoad() throws {
+        let saved = Data(#"{"size":40,"readingWidth":0.7,"hidesControlsWhileRecording":true}"#.utf8)
+        let decoded = try JSONDecoder().decode(PrompterSettings.self, from: saved)
+        #expect(decoded.size == 40)
+        #expect(decoded.readingWidth == 0.7)
+        let rewritten = try #require(String(data: JSONEncoder().encode(decoded), encoding: .utf8))
+        #expect(!rewritten.contains("hidesControlsWhileRecording"))
     }
 
     @Test(arguments: [(0.0, "Off"), (4.0, "Subtle"), (10.0, "Soft"), (20.0, "Medium")])

@@ -13,6 +13,8 @@ enum EditorSheet: String, Identifiable {
     case music
     /// A photo or video from Photos, on top of the video or as a clip.
     case media
+    /// Done's question: "Is it ready to post?".
+    case done
 
     var id: String { rawValue }
 }

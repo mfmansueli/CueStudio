@@ -91,8 +91,6 @@ final class QuickEditViewModel {
     @ObservationIgnored var lastHandleSnap: TimeInterval?
     /// What Text style changes: this text, every text, or every text and the captions.
     var textStyleScope: TextStyleScope = .selected
-    /// A change waits to be kept in the draft ("Saving…" in the top bar until it is).
-    private(set) var isSavingDraft = false
     /// The Text style panel's field takes the keyboard (a text was just added, or Edit was tapped).
     var focusesTextField = false
     /// The picked caption line's field takes the keyboard (a line was just added).
@@ -202,6 +200,12 @@ final class QuickEditViewModel {
     var speedScope: SpeedScope = .whole
     /// The type the creator saved as "My style" (see `QuickEditViewModel+Style`).
     var myStyle: TextLook?
+    /// The cover style saved as "My cover style".
+    var myCoverLook: CoverLook?
+    /// The creator's handle, for the cover's "@handle" element (set by the screen).
+    var creatorHandle = ""
+    /// Cover's preview: the cover as it will be posted, or inside a profile's grid.
+    var coverPreview: CoverPreviewMode = .feed
 
     // MARK: Background
     /// Whether this iPhone can find people in video; nil until checked.
@@ -275,6 +279,7 @@ final class QuickEditViewModel {
         self.styles = styles ?? TextStyleStore()
         self.translations = translations
         myStyle = self.styles.myStyle
+        myCoverLook = self.styles.myCoverLook
         speechLanguageFor = speechLanguage
         self.mediaImporter = mediaImporter ?? EditMediaImporter()
         self.recorder = recorder ?? VoiceOverRecorder()
@@ -365,12 +370,6 @@ final class QuickEditViewModel {
             return String(localized: "Original · \(source)")
         }
         return source + " → " + DurationText.clock(edit.editedDuration)
-    }
-
-    /// "00:21.6 · Saved": the edit's length and whether the draft keeps the latest change.
-    var topBarStatus: String {
-        let length = DurationText.editor(edit.editedDuration)
-        return isSavingDraft ? String(localized: "\(length) · Saving…") : String(localized: "\(length) · Saved")
     }
 
     /// "00:04.1": where the playhead is. It reads the player's clock, so only the small views that
@@ -659,6 +658,38 @@ final class QuickEditViewModel {
         close(keepingDraft: false)
     }
 
+    /// Done: pauses and asks "Is it ready to post?" (`EditorDoneSheet`); the answer is `finish(_:)`.
+    func askIfReadyToPost() {
+        guard isReady else { return }
+        endChange()
+        player.pause()
+        selection = nil
+        panel = nil
+        sheet = .done
+    }
+
+    /// Leaves the editor the way the creator answered: the edit is saved on the take (share, download,
+    /// ready later), kept as a draft the video stays in edit with (not yet), or kept as a draft
+    /// without asking (back).
+    func finish(_ outcome: EditorOutcome) {
+        sheet = nil
+        switch outcome {
+        case .share, .download, .ready: done()
+        case .notYet: keepForLater()
+        case .back: cancel()
+        }
+    }
+
+    /// "Not yet, I'll come back": the draft stays even if nothing changed, so the video is in edit.
+    private func keepForLater() {
+        endTrim()
+        endChange()
+        if recorder.isRecording { cancelVoiceOver() }
+        cancelPausePreview()
+        saveDraft(forced: true)
+        close(keepingDraft: true)
+    }
+
     /// Leaves without saving on the take. Changes stay in a draft that Edit picks up again; the take
     /// is as it was.
     func cancel() {
@@ -706,7 +737,6 @@ final class QuickEditViewModel {
 
     private func scheduleDraftSave() {
         guard !isClosed else { return }
-        isSavingDraft = true
         draftTask?.cancel()
         draftTask = Task { [weak self] in
             try? await Task.sleep(for: .milliseconds(600))
@@ -716,13 +746,12 @@ final class QuickEditViewModel {
     }
 
     /// Keeps the edit, the playhead and the undo steps, or drops the draft when nothing changed.
-    func saveDraft() {
-        isSavingDraft = false
+    func saveDraft(forced: Bool = false) {
         guard source == .ready, !isClosed else { return }
         // A pauses preview that wasn't applied isn't part of the edit.
         var kept = edit
         if let base = pausePreviewBase { Self.apply(base, to: &kept) }
-        if kept != original {
+        if kept != original || forced {
             drafts.save(QuickEditDraft(takeID: take.id, edit: kept, playhead: player.currentTime, history: history, savedAt: .now))
         } else {
             drafts.discard(takeID: take.id)

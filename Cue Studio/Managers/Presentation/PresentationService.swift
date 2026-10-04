@@ -20,10 +20,10 @@ final class PresentationService {
 
     // MARK: - Actions
 
-    func openScript(_ id: UUID, editing: Bool = false) {
+    func openScript(_ id: UUID, editing: Bool = false, writing: ScriptRequest? = nil) {
         sheet = nil
         selectedTab = .scripts
-        scriptsPath = [ScriptRoute(scriptID: id, startsEditing: editing)]
+        scriptsPath = [ScriptRoute(scriptID: id, startsEditing: editing || writing != nil, writing: writing)]
     }
 
     func openPrompter(scriptID: UUID?, mode: PrompterMode) {
@@ -31,9 +31,9 @@ final class PresentationService {
         prompter = PrompterLaunch(scriptID: scriptID, mode: mode)
     }
 
-    func openReview(of take: Take) {
+    func openReview(of take: Take, then action: ReviewLaunchAction? = nil) {
         sheet = nil
-        prompter = PrompterLaunch(scriptID: take.scriptID, mode: .selfie, reviewTakeID: take.id)
+        prompter = PrompterLaunch(scriptID: take.scriptID, mode: .selfie, reviewTakeID: take.id, reviewAction: action)
     }
 
     func present(_ sheet: AppSheet) {

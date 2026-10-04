@@ -5,7 +5,8 @@
 
 import SwiftUI
 
-/// Red pill with the take clock and, when it applies, the time left to the monetization minimum.
+/// The REC pill at the top while recording: a red capsule with a pulsing dot, the take clock in
+/// monospaced digits and, when it applies, the time left to the monetization minimum.
 struct RecordingBadge: View {
     let seconds: Int
     let monetizationChip: String?
@@ -30,7 +31,8 @@ struct RecordingBadge: View {
                     }
             }
         }
-        .font(.subheadline.weight(.semibold))
+        .font(.system(.subheadline, design: .monospaced, weight: .bold))
+        .tracking(0.5)
         .foregroundStyle(.white)
         .padding(.horizontal, 14)
         .frame(height: 34)

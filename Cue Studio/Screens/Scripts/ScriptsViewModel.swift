@@ -10,6 +10,10 @@ import Foundation
 final class ScriptsViewModel {
     var filter: ScriptFilter = .all
     var query = ""
+    /// The magnifier in the bar: the search field is showing.
+    var isSearching = false {
+        didSet { if !isSearching { query = "" } }
+    }
     var isSelecting = false {
         didSet { if !isSelecting { selection.removeAll() } }
     }
@@ -41,10 +45,12 @@ final class ScriptsViewModel {
         [.all] + ScriptFilter.platformFilters(for: library.scripts) + library.folders.map(ScriptFilter.folder)
     }
 
-    func summary(takeCount: Int) -> String {
+    /// "05 SCRIPTS / 11 TAKES": two zero-padded counts under the title.
+    func summaryValues(takeCount: Int) -> [String] {
         let count = library.scripts.count
-        guard count > 0 else { return "" }
-        return String(localized: "\(count) scripts · \(takeCount) takes")
+        guard count > 0 else { return [] }
+        let padded = { (value: Int) in value.formatted(.number.precision(.integerLength(2...))) }
+        return [String(localized: "\(padded(count)) scripts"), String(localized: "\(padded(takeCount)) takes")]
     }
 
     // MARK: - Single script

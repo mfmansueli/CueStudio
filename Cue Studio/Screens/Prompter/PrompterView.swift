@@ -12,6 +12,8 @@ struct PrompterView: View {
     /// Where the safe area ends, from the top of the screen: Display and camera sheets stop between
     /// the Selfie text window and here, so the script stays in sight.
     @State private var safeAreaBottom: CGFloat = 0
+    /// The Takes tab's Share or Edit, taken once by the first review that opens.
+    @State private var launchActionTaken = false
     private let services: AppServices
 
     @Environment(PresentationService.self) private var presentation
@@ -56,7 +58,13 @@ struct PrompterView: View {
                         } else {
                             leaveReview()
                         }
-                    }
+                    },
+                    onOpenScript: { id in
+                        presentation.closePrompter()
+                        presentation.openScript(id)
+                    },
+                    launchAction: launchActionTaken ? nil : presentation.prompter?.reviewAction,
+                    onLaunchActionDone: { launchActionTaken = true }
                 )
                 .id(take.id)
                 .transition(.opacity)
@@ -121,11 +129,8 @@ struct PrompterView: View {
         case .newScript:
             NewScriptSheet(
                 mode: .attach,
-                onPrompt: { viewModel.sheet = .generateScript(.prompt) },
                 onPaste: pasteAndAttach,
-                onImport: { viewModel.sheet = .importScript },
-                onThemes: { viewModel.sheet = .generateScript(.themes) },
-                onFormats: { viewModel.sheet = .generateScript(.formats) }
+                onImport: { viewModel.sheet = .importScript }
             )
         case .importScript:
             ImportScriptSheet(
@@ -138,8 +143,6 @@ struct PrompterView: View {
                 },
                 onPaste: pasteAndAttach
             )
-        case .generateScript(let tab):
-            GenerateScriptSheet(services: services, initialTab: tab) { viewModel.attach($0) }
         }
     }
 

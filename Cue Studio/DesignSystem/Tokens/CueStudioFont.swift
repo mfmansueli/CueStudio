@@ -52,6 +52,10 @@ enum CueStudioFont {
         Font(TextFont.font(face, weight: face == .dmSerif ? .regular : .semibold, size: 15, text: face.label))
     }
 
+    /// HUD signals (counters, time, status lines): small, monospaced, in capitals where the caller
+    /// asks for it (`HUDLine`, `StageBar`). Scales with Dynamic Type.
+    static let hud = Font.system(.caption, design: .monospaced, weight: .semibold)
+
     /// Countdown numerals over the camera.
     static let countdown = Font.system(size: 190, weight: .bold).monospacedDigit()
 }

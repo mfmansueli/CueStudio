@@ -6,12 +6,14 @@
 import Foundation
 
 /// One row of the Takes library: the takes of one script (a freestyle recording stands alone), shown
-/// through its best take.
+/// through its best take, at the stage its takes put it in.
 nonisolated struct TakeVideo: Hashable, Identifiable, Sendable {
     /// Newest number first.
     let takes: [Take]
     let title: String
     let platform: Platform?
+    /// Derived from the takes and the open edits (`TakeStage`), never set by hand.
+    var stage: TakeStage = .ready
 
     var id: String { takes.first?.scriptID?.uuidString ?? takes.first?.id.uuidString ?? "" }
 

@@ -10,4 +10,6 @@ struct ScriptRoute: Hashable {
     let scriptID: UUID
     /// New scripts open straight into the editor.
     var startsEditing = false
+    /// A script the AI is about to write into the page: it opens empty and the words arrive.
+    var writing: ScriptRequest?
 }

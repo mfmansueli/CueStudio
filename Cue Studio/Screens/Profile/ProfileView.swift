@@ -7,7 +7,7 @@ import AuthenticationServices
 import StoreKit
 import SwiftUI
 
-/// Identity, Creator Voice, creative preferences and the plan. Sign in with Apple is optional.
+/// Identity, My Cue Voice, creative preferences and the plan. Sign in with Apple is optional.
 struct ProfileView: View {
     @Environment(CreatorProfileService.self) private var profile
     @Environment(\.colorScheme) private var colorScheme
@@ -21,8 +21,8 @@ struct ProfileView: View {
     @State private var isAddingPhrase = false
     @State private var newPhrase = ""
     @State private var trialDays: Int?
-    /// The "Write in my voice" setup opened from "Sounds like you".
-    @State private var voiceSetup: VoiceSetupSheet.Mode?
+    /// The My Cue Voice questions opened from the card (all that is missing, or one row to edit).
+    @State private var voiceSetup: ProfileVoiceSetup?
 
     /// Something of this screen's own covers it: the moving light behind "Sounds like you" rests.
     private var isCovered: Bool {
@@ -48,10 +48,10 @@ struct ProfileView: View {
                 }
             }
             Section {
-                SoundsLikeYouCard(setup: $voiceSetup)
+                MyCueVoiceCard(setup: $voiceSetup)
             } header: {
                 VStack(alignment: .leading, spacing: 4) {
-                    Text("Creator Voice")
+                    Text("My Cue Voice")
                         .font(.title2.bold())
                         .foregroundStyle(Palette.ink)
                     Text("Your AI identity. Cue writes and rewrites every script to sound like you — on every platform.")
@@ -88,7 +88,7 @@ struct ProfileView: View {
                     onManage: { showsManageSubscriptions = true }
                 )
             }
-            .listRowBackground(store.tier.isPro ? AnyView(glow) : AnyView(Palette.surface))
+            .listRowBackground(NightAuroraBackground(yellowTouch: store.tier.isPro))
             if session.isSignedIn {
                 Section {
                     Button("Sign out", role: .destructive) {
@@ -110,6 +110,9 @@ struct ProfileView: View {
             trialDays = await store.freeTrialDays(for: .annual)
         }
         .sheet(isPresented: $showsEditProfile) { EditProfileSheet() }
+        .sheet(item: $voiceSetup) { setup in
+            VoiceSetupSheet(mode: setup.mode, profile: profile.profile, startAt: setup.startAt)
+        }
         .fullScreenCover(item: $paywall) { PaywallView(context: $0) }
         .manageSubscriptionsSheet(isPresented: $showsManageSubscriptions)
         .alert("Add a phrase", isPresented: $isAddingPhrase) {
@@ -142,16 +145,6 @@ struct ProfileView: View {
                 toast.show(String(localized: "Couldn't sign in with Apple. Try again."))
             }
         }
-    }
-
-    /// Behind the Pro plan.
-    private var glow: some View {
-        Palette.surface.overlay(
-            LinearGradient(
-                stops: [.init(color: Palette.accGlow, location: 0), .init(color: Palette.accGlowFaint, location: 0.6)],
-                startPoint: .topLeading, endPoint: .bottomTrailing
-            )
-        )
     }
 }
 

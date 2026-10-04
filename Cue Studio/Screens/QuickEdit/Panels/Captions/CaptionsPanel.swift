@@ -120,7 +120,7 @@ struct CaptionsPanel: View {
             .foregroundStyle(tinted ? Palette.accText : Palette.ink)
             .padding(.horizontal, 11)
             .frame(height: 32)
-            .background(tinted ? Palette.accSoft : (isOn ? Palette.neutralAction : Palette.fill), in: Capsule())
+            .background(tinted ? Palette.accSoft : (isOn ? Palette.segmentOn : Palette.fill), in: Capsule())
             .frame(minHeight: Metrics.hitTarget)
             .contentShape(Rectangle())
         }

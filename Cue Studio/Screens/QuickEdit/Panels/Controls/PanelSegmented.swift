@@ -34,7 +34,7 @@ struct PanelSegmented<Value: Hashable>: View {
                             .foregroundStyle(isOn ? (accent ? Palette.accInk : Palette.ink) : Palette.ink.opacity(0.72))
                             .frame(maxWidth: .infinity, minHeight: height)
                             .background(
-                                isOn ? (accent ? Palette.acc : Palette.neutralAction) : .clear,
+                                isOn ? (accent ? Palette.acc : Palette.segmentOn) : .clear,
                                 in: RoundedRectangle(cornerRadius: 9, style: .continuous)
                             )
                             // Each choice is reached from the whole height of the well: 44 pt.

@@ -5,7 +5,7 @@
 
 import XCTest
 
-/// On the free plan every feature works, with no PRO badges: the full Creator Voice, versions for
+/// On the free plan every feature works, with no PRO badges: the full My Cue Voice, versions for
 /// other platforms and best-take suggestions. Only exporting past the free five opens the paywall.
 @MainActor
 final class FreePlanUITests: XCTestCase {
@@ -28,7 +28,7 @@ final class FreePlanUITests: XCTestCase {
 
     func testMakingAVersionForAnotherPlatform() {
         let app = openScript()
-        app.navigationBars.buttons["More"].tap()
+        app.buttons["page.menuButton"].tap()
         let versions = app.buttons.matching(NSPredicate(format: "label BEGINSWITH 'Make a version for'")).firstMatch
         XCTAssertTrue(versions.waitForExistence(timeout: 5))
         versions.tap()
@@ -36,7 +36,9 @@ final class FreePlanUITests: XCTestCase {
         XCTAssertTrue(app.buttons["TikTok"].waitForExistence(timeout: 5))
         XCTAssertFalse(app.buttons["Instagram Reels"].exists)
         app.buttons["TikTok"].tap()
-        XCTAssertTrue(app.staticTexts["TikTok version saved as a copy"].waitForExistence(timeout: 10))
+        // The toast passes quickly: what lasts is the copy in the library.
+        app.buttons["page.backButton"].tap()
+        XCTAssertTrue(app.staticTexts["Unboxing the Lumen desk lamp (TikTok)"].waitForExistence(timeout: 10))
     }
 
     func testSuggestBestPicksATake() {
@@ -56,13 +58,10 @@ final class FreePlanUITests: XCTestCase {
 
     func testSponsoredAdIsAFreeFormat() {
         let app = CueApp.launch(seeded: true)
-        let newScript = app.buttons["scripts.newButton"]
-        XCTAssertTrue(newScript.waitForExistence(timeout: 15))
-        newScript.tap()
-        let formats = app.buttons["newScript.formats"]
-        XCTAssertTrue(formats.waitForExistence(timeout: 5))
-        formats.tap()
-        let ad = app.buttons["generate.type.ad"]
+        let chip = app.buttons["ideaCard.formatChip"]
+        XCTAssertTrue(chip.waitForExistence(timeout: 15))
+        chip.tap()
+        let ad = app.buttons["format.ad"]
         XCTAssertTrue(ad.waitForExistence(timeout: 5))
         XCTAssertFalse(app.staticTexts["PRO"].exists)
         ad.tap()
@@ -76,7 +75,7 @@ final class FreePlanUITests: XCTestCase {
         let row = app.staticTexts["Unboxing the Lumen desk lamp"]
         XCTAssertTrue(row.waitForExistence(timeout: 15))
         row.tap()
-        XCTAssertTrue(app.buttons["detail.editButton"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.buttons["detail.recordButton"].waitForExistence(timeout: 5))
         return app
     }
 }

@@ -13,28 +13,6 @@ import Testing
 @MainActor
 @Suite("Idea prompt card")
 struct IdeaPromptDraftTests {
-    private struct Scenario {
-        let viewModel: GenerateScriptViewModel
-        let writer: FakeScriptWriter
-        let profile: CreatorProfileService
-        let ideaDraft: IdeaDraftService
-        let defaults: TestDefaults
-    }
-
-    private func makeScenario(text: String = "") -> Scenario {
-        let defaults = TestDefaults()
-        let writer = FakeScriptWriter()
-        let profile = CreatorProfileService(defaults: defaults.defaults)
-        let ideaDraft = IdeaDraftService()
-        ideaDraft.text = text
-        let viewModel = GenerateScriptViewModel(
-            ideaDraft: ideaDraft, writer: writer,
-            library: ScriptLibraryService(repository: FakeScriptRepository(), now: { TestData.now }),
-            profile: profile, rules: TestData.rulesService(), toast: ToastService()
-        )
-        return Scenario(viewModel: viewModel, writer: writer, profile: profile, ideaDraft: ideaDraft, defaults: defaults)
-    }
-
     @Test func nothingIsSentFromAnEmptyFieldOrOneWithOnlySpaces() {
         var draft = IdeaPromptDraft()
         #expect(!draft.canSubmit(isAvailable: true) && draft.submission == nil)
@@ -55,6 +33,29 @@ struct IdeaPromptDraftTests {
         #expect(!draft.canSubmit(isAvailable: false))
     }
 
+    /// With nothing written the arrow asks for ideas instead ("Need an idea?"), with or without a
+    /// model (the ideas are local), but never while a dictation is still writing, and never with an idea
+    /// already typed: then it sends.
+    @Test func withNothingWrittenTheArrowAsksForIdeas() {
+        var draft = IdeaPromptDraft()
+        #expect(draft.canAskForIdea())
+        draft.text = "  \n "
+        #expect(draft.canAskForIdea())
+        #expect(!draft.canAskForIdea(isDictating: true))
+        draft.text = "Three ways to focus"
+        #expect(!draft.canAskForIdea())
+        #expect(draft.canSubmit(isAvailable: true))
+    }
+
+    @Test func theServiceAsksForIdeasOnlyWhileTheDraftIsEmpty() {
+        let service = IdeaDraftService()
+        #expect(service.canAskForIdea(isDictating: false))
+        service.text = "Carnival in Salvador"
+        #expect(!service.canAskForIdea(isDictating: false))
+        service.clear()
+        #expect(service.canAskForIdea(isDictating: false))
+    }
+
     // MARK: - One draft
 
     @Test func theServiceIsTheOneCopyOfTheText() {
@@ -69,121 +70,19 @@ struct IdeaPromptDraftTests {
         #expect(service.isEmpty && service.text.isEmpty)
     }
 
-    @Test func theGenerationFlowReadsAndWritesTheCardsDraft() async {
-        let scenario = makeScenario(text: "Why I quit coffee")
-        defer { scenario.defaults.tearDown() }
-        #expect(scenario.viewModel.promptText == "Why I quit coffee")
-        // Edited on the generation screen, it is the card's text too: there is no second copy.
-        scenario.viewModel.promptText = "Why I quit coffee for 30 days"
-        #expect(scenario.ideaDraft.text == "Why I quit coffee for 30 days")
-        scenario.ideaDraft.text = "Carnival in Salvador"
-        #expect(scenario.viewModel.promptText == "Carnival in Salvador")
-        let script = await scenario.viewModel.generateFromPrompt()
-        #expect(script != nil)
-        #expect(scenario.writer.lastRequest?.source == .prompt("Carnival in Salvador"))
+    @Test func theIdeaSheetsHaveTheirOwnIdentity() {
+        let ids = [AppSheet.ideas.id, AppSheet.format.id, AppSheet.createFor.id, AppSheet.newScript.id]
+        #expect(Set(ids).count == ids.count)
     }
 
-    @Test func theRequestCarriesTheCurrentIdeaAndNoExampleOrOldText() async {
-        let scenario = makeScenario(text: "Carnival in Salvador")
-        defer { scenario.defaults.tearDown() }
-        scenario.viewModel.platform = .reels
-        scenario.viewModel.length = .minutes2
-        _ = await scenario.viewModel.generateFromPrompt()
-        let request = scenario.writer.lastRequest
-        #expect(request?.source == .prompt("Carnival in Salvador"))
-        #expect(request?.platform == .reels)
-        let prompt = ScriptPromptBuilder.prompt(for: request!)
-        #expect(prompt.contains("The video: Carnival in Salvador"))
-        for example in GenerateScriptViewModel.examples {
-            #expect(!prompt.contains(example))
-        }
-        // The chips are gone with their guidance: nothing but the idea says what the video is.
-        #expect(!prompt.contains("useful tip") && !prompt.contains("shows a product") && !prompt.contains("tells a story"))
-    }
-
-    @Test func aGenerateSheetOpenedOnItsOwnHasItsOwnTextAndTheCardsStaysUntouched() {
-        let defaults = TestDefaults()
-        defer { defaults.tearDown() }
-        let ideaDraft = IdeaDraftService()
-        ideaDraft.text = "The card's idea"
-        let viewModel = GenerateScriptViewModel(
-            writer: FakeScriptWriter(), library: ScriptLibraryService(repository: FakeScriptRepository(), now: { TestData.now }),
-            profile: CreatorProfileService(defaults: defaults.defaults), rules: TestData.rulesService(), toast: ToastService()
-        )
-        #expect(viewModel.promptText.isEmpty)
-        viewModel.promptText = "Something else"
-        #expect(ideaDraft.text == "The card's idea")
-    }
-
-    @Test func theDraftSurvivesOpeningCancellingAndConfirmingTheVoiceSetup() {
-        let scenario = makeScenario(text: "Carnival in Salvador,\nwith the trios elétricos")
-        defer { scenario.defaults.tearDown() }
-        let text = scenario.ideaDraft.text
-        // Opened and cancelled: nothing was saved and the text is untouched.
-        let cancelled = VoiceSetupDraft(profile: scenario.profile.profile)
-        #expect(!cancelled.canSave)
-        #expect(scenario.ideaDraft.text == text && scenario.viewModel.promptText == text)
-        #expect(!scenario.profile.writesInMyVoice)
-        // Confirmed: the voice turns on and the text is exactly as it was.
-        var confirmed = VoiceSetupDraft(profile: scenario.profile.profile)
-        confirmed.toggle(Niche.lifestyle)
-        confirmed.choose(.genZ)
-        confirmed.toggle(VoiceSound.funny)
-        confirmed.save(to: scenario.profile)
-        #expect(scenario.profile.writesInMyVoice)
-        #expect(scenario.ideaDraft.text == text && scenario.viewModel.promptText == text)
-    }
-
-    @Test func withoutAnyPersonalizationTheIdeaStillWritesAScriptAndKeepsTheDraftUntilThen() async {
-        let scenario = makeScenario(text: "Carnival in Salvador")
-        defer { scenario.defaults.tearDown() }
-        #expect(!scenario.viewModel.writesInMyVoice)
-        // Opening the generation screen starts nothing: the draft is there to confirm.
-        #expect(scenario.writer.lastRequest == nil && scenario.viewModel.promptText == "Carnival in Salvador")
-        let script = await scenario.viewModel.generateFromPrompt()
-        #expect(script != nil)
-        #expect(scenario.writer.lastRequest?.voice == nil)
-        #expect(scenario.writer.lastRequest?.source == .prompt("Carnival in Salvador"))
-        // The idea is a script now: the card starts empty, with the choices back to the defaults.
-        #expect(scenario.ideaDraft.isEmpty && scenario.ideaDraft.platform == nil && scenario.ideaDraft.length == .auto)
-    }
-
-    @Test func theDraftStaysUntilItIsWrittenAndAScriptFromABriefLeavesIt() async {
-        let scenario = makeScenario(text: "Carnival in Salvador")
-        defer { scenario.defaults.tearDown() }
-        scenario.viewModel.platform = .reels
-        // A failed request keeps it, to try again.
-        scenario.writer.error = ScriptAIError.emptyResponse
-        #expect(await scenario.viewModel.generateFromPrompt() == nil)
-        #expect(scenario.ideaDraft.text == "Carnival in Salvador" && scenario.ideaDraft.platform == .reels)
-        scenario.writer.error = nil
-        // Formats, opened from the same screen, writes from its brief: the idea wasn't used, so it stays.
-        scenario.viewModel.choose(.review)
-        #expect(await scenario.viewModel.generateFromBrief() != nil)
-        #expect(scenario.ideaDraft.text == "Carnival in Salvador" && scenario.ideaDraft.platform == .reels)
-    }
-
-    @Test func theIdeaSheetHasItsOwnIdentity() {
-        #expect(AppSheet.generateIdea.id == "generateIdea")
-        #expect(AppSheet.generateIdea.id != AppSheet.generateScript(.prompt).id)
-    }
-
-    @Test func platformAndLengthChosenForTheIdeaSurviveClosingAndReopeningGenerate() {
-        let scenario = makeScenario(text: "Carnival in Salvador")
-        defer { scenario.defaults.tearDown() }
-        scenario.viewModel.platform = .reels
-        scenario.viewModel.length = .minutes2
-        // A new Generate screen over the same draft (the old one was closed) finds the same choices.
-        let reopened = GenerateScriptViewModel(
-            ideaDraft: scenario.ideaDraft, writer: scenario.writer,
-            library: ScriptLibraryService(repository: FakeScriptRepository(), now: { TestData.now }),
-            profile: scenario.profile, rules: TestData.rulesService(), toast: ToastService()
-        )
-        #expect(reopened.platform == .reels && reopened.length == .minutes2)
-        #expect(reopened.promptText == "Carnival in Salvador")
-        // Once the idea is a script, the next one starts from the defaults.
-        scenario.ideaDraft.clear()
-        #expect(scenario.ideaDraft.platform == nil && scenario.ideaDraft.length == .auto)
+    @Test func clearingTheDraftBringsBackTheDefaultsIncludingTheFormat() {
+        let service = IdeaDraftService()
+        service.text = "Carnival in Salvador"
+        service.platform = .reels
+        service.length = .minutes2
+        service.format = .review
+        service.clear()
+        #expect(service.isEmpty && service.platform == nil && service.length == .auto && service.format == nil)
     }
 
     @Test func aDictationEndingAfterTheComposerClosedStillWritesIntoTheDraft() {

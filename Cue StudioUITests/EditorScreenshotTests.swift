@@ -57,7 +57,7 @@ final class EditorScreenshotTests: XCTestCase {
         EditorApp.mainTrack(app, at: 0.5).tap()
         try capture("06-transition")
         apply()
-        EditorApp.tapTool(app, "pauses")
+        EditorApp.openPauses(app)
         try capture("07-pauses")
         apply()
         EditorApp.tapTool(app, "captions")
@@ -95,9 +95,10 @@ final class EditorScreenshotTests: XCTestCase {
             try capture("\(17 + index)-\(tool)")
             apply()
         }
-        app.buttons["edit.exportButton"].tap()
-        try capture("21-export")
-        app.buttons["edit.export.close"].tap()
+        app.buttons["edit.doneButton"].tap()
+        XCTAssertTrue(app.buttons["edit.done.share"].waitForExistence(timeout: 5))
+        try capture("21-done-question")
+        app.swipeDown()
         app.buttons["edit.fullScreenButton"].tap()
         try capture("22-full-screen")
     }

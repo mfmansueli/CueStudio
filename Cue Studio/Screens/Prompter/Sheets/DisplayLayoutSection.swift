@@ -123,13 +123,6 @@ struct DisplayLayoutSection: View {
             )
             .disabled(current == nil)
             .accessibilityIdentifier("display.showSafeZoneToggle")
-            SettingToggleRow(
-                title: String(localized: "Hide controls while recording"),
-                detail: String(localized: "Keeps only the text, line and stop"),
-                isOn: $session.prompter.hidesControlsWhileRecording,
-                minHeight: 56
-            )
-            .accessibilityIdentifier("display.hideControlsToggle")
         }
         .animation(.smooth(duration: 0.25), value: current)
     }

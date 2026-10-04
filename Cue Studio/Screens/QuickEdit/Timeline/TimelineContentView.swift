@@ -241,8 +241,9 @@ final class TimelineContentView: UIView {
             let right = min(clip.frame.maxX, visible.maxX) - originX
             label.frame.origin = CGPoint(x: right - label.frame.width - 5, y: 5)
             container.addSublayer(label)
+            // A picked clip is framed in white; its handles are the yellow part.
             container.borderWidth = 2
-            container.borderColor = UIColor(Palette.acc).cgColor
+            container.borderColor = UIColor.white.cgColor
         }
         layersRoot.addSublayer(container)
     }
@@ -300,7 +301,7 @@ final class TimelineContentView: UIView {
             ring.frame = item.frame.insetBy(dx: -2, dy: -2)
             ring.cornerRadius = Metrics.laneItemRadius + 2
             ring.borderWidth = 2
-            ring.borderColor = UIColor(Palette.acc).cgColor
+            ring.borderColor = UIColor.white.cgColor
             layersRoot.addSublayer(ring)
         }
         let box = CALayer()
@@ -433,9 +434,9 @@ final class TimelineContentView: UIView {
 
     private static func style(of kind: TimelineGeometry.ItemKind, selected: Bool) -> ItemStyle {
         switch kind {
-        case .text: ItemStyle(fill: UIColor(selected ? Palette.laneTextSelected : Palette.laneText), ink: UIColor(Palette.acc), symbol: "textformat")
+        case .text: ItemStyle(fill: UIColor(selected ? Palette.laneTextSelected : Palette.laneText), ink: UIColor(Palette.laneTextInk), symbol: "textformat")
         case .media: ItemStyle(fill: UIColor(Palette.laneMedia), ink: UIColor(Palette.laneMediaInk), symbol: "photo")
-        case .caption: ItemStyle(fill: UIColor(Palette.laneCaption), ink: .white, symbol: "captions.bubble")
+        case .caption: ItemStyle(fill: UIColor(Palette.laneCaption), ink: UIColor(Palette.laneCaptionInk), symbol: "captions.bubble")
         case .music: ItemStyle(fill: UIColor(Palette.laneMusic), ink: UIColor(Palette.laneMusicInk), symbol: "music.note")
         case .voiceOver: ItemStyle(fill: UIColor(Palette.laneVoiceOver), ink: UIColor(Palette.laneVoiceOverInk), symbol: "mic")
         case .recording: ItemStyle(fill: UIColor(Palette.laneRecording), ink: .white, symbol: "mic.fill")

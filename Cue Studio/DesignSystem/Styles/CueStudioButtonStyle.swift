@@ -25,6 +25,8 @@ struct CueStudioButtonStyle: ButtonStyle {
         case destructive
         /// Soft red, red label: a small remove next to other choices.
         case destructiveTinted
+        /// Violet, the AI's color: "✦ Shape", "✦ Rewrite".
+        case ai
     }
 
     enum Size {
@@ -81,6 +83,7 @@ struct CueStudioButtonStyle: ButtonStyle {
             switch variant {
             case .primary: Palette.accInk
             case .tinted: Palette.accText
+            case .ai: Palette.aiTextStrong
             case .secondary, .outline, .glass, .destructive: Palette.ink
             case .light: Palette.bg
             case .destructiveTinted: Palette.dangerText
@@ -92,6 +95,7 @@ struct CueStudioButtonStyle: ButtonStyle {
             case .primary: Palette.acc
             case .secondary: Palette.surface2
             case .tinted: Palette.accSoft
+            case .ai: Palette.aiFill
             case .outline, .glass: .clear
             case .light: Palette.ink
             case .destructive: Palette.dangerFill
@@ -124,6 +128,10 @@ extension ButtonStyle where Self == CueStudioButtonStyle {
 
     static func cueLight(_ size: CueStudioButtonStyle.Size = .regular, expands: Bool = true) -> CueStudioButtonStyle {
         CueStudioButtonStyle(variant: .light, size: size, expands: expands)
+    }
+
+    static func cueAI(_ size: CueStudioButtonStyle.Size = .regular, expands: Bool = true) -> CueStudioButtonStyle {
+        CueStudioButtonStyle(variant: .ai, size: size, expands: expands)
     }
 
     static func cueDestructive(_ size: CueStudioButtonStyle.Size = .regular, expands: Bool = true) -> CueStudioButtonStyle {

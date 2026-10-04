@@ -16,7 +16,9 @@ struct CoverPreviewLayer: View {
 
     var body: some View {
         ZStack {
-            if let data = viewModel.coverImage, let image = UIImage(data: data) {
+            if viewModel.coverPreview == .grid, let data = viewModel.coverImage, let image = UIImage(data: data) {
+                gridPreview(image)
+            } else if let data = viewModel.coverImage, let image = UIImage(data: data) {
                 Image(uiImage: image)
                     .resizable()
                     .scaledToFill()
@@ -35,6 +37,38 @@ struct CoverPreviewLayer: View {
         }
         .frame(width: size.width, height: size.height)
         .allowsHitTesting(viewModel.coverImage != nil)
+    }
+
+    /// The cover among the series on a profile: a 3 × 3 grid of 3:4 tiles, this cover in the middle
+    /// ringed in yellow and the others placeholders numbered in the cover's typeface.
+    private func gridPreview(_ cover: UIImage) -> some View {
+        let spacing: CGFloat = 2
+        let tileWidth = min((size.width - spacing * 2) / 3, (size.height - spacing * 2) / 3 * 3 / 4)
+        let tile = CGSize(width: tileWidth, height: tileWidth * 4 / 3)
+        let design = viewModel.coverDesign
+        return LazyVGrid(columns: Array(repeating: GridItem(.fixed(tile.width), spacing: spacing), count: 3), spacing: spacing) {
+            ForEach(0..<9, id: \.self) { index in
+                if index == 4 {
+                    Image(uiImage: cover)
+                        .resizable()
+                        .scaledToFill()
+                        .frame(width: tile.width, height: tile.height)
+                        .clipped()
+                        .overlay(Rectangle().strokeBorder(Palette.acc, lineWidth: 2))
+                } else {
+                    Text("EP " + String(format: "%02d", max(1, design.episode + 4 - index)))
+                        .font(Font(CoverDesignRenderer.words(design.font, size: tile.width * 0.2)))
+                        .foregroundStyle(Palette.ink2)
+                        .frame(width: tile.width, height: tile.height)
+                        .background(Palette.surface2)
+                }
+            }
+        }
+        .frame(width: size.width, height: size.height)
+        .background(Color.black)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(Text("Profile grid"))
+        .accessibilityIdentifier("edit.coverGrid")
     }
 
     /// A line where the title will land while it's dragged.

@@ -93,4 +93,26 @@ struct AuroraMotionTests {
         // A whole lap is where it began.
         #expect(AuroraMotion.offsetFromCenter(atPerimeterFraction: 1, size: size) == CGPoint(x: -100, y: -50))
     }
+
+    @Test func theScanLineEntersBeyondTheLeftEdgeAndLeavesBeyondTheRightOne() {
+        let half = AuroraMotion.scanLength / 2
+        #expect(abs(AuroraMotion.scanCenter(at: 0) - (-half)) < 0.0001)
+        #expect(AuroraMotion.scanCenter(at: AuroraMotion.scanDuration / 2) > 0.4)
+        #expect(AuroraMotion.scanCenter(at: AuroraMotion.scanDuration / 2) < 0.6)
+        // Just before a lap ends it is past the right edge, and the next lap starts where this began.
+        #expect(AuroraMotion.scanCenter(at: AuroraMotion.scanDuration - 0.001) > 1 + half - 0.01)
+        #expect(abs(AuroraMotion.scanCenter(at: AuroraMotion.scanDuration) - AuroraMotion.scanCenter(at: 0)) < 0.0001)
+    }
+
+    @Test func theScanLineMovesAtAnEvenPaceWithoutJumping() {
+        var previous = AuroraMotion.scanCenter(at: 0)
+        var time = frame
+        while time < AuroraMotion.scanDuration - frame {
+            let current = AuroraMotion.scanCenter(at: time)
+            #expect(current > previous)
+            #expect(current - previous < 0.01)
+            previous = current
+            time += frame
+        }
+    }
 }

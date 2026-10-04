@@ -1,0 +1,144 @@
+{
+  "version": "v26",
+  "rule": "Appearance: Automatic follows iOS. Video screens (recorder, review, editor) and sheets opened from them are always dark. Everything else follows Appearance.",
+  "tokens": [
+    {
+      "name": "bg/app",
+      "dark": "#0A0B12 + slow violet aurora",
+      "light": "#F4F5FA + soft violet wash",
+      "use": "Tab screens, script page"
+    },
+    {
+      "name": "bg/sheet",
+      "dark": "rgba(18,20,34,0.96) glass",
+      "light": "#F4F5FA",
+      "use": "Sheets from tab screens"
+    },
+    {
+      "name": "bg/card",
+      "dark": "#161826",
+      "light": "#FFFFFF + shadow 0 1 2 rgba(20,20,60,.05)",
+      "use": "Lists, grouped rows"
+    },
+    {
+      "name": "bg/card-raised",
+      "dark": "#1F2236",
+      "light": "#E6E8F2",
+      "use": "Inputs, rows inside cards"
+    },
+    {
+      "name": "bg/glass",
+      "dark": "rgba(14,16,28,0.6–0.88) + 0.5px rim rgba(180,167,255,.22)",
+      "light": "rgba(255,255,255,0.94) + 0.5px rim rgba(60,60,90,.12)",
+      "use": "Bars, floating controls, tab bar"
+    },
+    {
+      "name": "bg/hero-ai",
+      "dark": "Violet aurora card (rotating 24 s) + yellow scan line",
+      "light": "Solid violet gradient, white text",
+      "use": "Let’s Cue!, Your setup, My Cue Voice"
+    },
+    {
+      "name": "fill/control",
+      "dark": "rgba(110,116,150,0.26)",
+      "light": "#E6E8F2",
+      "use": "Unselected chip, segmented track, round buttons"
+    },
+    {
+      "name": "fill/segment-on",
+      "dark": "#636366",
+      "light": "#FFFFFF + shadow 0 1 3 rgba(0,0,0,.12)",
+      "use": "Active segment"
+    },
+    {
+      "name": "fill/chip-on",
+      "dark": "#FFFFFF / text #000",
+      "light": "#0F1020 / text #FFF",
+      "use": "Selected text chip"
+    },
+    {
+      "name": "separator",
+      "dark": "rgba(80,86,120,0.5)",
+      "light": "rgba(60,60,90,0.14)",
+      "use": "Hairlines 0.5px"
+    },
+    {
+      "name": "text/primary",
+      "dark": "#FFFFFF",
+      "light": "#0F1020",
+      "use": ""
+    },
+    {
+      "name": "text/secondary",
+      "dark": "rgba(225,228,245,0.62)",
+      "light": "#53566C",
+      "use": ""
+    },
+    {
+      "name": "text/tertiary",
+      "dark": "rgba(225,228,245,0.4)",
+      "light": "#8A8DA2",
+      "use": "Placeholders, hints"
+    },
+    {
+      "name": "accent/action",
+      "dark": "#FFD60A fill, #000 text",
+      "light": "#FFD60A fill, #000 text",
+      "use": "ONE primary action or ✓ per screen"
+    },
+    {
+      "name": "accent/signal",
+      "dark": "#FFD60A text (mono HUD)",
+      "light": "#8A6A00 text",
+      "use": "Counters, time, status, links"
+    },
+    {
+      "name": "accent/selected-ring",
+      "dark": "2px #FFD60A + 12% tint",
+      "light": "2px #FFD60A + 12% tint",
+      "use": "Selected visual tile"
+    },
+    {
+      "name": "ai/text",
+      "dark": "#B4A7FF (strong #E4DEFF)",
+      "light": "#5B48D9 (strong #3E2DB8)",
+      "use": "✦, My Cue Voice, Smart, suggestions"
+    },
+    {
+      "name": "ai/fill",
+      "dark": "rgba(157,140,255,0.14–0.2)",
+      "light": "rgba(91,72,217,0.10)",
+      "use": "AI chips, AI tiles"
+    },
+    {
+      "name": "status/ok",
+      "dark": "#34C759",
+      "light": "#248A3D (text) · #34C759 (toggle)",
+      "use": "READY, FITS, toggle on"
+    },
+    {
+      "name": "status/warn",
+      "dark": "#FF9F0A",
+      "light": "#C26A00",
+      "use": "Duration warnings, export meter"
+    },
+    {
+      "name": "status/danger",
+      "dark": "#FF453A",
+      "light": "#FF3B30",
+      "use": "Delete, record dot"
+    },
+    {
+      "name": "platform/tiktok",
+      "dark": "#64D2FF",
+      "light": "#0071A4 (text) · dot unchanged",
+      "use": "Platform dots"
+    },
+    {
+      "name": "video/always-dark",
+      "dark": "Selfie, Studio, Take review, Editor and their sheets",
+      "light": "Same (always dark)",
+      "use": "Like Camera/Photos: color judgment needs dark"
+    }
+  ]
+}

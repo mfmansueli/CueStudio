@@ -5,47 +5,72 @@
 
 import Foundation
 
-/// The Takes library: videos (takes grouped by script) filtered by platform and view, by day.
+/// The Takes library: videos (takes grouped by script, each at the stage its takes put it in)
+/// filtered by platform and by the stage picked in the pipeline, by day.
 @MainActor
 @Observable
 final class TakesViewModel {
     var filter = TakeLibraryFilter()
     /// Video whose takes are about to be deleted, for the confirmation.
     var videoToDelete: TakeVideo?
+    /// Bumped when the tab shows again: an edit left open in the editor changes a stage without
+    /// touching the takes.
+    private(set) var editRevision = 0
 
     private let takes: TakeLibraryService
     private let library: ScriptLibraryService
+    private let drafts: QuickEditDraftStoring
+    private let presentation: PresentationService
     private let toast: ToastService
     private let now: () -> Date
 
-    init(takes: TakeLibraryService, library: ScriptLibraryService, toast: ToastService, now: @escaping () -> Date = Date.init) {
+    init(
+        takes: TakeLibraryService, library: ScriptLibraryService, drafts: QuickEditDraftStoring,
+        presentation: PresentationService, toast: ToastService, now: @escaping () -> Date = Date.init
+    ) {
         self.takes = takes
         self.library = library
+        self.drafts = drafts
+        self.presentation = presentation
         self.toast = toast
         self.now = now
     }
 
     // MARK: - Reading
 
-    var videos: [TakeVideo] {
-        TakeLibraryFilter.videos(from: takes.takes) { [library] in library.script(id: $0)?.platform }
+    /// Every video, newest first, with its stage.
+    var allVideos: [TakeVideo] {
+        _ = editRevision
+        return TakeLibraryFilter.videos(
+            from: takes.takes,
+            scriptPlatform: { [library] in library.script(id: $0)?.platform },
+            hasDraft: { [drafts] in drafts.hasDraft(for: $0) }
+        )
+    }
+
+    /// The header: how many at each stage, and the next step, for the platform picked.
+    var pipeline: TakePipeline {
+        TakePipeline(videos: filter.onPlatform(allVideos))
     }
 
     var sections: [TakeLibraryFilter.Section] {
-        filter.sections(of: videos, now: now())
+        filter.sections(of: allVideos, now: now())
     }
 
     var isEmpty: Bool { takes.takes.isEmpty }
 
-    /// "11 takes · 5 videos"
-    var summary: String {
-        guard !isEmpty else { return "" }
-        return String(localized: "\(takes.takes.count) takes · \(videos.count) videos")
+    /// "12 TAKES / 05 VIDEOS" as two zero-padded counts, like the pipeline's.
+    var summaryValues: [String] {
+        let all = allVideos
+        return [
+            String(localized: "\(takes.takes.count.formatted(.number.precision(.integerLength(2...)))) takes"),
+            String(localized: "\(all.count.formatted(.number.precision(.integerLength(2...)))) videos"),
+        ]
     }
 
-    /// Platform chips: All, then the primary platforms (Stories only once a take uses it).
+    /// Platform menu: All, then the primary platforms (Stories only once a take uses it).
     var platformOptions: [Platform?] {
-        let used = Set(videos.compactMap(\.platform))
+        let used = Set(allVideos.compactMap(\.platform))
         return [nil] + Platform.allCases.filter { Platform.primary.contains($0) || used.contains($0) }
     }
 
@@ -60,6 +85,30 @@ final class TakesViewModel {
     }
 
     // MARK: - Actions
+
+    func refresh() {
+        editRevision += 1
+    }
+
+    /// Tapping the stage that is picked clears it.
+    func toggle(_ stage: TakeStage) {
+        filter.stage = filter.stage == stage ? nil : stage
+    }
+
+    func open(_ video: TakeVideo, then action: ReviewLaunchAction? = nil) {
+        guard let best = video.best else { return }
+        presentation.openReview(of: best, then: action)
+    }
+
+    func retake(_ video: TakeVideo) {
+        presentation.openPrompter(scriptID: video.best?.scriptID, mode: .selfie)
+    }
+
+    func markBest(_ video: TakeVideo) {
+        guard let best = video.best, !best.isBest else { return }
+        takes.setBest(best.id, isBest: true)
+        toast.show(String(localized: "\(best.label) marked as best"))
+    }
 
     func deleteConfirmed() {
         guard let video = videoToDelete else { return }

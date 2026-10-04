@@ -26,8 +26,12 @@ struct GroupedCard<Content: View>: View {
                 }
             }
         }
-        .background(background, in: RoundedRectangle(cornerRadius: radius, style: .continuous))
         .clipShape(RoundedRectangle(cornerRadius: radius, style: .continuous))
+        .background {
+            RoundedRectangle(cornerRadius: radius, style: .continuous)
+                .fill(background)
+                .shadow(color: Palette.cardShadow, radius: 1, y: 1)
+        }
     }
 }
 

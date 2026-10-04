@@ -10,12 +10,16 @@ struct ScriptActionsMenu: View {
     let script: Script
     let folders: [String]
     let actions: ScriptActions
+    /// Record, Studio mode and Edit lead the menu; the script page has its own for those.
+    var showsOpeningActions = true
 
     var body: some View {
-        Button("Record", systemImage: "video") { actions.record(script) }
-        Button("Studio mode", systemImage: "text.alignleft") { actions.studio(script) }
-        Button("Edit", systemImage: "pencil") { actions.edit(script) }
-        Divider()
+        if showsOpeningActions {
+            Button("Record", systemImage: "video") { actions.record(script) }
+            Button("Studio mode", systemImage: "text.alignleft") { actions.studio(script) }
+            Button("Edit", systemImage: "pencil") { actions.edit(script) }
+            Divider()
+        }
         Button("Duplicate", systemImage: "plus.square.on.square") { actions.duplicate(script) }
         Menu("Move to folder", systemImage: "folder") {
             ForEach(folders, id: \.self) { folder in

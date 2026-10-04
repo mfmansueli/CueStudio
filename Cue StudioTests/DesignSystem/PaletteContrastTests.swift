@@ -74,6 +74,7 @@ struct PaletteContrastTests {
     private let textTokens: [(name: String, color: Color)] = [
         ("ink", Palette.ink), ("ink2", Palette.ink2), ("accText", Palette.accText), ("warnText", Palette.warnText),
         ("dangerText", Palette.dangerText), ("infoText", Palette.infoText), ("successText", Palette.successText),
+        ("aiText", Palette.aiText), ("aiTextStrong", Palette.aiTextStrong),
     ]
 
     private let tertiaryToken: [(name: String, color: Color)] = [("ink3", Palette.ink3)]
@@ -106,6 +107,7 @@ struct PaletteContrastTests {
         let pairs: [(name: String, text: Color, tint: Color)] = [
             ("accText", Palette.accText, Palette.accSoft), ("warnText", Palette.warnText, Palette.warnSoft),
             ("infoText", Palette.infoText, Palette.infoSoft), ("dangerText", Palette.dangerText, Palette.dangerSoft),
+            ("aiText", Palette.aiText, Palette.aiFill), ("aiTextStrong", Palette.aiTextStrong, Palette.aiFill),
         ]
         for appearance in Appearance.allCases {
             for pair in pairs {
@@ -126,6 +128,39 @@ struct PaletteContrastTests {
             #expect(ratio(.white, on: Palette.dangerFill, in: appearance) >= ColorContrast.textMinimum, "white on dangerFill, \(appearance)")
             #expect(ratio(Palette.bg, on: Palette.ink, in: appearance) >= ColorContrast.textMinimum, "a selected chip, \(appearance)")
             #expect(ratio(.white, on: Palette.neutralAction, in: appearance) >= ColorContrast.textMinimum, "white on neutralAction, \(appearance)")
+            // v26 controls: the selected chip and the selected segment, with the text they carry.
+            #expect(ratio(Palette.chipOnInk, on: Palette.chipOn, in: appearance) >= ColorContrast.textMinimum, "the selected chip, \(appearance)")
+            #expect(ratio(Palette.ink, on: Palette.segmentOn, in: appearance) >= ColorContrast.textMinimum, "the selected segment, \(appearance)")
+            #expect(ratio(Palette.ink, on: Palette.fill, in: appearance) >= ColorContrast.textMinimum, "an unselected chip, \(appearance)")
+        }
+    }
+
+    /// The light appearance's hero cards are solid violet with night content: the text a card shows
+    /// (ink, secondary ink, the yellow and violet signals) has to read at both ends of the gradient.
+    @Test func theHeroCardsReadWithTheirNightContentOnTheLightVioletFill() {
+        for fill in [("heroTop", Palette.heroTop), ("heroBottom", Palette.heroBottom)] {
+            #expect(ratio(Palette.ink, on: fill.1, in: .dark) >= ColorContrast.textMinimum, "ink on \(fill.0)")
+            #expect(ratio(Palette.ink2, on: fill.1, in: .dark) >= ColorContrast.textMinimum, "ink2 on \(fill.0)")
+            #expect(ratio(Palette.accText, on: fill.1, in: .dark) >= ColorContrast.textMinimum, "accText on \(fill.0)")
+        }
+    }
+
+    /// The selected chip also has to stand out from the surface it sits on, as an outline would (3:1).
+    @Test func theSelectedChipStandsOutFromEverySurface() {
+        for appearance in Appearance.allCases {
+            for surface in surfaces {
+                #expect(ratio(Palette.chipOn, on: surface.color, in: appearance) >= ColorContrast.componentMinimum, "\(surface.name), \(appearance)")
+            }
+        }
+    }
+
+    /// Night glass (bars, floating controls) over the app's background: every text token reads on it.
+    @Test func textReadsOnNightGlass() {
+        for appearance in Appearance.allCases {
+            for token in textTokens {
+                let value = ratio(token.color, onTint: Palette.glassFill, over: Palette.bg, in: appearance)
+                #expect(value >= ColorContrast.textMinimum, "\(token.name) on night glass, \(appearance): \(value)")
+            }
         }
     }
 
@@ -252,6 +287,51 @@ struct PaletteContrastTests {
         let black = ColorContrast.RGB(red: 0, green: 0, blue: 0)
         let icon = rgb(Palette.laneGutterInk, in: .dark, over: black)
         #expect(ColorContrast.ratio(icon, black) >= ColorContrast.componentMinimum, "a track's icon in the gutter")
+    }
+
+    /// v26 lanes: each track's ink on its own fill, over the strip it sits on.
+    @Test func theLanesInksReadOnTheirFills() {
+        let lanes: [(name: String, fill: Color, ink: Color)] = [
+            ("Aa", Palette.laneText, Palette.laneTextInk), ("Aa selected", Palette.laneTextSelected, Palette.laneTextInk),
+            ("captions", Palette.laneCaption, Palette.laneCaptionInk), ("music", Palette.laneMusic, Palette.laneMusicInk),
+            ("voice-over", Palette.laneVoiceOver, Palette.laneVoiceOverInk), ("overlay", Palette.laneMedia, Palette.laneMediaInk),
+        ]
+        for strip in [Palette.laneStrip, Palette.laneStripActive] {
+            let base = rgb(strip, in: .dark)
+            for lane in lanes {
+                let fill = rgb(lane.fill, in: .dark, over: base)
+                let ink = rgb(lane.ink, in: .dark, over: fill)
+                #expect(ColorContrast.ratio(ink, fill) >= ColorContrast.textMinimum, "\(lane.name) on its lane")
+            }
+        }
+    }
+
+    /// The platform's recommendation over the camera: violet gradient (90% over black), its lines in
+    /// `aiTextStrong`, the title and the icon's glyph. The warning card is night, with `ink2` lines.
+    @Test func theCardsOverTheCameraReadOnTheirOwnFills() {
+        let black = ColorContrast.RGB(red: 0, green: 0, blue: 0)
+        for fill in [Palette.recommendationTop, Palette.recommendationBottom] {
+            let card = rgb(fill, in: .dark, over: black)
+            #expect(ColorContrast.ratio(rgb(Palette.aiTextStrong, in: .dark, over: card), card) >= ColorContrast.textMinimum, "a line on the recommendation")
+            #expect(ColorContrast.ratio(rgb(Palette.ink, in: .dark, over: card), card) >= ColorContrast.textMinimum, "the title on the recommendation")
+            let disc = rgb(Palette.recommendationIconFill, in: .dark, over: card)
+            #expect(ColorContrast.ratio(rgb(Palette.recommendationIcon, in: .dark, over: disc), disc) >= ColorContrast.componentMinimum, "the icon")
+        }
+        let warning = rgb(Palette.warningCard, in: .dark, over: black)
+        for token in [Palette.ink, Palette.ink2, Palette.warnText] {
+            #expect(ColorContrast.ratio(rgb(token, in: .dark, over: warning), warning) >= ColorContrast.textMinimum, "the warning card")
+        }
+    }
+
+    /// The toolbar's HUD and chips sit on the solid night glass (88%) over a bright camera feed.
+    @Test func theToolbarsTextReadsOnSolidNightGlassOverAnyFeed() {
+        for feed in [ColorContrast.RGB(red: 0, green: 0, blue: 0), ColorContrast.RGB(red: 1, green: 1, blue: 1)] {
+            let glass = ColorContrast.composite(ColorContrast.RGB(hex: 0x0E101C), alpha: 0.88, over: feed)
+            for token in [Palette.ink, Palette.ink2, Palette.accText] {
+                let text = rgb(token, in: .dark, over: glass)
+                #expect(ColorContrast.ratio(text, glass) >= ColorContrast.textMinimum, "text on solid glass")
+            }
+        }
     }
 
     // MARK: - The math

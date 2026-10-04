@@ -43,8 +43,27 @@ struct QuickEditToolbarTests {
 
     @Test func theMainToolbarHasEveryToolWithNothingPicked() async {
         let viewModel = await makeScenario().viewModel
-        #expect(ids(viewModel) == ["edit", "text", "captions", "audio", "pauses", "media", "adjust", "filters", "background", "crop"])
+        #expect(ids(viewModel) == ["edit", "audio", "text", "captions", "filters", "adjust", "crop", "background", "media", "smart"])
         #expect(viewModel.toolbarContextLabel == nil)
+    }
+
+    @Test func smartIsTheLastToolAndTheOnlyVioletOne() async {
+        let viewModel = await makeScenario().viewModel
+        let items = viewModel.toolbarItems
+        #expect(items.last?.id == "smart")
+        #expect(items.last?.style == .smart)
+        #expect(items.last?.action == .open(.smart))
+        #expect(items.dropLast().allSatisfy { $0.style == .normal })
+        // Overlay is Media's tool, and pauses live in Smart now.
+        #expect(items.first { $0.id == "media" }?.label == "Overlay")
+        #expect(!items.contains { $0.id == "pauses" })
+    }
+
+    @Test func theAudioMenuNamesStudioVoice() async {
+        let viewModel = await makeScenario().viewModel
+        viewModel.perform(.openMenu(.audio))
+        #expect(ids(viewModel) == ["voice", "music", "voiceOver"])
+        #expect(viewModel.toolbarItems.first?.label == "Studio Voice")
     }
 
     @Test func editPicksTheClipUnderThePlayheadAndShowsItsTools() async {

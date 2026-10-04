@@ -5,9 +5,9 @@
 
 import SwiftUI
 
-/// Which microphone the take records from, next to the capture controls, so the creator can
-/// check it before tapping record. The dot is green while that input is connected. Tapping it opens
-/// Audio Input.
+/// Which microphone the take records from, as the first half of the toolbar's HUD line
+/// ("● IPHONE MIC · 1080P 30 · 9:16 ›"), so the creator can check it before tapping record. The
+/// dot is green while that input is connected. Tapping it opens Audio Input.
 struct AudioInputPill: View {
     let isEnabled: Bool
     let action: () -> Void
@@ -17,21 +17,16 @@ struct AudioInputPill: View {
 
     var body: some View {
         Button(action: action) {
-            HStack(spacing: 6) {
-                Image(systemName: audio.isMicrophoneAllowed ? "mic.fill" : "mic.slash.fill")
-                    .font(.caption2.weight(.semibold))
-                    .foregroundStyle(Palette.ink2)
+            HStack(spacing: 5) {
                 ColorDot(color: dotColor, size: 6)
                 Text(title)
-                    .font(.caption.weight(.semibold))
-                    .foregroundStyle(Palette.ink)
+                    .textCase(.uppercase)
                     .lineLimit(1)
             }
-            .padding(.horizontal, 10)
-            .padding(.vertical, 4)
-            .frame(minHeight: 26)
-            .background(Palette.overlayFill, in: Capsule())
-            .frame(minHeight: 40)
+            .font(CueStudioFont.hud)
+            .tracking(0.6)
+            .foregroundStyle(Palette.ink)
+            .frame(minHeight: Metrics.hitTarget)
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)

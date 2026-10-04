@@ -36,39 +36,33 @@ final class CreateScriptUITests: XCTestCase {
         XCTAssertTrue(newScript.waitForExistence(timeout: 5))
         newScript.tap()
 
-        XCTAssertTrue(app.buttons["newScript.prompt"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.buttons["newScript.write"].waitForExistence(timeout: 5))
     }
 
-    func testPlusOffersEveryWayToStartAScript() {
+    func testPlusOffersWriteMyOwnAndImportOnly() {
         let app = CueApp.launch(seeded: true)
         let plus = app.buttons["scripts.newButton"]
         XCTAssertTrue(plus.waitForExistence(timeout: 15))
         plus.tap()
 
-        XCTAssertTrue(app.buttons["newScript.prompt"].waitForExistence(timeout: 5))
-        for tile in ["newScript.write", "newScript.import", "newScript.themes", "newScript.formats"] {
-            XCTAssertTrue(app.buttons[tile].exists, "Missing \(tile)")
+        // The AI lives in the idea card, not in this sheet.
+        XCTAssertTrue(app.buttons["newScript.write"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.buttons["newScript.import"].exists)
+        for gone in ["newScript.prompt", "newScript.themes", "newScript.formats"] {
+            XCTAssertFalse(app.buttons[gone].exists, "\(gone) is gone")
         }
         app.buttons["newScript.write"].tap()
-        XCTAssertTrue(app.buttons["editor.doneButton"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.descendants(matching: .any)["page.draftEditor"].waitForExistence(timeout: 5))
     }
 
-    func testGeneratingAScriptOpensItInTheEditor() {
+    func testWritingAnIdeaOpensItOnThePage() {
         let app = CueApp.launch(seeded: true)
-        let plus = app.buttons["scripts.newButton"]
-        XCTAssertTrue(plus.waitForExistence(timeout: 15))
-        plus.tap()
-        let formats = app.buttons["newScript.formats"]
-        XCTAssertTrue(formats.waitForExistence(timeout: 5))
-        formats.tap()
-
-        let list = app.buttons["generate.type.list"]
-        XCTAssertTrue(list.waitForExistence(timeout: 5))
-        list.tap()
-        let generate = app.buttons["generate.generateButton"]
-        XCTAssertTrue(generate.waitForExistence(timeout: 5))
-        generate.tap()
-
-        XCTAssertTrue(app.buttons["editor.doneButton"].waitForExistence(timeout: 10))
+        let field = app.descendants(matching: .any)["ideaCard.field"].firstMatch
+        XCTAssertTrue(field.waitForExistence(timeout: 15))
+        field.tap()
+        field.typeText("3 tips for better lighting")
+        app.buttons["ideaCard.submit"].tap()
+        XCTAssertTrue(app.buttons["page.backButton"].waitForExistence(timeout: 10))
+        XCTAssertTrue(app.descendants(matching: .any)["page.draftEditor"].waitForExistence(timeout: 10))
     }
 }

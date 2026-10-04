@@ -22,6 +22,18 @@ final class ScriptDetailViewModel {
     /// `draftText` is the same thing as the text that gets saved.
     var draftParagraphs = [""]
     var sheet: Sheet?
+    /// The single page (Draft | Shaped) the creator is on while not in the full editor.
+    var page = ScriptPageState()
+    /// The pending save of what is being written on the page.
+    var pageCommitTask: Task<Void, Never>?
+    /// The model writing into the page, if it is.
+    var pageWritingTask: Task<Void, Never>?
+    /// What the AI is to write into the page when it opens (an idea sent from the card), and the
+    /// same request kept for "Try again".
+    var pendingRequest: ScriptRequest?
+    /// The words shown to the creator, a few at a time; zero with Reduce Motion.
+    let revealPause: Duration
+    let ideaDraft: IdeaDraftService?
     /// Where the editor is asked to put the caret (or to put the keyboard away).
     var focus: ParagraphFocus?
     /// The panel under the writing area in place of the keyboard.
@@ -59,6 +71,9 @@ final class ScriptDetailViewModel {
     init(
         scriptID: UUID,
         startsEditing: Bool = false,
+        writing request: ScriptRequest? = nil,
+        ideaDraft: IdeaDraftService? = nil,
+        revealPause: Duration = .milliseconds(55),
         library: ScriptLibraryService,
         takes: TakeLibraryService,
         preferences: PreferencesService,
@@ -75,7 +90,10 @@ final class ScriptDetailViewModel {
         self.rules = rules
         self.writer = writer
         self.toast = toast
-        if startsEditing { startEditing() }
+        self.ideaDraft = ideaDraft
+        self.revealPause = revealPause
+        pendingRequest = request
+        loadPage(startsInDraft: startsEditing)
     }
 
     // MARK: - Reading
@@ -89,7 +107,10 @@ final class ScriptDetailViewModel {
     }
 
     /// The draft while editing, the saved text otherwise.
-    var workingText: String { isEditing ? draftText : (script?.text ?? "") }
+    var workingText: String {
+        if isEditing { return draftText }
+        return page.isLoaded ? (page.revealed ?? page.text) : (script?.text ?? "")
+    }
 
     var structure: ScriptStructure { script?.structure ?? .generic }
 
@@ -142,7 +163,7 @@ final class ScriptDetailViewModel {
         Platform.allCases.filter { $0 != script?.platform }
     }
 
-    private var rewriteContext: RewriteContext {
+    var rewriteContext: RewriteContext {
         RewriteContext(
             structure: structure,
             platform: script?.platform ?? .tiktok,
@@ -156,6 +177,7 @@ final class ScriptDetailViewModel {
     /// Opens the editor with the caret at the end of paragraph `paragraph` (the first when the
     /// creator didn't tap one; the title for a script with nothing in it yet).
     func startEditing(atParagraph paragraph: Int? = nil) {
+        commitPage()
         guard let script else { return }
         draftTitle = script.title
         draftParagraphs = ScriptParagraphs.split(script.text)
@@ -175,6 +197,7 @@ final class ScriptDetailViewModel {
 
     /// "Discard changes": the draft goes and the script stays as it was.
     func cancelEditing() {
+        syncPage()
         isEditing = false
         undoText = nil
         tool = nil
@@ -185,6 +208,7 @@ final class ScriptDetailViewModel {
     /// the takes stay tied to what was actually read.
     func finishEditing() {
         guard isEditing, let script else { return }
+        defer { syncPage() }
         isEditing = false
         undoText = nil
         tool = nil
@@ -231,6 +255,7 @@ final class ScriptDetailViewModel {
             draftText = ScriptTextEditing.replacingOpening(of: draftText, with: hook)
         } else {
             library.update(scriptID) { $0.text = ScriptTextEditing.replacingOpening(of: $0.text, with: hook) }
+            syncPage()
         }
         sheet = nil
         toast.show(String(localized: "Hook replaced · ~\(DurationText.short(ReadTime.seconds(for: hook, speed: preferences.prompter.speed)))"))
@@ -329,6 +354,7 @@ final class ScriptDetailViewModel {
             script.text = text
             if bumpsVersion { script.version += 1 }
         }
+        syncPage()
         sheet = nil
         toast.show(message, duration: .seconds(4), action: ToastAction(title: String(localized: "Undo")) { [weak self] in
             guard let self else { return }
@@ -336,6 +362,7 @@ final class ScriptDetailViewModel {
                 script.text = before.text
                 script.version = before.version
             }
+            syncPage()
             toast.show(String(localized: "Undone"))
         })
     }

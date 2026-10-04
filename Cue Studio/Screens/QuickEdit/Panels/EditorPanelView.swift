@@ -29,6 +29,7 @@ struct EditorPanelView: View {
         case .textStyle: TextStylePanel(viewModel: viewModel)
         case .voiceOver: VoiceOverPanel(viewModel: viewModel)
         case .media: MediaPanel(viewModel: viewModel)
+        case .smart: SmartPanel(viewModel: viewModel)
         }
     }
 }

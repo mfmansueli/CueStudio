@@ -24,7 +24,7 @@ struct MainView: View {
         TabView(selection: tabSelection) {
             Tab("Scripts", systemImage: "doc.text", value: AppTab.scripts) {
                 NavigationStack(path: $presentation.scriptsPath) {
-                    ScriptsView(library: services.library, toast: services.toast, writer: services.writer)
+                    ScriptsView(library: services.library, toast: services.toast, writer: services.writer, drafts: services.drafts)
                         .navigationDestination(for: ScriptRoute.self) { route in
                             ScriptDetailView(route: route, services: services)
                         }
@@ -52,8 +52,11 @@ struct MainView: View {
                         .navigationDestination(for: SettingsRoute.self) { route in
                             switch route {
                             case .languageRegion: LanguageRegionView()
-                            case .creatorSetup:
-                                CreatorSetupView(preferences: preferences, microphones: services.audio, toast: toast)
+                            case .recording:
+                                SettingsRecordingView(preferences: preferences, microphones: services.audio, toast: toast)
+                            case .prompter:
+                                SettingsPrompterView(preferences: preferences, microphones: services.audio, toast: toast)
+                            case .remote: RemoteControlView()
                             case .acknowledgements: AcknowledgementsView()
                             }
                         }
@@ -90,11 +93,8 @@ struct MainView: View {
         case .newScript:
             NewScriptSheet(
                 mode: .new,
-                onPrompt: { presentation.present(.generateScript(.prompt)) },
                 onWrite: writeNewScript,
-                onImport: { presentation.present(.importScript) },
-                onThemes: { presentation.present(.generateScript(.themes)) },
-                onFormats: { presentation.present(.generateScript(.formats)) }
+                onImport: { presentation.present(.importScript) }
             )
         case .startRecording:
             StartRecordingSheet(
@@ -117,14 +117,21 @@ struct MainView: View {
                 },
                 onPaste: pasteScript
             )
-        case .generateScript(let tab):
-            GenerateScriptSheet(services: services, initialTab: tab) { script in
-                presentation.openScript(script.id, editing: true)
-            }
-        case .generateIdea:
-            // The view model clears the idea once it is written into a script.
-            GenerateScriptSheet(services: services, ideaDraft: services.ideaDraft) { script in
-                presentation.openScript(script.id, editing: true)
+        case .ideas:
+            IdeasSheet(
+                services: services,
+                onEdit: { idea in
+                    services.ideaDraft.text = idea.prompt
+                    services.ideaDraft.length = idea.length
+                },
+                onWrite: { idea in services.starter.write(idea: idea.prompt, length: idea.length) }
+            )
+        case .format:
+            FormatSheet(current: services.ideaDraft.format) { services.ideaDraft.format = $0 }
+        case .createFor:
+            DestinationSheet(current: services.starter.platform) {
+                services.ideaDraft.platform = $0
+                presentation.sheet = nil
             }
         }
     }

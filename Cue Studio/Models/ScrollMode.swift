@@ -19,4 +19,12 @@ nonisolated enum ScrollMode: String, Codable, CaseIterable, Identifiable, Sendab
         case .voice: String(localized: "Voice Following")
         }
     }
+
+    /// The word in the toolbar's switch ("Voice" | "Steady"); `label` is the full name for VoiceOver.
+    var shortLabel: String {
+        switch self {
+        case .steady: String(localized: "Steady")
+        case .voice: String(localized: "Voice")
+        }
+    }
 }

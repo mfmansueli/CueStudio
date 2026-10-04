@@ -22,8 +22,12 @@ nonisolated enum DefaultsKey {
     static let scriptEditorTextSize = "scriptEditorTextSize"
     /// The type the creator saved as "My style" in Quick edit (`TextLook`, JSON).
     static let myTextStyle = "myTextStyle"
+    /// The cover style the creator saved as "My cover style" (`CoverLook`, JSON).
+    static let myCoverStyle = "myCoverStyle"
     /// Free exports used, before the count moved to the Keychain; migrated and removed at launch.
     static let legacyCleanExportsUsed = "cleanExportsUsed"
+    /// How the Takes tab lays videos out (`TakeLayout` raw value); absent = the grid.
+    static let takesLayout = "takesLayout"
     /// The Sign in with Apple account (ID, and the name and email Apple shared once).
     static let appleAccount = "appleAccount"
     /// v1's monthly AI counters ("aiScriptsUsed_2026-09"), removed at launch.

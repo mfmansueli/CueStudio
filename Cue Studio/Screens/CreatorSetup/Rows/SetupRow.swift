@@ -11,6 +11,8 @@ struct SetupRow<Control: View>: View {
     var detail: String?
     /// Controls wider than a switch (chips, tiles) go under the title.
     var stacksControl = true
+    /// The place the chips of Settings › Prompter scroll to.
+    var anchor: PrompterSettingsSection?
     @ViewBuilder var control: Control
 
     var body: some View {
@@ -32,6 +34,9 @@ struct SetupRow<Control: View>: View {
         }
         .padding(.horizontal, 16)
         .frame(maxWidth: .infinity, alignment: .leading)
+        .overlay(alignment: .top) {
+            if let anchor { Color.clear.frame(height: 1).id(anchor) }
+        }
     }
 
     private var heading: some View {

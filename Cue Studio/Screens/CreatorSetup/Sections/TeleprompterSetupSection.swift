@@ -13,7 +13,7 @@ struct TeleprompterSetupSection: View {
 
     var body: some View {
         GroupedCard {
-            SetupRow(title: String(localized: "Text size")) {
+            SetupRow(title: String(localized: "Text size"), anchor: .text) {
                 VStack(alignment: .leading, spacing: 6) {
                     HStack(spacing: 8) {
                         ForEach(PrompterTextSize.allCases) { size in
@@ -45,7 +45,7 @@ struct TeleprompterSetupSection: View {
                     identifier: "creatorSetup.speedSlider"
                 )
             }
-            SetupRow(title: String(localized: "Reading mode")) {
+            SetupRow(title: String(localized: "Reading mode"), anchor: .reading) {
                 ScrollModePicker(selection: viewModel.prompter.scrollMode) { viewModel.prompter.scrollMode = $0 }
             }
             readingLineRow
@@ -63,14 +63,18 @@ struct TeleprompterSetupSection: View {
             SetupRow(
                 title: String(localized: "Safe zones"),
                 detail: String(localized: "Shows where each app's buttons and captions cover the frame"),
-                stacksControl: false
+                stacksControl: false,
+                anchor: .safeZones
             ) {
                 Toggle("Safe zones", isOn: $viewModel.showsSafeZones)
                     .labelsHidden()
                     .tint(Palette.successText)
                     .accessibilityIdentifier("creatorSetup.safeZonesToggle")
             }
-            SetupRow(title: String(localized: "Display"), detail: String(localized: "Font, spacing, margins, alignment, color"), stacksControl: false) {
+            SetupRow(
+                title: String(localized: "Display"), detail: String(localized: "Font, spacing, margins, alignment, color"),
+                stacksControl: false, anchor: .window
+            ) {
                 Button { showsDisplay = true } label: {
                     Image(systemName: "chevron.forward")
                         .font(.footnote.weight(.bold))
@@ -88,7 +92,7 @@ struct TeleprompterSetupSection: View {
     }
 
     private var readingLineRow: some View {
-        SetupRow(title: String(localized: "Reading line"), detail: viewModel.readingLineSummary, stacksControl: false) {
+        SetupRow(title: String(localized: "Reading line"), detail: viewModel.readingLineSummary, stacksControl: false, anchor: .line) {
             HStack(spacing: 8) {
                 if !viewModel.isReadingLineRecommended {
                     Button("Reset") { viewModel.resetReadingLine() }

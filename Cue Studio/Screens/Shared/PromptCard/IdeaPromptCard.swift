@@ -20,11 +20,12 @@ import SwiftUI
 struct IdeaPromptCard: View {
     var base: Color = Palette.surface
     var animatesBackground = true
-    /// Why Apple Intelligence can't write now; nil when it can. The arrow is off then, and the note says why.
+    /// Why Apple Intelligence can't write now; nil when it can. The arrow is off then (with an idea
+    /// typed), and the note says why.
     var unavailableReason: String?
-    let onSubmit: () -> Void
 
     @Environment(IdeaDraftService.self) private var ideaDraft
+    @Environment(ScriptStarter.self) private var starter
     @Environment(DictationService.self) private var dictation
     @Environment(LanguageService.self) private var languages
     @Environment(PresentationService.self) private var presentation
@@ -46,6 +47,10 @@ struct IdeaPromptCard: View {
         ideaDraft.canSubmit(isAvailable: unavailableReason == nil, isDictating: dictation.isActive)
     }
 
+    private var canAskForIdea: Bool {
+        ideaDraft.canAskForIdea(isDictating: dictation.isActive)
+    }
+
     /// Something else has the screen: the microphone is theirs.
     private var isCovered: Bool {
         presentation.sheet != nil || presentation.prompter != nil
@@ -59,16 +64,15 @@ struct IdeaPromptCard: View {
     }
 
     var body: some View {
-        PromptCardSurface(base: base, animatesBackground: animates, usesAurora: true) {
+        PromptCardSurface(base: base, animatesBackground: animates) {
             VStack(alignment: .leading, spacing: 12) {
-                PromptCardHeader(title: "Let’s Cue!", animatesBackground: animates)
-                intro
+                header
                 field
                 if let notice = dictation.notice, !dictation.isActive {
                     DictationNoticeView(notice: notice)
                         .transition(.opacity)
                 }
-                WriteInMyVoiceRow(setup: $voiceSetup)
+                chips
                 if let unavailableReason {
                     AIUnavailableNote(reason: unavailableReason)
                 }
@@ -109,22 +113,64 @@ struct IdeaPromptCard: View {
 
     // MARK: - Pieces
 
-    /// The one-line description, or while dictating "Listening…" in its place. It fits one line at the
-    /// default size and wraps at larger Dynamic Type sizes instead of being cut. It stays laid out
-    /// (hidden) so the card keeps its height when the dictation starts and stops.
-    private var intro: some View {
-        Text("Your idea, ready to record.")
-            .font(.subheadline)
-            .foregroundStyle(Palette.ink2)
-            .fixedSize(horizontal: false, vertical: true)
-            .opacity(dictation.isActive ? 0 : 1)
-            .accessibilityHidden(dictation.isActive)
-            .overlay(alignment: .topLeading) {
+    /// "✦ LET'S CUE", and, while listening, the voice bars with "Listening…" at the end of the same line
+    /// (the card keeps its height when the dictation starts and stops).
+    private var header: some View {
+        PromptCardHeader(animatesBackground: animates)
+            .overlay(alignment: .trailing) {
                 if dictation.isActive {
                     DictationStatusRow(state: dictation.state, level: dictation.level)
                 }
             }
             .animation(.smooth(duration: 0.2), value: dictation.isActive)
+    }
+
+    /// What the idea is for and how it is written: the platform, My Cue Voice, ideas and the format.
+    private var chips: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            chipRow {
+                platformChip
+                MyCueVoiceChip(setup: $voiceSetup)
+            }
+            chipRow {
+                ideasChip
+                formatChip
+            }
+        }
+    }
+
+    /// Two chips on a line; with large text, one above the other.
+    private func chipRow<Content: View>(@ViewBuilder _ content: () -> Content) -> some View {
+        let chips = content()
+        return ViewThatFits(in: .horizontal) {
+            HStack(spacing: 8) { chips }
+            VStack(alignment: .leading, spacing: 0) { chips }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    private var platformChip: some View {
+        Button { presentation.present(.createFor) } label: {
+            IdeaCardChip(label: String(localized: "For \(starter.platform.label)"), dotColor: starter.platform.tint, showsChevron: true)
+        }
+        .buttonStyle(.plain)
+        .accessibilityIdentifier("ideaCard.platformChip")
+    }
+
+    private var ideasChip: some View {
+        Button { presentation.present(.ideas) } label: {
+            IdeaCardChip(label: String(localized: "Need an idea?"), systemImage: "lightbulb")
+        }
+        .buttonStyle(.plain)
+        .accessibilityIdentifier("ideaCard.ideasChip")
+    }
+
+    private var formatChip: some View {
+        Button { presentation.present(.format) } label: {
+            IdeaCardChip(label: ideaDraft.format?.structure.label ?? String(localized: "Format"), showsChevron: true)
+        }
+        .buttonStyle(.plain)
+        .accessibilityIdentifier("ideaCard.formatChip")
     }
 
     /// The text, with the microphone and the arrow at its end. Their places never move.
@@ -193,7 +239,7 @@ struct IdeaPromptCard: View {
     }
 
     private var placeholder: Text {
-        Text("Speak or type your idea…").foregroundStyle(Palette.ink2)
+        Text("Got an idea? Say it or type it — Cue writes the script.").foregroundStyle(Palette.ink2)
     }
 
     private var sendButton: some View {
@@ -202,13 +248,13 @@ struct IdeaPromptCard: View {
                 .font(.system(size: 15, weight: .bold))
                 .foregroundStyle(Palette.accInk)
                 .frame(width: 34, height: 34)
-                .background(Palette.acc.opacity(canSubmit ? 1 : 0.35), in: Circle())
+                .background(Palette.acc.opacity(canSubmit || canAskForIdea ? 1 : 0.35), in: Circle())
                 .frame(width: Metrics.hitTarget, height: Metrics.hitTarget)
                 .contentShape(Circle())
         }
         .buttonStyle(.plain)
-        .disabled(!canSubmit)
-        .accessibilityLabel(Text("Generate script"))
+        .disabled(!canSubmit && !canAskForIdea)
+        .accessibilityLabel(canAskForIdea ? Text("Need an idea?") : Text("Generate script"))
         .accessibilityIdentifier("ideaCard.submit")
     }
 
@@ -265,17 +311,22 @@ struct IdeaPromptCard: View {
         if dictation.isActive { dictation.stop() }
     }
 
-    /// Ends the editing and opens Generate with AI with this idea; nothing is written yet.
+    /// Ends the editing and writes the idea into a new script, or, with no idea, opens the ideas from
+    /// the creator's topics.
     private func submit() {
-        guard canSubmit else { return }
-        isFocused = false
-        onSubmit()
+        if canSubmit {
+            isFocused = false
+            starter.write()
+        } else if canAskForIdea {
+            isFocused = false
+            presentation.present(.ideas)
+        }
     }
 }
 
 #if DEBUG
 #Preview {
-    IdeaPromptCard(onSubmit: {})
+    IdeaPromptCard()
         .padding()
         .background(Palette.bg)
         .previewEnvironment(seeded: false)

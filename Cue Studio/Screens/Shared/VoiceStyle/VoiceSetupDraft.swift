@@ -15,6 +15,7 @@ struct VoiceSetupDraft: Equatable {
     static let soundLimit = 2
 
     let steps: [VoiceSetupStep]
+    private(set) var role: CreatorRole?
     private(set) var niches: [Niche]
     private(set) var vocabulary: Vocabulary?
     private(set) var sounds: [VoiceSound]
@@ -26,7 +27,10 @@ struct VoiceSetupDraft: Equatable {
 
     /// - Parameter steps: what to ask; nil asks what the profile still lacks.
     init(profile: CreatorProfile, steps: [VoiceSetupStep]? = nil) {
-        self.steps = steps ?? profile.missingVoiceSteps
+        // A creator setting the voice up from scratch is also asked what kind of creator they are.
+        let missing = profile.missingVoiceSteps
+        self.steps = steps ?? (missing.contains(.niche) && !profile.hasAnswered(.role) ? [.role] + missing : missing)
+        role = profile.role
         // A new profile's defaults are not answers, so nothing is shown picked; what the creator chose,
         // or an older build saved, is shown picked and can be confirmed as it is.
         niches = profile.hasAnswered(.niche) ? profile.niches : []
@@ -39,6 +43,7 @@ struct VoiceSetupDraft: Equatable {
 
     // MARK: - Picking
 
+    func isPicked(_ role: CreatorRole) -> Bool { self.role == role }
     func isPicked(_ niche: Niche) -> Bool { niches.contains(niche) }
     func isPicked(_ sound: VoiceSound) -> Bool { sounds.contains(sound) }
     func isPicked(_ vocabulary: Vocabulary) -> Bool { self.vocabulary == vocabulary }
@@ -70,6 +75,10 @@ struct VoiceSetupDraft: Equatable {
         return true
     }
 
+    mutating func choose(_ role: CreatorRole) {
+        self.role = role
+    }
+
     mutating func choose(_ vocabulary: Vocabulary) {
         self.vocabulary = vocabulary
     }
@@ -80,6 +89,7 @@ struct VoiceSetupDraft: Equatable {
     var canSave: Bool {
         steps.allSatisfy { step in
             switch step {
+            case .role: true
             case .niche: !niches.isEmpty
             case .audience: vocabulary != nil
             case .tone: !sounds.isEmpty
@@ -93,6 +103,7 @@ struct VoiceSetupDraft: Equatable {
     func save(to service: CreatorProfileService) {
         guard canSave else { return }
         service.saveVoiceSetup(
+            role: steps.contains(.role) ? role : nil,
             niches: steps.contains(.niche) ? niches : nil,
             vocabulary: steps.contains(.audience) ? vocabulary : nil,
             sounds: steps.contains(.tone) ? sounds : nil

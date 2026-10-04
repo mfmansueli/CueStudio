@@ -27,7 +27,7 @@ struct StopWarningCard: View {
             }
             HStack(spacing: 8) {
                 Button("Stop anyway", action: onStop)
-                    .buttonStyle(.cueSecondary())
+                    .buttonStyle(.cueGlass())
                     .accessibilityIdentifier("prompter.stopAnywayButton")
                 Button("Keep going", action: onKeepGoing)
                     .buttonStyle(.cuePrimary())
@@ -35,7 +35,9 @@ struct StopWarningCard: View {
             }
         }
         .padding(16)
-        .glassEffect(.regular, in: RoundedRectangle(cornerRadius: Metrics.cardRadius, style: .continuous))
+        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: Metrics.cardRadius, style: .continuous))
+        .background(Palette.warningCard, in: RoundedRectangle(cornerRadius: Metrics.cardRadius, style: .continuous))
+        .overlay(RoundedRectangle(cornerRadius: Metrics.cardRadius, style: .continuous).strokeBorder(Palette.glassBorder, lineWidth: 0.5))
         .shadow(color: .black.opacity(0.5), radius: 25, y: 20)
     }
 }

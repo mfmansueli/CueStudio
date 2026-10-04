@@ -18,7 +18,7 @@ struct PrivacySheet: View {
             List {
                 item(
                     title: "Scripts and takes stay on this iPhone",
-                    detail: "Cue has no server. Your scripts, takes and Creator Voice are stored on this device and in your device backups. Sign in with Apple is optional and only keeps your Apple ID on this iPhone.",
+                    detail: "Cue has no server. Your scripts, takes and My Cue Voice are stored on this device and in your device backups. Sign in with Apple is optional and only keeps your Apple ID on this iPhone.",
                     systemImage: "iphone"
                 )
                 item(

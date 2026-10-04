@@ -14,6 +14,8 @@ nonisolated struct CreatorVoice: Hashable, Sendable {
     var vocabulary: Vocabulary?
     var styles: [VoiceStyle]
     var niches: [Niche]
+    /// Who is talking; nil when the creator didn't say.
+    var role: CreatorRole?
 
     /// "Casual · Confident · “Hey fam”", the one-line summary under "Write in my voice".
     var summary: String {

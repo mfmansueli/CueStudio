@@ -5,7 +5,7 @@
 
 import Foundation
 
-/// The creator's profile and Creator Voice: what the AI uses to write scripts that sound like them,
+/// The creator's profile and My Cue Voice: what the AI uses to write scripts that sound like them,
 /// plus the defaults new scripts start with. One voice for every platform. Stays on the device.
 nonisolated struct CreatorProfile: Codable, Hashable, Sendable {
     var name: String
@@ -13,6 +13,11 @@ nonisolated struct CreatorProfile: Codable, Hashable, Sendable {
     var niches: [Niche]
     /// Catchphrases the creator always says ("Hey fam").
     var phrases: [String]
+    /// "What kind of creator are you?": the first question of My Cue Voice. Optional.
+    var role: CreatorRole?
+    /// The creator said a script written in their voice "sounds like me" (the preview strip on the
+    /// script page stops asking).
+    var voiceApproved: Bool
     /// "How I sound".
     var sounds: [VoiceSound]
     var vocabulary: Vocabulary
@@ -32,6 +37,7 @@ nonisolated struct CreatorProfile: Codable, Hashable, Sendable {
 
     init(
         name: String = "", handle: String = "", niches: [Niche] = [], phrases: [String] = [],
+        role: CreatorRole? = nil, voiceApproved: Bool = false,
         sounds: [VoiceSound] = [.casual, .confident], vocabulary: Vocabulary = .simple,
         styles: [VoiceStyle] = [.shortSentences, .conversational], usesVoiceInAI: Bool = true,
         defaultPlatform: Platform = .tiktok, monetizationGoals: Bool = true,
@@ -41,6 +47,8 @@ nonisolated struct CreatorProfile: Codable, Hashable, Sendable {
         self.handle = handle
         self.niches = niches
         self.phrases = phrases
+        self.role = role
+        self.voiceApproved = voiceApproved
         self.sounds = sounds
         self.vocabulary = vocabulary
         self.styles = styles
@@ -52,7 +60,7 @@ nonisolated struct CreatorProfile: Codable, Hashable, Sendable {
     }
 
     var voice: CreatorVoice {
-        CreatorVoice(sounds: sounds, phrases: phrases, vocabulary: vocabulary, styles: styles, niches: niches)
+        CreatorVoice(sounds: sounds, phrases: phrases, vocabulary: vocabulary, styles: styles, niches: niches, role: role)
     }
 
     var initials: String {
@@ -68,7 +76,7 @@ nonisolated struct CreatorProfile: Codable, Hashable, Sendable {
     // MARK: - Coding
 
     private enum CodingKeys: String, CodingKey {
-        case name, handle, niches, phrases, sounds, vocabulary, styles, usesVoiceInAI, defaultPlatform, monetizationGoals
+        case name, handle, niches, phrases, role, voiceApproved, sounds, vocabulary, styles, usesVoiceInAI, defaultPlatform, monetizationGoals
         case confirmedVoiceSteps, unverifiedVoiceSteps
         /// v1 kept a single tone; it becomes the first "How I sound".
         case legacyTone = "tone"
@@ -83,6 +91,8 @@ nonisolated struct CreatorProfile: Codable, Hashable, Sendable {
         handle = try container.decodeIfPresent(String.self, forKey: .handle) ?? defaults.handle
         niches = try container.decodeIfPresent([Niche].self, forKey: .niches) ?? defaults.niches
         phrases = try container.decodeIfPresent([String].self, forKey: .phrases) ?? defaults.phrases
+        role = try container.decodeIfPresent(CreatorRole.self, forKey: .role)
+        voiceApproved = try container.decodeIfPresent(Bool.self, forKey: .voiceApproved) ?? defaults.voiceApproved
         if let sounds = try container.decodeIfPresent([VoiceSound].self, forKey: .sounds) {
             self.sounds = sounds
         } else if let tone = try container.decodeIfPresent(Tone.self, forKey: .legacyTone) {
@@ -115,6 +125,8 @@ nonisolated struct CreatorProfile: Codable, Hashable, Sendable {
         try container.encode(handle, forKey: .handle)
         try container.encode(niches, forKey: .niches)
         try container.encode(phrases, forKey: .phrases)
+        try container.encodeIfPresent(role, forKey: .role)
+        try container.encode(voiceApproved, forKey: .voiceApproved)
         try container.encode(sounds, forKey: .sounds)
         try container.encode(vocabulary, forKey: .vocabulary)
         try container.encode(styles, forKey: .styles)

@@ -5,8 +5,9 @@
 
 import Foundation
 
-/// Builds the Takes library: takes grouped into videos, filtered by platform and view, in Today /
-/// Yesterday / Earlier sections. Pure, so it is tested without files or the clock.
+/// Builds the Takes library: takes grouped into videos (each with its stage), filtered by platform
+/// and by the stage picked in the pipeline, in Today / Yesterday / Earlier sections. Pure, so it is
+/// tested without files or the clock.
 nonisolated struct TakeLibraryFilter: Hashable, Sendable {
     struct Section: Hashable, Identifiable, Sendable {
         let day: TakeDay
@@ -17,11 +18,17 @@ nonisolated struct TakeLibraryFilter: Hashable, Sendable {
 
     /// Nil shows every platform.
     var platform: Platform?
-    var view: TakeLibraryView = .all
+    /// Nil shows every stage; tapping a stage in the pipeline filters to it, and again clears it.
+    var stage: TakeStage?
 
     /// One video per script, and one per freestyle recording. `scriptPlatform` gives the script's
-    /// current platform (it can change after recording); takes fall back to their own.
-    static func videos(from takes: [Take], scriptPlatform: (UUID) -> Platform? = { _ in nil }) -> [TakeVideo] {
+    /// current platform (it can change after recording); takes fall back to their own. `hasDraft`
+    /// says whether an edit is open on a take (it decides "In edit").
+    static func videos(
+        from takes: [Take],
+        scriptPlatform: (UUID) -> Platform? = { _ in nil },
+        hasDraft: (UUID) -> Bool = { _ in false }
+    ) -> [TakeVideo] {
         var order: [String] = []
         var grouped: [String: [Take]] = [:]
         for take in takes.sorted(by: { $0.recordedAt > $1.recordedAt }) {
@@ -33,14 +40,18 @@ nonisolated struct TakeLibraryFilter: Hashable, Sendable {
             guard let group = grouped[key]?.sorted(by: { $0.number > $1.number }), let first = group.first else { return nil }
             let title = first.isFreestyle ? String(localized: "Freestyle recording") : first.scriptTitle
             let platform = first.scriptID.flatMap(scriptPlatform) ?? first.platform
-            return TakeVideo(takes: group, title: title, platform: platform)
+            return TakeVideo(takes: group, title: title, platform: platform, stage: TakeStage(takes: group, hasDraft: hasDraft))
         }
     }
 
+    /// The platform filter alone: what the pipeline counts, so its numbers don't change when a
+    /// stage is picked.
+    func onPlatform(_ videos: [TakeVideo]) -> [TakeVideo] {
+        videos.filter { platform == nil || $0.platform == platform }
+    }
+
     func apply(to videos: [TakeVideo]) -> [TakeVideo] {
-        videos.filter { video in
-            (platform == nil || video.platform == platform) && view.matches(video)
-        }
+        onPlatform(videos).filter { stage == nil || $0.stage == stage }
     }
 
     func sections(of videos: [TakeVideo], now: Date, calendar: Calendar = .current) -> [Section] {

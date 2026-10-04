@@ -14,16 +14,16 @@ import Foundation
 nonisolated enum AuroraMotion {
     /// The soft lights behind the card, from the one that sets the mood to the shade that gives depth.
     enum Light: CaseIterable {
-        case gold
-        case amber
+        case violet
+        case indigo
         case glow
         case shade
 
         /// How far it reaches, as a share of the card's longer side.
         var radius: Double {
             switch self {
-            case .gold: 0.72
-            case .amber: 0.62
+            case .violet: 0.72
+            case .indigo: 0.62
             case .glow: 0.52
             case .shade: 0.58
             }
@@ -39,18 +39,34 @@ nonisolated enum AuroraMotion {
     static func center(of light: Light, at time: TimeInterval) -> CGPoint {
         let turn = 2 * Double.pi
         switch light {
-        case .gold:
+        case .violet:
             return CGPoint(
                 x: 0.26 + 0.24 * sin(turn * time / 12 + 0.4) + 0.03 * sin(turn * time / 4.4),
                 y: 0.16 + 0.20 * sin(turn * time / 10 + 1.1)
             )
-        case .amber:
+        case .indigo:
             return CGPoint(x: 0.74 + 0.22 * sin(turn * time / 14 + 2.0), y: 0.34 + 0.20 * cos(turn * time / 11))
         case .glow:
             return CGPoint(x: 0.50 + 0.28 * cos(turn * time / 13 + 0.8), y: 0.86 + 0.10 * sin(turn * time / 10.5))
         case .shade:
             return CGPoint(x: 0.56 + 0.20 * cos(turn * time / 11.5 + 3.1), y: 0.72 + 0.14 * sin(turn * time / 14 + 0.3))
         }
+    }
+
+    // MARK: - Scan line
+
+    /// Seconds for the yellow scan line to cross the card's bottom edge once.
+    static let scanDuration: TimeInterval = 12
+    /// How much of the edge the bright part covers, as a share of the card's width.
+    static let scanLength = 0.4
+
+    /// Where the middle of the scan line's bright part is, as a share of the card's width. It
+    /// enters from beyond the left edge and leaves beyond the right one, so the line never starts or
+    /// stops in the middle of the card.
+    static func scanCenter(at time: TimeInterval) -> Double {
+        let lap = (time / scanDuration).truncatingRemainder(dividingBy: 1)
+        let progress = lap < 0 ? lap + 1 : lap
+        return -scanLength / 2 + progress * (1 + scanLength)
     }
 
     // MARK: - Border

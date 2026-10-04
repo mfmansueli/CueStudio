@@ -108,7 +108,6 @@ struct SessionSetupServiceTests {
         session.prompter.scrollMode = .voice
         session.prompter.studioBackground = .navy
         session.prompter.showsCues = true
-        session.prompter.hidesControlsWhileRecording = true
         session.prompter.customSafeZone.top = 20
         session.prompter.size = 40
         session.prompter.speed = 1.8

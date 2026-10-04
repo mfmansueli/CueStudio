@@ -52,4 +52,9 @@ struct PaywallCopyTests {
         #expect(PaywallCopy.title(for: .profile) == "Create more. Sound like you.")
         #expect(PaywallCopy.subtitle(for: .export).contains("5 free exports"))
     }
+
+    @Test func everyBenefitHasAnIconAndAMonoTag() {
+        #expect(PaywallCopy.featureImages.count == PaywallCopy.features.count)
+        #expect(PaywallCopy.featureTags.count == PaywallCopy.features.count)
+    }
 }

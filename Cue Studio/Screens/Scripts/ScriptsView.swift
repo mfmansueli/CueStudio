@@ -5,8 +5,8 @@
 
 import SwiftUI
 
-/// Home: the Prompt box, always on top, then the script library. Tap opens, swipe for actions, hold
-/// to preview.
+/// Home: the idea card, always on top, then the Recent scripts, each at its stage on the way to a
+/// posted video. Tap opens, swipe for actions, hold to preview.
 struct ScriptsView: View {
     @State private var viewModel: ScriptsViewModel
 
@@ -19,10 +19,13 @@ struct ScriptsView: View {
 
     /// Tells the idea card whether Apple Intelligence can write.
     private let writer: ScriptWriting?
+    /// Which takes have an edit left open: a row's stage reads it.
+    private let drafts: QuickEditDraftStoring?
 
-    init(library: ScriptLibraryService, toast: ToastService, writer: ScriptWriting? = nil) {
+    init(library: ScriptLibraryService, toast: ToastService, writer: ScriptWriting? = nil, drafts: QuickEditDraftStoring? = nil) {
         _viewModel = State(initialValue: ScriptsViewModel(library: library, toast: toast))
         self.writer = writer
+        self.drafts = drafts
     }
 
     var body: some View {
@@ -31,7 +34,6 @@ struct ScriptsView: View {
             .background(Palette.bg)
             .navigationTitle("Scripts")
             .toolbarTitleDisplayMode(.inlineLarge)
-            .navigationSubtitle(viewModel.summary(takeCount: takes.takes.count))
             .toolbar { toolbarContent }
             .alert("New folder", isPresented: $viewModel.isNamingFolder) {
                 TextField("Folder name", text: $viewModel.newFolderName)
@@ -60,7 +62,6 @@ struct ScriptsView: View {
             EmptyLibraryView(
                 animatesPromptBackground: animatesPromptBackground,
                 unavailableReason: writerUnavailableReason,
-                onSubmit: { presentation.present(.generateIdea) },
                 onWrite: newBlankScript,
                 onImport: { presentation.present(.importScript) },
                 onSkip: { presentation.openPrompter(scriptID: nil, mode: .selfie) }
@@ -78,62 +79,36 @@ struct ScriptsView: View {
     private var scriptList: some View {
         @Bindable var viewModel = viewModel
         let visible = viewModel.visibleScripts
-        let hero = viewModel.isSelecting ? nil : visible.first
-        let rest = hero == nil ? visible : Array(visible.dropFirst())
+        let continuing = viewModel.filter == .all && viewModel.query.isEmpty ? library.scripts.first?.id : nil
         return List(selection: $viewModel.selection) {
             Section {
-                VStack(spacing: 14) {
-                    // The same card as the empty screen's: typed or dictated in place, the arrow opens Generate with AI.
+                VStack(alignment: .leading, spacing: 14) {
+                    HUDLine(values: viewModel.summaryValues(takeCount: takes.takes.count), separator: " / ")
+                        .padding(.horizontal, 4)
+                        .accessibilityIdentifier("scripts.summary")
+                    // The same card as the empty screen's: typed or dictated in place, the arrow writes the script.
                     IdeaPromptCard(
                         base: Palette.surface, animatesBackground: animatesPromptBackground,
-                        unavailableReason: writerUnavailableReason, onSubmit: { presentation.present(.generateIdea) }
+                        unavailableReason: writerUnavailableReason
                     )
                     .accessibilityIdentifier("scripts.promptCard")
-                    SearchField(text: $viewModel.query, prompt: "Search scripts")
-                        .accessibilityIdentifier("scripts.searchField")
+                    if viewModel.isSearching {
+                        SearchField(text: $viewModel.query, prompt: "Search scripts")
+                            .accessibilityIdentifier("scripts.searchField")
+                    }
                 }
                 .listRowInsets(EdgeInsets(top: 0, leading: Metrics.gutter, bottom: 6, trailing: Metrics.gutter))
                 .listRowBackground(Color.clear)
                 .listRowSeparator(.hidden)
                 .selectionDisabled()
-                FilterBar(filters: viewModel.filters, selection: $viewModel.filter)
-                    .listRowInsets(EdgeInsets())
-                    .listRowBackground(Color.clear)
-                    .listRowSeparator(.hidden)
-                    .selectionDisabled()
             }
-            if let hero {
+            if !visible.isEmpty {
                 Section {
-                    NavigationLink(value: ScriptRoute(scriptID: hero.id)) {
-                        HeroScriptCard(
-                            script: hero,
-                            readSeconds: readSeconds(hero),
-                            takeCount: takes.count(for: hero.id),
-                            onStudio: { actions.studio(hero) },
-                            onRecord: { actions.record(hero) }
-                        )
-                    }
-                    .navigationLinkIndicatorVisibility(.hidden)
-                    // Match the UUID selection type, just like the ordinary rows. Without this
-                    // tag List also infers a ScriptRoute selection and pushes the hero twice.
-                    .tag(hero.id)
-                    .listRowInsets(EdgeInsets(top: 4, leading: Metrics.gutter, bottom: 4, trailing: Metrics.gutter))
-                    .listRowBackground(Color.clear)
-                    .contextMenu {
-                        ScriptActionsMenu(script: hero, folders: library.folders, actions: actions)
-                    } preview: {
-                        ScriptPreviewCard(script: hero, readSeconds: readSeconds(hero))
-                    }
-                    .accessibilityIdentifier("scripts.hero")
-                }
-            }
-            if !rest.isEmpty {
-                Section {
-                    ForEach(rest) { script in
-                        row(for: script)
+                    ForEach(visible) { script in
+                        row(for: script, isContinue: script.id == continuing)
                     }
                 } header: {
-                    allScriptsHeader
+                    recentHeader
                 } footer: {
                     if !viewModel.isSelecting {
                         Text("Tap to open · Swipe for actions · Hold to preview")
@@ -175,11 +150,12 @@ struct ScriptsView: View {
         .animation(.smooth(duration: 0.25), value: viewModel.isSelecting)
     }
 
-    private func row(for script: Script) -> some View {
+    private func row(for script: Script, isContinue: Bool) -> some View {
         NavigationLink(value: ScriptRoute(scriptID: script.id)) {
             ScriptRow(
                 script: script,
-                readSeconds: readSeconds(script),
+                status: status(of: script),
+                isContinue: isContinue,
                 showsQuickActions: !viewModel.isSelecting,
                 onStudio: { actions.studio(script) },
                 onRecord: { actions.record(script) }
@@ -210,11 +186,14 @@ struct ScriptsView: View {
         .accessibilityIdentifier("scripts.row.\(script.id.uuidString)")
     }
 
-    private var allScriptsHeader: some View {
-        HStack(alignment: .firstTextBaseline) {
-            Text("All scripts")
+    /// "Recent", the filter menu ("All ⌄") and Select.
+    private var recentHeader: some View {
+        @Bindable var viewModel = viewModel
+        return HStack(alignment: .center, spacing: 10) {
+            Text("Recent")
                 .font(.title3.bold())
                 .foregroundStyle(Palette.ink)
+            ScriptFilterMenu(filters: viewModel.filters, selection: $viewModel.filter)
             Spacer()
             Button(viewModel.isSelecting ? "Done" : "Select") {
                 viewModel.toggleSelecting()
@@ -224,7 +203,7 @@ struct ScriptsView: View {
             .accessibilityIdentifier("scripts.selectButton")
         }
         .textCase(nil)
-        .padding(.top, 10)
+        .padding(.top, 6)
     }
 
     @ViewBuilder
@@ -245,6 +224,15 @@ struct ScriptsView: View {
 
     @ToolbarContentBuilder
     private var toolbarContent: some ToolbarContent {
+        ToolbarItem(placement: .topBarTrailing) {
+            Button {
+                viewModel.isSearching.toggle()
+            } label: {
+                Label("Search", systemImage: "magnifyingglass")
+            }
+            .tint(Palette.ink)
+            .accessibilityIdentifier("scripts.searchButton")
+        }
         ToolbarItem(placement: .topBarTrailing) {
             Button {
                 presentation.present(.newScript)
@@ -281,6 +269,13 @@ struct ScriptsView: View {
 
     private func readSeconds(_ script: Script) -> TimeInterval {
         ReadTime.seconds(for: script.text, speed: preferences.prompter.speed)
+    }
+
+    /// Before any take: ready to record, and how long it runs. After: the video's stage.
+    private func status(of script: Script) -> ScriptStatus {
+        ScriptStatus(takes: takes.takes(for: script.id), readSeconds: readSeconds(script)) { [drafts] in
+            drafts?.hasDraft(for: $0) ?? false
+        }
     }
 
     private func newBlankScript() {

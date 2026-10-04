@@ -22,7 +22,7 @@ final class SettingsUITests: XCTestCase {
         XCTAssertTrue(app.buttons["startRecording.skip"].waitForExistence(timeout: 5))
         app.buttons["sheet.closeButton"].tap()
         XCTAssertTrue(tab(app, label: "Settings").isSelected)
-        XCTAssertTrue(app.buttons["settings.creatorSetupButton"].isHittable)
+        XCTAssertTrue(app.buttons["settings.recordingTile"].isHittable)
     }
 
     func testTechnicalNavigationStaysOnSettingsAndReturnsToItsRoot() {
@@ -30,14 +30,14 @@ final class SettingsUITests: XCTestCase {
         let settings = tab(app, label: "Settings")
         XCTAssertTrue(settings.waitForExistence(timeout: 15))
         settings.tap()
-        app.buttons["settings.creatorSetupButton"].tap()
-        XCTAssertTrue(app.navigationBars["Creator Setup"].waitForExistence(timeout: 5))
+        app.buttons["settings.recordingTile"].tap()
+        XCTAssertTrue(app.navigationBars["Recording"].waitForExistence(timeout: 5))
         XCTAssertTrue(settings.isSelected)
         tab(app, label: "Profile").tap()
         XCTAssertTrue(app.navigationBars["Profile"].waitForExistence(timeout: 5))
         settings.tap()
-        XCTAssertTrue(app.navigationBars["Creator Setup"].waitForExistence(timeout: 5))
-        app.navigationBars["Creator Setup"].buttons.firstMatch.tap()
+        XCTAssertTrue(app.navigationBars["Recording"].waitForExistence(timeout: 5))
+        app.navigationBars["Recording"].buttons.firstMatch.tap()
         XCTAssertTrue(app.navigationBars["Settings"].waitForExistence(timeout: 5))
         app.buttons["settings.languageRegionButton"].tap()
         XCTAssertTrue(app.navigationBars["Language & Region"].waitForExistence(timeout: 5))
@@ -62,7 +62,7 @@ final class SettingsUITests: XCTestCase {
         goals.tap()
         let saved = goals.value as? String
         capture(app, name: "Profile · Creator preferences")
-        XCTAssertFalse(app.buttons["settings.creatorSetupButton"].exists)
+        XCTAssertFalse(app.buttons["settings.recordingTile"].exists)
         XCTAssertFalse(app.buttons["settings.languageRegionButton"].exists)
         tab(app, label: "Settings").tap()
         XCTAssertTrue(app.buttons["settings.restorePurchasesButton"].waitForExistence(timeout: 5))
@@ -82,9 +82,11 @@ final class SettingsUITests: XCTestCase {
             let app = CueApp.launch(seeded: true, appLanguage: language)
             assertTabs(app, labels: labels)
             tab(app, label: labels[4], index: 4).tap()
-            XCTAssertTrue(app.buttons["settings.creatorSetupButton"].waitForExistence(timeout: 5))
-            XCTAssertTrue(app.buttons["settings.restorePurchasesButton"].isHittable)
+            XCTAssertTrue(app.buttons["settings.recordingTile"].waitForExistence(timeout: 5))
             capture(app, name: "Settings · \(language)")
+            // Everything stays reachable by scrolling, in every language.
+            scroll(app, to: app.buttons["settings.restorePurchasesButton"])
+            XCTAssertTrue(app.buttons["settings.restorePurchasesButton"].isHittable)
             app.terminate()
         }
     }
@@ -95,8 +97,9 @@ final class SettingsUITests: XCTestCase {
         tab(app, label: "Einstellungen", index: 4).tap()
         let language = app.buttons["settings.languageRegionButton"]
         XCTAssertTrue(language.waitForExistence(timeout: 5))
-        XCTAssertTrue(language.isHittable)
         capture(app, name: "Settings · German · Accessibility XXXL")
+        scroll(app, to: language)
+        XCTAssertTrue(language.isHittable)
         let restore = app.buttons["settings.restorePurchasesButton"]
         scroll(app, to: restore)
         XCTAssertTrue(restore.isHittable)

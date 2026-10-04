@@ -5,129 +5,154 @@
 
 import SwiftUI
 
-/// App languages, recording defaults, privacy and purchase recovery, using Profile's list style.
+/// How the app behaves (v26): the "Your setup" card with what every recording starts from, the
+/// three pages under it (Recording, Prompter, Remote), then General, Purchases & About and Reset.
 struct SettingsView: View {
     @Environment(StoreManager.self) private var store
     @Environment(ToastService.self) private var toast
     @Environment(PreferencesService.self) private var preferences
     @Environment(LanguageService.self) private var languages
     @Environment(AppearanceService.self) private var appearance
+    @Environment(PresentationService.self) private var presentation
+    @Environment(RemoteControlService.self) private var remote
 
     @State private var showsPrivacy = false
+    @State private var confirmsReset = false
 
     var body: some View {
-        List {
-            Section {
-                NavigationLink(value: SettingsRoute.languageRegion) {
-                    languageRegionRow
-                }
-                .accessibilityIdentifier("settings.languageRegionButton")
-            }
-            Section {
-                appearanceRow
-            } footer: {
-                Text("The camera, the prompter and the editor stay dark, so nothing washes out while you record or edit.")
-            }
-            Section {
-                NavigationLink(value: SettingsRoute.creatorSetup) {
-                    creatorSetupRow
-                }
-                .accessibilityIdentifier("settings.creatorSetupButton")
-            } header: {
-                Text("Creator Setup")
-                    .font(.title2.bold())
-                    .foregroundStyle(Palette.ink)
-                    .textCase(nil)
-            } footer: {
+        @Bindable var appearance = appearance
+        let setup = preferences.creatorSetup
+        ScrollView {
+            VStack(alignment: .leading, spacing: 14) {
+                Text("How you record, every time.")
+                    .font(.subheadline)
+                    .foregroundStyle(Palette.ink2)
+                    .padding(.horizontal, 4)
+                SetupSummaryCard(
+                    setup: setup,
+                    onOpenRecording: { presentation.settingsPath.append(.recording) },
+                    onOpenPrompter: { presentation.settingsPath.append(.prompter) }
+                )
+                tiles(setup)
                 Text("Set it up once. Cue remembers how you create.")
-            }
-            Section {
-                Button { showsPrivacy = true } label: {
-                    HStack {
-                        Text("Privacy & AI data").foregroundStyle(Palette.ink)
-                        Spacer()
-                        Image(systemName: "chevron.forward")
-                            .font(.footnote.weight(.semibold))
-                            .foregroundStyle(Palette.ink3)
+                    .font(.footnote)
+                    .foregroundStyle(Palette.ink2)
+                    .padding(.horizontal, 4)
+
+                heading(String(localized: "General"))
+                GroupedCard(dividerInset: 58) {
+                    NavigationLink(value: SettingsRoute.languageRegion) {
+                        SettingsRow(
+                            systemImage: "globe", title: String(localized: "Language & Region"),
+                            value: languages.interfaceLanguage.nativeName
+                        )
                     }
-                }
-                .accessibilityIdentifier("settings.privacyButton")
-                Button("Restore purchases") {
-                    Task {
-                        let restored = await store.restore()
-                        toast.show(restored ? String(localized: "Purchases restored") : String(localized: "No purchases to restore"))
+                    .buttonStyle(.plain)
+                    .accessibilityIdentifier("settings.languageRegionButton")
+                    VStack(alignment: .leading, spacing: 10) {
+                        HStack(spacing: 12) {
+                            Image(systemName: "circle.lefthalf.filled")
+                                .font(.system(size: 14, weight: .semibold))
+                                .foregroundStyle(.white)
+                                .frame(width: 30, height: 30)
+                                .background(Palette.neutralAction, in: RoundedRectangle(cornerRadius: 8, style: .continuous))
+                                .accessibilityHidden(true)
+                            Text("Appearance").foregroundStyle(Palette.ink)
+                        }
+                        AppearancePicker(selection: $appearance.appearance)
                     }
+                    .padding(EdgeInsets(top: 12, leading: 16, bottom: 12, trailing: 16))
+                    Button { showsPrivacy = true } label: {
+                        SettingsRow(systemImage: "lock.fill", tint: Palette.neutralAction, title: String(localized: "Privacy & AI data"))
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityIdentifier("settings.privacyButton")
                 }
-                .foregroundStyle(Palette.ink)
-                .accessibilityIdentifier("settings.restorePurchasesButton")
-                NavigationLink(value: SettingsRoute.acknowledgements) {
-                    Text("Acknowledgements").foregroundStyle(Palette.ink)
+                Text("The camera, the prompter and the editor stay dark, so nothing washes out while you record or edit.")
+                    .font(.footnote)
+                    .foregroundStyle(Palette.ink2)
+                    .padding(.horizontal, 4)
+
+                heading(String(localized: "Purchases & About"))
+                GroupedCard(dividerInset: 58) {
+                    Button {
+                        Task {
+                            let restored = await store.restore()
+                            toast.show(restored ? String(localized: "Purchases restored") : String(localized: "No purchases to restore"))
+                        }
+                    } label: {
+                        SettingsRow(
+                            systemImage: "arrow.clockwise", tint: Palette.neutralAction,
+                            title: String(localized: "Restore purchases"), showsChevron: false
+                        )
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityIdentifier("settings.restorePurchasesButton")
+                    NavigationLink(value: SettingsRoute.acknowledgements) {
+                        SettingsRow(systemImage: "heart.text.square", tint: Palette.neutralAction, title: String(localized: "Acknowledgements"))
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityIdentifier("settings.acknowledgementsButton")
                 }
-                .accessibilityIdentifier("settings.acknowledgementsButton")
+
+                Button("Reset Creator Setup") { confirmsReset = true }
+                    .buttonStyle(.cueDestructiveTinted())
+                    .padding(.top, 10)
+                    .accessibilityIdentifier("creatorSetup.resetButton")
             }
+            .padding(EdgeInsets(top: 4, leading: Metrics.gutter, bottom: 40, trailing: Metrics.gutter))
         }
-        .listStyle(.insetGrouped)
-        .scrollContentBackground(.hidden)
         .background(Palette.bg)
         .navigationTitle("Settings")
         .toolbarTitleDisplayMode(.inlineLarge)
         .sheet(isPresented: $showsPrivacy) { PrivacySheet() }
+        .confirmationDialog("Reset Creator Setup?", isPresented: $confirmsReset, titleVisibility: .visible) {
+            Button("Reset Creator Setup", role: .destructive) {
+                preferences.resetCreatorSetup()
+                toast.show(String(localized: "Creator Setup is back to Cue's defaults"))
+            }
+            .accessibilityIdentifier("creatorSetup.confirmResetButton")
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text("Camera, microphone, quality, format and teleprompter go back to Cue's defaults. Your scripts, takes and edits stay.")
+        }
     }
 
-    private var languageRegionRow: some View {
-        ViewThatFits(in: .horizontal) {
-            HStack(spacing: 12) {
-                Text("Language & Region").foregroundStyle(Palette.ink)
-                    .fixedSize()
-                Spacer(minLength: 8)
-                Text(verbatim: languages.interfaceLanguage.nativeName)
-                    .foregroundStyle(Palette.ink2)
-                    .fixedSize()
-            }
-            VStack(alignment: .leading, spacing: 2) {
-                Text("Language & Region").foregroundStyle(Palette.ink)
-                Text(verbatim: languages.interfaceLanguage.nativeName)
-                    .font(.subheadline)
-                    .foregroundStyle(Palette.ink2)
-            }
+    // MARK: - Pieces
+
+    /// Recording · Prompter · Remote, with what is set in each.
+    private func tiles(_ setup: CreatorSetup) -> some View {
+        HStack(spacing: 10) {
+            tile(
+                .recording, "video", String(localized: "Recording"),
+                "\(setup.label(for: .camera)) · \(setup.microphone.label)", "recording"
+            )
+            tile(
+                .prompter, "text.alignleft", String(localized: "Prompter"),
+                "\(preferences.prompter.scrollMode.shortLabel) · \(Int(setup.textSize.rounded())) pt", "prompter"
+            )
+            tile(
+                .remote, "iphone.radiowaves.left.and.right", String(localized: "Remote"),
+                remote.state.isConnected ? String(localized: "Connected") : String(localized: "Off"), "remote"
+            )
         }
-        .accessibilityElement(children: .combine)
     }
 
-    /// Light, dark or the iPhone's: one row, one menu.
-    private var appearanceRow: some View {
-        @Bindable var appearance = appearance
-        return Picker(selection: $appearance.appearance) {
-            ForEach(AppAppearance.allCases) { option in
-                Label(option.label, systemImage: option.symbol).tag(option)
-            }
-        } label: {
-            Text("Appearance").foregroundStyle(Palette.ink)
+    private func tile(_ route: SettingsRoute, _ image: String, _ title: String, _ detail: String, _ id: String) -> some View {
+        NavigationLink(value: route) {
+            SettingsTile(systemImage: image, title: title, detail: detail)
         }
-        .pickerStyle(.menu)
-        .tint(Palette.ink2)
-        .accessibilityIdentifier("settings.appearancePicker")
+        .buttonStyle(.plain)
+        .accessibilityIdentifier("settings.\(id)Tile")
     }
 
-    /// "4K · 9:16 · Front · Large text": the usual setup at a glance.
-    private var creatorSetupRow: some View {
-        let setup = preferences.creatorSetup
-        return HStack(spacing: 12) {
-            Image(systemName: "slider.horizontal.3")
-                .foregroundStyle(Palette.accText)
-                .frame(width: 28, height: 28)
-                .background(Palette.accSoft, in: Circle())
-            VStack(alignment: .leading, spacing: 2) {
-                Text("Recording, teleprompter & remote")
-                    .foregroundStyle(Palette.ink)
-                Text(setup.summary(of: [.camera, .format, .quality, .textSize]))
-                    .font(.footnote)
-                    .foregroundStyle(Palette.ink2)
-                    .lineLimit(1)
-            }
-        }
-        .padding(.vertical, 4)
-        .accessibilityElement(children: .combine)
+    private func heading(_ text: String) -> some View {
+        Text(text)
+            .font(CueStudioFont.hud)
+            .textCase(.uppercase)
+            .tracking(0.8)
+            .foregroundStyle(Palette.ink2)
+            .padding(EdgeInsets(top: 10, leading: 4, bottom: 0, trailing: 4))
     }
 }
 

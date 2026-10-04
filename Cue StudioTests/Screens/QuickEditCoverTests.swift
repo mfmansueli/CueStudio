@@ -8,7 +8,7 @@ import Testing
 @testable import Cue_Studio
 
 /// Cover: a frame picked on the strip (the video shows it while the finger moves), a title in the
-/// Cue preset, and Reset taking it away.
+/// v26 design, and Reset taking it away.
 @MainActor
 @Suite("Quick edit cover")
 struct QuickEditCoverTests {
@@ -38,7 +38,8 @@ struct QuickEditCoverTests {
         #expect(!viewModel.showsCoverImage)
         viewModel.endCoverScrub(atEdited: 12)
         #expect(viewModel.edit.cover?.source == .frame(12))
-        #expect(viewModel.edit.cover?.preset == .cue)
+        // A new cover is a v26 design: the Hook layout, in Anton, nothing on top.
+        #expect(viewModel.edit.cover?.design?.layout == .hook)
         #expect(abs(viewModel.coverEditedTime - 12) < 0.001)
         #expect(viewModel.showsCoverImage)
     }
@@ -49,11 +50,66 @@ struct QuickEditCoverTests {
         viewModel.setCoverTitle("5 comidas de SP")
         #expect(viewModel.edit.cover?.source == .frame(5))
         #expect(viewModel.edit.cover?.title == "5 comidas de SP")
-        // In the Cue preset: black on a yellow box.
-        #expect(viewModel.edit.cover?.titleOverlay?.background == .box)
-        #expect(viewModel.edit.cover?.titleOverlay?.backgroundColor == .yellow)
+        #expect(viewModel.edit.cover?.design?.font == .anton)
         viewModel.removeCover()
         #expect(viewModel.edit.cover == nil)
+    }
+
+    @Test func theDesignChangesAreUndoableSteps() async {
+        let (viewModel, _) = await makeViewModel()
+        viewModel.setCoverLayout(.number)
+        #expect(viewModel.edit.cover?.design?.layout == .number)
+        viewModel.setCoverFont(.serif)
+        viewModel.setCoverEffect(.dim)
+        viewModel.toggleCoverElement(.badge)
+        #expect(viewModel.edit.cover?.design?.elements == [.badge])
+        viewModel.toggleCoverElement(.badge)
+        #expect(viewModel.edit.cover?.design?.elements.isEmpty == true)
+        viewModel.undo()
+        #expect(viewModel.edit.cover?.design?.elements == [.badge])
+        viewModel.undo()
+        viewModel.undo()
+        #expect(viewModel.edit.cover?.design?.font == .serif)
+    }
+
+    @Test func theHandleElementCarriesTheCreatorsHandle() async {
+        let (viewModel, _) = await makeViewModel()
+        viewModel.creatorHandle = "mayacooks"
+        viewModel.toggleCoverElement(.handle)
+        #expect(viewModel.edit.cover?.design?.handle == "mayacooks")
+    }
+
+    @Test func suggestionsCoverTheTitleAndPutTheHighlightOnTheSecondWord() async {
+        let (viewModel, _) = await makeViewModel()
+        viewModel.useCoverSuggestion("3 morning habits")
+        #expect(viewModel.edit.cover?.title == "3 morning habits")
+        #expect(viewModel.edit.cover?.design?.highlightIndex == 1)
+        viewModel.useCoverSuggestion("Wow")
+        #expect(viewModel.edit.cover?.design?.highlightIndex == 0)
+        #expect(viewModel.coverSuggestions.count <= 3)
+    }
+
+    @Test func myCoverStyleIsSavedAndStartsNewCovers() async {
+        let (viewModel, _) = await makeViewModel()
+        viewModel.setCoverLayout(.kicker)
+        viewModel.setCoverFont(.grotesk)
+        viewModel.setCoverEffect(.blur)
+        viewModel.toggleCoverElement(.series)
+        viewModel.saveMyCoverStyle()
+        #expect(viewModel.myCoverLook == CoverLook(layout: .kicker, font: .grotesk, effect: .blur, series: true))
+
+        // A cover made after it starts in the style, with its own words.
+        viewModel.removeCover()
+        viewModel.setCoverTitle("Hello there")
+        #expect(viewModel.edit.cover?.design?.layout == .kicker)
+        #expect(viewModel.edit.cover?.design?.effect == .blur)
+        #expect(viewModel.edit.cover?.design?.elements == [.series])
+
+        // And it can be given to a cover that has another look.
+        viewModel.setCoverLayout(.hook)
+        viewModel.setCoverFont(.anton)
+        viewModel.applyMyCoverStyle()
+        #expect(viewModel.edit.cover?.design?.layout == .kicker && viewModel.edit.cover?.design?.font == .grotesk)
     }
 
     @Test func coversMadeBeforeKeepTheirStyle() throws {

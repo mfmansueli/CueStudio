@@ -139,12 +139,15 @@ extension QuickEditViewModel {
     }
 
     private func setCoverSource(_ source: CoverSource) {
+        let startingDesign = newCoverDesign
         change { snapshot in
             if var cover = snapshot.cover {
                 cover.source = source
                 snapshot.cover = cover
             } else {
-                snapshot.cover = VideoCover(source: source, style: snapshot.creatorStyle ?? .bold, preset: .cue)
+                var cover = VideoCover(source: source, style: snapshot.creatorStyle ?? .bold)
+                cover.design = startingDesign
+                snapshot.cover = cover
             }
         }
     }

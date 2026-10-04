@@ -56,8 +56,6 @@ nonisolated struct PrompterSettings: Codable, Hashable, Sendable {
     var showsCues: Bool = false
     /// "Custom" safe zone margins.
     var customSafeZone = SafeZoneMargins()
-    /// Recording starts with only the text, the reading line, the clock and a stop button.
-    var hidesControlsWhileRecording: Bool = false
     /// Words a minute that 1.0× meant when `speed` was saved. Builds before v7 read 150 at 1.0×;
     /// a saved speed is converted on load so the creator keeps the pace they chose.
     private(set) var speedCalibration: Double = ReadTime.wordsPerMinuteAtOneX
@@ -114,7 +112,5 @@ nonisolated struct PrompterSettings: Codable, Hashable, Sendable {
         studioBackground = (try? container.decodeIfPresent(StudioBackground.self, forKey: .studioBackground)) ?? defaults.studioBackground
         showsCues = try container.decodeIfPresent(Bool.self, forKey: .showsCues) ?? defaults.showsCues
         customSafeZone = (try? container.decodeIfPresent(SafeZoneMargins.self, forKey: .customSafeZone)) ?? defaults.customSafeZone
-        hidesControlsWhileRecording = try container.decodeIfPresent(Bool.self, forKey: .hidesControlsWhileRecording)
-            ?? defaults.hidesControlsWhileRecording
     }
 }

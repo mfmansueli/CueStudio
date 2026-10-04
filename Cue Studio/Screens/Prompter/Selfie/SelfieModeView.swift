@@ -18,6 +18,17 @@ struct SelfieModeView: View {
         let geometry = viewModel.frameGeometry
         ZStack {
             cameraLayers(geometry)
+            if viewModel.showsCompactBar {
+                // Anywhere on the picture brings the whole bar back for a few seconds.
+                Color.clear
+                    .contentShape(Rectangle())
+                    .onTapGesture { viewModel.bar.expand() }
+                    .accessibilityElement()
+                    .accessibilityLabel(Text("Tap the screen for controls"))
+                    .accessibilityAddTraits(.isButton)
+                    .accessibilityIdentifier("prompter.showControlsArea")
+                    .ignoresSafeArea()
+            }
             controls
                 .onGeometryChange(for: CGFloat.self) { $0.frame(in: .global).minY } action: { top in
                     viewModel.measured { $0.topInset = top }
@@ -129,22 +140,14 @@ struct SelfieModeView: View {
                 .padding(.bottom, 12)
                 .transition(.scale(scale: 0.9, anchor: .bottom).combined(with: .opacity))
             }
-            if viewModel.hidesControls {
-                CompactStopButton { Task { await viewModel.recordButtonTapped() } }
-                    .padding(.bottom, 2)
-                    .transition(.opacity)
-            } else {
-                SelfieControlPanel(viewModel: viewModel)
-                    .padding(.horizontal, 10)
-                    .onGeometryChange(for: CGFloat.self) { $0.frame(in: .global).minY } action: { top in
-                        viewModel.measured { $0.toolbarTop = top }
-                    }
-                    .transition(.opacity)
-            }
+            SelfieControlPanel(viewModel: viewModel)
+                .padding(.horizontal, 10)
+                .onGeometryChange(for: CGFloat.self) { $0.frame(in: .global).minY } action: { top in
+                    viewModel.measured { $0.toolbarTop = top }
+                }
         }
         .animation(.spring(duration: 0.3), value: viewModel.showsStopWarning)
         .animation(.spring(duration: 0.3), value: viewModel.showsRecommendation)
-        .animation(.easeOut(duration: 0.25), value: viewModel.hidesControls)
     }
 }
 

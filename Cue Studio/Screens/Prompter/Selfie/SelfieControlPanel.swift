@@ -5,36 +5,64 @@
 
 import SwiftUI
 
-/// One toolbar for prompter and camera: scroll controls on top, capture controls below, and between
-/// them the microphone and the setup the take records with.
+/// One toolbar for prompter and camera, in night glass. Ready to record it is whole: the mode switch
+/// with back to the top, play and Aa, the speed (or what Voice Following is doing), the HUD line
+/// with the microphone and the setup the take records with, and the capture row. While a take
+/// records it shrinks to `RecordingCompactBar`; a tap on the screen brings the whole one back for
+/// a few seconds.
 struct SelfieControlPanel: View {
     let viewModel: PrompterViewModel
 
     @Environment(SessionSetupService.self) private var session
 
     var body: some View {
-        VStack(spacing: 0) {
-            if viewModel.hasScript { scriptRow } else { freestyleRow }
-            audioRow
-                .padding(EdgeInsets(top: 4, leading: 2, bottom: 2, trailing: 2))
-            cameraRow
+        let compact = viewModel.showsCompactBar
+        let shape = RoundedRectangle(cornerRadius: 40, style: .continuous)
+        VStack(spacing: 10) {
+            if compact {
+                RecordingCompactBar(viewModel: viewModel)
+                    .transition(.opacity)
+            } else {
+                if viewModel.hasScript { scriptRows } else { freestyleRow }
+                hudLine
+                captureRow
+                    .padding(.horizontal, 6)
+                    .padding(.top, 2)
+                    .transition(.opacity)
+            }
         }
-        .padding(EdgeInsets(top: 12, leading: 14, bottom: 14, trailing: 14))
-        .glassEffect(.regular, in: RoundedRectangle(cornerRadius: 40, style: .continuous))
+        .padding(EdgeInsets(top: 12, leading: 12, bottom: compact ? 16 : 20, trailing: 12))
+        .background(.ultraThinMaterial, in: shape)
+        .glassNight(in: shape, density: .solid)
+        .animation(.smooth(duration: 0.25), value: compact)
+        // Using any control of the whole bar while recording keeps it open a little longer.
+        .simultaneousGesture(DragGesture(minimumDistance: 0).onChanged { _ in viewModel.bar.touch() })
     }
 
     // MARK: - Rows
 
-    private var scriptRow: some View {
+    /// The mode switch and the playback buttons, then the speed (Steady) or the voice line.
+    private var scriptRows: some View {
         VStack(spacing: 10) {
-            ScrollModePicker(selection: session.prompter.scrollMode) { viewModel.setScrollMode($0) }
-            scriptControls
-        }
-    }
-
-    /// Steady shows the speed slider; Voice Following shows "AUTO", since the voice sets the pace.
-    private var scriptControls: some View {
-        HStack(spacing: 8) {
+            HStack(spacing: 8) {
+                ScrollModePicker(selection: session.prompter.scrollMode) { viewModel.setScrollMode($0) }
+                Button { viewModel.rewind() } label: { Image(systemName: "arrow.up.to.line") }
+                    .buttonStyle(.cueIcon(.overlay))
+                    .accessibilityLabel(Text("Back to the top"))
+                Button { viewModel.togglePlay() } label: {
+                    Image(systemName: viewModel.isPlaying ? "pause.fill" : "play.fill")
+                }
+                .buttonStyle(.cueIcon(.overlay))
+                .accessibilityLabel(Text(viewModel.isPlaying ? "Pause" : "Play"))
+                .accessibilityIdentifier("prompter.playButton")
+                Button { viewModel.sheet = .display } label: {
+                    Text("Aa").font(.system(size: 15, weight: .semibold))
+                }
+                .buttonStyle(.cueIcon(.overlay))
+                .accessibilityLabel(Text("Display settings"))
+                .accessibilityIdentifier("prompter.displayButton")
+            }
+            .frame(height: Metrics.hitTarget)
             if session.prompter.scrollMode == .voice {
                 VoiceIndicator(
                     level: viewModel.voiceLevel, isListening: viewModel.isPlaying && viewModel.isVoiceActive,
@@ -47,23 +75,7 @@ struct SelfieControlPanel: View {
                     onChange: { viewModel.setSpeed($0) }
                 )
             }
-            Button { viewModel.rewind() } label: { Image(systemName: "arrow.up.to.line") }
-                .buttonStyle(.cueIcon(.overlay))
-                .accessibilityLabel(Text("Back to the top"))
-            Button { viewModel.togglePlay() } label: {
-                Image(systemName: viewModel.isPlaying ? "pause.fill" : "play.fill")
-            }
-            .buttonStyle(.cueIcon(.overlay))
-            .accessibilityLabel(Text(viewModel.isPlaying ? "Pause" : "Play"))
-            .accessibilityIdentifier("prompter.playButton")
-            Button { viewModel.sheet = .display } label: {
-                Text("Aa").font(.system(size: 17, weight: .semibold))
-            }
-            .buttonStyle(.cueIcon(.overlay))
-            .accessibilityLabel(Text("Display settings"))
-            .accessibilityIdentifier("prompter.displayButton")
         }
-        .frame(height: 44)
     }
 
     private var freestyleRow: some View {
@@ -85,16 +97,18 @@ struct SelfieControlPanel: View {
             .accessibilityIdentifier("prompter.addScriptButton")
         }
         .padding(.leading, 6)
-        .frame(height: 44)
+        .frame(height: Metrics.hitTarget)
     }
 
-    /// The hairline between the rows, with what the take records with in its middle: the
-    /// microphone, then the quality and frame ("🎙 AirPods Pro · 4K · 9:16").
-    private var audioRow: some View {
+    /// The HUD line: "● IPHONE MIC · 1080P 30 · 9:16 ›". The microphone and the setup are two buttons.
+    private var hudLine: some View {
         HStack(spacing: 6) {
-            hairline
             AudioInputPill(isEnabled: viewModel.canChangeAudioInput) { viewModel.openAudioInput() }
                 .layoutPriority(1)
+            Text("·")
+                .font(CueStudioFont.hud)
+                .foregroundStyle(Palette.ink3)
+                .accessibilityHidden(true)
             SetupSummaryPill(
                 summary: viewModel.captureSummary,
                 source: viewModel.session.captureSource,
@@ -102,37 +116,18 @@ struct SelfieControlPanel: View {
                 action: { viewModel.openRecordingSetup() }
             )
             .layoutPriority(2)
-            hairline
         }
+        .frame(maxWidth: .infinity)
+        .frame(height: 28)
     }
 
-    private var hairline: some View {
-        Rectangle()
-            .fill(Palette.glassBorder)
-            .frame(height: 0.5)
-            .frame(minWidth: 12)
-    }
-
-    private var cameraRow: some View {
+    /// Last take with how many there are, camera settings, record, flip and the "•••" menu.
+    private var captureRow: some View {
         HStack {
-            Button { viewModel.openLastTake() } label: {
-                Group {
-                    if let take = viewModel.lastTake {
-                        TakeThumbnail(take: take)
-                    } else {
-                        Palette.overlayFill
-                    }
-                }
-                .frame(width: 44, height: 44)
-                .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
-                .overlay(RoundedRectangle(cornerRadius: 12, style: .continuous).strokeBorder(Color.white.opacity(0.7), lineWidth: 1.5))
-            }
-            .buttonStyle(.plain)
-            .disabled(viewModel.lastTake == nil || viewModel.isRecording)
-            .accessibilityLabel(Text("Last take"))
+            LastTakeButton(viewModel: viewModel)
             Spacer()
             Button { viewModel.sheet = .camera } label: { Image(systemName: "slider.horizontal.3") }
-                .buttonStyle(.cueIcon(.overlay))
+                .buttonStyle(.cueIcon(.overlay, diameter: 40))
                 .disabled(viewModel.isRecording)
                 .accessibilityLabel(Text("Camera settings"))
                 .accessibilityIdentifier("prompter.cameraSettingsButton")
@@ -142,28 +137,11 @@ struct SelfieControlPanel: View {
             }
             Spacer()
             Button { viewModel.flipCamera() } label: { Image(systemName: "arrow.triangle.2.circlepath.camera") }
-                .buttonStyle(.cueIcon(.overlay))
+                .buttonStyle(.cueIcon(.overlay, diameter: 40))
                 .disabled(viewModel.isRecording)
                 .accessibilityLabel(Text("Switch camera"))
             Spacer()
-            countdownButton
+            RecorderMoreMenu(viewModel: viewModel)
         }
-    }
-
-    private var countdownButton: some View {
-        let countdown = session.camera.countdown
-        return Button { viewModel.cycleCountdown() } label: {
-            VStack(spacing: 1) {
-                Image(systemName: "timer").font(.system(size: 16, weight: .semibold))
-                Text(countdown.shortLabel).font(.system(size: 9, weight: .bold))
-            }
-            .foregroundStyle(countdown == .off ? Color.white : Palette.accText)
-            .frame(width: 44, height: 44)
-            .background(countdown == .off ? Palette.overlayFill : Palette.acc.opacity(0.18), in: Circle())
-        }
-        .buttonStyle(.plain)
-        .disabled(viewModel.isRecording)
-        .accessibilityLabel(Text("Countdown"))
-        .accessibilityValue(Text(countdown.label))
     }
 }

@@ -5,58 +5,77 @@
 
 import SwiftUI
 
-/// Edit · Retake · Save · Share, as four tiles; Share (which opens "Share to") is the one primary
-/// action.
+/// Edit (or Continue, when an edit is open) · Retake · Save as three round glass buttons with their
+/// names under them, and below, the screen's one yellow action: Share to the take's platform.
 struct ReviewActionBar: View {
     let runningAction: TakeReviewViewModel.ExportAction?
+    /// Share glows for a moment after "Ready, I'll post later": it is the next step.
+    var glowsShare = false
+    /// "Share to TikTok", or just "Share" for a freestyle take.
+    let shareTitle: String
+    /// "Continue" when an edit is waiting, "Edit" otherwise.
+    let editTitle: String
     var onEdit: (() -> Void)?
     let onRetake: () -> Void
     let onSave: () -> Void
     let onShare: () -> Void
 
     var body: some View {
-        HStack(spacing: 8) {
-            if let onEdit {
-                tile("Edit", systemImage: "slider.horizontal.3", identifier: "review.editButton", action: onEdit)
+        VStack(spacing: 12) {
+            HStack(spacing: 28) {
+                if let onEdit {
+                    round(editTitle, systemImage: "pencil", identifier: "review.editButton", action: onEdit)
+                }
+                round("Retake", systemImage: "arrow.counterclockwise", identifier: "review.retakeButton", action: onRetake)
+                round(
+                    "Save", systemImage: "arrow.down.to.line", identifier: "review.saveButton",
+                    isRunning: runningAction == .save, action: onSave
+                )
             }
-            tile("Retake", systemImage: "arrow.counterclockwise", identifier: "review.retakeButton", action: onRetake)
-            tile("Save", systemImage: "arrow.down.to.line", identifier: "review.saveButton", isRunning: runningAction == .save, action: onSave)
-            tile(
-                "Share", systemImage: "square.and.arrow.up", identifier: "review.shareButton", isPrimary: true,
-                isRunning: runningAction.map { if case .share = $0 { true } else { false } } ?? false, action: onShare
-            )
+            Button(action: onShare) {
+                HStack(spacing: 8) {
+                    if isSharing {
+                        ProgressView().tint(Palette.accInk)
+                    } else {
+                        Image(systemName: "square.and.arrow.up")
+                    }
+                    Text(shareTitle)
+                }
+            }
+            .buttonStyle(.cuePrimary(.large))
+            .shadow(color: Palette.acc.opacity(glowsShare ? 0.6 : 0), radius: 16)
+            .animation(.easeInOut(duration: 0.4), value: glowsShare)
+            .accessibilityIdentifier("review.shareButton")
         }
         .disabled(runningAction != nil)
     }
 
-    private func tile(
-        _ title: LocalizedStringKey, systemImage: String, identifier: String,
-        isPrimary: Bool = false, isRunning: Bool = false, action: @escaping () -> Void
+    private var isSharing: Bool {
+        if case .share = runningAction { true } else { false }
+    }
+
+    private func round(
+        _ title: String, systemImage: String, identifier: String, isRunning: Bool = false, action: @escaping () -> Void
     ) -> some View {
-        let shape = RoundedRectangle(cornerRadius: Metrics.innerRadius, style: .continuous)
-        return Button(action: action) {
+        Button(action: action) {
             VStack(spacing: 4) {
-                if isRunning {
-                    ProgressView().tint(isPrimary ? Palette.accInk : Palette.ink)
-                        .frame(height: 20)
-                } else {
-                    Image(systemName: systemImage).font(.system(size: 18, weight: .semibold))
-                        .frame(height: 20)
+                Group {
+                    if isRunning {
+                        ProgressView().tint(Palette.ink)
+                    } else {
+                        Image(systemName: systemImage).font(.system(size: 18, weight: .semibold))
+                    }
                 }
-                Text(title).font(.footnote.weight(.semibold))
+                .foregroundStyle(Palette.ink)
+                .frame(width: 52, height: 52)
+                .glassEffect(.regular.interactive(), in: Circle())
+                Text(title).font(.footnote.weight(.semibold)).foregroundStyle(Palette.ink)
             }
-            .foregroundStyle(isPrimary ? Palette.accInk : Palette.ink)
-            .frame(maxWidth: .infinity, minHeight: 62)
-            .background {
-                if isPrimary {
-                    shape.fill(Palette.acc)
-                } else {
-                    shape.fill(.clear).glassEffect(.regular, in: shape)
-                }
-            }
-            .contentShape(shape)
+            .frame(minWidth: Metrics.hitTarget, minHeight: Metrics.hitTarget)
+            .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
+        .accessibilityLabel(Text(title))
         .accessibilityIdentifier(identifier)
     }
 }

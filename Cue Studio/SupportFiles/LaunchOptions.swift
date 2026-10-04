@@ -40,6 +40,8 @@ struct LaunchOptions {
     var languageStore: AppLanguageStoring = SystemAppLanguageStore()
     /// Nil is the real microphone and recognizer.
     var dictation: DictationService?
+    /// How long each few words of a script the AI writes stay on screen before the next arrive.
+    var scriptRevealPause: Duration = .milliseconds(55)
 
     static func fromProcess() -> LaunchOptions {
         var options = LaunchOptions()
@@ -92,6 +94,8 @@ struct LaunchOptions {
             }
             if arguments.contains("-uiTestStubAI") || arguments.contains("-uiTestNoAI") {
                 options.writer = StubScriptWriter(available: !arguments.contains("-uiTestNoAI"))
+                // A test never waits for words to arrive one by one.
+                options.scriptRevealPause = .zero
             }
         }
         #endif

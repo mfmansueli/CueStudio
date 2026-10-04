@@ -25,6 +25,7 @@ nonisolated enum CoverRenderer {
             picture = UIImage(contentsOfFile: EditMediaFiles.url(for: fileName).path(percentEncoded: false))
         }
         guard let picture else { return nil }
+        if let design = cover.design { return designImage(cover: cover, design: design, picture: picture, size: size) }
         let title = cover.titleOverlay.flatMap { TextOverlayRenderer.image(for: $0, frameWidth: size.width) }
         let format = UIGraphicsImageRendererFormat()
         format.scale = 1
@@ -45,6 +46,31 @@ nonisolated enum CoverRenderer {
                     y: (CGFloat(center.y) * size.height - title.size.height / 2).rounded()
                 ))
             }
+        }
+    }
+
+    /// A v26 cover: the picture filling the frame (blurred for "Blur back"), then the design on top
+    /// (and, for the effects that lift the person, the person cut out over the words).
+    private static func designImage(cover: VideoCover, design: CoverDesign, picture: UIImage, size: CGSize) -> UIImage {
+        let format = UIGraphicsImageRendererFormat()
+        format.scale = 1
+        format.opaque = true
+        func filled(_ image: UIImage) -> UIImage {
+            UIGraphicsImageRenderer(size: size, format: format).image { context in
+                UIColor.black.setFill()
+                context.fill(CGRect(origin: .zero, size: size))
+                let fill = MediaPlacement.fill(image.size, into: size)
+                image.draw(in: CGRect(
+                    x: fill.offset.x, y: fill.offset.y, width: image.size.width * fill.scale, height: image.size.height * fill.scale
+                ))
+            }
+        }
+        let base = filled(picture)
+        let cutout = design.effect.needsPersonMask ? CoverDesignRenderer.cutout(of: base, outlined: design.effect == .outline) : nil
+        let background = design.effect == .blur ? CoverDesignRenderer.blurred(base, width: size.width) : base
+        return UIGraphicsImageRenderer(size: size, format: format).image { context in
+            background.draw(in: CGRect(origin: .zero, size: size))
+            CoverDesignRenderer.draw(cover: cover, design: design, size: size, cutout: cutout, in: context.cgContext)
         }
     }
 

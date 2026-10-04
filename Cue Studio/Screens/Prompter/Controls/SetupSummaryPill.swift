@@ -5,10 +5,10 @@
 
 import SwiftUI
 
-/// Next to the microphone pill: the quality and frame the take records in ("4K · 9:16"), so the
-/// creator can check the setup before tapping record. When the values come from a platform
-/// recommendation or were changed for this take, it says so ("TikTok setup · 1080p · 9:16"). Opens
-/// "This take".
+/// The second half of the toolbar's HUD line: the quality and frame the take records in
+/// ("4K · 9:16 ›"), so the creator can check the setup before tapping record. When the values come
+/// from a platform recommendation or were changed for this take, it says so first, in yellow
+/// ("TIKTOK SETUP · 1080P · 9:16 ›"). Opens "This take".
 struct SetupSummaryPill: View {
     /// "4K · 9:16"
     let summary: String
@@ -27,16 +27,15 @@ struct SetupSummaryPill: View {
                 }
                 Text(summary)
                     .foregroundStyle(Palette.ink)
-                    .monospacedDigit()
+                Text("›")
+                    .foregroundStyle(Palette.ink2)
             }
-            .font(.caption.weight(.semibold))
+            .font(CueStudioFont.hud)
+            .textCase(.uppercase)
+            .tracking(0.6)
             .lineLimit(1)
             .fixedSize()
-            .padding(.horizontal, 10)
-            .padding(.vertical, 4)
-            .frame(minHeight: 26)
-            .background(Palette.overlayFill, in: Capsule())
-            .frame(minHeight: 40)
+            .frame(minHeight: Metrics.hitTarget)
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
@@ -50,7 +49,7 @@ struct SetupSummaryPill: View {
 
 #if DEBUG
 #Preview {
-    VStack(spacing: 12) {
+    VStack(spacing: 4) {
         SetupSummaryPill(summary: "4K · 9:16", source: .creatorSetup, isEnabled: true) {}
         SetupSummaryPill(summary: "1080p · 9:16", source: .recommended(.tiktok), isEnabled: true) {}
         SetupSummaryPill(summary: "4K · 1:1", source: .thisTake, isEnabled: true) {}

@@ -7,15 +7,13 @@ import SwiftUI
 
 /// A library with no scripts (not loading, not an empty search): one card, "Let's Cue!",
 /// whose idea is answered in the card (`IdeaPromptCard`, the same one the list shows: typed or dictated in place,
-/// its arrow opens Generate with AI), then writing and importing as quiet rows, and recording
-/// without a script as a small link. The "+" in the navigation bar stays, as in every state, and
-/// keeps Generate, Themes and Formats.
+/// its arrow opens Generate with AI, or the ideas from the creator's topics when nothing is written),
+/// then writing and importing as quiet rows, and recording without a script as a small link. The
+/// "+" in the navigation bar stays, as in every state.
 struct EmptyLibraryView: View {
     var animatesPromptBackground = true
     /// Why Apple Intelligence can't write now; nil when it can.
     var unavailableReason: String?
-    /// The card's draft goes to the generation flow.
-    let onSubmit: () -> Void
     let onWrite: () -> Void
     let onImport: () -> Void
     let onSkip: () -> Void
@@ -34,7 +32,7 @@ struct EmptyLibraryView: View {
                 }
                 IdeaPromptCard(
                     base: Palette.surface, animatesBackground: animatesPromptBackground,
-                    unavailableReason: unavailableReason, onSubmit: onSubmit
+                    unavailableReason: unavailableReason
                 )
                 .accessibilityIdentifier("empty.promptCard")
                 GroupedCard(dividerInset: 72) {
@@ -107,7 +105,7 @@ struct EmptyLibraryView: View {
 
 #if DEBUG
 #Preview {
-    EmptyLibraryView(onSubmit: {}, onWrite: {}, onImport: {}, onSkip: {})
+    EmptyLibraryView(onWrite: {}, onImport: {}, onSkip: {})
         .background(Palette.bg)
         .previewEnvironment(seeded: false)
 }

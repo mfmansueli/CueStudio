@@ -5,36 +5,36 @@
 
 import SwiftUI
 
-/// Steady mode's speed in the Selfie toolbar: the value, then a compact slider from 0.3× to 2.0×.
+/// Steady mode's speed in the toolbar: "SPEED", the v26 slider (0.3× to 2.0×) and the value in
+/// yellow, on a faint 44 pt capsule.
 struct SpeedSlider: View {
     let speed: Double
     let speedLabel: String
     let onChange: @MainActor @Sendable (Double) -> Void
 
     var body: some View {
-        HStack(spacing: 12) {
-            VStack(alignment: .leading, spacing: 3) {
-                Text(speedLabel)
-                    .font(.system(size: 16, weight: .semibold).monospacedDigit())
-                Text("SPEED")
-                    .font(.system(size: 9, weight: .bold))
-                    .kerning(0.6)
-                    .foregroundStyle(Palette.ink2)
-            }
-            // Wider when "SPEED" is a longer word; the slider gives up the room.
-            .fixedSize()
-            .frame(minWidth: 36, alignment: .leading)
-            .accessibilityHidden(true)
-            Slider(value: Binding(get: { speed }, set: onChange), in: PrompterSettings.speedRange, step: 0.1)
-                .tint(Palette.acc)
-                .accessibilityLabel(Text("Speed"))
-                .accessibilityValue(Text(speedLabel))
-                .accessibilityIdentifier("prompter.speedSlider")
+        HStack(spacing: 6) {
+            Text("SPEED")
+                .font(.system(size: 11, weight: .heavy, design: .monospaced))
+                .tracking(0.8)
+                .foregroundStyle(Palette.ink2)
+                .fixedSize()
+                .accessibilityHidden(true)
+            CueSlider(
+                title: String(localized: "Speed"), value: speed, range: PrompterSettings.speedRange, step: 0.1,
+                valueText: speedLabel, identifier: "prompter.speedSlider", onChange: { onChange($0) }
+            )
+            .padding(.horizontal, 6)
+            Text(speedLabel)
+                .font(.system(size: 13, weight: .heavy, design: .monospaced))
+                .foregroundStyle(Palette.accText)
+                .fixedSize()
+                .accessibilityHidden(true)
         }
-        .foregroundStyle(.white)
-        .padding(EdgeInsets(top: 0, leading: 14, bottom: 0, trailing: 16))
-        .frame(maxWidth: .infinity, minHeight: 44)
-        .background(Palette.overlayFill, in: Capsule())
+        .padding(.leading, 12)
+        .padding(.trailing, 14)
+        .frame(maxWidth: .infinity, minHeight: Metrics.hitTarget)
+        .background(Palette.overlayFill.opacity(0.6), in: Capsule())
     }
 }
 

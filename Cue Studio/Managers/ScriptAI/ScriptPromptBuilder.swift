@@ -69,10 +69,14 @@ nonisolated enum ScriptPromptBuilder {
 
     // MARK: - Voice
 
-    /// Creator Voice as instructions: how they sound, the words they use, their style, catchphrases
+    /// My Cue Voice as instructions: how they sound, the words they use, their style, catchphrases
     /// and niche.
     static func voiceLines(_ voice: CreatorVoice) -> [String] {
         var lines = ["Write in the creator's own voice."]
+        if let role = voice.role {
+            lines.append("They are a creator of this kind: \(role.label.lowercased()) (\(role.examples.lowercased())).")
+            if role.speaksAsWe { lines.append("They speak as a team: say \"we\", not \"I\".") }
+        }
         if !voice.sounds.isEmpty {
             lines.append("They sound \(list(voice.sounds.map { $0.label.lowercased() })).")
         }

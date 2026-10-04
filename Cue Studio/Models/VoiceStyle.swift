@@ -5,7 +5,7 @@
 
 import Foundation
 
-/// "My style" in Creator Voice. A creator can pick several.
+/// "My style" in My Cue Voice. A creator can pick several.
 nonisolated enum VoiceStyle: String, Codable, CaseIterable, Identifiable, Sendable {
     case shortSentences, storytelling, educational, opinionDriven, conversational
 

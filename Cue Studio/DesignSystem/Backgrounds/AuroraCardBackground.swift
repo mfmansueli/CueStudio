@@ -5,20 +5,23 @@
 
 import SwiftUI
 
-/// What sits behind a highlighted card: a soft gold and amber aurora drifting slowly over `base`,
-/// and a thin light that runs around the rounded border. Decoration only: it takes no touches, is
-/// hidden from VoiceOver and draws behind the card's content, clipped to the card's shape.
+/// What sits behind a highlighted AI card: a soft violet aurora drifting slowly over `base`, a thin
+/// light that runs around the rounded border and a yellow scan line along the bottom edge.
+/// Decoration only: it takes no touches, is hidden from VoiceOver and draws behind the card's
+/// content, clipped to the card's shape.
 ///
-/// One `TimelineView` redraws just these two layers (a `Canvas` and a gradient stroke), never the
-/// card's content. It pauses when the card is off screen or scrolled out, when the app is not
-/// active, or when `isActive` is false, and resumes from the same frame. With Reduce Motion it
-/// stays still: the aurora at rest and the border as a quiet gold line.
+/// One `TimelineView` redraws just these layers (a `Canvas`, a gradient stroke and the scan line),
+/// never the card's content. It pauses when the card is off screen or scrolled out, when the app is
+/// not active, or when `isActive` is false, and resumes from the same frame. With Reduce Motion it
+/// stays still: the aurora at rest, the border as a quiet violet line and the scan line dim in
+/// the middle of the edge.
 struct AuroraCardBackground: View {
     /// The card's surface: the aurora drifts over it.
     var base: Color = Palette.surface
     var cornerRadius: CGFloat = Metrics.cardRadius
     var isActive = true
 
+    @Environment(\.colorScheme) private var colorScheme
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.scenePhase) private var scenePhase
     @State private var isOnScreen = false
@@ -26,19 +29,28 @@ struct AuroraCardBackground: View {
     @State private var clock = MotionClock()
 
     private static let borderWidth: CGFloat = 1.5
+    private static let scanLineHeight: CGFloat = 1.5
 
     var body: some View {
         let shape = RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
         ZStack {
-            base
+            // In light the card is the solid violet of the hero cards, with white content (`heroCardContent`).
+            if colorScheme == .light {
+                LinearGradient(colors: [Palette.heroTop, Palette.heroBottom], startPoint: .topLeading, endPoint: .bottomTrailing)
+            } else {
+                base
+            }
             TimelineView(.animation(minimumInterval: 1.0 / 30, paused: !isRunning)) { context in
                 let time = reduceMotion ? 0 : clock.elapsed(at: context.date)
                 ZStack {
                     Canvas { context, size in paintAurora(in: &context, size: size, time: time) }
                     GeometryReader { geometry in
                         border(shape, size: geometry.size, time: time)
+                        scanLine(width: geometry.size.width, height: geometry.size.height, time: time)
                     }
                 }
+                // The lights are the night ones in both appearances: the card is night, even in light.
+                .environment(\.colorScheme, .dark)
             }
         }
         .clipShape(shape)
@@ -86,10 +98,24 @@ struct AuroraCardBackground: View {
 
     private static func color(of light: AuroraMotion.Light) -> Color {
         switch light {
-        case .gold, .glow: Palette.auroraGold
-        case .amber: Palette.auroraAmber
+        case .violet, .glow: Palette.auroraViolet
+        case .indigo: Palette.auroraIndigo
         case .shade: Palette.insetShade
         }
+    }
+
+    /// The yellow line along the bottom edge: a bright stretch that crosses it, fading at both ends.
+    private func scanLine(width: CGFloat, height: CGFloat, time: TimeInterval) -> some View {
+        let center = reduceMotion ? 0.5 : AuroraMotion.scanCenter(at: time)
+        let length = width * AuroraMotion.scanLength
+        let line = Palette.auroraScanLine
+        return LinearGradient(
+            colors: [line.opacity(0), line.opacity(reduceMotion ? 0.35 : 0.9), line.opacity(0)],
+            startPoint: .leading,
+            endPoint: .trailing
+        )
+        .frame(width: length, height: Self.scanLineHeight)
+        .position(x: center * width, y: height - Self.scanLineHeight / 2)
     }
 
     /// The light along the border: it fades in and out at both ends, so it never looks like a

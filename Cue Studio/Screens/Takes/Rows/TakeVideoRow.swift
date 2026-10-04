@@ -5,8 +5,8 @@
 
 import SwiftUI
 
-/// One video in the Takes library: its best take's thumbnail in the take's own frame, platform,
-/// format and quality, when, and chips for takes, edits and sharing.
+/// One video in the Takes list: its best take's thumbnail in the take's own frame, platform,
+/// format and quality, when, and chips for its stage, takes and edit.
 struct TakeVideoRow: View {
     let video: TakeVideo
     let whenLabel: String
@@ -76,21 +76,30 @@ struct TakeVideoRow: View {
 
     @ViewBuilder
     private var chips: some View {
-        let hasChips = video.takesLabel != nil || video.isEdited || video.isNotShared
-        if hasChips {
-            HStack(spacing: 5) {
-                if let label = video.takesLabel {
-                    chip(label, foreground: Palette.ink.opacity(0.85), background: Palette.surface2)
-                }
-                if video.isEdited {
-                    chip(String(localized: "Edited"), foreground: Palette.infoText, background: Palette.infoSoft)
-                }
-                if video.isNotShared {
-                    chip(String(localized: "Not shared"), foreground: Palette.warnText, background: Palette.warnSoft)
-                }
+        HStack(spacing: 5) {
+            stageChip
+            if let label = video.takesLabel {
+                chip(label, foreground: Palette.ink.opacity(0.85), background: Palette.surface2)
             }
-            .padding(.top, 2)
+            if video.isEdited {
+                chip(String(localized: "Edited"), foreground: Palette.infoText, background: Palette.infoSoft)
+            }
         }
+        .padding(.top, 2)
+    }
+
+    /// "● READY": the stage in its color, in monospaced capitals like the rest of the HUD.
+    private var stageChip: some View {
+        HStack(spacing: 5) {
+            Circle().fill(video.stage.tint).frame(width: 5, height: 5)
+            Text(video.stage.badgeLabel).textCase(.uppercase)
+        }
+        .font(.system(size: 10, weight: .heavy, design: .monospaced))
+        .tracking(0.5)
+        .foregroundStyle(video.stage.tint)
+        .padding(.horizontal, 8)
+        .frame(height: 22)
+        .background(Palette.surface2, in: Capsule())
     }
 
     private func chip(_ text: String, foreground: Color, background: Color) -> some View {
@@ -114,10 +123,9 @@ struct TakeVideoRow: View {
     }
 
     private var accessibilityText: String {
-        var parts = [video.title, video.platform?.label ?? String(localized: "Freestyle"), whenLabel]
+        var parts = [video.title, video.stage.sentence, video.platform?.label ?? String(localized: "Freestyle"), whenLabel]
         if let label = video.takesLabel { parts.append(label) }
         if video.isEdited { parts.append(String(localized: "Edited")) }
-        if video.isNotShared { parts.append(String(localized: "Not shared")) }
         return parts.joined(separator: ", ")
     }
 }

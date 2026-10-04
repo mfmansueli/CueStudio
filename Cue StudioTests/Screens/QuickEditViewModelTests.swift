@@ -782,6 +782,74 @@ struct QuickEditViewModelTests {
         #expect(second.toast.message == "Draft restored")
     }
 
+    // MARK: - Done asks "Is it ready to post?"
+
+    @Test func doneOpensTheQuestionAndLeavesTheEditAsItWas() async {
+        let scenario = await makeScenario()
+        dragHandle(.start, to: 4, on: scenario.viewModel)
+        scenario.viewModel.panel = .adjust
+        scenario.viewModel.askIfReadyToPost()
+        #expect(scenario.viewModel.sheet == .done)
+        #expect(scenario.viewModel.panel == nil)
+        // Nothing is saved on the take until it is answered.
+        #expect(!scenario.takes.takes[0].isEdited)
+    }
+
+    @Test(arguments: [EditorOutcome.share, .download, .ready])
+    func shareDownloadAndReadyLaterSaveTheEditAndDropTheDraft(_ outcome: EditorOutcome) async {
+        let scenario = await makeScenario()
+        dragHandle(.start, to: 4, on: scenario.viewModel)
+        scenario.viewModel.saveDraft()
+        scenario.viewModel.askIfReadyToPost()
+        scenario.viewModel.finish(outcome)
+        #expect(scenario.viewModel.sheet == nil)
+        #expect(scenario.takes.takes[0].isEdited)
+        #expect(scenario.takes.takes[0].edit?.timeline.trimStart == 4)
+        #expect(scenario.drafts.drafts.isEmpty)
+        #expect(scenario.player.isStopped)
+    }
+
+    @Test func notYetKeepsTheDraftEvenWithoutChangesAndDoesNotTouchTheTake() async {
+        let scenario = await makeScenario()
+        scenario.viewModel.finish(.notYet)
+        // The video stays in edit: a draft is what says so.
+        #expect(scenario.drafts.drafts.count == 1)
+        #expect(scenario.takes.takes[0].edit == nil)
+        #expect(!scenario.takes.takes[0].isEdited)
+        #expect(scenario.player.isStopped)
+
+        let changed = await makeScenario()
+        dragHandle(.end, to: 30, on: changed.viewModel)
+        changed.viewModel.finish(.notYet)
+        #expect(changed.drafts.drafts.count == 1)
+        #expect(changed.drafts.drafts.values.first?.edit.timeline.trimEnd == 30)
+        #expect(!changed.takes.takes[0].isEdited)
+    }
+
+    @Test func backKeepsADraftOnlyWhenSomethingChanged() async {
+        let untouched = await makeScenario()
+        untouched.viewModel.finish(.back)
+        #expect(untouched.drafts.drafts.isEmpty)
+
+        let changed = await makeScenario()
+        dragHandle(.end, to: 30, on: changed.viewModel)
+        changed.viewModel.finish(.back)
+        #expect(changed.drafts.drafts.count == 1)
+        #expect(!changed.takes.takes[0].isEdited)
+    }
+
+    @Test func eachAnswerSaysWhatItDoesToTheVideo() {
+        #expect(EditorOutcome.allCases.filter(\.savesTheEdit) == [.share, .download, .ready])
+        #expect(EditorOutcome.allCases.filter(\.exportsTheVideo) == [.share, .download])
+    }
+
+    @Test func theTopBarSaysWhetherAnythingChanged() async {
+        let scenario = await makeScenario()
+        #expect(!scenario.viewModel.hasUnsavedChanges)
+        dragHandle(.start, to: 4, on: scenario.viewModel)
+        #expect(scenario.viewModel.hasUnsavedChanges)
+    }
+
     @Test func cancelWithoutChangesLeavesNoDraft() async {
         let scenario = await makeScenario()
         scenario.viewModel.cancel()

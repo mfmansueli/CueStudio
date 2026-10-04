@@ -7,7 +7,7 @@ import Foundation
 
 /// One-tap tools offered above the keyboard while editing a script.
 nonisolated enum ScriptTool: String, Codable, CaseIterable, Identifiable, Sendable {
-    /// Rewrites with Creator Voice. Offered for every format, ahead of its own tools.
+    /// Rewrites with My Cue Voice. Offered for every format, ahead of its own tools.
     case inMyVoice
     case newHooks
     case fitToTime

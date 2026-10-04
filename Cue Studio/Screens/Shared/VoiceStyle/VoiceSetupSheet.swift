@@ -5,10 +5,10 @@
 
 import SwiftUI
 
-/// The short setup behind "Write in my voice": what you create, who you talk to and how you talk.
-/// It asks only what the profile still lacks (or all three, to edit), writes the answers into the
-/// same Profile fields the Creator Voice section edits, and turns the voice on. Closing it without
-/// saving changes nothing.
+/// My Cue Voice (V1): four questions, one at a time, with a progress bar ("01 / 04"): what kind of
+/// creator, what you talk about, who you talk to, how you sound. Answers go to the same profile
+/// fields Profile edits. A creator with an idea waiting on the card finishes with "Write my script",
+/// and the script that comes is the preview of the voice (see `VoicePreviewStrip`).
 struct VoiceSetupSheet: View {
     /// Which questions the sheet opens with: what is missing, or all of them to edit what was answered.
     enum Mode: String, Identifiable {
@@ -18,124 +18,226 @@ struct VoiceSetupSheet: View {
     }
 
     let mode: Mode
-    var onSaved: () -> Void = {}
+    /// The idea waiting on the card: the last question's button then writes it.
+    var ideaText: String?
+    /// The question to open on (an editable row of the profile); nil starts at the first.
+    var startAt: VoiceSetupStep?
+    /// Saved: `writesScript` is true when the creator asked for the idea to be written.
+    var onSaved: (_ writesScript: Bool) -> Void = { _ in }
 
     @Environment(CreatorProfileService.self) private var profile
     @Environment(\.dismiss) private var dismiss
     @State private var draft: VoiceSetupDraft
+    @State private var index = 0
     private let confirmsExistingValues: Bool
 
-    init(mode: Mode, profile: CreatorProfile, onSaved: @escaping () -> Void = {}) {
+    init(
+        mode: Mode, profile: CreatorProfile, ideaText: String? = nil, startAt: VoiceSetupStep? = nil,
+        onSaved: @escaping (Bool) -> Void = { _ in }
+    ) {
         self.mode = mode
+        self.ideaText = ideaText
+        self.startAt = startAt
         self.onSaved = onSaved
         let draft = VoiceSetupDraft(profile: profile, steps: mode == .edit ? VoiceSetupStep.allCases : nil)
         confirmsExistingValues = draft.confirmsExistingValues
+        _index = State(initialValue: startAt.flatMap { draft.steps.firstIndex(of: $0) } ?? 0)
         _draft = State(initialValue: draft)
+    }
+
+    private var step: VoiceSetupStep { draft.steps[min(index, draft.steps.count - 1)] }
+    private var isLast: Bool { index >= draft.steps.count - 1 }
+    private var hasIdea: Bool { !(ideaText?.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ?? true) }
+
+    /// Whether the answer for the question showing allows going on.
+    private var canContinue: Bool {
+        switch step {
+        case .role: true
+        case .niche: !draft.niches.isEmpty
+        case .audience: draft.vocabulary != nil
+        case .tone: !draft.sounds.isEmpty
+        }
     }
 
     var body: some View {
         VStack(spacing: 0) {
+            topBar
             ScrollView {
-                VStack(alignment: .leading, spacing: 22) {
-                    SheetHeader(
-                        title: mode == .edit ? String(localized: "Edit your style") : String(localized: "Set up your style"),
-                        subtitle: confirmsExistingValues
-                            ? String(localized: "Confirm what’s here, or change it.")
-                            : String(localized: "Saved to your Profile."),
-                        onClose: { dismiss() }
-                    )
-                    ForEach(draft.steps) { step in
-                        section(for: step)
+                VStack(alignment: .leading, spacing: 18) {
+                    VStack(alignment: .leading, spacing: 6) {
+                        Text(step.question)
+                            .font(.system(size: 30, weight: .bold))
+                            .foregroundStyle(Palette.ink)
+                            .fixedSize(horizontal: false, vertical: true)
+                            .accessibilityAddTraits(.isHeader)
+                        Text(subtitle)
+                            .font(.subheadline)
+                            .foregroundStyle(Palette.ink2)
+                    }
+                    content
+                    if step == .role {
+                        Text("Doing more than one? Pick the one you film most.")
+                            .font(.footnote)
+                            .foregroundStyle(Palette.ink2)
+                            .frame(maxWidth: .infinity)
                     }
                 }
-                .padding(EdgeInsets(top: 20, leading: Metrics.gutter, bottom: 16, trailing: Metrics.gutter))
+                .padding(EdgeInsets(top: 16, leading: Metrics.gutter, bottom: 16, trailing: Metrics.gutter))
             }
             .scrollBounceBehavior(.basedOnSize)
-            Button(action: save) {
-                Text("Save and use my style")
-            }
-            .buttonStyle(.cuePrimary(.large))
-            .disabled(!draft.canSave)
-            .padding(EdgeInsets(top: 8, leading: Metrics.gutter, bottom: 16, trailing: Metrics.gutter))
-            .accessibilityIdentifier("voiceSetup.saveButton")
+            bottomBar
         }
+        .animation(.smooth(duration: 0.2), value: index)
         .presentationDetents([.large])
-        .presentationBackground(Palette.surface)
+        .presentationBackground(Palette.bg)
         .presentationCornerRadius(Metrics.sheetRadius)
         .presentationDragIndicator(.visible)
-        // A container of its own: the sheet's identifier would otherwise replace its controls' (Save's).
+        // A container of its own: the sheet's identifier would otherwise replace its controls' (Continue's).
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("voiceSetup.sheet")
     }
 
     // MARK: - Pieces
 
+    private var subtitle: LocalizedStringKey {
+        switch step {
+        case .role: "Pick the closest. Change it anytime."
+        case .niche: "Cue writes ideas and scripts about them."
+        case .audience: confirmsExistingValues ? "Confirm what’s here, or change it." : "They decide the words Cue uses."
+        case .tone: confirmsExistingValues ? "Confirm what’s here, or change it." : "Pick the closest. Change it anytime."
+        }
+    }
+
     @ViewBuilder
-    private func section(for step: VoiceSetupStep) -> some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text(step.question)
-                .font(.headline)
-                .foregroundStyle(Palette.ink)
-                .accessibilityAddTraits(.isHeader)
-            switch step {
-            case .niche:
-                chips(
-                    Niche.allCases, label: \.label, isPicked: { draft.isPicked($0) }, isOn: draft.canAddNiche, key: "niche",
-                    pick: { draft.toggle($0) }
-                )
-                limitNote(draft.nicheCap)
-            case .audience:
-                chips(
-                    Vocabulary.allCases, label: \.audienceLabel, isPicked: { draft.isPicked($0) }, isOn: true, key: "audience",
-                    pick: { draft.choose($0) }
-                )
-            case .tone:
-                chips(
-                    VoiceSound.allCases, label: \.label, isPicked: { draft.isPicked($0) }, isOn: draft.canAddSound, key: "tone",
-                    pick: { draft.toggle($0) }
-                )
-                limitNote(draft.soundCap)
+    private var content: some View {
+        switch step {
+        case .role:
+            VoiceRoleStep(draft: draft) { role in
+                Haptics.selection()
+                draft.choose(role)
+                advanceAfterPicking()
+            }
+        case .niche:
+            VoiceNicheStep(draft: draft) { niche in
+                Haptics.selection()
+                draft.toggle(niche)
+            }
+        case .audience:
+            VoiceAudienceStep(draft: draft) { vocabulary in
+                Haptics.selection()
+                draft.choose(vocabulary)
+            }
+        case .tone:
+            VoiceToneStep(draft: draft) { sound in
+                Haptics.selection()
+                draft.toggle(sound)
             }
         }
     }
 
-    /// Choices that wrap, one tap each. Past the limit the unpicked ones dim: they can't be added.
-    private func chips<Option: Identifiable & Hashable>(
-        _ options: [Option], label: @escaping (Option) -> String, isPicked: @escaping (Option) -> Bool,
-        isOn canAdd: Bool, key: String, pick: @escaping (Option) -> Void
-    ) -> some View where Option.ID == String {
-        FlowLayout(spacing: 8, lineSpacing: 0) {
-            ForEach(options) { option in
-                let picked = isPicked(option)
-                Button {
-                    Haptics.selection()
-                    pick(option)
-                } label: {
-                    FilterChip(label: label(option), isSelected: picked)
-                        .fixedSize()
-                        .frame(minHeight: Metrics.hitTarget)
+    private var topBar: some View {
+        HStack(spacing: 10) {
+            if index > 0 {
+                Button { index -= 1 } label: {
+                    Image(systemName: "chevron.backward")
+                        .font(.system(size: 16, weight: .bold))
+                        .foregroundStyle(Palette.ink)
+                        .frame(width: Metrics.hitTarget, height: Metrics.hitTarget)
                         .contentShape(Rectangle())
-                        .opacity(picked || canAdd ? 1 : 0.4)
+                }
+                .accessibilityLabel(Text("Back"))
+                .accessibilityIdentifier("voiceSetup.back")
+            }
+            VoiceFlowProgress(step: index, count: draft.steps.count)
+            Spacer(minLength: 0)
+            Button { dismiss() } label: {
+                Text(mode == .edit ? "Cancel" : "Not now")
+                    .font(.body)
+                    .foregroundStyle(Palette.ink2)
+                    .frame(minHeight: Metrics.hitTarget)
+                    .contentShape(Rectangle())
+            }
+            .accessibilityIdentifier("sheet.closeButton")
+        }
+        .padding(.horizontal, Metrics.gutter)
+        .padding(.top, 14)
+    }
+
+    @ViewBuilder
+    private var bottomBar: some View {
+        let showsContinue = index > 0 || step != .role
+        VStack(spacing: 4) {
+            if step == .role {
+                Button { advance() } label: {
+                    Text("Skip this one")
+                        .font(.subheadline.weight(.semibold))
+                        .foregroundStyle(Palette.ink2)
+                        .frame(maxWidth: .infinity, minHeight: Metrics.hitTarget)
+                        .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
-                .accessibilityIdentifier("voiceSetup.\(key).\(option.id)")
+                .accessibilityIdentifier("voiceSetup.skipRole")
+            }
+            if showsContinue {
+                Button(action: next) {
+                    Text(ctaLabel)
+                }
+                .buttonStyle(.cuePrimary(.large))
+                .disabled(!canContinue)
+                .accessibilityIdentifier("voiceSetup.saveButton")
+                if isLast, hasIdea, mode != .edit {
+                    Button { save(writesScript: false) } label: {
+                        Text("Just save my voice")
+                            .font(.subheadline.weight(.semibold))
+                            .foregroundStyle(Palette.ink2)
+                            .frame(maxWidth: .infinity, minHeight: Metrics.hitTarget)
+                            .contentShape(Rectangle())
+                    }
+                    .buttonStyle(.plain)
+                    .disabled(!draft.canSave)
+                    .accessibilityIdentifier("voiceSetup.justSave")
+                }
             }
         }
+        .padding(EdgeInsets(top: 6, leading: Metrics.gutter, bottom: 12, trailing: Metrics.gutter))
     }
 
-    private func limitNote(_ limit: Int) -> some View {
-        Text("Pick up to \(limit)")
-            .font(.footnote)
-            .foregroundStyle(Palette.ink2)
+    private var ctaLabel: LocalizedStringKey {
+        if !isLast { return "Continue" }
+        if mode == .edit { return "Done" }
+        return hasIdea ? "✦ Write my script" : "Done"
     }
 
     // MARK: - Actions
 
-    private func save() {
+    private func advance() {
+        guard !isLast else { return }
+        index += 1
+    }
+
+    /// A card was picked: the next question comes after a beat, so the pick is seen.
+    private func advanceAfterPicking() {
+        guard mode != .edit else { return }
+        Task {
+            try? await Task.sleep(for: .milliseconds(220))
+            advance()
+        }
+    }
+
+    private func next() {
+        guard canContinue else { return }
+        if isLast {
+            save(writesScript: hasIdea && mode != .edit)
+        } else {
+            advance()
+        }
+    }
+
+    private func save(writesScript: Bool) {
         guard draft.canSave else { return }
         draft.save(to: profile)
         Haptics.apply()
-        onSaved()
+        onSaved(writesScript)
         dismiss()
     }
 }

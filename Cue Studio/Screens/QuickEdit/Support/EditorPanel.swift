@@ -22,12 +22,14 @@ enum EditorPanel: String, CaseIterable, Identifiable {
     case media
     // The cut between two clips
     case transition
+    // ✦ Smart: four quick fixes
+    case smart
 
     var id: String { rawValue }
 
     var size: EditorPanelSize {
         switch self {
-        case .speed, .zoom, .volume, .filters, .crop, .voiceOver, .autoCaptions, .media, .transition: .mini
+        case .speed, .zoom, .volume, .filters, .crop, .voiceOver, .autoCaptions, .media, .transition, .smart: .mini
         case .voice, .pauses, .captions, .adjust, .background, .cover: .medium
         case .textStyle, .captionStyle: .full
         }
@@ -77,7 +79,7 @@ enum EditorPanel: String, CaseIterable, Identifiable {
         case .speed: String(localized: "Speed")
         case .zoom: String(localized: "Zoom")
         case .volume: String(localized: "Volume")
-        case .voice: String(localized: "Voice")
+        case .voice: String(localized: "Studio Voice")
         case .pauses: String(localized: "Pauses")
         case .adjust: String(localized: "Adjust")
         case .filters: String(localized: "Filters")
@@ -91,6 +93,7 @@ enum EditorPanel: String, CaseIterable, Identifiable {
         case .voiceOver: String(localized: "Voice-over")
         case .media: String(localized: "Photo or video")
         case .transition: String(localized: "Transition")
+        case .smart: String(localized: "✦ Smart")
         }
     }
 }

@@ -16,9 +16,10 @@ final class EditorUITests: XCTestCase {
     func testTheEditorOpensWithTheMainTools() {
         let app = EditorApp.open()
         XCTAssertTrue(app.buttons["edit.doneButton"].exists)
-        XCTAssertTrue(app.buttons["edit.exportButton"].exists)
+        XCTAssertTrue(app.buttons["edit.backButton"].exists)
+        XCTAssertFalse(app.buttons["edit.exportButton"].exists)
         XCTAssertTrue(app.buttons["edit.playButton"].exists)
-        for tool in ["edit", "text", "captions", "audio", "pauses", "media", "adjust"] {
+        for tool in ["edit", "audio", "text", "captions", "filters", "adjust", "crop", "background", "media", "smart"] {
             XCTAssertTrue(app.buttons["edit.toolbar.\(tool)"].exists, tool)
         }
         XCTAssertFalse(app.buttons["edit.toolbar.back"].exists)
@@ -31,7 +32,7 @@ final class EditorUITests: XCTestCase {
         XCTAssertTrue(app.buttons["edit.toolbar.speed"].exists)
         XCTAssertTrue(app.buttons["edit.toolbar.zoom"].exists)
         EditorApp.tapTool(app, "back")
-        XCTAssertTrue(app.buttons["edit.toolbar.pauses"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.buttons["edit.toolbar.smart"].waitForExistence(timeout: 5))
     }
 
     func testAPanelReplacesTheToolbarUntilItsCheckmark() {
@@ -84,9 +85,8 @@ final class EditorUITests: XCTestCase {
             // Intensity is its own ruler; Compare shows the picture as recorded, and Reset takes Auto away.
             let compare = app.buttons["edit.adjust.compare"]
             XCTAssertTrue(compare.exists)
-            compare.tap()
-            XCTAssertTrue(compare.isSelected)
-            compare.tap()
+            // ◐ is held: it shows the original only while pressed, and lets go when the finger lifts.
+            compare.press(forDuration: 0.5)
             XCTAssertFalse(compare.isSelected)
             XCTAssertTrue(app.buttons["edit.adjust.resetOne"].waitForExistence(timeout: 5))
             app.buttons["edit.adjust.resetOne"].tap()
@@ -134,8 +134,7 @@ final class EditorUITests: XCTestCase {
 
     func testSplittingDeletingUndoingAndSavingAClip() {
         let app = EditorApp.open()
-        let status = app.staticTexts["edit.durationChange"]
-        XCTAssertTrue(status.label.hasPrefix("01:02.0"))
+        XCTAssertTrue(EditorApp.length(app).hasPrefix("01:02.0"))
         EditorApp.tapTool(app, "edit")
         // At the very start the playhead can't split: a toast says why.
         EditorApp.tapTool(app, "split")
@@ -147,13 +146,13 @@ final class EditorUITests: XCTestCase {
         EditorApp.tapTool(app, "split")
         XCTAssertTrue(app.staticTexts.matching(NSPredicate(format: "label BEGINSWITH 'Split at'")).firstMatch.waitForExistence(timeout: 5))
         EditorApp.tapTool(app, "delete")
-        XCTAssertFalse(status.label.hasPrefix("01:02.0"))
+        XCTAssertFalse(EditorApp.length(app).hasPrefix("01:02.0"))
         app.buttons["edit.undoButton"].tap()
-        XCTAssertTrue(status.label.hasPrefix("01:02.0"))
+        XCTAssertTrue(EditorApp.length(app).hasPrefix("01:02.0"))
         app.buttons["edit.redoButton"].tap()
-        XCTAssertFalse(status.label.hasPrefix("01:02.0"))
+        XCTAssertFalse(EditorApp.length(app).hasPrefix("01:02.0"))
 
-        app.buttons["edit.doneButton"].tap()
+        EditorApp.done(app)
         XCTAssertTrue(app.buttons["review.editButton"].waitForExistence(timeout: 5))
     }
 
@@ -171,19 +170,41 @@ final class EditorUITests: XCTestCase {
         XCTAssertTrue(app.buttons["edit.toolbar.adjust"].waitForExistence(timeout: 5))
     }
 
-    /// Export: the choices never go above the recording (the sample is 1080p at 30 fps).
-    func testExportOffersWhatTheRecordingAllows() {
+    /// Done always asks "Is it ready to post?", with four answers; swiping the sheet down goes back.
+    func testDoneAsksIfItIsReadyToPost() {
         let app = EditorApp.open()
-        app.buttons["edit.exportButton"].tap()
-        let start = app.buttons["edit.export.start"]
-        XCTAssertTrue(start.waitForExistence(timeout: 5))
-        XCTAssertTrue(app.buttons["edit.export.resolution.hd1080"].isSelected)
-        XCTAssertFalse(app.buttons["edit.export.resolution.uhd4K"].isEnabled)
-        XCTAssertFalse(app.buttons["edit.export.frameRate.60"].isEnabled)
-        app.buttons["edit.export.resolution.hd720"].tap()
-        XCTAssertTrue(app.buttons["edit.export.resolution.hd720"].isSelected)
-        app.buttons["edit.export.close"].tap()
+        app.buttons["edit.doneButton"].tap()
+        XCTAssertTrue(app.buttons["edit.done.share"].waitForExistence(timeout: 5))
+        for answer in ["download", "ready", "notYet"] {
+            XCTAssertTrue(app.buttons["edit.done.\(answer)"].exists, answer)
+        }
+        // Back to the editor: the sheet swipes down and the tools are still there.
+        app.descendants(matching: .any)["edit.doneSheet"].firstMatch.swipeDown(velocity: .fast)
+        XCTAssertTrue(app.buttons["edit.done.share"].waitForNonExistence(timeout: 5))
         XCTAssertTrue(app.buttons["edit.toolbar.edit"].waitForExistence(timeout: 5))
+    }
+
+    /// "Not yet, I'll come back" leaves the edit open: the review offers to continue it.
+    func testNotYetKeepsTheEditOpenAndTheReviewSaysContinue() {
+        let app = EditorApp.open()
+        EditorApp.done(app, answer: "notYet")
+        let edit = app.buttons["review.editButton"]
+        XCTAssertTrue(edit.waitForExistence(timeout: 5))
+        let continues = NSPredicate(format: "label == 'Continue'")
+        XCTAssertEqual(XCTWaiter().wait(for: [XCTNSPredicateExpectation(predicate: continues, object: edit)], timeout: 8), .completed, edit.label)
+        // And the stage bar says so: the video is in edit.
+        XCTAssertTrue(app.descendants(matching: .any)["review.stageBar"].exists)
+    }
+
+    /// Back asks nothing and keeps the draft.
+    func testBackLeavesWithoutAskingAndKeepsTheDraft() {
+        let app = EditorApp.open()
+        EditorApp.tapTool(app, "edit")
+        EditorApp.scrub(app)
+        EditorApp.tapTool(app, "split")
+        app.buttons["edit.backButton"].tap()
+        XCTAssertFalse(app.buttons["edit.done.share"].exists)
+        XCTAssertTrue(app.buttons["review.editButton"].waitForExistence(timeout: 5))
     }
 
     // MARK: - Timeline
@@ -203,19 +224,18 @@ final class EditorUITests: XCTestCase {
         EditorApp.mainTrack(app, at: 0.75).tap()
         XCTAssertTrue(app.buttons["edit.toolbar.split"].waitForExistence(timeout: 5))
         timeline.coordinate(withNormalizedOffset: CGVector(dx: 0.75, dy: 0.97)).tap()
-        XCTAssertTrue(app.buttons["edit.toolbar.pauses"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.buttons["edit.toolbar.smart"].waitForExistence(timeout: 5))
     }
 
     func testTheClipsLeftHandleTrimsItsStart() {
         let app = EditorApp.open()
-        let status = app.staticTexts["edit.durationChange"]
         EditorApp.mainTrack(app, at: 0.75).tap()
         XCTAssertTrue(app.buttons["edit.toolbar.split"].waitForExistence(timeout: 5))
         // With the playhead at the start, the clip's left handle sits just left of the middle.
         let handle = EditorApp.mainTrack(app, at: 0.5).withOffset(CGVector(dx: -7, dy: 0))
         handle.press(forDuration: 0.2, thenDragTo: handle.withOffset(CGVector(dx: 88, dy: 0)), withVelocity: 300, thenHoldForDuration: 0.3)
-        XCTAssertFalse(status.label.hasPrefix("01:02.0"))
+        XCTAssertFalse(EditorApp.length(app).hasPrefix("01:02.0"))
         app.buttons["edit.undoButton"].tap()
-        XCTAssertTrue(status.label.hasPrefix("01:02.0"))
+        XCTAssertTrue(EditorApp.length(app).hasPrefix("01:02.0"))
     }
 }

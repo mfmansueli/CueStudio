@@ -12,9 +12,10 @@ import Testing
 @MainActor
 @Suite("Voice setup")
 struct VoiceSetupDraftTests {
-    @Test func aNewProfileIsAskedAllThreeQuestionsWithNothingPicked() {
+    @Test func aNewProfileIsAskedAllFourQuestionsWithNothingPicked() {
         let draft = VoiceSetupDraft(profile: CreatorProfile())
-        #expect(draft.steps == [.niche, .audience, .tone])
+        #expect(draft.steps == [.role, .niche, .audience, .tone])
+        #expect(draft.role == nil)
         // The default tone and vocabulary are not shown as if they were chosen.
         #expect(draft.niches.isEmpty && draft.vocabulary == nil && draft.sounds.isEmpty)
         #expect(!draft.canSave)
@@ -40,7 +41,7 @@ struct VoiceSetupDraftTests {
     @Test func anOlderProfileStillNeedsTheNicheItNeverHad() {
         let profile = CreatorProfile(sounds: [.funny], vocabulary: .technical, unverifiedVoiceSteps: [.audience, .tone])
         var draft = VoiceSetupDraft(profile: profile)
-        #expect(draft.steps == [.niche, .audience, .tone])
+        #expect(draft.steps == [.role, .niche, .audience, .tone])
         #expect(!draft.canSave)
         draft.toggle(Niche.tech)
         #expect(draft.canSave)

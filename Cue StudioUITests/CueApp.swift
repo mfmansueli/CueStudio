@@ -43,3 +43,13 @@ enum CueApp {
         return app
     }
 }
+
+extension XCUIApplication {
+    /// Opens "Need an idea?" from its chip on the idea card (the arrow does the same with nothing written).
+    func openIdeas() {
+        let chip = buttons["ideaCard.ideasChip"]
+        XCTAssertTrue(chip.waitForExistence(timeout: 15))
+        chip.tap()
+        XCTAssertTrue(descendants(matching: .any)["ideas.sheet"].waitForExistence(timeout: 5), "No ideas sheet")
+    }
+}

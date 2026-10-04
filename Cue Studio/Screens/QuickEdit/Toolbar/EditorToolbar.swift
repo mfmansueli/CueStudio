@@ -120,11 +120,13 @@ struct EditorToolbar: View {
         case .normal: Palette.ink
         case .dimmed: Palette.ink3
         case .destructive: Palette.dangerText
+        case .smart: Palette.aiText
         }
         let labelTint: Color = switch item.style {
         case .normal: Palette.ink2
         case .dimmed: Palette.ink3
         case .destructive: Palette.dangerText
+        case .smart: Palette.aiTextStrong
         }
         return Button {
             viewModel.perform(item.action)

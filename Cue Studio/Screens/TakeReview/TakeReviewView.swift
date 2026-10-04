@@ -6,7 +6,9 @@
 import AVFoundation
 import SwiftUI
 
-/// Watch the take, mark the best one, then retake, save or share.
+/// Watch the take (it opens paused), compare it with the video's other takes (swipe), mark the best
+/// one, then continue the edit, retake, save or share. The card under the video says where the
+/// video is on its way out.
 struct TakeReviewView: View {
     @State private var viewModel: TakeReviewViewModel
     let onRetake: () -> Void
@@ -15,22 +17,38 @@ struct TakeReviewView: View {
     let onSelect: (Take) -> Void
     /// After deleting: the take to show next, or nil to leave the review.
     let onDeleted: (Take?) -> Void
+    /// "From script ›": leaves the review for the script this take was read from.
+    let onOpenScript: (UUID) -> Void
+    /// Share or Edit asked for by the Takes tab as it opened this review; `onLaunchActionDone` tells
+    /// the caller it has been taken, so another take of the video doesn't repeat it.
+    var launchAction: ReviewLaunchAction?
+    var onLaunchActionDone: () -> Void = {}
 
     @State private var player = AVPlayer()
     @State private var audioSession = PlaybackAudioManager()
     @State private var playbackTask: Task<Void, Never>?
     @State private var isPlaying = false
+    @State private var isMuted = false
     @State private var progress: Double = 0
 
     @State private var confirmsDelete = false
     @State private var editingTake: Take?
+    /// How the editor was left, acted on once its cover is gone (share, download, ready later).
+    @State private var pendingOutcome: EditorOutcome?
+    /// Share glows for a few seconds after "Ready, I'll post later".
+    @State private var glowsShare = false
+    /// Counts the times the editor was left, so the card redraws: an edit left open (a draft) isn't
+    /// observable, but it decides "Continue" and the stage.
+    @State private var editorVisits = 0
     private let services: AppServices
     @Environment(TakeEditService.self) private var editing
 
     init(
         takeID: UUID, services: AppServices,
         onRetake: @escaping () -> Void, onBack: @escaping () -> Void,
-        onSelect: @escaping (Take) -> Void, onDeleted: @escaping (Take?) -> Void
+        onSelect: @escaping (Take) -> Void, onDeleted: @escaping (Take?) -> Void,
+        onOpenScript: @escaping (UUID) -> Void = { _ in },
+        launchAction: ReviewLaunchAction? = nil, onLaunchActionDone: @escaping () -> Void = {}
     ) {
         let store = services.store
         let languages = services.languages
@@ -47,6 +65,7 @@ struct TakeReviewView: View {
             rules: services.rules,
             profile: services.profile,
             preferences: services.preferences,
+            drafts: services.drafts,
             toast: services.toast,
             speechLanguage: { languages.captionRequest(for: $0) }
         ))
@@ -55,6 +74,9 @@ struct TakeReviewView: View {
         self.onBack = onBack
         self.onSelect = onSelect
         self.onDeleted = onDeleted
+        self.onOpenScript = onOpenScript
+        self.launchAction = launchAction
+        self.onLaunchActionDone = onLaunchActionDone
     }
 
     var body: some View {
@@ -72,8 +94,9 @@ struct TakeReviewView: View {
         .onChange(of: viewModel.take?.edit?.showsCaptions ?? false) { _, shown in
             viewModel.burnsInCaptions = shown
         }
-        .fullScreenCover(item: $editingTake) { take in
-            QuickEditView(take: take, services: services) {
+        .fullScreenCover(item: $editingTake, onDismiss: handleEditorOutcome) { take in
+            QuickEditView(take: take, services: services) { outcome in
+                pendingOutcome = outcome
                 editingTake = nil
             }
             .videoContext()
@@ -86,6 +109,7 @@ struct TakeReviewView: View {
         } message: {
             Text("The video is removed from Cue. Copies you saved to Photos stay there.")
         }
+        .onAppear { applyLaunchAction() }
         .onDisappear { pausePlayback() }
         .sheet(isPresented: $viewModel.showsShareSheet) {
             if let take = viewModel.take {
@@ -122,6 +146,13 @@ struct TakeReviewView: View {
         }
         .contentShape(Rectangle())
         .onTapGesture { togglePlayback() }
+        .simultaneousGesture(
+            DragGesture(minimumDistance: 40).onEnded { drag in
+                // A clear horizontal swipe goes to the next (left) or the previous (right) take.
+                guard abs(drag.translation.width) > 60, abs(drag.translation.width) > abs(drag.translation.height) * 1.5 else { return }
+                selectNeighbor(drag.translation.width < 0 ? 1 : -1)
+            }
+        )
         .overlay {
             if !isPlaying {
                 Button { togglePlayback() } label: {
@@ -143,7 +174,8 @@ struct TakeReviewView: View {
     // MARK: - Chrome
 
     private func chrome(for take: Take) -> some View {
-        VStack(spacing: 0) {
+        _ = editorVisits
+        return VStack(spacing: 0) {
             ReviewTopBar(
                 take: take,
                 onBack: onBack,
@@ -151,63 +183,30 @@ struct TakeReviewView: View {
                 onDelete: { confirmsDelete = true }
             )
             .padding(.horizontal, 14)
+            if let place = viewModel.placeLabel, let index = viewModel.siblings.firstIndex(where: { $0.id == take.id }) {
+                ReviewCompareChip(
+                    count: viewModel.siblings.count, index: index, label: place,
+                    onPrevious: viewModel.neighbor(-1) == nil ? nil : { selectNeighbor(-1) },
+                    onNext: viewModel.neighbor(1) == nil ? nil : { selectNeighbor(1) }
+                )
+                .padding(.top, 8)
+            }
             Spacer()
             VStack(alignment: .leading, spacing: 14) {
-                if let url = viewModel.videoURL {
-                    VStack(spacing: 6) {
-                        FilmstripView(take: take, videoURL: url, progress: progress) { fraction in
-                            seek(to: fraction, of: take)
-                        }
-                        HStack {
-                            Text(DurationText.clock(take.duration * progress))
-                            Spacer()
-                            Text(DurationText.clock(take.duration))
-                        }
-                        .font(.caption.monospacedDigit())
-                        .foregroundStyle(Palette.ink2)
-                    }
-                }
-                VStack(alignment: .leading, spacing: 3) {
-                    HStack(spacing: 8) {
-                        Text(take.scriptTitle)
-                            .font(.title3.bold())
-                            .lineLimit(1)
-                        if take.isEdited {
-                            Text("EDITED")
-                                .font(.caption2.weight(.bold))
-                                .foregroundStyle(Palette.infoText)
-                                .padding(.horizontal, 7)
-                                .frame(height: 20)
-                                .background(Palette.infoSoft, in: Capsule())
-                        }
-                    }
-                    Text(viewModel.metaLine)
-                        .font(.footnote)
-                        .foregroundStyle(Palette.ink2)
-                    if let notice = viewModel.exportNotice {
-                        HStack(spacing: 8) {
-                            Text(notice).foregroundStyle(viewModel.exportsExhausted ? Palette.warnText : Palette.ink2)
-                            Button("Go Pro") { viewModel.paywall = .export }
-                                .fontWeight(.semibold)
-                                .foregroundStyle(Palette.accText)
-                        }
-                        .font(.footnote)
-                        .padding(.top, 4)
-                    }
-                }
-                if viewModel.siblings.count > 1 {
-                    YourTakesStrip(
-                        takes: viewModel.siblings,
-                        currentID: take.id,
-                        onSuggest: viewModel.offersBestSuggestion ? { suggestBest(from: take) } : nil
-                    ) { sibling in
-                        guard sibling.id != take.id else { return }
-                        pausePlayback()
-                        onSelect(sibling)
-                    }
-                }
+                if let url = viewModel.videoURL { scrubber(take: take, url: url) }
+                ReviewInfoPanel(
+                    take: take,
+                    stage: viewModel.stage,
+                    lengthFit: viewModel.lengthFit,
+                    scriptVersion: viewModel.scriptVersionLabel,
+                    onOpenScript: take.scriptID.map { id in { pausePlayback(); onOpenScript(id) } },
+                    onSuggest: viewModel.offersBestSuggestion ? { suggestBest(from: take) } : nil
+                )
                 ReviewActionBar(
                     runningAction: viewModel.runningAction,
+                    glowsShare: glowsShare,
+                    shareTitle: take.platform.map { String(localized: "Share to \($0.label)") } ?? String(localized: "Share"),
+                    editTitle: viewModel.hasOpenEdit ? String(localized: "Continue") : String(localized: "Edit"),
                     onEdit: {
                         pausePlayback()
                         editingTake = take
@@ -219,9 +218,81 @@ struct TakeReviewView: View {
                         viewModel.showsShareSheet = true
                     }
                 )
+                if let notice = viewModel.exportNotice {
+                    ReviewExportFooter(notice: notice, isExhausted: viewModel.exportsExhausted) { viewModel.paywall = .export }
+                }
             }
             .padding(.horizontal, Metrics.gutter)
             .padding(.bottom, 8)
+        }
+    }
+
+    /// The frames across the take with the playhead and the sound button, and the clock under it:
+    /// the time in yellow, the length in gray.
+    private func scrubber(take: Take, url: URL) -> some View {
+        VStack(spacing: 6) {
+            HStack(spacing: 10) {
+                FilmstripView(take: take, videoURL: url, progress: progress) { fraction in
+                    seek(to: fraction, of: take)
+                }
+                Button {
+                    isMuted.toggle()
+                    player.isMuted = isMuted
+                } label: {
+                    Image(systemName: isMuted ? "speaker.slash.fill" : "speaker.wave.2.fill")
+                }
+                .buttonStyle(.cueIcon(.glass, diameter: 40))
+                .accessibilityLabel(Text(isMuted ? "Unmute" : "Mute"))
+                .accessibilityIdentifier("review.muteButton")
+            }
+            HStack {
+                Text(DurationText.clock(take.duration * progress)).foregroundStyle(Palette.accText)
+                Spacer()
+                Text(DurationText.clock(take.duration)).foregroundStyle(Palette.ink2)
+            }
+            .font(.system(size: 11, weight: .heavy, design: .monospaced))
+            .padding(.trailing, 50)
+        }
+    }
+
+    // MARK: - Takes
+
+    /// Swipe or the chip: another take of the same video, paused.
+    private func selectNeighbor(_ offset: Int) {
+        guard let next = viewModel.neighbor(offset) else { return }
+        pausePlayback()
+        onSelect(next)
+    }
+
+    /// The editor's Done question, answered: share opens "Share to", download saves to Photos (and
+    /// counts as an export), ready later makes Share glow, and not yet or back change nothing here.
+    private func handleEditorOutcome() {
+        editorVisits += 1
+        guard let outcome = pendingOutcome else { return }
+        pendingOutcome = nil
+        switch outcome {
+        case .share:
+            viewModel.showsShareSheet = true
+        case .download:
+            Task { await viewModel.save() }
+        case .ready:
+            glowsShare = true
+            Task {
+                try? await Task.sleep(for: .seconds(4))
+                glowsShare = false
+            }
+        case .notYet, .back:
+            break
+        }
+    }
+
+    /// The Takes tab's Share or Edit, once, as the review opens.
+    private func applyLaunchAction() {
+        guard let launchAction, let take = viewModel.take else { return }
+        onLaunchActionDone()
+        switch launchAction {
+        case .share: viewModel.showsShareSheet = true
+        case .edit: editingTake = take
         }
     }
 
@@ -249,7 +320,8 @@ struct TakeReviewView: View {
             player.replaceCurrentItem(with: AVPlayerItem(url: url))
         }
         guard !Task.isCancelled else { return }
-        startPlayback()
+        // Opens paused: the play button starts it.
+        player.isMuted = isMuted
         while !Task.isCancelled {
             let duration = viewModel.take?.duration ?? 0
             let seconds = player.currentTime().seconds

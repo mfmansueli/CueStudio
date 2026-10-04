@@ -44,6 +44,7 @@ final class TakeReviewViewModel {
     private let rules: PlatformRulesService
     private let profile: CreatorProfileService
     private let preferences: PreferencesService
+    private let drafts: QuickEditDraftStoring
     private let toast: ToastService
     /// What a script is heard in for captions (`LanguageService.captionRequest(for:)`).
     private let speechLanguageFor: (Script?) -> SpeechLanguageRequest
@@ -61,6 +62,7 @@ final class TakeReviewViewModel {
         rules: PlatformRulesService,
         profile: CreatorProfileService,
         preferences: PreferencesService,
+        drafts: QuickEditDraftStoring,
         toast: ToastService,
         speechLanguage: @escaping (Script?) -> SpeechLanguageRequest = SpeechLanguageRequest.script
     ) {
@@ -77,6 +79,7 @@ final class TakeReviewViewModel {
         self.rules = rules
         self.profile = profile
         self.preferences = preferences
+        self.drafts = drafts
         self.toast = toast
         burnsInCaptions = takes.take(id: takeID)?.edit?.showsCaptions ?? false
     }
@@ -97,6 +100,42 @@ final class TakeReviewViewModel {
     }
 
     var videoURL: URL? { take.map(takes.videoURL(for:)) }
+
+    /// Where this video is on its way out (the takes of its script): derived, never set by hand.
+    var stage: TakeStage {
+        TakeStage(takes: siblings, hasDraft: { [drafts] in drafts.hasDraft(for: $0) })
+    }
+
+    /// An edit is open on one of its takes: the main action reads "Continue".
+    var hasOpenEdit: Bool { siblings.contains { drafts.hasDraft(for: $0.id) } }
+
+    /// The take's length against its platform's ideal range: "✓ FITS 1:00–1:30", or how far off.
+    var lengthFit: LengthFit? {
+        guard let take else { return nil }
+        let platform = take.platform ?? library.script(id: take.scriptID)?.platform
+        guard let platform else { return nil }
+        let preset = rules.preset(for: platform, monetizationGoals: profile.profile.monetizationGoals)
+        return LengthFit(seconds: take.edit?.editedDuration ?? take.duration, ideal: preset.idealRange)
+    }
+
+    /// The script this take was read from, and its version ("v1"); nil for a freestyle take.
+    var scriptVersionLabel: String? {
+        guard let take, let version = take.scriptVersion, !take.isFreestyle else { return nil }
+        return "v\(version)"
+    }
+
+    /// The sibling `offset` takes away (by number), for the swipe and the "2 / 3" chip; nil at the ends.
+    func neighbor(_ offset: Int) -> Take? {
+        guard let take, let index = siblings.firstIndex(where: { $0.id == take.id }) else { return nil }
+        let target = index + offset
+        return siblings.indices.contains(target) ? siblings[target] : nil
+    }
+
+    /// "2 / 3": this take's place among the video's takes.
+    var placeLabel: String? {
+        guard siblings.count > 1, let take, let index = siblings.firstIndex(where: { $0.id == take.id }) else { return nil }
+        return "\(index + 1) / \(siblings.count)"
+    }
 
     /// Nil when unlimited.
     var exportsLeft: Int? { quota.exportsLeft(for: tier()) }

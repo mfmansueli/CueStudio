@@ -16,6 +16,9 @@ nonisolated struct VideoCover: Codable, Hashable, Sendable {
     /// The title's preset (Cue for covers made in the v10 editor); nil keeps `style`, as covers
     /// made before it.
     var preset: TypePreset?
+    /// The v26 design (layout, typeface, highlighted word, effect and elements). Nil for covers made
+    /// before it, which keep drawing their title the old way.
+    var design: CoverDesign?
 
     init(source: CoverSource, style: CreatorStyle = .bold, preset: TypePreset? = nil) {
         self.source = source

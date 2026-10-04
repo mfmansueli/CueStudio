@@ -23,7 +23,6 @@ enum PrompterSheet: Identifiable, Hashable {
     /// "New script", without the blank page (there is no editor over the camera).
     case newScript
     case importScript
-    case generateScript(GenerateTab)
 
     var id: String {
         switch self {
@@ -36,7 +35,6 @@ enum PrompterSheet: Identifiable, Hashable {
         case .addScript: "addScript"
         case .newScript: "newScript"
         case .importScript: "importScript"
-        case .generateScript(let tab): "generateScript.\(tab.rawValue)"
         }
     }
 }

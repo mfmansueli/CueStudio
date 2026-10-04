@@ -43,22 +43,20 @@ final class AppearanceUITests: XCTestCase {
     func testAScriptOpensInLight() {
         let app = CueApp.launch(seeded: true, appearance: "light")
         XCTAssertTrue(tab(app, "Scripts").waitForExistence(timeout: 15))
-        let first = app.cells.firstMatch
+        let first = app.staticTexts["3 morning habits that changed my life"]
         XCTAssertTrue(first.waitForExistence(timeout: 5))
         first.tap()
-        XCTAssertTrue(app.buttons["detail.editButton"].waitForExistence(timeout: 5) || app.navigationBars.firstMatch.exists)
+        XCTAssertTrue(app.buttons["detail.recordButton"].waitForExistence(timeout: 5))
         capture(app, "Script · light")
     }
 
     func testAppearanceIsPickedInSettings() {
         let app = CueApp.launch(seeded: true, appearance: "dark")
         tab(app, "Settings").tap()
-        let picker = app.buttons["settings.appearancePicker"]
-        XCTAssertTrue(picker.waitForExistence(timeout: 5))
-        picker.tap()
-        let light = app.buttons["Light"]
+        let light = app.buttons["settings.appearance.light"]
         XCTAssertTrue(light.waitForExistence(timeout: 5))
         light.tap()
+        XCTAssertTrue(light.isSelected)
         XCTAssertTrue(tab(app, "Settings").waitForExistence(timeout: 5))
         capture(app, "Settings · switched to light")
     }

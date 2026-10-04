@@ -35,13 +35,6 @@ struct CreatorDisplaySettingsSheet: View {
                             .padding(EdgeInsets(top: 4, leading: 4, bottom: 0, trailing: 4))
                         GroupedCard(background: Palette.surface2, radius: 22) {
                             DisplayLayoutControls.window(settings: $viewModel.prompter)
-                            SettingToggleRow(
-                                title: String(localized: "Hide controls while recording"),
-                                detail: String(localized: "Keeps only the text, line and stop"),
-                                isOn: $viewModel.prompter.hidesControlsWhileRecording,
-                                minHeight: 56
-                            )
-                            .accessibilityIdentifier("display.hideControlsToggle")
                         }
                     }
                     DisplaySettingsControls(settings: $viewModel.prompter, mode: mode, showsCoreControls: false)

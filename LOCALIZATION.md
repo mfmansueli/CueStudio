@@ -79,7 +79,7 @@ One translation per concept, everywhere (buttons, alerts, accessibility labels).
 names in **bold** stay in English in every language.
 
 - Brand, unchanged: **Cue**, **Cue Pro**, **Pro**, **Apple Intelligence**, **Private Cloud Compute**,
-  **Creator Voice**, **Selfie**, **Studio**, **TikTok**, **Reels**, **Shorts**, **YouTube**,
+  **My Cue Voice**, **Selfie**, **Studio**, **TikTok**, **Reels**, **Shorts**, **YouTube**,
   **LinkedIn**, **Stories**, **Instagram**, **Lexend**.
 - Voice: talk to one creator (pt-BR *você*, es *tú*, fr *vous*, de *du*, it *tu*, id *kamu*,
   tr *sen*, vi *bạn*, zh *你*, ar the singular, hi *आप*; ja and ko polite and neutral), short

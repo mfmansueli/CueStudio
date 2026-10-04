@@ -5,7 +5,9 @@
 
 import SwiftUI
 
-/// Selectable capsule used for filters and single-choice rows. Use as a `Button` label.
+/// Selectable capsule used for filters and single-choice rows. Use as a `Button` label. Selected is
+/// the white chip with black text (near-black with white text in light), never yellow: yellow is
+/// the screen's one action.
 struct FilterChip: View {
     var label: String
     var isSelected: Bool
@@ -23,8 +25,8 @@ struct FilterChip: View {
         .lineLimit(1)
         .padding(.horizontal, 14)
         .frame(height: height)
-        .foregroundStyle(isSelected ? Palette.bg : Palette.ink)
-        .background(isSelected ? Palette.ink : Palette.fill, in: Capsule())
+        .foregroundStyle(isSelected ? Palette.chipOnInk : Palette.ink)
+        .background(isSelected ? Palette.chipOn : Palette.fill, in: Capsule())
         .contentShape(Capsule())
         .accessibilityAddTraits(isSelected ? .isSelected : [])
     }

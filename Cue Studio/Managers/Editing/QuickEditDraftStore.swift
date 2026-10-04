@@ -28,6 +28,10 @@ final class QuickEditDraftStore: QuickEditDraftStoring {
         }
     }
 
+    func hasDraft(for takeID: UUID) -> Bool {
+        FileManager.default.fileExists(atPath: fileURL(for: takeID).path(percentEncoded: false))
+    }
+
     func save(_ draft: QuickEditDraft) {
         do {
             try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)

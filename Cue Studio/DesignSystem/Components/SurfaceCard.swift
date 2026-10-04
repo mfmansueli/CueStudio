@@ -5,7 +5,8 @@
 
 import SwiftUI
 
-/// Rounded card on the surface color, the basic container of the app.
+/// Rounded card on the surface color, the basic container of the app. In the light appearance it
+/// has the hairline shadow of a white card.
 struct SurfaceCard: ViewModifier {
     var padding: CGFloat
     var radius: CGFloat
@@ -14,7 +15,11 @@ struct SurfaceCard: ViewModifier {
     func body(content: Content) -> some View {
         content
             .padding(padding)
-            .background(color, in: RoundedRectangle(cornerRadius: radius, style: .continuous))
+            .background {
+                RoundedRectangle(cornerRadius: radius, style: .continuous)
+                    .fill(color)
+                    .shadow(color: Palette.cardShadow, radius: 1, y: 1)
+            }
     }
 }
 

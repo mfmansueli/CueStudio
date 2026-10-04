@@ -107,8 +107,9 @@ final class CreatorProfileService {
 
     /// Saves the answers of the short setup into the same profile fields Profile edits, marks them
     /// as the creator's own and turns the voice on. A step passed as nil (or an empty list) is left as it was.
-    func saveVoiceSetup(niches: [Niche]? = nil, vocabulary: Vocabulary? = nil, sounds: [VoiceSound]? = nil) {
+    func saveVoiceSetup(role: CreatorRole? = nil, niches: [Niche]? = nil, vocabulary: Vocabulary? = nil, sounds: [VoiceSound]? = nil) {
         var updated = profile
+        if let role { updated.role = role }
         if let niches, !niches.isEmpty { updated.niches = niches }
         if let vocabulary {
             updated.vocabulary = vocabulary

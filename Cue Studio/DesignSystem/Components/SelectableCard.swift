@@ -5,7 +5,7 @@
 
 import SwiftUI
 
-/// Tile that shows a yellow outline when selected (fonts, frames, formats, plans).
+/// Tile that shows a 2 pt yellow ring over a 12% yellow tint when selected (fonts, frames, formats, plans).
 struct SelectableCard<Content: View>: View {
     var isSelected: Bool
     var radius: CGFloat = 16
@@ -16,8 +16,8 @@ struct SelectableCard<Content: View>: View {
         let shape = RoundedRectangle(cornerRadius: radius, style: .continuous)
         content
             .frame(maxWidth: .infinity)
-            .background(isSelected ? Palette.accSoft : background, in: shape)
-            .overlay(shape.strokeBorder(isSelected ? Palette.acc : .clear, lineWidth: 1.5))
+            .background(isSelected ? Palette.accTile : background, in: shape)
+            .overlay(shape.strokeBorder(isSelected ? Palette.acc : .clear, lineWidth: 2))
             .contentShape(shape)
             .accessibilityAddTraits(isSelected ? .isSelected : [])
     }

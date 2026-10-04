@@ -101,7 +101,7 @@ final class LanguageService {
     // MARK: - Dictation
 
     /// What an idea spoken into the empty Scripts card is heard in: the language the script will be
-    /// written in (`GenerateScriptViewModel` decides it the same way), so what is said and what comes
+    /// written in (`ScriptRequestFactory` decides it the same way), so what is said and what comes
     /// back agree. The Script Language when one is set; else the language of what is already typed
     /// there (three words or more); else the interface's. Voice Following's language never takes part.
     func dictationRequest(existingText: String) -> SpeechLanguageRequest {

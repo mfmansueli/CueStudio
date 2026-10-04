@@ -14,6 +14,8 @@ struct EditorToolbarItem: Identifiable, Hashable {
         case dimmed
         /// Deletes something.
         case destructive
+        /// Smart (the AI's): violet.
+        case smart
     }
 
     /// Stable, for UI tests: `edit.toolbar.<id>`.

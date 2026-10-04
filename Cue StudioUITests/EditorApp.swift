@@ -58,10 +58,26 @@ enum EditorApp {
         return timeline.coordinate(withNormalizedOffset: CGVector(dx: x, dy: 0)).withOffset(CGVector(dx: 0, dy: 50))
     }
 
-    /// The top bar's "00:21.6 · Saved": the edit's length.
+    /// The player bar's "00:01.2 / 00:21.6": the edit's length (the part after the slash).
     static func length(_ app: XCUIApplication) -> String {
-        let status = app.staticTexts["edit.durationChange"].label
-        return String(status.prefix(7))
+        let time = app.staticTexts["edit.timeLabel"].value as? String ?? ""
+        return String((time.components(separatedBy: " / ").last ?? "").prefix(7))
+    }
+
+    /// Done always asks "Is it ready to post?": answers it (`ready` by default) and leaves the editor.
+    static func done(_ app: XCUIApplication, answer: String = "ready") {
+        app.buttons["edit.doneButton"].tap()
+        let option = app.buttons["edit.done.\(answer)"]
+        XCTAssertTrue(option.waitForExistence(timeout: 5), "No \(answer) answer")
+        option.tap()
+    }
+
+    /// ✦ Smart › Remove pauses: opens the Pauses panel the way a creator reaches it now.
+    static func openPauses(_ app: XCUIApplication) {
+        tapTool(app, "smart")
+        let tile = app.buttons["edit.smart.pauses"]
+        XCTAssertTrue(tile.waitForExistence(timeout: 5))
+        tile.tap()
     }
 
     /// Captions › the line at `index`: the playhead goes to its start. Closes the panel after.

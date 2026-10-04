@@ -33,20 +33,22 @@ extension QuickEditViewModel {
 
     // MARK: - Contexts
 
+    /// The main tools, in the order a creator's hand expects (v26): cut, sound, words, look, shape,
+    /// then what goes on top, and last the AI's, in violet.
     private var mainItems: [EditorToolbarItem] {
         [
             EditorToolbarItem(id: "edit", label: String(localized: "Edit"), systemImage: "scissors", action: .selectClipAtPlayhead),
+            EditorToolbarItem(id: "audio", label: String(localized: "Audio"), systemImage: "music.note", action: .openMenu(.audio)),
             EditorToolbarItem(id: "text", label: String(localized: "Text"), systemImage: "textformat", action: .openMenu(.text)),
             EditorToolbarItem(id: "captions", label: String(localized: "Captions"), systemImage: "captions.bubble", action: .openCaptions),
-            EditorToolbarItem(id: "audio", label: String(localized: "Audio"), systemImage: "music.note", action: .openMenu(.audio)),
-            EditorToolbarItem(id: "pauses", label: String(localized: "Pauses"), systemImage: "waveform", action: .open(.pauses)),
-            EditorToolbarItem(id: "media", label: String(localized: "Media"), systemImage: "photo.badge.plus", action: .addMedia),
-            EditorToolbarItem(id: "adjust", label: String(localized: "Adjust"), systemImage: "slider.horizontal.3", action: .open(.adjust)),
             EditorToolbarItem(id: "filters", label: String(localized: "Filters"), systemImage: "camera.filters", action: .open(.filters)),
+            EditorToolbarItem(id: "adjust", label: String(localized: "Adjust"), systemImage: "slider.horizontal.3", action: .open(.adjust)),
+            EditorToolbarItem(id: "crop", label: String(localized: "Crop"), systemImage: "crop", action: .open(.crop)),
             EditorToolbarItem(
                 id: "background", label: String(localized: "Background"), systemImage: "person.and.background.dotted", action: .open(.background)
             ),
-            EditorToolbarItem(id: "crop", label: String(localized: "Crop"), systemImage: "crop", action: .open(.crop)),
+            EditorToolbarItem(id: "media", label: String(localized: "Overlay"), systemImage: "photo.badge.plus", action: .addMedia),
+            EditorToolbarItem(id: "smart", label: String(localized: "✦ Smart"), systemImage: "sparkles", style: .smart, action: .open(.smart)),
         ]
     }
 
@@ -83,7 +85,7 @@ extension QuickEditViewModel {
 
     private var audioMenuItems: [EditorToolbarItem] {
         [
-            EditorToolbarItem(id: "voice", label: String(localized: "Voice"), systemImage: "waveform.and.mic", action: .open(.voice)),
+            EditorToolbarItem(id: "voice", label: String(localized: "Studio Voice"), systemImage: "waveform.and.mic", action: .open(.voice)),
             EditorToolbarItem(id: "music", label: String(localized: "Music"), systemImage: "music.note", action: .openMusic),
             EditorToolbarItem(id: "voiceOver", label: String(localized: "Voice-over"), systemImage: "mic", action: .open(.voiceOver)),
         ]
@@ -106,7 +108,7 @@ extension QuickEditViewModel {
                 ),
                 EditorToolbarItem(id: "zoom", label: String(localized: "Zoom"), systemImage: "arrow.up.left.and.arrow.down.right", action: .open(.zoom)),
                 EditorToolbarItem(id: "volume", label: String(localized: "Volume"), systemImage: "speaker.wave.2", action: .open(.volume)),
-                EditorToolbarItem(id: "voice", label: String(localized: "Voice"), systemImage: "waveform.and.mic", action: .open(.voice)),
+                EditorToolbarItem(id: "voice", label: String(localized: "Studio Voice"), systemImage: "waveform.and.mic", action: .open(.voice)),
                 EditorToolbarItem(id: "duplicate", label: String(localized: "Duplicate"), systemImage: "plus.square.on.square", action: .duplicateClip),
                 EditorToolbarItem(id: "delete", label: delete, systemImage: "trash", style: .destructive, action: .deleteClip),
             ]

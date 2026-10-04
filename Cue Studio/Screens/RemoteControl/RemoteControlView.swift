@@ -18,10 +18,8 @@ struct RemoteControlView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 10) {
-                Text("Control your teleprompter from another device.")
-                    .font(.title3.weight(.semibold))
-                    .foregroundStyle(Palette.ink)
-                    .padding(EdgeInsets(top: 4, leading: 4, bottom: 8, trailing: 4))
+                RemoteStatusHero(state: remote.state, deviceName: remote.state.deviceName)
+                    .padding(.bottom, 4)
 
                 SectionHeading(text: String(localized: "Connect a Device"))
                     .padding(.horizontal, 4)

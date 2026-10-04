@@ -18,6 +18,8 @@ final class IdeaDraftService {
     /// here so closing that screen and opening it again finds the same choices.
     var platform: Platform?
     var length: ScriptLength = .auto
+    /// How Cue structures the script (Format ⌄ on the card); nil is Auto, which picks from the idea.
+    var format: ScriptType?
 
     /// The text as the creator sees it. Writing it here (typing, paste, an example) ends a dictation
     /// that was still writing into it.
@@ -37,6 +39,10 @@ final class IdeaDraftService {
 
     func canSubmit(isAvailable: Bool, isDictating: Bool) -> Bool {
         draft.canSubmit(isAvailable: isAvailable, isDictating: isDictating)
+    }
+
+    func canAskForIdea(isDictating: Bool) -> Bool {
+        draft.canAskForIdea(isDictating: isDictating)
     }
 
     // MARK: - Dictation
@@ -62,5 +68,6 @@ final class IdeaDraftService {
         draft = IdeaPromptDraft()
         platform = nil
         length = .auto
+        format = nil
     }
 }

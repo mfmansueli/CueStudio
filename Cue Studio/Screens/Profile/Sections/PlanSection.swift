@@ -21,7 +21,11 @@ struct PlanSection: View {
     private var freeCard: some View {
         VStack(alignment: .leading, spacing: 14) {
             HStack(alignment: .firstTextBaseline) {
-                Text("Free plan").font(.headline)
+                Text("Free plan")
+                    .font(CueStudioFont.hud)
+                    .textCase(.uppercase)
+                    .tracking(0.6)
+                    .foregroundStyle(Palette.ink2)
                 Spacer()
                 Text("Every feature included")
                     .font(.footnote)
@@ -33,7 +37,7 @@ struct PlanSection: View {
                 limit: UsagePolicy.freeExports
             )
             HStack(spacing: 8) {
-                Image(systemName: "sparkles").foregroundStyle(Palette.accText)
+                Image(systemName: "sparkles").foregroundStyle(Palette.aiText)
                 Text("Apple Intelligence")
                 Spacer()
                 Text("On-device · unlimited").foregroundStyle(Palette.ink2)
@@ -67,6 +71,14 @@ struct PlanSection: View {
     private var proCard: some View {
         HStack(spacing: 12) {
             VStack(alignment: .leading, spacing: 3) {
+                HStack(spacing: 6) {
+                    Circle().fill(Palette.success).frame(width: 7, height: 7)
+                    Text("Pro active")
+                        .font(CueStudioFont.hud)
+                        .textCase(.uppercase)
+                        .tracking(0.6)
+                        .foregroundStyle(Palette.accText)
+                }
                 Text("Cue Pro").font(.headline)
                 Text(planLine)
                     .font(.footnote)

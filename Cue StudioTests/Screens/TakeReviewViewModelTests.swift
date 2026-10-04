@@ -50,7 +50,7 @@ struct TakeReviewViewModelTests {
             takeID: take.id, takes: takes, quota: quota, tier: { plan.tier },
             exporter: exporter, photos: photos, apps: apps, editing: editor, library: library,
             rules: TestData.rulesService(), profile: CreatorProfileService(defaults: defaults.defaults),
-            preferences: PreferencesService(defaults: defaults.defaults), toast: toast
+            preferences: PreferencesService(defaults: defaults.defaults), drafts: FakeDraftStore(), toast: toast
         )
         return Scenario(
             viewModel: viewModel, exporter: exporter, photos: photos, apps: apps, editor: editor,
@@ -266,7 +266,7 @@ struct TakeReviewViewModelTests {
             takeID: all[0].id, takes: takes, quota: UsageQuotaService(counter: FakeExportCountStore(), defaults: defaults.defaults), tier: { tier },
             exporter: FakeVideoExporter(), photos: FakePhotoSaver(), apps: FakeAppOpener(), editing: FakeTakeEditor(),
             library: library, rules: TestData.rulesService(), profile: CreatorProfileService(defaults: defaults.defaults),
-            preferences: PreferencesService(defaults: defaults.defaults), toast: toast
+            preferences: PreferencesService(defaults: defaults.defaults), drafts: FakeDraftStore(), toast: toast
         )
         return (viewModel, all, toast, defaults)
     }
@@ -300,7 +300,7 @@ struct TakeReviewViewModelTests {
             takeID: second.id, takes: takes, quota: UsageQuotaService(counter: FakeExportCountStore(), defaults: defaults.defaults), tier: { .free },
             exporter: FakeVideoExporter(), photos: FakePhotoSaver(), apps: FakeAppOpener(), editing: FakeTakeEditor(),
             library: ScriptLibraryService(repository: FakeScriptRepository()), rules: TestData.rulesService(),
-            profile: CreatorProfileService(defaults: defaults.defaults), preferences: PreferencesService(defaults: defaults.defaults),
+            profile: CreatorProfileService(defaults: defaults.defaults), preferences: PreferencesService(defaults: defaults.defaults), drafts: FakeDraftStore(),
             toast: ToastService()
         )
         #expect(viewModel.siblings.map(\.number) == [1, 2, 3])
@@ -320,5 +320,78 @@ struct TakeReviewViewModelTests {
         let scenario = makeScenario()
         defer { scenario.defaults.tearDown() }
         #expect(scenario.viewModel.metaLine.hasSuffix("· TikTok · 9:16 · 1080p"))
+    }
+
+    // MARK: - The v26 review: stage, compare, length
+
+    private func makeVideoScenario(
+        numbers: [Int] = [1, 2, 3], current: Int = 2, best: Int? = nil, drafts: FakeDraftStore = FakeDraftStore()
+    ) -> (viewModel: TakeReviewViewModel, takes: [Take], defaults: TestDefaults, drafts: FakeDraftStore) {
+        let defaults = TestDefaults()
+        let script = UUID()
+        let all = numbers.map { TestData.take(scriptID: script, number: $0, isBest: $0 == best) }
+        let takes = TakeLibraryService(repository: FakeTakeRepository(takes: all))
+        takes.load()
+        let id = all.first { $0.number == current }!.id
+        let viewModel = TakeReviewViewModel(
+            takeID: id, takes: takes, quota: UsageQuotaService(counter: FakeExportCountStore(), defaults: defaults.defaults), tier: { .free },
+            exporter: FakeVideoExporter(), photos: FakePhotoSaver(), apps: FakeAppOpener(), editing: FakeTakeEditor(),
+            library: ScriptLibraryService(repository: FakeScriptRepository()), rules: TestData.rulesService(),
+            profile: CreatorProfileService(defaults: defaults.defaults), preferences: PreferencesService(defaults: defaults.defaults),
+            drafts: drafts, toast: ToastService()
+        )
+        return (viewModel, all, defaults, drafts)
+    }
+
+    @Test func theChipSaysWhereTheTakeIsAndTheNeighborsAreTheOthersByNumber() {
+        let scenario = makeVideoScenario()
+        defer { scenario.defaults.tearDown() }
+        #expect(scenario.viewModel.placeLabel == "2 / 3")
+        #expect(scenario.viewModel.neighbor(-1)?.number == 1)
+        #expect(scenario.viewModel.neighbor(1)?.number == 3)
+    }
+
+    @Test func thereIsNoNeighborPastTheEnds() {
+        let first = makeVideoScenario(current: 1)
+        defer { first.defaults.tearDown() }
+        #expect(first.viewModel.neighbor(-1) == nil)
+        let last = makeVideoScenario(current: 3)
+        defer { last.defaults.tearDown() }
+        #expect(last.viewModel.neighbor(1) == nil)
+    }
+
+    @Test func aSingleTakeHasNoChip() {
+        let scenario = makeVideoScenario(numbers: [1], current: 1)
+        defer { scenario.defaults.tearDown() }
+        #expect(scenario.viewModel.placeLabel == nil)
+        #expect(scenario.viewModel.neighbor(1) == nil)
+    }
+
+    @Test func theStageFollowsTheVideoNotJustTheTake() {
+        let scenario = makeVideoScenario()
+        defer { scenario.defaults.tearDown() }
+        // Three takes and none starred: pick the best.
+        #expect(scenario.viewModel.stage == .pick)
+        scenario.viewModel.toggleBest()
+        #expect(scenario.viewModel.stage == .ready)
+        // An edit left open on any take of the video puts it in edit and the main action reads "Continue".
+        #expect(!scenario.viewModel.hasOpenEdit)
+        let other = scenario.takes.first { $0.number == 3 }!
+        scenario.drafts.drafts[other.id] = QuickEditDraft(
+            takeID: other.id, edit: TakeEdit(sourceDuration: 30, aspect: .portrait), playhead: 0,
+            history: EditHistory<EditSnapshot>(), savedAt: TestData.now
+        )
+        #expect(scenario.viewModel.stage == .edit)
+        #expect(scenario.viewModel.hasOpenEdit)
+    }
+
+    @Test func theLengthIsMeasuredAgainstThePlatformsIdealRange() {
+        let scenario = makeVideoScenario(numbers: [1], current: 1)
+        defer { scenario.defaults.tearDown() }
+        #expect(scenario.viewModel.scriptVersionLabel == "v1")
+        let fit = scenario.viewModel.lengthFit
+        #expect(fit?.seconds == 30)
+        let preset = TestData.rulesService().preset(for: .tiktok, monetizationGoals: CreatorProfile().monetizationGoals)
+        #expect(fit?.ideal == preset.idealRange)
     }
 }

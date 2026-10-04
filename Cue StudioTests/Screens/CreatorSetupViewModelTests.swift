@@ -121,7 +121,6 @@ struct CreatorSetupViewModelTests {
         viewModel.prompter.scrollMode = .voice
         viewModel.prompter.studioBackground = .navy
         viewModel.prompter.showsCues = true
-        viewModel.prompter.hidesControlsWhileRecording = true
         viewModel.prompter.customSafeZone = SafeZoneMargins(top: 8, bottom: 16, left: 4, right: 12)
         viewModel.textSize = 34
         viewModel.speed = 1.1

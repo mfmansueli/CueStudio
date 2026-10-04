@@ -14,7 +14,7 @@ final class PrompterUITests: XCTestCase {
 
     func testStudioModePlaysAndOpensDisplaySettings() {
         let app = CueApp.launch(seeded: true)
-        let studio = app.buttons["hero.studioButton"]
+        let studio = app.buttons["row.studioButton"].firstMatch
         XCTAssertTrue(studio.waitForExistence(timeout: 15))
         studio.tap()
 
@@ -36,17 +36,17 @@ final class PrompterUITests: XCTestCase {
 
     func testStudioSwitchesToVoiceFollowing() {
         let app = CueApp.launch(seeded: true)
-        let studio = app.buttons["hero.studioButton"]
+        let studio = app.buttons["row.studioButton"].firstMatch
         XCTAssertTrue(studio.waitForExistence(timeout: 15))
         studio.tap()
 
-        XCTAssertTrue(app.sliders["Speed"].waitForExistence(timeout: 5))
+        XCTAssertTrue(element(app, "prompter.speedSlider").waitForExistence(timeout: 5))
         XCTAssertTrue(app.buttons["prompter.backButton"].exists)
         XCTAssertTrue(app.buttons["prompter.forwardButton"].exists)
         app.buttons["prompter.scrollMode.voice"].tap()
         allowMicrophoneIfAsked()
         XCTAssertTrue(element(app, "prompter.voiceIndicator").waitForExistence(timeout: 5))
-        XCTAssertFalse(app.sliders["Speed"].exists)
+        XCTAssertFalse(element(app, "prompter.speedSlider").exists)
         let play = app.buttons["prompter.playButton"]
         play.tap()
         // The Simulator can't run speech recognition: there the text scrolls at the set speed while
@@ -63,13 +63,13 @@ final class PrompterUITests: XCTestCase {
 
     func testVoiceFollowingIsOneTapInTheToolbar() {
         let app = CueApp.launch(seeded: true)
-        let record = app.buttons["hero.recordButton"]
+        let record = app.buttons["row.recordButton"].firstMatch
         XCTAssertTrue(record.waitForExistence(timeout: 15))
         record.tap()
 
         let voice = app.buttons["prompter.scrollMode.voice"]
         XCTAssertTrue(voice.waitForExistence(timeout: 5))
-        let speed = app.sliders["prompter.speedSlider"]
+        let speed = element(app, "prompter.speedSlider")
         XCTAssertTrue(speed.exists)
         // "0.7×" or "0,7×", depending on the simulator's locale.
         XCTAssertTrue((speed.value as? String)?.hasSuffix("7×") == true)
@@ -93,7 +93,7 @@ final class PrompterUITests: XCTestCase {
 
     func testDisplaySettingsStayBelowTheScriptWithAdvancedTucked() {
         let app = CueApp.launch(seeded: true)
-        let record = app.buttons["hero.recordButton"]
+        let record = app.buttons["row.recordButton"].firstMatch
         XCTAssertTrue(record.waitForExistence(timeout: 15))
         record.tap()
 
@@ -113,7 +113,7 @@ final class PrompterUITests: XCTestCase {
 
     func testReadingLineMovesFromDisplayWithoutATip() {
         let app = CueApp.launch(seeded: true)
-        let record = app.buttons["hero.recordButton"]
+        let record = app.buttons["row.recordButton"].firstMatch
         XCTAssertTrue(record.waitForExistence(timeout: 15))
         record.tap()
 
@@ -139,14 +139,14 @@ final class PrompterUITests: XCTestCase {
 
     func testCustomSafeZoneFromDisplayLayout() {
         let app = CueApp.launch(seeded: true)
-        let record = app.buttons["hero.recordButton"]
+        let record = app.buttons["row.recordButton"].firstMatch
         XCTAssertTrue(record.waitForExistence(timeout: 15))
         record.tap()
 
         XCTAssertTrue(app.buttons["prompter.displayButton"].waitForExistence(timeout: 5))
         app.buttons["prompter.displayButton"].tap()
         XCTAssertTrue(app.buttons["display.doneButton"].waitForExistence(timeout: 5))
-        XCTAssertTrue(element(app, "display.hideControlsToggle").exists)
+        XCTAssertFalse(element(app, "display.hideControlsToggle").exists)
         XCTAssertTrue(element(app, "display.showSafeZoneToggle").exists)
         let custom = app.buttons["display.safeZone.custom"]
         XCTAssertTrue(custom.exists)
@@ -166,7 +166,7 @@ final class PrompterUITests: XCTestCase {
 
     func testPlatformChipOpensCreateFor() {
         let app = CueApp.launch(seeded: true)
-        let record = app.buttons["hero.recordButton"]
+        let record = app.buttons["row.recordButton"].firstMatch
         XCTAssertTrue(record.waitForExistence(timeout: 15))
         record.tap()
 
@@ -193,7 +193,7 @@ final class PrompterUITests: XCTestCase {
 
     func testMicrophonePillPicksTheAudioInput() {
         let app = CueApp.launch(seeded: true)
-        let record = app.buttons["hero.recordButton"]
+        let record = app.buttons["row.recordButton"].firstMatch
         XCTAssertTrue(record.waitForExistence(timeout: 15))
         record.tap()
         allowMicrophoneIfAsked()
@@ -218,9 +218,54 @@ final class PrompterUITests: XCTestCase {
         app.buttons["prompter.closeButton"].tap()
     }
 
+    /// The toolbar's "•••" holds what has no room on the bar: Countdown, Remote Control and "This take".
+    func testMoreMenuHoldsCountdownRemoteControlAndThisTake() {
+        let app = CueApp.launch(seeded: true)
+        let record = app.buttons["row.recordButton"].firstMatch
+        XCTAssertTrue(record.waitForExistence(timeout: 15))
+        record.tap()
+
+        let more = app.buttons["prompter.moreButton"]
+        XCTAssertTrue(more.waitForExistence(timeout: 5))
+        more.tap()
+        XCTAssertTrue(app.buttons["prompter.moreRemote"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.buttons["prompter.moreThisTake"].exists)
+        app.buttons["prompter.moreThisTake"].tap()
+        XCTAssertTrue(app.buttons["sheet.closeButton"].waitForExistence(timeout: 5))
+        app.buttons["sheet.closeButton"].tap()
+        XCTAssertTrue(app.buttons["sheet.closeButton"].waitForNonExistence(timeout: 5))
+        app.buttons["prompter.closeButton"].tap()
+    }
+
+    /// The v26 toolbar: Voice | Steady with back to the top, play and Aa, the speed slider, the HUD
+    /// line with the microphone and the setup, and the capture row.
+    func testTheToolbarHasTheV26Controls() {
+        let app = CueApp.launch(seeded: true)
+        let record = app.buttons["row.recordButton"].firstMatch
+        XCTAssertTrue(record.waitForExistence(timeout: 15))
+        record.tap()
+
+        XCTAssertTrue(app.buttons["prompter.scrollMode.voice"].waitForExistence(timeout: 5))
+        XCTAssertEqual(app.buttons["prompter.scrollMode.voice"].label, "Voice Following")
+        XCTAssertTrue(app.buttons["prompter.scrollMode.steady"].exists)
+        for id in ["prompter.playButton", "prompter.displayButton", "prompter.audioInputButton", "prompter.setupButton",
+                   "prompter.cameraSettingsButton", "prompter.recordButton", "prompter.moreButton", "prompter.lastTakeButton",
+        ] {
+            XCTAssertTrue(element(app, id).exists, "Missing \(id)")
+        }
+        // Dragging the thumb along the speed slider changes the speed.
+        let speed = element(app, "prompter.speedSlider")
+        XCTAssertTrue(speed.exists)
+        let before = speed.value as? String
+        let start = speed.coordinate(withNormalizedOffset: CGVector(dx: 0.2, dy: 0.5))
+        start.press(forDuration: 0.1, thenDragTo: speed.coordinate(withNormalizedOffset: CGVector(dx: 0.9, dy: 0.5)))
+        XCTAssertNotEqual(speed.value as? String, before)
+        app.buttons["prompter.closeButton"].tap()
+    }
+
     func testSelfieModeSwitchesToStudio() throws {
         let app = CueApp.launch(seeded: true)
-        let record = app.buttons["hero.recordButton"]
+        let record = app.buttons["row.recordButton"].firstMatch
         XCTAssertTrue(record.waitForExistence(timeout: 15))
         record.tap()
 
@@ -236,7 +281,7 @@ final class PrompterUITests: XCTestCase {
 
     func testCameraSettingsStopBelowTheScript() {
         let app = CueApp.launch(seeded: true)
-        let record = app.buttons["hero.recordButton"]
+        let record = app.buttons["row.recordButton"].firstMatch
         XCTAssertTrue(record.waitForExistence(timeout: 15))
         record.tap()
 

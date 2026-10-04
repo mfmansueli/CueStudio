@@ -5,7 +5,7 @@
 
 import SwiftUI
 
-/// A settings row inside a grouped card: a title, an optional line of detail and a green switch.
+/// A settings row inside a grouped card: a title, an optional line of detail and the green switch (`#34C759`, in both appearances).
 struct SettingToggleRow: View {
     let title: String
     var detail: String?
@@ -21,7 +21,7 @@ struct SettingToggleRow: View {
                 }
             }
         }
-        .tint(Palette.successText)
+        .tint(Palette.success)
         .frame(minHeight: minHeight)
         .padding(.horizontal, 16)
     }

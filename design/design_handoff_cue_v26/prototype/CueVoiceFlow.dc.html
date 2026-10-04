@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet><style>@keyframes cvUp{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}@keyframes cvFade{from{opacity:0}to{opacity:1}}textarea::placeholder,input::placeholder{color:rgba(235,235,245,0.3)}</style></helmet>
+<div style="position:{{ fpos }};inset:0;width:{{ fw }};height:{{ fh }};border-radius:{{ fr }};background:{{ fbg }};overflow:hidden;box-shadow:{{ fsh }};color:#fff;font-family:-apple-system,'SF Pro Text',system-ui,sans-serif;-webkit-font-smoothing:antialiased">
+  <sc-if value="{{ notEmbed }}" hint-placeholder-val="{{ true }}"><div style="position:absolute;top:16px;left:30px;font-size:15px;font-weight:600;z-index:60">9:41</div></sc-if>
+
+  <sc-if value="{{ isHome }}" hint-placeholder-val="{{ true }}">
+    <div style="position:absolute;inset:0;overflow-y:auto;scrollbar-width:none;padding:52px 0 120px">
+      <div style="display:flex;align-items:center;gap:8px;padding:6px 16px 0 20px"><div style="flex:1;font-size:34px;font-weight:700">Scripts</div>
+        <div style="width:44px;height:44px;border-radius:22px;background:rgba(58,58,60,0.6);display:flex;align-items:center;justify-content:center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" style="stroke-width:2.2;stroke-linecap:round"><circle cx="11" cy="11" r="6.5"></circle><path d="M16 16l4.5 4.5"></path></svg></div>
+        <div style="width:44px;height:44px;border-radius:22px;background:rgba(58,58,60,0.6);display:flex;align-items:center;justify-content:center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" style="stroke-width:2.6;stroke-linecap:round"><path d="M12 5v14M5 12h14"></path></svg></div></div>
+      <div style="padding:0 20px 14px;font-size:14px;color:rgba(235,235,245,0.6)">6 scripts · 14 takes</div>
+      <div style="position:relative;margin:0 16px;border-radius:24px;background:linear-gradient(135deg,rgba(255,214,10,0.14),rgba(255,214,10,0.03) 60%),#161826;box-shadow:inset 0 0 0 0.5px rgba(255,214,10,0.38),0 14px 30px rgba(0,0,0,0.4);padding:10px;display:flex;flex-direction:column;gap:8px">
+        <div style="display:flex;align-items:flex-end;gap:4px;border-radius:18px;background:rgba(0,0,0,0.38);padding:10px 4px 4px 12px">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="#FFD60A" style="flex-shrink:0;align-self:flex-start;margin-top:2px"><path d="M11 3l1.9 5.1L18 10l-5.1 1.9L11 17l-1.9-5.1L4 10l5.1-1.9zM18.5 14l.9 2.1 2.1.9-2.1.9-.9 2.1-.9-2.1-2.1-.9 2.1-.9z"></path></svg>
+          <textarea value="{{ idea }}" onChange="{{ onIdea }}" rows="2" placeholder="Got an idea? Say it or type it — Cue turns it into a script you can record now." style="flex:1;min-width:0;height:44px;margin:0 2px 6px 4px;resize:none;background:transparent;border:none;outline:none;color:#fff;font-family:inherit;font-size:15.5px;line-height:1.4;padding:0;caret-color:#FFD60A"></textarea>
+          <div style="width:40px;height:44px;display:flex;align-items:center;justify-content:center;flex-shrink:0"><div style="width:32px;height:32px;border-radius:16px;background:rgba(255,255,255,0.12);display:flex;align-items:center;justify-content:center"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" style="stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round"><rect x="9" y="3" width="6" height="11" rx="3"></rect><path d="M5.5 11a6.5 6.5 0 0013 0M12 17.5V21"></path></svg></div></div>
+          <div onClick="{{ gen }}" style="width:44px;height:44px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0"><div style="width:36px;height:36px;border-radius:18px;background:{{ arrowBg }};display:flex;align-items:center;justify-content:center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="{{ arrowFg }}" style="stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round"><path d="M12 19V5M6 11l6-6 6 6"></path></svg></div></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px">
+          <div onClick="{{ platOpen }}" style="height:36px;padding:0 12px;border-radius:18px;display:flex;align-items:center;gap:6px;font-size:14px;font-weight:600;cursor:pointer;white-space:nowrap;background:rgba(118,118,128,0.24)"><span style="width:7px;height:7px;border-radius:4px;background:{{ platDot }}"></span>For {{ plat }}<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" style="stroke-width:3;stroke-linecap:round;stroke-linejoin:round"><path d="M6 9l6 6 6-6"></path></svg></div>
+          <div onClick="{{ onToggle }}" style="height:36px;padding:0 12px;border-radius:18px;display:flex;align-items:center;gap:6px;font-size:14px;font-weight:600;cursor:pointer;white-space:nowrap;background:{{ vpBg }};color:{{ vpFg }};opacity:{{ tgOp }}"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M11 3l1.9 5.1L18 10l-5.1 1.9L11 17l-1.9-5.1L4 10l5.1-1.9z"></path></svg>{{ vpL }}</div>
+          <div style="flex:1"></div>
+          <sc-if value="{{ rowEdit }}"><div onClick="{{ goProfile }}" style="height:36px;padding:0 6px;display:flex;align-items:center;font-size:14px;font-weight:600;color:rgba(235,235,245,0.6);cursor:pointer">Edit</div></sc-if>
+        </div>
+        <sc-if value="{{ vpHint }}"><div onClick="{{ rowTap }}" style="font-size:12.5px;color:{{ rowSubC }};font-weight:{{ rowSubW }};padding:0 6px 2px;cursor:pointer">{{ rowSub }}</div></sc-if>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:22px 20px 8px 36px"><span style="font-size:13px;font-weight:600;color:rgba(235,235,245,0.6);letter-spacing:0.4px">RECENT</span><div style="height:30px;padding:0 10px;border-radius:15px;background:rgba(118,118,128,0.24);display:flex;align-items:center;gap:5px;font-size:13px;font-weight:600">All<svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" style="stroke-width:3;stroke-linecap:round;stroke-linejoin:round"><path d="M6 9l6 6 6-6"></path></svg></div></div>
+      <div style="margin:0 16px;border-radius:26px;background:#161826;overflow:hidden">
+        <div style="display:flex;align-items:center;gap:12px;min-height:62px;padding:8px 16px"><span style="width:8px;height:8px;border-radius:4px;background:#64D2FF;flex-shrink:0"></span><div style="flex:1;min-width:0"><div style="font-size:16px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">3 dinners under 20 minutes</div><div style="font-size:13px;color:rgba(235,235,245,0.6)">Edited 2 h ago · TikTok · 3 takes</div></div><div style="height:28px;padding:0 10px;border-radius:14px;background:rgba(255,214,10,0.16);color:#FFD60A;font-size:12.5px;font-weight:600;display:flex;align-items:center;flex-shrink:0">Continue</div></div><div style="height:0.5px;background:rgba(84,84,88,0.6);margin-left:36px"></div>
+        <div style="display:flex;align-items:center;gap:12px;min-height:62px;padding:8px 16px"><span style="width:8px;height:8px;border-radius:4px;background:#BF5AF2;flex-shrink:0"></span><div style="flex:1;min-width:0"><div style="font-size:16px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">The one-pan lemon pasta</div><div style="font-size:13px;color:rgba(235,235,245,0.6)">Reels · ~32s · Draft</div></div></div><div style="height:0.5px;background:rgba(84,84,88,0.6);margin-left:36px"></div>
+        <div style="display:flex;align-items:center;gap:12px;min-height:62px;padding:8px 16px"><span style="width:8px;height:8px;border-radius:4px;background:#FF6961;flex-shrink:0"></span><div style="flex:1;min-width:0"><div style="font-size:16px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Grocery haul under $40</div><div style="font-size:13px;color:rgba(235,235,245,0.6)">Shorts · ~45s · 1 take</div></div></div><div style="height:0.5px;background:rgba(84,84,88,0.6);margin-left:36px"></div>
+        <div style="display:flex;align-items:center;gap:12px;min-height:62px;padding:8px 16px"><span style="width:8px;height:8px;border-radius:4px;background:#64D2FF;flex-shrink:0"></span><div style="flex:1;min-width:0"><div style="font-size:16px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Meal prep Sunday, honestly</div><div style="font-size:13px;color:rgba(235,235,245,0.6)">TikTok · ~50s · Ready to record</div></div></div>
+      </div>
+    </div>
+    <sc-if value="{{ platMenu }}">
+      <div onClick="{{ platClose }}" style="position:absolute;inset:0;z-index:30"></div>
+      <div style="position:absolute;left:26px;top:{{ platTop }};z-index:31;width:210px;border-radius:14px;background:rgba(44,44,46,0.97);box-shadow:0 18px 50px rgba(0,0,0,0.55);overflow:hidden;animation:cvFade .15s">
+        <sc-for list="{{ plats }}" as="p" hint-placeholder-count="6"><div onClick="{{ p.pick }}" style="height:44px;padding:0 14px;display:flex;align-items:center;gap:10px;font-size:16px;border-top:{{ p.bd }};cursor:pointer"><span style="width:16px;display:flex;justify-content:center"><sc-if value="{{ p.on }}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" style="stroke-width:3;stroke-linecap:round;stroke-linejoin:round"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg></sc-if></span><span style="flex:1">{{ p.l }}</span><span style="width:8px;height:8px;border-radius:4px;background:{{ p.dot }}"></span></div></sc-for>
+      </div>
+    </sc-if>
+  </sc-if>
+
+  <sc-if value="{{ isScript }}" hint-placeholder-val="{{ false }}">
+    <div style="position:absolute;inset:0;overflow-y:auto;scrollbar-width:none;padding:112px 20px 240px">
+      <div style="font-size:28px;font-weight:700;line-height:1.15;letter-spacing:-0.4px;text-wrap:pretty">{{ title }}</div>
+      <div style="font-size:13px;color:rgba(235,235,245,0.6);margin-top:8px;display:flex;align-items:center;gap:6px"><span style="width:7px;height:7px;border-radius:4px;background:{{ platDot }}"></span>{{ platMeta }}</div>
+      <sc-if value="{{ showSeg }}">
+        <div style="display:flex;align-items:center;gap:10px;margin-top:16px">
+          <div style="flex:1;display:flex;gap:2px;background:rgba(118,118,128,0.24);border-radius:10px;padding:2px"><sc-for list="{{ pvOpts }}" as="o" hint-placeholder-count="2"><div onClick="{{ o.pick }}" style="flex:1;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:{{ o.fw }};background:{{ o.bg }};cursor:pointer">{{ o.label }}</div></sc-for></div>
+          <div onClick="{{ goProfile }}" style="height:36px;padding:0 10px;border-radius:18px;background:rgba(255,214,10,0.12);color:#FFD60A;font-size:13px;font-weight:600;display:flex;align-items:center;gap:5px;cursor:pointer;white-space:nowrap"><svg width="12" height="12" viewBox="0 0 24 24" fill="#B4A7FF"><path d="M11 3l1.9 5.1L18 10l-5.1 1.9L11 17l-1.9-5.1L4 10l5.1-1.9z"></path></svg>My Cue Voice ›</div>
+        </div>
+      </sc-if>
+      <div style="font-size:12px;font-weight:700;letter-spacing:0.6px;color:#FFD60A;margin-top:22px">HOOK</div>
+      <div style="font-size:20px;line-height:1.4;font-weight:600;margin-top:6px;text-wrap:pretty">{{ pvHook }}</div>
+      <div style="font-size:12px;font-weight:700;letter-spacing:0.6px;color:rgba(235,235,245,0.6);margin-top:18px">BODY</div>
+      <div style="font-size:17px;line-height:1.5;color:rgba(235,235,245,0.85);margin-top:6px;text-wrap:pretty">{{ pvBody }}</div>
+      <div style="font-size:12px;font-weight:700;letter-spacing:0.6px;color:rgba(235,235,245,0.6);margin-top:18px">CTA</div>
+      <div style="font-size:17px;line-height:1.5;color:rgba(235,235,245,0.85);margin-top:6px">{{ pvCta }}</div>
+    </div>
+    <div style="position:absolute;top:52px;left:0;right:0;height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 16px;background:linear-gradient(to bottom,#000 70%,rgba(0,0,0,0));z-index:5"><div onClick="{{ goHome }}" style="width:44px;height:44px;border-radius:22px;background:rgba(58,58,60,0.6);display:flex;align-items:center;justify-content:center;cursor:pointer"><svg width="12" height="20" viewBox="0 0 12 20" fill="none" stroke="#fff" style="stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round"><path d="M10 2L2 10l8 8"></path></svg></div></div>
+    <sc-if value="{{ fb }}">
+      <div style="position:absolute;left:12px;right:12px;bottom:30px;z-index:6;border-radius:26px;background:rgba(44,44,46,0.94);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border:0.5px solid rgba(255,255,255,0.12);padding:14px;display:flex;flex-direction:column;gap:12px;animation:cvUp .3s">
+        <div style="display:flex;align-items:center;gap:8px;font-size:15px;font-weight:600"><svg width="15" height="15" viewBox="0 0 24 24" fill="#B4A7FF"><path d="M11 3l1.9 5.1L18 10l-5.1 1.9L11 17l-1.9-5.1L4 10l5.1-1.9z"></path></svg>Does this sound like you?</div>
+        <div style="display:flex;gap:8px"><div onClick="{{ approve }}" style="flex:1;height:46px;border-radius:23px;background:#FFD60A;color:#000;font-size:16px;font-weight:600;display:flex;align-items:center;justify-content:center;cursor:pointer">Sounds like me</div><div onClick="{{ openAdjust }}" style="flex:1;height:46px;border-radius:23px;background:rgba(255,255,255,0.12);font-size:16px;font-weight:600;display:flex;align-items:center;justify-content:center;cursor:pointer">Adjust</div></div>
+      </div>
+    </sc-if>
+  </sc-if>
+
+  <sc-if value="{{ isProfile }}" hint-placeholder-val="{{ false }}">
+    <div style="position:absolute;inset:0;overflow-y:auto;scrollbar-width:none;padding:52px 0 120px">
+      <div style="padding:6px 20px 14px;font-size:34px;font-weight:700">Profile</div>
+      <div style="margin:0 16px;border-radius:26px;background:#161826;padding:14px 16px;display:flex;align-items:center;gap:12px"><div style="width:44px;height:44px;border-radius:22px;background:#2A2D42;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:600">M</div><div style="flex:1"><div style="font-size:17px;font-weight:600">Maya Costa</div><div style="font-size:13px;color:rgba(235,235,245,0.6)">@mayacooks · Signed in with Apple</div></div></div>
+      <div style="font-size:13px;font-weight:600;color:rgba(235,235,245,0.6);letter-spacing:0.4px;padding:22px 36px 8px">MY CUE VOICE</div>
+      <div style="margin:0 16px;border-radius:26px;background:linear-gradient(135deg,rgba(255,214,10,0.14),rgba(255,214,10,0.02) 60%),#161826;box-shadow:inset 0 0 0 0.5px rgba(255,214,10,0.38);overflow:hidden">
+        <div style="padding:12px 16px 10px;display:flex;align-items:center;justify-content:space-between"><div style="display:flex;align-items:center;gap:7px;font-size:13px;font-weight:700;letter-spacing:0.5px;color:#FFD60A"><svg width="14" height="14" viewBox="0 0 24 24" fill="#FFD60A"><path d="M11 3l1.9 5.1L18 10l-5.1 1.9L11 17l-1.9-5.1L4 10l5.1-1.9z"></path></svg>WHAT CUE USES</div><div onClick="{{ onToggle }}" style="width:51px;height:31px;border-radius:16px;background:{{ tgBg }};position:relative;cursor:pointer;transition:background .2s"><div style="position:absolute;top:2px;left:{{ tgX }};width:27px;height:27px;border-radius:50%;background:#fff;transition:left .2s"></div></div></div>
+        <sc-for list="{{ brief }}" as="b" hint-placeholder-count="5"><div onClick="{{ b.go }}" style="display:flex;align-items:flex-start;gap:12px;padding:10px 16px;border-top:0.5px solid rgba(84,84,88,0.5);cursor:pointer"><div style="width:76px;flex-shrink:0;font-size:13px;color:rgba(235,235,245,0.6);padding-top:2px">{{ b.k }}</div><div style="flex:1;min-width:0;font-size:15px;line-height:1.35">{{ b.v }}</div><svg width="7" height="12" viewBox="0 0 8 14" fill="none" stroke="rgba(235,235,245,0.3)" style="stroke-width:2;stroke-linecap:round;stroke-linejoin:round;margin-top:5px;flex-shrink:0"><path d="M1 1l6 6-6 6"></path></svg></div></sc-for>
+      </div>
+      <div style="font-size:13px;line-height:1.4;color:rgba(235,235,245,0.6);padding:8px 32px 0">Exactly what Cue tells Apple Intelligence. Stays on this iPhone.</div>
+      <div onClick="{{ openExample }}" style="margin:16px 16px 0;border-radius:26px;background:#161826;display:flex;align-items:center;gap:12px;min-height:62px;padding:8px 16px;cursor:pointer"><div style="flex:1"><div style="font-size:17px">Voice examples</div><div style="font-size:13px;color:{{ exC }};font-weight:600">{{ exL }}</div></div><svg width="8" height="14" viewBox="0 0 8 14" fill="none" stroke="rgba(235,235,245,0.3)" style="stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><path d="M1 1l6 6-6 6"></path></svg></div>
+      <div style="font-size:13px;font-weight:600;color:rgba(235,235,245,0.6);letter-spacing:0.4px;padding:22px 36px 8px">CREATOR PREFERENCES</div>
+      <div style="margin:0 16px;border-radius:26px;background:#161826;display:flex;align-items:center;justify-content:space-between;min-height:52px;padding:0 16px;font-size:17px"><span>Default “Create for”</span><span style="color:rgba(235,235,245,0.6)">TikTok</span></div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ showTabs }}" hint-placeholder-val="{{ true }}">
+    <div style="position:absolute;left:12px;right:12px;bottom:24px;height:62px;border-radius:31px;background:rgba(30,30,32,0.82);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:0.5px solid rgba(255,255,255,0.12);display:flex;align-items:center;padding:0 6px;font-size:10.5px;font-weight:600;color:rgba(235,235,245,0.75);z-index:8">
+      <div onClick="{{ goHome }}" style="flex:1;height:50px;border-radius:25px;background:{{ tabS }};color:{{ tabSc }};display:flex;align-items:center;justify-content:center;cursor:pointer">Scripts</div>
+      <div style="flex:1;display:flex;justify-content:center">Takes</div>
+      <div onClick="{{ goProfile }}" style="flex:1;height:50px;border-radius:25px;background:{{ tabP }};color:{{ tabPc }};display:flex;align-items:center;justify-content:center;cursor:pointer">Profile</div>
+      <div style="flex:1;display:flex;justify-content:center">Settings</div>
+      <div style="flex:1;display:flex;align-items:center;justify-content:center;gap:4px"><span style="width:8px;height:8px;border-radius:4px;background:#FF3B30"></span>Record</div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ setup }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ notNow }}" style="position:absolute;inset:0;z-index:20;background:rgba(0,0,0,0.55);animation:cvFade .2s"></div>
+    <div style="position:absolute;left:0;right:0;bottom:0;top:{{ sheetTop }};z-index:21;background:#12141F;box-shadow:inset 0 0.5px 0 rgba(180,167,255,0.3);border-radius:38px 38px 0 0;overflow:hidden;animation:cvUp .32s cubic-bezier(.2,.9,.25,1)">
+      <div style="width:36px;height:5px;border-radius:3px;background:rgba(235,235,245,0.3);margin:8px auto 0"></div>
+      <div style="height:48px;display:flex;align-items:center;justify-content:space-between;padding:0 14px 0 8px">
+        <div onClick="{{ back }}" style="width:44px;height:44px;display:flex;align-items:center;justify-content:center;cursor:pointer;opacity:{{ backOp }}"><svg width="11" height="19" viewBox="0 0 12 20" fill="none" stroke="#fff" style="stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round"><path d="M10 2L2 10l8 8"></path></svg></div>
+        <sc-if value="{{ showProg }}"><div style="display:flex;align-items:center;gap:8px"><div style="display:flex;gap:5px"><sc-for list="{{ prog }}" as="p" hint-placeholder-count="4"><div style="width:26px;height:4px;border-radius:2px;background:{{ p.bg }}"></div></sc-for></div><span style="font-family:ui-monospace,'SF Mono',Menlo,monospace;font-size:10.5px;font-weight:800;letter-spacing:0.8px;color:rgba(225,228,245,0.6)">{{ stepL }}</span></div></sc-if>
+        <div onClick="{{ notNow }}" style="font-size:15px;font-weight:600;color:rgba(235,235,245,0.75);white-space:nowrap;cursor:pointer;min-width:44px;text-align:right">{{ closeL }}</div>
+      </div>
+
+      <sc-if value="{{ s0 }}">
+        <div style="position:absolute;top:66px;left:0;right:0;bottom:0;overflow-y:auto;scrollbar-width:none;padding:6px 16px 40px;animation:cvFade .2s">
+          <div style="font-size:28px;font-weight:700;line-height:1.12;letter-spacing:-0.4px;padding:0 4px">What kind of creator are you?</div>
+          <div style="font-size:15px;color:rgba(235,235,245,0.6);margin:8px 4px 16px">Pick the closest. Change it anytime.</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><sc-for list="{{ roles }}" as="r" hint-placeholder-count="6"><div onClick="{{ r.pick }}" style="border-radius:20px;background:{{ r.bg }};box-shadow:inset 0 0 0 {{ r.bw }} #FFD60A;padding:14px 12px 13px;display:flex;flex-direction:column;gap:6px;cursor:pointer;min-height:112px"><div style="width:32px;height:32px;border-radius:10px;background:rgba(255,214,10,0.14);display:flex;align-items:center;justify-content:center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFD60A" style="stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round"><path d="{{ r.ic }}"></path></svg></div><div style="font-size:15.5px;font-weight:600;line-height:1.2">{{ r.l }}</div><div style="font-size:12.5px;line-height:1.3;color:rgba(235,235,245,0.6)">{{ r.ex }}</div></div></sc-for></div>
+          <div style="font-size:13px;color:rgba(235,235,245,0.6);text-align:center;margin-top:16px">Doing more than one? Pick the one you film most.</div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ s1 }}">
+        <div style="position:absolute;top:66px;left:0;right:0;bottom:0;overflow-y:auto;scrollbar-width:none;padding:6px 20px 130px;animation:cvFade .2s">
+          <div style="font-size:28px;font-weight:700;line-height:1.12;letter-spacing:-0.4px">What do you talk about?</div>
+          <div style="font-size:15px;color:rgba(235,235,245,0.6);margin-top:8px">Up to 3. Tap one again to get specific.</div>
+          <div style="height:44px;border-radius:12px;background:#1F2233;margin-top:12px;padding:0 12px;display:flex;align-items:center;gap:8px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(235,235,245,0.6)" style="stroke-width:2.2;stroke-linecap:round;flex-shrink:0"><circle cx="11" cy="11" r="6.5"></circle><path d="M16 16l4.5 4.5"></path></svg><input value="{{ q }}" onChange="{{ onQ }}" placeholder="Search 140+ topics — or type your own" style="flex:1;min-width:0;background:transparent;border:none;outline:none;color:#fff;font-family:inherit;font-size:16px;caret-color:#FFD60A"></div>
+          <sc-if value="{{ noQ }}"><div style="display:inline-flex;height:24px;padding:0 9px;border-radius:12px;background:rgba(52,199,89,0.14);color:#34C759;font-size:12px;font-weight:600;align-items:center;margin-top:12px">Suggested from your scripts</div></sc-if>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:14px"><sc-for list="{{ macros }}" as="m" hint-placeholder-count="12"><div onClick="{{ m.pick }}" style="height:38px;padding:0 13px;border-radius:19px;background:{{ m.bg }};color:{{ m.fg }};box-shadow:inset 0 0 0 {{ m.bw }} {{ m.bc }};font-size:14.5px;font-weight:600;display:flex;align-items:center;gap:6px;cursor:pointer">{{ m.l }}<sc-if value="{{ m.hasN }}"><span style="min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:#000;color:#fff;font-size:11px;display:flex;align-items:center;justify-content:center">{{ m.n }}</span></sc-if></div></sc-for></div>
+          <sc-if value="{{ hasSubs }}"><div style="margin-top:16px;border-radius:18px;background:#1F2233;padding:12px;display:flex;flex-direction:column;gap:10px"><div style="font-size:13px;font-weight:600;color:rgba(235,235,245,0.6)">{{ activeL }} · more specific (optional)</div><div style="display:flex;flex-wrap:wrap;gap:6px"><sc-for list="{{ subs }}" as="u" hint-placeholder-count="5"><div onClick="{{ u.pick }}" style="height:32px;padding:0 11px;border-radius:16px;background:{{ u.bg }};color:{{ u.fg }};font-size:13.5px;font-weight:600;display:flex;align-items:center;cursor:pointer">{{ u.l }}</div></sc-for></div></div></sc-if>
+          
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ s2 }}">
+        <div style="position:absolute;top:66px;left:0;right:0;bottom:0;overflow-y:auto;scrollbar-width:none;padding:6px 16px 130px;animation:cvFade .2s">
+          <div style="font-size:28px;font-weight:700;line-height:1.12;letter-spacing:-0.4px;padding:0 4px">Who’s watching?</div>
+          <div style="font-size:15px;color:rgba(235,235,245,0.6);margin:8px 4px 14px">{{ audHint }}</div>
+          <div style="border-radius:20px;background:#1F2233;overflow:hidden"><sc-for list="{{ auds }}" as="a" hint-placeholder-count="4"><div onClick="{{ a.pick }}" style="display:flex;align-items:center;gap:12px;min-height:50px;padding:7px 14px;border-top:{{ a.bd }};cursor:pointer"><div style="width:22px;height:22px;border-radius:11px;border:2px solid {{ a.ring }};display:flex;align-items:center;justify-content:center;flex-shrink:0"><div style="width:12px;height:12px;border-radius:6px;background:{{ a.dot }}"></div></div><div style="flex:1;font-size:16px;line-height:1.3;color:{{ a.fg }}">{{ a.l }}</div></div></sc-for>
+            <div style="border-top:0.5px solid rgba(84,84,88,0.6);display:flex;align-items:center;gap:12px;min-height:50px;padding:0 14px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(235,235,245,0.6)" style="stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0"><path d="M4 20h4L19 9l-4-4L4 16z"></path></svg><input value="{{ audCustom }}" onChange="{{ onAud }}" placeholder="Or describe them in your words" style="flex:1;min-width:0;background:transparent;border:none;outline:none;color:#fff;font-family:inherit;font-size:16px;caret-color:#FFD60A"></div>
+          </div>
+          <sc-if value="{{ audKnown }}">
+            <div style="display:flex;flex-direction:column;gap:18px;margin-top:20px;animation:cvFade .2s">
+              <div style="display:flex;flex-direction:column;gap:8px"><div style="padding:0 4px"><div style="font-size:15px;font-weight:600">Why do they watch you?</div><div style="font-size:13px;color:rgba(235,235,245,0.6);margin-top:2px">Up to 2 · shapes the hook and the payoff</div></div><div style="display:flex;flex-wrap:wrap;gap:6px"><sc-for list="{{ whys }}" as="c" hint-placeholder-count="6"><div onClick="{{ c.pick }}" style="height:34px;padding:0 12px;border-radius:17px;background:{{ c.bg }};color:{{ c.fg }};opacity:{{ c.op }};font-size:14px;font-weight:600;display:flex;align-items:center;cursor:pointer">{{ c.l }}</div></sc-for></div></div>
+              <div style="display:flex;flex-direction:column;gap:8px"><div style="padding:0 4px"><div style="font-size:15px;font-weight:600">What gets in their way?</div><div style="font-size:13px;color:rgba(235,235,245,0.6);margin-top:2px">Optional · Cue answers it before they ask</div></div><div style="display:flex;flex-wrap:wrap;gap:6px"><sc-for list="{{ blocks }}" as="c" hint-placeholder-count="6"><div onClick="{{ c.pick }}" style="height:34px;padding:0 12px;border-radius:17px;background:{{ c.bg }};color:{{ c.fg }};opacity:{{ c.op }};font-size:14px;font-weight:600;display:flex;align-items:center;cursor:pointer">{{ c.l }}</div></sc-for></div></div>
+              <div style="display:flex;flex-direction:column;gap:8px"><div style="font-size:15px;font-weight:600;padding:0 4px">{{ levelQ }}</div><div style="display:flex;gap:2px;background:rgba(118,118,128,0.24);border-radius:10px;padding:2px"><sc-for list="{{ levels }}" as="o" hint-placeholder-count="3"><div onClick="{{ o.pick }}" style="flex:1;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:{{ o.fw }};background:{{ o.bg }};cursor:pointer">{{ o.label }}</div></sc-for></div><div style="font-size:13px;color:rgba(235,235,245,0.6);padding:0 4px">{{ levelEx }}</div></div>
+            </div>
+          </sc-if>
+          <sc-if value="{{ audUnknown }}">
+            <div style="margin-top:16px;border-radius:18px;background:rgba(255,214,10,0.06);box-shadow:inset 0 0 0 0.5px rgba(255,214,10,0.3);padding:14px;display:flex;flex-direction:column;gap:6px;animation:cvFade .2s">
+              <div style="font-size:15px;font-weight:600">That’s fine — most creators start here.</div>
+              <div style="font-size:14px;line-height:1.4;color:rgba(235,235,245,0.7);text-wrap:pretty">Cue writes for a broad audience new to the topic. Fill this in later from Profile, when you know who keeps coming back.</div>
+            </div>
+          </sc-if>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ s3 }}">
+        <div style="position:absolute;top:66px;left:0;right:0;bottom:0;overflow-y:auto;scrollbar-width:none;padding:6px 16px 130px;animation:cvFade .2s">
+          <div style="font-size:28px;font-weight:700;line-height:1.12;letter-spacing:-0.4px;padding:0 4px">How do you talk on camera?</div>
+          <div style="font-size:15px;color:rgba(235,235,245,0.6);margin:8px 4px 14px">{{ toneHint }}</div>
+          <div style="border-radius:20px;background:#1F2233;overflow:hidden"><sc-for list="{{ tones }}" as="t" hint-placeholder-count="6"><div onClick="{{ t.pick }}" style="display:flex;align-items:center;gap:12px;padding:10px 14px;border-top:{{ t.bd }};opacity:{{ t.op }};cursor:pointer"><div style="flex:1;min-width:0"><div style="display:flex;align-items:center;gap:7px;flex-wrap:wrap"><span style="font-size:16px;font-weight:600">{{ t.l }}</span><sc-if value="{{ t.common }}"><span style="height:19px;padding:0 7px;border-radius:10px;background:rgba(255,214,10,0.14);color:#FFD60A;font-size:11px;font-weight:600;display:flex;align-items:center">{{ t.commonL }}</span></sc-if></div><div style="font-size:13.5px;color:rgba(235,235,245,0.6);margin-top:2px;font-style:italic">{{ t.ex }}</div></div><div style="width:24px;height:24px;border-radius:12px;border:2px solid {{ t.ring }};background:{{ t.fill }};display:flex;align-items:center;justify-content:center;flex-shrink:0"><sc-if value="{{ t.on }}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#000" style="stroke-width:3.6;stroke-linecap:round;stroke-linejoin:round"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg></sc-if></div></div></sc-for></div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ showCta }}">
+        <div style="position:absolute;left:0;right:0;bottom:0;padding:14px 16px {{ ctaPad }};background:linear-gradient(to bottom,rgba(28,28,30,0),#161826 22px)"><div onClick="{{ next }}" style="height:54px;border-radius:27px;background:{{ ctaBg }};color:{{ ctaFg }};font-size:17px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer"><sc-if value="{{ ctaSpark }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M11 3l1.9 5.1L18 10l-5.1 1.9L11 17l-1.9-5.1L4 10l5.1-1.9z"></path></svg></sc-if>{{ ctaL }}</div><sc-if value="{{ showSkip }}"><div onClick="{{ saveOnly }}" style="height:44px;margin-top:4px;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:600;color:rgba(235,235,245,0.75);cursor:pointer">Just save my voice</div></sc-if></div>
+      </sc-if>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ shAdjust }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ closeSheet }}" style="position:absolute;inset:0;z-index:20;background:rgba(0,0,0,0.55);animation:cvFade .2s"></div>
+    <div style="position:absolute;left:0;right:0;bottom:0;z-index:21;background:#12141F;box-shadow:inset 0 0.5px 0 rgba(180,167,255,0.3);border-radius:38px 38px 0 0;padding:8px 16px 36px;display:flex;flex-direction:column;gap:16px;animation:cvUp .32s cubic-bezier(.2,.9,.25,1)">
+      <div style="width:36px;height:5px;border-radius:3px;background:rgba(235,235,245,0.3);margin:0 auto"></div>
+      <div style="font-size:22px;font-weight:700;padding:0 4px">What’s off?</div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px"><sc-for list="{{ adj }}" as="c" hint-placeholder-count="5"><div onClick="{{ c.pick }}" style="height:36px;padding:0 14px;border-radius:18px;background:{{ c.bg }};color:{{ c.fg }};font-size:15px;font-weight:600;display:flex;align-items:center;cursor:pointer">{{ c.label }}</div></sc-for></div>
+      <div style="height:46px;border-radius:12px;background:#1F2233;padding:0 14px;display:flex;align-items:center;font-size:16px;color:rgba(235,235,245,0.3)">Or say it in your words…</div>
+      <div style="display:flex;gap:2px;background:rgba(118,118,128,0.24);border-radius:10px;padding:2px"><sc-for list="{{ scope }}" as="o" hint-placeholder-count="2"><div onClick="{{ o.pick }}" style="flex:1;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:{{ o.fw }};background:{{ o.bg }};cursor:pointer">{{ o.label }}</div></sc-for></div>
+      <sc-if value="{{ scopeProfile }}"><div style="border-radius:16px;background:#1F2233;padding:12px 14px;display:flex;flex-direction:column;gap:6px"><div style="font-size:13px;color:rgba(235,235,245,0.6)">Will change in “What Cue uses”</div><sc-for list="{{ diffs }}" as="d" hint-placeholder-count="1"><div style="display:flex;justify-content:space-between;gap:10px;font-size:15px"><span>{{ d.k }}</span><span style="white-space:nowrap"><span style="color:rgba(235,235,245,0.45);text-decoration:line-through">{{ d.a }}</span> → <span style="color:#FFD60A;font-weight:600">{{ d.b }}</span></span></div></sc-for></div></sc-if>
+      <sc-if value="{{ scopeScript }}"><div style="font-size:13px;color:rgba(235,235,245,0.6);padding:0 4px">Rewrites this script only. Your profile stays the same.</div></sc-if>
+      <div onClick="{{ rewrite }}" style="height:54px;border-radius:27px;background:#FFD60A;color:#000;font-size:17px;font-weight:600;display:flex;align-items:center;justify-content:center;cursor:pointer">Rewrite</div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ shExample }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ closeSheet }}" style="position:absolute;inset:0;z-index:20;background:rgba(0,0,0,0.55);animation:cvFade .2s"></div>
+    <div style="position:absolute;left:0;right:0;bottom:0;top:64px;z-index:21;background:#12141F;box-shadow:inset 0 0.5px 0 rgba(180,167,255,0.3);border-radius:38px 38px 0 0;padding:8px 16px 0;display:flex;flex-direction:column;gap:12px;animation:cvUp .32s cubic-bezier(.2,.9,.25,1)">
+      <div style="width:36px;height:5px;border-radius:3px;background:rgba(235,235,245,0.3);margin:0 auto"></div>
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:0 4px"><span onClick="{{ closeSheet }}" style="font-size:17px;color:rgba(235,235,245,0.75);cursor:pointer">Cancel</span><span style="font-size:17px;font-weight:600">Voice example</span><span style="width:52px"></span></div>
+      <div style="display:flex;gap:2px;background:rgba(118,118,128,0.24);border-radius:10px;padding:2px"><sc-for list="{{ exSrc }}" as="o" hint-placeholder-count="3"><div onClick="{{ o.pick }}" style="flex:1;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:{{ o.fw }};background:{{ o.bg }};cursor:pointer">{{ o.label }}</div></sc-for></div>
+      <div style="border-radius:18px;background:#1F2233;padding:14px;min-height:150px;font-size:16px;line-height:1.5">{{ exText }}</div>
+      <div style="font-size:13px;color:rgba(235,235,245,0.6);padding:0 4px">{{ exHint }}</div>
+      <div onClick="{{ toggleMine }}" style="border-radius:16px;background:#1F2233;padding:12px 14px;display:flex;align-items:center;gap:12px;cursor:pointer"><div style="width:24px;height:24px;border-radius:7px;background:{{ mineBg }};box-shadow:inset 0 0 0 2px {{ mineRing }};display:flex;align-items:center;justify-content:center;flex-shrink:0"><sc-if value="{{ mine }}"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#000" style="stroke-width:3.6;stroke-linecap:round;stroke-linejoin:round"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg></sc-if></div><div style="flex:1;font-size:15px">I said or wrote this myself</div><span style="font-size:13px;color:rgba(235,235,245,0.6)">Portuguese</span></div>
+      <div style="font-size:13px;line-height:1.45;color:rgba(235,235,245,0.6);padding:0 4px;text-wrap:pretty">Teaches how you talk — never reused for stories, opinions or results. Up to 3 examples.</div>
+      <div style="position:absolute;left:16px;right:16px;bottom:34px"><div onClick="{{ saveExample }}" style="height:54px;border-radius:27px;background:{{ saveBg }};color:{{ saveFg }};font-size:17px;font-weight:600;display:flex;align-items:center;justify-content:center;cursor:pointer">Save example</div></div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ hasToast }}" hint-placeholder-val="{{ false }}">
+    <div style="position:absolute;top:58px;left:50%;transform:translateX(-50%);z-index:50;height:40px;padding:0 16px;border-radius:20px;background:rgba(44,44,46,0.96);border:0.5px solid rgba(255,255,255,0.12);display:flex;align-items:center;gap:8px;font-size:14px;font-weight:600;white-space:nowrap;animation:cvFade .2s"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#34C759" style="stroke-width:3;stroke-linecap:round;stroke-linejoin:round"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg>{{ toast }}</div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:375,&quot;height&quot;:812},&quot;start&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;home-new&quot;,&quot;setup-0&quot;,&quot;setup-1&quot;,&quot;setup-2&quot;,&quot;setup-3&quot;,&quot;home-partial&quot;,&quot;script&quot;,&quot;adjust&quot;,&quot;home-ready&quot;,&quot;profile&quot;,&quot;edit&quot;,&quot;example&quot;,&quot;home-noai&quot;],&quot;default&quot;:&quot;home-new&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
+class Component extends DCLogic {
+  static ROLES = [
+    ['personal', 'Lifestyle & personal', 'Routine, style, opinions, vlogs', 'M12 12a4 4 0 100-8 4 4 0 000 8zM4 21c1.4-4 4.5-6 8-6s6.6 2 8 6'],
+    ['entertainer', 'Entertainer', 'Comedy, sketches, music, reacts', 'M4 13a8 8 0 0016 0zM9 8h.01M15 8h.01'],
+    ['expert', 'Expert, coach or pro', 'Trainer, doctor, lawyer, consultant', 'M12 3l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.4 6.8 19.1l1-5.8L3.5 9.2l5.9-.9z'],
+    ['educator', 'Teacher or explainer', 'Classes, study, how things work', 'M3 9l9-5 9 5-9 5zM7 11.5V16c1.5 1.5 3.2 2 5 2s3.5-.5 5-2v-4.5'],
+    ['business', 'My own business', 'Shop, salon, studio, service', 'M4 9l1.5-5h13L20 9M4 9v11h16V9M4 9h16M9 20v-6h6v6'],
+    ['brands', 'Content for brands', 'UGC, reviews, social media manager', 'M20 12l-8 8-8-8V4h8zM8 8h.01'],
+    ['news', 'News & commentary', 'Report, analyze, review, react', 'M4 5h13v14H6a2 2 0 01-2-2zM17 9h3v8a2 2 0 01-2 2M8 9h5M8 13h5'],
+    ['community', 'Community or cause', 'Faith, nonprofit, activism, politics', 'M12 21s-7-4.5-7-10a4 4 0 017-2.6A4 4 0 0119 11c0 5.5-7 10-7 10z']
+  ];
+  static TAXO = [['fun', 'Comedy & entertainment', ['Sketches', 'Reactions', 'Pranks', 'Storytime', 'Memes']], ['beauty', 'Beauty', ['Makeup', 'Skincare', 'Hair', 'Nails', 'Fragrance']], ['fashion', 'Fashion & style', ['Outfits', 'Thrifting', 'Modest fashion', 'Menswear', 'Sneakers']], ['life', 'Lifestyle', ['Routine', 'Vlog', 'Productivity', 'Minimalism', 'Day in my life']], ['food', 'Food & cooking', ['Recipes', 'Healthy eating', 'Baking', 'Restaurants', 'Drinks']], ['fit', 'Fitness', ['Workouts', 'Running', 'Gym', 'Yoga & pilates', 'Weight loss']], ['health', 'Health & wellness', ['Mental health', 'Nutrition', 'Medicine', 'Psychology', 'Sleep', 'Women’s health']], ['family', 'Parenting & family', ['Pregnancy', 'Babies', 'Kids', 'Teens', 'Family life']], ['love', 'Relationships', ['Dating', 'Marriage', 'Friendship', 'Self-love']], ['money', 'Money & finance', ['Personal finance', 'Investing', 'Crypto', 'Saving', 'Taxes']], ['biz', 'Business & marketing', ['Entrepreneurship', 'Marketing', 'Sales', 'Social media', 'E-commerce']], ['career', 'Career & growth', ['Careers', 'Leadership', 'Motivation', 'Public speaking', 'Personal growth']], ['tech', 'Tech & AI', ['AI tools', 'Gadgets', 'Apps', 'Coding', 'Reviews']], ['edu', 'Learning', ['Languages', 'Exams & study', 'Science', 'History', 'Math']], ['travel', 'Travel', ['Travel tips', 'Local guides', 'Remote work', 'Budget travel', 'Luxury travel']], ['home', 'Home & DIY', ['Decor', 'Renovation', 'Cleaning', 'Plants & garden', 'Crafts']], ['games', 'Gaming', ['Gameplay', 'Esports', 'Game reviews', 'Mobile games']], ['sport', 'Sports', ['Football', 'Basketball', 'Fighting sports', 'Sports analysis', 'Motorsport']], ['music', 'Music & dance', ['Covers', 'Production', 'Dance', 'Instruments']], ['pop', 'Movies, TV & books', ['Reviews', 'Celebrities', 'Anime', 'Books']]];
+  static MORE = [['pets', 'Pets & animals', ['Dogs', 'Cats', 'Pet care']], ['cars', 'Cars', ['Reviews', 'Repairs', 'Electric']], ['art', 'Art & design', ['Drawing', 'Photography', 'Design', 'Tattoo']], ['realestate', 'Real estate', []], ['law', 'Law', []], ['eco', 'Sustainability', []], ['agro', 'Farming & outdoors', ['Farming', 'Fishing', 'Camping']], ['faith', 'Faith & spirituality', ['Christian', 'Spirituality', 'Astrology']], ['politics', 'Politics & society', []], ['news', 'News & current events', []]];
+  static AUD = { personal: ['People with a routine like mine', 'Followers who share my taste', 'People my age figuring life out'], entertainer: ['People who want a laugh after a long day', 'Fans of my characters and bits', 'People who love {t}'], community: ['Members of my community', 'People who share my cause', 'People curious about {t}'], expert: ['Clients and future clients', 'People starting out in {t}', 'Peers in my field'], educator: ['Students preparing for exams', 'Beginners curious about {t}', 'Parents helping their kids'], business: ['Customers near me', 'People who already bought from me', 'People looking for {t}'], brands: ['The brand’s ideal customer', 'People comparing products', 'People who need a quick, honest take'], news: ['People who want the short version', 'Fans who follow every detail', 'Professionals in the area'] };
+  static WHY = ['Learn something', 'Solve a problem', 'Get inspired', 'Have a laugh', 'Decide what to buy', 'Stay up to date', 'Feel understood'];
+  static WHYORDER = { personal: ['Have a laugh', 'Get inspired', 'Feel understood'], expert: ['Solve a problem', 'Learn something'], educator: ['Learn something', 'Solve a problem'], business: ['Decide what to buy', 'Solve a problem'], brands: ['Decide what to buy', 'Learn something'], news: ['Stay up to date', 'Learn something'], entertainer: ['Have a laugh', 'Feel understood'], community: ['Feel understood', 'Get inspired'] };
+  static BLOCK = ['No time', 'Don’t know where to start', 'Afraid to get it wrong', 'Too much info out there', 'Money is tight', 'Don’t trust what they see'];
+  static PLATS = [['TikTok', '#64D2FF', 92, 37], ['Reels', '#BF5AF2', 80, 32], ['Shorts', '#FF6961', 110, 45], ['YouTube', '#FF9F0A', 360, 150], ['LinkedIn', '#0A84FF', 140, 60], ['Stories', '#FF375F', 45, 18]];
+  static CUSTOM = {};
+  static TONES = [['Inspiring', '“You can start today. Here’s how.”'], ['Calm', '“Let’s slow down for a second.”'], ['Conversational', '“So here’s the thing…”'], ['Direct', '“Three steps. No fluff.”'], ['Educational', '“Let’s break down why.”'], ['Confident', '“This is the method I trust.”'], ['Relaxed', '“Okay, quick one today…”'], ['Funny', '“My oven and I are not friends.”']];
+  static COMMON = { personal: ['Conversational', 'Funny'], expert: ['Confident', 'Educational'], educator: ['Educational', 'Conversational'], business: ['Conversational', 'Direct'], brands: ['Conversational', 'Relaxed'], news: ['Direct', 'Confident'], entertainer: ['Funny', 'Relaxed'], community: ['Inspiring', 'Calm'] };
+  static RNAME = { personal: 'personal creators', expert: 'experts', educator: 'educators', business: 'businesses', brands: 'brand content', news: 'commentary', entertainer: 'entertainers', community: 'communities' };
+  static RSHORT = { personal: 'Personal', expert: 'Expert', educator: 'Teacher', business: 'Business', brands: 'Brands', news: 'News', entertainer: 'Entertainer', community: 'Community' };
+  static preset(start) {
+    const base = { scr: 'home', setup: false, step: 0, editOne: false, sheet: null, configured: false, voiceOn: false, noai: false, role: null, topics: {}, active: null, more: false, aud: null, audCustom: '', level: 'new', why: [], block: [], tone: [], pv: 'mine', fb: false, approved: false, adj: ['Too much slang'], scope: 'script', src: 'paste', mine: true, examples: 0, toast: null, q: '', plat: 'TikTok', idea: '' };
+    const filled = { configured: true, voiceOn: true, role: 'personal', topics: { food: ['Recipes'] }, active: 'food', audCustom: 'Busy adults starting to cook', level: 'new', why: ['Solve a problem'], block: ['No time'], tone: ['Conversational', 'Relaxed'] };
+    const half = { role: 'personal', topics: { food: ['Recipes'] }, active: 'food' };
+    const P = {
+      'setup-0': { setup: true },
+      'setup-1': { setup: true, step: 1, role: 'personal', topics: { food: [] }, active: 'food' },
+      'setup-2': { setup: true, step: 2, ...half, aud: 0, why: ['Learn something'] },
+      'setup-3': { setup: true, step: 3, ...half, aud: 0, tone: ['Conversational'] },
+      'home-partial': { ...half, step: 2 },
+      'script': { ...filled, scr: 'script', fb: true },
+      'adjust': { ...filled, scr: 'script', fb: true, sheet: 'adjust' },
+      'home-ready': { ...filled, approved: true },
+      'profile': { ...filled, scr: 'profile', approved: true },
+      'edit': { ...filled, scr: 'profile', approved: true, setup: true, step: 3, editOne: true },
+      'example': { ...filled, scr: 'profile', approved: true, sheet: 'example' },
+      'home-noai': { noai: true }
+    };
+    return { ...base, ...(P[start] || {}) };
+  }
+  static embedState(p) { const st = p.embedStart || 'setup-0', seed = p.seed || {}; const base = { ...Component.preset('setup-0'), scr: 'none', idea: p.idea || '' };
+    const keep = ['role', 'topics', 'active', 'aud', 'audCustom', 'level', 'why', 'block', 'tone']; const sd = {}; keep.forEach(k => { if (seed[k] !== undefined) sd[k] = seed[k]; });
+    if (st.startsWith('edit-')) return { ...base, ...sd, configured: true, setup: true, step: +st.slice(5), editOne: true };
+    if (st === 'example') return { ...base, ...sd, configured: true, setup: false, sheet: 'example' };
+    return { ...base, ...sd }; }
+  state = this.props && this.props.embed ? Component.embedState(this.props) : Component.preset(this.props && this.props.start);
+  snap() { const s = this.state; return { role: s.role, topics: s.topics, active: s.active, aud: s.aud, audCustom: s.audCustom, level: s.level, why: s.why, block: s.block, tone: s.tone, brief: (this.renderVals().brief || []).map(b => [b.k, b.v, b.st]) }; }
+  toast(m) { clearTimeout(this._tt); this.setState({ toast: m }); this._tt = setTimeout(() => this.setState({ toast: null }), 2200); }
+  componentWillUnmount() { clearTimeout(this._tt); clearTimeout(this._rt); }
+  renderVals() {
+    const s = this.state, K = Component, Y = '#FFD60A';
+    const tx = id => K.TAXO.concat(K.MORE).find(x => x[0] === id) || [id, K.CUSTOM[id] || id.slice(2), []];
+    const tKeys = Object.keys(s.topics);
+    const firstT = tKeys.length ? (s.topics[tKeys[0]][0] || tx(tKeys[0])[1]).toLowerCase() : 'this';
+    const audList = (K.AUD[s.role] || K.AUD.personal).map(a => a.replace('{t}', firstT)).concat(['I’m still figuring it out']);
+    const audVal = s.audCustom.trim() || (s.aud != null ? audList[s.aud] : '');
+    const unknown = !s.audCustom.trim() && s.aud === audList.length - 1;
+    const canNext = [true, tKeys.length > 0, !!audVal && (unknown || s.why.length > 0), s.tone.length > 0][s.step];
+    const wo = K.WHYORDER[s.role] || [];
+    const whyList = wo.concat(K.WHY.filter(w => !wo.includes(w)));
+    const multi = (k, list, max) => list.map(l => { const on = s[k].includes(l), full = s[k].length >= max; return { l, bg: on ? '#fff' : 'rgba(118,118,128,0.24)', fg: on ? '#000' : '#fff', op: !on && full ? 0.45 : 1, pick: () => this.setState(x => x[k].includes(l) ? { [k]: x[k].filter(y => y !== l) } : x[k].length >= max ? null : { [k]: [...x[k], l] }) }; });
+    const roleL = s.role ? K.ROLES.find(r => r[0] === s.role)[1] : '';
+    const LV = { new: ['New to it', 'Cue explains terms and keeps steps simple.'], some: ['Some basics', 'Cue skips the obvious and goes one level deeper.'], pro: ['Experienced', 'Cue uses the field’s terms and gets to the point.'] };
+    const common = K.COMMON[s.role] || [];
+    const hasIdea = !!s.idea.trim();
+    const live = s.configured && s.voiceOn && !s.noai;
+    const seg = (k, opts) => opts.map(([v, l]) => ({ label: l, bg: s[k] === v ? '#636366' : 'transparent', fw: s[k] === v ? 600 : 400, pick: () => this.setState({ [k]: v }) }));
+    const openSetup = (step, one) => this.setState({ setup: true, step, editOne: !!one });
+    const EMB = !!this.props.embed;
+    const finish = () => {
+      if (EMB) { this.props.onDone && this.props.onDone({ data: this.snap(), write: !s.editOne, edit: s.editOne }); return; }
+      if (s.editOne) { this.setState({ setup: false }); this.toast('Updated'); return; }
+      if (hasIdea) this.setState({ setup: false, configured: true, voiceOn: true, scr: 'script', pv: 'mine', fb: !s.approved });
+      else this.setState({ setup: false, configured: true, voiceOn: true });
+      this.toast(hasIdea ? 'Saved to Profile › My Cue Voice' : 'You’re set — scripts now sound like you');
+    };
+    const left = 4 - s.step;
+    let rowSub = 'Make scripts sound like you — about 20 seconds', rowSubC = 'rgba(235,235,245,0.6)', rowSubW = 400;
+    if (s.noai) rowSub = 'Needs Apple Intelligence on this iPhone';
+    else if (!s.configured && s.role) { rowSub = (left === 1 ? '1 question left' : left + ' questions left') + ' · Finish'; rowSubC = Y; rowSubW = 600; }
+    else if (s.configured) rowSub = s.voiceOn ? [K.RSHORT[s.role], tKeys.length ? tx(tKeys[0])[1] : '', s.tone.join(', ')].filter(Boolean).join(' · ') : 'Off — scripts use a neutral voice';
+    const diffMap = { 'Too formal': ['Formality', 'Balanced', 'Casual'], 'Too much slang': ['Slang', 'Some', 'Rarely'], 'Too over the top': ['Energy', 'Warm', 'Calm'], '“I don’t say that”': ['Phrases', '“Bora?”', 'Removed'], 'Too long': ['Sentences', 'Mixed', 'Short'] };
+    const EX = { paste: ['“Olha, eu sei que você chega cansado. Então hoje é uma panela só, dez minutos. Bora?”', 'A caption, post or past script. 2–4 sentences is plenty.'], speak: ['● Listening… talk for 20–30 seconds like you would on camera.', 'You’ll review and fix the transcript before saving.'], scripts: ['3 dinners under 20 minutes · recorded 2 days ago', 'Only scripts you recorded. Edit before saving.'] };
+    const mineV = s.pv === 'mine' && live;
+    const ctaL = s.editOne ? 'Done' : s.step === 3 ? (hasIdea ? 'Write my script' : 'Done') : 'Continue';
+    return {
+      notEmbed: !EMB, fpos: EMB ? 'absolute' : 'relative', fw: EMB ? '100%' : '375px', fh: EMB ? '100%' : '812px', fr: EMB ? '0px' : '46px', fbg: EMB ? 'transparent' : '#000', fsh: EMB ? 'none' : '0 0 0 1px #1F2233,0 30px 60px rgba(0,0,0,0.5)',
+      isHome: s.scr === 'home', isScript: s.scr === 'script', isProfile: s.scr === 'profile', showTabs: s.scr !== 'script',
+      tabS: s.scr === 'home' ? 'rgba(255,255,255,0.12)' : 'transparent', tabSc: s.scr === 'home' ? Y : 'rgba(235,235,245,0.75)',
+      tabP: s.scr === 'profile' ? 'rgba(255,255,255,0.12)' : 'transparent', tabPc: s.scr === 'profile' ? Y : 'rgba(235,235,245,0.75)',
+      goHome: () => this.setState({ scr: 'home', sheet: null }), goProfile: () => { if (s.configured) this.setState({ scr: 'profile', sheet: null }); },
+      idea: s.idea, onIdea: e => this.setState({ idea: e.target.value }),
+      arrowBg: hasIdea ? Y : 'rgba(118,118,128,0.3)', arrowFg: hasIdea ? '#000' : 'rgba(235,235,245,0.4)',
+      gen: () => { if (!hasIdea) return; this.setState({ scr: 'script', pv: live ? 'mine' : 'plain', fb: live && !s.approved }); },
+      rowSub, rowSubC, rowSubW, rowEdit: s.configured && s.voiceOn && !s.noai,
+      rowTap: () => { if (s.noai) return; if (!s.configured) openSetup(s.role ? s.step : 0); else this.setState({ scr: 'profile' }); },
+      tgBg: live ? '#34C759' : 'rgba(120,120,128,0.32)', tgX: live ? '22px' : '2px', tgOp: s.noai ? 0.4 : 1,
+      onToggle: () => { if (s.noai) return; if (!s.configured) openSetup(s.role ? s.step : 0); else this.setState(x => ({ voiceOn: !x.voiceOn })); },
+      title: s.idea.trim() || '3 dinners under 20 minutes', showSeg: s.configured && !s.noai,
+      pvOpts: seg('pv', [['mine', 'My Cue Voice'], ['plain', 'Without']]),
+      pvHook: mineV ? 'I used to buy frozen dinners every week. Then I did the math. Bora?' : 'Frozen dinners are convenient, but there are good reasons to cook instead.',
+      pvBody: mineV ? 'Twenty minutes. One pan. Real food. Here’s the lemon pasta I make when I’m way too tired to think — and it costs less than the box.' : 'Home-cooked meals are often cheaper and healthier. For example, a simple lemon pasta takes about twenty minutes to prepare.',
+      pvCta: mineV ? 'Save this for Tuesday night. You’ll thank me.' : 'Save this video to try the recipe later.',
+      fb: s.fb && s.scr === 'script' && !s.sheet,
+      approve: () => { this.setState({ fb: false, approved: true }); this.toast('Got it — Cue will keep writing like this'); },
+      openAdjust: () => this.setState({ sheet: 'adjust' }),
+      setup: s.setup, sheetTop: s.editOne ? '120px' : '58px', showProg: !s.editOne,
+      s0: s.step === 0, s1: s.step === 1, s2: s.step === 2, s3: s.step === 3,
+      stepL: '0' + (s.step + 1) + ' / 04',
+      prog: [0, 1, 2, 3].map(i => ({ bg: i <= s.step ? Y : 'rgba(118,118,128,0.4)' })),
+      backOp: s.step && !s.editOne ? 1 : 0, back: () => { if (s.step && !s.editOne) this.setState({ step: s.step - 1 }); },
+      closeL: s.editOne ? 'Cancel' : 'Not now', notNow: () => { if (EMB) { this.props.onClose && this.props.onClose(); return; } this.setState({ setup: false }); },
+      showCta: s.step > 0, ctaL, ctaSpark: ctaL === 'Write my script', ctaBg: canNext ? Y : 'rgba(118,118,128,0.24)', ctaFg: canNext ? '#000' : 'rgba(235,235,245,0.3)',
+      next: () => { if (!canNext) return; if (s.editOne || s.step === 3) finish(); else this.setState({ step: s.step + 1 }); },
+      roles: K.ROLES.map(([id, l, ex, ic]) => { const on = s.role === id; return { l, ex, ic, bg: on ? 'rgba(255,214,10,0.12)' : '#1F2233', bw: on ? '2px' : '0px', pick: () => { this.setState({ role: id, aud: s.role === id ? s.aud : null }); clearTimeout(this._rt); this._rt = setTimeout(() => { if (this.state.editOne) { if (EMB) { this.props.onDone && this.props.onDone({ data: this.snap(), edit: true }); return; } this.setState({ setup: false }); this.toast('Updated'); } else this.setState({ step: 1, topics: Object.keys(this.state.topics).length ? this.state.topics : { food: [] }, active: this.state.active || 'food' }); }, 220); } }; }),
+      q: s.q, onQ: e => this.setState({ q: e.target.value }), noQ: !s.q.trim(),
+      macros: (() => { const q = s.q.trim().toLowerCase(); const ALL = K.TAXO.concat(K.MORE); let list = q ? ALL.filter(([id, l, subs]) => l.toLowerCase().includes(q) || subs.some(x => x.toLowerCase().includes(q))) : (s.more ? ALL : K.TAXO);
+        const base = list.map(([id, l, subs]) => { const hit = q ? subs.find(x => x.toLowerCase().includes(q)) : null; return [id, hit && !l.toLowerCase().includes(q) ? l + ' › ' + hit : l, hit]; });
+        const mk = base.map(([id, l, hit]) => { const on = !!s.topics[id], n = on ? s.topics[id].length : 0; return { l, hasN: n > 0, n, bg: on ? '#fff' : 'rgba(118,118,128,0.24)', fg: on ? '#000' : '#fff', bw: s.active === id && on ? '2px' : '0px', bc: Y,
+          pick: () => this.setState(x => { const t = { ...x.topics }; if (!t[id]) { if (Object.keys(t).length >= 3) return null; t[id] = hit ? [hit] : []; return { topics: t, active: id, q: '' }; } if (x.active === id) { delete t[id]; return { topics: t, active: Object.keys(t)[0] || null }; } return { active: id }; }) }; });
+        if (q) { const custom = s.q.trim(); return mk.concat([{ l: '+ Add “' + custom + '”', hasN: false, n: 0, bg: 'transparent', fg: Y, bw: '1px', bc: 'rgba(255,214,10,0.5)', pick: () => this.setState(x => { if (Object.keys(x.topics).length >= 3) return null; const id = 'c_' + custom; K.CUSTOM[id] = custom; return { topics: { ...x.topics, [id]: [] }, active: id, q: '' }; }) }]); }
+        return mk.concat([{ l: s.more ? 'Fewer topics' : '+ More topics', hasN: false, n: 0, bg: 'transparent', fg: Y, bw: '1px', bc: 'rgba(255,214,10,0.5)', pick: () => this.setState(x => ({ more: !x.more })) }]); })(),
+      _unused: (s.more ? K.TAXO.concat(K.MORE) : K.TAXO).map(([id, l]) => { const on = !!s.topics[id], n = on ? s.topics[id].length : 0; return { l, hasN: n > 0, n, bg: on ? '#fff' : 'rgba(118,118,128,0.24)', fg: on ? '#000' : '#fff', bw: s.active === id && on ? '2px' : '0px', bc: Y,
+        pick: () => this.setState(x => { const t = { ...x.topics }; if (!t[id]) { if (Object.keys(t).length >= 3) return null; t[id] = []; return { topics: t, active: id }; } if (x.active === id) { delete t[id]; return { topics: t, active: Object.keys(t)[0] || null }; } return { active: id }; }) }; })
+        .concat([{ l: s.more ? 'Fewer topics' : '+ More topics', hasN: false, n: 0, bg: 'transparent', fg: Y, bw: '1px', bc: 'rgba(255,214,10,0.5)', pick: () => this.setState(x => ({ more: !x.more })) }]),
+      hasSubs: !!(s.active && s.topics[s.active] && tx(s.active)[2].length), activeL: s.active ? tx(s.active)[1] : '',
+      subs: s.active && s.topics[s.active] ? tx(s.active)[2].map(l => { const on = s.topics[s.active].includes(l); return { l, bg: on ? '#fff' : 'rgba(118,118,128,0.3)', fg: on ? '#000' : '#fff', pick: () => this.setState(x => { const cur = x.topics[x.active]; return { topics: { ...x.topics, [x.active]: cur.includes(l) ? cur.filter(y => y !== l) : [...cur, l] } }; }) }; }) : [],
+      audHint: 'Suggestions for ' + (K.RNAME[s.role] || 'creators') + '. Pick one or write your own.',
+      auds: audList.map((l, i) => { const on = s.aud === i && !s.audCustom.trim(); return { l, bd: i ? '0.5px solid rgba(84,84,88,0.6)' : 'none', ring: on ? Y : 'rgba(235,235,245,0.3)', dot: on ? Y : 'transparent', fg: i === audList.length - 1 ? 'rgba(235,235,245,0.75)' : '#fff', pick: () => this.setState({ aud: i, audCustom: '' }) }; }),
+      audCustom: s.audCustom, onAud: e => this.setState({ audCustom: e.target.value }),
+      audKnown: !!audVal && !unknown, audUnknown: unknown,
+      whys: multi('why', whyList, 2), blocks: multi('block', K.BLOCK, 2),
+      levelQ: 'How much do they know about ' + firstT + '?',
+      levels: Object.keys(LV).map(k => ({ label: LV[k][0], bg: s.level === k ? '#636366' : 'transparent', fw: s.level === k ? 600 : 400, pick: () => this.setState({ level: k }) })), levelEx: LV[s.level][1],
+      toneHint: s.tone.length >= 2 ? 'Up to two · 2 of 2' : 'Pick up to two.',
+      tones: K.TONES.map(([l, ex], i) => { const on = s.tone.includes(l), full = s.tone.length >= 2; return { l, ex, on, common: common.includes(l), commonL: 'Common for ' + (K.RNAME[s.role] || 'creators'), bd: i ? '0.5px solid rgba(84,84,88,0.6)' : 'none', op: !on && full ? 0.45 : 1, ring: on ? Y : 'rgba(235,235,245,0.3)', fill: on ? Y : 'transparent', pick: () => this.setState(x => x.tone.includes(l) ? { tone: x.tone.filter(y => y !== l) } : x.tone.length >= 2 ? null : { tone: [...x.tone, l] }) }; }),
+      brief: [['I am', roleL + (s.role === 'business' || s.role === 'brands' ? ' — says “we”' : ' — says “I”'), 0], ['Topics', tKeys.map(k => s.topics[k].length ? s.topics[k].join(', ') : tx(k)[1]).join(' · '), 1], ['Audience', unknown ? 'Still figuring it out — broad, new to the topic' : audVal + ' · ' + LV[s.level][0].toLowerCase(), 2], ['They watch to', unknown ? '—' : s.why.map(w => w.toLowerCase()).join(', ') + (s.block.length ? ' · held back by ' + s.block.map(b => b.toLowerCase()).join(', ') : ''), 2], ['Voice', s.tone.join(', '), 3]].map(([k, v, st]) => ({ k, v, st, go: () => openSetup(st, true) })),
+      exL: s.examples ? s.examples + ' example · add up to 3' : 'Add one — the biggest upgrade', exC: s.examples ? 'rgba(235,235,245,0.6)' : Y,
+      openExample: () => this.setState({ sheet: 'example' }),
+      shAdjust: s.sheet === 'adjust', shExample: s.sheet === 'example', closeSheet: () => { if (EMB) { this.props.onClose && this.props.onClose(); return; } this.setState({ sheet: null }); },
+      adj: ['Too formal', 'Too much slang', 'Too over the top', '“I don’t say that”', 'Too long'].map(l => { const on = s.adj.includes(l); return { label: l, bg: on ? '#fff' : 'rgba(118,118,128,0.24)', fg: on ? '#000' : '#fff', pick: () => this.setState(x => ({ adj: x.adj.includes(l) ? x.adj.filter(y => y !== l) : [...x.adj, l] })) }; }),
+      scope: seg('scope', [['script', 'This script only'], ['profile', 'Also my profile']]), scopeProfile: s.scope === 'profile', scopeScript: s.scope === 'script',
+      diffs: s.adj.map(a => diffMap[a]).filter(Boolean).map(([k, a, b]) => ({ k, a, b })),
+      rewrite: () => { this.setState({ sheet: null, fb: false, approved: true }); this.toast(s.scope === 'profile' ? 'Profile updated · script rewritten' : 'Script rewritten'); },
+      exSrc: seg('src', [['paste', 'Paste'], ['speak', 'Speak'], ['scripts', 'My scripts']]), exText: EX[s.src][0], exHint: EX[s.src][1],
+      mine: s.mine, toggleMine: () => this.setState(x => ({ mine: !x.mine })), mineBg: s.mine ? Y : 'transparent', mineRing: s.mine ? Y : 'rgba(235,235,245,0.3)',
+      saveBg: s.mine ? Y : 'rgba(118,118,128,0.24)', saveFg: s.mine ? '#000' : 'rgba(235,235,245,0.3)',
+      saveExample: () => { if (!s.mine) return; if (EMB) { this.props.onDone && this.props.onDone({ example: true }); return; } this.setState(x => ({ sheet: null, examples: Math.min(3, x.examples + 1) })); this.toast('Example saved'); },
+      plats: K.PLATS.map(([l, c], i) => { const on = s.plat === l; return { l, on, dot: c, bd: i ? '0.5px solid rgba(84,84,88,0.6)' : 'none', pick: () => this.setState({ plat: l, platMenu: false }) }; }),
+      plat: s.plat, platMenu: !!s.platMenu, platOpen: () => this.setState({ platMenu: true }), platClose: () => this.setState({ platMenu: false }), platTop: s.configured || s.role || s.noai ? '226px' : '226px',
+      vpL: s.noai ? 'My Cue Voice · Unavailable' : !s.configured ? (s.role ? 'My Cue Voice · ' + (4 - s.step) + ' left' : 'My Cue Voice · Set up') : s.voiceOn ? 'My Cue Voice' : 'My Cue Voice · Off',
+      vpBg: live ? '#FFD60A' : 'rgba(118,118,128,0.24)', vpFg: live ? '#000' : (!s.configured && !s.noai ? '#FFD60A' : '#fff'),
+      vpHint: s.noai || !s.configured,
+      platDot: (K.PLATS.find(p => p[0] === s.plat) || K.PLATS[0])[1],
+      platMeta: (() => { const p = K.PLATS.find(x => x[0] === s.plat) || K.PLATS[0]; const sec = p[3]; return p[0] + ' · ' + p[2] + ' words · ~' + (sec >= 60 ? Math.floor(sec / 60) + ':' + String(sec % 60).padStart(2, '0') : sec + 's'); })(),
+      showSkip: s.step === 3 && !s.editOne && hasIdea, ctaPad: s.step === 3 && !s.editOne && hasIdea ? '20px' : '34px',
+      saveOnly: () => { if (!s.tone.length) return; if (EMB) { this.props.onDone && this.props.onDone({ data: this.snap(), write: false }); return; } this.setState({ setup: false, configured: true, voiceOn: true }); this.toast('Saved — your next script will sound like you'); },
+      hasToast: !!s.toast, toast: s.toast
+    };
+  }
+}
+</script>
+</body>
+</html>

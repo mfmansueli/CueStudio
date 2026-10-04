@@ -5,13 +5,14 @@
 
 import SwiftUI
 
-/// Adjust (whole take, or the picked clip alone when opened from it): one ruler for the setting picked in a row of dials (Auto, Exposure, Contrast,
-/// Warmth, Tint, Saturation, Vibrance, Highlights, Shadows, Sharpness), each showing its value; a dial that is off
-/// zero is yellow; for a clip a dial shows the take's value until the clip sets its own, and Reset
-/// gives the clip the take's values again. The Auto dial is the measured correction (a step before the
-/// dials, which stay as they are on top of it): its ruler is how much of it shows. Auto, Compare and the
-/// picked setting's name, value and Reset share one line, so the controls fit the panel without
-/// scrolling on an ordinary iPhone. Reset puts them all back, and the setting on the ruler has its own.
+/// Adjust (whole take, or the picked clip alone when opened from it): one ruler for the setting picked in a row
+/// of chips (Auto, Exposure, Contrast, Warmth, Tint, Saturation, Vibrance, Highlights, Shadows, Sharpness): the
+/// picked chip is white, one that is off zero shows its value in yellow; for a clip a chip shows the take's value
+/// until the clip sets its own, and Reset gives the clip the take's values again. ◐ shows the picture as recorded
+/// for as long as it is held. The Auto chip is the measured correction (a step before the other settings, which
+/// stay as they are on top of it): its ruler is how much of it shows. Auto, ◐ and the picked setting's name, value
+/// and Reset share one line, so the controls fit the panel without scrolling on an ordinary iPhone. Reset puts
+/// them all back, and the setting on the ruler has its own.
 struct AdjustPanel: View {
     @Bindable var viewModel: QuickEditViewModel
 
@@ -69,54 +70,54 @@ struct AdjustPanel: View {
 
     private var dials: some View {
         ScrollView(.horizontal) {
-            HStack(spacing: 4) {
-                autoDial
+            HStack(spacing: 8) {
+                autoChip
                 ForEach(QuickEditViewModel.Adjustment.allCases) { adjustment in
-                    dial(adjustment)
+                    chip(adjustment)
                 }
             }
         }
         .scrollIndicators(.hidden)
-        // The row runs to the panel's edges, so a dial doesn't stop short of them when it scrolls.
+        // The row runs to the panel's edges, so a chip doesn't stop short of them when it scrolls.
         .padding(.horizontal, -16)
         .contentMargins(.horizontal, 16, for: .scrollContent)
     }
 
-    private func dialLabel(_ title: String, picked isPicked: Bool, changed isChanged: Bool, @ViewBuilder content: () -> some View) -> some View {
-        let ring: Color = isPicked ? Palette.ink : isChanged ? Palette.acc : Palette.adjustDialRing
-        return VStack(spacing: 6) {
-            content()
-                .frame(width: 48, height: 48)
-                .background(isPicked ? Palette.ink : Color.clear, in: Circle())
-                .overlay(Circle().strokeBorder(ring, lineWidth: 2))
-            Text(title)
-                .font(.system(size: 11.5, weight: .semibold))
-                .foregroundStyle(isPicked ? Palette.ink : Palette.ink2)
-                .lineLimit(1)
-                .fixedSize()
+    /// A setting as a chip: its name and, once it is off zero, its value in yellow. The picked one is
+    /// white with black text, like every chosen chip.
+    private func chipLabel(_ title: String, valueText: String?, picked isPicked: Bool, isMeasuring: Bool = false) -> some View {
+        HStack(spacing: 6) {
+            Text(title).font(.system(size: 14, weight: isPicked ? .semibold : .medium))
+            if isMeasuring {
+                ProgressView().controlSize(.mini).tint(isPicked ? Palette.chipOnInk : Palette.ink)
+            } else if let valueText {
+                Text(valueText)
+                    .font(.system(size: 12, weight: .bold).monospacedDigit())
+                    .foregroundStyle(isPicked ? Palette.chipOnInk.opacity(0.75) : Palette.accText)
+            }
         }
-        .frame(minWidth: 64, minHeight: Metrics.hitTarget)
+        .foregroundStyle(isPicked ? Palette.chipOnInk : Palette.ink)
+        .lineLimit(1)
+        .fixedSize()
+        .padding(.horizontal, 13)
+        .frame(height: 34)
+        .background(isPicked ? Palette.chipOn : Palette.fill, in: Capsule())
+        .frame(minHeight: Metrics.hitTarget)
         .contentShape(Rectangle())
     }
 
-    /// The measured correction: its intensity once there is one, a spark before.
-    private var autoDial: some View {
+    /// The measured correction: its intensity once there is one.
+    private var autoChip: some View {
         let isPicked = current == .auto
         let hasAuto = viewModel.hasAuto
-        let ink: Color = isPicked ? Palette.bg : hasAuto ? Palette.accText : Palette.ink
         let text = PanelValueFormat.plain.text(viewModel.autoAmount * 100)
         return Button {
             current = .auto
         } label: {
-            dialLabel(String(localized: "Auto"), picked: isPicked, changed: hasAuto && viewModel.autoAmount > 0) {
-                if viewModel.autoState == .analyzing {
-                    ProgressView().tint(ink)
-                } else if hasAuto {
-                    Text(text).font(.system(size: 14, weight: .bold).monospacedDigit()).foregroundStyle(ink)
-                } else {
-                    Image(systemName: "sparkles").font(.system(size: 17, weight: .semibold)).foregroundStyle(ink)
-                }
-            }
+            chipLabel(
+                String(localized: "Auto"), valueText: hasAuto && viewModel.autoAmount > 0 ? text : nil,
+                picked: isPicked, isMeasuring: viewModel.autoState == .analyzing
+            )
         }
         .buttonStyle(.plain)
         .accessibilityElement(children: .ignore)
@@ -126,19 +127,13 @@ struct AdjustPanel: View {
         .accessibilityIdentifier("edit.adjust.autoDial")
     }
 
-    private func dial(_ adjustment: QuickEditViewModel.Adjustment) -> some View {
+    private func chip(_ adjustment: QuickEditViewModel.Adjustment) -> some View {
         let isPicked = current == .dial(adjustment)
         let value = viewModel.adjustment(adjustment)
-        let isChanged = value != 0
-        let ink: Color = isPicked ? Palette.bg : isChanged ? Palette.accText : Palette.ink
         return Button {
             current = .dial(adjustment)
         } label: {
-            dialLabel(adjustment.label, picked: isPicked, changed: isChanged) {
-                Text(format(of: adjustment).text(value))
-                    .font(.system(size: 14, weight: .bold).monospacedDigit())
-                    .foregroundStyle(ink)
-            }
+            chipLabel(adjustment.label, valueText: value != 0 ? format(of: adjustment).text(value) : nil, picked: isPicked)
         }
         .buttonStyle(.plain)
         .accessibilityElement(children: .ignore)
@@ -220,23 +215,28 @@ struct AdjustPanel: View {
         }
     }
 
-    /// Hold the original against the edit: tap to show the picture as recorded, tap again to come back.
+    /// ◐: hold it to see the picture as recorded, let go to come back to the edit. (VoiceOver toggles it.)
     private var compareButton: some View {
         let isOn = viewModel.comparesPicture
-        return Button(action: viewModel.togglePictureComparison) {
-            Image(systemName: isOn ? "eye.fill" : "eye")
-                .font(.system(size: 16, weight: .semibold))
-                .foregroundStyle(isOn ? Palette.accInk : Palette.ink)
-                .frame(width: Metrics.hitTarget, height: Metrics.hitTarget)
-                .background(isOn ? Palette.acc : Palette.fill, in: Circle())
-                .contentShape(Circle())
-        }
-        .buttonStyle(.plain)
-        .opacity(viewModel.edit.hasPictureLook || isOn ? 1 : 0.4)
-        .accessibilityLabel(Text("Compare with original"))
-        .accessibilityValue(isOn ? Text("Showing the original") : Text("Showing your edit"))
-        .accessibilityAddTraits(isOn ? .isSelected : [])
-        .accessibilityIdentifier("edit.adjust.compare")
+        return Image(systemName: "circle.lefthalf.filled")
+            .font(.system(size: 17, weight: .semibold))
+            .foregroundStyle(isOn ? Palette.accInk : Palette.ink)
+            .frame(width: Metrics.hitTarget, height: Metrics.hitTarget)
+            .background(isOn ? Palette.acc : Palette.fill, in: Circle())
+            .contentShape(Circle())
+            .gesture(
+                DragGesture(minimumDistance: 0)
+                    .onChanged { _ in viewModel.holdPictureComparison(true) }
+                    .onEnded { _ in viewModel.holdPictureComparison(false) }
+            )
+            .opacity(viewModel.edit.hasPictureLook || isOn ? 1 : 0.4)
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel(Text("Compare with original"))
+            .accessibilityHint(Text("Hold to show the picture as recorded"))
+            .accessibilityValue(isOn ? Text("Showing the original") : Text("Showing your edit"))
+            .accessibilityAddTraits(isOn ? [.isButton, .isSelected] : .isButton)
+            .accessibilityAction { viewModel.togglePictureComparison() }
+            .accessibilityIdentifier("edit.adjust.compare")
     }
 
     /// Measures the picture (the take's, or the picked clip's) and applies a correction.

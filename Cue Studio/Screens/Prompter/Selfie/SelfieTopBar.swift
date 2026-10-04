@@ -5,8 +5,7 @@
 
 import SwiftUI
 
-/// Close, mode switch and frame; while recording, the clock takes the middle and an eye button
-/// hides the controls (the platform chip goes with them).
+/// Close, mode switch and frame; while recording, the REC pill (with the clock) takes the start.
 struct SelfieTopBar: View {
     let viewModel: PrompterViewModel
     let onClose: () -> Void
@@ -16,39 +15,21 @@ struct SelfieTopBar: View {
     var body: some View {
         HStack {
             if viewModel.isRecording {
-                hideButton
+                RecordingBadge(seconds: viewModel.recordingSeconds, monetizationChip: viewModel.monetizationChip)
+                Spacer(minLength: 8)
             } else {
                 Button(action: onClose) { Image(systemName: "xmark") }
                     .buttonStyle(.cueIcon(.glass, diameter: 40))
                     .accessibilityLabel(Text("Close"))
                     .accessibilityIdentifier("prompter.closeButton")
-            }
-            Spacer(minLength: 8)
-            if viewModel.isRecording {
-                RecordingBadge(seconds: viewModel.recordingSeconds, monetizationChip: viewModel.monetizationChip)
-            } else {
+                Spacer(minLength: 8)
                 ModeSwitcher(mode: .selfie) { mode in
                     Task { await viewModel.switchMode(to: mode) }
                 }
+                Spacer(minLength: 8)
             }
-            Spacer(minLength: 8)
-            if viewModel.hidesControls {
-                Color.clear.frame(width: 40, height: 40)
-            } else {
-                aspectButton
-            }
+            aspectButton
         }
-    }
-
-    private var hideButton: some View {
-        let hidden = viewModel.hidesControls
-        return Button { viewModel.toggleControls() } label: {
-            Image(systemName: hidden ? "eye" : "eye.slash")
-                .foregroundStyle(hidden ? Palette.accText : .white)
-        }
-        .buttonStyle(.cueIcon(.glass, diameter: 40))
-        .accessibilityLabel(Text(hidden ? "Show controls" : "Hide controls"))
-        .accessibilityIdentifier("prompter.hideControlsButton")
     }
 
     private var aspectButton: some View {

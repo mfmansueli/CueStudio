@@ -5,7 +5,9 @@
 
 import SwiftUI
 
-/// Speed slider (or Voice follow's status) and playback controls for Studio mode.
+/// Speed slider (or Voice follow's status) and playback controls for Studio mode, in the same night
+/// glass and with the same switch and slider as the Selfie toolbar. Studio doesn't record: a
+/// second device films, so there is no capture row, and the jump buttons stay.
 struct StudioControlPanel: View {
     let viewModel: PrompterViewModel
 
@@ -18,10 +20,14 @@ struct StudioControlPanel: View {
             if session.prompter.scrollMode == .voice {
                 voiceRow
             } else {
-                speedRow
+                SpeedSlider(
+                    speed: session.prompter.speed,
+                    speedLabel: session.prompter.speedLabel,
+                    onChange: { viewModel.setSpeed($0) }
+                )
             }
             Rectangle()
-                .fill(Color.white.opacity(0.1))
+                .fill(Palette.glassBorder)
                 .frame(height: 0.5)
                 .padding(.vertical, 12)
             HStack {
@@ -55,30 +61,11 @@ struct StudioControlPanel: View {
             }
         }
         .padding(EdgeInsets(top: 14, leading: 16, bottom: 14, trailing: 16))
-        .glassEffect(.regular, in: RoundedRectangle(cornerRadius: 40, style: .continuous))
+        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 40, style: .continuous))
+        .glassNight(in: RoundedRectangle(cornerRadius: 40, style: .continuous), density: .solid)
     }
 
     // MARK: - Rows
-
-    private var speedRow: some View {
-        HStack(spacing: 12) {
-            Text("Speed")
-                .font(.footnote.weight(.semibold))
-                .foregroundStyle(Palette.ink2)
-                // At least the column width; longer words ("Velocidade") push the slider over.
-                .fixedSize()
-                .frame(minWidth: 44, alignment: .leading)
-            Slider(value: Binding(get: { session.prompter.speed }, set: { viewModel.setSpeed($0) }), in: PrompterSettings.speedRange, step: 0.1)
-                .tint(Palette.acc)
-                .accessibilityLabel(Text("Speed"))
-                .accessibilityValue(Text(session.prompter.speedLabel))
-            Text(session.prompter.speedLabel)
-                .font(.body.weight(.semibold).monospacedDigit())
-                .fixedSize()
-                .frame(minWidth: 44, alignment: .trailing)
-        }
-        .frame(minHeight: 34)
-    }
 
     /// Following the words, or, without word-by-word recognition here (yet), scrolling at the set
     /// speed while the creator talks. A model getting ready or downloading says so before play.

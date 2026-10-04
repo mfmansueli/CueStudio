@@ -9,7 +9,7 @@ import SwiftUI
 /// from fixed positions, so the video always shows on every iPhone.
 ///
 /// ```
-/// [Top bar]       Done · Take 3 / 00:21.6 · Saved · Export
+/// [Top bar]       Back · IN EDIT · AUTOSAVED · Done (asks "Is it ready to post?")
 /// [Preview]       the take in its frame, fitted
 /// [Player bar]    00:01.2 / 00:21.6 · ▶︎ · undo, redo, full screen
 /// [Timeline]      the clips and the tracks under them
@@ -21,16 +21,19 @@ import SwiftUI
 struct QuickEditView: View {
     @State private var viewModel: QuickEditViewModel
     private let services: AppServices
-    let onClose: () -> Void
+    /// How the creator left: the review they return to carries on from it (share, download…).
+    let onClose: (EditorOutcome) -> Void
 
     /// The height the editor has with no keyboard (see `measuresStableHeight`).
     @State private var stableHeight: CGFloat = 0
+    /// The height of Done's question: what its content measures, plus the room under the last answer.
+    @State private var doneSheetHeight: CGFloat = 520
 
     @Environment(\.scenePhase) private var scenePhase
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
-    init(take: Take, services: AppServices, onClose: @escaping () -> Void) {
+    init(take: Take, services: AppServices, onClose: @escaping (EditorOutcome) -> Void) {
         let languages = services.languages
         _viewModel = State(initialValue: QuickEditViewModel(
             take: take, takes: services.takes, library: services.library,
@@ -70,7 +73,10 @@ struct QuickEditView: View {
         .background { measuresStableHeight }
         .modifier(CaptionTranslationRunner(viewModel: viewModel))
         .editorPhotoPicker(viewModel)
-        .task { await viewModel.prepare() }
+        .task {
+            viewModel.creatorHandle = services.profile.profile.handle
+            await viewModel.prepare()
+        }
         .onChange(of: viewModel.panel) { _, panel in
             // Not tied to the panel: leaving Pauses doesn't stop it listening.
             if panel == .pauses { Task { await viewModel.analyzeIfNeeded() } }
@@ -80,6 +86,19 @@ struct QuickEditView: View {
             case .music: AddMusicSheet(viewModel: viewModel)
             case .media: AddMediaSheet(viewModel: viewModel)
             case .export: QuickEditExportSheet(viewModel: viewModel, services: services)
+            case .done:
+                EditorDoneSheet(
+                    duration: DurationText.clock(viewModel.edit.editedDuration),
+                    onMeasure: { doneSheetHeight = $0 + 34 },
+                    onAnswer: { outcome in
+                        viewModel.finish(outcome)
+                        onClose(outcome)
+                    }
+                )
+                .presentationDetents([.height(doneSheetHeight)])
+                .presentationCornerRadius(Metrics.editorSheetRadius)
+                .presentationBackground(Palette.surface)
+                .presentationDragIndicator(.visible)
             }
         }
         .confirmationDialog(
@@ -146,10 +165,14 @@ struct QuickEditView: View {
 
     private func editor(_ layout: EditorLayout, width: CGFloat) -> some View {
         VStack(spacing: 0) {
-            EditorTopBar(viewModel: viewModel) {
-                viewModel.done()
-                onClose()
-            }
+            EditorTopBar(
+                viewModel: viewModel,
+                onBack: {
+                    viewModel.finish(.back)
+                    onClose(.back)
+                },
+                onDone: { viewModel.askIfReadyToPost() }
+            )
             .frame(height: layout.topBar)
             QuickEditPreview(viewModel: viewModel, size: previewSize(in: CGSize(width: width, height: layout.preview)))
                 .frame(width: width, height: layout.preview)

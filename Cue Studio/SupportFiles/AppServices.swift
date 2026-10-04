@@ -25,6 +25,9 @@ struct AppServices {
     let speech: SpeechRecognitionManager
     let dictation: DictationService
     let ideaDraft: IdeaDraftService
+    let starter: ScriptStarter
+    /// The pause between the groups of words of a script the AI writes into the page.
+    let scriptRevealPause: Duration
     let writer: ScriptWriting
     let textRecognizer: TextRecognitionManager
     let importer: DocumentImportService
@@ -59,7 +62,12 @@ struct AppServices {
         speech = SpeechRecognitionManager()
         dictation = options.dictation ?? DictationService(audio: AudioInputManager(), speech: SpeechRecognitionManager(use: .dictation))
         ideaDraft = IdeaDraftService()
+        starter = ScriptStarter(
+            library: library, rules: rules, profile: profile, languages: languages,
+            presentation: presentation, ideaDraft: ideaDraft
+        )
         writer = options.writer
+        scriptRevealPause = options.scriptRevealPause
         textRecognizer = TextRecognitionManager()
         importer = DocumentImportService()
         exporter = VideoExportService()
@@ -100,6 +108,7 @@ extension View {
             .environment(services.speech)
             .environment(services.dictation)
             .environment(services.ideaDraft)
+            .environment(services.starter)
             .environment(services.textRecognizer)
             .environment(services.importer)
             .environment(services.exporter)

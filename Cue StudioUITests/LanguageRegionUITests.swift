@@ -124,7 +124,7 @@ final class LanguageRegionUITests: XCTestCase {
         let note = app.staticTexts["edit.captionsLanguageNote"]
         XCTAssertTrue(note.waitForExistence(timeout: 5))
         XCTAssertTrue(note.label.contains("Portuguese (Brazil)"))
-        app.buttons["edit.doneButton"].tap()
+        EditorApp.done(app)
         XCTAssertTrue(edit.waitForExistence(timeout: 5))
     }
 
