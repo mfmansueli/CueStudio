@@ -223,7 +223,8 @@ extension ScriptDetailViewModel {
     /// A script opened from the card's arrow: the words are written into the page, in violet,
     /// the title first, with Stop within reach.
     func beginWritingIfNeeded() {
-        guard let request = pendingRequest, !page.isWriting else { return }
+        // After an error the page waits for "Try again": coming back to it doesn't start the model by itself.
+        guard let request = pendingRequest, !page.isWriting, page.writingError == nil else { return }
         write(request)
     }
 
@@ -301,11 +302,12 @@ extension ScriptDetailViewModel {
         guard page.isWriting else { return }
         page.isWriting = false
         pendingRequest = nil
+        // The idea leaves the card only if some of it became a script: stopped before the first word, it stays.
         if let revealed = page.revealed, !revealed.isEmpty {
             page.text = revealed
+            ideaDraft?.clear()
         }
         page.revealed = nil
-        ideaDraft?.clear()
         commitPage()
     }
 }

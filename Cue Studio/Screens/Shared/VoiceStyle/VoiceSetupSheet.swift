@@ -52,7 +52,7 @@ struct VoiceSetupSheet: View {
     /// Whether the answer for the question showing allows going on.
     private var canContinue: Bool {
         switch step {
-        case .role: true
+        case .role: draft.role != nil
         case .niche: !draft.niches.isEmpty
         case .audience: draft.vocabulary != nil
         case .tone: !draft.sounds.isEmpty
@@ -115,7 +115,6 @@ struct VoiceSetupSheet: View {
             VoiceRoleStep(draft: draft) { role in
                 Haptics.selection()
                 draft.choose(role)
-                advanceAfterPicking()
             }
         case .niche:
             VoiceNicheStep(draft: draft) { niche in
@@ -165,7 +164,6 @@ struct VoiceSetupSheet: View {
 
     @ViewBuilder
     private var bottomBar: some View {
-        let showsContinue = index > 0 || step != .role
         VStack(spacing: 4) {
             if step == .role {
                 Button { advance() } label: {
@@ -178,25 +176,23 @@ struct VoiceSetupSheet: View {
                 .buttonStyle(.plain)
                 .accessibilityIdentifier("voiceSetup.skipRole")
             }
-            if showsContinue {
-                Button(action: next) {
-                    Text(ctaLabel)
+            Button(action: next) {
+                Text(ctaLabel)
+            }
+            .buttonStyle(.cuePrimary(.large))
+            .disabled(!canContinue)
+            .accessibilityIdentifier("voiceSetup.saveButton")
+            if isLast, hasIdea, mode != .edit {
+                Button { save(writesScript: false) } label: {
+                    Text("Just save my voice")
+                        .font(.subheadline.weight(.semibold))
+                        .foregroundStyle(Palette.ink2)
+                        .frame(maxWidth: .infinity, minHeight: Metrics.hitTarget)
+                        .contentShape(Rectangle())
                 }
-                .buttonStyle(.cuePrimary(.large))
-                .disabled(!canContinue)
-                .accessibilityIdentifier("voiceSetup.saveButton")
-                if isLast, hasIdea, mode != .edit {
-                    Button { save(writesScript: false) } label: {
-                        Text("Just save my voice")
-                            .font(.subheadline.weight(.semibold))
-                            .foregroundStyle(Palette.ink2)
-                            .frame(maxWidth: .infinity, minHeight: Metrics.hitTarget)
-                            .contentShape(Rectangle())
-                    }
-                    .buttonStyle(.plain)
-                    .disabled(!draft.canSave)
-                    .accessibilityIdentifier("voiceSetup.justSave")
-                }
+                .buttonStyle(.plain)
+                .disabled(!draft.canSave)
+                .accessibilityIdentifier("voiceSetup.justSave")
             }
         }
         .padding(EdgeInsets(top: 6, leading: Metrics.gutter, bottom: 12, trailing: Metrics.gutter))
@@ -213,15 +209,6 @@ struct VoiceSetupSheet: View {
     private func advance() {
         guard !isLast else { return }
         index += 1
-    }
-
-    /// A card was picked: the next question comes after a beat, so the pick is seen.
-    private func advanceAfterPicking() {
-        guard mode != .edit else { return }
-        Task {
-            try? await Task.sleep(for: .milliseconds(220))
-            advance()
-        }
     }
 
     private func next() {

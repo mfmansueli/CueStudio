@@ -75,6 +75,9 @@ struct ScriptPageTopBar<MenuContent: View>: View {
         }
         .padding(.leading, 4)
         .padding(.trailing, 10)
+        // Navigation chrome: five controls on one line don't survive the biggest text sizes (the whole
+        // page ended up wider than the screen), so the bar stays at the default size.
+        .dynamicTypeSize(...DynamicTypeSize.large)
     }
 
     /// The two faces, as the recorder's Voice | Steady: a track with the chosen one raised.

@@ -90,6 +90,9 @@ struct TakeReviewView: View {
                 ContentUnavailableView("This take was deleted", systemImage: "film")
             }
         }
+        // A video player's controls: they stop growing at a large text size, or the actions land on
+        // top of each other and the stage names turn into "ESC…".
+        .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
         .task(id: PlayerKey(takeID: viewModel.takeID, edit: viewModel.take?.edit)) { await runPlayer() }
         .onChange(of: viewModel.take?.edit?.showsCaptions ?? false) { _, shown in
             viewModel.burnsInCaptions = shown
@@ -219,7 +222,10 @@ struct TakeReviewView: View {
                     }
                 )
                 if let notice = viewModel.exportNotice {
-                    ReviewExportFooter(notice: notice, isExhausted: viewModel.exportsExhausted) { viewModel.paywall = .export }
+                    ReviewExportFooter(notice: notice, isExhausted: viewModel.exportsExhausted) {
+                        // "You've used your 5 free exports" is for when they are gone; with some left it is just browsing.
+                        viewModel.paywall = viewModel.exportsExhausted ? .export : .profile
+                    }
                 }
             }
             .padding(.horizontal, Metrics.gutter)

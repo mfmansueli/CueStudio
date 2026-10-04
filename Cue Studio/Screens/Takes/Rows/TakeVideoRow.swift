@@ -11,6 +11,8 @@ struct TakeVideoRow: View {
     let video: TakeVideo
     let whenLabel: String
 
+    @Environment(\.dynamicTypeSize) private var typeSize
+
     var body: some View {
         HStack(spacing: 14) {
             if let best = video.best { thumbnail(best) }
@@ -28,7 +30,8 @@ struct TakeVideoRow: View {
                 }
                 .font(.footnote)
                 .foregroundStyle(Palette.ink2)
-                .lineLimit(1)
+                // With the biggest text the platform, format and quality wrap instead of ending in "…".
+                .lineLimit(typeSize.isAccessibilitySize ? 3 : 1)
                 Text(whenLabel)
                     .font(.footnote)
                     .foregroundStyle(Palette.ink2)
@@ -69,6 +72,8 @@ struct TakeVideoRow: View {
                     .foregroundStyle(.white)
                     .padding(.horizontal, 5)
                     .frame(height: 18)
+                    // A badge on a thumbnail of fixed size: it follows the text size up to a point.
+                    .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
                     .background(Palette.durationBadge, in: RoundedRectangle(cornerRadius: 6, style: .continuous))
                     .padding(5)
             }
@@ -76,7 +81,7 @@ struct TakeVideoRow: View {
 
     @ViewBuilder
     private var chips: some View {
-        HStack(spacing: 5) {
+        FlowLayout(spacing: 5, lineSpacing: 5) {
             stageChip
             if let label = video.takesLabel {
                 chip(label, foreground: Palette.ink.opacity(0.85), background: Palette.surface2)
@@ -98,7 +103,7 @@ struct TakeVideoRow: View {
         .tracking(0.5)
         .foregroundStyle(video.stage.tint)
         .padding(.horizontal, 8)
-        .frame(height: 22)
+        .frame(minHeight: 22)
         .background(Palette.surface2, in: Capsule())
     }
 
@@ -108,7 +113,7 @@ struct TakeVideoRow: View {
             .foregroundStyle(foreground)
             .lineLimit(1)
             .padding(.horizontal, 8)
-            .frame(height: 22)
+            .frame(minHeight: 22)
             .background(background, in: Capsule())
     }
 

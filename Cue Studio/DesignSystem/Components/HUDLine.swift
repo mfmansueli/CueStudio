@@ -16,6 +16,8 @@ struct HUDLine: View {
     var dotColor: Color?
     var tint: Color = Palette.accText
 
+    @Environment(\.dynamicTypeSize) private var typeSize
+
     var body: some View {
         HStack(spacing: 6) {
             if let dotColor { ColorDot(color: dotColor, size: 6) }
@@ -24,8 +26,10 @@ struct HUDLine: View {
                 .textCase(.uppercase)
                 .tracking(0.6)
                 .foregroundStyle(tint)
-                .lineLimit(1)
-                .minimumScaleFactor(0.8)
+                // With the biggest text sizes the line wraps instead of dropping the end of what it says.
+                .lineLimit(typeSize.isAccessibilitySize ? nil : 1)
+                .minimumScaleFactor(typeSize.isAccessibilitySize ? 1 : 0.8)
+                .fixedSize(horizontal: false, vertical: typeSize.isAccessibilitySize)
         }
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(Text(values.joined(separator: ", ")))

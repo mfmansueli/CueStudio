@@ -11,32 +11,28 @@ struct ScriptTipRow: View {
     let onFix: () -> Void
     let onDismiss: () -> Void
 
+    @Environment(\.dynamicTypeSize) private var typeSize
+
     var body: some View {
         let shape = RoundedRectangle(cornerRadius: 12, style: .continuous)
-        HStack(spacing: 8) {
-            Text("✦").foregroundStyle(Palette.aiText)
-            message
-                .frame(maxWidth: .infinity, alignment: .leading)
-            Button(action: onFix) {
-                fixLabel
-                    .font(.footnote.weight(.bold))
-                    .foregroundStyle(Palette.ink)
-                    .padding(.horizontal, 4)
-                    .frame(minHeight: Metrics.hitTarget)
-                    .contentShape(Rectangle())
+        Group {
+            if typeSize.isAccessibilitySize {
+                // With the biggest text the message needs the whole width: Fix and ✕ go on a line under it.
+                VStack(alignment: .leading, spacing: 0) {
+                    messageLine
+                    HStack(spacing: 8) {
+                        fixButton
+                        Spacer(minLength: 0)
+                        dismissButton
+                    }
+                }
+            } else {
+                HStack(spacing: 8) {
+                    messageLine
+                    fixButton
+                    dismissButton
+                }
             }
-            .buttonStyle(.plain)
-            .accessibilityIdentifier("page.tip.fix")
-            Button(action: onDismiss) {
-                Image(systemName: "xmark")
-                    .font(.system(size: 11, weight: .bold))
-                    .foregroundStyle(Palette.ink2)
-                    .frame(width: 32, height: Metrics.hitTarget)
-                    .contentShape(Rectangle())
-            }
-            .buttonStyle(.plain)
-            .accessibilityLabel(Text("Dismiss"))
-            .accessibilityIdentifier("page.tip.dismiss")
         }
         .font(.footnote)
         .foregroundStyle(Palette.aiTextStrong)
@@ -46,6 +42,41 @@ struct ScriptTipRow: View {
         .overlay(shape.strokeBorder(Palette.aiBorder, lineWidth: 0.5))
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("page.tip.\(tip.id)")
+    }
+
+    private var messageLine: some View {
+        HStack(alignment: .top, spacing: 8) {
+            Text("✦").foregroundStyle(Palette.aiText)
+            message
+                .frame(maxWidth: .infinity, alignment: .leading)
+        }
+        .padding(.vertical, typeSize.isAccessibilitySize ? 8 : 0)
+    }
+
+    private var fixButton: some View {
+        Button(action: onFix) {
+            fixLabel
+                .font(.footnote.weight(.bold))
+                .foregroundStyle(Palette.ink)
+                .padding(.horizontal, 4)
+                .frame(minHeight: Metrics.hitTarget)
+                .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .accessibilityIdentifier("page.tip.fix")
+    }
+
+    private var dismissButton: some View {
+        Button(action: onDismiss) {
+            Image(systemName: "xmark")
+                .font(.system(size: 11, weight: .bold))
+                .foregroundStyle(Palette.ink2)
+                .frame(width: 32, height: Metrics.hitTarget)
+                .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel(Text("Dismiss"))
+        .accessibilityIdentifier("page.tip.dismiss")
     }
 
     @ViewBuilder

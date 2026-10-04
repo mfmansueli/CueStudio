@@ -16,7 +16,8 @@ struct ScriptSectionView: View {
     let onSuggestCTA: () -> Void
     let onHook: () -> Void
 
-    @ScaledMetric(relativeTo: .body) private var labelWidth = 58.0
+    @Environment(\.dynamicTypeSize) private var typeSize
+    private let labelWidth: CGFloat = 58
 
     private var railColor: Color {
         if section.isHook { return Palette.accText }
@@ -24,18 +25,13 @@ struct ScriptSectionView: View {
     }
 
     var body: some View {
-        HStack(alignment: .top, spacing: 10) {
-            Text(section.label)
-                .font(.system(size: 10, weight: .bold, design: .monospaced))
-                .textCase(.uppercase)
-                .tracking(0.6)
-                .lineLimit(2)
-                .minimumScaleFactor(0.7)
-                .foregroundStyle(railColor)
-                .frame(width: labelWidth, alignment: .leading)
-                .frame(maxHeight: .infinity, alignment: .top)
-                .padding(.top, 4)
-                .overlay(alignment: .trailing) { rail }
+        // Label on a rail at the left of the words; with the biggest text sizes there is no room for
+        // two columns, so the label goes above the words.
+        let layout = typeSize.isAccessibilitySize
+            ? AnyLayout(VStackLayout(alignment: .leading, spacing: 6))
+            : AnyLayout(HStackLayout(alignment: .top, spacing: 10))
+        return layout {
+            label
             VStack(alignment: .leading, spacing: 8) {
                 if section.isMissingCTA {
                     Button(action: onSuggestCTA) {
@@ -58,6 +54,26 @@ struct ScriptSectionView: View {
         }
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("page.section.\(section.firstParagraph)")
+    }
+
+    @ViewBuilder
+    private var label: some View {
+        let text = Text(section.label)
+            .font(.system(size: 10, weight: .bold, design: .monospaced))
+            .textCase(.uppercase)
+            .tracking(0.6)
+            .foregroundStyle(railColor)
+        if typeSize.isAccessibilitySize {
+            text
+        } else {
+            text
+                .lineLimit(2)
+                .minimumScaleFactor(0.7)
+                .frame(width: labelWidth, alignment: .leading)
+                .frame(maxHeight: .infinity, alignment: .top)
+                .padding(.top, 4)
+                .overlay(alignment: .trailing) { rail }
+        }
     }
 
     private var words: some View {

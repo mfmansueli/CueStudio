@@ -137,6 +137,29 @@ final class PrompterUITests: XCTestCase {
         XCTAssertFalse(app.buttons["prompter.readingLineTip"].exists)
     }
 
+    func testTextWindowResizesFromItsCornerAndResetsOnDoubleTap() {
+        let app = CueApp.launch(seeded: true)
+        let record = app.buttons["row.recordButton"].firstMatch
+        XCTAssertTrue(record.waitForExistence(timeout: 15))
+        record.tap()
+
+        let handle = element(app, "prompter.textWindowResizeHandle")
+        XCTAssertTrue(handle.waitForExistence(timeout: 5))
+        let original = handle.value as? String
+        let start = handle.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5))
+        start.press(forDuration: 0.1, thenDragTo: start.withOffset(CGVector(dx: -90, dy: -120)))
+        XCTAssertNotEqual(handle.value as? String, original, "dragging the corner changes the window")
+
+        handle.doubleTap()
+        XCTAssertEqual(handle.value as? String, original, "a double-tap puts the original size back")
+
+        // Nothing resizes while a sheet is open.
+        app.buttons["prompter.displayButton"].tap()
+        XCTAssertTrue(app.buttons["display.doneButton"].waitForExistence(timeout: 5))
+        XCTAssertFalse(handle.exists)
+        app.buttons["display.doneButton"].tap()
+    }
+
     func testCustomSafeZoneFromDisplayLayout() {
         let app = CueApp.launch(seeded: true)
         let record = app.buttons["row.recordButton"].firstMatch

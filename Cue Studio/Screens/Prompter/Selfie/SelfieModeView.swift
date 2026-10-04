@@ -13,6 +13,8 @@ struct SelfieModeView: View {
     let onClose: () -> Void
 
     @Environment(SessionSetupService.self) private var session
+    /// A finger is on the window's corner: the window follows it right away instead of gliding.
+    @State private var isResizingWindow = false
 
     var body: some View {
         let geometry = viewModel.frameGeometry
@@ -57,6 +59,9 @@ struct SelfieModeView: View {
             if viewModel.hasScript {
                 let layout = viewModel.readingLayout
                 textWindow(layout)
+                if viewModel.showsTextWindowHandle {
+                    TextWindowResizeHandle(viewModel: viewModel, layout: layout, isResizing: $isResizingWindow)
+                }
                 if session.prompter.showsGuide {
                     ReadingLineLayer(
                         layout: layout,
@@ -104,7 +109,7 @@ struct SelfieModeView: View {
         .overlay(shape.strokeBorder(Palette.panelBorder, lineWidth: 0.5))
         .frame(width: rect.width, height: rect.height)
         .position(x: rect.midX, y: rect.midY)
-        .animation(.smooth(duration: 0.3), value: rect)
+        .animation(isResizingWindow ? nil : .smooth(duration: 0.3), value: rect)
     }
 
     // MARK: - Controls

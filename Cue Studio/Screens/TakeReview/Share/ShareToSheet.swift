@@ -27,6 +27,8 @@ struct ShareToSheet: View {
                     Task { await viewModel.share(to: nil) }
                 }
             }
+            // Four tiles across: their names stay on one line each, so the grid stops growing at a large size.
+            .dynamicTypeSize(...DynamicTypeSize.xLarge)
             if let platform = take.platform {
                 Text("Created for \(platform.destinationName) — framed and safe-zoned for it")
                     .font(.footnote)

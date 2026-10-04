@@ -87,6 +87,43 @@ extension PrompterViewModel {
         session.prompter.readingLineOffset = layout.offset(forLineAt: layout.lineY + delta)
     }
 
+    /// Dragging the window's corner: its size is the one the drag started from, moved by `translation`.
+    /// Like the rest of the layout it changes for this take only; Creator Setup keeps the defaults.
+    @discardableResult
+    func resizeTextWindow(from start: (width: Double, height: Double), by translation: CGSize) -> TextWindowResize {
+        let prompter = session.prompter
+        let resize = TextWindowResize(
+            startWidth: start.width,
+            startHeight: start.height,
+            translation: translation,
+            screenWidth: screenMetrics.screen.width,
+            lineHeight: CGFloat(prompter.size * prompter.lineSpacing)
+        )
+        session.prompter.readingWidth = resize.width
+        session.prompter.textWindowHeight = resize.height
+        return resize
+    }
+
+    /// One line taller or shorter, from VoiceOver.
+    func nudgeTextWindowHeight(byLines lines: Int) {
+        let prompter = session.prompter
+        let range = PrompterSettings.textWindowHeightRange
+        let line = prompter.size * prompter.lineSpacing
+        session.prompter.textWindowHeight = min(range.upperBound, max(range.lowerBound, prompter.textWindowHeight + Double(lines) * line))
+    }
+
+    /// Double-tap on the corner: the window's own size back to the original.
+    func resetTextWindow() {
+        session.prompter.readingWidth = PrompterSettings.defaultReadingWidth
+        session.prompter.textWindowHeight = PrompterSettings.defaultTextWindowHeight
+        toast.show(String(localized: "Text window reset"))
+    }
+
+    /// The corner handle is there while the window can be changed: not while recording or with a sheet open.
+    var showsTextWindowHandle: Bool {
+        hasScript && mode == .selfie && !isRecording && sheet == nil
+    }
+
     /// Line, window, speed and safe zone back to what Cue recommends for this script. Line, speed and
     /// safe zone change for this session only; Creator Setup keeps the creator's defaults.
     func resetLayout() {

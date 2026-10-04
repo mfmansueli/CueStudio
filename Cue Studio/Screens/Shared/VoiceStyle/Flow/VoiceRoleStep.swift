@@ -5,7 +5,7 @@
 
 import SwiftUI
 
-/// "What kind of creator are you?": eight cards, two across. Picking one moves on.
+/// "What kind of creator are you?": eight cards, two across. Picking one marks it; Continue goes on.
 struct VoiceRoleStep: View {
     let draft: VoiceSetupDraft
     let onPick: (CreatorRole) -> Void

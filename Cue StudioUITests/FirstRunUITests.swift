@@ -126,11 +126,15 @@ final class FirstRunUITests: XCTestCase {
         XCTAssertEqual(chip.value as? String, "Set up")
         XCTAssertEqual(field.value as? String, "Carnival in Salvador")
 
-        // 01 · the kind of creator; picking one goes on. 02 · topics. 03 · audience. 04 · tone.
+        // 01 · the kind of creator (Continue waits for a pick). 02 · topics. 03 · audience. 04 · tone.
         chip.tap()
         XCTAssertTrue(app.buttons["voiceSetup.role.personal"].waitForExistence(timeout: 5))
-        app.buttons["voiceSetup.role.personal"].tap()
         let next = app.buttons["voiceSetup.saveButton"]
+        XCTAssertTrue(next.exists)
+        XCTAssertFalse(next.isEnabled)
+        app.buttons["voiceSetup.role.personal"].tap()
+        XCTAssertTrue(next.isEnabled)
+        next.tap()
         XCTAssertTrue(app.buttons["voiceSetup.niche.lifestyle"].waitForExistence(timeout: 5))
         XCTAssertFalse(next.isEnabled)
         app.buttons["voiceSetup.niche.lifestyle"].tap()
@@ -155,7 +159,8 @@ final class FirstRunUITests: XCTestCase {
         XCTAssertEqual(app.buttons["ideaCard.voiceChip"].value as? String, "On")
     }
 
-    func testTheVoiceChipTurnsTheVoiceOffAndOnOnceItIsSet() {
+    /// Set up, the chip keeps its name and opens the questions again, filled in; the switch beside it turns the voice off and on.
+    func testTheVoiceChipHasASwitchOnceItIsSet() {
         let app = CueApp.launch(seeded: false)
         let chip = app.buttons["ideaCard.voiceChip"]
         XCTAssertTrue(chip.waitForExistence(timeout: 15))
@@ -171,9 +176,21 @@ final class FirstRunUITests: XCTestCase {
         app.buttons["voiceSetup.saveButton"].tap()
         XCTAssertTrue(chip.waitForExistence(timeout: 5))
         XCTAssertEqual(chip.value as? String, "On")
-        chip.tap()
+        let voiceSwitch = app.switches["ideaCard.voiceToggle"]
+        XCTAssertTrue(voiceSwitch.exists)
+        XCTAssertEqual(voiceSwitch.value as? String, "1")
+        voiceSwitch.tap()
+        XCTAssertEqual(voiceSwitch.value as? String, "0")
         XCTAssertEqual(chip.value as? String, "Off")
+        voiceSwitch.tap()
+        XCTAssertEqual(voiceSwitch.value as? String, "1")
+        XCTAssertEqual(chip.value as? String, "On")
+
+        // Tapping the name opens the questions again, from the first one, with the answers in place.
         chip.tap()
+        XCTAssertTrue(app.buttons["voiceSetup.role.personal"].waitForExistence(timeout: 5))
+        app.buttons["sheet.closeButton"].tap()
+        XCTAssertTrue(chip.waitForExistence(timeout: 5))
         XCTAssertEqual(chip.value as? String, "On")
     }
 

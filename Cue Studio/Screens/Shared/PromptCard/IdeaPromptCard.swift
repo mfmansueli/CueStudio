@@ -24,6 +24,7 @@ struct IdeaPromptCard: View {
     /// typed), and the note says why.
     var unavailableReason: String?
 
+    @Environment(CreatorProfileService.self) private var profile
     @Environment(IdeaDraftService.self) private var ideaDraft
     @Environment(ScriptStarter.self) private var starter
     @Environment(DictationService.self) private var dictation
@@ -80,6 +81,13 @@ struct IdeaPromptCard: View {
             .animation(.smooth(duration: 0.2), value: dictation.notice)
         }
         .accessibilityElement(children: .contain)
+        // Out here, not on the chip: the card's content is always dark, and its sheets follow the appearance.
+        .sheet(item: $voiceSetup) { mode in
+            // With an idea waiting on the card, the last question writes it: the script is the preview.
+            VoiceSetupSheet(mode: mode, profile: profile.profile, ideaText: ideaDraft.submission) { writesScript in
+                if writesScript { starter.write() }
+            }
+        }
         .onChange(of: dictation.state) { _, state in
             if state == .idle { finishDictation() }
             if state == .listening { AccessibilityNotification.Announcement(String(localized: "Listening…")).post() }

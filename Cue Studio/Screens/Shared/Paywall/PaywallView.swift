@@ -53,7 +53,8 @@ struct PaywallView: View {
                 .padding(EdgeInsets(top: 100, leading: 20, bottom: 16, trailing: 20))
             }
             .scrollIndicators(.hidden)
-            footer
+            // The footer (the button and the small print) stops growing at a large size: at the biggest it left no room for the plans above it.
+            footer.dynamicTypeSize(...DynamicTypeSize.xxxLarge)
         }
         .foregroundStyle(Palette.ink)
         .background {

@@ -303,6 +303,28 @@ struct ScriptPageViewModelTests {
         #expect(scenario.viewModel.page.writingError == nil)
     }
 
+    @Test func stoppingBeforeTheFirstWordKeepsTheIdeaOnTheCard() {
+        let scenario = makeScenario(script: TestData.script(title: "", text: ""), writing: request())
+        defer { scenario.defaults.tearDown() }
+        scenario.ideaDraft.text = "Carnival in Salvador"
+        scenario.viewModel.beginWritingIfNeeded()
+        scenario.viewModel.stopWriting()
+        #expect(scenario.ideaDraft.text == "Carnival in Salvador")
+    }
+
+    @Test func anErrorIsNotRetriedJustBecauseThePageShowsAgain() async {
+        let scenario = makeScenario(script: TestData.script(title: "", text: ""), writing: request())
+        defer { scenario.defaults.tearDown() }
+        scenario.writer.error = ScriptAIError.emptyResponse
+        scenario.viewModel.beginWritingIfNeeded()
+        await scenario.viewModel.pageWritingTask?.value
+        #expect(scenario.viewModel.page.writingError != nil)
+        scenario.writer.error = nil
+        scenario.viewModel.beginWritingIfNeeded()
+        #expect(!scenario.viewModel.page.isWriting, "only Try again starts it once more")
+        #expect(scenario.viewModel.page.writingError != nil)
+    }
+
     @Test func askedTwiceItWritesOnlyOnce() async {
         let scenario = makeScenario(script: TestData.script(title: "", text: ""), writing: request())
         defer { scenario.defaults.tearDown() }

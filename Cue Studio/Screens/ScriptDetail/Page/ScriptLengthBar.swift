@@ -12,14 +12,29 @@ struct ScriptLengthBar: View {
 
     private var isOver: Bool { zone.seconds > zone.preset.idealRange.upperBound }
 
+    private var time: some View {
+        Text(DurationText.clock(zone.seconds))
+            .foregroundStyle(isOver ? Palette.warnText : Palette.accText)
+    }
+
+    private var ideal: some View {
+        Text("Ideal \(DurationText.clock(zone.preset.idealRange.lowerBound))–\(DurationText.clock(zone.preset.idealRange.upperBound))")
+            .foregroundStyle(Palette.ink2)
+    }
+
     var body: some View {
         VStack(spacing: 5) {
-            HStack {
-                Text(DurationText.clock(zone.seconds))
-                    .foregroundStyle(isOver ? Palette.warnText : Palette.accText)
-                Spacer(minLength: 0)
-                Text("Ideal \(DurationText.clock(zone.preset.idealRange.lowerBound))–\(DurationText.clock(zone.preset.idealRange.upperBound))")
-                    .foregroundStyle(Palette.ink2)
+            // Side by side while they fit; with large text the ideal range goes under the time.
+            ViewThatFits(in: .horizontal) {
+                HStack {
+                    time
+                    Spacer(minLength: 0)
+                    ideal
+                }
+                VStack(alignment: .leading, spacing: 2) {
+                    time
+                    ideal
+                }
             }
             .font(CueStudioFont.hud)
             .textCase(.uppercase)

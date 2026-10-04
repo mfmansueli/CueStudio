@@ -67,6 +67,7 @@ final class ScriptsScreenshotTests: XCTestCase {
         XCTAssertTrue(app.buttons["voiceSetup.role.personal"].waitForExistence(timeout: 5))
         try capture("10-voice-role")
         app.buttons["voiceSetup.role.personal"].tap()
+        app.buttons["voiceSetup.saveButton"].tap()
         XCTAssertTrue(app.buttons["voiceSetup.niche.food"].waitForExistence(timeout: 5))
         app.buttons["voiceSetup.niche.food"].tap()
         try capture("11-voice-topics")
@@ -105,6 +106,7 @@ final class ScriptsScreenshotTests: XCTestCase {
         app.buttons["profile.setUpVoiceButton"].tap()
         XCTAssertTrue(app.buttons["voiceSetup.role.expert"].waitForExistence(timeout: 10))
         app.buttons["voiceSetup.role.expert"].tap()
+        app.buttons["voiceSetup.saveButton"].tap()
         app.buttons["voiceSetup.niche.tech"].tap()
         app.buttons["voiceSetup.saveButton"].tap()
         app.buttons["voiceSetup.audience.technical"].tap()
@@ -113,6 +115,10 @@ final class ScriptsScreenshotTests: XCTestCase {
         app.buttons["voiceSetup.saveButton"].tap()
         XCTAssertTrue(app.staticTexts["profile.voiceSample"].waitForExistence(timeout: 5))
         try capture("22-profile-voice")
+        app.tabBars.buttons["Scripts"].tap()
+        XCTAssertTrue(app.switches["ideaCard.voiceToggle"].waitForExistence(timeout: 5))
+        try capture("22b-scripts-voice-switch")
+        app.tabBars.buttons["Profile"].tap()
         let upgrade = app.buttons["profile.upgradeButton"]
         for _ in 0..<8 where !(upgrade.exists && upgrade.isHittable) { app.swipeUp() }
         try capture("20b-profile-plan")
@@ -134,5 +140,28 @@ final class ScriptsScreenshotTests: XCTestCase {
         app.buttons["settings.remoteTile"].tap()
         XCTAssertTrue(app.descendants(matching: .any)["remote.statusHero"].waitForExistence(timeout: 5))
         try capture("26-remote")
+    }
+
+    /// The Selfie text window and its corner handle, at rest and after a drag.
+    func testCapturePrompterTextWindow() throws {
+        guard let folder = ProcessInfo.processInfo.environment["CUE_SCREENSHOT_DIR"] else {
+            throw XCTSkip("Set TEST_RUNNER_CUE_SCREENSHOT_DIR to capture the prompter")
+        }
+        let directory = URL(fileURLWithPath: folder, isDirectory: true)
+        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+        let app = CueApp.launch(seeded: true)
+        func capture(_ name: String) throws {
+            sleep(1)
+            try app.screenshot().pngRepresentation.write(to: directory.appending(path: "dark-\(name).png"))
+        }
+        let record = app.buttons["row.recordButton"].firstMatch
+        XCTAssertTrue(record.waitForExistence(timeout: 15))
+        record.tap()
+        let handle = app.descendants(matching: .any)["prompter.textWindowResizeHandle"]
+        XCTAssertTrue(handle.waitForExistence(timeout: 5))
+        try capture("30-text-window")
+        let start = handle.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5))
+        start.press(forDuration: 0.1, thenDragTo: start.withOffset(CGVector(dx: -90, dy: -120)))
+        try capture("31-text-window-resized")
     }
 }

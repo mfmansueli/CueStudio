@@ -189,18 +189,33 @@ struct ScriptsView: View {
     /// "Recent", the filter menu ("All ⌄") and Select.
     private var recentHeader: some View {
         @Bindable var viewModel = viewModel
-        return HStack(alignment: .center, spacing: 10) {
-            Text("Recent")
-                .font(.title3.bold())
-                .foregroundStyle(Palette.ink)
-            ScriptFilterMenu(filters: viewModel.filters, selection: $viewModel.filter)
-            Spacer()
-            Button(viewModel.isSelecting ? "Done" : "Select") {
-                viewModel.toggleSelecting()
+        let title = Text("Recent")
+            .font(.title3.bold())
+            .foregroundStyle(Palette.ink)
+        let menu = ScriptFilterMenu(filters: viewModel.filters, selection: $viewModel.filter)
+        let select = Button(viewModel.isSelecting ? "Done" : "Select") {
+            viewModel.toggleSelecting()
+        }
+        .font(.body.weight(.medium))
+        .foregroundStyle(Palette.accText)
+        .accessibilityIdentifier("scripts.selectButton")
+        // With large text the three don't fit on a line (and "Recent" would break in the middle of the
+        // word): the title goes on top and the menu and Select share the line under it.
+        return ViewThatFits(in: .horizontal) {
+            HStack(alignment: .center, spacing: 10) {
+                title.lineLimit(1)
+                menu
+                Spacer()
+                select
             }
-            .font(.body.weight(.medium))
-            .foregroundStyle(Palette.accText)
-            .accessibilityIdentifier("scripts.selectButton")
+            VStack(alignment: .leading, spacing: 6) {
+                title
+                HStack(alignment: .center, spacing: 10) {
+                    menu
+                    Spacer()
+                    select
+                }
+            }
         }
         .textCase(nil)
         .padding(.top, 6)
