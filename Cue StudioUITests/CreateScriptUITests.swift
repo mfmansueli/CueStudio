@@ -14,7 +14,7 @@ final class CreateScriptUITests: XCTestCase {
 
     func testRecordTabOffersRecentScriptsAndFreestyle() {
         let app = CueApp.launch(seeded: true)
-        let recordTab = app.tabBars.buttons["Record"]
+        let recordTab = app.cueTabBar.buttons["Record"]
         XCTAssertTrue(recordTab.waitForExistence(timeout: 15))
         recordTab.tap()
 
@@ -24,12 +24,12 @@ final class CreateScriptUITests: XCTestCase {
         XCTAssertTrue(app.buttons["prompter.addScriptButton"].waitForExistence(timeout: 5))
         app.buttons["prompter.closeButton"].tap()
         // Record never becomes the selected tab.
-        XCTAssertTrue(app.tabBars.buttons["Scripts"].isSelected)
+        XCTAssertTrue(app.cueTabBar.buttons["Scripts"].isSelected)
     }
 
     func testRecordTabLeadsToNewScript() {
         let app = CueApp.launch(seeded: true)
-        let recordTab = app.tabBars.buttons["Record"]
+        let recordTab = app.cueTabBar.buttons["Record"]
         XCTAssertTrue(recordTab.waitForExistence(timeout: 15))
         recordTab.tap()
         let newScript = app.buttons["startRecording.newScript"]

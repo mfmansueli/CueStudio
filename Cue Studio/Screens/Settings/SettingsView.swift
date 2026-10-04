@@ -83,7 +83,7 @@ struct SettingsView: View {
             }
             .padding(EdgeInsets(top: 4, leading: Metrics.gutter, bottom: 40, trailing: Metrics.gutter))
         }
-        .background(Palette.bg)
+        .skyBackground()
         .navigationTitle("Settings")
         .toolbarTitleDisplayMode(.inlineLarge)
         .sheet(isPresented: $showsPrivacy) { PrivacySheet() }

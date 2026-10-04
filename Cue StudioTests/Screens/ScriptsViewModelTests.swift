@@ -54,10 +54,20 @@ struct ScriptsViewModelTests {
         #expect(toast.message == "Folder created")
     }
 
-    @Test func summaryCountsScriptsAndTakesAsTwoPaddedNumbers() {
+    @Test func summaryCountsTheScriptsAndHowManyStillWaitForATake() {
         let (viewModel, _, _) = makeViewModel(scripts: [TestData.script(), TestData.script()])
-        #expect(viewModel.summaryValues(takeCount: 3) == ["02 scripts", "03 takes"])
-        #expect(makeViewModel(scripts: []).0.summaryValues(takeCount: 0).isEmpty)
+        #expect(viewModel.summaryValues(readyToRecord: 1) == ["2 scripts", "1 ready to record"])
+        #expect(makeViewModel(scripts: []).0.summaryValues(readyToRecord: 0).isEmpty)
+    }
+
+    @Test func eachFilterChipCountsItsScripts() {
+        let (viewModel, _, _) = makeViewModel(scripts: [
+            TestData.script(platform: .tiktok), TestData.script(platform: .tiktok), TestData.script(platform: .reels),
+        ])
+        #expect(viewModel.count(for: .all) == 3)
+        #expect(viewModel.count(for: .platform(.tiktok)) == 2)
+        #expect(viewModel.count(for: .platform(.reels)) == 1)
+        #expect(viewModel.count(for: .platform(.shorts)) == 0)
     }
 
     @Test func theMagnifierShowsTheSearchAndHidingItClearsTheQuery() {

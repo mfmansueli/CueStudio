@@ -56,7 +56,7 @@ struct ScriptDetailView: View {
         // editor its own header: nothing sits above either.
         .toolbarVisibility(.hidden, for: .navigationBar)
         .navigationBarBackButtonHidden()
-        .toolbarVisibility(.hidden, for: .tabBar)
+        .hidesCueTabBar()
         .task { viewModel.beginWritingIfNeeded() }
         .alert("Couldn't write the script", isPresented: Binding(
             get: { viewModel.page.writingError != nil },

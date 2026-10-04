@@ -15,7 +15,7 @@ final class FreePlanUITests: XCTestCase {
 
     func testVocabularyIsFree() {
         let app = CueApp.launch(seeded: true)
-        let tab = app.tabBars.buttons["Profile"]
+        let tab = app.cueTabBar.buttons["Profile"]
         XCTAssertTrue(tab.waitForExistence(timeout: 15))
         tab.tap()
         // "Who I talk to" is the vocabulary, in the same words as the voice setup's audience question.
@@ -43,7 +43,7 @@ final class FreePlanUITests: XCTestCase {
 
     func testSuggestBestPicksATake() {
         let app = CueApp.launch(seeded: true)
-        let tab = app.tabBars.buttons["Takes"]
+        let tab = app.cueTabBar.buttons["Takes"]
         XCTAssertTrue(tab.waitForExistence(timeout: 15))
         tab.tap()
         let row = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH 'takes.video.' AND label CONTAINS '3 morning habits'")).firstMatch

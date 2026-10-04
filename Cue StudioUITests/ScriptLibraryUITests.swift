@@ -32,7 +32,6 @@ final class ScriptLibraryUITests: XCTestCase {
     func testFilteringByDestination() {
         let app = CueApp.launch(seeded: true)
         XCTAssertTrue(app.staticTexts[Self.lamp].waitForExistence(timeout: 15))
-        app.buttons["scripts.filterMenu"].tap()
         app.buttons["scripts.filter.reels"].tap()
         XCTAssertTrue(app.staticTexts[Self.lamp].waitForExistence(timeout: 5))
         XCTAssertFalse(app.staticTexts["Oat & Co. — sponsored read"].exists)

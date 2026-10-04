@@ -24,13 +24,13 @@ final class LanguageRegionUITests: XCTestCase {
         pick("pt-BR", in: app)
 
         XCTAssertTrue(app.navigationBars["Idioma e região"].waitForExistence(timeout: 5))
-        XCTAssertTrue(app.tabBars.buttons["Perfil"].exists)
-        XCTAssertTrue(app.tabBars.buttons["Ajustes"].isSelected)
+        XCTAssertTrue(app.cueTabBar.buttons["Perfil"].exists)
+        XCTAssertTrue(app.cueTabBar.buttons["Ajustes"].isSelected)
         XCTAssertTrue(app.buttons["languageRegion.appLanguageButton"].label.contains("Português (Brasil)"))
         XCTAssertTrue(app.buttons["languageRegion.voiceFollowingLanguageButton"].label.contains("Igual ao roteiro"))
         XCTAssertTrue(app.buttons["languageRegion.scriptLanguageButton"].label.contains("Detectar automaticamente"))
 
-        app.tabBars.buttons["Roteiros"].tap()
+        app.cueTabBar.buttons["Roteiros"].tap()
         XCTAssertTrue(app.staticTexts[Self.sampleTitle].waitForExistence(timeout: 5))
     }
 
@@ -80,7 +80,7 @@ final class LanguageRegionUITests: XCTestCase {
     /// Cue in Japanese with English scripts: the scripts stay in English.
     func testJapaneseInterfaceKeepsEnglishScripts() {
         let app = CueApp.launch(seeded: true, appLanguage: "ja")
-        XCTAssertTrue(app.tabBars.buttons["台本"].waitForExistence(timeout: 15))
+        XCTAssertTrue(app.cueTabBar.buttons["台本"].waitForExistence(timeout: 15))
         XCTAssertTrue(app.staticTexts[Self.sampleTitle].waitForExistence(timeout: 5))
     }
 
@@ -109,7 +109,7 @@ final class LanguageRegionUITests: XCTestCase {
         pick("pt-BR", in: app)
         XCTAssertTrue(app.buttons["languageRegion.voiceFollowingLanguageButton"].waitForExistence(timeout: 5))
 
-        app.tabBars.buttons["Takes"].tap()
+        app.cueTabBar.buttons["Takes"].tap()
         let row = app.buttons.matching(
             NSPredicate(format: "identifier BEGINSWITH 'takes.video.' AND label CONTAINS '3 morning habits'")
         ).firstMatch
@@ -132,7 +132,7 @@ final class LanguageRegionUITests: XCTestCase {
 
     private func openLanguageRegion(_ app: XCUIApplication) {
         // Settings is the fifth tab in any language.
-        let settings = app.tabBars.buttons.element(boundBy: 4)
+        let settings = app.cueTabBar.buttons.element(boundBy: 4)
         XCTAssertTrue(settings.waitForExistence(timeout: 15))
         settings.tap()
         let row = app.buttons["settings.languageRegionButton"]

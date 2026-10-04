@@ -230,7 +230,7 @@ final class ExploratoryTourTests: XCTestCase {
     // MARK: - Helpers
 
     private func tab(_ index: Int) {
-        let bar = app.tabBars.firstMatch
+        let bar = app.cueTabBar
         if bar.waitForExistence(timeout: 5) { bar.buttons.element(boundBy: index).tap(); sleep(1) } else { misses.append("tabBar") }
     }
 

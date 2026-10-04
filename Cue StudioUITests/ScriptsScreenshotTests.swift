@@ -96,8 +96,8 @@ final class ScriptsScreenshotTests: XCTestCase {
             sleep(1)
             try app.screenshot().pngRepresentation.write(to: directory.appending(path: "dark-\(name).png"))
         }
-        XCTAssertTrue(app.tabBars.buttons["Profile"].waitForExistence(timeout: 15))
-        app.tabBars.buttons["Profile"].tap()
+        XCTAssertTrue(app.cueTabBar.buttons["Profile"].waitForExistence(timeout: 15))
+        app.cueTabBar.buttons["Profile"].tap()
         XCTAssertTrue(app.buttons["profile.setUpVoiceButton"].waitForExistence(timeout: 5))
         try capture("20-profile-new")
         app.buttons["profile.setUpVoiceButton"].tap()
@@ -112,10 +112,10 @@ final class ScriptsScreenshotTests: XCTestCase {
         app.buttons["voiceSetup.saveButton"].tap()
         XCTAssertTrue(app.staticTexts["profile.voiceSample"].waitForExistence(timeout: 5))
         try capture("22-profile-voice")
-        app.tabBars.buttons["Scripts"].tap()
+        app.cueTabBar.buttons["Scripts"].tap()
         XCTAssertTrue(app.switches["ideaCard.voiceToggle"].waitForExistence(timeout: 5))
         try capture("22b-scripts-voice-switch")
-        app.tabBars.buttons["Profile"].tap()
+        app.cueTabBar.buttons["Profile"].tap()
         let upgrade = app.buttons["profile.upgradeButton"]
         for _ in 0..<8 where !(upgrade.exists && upgrade.isHittable) { app.swipeUp() }
         try capture("20b-profile-plan")
@@ -123,7 +123,7 @@ final class ScriptsScreenshotTests: XCTestCase {
         XCTAssertTrue(app.buttons["paywall.buyButton"].waitForExistence(timeout: 5))
         try capture("21-paywall")
         app.buttons["paywall.closeButton"].tap()
-        app.tabBars.buttons["Settings"].tap()
+        app.cueTabBar.buttons["Settings"].tap()
         XCTAssertTrue(app.buttons["settings.recordingTile"].waitForExistence(timeout: 5))
         try capture("23-settings")
         app.buttons["settings.recordingTile"].tap()

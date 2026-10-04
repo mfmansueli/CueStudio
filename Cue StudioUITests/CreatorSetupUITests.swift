@@ -80,7 +80,7 @@ final class CreatorSetupUITests: XCTestCase {
         XCTAssertTrue(app.buttons["settings.recordingTile"].waitForExistence(timeout: 5))
 
         // "3 morning habits" is for TikTok, which recommends 1080p.
-        app.tabBars.buttons["Scripts"].tap()
+        app.cueTabBar.buttons["Scripts"].tap()
         let record = app.buttons["row.recordButton"].firstMatch
         XCTAssertTrue(record.waitForExistence(timeout: 15))
         record.tap()
@@ -102,7 +102,7 @@ final class CreatorSetupUITests: XCTestCase {
         app.buttons["prompter.closeButton"].tap()
 
         // The Creator Setup is still 4K.
-        let settings = app.tabBars.buttons["Settings"]
+        let settings = app.cueTabBar.buttons["Settings"]
         XCTAssertTrue(settings.waitForExistence(timeout: 5))
         settings.tap()
         openCreatorSetup(app)
@@ -138,7 +138,7 @@ final class CreatorSetupUITests: XCTestCase {
         app.buttons["display.doneButton"].tap()
         app.navigationBars.buttons.firstMatch.tap()
 
-        app.tabBars.buttons["Scripts"].tap()
+        app.cueTabBar.buttons["Scripts"].tap()
         let record = app.buttons["row.recordButton"].firstMatch
         XCTAssertTrue(record.waitForExistence(timeout: 15))
         record.tap()
@@ -171,13 +171,13 @@ final class CreatorSetupUITests: XCTestCase {
 
     /// Settings, then one of the three pages under "Your setup" (recording by default).
     private func openCreatorSetup(_ app: XCUIApplication, page: String = "recording") {
-        let tab = app.tabBars.buttons["Settings"]
+        let tab = app.cueTabBar.buttons["Settings"]
         XCTAssertTrue(tab.waitForExistence(timeout: 15))
         tab.tap()
         let tile = app.buttons["settings.\(page)Tile"]
         scroll(app, to: tile)
         tile.tap()
-        XCTAssertTrue(app.tabBars.buttons["Settings"].isSelected)
+        XCTAssertTrue(app.cueTabBar.buttons["Settings"].isSelected)
     }
 
     private func scroll(_ app: XCUIApplication, to element: XCUIElement) {

@@ -106,7 +106,7 @@ final class ProfileUITests: XCTestCase {
 
     func testProPlanHidesTheUpgrade() {
         let app = CueApp.launch(seeded: true, pro: true)
-        app.tabBars.buttons["Profile"].tap()
+        app.cueTabBar.buttons["Profile"].tap()
         let pro = app.staticTexts["Cue Pro"]
         scroll(app, to: pro)
         XCTAssertFalse(app.buttons["profile.upgradeButton"].exists)
@@ -116,7 +116,7 @@ final class ProfileUITests: XCTestCase {
 
     private func openProfile() -> XCUIApplication {
         let app = CueApp.launch(seeded: true)
-        let tab = app.tabBars.buttons["Profile"]
+        let tab = app.cueTabBar.buttons["Profile"]
         XCTAssertTrue(tab.waitForExistence(timeout: 15))
         tab.tap()
         return app

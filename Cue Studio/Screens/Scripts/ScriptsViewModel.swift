@@ -45,12 +45,17 @@ final class ScriptsViewModel {
         [.all] + ScriptFilter.platformFilters(for: library.scripts) + library.folders.map(ScriptFilter.folder)
     }
 
-    /// "05 SCRIPTS / 11 TAKES": two zero-padded counts under the title.
-    func summaryValues(takeCount: Int) -> [String] {
+    /// "14 SCRIPTS · 3 READY TO RECORD": what is in the library and how much of it still waits for a take.
+    /// `readyToRecord` counts the scripts that have no take yet.
+    func summaryValues(readyToRecord: Int) -> [String] {
         let count = library.scripts.count
         guard count > 0 else { return [] }
-        let padded = { (value: Int) in value.formatted(.number.precision(.integerLength(2...))) }
-        return [String(localized: "\(padded(count)) scripts"), String(localized: "\(padded(takeCount)) takes")]
+        return [String(localized: "\(count) scripts"), String(localized: "\(readyToRecord) ready to record")]
+    }
+
+    /// How many scripts a filter chip stands for ("TikTok 7").
+    func count(for filter: ScriptFilter) -> Int {
+        library.scripts.filter(filter.matches).count
     }
 
     // MARK: - Single script

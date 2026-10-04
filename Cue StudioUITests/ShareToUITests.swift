@@ -35,7 +35,7 @@ final class ShareToUITests: XCTestCase {
 
     private func openShareTo(pro: Bool = false) -> XCUIApplication {
         let app = CueApp.launch(seeded: true, pro: pro)
-        let tab = app.tabBars.buttons["Takes"]
+        let tab = app.cueTabBar.buttons["Takes"]
         XCTAssertTrue(tab.waitForExistence(timeout: 15))
         tab.tap()
         let row = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH 'takes.video.' AND label CONTAINS '3 morning habits'")).firstMatch

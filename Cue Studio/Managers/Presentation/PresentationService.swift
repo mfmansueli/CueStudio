@@ -17,6 +17,15 @@ final class PresentationService {
     var prompter: PrompterLaunch?
     /// This device is the remote of a teleprompter on another one.
     var showsRemoteController = false
+    /// How many screens ask for the tab bar to be out of the way (the script page, a list in selection mode).
+    private(set) var tabBarHiders = 0
+
+    /// The floating tab bar is hidden while a screen asks for it.
+    var hidesTabBar: Bool { tabBarHiders > 0 }
+
+    func hideTabBar() { tabBarHiders += 1 }
+
+    func showTabBar() { tabBarHiders = max(0, tabBarHiders - 1) }
 
     // MARK: - Actions
 

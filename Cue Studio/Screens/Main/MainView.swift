@@ -4,6 +4,7 @@
 //
 
 import SwiftUI
+import UIKit
 
 /// Tabs (Scripts, Takes, Record, Profile, Settings), creation sheets, the prompter and the
 /// remote (when this device controls a teleprompter on another one).
@@ -17,10 +18,38 @@ struct MainView: View {
     @Environment(DocumentImportService.self) private var importer
     @Environment(ToastService.self) private var toast
     @Environment(LanguageService.self) private var languages
+    @State private var isKeyboardUp = false
 
     var body: some View {
         @Bindable var presentation = presentation
-        TabView(selection: tabSelection) {
+        VStack(spacing: 0) {
+            tabs
+            if !presentation.hidesTabBar && !isKeyboardUp {
+                CueTabBar(selection: presentation.selectedTab) { presentation.select($0) }
+                    .padding(.top, 6)
+                    .frame(maxWidth: .infinity)
+                    .background(Palette.bg)
+                    .transition(.move(edge: .bottom).combined(with: .opacity))
+            }
+        }
+        .animation(CueMotion.card, value: presentation.hidesTabBar)
+        .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardWillShowNotification)) { _ in isKeyboardUp = true }
+        .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardWillHideNotification)) { _ in isKeyboardUp = false }
+        .sheet(item: $presentation.sheet) { sheet in
+            sheetContent(sheet)
+        }
+        .fullScreenCover(item: $presentation.prompter) { launch in
+            PrompterView(launch: launch, services: services)
+        }
+        .fullScreenCover(isPresented: $presentation.showsRemoteController) {
+            RemoteControllerView()
+        }
+    }
+
+    /// The four destinations. The tab bar is ours (below), so the system's is hidden in each tab.
+    private var tabs: some View {
+        @Bindable var presentation = presentation
+        return TabView(selection: tabSelection) {
             Tab("Scripts", systemImage: "doc.text", value: AppTab.scripts) {
                 NavigationStack(path: $presentation.scriptsPath) {
                     ScriptsView(library: services.library, toast: services.toast, writer: services.writer, drafts: services.drafts)
@@ -28,22 +57,15 @@ struct MainView: View {
                             ScriptDetailView(route: route, services: services)
                         }
                 }
+                .toolbarVisibility(.hidden, for: .tabBar)
             }
             Tab("Takes", systemImage: "film.stack", value: AppTab.takes) {
                 NavigationStack { TakesView(services: services) }
-            }
-            // Not a destination: selecting it opens "Start recording".
-            Tab(value: AppTab.record) {
-                Color.clear
-            } label: {
-                Label {
-                    Text("Record")
-                } icon: {
-                    Image(uiImage: RecordGlyph.tabImage)
-                }
+                    .toolbarVisibility(.hidden, for: .tabBar)
             }
             Tab("Profile", systemImage: "person.crop.circle", value: AppTab.profile) {
                 NavigationStack { ProfileView() }
+                    .toolbarVisibility(.hidden, for: .tabBar)
             }
             Tab("Settings", systemImage: "gearshape", value: AppTab.settings) {
                 NavigationStack(path: $presentation.settingsPath) {
@@ -60,18 +82,10 @@ struct MainView: View {
                             }
                         }
                 }
+                .toolbarVisibility(.hidden, for: .tabBar)
             }
         }
         .tint(Palette.accText)
-        .sheet(item: $presentation.sheet) { sheet in
-            sheetContent(sheet)
-        }
-        .fullScreenCover(item: $presentation.prompter) { launch in
-            PrompterView(launch: launch, services: services)
-        }
-        .fullScreenCover(isPresented: $presentation.showsRemoteController) {
-            RemoteControllerView()
-        }
     }
 
     /// Selecting the record tab presents the sheet and keeps the current tab.

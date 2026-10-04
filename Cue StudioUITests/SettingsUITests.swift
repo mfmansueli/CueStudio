@@ -127,8 +127,8 @@ final class SettingsUITests: XCTestCase {
     private func assertTabs(_ app: XCUIApplication, labels: [String]) {
         let first = tab(app, label: labels[0], index: 0)
         XCTAssertTrue(first.waitForExistence(timeout: 15))
-        let hasBottomBar = app.tabBars.firstMatch.exists
-        if hasBottomBar { XCTAssertEqual(app.tabBars.firstMatch.buttons.count, 5) }
+        let hasBottomBar = app.cueTabBar.exists
+        if hasBottomBar { XCTAssertEqual(app.cueTabBar.buttons.count, 5) }
         var previousCenter: CGFloat?
         for (index, label) in labels.enumerated() {
             let item = tab(app, label: label, index: index)
@@ -147,7 +147,7 @@ final class SettingsUITests: XCTestCase {
     }
 
     private func tab(_ app: XCUIApplication, label: String, index: Int? = nil) -> XCUIElement {
-        if app.tabBars.firstMatch.exists { return app.tabBars.buttons[label] }
+        if app.cueTabBar.exists { return app.cueTabBar.buttons[label] }
         // On iPad the native top bar exposes nested Buttons instead of a TabBar.
         let labels = ["Scripts", "Takes", "Record", "Profile", "Settings"]
         let symbols = ["doc.text", "film.stack", "", "person.crop.circle", "gearshape"]

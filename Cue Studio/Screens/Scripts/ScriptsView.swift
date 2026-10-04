@@ -31,7 +31,7 @@ struct ScriptsView: View {
     var body: some View {
         @Bindable var viewModel = viewModel
         content
-            .background(Palette.bg)
+            .skyBackground()
             .navigationTitle("Scripts")
             .toolbarTitleDisplayMode(.inlineLarge)
             .toolbar { toolbarContent }
@@ -83,9 +83,14 @@ struct ScriptsView: View {
         return List(selection: $viewModel.selection) {
             Section {
                 VStack(alignment: .leading, spacing: 14) {
-                    HUDLine(values: viewModel.summaryValues(takeCount: takes.takes.count), separator: " / ")
+                    HUDLine(values: viewModel.summaryValues(readyToRecord: readyToRecordCount))
                         .padding(.horizontal, 4)
                         .accessibilityIdentifier("scripts.summary")
+                    // Platform first: it is how creators think about their day.
+                    PlatformFilterChips(
+                        filters: viewModel.filters, selection: $viewModel.filter, count: { viewModel.count(for: $0) }
+                    )
+                    .padding(.horizontal, -Metrics.gutter)
                     // The same card as the empty screen's: typed or dictated in place, the arrow writes the script.
                     IdeaPromptCard(
                         base: Palette.surface, animatesBackground: animatesPromptBackground,
@@ -146,7 +151,7 @@ struct ScriptsView: View {
                 .transition(.move(edge: .bottom).combined(with: .opacity))
             }
         }
-        .toolbarVisibility(viewModel.isSelecting ? .hidden : .automatic, for: .tabBar)
+        .hidesCueTabBar(viewModel.isSelecting)
         .animation(.smooth(duration: 0.25), value: viewModel.isSelecting)
     }
 
@@ -186,36 +191,20 @@ struct ScriptsView: View {
         .accessibilityIdentifier("scripts.row.\(script.id.uuidString)")
     }
 
-    /// "Recent", the filter menu ("All ⌄") and Select.
+    /// "Recent" and Select (the filters are the chips above the list).
     private var recentHeader: some View {
-        @Bindable var viewModel = viewModel
-        let title = Text("Recent")
-            .font(.title3.bold())
-            .foregroundStyle(Palette.ink)
-        let menu = ScriptFilterMenu(filters: viewModel.filters, selection: $viewModel.filter)
-        let select = Button(viewModel.isSelecting ? "Done" : "Select") {
-            viewModel.toggleSelecting()
-        }
-        .font(.body.weight(.medium))
-        .foregroundStyle(Palette.accText)
-        .accessibilityIdentifier("scripts.selectButton")
-        // With large text the three don't fit on a line (and "Recent" would break in the middle of the
-        // word): the title goes on top and the menu and Select share the line under it.
-        return ViewThatFits(in: .horizontal) {
-            HStack(alignment: .center, spacing: 10) {
-                title.lineLimit(1)
-                menu
-                Spacer()
-                select
+        HStack(alignment: .center, spacing: 10) {
+            Text("Recent")
+                .font(.title3.bold())
+                .foregroundStyle(Palette.ink)
+            Spacer()
+            Button(viewModel.isSelecting ? "Done" : "Select") {
+                viewModel.toggleSelecting()
             }
-            VStack(alignment: .leading, spacing: 6) {
-                title
-                HStack(alignment: .center, spacing: 10) {
-                    menu
-                    Spacer()
-                    select
-                }
-            }
+            .font(.body.weight(.medium))
+            .foregroundStyle(Palette.accText)
+            .frame(minHeight: Metrics.hitTarget)
+            .accessibilityIdentifier("scripts.selectButton")
         }
         .textCase(nil)
         .padding(.top, 6)
@@ -287,6 +276,11 @@ struct ScriptsView: View {
     }
 
     /// Before any take: ready to record, and how long it runs. After: the video's stage.
+    /// Scripts that have no take yet.
+    private var readyToRecordCount: Int {
+        library.scripts.filter { takes.takes(for: $0.id).isEmpty }.count
+    }
+
     private func status(of script: Script) -> ScriptStatus {
         ScriptStatus(takes: takes.takes(for: script.id), readSeconds: readSeconds(script)) { [drafts] in
             drafts?.hasDraft(for: $0) ?? false

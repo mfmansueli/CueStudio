@@ -46,7 +46,7 @@ struct TakesView: View {
                 list
             }
         }
-        .background(Palette.bg)
+        .skyBackground()
         .navigationTitle("Takes")
         .toolbarTitleDisplayMode(.inlineLarge)
         .toolbar {

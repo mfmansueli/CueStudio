@@ -114,7 +114,7 @@ final class TakesUITests: XCTestCase {
 
     private func openTakes() -> XCUIApplication {
         let app = CueApp.launch(seeded: true)
-        let tab = app.tabBars.buttons["Takes"]
+        let tab = app.cueTabBar.buttons["Takes"]
         XCTAssertTrue(tab.waitForExistence(timeout: 15))
         tab.tap()
         return app

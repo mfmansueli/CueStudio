@@ -101,7 +101,7 @@ struct ProfileView: View {
         }
         .listStyle(.insetGrouped)
         .scrollContentBackground(.hidden)
-        .background(Palette.bg)
+        .skyBackground()
         .navigationTitle("Profile")
         .toolbarTitleDisplayMode(.inlineLarge)
         .task {

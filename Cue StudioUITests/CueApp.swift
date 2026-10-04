@@ -43,6 +43,11 @@ enum CueApp {
 }
 
 extension XCUIApplication {
+    /// The floating tab bar (`CueTabBar`): its buttons are the five tabs, in order Scripts, Takes, Record, Profile, Settings.
+    var cueTabBar: XCUIElement {
+        descendants(matching: .any)["tabBar"].firstMatch
+    }
+
     /// Opens "Need an idea?" from its chip on the idea card (the arrow does the same with nothing written).
     func openIdeas() {
         let chip = buttons["ideaCard.ideasChip"]

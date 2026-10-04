@@ -178,7 +178,7 @@ struct ShareToSheet: View {
                 HStack {
                     Text(notice).foregroundStyle(viewModel.exportsExhausted ? Palette.warnText : Palette.ink2)
                     Spacer()
-                    Button("Go Pro") { viewModel.paywall = .export }
+                    Button("Go Pro") { viewModel.paywall = viewModel.exportsExhausted ? .export : .profile }
                         .fontWeight(.semibold)
                         .foregroundStyle(Palette.accText)
                 }
