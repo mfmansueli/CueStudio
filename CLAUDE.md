@@ -60,3 +60,5 @@ tomadas. Atualize-o junto com a UI.
   -only-testing:"Cue StudioTests/QuickEditPreviewLatencyTests" test` (quanto uma mudança leva para
   aparecer e se a imagem some, com filtro, texto, fundo Blur, 4K e corte).
 - Compras são testadas localmente com `CueStudio.storekit` (selecionado no scheme).
+- Em Debug, uma instalação nova volta a ter as 5 exportações grátis: o contador fica no Keychain (sobrevive a reinstalar)
+  e o `UsageQuotaService` o zera no primeiro lançamento depois de instalar (`DefaultsKey.installLaunched`). Release não zera.
