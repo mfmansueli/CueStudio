@@ -38,6 +38,7 @@ struct CaptionSpeechTests {
 
     @Test(arguments: CueLanguage.allCases)
     func captionsAreHeardAndTimedInTheRecording(language: CueLanguage) async throws {
+        KeepScreenAwake.enable()
         let script = try #require(VoiceFollowingSpeechTests.scripts[language])
         let url = try #require(Bundle(for: BundleToken.self).url(forResource: "speech-\(language.rawValue)", withExtension: "m4a"))
         let file = try AVAudioFile(forReading: url)

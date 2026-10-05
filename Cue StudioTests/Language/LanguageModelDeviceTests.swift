@@ -46,6 +46,7 @@ struct LanguageModelDeviceTests {
     ]
 
     private func service(_ language: CueLanguage) throws -> ScriptAIService {
+        KeepScreenAwake.enable()
         let service = ScriptAIService()
         guard service.availability.onDevice else {
             let reason = service.availability.reason ?? "unknown"

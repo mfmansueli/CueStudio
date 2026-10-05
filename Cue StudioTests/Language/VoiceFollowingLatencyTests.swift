@@ -82,6 +82,7 @@ struct VoiceFollowingLatencyTests {
     }
 
     private func follow(_ language: CueLanguage, tuning: Tuning) async throws {
+        KeepScreenAwake.enable()
         let script = try #require(VoiceFollowingSpeechTests.scripts[language])
         let fixture: SpeechFixture
         do {

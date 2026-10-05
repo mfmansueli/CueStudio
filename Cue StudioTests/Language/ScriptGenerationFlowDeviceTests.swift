@@ -5,9 +5,6 @@
 
 import Foundation
 import Testing
-#if canImport(UIKit)
-import UIKit
-#endif
 @testable import Cue_Studio
 
 /// What a creator gets from the card on the main screen, end to end and with the real Apple Intelligence
@@ -35,10 +32,8 @@ struct ScriptGenerationFlowDeviceTests {
     }
 
     private func makeFlow(preferred: [String] = ["en-US"], writesInMyVoice: Bool) throws -> Flow {
-        #if canImport(UIKit)
         // A long run on a device must not lock the screen: a locked app is in the background, where the model is rate limited.
-        UIApplication.shared.isIdleTimerDisabled = true
-        #endif
+        KeepScreenAwake.enable()
         let writer = ScriptAIService()
         guard writer.availability.onDevice else {
             let reason = writer.availability.reason ?? "unknown"

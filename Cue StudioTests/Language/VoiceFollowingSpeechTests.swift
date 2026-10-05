@@ -82,6 +82,7 @@ struct VoiceFollowingSpeechTests {
 
     @Test(arguments: CueLanguage.allCases)
     func followsAReadingOfTheScript(in language: CueLanguage) async throws {
+        KeepScreenAwake.enable()
         let script = try #require(Self.scripts[language], "\(language.rawValue) has no script")
         let resource = "speech-\(language.rawValue)"
         let url = try #require(Bundle(for: BundleToken.self).url(forResource: resource, withExtension: "m4a"), "\(language.rawValue) has no recording")
