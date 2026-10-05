@@ -65,7 +65,10 @@ nonisolated struct SpeechLocaleResolver: Sendable {
 
         func accepts(_ locale: Locale) -> Bool {
             if let language, !isDetected { return language.accepts(locale) }
-            return locale.language.languageCode?.identifier == languageCode
+            guard locale.language.languageCode?.identifier == languageCode else { return false }
+            // Chinese is two writing systems: a script in Traditional characters is never heard as Simplified.
+            if let language, language.isChinese { return language.accepts(locale) }
+            return true
         }
 
         var name: String {
@@ -80,13 +83,15 @@ nonisolated struct SpeechLocaleResolver: Sendable {
         case .language(let language):
             return Target(candidates: [language.speechLocale], language: language, languageCode: language.languageCode, isDetected: false)
         case .detect(let text, let systemLanguages):
-            let detected = LanguageDetector.dominantLanguageCode(in: text, preferring: systemLanguages)
-                ?? (text.isEmpty ? systemLanguages.first.flatMap { Locale.Language(identifier: $0).languageCode?.identifier } : nil)
-            guard let code = detected else { return nil }
-            let language = CueLanguage.matching(languageCode: code)
+            let detected = LanguageDetector.dominantLanguage(in: text, preferring: systemLanguages)
+                ?? (text.isEmpty ? systemLanguages.first.map { Locale.Language(identifier: $0) } : nil)
+            guard let code = detected?.languageCode?.identifier else { return nil }
+            let language = detected.flatMap(CueLanguage.matching(language:))
+            // The creator's own variants of the detected language come first (en-GB over en-US), but only
+            // ones in the writing system the text uses.
             var candidates = systemLanguages
                 .map { Locale(identifier: $0) }
-                .filter { $0.language.languageCode?.identifier == code }
+                .filter { $0.language.languageCode?.identifier == code && (language?.isChinese != true || language?.accepts($0) == true) }
             if let language { candidates.append(language.speechLocale) }
             candidates.append(Locale(identifier: code))
             var seen = Set<String>()

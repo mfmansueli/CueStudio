@@ -258,8 +258,10 @@ extension ScriptDetailViewModel {
         do {
             let rewritten = try await writer.rewrite(selected, with: tool, context: rewriteContext)
             replace(range, with: rewritten, action: action, original: selected)
+        } catch is CancellationError {
+            return
         } catch {
-            toast.show(String(localized: "Couldn’t write it · Try again"))
+            toast.show(Self.failureMessage(for: error))
         }
     }
 
@@ -366,7 +368,7 @@ extension ScriptDetailViewModel {
                     page.isWriting = false
                     page.revealed = nil
                     transition.fail()
-                    toast.show(String(localized: "Couldn’t write it · Try again"))
+                    toast.show(Self.failureMessage(for: error))
                     return
                 }
                 page.isWriting = false
@@ -374,6 +376,13 @@ extension ScriptDetailViewModel {
                 page.writingError = error.localizedDescription
             }
         }
+    }
+
+    /// What a failed write says: the reason when it is one the creator can act on (another language,
+    /// waiting), otherwise "Try again".
+    static func failureMessage(for error: any Error) -> String {
+        if let error = error as? ScriptAIError, error.explainsItself { return error.localizedDescription }
+        return String(localized: "Couldn’t write it · Try again")
     }
 
     /// "Try again" after an error: the same idea, once more.

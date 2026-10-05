@@ -101,14 +101,39 @@ seção do quadro (`sc10`) não existe na página única (as seções saíram da
 - **Permissões** (`VoiceChapter`): cada linha é um botão. Sem resposta mostra **Allow** (a primeira sem resposta em amarelo, "a próxima"); tocar pede aquela
   permissão (o microfone pede também a Fala). Negada mostra **Off · Turn on** e abre os Ajustes (o sistema não pergunta duas vezes). Voltar dos Ajustes
   relê o estado. **Continue** pede o que faltar. Se algo foi negado, o rodapé vira "No problem, you can still practice…": o fluxo nunca trava.
-- **Prática sem microfone** (`PracticeBottomBar`): o cartão "Read it out loud." vira "Microphone off" ("The text scrolls on its own…") com **Open Settings**;
-  ao voltar dos Ajustes ele se atualiza. Sem câmera o `CameraBackdrop` já avisa e leva aos Ajustes. Depois da prática, `MicrophoneNeededCard` cuida do Record.
+- **Tópicos** (`UniverseChapter`): o que se escreve em "+ Your own" entra na lista como chip (`customTopics`), escolhido; se for solto o chip continua
+  na lista e pode ser escolhido de novo.
+- **Prática** (`SelfieModeView` + `PracticeBottomBar`): a câmera cobre **a tela toda** (`CameraBackdrop(fillsScreen:)`, `resizeAspectFill`; a prática não grava,
+  então não há moldura, grade nem zona segura). O painel de baixo é o do gravador, em vidro noturno: **Voice | Steady** (`ScrollModePicker`), voltar ao
+  topo, play, e a linha de voz ou o slider de velocidade; embaixo os dois caminhos como botões de verdade: **Record it for real** (amarelo) e **Not now — take
+  me to my studio** (vidro). O modo escolhido vale também na gravação de verdade (mesma sessão). Sem microfone o Voice fica apagado, a prática usa Steady
+  (`PrompterViewModel.startPractice`) e uma linha diz "Voice Following needs the microphone." com **Open Settings** (relê o estado ao voltar dos Ajustes).
+  Sem câmera o `CameraBackdrop` já avisa e leva aos Ajustes. Depois da prática, `MicrophoneNeededCard` cuida do Record.
 - **Fala** (`SystemPermissions.requestSpeech`): o callback do `SFSpeechRecognizer.requestAuthorization` volta numa fila de fundo; o closure fica num
   `nonisolated static` (dentro de uma classe `@MainActor` ele herdaria o isolamento e o Swift 6 aborta com `dispatch_assert_queue_fail`).
 
 **Teleprompter, só foco (v30):** o texto não acende palavras. Com o Voice Following o texto tem **uma cor só** e apenas **rola conforme a voz é
 reconhecida** (`SpeechLead`, `VoiceGlide`, `ScriptSpeechTracker`); o realce das últimas palavras ditas, o texto a 42% e a palavra nova em amarelo da v27
 saíram (`PrompterHighlighter`, `WordSpans` e `HighlightedParagraph` foram apagados). A linha de leitura, o trilho de seções e o chip de voz continuam.
+
+## 5.3. Studio é só teleprompter, e o Selfie lembra o último ajuste
+
+**Studio (v30)** (`Screens/Prompter/Studio`): sem câmera, sem gravar e sem permissão de câmera; serve para **ensaiar** o texto, **ajustar** onde ele fica
+para os olhos e a velocidade, ou **ler com outra câmera filmando** (o espelho e o Remote continuam). Saíram a miniatura da câmera, o botão de gravar, a
+última take, os ajustes de câmera, virar câmera, a linha de microfone e setup e a barra compacta da gravação (a decisão da v29 · 5.3 de gravar pela câmera
+traseira foi desfeita; gravar é do Selfie). O texto é o `PrompterTextView` de tela cheia com a linha de leitura em `guidePosition`, e um toque nele toca ou
+pausa. **Barra** (`StudioControlPanel`, vidro noturno como a do Selfie, com uma alça que a guarda e um botão ⌃ que a traz de volta): (1) Voice | Steady,
+‹‹ 3 linhas, play, 3 linhas ››; (2) a velocidade (Steady) ou a linha de voz e o estado do reconhecimento (Voice); (3) **chips Size · Line · Margin · Mirror ·
+Aa More** (`StudioAdjustBar`): Size, Line e Margin abrem **um slider por vez** (tamanho S–XL, linha 10–70% da tela, margens 8–40 pt), Mirror vira o texto
+para o vidro de um rig e Aa abre o Display. Acima do texto, **"0:42 LEFT" e "1:12 · IDEAL 1:00–1:30"** (`StudioTimeLine`, no ritmo escolhido). **Contagem:** dar
+play **do começo** usa a contagem de Settings › Prompter (Off, 3, 5, 10 s) para dar tempo de se posicionar; durante ela a barra some e um toque cancela;
+retomar depois de uma pausa toca na hora. Voice Following ouve pelo medidor do microfone (sem câmera).
+
+**Selfie: a caixa abre no alto.** Uma linha de leitura guardada pelo Settings antigo a mais de ~1/3 da tela (`PreferencesService.lowestUsualLineOffset`, 260 pt
+abaixo da lente) punha a caixa no meio; ela é apagada uma vez (`readingLineResetV30`) e a caixa volta ao lugar recomendado (118 pt sob a lente). **Último ajuste
+lembrado:** ao sair do prompter, o que o criador deixou (caixa: largura e altura; linha de leitura; tamanho e margens do texto; velocidade; espelho; Voice |
+Steady) vira o ponto de partida da próxima sessão (`SessionSetupService.rememberReadingLayout`). Câmera, qualidade, uma recomendação da plataforma ou fonte e
+cores continuam só da sessão; "Back to my setup" volta ao que estava ao abrir. O treino do onboarding não grava nada.
 
 ## 6. Argumentos de teste (só Debug)
 
@@ -120,3 +145,21 @@ encurtam). `-uiTestCatalogue transition` mostra a estrela; `universe` e `writing
 - O dock some durante a busca e a seleção; o tip espera 1,2 s com a tela quieta (sem sheet, toast, teclado, busca ou seleção).
 - A estrela pousa onde começaria o título da página (cursor amarelo) e sem destino medido no protótipo.
 - "Speak" do exemplo (08 X1) não foi feito (só Paste e My scripts); o microfone do dock dita ao toque, sem "segurar para gravar".
+
+## 8. Idiomas e Apple Intelligence: nenhuma tela nova (v30)
+
+O trabalho de qualidade de idiomas (`LOCALIZATION.md` §1.1) não mudou layout, identidade visual nem navegação. Só mudaram **mensagens**, que
+reaproveitam os componentes que já existiam (toast, linha de estado das legendas, lista de Language & Region):
+
+- **Seta ✦ do card de ideias** (`ScriptStarter`): se o Apple Intelligence não escreve no idioma da ideia, a estrela nem sai. Um toast diz o motivo ("Apple
+  Intelligence can't write in this script's language yet.") e a ideia vira um rascunho em branco para escrever à mão, como já acontecia sem o Apple
+  Intelligence. Antes a estrela voava 3 s e caía com "Couldn't write it · Try again", que não resolvia nada.
+- **Ferramentas de IA da página do script** (Improve script, seleção, Translate, hooks): o erro mostra o motivo quando o criador pode agir sobre ele
+  (idioma não suportado, **par** de idiomas na tradução, modelo ainda se preparando, resultado em outro idioma) e "Couldn't write it · Try again" só para
+  o que tentar de novo resolve. Parar uma ferramenta não mostra erro. **Translate** só age com o idioma escolhido no menu (antes caía em espanhol).
+- **Legendas** (`CaptionState.missingLanguages`, na linha de estado que já existia sob o interruptor): quando o roteiro usa outro idioma por um trecho e este
+  iPhone não consegue ouvi-lo, as legendas dizem qual idioma ficou de fora (com **Retry**), em vez de omitir o trecho sem avisar. Um par de idiomas que o
+  sistema recusa no meio da tradução diz "This iPhone can’t translate…" (como a checagem prévia), não "Try again".
+- **Language & Region › Voice Following** continua com os mesmos três rótulos ("Ready on this iPhone", "Downloads the first time you use it", "Not
+  available on this iPhone"), agora vindos de `LanguageCapabilityService` (uma consulta, guardada), e a lista de Script Language não mostra suporte de IA.
+- Textos novos: 3 strings, nos 20 idiomas (`LocalizationCatalogTests` confere placeholders e presença em todos).

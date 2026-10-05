@@ -11,7 +11,8 @@ import Foundation
 /// from here instead of the stored preferences.
 ///
 /// Writing through it keeps the rule that matters most: a recommendation or a change for one take
-/// never rewrites the creator's defaults. All reading settings stay in the session. Other camera
+/// never rewrites the creator's defaults. Reading settings stay in the session while it is open, and the layout the
+/// creator left is remembered when it closes (`rememberReadingLayout`). Other camera
 /// options (grid, countdown…) are still saved as before. Defaults are captured when the session
 /// opens, so editing Creator Setup cannot change an open recording.
 @MainActor
@@ -59,6 +60,26 @@ final class SessionSetupService {
             record(changed)
             sessionPrompter = newValue
         }
+    }
+
+    // MARK: - Remembering the layout
+
+    /// What the creator adjusted while reading (the box, the line, the text size, the speed, the mode…) becomes what the next session opens
+    /// with, so the prompter comes back as it was left. Only the reading layout is kept: the camera, a platform recommendation or any
+    /// other change for one take stays with its session.
+    func rememberReadingLayout() {
+        let now = prompter
+        var stored = preferences.prompter
+        stored.readingLineOffset = now.readingLineOffset
+        stored.textWindowHeight = now.textWindowHeight
+        stored.readingWidth = now.readingWidth
+        stored.size = now.size
+        stored.speed = now.speed
+        stored.guidePosition = now.guidePosition
+        stored.margin = now.margin
+        stored.isMirrored = now.isMirrored
+        stored.scrollMode = now.scrollMode
+        if stored != preferences.prompter { preferences.prompter = stored }
     }
 
     // MARK: - Recommendation

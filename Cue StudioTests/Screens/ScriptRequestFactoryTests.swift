@@ -94,4 +94,74 @@ struct ScriptRequestFactoryTests {
         #expect(auto.request(idea: "Por que eu parei de tomar café por trinta dias", platform: nil, format: nil).language == .portugueseBrazil)
         #expect(auto.request(idea: "Café", platform: nil, format: nil).language == .english)
     }
+
+    // MARK: - Regional variants
+
+    private func makeFactory(
+        scriptLanguage: CueLanguage? = nil, interface: CueLanguage? = .english, preferred: [String], defaults: TestDefaults
+    ) -> ScriptRequestFactory {
+        ScriptRequestFactory(
+            rules: TestData.rulesService(), profile: CreatorProfileService(defaults: defaults.defaults),
+            scriptLanguage: scriptLanguage, interfaceLanguage: interface, preferredLanguages: preferred
+        )
+    }
+
+    /// An idea read as English on an iPhone set to British English is written in British English.
+    @Test func aLanguageReadFromTheIdeaKeepsTheCreatorsOwnVariant() {
+        let defaults = TestDefaults()
+        defer { defaults.tearDown() }
+        let factory = makeFactory(preferred: ["en-GB", "it-IT"], defaults: defaults)
+        let request = factory.request(idea: "Why I quit coffee for thirty days", platform: nil, format: nil)
+        #expect(request.language == .english)
+        #expect(request.languageVariant?.identifier(.bcp47) == "en-GB")
+        #expect(ScriptPromptBuilder.instructions(for: request).contains("English (United Kingdom)"))
+    }
+
+    @Test func europeanPortugueseIsKeptWhenOnlyTheLanguageWasRead() {
+        let defaults = TestDefaults()
+        defer { defaults.tearDown() }
+        let factory = makeFactory(preferred: ["pt-PT"], defaults: defaults)
+        let request = factory.request(idea: "Por que eu parei de tomar café por trinta dias", platform: nil, format: nil)
+        #expect(request.language == .portugueseBrazil)
+        #expect(request.languageVariant?.identifier(.bcp47) == "pt-PT")
+        #expect(ScriptPromptBuilder.instructions(for: request).contains("Portuguese (Portugal)"))
+    }
+
+    /// A language picked in Language & Region is the creator's choice: never refined into a variant they didn't pick.
+    @Test func aChosenScriptLanguageIsNeverRefined() {
+        let defaults = TestDefaults()
+        defer { defaults.tearDown() }
+        let factory = makeFactory(scriptLanguage: .portugueseBrazil, preferred: ["pt-PT", "en-GB"], defaults: defaults)
+        let request = factory.request(idea: "Por que eu parei de tomar café", platform: nil, format: nil)
+        #expect(request.language == .portugueseBrazil && request.languageVariant == nil)
+        #expect(ScriptPromptBuilder.instructions(for: request).contains("Portuguese (Brazil)"))
+        let english = makeFactory(scriptLanguage: .english, preferred: ["en-GB"], defaults: defaults)
+        #expect(english.request(idea: "Why I quit coffee for thirty days", platform: nil, format: nil).languageVariant == nil)
+    }
+
+    /// The country the iPhone is set to says nothing about who the script is for.
+    @Test func noVariantComesFromAnIPhoneWithoutOneInItsLanguages() {
+        let defaults = TestDefaults()
+        defer { defaults.tearDown() }
+        let factory = makeFactory(preferred: ["it-IT"], defaults: defaults)
+        let request = factory.request(idea: "Why I quit coffee for thirty days", platform: nil, format: nil)
+        #expect(request.language == .english && request.languageVariant == nil)
+        #expect(ScriptPromptBuilder.languageRule(.english) == "Write the title and every block in English.")
+    }
+
+    @Test func theInterfaceLanguageGetsTheCreatorsVariantToo() {
+        let defaults = TestDefaults()
+        defer { defaults.tearDown() }
+        let factory = makeFactory(interface: .spanish, preferred: ["es-MX"], defaults: defaults)
+        let request = factory.request(idea: "Café", platform: nil, format: nil)
+        #expect(request.language == .spanish && request.languageVariant?.identifier(.bcp47) == "es-MX")
+    }
+
+    @Test func aTraditionalIdeaIsWrittenInTraditionalChinese() {
+        let defaults = TestDefaults()
+        defer { defaults.tearDown() }
+        let factory = makeFactory(preferred: ["en-US"], defaults: defaults)
+        let request = factory.request(idea: "為什麼我三十天不喝咖啡，改變了我的早晨。", platform: nil, format: nil)
+        #expect(request.language == .chineseTraditional)
+    }
 }

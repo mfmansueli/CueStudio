@@ -122,4 +122,65 @@ struct SpeechLocaleResolverTests {
         let result = await route(.language(.english), on: FakeSpeechLocaleCatalog())
         #expect(result == .failure(.noRecognition))
     }
+
+    // MARK: - Chinese: two writing systems
+
+    private let chineseDevice = FakeSpeechLocaleCatalog(
+        transcriber: ["zh-CN", "zh-TW", "zh-HK", "en-US"],
+        dictation: ["zh-CN", "zh-TW", "zh-HK"],
+        defaults: ["zh": "zh-CN"]
+    )
+
+    @Test func aTraditionalScriptOnAutoDetectIsHeardInTaiwanChineseNeverSimplified() async throws {
+        let text = "這是改變我早晨的三個習慣。第一，我在看手機之前先喝一杯水。"
+        let route = try await route(.detect(text: text, systemLanguages: ["en-US"]), on: chineseDevice).get()
+        #expect(route.locale.identifier(.bcp47) == "zh-TW")
+        #expect(route.language == .chineseTraditional)
+    }
+
+    @Test func aSimplifiedScriptOnAutoDetectIsHeardInSimplified() async throws {
+        let text = "这是改变我早晨的三个习惯。第一，我在看手机之前先喝一杯水。"
+        let route = try await route(.detect(text: text, systemLanguages: ["en-US"]), on: chineseDevice).get()
+        #expect(route.locale.identifier(.bcp47) == "zh-CN")
+        #expect(route.language == .chineseSimplified)
+    }
+
+    @Test func theCreatorsOwnChineseVariantIsKeptInTheScriptsWritingSystem() async throws {
+        let text = "這是改變我早晨的三個習慣。第一，我在看手機之前先喝一杯水。"
+        // A Simplified-Chinese iPhone doesn't pull Traditional text into Simplified recognition; a Hong Kong one is kept.
+        let simplifiedPhone = try await route(.detect(text: text, systemLanguages: ["zh-Hans-CN"]), on: chineseDevice).get()
+        #expect(simplifiedPhone.locale.identifier(.bcp47) == "zh-TW")
+        let hongKongPhone = try await route(.detect(text: text, systemLanguages: ["zh-Hant-HK"]), on: chineseDevice).get()
+        #expect(hongKongPhone.locale.identifier(.bcp47) == "zh-HK")
+    }
+
+    @Test func traditionalChineseIsUnavailableNotReplacedBySimplified() async {
+        let simplifiedOnly = FakeSpeechLocaleCatalog(transcriber: ["zh-CN"], dictation: ["zh-CN"], defaults: ["zh": "zh-CN", "zh-TW": "zh-CN"])
+        let explicit = await route(.language(.chineseTraditional), on: simplifiedOnly)
+        #expect(explicit == .failure(.unsupported(.chineseTraditional)))
+        let text = "這是改變我早晨的三個習慣。第一，我在看手機之前先喝一杯水。"
+        let detected = await route(.detect(text: text, systemLanguages: []), on: simplifiedOnly)
+        guard case .failure(.unsupportedDetected) = detected else {
+            Issue.record("A Traditional script was heard as Simplified: \(detected)")
+            return
+        }
+    }
+
+    // MARK: - Explicit choices stay as picked
+
+    @Test func anExplicitLanguageIsNotRefinedByTheIPhonesVariant() async throws {
+        // The creator picked English; an iPhone in British English doesn't change what was picked (en-US).
+        let route = try await route(.language(.english)).get()
+        #expect(route.locale.identifier(.bcp47) == "en-US")
+    }
+
+    @Test func aDetectedPortugueseKeepsEuropeanPortugueseOnAnEuropeanIPhone() async throws {
+        let text = "Estes são três hábitos que mudaram as minhas manhãs. Primeiro, bebo um copo de água antes de pegar no telemóvel."
+        let european = FakeSpeechLocaleCatalog(transcriber: ["pt-PT", "pt-BR"], dictation: ["pt-PT", "pt-BR"])
+        let route = try await route(.detect(text: text, systemLanguages: ["pt-PT", "en-GB"]), on: european).get()
+        #expect(route.locale.identifier(.bcp47) == "pt-PT")
+        // While a chosen Brazilian Portuguese never is.
+        let chosen = try await self.route(.language(.portugueseBrazil), on: european).get()
+        #expect(chosen.locale.identifier(.bcp47) == "pt-BR")
+    }
 }

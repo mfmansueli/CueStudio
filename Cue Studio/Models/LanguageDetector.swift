@@ -27,6 +27,13 @@ nonisolated enum LanguageDetector {
     /// Cues aren't spoken, so they don't count. `preferring` (the creator's languages, such as the
     /// iPhone's) is a weak lean for text that could be either, never a vote against clear text.
     static func dominantLanguageCode(in text: String, preferring preferred: [String] = []) -> String? {
+        dominantLanguage(in: text, preferring: preferred)?.languageCode?.identifier
+    }
+
+    /// The dominant language as Natural Language reads it, keeping the writing system when the
+    /// language has two ("zh-Hant" for Traditional characters, "zh-Hans" for Simplified): reduced to
+    /// "zh" a Traditional script would be heard, written and translated as Simplified.
+    static func dominantLanguage(in text: String, preferring preferred: [String] = []) -> Locale.Language? {
         let spoken = CueParser.stripCues(text)
         guard spoken.contains(where: { $0.isLetter }) else { return nil }
         let lean = lean(for: preferred)
@@ -35,12 +42,12 @@ nonisolated enum LanguageDetector {
         let wholeLanguage = whole.languageHypotheses(withMaximum: 2).sorted { $0.value > $1.value }
             .map(\.key).first { $0 != .undetermined }
         let language = weighed(spoken, lean: lean, fallback: wholeLanguage) ?? leaning(whole, to: lean) ?? wholeLanguage
-        return language.flatMap { Locale.Language(identifier: $0.rawValue).languageCode?.identifier }
+        return language.map { Locale.Language(identifier: $0.rawValue) }
     }
 
-    /// The detected language when Cue offers it.
+    /// The detected language when Cue offers it, in the writing system the text uses.
     static func language(in text: String, preferring preferred: [String] = []) -> CueLanguage? {
-        dominantLanguageCode(in: text, preferring: preferred).flatMap(CueLanguage.matching(languageCode:))
+        dominantLanguage(in: text, preferring: preferred).flatMap(CueLanguage.matching(language:))
     }
 
     /// Whether `words`, a short stretch of a text written in `code`, are clearly in another
@@ -96,7 +103,13 @@ nonisolated enum LanguageDetector {
     /// English-only hint reads a clear Portuguese text as English), and an iPhone set to English
     /// belongs to many creators who write in another language.
     private static func lean(for preferred: [String]) -> Set<NLLanguage> {
-        Set(preferred.compactMap { Locale.Language(identifier: $0).languageCode?.identifier }.map { NLLanguage(rawValue: $0) })
+        Set(preferred.compactMap { identifier -> NLLanguage? in
+            let language = Locale.Language(identifier: identifier)
+            guard let code = language.languageCode?.identifier else { return nil }
+            // Natural Language tells the two Chinese writing systems apart, so the lean has to name one.
+            guard code == "zh" else { return NLLanguage(rawValue: code) }
+            return NLLanguage(rawValue: CueLanguage.matching(language: language)?.chineseScriptIdentifier ?? "zh-Hans")
+        })
     }
 
     /// For a text too short to weigh by sentence: the leaning language when it is a close second

@@ -72,6 +72,10 @@ final class LanguageService {
         CueLanguage.matching(interfaceLocalization: store.systemLocalization) ?? .english
     }
 
+    /// The iPhone's own languages, most preferred first (never the interface's): where the creator's
+    /// regional variants come from. The device's country is never read for content.
+    var systemLanguages: [String] { store.systemLanguages }
+
     // MARK: - Voice Following
 
     /// What Voice Following listens for with `script`. The interface language never takes part.
@@ -108,8 +112,9 @@ final class LanguageService {
         if let scriptLanguage { return .language(scriptLanguage) }
         let typed = existingText.trimmingCharacters(in: .whitespacesAndNewlines)
         if typed.split(whereSeparator: \.isWhitespace).count >= 3 || WordSegmenter.containsUnspacedScript(typed),
-           let detected = LanguageDetector.language(in: typed) {
-            return .language(detected)
+           LanguageDetector.language(in: typed, preferring: store.systemLanguages) != nil {
+            // Read from the text, so the creator's own variant (en-GB over en-US) is kept, as in captions.
+            return .detect(text: typed, systemLanguages: store.systemLanguages)
         }
         return .language(interfaceLanguage)
     }

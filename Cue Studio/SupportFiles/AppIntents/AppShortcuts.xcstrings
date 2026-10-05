@@ -353,7 +353,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "${applicationName} ile ${script} kaydet"
+            "value" : "${applicationName} ile ${script} kaydını başlat"
           }
         },
         "vi" : {

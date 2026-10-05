@@ -42,6 +42,8 @@ struct AppServices {
     let apps: ExternalAppService
     let remote: RemoteControlService
     let languages: LanguageService
+    /// What this device does in each language (interface, Apple Intelligence, speech, translation), asked once and kept.
+    let capabilities: LanguageCapabilityService
     let personalization: PersonalizationService
     let onboarding: OnboardingService
     let milestones: MilestoneService
@@ -60,6 +62,7 @@ struct AppServices {
             InterfaceLocale.current = Locale(identifier: language.interfaceLocalization)
             InterfaceDirection.apply(rightToLeft: language.isRightToLeft)
         }
+        capabilities = LanguageCapabilityService(checker: options.languageCapabilities)
         library = ScriptLibraryService(repository: options.scriptRepository)
         takes = TakeLibraryService(repository: options.takeRepository)
         preferences = PreferencesService(defaults: options.defaults)
@@ -89,7 +92,8 @@ struct AppServices {
         self.ideaTransition = ideaTransition
         starter = ScriptStarter(
             library: library, rules: rules, profile: profile, languages: languages,
-            presentation: presentation, ideaDraft: ideaDraft, transition: ideaTransition, sky: sky
+            presentation: presentation, ideaDraft: ideaDraft, transition: ideaTransition, sky: sky,
+            writer: options.writer, toast: toast
         )
         writer = options.writer
         scriptRevealPause = options.scriptRevealPause
@@ -159,6 +163,7 @@ extension View {
             .environment(services.apps)
             .environment(services.remote)
             .environment(services.languages)
+            .environment(services.capabilities)
             .environment(services.personalization)
             .environment(services.onboarding)
             .environment(services.milestones)

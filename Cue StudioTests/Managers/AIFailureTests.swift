@@ -29,9 +29,30 @@ struct AIFailureTests {
         #expect(AIFailure(error) == .unsupportedLanguage)
     }
 
+    @Test func modelFilesThatAreNotReadyMeanThePreparingModel() {
+        let error = SystemLanguageModel.Error.assetsUnavailable(.init(debugDescription: "downloading"))
+        #expect(AIFailure(error) == .modelPreparing)
+    }
+
+    /// A rest is what a rate limited model needs: no retry, no other model.
+    @Test func aRateLimitAsksForARest() {
+        let error = LanguageModelError.rateLimited(.init(resetDate: nil, debugDescription: "limited"))
+        #expect(AIFailure(error) == .rateLimited)
+        #expect(AIModelRoute.onDevice.fallback(after: .rateLimited) == nil)
+        #expect(AIModelRoute.privateCloud.fallback(after: .rateLimited) == nil)
+        #expect(ScriptAIError.rateLimited.explainsItself)
+    }
+
+    /// Stopping a request is not a failure to explain or to try elsewhere.
+    @Test func aCancellationIsNotAFailure() {
+        #expect(AIFailure(CancellationError()) == .cancelled)
+        #expect(AIModelRoute.onDevice.fallback(after: .cancelled) == nil)
+        #expect(AIModelRoute.privateCloud.fallback(after: .cancelled) == nil)
+    }
+
     @Test func anythingElseIsNotRetried() {
         #expect(AIFailure(LanguageModelError.timeout(.init(debugDescription: "slow"))) == .other)
+        #expect(AIFailure(LanguageModelError.refusal(.init(explanation: "no", debugDescription: "no"))) == .other)
         #expect(AIFailure(ScriptAIError.emptyResponse) == .other)
-        #expect(AIFailure(CancellationError()) == .other)
     }
 }

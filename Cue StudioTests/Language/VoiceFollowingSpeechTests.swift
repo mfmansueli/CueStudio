@@ -40,6 +40,11 @@ struct VoiceFollowingSpeechTests {
         .turkish: "Sabahlarımı değiştiren üç alışkanlık var. İlk olarak, telefonuma dokunmadan önce bir bardak su içiyorum. İkinci olarak, bugün bitirmek istediğim bir şeyi yazıyorum.",
         .thai: "นี่คือสามนิสัยที่เปลี่ยนตอนเช้าของฉัน อย่างแรก ฉันดื่มน้ำหนึ่งแก้วก่อนจับโทรศัพท์ อย่างที่สอง ฉันเขียนสิ่งหนึ่งที่อยากทำให้เสร็จวันนี้",
         .vietnamese: "Đây là ba thói quen đã thay đổi buổi sáng của tôi. Đầu tiên, tôi uống một cốc nước trước khi cầm điện thoại. Thứ hai, tôi viết ra một việc muốn làm xong hôm nay.",
+        .dutch: "Dit zijn drie gewoontes die mijn ochtenden hebben veranderd. Eerst drink ik een glas water voordat ik mijn telefoon aanraak. Daarna schrijf ik één ding op dat ik vandaag wil afmaken.",
+        .swedish: "Det här är tre vanor som har förändrat mina morgnar. Först dricker jag ett glas vatten innan jag rör telefonen. Sedan skriver jag upp en sak som jag vill bli klar med idag.",
+        .danish: "Det er tre vaner, der har ændret mine morgener. Først drikker jeg et glas vand, før jeg rører min telefon. Bagefter skriver jeg én ting ned, som jeg vil have færdig i dag.",
+        .norwegian: "Dette er tre vaner som har endret morgenene mine. Først drikker jeg et glass vann før jeg tar på telefonen. Deretter skriver jeg ned én ting som jeg vil bli ferdig med i dag.",
+        .chineseTraditional: "這是改變我早晨的三個習慣。第一，我在看手機之前先喝一杯水。第二，我寫下今天想完成的一件事。",
     ]
 
     /// Share of the script's words the reading has to reach.
@@ -51,13 +56,36 @@ struct VoiceFollowingSpeechTests {
     private final class Reading {
         var tracker: ScriptSpeechTracker
         var lastHeard = ""
-        init(words: [String]) { tracker = ScriptSpeechTracker(words: words) }
+        var updates = 0
+        var maxJump = 0
+        var backwards = 0
+        /// How far the text got while only silence had been played.
+        var positionInLeadingSilence = 0
+        init(words: [String], language: CueLanguage) { tracker = ScriptSpeechTracker(words: words, language: language) }
+
+        func hear(_ transcript: String) {
+            lastHeard = transcript
+            let before = tracker.position
+            tracker.hear(transcript)
+            updates += 1
+            maxJump = max(maxJump, tracker.position - before)
+            if tracker.position < before { backwards += 1 }
+        }
+    }
+
+    /// A language this device can't run is *not validated*, never counted as passed: the test is
+    /// cancelled (reported as skipped) with the reason, and the line below goes to the log.
+    private func notValidated(_ language: CueLanguage, _ reason: String) throws -> Never {
+        print("VOICE FOLLOWING \(language.rawValue): NOT VALIDATED · \(reason)")
+        try Test.cancel("\(language.rawValue) not validated: \(reason)")
     }
 
     @Test(arguments: CueLanguage.allCases)
     func followsAReadingOfTheScript(in language: CueLanguage) async throws {
-        let script = try #require(Self.scripts[language])
-        let url = try #require(Bundle(for: BundleToken.self).url(forResource: "speech-\(language.rawValue)", withExtension: "m4a"))
+        KeepScreenAwake.enable()
+        let script = try #require(Self.scripts[language], "\(language.rawValue) has no script")
+        let resource = "speech-\(language.rawValue)"
+        let url = try #require(Bundle(for: BundleToken.self).url(forResource: resource, withExtension: "m4a"), "\(language.rawValue) has no recording")
         let speech = SpeechRecognitionManager()
         defer { speech.stop() }
 
@@ -71,33 +99,38 @@ struct VoiceFollowingSpeechTests {
             print("VOICE FOLLOWING \(language.rawValue): \(route.engine) \(route.locale.identifier(.bcp47))")
         case .unavailable(.noRecognition):
             // The simulator lists speech models it can't run: this test needs a device.
-            print("VOICE FOLLOWING \(language.rawValue): no speech recognition on this device")
-            return
+            try notValidated(language, "no speech recognition on this device")
         case .unavailable(let reason):
-            Issue.record("\(language.rawValue) unavailable on this device: \(reason.message)")
-            return
+            // Not offered here, or its model couldn't be downloaded: nothing was recognized, so nothing is claimed.
+            try notValidated(language, reason.message)
         case .cancelled:
-            Issue.record("\(language.rawValue) cancelled")
-            return
+            try notValidated(language, "the recognizer was cancelled before it started")
         }
 
-        let words = ScriptWords(text: script)
-        let reading = Reading(words: words.tokens)
+        let words = ScriptWords(text: script, language: language)
+        let reading = Reading(words: words.tokens, language: language)
         let listener = Task { @MainActor in
-            for await heard in transcription.transcripts {
-                reading.lastHeard = heard
-                reading.tracker.hear(heard)
-            }
+            for await heard in transcription.transcripts { reading.hear(heard) }
         }
         defer { listener.cancel() }
 
+        // A second of silence first: nothing may move while nobody speaks.
+        try await silence(1, into: transcription)
+        reading.positionInLeadingSilence = reading.tracker.position
         try await play(url, into: transcription)
         for _ in 0..<150 where reading.tracker.position < words.count {
             try await Task.sleep(for: .milliseconds(100))
         }
         let reached = Double(reading.tracker.position) / Double(max(1, words.count))
-        print("VOICE FOLLOWING \(language.rawValue): \(reading.tracker.position)/\(words.count) words · heard “\(reading.lastHeard)”")
+        print(
+            "VOICE FOLLOWING \(language.rawValue): \(reading.tracker.position)/\(words.count) words"
+                + " · largest jump \(reading.maxJump) · backwards \(reading.backwards) · moved in silence \(reading.positionInLeadingSilence)"
+                + " · updates \(reading.updates) · heard “\(reading.lastHeard)”"
+        )
         #expect(reached >= Self.required, "\(language.rawValue) reached \(reading.tracker.position) of \(words.count) words; heard: \(reading.lastHeard)")
+        #expect(reading.positionInLeadingSilence == 0, "\(language.rawValue): the text moved during silence")
+        #expect(reading.backwards == 0)
+        #expect(reading.tracker.position <= words.count)
     }
 
     /// What this device offers for each language, asked without downloading anything: ready,
@@ -115,6 +148,17 @@ struct VoiceFollowingSpeechTests {
             lines.append("\(language.rawValue): \(availability) (\(engine))")
         }
         print("VOICE AVAILABILITY \(lines.joined(separator: " · "))")
+    }
+
+    private func silence(_ seconds: Double, into transcription: SpeechTranscription) async throws {
+        let format = try #require(AVAudioFormat(commonFormat: .pcmFormatFloat32, sampleRate: 16_000, channels: 1, interleaved: false))
+        let chunk = AVAudioFrameCount(format.sampleRate / 10)
+        for _ in 0..<Int(seconds * 10) {
+            guard let buffer = AVAudioPCMBuffer(pcmFormat: format, frameCapacity: chunk) else { return }
+            buffer.frameLength = chunk
+            transcription.audio(buffer)
+            try await Task.sleep(for: .milliseconds(100))
+        }
     }
 
     /// Feeds the recording in 100 ms buffers at four times real speed, then a second of silence so

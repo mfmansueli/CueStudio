@@ -99,7 +99,12 @@ final class TakeEditService: TakeEditing {
         let language = CueLanguage.matching(languageCode: heard.languageCode)
         let cues = await Task.detached { CaptionBuilder.captions(heard: words, script: script, language: language) }.value
         try Task.checkCancellation()
-        return .captions(cues, transcript: CaptionTranscript(words: words, languageCode: heard.languageCode))
+        return .captions(
+            cues,
+            transcript: CaptionTranscript(
+                words: words, languageCode: heard.languageCode, unheardLanguages: heard.unheardLanguages.isEmpty ? nil : heard.unheardLanguages
+            )
+        )
     }
 
     func previewItem(forVideoAt url: URL, edit: TakeEdit, window: TimeSpan?) async throws -> AVPlayerItem {

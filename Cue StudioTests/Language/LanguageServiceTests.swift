@@ -212,7 +212,35 @@ struct LanguageServiceTests {
         // Too little to tell a language from.
         #expect(service.dictationRequest(existingText: "café") == .language(.italian))
         // Enough typed: its language, whatever the interface is.
-        #expect(service.dictationRequest(existingText: "Esses são três hábitos que mudaram as minhas manhãs") == .language(.portugueseBrazil))
+        let typed = "Esses são três hábitos que mudaram as minhas manhãs"
+        #expect(service.dictationRequest(existingText: typed) == .detect(text: typed, systemLanguages: ["it-IT"]))
+    }
+
+    /// A language read from the typed idea keeps the creator's own regional variant (en-GB over en-US),
+    /// the way captions and Voice Following already did: it goes through the same detection.
+    @Test func aDetectedIdeaKeepsTheCreatorsRegionalVariant() async throws {
+        let defaults = TestDefaults()
+        defer { defaults.tearDown() }
+        let store = InMemoryAppLanguageStore(systemLocalization: "en", systemLanguages: ["en-GB", "it-IT"])
+        let service = makeService(defaults: defaults, store: store)
+        let typed = "Here are three habits that changed my mornings"
+        let request = service.dictationRequest(existingText: typed)
+        #expect(request == .detect(text: typed, systemLanguages: ["en-GB", "it-IT"]))
+        let catalog = FakeSpeechLocaleCatalog(transcriber: ["en-US", "en-GB"], dictation: ["en-US"])
+        let route = try await SpeechLocaleResolver(catalog: catalog).resolve(request).get()
+        #expect(route.locale.identifier(.bcp47) == "en-GB")
+    }
+
+    @Test func aChosenScriptLanguageIsNeverRefinedByTheIPhonesVariant() async throws {
+        let defaults = TestDefaults()
+        defer { defaults.tearDown() }
+        let store = InMemoryAppLanguageStore(systemLocalization: "en", systemLanguages: ["en-GB"])
+        let service = makeService(defaults: defaults, store: store)
+        service.scriptLanguage = .english
+        #expect(service.dictationRequest(existingText: "Here are three habits that changed my mornings") == .language(.english))
+        let catalog = FakeSpeechLocaleCatalog(transcriber: ["en-US", "en-GB"])
+        let route = try await SpeechLocaleResolver(catalog: catalog).resolve(.language(.english)).get()
+        #expect(route.locale.identifier(.bcp47) == "en-US")
     }
 
     @Test func voiceFollowingsLanguageNeverDecidesWhatAnIdeaIsHeardIn() {

@@ -20,7 +20,10 @@ final class PrompterUITests: XCTestCase {
         XCTAssertTrue(play.waitForExistence(timeout: 5))
         XCTAssertEqual(play.label, "Play")
         play.tap()
-        XCTAssertEqual(play.label, "Pause")
+        // From the top it counts down first (3 s by default), then plays.
+        let playing = NSPredicate(format: "label == 'Pause'")
+        expectation(for: playing, evaluatedWith: play)
+        waitForExpectations(timeout: 10)
         play.tap()
 
         app.buttons["prompter.displayButton"].tap()

@@ -40,7 +40,7 @@ nonisolated enum AIModelRoute: Equatable, Sendable {
     func fallback(after failure: AIFailure) -> AIModelRoute? {
         switch (self, failure) {
         case (.privateCloud, .cloudUnreachable): .onDevice
-        case (.onDevice, .tooLong), (.onDevice, .unsupportedLanguage): .privateCloud
+        case (.onDevice, .tooLong), (.onDevice, .unsupportedLanguage), (.onDevice, .modelPreparing): .privateCloud
         default: nil
         }
     }

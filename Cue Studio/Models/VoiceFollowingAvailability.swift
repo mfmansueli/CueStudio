@@ -15,6 +15,14 @@ nonisolated enum VoiceFollowingAvailability: Equatable, Sendable {
     /// No speech recognition for it here.
     case unavailable
 
+    init(_ support: FeatureSupport) {
+        switch support {
+        case .supported: self = .ready
+        case .notInstalled: self = .downloadsOnFirstUse
+        case .unavailable: self = .unavailable
+        }
+    }
+
     var label: String {
         switch self {
         case .ready: String(localized: "Ready on this iPhone")

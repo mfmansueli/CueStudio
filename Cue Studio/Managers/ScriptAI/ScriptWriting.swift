@@ -25,12 +25,19 @@ protocol ScriptWriting: AnyObject {
     /// Ideas written in `language` (the interface's, where they are shown), or the model's choice.
     func themeIdeas(for niches: [Niche], language: CueLanguage?) async throws -> [ThemeIdea]
 
+    /// Why Apple Intelligence can't write in `languages` right now (a translation lists both), told before
+    /// anything is sent; nil when it can. Being available says nothing about a language.
+    func writingFailure(in languages: [Locale.Language]) -> AIPlanFailure?
+
     /// Which of the creator's topics (their names) a script is about, chosen on this iPhone; nil when none fits or
     /// no model can tell.
     func pickTopic(for text: String, among topics: [String]) async -> String?
 }
 
 extension ScriptWriting {
+    /// Writers that don't know languages (tests) take any.
+    func writingFailure(in languages: [Locale.Language]) -> AIPlanFailure? { nil }
+
     /// Writers that can't choose (tests, a device without Apple Intelligence) leave the script untagged.
     func pickTopic(for text: String, among topics: [String]) async -> String? { nil }
 

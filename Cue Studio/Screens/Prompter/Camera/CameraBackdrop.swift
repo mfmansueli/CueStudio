@@ -9,12 +9,14 @@ import UIKit
 /// The camera feed, or a calm placeholder that says why there is none. The feed fills `sensorRect`,
 /// never the whole screen: the preview is the recorded image, and the rest of the screen stays black.
 /// With a background effect on, its frames cover the feed (the recording keeps the camera's image;
-/// the effect goes with the take).
+/// the effect goes with the take). The practice run records nothing, so there the feed fills the screen.
 struct CameraBackdrop: View {
     /// Where the sensor image goes on screen (`FrameGeometry.sensorRect(in:)`).
     let sensorRect: CGRect
     /// Where the preview layer actually drew the image, in screen points.
     var onVideoRectChange: (CGRect) -> Void = { _ in }
+    /// The practice run: the feed covers the whole screen instead of showing the recorded frame.
+    var fillsScreen = false
 
     @Environment(CameraManager.self) private var camera
     @Environment(\.openURL) private var openURL
@@ -29,7 +31,8 @@ struct CameraBackdrop: View {
                         session: camera.previewSession,
                         deviceID: camera.activeDeviceID,
                         onCaptureRotationChange: { camera.captureRotationAngle = $0 },
-                        onVideoRectChange: onVideoRectChange
+                        onVideoRectChange: onVideoRectChange,
+                        fillsFrame: fillsScreen
                     )
                     .frame(width: sensorRect.width, height: sensorRect.height)
                     .position(x: sensorRect.midX, y: sensorRect.midY)

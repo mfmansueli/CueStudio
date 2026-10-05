@@ -22,4 +22,22 @@ nonisolated struct AppleSpeechLocaleCatalog: SpeechLocaleCatalog {
         case .dictation: await DictationTranscriber.supportedLocale(equivalentTo: locale)
         }
     }
+
+    func assetStatus(of route: SpeechRoute) async -> SpeechAssetStatus {
+        let modules: [any SpeechModule] = switch route.engine {
+        case .transcriber:
+            [SpeechTranscriber(locale: route.locale, transcriptionOptions: [], reportingOptions: [], attributeOptions: [])]
+        case .dictation:
+            [DictationTranscriber(locale: route.locale, contentHints: [], transcriptionOptions: [], reportingOptions: [], attributeOptions: [])]
+        }
+        switch await AssetInventory.status(forModules: modules) {
+        case .installed:
+            // Some devices list a model they can't run (the simulator): no audio format for it.
+            return await SpeechAnalyzer.bestAvailableAudioFormat(compatibleWith: modules) == nil ? .cannotRun : .ready
+        case .unsupported:
+            return .unsupported
+        default:
+            return .needsDownload
+        }
+    }
 }

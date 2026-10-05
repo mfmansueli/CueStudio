@@ -76,6 +76,8 @@ extension ScriptDetailViewModel {
             page.voicePreview?.without = nil
             commitPage()
             toast.show(keepsInProfile ? String(localized: "Profile updated · Rewritten") : String(localized: "Script rewritten"))
+        } catch is CancellationError {
+            return
         } catch {
             toast.show(error.localizedDescription)
         }

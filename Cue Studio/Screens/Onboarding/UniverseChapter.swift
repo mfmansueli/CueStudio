@@ -23,6 +23,8 @@ struct UniverseChapter: View {
     }
     /// When each topic was picked, to play its birth.
     @State private var born: [String: Date] = [:]
+    /// The topics typed with "+ Your own", kept in the list as chips (picked or not) so they can be picked again.
+    @State private var customTopics: [OnboardingTopic] = []
 
     private var topicChoices: [OnboardingTopic] { Niche.allCases.map(OnboardingTopic.niche) }
 
@@ -43,6 +45,7 @@ struct UniverseChapter: View {
                 OnboardingCaption(text: countLabel)
                 FlowLayout(spacing: 8, lineSpacing: 8) {
                     ForEach(topicChoices) { topic in chip(topic) }
+                    ForEach(customTopics) { topic in chip(topic) }
                     yourOwnChip
                 }
                 if let customFeedback { feedbackView(customFeedback) }
@@ -136,6 +139,11 @@ struct UniverseChapter: View {
             let before = Set(onboarding.topics.map(\.id))
             onboarding.addCustom(name)
             for topic in onboarding.topics where !before.contains(topic.id) { born[topic.id] = .now }
+            // The topic joins the list as a chip, even if it is let go of later.
+            for topic in onboarding.topics {
+                if case .custom = topic, !customTopics.contains(topic) { customTopics.append(topic) }
+            }
+            customName = ""
         case .typo(let suggestion, let original):
             customFeedback = .typo(suggestion: suggestion, original: original)
         case .duplicate:

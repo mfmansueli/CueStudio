@@ -35,9 +35,14 @@ nonisolated enum CaptionTranscriber {
         let code = route.locale.language.languageCode?.identifier ?? "en"
         let reading = ScriptLanguageRuns.reading(of: script, language: route.language)
         var routes = [(code: code, route: route)]
+        var unheard: [String] = []
         for other in ScriptLanguageRuns.foreignCodes(in: reading, besides: code) {
             guard let cue = CueLanguage.matching(languageCode: other),
-                  case .success(let found) = await resolver.resolve(.language(cue), scriptText: script) else { continue }
+                  case .success(let found) = await resolver.resolve(.language(cue), scriptText: script) else {
+                // A language this iPhone can't listen in: its stretches stay out, and the creator is told.
+                unheard.append(other)
+                continue
+            }
             routes.append((other, found))
         }
         var heard: [MixedLanguageMerge.Heard] = []
@@ -47,12 +52,26 @@ nonisolated enum CaptionTranscriber {
                 let words = try await listen(in: audio, route: entry.route, script: script, progress: share(progress, pass: index, of: routes.count))
                 heard.append(.init(code: entry.code, words: words))
             } catch {
-                // The main language must be heard; another one this iPhone can't download or run only costs its stretch.
+                // The main language must be heard; another one this iPhone can't download or run only costs
+                // its stretch, which is reported rather than lost without a word.
                 if index == 0 || error is CancellationError { throw error }
+                unheard.append(entry.code)
             }
         }
-        let words = MixedLanguageMerge.merge(heard, primary: code, reading: reading)
-        return TakeTranscript(words: words, languageCode: code)
+        var words = MixedLanguageMerge.merge(heard, primary: code, reading: reading)
+        // Times that don't fit the recording (a recognizer that finishes early) are never passed off as measured.
+        if let levels = try? AudioLevelReader.levels(of: audio, interval: 0.05) {
+            words = TranscriptTimingCheck.reconciled(words, spoken: TranscriptTimingCheck.spokenSpan(levels: levels, interval: 0.05))
+        }
+        return TakeTranscript(words: words, languageCode: Self.transcriptCode(for: route, code: code), unheardLanguages: unheard)
+    }
+
+    /// The code a transcript is kept under: the language's ("pt"), except Chinese, which carries its
+    /// writing system ("zh-Hant") because the code alone would read Traditional characters as Simplified
+    /// when the captions are built, reused or translated.
+    private static func transcriptCode(for route: SpeechRoute, code: String) -> String {
+        guard code == "zh" else { return code }
+        return CueLanguage.matching(language: route.locale.language)?.chineseScriptIdentifier ?? code
     }
 
     /// The take heard in one language.
@@ -61,6 +80,8 @@ nonisolated enum CaptionTranscriber {
     ) async throws -> [TimedWord] {
         // The script's names and long words, so the recognizer listens for them (it still writes what it hears).
         let terms = ScriptVocabulary.terms(in: script, language: route.language)
+        // The system holds only a few languages at a time: take a place for this one first.
+        await SpeechLocaleReservation.reserve(route.locale)
         switch route.engine {
         case .transcriber:
             let transcriber = SpeechTranscriber(locale: route.locale, transcriptionOptions: [], reportingOptions: [], attributeOptions: [.audioTimeRange])

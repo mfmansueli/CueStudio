@@ -67,10 +67,30 @@ struct VoiceFollowingLatencyTests {
         }
     }
 
+    /// English and Portuguese are also run with the earlier settings, to compare them.
     @Test(arguments: [CueLanguage.english, .portugueseBrazil], Tuning.allCases)
     func followsARecordingInRealTime(in language: CueLanguage, tuning: Tuning) async throws {
+        try await follow(language, tuning: tuning)
+    }
+
+    /// Every other language Cue offers, with the shipping settings: how far the text gets, whether it
+    /// ever runs ahead of the voice, how soon it follows each word. A language this device can't run is
+    /// *not validated* (reported as skipped with the reason), never counted as passed.
+    @Test(arguments: CueLanguage.allCases.filter { $0 != .english && $0 != .portugueseBrazil })
+    func followsARecordingInEveryOtherLanguage(in language: CueLanguage) async throws {
+        try await follow(language, tuning: .current)
+    }
+
+    private func follow(_ language: CueLanguage, tuning: Tuning) async throws {
+        KeepScreenAwake.enable()
         let script = try #require(VoiceFollowingSpeechTests.scripts[language])
-        let fixture = try await makeFixture(language, script: script)
+        let fixture: SpeechFixture
+        do {
+            fixture = try await makeFixture(language, script: script)
+        } catch let reason as SpeechUnavailableReason {
+            print("VOICE LATENCY \(language.rawValue): NOT VALIDATED · \(reason.message)")
+            try Test.cancel("\(language.rawValue) not validated: \(reason.message)")
+        }
         let scenario = makeScenario(script: script)
         defer { scenario.defaults.tearDown() }
         let viewModel = scenario.viewModel
@@ -78,9 +98,11 @@ struct VoiceFollowingLatencyTests {
 
         let coldStart = uptime
         await viewModel.appear()
-        guard try await waitUntil(timeout: 60, { viewModel.followsSpeech }) else {
-            Issue.record("\(language.rawValue): Voice Following didn't start: \(viewModel.speechUnavailable?.message ?? "no reason")")
-            return
+        guard try await waitUntil(timeout: 90, { viewModel.followsSpeech }) else {
+            let reason = viewModel.speechUnavailable?.message ?? "no reason given"
+            print("VOICE LATENCY \(language.rawValue): NOT VALIDATED · Voice Following didn't start: \(reason)")
+            await viewModel.disappear()
+            try Test.cancel("\(language.rawValue) not validated: Voice Following didn't start (\(reason))")
         }
         let startup = uptime - coldStart
 

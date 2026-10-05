@@ -33,9 +33,7 @@ final class PrompterViewModel {
     /// True while speech recognition follows the reading word by word. Without it (no model for
     /// the language, or still downloading), Voice follow scrolls at the set speed while it hears
     /// speech.
-    private(set) var followsSpeech = false { didSet { highlighter.isActive = followsSpeech } }
-    /// The words lit as they are said (see `PrompterHighlighter`).
-    let highlighter = PrompterHighlighter()
+    private(set) var followsSpeech = false
     /// The language recognition listens in while `followsSpeech`.
     private(set) var listeningLanguage: CueLanguage?
     /// Why the words can't be followed in this language here, shown to the creator (once as a
@@ -103,13 +101,18 @@ final class PrompterViewModel {
     private var speechSession: SpeechSession?
     /// Bumped whenever recognition stops, so what a stopped start still reports is ignored.
     private var speechGeneration = 0
+    /// Times in a row recognition ended on its own and was started again (`restartSpeech`).
+    private var speechRestarts = 0
+    private static let maximumSpeechRestarts = 3
+    /// How long recognition that ended by itself waits before it starts again.
+    private let speechRestartDelay: Duration
     private var transcription: SpeechTranscription?
     private var voiceGate = VoiceFollowGate()
     private var speechLead = SpeechLead()
     /// When the level meter last changed, so it redraws at most `levelInterval` apart.
     private var levelShownAt: TimeInterval = 0
     private var scriptWords = ScriptWords(text: "")
-    private var speechTracker = ScriptSpeechTracker(words: []) { didSet { highlighter.position = speechTracker.position } }
+    private var speechTracker = ScriptSpeechTracker(words: [])
     /// Vertical extent of each paragraph in the text, for placing words on the guide.
     private(set) var paragraphFrames: [Range<Double>] = []
     /// The word each mode was left on (see `keepPlace`).
@@ -148,8 +151,10 @@ final class PrompterViewModel {
         languages: LanguageService,
         remote: RemoteControlService,
         toast: ToastService,
-        clock: @escaping () -> TimeInterval = { ProcessInfo.processInfo.systemUptime }
+        clock: @escaping () -> TimeInterval = { ProcessInfo.processInfo.systemUptime },
+        speechRestartDelay: Duration = .seconds(1)
     ) {
+        self.speechRestartDelay = speechRestartDelay
         scriptID = launch.scriptID
         mode = launch.mode
         session = SessionSetupService(preferences: preferences)
@@ -194,8 +199,6 @@ final class PrompterViewModel {
         let text: String
     }
 
-    /// The lens Selfie had, kept while Studio records through the rear camera.
-    @ObservationIgnored private var studioReturnLens: CameraLens?
     @ObservationIgnored private var directionCache: (key: DirectionKey, rightToLeft: Bool)?
 
     var preset: PlatformPreset? {
@@ -208,31 +211,7 @@ final class PrompterViewModel {
         return SetupRecommendation(platform: script.platform, preset: preset)
     }
 
-    /// Studio text is read from further away, so it is bigger.
-    var fontSize: Double {
-        let size = session.prompter.size
-        return mode == .studio ? (size * PrompterSettings.studioScale).rounded() : size
-    }
-
-    var lineHeight: Double { fontSize * session.prompter.lineSpacing }
-
-    /// Newest take of this script (or of freestyle recordings).
-    var lastTake: Take? {
-        takes.takes.first { $0.scriptID == scriptID }
-    }
-
     var cameraStatus: CameraStatus { camera.status }
-
-    var monetizationChip: String? {
-        guard isRecording, hasScript else { return nil }
-        return MonetizationCheck.chipLabel(elapsed: TimeInterval(recordingSeconds), preset: preset)
-    }
-
-    var stopWarningTitle: String? {
-        MonetizationCheck.warningTitle(elapsed: TimeInterval(recordingSeconds), preset: preset)
-    }
-
-    var stopWarningMessage: String? { preset?.goal?.stopWarning }
 
     // MARK: - Lifecycle
 
@@ -248,6 +227,8 @@ final class PrompterViewModel {
     }
 
     func disappear() async {
+        // What the creator adjusted here (the box, the line, the size, the speed…) is what the next session opens with.
+        if !isPractice { session.rememberReadingLayout() }
         countdownTask?.cancel()
         autoStopTask?.cancel()
         stopVoiceMonitoring()
@@ -273,21 +254,14 @@ final class PrompterViewModel {
         switch mode {
         case .selfie:
             audio.stopMetering()
-            // Back from Studio: the lens the creator had.
-            if let lens = studioReturnLens {
-                session.camera.lens = lens
-                studioReturnLens = nil
-            }
             await camera.start(with: session.camera)
             noticeCaptureFallbacks()
         case .studio:
-            // Studio records too (v29 · 5.3): through the rear camera, behind the glass of a rig, while the screen
-            // shows the text. Its lens is for this take only.
+            // Studio is only the prompter (v30): to rehearse, to set where the text sits for the eyes and how fast it goes, or to
+            // read from while another camera films. No camera, no recording, no camera permission; Voice Following listens
+            // through the microphone meter.
             audio.stopMetering()
-            if studioReturnLens == nil { studioReturnLens = session.camera.lens }
-            session.camera.lens = .wide
-            await camera.start(with: session.camera)
-            noticeCaptureFallbacks()
+            await camera.stop()
         }
         updateVoiceMonitoring()
     }
@@ -399,7 +373,22 @@ final class PrompterViewModel {
 
     func togglePlay() {
         guard hasScript else { return }
-        if isPlaying { pause() } else { play() }
+        if countdown != nil {
+            cancelCountdown()
+        } else if isPlaying {
+            pause()
+        } else if let seconds = studioCountdown {
+            startCountdown(from: seconds) { [weak self] in self?.play() }
+        } else {
+            play()
+        }
+    }
+
+    /// Studio, starting from the top, with a countdown set in Settings: a few seconds to get in front of the other camera.
+    private var studioCountdown: Int? {
+        guard mode == .studio, !isPractice, engine.progress < 0.01 else { return nil }
+        let seconds = session.camera.countdown.rawValue
+        return seconds > 0 ? seconds : nil
     }
 
     func play() {
@@ -429,9 +418,6 @@ final class PrompterViewModel {
         guard isPractice else { return }
         pause(); isPractice = false; layoutAnchor = nil; engine.rewind(); resumeSpeech(at: 0)
     }
-
-    /// The practice starts on its own: the text follows the voice from the first word.
-    func startPractice() { if isPractice, !isPlaying { play() } }
 
     func rewind() {
         layoutAnchor = nil
@@ -517,7 +503,10 @@ final class PrompterViewModel {
         }
         let seconds = session.camera.countdown.rawValue
         if seconds > 0 {
-            startCountdown(from: seconds)
+            startCountdown(from: seconds) { [weak self] in
+                Haptics.record()
+                await self?.beginRecording()
+            }
         } else {
             await beginRecording()
         }
@@ -531,7 +520,7 @@ final class PrompterViewModel {
         await stopRecording()
     }
 
-    private func startCountdown(from seconds: Int) {
+    private func startCountdown(from seconds: Int, then action: @escaping @MainActor () async -> Void) {
         pause()
         sheet = nil
         countdown = seconds
@@ -542,12 +531,11 @@ final class PrompterViewModel {
                 if Task.isCancelled { return }
             }
             self?.countdown = nil
-            Haptics.record()
-            await self?.beginRecording()
+            await action()
         }
     }
 
-    private func cancelCountdown() {
+    func cancelCountdown() {
         countdownTask?.cancel()
         countdownTask = nil
         countdown = nil
@@ -731,6 +719,7 @@ final class PrompterViewModel {
         isVoiceActive = false
         voiceLevel = 0
         speechUnavailable = nil
+        speechRestarts = 0
         voiceGate = VoiceFollowGate()
         audio.stopMetering()
     }
@@ -782,7 +771,6 @@ final class PrompterViewModel {
         }
         transcription = started
         scriptWords = ScriptWords(text: wanted.text, language: language)
-        highlighter.words = scriptWords
         speechTracker = ScriptSpeechTracker(words: scriptWords.tokens, language: language)
         speechLead.initialRate = ReadTime.wordsPerMinute(speed: session.prompter.speed) / 60
         followsSpeech = true
@@ -792,6 +780,7 @@ final class PrompterViewModel {
         for await heard in started.transcripts {
             let received = clock()
             if speechTracker.hear(heard) {
+                speechRestarts = 0
                 voiceMetrics.confirmed(ahead: speechLead.position - Double(speechTracker.position))
                 speechLead.confirm(speechTracker.position, at: received)
             }
@@ -802,6 +791,19 @@ final class PrompterViewModel {
         followsSpeech = false
         transcription = nil
         routeSpeechAudio()
+        await restartSpeech(after: generation)
+    }
+
+    /// A recognizer that stops by itself (the system took the audio for a moment, a model was
+    /// unloaded) is started again, a few times in a row, before the text settles for the level. Every
+    /// word it confirms in between starts the count over.
+    private func restartSpeech(after generation: Int) async {
+        guard speechRestarts < Self.maximumSpeechRestarts else { return }
+        speechRestarts += 1
+        try? await Task.sleep(for: speechRestartDelay)
+        guard !Task.isCancelled, speechGeneration == generation else { return }
+        speechSession = nil
+        startSpeechIfNeeded()
     }
 
     private func stopFollowingSpeech() {
@@ -819,10 +821,9 @@ final class PrompterViewModel {
         speech.stop()
     }
 
-    /// The camera hears the creator while it runs (Selfie and Studio both record); with no camera (a Mac, the Simulator,
-    /// no permission) Studio listens through a meter of its own, as it did before it recorded.
+    /// The camera hears the creator in Selfie; Studio has no camera and listens through a meter of its own.
     private var listensThroughCamera: Bool {
-        mode == .selfie || camera.status == .running
+        mode == .selfie
     }
 
     /// Sends the microphone to recognition: the camera's, or the meter's when there is no camera.

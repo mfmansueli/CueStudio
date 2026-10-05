@@ -47,6 +47,11 @@ tomadas. Atualize-o junto com a UI.
   Following no aparelho (uma gravação tocada em tempo real pelo caminho de áudio da câmera: voz →
   indicador, palavra → texto p50/p95, quanto o texto se adianta, sala com ruído) e
   `VoiceFollowingSpeechTests/availabilityOnThisDevice()` lista os 20 idiomas sem baixar nada.
+- Mais testes opt-in no aparelho (um conjunto por vez, com o iPhone desbloqueado e a tela acesa: o modelo da Apple é limitado em segundo plano e dois
+  conjuntos de fala disputam os 5 idiomas): `TEST_RUNNER_CUE_SPEECH_E2E=1 … -only-testing:"Cue StudioTests/CaptionSpeechTests"` (legendas: o que foi
+  ouvido, tempos, sincronia) e `TEST_RUNNER_CUE_AI_E2E=1 … -only-testing:"Cue StudioTests/LanguageModelDeviceTests"` ou `…/ScriptGenerationFlowDeviceTests`
+  (Apple Intelligence de verdade: idioma do resultado, tradução, My Cue Voice, o fluxo do card até o script salvo). Um idioma que o aparelho não roda
+  aparece como **não validado** (teste cancelado), nunca como aprovado. Resultados e limites: `LOCALIZATION.md` §5.
 - A prévia do Quick edit tem uma medição opt-in no aparelho: `TEST_RUNNER_CUE_PREVIEW_LATENCY=1 xcodebuild …
   -only-testing:"Cue StudioTests/QuickEditPreviewLatencyTests" test` (quanto uma mudança leva para
   aparecer e se a imagem some, com filtro, texto, fundo Blur, 4K e corte).

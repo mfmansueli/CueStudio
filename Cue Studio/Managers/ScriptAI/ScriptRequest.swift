@@ -26,6 +26,10 @@ nonisolated struct ScriptRequest: Hashable, Sendable {
     /// The language to write in. The model is told explicitly, so the interface language (in which
     /// the format's labels reach the prompt) never decides it.
     var language: CueLanguage?
+    /// The creator's own regional variant of `language` ("en-GB", "pt-PT"), only when the language was
+    /// not chosen but read from the idea (Auto-detect) or taken from the interface: an explicit choice
+    /// is never refined into one the creator didn't pick.
+    var languageVariant: Locale?
     /// The format the creator picked for a free prompt (nil: Cue picks from the idea). A format's
     /// own brief carries its type in the source.
     var format: ScriptType?

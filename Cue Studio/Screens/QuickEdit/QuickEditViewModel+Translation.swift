@@ -13,10 +13,16 @@ extension QuickEditViewModel {
     /// The language the captions are in: what speech recognition heard, the language picked for
     /// them, or what their text reads as.
     var captionSourceLanguage: Locale.Language? {
-        if let code = edit.captionTranscript?.languageCode { return Locale.Language(identifier: code) }
+        if let code = edit.captionTranscript?.languageCode {
+            let heard = Locale.Language(identifier: code)
+            // A transcript saved before Chinese kept its writing system says only "zh": the lines show which one.
+            guard code == "zh" else { return heard }
+            return LanguageDetector.dominantLanguage(in: edit.captions.map(\.text).joined(separator: " "))
+                .flatMap { $0.languageCode?.identifier == "zh" ? $0 : nil } ?? edit.captionLanguage?.locale.language ?? heard
+        }
         if let language = edit.captionLanguage { return language.locale.language }
-        let text = edit.captions.map(\.text).joined(separator: " ")
-        return LanguageDetector.dominantLanguageCode(in: text).map { Locale.Language(identifier: $0) }
+        // Read from the lines, in the writing system they use (Traditional or Simplified Chinese).
+        return LanguageDetector.dominantLanguage(in: edit.captions.map(\.text).joined(separator: " "))
     }
 
     /// Languages to translate into: every language Cue knows but the captions' own.
@@ -46,8 +52,7 @@ extension QuickEditViewModel {
         translationState = .checking
         let support = await translations.support(from: source, to: target.locale.language)
         guard support != .unsupported else {
-            let name = Locale.interface.localizedString(forLanguageCode: source.languageCode?.identifier ?? "") ?? source.maximalIdentifier
-            translationState = .unsupported(source: name, target: target)
+            translationState = .unsupported(source: Self.name(of: source), target: target)
             return
         }
         translationState = .translating
@@ -82,11 +87,23 @@ extension QuickEditViewModel {
             guard translationRequest == request else { return }
             translationRequest = nil
             translationState = .idle
+        } catch CaptionTranslationError.unsupportedPair {
+            // The system found out the pair can't be translated after all: said as it is, not as "try again".
+            guard translationRequest == request else { return }
+            translationRequest = nil
+            translationState = .unsupported(source: Self.name(of: request.source), target: request.target)
         } catch {
             guard translationRequest == request else { return }
             translationRequest = nil
             translationState = .failed
         }
+    }
+
+    /// A language's name in the interface's language, with its writing system where there are two
+    /// ("Chinese (Traditional)").
+    private static func name(of language: Locale.Language) -> String {
+        if let cue = CueLanguage.matching(language: language), cue.isChinese { return cue.localizedName }
+        return Locale.interface.localizedString(forLanguageCode: language.languageCode?.identifier ?? "") ?? language.maximalIdentifier
     }
 
     /// Stops translating; what was there stays.

@@ -51,7 +51,8 @@ struct PrompterViewModelVoiceTests {
             library: library, takes: TakeLibraryService(repository: FakeTakeRepository()), preferences: preferences,
             profile: CreatorProfileService(defaults: defaults.defaults), rules: TestData.rulesService(),
             camera: camera, audio: audio, microphones: FakeMicrophones(), speech: speech, languages: languages,
-            remote: RemoteControlService(transport: FakeRemoteTransport()), toast: ToastService(), clock: { clock.now }
+            remote: RemoteControlService(transport: FakeRemoteTransport()), toast: ToastService(), clock: { clock.now },
+            speechRestartDelay: .milliseconds(20)
         )
         let lineHeight = viewModel.lineHeight
         viewModel.updateLayout(contentHeight: 150 + 2 * lineHeight)
@@ -132,6 +133,61 @@ struct PrompterViewModelVoiceTests {
         await run(scenario, for: 0.1, level: -15)
         #expect(scenario.viewModel.isVoiceActive)
         await scenario.viewModel.disappear()
+    }
+
+    // MARK: - Recognition that stops by itself
+
+    /// Waits in real time, for as long as a loaded machine needs (a restart waits a moment before it starts again).
+    private func waitSeconds(_ seconds: Double, until condition: () -> Bool) async {
+        let deadline = ContinuousClock.now + .seconds(seconds)
+        while !condition(), ContinuousClock.now < deadline {
+            try? await Task.sleep(for: .milliseconds(50))
+        }
+    }
+
+    /// The system took the audio for a moment, or a model was unloaded: following picks up again instead of
+    /// staying on the level for the rest of the reading.
+    @Test func recognitionThatEndsByItselfStartsAgainAndFollowsOn() async {
+        let scenario = makeScenario(mode: .studio)
+        defer { scenario.defaults.tearDown() }
+        await startListening(scenario)
+        #expect(scenario.speech.startCount == 1)
+        scenario.speech.endOnItsOwn()
+        await waitUntil { !scenario.viewModel.followsSpeech }
+        #expect(!scenario.viewModel.followsSpeech)
+        await waitSeconds(10) { scenario.speech.startCount == 2 && scenario.viewModel.followsSpeech }
+        #expect(scenario.speech.startCount == 2)
+        #expect(scenario.viewModel.followsSpeech)
+        await scenario.viewModel.disappear()
+    }
+
+    /// It tries a few times, not forever: a recognizer that keeps failing leaves the text on the level.
+    @Test func aRecognizerThatKeepsStoppingIsGivenUpOn() async {
+        let scenario = makeScenario(mode: .studio)
+        defer { scenario.defaults.tearDown() }
+        await startListening(scenario)
+        // Three restarts in a row, each one a second after the recognizer stopped...
+        for attempt in 1...3 {
+            scenario.speech.endOnItsOwn()
+            await waitSeconds(10) { scenario.speech.startCount == attempt + 1 && scenario.viewModel.followsSpeech }
+            #expect(scenario.speech.startCount == attempt + 1)
+        }
+        // ...and then it stays on the level.
+        scenario.speech.endOnItsOwn()
+        await waitSeconds(1) { false }
+        #expect(scenario.speech.startCount == 4)
+        #expect(!scenario.viewModel.followsSpeech)
+        await scenario.viewModel.disappear()
+    }
+
+    /// Stopping on purpose is not "ended by itself": nothing starts behind the creator's back.
+    @Test func leavingTheScreenDoesNotRestartRecognition() async {
+        let scenario = makeScenario(mode: .studio)
+        defer { scenario.defaults.tearDown() }
+        await startListening(scenario)
+        await scenario.viewModel.disappear()
+        await waitSeconds(0.5) { false }
+        #expect(scenario.speech.startCount == 1)
     }
 
     // MARK: - One recognition per script
