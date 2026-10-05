@@ -6,7 +6,7 @@
 import Foundation
 
 /// Counts the one thing the free plan limits: video exports (saving to Photos or sharing). The
-/// count lives in the Keychain so a reinstall doesn't reset it.
+/// count lives in the Keychain so a reinstall doesn't reset it (Debug builds do, to test the free plan again).
 @MainActor
 @Observable
 final class UsageQuotaService {
@@ -15,12 +15,14 @@ final class UsageQuotaService {
     private let counter: ExportCountStoring
     private let defaults: UserDefaults
 
-    init(counter: ExportCountStoring = KeychainExportCountStore(), defaults: UserDefaults = .standard) {
+    /// `resetsOnNewInstall` (Debug builds, `LaunchOptions`) gives a new install its free exports back.
+    init(counter: ExportCountStoring = KeychainExportCountStore(), defaults: UserDefaults = .standard, resetsOnNewInstall: Bool = false) {
         self.counter = counter
         self.defaults = defaults
         exportsUsed = counter.load()
         migrateCountFromDefaults()
         removeLegacyAICounters()
+        if resetsOnNewInstall { resetOnNewInstall() }
     }
 
     // MARK: - Reading
@@ -55,6 +57,16 @@ final class UsageQuotaService {
             counter.save(legacy)
         }
         defaults.removeObject(forKey: DefaultsKey.legacyCleanExportsUsed)
+    }
+
+    /// The Keychain keeps the count through a reinstall, which is the point in Release; testing the free plan needs the
+    /// five exports back. UserDefaults goes with the app, so a missing marker means this is the install's first launch.
+    private func resetOnNewInstall() {
+        guard defaults.object(forKey: DefaultsKey.installLaunched) == nil else { return }
+        defaults.set(true, forKey: DefaultsKey.installLaunched)
+        guard exportsUsed > 0 else { return }
+        exportsUsed = 0
+        counter.save(0)
     }
 
     /// v1 metered AI scripts per month; those counters are never read again.

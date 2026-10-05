@@ -127,8 +127,9 @@ struct MainView: View {
             }
         }
         .tint(Palette.accText)
-        // The bar draws back while a list scrolls down and comes back on the way up (07 §1).
-        .tabBarMinimizeBehavior(.onScrollDown)
+        // The bar stays full while a list scrolls: the creator chose it over the design's `.onScrollDown` (07 §1), which
+        // drew the bar back on every scroll down.
+        .tabBarMinimizeBehavior(.never)
     }
 
     /// Selecting the record tab presents the sheet and keeps the current tab.

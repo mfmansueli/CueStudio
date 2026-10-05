@@ -74,7 +74,9 @@ struct AppServices {
         profile = CreatorProfileService(defaults: options.defaults)
         session = SessionService(defaults: options.defaults, checker: options.credentialChecker)
         rules = options.platformRules
-        quota = UsageQuotaService(counter: options.exportCounter, defaults: options.defaults)
+        quota = UsageQuotaService(
+            counter: options.exportCounter, defaults: options.defaults, resetsOnNewInstall: options.resetsExportsOnNewInstall
+        )
         store = StoreManager()
         presentation = PresentationService()
         toast = ToastService()
