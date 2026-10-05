@@ -33,6 +33,9 @@ tomadas. Atualize-o junto com a UI.
   Crashlytics, iniciados em `Managers/Telemetry/TelemetryManager.swift`, o único arquivo que importa o SDK. Testes de
   unidade, de UI (`-uiTestInMemory`) e previews não enviam nada (`TelemetryPolicy`). O upload dos dSYMs roda só em
   archive (Build Phases › Upload dSYMs to Crashlytics). Para ver eventos no DebugView: `-FIRAnalyticsDebugEnabled`.
+  Falhas do Apple Intelligence (`AIFailureReport`): cada tentativa que falha vai para o Console (`studio.cue` / `ScriptAI`) com o motivo exato do
+  framework (guardrailViolation, timeout, concurrentRequests…) e as condições (modelo pronto, calor, Low Power, memória, app em primeiro plano,
+  aparelho); a que chega ao criador vira um non-fatal no Crashlytics (`AppleIntelligence.<operação>.<motivo>`). Nunca o texto.
 - O build Release também precisa compilar: previews usam dados de `SupportFiles/Debug/` e ficam em `#if DEBUG`.
 - Launch arguments (só em Debug, ver `SupportFiles/LaunchOptions.swift`): `-uiTestInMemory` (armazenamento
   em memória), `-uiTestSeedSamples` (scripts de exemplo), `-uiTestPro` (começa no Cue Pro),
@@ -42,7 +45,8 @@ tomadas. Atualize-o junto com a UI.
   `-uiTestAppLanguage <lproj>` (a interface começa nesse idioma, em memória, sem mudar o simulador).
   v27: `-uiTestOnboarding`, `-uiTestPermissions granted|denied`, `-uiTestSky off|calm|lively` (off por padrão nos testes), `-uiTestAppsInstalled` (os apps das plataformas contam como instalados e "recebem" o vídeo, só para ver a tela de envio; ver `SHARING.md`),
   `-uiTestCatalogue <seção>` (a seção `transition` mostra a estrela; ver `DESIGN_PROJECT.md`).
-  v30: `-uiTestVoiceTip` (abre as portas da dica do My Cue Voice) e `-uiTestStarTransition` (a estrela da ideia mantém os tempos reais; nos testes de UI ela é encurtada).
+  v30: `-uiTestVoiceTip` (abre as portas da dica do My Cue Voice), `-uiTestStarTransition` (a estrela da ideia mantém os tempos reais; nos testes de UI ela é encurtada)
+  e `-uiTestSlowWriting` (com o roteirista de teste, as palavras chegam devagar na página).
 - Idiomas: `LOCALIZATION.md` (três idiomas independentes, terminologia, RTL). Todo texto novo entra
   nos 20 idiomas dos String Catalogs. O teste de fala de verdade é opt-in:
   `TEST_RUNNER_CUE_SPEECH_E2E=1 xcodebuild … -only-testing:"Cue StudioTests/VoiceFollowingSpeechTests" test`,

@@ -48,6 +48,9 @@ struct ScriptsDock: View {
     private static let visibleLines = 2
     /// Row 1: 30 pt chips with a 36 pt touch area.
     private static let topRowHeight: CGFloat = 36
+    private static let rowSpacing: CGFloat = 10
+    /// How much shorter the dock is with row 1 folded away.
+    static let foldHeight = topRowHeight + rowSpacing
 
     /// Apple Intelligence can write: the arrow sends the idea.
     private var hasAI: Bool { unavailableReason == nil }
@@ -78,22 +81,24 @@ struct ScriptsDock: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
+        VStack(alignment: .leading, spacing: 0) {
+            // The fold is animated by whoever folds it (`ScriptsView`), so the glass moves with the row. The chips stay where they are
+            // while the glass closes over them, and fade a little sooner. The row takes its spacing with it (`foldHeight` in all).
             topRow
-                .frame(height: isFolded ? 0 : Self.topRowHeight, alignment: .center)
-                .padding(.bottom, isFolded ? -10 : 0)
-                .opacity(isFolded ? 0 : 1)
+                .animation(reduceMotion ? nil : .easeOut(duration: 0.2)) { $0.opacity(isFolded ? 0 : 1) }
+                .frame(height: isFolded ? 0 : Self.topRowHeight, alignment: .bottom)
                 .clipped()
+                .padding(.bottom, isFolded ? 0 : Self.rowSpacing)
                 .accessibilityHidden(isFolded)
-                .animation(reduceMotion ? nil : CueMotion.dockFold, value: isFolded)
-                .animation(reduceMotion ? nil : .easeOut(duration: 0.2), value: isFolded)
-            if let notice = dictation.notice, !dictation.isActive {
-                DictationNoticeView(notice: notice)
-                    .transition(.opacity)
-            }
-            field
-            if let unavailableReason {
-                AIUnavailableNote(reason: unavailableReason)
+            VStack(alignment: .leading, spacing: Self.rowSpacing) {
+                if let notice = dictation.notice, !dictation.isActive {
+                    DictationNoticeView(notice: notice)
+                        .transition(.opacity)
+                }
+                field
+                if let unavailableReason {
+                    AIUnavailableNote(reason: unavailableReason)
+                }
             }
         }
         .padding(EdgeInsets(top: 16, leading: 12, bottom: 12, trailing: 12))

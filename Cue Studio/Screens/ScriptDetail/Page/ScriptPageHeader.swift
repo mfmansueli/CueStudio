@@ -5,14 +5,13 @@
 
 import SwiftUI
 
-/// The title (a field, 27 pt) and the mono meter under it: "113 WORDS · ~0:45", and, while the AI
-/// writes, "✦ WRITING IN YOUR VOICE…" with a Stop.
+/// The title (a field, 27 pt) and the mono meter under it: "113 WORDS · ~0:45". The same while the AI writes (only the title can't be
+/// edited then), so the page doesn't move when it ends; its Stop is in the state strip.
 struct ScriptPageHeader: View {
     @Binding var title: String
     let wordsAndTime: String
     let isWriting: Bool
     var focus: FocusState<ScriptPageFocus?>.Binding
-    let onStop: () -> Void
     let onSubmitTitle: () -> Void
 
     var body: some View {
@@ -26,23 +25,12 @@ struct ScriptPageHeader: View {
                 .onSubmit(onSubmitTitle)
                 .disabled(isWriting)
                 .accessibilityIdentifier("page.titleField")
-            HStack(spacing: 8) {
-                Text(wordsAndTime)
-                    .foregroundStyle(Palette.accText)
-                    .accessibilityIdentifier("page.meter")
-                if isWriting {
-                    Spacer(minLength: 0)
-                    Button(action: onStop) {
-                        Text("Stop")
-                            .font(.footnote.weight(.semibold))
-                    }
-                    .buttonStyle(.cueAI(.compact, expands: false))
-                    .accessibilityIdentifier("page.stopButton")
-                }
-            }
-            .font(CueStudioFont.hud)
-            .textCase(.uppercase)
-            .tracking(0.6)
+            Text(wordsAndTime)
+                .font(CueStudioFont.hud)
+                .textCase(.uppercase)
+                .tracking(0.6)
+                .foregroundStyle(Palette.accText)
+                .accessibilityIdentifier("page.meter")
         }
     }
 }

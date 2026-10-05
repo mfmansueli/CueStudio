@@ -16,13 +16,15 @@ extension ScriptDetailViewModel {
     // MARK: - Loading and saving
 
     /// Opens the page on the script's words. One being written (a draft opened with "Continue", a new or imported one) takes the
-    /// keyboard, in the title when it has none.
+    /// keyboard, in the title when it has none. One the AI is about to write doesn't: the page opens under the idea's star, and a
+    /// keyboard there would ride through the transition.
     func loadPage(startsInDraft: Bool) {
         guard let script else { return }
         page.title = script.title
         page.text = script.text
-        page.focusesTitle = script.title.isEmpty && script.isEmpty
-        page.focusesText = startsInDraft && !page.focusesTitle
+        let takesKeyboard = pendingRequest == nil
+        page.focusesTitle = takesKeyboard && script.title.isEmpty && script.isEmpty
+        page.focusesText = takesKeyboard && startsInDraft && !page.focusesTitle
         page.isLoaded = true
     }
 
@@ -102,8 +104,8 @@ extension ScriptDetailViewModel {
     var strip: ScriptStrip? {
         guard let script else { return nil }
         var current = script
-        // The strip reads the words on the page, which may be ahead of what was saved a moment ago.
-        if page.isLoaded, !page.isWriting { current.text = page.text }
+        // The strip reads the words on the page, which may be ahead of what was saved a moment ago (or still arriving).
+        if page.isLoaded { current.text = page.isWriting ? (page.revealed ?? "") : page.text }
         return ScriptStrip(script: current, takes: scriptTakes, hasAI: writer.isLanguageModelAvailable, isEdited: page.isEdited && !page.isDone)
     }
 
@@ -353,6 +355,9 @@ extension ScriptDetailViewModel {
                 await transition?.contentReady()
                 guard !Task.isCancelled else { return }
                 page.title = generated.title
+                // What the written page shows around the words is in place before they arrive: the fact check and the voice question.
+                if generated.needsFactCheck { library.update(scriptID) { $0.factCheck = true } }
+                beginVoicePreview(for: request)
                 await reveal(generated.text)
                 guard !Task.isCancelled else { return }
                 finishWriting(generated)
@@ -362,7 +367,9 @@ extension ScriptDetailViewModel {
                     writtenWords: ReadTime.wordCount(in: generated.text)
                 )
             } catch {
-                guard !Task.isCancelled, !(error is CancellationError) else { return }
+                // Only the page's own cancel (Stop, Cancel, leaving) is quiet. A request the system ended by itself is a failure like
+                // any other: otherwise the star would wait for a script that never comes.
+                guard !Task.isCancelled else { return }
                 if let transition, transition.isActive {
                     // The star leaves the way Cancel does: no page, the idea kept, and a toast says why.
                     page.isWriting = false
@@ -417,7 +424,6 @@ extension ScriptDetailViewModel {
         }
         // The idea became a script: the card starts empty the next time.
         ideaDraft?.clear()
-        if let request { beginVoicePreview(for: request) }
         if request?.voice != nil { voiceQuestions?.recordVoiceScript(scriptID) }
         toast.show(generated.needsFactCheck
             ? String(localized: "Draft ready · Check facts")
@@ -431,6 +437,8 @@ extension ScriptDetailViewModel {
         guard page.isWriting else { return }
         page.isWriting = false
         pendingRequest = nil
+        // A script stopped halfway isn't the one to judge the voice by.
+        page.voicePreview = nil
         // The idea leaves the card only if some of it became a script: stopped before the first word, it stays.
         if let revealed = page.revealed, !revealed.isEmpty {
             page.text = revealed

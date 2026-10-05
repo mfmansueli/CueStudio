@@ -27,8 +27,13 @@ My Cue Voice (`VoiceTipViewStyle`).
 `Screens/Scripts/Dock/ScriptsDock.swift`: vidro limpo (sem céu dentro, `09` §2), fixo em `.safeAreaInset(.bottom)` acima da tab bar.
 Linha 1: **Format ⌄ · For {Rede} ⌄ · ✦ Voz nn%** (chips de 36 pt de toque; o Format some na primeira visita). Linha 2: campo de duas linhas
 (a ideia sugerida enquanto vazio), ↻, microfone e a seta amarela (**Write it** sem Apple Intelligence). A linha 1 recolhe ao rolar para baixo
-(`DockFold`: passa de 40 pt e mais de 2 pt de movimento; volta em qualquer subida; nunca com o campo focado; 0,28 s `(0.2,0.8,0.2,1)`); com o
-campo focado a lista escurece e desfoca (0,25 s). Durante a busca e a seleção o dock sai. Ditado, rascunho e voz são os de antes
+(`DockFold`: passa de 40 pt e mais de 2 pt de movimento, somando os passos pequenos de uma rolagem lenta; volta em qualquer subida; nunca com o
+campo focado; 0,28 s `(0.2,0.8,0.2,1)`). A dobra é um movimento só (`ScriptsView.foldDock`): a linha leva o espaçamento junto e o vidro fecha sobre os
+chips, que ficam parados e somem em 0,2 s. **A lista não sente a dobra:** o espaço que o dock reserva embaixo dela continua o mesmo (o lugar da linha
+vira espaço vazio, que deixa passar o toque); quando o fim da lista mudava com o dock, a lista pulava sozinha (~205 pt, medido) e o dock abria e fechava
+sem parar. No fim da lista o quique não conta como subida. Uma lista curta (rola menos de 80 pt) recolhe ao passar da metade do que rola, e fica
+recolhida parada no fim; uma que quase não rola (menos de 16 pt) nunca recolhe. `DockFold` registra cada mudança no Console
+(`studio.cue` / `DockFold`, com a fase da rolagem). Com o campo focado a lista escurece e desfoca (0,25 s). Durante a busca e a seleção o dock sai. Ditado, rascunho e voz são os de antes
 (`IdeaDraftService`, `DictationService`).
 
 Abaixo da lista: **Logbook · n waiting** (até 2 ideias com ✦ Write e "Open Logbook ›"), `ScriptsLogbookSection`. Enquanto a biblioteca carrega,
@@ -43,7 +48,8 @@ seção **More formats** com uma linha para cada `ScriptType` que a grade não m
 `IdeaTransitionService` (relógio e estado) + `StarTransitionOverlay` (desenho, por cima do app em `MainView`) + `ScriptStarter.write(from:)`:
 a estrela sobe da seta ao centro (0,6 s), o app atrás escurece (brilho 0,35, desfoque 10 pt, escala 0,94), halo, 12 partículas, "Writing in your
 voice", a ideia e 7 frases que mudam a cada 1,6 s, Cancel. Dura **no mínimo 3,0 s** (ou o que a IA precisar); quando o roteiro chega: frase final, capa
-sólida (0,22 s), anel abrindo (0,42 s), a estrela pousa como cursor (0,44 s) e a página escreve. **Cancel ou erro:** a estrela cai 40 pt e some
+sólida (0,22 s), anel abrindo (0,42 s), a estrela pousa como cursor (0,44 s) e a página escreve. O teclado do campo desce quando a estrela sobe e a
+página aberta por baixo não o pede de volta (título e texto são da IA; `loadPage` não foca nada com um pedido pendente). **Cancel ou erro:** a estrela cai 40 pt e some
 (0,3 s), o overlay some (0,22 s), nenhum roteiro fica, a ideia continua no campo (erro: toast "Couldn’t write it · Try again"). A ideia do Logbook só
 deixa de esperar quando virou roteiro. **Reduce Motion / Low Power (`09` §7):** sem voo nem anel, fade de 0,2 s; Low Power corta os tempos à metade
 (`speed`). Sem Apple Intelligence não há overlay (a seta é "Write it" e abre um rascunho). A estrela vira uma estrela do céu (`SkyMemory`) ao chegar.
@@ -89,7 +95,10 @@ Profile e a imagem de "Share my universe". O catálogo (`-uiTestCatalogue univer
 Enquanto o roteiro é escrito a página mostra `ArrivingText` no lugar do editor (volta quando termina): cada palavra entra de blur 7 pt e 5 pt abaixo
 em 0,3 s, com um brilho violeta de 14 pt (`#C4B8FF` 95%) que some em 0,8 s, a cada 0,17 s (mais perto quando chegam muitas, nunca mais que ~1 s atrás do
 modelo), e um cursor violeta de 2 pt pisca (1 s) depois da última palavra que chegou. A pílula **"✦ Writing in your voice"** (`ScriptWritingPill`, 34 pt,
-centrada embaixo) tem o brilho de borda de 2,4 s e o brilho branco que cruza o texto a cada 1,6 s; o **Stop** fica ao lado do contador. Reduce Motion: as
+centrada embaixo) tem o brilho de borda de 2,4 s e o brilho branco que cruza o texto a cada 1,6 s. **A página escrevendo é a página escrita:** título e
+contador iguais, a faixa de estado já no lugar (com **Stop** onde vai ficar o Done), "Does it sound like you?" e o aviso de checar fatos esperando
+(desabilitados) desde a primeira palavra, e o texto chega com as margens (`ScriptTextEditor.textInsets`: 8 pt em cima e embaixo, 5 pt dos lados),
+o tamanho e as etiquetas de cue do editor; nada se move quando termina. Parar no meio tira a pergunta da voz. Reduce Motion: as
 palavras só aparecem (fade de 0,2 s), o cursor fica aceso e a pílula parada. `-uiTestCatalogue writing` mostra a cena. **Diferença:** a barra de 3 pt por
 seção do quadro (`sc10`) não existe na página única (as seções saíram da escrita); fica para quando a página mostrar as seções.
 
@@ -138,7 +147,8 @@ cores continuam só da sessão; "Back to my setup" volta ao que estava ao abrir.
 ## 6. Argumentos de teste (só Debug)
 
 Além dos de sempre: `-uiTestVoiceTip` (abre as portas da dica) e `-uiTestStarTransition` (mantém os tempos reais da estrela; os testes de UI os
-encurtam). `-uiTestCatalogue transition` mostra a estrela; `universe` e `writing` mostram o núcleo e a escrita.
+encurtam). `-uiTestSlowWriting` (com o roteirista de teste, as palavras chegam devagar para fotografar a página no meio da escrita).
+`-uiTestCatalogue transition` mostra a estrela; `universe` e `writing` mostram o núcleo e a escrita.
 
 ## 7. Suposições (lacunas do protótipo)
 

@@ -63,6 +63,14 @@ struct ScriptPageViewModelTests {
         #expect(!reading.viewModel.page.focusesText && !reading.viewModel.page.focusesTitle)
     }
 
+    @Test func aPageTheAIIsAboutToWriteLeavesTheKeyboardAway() {
+        // The idea's arrow opens the page under the star with editing on: neither the title nor the text may take the keyboard.
+        let scenario = makeScenario(script: TestData.script(title: "", text: ""), startsEditing: true, writing: request())
+        defer { scenario.defaults.tearDown() }
+        #expect(scenario.viewModel.page.isLoaded)
+        #expect(!scenario.viewModel.page.focusesTitle && !scenario.viewModel.page.focusesText)
+    }
+
     // MARK: - Saving as it goes
 
     @Test func writingIsSavedWithoutADoneButton() {
@@ -480,6 +488,30 @@ struct ScriptPageViewModelTests {
         scenario.viewModel.beginWritingIfNeeded()
         #expect(!scenario.viewModel.page.isWriting, "only Try again starts it once more")
         #expect(scenario.viewModel.page.writingError != nil)
+    }
+
+    @Test func aRequestTheSystemEndsIsAFailureNotAnEndlessWait() async {
+        // A cancellation the page didn't ask for (the framework ended the request): the page says so and offers Try again.
+        let scenario = makeScenario(script: TestData.script(title: "", text: ""), writing: request())
+        defer { scenario.defaults.tearDown() }
+        scenario.writer.error = CancellationError()
+        scenario.viewModel.beginWritingIfNeeded()
+        await scenario.viewModel.pageWritingTask?.value
+        #expect(!scenario.viewModel.page.isWriting && scenario.viewModel.page.writingError != nil)
+    }
+
+    @Test func whileTheWordsArriveThePageIsTheOneItWillBe() {
+        // The strip reads the words that have arrived, and the voice question is already in its place (waiting).
+        let scenario = makeScenario(script: TestData.script(title: "", text: ""), writing: request())
+        defer { scenario.defaults.tearDown() }
+        scenario.viewModel.page.isWriting = true
+        scenario.viewModel.page.revealed = "Hello there. [pause] And"
+        #expect(scenario.viewModel.strip?.cueCount == 1)
+        scenario.viewModel.beginVoicePreview(for: request(voice: voice(scenario)))
+        #expect(scenario.viewModel.showsVoicePreview)
+        // Stopped halfway, the script isn't the one to judge the voice by.
+        scenario.viewModel.stopWriting()
+        #expect(!scenario.viewModel.showsVoicePreview)
     }
 
     @Test func askedTwiceItWritesOnlyOnce() async {

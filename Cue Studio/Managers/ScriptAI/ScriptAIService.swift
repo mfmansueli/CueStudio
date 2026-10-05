@@ -61,13 +61,17 @@ final class ScriptAIService: ScriptWriting {
         let task: AIModelRoute.Task = request.isFreePrompt ? .freePrompt : .format
         let request = resolvingVariant(of: request)
         let languages = request.language.map { [request.languageVariant ?? $0.locale] } ?? []
+        let language = languages.first?.identifier
         let plan: AIPlan
         switch await planner.plan(task, languages: languages) {
         case .success(let planned):
             plan = planned
         case .failure(let failure):
             // A format has its own structured draft, in the language, that needs no model at all.
-            guard case .format(let type, let brief) = request.source else { throw failure.error() }
+            guard case .format(let type, let brief) = request.source else {
+                AIFailureReport.note(failure, operation: "script", route: nil, language: language, seconds: 0, isFinal: true)
+                throw failure.error()
+            }
             return GeneratedScript(
                 title: type.draftTitle(from: brief, language: request.language),
                 text: structuredDraft(type: type, brief: brief, voice: request.voice, language: request.language),
@@ -78,15 +82,24 @@ final class ScriptAIService: ScriptWriting {
         // same model: the instructions and the idea are nowhere near the model's context, so "too long" can't
         // be the creator's doing, and a second run seldom does the same.
         let inputSize = ScriptPromptBuilder.instructions(for: request).count + ScriptPromptBuilder.prompt(for: request).count
-        return try await withFallback(plan, retriesRunaway: inputSize < Self.smallInput) { model in
+        return try await withFallback(plan, retriesRunaway: inputSize < Self.smallInput, operation: "script", language: language) { model in
+            let attempt = ContinuousClock.now
             do {
                 return try await self.draft(request, on: model, since: begin)
             } catch ScriptAIError.wrongLanguage {
                 // Measured on an iPhone: a Japanese idea with an English catchphrase came back in English. One more try,
                 // told plainly; if it still isn't in the language, the creator is told and nothing is saved.
+                AIFailureReport.note(
+                    ScriptAIError.wrongLanguage, operation: "script", route: model, language: language,
+                    seconds: attempt.duration(to: .now).inSeconds, isFinal: false
+                )
                 return try await self.draft(request, on: model, since: begin, insistsOnLanguage: true)
             } catch ScriptAIError.emptyResponse {
                 // Measured on an iPhone: now and then a request comes back with nothing in it, and the same one works at once.
+                AIFailureReport.note(
+                    ScriptAIError.emptyResponse, operation: "script", route: model, language: language,
+                    seconds: attempt.duration(to: .now).inSeconds, isFinal: false
+                )
                 return try await self.draft(request, on: model, since: begin)
             }
         }
@@ -190,6 +203,8 @@ final class ScriptAIService: ScriptWriting {
             needed = context.sourceLanguage.map { [$0] } ?? []
         }
         let plan = try await plan(for: .rewrite, languages: needed, translation: pair)
+        let operation = "rewrite.\(tool)"
+        let language = expected?.minimalIdentifier
         let voice = tool == .inMyVoice ? context.voice : nil
         func attempt(on model: AIModelRoute) async throws -> String {
             let session = self.session(on: model, instructions: ScriptPromptBuilder.rewriteInstructions(voice: voice, language: expected))
@@ -199,10 +214,11 @@ final class ScriptAIService: ScriptWriting {
             try Self.requireLanguage(expected, in: rewritten)
             return rewritten
         }
-        return try await withFallback(plan) { model in
+        return try await withFallback(plan, operation: operation, language: language) { model in
             do {
                 return try await attempt(on: model)
             } catch ScriptAIError.wrongLanguage {
+                AIFailureReport.note(ScriptAIError.wrongLanguage, operation: operation, route: model, language: language, seconds: 0, isFinal: false)
                 // Measured on an iPhone: "In my voice" on a Japanese script came back in English. One more try; then the
                 // creator is told and the script stays as it was.
                 return try await attempt(on: model)
@@ -212,7 +228,7 @@ final class ScriptAIService: ScriptWriting {
 
     func hooks(for text: String, context: RewriteContext) async throws -> [String] {
         let plan = try await plan(for: .hooks, languages: context.sourceLanguage.map { [$0] } ?? [])
-        return try await withFallback(plan) { model in
+        return try await withFallback(plan, operation: "hooks", language: context.sourceLanguage?.minimalIdentifier) { model in
             let session = self.session(on: model, instructions: ScriptPromptBuilder.rewriteInstructions(voice: context.voice))
             let ideas = try await session.respond(to: ScriptPromptBuilder.hooksPrompt(for: text, context: context), generating: HookIdeas.self).content
             let hooks = ideas.hooks.map(ScriptPromptBuilder.cleanTitle).filter { !$0.isEmpty }
@@ -225,7 +241,7 @@ final class ScriptAIService: ScriptWriting {
     func themeIdeas(for niches: [Niche], language: CueLanguage?) async throws -> [ThemeIdea] {
         let plan = try await plan(for: .themes, languages: language.map { [$0.locale.language] } ?? [])
         let known = niches.isEmpty ? [Niche.lifestyle] : niches
-        return try await withFallback(plan) { model in
+        return try await withFallback(plan, operation: "themes", language: language?.locale.identifier) { model in
             let session = self.session(on: model, instructions: "You suggest video ideas for creators who film themselves talking to camera.")
             let prompt = ScriptPromptBuilder.themesPrompt(for: known, language: language)
             let suggestions = try await session.respond(to: prompt, generating: ThemeSuggestions.self).content
@@ -261,8 +277,11 @@ final class ScriptAIService: ScriptWriting {
         for task: AIModelRoute.Task, languages: [Locale.Language], translation: (source: String, target: String)? = nil
     ) async throws -> AIPlan {
         switch await planner.plan(task, languages: languages.map(Self.locale(for:))) {
-        case .success(let plan): return plan
-        case .failure(let failure): throw failure.error(translation: translation)
+        case .success(let plan):
+            return plan
+        case .failure(let failure):
+            AIFailureReport.note(failure, operation: "\(task)", route: nil, language: languages.first?.minimalIdentifier, seconds: 0, isFinal: true)
+            throw failure.error(translation: translation)
         }
     }
 
@@ -277,19 +296,29 @@ final class ScriptAIService: ScriptWriting {
     /// plan knows it is available and writes the languages*, tries once more there: the device when
     /// Private Cloud Compute is out of reach, Private Cloud Compute when a script is too long. A model
     /// already known to refuse the languages is never tried. A cancellation is passed on as it is; what
-    /// still fails is explained in Cue's words.
+    /// still fails is explained in Cue's words. Every attempt that fails is written down (`AIFailureReport`): what was asked
+    /// (`operation`, in `language`), the framework's reason and the iPhone's conditions.
     func withFallback<Result>(
         _ plan: AIPlan,
         retriesRunaway: Bool = false,
+        operation: String = "script",
+        language: String? = nil,
         _ work: (AIModelRoute) async throws -> Result
     ) async throws -> Result {
+        var started = ContinuousClock.now
+        func note(_ error: any Error, on route: AIModelRoute, isFinal: Bool) {
+            AIFailureReport.note(
+                error, operation: operation, route: route, language: language, seconds: started.duration(to: .now).inSeconds, isFinal: isFinal
+            )
+            started = .now
+        }
         do {
             return try await work(plan.route)
         } catch {
             var error = error
             var failure = AIFailure(error)
             if failure == .tooLong, retriesRunaway {
-                logger.notice("\(String(describing: plan.route)) ran out of room on a short request, trying again")
+                note(error, on: plan.route, isFinal: false)
                 do {
                     return try await work(plan.route)
                 } catch let second {
@@ -298,15 +327,14 @@ final class ScriptAIService: ScriptWriting {
                 }
             }
             guard let fallback = plan.fallback(from: plan.route, after: failure) else {
+                note(error, on: plan.route, isFinal: true)
                 throw Self.explained(error, failure: failure)
             }
-            logger.notice("""
-                \(String(describing: plan.route)) failed (\(String(describing: failure))), trying \(String(describing: fallback)): \
-                \(error.localizedDescription)
-                """)
+            note(error, on: plan.route, isFinal: false)
             do {
                 return try await work(fallback)
             } catch {
+                note(error, on: fallback, isFinal: true)
                 throw Self.explained(error, failure: AIFailure(error))
             }
         }
