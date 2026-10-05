@@ -132,6 +132,45 @@ final class OnboardingUITests: XCTestCase {
         XCTAssertTrue(element(app, "practice.chip").waitForExistence(timeout: 10))
     }
 
+    /// Each permission row is a button: tapping it asks for that permission, and a refusal is said gently.
+    func testThePermissionRowsAreButtons() {
+        let app = launch()
+        startFlight(app)
+        pick(app, "onboarding.topic.niche.food")
+        app.buttons["onboarding.continue"].tap()
+        pick(app, "onboarding.platform.tiktok")
+        app.buttons["onboarding.continue"].tap()
+        useScript(app)
+        let microphone = app.buttons["onboarding.permission.microphone"]
+        XCTAssertTrue(microphone.waitForExistence(timeout: 8))
+        microphone.tap()
+        XCTAssertTrue(app.staticTexts["✓ Allowed"].waitForExistence(timeout: 5))
+        XCTAssertFalse(app.buttons["onboarding.permission.microphone"].exists, "answered: it is no longer a button")
+        let camera = app.buttons["onboarding.permission.camera"]
+        XCTAssertTrue(camera.exists)
+        camera.tap()
+        XCTAssertFalse(app.buttons["onboarding.permission.camera"].waitForExistence(timeout: 3))
+        app.buttons["onboarding.continue"].tap()
+        XCTAssertTrue(element(app, "practice.chip").waitForExistence(timeout: 10))
+    }
+
+    /// A refused permission turns the footnote into a gentle note, and the flight still reaches the practice.
+    func testARefusalShowsAGentleNote() {
+        let app = launch(permissions: "denied")
+        startFlight(app)
+        pick(app, "onboarding.topic.niche.food")
+        app.buttons["onboarding.continue"].tap()
+        pick(app, "onboarding.platform.tiktok")
+        app.buttons["onboarding.continue"].tap()
+        useScript(app)
+        let microphone = app.buttons["onboarding.permission.microphone"]
+        XCTAssertTrue(microphone.waitForExistence(timeout: 8))
+        microphone.tap()
+        XCTAssertTrue(element(app, "onboarding.permission.deniedNote").waitForExistence(timeout: 5))
+        app.buttons["onboarding.continue"].tap()
+        XCTAssertTrue(element(app, "practice.chip").waitForExistence(timeout: 10))
+    }
+
     /// Skip goes straight to the Scripts empty state.
     func testSkipGoesToTheEmptyScriptsScreen() {
         let app = launch()

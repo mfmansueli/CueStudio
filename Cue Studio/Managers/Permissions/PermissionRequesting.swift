@@ -47,10 +47,14 @@ final class SystemPermissions: PermissionRequesting {
     }
 
     func requestSpeech() async -> PermissionState {
-        let status = await withCheckedContinuation { continuation in
+        await Self.speechAuthorization() == .authorized ? .allowed : .denied
+    }
+
+    /// Speech answers on a queue of its own: the callback must not be isolated to the main actor (it would trap).
+    private nonisolated static func speechAuthorization() async -> SFSpeechRecognizerAuthorizationStatus {
+        await withCheckedContinuation { continuation in
             SFSpeechRecognizer.requestAuthorization { continuation.resume(returning: $0) }
         }
-        return status == .authorized ? .allowed : .denied
     }
 
     func camera() -> PermissionState {

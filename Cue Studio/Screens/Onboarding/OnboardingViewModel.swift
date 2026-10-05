@@ -97,11 +97,44 @@ final class OnboardingViewModel {
         microphone != .notAsked && camera != .notAsked
     }
 
+    /// Something was refused: the screen says, gently, that the practice still works and where to turn it on.
+    var hasDenied: Bool {
+        microphone == .denied || camera == .denied
+    }
+
     /// "Continue" on the permissions screen: the system's prompts follow one at a time, microphone first.
     func askPermissions() async {
         guard !isAskingPermissions else { return }
         isAskingPermissions = true
         defer { isAskingPermissions = false }
+        await requestMicrophoneAndSpeech()
+        await requestCameraAccess()
+    }
+
+    /// The microphone's row: the system's prompt for it (and for Speech, which Voice Following listens through).
+    func askMicrophone() async {
+        guard !isAskingPermissions else { return }
+        isAskingPermissions = true
+        defer { isAskingPermissions = false }
+        await requestMicrophoneAndSpeech()
+    }
+
+    /// The camera's row.
+    func askCamera() async {
+        guard !isAskingPermissions else { return }
+        isAskingPermissions = true
+        defer { isAskingPermissions = false }
+        await requestCameraAccess()
+    }
+
+    /// Back from Settings, where the creator may have turned something on.
+    func refreshPermissions() {
+        microphone = permissions.microphone()
+        speech = permissions.speech()
+        camera = permissions.camera()
+    }
+
+    private func requestMicrophoneAndSpeech() async {
         if microphone == .notAsked {
             microphone = await permissions.requestMicrophone()
             if microphone == .allowed { Haptics.success() }
@@ -110,6 +143,9 @@ final class OnboardingViewModel {
         if speech == .notAsked, microphone == .allowed {
             speech = await permissions.requestSpeech()
         }
+    }
+
+    private func requestCameraAccess() async {
         if camera == .notAsked {
             camera = await permissions.requestCamera()
             if camera == .allowed { Haptics.success() }

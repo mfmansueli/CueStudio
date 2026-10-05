@@ -117,6 +117,29 @@ struct OnboardingViewModelTests {
         #expect(scenario.model.hasAnsweredEverything, "answered, so the flight goes on")
     }
 
+    @Test func eachRowAsksOnlyForItsOwnPermission() async {
+        let scenario = make()
+        defer { scenario.defaults.tearDown() }
+        await scenario.model.askCamera()
+        #expect(scenario.model.camera == .allowed)
+        #expect(scenario.model.microphone == .notAsked && scenario.model.speech == .notAsked)
+        await scenario.model.askMicrophone()
+        #expect(scenario.model.microphone == .allowed && scenario.model.speech == .allowed)
+        #expect(scenario.model.hasAnsweredEverything)
+        #expect(!scenario.model.hasDenied)
+    }
+
+    @Test func aRefusedPermissionIsReportedSoTheScreenCanPointToSettings() async {
+        let scenario = make(grants: false)
+        defer { scenario.defaults.tearDown() }
+        #expect(!scenario.model.hasDenied)
+        await scenario.model.askMicrophone()
+        #expect(scenario.model.hasDenied)
+        #expect(scenario.model.camera == .notAsked, "the other row is still open")
+        await scenario.model.askCamera()
+        #expect(scenario.model.hasAnsweredEverything, "a refusal still lets the flight go on")
+    }
+
     // MARK: - The end
 
     @Test func theChoicesGoWhereTheAppReadsThem() {

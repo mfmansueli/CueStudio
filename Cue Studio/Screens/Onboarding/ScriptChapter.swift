@@ -59,7 +59,7 @@ struct ScriptChapter: View {
                     .font(.system(size: 12.5))
                     .foregroundStyle(Palette.inkHint)
             } else {
-                ProgressView().tint(Palette.aiText).frame(maxWidth: .infinity, minHeight: 120)
+                OnboardingWritingNotice()
             }
         }
         .padding(18)
