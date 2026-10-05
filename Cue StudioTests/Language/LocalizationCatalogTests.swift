@@ -57,7 +57,8 @@ struct LocalizationCatalogTests {
 
     @Test func theStringsThisWorkAddedAreInEveryLanguage() throws {
         let keys = [
-            "Apple Intelligence can’t translate between %1$@ and %2$@ yet.",
+            // The key the code looks up (`ScriptAIError`): two interpolations make two %@; translations may number them.
+            "Apple Intelligence can’t translate between %@ and %@ yet.",
             "The result wasn’t in the right language, so your script is unchanged. Try again.",
             "Captions couldn’t listen for %@ in this take, so those parts may be missing. Check the lines or write them yourself.",
             "Apple Intelligence needs a short break. Try again in a few minutes.",

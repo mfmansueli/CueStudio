@@ -29,6 +29,7 @@ tomadas. Atualize-o junto com a UI.
     e `--repeat N`. Durante o trabalho, `fast` ou `only`; `full` no fim. Testes de aparelho: `CUE_DEVICE=<iPhone>
     scripts/test.sh device <Suite>` (um conjunto por vez; liga a variável `TEST_RUNNER_CUE_…` certa).
   - `scripts/check-warnings.sh`: a conferência de zero warnings (abaixo).
+  - `scripts/strings.py`: o String Catalog sem editar o JSON à mão (`add` com os 20 idiomas, `missing`, `stale --remove`).
 - **Zero warnings.** Todo build termina sem nenhum warning (compilador, SwiftLint, ferramentas do
   Xcode): se um build mostrar um warning, corrija na mesma entrega, mesmo que não tenha vindo da sua
   mudança. Build incremental não repete warnings de arquivos não recompilados: antes de dar por terminado, rode
