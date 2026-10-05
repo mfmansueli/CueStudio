@@ -33,9 +33,7 @@ final class PrompterViewModel {
     /// True while speech recognition follows the reading word by word. Without it (no model for
     /// the language, or still downloading), Voice follow scrolls at the set speed while it hears
     /// speech.
-    private(set) var followsSpeech = false { didSet { highlighter.isActive = followsSpeech } }
-    /// The words lit as they are said (see `PrompterHighlighter`).
-    let highlighter = PrompterHighlighter()
+    private(set) var followsSpeech = false
     /// The language recognition listens in while `followsSpeech`.
     private(set) var listeningLanguage: CueLanguage?
     /// Why the words can't be followed in this language here, shown to the creator (once as a
@@ -109,7 +107,7 @@ final class PrompterViewModel {
     /// When the level meter last changed, so it redraws at most `levelInterval` apart.
     private var levelShownAt: TimeInterval = 0
     private var scriptWords = ScriptWords(text: "")
-    private var speechTracker = ScriptSpeechTracker(words: []) { didSet { highlighter.position = speechTracker.position } }
+    private var speechTracker = ScriptSpeechTracker(words: [])
     /// Vertical extent of each paragraph in the text, for placing words on the guide.
     private(set) var paragraphFrames: [Range<Double>] = []
     /// The word each mode was left on (see `keepPlace`).
@@ -782,7 +780,6 @@ final class PrompterViewModel {
         }
         transcription = started
         scriptWords = ScriptWords(text: wanted.text, language: language)
-        highlighter.words = scriptWords
         speechTracker = ScriptSpeechTracker(words: scriptWords.tokens, language: language)
         speechLead.initialRate = ReadTime.wordsPerMinute(speed: session.prompter.speed) / 60
         followsSpeech = true
