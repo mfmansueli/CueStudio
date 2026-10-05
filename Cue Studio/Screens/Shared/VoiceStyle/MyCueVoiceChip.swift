@@ -16,6 +16,8 @@ struct MyCueVoiceChip: View {
     @Binding var setup: VoiceSetupSheet.Mode?
     /// The bare first-visit card draws smaller chips (28 pt).
     var isCompact = false
+    /// The chip's touch height (the dock's row is 36 pt).
+    var hitHeight = Metrics.hitTarget
 
     @Environment(CreatorProfileService.self) private var profile
     @Environment(DictationService.self) private var dictation
@@ -24,18 +26,19 @@ struct MyCueVoiceChip: View {
 
     private var isSet: Bool { profile.profile.hasMinimumVoice }
 
-    /// The board's chip: "✦ In your voice 65%"; "✦ My Cue Voice" before there is enough to use; grey "Neutral voice · OFF" when the
+    /// The dock's chip (03 · 3.2): "✦ Voice 65%"; "✦ My Cue Voice" before there is enough to use; grey "Neutral voice · OFF" when the
     /// creator turned the voice off.
     private var chip: IdeaCardChip {
         if isSet, !profile.profile.usesVoiceInAI {
-            return IdeaCardChip(label: String(localized: "Neutral voice"), style: .off, trailingMono: String(localized: "OFF"))
+            return IdeaCardChip(label: String(localized: "Neutral voice"), style: .off, trailingMono: String(localized: "OFF"), hitHeight: hitHeight)
         }
         if isSet {
             return IdeaCardChip(
-                label: String(localized: "In your voice"), style: .ai, glyph: "✦", trailingMono: "\(profile.profile.voiceStrength)%", isCompact: isCompact
+                label: String(localized: "Voice"), style: .ai, glyph: "✦", trailingMono: "\(profile.profile.voiceStrength)%",
+                isCompact: isCompact, hitHeight: hitHeight
             )
         }
-        return IdeaCardChip(label: String(localized: "My Cue Voice"), style: .ai, glyph: "✦", isCompact: isCompact)
+        return IdeaCardChip(label: String(localized: "My Cue Voice"), style: .ai, glyph: "✦", isCompact: isCompact, hitHeight: hitHeight)
     }
 
     var body: some View {

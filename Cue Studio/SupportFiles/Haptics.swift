@@ -55,6 +55,18 @@ enum Haptics {
         mediumGenerator.impactOccurred()
     }
 
+    /// An idea is sent (the star leaves the arrow).
+    static func medium() {
+        guard isEnabled else { return }
+        mediumGenerator.impactOccurred()
+    }
+
+    /// The star's exit when the idea is cancelled.
+    static func light() {
+        guard isEnabled else { return }
+        lightGenerator.impactOccurred()
+    }
+
     /// A world is born, a video arrives, the first star, a milestone, a permission granted.
     static func success() {
         guard isEnabled else { return }

@@ -16,6 +16,8 @@ struct ScriptStarterTests {
         let library: ScriptLibraryService
         let presentation: PresentationService
         let ideaDraft: IdeaDraftService
+        let transition: IdeaTransitionService
+        let sky: SkyMemory
         let defaults: TestDefaults
     }
 
@@ -24,11 +26,18 @@ struct ScriptStarterTests {
         let library = ScriptLibraryService(repository: FakeScriptRepository(), now: { TestData.now })
         let presentation = PresentationService()
         let ideaDraft = IdeaDraftService()
+        let transition = IdeaTransitionService()
+        transition.speed = 0.01
+        let sky = SkyMemory(defaults: defaults.defaults)
         let starter = ScriptStarter(
             library: library, rules: TestData.rulesService(), profile: CreatorProfileService(defaults: defaults.defaults),
-            languages: TestData.languages(defaults: defaults.defaults), presentation: presentation, ideaDraft: ideaDraft
+            languages: TestData.languages(defaults: defaults.defaults), presentation: presentation, ideaDraft: ideaDraft,
+            transition: transition, sky: sky
         )
-        return Scenario(starter: starter, library: library, presentation: presentation, ideaDraft: ideaDraft, defaults: defaults)
+        return Scenario(
+            starter: starter, library: library, presentation: presentation, ideaDraft: ideaDraft, transition: transition, sky: sky,
+            defaults: defaults
+        )
     }
 
     @Test func theCardsIdeaOpensANewScriptWithItsRequest() {
@@ -70,5 +79,29 @@ struct ScriptStarterTests {
         #expect(scenario.starter.platform == .tiktok)
         scenario.ideaDraft.platform = .linkedin
         #expect(scenario.starter.platform == .linkedin)
+    }
+
+    @Test func theIdeasStarRisesAsTheTransitionAndCancelTakesTheScriptBack() async throws {
+        let scenario = makeScenario()
+        defer { scenario.defaults.tearDown() }
+        scenario.ideaDraft.text = "Carnival in Salvador"
+        scenario.starter.write(from: CGPoint(x: 300, y: 700))
+        #expect(scenario.transition.isActive && scenario.transition.idea == "Carnival in Salvador")
+        #expect(scenario.library.scripts.count == 1 && !scenario.presentation.scriptsPath.isEmpty)
+        scenario.transition.cancel()
+        // No script is created, the page goes, and the idea is still in the field.
+        #expect(scenario.library.scripts.isEmpty && scenario.presentation.scriptsPath.isEmpty)
+        #expect(scenario.ideaDraft.text == "Carnival in Salvador")
+        #expect(scenario.sky.points.isEmpty)
+    }
+
+    @Test func whenTheScriptIsReadyTheIdeaBecomesAStarInTheSky() async {
+        let scenario = makeScenario()
+        defer { scenario.defaults.tearDown() }
+        scenario.ideaDraft.text = "Carnival in Salvador"
+        scenario.starter.write(from: CGPoint(x: 300, y: 700))
+        await scenario.transition.contentReady()
+        #expect(scenario.sky.points.count == 1)
+        #expect(scenario.library.scripts.count == 1)
     }
 }

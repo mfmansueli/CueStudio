@@ -12,6 +12,7 @@ struct UniverseShareCard: View {
 
     let snapshot: UniverseSnapshot
     let mode: Mode
+    var coreColor: CoreColor = .gold
 
     var body: some View {
         ZStack {
@@ -21,7 +22,7 @@ struct UniverseShareCard: View {
                     .font(.system(size: 16, weight: .bold, design: .monospaced)).tracking(2).foregroundStyle(Palette.acc)
                 switch mode {
                 case .universe:
-                    UniverseMap(snapshot: snapshot, animates: false).frame(height: 520)
+                    UniverseMap(snapshot: snapshot, animates: false, coreColor: coreColor).frame(height: 520)
                     Text("\(snapshot.total) videos shared").font(.system(size: 34, weight: .bold)).foregroundStyle(.white)
                 case .year:
                     year

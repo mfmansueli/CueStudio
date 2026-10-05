@@ -18,6 +18,8 @@ struct VoiceSetupDraft: Equatable {
     private(set) var role: CreatorRole?
     private(set) var niches: [Niche]
     private(set) var vocabulary: Vocabulary?
+    /// How much the audience knows; optional here (the tip asks it later when it is left).
+    private(set) var audienceLevel: AudienceLevel?
     private(set) var sounds: [VoiceSound]
     let nicheCap: Int
     let soundCap: Int
@@ -35,6 +37,7 @@ struct VoiceSetupDraft: Equatable {
         // or an older build saved, is shown picked and can be confirmed as it is.
         niches = profile.hasAnswered(.niche) ? profile.niches : []
         vocabulary = profile.isChosen(.audience) ? profile.vocabulary : nil
+        audienceLevel = profile.audienceLevel
         sounds = profile.isChosen(.tone) ? profile.sounds : []
         confirmsExistingValues = self.steps.contains { !profile.hasAnswered($0) && profile.isChosen($0) }
         nicheCap = max(Self.nicheLimit, niches.count)
@@ -47,6 +50,7 @@ struct VoiceSetupDraft: Equatable {
     func isPicked(_ niche: Niche) -> Bool { niches.contains(niche) }
     func isPicked(_ sound: VoiceSound) -> Bool { sounds.contains(sound) }
     func isPicked(_ vocabulary: Vocabulary) -> Bool { self.vocabulary == vocabulary }
+    func isPicked(_ level: AudienceLevel) -> Bool { audienceLevel == level }
 
     /// Whether one more niche (or sound) can be picked.
     var canAddNiche: Bool { niches.count < nicheCap }
@@ -83,6 +87,10 @@ struct VoiceSetupDraft: Equatable {
         self.vocabulary = vocabulary
     }
 
+    mutating func choose(_ level: AudienceLevel) {
+        audienceLevel = level
+    }
+
     // MARK: - Saving
 
     /// Every step that is asked has an answer.
@@ -108,5 +116,6 @@ struct VoiceSetupDraft: Equatable {
             vocabulary: steps.contains(.audience) ? vocabulary : nil,
             sounds: steps.contains(.tone) ? sounds : nil
         )
+        if steps.contains(.audience), let audienceLevel { service.answerAudienceLevel(audienceLevel) }
     }
 }

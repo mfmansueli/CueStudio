@@ -16,11 +16,15 @@ enum Metrics {
     static let profileBlockRadius: CGFloat = 22
     /// The idea card on Scripts (the board's `.hero`).
     static let heroRadius: CGFloat = 22
+    /// The Scripts dock (v30).
+    static let dockRadius: CGFloat = 28
     static let innerRadius: CGFloat = 20
     static let tileRadius: CGFloat = 18
     static let fieldRadius: CGFloat = 12
     /// Top corners of custom sheets.
     static let sheetRadius: CGFloat = 38
+    /// The navigation bar of a sheet (the native close button): added to a fitted sheet's height.
+    static let sheetBarHeight: CGFloat = 56
     static let buttonHeight: CGFloat = 50
     static let largeButtonHeight: CGFloat = 54
     static let compactButtonHeight: CGFloat = 34

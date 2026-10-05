@@ -29,7 +29,7 @@ final class ShareUniverseProV29UITests: XCTestCase {
         let tab = app.cueTabBar.buttons["Profile"]
         XCTAssertTrue(tab.waitForExistence(timeout: 15))
         tab.tap()
-        let card = element(app, "profile.universeCard")
+        let card = element(app, "profile.universeLink")
         var swipes = 0
         while !card.isHittable, swipes < 5 {
             app.swipeUp()
@@ -46,6 +46,43 @@ final class ShareUniverseProV29UITests: XCTestCase {
         XCTAssertTrue(app.staticTexts["Your first star is one video away"].waitForExistence(timeout: 5))
         XCTAssertTrue(element(app, "universe.empty.action").exists)
         capture(app, "9.2_universe_empty")
+    }
+
+    /// 9.2: tapping the core opens its sheet; choosing a colour there marks it (the same choice lives in Settings › Personalize).
+    func testTappingTheCoreOpensItsSheetWithTheFourColours() {
+        let app = CueApp.launch(seeded: false)
+        openUniverse(app)
+        element(app, "universe.core").tap()
+        XCTAssertTrue(element(app, "universeCore.sheet").waitForExistence(timeout: 5))
+        XCTAssertTrue(app.staticTexts["Your light. It grows with every video you share — no photo needed."].exists)
+        for color in ["gold", "amber", "sunrise", "rose"] {
+            XCTAssertTrue(app.buttons["coreColor.\(color)"].exists, color)
+        }
+        XCTAssertTrue(app.buttons["coreColor.gold"].isSelected)
+        app.buttons["coreColor.rose"].tap()
+        XCTAssertTrue(app.buttons["coreColor.rose"].isSelected)
+        XCTAssertFalse(app.buttons["coreColor.gold"].isSelected)
+        capture(app, "9.2_core_sheet")
+    }
+
+    /// 11.3: the Personalize card has the same four colours as the core sheet.
+    func testThePersonalizeRowChoosesTheCoreColour() {
+        let app = CueApp.launch(seeded: false)
+        let tab = app.cueTabBar.buttons["Settings"]
+        XCTAssertTrue(tab.waitForExistence(timeout: 15))
+        tab.tap()
+        let row = app.buttons["settings.personalizeButton"]
+        XCTAssertTrue(row.waitForExistence(timeout: 5))
+        row.tap()
+        let amber = app.buttons["coreColor.amber"]
+        var swipes = 0
+        while !amber.isHittable, swipes < 5 {
+            app.swipeUp()
+            swipes += 1
+        }
+        amber.tap()
+        XCTAssertTrue(amber.isSelected)
+        capture(app, "11.3_core_colour")
     }
 
     /// 11.4 from the Profile: the plans, the trial button and Restore are all there.

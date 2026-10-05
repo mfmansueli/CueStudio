@@ -18,8 +18,7 @@ struct VoiceAdjustSheet: View {
         VStack(alignment: .leading, spacing: 16) {
             SheetHeader(
                 title: String(localized: "What didn’t sound like you?"),
-                subtitle: String(localized: "Pick what to change. Cue rewrites it."),
-                onClose: { dismiss() }
+                subtitle: String(localized: "Pick what to change. Cue rewrites it.")
             )
             FlowLayout(spacing: 8, lineSpacing: 0) {
                 ForEach(VoiceAdjustment.allCases) { adjustment in
@@ -61,9 +60,8 @@ struct VoiceAdjustSheet: View {
             .accessibilityIdentifier("voiceAdjust.rewrite")
         }
         .padding(EdgeInsets(top: 20, leading: Metrics.gutter, bottom: 12, trailing: Metrics.gutter))
+        .cueSheetChrome()
         .presentationDetents([.medium])
-        .presentationBackground(Palette.surface)
-        .presentationCornerRadius(Metrics.sheetRadius)
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("voiceAdjust.sheet")
     }

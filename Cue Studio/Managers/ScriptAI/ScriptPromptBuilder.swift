@@ -83,7 +83,7 @@ nonisolated enum ScriptPromptBuilder {
             if role.speaksAsWe { lines.append("They speak as a team: say \"we\", not \"I\".") }
         }
         if !voice.sounds.isEmpty {
-            lines.append("They sound \(list(voice.sounds.map { $0.label.lowercased() })).")
+            lines.append("They sound \(list(voice.sounds.map(\.promptWord))).")
         }
         if let vocabulary = voice.vocabulary {
             lines.append(vocabularyRule(vocabulary))
@@ -109,6 +109,7 @@ nonisolated enum ScriptPromptBuilder {
         if let swearing = voice.swearing {
             lines.append(swearingRule(swearing))
         }
+        lines += deliveryLines(voice)
         if !voice.customTags.isEmpty {
             lines.append("Also true of them: \(voice.customTags.joined(separator: ", ")).")
         }
@@ -124,6 +125,32 @@ nonisolated enum ScriptPromptBuilder {
     static func voiceBrief(_ profile: CreatorProfile) -> String {
         guard profile.hasMinimumVoice else { return "" }
         return voiceLines(profile.voice).joined(separator: "\n")
+    }
+
+    /// What the question bank added: how they come across, who is watching, what to avoid and where they post.
+    private static func deliveryLines(_ voice: CreatorVoice) -> [String] {
+        var lines: [String] = []
+        if let energy = voice.style.energy {
+            lines.append("Their energy on camera is \(energy.label.lowercased()).")
+        }
+        if let sentences = voice.style.sentences {
+            lines.append("They speak in \(sentences.label.lowercased()) sentences.")
+        }
+        if let words = voice.style.words {
+            lines.append("Their words: \(words.label.lowercased()).")
+        }
+        if let level = voice.audienceLevel {
+            lines.append("Their audience is \(level.label.lowercased()).")
+        }
+        if !voice.avoid.isEmpty {
+            lines.append("Never write: \(voice.avoid.joined(separator: ", ")).")
+        }
+        var reach: [String] = []
+        if !voice.reach.platforms.isEmpty { reach.append("they mostly post on \(voice.reach.platforms.map(\.label).joined(separator: ", "))") }
+        if let length = voice.reach.length { reach.append("their videos are usually \(length.label)") }
+        if let humor = voice.reach.humor { reach.append("humor in their videos: \(humor.label.lowercased())") }
+        if !reach.isEmpty { lines.append(reach.joined(separator: "; ").capitalizedFirst + ".") }
+        return lines
     }
 
     private static func quoted(_ items: [String]) -> String {
@@ -287,4 +314,9 @@ nonisolated enum ScriptPromptBuilder {
         let known = Set(ScriptType.allCases.flatMap { $0.structure.blocks } + ScriptStructure.generic.blocks)
         return known.contains { $0.caseInsensitiveCompare(label) == .orderedSame }
     }
+}
+
+private nonisolated extension String {
+    /// The first letter in capitals; the rest as it is.
+    var capitalizedFirst: String { prefix(1).uppercased() + dropFirst() }
 }

@@ -56,6 +56,13 @@ nonisolated enum CueMotion {
         .timingCurve(0.16, 1, 0.3, 1, duration: duration)
     }
 
+    /// The Scripts dock's first row folding away and coming back (09 §6: 0.28 s, `cubic-bezier(.2,.8,.2,1)`).
+    static let dockFold = Animation.timingCurve(0.2, 0.8, 0.2, 1, duration: 0.28)
+    /// The My Cue Voice tip coming in (09 §3: 0.40 s, `cubic-bezier(.2,.9,.25,1)`).
+    static let tipEnter = Animation.timingCurve(0.2, 0.9, 0.25, 1, duration: 0.4)
+    /// The list dimming while the dock's field has the keyboard (09 §6: 0.25 s, ease-out).
+    static let dockDim = Animation.easeOut(duration: 0.25)
+
     /// The prompter's glide to the next line (`cubic-bezier(.45,0,.25,1)`).
     static let glide = Animation.timingCurve(0.45, 0, 0.25, 1, duration: Duration.voiceGlide)
 

@@ -38,23 +38,25 @@ final class ScriptLibraryUITests: XCTestCase {
         XCTAssertFalse(app.staticTexts["Oat & Co. — sponsored read"].exists)
     }
 
-    func testPromptBoxStaysOnTop() {
+    /// The AI dock is fixed at the bottom, above the tab bar. Selecting scripts and searching take it away (the selection bar and the
+    /// keyboard have the screen); a filter does not.
+    func testTheDockStaysAtTheBottomAndGivesWayToSelectionAndSearch() {
         let app = CueApp.launch(seeded: true)
         let prompt = element(app, "scripts.promptCard")
         XCTAssertTrue(prompt.waitForExistence(timeout: 15))
+        XCTAssertGreaterThan(prompt.frame.minY, app.frame.height / 2, "the dock is at the bottom")
 
-        // The magnifier brings the search under the card; no filter, search or selection hides the card.
-        app.buttons["scripts.searchButton"].tap()
-        let search = element(app, "scripts.searchField")
+        app.buttons["scripts.selectButton"].tap()
+        XCTAssertFalse(prompt.waitForExistence(timeout: 1))
+        app.buttons["scripts.selectButton"].tap()
+        XCTAssertTrue(prompt.waitForExistence(timeout: 5))
+
+        let magnifier = app.navigationBars.buttons["Search"].firstMatch
+        magnifier.tap()
+        let search = app.searchFields.firstMatch
         XCTAssertTrue(search.waitForExistence(timeout: 5))
-        XCTAssertLessThan(prompt.frame.minY, search.frame.minY)
-        app.buttons["scripts.selectButton"].tap()
-        XCTAssertTrue(prompt.exists)
-        app.buttons["scripts.selectButton"].tap()
-        search.tap()
         search.typeText("nothing matches this")
         XCTAssertTrue(element(app, "scripts.empty").waitForExistence(timeout: 5))
-        XCTAssertTrue(prompt.exists)
     }
 
     func testTheCardsArrowWritesTheIdeaIntoANewPage() {
@@ -65,11 +67,11 @@ final class ScriptLibraryUITests: XCTestCase {
         field.typeText("A day in my life")
         app.buttons["ideaCard.submit"].tap()
         // The page opens and the words arrive on it, in the Draft; the card is empty again.
-        XCTAssertTrue(app.buttons["page.backButton"].waitForExistence(timeout: 10))
+        XCTAssertTrue(app.pageBackButton.waitForExistence(timeout: 10))
         XCTAssertTrue(element(app, "page.editor").waitForExistence(timeout: 10))
         XCTAssertTrue((element(app, "page.editor").value as? String)?.contains("Save this for later") == true)
         XCTAssertEqual((element(app, "page.titleField").value as? String), "A day in my life")
-        app.buttons["page.backButton"].tap()
+        app.pageBackButton.tap()
         XCTAssertTrue(element(app, "ideaCard.field").waitForExistence(timeout: 5))
         XCTAssertNotEqual(element(app, "ideaCard.field").value as? String, "A day in my life")
     }
@@ -99,17 +101,17 @@ final class ScriptLibraryUITests: XCTestCase {
         // Its field takes the keyboard in place; no page opens until the arrow is tapped.
         element(app, "ideaCard.field").tap()
         XCTAssertTrue(app.keyboards.firstMatch.waitForExistence(timeout: 5))
-        XCTAssertFalse(app.buttons["page.backButton"].exists)
+        XCTAssertFalse(app.pageBackButton.exists)
     }
 
     func testSearch() {
         let app = CueApp.launch(seeded: true)
-        let magnifier = app.buttons["scripts.searchButton"]
+        // The search is the navigation bar's own: a magnifier that opens the system's field.
+        let magnifier = app.navigationBars.buttons["Search"].firstMatch
         XCTAssertTrue(magnifier.waitForExistence(timeout: 15))
         magnifier.tap()
-        let search = element(app, "scripts.searchField")
+        let search = app.searchFields.firstMatch
         XCTAssertTrue(search.waitForExistence(timeout: 5))
-        search.tap()
         search.typeText("Q&A")
         XCTAssertTrue(app.staticTexts["Weekly Q&A — episode 12"].waitForExistence(timeout: 5))
         XCTAssertFalse(app.staticTexts[Self.lamp].exists)
@@ -120,7 +122,7 @@ final class ScriptLibraryUITests: XCTestCase {
     func testExistingScriptReturnsToScriptsWithOneBackTap() {
         let app = CueApp.launch(seeded: true)
         openScript(app, Self.lamp)
-        app.buttons["page.backButton"].tap()
+        app.pageBackButton.tap()
         XCTAssertTrue(element(app, "scripts.promptCard").waitForExistence(timeout: 5))
         XCTAssertFalse(app.buttons["detail.recordButton"].exists)
     }
@@ -132,13 +134,13 @@ final class ScriptLibraryUITests: XCTestCase {
         XCTAssertTrue(text.waitForExistence(timeout: 5))
         text.tap()
         text.typeText(" Updated for navigation testing.")
-        app.buttons["page.backButton"].tap()
+        app.pageBackButton.tap()
         XCTAssertTrue(element(app, "scripts.promptCard").waitForExistence(timeout: 5))
         XCTAssertFalse(app.buttons["detail.recordButton"].exists)
 
         // Saving promotes this row to the one edited last, but must not create another page.
         openScript(app, Self.lamp)
-        app.buttons["page.backButton"].tap()
+        app.pageBackButton.tap()
         XCTAssertTrue(element(app, "scripts.promptCard").waitForExistence(timeout: 5))
         XCTAssertFalse(app.buttons["detail.recordButton"].exists)
     }
@@ -148,7 +150,7 @@ final class ScriptLibraryUITests: XCTestCase {
         for title in [Self.habits, Self.lamp, Self.habits] {
             openScript(app, title)
             XCTAssertTrue(app.staticTexts[title].exists || (element(app, "page.titleField").value as? String) == title)
-            app.buttons["page.backButton"].tap()
+            app.pageBackButton.tap()
             XCTAssertTrue(element(app, "scripts.promptCard").waitForExistence(timeout: 5))
             XCTAssertFalse(app.buttons["detail.recordButton"].exists)
         }
@@ -166,15 +168,15 @@ final class ScriptLibraryUITests: XCTestCase {
         XCTAssertTrue(title.waitForExistence(timeout: 5))
         XCTAssertTrue(element(app, "page.editor").exists)
         title.typeText("One-tap navigation script")
-        app.buttons["page.backButton"].tap()
+        app.pageBackButton.tap()
         XCTAssertTrue(element(app, "scripts.promptCard").waitForExistence(timeout: 5))
         XCTAssertFalse(app.buttons["detail.recordButton"].exists)
         // A blank draft opens straight into writing (Continue ›), with the keyboard up.
         app.staticTexts["One-tap navigation script"].tap()
-        XCTAssertTrue(app.buttons["page.backButton"].waitForExistence(timeout: 5))
-        app.buttons["page.backButton"].tap()
+        XCTAssertTrue(app.pageBackButton.waitForExistence(timeout: 5))
+        app.pageBackButton.tap()
         XCTAssertTrue(element(app, "scripts.promptCard").waitForExistence(timeout: 5))
-        XCTAssertFalse(app.buttons["page.backButton"].exists)
+        XCTAssertFalse(app.pageBackButton.exists)
     }
 
     func testStudioAndRecordReturnToTheSamePageWithoutAddingAnotherRoute() {
@@ -191,7 +193,7 @@ final class ScriptLibraryUITests: XCTestCase {
             XCTAssertTrue(close.waitForExistence(timeout: 10))
             close.tap()
             XCTAssertTrue(app.buttons["detail.recordButton"].waitForExistence(timeout: 5))
-            app.buttons["page.backButton"].tap()
+            app.pageBackButton.tap()
             XCTAssertTrue(element(app, "scripts.promptCard").waitForExistence(timeout: 5))
             XCTAssertFalse(app.buttons["detail.recordButton"].exists)
         }
@@ -293,7 +295,7 @@ final class ScriptLibraryUITests: XCTestCase {
         XCTAssertTrue(discard.waitForExistence(timeout: 5))
         discard.tap()
         XCTAssertTrue(app.buttons["detail.recordButton"].waitForExistence(timeout: 5))
-        app.buttons["page.backButton"].tap()
+        app.pageBackButton.tap()
         XCTAssertTrue(element(app, "scripts.promptCard").waitForExistence(timeout: 5))
     }
 

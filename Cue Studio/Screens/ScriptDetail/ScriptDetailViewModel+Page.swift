@@ -43,6 +43,7 @@ extension ScriptDetailViewModel {
         let titleChanged = page.title != script.title
         let textChanged = CueParser.paragraphs(in: page.text) != CueParser.paragraphs(in: script.text)
         guard titleChanged || textChanged else { return }
+        if textChanged { voiceQuestions?.noteEdit(ofScript: scriptID) }
         let takeCount = scriptTakes.count
         let bumpsVersion = textChanged && takeCount > 0 && !page.bumpedVersion
         let title = page.title
@@ -346,6 +347,9 @@ extension ScriptDetailViewModel {
                 let generated = try await writer.generate(request)
                 guard !Task.isCancelled else { return }
                 let returnedAt = ContinuousClock.now
+                // The star opens the page (ring, crossfade) before the first word is written.
+                await transition?.contentReady()
+                guard !Task.isCancelled else { return }
                 page.title = generated.title
                 await reveal(generated.text)
                 guard !Task.isCancelled else { return }
@@ -357,6 +361,14 @@ extension ScriptDetailViewModel {
                 )
             } catch {
                 guard !Task.isCancelled, !(error is CancellationError) else { return }
+                if let transition, transition.isActive {
+                    // The star leaves the way Cancel does: no page, the idea kept, and a toast says why.
+                    page.isWriting = false
+                    page.revealed = nil
+                    transition.fail()
+                    toast.show(String(localized: "Couldn’t write it · Try again"))
+                    return
+                }
                 page.isWriting = false
                 page.revealed = nil
                 page.writingError = error.localizedDescription
@@ -397,6 +409,7 @@ extension ScriptDetailViewModel {
         // The idea became a script: the card starts empty the next time.
         ideaDraft?.clear()
         if let request { beginVoicePreview(for: request) }
+        if request?.voice != nil { voiceQuestions?.recordVoiceScript(scriptID) }
         toast.show(generated.needsFactCheck
             ? String(localized: "Draft ready · Check facts")
             : String(localized: "Draft ready · Edit anything"))

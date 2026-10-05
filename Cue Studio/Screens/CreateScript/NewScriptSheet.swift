@@ -29,8 +29,7 @@ struct NewScriptSheet: View {
         VStack(alignment: .leading, spacing: 0) {
             SheetHeader(
                 title: mode == .new ? String(localized: "Start a video") : String(localized: "New script"),
-                subtitle: mode == .new ? nil : String(localized: "Your words, your way."),
-                onClose: { dismiss() }
+                subtitle: mode == .new ? nil : String(localized: "Your words, your way.")
             )
             .padding(.horizontal, 4)
             .padding(.bottom, 16)

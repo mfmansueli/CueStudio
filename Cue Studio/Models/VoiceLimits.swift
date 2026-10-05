@@ -13,6 +13,7 @@ nonisolated enum VoiceLimits {
     static let endings = 2
     static let phrases = 5
     static let formats = 3
+    static let avoid = 3
 
     /// "Max 3 topics" and friends: the toast when one more would go over.
     static func message(max: Int, noun: String) -> String {

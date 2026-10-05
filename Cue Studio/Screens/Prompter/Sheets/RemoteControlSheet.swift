@@ -14,8 +14,7 @@ struct RemoteControlSheet: View {
         VStack(alignment: .leading, spacing: 16) {
             SheetHeader(
                 title: String(localized: "Remote Control"),
-                subtitle: String(localized: "Control your teleprompter from another device."),
-                onClose: { dismiss() }
+                subtitle: String(localized: "Control your teleprompter from another device.")
             )
             .padding(.horizontal, 4)
             RemotePairingPanel()

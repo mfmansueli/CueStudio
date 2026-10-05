@@ -6,7 +6,8 @@
 import SwiftUI
 
 /// A sheet exactly as tall as its content, like the short pickers in the design ("New script",
-/// "Start recording"). With large Dynamic Type the content scrolls once it reaches the top.
+/// "Start recording"), under the system's sheet chrome (the native close button). With large Dynamic Type the content scrolls
+/// once it reaches the top.
 struct FittedSheet: ViewModifier {
     @State private var contentHeight: CGFloat = 420
 
@@ -16,9 +17,8 @@ struct FittedSheet: ViewModifier {
                 .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { contentHeight = $0 }
         }
         .scrollBounceBehavior(.basedOnSize)
-        .presentationDetents([.height(contentHeight)])
-        .presentationBackground(Palette.surface)
-        .presentationCornerRadius(Metrics.sheetRadius)
+        .cueSheetChrome()
+        .presentationDetents([.height(contentHeight + Metrics.sheetBarHeight)])
         .presentationDragIndicator(.visible)
     }
 }

@@ -79,9 +79,8 @@ struct ImportScriptSheet: View {
             .padding(EdgeInsets(top: 20, leading: Metrics.gutter, bottom: 28, trailing: Metrics.gutter))
         }
         .scrollDismissesKeyboard(.interactively)
+        .cueSheetChrome()
         .presentationDetents([.large])
-        .presentationBackground(Palette.surface)
-        .presentationCornerRadius(Metrics.sheetRadius)
         .presentationDragIndicator(.visible)
         .fileImporter(isPresented: $showsFilePicker, allowedContentTypes: importer.supportedTypes) { result in
             switch result {

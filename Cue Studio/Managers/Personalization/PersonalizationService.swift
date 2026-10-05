@@ -7,12 +7,17 @@ import Foundation
 
 /// What the creator chose in Settings › Personalize: how alive the sky is, whether the story moments
 /// (send-off, milestones, the first star) play, whether the app taps back (haptics) and whether Cue
-/// tags new scripts with a topic by itself. Kept on this iPhone.
+/// tags new scripts with a topic by itself; the colour of the universe's core. Kept on this iPhone.
 @MainActor
 @Observable
 final class PersonalizationService {
     var sky: SkyDensity {
         didSet { defaults.set(sky.rawValue, forKey: DefaultsKey.skyDensity) }
+    }
+
+    /// The light at the centre of the universe (9.2, 11.3).
+    var coreColor: CoreColor {
+        didSet { defaults.set(coreColor.rawValue, forKey: DefaultsKey.coreColor) }
     }
 
     var celebrations: Bool {
@@ -36,6 +41,7 @@ final class PersonalizationService {
     init(defaults: UserDefaults = .standard) {
         self.defaults = defaults
         sky = defaults.string(forKey: DefaultsKey.skyDensity).flatMap(SkyDensity.init(rawValue:)) ?? .lively
+        coreColor = defaults.string(forKey: DefaultsKey.coreColor).flatMap(CoreColor.init(rawValue:)) ?? .gold
         celebrations = defaults.object(forKey: DefaultsKey.celebrations) as? Bool ?? true
         haptics = defaults.object(forKey: DefaultsKey.hapticsEnabled) as? Bool ?? true
         autoTagsTopics = defaults.object(forKey: DefaultsKey.autoTagTopics) as? Bool ?? true

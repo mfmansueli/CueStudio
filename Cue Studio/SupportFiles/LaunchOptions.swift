@@ -27,6 +27,9 @@ import Foundation
 ///   (`speech`), or is refused the microphone, can't recognize the language, or hears nothing.
 /// - `-uiTestOnboarding`: with the above, the first flight shows (it is off in UI tests otherwise).
 /// - `-uiTestPermissions <granted|denied>`: the first flight's permission prompts are answered at once.
+/// - `-uiTestVoiceTip`: the My Cue Voice tip needs no second day, script, wait or cap (tests of the tip itself); without it the
+///   tip stays away in UI tests (they open the app on one day).
+/// - `-uiTestStarTransition`: the idea's star transition keeps its real timings (3 s at least); UI tests shorten it otherwise.
 /// - `-uiTestAppLanguage <lproj>`: with `-uiTestInMemory`, Cue's interface starts in that language
 ///   (as if picked in Language & Region) without changing the simulator's. The interface language
 ///   always lives in memory under `-uiTestInMemory`.
@@ -57,6 +60,10 @@ struct LaunchOptions {
     var isInMemory = false
     /// UI tests: the platforms' apps count as installed (`-uiTestAppsInstalled`).
     var appsAreInstalled = false
+    /// UI tests of the My Cue Voice tip: its gates are open (`-uiTestVoiceTip`).
+    var voiceTipSkipsGates = false
+    /// UI tests of the star transition: it takes its real time (`-uiTestStarTransition`).
+    var keepsStarTransitionTimings = false
 
     static func fromProcess() -> LaunchOptions {
         var options = LaunchOptions()
@@ -102,6 +109,8 @@ struct LaunchOptions {
             }
             options.platformRules = PlatformRulesService(cacheURL: nil, remoteURL: nil)
             options.showsOnboarding = arguments.contains("-uiTestOnboarding")
+            options.voiceTipSkipsGates = arguments.contains("-uiTestVoiceTip")
+            options.keepsStarTransitionTimings = arguments.contains("-uiTestStarTransition")
             if let index = arguments.firstIndex(of: "-uiTestPermissions"), arguments.indices.contains(index + 1) {
                 options.permissions = StubPermissions(grants: arguments[index + 1] != "denied")
             }

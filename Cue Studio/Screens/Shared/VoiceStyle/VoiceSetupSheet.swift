@@ -30,6 +30,7 @@ struct VoiceSetupSheet: View {
     @Environment(ToastService.self) private var toast
     @State private var draft: VoiceSetupDraft
     @State private var index = 0
+    @State private var showsExample = false
     private let confirmsExistingValues: Bool
 
     init(
@@ -90,10 +91,9 @@ struct VoiceSetupSheet: View {
         }
         .animation(.smooth(duration: 0.2), value: index)
         .presentationDetents([.large])
-        .presentationBackground(Palette.bg)
-        .presentationCornerRadius(Metrics.sheetRadius)
         .presentationDragIndicator(.visible)
         // A container of its own: the sheet's identifier would otherwise replace its controls' (Continue's).
+        .sheet(isPresented: $showsExample) { VoiceExamplesSheet() }
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("voiceSetup.sheet")
     }
@@ -126,6 +126,9 @@ struct VoiceSetupSheet: View {
             VoiceAudienceStep(draft: draft) { vocabulary in
                 Haptics.selection()
                 draft.choose(vocabulary)
+            } onLevel: { level in
+                Haptics.selection()
+                draft.choose(level)
             }
         case .tone:
             VoiceToneStep(draft: draft) { sound in
@@ -183,6 +186,17 @@ struct VoiceSetupSheet: View {
             .buttonStyle(.cuePrimary(.large))
             .disabled(!canContinue)
             .accessibilityIdentifier("voiceSetup.saveButton")
+            if isLast {
+                Button { showsExample = true } label: {
+                    Text("Add a voice example")
+                        .font(.subheadline.weight(.semibold))
+                        .foregroundStyle(Palette.aiText)
+                        .frame(maxWidth: .infinity, minHeight: Metrics.hitTarget)
+                        .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+                .accessibilityIdentifier("voiceSetup.addExample")
+            }
             if isLast, hasIdea, mode != .edit {
                 Button { save(writesScript: false) } label: {
                     Text("Just save my voice")

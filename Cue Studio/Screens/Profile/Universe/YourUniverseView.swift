@@ -13,8 +13,10 @@ struct YourUniverseView: View {
     @Environment(ScriptLibraryService.self) private var library
     @Environment(TopicTaggingService.self) private var tagging
     @Environment(PresentationService.self) private var presentation
+    @Environment(PersonalizationService.self) private var personalization
     @State private var shareImage: Image?
     @State private var yearImage: Image?
+    @State private var showsCore = false
 
     private var snapshot: UniverseSnapshot {
         UniverseSnapshot(
@@ -32,8 +34,16 @@ struct YourUniverseView: View {
                     .tracking(1.2)
                     .foregroundStyle(Palette.accText)
                     .padding(.horizontal, 4)
-                UniverseMap(snapshot: snapshot)
-                    .frame(height: snapshot.total == 0 ? 190 : 400)
+                // Tapping the core opens its sheet: the light, the topics' rings, the milestones and the core's colour.
+                Button { showsCore = true } label: {
+                    UniverseMap(snapshot: snapshot, coreColor: personalization.coreColor)
+                        .frame(height: snapshot.total == 0 ? 190 : nil)
+                        .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel(Text("Your core"))
+                .accessibilityValue(Text("\(snapshot.total) videos shared"))
+                .accessibilityIdentifier("universe.core")
                 if snapshot.total == 0 {
                     emptyState
                 }
@@ -49,7 +59,8 @@ struct YourUniverseView: View {
         .skyBackground()
         .navigationTitle("Your universe")
         .toolbarTitleDisplayMode(.inlineLarge)
-        .task(id: snapshot.total) { renderImages(snapshot) }
+        .task(id: "\(snapshot.total)-\(personalization.coreColor.rawValue)") { renderImages(snapshot) }
+        .sheet(isPresented: $showsCore) { UniverseCoreSheet(snapshot: snapshot) }
         .accessibilityIdentifier("universe.screen")
     }
 
@@ -142,7 +153,7 @@ struct YourUniverseView: View {
     @MainActor
     private func renderImages(_ snapshot: UniverseSnapshot) {
         guard snapshot.total > 0 else { return }
-        let card = UniverseShareCard(snapshot: snapshot, mode: .universe)
+        let card = UniverseShareCard(snapshot: snapshot, mode: .universe, coreColor: personalization.coreColor)
         let renderer = ImageRenderer(content: card)
         renderer.scale = 3
         shareImage = renderer.uiImage.map(Image.init(uiImage:))

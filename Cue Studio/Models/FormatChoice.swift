@@ -5,9 +5,10 @@
 
 import Foundation
 
-/// A tile of the format sheet (v29 · L3): Auto (Cue picks from the idea), Talking head (the plain "you, the camera, one
-/// clear point" video, which has no `ScriptType` of its own) or one of the ten formats. The board has 11 tiles; Hot take
-/// / reply (`opinion`) is kept as a 12th so no format is lost. "Start from a format" has no Auto.
+/// A choice on the format sheet (v30 · F, 09 §1): Auto (Cue picks from the idea), Talking head (the plain "you, the camera, one
+/// clear point" video, which has no `ScriptType` of its own) or a `ScriptType`. Nine are tiles in the grid; the formats the grid
+/// doesn't show (Hot take / reply, Announcement, Apology) are rows under "More formats", so no format is lost. "Start from a format"
+/// has no Auto.
 nonisolated enum FormatChoice: Hashable, Identifiable, Sendable {
     case auto
     case talkingHead
@@ -21,12 +22,19 @@ nonisolated enum FormatChoice: Hashable, Identifiable, Sendable {
         }
     }
 
-    /// The tiles in the order the sheet shows them: Auto, Talking head, Tutorial, Storytime, List / tips, Review,
-    /// Myth vs fact, POV, Sponsored ad, then the three that came before v28 (Hot take / reply, Announcement, Apology).
-    static let allTiles: [FormatChoice] = [
+    /// The grid's nine tiles, in order: Auto, Talking head, Tutorial, Storytime, List / tips, Review, Myth vs fact, POV, Sponsored ad.
+    static let gridTiles: [FormatChoice] = [
         .auto, .talkingHead, .type(.tutorial), .type(.story), .type(.list), .type(.review),
-        .type(.mythFact), .type(.pov), .type(.ad), .type(.opinion), .type(.launch), .type(.apology),
+        .type(.mythFact), .type(.pov), .type(.ad),
     ]
+
+    /// "More formats": one row for every `ScriptType` the grid doesn't show, in the enum's order (Hot take / reply, Launch, Apology).
+    static let moreFormats: [FormatChoice] = ScriptType.allCases
+        .filter { type in !gridTiles.contains(.type(type)) }
+        .map(FormatChoice.type)
+
+    /// Every choice the sheet has: the grid, then "More formats".
+    static let allTiles: [FormatChoice] = gridTiles + moreFormats
 
     /// What goes on the script: nil for Auto and Talking head.
     var scriptType: ScriptType? {

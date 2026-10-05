@@ -17,8 +17,7 @@ struct CreatorMicrophoneSheet: View {
         VStack(alignment: .leading, spacing: 0) {
             SheetHeader(
                 title: String(localized: "Microphone"),
-                subtitle: String(localized: "What Cue listens with in every take."),
-                onClose: { dismiss() }
+                subtitle: String(localized: "What Cue listens with in every take.")
             )
             .padding(.horizontal, 4)
             .padding(.bottom, 16)

@@ -43,7 +43,17 @@ nonisolated struct CreatorProfile: Codable, Hashable, Sendable {
     var endings: [String]
     /// What they film most.
     var formats: [ScriptType]
-    var swearing: Swearing?
+    /// How they come across: energy, sentences, words and swearing (v30 · 08 §1). Swearing used to be a field of its own.
+    var style: VoiceDelivery
+    /// What Cue should never write; `avoidNone` is the explicit "Nothing to avoid" (it counts as answered).
+    var avoid: [String]
+    var avoidNone: Bool
+    /// Where they post, how long their videos are and how much humor they use.
+    var reach: VoiceReach
+    /// How much their audience already knows.
+    var audienceLevel: AudienceLevel?
+    /// How many times they said a script written in their voice "sounds like me"; every two count as one example.
+    var approvals: Int
     /// Up to three of their own writings (`VoiceExample.limit`).
     var examples: [VoiceExample]
     /// Free tags added with "+ Something else" (2–40 characters each).
@@ -59,6 +69,8 @@ nonisolated struct CreatorProfile: Codable, Hashable, Sendable {
         defaultPlatform: Platform = .tiktok, monetizationGoals: Bool = true,
         confirmedVoiceSteps: Set<VoiceSetupStep> = [], unverifiedVoiceSteps: Set<VoiceSetupStep> = [],
         openings: [String] = [], endings: [String] = [], formats: [ScriptType] = [], swearing: Swearing? = nil,
+        style: VoiceDelivery = VoiceDelivery(), avoid: [String] = [], avoidNone: Bool = false, reach: VoiceReach = VoiceReach(),
+        audienceLevel: AudienceLevel? = nil, approvals: Int = 0,
         examples: [VoiceExample] = [], customTags: [String] = [], declinedVoiceItems: Set<VoicePersonalityItem> = []
     ) {
         self.name = name
@@ -79,7 +91,13 @@ nonisolated struct CreatorProfile: Codable, Hashable, Sendable {
         self.openings = openings
         self.endings = endings
         self.formats = formats
-        self.swearing = swearing
+        self.style = style
+        if let swearing { self.style.swearing = swearing }
+        self.avoid = avoid
+        self.avoidNone = avoidNone
+        self.reach = reach
+        self.audienceLevel = audienceLevel
+        self.approvals = approvals
         self.examples = examples
         self.customTags = customTags
         self.declinedVoiceItems = declinedVoiceItems
@@ -88,9 +106,15 @@ nonisolated struct CreatorProfile: Codable, Hashable, Sendable {
     var voice: CreatorVoice {
         CreatorVoice(
             sounds: sounds, phrases: phrases, vocabulary: vocabulary, styles: styles, niches: niches, role: role,
-            openings: openings, endings: endings, formats: formats, swearing: swearing, examples: examples,
-            customTags: customTags
+            openings: openings, endings: endings, formats: formats, swearing: swearing, style: style, avoid: avoid, reach: reach,
+            audienceLevel: audienceLevel, examples: examples, customTags: customTags
         )
+    }
+
+    /// Swearing moved into `style` (v30); the old name still reads and writes it.
+    var swearing: Swearing? {
+        get { style.swearing }
+        set { style.swearing = newValue }
     }
 
     var initials: String {
@@ -109,6 +133,7 @@ nonisolated struct CreatorProfile: Codable, Hashable, Sendable {
         case name, handle, niches, customTopics, phrases, role, voiceApproved, sounds, vocabulary, styles, usesVoiceInAI, defaultPlatform, monetizationGoals
         case confirmedVoiceSteps, unverifiedVoiceSteps
         case openings, endings, formats, swearing, examples, customTags, declinedVoiceItems
+        case style, avoid, avoidNone, reach, audienceLevel, approvals
         /// v1 kept a single tone; it becomes the first "How I sound".
         case legacyTone = "tone"
     }
@@ -142,7 +167,20 @@ nonisolated struct CreatorProfile: Codable, Hashable, Sendable {
         endings = try container.decodeIfPresent([String].self, forKey: .endings) ?? defaults.endings
         // A format a newer build added reads as absent, so the rest of the profile still opens.
         formats = (try? container.decodeIfPresent([String].self, forKey: .formats))?.compactMap(ScriptType.init(rawValue:)) ?? defaults.formats
-        swearing = (try? container.decodeIfPresent(Swearing.self, forKey: .swearing)) ?? nil
+        style = (try? container.decodeIfPresent(VoiceDelivery.self, forKey: .style)) ?? VoiceDelivery()
+        // The old `swearing` field moves into the style: "never" or false is "never"; "mild" or true is "mild only".
+        if style.swearing == nil {
+            if let legacy = (try? container.decodeIfPresent(Swearing.self, forKey: .swearing)) ?? nil {
+                style.swearing = legacy
+            } else if let flag = (try? container.decodeIfPresent(Bool.self, forKey: .swearing)) ?? nil {
+                style.swearing = flag ? .mild : .never
+            }
+        }
+        avoid = try container.decodeIfPresent([String].self, forKey: .avoid) ?? defaults.avoid
+        avoidNone = try container.decodeIfPresent(Bool.self, forKey: .avoidNone) ?? defaults.avoidNone
+        reach = (try? container.decodeIfPresent(VoiceReach.self, forKey: .reach)) ?? VoiceReach()
+        audienceLevel = (try? container.decodeIfPresent(AudienceLevel.self, forKey: .audienceLevel)) ?? nil
+        approvals = try container.decodeIfPresent(Int.self, forKey: .approvals) ?? defaults.approvals
         examples = Array(((try? container.decodeIfPresent([VoiceExample].self, forKey: .examples)) ?? []).prefix(VoiceExample.limit))
         customTags = try container.decodeIfPresent([String].self, forKey: .customTags) ?? defaults.customTags
         declinedVoiceItems = (try? container.decodeIfPresent(Set<VoicePersonalityItem>.self, forKey: .declinedVoiceItems)) ?? []
@@ -179,7 +217,12 @@ nonisolated struct CreatorProfile: Codable, Hashable, Sendable {
         try container.encode(openings, forKey: .openings)
         try container.encode(endings, forKey: .endings)
         try container.encode(formats.map(\.rawValue), forKey: .formats)
-        try container.encodeIfPresent(swearing, forKey: .swearing)
+        try container.encode(style, forKey: .style)
+        try container.encode(avoid, forKey: .avoid)
+        try container.encode(avoidNone, forKey: .avoidNone)
+        try container.encode(reach, forKey: .reach)
+        try container.encodeIfPresent(audienceLevel, forKey: .audienceLevel)
+        try container.encode(approvals, forKey: .approvals)
         try container.encode(examples, forKey: .examples)
         try container.encode(customTags, forKey: .customTags)
         try container.encode(declinedVoiceItems, forKey: .declinedVoiceItems)

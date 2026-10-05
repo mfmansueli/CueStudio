@@ -67,6 +67,10 @@ final class ScriptDetailViewModel {
     let rules: PlatformRulesService
     let writer: ScriptWriting
     let toast: ToastService
+    /// Where the voice questions learn that a script was written in the creator's voice, or edited after.
+    let voiceQuestions: VoiceQuestionScheduler?
+    /// The idea's star while the AI writes into this page: it waits for the star to open the page, and an error is its exit.
+    let transition: IdeaTransitionService?
 
     init(
         scriptID: UUID,
@@ -80,8 +84,12 @@ final class ScriptDetailViewModel {
         profile: CreatorProfileService,
         rules: PlatformRulesService,
         writer: ScriptWriting,
-        toast: ToastService
+        toast: ToastService,
+        voiceQuestions: VoiceQuestionScheduler? = nil,
+        transition: IdeaTransitionService? = nil
     ) {
+        self.voiceQuestions = voiceQuestions
+        self.transition = transition
         self.scriptID = scriptID
         self.library = library
         self.takes = takes

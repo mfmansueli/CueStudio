@@ -23,8 +23,7 @@ struct HooksSheet: View {
             VStack(alignment: .leading, spacing: 12) {
                 SheetHeader(
                     title: String(localized: "Pick a new hook"),
-                    subtitle: String(localized: "Viewers decide in the first 3 seconds."),
-                    onClose: { dismiss() }
+                    subtitle: String(localized: "Viewers decide in the first 3 seconds.")
                 )
                 .padding(.bottom, 4)
                 VStack(alignment: .leading, spacing: 6) {
@@ -89,8 +88,8 @@ struct HooksSheet: View {
             }
             .padding(EdgeInsets(top: 20, leading: Metrics.gutter, bottom: 24, trailing: Metrics.gutter))
         }
+        .cueSheetChrome()
         .presentationDetents([.medium, .large])
-        .presentationBackground(Palette.surface)
     }
 }
 

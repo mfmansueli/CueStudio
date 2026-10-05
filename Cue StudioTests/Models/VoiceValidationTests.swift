@@ -107,8 +107,9 @@ struct VoiceEditTests {
         defer { defaults.tearDown() }
         let before = service.profile.voiceStrength
         #expect(service.toggle(format: .tutorial) == .added)
+        // Swearing alone doesn't fill the style: it needs energy, sentences and words too.
         service.setSwearing(.mild)
-        #expect(service.profile.voiceStrength == before + 10)
+        #expect(service.profile.voiceStrength == before + 6)
         #expect(service.toggle(format: .tutorial) == .removed)
     }
 
@@ -131,71 +132,9 @@ struct VoiceEditTests {
         #expect(service.profile.nextQuestion == .endings)
         service.decline(.endings)
         #expect(service.profile.nextQuestion == .openings)
-        #expect(!service.profile.isFilled(.endings))
+        #expect(!service.profile.isFilled(VoicePersonalityItem.endings))
         // A real answer later takes it off the declined list.
         service.toggle("Save this", for: .endings)
         #expect(!service.profile.declinedVoiceItems.contains(.endings))
-    }
-}
-
-@MainActor
-@Suite("My Cue Voice nudges")
-struct VoiceNudgeTests {
-    private final class Clock {
-        var now = Date(timeIntervalSince1970: 1_800_000_000)
-    }
-
-    private func make(minimumVoice: Bool = true) -> (VoiceNudgeService, CreatorProfileService, Clock, TestDefaults) {
-        let defaults = TestDefaults()
-        let profile = CreatorProfileService(defaults: defaults.defaults)
-        if minimumVoice {
-            profile.saveVoiceSetup(role: .entertainer, niches: [.food], vocabulary: .simple, sounds: [.casual])
-        }
-        let clock = Clock()
-        let service = VoiceNudgeService(profile: profile, defaults: defaults.defaults, now: { clock.now })
-        return (service, profile, clock, defaults)
-    }
-
-    @Test func oneQuestionAtATimeInTheOrderCueAsks() {
-        let (service, profile, _, defaults) = make()
-        defer { defaults.tearDown() }
-        #expect(service.current(isAIAvailable: true) == .endings)
-        profile.toggle("Save this", for: .endings)
-        #expect(service.current(isAIAvailable: true) == .openings)
-    }
-
-    @Test func notNowHoldsItBackForThreeDaysThenItReturns() {
-        let (service, _, clock, defaults) = make()
-        defer { defaults.tearDown() }
-        service.notNow(.endings)
-        #expect(service.current(isAIAvailable: true) == .openings)
-        clock.now.addTimeInterval(2 * 24 * 3600)
-        #expect(service.current(isAIAvailable: true) == .openings)
-        clock.now.addTimeInterval(1 * 24 * 3600 + 60)
-        #expect(service.current(isAIAvailable: true) == .endings)
-    }
-
-    @Test func theSnoozeSurvivesARelaunch() {
-        let (service, profile, clock, defaults) = make()
-        defer { defaults.tearDown() }
-        service.notNow(.endings)
-        let again = VoiceNudgeService(profile: profile, defaults: defaults.defaults, now: { clock.now })
-        #expect(again.snoozedItems == [.endings])
-    }
-
-    @Test func nothingIsAskedWithoutAppleIntelligenceOrBeforeTheMinimumVoice() {
-        let (service, _, _, defaults) = make()
-        defer { defaults.tearDown() }
-        #expect(service.current(isAIAvailable: false) == nil)
-        let (bare, _, _, bareDefaults) = make(minimumVoice: false)
-        defer { bareDefaults.tearDown() }
-        #expect(bare.current(isAIAvailable: true) == nil)
-    }
-
-    @Test func noneOfTheseAndAnAnswerBothMoveOn() {
-        let (service, profile, _, defaults) = make()
-        defer { defaults.tearDown() }
-        profile.decline(.endings)
-        #expect(service.current(isAIAvailable: true) == .openings)
     }
 }

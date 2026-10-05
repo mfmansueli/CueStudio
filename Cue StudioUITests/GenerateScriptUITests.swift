@@ -45,7 +45,7 @@ final class GenerateScriptUITests: XCTestCase {
         // ↑ writes it into a new page at once.
         app.openIdeas()
         app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH 'ideas.write.'")).firstMatch.tap()
-        XCTAssertTrue(app.buttons["page.backButton"].waitForExistence(timeout: 10))
+        XCTAssertTrue(app.pageBackButton.waitForExistence(timeout: 10))
         XCTAssertTrue(element(app, "page.editor").waitForExistence(timeout: 10))
     }
 
@@ -104,7 +104,7 @@ final class GenerateScriptUITests: XCTestCase {
         field.typeText("Why I quit coffee for 30 days")
         app.buttons["ideaCard.submit"].tap()
         // The stub answers at once, so by the time the page is up the writing is done and Stop is gone.
-        XCTAssertTrue(app.buttons["page.backButton"].waitForExistence(timeout: 10))
+        XCTAssertTrue(app.pageBackButton.waitForExistence(timeout: 10))
         XCTAssertTrue(app.staticTexts.matching(NSPredicate(format: "label CONTAINS 'Draft ready'")).firstMatch.waitForExistence(timeout: 10))
         XCTAssertFalse(app.buttons["page.stopButton"].exists)
     }

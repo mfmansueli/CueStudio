@@ -56,23 +56,29 @@ final class SettingsUITests: XCTestCase {
         XCTAssertTrue(settings.isSelected)
     }
 
+    /// The creative preferences are in the profile sheet (the identity row opens it), not in Settings, and they survive tab changes.
     func testCreativePreferencesStayInProfileAndSurviveTabChanges() {
         let app = CueApp.launch(seeded: true)
         let profile = tab(app, label: "Profile")
         XCTAssertTrue(profile.waitForExistence(timeout: 15))
         profile.tap()
+        let identity = app.descendants(matching: .any)["profile.creatorCard"].firstMatch
+        XCTAssertTrue(identity.waitForExistence(timeout: 5))
+        identity.tap()
         let goals = app.switches["profile.monetizationGoalsToggle"]
         scroll(app, to: goals)
         XCTAssertTrue(app.buttons["profile.defaultPlatformPicker"].exists)
         goals.tap()
         let saved = goals.value as? String
         capture(app, name: "Profile · Creator preferences")
+        app.buttons["Done"].tap()
         XCTAssertFalse(app.buttons["settings.recordingTile"].exists)
         XCTAssertFalse(app.buttons["settings.languageRegionButton"].exists)
         tab(app, label: "Settings").tap()
         XCTAssertTrue(app.buttons["settings.restorePurchasesButton"].waitForExistence(timeout: 5))
         XCTAssertFalse(app.switches["profile.monetizationGoalsToggle"].exists)
         profile.tap()
+        identity.tap()
         scroll(app, to: goals)
         XCTAssertEqual(goals.value as? String, saved)
     }
@@ -200,8 +206,11 @@ final class SettingsUITests: XCTestCase {
         app.buttons["privacy.deleteButton"].tap()
         app.alerts.firstMatch.buttons["privacy.confirmDelete"].firstMatch.tap()
         // The sheet closes by itself and the library is empty: the first-visit screen is back.
+        let gone = NSPredicate(format: "exists == false")
+        expectation(for: gone, evaluatedWith: app.buttons["privacy.deleteButton"])
+        waitForExpectations(timeout: 10)
         tab(app, label: "Scripts").tap()
-        XCTAssertTrue(app.descendants(matching: .any)["empty.promptCard"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.descendants(matching: .any)["empty.promptCard"].waitForExistence(timeout: 10))
         XCTAssertFalse(sampleScript(app).exists)
     }
 

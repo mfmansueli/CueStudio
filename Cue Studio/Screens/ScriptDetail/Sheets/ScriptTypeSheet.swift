@@ -18,8 +18,7 @@ struct ScriptTypeSheet: View {
             VStack(alignment: .leading, spacing: 14) {
                 SheetHeader(
                     title: String(localized: "Script type"),
-                    subtitle: String(localized: "Sets the sections and AI suggestions"),
-                    onClose: { dismiss() }
+                    subtitle: String(localized: "Sets the sections and AI suggestions")
                 )
                 GroupedCard(background: Palette.surface2, radius: 16, dividerInset: 14) {
                     row(nil, structure: .generic)
@@ -30,9 +29,8 @@ struct ScriptTypeSheet: View {
             }
             .padding(EdgeInsets(top: 20, leading: Metrics.gutter, bottom: 24, trailing: Metrics.gutter))
         }
+        .cueSheetChrome()
         .presentationDetents([.large])
-        .presentationBackground(Palette.surface)
-        .presentationCornerRadius(Metrics.sheetRadius)
     }
 
     private func row(_ type: ScriptType?, structure: ScriptStructure) -> some View {

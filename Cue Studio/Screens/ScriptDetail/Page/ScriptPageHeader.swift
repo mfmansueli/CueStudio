@@ -11,7 +11,6 @@ struct ScriptPageHeader: View {
     @Binding var title: String
     let wordsAndTime: String
     let isWriting: Bool
-    let writesInMyVoice: Bool
     var focus: FocusState<ScriptPageFocus?>.Binding
     let onStop: () -> Void
     let onSubmitTitle: () -> Void
@@ -32,14 +31,6 @@ struct ScriptPageHeader: View {
                     .foregroundStyle(Palette.accText)
                     .accessibilityIdentifier("page.meter")
                 if isWriting {
-                    Group {
-                        if writesInMyVoice {
-                            Text("· ✦ Writing in your voice…")
-                        } else {
-                            Text("· ✦ Writing…")
-                        }
-                    }
-                    .foregroundStyle(Palette.aiText)
                     Spacer(minLength: 0)
                     Button(action: onStop) {
                         Text("Stop")

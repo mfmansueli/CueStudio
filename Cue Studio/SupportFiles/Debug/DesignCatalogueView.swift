@@ -10,7 +10,8 @@ import SwiftUI
 /// them by eye and by screenshot (`-uiTestCatalogue` opens it at launch; Settings has a row for it).
 struct DesignCatalogueView: View {
     enum Section: String, CaseIterable, Identifiable {
-        case colors = "Colors", icons = "Icons", sliders = "Sliders", tabBar = "Tabbar", components = "Parts", effects = "Effects", sky = "Sky"
+        case colors = "Colors", icons = "Icons", sliders = "Sliders", tabBar = "Tabbar", components = "Parts", effects = "Effects"
+        case sky = "Sky", transition = "Transition", universe = "Universe", writing = "Writing"
         var id: String { rawValue }
     }
 
@@ -25,6 +26,9 @@ struct DesignCatalogueView: View {
     @State private var words = 0
     @State private var aura = false
     @State private var density: SkyDensity = .lively
+    @State private var transitionRun = 0
+    @State private var writtenWords = 0
+    @State private var transitionReady = 0
 
     init(section: Section = .colors) {
         _section = State(initialValue: section)
@@ -50,6 +54,9 @@ struct DesignCatalogueView: View {
                     case .components: components
                     case .effects: effects
                     case .sky: skyDemo
+                    case .transition: transitionDemo
+                    case .universe: universeDemo
+                    case .writing: writingDemo
                     }
                 }
                 .padding(.horizontal, 16)
@@ -58,6 +65,91 @@ struct DesignCatalogueView: View {
         }
         .background(Palette.bg.ignoresSafeArea())
         .accessibilityIdentifier("catalogue.root")
+    }
+
+    // MARK: - Writing
+
+    private static let sampleScript = """
+    3 habits that fix my mornings. One: I drink water before my phone, because nothing good starts with a notification.
+
+    Two: I write one sentence about what would make today a win. Three: I move. Ten squats, a walk around the block.
+
+    Save this for tomorrow morning, and tell me which one stuck.
+    """
+
+    /// 4.1: the words arriving from light with the caret, and the pill; four more words every 0.7 s.
+    private var writingDemo: some View {
+        let words = Self.sampleScript.split(separator: " ", omittingEmptySubsequences: false)
+        return VStack(alignment: .leading, spacing: 20) {
+            ArrivingText(text: words.prefix(writtenWords).joined(separator: " "))
+                .frame(minHeight: 220, alignment: .topLeading)
+                .accessibilityIdentifier("catalogue.writingText")
+            ScriptWritingPill(inMyVoice: true).frame(maxWidth: .infinity)
+        }
+        .task {
+            writtenWords = 0
+            while writtenWords < words.count {
+                try? await Task.sleep(for: .milliseconds(700))
+                writtenWords += 4
+            }
+        }
+    }
+
+    // MARK: - Universe
+
+    /// 9.2: the core in its three sizes and four colours, and the map with a few shared videos.
+    private var universeDemo: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            ForEach(CoreColor.allCases) { color in
+                HStack(spacing: 12) {
+                    UniverseCore(color: color, style: .full)
+                    UniverseCore(color: color, style: .compact)
+                    UniverseCore(color: color, style: .preview)
+                    Text(color.label).font(.footnote).foregroundStyle(Palette.ink2)
+                }
+            }
+            UniverseMap(snapshot: Self.sampleUniverse)
+                .frame(height: 340)
+                .accessibilityIdentifier("catalogue.universeMap")
+        }
+    }
+
+    /// Twenty-three shared videos across three topics and three platforms, as in the board.
+    private static var sampleUniverse: UniverseSnapshot {
+        let topics: [OnboardingTopic] = [.niche(.lifestyle), .niche(.finance), .niche(.food)]
+        let platforms: [Platform] = [.tiktok, .reels, .shorts]
+        var scripts: [Script] = []
+        var takes: [Take] = []
+        for index in 0..<23 {
+            let topic = topics[index % 3]
+            let script = Script(title: "Sample \(index)", text: "Words", platform: platforms[index % 3], topic: topic.id)
+            scripts.append(script)
+            takes.append(Take(
+                scriptID: script.id, scriptTitle: script.title, scriptVersion: 1, number: 1, duration: 30,
+                recordedAt: .now.addingTimeInterval(Double(index) * 60), fileName: "sample\(index).mov",
+                resolution: .hd1080, frameRate: .fps30, aspect: .portrait, platform: platforms[index % 3]
+            ))
+        }
+        return UniverseSnapshot(sharedIDs: Set(takes.map(\.id)), takes: takes, scripts: scripts, topics: topics, firstShare: .now)
+    }
+
+    // MARK: - Transition
+
+    /// The idea's star over a stand-in for Scripts, held in "waiting" until "Ready" (so it can be looked at); "Again" starts it over.
+    private var transitionDemo: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("The star that is the transition from an idea to its script. It waits for the AI until you press Ready.")
+                .font(.footnote)
+                .foregroundStyle(Palette.ink2)
+            HStack(spacing: 10) {
+                Button("Again") { transitionRun += 1 }.buttonStyle(.cueSecondary(.compact, expands: false)).accessibilityIdentifier("catalogue.transitionAgain")
+                Button("Ready") { transitionReady += 1 }.buttonStyle(.cuePrimary(.compact, expands: false)).accessibilityIdentifier("catalogue.transitionReady")
+            }
+            TransitionDemo(run: transitionRun, ready: transitionReady)
+                .id(transitionRun)
+                .frame(height: 560)
+                .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
+        }
     }
 
     // MARK: - Colors
@@ -288,6 +380,44 @@ struct DesignCatalogueView: View {
     private func heading(_ text: String) -> some View {
         Text(text).font(CueStudioFont.hud).textCase(.uppercase).foregroundStyle(Palette.accText)
     }
+}
+
+/// The transition over a mock Scripts (the dock at the bottom), in a box.
+private struct TransitionDemo: View {
+    let run: Int
+    let ready: Int
+
+    @State private var transition = IdeaTransitionService()
+
+    var body: some View {
+        ZStack {
+            Palette.bg
+            VStack(alignment: .leading, spacing: 10) {
+                Text("Scripts").font(.largeTitle.bold()).foregroundStyle(Palette.ink)
+                ForEach(0..<4, id: \.self) { _ in
+                    RoundedRectangle(cornerRadius: 18, style: .continuous).fill(Palette.surface).frame(height: 64)
+                }
+                Spacer()
+                Text("3 things I stopped buying this year").padding(16).frame(maxWidth: .infinity, alignment: .leading)
+                    .dockSurface().foregroundStyle(Palette.ink)
+            }
+            .padding(16)
+            .scaleEffect(dims ? 0.94 : 1, anchor: UnitPoint(x: 0.5, y: 0.4))
+            .brightness(dims ? -0.4 : 0)
+            .saturation(dims ? 0.7 : 1)
+            .blur(radius: dims ? 10 : 0)
+            .animation(.timingCurve(0.2, 0.8, 0.2, 1, duration: IdeaTransitionService.riseDuration), value: dims)
+            StarTransitionOverlay(transition: transition)
+        }
+        .onAppear {
+            transition.begin(
+                from: CGPoint(x: 330, y: 560), idea: "3 things I stopped buying this year", platformName: "TikTok", abort: {}, arrive: {}
+            )
+        }
+        .onChange(of: ready) { Task { await transition.contentReady() } }
+    }
+
+    private var dims: Bool { transition.phase == .rising || transition.phase == .waiting }
 }
 
 #Preview {

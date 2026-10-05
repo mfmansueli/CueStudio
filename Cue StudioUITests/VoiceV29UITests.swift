@@ -34,8 +34,8 @@ final class VoiceV29UITests: XCTestCase {
     }
 
     /// Profile with the four setup questions answered (the minimum voice).
-    private func setUpVoice(ai: CueApp.AIMode = .stub) -> XCUIApplication {
-        let app = CueApp.launch(seeded: true, ai: ai)
+    private func setUpVoice(ai: CueApp.AIMode = .stub, extraArguments: [String] = []) -> XCUIApplication {
+        let app = CueApp.launch(seeded: true, ai: ai, extraArguments: extraArguments)
         let tab = app.cueTabBar.buttons["Profile"]
         XCTAssertTrue(tab.waitForExistence(timeout: 15))
         tab.tap()
@@ -49,7 +49,7 @@ final class VoiceV29UITests: XCTestCase {
         app.buttons["voiceSetup.saveButton"].tap()
         app.buttons["voiceSetup.tone.casual"].tap()
         app.buttons["voiceSetup.saveButton"].tap()
-        XCTAssertTrue(element(app, "profile.voiceSample").waitForExistence(timeout: 5))
+        XCTAssertTrue(element(app, "profile.voiceSentence").waitForExistence(timeout: 5))
         return app
     }
 
@@ -71,7 +71,7 @@ final class VoiceV29UITests: XCTestCase {
     func testTheFullPageListsTheThreeLayersAndWhatCueSends() {
         let app = setUpVoice()
         openVoicePage(app)
-        for row in ["role", "niche", "audience", "tone", "endings", "openings", "phrases", "formats", "swearing", "examples"] {
+        for row in ["role", "topics", "audience", "tone", "style", "formats", "openings", "endings", "phrases", "avoid", "reach", "examples"] {
             let element = element(app, "voicePage.row.\(row)")
             scroll(app, to: element)
             XCTAssertTrue(element.exists, row)
@@ -82,62 +82,70 @@ final class VoiceV29UITests: XCTestCase {
         capture(app, "9.3_my_cue_voice")
     }
 
-    /// F9: a typo asks "Did you mean…", a blocked word is refused, a repeat says "Already added." and the limit says Max.
+    /// F9: a typo asks "Did you mean…", a blocked word is refused, a repeat says "Already added.".
     func testFreeTextIsValidated() {
         let app = setUpVoice()
         openVoicePage(app)
         let row = element(app, "voicePage.row.endings")
         scroll(app, to: row)
         row.tap()
-        let field = app.textFields["voice.field"]
+        // "+ Something else" is below the five endings; the field comes up with it.
+        app.swipeUp()
+        let somethingElse = element(app, "voice.somethingElse")
+        XCTAssertTrue(somethingElse.waitForExistence(timeout: 5))
+        somethingElse.tap()
+        let field = element(app, "voice.field")
         XCTAssertTrue(field.waitForExistence(timeout: 5))
-        field.tap()
         field.typeText("Save thsi")
         app.buttons["voice.add"].tap()
         XCTAssertTrue(app.buttons["voice.typo.use"].waitForExistence(timeout: 5))
         capture(app, "9.3_validation_typo")
-        app.buttons["voice.typo.use"].tap()
-        XCTAssertTrue(app.buttons.matching(identifier: "voice.option").matching(NSPredicate(format: "label == 'Save this'")).firstMatch.isSelected)
-        // A repeat.
+        // A blocked word is refused.
         field.tap()
-        field.typeText("save this")
-        app.buttons["voice.add"].tap()
-        XCTAssertTrue(app.staticTexts["Already added."].waitForExistence(timeout: 5))
-        // A blocked word.
-        field.tap()
+        for _ in 0..<9 { field.typeText(XCUIKeyboardKey.delete.rawValue) }
         field.typeText("holy shit")
         app.buttons["voice.add"].tap()
         XCTAssertTrue(app.staticTexts["Apple Intelligence can’t use this word."].waitForExistence(timeout: 5))
         capture(app, "9.3_validation_blocked")
+        // The typo is used: it is saved.
+        field.tap()
+        for _ in 0..<9 { field.typeText(XCUIKeyboardKey.delete.rawValue) }
+        field.typeText("Save thsi")
+        app.buttons["voice.add"].tap()
+        app.buttons["voice.typo.use"].tap()
+        XCTAssertTrue(element(app, "voice.saved").waitForExistence(timeout: 5))
     }
 
-    /// F9 · nudge: one question on Scripts; "Not now" holds it back, "None of these" retires it.
-    func testTheNudgeOnScriptsAsksOneQuestionAtATime() {
-        let app = setUpVoice()
+    /// F9 · the tip on Scripts asks one question at a time (the sample takes were exported, so "Where do you post most?" is pulled to the
+    /// front), says "Saved" and offers one more.
+    func testTheTipOnScriptsAsksOneQuestionAtATime() {
+        let app = setUpVoice(extraArguments: ["-uiTestVoiceTip"])
         app.cueTabBar.buttons["Scripts"].tap()
-        let nudge = element(app, "voice.nudge")
-        scroll(app, to: nudge)
-        XCTAssertTrue(nudge.waitForExistence(timeout: 5))
-        XCTAssertTrue(app.staticTexts["How do you usually end a video?"].exists)
-        capture(app, "9.1_nudge")
-        app.buttons["voice.nudge.notNow"].tap()
-        // The next question comes up in its place.
-        XCTAssertTrue(app.staticTexts["How do you like to open?"].waitForExistence(timeout: 5))
-        app.buttons["voice.nudge.none"].tap()
-        XCTAssertTrue(app.staticTexts["What do you film most?"].waitForExistence(timeout: 5))
+        let open = app.buttons.matching(NSPredicate(format: "label CONTAINS 'One quick question'")).firstMatch
+        XCTAssertTrue(open.waitForExistence(timeout: 15))
+        capture(app, "9.1_tip")
+        open.tap()
+        XCTAssertTrue(app.staticTexts["Where do you post most?"].waitForExistence(timeout: 5))
+        element(app, "voice.option.tiktok").tap()
+        XCTAssertTrue(element(app, "voice.saved").waitForExistence(timeout: 5))
+        element(app, "voice.more").tap()
+        // The next question replaces it.
+        let old = app.staticTexts["Where do you post most?"]
+        expectation(for: NSPredicate(format: "exists == false"), evaluatedWith: old)
+        waitForExpectations(timeout: 5)
+        XCTAssertTrue(app.buttons["sheet.closeButton"].exists)
     }
 
-    /// F9 · no AI: the page says it needs Apple Intelligence and the data stays editable; no nudges.
+    /// F9 · no AI: the page says it needs Apple Intelligence and the data stays editable; no tips.
     func testWithoutAppleIntelligenceThePageSaysSoAndStaysEditable() {
         let app = setUpVoice(ai: .none)
         openVoicePage(app)
         XCTAssertTrue(element(app, "voicePage.needsAI").waitForExistence(timeout: 5))
-        XCTAssertFalse(element(app, "voice.nudge").exists)
+        XCTAssertFalse(element(app, "voice.tip").exists)
         let row = element(app, "voicePage.row.openings")
         scroll(app, to: row)
         row.tap()
-        XCTAssertTrue(app.buttons["voice.nudge.none"].exists == false)
-        XCTAssertTrue(app.textFields["voice.field"].waitForExistence(timeout: 5))
+        XCTAssertTrue(element(app, "voice.sheet.openings").waitForExistence(timeout: 5))
         capture(app, "9.3_no_ai")
     }
 }

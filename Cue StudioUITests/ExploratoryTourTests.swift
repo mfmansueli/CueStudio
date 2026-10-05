@@ -111,7 +111,7 @@ final class ExploratoryTourTests: XCTestCase {
             closeSheet()
         }
         tab(3)
-        if tap("profile.universeCard") || tap("profile.universeLink") {
+        if tap("profile.universeLink") || tap("profile.universeLink") {
             sleep(2)
             shot("your-universe")
             app.swipeUp(); shot("your-universe-2")
@@ -206,7 +206,7 @@ final class ExploratoryTourTests: XCTestCase {
             sleep(1)
         }
             if tap("page.platformChip") { shot("script-platform"); closeSheet() }
-            _ = tap("page.backButton")
+            _ = app.pageBackButton.exists ? { app.pageBackButton.tap(); return true }() : false
         } else { misses.append("scripts.row") }
     }
 

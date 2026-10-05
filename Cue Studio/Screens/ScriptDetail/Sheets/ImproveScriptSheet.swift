@@ -18,8 +18,7 @@ struct ImproveScriptSheet: View {
             VStack(alignment: .leading, spacing: 14) {
                 SheetHeader(
                     title: String(localized: "Improve script"),
-                    subtitle: String(localized: "Apple Intelligence · runs on your iPhone"),
-                    onClose: { dismiss() }
+                    subtitle: String(localized: "Apple Intelligence · runs on your iPhone")
                 )
                 if let overrun = viewModel.hookOverrun {
                     hookTip(overrun)
@@ -39,9 +38,8 @@ struct ImproveScriptSheet: View {
             }
             .padding(EdgeInsets(top: 20, leading: Metrics.gutter, bottom: 24, trailing: Metrics.gutter))
         }
+        .cueSheetChrome()
         .presentationDetents([.medium, .large])
-        .presentationBackground(Palette.surface)
-        .presentationCornerRadius(Metrics.sheetRadius)
     }
 
     /// "Your hook runs ~12s" with what to aim for: opens the hook options.

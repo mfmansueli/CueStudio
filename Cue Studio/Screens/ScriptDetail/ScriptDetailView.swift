@@ -26,7 +26,9 @@ struct ScriptDetailView: View {
             profile: services.profile,
             rules: services.rules,
             writer: services.writer,
-            toast: services.toast
+            toast: services.toast,
+            voiceQuestions: services.voiceQuestions,
+            transition: services.ideaTransition
         ))
     }
 
@@ -52,10 +54,10 @@ struct ScriptDetailView: View {
             }
         }
         .background(Palette.bg)
-        // The page has its own bar (back, platform, Draft | Shaped, •••, Rec) and the writing
-        // editor its own header: nothing sits above either.
-        .toolbarVisibility(.hidden, for: .navigationBar)
-        .navigationBarBackButtonHidden()
+        // The page uses the system's bar (back, platform, •••); the writing editor has its own header, so nothing sits above it.
+        .toolbarVisibility(viewModel.isEditing ? .hidden : .visible, for: .navigationBar)
+        .navigationBarBackButtonHidden(viewModel.isEditing)
+        .navigationBarTitleDisplayMode(.inline)
         .hidesCueTabBar()
         .task { viewModel.beginWritingIfNeeded() }
         .alert("Couldn't write the script", isPresented: Binding(

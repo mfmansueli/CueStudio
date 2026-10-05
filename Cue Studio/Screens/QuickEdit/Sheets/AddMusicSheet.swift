@@ -16,7 +16,7 @@ struct AddMusicSheet: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            EditorSheetHeader(title: String(localized: "Add music")) { dismiss() }
+            SheetHeader(title: String(localized: "Add music"))
             Button { picksFile = true } label: {
                 HStack(spacing: 12) {
                     Image(systemName: viewModel.isImportingMusic ? "hourglass" : "music.note")
@@ -63,9 +63,8 @@ struct AddMusicSheet: View {
                 if viewModel.selectedMusicID != nil { dismiss() }
             }
         }
-        .presentationDetents([.height(250)])
-        .presentationCornerRadius(Metrics.editorSheetRadius)
-        .presentationBackground(Palette.surface)
+        .cueSheetChrome()
+        .presentationDetents([.height(250 + Metrics.sheetBarHeight)])
         .presentationDragIndicator(.visible)
     }
 }

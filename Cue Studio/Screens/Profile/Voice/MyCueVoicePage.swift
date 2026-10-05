@@ -6,17 +6,18 @@
 import SwiftUI
 
 /// 9.3 · My Cue Voice, the full page: the meter, the next question, and the three layers — Essentials (kind of creator, topics,
-/// audience, tone), Personality (openings, endings, phrases, formats, swearing) and Proof (examples) — each row opening
-/// its own sheet, then "What Cue sends": the brief as the model reads it. Without Apple Intelligence the data stays saved and
+/// audience, tone), Personality (style, formats, openings, endings, phrases, what to avoid, reach) and Proof (examples) — each row
+/// opening the question sheet on its field, then "What Cue sends": the brief as the model reads it. Without Apple Intelligence the data stays saved and
 /// editable, and the page says the voice needs it.
 struct MyCueVoicePage: View {
     @Environment(CreatorProfileService.self) private var profile
-    @Environment(VoiceNudgeService.self) private var nudges
+    @Environment(VoiceQuestionScheduler.self) private var scheduler
     @Environment(AIStatus.self) private var aiStatus
 
     @State private var setup: ProfileVoiceSetup?
-    @State private var personality: VoicePersonalityItem?
-    @State private var showsExamples = false
+    @State private var editing: VoiceField?
+    @State private var confirmsReset = false
+    @Environment(ToastService.self) private var toast
 
     private var current: CreatorProfile { profile.profile }
 
@@ -25,12 +26,10 @@ struct MyCueVoicePage: View {
             VStack(alignment: .leading, spacing: 20) {
                 header
                 if !aiStatus.isAvailable { needsAI }
-                if let next = nudges.current(isAIAvailable: aiStatus.isAvailable) {
-                    VoiceNudgeCard(item: next) { personality = next }
+                if aiStatus.isAvailable, let next = scheduler.remaining.first {
+                    nextQuestion(next)
                 }
-                layer(title: String(localized: "Essentials"), points: essentialsPoints, of: 60) { essentials }
-                layer(title: String(localized: "Personality"), points: personalityPoints, of: 25) { personalityRows }
-                layer(title: String(localized: "Proof"), points: min(VoiceExample.limit, current.examples.count) * 5, of: 15) { proofRow }
+                ForEach(VoiceLayer.allCases, id: \.self) { layerView($0) }
                 NavigationLink { VoiceFineTunePage() } label: {
                     HStack {
                         Text("Fine-tune how you sound").font(.subheadline.weight(.semibold)).foregroundStyle(Palette.ink)
@@ -44,6 +43,7 @@ struct MyCueVoicePage: View {
                 .buttonStyle(.plain)
                 .accessibilityIdentifier("voicePage.fineTune")
                 whatCueSends
+                resetQuestions
             }
             .padding(EdgeInsets(top: 8, leading: Metrics.gutter, bottom: 40, trailing: Metrics.gutter))
         }
@@ -53,8 +53,16 @@ struct MyCueVoicePage: View {
         .sheet(item: $setup) { setup in
             VoiceSetupSheet(mode: setup.mode, profile: profile.profile, startAt: setup.startAt)
         }
-        .sheet(item: $personality) { VoicePersonalitySheet(item: $0) }
-        .sheet(isPresented: $showsExamples) { VoiceExamplesSheet() }
+        .sheet(item: $editing) { field in
+            if field == .examples {
+                VoiceExamplesSheet()
+            } else {
+                VoiceQuestionSheet(model: VoiceQuestionSheetModel(
+                    question: field.questions[0], mode: .edit, fieldQuestions: field.questions,
+                    profile: profile, scheduler: scheduler, toast: toast
+                ))
+            }
+        }
         .accessibilityIdentifier("voicePage")
     }
 
@@ -98,8 +106,27 @@ struct MyCueVoicePage: View {
 
     // MARK: - Layers
 
-    private var essentialsPoints: Int { VoiceSetupStep.allCases.filter { current.isChosen($0) }.count * 15 }
-    private var personalityPoints: Int { VoicePersonalityItem.allCases.filter { current.isFilled($0) }.count * 5 }
+    private func layerView(_ layer: VoiceLayer) -> some View {
+        let fields = VoiceField.fields(of: layer)
+        let points = fields.reduce(0) { $0 + current.points(for: $1) }
+        let total = fields.reduce(0) { $0 + $1.weight }
+        return self.layer(title: layerTitle(layer), points: points, of: total) {
+            ForEach(Array(fields.enumerated()), id: \.element) { index, field in
+                row(
+                    title: field.title, value: current.value(for: field), isFilled: current.isFilled(field), isFirst: index == 0,
+                    identifier: "voicePage.row.\(field.rawValue)"
+                ) { editing = field }
+            }
+        }
+    }
+
+    private func layerTitle(_ layer: VoiceLayer) -> String {
+        switch layer {
+        case .essentials: String(localized: "Essentials")
+        case .personality: String(localized: "Personality")
+        case .proof: String(localized: "Proof")
+        }
+    }
 
     private func layer<Content: View>(title: String, points: Int, of total: Int, @ViewBuilder content: () -> Content) -> some View {
         VStack(alignment: .leading, spacing: 8) {
@@ -121,32 +148,27 @@ struct MyCueVoicePage: View {
         }
     }
 
-    @ViewBuilder
-    private var essentials: some View {
-        ForEach(Array(VoiceSetupStep.allCases.enumerated()), id: \.element) { index, step in
-            row(
-                title: essentialTitle(step), value: essentialValue(step), isFilled: current.isChosen(step), isFirst: index == 0,
-                identifier: "voicePage.row.\(step.rawValue)"
-            ) { setup = ProfileVoiceSetup(mode: .edit, startAt: step) }
+    /// The next question in the queue, answered right here.
+    private func nextQuestion(_ question: VoiceQuestion) -> some View {
+        Button { editing = question.field } label: {
+            HStack(spacing: 10) {
+                Text(verbatim: "✦").foregroundStyle(Palette.aiText)
+                Text(question.title)
+                    .font(.subheadline)
+                    .foregroundStyle(Palette.ink)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                Text("Answer")
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(Palette.accText)
+            }
+            .padding(.horizontal, 14)
+            .frame(minHeight: Metrics.hitTarget + 6)
+            .background(Palette.aiFill, in: RoundedRectangle(cornerRadius: Metrics.cardRadius, style: .continuous))
+            .overlay(RoundedRectangle(cornerRadius: Metrics.cardRadius, style: .continuous).strokeBorder(Palette.aiBorder, lineWidth: 0.5))
+            .contentShape(Rectangle())
         }
-    }
-
-    @ViewBuilder
-    private var personalityRows: some View {
-        ForEach(Array(VoicePersonalityItem.allCases.enumerated()), id: \.element) { index, item in
-            row(
-                title: item.title, value: current.values(for: item).joined(separator: " · "), isFilled: current.isFilled(item),
-                isFirst: index == 0, identifier: "voicePage.row.\(item.rawValue)"
-            ) { personality = item }
-        }
-    }
-
-    private var proofRow: some View {
-        row(
-            title: String(localized: "Examples"),
-            value: current.examples.isEmpty ? "" : String(localized: "\(current.examples.count) of \(VoiceExample.limit)"),
-            isFilled: !current.examples.isEmpty, isFirst: true, identifier: "voicePage.row.examples"
-        ) { showsExamples = true }
+        .buttonStyle(.plain)
+        .accessibilityIdentifier("voicePage.next")
     }
 
     private func row(title: String, value: String, isFilled: Bool, isFirst: Bool, identifier: String, action: @escaping () -> Void) -> some View {
@@ -179,21 +201,27 @@ struct MyCueVoicePage: View {
         .accessibilityIdentifier(identifier)
     }
 
-    private func essentialTitle(_ step: VoiceSetupStep) -> String {
-        switch step {
-        case .role: String(localized: "I am")
-        case .niche: String(localized: "Topics")
-        case .audience: String(localized: "Audience")
-        case .tone: String(localized: "Voice")
-        }
-    }
+    // MARK: - Reset
 
-    private func essentialValue(_ step: VoiceSetupStep) -> String {
-        switch step {
-        case .role: current.role?.label ?? ""
-        case .niche: current.hasAnswered(.niche) ? current.niches.map(\.label).joined(separator: " · ") : ""
-        case .audience: current.isChosen(.audience) ? current.vocabulary.audienceLabel : ""
-        case .tone: current.isChosen(.tone) ? current.sounds.map(\.label).joined(separator: " · ") : ""
+    /// "Reset My Cue Voice" (08 §4): the history of the tips starts over — what was snoozed, paused or skipped. The answers stay.
+    private var resetQuestions: some View {
+        Button { confirmsReset = true } label: {
+            Text("Reset My Cue Voice")
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(Palette.ink2)
+                .frame(maxWidth: .infinity, minHeight: Metrics.hitTarget)
+                .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .accessibilityIdentifier("voicePage.reset")
+        .confirmationDialog("Reset My Cue Voice?", isPresented: $confirmsReset, titleVisibility: .visible) {
+            Button("Ask me everything again") {
+                scheduler.reset()
+                toast.show(String(localized: "Questions reset"))
+            }
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text("Skipped and snoozed questions come back. Your answers stay.")
         }
     }
 

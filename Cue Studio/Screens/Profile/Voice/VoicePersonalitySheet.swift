@@ -25,7 +25,7 @@ struct VoicePersonalitySheet: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            SheetHeader(title: item.title, onClose: { dismiss() })
+            SheetHeader(title: item.title)
             Text(item.question)
                 .font(.subheadline)
                 .foregroundStyle(Palette.ink2)

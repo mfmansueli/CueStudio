@@ -20,8 +20,7 @@ struct DestinationSheet: View {
             VStack(alignment: .leading, spacing: 12) {
                 SheetHeader(
                     title: String(localized: "Create for"),
-                    subtitle: String(localized: "Cue sets the frame, safe zones, teleprompter position and length goals. Fine-tune anytime."),
-                    onClose: { dismiss() }
+                    subtitle: String(localized: "Cue sets the frame, safe zones, teleprompter position and length goals. Fine-tune anytime.")
                 )
                 .padding(.bottom, 4)
                 GroupedCard(background: Palette.surface2, radius: 22, dividerInset: 38) {
@@ -50,9 +49,8 @@ struct DestinationSheet: View {
             }
             .padding(EdgeInsets(top: 20, leading: Metrics.gutter, bottom: 24, trailing: Metrics.gutter))
         }
+        .cueSheetChrome()
         .presentationDetents([.large])
-        .presentationBackground(Palette.surface)
-        .presentationCornerRadius(Metrics.sheetRadius)
     }
 
     private func row(_ platform: Platform) -> some View {

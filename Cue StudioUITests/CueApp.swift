@@ -43,6 +43,9 @@ enum CueApp {
 }
 
 extension XCUIApplication {
+    /// The script page's back button: the navigation bar's own (v30).
+    var pageBackButton: XCUIElement { navigationBars.buttons["BackButton"].firstMatch }
+
     /// The system tab bar: its buttons are the five tabs, in order Scripts, Takes, Record, Profile, Settings.
     var cueTabBar: XCUIElement { tabBars.firstMatch }
 
@@ -72,12 +75,12 @@ extension XCUIApplication {
     func openScriptPage(titled title: String) {
         let row = scriptRow(title)
         row.tap()
-        if buttons["detail.recordButton"].waitForExistence(timeout: 3) || buttons["page.backButton"].exists { return }
+        if buttons["detail.recordButton"].waitForExistence(timeout: 3) || pageBackButton.exists { return }
         tabBars.buttons["Scripts"].tap()
         let again = scriptRow(title)
         again.press(forDuration: 1.2)
         buttons["Open script"].tap()
-        XCTAssertTrue(buttons["page.backButton"].waitForExistence(timeout: 5), "No page for \(title)")
+        XCTAssertTrue(pageBackButton.waitForExistence(timeout: 5), "No page for \(title)")
     }
 
     /// Studio mode from a row's menu (the row's own Studio button is gone in v29).

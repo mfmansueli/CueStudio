@@ -45,6 +45,12 @@ struct TakesView: View {
                 list
             }
         }
+        .safeAreaInset(edge: .bottom, spacing: 0) {
+            // The My Cue Voice question, 10 pt above the tab bar.
+            VoiceQuestionTipHost(isQuiet: presentation.sheet == nil && presentation.prompter == nil && presentation.selectedTab == .takes)
+                .padding(.horizontal, 12)
+                .padding(.bottom, 10)
+        }
         .skyBackground()
         .navigationTitle("Takes")
         .toolbarTitleDisplayMode(.inlineLarge)
@@ -86,7 +92,6 @@ struct TakesView: View {
                 onSelect: { viewModel.toggle($0) },
                 onNext: { viewModel.open($0.video) }
             )
-            VoiceNudgeSlot()
         }
     }
 

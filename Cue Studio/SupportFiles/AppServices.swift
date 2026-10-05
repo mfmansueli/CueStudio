@@ -28,6 +28,7 @@ struct AppServices {
     let dictation: DictationService
     let ideaDraft: IdeaDraftService
     let starter: ScriptStarter
+    let ideaTransition: IdeaTransitionService
     /// The pause between the groups of words of a script the AI writes into the page.
     let scriptRevealPause: Duration
     let writer: ScriptWriting
@@ -49,7 +50,7 @@ struct AppServices {
     let brands: BrandStore
     let sky: SkyMemory
     let aiStatus: AIStatus
-    let voiceNudges: VoiceNudgeService
+    let voiceQuestions: VoiceQuestionScheduler
     let eraser: DataEraserService
     let appIcon: AppIconService
     let permissions: PermissionRequesting
@@ -81,9 +82,14 @@ struct AppServices {
         speech = SpeechRecognitionManager()
         dictation = options.dictation ?? DictationService(audio: AudioInputManager(), speech: SpeechRecognitionManager(use: .dictation))
         ideaDraft = IdeaDraftService()
+        let sky = SkyMemory(defaults: options.defaults)
+        let ideaTransition = IdeaTransitionService()
+        // UI tests don't wait three seconds for every idea (`-uiTestStarTransition` brings the real timings back).
+        if options.isInMemory, !options.keepsStarTransitionTimings { ideaTransition.speed = 0.05 }
+        self.ideaTransition = ideaTransition
         starter = ScriptStarter(
             library: library, rules: rules, profile: profile, languages: languages,
-            presentation: presentation, ideaDraft: ideaDraft
+            presentation: presentation, ideaDraft: ideaDraft, transition: ideaTransition, sky: sky
         )
         writer = options.writer
         scriptRevealPause = options.scriptRevealPause
@@ -98,9 +104,9 @@ struct AppServices {
         remote = RemoteControlService(transport: options.remoteTransport)
         logbook = LogbookService(defaults: options.defaults)
         brands = BrandStore(repository: options.brandRepository)
-        sky = SkyMemory(defaults: options.defaults)
+        self.sky = sky
         aiStatus = AIStatus(writer: options.writer)
-        voiceNudges = VoiceNudgeService(profile: profile, defaults: options.defaults)
+        voiceQuestions = VoiceQuestionScheduler(profile: profile, defaults: options.defaults, skipsGates: options.voiceTipSkipsGates)
         eraser = DataEraserService(
             library: library, takes: takes, drafts: options.draftStore, logbook: logbook, brands: brands, sky: sky,
             profile: profile, preferences: preferences, defaults: options.defaults
@@ -143,6 +149,7 @@ extension View {
             .environment(services.dictation)
             .environment(services.ideaDraft)
             .environment(services.starter)
+            .environment(services.ideaTransition)
             .environment(services.textRecognizer)
             .environment(services.importer)
             .environment(services.exporter)
@@ -161,7 +168,7 @@ extension View {
             .environment(services.brands)
             .environment(services.sky)
             .environment(services.aiStatus)
-            .environment(services.voiceNudges)
+            .environment(services.voiceQuestions)
             .environment(services.eraser)
     }
 }

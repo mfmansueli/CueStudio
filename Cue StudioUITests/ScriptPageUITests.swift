@@ -65,7 +65,7 @@ final class ScriptPageUITests: XCTestCase {
         text.tap()
         text.typeText(" One more line.")
         XCTAssertEqual(strip(app).uppercased(), "EDITED · TAP DONE")
-        app.buttons["page.backButton"].tap()
+        app.pageBackButton.tap()
         XCTAssertTrue(app.staticTexts["Saved as draft"].waitForExistence(timeout: 5))
         XCTAssertTrue(element(app, "scripts.group.draft").waitForExistence(timeout: 5))
     }

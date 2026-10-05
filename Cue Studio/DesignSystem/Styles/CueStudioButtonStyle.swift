@@ -67,16 +67,30 @@ struct CueStudioButtonStyle: ButtonStyle {
                 .frame(maxWidth: expands ? .infinity : nil, minHeight: size.height)
                 .foregroundStyle(foreground)
                 .background {
-                    if variant != .glass { shape.fill(background) }
+                    if !usesGlass { shape.fill(background) }
                 }
                 .overlay {
                     if variant == .outline { shape.strokeBorder(Palette.ink3, lineWidth: 1) }
                 }
-                .glassEffect(variant == .glass ? .regular.interactive() : .identity, in: shape)
+                .glassEffect(glass, in: shape)
                 .contentShape(shape)
                 .opacity(isEnabled ? (configuration.isPressed ? 0.75 : 1) : 0.4)
                 .scaleEffect(configuration.isPressed ? 0.98 : 1)
                 .animation(.easeOut(duration: 0.15), value: configuration.isPressed)
+        }
+
+        /// The primary (yellow) and secondary buttons are Liquid Glass, as `.glassProminent` and `.glass` are (07 §1); the tinted,
+        /// outline, AI, white and destructive ones keep their own fill.
+        private var usesGlass: Bool {
+            variant == .glass || variant == .primary || variant == .secondary
+        }
+
+        private var glass: Glass {
+            switch variant {
+            case .primary: .regular.tint(Palette.acc).interactive()
+            case .secondary, .glass: .regular.interactive()
+            default: .identity
+            }
         }
 
         private var foreground: Color {

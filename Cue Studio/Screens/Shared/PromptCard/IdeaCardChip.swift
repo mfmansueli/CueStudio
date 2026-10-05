@@ -6,7 +6,7 @@
 import SwiftUI
 
 /// A small choice on the idea card, as the board draws it: 30 pt high, 13 pt semibold on a dark glass capsule ("● For TikTok",
-/// "Format ⌄"), and the AI's chip in violet with its ✦ ("✦ In your voice 65%"). 28 pt and 12 pt when the card is the bare first-visit one.
+/// "Format ⌄"), and the AI's chip in violet with its ✦ ("✦ Voice 65%"). 28 pt and 12 pt when the card is the bare first-visit one.
 struct IdeaCardChip: View {
     enum Style { case neutral, ai, off }
 
@@ -21,6 +21,8 @@ struct IdeaCardChip: View {
     /// A small mono tag before the label ("AD": a sponsored ad is picked).
     var isTag: String?
     var isCompact = false
+    /// The touch area's height (the dock's row is 36 pt).
+    var hitHeight = Metrics.hitTarget
 
     @Environment(\.dynamicTypeSize) private var typeSize
 
@@ -54,7 +56,7 @@ struct IdeaCardChip: View {
         .frame(minHeight: height)
         .background(background, in: Capsule())
         .overlay { if style == .ai && !isCompact { Capsule().strokeBorder(Palette.heroChipAIStroke, lineWidth: 0.5) } }
-        .frame(minHeight: Metrics.hitTarget)
+        .frame(minHeight: hitHeight)
         .contentShape(Capsule())
     }
 

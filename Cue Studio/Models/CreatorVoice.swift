@@ -21,6 +21,11 @@ nonisolated struct CreatorVoice: Hashable, Sendable {
     var endings: [String] = []
     var formats: [ScriptType] = []
     var swearing: Swearing?
+    // What the question bank added (v30 · 08): how they come across, what to avoid, where and how long they post.
+    var style = VoiceDelivery()
+    var avoid: [String] = []
+    var reach = VoiceReach()
+    var audienceLevel: AudienceLevel?
     var examples: [VoiceExample] = []
     var customTags: [String] = []
 
@@ -40,6 +45,8 @@ nonisolated struct CreatorVoice: Hashable, Sendable {
         case .funny: String(localized: "I did something ridiculous so you don't have to.")
         case .educational: String(localized: "Let me explain this in 30 seconds.")
         case .confident: String(localized: "I'll say it: you don't need more gear.")
+        case .warmCalm: String(localized: "Let's slow down for a second.")
+        case .dry: String(localized: "Great. Another thing nobody asked for.")
         case .casual, nil: String(localized: "So, real quick.")
         }
         let body: String = if styles.contains(.storytelling) {

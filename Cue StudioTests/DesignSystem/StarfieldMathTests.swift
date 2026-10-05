@@ -41,59 +41,100 @@ struct StarfieldMathTests {
     }
 
     @Test func twinklesStayWithinTheirRanges() {
-        let twinkles = StarfieldMath.twinkles(count: 8, seed: 9)
-        #expect(twinkles.count == 8)
-        #expect(twinkles.allSatisfy { (1.8...3.0).contains($0.size) && (2.6...4.1).contains($0.cycle) })
+        let twinkles = StarfieldMath.twinkles(count: 14, seed: 9)
+        #expect(twinkles.count == 14)
+        // A 7 s cycle for every star, each starting 0 to 5.2 s in.
+        #expect(twinkles.allSatisfy { (1.8...3.0).contains($0.size) && $0.cycle == 7 && (0...(5.2 / 7)).contains($0.phase) })
         // About half have the cross glint.
-        #expect(twinkles.filter(\.hasGlint).count == 4)
+        #expect(twinkles.filter(\.hasGlint).count == 7)
     }
 
-    @Test func aTwinkleKeepsItsOpacityAndScaleInTheDesignsRange() {
+    @Test func aTwinkleFollowsTheMotionSpecsKeyframes() {
+        let start = StarfieldMath.twinkleLevel(at: 0)
+        #expect(abs(start.opacity - 0.16) < 0.001 && abs(start.scale - 0.75) < 0.001)
+        let peak = StarfieldMath.twinkleLevel(at: 0.45)
+        #expect(abs(peak.opacity - 0.75) < 0.001 && abs(peak.scale - 1) < 0.001)
+        #expect(abs(StarfieldMath.twinkleLevel(at: 0.60).opacity - 0.58) < 0.001)
         for step in 0...100 {
             let level = StarfieldMath.twinkleLevel(at: Double(step) / 100)
-            #expect((0.2...1.0).contains(level.opacity))
-            #expect((0.7...1.3).contains(level.scale))
+            #expect((0.16...0.75).contains(level.opacity))
+            #expect((0.75...1.0).contains(level.scale))
         }
-        #expect(StarfieldMath.twinkleLevel(at: 3.25).opacity == StarfieldMath.twinkleLevel(at: 0.25).opacity)
+        #expect(abs(StarfieldMath.twinkleLevel(at: 3.25).opacity - StarfieldMath.twinkleLevel(at: 0.25).opacity) < 0.0001)
     }
 
-    @Test func aShootingStarCrossesForSevenTenthsOfASecondAndThenWaitsForTheNext() {
-        let size = CGSize(width: 390, height: 844)
-        var seen = 0
-        var lastCrossing: Double?
-        var gaps: [Double] = []
-        for tenths in 0..<(60 * 10) {
-            let time = Double(tenths) / 10
-            if StarfieldMath.shootingStar(slot: 0, at: time, size: size, seed: 27) != nil {
-                if lastCrossing == nil || time - (lastCrossing ?? 0) > 1 {
-                    if let lastCrossing { gaps.append(time - lastCrossing) }
-                    seen += 1
-                }
-                lastCrossing = time
-            }
-        }
-        #expect(seen >= 4)
-        // One every 11 to 14 s.
-        #expect(gaps.allSatisfy { $0 >= 10.5 && $0 <= 14.5 })
+    // MARK: - The comet
+
+    private let screen = CGSize(width: 390, height: 844)
+
+    /// The seconds after launch at which the comet is on screen, in steps of a tenth.
+    private func crossings(until seconds: Int, seed: UInt64 = 27) -> [Double] {
+        (0..<(seconds * 10)).map { Double($0) / 10 }.filter { StarfieldMath.comet(at: $0, size: screen, seed: seed) != nil }
     }
 
-    @Test func aShootingStarMovesLeftAndDownAtOneHundredSixtyDegrees() {
-        let star = StarfieldMath.shootingStar(slot: 0, at: 0.35 + 11.35 * 0, size: CGSize(width: 390, height: 844), seed: 27)
-            ?? StarfieldMath.ShootingStar(progress: 0.5, start: .zero, direction: CGVector(dx: cos(160 * Double.pi / 180), dy: sin(160 * Double.pi / 180)))
-        #expect(star.direction.dx < 0 && star.direction.dy > 0)
-        #expect(abs(hypot(star.direction.dx, star.direction.dy) - 1) < 0.0001)
-        #expect(StarfieldMath.ShootingStar(progress: 0.5, start: .zero, direction: star.direction).opacity == 1)
-        #expect(StarfieldMath.ShootingStar(progress: 0, start: .zero, direction: star.direction).opacity == 0)
+    @Test func noCometBeforeTheFirstOneAt25Seconds() {
+        #expect(crossings(until: 24).isEmpty)
+        let first = crossings(until: 30)
+        #expect(first.first.map { $0 >= 25 && $0 <= 25.3 } == true)
     }
 
-    @Test func twoSlotsNeverFireAtTheSameMoment() {
-        let size = CGSize(width: 390, height: 844)
-        for tenths in 0..<(120 * 10) {
-            let time = Double(tenths) / 10
-            let first = StarfieldMath.shootingStar(slot: 0, at: time, size: size, seed: 27)
-            let second = StarfieldMath.shootingStar(slot: 1, at: time, size: size, seed: 27)
-            #expect(first == nil || second == nil, "both at \(time)")
+    @Test func aCometTakesBetween1_7And2_4SecondsAndTheNextComesEvery105To135() {
+        let seen = crossings(until: 700)
+        #expect(!seen.isEmpty)
+        // Group the tenths of one crossing; each lasts 1.7 to 2.4 s.
+        var groups: [[Double]] = []
+        for time in seen {
+            if let last = groups.last?.last, time - last < 1 { groups[groups.count - 1].append(time) } else { groups.append([time]) }
         }
+        #expect(groups.count >= 5)
+        for group in groups {
+            let length = (group.last ?? 0) - (group.first ?? 0)
+            #expect(length >= 1.5 && length <= 2.4, "\(length)")
+        }
+        let gaps = zip(groups, groups.dropFirst()).map { ($1.first ?? 0) - ($0.first ?? 0) }
+        #expect(gaps.allSatisfy { $0 >= 104 && $0 <= 136.4 })
+    }
+
+    @Test func aCometGoesAnyWayItLikesButTravelsTheDesignsDistanceWithATail() {
+        var directions = Set<Int>()
+        var index = 0
+        for seed in 1...40 {
+            guard let comet = firstComet(seed: UInt64(seed)) else { continue }
+            #expect((520...680).contains(Double(comet.distance)) && (140...210).contains(Double(comet.tail)))
+            #expect(abs(hypot(comet.direction.dx, comet.direction.dy) - 1) < 0.0001)
+            directions.insert(Int(atan2(comet.direction.dy, comet.direction.dx) * 180 / .pi / 45))
+            index += 1
+        }
+        #expect(index > 20 && directions.count >= 4, "any direction")
+    }
+
+    /// The first comet of a sky: it comes at 25 s, between 25 and 27.4.
+    private func firstComet(seed: UInt64) -> StarfieldMath.Comet? {
+        (250..<290).lazy.compactMap { StarfieldMath.comet(at: Double($0) / 10, size: screen, seed: seed) }.first
+    }
+
+    @Test func theCometFadesInReachesFullAndFadesOut() {
+        func comet(_ time: Double) -> StarfieldMath.Comet {
+            StarfieldMath.Comet(time: time, start: .zero, direction: CGVector(dx: 1, dy: 0), distance: 600, tail: 170)
+        }
+        #expect(comet(0).opacity == 0)
+        #expect(abs(comet(0.12).opacity - 1) < 0.0001)
+        #expect(abs(comet(0.72).opacity - 0.9) < 0.0001)
+        #expect(abs(comet(1).opacity) < 0.0001)
+        #expect(comet(0).progress == 0 && abs(comet(1).progress - 1) < 0.0001)
+        // `cubic-bezier(.3,.1,.45,1)`: a slow start, then it settles; always forward.
+        var previous = -1.0
+        for step in 0...20 {
+            let value = comet(Double(step) / 20).progress
+            #expect(value >= previous)
+            previous = value
+        }
+    }
+
+    @Test func theCubicBezierIsTheCSSOne() {
+        // The linear curve and the standard ease-in-out at its middle.
+        #expect(abs(StarfieldMath.cubicBezier(0, 0, 1, 1, at: 0.3) - 0.3) < 0.001)
+        #expect(abs(StarfieldMath.cubicBezier(0.42, 0, 0.58, 1, at: 0.5) - 0.5) < 0.001)
     }
 
     @Test func theNebulaeAreTheDesignsSizeAndBreatheBackAndForth() {
@@ -106,11 +147,10 @@ struct StarfieldMathTests {
         #expect(abs(StarfieldMath.nebulaPhase(at: period * 2, period: period)) < 0.0001)
     }
 
-    @Test func theDensitiesScaleTheTwinklesAndShootingStars() {
-        #expect(SkyDensity.off.twinkleCount == 0 && SkyDensity.off.shootingStarSlots == 0)
-        #expect((3...8).contains(SkyDensity.calm.twinkleCount) && (3...8).contains(SkyDensity.lively.twinkleCount))
-        #expect(SkyDensity.lively.twinkleCount > SkyDensity.calm.twinkleCount)
-        #expect(SkyDensity.lively.shootingStarSlots == 2 && SkyDensity.calm.shootingStarSlots == 1)
+    @Test func theDensitiesScaleTheTwinklesAndTheCometComesWithSoftAndFull() {
+        #expect(SkyDensity.off.twinkleCount == 0 && !SkyDensity.off.hasComet)
+        #expect(SkyDensity.lively.twinkleCount == 14 && SkyDensity.calm.twinkleCount == 7)
+        #expect(SkyDensity.lively.hasComet && SkyDensity.calm.hasComet)
         #expect(SkyDensity.allCases.map(\.step) == [0, 1, 2])
     }
 }

@@ -39,16 +39,66 @@ nonisolated extension CreatorProfile {
     /// Enough of the creator is known for the AI to write like them. With less, the voice is not applied.
     var hasMinimumVoice: Bool { missingVoiceSteps.isEmpty }
 
-    // MARK: - Strength (v29 · 04 F9)
+    // MARK: - Strength (v30 · 08 §1)
 
-    /// How much of the creator Cue knows, 0–100: Essentials 60% (kind of creator, topics, audience and tone, 15 each),
-    /// Personality 25% (openings, endings, catchphrases, formats and swearing, 5 each) and Proof 15% (1–3 examples
-    /// the creator wrote, 5 each). Computed, so it follows every change to the profile.
+    /// How much of the creator Cue knows, 0–100: the weights of `VoiceField` for every field filled — Essentials 40 (kind of creator,
+    /// topics, audience with its level, tone), Personality 40 (style, formats, openings, endings, phrases, what to avoid, reach) and
+    /// Proof 20 (one example 8, two 14, three 20; every two "Sounds like me" count as one example). Computed, so it follows
+    /// every change to the profile.
     var voiceStrength: Int {
-        let essentials = VoiceSetupStep.allCases.filter { isChosen($0) }.count * 15
-        let personality = VoicePersonalityItem.allCases.filter { isFilled($0) }.count * 5
-        let proof = min(VoiceExample.limit, examples.count) * 5
-        return essentials + personality + proof
+        min(100, VoiceField.allCases.reduce(0) { $0 + points(for: $1) })
+    }
+
+    /// What `field` is worth right now.
+    func points(for field: VoiceField) -> Int {
+        if field == .examples {
+            switch provenExamples {
+            case 0: return 0
+            case 1: return 8
+            case 2: return 14
+            default: return 20
+            }
+        }
+        return isFilled(field) ? field.weight : 0
+    }
+
+    /// Examples that prove the voice: the ones pasted, plus one for every two approvals (at most three).
+    var provenExamples: Int { min(VoiceExample.limit, examples.count + approvals / 2) }
+
+    /// Whether the creator has given Cue everything `field` asks for.
+    func isFilled(_ field: VoiceField) -> Bool {
+        switch field {
+        case .role: role != nil
+        case .topics: !niches.isEmpty || !customTopics.isEmpty
+        case .audience: isChosen(.audience) && audienceLevel != nil
+        case .tone: isChosen(.tone) && (1...VoiceLimits.tones).contains(sounds.count)
+        case .style: style.isComplete
+        case .formats: !formats.isEmpty || customTags.contains(where: { VoiceTextValidator.key($0) == VoiceTextValidator.key(Self.talkingHeadTag) })
+        case .openings: !openings.isEmpty
+        case .endings: !endings.isEmpty
+        case .phrases: !phrases.isEmpty
+        case .avoid: !avoid.isEmpty || avoidNone
+        case .reach: reach.isComplete
+        case .examples: provenExamples > 0
+        }
+    }
+
+    /// The tag "Talking head" is kept under: it has no `ScriptType` of its own.
+    static let talkingHeadTag = "Talking head"
+
+    /// Whether this one question has been answered (a field with several questions, like style and reach, is filled by all of them).
+    func isAnswered(_ question: VoiceQuestion) -> Bool {
+        switch question {
+        case .energy: style.energy != nil
+        case .sentences: style.sentences != nil
+        case .words: style.words != nil
+        case .swearing: style.swearing != nil
+        case .length: reach.length != nil
+        case .humor: reach.humor != nil
+        case .platforms: !reach.platforms.isEmpty
+        case .example: examples.count >= VoiceExample.limit
+        default: isFilled(question.field)
+        }
     }
 
     /// Whether the creator has given Cue this Personality item.
@@ -57,7 +107,7 @@ nonisolated extension CreatorProfile {
         case .endings: !endings.isEmpty
         case .openings: !openings.isEmpty
         case .formats: !formats.isEmpty
-        case .swearing: swearing != nil
+        case .swearing: style.swearing != nil
         case .phrases: !phrases.isEmpty
         }
     }

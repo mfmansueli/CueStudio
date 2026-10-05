@@ -32,6 +32,8 @@ nonisolated enum DefaultsKey {
     /// haptics and the automatic topic tag (absent = on).
     static let skyDensity = "skyDensity"
     static let celebrations = "celebrations"
+    /// The colour of the universe's core (`CoreColor` raw value; absent = gold).
+    static let coreColor = "coreColor"
     static let hapticsEnabled = "hapticsEnabled"
     static let autoTagTopics = "autoTagTopics"
     /// The first flight (onboarding) is over, and its "first star" has been told.
@@ -44,8 +46,8 @@ nonisolated enum DefaultsKey {
     /// "Your stars" in the sky above Scripts (`[StarPoint]`, JSON, up to 50) and how many were ever added.
     static let skyMemory = "skyMemory"
     static let skyMemoryAdded = "skyMemoryAdded"
-    /// My Cue Voice nudges the creator put off with "Not now" (`VoiceNudgeSnoozes`, JSON).
-    static let voiceNudgeSnoozes = "voiceNudgeSnoozes"
+    /// What the My Cue Voice tip remembers (`VoiceQuestionState`, JSON): days opened, tips shown, snoozes, skips.
+    static let voiceQuestionState = "vq.state"
     /// The Logbook's ideas (JSON).
     static let logbook = "logbook"
     /// v1's monthly AI counters ("aiScriptsUsed_2026-09"), removed at launch.

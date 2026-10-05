@@ -5,10 +5,12 @@
 
 import SwiftUI
 
-/// The format sheet (v29 · F): 11 tiles (Auto, Talking head, Tutorial, Storytime, List / tips, Review, Myth vs fact, POV,
-/// Sponsored ad, Announcement and Apology), each with its sections in mono ("HOOK › POINT › WHY IT MATTERS › CTA"). Two ways in:
-/// the card's Format ⌄ ("Comes ready: sections, cues, timing.", with Auto) and "Start from a format" in "+" (a blank
-/// draft you write, no Auto). Picking a tile only selects it; **Done** or **Open** confirms, and Sponsored ad goes on to its
+/// The format sheet (v30 · F, 09 §1): a grid of nine tiles (Auto, Talking head, Tutorial, Storytime, List / tips, Review, Myth vs
+/// fact, POV, Sponsored ad), each with its sections in mono ("HOOK › POINT › WHY IT MATTERS › CTA"), and "More formats" under it: a
+/// row for each remaining format (Hot take / reply, Announcement, Apology). It is the system's sheet (medium and large, it scrolls)
+/// with the native close and confirm buttons. Two ways in:
+/// the dock's Format ⌄ ("Comes ready: sections, cues, timing.", with Auto) and "Start from a format" in "+" (a blank
+/// draft you write, no Auto). Picking a choice only selects it; **Done** or **Open** confirms, and Sponsored ad goes on to its
 /// brand brief.
 struct FormatSheet: View {
     enum Mode { case card, blank }
@@ -27,50 +29,92 @@ struct FormatSheet: View {
     }
 
     private var tiles: [FormatChoice] {
-        FormatChoice.allTiles.filter { mode == .card || $0 != .auto }
+        FormatChoice.gridTiles.filter { mode == .card || $0 != .auto }
     }
 
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: Metrics.blockGap) {
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(mode == .blank ? "Start from a format" : "Format")
-                        .font(CueStudioFont.hud).textCase(.uppercase).tracking(1.2)
-                        .foregroundStyle(Palette.accText)
-                    Text(mode == .blank ? "Which video are you making?" : "How should Cue build it?")
-                        .font(.title2.bold())
-                        .foregroundStyle(Palette.ink)
-                        .accessibilityAddTraits(.isHeader)
-                }
-                // Not lazy: twelve tiles are all in the page for VoiceOver and for tests, two to a row.
-                Grid(horizontalSpacing: 8, verticalSpacing: 8) {
-                    ForEach(Array(stride(from: 0, to: tiles.count, by: 2)), id: \.self) { start in
-                        GridRow {
-                            ForEach(tiles[start..<min(start + 2, tiles.count)]) { choice in
-                                Button { selection = choice } label: {
-                                    FormatTile(choice: choice, isSelected: selection == choice)
+        NavigationStack {
+            ScrollView {
+                VStack(alignment: .leading, spacing: Metrics.blockGap) {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text(mode == .blank ? "Start from a format" : "Format")
+                            .font(CueStudioFont.hud).textCase(.uppercase).tracking(1.2)
+                            .foregroundStyle(Palette.accText)
+                        Text(mode == .blank ? "Which video are you making?" : "How should Cue build it?")
+                            .font(.title2.bold())
+                            .foregroundStyle(Palette.ink)
+                            .accessibilityAddTraits(.isHeader)
+                    }
+                    // Not lazy: every tile is in the page for VoiceOver and for tests, two to a row.
+                    Grid(horizontalSpacing: 8, verticalSpacing: 8) {
+                        ForEach(Array(stride(from: 0, to: tiles.count, by: 2)), id: \.self) { start in
+                            GridRow {
+                                ForEach(tiles[start..<min(start + 2, tiles.count)]) { choice in
+                                    Button { selection = choice } label: {
+                                        FormatTile(choice: choice, isSelected: selection == choice)
+                                    }
+                                    .buttonStyle(.plain)
+                                    .accessibilityIdentifier("format.\(choice.id)")
                                 }
-                                .buttonStyle(.plain)
-                                .accessibilityIdentifier("format.\(choice.id)")
                             }
                         }
                     }
+                    moreFormats
+                    Text(note)
+                        .font(.footnote)
+                        .foregroundStyle(Palette.ink2)
                 }
-                Text(note)
-                    .font(.footnote)
-                    .foregroundStyle(Palette.ink2)
-                Button { onConfirm(selection) } label: { Text(mode == .blank ? "Open" : "Done") }
-                    .buttonStyle(.cuePrimary(.large))
-                    .accessibilityIdentifier("format.confirm")
+                .padding(EdgeInsets(top: 8, leading: Metrics.gutter, bottom: 28, trailing: Metrics.gutter))
             }
-            .padding(EdgeInsets(top: 20, leading: Metrics.gutter, bottom: 28, trailing: Metrics.gutter))
+            .scrollIndicators(.hidden)
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button(role: .close) { dismiss() }.accessibilityIdentifier("sheet.closeButton")
+                }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button(mode == .blank ? "Open" : "Done") { onConfirm(selection) }
+                        .accessibilityIdentifier("format.confirm")
+                }
+            }
         }
-        .scrollIndicators(.hidden)
-        .presentationDetents([.large])
-        .presentationBackground(Palette.surface)
-        .presentationCornerRadius(Metrics.sheetRadius)
+        .presentationDetents([.medium, .large])
         .presentationDragIndicator(.visible)
         .accessibilityIdentifier(mode == .blank ? "format.startSheet" : "format.sheet")
+    }
+
+    /// One row for each format the grid doesn't have, so none is lost.
+    private var moreFormats: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text("More formats")
+                .font(CueStudioFont.hud).textCase(.uppercase).tracking(1.2)
+                .foregroundStyle(Palette.inkHint)
+                .padding(.horizontal, 4)
+                .accessibilityAddTraits(.isHeader)
+            GroupedCard(background: Palette.surface2, radius: 18, dividerInset: 14) {
+                ForEach(FormatChoice.moreFormats) { choice in
+                    Button { selection = choice } label: {
+                        HStack(spacing: 12) {
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text(choice.title).font(.body.weight(.semibold)).foregroundStyle(Palette.ink)
+                                Text(choice.summary).font(.footnote).foregroundStyle(Palette.ink2)
+                            }
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            if selection == choice {
+                                Image(systemName: "checkmark").font(.body.weight(.semibold)).foregroundStyle(Palette.accText)
+                            }
+                        }
+                        .padding(.horizontal, 14)
+                        .padding(.vertical, 10)
+                        .frame(minHeight: Metrics.hitTarget)
+                        .contentShape(Rectangle())
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityAddTraits(selection == choice ? .isSelected : [])
+                    .accessibilityIdentifier("format.\(choice.id)")
+                }
+            }
+        }
     }
 
     /// What happens next.

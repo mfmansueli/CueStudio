@@ -28,8 +28,7 @@ struct StartRecordingSheet: View {
                 title: mode == .attach ? String(localized: "Add a script") : String(localized: "Start recording"),
                 subtitle: mode == .attach
                     ? String(localized: "Cue will scroll it under the lens. Your camera stays where it is.")
-                    : String(localized: "Scripts keep you on track and cut retakes. Pick one to read from."),
-                onClose: { dismiss() }
+                    : String(localized: "Scripts keep you on track and cut retakes. Pick one to read from.")
             )
             .padding(.horizontal, 4)
             .padding(.bottom, 16)

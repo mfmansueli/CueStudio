@@ -6,7 +6,7 @@
 import SwiftUI
 
 /// The sky of the browse screens and the onboarding: three layers of stars drifting down at their own
-/// speed, a few twinkles (half with the cross glint of a phone-camera star), a rare shooting star and
+/// speed, 14 twinkles (half with the cross glint of a phone-camera star), a comet every two minutes or so and
 /// one or two soft violet nebulae. Never over the camera, a take or the editor.
 ///
 /// One `Canvas` in a `TimelineView` at 30 fps (it is ambient). It stops, on a still frame, when the
@@ -63,9 +63,8 @@ struct StarfieldView: View {
             drawLayer(layer, seed: seed &+ UInt64(index) &* 101, in: &canvas, size: size, time: time)
         }
         for twinkle in twinkles { drawTwinkle(twinkle, in: &canvas, size: size, time: time) }
-        for slot in 0..<density.shootingStarSlots {
-            guard let star = StarfieldMath.shootingStar(slot: slot, at: time, size: size, seed: seed) else { continue }
-            drawShootingStar(star, in: &canvas)
+        if density.hasComet, let comet = StarfieldMath.comet(at: Self.sinceLaunch(), size: size, seed: seed) {
+            drawComet(comet, in: &canvas)
         }
     }
 
@@ -147,24 +146,33 @@ struct StarfieldView: View {
         }
     }
 
-    private func drawShootingStar(_ star: StarfieldMath.ShootingStar, in canvas: inout GraphicsContext) {
+    /// The comet's clock is the app's, not the screen's: it carries on while the creator moves between tabs.
+    private static let launchedAt = ProcessInfo.processInfo.systemUptime
+
+    private static func sinceLaunch() -> TimeInterval {
+        ProcessInfo.processInfo.systemUptime - launchedAt
+    }
+
+    /// A glowing head with a tail of 140 to 210 pt fading behind it.
+    private func drawComet(_ comet: StarfieldMath.Comet, in canvas: inout GraphicsContext) {
         let head = CGPoint(
-            x: star.start.x + star.direction.dx * StarfieldMath.ShootingStar.travel * star.progress,
-            y: star.start.y + star.direction.dy * StarfieldMath.ShootingStar.travel * star.progress
+            x: comet.start.x + comet.direction.dx * comet.distance * comet.progress,
+            y: comet.start.y + comet.direction.dy * comet.distance * comet.progress
         )
-        let tail = CGPoint(
-            x: head.x - star.direction.dx * StarfieldMath.ShootingStar.length,
-            y: head.y - star.direction.dy * StarfieldMath.ShootingStar.length
-        )
+        let tail = CGPoint(x: head.x - comet.direction.dx * comet.tail, y: head.y - comet.direction.dy * comet.tail)
         var line = Path()
         line.move(to: tail)
         line.addLine(to: head)
         canvas.stroke(
             line,
             with: .linearGradient(
-                Gradient(colors: [.white.opacity(0), .white.opacity(star.opacity)]), startPoint: tail, endPoint: head
+                Gradient(colors: [.white.opacity(0), .white.opacity(comet.opacity)]), startPoint: tail, endPoint: head
             ),
-            style: StrokeStyle(lineWidth: StarfieldMath.ShootingStar.thickness, lineCap: .round)
+            style: StrokeStyle(lineWidth: 1.5, lineCap: .round)
+        )
+        canvas.fill(
+            Path(ellipseIn: CGRect(x: head.x - 1.6, y: head.y - 1.6, width: 3.2, height: 3.2)),
+            with: .color(.white.opacity(comet.opacity))
         )
     }
 }

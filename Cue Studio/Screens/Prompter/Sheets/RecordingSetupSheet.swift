@@ -21,8 +21,7 @@ struct RecordingSetupSheet: View {
         VStack(alignment: .leading, spacing: 14) {
             SheetHeader(
                 title: String(localized: "This take"),
-                subtitle: String(localized: "What Cue records with, and why."),
-                onClose: { dismiss() }
+                subtitle: String(localized: "What Cue records with, and why.")
             )
             .padding(.horizontal, 4)
 

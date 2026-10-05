@@ -24,8 +24,7 @@ struct AnswerCommentSheet: View {
                 title: model.step == .confirm ? String(localized: "Is this right?") : String(localized: "Answer a comment"),
                 subtitle: model.step == .confirm
                     ? String(localized: "Check the comment before Cue writes.")
-                    : String(localized: "Turn a question from your audience into a script."),
-                onClose: { dismiss() }
+                    : String(localized: "Turn a question from your audience into a script.")
             )
             switch model.step {
             case .choose: choose
@@ -35,7 +34,7 @@ struct AnswerCommentSheet: View {
             Spacer(minLength: 0)
         }
         .padding(EdgeInsets(top: 20, leading: Metrics.gutter, bottom: 24, trailing: Metrics.gutter))
-        .background(Palette.bg)
+        .cueSheetChrome()
         .onChange(of: picked) { _, item in
             guard let item else { return }
             Task {

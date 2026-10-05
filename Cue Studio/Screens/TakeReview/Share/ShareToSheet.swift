@@ -62,11 +62,6 @@ struct ShareToSheet: View {
                     .foregroundStyle(Palette.ink2)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
-            Button { dismiss() } label: {
-                Image(systemName: "xmark").font(.system(size: 12, weight: .bold)).foregroundStyle(Palette.ink2)
-            }
-            .buttonStyle(.cueIcon(.surface, diameter: 32))
-            .accessibilityLabel(Text("Close"))
         }
         .padding(.horizontal, 4)
         .padding(.bottom, 18)

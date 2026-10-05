@@ -32,7 +32,7 @@ struct IdeasSheet: View {
                     .textCase(.uppercase)
                     .tracking(0.6)
                     .foregroundStyle(Palette.aiText)
-                SheetHeader(title: String(localized: "Need an idea?"), onClose: { dismiss() })
+                SheetHeader(title: String(localized: "Need an idea?"))
             }
             topics
             ScrollView {
@@ -50,9 +50,8 @@ struct IdeasSheet: View {
             footer
         }
         .padding(EdgeInsets(top: 20, leading: Metrics.gutter, bottom: 12, trailing: Metrics.gutter))
+        .cueSheetChrome()
         .presentationDetents([.large])
-        .presentationBackground(Palette.surface)
-        .presentationCornerRadius(Metrics.sheetRadius)
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("ideas.sheet")
     }

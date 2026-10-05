@@ -13,7 +13,7 @@ struct VoicePreviewSheet: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            SheetHeader(title: String(localized: "Sounds like you"), subtitle: String(localized: "Live preview"), onClose: { dismiss() })
+            SheetHeader(title: String(localized: "Sounds like you"), subtitle: String(localized: "Live preview"))
             Text("“\(profile.profile.voice.sampleLine)”")
                 .font(.system(.title3, design: .serif))
                 .italic()

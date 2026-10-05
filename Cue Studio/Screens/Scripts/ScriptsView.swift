@@ -5,8 +5,9 @@
 
 import SwiftUI
 
-/// Home: the idea card, always on top, then the Recent scripts, each at its stage on the way to a
-/// posted video. Tap opens, swipe for actions, hold to preview.
+/// Home (v30 · 3.1, 3.2): the scripts on top, each at its stage on the way to a posted video, and the AI dock fixed at the bottom
+/// (`ScriptsDock`). The title, the Logbook, the search and "+" are the system's navigation bar. Tap opens, swipe for actions, hold
+/// to preview.
 struct ScriptsView: View {
     @State private var viewModel: ScriptsViewModel
 
@@ -20,6 +21,13 @@ struct ScriptsView: View {
     @Environment(SkyMemory.self) private var sky
     @Environment(IdeaDraftService.self) private var ideaDraft
     @Environment(LogbookService.self) private var logbook
+    @Environment(ToastService.self) private var toast
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    /// The dock's field has the keyboard: the list dims.
+    @State private var isDockEditing = false
+    /// Whether the dock's first row is folded away by the list scrolling.
+    @State private var dockFold = DockFold()
 
     /// Tells the idea card whether Apple Intelligence can write.
     private let writer: ScriptWriting?
@@ -35,14 +43,38 @@ struct ScriptsView: View {
     var body: some View {
         @Bindable var viewModel = viewModel
         content
+            .brightness(isDockEditing ? -0.3 : 0)
+            .blur(radius: isDockEditing ? 3 : 0)
+            .animation(reduceMotion ? .easeOut(duration: 0.15) : CueMotion.dockDim, value: isDockEditing)
+            .overlay { if isDockEditing { Color.clear.contentShape(Rectangle()).onTapGesture { endEditing() } } }
+            .safeAreaInset(edge: .bottom, spacing: 0) {
+                // Selecting and searching have the screen to themselves: the dock (and its keyboard) would cover the results.
+                if !viewModel.isSelecting, !viewModel.isSearching {
+                    VStack(spacing: 10) {
+                        // The My Cue Voice question, 10 pt above the dock.
+                        VoiceQuestionTipHost(isQuiet: isQuiet)
+                        ScriptsDock(
+                            showsFormat: !isFirstVisit, isFolded: dockFold.isFolded, isEditing: $isDockEditing,
+                            unavailableReason: writerUnavailableReason
+                        )
+                        .accessibilityIdentifier(isFirstVisit ? "empty.promptCard" : "scripts.promptCard")
+                    }
+                    .padding(.horizontal, 12)
+                    .padding(.bottom, 8)
+                    .transition(.move(edge: .bottom).combined(with: .opacity))
+                }
+            }
             .skyBackground()
             // "Your stars": one for each idea sent, and the one on its way.
             .overlay(alignment: .top) { SkyStarsLayer(stars: sky.visible).ignoresSafeArea(edges: .top) }
             .overlay { StarFlightOverlay(flight: sky.flight).ignoresSafeArea() }
             // New scripts get their topic (on this iPhone) once they are long enough to say what they are about.
             .task(id: library.scripts.filter { $0.topic == nil }.map(\.id)) { await tagging.tagUntagged() }
-            // The title lives in the content (`ScriptsHeader`), as on the board: no navigation bar on this tab root.
-            .toolbar(.hidden, for: .navigationBar)
+            .navigationTitle("Scripts")
+            .toolbarTitleDisplayMode(.inlineLarge)
+            .toolbar { toolbarItems }
+            .searchable(text: $viewModel.query, isPresented: $viewModel.isSearching, prompt: Text("Search scripts"))
+            .searchToolbarBehavior(.minimize)
             .alert("New folder", isPresented: $viewModel.isNamingFolder) {
                 TextField("Folder name", text: $viewModel.newFolderName)
                 Button("Cancel", role: .cancel) {}
@@ -62,13 +94,72 @@ struct ScriptsView: View {
             }
     }
 
+    /// The first visit: no scripts yet, so the dock has no Format chip (03 · 3.1).
+    private var isFirstVisit: Bool {
+        library.hasLoaded && library.scripts.isEmpty
+    }
+
+    /// Nothing else has the screen, so a tip may come: no sheet, prompter, toast or keyboard, no selection or search.
+    private var isQuiet: Bool {
+        presentation.sheet == nil && presentation.prompter == nil && presentation.selectedTab == .scripts
+            && presentation.scriptsPath.isEmpty && !isDockEditing && !viewModel.isSelecting && !viewModel.isSearching
+            && toast.message == nil
+    }
+
+    private func endEditing() {
+        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+    }
+
+    /// Logbook and "+" in the bar's glass; the search is the bar's own (`.searchable`, which folds into its magnifier).
+    @ToolbarContentBuilder
+    private var toolbarItems: some ToolbarContent {
+        ToolbarItemGroup(placement: .topBarTrailing) {
+            if !logbook.waiting.isEmpty || !isFirstVisit {
+                Button { presentation.present(.logbook) } label: {
+                    CueIconView(.logbook, size: 20)
+                        .foregroundStyle(Palette.aiTextStrong)
+                        .overlay(alignment: .topTrailing) { logbookBadge }
+                }
+                .accessibilityLabel(Text("Logbook"))
+                .accessibilityValue(Text(logbook.waiting.isEmpty ? "" : "\(logbook.waiting.count)"))
+                .accessibilityIdentifier("scripts.logbookButton")
+            }
+            Button { presentation.present(.newScript) } label: {
+                Image(systemName: "plus")
+            }
+            .accessibilityLabel(Text("New script"))
+            .accessibilityIdentifier("scripts.newButton")
+        }
+    }
+
+    @ViewBuilder
+    private var logbookBadge: some View {
+        if !logbook.waiting.isEmpty {
+            Text(verbatim: "\(logbook.waiting.count)")
+                .font(.system(size: 9.5, weight: .bold, design: .monospaced))
+                .foregroundStyle(Palette.bg)
+                .padding(.horizontal, 4)
+                .frame(minWidth: 16, minHeight: 16)
+                .background(Palette.aiText, in: Capsule())
+                .offset(x: 10, y: -8)
+        }
+    }
+
     // MARK: - Content
 
     @ViewBuilder
     private var content: some View {
-        if library.hasLoaded && library.scripts.isEmpty {
+        if !library.hasLoaded {
+            // The structure of the list, with the shine (04 · Global states): no spinner over content.
+            VStack(spacing: 8) {
+                ForEach(0..<4, id: \.self) { _ in ScriptRowSkeleton() }
+                Spacer(minLength: 0)
+            }
+            .padding(.horizontal, Metrics.gutter)
+            .padding(.top, 16)
+            .accessibilityIdentifier("scripts.loading")
+        } else if library.scripts.isEmpty {
             EmptyLibraryView(
-                animatesPromptBackground: animatesPromptBackground,
                 unavailableReason: writerUnavailableReason,
                 onWrite: newBlankScript,
                 onImport: { presentation.present(.importScript) },
@@ -88,36 +179,18 @@ struct ScriptsView: View {
         @Bindable var viewModel = viewModel
         let groups = viewModel.groups(takeCount: { takes.count(for: $0) })
         return List(selection: $viewModel.selection) {
-            // The title with its count and the three round buttons, the card, the platform filters (and the search): free blocks.
-            blockRow(top: 4) {
-                ScriptsHeader(
-                    summaryValues: viewModel.summaryValues(takeCount: { takes.count(for: $0) }),
-                    logbookCount: logbook.waiting.count,
-                    onLogbook: { presentation.present(.logbook) },
-                    onSearch: { viewModel.isSearching.toggle() },
-                    onNew: { presentation.present(.newScript) }
-                )
-            }
-            blockRow(top: 16) {
-                // The same card as the first visit's: typed or dictated in place, the arrow sends the idea.
-                IdeaPromptCard(
-                    base: Palette.surface, animatesBackground: animatesPromptBackground,
-                    unavailableReason: writerUnavailableReason
-                )
-                .accessibilityIdentifier("scripts.promptCard")
+            // The count under the large title ("8 SCRIPTS · 3 READY"), then the platform filters (and the search): free blocks.
+            blockRow(top: 0) {
+                HUDLine(values: viewModel.summaryValues(takeCount: { takes.count(for: $0) }))
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.horizontal, 4)
+                    .accessibilityIdentifier("scripts.summary")
             }
             blockRow(top: 16, horizontal: 0) {
                 // Platform first: it is how creators think about their day.
                 PlatformFilterChips(
                     filters: viewModel.filters, selection: $viewModel.filter, count: { viewModel.count(for: $0) }
                 )
-            }
-            blockRow(top: 16) { VoiceNudgeSlot() }
-            if viewModel.isSearching {
-                blockRow(top: 12) {
-                    SearchField(text: $viewModel.query, prompt: "Search scripts")
-                        .accessibilityIdentifier("scripts.searchField")
-                }
             }
             if let empty = viewModel.emptyResult {
                 Section { emptyResultView(empty) }
@@ -141,6 +214,10 @@ struct ScriptsView: View {
                     }
                     .listSectionSeparator(.hidden)
                 }
+                if viewModel.filter == .all, !viewModel.isSelecting, viewModel.query.isEmpty {
+                    // The ideas waiting in the Logbook, at the end of the list.
+                    blockRow(top: 22) { ScriptsLogbookSection() }
+                }
             }
         }
         .listStyle(.plain)
@@ -149,6 +226,10 @@ struct ScriptsView: View {
         .scrollContentBackground(.hidden)
         .environment(\.editMode, .constant(viewModel.isSelecting ? .active : .inactive))
         .scrollDismissesKeyboard(.immediately)
+        .onScrollGeometryChange(for: CGFloat.self) { $0.contentOffset.y + $0.contentInsets.top } action: { _, offset in
+            dockFold.update(offset: offset, isEditing: isDockEditing)
+        }
+        .onChange(of: isDockEditing) { dockFold.update(offset: 0, isEditing: isDockEditing) }
         .safeAreaInset(edge: .bottom) {
             if viewModel.isSelecting {
                 SelectionBar(
@@ -305,14 +386,6 @@ struct ScriptsView: View {
     }
 
     // MARK: - Actions
-
-    /// Sheets can leave the home mounted underneath them; do not animate that covered card.
-    private var animatesPromptBackground: Bool {
-        presentation.selectedTab == .scripts && presentation.scriptsPath.isEmpty
-            && presentation.sheet == nil && presentation.prompter == nil
-            && !presentation.showsRemoteController && viewModel.shareTarget == nil
-            && viewModel.actionsTarget == nil && !viewModel.isNamingFolder
-    }
 
     private var actions: ScriptActions {
         ScriptActions(

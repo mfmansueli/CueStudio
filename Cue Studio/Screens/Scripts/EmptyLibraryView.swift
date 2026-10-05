@@ -5,13 +5,12 @@
 
 import SwiftUI
 
-/// Scripts with none (v29 · 3.1, not loading, not an empty search): "NO SCRIPTS YET", the LET'S CUE! card (the same
-/// `IdeaPromptCard` the list shows), the empty-state mark with "Every universe starts with an idea.", three ideas from
+/// Scripts with none (v30 · 3.1, not loading, not an empty search): "NO SCRIPTS YET" under the large title, the empty-state mark
+/// with "Every universe starts with an idea." (the AI dock is fixed at the bottom, as on the list), three ideas from
 /// the creator's topics (tap one and it is written; the star rises like for any idea), and two quiet ways in: "Write my
 /// own ›" and "Import ›". Without Apple Intelligence an idea says "Write it" and opens a blank draft with the idea as its
 /// title. "Record without a script" stays as a small link: the "+" in the bar has it too.
 struct EmptyLibraryView: View {
-    var animatesPromptBackground = true
     /// Why Apple Intelligence can't write now; nil when it can.
     var unavailableReason: String?
     let onWrite: () -> Void
@@ -19,14 +18,11 @@ struct EmptyLibraryView: View {
     let onSkip: () -> Void
 
     @Environment(CreatorProfileService.self) private var profile
-    @Environment(LogbookService.self) private var logbook
     @Environment(PresentationService.self) private var presentation
     @Environment(ScriptStarter.self) private var starter
-    @Environment(SkyMemory.self) private var sky
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(IdeaTransitionService.self) private var transition
     /// Where each idea's arrow is on the screen, for its star to leave from.
     @State private var arrowCenters: [String: CGPoint] = [:]
-    @State private var isLaunching = false
 
     private var hasAI: Bool { unavailableReason == nil }
 
@@ -37,19 +33,11 @@ struct EmptyLibraryView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 0) {
-                ScriptsHeader(
-                    summaryValues: [String(localized: "No scripts yet")], summaryTint: Palette.ink.opacity(0.55),
-                    logbookCount: logbook.waiting.count, showsLogbook: !logbook.waiting.isEmpty, showsSearch: false,
-                    onLogbook: { presentation.present(.logbook) }, onSearch: {}, onNew: { presentation.present(.newScript) }
-                )
-                IdeaPromptCard(
-                    base: Palette.surface, animatesBackground: animatesPromptBackground,
-                    suggests: false, unavailableReason: unavailableReason
-                )
-                .accessibilityIdentifier("empty.promptCard")
-                .padding(.top, 14)
+                HUDLine(values: [String(localized: "No scripts yet")], tint: Palette.ink.opacity(0.55))
+                    .padding(.horizontal, 4)
+                    .accessibilityIdentifier("scripts.summary")
                 invitation
-                    .padding(.top, 20)
+                    .padding(.top, 8)
                 ideaList
                     .padding(.top, 30)
                 links
@@ -57,7 +45,7 @@ struct EmptyLibraryView: View {
             }
             .padding(.horizontal, Metrics.gutter)
             .padding(.top, 4)
-            .padding(.bottom, 120)
+            .padding(.bottom, 24)
         }
         .scrollDismissesKeyboard(.interactively)
     }
@@ -139,7 +127,7 @@ struct EmptyLibraryView: View {
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
-        .disabled(isLaunching)
+        .disabled(transition.isActive)
         .accessibilityLabel(Text(idea.title))
         .accessibilityHint(Text(hasAI ? "Writes it in your voice." : "Opens a blank draft with this title."))
         .accessibilityIdentifier("empty.idea.\(idea.id)")
@@ -175,12 +163,8 @@ struct EmptyLibraryView: View {
             starter.writeByHand(idea: idea.title)
             return
         }
-        isLaunching = true
-        Task {
-            await sky.launchStar(from: arrowCenters[idea.id] ?? .zero, reduceMotion: reduceMotion)
-            starter.write(idea: idea.prompt, length: idea.length)
-            isLaunching = false
-        }
+        Haptics.medium()
+        starter.write(idea: idea.prompt, length: idea.length, from: arrowCenters[idea.id])
     }
 }
 

@@ -20,8 +20,7 @@ struct ScriptDetailsSheet: View {
             VStack(alignment: .leading, spacing: 14) {
                 SheetHeader(
                     title: String(localized: "Script details"),
-                    subtitle: viewModel.script?.displayTitle,
-                    onClose: { dismiss() }
+                    subtitle: viewModel.script?.displayTitle
                 )
                 if let script = viewModel.script {
                     GroupedCard(background: Palette.surface2, radius: 16, dividerInset: 14) {
@@ -54,9 +53,8 @@ struct ScriptDetailsSheet: View {
             }
             .padding(EdgeInsets(top: 20, leading: Metrics.gutter, bottom: 24, trailing: Metrics.gutter))
         }
+        .cueSheetChrome()
         .presentationDetents([.large])
-        .presentationBackground(Palette.surface)
-        .presentationCornerRadius(Metrics.sheetRadius)
     }
 
     private var lengthCard: some View {

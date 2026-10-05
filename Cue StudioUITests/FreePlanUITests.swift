@@ -13,14 +13,17 @@ final class FreePlanUITests: XCTestCase {
         continueAfterFailure = false
     }
 
+    /// The audience (the words Cue uses) is part of the voice setup, free like everything else but exporting.
     func testVocabularyIsFree() {
         let app = CueApp.launch(seeded: true)
-        let tab = app.cueTabBar.buttons["Profile"]
-        XCTAssertTrue(tab.waitForExistence(timeout: 15))
-        tab.tap()
-        // "Who I talk to" is the vocabulary, in the same words as the voice setup's audience question.
-        let technical = app.buttons["profile.audience.People who know the field"]
-        for _ in 0..<6 where !(technical.exists && technical.isHittable) { app.swipeUp() }
+        let chip = app.buttons["ideaCard.voiceChip"]
+        XCTAssertTrue(chip.waitForExistence(timeout: 15))
+        chip.tap()
+        app.buttons["voiceSetup.skipRole"].tap()
+        app.buttons["voiceSetup.niche.tech"].tap()
+        app.buttons["voiceSetup.saveButton"].tap()
+        let technical = app.buttons["voiceSetup.audience.technical"]
+        XCTAssertTrue(technical.waitForExistence(timeout: 5))
         technical.tap()
         XCTAssertFalse(app.buttons["paywall.closeButton"].waitForExistence(timeout: 2))
         XCTAssertTrue(technical.isSelected)
@@ -37,7 +40,7 @@ final class FreePlanUITests: XCTestCase {
         XCTAssertFalse(app.buttons["Instagram Reels"].exists)
         app.buttons["TikTok"].tap()
         // The toast passes quickly: what lasts is the copy in the library.
-        app.buttons["page.backButton"].tap()
+        app.pageBackButton.tap()
         XCTAssertTrue(app.staticTexts["Unboxing the Lumen desk lamp (TikTok)"].waitForExistence(timeout: 10))
     }
 

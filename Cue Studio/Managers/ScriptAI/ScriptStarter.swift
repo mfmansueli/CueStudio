@@ -3,6 +3,7 @@
 //  Cue Studio
 //
 
+import CoreGraphics
 import Foundation
 
 /// Sends an idea to the script page: a new empty script is opened and Apple Intelligence writes
@@ -17,11 +18,16 @@ final class ScriptStarter {
     private let languages: LanguageService
     private let presentation: PresentationService
     private let ideaDraft: IdeaDraftService
+    private let transition: IdeaTransitionService
+    private let sky: SkyMemory
 
     init(
         library: ScriptLibraryService, rules: PlatformRulesService, profile: CreatorProfileService,
-        languages: LanguageService, presentation: PresentationService, ideaDraft: IdeaDraftService
+        languages: LanguageService, presentation: PresentationService, ideaDraft: IdeaDraftService,
+        transition: IdeaTransitionService, sky: SkyMemory
     ) {
+        self.transition = transition
+        self.sky = sky
         self.library = library
         self.rules = rules
         self.profile = profile
@@ -40,10 +46,16 @@ final class ScriptStarter {
     /// The platform the card's chip shows: the creator's choice for this idea, or their default.
     var platform: Platform { ideaDraft.platform ?? factory.defaultPlatform }
 
-    /// Writes `idea` (the card's own text when nil), for the platform and format chosen on the card.
+    /// Writes `idea` (the card's own text when nil), for the platform and format chosen on the card. The idea's star is the transition
+    /// (`IdeaTransitionService`): it rises from `origin` (the arrow; the bottom of the screen when nil) while the page is opened under it
+    /// and the AI writes.
     /// - Parameter comment: the audience comment the script answers, kept on the script.
+    /// - Parameter whenWritten: runs when the idea has become a script (not when it was cancelled or failed).
     @discardableResult
-    func write(idea: String? = nil, length: ScriptLength? = nil, comment: ScriptComment? = nil, platform: Platform? = nil) -> UUID? {
+    func write(
+        idea: String? = nil, length: ScriptLength? = nil, comment: ScriptComment? = nil, platform: Platform? = nil, from origin: CGPoint? = nil,
+        whenWritten: ((UUID) -> Void)? = nil
+    ) -> UUID? {
         guard let text = idea ?? ideaDraft.submission, !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return nil }
         let request = factory.request(
             idea: text, platform: platform ?? ideaDraft.platform, format: ideaDraft.format, length: length ?? ideaDraft.length,
@@ -53,7 +65,22 @@ final class ScriptStarter {
             title: "", text: "", platform: request.platform, type: request.format, language: languages.scriptLanguage, comment: comment
         )
         presentation.openScript(script.id, writing: request)
+        let scriptID = script.id
+        transition.begin(
+            from: origin ?? .zero, idea: text, platformName: request.platform.label,
+            abort: { [weak self] in self?.abort(scriptID) },
+            arrive: { [weak self] in
+                self?.sky.addStar()
+                whenWritten?(scriptID)
+            }
+        )
         return script.id
+    }
+
+    /// Cancel, or an error while the star is on screen: no script is created, and the idea is still in the field.
+    private func abort(_ scriptID: UUID) {
+        presentation.scriptsPath = []
+        library.delete([scriptID])
     }
 
     /// With no Apple Intelligence, "Write it": the idea becomes the title of a blank draft, opened to write in (04 · F2).

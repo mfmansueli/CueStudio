@@ -14,9 +14,10 @@ struct MyCueVoiceCard: View {
     let onPreview: () -> Void
 
     @Environment(CreatorProfileService.self) private var profile
-    @Environment(VoiceNudgeService.self) private var nudges
+    @Environment(VoiceQuestionScheduler.self) private var scheduler
+    @Environment(ToastService.self) private var toast
     @Environment(AIStatus.self) private var aiStatus
-    @State private var question: VoicePersonalityItem?
+    @State private var question: VoiceQuestion?
 
     private var isSet: Bool { profile.profile.hasMinimumVoice }
 
@@ -26,7 +27,11 @@ struct MyCueVoiceCard: View {
         }
         .padding(EdgeInsets(top: 14, leading: 16, bottom: 14, trailing: 16))
         .profileBlock(glow: RadialGradient(colors: [Palette.aiGlow, .clear], center: .topLeading, startRadius: 0, endRadius: 260))
-        .sheet(item: $question) { VoicePersonalitySheet(item: $0) }
+        .sheet(item: $question) { question in
+            VoiceQuestionSheet(model: VoiceQuestionSheetModel(
+                question: question, mode: .edit, fieldQuestions: [question], profile: profile, scheduler: scheduler, toast: toast
+            ))
+        }
     }
 
     // MARK: - Not set up
@@ -59,7 +64,7 @@ struct MyCueVoiceCard: View {
                 .foregroundStyle(Palette.ink)
                 .fixedSize(horizontal: false, vertical: true)
                 .accessibilityIdentifier("profile.voiceSentence")
-            if let next = nudges.current(isAIAvailable: aiStatus.isAvailable) {
+            if aiStatus.isAvailable, let next = scheduler.remaining.first {
                 nextQuestion(next)
             }
             HStack(spacing: 8) {
@@ -88,12 +93,12 @@ struct MyCueVoiceCard: View {
         }
     }
 
-    /// The next Personality question, one line, answered in its sheet.
-    private func nextQuestion(_ item: VoicePersonalityItem) -> some View {
+    /// The next question in the queue, one line, answered in its sheet.
+    private func nextQuestion(_ item: VoiceQuestion) -> some View {
         Button { question = item } label: {
             HStack(spacing: 10) {
                 Text(verbatim: "✦").foregroundStyle(Palette.aiText)
-                Text(item.question)
+                Text(item.title)
                     .font(.system(size: 14))
                     .foregroundStyle(Palette.ink2)
                     .frame(maxWidth: .infinity, alignment: .leading)

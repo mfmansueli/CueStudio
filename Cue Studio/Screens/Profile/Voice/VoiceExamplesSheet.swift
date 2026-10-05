@@ -8,18 +8,28 @@ import SwiftUI
 /// Proof (9.3): up to three things the creator wrote themself (a caption, a post, a past script) so Cue can hear how they
 /// write. Two to four sentences each; text with words Apple Intelligence won't learn from is refused. Stays on the iPhone.
 struct VoiceExamplesSheet: View {
+    var body: some View {
+        VoiceExamplesBody()
+            .cueSheetChrome()
+            .presentationDetents([.large])
+    }
+}
+
+/// What is in the examples sheet, without the sheet (the question sheet shows it for the last question too). "I said or wrote this
+/// myself" has to be on before an example is added (08 X1); the text can be typed, pasted or taken from one of the creator's scripts.
+struct VoiceExamplesBody: View {
     @Environment(CreatorProfileService.self) private var profile
+    @Environment(ScriptLibraryService.self) private var library
     @Environment(ToastService.self) private var toast
-    @Environment(\.dismiss) private var dismiss
     @State private var text = ""
     @State private var feedback: String?
+    @State private var isOwn = false
 
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
                 SheetHeader(
-                    title: String(localized: "Examples"), subtitle: String(localized: "A caption, post or past script. 2–4 sentences."),
-                    onClose: { dismiss() }
+                    title: String(localized: "Examples"), subtitle: String(localized: "A caption, post or past script. 2–4 sentences.")
                 )
                 ForEach(profile.profile.examples) { example in
                     HStack(alignment: .top, spacing: 10) {
@@ -48,9 +58,14 @@ struct VoiceExamplesSheet: View {
                     if let feedback {
                         Text(feedback).font(.footnote).foregroundStyle(Palette.warnText).accessibilityIdentifier("voice.feedback")
                     }
+                    sourceButtons
+                    Toggle("I said or wrote this myself", isOn: $isOwn)
+                        .font(.subheadline)
+                        .tint(Palette.successText)
+                        .accessibilityIdentifier("voice.exampleOwn")
                     Button("Add an example", action: add)
                         .buttonStyle(.cuePrimary())
-                        .disabled(text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                        .disabled(!isOwn || text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
                         .accessibilityIdentifier("voice.exampleAdd")
                 } else {
                     Text("Max 3 examples · tap ✕ to swap one")
@@ -61,13 +76,36 @@ struct VoiceExamplesSheet: View {
             .padding(EdgeInsets(top: 20, leading: Metrics.gutter, bottom: 24, trailing: Metrics.gutter))
         }
         .accessibilityIdentifier("voice.sheet.examples")
-        .presentationDetents([.large])
+    }
+
+    /// Paste, or pick one of the creator's own scripts.
+    private var sourceButtons: some View {
+        HStack(spacing: 8) {
+            Button { text = UIPasteboard.general.string ?? text } label: {
+                Label("Paste", systemImage: "doc.on.clipboard")
+            }
+            .buttonStyle(.cueSecondary(.compact, expands: false))
+            .accessibilityIdentifier("voice.examplePaste")
+            if !library.scripts.isEmpty {
+                Menu {
+                    ForEach(library.scripts.prefix(8)) { script in
+                        Button(script.displayTitle) { text = script.text }
+                    }
+                } label: {
+                    Label("My scripts", systemImage: "doc.text")
+                }
+                .buttonStyle(.cueSecondary(.compact, expands: false))
+                .accessibilityIdentifier("voice.exampleScripts")
+            }
+            Spacer(minLength: 0)
+        }
     }
 
     private func add() {
         switch profile.addExample(text) {
         case .added:
             text = ""
+            isOwn = false
             feedback = nil
             toast.show(String(localized: "Example saved"))
         case .rejected(let check):

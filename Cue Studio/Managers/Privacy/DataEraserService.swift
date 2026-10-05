@@ -50,7 +50,7 @@ final class DataEraserService {
         profile.profile = CreatorProfile()
         preferences.resetCreatorSetup()
         for key in [
-            DefaultsKey.voiceNudgeSnoozes, DefaultsKey.myTextStyle, DefaultsKey.myCoverStyle, DefaultsKey.scriptEditorTextSize,
+            DefaultsKey.voiceQuestionState, DefaultsKey.myTextStyle, DefaultsKey.myCoverStyle, DefaultsKey.scriptEditorTextSize,
         ] {
             defaults.removeObject(forKey: key)
         }

@@ -9,14 +9,21 @@ import Testing
 
 @Suite("FormatChoice")
 struct FormatChoiceTests {
-    @Test func theBoardsElevenTilesAndHotTakeKeptAsATwelfth() {
-        #expect(FormatChoice.allTiles.count == 12)
-        #expect(FormatChoice.allTiles.prefix(2) == [.auto, .talkingHead])
+    @Test func theGridHasNineTilesInOrder() {
+        #expect(FormatChoice.gridTiles == [
+            .auto, .talkingHead, .type(.tutorial), .type(.story), .type(.list), .type(.review),
+            .type(.mythFact), .type(.pov), .type(.ad),
+        ])
+    }
+
+    @Test func moreFormatsListsEveryOtherTypeInTheEnumsOrder() {
+        #expect(FormatChoice.moreFormats == [.type(.opinion), .type(.launch), .type(.apology)])
         #expect(Set(FormatChoice.allTiles.compactMap(\.scriptType)) == Set(ScriptType.allCases))
+        #expect(FormatChoice.allTiles.count == 12)
     }
 
     @Test func noFormatIsLost() {
-        // Every format that existed before v29 is still a tile.
+        // Every format that existed before v29 is still a choice: a tile or a row under "More formats".
         for type in [ScriptType.ad, .review, .tutorial, .list, .story, .opinion, .launch, .apology] {
             #expect(FormatChoice.allTiles.contains(.type(type)), "\(type) has no tile")
         }

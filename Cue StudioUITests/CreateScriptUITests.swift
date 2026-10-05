@@ -62,7 +62,7 @@ final class CreateScriptUITests: XCTestCase {
         field.tap()
         field.typeText("3 tips for better lighting")
         app.buttons["ideaCard.submit"].tap()
-        XCTAssertTrue(app.buttons["page.backButton"].waitForExistence(timeout: 10))
+        XCTAssertTrue(app.pageBackButton.waitForExistence(timeout: 10))
         XCTAssertTrue(app.descendants(matching: .any)["page.editor"].waitForExistence(timeout: 10))
     }
 }

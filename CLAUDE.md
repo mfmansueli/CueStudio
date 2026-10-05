@@ -13,8 +13,9 @@ padrão, corrija-o.
 
 ## Design
 
-A fonte de verdade do design é @DESIGN_PROJECT.md (tokens, telas, estados e as diferenças em relação
-ao protótipo do Claude Design). Atualize-o junto com a UI.
+A fonte de verdade do design é `design/cue-v30/` (comece por `LEIA-ME.md` e `09-Decisions.md`; o protótipo
+`prototype/Cue App v30.dc.html` é a referência visual). @DESIGN_PROJECT.md diz como o app ficou e onde as decisões foram
+tomadas. Atualize-o junto com a UI.
 
 ## Build e testes
 
@@ -36,7 +37,8 @@ ao protótipo do Claude Design). Atualize-o junto com a UI.
   `-uiTestAppearance <light|dark>` (as telas do Cue começam claras ou escuras, como em Settings › Appearance),
   `-uiTestAppLanguage <lproj>` (a interface começa nesse idioma, em memória, sem mudar o simulador).
   v27: `-uiTestOnboarding`, `-uiTestPermissions granted|denied`, `-uiTestSky off|calm|lively` (off por padrão nos testes), `-uiTestAppsInstalled`,
-  `-uiTestCatalogue <seção>` (ver `DESIGN_PROJECT.md`, seção 12).
+  `-uiTestCatalogue <seção>` (a seção `transition` mostra a estrela; ver `DESIGN_PROJECT.md`).
+  v30: `-uiTestVoiceTip` (abre as portas da dica do My Cue Voice) e `-uiTestStarTransition` (a estrela da ideia mantém os tempos reais; nos testes de UI ela é encurtada).
 - Idiomas: `LOCALIZATION.md` (três idiomas independentes, terminologia, RTL). Todo texto novo entra
   nos 20 idiomas dos String Catalogs. O teste de fala de verdade é opt-in:
   `TEST_RUNNER_CUE_SPEECH_E2E=1 xcodebuild … -only-testing:"Cue StudioTests/VoiceFollowingSpeechTests" test`,

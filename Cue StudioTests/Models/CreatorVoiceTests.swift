@@ -10,7 +10,7 @@ import Testing
 struct CreatorVoiceTests {
     @Test func summaryShowsTwoSoundsAndTheFirstPhrase() {
         let voice = CreatorVoice(sounds: [.casual, .confident, .funny], phrases: ["Hey fam", "Real talk"], vocabulary: .simple, styles: [], niches: [])
-        #expect(voice.summary == "Casual · Confident · “Hey fam”")
+        #expect(voice.summary == "Conversational · Confident · “Hey fam”")
     }
 
     @Test func sampleLineFollowsSoundStyleAndVocabulary() {

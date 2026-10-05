@@ -17,10 +17,24 @@ struct MainView: View {
     @Environment(DocumentImportService.self) private var importer
     @Environment(ToastService.self) private var toast
     @Environment(LanguageService.self) private var languages
+    @Environment(VoiceQuestionScheduler.self) private var voiceQuestions
+    @Environment(IdeaTransitionService.self) private var ideaTransition
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.scenePhase) private var scenePhase
 
     var body: some View {
         @Bindable var presentation = presentation
         tabs
+            // While the idea's star is on screen the app dims and draws back behind it (0.6 s), as the board has it (09 §8).
+            .scaleEffect(dimsForTransition && !reduceMotion ? 0.94 : 1, anchor: UnitPoint(x: 0.5, y: 0.4))
+            .brightness(dimsForTransition ? -0.4 : 0)
+            .saturation(dimsForTransition ? 0.7 : 1)
+            .blur(radius: dimsForTransition ? 10 : 0)
+            .animation(
+                reduceMotion ? .easeOut(duration: 0.3) : .timingCurve(0.2, 0.8, 0.2, 1, duration: IdeaTransitionService.riseDuration * ideaTransition.speed),
+                value: dimsForTransition
+            )
+            .overlay { StarTransitionOverlay(transition: ideaTransition).ignoresSafeArea() }
             .sheet(item: $presentation.sheet) { sheet in
                 sheetContent(sheet)
             }
@@ -30,6 +44,16 @@ struct MainView: View {
             .fullScreenCover(isPresented: $presentation.showsRemoteController) {
                 RemoteControllerView()
             }
+            // The My Cue Voice tip waits until the app has been opened on two different days.
+            .task { voiceQuestions.registerAppOpen() }
+            .onChange(of: scenePhase) { _, phase in
+                if phase == .active { voiceQuestions.registerAppOpen() }
+            }
+    }
+
+    /// The star is rising or waiting: the app behind it is dimmed.
+    private var dimsForTransition: Bool {
+        ideaTransition.phase == .rising || ideaTransition.phase == .waiting
     }
 
     /// The system's tab bar (Liquid Glass on iOS 26+): content scrolls under it, the selection slides with a drag
@@ -103,6 +127,8 @@ struct MainView: View {
             }
         }
         .tint(Palette.accText)
+        // The bar draws back while a list scrolls down and comes back on the way up (07 §1).
+        .tabBarMinimizeBehavior(.onScrollDown)
     }
 
     /// Selecting the record tab presents the sheet and keeps the current tab.

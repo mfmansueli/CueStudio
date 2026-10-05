@@ -5,6 +5,7 @@
 
 import AppIntents
 import SwiftUI
+import TipKit
 
 @main
 struct CueStudioApp: App {
@@ -17,7 +18,15 @@ struct CueStudioApp: App {
         let services = AppServices(options: LaunchOptions.fromProcess())
         services.load()
         services.registerIntentDependencies()
+        Self.configureTips(inMemory: LaunchOptions.fromProcess().isInMemory)
         _services = State(initialValue: services)
+    }
+
+    /// TipKit shows the My Cue Voice tip; the scheduler decides when (frequency is its own: one a day, three a week). UI tests start
+    /// with an empty tip store, so an invalidated tip never carries over between runs.
+    private static func configureTips(inMemory: Bool) {
+        if inMemory { try? Tips.resetDatastore() }
+        try? Tips.configure([.displayFrequency(.immediate)])
     }
 
     var body: some Scene {

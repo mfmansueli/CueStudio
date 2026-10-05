@@ -41,9 +41,11 @@ final class ScriptsV29UITests: XCTestCase {
 
     func testASearchWithNoResultShowsTheEmptyStateAndTheWayOut() throws {
         let app = CueApp.launch(seeded: true)
-        XCTAssertTrue(app.buttons["scripts.searchButton"].waitForExistence(timeout: 15))
-        app.buttons["scripts.searchButton"].tap()
-        let field = element(app, "scripts.searchField")
+        // The search is the navigation bar's own (`.searchable`): a magnifier that opens the system's field.
+        let magnifier = app.navigationBars.buttons["Search"].firstMatch
+        XCTAssertTrue(magnifier.waitForExistence(timeout: 15))
+        magnifier.tap()
+        let field = app.searchFields.firstMatch
         XCTAssertTrue(field.waitForExistence(timeout: 5))
         field.tap()
         field.typeText("zzzzzz")
@@ -130,7 +132,7 @@ final class CreationSheetsUITests: XCTestCase {
         try capture(app, "F_format_start")
         element(app, "format.tutorial").tap()
         element(app, "format.confirm").tap()
-        XCTAssertTrue(app.buttons["page.backButton"].waitForExistence(timeout: 10) || app.textFields["page.titleField"].waitForExistence(timeout: 10))
+        XCTAssertTrue(app.pageBackButton.waitForExistence(timeout: 10) || app.textFields["page.titleField"].waitForExistence(timeout: 10))
     }
 
     func testTheCardsFormatSheetHasAutoAndSetsTheChip() throws {
@@ -142,7 +144,7 @@ final class CreationSheetsUITests: XCTestCase {
         element(app, "format.review").tap()
         element(app, "format.confirm").tap()
         XCTAssertTrue(app.buttons["ideaCard.formatChip"].waitForExistence(timeout: 5))
-        XCTAssertEqual(app.buttons["ideaCard.formatChip"].label, "Review")
+        XCTAssertEqual(app.buttons["ideaCard.formatChip"].label, "Format, Review")
     }
 
     func testTheBrandBriefNeedsABrandAndAProduct() throws {

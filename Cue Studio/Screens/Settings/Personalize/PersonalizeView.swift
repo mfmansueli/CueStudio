@@ -41,6 +41,21 @@ struct PersonalizeView: View {
                     .accessibilityIdentifier("personalize.autoTag")
                 }
 
+                heading(String(localized: "Your universe")).padding(.top, 10)
+                GroupedCard(dividerInset: 16) {
+                    HStack(spacing: 10) {
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text("Core colour").font(.system(size: 15)).foregroundStyle(Palette.ink)
+                            Text("The light at the centre of your universe").font(.caption).foregroundStyle(Palette.ink2)
+                        }
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        CoreColorSwatches(selection: $personalization.coreColor, showsNames: false)
+                    }
+                    .padding(.horizontal, 16)
+                    .frame(minHeight: 78)
+                    .accessibilityIdentifier("personalize.coreColor")
+                }
+
                 heading(String(localized: "Motion")).padding(.top, 10)
                 GroupedCard(dividerInset: 16) {
                     CueSlider(

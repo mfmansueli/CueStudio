@@ -50,6 +50,7 @@ extension ScriptDetailViewModel {
     /// "Sounds like me": the voice is kept, and the strip goes.
     func approveVoice() {
         profile.profile.voiceApproved = true
+        profile.profile.approvals += 1
         page.voicePreview = nil
         toast.show(String(localized: "Got it · Writing like this"))
     }

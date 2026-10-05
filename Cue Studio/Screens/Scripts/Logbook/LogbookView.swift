@@ -250,8 +250,12 @@ struct LogbookView: View {
     }
 
     private func writeIdea(_ entry: LogbookEntry) {
-        let scriptID = aiStatus.isAvailable ? starter.write(idea: entry.text) : starter.writeByHand(idea: entry.text)
-        logbook.markShaped(entry.id, as: scriptID)
+        if aiStatus.isAvailable {
+            // The idea stops waiting only once the star has made it a script: Cancel leaves it in the Logbook.
+            starter.write(idea: entry.text) { [logbook] scriptID in logbook.markShaped(entry.id, as: scriptID) }
+        } else {
+            logbook.markShaped(entry.id, as: starter.writeByHand(idea: entry.text))
+        }
         dismiss()
     }
 }

@@ -7,7 +7,7 @@ import CoreGraphics
 import Foundation
 
 /// The numbers behind the sky, apart from the drawing so they can be tested: the three star layers,
-/// the twinkle keyframes, and when a shooting star crosses. Everything is a function of time, with
+/// the twinkle keyframes, and when the comet crosses. Everything is a function of time, with
 /// stars laid out by a seeded generator, so a screen's sky is the same every time and never jumps.
 nonisolated enum StarfieldMath {
     // MARK: - Layers
@@ -60,7 +60,7 @@ nonisolated enum StarfieldMath {
         let y: Double
         /// 1.8 to 3 pt.
         let size: Double
-        /// 2.6 to 4.1 s for one cycle.
+        /// 7 s for one cycle (`motion/README.md`).
         let cycle: Double
         let phase: Double
         /// Half of them have the phone-camera cross glint.
@@ -74,67 +74,101 @@ nonisolated enum StarfieldMath {
         return (0..<count).map { index in
             Twinkle(
                 x: random.next(in: 0.06...0.94), y: random.next(in: 0.05...0.9),
-                size: random.next(in: 1.8...3.0), cycle: random.next(in: 2.6...4.1),
-                phase: random.next(),
+                size: random.next(in: 1.8...3.0), cycle: twinkleCycle,
+                // Each star starts 0 to 5.2 s into its cycle.
+                phase: random.next(in: 0...5.2) / twinkleCycle,
                 hasGlint: index % 2 == 0,
                 tint: [TwinkleTint.white, .warm, .lilac][Int(random.next(in: 0...2.999))]
             )
         }
     }
 
-    /// The irregular keyframes of a twinkle: opacity 0.2 → 1 → 0.45 → 0.95 → 0.25 → 1 → 0.5, with the
-    /// scale between 0.7 and 1.3. `phase` is 0...1 through the cycle.
+    /// Seconds for one twinkle.
+    static let twinkleCycle = 7.0
+
+    /// The keyframes of a twinkle (`motion/README.md`): opacity 0.16 → 0.75 at 45% → 0.58 at 60% → 0.16, with the scale between 0.75 and 1.
+    /// `phase` is 0...1 through the cycle (it wraps).
     static func twinkleLevel(at phase: Double) -> (opacity: Double, scale: Double) {
-        let opacities = [0.2, 1, 0.45, 0.95, 0.25, 1, 0.5, 0.2]
-        let scales = [0.7, 1.3, 0.9, 1.2, 0.75, 1.3, 0.95, 0.7]
         let wrapped = phase - phase.rounded(.down)
-        let position = wrapped * Double(opacities.count - 1)
-        let index = min(opacities.count - 2, Int(position))
-        let t = position - Double(index)
-        // Smooth between keyframes.
+        let keyframes: [(at: Double, opacity: Double, scale: Double)] = [
+            (0, 0.16, 0.75), (0.45, 0.75, 1), (0.60, 0.58, 0.9), (1, 0.16, 0.75),
+        ]
+        let index = keyframes.lastIndex { $0.at <= wrapped } ?? 0
+        let from = keyframes[min(index, keyframes.count - 2)]
+        let to = keyframes[min(index, keyframes.count - 2) + 1]
+        let t = (wrapped - from.at) / (to.at - from.at)
         let eased = t * t * (3 - 2 * t)
-        return (
-            opacities[index] + (opacities[index + 1] - opacities[index]) * eased,
-            scales[index] + (scales[index + 1] - scales[index]) * eased
-        )
+        return (from.opacity + (to.opacity - from.opacity) * eased, from.scale + (to.scale - from.scale) * eased)
     }
 
-    // MARK: - Shooting stars
+    // MARK: - The comet
 
-    struct ShootingStar: Equatable, Sendable {
-        /// 0...1 along its way.
-        let progress: Double
-        /// Where it started and the unit direction (160°: left and a little down).
+    /// The comet (`motion/README.md`): one crosses every 105 to 135 s, the first 25 s after launch, in any direction, 520 to 680 pt in 1.7 to
+    /// 2.4 s (`cubic-bezier(.3,.1,.45,1)`), with a tail of 140 to 210 pt; it fades in to 1 at 12% of its way, is at 0.9 at 72% and gone at the end.
+    struct Comet: Equatable, Sendable {
+        /// 0...1 of the time it takes.
+        let time: Double
         let start: CGPoint
+        /// A unit vector.
         let direction: CGVector
-        static let length: CGFloat = 130
-        static let thickness: CGFloat = 1.5
-        static let travel: CGFloat = 380
-        /// A fade in the first and last fifth of the way.
-        var opacity: Double { min(1, min(progress, 1 - progress) * 5) }
+        let distance: CGFloat
+        let tail: CGFloat
+
+        /// How far along its way it is, eased.
+        var progress: Double { cubicBezier(0.3, 0.1, 0.45, 1, at: time) }
+
+        var opacity: Double {
+            if time < 0.12 { return time / 0.12 }
+            if time < 0.72 { return 1 - 0.1 * (time - 0.12) / 0.6 }
+            return max(0, 0.9 * (1 - (time - 0.72) / 0.28))
+        }
     }
 
-    /// Seconds a shooting star takes to cross.
-    static let shootingStarDuration = 0.7
+    static let firstCometDelay = 25.0
+    static let cometInterval = 105.0...135.0
 
-    /// The shooting star of `slot` at `time`, if one is crossing. Each slot fires every 11 to 14 s, and
-    /// the slots are staggered so two are never at the same point of their way.
-    static func shootingStar(slot: Int, at time: TimeInterval, size: CGSize, seed: UInt64) -> ShootingStar? {
-        // The same period for every slot, offset by half of it: two are never crossing together.
-        let period = 11.0 + Double(seed % 4)
-        let offset = period * (Double(slot) / 2 + 0.35)
-        let shifted = time - offset
-        guard shifted >= 0 else { return nil }
-        let cycle = Int(shifted / period)
-        let inCycle = shifted - Double(cycle) * period
-        guard inCycle < shootingStarDuration else { return nil }
-        var random = SeededRandom(seed: seed &+ UInt64(slot) &* 977 &+ UInt64(cycle) &* 131)
-        let angle = 160.0 * .pi / 180
-        return ShootingStar(
-            progress: inCycle / shootingStarDuration,
-            start: CGPoint(x: size.width * random.next(in: 0.45...1.0), y: size.height * random.next(in: 0.04...0.35)),
-            direction: CGVector(dx: cos(angle), dy: sin(angle))
-        )
+    /// The comet crossing `size` at `time` seconds after launch, if there is one. The schedule is a function of time and the seed (the same on
+    /// every screen, so it carries on across tabs).
+    static func comet(at time: TimeInterval, size: CGSize, seed: UInt64) -> Comet? {
+        var begins = firstCometDelay
+        var index: UInt64 = 0
+        while begins <= time {
+            var random = SeededRandom(seed: seed &+ index &* 6_151)
+            let duration = random.next(in: 1.7...2.4)
+            if time <= begins + duration {
+                let distance = CGFloat(random.next(in: 520...680))
+                let angle = random.next(in: 0...(2 * .pi))
+                let direction = CGVector(dx: cos(angle), dy: sin(angle))
+                // It passes through a point of the screen a third of the way in.
+                let through = CGPoint(x: size.width * random.next(in: 0.15...0.85), y: size.height * random.next(in: 0.05...0.8))
+                let start = CGPoint(x: through.x - direction.dx * distance / 3, y: through.y - direction.dy * distance / 3)
+                return Comet(
+                    time: (time - begins) / duration, start: start, direction: direction, distance: distance,
+                    tail: CGFloat(random.next(in: 140...210))
+                )
+            }
+            begins += random.next(in: cometInterval)
+            index += 1
+        }
+        return nil
+    }
+
+    /// A CSS-style cubic Bézier easing: where the curve is at `t` of the time (solved for x by Newton, with bisection as the fallback).
+    static func cubicBezier(_ x1: Double, _ y1: Double, _ x2: Double, _ y2: Double, at t: Double) -> Double {
+        func coordinate(_ a: Double, _ b: Double, _ s: Double) -> Double {
+            let u = 1 - s
+            return 3 * u * u * s * a + 3 * u * s * s * b + s * s * s
+        }
+        var low = 0.0
+        var high = 1.0
+        var s = t
+        for _ in 0..<24 {
+            let x = coordinate(x1, x2, s)
+            if abs(x - t) < 1e-6 { break }
+            if x < t { low = s } else { high = s }
+            s = (low + high) / 2
+        }
+        return coordinate(y1, y2, s)
     }
 
     // MARK: - Nebulae

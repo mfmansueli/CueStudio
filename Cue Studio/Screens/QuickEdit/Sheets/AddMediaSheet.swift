@@ -17,7 +17,7 @@ struct AddMediaSheet: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
-            EditorSheetHeader(title: String(localized: "Add photo or video")) { dismiss() }
+            SheetHeader(title: String(localized: "Add photo or video"))
             Picker("Where it goes", selection: $viewModel.mediaInsertMode) {
                 ForEach(MediaInsertMode.allCases) { mode in
                     Text(mode.label).tag(mode)
@@ -57,9 +57,8 @@ struct AddMediaSheet: View {
                 dismiss()
             }
         }
+        .cueSheetChrome()
         .presentationDetents([.medium, .large])
-        .presentationCornerRadius(Metrics.editorSheetRadius)
-        .presentationBackground(Palette.surface)
         .presentationDragIndicator(.visible)
     }
 }

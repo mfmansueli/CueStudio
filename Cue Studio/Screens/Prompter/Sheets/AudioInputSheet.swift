@@ -19,8 +19,7 @@ struct AudioInputSheet: View {
         VStack(alignment: .leading, spacing: 0) {
             SheetHeader(
                 title: String(localized: "Audio Input"),
-                subtitle: String(localized: "Where Cue hears you in this take."),
-                onClose: { dismiss() }
+                subtitle: String(localized: "Where Cue hears you in this take.")
             )
             .padding(.horizontal, 4)
             .padding(.bottom, 16)

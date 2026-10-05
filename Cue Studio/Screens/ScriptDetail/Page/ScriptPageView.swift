@@ -5,9 +5,10 @@
 
 import SwiftUI
 
-/// The script page (v29 · 4.1 and 4.2): one page, no Draft | Shaped switch. A bar with back, the platform and •••; the title
+/// The script page (v30 · 4.1 and 4.2): one page, no Draft | Shaped switch. The navigation bar has back, the platform and •••; the title
 /// and its meter; the **state strip** (READY, DRAFT or RECORDED, the format, the cues and the next step); the words, always
-/// editable, with cues as tags; and one Record button at the bottom. Selecting words brings the AI bar (Apple Intelligence
+/// editable, with cues as tags; and one Record button at the bottom. The bar above is the system's: its back button, the platform
+/// and •••. Selecting words brings the AI bar (Apple Intelligence
 /// only); the keyboard brings the cues bar. "✦ Shape" is a tool: it adds cues.
 struct ScriptPageView: View {
     let viewModel: ScriptDetailViewModel
@@ -24,20 +25,6 @@ struct ScriptPageView: View {
     var body: some View {
         @Bindable var viewModel = viewModel
         VStack(spacing: 0) {
-            ScriptPageTopBar(
-                platform: script.platform,
-                onBack: onBack,
-                onPlatform: { viewModel.sheet = .destination },
-                menu: {
-                    ScriptPageMenu(
-                        script: script, folders: folders, actions: actions,
-                        hasAI: viewModel.isLanguageModelAvailable,
-                        onImprove: { viewModel.sheet = .improve },
-                        onVersions: { viewModel.startEditing() },
-                        onDetails: { viewModel.sheet = .details }
-                    )
-                }
-            )
             ScrollViewReader { proxy in
                 ScrollView {
                     VStack(alignment: .leading, spacing: 0) {
@@ -45,7 +32,6 @@ struct ScriptPageView: View {
                             title: $viewModel.page.title,
                             wordsAndTime: wordsAndTime,
                             isWriting: viewModel.page.isWriting,
-                            writesInMyVoice: viewModel.profile.writesInMyVoice,
                             focus: $focus,
                             onStop: viewModel.stopWriting,
                             onSubmitTitle: { focus = .text }
@@ -93,6 +79,7 @@ struct ScriptPageView: View {
             }
         }
         .safeAreaInset(edge: .bottom, spacing: 0) { bottom }
+        .toolbar { toolbarItems }
         .sheet(isPresented: $viewModel.page.showsLengthNudge) { nudge }
         .sheet(isPresented: $viewModel.page.showsVoiceAdjust) {
             VoiceAdjustSheet { adjustments, keepsInProfile in
@@ -128,6 +115,40 @@ struct ScriptPageView: View {
             if let passage = viewModel.page.passage, let selection, !selection.isEmpty, selection != passage.range { viewModel.keepPassage() }
         }
         .onDisappear { viewModel.leavePage() }
+    }
+
+    // MARK: - Bar
+
+    /// The platform ("● TikTok", opens Create for) and ••• in the bar's glass; back is the system's.
+    @ToolbarContentBuilder
+    private var toolbarItems: some ToolbarContent {
+        ToolbarItem(placement: .topBarTrailing) {
+            Button { viewModel.sheet = .destination } label: {
+                HStack(spacing: 6) {
+                    PlatformDot(color: script.platform.tint)
+                    Text(script.platform.label).font(.footnote.weight(.semibold))
+                }
+            }
+            .accessibilityLabel(Text("Create for"))
+            .accessibilityValue(Text(script.platform.label))
+            .accessibilityIdentifier("page.platformChip")
+        }
+        ToolbarSpacer(.fixed, placement: .topBarTrailing)
+        ToolbarItem(placement: .topBarTrailing) {
+            Menu {
+                ScriptPageMenu(
+                    script: script, folders: folders, actions: actions,
+                    hasAI: viewModel.isLanguageModelAvailable,
+                    onImprove: { viewModel.sheet = .improve },
+                    onVersions: { viewModel.startEditing() },
+                    onDetails: { viewModel.sheet = .details }
+                )
+            } label: {
+                Image(systemName: "ellipsis")
+            }
+            .accessibilityLabel(Text("More"))
+            .accessibilityIdentifier("page.menuButton")
+        }
     }
 
     // MARK: - Pieces
@@ -184,7 +205,20 @@ struct ScriptPageView: View {
         }
     }
 
+    @ViewBuilder
     private var editor: some View {
+        if viewModel.page.isWriting {
+            // The AI's words arrive from light, one after another (4.1); the editor comes back when the script is written.
+            ArrivingText(text: viewModel.page.revealed ?? "", size: viewModel.page.textSize.points)
+                .frame(minHeight: 300, alignment: .topLeading)
+                .id("page.editor")
+                .accessibilityIdentifier("page.writingText")
+        } else {
+            writtenEditor
+        }
+    }
+
+    private var writtenEditor: some View {
         @Bindable var viewModel = viewModel
         return ScriptTextEditor(
             text: Binding(
@@ -227,6 +261,11 @@ struct ScriptPageView: View {
                 )
                 .transition(.opacity.combined(with: .move(edge: .bottom)))
             }
+            if viewModel.page.isWriting {
+                ScriptWritingPill(inMyVoice: viewModel.profile.writesInMyVoice)
+                    .padding(.bottom, 12)
+                    .transition(.opacity.combined(with: .scale(scale: 0.96)))
+            }
             if focus == .text {
                 ScriptCuesBar(onCue: viewModel.insertCue)
             } else if focus != .title, !viewModel.page.isWriting, let strip = viewModel.strip {
@@ -260,8 +299,6 @@ struct ScriptPageView: View {
             }
         )
         .presentationDetents([.height(300)])
-        .presentationBackground(Palette.surface)
-        .presentationCornerRadius(Metrics.sheetRadius)
     }
 
     /// Done: a draft or a script being edited becomes ready; one that is ready and unchanged simply goes back.
