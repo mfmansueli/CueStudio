@@ -8,7 +8,8 @@ import UIKit
 
 /// Export from the editor: the edit as it is now, at 720p, 1080p or 4K and 30 or 60 fps (never
 /// more than the recording has), with its captions and texts burned in, saved to Photos with its
-/// cover. The free plan's exports count here like everywhere (5, then the paywall, no watermark).
+/// cover. The free plan's exports count here like everywhere (5, then the paywall, no watermark): once, when the video is
+/// saved to Photos (`ExportLedgerService`), so sharing the finished file afterwards never counts again.
 /// Progress is the export's own; leaving Cue while it runs asks the system for time to finish.
 @MainActor
 @Observable
@@ -26,7 +27,7 @@ final class QuickEditExportModel {
     var frameRate: Int
     var paywall: PaywallContext?
     /// The finished video, for the share sheet.
-    var shareURL: URL?
+    var activity: ActivityShare?
 
     private let take: Take
     private let edit: () -> TakeEdit
@@ -37,11 +38,15 @@ final class QuickEditExportModel {
     private let exporter: VideoExporting
     private let photos: PhotoSaving
     private let editing: TakeEditing
+    private let ledger: ExportLedgerService
     private var pendsAfterPurchase = false
+    private var operationID: UUID?
+    private var handledActivities: Set<UUID> = []
 
     init(
         take: Take, videoURL: URL, edit: @escaping () -> TakeEdit, takes: TakeLibraryService, quota: UsageQuotaService,
-        tier: @escaping () -> MembershipTier, exporter: VideoExporting, photos: PhotoSaving, editing: TakeEditing
+        tier: @escaping () -> MembershipTier, exporter: VideoExporting, photos: PhotoSaving, editing: TakeEditing,
+        ledger: ExportLedgerService
     ) {
         self.take = take
         self.videoURL = videoURL
@@ -52,6 +57,7 @@ final class QuickEditExportModel {
         self.exporter = exporter
         self.photos = photos
         self.editing = editing
+        self.ledger = ledger
         resolution = take.resolution == .hd720 ? .hd720 : .hd1080
         frameRate = Self.baseFrameRate(of: take)
     }
@@ -115,11 +121,12 @@ final class QuickEditExportModel {
 
     // MARK: - Exporting
 
-    /// Exports, or opens the paywall when the free exports are used up (and goes on after).
+    /// Exports, or opens the paywall when the free exports are used up (and goes on after). The video is saved to Photos and
+    /// counted there; a retry after a failure reuses the file already rendered for the same edit and settings.
     func start() async {
         guard !isExporting else { return }
         let currentTier = tier()
-        guard quota.canExport(tier: currentTier) else {
+        guard quota.canExport(tier: currentTier) || ledger.hasCountedOperation(forTake: take.id) else {
             pendsAfterPurchase = true
             paywall = .export
             return
@@ -132,21 +139,62 @@ final class QuickEditExportModel {
             aspect: current.aspect, edit: current, burnsInCaptions: false,
             shortSide: CGFloat(resolution.landscapeHeight), frameRate: Double(frameRate)
         )
+        let fingerprint = ExportFingerprint.make(takeID: take.id, source: videoURL, options: options)
         do {
-            let url = try await exporter.export(videoAt: videoURL, options: options) { [weak self] fraction in
-                guard let self, self.isExporting else { return }
-                self.phase = .exporting(min(max(fraction, 0), 1))
+            let operation: ExportOperation
+            if let reusable = ledger.reusableOperation(fingerprint: fingerprint) {
+                guard reusable.isCounted || quota.canExport(tier: currentTier) else {
+                    phase = .setup
+                    pendsAfterPurchase = true
+                    paywall = .export
+                    return
+                }
+                operation = reusable
+            } else {
+                guard quota.canExport(tier: currentTier) else {
+                    phase = .setup
+                    pendsAfterPurchase = true
+                    paywall = .export
+                    return
+                }
+                let url = try await exporter.export(videoAt: videoURL, options: options) { [weak self] fraction in
+                    guard let self, self.isExporting else { return }
+                    self.phase = .exporting(min(max(fraction, 0), 1))
+                }
+                operation = ledger.begin(takeID: take.id, fingerprint: fingerprint, file: url)
             }
-            try await photos.saveVideo(at: url)
-            await saveCover(of: current)
-            quota.recordExport(tier: currentTier)
+            operationID = operation.id
+            let file = ledger.fileURL(of: operation)
+            let assetID = try await photos.saveVideo(at: file)
+            ledger.recordDelivery(.photoLibrary(assetID: assetID), for: operation.id, tier: currentTier)
             takes.markExported(take.id)
-            phase = .done(url)
+            await saveCover(of: current)
+            phase = .done(file)
         } catch {
             phase = .failed(UIApplication.shared.applicationState == .active
                 ? error.localizedDescription
                 : String(localized: "The export stopped when Cue left the screen. Keep Cue open and try again."))
         }
+    }
+
+    /// Opens the system share sheet for the finished video.
+    func share(_ url: URL) {
+        guard let operationID else { return }
+        activity = ActivityShare(operationID: operationID, url: url, destination: nil)
+    }
+
+    /// How the share sheet ended. The video was counted when it was saved, so this only keeps the record: the same operation,
+    /// delivered again, is never a second export.
+    func activityFinished(_ result: ActivityResult, for share: ActivityShare) {
+        activity = nil
+        guard handledActivities.insert(share.id).inserted, case .completed(let type) = result else { return }
+        ledger.recordDelivery(.activity(type: type), for: share.operationID, tier: tier())
+    }
+
+    /// The editor's export closed with nothing in flight: the rendered file goes.
+    func leave() {
+        guard !isExporting, activity == nil, let operationID else { return }
+        ledger.releaseFile(of: operationID)
     }
 
     /// Pro (or its trial) is on: the export that opened the paywall goes on.

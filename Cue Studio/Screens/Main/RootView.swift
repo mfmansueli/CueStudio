@@ -54,8 +54,13 @@ struct RootView: View {
             }
             // A remote pairing code scanned with the Camera on this device.
             .onOpenURL { url in
+                // TikTok's Share Kit answers through a universal link.
+                if services.sharing.handleCallback(url) { return }
                 guard let code = RemotePairing.code(from: url), services.remote.join(code: code) else { return }
                 services.presentation.openRemoteController()
+            }
+            .onContinueUserActivity(NSUserActivityTypeBrowsingWeb) { activity in
+                if let url = activity.webpageURL { _ = services.sharing.handleCallback(url) }
             }
             .onChange(of: services.library.scripts.count, initial: true) {
                 // Keeps "Record {script}" phrases in step with the library.

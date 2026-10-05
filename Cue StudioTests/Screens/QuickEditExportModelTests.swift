@@ -18,6 +18,7 @@ struct QuickEditExportModelTests {
         let exporter: FakeVideoExporter
         let photos: FakePhotoSaver
         let quota: UsageQuotaService
+        let ledger: ExportLedgerService
         let takes: TakeLibraryService
         let take: Take
     }
@@ -34,13 +35,14 @@ struct QuickEditExportModelTests {
         let quota = UsageQuotaService(counter: FakeExportCountStore(count: used), defaults: defaults)
         let exporter = FakeVideoExporter()
         let photos = FakePhotoSaver()
+        let ledger = ExportLedgerService(store: FakeExportLedgerStore(), quota: quota)
         var edit = TakeEdit(sourceDuration: 20, aspect: .portrait)
         edit.timeline.trimEnd(to: 10)
         let model = QuickEditExportModel(
             take: take, videoURL: URL(fileURLWithPath: "/tmp/take.mov"), edit: { edit }, takes: takes, quota: quota,
-            tier: { tier }, exporter: exporter, photos: photos, editing: FakeTakeEditor()
+            tier: { tier }, exporter: exporter, photos: photos, editing: FakeTakeEditor(), ledger: ledger
         )
-        return Scenario(model: model, exporter: exporter, photos: photos, quota: quota, takes: takes, take: take)
+        return Scenario(model: model, exporter: exporter, photos: photos, quota: quota, ledger: ledger, takes: takes, take: take)
     }
 
     @Test func nothingAboveTheRecording() {
@@ -99,7 +101,8 @@ struct QuickEditExportModelTests {
         let exporter = FakeVideoExporter()
         let model = QuickEditExportModel(
             take: take, videoURL: URL(fileURLWithPath: "/tmp/take.mov"), edit: { TakeEdit(sourceDuration: 20, aspect: .portrait) },
-            takes: takes, quota: quota, tier: { tier }, exporter: exporter, photos: FakePhotoSaver(), editing: FakeTakeEditor()
+            takes: takes, quota: quota, tier: { tier }, exporter: exporter, photos: FakePhotoSaver(), editing: FakeTakeEditor(),
+            ledger: ExportLedgerService(store: FakeExportLedgerStore(), quota: quota)
         )
         await model.start()
         #expect(model.paywall == .export)
@@ -121,5 +124,59 @@ struct QuickEditExportModelTests {
         #expect(scenario.quota.exportsUsed == 0)
         scenario.model.retry()
         #expect(scenario.model.phase == .setup)
+    }
+
+    @Test func sharingTheSavedFileAfterwardsNeverCountsAgain() async throws {
+        let scenario = makeScenario()
+        await scenario.model.start()
+        guard case .done(let url) = scenario.model.phase else {
+            Issue.record("Expected done, got \(scenario.model.phase)")
+            return
+        }
+        #expect(scenario.quota.exportsUsed == 1)
+        scenario.model.share(url)
+        let share = try #require(scenario.model.activity)
+        scenario.model.activityFinished(.completed(activityType: "com.apple.UIKit.activity.AirDrop"), for: share)
+        scenario.model.activityFinished(.completed(activityType: "com.apple.UIKit.activity.AirDrop"), for: share)
+        #expect(scenario.quota.exportsUsed == 1)
+        #expect(scenario.ledger.operations.count == 1)
+        #expect(scenario.ledger.operations.first?.deliveries.count == 2)
+    }
+
+    @Test func aCancelledShareSheetChangesNothing() async throws {
+        let scenario = makeScenario()
+        await scenario.model.start()
+        guard case .done(let url) = scenario.model.phase else { return }
+        scenario.model.share(url)
+        scenario.model.activityFinished(.cancelled, for: try #require(scenario.model.activity))
+        #expect(scenario.quota.exportsUsed == 1)
+        #expect(scenario.model.activity == nil)
+    }
+
+    @Test func aDeniedSaveCountsNothingAndTheRetryReusesTheRenderedFile() async {
+        let scenario = makeScenario()
+        scenario.photos.error = PhotoLibraryError.notAuthorized
+        await scenario.model.start()
+        guard case .failed = scenario.model.phase else {
+            Issue.record("Expected failed, got \(scenario.model.phase)")
+            return
+        }
+        #expect(scenario.quota.exportsUsed == 0)
+        #expect(scenario.takes.take(id: scenario.take.id)?.isExported == false)
+        scenario.photos.error = nil
+        scenario.model.retry()
+        await scenario.model.start()
+        #expect(scenario.exporter.exports.count == 1)
+        #expect(scenario.quota.exportsUsed == 1)
+    }
+
+    @Test func leavingTheSheetRemovesTheRenderedFile() async throws {
+        let scenario = makeScenario()
+        await scenario.model.start()
+        let operation = try #require(scenario.ledger.operations.first)
+        #expect(scenario.ledger.fileExists(for: operation))
+        scenario.model.leave()
+        #expect(!scenario.ledger.fileExists(for: operation))
+        #expect(scenario.quota.exportsUsed == 1)
     }
 }

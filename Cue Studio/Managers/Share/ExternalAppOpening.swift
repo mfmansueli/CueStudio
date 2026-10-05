@@ -5,8 +5,12 @@
 
 import Foundation
 
-/// Opens a platform's app. Swappable so tests never leave Cue.
+/// Opens other apps. Swappable so tests never leave Cue. There is no "is it installed?" question: iOS 27 deprecates
+/// `canOpenURL` ("prefer attempting to open URLs and handling any failures"), so a destination is tried and `false` means
+/// the app isn't there (or wouldn't open).
 protocol ExternalAppOpening: AnyObject {
-    /// False when the app isn't installed (or can't be opened).
+    /// Opens the platform's app, only that: it says nothing about any video. False when it can't be opened.
     func open(_ destination: ShareDestination) async -> Bool
+    /// Opens a URL; false when nothing handled it.
+    func open(_ url: URL) async -> Bool
 }

@@ -8,6 +8,10 @@ import UIKit
 
 /// Save a take, or share it to a platform ("Share to"). Every feature is free; the free plan
 /// includes five exports, then exporting asks for Cue Pro (7 days free). Takes are never locked.
+///
+/// An export counts when the video provably leaves Cue (`DeliveryEvidence`), once per operation (`ExportLedgerService`):
+/// saved to Photos, accepted by a share-sheet activity, received by TikTok. Preparing the file, opening an app,
+/// cancelling and failing never count. No platform tells Cue that a video was published, so nothing here says so.
 @MainActor
 @Observable
 final class TakeReviewViewModel {
@@ -19,10 +23,12 @@ final class TakeReviewViewModel {
 
     let takeID: UUID
     private(set) var runningAction: ExportAction?
+    /// Where the export is, told apart: preparing, saving, handed over, cancelled, failed, delivered.
+    private(set) var phase: ExportPhase = .idle
     /// Set when an export is ready for the system share sheet.
-    var shareURL: URL?
+    var activity: ActivityShare?
     var paywall: PaywallContext?
-    /// "Ready to travel" after a save, "On its way" once a platform's app is open.
+    /// "Ready to travel" after a save, "On its way" once a platform's app has the video.
     var celebration: ExportCelebration?
     /// "Share to".
     var showsShareSheet = false
@@ -39,13 +45,16 @@ final class TakeReviewViewModel {
     private(set) var quality: ExportQuality = .hd1080
 
     private var pendingAction: ExportAction?
+    /// Share sheets already acted on: a completion heard twice counts and tells once.
+    private var handledActivities: Set<UUID> = []
 
     private let takes: TakeLibraryService
     private let quota: UsageQuotaService
     private let tier: () -> MembershipTier
     private let exporter: VideoExporting
     private let photos: PhotoSaving
-    private let apps: ExternalAppOpening
+    private let sharing: VideoSharing
+    private let ledger: ExportLedgerService
     private let editing: TakeEditing
     private let library: ScriptLibraryService
     private let rules: PlatformRulesService
@@ -63,7 +72,8 @@ final class TakeReviewViewModel {
         tier: @escaping () -> MembershipTier,
         exporter: VideoExporting,
         photos: PhotoSaving,
-        apps: ExternalAppOpening,
+        sharing: VideoSharing,
+        ledger: ExportLedgerService,
         editing: TakeEditing,
         library: ScriptLibraryService,
         rules: PlatformRulesService,
@@ -80,7 +90,8 @@ final class TakeReviewViewModel {
         self.tier = tier
         self.exporter = exporter
         self.photos = photos
-        self.apps = apps
+        self.sharing = sharing
+        self.ledger = ledger
         self.editing = editing
         self.library = library
         self.rules = rules
@@ -266,8 +277,9 @@ final class TakeReviewViewModel {
 
     static let adCaption = "#ad"
 
-    /// A platform: export, save to Photos and open its app to post (the share sheet when the app
-    /// isn't there). Nil is "More": the system share sheet.
+    /// A platform's tile. How the video gets there depends on what the platform allows (`ShareRoute`): TikTok's Share Kit,
+    /// Instagram's hand-off, the system share sheet, or saving to Photos and opening the app. Nil is "More": the system
+    /// share sheet.
     func share(to destination: ShareDestination?) async {
         await export(.share(destination))
     }
@@ -279,77 +291,217 @@ final class TakeReviewViewModel {
         await export(action)
     }
 
-    private func export(_ action: ExportAction) async {
+    /// "Other apps" / "Share again": the system share sheet for a file that was already exported (the same operation, so
+    /// it never counts twice). If the system cleared the file, it is rendered again for the same operation.
+    func share(_ video: ExportedVideo) {
+        guard let operation = ledger.operation(id: video.operationID), ledger.fileExists(for: operation) else {
+            Task { await export(.share(nil), continuing: video.operationID) }
+            return
+        }
+        presentActivity(for: operation, destination: nil)
+    }
+
+    /// The review is closing with nothing in flight: the exported files go. (A file is kept while the share sheet, a
+    /// celebration or an export needs it, and for the next retry of the same edit.)
+    func leave() {
+        guard runningAction == nil, activity == nil, celebration == nil, !showsShareSheet else { return }
+        ledger.releaseFiles(forTake: takeID)
+    }
+
+    private func export(_ action: ExportAction, continuing operationID: UUID? = nil) async {
         guard let take, runningAction == nil else { return }
-        let currentTier = tier()
-        guard quota.canExport(tier: currentTier) else {
+        // Used up, and nothing of this take already out: the paywall before any work.
+        guard quota.canExport(tier: tier()) || ledger.hasCountedOperation(forTake: take.id) else {
             pendingAction = action
             paywall = .export
             return
         }
         runningAction = action
+        phase = .preparing
         defer { runningAction = nil }
         do {
-            let url = try await exporter.export(
-                videoAt: takes.videoURL(for: take),
-                options: ExportOptions(
-                    aspect: take.outputAspect, edit: await editForExport(take),
-                    burnsInCaptions: burnsInCaptions, shortSide: outputShortSide(for: take)
-                )
-            )
-            switch action {
-            case .save:
-                try await photos.saveVideo(at: url)
-                countExport(take, tier: currentTier)
-                let withCover = (try? await saveCoverIfChosen()) ?? false
-                showsShareSheet = false
-                let video = exported(take, url: url, tier: currentTier)
-                announce(savedMessage(tier: currentTier, withCover: withCover))
-                celebration = .readyToTravel(video)
-            case .share(nil):
-                countExport(take, tier: currentTier)
-                shareURL = url
-            case .share(let destination?):
-                // The platform's app picks the video (and the cover) from Photos.
-                try await photos.saveVideo(at: url)
-                countExport(take, tier: currentTier)
-                _ = try? await saveCoverIfChosen()
-                if await apps.open(destination) {
-                    showsShareSheet = false
-                    let video = exported(take, url: url, tier: currentTier)
-                    announce(readyMessage(for: destination, tier: currentTier))
-                    celebration = .sentOff(video, destination)
-                } else {
-                    shareURL = url
-                }
+            guard let operation = try await prepareOperation(for: take, action: action, continuing: operationID) else {
+                phase = .idle
+                return
             }
+            try await deliver(action, operation: operation, take: take)
         } catch {
+            phase = .failed
             report(error)
         }
     }
 
-    /// The export worked and the video is where it was going: only now does it count, and a sponsored one carries "#ad".
-    private func countExport(_ take: Take, tier: MembershipTier) {
-        quota.recordExport(tier: tier)
+    /// The file for this export: the one already made for the same edit and settings, else a new render. Nil when the
+    /// free exports are used up (the paywall is open). An operation that was already counted never needs the quota again.
+    private func prepareOperation(for take: Take, action: ExportAction, continuing operationID: UUID?) async throws -> ExportOperation? {
+        let options = ExportOptions(
+            aspect: take.outputAspect, edit: await editForExport(take),
+            burnsInCaptions: burnsInCaptions, shortSide: outputShortSide(for: take)
+        )
+        let source = takes.videoURL(for: take)
+        let fingerprint = ExportFingerprint.make(takeID: take.id, source: source, options: options)
+        let reusable = ledger.reusableOperation(fingerprint: fingerprint)
+        let continued = operationID.flatMap { ledger.operation(id: $0) }.flatMap { $0.fingerprint == fingerprint ? $0 : nil }
+        if !(reusable?.isCounted ?? false), !(continued?.isCounted ?? false), !quota.canExport(tier: tier()) {
+            pendingAction = action
+            paywall = .export
+            return nil
+        }
+        if let reusable { return reusable }
+        let url = try await exporter.export(videoAt: source, options: options)
+        if let continued {
+            // The same export, its file made again after the system cleared the first: not a second export.
+            ledger.replaceFile(of: continued.id, with: url)
+            return ledger.operation(id: continued.id)
+        }
+        return ledger.begin(takeID: take.id, fingerprint: fingerprint, file: url)
+    }
+
+    private func deliver(_ action: ExportAction, operation: ExportOperation, take: Take) async throws {
+        switch action {
+        case .save:
+            phase = .savingToPhotos
+            let assetID = try await photos.saveVideo(at: ledger.fileURL(of: operation))
+            recordDelivery(.photoLibrary(assetID: assetID), operation: operation, take: take)
+            let withCover = (try? await saveCoverIfChosen()) ?? false
+            showsShareSheet = false
+            announce(savedMessage(tier: tier(), withCover: withCover))
+            celebration = .readyToTravel(exported(take, operation: operation))
+        case .share(nil):
+            presentActivity(for: operation, destination: nil)
+        case .share(let destination?):
+            try await share(operation, of: take, to: destination)
+        }
+    }
+
+    private func share(_ operation: ExportOperation, of take: Take, to destination: ShareDestination) async throws {
+        var route = sharing.route(for: destination, duration: take.edit?.editedDuration ?? take.duration)
+        guard route != .activitySheet else {
+            presentActivity(for: operation, destination: destination)
+            return
+        }
+        var assetID = operation.photosAssetID
+        if route.needsPhotosCopy {
+            phase = .savingToPhotos
+            do {
+                assetID = try await photos.saveVideo(at: ledger.fileURL(of: operation))
+            } catch PhotoLibraryError.notAuthorized {
+                // The share sheet can take the file without Photos.
+                presentActivity(for: operation, destination: destination)
+                return
+            }
+            recordDelivery(.photoLibrary(assetID: assetID), operation: operation, take: take)
+            _ = try? await saveCoverIfChosen()
+            // Share Kit takes the library's identifier; without one, the app opens and the creator picks the video.
+            if route == .shareKit && assetID == nil { route = .saveAndOpen }
+        }
+        if route == .saveOnly {
+            // Nothing takes the video directly: it is in Photos, and the creator is told to post it from the app.
+            showsShareSheet = false
+            announce(savedForPostingMessage(for: destination, tier: tier()))
+            celebration = .readyToTravel(exported(take, operation: operation))
+            return
+        }
+        let video = SharedVideo(
+            operationID: operation.id, url: ledger.fileURL(of: operation), photosAssetID: assetID,
+            duration: take.edit?.editedDuration ?? take.duration
+        )
+        phase = .delivering(destination)
+        let outcome = await sharing.send(video, to: destination, via: route) { [weak self] late in
+            self?.finishHandoff(late, destination: destination, route: route, operationID: operation.id)
+        }
+        finishHandoff(outcome, destination: destination, route: route, operationID: operation.id)
+    }
+
+    /// What the hand-off came to, now or when the platform called back. Only `.delivered` counts and celebrates; `.opened`
+    /// is told as exactly that.
+    private func finishHandoff(_ outcome: ShareOutcome, destination: ShareDestination, route: ShareRoute, operationID: UUID) {
+        guard let take = takes.take(id: takeID), let operation = ledger.operation(id: operationID) else { return }
+        let label = destination.platform.label
+        switch outcome {
+        case .delivered(let evidence):
+            recordDelivery(evidence, operation: operation, take: take)
+            showsShareSheet = false
+            announce(sharedMessage(with: label))
+            celebration = .sentOff(exported(take, operation: operation), destination)
+        case .pending:
+            showsShareSheet = false
+        case .opened:
+            showsShareSheet = false
+            if route.needsPhotosCopy {
+                // Saved, and the app is open for the creator to pick it.
+                announce(readyMessage(for: destination, tier: tier()))
+                celebration = .readyToTravel(exported(take, operation: operation))
+            } else {
+                // Instagram: the video left Cue (on the pasteboard, with the composer open), which counts. Whether it read it, or
+                // the creator posts it, Instagram doesn't say.
+                recordDelivery(.pasteboardHandoff, operation: operation, take: take)
+                phase = .delivering(destination)
+                toast.show(openedMessage(with: label))
+            }
+        case .cancelled:
+            phase = .cancelled
+            toast.show(String(localized: "Sharing cancelled"))
+        case .unavailable:
+            // Not there after all (or it wouldn't open): the share sheet takes the file.
+            toast.show(String(localized: "\(label) isn’t on this iPhone · Pick another app"))
+            presentActivity(for: operation, destination: destination)
+        case .failed:
+            phase = .failed
+            toast.show(String(localized: "\(label) didn’t take the video"))
+        }
+    }
+
+    private func presentActivity(for operation: ExportOperation, destination: ShareDestination?) {
+        phase = .delivering(destination)
+        activity = ActivityShare(operationID: operation.id, url: ledger.fileURL(of: operation), destination: destination)
+    }
+
+    /// How the system share sheet ended. A finished activity is a delivery (the file reached an app); a cancelled one
+    /// isn't, and the Photos copy, if the video was saved first, already counted.
+    func activityFinished(_ result: ActivityResult, for share: ActivityShare) {
+        self.activity = nil
+        guard handledActivities.insert(share.id).inserted,
+              let operation = ledger.operation(id: share.operationID), let take = takes.take(id: operation.takeID) else { return }
+        switch result {
+        case .completed(let type):
+            recordDelivery(.activity(type: type), operation: operation, take: take)
+            showsShareSheet = false
+            if let destination = share.destination, destination.matches(activityType: type) {
+                announce(sharedMessage(with: destination.platform.label))
+                celebration = .sentOff(exported(take, operation: operation), destination)
+            } else {
+                announce(sharedMessage(with: nil))
+            }
+        case .cancelled:
+            phase = .cancelled
+        case .failed:
+            phase = .failed
+            toast.show(String(localized: "Couldn’t share · Try again"))
+        }
+    }
+
+    /// The video provably left Cue: the ledger counts the operation (once), the take is "shared", and a sponsored video
+    /// puts "#ad" on the pasteboard.
+    private func recordDelivery(_ evidence: DeliveryEvidence, operation: ExportOperation, take: Take) {
+        ledger.recordDelivery(evidence, for: operation.id, tier: tier())
         takes.markExported(take.id)
+        phase = .delivered(evidence)
         if isSponsored { copiesCaption(Self.adCaption) }
     }
 
-    private func exported(_ take: Take, url: URL, tier: MembershipTier) -> ExportedVideo {
-        ExportedVideo(
-            take: take, url: url, formatLabel: "\(outputResolutionLabel(for: take).uppercased()) · \(take.outputAspect.label)",
-            hasCaptions: burnsInCaptions && captionNotice == nil, exportsLeft: quota.exportsLeft(for: tier), platform: take.platform
+    private func exported(_ take: Take, operation: ExportOperation) -> ExportedVideo {
+        let currentTier = tier()
+        return ExportedVideo(
+            operationID: operation.id, take: take, url: ledger.fileURL(of: operation),
+            formatLabel: "\(outputResolutionLabel(for: take).uppercased()) · \(take.outputAspect.label)",
+            hasCaptions: burnsInCaptions && captionNotice == nil, exportsLeft: quota.exportsLeft(for: currentTier), platform: take.platform
         )
     }
 
-    /// "Ready to travel" → "Share to TikTok": the video is already in Photos, so its app opens without exporting
-    /// again (the system share sheet when the app isn't there).
+    /// "Ready to travel" → "Share to TikTok": the same exported file, so a video that was saved is not counted again.
     func send(_ video: ExportedVideo, to destination: ShareDestination) async {
-        if await apps.open(destination) {
-            celebration = .sentOff(video, destination)
-        } else {
-            shareURL = video.url
-        }
+        await export(.share(destination), continuing: video.operationID)
     }
 
     /// The take's caption translations, for the export's caption language.
@@ -401,6 +553,27 @@ final class TakeReviewViewModel {
         let ready = String(localized: "Ready to post on \(destination.platform.label)")
         guard let left = quota.exportsLeft(for: tier) else { return ready }
         return ready + " · " + String(localized: "\(left) of \(UsagePolicy.freeExports) free exports left")
+    }
+
+    /// "Opened Reels with your video · Cue can't see if you post it", with the free exports left.
+    private func openedMessage(with label: String) -> String {
+        let opened = String(localized: "Opened \(label) with your video · Cue can’t see if you post it")
+        guard let left = quota.exportsLeft(for: tier()) else { return opened }
+        return opened + " · " + String(localized: "\(left) of \(UsagePolicy.freeExports) free exports left")
+    }
+
+    /// "Saved to Photos · Open LinkedIn to post it", with the free exports left.
+    private func savedForPostingMessage(for destination: ShareDestination, tier: MembershipTier) -> String {
+        let saved = String(localized: "Saved to Photos · Open \(destination.platform.label) to post it")
+        guard let left = quota.exportsLeft(for: tier) else { return saved }
+        return saved + " · " + String(localized: "\(left) of \(UsagePolicy.freeExports) free exports left")
+    }
+
+    /// "Shared with TikTok" (or "Shared" when the creator picked another app), with the free exports left.
+    private func sharedMessage(with label: String?) -> String {
+        let shared = label.map { String(localized: "Shared with \($0)") } ?? String(localized: "Shared")
+        guard let left = quota.exportsLeft(for: tier()) else { return shared }
+        return shared + " · " + String(localized: "\(left) of \(UsagePolicy.freeExports) free exports left")
     }
 
     private func savedMessage(tier: MembershipTier, withCover: Bool) -> String {

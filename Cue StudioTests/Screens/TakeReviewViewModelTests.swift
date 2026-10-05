@@ -14,7 +14,8 @@ struct TakeReviewViewModelTests {
         let viewModel: TakeReviewViewModel
         let exporter: FakeVideoExporter
         let photos: FakePhotoSaver
-        let apps: FakeAppOpener
+        let sharing: FakeVideoSharing
+        let ledger: ExportLedgerService
         let editor: FakeTakeEditor
         let quota: UsageQuotaService
         let takes: TakeLibraryService
@@ -43,17 +44,18 @@ struct TakeReviewViewModelTests {
         let quota = UsageQuotaService(counter: FakeExportCountStore(count: usedExports), defaults: defaults.defaults)
         let exporter = FakeVideoExporter()
         let photos = FakePhotoSaver()
-        let apps = FakeAppOpener()
+        let sharing = FakeVideoSharing()
+        let ledger = ExportLedgerService(store: FakeExportLedgerStore(), quota: quota)
         let editor = FakeTakeEditor()
         let toast = ToastService()
         let viewModel = TakeReviewViewModel(
             takeID: take.id, takes: takes, quota: quota, tier: { plan.tier },
-            exporter: exporter, photos: photos, apps: apps, editing: editor, library: library,
+            exporter: exporter, photos: photos, sharing: sharing, ledger: ledger, editing: editor, library: library,
             rules: TestData.rulesService(), profile: CreatorProfileService(defaults: defaults.defaults),
             preferences: PreferencesService(defaults: defaults.defaults), drafts: FakeDraftStore(), toast: toast
         )
         return Scenario(
-            viewModel: viewModel, exporter: exporter, photos: photos, apps: apps, editor: editor,
+            viewModel: viewModel, exporter: exporter, photos: photos, sharing: sharing, ledger: ledger, editor: editor,
             quota: quota, takes: takes, toast: toast, defaults: defaults
         )
     }
@@ -115,31 +117,36 @@ struct TakeReviewViewModelTests {
         let scenario = makeScenario(tier: .subscriber)
         defer { scenario.defaults.tearDown() }
         await scenario.viewModel.share(to: nil)
-        #expect(scenario.viewModel.shareURL != nil)
+        #expect(scenario.viewModel.activity != nil)
         #expect(scenario.photos.savedURLs.isEmpty)
     }
 
-    @Test func sharingToAPlatformSavesThenOpensItsApp() async {
+    @Test func sharingToAPlatformWithoutADirectRouteSavesThenOpensItsApp() async {
         let scenario = makeScenario()
         defer { scenario.defaults.tearDown() }
         scenario.viewModel.showsShareSheet = true
         await scenario.viewModel.share(to: .reels)
         #expect(scenario.photos.savedURLs.count == 1)
-        #expect(scenario.apps.opened == [.reels])
-        #expect(scenario.viewModel.shareURL == nil)
+        #expect(scenario.sharing.sent.map(\.destination) == [.reels])
+        #expect(scenario.viewModel.activity == nil)
         #expect(!scenario.viewModel.showsShareSheet)
+        // Opened is not delivered: the video is ready in Photos, nothing says it arrived.
         #expect(scenario.toast.message == "Ready to post on Reels · 4 of 5 free exports left")
+        guard case .readyToTravel? = scenario.viewModel.celebration else {
+            Issue.record("Expected Ready to travel, got \(String(describing: scenario.viewModel.celebration))")
+            return
+        }
         #expect(scenario.viewModel.take?.isExported == true)
     }
 
     @Test func aMissingAppFallsBackToTheShareSheet() async {
         let scenario = makeScenario(tier: .subscriber)
         defer { scenario.defaults.tearDown() }
-        scenario.apps.installed = []
+        scenario.sharing.routes[.tiktok] = .activitySheet
         scenario.viewModel.showsShareSheet = true
         await scenario.viewModel.share(to: .tiktok)
-        #expect(scenario.photos.savedURLs.count == 1)
-        #expect(scenario.viewModel.shareURL != nil)
+        #expect(scenario.photos.savedURLs.isEmpty)
+        #expect(scenario.viewModel.activity?.destination == .tiktok)
         // The system share sheet opens on top of Share to.
         #expect(scenario.viewModel.showsShareSheet)
     }
@@ -149,7 +156,7 @@ struct TakeReviewViewModelTests {
         defer { scenario.defaults.tearDown() }
         await scenario.viewModel.share(to: .shorts)
         #expect(scenario.viewModel.paywall == .export)
-        #expect(scenario.apps.opened.isEmpty)
+        #expect(scenario.sharing.sent.isEmpty)
         #expect(scenario.exporter.exports.isEmpty)
     }
 
@@ -262,9 +269,11 @@ struct TakeReviewViewModelTests {
         let library = ScriptLibraryService(repository: FakeScriptRepository(scripts: [script]))
         library.load()
         let toast = ToastService()
+        let quota = UsageQuotaService(counter: FakeExportCountStore(), defaults: defaults.defaults)
         let viewModel = TakeReviewViewModel(
-            takeID: all[0].id, takes: takes, quota: UsageQuotaService(counter: FakeExportCountStore(), defaults: defaults.defaults), tier: { tier },
-            exporter: FakeVideoExporter(), photos: FakePhotoSaver(), apps: FakeAppOpener(), editing: FakeTakeEditor(),
+            takeID: all[0].id, takes: takes, quota: quota, tier: { tier },
+            exporter: FakeVideoExporter(), photos: FakePhotoSaver(), sharing: FakeVideoSharing(),
+            ledger: ExportLedgerService(store: FakeExportLedgerStore(), quota: quota), editing: FakeTakeEditor(),
             library: library, rules: TestData.rulesService(), profile: CreatorProfileService(defaults: defaults.defaults),
             preferences: PreferencesService(defaults: defaults.defaults), drafts: FakeDraftStore(), toast: toast
         )
@@ -300,9 +309,11 @@ struct TakeReviewViewModelTests {
         let third = TestData.take(scriptID: script, number: 3)
         let takes = TakeLibraryService(repository: FakeTakeRepository(takes: [first, second, third]))
         takes.load()
+        let quota = UsageQuotaService(counter: FakeExportCountStore(), defaults: defaults.defaults)
         let viewModel = TakeReviewViewModel(
-            takeID: second.id, takes: takes, quota: UsageQuotaService(counter: FakeExportCountStore(), defaults: defaults.defaults), tier: { .free },
-            exporter: FakeVideoExporter(), photos: FakePhotoSaver(), apps: FakeAppOpener(), editing: FakeTakeEditor(),
+            takeID: second.id, takes: takes, quota: quota, tier: { .free },
+            exporter: FakeVideoExporter(), photos: FakePhotoSaver(), sharing: FakeVideoSharing(),
+            ledger: ExportLedgerService(store: FakeExportLedgerStore(), quota: quota), editing: FakeTakeEditor(),
             library: ScriptLibraryService(repository: FakeScriptRepository()), rules: TestData.rulesService(),
             profile: CreatorProfileService(defaults: defaults.defaults), preferences: PreferencesService(defaults: defaults.defaults), drafts: FakeDraftStore(),
             toast: ToastService()
@@ -390,9 +401,11 @@ struct TakeReviewViewModelTests {
         let takes = TakeLibraryService(repository: FakeTakeRepository(takes: all))
         takes.load()
         let id = all.first { $0.number == current }!.id
+        let quota = UsageQuotaService(counter: FakeExportCountStore(), defaults: defaults.defaults)
         let viewModel = TakeReviewViewModel(
-            takeID: id, takes: takes, quota: UsageQuotaService(counter: FakeExportCountStore(), defaults: defaults.defaults), tier: { .free },
-            exporter: FakeVideoExporter(), photos: FakePhotoSaver(), apps: FakeAppOpener(), editing: FakeTakeEditor(),
+            takeID: id, takes: takes, quota: quota, tier: { .free },
+            exporter: FakeVideoExporter(), photos: FakePhotoSaver(), sharing: FakeVideoSharing(),
+            ledger: ExportLedgerService(store: FakeExportLedgerStore(), quota: quota), editing: FakeTakeEditor(),
             library: ScriptLibraryService(repository: FakeScriptRepository()), rules: TestData.rulesService(),
             profile: CreatorProfileService(defaults: defaults.defaults), preferences: PreferencesService(defaults: defaults.defaults),
             drafts: drafts, toast: ToastService()

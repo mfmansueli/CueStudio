@@ -69,7 +69,8 @@ struct TakeReviewView: View {
             tier: { store.tier },
             exporter: services.exporter,
             photos: services.photos,
-            apps: services.apps,
+            sharing: services.sharing,
+            ledger: services.ledger,
             editing: services.editing,
             library: services.library,
             rules: services.rules,
@@ -160,7 +161,7 @@ struct TakeReviewView: View {
             }
         }
         .onAppear { applyLaunchAction(); considerFirstStar() }
-        .onDisappear { pausePlayback() }
+        .onDisappear { pausePlayback(); viewModel.leave() }
         .sheet(isPresented: $viewModel.showsShareSheet) {
             if let take = viewModel.take {
                 ShareToSheet(viewModel: viewModel, take: take)
@@ -364,13 +365,13 @@ struct TakeReviewView: View {
             ReadyToTravelView(
                 video: video,
                 onShare: { destination in Task { await viewModel.send(video, to: destination) } },
-                onOtherApps: { shareAfterClosing(video.url) },
+                onOtherApps: { shareAfterClosing(video) },
                 onClose: { viewModel.celebration = nil }
             )
         case .sentOff(let video, let destination):
             SendOffView(
                 video: video, destination: destination,
-                onShareAgain: { shareAfterClosing(video.url) },
+                onShareAgain: { shareAfterClosing(video) },
                 onUniverse: { viewModel.celebration = nil; services.presentation.selectedTab = .profile; onBack() },
                 onDone: { doneWithSendOff() }
             )
@@ -430,11 +431,11 @@ struct TakeReviewView: View {
     }
 
     /// The system share sheet, once the celebration cover is gone (a view can't present while another cover leaves).
-    private func shareAfterClosing(_ url: URL) {
+    private func shareAfterClosing(_ video: ExportedVideo) {
         viewModel.celebration = nil
         Task {
             try? await Task.sleep(for: .milliseconds(600))
-            viewModel.shareURL = url
+            viewModel.share(video)
         }
     }
 
