@@ -40,7 +40,7 @@ tomadas. Atualize-o junto com a UI.
   `-uiTestRemoteConnects` (um iPad de mentira entra logo depois do pareamento do Remote Control),
   `-uiTestAppearance <light|dark>` (as telas do Cue começam claras ou escuras, como em Settings › Appearance),
   `-uiTestAppLanguage <lproj>` (a interface começa nesse idioma, em memória, sem mudar o simulador).
-  v27: `-uiTestOnboarding`, `-uiTestPermissions granted|denied`, `-uiTestSky off|calm|lively` (off por padrão nos testes), `-uiTestAppsInstalled`,
+  v27: `-uiTestOnboarding`, `-uiTestPermissions granted|denied`, `-uiTestSky off|calm|lively` (off por padrão nos testes), `-uiTestAppsInstalled` (os apps das plataformas contam como instalados e "recebem" o vídeo, só para ver a tela de envio; ver `SHARING.md`),
   `-uiTestCatalogue <seção>` (a seção `transition` mostra a estrela; ver `DESIGN_PROJECT.md`).
   v30: `-uiTestVoiceTip` (abre as portas da dica do My Cue Voice) e `-uiTestStarTransition` (a estrela da ideia mantém os tempos reais; nos testes de UI ela é encurtada).
 - Idiomas: `LOCALIZATION.md` (três idiomas independentes, terminologia, RTL). Todo texto novo entra

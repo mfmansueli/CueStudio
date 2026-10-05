@@ -15,11 +15,11 @@ struct ExportPresentations: ViewModifier {
     func body(content: Content) -> some View {
         content
             .sheet(isPresented: Binding(
-                get: { isActive && viewModel.shareURL != nil },
-                set: { if !$0 { viewModel.shareURL = nil } }
+                get: { isActive && viewModel.activity != nil },
+                set: { if !$0 { viewModel.activity = nil } }
             )) {
-                if let url = viewModel.shareURL {
-                    ActivityView(items: [url])
+                if let share = viewModel.activity {
+                    ActivityView(items: [share.url]) { viewModel.activityFinished($0, for: share) }
                         .presentationDetents([.medium, .large])
                 }
             }

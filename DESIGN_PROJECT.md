@@ -163,3 +163,19 @@ reaproveitam os componentes que já existiam (toast, linha de estado das legenda
 - **Language & Region › Voice Following** continua com os mesmos três rótulos ("Ready on this iPhone", "Downloads the first time you use it", "Not
   available on this iPhone"), agora vindos de `LanguageCapabilityService` (uma consulta, guardada), e a lista de Script Language não mostra suporte de IA.
 - Textos novos: 3 strings, nos 20 idiomas (`LocalizationCatalogTests` confere placeholders e presença em todos).
+
+## 9. Compartilhar: a tela é a mesma, o que ela diz ficou exato
+
+"Share to" (`ShareToSheet`), "Ready to travel" e "On its way" mantêm layout, botões e navegação. Mudou o que cada estado **afirma** (detalhes e
+regra de contagem em `SHARING.md`):
+
+- **Contagem:** a exportação grátis é descontada quando o vídeo comprovadamente sai do Cue (salvo em Fotos, atividade da folha de compartilhamento
+  concluída, Share Kit do TikTok), uma vez por arquivo exportado. Abrir um app, preparar o arquivo, cancelar ou falhar não desconta.
+- **"On its way" / "Shared to X"** só aparece com entrega comprovada àquele app. Quando só o app abriu (plataformas sem integração configurada:
+  vídeo salvo em Fotos), a tela é "Ready to travel" e o aviso continua "Ready to post on X" (o vídeo está pronto); no LinkedIn o vídeo só é salvo e o aviso
+  recomenda postar pelo app ("Saved to Photos · Open LinkedIn to post it", sem abrir o app); no Instagram (vídeo na área de
+  transferência, sem resposta da Meta) o aviso diz "Opened X with your video · Cue can't see if you post it" e não há celebração (a exportação conta: o vídeo saiu do Cue).
+- **Avisos novos** (toast, nos 20 idiomas): "Shared with X", "Sharing cancelled", "Couldn't share · Try again", "Saved to Photos · Open X to post it", "X isn't on this iPhone · Pick
+  another app" (a folha do sistema abre em seguida) e "X didn't take the video". Nada diz "postado" ou "publicado": nenhuma plataforma informa.
+- **Sem Fotos:** os destinos usam a folha do sistema, que recebe o arquivo direto; só **Save video** mostra o cartão "Open Settings".
+

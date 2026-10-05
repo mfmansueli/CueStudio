@@ -70,4 +70,24 @@ struct LocalizationCatalogTests {
             }
         }
     }
+
+    @Test func theSharingMessagesAreInEveryLanguage() throws {
+        let keys = [
+            "Shared with %@",
+            "Sharing cancelled",
+            "Couldn’t share · Try again",
+            "%@ isn’t on this iPhone · Pick another app",
+            "Opened %@ with your video · Cue can’t see if you post it",
+            "%@ didn’t take the video",
+            "Saved to Photos · Open %@ to post it",
+        ]
+        for language in CueLanguage.allCases where language != .english {
+            let table = try #require(Self.strings(language.interfaceLocalization))
+            for key in keys {
+                let text = try #require(table[key], "\(language.interfaceLocalization) lacks “\(key.prefix(40))…”")
+                #expect(text != key, "\(language.interfaceLocalization) left “\(key.prefix(40))…” in English")
+                #expect(Self.specifiers(in: text) == Self.specifiers(in: key), "\(language.interfaceLocalization) changed the placeholders of “\(key.prefix(40))…”")
+            }
+        }
+    }
 }

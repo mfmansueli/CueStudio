@@ -5,8 +5,8 @@
 
 import Foundation
 
-/// Where "Share to" sends a take. Cue has no platform SDKs: the video is saved to Photos and the
-/// app is opened, ready to pick it; without the app, the system share sheet takes over.
+/// Where "Share to" sends a take. How the video gets there is `ShareRoute`: TikTok's Share Kit, Instagram's documented
+/// hand-off, the system share sheet, or (where a platform takes nothing directly) saving to Photos and opening the app.
 nonisolated enum ShareDestination: String, CaseIterable, Identifiable, Sendable {
     case tiktok, reels, shorts, youtube, linkedin, stories
 
@@ -54,5 +54,21 @@ nonisolated enum ShareDestination: String, CaseIterable, Identifiable, Sendable 
         case .shorts, .youtube: URL(string: "youtube://")
         case .linkedin: URL(string: "linkedin://")
         }
+    }
+
+    /// The bundle-identifier prefix of the app's share-sheet activities, to tell whether the creator picked this app there.
+    var activityTypePrefix: String {
+        switch self {
+        case .tiktok: "com.zhiliaoapp.musically"
+        case .reels, .stories: "com.burbn.instagram"
+        case .shorts, .youtube: "com.google.ios.youtube"
+        case .linkedin: "com.linkedin"
+        }
+    }
+
+    /// True when the share-sheet activity that finished belongs to this destination's app.
+    func matches(activityType: String?) -> Bool {
+        guard let activityType else { return false }
+        return activityType.hasPrefix(activityTypePrefix)
     }
 }

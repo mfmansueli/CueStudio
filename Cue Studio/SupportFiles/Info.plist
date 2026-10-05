@@ -15,9 +15,21 @@
 			</array>
 		</dict>
 	</array>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>tiktoksharesdk</string>
+		<string>snssdk1180</string>
+		<string>snssdk1233</string>
+	</array>
+	<key>MetaAppID</key>
+	<string></string>
 	<key>NSBonjourServices</key>
 	<array>
 		<string>_cue-remote._tcp</string>
 	</array>
+	<key>TikTokClientKey</key>
+	<string></string>
+	<key>TikTokShareRedirectURI</key>
+	<string></string>
 </dict>
 </plist>

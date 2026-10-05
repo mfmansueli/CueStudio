@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		000000000000000000000501 /* TikTokOpenSDKCore in Frameworks */ = {isa = PBXBuildFile; productRef = 000000000000000000000511 /* TikTokOpenSDKCore */; };
+		000000000000000000000502 /* TikTokOpenShareSDK in Frameworks */ = {isa = PBXBuildFile; productRef = 000000000000000000000512 /* TikTokOpenShareSDK */; };
 		000000000000000411000000 /* FirebaseAnalyticsCore in Frameworks */ = {isa = PBXBuildFile; productRef = 000000000000000410000000 /* FirebaseAnalyticsCore */; };
 		000000000000000421000000 /* FirebaseCrashlytics in Frameworks */ = {isa = PBXBuildFile; productRef = 000000000000000420000000 /* FirebaseCrashlytics */; };
 /* End PBXBuildFile section */
@@ -69,6 +71,8 @@
 		000000000000000130000000 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			files = (
+				000000000000000000000501 /* TikTokOpenSDKCore in Frameworks */,
+				000000000000000000000502 /* TikTokOpenShareSDK in Frameworks */,
 				000000000000000411000000 /* FirebaseAnalyticsCore in Frameworks */,
 				000000000000000421000000 /* FirebaseCrashlytics in Frameworks */,
 			);
@@ -126,6 +130,8 @@
 			);
 			name = "Cue Studio";
 			packageProductDependencies = (
+				000000000000000000000511 /* TikTokOpenSDKCore */,
+				000000000000000000000512 /* TikTokOpenShareSDK */,
 				000000000000000410000000 /* FirebaseAnalyticsCore */,
 				000000000000000420000000 /* FirebaseCrashlytics */,
 			);
@@ -228,6 +234,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				000000000000000400000000 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				000000000000000000000510 /* XCRemoteSwiftPackageReference "tiktok-opensdk-ios" */,
 			);
 			preferredProjectObjectVersion = 90;
 			productRefGroup = 000000000000000000000020 /* Products */;
@@ -710,6 +717,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		000000000000000000000510 /* XCRemoteSwiftPackageReference "tiktok-opensdk-ios" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/tiktok/tiktok-opensdk-ios";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.5.0;
+			};
+		};
 		000000000000000400000000 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
@@ -721,6 +736,16 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		000000000000000000000511 /* TikTokOpenSDKCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 000000000000000000000510 /* XCRemoteSwiftPackageReference "tiktok-opensdk-ios" */;
+			productName = TikTokOpenSDKCore;
+		};
+		000000000000000000000512 /* TikTokOpenShareSDK */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 000000000000000000000510 /* XCRemoteSwiftPackageReference "tiktok-opensdk-ios" */;
+			productName = TikTokOpenShareSDK;
+		};
 		000000000000000410000000 /* FirebaseAnalyticsCore */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 000000000000000400000000 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;

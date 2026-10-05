@@ -17,7 +17,8 @@ import Foundation
 /// - `-uiTestSampleVideo`: with the sample takes, writes small real videos behind the "3 morning
 ///   habits" takes, so Quick edit can play, scrub and trim them.
 /// - `-uiTestDemoCamera`: the recorder's camera records with no hardware (a small real video per take), for the Simulator.
-/// - `-uiTestAppsInstalled`: with the above, the platforms' apps count as installed (the send-off after "Share to").
+/// - `-uiTestAppsInstalled`: with the above, the platforms' apps count as installed and take the video (`DemoVideoSharing`:
+///   the send-off after "Share to").
 /// - `-uiTestSky <off|calm|lively>`: with the above, the sky starts like that (off otherwise: an endless animation
 ///   keeps UI tests from finding the app idle).
 /// - `-uiTestRemoteConnects`: with the above, a remote "connects" right after pairing starts (UI
@@ -41,6 +42,9 @@ struct LaunchOptions {
     var recorderCamera: CameraControlling?
     var draftStore: QuickEditDraftStoring = QuickEditDraftStore()
     var exportCounter: ExportCountStoring = KeychainExportCountStore()
+    var exportLedger: ExportLedgerStoring = FileExportLedgerStore()
+    /// Nil is the real sharing (`VideoSharingService`).
+    var sharing: VideoSharing?
     /// Debug builds give a new install its free exports back (the Keychain count outlives a reinstall). Not under UI tests:
     /// their throwaway defaults would make every launch look like a new install.
     var resetsExportsOnNewInstall = false
@@ -95,6 +99,8 @@ struct LaunchOptions {
             options.takeRepository = repository
             options.draftStore = InMemoryQuickEditDraftStore()
             options.exportCounter = InMemoryExportCountStore()
+            options.exportLedger = InMemoryExportLedgerStore()
+            if options.appsAreInstalled { options.sharing = DemoVideoSharing() }
             // Videos written by an earlier launch stay in the temporary folder: without the flag
             // they go, so every launch starts from the state it asked for.
             let habits = takes.filter { $0.scriptID == SampleScripts.morningHabits.id }

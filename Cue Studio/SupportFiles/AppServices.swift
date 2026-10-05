@@ -40,6 +40,10 @@ struct AppServices {
     let editing: TakeEditService
     let drafts: QuickEditDraftStoring
     let apps: ExternalAppService
+    /// Hands an exported video to a platform (Share Kit, Instagram's hand-off, the share sheet) and says what is known.
+    let sharing: VideoSharing
+    /// Where a free export is counted, once per exported file.
+    let ledger: ExportLedgerService
     let remote: RemoteControlService
     let languages: LanguageService
     /// What this device does in each language (interface, Apple Intelligence, speech, translation), asked once and kept.
@@ -78,6 +82,7 @@ struct AppServices {
             counter: options.exportCounter, defaults: options.defaults, resetsOnNewInstall: options.resetsExportsOnNewInstall
         )
         store = StoreManager()
+        ledger = ExportLedgerService(store: options.exportLedger, quota: quota)
         presentation = PresentationService()
         toast = ToastService()
         let realCamera = CameraManager()
@@ -106,7 +111,9 @@ struct AppServices {
         thumbnails = VideoThumbnailService()
         editing = TakeEditService()
         drafts = options.draftStore
-        apps = ExternalAppService(pretendsInstalled: options.appsAreInstalled)
+        let apps = ExternalAppService()
+        self.apps = apps
+        sharing = options.sharing ?? VideoSharingService(apps: apps, tikTok: TikTokShareManager(), instagram: InstagramShareManager(apps: apps))
         remote = RemoteControlService(transport: options.remoteTransport)
         logbook = LogbookService(defaults: options.defaults)
         brands = BrandStore(repository: options.brandRepository)

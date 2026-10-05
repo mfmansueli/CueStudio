@@ -23,7 +23,7 @@ struct QuickEditExportSheet: View {
         _model = State(initialValue: QuickEditExportModel(
             take: viewModel.take, videoURL: viewModel.videoURL, edit: { viewModel.edit },
             takes: services.takes, quota: services.quota, tier: { store.tier },
-            exporter: services.exporter, photos: services.photos, editing: services.editing
+            exporter: services.exporter, photos: services.photos, editing: services.editing, ledger: services.ledger
         ))
     }
 
@@ -50,11 +50,13 @@ struct QuickEditExportSheet: View {
             guard thumbnail == nil else { return }
             thumbnail = await thumbnails.thumbnail(for: viewModel.videoURL, maxPixelSize: 240)
         }
-        .sheet(isPresented: Binding(get: { model.shareURL != nil }, set: { if !$0 { model.shareURL = nil } })) {
-            if let url = model.shareURL {
-                ActivityView(items: [url]).presentationDetents([.medium, .large])
+        .sheet(isPresented: Binding(get: { model.activity != nil }, set: { if !$0 { model.activity = nil } })) {
+            if let share = model.activity {
+                ActivityView(items: [share.url]) { model.activityFinished($0, for: share) }
+                    .presentationDetents([.medium, .large])
             }
         }
+        .onDisappear { model.leave() }
         .fullScreenCover(item: $model.paywall) { context in
             PaywallView(context: context) { Task { await model.continueAfterPurchase() } }
         }
@@ -172,7 +174,7 @@ struct QuickEditExportSheet: View {
             .buttonStyle(.plain)
             .accessibilityIdentifier("edit.export.done")
             Button {
-                if case .done(let url) = model.phase { model.shareURL = url }
+                if case .done(let url) = model.phase { model.share(url) }
             } label: {
                 Text("Share").font(.system(.callout, weight: .bold))
                     .foregroundStyle(Palette.accInk)
