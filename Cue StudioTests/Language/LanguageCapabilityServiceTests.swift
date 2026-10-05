@@ -39,7 +39,8 @@ struct LanguageCapabilityServiceTests {
         #expect(capabilities[.voiceFollowing] == .supported)
         #expect(capabilities[.dictation] == .notInstalled)
         #expect(capabilities[.captions] == .unavailable(.deviceNotSupported))
-        #expect(capabilities.unavailable.map(\.feature).sorted { $0.rawValue < $1.rawValue } == [.aiWriting, .captions])
+        let unavailable: [LanguageFeature] = capabilities.unavailable.map(\.feature).sorted { $0.rawValue < $1.rawValue }
+        #expect(unavailable == [.aiWriting, .captions])
     }
 
     @Test func supportedNotInstalledAndUnavailableAreThreeDifferentAnswers() {

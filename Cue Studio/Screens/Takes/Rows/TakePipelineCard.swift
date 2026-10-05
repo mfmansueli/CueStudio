@@ -59,13 +59,13 @@ struct TakePipelineCard: View {
             }
             .frame(maxWidth: .infinity, minHeight: 50)
             .background(isOn ? Palette.accSoft : Palette.fill.opacity(0.6), in: shape)
-            .overlay(shape.strokeBorder(isOn ? Palette.acc.opacity(0.5) : .clear, lineWidth: 1))
+            .overlay(shape.strokeBorder(isOn ? Palette.acc.opacity(0.5) : Color.clear, lineWidth: 1))
             .contentShape(shape)
         }
         .buttonStyle(.plain)
         .accessibilityLabel(Text(stage.pipelineLabel))
         .accessibilityValue(Text("\(count)"))
-        .accessibilityAddTraits(isOn ? .isSelected : [])
+        .accessibilityAddTraits(isOn ? AccessibilityTraits.isSelected : [])
         .accessibilityIdentifier("takes.stage.\(stage.stepKey)")
     }
 
