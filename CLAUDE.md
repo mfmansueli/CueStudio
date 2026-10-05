@@ -19,13 +19,26 @@ tomadas. Atualize-o junto com a UI.
 
 ## Build e testes
 
-- Scheme compartilhado `Cue Studio` (app + `Cue StudioTests` + `Cue StudioUITests`), Swift 6, iOS 27.
-- `xcodebuild -project "Cue Studio.xcodeproj" -scheme "Cue Studio" -destination "platform=iOS Simulator,name=iPhone 17" test`
+- Scheme compartilhado `Cue Studio` (app + `Cue StudioTests` + `Cue StudioUITests`), Swift 6, iOS 27. Testes por planos
+  (`TestPlans/`): **Full** (o padrão do ⌘U: unidade + UI) e **Fast** (unidade sem as exportações reais, tag `.realExports`).
+- **Build e testes pelos scripts** (`scripts/`), não por `xcodebuild` solto: um derivedData por checkout (`build/`), pacotes
+  compartilhados, **um `xcodebuild` por vez no Mac** (o próximo espera o que está rodando, de outra sessão ou worktree) e só
+  erros, warnings e falhas no terminal (o log inteiro fica em `build/logs/`).
+  - `scripts/build.sh [tests|app|device|release]` (padrão `tests`: o app e os pacotes de teste no simulador).
+  - `scripts/test.sh [fast|unit|exports|ui|full]`, `scripts/test.sh only "Cue StudioTests/DockFoldTests"`, com `--no-build`
+    e `--repeat N`. Durante o trabalho, `fast` ou `only`; `full` no fim. Testes de aparelho: `CUE_DEVICE=<iPhone>
+    scripts/test.sh device <Suite>` (um conjunto por vez; liga a variável `TEST_RUNNER_CUE_…` certa).
+  - `scripts/check-warnings.sh`: a conferência de zero warnings (abaixo).
 - **Zero warnings.** Todo build termina sem nenhum warning (compilador, SwiftLint, ferramentas do
   Xcode): se um build mostrar um warning, corrija na mesma entrega, mesmo que não tenha vindo da sua
-  mudança. Build incremental não repete warnings de arquivos não recompilados, então confira com um
-  build limpo (`-derivedDataPath` novo) antes de dar por terminado. O SDK do simulador e o do
-  aparelho acusam coisas diferentes (anotações de concorrência): confira os dois.
+  mudança. Build incremental não repete warnings de arquivos não recompilados: antes de dar por terminado, rode
+  `scripts/check-warnings.sh`, que recompila o app e os testes do zero para o simulador, para o aparelho (o SDK dele acusa
+  outras coisas, como anotações de concorrência) e em Release.
+- **Sessões em paralelo** trabalham cada uma num git worktree (`.claude/worktrees/`), nunca duas na mesma pasta. Os scripts
+  já separam o derivedData por worktree e enfileiram os builds.
+- **Diagnósticos do editor:** `scripts/lsp-setup.sh` (uma vez por checkout ou worktree; precisa de
+  `brew install xcode-build-server`) faz o SourceKit-LSP ler o build de verdade, em vez de acusar os tipos do projeto como
+  ausentes.
 - **SwiftLint** (`brew install swiftlint`) roda em todo build do app (Build Phases › SwiftLint) com
   `.swiftlint.yml`. Corrija o código em vez de afrouxar a configuração; `swiftlint --fix` resolve
   parte, mas revise o formato do que ele muda.

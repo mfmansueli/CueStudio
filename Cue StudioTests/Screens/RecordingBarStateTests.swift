@@ -18,13 +18,6 @@ struct RecordingBarStateTests {
         return state
     }
 
-    /// Polls until `condition` holds (or a few seconds pass), instead of sleeping a fixed time.
-    private func waitUntil(_ condition: () -> Bool) async {
-        for _ in 0..<300 where !condition() {
-            try? await Task.sleep(for: .milliseconds(10))
-        }
-    }
-
     @Test func itStartsCompactAndStaysOpenFourSeconds() {
         #expect(!RecordingBarState().isExpanded)
         #expect(RecordingBarState().expandedDuration == .seconds(4))
@@ -34,7 +27,7 @@ struct RecordingBarStateTests {
         let state = makeState()
         state.expand()
         #expect(state.isExpanded)
-        await waitUntil { !state.isExpanded }
+        await Wait.until { !state.isExpanded }
         #expect(!state.isExpanded)
     }
 

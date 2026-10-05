@@ -15,3 +15,10 @@ build/
 
 # Claude Code (configurações locais)
 .claude/settings.local.json
+
+# Build and test scripts (scripts/): derived data, logs and results of each checkout
+# (already covered by build/ above), and SourceKit-LSP's per-machine pointer to them
+buildServer.json
+
+# Claude Code worktrees, one per parallel session
+.claude/worktrees/

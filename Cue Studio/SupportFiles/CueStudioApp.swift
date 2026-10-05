@@ -10,12 +10,14 @@ import TipKit
 @main
 struct CueStudioApp: App {
     /// The app session's services. Created here, before any scene, because Siri and Shortcuts can
-    /// ask for scripts (App Intents) without the UI ever appearing.
-    @State private var services: AppServices
+    /// ask for scripts (App Intents) without the UI ever appearing. None while the app only hosts the unit tests.
+    @State private var services: AppServices?
 
     init() {
         TelemetryManager.start()
         CueStudioFont.registerFonts()
+        // Hosting the unit tests: an empty window (some tests put a view in it), nothing loaded, nothing drawing.
+        guard !TestHost.isHostingUnitTests else { return }
         let services = AppServices(options: LaunchOptions.fromProcess())
         services.load()
         services.registerIntentDependencies()
@@ -32,7 +34,9 @@ struct CueStudioApp: App {
 
     var body: some Scene {
         WindowGroup {
-            RootView(services: services)
+            if let services {
+                RootView(services: services)
+            }
         }
     }
 }

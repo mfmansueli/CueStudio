@@ -68,14 +68,8 @@ struct PrompterViewModelTests {
         scenario.viewModel.updateParagraphFrame(0..<(2 * lineHeight), at: 0)
         scenario.viewModel.updateParagraphFrame(150..<(150 + 2 * lineHeight), at: 1)
         scenario.viewModel.scrollModeChanged()
-        await waitUntil { scenario.viewModel.followsSpeech }
+        await Wait.until { scenario.viewModel.followsSpeech }
         return scenario
-    }
-
-    private func waitUntil(_ condition: () -> Bool) async {
-        for _ in 0..<200 where !condition() {
-            await Task.yield()
-        }
     }
 
     /// Lets the tasks the view model started catch up (the transcript reaching the tracker).
@@ -395,7 +389,7 @@ struct PrompterViewModelTests {
         scenario.speech.isAvailable = false
         scenario.viewModel.session.prompter.scrollMode = .voice
         scenario.viewModel.scrollModeChanged()
-        await waitUntil { scenario.speech.startCount > 0 }
+        await Wait.until { scenario.speech.startCount > 0 }
         await settle()
         #expect(!scenario.viewModel.followsSpeech)
         await scenario.viewModel.disappear()
@@ -410,7 +404,7 @@ struct PrompterViewModelTests {
         scenario.languages.voiceFollowingLanguage = .portugueseBrazil
         scenario.viewModel.session.prompter.scrollMode = .voice
         scenario.viewModel.scrollModeChanged()
-        await waitUntil { scenario.viewModel.followsSpeech }
+        await Wait.until { scenario.viewModel.followsSpeech }
         #expect(scenario.speech.requests.last == .language(.portugueseBrazil))
         #expect(scenario.viewModel.listeningLanguage == .portugueseBrazil)
         await scenario.viewModel.disappear()
@@ -423,7 +417,7 @@ struct PrompterViewModelTests {
         scenario.languages.setAppLanguage(.japanese)
         scenario.viewModel.session.prompter.scrollMode = .voice
         scenario.viewModel.scrollModeChanged()
-        await waitUntil { scenario.viewModel.followsSpeech }
+        await Wait.until { scenario.viewModel.followsSpeech }
         #expect(scenario.speech.requests.last == .language(.portugueseBrazil))
         await scenario.viewModel.disappear()
     }
@@ -437,7 +431,7 @@ struct PrompterViewModelTests {
         scenario.speech.unavailable = .unsupported(.thai)
         scenario.viewModel.session.prompter.scrollMode = .voice
         scenario.viewModel.scrollModeChanged()
-        await waitUntil { scenario.viewModel.speechUnavailable != nil }
+        await Wait.until { scenario.viewModel.speechUnavailable != nil }
         #expect(scenario.speech.requests == [.language(.thai)])
         #expect(scenario.viewModel.speechUnavailable == .unsupported(.thai))
         #expect(!scenario.viewModel.followsSpeech)
@@ -449,7 +443,7 @@ struct PrompterViewModelTests {
         #expect(scenario.viewModel.speechUnavailable == nil)
         scenario.viewModel.session.prompter.scrollMode = .voice
         scenario.viewModel.scrollModeChanged()
-        await waitUntil { scenario.viewModel.speechUnavailable != nil }
+        await Wait.until { scenario.viewModel.speechUnavailable != nil }
         #expect(scenario.toast.message == nil)
         await scenario.viewModel.disappear()
     }
