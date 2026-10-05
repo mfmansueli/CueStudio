@@ -30,7 +30,7 @@ struct EditorToolbar: View {
         .animation(reduceMotion ? nil : .easeInOut(duration: 0.15), value: context)
         .background(Palette.bg)
         .overlay(alignment: .top) {
-            Rectangle().fill(Palette.editorSeparator).frame(height: 0.5)
+            Rectangle().fill(Palette.Editor.separator).frame(height: 0.5)
         }
         .overlay(alignment: .top) {
             if let tooltip {
@@ -38,7 +38,7 @@ struct EditorToolbar: View {
                     .font(.footnote.weight(.semibold))
                     .padding(.horizontal, 12)
                     .frame(height: 30)
-                    .background(Palette.editorToast, in: Capsule())
+                    .background(Palette.Editor.toast, in: Capsule())
                     .offset(y: -38)
                     .allowsHitTesting(false)
                     .transition(.opacity)
@@ -108,7 +108,7 @@ struct EditorToolbar: View {
         }
         .buttonStyle(.plain)
         .overlay(alignment: .trailing) {
-            Rectangle().fill(Palette.editorSeparator).frame(width: 0.5)
+            Rectangle().fill(Palette.Editor.separator).frame(width: 0.5)
         }
         .accessibilityLabel(Text("Back to all tools"))
         .accessibilityValue(Text(context))

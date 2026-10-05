@@ -27,10 +27,10 @@ struct PlatformDot: View {
 #if DEBUG
 #Preview {
     HStack(spacing: 12) {
-        PlatformDot(color: Palette.platformTikTok)
-        PlatformDot(color: Palette.platformReels, isSmall: true)
-        PlatformDot(color: Palette.platformShorts)
-        PlatformDot(color: Palette.platformYouTube, isSmall: true)
+        PlatformDot(color: Palette.Platform.tikTok)
+        PlatformDot(color: Palette.Platform.reels, isSmall: true)
+        PlatformDot(color: Palette.Platform.shorts)
+        PlatformDot(color: Palette.Platform.youTube, isSmall: true)
     }
     .padding()
     .background(Palette.bg)

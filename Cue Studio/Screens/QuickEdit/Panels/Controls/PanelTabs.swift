@@ -21,7 +21,7 @@ struct PanelTabs: View {
                 row.padding(.horizontal, 20)
             }
             .scrollIndicators(.hidden)
-            .overlay(alignment: .bottom) { Rectangle().fill(Palette.editorSeparator).frame(height: 0.5) }
+            .overlay(alignment: .bottom) { Rectangle().fill(Palette.Editor.separator).frame(height: 0.5) }
         }
     }
 

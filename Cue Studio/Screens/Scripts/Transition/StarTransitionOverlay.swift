@@ -75,7 +75,7 @@ struct StarTransitionOverlay: View {
     private func coverLayer(size: CGSize, centre: CGPoint) -> some View {
         let diagonal = hypot(size.width, size.height)
         return Rectangle()
-            .fill(Palette.transitionCover)
+            .fill(Palette.Scripts.transitionCover)
             .opacity(cover)
             .mask {
                 Rectangle()
@@ -97,7 +97,7 @@ struct StarTransitionOverlay: View {
             let phase = reduceMotion ? 0.5 : 0.5 - 0.5 * cos(context.date.timeIntervalSinceReferenceDate * 2 * .pi / 2.6)
             Circle()
                 .fill(RadialGradient(
-                    colors: [Palette.transitionHalo, Palette.transitionHalo.opacity(0.24), .clear],
+                    colors: [Palette.Scripts.transitionHalo, Palette.Scripts.transitionHalo.opacity(0.24), .clear],
                     center: .center, startRadius: 0, endRadius: 85
                 ))
                 .frame(width: 170, height: 170)
@@ -126,7 +126,7 @@ struct StarTransitionOverlay: View {
                     )
                     let opacity = t < 0.2 ? t / 0.2 * 0.85 : 0.85 * (1 - (t - 0.2) / 0.8)
                     let size = 3 * (1 - 0.7 * pull)
-                    let colour = index % 3 == 0 ? Palette.skyStarYou : Palette.aiTextStrong
+                    let colour = index % 3 == 0 ? Palette.World.skyStarYou : Palette.aiTextStrong
                     canvas.fill(
                         Path(ellipseIn: CGRect(x: point.x - size / 2, y: point.y - size / 2, width: size, height: size)),
                         with: .color(colour.opacity(opacity))
@@ -160,7 +160,7 @@ struct StarTransitionOverlay: View {
             Text(currentPhrase)
                 .font(.system(size: 16, weight: .medium))
                 .italic()
-                .foregroundStyle(Palette.transitionPhrase)
+                .foregroundStyle(Palette.Scripts.transitionPhrase)
                 .opacity(phraseShown ? 1 : 0)
                 .offset(y: phraseShown ? 0 : (finishShown ? 0 : 4))
                 .frame(height: 22)
@@ -209,8 +209,8 @@ struct StarTransitionOverlay: View {
                 Circle()
                     .fill(.white)
                     .frame(width: 10, height: 10)
-                    .shadow(color: Palette.skyStarYou.opacity(0.8), radius: 14)
-                    .shadow(color: Palette.skyStarYou, radius: 1.5)
+                    .shadow(color: Palette.World.skyStarYou.opacity(0.8), radius: 14)
+                    .shadow(color: Palette.World.skyStarYou, radius: 1.5)
                     .scaleEffect(breath)
                     .modifier(StarCourse(
                         path: path, landed: landed, from: from, control: control, centre: centre, caret: caret, fall: starFall,

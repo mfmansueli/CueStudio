@@ -70,7 +70,7 @@ struct QuickEditView: View {
                         .presentationDetents([.height(medium), .height(large)])
                         .presentationBackgroundInteraction(.enabled(upThrough: .height(large)))
                         .presentationCornerRadius(Metrics.editorSheetRadius)
-                        .presentationBackground(Palette.editorPanel)
+                        .presentationBackground(Palette.Editor.panel)
                         .presentationDragIndicator(.visible)
                 }
             }
@@ -246,7 +246,7 @@ struct QuickEditView: View {
                 .font(.system(size: 13, weight: .semibold))
                 .padding(.horizontal, 14)
                 .frame(height: 30)
-                .background(Palette.durationBadge, in: Capsule())
+                .background(Palette.Takes.durationBadge, in: Capsule())
                 .frame(maxHeight: .infinity, alignment: .bottom)
                 .padding(.bottom, 40)
                 .allowsHitTesting(false)

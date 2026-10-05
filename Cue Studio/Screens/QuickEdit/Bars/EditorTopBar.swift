@@ -19,7 +19,7 @@ struct EditorTopBar: View {
                     .font(.system(size: 15, weight: .semibold))
                     .foregroundStyle(Palette.ink)
                     .frame(width: 36, height: 36)
-                    .background(Palette.editorBarButton, in: Circle())
+                    .background(Palette.Editor.barButton, in: Circle())
                     .overlay(Circle().strokeBorder(Palette.glassBorder, lineWidth: 0.5))
                     .contentShape(Circle())
             }
@@ -64,7 +64,7 @@ struct EditorTopBar: View {
         .foregroundStyle(changed ? Palette.ink : Palette.ink2)
         .padding(.horizontal, 12)
         .frame(height: 28)
-        .background(Palette.editorBarButton, in: Capsule())
+        .background(Palette.Editor.barButton, in: Capsule())
         .overlay(Capsule().strokeBorder(changed ? Color.white.opacity(0.3) : Palette.glassBorder, lineWidth: 1))
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(Text(changed ? "In edit · Autosaved" : "No changes yet"))

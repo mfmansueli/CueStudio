@@ -18,7 +18,12 @@ import SwiftUI
 /// **Color roles** (enforced in review): **violet is AI** (`aiText`, `aiFill`, the aurora of the idea
 /// card), **solid yellow is the one primary action or ✓ of a screen** (`acc`), **yellow text is a HUD
 /// signal** (`accText`: counters, time, status), **red is recording only**, **green is ready**, **cyan is in
-/// edit**. Topics are worlds (`world*`) and platforms are galaxies (`platform*`).
+/// edit**. Topics are worlds (`World`) and platforms are galaxies (`Platform`): a topic is a bar (`themeRail`) in its
+/// world's color, a network a dot (`platformDot`) in its galaxy's; sizes are in `Metrics`.
+///
+/// The core tokens below are the ones every screen uses; an area's own colors live in a namespace of their own
+/// (`Palette.Editor`, `Palette.Camera`…, one file each beside this one), so a token added for one area rebuilds that
+/// area's files instead of every file that uses a color.
 enum Palette {
     // MARK: - Surfaces
 
@@ -51,30 +56,6 @@ enum Palette {
     static let glassBorder = Color(hex: 0xB4A7FF, opacity: 0.22)
     /// Field sunk into a tinted card, like the prompt box: a dark well.
     static let insetField = Color.black.opacity(0.38)
-    /// The idea card (3.2 `.hero`): `#1A1840` under a violet light from the top-left and an indigo one from the bottom-right.
-    static let heroBase = Color(hex: 0x1A1840)
-    static let heroViolet = Color(hex: 0x9D8CFF, opacity: 0.55)
-    static let heroIndigo = Color(hex: 0x5E4EE0, opacity: 0.6)
-    static let heroBorder = Color(hex: 0xB4A7FF, opacity: 0.4)
-    // The Scripts dock (v30, 09 §2): clean glass with two auroras, no sky inside.
-    static let dockBase = Color(hex: 0x1A1840, opacity: 0.56)
-    static let dockAuroraViolet = Color(hex: 0x9D8CFF, opacity: 0.36)
-    static let dockAuroraIndigo = Color(hex: 0x5E4EE0, opacity: 0.40)
-    static let dockRim = Color(hex: 0xC4B8FF, opacity: 0.5)
-    /// The My Cue Voice tip's ✦ and the circle behind it (09 §3).
-    static let tipGlyph = Color(hex: 0xC4B8FF)
-    static let tipGlyphFill = Color(hex: 0x9D8CFF, opacity: 0.22)
-    /// The idea's transition (09 §8): the cover over the screen, the halo around the star and the phrase under it.
-    static let transitionCover = Color(hex: 0x07080E)
-    static let transitionHalo = Color(hex: 0x9D8CFF, opacity: 0.34)
-    static let transitionPhrase = Color(hex: 0xC4B8FF)
-    static let dockField = Color(hex: 0x05060C, opacity: 0.45)
-    /// A chip on the idea card (`rgba(5,6,12,0.42)`) and the voice chip's violet.
-    static let heroChip = Color(hex: 0x05060C, opacity: 0.42)
-    static let heroChipAI = Color(hex: 0x9D8CFF, opacity: 0.2)
-    static let heroChipAIStroke = Color(hex: 0xC4B8FF, opacity: 0.4)
-    /// The soft shadow that drifts across the prompt box's golden wash.
-    static let insetShade = Color.black.opacity(0.38)
     /// Ring around a color swatch, so a white one is still seen on a white card.
     static let swatchRing = Color.white.opacity(0.25)
 
@@ -129,14 +110,6 @@ enum Palette {
     /// My Cue Voice's glow from the top corner, fading into the surface.
     static let aiGlow = Color(hex: 0x9D8CFF, opacity: 0.20)
     static let aiGlowFaint = Color(hex: 0x9D8CFF, opacity: 0.02)
-    /// Aurora behind the idea and "Sounds like you" cards: the violet and the indigo that drift across
-    /// the dark surface.
-    static let auroraViolet = Color(hex: 0x9D8CFF, opacity: 0.30)
-    static let auroraIndigo = Color(hex: 0x5E4EE0, opacity: 0.30)
-    /// The light that runs around those cards' border: lilac.
-    static let auroraBorderLight = Color(hex: 0xB4A7FF)
-    /// The thin yellow scan line along the bottom edge of those cards.
-    static let auroraScanLine = Color(hex: 0xFFD60A)
     static let record = Color(hex: 0xFF3B30)
     static let danger = Color(hex: 0xFF453A)
     /// Red for text and icons on the app's own surfaces (see `accText`).
@@ -159,82 +132,13 @@ enum Palette {
     /// Green for text and icons on the app's own surfaces (see `accText`).
     static let successText = Color(hex: 0x34C759)
 
-    // MARK: - Platforms
-
-    static let platformTikTok = Color(hex: 0x64D2FF)
-    static let platformReels = Color(hex: 0xBF5AF2)
-    static let platformShorts = Color(hex: 0xFF6B5A)
-    static let platformYouTube = Color(hex: 0xFF9F0A)
-    static let platformLinkedIn = Color(hex: 0x0A84FF)
-    static let platformStories = Color(hex: 0xFF6FA8)
-    static let platformNeutral = Color(hex: 0x8E8E93)
-
-    // MARK: - Topics (worlds)
-
-    /// A topic's color: up to three per creator, in this order (warm, mint, pink, sky).
-    static let worldWarm = Color(hex: 0xFFC46B)
-    static let worldMint = Color(hex: 0x7EE0B8)
-    static let worldPink = Color(hex: 0xFF9BD2)
-    static let worldSky = Color(hex: 0x8FB8FF)
+    // MARK: - Status
 
     /// "Live preview" dot in Display.
     static let live = Color(hex: 0x30D158)
 
-    // MARK: - Takes
+    // MARK: - Over the camera
 
-    /// The dark well a take's thumbnail sits in, at its own frame.
-    static let thumbnailWell = Color(hex: 0x0E0E10)
-    /// Placeholder behind a take until its poster frame loads.
-    static let thumbnailTop = Color(hex: 0x7A6250)
-    static let thumbnailBottom = Color(hex: 0x2A211C)
-    /// The dark glass pill over a poster (a stage, "×3").
-    static let posterPill = Color(hex: 0x0E101C, opacity: 0.7)
-    /// Duration label over a thumbnail.
-    static let durationBadge = Color.black.opacity(0.6)
-    /// Tiles of the "Your takes" strip over the video.
-    static let stripTile = Color(hex: 0x1F2236, opacity: 0.85)
-
-    // MARK: - Quick edit
-
-    /// Behind the mark on a cut (a hard cut) that picks its transition.
-    static let joinMark = Color.black.opacity(0.6)
-    /// Behind "Classic" captions.
-    static let captionBox = Color.black.opacity(0.62)
-    /// Behind the preview before the video loads.
-    static let previewWell = Color(hex: 0x0E101C)
-    /// The tool bar at the bottom of Quick edit.
-    static let toolbarFill = Color(hex: 0x1C1C1E, opacity: 0.92)
-
-    // MARK: - Camera
-
-    /// Darkens the screen outside the recorded frame.
-    static let frameMask = Color.black.opacity(0.6)
-    /// Hairlines at the edges of the recorded frame.
-    static let frameEdge = Color.white.opacity(0.22)
-    static let gridLine = Color.white.opacity(0.28)
-    /// Safe zone: dashed outline of the clear area and its caption.
-    static let safeZoneLine = Color.white.opacity(0.4)
-    static let safeZoneLabel = Color.white.opacity(0.62)
-    /// Safe zone shading, top and bottom (fading inward) and at the sides.
-    static let safeZoneShade = Color.black.opacity(0.4)
-    static let safeZoneShadeFaint = Color.black.opacity(0.1)
-    static let safeZoneSide = Color.black.opacity(0.16)
-    /// Soft glow around the Selfie reading line.
-    static let readingLineGlow = Color(hex: 0xFFD60A, opacity: 0.45)
-    /// Reading line handle, at rest and while dragged.
-    static let readingLineHandle = Color(hex: 0x1E1E20, opacity: 0.55)
-    static let readingLineHandleActive = Color(hex: 0xFFD60A, opacity: 0.55)
-    static let readingLineHandleBorder = Color.white.opacity(0.28)
-    /// Hairline around the Selfie script panel.
-    static let panelBorder = Color.white.opacity(0.08)
-    /// The platform's recommendation over the camera (smart, so violet): a gradient from the top
-    /// left, a hairline rim, the icon's disc and its glyph. Its secondary lines are `aiTextStrong`.
-    static let recommendationTop = Color(hex: 0x3E3096, opacity: 0.9)
-    static let recommendationBottom = Color(hex: 0x1E1650, opacity: 0.9)
-    static let recommendationRim = Color(hex: 0xC4B8FF, opacity: 0.45)
-    static let recommendationShadow = Color(hex: 0x1E0F64, opacity: 0.5)
-    static let recommendationIconFill = Color(hex: 0xC9BEFF, opacity: 0.2)
-    static let recommendationIcon = Color(hex: 0xC9BEFF)
     /// The warning card over the camera ("12s short of 1:00"): nearly opaque night, with a hairline.
     static let warningCard = Color(hex: 0x161826, opacity: 0.97)
     /// Keeps prompter text readable over a bright camera feed.
@@ -242,124 +146,4 @@ enum Palette {
     /// Display sheet over the camera: nearly opaque, so settings stay readable, with the preview
     /// still visible above it.
     static let sheetGlass = Color(hex: 0x121422, opacity: 0.96)
-
-    // MARK: Editor (v10)
-
-    /// Panels under the editor's timeline.
-    static let editorPanel = Color(hex: 0x0E101C)
-    /// Done and the other glass buttons of the editor's top bar.
-    static let editorBarButton = Color(hex: 0x2B2F48, opacity: 0.7)
-    /// The editor's toast: one line on a dark pill.
-    static let editorToast = Color(hex: 0x1F2236, opacity: 0.96)
-    /// Separators of the toolbar and the panels.
-    static let editorSeparator = Color(hex: 0x505678, opacity: 0.5)
-    /// A clip's waveform strip and its bars.
-    static let waveformWell = Color(hex: 0x1A1C2C)
-    static let waveformBar = Color(hex: 0xEBEBF5, opacity: 0.55)
-    /// Timeline tracks: a tinted fill with the text in the full color.
-    /// v26: Aa white, captions violet, music green, voice-over amber, overlay light blue.
-    static let laneText = Color.white.opacity(0.2)
-    static let laneTextSelected = Color.white.opacity(0.32)
-    static let laneTextInk = Color.white
-    static let laneCaption = Color(hex: 0x9D8CFF, opacity: 0.3)
-    static let laneCaptionInk = Color(hex: 0xC9BFFF)
-    static let laneMusic = Color(hex: 0x34C759, opacity: 0.3)
-    static let laneMusicInk = Color(hex: 0x7CE59A)
-    static let laneVoiceOver = Color(hex: 0xFF9F0A, opacity: 0.3)
-    static let laneVoiceOverInk = Color(hex: 0xFFB340)
-    static let laneMedia = Color(hex: 0x64D2FF, opacity: 0.3)
-    static let laneMediaInk = Color(hex: 0x9FE3FF)
-    /// A voice-over track while it records.
-    static let laneRecording = Color(hex: 0xFF453A, opacity: 0.5)
-    /// The dashed outline of "Save as my style" and "Add a line".
-    static let laneGhostBorder = Color(hex: 0xEBEBF5, opacity: 0.45)
-    /// The strip each track sits on, and the same strip while its tools are open (with its ring).
-    static let laneStrip = Color(hex: 0x1C1C1E)
-    static let laneStripActive = Color(hex: 0x24231C)
-    static let laneStripRing = Color(hex: 0xFFD60A, opacity: 0.75)
-    /// A track's icon in the gutter beside its strip.
-    static let laneGutterInk = Color(hex: 0xEBEBF5, opacity: 0.85)
-    /// "Tap to add text" and the other hints on an empty track. The prototype draws them at 45%,
-    /// which is 3.9:1 on the strip; 60% is 5.9:1, past the 4.5:1 text needs.
-    static let laneHintInk = Color(hex: 0xEBEBF5, opacity: 0.6)
-    /// Pauses on the video track: marked to go (yellow hatch) or kept (gray hatch).
-    static let pauseRemoveStripe = Color(hex: 0xFFD60A, opacity: 0.62)
-    static let pauseRemoveGap = Color(hex: 0xFFD60A, opacity: 0.2)
-    static let pauseKeepStripe = Color.white.opacity(0.25)
-    static let pauseKeepGap = Color.black.opacity(0.3)
-    static let pauseKeepBorder = Color.white.opacity(0.75)
-    /// Ruler labels and ticks.
-    static let rulerLabel = Color(hex: 0xEBEBF5, opacity: 0.55)
-    /// A selected card's wash (pauses to remove, a Zoom or Crop tile).
-    static let accTile = Color(hex: 0xFFD60A, opacity: 0.12)
-    /// The row of a list the caret or the choice is in (Sections).
-    static let selectedRow = Color(hex: 0xFFD60A, opacity: 0.08)
-    /// A pause card to remove.
-    static let accCard = Color(hex: 0xFFD60A, opacity: 0.1)
-    /// Cards and rows inside panels.
-    static let panelCard = Color(hex: 0x767680, opacity: 0.16)
-    /// The ring of an Adjust dial that is still at zero.
-    static let adjustDialRing = Color(hex: 0xEBEBF5, opacity: 0.35)
-    /// A switch that is off.
-    static let toggleOff = Color(hex: 0x787880, opacity: 0.36)
-    /// A small delete button inside a panel (a caption line's trash).
-    static let dangerWash = Color(hex: 0xFF453A, opacity: 0.16)
-    /// The frame picked on Cover's strip: everything else dimmed.
-    static let coverDim = Color.black.opacity(0.5)
-    /// A preset card: the frame of the take under the sample, darkened, and the card's edge.
-    static let presetCardDim = Color.black.opacity(0.28)
-    static let presetCardBorder = Color.white.opacity(0.08)
-
-    // MARK: - v29
-
-    /// Night glow of the navigation screens (`BgWash`): a violet light from the top left and an indigo
-    /// one on the right, over `bg`. The same on every screen, empty states included.
-    static let bgWashViolet = Color(hex: 0x9D8CFF, opacity: 0.2)
-    static let bgWashIndigo = Color(hex: 0x5E4EE0, opacity: 0.12)
-
-    // Markers: a topic is a bar (`themeRail`, in the topic's `world*` color), a network is a dot
-    // (`platformDot`, in the platform's galaxy color). Sizes are in `Metrics`.
-
-    /// The "● REC" pill: a 1 pt inset ring, a 6 pt red dot (`record`) and the label in `ink`.
-    static let recPillRing = Color(hex: 0xE1E4F5, opacity: 0.22)
-    static let recPillDot = record
-
-    // The slider: a 4 pt track, a 4 pt yellow fill and a 24 pt white thumb (`Metrics.slider*`).
-    /// `#6E7496` at 35%.
-    static let sliderTrack = Color(hex: 0x6E7496, opacity: 0.35)
-    static let sliderFill = acc
-    static let sliderThumb = Color.white
-    static let sliderThumbShadow = Color.black.opacity(0.4)
-
-    /// The AI bar over a text selection: a night violet at 97% with a 0.5 pt violet rim.
-    static let selectionBar = Color(hex: 0x161434, opacity: 0.97)
-    static let selectionBarRim = Color(hex: 0xB4A7FF, opacity: 0.45)
-    static let selectionBarShadow = Color.black.opacity(0.5)
-    /// Text the AI rewrote and the creator hasn't kept yet: `aiReplacedInk` on `aiReplacedFill`.
-    static let aiReplacedInk = Color(hex: 0xE4DEFF)
-    static let aiReplacedFill = Color(hex: 0x9D8CFF, opacity: 0.16)
-    /// The state strip of the script page: night at 92% over a blur, with a 0.5 pt violet rim.
-    static let stripFill = Color(hex: 0x0E101C, opacity: 0.92)
-    static let stripRim = Color(hex: 0xB4A7FF, opacity: 0.3)
-
-    // The state chip (READY · DRAFT · RECORDED): ink on a fill, 4.5:1 over every surface.
-    static let stateReadyInk = Color(hex: 0x34C759)
-    static let stateReadyFill = Color(hex: 0x34C759, opacity: 0.14)
-    static let stateDraftInk = Color(hex: 0xE1E4F5, opacity: 0.8)
-    static let stateDraftFill = fill
-    static let stateRecordedInk = Color(hex: 0xE1E4F5, opacity: 0.85)
-    static let stateRecordedFill = fill
-
-    /// The "#AD" / "AD" tag: black on yellow.
-    static let adTagFill = acc
-    static let adTagInk = Color.black
-
-    // The empty-state mark: a ring, a violet core and a star that orbits it.
-    static let emptyRing = Color(hex: 0xB4A7FF, opacity: 0.22)
-    static let emptyRingCore = Color(hex: 0x9D8CFF, opacity: 0.22)
-    static let emptyOrbiter = Color(hex: 0xFFE680)
-    static let emptyOrbiterGlow = Color(hex: 0xFFD60A, opacity: 0.7)
-    /// "Your stars" in the sky above Scripts.
-    static let skyStarYou = Color(hex: 0xFFE680)
-    static let skyStarYouGlow = Color(hex: 0xFFD60A, opacity: 0.6)
 }

@@ -85,7 +85,7 @@ struct ReadyToTravelView: View {
                     .foregroundStyle(.white)
                     .padding(.horizontal, 10)
                     .frame(height: 28)
-                    .background(Palette.posterPill, in: Capsule())
+                    .background(Palette.Takes.posterPill, in: Capsule())
                     .padding(12)
             }
             .shadow(color: Palette.acc.opacity(0.15), radius: 30)

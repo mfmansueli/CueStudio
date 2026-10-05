@@ -26,7 +26,7 @@ struct AISelectionBar: View {
             switch phase {
             case .choosing:
                 ForEach(SelectionAction.allCases) { action in
-                    if action == .cut { Divider().frame(height: 18).overlay(Palette.selectionBarRim) }
+                    if action == .cut { Divider().frame(height: 18).overlay(Palette.Page.selectionBarRim) }
                     Button { onAction(action) } label: {
                         HStack(spacing: 4) {
                             if action == .rewrite { Image(systemName: "sparkles").font(.system(size: 11, weight: .bold)) }
@@ -60,9 +60,9 @@ struct AISelectionBar: View {
             }
         }
         .padding(.horizontal, 4)
-        .background(Palette.selectionBar, in: Capsule())
-        .overlay(Capsule().strokeBorder(Palette.selectionBarRim, lineWidth: 0.5))
-        .shadow(color: Palette.selectionBarShadow, radius: 15, y: 12)
+        .background(Palette.Page.selectionBar, in: Capsule())
+        .overlay(Capsule().strokeBorder(Palette.Page.selectionBarRim, lineWidth: 0.5))
+        .shadow(color: Palette.Page.selectionBarShadow, radius: 15, y: 12)
         .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("page.selectionBar")

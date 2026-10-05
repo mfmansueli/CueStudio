@@ -47,7 +47,7 @@ struct CleanUpCard: View {
                 }
                 .foregroundStyle(Palette.ink)
                 .frame(maxWidth: .infinity, minHeight: 30)
-                .background(Palette.sliderTrack, in: Capsule())
+                .background(Palette.Slider.track, in: Capsule())
                 .contentShape(Capsule())
             }
             .buttonStyle(.plain)
@@ -56,7 +56,7 @@ struct CleanUpCard: View {
         }
         .padding(10)
         .frame(width: 122)
-        .background(isMarked ? Palette.accCard : Palette.panelCard, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+        .background(isMarked ? Palette.Editor.accCard : Palette.Editor.panelCard, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
         .overlay(RoundedRectangle(cornerRadius: 14, style: .continuous).strokeBorder(isMarked ? Palette.acc : Color.clear, lineWidth: 1.5))
         .contentShape(Rectangle())
         .onTapGesture(perform: onToggle)

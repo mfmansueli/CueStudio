@@ -54,7 +54,7 @@ struct EditorToastHost: ViewModifier {
                     .padding(.leading, 14)
                     .padding(.trailing, toast.action == nil ? 14 : 4)
                     .frame(height: 34)
-                    .background(Palette.editorToast, in: Capsule())
+                    .background(Palette.Editor.toast, in: Capsule())
                     .padding(.horizontal, 16)
                     .padding(.top, top + 10)
                     .id(message)

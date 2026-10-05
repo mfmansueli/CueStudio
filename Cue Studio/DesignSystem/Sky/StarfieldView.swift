@@ -94,7 +94,7 @@ struct StarfieldView: View {
         let phase = StarfieldMath.nebulaPhase(at: time, period: nebula.period)
         let center = CGPoint(x: size.width * nebula.x + (phase - 0.5) * 40, y: size.height * nebula.y + (0.5 - phase) * 40)
         let radius = nebula.diameter / 2 * (1 + 0.16 * phase)
-        let violet = Palette.auroraViolet
+        let violet = Palette.Aurora.violet
         canvas.fill(
             Path(ellipseIn: CGRect(x: center.x - radius, y: center.y - radius, width: radius * 2, height: radius * 2)),
             with: .radialGradient(

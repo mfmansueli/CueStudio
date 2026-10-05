@@ -43,10 +43,10 @@ final class TimelineLaneBackdropView: UIView {
             strip.frame = CGRect(x: TimelineGeometry.stripLeading, y: frame.y, width: width, height: frame.height)
             strip.cornerRadius = Metrics.laneItemRadius + 2
             strip.cornerCurve = .continuous
-            strip.backgroundColor = UIColor(isActive ? Palette.laneStripActive : Palette.laneStrip).cgColor
+            strip.backgroundColor = UIColor(isActive ? Palette.Editor.laneStripActive : Palette.Editor.laneStrip).cgColor
             if isActive {
                 strip.borderWidth = 1.5
-                strip.borderColor = UIColor(Palette.laneStripRing).cgColor
+                strip.borderColor = UIColor(Palette.Editor.laneStripRing).cgColor
             }
             layer.addSublayer(strip)
         }

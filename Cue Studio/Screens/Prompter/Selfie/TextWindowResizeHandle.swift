@@ -35,7 +35,7 @@ struct TextWindowResizeHandle: View {
                     .foregroundStyle(Palette.accText)
                     .padding(.horizontal, 10)
                     .frame(height: 26)
-                    .background(Palette.posterPill, in: Capsule())
+                    .background(Palette.Takes.posterPill, in: Capsule())
                     .position(x: rect.midX, y: max(60, rect.minY - 20))
                     .allowsHitTesting(false)
             }

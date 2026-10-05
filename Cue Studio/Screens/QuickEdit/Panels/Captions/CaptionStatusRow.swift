@@ -30,7 +30,7 @@ struct CaptionStatusRow: View {
             }
             .padding(.horizontal, 12)
             .padding(.vertical, 8)
-            .background(Palette.panelCard, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+            .background(Palette.Editor.panelCard, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
         }
     }
 

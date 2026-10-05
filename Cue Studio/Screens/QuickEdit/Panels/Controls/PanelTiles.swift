@@ -32,7 +32,7 @@ struct PanelTiles<Value: Hashable>: View {
                     }
                     .foregroundStyle(isOn ? Palette.accText : Palette.ink)
                     .frame(maxWidth: .infinity, minHeight: 68)
-                    .background(isOn ? Palette.accTile : Palette.panelCard, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+                    .background(isOn ? Palette.Editor.accTile : Palette.Editor.panelCard, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
                     .overlay(RoundedRectangle(cornerRadius: 14, style: .continuous).strokeBorder(isOn ? Palette.acc : .clear, lineWidth: 1.5))
                     .contentShape(Rectangle())
                 }

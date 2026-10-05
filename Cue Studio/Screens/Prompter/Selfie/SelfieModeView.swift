@@ -127,7 +127,7 @@ struct SelfieModeView: View {
         }
         .overlay { PrompterTextOverlays(viewModel: viewModel) }
         .clipShape(shape)
-        .overlay(shape.strokeBorder(Palette.panelBorder, lineWidth: 0.5))
+        .overlay(shape.strokeBorder(Palette.Camera.panelBorder, lineWidth: 0.5))
         .frame(width: rect.width, height: rect.height)
         .position(x: rect.midX, y: rect.midY)
         .animation(isResizingWindow ? nil : .smooth(duration: 0.3), value: rect)

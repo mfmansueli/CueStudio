@@ -380,7 +380,10 @@ struct HomeView: View {
 
 - **Tokens:**
   - `Palette`: `enum` com `static let`, cores light/dark via `Color(light:dark:)` e nomes semânticos
-    (`bg`, `surf`, `ink`, `ink2`, `acc`, `accInk`, `danger`...);
+    (`bg`, `surf`, `ink`, `ink2`, `acc`, `accInk`, `danger`...). O núcleo (`Tokens/Palette/Palette.swift`) é o que toda
+    tela usa; a cor de uma área só vai no namespace dela (`Palette.Editor`, `.Camera`, `.Scripts`, `.Page`, `.Takes`,
+    `.Platform`, `.World`, `.Aurora`, `.Slider`, um arquivo cada). Um token novo no núcleo recompila os ~290 arquivos
+    que usam cor; num namespace, só os daquela área;
   - `CueStudioFont`: fonte display com `relativeTo:` para escalar com Dynamic Type, registrada no launch;
   - `Color+Dynamic`: inits de hex e HSL.
 - **Estilos:** um `ButtonStyle` com `enum Variant` + helpers estáticos (`.appPrimary()`, `.appSoft()`...),

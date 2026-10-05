@@ -15,7 +15,7 @@ struct DockSurface: ViewModifier {
                 DockAurora().clipShape(shape).accessibilityHidden(true)
             }
             .glassEffect(.regular, in: shape)
-            .overlay(shape.strokeBorder(Palette.dockRim, lineWidth: 0.5).allowsHitTesting(false))
+            .overlay(shape.strokeBorder(Palette.Scripts.dockRim, lineWidth: 0.5).allowsHitTesting(false))
             .shadow(color: .black.opacity(0.5), radius: 20, y: 14)
     }
 }
@@ -31,9 +31,9 @@ extension View {
 private struct DockAurora: View {
     var body: some View {
         Canvas { context, size in
-            context.fill(Path(CGRect(origin: .zero, size: size)), with: .color(Palette.dockBase))
-            light(&context, size: size, color: Palette.dockAuroraViolet, center: .zero, rx: 0.9, ry: 1.2, stop: 0.6)
-            light(&context, size: size, color: Palette.dockAuroraIndigo, center: CGPoint(x: size.width, y: size.height), rx: 0.8, ry: 1.0, stop: 0.65)
+            context.fill(Path(CGRect(origin: .zero, size: size)), with: .color(Palette.Scripts.dockBase))
+            light(&context, size: size, color: Palette.Scripts.dockAuroraViolet, center: .zero, rx: 0.9, ry: 1.2, stop: 0.6)
+            light(&context, size: size, color: Palette.Scripts.dockAuroraIndigo, center: CGPoint(x: size.width, y: size.height), rx: 0.8, ry: 1.0, stop: 0.65)
         }
     }
 

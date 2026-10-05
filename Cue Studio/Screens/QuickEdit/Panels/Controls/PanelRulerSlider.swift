@@ -38,7 +38,7 @@ struct PanelRulerSlider: View {
                         .frame(width: 1, height: index % 10 == 0 ? 14 : index % 5 == 0 ? 10 : 6)
                         .offset(x: width * CGFloat(index) / CGFloat(Self.tickCount), y: 6)
                 }
-                Capsule().fill(Palette.sliderTrack)
+                Capsule().fill(Palette.Slider.track)
                     .frame(width: width, height: 6)
                     .offset(y: 32)
                 Capsule().fill(Palette.acc)

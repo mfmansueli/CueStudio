@@ -60,7 +60,7 @@ struct TakeVideoCard: View {
                     .foregroundStyle(.white)
                     .padding(.horizontal, 7)
                     .frame(height: 22)
-                    .background(Palette.posterPill, in: Capsule())
+                    .background(Palette.Takes.posterPill, in: Capsule())
             }
         }
         .padding(8)
@@ -87,7 +87,7 @@ struct TakeVideoCard: View {
 
     private var hud: some View {
         HStack(spacing: 5) {
-            ColorDot(color: video.platform?.tint ?? Palette.platformNeutral, size: 5)
+            ColorDot(color: video.platform?.tint ?? Palette.Platform.neutral, size: 5)
             Text(hudText)
                 .textCase(.uppercase)
                 .lineLimit(1)

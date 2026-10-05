@@ -36,7 +36,7 @@ struct FilterChip: View {
 #Preview {
     HStack {
         FilterChip(label: "All", isSelected: true)
-        FilterChip(label: "TikTok", isSelected: false, dotColor: Palette.platformTikTok)
+        FilterChip(label: "TikTok", isSelected: false, dotColor: Palette.Platform.tikTok)
     }
     .padding()
     .background(Palette.bg)

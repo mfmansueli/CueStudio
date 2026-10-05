@@ -221,7 +221,7 @@ struct ScriptsDock: View {
         }
         .padding(EdgeInsets(top: 6, leading: 0, bottom: 6, trailing: 6))
         .frame(minHeight: 56)
-        .background(Palette.dockField, in: RoundedRectangle(cornerRadius: 20, style: .continuous))
+        .background(Palette.Scripts.dockField, in: RoundedRectangle(cornerRadius: 20, style: .continuous))
     }
 
     /// The field to type in; while dictating, the same words read-only, which keeps the newest in view as they grow (a field that

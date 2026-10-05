@@ -20,8 +20,8 @@ struct BgWash: View {
     }
 
     private let lights = [
-        Light(color: Palette.bgWashViolet, radiusX: 0.7, radiusY: 0.3, centerX: 0.2, centerY: 0.06),
-        Light(color: Palette.bgWashIndigo, radiusX: 0.55, radiusY: 0.28, centerX: 0.85, centerY: 0.6),
+        Light(color: Palette.Aurora.bgWashViolet, radiusX: 0.7, radiusY: 0.3, centerX: 0.2, centerY: 0.06),
+        Light(color: Palette.Aurora.bgWashIndigo, radiusX: 0.55, radiusY: 0.28, centerX: 0.85, centerY: 0.6),
     ]
 
     var body: some View {

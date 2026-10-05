@@ -21,9 +21,9 @@ struct AddMusicSheet: View {
                 HStack(spacing: 12) {
                     Image(systemName: viewModel.isImportingMusic ? "hourglass" : "music.note")
                         .font(.system(size: 17, weight: .semibold))
-                        .foregroundStyle(Palette.laneMusicInk)
+                        .foregroundStyle(Palette.Editor.laneMusicInk)
                         .frame(width: 38, height: 38)
-                        .background(Palette.laneMusic, in: RoundedRectangle(cornerRadius: 10, style: .continuous))
+                        .background(Palette.Editor.laneMusic, in: RoundedRectangle(cornerRadius: 10, style: .continuous))
                     VStack(alignment: .leading, spacing: 2) {
                         Text("Browse Files")
                             .font(.system(size: 15, weight: .semibold))
@@ -42,7 +42,7 @@ struct AddMusicSheet: View {
                 }
                 .padding(.horizontal, 14)
                 .padding(.vertical, 12)
-                .background(Palette.panelCard, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+                .background(Palette.Editor.panelCard, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
                 .contentShape(Rectangle())
             }
             .buttonStyle(.plain)

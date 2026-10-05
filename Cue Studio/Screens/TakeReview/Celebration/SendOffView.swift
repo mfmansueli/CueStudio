@@ -112,7 +112,7 @@ struct SendOffView: View {
                 .foregroundStyle(.white)
                 .padding(.horizontal, 10)
                 .frame(height: 26)
-                .background(Palette.posterPill, in: Capsule())
+                .background(Palette.Takes.posterPill, in: Capsule())
                 .padding(10)
             }
             .overlay(alignment: .bottomLeading) {

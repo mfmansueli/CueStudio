@@ -72,10 +72,10 @@ struct ShareToSheet: View {
         HStack(spacing: 10) {
             Text("AD")
                 .font(.system(size: 11, weight: .heavy, design: .monospaced))
-                .foregroundStyle(Palette.adTagInk)
+                .foregroundStyle(Palette.Scripts.adTagInk)
                 .padding(.horizontal, 7)
                 .frame(height: 20)
-                .background(Palette.adTagFill, in: Capsule())
+                .background(Palette.Scripts.adTagFill, in: Capsule())
             Text("#ad is copied · paste it in your caption")
                 .font(.footnote)
                 .foregroundStyle(Palette.ink)

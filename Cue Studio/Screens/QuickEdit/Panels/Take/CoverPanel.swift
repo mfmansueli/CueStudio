@@ -230,7 +230,7 @@ struct CoverPanel: View {
                         .clipped()
                     }
                 }
-                Palette.coverDim
+                Palette.Editor.coverDim
                     .mask {
                         Rectangle()
                             .overlay {

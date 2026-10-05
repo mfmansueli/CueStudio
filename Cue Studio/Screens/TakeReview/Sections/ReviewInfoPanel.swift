@@ -61,7 +61,7 @@ struct ReviewInfoPanel: View {
         HStack(spacing: 12) {
             HUDLine(
                 values: [take.platform?.label ?? String(localized: "Freestyle"), take.resolution.label, take.aspect.label],
-                dotColor: take.platform?.tint ?? Palette.platformNeutral, tint: Palette.ink
+                dotColor: take.platform?.tint ?? Palette.Platform.neutral, tint: Palette.ink
             )
             if let lengthFit {
                 HUDLine(values: [lengthFit.label], tint: lengthFit.fits ? Palette.successText : Palette.warnText)

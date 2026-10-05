@@ -11,7 +11,7 @@ struct PanelSwitch: View {
 
     var body: some View {
         Capsule()
-            .fill(isOn ? Palette.success : Palette.toggleOff)
+            .fill(isOn ? Palette.success : Palette.Editor.toggleOff)
             .frame(width: 51, height: 31)
             .overlay(alignment: isOn ? .trailing : .leading) {
                 Circle().fill(Color.white).frame(width: 27, height: 27).padding(2)

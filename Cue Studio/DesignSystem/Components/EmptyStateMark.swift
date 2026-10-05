@@ -29,15 +29,15 @@ struct EmptyStateMark: View {
                 : Self.restingAngle
             ZStack {
                 Circle()
-                    .fill(RadialGradient(colors: [Palette.emptyRingCore, .clear], center: .center, startRadius: 0, endRadius: size / 2))
-                Circle().strokeBorder(Palette.emptyRing, lineWidth: 1)
+                    .fill(RadialGradient(colors: [Palette.Scripts.emptyRingCore, .clear], center: .center, startRadius: 0, endRadius: size / 2))
+                Circle().strokeBorder(Palette.Scripts.emptyRing, lineWidth: 1)
                 icon.image
                     .frame(width: 34, height: 34)
-                    .foregroundStyle(icon == .star ? Palette.emptyOrbiter : Palette.aiTextStrong)
+                    .foregroundStyle(icon == .star ? Palette.Scripts.emptyOrbiter : Palette.aiTextStrong)
                 Circle()
-                    .fill(Palette.emptyOrbiter)
+                    .fill(Palette.Scripts.emptyOrbiter)
                     .frame(width: Metrics.emptyOrbiterSize, height: Metrics.emptyOrbiterSize)
-                    .shadow(color: Palette.emptyOrbiterGlow, radius: 4)
+                    .shadow(color: Palette.Scripts.emptyOrbiterGlow, radius: 4)
                     .offset(y: -(size / 2 - 0.5))
                     .rotationEffect(angle)
             }

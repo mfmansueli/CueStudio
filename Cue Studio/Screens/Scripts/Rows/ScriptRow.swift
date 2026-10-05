@@ -111,7 +111,7 @@ struct ScriptRowBackground: View {
             line: ScriptRowLine(
                 script: SampleScripts.lampReview, state: .ready, readSeconds: 28, takes: [], hasDraft: { _ in false }
             ),
-            takeCount: 0, topicColor: Palette.worldPink, showsTrailing: true, onRecord: {}
+            takeCount: 0, topicColor: Palette.World.pink, showsTrailing: true, onRecord: {}
         )
     }
     .previewEnvironment()

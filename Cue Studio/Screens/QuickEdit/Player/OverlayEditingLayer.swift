@@ -55,7 +55,7 @@ struct OverlayEditingLayer: View {
     private var dragGuides: some View {
         let safe = viewModel.safeArea(in: size)
         RoundedRectangle(cornerRadius: 6, style: .continuous)
-            .strokeBorder(Palette.safeZoneLine, style: StrokeStyle(lineWidth: 1, dash: [4, 3]))
+            .strokeBorder(Palette.Camera.safeZoneLine, style: StrokeStyle(lineWidth: 1, dash: [4, 3]))
             .frame(width: safe.width, height: safe.height)
             .offset(x: safe.minX, y: safe.minY)
             .allowsHitTesting(false)

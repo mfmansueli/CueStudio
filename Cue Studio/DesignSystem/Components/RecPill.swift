@@ -16,7 +16,7 @@ struct RecPill: View {
         Button(action: action) {
             HStack(spacing: 5) {
                 Circle()
-                    .fill(Palette.recPillDot)
+                    .fill(Palette.Camera.recPillDot)
                     .frame(width: Metrics.recPillDotSize, height: Metrics.recPillDotSize)
                 Text("REC")
                     .font(.system(size: 10.5, weight: .heavy, design: .monospaced))
@@ -25,7 +25,7 @@ struct RecPill: View {
             }
             .padding(.horizontal, Metrics.recPillPadding)
             .frame(height: Metrics.recPillHeight)
-            .overlay(Capsule().strokeBorder(Palette.recPillRing, lineWidth: 1))
+            .overlay(Capsule().strokeBorder(Palette.Camera.recPillRing, lineWidth: 1))
             // The pill is 26 pt; the touch area is the 44 pt around it.
             .frame(minWidth: Metrics.hitTarget, minHeight: Metrics.hitTarget)
             .contentShape(Rectangle())

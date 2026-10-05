@@ -78,7 +78,7 @@ struct TextStylePanel: View {
                 }
                 .scrollIndicators(.hidden)
                 .padding(.bottom, 4)
-                .overlay(alignment: .bottom) { Rectangle().fill(Palette.editorSeparator).frame(height: 0.5) }
+                .overlay(alignment: .bottom) { Rectangle().fill(Palette.Editor.separator).frame(height: 0.5) }
             }
         }
     }
