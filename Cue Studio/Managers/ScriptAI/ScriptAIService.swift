@@ -85,6 +85,9 @@ final class ScriptAIService: ScriptWriting {
                 // Measured on an iPhone: a Japanese idea with an English catchphrase came back in English. One more try,
                 // told plainly; if it still isn't in the language, the creator is told and nothing is saved.
                 return try await self.draft(request, on: model, since: begin, insistsOnLanguage: true)
+            } catch ScriptAIError.emptyResponse {
+                // Measured on an iPhone: now and then a request comes back with nothing in it, and the same one works at once.
+                return try await self.draft(request, on: model, since: begin)
             }
         }
     }
@@ -110,13 +113,38 @@ final class ScriptAIService: ScriptWriting {
         let started = clock.now
         var firstResponse: Duration?
         var latest: GeneratedContent?
-        for try await snapshot in session.streamResponse(to: prompt, generating: ScriptDraft.self) {
-            if firstResponse == nil { firstResponse = started.duration(to: clock.now) }
-            latest = snapshot.rawContent
+        var partial: ScriptDraft.PartiallyGenerated?
+        // A bound on the answer: measured on an iPhone, a script the model kept on writing past its end ran 60 s and more
+        // before "context size exceeded". The bound is generous (three tokens a word and room for the structure).
+        let options = GenerationOptions(maximumResponseTokens: Self.responseTokens(for: request))
+        var rescued: ScriptDraft?
+        do {
+            for try await snapshot in session.streamResponse(to: prompt, generating: ScriptDraft.self, options: options) {
+                if firstResponse == nil { firstResponse = started.duration(to: clock.now) }
+                latest = snapshot.rawContent
+                partial = snapshot.content
+            }
+        } catch {
+            // A model that ran on past the end of a script it had already written: what arrived is the script.
+                guard AIFailure(error) == .tooLong, let draft = Self.rescued(partial, request: request) else { throw error }
+            logger.notice("The model ran on past the end of the script; using what had arrived")
+            rescued = draft
         }
         try Task.checkCancellation()
-        guard let latest else { throw ScriptAIError.emptyResponse }
-        let draft = try ScriptDraft(latest)
+        let draft: ScriptDraft
+        if let rescued {
+            draft = rescued
+        } else {
+            guard let latest else { throw ScriptAIError.emptyResponse }
+            if let complete = try? ScriptDraft(latest) {
+                draft = complete
+            } else if let cut = Self.rescued(partial, request: request) {
+                // The bound ended it before the last field: the blocks that arrived are the script.
+                draft = cut
+            } else {
+                throw ScriptAIError.emptyResponse
+            }
+        }
         let timings = GenerationTimings(
             prepare: begin.duration(to: started), firstResponse: firstResponse, generation: started.duration(to: clock.now)
         )
@@ -291,9 +319,29 @@ final class ScriptAIService: ScriptWriting {
         case .tooLong: ScriptAIError.tooLong
         case .unsupportedLanguage: ScriptAIError.unsupportedLanguage
         case .modelPreparing: ScriptAIError.modelPreparing
+        case .rateLimited: ScriptAIError.rateLimited
         case .cancelled: CancellationError()
         case .cloudUnreachable, .other: error
         }
+    }
+
+    /// Tokens the answer may take: three a word of the longest script asked for, and room for the structure around it.
+    static func responseTokens(for request: ScriptRequest) -> Int {
+        let words = ReadTime.words(for: request.targetRange.upperBound)
+        return min(1_800, max(600, words * 3 + 350))
+    }
+
+    /// The script out of an answer that stopped before it was complete: needs at least two blocks with text and half
+    /// the words asked for, so a few lines before a failure are never passed off as a script.
+    static func rescued(_ partial: ScriptDraft.PartiallyGenerated?, request: ScriptRequest) -> ScriptDraft? {
+        guard let partial else { return nil }
+        let blocks = (partial.blocks ?? []).compactMap { block -> ScriptDraft.Block? in
+            guard let text = block.text?.trimmingCharacters(in: .whitespacesAndNewlines), !text.isEmpty else { return nil }
+            return ScriptDraft.Block(label: block.label ?? "", text: text)
+        }
+        let words = blocks.reduce(0) { $0 + ReadTime.wordCount(in: CueParser.stripCues($1.text)) }
+        guard blocks.count >= 2, words >= max(15, ReadTime.words(for: request.targetRange.lowerBound) / 2) else { return nil }
+        return ScriptDraft(title: partial.title ?? "", blocks: blocks, statesFacts: partial.statesFacts ?? false)
     }
 
     /// Characters of instructions and prompt below which a request can't fill the model's context by itself.

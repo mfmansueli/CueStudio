@@ -60,6 +60,7 @@ struct LocalizationCatalogTests {
             "Apple Intelligence can’t translate between %1$@ and %2$@ yet.",
             "The result wasn’t in the right language, so your script is unchanged. Try again.",
             "Captions couldn’t listen for %@ in this take, so those parts may be missing. Check the lines or write them yourself.",
+            "Apple Intelligence needs a short break. Try again in a few minutes.",
         ]
         for language in CueLanguage.allCases where language != .english {
             let table = try #require(Self.strings(language.interfaceLocalization))

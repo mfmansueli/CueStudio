@@ -263,6 +263,21 @@ struct ScriptAIServiceFallbackTests {
         #expect(models == [.onDevice])
     }
 
+    @Test func aRateLimitIsNotRetriedAndIsToldAsARest() async {
+        var calls = 0
+        do {
+            _ = try await service().withFallback(plan(usable: [.onDevice, .privateCloud]), retriesRunaway: true) { _ -> String in
+                calls += 1
+                throw LanguageModelError.rateLimited(.init(resetDate: nil, debugDescription: "limited"))
+            }
+        } catch let error as ScriptAIError {
+            guard case .rateLimited = error else { Issue.record("Expected a rest, got \(error)"); return }
+            #expect(calls == 1)
+        } catch {
+            Issue.record("Unexpected \(error)")
+        }
+    }
+
     @Test func aPreparingModelIsToldAsSuch() async {
         do {
             _ = try await service().withFallback(plan()) { _ -> String in
@@ -273,5 +288,50 @@ struct ScriptAIServiceFallbackTests {
         } catch {
             Issue.record("Unexpected \(error)")
         }
+    }
+}
+
+// MARK: - A model that runs on, and one that is cut short
+
+@Suite("ScriptAIService runaway answers")
+@MainActor
+struct ScriptAIServiceRunawayTests {
+    private func request(_ range: ClosedRange<TimeInterval>) -> ScriptRequest {
+        ScriptRequest(source: .prompt("Why I quit coffee"), platform: .tiktok, tone: nil, voice: nil, targetRange: range, language: .english)
+    }
+
+    @Test func theBoundGrowsWithTheLengthAskedFor() {
+        let short = ScriptAIService.responseTokens(for: request(10...15))
+        let long = ScriptAIService.responseTokens(for: request(60...120))
+        #expect(short >= 600 && long > short && long <= 1_800)
+    }
+
+    /// What the model's stream holds partway, built the way the framework hands it over.
+    private func partial(title: String?, blocks: [(label: String, text: String?)]) throws -> ScriptDraft.PartiallyGenerated {
+        let items = blocks.map { block -> GeneratedContent in
+            var properties: [(String, any ConvertibleToGeneratedContent)] = [("label", block.label)]
+            if let text = block.text { properties.append(("text", text)) }
+            return GeneratedContent(properties: properties, uniquingKeysWith: { first, _ in first })
+        }
+        var properties: [(String, any ConvertibleToGeneratedContent)] = [("blocks", GeneratedContent(elements: items))]
+        if let title { properties.append(("title", title)) }
+        return try ScriptDraft.PartiallyGenerated(GeneratedContent(properties: properties, uniquingKeysWith: { first, _ in first }))
+    }
+
+    @Test func whatArrivedBeforeAModelRanOnIsTheScriptWhenThereIsEnoughOfIt() throws {
+        let draft = try partial(title: "Coffee", blocks: [
+            ("Hook", "Hey fam, I stopped drinking coffee for thirty days and I want to tell you what happened to me."),
+            ("Body", "The first week was hard, I was tired and my head hurt, but then my mornings got calmer and my focus came back."),
+            ("CTA", nil),
+        ])
+        let rescued = ScriptAIService.rescued(draft, request: request(30...45))
+        #expect(rescued?.blocks.count == 2)
+        #expect(rescued?.title == "Coffee")
+    }
+
+    @Test func aFewLinesBeforeAFailureAreNeverPassedOffAsAScript() throws {
+        let draft = try partial(title: "Coffee", blocks: [("Hook", "Hey fam, I stopped.")])
+        #expect(ScriptAIService.rescued(draft, request: request(30...45)) == nil)
+        #expect(ScriptAIService.rescued(nil, request: request(30...45)) == nil)
     }
 }

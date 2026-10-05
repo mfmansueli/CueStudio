@@ -34,6 +34,15 @@ struct AIFailureTests {
         #expect(AIFailure(error) == .modelPreparing)
     }
 
+    /// A rest is what a rate limited model needs: no retry, no other model.
+    @Test func aRateLimitAsksForARest() {
+        let error = LanguageModelError.rateLimited(.init(resetDate: nil, debugDescription: "limited"))
+        #expect(AIFailure(error) == .rateLimited)
+        #expect(AIModelRoute.onDevice.fallback(after: .rateLimited) == nil)
+        #expect(AIModelRoute.privateCloud.fallback(after: .rateLimited) == nil)
+        #expect(ScriptAIError.rateLimited.explainsItself)
+    }
+
     /// Stopping a request is not a failure to explain or to try elsewhere.
     @Test func aCancellationIsNotAFailure() {
         #expect(AIFailure(CancellationError()) == .cancelled)

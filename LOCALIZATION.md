@@ -304,10 +304,23 @@ no markdown, and the catchphrase present, in en, pt-BR, es, fr, de, ja, zh-TW an
   with the language stated firmly; the same for "In my voice". *Scripts a third of the length asked*: the minimum is now
   in the prompt (44 to 82 words before, 89 to 179 after, for 150 to 225 asked). *"Context size exceeded" on short requests*:
   retried once.
+- *The iPhone 18 Pro Max's model* (a different model from the 15 Pro's) wrote every script in **English** with "Write in my
+  voice" on (English voice instructions, an English catchphrase), in pt-BR, es and ja, even with the language stated in the
+  instructions; the check refused them. The language is now also asked for in the request itself, and they come back in the
+  language (pt-BR, es, de, ja, nl measured on the 15 Pro; pt-BR and es on the 18 Pro Max, the rest of that run was cut by the
+  rate limit below).
+- *Rate limit*: after a long run of scripts the model answers "rate limited" for a while. It is told as "needs a short break"
+  (new string, 20 languages), never retried at once, never sent to another model.
+- *A script that ran on* for 60 s and more before "context size exceeded": the answer is now bounded (three tokens a word of the
+  longest script asked) and what had arrived is kept when there is enough of it (two blocks and half the words).
+- *An empty answer* from the model, now and then, is retried once.
 - *Off-script filler* ("so", "and", "the") put the text up to 47 words ahead of the reader in a simulated reading; common
   words now count for less (4 words, `VoiceFollowingRobustnessTests`).
 
 **Not validated** (do not read the table as "20 languages fully validated")
+- The iPhone 18 Pro Max (iOS 27.0): only its availability list (en, es, pt-BR ready; 17 download on first use; none unavailable) and
+  Apple Intelligence writing (the same 16 languages written, the same 4 refused) were run; its Voice Following, captions and latency
+  runs were cut because the phone locked, and the rest of its Apple Intelligence run by the model's rate limit.
 - Quality of the generated text to a native speaker, and the voice's fidelity: only language, structure and length are measured.
 - Real human speech and accents, background noise in languages other than English, and long readings: fixtures are
   10 s of synthetic speech; the noise run is English only.

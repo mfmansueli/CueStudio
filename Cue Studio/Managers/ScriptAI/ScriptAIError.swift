@@ -19,13 +19,15 @@ nonisolated enum ScriptAIError: LocalizedError, Sendable {
     case modelPreparing
     /// What came back wasn't in the language it should have been; nothing was changed.
     case wrongLanguage
+    /// The model asks for a rest: too many requests lately.
+    case rateLimited
 
     /// Its message already tells the creator what is wrong and what to do (another language, wait,
     /// shorten); the others ("couldn't write it") are for Try again.
     var explainsItself: Bool {
         switch self {
         case .emptyResponse: false
-        case .modelUnavailable, .tooLong, .unsupportedLanguage, .unsupportedTranslation, .modelPreparing, .wrongLanguage: true
+        case .modelUnavailable, .tooLong, .unsupportedLanguage, .unsupportedTranslation, .modelPreparing, .wrongLanguage, .rateLimited: true
         }
     }
 
@@ -38,6 +40,7 @@ nonisolated enum ScriptAIError: LocalizedError, Sendable {
         case .unsupportedTranslation(let source, let target):
             String(localized: "Apple Intelligence can’t translate between \(source) and \(target) yet.")
         case .modelPreparing: String(localized: "Apple Intelligence is still getting ready. Try again in a few minutes.")
+        case .rateLimited: String(localized: "Apple Intelligence needs a short break. Try again in a few minutes.")
         case .wrongLanguage: String(localized: "The result wasn’t in the right language, so your script is unchanged. Try again.")
         }
     }

@@ -39549,6 +39549,130 @@
         }
       }
     },
+    "Apple Intelligence needs a short break. Try again in a few minutes." : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يحتاج Apple Intelligence إلى استراحة قصيرة. حاول مرة أخرى بعد بضع دقائق."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence har brug for en kort pause. Prøv igen om nogle minutter."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence braucht eine kurze Pause. Versuch es in ein paar Minuten noch einmal."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence needs a short break. Try again in a few minutes."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence necesita un respiro. Inténtalo de nuevo en unos minutos."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence a besoin d’une courte pause. Réessayez dans quelques minutes."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence को थोड़ा विराम चाहिए। कुछ मिनट बाद फिर कोशिश करें।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence perlu istirahat sebentar. Coba lagi dalam beberapa menit."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence ha bisogno di una pausa. Riprova tra qualche minuto."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligenceは少し休憩が必要です。数分後にもう一度お試しください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence가 잠시 쉬어야 해요. 몇 분 뒤에 다시 시도해 보세요."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence trenger en kort pause. Prøv igjen om noen minutter."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence heeft even rust nodig. Probeer het over een paar minuten opnieuw."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A Apple Intelligence precisa de uma pausa. Tente de novo em alguns minutos."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence behöver en kort paus. Försök igen om några minuter."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence ต้องพักสักครู่ ลองอีกครั้งในอีกไม่กี่นาที"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence’ın kısa bir ara vermesi gerekiyor. Birkaç dakika sonra tekrar dene."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence cần nghỉ một chút. Hãy thử lại sau vài phút."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence 需要稍作休息。请几分钟后再试。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence 需要稍作休息。請幾分鐘後再試。"
+          }
+        }
+      }
+    },
     "The result wasn’t in the right language, so your script is unchanged. Try again." : {
       "localizations" : {
         "ar" : {

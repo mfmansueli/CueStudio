@@ -159,6 +159,8 @@ struct LanguageModelDeviceTests {
     @Test(arguments: [CueLanguage.english, .portugueseBrazil, .spanish, .german, .japanese, .dutch])
     func aScriptInMyVoiceComesBackInTheCreatorsLanguage(language: CueLanguage) async throws {
         let service = try service(language)
+        // The model is rate limited after a long run of scripts: a pause between languages keeps this measuring the language.
+        try await Task.sleep(for: .seconds(20))
         let defaults = UserDefaults(suiteName: "ai-voice-\(UUID())") ?? .standard
         let profile = CreatorProfileService(defaults: defaults)
         profile.addPhrase("Hey fam")

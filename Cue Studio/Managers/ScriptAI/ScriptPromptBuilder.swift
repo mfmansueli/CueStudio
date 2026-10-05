@@ -61,7 +61,13 @@ nonisolated enum ScriptPromptBuilder {
         let structure = request.structure
         let low = ReadTime.words(for: request.targetRange.lowerBound)
         let high = ReadTime.words(for: request.targetRange.upperBound)
-        var lines = [
+        var lines: [String] = []
+        // On the iPhone 18 Pro Max the model wrote every script in English when the creator's voice (English instructions, an
+        // English catchphrase) was on, whatever the instructions said: the language is also asked for in the request itself.
+        if let language = request.language, language != .english || request.languageVariant != nil {
+            lines.append("Language of the script: \(languageName(language, variant: request.languageVariant)). Write all of it in \(languageName(language, variant: request.languageVariant)).")
+        }
+        lines += [
             "Write a \(structure.label.lowercased()) script for \(request.platform.destinationName).",
             "Blocks, in this order: \(structure.blocks.joined(separator: " → ")).",
         ]
