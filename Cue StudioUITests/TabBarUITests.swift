@@ -6,7 +6,8 @@
 import XCTest
 
 /// The tab bar is the system's (Liquid Glass): each tab becomes the selected one, Record opens "Start recording"
-/// without becoming selected, and the tab's content runs under the bar. `TEST_RUNNER_CUE_SCREENSHOT_DIR=<folder>`
+/// without becoming selected, the tab's content runs under the bar, and the bar never draws back while a list scrolls.
+/// `TEST_RUNNER_CUE_SCREENSHOT_DIR=<folder>`
 /// saves a picture of each tab.
 @MainActor
 final class TabBarUITests: XCTestCase {
@@ -31,6 +32,24 @@ final class TabBarUITests: XCTestCase {
                 try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
                 try app.screenshot().pngRepresentation.write(to: directory.appending(path: "tabbar-\(name.lowercased()).png"))
             }
+        }
+    }
+
+    /// The bar never draws back into the small pill while a list scrolls: every tab stays in reach. Takes is the list
+    /// that drew it back under `.onScrollDown`; the drawn-back bar keeps its frame but leaves one "Collapsed" button.
+    func testTheBarStaysWholeWhileAListScrolls() {
+        let app = CueApp.launch(seeded: true)
+        let takes = app.tabBars.buttons["Takes"]
+        XCTAssertTrue(takes.waitForExistence(timeout: 15))
+        takes.tap()
+        sleep(1)
+
+        for _ in 0..<3 { app.swipeUp() }
+        sleep(1)
+
+        XCTAssertEqual(app.tabBars.buttons.count, 5, "The tab bar drew back while the list scrolled")
+        for name in tabs + ["Record"] {
+            XCTAssertTrue(app.tabBars.buttons[name].isHittable, "\(name) is out of reach after scrolling")
         }
     }
 
