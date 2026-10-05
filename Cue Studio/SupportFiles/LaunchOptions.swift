@@ -30,6 +30,7 @@ import Foundation
 /// - `-uiTestVoiceTip`: the My Cue Voice tip needs no second day, script, wait or cap (tests of the tip itself); without it the
 ///   tip stays away in UI tests (they open the app on one day).
 /// - `-uiTestStarTransition`: the idea's star transition keeps its real timings (3 s at least); UI tests shorten it otherwise.
+/// - `-uiTestSlowWriting`: with the stub writer, the script's words arrive on the page slowly enough to look at the page mid-writing.
 /// - `-uiTestAppLanguage <lproj>`: with `-uiTestInMemory`, Cue's interface starts in that language
 ///   (as if picked in Language & Region) without changing the simulator's. The interface language
 ///   always lives in memory under `-uiTestInMemory`.
@@ -135,8 +136,8 @@ struct LaunchOptions {
             }
             if arguments.contains("-uiTestStubAI") || arguments.contains("-uiTestNoAI") {
                 options.writer = StubScriptWriter(available: !arguments.contains("-uiTestNoAI"))
-                // A test never waits for words to arrive one by one.
-                options.scriptRevealPause = .zero
+                // A test never waits for words to arrive one by one, unless it is looking at them arrive.
+                options.scriptRevealPause = arguments.contains("-uiTestSlowWriting") ? .milliseconds(2_000) : .zero
             }
         }
         #endif

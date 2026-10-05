@@ -9,11 +9,26 @@ import SwiftUI
 /// (`(.16, 1, .3, 1)`), flashing a 14 pt violet glow (`#C4B8FF` at 95%) that is gone 0.8 s later, 0.17 s after the word before it. A 2 pt violet
 /// caret blinks after the last word (1 s, on for the first half). It grows as `text` grows: the words already on the page stay, only the new ones
 /// arrive. Under Reduce Motion the new words fade in together and the caret stays lit. Never for what the creator types.
+///
+/// The words can come styled (`AttributedString`): a script's page hands in its text as its editor draws it, cues as tags, so the words
+/// arrive looking the way they will stay.
 struct ArrivingText: View {
-    let text: String
+    let text: AttributedString
     var size: CGFloat = 19
     var lineSpacing: CGFloat = 6
     var color: Color = Palette.ink
+
+    init(text: String, size: CGFloat = 19, lineSpacing: CGFloat = 6, color: Color = Palette.ink) {
+        self.init(styled: AttributedString(text), size: size, lineSpacing: lineSpacing, color: color)
+    }
+
+    /// Words with their own fonts and colours where they have them; the rest takes `size` and `color`.
+    init(styled text: AttributedString, size: CGFloat = 19, lineSpacing: CGFloat = 6, color: Color = Palette.ink) {
+        self.text = text
+        self.size = size
+        self.lineSpacing = lineSpacing
+        self.color = color
+    }
 
     /// Seconds between one word's arrival and the next.
     static let stagger = 0.17
@@ -36,7 +51,18 @@ struct ArrivingText: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel(Text(text))
+        .accessibilityLabel(Text(String(text.characters)))
+    }
+
+    /// The styled text cut the way `tokens(of:)` cuts its characters, each piece keeping its style.
+    static func tokens(of text: AttributedString) -> [AttributedString] {
+        let characters = text.characters
+        var start = characters.startIndex
+        return tokens(of: String(characters)).map { token in
+            let end = characters.index(start, offsetBy: token.count)
+            defer { start = end }
+            return AttributedString(text[start..<end])
+        }
     }
 
     /// Each word with the space or line break that follows it, so the paragraphs stay as written.
@@ -58,10 +84,8 @@ struct ArrivingText: View {
     }
 
     /// The tokens as one `Text`, each marked with its place (the renderer draws the caret after the last word to have arrived).
-    static func marked(_ words: [String]) -> Text {
-        words.enumerated().reduce(Text(verbatim: "")) { text, item in
-            Text("\(text)\(Text(verbatim: item.element).customAttribute(ArrivalIndex(index: item.offset)))")
-        }
+    static func marked(_ words: [AttributedString]) -> Text {
+        Text.joined(words.enumerated().map { Text($0.element).customAttribute(ArrivalIndex(index: $0.offset)) })
     }
 }
 

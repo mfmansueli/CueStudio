@@ -27,6 +27,8 @@ struct ScriptsView: View {
     /// The dock's field has the keyboard: the list dims.
     @State private var isDockEditing = false
     /// Whether the dock's first row is folded away by the list scrolling.
+    @State private var isDockFolded = false
+    /// Reads the scroll for the fold. It changes on every frame of a scroll without redrawing the screen; only `isDockFolded` does.
     @State private var dockFold = DockFold()
 
     /// Tells the idea card whether Apple Intelligence can write.
@@ -54,11 +56,15 @@ struct ScriptsView: View {
                         // The My Cue Voice question, 10 pt above the dock.
                         VoiceQuestionTipHost(isQuiet: isQuiet)
                         ScriptsDock(
-                            showsFormat: !isFirstVisit, isFolded: dockFold.isFolded, isEditing: $isDockEditing,
+                            showsFormat: !isFirstVisit, isFolded: isDockFolded, isEditing: $isDockEditing,
                             unavailableReason: writerUnavailableReason
                         )
                         .accessibilityIdentifier(isFirstVisit ? "empty.promptCard" : "scripts.promptCard")
                     }
+                    // The list doesn't feel the fold: the room the dock keeps under it stays the same (empty space, which lets touches
+                    // through, takes the folded row's place). A list whose end moved with the dock jumped by itself under it, which
+                    // unfolded the dock, which moved the list again.
+                    .padding(.top, isDockFolded ? ScriptsDock.foldHeight : 0)
                     .padding(.horizontal, 12)
                     .padding(.bottom, 8)
                     .transition(.move(edge: .bottom).combined(with: .opacity))
@@ -108,6 +114,12 @@ struct ScriptsView: View {
 
     private func endEditing() {
         UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+    }
+
+    /// Folds or unfolds the dock's first row as one movement: the row, the glass around it and the end of the list (09 §6).
+    private func foldDock(_ folded: Bool) {
+        guard folded != isDockFolded else { return }
+        withAnimation(reduceMotion ? nil : CueMotion.dockFold) { isDockFolded = folded }
     }
 
     /// Logbook and "+" in the bar's glass; the search is the bar's own (`.searchable`, which folds into its magnifier).
@@ -226,10 +238,19 @@ struct ScriptsView: View {
         .scrollContentBackground(.hidden)
         .environment(\.editMode, .constant(viewModel.isSelecting ? .active : .inactive))
         .scrollDismissesKeyboard(.immediately)
-        .onScrollGeometryChange(for: CGFloat.self) { $0.contentOffset.y + $0.contentInsets.top } action: { _, offset in
-            dockFold.update(offset: offset, isEditing: isDockEditing)
+        .onScrollGeometryChange(for: DockFold.Position.self) { geometry in
+            // From the top of the list (0) to the farthest it scrolls, whatever the bars above and the dock below cover.
+            DockFold.Position(
+                offset: geometry.contentOffset.y + geometry.contentInsets.top,
+                end: geometry.contentSize.height + geometry.contentInsets.top + geometry.contentInsets.bottom - geometry.containerSize.height
+            )
+        } action: { _, position in
+            foldDock(dockFold.update(position, isEditing: isDockEditing))
         }
-        .onChange(of: isDockEditing) { dockFold.update(offset: 0, isEditing: isDockEditing) }
+        .onScrollPhaseChange { _, phase in dockFold.phase = "\(phase)" }
+        .onChange(of: isDockEditing) { _, editing in
+            if editing { foldDock(dockFold.unfold()) }
+        }
         .safeAreaInset(edge: .bottom) {
             if viewModel.isSelecting {
                 SelectionBar(

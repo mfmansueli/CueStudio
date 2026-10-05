@@ -27,6 +27,10 @@ struct ScriptTextEditor: View {
 
     @ScaledMetric(relativeTo: .body) private var minimumHeight = 300.0
 
+    /// Where the editor's words sit inside it: the text view's 8 pt above and below, and 5 pt of line padding at each side. The page's
+    /// placeholder and the words the AI writes in (`ArrivingText`) sit there too.
+    static let textInsets = EdgeInsets(top: 8, leading: 5, bottom: 8, trailing: 5)
+
     var body: some View {
         TextEditor(text: $attributed, selection: $attributedSelection)
             .font(.system(size: textSize.points))
@@ -43,8 +47,8 @@ struct ScriptTextEditor: View {
                     Text("Just start talking…")
                         .font(.system(size: textSize.points))
                         .foregroundStyle(Palette.ink2)
-                        .padding(.top, 8)
-                        .padding(.leading, 5)
+                        .padding(.top, Self.textInsets.top)
+                        .padding(.leading, Self.textInsets.leading)
                         .allowsHitTesting(false)
                 }
             }

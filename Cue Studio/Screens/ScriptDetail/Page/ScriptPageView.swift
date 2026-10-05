@@ -21,6 +21,8 @@ struct ScriptPageView: View {
 
     @FocusState private var focus: ScriptPageFocus?
     @Environment(\.scenePhase) private var scenePhase
+    /// The editor's own minimum height, kept by the words the AI writes in too.
+    @ScaledMetric(relativeTo: .body) private var editorMinimumHeight = 300.0
 
     var body: some View {
         @Bindable var viewModel = viewModel
@@ -33,24 +35,30 @@ struct ScriptPageView: View {
                             wordsAndTime: wordsAndTime,
                             isWriting: viewModel.page.isWriting,
                             focus: $focus,
-                            onStop: viewModel.stopWriting,
                             onSubmitTitle: { focus = .text }
                         )
-                        if let strip = viewModel.strip, !viewModel.page.isWriting {
-                            ScriptStateStrip(strip: strip, onShape: viewModel.shape, onDone: done)
-                                .padding(.top, 12)
+                        // While the AI writes, the page is already the one it will be: the strip (with Stop), the voice question
+                        // and the fact check are in their places, waiting, so nothing moves when the writing ends.
+                        if let strip = viewModel.strip {
+                            ScriptStateStrip(
+                                strip: strip, onShape: viewModel.shape, onDone: done,
+                                onStop: stop
+                            )
+                            .padding(.top, 12)
                         }
                         if viewModel.showsVoicePreview, let preview = viewModel.page.voicePreview {
                             VoicePreviewStrip(
                                 showing: preview.showing, isLoading: preview.isLoadingWithout,
                                 onShow: viewModel.showVoice, onApprove: viewModel.approveVoice, onAdjust: viewModel.openVoiceAdjust
                             )
+                            .disabled(viewModel.page.isWriting)
                             .padding(.top, 12)
                         }
                         ScriptLengthBar(zone: viewModel.zone)
                             .padding(.top, 14)
                         if viewModel.needsFactCheck {
                             FactCheckBanner(onChecked: viewModel.markFactChecked)
+                                .disabled(viewModel.page.isWriting)
                                 .padding(.top, 12)
                         }
                         tools
@@ -153,6 +161,12 @@ struct ScriptPageView: View {
 
     // MARK: - Pieces
 
+    /// Stop, while the AI writes.
+    private var stop: (() -> Void)? {
+        guard viewModel.page.isWriting else { return nil }
+        return { viewModel.stopWriting() }
+    }
+
     /// "113 WORDS · ~0:45"
     private var wordsAndTime: String {
         let zone = viewModel.zone
@@ -208,9 +222,12 @@ struct ScriptPageView: View {
     @ViewBuilder
     private var editor: some View {
         if viewModel.page.isWriting {
-            // The AI's words arrive from light, one after another (4.1); the editor comes back when the script is written.
-            ArrivingText(text: viewModel.page.revealed ?? "", size: viewModel.page.textSize.points)
-                .frame(minHeight: 300, alignment: .topLeading)
+            // The AI's words arrive from light, one after another (4.1), drawn the way the editor that comes back will draw them:
+            // the same insets, size and cue tags, so they arrive where they stay.
+            let size = viewModel.page.textSize.points
+            ArrivingText(styled: ScriptTextEditor.styled(viewModel.page.revealed ?? "", passage: nil, size: size), size: size)
+                .padding(ScriptTextEditor.textInsets)
+                .frame(minHeight: editorMinimumHeight, alignment: .topLeading)
                 .id("page.editor")
                 .accessibilityIdentifier("page.writingText")
         } else {

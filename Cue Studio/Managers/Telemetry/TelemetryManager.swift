@@ -4,6 +4,7 @@
 //
 
 import FirebaseCore
+import FirebaseCrashlytics
 import Foundation
 
 /// Analytics and crash reports, through Firebase (project `cuestudio-app`, `SupportFiles/GoogleService-Info.plist`).
@@ -15,5 +16,15 @@ enum TelemetryManager {
     static func start(process: ProcessInfo = .processInfo) {
         guard TelemetryPolicy.sendsReports(arguments: process.arguments, environment: process.environment) else { return }
         FirebaseApp.configure()
+    }
+
+    /// An Apple Intelligence request that failed in front of the creator, as a non-fatal report (sent with the next launch): one issue
+    /// per reason, with the conditions as its keys and the log line before it. Never the words. Nothing when Firebase isn't running
+    /// (tests, previews).
+    static func record(_ failure: AIFailureReport) {
+        guard FirebaseApp.app() != nil else { return }
+        let crashlytics = Crashlytics.crashlytics()
+        crashlytics.log(failure.line)
+        crashlytics.record(error: NSError(domain: "AppleIntelligence.\(failure.operation).\(failure.reason)", code: 0, userInfo: failure.keys))
     }
 }

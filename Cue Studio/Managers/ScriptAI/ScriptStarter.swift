@@ -68,6 +68,7 @@ final class ScriptStarter {
         // A language Apple Intelligence doesn't write is told now, not after three seconds of star: the idea
         // becomes a blank draft to write by hand, the way it does without Apple Intelligence.
         if let failure = writer.writingFailure(in: request.language.map { [$0.locale.language] } ?? []) {
+            AIFailureReport.note(failure, operation: "script", route: nil, language: request.language?.locale.identifier, seconds: 0, isFinal: true)
             toast.show(failure.error().localizedDescription)
             return writeByHand(idea: text, format: request.format, comment: comment)
         }

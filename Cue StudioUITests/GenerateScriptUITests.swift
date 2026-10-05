@@ -103,9 +103,10 @@ final class GenerateScriptUITests: XCTestCase {
         field.tap()
         field.typeText("Why I quit coffee for 30 days")
         app.buttons["ideaCard.submit"].tap()
-        // The stub answers at once, so by the time the page is up the writing is done and Stop is gone.
+        // The stub answers at once, so by the time the page is up the writing is done and Stop is gone: the strip has Done in its
+        // place (the "Draft ready" toast is too short-lived to wait for; the view model's tests check it).
         XCTAssertTrue(app.pageBackButton.waitForExistence(timeout: 10))
-        XCTAssertTrue(app.staticTexts.matching(NSPredicate(format: "label CONTAINS 'Draft ready'")).firstMatch.waitForExistence(timeout: 10))
+        XCTAssertTrue(app.buttons["page.doneButton"].waitForExistence(timeout: 10))
         XCTAssertFalse(app.buttons["page.stopButton"].exists)
     }
 

@@ -45,10 +45,9 @@ struct WordsFromLight: View {
 
     /// The text with each word marked by its index, which the renderer reads.
     static func marked(words: [Substring]) -> Text {
-        words.enumerated().reduce(Text(verbatim: "")) { text, item in
-            let word = Text(verbatim: item.offset == 0 ? String(item.element) : " " + item.element).customAttribute(WordIndexAttribute(index: item.offset))
-            return Text("\(text)\(word)")
-        }
+        Text.joined(words.enumerated().map { index, word in
+            Text(verbatim: index == 0 ? String(word) : " " + word).customAttribute(WordIndexAttribute(index: index))
+        })
     }
 }
 

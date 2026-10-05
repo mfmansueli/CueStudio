@@ -8,9 +8,9 @@ import Foundation
 /// The script as the preview of My Cue Voice: "My Cue Voice | Without", "Sounds like me" and "Adjust".
 extension ScriptDetailViewModel {
     /// Whether the strip shows: the script was just written in the creator's voice, and they haven't
-    /// said it sounds like them.
+    /// said it sounds like them. It is there (waiting) while the words arrive, so the page doesn't move when they're done.
     var showsVoicePreview: Bool {
-        page.voicePreview != nil && !profile.profile.voiceApproved && !page.isWriting
+        page.voicePreview != nil && !profile.profile.voiceApproved
     }
 
     /// The words on the page: the neutral version while "Without" is chosen.
