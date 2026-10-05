@@ -171,6 +171,28 @@ final class OnboardingUITests: XCTestCase {
         XCTAssertTrue(element(app, "practice.chip").waitForExistence(timeout: 10))
     }
 
+    /// The practice has the recorder's own controls (Voice | Steady, play, speed) over the camera, and both ways out stay in reach.
+    func testThePracticeHasTheRecordersControlsAndBothWaysOut() {
+        let app = launch()
+        startFlight(app)
+        pick(app, "onboarding.topic.niche.food")
+        app.buttons["onboarding.continue"].tap()
+        pick(app, "onboarding.platform.tiktok")
+        app.buttons["onboarding.continue"].tap()
+        useScript(app)
+        XCTAssertTrue(element(app, "onboarding.permission.microphone").waitForExistence(timeout: 8))
+        app.buttons["onboarding.continue"].tap()
+        XCTAssertTrue(element(app, "practice.chip").waitForExistence(timeout: 10))
+        let steady = app.buttons["prompter.scrollMode.steady"]
+        XCTAssertTrue(steady.waitForExistence(timeout: 5))
+        steady.tap()
+        XCTAssertTrue(steady.isSelected)
+        XCTAssertTrue(app.buttons["practice.play"].exists)
+        XCTAssertTrue(app.buttons["practice.recordForReal"].isHittable)
+        XCTAssertTrue(app.buttons["practice.notNow"].isHittable)
+        shot(app, "6b-practice-controls")
+    }
+
     /// Skip goes straight to the Scripts empty state.
     func testSkipGoesToTheEmptyScriptsScreen() {
         let app = launch()
@@ -190,8 +212,17 @@ final class OnboardingUITests: XCTestCase {
         XCTAssertTrue(field.waitForExistence(timeout: 5))
         field.typeText("Budget travel")
         app.buttons["Add"].tap()
-        XCTAssertTrue(app.buttons["onboarding.topic.custom.budget travel"].waitForExistence(timeout: 5) || app.buttons["onboarding.continue"].isEnabled)
+        // It joins the list as a chip, picked; tapping it lets go, and again picks it back.
+        let chip = app.buttons["onboarding.topic.custom.budget travel"]
+        XCTAssertTrue(chip.waitForExistence(timeout: 5))
+        XCTAssertTrue(chip.isSelected)
         XCTAssertTrue(app.buttons["onboarding.continue"].isEnabled)
+        chip.tap()
+        XCTAssertTrue(chip.exists, "let go of, the chip stays in the list")
+        XCTAssertFalse(chip.isSelected)
+        XCTAssertFalse(app.buttons["onboarding.continue"].isEnabled)
+        chip.tap()
+        XCTAssertTrue(chip.isSelected)
     }
 
     /// 1.2: a word Apple Intelligence won't use is refused inline, and nothing is added.

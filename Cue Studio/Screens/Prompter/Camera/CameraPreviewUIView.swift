@@ -8,7 +8,7 @@ import UIKit
 
 /// Hosts the capture preview layer and keeps preview and recording upright with a rotation coordinator.
 /// The layer shows the whole camera image (aspect fit), and reports where it landed so the overlays
-/// match what is really recorded.
+/// match what is really recorded. The practice run, which records nothing, fills the view instead.
 final class CameraPreviewUIView: UIView {
     override static var layerClass: AnyClass { AVCaptureVideoPreviewLayer.self }
 
@@ -26,12 +26,21 @@ final class CameraPreviewUIView: UIView {
     private var deviceID: String?
     private var reportedVideoRect: CGRect?
 
+    /// The practice fills the view with the image (cropping it) because nothing is recorded; a take never does.
+    var fillsFrame = false {
+        didSet {
+            guard fillsFrame != oldValue else { return }
+            previewLayer.videoGravity = fillsFrame ? .resizeAspectFill : .resizeAspect
+            setNeedsLayout()
+        }
+    }
+
     func attach(_ session: AVCaptureSession) {
         if previewLayer.session !== session {
             previewLayer.session = session
         }
-        // Never fill: the preview must show exactly the frame that is recorded, not a crop of it.
-        previewLayer.videoGravity = .resizeAspect
+        // A take never fills: the preview must show exactly the frame that is recorded, not a crop of it.
+        previewLayer.videoGravity = fillsFrame ? .resizeAspectFill : .resizeAspect
     }
 
     override func layoutSubviews() {
@@ -41,7 +50,8 @@ final class CameraPreviewUIView: UIView {
 
     /// The whole image in metadata space (0...1) converted to the layer, then to the window.
     private func reportVideoRect() {
-        guard let window else { return }
+        // Filled, the image reaches past the view: there is no frame to report.
+        guard !fillsFrame, let window else { return }
         let rect = previewLayer.layerRectConverted(fromMetadataOutputRect: CGRect(x: 0, y: 0, width: 1, height: 1))
         guard rect.width > 1, rect.height > 1, rect.width.isFinite, rect.height.isFinite else { return }
         let inWindow = convert(rect, to: window).integral

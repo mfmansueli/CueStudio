@@ -27,6 +27,20 @@ final class PreferencesService {
         camera = Self.load(CameraSettings.self, key: DefaultsKey.cameraSettings, from: defaults) ?? CameraSettings()
         // The reading line's first-time tip is gone; so is the flag it left behind.
         defaults.removeObject(forKey: DefaultsKey.legacyReadingLineTipSeen)
+        resetLowReadingLineOnce()
+    }
+
+    /// A line farther than this below the lens (about a third of the screen) puts the text box in the middle of it, not near the top.
+    static let lowestUsualLineOffset: Double = 260
+
+    /// Once, in v30: a reading line saved lower than that (from the old Settings slider) is cleared, so the box opens near the top
+    /// again, where Cue recommends. From then on the prompter remembers whatever the creator sets (`SessionSetupService.rememberReadingLayout`).
+    private func resetLowReadingLineOnce() {
+        guard !defaults.bool(forKey: DefaultsKey.readingLineResetV30) else { return }
+        defaults.set(true, forKey: DefaultsKey.readingLineResetV30)
+        guard let offset = prompter.readingLineOffset, offset > Self.lowestUsualLineOffset else { return }
+        prompter.readingLineOffset = nil
+        store(prompter, key: DefaultsKey.prompterSettings)
     }
 
     // MARK: - Creator Setup

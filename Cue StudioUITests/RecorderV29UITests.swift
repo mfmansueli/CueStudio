@@ -5,8 +5,8 @@
 
 import XCTest
 
-/// The recorder (v29 · 5.2 and 5.3) with a stand-in camera (`-uiTestDemoCamera`: the Simulator has none): the whole bar when idle, the compact
-/// one while recording, the box that shrinks, a tap that brings the whole bar back, Studio with its thumbnail. 
+/// The recorder (v29 · 5.2) with a stand-in camera (`-uiTestDemoCamera`: the Simulator has none): the whole bar when idle, the compact
+/// one while recording, the box that shrinks and a tap that brings the whole bar back (Studio is in `StudioUITests`).
 /// `TEST_RUNNER_CUE_SCREENSHOT_DIR=<folder>` saves a picture of each state.
 @MainActor
 final class RecorderV29UITests: XCTestCase {
@@ -26,15 +26,11 @@ final class RecorderV29UITests: XCTestCase {
         app.descendants(matching: .any)[id].firstMatch
     }
 
-    private func launchRecorder(studio: Bool = false) -> XCUIApplication {
+    private func launchRecorder() -> XCUIApplication {
         let app = CueApp.launch(seeded: true, extraArguments: ["-uiTestDemoCamera"])
-        if studio {
-            app.openStudio(titled: "Oat & Co. — sponsored read")
-        } else {
-            let record = app.buttons["row.recordButton"].firstMatch
-            XCTAssertTrue(record.waitForExistence(timeout: 15))
-            record.tap()
-        }
+        let record = app.buttons["row.recordButton"].firstMatch
+        XCTAssertTrue(record.waitForExistence(timeout: 15))
+        record.tap()
         XCTAssertTrue(app.buttons["prompter.recordButton"].waitForExistence(timeout: 10))
         return app
     }
@@ -65,19 +61,14 @@ final class RecorderV29UITests: XCTestCase {
         XCTAssertTrue(app.buttons["review.shareButton"].waitForExistence(timeout: 20) || element(app, "review.takeLabel").waitForExistence(timeout: 20))
     }
 
-    func testStudioRecordsWithTheRearCameraThumbnailAndTheSameCompactBar() throws {
-        let app = launchRecorder(studio: true)
-        XCTAssertTrue(element(app, "prompter.studioPreview").waitForExistence(timeout: 5))
-        XCTAssertTrue(app.buttons["prompter.scrollMode.voice"].exists)
-        // The thumbnail never covers the text: it sits to the right of it.
-        let text = element(app, "prompter.text")
-        if text.exists { XCTAssertLessThanOrEqual(text.frame.maxX, element(app, "prompter.studioPreview").frame.minX + 1) }
-        try capture(app, "5.3_studio_idle")
-        app.buttons["prompter.recordButton"].tap()
-        XCTAssertTrue(element(app, "prompter.compactBar").waitForExistence(timeout: 12))
-        try capture(app, "5.3_studio_recording")
-        app.buttons["prompter.recordButton"].tap()
-        XCTAssertTrue(app.buttons["review.shareButton"].waitForExistence(timeout: 20) || element(app, "review.takeLabel").waitForExistence(timeout: 20))
+    /// The text box opens near the top of the screen, under the lens, not in the middle of it.
+    func testTheBoxOpensNearTheTop() throws {
+        let app = launchRecorder()
+        let box = element(app, "prompter.text")
+        XCTAssertTrue(box.waitForExistence(timeout: 5))
+        XCTAssertLessThan(box.frame.minY, app.frame.height * 0.25, "the box starts in the top quarter")
+        XCTAssertLessThan(box.frame.midY, app.frame.height * 0.5, "its middle is above the middle of the screen")
+        try capture(app, "5.2_box_top")
     }
 
     func testThereIsNoHideControlsButton() {

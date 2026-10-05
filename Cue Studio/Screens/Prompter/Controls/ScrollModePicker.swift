@@ -9,6 +9,8 @@ import SwiftUI
 /// chosen segment in gray (`segmentOn`). Voice carries a little waveform, Steady a scroll mark.
 struct ScrollModePicker: View {
     let selection: ScrollMode
+    /// False when Voice Following can't listen (the practice without the microphone): its segment is dimmed and inert.
+    var isVoiceAvailable = true
     let onSelect: (ScrollMode) -> Void
 
     var body: some View {
@@ -24,6 +26,7 @@ struct ScrollModePicker: View {
 
     private func segment(_ mode: ScrollMode) -> some View {
         let isOn = selection == mode
+        let isAvailable = mode != .voice || isVoiceAvailable
         return Button { onSelect(mode) } label: {
             HStack(spacing: 6) {
                 switch mode {
@@ -42,6 +45,8 @@ struct ScrollModePicker: View {
             .contentShape(Capsule())
         }
         .buttonStyle(.plain)
+        .disabled(!isAvailable)
+        .opacity(isAvailable ? 1 : 0.4)
         .accessibilityLabel(Text(mode.label))
         .accessibilityAddTraits(isOn ? .isSelected : [])
         .accessibilityIdentifier("prompter.scrollMode.\(mode.rawValue)")

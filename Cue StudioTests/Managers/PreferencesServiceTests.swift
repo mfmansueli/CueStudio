@@ -106,4 +106,28 @@ struct PreferencesServiceTests {
         let service = PreferencesService(defaults: store.defaults)
         #expect(service.prompter == PrompterSettings())
     }
+
+    // MARK: - The reading line saved before v30
+
+    @Test func aLowReadingLineSavedBeforeV30IsClearedOnce() throws {
+        let store = TestDefaults()
+        defer { store.tearDown() }
+        var old = PrompterSettings()
+        old.readingLineOffset = 300
+        store.defaults.set(try JSONEncoder().encode(old), forKey: DefaultsKey.prompterSettings)
+        let service = PreferencesService(defaults: store.defaults)
+        #expect(service.prompter.readingLineOffset == nil, "the box opens near the top again")
+        // From then on whatever the creator sets stays.
+        service.prompter.readingLineOffset = 300
+        #expect(PreferencesService(defaults: store.defaults).prompter.readingLineOffset == 300)
+    }
+
+    @Test func aReadingLineNearTheCameraIsKept() throws {
+        let store = TestDefaults()
+        defer { store.tearDown() }
+        var saved = PrompterSettings()
+        saved.readingLineOffset = 120
+        store.defaults.set(try JSONEncoder().encode(saved), forKey: DefaultsKey.prompterSettings)
+        #expect(PreferencesService(defaults: store.defaults).prompter.readingLineOffset == 120)
+    }
 }

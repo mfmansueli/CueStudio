@@ -9,8 +9,8 @@ import Foundation
 import Testing
 @testable import Cue_Studio
 
-/// The v29 recorder (5.2 and 5.3): the box that shrinks while recording, the pinch on the right edge, Studio recording through the
-/// rear camera and what happens when a take ends on its own (04 · F3).
+/// The v29 recorder (5.2): the box that shrinks while recording, the pinch on the right edge, Studio as a prompter only (v30) and what
+/// happens when a take ends on its own (04 · F3).
 @MainActor
 @Suite("Recorder v29")
 struct PrompterV29Tests {
@@ -99,29 +99,52 @@ struct PrompterV29Tests {
 
     // MARK: - Studio
 
-    @Test func studioRecordsThroughTheRearCameraAndSelfieGetsItsLensBack() async {
-        let scenario = makeScenario()
-        defer { scenario.defaults.tearDown() }
-        await scenario.viewModel.appear()
-        #expect(scenario.camera.startedSettings.last?.lens == .front)
-        await scenario.viewModel.switchMode(to: .studio)
-        #expect(scenario.camera.startedSettings.last?.lens == .wide)
-        #expect(scenario.viewModel.session.camera.lens == .wide)
-        await scenario.viewModel.switchMode(to: .selfie)
-        #expect(scenario.camera.startedSettings.last?.lens == .front)
-        #expect(scenario.viewModel.session.camera.lens == .front)
-    }
-
-    @Test func aTakeRecordedInStudioIsFiledLikeAnyOther() async {
+    @Test func studioNeverStartsTheCameraAndSelfieGetsItBack() async {
         let scenario = makeScenario(mode: .studio)
         defer { scenario.defaults.tearDown() }
         await scenario.viewModel.appear()
+        #expect(scenario.camera.startCount == 0, "Studio is only the prompter: no camera")
+        #expect(scenario.camera.stopCount == 1)
+        await scenario.viewModel.switchMode(to: .selfie)
+        #expect(scenario.camera.startedSettings.last?.lens == .front)
+        #expect(scenario.viewModel.session.camera.lens == .front)
+        await scenario.viewModel.switchMode(to: .studio)
+        #expect(scenario.viewModel.session.camera.lens == .front, "the lens is never touched")
+    }
+
+    @Test func studioHasNothingToRecord() async {
+        let scenario = makeScenario(mode: .studio)
+        defer { scenario.defaults.tearDown() }
+        scenario.camera.status = .unavailable
+        await scenario.viewModel.appear()
         await scenario.viewModel.recordButtonTapped()
-        #expect(scenario.viewModel.isRecording)
-        // Stopping short of the platform's minimum asks first; "Stop anyway" files the take.
-        await scenario.viewModel.stopAnyway()
-        #expect(scenario.takes.takes.count == 1)
-        #expect(scenario.viewModel.reviewingTake != nil)
+        #expect(!scenario.viewModel.isRecording)
+        #expect(scenario.takes.takes.isEmpty)
+    }
+
+    @Test func playFromTheTopInStudioCountsDownFirstAndATapCancelsIt() async {
+        let scenario = makeScenario(mode: .studio)
+        defer { scenario.defaults.tearDown() }
+        scenario.viewModel.session.camera.countdown = .three
+        scenario.viewModel.togglePlay()
+        #expect(scenario.viewModel.countdown == 3)
+        #expect(!scenario.viewModel.isPlaying)
+        scenario.viewModel.togglePlay()
+        #expect(scenario.viewModel.countdown == nil)
+        #expect(!scenario.viewModel.isPlaying)
+    }
+
+    @Test func studioPlaysAtOnceWithNoCountdownOrAwayFromTheTop() {
+        let scenario = makeScenario(mode: .studio)
+        defer { scenario.defaults.tearDown() }
+        scenario.viewModel.togglePlay()
+        #expect(scenario.viewModel.isPlaying && scenario.viewModel.countdown == nil, "countdown Off")
+        scenario.viewModel.pause()
+        scenario.viewModel.session.camera.countdown = .three
+        scenario.viewModel.updateLayout(contentHeight: 3000)
+        scenario.viewModel.jump(lines: 20)
+        scenario.viewModel.togglePlay()
+        #expect(scenario.viewModel.isPlaying && scenario.viewModel.countdown == nil, "resuming is not starting")
     }
 
     @Test func theFirstTakeGoesStraightToItsReviewAndTheSecondStartsOnPickYourBest() async {

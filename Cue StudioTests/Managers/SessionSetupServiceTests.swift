@@ -157,4 +157,45 @@ struct SessionSetupServiceTests {
         #expect(preferences.prompter.margin == PrompterSettings().margin)
     }
 
+    // MARK: - Remembering the layout
+
+    @Test func theLayoutTheCreatorLeftIsWhatTheNextSessionOpensWith() {
+        let defaults = TestDefaults()
+        defer { defaults.tearDown() }
+        let (session, preferences) = makeService(defaults)
+        session.prompter.readingLineOffset = 90
+        session.prompter.textWindowHeight = 240
+        session.prompter.readingWidth = 0.8
+        session.prompter.size = 44
+        session.prompter.speed = 0.9
+        session.prompter.guidePosition = 0.2
+        session.prompter.margin = 12
+        session.prompter.isMirrored = true
+        session.prompter.scrollMode = .voice
+        #expect(preferences.prompter.readingLineOffset == nil, "nothing is saved while the session is open")
+        session.rememberReadingLayout()
+        let next = SessionSetupService(preferences: PreferencesService(defaults: defaults.defaults)).prompter
+        #expect(next.readingLineOffset == 90)
+        #expect(next.textWindowHeight == 240)
+        #expect(next.readingWidth == 0.8)
+        #expect(next.size == 44)
+        #expect(next.speed == 0.9)
+        #expect(next.guidePosition == 0.2)
+        #expect(next.margin == 12)
+        #expect(next.isMirrored)
+        #expect(next.scrollMode == .voice)
+    }
+
+    @Test func rememberingTheLayoutLeavesEverythingElseAlone() {
+        let defaults = TestDefaults()
+        defer { defaults.tearDown() }
+        let (session, preferences) = makeService(defaults)
+        session.camera.resolution = .hd720
+        session.prompter.font = .serif
+        session.prompter.size = 30
+        session.rememberReadingLayout()
+        #expect(preferences.prompter.size == 30)
+        #expect(preferences.prompter.font == .lexend, "only the layout is kept")
+        #expect(preferences.camera.resolution == .uhd4K, "a change for one take stays with the take")
+    }
 }

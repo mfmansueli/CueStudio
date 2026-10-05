@@ -8,6 +8,8 @@ import Foundation
 /// Every UserDefaults key in one place, so no screen repeats a raw string.
 nonisolated enum DefaultsKey {
     static let prompterSettings = "prompterSettings"
+    /// The reading line saved before v30 that sat low enough to put the text box in the middle of the screen was cleared once.
+    static let readingLineResetV30 = "readingLineResetV30"
     static let cameraSettings = "cameraSettings"
     /// The language Voice Following listens for (`CueLanguage` raw value); absent = the script's.
     static let voiceFollowingLanguage = "voiceFollowingLanguage"

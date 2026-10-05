@@ -53,14 +53,20 @@ struct SelfieModeView: View {
 
     private func cameraLayers(_ geometry: FrameGeometry) -> some View {
         ZStack {
-            CameraBackdrop(sensorRect: FrameGeometry.sensorRect(in: viewModel.screenMetrics.screen)) { rect in
-                viewModel.cameraImageMoved(to: rect)
-            }
-            if session.camera.showsGrid {
+            // The practice records nothing: the camera covers the whole screen, with no frame, grid or safe zone.
+            let screen = viewModel.screenMetrics.screen
+            CameraBackdrop(
+                sensorRect: viewModel.isPractice ? CGRect(origin: .zero, size: screen) : FrameGeometry.sensorRect(in: screen),
+                onVideoRectChange: { rect in viewModel.cameraImageMoved(to: rect) },
+                fillsScreen: viewModel.isPractice
+            )
+            if session.camera.showsGrid, !viewModel.isPractice {
                 GridOverlay(frame: geometry.frameRect)
             }
-            FrameGuideOverlay(frame: geometry.frameRect)
-            if viewModel.showsSafeZone, let zone = viewModel.safeZone, let content = viewModel.safeZoneContentRect {
+            if !viewModel.isPractice {
+                FrameGuideOverlay(frame: geometry.frameRect)
+            }
+            if !viewModel.isPractice, viewModel.showsSafeZone, let zone = viewModel.safeZone, let content = viewModel.safeZoneContentRect {
                 SafeZoneOverlay(frame: geometry.frameRect, content: content, label: zone.overlayLabel)
                     .transition(.opacity)
             }
@@ -174,7 +180,7 @@ struct SelfieModeView: View {
             }
             Group {
                 if viewModel.isPractice {
-                    PracticeBottomBar(onChoose: onPractice)
+                    PracticeBottomBar(viewModel: viewModel, onChoose: onPractice)
                 } else {
                     SelfieControlPanel(viewModel: viewModel)
                 }
