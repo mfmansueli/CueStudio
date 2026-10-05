@@ -19,6 +19,8 @@ tomadas. Atualize-o junto com a UI.
 
 ## Build e testes
 
+- **Build settings em `Config/*.xcconfig`** (`Project`, `App`, `UnitTests`, `UITests`), nunca no `project.pbxproj`: mude o
+  arquivo de texto, não o editor de Build Settings do Xcode (ele grava no projeto, e `scripts/check-project.sh` acusa).
 - Scheme compartilhado `Cue Studio` (app + `Cue StudioTests` + `Cue StudioUITests`), Swift 6, iOS 27. Testes por planos
   (`TestPlans/`): **Full** (o padrão do ⌘U: unidade + UI) e **Fast** (unidade sem as exportações reais, tag `.realExports`).
 - **Build e testes pelos scripts** (`scripts/`), não por `xcodebuild` solto: um derivedData por checkout (`build/`), pacotes
@@ -29,6 +31,7 @@ tomadas. Atualize-o junto com a UI.
     e `--repeat N`. Durante o trabalho, `fast` ou `only`; `full` no fim. Testes de aparelho: `CUE_DEVICE=<iPhone>
     scripts/test.sh device <Suite>` (um conjunto por vez; liga a variável `TEST_RUNNER_CUE_…` certa).
   - `scripts/check-warnings.sh`: a conferência de zero warnings (abaixo).
+  - `scripts/check-project.sh`: em segundos, confere `project.pbxproj`, os `.xcconfig`, o scheme e os planos de teste.
   - `scripts/strings.py`: o String Catalog sem editar o JSON à mão (`add` com os 20 idiomas, `missing`, `stale --remove`).
 - **Zero warnings.** Todo build termina sem nenhum warning (compilador, SwiftLint, ferramentas do
   Xcode): se um build mostrar um warning, corrija na mesma entrega, mesmo que não tenha vindo da sua

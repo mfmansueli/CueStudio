@@ -16,6 +16,8 @@ elif [ $# -gt 0 ]; then
     exit 64
 fi
 
+"$REPO_ROOT/scripts/check-project.sh"
+
 intermediates="$DERIVED_DATA/Build/Intermediates.noindex/Cue Studio.build"
 found=0
 failed=0
