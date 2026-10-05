@@ -19,6 +19,9 @@ nonisolated struct ScriptSpeechTracker: Equatable, Sendable {
     let language: CueLanguage?
     /// Index of the next word to read; `words.count` once the whole script has been read.
     private(set) var position = 0
+    /// What an exact match of each script word is worth (`exactMatch`, or `commonMatch` for the words
+    /// the script keeps repeating: its "the", "de", "e").
+    private let weights: [Int]
 
     /// Recent words heard that take part in a match: enough context to tell repeated phrases apart.
     private static let heardWindow = 8
@@ -28,6 +31,15 @@ nonisolated struct ScriptSpeechTracker: Equatable, Sendable {
     private static let lookAhead = 60
 
     private static let exactMatch = 2
+    /// A word that appears this many times in the script is common in it.
+    private static let commonRepeats = 3
+    /// Exact matches of common words count for less, so a lone one never moves the text: talk that
+    /// isn't in the script ("so", "and", "the" while the creator thinks aloud) matches them anywhere, and
+    /// scattered ones used to add up to a jump of dozens of words. Reading the script in order still
+    /// finds its rarer words, which carry the match. Measured on synthetic readings with off-script
+    /// filler (`VoiceFollowingRobustnessTests`): the text ended up to 47 words ahead of the reader (95th
+    /// percentile, English) before, 4 after, with a clean reading still followed to the end.
+    private static let commonMatch = 1
     private static let closeMatch = 1
     private static let mismatch = -1
     private static let gap = -1
@@ -35,6 +47,9 @@ nonisolated struct ScriptSpeechTracker: Equatable, Sendable {
     init(words: [String], language: CueLanguage? = nil) {
         self.words = words
         self.language = language
+        var counts: [String: Int] = [:]
+        for word in words { counts[word, default: 0] += 1 }
+        weights = words.map { counts[$0, default: 0] >= Self.commonRepeats ? Self.commonMatch : Self.exactMatch }
     }
 
     mutating func reset(to position: Int) {
@@ -60,11 +75,12 @@ nonisolated struct ScriptSpeechTracker: Equatable, Sendable {
     /// matches convincingly for the distance it would move.
     private func bestMatch(for heard: [String], in window: Range<Int>) -> Int? {
         let script = Array(words[window])
+        let worth = Array(weights[window])
         var previous = [Int](repeating: 0, count: script.count + 1)
         for word in heard {
             var row = [Int](repeating: 0, count: script.count + 1)
             for column in 1...script.count {
-                let diagonal = previous[column - 1] + Self.similarity(word, script[column - 1])
+                let diagonal = previous[column - 1] + Self.similarity(word, script[column - 1], exact: worth[column - 1])
                 row[column] = max(0, diagonal, previous[column] + Self.gap, row[column - 1] + Self.gap)
             }
             previous = row
@@ -94,8 +110,8 @@ nonisolated struct ScriptSpeechTracker: Equatable, Sendable {
         }
     }
 
-    private static func similarity(_ heard: String, _ word: String) -> Int {
-        if heard == word { return exactMatch }
+    private static func similarity(_ heard: String, _ word: String, exact: Int) -> Int {
+        if heard == word { return exact }
         // A word still being said ("teleprom") or heard slightly off ("colour" for "color").
         if heard.count >= 3, word.hasPrefix(heard) { return closeMatch }
         if min(heard.count, word.count) >= 4, editDistance(heard, word) <= (word.count >= 8 ? 2 : 1) {

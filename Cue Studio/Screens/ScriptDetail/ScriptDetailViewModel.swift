@@ -176,8 +176,15 @@ final class ScriptDetailViewModel {
             structure: structure,
             platform: script?.platform ?? .tiktok,
             idealRange: preset.idealRange,
+            sourceLanguage: textLanguage,
             voice: profile.profile.voice
         )
+    }
+
+    /// The language the script is written in, as the model must keep it: the script's own, else read
+    /// from its text (any language, not only the ones Cue offers).
+    private var textLanguage: Locale.Language? {
+        script?.language?.locale.language ?? LanguageDetector.dominantLanguage(in: workingText)
     }
 
     // MARK: - Editing
@@ -322,7 +329,9 @@ final class ScriptDetailViewModel {
                 message: String(localized: "Disclosure added up front")
             )
         case .translate:
-            await translate(into: language ?? .spanish)
+            // The target is always the creator's pick; there is no language to translate into by default.
+            guard let language else { return }
+            await translate(into: language)
         default:
             await rewrite(with: tool)
         }
@@ -392,7 +401,7 @@ final class ScriptDetailViewModel {
             let rewritten = try await writer.rewrite(workingText, with: tool, context: rewriteContext)
             adopt(rewritten, message: doneMessage(for: tool))
         } catch {
-            toast.show(error.localizedDescription)
+            showFailure(error)
         }
     }
 
@@ -418,7 +427,7 @@ final class ScriptDetailViewModel {
             sheet = nil
             toast.show(String(localized: "\(language.localizedName) version saved"))
         } catch {
-            toast.show(error.localizedDescription)
+            showFailure(error)
         }
     }
 
@@ -446,8 +455,14 @@ final class ScriptDetailViewModel {
             )
             toast.show(String(localized: "\(platform.label) version saved"))
         } catch {
-            toast.show(error.localizedDescription)
+            showFailure(error)
         }
+    }
+
+    /// An AI tool failed: the reason in Cue's words. Stopping it is not a failure and says nothing.
+    private func showFailure(_ error: any Error) {
+        guard !(error is CancellationError) else { return }
+        toast.show(error.localizedDescription)
     }
 
     private func doneMessage(for tool: ScriptTool) -> String {

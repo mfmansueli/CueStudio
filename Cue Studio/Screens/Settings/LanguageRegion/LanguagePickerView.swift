@@ -21,7 +21,7 @@ struct LanguagePickerView: View {
     var showsVoiceFollowingAvailability = false
     let onPick: (CueLanguage?) -> Void
 
-    @Environment(SpeechRecognitionManager.self) private var speech
+    @Environment(LanguageCapabilityService.self) private var capabilities
     @Environment(\.dismiss) private var dismiss
 
     @State private var availability: [CueLanguage: VoiceFollowingAvailability] = [:]
@@ -60,7 +60,7 @@ struct LanguagePickerView: View {
         .task {
             guard showsVoiceFollowingAvailability else { return }
             for language in CueLanguage.allCases {
-                availability[language] = await speech.availability(of: language)
+                availability[language] = VoiceFollowingAvailability(await capabilities.support(.voiceFollowing, for: language))
             }
         }
     }

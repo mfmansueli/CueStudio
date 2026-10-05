@@ -20,12 +20,16 @@ final class ScriptStarter {
     private let ideaDraft: IdeaDraftService
     private let transition: IdeaTransitionService
     private let sky: SkyMemory
+    private let writer: ScriptWriting
+    private let toast: ToastService
 
     init(
         library: ScriptLibraryService, rules: PlatformRulesService, profile: CreatorProfileService,
         languages: LanguageService, presentation: PresentationService, ideaDraft: IdeaDraftService,
-        transition: IdeaTransitionService, sky: SkyMemory
+        transition: IdeaTransitionService, sky: SkyMemory, writer: ScriptWriting, toast: ToastService
     ) {
+        self.writer = writer
+        self.toast = toast
         self.transition = transition
         self.sky = sky
         self.library = library
@@ -39,7 +43,7 @@ final class ScriptStarter {
     var factory: ScriptRequestFactory {
         ScriptRequestFactory(
             rules: rules, profile: profile, scriptLanguage: languages.scriptLanguage,
-            interfaceLanguage: languages.interfaceLanguage
+            interfaceLanguage: languages.interfaceLanguage, preferredLanguages: languages.systemLanguages
         )
     }
 
@@ -61,6 +65,12 @@ final class ScriptStarter {
             idea: text, platform: platform ?? ideaDraft.platform, format: ideaDraft.format, length: length ?? ideaDraft.length,
             brand: ideaDraft.brand
         )
+        // A language Apple Intelligence doesn't write is told now, not after three seconds of star: the idea
+        // becomes a blank draft to write by hand, the way it does without Apple Intelligence.
+        if let failure = writer.writingFailure(in: request.language.map { [$0.locale.language] } ?? []) {
+            toast.show(failure.error().localizedDescription)
+            return writeByHand(idea: text, format: request.format, comment: comment)
+        }
         let script = library.create(
             title: "", text: "", platform: request.platform, type: request.format, language: languages.scriptLanguage, comment: comment
         )

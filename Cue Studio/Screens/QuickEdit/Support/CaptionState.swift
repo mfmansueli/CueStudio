@@ -17,6 +17,9 @@ enum CaptionState: Equatable {
     case unavailable(SpeechUnavailableReason)
     /// The sound couldn't be read or listening failed; worth another try.
     case failed
+    /// Captions were made, but a language the script uses for a stretch couldn't be heard (the codes),
+    /// so those stretches may be missing from them.
+    case missingLanguages([String])
 
     var isWorking: Bool {
         if case .working = self { true } else { false }
@@ -37,14 +40,23 @@ enum CaptionState: Equatable {
         case .noSpeech: String(localized: "No speech found in this take.")
         case .unavailable(let reason): reason.captionMessage
         case .failed: String(localized: "Couldn’t listen to this take.")
+        case .missingLanguages(let codes):
+            String(localized: "Captions couldn’t listen for \(Self.names(of: codes)) in this take, so those parts may be missing. Check the lines or write them yourself.")
         }
     }
 
     /// Worth trying again: the problem may not be there next time.
     var canRetry: Bool {
         switch self {
-        case .failed, .cancelled, .unavailable(.needsDownload), .unavailable(.couldNotStart): true
+        case .failed, .cancelled, .missingLanguages, .unavailable(.needsDownload), .unavailable(.couldNotStart): true
         default: false
         }
+    }
+
+    /// "English" or "English and Spanish", in the interface's language.
+    private static func names(of codes: [String]) -> String {
+        let locale = InterfaceLocale.current ?? .current
+        let names = codes.map { locale.localizedString(forLanguageCode: $0) ?? $0 }
+        return names.formatted(.list(type: .and).locale(locale))
     }
 }

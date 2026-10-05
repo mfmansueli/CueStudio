@@ -33,7 +33,7 @@ struct AIModelRouteTests {
         #expect(AIModelRoute.privateCloud.fallback(after: .cloudUnreachable) == .onDevice)
     }
 
-    @Test(arguments: [AIFailure.tooLong, .unsupportedLanguage])
+    @Test(arguments: [AIFailure.tooLong, .unsupportedLanguage, .modelPreparing])
     func whatDoesNotFitTheDeviceGoesToTheCloud(_ failure: AIFailure) {
         #expect(AIModelRoute.onDevice.fallback(after: failure) == .privateCloud)
     }

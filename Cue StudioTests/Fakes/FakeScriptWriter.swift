@@ -16,6 +16,8 @@ final class FakeScriptWriter: ScriptWriting {
     var hookIdeas = ["New hook one.", "New hook two.", "New hook three."]
     var ideas: [ThemeIdea] = []
     var error: Error?
+    /// Set, the writer says it can't write the request's languages (what the real one decides from the model).
+    var writingFailureToReturn: AIPlanFailure?
     private(set) var lastRequest: ScriptRequest?
     private(set) var lastRewrite: (tool: ScriptTool, context: RewriteContext)?
     private(set) var hooksRequested = 0
@@ -23,6 +25,10 @@ final class FakeScriptWriter: ScriptWriting {
     var isAvailable: Bool {
         get { availability.isAvailable }
         set { availability = newValue ? AIAvailability(onDevice: true, privateCloud: true, reason: nil) : .unavailable }
+    }
+
+    func writingFailure(in languages: [Locale.Language]) -> AIPlanFailure? {
+        writingFailureToReturn
     }
 
     func generate(_ request: ScriptRequest) async throws -> GeneratedScript {

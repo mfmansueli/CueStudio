@@ -101,6 +101,11 @@ final class PrompterViewModel {
     private var speechSession: SpeechSession?
     /// Bumped whenever recognition stops, so what a stopped start still reports is ignored.
     private var speechGeneration = 0
+    /// Times in a row recognition ended on its own and was started again (`restartSpeech`).
+    private var speechRestarts = 0
+    private static let maximumSpeechRestarts = 3
+    /// How long recognition that ended by itself waits before it starts again.
+    private let speechRestartDelay: Duration
     private var transcription: SpeechTranscription?
     private var voiceGate = VoiceFollowGate()
     private var speechLead = SpeechLead()
@@ -146,8 +151,10 @@ final class PrompterViewModel {
         languages: LanguageService,
         remote: RemoteControlService,
         toast: ToastService,
-        clock: @escaping () -> TimeInterval = { ProcessInfo.processInfo.systemUptime }
+        clock: @escaping () -> TimeInterval = { ProcessInfo.processInfo.systemUptime },
+        speechRestartDelay: Duration = .seconds(1)
     ) {
+        self.speechRestartDelay = speechRestartDelay
         scriptID = launch.scriptID
         mode = launch.mode
         session = SessionSetupService(preferences: preferences)
@@ -712,6 +719,7 @@ final class PrompterViewModel {
         isVoiceActive = false
         voiceLevel = 0
         speechUnavailable = nil
+        speechRestarts = 0
         voiceGate = VoiceFollowGate()
         audio.stopMetering()
     }
@@ -772,6 +780,7 @@ final class PrompterViewModel {
         for await heard in started.transcripts {
             let received = clock()
             if speechTracker.hear(heard) {
+                speechRestarts = 0
                 voiceMetrics.confirmed(ahead: speechLead.position - Double(speechTracker.position))
                 speechLead.confirm(speechTracker.position, at: received)
             }
@@ -782,6 +791,19 @@ final class PrompterViewModel {
         followsSpeech = false
         transcription = nil
         routeSpeechAudio()
+        await restartSpeech(after: generation)
+    }
+
+    /// A recognizer that stops by itself (the system took the audio for a moment, a model was
+    /// unloaded) is started again, a few times in a row, before the text settles for the level. Every
+    /// word it confirms in between starts the count over.
+    private func restartSpeech(after generation: Int) async {
+        guard speechRestarts < Self.maximumSpeechRestarts else { return }
+        speechRestarts += 1
+        try? await Task.sleep(for: speechRestartDelay)
+        guard !Task.isCancelled, speechGeneration == generation else { return }
+        speechSession = nil
+        startSpeechIfNeeded()
     }
 
     private func stopFollowingSpeech() {

@@ -19,12 +19,16 @@ nonisolated final class AppleTranslationSession: CaptionTranslationSession, @unc
     /// Sentence by sentence: each one is translated whole, with its own context.
     func translate(_ texts: [String]) async throws -> [String] {
         guard !texts.isEmpty else { return [] }
-        try await session.prepareTranslation()
-        var result: [String] = []
-        for text in texts {
-            try Task.checkCancellation()
-            result.append(try await session.translate(text).targetText)
+        do {
+            try await session.prepareTranslation()
+            var result: [String] = []
+            for text in texts {
+                try Task.checkCancellation()
+                result.append(try await session.translate(text).targetText)
+            }
+            return result
+        } catch TranslationError.unsupportedSourceLanguage, TranslationError.unsupportedTargetLanguage, TranslationError.unsupportedLanguagePairing {
+            throw CaptionTranslationError.unsupportedPair
         }
-        return result
     }
 }

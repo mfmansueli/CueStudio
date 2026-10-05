@@ -138,15 +138,31 @@ nonisolated enum CueLanguage: String, CaseIterable, Identifiable, Codable, Hasha
         }
     }
 
+    /// Chinese is one language in two writing systems; speech, detection and translation tell them apart.
+    var isChinese: Bool { self == .chineseSimplified || self == .chineseTraditional }
+
+    /// How Natural Language and Translation name this Chinese writing system; nil for other languages.
+    var chineseScriptIdentifier: String? {
+        switch self {
+        case .chineseSimplified: "zh-Hans"
+        case .chineseTraditional: "zh-Hant"
+        default: nil
+        }
+    }
+
     // MARK: - Matching
 
     /// The language for a language code ("pt", "pt-PT", "zh-Hans"…), or nil when Cue doesn't offer it.
     static func matching(languageCode code: String) -> CueLanguage? {
-        let language = Locale.Language(identifier: code)
+        matching(language: Locale.Language(identifier: code))
+    }
+
+    /// The language for a `Locale.Language`, keeping the writing system where a language has two:
+    /// Chinese is Traditional by script or region (zh-Hant, zh-TW, zh-HK, zh-MO), Simplified otherwise.
+    static func matching(language: Locale.Language) -> CueLanguage? {
         guard let code = language.languageCode?.identifier else { return nil }
         // "no" is Norwegian in general; Cue offers Bokmål.
         if code == "no" || code == "nb" || code == "nn" { return .norwegian }
-        // Chinese is two languages here: Traditional by script or region, Simplified otherwise.
         if code == "zh" {
             let isTraditional = language.script?.identifier == "Hant" || ["TW", "HK", "MO"].contains(language.region?.identifier ?? "")
             return isTraditional ? .chineseTraditional : .chineseSimplified
@@ -159,6 +175,23 @@ nonisolated enum CueLanguage: String, CaseIterable, Identifiable, Codable, Hasha
     static func matching(interfaceLocalization localization: String) -> CueLanguage? {
         allCases.first { $0.interfaceLocalization.caseInsensitiveCompare(localization) == .orderedSame }
             ?? matching(languageCode: localization)
+    }
+
+    /// The creator's own regional variant of this language among `preferred` (the iPhone's language
+    /// list, "en-GB" or "es-MX"), or nil when the list has none. Only a language the creator listed
+    /// counts, never the device's country, which says nothing about the audience of a script. A
+    /// variant Cue writes differently (pt-PT for pt-BR, Simplified for Traditional) is not one of this
+    /// language's, unless `acceptingAnyVariant`: a language read from the text alone (Auto-detect)
+    /// only says "Portuguese", and the creator's own Portuguese is as good as Cue's.
+    func variant(among preferred: [String], acceptingAnyVariant: Bool = false) -> Locale? {
+        for identifier in preferred {
+            let locale = Locale(identifier: identifier)
+            guard locale.language.languageCode?.identifier == languageCode, locale.region != nil else { continue }
+            if isChinese, !accepts(locale) { continue }
+            guard acceptingAnyVariant || accepts(locale) else { continue }
+            return locale
+        }
+        return nil
     }
 
     /// True when `locale` is this language as written here: the same language, and for Portuguese

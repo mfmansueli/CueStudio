@@ -48,6 +48,8 @@ struct LaunchOptions {
     var credentialChecker: AppleIDCredentialChecking = AppleIDCredentialChecker()
     var remoteTransport: RemoteTransport = NearbyRemoteTransport()
     var languageStore: AppLanguageStoring = SystemAppLanguageStore()
+    /// What the device can do in each language; the system's own answers unless a test gives a fixed list.
+    var languageCapabilities: LanguageCapabilityChecking = AppleLanguageCapabilityChecker()
     /// Nil is the real microphone and recognizer.
     var dictation: DictationService?
     /// How long each few words of a script the AI writes stay on screen before the next arrive.

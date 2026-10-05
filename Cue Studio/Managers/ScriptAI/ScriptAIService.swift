@@ -22,41 +22,36 @@ final class ScriptAIService: ScriptWriting {
     /// one) while `isAvailable` still says yes. So it stays off until the entitlement is in
     /// `Cue Studio.entitlements` (a test keeps the two in sync). Meanwhile everything is written on
     /// the device.
-    static let hasPrivateCloudComputeEntitlement = false
+    nonisolated static let hasPrivateCloudComputeEntitlement = false
 
     /// Nil while Private Cloud Compute is off.
     private let privateCloud: PrivateCloudComputeLanguageModel?
+    private let capabilities: AIModelCapabilities
+    private let planner: AIModelPlanner
     private let logger = Logger(subsystem: "studio.cue", category: "ScriptAI")
 
-    init(usesPrivateCloudCompute: Bool = ScriptAIService.hasPrivateCloudComputeEntitlement) {
+    /// - Parameter capabilities: what the models can do and in which languages; Apple's own answers
+    ///   unless a test gives a fixed list.
+    init(usesPrivateCloudCompute: Bool = ScriptAIService.hasPrivateCloudComputeEntitlement, capabilities: AIModelCapabilities? = nil) {
         privateCloud = usesPrivateCloudCompute ? PrivateCloudComputeLanguageModel() : nil
+        let capabilities = capabilities ?? AppleAIModelCapabilities(usesPrivateCloudCompute: usesPrivateCloudCompute)
+        self.capabilities = capabilities
+        planner = AIModelPlanner(capabilities: capabilities)
     }
 
     /// Private Cloud Compute counts as available only while this person's quota has room, so a
-    /// used-up quota sends prompts to the device without a request that is bound to fail.
+    /// used-up quota sends prompts to the device without a request that is bound to fail. Whether a
+    /// model is available says nothing about a language: that is `writingFailure(in:)`.
     var availability: AIAvailability {
-        let onDevice = SystemLanguageModel.default.isAvailable
-        let cloud = privateCloud.map { $0.isAvailable && !$0.quotaUsage.isLimitReached } ?? false
-        return AIAvailability(
-            onDevice: onDevice,
-            privateCloud: cloud,
-            reason: onDevice || cloud ? nil : unavailableReason
-        )
+        let onDevice = capabilities.deviceStatus == .available
+        let cloud = capabilities.cloudStatus == .available
+        return AIAvailability(onDevice: onDevice, privateCloud: cloud, reason: onDevice || cloud ? nil : capabilities.deviceStatus.reason)
     }
 
-    private var unavailableReason: String {
-        switch SystemLanguageModel.default.availability {
-        case .available:
-            String(localized: "Apple Intelligence isn't available right now.")
-        case .unavailable(.deviceNotEligible):
-            String(localized: "Requires Apple Intelligence. This device doesn't support it.")
-        case .unavailable(.appleIntelligenceNotEnabled):
-            String(localized: "Requires Apple Intelligence. Turn it on in Settings to use AI tools.")
-        case .unavailable(.modelNotReady):
-            String(localized: "Apple Intelligence is still getting ready. Try again in a few minutes.")
-        case .unavailable:
-            String(localized: "Requires Apple Intelligence.")
-        }
+    /// Why Apple Intelligence can't write in `languages` right now, told before anything is sent;
+    /// nil when it can.
+    func writingFailure(in languages: [Locale.Language]) -> AIPlanFailure? {
+        planner.quickFailure(languages: languages.map(Self.locale(for:)))
     }
 
     // MARK: - Scripts
@@ -64,27 +59,53 @@ final class ScriptAIService: ScriptWriting {
     func generate(_ request: ScriptRequest) async throws -> GeneratedScript {
         let begin = ContinuousClock.now
         let task: AIModelRoute.Task = request.isFreePrompt ? .freePrompt : .format
-        guard let route = route(for: task) else {
-            guard case .format(let type, let brief) = request.source else {
-                throw ScriptAIError.modelUnavailable(unavailableReason)
-            }
+        let request = resolvingVariant(of: request)
+        let languages = request.language.map { [request.languageVariant ?? $0.locale] } ?? []
+        let plan: AIPlan
+        switch await planner.plan(task, languages: languages) {
+        case .success(let planned):
+            plan = planned
+        case .failure(let failure):
+            // A format has its own structured draft, in the language, that needs no model at all.
+            guard case .format(let type, let brief) = request.source else { throw failure.error() }
             return GeneratedScript(
                 title: type.draftTitle(from: brief, language: request.language),
                 text: structuredDraft(type: type, brief: brief, voice: request.voice, language: request.language),
                 usedLanguageModel: false
             )
         }
-        return try await withFallback(from: route) { model in
-            try await self.draft(request, on: model, since: begin)
+        // A short request that still ran out of room (the model went on and on) is worth one more try on the
+        // same model: the instructions and the idea are nowhere near the model's context, so "too long" can't
+        // be the creator's doing, and a second run seldom does the same.
+        let inputSize = ScriptPromptBuilder.instructions(for: request).count + ScriptPromptBuilder.prompt(for: request).count
+        return try await withFallback(plan, retriesRunaway: inputSize < Self.smallInput) { model in
+            do {
+                return try await self.draft(request, on: model, since: begin)
+            } catch ScriptAIError.wrongLanguage {
+                // Measured on an iPhone: a Japanese idea with an English catchphrase came back in English. One more try,
+                // told plainly; if it still isn't in the language, the creator is told and nothing is saved.
+                return try await self.draft(request, on: model, since: begin, insistsOnLanguage: true)
+            }
         }
+    }
+
+    /// The creator's regional variant is only asked of the model when the model writes it; otherwise
+    /// the request is for the language as Cue offers it.
+    private func resolvingVariant(of request: ScriptRequest) -> ScriptRequest {
+        guard let variant = request.languageVariant, !capabilities.deviceSupports(variant) else { return request }
+        var resolved = request
+        resolved.languageVariant = nil
+        return resolved
     }
 
     /// Streams the draft so the time to the first words can be told apart from the time to the last.
     /// `begin` is when `generate` was called: choosing the model and building the request count as
     /// preparation, up to the moment the request goes out.
-    private func draft(_ request: ScriptRequest, on model: AIModelRoute, since begin: ContinuousClock.Instant) async throws -> GeneratedScript {
+    private func draft(
+        _ request: ScriptRequest, on model: AIModelRoute, since begin: ContinuousClock.Instant, insistsOnLanguage: Bool = false
+    ) async throws -> GeneratedScript {
         let clock = ContinuousClock()
-        let session = session(on: model, instructions: ScriptPromptBuilder.instructions(for: request))
+        let session = session(on: model, instructions: ScriptPromptBuilder.instructions(for: request, insistsOnLanguage: insistsOnLanguage))
         let prompt = ScriptPromptBuilder.prompt(for: request)
         let started = clock.now
         var firstResponse: Duration?
@@ -101,6 +122,7 @@ final class ScriptAIService: ScriptWriting {
         )
         let text = ScriptPromptBuilder.clean(draft.scriptText)
         guard !text.isEmpty else { throw ScriptAIError.emptyResponse }
+        try Self.requireLanguage(request.language?.locale.language, in: text)
         let title: String = switch request.source {
         case .format(let type, let brief): type.draftTitle(from: brief, language: request.language)
         case .prompt: ScriptPromptBuilder.cleanTitle(draft.title)
@@ -125,38 +147,57 @@ final class ScriptAIService: ScriptWriting {
     // MARK: - Editing
 
     func rewrite(_ text: String, with tool: ScriptTool, context: RewriteContext) async throws -> String {
-        guard let route = route(for: .rewrite) else {
-            throw ScriptAIError.modelUnavailable(unavailableReason)
+        // The language the result must be in: the target of a translation, otherwise the script's own.
+        let expected: Locale.Language?
+        var needed: [Locale.Language] = []
+        var pair: (source: String, target: String)?
+        if tool == .translate {
+            // A translation needs both languages, and never picks the target itself.
+            guard let target = context.language else { throw ScriptAIError.unsupportedLanguage }
+            expected = target.locale.language
+            needed = [target.locale.language] + (context.sourceLanguage.map { [$0] } ?? [])
+            pair = context.sourceLanguage.map { (Self.name(of: $0), target.localizedName) }
+        } else {
+            expected = context.sourceLanguage
+            needed = context.sourceLanguage.map { [$0] } ?? []
         }
+        let plan = try await plan(for: .rewrite, languages: needed, translation: pair)
         let voice = tool == .inMyVoice ? context.voice : nil
-        return try await withFallback(from: route) { model in
-            let session = self.session(on: model, instructions: ScriptPromptBuilder.rewriteInstructions(voice: voice))
+        func attempt(on model: AIModelRoute) async throws -> String {
+            let session = self.session(on: model, instructions: ScriptPromptBuilder.rewriteInstructions(voice: voice, language: expected))
             let response = try await session.respond(to: ScriptPromptBuilder.rewritePrompt(for: text, tool: tool, context: context))
             let rewritten = ScriptPromptBuilder.clean(response.content)
             guard !rewritten.isEmpty else { throw ScriptAIError.emptyResponse }
+            try Self.requireLanguage(expected, in: rewritten)
             return rewritten
+        }
+        return try await withFallback(plan) { model in
+            do {
+                return try await attempt(on: model)
+            } catch ScriptAIError.wrongLanguage {
+                // Measured on an iPhone: "In my voice" on a Japanese script came back in English. One more try; then the
+                // creator is told and the script stays as it was.
+                return try await attempt(on: model)
+            }
         }
     }
 
     func hooks(for text: String, context: RewriteContext) async throws -> [String] {
-        guard let route = route(for: .hooks) else {
-            throw ScriptAIError.modelUnavailable(unavailableReason)
-        }
-        return try await withFallback(from: route) { model in
+        let plan = try await plan(for: .hooks, languages: context.sourceLanguage.map { [$0] } ?? [])
+        return try await withFallback(plan) { model in
             let session = self.session(on: model, instructions: ScriptPromptBuilder.rewriteInstructions(voice: context.voice))
             let ideas = try await session.respond(to: ScriptPromptBuilder.hooksPrompt(for: text, context: context), generating: HookIdeas.self).content
             let hooks = ideas.hooks.map(ScriptPromptBuilder.cleanTitle).filter { !$0.isEmpty }
             guard !hooks.isEmpty else { throw ScriptAIError.emptyResponse }
+            try Self.requireLanguage(context.sourceLanguage, in: hooks.joined(separator: " "))
             return Array(hooks.prefix(3))
         }
     }
 
     func themeIdeas(for niches: [Niche], language: CueLanguage?) async throws -> [ThemeIdea] {
-        guard let route = route(for: .themes) else {
-            throw ScriptAIError.modelUnavailable(unavailableReason)
-        }
+        let plan = try await plan(for: .themes, languages: language.map { [$0.locale.language] } ?? [])
         let known = niches.isEmpty ? [Niche.lifestyle] : niches
-        return try await withFallback(from: route) { model in
+        return try await withFallback(plan) { model in
             let session = self.session(on: model, instructions: "You suggest video ideas for creators who film themselves talking to camera.")
             let prompt = ScriptPromptBuilder.themesPrompt(for: known, language: language)
             let suggestions = try await session.respond(to: prompt, generating: ThemeSuggestions.self).content
@@ -172,8 +213,10 @@ final class ScriptAIService: ScriptWriting {
     }
 
     func pickTopic(for text: String, among topics: [String]) async -> String? {
-        // The small on-device model is enough, and nothing about the script leaves the iPhone.
-        guard !topics.isEmpty, availability.onDevice else { return nil }
+        // The small on-device model is enough, and nothing about the script leaves the iPhone. A script in a
+        // language it doesn't write stays untagged rather than tagged by a guess.
+        guard !topics.isEmpty, capabilities.deviceStatus == .available else { return nil }
+        if let language = LanguageDetector.dominantLanguage(in: text), !capabilities.deviceSupports(Self.locale(for: language)) { return nil }
         let session = LanguageModelSession(
             model: SystemLanguageModel.default,
             instructions: "You file a creator's video script under one of their topics. Answer with one topic exactly as given, or none."
@@ -185,9 +228,14 @@ final class ScriptAIService: ScriptWriting {
 
     // MARK: - Models
 
-    private func route(for task: AIModelRoute.Task) -> AIModelRoute? {
-        let availability = availability
-        return AIModelRoute.choose(for: task, onDeviceAvailable: availability.onDevice, privateCloudAvailable: availability.privateCloud)
+    /// The model for a task in the languages the request involves, or the reason none can take it.
+    private func plan(
+        for task: AIModelRoute.Task, languages: [Locale.Language], translation: (source: String, target: String)? = nil
+    ) async throws -> AIPlan {
+        switch await planner.plan(task, languages: languages.map(Self.locale(for:))) {
+        case .success(let plan): return plan
+        case .failure(let failure): throw failure.error(translation: translation)
+        }
     }
 
     private func session(on model: AIModelRoute, instructions: String) -> LanguageModelSession {
@@ -197,23 +245,35 @@ final class ScriptAIService: ScriptWriting {
         return LanguageModelSession(model: SystemLanguageModel.default, instructions: instructions)
     }
 
-    /// Runs `work` on `model` and, when the other model can do what this one couldn't, tries once
-    /// more there: the device when Private Cloud Compute is out of reach (no network, quota
-    /// reached, service down), Private Cloud Compute when a script is too long or in a language
-    /// the device model doesn't write. What still fails is explained in Cue's words.
-    private func withFallback<Result>(
-        from model: AIModelRoute,
+    /// Runs `work` on the plan's model and, when the other model can do what this one couldn't *and the
+    /// plan knows it is available and writes the languages*, tries once more there: the device when
+    /// Private Cloud Compute is out of reach, Private Cloud Compute when a script is too long. A model
+    /// already known to refuse the languages is never tried. A cancellation is passed on as it is; what
+    /// still fails is explained in Cue's words.
+    func withFallback<Result>(
+        _ plan: AIPlan,
+        retriesRunaway: Bool = false,
         _ work: (AIModelRoute) async throws -> Result
     ) async throws -> Result {
         do {
-            return try await work(model)
+            return try await work(plan.route)
         } catch {
-            let failure = AIFailure(error)
-            guard let fallback = model.fallback(after: failure), isAvailable(fallback) else {
+            var error = error
+            var failure = AIFailure(error)
+            if failure == .tooLong, retriesRunaway {
+                logger.notice("\(String(describing: plan.route)) ran out of room on a short request, trying again")
+                do {
+                    return try await work(plan.route)
+                } catch let second {
+                    error = second
+                    failure = AIFailure(second)
+                }
+            }
+            guard let fallback = plan.fallback(from: plan.route, after: failure) else {
                 throw Self.explained(error, failure: failure)
             }
             logger.notice("""
-                \(String(describing: model)) failed (\(String(describing: failure))), trying \(String(describing: fallback)): \
+                \(String(describing: plan.route)) failed (\(String(describing: failure))), trying \(String(describing: fallback)): \
                 \(error.localizedDescription)
                 """)
             do {
@@ -224,21 +284,37 @@ final class ScriptAIService: ScriptWriting {
         }
     }
 
-    private func isAvailable(_ model: AIModelRoute) -> Bool {
-        let availability = availability
-        return switch model {
-        case .onDevice: availability.onDevice
-        case .privateCloud: availability.privateCloud
-        }
-    }
-
     /// The framework's own message for a long script or a missing language is written for
     /// developers; the creator gets Cue's.
     private static func explained(_ error: any Error, failure: AIFailure) -> any Error {
         switch failure {
         case .tooLong: ScriptAIError.tooLong
         case .unsupportedLanguage: ScriptAIError.unsupportedLanguage
+        case .modelPreparing: ScriptAIError.modelPreparing
+        case .cancelled: CancellationError()
         case .cloudUnreachable, .other: error
         }
+    }
+
+    /// Characters of instructions and prompt below which a request can't fill the model's context by itself.
+    private static let smallInput = 3_000
+
+    // MARK: - Languages
+
+    /// The locale the models are asked about for a language: Cue's own when it is one it offers.
+    private static func locale(for language: Locale.Language) -> Locale {
+        CueLanguage.matching(language: language).map(\.locale) ?? Locale(identifier: language.maximalIdentifier)
+    }
+
+    private static func name(of language: Locale.Language) -> String {
+        CueLanguage.matching(language: language)?.localizedName
+            ?? (InterfaceLocale.current ?? .current).localizedString(forIdentifier: language.minimalIdentifier)
+            ?? language.minimalIdentifier
+    }
+
+    /// Nothing the model wrote replaces the creator's words if it isn't in the language asked for.
+    private static func requireLanguage(_ expected: Locale.Language?, in text: String) throws {
+        guard let expected, !OutputLanguageCheck.isPlausible(text, in: expected) else { return }
+        throw ScriptAIError.wrongLanguage
     }
 }

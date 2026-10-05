@@ -204,6 +204,45 @@ struct ScriptDetailViewModelTests {
         #expect(scenario.writer.lastRewrite?.context.language == .spanish)
     }
 
+    /// There is no default language to translate into: without the creator's pick nothing is sent.
+    @Test func translatingWithoutATargetDoesNothing() async {
+        let scenario = makeScenario(script: TestData.script(title: "Habits"), startsEditing: true)
+        defer { scenario.defaults.tearDown() }
+        await scenario.viewModel.run(.translate)
+        #expect(scenario.writer.lastRewrite == nil)
+        #expect(scenario.library.scripts.count == 1)
+    }
+
+    @Test func theRewriteKnowsTheLanguageTheScriptIsWrittenIn() async {
+        let portuguese = TestData.script(text: "Esses são três hábitos que mudaram as minhas manhãs. Primeiro, eu bebo um copo de água.")
+        let scenario = makeScenario(script: portuguese, startsEditing: true)
+        defer { scenario.defaults.tearDown() }
+        await scenario.viewModel.run(.moreEnergy)
+        #expect(scenario.writer.lastRewrite?.context.sourceLanguage?.languageCode?.identifier == "pt")
+        // The script's own language, when it has one, is what counts.
+        scenario.library.setLanguage(.thai, of: portuguese.id)
+        await scenario.viewModel.run(.moreEnergy)
+        #expect(scenario.writer.lastRewrite?.context.sourceLanguage?.languageCode?.identifier == "th")
+    }
+
+    @Test func stoppingAnAIToolIsNotAnErrorToShow() async {
+        let scenario = makeScenario(script: TestData.script(), startsEditing: true)
+        defer { scenario.defaults.tearDown() }
+        scenario.writer.error = CancellationError()
+        await scenario.viewModel.run(.moreEnergy)
+        #expect(scenario.toast.message == nil)
+        #expect(scenario.viewModel.runningTool == nil)
+    }
+
+    @Test func aLanguageProblemIsToldAsTheCreatorCanActOnIt() async {
+        let scenario = makeScenario(script: TestData.script(), startsEditing: true)
+        defer { scenario.defaults.tearDown() }
+        scenario.writer.error = ScriptAIError.unsupportedTranslation(source: "Portuguese", target: "Thai")
+        await scenario.viewModel.run(.translate, language: .thai)
+        #expect(scenario.toast.message?.contains("Thai") == true)
+        #expect(scenario.library.scripts.count == 1)
+    }
+
     // MARK: - Everything is free
 
     @Test func inMyVoiceUsesTheWholeVoice() async {

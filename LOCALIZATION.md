@@ -70,6 +70,51 @@ direction and whether it's written without spaces.
 Nothing here has a server, an API key or a cost per use: speech recognition, language detection and
 word segmentation all run on the device with Apple's frameworks.
 
+## 1.1 What a device does in each language (capabilities)
+
+Six things depend on the language, and the device answers each on its own: **interface** (the String
+Catalogs), **Apple Intelligence writing** (generation, rewriting, hooks, ideas, tagging, translating a
+script), **dictation**, **Voice Following**, **captions** (and Clean Up) and **translating captions**. None implies another. On a
+Mac with Apple Intelligence (macOS 27), `SystemLanguageModel.supportedLanguages` lists 24 locales and
+leaves out four of Cue's languages: **Hindi, Indonesian, Arabic and Thai**; all four have speech
+recognition. `LanguageCapabilityService` (`Managers/Language`) is the one place that asks, behind
+`LanguageCapabilityChecking` (Apple's answers in `AppleLanguageCapabilityChecker`; tests give a list):
+
+- an answer is **supported**, **not installed** (supported; the model downloads or finishes preparing) or
+  **unavailable** with a cause (language not supported, device not supported, turned off, interface variant
+  not translated: `FeatureSupport`);
+- answers are kept, two screens asking at once share one question, "not installed" and "turned off" are
+  asked again after 30 s, the rest only when the system version or the iPhone's languages change;
+- nothing is ever downloaded to find out. A failed speech-model download isn't retried for 30 s
+  (`DownloadCooldown`);
+- one feature failing never turns another off: a language without Apple Intelligence still has its
+  speech models, and a script in it can still be prompted from the teleprompter.
+
+**Apple Intelligence** (`ScriptAIService`) asks `AIModelPlanner` before anything is sent, with every
+language of the request (a translation needs the source *and* the target): the device model's own
+`supportsLocale`, never the languages Cue's interface speaks. No model that doesn't write the languages is
+tried or fallen back to (`AIPlan`). The failures are told apart: language not written (`unsupportedLanguage`,
+or `unsupportedTranslation` naming the pair), model still preparing, device not eligible, Apple Intelligence
+off, too long, cancelled (silent). A result that comes back in another language (a polish answered in
+English, a translation handed back untouched) is refused and the script left as it was
+(`OutputLanguageCheck`; only when the text is long enough and Natural Language is sure). Translating has no
+default target. A free prompt in a language the model doesn't write opens a blank draft with the reason, the way it
+does without Apple Intelligence; a format still gets its structured draft. **Private Cloud Compute stays off**
+(`hasPrivateCloudComputeEntitlement = false`): it is only a candidate when the app has the entitlement.
+
+**Regional variants.** Only the 20 languages above have a translated interface; no variant gets one of its
+own. A language the creator picked (Script Language, Voice Following Language) is used as picked, in Cue's
+variant (pt-BR, zh-CN…). A language *read from the text* (Auto-detect) keeps the variant of the creator's own
+language list (en-GB, pt-PT, es-MX: `CueLanguage.variant(among:)`) for dictation, Voice Following, captions
+and the language AI writes in (`ScriptRequest.languageVariant`, asked of the model only when it writes that
+variant); the device's country never decides. Chinese is two writing systems: detection, recognition, captions,
+translation and the check of AI output all keep Simplified (`zh-Hans`) and Traditional (`zh-Hant`) apart, and a
+Traditional script is never heard as Simplified.
+
+**Listening** (`SpeechLocaleReservation`): the system lets an app hold five speech languages at once. Every way
+of listening reserves the language it needs, and the oldest other one makes room (captions in a sixth language
+used to fail after Voice Following had been used in five).
+
 **To add a language:** add a `CueLanguage` case, add the language to the three String Catalogs and
 to `knownRegions` in the project. Nothing else is structural.
 
@@ -175,7 +220,8 @@ speed while the creator talks, in that language's place, never in another one.
 | Language | Locale | Recognizer (both on-device, Speech framework) | Measured on a Mac with Apple's models |
 |---|---|---|---|
 | English, Spanish, Portuguese (Brazil), French, German, Italian, Japanese, Korean, Chinese (Simplified) | en-US, es-ES, pt-BR, fr-FR, de-DE, it-IT, ja-JP, ko-KR, zh-CN | `SpeechTranscriber` (the original engine), else `DictationTranscriber` | 100% of the script followed |
-| Indonesian, Arabic, Turkish, Thai, Vietnamese | id-ID, ar-SA, tr-TR, th-TH, vi-VN | `DictationTranscriber` (`SpeechTranscriber` didn't offer them on the test Mac) | 100% |
+| Indonesian, Arabic, Turkish, Thai, Vietnamese, Dutch, Swedish, Danish, Norwegian Bokmål | id-ID, ar-SA, tr-TR, th-TH, vi-VN, nl-NL, sv-SE, da-DK, nb-NO | `DictationTranscriber` (`SpeechTranscriber` didn't offer them on the test Mac or the iPhone) | 100% |
+| Chinese (Traditional) | zh-TW | `SpeechTranscriber` | 100% (iPhone) |
 | Hindi | hi-IN | `DictationTranscriber` first when the script is in Devanagari: `SpeechTranscriber` writes Hindi in Latin letters, which can't match the script | 100% (0% through `SpeechTranscriber`) |
 
 **Dictating an idea** (the empty Scripts card) uses the same recognizers and the same table, in a
@@ -194,12 +240,8 @@ On an **iPhone 18 Pro Max (iOS 27)**, 30 Sep 2026 (`VoiceFollowingSpeechTests/av
 nothing downloaded): English and Portuguese (Brazil) ready; the other 13 offered and downloaded
 the first time they're used; none unavailable. `SpeechTranscriber` for en, es, pt-BR, fr, de, it,
 ja, ko, zh-CN and hi (Hindi in Devanagari still goes to `DictationTranscriber` first, see above);
-`DictationTranscriber` for id, ar, tr, th and vi. Word-by-word following was measured on that
-iPhone in English and Portuguese only (`VoiceFollowingLatencyTests`); Japanese, Chinese and Thai
-are covered by the recordings on a Mac and by the tokenizer tests with partial results cut
-mid-word (`MultilingualVoiceFollowTests`), not yet by a reading on a device, so they shouldn't be
-advertised as fully supported until that runs (`TEST_RUNNER_CUE_SPEECH_E2E=1`, downloads each
-model). The iOS Simulator
+`DictationTranscriber` for id, ar, tr, th and vi. Word-by-word following, captions and latency were later
+measured on an iPhone (iOS 27.0.1) in all 20 languages: section 5. The iOS Simulator
 lists the dictation locales but can't run either recognizer (no audio format), so Voice Following
 shows "This iPhone can't recognize speech" there; real recognition is tested on a device or on a
 Mac.
@@ -210,3 +252,68 @@ Voice Following has no spoken "auto-detect": it listens in the chosen language, 
 The opt-in `VoiceFollowingSpeechTests` plays a recording of each language
 (`Cue StudioTests/Fixtures/Speech/`) through the real recognizer and tracker
 (`TEST_RUNNER_CUE_SPEECH_E2E=1`, on a device).
+
+## 5. Evidence by language and feature (iPhone, iOS 27.0.1, 5 Oct 2026)
+
+Run on a real iPhone with Apple's own models, one suite at a time and with the screen kept awake (the model is rate
+limited in the background, and two speech suites at once compete for the five language places). Speech is
+**synthesized** with Apple's system voices (`Fixtures/Speech`; nl, sv, da, nb and zh-TW were added in this pass: Xander,
+Alva, Sara, Nora, Meijia): a technical reference that the recognizers and the timings work, not proof of quality with
+every human accent. Everything below is measured; what isn't is under *Not validated*.
+
+| Language | Voice Following: words reached · largest jump | Voice Following latency p50 / p95 (word → text) | Captions: script heard · timing | AI writing |
+|---|---|---|---|---|
+| en-US | 100% · 1 | 483 / 803 ms | 100% · measured | in language |
+| es-ES | 100% · 1 | 407 / 701 ms | 100% · measured | in language |
+| pt-BR | 100% · 2 | 330 / 686 ms | 100% · measured | in language |
+| fr-FR | 100% · 1 | 489 / 789 ms | 100% · measured | in language |
+| de-DE | 100% · 1 | 221 / 646 ms | 93% · measured | in language |
+| it-IT | 100% · 1 | 486 / 774 ms | 100% · measured | in language |
+| ja-JP | 100% · 2 | 499 / 829 ms | 92% (by letters) · measured | in language |
+| ko-KR | 100% · 3 | 249 / 693 ms | 81% (96% by letters) · measured | in language |
+| zh-CN | 100% · 1 | 463 / 715 ms | 100% · measured | in language |
+| hi-IN | 100% · 5 | 106 / 949 ms | 61% (Hindi dictation drops words) · **estimated** (see below) | not written by the model |
+| id-ID | 100% · 2 | 53 / 447 ms | 96% · measured | not written by the model |
+| ar-SA | 100% · 2 | −273 / 367 ms¹ | 77% (96% by letters) · measured | not written by the model |
+| tr-TR | 100% · 1 | −127 / 161 ms¹ | 95% · measured | in language |
+| th-TH | 100% · 3 | 273 / 581 ms | 90% · partly estimated | not written by the model |
+| vi-VN | 100% · 1 | 66 / 279 ms | 100% · partly estimated | in language |
+| zh-TW | 100% · 2 | 475 / 702 ms | 97% · measured | in language |
+| nl-NL | 100% · 1 | 266 / 455 ms | 100% · measured | in language |
+| sv-SE | 100% · 2 | 367 / 559 ms | 100% · measured | in language |
+| da-DK | 100% · 2 | 400 / 613 ms | 84% · partly estimated | in language |
+| nb-NO | 100% · 2 | 301 / 466 ms | 94% · partly estimated | in language |
+
+¹ A negative time means the text reached a word before the recognizer's own time for it ends: the lead
+(`SpeechLead`) runs a little ahead of a word still being said. No language moved before speech began, none moved back,
+and none ran more than 2 words ahead of the voice (`VoiceFollowingLatencyTests`).
+
+Apple Intelligence ("AI writing"), 16 of Cue's 20 languages written by the on-device model; **Hindi, Indonesian, Arabic
+and Thai are not** (`SystemLanguageModel.supportedLanguages`, 24 locales; the app's own check agreed with the model for
+all 20). Those four are refused before any request, with a draft to write by hand; their speech features work.
+Translation (pt-BR→en, en→de, ja→zh-TW, fr→es) came back in the target each time, and a pair with an unsupported
+language is refused naming the pair. From the card, with "Write in my voice": title, body in the idea's language,
+no markdown, and the catchphrase present, in en, pt-BR, es, fr, de, ja, zh-TW and nl.
+
+**Found and fixed by this evidence**
+- *Captions after Voice Following* failed in a sixth language ("Too many allocated locales, 5 maximum"): captions now reserve
+  the language they need (`SpeechLocaleReservation`).
+- *Hindi captions* were timed at about half their real moments by the dictation model (10 s of speech finished at 5 s):
+  such times are spread over the spoken stretch and marked estimated (`TranscriptTimingCheck`).
+- *A Japanese idea written in English* (the creator's English catchphrase pulled the model): refused, then tried once more
+  with the language stated firmly; the same for "In my voice". *Scripts a third of the length asked*: the minimum is now
+  in the prompt (44 to 82 words before, 89 to 179 after, for 150 to 225 asked). *"Context size exceeded" on short requests*:
+  retried once.
+- *Off-script filler* ("so", "and", "the") put the text up to 47 words ahead of the reader in a simulated reading; common
+  words now count for less (4 words, `VoiceFollowingRobustnessTests`).
+
+**Not validated** (do not read the table as "20 languages fully validated")
+- Quality of the generated text to a native speaker, and the voice's fidelity: only language, structure and length are measured.
+- Real human speech and accents, background noise in languages other than English, and long readings: fixtures are
+  10 s of synthetic speech; the noise run is English only.
+- Hindi recognition (61%) and Arabic by words (77%) are the models' own limits; they follow the script, but the text they hear
+  is rough.
+- Apple Intelligence on other iPhones and OS versions, and Private Cloud Compute (off: no entitlement).
+- The interface translations are still by the model that built them, awaiting native review (28 App Shortcuts phrases
+  are flagged `needs_review`).
+

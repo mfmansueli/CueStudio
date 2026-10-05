@@ -145,3 +145,21 @@ encurtam). `-uiTestCatalogue transition` mostra a estrela; `universe` e `writing
 - O dock some durante a busca e a seleção; o tip espera 1,2 s com a tela quieta (sem sheet, toast, teclado, busca ou seleção).
 - A estrela pousa onde começaria o título da página (cursor amarelo) e sem destino medido no protótipo.
 - "Speak" do exemplo (08 X1) não foi feito (só Paste e My scripts); o microfone do dock dita ao toque, sem "segurar para gravar".
+
+## 8. Idiomas e Apple Intelligence: nenhuma tela nova (v30)
+
+O trabalho de qualidade de idiomas (`LOCALIZATION.md` §1.1) não mudou layout, identidade visual nem navegação. Só mudaram **mensagens**, que
+reaproveitam os componentes que já existiam (toast, linha de estado das legendas, lista de Language & Region):
+
+- **Seta ✦ do card de ideias** (`ScriptStarter`): se o Apple Intelligence não escreve no idioma da ideia, a estrela nem sai. Um toast diz o motivo ("Apple
+  Intelligence can't write in this script's language yet.") e a ideia vira um rascunho em branco para escrever à mão, como já acontecia sem o Apple
+  Intelligence. Antes a estrela voava 3 s e caía com "Couldn't write it · Try again", que não resolvia nada.
+- **Ferramentas de IA da página do script** (Improve script, seleção, Translate, hooks): o erro mostra o motivo quando o criador pode agir sobre ele
+  (idioma não suportado, **par** de idiomas na tradução, modelo ainda se preparando, resultado em outro idioma) e "Couldn't write it · Try again" só para
+  o que tentar de novo resolve. Parar uma ferramenta não mostra erro. **Translate** só age com o idioma escolhido no menu (antes caía em espanhol).
+- **Legendas** (`CaptionState.missingLanguages`, na linha de estado que já existia sob o interruptor): quando o roteiro usa outro idioma por um trecho e este
+  iPhone não consegue ouvi-lo, as legendas dizem qual idioma ficou de fora (com **Retry**), em vez de omitir o trecho sem avisar. Um par de idiomas que o
+  sistema recusa no meio da tradução diz "This iPhone can’t translate…" (como a checagem prévia), não "Try again".
+- **Language & Region › Voice Following** continua com os mesmos três rótulos ("Ready on this iPhone", "Downloads the first time you use it", "Not
+  available on this iPhone"), agora vindos de `LanguageCapabilityService` (uma consulta, guardada), e a lista de Script Language não mostra suporte de IA.
+- Textos novos: 3 strings, nos 20 idiomas (`LocalizationCatalogTests` confere placeholders e presença em todos).

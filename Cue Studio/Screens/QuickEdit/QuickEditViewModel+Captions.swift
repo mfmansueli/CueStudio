@@ -210,9 +210,11 @@ extension QuickEditViewModel {
         var lines: [CaptionCue] = []
         var takeTranscript: CaptionTranscript?
         var others: [CaptionTranscript] = []
+        var unheard: [String] = []
         for (source, outcome) in outcomes {
             guard case .captions(let found, var transcript) = outcome else { continue }
             transcript.sourceID = source
+            for code in transcript.unheardLanguages ?? [] where !unheard.contains(code) { unheard.append(code) }
             lines += found.map { line in
                 var tagged = line
                 tagged.sourceID = source
@@ -232,7 +234,8 @@ extension QuickEditViewModel {
         edit.captionTranscript = takeTranscript
         edit.sourceTranscripts = others
         edit.showsCaptions = true
-        captionState = .idle
+        // Lines made, but a language they should have had was left out: the creator is told, never left to find out.
+        captionState = unheard.isEmpty ? .idle : .missingLanguages(unheard)
         // Auto captions turns into the list of the new lines.
         if panel == .autoCaptions { panel = .captions }
         toast.show(lines.count == 1

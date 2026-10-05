@@ -32,10 +32,13 @@ final class SpeechRecognitionManager: SpeechTranscribing {
     private let transcriptEpoch = Epoch()
 
     private let resolver: SpeechLocaleResolver
+    private let catalog: SpeechLocaleCatalog
     private let use: SpeechUse
+    private var downloads = DownloadCooldown()
 
-    init(resolver: SpeechLocaleResolver = SpeechLocaleResolver(), use: SpeechUse = .following) {
-        self.resolver = resolver
+    init(catalog: SpeechLocaleCatalog = AppleSpeechLocaleCatalog(), use: SpeechUse = .following) {
+        self.catalog = catalog
+        resolver = SpeechLocaleResolver(catalog: catalog)
         self.use = use
     }
 
@@ -52,11 +55,16 @@ final class SpeechRecognitionManager: SpeechTranscribing {
         }
         let module = Self.module(for: route)
         let modules: [any SpeechModule] = [module.speechModule]
+        // What is open while starting, so a failure at any step lets go of it (never a recognizer left running).
+        var opening: (analyzer: SpeechAnalyzer, input: AsyncStream<AnalyzerInput>.Continuation?)?
         do {
-            await Self.reserve(route.locale)
+            await SpeechLocaleReservation.reserve(route.locale)
             if let request = try await AssetInventory.assetInstallationRequest(supporting: modules) {
                 guard current == generation else { return .cancelled }
+                // A download that just failed (no internet) isn't asked again at once: the prompter says so and keeps scrolling.
+                guard !downloads.isCoolingDown(route.locale) else { return .unavailable(.needsDownload(route.language)) }
                 guard await download(request, of: route.language, preparation: preparation) else {
+                    downloads.failed(route.locale)
                     return current == generation ? .unavailable(.needsDownload(route.language)) : .cancelled
                 }
                 guard current == generation else { return .cancelled }
@@ -67,11 +75,13 @@ final class SpeechRecognitionManager: SpeechTranscribing {
             // Installed but unable to take audio: the model can't run here (the simulator).
             guard let format else { return .unavailable(.noRecognition) }
             let analyzer = SpeechAnalyzer(modules: modules, options: SpeechAnalyzer.Options(priority: .userInitiated, modelRetention: .whileInUse))
+            opening = (analyzer, nil)
             let context = AnalysisContext()
             context.contextualStrings[.general] = Self.vocabulary(in: script)
             try? await analyzer.setContext(context)
             try await analyzer.prepareToAnalyze(in: format)
             let (inputs, input) = AsyncStream.makeStream(of: AnalyzerInput.self)
+            opening = (analyzer, input)
             try await analyzer.start(inputSequence: inputs)
             guard current == generation else {
                 input.finish()
@@ -87,6 +97,9 @@ final class SpeechRecognitionManager: SpeechTranscribing {
             #if DEBUG
             Logger(subsystem: "studio.cue", category: "VoiceFollowing").error("Recognition couldn't start: \(error, privacy: .public)")
             #endif
+            opening?.input?.finish()
+            if let opening { await opening.analyzer.cancelAndFinishNow() }
+            if error is CancellationError { return .cancelled }
             return current == generation ? .unavailable(.couldNotStart) : .cancelled
         }
     }
@@ -135,15 +148,7 @@ final class SpeechRecognitionManager: SpeechTranscribing {
     /// Whether Voice Following can follow the words in `language` here, and whether its model is
     /// already on the device.
     func availability(of language: CueLanguage) async -> VoiceFollowingAvailability {
-        guard case .success(let route) = await resolver.resolve(.language(language)) else { return .unavailable }
-        let modules = [Self.module(for: route).speechModule]
-        switch await AssetInventory.status(forModules: modules) {
-        case .installed:
-            // Some devices list a model they can't run (the simulator): no audio format for it.
-            return await SpeechAnalyzer.bestAvailableAudioFormat(compatibleWith: modules) == nil ? .unavailable : .ready
-        case .unsupported: return .unavailable
-        default: return .downloadsOnFirstUse
-        }
+        VoiceFollowingAvailability(await SpeechCapabilityChecker(catalog: catalog).support(for: language))
     }
 
     // MARK: - Recognizers
@@ -247,18 +252,6 @@ final class SpeechRecognitionManager: SpeechTranscribing {
             return true
         } catch {
             return false
-        }
-    }
-
-    /// Keeps the language's model on the device. The system holds a few reserved languages at a
-    /// time; when they're taken, the oldest other one makes room, so a new language still works.
-    private static func reserve(_ locale: Locale) async {
-        let reserved = await AssetInventory.reservedLocales
-        guard !reserved.contains(where: { $0.identifier(.bcp47) == locale.identifier(.bcp47) }) else { return }
-        if (try? await AssetInventory.reserve(locale: locale)) == true { return }
-        if reserved.count >= AssetInventory.maximumReservedLocales, let oldest = reserved.first {
-            await AssetInventory.release(reservedLocale: oldest)
-            _ = try? await AssetInventory.reserve(locale: locale)
         }
     }
 

@@ -88,4 +88,37 @@ struct CueLanguageTests {
         #expect(String(bytes: data, encoding: .utf8) == #"["pt-BR"]"#)
         #expect(try JSONDecoder().decode([CueLanguage].self, from: data) == [.portugueseBrazil])
     }
+
+    // MARK: - Regional variants
+
+    /// The creator's own variant comes from the languages they listed, never from the device's country.
+    @Test func theCreatorsVariantComesFromTheirOwnLanguageList() {
+        #expect(CueLanguage.english.variant(among: ["it-IT", "en-GB"])?.identifier(.bcp47) == "en-GB")
+        #expect(CueLanguage.spanish.variant(among: ["es-MX", "en-US"])?.identifier(.bcp47) == "es-MX")
+        #expect(CueLanguage.english.variant(among: ["it-IT"]) == nil)
+        #expect(CueLanguage.english.variant(among: []) == nil)
+        // A language listed without a region has no variant to keep.
+        #expect(CueLanguage.english.variant(among: ["en"]) == nil)
+    }
+
+    /// Brazilian Portuguese stays Brazilian unless the language was only read from the text.
+    @Test func aVariantCueWritesDifferentlyIsOnlyKeptForALanguageReadFromText() {
+        #expect(CueLanguage.portugueseBrazil.variant(among: ["pt-PT"]) == nil)
+        #expect(CueLanguage.portugueseBrazil.variant(among: ["pt-PT"], acceptingAnyVariant: true)?.identifier(.bcp47) == "pt-PT")
+        #expect(CueLanguage.portugueseBrazil.variant(among: ["pt-BR"])?.identifier(.bcp47) == "pt-BR")
+    }
+
+    @Test func chineseVariantsNeverCrossWritingSystems() {
+        #expect(CueLanguage.chineseTraditional.variant(among: ["zh-Hans-CN", "zh-Hant-HK"])?.identifier(.bcp47) == "zh-Hant-HK")
+        #expect(CueLanguage.chineseTraditional.variant(among: ["zh-Hans-CN"], acceptingAnyVariant: true) == nil)
+        #expect(CueLanguage.chineseSimplified.variant(among: ["zh-Hant-TW"], acceptingAnyVariant: true) == nil)
+    }
+
+    @Test func matchesALocaleLanguageKeepingTheWritingSystem() {
+        #expect(CueLanguage.matching(language: Locale.Language(identifier: "zh-Hant")) == .chineseTraditional)
+        #expect(CueLanguage.matching(language: Locale.Language(identifier: "zh-Hans")) == .chineseSimplified)
+        #expect(CueLanguage.matching(language: Locale.Language(identifier: "nn")) == .norwegian)
+        #expect(CueLanguage.chineseTraditional.chineseScriptIdentifier == "zh-Hant")
+        #expect(CueLanguage.english.chineseScriptIdentifier == nil)
+    }
 }

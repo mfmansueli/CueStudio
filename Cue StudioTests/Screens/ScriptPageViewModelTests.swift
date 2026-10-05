@@ -290,6 +290,34 @@ struct ScriptPageViewModelTests {
         #expect(scenario.toast.message == "Couldn’t write it · Try again")
     }
 
+    /// A reason the creator can act on is told as it is; "Try again" is only for what trying again can fix.
+    @Test func aFailedRewriteInAnUnsupportedLanguageSaysSoInsteadOfTryAgain() async {
+        let scenario = makeScenario(script: TestData.script(text: "Hello there my friend"))
+        defer { scenario.defaults.tearDown() }
+        scenario.writer.error = ScriptAIError.unsupportedLanguage
+        scenario.viewModel.page.selection = 0..<21
+        await scenario.viewModel.rewriteSelection(.rewrite)
+        #expect(scenario.toast.message == ScriptAIError.unsupportedLanguage.localizedDescription)
+    }
+
+    @Test func stoppingARewriteSaysNothing() async {
+        let scenario = makeScenario(script: TestData.script(text: "Hello there my friend"))
+        defer { scenario.defaults.tearDown() }
+        scenario.writer.error = CancellationError()
+        scenario.viewModel.page.selection = 0..<21
+        await scenario.viewModel.rewriteSelection(.rewrite)
+        #expect(scenario.toast.message == nil)
+        #expect(!scenario.viewModel.page.isRewriting)
+    }
+
+    @Test func whichErrorsExplainThemselves() {
+        #expect(ScriptDetailViewModel.failureMessage(for: ScriptAIError.emptyResponse) == "Couldn’t write it · Try again")
+        #expect(ScriptDetailViewModel.failureMessage(for: URLError(.timedOut)) == "Couldn’t write it · Try again")
+        for error in [ScriptAIError.unsupportedLanguage, .modelPreparing, .wrongLanguage, .tooLong] {
+            #expect(ScriptDetailViewModel.failureMessage(for: error) == error.localizedDescription)
+        }
+    }
+
     // MARK: - State (04 · F2)
 
     @Test func doneMakesADraftReadyAndKeepsTheWords() {

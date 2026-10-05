@@ -18,10 +18,12 @@ struct ScriptStarterTests {
         let ideaDraft: IdeaDraftService
         let transition: IdeaTransitionService
         let sky: SkyMemory
+        let writer: FakeScriptWriter
+        let toast: ToastService
         let defaults: TestDefaults
     }
 
-    private func makeScenario() -> Scenario {
+    private func makeScenario(languages: LanguageService? = nil) -> Scenario {
         let defaults = TestDefaults()
         let library = ScriptLibraryService(repository: FakeScriptRepository(), now: { TestData.now })
         let presentation = PresentationService()
@@ -29,14 +31,16 @@ struct ScriptStarterTests {
         let transition = IdeaTransitionService()
         transition.speed = 0.01
         let sky = SkyMemory(defaults: defaults.defaults)
+        let writer = FakeScriptWriter()
+        let toast = ToastService()
         let starter = ScriptStarter(
             library: library, rules: TestData.rulesService(), profile: CreatorProfileService(defaults: defaults.defaults),
-            languages: TestData.languages(defaults: defaults.defaults), presentation: presentation, ideaDraft: ideaDraft,
-            transition: transition, sky: sky
+            languages: languages ?? TestData.languages(defaults: defaults.defaults), presentation: presentation, ideaDraft: ideaDraft,
+            transition: transition, sky: sky, writer: writer, toast: toast
         )
         return Scenario(
             starter: starter, library: library, presentation: presentation, ideaDraft: ideaDraft, transition: transition, sky: sky,
-            defaults: defaults
+            writer: writer, toast: toast, defaults: defaults
         )
     }
 
@@ -103,5 +107,33 @@ struct ScriptStarterTests {
         await scenario.transition.contentReady()
         #expect(scenario.sky.points.count == 1)
         #expect(scenario.library.scripts.count == 1)
+    }
+
+    // MARK: - A language Apple Intelligence doesn't write
+
+    /// The star flies for three seconds only to fall: a language the model can't write is told at once, and the
+    /// idea becomes a blank draft to write by hand, the way it does without Apple Intelligence.
+    @Test func anIdeaInALanguageTheModelCannotWriteOpensABlankDraftWithTheReason() {
+        let scenario = makeScenario()
+        defer { scenario.defaults.tearDown() }
+        scenario.writer.writingFailureToReturn = .unsupportedLanguage(Locale.Language(identifier: "th"))
+        scenario.ideaDraft.text = "ทำไมฉันเลิกกินกาแฟสามสิบวันแล้วชีวิตเปลี่ยนไป"
+        let id = scenario.starter.write()
+        #expect(id != nil)
+        #expect(scenario.library.scripts.count == 1)
+        let route = scenario.presentation.scriptsPath.first
+        #expect(route?.writing == nil)
+        #expect(route?.startsEditing == true)
+        #expect(scenario.toast.message == ScriptAIError.unsupportedLanguage.localizedDescription)
+        #expect(!scenario.transition.isActive)
+    }
+
+    @Test func aSupportedLanguageStillGoesToTheModel() {
+        let scenario = makeScenario()
+        defer { scenario.defaults.tearDown() }
+        scenario.ideaDraft.text = "Carnival in Salvador"
+        scenario.starter.write()
+        #expect(scenario.presentation.scriptsPath.first?.writing != nil)
+        #expect(scenario.toast.message == nil)
     }
 }

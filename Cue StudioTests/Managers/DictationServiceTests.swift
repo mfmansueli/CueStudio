@@ -76,7 +76,7 @@ struct DictationServiceTests {
     /// For a wait that depends on a real timer: up to a deadline far beyond any timeout under test,
     /// so a busy machine only makes it slower, never wrong.
     private func waitUntilSlow(_ condition: () -> Bool) async {
-        let deadline = ContinuousClock.now + .seconds(10)
+        let deadline = ContinuousClock.now + .seconds(30)
         while !condition(), ContinuousClock.now < deadline {
             try? await Task.sleep(for: .milliseconds(10))
         }

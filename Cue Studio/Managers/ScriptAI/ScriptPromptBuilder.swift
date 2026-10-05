@@ -12,7 +12,7 @@ nonisolated enum ScriptPromptBuilder {
 
     // MARK: - Generation
 
-    static func instructions(for request: ScriptRequest) -> String {
+    static func instructions(for request: ScriptRequest, insistsOnLanguage: Bool = false) -> String {
         let structure = request.structure
         var lines = [
             "You write short-form video scripts that a creator reads from a teleprompter while filming themselves.",
@@ -30,15 +30,31 @@ nonisolated enum ScriptPromptBuilder {
             lines += voiceLines(voice)
         }
         if let language = request.language {
-            lines.append(languageRule(language))
+            lines.append(languageRule(language, variant: request.languageVariant))
+            if insistsOnLanguage || language != .english { lines.append(languageInsistence(language, variant: request.languageVariant)) }
         }
         return lines.joined(separator: "\n")
     }
 
     /// Which language to write in, named in English so the rule reads the same whatever the
     /// interface language is.
-    static func languageRule(_ language: CueLanguage) -> String {
-        "Write the title and every block in \(language.englishName)."
+    static func languageRule(_ language: CueLanguage, variant: Locale? = nil) -> String {
+        "Write the title and every block in \(languageName(language, variant: variant))."
+    }
+
+    /// For a language other than English the instructions themselves are in English, and a catchphrase in the
+    /// voice may be too: the model has answered in English (measured: a Japanese idea, an English "Hey fam").
+    static func languageInsistence(_ language: CueLanguage, variant: Locale? = nil) -> String {
+        let name = languageName(language, variant: variant)
+        return "The script is in \(name), not in English: write it in \(name) even though these instructions are in English. Only the creator's catchphrases stay as they are."
+    }
+
+    /// "English (United Kingdom)" for the creator's own variant, "English" for the language Cue offers.
+    static func languageName(_ language: CueLanguage, variant: Locale? = nil) -> String {
+        guard let variant, let name = Locale(identifier: "en").localizedString(forIdentifier: variant.identifier) else {
+            return language.englishName
+        }
+        return name
     }
 
     static func prompt(for request: ScriptRequest) -> String {
@@ -53,6 +69,9 @@ nonisolated enum ScriptPromptBuilder {
             lines.append("Tone: \(tone.label.lowercased()).")
         }
         lines.append("Length: between \(low) and \(high) spoken words in total.")
+        // Measured on an iPhone: told only the range, the model wrote about a third of it (44 to 82 words for 150 to 225,
+        // in every language). Naming the minimum and what a block holds is what makes it write the length.
+        lines.append(lengthRule(minimumWords: low))
         if !structure.isSerious {
             lines.append("Open with a hook that works in the first 3 seconds.")
         }
@@ -70,6 +89,11 @@ nonisolated enum ScriptPromptBuilder {
             lines += brandLines(brand)
         }
         return lines.joined(separator: "\n")
+    }
+
+    /// Every block gets full sentences, and the script doesn't stop before its minimum.
+    static func lengthRule(minimumWords: Int) -> String {
+        "Do not stop early: the script must be at least \(minimumWords) words, so write every block in full, with several complete sentences each."
     }
 
     // MARK: - Voice
@@ -224,7 +248,9 @@ nonisolated enum ScriptPromptBuilder {
 
     // MARK: - Rewrites
 
-    static func rewriteInstructions(voice: CreatorVoice? = nil) -> String {
+    /// - Parameter language: the language the result must be in (the script's, or a translation's target), named
+    ///   outright for any language but English: the instructions are in English, and so may be a catchphrase.
+    static func rewriteInstructions(voice: CreatorVoice? = nil, language: Locale.Language? = nil) -> String {
         var lines = [
             "You edit teleprompter scripts for video creators.",
             "Keep the creator's voice and first person. Keep existing stage cues in square brackets unless the edit requires removing them.",
@@ -232,6 +258,10 @@ nonisolated enum ScriptPromptBuilder {
             "Separate paragraphs with a blank line.",
             "Keep the script in the language it is written in, unless you are asked to translate it.",
         ]
+        if let language, language.languageCode?.identifier != "en" {
+            let name = Locale(identifier: "en").localizedString(forIdentifier: language.minimalIdentifier) ?? language.minimalIdentifier
+            lines.append("The result is in \(name), not in English: write it in \(name) even though these instructions are in English. Only the creator's catchphrases stay as they are.")
+        }
         if let voice {
             lines += voiceLines(voice)
         }
