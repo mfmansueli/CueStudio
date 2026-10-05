@@ -11,7 +11,7 @@ StoreKit, cota de IA e o pipeline das takes (`TakeStage`).
 
 | Onde | Como é |
 |---|---|
-| Tab bar | `TabView` do sistema com `.tabBarMinimizeBehavior(.onScrollDown)`; Record fica no meio como aba normal (`09` §4), nunca `role: .search` |
+| Tab bar | `TabView` do sistema com `.tabBarMinimizeBehavior(.never)`: a barra não recolhe ao rolar as listas (decisão do criador; o `07` §1 pedia `.onScrollDown`); Record fica no meio como aba normal (`09` §4), nunca `role: .search` |
 | Barras de navegação | Scripts, Takes, Profile, Settings e a página do script usam `NavigationStack` + `.toolbar` (voltar do sistema, `ToolbarItemGroup`, `ToolbarSpacer`); Scripts usa `.searchable` + `.searchToolbarBehavior(.minimize)` |
 | Sheets | `cueSheetChrome()` (`DesignSystem/Components/CueSheetChrome.swift`): `NavigationStack` com `Button(role: .close)` em vidro à esquerda e fundo de vidro do sistema; `fittedSheet()` soma `Metrics.sheetBarHeight` à altura. `SheetHeader` é só título e subtítulo |
 | Botões | `CueStudioButtonStyle`: primário (amarelo) e secundário são Liquid Glass (`.glassEffect(.regular.tint(acc).interactive())`); `.glass` sobre vídeo; os outros mantêm o próprio preenchimento |

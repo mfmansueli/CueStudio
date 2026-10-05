@@ -26,6 +26,9 @@ nonisolated enum DefaultsKey {
     static let myCoverStyle = "myCoverStyle"
     /// Free exports used, before the count moved to the Keychain; migrated and removed at launch.
     static let legacyCleanExportsUsed = "cleanExportsUsed"
+    /// Debug builds: this install has launched before. UserDefaults goes with the app and the Keychain stays, so without
+    /// it the launch is a new install's first, and the free exports start over (`UsageQuotaService`).
+    static let installLaunched = "installLaunched"
     /// How the Takes tab lays videos out (`TakeLayout` raw value); absent = the grid.
     static let takesLayout = "takesLayout"
     /// The Sign in with Apple account (ID, and the name and email Apple shared once).

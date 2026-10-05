@@ -55,6 +55,40 @@ struct UsageQuotaServiceTests {
         #expect(store.defaults.object(forKey: DefaultsKey.legacyCleanExportsUsed) == nil)
     }
 
+    /// Debug builds: a reinstall (empty UserDefaults, the Keychain count still there) starts with the five exports again.
+    @Test func aNewDebugInstallGetsItsFreeExportsBack() {
+        let store = TestDefaults()
+        defer { store.tearDown() }
+        let counter = FakeExportCountStore(count: 5)
+        let quota = UsageQuotaService(counter: counter, defaults: store.defaults, resetsOnNewInstall: true)
+        #expect(quota.exportsLeft(for: .free) == 5)
+        #expect(counter.count == 0)
+    }
+
+    /// Only the install's first launch starts over: the exports used after it count on the next launches.
+    @Test func laterDebugLaunchesKeepTheCount() {
+        let store = TestDefaults()
+        defer { store.tearDown() }
+        let counter = FakeExportCountStore(count: 4)
+        let first = UsageQuotaService(counter: counter, defaults: store.defaults, resetsOnNewInstall: true)
+        first.recordExport(tier: .free)
+        first.recordExport(tier: .free)
+        let next = UsageQuotaService(counter: counter, defaults: store.defaults, resetsOnNewInstall: true)
+        #expect(next.exportsUsed == 2)
+        #expect(next.exportsLeft(for: .free) == 3)
+    }
+
+    /// Release builds keep the count through a reinstall.
+    @Test func withoutTheDebugResetANewInstallKeepsTheCount() {
+        let store = TestDefaults()
+        defer { store.tearDown() }
+        let counter = FakeExportCountStore(count: 5)
+        let quota = UsageQuotaService(counter: counter, defaults: store.defaults)
+        #expect(quota.exportsLeft(for: .free) == 0)
+        #expect(counter.count == 5)
+        #expect(store.defaults.object(forKey: DefaultsKey.installLaunched) == nil)
+    }
+
     @Test func legacyMonthlyAICountersAreRemoved() {
         let store = TestDefaults()
         defer { store.tearDown() }

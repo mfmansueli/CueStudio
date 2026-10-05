@@ -45,6 +45,9 @@ struct LaunchOptions {
     var exportLedger: ExportLedgerStoring = FileExportLedgerStore()
     /// Nil is the real sharing (`VideoSharingService`).
     var sharing: VideoSharing?
+    /// Debug builds give a new install its free exports back (the Keychain count outlives a reinstall). Not under UI tests:
+    /// their throwaway defaults would make every launch look like a new install.
+    var resetsExportsOnNewInstall = false
     var defaults: UserDefaults = .standard
     /// UI tests and previews swap in rules read from the bundle only (no cache, no download).
     var platformRules: PlatformRulesService = PlatformRulesService()
@@ -75,6 +78,7 @@ struct LaunchOptions {
         var options = LaunchOptions()
         #if DEBUG
         let arguments = ProcessInfo.processInfo.arguments
+        options.resetsExportsOnNewInstall = !arguments.contains("-uiTestInMemory")
         if arguments.contains("-uiTestInMemory") {
             options.isInMemory = true
             options.appsAreInstalled = arguments.contains("-uiTestAppsInstalled")
