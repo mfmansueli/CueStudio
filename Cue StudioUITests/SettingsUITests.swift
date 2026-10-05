@@ -66,7 +66,7 @@ final class SettingsUITests: XCTestCase {
         XCTAssertTrue(identity.waitForExistence(timeout: 5))
         identity.tap()
         let goals = app.switches["profile.monetizationGoalsToggle"]
-        scroll(app, to: goals)
+        app.scroll(to: goals)
         XCTAssertTrue(app.buttons["profile.defaultPlatformPicker"].exists)
         goals.tap()
         let saved = goals.value as? String
@@ -79,7 +79,7 @@ final class SettingsUITests: XCTestCase {
         XCTAssertFalse(app.switches["profile.monetizationGoalsToggle"].exists)
         profile.tap()
         identity.tap()
-        scroll(app, to: goals)
+        app.scroll(to: goals)
         XCTAssertEqual(goals.value as? String, saved)
     }
 
@@ -96,7 +96,7 @@ final class SettingsUITests: XCTestCase {
             XCTAssertTrue(app.buttons["settings.recordingTile"].waitForExistence(timeout: 5))
             capture(app, name: "Settings · \(language)")
             // Everything stays reachable by scrolling, in every language.
-            scroll(app, to: app.buttons["settings.restorePurchasesButton"])
+            app.scroll(to: app.buttons["settings.restorePurchasesButton"])
             XCTAssertTrue(app.buttons["settings.restorePurchasesButton"].isHittable)
             app.terminate()
         }
@@ -109,10 +109,10 @@ final class SettingsUITests: XCTestCase {
         let language = app.buttons["settings.languageRegionButton"]
         XCTAssertTrue(language.waitForExistence(timeout: 5))
         capture(app, name: "Settings · German · Accessibility XXXL")
-        scroll(app, to: language)
+        app.scroll(to: language)
         XCTAssertTrue(language.isHittable)
         let restore = app.buttons["settings.restorePurchasesButton"]
-        scroll(app, to: restore)
+        app.scroll(to: restore)
         XCTAssertTrue(restore.isHittable)
         capture(app, name: "Settings · German · Accessibility XXXL · Bottom")
     }
@@ -123,7 +123,7 @@ final class SettingsUITests: XCTestCase {
         XCTAssertTrue(settings.waitForExistence(timeout: 15))
         settings.tap()
         let acknowledgements = app.buttons["settings.acknowledgementsButton"]
-        scroll(app, to: acknowledgements)
+        app.scroll(to: acknowledgements)
         acknowledgements.tap()
         XCTAssertTrue(app.navigationBars["Acknowledgements"].waitForExistence(timeout: 5))
         let font = app.buttons.matching(identifier: "acknowledgements.font").firstMatch
@@ -164,13 +164,6 @@ final class SettingsUITests: XCTestCase {
         let symbols = ["doc.text", "film.stack", "", "person.crop.circle", "gearshape"]
         let symbol = symbols[index ?? labels.firstIndex(of: label) ?? 0]
         return app.buttons.matching(NSPredicate(format: "label == %@ AND identifier == %@", label, symbol)).firstMatch
-    }
-
-    private func scroll(_ app: XCUIApplication, to element: XCUIElement) {
-        for _ in 0..<8 where !(element.exists && element.isHittable) {
-            app.swipeUp()
-        }
-        XCTAssertTrue(element.waitForExistence(timeout: 5))
     }
 
     private func capture(_ app: XCUIApplication, name: String) {

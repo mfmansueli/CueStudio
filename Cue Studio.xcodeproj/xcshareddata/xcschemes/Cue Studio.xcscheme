@@ -35,6 +35,9 @@
          <TestPlanReference
             reference = "container:TestPlans/Fast.xctestplan">
          </TestPlanReference>
+         <TestPlanReference
+            reference = "container:TestPlans/UISmoke.xctestplan">
+         </TestPlanReference>
       </TestPlans>
    </TestAction>
    <LaunchAction

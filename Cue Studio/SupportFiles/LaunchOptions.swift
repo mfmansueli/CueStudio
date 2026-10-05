@@ -32,6 +32,8 @@ import Foundation
 ///   tip stays away in UI tests (they open the app on one day).
 /// - `-uiTestStarTransition`: the idea's star transition keeps its real timings (3 s at least); UI tests shorten it otherwise.
 /// - `-uiTestSlowWriting`: with the stub writer, the script's words arrive on the page slowly enough to look at the page mid-writing.
+/// - `-uiTestFastAnimations`: with the above, no animations (UIKit's sheets and pushes, SwiftUI's transactions), so a UI test
+///   never waits for one to end; `CueApp.launch` passes it unless a test asks for real animations.
 /// - `-uiTestAppLanguage <lproj>`: with `-uiTestInMemory`, Cue's interface starts in that language
 ///   (as if picked in Language & Region) without changing the simulator's. The interface language
 ///   always lives in memory under `-uiTestInMemory`.
@@ -74,6 +76,8 @@ struct LaunchOptions {
     var voiceTipSkipsGates = false
     /// UI tests of the star transition: it takes its real time (`-uiTestStarTransition`).
     var keepsStarTransitionTimings = false
+    /// UI tests: nothing animates (`-uiTestFastAnimations`).
+    var animationsOff = false
 
     static func fromProcess() -> LaunchOptions {
         var options = LaunchOptions()
@@ -124,6 +128,7 @@ struct LaunchOptions {
             options.showsOnboarding = arguments.contains("-uiTestOnboarding")
             options.voiceTipSkipsGates = arguments.contains("-uiTestVoiceTip")
             options.keepsStarTransitionTimings = arguments.contains("-uiTestStarTransition")
+            options.animationsOff = arguments.contains("-uiTestFastAnimations")
             if let index = arguments.firstIndex(of: "-uiTestPermissions"), arguments.indices.contains(index + 1) {
                 options.permissions = StubPermissions(grants: arguments[index + 1] != "denied")
             }

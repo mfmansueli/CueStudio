@@ -56,6 +56,8 @@ struct WelcomeChapter: View {
                     pill(String(localized: "✦ AI SCRIPTS"), isAI: true)
                 }
                 .opacity(buttonsShown ? 1 : 0)
+                // Invisible until the story reaches them: VoiceOver (and a UI test) finds them when they show.
+                .accessibilityHidden(!buttonsShown)
             }
             .padding(.horizontal, 20)
             VStack(spacing: 2) {
@@ -66,6 +68,7 @@ struct WelcomeChapter: View {
             .padding(.top, 22)
             .padding(.bottom, 8)
             .opacity(buttonsShown ? 1 : 0)
+            .accessibilityHidden(!buttonsShown)
         }
         .onAppear(perform: play)
     }

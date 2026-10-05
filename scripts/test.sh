@@ -1,11 +1,12 @@
 #!/bin/bash
 # Runs Cue Studio's tests (building first) and prints a summary with every failure. See scripts/_xcode.sh for what every
-# run shares. Test plans: TestPlans/Fast.xctestplan and TestPlans/Full.xctestplan.
+# run shares. Test plans: TestPlans/Fast, UISmoke and Full (.xctestplan).
 #
 #   scripts/test.sh                  the Fast plan: unit tests without the real exports (the everyday run)
 #   scripts/test.sh unit             every unit test, real exports included
 #   scripts/test.sh exports          only the real exports (they take turns on the encoder)
-#   scripts/test.sh ui               the UI tests
+#   scripts/test.sh smoke            the UISmoke plan: one UI test per flow (a few minutes; the everyday UI check)
+#   scripts/test.sh ui               every UI test
 #   scripts/test.sh full             the Full plan: unit and UI tests (what ⌘U runs)
 #   scripts/test.sh only <id>…       chosen tests: "Cue StudioTests/DockFoldTests", "Cue StudioUITests/TabBarUITests/testTabs()"
 #   scripts/test.sh device <suite>   a device-only suite on the iPhone named by CUE_DEVICE (name or id), one set at a time
@@ -17,7 +18,7 @@
 source "$(dirname "$0")/_xcode.sh"
 
 usage() {
-    sed -n '2,15p' "$0"
+    sed -n '2,16p' "$0"
     exit 64
 }
 
@@ -44,6 +45,7 @@ destination="$SIMULATOR_DESTINATION"
 plan=(-testPlan Full)
 case "$mode" in
     fast) plan=(-testPlan Fast) ;;
+    smoke) plan=(-testPlan UISmoke) ;;
     unit) extra+=(-only-testing:"Cue StudioTests") ;;
     exports) extra+=(-only-testing:"Cue StudioTests/RealExports") ;;
     ui) extra+=(-only-testing:"Cue StudioUITests") ;;

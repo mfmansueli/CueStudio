@@ -184,16 +184,9 @@ final class CreatorSetupUITests: XCTestCase {
         XCTAssertTrue(app.cueTabBar.buttons["Settings"].isSelected)
     }
 
+    /// In the Display sheet the swipes go to its own scroll view; elsewhere, to the screen.
     private func scroll(_ app: XCUIApplication, to element: XCUIElement) {
-        for _ in 0..<8 where !(element.exists && element.isHittable) {
-            let display = app.scrollViews.containing(.button, identifier: "display.advancedButton").firstMatch
-            if display.exists {
-                display.swipeUp()
-            } else {
-                app.swipeUp()
-            }
-        }
-        XCTAssertTrue(element.waitForExistence(timeout: 5))
+        app.scroll(to: element, in: app.scrollViews.containing(.button, identifier: "display.advancedButton").firstMatch)
     }
 
     private func scrollUp(_ app: XCUIApplication, to element: XCUIElement) {

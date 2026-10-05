@@ -1,0 +1,52 @@
+{
+  "configurations" : [
+    {
+      "id" : "5CFC5580-A672-4AD7-A8CC-51AD4E8301F6",
+      "name" : "Default",
+      "options" : {}
+    }
+  ],
+  "defaultOptions" : {
+    "codeCoverage" : false,
+    "defaultTestExecutionTimeAllowance" : 300,
+    "maximumTestExecutionTimeAllowance" : 600,
+    "systemAttachmentLifetime" : "deleteOnSuccess",
+    "testTimeoutsEnabled" : true,
+    "uiTestingScreenshotsLifetime" : "deleteOnSuccess"
+  },
+  "testTargets" : [
+    {
+      "selectedTests" : [
+        "TabBarUITests/testEachTabIsSelectedAndTheBarIsTheSystemsOwn()",
+        "OnboardingUITests/testSkipGoesToTheEmptyScriptsScreen()",
+        "ScriptsV29UITests/testTheListIsGroupedByState()",
+        "GenerateScriptUITests/testTheFormatChipChoosesHowCueBuildsTheScript()",
+        "StarTransitionUITests/testTheStarCoversTheScreenThenOpensTheScript()",
+        "ScriptPageUITests/testAReadyScriptShowsReadyAndOneYellowRecord()",
+        "ScriptLibraryUITests/testFilteringByDestination()",
+        "CreateScriptUITests/testRecordTabOffersRecentScriptsAndFreestyle()",
+        "PrompterUITests/testSelfieModeSwitchesToStudio()",
+        "StudioUITests/testStudioHasNoCameraAndNothingToRecord()",
+        "RecorderV29UITests/testTheBoxOpensNearTheTop()",
+        "TakesUITests/testDeletingATakeMovesToAnother()",
+        "EditorUITests/testTheEditorOpensWithTheMainTools()",
+        "FirstRunUITests/testRecordingWithoutAScript()",
+        "FreePlanUITests/testSuggestBestPicksATake()",
+        "ProfileUITests/testSignInWithAppleIsOfferedWhenSignedOut()",
+        "VoiceV29UITests/testTheProfileCardShowsTheMeterTheSentenceAndTheNextQuestion()",
+        "VoiceTipUITests/testTheTipAsksOneQuestionAndOffersOneMore()",
+        "ShareUniverseProV29UITests/testThePaywallShowsPlansTheTrialAndRestore()",
+        "ShareToUITests/testShareToListsEveryPlatformWithTheOneItWasMadeFor()",
+        "SettingsUITests/testFontLicensesRemainReachableFromSettings()",
+        "LanguageRegionUITests/testJapaneseInterfaceKeepsEnglishScripts()",
+        "CreatorSetupUITests/testChoicesStayAfterLeavingCreatorSetup()"
+      ],
+      "target" : {
+        "containerPath" : "container:Cue Studio.xcodeproj",
+        "identifier" : "000000000000000300000000",
+        "name" : "Cue StudioUITests"
+      }
+    }
+  ],
+  "version" : 1
+}

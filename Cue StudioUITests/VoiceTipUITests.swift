@@ -65,7 +65,8 @@ final class VoiceTipUITests: XCTestCase {
     }
 
     func testAMultipleAnswerQuestionHasSaveAndNoneOfThese() {
-        let app = CueApp.launch(seeded: false, extraArguments: ["-uiTestVoiceTip"])
+        // The "Saved" shows for 0.9 s before the sheet closes; without the closing animation it can be gone before the test looks.
+        let app = CueApp.launch(seeded: false, animations: true, extraArguments: ["-uiTestVoiceTip"])
         XCTAssertTrue(element(app, "voice.tip").waitForExistence(timeout: 15))
         openTip(app)
         element(app, "voice.option.personal").tap()

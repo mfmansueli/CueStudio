@@ -22,13 +22,15 @@ tomadas. Atualize-o junto com a UI.
 - **Build settings em `Config/*.xcconfig`** (`Project`, `App`, `UnitTests`, `UITests`), nunca no `project.pbxproj`: mude o
   arquivo de texto, não o editor de Build Settings do Xcode (ele grava no projeto, e `scripts/check-project.sh` acusa).
 - Scheme compartilhado `Cue Studio` (app + `Cue StudioTests` + `Cue StudioUITests`), Swift 6, iOS 27. Testes por planos
-  (`TestPlans/`): **Full** (o padrão do ⌘U: unidade + UI) e **Fast** (unidade sem as exportações reais, tag `.realExports`).
+  (`TestPlans/`): **Full** (o padrão do ⌘U: unidade + UI), **Fast** (unidade sem as exportações reais, tag `.realExports`) e
+  **UISmoke** (um teste de UI por fluxo).
 - **Build e testes pelos scripts** (`scripts/`), não por `xcodebuild` solto: um derivedData por checkout (`build/`), pacotes
   compartilhados, **um `xcodebuild` por vez no Mac** (o próximo espera o que está rodando, de outra sessão ou worktree) e só
   erros, warnings e falhas no terminal (o log inteiro fica em `build/logs/`).
   - `scripts/build.sh [tests|app|device|release]` (padrão `tests`: o app e os pacotes de teste no simulador).
-  - `scripts/test.sh [fast|unit|exports|ui|full]`, `scripts/test.sh only "Cue StudioTests/DockFoldTests"`, com `--no-build`
-    e `--repeat N`. Durante o trabalho, `fast` ou `only`; `full` no fim. Testes de aparelho: `CUE_DEVICE=<iPhone>
+  - `scripts/test.sh [fast|smoke|unit|exports|ui|full]`, `scripts/test.sh only "Cue StudioTests/DockFoldTests"`, com
+    `--no-build` e `--repeat N`. Durante o trabalho, `fast`, `smoke` (um teste de UI por fluxo, plano `UISmoke`) ou `only`;
+    `full` no fim. Testes de aparelho: `CUE_DEVICE=<iPhone>
     scripts/test.sh device <Suite>` (um conjunto por vez; liga a variável `TEST_RUNNER_CUE_…` certa).
   - `scripts/check-warnings.sh`: a conferência de zero warnings (abaixo).
   - `scripts/check-project.sh`: em segundos, confere `project.pbxproj`, os `.xcconfig`, o scheme e os planos de teste.
@@ -64,6 +66,8 @@ tomadas. Atualize-o junto com a UI.
   `-uiTestCatalogue <seção>` (a seção `transition` mostra a estrela; ver `DESIGN_PROJECT.md`).
   v30: `-uiTestVoiceTip` (abre as portas da dica do My Cue Voice), `-uiTestStarTransition` (a estrela da ideia mantém os tempos reais; nos testes de UI ela é encurtada)
   e `-uiTestSlowWriting` (com o roteirista de teste, as palavras chegam devagar na página).
+  Testes de UI: `-uiTestFastAnimations` (nada anima: sheets, pushes e as transações do SwiftUI; o `CueApp.launch` passa por padrão
+  e `animations: true` pede as reais).
 - Idiomas: `LOCALIZATION.md` (três idiomas independentes, terminologia, RTL). Todo texto novo entra
   nos 20 idiomas dos String Catalogs. O teste de fala de verdade é opt-in:
   `TEST_RUNNER_CUE_SPEECH_E2E=1 xcodebuild … -only-testing:"Cue StudioTests/VoiceFollowingSpeechTests" test`,

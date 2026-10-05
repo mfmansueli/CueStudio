@@ -18,8 +18,22 @@ final class StarTransitionUITests: XCTestCase {
         CueApp.launch(seeded: true, extraArguments: ["-uiTestStarTransition"])
     }
 
+    /// Until `element` stops moving (two looks 0.2 s apart agree), at most `timeout` seconds: its frame is then the one it keeps.
+    private func waitUntilSettled(_ element: XCUIElement, timeout: TimeInterval = 3) {
+        var last = element.frame
+        let deadline = Date().addingTimeInterval(timeout)
+        while Date() < deadline {
+            Thread.sleep(forTimeInterval: 0.2)
+            let now = element.frame
+            if now == last { return }
+            last = now
+        }
+    }
+
     private func capture(_ app: XCUIApplication, _ name: String) throws {
         guard let folder = ProcessInfo.processInfo.environment["CUE_SCREENSHOT_DIR"] else { return }
+        // Pictures only: a moment for the screen to settle.
+        sleep(1)
         let directory = URL(fileURLWithPath: folder, isDirectory: true)
         try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
         try app.screenshot().pngRepresentation.write(to: directory.appending(path: "\(name).png"))
@@ -32,7 +46,6 @@ final class StarTransitionUITests: XCTestCase {
         send.tap()
         let cancel = app.buttons["transition.cancel"]
         XCTAssertTrue(cancel.waitForExistence(timeout: 5), "No transition")
-        sleep(1)
         try capture(app, "transition_waiting")
         // At least three seconds from the tap, then the script is the page.
         XCTAssertTrue(app.pageBackButton.waitForExistence(timeout: 15), "The script never opened")
@@ -74,12 +87,12 @@ final class StarTransitionUITests: XCTestCase {
         XCTAssertTrue(writing.waitForExistence(timeout: 10), "The page never started writing")
         expectation(for: NSPredicate(format: "exists == false"), evaluatedWith: app.buttons["transition.cancel"])
         waitForExpectations(timeout: 10)
-        sleep(1)
+        waitUntilSettled(writing)
         let writingFrame = writing.frame
         try capture(app, "page_writing")
         let editor = app.descendants(matching: .any)["page.editor"].firstMatch
         XCTAssertTrue(editor.waitForExistence(timeout: 15), "The writing never ended")
-        sleep(1)
+        waitUntilSettled(editor)
         try capture(app, "page_written")
         // The editor's frame holds its text view's insets (8 pt above, 5 pt at the side); the arriving words' frame is the words.
         XCTAssertEqual(editor.frame.minY + 8, writingFrame.minY, accuracy: 1, "the words moved when the writing ended")

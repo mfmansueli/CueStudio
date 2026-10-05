@@ -476,6 +476,13 @@ struct OwnProfileStatusServiceTests {
 - Elementos localizados por `accessibilityIdentifier`, não por texto.
 - `XCTSkip` quando a pré-condição do ambiente não existe (ex.: simulador já logado).
 - Helpers de launch e asserção agrupados em `// MARK: - Helpers`.
+- Lance pelo `CueApp.launch`: ele passa `-uiTestFastAnimations` (nada anima, nenhum passo espera uma animação); peça
+  `animations: true` só quando o teste olha uma ou espera algo que só fica na tela durante ela (o "Saved" de 0,9 s antes
+  de uma sheet fechar). `TEST_RUNNER_CUE_UI_ANIMATIONS=1` roda tudo com as reais, para comparar. Para chegar a um
+  elemento abaixo da dobra, `app.scroll(to:)`.
+- `sleep` só para tempo real (um áudio tocando, provar que algo não acontece) ou antes de uma foto do modo screenshot;
+  o resto espera uma condição (`waitForExistence`, `expectation(for: NSPredicate…)`). Um teste novo de um fluxo novo
+  entra também no plano `UISmoke` se for o caminho básico daquele fluxo.
 
 ---
 

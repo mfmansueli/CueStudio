@@ -15,7 +15,7 @@ final class ProfileUITests: XCTestCase {
     func testUpgradeOpensAndClosesThePaywall() {
         let app = openProfile()
         let upgrade = app.buttons["profile.upgradeButton"]
-        scroll(app, to: upgrade)
+        app.scroll(to: upgrade)
         upgrade.tap()
         let close = app.buttons["paywall.closeButton"]
         XCTAssertTrue(close.waitForExistence(timeout: 5))
@@ -29,7 +29,7 @@ final class ProfileUITests: XCTestCase {
     func testPaywallFooterOffersRestoreTermsAndPrivacy() {
         let app = openProfile()
         let upgrade = app.buttons["profile.upgradeButton"]
-        scroll(app, to: upgrade)
+        app.scroll(to: upgrade)
         upgrade.tap()
         XCTAssertTrue(app.buttons["Restore"].waitForExistence(timeout: 5))
         XCTAssertTrue(app.links["Terms"].exists || app.buttons["Terms"].exists)
@@ -39,11 +39,12 @@ final class ProfileUITests: XCTestCase {
 
     /// A catchphrase is an answer of "My phrases" on the full page (9.3): the question sheet opens with its field ready.
     func testAddingACatchphrase() {
-        let app = openProfile()
+        // The "Saved" shows for 0.9 s before the sheet closes; without the closing animation it can be gone before the test looks.
+        let app = openProfile(animations: true)
         setUpVoice(app)
         openVoicePage(app)
         let row = app.buttons["voicePage.row.phrases"]
-        scroll(app, to: row)
+        app.scroll(to: row)
         row.tap()
         let field = app.descendants(matching: .any)["voice.field"].firstMatch
         XCTAssertTrue(field.waitForExistence(timeout: 5))
@@ -73,7 +74,7 @@ final class ProfileUITests: XCTestCase {
         let app = openProfile()
         setUpVoice(app)
         let preview = app.buttons["profile.voicePreview"]
-        scroll(app, to: preview)
+        app.scroll(to: preview)
         preview.tap()
         let sample = app.staticTexts["profile.voiceSample"]
         XCTAssertTrue(sample.waitForExistence(timeout: 5))
@@ -94,14 +95,14 @@ final class ProfileUITests: XCTestCase {
         let app = CueApp.launch(seeded: true, pro: true)
         app.cueTabBar.buttons["Profile"].tap()
         let pro = app.staticTexts["Cue Pro"]
-        scroll(app, to: pro)
+        app.scroll(to: pro)
         XCTAssertFalse(app.buttons["profile.upgradeButton"].exists)
     }
 
     // MARK: - Helpers
 
-    private func openProfile() -> XCUIApplication {
-        let app = CueApp.launch(seeded: true)
+    private func openProfile(animations: Bool = false) -> XCUIApplication {
+        let app = CueApp.launch(seeded: true, animations: animations)
         let tab = app.cueTabBar.buttons["Profile"]
         XCTAssertTrue(tab.waitForExistence(timeout: 15))
         tab.tap()
@@ -123,15 +124,7 @@ final class ProfileUITests: XCTestCase {
     /// Profile › Edit voice: the full page (9.3).
     private func openVoicePage(_ app: XCUIApplication) {
         let edit = app.buttons["profile.editVoice"]
-        scroll(app, to: edit)
+        app.scroll(to: edit)
         edit.tap()
-    }
-
-    /// The profile is a long list; rows below the fold only exist once scrolled to.
-    private func scroll(_ app: XCUIApplication, to element: XCUIElement) {
-        for _ in 0..<8 where !(element.exists && element.isHittable) {
-            app.swipeUp()
-        }
-        XCTAssertTrue(element.waitForExistence(timeout: 5))
     }
 }
