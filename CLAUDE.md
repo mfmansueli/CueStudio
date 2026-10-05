@@ -29,6 +29,10 @@ tomadas. Atualize-o junto com a UI.
 - **SwiftLint** (`brew install swiftlint`) roda em todo build do app (Build Phases › SwiftLint) com
   `.swiftlint.yml`. Corrija o código em vez de afrouxar a configuração; `swiftlint --fix` resolve
   parte, mas revise o formato do que ele muda.
+- **Firebase** (projeto `cuestudio-app`, SPM `firebase-ios-sdk`): só Analytics (`FirebaseAnalyticsCore`, sem IDFA) e
+  Crashlytics, iniciados em `Managers/Telemetry/TelemetryManager.swift`, o único arquivo que importa o SDK. Testes de
+  unidade, de UI (`-uiTestInMemory`) e previews não enviam nada (`TelemetryPolicy`). O upload dos dSYMs roda só em
+  archive (Build Phases › Upload dSYMs to Crashlytics). Para ver eventos no DebugView: `-FIRAnalyticsDebugEnabled`.
 - O build Release também precisa compilar: previews usam dados de `SupportFiles/Debug/` e ficam em `#if DEBUG`.
 - Launch arguments (só em Debug, ver `SupportFiles/LaunchOptions.swift`): `-uiTestInMemory` (armazenamento
   em memória), `-uiTestSeedSamples` (scripts de exemplo), `-uiTestPro` (começa no Cue Pro),

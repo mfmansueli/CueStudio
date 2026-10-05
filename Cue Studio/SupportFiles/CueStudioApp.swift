@@ -14,6 +14,7 @@ struct CueStudioApp: App {
     @State private var services: AppServices
 
     init() {
+        TelemetryManager.start()
         CueStudioFont.registerFonts()
         let services = AppServices(options: LaunchOptions.fromProcess())
         services.load()
