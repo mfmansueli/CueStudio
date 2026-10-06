@@ -22,6 +22,19 @@ extension BgWash {
         Light(color: Palette.bgWashIndigo, radiusX: 0.55, radiusY: 0.28, centerX: 0.85, centerY: 0.6),
     ]
 
+    /// The browse screens' night at Starry sky › Galactic: three lights, deeper than the navigation's two (indigo from the top left, magenta on
+    /// the right, teal at the bottom left), over `Palette.galacticBg`.
+    static let galactic = [
+        Light(color: Palette.galacticWashIndigo, radiusX: 0.75, radiusY: 0.32, centerX: 0.18, centerY: 0.05),
+        Light(color: Palette.galacticWashMagenta, radiusX: 0.55, radiusY: 0.26, centerX: 0.92, centerY: 0.52),
+        Light(color: Palette.galacticWashTeal, radiusX: 0.6, radiusY: 0.25, centerX: 0.08, centerY: 0.92),
+    ]
+
+    /// The lights and the colour under them for the browse screens, which follow the creator's Starry sky: the same on every one of them.
+    static func browse(_ sky: SkyDensity) -> [Light] { sky.isGalactic ? galactic : navigation }
+
+    static func browseBase(_ sky: SkyDensity) -> Color { sky.isGalactic ? Palette.galacticBg : Palette.bg }
+
     /// 1.1: a big violet haze over the top (where the C is) and a faint indigo one at the bottom left.
     static let welcome = [
         Light(color: Palette.nightViolet.opacity(0.30), radiusX: 0.9, radiusY: 0.45, centerX: 0.5, centerY: 0.28),

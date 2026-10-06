@@ -366,6 +366,32 @@ enum Palette {
     static let flightNight = Color(hex: 0x07080E)
     static let flightNightDeep = Color(hex: 0x06070D)
 
+    // MARK: - Galactic sky (Starry sky › Galactic)
+
+    /// Deep space under the browse screens: darker than `bg` (`#0A0B12`), so the colours of the nebulae have more night to stand out from.
+    static let galacticBg = Color(hex: 0x030409)
+    /// The night glow of Galactic (`BgWash.galactic`): a deep indigo light from the top left, a magenta one on the right and a teal one
+    /// at the bottom left. Strong enough to feel, light enough that `inkHint` still reads at the brightest point (`PaletteContrastTests`).
+    static let galacticWashIndigo = Color(hex: 0x4A3FD0, opacity: 0.20)
+    static let galacticWashMagenta = Color(hex: 0xB0408F, opacity: 0.12)
+    static let galacticWashTeal = Color(hex: 0x1F8FA8, opacity: 0.11)
+    /// The nebulae's own colours (solid: each nebula carries its own peak opacity, `StarfieldMath.Nebula.opacity`).
+    static let nebulaViolet = Color(hex: 0x9D8CFF)
+    static let nebulaBlue = Color(hex: 0x3D5BFF)
+    static let nebulaMagenta = Color(hex: 0xC2449E)
+    static let nebulaTeal = Color(hex: 0x2BB3C8)
+    /// The Milky Way band of Galactic and its dust (solid; the band's peak opacity is `StarfieldMath.bandPeakOpacity`).
+    static let galacticBand = Color(hex: 0x8FA6FF)
+    /// The spaceship: a faceted pale hull (light above, shaded below), deep indigo wings with a cyan edge light, ion-blue engines that leave a
+    /// trail fading to violet, and two small wingtip lights. Decoration only.
+    static let shipHull = Color(hex: 0xE4E9FF)
+    static let shipHullShade = Color(hex: 0x8E97C9)
+    static let shipWing = Color(hex: 0x3F43B0)
+    static let shipEngine = Color(hex: 0x5FD4FF)
+    static let shipTrailFar = Color(hex: 0x7A6CE0)
+    static let shipLightPort = Color(hex: 0xFF7A8A)
+    static let shipLightStarboard = Color(hex: 0x7DFFC8)
+
     // Markers: a topic is a bar (`themeRail`, in the topic's `world*` color), a network is a dot
     // (`platformDot`, in the platform's galaxy color). Sizes are in `Metrics`.
 

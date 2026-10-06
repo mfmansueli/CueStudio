@@ -44,7 +44,7 @@ struct StarfieldMathTests {
         let twinkles = StarfieldMath.twinkles(count: 14, seed: 9)
         #expect(twinkles.count == 14)
         // A 7 s cycle for every star, each starting 0 to 5.2 s in.
-        #expect(twinkles.allSatisfy { (1.8...3.0).contains($0.size) && $0.cycle == 7 && (0...(5.2 / 7)).contains($0.phase) })
+        #expect(twinkles.allSatisfy { StarfieldMath.twinkleSize.contains($0.size) && $0.cycle == 7 && (0...(5.2 / 7)).contains($0.phase) })
         // About half have the cross glint.
         #expect(twinkles.filter(\.hasGlint).count == 7)
     }
@@ -147,10 +147,19 @@ struct StarfieldMathTests {
         #expect(abs(StarfieldMath.nebulaPhase(at: period * 2, period: period)) < 0.0001)
     }
 
-    @Test func theDensitiesScaleTheTwinklesAndTheCometComesWithSoftAndFull() {
+    @Test func onlyLivelyHasTheTwinklesAndTheComet() {
         #expect(SkyDensity.off.twinkleCount == 0 && !SkyDensity.off.hasComet)
-        #expect(SkyDensity.lively.twinkleCount == 14 && SkyDensity.calm.twinkleCount == 7)
-        #expect(SkyDensity.lively.hasComet && SkyDensity.calm.hasComet)
-        #expect(SkyDensity.allCases.map(\.step) == [0, 1, 2])
+        #expect(SkyDensity.calm.twinkleCount == 0 && !SkyDensity.calm.hasComet)
+        #expect(SkyDensity.lively.twinkleCount == 14 && SkyDensity.lively.hasComet)
+        #expect(SkyDensity.galactic.twinkleCount == 14 && !SkyDensity.galactic.hasComet)
+        #expect(SkyDensity.allCases.map(\.step) == [0, 1, 2, 3])
+    }
+
+    @Test func theTwinklesAreSmallerThanTheDesignsOriginalOnes() {
+        #expect(StarfieldMath.twinkleSize.upperBound < 3.0 && StarfieldMath.twinkleSize.lowerBound < 1.8)
+        #expect(StarfieldMath.glintHalfLength < 8)
+        // Smaller, but where they are and when they light does not change.
+        let small = StarfieldMath.twinkles(count: 14, seed: 27)
+        #expect(small.allSatisfy { (0.06...0.94).contains($0.x) && (0.05...0.9).contains($0.y) })
     }
 }

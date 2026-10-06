@@ -19,6 +19,7 @@ struct ScriptsView: View {
     @Environment(LanguageService.self) private var languages
     @Environment(TopicTaggingService.self) private var tagging
     @Environment(SkyMemory.self) private var sky
+    @Environment(PersonalizationService.self) private var personalization
     @Environment(IdeaDraftService.self) private var ideaDraft
     @Environment(LogbookService.self) private var logbook
     @Environment(ToastService.self) private var toast
@@ -71,9 +72,13 @@ struct ScriptsView: View {
                 }
             }
             .skyBackground()
-            // "Your stars": one for each idea sent, and the one on its way.
-            .overlay(alignment: .top) { SkyStarsLayer(stars: sky.visible).ignoresSafeArea(edges: .top) }
-            .overlay { StarFlightOverlay(flight: sky.flight).ignoresSafeArea() }
+            // "Your stars": one for each idea sent, and the one on its way. Part of the sky, so with Starry sky Off there are none.
+            .overlay(alignment: .top) {
+                if personalization.sky.showsYourStars { SkyStarsLayer(stars: sky.visible).ignoresSafeArea(edges: .top) }
+            }
+            .overlay {
+                if personalization.sky.showsYourStars { StarFlightOverlay(flight: sky.flight).ignoresSafeArea() }
+            }
             // New scripts get their topic (on this iPhone) once they are long enough to say what they are about.
             .task(id: library.scripts.filter { $0.topic == nil }.map(\.id)) { await tagging.tagUntagged() }
             .navigationTitle("Scripts")

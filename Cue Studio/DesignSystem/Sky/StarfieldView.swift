@@ -6,8 +6,9 @@
 import SwiftUI
 
 /// The sky of the browse screens and the onboarding: three layers of stars drifting down at their own
-/// speed, 14 twinkles (half with the cross glint of a phone-camera star), a comet every two minutes or so and
-/// one or two soft violet nebulae. Never over the camera, a take or the editor.
+/// speed and two soft violet nebulae (all of Calm), and, at Lively only, 14 small twinkling stars (half with the cross glint of a
+/// phone-camera star) and a comet every two minutes or so. Galactic is Lively with the colours of a galaxy (three nebulae, the Milky Way
+/// band) and a spaceship in place of the comet. Never over the camera, a take or the editor.
 ///
 /// One `Canvas` in a `TimelineView` at 30 fps (it is ambient). It stops, on a still frame, when the
 /// view is off screen, the app is not active or Reduce Motion is on (Low Power Mode does not stop it), and it
@@ -15,14 +16,24 @@ import SwiftUI
 struct StarfieldView: View {
     var density: SkyDensity = .calm
     var seed: UInt64 = 27
+    /// Seconds added to the app's clock when the comet's and the spaceship's schedules are read (the catalogue sends a spaceship on demand).
+    var scheduleShift: TimeInterval = 0
+    /// The first flight keeps the sky its boards were drawn with, whatever Calm and Lively became: its own twinkles and its comet.
+    var twinkleCountOverride: Int?
+    var cometOverride: Bool?
+    /// How strongly the stars are drawn (delicate in the app; the first flight keeps the strength of its boards).
+    var look = StarfieldMath.delicateLook
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.scenePhase) private var scenePhase
     @State private var isOnScreen = false
     @State private var clock = MotionClock()
 
-    private var twinkles: [StarfieldMath.Twinkle] { StarfieldMath.twinkles(count: density.twinkleCount, seed: seed) }
-    private var nebulae: [StarfieldMath.Nebula] { StarfieldMath.nebulae(seed: seed) }
+    private var twinkles: [StarfieldMath.Twinkle] { StarfieldMath.twinkles(count: twinkleCountOverride ?? density.twinkleCount, seed: seed) }
+    private var nebulae: [StarfieldMath.Nebula] {
+        density.isGalactic ? StarfieldMath.galacticNebulae(seed: seed) : StarfieldMath.nebulae(seed: seed)
+    }
+    private var bandDust: [StarfieldMath.BandStar] { density.isGalactic ? StarfieldMath.bandStars(seed: seed) : [] }
 
     var body: some View {
         Group {
@@ -55,12 +66,18 @@ struct StarfieldView: View {
 
     private func draw(in canvas: inout GraphicsContext, size: CGSize, time: TimeInterval) {
         for nebula in nebulae { drawNebula(nebula, in: &canvas, size: size, time: time) }
+        if density.isGalactic { GalacticSkyPainter.drawBand(in: &canvas, size: size, time: time, dust: bandDust) }
         for (index, layer) in StarfieldMath.layers.enumerated() {
             drawLayer(layer, seed: seed &+ UInt64(index) &* 101, in: &canvas, size: size, time: time)
         }
         for twinkle in twinkles { drawTwinkle(twinkle, in: &canvas, size: size, time: time) }
-        if density.hasComet, let comet = StarfieldMath.comet(at: Self.sinceLaunch(), size: size, seed: seed) {
+        let schedule = Self.sinceLaunch() + scheduleShift
+        if cometOverride ?? density.hasComet, let comet = StarfieldMath.comet(at: schedule, size: size, seed: seed) {
             drawComet(comet, in: &canvas)
+        }
+        // A frozen frame (Reduce Motion, the app in the background) never catches a spaceship halfway.
+        if density.hasSpaceship, isRunning, let ship = StarfieldMath.spaceship(at: schedule, size: size, seed: seed) {
+            SpaceshipPainter.draw(ship, time: time, in: &canvas)
         }
     }
 
@@ -77,8 +94,9 @@ struct StarfieldView: View {
                 for star in stars {
                     let point = CGPoint(x: origin.x + star.x * layer.tile.width, y: origin.y + star.y * layer.tile.height)
                     guard point.y > -4, point.y < size.height + 4 else { continue }
-                    let rect = CGRect(x: point.x - star.size / 2, y: point.y - star.size / 2, width: star.size, height: star.size)
-                    canvas.fill(Path(ellipseIn: rect), with: .color(.white.opacity(star.opacity)))
+                    let size = star.size * look.size
+                    let rect = CGRect(x: point.x - size / 2, y: point.y - size / 2, width: size, height: size)
+                    canvas.fill(Path(ellipseIn: rect), with: .color(.white.opacity(star.opacity * look.opacity)))
                 }
             }
         }
@@ -90,14 +108,14 @@ struct StarfieldView: View {
         let phase = StarfieldMath.nebulaPhase(at: time, period: nebula.period)
         let center = CGPoint(x: size.width * nebula.x + (phase - 0.5) * 40, y: size.height * nebula.y + (0.5 - phase) * 40)
         let radius = nebula.diameter / 2 * (1 + 0.16 * phase)
-        let violet = Palette.auroraViolet
+        let violet = nebula.hue.color
         canvas.fill(
             Path(ellipseIn: CGRect(x: center.x - radius, y: center.y - radius, width: radius * 2, height: radius * 2)),
             with: .radialGradient(
                 Gradient(stops: [
-                    .init(color: violet.opacity(nebula.opacity / 0.3), location: 0),
-                    .init(color: violet.opacity(nebula.opacity / 0.3 * 0.45), location: 0.4),
-                    .init(color: violet.opacity(nebula.opacity / 0.3 * 0.1), location: 0.75),
+                    .init(color: violet.opacity(nebula.opacity), location: 0),
+                    .init(color: violet.opacity(nebula.opacity * 0.45), location: 0.4),
+                    .init(color: violet.opacity(nebula.opacity * 0.1), location: 0.75),
                     .init(color: violet.opacity(0), location: 1),
                 ]),
                 center: center, startRadius: 0, endRadius: radius
@@ -117,13 +135,14 @@ struct StarfieldView: View {
         case .lilac: Color(hex: 0xE4DEFF)
         }
         let diameter = twinkle.size * level.scale
+        let opacity = level.opacity * look.opacity
         canvas.fill(
             Path(ellipseIn: CGRect(x: center.x - diameter / 2, y: center.y - diameter / 2, width: diameter, height: diameter)),
-            with: .color(color.opacity(level.opacity))
+            with: .color(color.opacity(opacity))
         )
         guard twinkle.hasGlint else { return }
-        // The cross: two 16 pt hairlines that fade toward their ends.
-        let half = 8 * level.scale
+        // The cross: two hairlines that fade toward their ends.
+        let half = StarfieldMath.glintHalfLength * level.scale
         for angle in [0.0, 90.0] {
             let radians = angle * .pi / 180
             let end = CGVector(dx: cos(radians) * half, dy: sin(radians) * half)
@@ -133,7 +152,7 @@ struct StarfieldView: View {
             canvas.stroke(
                 line,
                 with: .linearGradient(
-                    Gradient(colors: [color.opacity(0), color.opacity(level.opacity * 0.9), color.opacity(0)]),
+                    Gradient(colors: [color.opacity(0), color.opacity(opacity * 0.9), color.opacity(0)]),
                     startPoint: CGPoint(x: center.x - end.dx, y: center.y - end.dy),
                     endPoint: CGPoint(x: center.x + end.dx, y: center.y + end.dy)
                 ),
@@ -145,7 +164,7 @@ struct StarfieldView: View {
     /// The comet's clock is the app's, not the screen's: it carries on while the creator moves between tabs.
     private static let launchedAt = ProcessInfo.processInfo.systemUptime
 
-    private static func sinceLaunch() -> TimeInterval {
+    static func sinceLaunch() -> TimeInterval {
         ProcessInfo.processInfo.systemUptime - launchedAt
     }
 
@@ -176,16 +195,18 @@ struct StarfieldView: View {
 /// The sky behind a browse screen, from the creator's Starry sky setting.
 struct SkyBackground: ViewModifier {
     @Environment(PersonalizationService.self) private var personalization
-    /// The night glow and the colour under it: the browse screens' (`BgWash.navigation` over `bg`), or the one a board of the stories draws.
-    var lights = BgWash.navigation
-    var base = Palette.bg
+    /// The night glow and the colour under it: nil is the browse screens' (`BgWash.navigation` over `bg`, or the galactic night at Galactic),
+    /// otherwise the one a board of the stories draws.
+    var lights: [BgWash.Light]?
+    var base: Color?
 
     func body(content: Content) -> some View {
+        let sky = personalization.sky
         content.background {
             ZStack {
                 // The night glow (v29): a violet light from the top left, the same on every browse screen, sky on or off.
-                BgWash(lights: lights, base: base)
-                StarfieldView(density: personalization.sky)
+                BgWash(lights: lights ?? BgWash.browse(sky), base: base ?? BgWash.browseBase(sky))
+                StarfieldView(density: sky)
             }
             .ignoresSafeArea()
         }
