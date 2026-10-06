@@ -43,9 +43,9 @@ struct SessionSetupServiceTests {
         defer { defaults.tearDown() }
         let (session, preferences) = makeService(defaults)
         session.camera.countdown = .ten
-        session.prompter.font = .serif
+        session.prompter.font = .newYork
         #expect(preferences.camera.countdown == .ten)
-        #expect(session.prompter.font == .serif)
+        #expect(session.prompter.font == .newYork)
         #expect(preferences.prompter.font == .lexend)
         #expect(session.hasChanges)
     }
@@ -92,7 +92,7 @@ struct SessionSetupServiceTests {
         defer { defaults.tearDown() }
         let (session, preferences) = makeService(defaults)
         let saved = preferences.prompter
-        session.prompter.font = .serif
+        session.prompter.font = .newYork
         session.prompter.textColor = .yellow
         session.prompter.lineSpacing = 1.8
         session.prompter.alignment = .trailing
@@ -129,7 +129,7 @@ struct SessionSetupServiceTests {
         session.prompter.size = 42
         session.prompter.readingWidth = 0.7
         let before = session.prompter
-        preferences.prompter.font = .serif
+        preferences.prompter.font = .newYork
         preferences.prompter.textColor = .green
         preferences.prompter.size = 20
         preferences.prompter.readingWidth = 0.9
@@ -191,7 +191,7 @@ struct SessionSetupServiceTests {
         defer { defaults.tearDown() }
         let (session, preferences) = makeService(defaults)
         session.camera.resolution = .hd720
-        session.prompter.font = .serif
+        session.prompter.font = .newYork
         session.prompter.size = 30
         session.rememberReadingLayout()
         #expect(preferences.prompter.size == 30)

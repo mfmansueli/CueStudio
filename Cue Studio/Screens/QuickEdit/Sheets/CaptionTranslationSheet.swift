@@ -75,6 +75,7 @@ struct CaptionTranslationSheet: View {
             target = target ?? viewModel.edit.captionDisplay.language ?? viewModel.edit.captionTranslations.first?.language
         }
         .presentationDetents([.medium, .large])
+        .cueSheetSurface()
     }
 
     // MARK: - Sections

@@ -36,10 +36,10 @@
         "VoiceV29UITests/testTheProfileCardShowsTheMeterTheSentenceAndTheNextQuestion()",
         "VoiceTipUITests/testTheTipAsksOneQuestionAndOffersOneMore()",
         "ShareUniverseProV29UITests/testThePaywallShowsPlansTheTrialAndRestore()",
-        "ShareToUITests/testShareToListsEveryPlatformWithTheOneItWasMadeFor()",
+        "ShareToUITests/testShareToUniverseOpensReadyAndTheNetworksWithTheScriptsOneTicked()",
         "SettingsUITests/testFontLicensesRemainReachableFromSettings()",
         "LanguageRegionUITests/testJapaneseInterfaceKeepsEnglishScripts()",
-        "CreatorSetupUITests/testChoicesStayAfterLeavingCreatorSetup()"
+        "SettingsUITests/testChoicesMadeInRecordingShowOnTheSetupCard()"
       ],
       "target" : {
         "containerPath" : "container:Cue Studio.xcodeproj",

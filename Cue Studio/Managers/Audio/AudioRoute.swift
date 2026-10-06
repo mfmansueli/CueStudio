@@ -50,6 +50,6 @@ nonisolated enum AudioRoute {
     }
 
     private static func option(for port: AVAudioSessionPortDescription) -> MicrophoneOption {
-        MicrophoneOption(id: port.uid, name: port.portName, port: port.portType)
+        MicrophoneOption(id: port.uid, name: port.portType == .builtInMic ? String(localized: "iPhone") : port.portName, port: port.portType)
     }
 }

@@ -12,7 +12,7 @@ import SwiftUI
 /// (0.44 s) and the page writes. Cancel or an error: the star falls 40 pt (0.3 s), the overlay fades (0.22 s).
 ///
 /// Reduce Motion (09 §7): no rise or ring. The overlay fades in (0.2 s) with the text and Cancel in place, then crossfades into the page
-/// (0.3 s). Low Power Mode halves the timings (`IdeaTransitionService.speed`).
+/// (0.3 s). The timings are the board's in every situation (`IdeaTransitionService.speed` is 1; only UI tests shorten it).
 struct StarTransitionOverlay: View {
     let transition: IdeaTransitionService
 

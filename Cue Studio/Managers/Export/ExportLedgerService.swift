@@ -70,11 +70,13 @@ final class ExportLedgerService {
 
     // MARK: - Operations
 
-    /// A freshly exported file. Nothing is counted yet.
-    func begin(takeID: UUID, fingerprint: String, file: URL) -> ExportOperation {
-        let operation = ExportOperation(
+    /// A freshly exported file. Nothing is counted yet, unless it carries on an operation that already was (`inheritingCountFrom`: an edit made
+    /// inside a "Share to universe" queue is the same export, and costs nothing more).
+    func begin(takeID: UUID, fingerprint: String, file: URL, inheritingCountFrom source: UUID? = nil) -> ExportOperation {
+        var operation = ExportOperation(
             id: UUID(), takeID: takeID, fingerprint: fingerprint, fileName: file.lastPathComponent, createdAt: now()
         )
+        if let source, let counted = self.operation(id: source)?.countedAt { operation.countedAt = counted }
         operations.append(operation)
         persist()
         return operation

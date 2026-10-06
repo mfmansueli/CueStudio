@@ -43,6 +43,39 @@ enum Palette {
     static let separator = Color(normal: Color(hex: 0x505678, opacity: 0.5), increasedContrast: Color(hex: 0x8C92B4, opacity: 0.8))
     /// Secondary swipe actions ("More"): white text on it.
     static let neutralAction = Color(hex: 0x636366)
+    /// The planet that is you on the Pro screen: gold lit from the top left (light, mid, shade, dark).
+    static let proPlanetLight = Color(hex: 0xFFF6DC)
+    static let proPlanetMid = Color(hex: 0xFFD98A)
+    static let proPlanetShade = Color(hex: 0xE39A3E)
+    static let proPlanetDark = Color(hex: 0x3A1E10)
+    /// The cream, warm and gold of a star's light (the welcome's star, its sparks and its trail).
+    static let starCream = Color(hex: 0xFFF6C2)
+    /// The pale lilac of a speck of light.
+    static let starLilac = Color(hex: 0xE4DEFF)
+    /// The thin dark line around the core ball of YOU.
+    static let coreRim = Color(hex: 0x281C00, opacity: 0.4)
+    static let starWarm = Color(hex: 0xFFF0A8)
+    static let starGold = Color(hex: 0xFFE680)
+    /// The violet glow of the night behind a constellation.
+    static let nightViolet = Color(hex: 0x9D8CFF)
+    /// The night of the universe cards and the story: from this near-black at the top to the indigo at the bottom.
+    static let nightDeep = Color(hex: 0x0A0B12)
+    /// The card over the universe map (a planet's popover).
+    static let popover = Color(hex: 0x14162A, opacity: 0.94)
+    /// The sheets of the share flow and "Your video is ready": navy, a little translucent, as the board draws them.
+    static let sheetNight = Color(hex: 0x14162A, opacity: 0.96)
+    static let nightIndigo = Color(hex: 0x1B1740)
+    /// Content cards over the sky (07 §3): translucent, so the stars show through. Solid under Reduce Transparency (`cardRowBackground()`).
+    static let card = Color(hex: 0x161826, opacity: 0.64)
+    /// The icon tiles of the Settings rows (the others are `record`, `acc`, `success` and `neutralAction`).
+    static let iconIndigo = Color(hex: 0x5E4EE0)
+    static let iconPurple = Color(hex: 0xBF5AF2)
+    /// Cue Pro's tile is a deep gold with a yellow star (09 §11).
+    static let iconPro = Color(hex: 0x3A2E00)
+    /// The Settings rows that are not a place of their own (Restore, Terms, Acknowledgements, Version).
+    static let iconNeutral = Color(hex: 0x6E7496, opacity: 0.35)
+    static let iconTeal = Color(hex: 0x30B0C7)
+    static let iconBlue = Color(hex: 0x0A84FF)
     /// The selected segment of a segmented control.
     static let segmentOn = Color(hex: 0x636366)
         /// A selected text chip: white with black text.
@@ -58,6 +91,9 @@ enum Palette {
     static let insetField = Color.black.opacity(0.38)
     /// Ring around a color swatch, so a white one is still seen on a white card.
     static let swatchRing = Color.white.opacity(0.25)
+    /// The night under the chapters of the first flight (the boards' `.night`: `#07080E`), and the deeper one of the first star (`#06070D`).
+    static let flightNight = Color(hex: 0x07080E)
+    static let flightNightDeep = Color(hex: 0x06070D)
 
     // MARK: - Text
 
@@ -83,6 +119,8 @@ enum Palette {
     static let accAction = Color(hex: 0x8A6500)
     /// Text and icons on top of `acc`.
     static let accInk = Color.black
+    /// Secondary text on a white (chosen-chip) fill: 5:1 or more on white, where `inkHint` would vanish.
+    static let inkOnLight = Color.black.opacity(0.62)
     static let accSoft = Color(hex: 0xFFD60A, opacity: 0.16)
     static let accLine = Color(hex: 0xFFD60A, opacity: 0.3)
     /// Behind AI Coach cues in the prompter: present, but quieter than the words.
@@ -110,6 +148,9 @@ enum Palette {
     /// My Cue Voice's glow from the top corner, fading into the surface.
     static let aiGlow = Color(hex: 0x9D8CFF, opacity: 0.20)
     static let aiGlowFaint = Color(hex: 0x9D8CFF, opacity: 0.02)
+    /// The avatar of the creator (9.1): a violet that goes to indigo, with a faint diagonal sheen.
+    static let avatarLight = Color(hex: 0x9D8CFF)
+    static let avatarDeep = Color(hex: 0x5E4EE0)
     static let record = Color(hex: 0xFF3B30)
     static let danger = Color(hex: 0xFF453A)
     /// Red for text and icons on the app's own surfaces (see `accText`).

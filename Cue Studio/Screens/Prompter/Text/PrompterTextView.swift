@@ -60,7 +60,7 @@ struct PrompterTextView: View {
             .offset(y: guideY - lineHeight / 2 - viewModel.engine.offset)
             .frame(maxWidth: .infinity)
             .frame(height: viewportHeight, alignment: .top)
-            .scaleEffect(x: settings.isMirrored ? -1 : 1, y: 1)
+            .scaleEffect(x: settings.isMirrored ? -1 : 1, y: settings.isFlippedVertically ? -1 : 1)
             .clipped()
             .mask {
                 LinearGradient(stops: maskStops, startPoint: .top, endPoint: .bottom)

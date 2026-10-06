@@ -68,6 +68,35 @@ final class EditorUITests: XCTestCase {
         XCTAssertFalse(app.buttons["edit.adjust.resetOne"].exists)
     }
 
+    /// Skin Smoothing is the last chip of Adjust, off at 0, with a ruler and a Reset of its own like the other settings.
+    func testSkinSmoothingIsAnAdjustSettingWithItsOwnRulerAndReset() {
+        let app = EditorApp.open()
+        EditorApp.tapTool(app, "adjust")
+        let chip = app.buttons["edit.adjust.skinSmoothing"]
+        XCTAssertTrue(chip.waitForExistence(timeout: 5))
+        XCTAssertEqual(chip.label, "Skin Smoothing")
+        XCTAssertEqual(chip.value as? String, "0")
+        // The row of settings scrolls sideways: the last chip comes into reach.
+        // Drag the row of chips from its right to its left, level with the first chip, until the last one is on screen.
+        let window = app.windows.firstMatch.frame
+        let level = app.buttons["edit.adjust.exposure"].frame.midY / window.height
+        for _ in 0..<5 where !window.contains(chip.frame) {
+            app.coordinate(withNormalizedOffset: CGVector(dx: 0.9, dy: level))
+                .press(forDuration: 0.1, thenDragTo: app.coordinate(withNormalizedOffset: CGVector(dx: 0.1, dy: level)))
+        }
+        chip.tap()
+        XCTAssertTrue(chip.isSelected)
+        let ruler = app.descendants(matching: .any)["edit.adjust.ruler"]
+        XCTAssertTrue(ruler.waitForExistence(timeout: 5))
+        XCTAssertEqual(ruler.label, "Skin Smoothing")
+        ruler.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).tap()
+        XCTAssertNotEqual(chip.value as? String, "0", "the ruler sets the smoothing")
+        XCTAssertTrue(app.buttons["edit.adjust.resetOne"].waitForExistence(timeout: 5))
+        app.buttons["edit.adjust.resetOne"].tap()
+        XCTAssertEqual(chip.value as? String, "0")
+        XCTAssertFalse(app.buttons["edit.adjust.resetOne"].exists)
+    }
+
     /// Auto measures the real frames of the clip: it ends with a correction to dial down, or says the picture is
     /// already balanced; either way the picture is never left half-done.
     func testAutoMeasuresTheClipAndCompareShowsTheOriginal() {

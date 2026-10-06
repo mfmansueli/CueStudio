@@ -63,6 +63,9 @@ final class ScriptsV29UITests: XCTestCase {
         XCTAssertTrue(element(app, "empty.importButton").exists)
         let ideas = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH 'empty.idea.'"))
         XCTAssertEqual(ideas.count, 3)
+        // The Logbook is in the bar and Format on the card from the first visit on, not only after the first script.
+        XCTAssertTrue(app.buttons["scripts.logbookButton"].exists, "No Logbook on the empty Scripts")
+        XCTAssertTrue(app.buttons["ideaCard.formatChip"].exists, "No Format on the empty Scripts' card")
         try capture(app, "3.1_first_visit")
     }
 

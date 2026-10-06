@@ -21,10 +21,10 @@ struct VoiceFineTunePage: View {
                     isAddingPhrase = true
                 }
             )
+            CreatorDefaultsSection()
+            AccountSection()
         }
-        .listStyle(.insetGrouped)
-        .scrollContentBackground(.hidden)
-        .skyBackground()
+        .cueGroupedList()
         .navigationTitle("Fine-tune")
         .navigationBarTitleDisplayMode(.inline)
         .alert("Add a phrase", isPresented: $isAddingPhrase) {

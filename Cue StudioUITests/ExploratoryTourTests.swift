@@ -120,10 +120,10 @@ final class ExploratoryTourTests: XCTestCase {
         }
         tab(4)
         app.swipeUp()
-        if tap("settings.personalizeButton") {
+        if tap("settings.personalize") {
             shot("personalize"); app.swipeUp(); shot("personalize-2"); app.navigationBars.buttons.firstMatch.tap()
         }
-        if tap("settings.prompterTile") {
+        if tap("settings.prompter") {
             sleep(1)
             shot("prompter-settings")
             app.swipeUp(); shot("prompter-settings-2")
@@ -259,15 +259,15 @@ final class ExploratoryTourTests: XCTestCase {
         shot("settings")
         app.swipeUp(); shot("settings-2")
         app.swipeDown()
-        for (id, label) in [("settings.recordingTile", "recording"), ("settings.prompterTile", "prompter"), ("settings.remoteTile", "remote")] {
+        for (id, label) in [("settings.recording", "recording"), ("settings.prompter", "prompter"), ("settings.remote", "remote")] {
             guard tap(id) else { continue }
             sleep(1)
             shot("settings-\(label)")
             app.swipeUp(); shot("settings-\(label)-2")
             app.navigationBars.buttons.firstMatch.tap()
         }
-        if tap("settings.languageRegionButton") { shot("settings-language"); app.navigationBars.buttons.firstMatch.tap() }
-        if tap("settings.privacyButton") { shot("settings-privacy"); closeSheet() }
+        if tap("settings.languageRegion") { shot("settings-language"); app.navigationBars.buttons.firstMatch.tap() }
+        if tap("settings.privacy") { shot("settings-privacy"); app.navigationBars.buttons.firstMatch.tap() }
     }
 
     private func prompter() {
@@ -330,5 +330,7 @@ final class ExploratoryTourTests: XCTestCase {
         count += 1
         let file = String(format: "%@-%02d-%@.png", tourName, count, label)
         try? app.screenshot().pngRepresentation.write(to: directory.appending(path: file))
+        // The accessibility hierarchy beside each picture: where every text is, for `tools/contrast/audit.py`.
+        try? app.debugDescription.write(to: directory.appending(path: file.replacingOccurrences(of: ".png", with: ".txt")), atomically: true, encoding: .utf8)
     }
 }

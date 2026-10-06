@@ -18,7 +18,7 @@ struct IdeaRow: View {
             Button(action: onEdit) {
                 VStack(alignment: .leading, spacing: 4) {
                     Text(idea.title)
-                        .font(.system(.body, design: .serif, weight: .bold))
+                        .font(.system(.body, weight: .semibold))
                         .foregroundStyle(Palette.ink)
                         .multilineTextAlignment(.leading)
                     Text(idea.meta)

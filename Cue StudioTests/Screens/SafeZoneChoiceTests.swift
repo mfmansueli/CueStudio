@@ -54,4 +54,23 @@ struct SafeZoneChoiceTests {
         #expect(SafeZoneChoice.custom.overlayLabel == "CUSTOM SAFE AREA")
         #expect(SafeZoneChoice.platform(.tiktok).label == "TikTok")
     }
+
+    // MARK: - Settings › Social safe zone
+
+    @Test func theSettingsListIsTikTokReelsShortsCustom() {
+        #expect(SafeZoneChoice.settingsOptions == [.platform(.tiktok), .platform(.reels), .platform(.shorts), .custom])
+    }
+
+    @Test func aSavedKeyBringsBackItsChoice() {
+        for choice in SafeZoneChoice.settingsOptions {
+            #expect(SafeZoneChoice.pick(fromKey: choice.key) == choice)
+            #expect(SafeZoneChoice.saved(key: choice.key) == choice)
+        }
+    }
+
+    @Test func noKeyFollowsTheScriptAndSettingsShowsTikTokFirst() {
+        #expect(SafeZoneChoice.pick(fromKey: nil) == nil)
+        #expect(SafeZoneChoice.pick(fromKey: "not-a-platform") == nil)
+        #expect(SafeZoneChoice.saved(key: nil) == .platform(.tiktok))
+    }
 }

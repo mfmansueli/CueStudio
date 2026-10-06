@@ -19,22 +19,11 @@ final class ProfileUITests: XCTestCase {
         upgrade.tap()
         let close = app.buttons["paywall.closeButton"]
         XCTAssertTrue(close.waitForExistence(timeout: 5))
-        XCTAssertTrue(app.buttons["paywall.plan.annual"].exists)
-        XCTAssertTrue(app.buttons["paywall.plan.monthly"].exists)
-        XCTAssertFalse(app.buttons["paywall.plan.lifetime"].exists)
+        // The regular Pro: Cue's marketing above the system's plans; the opening takes 2.4 s and the list is there when it ends.
+        XCTAssertTrue(app.descendants(matching: .any)["paywall.benefits"].firstMatch.waitForExistence(timeout: 8))
+        XCTAssertTrue(app.staticTexts["Take your universe further."].exists)
         close.tap()
         XCTAssertTrue(upgrade.waitForExistence(timeout: 5))
-    }
-
-    func testPaywallFooterOffersRestoreTermsAndPrivacy() {
-        let app = openProfile()
-        let upgrade = app.buttons["profile.upgradeButton"]
-        app.scroll(to: upgrade)
-        upgrade.tap()
-        XCTAssertTrue(app.buttons["Restore"].waitForExistence(timeout: 5))
-        XCTAssertTrue(app.links["Terms"].exists || app.buttons["Terms"].exists)
-        app.buttons["paywall.privacyButton"].tap()
-        XCTAssertTrue(app.navigationBars["Privacy & AI data"].waitForExistence(timeout: 5))
     }
 
     /// A catchphrase is an answer of "My phrases" on the full page (9.3): the question sheet opens with its field ready.
@@ -81,14 +70,92 @@ final class ProfileUITests: XCTestCase {
         XCTAssertTrue(sample.label.contains("So, real quick."))
     }
 
-    /// Sign in with Apple lives in the profile sheet (the identity row opens it), optional like everything about an account.
+    /// Sign in with Apple lives at the end of Fine-tune (My Cue Voice › Fine-tune how you sound), optional like everything about an account.
     func testSignInWithAppleIsOfferedWhenSignedOut() {
         let app = openProfile()
+        setUpVoice(app)
+        openVoicePage(app)
+        let fineTune = app.staticTexts["Fine-tune how you sound"]
+        app.scroll(to: fineTune)
+        fineTune.tap()
+        let signIn = app.buttons["profile.signInButton"]
+        app.scroll(to: signIn)
+        XCTAssertTrue(signIn.exists)
+        XCTAssertFalse(app.buttons["profile.signOutButton"].exists)
+    }
+
+    /// The creative preferences are with the fine-tuning (My Cue Voice › Fine-tune), not in Settings or in the board's Edit Profile, and they survive
+    /// tab changes.
+    func testCreativePreferencesLiveInFineTuneAndSurviveTabChanges() {
+        let app = openProfile()
+        setUpVoice(app)
+        openVoicePage(app)
+        let fineTune = app.staticTexts["Fine-tune how you sound"]
+        app.scroll(to: fineTune)
+        fineTune.tap()
+        let goals = app.switches["profile.monetizationGoalsToggle"]
+        app.scroll(to: goals)
+        XCTAssertTrue(app.buttons["profile.defaultPlatformPicker"].exists)
+        goals.tap()
+        let saved = goals.value as? String
+        // Settings has none of them.
+        app.cueTabBar.buttons["Settings"].tap()
+        XCTAssertTrue(app.descendants(matching: .any)["settings.recording"].waitForExistence(timeout: 10))
+        XCTAssertFalse(app.switches["profile.monetizationGoalsToggle"].exists)
+        // Back on the Profile tab, the page is where it was left, with the value kept.
+        app.cueTabBar.buttons["Profile"].tap()
+        let again = app.switches["profile.monetizationGoalsToggle"]
+        app.scroll(to: again)
+        XCTAssertEqual(again.value as? String, saved)
+    }
+
+    /// Edit Profile (9.1): Done waits for a valid name and username; it saves them and says so.
+    func testEditProfileSavesAValidDraftAndRefusesAnInvalidOne() {
+        let app = openProfile()
+        let identity = app.descendants(matching: .any)["profile.creatorCard"].firstMatch
+        identity.tap()
+        let name = app.textFields["editProfile.nameField"]
+        XCTAssertTrue(name.waitForExistence(timeout: 5))
+        let done = app.buttons["editProfile.doneButton"]
+        let handle = app.textFields["editProfile.handleField"]
+        name.tap()
+        name.typeText("Maya Costa")
+        handle.tap()
+        handle.typeText("M")
+        XCTAssertFalse(done.isEnabled, "a one-letter username is not enough")
+        XCTAssertTrue(app.staticTexts["editProfile.handleError"].exists)
+        handle.typeText("aya Cooks")
+        XCTAssertEqual(handle.value as? String, "mayacooks", "the field keeps the username lowercase and without spaces")
+        XCTAssertTrue(done.isEnabled)
+        done.tap()
+        XCTAssertTrue(app.staticTexts["Profile updated"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.staticTexts["Maya Costa"].waitForExistence(timeout: 5))
+    }
+
+    func testCancelLeavesTheProfileAsItWas() {
+        let app = openProfile()
+        let identity = app.descendants(matching: .any)["profile.creatorCard"].firstMatch
+        identity.tap()
+        let name = app.textFields["editProfile.nameField"]
+        XCTAssertTrue(name.waitForExistence(timeout: 5))
+        name.tap()
+        name.typeText("Someone Else")
+        app.buttons["editProfile.cancelButton"].tap()
+        XCTAssertFalse(app.staticTexts["Someone Else"].waitForExistence(timeout: 2))
+    }
+
+    /// Edit in the toolbar and the long press on the identity open the same sheet (9.1).
+    func testEditButtonAndContextMenuOpenEditProfile() {
+        let app = openProfile()
+        app.buttons["profile.editButton"].tap()
+        XCTAssertTrue(app.buttons["editProfile.doneButton"].waitForExistence(timeout: 5))
+        app.buttons["editProfile.cancelButton"].tap()
         let identity = app.descendants(matching: .any)["profile.creatorCard"].firstMatch
         XCTAssertTrue(identity.waitForExistence(timeout: 5))
-        identity.tap()
-        XCTAssertTrue(app.buttons["profile.signInButton"].waitForExistence(timeout: 5))
-        XCTAssertFalse(app.buttons["profile.signOutButton"].exists)
+        identity.press(forDuration: 0.8)
+        XCTAssertTrue(app.buttons["Edit profile"].waitForExistence(timeout: 5))
+        app.buttons["Edit profile"].tap()
+        XCTAssertTrue(app.buttons["editProfile.doneButton"].waitForExistence(timeout: 5))
     }
 
     func testProPlanHidesTheUpgrade() {

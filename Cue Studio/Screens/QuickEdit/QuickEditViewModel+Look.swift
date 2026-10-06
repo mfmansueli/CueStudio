@@ -10,9 +10,9 @@ import Foundation
 /// step; a slider's quick moves are one (`EditHistory.coalescingInterval`). Auto, the measured
 /// correction, is in `QuickEditViewModel+AutoLook`.
 extension QuickEditViewModel {
-    /// Adjust's settings, −100…+100 (Sharpness 0…100), in the order of the dials.
+    /// Adjust's settings, −100…+100 (Sharpness and Skin Smoothing 0…100), in the order of the dials.
     enum Adjustment: String, CaseIterable, Identifiable {
-        case exposure, contrast, warmth, tint, saturation, vibrance, highlights, shadows, sharpness
+        case exposure, contrast, warmth, tint, saturation, vibrance, highlights, shadows, sharpness, skinSmoothing
 
         var id: String { rawValue }
 
@@ -27,10 +27,19 @@ extension QuickEditViewModel {
             case .highlights: String(localized: "Highlights")
             case .shadows: String(localized: "Shadows")
             case .sharpness: String(localized: "Sharpness")
+            case .skinSmoothing: String(localized: "Skin Smoothing")
             }
         }
 
-        var isBipolar: Bool { self != .sharpness }
+        /// What VoiceOver adds for the settings that need it.
+        var hint: String? {
+            switch self {
+            case .skinSmoothing: String(localized: "Softens the skin of faces. Eyes, lips, hair and beard stay sharp.")
+            default: nil
+            }
+        }
+
+        var isBipolar: Bool { self != .sharpness && self != .skinSmoothing }
     }
 
     /// Changes light, color, frame or sound (`EditLook`) as an undo step.
@@ -58,6 +67,7 @@ extension QuickEditViewModel {
         case .highlights: return look.highlights
         case .shadows: return look.shadows
         case .sharpness: return look.sharpness
+        case .skinSmoothing: return look.skinSmoothing
         }
     }
 
@@ -91,6 +101,7 @@ extension QuickEditViewModel {
             case .highlights: edit.highlights = clamped
             case .shadows: edit.shadows = clamped
             case .sharpness: edit.sharpness = clamped
+            case .skinSmoothing: edit.skinSmoothing = clamped
             }
         }
     }
@@ -125,6 +136,7 @@ extension QuickEditViewModel {
                 case .highlights: edit.highlights = 0
                 case .shadows: edit.shadows = 0
                 case .sharpness: edit.sharpness = 0
+                case .skinSmoothing: edit.skinSmoothing = 0
                 }
             }
         }
@@ -147,6 +159,7 @@ extension QuickEditViewModel {
         case .highlights: look.highlights
         case .shadows: look.shadows
         case .sharpness: look.sharpness
+        case .skinSmoothing: look.skinSmoothing
         }
     }
 
@@ -161,6 +174,7 @@ extension QuickEditViewModel {
         case .highlights: look.highlights = value
         case .shadows: look.shadows = value
         case .sharpness: look.sharpness = value
+        case .skinSmoothing: look.skinSmoothing = value
         }
     }
 

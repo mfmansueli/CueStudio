@@ -24,12 +24,8 @@ struct MyCueVoicePage: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
-                header
                 if !aiStatus.isAvailable { needsAI }
-                if aiStatus.isAvailable, let next = scheduler.remaining.first {
-                    nextQuestion(next)
-                }
-                ForEach(VoiceLayer.allCases, id: \.self) { layerView($0) }
+                mainCard
                 NavigationLink { VoiceFineTunePage() } label: {
                     HStack {
                         Text("Fine-tune how you sound").font(.subheadline.weight(.semibold)).foregroundStyle(Palette.ink)
@@ -66,23 +62,34 @@ struct MyCueVoicePage: View {
         .accessibilityIdentifier("voicePage")
     }
 
-    // MARK: - Header
+    // MARK: - The card
+
+    /// One material card, as in the Profile list (9.1): what Cue uses with its switch, the meter and the next question, then the layers as
+    /// uppercase headers over rows of 52 pt or more.
+    private var mainCard: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            header.padding(EdgeInsets(top: 14, leading: 16, bottom: 12, trailing: 16))
+            ForEach(VoiceLayer.allCases, id: \.self) { layerView($0) }
+        }
+        .background(Palette.surface, in: RoundedRectangle(cornerRadius: Metrics.profileBlockRadius, style: .continuous))
+        .overlay(RoundedRectangle(cornerRadius: Metrics.profileBlockRadius, style: .continuous).strokeBorder(Palette.glassBorder.opacity(0.7), lineWidth: 0.5))
+    }
 
     private var header: some View {
         VStack(alignment: .leading, spacing: 12) {
+            HStack {
+                Text("✦ WHAT CUE USES")
+                    .font(.system(size: 10.5, weight: .bold, design: .monospaced)).tracking(1).foregroundStyle(Palette.aiText)
+                Spacer()
+                Toggle("Use my voice in AI scripts", isOn: profile.writesInMyVoiceBinding { setup = ProfileVoiceSetup(mode: .missing) })
+                    .labelsHidden()
+                    .tint(Palette.successText)
+                    .accessibilityLabel(Text("Use my voice in AI scripts"))
+                    .accessibilityIdentifier("voicePage.toggle")
+            }
             VoiceMeter(strength: current.voiceStrength, level: current.voiceLevel)
-            Text(current.voiceSentence.isEmpty ? String(localized: "Answer a few questions and Cue starts sounding like you.") : current.voiceSentence)
-                .font(.system(.body, weight: .medium))
-                .foregroundStyle(Palette.ink)
-                .fixedSize(horizontal: false, vertical: true)
-                .accessibilityIdentifier("voicePage.sentence")
-            Toggle("Use my voice in AI scripts", isOn: profile.writesInMyVoiceBinding { setup = ProfileVoiceSetup(mode: .missing) })
-                .font(.subheadline)
-                .tint(Palette.successText)
-                .accessibilityIdentifier("voicePage.toggle")
+            if aiStatus.isAvailable, let next = scheduler.remaining.first { nextQuestion(next) }
         }
-        .padding(16)
-        .background(Palette.surface, in: RoundedRectangle(cornerRadius: Metrics.cardRadius, style: .continuous))
     }
 
     private var needsAI: some View {
@@ -107,13 +114,17 @@ struct MyCueVoicePage: View {
     // MARK: - Layers
 
     private func layerView(_ layer: VoiceLayer) -> some View {
-        let fields = VoiceField.fields(of: layer)
-        let points = fields.reduce(0) { $0 + current.points(for: $1) }
-        let total = fields.reduce(0) { $0 + $1.weight }
-        return self.layer(title: layerTitle(layer), points: points, of: total) {
-            ForEach(Array(fields.enumerated()), id: \.element) { index, field in
+        VStack(alignment: .leading, spacing: 0) {
+            Text(layerTitle(layer))
+                .font(.system(size: 12, weight: .semibold))
+                .textCase(.uppercase)
+                .tracking(0.6)
+                .foregroundStyle(Palette.ink2)
+                .padding(EdgeInsets(top: 14, leading: 16, bottom: 6, trailing: 16))
+                .accessibilityAddTraits(.isHeader)
+            ForEach(VoiceField.fields(of: layer), id: \.self) { field in
                 row(
-                    title: field.title, value: current.value(for: field), isFilled: current.isFilled(field), isFirst: index == 0,
+                    title: field.title, value: current.value(for: field),
                     identifier: "voicePage.row.\(field.rawValue)"
                 ) { editing = field }
             }
@@ -128,32 +139,12 @@ struct MyCueVoicePage: View {
         }
     }
 
-    private func layer<Content: View>(title: String, points: Int, of total: Int, @ViewBuilder content: () -> Content) -> some View {
-        VStack(alignment: .leading, spacing: 8) {
-            HStack {
-                Text(title)
-                    .font(CueStudioFont.hud)
-                    .textCase(.uppercase)
-                    .tracking(1)
-                    .foregroundStyle(Palette.ink2)
-                Spacer()
-                Text("\(points) / \(total)")
-                    .font(CueStudioFont.hud)
-                    .tracking(1)
-                    .foregroundStyle(points == total ? Palette.successText : Palette.inkHint)
-            }
-            .padding(.horizontal, 4)
-            VStack(spacing: 0) { content() }
-                .background(Palette.surface, in: RoundedRectangle(cornerRadius: Metrics.cardRadius, style: .continuous))
-        }
-    }
-
-    /// The next question in the queue, answered right here.
+    /// The next question in the queue, answered right here: "✦ Next: How do you usually end a video?  Answer".
     private func nextQuestion(_ question: VoiceQuestion) -> some View {
         Button { editing = question.field } label: {
             HStack(spacing: 10) {
                 Text(verbatim: "✦").foregroundStyle(Palette.aiText)
-                Text(question.title)
+                Text("Next: \(question.title)")
                     .font(.subheadline)
                     .foregroundStyle(Palette.ink)
                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -161,39 +152,39 @@ struct MyCueVoicePage: View {
                     .font(.subheadline.weight(.semibold))
                     .foregroundStyle(Palette.accText)
             }
-            .padding(.horizontal, 14)
-            .frame(minHeight: Metrics.hitTarget + 6)
-            .background(Palette.aiFill, in: RoundedRectangle(cornerRadius: Metrics.cardRadius, style: .continuous))
-            .overlay(RoundedRectangle(cornerRadius: Metrics.cardRadius, style: .continuous).strokeBorder(Palette.aiBorder, lineWidth: 0.5))
             .contentShape(Rectangle())
+            .frame(minHeight: Metrics.hitTarget)
         }
         .buttonStyle(.plain)
         .accessibilityIdentifier("voicePage.next")
     }
 
-    private func row(title: String, value: String, isFilled: Bool, isFirst: Bool, identifier: String, action: @escaping () -> Void) -> some View {
+    /// A row of the list: the field on the left in grey, what Cue knows on the right (or "+ Add · 1 tap" in yellow), a chevron, and a hairline above.
+    private func row(title: String, value: String, identifier: String, action: @escaping () -> Void) -> some View {
         Button(action: action) {
-            HStack(spacing: 10) {
-                Image(systemName: isFilled ? "checkmark.circle.fill" : "circle")
-                    .foregroundStyle(isFilled ? Palette.successText : Palette.ink3)
-                    .accessibilityHidden(true)
+            HStack(spacing: 12) {
                 Text(title)
                     .font(.subheadline)
                     .foregroundStyle(Palette.ink2)
-                    .frame(width: 104, alignment: .leading)
-                Text(value.isEmpty ? String(localized: "Not set") : value)
-                    .font(.subheadline.weight(.semibold))
-                    .foregroundStyle(value.isEmpty ? Palette.inkHint : Palette.ink)
-                    .lineLimit(2)
-                    .multilineTextAlignment(.leading)
-                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .frame(width: 96, alignment: .leading)
+                Group {
+                    if !value.isEmpty {
+                        Text(value).font(.system(size: 16)).foregroundStyle(Palette.ink)
+                    } else {
+                        Text("+ Add · 1 tap").font(.system(size: 16, weight: .semibold)).foregroundStyle(Palette.accText)
+                    }
+                }
+                .multilineTextAlignment(.leading)
+                .frame(maxWidth: .infinity, alignment: .leading)
                 Image(systemName: "chevron.forward")
                     .font(.footnote.weight(.semibold))
                     .foregroundStyle(Palette.ink3)
+                    .accessibilityHidden(true)
             }
-            .padding(.horizontal, 14)
-            .frame(minHeight: Metrics.hitTarget + 6)
-            .overlay(alignment: .top) { if !isFirst { Rectangle().fill(Palette.separator).frame(height: 0.5).padding(.leading, 14) } }
+            .padding(.horizontal, 16)
+            .padding(.vertical, 8)
+            .frame(minHeight: 52)
+            .overlay(alignment: .top) { Rectangle().fill(Palette.separator).frame(height: 0.5).padding(.leading, 16) }
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)

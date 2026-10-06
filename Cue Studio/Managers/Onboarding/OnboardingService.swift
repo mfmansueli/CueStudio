@@ -22,9 +22,11 @@ final class OnboardingService {
     private let defaults: UserDefaults
     private let isEnabled: Bool
 
-    init(defaults: UserDefaults = .standard, isEnabled: Bool = true) {
+    /// - Parameter startStep: the chapter the flight opens on (UI tests that take pictures of one); the welcome otherwise.
+    init(defaults: UserDefaults = .standard, isEnabled: Bool = true, startStep: OnboardingStep? = nil) {
         self.defaults = defaults
         self.isEnabled = isEnabled
+        step = startStep ?? .welcome
         isCompleted = !isEnabled || defaults.bool(forKey: DefaultsKey.onboardingCompleted)
         firstStarShown = defaults.bool(forKey: DefaultsKey.firstStarShown)
     }
@@ -47,14 +49,19 @@ final class OnboardingService {
 
     func isPicked(_ topic: OnboardingTopic) -> Bool { topics.contains(topic) }
 
-    /// Picks or lets go. With three picked, a new pick takes the place of the first.
-    func toggle(_ topic: OnboardingTopic) {
+    /// With three picked, no other topic can be picked until one is let go (09 §14).
+    var isFull: Bool { topics.count >= OnboardingTopic.limit }
+
+    /// Picks or lets go. With three picked, a new topic is not taken (let one go first); returns whether the topic is picked now.
+    @discardableResult
+    func toggle(_ topic: OnboardingTopic) -> Bool {
         if let index = topics.firstIndex(of: topic) {
             topics.remove(at: index)
-            return
+            return false
         }
-        if topics.count >= OnboardingTopic.limit { topics.removeFirst() }
+        guard !isFull else { return false }
         topics.append(topic)
+        return true
     }
 
     /// "+ Your own": a topic the creator typed. Blank names are ignored.

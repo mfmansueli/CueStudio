@@ -68,7 +68,8 @@ struct VoiceSetupSheet: View {
                 VStack(alignment: .leading, spacing: 18) {
                     VStack(alignment: .leading, spacing: 6) {
                         Text(step.question)
-                            .font(.system(size: 30, weight: .bold))
+                            .font(.system(size: 28, weight: .bold))
+                            .tracking(-0.56)
                             .foregroundStyle(Palette.ink)
                             .fixedSize(horizontal: false, vertical: true)
                             .accessibilityAddTraits(.isHeader)
@@ -92,6 +93,7 @@ struct VoiceSetupSheet: View {
         .animation(.smooth(duration: 0.2), value: index)
         .presentationDetents([.large])
         .presentationDragIndicator(.visible)
+        .cueSheetSurface()
         // A container of its own: the sheet's identifier would otherwise replace its controls' (Continue's).
         .sheet(isPresented: $showsExample) { VoiceExamplesSheet() }
         .accessibilityElement(children: .contain)

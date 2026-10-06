@@ -41,7 +41,7 @@ struct OnboardingServiceTests {
     @Test func theStepsRunWelcomeThenFiveChaptersAndTheBarLightsOneSegmentEach() {
         #expect(OnboardingStep.allCases == [.welcome, .universe, .voyage, .script, .voice, .practice])
         #expect(OnboardingStep.welcome.segment == nil)
-        #expect(OnboardingStep.allCases.dropFirst().map(\.segment) == [0, 1, 2, 3, 4])
+        #expect(OnboardingStep.allCases.dropFirst().map(\.segment) == [0, 1, 2, 3, 3], "the practice lights the permissions' segment, as the boards do")
         #expect(OnboardingStep.segmentCount == 5)
         #expect(OnboardingStep.practice.next == nil)
     }
@@ -72,12 +72,16 @@ struct OnboardingServiceTests {
 
     // MARK: - Topics
 
-    @Test func atMostThreeTopicsAndANewPickTakesTheFirstOnesPlace() {
+    @Test func atMostThreeTopicsAndAFourthIsNotTakenUntilOneIsLetGo() {
         let (service, defaults) = make()
         defer { defaults.tearDown() }
         [Niche.fitness, .food, .tech].forEach { service.toggle(.niche($0)) }
-        #expect(service.topics.count == 3)
-        service.toggle(.niche(.finance))
+        #expect(service.topics.count == 3 && service.isFull)
+        #expect(!service.toggle(.niche(.finance)))
+        #expect(service.topics == [.niche(.fitness), .niche(.food), .niche(.tech)])
+        // Letting one go makes room for another, which takes the free colour (the last place).
+        #expect(!service.toggle(.niche(.fitness)))
+        #expect(service.toggle(.niche(.finance)))
         #expect(service.topics == [.niche(.food), .niche(.tech), .niche(.finance)])
         #expect(service.mainTopic == .niche(.food))
     }

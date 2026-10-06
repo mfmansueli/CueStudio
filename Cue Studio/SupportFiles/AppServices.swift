@@ -51,6 +51,9 @@ struct AppServices {
     let personalization: PersonalizationService
     let onboarding: OnboardingService
     let milestones: MilestoneService
+    let shareQueue: ShareQueueService
+    /// The settings store (the app's, or the UI tests' in-memory one).
+    let defaults: UserDefaults
     let topicTagging: TopicTaggingService
     let logbook: LogbookService
     let brands: BrandStore
@@ -58,8 +61,30 @@ struct AppServices {
     let aiStatus: AIStatus
     let voiceQuestions: VoiceQuestionScheduler
     let eraser: DataEraserService
+    let privacy: PrivacyPreferencesService
     let appIcon: AppIconService
     let permissions: PermissionRequesting
+    let permissionStatus: PermissionsService
+    /// The welcome's star opening plays, except in UI tests that don't ask for it.
+    let playsWelcomeOpening: Bool
+    /// UI tests: the opening stands still at this second.
+    let welcomeFrozenTime: Double?
+    /// UI tests: the Pro opening stands still at this second.
+    let proFrozenTime: Double?
+    /// UI tests: the chapter of the first flight on screen stands still at this second of its opening.
+    let chapterFrozenTime: Double?
+    /// UI tests: the last topic of 1.2 stands still at this age of its birth.
+    let topicBirthFrozenAge: Double?
+    /// UI tests: on 1.3 TikTok is picked and the light of the pick stands still at this age.
+    let platformPickFrozenAge: Double?
+    /// UI tests: the send-off stands still at this second.
+    let sendOffFrozenTime: Double?
+    /// UI tests: the review opens on the first-star / milestone story.
+    let showsFirstStar: Bool
+    let storyFrozenTime: Double?
+    let milestoneToShow: Int?
+    /// UI tests: a stand-in for the system share sheet.
+    let fakesShareSheet: Bool
 
     init(options: LaunchOptions) {
         languages = LanguageService(defaults: options.defaults, store: options.languageStore) { language in
@@ -71,11 +96,26 @@ struct AppServices {
         takes = TakeLibraryService(repository: options.takeRepository)
         preferences = PreferencesService(defaults: options.defaults)
         personalization = PersonalizationService(defaults: options.defaults)
-        onboarding = OnboardingService(defaults: options.defaults, isEnabled: options.showsOnboarding)
+        onboarding = OnboardingService(defaults: options.defaults, isEnabled: options.showsOnboarding, startStep: options.onboardingStep)
         milestones = MilestoneService(defaults: options.defaults)
+        shareQueue = ShareQueueService(defaults: options.defaults)
+        defaults = options.defaults
         let iconSwitcher: any AppIconSwitching = options.isInMemory ? InMemoryAppIcon() : SystemAppIcon()
         appIcon = AppIconService(switcher: iconSwitcher)
-        permissions = options.permissions ?? SystemPermissions()
+        let permissions = options.permissions ?? SystemPermissions()
+        self.permissions = permissions
+        permissionStatus = PermissionsService(permissions: permissions)
+        playsWelcomeOpening = !options.isInMemory || options.keepsWelcomeOpening
+        welcomeFrozenTime = options.welcomeFrozenTime
+        proFrozenTime = options.proFrozenTime
+        chapterFrozenTime = options.chapterFrozenTime
+        topicBirthFrozenAge = options.topicBirthFrozenAge
+        platformPickFrozenAge = options.platformPickFrozenAge
+        sendOffFrozenTime = options.sendOffFrozenTime
+        showsFirstStar = options.showsFirstStar
+        storyFrozenTime = options.storyFrozenTime
+        milestoneToShow = options.milestoneToShow
+        fakesShareSheet = options.fakesShareSheet
         profile = CreatorProfileService(defaults: options.defaults)
         session = SessionService(defaults: options.defaults, checker: options.credentialChecker)
         rules = options.platformRules
@@ -120,6 +160,7 @@ struct AppServices {
         brands = BrandStore(repository: options.brandRepository)
         self.sky = sky
         aiStatus = AIStatus(writer: options.writer)
+        privacy = PrivacyPreferencesService(defaults: options.defaults, writer: options.writer)
         voiceQuestions = VoiceQuestionScheduler(profile: profile, defaults: options.defaults, skipsGates: options.voiceTipSkipsGates)
         eraser = DataEraserService(
             library: library, takes: takes, drafts: options.draftStore, logbook: logbook, brands: brands, sky: sky,
@@ -177,6 +218,7 @@ extension View {
             .environment(services.personalization)
             .environment(services.onboarding)
             .environment(services.milestones)
+            .environment(services.shareQueue)
             .environment(services.appIcon)
             .environment(services.topicTagging)
             .environment(services.logbook)
@@ -185,5 +227,12 @@ extension View {
             .environment(services.aiStatus)
             .environment(services.voiceQuestions)
             .environment(services.eraser)
+            .environment(services.privacy)
+            .environment(services.permissionStatus)
+            .environment(\.proOpeningFrozenAt, services.proFrozenTime)
+            .environment(\.onboardingChapterFrozenAt, services.chapterFrozenTime)
+            .environment(\.sendOffFrozenAt, services.sendOffFrozenTime)
+            .environment(\.storyFrozenAt, services.storyFrozenTime)
+            .environment(\.fakesShareSheet, services.fakesShareSheet)
     }
 }

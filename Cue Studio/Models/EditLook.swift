@@ -19,6 +19,8 @@ nonisolated struct EditLook: Codable, Hashable, Sendable {
     /// Added with the calibrated look: nil in steps saved before, which leave them as they are.
     var vibrance: Double?
     var tint: Double?
+    /// Added with Skin Smoothing: nil in steps saved before, which leave it as it is.
+    var skinSmoothing: Double?
     var autoCorrection: AutoCorrection?
     /// Set in every step that has Auto (it tells a step with no correction from one saved before).
     var autoAmount: Double?
@@ -46,6 +48,7 @@ nonisolated struct EditLook: Codable, Hashable, Sendable {
         sharpness = edit.sharpness
         vibrance = edit.vibrance
         tint = edit.tint
+        skinSmoothing = edit.skinSmoothing
         autoCorrection = edit.autoCorrection
         autoAmount = edit.autoAmount
         lookVersion = edit.lookVersion
@@ -72,6 +75,7 @@ nonisolated struct EditLook: Codable, Hashable, Sendable {
         edit.highlights = highlights
         edit.shadows = shadows
         edit.sharpness = sharpness
+        if let skinSmoothing { edit.skinSmoothing = skinSmoothing }
         if let autoAmount {
             edit.vibrance = vibrance ?? 0
             edit.tint = tint ?? 0

@@ -5,165 +5,79 @@
 
 import SwiftUI
 
-/// How the app behaves (v26): the "Your setup" card with what every recording starts from, the
-/// three pages under it (Recording, Prompter, Remote), then General, Purchases & About and Reset.
+/// Settings (11.1): how the app behaves. "Your setup" first, then Create, Your Cue, General, Pro and About, as a grouped list with a
+/// search that finds the rows themselves. Every page it opens is pushed (`SettingsRoute`).
 struct SettingsView: View {
-    /// A tile opens a pushed page or a sheet.
-    private enum SettingsTarget {
-        case page(SettingsRoute)
-        case sheet(SettingsSheet)
-    }
-
-    @Environment(StoreManager.self) private var store
-    @Environment(ToastService.self) private var toast
     @Environment(PreferencesService.self) private var preferences
-    @Environment(LanguageService.self) private var languages
     @Environment(PresentationService.self) private var presentation
-    @Environment(RemoteControlService.self) private var remote
+    @Environment(ToastService.self) private var toast
 
-    @State private var showsPrivacy = false
+    @State private var query = ""
     @State private var confirmsReset = false
-    @State private var paywall: PaywallContext?
+
+    /// Every row is shown. The privacy policy opens its link when one is set (`AppLinks`), and Cue's own summary of it until then.
+    static func isShown(_ entry: SettingsEntry) -> Bool { true }
 
     var body: some View {
-        let setup = preferences.creatorSetup
-        ScrollView {
-            VStack(alignment: .leading, spacing: 14) {
-                Text("How you record, every time.")
-                    .font(.subheadline)
-                    .foregroundStyle(Palette.ink2)
-                    .padding(.horizontal, 4)
-                SetupSummaryCard(
-                    setup: setup,
-                    onOpenRecording: { presentation.settingsSheet = .recording },
-                    onOpenPrompter: { presentation.settingsPath.append(.prompter) }
-                )
-                tiles(setup)
-                Text("Set it up once. Cue remembers how you create.")
-                    .font(.footnote)
-                    .foregroundStyle(Palette.ink2)
-                    .padding(.horizontal, 4)
-
-                heading(String(localized: "General"))
-                GroupedCard(dividerInset: 58) {
-                    Button { presentation.settingsSheet = .languageRegion } label: {
-                        SettingsRow(
-                            systemImage: "globe", title: String(localized: "Language & Region"),
-                            value: languages.interfaceLanguage.nativeName
-                        )
-                    }
-                    .buttonStyle(.plain)
-                    .accessibilityIdentifier("settings.languageRegionButton")
-                    NavigationLink(value: SettingsRoute.personalize) {
-                        SettingsRow(
-                            systemImage: "sparkles", tint: Palette.aiText, title: String(localized: "Personalize"),
-                            detail: String(localized: "App icon · starry sky · celebrations"), badge: String(localized: "NEW")
-                        )
-                    }
-                    .buttonStyle(.plain)
-                    .accessibilityIdentifier("settings.personalizeButton")
-                    Button { showsPrivacy = true } label: {
-                        SettingsRow(systemImage: "lock.fill", tint: Palette.neutralAction, title: String(localized: "Privacy & AI data"))
-                    }
-                    .buttonStyle(.plain)
-                    .accessibilityIdentifier("settings.privacyButton")
-                }
-
-                heading(String(localized: "Purchases & About"))
-                GroupedCard(dividerInset: 58) {
-                    // 11.4: the plans, from where the creator looks for them.
-                    Button { paywall = .profile } label: {
-                        SettingsRow(
-                            systemImage: "star", tint: Palette.accText, title: String(localized: "Cue Pro"),
-                            value: store.tier.isPro ? String(localized: "Active") : String(localized: "Free plan")
-                        )
-                    }
-                    .buttonStyle(.plain)
-                    .accessibilityIdentifier("settings.proButton")
-                    Button {
-                        Task {
-                            let restored = await store.restore()
-                            toast.show(restored ? String(localized: "Purchases restored") : String(localized: "No purchases to restore"))
-                        }
-                    } label: {
-                        SettingsRow(
-                            systemImage: "arrow.clockwise", tint: Palette.neutralAction,
-                            title: String(localized: "Restore purchases"), showsChevron: false
-                        )
-                    }
-                    .buttonStyle(.plain)
-                    .accessibilityIdentifier("settings.restorePurchasesButton")
-                    NavigationLink(value: SettingsRoute.acknowledgements) {
-                        SettingsRow(systemImage: "heart.text.square", tint: Palette.neutralAction, title: String(localized: "Acknowledgements"))
-                    }
-                    .buttonStyle(.plain)
-                    .accessibilityIdentifier("settings.acknowledgementsButton")
-                }
-
-                Button("Reset Creator Setup") { confirmsReset = true }
-                    .buttonStyle(.cueDestructiveTinted())
-                    .padding(.top, 10)
-                    .accessibilityIdentifier("creatorSetup.resetButton")
+        @Bindable var preferences = preferences
+        let bindings = SettingsBindings(prompter: $preferences.prompter, camera: $preferences.camera)
+        VStack(spacing: 0) {
+            // The search sits under the large title and stays there while it is used: the system's collapses the title and brings a keyboard-sized bar.
+            SettingsSearchField(text: $query).padding(.horizontal, 16).padding(.bottom, 4)
+            if query.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                root(bindings)
+            } else {
+                SettingsSearchResults(query: query, bindings: bindings)
             }
-            .padding(EdgeInsets(top: 4, leading: Metrics.gutter, bottom: 40, trailing: Metrics.gutter))
         }
         .skyBackground()
         .navigationTitle("Settings")
         .toolbarTitleDisplayMode(.inlineLarge)
-        .sheet(isPresented: $showsPrivacy) { PrivacySheet() }
-        .fullScreenCover(item: $paywall) { PaywallView(context: $0) }
-        .confirmationDialog("Reset Creator Setup?", isPresented: $confirmsReset, titleVisibility: .visible) {
-            Button("Reset Creator Setup", role: .destructive) {
-                preferences.resetCreatorSetup()
-                toast.show(String(localized: "Back to Cue's defaults"))
+        .navigationDestination(for: SettingsRoute.self) { SettingsDestination(route: $0, bindings: bindings) }
+    }
+
+    private func root(_ bindings: SettingsBindings) -> some View {
+        List {
+            Section {
+                SetupSummaryCard(camera: preferences.camera, prompter: preferences.prompter) { presentation.settingsPath.append($0) }
+                    .listRowBackground(Color.clear)
+                    .listRowInsets(EdgeInsets())
+            } footer: {
+                Text("Tap a value to change it. Platforms may suggest a setup. You choose.")
             }
-            .accessibilityIdentifier("creatorSetup.confirmResetButton")
-            Button("Cancel", role: .cancel) {}
-        } message: {
-            Text("Camera, microphone, quality, format and teleprompter go back to Cue's defaults. Your scripts, takes and edits stay.")
-        }
-    }
-
-    // MARK: - Pieces
-
-    /// Recording · Prompter · Remote, with what is set in each.
-    private func tiles(_ setup: CreatorSetup) -> some View {
-        HStack(spacing: 10) {
-            tile(
-                .sheet(.recording), "video", String(localized: "Recording"),
-                "\(setup.label(for: .camera)) · \(setup.microphone.label)", "recording"
-            )
-            tile(
-                .page(.prompter), "text.alignleft", String(localized: "Prompter"),
-                "\(preferences.prompter.scrollMode.shortLabel) · \(Int(setup.textSize.rounded())) pt", "prompter"
-            )
-            tile(
-                .sheet(.remote), "iphone.radiowaves.left.and.right", String(localized: "Remote"),
-                remote.state.isConnected ? String(localized: "Connected") : String(localized: "Off"), "remote"
-            )
-        }
-    }
-
-    private func tile(_ target: SettingsTarget, _ image: String, _ title: String, _ detail: String, _ id: String) -> some View {
-        Button {
-            switch target {
-            case .page(let route): presentation.settingsPath.append(route)
-            case .sheet(let sheet): presentation.settingsSheet = sheet
+            section(String(localized: "Create"), [.recording, .prompter, .remote], bindings, footer: String(localized: "Set it up once. Every recording starts from here."))
+            section(String(localized: "Your Cue"), [.myCueVoice, .personalize], bindings)
+            section(String(localized: "General"), [.languageRegion, .privacy], bindings)
+            section(String(localized: "Pro"), [.cuePro, .restorePurchases], bindings)
+            section(String(localized: "About"), [.privacyPolicy, .termsOfUse, .acknowledgements, .version], bindings)
+            // The app's own row, kept exactly as it was until the product owner decides (v30 does not design it).
+            Section {
+                Button("Reset Creator Setup") { confirmsReset = true }
+                    .buttonStyle(.cueDestructiveTinted())
+                    .accessibilityIdentifier("creatorSetup.resetButton")
+                    .listRowBackground(Color.clear)
+                    .listRowInsets(EdgeInsets())
             }
-        } label: {
-            SettingsTile(systemImage: image, title: title, detail: detail)
         }
-        .buttonStyle(.plain)
-        .accessibilityIdentifier("settings.\(id)Tile")
+        .cueGroupedList()
+        .cueActionSheet(
+            isPresented: $confirmsReset,
+            message: "Camera, microphone, quality, format and teleprompter go back to Cue's defaults. Your scripts, takes and edits stay.",
+            actionTitle: "Reset Creator Setup", actionIdentifier: "creatorSetup.confirmResetButton"
+        ) {
+            preferences.resetCreatorSetup()
+            toast.show(String(localized: "Back to Cue's defaults"))
+        }
     }
 
-    private func heading(_ text: String) -> some View {
-        Text(text)
-            .font(CueStudioFont.hud)
-            .textCase(.uppercase)
-            .tracking(0.8)
-            .foregroundStyle(Palette.ink2)
-            .padding(EdgeInsets(top: 10, leading: 4, bottom: 0, trailing: 4))
+    private func section(_ title: String, _ entries: [SettingsEntry], _ bindings: SettingsBindings, footer: String? = nil) -> some View {
+        Section {
+            ForEach(entries.filter(Self.isShown)) { SettingsEntryRow(entry: $0, bindings: bindings) }
+        } header: {
+            CueSectionHeader(verbatim: title)
+        } footer: {
+            if let footer { Text(footer) }
+        }
     }
 }
 

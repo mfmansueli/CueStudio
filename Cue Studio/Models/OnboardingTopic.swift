@@ -20,7 +20,7 @@ nonisolated enum OnboardingTopic: Hashable, Identifiable, Sendable {
 
     var label: String {
         switch self {
-        case .niche(let niche): niche.label
+        case .niche(let niche): niche.chipLabel
         case .custom(let name): name
         }
     }

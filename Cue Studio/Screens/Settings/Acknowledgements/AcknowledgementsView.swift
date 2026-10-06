@@ -5,34 +5,31 @@
 
 import SwiftUI
 
-/// Settings › Acknowledgements: the fonts Cue ships, what each is for, and its license.
+/// Settings › Acknowledgements: the fonts Cue ships, and the license of each.
 struct AcknowledgementsView: View {
     var body: some View {
         List {
             Section {
                 ForEach(FontCredit.all) { credit in
-                    NavigationLink {
-                        LicenseTextView(credit: credit)
-                    } label: {
-                        VStack(alignment: .leading, spacing: 3) {
+                    // The board's list has no chevrons; the license is still one tap away.
+                    ZStack(alignment: .leading) {
+                        NavigationLink { LicenseTextView(credit: credit) } label: { EmptyView() }.opacity(0)
+                        VStack(alignment: .leading, spacing: 2) {
                             Text(verbatim: credit.name).foregroundStyle(Palette.ink)
-                            Text(credit.use).font(.footnote).foregroundStyle(Palette.ink2)
-                            Text("SIL Open Font License 1.1").font(.caption).foregroundStyle(Palette.ink2)
+                            Text("SIL Open Font License 1.1").font(.footnote).foregroundStyle(Palette.ink2)
                         }
-                        .padding(.vertical, 2)
+                        .frame(minHeight: Metrics.listRowContent, alignment: .leading)
                     }
                     .accessibilityIdentifier("acknowledgements.font")
+                    .cardRowBackground()
                 }
-            } header: {
-                Text("Fonts")
             } footer: {
-                Text("These fonts are free to use and embed under the SIL Open Font License.")
+                Text("The free fonts Cue ships with.")
             }
         }
-        .listStyle(.insetGrouped)
-        .scrollContentBackground(.hidden)
-        .background(Palette.bg)
+        .cueGroupedList()
         .navigationTitle("Acknowledgements")
         .navigationBarTitleDisplayMode(.inline)
+        .contentMargins(.top, 0, for: .scrollContent)
     }
 }

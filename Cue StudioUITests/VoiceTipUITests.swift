@@ -72,11 +72,11 @@ final class VoiceTipUITests: XCTestCase {
         element(app, "voice.option.personal").tap()
         element(app, "voice.more").tap()
         XCTAssertTrue(element(app, "voice.sheet.topics").waitForExistence(timeout: 5))
-        element(app, "voice.option.lifestyle").tap()
-        element(app, "voice.option.wellness").tap()
+        element(app, "voice.option.fitness").tap()
+        element(app, "voice.option.food").tap()
         XCTAssertTrue(app.buttons["voice.sheet.save"].exists)
-        // "+ Something else" and "None of these" close the list, below the eight topics.
-        app.swipeUp()
+        // "+ Something else" and "None of these" close the list, below the topics.
+        for _ in 0..<4 where !element(app, "voice.somethingElse").exists { app.swipeUp() }
         XCTAssertTrue(element(app, "voice.somethingElse").waitForExistence(timeout: 5))
         XCTAssertTrue(element(app, "voice.sheet.none").exists)
         app.buttons["voice.sheet.save"].tap()

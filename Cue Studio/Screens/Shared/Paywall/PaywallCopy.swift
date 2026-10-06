@@ -9,45 +9,59 @@ import Foundation
 nonisolated enum PaywallCopy {
     static func title(for context: PaywallContext) -> String {
         switch context {
-        case .export: String(localized: "Keep posting with Cue")
+        case .export: String(localized: "Keep sharing your universe.")
         case .profile: String(localized: "Take your universe further.")
+        }
+    }
+
+    /// The small line above the title: the plans' name, or (when the video is waiting) that it is ready.
+    static func eyebrow(for context: PaywallContext) -> String {
+        switch context {
+        case .export: String(localized: "YOUR VIDEO IS READY")
+        case .profile: String(localized: "CUE PRO")
         }
     }
 
     static func subtitle(for context: PaywallContext) -> String {
         switch context {
         case .export:
-            String(localized: "You've used your \(UsagePolicy.freeExports) free exports. Every feature stays open — start 7 days free to keep exporting. Your takes are safe.")
+            String(localized: "Start the trial and export it now.")
         case .profile:
-            String(localized: "Everything in Cue is free while you try it — \(UsagePolicy.freeExports) exports included. After that, 7 days free, then monthly or annual.")
+            freeToTry
         }
     }
 
-    /// Only what Pro actually changes: exporting. Every feature is open on the free plan too.
-    static let features: [String] = [
-        String(localized: "Unlimited video exports, up to 4K"),
-        String(localized: "Every feature stays open: AI, My Cue Voice, Quick edit, Clean Up, captions"),
-        String(localized: "Your takes are always yours — nothing is ever locked or deleted"),
-        String(localized: "Every milestone app icon"),
+    /// What Pro offers, as the board lists it (11.4).
+    static let benefits: [ProBenefit] = [
+        ProBenefit(mark: "✓", text: String(localized: "Unlimited exports, up to 4K"), tag: String(localized: "EXPORT"), tone: .plain),
+        ProBenefit(mark: "✓", text: String(localized: "Full My Cue Voice + sponsored-ad scripts"), tag: String(localized: "AI"), tone: .ai),
+        ProBenefit(mark: "✓", text: String(localized: "Hook variations, platform versions, best-take picks"), tag: String(localized: "AI"), tone: .ai),
+        ProBenefit(mark: "✓", text: String(localized: "Cover styles, series tags, “Text behind me”"), tag: String(localized: "EDIT"), tone: .plain),
+        ProBenefit(
+            mark: "✓", text: String(localized: "Remote from Apple Watch, iPad & Mac sync"), tag: String(localized: "STUDIO"), tone: .plain,
+            isAvailable: false
+        ),
+        ProBenefit(mark: "✦", text: String(localized: "Every milestone app icon"), tag: String(localized: "UNIVERSE"), tone: .universe),
     ]
 
-    /// The icon and the mono tag of each line of `features`.
-    static let featureImages = ["square.and.arrow.up", "sparkles", "lock.open", "sparkle"]
-    static let featureTags = [String(localized: "Export"), String(localized: "Free"), String(localized: "Yours"), String(localized: "Universe")]
+    /// The lines for this iPhone: the ones about AI stay out where Apple Intelligence can't run, and the ones for what the app cannot do yet stay out
+    /// (the Apple Watch and Mac remote), so the paywall never sells what is not there.
+    static func visibleBenefits(aiIsAvailable: Bool) -> [ProBenefit] {
+        benefits.filter { $0.isAvailable && (aiIsAvailable || $0.tone != .ai) }
+    }
 
-    /// The lines for this iPhone: the one about AI stays out where Apple Intelligence can't run, so the paywall never
-    /// sells what the device cannot do.
-    static func visibleFeatureIndices(aiIsAvailable: Bool) -> [Int] {
-        features.indices.filter { aiIsAvailable || $0 != 1 }
+    /// The line under the title of the regular Pro.
+    static var freeToTry: String {
+        String(localized: "Free to try · \(UsagePolicy.freeExports) exports included. Then 7 days free.")
     }
 
     static func welcome(for context: PaywallContext, startedTrial: Bool) -> String {
         switch context {
         case .export:
             if startedTrial {
-                String(localized: "Trial started — exporting now")
+                String(localized: "Trial started · video exported")
             } else {
-                String(localized: "Welcome to Cue Pro — exporting now")
+                String(localized: "Welcome to Cue Pro · video exported")
             }
         case .profile:
             if startedTrial {
@@ -57,6 +71,9 @@ nonisolated enum PaywallCopy {
             }
         }
     }
+
+    /// "$39.99", or an ellipsis while the price loads.
+    static func priceOnly(displayPrice: String?) -> String { displayPrice ?? "…" }
 
     static func price(for plan: ProPlan, displayPrice: String?) -> String {
         let price = displayPrice ?? "…"
@@ -78,7 +95,8 @@ nonisolated enum PaywallCopy {
         }
     }
 
-    static func callToAction(for plan: ProPlan, displayPrice: String?, trialDays: Int?) -> String {
+    static func callToAction(for plan: ProPlan, displayPrice: String?, trialDays: Int?, context: PaywallContext = .profile) -> String {
+        if context == .export, trialDays != nil { return String(localized: "Start free trial · export now") }
         if let trialDays { return String(localized: "Start \(trialDays)-day free trial") }
         let price = displayPrice ?? "…"
         return switch plan {

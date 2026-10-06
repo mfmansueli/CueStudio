@@ -22,6 +22,7 @@ extension PrompterViewModel {
     }
 
     var readingLayout: ReadingLayout {
+        if isPractice { return ReadingLayout(practiceScreen: screenMetrics.screen) }
         let prompter = session.prompter
         return ReadingLayout(
             metrics: screenMetrics,
@@ -46,10 +47,15 @@ extension PrompterViewModel {
         SafeZoneChoice.options(for: session.camera.aspect, rules: rules.rules)
     }
 
-    /// The zone for this frame: the pick, else the script's platform, else Reels (9:16) or
-    /// LinkedIn (4:5). None for horizontal video.
+    /// The zone for this frame: the pick, else the one chosen in Settings › Social safe zone, else the script's platform, else Reels (9:16)
+    /// or LinkedIn (4:5). None for horizontal video.
     var safeZone: SafeZoneChoice? {
-        SafeZoneChoice.resolve(pick: safeZonePick, scriptPlatform: script?.platform, aspect: session.camera.aspect, rules: rules.rules)
+        SafeZoneChoice.resolve(pick: effectiveSafeZonePick, scriptPlatform: script?.platform, aspect: session.camera.aspect, rules: rules.rules)
+    }
+
+    /// This take's pick, or the one the creator chose in Settings.
+    private var effectiveSafeZonePick: SafeZoneChoice? {
+        safeZonePick ?? SafeZoneChoice.pick(fromKey: session.prompter.safeZoneKey)
     }
 
     /// The part of the frame the zone leaves clear, on screen.

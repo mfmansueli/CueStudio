@@ -140,7 +140,7 @@ nonisolated enum VoiceQuestion: String, CaseIterable, Identifiable, Sendable {
     var options: [VoiceOption] {
         switch self {
         case .role: CreatorRole.allCases.map { VoiceOption(id: $0.rawValue, label: $0.label, detail: $0.examples) }
-        case .topics: Niche.allCases.map { VoiceOption(id: $0.rawValue, label: $0.label) }
+        case .topics: Niche.allCases.map { VoiceOption(id: $0.rawValue, label: $0.chipLabel) }
         case .audience: Vocabulary.allCases.map { VoiceOption(id: $0.rawValue, label: $0.audienceLabel) }
         case .tone: VoiceSound.allCases.map { VoiceOption(id: $0.rawValue, label: $0.label, detail: $0.example) }
         case .endings: VoicePersonalityItem.endings.options.map { VoiceOption(id: $0, label: $0) }

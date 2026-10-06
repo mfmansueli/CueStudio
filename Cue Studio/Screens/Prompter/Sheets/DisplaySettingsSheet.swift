@@ -5,9 +5,8 @@
 
 import SwiftUI
 
-/// "Aa": how the prompter reads, with a live preview behind the sheet. In Selfie mode the layout
-/// comes first (reading line, text window, safe zone); then quick settings, and the rest under
-/// Advanced. Over the Selfie camera the sheet never covers the text window.
+/// "Aa" in Studio: how the prompter reads, with a live preview behind the sheet. Selfie opens the Prompter page of Settings
+/// instead (`PrompterSettingsSheet`).
 struct DisplaySettingsSheet: View {
     let viewModel: PrompterViewModel
     /// Tallest the sheet may grow in Selfie mode, so the text window above stays in sight.
@@ -27,10 +26,6 @@ struct DisplaySettingsSheet: View {
             header
             ScrollView {
                 VStack(alignment: .leading, spacing: 10) {
-                    if mode == .selfie {
-                        DisplayLayoutSection(viewModel: viewModel)
-                            .padding(.bottom, 6)
-                    }
                     DisplaySettingsControls(settings: $session.prompter, mode: mode)
                 }
                 .padding(EdgeInsets(top: 0, leading: Metrics.gutter, bottom: 40, trailing: Metrics.gutter))

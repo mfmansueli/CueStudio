@@ -185,7 +185,7 @@ extension CreatorProfileService {
             let existing = profile.customTopics + profile.niches.map(\.label)
             let held = profile.niches.count + profile.customTopics.count
             return addText(
-                raw, vocabulary: keepingTyped ? [] : Niche.allCases.map(\.label), existing: existing,
+                raw, vocabulary: keepingTyped ? [] : Niche.allCases.map(\.chipLabel), existing: existing,
                 held: held, limit: (VoiceLimits.topics, String(localized: "topics"))
             ) { $0.customTopics.append($1) }
         default:

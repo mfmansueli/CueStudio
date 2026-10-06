@@ -5,32 +5,51 @@
 
 import SwiftUI
 
-/// Settings › Recording: camera, microphone, quality and the default format.
+/// Settings › Recording: the camera every recording starts with, its quality and format, the microphone, and what happens
+/// while recording.
 struct SettingsRecordingView: View {
-    @State private var viewModel: CreatorSetupViewModel
-    @State private var showsMicrophones = false
-
-    init(preferences: PreferencesService, microphones: MicrophoneListing, toast: ToastService) {
-        _viewModel = State(initialValue: CreatorSetupViewModel(preferences: preferences, microphones: microphones, toast: toast))
-    }
+    let bindings: SettingsBindings
 
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 10) {
-                SectionHeading(text: String(localized: "Camera & format"))
-                    .padding(.horizontal, 4)
-                RecordingSetupSection(viewModel: viewModel) { showsMicrophones = true }
-                Text("Lens, mic and quality can change per take.")
-                    .font(.footnote)
-                    .foregroundStyle(Palette.ink2)
-                    .padding(EdgeInsets(top: 6, leading: 4, bottom: 0, trailing: 4))
+        List {
+            Section {
+                SettingsEntryRow(entry: .startsWith, bindings: bindings)
+            } header: {
+                CueSectionHeader("Camera")
+            } footer: {
+                Text("Flip anytime while recording.")
             }
-            .padding(EdgeInsets(top: 8, leading: Metrics.gutter, bottom: 40, trailing: Metrics.gutter))
+            Section {
+                SettingsEntryRow(entry: .resolution, bindings: bindings)
+                SettingsEntryRow(entry: .frameRate, bindings: bindings)
+            } header: {
+                CueSectionHeader("Quality")
+            } footer: {
+                Text("A platform can suggest another setup. You choose.")
+            }
+            Section {
+                SettingsEntryRow(entry: .defaultFormat, bindings: bindings)
+            } header: {
+                CueSectionHeader("Default format")
+            } footer: {
+                Text("Framing, safe zones and export follow it.")
+            }
+            Section {
+                SettingsEntryRow(entry: .microphone, bindings: bindings)
+            } header: {
+                CueSectionHeader("Microphone")
+            } footer: {
+                Text("Uses a connected mic when there is one.")
+            }
+            Section {
+                SettingsEntryRow(entry: .countdown, bindings: bindings)
+                SettingsEntryRow(entry: .grid, bindings: bindings)
+            } header: {
+                CueSectionHeader("While recording")
+            }
         }
-        .background(Palette.bg)
+        .cueGroupedList()
         .navigationTitle("Recording")
         .navigationBarTitleDisplayMode(.inline)
-        .task { viewModel.refreshInputs() }
-        .sheet(isPresented: $showsMicrophones) { CreatorMicrophoneSheet(viewModel: viewModel) }
     }
 }

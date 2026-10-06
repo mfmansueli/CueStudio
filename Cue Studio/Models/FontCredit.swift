@@ -73,9 +73,12 @@ nonisolated struct FontCredit: Identifiable, Hashable, Sendable {
             copyright: "Copyright 2014 The Caveat Project Authors", licenseFile: "caveat-OFL"
         ),
         FontCredit(
-            name: "Lexend · Atkinson Hyperlegible · Source Serif 4", use: String(localized: "The teleprompter's text"),
-            copyright: "The Lexend Project Authors · Braille Institute of America · The Source Serif 4 Project Authors",
-            licenseFile: "FONTS_LICENSE"
+            name: "Lexend", use: String(localized: "The teleprompter's text"),
+            copyright: "Copyright 2018 The Lexend Project Authors", licenseFile: "FONTS_LICENSE"
+        ),
+        FontCredit(
+            name: "Atkinson Hyperlegible", use: String(localized: "The teleprompter's text"),
+            copyright: "Copyright 2020 Braille Institute of America, Inc.", licenseFile: "FONTS_LICENSE"
         ),
     ]
 }

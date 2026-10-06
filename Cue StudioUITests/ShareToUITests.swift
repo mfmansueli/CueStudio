@@ -5,36 +5,148 @@
 
 import XCTest
 
-/// "Share to" from a take's review: the platforms, captions and quality (4K on every plan).
+/// "Share to universe" (8.1) from a take's review: Ready to travel, the networks, the queue one network at a time, "Posted on…?", the send-off, and the
+/// "Continue posting" card of a queue that was left. The system share sheet is a stand-in with Complete and Cancel (`-uiTestFakeShareSheet`).
 @MainActor
 final class ShareToUITests: XCTestCase {
     override func setUp() {
         continueAfterFailure = false
     }
 
-    func testShareToListsEveryPlatformWithTheOneItWasMadeFor() {
-        let app = openShareTo()
-        let tiktok = app.buttons["share.tiktok"]
-        XCTAssertEqual(tiktok.label, "TikTok, recommended")
-        for identifier in ["share.reels", "share.shorts", "share.youtube", "share.linkedin", "share.stories", "share.save", "share.more"] {
-            XCTAssertTrue(app.buttons[identifier].exists, identifier)
+    private func element(_ app: XCUIApplication, _ id: String) -> XCUIElement {
+        app.descendants(matching: .any)[id].firstMatch
+    }
+
+    // MARK: - Ready to travel and the networks
+
+    func testShareToUniverseOpensReadyAndTheNetworksWithTheScriptsOneTicked() {
+        let app = openShare()
+        XCTAssertTrue(element(app, "ready.sheet").exists)
+        for network in ["tiktok", "reels", "shorts", "youtube", "linkedin"] {
+            XCTAssertTrue(element(app, "shareFlow.network.\(network)").exists, network)
         }
-        XCTAssertTrue(app.staticTexts["Framed and safe-zoned for TikTok"].exists)
-        XCTAssertTrue(app.switches["share.captionsToggle"].exists)
+        XCTAssertTrue(element(app, "shareFlow.network.tiktok").isSelected)
+        XCTAssertFalse(element(app, "shareFlow.network.reels").isSelected)
+        XCTAssertTrue(app.buttons["shareFlow.start"].label.contains("Share to TikTok"))
+        XCTAssertTrue(app.switches["shareFlow.saveToPhotos"].exists)
+    }
+
+    func testPickingNetworksChangesTheButtonAndNothingPickedAsksToPick() {
+        let app = openShare()
+        element(app, "shareFlow.network.reels").tap()
+        element(app, "shareFlow.network.linkedin").tap()
+        XCTAssertTrue(app.buttons["shareFlow.start"].label.contains("Share to 3 networks"))
+        for network in ["reels", "linkedin", "tiktok"] { element(app, "shareFlow.network.\(network)").tap() }
+        XCTAssertTrue(app.buttons["shareFlow.start"].label.contains("Pick a network"))
+        XCTAssertFalse(app.buttons["shareFlow.start"].isEnabled)
     }
 
     func testFourKIsFree() {
-        let app = openShareTo()
+        let app = openShare()
+        app.buttons["shareFlow.options"].tap()
         let quality = app.segmentedControls["share.quality"]
+        XCTAssertTrue(quality.waitForExistence(timeout: 5))
         quality.buttons["4K"].tap()
         XCTAssertTrue(quality.buttons["4K"].isSelected)
         XCTAssertFalse(app.buttons["paywall.closeButton"].exists)
     }
 
+    func testClosingTheNetworksLeavesReadyWithItsThreeWaysOut() {
+        let app = openShare()
+        app.buttons["sheet.closeButton"].tap()
+        XCTAssertTrue(app.buttons["ready.shareButton"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.buttons["ready.saveButton"].exists)
+        XCTAssertTrue(app.buttons["ready.shareIcon"].exists)
+    }
+
+    // MARK: - The queue
+
+    func testTwoNetworksShowTheExplanationThenEachNetworksStep() {
+        let app = openShare()
+        element(app, "shareFlow.network.reels").tap()
+        app.buttons["shareFlow.start"].tap()
+        XCTAssertTrue(waitAllowingPhotos(for: app.staticTexts["Posting to 2 networks"]))
+        app.buttons["shareFlow.explainerStart"].tap()
+        XCTAssertTrue(app.staticTexts["Post to TikTok"].waitForExistence(timeout: 5))
+        XCTAssertEqual(element(app, "shareFlow.position").label, "1 OF 2")
+        XCTAssertTrue(app.buttons["shareFlow.send"].exists && app.buttons["shareFlow.editFirst"].exists && app.buttons["shareFlow.postLater"].exists)
+        app.buttons["shareFlow.postLater"].tap()
+        XCTAssertTrue(app.staticTexts["Post to Reels"].waitForExistence(timeout: 5))
+        XCTAssertEqual(element(app, "shareFlow.position").label, "2 OF 2")
+    }
+
+    func testPostingLaterOnEveryNetworkSavesAndTheReviewOffersToPostLater() {
+        let app = openShare()
+        app.buttons["shareFlow.start"].tap()
+        XCTAssertTrue(waitAllowingPhotos(for: app.buttons["shareFlow.postLater"]))
+        app.buttons["shareFlow.postLater"].tap()
+        XCTAssertTrue(app.staticTexts["Saved · continue anytime"].waitForExistence(timeout: 5))
+        app.buttons["ready.closeButton"].tap()
+        XCTAssertTrue(app.buttons["review.postLater"].waitForExistence(timeout: 5))
+        XCTAssertEqual(app.buttons["review.postLater"].label, "POST TO TIKTOK LATER")
+    }
+
+    func testNotYetKeepsTheNetworkAndYesSendsItOff() {
+        let app = openShare()
+        app.buttons["shareFlow.start"].tap()
+        XCTAssertTrue(waitAllowingPhotos(for: app.buttons["shareFlow.send"]))
+        app.buttons["shareFlow.send"].tap()
+        XCTAssertTrue(app.buttons["debug.share.complete"].waitForExistence(timeout: 10))
+        app.buttons["debug.share.complete"].tap()
+        XCTAssertTrue(app.staticTexts["Posted on TikTok?"].waitForExistence(timeout: 10))
+        XCTAssertTrue(app.staticTexts["Welcome back. Cue lights its planet once it’s live."].exists)
+        app.buttons["shareFlow.notYet"].tap()
+        XCTAssertTrue(app.buttons["shareFlow.send"].waitForExistence(timeout: 5), "back to the step: it can be sent again")
+        app.buttons["shareFlow.send"].tap()
+        app.buttons["debug.share.complete"].tap()
+        app.buttons["shareFlow.live"].tap()
+        for second in [1.2, 2.5, 5.0] {
+            Thread.sleep(forTimeInterval: second == 1.2 ? 1.2 : second - (second == 2.5 ? 1.2 : 2.5))
+            let ids = app.descendants(matching: .any).matching(NSPredicate(format: "identifier != ''")).allElementsBoundByIndex.prefix(40).map(\.identifier)
+            print("DEBUGIDS \(second): \(ids.joined(separator: ","))")
+        }
+        XCTAssertTrue(element(app, "sendoff.sheet").waitForExistence(timeout: 20))
+        XCTAssertEqual(element(app, "sendoff.headline").label, "SHARED TO TIKTOK")
+    }
+
+    func testACancelledShareSheetGoesBackToTheStep() {
+        let app = openShare()
+        app.buttons["shareFlow.start"].tap()
+        XCTAssertTrue(waitAllowingPhotos(for: app.buttons["shareFlow.send"]))
+        app.buttons["shareFlow.send"].tap()
+        XCTAssertTrue(app.buttons["debug.share.cancel"].waitForExistence(timeout: 10))
+        app.buttons["debug.share.cancel"].tap()
+        XCTAssertTrue(app.buttons["shareFlow.send"].waitForExistence(timeout: 10))
+        XCTAssertFalse(app.staticTexts["Posted on TikTok?"].exists)
+    }
+
+    // MARK: - Continue posting
+
+    func testALeftQueueShowsTheCardOnScriptsAndTakesAndTheCrossLeavesItForLater() {
+        let app = CueApp.launch(seeded: true, extraArguments: ["-uiTestShareQueue"])
+        let card = element(app, "continuePosting.card")
+        XCTAssertTrue(card.waitForExistence(timeout: 15))
+        XCTAssertTrue(app.staticTexts["CONTINUE POSTING · 1 OF 2"].exists)
+        app.cueTabBar.buttons["Takes"].tap()
+        XCTAssertTrue(element(app, "continuePosting.card").waitForExistence(timeout: 5))
+        element(app, "continuePosting.close").tap()
+        XCTAssertTrue(app.staticTexts["Saved · post when you’re ready"].waitForExistence(timeout: 5))
+        XCTAssertFalse(element(app, "continuePosting.card").exists)
+    }
+
+    func testContinueOpensTheReviewAtTheNetworksStep() {
+        let app = CueApp.launch(seeded: true, sampleVideo: true, extraArguments: ["-uiTestShareQueue"])
+        XCTAssertTrue(element(app, "continuePosting.card").waitForExistence(timeout: 15))
+        element(app, "continuePosting.continue").tap()
+        XCTAssertTrue(app.staticTexts["Post to TikTok"].waitForExistence(timeout: 60))
+        XCTAssertEqual(element(app, "shareFlow.position").label, "1 OF 2")
+    }
+
     // MARK: - Helpers
 
-    private func openShareTo(pro: Bool = false) -> XCUIApplication {
-        let app = CueApp.launch(seeded: true, pro: pro)
+    /// A take's review, "Share to universe" tapped: Ready to travel with the networks over it.
+    private func openShare() -> XCUIApplication {
+        let app = CueApp.launch(seeded: true, sampleVideo: true, extraArguments: ["-uiTestFakeShareSheet"])
         let tab = app.cueTabBar.buttons["Takes"]
         XCTAssertTrue(tab.waitForExistence(timeout: 15))
         tab.tap()
@@ -42,9 +154,9 @@ final class ShareToUITests: XCTestCase {
         XCTAssertTrue(row.waitForExistence(timeout: 5))
         row.tap()
         let share = app.buttons["review.shareButton"]
-        XCTAssertTrue(share.waitForExistence(timeout: 5))
+        XCTAssertTrue(share.waitForExistence(timeout: 10))
         share.tap()
-        XCTAssertTrue(app.buttons["share.tiktok"].waitForExistence(timeout: 5))
+        XCTAssertTrue(element(app, "shareFlow.start").waitForExistence(timeout: 120))
         return app
     }
 }

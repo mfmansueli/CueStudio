@@ -10,6 +10,7 @@ import Foundation
 /// request is running. Cancelling the request ends it with `CancellationError`, like the real model.
 @MainActor
 final class GatedScriptWriter: ScriptWriting {
+    var isEnabled = true
     var availability = AIAvailability(onDevice: true, privateCloud: false, reason: nil)
     /// When set, the request fails with it once released.
     var failure: Error?

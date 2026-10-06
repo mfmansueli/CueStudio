@@ -14,14 +14,23 @@ import os
 /// over it (B-roll), then texts and captions. Used by the Quick
 /// edit preview and by exports, so both show exactly the same thing.
 final class CueVideoCompositor: NSObject, AVVideoCompositing, @unchecked Sendable {
-    private let context = CIContext(options: [.cacheIntermediates: false])
+    private let context: CIContext
     /// Captions drawn as they show, the last few kept.
     private let overlayCache = OverlayImageCache()
     /// Where the person is, for background effects; the last masks kept.
     private let masker = PersonMasker()
+    /// Where the faces are, for Skin Smoothing; only asked while a clip's dial is above 0.
+    private let skin: SkinSmoother
     /// The frame composed last, which the preview holds on screen while it swaps to a new item.
     private let lastComposed = OSAllocatedUnfairLock<CVReadOnlyPixelBuffer?>(initialState: nil)
     private let queue = DispatchQueue(label: "studio.cue.compositor")
+
+    override init() {
+        let context = CIContext(options: [.cacheIntermediates: false])
+        self.context = context
+        skin = SkinSmoother(context: context)
+        super.init()
+    }
 
     nonisolated let sourcePixelBufferAttributes: [String: any Sendable]? = [
         kCVPixelBufferPixelFormatTypeKey as String: kCVPixelFormatType_32BGRA,
@@ -33,7 +42,7 @@ final class CueVideoCompositor: NSObject, AVVideoCompositing, @unchecked Sendabl
     nonisolated func renderContextChanged(_ newRenderContext: AVVideoCompositionRenderContext) {}
 
     nonisolated func startRequest(_ request: AVAsynchronousVideoCompositionRequest) {
-        queue.async { [context, overlayCache, masker, lastComposed] in
+        queue.async { [context, overlayCache, masker, skin, lastComposed] in
             guard let instruction = request.videoCompositionInstruction as? CompositionInstruction else {
                 request.finish(with: NSError(domain: "studio.cue.compositor", code: 1))
                 return
@@ -75,14 +84,14 @@ final class CueVideoCompositor: NSObject, AVVideoCompositing, @unchecked Sendabl
                             other.withUnsafeBuffer { other in
                                 let image = Self.composedImage(
                                     from: source, blending: other, media: media, instruction: instruction, at: time,
-                                    cache: overlayCache, masker: masker
+                                    cache: overlayCache, faces: (masker, skin)
                                 )
                                 context.render(image.cropped(to: bounds), to: output)
                             }
                         } else {
                             let image = Self.composedImage(
                                 from: source, blending: nil, media: media, instruction: instruction, at: time,
-                                cache: overlayCache, masker: masker
+                                cache: overlayCache, faces: (masker, skin)
                             )
                             context.render(image.cropped(to: bounds), to: output)
                         }
@@ -128,11 +137,14 @@ final class CueVideoCompositor: NSObject, AVVideoCompositing, @unchecked Sendabl
     /// darkened inside a fade; then the texts and captions visible at `time` and the output scale.
     nonisolated private static func composedImage(
         from source: CVPixelBuffer, blending other: CVPixelBuffer?, media: [CMPersistentTrackID: CVPixelBuffer],
-        instruction: CompositionInstruction, at time: TimeInterval, cache: OverlayImageCache, masker: PersonMasker
+        instruction: CompositionInstruction, at time: TimeInterval, cache: OverlayImageCache, faces: (masker: PersonMasker, skin: SkinSmoother)
     ) -> CIImage {
         let moment = Int((time * 1000).rounded())
+        // The stretch of video this frame belongs to: the faces found in it carry from frame to frame, and are forgotten at its edges.
+        let stretch = instruction.timeRange.start.seconds
         var image = framed(
-            source, frame: instruction.frame, cropFit: instruction.edit.cropFit, look: instruction.look, masker: masker, key: "main-\(moment)"
+            source, frame: instruction.frame, cropFit: instruction.edit.cropFit, look: instruction.look, faces: faces, key: "main-\(moment)",
+            moment: SmoothingMoment(stream: .main, stretch: stretch, time: time)
         )
         if let zoom = instruction.zoom {
             image = zoomed(image, by: CGFloat(zoom.scale(at: time)))
@@ -140,7 +152,8 @@ final class CueVideoCompositor: NSObject, AVVideoCompositing, @unchecked Sendabl
         if let other, let dissolve = instruction.dissolve {
             let otherSide = framed(
                 other, frame: instruction.blendFrame ?? instruction.frame, cropFit: instruction.edit.cropFit,
-                look: instruction.blendLook ?? instruction.look, masker: masker, key: "blend-\(moment)"
+                look: instruction.blendLook ?? instruction.look, faces: faces, key: "blend-\(moment)",
+                moment: SmoothingMoment(stream: .blend, stretch: stretch, time: time)
             )
             // Before the cut the main track still shows the outgoing piece; after it, the incoming one.
             let (outgoing, incoming) = time < dissolve.cut ? (image, otherSide) : (otherSide, image)
@@ -191,7 +204,8 @@ final class CueVideoCompositor: NSObject, AVVideoCompositing, @unchecked Sendabl
     /// effect, Adjust and Filters (`look`: the clip's own over the take's). `key` names the moment,
     /// for the person masks kept.
     nonisolated private static func framed(
-        _ source: CVPixelBuffer, frame: SourceFrame, cropFit: CropFit, look: LookSettings, masker: PersonMasker, key: String
+        _ source: CVPixelBuffer, frame: SourceFrame, cropFit: CropFit, look: LookSettings, faces: (masker: PersonMasker, skin: SkinSmoother),
+        key: String, moment: SmoothingMoment
     ) -> CIImage {
         var image = CIImage(cvPixelBuffer: source).transformed(by: uprightTransform(frame.transform, sourceHeight: CGFloat(CVPixelBufferGetHeight(source))))
         image = image.transformed(by: CGAffineTransform(translationX: -image.extent.minX, y: -image.extent.minY))
@@ -204,12 +218,14 @@ final class CueVideoCompositor: NSObject, AVVideoCompositing, @unchecked Sendabl
         if abs(frame.scale - 1) > 0.000_1 {
             image = image.transformed(by: CGAffineTransform(scaleX: frame.scale, y: frame.scale))
         }
+        // The faces of the frame as recorded (before a background is put behind the creator), found only when the dial is above 0.
+        let smoothing = faces.skin.pass(for: image, value: look.skinSmoothing, stream: moment.stream, epoch: moment.stretch, time: moment.time)
         if let background = frame.background {
             image = BackgroundCompositing.apply(image, render: background) { image in
-                masker.mask(for: image, key: background.cacheKey + key)
+                faces.masker.mask(for: image, key: background.cacheKey + key)
             }
         }
-        return FrameLook.apply(look, to: image)
+        return FrameLook.apply(look, to: image, skin: smoothing)
     }
 
     /// Crop › Fit: the whole upright frame scaled to fit in `size`, centered on black.

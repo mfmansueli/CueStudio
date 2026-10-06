@@ -5,11 +5,12 @@
 
 import SwiftUI
 
-/// The export is done: the video is in Photos, with no watermark, and what is left is choosing where it goes.
+/// The video is made (1080 × 1920, no watermark) and nothing has left Cue yet (8.1): **Share to universe** (the networks, one after the other),
+/// **Save video** (Photos) and the share icon (the system share sheet) are three ways out, and each counts one free export when the file leaves.
 struct ReadyToTravelView: View {
     let video: ExportedVideo
-    let onShare: (ShareDestination) -> Void
-    let onOtherApps: () -> Void
+    @Bindable var review: TakeReviewViewModel
+    @Bindable var flow: ShareFlow
     let onClose: () -> Void
 
     var body: some View {
@@ -34,13 +35,13 @@ struct ReadyToTravelView: View {
                 .foregroundStyle(Palette.inkHint)
                 .padding(.top, 8)
             Spacer(minLength: 12)
-            if let left = video.exportsLeft { exportsCard(left: left).padding(.horizontal, 16) }
+            exportsCard(left: review.exportsLeft).padding(.horizontal, 16)
             buttons
                 .padding(.horizontal, 16)
                 .padding(.top, 14)
                 .padding(.bottom, 8)
         }
-        .skyBackground()
+        .skyBackground(wash: BgWash.share)
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("ready.sheet")
     }
@@ -61,11 +62,15 @@ struct ReadyToTravelView: View {
                 .tracking(1.5)
                 .foregroundStyle(Palette.successText)
             HStack {
-                Spacer()
                 Button(action: onClose) { Image(systemName: "xmark") }
                     .buttonStyle(.cueIcon(.glass, diameter: 40))
                     .accessibilityLabel(Text("Close"))
                     .accessibilityIdentifier("ready.closeButton")
+                Spacer()
+                Button { review.share(video) } label: { Image(systemName: "square.and.arrow.up") }
+                    .buttonStyle(.cueIcon(.glass, diameter: 40))
+                    .accessibilityLabel(Text("Share"))
+                    .accessibilityIdentifier("ready.shareIcon")
             }
         }
         .padding(.horizontal, 16)
@@ -92,25 +97,38 @@ struct ReadyToTravelView: View {
             .accessibilityHidden(true)
     }
 
-    private func exportsCard(left: Int) -> some View {
+    /// 8.1: the free exports left as a label ("2 OF 5 LEFT", "LAST FREE EXPORT" in yellow, "0 OF 5 LEFT · EXPORT WITH PRO" in orange) and the
+    /// five bars; on Pro, "PRO · UNLIMITED EXPORTS".
+    private func exportsCard(left: Int?) -> some View {
         let shape = RoundedRectangle(cornerRadius: 20, style: .continuous)
         let total = UsagePolicy.freeExports
+        let label = FreeExportLabels.meter(left: left)
+        let tint: Color = switch label.tone {
+        case .quiet: Palette.ink2
+        case .last: Palette.accText
+        case .exhausted: Palette.warnText
+        }
         return HStack {
             HStack(spacing: 6) {
-                Text("FREE EXPORTS").foregroundStyle(Palette.ink2)
-                Text("·").foregroundStyle(Palette.inkHint)
-                Text("\(left) OF \(total) LEFT").foregroundStyle(Palette.warnText)
+                if left != nil {
+                    Text("FREE EXPORTS").foregroundStyle(Palette.ink2)
+                    Text("·").foregroundStyle(Palette.inkHint)
+                }
+                Text(label.text).foregroundStyle(tint)
             }
             .font(CueStudioFont.hud)
             .tracking(1)
             .lineLimit(1)
             .minimumScaleFactor(0.7)
+            .animation(.easeOut(duration: 0.25), value: label.tone)
             Spacer(minLength: 8)
-            HStack(spacing: 5) {
-                ForEach(0..<total, id: \.self) { index in
-                    Capsule()
-                        .fill(index < total - left ? Palette.warn : Palette.fill)
-                        .frame(width: 22, height: 7)
+            if let left {
+                HStack(spacing: 5) {
+                    ForEach(0..<total, id: \.self) { index in
+                        Capsule()
+                            .fill(index < total - left ? (left <= 1 ? Palette.acc : Palette.warn) : Palette.fill)
+                            .frame(width: 22, height: 7)
+                    }
                 }
             }
         }
@@ -118,31 +136,29 @@ struct ReadyToTravelView: View {
         .background(Palette.surface, in: shape)
         .overlay(shape.strokeBorder(Palette.glassBorder, lineWidth: 0.5))
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel(Text("Free exports left"))
-        .accessibilityValue(Text("\(left) of \(total)"))
+        .accessibilityLabel(Text(left == nil ? "Unlimited exports" : "Free exports left"))
+        .accessibilityValue(Text(left.map { "\($0) of \(total)" } ?? ""))
         .accessibilityIdentifier("ready.exportsLeft")
     }
 
     private var buttons: some View {
         VStack(spacing: 10) {
-            if let platform = video.platform {
-                Button { onShare(ShareDestination(platform)) } label: {
-                    Label("Share to \(platform.label)", systemImage: "square.and.arrow.up")
-                }
-                .buttonStyle(.cuePrimary(.large))
-                .accessibilityIdentifier("ready.shareButton")
+            Button { flow.openPicker(with: video) } label: {
+                Label("Share to universe", systemImage: "square.and.arrow.up")
             }
-            HStack(spacing: 10) {
-                Button {} label: {
-                    Label { Text("Saved to Photos").lineLimit(1).minimumScaleFactor(0.7) } icon: { Image(systemName: "checkmark") }
-                }
+            .buttonStyle(.cuePrimary(.large))
+            .accessibilityIdentifier("ready.shareButton")
+            if review.isSaved(video) {
+                Button {} label: { Label("Saved to Photos", systemImage: "checkmark") }
                     .buttonStyle(.cueSecondary(.large))
                     .disabled(true)
                     .accessibilityIdentifier("ready.savedButton")
-                Button(action: onOtherApps) { Text("Other apps") }
-                    .buttonStyle(video.platform == nil ? .cuePrimary(.large) : .cueSecondary(.large))
-                    .accessibilityIdentifier("ready.otherAppsButton")
+            } else {
+                Button { Task { await review.save() } } label: { Text("Save video") }
+                    .buttonStyle(.cueSecondary(.large))
+                    .accessibilityIdentifier("ready.saveButton")
             }
         }
+        .disabled(review.runningAction != nil)
     }
 }

@@ -21,6 +21,16 @@ nonisolated enum PrompterTextSize: String, CaseIterable, Identifiable, Sendable 
         }
     }
 
+    /// The word on the segmented control of Settings › Prompter ("XL" where there is no room for "Extra large").
+    var shortLabel: String {
+        self == .extraLarge ? String(localized: "XL") : label
+    }
+
+    /// The preset closest to a size set some other way (the size slider of the recorder reaches any size).
+    static func nearest(to points: Double) -> PrompterTextSize {
+        allCases.min { abs($0.points - points) < abs($1.points - points) } ?? .large
+    }
+
     /// Selfie size in points (Studio reads it 1.35× bigger). Large is the prompter's default.
     var points: Double {
         switch self {

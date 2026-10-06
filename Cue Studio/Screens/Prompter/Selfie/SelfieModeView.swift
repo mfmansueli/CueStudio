@@ -74,17 +74,18 @@ struct SelfieModeView: View {
                 let layout = viewModel.readingLayout
                 textWindow(layout)
                 // The pinch's edge sits under the handles: the corner and the line's handle keep their own touches.
-                if !viewModel.isRecording, viewModel.sheet == nil {
+                if !viewModel.isRecording, !viewModel.isPractice, viewModel.sheet == nil {
                     ReadingLinePinch(viewModel: viewModel, layout: layout)
                 }
-                if viewModel.showsTextWindowHandle {
+                if viewModel.showsTextWindowHandle, !viewModel.isPractice {
                     TextWindowResizeHandle(viewModel: viewModel, layout: layout, isResizing: $isResizingWindow)
                 }
-                if session.prompter.showsGuide {
+                // The practice's line lies under the dim until the creator is counted in (the board).
+                if session.prompter.showsGuide, !(viewModel.isPractice && viewModel.practiceStage.isWaiting) {
                     ReadingLineLayer(
                         layout: layout,
                         showsTag: viewModel.sheet == .display,
-                        showsHandle: !viewModel.isPlaying && !viewModel.isRecording,
+                        showsHandle: !viewModel.isPlaying && !viewModel.isRecording && !viewModel.isPractice,
                         level: viewModel.followsSpeech ? viewModel.voiceLevel : nil,
                         showsParticles: viewModel.isPlaying,
                         onMove: { viewModel.moveReadingLine(toY: $0) },
@@ -104,8 +105,12 @@ struct SelfieModeView: View {
     /// Dark enough to read over any background, with the camera optionally blurred behind the text.
     /// Both only change the preview, never the recording.
     private func textWindow(_ layout: ReadingLayout) -> some View {
-        let settings = session.prompter
-        let shape = RoundedRectangle(cornerRadius: Metrics.cardRadius, style: .continuous)
+        var settings = session.prompter
+        let isPractice = viewModel.isPractice
+        // The practice reads at the board's 24 pt, a box of five lines, whatever size the creator uses later.
+        if isPractice { settings.size = 24 }
+        // The practice's box is rounder (28 pt) and darker, and the text recedes (5 pt of blur) until the creator is counted in.
+        let shape = RoundedRectangle(cornerRadius: isPractice ? 28 : Metrics.cardRadius, style: .continuous)
         let rect = layout.windowRect
         return PrompterTextView(
             viewModel: viewModel,
@@ -116,16 +121,23 @@ struct SelfieModeView: View {
             drawsGuide: false,
             fadesReadText: true
         )
+        .blur(radius: isPractice && viewModel.practiceStage.isWaiting ? 5 : 0)
+        .animation(.easeOut(duration: 0.4), value: viewModel.practiceStage.isWaiting)
         .background {
             ZStack {
-                let blur = CameraBlurLevel(amount: settings.cameraBlur)
+                let blur = CameraBlurLevel(amount: isPractice ? 0.6 : settings.cameraBlur)
                 if blur != .off {
                     Rectangle().fill(.ultraThinMaterial).opacity(blur.strength)
                 }
-                Rectangle().fill(Color.black.opacity(settings.backgroundOpacity))
+                Rectangle().fill(Color.black.opacity(isPractice ? 0.5 : settings.backgroundOpacity))
             }
         }
-        .overlay { PrompterTextOverlays(viewModel: viewModel) }
+        .overlay {
+            if !isPractice { PrompterTextOverlays(viewModel: viewModel) }
+        }
+        .overlay {
+            if isPractice { PracticeBoxOverlay(stage: viewModel.practiceStage, onPlay: { viewModel.beginPracticeReading() }) }
+        }
         .clipShape(shape)
         .overlay(shape.strokeBorder(Palette.Camera.panelBorder, lineWidth: 0.5))
         .frame(width: rect.width, height: rect.height)
@@ -135,15 +147,33 @@ struct SelfieModeView: View {
 
     // MARK: - Controls
 
+    @ViewBuilder
     private var controls: some View {
-        VStack(spacing: 0) {
-            Group {
-                if viewModel.isPractice {
-                    PracticeTopBar(onClose: onClose)
-                } else {
-                    SelfieTopBar(viewModel: viewModel, onClose: onClose)
+        if viewModel.isPractice { practiceControls } else { recorderControls }
+    }
+
+    /// The practice's top bar, the card under its box and the two ways on, placed from the screen's edges as the board has them (the box is
+    /// at 100 pt, the card at 372 pt, the buttons 36 pt above the bottom).
+    private var practiceControls: some View {
+        GeometryReader { proxy in
+            ZStack(alignment: .top) {
+                PracticeTopBar().frame(height: 32).padding(.top, 56)
+                PracticeMessageCard(stage: viewModel.practiceStage)
+                    .padding(.horizontal, 16)
+                    .padding(.top, 372)
+                VStack(spacing: 0) {
+                    Spacer(minLength: 0)
+                    PracticeBottomBar(viewModel: viewModel, onChoose: onPractice).padding(.bottom, 36)
                 }
             }
+            .frame(width: proxy.size.width, height: proxy.size.height, alignment: .top)
+        }
+        .ignoresSafeArea()
+    }
+
+    private var recorderControls: some View {
+        VStack(spacing: 0) {
+            SelfieTopBar(viewModel: viewModel, onClose: onClose)
                 .padding(.horizontal, 14)
                 .onGeometryChange(for: CGFloat.self) { $0.frame(in: .global).maxY } action: { bottom in
                     viewModel.measured { $0.topBarBottom = bottom }
@@ -178,13 +208,7 @@ struct SelfieModeView: View {
                 .padding(.bottom, 12)
                 .transition(.scale(scale: 0.9, anchor: .bottom).combined(with: .opacity))
             }
-            Group {
-                if viewModel.isPractice {
-                    PracticeBottomBar(viewModel: viewModel, onChoose: onPractice)
-                } else {
-                    SelfieControlPanel(viewModel: viewModel)
-                }
-            }
+            SelfieControlPanel(viewModel: viewModel)
                 .padding(.horizontal, 10)
                 .onGeometryChange(for: CGFloat.self) { $0.frame(in: .global).minY } action: { top in
                     viewModel.measured { $0.toolbarTop = top }

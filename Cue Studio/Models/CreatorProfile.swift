@@ -60,6 +60,8 @@ nonisolated struct CreatorProfile: Codable, Hashable, Sendable {
     var customTags: [String]
     /// Personality questions the creator answered "None of these" to: they are not asked again (and don't count as filled).
     var declinedVoiceItems: Set<VoicePersonalityItem>
+    /// The photo (a small JPEG) the creator chose in Edit Profile; the avatar shows their initial without one. Stays on this iPhone.
+    var photoData: Data?
 
     init(
         name: String = "", handle: String = "", niches: [Niche] = [], customTopics: [String] = [], phrases: [String] = [],
@@ -134,6 +136,7 @@ nonisolated struct CreatorProfile: Codable, Hashable, Sendable {
         case confirmedVoiceSteps, unverifiedVoiceSteps
         case openings, endings, formats, swearing, examples, customTags, declinedVoiceItems
         case style, avoid, avoidNone, reach, audienceLevel, approvals
+        case photoData = "photo"
         /// v1 kept a single tone; it becomes the first "How I sound".
         case legacyTone = "tone"
     }
@@ -184,6 +187,7 @@ nonisolated struct CreatorProfile: Codable, Hashable, Sendable {
         examples = Array(((try? container.decodeIfPresent([VoiceExample].self, forKey: .examples)) ?? []).prefix(VoiceExample.limit))
         customTags = try container.decodeIfPresent([String].self, forKey: .customTags) ?? defaults.customTags
         declinedVoiceItems = (try? container.decodeIfPresent(Set<VoicePersonalityItem>.self, forKey: .declinedVoiceItems)) ?? []
+        photoData = try container.decodeIfPresent(Data.self, forKey: .photoData)
         if let unverified = try container.decodeIfPresent(Set<VoiceSetupStep>.self, forKey: .unverifiedVoiceSteps) {
             unverifiedVoiceSteps = unverified
         } else if container.contains(.confirmedVoiceSteps) {
@@ -226,6 +230,7 @@ nonisolated struct CreatorProfile: Codable, Hashable, Sendable {
         try container.encode(examples, forKey: .examples)
         try container.encode(customTags, forKey: .customTags)
         try container.encode(declinedVoiceItems, forKey: .declinedVoiceItems)
+        try container.encodeIfPresent(photoData, forKey: .photoData)
     }
 
     static func sounds(migratingFrom tone: Tone) -> [VoiceSound] {

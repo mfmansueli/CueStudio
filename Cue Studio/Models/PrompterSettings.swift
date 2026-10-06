@@ -49,6 +49,11 @@ nonisolated struct PrompterSettings: Codable, Hashable, Sendable {
     /// Studio reading line position, as a fraction of the text area height.
     var guidePosition: Double = 0.3
     var isMirrored: Bool = false
+    /// Turns the text upside down, for rigs that reflect it from below (Settings › Prompter › Rigs).
+    var isFlippedVertically: Bool = false
+    /// The safe zone the Selfie camera starts with (`SafeZoneChoice.key`: a platform's raw value or "custom"); nil follows the
+    /// script's platform (Settings › Prompter › Social safe zone).
+    var safeZoneKey: String?
     var scrollMode: ScrollMode = .steady
     var studioBackground: StudioBackground = .black
     /// AI Coach: performance cues like PAUSE or SMILE in the prompter. Off until the creator turns
@@ -155,6 +160,8 @@ nonisolated struct PrompterSettings: Codable, Hashable, Sendable {
         showsGuide = try container.decodeIfPresent(Bool.self, forKey: .showsGuide) ?? defaults.showsGuide
         guidePosition = try container.decodeIfPresent(Double.self, forKey: .guidePosition) ?? defaults.guidePosition
         isMirrored = try container.decodeIfPresent(Bool.self, forKey: .isMirrored) ?? defaults.isMirrored
+        isFlippedVertically = try container.decodeIfPresent(Bool.self, forKey: .isFlippedVertically) ?? defaults.isFlippedVertically
+        safeZoneKey = try container.decodeIfPresent(String.self, forKey: .safeZoneKey)
         scrollMode = (try? container.decodeIfPresent(ScrollMode.self, forKey: .scrollMode)) ?? defaults.scrollMode
         studioBackground = (try? container.decodeIfPresent(StudioBackground.self, forKey: .studioBackground)) ?? defaults.studioBackground
         showsCues = try container.decodeIfPresent(Bool.self, forKey: .showsCues) ?? defaults.showsCues

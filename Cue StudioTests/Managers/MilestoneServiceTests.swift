@@ -79,4 +79,74 @@ struct MilestoneServiceTests {
         #expect(service.current == .aurora)
         #expect(await service.choose(.aurora))
     }
+
+    @Test func eachShareKeepsItsDateItsPlatformAndItsTopic() {
+        let (service, defaults) = make()
+        defer { defaults.tearDown() }
+        let take = UUID()
+        let when = Date(timeIntervalSince1970: 1_780_000_000)
+        service.recordShare(of: take, at: when, platform: .reels, topic: "niche.food")
+        let again = MilestoneService(defaults: defaults.defaults)
+        #expect(again.records == [ShareRecord(takeID: take, date: when, platforms: [.reels], topic: "niche.food")])
+    }
+
+    @Test func videosCountedBeforeRecordsExistedKeepCountingWithoutADate() {
+        let defaults = TestDefaults()
+        defer { defaults.tearDown() }
+        let old = UUID()
+        defaults.defaults.set([old.uuidString], forKey: DefaultsKey.sharedTakeIDs)
+        let service = MilestoneService(defaults: defaults.defaults)
+        #expect(service.shares == 1 && service.sharedTakeIDs == [old])
+        #expect(service.records == [ShareRecord(takeID: old, date: nil, topic: nil)])
+        #expect(service.recordShare(of: old) == nil, "and it still counts once")
+    }
+
+    @Test func thePlanetsRememberWhatTheyHadWhenTheScreenWasLastOpen() {
+        let (service, defaults) = make()
+        defer { defaults.tearDown() }
+        #expect(service.seenPlanetCounts(year: 2026).isEmpty)
+        service.markPlanetsSeen([.tiktok: 12, .reels: 6], year: 2026)
+        #expect(service.seenPlanetCounts(year: 2026)[.tiktok] == 12)
+        #expect(service.seenPlanetCounts(year: 2025).isEmpty, "each year has its own")
+    }
+
+    @Test func aVideoSharedToAnotherNetworkCountsOnceButAddsTheNetwork() {
+        let (service, defaults) = make()
+        defer { defaults.tearDown() }
+        let take = UUID()
+        #expect(service.recordShare(of: take, platform: .tiktok) == 1)
+        #expect(service.recordShare(of: take, platform: .reels) == nil, "the milestone was told with the first")
+        #expect(service.recordShare(of: take, platform: .reels) == nil && service.shares == 1)
+        #expect(service.records.first?.platforms == [.tiktok, .reels])
+        #expect(MilestoneService(defaults: defaults.defaults).records.first?.platforms == [.tiktok, .reels])
+    }
+
+    @Test func aRecordSavedWithOnePlatformStillReads() throws {
+        let take = UUID()
+        let json = #"[{"takeID":"\#(take.uuidString)","platform":"reels","topic":"niche.food"}]"#
+        let records = try JSONDecoder().decode([ShareRecord].self, from: Data(json.utf8))
+        #expect(records == [ShareRecord(takeID: take, date: nil, platforms: [.reels], topic: "niche.food")])
+    }
+
+    @Test func theMilestonesAreCountedInTheLiveYear() {
+        let (service, defaults) = make()
+        defer { defaults.tearDown() }
+        let lastYear = Calendar.current.date(byAdding: .year, value: -1, to: .now)!
+        (0..<12).forEach { _ in service.recordShare(of: UUID(), at: lastYear) }
+        #expect(service.shares == 12 && service.yearShares == 0)
+        #expect(service.nextMilestone == 1, "a new year starts its road again")
+        service.recordShare(of: UUID())
+        #expect(service.yearShares == 1 && service.nextMilestone == 10)
+    }
+
+    @Test func anIconWonInAnEarlierYearIsNotCelebratedAgain() {
+        let (service, defaults) = make()
+        defer { defaults.tearDown() }
+        let lastYear = Calendar.current.date(byAdding: .year, value: -1, to: .now)!
+        var reached: [Int] = []
+        (0..<12).forEach { _ in if let step = service.recordShare(of: UUID(), at: lastYear) { reached.append(step) } }
+        #expect(reached == [1, 10])
+        #expect(service.recordShare(of: UUID()) == nil, "the first share of the new year reaches 1 again, but Aurora is already theirs")
+        #expect(service.isUnlocked(.firstLight))
+    }
 }

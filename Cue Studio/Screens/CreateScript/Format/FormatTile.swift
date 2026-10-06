@@ -14,15 +14,13 @@ struct FormatTile: View {
     var body: some View {
         SelectableCard(isSelected: isSelected, radius: Metrics.tileRadius, background: choice.isSerious ? Palette.surfaceMuted : Palette.surface2) {
             VStack(alignment: .leading, spacing: 4) {
-                HStack(spacing: 5) {
-                    Text(choice.title)
-                        .font(.system(size: 14, weight: .semibold))
-                        .foregroundStyle(Palette.ink)
-                    if choice.needsBrandBrief {
-                        Text("· needs brand info")
-                            .font(.system(size: 11))
-                            .foregroundStyle(Palette.aiText)
-                    }
+                Text(choice.title)
+                    .font(.system(size: 14, weight: .semibold))
+                    .foregroundStyle(Palette.ink)
+                if choice.needsBrandBrief {
+                    Text("needs brand info")
+                        .font(.system(size: 11, weight: .medium))
+                        .foregroundStyle(Palette.aiText)
                 }
                 Text(choice.summary)
                     .font(.system(size: 12))

@@ -5,78 +5,106 @@
 
 import SwiftUI
 
-/// Settings › Prompter: a still preview that stays on top, Selfie | Studio beside it, and section
-/// chips that take the creator to the rows below (Reading, Text, Line, Window, Safe zones).
+/// Settings › Prompter: a preview that stays on top and, under it, how the text reads and looks. The same page opens from Aa in the
+/// recorder, over the settings of that recording (`bindings`).
 struct SettingsPrompterView: View {
-    @State private var viewModel: CreatorSetupViewModel
-    @State private var isStudio = false
+    let bindings: SettingsBindings
+    /// The mode of the recording the page opened from: the "· Selfie" sections show with Selfie, "Studio" with Studio. Settings
+    /// itself has no mode and shows both.
+    var activeMode: PrompterMode?
 
-    init(preferences: PreferencesService, microphones: MicrophoneListing, toast: ToastService) {
-        _viewModel = State(initialValue: CreatorSetupViewModel(preferences: preferences, microphones: microphones, toast: toast))
-    }
+    @State private var screenScale = ReadingLinePercent.standard
+
+    private var showsSelfie: Bool { activeMode != .studio }
+    private var showsStudio: Bool { activeMode != .selfie }
 
     var body: some View {
-        ScrollViewReader { proxy in
-            ScrollView {
-                VStack(alignment: .leading, spacing: 10) {
-                    PrompterSliderControls(viewModel: viewModel)
-                        .id(PrompterSettingsSection.reading)
-                    SectionHeading(text: String(localized: "More options"))
-                        .padding(.horizontal, 4)
-                        .padding(.top, 8)
-                    TeleprompterSetupSection(viewModel: viewModel)
-                }
-                .padding(EdgeInsets(top: 8, leading: Metrics.gutter, bottom: 40, trailing: Metrics.gutter))
+        var bindings = bindings
+        bindings.screenScale = screenScale
+        return List {
+            Section {
+                row(.followVoice, bindings)
+                row(.speed, bindings)
+                row(.countdownBeforePlay, bindings)
+                row(.aiCoach, bindings)
+            } header: {
+                CueSectionHeader("Reading")
             }
-            .safeAreaInset(edge: .top, spacing: 0) { header(proxy) }
+            Section {
+                row(.textSize, bindings)
+                row(.font, bindings)
+                row(.lineSpacing, bindings)
+                row(.alignment, bindings)
+                row(.textColor, bindings)
+            } header: {
+                CueSectionHeader("Text")
+            }
+            Section {
+                row(.showReadingLine, bindings)
+                row(.readingLinePosition, bindings)
+                row(.resetReadingLine, bindings)
+            } header: {
+                CueSectionHeader("Reading line")
+            } footer: {
+                Text(readingLineFooter)
+            }
+            if showsSelfie {
+                Section {
+                    row(.windowHeight, bindings)
+                    row(.windowWidth, bindings)
+                    row(.sideMargins, bindings)
+                } header: {
+                    CueSectionHeader("Text window · Selfie")
+                } footer: {
+                    Text("Or drag the ⌟ handle on the recorder.")
+                }
+                Section {
+                    row(.backgroundOpacity, bindings)
+                    row(.cameraBlur, bindings)
+                    row(.socialSafeZone, bindings)
+                } header: {
+                    CueSectionHeader("Over the camera · Selfie")
+                } footer: {
+                    Text("Changes the preview only, never the recording.")
+                }
+            }
+            if showsStudio {
+                Section {
+                    row(.studioBackground, bindings)
+                } header: {
+                    CueSectionHeader("Studio")
+                }
+            }
+            Section {
+                row(.mirrorText, bindings)
+                row(.flipVertically, bindings)
+            } header: {
+                CueSectionHeader("Rigs")
+            } footer: {
+                Text("Studio uses these too. The screen stays on while the prompter is open.")
+            }
+        }
+        .cueGroupedList()
+        .safeAreaInset(edge: .top, spacing: 8) {
+            PrompterPreviewCard(settings: bindings.prompter.wrappedValue)
+                .padding(.horizontal, Metrics.gutter)
         }
         .onGeometryChange(for: ReadingLinePercent.self) { proxy in
-            ReadingLinePercent(screenHeight: proxy.size.height + proxy.safeAreaInsets.top + proxy.safeAreaInsets.bottom, lensY: proxy.safeAreaInsets.top / 2)
-        } action: { viewModel.screenScale = $0 }
-        .background(Palette.bg)
+            ReadingLinePercent(
+                screenHeight: proxy.size.height + proxy.safeAreaInsets.top + proxy.safeAreaInsets.bottom, lensY: proxy.safeAreaInsets.top / 2
+            )
+        } action: { screenScale = $0 }
         .navigationTitle("Prompter")
         .navigationBarTitleDisplayMode(.inline)
     }
 
-    private func header(_ proxy: ScrollViewProxy) -> some View {
-        VStack(alignment: .leading, spacing: 12) {
-            HStack(alignment: .top, spacing: 14) {
-                TeleprompterPreview(
-                    textSize: viewModel.textSize, showsReadingLine: viewModel.showsReadingLine,
-                    isMirrored: viewModel.isMirrored, isStudio: isStudio
-                )
-                VStack(alignment: .leading, spacing: 8) {
-                    Picker("Mode", selection: $isStudio) {
-                        Text("Selfie").tag(false)
-                        Text("Studio").tag(true)
-                    }
-                    .pickerStyle(.segmented)
-                    .accessibilityIdentifier("settings.prompterMode")
-                    Text(isStudio ? "Full-screen text, no camera." : "Text over your camera, right under the lens.")
-                        .font(.footnote)
-                        .foregroundStyle(Palette.ink2)
-                    Text("Preview shows proportions, not the final look.")
-                        .font(.caption)
-                        .foregroundStyle(Palette.ink3)
-                }
-            }
-            ScrollView(.horizontal) {
-                HStack(spacing: 8) {
-                    ForEach(PrompterSettingsSection.allCases) { section in
-                        Button {
-                            withAnimation(.easeInOut(duration: 0.3)) { proxy.scrollTo(section, anchor: .top) }
-                        } label: {
-                            FilterChip(label: section.label, isSelected: false)
-                        }
-                        .buttonStyle(.plain)
-                        .accessibilityIdentifier("settings.prompterChip.\(section.rawValue)")
-                    }
-                }
-            }
-            .scrollIndicators(.hidden)
-        }
-        .padding(EdgeInsets(top: 8, leading: Metrics.gutter, bottom: 10, trailing: Metrics.gutter))
-        .background(Palette.bg)
-        .overlay(alignment: .bottom) { Rectangle().fill(Palette.separator).frame(height: 0.5) }
+    /// "118 pt below the camera · recommended." while the line is where Cue puts it, else how to move it.
+    private var readingLineFooter: String {
+        guard bindings.prompter.wrappedValue.readingLineOffset == nil else { return String(localized: "Or drag the line on the recorder.") }
+        return String(localized: "\(Int(ReadingLayout.recommendedFrontOffset)) pt below the camera · recommended.")
+    }
+
+    private func row(_ entry: SettingsEntry, _ bindings: SettingsBindings) -> some View {
+        SettingsEntryRow(entry: entry, bindings: bindings)
     }
 }

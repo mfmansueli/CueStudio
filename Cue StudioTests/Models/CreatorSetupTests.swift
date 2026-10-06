@@ -39,7 +39,7 @@ struct CreatorSetupTests {
         camera.countdown = .ten
         camera.codec = .h264
         var prompter = PrompterSettings()
-        prompter.font = .serif
+        prompter.font = .newYork
         let setup = Self.usual()
 
         let newCamera = setup.applied(to: camera)
@@ -52,7 +52,7 @@ struct CreatorSetupTests {
         #expect(newCamera.codec == .h264)
         #expect(newPrompter.size == 36)
         #expect(newPrompter.speed == 1.2)
-        #expect(newPrompter.font == .serif)
+        #expect(newPrompter.font == .newYork)
         #expect(CreatorSetup(camera: newCamera, prompter: newPrompter) == setup)
     }
 

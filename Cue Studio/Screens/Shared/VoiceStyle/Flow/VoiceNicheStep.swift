@@ -10,13 +10,18 @@ struct VoiceNicheStep: View {
     let draft: VoiceSetupDraft
     let onToggle: (Niche) -> Void
 
+    /// The ten topics of the first flight (09 §14b), and any other one this creator already has.
+    private var topics: [Niche] {
+        Niche.allCases.filter { Niche.offered.contains($0) || draft.isPicked($0) }
+    }
+
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
             FlowLayout(spacing: 8, lineSpacing: 0) {
-                ForEach(Niche.allCases) { niche in
+                ForEach(topics) { niche in
                     let picked = draft.isPicked(niche)
                     Button { onToggle(niche) } label: {
-                        FilterChip(label: niche.label, isSelected: picked, height: 40)
+                        FilterChip(label: niche.chipLabel, isSelected: picked, height: 40)
                             .fixedSize()
                             .frame(minHeight: Metrics.hitTarget)
                             .contentShape(Rectangle())

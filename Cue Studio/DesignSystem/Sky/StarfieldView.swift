@@ -10,7 +10,7 @@ import SwiftUI
 /// one or two soft violet nebulae. Never over the camera, a take or the editor.
 ///
 /// One `Canvas` in a `TimelineView` at 30 fps (it is ambient). It stops, on a still frame, when the
-/// view is off screen, the app is not active, Low Power Mode is on or Reduce Motion is on, and it
+/// view is off screen, the app is not active or Reduce Motion is on (Low Power Mode does not stop it), and it
 /// draws nothing at all when the density is Off.
 struct StarfieldView: View {
     var density: SkyDensity = .calm
@@ -19,7 +19,6 @@ struct StarfieldView: View {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.scenePhase) private var scenePhase
     @State private var isOnScreen = false
-    @State private var isLowPower = ProcessInfo.processInfo.isLowPowerModeEnabled
     @State private var clock = MotionClock()
 
     private var twinkles: [StarfieldMath.Twinkle] { StarfieldMath.twinkles(count: density.twinkleCount, seed: seed) }
@@ -42,9 +41,6 @@ struct StarfieldView: View {
                 .onChange(of: isRunning, initial: true) { _, running in
                     clock.setRunning(running, at: .now)
                 }
-                .onReceive(NotificationCenter.default.publisher(for: .NSProcessInfoPowerStateDidChange)) { _ in
-                    isLowPower = ProcessInfo.processInfo.isLowPowerModeEnabled
-                }
             }
         }
         .allowsHitTesting(false)
@@ -52,7 +48,7 @@ struct StarfieldView: View {
     }
 
     private var isRunning: Bool {
-        isOnScreen && scenePhase == .active && !reduceMotion && !isLowPower
+        isOnScreen && scenePhase == .active && !reduceMotion
     }
 
     // MARK: - Drawing
@@ -180,12 +176,15 @@ struct StarfieldView: View {
 /// The sky behind a browse screen, from the creator's Starry sky setting.
 struct SkyBackground: ViewModifier {
     @Environment(PersonalizationService.self) private var personalization
+    /// The night glow and the colour under it: the browse screens' (`BgWash.navigation` over `bg`), or the one a board of the stories draws.
+    var lights = BgWash.navigation
+    var base = Palette.bg
 
     func body(content: Content) -> some View {
         content.background {
             ZStack {
                 // The night glow (v29): a violet light from the top left, the same on every browse screen, sky on or off.
-                BgWash()
+                BgWash(lights: lights, base: base)
                 StarfieldView(density: personalization.sky)
             }
             .ignoresSafeArea()
@@ -198,6 +197,11 @@ extension View {
     /// take or the editor.
     func skyBackground() -> some View {
         modifier(SkyBackground())
+    }
+
+    /// The night and its stars with the glow of one board (`BgWash.sendOff`…), over `base`.
+    func skyBackground(wash lights: [BgWash.Light], base: Color = Palette.bg) -> some View {
+        modifier(SkyBackground(lights: lights, base: base))
     }
 }
 

@@ -34,7 +34,7 @@ struct VoiceExamplesBody: View {
                 ForEach(profile.profile.examples) { example in
                     HStack(alignment: .top, spacing: 10) {
                         Text("“\(example.text)”")
-                            .font(.system(.subheadline, design: .serif))
+                            .font(.subheadline)
                             .italic()
                             .foregroundStyle(Palette.ink)
                             .lineLimit(5)

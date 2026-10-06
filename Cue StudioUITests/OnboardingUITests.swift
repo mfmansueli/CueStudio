@@ -76,8 +76,8 @@ final class OnboardingUITests: XCTestCase {
         // 2 · the voyage: a platform and its format line.
         XCTAssertTrue(app.buttons["onboarding.platform.reels"].waitForExistence(timeout: 5))
         app.buttons["onboarding.platform.reels"].tap()
-        let formatLine = element(app, "onboarding.formatLine")
-        expectation(for: NSPredicate(format: "label CONTAINS %@", "9:16"), evaluatedWith: formatLine)
+        expectation(for: NSPredicate(format: "label CONTAINS %@", "REELS"), evaluatedWith: element(app, "onboarding.formatLine"))
+        expectation(for: NSPredicate(format: "label CONTAINS %@", "9:16"), evaluatedWith: element(app, "onboarding.formatHint"))
         waitForExpectations(timeout: 5)
         shot(app, "3-voyage")
         XCTAssertTrue(app.buttons["onboarding.continue"].label.contains("Reels"))
@@ -86,7 +86,9 @@ final class OnboardingUITests: XCTestCase {
         // 3 · the first script.
         let use = app.buttons["onboarding.useScript"]
         XCTAssertTrue(use.waitForExistence(timeout: 10))
-        XCTAssertTrue(use.isEnabled)
+        // Load in teleprompter waits for the message to be written.
+        expectation(for: NSPredicate(format: "isEnabled == true"), evaluatedWith: use)
+        waitForExpectations(timeout: 10)
         shot(app, "4-script")
         use.tap()
 
@@ -106,8 +108,8 @@ final class OnboardingUITests: XCTestCase {
         XCTAssertTrue(app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH 'scripts.row.'")).firstMatch.waitForExistence(timeout: 5))
     }
 
-    /// Without Apple Intelligence the script is ours, labelled as practice.
-    func testWithoutAppleIntelligenceTheFirstScriptIsLabelledAsPractice() {
+    /// Without Apple Intelligence the message is the built-in one, and says so.
+    func testWithoutAppleIntelligenceTheFirstMessageIsTheBuiltInOne() {
         let app = launch(ai: false)
         startFlight(app)
         pick(app, "onboarding.topic.niche.tech")
@@ -115,8 +117,8 @@ final class OnboardingUITests: XCTestCase {
         pick(app, "onboarding.platform.tiktok")
         app.buttons["onboarding.continue"].tap()
         XCTAssertTrue(app.buttons["onboarding.useScript"].waitForExistence(timeout: 10))
-        XCTAssertTrue(app.staticTexts["TELEPROMPTER PRACTICE"].waitForExistence(timeout: 5))
-        shot(app, "4b-script-practice")
+        XCTAssertTrue(app.staticTexts["✦ READY · BUILT-IN"].waitForExistence(timeout: 10))
+        shot(app, "4b-script-built-in")
     }
 
     /// A refusal never blocks the flight: it goes on to the practice.
@@ -145,7 +147,10 @@ final class OnboardingUITests: XCTestCase {
         let microphone = app.buttons["onboarding.permission.microphone"]
         XCTAssertTrue(microphone.waitForExistence(timeout: 8))
         microphone.tap()
-        XCTAssertTrue(app.staticTexts["✓ Allowed"].waitForExistence(timeout: 5))
+        let allowed = NSPredicate(format: "label CONTAINS 'Allowed'")
+        XCTAssertTrue(element(app, "onboarding.permission.microphone").waitForExistence(timeout: 5))
+        expectation(for: allowed, evaluatedWith: element(app, "onboarding.permission.microphone"))
+        waitForExpectations(timeout: 5)
         XCTAssertFalse(app.buttons["onboarding.permission.microphone"].exists, "answered: it is no longer a button")
         let camera = app.buttons["onboarding.permission.camera"]
         XCTAssertTrue(camera.exists)
@@ -184,11 +189,8 @@ final class OnboardingUITests: XCTestCase {
         XCTAssertTrue(element(app, "onboarding.permission.microphone").waitForExistence(timeout: 8))
         app.buttons["onboarding.continue"].tap()
         XCTAssertTrue(element(app, "practice.chip").waitForExistence(timeout: 10))
-        let steady = app.buttons["prompter.scrollMode.steady"]
-        XCTAssertTrue(steady.waitForExistence(timeout: 5))
-        steady.tap()
-        XCTAssertTrue(steady.isSelected)
-        XCTAssertTrue(app.buttons["practice.play"].exists)
+        // The practice is the board's 1.6: the text, play, and the two ways out (no Voice | Steady switch: that is the recorder's).
+        XCTAssertTrue(app.buttons["practice.play"].waitForExistence(timeout: 5))
         XCTAssertTrue(app.buttons["practice.recordForReal"].isHittable)
         XCTAssertTrue(app.buttons["practice.notNow"].isHittable)
         shot(app, "6b-practice-controls")

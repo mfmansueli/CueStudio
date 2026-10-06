@@ -35,6 +35,7 @@ struct MainView: View {
                 value: dimsForTransition
             )
             .overlay { StarTransitionOverlay(transition: ideaTransition).ignoresSafeArea() }
+            .overlay(alignment: .bottom) { continuePostingCard }
             .sheet(item: $presentation.sheet) { sheet in
                 sheetContent(sheet)
             }
@@ -49,6 +50,30 @@ struct MainView: View {
             .onChange(of: scenePhase) { _, phase in
                 if phase == .active { voiceQuestions.registerAppOpen() }
             }
+    }
+
+    /// A "Share to universe" queue the creator left: on Scripts and Takes, 104 pt above the bottom, until it is continued or left for later.
+    @ViewBuilder
+    private var continuePostingCard: some View {
+        let onList = (presentation.selectedTab == .scripts && presentation.scriptsPath.isEmpty) || presentation.selectedTab == .takes
+        if onList, !presentation.hidesTabBar, let queue = services.shareQueue.pending {
+            ContinuePostingCard(queue: queue) { continuePosting(queue) } onClose: { leaveForLater(queue) }
+                .padding(.bottom, 104)
+                .transition(.move(edge: .bottom).combined(with: .opacity))
+        }
+    }
+
+    private func continuePosting(_ queue: ShareQueue) {
+        guard let take = services.takes.take(id: queue.takeID) else {
+            services.shareQueue.discard(takeID: queue.takeID)
+            return
+        }
+        presentation.openReview(of: take, then: .continueQueue)
+    }
+
+    private func leaveForLater(_ queue: ShareQueue) {
+        services.shareQueue.moveRestToLater(takeID: queue.takeID)
+        toast.show(String(localized: "Saved · post when you’re ready"))
     }
 
     /// The star is rising or waiting: the app behind it is dimmed.
@@ -92,35 +117,7 @@ struct MainView: View {
                 Label { Text("Profile") } icon: { Image(uiImage: CueTabImage.template(.profile)) }
             }
             Tab(value: AppTab.settings) {
-                NavigationStack(path: $presentation.settingsPath) {
-                    SettingsView()
-                        .navigationDestination(for: SettingsRoute.self) { route in
-                            switch route {
-                            case .personalize: PersonalizeView()
-                            case .prompter:
-                                SettingsPrompterView(preferences: preferences, microphones: services.audio, toast: toast)
-                            case .acknowledgements: AcknowledgementsView()
-                            }
-                        }
-                        .sheet(item: $presentation.settingsSheet) { sheet in
-                            NavigationStack {
-                                Group {
-                                    switch sheet {
-                                    case .recording:
-                                        SettingsRecordingView(preferences: preferences, microphones: services.audio, toast: toast)
-                                    case .remote: RemoteControlView()
-                                    case .languageRegion: LanguageRegionView()
-                                    }
-                                }
-                                .toolbar {
-                                    ToolbarItem(placement: .confirmationAction) {
-                                        Button("Done") { presentation.settingsSheet = nil }
-                                            .accessibilityIdentifier("settings.sheetDone")
-                                    }
-                                }
-                            }
-                        }
-                }
+                NavigationStack(path: $presentation.settingsPath) { SettingsView() }
                 .toolbarVisibility(barVisibility, for: .tabBar)
             } label: {
                 Label { Text("Settings") } icon: { Image(uiImage: CueTabImage.template(.settings)) }

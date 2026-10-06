@@ -13,6 +13,9 @@ import Foundation
 @MainActor
 @Observable
 final class DataEraserService {
+    /// "Delete my Cue data" was tapped and the creator has not answered the confirmation yet.
+    var isConfirming = false
+
     @ObservationIgnored private let library: ScriptLibraryService
     @ObservationIgnored private let takes: TakeLibraryService
     @ObservationIgnored private let drafts: QuickEditDraftStoring

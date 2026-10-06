@@ -80,6 +80,7 @@ struct FormatSheet: View {
         }
         .presentationDetents([.medium, .large])
         .presentationDragIndicator(.visible)
+        .cueSheetSurface()
         .accessibilityIdentifier(mode == .blank ? "format.startSheet" : "format.sheet")
     }
 

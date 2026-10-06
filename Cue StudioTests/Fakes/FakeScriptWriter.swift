@@ -8,6 +8,7 @@ import Foundation
 
 @MainActor
 final class FakeScriptWriter: ScriptWriting {
+    var isEnabled = true
     var availability = AIAvailability(onDevice: true, privateCloud: true, reason: nil)
     var generatedText = "Hey there. [pause]\n\nThis is the body.\n\nFollow for more."
     var generatedTitle = "Generated title"

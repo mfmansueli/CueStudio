@@ -5,8 +5,9 @@
 
 import Foundation
 
-/// Which route a destination's tile takes, from what is true right now. Pure, so every combination is tested.
+/// Which route a destination takes, from what is true right now. Pure, so every combination is tested.
 ///
+/// - Phase A (`integrationsEnabled` off, as shipped): the system share sheet, for every destination.
 /// - TikTok: Share Kit, when the client key and redirect URI are set and the video fits (3 s to 10 min); else save and open.
 /// - Reels and Stories: Instagram's hand-off, when the Meta app ID is set and the video fits that surface; else save and open.
 /// - YouTube and Shorts: the system share sheet (YouTube's share extension, when the installed version has one).
@@ -21,6 +22,8 @@ nonisolated enum ShareRouteResolver {
     static func route(
         for destination: ShareDestination, configuration: ShareIntegrationConfiguration, duration: TimeInterval
     ) -> ShareRoute {
+        // Phase A: the system share sheet for every network ("In the share sheet, tap TikTok").
+        guard configuration.integrationsEnabled else { return .activitySheet }
         switch destination {
         case .tiktok:
             return configuration.isTikTokConfigured && tikTokDurationRange.contains(duration) ? .shareKit : .saveAndOpen

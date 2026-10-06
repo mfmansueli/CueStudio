@@ -7,7 +7,7 @@ import SwiftUI
 
 /// The one empty-state pattern (v29): an 88 pt ring with a violet core and a star orbiting it, a title, one line, one yellow
 /// action and, when there is a second way out, a text link. Motion is ambient and slow (one turn in 9 s); it is
-/// still with Reduce Motion, in Low Power Mode and when the app is not active, with the star at the top right.
+/// still with Reduce Motion and when the app is not active, with the star at the top right.
 struct EmptyState: View {
     var icon: EmptyStateIcon = .star
     var title: LocalizedStringKey

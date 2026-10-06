@@ -16,8 +16,16 @@ nonisolated struct ShareIntegrationConfiguration: Equatable, Sendable {
     var tikTokRedirectURI: String?
     /// The Meta app ID that Instagram's hand-off asks for (`MetaAppID`).
     var metaAppID: String?
+    /// Phase A of "Share to universe" (`HANDOFF-HOJE` §6): every network goes through the system share sheet, whatever is configured. The app turns
+    /// this on (`Self.integrationsEnabled`) when TikTok's Share Kit and Instagram's hand-off are validated on a device; until then the code for them
+    /// stays, off.
+    var integrationsEnabled: Bool
 
-    init(tikTokClientKey: String? = nil, tikTokRedirectURI: String? = nil, metaAppID: String? = nil) {
+    /// What the shipping app uses: false in phase A.
+    static let integrationsEnabled = false
+
+    init(tikTokClientKey: String? = nil, tikTokRedirectURI: String? = nil, metaAppID: String? = nil, integrationsEnabled: Bool = true) {
+        self.integrationsEnabled = integrationsEnabled
         self.tikTokClientKey = Self.clean(tikTokClientKey)
         self.tikTokRedirectURI = Self.clean(tikTokRedirectURI)
         self.metaAppID = Self.clean(metaAppID)
@@ -30,7 +38,8 @@ nonisolated struct ShareIntegrationConfiguration: Equatable, Sendable {
     static func fromBundle(_ bundle: Bundle = .main) -> ShareIntegrationConfiguration {
         func value(_ key: String) -> String? { bundle.object(forInfoDictionaryKey: key) as? String }
         return ShareIntegrationConfiguration(
-            tikTokClientKey: value("TikTokClientKey"), tikTokRedirectURI: value("TikTokShareRedirectURI"), metaAppID: value("MetaAppID")
+            tikTokClientKey: value("TikTokClientKey"), tikTokRedirectURI: value("TikTokShareRedirectURI"), metaAppID: value("MetaAppID"),
+            integrationsEnabled: Self.integrationsEnabled
         )
     }
 

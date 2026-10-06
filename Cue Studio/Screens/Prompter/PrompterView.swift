@@ -84,7 +84,6 @@ struct PrompterView: View {
             // Reading a long script must not let the screen sleep.
             UIApplication.shared.isIdleTimerDisabled = true
             await viewModel.appear()
-            viewModel.startPractice()
         }
         .onDisappear {
             UIApplication.shared.isIdleTimerDisabled = false
@@ -119,7 +118,12 @@ struct PrompterView: View {
     private func sheetContent(_ sheet: PrompterSheet) -> some View {
         switch sheet {
         case .display:
-            DisplaySettingsSheet(viewModel: viewModel, maxHeight: sheetMaxHeight)
+            // Selfie opens the Prompter page of Settings (09 §11); Studio keeps its own Display sheet.
+            if viewModel.mode == .selfie {
+                PrompterSettingsSheet()
+            } else {
+                DisplaySettingsSheet(viewModel: viewModel, maxHeight: sheetMaxHeight)
+            }
         case .destination:
             DestinationSheet(current: viewModel.script?.platform ?? profile.profile.defaultPlatform) { viewModel.setPlatform($0) }
         case .camera:

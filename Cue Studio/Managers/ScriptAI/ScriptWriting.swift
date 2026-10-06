@@ -8,6 +8,9 @@ import Foundation
 /// Drafts and rewrites scripts with Apple Intelligence. Screens depend on this protocol so tests
 /// can use a fake writer.
 protocol ScriptWriting: AnyObject {
+    /// The creator's master switch (Settings › Privacy & AI data › On-device AI). Off, no AI feature is offered.
+    var isEnabled: Bool { get set }
+
     /// Which models can run right now.
     var availability: AIAvailability { get }
 
@@ -41,12 +44,13 @@ extension ScriptWriting {
     /// Writers that can't choose (tests, a device without Apple Intelligence) leave the script untagged.
     func pickTopic(for text: String, among topics: [String]) async -> String? { nil }
 
-    var isLanguageModelAvailable: Bool { availability.isAvailable }
-    var unavailableReason: String? { availability.reason }
+    var isLanguageModelAvailable: Bool { isEnabled && availability.isAvailable }
+    var unavailableReason: String? { isEnabled ? availability.reason : AIAvailability.turnedOffReason }
 
     /// Why Apple Intelligence can't write now, in words for the creator; nil when it can.
     var writingUnavailableReason: String? {
-        guard !availability.isAvailable else { return nil }
+        guard !isLanguageModelAvailable else { return nil }
+        guard isEnabled else { return AIAvailability.turnedOffReason }
         return availability.reason ?? AIAvailability.unavailable.reason
     }
 }

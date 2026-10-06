@@ -78,6 +78,7 @@ final class SessionSetupService {
         stored.guidePosition = now.guidePosition
         stored.margin = now.margin
         stored.isMirrored = now.isMirrored
+        stored.isFlippedVertically = now.isFlippedVertically
         stored.scrollMode = now.scrollMode
         if stored != preferences.prompter { preferences.prompter = stored }
     }

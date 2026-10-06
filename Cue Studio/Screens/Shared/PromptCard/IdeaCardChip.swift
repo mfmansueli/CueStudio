@@ -44,9 +44,9 @@ struct IdeaCardChip: View {
             if let trailingMono {
                 Text(verbatim: trailingMono)
                     .font(.system(size: 10, design: .monospaced))
-                    .foregroundStyle(Palette.aiTextStrong.opacity(0.65))
+                    .foregroundStyle(Palette.aiText)
             }
-            if showsChevron { Text(verbatim: "⌄").foregroundStyle(Palette.ink.opacity(0.5)) }
+            if showsChevron { Text(verbatim: "⌄").foregroundStyle(Palette.inkHint) }
         }
         .font(.system(size: isCompact ? 12 : 13, weight: .semibold))
         .foregroundStyle(foreground)
