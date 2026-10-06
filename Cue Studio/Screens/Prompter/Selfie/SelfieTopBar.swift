@@ -5,29 +5,31 @@
 
 import SwiftUI
 
-/// Close, mode switch and frame; while recording, the REC pill (with the clock) takes the start.
-struct SelfieTopBar: View {
+/// The Selfie recorder's navigation bar, the system's: close at the start, Selfie | Studio in the middle and the frame chip at the end.
+/// While recording, the REC pill (with the clock) takes the start and the middle stays empty.
+struct SelfieTopBar: ToolbarContent {
     let viewModel: PrompterViewModel
+    let session: SessionSetupService
     let onClose: () -> Void
 
-    @Environment(SessionSetupService.self) private var session
-
-    var body: some View {
-        HStack {
-            if viewModel.isRecording {
+    var body: some ToolbarContent {
+        if viewModel.isRecording {
+            ToolbarItem(placement: .topBarLeading) {
                 RecordingBadge(seconds: viewModel.recordingSeconds, monetizationChip: viewModel.monetizationChip)
-                Spacer(minLength: 8)
-            } else {
-                Button(action: onClose) { Image(systemName: "xmark") }
-                    .buttonStyle(.cueIcon(.glass, diameter: 40))
-                    .accessibilityLabel(Text("Close"))
+            }
+            .sharedBackgroundVisibility(.hidden)
+        } else {
+            ToolbarItem(placement: .topBarLeading) {
+                Button(role: .close, action: onClose)
                     .accessibilityIdentifier("prompter.closeButton")
-                Spacer(minLength: 8)
+            }
+            ToolbarItem(placement: .principal) {
                 ModeSwitcher(mode: .selfie) { mode in
                     Task { await viewModel.switchMode(to: mode) }
                 }
-                Spacer(minLength: 8)
             }
+        }
+        ToolbarItem(placement: .topBarTrailing) {
             aspectButton
         }
     }
@@ -41,19 +43,15 @@ struct SelfieTopBar: View {
         } label: {
             HStack(spacing: 6) {
                 RoundedRectangle(cornerRadius: 2.5)
-                    .strokeBorder(Color.white, lineWidth: 1.6)
+                    .strokeBorder(Palette.ink, lineWidth: 1.6)
                     .frame(width: icon.width, height: icon.height)
                 Text(label)
                     .font(.footnote.weight(.semibold))
                     .lineLimit(1)
                     .minimumScaleFactor(0.85)
             }
-            .foregroundStyle(.white)
-            .padding(.horizontal, 11)
-            .frame(minWidth: 40, minHeight: 40)
-            .glassEffect(.regular.interactive(), in: Capsule())
+            .foregroundStyle(Palette.ink)
         }
-        .buttonStyle(.plain)
         .disabled(viewModel.isRecording)
         .accessibilityLabel(Text(viewModel.script.map { "Create for \($0.platform.label), \(aspect.label)" } ?? "Frame \(aspect.label)"))
         .accessibilityHint(viewModel.hasScript ? Text("Changes the platform and its preset") : Text("Switches to the next frame"))

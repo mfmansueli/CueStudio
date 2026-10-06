@@ -9,7 +9,7 @@ import SwiftUI
 /// from fixed positions, so the video always shows on every iPhone.
 ///
 /// ```
-/// [Top bar]       Back · IN EDIT · AUTOSAVED · Done (asks "Is it ready to post?")
+/// [Navigation]    Back · IN EDIT · AUTOSAVED · Done (asks "Is it ready to post?"), the system's bar
 /// [Preview]       the take in its frame, fitted
 /// [Player bar]    00:01.2 / 00:21.6 · ▶︎ · undo, redo, full screen
 /// [Timeline]      the clips and the tracks under them
@@ -47,36 +47,24 @@ struct QuickEditView: View {
 
     var body: some View {
         @Bindable var viewModel = viewModel
-        GeometryReader { proxy in
-            let layout = layout(forUsableHeight: proxy.size.height)
-            ZStack {
-                editor(layout, width: proxy.size.width)
-                if viewModel.isFullScreen {
-                    fullScreenPreview(in: proxy)
-                        .transition(.opacity)
+        // A navigation stack of its own: Back, the status and Done are the system's bar, in its Liquid Glass.
+        NavigationStack {
+            content
+                .navigationBarTitleDisplayMode(.inline)
+                .toolbarBackgroundVisibility(.hidden, for: .navigationBar)
+                // Full screen is only the video.
+                .toolbarVisibility(viewModel.isFullScreen ? .hidden : .visible, for: .navigationBar)
+                .toolbar {
+                    EditorTopBar(
+                        viewModel: viewModel,
+                        onBack: {
+                            viewModel.finish(.back)
+                            onClose(.back)
+                        },
+                        onDone: { viewModel.askIfReadyToPost() }
+                    )
                 }
-            }
-            .overlay {
-                if viewModel.source == .loading {
-                    EditorOpeningOverlay().transition(.opacity)
-                }
-            }
-            .animation(reduceMotion ? nil : .easeOut(duration: 0.35), value: viewModel.source == .loading)
-            .modifier(EditorToastHost(top: layout.topBar))
-            .sheet(isPresented: sheetPanelBinding(layout)) {
-                if let panel = viewModel.panel, case .sheet(let medium, let large) = layout.panelPresentation {
-                    EditorPanelView(viewModel: viewModel, panel: panel)
-                        .environment(\.editorHeightClass, layout.heightClass)
-                        .presentationDetents([.height(medium), .height(large)])
-                        .presentationBackgroundInteraction(.enabled(upThrough: .height(large)))
-                        .presentationCornerRadius(Metrics.editorSheetRadius)
-                        .presentationBackground(Palette.Editor.panel)
-                        .presentationDragIndicator(.visible)
-                }
-            }
         }
-        .background(Palette.bg.ignoresSafeArea())
-        .background { measuresStableHeight }
         .modifier(CaptionTranslationRunner(viewModel: viewModel))
         .editorPhotoPicker(viewModel)
         .task {
@@ -143,6 +131,40 @@ struct QuickEditView: View {
         .animation(reduceMotion ? nil : .easeInOut(duration: 0.25), value: viewModel.isFullScreen)
     }
 
+    /// The editor under the navigation bar, laid out from the height it leaves.
+    private var content: some View {
+        GeometryReader { proxy in
+            let layout = layout(forUsableHeight: proxy.size.height)
+            ZStack {
+                editor(layout, width: proxy.size.width)
+                if viewModel.isFullScreen {
+                    fullScreenPreview(in: proxy)
+                        .transition(.opacity)
+                }
+            }
+            .overlay {
+                if viewModel.source == .loading {
+                    EditorOpeningOverlay().transition(.opacity)
+                }
+            }
+            .animation(reduceMotion ? nil : .easeOut(duration: 0.35), value: viewModel.source == .loading)
+            .modifier(EditorToastHost())
+            .sheet(isPresented: sheetPanelBinding(layout)) {
+                if let panel = viewModel.panel, case .sheet(let medium, let large) = layout.panelPresentation {
+                    EditorPanelView(viewModel: viewModel, panel: panel)
+                        .environment(\.editorHeightClass, layout.heightClass)
+                        .presentationDetents([.height(medium), .height(large)])
+                        .presentationBackgroundInteraction(.enabled(upThrough: .height(large)))
+                        .presentationCornerRadius(Metrics.editorSheetRadius)
+                        .presentationBackground(Palette.Editor.panel)
+                        .presentationDragIndicator(.visible)
+                }
+            }
+        }
+        .background(Palette.bg.ignoresSafeArea())
+        .background { measuresStableHeight }
+    }
+
     // MARK: - Layout
 
     /// The editor's height as if the keyboard were never up. The editor itself lays out in what the
@@ -171,15 +193,6 @@ struct QuickEditView: View {
 
     private func editor(_ layout: EditorLayout, width: CGFloat) -> some View {
         VStack(spacing: 0) {
-            EditorTopBar(
-                viewModel: viewModel,
-                onBack: {
-                    viewModel.finish(.back)
-                    onClose(.back)
-                },
-                onDone: { viewModel.askIfReadyToPost() }
-            )
-            .frame(height: layout.topBar)
             QuickEditPreview(viewModel: viewModel, size: previewSize(in: CGSize(width: width, height: layout.preview)))
                 .frame(width: width, height: layout.preview)
                 .contentShape(Rectangle())

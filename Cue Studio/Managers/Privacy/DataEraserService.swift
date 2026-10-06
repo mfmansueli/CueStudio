@@ -52,8 +52,10 @@ final class DataEraserService {
         sky.removeAll()
         profile.profile = CreatorProfile()
         preferences.resetCreatorSetup()
+        preferences.customCues = []
+        preferences.showsCuesOnPage = true
         for key in [
-            DefaultsKey.voiceQuestionState, DefaultsKey.myTextStyle, DefaultsKey.myCoverStyle, DefaultsKey.scriptEditorTextSize,
+            DefaultsKey.voiceQuestionState, DefaultsKey.myTextStyle, DefaultsKey.myCoverStyle,
         ] {
             defaults.removeObject(forKey: key)
         }

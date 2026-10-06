@@ -26,5 +26,14 @@ nonisolated struct CueShortcuts: AppShortcutsProvider {
             shortTitle: "New script",
             systemImageName: "square.and.pencil"
         )
+        AppShortcut(
+            intent: AddToLogbookIntent(),
+            phrases: [
+                "Add an idea to \(.applicationName)",
+                "Save an idea in \(.applicationName)",
+            ],
+            shortTitle: "Add to Logbook",
+            systemImageName: "book.closed"
+        )
     }
 }

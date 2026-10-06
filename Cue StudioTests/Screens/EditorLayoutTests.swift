@@ -9,13 +9,13 @@ import Testing
 
 @Suite("EditorLayout")
 struct EditorLayoutTests {
-    /// Usable heights (screen minus the real safe areas) of the screens the editor is checked on.
+    /// Usable heights (screen minus the real safe areas and the 44 pt navigation bar) of the screens the editor is checked on.
     private enum Screen: CGFloat, CaseIterable {
-        case iPhoneSE = 647
-        case iPhoneMini = 728
-        case iPhone16 = 759
-        case iPhone16Pro = 778
-        case iPhone16ProMax = 860
+        case iPhoneSE = 603
+        case iPhoneMini = 684
+        case iPhone16 = 715
+        case iPhone16Pro = 734
+        case iPhone16ProMax = 816
     }
 
     private let sizes: [EditorPanelSize] = [.mini, .medium, .full]
@@ -37,7 +37,6 @@ struct EditorLayoutTests {
 
     @Test func theSmallestScreensGetShorterBarsAndIconOnlyToolbars() {
         let se = EditorLayout(usableHeight: Screen.iPhoneSE.rawValue)
-        #expect(se.topBar == 40)
         #expect(se.playerBar == 40)
         #expect(!se.heightClass.toolbarShowsLabels)
         #expect(se.heightClass.mainTrackHeight == 44)
@@ -47,7 +46,6 @@ struct EditorLayoutTests {
         #expect(mini.heightClass.laneHeight == 24)
         #expect(mini.heightClass.toolbarLabelSize == 10)
         let pro = EditorLayout(usableHeight: Screen.iPhone16Pro.rawValue)
-        #expect(pro.topBar == 44)
         #expect(pro.heightClass.mainTrackHeight == 56)
         #expect(pro.heightClass.toolbarLabelSize == 11)
     }
@@ -60,7 +58,7 @@ struct EditorLayoutTests {
             #expect(layout.timeline >= 184 && layout.timeline <= 300, "\(screen)")
             #expect(layout.toolbar == 64)
             #expect(layout.panel == 0)
-            #expect(abs(layout.topBar + layout.preview + layout.playerBar + layout.timeline + layout.toolbar - screen.rawValue) < 0.5, "\(screen)")
+            #expect(abs(layout.preview + layout.playerBar + layout.timeline + layout.toolbar - screen.rawValue) < 0.5, "\(screen)")
             #expect(layout.preview >= EditorLayout.previewMinimum(for: screen.rawValue), "\(screen)")
         }
         #expect(EditorLayout(usableHeight: 900).timeline == 288)
@@ -87,7 +85,7 @@ struct EditorLayoutTests {
                 let layout = EditorLayout(usableHeight: screen.rawValue, panel: size)
                 guard layout.panelPresentation == .inline else { continue }
                 #expect(layout.panel > 0)
-                #expect(abs(layout.topBar + layout.preview + layout.playerBar + layout.timeline + layout.panel - screen.rawValue) < 0.5, "\(screen) \(size)")
+                #expect(abs(layout.preview + layout.playerBar + layout.timeline + layout.panel - screen.rawValue) < 0.5, "\(screen) \(size)")
             }
         }
     }
@@ -146,7 +144,7 @@ struct EditorLayoutTests {
             return
         }
         #expect(layout.preview == EditorLayout.previewMinimum(for: usable))
-        #expect(abs(layout.topBar + layout.preview + large - usable) < 0.5)
+        #expect(abs(layout.preview + large - usable) < 0.5)
         #expect(medium <= large)
         #expect(layout.panel == 0)
     }
@@ -156,7 +154,7 @@ struct EditorLayoutTests {
         #expect(layout.preview >= EditorLayout.previewMinimum(for: 560))
         let tight = EditorLayout(usableHeight: 600, panel: .medium, panelFocusesLane: true)
         #expect(tight.preview >= EditorLayout.previewMinimum(for: 600) - 0.01)
-        #expect(abs(tight.topBar + tight.preview + tight.playerBar + tight.timeline + tight.panel - 600) < 0.5)
+        #expect(abs(tight.preview + tight.playerBar + tight.timeline + tight.panel - 600) < 0.5)
     }
 
     // MARK: - Keyboard
@@ -174,7 +172,7 @@ struct EditorLayoutTests {
                 let typing = EditorLayout(usableHeight: screen.rawValue - keyboard, stableHeight: screen.rawValue, panel: size)
                 #expect(typing.heightClass == still.heightClass, "\(screen) \(size)")
                 #expect(typing.panelPresentation == .inline, "\(screen) \(size)")
-                #expect(typing.topBar == still.topBar && typing.playerBar == still.playerBar, "\(screen) \(size)")
+                #expect(typing.playerBar == still.playerBar, "\(screen) \(size)")
                 #expect(typing.keyboardIsUp)
             }
         }
@@ -185,7 +183,7 @@ struct EditorLayoutTests {
             let usable = screen.rawValue - keyboard
             for size in sizes {
                 let layout = EditorLayout(usableHeight: usable, stableHeight: screen.rawValue, panel: size, panelFocusesLane: true)
-                let total = layout.topBar + layout.preview + layout.playerBar + layout.timeline + layout.panel
+                let total = layout.preview + layout.playerBar + layout.timeline + layout.panel
                 #expect(abs(total - usable) < 0.5, "\(screen) \(size)")
                 #expect(layout.timeline == 0 && layout.toolbar == 0, "\(screen) \(size)")
                 // The video still shows the text being typed, and the panel has room for its header and its field.

@@ -36,8 +36,9 @@ struct SelfieControlPanel: View {
         .background(.ultraThinMaterial, in: shape)
         .glassNight(in: shape, density: .solid)
         .animation(.smooth(duration: 0.25), value: compact)
-        // Using any control of the whole bar while recording keeps it open a little longer.
-        .simultaneousGesture(DragGesture(minimumDistance: 0).onChanged { _ in viewModel.bar.touch() })
+        // Using a control of the whole bar while recording keeps it open a little longer: the controls say so themselves
+        // (`PrompterViewModel.setScrollMode`, `setSpeed`, `togglePlay`, `rewind`). A gesture over the whole panel took the touches of
+        // the system's controls in it (Voice | Steady and the speed slider stopped responding).
     }
 
     // MARK: - Rows
@@ -48,18 +49,18 @@ struct SelfieControlPanel: View {
             HStack(spacing: 8) {
                 ScrollModePicker(selection: session.prompter.scrollMode) { viewModel.setScrollMode($0) }
                 Button { viewModel.rewind() } label: { Image(systemName: "arrow.up.to.line") }
-                    .buttonStyle(.cueIcon(.overlay))
+                    .glassIconButton()
                     .accessibilityLabel(Text("Back to the top"))
                 Button { viewModel.togglePlay() } label: {
                     Image(systemName: viewModel.isPlaying ? "pause.fill" : "play.fill")
                 }
-                .buttonStyle(.cueIcon(.overlay))
+                .glassIconButton()
                 .accessibilityLabel(Text(viewModel.isPlaying ? "Pause" : "Play"))
                 .accessibilityIdentifier("prompter.playButton")
                 Button { viewModel.sheet = .display } label: {
                     Text("Aa").font(.system(size: 15, weight: .semibold))
                 }
-                .buttonStyle(.cueIcon(.overlay))
+                .glassIconButton()
                 .accessibilityLabel(Text("Display settings"))
                 .accessibilityIdentifier("prompter.displayButton")
             }
@@ -127,7 +128,7 @@ struct SelfieControlPanel: View {
             LastTakeButton(viewModel: viewModel)
             Spacer()
             Button { viewModel.sheet = .camera } label: { Image(systemName: "slider.horizontal.3") }
-                .buttonStyle(.cueIcon(.overlay, diameter: 40))
+                .glassIconButton()
                 .disabled(viewModel.isRecording)
                 .accessibilityLabel(Text("Camera settings"))
                 .accessibilityIdentifier("prompter.cameraSettingsButton")
@@ -140,7 +141,7 @@ struct SelfieControlPanel: View {
             .opacity(!audio.isMicrophoneAllowed && !viewModel.isRecording ? 0.4 : 1)
             Spacer()
             Button { viewModel.flipCamera() } label: { Image(systemName: "arrow.triangle.2.circlepath.camera") }
-                .buttonStyle(.cueIcon(.overlay, diameter: 40))
+                .glassIconButton()
                 .disabled(viewModel.isRecording)
                 .accessibilityLabel(Text("Switch camera"))
             Spacer()

@@ -38,7 +38,8 @@ final class StudioUITests: XCTestCase {
         XCTAssertFalse(element(app, "prompter.studioPreview").exists)
         XCTAssertFalse(app.buttons["prompter.cameraSettingsButton"].exists)
         XCTAssertFalse(element(app, "prompter.audioInputButton").exists)
-        XCTAssertTrue(app.buttons["prompter.scrollMode.voice"].exists && app.buttons["prompter.scrollMode.steady"].exists)
+        let scrollMode = app.segmentedControls["prompter.scrollMode"]
+        XCTAssertTrue(scrollMode.buttons["Voice"].exists && scrollMode.buttons["Steady"].exists)
         XCTAssertTrue(element(app, "prompter.speedSlider").exists)
         XCTAssertTrue(element(app, "studio.timeLeft").waitForExistence(timeout: 5))
         try capture(app, "studio_idle")

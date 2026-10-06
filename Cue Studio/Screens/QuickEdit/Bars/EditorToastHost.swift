@@ -10,9 +10,6 @@ import SwiftUI
 /// inside the clip"); a tap lets one go early. One with an action ("8 lines deleted" · Undo) shows
 /// its button at the end of the pill and stays 4 s (`ToastService`).
 struct EditorToastHost: ViewModifier {
-    /// Where the preview starts: the toast sits just under the top bar.
-    let top: CGFloat
-
     @Environment(ToastService.self) private var toast
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
@@ -56,7 +53,7 @@ struct EditorToastHost: ViewModifier {
                     .frame(height: 34)
                     .background(Palette.Editor.toast, in: Capsule())
                     .padding(.horizontal, 16)
-                    .padding(.top, top + 10)
+                    .padding(.top, 10)
                     .id(message)
                     .transition(reduceMotion ? .opacity : .move(edge: .top).combined(with: .opacity))
                     .onTapGesture { toast.dismiss() }

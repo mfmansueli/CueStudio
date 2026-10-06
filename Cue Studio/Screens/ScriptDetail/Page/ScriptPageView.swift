@@ -7,9 +7,9 @@ import SwiftUI
 
 /// The script page (v30 · 4.1 and 4.2): one page, no Draft | Shaped switch. The navigation bar has back, the platform and •••; the title
 /// and its meter; the **state strip** (READY, DRAFT or RECORDED, the format, the cues and the next step); the words, always
-/// editable, with cues as tags; and one Record button at the bottom. The bar above is the system's: its back button, the platform
-/// and •••. Selecting words brings the AI bar (Apple Intelligence
-/// only); the keyboard brings the cues bar. "✦ Shape" is a tool: it adds cues.
+/// editable, with cues as tags; and one Record button pinned at the bottom, a Liquid Glass capsule over the words that scroll
+/// under it. Selecting words brings the AI bar (Apple Intelligence only); the keyboard brings the cues, in a glass bar that rides
+/// on it, in Record's place. "✦ Shape" is a tool: it adds cues.
 struct ScriptPageView: View {
     let viewModel: ScriptDetailViewModel
     let script: Script
@@ -20,6 +20,9 @@ struct ScriptPageView: View {
     let onOpenTake: (Take) -> Void
 
     @FocusState private var focus: ScriptPageFocus?
+    /// "+" on the cues bar: the name of the creator's new cue.
+    @State private var isAddingCue = false
+    @State private var newCue = ""
     @Environment(\.scenePhase) private var scenePhase
     /// The editor's own minimum height, kept by the words the AI writes in too.
     @ScaledMetric(relativeTo: .body) private var editorMinimumHeight = 300.0
@@ -86,13 +89,24 @@ struct ScriptPageView: View {
                 }
             }
         }
-        .safeAreaInset(edge: .bottom, spacing: 0) { bottom }
+        // A bar of the scroll view's own: the words that scroll under it blur, as under the system's bars.
+        .safeAreaBar(edge: .bottom, spacing: 0) { bottom }
         .toolbar { toolbarItems }
         .sheet(isPresented: $viewModel.page.showsLengthNudge) { nudge }
         .sheet(isPresented: $viewModel.page.showsVoiceAdjust) {
             VoiceAdjustSheet { adjustments, keepsInProfile in
                 Task { await viewModel.rewriteVoice(adjustments: adjustments, keepsInProfile: keepsInProfile) }
             }
+        }
+        .alert("New cue", isPresented: $isAddingCue) {
+            TextField("laugh", text: $newCue)
+            Button("Cancel", role: .cancel) { focus = .text }
+            Button("Add") {
+                viewModel.addCue(newCue)
+                focus = .text
+            }
+        } message: {
+            Text("It goes in where the cursor is and stays on the bar for every script.")
         }
         .alert(emptySectionsMessage, isPresented: Binding(
             get: { viewModel.page.emptySectionsToConfirm != nil },
@@ -148,7 +162,6 @@ struct ScriptPageView: View {
                     script: script, folders: folders, actions: actions,
                     hasAI: viewModel.isLanguageModelAvailable,
                     onImprove: { viewModel.sheet = .improve },
-                    onVersions: { viewModel.startEditing() },
                     onDetails: { viewModel.sheet = .details }
                 )
             } label: {
@@ -173,7 +186,8 @@ struct ScriptPageView: View {
         return String(localized: "\(zone.words) words · ~\(DurationText.clock(zone.seconds))")
     }
 
-    /// Hook and Improve: the two ways into the sheets of 4.3 and 4.4 (Improve is the AI's: it goes without Apple Intelligence).
+    /// Hook and Improve: the two ways into the sheets of 4.3 and 4.4 (Improve is the AI's: it goes without Apple Intelligence); then
+    /// Cues, which turns the cues on or off in the teleprompter.
     private var tools: some View {
         HStack(spacing: 8) {
             Button { Task { await viewModel.openHooks() } } label: {
@@ -205,6 +219,7 @@ struct ScriptPageView: View {
                 .buttonStyle(.plain)
                 .accessibilityIdentifier("page.improveButton")
             }
+            cuesToggle
             Spacer(minLength: 0)
             Button { viewModel.cycleTextSize() } label: {
                 Text("Aa")
@@ -219,13 +234,39 @@ struct ScriptPageView: View {
         }
     }
 
+    /// "Cues": on (yellow, like the tags), the page draws the cue tags; off, it shows only the words. The cues stay in the script
+    /// either way.
+    private var cuesToggle: some View {
+        @Bindable var viewModel = viewModel
+        let isOn = viewModel.showsCues
+        return Toggle(isOn: $viewModel.showsCues) {
+            HStack(spacing: 5) {
+                Image(systemName: isOn ? "eye" : "eye.slash").font(.system(size: 12, weight: .bold))
+                Text("Cues")
+            }
+            .font(.system(size: 14, weight: .semibold))
+            .foregroundStyle(isOn ? Palette.accText : Palette.ink2)
+            .padding(.horizontal, 14)
+            .frame(height: 34)
+            .background(isOn ? Palette.accSoft : Palette.fill, in: Capsule())
+            .frame(minHeight: Metrics.hitTarget)
+            .contentShape(Capsule())
+        }
+        .toggleStyle(.button)
+        .buttonStyle(.plain)
+        .accessibilityLabel(Text("Show cues"))
+        .accessibilityIdentifier("page.cuesToggle")
+    }
+
     @ViewBuilder
     private var editor: some View {
         if viewModel.page.isWriting {
             // The AI's words arrive from light, one after another (4.1), drawn the way the editor that comes back will draw them:
             // the same insets, size and cue tags, so they arrive where they stay.
             let size = viewModel.page.textSize.points
-            ArrivingText(styled: ScriptTextEditor.styled(viewModel.page.revealed ?? "", passage: nil, size: size), size: size)
+            ArrivingText(
+                styled: ScriptTextEditor.styled(viewModel.page.revealed ?? "", passage: nil, size: size, showsCues: viewModel.showsCues), size: size
+            )
                 .padding(ScriptTextEditor.textInsets)
                 .frame(minHeight: editorMinimumHeight, alignment: .topLeading)
                 .id("page.editor")
@@ -245,6 +286,7 @@ struct ScriptPageView: View {
             selection: $viewModel.page.selection,
             passage: viewModel.page.passage?.range,
             textSize: viewModel.page.textSize,
+            showsCues: viewModel.showsCues,
             isLocked: viewModel.page.isWriting || viewModel.previewedText != nil,
             focus: $focus,
             onEdit: {
@@ -265,7 +307,8 @@ struct ScriptPageView: View {
         return nil
     }
 
-    /// The bottom: the AI bar when it has something to do, then the cues above the keyboard or the page's one Record.
+    /// The bottom: the AI bar when it has something to do, the pill while the AI writes, then the cues over the keyboard while the
+    /// words have it, or the page's one Record (always there otherwise, dimmed while the AI writes).
     private var bottom: some View {
         VStack(spacing: 8) {
             if let phase = barPhase, focus != .title {
@@ -284,12 +327,19 @@ struct ScriptPageView: View {
                     .transition(.opacity.combined(with: .scale(scale: 0.96)))
             }
             if focus == .text {
-                ScriptCuesBar(onCue: viewModel.insertCue)
-            } else if focus != .title, !viewModel.page.isWriting, let strip = viewModel.strip {
-                ScriptRecordBar(
-                    title: strip.recordsAgain ? "Retake" : "Record", isPrimary: strip.recordIsPrimary, action: record
+                ScriptCuesBar(
+                    cues: viewModel.barCues,
+                    customCues: viewModel.preferences.customCues,
+                    onCue: { viewModel.insertCue(named: $0) },
+                    onAdd: {
+                        newCue = ""
+                        isAddingCue = true
+                    },
+                    onRemove: { viewModel.removeCue($0) }
                 )
-                .background(Palette.bg)
+            } else if let strip = viewModel.strip {
+                ScriptRecordButton(title: strip.recordsAgain ? "Retake" : "Record", isPrimary: strip.recordIsPrimary, action: record)
+                    .disabled(viewModel.page.isWriting)
             }
         }
     }

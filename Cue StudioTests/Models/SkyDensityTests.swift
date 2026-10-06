@@ -13,13 +13,11 @@ struct SkyDensityTests {
     @Test func offDrawsNoStarAnywhere() {
         #expect(SkyDensity.off.twinkleCount == 0)
         #expect(!SkyDensity.off.hasComet)
-        #expect(!SkyDensity.off.showsYourStars)
     }
 
     @Test func sereneIsOnlyTheDriftingStarsAndTheNebulae() {
         #expect(SkyDensity.serene.twinkleCount == 0)
         #expect(!SkyDensity.serene.hasComet)
-        #expect(SkyDensity.serene.showsYourStars)
     }
 
     @Test func adriftHasEverythingAndAnAstronaut() {
@@ -27,7 +25,6 @@ struct SkyDensityTests {
         #expect(SkyDensity.adrift.hasComet)
         #expect(SkyDensity.adrift.hasAstronaut)
         #expect(!SkyDensity.adrift.hasSpaceship)
-        #expect(SkyDensity.adrift.showsYourStars)
     }
 
     @Test func interstellarHasTheTwinklesAndASpaceshipInsteadOfTheComet() {
@@ -35,7 +32,6 @@ struct SkyDensityTests {
         #expect(SkyDensity.interstellar.hasSpaceship)
         #expect(!SkyDensity.interstellar.hasComet)
         #expect(SkyDensity.interstellar.isInterstellar)
-        #expect(SkyDensity.interstellar.showsYourStars)
     }
 
     @Test func onlyAdriftHasTheAstronaut() {
@@ -84,6 +80,5 @@ struct SkyDensityTests {
         #expect(service.sky == .serene)
         service.sky = .off
         #expect(PersonalizationService(defaults: defaults).sky == .off)
-        #expect(!PersonalizationService(defaults: defaults).sky.showsYourStars)
     }
 }

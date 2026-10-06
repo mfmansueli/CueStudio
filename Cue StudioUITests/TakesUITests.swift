@@ -50,11 +50,30 @@ final class TakesUITests: XCTestCase {
 
     func testTheLibraryCanBeAListAndRemembersIt() {
         let app = openTakes()
-        XCTAssertTrue(app.buttons["takes.layout.list"].waitForExistence(timeout: 5))
-        app.buttons["takes.layout.list"].tap()
+        XCTAssertTrue(layoutSegment(app, "List").waitForExistence(timeout: 5))
+        layoutSegment(app, "List").tap()
         XCTAssertTrue(videoRow(app, containing: "3 morning habits").waitForExistence(timeout: 5))
-        app.buttons["takes.layout.grid"].tap()
+        layoutSegment(app, "Grid").tap()
         XCTAssertTrue(videoRow(app, containing: "3 morning habits").waitForExistence(timeout: 5))
+    }
+
+    /// Holding a video (grid and list) lifts its card and shows its actions; the preview is drawn
+    /// outside the screen's hierarchy, so it needs every service the card reads.
+    func testHoldingAVideoShowsItsActions() {
+        let app = openTakes()
+        for layout in ["Grid", "List"] {
+            layoutSegment(app, layout).tap()
+            let row = videoRow(app, containing: "3 morning habits")
+            XCTAssertTrue(row.waitForExistence(timeout: 5))
+            row.press(forDuration: 1.2)
+            XCTAssertTrue(app.buttons["Mark as best"].waitForExistence(timeout: 5) || app.buttons["Best take"].exists,
+                          "The \(layout)'s menu never opened")
+            XCTAssertTrue(app.buttons["Retake"].exists)
+            XCTAssertEqual(app.state, .runningForeground, "Holding a video in the \(layout) closed the app")
+            // Out of the menu: a tap on the dimmed screen at its left edge, beside the lifted card and the menu.
+            app.coordinate(withNormalizedOffset: CGVector(dx: 0.04, dy: 0.5)).tap()
+            XCTAssertTrue(app.buttons["Retake"].waitForNonExistence(timeout: 5))
+        }
     }
 
     func testReviewOpensPausedAndSwitchesBetweenTakesAndPicksTheBest() {
@@ -109,6 +128,12 @@ final class TakesUITests: XCTestCase {
         }
         // Share is the one yellow action: it names the platform.
         XCTAssertTrue(app.buttons["review.shareButton"].label.hasPrefix("Share"))
+        // Back, the take's menu, the star and the bin are the system's navigation bar.
+        let bar = app.navigationBars.firstMatch
+        for id in ["review.backButton", "review.bestButton", "review.deleteButton"] {
+            XCTAssertTrue(bar.buttons[id].exists, "\(id) isn't in the navigation bar")
+        }
+        XCTAssertTrue(bar.descendants(matching: .any)["review.takeLabel"].exists)
     }
 
     // MARK: - Helpers
@@ -119,6 +144,11 @@ final class TakesUITests: XCTestCase {
         XCTAssertTrue(tab.waitForExistence(timeout: 15))
         tab.tap()
         return app
+    }
+
+    /// List | Grid: a segment of the system's segmented control in the navigation bar.
+    private func layoutSegment(_ app: XCUIApplication, _ label: String) -> XCUIElement {
+        app.segmentedControls["takes.layout"].buttons[label]
     }
 
     private func videoRow(_ app: XCUIApplication, containing text: String) -> XCUIElement {

@@ -22,6 +22,7 @@ struct DataEraserServiceTests {
         let profile = CreatorProfileService(defaults: defaults.defaults)
         profile.saveVoiceSetup(role: .entertainer, niches: [.food], vocabulary: .simple, sounds: [.casual])
         let preferences = PreferencesService(defaults: defaults.defaults)
+        preferences.customCues = ["laugh"]
         let quota = UsageQuotaService(counter: FakeExportCountStore(count: 3), defaults: defaults.defaults)
         let brands = BrandStore(repository: InMemoryBrandRepository())
         _ = brands.save(BrandBrief(name: "Acme", product: "Soap"))
@@ -39,6 +40,8 @@ struct DataEraserServiceTests {
         #expect(brands.brands.isEmpty)
         #expect(sky.points.isEmpty)
         #expect(profile.profile == CreatorProfile())
+        #expect(preferences.customCues.isEmpty)
+        #expect(PreferencesService(defaults: defaults.defaults).customCues.isEmpty)
         // The 3 exports used are still used: deleting data can't hand back free exports.
         #expect(quota.exportsLeft(for: .free) == 2)
     }

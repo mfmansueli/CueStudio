@@ -110,14 +110,11 @@ final class GenerateScriptUITests: XCTestCase {
         XCTAssertFalse(app.buttons["page.stopButton"].exists)
     }
 
-    func testTheFullEditorOffersInMyVoiceOnTheFreePlan() {
+    func testImproveOffersInMyVoiceOnTheFreePlan() {
         let app = CueApp.launch(seeded: true)
         app.openScriptPage(titled: "Unboxing the Lumen desk lamp")
-        app.buttons["page.menuButton"].tap()
-        app.buttons["Versions & options"].tap()
-        // AI is one of the bar's panels; its tools are in the grid.
-        app.buttons["editor.tool.ai"].tap()
-        let voice = element(app, "editor.tool.inMyVoice")
+        app.buttons["page.improveButton"].tap()
+        let voice = element(app, "improve.tool.inMyVoice")
         XCTAssertTrue(voice.waitForExistence(timeout: 5))
         voice.tap()
         XCTAssertTrue(app.staticTexts.containing(NSPredicate(format: "label BEGINSWITH 'Rewrote in your voice'")).firstMatch.waitForExistence(timeout: 5))
