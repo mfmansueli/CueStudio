@@ -198,7 +198,7 @@ nonisolated enum StarfieldMath {
         let diameter: Double
         let opacity: Double
         let period: Double
-        /// Violet in Calm and Lively; Galactic has blue, magenta and teal ones (`galacticNebulae`).
+        /// Violet in Serene and Adrift; Interstellar has blue, magenta and teal ones (`interstellarNebulae`).
         var hue: NebulaHue = .violet
     }
 

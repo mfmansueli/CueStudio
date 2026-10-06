@@ -5,7 +5,7 @@
 
 import SwiftUI
 
-/// The spaceship of the Galactic sky, drawn in a `Canvas` (no image): a small angular craft, 16 to 22 pt long, with a faceted hull (light above,
+/// The spaceship of the Interstellar sky, drawn in a `Canvas` (no image): a small angular craft, 16 to 22 pt long, with a faceted hull (light above,
 /// shaded below), swept indigo wings edged with a thin cyan light, a visor, two engine slits and a tiny light on each wing tip. Behind it, a
 /// hairline trail that follows the path the ship really flew, tapering and fading from ion blue to violet. Quiet on purpose: it is never fully opaque.
 /// Everything on the craft is a fraction of its length; `+x` is forward.

@@ -1,5 +1,5 @@
 //
-//  StarfieldGalacticTests.swift
+//  StarfieldInterstellarTests.swift
 //  Cue StudioTests
 //
 
@@ -8,31 +8,31 @@ import Foundation
 import Testing
 @testable import Cue_Studio
 
-/// The Galactic sky (Starry sky › Galactic): its three nebulae, the Milky Way band and the spaceship that crosses where Lively has the comet.
-@Suite("StarfieldMath · Galactic")
-struct StarfieldGalacticTests {
+/// The Interstellar sky (Starry sky › Interstellar): its three nebulae, the Milky Way band and the spaceship that crosses where Adrift has the comet.
+@Suite("StarfieldMath · Interstellar")
+struct StarfieldInterstellarTests {
     private let screen = CGSize(width: 390, height: 844)
 
     // MARK: - Nebulae
 
     @Test func thereAreThreeNebulaeOneInEachColourAndTheyAreAlwaysTheSame() {
-        let nebulae = StarfieldMath.galacticNebulae(seed: 27)
+        let nebulae = StarfieldMath.interstellarNebulae(seed: 27)
         #expect(nebulae.map(\.hue) == [.blue, .magenta, .teal])
-        #expect(nebulae == StarfieldMath.galacticNebulae(seed: 27))
-        #expect(nebulae != StarfieldMath.galacticNebulae(seed: 28))
+        #expect(nebulae == StarfieldMath.interstellarNebulae(seed: 27))
+        #expect(nebulae != StarfieldMath.interstellarNebulae(seed: 28))
     }
 
     @Test func theNebulaeStayWithinTheirPlacesAndAreFaint() {
         for seed in [27, 7, 99] as [UInt64] {
-            for nebula in StarfieldMath.galacticNebulae(seed: seed) {
-                #expect(StarfieldMath.galacticNebulaOpacity.contains(nebula.opacity))
+            for nebula in StarfieldMath.interstellarNebulae(seed: seed) {
+                #expect(StarfieldMath.interstellarNebulaOpacity.contains(nebula.opacity))
                 #expect((280...400).contains(nebula.diameter) && (30...40).contains(nebula.period))
                 #expect((0.05...0.92).contains(nebula.x) && (0.05...0.9).contains(nebula.y))
             }
         }
     }
 
-    @Test func theVioletNebulaeOfCalmAndLivelyAreUntouched() {
+    @Test func theVioletNebulaeOfSereneAndAdriftAreUntouched() {
         let nebulae = StarfieldMath.nebulae(seed: 27)
         #expect(nebulae.count == 2 && nebulae.allSatisfy { $0.hue == .violet })
     }

@@ -1,39 +1,39 @@
 //
-//  StarfieldMath+Galactic.swift
+//  StarfieldMath+Interstellar.swift
 //  Cue Studio
 //
 
 import CoreGraphics
 import Foundation
 
-/// The colour of a nebula. Calm and Lively only have violet ones.
+/// The colour of a nebula. Serene and Adrift only have violet ones.
 nonisolated enum NebulaHue: Sendable { case violet, blue, magenta, teal }
 
-/// The numbers of the Galactic sky (Starry sky › Galactic), apart from the drawing so they can be tested: three coloured nebulae, the Milky
-/// Way band with its dust, and the spaceship that crosses where Lively has the comet. Like the rest of the sky, everything is a function of
+/// The numbers of the Interstellar sky (Starry sky › Interstellar), apart from the drawing so they can be tested: three coloured nebulae, the Milky
+/// Way band with its dust, and the spaceship that crosses where Adrift has the comet. Like the rest of the sky, everything is a function of
 /// time and a seed, so a screen's sky is the same every time and never jumps.
 nonisolated extension StarfieldMath {
     // MARK: - Nebulae
 
-    /// How strong a Galactic nebula is at its heart. Kept low on purpose: with the wash under it and the band over it, the brightest
+    /// How strong a Interstellar nebula is at its heart. Kept low on purpose: with the wash under it and the band over it, the brightest
     /// point of the night still has to read `inkHint` text (`PaletteContrastTests`).
-    static let galacticNebulaOpacity = 0.06...0.10
+    static let interstellarNebulaOpacity = 0.06...0.10
 
     /// Three nebulae, one in each colour, in three different parts of the sky: bigger and slower than the violet ones.
-    static func galacticNebulae(seed: UInt64) -> [Nebula] {
+    static func interstellarNebulae(seed: UInt64) -> [Nebula] {
         var random = SeededRandom(seed: seed &+ 15_485_863)
         return [
             Nebula(
                 x: random.next(in: 0.15...0.4), y: random.next(in: 0.05...0.22), diameter: random.next(in: 320...400),
-                opacity: random.next(in: galacticNebulaOpacity), period: random.next(in: 30...40), hue: .blue
+                opacity: random.next(in: interstellarNebulaOpacity), period: random.next(in: 30...40), hue: .blue
             ),
             Nebula(
                 x: random.next(in: 0.65...0.92), y: random.next(in: 0.38...0.6), diameter: random.next(in: 280...360),
-                opacity: random.next(in: galacticNebulaOpacity), period: random.next(in: 30...40), hue: .magenta
+                opacity: random.next(in: interstellarNebulaOpacity), period: random.next(in: 30...40), hue: .magenta
             ),
             Nebula(
                 x: random.next(in: 0.1...0.4), y: random.next(in: 0.68...0.9), diameter: random.next(in: 300...380),
-                opacity: random.next(in: galacticNebulaOpacity), period: random.next(in: 30...40), hue: .teal
+                opacity: random.next(in: interstellarNebulaOpacity), period: random.next(in: 30...40), hue: .teal
             ),
         ]
     }

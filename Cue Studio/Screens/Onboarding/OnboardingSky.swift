@@ -22,8 +22,8 @@ struct OnboardingSky: View {
 
     var body: some View {
         MotionScreen(hold: Self.settled, frozenAt: step == .welcome ? frozenAt : nil, plays: plays && step == .welcome) { time in
-            // The sky the boards were drawn with: 7 twinkles and the comet (Calm, which used to have them, is now only the stars).
-            StarfieldView(density: .calm, seed: 7, twinkleCountOverride: 7, cometOverride: true, look: StarfieldMath.boardLook)
+            // The sky the boards were drawn with: 7 twinkles and the comet (Serene, which used to have them, is now only the stars).
+            StarfieldView(density: .serene, seed: 7, twinkleCountOverride: 7, cometOverride: true, look: StarfieldMath.boardLook)
                 .motion(step == .voyage ? director.pose : Self.clip.pose(of: "L1", at: time.clock))
         }
     }

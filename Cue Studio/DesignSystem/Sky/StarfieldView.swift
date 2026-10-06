@@ -6,19 +6,20 @@
 import SwiftUI
 
 /// The sky of the browse screens and the onboarding: three layers of stars drifting down at their own
-/// speed and two soft violet nebulae (all of Calm), and, at Lively only, 14 small twinkling stars (half with the cross glint of a
-/// phone-camera star) and a comet every two minutes or so. Galactic is Lively with the colours of a galaxy (three nebulae, the Milky Way
+/// speed and two soft violet nebulae (all of Serene), and, at Adrift only, 14 small twinkling stars (half with the cross glint of a
+/// phone-camera star), a comet every two minutes or so and a small astronaut floating in zero gravity, bouncing softly off the edges of the
+/// screen. Interstellar is Adrift with the colours of a galaxy (three nebulae, the Milky Way
 /// band) and a spaceship in place of the comet. Never over the camera, a take or the editor.
 ///
 /// One `Canvas` in a `TimelineView` at 30 fps (it is ambient). It stops, on a still frame, when the
 /// view is off screen, the app is not active or Reduce Motion is on (Low Power Mode does not stop it), and it
 /// draws nothing at all when the density is Off.
 struct StarfieldView: View {
-    var density: SkyDensity = .calm
+    var density: SkyDensity = .serene
     var seed: UInt64 = 27
     /// Seconds added to the app's clock when the comet's and the spaceship's schedules are read (the catalogue sends a spaceship on demand).
     var scheduleShift: TimeInterval = 0
-    /// The first flight keeps the sky its boards were drawn with, whatever Calm and Lively became: its own twinkles and its comet.
+    /// The first flight keeps the sky its boards were drawn with, whatever Serene and Adrift became: its own twinkles and its comet.
     var twinkleCountOverride: Int?
     var cometOverride: Bool?
     /// How strongly the stars are drawn (delicate in the app; the first flight keeps the strength of its boards).
@@ -31,9 +32,9 @@ struct StarfieldView: View {
 
     private var twinkles: [StarfieldMath.Twinkle] { StarfieldMath.twinkles(count: twinkleCountOverride ?? density.twinkleCount, seed: seed) }
     private var nebulae: [StarfieldMath.Nebula] {
-        density.isGalactic ? StarfieldMath.galacticNebulae(seed: seed) : StarfieldMath.nebulae(seed: seed)
+        density.isInterstellar ? StarfieldMath.interstellarNebulae(seed: seed) : StarfieldMath.nebulae(seed: seed)
     }
-    private var bandDust: [StarfieldMath.BandStar] { density.isGalactic ? StarfieldMath.bandStars(seed: seed) : [] }
+    private var bandDust: [StarfieldMath.BandStar] { density.isInterstellar ? StarfieldMath.bandStars(seed: seed) : [] }
 
     var body: some View {
         Group {
@@ -66,7 +67,7 @@ struct StarfieldView: View {
 
     private func draw(in canvas: inout GraphicsContext, size: CGSize, time: TimeInterval) {
         for nebula in nebulae { drawNebula(nebula, in: &canvas, size: size, time: time) }
-        if density.isGalactic { GalacticSkyPainter.drawBand(in: &canvas, size: size, time: time, dust: bandDust) }
+        if density.isInterstellar { InterstellarSkyPainter.drawBand(in: &canvas, size: size, time: time, dust: bandDust) }
         for (index, layer) in StarfieldMath.layers.enumerated() {
             drawLayer(layer, seed: seed &+ UInt64(index) &* 101, in: &canvas, size: size, time: time)
         }
@@ -75,7 +76,10 @@ struct StarfieldView: View {
         if cometOverride ?? density.hasComet, let comet = StarfieldMath.comet(at: schedule, size: size, seed: seed) {
             drawComet(comet, in: &canvas)
         }
-        // A frozen frame (Reduce Motion, the app in the background) never catches a spaceship halfway.
+        // A frozen frame (Reduce Motion, the app in the background) never catches the astronaut or a spaceship halfway.
+        if density.hasAstronaut, isRunning {
+            AstronautPainter.draw(StarfieldMath.astronaut(at: schedule, size: size, seed: seed), time: time, in: &canvas)
+        }
         if density.hasSpaceship, isRunning, let ship = StarfieldMath.spaceship(at: schedule, size: size, seed: seed) {
             SpaceshipPainter.draw(ship, time: time, in: &canvas)
         }
@@ -195,7 +199,7 @@ struct StarfieldView: View {
 /// The sky behind a browse screen, from the creator's Starry sky setting.
 struct SkyBackground: ViewModifier {
     @Environment(PersonalizationService.self) private var personalization
-    /// The night glow and the colour under it: nil is the browse screens' (`BgWash.navigation` over `bg`, or the galactic night at Galactic),
+    /// The night glow and the colour under it: nil is the browse screens' (`BgWash.navigation` over `bg`, or the interstellar night at Interstellar),
     /// otherwise the one a board of the stories draws.
     var lights: [BgWash.Light]?
     var base: Color?
@@ -228,7 +232,7 @@ extension View {
 
 #if DEBUG
 #Preview {
-    StarfieldView(density: .lively)
+    StarfieldView(density: .adrift)
         .background(Palette.bg)
 }
 #endif

@@ -16,44 +16,57 @@ struct SkyDensityTests {
         #expect(!SkyDensity.off.showsYourStars)
     }
 
-    @Test func calmIsOnlyTheDriftingStarsAndTheNebulae() {
-        #expect(SkyDensity.calm.twinkleCount == 0)
-        #expect(!SkyDensity.calm.hasComet)
-        #expect(SkyDensity.calm.showsYourStars)
+    @Test func sereneIsOnlyTheDriftingStarsAndTheNebulae() {
+        #expect(SkyDensity.serene.twinkleCount == 0)
+        #expect(!SkyDensity.serene.hasComet)
+        #expect(SkyDensity.serene.showsYourStars)
     }
 
-    @Test func livelyHasEverything() {
-        #expect(SkyDensity.lively.twinkleCount == 14)
-        #expect(SkyDensity.lively.hasComet)
-        #expect(!SkyDensity.lively.hasSpaceship)
-        #expect(SkyDensity.lively.showsYourStars)
+    @Test func adriftHasEverythingAndAnAstronaut() {
+        #expect(SkyDensity.adrift.twinkleCount == 14)
+        #expect(SkyDensity.adrift.hasComet)
+        #expect(SkyDensity.adrift.hasAstronaut)
+        #expect(!SkyDensity.adrift.hasSpaceship)
+        #expect(SkyDensity.adrift.showsYourStars)
     }
 
-    @Test func galacticHasLivelysTwinklesAndASpaceshipInsteadOfTheComet() {
-        #expect(SkyDensity.galactic.twinkleCount == SkyDensity.lively.twinkleCount)
-        #expect(SkyDensity.galactic.hasSpaceship)
-        #expect(!SkyDensity.galactic.hasComet)
-        #expect(SkyDensity.galactic.isGalactic)
-        #expect(SkyDensity.galactic.showsYourStars)
+    @Test func interstellarHasTheTwinklesAndASpaceshipInsteadOfTheComet() {
+        #expect(SkyDensity.interstellar.twinkleCount == SkyDensity.adrift.twinkleCount)
+        #expect(SkyDensity.interstellar.hasSpaceship)
+        #expect(!SkyDensity.interstellar.hasComet)
+        #expect(SkyDensity.interstellar.isInterstellar)
+        #expect(SkyDensity.interstellar.showsYourStars)
     }
 
-    @Test func onlyGalacticIsGalacticAndOnlyItHasASpaceship() {
-        for density in SkyDensity.allCases where density != .galactic {
-            #expect(!density.isGalactic && !density.hasSpaceship, "\(density)")
+    @Test func onlyAdriftHasTheAstronaut() {
+        for density in SkyDensity.allCases where density != .adrift {
+            #expect(!density.hasAstronaut, "\(density)")
         }
     }
 
-    @Test func galacticHasItsOwnLabelAndSavedValue() {
-        #expect(SkyDensity.galactic.rawValue == "galactic")
-        #expect(SkyDensity(rawValue: "galactic") == .galactic)
-        #expect(!SkyDensity.galactic.label.isEmpty)
+    @Test func onlyInterstellarIsInterstellarAndOnlyItHasASpaceship() {
+        for density in SkyDensity.allCases where density != .interstellar {
+            #expect(!density.isInterstellar && !density.hasSpaceship, "\(density)")
+        }
+    }
+
+    @Test func interstellarHasItsOwnLabelAndSavedValue() {
+        #expect(SkyDensity.interstellar.rawValue == "interstellar")
+        #expect(SkyDensity(rawValue: "interstellar") == .interstellar)
+        #expect(!SkyDensity.interstellar.label.isEmpty)
         #expect(Set(SkyDensity.allCases.map(\.label)).count == SkyDensity.allCases.count)
     }
 
-    @Test func theSavedChoiceOfEarlierVersionsStillReads() {
-        #expect(SkyDensity(rawValue: "calm") == .calm)
-        #expect(SkyDensity(rawValue: "lively") == .lively)
-        #expect(SkyDensity(rawValue: "off") == .off)
+    @Test func aChoiceSavedUnderTheOldNamesStillReads() {
+        #expect(SkyDensity(saved: "calm") == .serene)
+        #expect(SkyDensity(saved: "lively") == .adrift)
+        #expect(SkyDensity(saved: "galactic") == .interstellar)
+        #expect(SkyDensity(saved: "off") == .off)
+        // And the current names.
+        for density in SkyDensity.allCases {
+            #expect(SkyDensity(saved: density.rawValue) == density, "\(density)")
+        }
+        #expect(SkyDensity(saved: "stormy") == nil)
     }
 
     @Test func thePickerHasFourSteps() {
@@ -68,7 +81,7 @@ struct SkyDensityTests {
         defer { defaults.removePersistentDomain(forName: suite) }
 
         let service = PersonalizationService(defaults: defaults)
-        #expect(service.sky == .calm)
+        #expect(service.sky == .serene)
         service.sky = .off
         #expect(PersonalizationService(defaults: defaults).sky == .off)
         #expect(!PersonalizationService(defaults: defaults).sky.showsYourStars)

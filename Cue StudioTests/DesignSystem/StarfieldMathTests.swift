@@ -147,11 +147,11 @@ struct StarfieldMathTests {
         #expect(abs(StarfieldMath.nebulaPhase(at: period * 2, period: period)) < 0.0001)
     }
 
-    @Test func onlyLivelyHasTheTwinklesAndTheComet() {
+    @Test func onlyAdriftHasTheTwinklesAndTheComet() {
         #expect(SkyDensity.off.twinkleCount == 0 && !SkyDensity.off.hasComet)
-        #expect(SkyDensity.calm.twinkleCount == 0 && !SkyDensity.calm.hasComet)
-        #expect(SkyDensity.lively.twinkleCount == 14 && SkyDensity.lively.hasComet)
-        #expect(SkyDensity.galactic.twinkleCount == 14 && !SkyDensity.galactic.hasComet)
+        #expect(SkyDensity.serene.twinkleCount == 0 && !SkyDensity.serene.hasComet)
+        #expect(SkyDensity.adrift.twinkleCount == 14 && SkyDensity.adrift.hasComet)
+        #expect(SkyDensity.interstellar.twinkleCount == 14 && !SkyDensity.interstellar.hasComet)
         #expect(SkyDensity.allCases.map(\.step) == [0, 1, 2, 3])
     }
 

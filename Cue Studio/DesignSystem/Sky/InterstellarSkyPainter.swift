@@ -1,18 +1,18 @@
 //
-//  GalacticSkyPainter.swift
+//  InterstellarSkyPainter.swift
 //  Cue Studio
 //
 
 import SwiftUI
 
-/// What only the Galactic sky draws besides the nebulae: the Milky Way, a soft diagonal band of light with a dust of tiny stars in it, drifting
+/// What only the Interstellar sky draws besides the nebulae: the Milky Way, a soft diagonal band of light with a dust of tiny stars in it, drifting
 /// slowly across itself. The numbers are `StarfieldMath`'s (`bandAngle`, `bandWidth`…).
-enum GalacticSkyPainter {
+enum InterstellarSkyPainter {
     static func drawBand(in canvas: inout GraphicsContext, size: CGSize, time: TimeInterval, dust: [StarfieldMath.BandStar]) {
         let diagonal = hypot(size.width, size.height)
         let width = StarfieldMath.bandWidth
         let peak = StarfieldMath.bandPeakOpacity
-        let light = Palette.galacticBand
+        let light = Palette.interstellarBand
 
         var layer = canvas
         layer.translateBy(x: size.width / 2, y: size.height * 0.46)

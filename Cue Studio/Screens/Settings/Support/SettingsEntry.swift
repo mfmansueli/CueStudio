@@ -186,7 +186,7 @@ nonisolated enum SettingsEntry: String, CaseIterable, Identifiable, Sendable {
         case .appIcon: ["deep space", "first light", "icon"]
         case .topics: ["niche", "colors", "worlds"]
         case .autoTag: ["topic", "tag", "automatic"]
-        case .starrySky: ["stars", "motion", "calm", "lively", "galactic", "spaceship", "space", "background"]
+        case .starrySky: ["stars", "motion", "serene", "adrift", "interstellar", "calm", "lively", "galactic", "spaceship", "astronaut", "space", "background"]
         case .celebrations: ["confetti", "milestone", "motion"]
         case .haptics: ["vibration", "feedback", "taps"]
         case .appLanguage: ["interface", "english", "português"]

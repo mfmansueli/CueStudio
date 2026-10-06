@@ -401,22 +401,22 @@ struct PaletteContrastTests {
 
     // MARK: - The math
 
-    /// Galactic (Starry sky): the night under every browse screen is darker than `bg`, so every text token reads on it, and still reads at its
+    /// Interstellar (Starry sky): the night under every browse screen is darker than `bg`, so every text token reads on it, and still reads at its
     /// brightest point: a wash light, a nebula's heart and the Milky Way band all on the same spot (the rule: the worst point, not the average).
-    @Test func theGalacticNightKeepsTheTextTokensReadableEvenAtItsBrightestPoint() {
+    @Test func theInterstellarNightKeepsTheTextTokensReadableEvenAtItsBrightestPoint() {
         let washes: [(name: String, color: Color)] = [
-            ("indigo", Palette.galacticWashIndigo), ("magenta", Palette.galacticWashMagenta), ("teal", Palette.galacticWashTeal),
+            ("indigo", Palette.interstellarWashIndigo), ("magenta", Palette.interstellarWashMagenta), ("teal", Palette.interstellarWashTeal),
         ]
         let nebulae: [(name: String, hue: NebulaHue)] = [("blue", .blue), ("magenta", .magenta), ("teal", .teal)]
-        let nebulaPeak = StarfieldMath.galacticNebulaOpacity.upperBound
-        let band = Palette.galacticBand.opacity(StarfieldMath.bandPeakOpacity)
+        let nebulaPeak = StarfieldMath.interstellarNebulaOpacity.upperBound
+        let band = Palette.interstellarBand.opacity(StarfieldMath.bandPeakOpacity)
         let tokens: [(name: String, color: Color)] = [("ink", Palette.ink), ("ink2", Palette.ink2), ("inkHint", Palette.inkHint)]
 
         for appearance in Appearance.allCases {
-            let base = rgb(Palette.galacticBg, in: appearance)
+            let base = rgb(Palette.interstellarBg, in: appearance)
             for token in textTokens {
-                let value = ratio(token.color, on: Palette.galacticBg, in: appearance)
-                #expect(value >= ColorContrast.textMinimum, "\(token.name) on the galactic night, \(appearance): \(value)")
+                let value = ratio(token.color, on: Palette.interstellarBg, in: appearance)
+                #expect(value >= ColorContrast.textMinimum, "\(token.name) on the interstellar night, \(appearance): \(value)")
             }
             for wash in washes {
                 for nebula in nebulae {
