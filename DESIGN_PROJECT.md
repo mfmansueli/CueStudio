@@ -52,7 +52,7 @@ voice", a ideia e 7 frases que mudam a cada 1,6 s, Cancel. Dura **no mínimo 3,0
 sólida (0,22 s), anel abrindo (0,42 s), a estrela pousa como cursor (0,44 s) e a página escreve. O teclado do campo desce quando a estrela sobe e a
 página aberta por baixo não o pede de volta (título e texto são da IA; `loadPage` não foca nada com um pedido pendente). **Cancel ou erro:** a estrela cai 40 pt e some
 (0,3 s), o overlay some (0,22 s), nenhum roteiro fica, a ideia continua no campo (erro: toast "Couldn’t write it · Try again"). A ideia do Logbook só
-deixa de esperar quando virou roteiro. **Reduce Motion (`09` §7):** sem voo nem anel, fade de 0,2 s. **Low Power Mode não muda nada** (decisão do dono em 6/10/2026: as animações tocam em qualquer situação; `speed` só serve para encurtar nos testes de UI). Sem Apple Intelligence não há overlay (a seta é "Write it" e abre um rascunho). A estrela vira uma estrela do céu (`SkyMemory`) ao chegar.
+deixa de esperar quando virou roteiro. **Reduce Motion (`09` §7):** sem voo nem anel, fade de 0,2 s. **Low Power Mode não muda nada** (decisão do dono em 6/10/2026: as animações tocam em qualquer situação; `speed` só serve para encurtar nos testes de UI). Sem Apple Intelligence não há overlay (a seta é "Write it" e abre um rascunho). A estrela vira uma estrela do céu (`SkyMemory`) ao chegar. **"Your stars"** (as até 14 estrelas amarelas de 3 pt no alto de Scripts, `SkyStarsLayer`) são parte do céu: com **Starry sky › Off** nenhuma tela desenha estrela alguma, Scripts incluída (`SkyDensity.showsYourStars`); as estrelas continuam guardadas e voltam com Calm ou Lively. O fundo é um só em todas as telas de navegação (`skyBackground()`: `BgWash` + `StarfieldView` na densidade escolhida), e nada além dele desenha estrelas por cima.
 O catálogo de debug (`-uiTestCatalogue transition`) segura o estado de espera para fotografar.
 
 ## 4. My Cue Voice (`04` §F9, `08`)
@@ -75,8 +75,50 @@ O catálogo de debug (`-uiTestCatalogue transition`) segura o estado de espera p
 
 ## 5. Movimento
 
-Céu (`StarfieldMath`): 14 twinkles de 7 s (Soft: 7), comet a cada 105–135 s (o primeiro aos 25 s, relógio do app); deriva 260/160/85 s; nebulosa
+Céu (`StarfieldMath`, `SkyDensity`): **Serene** é só as estrelas de fundo (3 camadas, deriva 260/160/85 s) e as 2 nebulosas, sem estrelas piscando e sem cometa; **Adrift** tem tudo: as mesmas camadas e nebulosas, 14 estrelas piscando de 7 s e **menores** que no quadro (1,2–2 pt em vez de 1,8–3; a cruz de brilho com 5,5 pt de meia haste em vez de 8; pedido do dono em 6/10/2026) e o comet a cada 105–135 s (o primeiro aos 25 s, relógio do app), **e um astronauta flutuando** (seção 5.0.1); **Interstellar** (o quarto, pedido do dono em 6/10/2026; `StarfieldMath+Interstellar`, `InterstellarSkyPainter`, `SpaceshipPainter`) é o Adrift com as cores de uma galáxia e **uma nave no lugar do comet** (detalhes na seção 5.0); nebulosa
 26 s. Tudo o mais segue `motion/README.md` e as seções 12 e 13 da v27/v29 já implementadas (contagem, send-off, marco, first star, núcleo YOU, empty state).
+
+## 5.0. Interstellar, o quarto céu (Settings › Personalize › Starry sky)
+
+**Os nomes (decisão do dono, 6/10/2026):** Off · **Serene** (antes Calm) · **Adrift** (antes Lively) · **Interstellar** (antes Galactic). "Deep Space" também foi pensado, mas já é o nome de um dos
+ícones do app (o do marco de 25 vídeos) e aparece na mesma tela de Personalize, então ficou Interstellar. Os valores salvos antes (`calm`, `lively`, `galactic`) continuam valendo (`SkyDensity.init(saved:)`);
+os argumentos de teste são `off|serene|adrift|interstellar` (os antigos também são lidos).
+
+O Off, o Serene e o Adrift não mudaram de cor; o **Interstellar** é o céu do espaço profundo. As quatro opções estão em Settings › Personalize › Starry sky e a escolha vale em todas as telas de navegação (`skyBackground()`).
+**O padrão é o Serene** (decisão do dono, 6/10/2026): quem nunca escolheu começa nele e muda se quiser; quem já tinha escolhido outro céu mantém a escolha (só o valor ausente ou desconhecido vira Serene).
+- **A noite:** `Palette.Sky.interstellarBg` (`#030409`, mais escura que o `bg`) com três luzes em vez de duas (`BgWash.interstellar`: índigo no alto à esquerda, magenta à direita, teal embaixo à esquerda). As telas com
+  quadro próprio (Your universe, Share, Milestone…) mantêm o brilho do próprio quadro; só as estrelas, as nebulosas e a nave são as do Interstellar.
+- **Nebulosas:** três, uma de cada cor (azul, magenta e teal), maiores e mais lentas que as violeta (`StarfieldMath.interstellarNebulae`; abertura de 6 a 10% no centro).
+- **Via Láctea:** uma faixa suave na diagonal (24°, 150 pt de largura, 5% no meio) com 70 grãos de poeira, que se desloca ±18 pt em 90 s (`InterstellarSkyPainter`).
+- **Estrelas:** as mesmas camadas de fundo e as mesmas 14 que piscam do Adrift (também pequenas).
+- **A nave** (`SpaceshipPainter`, no lugar do comet), **pequena, lenta e rara** (pedido do dono em 6/10/2026: a tela de Scripts já é cheia de informação, a nave é algo para achar, nunca algo que chama): 16 a 22 pt, angular
+  e "tech": casco facetado (claro em cima, sombreado embaixo), asas delta índigo com um entalhe e uma luz ciano fina na borda de ataque, visor, duas fendas de motor e uma luz minúscula em cada ponta de asa (rosa e menta,
+  piscam a cada 2,8 s, uma de cada vez). **O rastro** é um fio de 1,1 pt que afina até sumir, vai do azul dos íons ao violeta, tem um brilho mais largo e fraco por baixo e **segue o caminho que a nave de fato fez**,
+  curva incluída (4,5 s de voo, ≈ 125 pt). Atravessa a tela em 16 a 22 s num arco suave, entra por uma borda e sai pela outra, na metade de cima, a 90% de opacidade; a primeira aos **90 s** e as outras a cada **4 a 7 minutos**
+  (`StarfieldMath.spaceship`, um relógio só para o app todo, como o do comet). Com Reduce Motion não há nave (o céu fica num quadro parado).
+- **Contraste:** `PaletteContrastTests` mede `ink`, `ink2` e `inkHint` na noite galáctica e no ponto mais claro dela (uma luz, o coração de uma nebulosa e a faixa juntos): todos passam de 4,5:1, com e sem
+  Aumentar Contraste. A nave e a poeira são decoração.
+- **Debug:** `-uiTestCatalogue sky -uiTestSky interstellar` abre a demonstração (com o botão "Send a spaceship"; com `-uiTestInMemory` num simulador novo, para o onboarding não cobrir a tela).
+- **Estrelas mais delicadas em Serene, Adrift e Interstellar (6/10/2026):** as de fundo e as que piscam são desenhadas a **65% da opacidade** e as de fundo a **88% do tamanho** (`StarfieldMath.delicateLook`; os números dos quadros
+  continuam em `boardLook`, que o primeiro voo usa).
+- **Serene mudou também (6/10/2026):** é só as estrelas de fundo e as nebulosas. O céu do primeiro voo (`OnboardingSky`) mantém o que tinha (7 estrelas piscando e o comet, `twinkleCountOverride`).
+
+## 5.0.1. O astronauta do Adrift
+
+Só no **Adrift**, sem mudar mais nada dele (pedido do dono em 6/10/2026): um astronauta pequeno perdido no espaço, flutuando em gravidade zero pela tela e batendo de leve nas bordas.
+- **Movimento** (`StarfieldMath.astronaut`, uma função do relógio do app e de uma semente, como o resto do céu: continua de onde estava ao trocar de aba e nunca pula): deriva de 7 a 10 pt por segundo em
+  linha reta, **quica nas quatro bordas** sem perder velocidade (`StarfieldMath.bounce`, uma onda triangular), com um balanço de 4 pt fora da reta (9 e 13 s), uma volta lenta sobre si mesmo (uma volta a cada 70–125 s),
+  um balanço leve do corpo e, a cada batida, um empurrão suave de giro que se acalma (1,5 s, sem salto). Nunca sai da tela. Entra em fade em 4 s no início da sessão.
+- **Desenho** (`AstronautPainter`, 37,5 pt da cabeça às botas (eram 30 pt; 25% maior a pedido do dono em 6/10/2026, para vê-lo melhor); refinado a pedido do dono em 6/10/2026, que achou a primeira versão transparente demais): **traje branco opaco**, iluminado de cima à esquerda e sombreado em
+  cinza frio para a direita e para baixo (`Palette.Sky.astronautSuit` → `astronautSuitShade`), com juntas, luvas, botas, anel do pescoço e mochila cinza (`astronautSuitDeep`), um **cordão solto** que balança, um painel no
+  peito com duas luzes (amarela fixa e ciano que pulsa a cada 3 s) e um remendo amarelo do Cue no ombro. O capacete tem um **visor quadrado espelhado**: vidro do índigo ao preto, **dois reflexos prateados**
+  inclinados (um forte, um fraco), um brilho em cruz no canto superior esquerdo, um reflexo frio ciano na borda de baixo e um aro prateado fino. Braços (levantados) e pernas balançam fora de passo.
+  O catálogo mostra um **close-up** dele em 170 pt (`-uiTestCatalogue sky -uiTestSky adrift`).
+- **Contraste (exceção aceita pelo dono para testar no app, 6/10/2026; rever depois do teste):** o traje branco (`#F6F7FF`) é quase da cor do texto: `ink`, `ink2` e `inkHint` medem ≈ 1,1:1 sobre ele, abaixo dos 4,5:1 da regra. Só acontece enquanto ele passa por
+  trás de um texto que está direto no céu (cartões, vidro e a barra de navegação o escondem ou o cobrem), com 37,5 pt de altura e no máximo ≈ 16 pt/s, ou seja, uma palavra fica sob ele por poucos segundos.
+  A primeira versão (silhueta escura com fio de luz) passava; a branca não passa e não há como passar sem mudar a cor do traje.
+- **Fica atrás de tudo** (é fundo): passa por trás dos cartões e dos textos. Com Reduce Motion não há astronauta (o céu fica num quadro parado), como a nave do Interstellar. O céu do primeiro voo não tem.
+- **Debug:** `-uiTestCatalogue sky -uiTestSky adrift` mostra a cena; o botão **Skip 30 s** avança o relógio do céu para ver as batidas sem esperar.
 
 ## 5.1. Your universe (9.2) e o núcleo YOU
 

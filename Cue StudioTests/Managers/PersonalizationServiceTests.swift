@@ -18,29 +18,55 @@ struct PersonalizationServiceTests {
         return defaults
     }
 
-    @Test func itStartsWithAFullSkyAndEverythingOn() {
+    @Test func itStartsWithTheSereneSkyAndEverythingOn() {
         let service = PersonalizationService(defaults: store())
-        #expect(service.sky == .lively)
+        #expect(service.sky == .serene)
         #expect(service.celebrations && service.haptics && service.autoTagsTopics)
     }
 
     @Test func theChoicesAreKept() {
         let defaults = store()
         let service = PersonalizationService(defaults: defaults)
-        service.sky = .calm
+        service.sky = .interstellar
         service.celebrations = false
         service.haptics = false
         service.autoTagsTopics = false
         let again = PersonalizationService(defaults: defaults)
-        #expect(again.sky == .calm)
+        #expect(again.sky == .interstellar)
         #expect(!again.celebrations && !again.haptics && !again.autoTagsTopics)
         Haptics.isEnabled = true
     }
 
-    @Test func anUnknownSkyFallsBackToFull() {
+    @Test func anUnknownSkyFallsBackToSerene() {
         let defaults = store()
         defaults.set("stormy", forKey: DefaultsKey.skyDensity)
-        #expect(PersonalizationService(defaults: defaults).sky == .lively)
+        #expect(PersonalizationService(defaults: defaults).sky == .serene)
+    }
+
+    /// The four skies of Settings › Personalize › Starry sky: each can be chosen and is there the next time.
+    @Test func everySkyOfTheSettingsIsKept() {
+        for sky in SkyDensity.allCases {
+            let defaults = store()
+            PersonalizationService(defaults: defaults).sky = sky
+            #expect(PersonalizationService(defaults: defaults).sky == sky, "\(sky)")
+        }
+        #expect(SkyDensity.allCases == [.off, .serene, .adrift, .interstellar])
+    }
+
+    /// Someone who already chose a sky keeps it, even if it was saved under the name it had before the renaming (Calm, Lively, Galactic).
+    @Test func aSkySavedUnderItsOldNameIsKept() {
+        for (old, sky) in [("calm", SkyDensity.serene), ("lively", .adrift), ("galactic", .interstellar)] {
+            let defaults = store()
+            defaults.set(old, forKey: DefaultsKey.skyDensity)
+            #expect(PersonalizationService(defaults: defaults).sky == sky, "\(old)")
+        }
+    }
+
+    /// Someone who already chose a sky keeps it: only a creator who never chose gets Serene.
+    @Test func aSkyChosenBeforeIsNotChanged() {
+        let defaults = store()
+        defaults.set(SkyDensity.adrift.rawValue, forKey: DefaultsKey.skyDensity)
+        #expect(PersonalizationService(defaults: defaults).sky == .adrift)
     }
 
     @Test func theHapticsSwitchReachesTheHapticsHelper() {

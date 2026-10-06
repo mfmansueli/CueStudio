@@ -5,34 +5,61 @@
 
 import Foundation
 
-/// How alive the starry sky of the browse screens is (Personalize › Starry sky): Off, Calm or Lively. Lively is the default
-/// (v29); Calm has half the twinkles; Off draws no sky at all. The raw values are the ones saved by
-/// v27 (calm, lively), so a creator's choice carries over.
+/// Which starry sky the browse screens have (Personalize › Starry sky): Off, Serene, Adrift or Interstellar. Serene is the default (the owner's call,
+/// 6/10/2026; the creator changes it in Settings). Adrift has everything: the drifting stars, the nebulae, the small twinkling stars, the
+/// comet and an astronaut floating in zero gravity. Serene is only the drifting stars and the nebulae (nothing twinkles, no comet).
+/// Interstellar is deep space: Adrift's stars and twinkles in the colours of a galaxy (blue, magenta and teal nebulae, a Milky Way band, a
+/// darker night), with a spaceship that crosses instead of the comet. Off draws no sky at all. Serene, Adrift and Interstellar were Calm, Lively and
+/// Galactic before the owner renamed them on 6/10/2026; a choice saved under the old names still reads (`init(saved:)`).
 nonisolated enum SkyDensity: String, CaseIterable, Identifiable, Sendable {
-    case off, calm, lively
+    case off, serene, adrift, interstellar
 
-    var id: String { rawValue }
-
-    /// The slider's position on its three steps.
-    var step: Int { Self.allCases.firstIndex(of: self) ?? 2 }
-
-    /// How many twinkles a screen has: 14 at Lively, half at Calm (`motion/README.md`).
-    var twinkleCount: Int {
-        switch self {
-        case .off: 0
-        case .calm: 7
-        case .lively: 14
+    /// The sky saved in the preferences: the current raw values, and the names the skies had before (calm, lively, galactic), so a creator's
+    /// choice carries over. Nil for anything else.
+    init?(saved value: String) {
+        switch value {
+        case "calm": self = .serene
+        case "lively": self = .adrift
+        case "galactic": self = .interstellar
+        default: self.init(rawValue: value)
         }
     }
 
-    /// The comet crosses the sky of Calm and Lively.
-    var hasComet: Bool { self != .off }
+    var id: String { rawValue }
+
+    /// The position on its four steps.
+    var step: Int { Self.allCases.firstIndex(of: self) ?? 1 }
+
+    /// How many twinkling stars a screen has: 14 at Adrift and Interstellar (`motion/README.md`), none at Serene.
+    var twinkleCount: Int {
+        switch self {
+        case .off, .serene: 0
+        case .adrift, .interstellar: 14
+        }
+    }
+
+    /// The comet crosses the sky of Adrift only.
+    var hasComet: Bool { self == .adrift }
+
+    /// A small astronaut floats in the sky of Adrift only, bouncing softly off the edges of the screen as in zero gravity.
+    var hasAstronaut: Bool { self == .adrift }
+
+    /// The spaceship crosses the sky of Interstellar only, where the comet would be.
+    var hasSpaceship: Bool { self == .interstellar }
+
+    /// Interstellar is its own look: a darker night under the browse screens and the colours of a galaxy in the nebulae.
+    var isInterstellar: Bool { self == .interstellar }
+
+    /// "Your stars" (the small yellow one for each idea sent, above Scripts) belong to the sky: with Off no screen draws any star.
+    /// They are kept, so they are back when the sky is.
+    var showsYourStars: Bool { self != .off }
 
     var label: String {
         switch self {
         case .off: String(localized: "Off")
-        case .calm: String(localized: "Calm")
-        case .lively: String(localized: "Lively")
+        case .serene: String(localized: "Serene")
+        case .adrift: String(localized: "Adrift")
+        case .interstellar: String(localized: "Interstellar")
         }
     }
 }

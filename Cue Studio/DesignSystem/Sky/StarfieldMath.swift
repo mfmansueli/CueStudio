@@ -26,6 +26,17 @@ nonisolated enum StarfieldMath {
     static let near = Layer(starsPerTile: 7, size: 1.6...2.4, opacity: 0.60...0.95, tile: CGSize(width: 390, height: 600), drift: 85)
     static let layers = [far, mid, near]
 
+    /// How strongly the stars are drawn: the drifting stars' and the twinkles' opacity are multiplied by `opacity`, and the drifting stars' size by
+    /// `size` (the twinkles' own size is `twinkleSize`). The app's sky is the delicate one (the owner's call, 6/10/2026: "a bit more delicate"); the
+    /// first flight keeps the strength its boards were drawn with.
+    struct StarLook: Equatable, Sendable {
+        let opacity: Double
+        let size: Double
+    }
+
+    static let delicateLook = StarLook(opacity: 0.65, size: 0.88)
+    static let boardLook = StarLook(opacity: 1, size: 1)
+
     struct Star: Equatable, Sendable {
         /// Position inside the tile, 0...1.
         let x: Double
@@ -58,7 +69,7 @@ nonisolated enum StarfieldMath {
         /// Position on the screen, 0...1.
         let x: Double
         let y: Double
-        /// 1.8 to 3 pt.
+        /// `twinkleSize`.
         let size: Double
         /// 7 s for one cycle (`motion/README.md`).
         let cycle: Double
@@ -74,7 +85,7 @@ nonisolated enum StarfieldMath {
         return (0..<count).map { index in
             Twinkle(
                 x: random.next(in: 0.06...0.94), y: random.next(in: 0.05...0.9),
-                size: random.next(in: 1.8...3.0), cycle: twinkleCycle,
+                size: random.next(in: twinkleSize), cycle: twinkleCycle,
                 // Each star starts 0 to 5.2 s into its cycle.
                 phase: random.next(in: 0...5.2) / twinkleCycle,
                 hasGlint: index % 2 == 0,
@@ -85,6 +96,13 @@ nonisolated enum StarfieldMath {
 
     /// Seconds for one twinkle.
     static let twinkleCycle = 7.0
+
+    /// A twinkling star's size at its fullest, in points: small, close to the near layer's stars (1.6 to 2.4 pt), so it is the light
+    /// coming and going that gives it away (the design's 1.8 to 3 pt, made smaller on 6/10/2026 at the owner's request).
+    static let twinkleSize = 1.2...2.0
+
+    /// Half the length of the cross glint of a twinkle at its fullest, in points (it was 8).
+    static let glintHalfLength = 5.5
 
     /// The keyframes of a twinkle (`motion/README.md`): opacity 0.16 → 0.75 at 45% → 0.58 at 60% → 0.16, with the scale between 0.75 and 1.
     /// `phase` is 0...1 through the cycle (it wraps).
@@ -180,6 +198,8 @@ nonisolated enum StarfieldMath {
         let diameter: Double
         let opacity: Double
         let period: Double
+        /// Violet in Serene and Adrift; Interstellar has blue, magenta and teal ones (`interstellarNebulae`).
+        var hue: NebulaHue = .violet
     }
 
     static func nebulae(seed: UInt64) -> [Nebula] {
