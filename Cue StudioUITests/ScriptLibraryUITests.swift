@@ -51,12 +51,12 @@ final class ScriptLibraryUITests: XCTestCase {
         app.buttons["scripts.selectButton"].tap()
         XCTAssertTrue(prompt.waitForExistence(timeout: 5))
 
-        let magnifier = app.navigationBars.buttons["Search"].firstMatch
-        magnifier.tap()
-        let search = app.searchFields.firstMatch
+        let search = app.scriptsSearchField
         XCTAssertTrue(search.waitForExistence(timeout: 5))
+        search.tap()
         search.typeText("nothing matches this")
         XCTAssertTrue(element(app, "scripts.empty").waitForExistence(timeout: 5))
+        XCTAssertTrue(prompt.exists, "the dock stays while searching")
     }
 
     func testTheCardsArrowWritesTheIdeaIntoANewPage() {
@@ -106,12 +106,10 @@ final class ScriptLibraryUITests: XCTestCase {
 
     func testSearch() {
         let app = CueApp.launch(seeded: true)
-        // The search is the navigation bar's own: a magnifier that opens the system's field.
-        let magnifier = app.navigationBars.buttons["Search"].firstMatch
-        XCTAssertTrue(magnifier.waitForExistence(timeout: 15))
-        magnifier.tap()
-        let search = app.searchFields.firstMatch
-        XCTAssertTrue(search.waitForExistence(timeout: 5))
+        // The search is a field at the top of the list, always there.
+        let search = app.scriptsSearchField
+        XCTAssertTrue(search.waitForExistence(timeout: 15))
+        search.tap()
         search.typeText("Q&A")
         XCTAssertTrue(app.staticTexts["Weekly Q&A — episode 12"].waitForExistence(timeout: 5))
         XCTAssertFalse(app.staticTexts[Self.lamp].exists)

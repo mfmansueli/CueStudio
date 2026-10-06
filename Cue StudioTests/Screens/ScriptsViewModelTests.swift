@@ -122,11 +122,17 @@ struct ScriptsViewModelTests {
         #expect(viewModel.count(for: .platform(.shorts)) == 0)
     }
 
-    @Test func theMagnifierShowsTheSearchAndHidingItClearsTheQuery() {
-        let (viewModel, _, _) = makeViewModel(scripts: [TestData.script()])
-        viewModel.isSearching = true
+    /// The search is always there, so it narrows whatever platform is picked, and clearing it gives that platform's scripts back.
+    @Test func theSearchAndThePlatformNarrowTheListTogether() {
+        let lamp = TestData.script(title: "Lamp review", platform: .tiktok)
+        let habits = TestData.script(title: "Morning habits", platform: .tiktok)
+        let reel = TestData.script(title: "Lamp unboxing", platform: .reels)
+        let (viewModel, _, _) = makeViewModel(scripts: [lamp, habits, reel])
+        let titles = { Set(viewModel.groups(takeCount: { _ in 0 }).flatMap(\.scripts).map(\.title)) }
+        viewModel.filter = .platform(.tiktok)
         viewModel.query = "lamp"
-        viewModel.isSearching = false
-        #expect(viewModel.query.isEmpty)
+        #expect(titles() == ["Lamp review"])
+        viewModel.query = ""
+        #expect(titles() == ["Lamp review", "Morning habits"])
     }
 }

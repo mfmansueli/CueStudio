@@ -68,6 +68,9 @@ extension XCUIApplication {
     /// The script page's back button: the navigation bar's own (v30).
     var pageBackButton: XCUIElement { navigationBars.buttons["BackButton"].firstMatch }
 
+    /// The search at the top of Scripts' list (always there, the dock stays): its field.
+    var scriptsSearchField: XCUIElement { descendants(matching: .any)["scripts.search"].searchFields.firstMatch }
+
     /// The system tab bar: its buttons are the five tabs, in order Scripts, Takes, Record, Profile, Settings.
     var cueTabBar: XCUIElement { tabBars.firstMatch }
 

@@ -9,11 +9,8 @@ import Foundation
 @Observable
 final class ScriptsViewModel {
     var filter: ScriptFilter = .all
+    /// The words in the search field at the top of the list (always there).
     var query = ""
-    /// The magnifier in the bar: the search field is showing.
-    var isSearching = false {
-        didSet { if !isSearching { query = "" } }
-    }
     var isSelecting = false {
         didSet { if !isSelecting { selection.removeAll() } }
     }

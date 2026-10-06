@@ -6,12 +6,12 @@
 import SwiftUI
 
 /// A capsule search field that sits in the content, for screens where something has to come above
-/// the search (the navigation bar's drawer is always first).
+/// the search (the navigation bar's drawer is always first). The screen holds its focus (`isFocused`), so it
+/// knows when the keyboard is the search's.
 struct SearchField: View {
     @Binding var text: String
     let prompt: LocalizedStringKey
-
-    @FocusState private var isFocused: Bool
+    var isFocused: FocusState<Bool>.Binding
 
     private static let height: CGFloat = 40
 
@@ -21,11 +21,12 @@ struct SearchField: View {
                 .font(.body.weight(.medium))
                 .foregroundStyle(Palette.ink2)
                 .accessibilityHidden(true)
-            TextField(prompt, text: $text)
+            // The prompt in `ink2`, measured like any text (the system's placeholder grey is about 2.4:1 on the capsule).
+            TextField(text: $text, prompt: Text(prompt).foregroundStyle(Palette.ink2)) { Text(prompt) }
                 .font(.body)
                 .foregroundStyle(Palette.ink)
                 .tint(Palette.accText)
-                .focused($isFocused)
+                .focused(isFocused)
                 .submitLabel(.search)
                 .autocorrectionDisabled()
                 .accessibilityAddTraits(.isSearchField)
@@ -47,7 +48,7 @@ struct SearchField: View {
         .frame(height: Self.height)
         .background(Palette.fill, in: Capsule())
         .contentShape(Capsule())
-        .onTapGesture { isFocused = true }
+        .onTapGesture { isFocused.wrappedValue = true }
         .accessibilityElement(children: .contain)
     }
 }
@@ -55,7 +56,8 @@ struct SearchField: View {
 #if DEBUG
 #Preview {
     @Previewable @State var text = ""
-    SearchField(text: $text, prompt: "Search scripts")
+    @Previewable @FocusState var isFocused: Bool
+    SearchField(text: $text, prompt: "Search scripts", isFocused: $isFocused)
         .padding()
         .background(Palette.bg)
 }
