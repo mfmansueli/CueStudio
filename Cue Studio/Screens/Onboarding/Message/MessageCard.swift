@@ -26,11 +26,11 @@ struct MessageCard: View {
         content
             .padding(2)
             .background {
-                RoundedRectangle(cornerRadius: 24, style: .continuous).fill(Palette.nightViolet.mix(with: Palette.flightLilac, by: 0.5).opacity(0.32))
+                RoundedRectangle(cornerRadius: 24, style: .continuous).fill(Palette.Universe.nightViolet.mix(with: Palette.Flight.lilac, by: 0.5).opacity(0.32))
             }
             .overlay { ring }
-            .shadow(color: Palette.flightCardShadow.opacity(0.45), radius: 25, y: 20)
-            .shadow(color: Palette.nightViolet.opacity(0.22), radius: 17)
+            .shadow(color: Palette.Flight.cardShadow.opacity(0.45), radius: 25, y: 20)
+            .shadow(color: Palette.Universe.nightViolet.opacity(0.22), radius: 17)
             .motion(outer)
     }
 
@@ -46,7 +46,7 @@ struct MessageCard: View {
         .padding(.top, 16)
         .padding(.bottom, 18)
         .frame(maxWidth: .infinity, minHeight: 327, alignment: .topLeading)
-        .background { AuroraCardBackground(base: Palette.nightIndigo, cornerRadius: 22, isActive: false) }
+        .background { AuroraCardBackground(base: Palette.Universe.nightIndigo, cornerRadius: 22, isActive: false) }
         .overlay { brackets }
         .overlay { risingSpecks }
         .overlay { scanLine }
@@ -59,10 +59,10 @@ struct MessageCard: View {
             .strokeBorder(
                 AngularGradient(
                     stops: [
-                        .init(color: Palette.flightLilac.opacity(0), location: 0), .init(color: Palette.flightLilac.opacity(0), location: 190 / 360),
-                        .init(color: Palette.flightLilac, location: 270 / 360), .init(color: Palette.acc, location: 318 / 360),
-                        .init(color: Palette.starCream, location: 332 / 360), .init(color: Palette.starLilac, location: 345 / 360),
-                        .init(color: Palette.flightLilac.opacity(0), location: 1),
+                        .init(color: Palette.Flight.lilac.opacity(0), location: 0), .init(color: Palette.Flight.lilac.opacity(0), location: 190 / 360),
+                        .init(color: Palette.Flight.lilac, location: 270 / 360), .init(color: Palette.acc, location: 318 / 360),
+                        .init(color: Palette.Universe.starCream, location: 332 / 360), .init(color: Palette.Universe.starLilac, location: 345 / 360),
+                        .init(color: Palette.Flight.lilac.opacity(0), location: 1),
                     ],
                     center: .center, angle: .degrees(ambient / 2.8 * 360)
                 ),
@@ -80,7 +80,7 @@ struct MessageCard: View {
                 writingLabel
                     .opacity(Self.clip.pose(of: "L15", at: board).opacity)
                 Text(readyLabel)
-                    .foregroundStyle(Palette.starLilac)
+                    .foregroundStyle(Palette.Universe.starLilac)
                     .motion(Self.clip.pose(of: "L20", at: board))
             }
             .font(.system(size: 10.5, weight: .semibold, design: .monospaced))
@@ -138,7 +138,7 @@ struct MessageCard: View {
         }
         .padding(.horizontal, 8)
         .frame(height: 22)
-        .background(Palette.nightDeep.opacity(0.45), in: Capsule())
+        .background(Palette.Universe.nightDeep.opacity(0.45), in: Capsule())
         .opacity(topic == nil ? 0 : 1)
     }
 
@@ -148,14 +148,14 @@ struct MessageCard: View {
             Text("DESTINATION · \(platform.label.uppercased())")
                 .font(.system(size: 10, weight: .semibold, design: .monospaced))
                 .tracking(1)
-                .foregroundStyle(Palette.flightInk.opacity(0.72))
+                .foregroundStyle(Palette.Flight.ink.opacity(0.72))
                 .lineLimit(1)
             Spacer(minLength: 0)
             progressRing
             Text(durationLabel)
                 .font(.system(size: 10, weight: .semibold, design: .monospaced))
                 .tracking(1)
-                .foregroundStyle(Palette.starGold)
+                .foregroundStyle(Palette.Universe.starGold)
         }
         .frame(height: 18)
         .motion(Self.clip.pose(of: "L21", at: board))
@@ -173,15 +173,15 @@ struct MessageCard: View {
         let check = Self.clip.pose(of: "L23", at: board).opacity
         let waiting = script == nil
         return ZStack {
-            Circle().stroke(Palette.flightInk.opacity(0.22), lineWidth: 2)
+            Circle().stroke(Palette.Flight.ink.opacity(0.22), lineWidth: 2)
             Circle()
                 .trim(from: 0, to: waiting ? 0.14 : fill)
-                .stroke(Palette.starGold, style: StrokeStyle(lineWidth: 2, lineCap: .round))
+                .stroke(Palette.Universe.starGold, style: StrokeStyle(lineWidth: 2, lineCap: .round))
                 .rotationEffect(.degrees(-90 + (waiting ? ambient / 0.9 * 360 : 0)))
                 .shadow(color: Palette.acc.opacity(0.7), radius: 2)
             Image(systemName: "checkmark")
                 .font(.system(size: 7, weight: .heavy))
-                .foregroundStyle(Palette.starGold)
+                .foregroundStyle(Palette.Universe.starGold)
                 .opacity(check)
         }
         .frame(width: 12, height: 12)
@@ -196,11 +196,11 @@ struct MessageCard: View {
             VStack(alignment: .leading, spacing: 14) {
                 part("HOOK", text: script.hook, part: .hook, tint: Palette.accText, color: .white, labelLayer: "L25")
                 if !script.body.isEmpty {
-                    part("BODY", text: script.body, part: .body, tint: Palette.flightInk.opacity(0.6), color: .white, labelLayer: "L29")
+                    part("BODY", text: script.body, part: .body, tint: Palette.Flight.ink.opacity(0.6), color: .white, labelLayer: "L29")
                 }
                 part(
-                    "CTA", text: script.cta, part: .cta, tint: Palette.flightInk.opacity(0.6),
-                    color: script.isCurated ? .white : Palette.flightLilac, labelLayer: "L41", caret: Palette.flightLilac
+                    "CTA", text: script.cta, part: .cta, tint: Palette.Flight.ink.opacity(0.6),
+                    color: script.isCurated ? .white : Palette.Flight.lilac, labelLayer: "L41", caret: Palette.Flight.lilac
                 )
             }
         } else if isSlow {
@@ -227,7 +227,7 @@ struct MessageCard: View {
         return GeometryReader { proxy in
             ForEach(0..<4, id: \.self) { corner in
                 Bracket()
-                    .stroke(Palette.starGold.opacity(0.85), style: StrokeStyle(lineWidth: 1.5, lineCap: .round))
+                    .stroke(Palette.Universe.starGold.opacity(0.85), style: StrokeStyle(lineWidth: 1.5, lineCap: .round))
                     .frame(width: 14, height: 14)
                     .scaleEffect(x: corner % 2 == 0 ? 1 : -1, y: corner < 2 ? 1 : -1)
                     .motion(pose)
@@ -284,11 +284,11 @@ struct MessageCard: View {
     }
 
     private static let specks = [
-        Speck(left: 40, bottom: 30, size: 2, color: Palette.starLilac, dx: -4, cycle: 2.2, delay: 0),
-        Speck(left: 120, bottom: 50, size: 2.5, color: Palette.starGold, dx: 6, cycle: 2.6, delay: 0.5),
-        Speck(left: 200, bottom: 20, size: 2, color: Palette.starLilac, dx: -6, cycle: 2.0, delay: 1.0),
+        Speck(left: 40, bottom: 30, size: 2, color: Palette.Universe.starLilac, dx: -4, cycle: 2.2, delay: 0),
+        Speck(left: 120, bottom: 50, size: 2.5, color: Palette.Universe.starGold, dx: 6, cycle: 2.6, delay: 0.5),
+        Speck(left: 200, bottom: 20, size: 2, color: Palette.Universe.starLilac, dx: -6, cycle: 2.0, delay: 1.0),
         Speck(left: 260, bottom: 60, size: 1.6, color: .white, dx: 4, cycle: 2.8, delay: 0.3),
-        Speck(left: 300, bottom: 26, size: 2.2, color: Palette.flightLilac, dx: -3, cycle: 2.4, delay: 1.4),
+        Speck(left: 300, bottom: 26, size: 2.2, color: Palette.Flight.lilac, dx: -3, cycle: 2.4, delay: 1.4),
         Speck(left: 80, bottom: 90, size: 1.6, color: .white, dx: 5, cycle: 2.1, delay: 0.8),
     ]
 

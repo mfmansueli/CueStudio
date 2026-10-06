@@ -182,11 +182,6 @@ struct ShareFlowTests {
 
     // MARK: - A network's turn
 
-    /// The flow answers a finished sheet from a task of its own: waits (up to two seconds) for it to have run, however busy the tests around are.
-    private func eventually(_ condition: @MainActor () -> Bool) async {
-        for _ in 0..<200 where !condition() { try? await Task.sleep(for: .milliseconds(10)) }
-    }
-
     private func startedWithThree(_ scenario: Scenario) async throws {
         scenario.flow.openPicker(with: try #require(await rendered(scenario)))
         scenario.flow.toggle(.reels)
@@ -214,7 +209,8 @@ struct ShareFlowTests {
         let operation = try #require(scenario.queues.queue(forTake: scenario.take.id)?.operationID)
         let share = ActivityShare(operationID: operation, url: URL(filePath: "/tmp/x.mov"), destination: .tiktok)
         scenario.review.activityFinished(.completed(activityType: "com.zhiliaoapp.musically.share"), for: share)
-        await eventually { scenario.flow.step == .confirm(.tiktok) }
+        // The flow answers a finished sheet from a task of its own.
+        await Wait.until { scenario.flow.step == .confirm(.tiktok) }
         #expect(scenario.flow.step == .confirm(.tiktok))
         #expect(scenario.review.celebration.map { if case .sentOff = $0 { true } else { false } } != true, "no send-off yet")
         #expect(scenario.milestones.shares == 0, "a share sheet is not a post")
@@ -226,6 +222,7 @@ struct ShareFlowTests {
         try await startedWithThree(scenario)
         let operation = try #require(scenario.queues.queue(forTake: scenario.take.id)?.operationID)
         scenario.review.activityFinished(.cancelled, for: ActivityShare(operationID: operation, url: URL(filePath: "/tmp/x.mov"), destination: .tiktok))
+        // The step was already on screen, so there's nothing to wait for: the time only shows the flow's task doesn't move it on.
         try await Task.sleep(for: .milliseconds(50))
         #expect(scenario.flow.step == .step(.tiktok))
     }

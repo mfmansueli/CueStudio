@@ -21,9 +21,9 @@ struct SetupRecommendationCard: View {
             HStack(alignment: .top, spacing: 12) {
                 Image(systemName: "sparkles")
                     .font(.body.weight(.semibold))
-                    .foregroundStyle(Palette.recommendationIcon)
+                    .foregroundStyle(Palette.Camera.recommendationIcon)
                     .frame(width: 36, height: 36)
-                    .background(Palette.recommendationIconFill, in: Circle())
+                    .background(Palette.Camera.recommendationIconFill, in: Circle())
                     .accessibilityHidden(true)
                 VStack(alignment: .leading, spacing: 3) {
                     Text(recommendation.title).font(.headline)
@@ -51,13 +51,13 @@ struct SetupRecommendationCard: View {
         .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: Metrics.cardRadius, style: .continuous))
         .background(
             LinearGradient(
-                colors: [Palette.recommendationTop, Palette.recommendationBottom],
+                colors: [Palette.Camera.recommendationTop, Palette.Camera.recommendationBottom],
                 startPoint: .topLeading, endPoint: .bottomTrailing
             ),
             in: RoundedRectangle(cornerRadius: Metrics.cardRadius, style: .continuous)
         )
-        .overlay(RoundedRectangle(cornerRadius: Metrics.cardRadius, style: .continuous).strokeBorder(Palette.recommendationRim, lineWidth: 0.5))
-        .shadow(color: Palette.recommendationShadow, radius: 25, y: 20)
+        .overlay(RoundedRectangle(cornerRadius: Metrics.cardRadius, style: .continuous).strokeBorder(Palette.Camera.recommendationRim, lineWidth: 0.5))
+        .shadow(color: Palette.Camera.recommendationShadow, radius: 25, y: 20)
         // A container of its own, so the card's identifier doesn't replace the buttons'.
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("prompter.recommendationCard")

@@ -35,7 +35,7 @@ struct PlanetPopover: View {
             .accessibilityIdentifier("universe.planetSeeInTakes")
         }
         .padding(14)
-        .background(Palette.popover, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
+        .background(Palette.Universe.popover, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
         .overlay(RoundedRectangle(cornerRadius: 18, style: .continuous).strokeBorder(Palette.glassBorder.opacity(0.8), lineWidth: 0.5))
         .shadow(color: .black.opacity(0.45), radius: 20, y: 8)
         .accessibilityElement(children: .contain)

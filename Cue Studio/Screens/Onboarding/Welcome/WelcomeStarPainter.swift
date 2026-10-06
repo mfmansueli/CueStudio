@@ -65,7 +65,10 @@ struct WelcomeStarPainter {
     private func drawDust(in context: inout GraphicsContext) {
         for dust in WelcomeScript.dust {
             let pose = dust.track.pose(at: time)
-            cross(at: dust.point, horizontal: dust.size, vertical: dust.size, thickness: 1, color: Palette.starWarm, pose: pose, glows: false, in: &context)
+            cross(
+                at: dust.point, horizontal: dust.size, vertical: dust.size, thickness: 1, color: Palette.Universe.starWarm, pose: pose, glows: false,
+                in: &context
+            )
         }
     }
 
@@ -107,7 +110,7 @@ struct WelcomeStarPainter {
             guard opacity > 0.01 else { continue }
             let point = CGPoint(x: pose.x, y: pose.y)
             context.drawLayer { layer in
-                layer.addFilter(.shadow(color: Palette.starCream.opacity(0.7 * opacity), radius: follower.size * 1.6))
+                layer.addFilter(.shadow(color: Palette.Universe.starCream.opacity(0.7 * opacity), radius: follower.size * 1.6))
                 layer.fill(circle(point, follower.size / 2), with: .color(follower.color.opacity(opacity)))
             }
         }
@@ -125,13 +128,18 @@ struct WelcomeStarPainter {
                 layer.addFilter(.shadow(color: Palette.acc.opacity(0.6), radius: 6))
                 layer.fill(circle(centre, 6.5 * core), with: .color(Palette.acc))
             }
-            context.fill(circle(centre, 2.6 * core), with: .color(Palette.starCream))
+            context.fill(circle(centre, 2.6 * core), with: .color(Palette.Universe.starCream))
         }
         let ring = WelcomeScript.ring.pose(at: time)
         if ring.opacity > 0.01 { context.stroke(circle(centre, 10 * ring.scale), with: .color(Palette.acc.opacity(ring.opacity)), lineWidth: 1.2) }
         let second = WelcomeScript.secondRing.pose(at: time)
-        if second.opacity > 0.01 { context.stroke(circle(centre, 10 * second.scale), with: .color(Palette.starCream.opacity(second.opacity)), lineWidth: 1) }
-        cross(at: centre, horizontal: 150, vertical: 105, thickness: 1.8, color: Palette.starGold, pose: WelcomeScript.flare.pose(at: time), in: &context)
+        if second.opacity > 0.01 {
+            context.stroke(circle(centre, 10 * second.scale), with: .color(Palette.Universe.starCream.opacity(second.opacity)), lineWidth: 1)
+        }
+        cross(
+            at: centre, horizontal: 150, vertical: 105, thickness: 1.8, color: Palette.Universe.starGold, pose: WelcomeScript.flare.pose(at: time),
+            in: &context
+        )
     }
 
     // MARK: - Shapes

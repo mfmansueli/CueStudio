@@ -21,17 +21,17 @@ struct StateChip: View {
 
         var ink: Color {
             switch self {
-            case .ready: Palette.stateReadyInk
-            case .draft: Palette.stateDraftInk
-            case .recorded: Palette.stateRecordedInk
+            case .ready: Palette.Page.stateReadyInk
+            case .draft: Palette.Page.stateDraftInk
+            case .recorded: Palette.Page.stateRecordedInk
             }
         }
 
         var fill: Color {
             switch self {
-            case .ready: Palette.stateReadyFill
-            case .draft: Palette.stateDraftFill
-            case .recorded: Palette.stateRecordedFill
+            case .ready: Palette.Page.stateReadyFill
+            case .draft: Palette.Page.stateDraftFill
+            case .recorded: Palette.Page.stateRecordedFill
             }
         }
     }

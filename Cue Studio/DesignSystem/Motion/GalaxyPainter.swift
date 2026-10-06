@@ -133,7 +133,7 @@ enum GalaxyPainter {
         for orbit in orbits {
             layer.stroke(
                 Path(ellipseIn: CGRect(x: -orbit.rx, y: -orbit.ry, width: orbit.rx * 2, height: orbit.ry * 2)),
-                with: .color(Palette.starLilac.opacity(0.26)), lineWidth: 1.1
+                with: .color(Palette.Universe.starLilac.opacity(0.26)), lineWidth: 1.1
             )
             // The planet laps its ellipse clockwise from its right-hand end, `period` seconds a lap.
             let angle = (time - orbit.begin) / orbit.period * 2 * .pi
@@ -163,7 +163,7 @@ enum GalaxyPainter {
         diagonals.addLine(to: CGPoint(x: 30, y: 30))
         diagonals.move(to: CGPoint(x: 30, y: -30))
         diagonals.addLine(to: CGPoint(x: -30, y: 30))
-        layer.stroke(diagonals, with: .color(Palette.starLilac.opacity(0.3)), style: StrokeStyle(lineWidth: 1, lineCap: .round))
+        layer.stroke(diagonals, with: .color(Palette.Universe.starLilac.opacity(0.3)), style: StrokeStyle(lineWidth: 1, lineCap: .round))
     }
 
     /// The core: a lit sphere (`#fff → #F4F0FF → #D2C8FF → #9D8CFF → #6E5BE6`, light from the top left), a thin rim and a bright oval of reflection.
@@ -183,19 +183,19 @@ enum GalaxyPainter {
 
     private static let heroGlow: [Gradient.Stop] = [
         .init(color: Color(hex: 0xFFE080).opacity(0.55), location: 0), .init(color: Color(hex: 0xE9B94A).opacity(0.28), location: 0.25),
-        .init(color: Palette.nightViolet.opacity(0.14), location: 0.6), .init(color: Palette.nightViolet.opacity(0), location: 1),
+        .init(color: Palette.Universe.nightViolet.opacity(0.14), location: 0.6), .init(color: Palette.Universe.nightViolet.opacity(0), location: 1),
     ]
     private static let heroBulge: [Gradient.Stop] = [
         .init(color: .white, location: 0), .init(color: Color(hex: 0xFFF3C4).opacity(0.95), location: 0.18),
         .init(color: Palette.acc.opacity(0.5), location: 0.45), .init(color: Palette.acc.opacity(0), location: 1),
     ]
     private static let heroHalo: [Gradient.Stop] = [
-        .init(color: Color(hex: 0xC9BFFF).opacity(0.7), location: 0), .init(color: Palette.nightViolet.opacity(0.25), location: 0.5),
-        .init(color: Palette.nightViolet.opacity(0), location: 1),
+        .init(color: Color(hex: 0xC9BFFF).opacity(0.7), location: 0), .init(color: Palette.Universe.nightViolet.opacity(0.25), location: 0.5),
+        .init(color: Palette.Universe.nightViolet.opacity(0), location: 1),
     ]
     private static let heroCore: [Gradient.Stop] = [
         .init(color: .white, location: 0), .init(color: Color(hex: 0xF4F0FF), location: 0.22), .init(color: Color(hex: 0xD2C8FF), location: 0.52),
-        .init(color: Palette.nightViolet, location: 0.82), .init(color: Color(hex: 0x6E5BE6), location: 1),
+        .init(color: Palette.Universe.nightViolet, location: 0.82), .init(color: Color(hex: 0x6E5BE6), location: 1),
     ]
 
     private static func planet(_ light: UInt32, _ body: UInt32, _ shade: UInt32) -> [Gradient.Stop] {

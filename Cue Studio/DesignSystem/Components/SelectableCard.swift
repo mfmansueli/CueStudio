@@ -16,7 +16,7 @@ struct SelectableCard<Content: View>: View {
         let shape = RoundedRectangle(cornerRadius: radius, style: .continuous)
         content
             .frame(maxWidth: .infinity)
-            .background(isSelected ? Palette.accTile : background, in: shape)
+            .background(isSelected ? Palette.Editor.accTile : background, in: shape)
             .overlay(shape.strokeBorder(isSelected ? Palette.acc : .clear, lineWidth: 2))
             .contentShape(shape)
             .accessibilityAddTraits(isSelected ? .isSelected : [])

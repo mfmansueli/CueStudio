@@ -29,20 +29,20 @@ struct StarFlightOverlay: View {
                 ZStack(alignment: .topLeading) {
                     ForEach(0..<6, id: \.self) { index in
                         Circle()
-                            .fill(Palette.skyStarYou.opacity(0.7 - Double(index) * 0.1))
+                            .fill(Palette.World.skyStarYou.opacity(0.7 - Double(index) * 0.1))
                             .frame(width: 3, height: 3)
                             .modifier(FlightPath(progress: progress, lag: CGFloat(index + 1) * 0.07, from: start, control: control, to: target))
                     }
                     Circle()
                         .fill(.white)
                         .frame(width: 7, height: 7)
-                        .shadow(color: Palette.skyStarYouGlow, radius: 6)
+                        .shadow(color: Palette.World.skyStarYouGlow, radius: 6)
                         .scaleEffect(1 - progress * 0.45)
                         .modifier(FlightPath(progress: progress, lag: 0, from: start, control: control, to: target))
                         .opacity(progress < 1 ? 1 : 0)
                     Image(systemName: "sparkle")
                         .font(.system(size: 22, weight: .regular))
-                        .foregroundStyle(Palette.skyStarYou)
+                        .foregroundStyle(Palette.World.skyStarYou)
                         .scaleEffect(glintShown ? 0.4 : 1)
                         .rotationEffect(.degrees(glintShown ? 45 : 0))
                         .opacity(progress >= 1 ? (glintShown ? 0 : 1) : 0)

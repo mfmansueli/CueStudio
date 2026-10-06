@@ -25,7 +25,7 @@ struct CleanUpCard: View {
                     .minimumScaleFactor(0.6)
                 Spacer(minLength: 4)
                 Circle()
-                    .fill(isMarked ? Palette.acc : .clear)
+                    .fill(isMarked ? Palette.acc : Color.clear)
                     .overlay(Circle().strokeBorder(isMarked ? Palette.acc : Palette.ink2, lineWidth: 1.5))
                     .overlay {
                         Image(systemName: "checkmark").font(.system(size: 10, weight: .heavy)).foregroundStyle(Palette.accInk).opacity(isMarked ? 1 : 0)
@@ -47,7 +47,7 @@ struct CleanUpCard: View {
                 }
                 .foregroundStyle(Palette.ink)
                 .frame(maxWidth: .infinity, minHeight: 30)
-                .background(Palette.sliderTrack, in: Capsule())
+                .background(Palette.Slider.track, in: Capsule())
                 .contentShape(Capsule())
             }
             .buttonStyle(.plain)
@@ -56,8 +56,8 @@ struct CleanUpCard: View {
         }
         .padding(10)
         .frame(width: 122)
-        .background(isMarked ? Palette.accCard : Palette.panelCard, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
-        .overlay(RoundedRectangle(cornerRadius: 14, style: .continuous).strokeBorder(isMarked ? Palette.acc : .clear, lineWidth: 1.5))
+        .background(isMarked ? Palette.Editor.accCard : Palette.Editor.panelCard, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+        .overlay(RoundedRectangle(cornerRadius: 14, style: .continuous).strokeBorder(isMarked ? Palette.acc : Color.clear, lineWidth: 1.5))
         .contentShape(Rectangle())
         .onTapGesture(perform: onToggle)
         .accessibilityElement(children: .contain)

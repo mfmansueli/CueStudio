@@ -28,8 +28,9 @@ final class DesignCatalogueUITests: XCTestCase {
         let folder = ProcessInfo.processInfo.environment["CUE_SCREENSHOT_DIR"]
         for name in ["Colors", "Icons", "Sliders", "Tabbar", "Parts", "Effects", "Sky"] {
             app.buttons[name].firstMatch.tap()
-            sleep(1)
             if let folder {
+                // Pictures only: a moment for the section to settle.
+                sleep(1)
                 let directory = URL(fileURLWithPath: folder, isDirectory: true)
                 try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
                 try app.screenshot().pngRepresentation.write(to: directory.appending(path: "catalogue-\(name.lowercased()).png"))

@@ -101,6 +101,15 @@ nonisolated enum CoverDesignRenderer {
         }
     }
 
+    /// A line of word boxes side by side, `gap` apart.
+    private static func widthOfLine(_ line: [Int], boxes: [CGSize], gap: CGFloat) -> CGFloat {
+        var width: CGFloat = 0
+        for index in line {
+            width += boxes[index].width
+        }
+        return width + gap * CGFloat(max(0, line.count - 1))
+    }
+
     private static func drawWords(title: String, cover: VideoCover, design: CoverDesign, size: CGSize, in context: CGContext) {
         let parts = design.words(of: title)
         let layout = design.layout
@@ -152,10 +161,10 @@ nonisolated enum CoverDesignRenderer {
                 lineWidth = next
             }
         }
-        let lineHeights = lines.map { line in line.map { boxes[$0].height }.max() ?? 0 }
+        let lineHeights: [CGFloat] = lines.map { (line: [Int]) -> CGFloat in line.map { boxes[$0].height }.max() ?? 0 }
         let blockHeight = lineHeights.reduce(0, +) + gapY * CGFloat(max(0, lines.count - 1))
         if layout == .question {
-            let widest = lines.map { line in line.reduce(CGFloat(0)) { $0 + boxes[$1].width } + gapX * CGFloat(max(0, line.count - 1)) }.max() ?? 0
+            let widest: CGFloat = lines.map { widthOfLine($0, boxes: boxes, gap: gapX) }.max() ?? 0
             let box = CGRect(
                 x: center - widest / 2 - width * 0.04, y: y - size.height * 0.02,
                 width: widest + width * 0.08, height: blockHeight + size.height * 0.04
@@ -164,7 +173,7 @@ nonisolated enum CoverDesignRenderer {
             UIBezierPath(roundedRect: box, cornerRadius: width * 0.03).fill()
         }
         for (row, line) in lines.enumerated() {
-            let total = line.reduce(CGFloat(0)) { $0 + boxes[$1].width } + gapX * CGFloat(max(0, line.count - 1))
+            let total = widthOfLine(line, boxes: boxes, gap: gapX)
             var x = center - total / 2
             for index in line {
                 let box = CGRect(origin: CGPoint(x: x, y: y), size: boxes[index])

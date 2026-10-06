@@ -9,12 +9,12 @@ extension Platform {
     /// The dot color that tags this destination everywhere in the app.
     var tint: Color {
         switch self {
-        case .tiktok: Palette.platformTikTok
-        case .reels: Palette.platformReels
-        case .shorts: Palette.platformShorts
-        case .youtube: Palette.platformYouTube
-        case .linkedin: Palette.platformLinkedIn
-        case .stories: Palette.platformStories
+        case .tiktok: Palette.Platform.tikTok
+        case .reels: Palette.Platform.reels
+        case .shorts: Palette.Platform.shorts
+        case .youtube: Palette.Platform.youTube
+        case .linkedin: Palette.Platform.linkedIn
+        case .stories: Palette.Platform.stories
         }
     }
 }

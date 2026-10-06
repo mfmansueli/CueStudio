@@ -27,7 +27,7 @@ struct ExportReadySheet: View {
                             .foregroundStyle(Palette.success)
                             .padding(.horizontal, 6)
                             .frame(height: 18)
-                            .background(Palette.posterPill, in: Capsule())
+                            .background(Palette.Takes.posterPill, in: Capsule())
                             .padding(6)
                     }
                     .shadow(color: .black.opacity(0.45), radius: 15, y: 12)

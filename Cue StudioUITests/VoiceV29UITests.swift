@@ -25,17 +25,9 @@ final class VoiceV29UITests: XCTestCase {
         app.descendants(matching: .any)[id].firstMatch
     }
 
-    private func scroll(_ app: XCUIApplication, to element: XCUIElement) {
-        var swipes = 0
-        while !element.isHittable, swipes < 8 {
-            app.swipeUp()
-            swipes += 1
-        }
-    }
-
     /// Profile with the four setup questions answered (the minimum voice).
-    private func setUpVoice(ai: CueApp.AIMode = .stub, extraArguments: [String] = []) -> XCUIApplication {
-        let app = CueApp.launch(seeded: true, ai: ai, extraArguments: extraArguments)
+    private func setUpVoice(ai: CueApp.AIMode = .stub, animations: Bool = false, extraArguments: [String] = []) -> XCUIApplication {
+        let app = CueApp.launch(seeded: true, ai: ai, animations: animations, extraArguments: extraArguments)
         let tab = app.cueTabBar.buttons["Profile"]
         XCTAssertTrue(tab.waitForExistence(timeout: 15))
         tab.tap()
@@ -55,7 +47,7 @@ final class VoiceV29UITests: XCTestCase {
 
     private func openVoicePage(_ app: XCUIApplication) {
         let edit = app.buttons["profile.editVoice"]
-        scroll(app, to: edit)
+        app.scroll(to: edit)
         edit.tap()
         XCTAssertTrue(element(app, "voicePage").waitForExistence(timeout: 5))
     }
@@ -73,21 +65,22 @@ final class VoiceV29UITests: XCTestCase {
         openVoicePage(app)
         for row in ["role", "topics", "audience", "tone", "style", "formats", "openings", "endings", "phrases", "avoid", "reach", "examples"] {
             let element = element(app, "voicePage.row.\(row)")
-            scroll(app, to: element)
+            app.scroll(to: element)
             XCTAssertTrue(element.exists, row)
         }
         let brief = element(app, "voicePage.brief")
-        scroll(app, to: brief)
+        app.scroll(to: brief)
         XCTAssertTrue(brief.exists)
         capture(app, "9.3_my_cue_voice")
     }
 
     /// F9: a typo asks "Did you mean…", a blocked word is refused, a repeat says "Already added.".
     func testFreeTextIsValidated() {
-        let app = setUpVoice()
+        // The "Saved" shows for 0.9 s before the sheet closes; without the closing animation it can be gone before the test looks.
+        let app = setUpVoice(animations: true)
         openVoicePage(app)
         let row = element(app, "voicePage.row.endings")
-        scroll(app, to: row)
+        app.scroll(to: row)
         row.tap()
         // "+ Something else" is below the five endings; the field comes up with it.
         app.swipeUp()
@@ -143,7 +136,7 @@ final class VoiceV29UITests: XCTestCase {
         XCTAssertTrue(element(app, "voicePage.needsAI").waitForExistence(timeout: 5))
         XCTAssertFalse(element(app, "voice.tip").exists)
         let row = element(app, "voicePage.row.openings")
-        scroll(app, to: row)
+        app.scroll(to: row)
         row.tap()
         XCTAssertTrue(element(app, "voice.sheet.openings").waitForExistence(timeout: 5))
         capture(app, "9.3_no_ai")

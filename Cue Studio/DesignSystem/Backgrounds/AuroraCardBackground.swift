@@ -90,9 +90,9 @@ struct AuroraCardBackground: View {
 
     private static func color(of light: AuroraMotion.Light) -> Color {
         switch light {
-        case .violet, .glow: Palette.auroraViolet
-        case .indigo: Palette.auroraIndigo
-        case .shade: Palette.insetShade
+        case .violet, .glow: Palette.Aurora.violet
+        case .indigo: Palette.Aurora.indigo
+        case .shade: Palette.Scripts.insetShade
         }
     }
 
@@ -100,7 +100,7 @@ struct AuroraCardBackground: View {
     private func scanLine(width: CGFloat, height: CGFloat, time: TimeInterval) -> some View {
         let center = reduceMotion ? 0.5 : AuroraMotion.scanCenter(at: time)
         let length = width * AuroraMotion.scanLength
-        let line = Palette.auroraScanLine
+        let line = Palette.Aurora.scanLine
         return LinearGradient(
             colors: [line.opacity(0), line.opacity(reduceMotion ? 0.35 : 0.9), line.opacity(0)],
             startPoint: .leading,
@@ -115,11 +115,11 @@ struct AuroraCardBackground: View {
     @ViewBuilder
     private func border(_ shape: RoundedRectangle, size: CGSize, time: TimeInterval) -> some View {
         if reduceMotion {
-            shape.strokeBorder(Palette.auroraBorderLight.opacity(0.35), lineWidth: 1)
+            shape.strokeBorder(Palette.Aurora.borderLight.opacity(0.35), lineWidth: 1)
         } else {
             let highlight = AuroraMotion.highlight(at: time, size: size)
             let share = highlight.span / (2 * .pi)
-            let light = Palette.auroraBorderLight
+            let light = Palette.Aurora.borderLight
             shape.strokeBorder(
                 AngularGradient(
                     stops: [

@@ -26,8 +26,8 @@ final class TabBarUITests: XCTestCase {
             for other in tabs where other != name {
                 XCTAssertFalse(app.tabBars.buttons[other].isSelected, "\(other) is selected with \(name)")
             }
-            sleep(1)
             if let folder {
+                sleep(1)
                 let directory = URL(fileURLWithPath: folder, isDirectory: true)
                 try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
                 try app.screenshot().pngRepresentation.write(to: directory.appending(path: "tabbar-\(name.lowercased()).png"))
@@ -42,9 +42,10 @@ final class TabBarUITests: XCTestCase {
         let takes = app.tabBars.buttons["Takes"]
         XCTAssertTrue(takes.waitForExistence(timeout: 15))
         takes.tap()
-        sleep(1)
+        XCTAssertTrue(app.descendants(matching: .any)["takes.pipeline"].firstMatch.waitForExistence(timeout: 5), "Takes isn't up")
 
         for _ in 0..<3 { app.swipeUp() }
+        // Give the bar the moment it would take to draw back, then look.
         sleep(1)
 
         XCTAssertEqual(app.tabBars.buttons.count, 5, "The tab bar drew back while the list scrolled")

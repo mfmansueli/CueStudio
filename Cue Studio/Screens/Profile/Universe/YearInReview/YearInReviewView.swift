@@ -77,8 +77,8 @@ struct YearInReviewView: View {
 
     private var background: some View {
         ZStack {
-            Palette.nightDeep
-            RadialGradient(colors: [Palette.nightViolet.opacity(0.32), .clear], center: UnitPoint(x: 0.5, y: 0.35), startRadius: 0, endRadius: 360)
+            Palette.Universe.nightDeep
+            RadialGradient(colors: [Palette.Universe.nightViolet.opacity(0.32), .clear], center: UnitPoint(x: 0.5, y: 0.35), startRadius: 0, endRadius: 360)
         }
         .ignoresSafeArea()
     }

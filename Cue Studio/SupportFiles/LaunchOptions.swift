@@ -32,6 +32,8 @@ import Foundation
 ///   tip stays away in UI tests (they open the app on one day).
 /// - `-uiTestStarTransition`: the idea's star transition keeps its real timings (3 s at least); UI tests shorten it otherwise.
 /// - `-uiTestSlowWriting`: with the stub writer, the script's words arrive on the page slowly enough to look at the page mid-writing.
+/// - `-uiTestFastAnimations`: with the above, no animations (UIKit's sheets and pushes, SwiftUI's transactions), so a UI test
+///   never waits for one to end; `CueApp.launch` passes it unless a test asks for real animations.
 /// - `-uiTestExportsLeft <0...5>`: the free exports that are left (5 without it): 1 is the last one, 0 asks "Your video is ready" on export.
 /// - `-uiTestUniverse <sample|newYear|newAccount>`: what "Your universe" holds (the board's APP DATA panel; see `UniverseSeed`).
 /// - `-uiTestFakeShareSheet`: a stand-in with Complete and Cancel takes the place of the system share sheet.
@@ -89,6 +91,8 @@ struct LaunchOptions {
     var voiceTipSkipsGates = false
     /// UI tests of the star transition: it takes its real time (`-uiTestStarTransition`).
     var keepsStarTransitionTimings = false
+    /// UI tests: nothing animates (`-uiTestFastAnimations`).
+    var animationsOff = false
     /// UI tests of the welcome: the star's opening plays in full (`-uiTestWelcomeOpening`).
     var keepsWelcomeOpening = false
     /// UI tests: a stand-in for the system share sheet (`-uiTestFakeShareSheet`).
@@ -191,6 +195,7 @@ struct LaunchOptions {
             options.showsOnboarding = arguments.contains("-uiTestOnboarding")
             options.voiceTipSkipsGates = arguments.contains("-uiTestVoiceTip")
             options.keepsStarTransitionTimings = arguments.contains("-uiTestStarTransition")
+            options.animationsOff = arguments.contains("-uiTestFastAnimations")
             options.keepsWelcomeOpening = arguments.contains("-uiTestWelcomeOpening")
             options.showsFirstStar = arguments.contains("-uiTestFirstStar")
             Self.readFrozenTimes(arguments, into: &options)

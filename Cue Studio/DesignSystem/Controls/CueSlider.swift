@@ -182,12 +182,12 @@ struct CueSlider: View {
             ZStack(alignment: .leading) {
                 // The whole range, quiet and always visible.
                 Capsule()
-                    .fill(Palette.sliderTrack)
+                    .fill(Palette.Slider.track)
                     .frame(height: Metrics.sliderTrackHeight)
                     .padding(.horizontal, thumb / 2)
                 // The value, from the origin to the thumb.
                 Capsule()
-                    .fill(Palette.sliderFill)
+                    .fill(Palette.Slider.fill)
                     .frame(width: abs(thumbX - originX), height: Metrics.sliderTrackHeight)
                     .offset(x: min(thumbX, originX))
                     .opacity(isEnabled ? 1 : 0)
@@ -206,9 +206,9 @@ struct CueSlider: View {
                         .offset(x: thumb / 2 + length * place - 2, y: thumb / 2 + 4)
                 }
                 Circle()
-                    .fill(Palette.sliderThumb)
+                    .fill(Palette.Slider.thumb)
                     .frame(width: thumb, height: thumb)
-                    .shadow(color: Palette.sliderThumbShadow, radius: 3, y: 2)
+                    .shadow(color: Palette.Slider.thumbShadow, radius: 3, y: 2)
                     .opacity(isEnabled ? 1 : 0.6)
                     .overlay {
                         if isAccessibilityFocused || isKeyboardFocused {

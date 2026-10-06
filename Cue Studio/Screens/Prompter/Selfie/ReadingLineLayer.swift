@@ -73,8 +73,8 @@ struct ReadingLineLayer: View {
             .foregroundStyle(.white)
             .frame(width: Self.gripSize.width, height: Self.gripSize.height)
             .background(.ultraThinMaterial, in: grip)
-            .background(dragging ? Palette.readingLineHandleActive : Palette.readingLineHandle, in: grip)
-            .overlay(grip.strokeBorder(Palette.readingLineHandleBorder, lineWidth: 0.5))
+            .background(dragging ? Palette.Camera.readingLineHandleActive : Palette.Camera.readingLineHandle, in: grip)
+            .overlay(grip.strokeBorder(Palette.Camera.readingLineHandleBorder, lineWidth: 0.5))
             // A slim grip to look at, a full 44 pt to catch.
             .frame(width: Self.handleTarget, height: Self.handleTarget)
             .contentShape(Rectangle())

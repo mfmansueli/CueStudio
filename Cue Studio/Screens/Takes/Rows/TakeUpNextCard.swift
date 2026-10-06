@@ -57,12 +57,12 @@ struct TakeUpNextCard: View {
             ZStack {
                 Palette.surface
                 RadialGradient(
-                    colors: [Palette.takesUpNextGlow, .clear], center: UnitPoint(x: 0, y: 0.5), startRadius: 0, endRadius: 300
+                    colors: [Palette.Takes.upNextGlow, .clear], center: UnitPoint(x: 0, y: 0.5), startRadius: 0, endRadius: 300
                 )
             }
             .clipShape(shape)
         }
-        .overlay(shape.strokeBorder(Palette.takesUpNextRim, lineWidth: 0.5))
+        .overlay(shape.strokeBorder(Palette.Takes.upNextRim, lineWidth: 0.5))
     }
 
     @ViewBuilder

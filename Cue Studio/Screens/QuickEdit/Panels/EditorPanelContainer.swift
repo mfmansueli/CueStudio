@@ -43,10 +43,10 @@ struct EditorPanelContainer<Fixed: View, Content: View, Footer: View>: View {
         .safeAreaPadding(.bottom, Metrics.editorPanelBottomClearance)
         .background(alignment: .top) {
             UnevenRoundedRectangle(topLeadingRadius: Metrics.editorPanelRadius, topTrailingRadius: Metrics.editorPanelRadius, style: .continuous)
-                .fill(Palette.editorPanel)
+                .fill(Palette.Editor.panel)
                 .overlay(alignment: .top) {
                     UnevenRoundedRectangle(topLeadingRadius: Metrics.editorPanelRadius, topTrailingRadius: Metrics.editorPanelRadius, style: .continuous)
-                        .strokeBorder(Palette.editorSeparator, lineWidth: 0.5)
+                        .strokeBorder(Palette.Editor.separator, lineWidth: 0.5)
                         .mask(alignment: .top) { Rectangle().frame(height: Metrics.editorPanelRadius + 1) }
                 }
                 .ignoresSafeArea(edges: .bottom)

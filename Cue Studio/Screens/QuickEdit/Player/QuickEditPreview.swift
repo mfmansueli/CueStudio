@@ -27,7 +27,7 @@ struct QuickEditPreview: View {
     private var drawing: some View {
         QuickEditPlayerView(player: viewModel.player)
             .frame(width: size.width, height: size.height)
-            .background(Palette.previewWell)
+            .background(Palette.Editor.previewWell)
             .overlay {
                 if viewModel.panel == .crop {
                     ThirdsGrid()
@@ -98,7 +98,7 @@ struct QuickEditPreview: View {
             }
             .padding(.horizontal, 12)
             .frame(height: 30)
-            .background(Palette.durationBadge, in: Capsule())
+            .background(Palette.Takes.durationBadge, in: Capsule())
             .frame(maxHeight: .infinity, alignment: .top)
             .padding(.top, 12)
             .allowsHitTesting(false)
@@ -111,7 +111,7 @@ struct QuickEditPreview: View {
             }
             .padding(.horizontal, 12)
             .frame(height: 30)
-            .background(Palette.durationBadge, in: Capsule())
+            .background(Palette.Takes.durationBadge, in: Capsule())
             .frame(maxHeight: .infinity, alignment: .top)
             .padding(.top, 12)
             .allowsHitTesting(false)
@@ -148,7 +148,7 @@ struct QuickEditPreview: View {
             }
             .padding(.horizontal, 12)
             .frame(height: 32)
-            .background(Palette.durationBadge, in: Capsule())
+            .background(Palette.Takes.durationBadge, in: Capsule())
             .frame(maxHeight: .infinity, alignment: .top)
             .padding(.top, 12)
             .allowsHitTesting(false)

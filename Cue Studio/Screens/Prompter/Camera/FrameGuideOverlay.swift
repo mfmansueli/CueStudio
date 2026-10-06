@@ -20,7 +20,7 @@ struct FrameGuideOverlay: View {
         Canvas { context, size in
             var outside = Path(CGRect(origin: .zero, size: size))
             outside.addRect(frame)
-            context.fill(outside, with: .color(Palette.frameMask), style: FillStyle(eoFill: true))
+            context.fill(outside, with: .color(Palette.Camera.frameMask), style: FillStyle(eoFill: true))
 
             var edges = Path()
             for y in [frame.minY, frame.maxY] where y > 0.5 && y < size.height - 0.5 {
@@ -31,7 +31,7 @@ struct FrameGuideOverlay: View {
                 edges.move(to: CGPoint(x: x, y: frame.minY))
                 edges.addLine(to: CGPoint(x: x, y: frame.maxY))
             }
-            context.stroke(edges, with: .color(Palette.frameEdge), lineWidth: 0.5)
+            context.stroke(edges, with: .color(Palette.Camera.frameEdge), lineWidth: 0.5)
         }
         .ignoresSafeArea()
         .allowsHitTesting(false)

@@ -30,7 +30,7 @@ struct SectionsPanel: View {
                     .font(.subheadline.weight(.semibold))
                     .foregroundStyle(Palette.ink)
                     .frame(maxWidth: .infinity, minHeight: 42)
-                    .overlay(Capsule().strokeBorder(Palette.laneGhostBorder, style: StrokeStyle(lineWidth: 1, dash: [4, 3])))
+                    .overlay(Capsule().strokeBorder(Palette.Editor.laneGhostBorder, style: StrokeStyle(lineWidth: 1, dash: [4, 3])))
                     .frame(minHeight: Metrics.hitTarget)
                     .contentShape(Rectangle())
             }
@@ -67,7 +67,7 @@ struct SectionsPanel: View {
             }
             .padding(.horizontal, 14)
             .frame(minHeight: 50)
-            .background(isActive ? Palette.selectedRow : .clear)
+            .background(isActive ? Palette.Editor.selectedRow : .clear)
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)

@@ -22,7 +22,7 @@ struct TakeVideoRow: View {
                     .lineLimit(2)
                     .foregroundStyle(Palette.ink)
                 HStack(spacing: 6) {
-                    ColorDot(color: video.platform?.tint ?? Palette.platformNeutral, size: 6)
+                    ColorDot(color: video.platform?.tint ?? Palette.Platform.neutral, size: 6)
                     Text(video.platform?.label ?? String(localized: "Freestyle")).foregroundStyle(Palette.ink)
                     if let best = video.best {
                         Text("· \(best.aspect.label) · \(best.resolution.label)")
@@ -55,7 +55,7 @@ struct TakeVideoRow: View {
             .frame(width: size.width, height: size.height)
             .clipShape(RoundedRectangle(cornerRadius: 9, style: .continuous))
             .frame(width: 72, height: 112)
-            .background(Palette.thumbnailWell, in: RoundedRectangle(cornerRadius: Metrics.fieldRadius, style: .continuous))
+            .background(Palette.Takes.thumbnailWell, in: RoundedRectangle(cornerRadius: Metrics.fieldRadius, style: .continuous))
             .overlay(alignment: .topLeading) {
                 if take.isBest {
                     Image(systemName: "star.fill")
@@ -74,7 +74,7 @@ struct TakeVideoRow: View {
                     .frame(height: 18)
                     // A badge on a thumbnail of fixed size: it follows the text size up to a point.
                     .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
-                    .background(Palette.durationBadge, in: RoundedRectangle(cornerRadius: 6, style: .continuous))
+                    .background(Palette.Takes.durationBadge, in: RoundedRectangle(cornerRadius: 6, style: .continuous))
                     .padding(5)
             }
     }

@@ -28,9 +28,9 @@ struct SkyStarsLayer: View {
                     let point = Self.position(of: star, in: size)
                     let phase = animates ? 0.65 + 0.35 * sin((time + Double(index) * 0.7) * 2 * .pi / 4) : 0.85
                     let glow = Path(ellipseIn: CGRect(x: point.x - 4.5, y: point.y - 4.5, width: 9, height: 9))
-                    context.fill(glow, with: .color(Palette.skyStarYou.opacity(0.22 * phase)))
+                    context.fill(glow, with: .color(Palette.World.skyStarYou.opacity(0.22 * phase)))
                     let core = Path(ellipseIn: CGRect(x: point.x - 1.5, y: point.y - 1.5, width: 3, height: 3))
-                    context.fill(core, with: .color(Palette.skyStarYou.opacity(phase)))
+                    context.fill(core, with: .color(Palette.World.skyStarYou.opacity(phase)))
                 }
             }
         }

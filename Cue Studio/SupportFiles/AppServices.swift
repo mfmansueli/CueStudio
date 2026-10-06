@@ -100,7 +100,8 @@ struct AppServices {
         milestones = MilestoneService(defaults: options.defaults)
         shareQueue = ShareQueueService(defaults: options.defaults)
         defaults = options.defaults
-        appIcon = AppIconService(switcher: options.isInMemory ? InMemoryAppIcon() : SystemAppIcon())
+        let iconSwitcher: any AppIconSwitching = options.isInMemory ? InMemoryAppIcon() : SystemAppIcon()
+        appIcon = AppIconService(switcher: iconSwitcher)
         let permissions = options.permissions ?? SystemPermissions()
         self.permissions = permissions
         permissionStatus = PermissionsService(permissions: permissions)

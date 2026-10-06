@@ -1,0 +1,29 @@
+// UITests.xcconfig — the Cue StudioUITests target
+//
+// On top of Project.xcconfig, for Debug and Release alike.
+
+// Identity and signing
+CODE_SIGN_STYLE           = Automatic
+CURRENT_PROJECT_VERSION   = 1
+DEVELOPMENT_TEAM          = X5392U638Q
+GENERATE_INFOPLIST_FILE   = YES
+MARKETING_VERSION         = 1.0
+PRODUCT_BUNDLE_IDENTIFIER = devplaceholder.$(PROJECT_UNIQUE_VALUE:identifier).$(PRODUCT_NAME:rfc1034identifier)
+PRODUCT_NAME              = $(TARGET_NAME)
+
+// Platforms
+SDKROOT                = iphoneos
+SUPPORTED_PLATFORMS    = iphoneos iphonesimulator
+TARGETED_DEVICE_FAMILY = 1,2
+
+// Host app
+TEST_TARGET_NAME = Cue Studio
+
+// Swift
+SWIFT_APPROACHABLE_CONCURRENCY                  = YES
+SWIFT_EMIT_LOC_STRINGS                          = NO
+SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES
+SWIFT_VERSION                                   = 6.0
+
+// Everything else
+LM_SKIP_METADATA_EXTRACTION = YES

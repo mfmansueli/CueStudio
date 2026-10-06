@@ -41,7 +41,7 @@ struct ProOpeningCanvas: View {
             canvas.stroke(
                 path,
                 with: .linearGradient(
-                    Gradient(colors: [Palette.starCream.opacity(0), Palette.starCream.opacity(0.9 * (1 - progress * progress))]),
+                    Gradient(colors: [Palette.Universe.starCream.opacity(0), Palette.Universe.starCream.opacity(0.9 * (1 - progress * progress))]),
                     startPoint: tail, endPoint: head
                 ),
                 style: StrokeStyle(lineWidth: 1.4, lineCap: .round)
@@ -60,7 +60,7 @@ struct ProOpeningCanvas: View {
                 layer.fill(
                     Path(ellipseIn: CGRect(x: centre.x - radius, y: centre.y - radius, width: radius * 2, height: radius * 2)),
                     with: .radialGradient(
-                        Gradient(colors: [Palette.starCream.opacity(core.opacity), Palette.acc.opacity(0.9 * core.opacity), Palette.acc.opacity(0)]),
+                        Gradient(colors: [Palette.Universe.starCream.opacity(core.opacity), Palette.acc.opacity(0.9 * core.opacity), Palette.acc.opacity(0)]),
                         center: centre, startRadius: 0, endRadius: radius
                     )
                 )
@@ -82,7 +82,7 @@ struct ProOpeningCanvas: View {
         canvas.fill(
             Path(CGRect(origin: .zero, size: size)),
             with: .radialGradient(
-                Gradient(colors: [Palette.starCream.opacity(flash), Palette.acc.opacity(flash * 0.4), .clear]),
+                Gradient(colors: [Palette.Universe.starCream.opacity(flash), Palette.acc.opacity(flash * 0.4), .clear]),
                 center: focus, startRadius: 0, endRadius: max(size.width, size.height) * 0.7
             )
         )

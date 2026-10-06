@@ -48,8 +48,8 @@ struct ScriptStateStrip: View {
         .padding(.leading, 12)
         .padding(.trailing, 4)
         .frame(minHeight: Metrics.stripHeight)
-        .background(Palette.stripFill, in: RoundedRectangle(cornerRadius: Metrics.stripRadius, style: .continuous))
-        .overlay(RoundedRectangle(cornerRadius: Metrics.stripRadius, style: .continuous).strokeBorder(Palette.stripRim, lineWidth: 0.5))
+        .background(Palette.Page.stripFill, in: RoundedRectangle(cornerRadius: Metrics.stripRadius, style: .continuous))
+        .overlay(RoundedRectangle(cornerRadius: Metrics.stripRadius, style: .continuous).strokeBorder(Palette.Page.stripRim, lineWidth: 0.5))
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("page.strip")
     }

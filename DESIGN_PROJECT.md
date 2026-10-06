@@ -13,7 +13,7 @@ StoreKit, cota de IA e o pipeline das takes (`TakeStage`).
 | Onde | Como é |
 |---|---|
 | Tab bar | `TabView` do sistema com `.tabBarMinimizeBehavior(.never)`: a barra não recolhe ao rolar as listas (decisão do criador; o `07` §1 pedia `.onScrollDown`); Record fica no meio como aba normal (`09` §4), nunca `role: .search` |
-| Barras de navegação | Scripts, Takes, Profile, Settings e a página do script usam `NavigationStack` + `.toolbar` (voltar do sistema, `ToolbarItemGroup`, `ToolbarSpacer`); Scripts usa `.searchable` + `.searchToolbarBehavior(.minimize)` |
+| Barras de navegação | Scripts, Takes, Profile, Settings e a página do script usam `NavigationStack` + `.toolbar` (voltar do sistema, `ToolbarItemGroup`, `ToolbarSpacer`); Scripts: a barra tem só Logbook e +; a busca é um campo no topo da lista (`SearchField`, ver §2) |
 | Sheets | `cueSheetChrome()` (`DesignSystem/Components/CueSheetChrome.swift`): `NavigationStack` com `Button(role: .close)` em vidro à esquerda e fundo de vidro do sistema; `fittedSheet()` soma `Metrics.sheetBarHeight` à altura. `SheetHeader` é só título e subtítulo |
 | Botões | `CueStudioButtonStyle`: primário (amarelo) e secundário são Liquid Glass (`.glassEffect(.regular.tint(acc).interactive())`); `.glass` sobre vídeo; os outros mantêm o próprio preenchimento |
 | Menus, pickers, contexto | `Menu`, `Picker`, `.contextMenu` |
@@ -34,7 +34,7 @@ chips, que ficam parados e somem em 0,2 s. **A lista não sente a dobra:** o esp
 vira espaço vazio, que deixa passar o toque); quando o fim da lista mudava com o dock, a lista pulava sozinha (~205 pt, medido) e o dock abria e fechava
 sem parar. No fim da lista o quique não conta como subida. Uma lista curta (rola menos de 80 pt) recolhe ao passar da metade do que rola, e fica
 recolhida parada no fim; uma que quase não rola (menos de 16 pt) nunca recolhe. `DockFold` registra cada mudança no Console
-(`studio.cue` / `DockFold`, com a fase da rolagem). Com o campo focado a lista escurece e desfoca (0,25 s). Durante a busca e a seleção o dock sai. Ditado, rascunho e voz são os de antes
+(`studio.cue` / `DockFold`, com a fase da rolagem). Com o campo focado a lista escurece e desfoca (0,25 s). Durante a seleção o dock sai. **Busca:** um campo sempre visível no topo da lista (`SearchField`, entre a linha "6 SCRIPTS · 1 READY" e os filtros, rola com a lista), e o dock fica durante a busca (decisão do criador, 6/10/2026). Enquanto o teclado é da busca o dock fica embaixo, sob o teclado, em vez de subir com ele (por cima ele cobria os resultados e o "No matches"). **Diferença do `07`:** o quadro pedia a busca do sistema na barra (`.searchable`); com `.searchToolbarBehavior(.minimize)` o ✕ do iOS 27 só minimizava a busca (ela reabria, a lista ficava filtrada e o dock não voltava), e o campo no conteúdo resolve isso e deixa o dock sempre à mão. O texto de dica do campo é `ink2` (5,2:1 medido na imagem; o cinza do sistema ficava perto de 2,4:1). Ditado, rascunho e voz são os de antes
 (`IdeaDraftService`, `DictationService`).
 
 Abaixo da lista: **Logbook · n waiting** (até 2 ideias com ✦ Write e "Open Logbook ›"), `ScriptsLogbookSection`. Enquanto a biblioteca carrega,
@@ -152,7 +152,7 @@ encurtam). `-uiTestSlowWriting` (com o roteirista de teste, as palavras chegam d
 
 ## 7. Suposições (lacunas do protótipo)
 
-- O dock some durante a busca e a seleção; o tip espera 1,2 s com a tela quieta (sem sheet, toast, teclado, busca ou seleção).
+- O dock some durante a seleção; o tip espera 1,2 s com a tela quieta (sem sheet, toast, teclado, campo de busca focado ou seleção).
 - A estrela pousa onde começaria o título da página (cursor amarelo) e sem destino medido no protótipo.
 - "Speak" do exemplo (08 X1) não foi feito (só Paste e My scripts); o microfone do dock dita ao toque, sem "segurar para gravar".
 
@@ -409,7 +409,7 @@ cabeça de lado (perfil) ou muito pequena não tem marcos e não é alisada. O V
 
 **Auditoria** (`tools/contrast/audit.py` sobre as capturas de `HandoffCaptureTests`, `UserReportCaptureTests` e `ExploratoryTourTests`: 11.211 textos, 2.021 sem nada desenhado no retângulo e por isso descartados): a ferramenta lê o pixel e **subestima** texto fino e pequeno (um `ink2` de 6,3:1 sai como ~3 em rótulos mono de 10 pt) e erra sob telas escurecidas (menu, confirmação) e botões sobre vídeo. O que se repete a ~3,8:1 sobre o fundo é de fato o `ink3` usado como texto, e isso foi corrigido:
 - `ink3` virou `inkHint` onde era texto: "PREVIEW" do prompter, rótulos das pontas dos sliders de Settings, título e requisito dos ícones do app, rótulos esmaecidos da barra do editor, contagem da legenda do universo, a linha de preço de "Your video is ready".
-- Opacidades inventadas viraram token: `white.opacity(0.45)` (Year in review), `ink.opacity(0.45/0.5/0.55)` (Milestone, Scripts, ScriptRow, dock, Profile, Paywall, chips), `flightInk.opacity(0.4/0.5)` (onboarding: mensagem, voz, esqueleto), `ink2.opacity(0.8)` (etapas da revisão), `aiTextStrong.opacity(0.65)` (chip de ideias): todos `inkHint`, `aiText` ou `inkOnLight`.
+- Opacidades inventadas viraram token: `white.opacity(0.45)` (Year in review), `ink.opacity(0.45/0.5/0.55)` (Milestone, Scripts, ScriptRow, dock, Profile, Paywall, chips), `Flight.ink.opacity(0.4/0.5)` (onboarding: mensagem, voz, esqueleto), `ink2.opacity(0.8)` (etapas da revisão), `aiTextStrong.opacity(0.65)` (chip de ideias): todos `inkHint`, `aiText` ou `inkOnLight`.
 - Medido à mão numa captura real: o texto do campo do dock (18:1), os cabeçalhos de seção (6,3:1) e "SELECT" (6,3:1) passam.
 
 **Fica como está, por decisão de desenho:** a linha "3 VIDEOS TO UNLOCK" da revisão do universo e as linhas de um passo ainda bloqueado ficam a 62% (o `09` pede o estado inativo; a regra isenta componente inativo, e o toque explica o motivo); os chips de tema apagados quando 3 já foram escolhidos (desabilitados); setas de disclosure e separadores (decorativos).

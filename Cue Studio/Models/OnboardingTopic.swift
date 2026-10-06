@@ -31,6 +31,6 @@ nonisolated enum OnboardingTopic: Hashable, Identifiable, Sendable {
     /// The color of the world at `index` (0 is the first picked).
     @MainActor
     static func color(at index: Int) -> Color {
-        [Palette.worldWarm, Palette.worldMint, Palette.worldPink, Palette.worldSky][min(max(0, index), 3)]
+        [Palette.World.warm, Palette.World.mint, Palette.World.pink, Palette.World.sky][min(max(0, index), 3)]
     }
 }

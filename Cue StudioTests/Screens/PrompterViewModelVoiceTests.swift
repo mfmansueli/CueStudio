@@ -66,13 +66,7 @@ struct PrompterViewModelVoiceTests {
 
     private func startListening(_ scenario: Scenario) async {
         await scenario.viewModel.appear()
-        await waitUntil { scenario.viewModel.followsSpeech }
-    }
-
-    private func waitUntil(_ condition: () -> Bool) async {
-        for _ in 0..<200 where !condition() {
-            await Task.yield()
-        }
+        await Wait.until { scenario.viewModel.followsSpeech }
     }
 
     private func settle(_ yields: Int = 50) async {
@@ -153,7 +147,7 @@ struct PrompterViewModelVoiceTests {
         await startListening(scenario)
         #expect(scenario.speech.startCount == 1)
         scenario.speech.endOnItsOwn()
-        await waitUntil { !scenario.viewModel.followsSpeech }
+        await Wait.until { !scenario.viewModel.followsSpeech }
         #expect(!scenario.viewModel.followsSpeech)
         await waitSeconds(10) { scenario.speech.startCount == 2 && scenario.viewModel.followsSpeech }
         #expect(scenario.speech.startCount == 2)
@@ -324,7 +318,7 @@ struct PrompterViewModelVoiceTests {
         await startListening(scenario)
         scenario.languages.voiceFollowingLanguage = .portugueseBrazil
         scenario.viewModel.scrollModeChanged()
-        await waitUntil { scenario.speech.startCount == 2 }
+        await Wait.until { scenario.speech.startCount == 2 }
         #expect(scenario.speech.requests.last == .language(.portugueseBrazil))
         await scenario.viewModel.disappear()
     }
@@ -338,12 +332,12 @@ struct PrompterViewModelVoiceTests {
         }
         defer { scenario.defaults.tearDown() }
         await scenario.viewModel.appear()
-        await waitUntil { scenario.speech.startCount == 1 }
+        await Wait.until { scenario.speech.startCount == 1 }
         await settle()
         #expect(scenario.viewModel.voiceFollowStatus == .downloading(.english, progress: 0.4))
         #expect(!scenario.viewModel.followsSpeech)
         scenario.speech.finishPreparing()
-        await waitUntil { scenario.viewModel.followsSpeech }
+        await Wait.until { scenario.viewModel.followsSpeech }
         #expect(scenario.viewModel.voiceFollowStatus == .followingWords)
         #expect(scenario.viewModel.voiceMetrics.downloaded)
         #expect(scenario.viewModel.voiceMetrics.startup != nil)
@@ -355,7 +349,7 @@ struct PrompterViewModelVoiceTests {
         let scenario = makeScenario(mode: .selfie) { $0.holdsStart = true }
         defer { scenario.defaults.tearDown() }
         let opening = Task { await scenario.viewModel.appear() }
-        await waitUntil { scenario.speech.startCount == 1 }
+        await Wait.until { scenario.speech.startCount == 1 }
         #expect(scenario.speech.startCount == 1)
         #expect(scenario.viewModel.voiceFollowStatus == .preparing)
         scenario.speech.finishPreparing()
@@ -367,7 +361,7 @@ struct PrompterViewModelVoiceTests {
         let scenario = makeScenario { $0.unavailable = .unsupported(.thai) }
         defer { scenario.defaults.tearDown() }
         await scenario.viewModel.appear()
-        await waitUntil { scenario.viewModel.speechUnavailable != nil }
+        await Wait.until { scenario.viewModel.speechUnavailable != nil }
         #expect(scenario.viewModel.voiceFollowStatus == .scrollsWhileTalking)
         await learnTheRoom(scenario)
         scenario.viewModel.play()

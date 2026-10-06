@@ -56,7 +56,7 @@ struct TakeVideoCard: View {
                     .foregroundStyle(.white)
                     .padding(.horizontal, 7)
                     .frame(height: 22)
-                    .background(Palette.posterPill, in: Capsule())
+                    .background(Palette.Takes.posterPill, in: Capsule())
             }
         }
         .padding(8)
@@ -71,13 +71,13 @@ struct TakeVideoCard: View {
                 .multilineTextAlignment(.leading)
                 .shadow(color: .black.opacity(0.4), radius: 2, y: 1)
             HStack(spacing: 5) {
-                ColorDot(color: video.platform?.tint ?? Palette.platformNeutral, size: 5)
+                ColorDot(color: video.platform?.tint ?? Palette.Platform.neutral, size: 5)
                 Text(hudText)
                     .textCase(.uppercase)
                     .lineLimit(1)
             }
             .font(.system(size: 10, weight: .semibold, design: .monospaced))
-            .foregroundStyle(Palette.flightInk.opacity(0.75))
+            .foregroundStyle(Palette.Flight.ink.opacity(0.75))
         }
         .padding(10)
     }

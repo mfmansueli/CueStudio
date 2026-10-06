@@ -32,15 +32,10 @@ final class HandoffCaptureTests: XCTestCase {
         app.descendants(matching: .any)[id].firstMatch
     }
 
-    private func scroll(_ app: XCUIApplication, to element: XCUIElement) {
-        for _ in 0..<10 where !(element.exists && element.isHittable) { app.swipeUp() }
-        XCTAssertTrue(element.waitForExistence(timeout: 5))
-    }
-
     /// Settings, with the row `id` opened.
     private func open(_ app: XCUIApplication, _ id: String) {
         let row = element(app, id)
-        scroll(app, to: row)
+        app.scroll(to: row)
         row.tap()
     }
 
@@ -129,7 +124,7 @@ final class HandoffCaptureTests: XCTestCase {
     /// The star opening of 1.1, a picture every half second from the launch (the board's 14 s loop plays once here, about 8 s).
     func test1_1_Welcome() throws {
         _ = try requireFolder()
-        let app = CueApp.launch(seeded: false, extraArguments: ["-uiTestOnboarding", "-uiTestWelcomeOpening"])
+        let app = CueApp.launch(seeded: false, animations: true, extraArguments: ["-uiTestOnboarding", "-uiTestWelcomeOpening"])
         for step in 0..<20 {
             try shot(app, String(format: "1.1_%02d", step), wait: 0)
             usleep(300_000)
@@ -158,7 +153,7 @@ final class HandoffCaptureTests: XCTestCase {
             let app = CueApp.launch(seeded: false, extraArguments: ["-uiTestProAt", String(second)])
             app.cueTabBar.buttons["Profile"].tap()
             let upgrade = element(app, "profile.upgradeButton")
-            for _ in 0..<8 where !(upgrade.exists && upgrade.isHittable) { app.swipeUp() }
+            app.scroll(to: upgrade)
             upgrade.tap()
             XCTAssertTrue(element(app, "paywall.closeButton").waitForExistence(timeout: 8))
             try shot(app, "11.4_at_" + String(format: "%03.1f", second), wait: 2)
@@ -258,7 +253,8 @@ final class HandoffCaptureTests: XCTestCase {
 
     func test8_1_ShareToUniverse() throws {
         _ = try requireFolder()
-        let app = CueApp.launch(seeded: true, sampleVideo: true, extraArguments: ["-uiTestFakeShareSheet", "-uiTestUniverse", "sample"])
+        // Real animations: the networks' sheet only comes back after the share sheet has animated away.
+        let app = CueApp.launch(seeded: true, sampleVideo: true, animations: true, extraArguments: ["-uiTestFakeShareSheet", "-uiTestUniverse", "sample"])
         app.cueTabBar.buttons["Takes"].tap()
         let row = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH 'takes.video.' AND label CONTAINS '3 morning habits'")).firstMatch
         XCTAssertTrue(row.waitForExistence(timeout: 10))
@@ -393,7 +389,7 @@ final class HandoffCaptureTests: XCTestCase {
         for (name, extra) in [("3-networks", ["3"]), ("1-network", [String]())] {
             for second in name == "1-network" ? [4.0] : [0.3, 1.0, 1.7, 2.4, 4.0] {
                 let app = CueApp.launch(
-                    seeded: true, sampleVideo: true,
+                    seeded: true, sampleVideo: true, animations: true,
                     extraArguments: ["-uiTestFakeShareSheet", "-uiTestUniverse", "sample", "-uiTestSendOffAt", String(second)]
                 )
                 app.cueTabBar.buttons["Takes"].tap()
@@ -429,7 +425,7 @@ final class HandoffCaptureTests: XCTestCase {
     /// 1.2: pick a topic and watch it become a world, a picture about every 0.3 s.
     func test1_2_Topics() throws {
         _ = try requireFolder()
-        let app = CueApp.launch(seeded: false, extraArguments: ["-uiTestOnboarding"])
+        let app = CueApp.launch(seeded: false, animations: true, extraArguments: ["-uiTestOnboarding"])
         app.buttons["onboarding.getStarted"].tap()
         XCTAssertTrue(element(app, "onboarding.topic.niche.food").waitForExistence(timeout: 10))
         try shot(app, "1.2_00_entry", wait: 0)

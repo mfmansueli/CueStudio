@@ -46,7 +46,7 @@ struct OnboardingView: View {
 
     var body: some View {
         ZStack {
-            BgWash(lights: washLights, base: Palette.flightNight)
+            BgWash(lights: washLights, base: Palette.Flight.night)
             OnboardingSky(step: onboarding.step, plays: services.playsWelcomeOpening, frozenAt: services.welcomeFrozenTime)
                 .ignoresSafeArea()
                 // The sky shifts a little with each chapter (parallax).

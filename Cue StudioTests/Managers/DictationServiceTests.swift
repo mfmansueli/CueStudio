@@ -66,22 +66,6 @@ struct DictationServiceTests {
         for _ in 0..<yields { await Task.yield() }
     }
 
-    private func waitUntil(_ condition: () -> Bool) async {
-        for _ in 0..<400 where !condition() {
-            await Task.yield()
-        }
-        await waitUntilSlow(condition)
-    }
-
-    /// For a wait that depends on a real timer: up to a deadline far beyond any timeout under test,
-    /// so a busy machine only makes it slower, never wrong.
-    private func waitUntilSlow(_ condition: () -> Bool) async {
-        let deadline = ContinuousClock.now + .seconds(30)
-        while !condition(), ContinuousClock.now < deadline {
-            try? await Task.sleep(for: .milliseconds(10))
-        }
-    }
-
     // MARK: - Listening
 
     @Test func tappingTheMicrophoneListensInTheRequestedLanguageAndAsksForNothingElse() async {
@@ -192,7 +176,7 @@ struct DictationServiceTests {
         rig.speech.preparationSteps = [.preparing, .downloading(.german, progress: 0.4)]
         rig.speech.holdsStart = true
         let task = Task { await rig.start(language: .language(.german)) }
-        await waitUntil { rig.service.state == .preparing(.downloading(.german, progress: 0.4)) }
+        await Wait.until { rig.service.state == .preparing(.downloading(.german, progress: 0.4)) }
         #expect(rig.service.state == .preparing(.downloading(.german, progress: 0.4)))
         // Nothing is heard, and the microphone isn't on, while the model comes in.
         #expect(!rig.audio.isMetering)
@@ -212,7 +196,7 @@ struct DictationServiceTests {
         rig.service.stop()
         #expect(rig.service.state == .finishing)
         #expect(!rig.audio.isMetering)
-        await waitUntil { rig.service.state == .idle }
+        await Wait.until { rig.service.state == .idle }
         #expect(rig.service.state == .idle)
         #expect(rig.heard.texts.last == "a video about coffee and focus")
         #expect(rig.speech.finishCount == 1)
@@ -223,7 +207,7 @@ struct DictationServiceTests {
         let rig = Rig()
         await rig.start()
         rig.service.stop()
-        await waitUntil { rig.service.state == .idle }
+        await Wait.until { rig.service.state == .idle }
         #expect(rig.service.state == .idle)
         #expect(rig.service.notice == .nothingHeard)
         #expect(rig.heard.texts.isEmpty)
@@ -238,7 +222,7 @@ struct DictationServiceTests {
         await settle()
         rig.service.stop()
         #expect(rig.service.state == .finishing)
-        await waitUntilSlow { rig.service.state == .idle }
+        await Wait.until { rig.service.state == .idle }
         // The dictation ends anyway, and what was heard stays.
         #expect(rig.service.state == .idle)
         #expect(rig.heard.texts == ["something I said"])
@@ -250,7 +234,7 @@ struct DictationServiceTests {
         let rig = Rig()
         rig.speech.holdsStart = true
         let task = Task { await rig.start() }
-        await waitUntil { rig.service.state == .preparing(nil) || rig.speech.startCount == 1 }
+        await Wait.until { rig.service.state == .preparing(nil) || rig.speech.startCount == 1 }
         rig.service.stop()
         rig.speech.finishPreparing()
         await task.value
@@ -266,7 +250,7 @@ struct DictationServiceTests {
         rig.speech.say("first idea")
         await settle()
         rig.service.stop()
-        await waitUntil { rig.service.state == .idle }
+        await Wait.until { rig.service.state == .idle }
         await rig.start()
         #expect(rig.service.state == .listening)
         rig.speech.say("second idea")
@@ -309,7 +293,7 @@ struct DictationServiceTests {
         let rig = Rig()
         rig.speech.holdsStart = true
         let task = Task { await rig.start() }
-        await waitUntil { rig.speech.startCount == 1 }
+        await Wait.until { rig.speech.startCount == 1 }
         rig.service.cancel()
         rig.speech.finishPreparing()
         await task.value
@@ -347,7 +331,7 @@ struct DictationServiceTests {
         rig.speech.say("words before the interruption")
         await settle()
         rig.notificationCenter.post(name: notification, object: nil)
-        await waitUntil { rig.service.state == .idle }
+        await Wait.until { rig.service.state == .idle }
         #expect(rig.service.state == .idle)
         #expect(rig.service.notice == .interrupted)
         #expect(!rig.audio.isMetering)
@@ -361,7 +345,7 @@ struct DictationServiceTests {
         rig.speech.say("some words")
         await settle()
         rig.speech.endOnItsOwn()
-        await waitUntil { rig.service.state == .idle }
+        await Wait.until { rig.service.state == .idle }
         #expect(rig.service.state == .idle)
         #expect(rig.service.notice == .interrupted)
         #expect(!rig.audio.isMetering)
@@ -373,7 +357,7 @@ struct DictationServiceTests {
         await rig.start()
         #expect(rig.service.state == .listening)
         // No buffers arrive (an unplugged mic, a call): it lets go by itself.
-        await waitUntilSlow { rig.service.state == .idle }
+        await Wait.until { rig.service.state == .idle }
         #expect(rig.service.state == .idle)
         #expect(rig.service.notice == .interrupted)
         #expect(!rig.audio.isMetering)

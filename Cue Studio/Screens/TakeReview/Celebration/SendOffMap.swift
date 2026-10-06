@@ -45,7 +45,7 @@ struct SendOffMap: View {
                 let radius = width / 2 - 0.5
                 layer.stroke(
                     Path(ellipseIn: CGRect(x: -radius, y: -radius, width: radius * 2, height: radius * 2)),
-                    with: .color(index == 0 ? Palette.starLilac.opacity(0.16) : Palette.sendOffInnerOrbit), lineWidth: 1
+                    with: .color(index == 0 ? Palette.Universe.starLilac.opacity(0.16) : Palette.Universe.sendOffInnerOrbit), lineWidth: 1
                 )
             }
         }
@@ -55,16 +55,16 @@ struct SendOffMap: View {
     private var you: some View {
         let diameter = SendOffLayout.youDiameter
         return ZStack {
-            Circle().fill(Palette.sendOffYouGlow).frame(width: diameter + 20, height: diameter + 20).blur(radius: 20)
+            Circle().fill(Palette.Universe.sendOffYouGlow).frame(width: diameter + 20, height: diameter + 20).blur(radius: 20)
             Circle()
                 .fill(RadialGradient(
                     stops: [
-                        .init(color: Palette.proPlanetLight, location: 0), .init(color: Palette.proPlanetMid, location: 0.3),
-                        .init(color: Palette.proPlanetShade, location: 0.66), .init(color: Palette.proPlanetDark, location: 1),
+                        .init(color: Palette.Universe.proPlanetLight, location: 0), .init(color: Palette.Universe.proPlanetMid, location: 0.3),
+                        .init(color: Palette.Universe.proPlanetShade, location: 0.66), .init(color: Palette.Universe.proPlanetDark, location: 1),
                     ],
                     center: UnitPoint(x: 0.36, y: 0.32), startRadius: 0, endRadius: diameter * 0.934
                 ))
-                .overlay(Circle().strokeBorder(Palette.sendOffYouRim, lineWidth: 0.8))
+                .overlay(Circle().strokeBorder(Palette.Universe.sendOffYouRim, lineWidth: 0.8))
                 .frame(width: diameter, height: diameter)
         }
         .position(SendOffLayout.you)
@@ -72,7 +72,7 @@ struct SendOffMap: View {
             Text("YOU")
                 .font(.system(size: 9, weight: .bold, design: .monospaced))
                 .tracking(1.26)
-                .foregroundStyle(Palette.sendOffYouName)
+                .foregroundStyle(Palette.Universe.sendOffYouName)
                 .frame(width: 100)
                 .position(x: SendOffLayout.you.x, y: SendOffLayout.you.y - diameter / 2 + 64 + 5.5)
         }
@@ -106,7 +106,7 @@ struct SendOffMap: View {
             Text(verbatim: "\(platform.label.uppercased()) · \(shown)")
                 .font(.system(size: 9, weight: .bold, design: .monospaced))
                 .tracking(0.9)
-                .foregroundStyle(lit > 0.5 ? Color.white : Palette.sendOffNameDim)
+                .foregroundStyle(lit > 0.5 ? Color.white : Palette.Universe.sendOffNameDim)
                 .fixedSize()
                 .position(x: center.x, y: center.y + diameter / 2 + 6 + 5.5)
         }
@@ -126,7 +126,7 @@ struct SendOffMap: View {
                     let radius = 2 * flight.scale
                     context.fill(
                         Path(ellipseIn: CGRect(x: point.x - radius, y: point.y - radius, width: radius * 2, height: radius * 2)),
-                        with: .color(Palette.starGold.opacity(flight.opacity))
+                        with: .color(Palette.Universe.starGold.opacity(flight.opacity))
                     )
                 }
                 if let flight = SendOffScript.star(index, at: time) {
@@ -154,7 +154,7 @@ struct SendOffMap: View {
         }
         context.drawLayer { layer in
             layer.addFilter(.blur(radius: 1.5))
-            layer.fill(disc(point, rim), with: .color(Palette.starGold.opacity(opacity)))
+            layer.fill(disc(point, rim), with: .color(Palette.Universe.starGold.opacity(opacity)))
         }
         context.fill(disc(point, core), with: .color(.white.opacity(opacity)))
     }
@@ -165,7 +165,7 @@ struct SendOffMap: View {
             layer.addFilter(.blur(radius: 4))
             layer.fill(disc(point, radius + 2), with: .color(Palette.acc.opacity(0.7 * opacity)))
         }
-        context.fill(disc(point, radius), with: .color(Palette.starGold.opacity(opacity)))
+        context.fill(disc(point, radius), with: .color(Palette.Universe.starGold.opacity(opacity)))
     }
 
     private func disc(_ center: CGPoint, _ radius: Double) -> Path {

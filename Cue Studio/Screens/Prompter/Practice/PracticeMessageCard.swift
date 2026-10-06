@@ -50,7 +50,7 @@ struct PracticeMessageCard: View {
             ForEach(lines, id: \.self) { line in
                 Text(line)
                     .font(.system(size: 14))
-                    .foregroundStyle(Palette.flightInk.opacity(0.78))
+                    .foregroundStyle(Palette.Flight.ink.opacity(0.78))
                     .lineLimit(2)
             }
         }

@@ -59,7 +59,7 @@ struct SetupSummaryCard: View {
         let shape = RoundedRectangle(cornerRadius: 12, style: .continuous)
         return ZStack {
             shape
-                .fill(Palette.previewWell)
+                .fill(Palette.Editor.previewWell)
                 .overlay(shape.strokeBorder(Palette.ink3, lineWidth: 1.5))
             VStack(spacing: 3) {
                 RoundedRectangle(cornerRadius: 2).fill(Palette.ink).frame(height: 3)
@@ -92,7 +92,7 @@ struct SetupSummaryCard: View {
             }
             .padding(.horizontal, 10)
             .frame(maxWidth: .infinity, minHeight: 42, alignment: .leading)
-            .background(Palette.heroChip, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+            .background(Palette.Scripts.heroChip, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)

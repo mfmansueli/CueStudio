@@ -53,7 +53,7 @@ struct CaptionLineCard: View {
 
     private var background: Color {
         if isSelected { return Palette.surface2 }
-        return isActive ? Palette.accCard : Palette.panelCard
+        return isActive ? Palette.Editor.accCard : Palette.Editor.panelCard
     }
 
     private var header: some View {
@@ -103,7 +103,7 @@ struct CaptionLineCard: View {
                         .font(.system(size: 14, weight: .semibold))
                         .foregroundStyle(Palette.dangerText)
                         .frame(width: 36, height: 32)
-                        .background(Palette.dangerWash, in: Capsule())
+                        .background(Palette.Editor.dangerWash, in: Capsule())
                         .frame(minWidth: Metrics.hitTarget, minHeight: Metrics.hitTarget)
                         .contentShape(Rectangle())
                 }

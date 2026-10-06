@@ -20,7 +20,7 @@ struct ColorDot: View {
 
 #if DEBUG
 #Preview {
-    HStack { ColorDot(color: Palette.platformTikTok); ColorDot(color: Palette.acc, size: 10) }
+    HStack { ColorDot(color: Palette.Platform.tikTok); ColorDot(color: Palette.acc, size: 10) }
         .padding()
         .background(Palette.bg)
 }

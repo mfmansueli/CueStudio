@@ -13,7 +13,7 @@ struct PosterImage: View {
 
     var body: some View {
         LinearGradient(
-            colors: [Palette.thumbnailTop, Palette.thumbnailBottom],
+            colors: [Palette.Takes.thumbnailTop, Palette.Takes.thumbnailBottom],
             startPoint: .topLeading, endPoint: .bottomTrailing
         )
         .overlay {

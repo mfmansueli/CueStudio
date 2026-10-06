@@ -19,8 +19,8 @@ struct TakePipelineCard: View {
         ZStack(alignment: .top) {
             LinearGradient(
                 stops: [
-                    .init(color: Palette.flightInk.opacity(0.25), location: 0), .init(color: Palette.flightInk.opacity(0.25), location: 0.5),
-                    .init(color: Palette.success, location: 0.66), .init(color: Palette.flightLilac, location: 1),
+                    .init(color: Palette.Flight.ink.opacity(0.25), location: 0), .init(color: Palette.Flight.ink.opacity(0.25), location: 0.5),
+                    .init(color: Palette.success, location: 0.66), .init(color: Palette.Flight.lilac, location: 1),
                 ],
                 startPoint: .leading, endPoint: .trailing
             )
@@ -59,7 +59,7 @@ struct TakePipelineCard: View {
         .buttonStyle(.plain)
         .accessibilityLabel(Text(stage.pipelineLabel))
         .accessibilityValue(Text("\(count)"))
-        .accessibilityAddTraits(isOn ? .isSelected : [])
+        .accessibilityAddTraits(isOn ? AccessibilityTraits.isSelected : [])
         .accessibilityIdentifier("takes.stage.\(stage.stepKey)")
     }
 
@@ -71,10 +71,10 @@ struct TakePipelineCard: View {
 
     private func labelColor(_ stage: TakeStage) -> Color {
         switch stage {
-        case .pick: Palette.flightInk.opacity(0.6)
+        case .pick: Palette.Flight.ink.opacity(0.6)
         case .edit: Palette.info
         case .ready: Palette.success
-        case .shared: Palette.starLilac
+        case .shared: Palette.Universe.starLilac
         }
     }
 
@@ -83,16 +83,16 @@ struct TakePipelineCard: View {
         ZStack {
             switch stage {
             case .pick:
-                disc(fill: Palette.surface2, ring: Palette.flightInk.opacity(0.3), text: "\(count)", ink: .white)
+                disc(fill: Palette.surface2, ring: Palette.Flight.ink.opacity(0.3), text: "\(count)", ink: .white)
             case .edit:
                 disc(fill: Palette.surface2, ring: Palette.info.opacity(0.6), text: "\(count)", ink: Palette.info)
             case .ready:
                 readyDisc(count: count)
             case .shared:
-                Circle().fill(Palette.takesSharedNode)
-                    .overlay(Circle().strokeBorder(Palette.flightLilac, lineWidth: 1))
+                Circle().fill(Palette.Takes.sharedNode)
+                    .overlay(Circle().strokeBorder(Palette.Flight.lilac, lineWidth: 1))
                     .overlay { Text(verbatim: "✦").font(.system(size: 13)).foregroundStyle(Palette.acc) }
-                    .shadow(color: Palette.nightViolet.opacity(0.5), radius: 14)
+                    .shadow(color: Palette.Universe.nightViolet.opacity(0.5), radius: 14)
             }
         }
         .frame(width: 28, height: 28)

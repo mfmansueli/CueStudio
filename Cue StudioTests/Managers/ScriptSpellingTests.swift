@@ -33,8 +33,9 @@ struct ScriptSpellingTests {
         let result = ScriptSpelling.apply(
             to: heard("so today I want to talk about something else entirely"), script: "Hoje vou mostrar duas ferramentas simples."
         )
+        let heardWords: [String] = "so today I want to talk about something else entirely".split(separator: " ").map(String.init)
         #expect(!result.followsScript)
-        #expect(result.words.map(\.text) == "so today I want to talk about something else entirely".split(separator: " ").map(String.init))
+        #expect(result.words.map(\.text) == heardWords)
     }
 
     @Test func aMishearingBetweenWordsThatLineUpTakesTheScriptsWord() {
@@ -154,7 +155,8 @@ struct ScriptVocabularyTests {
     @Test func theListIsCapped() {
         // 300 distinct words of letters only: words with digits are never handed over.
         let letters = Array("abcdefghijklmnopqrstuvwxyz")
-        let script = (0..<300).map { "word" + String(letters[$0 / 26]) + String(letters[$0 % 26]) }.joined(separator: " ")
+        let words: [String] = (0..<300).map { (index: Int) -> String in "word\(letters[index / 26])\(letters[index % 26])" }
+        let script = words.joined(separator: " ")
         #expect(ScriptVocabulary.terms(in: script).count == ScriptVocabulary.limit)
         #expect(ScriptVocabulary.terms(in: "word1 word2 word3").isEmpty)
     }

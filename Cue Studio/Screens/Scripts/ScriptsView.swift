@@ -6,8 +6,8 @@
 import SwiftUI
 
 /// Home (v30 · 3.1, 3.2): the scripts on top, each at its stage on the way to a posted video, and the AI dock fixed at the bottom
-/// (`ScriptsDock`). The title, the Logbook, the search and "+" are the system's navigation bar. Tap opens, swipe for actions, hold
-/// to preview.
+/// (`ScriptsDock`). The title, the Logbook and "+" are the system's navigation bar; the search is a field at the top of the list, always
+/// there, and the dock stays while searching. Tap opens, swipe for actions, hold to preview.
 struct ScriptsView: View {
     @State private var viewModel: ScriptsViewModel
 
@@ -26,6 +26,8 @@ struct ScriptsView: View {
 
     /// The dock's field has the keyboard: the list dims.
     @State private var isDockEditing = false
+    /// The search field at the top of the list has the keyboard.
+    @FocusState private var isSearchFocused: Bool
     /// Whether the dock's first row is folded away by the list scrolling.
     @State private var isDockFolded = false
     /// Reads the scroll for the fold. It changes on every frame of a scroll without redrawing the screen; only `isDockFolded` does.
@@ -50,8 +52,9 @@ struct ScriptsView: View {
             .animation(reduceMotion ? .easeOut(duration: 0.15) : CueMotion.dockDim, value: isDockEditing)
             .overlay { if isDockEditing { Color.clear.contentShape(Rectangle()).onTapGesture { endEditing() } } }
             .safeAreaInset(edge: .bottom, spacing: 0) {
-                // Selecting and searching have the screen to themselves: the dock (and its keyboard) would cover the results.
-                if !viewModel.isSelecting, !viewModel.isSearching {
+                // Selecting has the screen to itself (its bar takes the dock's place). The search keeps the dock: its field is at the top of
+                // the list (the owner's call, 6/10/2026).
+                if !viewModel.isSelecting {
                     VStack(spacing: 10) {
                         // The My Cue Voice question, 10 pt above the dock.
                         VoiceQuestionTipHost(isQuiet: isQuiet)
@@ -70,6 +73,9 @@ struct ScriptsView: View {
                     .transition(.move(edge: .bottom).combined(with: .opacity))
                 }
             }
+            // While the search has the keyboard, the dock stays at the bottom under it instead of riding up with it: above the keyboard it
+            // covered the results (and "No matches"). It is back in sight as soon as the keyboard goes (a scroll sends it away).
+            .ignoresSafeArea(isSearchFocused ? .keyboard : [], edges: .bottom)
             .skyBackground()
             // "Your stars": one for each idea sent, and the one on its way.
             .overlay(alignment: .top) { SkyStarsLayer(stars: sky.visible).ignoresSafeArea(edges: .top) }
@@ -79,8 +85,6 @@ struct ScriptsView: View {
             .navigationTitle("Scripts")
             .toolbarTitleDisplayMode(.inlineLarge)
             .toolbar { toolbarItems }
-            .searchable(text: $viewModel.query, isPresented: $viewModel.isSearching, prompt: Text("Search scripts"))
-            .searchToolbarBehavior(.minimize)
             .alert("New folder", isPresented: $viewModel.isNamingFolder) {
                 TextField("Folder name", text: $viewModel.newFolderName)
                 Button("Cancel", role: .cancel) {}
@@ -108,7 +112,7 @@ struct ScriptsView: View {
     /// Nothing else has the screen, so a tip may come: no sheet, prompter, toast or keyboard, no selection or search.
     private var isQuiet: Bool {
         presentation.sheet == nil && presentation.prompter == nil && presentation.selectedTab == .scripts
-            && presentation.scriptsPath.isEmpty && !isDockEditing && !viewModel.isSelecting && !viewModel.isSearching
+            && presentation.scriptsPath.isEmpty && !isDockEditing && !viewModel.isSelecting && !isSearchFocused
             && toast.message == nil
     }
 
@@ -122,7 +126,7 @@ struct ScriptsView: View {
         withAnimation(reduceMotion ? nil : CueMotion.dockFold) { isDockFolded = folded }
     }
 
-    /// Logbook and "+" in the bar's glass; the search is the bar's own (`.searchable`, which folds into its magnifier).
+    /// Logbook and "+" in the bar's glass.
     @ToolbarContentBuilder
     private var toolbarItems: some ToolbarContent {
         ToolbarItemGroup(placement: .topBarTrailing) {
@@ -190,12 +194,16 @@ struct ScriptsView: View {
         @Bindable var viewModel = viewModel
         let groups = viewModel.groups(takeCount: { takes.count(for: $0) })
         return List(selection: $viewModel.selection) {
-            // The count under the large title ("8 SCRIPTS · 3 READY"), then the platform filters (and the search): free blocks.
+            // The count under the large title ("8 SCRIPTS · 3 READY"), the search, then the platform filters: free blocks.
             blockRow(top: 0) {
                 HUDLine(values: viewModel.summaryValues(takeCount: { takes.count(for: $0) }))
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.horizontal, 4)
                     .accessibilityIdentifier("scripts.summary")
+            }
+            blockRow(top: 14) {
+                SearchField(text: $viewModel.query, prompt: "Search scripts", isFocused: $isSearchFocused)
+                    .accessibilityIdentifier("scripts.search")
             }
             blockRow(top: 16, horizontal: 0) {
                 // Platform first: it is how creators think about their day.
@@ -365,7 +373,7 @@ struct ScriptsView: View {
             case .search:
                 EmptyState(
                     title: "No matches", message: "Try another word.", actionTitle: "Clear search",
-                    action: { viewModel.isSearching = false }, accessibilityPrefix: "scripts.empty"
+                    action: { viewModel.query = "" }, accessibilityPrefix: "scripts.empty"
                 )
             case .platform(let platform):
                 EmptyState(

@@ -31,7 +31,7 @@ struct EditorToolPanel: View {
         .scrollBounceBehavior(.basedOnSize)
         .frame(height: height)
         .frame(maxWidth: .infinity)
-        .background(Palette.editorPanel)
+        .background(Palette.Editor.panel)
         .transition(.opacity)
     }
 }

@@ -1,0 +1,37 @@
+{
+  "configurations" : [
+    {
+      "id" : "A17C2796-40B0-4192-BDE9-3B1A45EA195E",
+      "name" : "Default",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "codeCoverage" : false,
+    "defaultTestExecutionTimeAllowance" : 300,
+    "maximumTestExecutionTimeAllowance" : 600,
+    "systemAttachmentLifetime" : "deleteOnSuccess",
+    "testTimeoutsEnabled" : true,
+    "uiTestingScreenshotsLifetime" : "deleteOnSuccess"
+  },
+  "testTargets" : [
+    {
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:Cue Studio.xcodeproj",
+        "identifier" : "000000000000000200000000",
+        "name" : "Cue StudioTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Cue Studio.xcodeproj",
+        "identifier" : "000000000000000300000000",
+        "name" : "Cue StudioUITests"
+      }
+    }
+  ],
+  "version" : 1
+}

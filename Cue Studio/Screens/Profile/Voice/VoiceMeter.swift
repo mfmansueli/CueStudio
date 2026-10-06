@@ -27,7 +27,7 @@ struct VoiceMeter: View {
             }
             GeometryReader { proxy in
                 ZStack(alignment: .leading) {
-                    Capsule().fill(Palette.sliderTrack)
+                    Capsule().fill(Palette.Slider.track)
                     Capsule().fill(Palette.acc).frame(width: proxy.size.width * CGFloat(min(100, max(0, strength))) / 100)
                 }
             }

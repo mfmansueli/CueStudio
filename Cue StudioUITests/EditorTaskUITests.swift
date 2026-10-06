@@ -70,7 +70,7 @@ final class EditorTaskUITests: XCTestCase {
         }
         app.buttons["edit.pause.1.listen"].tap()
         XCTAssertTrue(EditorApp.toastSays(app, "Playing without this pause"))
-        // Keep the one heard, once it has played.
+        // Keep the one heard, once it has played: real playback time (the listen button doesn't say when it ends).
         sleep(3)
         let card = app.descendants(matching: .any)["edit.pause.1"]
         card.coordinate(withNormalizedOffset: CGVector(dx: 0.3, dy: 0.25)).tap()

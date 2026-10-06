@@ -189,7 +189,7 @@ struct CaptionsPanel: View {
                     .font(.system(.subheadline, weight: .semibold))
                     .foregroundStyle(Palette.ink.opacity(0.8))
                     .frame(maxWidth: .infinity, minHeight: Metrics.hitTarget)
-                    .overlay(Capsule().strokeBorder(Palette.laneGhostBorder, style: StrokeStyle(lineWidth: 1, dash: [4, 3])))
+                    .overlay(Capsule().strokeBorder(Palette.Editor.laneGhostBorder, style: StrokeStyle(lineWidth: 1, dash: [4, 3])))
                     .contentShape(Capsule())
             }
             .buttonStyle(.plain)

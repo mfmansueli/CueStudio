@@ -24,18 +24,37 @@ Toda tela, componente ou cor nova **precisa passar** no contraste antes de ser e
 
 - **Texto:** pelo menos **4,5:1** contra o que realmente está atrás dele (texto grande, de 18 pt ou mais, ou 14 pt em negrito ou mais, **3:1**). Isso vale para textos pequenos, rótulos mono, placeholders, textos legais e para texto sobre vidro, aurora, céu ou vídeo: o fundo é o **pior ponto** da superfície, não o token médio.
 - **Partes de controle, ícones que informam e bordas de campo:** **3:1** (WCAG 1.4.11). Só o que é decorativo (setas de disclosure, separadores, pontos) pode ficar abaixo.
-- **Use os tokens de texto de `Palette`** (`ink`, `ink2`, `inkHint`, `accText`, `aiText`, `warnText`, …); eles já são medidos em `PaletteContrastTests` com e sem Aumentar Contraste. `ink3` é só para o que não precisa ser lido (nunca para texto). **Não invente** `Color.white.opacity(x)`, `flightInk.opacity(x)` etc. para texto: se um token não serve, crie ou ajuste o token e meça.
+- **Use os tokens de texto de `Palette`** (`ink`, `ink2`, `inkHint`, `accText`, `aiText`, `warnText`, …); eles já são medidos em `PaletteContrastTests` com e sem Aumentar Contraste. `ink3` é só para o que não precisa ser lido (nunca para texto). **Não invente** `Color.white.opacity(x)`, `Palette.Flight.ink.opacity(x)` etc. para texto: se um token não serve, crie ou ajuste o token e meça.
 - **Meça de verdade:** um token novo entra em `PaletteContrastTests`; uma tela com fundo translúcido (dock, cartões sobre o céu, vidro, onboarding) é conferida na imagem renderizada (`UserReportCaptureTests` / `HandoffCaptureTests` gravam o PNG e a hierarquia; `tools/contrast/audit.py` mede cada texto). Qualquer par abaixo do mínimo é corrigido na mesma entrega, e o relatório final diz o que foi medido.
 
 ## Build e testes
 
-- Scheme compartilhado `Cue Studio` (app + `Cue StudioTests` + `Cue StudioUITests`), Swift 6, iOS 27.
-- `xcodebuild -project "Cue Studio.xcodeproj" -scheme "Cue Studio" -destination "platform=iOS Simulator,name=iPhone 17" test`
+- **Build settings em `Config/*.xcconfig`** (`Project`, `App`, `UnitTests`, `UITests`), nunca no `project.pbxproj`: mude o
+  arquivo de texto, não o editor de Build Settings do Xcode (ele grava no projeto, e `scripts/check-project.sh` acusa).
+- Scheme compartilhado `Cue Studio` (app + `Cue StudioTests` + `Cue StudioUITests`), Swift 6, iOS 27. Testes por planos
+  (`TestPlans/`): **Full** (o padrão do ⌘U: unidade + UI), **Fast** (unidade sem as exportações reais, tag `.realExports`) e
+  **UISmoke** (um teste de UI por fluxo).
+- **Build e testes pelos scripts** (`scripts/`), não por `xcodebuild` solto: um derivedData por checkout (`build/`), pacotes
+  compartilhados, **um `xcodebuild` por vez no Mac** (o próximo espera o que está rodando, de outra sessão ou worktree) e só
+  erros, warnings e falhas no terminal (o log inteiro fica em `build/logs/`).
+  - `scripts/build.sh [tests|app|device|release]` (padrão `tests`: o app e os pacotes de teste no simulador).
+  - `scripts/test.sh [fast|smoke|unit|exports|ui|full]`, `scripts/test.sh only "Cue StudioTests/DockFoldTests"`, com
+    `--no-build` e `--repeat N`. Durante o trabalho, `fast`, `smoke` (um teste de UI por fluxo, plano `UISmoke`) ou `only`;
+    `full` no fim. Testes de aparelho: `CUE_DEVICE=<iPhone>
+    scripts/test.sh device <Suite>` (um conjunto por vez; liga a variável `TEST_RUNNER_CUE_…` certa).
+  - `scripts/check-warnings.sh`: a conferência de zero warnings (abaixo).
+  - `scripts/check-project.sh`: em segundos, confere `project.pbxproj`, os `.xcconfig`, o scheme e os planos de teste.
+  - `scripts/strings.py`: o String Catalog sem editar o JSON à mão (`add` com os 20 idiomas, `missing`, `stale --remove`).
 - **Zero warnings.** Todo build termina sem nenhum warning (compilador, SwiftLint, ferramentas do
   Xcode): se um build mostrar um warning, corrija na mesma entrega, mesmo que não tenha vindo da sua
-  mudança. Build incremental não repete warnings de arquivos não recompilados, então confira com um
-  build limpo (`-derivedDataPath` novo) antes de dar por terminado. O SDK do simulador e o do
-  aparelho acusam coisas diferentes (anotações de concorrência): confira os dois.
+  mudança. Build incremental não repete warnings de arquivos não recompilados: antes de dar por terminado, rode
+  `scripts/check-warnings.sh`, que recompila o app e os testes do zero para o simulador, para o aparelho (o SDK dele acusa
+  outras coisas, como anotações de concorrência) e em Release.
+- **Sessões em paralelo** trabalham cada uma num git worktree (`.claude/worktrees/`), nunca duas na mesma pasta. Os scripts
+  já separam o derivedData por worktree e enfileiram os builds.
+- **Diagnósticos do editor:** `scripts/lsp-setup.sh` (uma vez por checkout ou worktree; precisa de
+  `brew install xcode-build-server`) faz o SourceKit-LSP ler o build de verdade, em vez de acusar os tipos do projeto como
+  ausentes.
 - **SwiftLint** (`brew install swiftlint`) roda em todo build do app (Build Phases › SwiftLint) com
   `.swiftlint.yml`. Corrija o código em vez de afrouxar a configuração; `swiftlint --fix` resolve
   parte, mas revise o formato do que ele muda.
@@ -60,6 +79,8 @@ Toda tela, componente ou cor nova **precisa passar** no contraste antes de ser e
   `-uiTestExportsLeft <0…5>` (quantas exportações grátis restam; 0 abre "Your video is ready"), `-uiTestWelcomeAt <s>` / `-uiTestProAt <s>` (congelam a abertura da 1.1 / do Pro nesse segundo), `-uiTestUniverse sample|newYear|newAccount` (o que o Your universe guarda, como o painel APP DATA do protótipo), `-uiTestFirstStar` / `-uiTestMilestone <n>` (a revisão abre direto na história da 1.7 / do 8.3), `-uiTestSendOffAt <s>` (congela o send-off 8.2), `-uiTestStoryAt <s>` (congela o 8.3 e a 1.7), `-uiTestFakeShareSheet` (um substituto com Complete/Cancel no lugar da folha de compartilhamento do sistema), `-uiTestShareQueue` (uma fila do Share to universe deixada para o take de exemplo: o card Continue posting),
   `-uiTestOnboardingStep welcome|universe|voyage|script|voice|practice` (com `-uiTestOnboarding`, o primeiro voo abre nesse capítulo), `-uiTestChapterAt <s>` (congela a abertura do capítulo na tela, 1.2 a 1.6, nesse segundo),
   `-uiTestWelcomeOpening` (a abertura da 1.1 toca inteira, ≈ 8 s; nos testes de UI ela mostra só o estado final).
+  Testes de UI: `-uiTestFastAnimations` (nada anima: sheets, pushes e as transações do SwiftUI; o `CueApp.launch` passa por padrão
+  e `animations: true` pede as reais).
 - Idiomas: `LOCALIZATION.md` (três idiomas independentes, terminologia, RTL). Todo texto novo entra
   nos 20 idiomas dos String Catalogs. O teste de fala de verdade é opt-in:
   `TEST_RUNNER_CUE_SPEECH_E2E=1 xcodebuild … -only-testing:"Cue StudioTests/VoiceFollowingSpeechTests" test`,
