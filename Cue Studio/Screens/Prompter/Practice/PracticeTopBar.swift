@@ -20,7 +20,7 @@ struct PracticeTopBar: View {
             }
             Spacer(minLength: 8)
             HStack(spacing: 6) {
-                Text(verbatim: "✦").foregroundStyle(Palette.flightLilac)
+                Text(verbatim: "✦").foregroundStyle(Palette.Flight.lilac)
                 Text("PRACTICE · NOT RECORDING")
             }
             .font(.system(size: 10, weight: .semibold, design: .monospaced))

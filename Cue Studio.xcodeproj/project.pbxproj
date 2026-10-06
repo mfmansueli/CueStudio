@@ -105,6 +105,16 @@
 			);
 			sourceTree = "<group>";
 		};
+		000000000000000000000020 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				000000000000000000000120 /* Cue Studio.app */,
+				000000000000000000000121 /* Cue StudioTests.xctest */,
+				000000000000000000000122 /* Cue StudioUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		000000000000000000000030 /* Config */ = {
 			isa = PBXGroup;
 			children = (
@@ -114,16 +124,6 @@
 				000000000000000000000034 /* UITests.xcconfig */,
 			);
 			path = Config;
-			sourceTree = "<group>";
-		};
-		000000000000000000000020 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				000000000000000000000120 /* Cue Studio.app */,
-				000000000000000000000121 /* Cue StudioTests.xctest */,
-				000000000000000000000122 /* Cue StudioUITests.xctest */,
-			);
-			name = Products;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

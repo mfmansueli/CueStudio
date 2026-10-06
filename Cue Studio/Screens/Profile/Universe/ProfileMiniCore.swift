@@ -35,13 +35,13 @@ struct ProfileMiniCore: View {
         let ringRadius = size.width / 2 - 0.5
         canvas.stroke(
             Path(ellipseIn: CGRect(x: center.x - ringRadius, y: center.y - ringRadius, width: ringRadius * 2, height: ringRadius * 2)),
-            with: .color(Palette.starGold.opacity(0.45)), lineWidth: 1
+            with: .color(Palette.Universe.starGold.opacity(0.45)), lineWidth: 1
         )
         let angle = -Double.pi / 2 + 2 * .pi * time.truncatingRemainder(dividingBy: Self.lap) / Self.lap
         let bead = CGPoint(x: center.x + ringRadius * cos(angle), y: center.y + ringRadius * sin(angle))
         canvas.drawLayer { layer in
             layer.addFilter(.shadow(color: glow, radius: 3))
-            layer.fill(Path(ellipseIn: CGRect(x: bead.x - 2, y: bead.y - 2, width: 4, height: 4)), with: .color(Palette.starGold))
+            layer.fill(Path(ellipseIn: CGRect(x: bead.x - 2, y: bead.y - 2, width: 4, height: 4)), with: .color(Palette.Universe.starGold))
         }
         // The ball: 14 pt, lit from the top left, with its glow, swelling a little.
         let swell = UniverseSphere.swell(at: time)

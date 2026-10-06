@@ -71,7 +71,7 @@ enum UniverseSphere {
                 center: CGPoint(x: center.x - radius * 0.3, y: center.y - radius * 0.35), startRadius: radius * 0.5, endRadius: radius * 1.5
             )
         )
-        canvas.stroke(ball, with: .color(Palette.coreRim), lineWidth: 1)
+        canvas.stroke(ball, with: .color(Palette.Universe.coreRim), lineWidth: 1)
     }
 
     /// The near halves of the rings and their beads that are in front of the ball.
@@ -87,7 +87,7 @@ enum UniverseSphere {
         arc.addArc(center: .zero, radius: 1, startAngle: .degrees(front ? 0 : 180), endAngle: .degrees(front ? 180 : 360), clockwise: false)
         layer.stroke(
             arc.applying(CGAffineTransform(scaleX: ring.rx, y: ring.ry)),
-            with: .color(Palette.starGold.opacity(front ? 0.55 : 0.3)), lineWidth: 0.8
+            with: .color(Palette.Universe.starGold.opacity(front ? 0.55 : 0.3)), lineWidth: 0.8
         )
         let angle = (ring.start + 360 * time / ring.period) * .pi / 180
         guard (sin(angle) >= 0) == front else { return }

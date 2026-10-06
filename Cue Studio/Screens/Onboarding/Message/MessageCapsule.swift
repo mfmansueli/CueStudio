@@ -23,7 +23,7 @@ struct MessageCapsule: View {
             Text(label)
                 .font(.system(size: 11.5, weight: .semibold, design: .monospaced))
                 .tracking(1.15)
-                .foregroundStyle(Palette.starGold)
+                .foregroundStyle(Palette.Universe.starGold)
                 .lineLimit(1)
                 .minimumScaleFactor(0.7)
                 .mask(alignment: .leading) { GeometryReader { Rectangle().frame(width: $0.size.width * max(0, min(1, 1 - reveal))) } }
@@ -47,7 +47,8 @@ struct MessageCapsule: View {
         return ZStack {
             Circle()
                 .fill(RadialGradient(
-                    colors: [Palette.starCream, Palette.acc, Palette.flightGoldEdge], center: UnitPoint(x: 0.35, y: 0.3), startRadius: 0, endRadius: 22
+                    colors: [Palette.Universe.starCream, Palette.acc, Palette.Flight.goldEdge],
+                    center: UnitPoint(x: 0.35, y: 0.3), startRadius: 0, endRadius: 22
                 ))
                 .frame(width: 30, height: 30)
                 .shadow(color: Palette.acc.opacity(0.8), radius: 7)
@@ -73,7 +74,7 @@ struct MessageCapsule: View {
                 LinearGradient(
                     stops: [
                         .init(color: Palette.acc.opacity(0), location: 0), .init(color: Palette.acc.opacity(0.7), location: 0.6),
-                        .init(color: Palette.starCream, location: 1),
+                        .init(color: Palette.Universe.starCream, location: 1),
                     ],
                     startPoint: .leading, endPoint: .trailing
                 )
@@ -85,7 +86,7 @@ struct MessageCapsule: View {
                 .offset(x: 46, y: proxy.size.height - 8.5)
                 runner.opacity(dot.opacity).offset(x: 46 + dot.tx, y: proxy.size.height / 2)
                 Circle()
-                    .strokeBorder(Palette.starGold, lineWidth: 1.5)
+                    .strokeBorder(Palette.Universe.starGold, lineWidth: 1.5)
                     .frame(width: 22, height: 22)
                     .motion(burst)
                     .offset(x: width - 14 - 22, y: proxy.size.height / 2 - 11)
@@ -97,12 +98,12 @@ struct MessageCapsule: View {
     /// The bright dot with a 46 pt tail behind it; its centre is at the origin.
     private var runner: some View {
         ZStack {
-            LinearGradient(colors: [Palette.starCream.opacity(0), Palette.acc.opacity(0.85)], startPoint: .leading, endPoint: .trailing)
+            LinearGradient(colors: [Palette.Universe.starCream.opacity(0), Palette.acc.opacity(0.85)], startPoint: .leading, endPoint: .trailing)
                 .frame(width: 46, height: 2)
                 .clipShape(Capsule())
                 .offset(x: -23)
             Circle()
-                .fill(RadialGradient(colors: [.white, Palette.starCream, Palette.acc], center: .center, startRadius: 0, endRadius: 5))
+                .fill(RadialGradient(colors: [.white, Palette.Universe.starCream, Palette.acc], center: .center, startRadius: 0, endRadius: 5))
                 .frame(width: 10, height: 10)
                 .shadow(color: Palette.acc.opacity(0.85), radius: 6)
         }

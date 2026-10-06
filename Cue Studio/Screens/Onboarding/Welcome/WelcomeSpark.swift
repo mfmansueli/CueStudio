@@ -24,7 +24,7 @@ struct WelcomeSpark: Sendable {
     /// out in 0.03 s and gone 0.55 s after the hit.
     static func burst(_ index: Int, start: Double) -> [WelcomeSpark] {
         let sizes: [CGFloat] = [3, 2, 2.5]
-        let colors: [Color] = [.white, Palette.starWarm, .white, Palette.starGold]
+        let colors: [Color] = [.white, Palette.Universe.starWarm, .white, Palette.Universe.starGold]
         return (0..<9).map { step in
             let distance = 18 + Double(index) * 3 + Double(step % 4) * 7
             return WelcomeSpark(
@@ -37,7 +37,7 @@ struct WelcomeSpark: Sendable {
     /// Seven sparks off a word the star has landed on: out in 0.04 s and gone after 0.5 s.
     static func word(start: Double) -> [WelcomeSpark] {
         let sizes: [CGFloat] = [2.5, 2, 3]
-        let colors: [Color] = [.white, Palette.acc, Palette.starWarm]
+        let colors: [Color] = [.white, Palette.acc, Palette.Universe.starWarm]
         return (0..<7).map { step in
             WelcomeSpark(
                 angle: -90 + Double(step) * 51, size: sizes[step % 3], color: colors[step % 3],
@@ -52,7 +52,7 @@ struct WelcomeSpark: Sendable {
         let sizes: [CGFloat] = [4, 3, 5, 3]
         return (0..<12).map { step in
             WelcomeSpark(
-                angle: Double(step) * 30, size: sizes[step % 4], color: step.isMultiple(of: 2) ? Palette.acc : Palette.starCream,
+                angle: Double(step) * 30, size: sizes[step % 4], color: step.isMultiple(of: 2) ? Palette.acc : Palette.Universe.starCream,
                 track: flight(Timing(start: start, peakAfter: 0.05, endAfter: 1.1, from: 2, to: 8, scale: 1), distance: distances[step])
             )
         }

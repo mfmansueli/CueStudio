@@ -6,8 +6,14 @@
 import SwiftUI
 
 extension Palette {
-    /// Takes: thumbnails, posters and the badges over them.
+    /// Takes: thumbnails, posters and the badges over them, and the pipeline (6.2).
     enum Takes {
+        /// The "shared" node of the pipeline: a lilac-dark disc (`#2A2160`).
+        static let sharedNode = Color(hex: 0x2A2160)
+        /// The yellow light behind the "Up next" card (`rgba(255,214,10,.14)`) and its edge (`.35`).
+        static let upNextGlow = Color(hex: 0xFFD60A, opacity: 0.14)
+        static let upNextRim = Color(hex: 0xFFD60A, opacity: 0.35)
+
         /// The dark well a take's thumbnail sits in, at its own frame.
         static let thumbnailWell = Color(hex: 0x0E0E10)
 

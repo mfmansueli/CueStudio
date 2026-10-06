@@ -77,7 +77,7 @@ struct RemoteEntryRow: View {
         case (nil, _):
             Button { remote.startHosting() } label: {
                 SettingsIconLabel(
-                    systemImage: "iphone.radiowaves.left.and.right", tint: Palette.iconBlue, title: entry.title, titleColor: Palette.accText
+                    systemImage: "iphone.radiowaves.left.and.right", tint: Palette.Settings.iconBlue, title: entry.title, titleColor: Palette.accText
                 )
             }
             .buttonStyle(.plain)

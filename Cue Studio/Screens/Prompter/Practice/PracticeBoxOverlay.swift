@@ -23,7 +23,7 @@ struct PracticeBoxOverlay: View {
         TimelineView(.animation(paused: !isCounting || frozenAt != nil)) { context in
             let second = boardSecond(at: context.date)
             ZStack {
-                Palette.flightDim.opacity(0.7 * pose("L1", second).opacity)
+                Palette.Flight.dim.opacity(0.7 * pose("L1", second).opacity)
                 label(second)
                 rings(second)
                 numbers(second)
@@ -55,7 +55,7 @@ struct PracticeBoxOverlay: View {
             Text("GET READY")
                 .font(.system(size: 11, weight: .semibold, design: .monospaced))
                 .tracking(1.76)
-                .foregroundStyle(Palette.starGold)
+                .foregroundStyle(Palette.Universe.starGold)
                 .motion(pose("L2", second))
                 .padding(.top, 20)
             Spacer()
@@ -93,7 +93,7 @@ struct PracticeBoxOverlay: View {
             Text("READ!")
                 .font(.system(size: 44, weight: .heavy))
                 .tracking(1.76)
-                .foregroundStyle(Palette.starGold)
+                .foregroundStyle(Palette.Universe.starGold)
                 .shadow(color: Palette.acc.opacity(0.7), radius: 13)
                 .motion(pose("L12", second))
         }

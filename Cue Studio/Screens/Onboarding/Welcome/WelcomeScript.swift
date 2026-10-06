@@ -99,7 +99,7 @@ enum WelcomeScript {
 
     /// The star and its three followers, from the largest to the smallest: how late each is, how big, how bright and what colour.
     static let trail: [(delay: Double, size: CGFloat, opacity: Double, color: Color)] = [
-        (0, 9, 1, .white), (0.08, 6.5, 0.6, Palette.starCream), (0.14, 5, 0.4, Palette.starWarm), (0.2, 4, 0.25, Palette.starGold),
+        (0, 9, 1, .white), (0.08, 6.5, 0.6, Palette.Universe.starCream), (0.14, 5, 0.4, Palette.Universe.starWarm), (0.2, 4, 0.25, Palette.Universe.starGold),
     ]
 
     /// Where the star is (`x`, `y`) and how visible (`opacity`), for the three words it visits: at their centres (frame coordinates).

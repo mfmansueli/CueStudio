@@ -26,8 +26,8 @@ struct GlowDot: View {
 
 #if DEBUG
 #Preview {
-    GlowDot(diameter: 6, color: Palette.starCream)
+    GlowDot(diameter: 6, color: Palette.Universe.starCream)
         .padding(40)
-        .background(Palette.flightNight)
+        .background(Palette.Flight.night)
 }
 #endif

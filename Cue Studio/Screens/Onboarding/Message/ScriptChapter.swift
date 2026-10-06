@@ -92,7 +92,7 @@ struct ScriptChapter: View {
         VStack(spacing: 2) {
             Text("Taking a little longer…")
                 .font(.system(size: 14.5, weight: .semibold))
-                .foregroundStyle(Palette.flightInk.opacity(0.82))
+                .foregroundStyle(Palette.Flight.ink.opacity(0.82))
                 .frame(height: 22)
             Text("Your message is on its way.")
                 .font(.system(size: 12.5))
@@ -107,7 +107,7 @@ struct ScriptChapter: View {
     private func readyMade(isOffered: Bool) -> some View {
         Button(String(localized: "Use a ready-made message")) { model.useReadyMade() }
             .font(.system(size: 15, weight: .semibold))
-            .foregroundStyle(Palette.starGold)
+            .foregroundStyle(Palette.Universe.starGold)
             .frame(maxWidth: .infinity, minHeight: 40)
             .buttonStyle(.plain)
             .opacity(isOffered ? 1 : 0)

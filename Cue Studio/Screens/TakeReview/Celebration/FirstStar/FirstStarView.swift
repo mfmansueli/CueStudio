@@ -30,7 +30,7 @@ struct FirstStarView: View {
         .background {
             // The board's own night (`#06070D` under a violet light behind the universe), and the sky over it.
             ZStack {
-                BgWash(lights: BgWash.firstStar, base: Palette.flightNightDeep)
+                BgWash(lights: BgWash.firstStar, base: Palette.Flight.nightDeep)
                 StarfieldView(density: personalization.sky)
             }
             .ignoresSafeArea()

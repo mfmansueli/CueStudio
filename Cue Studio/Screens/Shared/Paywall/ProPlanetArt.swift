@@ -86,13 +86,13 @@ struct ProPlanetArt: View {
             layer.addFilter(.shadow(color: Palette.World.warm.opacity(0.4), radius: 14))
             layer.fill(disc, with: .radialGradient(
                 Gradient(stops: [
-                    .init(color: Palette.proPlanetLight, location: 0), .init(color: Palette.proPlanetMid, location: 0.32),
-                    .init(color: Palette.proPlanetShade, location: 0.66), .init(color: Palette.proPlanetDark, location: 1),
+                    .init(color: Palette.Universe.proPlanetLight, location: 0), .init(color: Palette.Universe.proPlanetMid, location: 0.32),
+                    .init(color: Palette.Universe.proPlanetShade, location: 0.66), .init(color: Palette.Universe.proPlanetDark, location: 1),
                 ]),
                 center: CGPoint(x: -radius * 0.4, y: -radius * 0.4), startRadius: 0, endRadius: radius * 1.7
             ))
         }
-        canvas.stroke(disc, with: .color(Palette.proPlanetLight.opacity(0.35)), lineWidth: 0.6)
+        canvas.stroke(disc, with: .color(Palette.Universe.proPlanetLight.opacity(0.35)), lineWidth: 0.6)
         // A faint band of light crossing it every 9 s.
         let cycle = time.truncatingRemainder(dividingBy: 9) / 9
         canvas.drawLayer { layer in

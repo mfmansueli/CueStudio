@@ -33,7 +33,7 @@ struct TopicCounter: View {
             Text(text)
                 .font(.system(size: 12, weight: .semibold, design: .monospaced))
                 .tracking(1.2)
-                .foregroundStyle(isFull ? Palette.starGold : Color.white.opacity(0.82))
+                .foregroundStyle(isFull ? Palette.Universe.starGold : Color.white.opacity(0.82))
                 .lineLimit(2)
                 .fixedSize(horizontal: false, vertical: true)
                 .id(text)
@@ -67,6 +67,6 @@ struct TopicCounter: View {
         TopicCounter(colors: [Palette.World.warm, Palette.World.mint, Palette.World.pink])
     }
     .padding()
-    .background(Palette.flightNight)
+    .background(Palette.Flight.night)
 }
 #endif

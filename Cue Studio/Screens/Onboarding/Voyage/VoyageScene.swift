@@ -93,7 +93,7 @@ struct VoyageScene: View {
 
     private func drawBirthRings(in context: inout GraphicsContext) {
         for galaxy in VoyageGalaxy.all {
-            LightFX.ring(pose(galaxy.ring), at: galaxy.centre, radius: 22, color: Palette.starCream, lineWidth: 1.2, in: &context)
+            LightFX.ring(pose(galaxy.ring), at: galaxy.centre, radius: 22, color: Palette.Universe.starCream, lineWidth: 1.2, in: &context)
         }
     }
 
@@ -116,7 +116,7 @@ struct VoyageScene: View {
     private func nameColor(of galaxy: VoyageGalaxy) -> Color {
         if galaxy.platform == picked { return galaxy.platform.tint }
         if galaxy.platform == .tiktok { return galaxy.platform.tint.opacity(0.55) }
-        return Palette.flightInk.opacity(galaxy.platform == .youtube ? 0.4 : 0.45)
+        return Palette.Flight.ink.opacity(galaxy.platform == .youtube ? 0.4 : 0.45)
     }
 
     // MARK: - The route, the light and the arrival
@@ -129,7 +129,7 @@ struct VoyageScene: View {
         let hint = pickedAt == nil ? pose("L19").opacity : 1
         if hint > 0.01 {
             context.stroke(
-                route.path, with: .color(Palette.starLilac.opacity(0.2 * hint)),
+                route.path, with: .color(Palette.Universe.starLilac.opacity(0.2 * hint)),
                 style: StrokeStyle(lineWidth: 1, lineCap: .butt, dash: [2, 5])
             )
         }
@@ -158,7 +158,8 @@ struct VoyageScene: View {
                     layer.opacity = tail.opacity
                     layer.addFilter(.shadow(color: Palette.acc.opacity(0.95), radius: 6))
                     layer.stroke(
-                        route.path.trimmedPath(from: start, to: end), with: .color(Palette.starCream), style: StrokeStyle(lineWidth: 3, lineCap: .round)
+                        route.path.trimmedPath(from: start, to: end), with: .color(Palette.Universe.starCream),
+                        style: StrokeStyle(lineWidth: 3, lineCap: .round)
                     )
                 }
             }
@@ -168,7 +169,7 @@ struct VoyageScene: View {
             let dot = pose(id, at: second)
             guard dot.opacity > 0.01, let along = dot.along else { continue }
             let fade = dot.opacity * (0.3 + 0.12 * Double(index))
-            context.fill(LightFX.disc(route.point(atLength: along), sizes[index] / 2 * 0.65), with: .color(Palette.starCream.opacity(fade)))
+            context.fill(LightFX.disc(route.point(atLength: along), sizes[index] / 2 * 0.65), with: .color(Palette.Universe.starCream.opacity(fade)))
         }
         let head = pose("L23", at: second)
         if head.opacity > 0.01, let along = head.along {
@@ -177,8 +178,8 @@ struct VoyageScene: View {
                 LightFX.disc(point, 13),
                 with: .radialGradient(
                     Gradient(stops: [
-                        .init(color: Palette.starCream.opacity(head.opacity), location: 0),
-                        .init(color: Palette.starCream.opacity(head.opacity), location: 0.16 / 0.7),
+                        .init(color: Palette.Universe.starCream.opacity(head.opacity), location: 0),
+                        .init(color: Palette.Universe.starCream.opacity(head.opacity), location: 0.16 / 0.7),
                         .init(color: Palette.acc.opacity(0.6 * head.opacity), location: 0.32 / 0.7), .init(color: Palette.acc.opacity(0), location: 1),
                     ]),
                     center: point, startRadius: 0, endRadius: 13
@@ -191,7 +192,7 @@ struct VoyageScene: View {
         for glint in glints {
             LightFX.cross(
                 at: route.point(at: glint.parameter), size: glint.size, thickness: 1, verticalRatio: 1, pose: pose(glint.layer, at: second),
-                color: Palette.starGold, in: &context
+                color: Palette.Universe.starGold, in: &context
             )
         }
     }
@@ -208,7 +209,7 @@ struct VoyageScene: View {
                     LightFX.disc(centre, 34 * flash.sx),
                     with: .radialGradient(
                         Gradient(stops: [
-                            .init(color: .white, location: 0), .init(color: Palette.flightIce.opacity(0.8), location: 0.35),
+                            .init(color: .white, location: 0), .init(color: Palette.Flight.ice.opacity(0.8), location: 0.35),
                             .init(color: tint.opacity(0), location: 1),
                         ]),
                         center: centre, startRadius: 0, endRadius: 34 * flash.sx
@@ -221,11 +222,11 @@ struct VoyageScene: View {
             color: tint.mix(with: .white, by: 0.7), glow: tint.opacity(0.9), in: &context
         )
         LightFX.ring(pose("L24", at: second), at: centre, radius: 22, color: tint, in: &context)
-        LightFX.ring(pose("L25", at: second), at: centre, radius: 22, color: Palette.flightIce.opacity(0.8), lineWidth: 1, in: &context)
+        LightFX.ring(pose("L25", at: second), at: centre, radius: 22, color: Palette.Flight.ice.opacity(0.8), lineWidth: 1, in: &context)
         for index in 0..<10 { LightFX.streak(pose("L\(48 + index)", at: second), at: centre, from: tint, in: &context) }
         let sizes: [CGFloat] = [3, 2, 2.5]
         for index in 0..<9 {
-            let colors: [Color] = [Palette.flightIce, .white, tint]
+            let colors: [Color] = [Palette.Flight.ice, .white, tint]
             LightFX.spark(pose("L\(58 + index)", at: second), at: centre, size: sizes[index % 3], color: colors[index % 3], in: &context)
         }
         // The chosen galaxy's ring: it opens and fades again and again.
@@ -268,7 +269,7 @@ struct VoyageScene: View {
             if letter.glowRadius > 0.1, let glow = letter.glow { layer.addFilter(.shadow(color: glow, radius: letter.glowRadius)) }
             layer.draw(
                 Text(["Y", "O", "U"][index]).font(.system(size: 38, weight: .bold, design: .monospaced))
-                    .foregroundStyle(letter.color ?? Palette.starLilac),
+                    .foregroundStyle(letter.color ?? Palette.Universe.starLilac),
                 at: .zero
             )
         }

@@ -113,7 +113,7 @@ struct VoyageChapter: View {
                 .opacity(picked == nil ? 1 : 0)
                 .accessibilityHidden(picked != nil)
             Text("\((picked ?? onboarding.platform).label.uppercased()) · TAP ANOTHER TO SWITCH")
-                .foregroundStyle(Palette.starGold)
+                .foregroundStyle(Palette.Universe.starGold)
                 .opacity(picked == nil ? 0 : 1)
                 .accessibilityHidden(picked == nil)
         }
@@ -136,7 +136,7 @@ struct VoyageChapter: View {
         return Text(text)
             .font(.system(size: 10, weight: .semibold, design: .monospaced))
             .tracking(1)
-            .foregroundStyle(Palette.flightInk.opacity(0.6))
+            .foregroundStyle(Palette.Flight.ink.opacity(0.6))
             .lineLimit(1)
             .minimumScaleFactor(0.7)
             .mask(alignment: .leading) { GeometryReader { Rectangle().frame(width: $0.size.width * revealed) } }

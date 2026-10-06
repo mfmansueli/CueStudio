@@ -51,7 +51,7 @@ struct WelcomePill: View {
             let width = proxy.size.width * 0.58
             Ellipse()
                 .fill(RadialGradient(
-                    colors: [Palette.starCream.opacity(0.95), Palette.acc.opacity(0.55), Palette.acc.opacity(0)],
+                    colors: [Palette.Universe.starCream.opacity(0.95), Palette.acc.opacity(0.55), Palette.acc.opacity(0)],
                     center: .center, startRadius: 0, endRadius: width / 2
                 ))
                 .frame(width: width, height: proxy.size.height * 1.6)

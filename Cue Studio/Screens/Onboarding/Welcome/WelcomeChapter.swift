@@ -46,7 +46,7 @@ struct WelcomeChapter: View {
         return ZStack(alignment: .topLeading) {
             WelcomeShootingStar(time: time)
             Circle()
-                .fill(RadialGradient(colors: [Palette.nightViolet.opacity(0.32), .clear], center: .center, startRadius: 0, endRadius: 140))
+                .fill(RadialGradient(colors: [Palette.Universe.nightViolet.opacity(0.32), .clear], center: .center, startRadius: 0, endRadius: 140))
                 .frame(width: 280, height: 280)
                 .scaleEffect(halo.scale)
                 .opacity(halo.opacity)

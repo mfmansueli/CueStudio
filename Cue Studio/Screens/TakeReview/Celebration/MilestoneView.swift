@@ -71,7 +71,7 @@ struct MilestoneView: View {
             }
         }
         .ignoresSafeArea()
-        .skyBackground(wash: BgWash.milestone, base: Palette.flightNight)
+        .skyBackground(wash: BgWash.milestone, base: Palette.Flight.night)
         .task { await haptic() }
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("milestone.sheet")
@@ -121,14 +121,14 @@ struct MilestoneView: View {
                     .frame(width: 140, height: 140)
                     .clipShape(RoundedRectangle(cornerRadius: 32, style: .continuous))
                     .shadow(color: .black.opacity(0.7), radius: 30, y: 24)
-                    .shadow(color: Palette.nightViolet.opacity(0.35), radius: 25)
+                    .shadow(color: Palette.Universe.nightViolet.opacity(0.35), radius: 25)
                     .scaleEffect(pose.scale)
                     .opacity(pose.opacity)
             }
             // The pale ring and the cross are the board's last layers: they cross over the icon.
             let echo = MilestoneScript.echo(at: time)
             if echo.opacity > 0.01 {
-                Circle().strokeBorder(Palette.starCream.opacity(0.8 * echo.opacity), lineWidth: 1)
+                Circle().strokeBorder(Palette.Universe.starCream.opacity(0.8 * echo.opacity), lineWidth: 1)
                     .frame(width: 150, height: 150)
                     .scaleEffect(echo.scale)
             }
@@ -143,7 +143,7 @@ struct MilestoneView: View {
     private func color(_ tone: Int) -> Color {
         switch tone {
         case 0: .white
-        case 1: Palette.starLilac
+        case 1: Palette.Universe.starLilac
         default: Palette.acc
         }
     }
@@ -199,7 +199,7 @@ private struct Rays: View {
             let base = Double(ray) / 12
             let step = 1.0 / 360
             return [
-                .init(color: .clear, location: base + 12 * step), .init(color: Palette.starCream.opacity(0.18), location: base + 16 * step),
+                .init(color: .clear, location: base + 12 * step), .init(color: Palette.Universe.starCream.opacity(0.18), location: base + 16 * step),
                 .init(color: .clear, location: base + 20 * step),
             ]
         }
@@ -216,14 +216,14 @@ private struct Rays: View {
 private struct LightCross: View {
     var body: some View {
         let fade = Gradient(stops: [
-            .init(color: Palette.starGold.opacity(0), location: 0), .init(color: Palette.starGold.opacity(0.45), location: 0.3),
-            .init(color: Palette.starGold, location: 0.5), .init(color: Palette.starGold.opacity(0.45), location: 0.7),
-            .init(color: Palette.starGold.opacity(0), location: 1),
+            .init(color: Palette.Universe.starGold.opacity(0), location: 0), .init(color: Palette.Universe.starGold.opacity(0.45), location: 0.3),
+            .init(color: Palette.Universe.starGold, location: 0.5), .init(color: Palette.Universe.starGold.opacity(0.45), location: 0.7),
+            .init(color: Palette.Universe.starGold.opacity(0), location: 1),
         ])
         ZStack {
             Capsule().fill(LinearGradient(gradient: fade, startPoint: .leading, endPoint: .trailing)).frame(height: 1.8)
             Capsule().fill(LinearGradient(gradient: fade, startPoint: .top, endPoint: .bottom)).frame(width: 1.8, height: 154)
         }
-        .shadow(color: Palette.starGold.opacity(0.8), radius: 6)
+        .shadow(color: Palette.Universe.starGold.opacity(0.8), radius: 6)
     }
 }

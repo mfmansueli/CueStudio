@@ -34,19 +34,19 @@ struct SettingsRootRow: View {
         case .prompter:
             link(.prompter, "text.alignleft", Palette.acc, glyph: Palette.accInk, value: bindings.prompter.wrappedValue.scrollMode.shortLabel)
         case .remote:
-            link(.remote, "iphone.radiowaves.left.and.right", Palette.iconBlue, value: remoteValue)
+            link(.remote, "iphone.radiowaves.left.and.right", Palette.Settings.iconBlue, value: remoteValue)
         case .myCueVoice:
-            link(.myCueVoice, "sparkle", Palette.iconIndigo, value: "\(profile.profile.voiceStrength)%")
+            link(.myCueVoice, "sparkle", Palette.Settings.iconIndigo, value: "\(profile.profile.voiceStrength)%")
         case .personalize:
-            link(.personalize, "sparkles", Palette.iconPurple, badge: String(localized: "NEW"))
+            link(.personalize, "sparkles", Palette.Settings.iconPurple, badge: String(localized: "NEW"))
         case .languageRegion:
-            link(.languageRegion, "globe", Palette.iconTeal, value: languages.interfaceLanguage.nativeName)
+            link(.languageRegion, "globe", Palette.Settings.iconTeal, value: languages.interfaceLanguage.nativeName)
         case .privacy:
             link(.privacy, "hand.raised.fill", Palette.success)
         case .cuePro:
             Button { paywall = .profile } label: {
                 SettingsIconLabel(
-                    systemImage: "star.fill", tint: Palette.iconPro, glyph: Palette.acc, title: entry.title, value: proValue
+                    systemImage: "star.fill", tint: Palette.Settings.iconPro, glyph: Palette.acc, title: entry.title, value: proValue
                 )
             }
             .buttonStyle(.plain)
@@ -57,17 +57,17 @@ struct SettingsRootRow: View {
                     toast.show(restored ? String(localized: "Purchases restored") : String(localized: "No purchases to restore"))
                 }
             } label: {
-                SettingsIconLabel(systemImage: "arrow.clockwise", tint: Palette.iconNeutral, title: entry.title, titleColor: Palette.accText)
+                SettingsIconLabel(systemImage: "arrow.clockwise", tint: Palette.Settings.iconNeutral, title: entry.title, titleColor: Palette.accText)
             }
             .buttonStyle(.plain)
         case .privacyPolicy:
             if let url = AppLinks.privacyPolicy {
                 Link(destination: url) {
-                    SettingsIconLabel(systemImage: "doc.text.fill", tint: Palette.iconNeutral, title: entry.title)
+                    SettingsIconLabel(systemImage: "doc.text.fill", tint: Palette.Settings.iconNeutral, title: entry.title)
                 }
             } else {
                 Button { showsPrivacy = true } label: {
-                    SettingsIconLabel(systemImage: "doc.text.fill", tint: Palette.iconNeutral, title: entry.title)
+                    SettingsIconLabel(systemImage: "doc.text.fill", tint: Palette.Settings.iconNeutral, title: entry.title)
                 }
                 .buttonStyle(.plain)
                 .sheet(isPresented: $showsPrivacy) { PrivacySheet() }
@@ -75,13 +75,13 @@ struct SettingsRootRow: View {
         case .termsOfUse:
             if let url = AppLinks.termsOfUse {
                 Link(destination: url) {
-                    SettingsIconLabel(systemImage: "doc.text.fill", tint: Palette.iconNeutral, title: entry.title)
+                    SettingsIconLabel(systemImage: "doc.text.fill", tint: Palette.Settings.iconNeutral, title: entry.title)
                 }
             }
         case .acknowledgements:
-            link(.acknowledgements, "info.circle.fill", Palette.iconNeutral)
+            link(.acknowledgements, "info.circle.fill", Palette.Settings.iconNeutral)
         case .version:
-            SettingsIconLabel(systemImage: "info.circle.fill", tint: Palette.iconNeutral, title: entry.title, value: Self.version)
+            SettingsIconLabel(systemImage: "info.circle.fill", tint: Palette.Settings.iconNeutral, title: entry.title, value: Self.version)
         default:
             EmptyView()
         }
