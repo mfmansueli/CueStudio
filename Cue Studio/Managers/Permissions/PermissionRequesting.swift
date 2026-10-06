@@ -4,6 +4,7 @@
 //
 
 import AVFoundation
+import Photos
 import Speech
 
 /// Where a permission stands.
@@ -21,6 +22,8 @@ protocol PermissionRequesting: AnyObject {
     func requestSpeech() async -> PermissionState
     func camera() -> PermissionState
     func requestCamera() async -> PermissionState
+    /// Cue saves videos to Photos and asks for nothing more than adding them; the answer is read, never asked here.
+    func photos() -> PhotosAccess
 }
 
 /// The real thing: the system's own prompts.
@@ -68,6 +71,18 @@ final class SystemPermissions: PermissionRequesting {
     func requestCamera() async -> PermissionState {
         await AVCaptureDevice.requestAccess(for: .video) ? .allowed : .denied
     }
+
+    func photos() -> PhotosAccess {
+        switch PHPhotoLibrary.authorizationStatus(for: .readWrite) {
+        case .authorized, .limited: return .full
+        default: break
+        }
+        switch PHPhotoLibrary.authorizationStatus(for: .addOnly) {
+        case .authorized, .limited: return .addOnly
+        case .denied, .restricted: return .denied
+        default: return .notAsked
+        }
+    }
 }
 
 /// UI tests and previews: every request is answered the same way, at once.
@@ -83,6 +98,7 @@ final class StubPermissions: PermissionRequesting {
     func microphone() -> PermissionState { states["mic"] ?? .notAsked }
     func speech() -> PermissionState { states["speech"] ?? .notAsked }
     func camera() -> PermissionState { states["camera"] ?? .notAsked }
+    func photos() -> PhotosAccess { .notAsked }
 
     func requestMicrophone() async -> PermissionState { remember("mic") }
     func requestSpeech() async -> PermissionState { remember("speech") }

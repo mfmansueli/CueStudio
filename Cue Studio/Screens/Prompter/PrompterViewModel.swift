@@ -66,8 +66,11 @@ final class PrompterViewModel {
     var reviewingTake: Take?
     /// True when the prompter opened straight on a take (from the Takes tab).
     private(set) var openedOnReview: Bool
-    /// The first flight's practice run: nothing is recorded.
-    private(set) var isPractice: Bool
+    /// The first flight's practice run: nothing is recorded (it ends in `leavePractice()`, in `PrompterViewModel+Practice`).
+    var isPractice: Bool
+    /// Where the practice run is (waiting, counting in, reading, done); moved only by `PrompterViewModel+Practice`.
+    var practiceStage = PracticeStage.idle
+    var practiceTask: Task<Void, Never>?
 
     // MARK: Selfie layout (see PrompterViewModel+Layout)
     /// What the Selfie screen measured on this device.
@@ -231,6 +234,7 @@ final class PrompterViewModel {
         if !isPractice { session.rememberReadingLayout() }
         countdownTask?.cancel()
         autoStopTask?.cancel()
+        practiceTask?.cancel()
         stopVoiceMonitoring()
         pause()
         if isRecording { await stopRecording(openReview: false) }
@@ -413,16 +417,15 @@ final class PrompterViewModel {
         publishRemoteStatus()
     }
 
-    /// "Record it for real": the practice ends and the text goes back to the top.
-    func leavePractice() {
-        guard isPractice else { return }
-        pause(); isPractice = false; layoutAnchor = nil; engine.rewind(); resumeSpeech(at: 0)
-    }
-
-    func rewind() {
+    /// The text back at its first word, and the voice listening from there.
+    func rewindText() {
         layoutAnchor = nil
         engine.rewind()
         resumeSpeech(at: 0)
+    }
+
+    func rewind() {
+        rewindText()
         pause()
         toast.show(String(localized: "Back to the top"))
     }
@@ -618,6 +621,7 @@ final class PrompterViewModel {
 
     /// "Stop when script ends": a short beat after the last line, then stop.
     private func scriptDidEnd() {
+        if isPractice { practiceTextEnded() }
         guard isRecording, session.camera.stopsWhenScriptEnds else { return }
         autoStopTask = Task { [weak self] in
             try? await Task.sleep(for: .seconds(1.2))
@@ -635,12 +639,6 @@ final class PrompterViewModel {
         resumeSpeech(at: 0)
         mode = .selfie
         await enter(.selfie)
-    }
-
-    func openLastTake() {
-        guard let lastTake, !isRecording else { return }
-        pause()
-        reviewingTake = lastTake
     }
 
     // MARK: - Script

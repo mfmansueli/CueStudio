@@ -24,17 +24,27 @@ extension TakeStage {
         case .pick: Palette.acc
         case .edit: .white
         case .ready: Palette.success
-        case .shared: Color(hex: 0xE1E4F5, opacity: 0.7)
+        case .shared: Palette.flightInk.opacity(0.7)
         }
     }
 
-    /// The pill's ring.
-    var pillRing: Color {
+    /// 6.2: the colour a stage has on its pill over a poster and on the pipeline's nodes (yellow asks, cyan works, green waits, lilac is done).
+    var boardTint: Color {
         switch self {
-        case .pick: Palette.acc.opacity(0.5)
-        case .edit: Color.white.opacity(0.35)
-        case .ready: Palette.success.opacity(0.45)
-        case .shared: Color(hex: 0xE1E4F5, opacity: 0.22)
+        case .pick: Palette.acc
+        case .edit: Palette.info
+        case .ready: Palette.success
+        case .shared: Palette.starLilac
+        }
+    }
+
+    /// The ring round a video's card in the grid.
+    var cardRing: Color {
+        switch self {
+        case .pick: Palette.acc.opacity(0.55)
+        case .edit: Palette.info.opacity(0.45)
+        case .ready: Palette.success.opacity(0.5)
+        case .shared: Palette.flightLilac.opacity(0.4)
         }
     }
 }

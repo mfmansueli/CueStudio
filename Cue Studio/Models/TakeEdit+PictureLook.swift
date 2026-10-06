@@ -19,6 +19,7 @@ nonisolated extension TakeEdit {
         plain.highlights = 0
         plain.shadows = 0
         plain.sharpness = 0
+        plain.skinSmoothing = 0
         plain.autoCorrection = nil
         plain.filter = .original
         plain.filterAmount = 1

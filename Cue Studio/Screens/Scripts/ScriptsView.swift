@@ -56,7 +56,7 @@ struct ScriptsView: View {
                         // The My Cue Voice question, 10 pt above the dock.
                         VoiceQuestionTipHost(isQuiet: isQuiet)
                         ScriptsDock(
-                            showsFormat: !isFirstVisit, isFolded: isDockFolded, isEditing: $isDockEditing,
+                            showsFormat: true, isFolded: isDockFolded, isEditing: $isDockEditing,
                             unavailableReason: writerUnavailableReason
                         )
                         .accessibilityIdentifier(isFirstVisit ? "empty.promptCard" : "scripts.promptCard")
@@ -100,7 +100,7 @@ struct ScriptsView: View {
             }
     }
 
-    /// The first visit: no scripts yet, so the dock has no Format chip (03 · 3.1).
+    /// The first visit: no scripts yet (the dock names the empty prompt card, and the first visit only has its own tip).
     private var isFirstVisit: Bool {
         library.hasLoaded && library.scripts.isEmpty
     }
@@ -126,16 +126,15 @@ struct ScriptsView: View {
     @ToolbarContentBuilder
     private var toolbarItems: some ToolbarContent {
         ToolbarItemGroup(placement: .topBarTrailing) {
-            if !logbook.waiting.isEmpty || !isFirstVisit {
-                Button { presentation.present(.logbook) } label: {
-                    CueIconView(.logbook, size: 20)
-                        .foregroundStyle(Palette.aiTextStrong)
-                        .overlay(alignment: .topTrailing) { logbookBadge }
-                }
-                .accessibilityLabel(Text("Logbook"))
-                .accessibilityValue(Text(logbook.waiting.isEmpty ? "" : "\(logbook.waiting.count)"))
-                .accessibilityIdentifier("scripts.logbookButton")
+            // Always there, the first visit included (the owner's call, 6/10/2026: the empty Scripts has its Logbook too).
+            Button { presentation.present(.logbook) } label: {
+                CueIconView(.logbook, size: 20)
+                    .foregroundStyle(Palette.aiTextStrong)
+                    .overlay(alignment: .topTrailing) { logbookBadge }
             }
+            .accessibilityLabel(Text("Logbook"))
+            .accessibilityValue(Text(logbook.waiting.isEmpty ? "" : "\(logbook.waiting.count)"))
+            .accessibilityIdentifier("scripts.logbookButton")
             Button { presentation.present(.newScript) } label: {
                 Image(systemName: "plus")
             }
@@ -328,7 +327,7 @@ struct ScriptsView: View {
                 .font(.system(size: 10, weight: .semibold, design: .monospaced))
                 .textCase(.uppercase)
                 .tracking(1.2)
-                .foregroundStyle(group.state == .ready ? Palette.successText : Palette.ink.opacity(0.55))
+                .foregroundStyle(group.state == .ready ? Palette.successText : Palette.inkHint)
                 .accessibilityAddTraits(.isHeader)
                 .accessibilityIdentifier("scripts.group.\(group.state.rawValue)")
             Spacer()
@@ -339,7 +338,7 @@ struct ScriptsView: View {
                 .font(.system(size: 10, weight: .semibold, design: .monospaced))
                 .textCase(.uppercase)
                 .tracking(1.2)
-                .foregroundStyle(Palette.ink.opacity(0.55))
+                .foregroundStyle(Palette.inkHint)
                 .frame(minHeight: Metrics.hitTarget)
                 .padding(.vertical, -16)
                 .accessibilityIdentifier("scripts.selectButton")

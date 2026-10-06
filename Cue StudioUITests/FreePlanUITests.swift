@@ -52,8 +52,11 @@ final class FreePlanUITests: XCTestCase {
         let row = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH 'takes.video.' AND label CONTAINS '3 morning habits'")).firstMatch
         XCTAssertTrue(row.waitForExistence(timeout: 5))
         row.tap()
-        let suggest = app.buttons["review.suggestBestButton"]
-        XCTAssertTrue(suggest.waitForExistence(timeout: 5))
+        let pill = app.descendants(matching: .any)["review.takeLabel"].firstMatch
+        XCTAssertTrue(pill.waitForExistence(timeout: 5))
+        pill.tap()
+        let suggest = app.buttons["Suggest best"]
+        XCTAssertTrue(suggest.waitForExistence(timeout: 3))
         suggest.tap()
         // "Pick your best take": Cue's suggestion in the middle, with why; "Use take N" keeps it.
         XCTAssertTrue(app.descendants(matching: .any)["pick.sheet"].firstMatch.waitForExistence(timeout: 5))

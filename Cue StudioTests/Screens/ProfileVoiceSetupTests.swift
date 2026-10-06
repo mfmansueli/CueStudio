@@ -27,18 +27,13 @@ struct ProfileVoiceSetupTests {
         #expect(draft.steps.firstIndex(of: .audience) == 2)
     }
 
+    /// v30: every page Settings opens is pushed, none is a sheet.
     @MainActor
-    @Test func settingsPushesThreePagesAndOpensThreeSheets() {
-        let routes: Set<SettingsRoute> = [.personalize, .prompter, .acknowledgements]
-        #expect(routes.count == 3)
-        // v29 · L14: Recording, Remote and Language & Region are sheets.
-        let sheets: Set<SettingsSheet> = [.recording, .remote, .languageRegion]
-        #expect(sheets.count == 3)
-    }
-
-    @MainActor
-    @Test func everyPrompterChipHasANameAndAnAnchor() {
-        #expect(PrompterSettingsSection.allCases.count == 5)
-        #expect(PrompterSettingsSection.allCases.allSatisfy { !$0.label.isEmpty })
+    @Test func settingsPushesEveryPage() {
+        let routes: Set<SettingsRoute> = [
+            .recording, .microphone, .prompter, .font, .safeZone, .remote, .myCueVoice, .personalize, .appIcon, .languageRegion,
+            .privacy, .permissions, .acknowledgements,
+        ]
+        #expect(routes.count == 13)
     }
 }

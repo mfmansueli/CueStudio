@@ -32,7 +32,7 @@ struct ScriptRow: View {
                         .font(.system(size: 10, weight: .semibold, design: .monospaced))
                         .textCase(.uppercase)
                         .tracking(0.6)
-                        .foregroundStyle(Palette.ink.opacity(0.55))
+                        .foregroundStyle(Palette.inkHint)
                         .lineLimit(1)
                 }
                 .accessibilityElement(children: .ignore)

@@ -16,6 +16,11 @@ final class TakesViewModel {
     /// Bumped when the tab shows again: an edit left open in the editor changes a stage without
     /// touching the takes.
     private(set) var editRevision = 0
+    /// "{YEAR} · SHARED ✕": Takes opened from "Your universe" (a planet's "See in Takes ›", a theme): only the videos shared in that year, of that
+    /// platform or theme.
+    private(set) var scope: TakesRequest?
+    @ObservationIgnored private var scopeTakeIDs: Set<UUID> = []
+    @ObservationIgnored private var scopeSetPlatform = false
 
     private let takes: TakeLibraryService
     private let library: ScriptLibraryService
@@ -54,21 +59,23 @@ final class TakesViewModel {
     }
 
     var sections: [TakeLibraryFilter.Section] {
-        filter.sections(of: allVideos, now: now())
+        filter.sections(of: scopedVideos, now: now())
+    }
+
+    /// The videos with a take that was shared inside the scope (all of them without one).
+    private var scopedVideos: [TakeVideo] {
+        guard scope != nil else { return allVideos }
+        return allVideos.filter { video in video.takes.contains { scopeTakeIDs.contains($0.id) } }
     }
 
     var isEmpty: Bool { takes.takes.isEmpty }
 
-    /// "12 TAKES / 05 VIDEOS" as two zero-padded counts, like the pipeline's.
+    /// "12 TAKES · 5 VIDEOS" (the separator is the view's).
     var summaryValues: [String] {
-        let all = allVideos
-        return [
-            String(localized: "\(takes.takes.count.formatted(.number.precision(.integerLength(2...)))) takes"),
-            String(localized: "\(all.count.formatted(.number.precision(.integerLength(2...)))) videos"),
-        ]
+        [String(localized: "\(takes.takes.count.formatted()) takes"), String(localized: "\(allVideos.count.formatted()) videos")]
     }
 
-    /// Platform menu: All, then the primary platforms (Stories only once a take uses it).
+    /// The platform chips: All, then the primary platforms (Stories only once a take uses it).
     var platformOptions: [Platform?] {
         let used = Set(allVideos.compactMap(\.platform))
         return [nil] + Platform.allCases.filter { Platform.primary.contains($0) || used.contains($0) }
@@ -88,6 +95,23 @@ final class TakesViewModel {
 
     func refresh() {
         editRevision += 1
+    }
+
+    /// A request from "Your universe": the chip goes first, the platform it names is picked, and the stage filter is cleared.
+    func apply(_ request: TakesRequest, sharedVideos: [UniverseVideo]) {
+        scope = request
+        scopeTakeIDs = request.matching(sharedVideos)
+        scopeSetPlatform = request.platform != nil
+        if let platform = request.platform { filter.platform = platform }
+        filter.stage = nil
+    }
+
+    /// ✕ on the chip: every video again (and every platform, when the scope had picked one).
+    func clearScope() {
+        scope = nil
+        scopeTakeIDs = []
+        if scopeSetPlatform { filter.platform = nil }
+        scopeSetPlatform = false
     }
 
     /// Tapping the stage that is picked clears it.

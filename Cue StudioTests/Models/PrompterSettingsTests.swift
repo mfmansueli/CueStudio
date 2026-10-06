@@ -35,11 +35,36 @@ struct PrompterSettingsTests {
         #expect(PrompterSettings().speed == ReadTime.naturalSpeed)
     }
 
-    @Test func startsWithTheWidestTallestWindowAndTheCoachOff() {
+    @Test func startsWithTheOriginalWindowAndTheCoachOff() {
         let settings = PrompterSettings()
-        #expect(settings.readingWidth == PrompterSettings.readingWidthRange.upperBound)
-        #expect(settings.textWindowHeight == PrompterSettings.textWindowHeightRange.upperBound)
+        #expect(settings.readingWidth == PrompterSettings.defaultReadingWidth)
+        #expect(settings.textWindowHeight == PrompterSettings.defaultTextWindowHeight)
+        #expect(PrompterSettings.readingWidthRange.contains(settings.readingWidth))
+        #expect(PrompterSettings.textWindowHeightRange.contains(settings.textWindowHeight))
         #expect(!settings.showsCues)
+    }
+
+    @Test func settingsSavedBeforeTheRigsAndSafeZoneRowsDecodeWithThemOff() throws {
+        let settings = try JSONDecoder().decode(PrompterSettings.self, from: Data(#"{"size":36,"isMirrored":true}"#.utf8))
+        #expect(settings.isMirrored)
+        #expect(!settings.isFlippedVertically)
+        #expect(settings.safeZoneKey == nil)
+    }
+
+    @Test func flipAndTheSafeZoneChoiceAreSaved() throws {
+        var settings = PrompterSettings()
+        settings.isFlippedVertically = true
+        settings.safeZoneKey = SafeZoneChoice.custom.key
+        let decoded = try JSONDecoder().decode(PrompterSettings.self, from: JSONEncoder().encode(settings))
+        #expect(decoded.isFlippedVertically)
+        #expect(decoded.safeZoneKey == "custom")
+    }
+
+    /// New York keeps the raw value "serif" the serif choice was saved with.
+    @Test func theSerifChoiceOfBeforeIsNewYork() throws {
+        let settings = try JSONDecoder().decode(PrompterSettings.self, from: Data(#"{"font":"serif"}"#.utf8))
+        #expect(settings.font == .newYork)
+        #expect(PrompterFont.allCases.map(\.label) == ["SF Pro", "New York", "SF Rounded", "Lexend", "Atkinson Hyperlegible"])
     }
 
     // 1.0× meant 150 words a minute before the scale changed; the pace is kept on the 5 wpm step nearest it.

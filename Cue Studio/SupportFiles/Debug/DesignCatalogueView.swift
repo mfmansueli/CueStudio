@@ -97,12 +97,11 @@ struct DesignCatalogueView: View {
 
     // MARK: - Universe
 
-    /// 9.2: the core in its three sizes and four colours, and the map with a few shared videos.
+    /// 9.2: the core in its two small sizes and four colours, and the map with a few shared videos.
     private var universeDemo: some View {
         VStack(alignment: .leading, spacing: 16) {
             ForEach(CoreColor.allCases) { color in
                 HStack(spacing: 12) {
-                    UniverseCore(color: color, style: .full)
                     UniverseCore(color: color, style: .compact)
                     UniverseCore(color: color, style: .preview)
                     Text(color.label).font(.footnote).foregroundStyle(Palette.ink2)
@@ -118,19 +117,10 @@ struct DesignCatalogueView: View {
     private static var sampleUniverse: UniverseSnapshot {
         let topics: [OnboardingTopic] = [.niche(.lifestyle), .niche(.finance), .niche(.food)]
         let platforms: [Platform] = [.tiktok, .reels, .shorts]
-        var scripts: [Script] = []
-        var takes: [Take] = []
-        for index in 0..<23 {
-            let topic = topics[index % 3]
-            let script = Script(title: "Sample \(index)", text: "Words", platform: platforms[index % 3], topic: topic.id)
-            scripts.append(script)
-            takes.append(Take(
-                scriptID: script.id, scriptTitle: script.title, scriptVersion: 1, number: 1, duration: 30,
-                recordedAt: .now.addingTimeInterval(Double(index) * 60), fileName: "sample\(index).mov",
-                resolution: .hd1080, frameRate: .fps30, aspect: .portrait, platform: platforms[index % 3]
-            ))
+        let videos = (0..<23).map { index in
+            UniverseVideo(date: .now.addingTimeInterval(Double(index) * 60), platform: platforms[index % 3], topic: topics[index % 3].id)
         }
-        return UniverseSnapshot(sharedIDs: Set(takes.map(\.id)), takes: takes, scripts: scripts, topics: topics, firstShare: .now)
+        return UniverseSnapshot(videos: videos, year: Calendar.current.component(.year, from: .now), topics: topics)
     }
 
     // MARK: - Transition

@@ -24,6 +24,9 @@ final class ScriptAIService: ScriptWriting {
     /// the device.
     nonisolated static let hasPrivateCloudComputeEntitlement = false
 
+    /// Settings › Privacy & AI data › On-device AI (`PrivacyPreferencesService`).
+    var isEnabled = true
+
     /// Nil while Private Cloud Compute is off.
     private let privateCloud: PrivateCloudComputeLanguageModel?
     private let capabilities: AIModelCapabilities

@@ -61,3 +61,22 @@ struct ShareRouteResolverTests {
         #expect(!ShareRoute.instagramHandoff(.reels).needsPhotosCopy)
     }
 }
+
+/// Phase A of "Share to universe": until the integrations are validated on a device, every network goes through the system share sheet.
+@Suite("ShareRouteResolver · phase A")
+struct ShareRoutePhaseATests {
+    private let off = ShareIntegrationConfiguration(
+        tikTokClientKey: "key", tikTokRedirectURI: "https://cue.example/tiktok", metaAppID: "123", integrationsEnabled: false
+    )
+
+    @Test func everyNetworkUsesTheShareSheetWhenIntegrationsAreOff() {
+        for destination in ShareDestination.allCases {
+            #expect(ShareRouteResolver.route(for: destination, configuration: off, duration: 30) == .activitySheet, "\(destination)")
+        }
+    }
+
+    @Test func theShippingConfigurationHasThemOff() {
+        #expect(!ShareIntegrationConfiguration.integrationsEnabled)
+        #expect(!ShareIntegrationConfiguration.fromBundle().integrationsEnabled)
+    }
+}

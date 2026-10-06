@@ -124,7 +124,7 @@ struct EditorToolbar: View {
         }
         let labelTint: Color = switch item.style {
         case .normal: Palette.ink2
-        case .dimmed: Palette.ink3
+        case .dimmed: Palette.inkHint
         case .destructive: Palette.dangerText
         case .smart: Palette.aiTextStrong
         }

@@ -13,7 +13,6 @@ enum CueStudioFont {
         "Lexend-Variable",
         "AtkinsonHyperlegible-Regular",
         "AtkinsonHyperlegible-Bold",
-        "SourceSerif4-Variable",
         "SpaceGrotesk-Variable",
         "Anton-Regular",
         "Inter-Variable",
@@ -43,8 +42,14 @@ enum CueStudioFont {
         .custom("AtkinsonHyperlegible-Regular", fixedSize: size)
     }
 
-    static func serif(size: CGFloat) -> Font {
-        .custom("SourceSerif4Roman-Regular", fixedSize: size)
+    /// SF Pro, at a fixed size (the prompter's own slider sets it).
+    static func system(size: CGFloat) -> Font {
+        .system(size: size)
+    }
+
+    /// New York, the system's serif.
+    static func newYork(size: CGFloat) -> Font {
+        .system(size: size, design: .serif)
     }
 
     static func rounded(size: CGFloat) -> Font {

@@ -58,6 +58,9 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
     var vibrance: Double = 0
     /// −100…+100, green to magenta.
     var tint: Double = 0
+    /// 0 to 100: how much the skin of the faces in the picture is smoothed (`SkinSmoothing`). 0 is off, and what edits
+    /// saved before it have.
+    var skinSmoothing: Double = 0
     /// What Auto measured on the take, played before the dials; nil until Auto is used.
     var autoCorrection: AutoCorrection?
     /// How much of `autoCorrection` shows, 0 to 1.
@@ -309,7 +312,7 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
         case timeline, sources, suggestions, cleanUpAnalyzed, volume, enhancesVoice, reducesNoise,
         audioVersion, voiceEnhancement, noiseReduction, music, backgrounds, exposure, contrast, warmth, filter
         case saturation, highlights, shadows, sharpness, filterAmount, cropFit, pauseThreshold
-        case vibrance, tint, autoCorrection, autoAmount, lookVersion
+        case vibrance, tint, autoCorrection, autoAmount, lookVersion, skinSmoothing
         case aspect, cropOffset, showsCaptions, captionStyle, captionLook, captionPreset, captionPosition, captions
         case captionTranscript, sourceTranscripts, captionLanguage, captionAnimation, captionTranslations, captionDisplay
         case captionCollection
@@ -354,6 +357,7 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
         // Added with the calibrated look: edits saved before have none of them.
         vibrance = (try? container.decodeIfPresent(Double.self, forKey: .vibrance)) ?? 0
         tint = (try? container.decodeIfPresent(Double.self, forKey: .tint)) ?? 0
+        skinSmoothing = SkinSmoothingCalibration.clamped((try? container.decodeIfPresent(Double.self, forKey: .skinSmoothing)) ?? 0)
         autoCorrection = try? container.decodeIfPresent(AutoCorrection.self, forKey: .autoCorrection)
         autoAmount = (try? container.decodeIfPresent(Double.self, forKey: .autoAmount)) ?? 1
         cropFit = (try? container.decodeIfPresent(CropFit.self, forKey: .cropFit)) ?? .fill

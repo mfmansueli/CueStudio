@@ -12,13 +12,19 @@ import Foundation
 final class StubScriptWriter: ScriptWriting {
     let availability: AIAvailability
 
-    init(available: Bool) {
+    var isEnabled = true
+    /// The model never answers (until the request is cancelled): the slow states of the first message are photographed with it.
+    let stalls: Bool
+
+    init(available: Bool, stalls: Bool = false) {
+        self.stalls = stalls
         availability = available
             ? AIAvailability(onDevice: true, privateCloud: true, reason: nil)
             : .unavailable
     }
 
     func generate(_ request: ScriptRequest) async throws -> GeneratedScript {
+        if stalls { try await Task.sleep(for: .seconds(3600)) }
         switch request.source {
         case .prompt(let text):
             guard availability.isAvailable else { throw ScriptAIError.modelUnavailable(availability.reason ?? "") }

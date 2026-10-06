@@ -13,6 +13,8 @@ struct TakesView: View {
     @AppStorage(DefaultsKey.takesLayout) private var layoutValue = TakeLayout.grid.rawValue
 
     @Environment(TakeLibraryService.self) private var takes
+    @Environment(MilestoneService.self) private var milestones
+    @Environment(ScriptLibraryService.self) private var library
     @Environment(PresentationService.self) private var presentation
     @Environment(\.scenePhase) private var scenePhase
 
@@ -57,12 +59,10 @@ struct TakesView: View {
         .toolbar {
             if !viewModel.isEmpty {
                 ToolbarItem(placement: .topBarTrailing) { TakesLayoutToggle(layout: layout) }
-                ToolbarItem(placement: .topBarTrailing) {
-                    TakesPlatformMenu(platform: $viewModel.filter.platform, options: viewModel.platformOptions)
-                }
             }
         }
-        .onAppear { viewModel.refresh() }
+        .onAppear { viewModel.refresh(); takeRequest() }
+        .onChange(of: presentation.takesRequest) { _, _ in takeRequest() }
         .onChange(of: scenePhase) { _, phase in
             if phase == .active { viewModel.refresh() }
         }
@@ -80,18 +80,46 @@ struct TakesView: View {
         }
     }
 
+    /// The request "Your universe" left for Takes, taken once.
+    private func takeRequest() {
+        guard let request = presentation.takesRequest else { return }
+        presentation.takesRequest = nil
+        let videos = UniverseVideo.resolve(
+            records: milestones.records, takes: takes.takes, scripts: library.scripts, fallbackDate: milestones.firstShareDate ?? .now
+        )
+        viewModel.apply(request, sharedVideos: videos)
+    }
+
     // MARK: - Header
 
-    /// The count in yellow mono, the pipeline and what to do next: above both layouts.
+    /// The count in yellow mono, the pipeline, what to do next and the filters: above both layouts (6.2).
     private var header: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            HUDLine(values: viewModel.summaryValues, separator: " / ")
+        @Bindable var viewModel = viewModel
+        let pipeline = viewModel.pipeline
+        return VStack(alignment: .leading, spacing: 14) {
+            HUDLine(values: viewModel.summaryValues, separator: " · ")
                 .padding(.horizontal, 4)
-            TakePipelineCard(
-                pipeline: viewModel.pipeline, selected: viewModel.filter.stage,
-                onSelect: { viewModel.toggle($0) },
-                onNext: { viewModel.open($0.video) }
+            TakePipelineCard(pipeline: pipeline, selected: viewModel.filter.stage, onSelect: { viewModel.toggle($0) })
+            if let next = pipeline.next {
+                TakeUpNextCard(
+                    next: next, onOpen: { viewModel.open(next.video) }, onAct: { viewModel.open(next.video, then: Self.action(for: next.stage)) }
+                )
+            }
+            TakesFilterChips(
+                scopeYear: viewModel.scope?.year, onClearScope: { viewModel.clearScope() },
+                platform: $viewModel.filter.platform, options: viewModel.platformOptions
             )
+            .padding(.horizontal, -Metrics.gutter)
+            .padding(.vertical, -6)
+        }
+    }
+
+    /// The step a video is waiting at: picking its best take, finishing the edit, or sharing it.
+    private static func action(for stage: TakeStage) -> ReviewLaunchAction {
+        switch stage {
+        case .pick: .pickBest
+        case .edit: .edit
+        case .ready, .shared: .share
         }
     }
 

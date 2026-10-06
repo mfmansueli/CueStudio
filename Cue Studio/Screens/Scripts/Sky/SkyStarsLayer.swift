@@ -6,7 +6,7 @@
 import SwiftUI
 
 /// "Your stars" (v29 · L16): one small yellow star in the sky above Scripts for each idea sent, the 14 newest. They
-/// twinkle slowly (4 s); still with Reduce Motion, in Low Power Mode and when the app is not active. The layer is
+/// twinkle slowly (4 s); still with Reduce Motion and when the app is not active. The layer is
 /// decoration: it never takes a touch and VoiceOver skips it.
 struct SkyStarsLayer: View {
     let stars: [StarPoint]
@@ -20,7 +20,7 @@ struct SkyStarsLayer: View {
     @Environment(\.scenePhase) private var scenePhase
 
     var body: some View {
-        let animates = isAnimated && !reduceMotion && scenePhase == .active && !ProcessInfo.processInfo.isLowPowerModeEnabled
+        let animates = isAnimated && !reduceMotion && scenePhase == .active
         TimelineView(.animation(minimumInterval: 1.0 / 20, paused: !animates)) { timeline in
             Canvas { context, size in
                 let time = timeline.date.timeIntervalSinceReferenceDate

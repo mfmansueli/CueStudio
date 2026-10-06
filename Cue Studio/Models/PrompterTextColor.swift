@@ -20,10 +20,10 @@ nonisolated enum PrompterTextColor: String, Codable, CaseIterable, Identifiable,
     var label: String {
         switch self {
         case .white: String(localized: "White")
-        case .cream: String(localized: "Cream")
+        case .cream: String(localized: "Warm white")
         case .yellow: String(localized: "Yellow")
         case .cyan: String(localized: "Cyan")
-        case .green: String(localized: "Green")
+        case .green: String(localized: "Mint")
         }
     }
 }

@@ -6,7 +6,8 @@
 import SwiftUI
 
 /// Adjust (whole take, or the picked clip alone when opened from it): one ruler for the setting picked in a row
-/// of chips (Auto, Exposure, Contrast, Warmth, Tint, Saturation, Vibrance, Highlights, Shadows, Sharpness): the
+/// of chips (Auto, Exposure, Contrast, Warmth, Tint, Saturation, Vibrance, Highlights, Shadows, Sharpness, Skin
+/// Smoothing: the faces' skin only, drawn before the other settings, see `FrameLook`): the
 /// picked chip is white, one that is off zero shows its value in yellow; for a clip a chip shows the take's value
 /// until the clip sets its own, and Reset gives the clip the take's values again. ◐ shows the picture as recorded
 /// for as long as it is held. The Auto chip is the measured correction (a step before the other settings, which
@@ -47,7 +48,7 @@ struct AdjustPanel: View {
         case .dial(let adjustment):
             PanelRulerSlider(
                 label: adjustment.label, value: viewModel.adjustment(adjustment), range: range(of: adjustment), bipolar: adjustment.isBipolar,
-                format: format(of: adjustment), identifier: "edit.adjust.ruler",
+                format: format(of: adjustment), identifier: "edit.adjust.ruler", hint: adjustment.hint,
                 onChange: { viewModel.setAdjustment(adjustment, $0) }
             )
         }
@@ -139,6 +140,7 @@ struct AdjustPanel: View {
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(Text(adjustment.label))
         .accessibilityValue(Text(format(of: adjustment).text(value)))
+        .accessibilityHint(Text(adjustment.hint ?? ""))
         .accessibilityAddTraits(isPicked ? [.isButton, .isSelected] : .isButton)
         .accessibilityIdentifier("edit.adjust.\(adjustment.rawValue)")
     }

@@ -1,0 +1,40 @@
+//
+//  SettingsEntryRow.swift
+//  Cue Studio
+//
+
+import SwiftUI
+
+/// The row of one `SettingsEntry`, the same on its page and in the search results.
+struct SettingsEntryRow: View {
+    let entry: SettingsEntry
+    let bindings: SettingsBindings
+
+    var body: some View {
+        content
+            .cardRowBackground()
+    }
+
+    @ViewBuilder
+    private var content: some View {
+        switch entry {
+        case .recording, .prompter, .remote, .myCueVoice, .personalize, .languageRegion, .privacy, .cuePro, .restorePurchases,
+             .privacyPolicy, .termsOfUse, .acknowledgements, .version:
+            SettingsRootRow(entry: entry, bindings: bindings)
+        case .startsWith, .resolution, .frameRate, .defaultFormat, .microphone, .countdown, .countdownBeforePlay, .grid:
+            RecordingEntryRow(entry: entry, camera: bindings.camera)
+        case .followVoice, .speed, .aiCoach, .textSize, .font, .lineSpacing, .alignment, .textColor, .showReadingLine,
+             .readingLinePosition, .resetReadingLine, .windowHeight, .windowWidth, .sideMargins, .backgroundOpacity,
+             .cameraBlur, .socialSafeZone, .studioBackground, .mirrorText, .flipVertically:
+            PrompterEntryRow(entry: entry, bindings: bindings)
+        case .connectDevice, .enterCode, .scanCode:
+            RemoteEntryRow(entry: entry)
+        case .appIcon, .topics, .autoTag, .starrySky, .celebrations, .haptics:
+            PersonalizeEntryRow(entry: entry)
+        case .appLanguage, .voiceFollowingLanguage, .scriptLanguage:
+            LanguageEntryRow(entry: entry)
+        case .onDeviceAI, .helpImprove, .permissions, .deleteData:
+            PrivacyEntryRow(entry: entry)
+        }
+    }
+}

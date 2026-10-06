@@ -95,10 +95,14 @@ nonisolated enum CoverRenderer {
         // The clip's background and look at that moment of the take, like the video.
         let clip = edit.timeline.segments.first { $0.sourceID == nil && $0.sourceStart <= time && time < $0.sourceEnd }
         let effect = clip.map { edit.background(for: $0) } ?? edit.background(for: nil)
+        let look = clip.map { edit.lookSettings(for: $0) } ?? LookSettings(edit)
+        let context = CIContext(options: [.cacheIntermediates: false])
+        // Skin Smoothing like the video's: the faces of this frame, found on the frame as recorded (before a background goes behind the creator).
+        let skin = SkinSmoother(context: context).pass(for: image, value: look.skinSmoothing, stream: .main, epoch: 0, time: time)
         if let effect, let render = BackgroundRender.prepare(effect, cacheKey: "cover") {
             image = BackgroundCompositing.apply(image, render: render) { PersonMasker.mask(for: $0) }
         }
-        let looked = FrameLook.apply(clip.map { edit.lookSettings(for: $0) } ?? LookSettings(edit), to: image)
-        return CIContext(options: [.cacheIntermediates: false]).createCGImage(looked, from: looked.extent) ?? cropped
+        let looked = FrameLook.apply(look, to: image, skin: skin)
+        return context.createCGImage(looked, from: looked.extent) ?? cropped
     }
 }

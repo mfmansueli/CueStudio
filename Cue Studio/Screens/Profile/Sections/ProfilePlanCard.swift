@@ -23,7 +23,7 @@ struct ProfilePlanCard: View {
                         Spacer(minLength: 8)
                         Text(detail)
                             .font(.system(size: 11, weight: .semibold, design: .monospaced))
-                            .foregroundStyle(Palette.ink2)
+                            .foregroundStyle(detailTint)
                             .lineLimit(1)
                             .minimumScaleFactor(0.7)
                     }
@@ -53,6 +53,16 @@ struct ProfilePlanCard: View {
             guard let plan = store.activePlan else { return String(localized: "Active") }
             return plan.label.uppercased()
         }
-        return String(localized: "\(left) OF \(UsagePolicy.freeExports) EXPORTS LEFT")
+        return FreeExportLabels.plan(left: left).text
+    }
+
+    /// The count turns yellow on the last free export and orange once they are gone.
+    private var detailTint: Color {
+        guard !store.tier.isPro else { return Palette.ink2 }
+        switch FreeExportLabels.plan(left: left).tone {
+        case .quiet: return Palette.ink2
+        case .last: return Palette.accText
+        case .exhausted: return Palette.warnText
+        }
     }
 }

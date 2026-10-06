@@ -10,6 +10,7 @@ import SwiftUI
 /// finished or skipped.
 struct OnboardingView: View {
     @State private var model: OnboardingViewModel
+    @State private var skyDirector = SkyDirector()
     private let services: AppServices
 
     @Environment(PresentationService.self) private var presentation
@@ -31,10 +32,22 @@ struct OnboardingView: View {
 
     private var onboarding: OnboardingService { services.onboarding }
 
+    /// The haze behind the chapter on screen: each board has its own (`BgWash+Presets`).
+    private var washLights: [BgWash.Light] {
+        switch onboarding.step {
+        case .welcome: BgWash.welcome
+        case .universe: BgWash.universe
+        case .voyage: BgWash.voyage
+        case .script: BgWash.message
+        case .voice: BgWash.permissions
+        case .practice: BgWash.firstStar
+        }
+    }
+
     var body: some View {
         ZStack {
-            Color(hex: 0x07080E).ignoresSafeArea()
-            StarfieldView(density: .calm, seed: 7)
+            BgWash(lights: washLights, base: Palette.flightNight)
+            OnboardingSky(step: onboarding.step, plays: services.playsWelcomeOpening, frozenAt: services.welcomeFrozenTime)
                 .ignoresSafeArea()
                 // The sky shifts a little with each chapter (parallax).
                 .offset(y: reduceMotion ? 0 : -CGFloat(onboarding.step.rawValue) * 24)
@@ -54,6 +67,8 @@ struct OnboardingView: View {
             }
         }
         .animation(.easeInOut(duration: 0.45), value: onboarding.step)
+        .environment(skyDirector)
+        .task { HeroDiscCache.prewarm() }
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("onboarding.root")
         // The prompter closed during the practice: the story is over either way.
@@ -66,15 +81,23 @@ struct OnboardingView: View {
     private var chapter: some View {
         switch onboarding.step {
         case .welcome:
-            WelcomeChapter(onStart: advance, onReturning: returning)
+            WelcomeChapter(
+                plays: services.playsWelcomeOpening, frozenAt: services.welcomeFrozenTime, onStart: advance, onReturning: returning
+            )
         case .universe:
-            UniverseChapter(onboarding: onboarding, onContinue: advance)
+            UniverseChapter(
+                onboarding: onboarding, plays: services.playsWelcomeOpening, frozenAt: services.chapterFrozenTime,
+                birthFrozenAge: services.topicBirthFrozenAge, onContinue: advance
+            )
         case .voyage:
-            VoyageChapter(onboarding: onboarding, onContinue: advance)
+            VoyageChapter(
+                onboarding: onboarding, plays: services.playsWelcomeOpening, frozenAt: services.chapterFrozenTime,
+                frozenPickAge: services.platformPickFrozenAge, onContinue: advance
+            )
         case .script:
-            ScriptChapter(model: model, onUse: useScript, onWriteOwn: writeOwn)
+            ScriptChapter(model: model, plays: services.playsWelcomeOpening, frozenAt: services.chapterFrozenTime, onUse: useScript)
         case .voice:
-            VoiceChapter(model: model, onDone: advance)
+            VoiceChapter(model: model, onDone: advance, frozenAt: services.chapterFrozenTime)
         case .practice:
             PracticeChapter()
                 .onAppear(perform: startPractice)
@@ -106,17 +129,13 @@ struct OnboardingView: View {
         advance()
     }
 
-    /// "I'll write my own": the picks are kept and Scripts opens on a blank page.
-    private func writeOwn() {
-        model.finish()
-        let script = services.library.create(
-            title: "", text: "", platform: onboarding.platform, language: services.languages.scriptLanguage
-        )
-        presentation.openScript(script.id, editing: true)
-    }
-
     /// The practice run is the real prompter over the front camera, on the script just made, not recording.
     private func startPractice() {
+        // The script of 1.4 is normally there; a flight opened on this chapter directly gets the built-in practice message.
+        if services.library.scripts.isEmpty {
+            let practice = OnboardingScript.curated(topic: onboarding.mainTopic?.label ?? String(localized: "your day"))
+            _ = services.library.create(title: practice.title, text: practice.text, platform: onboarding.platform, language: nil)
+        }
         let scriptID = services.library.scripts.first?.id
         presentation.prompter = PrompterLaunch(scriptID: scriptID, mode: .selfie, isPractice: true)
     }

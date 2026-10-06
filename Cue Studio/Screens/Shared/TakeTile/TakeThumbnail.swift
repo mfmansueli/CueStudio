@@ -14,22 +14,10 @@ struct TakeThumbnail: View {
     @State private var image: UIImage?
 
     var body: some View {
-        ZStack {
-            LinearGradient(
-                colors: [Palette.thumbnailTop, Palette.thumbnailBottom],
-                startPoint: .topLeading, endPoint: .bottomTrailing
-            )
-            if let image {
-                Image(uiImage: image)
-                    .resizable()
-                    .scaledToFill()
-                    .transition(.opacity)
+        PosterImage(image: image)
+            .task(id: take.id) {
+                image = await thumbnails.thumbnail(for: takes.videoURL(for: take))
             }
-        }
-        .clipped()
-        .task(id: take.id) {
-            image = await thumbnails.thumbnail(for: takes.videoURL(for: take))
-        }
-        .accessibilityHidden(true)
+            .accessibilityHidden(true)
     }
 }

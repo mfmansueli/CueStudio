@@ -17,6 +17,8 @@ struct PanelRulerSlider: View {
     var bipolar = false
     let format: PanelValueFormat
     let identifier: String
+    /// What VoiceOver says after the value, for a setting that needs it.
+    var hint: String?
     let onChange: (Double) -> Void
     var onEditingChanged: (Bool) -> Void = { _ in }
 
@@ -78,6 +80,7 @@ struct PanelRulerSlider: View {
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(Text(label))
         .accessibilityValue(Text(format.text(value)))
+        .accessibilityHint(Text(hint ?? ""))
         .accessibilityAdjustableAction { direction in
             switch direction {
             case .increment: onChange(min(range.upperBound, value + step))

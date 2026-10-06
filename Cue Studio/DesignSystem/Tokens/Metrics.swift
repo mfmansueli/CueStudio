@@ -33,6 +33,10 @@ enum Metrics {
     /// Minimum touch target.
     static let hitTarget: CGFloat = 44
     static let chipHeight: CGFloat = 34
+    /// The filter chips of Takes (6.2): 32 pt on screen, 44 pt to touch.
+    static let filterChipHeight: CGFloat = 32
+    /// What a row of a grouped list puts inside the list's own padding: with it a row is 52 pt, and never under the 44 pt a touch needs.
+    static let listRowContent: CGFloat = 32
 
     // MARK: Editor (v10)
 

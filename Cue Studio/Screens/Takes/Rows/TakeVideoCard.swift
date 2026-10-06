@@ -5,29 +5,25 @@
 
 import SwiftUI
 
-/// A video in the Takes grid: its best take as a 9:16 poster with the stage on top ("● READY", and
-/// "×3" when it has several takes), the title at the bottom over four steps lit up to the stage,
-/// and under it the platform and length ("● TIKTOK · 1:02").
+/// A video in the Takes grid (6.2): its best take as a poster with the stage on top ("● READY", and "×3" when it has several takes), a ring in the
+/// stage's colour, the title at the bottom and under it the platform and length ("● TIKTOK · 1:02").
 struct TakeVideoCard: View {
     let video: TakeVideo
 
     var body: some View {
         let shape = RoundedRectangle(cornerRadius: 18, style: .continuous)
-        VStack(alignment: .leading, spacing: 7) {
-            Color.clear
-                .aspectRatio(9.0 / 16.0, contentMode: .fit)
-                .overlay { poster }
-                .overlay { shade }
-                .overlay(alignment: .top) { topRow }
-                .overlay(alignment: .bottomLeading) { bottom }
-                .clipShape(shape)
-                .overlay(shape.strokeBorder(video.stage == .pick ? Palette.acc.opacity(0.55) : Color.white.opacity(0.12), lineWidth: 1))
-            hud
-        }
-        .contentShape(Rectangle())
-        .accessibilityElement(children: .ignore)
-        .accessibilityLabel(Text(accessibilityText))
-        .accessibilityAddTraits(.isButton)
+        Color.clear
+            .aspectRatio(177.0 / 270.0, contentMode: .fit)
+            .overlay { poster }
+            .overlay { shade }
+            .overlay(alignment: .top) { topRow }
+            .overlay(alignment: .bottomLeading) { bottom }
+            .clipShape(shape)
+            .overlay(shape.strokeBorder(video.stage.cardRing, lineWidth: 1))
+            .contentShape(Rectangle())
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel(Text(accessibilityText))
+            .accessibilityAddTraits(.isButton)
     }
 
     @ViewBuilder
@@ -56,7 +52,7 @@ struct TakeVideoCard: View {
             Spacer(minLength: 0)
             if video.takes.count > 1 {
                 Text("×\(video.takes.count)")
-                    .font(.system(size: 10, weight: .heavy, design: .monospaced))
+                    .font(.system(size: 10, weight: .semibold, design: .monospaced))
                     .foregroundStyle(.white)
                     .padding(.horizontal, 7)
                     .frame(height: 22)
@@ -67,35 +63,23 @@ struct TakeVideoCard: View {
     }
 
     private var bottom: some View {
-        VStack(alignment: .leading, spacing: 6) {
+        VStack(alignment: .leading, spacing: 8) {
             Text(video.title)
                 .font(.system(size: 14, weight: .bold))
                 .foregroundStyle(.white)
                 .lineLimit(2)
                 .multilineTextAlignment(.leading)
                 .shadow(color: .black.opacity(0.4), radius: 2, y: 1)
-            HStack(spacing: 3) {
-                ForEach(TakeStage.allCases) { step in
-                    Capsule()
-                        .fill(step <= video.stage ? video.stage.pillTint : Color.white.opacity(0.18))
-                        .frame(height: 3)
-                }
+            HStack(spacing: 5) {
+                ColorDot(color: video.platform?.tint ?? Palette.platformNeutral, size: 5)
+                Text(hudText)
+                    .textCase(.uppercase)
+                    .lineLimit(1)
             }
+            .font(.system(size: 10, weight: .semibold, design: .monospaced))
+            .foregroundStyle(Palette.flightInk.opacity(0.75))
         }
         .padding(10)
-    }
-
-    private var hud: some View {
-        HStack(spacing: 5) {
-            ColorDot(color: video.platform?.tint ?? Palette.platformNeutral, size: 5)
-            Text(hudText)
-                .textCase(.uppercase)
-                .lineLimit(1)
-        }
-        .font(.system(size: 10.5, weight: .bold, design: .monospaced))
-        .tracking(0.4)
-        .foregroundStyle(Palette.ink2)
-        .padding(.horizontal, 2)
     }
 
     private var hudText: String {

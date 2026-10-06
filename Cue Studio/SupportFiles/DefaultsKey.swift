@@ -47,6 +47,13 @@ nonisolated enum DefaultsKey {
     /// The videos shared (once each), the day of the first one, and the milestones already told.
     static let sharedTakeIDs = "sharedTakeIDs"
     static let firstShareDate = "firstShareDate"
+    /// The same videos with date, platform and topic (`[ShareRecord]`, JSON); the universe of each year is built from them.
+    static let shareRecords = "shareRecords"
+    /// The "Share to universe" queues not yet finished (`[ShareQueue]`, JSON) and how many times the "Posting to n networks" explanation was shown.
+    static let shareQueues = "shareQueues"
+    static let queueExplainerShown = "queueExplainerShown"
+    /// How many videos each planet had when "Your universe" was last open (`[String: Int]`, "2026.tiktok"): the planets grow from there.
+    static let seenPlanetCounts = "seenPlanetCounts"
     static let celebratedMilestones = "celebratedMilestones"
     /// "Your stars" in the sky above Scripts (`[StarPoint]`, JSON, up to 50) and how many were ever added.
     static let skyMemory = "skyMemory"
@@ -55,6 +62,9 @@ nonisolated enum DefaultsKey {
     static let voiceQuestionState = "vq.state"
     /// The Logbook's ideas (JSON).
     static let logbook = "logbook"
+    /// Settings › Privacy & AI data: Apple Intelligence on or off (absent = on) and the anonymous usage switch (absent = off).
+    static let onDeviceAI = "onDeviceAI"
+    static let helpImproveCue = "helpImproveCue"
     /// v1's monthly AI counters ("aiScriptsUsed_2026-09"), removed at launch.
     static let legacyAIScriptsUsedPrefix = "aiScriptsUsed_"
 }

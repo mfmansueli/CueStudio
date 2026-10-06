@@ -31,6 +31,21 @@ nonisolated enum SafeZoneChoice: Hashable, Sendable {
         return options.first
     }
 
+    /// The platforms Settings › Social safe zone offers, then Custom.
+    static let settingsOptions: [SafeZoneChoice] = [.platform(.tiktok), .platform(.reels), .platform(.shorts), .custom]
+
+    /// The choice a saved key names (`key`); TikTok, the first of the Settings list, when none is saved.
+    static func saved(key: String?) -> SafeZoneChoice {
+        pick(fromKey: key) ?? .platform(.tiktok)
+    }
+
+    /// The creator's saved pick, or nil to follow the script's platform.
+    static func pick(fromKey key: String?) -> SafeZoneChoice? {
+        guard let key else { return nil }
+        if key == SafeZoneChoice.custom.key { return .custom }
+        return Platform(rawValue: key).map { .platform($0) }
+    }
+
     /// Chip title: "Reels", "Custom".
     var label: String {
         switch self {

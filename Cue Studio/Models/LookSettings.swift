@@ -18,6 +18,8 @@ nonisolated struct LookSettings: Hashable, Sendable {
     var sharpness: Double = 0
     var vibrance: Double = 0
     var tint: Double = 0
+    /// How much the skin of the faces is smoothed, 0 (off) to 100; drawn after Auto and before the dials (`FrameLook`).
+    var skinSmoothing: Double = 0
     /// What Auto measured, and how much of it shows (0 to 1); applied first, before the dials.
     var auto: AutoCorrection?
     var autoAmount: Double = 1
@@ -42,6 +44,7 @@ nonisolated struct LookSettings: Hashable, Sendable {
         sharpness = edit.sharpness
         vibrance = edit.vibrance
         tint = edit.tint
+        skinSmoothing = edit.skinSmoothing
         auto = edit.autoCorrection
         autoAmount = edit.autoAmount
         filter = edit.filter
@@ -71,6 +74,7 @@ nonisolated struct LookSettings: Hashable, Sendable {
         result.sharpness = override.sharpness ?? sharpness
         result.vibrance = override.vibrance ?? vibrance
         result.tint = override.tint ?? tint
+        result.skinSmoothing = override.skinSmoothing ?? skinSmoothing
         result.auto = override.auto ?? auto
         result.autoAmount = override.autoAmount ?? autoAmount
         result.filter = override.filter ?? filter

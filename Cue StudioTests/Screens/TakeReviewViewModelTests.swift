@@ -68,17 +68,46 @@ struct TakeReviewViewModelTests {
         #expect(scenario.photos.savedURLs.count == 1)
         #expect(scenario.quota.exportsLeft(for: .free) == 4)
         #expect(scenario.toast.message == "Saved to Photos · 4 of 5 free exports left")
-        #expect(scenario.viewModel.exportNotice == "4 of 5 free exports")
+        #expect(scenario.viewModel.exportLabel == FreeExportLabels.Label(text: "4 OF 5 FREE EXPORTS LEFT", tone: .quiet))
     }
 
-    @Test func pastTheFreeExportsThePaywallOpensAndNothingExports() async {
+    @Test func pastTheFreeExportsYourVideoIsReadyAsksAndNothingExports() async {
         let scenario = makeScenario(usedExports: 5)
         defer { scenario.defaults.tearDown() }
         await scenario.viewModel.save()
-        #expect(scenario.viewModel.paywall == .export)
+        #expect(scenario.viewModel.showsExportReady)
+        #expect(scenario.viewModel.paywall == nil)
         #expect(scenario.exporter.exports.isEmpty)
         #expect(scenario.photos.savedURLs.isEmpty)
-        #expect(scenario.viewModel.exportNotice == "Free exports used — 7 days free to keep exporting")
+        #expect(scenario.viewModel.exportLabel == FreeExportLabels.Label(text: "0 OF 5 FREE EXPORTS LEFT", tone: .exhausted))
+    }
+
+    /// "Not now", the close button and a swipe down are the same answer: the take stays ready and says to export with Pro.
+    @Test func notNowKeepsTheTakeReadyAndSaysSo() async {
+        let scenario = makeScenario(usedExports: 5)
+        defer { scenario.defaults.tearDown() }
+        await scenario.viewModel.save()
+        scenario.viewModel.declineExport()
+        #expect(!scenario.viewModel.showsExportReady)
+        #expect(scenario.toast.message == "Saved in Takes · export with Pro anytime")
+        #expect(scenario.viewModel.exportLabel.text == "READY · EXPORT WITH PRO")
+        #expect(scenario.viewModel.paywall == nil)
+        await scenario.viewModel.continueAfterPurchase()
+        #expect(scenario.exporter.exports.isEmpty, "the export that was asked for is dropped")
+        // The next attempt asks again, with the plain label back.
+        await scenario.viewModel.save()
+        #expect(scenario.viewModel.showsExportReady)
+        #expect(scenario.viewModel.exportLabel.text == "0 OF 5 FREE EXPORTS LEFT")
+    }
+
+    @Test func theTrialAndSeeWhatsInProOpenTheCalmPro() async {
+        let scenario = makeScenario(usedExports: 5)
+        defer { scenario.defaults.tearDown() }
+        scenario.viewModel.proDelay = .zero
+        await scenario.viewModel.save()
+        await scenario.viewModel.openProFromExportReady()
+        #expect(!scenario.viewModel.showsExportReady)
+        #expect(scenario.viewModel.paywall == .export)
     }
 
     @Test func subscriberExportsAreUncounted() async {
@@ -87,7 +116,7 @@ struct TakeReviewViewModelTests {
         await scenario.viewModel.save()
         #expect(scenario.exporter.exports.count == 1)
         #expect(scenario.toast.message == "Saved to Photos")
-        #expect(scenario.viewModel.exportNotice == nil)
+        #expect(scenario.viewModel.exportLabel == FreeExportLabels.Label(text: "PRO · UNLIMITED EXPORTS", tone: .quiet))
         #expect(scenario.quota.exportsUsed == 5)
     }
 
@@ -95,7 +124,9 @@ struct TakeReviewViewModelTests {
         let plan = Plan(.free)
         let scenario = makeScenario(plan: plan, usedExports: 5)
         defer { scenario.defaults.tearDown() }
+        scenario.viewModel.proDelay = .zero
         await scenario.viewModel.save()
+        await scenario.viewModel.openProFromExportReady()
         #expect(scenario.viewModel.paywall == .export)
         plan.tier = .subscriber
         await scenario.viewModel.continueAfterPurchase()
@@ -106,11 +137,13 @@ struct TakeReviewViewModelTests {
     @Test func closingThePaywallExportsNothing() async {
         let scenario = makeScenario(usedExports: 5)
         defer { scenario.defaults.tearDown() }
+        scenario.viewModel.proDelay = .zero
         await scenario.viewModel.save()
+        await scenario.viewModel.openProFromExportReady()
         scenario.viewModel.paywall = nil
         await scenario.viewModel.continueAfterPurchase()
         #expect(scenario.exporter.exports.isEmpty)
-        #expect(scenario.viewModel.paywall == .export)
+        #expect(scenario.viewModel.paywall == nil)
     }
 
     @Test func moreHandsTheFileToTheShareSheet() async {
@@ -155,7 +188,7 @@ struct TakeReviewViewModelTests {
         let scenario = makeScenario(usedExports: 5)
         defer { scenario.defaults.tearDown() }
         await scenario.viewModel.share(to: .shorts)
-        #expect(scenario.viewModel.paywall == .export)
+        #expect(scenario.viewModel.showsExportReady)
         #expect(scenario.sharing.sent.isEmpty)
         #expect(scenario.exporter.exports.isEmpty)
     }

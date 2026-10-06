@@ -5,13 +5,14 @@
 
 import SwiftUI
 
-/// The night glow behind the navigation screens (v29): a violet light from the top left and an indigo
-/// one on the right, over `bg`. It is still (no motion of its own), the same on every screen, empty
-/// states included, so it needs no Reduce Motion or Low Power version.
+/// The night glow behind a screen: lights over a base colour. The navigation screens (v29) have a violet light from the top left and an
+/// indigo one on the right over `bg` (`BgWash()`); each chapter of the first flight has its own (`BgWash.welcome`…, the boards' `.night`).
+/// It is still (no motion of its own), the same on every screen of its kind, empty states included, so it needs no Reduce Motion or Low
+/// Power version.
 struct BgWash: View {
     /// One light: an ellipse (radii as fractions of the screen) centred at a point (fractions too)
     /// that fades to nothing at 70% of its radius, like the prototype's `radial-gradient`.
-    private struct Light {
+    struct Light {
         let color: Color
         let radiusX: Double
         let radiusY: Double
@@ -19,10 +20,8 @@ struct BgWash: View {
         let centerY: Double
     }
 
-    private let lights = [
-        Light(color: Palette.bgWashViolet, radiusX: 0.7, radiusY: 0.3, centerX: 0.2, centerY: 0.06),
-        Light(color: Palette.bgWashIndigo, radiusX: 0.55, radiusY: 0.28, centerX: 0.85, centerY: 0.6),
-    ]
+    var lights: [Light] = BgWash.navigation
+    var base: Color = Palette.bg
 
     var body: some View {
         Canvas { context, size in
@@ -38,7 +37,7 @@ struct BgWash: View {
                 )
             }
         }
-        .background(Palette.bg)
+        .background(base)
         .ignoresSafeArea()
         .allowsHitTesting(false)
         .accessibilityHidden(true)

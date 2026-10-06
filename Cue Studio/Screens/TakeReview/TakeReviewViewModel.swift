@@ -19,6 +19,10 @@ final class TakeReviewViewModel {
         case save
         /// A platform, or nil for "More" (the system share sheet).
         case share(ShareDestination?)
+        /// Only the file: "Ready to travel" shows it, and nothing is delivered or counted until the creator picks where it goes.
+        case render
+        /// The file for a "Share to universe" queue, saved to Photos first when asked (`prepared` is set).
+        case prepare(alsoSavesToPhotos: Bool)
     }
 
     let takeID: UUID
@@ -28,8 +32,20 @@ final class TakeReviewViewModel {
     /// Set when an export is ready for the system share sheet.
     var activity: ActivityShare?
     var paywall: PaywallContext?
+    /// The free exports are used up and the creator tapped something that exports: "Your video is ready" asks before anything else.
+    var showsExportReady = false
+    /// "Not now" was answered: the take stays ready, and its line says "READY · EXPORT WITH PRO" until the next export attempt.
+    private(set) var exportDeclined = false
     /// "Ready to travel" after a save, "On its way" once a platform's app has the video.
     var celebration: ExportCelebration?
+    /// The file `.prepare` made, for the queue.
+    private(set) var prepared: ExportedVideo?
+    /// Operations saved to Photos in this review ("Save video" turns into "Saved to Photos").
+    private(set) var savedOperations: Set<UUID> = []
+    /// "Share to universe" hears how a share sheet ended for a network it sent (true: handled, so no send-off is played here).
+    @ObservationIgnored var queueInterceptor: ((ShareDestination, ActivityResult) -> Bool)?
+    /// The queue that edits are made for: re-exporting inside it costs no second export.
+    @ObservationIgnored var queueOperation: () -> UUID? = { nil }
     /// "Share to".
     var showsShareSheet = false
     /// Photos refused the save: the review shows a card with Open Settings instead of a toast.
@@ -158,13 +174,28 @@ final class TakeReviewViewModel {
     /// Nil when unlimited.
     var exportsLeft: Int? { quota.exportsLeft(for: tier()) }
 
-    /// Free plan only: "3 of 5 free exports", or that the next export starts the trial.
-    var exportNotice: String? {
-        guard let left = exportsLeft else { return nil }
-        return left > 0
-            ? String(localized: "\(left) of \(UsagePolicy.freeExports) free exports")
-            : String(localized: "Free exports used — 7 days free to keep exporting")
+    /// The line under Share (6.3): the free exports left, the last one, none, or Pro.
+    var exportLabel: FreeExportLabels.Label { FreeExportLabels.take(left: exportsLeft, declined: exportDeclined) }
+
+    /// "Not now", the close button or a swipe down: nothing is exported, nothing is lost.
+    func declineExport() {
+        guard showsExportReady else { return }
+        showsExportReady = false
+        pendingAction = nil
+        exportDeclined = true
+        toast.show(String(localized: "Saved in Takes · export with Pro anytime"))
     }
+
+    /// "Start free trial · export now" and "See what's in Pro": the calm Pro, with the video waiting.
+    func openProFromExportReady() async {
+        showsExportReady = false
+        // The sheet has to be gone before the full-screen cover can come up.
+        try? await Task.sleep(for: proDelay)
+        paywall = .export
+    }
+
+    /// How long the sheet takes to leave before the calm Pro comes up (a test sets it to zero).
+    @ObservationIgnored var proDelay: Duration = .milliseconds(450)
 
     var exportsExhausted: Bool { exportsLeft == 0 }
 
@@ -250,6 +281,38 @@ final class TakeReviewViewModel {
         await export(.save)
     }
 
+    /// "Share to universe": the file for the video, rendered without delivering or counting anything ("Ready to travel" shows it). `operationID`
+    /// carries on a queue whose file the system cleared.
+    func render(continuing operationID: UUID? = nil) async {
+        await export(.render, continuing: operationID)
+    }
+
+    /// The file the queue shares, saved to Photos first when asked. Counts the export (once) when it is saved; the free exports run out here.
+    /// Nil when nothing was made (the free exports are used up, or it failed).
+    func prepare(alsoSavingToPhotos: Bool, continuing operationID: UUID? = nil) async -> ExportedVideo? {
+        prepared = nil
+        await export(.prepare(alsoSavesToPhotos: alsoSavingToPhotos), continuing: operationID)
+        defer { prepared = nil }
+        return prepared
+    }
+
+    /// The export of this file is already counted (saved, or sent before): sharing it again costs nothing.
+    func isCounted(_ video: ExportedVideo) -> Bool { ledger.operation(id: video.operationID)?.isCounted ?? false }
+
+    func isSaved(_ video: ExportedVideo) -> Bool { savedOperations.contains(video.operationID) }
+
+    /// The length that suits a network, for "FITS" under it in the picker.
+    func idealRange(for platform: Platform) -> ClosedRange<TimeInterval> {
+        rules.preset(for: platform, monetizationGoals: profile.profile.monetizationGoals).idealRange
+    }
+
+    /// The text copied for a network's caption: the script's title, and "#ad" for a sponsored video.
+    var postCaption: String {
+        guard let take else { return "" }
+        let title = take.isFreestyle ? "" : take.scriptTitle
+        return [title, isSponsored ? Self.adCaption : nil].compactMap { $0 }.filter { !$0.isEmpty }.joined(separator: " ")
+    }
+
     /// Saves the cover to Photos on its own. A picture, not a video: it never counts as an export.
     func saveCover() async {
         guard runningAction == nil else { return }
@@ -294,6 +357,13 @@ final class TakeReviewViewModel {
     /// "Other apps" / "Share again": the system share sheet for a file that was already exported (the same operation, so
     /// it never counts twice). If the system cleared the file, it is rendered again for the same operation.
     func share(_ video: ExportedVideo) {
+        // The icon is a way out like any other: with the free exports gone, "Your video is ready" asks first.
+        guard isCounted(video) || quota.canExport(tier: tier()) else {
+            pendingAction = .share(nil)
+            exportDeclined = false
+            showsExportReady = true
+            return
+        }
         guard let operation = ledger.operation(id: video.operationID), ledger.fileExists(for: operation) else {
             Task { await export(.share(nil), continuing: video.operationID) }
             return
@@ -310,10 +380,11 @@ final class TakeReviewViewModel {
 
     private func export(_ action: ExportAction, continuing operationID: UUID? = nil) async {
         guard let take, runningAction == nil else { return }
-        // Used up, and nothing of this take already out: the paywall before any work.
-        guard quota.canExport(tier: tier()) || ledger.hasCountedOperation(forTake: take.id) else {
+        // Used up, and nothing of this take already out: "Your video is ready" before any work. Making the file is free; delivering it is not.
+        guard action == .render || quota.canExport(tier: tier()) || ledger.hasCountedOperation(forTake: take.id) else {
             pendingAction = action
-            paywall = .export
+            exportDeclined = false
+            showsExportReady = true
             return
         }
         runningAction = action
@@ -342,9 +413,10 @@ final class TakeReviewViewModel {
         let fingerprint = ExportFingerprint.make(takeID: take.id, source: source, options: options)
         let reusable = ledger.reusableOperation(fingerprint: fingerprint)
         let continued = operationID.flatMap { ledger.operation(id: $0) }.flatMap { $0.fingerprint == fingerprint ? $0 : nil }
-        if !(reusable?.isCounted ?? false), !(continued?.isCounted ?? false), !quota.canExport(tier: tier()) {
+        if action != .render, !(reusable?.isCounted ?? false), !(continued?.isCounted ?? false), !quota.canExport(tier: tier()) {
             pendingAction = action
-            paywall = .export
+            exportDeclined = false
+            showsExportReady = true
             return nil
         }
         if let reusable { return reusable }
@@ -354,14 +426,35 @@ final class TakeReviewViewModel {
             ledger.replaceFile(of: continued.id, with: url)
             return ledger.operation(id: continued.id)
         }
-        return ledger.begin(takeID: take.id, fingerprint: fingerprint, file: url)
+        // An edit made inside a queue that already counted its export is the same export: it costs nothing more.
+        let inherited = queueOperation().flatMap { ledger.operation(id: $0) }.flatMap { $0.takeID == take.id && $0.isCounted ? $0.id : nil }
+        return ledger.begin(takeID: take.id, fingerprint: fingerprint, file: url, inheritingCountFrom: inherited)
     }
 
     private func deliver(_ action: ExportAction, operation: ExportOperation, take: Take) async throws {
         switch action {
+        case .render:
+            phase = .idle
+            celebration = .readyToTravel(exported(take, operation: operation))
+        case .prepare(let alsoSaves):
+            if alsoSaves {
+                phase = .savingToPhotos
+                do {
+                    let assetID = try await photos.saveVideo(at: ledger.fileURL(of: operation))
+                    recordDelivery(.photoLibrary(assetID: assetID), operation: operation, take: take)
+                    savedOperations.insert(operation.id)
+                    _ = try? await saveCoverIfChosen()
+                } catch PhotoLibraryError.notAuthorized {
+                    // The networks can take the file without Photos: the queue goes on, and the first network that gets it counts the export.
+                    toast.show(String(localized: "Photos is off · the video wasn't saved there"))
+                }
+            }
+            phase = .idle
+            prepared = exported(take, operation: operation)
         case .save:
             phase = .savingToPhotos
             let assetID = try await photos.saveVideo(at: ledger.fileURL(of: operation))
+            savedOperations.insert(operation.id)
             recordDelivery(.photoLibrary(assetID: assetID), operation: operation, take: take)
             let withCover = (try? await saveCoverIfChosen()) ?? false
             showsShareSheet = false
@@ -423,7 +516,7 @@ final class TakeReviewViewModel {
             recordDelivery(evidence, operation: operation, take: take)
             showsShareSheet = false
             announce(sharedMessage(with: label))
-            celebration = .sentOff(exported(take, operation: operation), destination)
+            celebration = .sentOff(exported(take, operation: operation), [destination])
         case .pending:
             showsShareSheet = false
         case .opened:
@@ -463,13 +556,15 @@ final class TakeReviewViewModel {
         self.activity = nil
         guard handledActivities.insert(share.id).inserted,
               let operation = ledger.operation(id: share.operationID), let take = takes.take(id: operation.takeID) else { return }
+        // A network of a "Share to universe" queue: a finished sheet is a delivery, and the queue asks whether it went live.
+        if case .completed(let type) = result { recordDelivery(.activity(type: type), operation: operation, take: take) }
+        if let destination = share.destination, queueInterceptor?(destination, result) == true { return }
         switch result {
         case .completed(let type):
-            recordDelivery(.activity(type: type), operation: operation, take: take)
             showsShareSheet = false
             if let destination = share.destination, destination.matches(activityType: type) {
                 announce(sharedMessage(with: destination.platform.label))
-                celebration = .sentOff(exported(take, operation: operation), destination)
+                celebration = .sentOff(exported(take, operation: operation), [destination])
             } else {
                 announce(sharedMessage(with: nil))
             }

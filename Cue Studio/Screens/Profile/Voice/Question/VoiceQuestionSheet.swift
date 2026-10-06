@@ -45,6 +45,7 @@ struct VoiceQuestionSheet: View {
         }
         .presentationDetents(model.mode == .tip ? [.medium, .large] : [.large])
         .presentationDragIndicator(.visible)
+        .cueSheetSurface()
         .onDisappear { model.dismissedWithoutAnswer() }
         .onChange(of: model.shouldClose) { _, shouldClose in
             guard shouldClose else { return }

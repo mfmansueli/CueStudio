@@ -83,6 +83,20 @@ struct PaletteContrastTests {
         }
     }
 
+    /// Where the hint text sits in the app: the sheets and the soft control fill are lighter than the page.
+    /// (Not the tile surface: `inkHint` is 4.3:1 there, so tiles use `ink2`.)
+    @Test func hintInkReadsOnTheLighterFillsItSitsOn() {
+        let fills: [(name: String, color: Color)] = [
+            ("sheetNight", Palette.sheetNight), ("fill", Palette.fill),
+        ]
+        for appearance in Appearance.allCases {
+            for fill in fills {
+                let value = ratio(Palette.inkHint, on: fill.color, in: appearance)
+                #expect(value >= ColorContrast.textMinimum, "inkHint on \(fill.name), \(appearance): \(value)")
+            }
+        }
+    }
+
     @Test func inkAndSecondaryInkAlsoReadOnTheTileSurface() {
         for appearance in Appearance.allCases {
             for token in [Palette.ink, Palette.ink2] {
@@ -114,6 +128,7 @@ struct PaletteContrastTests {
             #expect(ratio(Palette.accInk, on: Palette.acc, in: appearance) >= ColorContrast.textMinimum, "accInk on acc, \(appearance)")
             #expect(ratio(Palette.accInk, on: Palette.warn, in: appearance) >= ColorContrast.textMinimum, "accInk on warn, \(appearance)")
             #expect(ratio(.white, on: Palette.dangerFill, in: appearance) >= ColorContrast.textMinimum, "white on dangerFill, \(appearance)")
+            #expect(ratio(Palette.inkOnLight, on: .white, in: appearance) >= ColorContrast.textMinimum, "inkOnLight on a white chip, \(appearance)")
             #expect(ratio(Palette.bg, on: Palette.ink, in: appearance) >= ColorContrast.textMinimum, "a selected chip, \(appearance)")
             #expect(ratio(.white, on: Palette.neutralAction, in: appearance) >= ColorContrast.textMinimum, "white on neutralAction, \(appearance)")
             // v26 controls: the selected chip and the selected segment, with the text they carry.

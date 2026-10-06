@@ -151,7 +151,7 @@ struct IdeaTransitionServiceTests {
         await finished.value
     }
 
-    @Test func halfTheTimeInLowPowerMode() async {
+    @Test func aSpeedOfOneHalfMakesEveryTimingHalfAsLong() async {
         let (service, clock, calls) = make()
         service.speed = 0.5
         begin(service, calls)

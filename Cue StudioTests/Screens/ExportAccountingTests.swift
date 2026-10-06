@@ -183,7 +183,7 @@ struct ExportAccountingTests {
         #expect(share.destination == .youtube)
         scenario.viewModel.activityFinished(.completed(activityType: "com.google.ios.youtube.ShareExtension"), for: share)
         #expect(scenario.used == 1)
-        guard case .sentOff(_, .youtube)? = scenario.viewModel.celebration else {
+        guard case .sentOff(_, [.youtube])? = scenario.viewModel.celebration else {
             Issue.record("Expected the send-off, got \(String(describing: scenario.viewModel.celebration))")
             return
         }
@@ -342,7 +342,7 @@ struct ExportAccountingTests {
         scenario.sharing.finish?(.delivered(.tikTokShareKit))
         scenario.sharing.finish?(.delivered(.tikTokShareKit))
         #expect(scenario.used == 1)
-        guard case .sentOff(_, .tiktok)? = scenario.viewModel.celebration else {
+        guard case .sentOff(_, [.tiktok])? = scenario.viewModel.celebration else {
             Issue.record("Expected the send-off, got \(String(describing: scenario.viewModel.celebration))")
             return
         }
@@ -511,8 +511,12 @@ struct ExportAccountingTests {
     @Test func anExhaustedQuotaAsksForProBeforeANewExport() async {
         let scenario = makeScenario(used: UsagePolicy.freeExports)
         defer { scenario.defaults.tearDown() }
+        scenario.viewModel.proDelay = .zero
         await scenario.viewModel.save()
-        #expect(scenario.viewModel.paywall == .export)
+        // "Your video is ready" comes first; the calm Pro only when the creator asks for it.
+        #expect(scenario.viewModel.showsExportReady && scenario.viewModel.paywall == nil)
+        await scenario.viewModel.openProFromExportReady()
+        #expect(scenario.viewModel.paywall == .export && !scenario.viewModel.showsExportReady)
         #expect(scenario.exporter.exports.isEmpty)
         #expect(scenario.used == UsagePolicy.freeExports)
     }
@@ -531,7 +535,7 @@ struct ExportAccountingTests {
         // A different edit is a new export and the quota says no.
         scenario.viewModel.burnsInCaptions = true
         await scenario.viewModel.save()
-        #expect(scenario.viewModel.paywall == .export)
+        #expect(scenario.viewModel.showsExportReady, "the quota says no: the video waits for Pro")
         #expect(scenario.used == UsagePolicy.freeExports)
     }
 

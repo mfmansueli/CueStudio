@@ -13,9 +13,19 @@ padrão, corrija-o.
 
 ## Design
 
-A fonte de verdade do design é `design/cue-v30/` (comece por `LEIA-ME.md` e `09-Decisions.md`; o protótipo
-`prototype/Cue App v30.dc.html` é a referência visual). @DESIGN_PROJECT.md diz como o app ficou e onde as decisões foram
+A fonte de verdade do design é `design/cue-v30/handoff-telas/` (comece por `LEIA-ME.md` e `docs/09-Decisions.md`; as telas em
+`screens/*.html` são a referência visual e `ANIMACOES.md` tem o movimento; o pacote anterior, com o protótipo `Cue App v30.dc.html` e os
+documentos 01–08, saiu da árvore e continua no histórico do git, commit `bb39f35`). @DESIGN_PROJECT.md diz como o app ficou e onde as decisões foram
 tomadas. Atualize-o junto com a UI.
+
+## Contraste (WCAG 2.2 AA, HIG da Apple)
+
+Toda tela, componente ou cor nova **precisa passar** no contraste antes de ser entregue; ao tocar numa cor existente, confira também:
+
+- **Texto:** pelo menos **4,5:1** contra o que realmente está atrás dele (texto grande, de 18 pt ou mais, ou 14 pt em negrito ou mais, **3:1**). Isso vale para textos pequenos, rótulos mono, placeholders, textos legais e para texto sobre vidro, aurora, céu ou vídeo: o fundo é o **pior ponto** da superfície, não o token médio.
+- **Partes de controle, ícones que informam e bordas de campo:** **3:1** (WCAG 1.4.11). Só o que é decorativo (setas de disclosure, separadores, pontos) pode ficar abaixo.
+- **Use os tokens de texto de `Palette`** (`ink`, `ink2`, `inkHint`, `accText`, `aiText`, `warnText`, …); eles já são medidos em `PaletteContrastTests` com e sem Aumentar Contraste. `ink3` é só para o que não precisa ser lido (nunca para texto). **Não invente** `Color.white.opacity(x)`, `flightInk.opacity(x)` etc. para texto: se um token não serve, crie ou ajuste o token e meça.
+- **Meça de verdade:** um token novo entra em `PaletteContrastTests`; uma tela com fundo translúcido (dock, cartões sobre o céu, vidro, onboarding) é conferida na imagem renderizada (`UserReportCaptureTests` / `HandoffCaptureTests` gravam o PNG e a hierarquia; `tools/contrast/audit.py` mede cada texto). Qualquer par abaixo do mínimo é corrigido na mesma entrega, e o relatório final diz o que foi medido.
 
 ## Build e testes
 
@@ -47,6 +57,9 @@ tomadas. Atualize-o junto com a UI.
   `-uiTestCatalogue <seção>` (a seção `transition` mostra a estrela; ver `DESIGN_PROJECT.md`).
   v30: `-uiTestVoiceTip` (abre as portas da dica do My Cue Voice), `-uiTestStarTransition` (a estrela da ideia mantém os tempos reais; nos testes de UI ela é encurtada)
   e `-uiTestSlowWriting` (com o roteirista de teste, as palavras chegam devagar na página).
+  `-uiTestExportsLeft <0…5>` (quantas exportações grátis restam; 0 abre "Your video is ready"), `-uiTestWelcomeAt <s>` / `-uiTestProAt <s>` (congelam a abertura da 1.1 / do Pro nesse segundo), `-uiTestUniverse sample|newYear|newAccount` (o que o Your universe guarda, como o painel APP DATA do protótipo), `-uiTestFirstStar` / `-uiTestMilestone <n>` (a revisão abre direto na história da 1.7 / do 8.3), `-uiTestSendOffAt <s>` (congela o send-off 8.2), `-uiTestStoryAt <s>` (congela o 8.3 e a 1.7), `-uiTestFakeShareSheet` (um substituto com Complete/Cancel no lugar da folha de compartilhamento do sistema), `-uiTestShareQueue` (uma fila do Share to universe deixada para o take de exemplo: o card Continue posting),
+  `-uiTestOnboardingStep welcome|universe|voyage|script|voice|practice` (com `-uiTestOnboarding`, o primeiro voo abre nesse capítulo), `-uiTestChapterAt <s>` (congela a abertura do capítulo na tela, 1.2 a 1.6, nesse segundo),
+  `-uiTestWelcomeOpening` (a abertura da 1.1 toca inteira, ≈ 8 s; nos testes de UI ela mostra só o estado final).
 - Idiomas: `LOCALIZATION.md` (três idiomas independentes, terminologia, RTL). Todo texto novo entra
   nos 20 idiomas dos String Catalogs. O teste de fala de verdade é opt-in:
   `TEST_RUNNER_CUE_SPEECH_E2E=1 xcodebuild … -only-testing:"Cue StudioTests/VoiceFollowingSpeechTests" test`,
@@ -63,6 +76,11 @@ tomadas. Atualize-o junto com a UI.
 - A prévia do Quick edit tem uma medição opt-in no aparelho: `TEST_RUNNER_CUE_PREVIEW_LATENCY=1 xcodebuild …
   -only-testing:"Cue StudioTests/QuickEditPreviewLatencyTests" test` (quanto uma mudança leva para
   aparecer e se a imagem some, com filtro, texto, fundo Blur, 4K e corte).
+- **Skin Smoothing** (Quick edit › Adjust) tem uma medição opt-in com rosto de verdade, no aparelho (o Vision não acha rostos no Simulator; os testes de
+  unidade usam um detector falso e um rosto desenhado): `TEST_RUNNER_CUE_SKIN_E2E=1 TEST_RUNNER_CUE_SKIN_MEDIA=Documents/skin.jpg xcodebuild … -destination
+  "platform=iOS,id=<UDID>" -only-testing:"Cue StudioTests/SkinSmoothingDeviceTests" test`, com uma foto de retrato em `Documents` do app (`xcrun devicectl
+  device copy to … --domain-type appDataContainer --domain-identifier com.cuestudioteleprompter --destination Documents/skin.jpg`). Mede o custo de um quadro
+  em 1080p e 4K, se o rosto fica firme com movimento e se a prévia e a exportação saem iguais; os resultados vão como anexos (`SKIN SMOOTHING …`) do xcresult.
 - Compras são testadas localmente com `CueStudio.storekit` (selecionado no scheme).
 - Em Debug, uma instalação nova volta a ter as 5 exportações grátis: o contador fica no Keychain (sobrevive a reinstalar)
   e o `UsageQuotaService` o zera no primeiro lançamento depois de instalar (`DefaultsKey.installLaunched`). Release não zera.

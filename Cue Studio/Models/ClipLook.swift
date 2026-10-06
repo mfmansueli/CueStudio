@@ -21,6 +21,7 @@ nonisolated struct ClipLook: Codable, Hashable, Sendable {
     var sharpness: Double?
     var vibrance: Double?
     var tint: Double?
+    var skinSmoothing: Double?
     /// The clip's own Auto (what was measured on this clip), and how much of it shows; an amount of
     /// 0 with no correction turns the take's Auto off for this clip.
     var auto: AutoCorrection?
@@ -38,7 +39,7 @@ nonisolated struct ClipLook: Codable, Hashable, Sendable {
 
     /// Adjust changes something on this clip.
     var overridesAdjustment: Bool {
-        [exposure, contrast, warmth, saturation, highlights, shadows, sharpness, vibrance, tint].contains { $0 != nil }
+        [exposure, contrast, warmth, saturation, highlights, shadows, sharpness, vibrance, tint, skinSmoothing].contains { $0 != nil }
             || overridesAuto
     }
 
@@ -62,6 +63,7 @@ nonisolated struct ClipLook: Codable, Hashable, Sendable {
         sharpness = nil
         vibrance = nil
         tint = nil
+        skinSmoothing = nil
         removeAuto()
     }
 

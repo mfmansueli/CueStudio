@@ -50,7 +50,7 @@ struct PlatformFilterChips: View {
             Text(filter.label)
             Text(verbatim: "\(count(filter))")
                 .font(.system(size: 11, design: .monospaced))
-                .foregroundStyle(isSelected ? Color.black.opacity(0.5) : Palette.ink.opacity(0.5))
+                .foregroundStyle(isSelected ? Palette.inkOnLight : Palette.inkHint)
         }
         .font(.system(size: 14, weight: .semibold))
         .lineLimit(1)

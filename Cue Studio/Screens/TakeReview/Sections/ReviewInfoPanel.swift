@@ -5,107 +5,107 @@
 
 import SwiftUI
 
-/// The card under the video: the script's title (and EDITED), the HUD line with the platform, the
-/// quality and whether the length fits ("● TIKTOK · 1080P · 9:16   ✓ FITS 1:00–1:30"), where the
-/// video is on its way out (PICK · EDIT · READY · SHARED), where it was read from, and, with
-/// several takes and none starred, a suggestion in violet.
+/// What a take is (6.3), on the video with no card around it: a dot and the title in 19 pt, the mono line
+/// "● TIKTOK · 1080P · 9:16 · ✓ FITS · FROM SCRIPT V1" and the pipeline (PICK · EDIT · READY · SHARED ✦) as four bars.
 struct ReviewInfoPanel: View {
     let take: Take
     let stage: TakeStage
     let lengthFit: LengthFit?
     let scriptVersion: String?
-    let onOpenScript: (() -> Void)?
-    let onSuggest: (() -> Void)?
+    /// The colour of the take's theme, for the dot before the title.
+    var dotColor: Color = Palette.worldWarm
 
     var body: some View {
-        let shape = RoundedRectangle(cornerRadius: Metrics.innerRadius, style: .continuous)
-        VStack(alignment: .leading, spacing: 10) {
+        VStack(alignment: .leading, spacing: 8) {
             titleRow
-            hudRow
-            StageBar(
-                labels: TakeStage.allCases.map(\.stepLabel), current: stage.rawValue,
-                accessibilityTitle: String(localized: "Stage"), tint: stage.pillTint
-            )
-            .padding(.top, 2)
-            .accessibilityIdentifier("review.stageBar")
-            if let onOpenScript { scriptRow(onOpenScript) }
-            if let onSuggest { suggestRow(onSuggest) }
+            metaLine
+            stageBar.padding(.top, 6)
         }
-        .padding(14)
-        .background(.ultraThinMaterial, in: shape)
-        .glassNight(in: shape, density: .solid)
     }
 
-    // MARK: - Rows
-
     private var titleRow: some View {
-        HStack(spacing: 8) {
+        HStack(spacing: 10) {
+            Circle()
+                .fill(dotColor)
+                .frame(width: 10, height: 10)
+                .shadow(color: dotColor.opacity(0.7), radius: 4)
+                .accessibilityHidden(true)
             Text(take.scriptTitle)
-                .font(.title3.bold())
+                .font(.system(size: 19, weight: .semibold))
+                .foregroundStyle(Palette.ink)
                 .lineLimit(1)
             if take.isEdited {
                 Text("Edited")
                     .textCase(.uppercase)
-                    .font(.system(size: 10, weight: .heavy, design: .monospaced))
+                    .font(.system(size: 9.5, weight: .heavy, design: .monospaced))
                     .tracking(0.5)
                     .foregroundStyle(Palette.infoText)
                     .padding(.horizontal, 7)
-                    .frame(height: 20)
+                    .frame(height: 18)
                     .background(Palette.infoSoft, in: Capsule())
             }
             Spacer(minLength: 0)
         }
     }
 
-    private var hudRow: some View {
-        HStack(spacing: 12) {
-            HUDLine(
-                values: [take.platform?.label ?? String(localized: "Freestyle"), take.resolution.label, take.aspect.label],
-                dotColor: take.platform?.tint ?? Palette.platformNeutral, tint: Palette.ink
-            )
-            if let lengthFit {
-                HUDLine(values: [lengthFit.label], tint: lengthFit.fits ? Palette.successText : Palette.warnText)
-                    .accessibilityIdentifier("review.lengthFit")
-            }
-            Spacer(minLength: 0)
+    /// "● TIKTOK · 1080P · 9:16 · ✓ FITS · FROM SCRIPT V1"
+    private var metaLine: some View {
+        var line = AttributedString()
+        func add(_ text: String, _ color: Color) {
+            var run = AttributedString(text)
+            run.foregroundColor = color
+            line.append(run)
+        }
+        let platform = take.platform?.label ?? String(localized: "Freestyle")
+        add("● ", take.platform?.tint ?? Palette.platformNeutral)
+        add([platform, take.resolution.label, take.aspect.label].map { $0.uppercased() }.joined(separator: " · "), Palette.ink2)
+        if let lengthFit {
+            add(" · ", Palette.ink2)
+            add(Self.fitText(lengthFit), lengthFit.fits ? Palette.successText : Palette.warnText)
+        }
+        if let scriptVersion {
+            add(" · " + String(localized: "FROM SCRIPT \(scriptVersion.uppercased())"), Palette.ink2)
+        }
+        return Text(line)
+            .font(.system(size: 10, weight: .semibold, design: .monospaced))
+            .tracking(0.6)
+            .lineLimit(1)
+            .minimumScaleFactor(0.8)
+            .accessibilityIdentifier("review.lengthFit")
+    }
+
+    /// "✓ FITS", or how far off it is.
+    static func fitText(_ fit: LengthFit) -> String {
+        switch fit.verdict {
+        case .fits: String(localized: "✓ FITS")
+        case .under(let gap): String(localized: "\(DurationText.remaining(gap).uppercased()) UNDER")
+        case .over(let gap): String(localized: "\(DurationText.remaining(gap).uppercased()) OVER")
         }
     }
 
-    private func scriptRow(_ action: @escaping () -> Void) -> some View {
-        Button(action: action) {
-            HStack(spacing: 8) {
-                Image(systemName: "doc.text").font(.footnote)
-                Text(scriptVersion.map { String(localized: "From script · \($0)") } ?? String(localized: "From script"))
-                    .font(.subheadline)
-                Spacer(minLength: 0)
-                Image(systemName: "chevron.forward").font(.caption.weight(.semibold)).foregroundStyle(Palette.ink3)
+    private var stageBar: some View {
+        let labels = TakeStage.allCases.map { $0 == .shared ? "\($0.stepLabel.uppercased()) ✦" : $0.stepLabel.uppercased() }
+        return HStack(spacing: 6) {
+            ForEach(Array(labels.enumerated()), id: \.offset) { index, label in
+                let isDone = index < stage.rawValue
+                VStack(spacing: 6) {
+                    Capsule()
+                        .fill(index == stage.rawValue ? stage.pillTint : (isDone ? Color.white.opacity(0.85) : Palette.fill))
+                        .frame(height: 3)
+                    Text(label)
+                        .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                        .tracking(0.6)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.7)
+                        .foregroundStyle(index == stage.rawValue ? stage.pillTint : Palette.inkHint)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                }
+                .frame(maxWidth: .infinity)
             }
-            .foregroundStyle(Palette.ink2)
-            .frame(minHeight: Metrics.hitTarget)
-            .overlay(alignment: .top) { Rectangle().fill(Palette.glassBorder).frame(height: 0.5) }
-            .contentShape(Rectangle())
         }
-        .buttonStyle(.plain)
-        .accessibilityIdentifier("review.fromScript")
-    }
-
-    private func suggestRow(_ action: @escaping () -> Void) -> some View {
-        let shape = RoundedRectangle(cornerRadius: 14, style: .continuous)
-        return Button(action: action) {
-            HStack(spacing: 8) {
-                Text("✦").foregroundStyle(Palette.aiText)
-                Text("Suggest best").font(.subheadline.weight(.semibold))
-                Spacer(minLength: 0)
-                Image(systemName: "chevron.forward").font(.caption.weight(.semibold))
-            }
-            .foregroundStyle(Palette.aiTextStrong)
-            .padding(.horizontal, 12)
-            .frame(minHeight: Metrics.hitTarget)
-            .background(Palette.aiFill, in: shape)
-            .overlay(shape.strokeBorder(Palette.aiBorder, lineWidth: 0.5))
-            .contentShape(shape)
-        }
-        .buttonStyle(.plain)
-        .accessibilityIdentifier("review.suggestBestButton")
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(Text("Stage"))
+        .accessibilityValue(Text(labels.indices.contains(stage.rawValue) ? labels[stage.rawValue] : ""))
+        .accessibilityIdentifier("review.stageBar")
     }
 }

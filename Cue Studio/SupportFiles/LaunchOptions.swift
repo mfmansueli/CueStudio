@@ -32,6 +32,21 @@ import Foundation
 ///   tip stays away in UI tests (they open the app on one day).
 /// - `-uiTestStarTransition`: the idea's star transition keeps its real timings (3 s at least); UI tests shorten it otherwise.
 /// - `-uiTestSlowWriting`: with the stub writer, the script's words arrive on the page slowly enough to look at the page mid-writing.
+/// - `-uiTestExportsLeft <0...5>`: the free exports that are left (5 without it): 1 is the last one, 0 asks "Your video is ready" on export.
+/// - `-uiTestUniverse <sample|newYear|newAccount>`: what "Your universe" holds (the board's APP DATA panel; see `UniverseSeed`).
+/// - `-uiTestFakeShareSheet`: a stand-in with Complete and Cancel takes the place of the system share sheet.
+/// - `-uiTestShareQueue`: a "Share to universe" queue left for the sample take (the Continue posting card).
+/// - `-uiTestStoryAt <seconds>`: the milestone and first-star stories stand still at that second.
+/// - `-uiTestFirstStar` / `-uiTestMilestone <videos>`: the review opens on the first-star (1.7) / milestone (8.3) story.
+/// - `-uiTestSendOffAt <seconds>`: the send-off (8.2) stands still at that second of its timeline.
+/// - `-uiTestProAt <seconds>`: the Pro opening stands still at that second of its timeline (to take its pictures).
+/// - `-uiTestWelcomeAt <seconds>`: the welcome's opening stands still at that second of its timeline (to take its pictures).
+/// - `-uiTestOnboardingStep <welcome|universe|voyage|script|voice|practice>`: with `-uiTestOnboarding`, the first flight opens on that chapter.
+/// - `-uiTestTopicBirthAt <seconds>`: on 1.2, three topics are picked and the last one's birth stands still at that second after the pick.
+/// - `-uiTestPlatformAt <seconds>`: on 1.3, TikTok is picked and the light of the pick stands still at that second after the pick.
+/// - `-uiTestWriterStalls`: with `-uiTestStubAI`, the model never answers the first message (its slow states, 1.4b).
+/// - `-uiTestChapterAt <seconds>`: the opening of the chapter on screen (1.2 to 1.6) stands still at that second of its timeline.
+/// - `-uiTestWelcomeOpening`: the welcome's star opening (1.1) plays in full (about 8 s); UI tests otherwise show its final state.
 /// - `-uiTestAppLanguage <lproj>`: with `-uiTestInMemory`, Cue's interface starts in that language
 ///   (as if picked in Language & Region) without changing the simulator's. The interface language
 ///   always lives in memory under `-uiTestInMemory`.
@@ -74,6 +89,44 @@ struct LaunchOptions {
     var voiceTipSkipsGates = false
     /// UI tests of the star transition: it takes its real time (`-uiTestStarTransition`).
     var keepsStarTransitionTimings = false
+    /// UI tests of the welcome: the star's opening plays in full (`-uiTestWelcomeOpening`).
+    var keepsWelcomeOpening = false
+    /// UI tests: a stand-in for the system share sheet (`-uiTestFakeShareSheet`).
+    var fakesShareSheet = false
+    /// UI tests: the welcome's opening is frozen at this second (`-uiTestWelcomeAt`).
+    var welcomeFrozenTime: Double?
+    /// UI tests: the Pro opening is frozen at this second (`-uiTestProAt`).
+    var proFrozenTime: Double?
+    /// UI tests: the first flight opens on this chapter (`-uiTestOnboardingStep`) and its opening stands still at a second (`-uiTestChapterAt`).
+    var onboardingStep: OnboardingStep?
+    var chapterFrozenTime: Double?
+    var topicBirthFrozenAge: Double?
+    var platformPickFrozenAge: Double?
+    /// UI tests: the send-off stands still at this second (`-uiTestSendOffAt`).
+    var sendOffFrozenTime: Double?
+    /// UI tests: the review opens on the first-star story (`-uiTestFirstStar`) or the milestone story (`-uiTestMilestone <videos>`).
+    var showsFirstStar = false
+    /// UI tests: the milestone / first-star stories stand still at this second (`-uiTestStoryAt`).
+    var storyFrozenTime: Double?
+    var milestoneToShow: Int?
+    /// UI tests: how many of the free exports are already used (`-uiTestExportsLeft`).
+    var exportsUsed = 0
+
+    /// The arguments that stand a screen still at a second of its timeline (to take its pictures), and the milestone to open on.
+    private static func readFrozenTimes(_ arguments: [String], into options: inout LaunchOptions) {
+        func value(_ name: String) -> String? {
+            arguments.firstIndex(of: name).flatMap { arguments.indices.contains($0 + 1) ? arguments[$0 + 1] : nil }
+        }
+        options.storyFrozenTime = value("-uiTestStoryAt").flatMap(Double.init)
+        options.milestoneToShow = value("-uiTestMilestone").flatMap(Int.init)
+        options.sendOffFrozenTime = value("-uiTestSendOffAt").flatMap(Double.init)
+        options.proFrozenTime = value("-uiTestProAt").flatMap(Double.init)
+        options.welcomeFrozenTime = value("-uiTestWelcomeAt").flatMap(Double.init)
+        options.chapterFrozenTime = value("-uiTestChapterAt").flatMap(Double.init)
+        options.topicBirthFrozenAge = value("-uiTestTopicBirthAt").flatMap(Double.init)
+        options.platformPickFrozenAge = value("-uiTestPlatformAt").flatMap(Double.init)
+        options.onboardingStep = value("-uiTestOnboardingStep").flatMap { name in OnboardingStep.allCases.first { "\($0)" == name } }
+    }
 
     static func fromProcess() -> LaunchOptions {
         var options = LaunchOptions()
@@ -99,7 +152,10 @@ struct LaunchOptions {
             let repository = InMemoryTakeRepository(takes: takes)
             options.takeRepository = repository
             options.draftStore = InMemoryQuickEditDraftStore()
-            options.exportCounter = InMemoryExportCountStore()
+            if let index = arguments.firstIndex(of: "-uiTestExportsLeft"), arguments.indices.contains(index + 1), let left = Int(arguments[index + 1]) {
+                options.exportsUsed = max(0, UsagePolicy.freeExports - left)
+            }
+            options.exportCounter = InMemoryExportCountStore(count: options.exportsUsed)
             options.exportLedger = InMemoryExportLedgerStore()
             if options.appsAreInstalled { options.sharing = DemoVideoSharing() }
             // Videos written by an earlier launch stay in the temporary folder: without the flag
@@ -120,10 +176,24 @@ struct LaunchOptions {
             } else {
                 options.defaults.set(SkyDensity.off.rawValue, forKey: DefaultsKey.skyDensity)
             }
+            if let index = arguments.firstIndex(of: "-uiTestUniverse"), arguments.indices.contains(index + 1),
+               let kind = UniverseSeed.Kind(rawValue: arguments[index + 1]) {
+                UniverseSeed.apply(kind, to: options.defaults)
+            }
+            options.fakesShareSheet = arguments.contains("-uiTestFakeShareSheet")
+            // A "Share to universe" queue the creator left: TikTok then Reels for the sample take (`-uiTestShareQueue`).
+            let habits3 = takes.first { $0.scriptID == SampleScripts.morningHabits.id && $0.number == 3 }
+            if arguments.contains("-uiTestShareQueue"), let take = habits3 {
+                let queue = ShareQueue(takeID: take.id, operationID: UUID(), title: take.scriptTitle, networks: [.tiktok, .reels])
+                options.defaults.set(try? JSONEncoder().encode([queue]), forKey: DefaultsKey.shareQueues)
+            }
             options.platformRules = PlatformRulesService(cacheURL: nil, remoteURL: nil)
             options.showsOnboarding = arguments.contains("-uiTestOnboarding")
             options.voiceTipSkipsGates = arguments.contains("-uiTestVoiceTip")
             options.keepsStarTransitionTimings = arguments.contains("-uiTestStarTransition")
+            options.keepsWelcomeOpening = arguments.contains("-uiTestWelcomeOpening")
+            options.showsFirstStar = arguments.contains("-uiTestFirstStar")
+            Self.readFrozenTimes(arguments, into: &options)
             if let index = arguments.firstIndex(of: "-uiTestPermissions"), arguments.indices.contains(index + 1) {
                 options.permissions = StubPermissions(grants: arguments[index + 1] != "denied")
             }
@@ -141,7 +211,7 @@ struct LaunchOptions {
                 options.dictation = DictationService(audio: scripted, speech: scripted, microphone: scripted.microphone)
             }
             if arguments.contains("-uiTestStubAI") || arguments.contains("-uiTestNoAI") {
-                options.writer = StubScriptWriter(available: !arguments.contains("-uiTestNoAI"))
+                options.writer = StubScriptWriter(available: !arguments.contains("-uiTestNoAI"), stalls: arguments.contains("-uiTestWriterStalls"))
                 // A test never waits for words to arrive one by one, unless it is looking at them arrive.
                 options.scriptRevealPause = arguments.contains("-uiTestSlowWriting") ? .milliseconds(2_000) : .zero
             }

@@ -48,6 +48,26 @@ nonisolated enum ThemeCatalog {
             (String(localized: "How I budget without spreadsheets"), String(localized: "Tutorial"), .minute1),
             (String(localized: "Money mistakes I made in my 20s"), String(localized: "Storytime"), .minutes2),
         ]
+        case .fashion: [
+            (String(localized: "3 outfits from one pair of jeans"), String(localized: "List"), .minute1),
+            (String(localized: "How I built a capsule wardrobe"), String(localized: "Tutorial"), .minutes2),
+            (String(localized: "Trends I’m skipping this season"), String(localized: "Opinion"), .minute1),
+        ]
+        case .travel: [
+            (String(localized: "How I plan a trip on a tight budget"), String(localized: "Tutorial"), .minutes2),
+            (String(localized: "Hidden gems most tourists miss"), String(localized: "List"), .minute1),
+            (String(localized: "The travel mistake that cost me a day"), String(localized: "Storytime"), .minutes2),
+        ]
+        case .productivity: [
+            (String(localized: "The email rule that saves me an hour a day"), String(localized: "Tip"), .minute1),
+            (String(localized: "Why to-do lists fail, and what works"), String(localized: "Explainer"), .minute1),
+            (String(localized: "How I say no at work"), String(localized: "Tips"), .minute1),
+        ]
+        case .parenting: [
+            (String(localized: "A calm bedtime routine that works"), String(localized: "Routine"), .minute1),
+            (String(localized: "Things I wish I knew as a new parent"), String(localized: "List"), .minute1),
+            (String(localized: "Tantrums without losing my cool"), String(localized: "Tips"), .minute1),
+        ]
         case .education: [
             (String(localized: "A history fact that sounds fake"), String(localized: "Explainer"), .minute1),
             (String(localized: "How to learn anything faster"), String(localized: "Tips"), .minute1),

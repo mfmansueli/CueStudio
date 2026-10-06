@@ -18,8 +18,8 @@ nonisolated enum StudioBackground: String, Codable, CaseIterable, Identifiable, 
     var label: String {
         switch self {
         case .black: String(localized: "Black")
-        case .graphite: String(localized: "Graphite")
-        case .navy: String(localized: "Navy")
+        case .graphite: String(localized: "Dark gray")
+        case .navy: String(localized: "Night")
         }
     }
 }

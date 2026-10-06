@@ -70,7 +70,7 @@ struct PreferencesServiceTests {
         let service = PreferencesService(defaults: store.defaults)
         service.creatorSetup = CreatorSetupTests.usual()
         service.camera.countdown = .ten
-        service.prompter.font = .serif
+        service.prompter.font = .newYork
         service.resetCreatorSetup()
         #expect(service.creatorSetup == CreatorSetup())
         #expect(service.camera.countdown == .ten)
@@ -81,7 +81,7 @@ struct PreferencesServiceTests {
         let store = TestDefaults()
         defer { store.tearDown() }
         var old = PrompterSettings()
-        old.font = .serif
+        old.font = .newYork
         old.size = 38
         old.textColor = .cream
         old.readingWidth = 0.63

@@ -7,7 +7,7 @@ import Foundation
 
 /// Where "Share to" sends a take. How the video gets there is `ShareRoute`: TikTok's Share Kit, Instagram's documented
 /// hand-off, the system share sheet, or (where a platform takes nothing directly) saving to Photos and opening the app.
-nonisolated enum ShareDestination: String, CaseIterable, Identifiable, Sendable {
+nonisolated enum ShareDestination: String, Codable, CaseIterable, Identifiable, Sendable {
     case tiktok, reels, shorts, youtube, linkedin, stories
 
     var id: String { rawValue }

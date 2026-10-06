@@ -5,76 +5,94 @@
 
 import SwiftUI
 
-/// "YOUR SETUP": a thumbnail of the default format and the four values every recording starts from
-/// (Camera, Quality, Mic, Text). Each value takes the creator to the page that sets it.
+/// "YOUR SETUP": the default format drawn as a phone, and the four values every recording starts from (Camera, Quality, Mic, Text).
+/// Each value opens the page that sets it.
 struct SetupSummaryCard: View {
-    let setup: CreatorSetup
-    let onOpenRecording: () -> Void
-    let onOpenPrompter: () -> Void
+    let camera: CameraSettings
+    let prompter: PrompterSettings
+    let onOpen: (SettingsRoute) -> Void
+
+    private var setup: CreatorSetup { CreatorSetup(camera: camera, prompter: prompter) }
 
     var body: some View {
         let shape = RoundedRectangle(cornerRadius: Metrics.cardRadius, style: .continuous)
-        VStack(alignment: .leading, spacing: 12) {
-            Text("Your setup")
-                .font(CueStudioFont.hud)
-                .textCase(.uppercase)
-                .tracking(0.8)
-                .foregroundStyle(Palette.accText)
-            HStack(alignment: .top, spacing: 14) {
-                thumbnail
+        HStack(alignment: .center, spacing: 14) {
+            phone
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Your setup")
+                    .font(CueStudioFont.hud)
+                    .textCase(.uppercase)
+                    .tracking(0.8)
+                    .foregroundStyle(Palette.accText)
                 Grid(horizontalSpacing: 8, verticalSpacing: 8) {
                     GridRow {
-                        tile(String(localized: "Camera"), setup.label(for: .camera), "camera", onOpenRecording)
-                        tile(String(localized: "Quality"), "\(setup.resolution.label) \(setup.frameRate.rawValue)", "quality", onOpenRecording)
+                        tile(String(localized: "Camera"), setup.label(for: .camera), "camera", .recording)
+                        tile(String(localized: "Quality"), "\(camera.resolution.label) · \(camera.frameRate.rawValue)", "quality", .recording)
                     }
                     GridRow {
-                        tile(String(localized: "Mic"), setup.microphone.label, "mic", onOpenRecording)
-                        tile(String(localized: "Text"), String(localized: "\(Int(setup.textSize.rounded())) pt"), "text", onOpenPrompter)
+                        tile(String(localized: "Mic"), setup.microphone.label, "mic", .microphone)
+                        tile(String(localized: "Text"), textValue, "text", .prompter)
                     }
                 }
             }
-            Text("Platforms may suggest a setup · You choose")
-                .font(.footnote)
-                .foregroundStyle(Palette.ink2)
         }
-        .padding(16)
+        .padding(14)
+        .frame(maxWidth: .infinity)
         .nightAurora(in: shape)
         .overlay(shape.strokeBorder(Palette.aiBorder, lineWidth: 0.5))
+        .clipShape(shape)
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("settings.setupCard")
     }
 
-    /// The default format in proportion, with its name.
-    private var thumbnail: some View {
-        let ratio = CGFloat(setup.aspect.widthOverHeight)
-        let height: CGFloat = 96
-        return ZStack(alignment: .bottom) {
-            RoundedRectangle(cornerRadius: 8, style: .continuous)
-                .fill(Color(hex: 0x1E2236))
-                .overlay(RoundedRectangle(cornerRadius: 8, style: .continuous).strokeBorder(Palette.glassBorder, lineWidth: 0.5))
-                .frame(width: min(72, height * ratio), height: min(height, 72 / max(ratio, 0.01)))
-            Text(setup.aspect.label)
-                .font(.system(size: 9, weight: .bold, design: .monospaced))
-                .foregroundStyle(.white.opacity(0.7))
-                .padding(.bottom, 4)
+    private var textValue: String {
+        guard let preset = PrompterTextSize(points: prompter.size) else { return String(localized: "\(Int(prompter.size.rounded())) pt") }
+        return preset.label
+    }
+
+    /// The default format in proportion, as a phone with a few lines of script, and its name.
+    private var phone: some View {
+        let ratio = CGFloat(camera.aspect.widthOverHeight)
+        let height: CGFloat = 110
+        let width = min(70, height * ratio)
+        let frameHeight = min(height, 70 / max(ratio, 0.01))
+        let shape = RoundedRectangle(cornerRadius: 12, style: .continuous)
+        return ZStack {
+            shape
+                .fill(Palette.previewWell)
+                .overlay(shape.strokeBorder(Palette.ink3, lineWidth: 1.5))
+            VStack(spacing: 3) {
+                RoundedRectangle(cornerRadius: 2).fill(Palette.ink).frame(height: 3)
+                RoundedRectangle(cornerRadius: 2).fill(Palette.acc).frame(height: 3)
+                RoundedRectangle(cornerRadius: 2).fill(Palette.ink3).frame(width: width * 0.55, height: 3)
+            }
+            .padding(10)
+            .frame(maxHeight: .infinity, alignment: .top)
+            .padding(.top, 6)
+            Text(camera.aspect.label)
+                .font(.system(size: 10, weight: .bold, design: .monospaced))
+                .foregroundStyle(Palette.ink2)
+                .frame(maxHeight: .infinity, alignment: .bottom)
+                .padding(.bottom, 6)
         }
-        .frame(width: 72, height: height)
+        .frame(width: width, height: frameHeight)
+        .frame(width: 76, height: height)
         .accessibilityHidden(true)
     }
 
-    private func tile(_ title: String, _ value: String, _ id: String, _ action: @escaping () -> Void) -> some View {
-        Button(action: action) {
-            VStack(alignment: .leading, spacing: 2) {
-                Text(title).font(.caption).foregroundStyle(Palette.ink2)
+    private func tile(_ title: String, _ value: String, _ id: String, _ route: SettingsRoute) -> some View {
+        Button { onOpen(route) } label: {
+            VStack(alignment: .leading, spacing: 1) {
+                Text(title).font(.system(size: 10.5)).foregroundStyle(Palette.ink2)
                 Text(value)
-                    .font(.subheadline.weight(.bold))
+                    .font(.system(size: 14.5, weight: .bold))
                     .foregroundStyle(Palette.ink)
                     .lineLimit(1)
                     .minimumScaleFactor(0.8)
             }
             .padding(.horizontal, 10)
-            .frame(maxWidth: .infinity, minHeight: 46, alignment: .leading)
-            .background(Palette.overlayFill, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+            .frame(maxWidth: .infinity, minHeight: 42, alignment: .leading)
+            .background(Palette.heroChip, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)

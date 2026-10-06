@@ -35,9 +35,9 @@ struct OnboardingWritingNotice: View {
     private func star(pulse: Double, time: TimeInterval) -> some View {
         ZStack {
             Circle()
-                .fill(Color(hex: 0x9D8CFF, opacity: 0.18 + 0.14 * pulse))
+                .fill(Palette.nightViolet.opacity(0.18 + 0.14 * pulse))
                 .frame(width: 54, height: 54)
-                .shadow(color: Color(hex: 0x9D8CFF, opacity: 0.55 * pulse), radius: 18)
+                .shadow(color: Palette.nightViolet.opacity(0.55 * pulse), radius: 18)
             Text("✦")
                 .font(.system(size: 24))
                 .foregroundStyle(Palette.aiTextStrong)
@@ -52,7 +52,7 @@ struct OnboardingWritingNotice: View {
             .font(.system(size: 15, weight: .semibold))
             .multilineTextAlignment(.center)
         return text
-            .foregroundStyle(Color(hex: 0xE4DEFF))
+            .foregroundStyle(Palette.starLilac)
             .overlay {
                 LinearGradient(
                     stops: [

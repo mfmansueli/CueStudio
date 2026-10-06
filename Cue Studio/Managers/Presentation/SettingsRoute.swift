@@ -5,10 +5,16 @@
 
 import Foundation
 
-/// The pages Settings pushes (Prompter, Personalize, Acknowledgements); Recording, Remote and Language & Region are sheets
-/// (`SettingsSheet`). Technical destinations keep their Settings context when the app language rebuilds the UI.
+/// The pages Settings pushes, every one of them (v30): the root's pages, and the pages under them (Microphone, Font, Social
+/// safe zone, App icon, Permissions). Kept in `PresentationService`, so the creator stays where they were when the app
+/// rebuilds itself after a language change.
 enum SettingsRoute: Hashable {
-    case personalize
-    case prompter
+    case recording, microphone
+    case prompter, font, safeZone
+    case remote
+    case myCueVoice
+    case personalize, appIcon
+    case languageRegion
+    case privacy, permissions
     case acknowledgements
 }

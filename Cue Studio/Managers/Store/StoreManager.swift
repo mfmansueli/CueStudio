@@ -24,6 +24,10 @@ final class StoreManager {
 
     private var updatesTask: Task<Void, Never>?
     private var forcedTier: MembershipTier?
+    #if DEBUG
+    /// UI tests can't load the StoreKit products: they show the prices of the design (`CueStudio.storekit`) instead, so the paywall can be looked at.
+    private let showsSamplePrices = ProcessInfo.processInfo.arguments.contains("-uiTestInMemory")
+    #endif
 
     init() {
         #if DEBUG
@@ -71,7 +75,10 @@ final class StoreManager {
     }
 
     func displayPrice(for plan: ProPlan) -> String? {
-        products[plan]?.displayPrice
+        #if DEBUG
+        if showsSamplePrices, products[plan] == nil { return plan == .annual ? "$39.99" : "$7.99" }
+        #endif
+        return products[plan]?.displayPrice
     }
 
     func price(for plan: ProPlan) -> Decimal? {
@@ -80,17 +87,26 @@ final class StoreManager {
 
     /// "$3.33" for the annual plan, so it can be compared with monthly.
     func monthlyEquivalentText(for plan: ProPlan) -> String? {
+        #if DEBUG
+        if showsSamplePrices, products[plan] == nil { return plan == .annual ? "$3.33" : nil }
+        #endif
         guard plan == .annual, let product = products[plan] else { return nil }
         return PricingMath.monthlyEquivalent(ofYearly: product.price).formatted(product.priceFormatStyle)
     }
 
     var annualSavingsPercent: Int? {
+        #if DEBUG
+        if showsSamplePrices, products.isEmpty { return 58 }
+        #endif
         guard let monthly = products[.monthly]?.price, let yearly = products[.annual]?.price else { return nil }
         return PricingMath.savingsPercent(monthlyPrice: monthly, yearlyPrice: yearly)
     }
 
     /// Length of the free trial in days when the creator is still eligible for it; nil otherwise.
     func freeTrialDays(for plan: ProPlan) async -> Int? {
+        #if DEBUG
+        if showsSamplePrices, products[plan] == nil { return 7 }
+        #endif
         guard let subscription = products[plan]?.subscription,
               let offer = subscription.introductoryOffer,
               offer.paymentMode == .freeTrial,

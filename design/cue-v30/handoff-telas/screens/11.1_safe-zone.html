@@ -1,0 +1,209 @@
+<!DOCTYPE html><html><head><style>
+    .sc-placeholder{background:color-mix(in srgb,currentColor 8%,transparent);
+      border:1px solid color-mix(in srgb,currentColor 50%,transparent);
+      border-radius:2px;box-sizing:border-box;overflow:hidden}
+    @keyframes sc-shine{0%{background-position:100% 50%}100%{background-position:0% 50%}}
+    html.sc-dc-streaming .sc-placeholder,
+    html.sc-dc-streaming .sc-interp.sc-missing{position:relative;
+      background:color-mix(in srgb,currentColor 5%,transparent);
+      border-color:transparent}
+    html.sc-dc-streaming .sc-placeholder::before,
+    html.sc-dc-streaming .sc-interp.sc-missing::before{content:'';
+      position:absolute;inset:0;pointer-events:none;
+      background:linear-gradient(90deg,rgba(217,119,87,0) 25%,rgba(247,225,211,.95) 37%,rgba(217,119,87,0) 63%);
+      background-size:400% 100%;animation:sc-shine 1.4s ease infinite}
+    html.sc-dc-streaming .sc-placeholder:nth-child(n+9 of .sc-placeholder)::before,
+    html.sc-dc-streaming .sc-interp.sc-missing:nth-child(n+9 of .sc-interp.sc-missing)::before{animation:none;
+      background:color-mix(in srgb,currentColor 8%,transparent)}
+    .sc-placeholder-error{padding:4px 8px;font:11px/1.4 ui-monospace,monospace;
+      color:color-mix(in srgb,currentColor 70%,transparent);word-break:break-word}
+    .sc-interp.sc-missing{display:inline-block;width:2em;height:1em;overflow:hidden;
+      vertical-align:text-bottom;background:rgba(255,255,255,.3);border:1px solid rgba(0,0,0,.5);
+      border-radius:2px;box-sizing:border-box;color:transparent;
+      user-select:none}
+    .sc-interp.sc-unresolved{font-family:ui-monospace,monospace;font-size:.85em;
+      color:color-mix(in srgb,currentColor 50%,transparent);
+      background:color-mix(in srgb,currentColor 10%,transparent);border-radius:3px;
+      padding:0 3px}
+    .sc-host.sc-has-error{position:relative}
+    .sc-logic-error{position:absolute;top:8px;left:8px;z-index:2147483647;max-width:60ch;
+      padding:6px 10px;background:#b00020;color:#fff;font:12px/1.4 ui-monospace,monospace;
+      border-radius:4px;white-space:pre-wrap;pointer-events:none}
+    /* Mirrors PRINT_BASELINE_CSS in apps/web deck-stage-export.ts — keep both
+       in sync until dc-runtime regains a build step. */
+    @media print {
+      @page { margin: 0.5cm; }
+      figure, table { break-inside: avoid; }
+      #dc-root, #dc-root > .sc-host { height: auto; }
+      *, *::before, *::after {
+        print-color-adjust: exact; -webkit-print-color-adjust: exact;
+        backdrop-filter: none !important; -webkit-backdrop-filter: none !important;
+        animation-delay: -99s !important; animation-duration: .001s !important;
+        animation-iteration-count: 1 !important; animation-fill-mode: both !important;
+        animation-play-state: running !important; transition-duration: 0s !important;
+      }
+    }
+  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>x-dc{display:none!important}</style>
+<style></style><style data-dc-tpl="1">
+@keyframes stTw{0%,100%{opacity:.16;transform:scale(.75)}45%{opacity:.75;transform:scale(1)}60%{opacity:.58}}
+@keyframes stIn{from{opacity:0;transform:scale(.96)}to{opacity:1;transform:none}}
+@keyframes stUp{from{transform:translateY(30px);opacity:0}to{transform:none;opacity:1}}
+.__stscroll::-webkit-scrollbar{display:none}
+.__stsearch::placeholder{color:rgba(235,235,245,0.55)}
+</style></head>
+<body>
+<div id="dc-root"><div class="sc-host" data-sc-name="script-sandbox"><div data-dc-tpl="2" style="position: absolute; inset: 0px; overflow: hidden; color: rgb(255, 255, 255); font-family: -apple-system, SF Pro Text, system-ui, sans-serif; -webkit-font-smoothing: antialiased; background: radial-gradient(70% 30% at 20% 6%, rgba(157, 140, 255, 0.2), rgba(157, 140, 255, 0) 70%), radial-gradient(55% 28% at 85% 60%, rgba(94, 78, 224, 0.12), rgba(94, 78, 224, 0) 70%), rgb(10, 11, 18);">
+  <div data-dc-tpl="3" aria-hidden="true" style="position: absolute; inset: 0px; pointer-events: none; background-image: radial-gradient(0.9px 0.9px at 115px 143px, rgba(255, 255, 255, 0.57), transparent), radial-gradient(0.9px 0.9px at 115px 130px, rgba(228, 222, 255, 0.37), transparent), radial-gradient(0.9px 0.9px at 131px 121px, rgba(255, 255, 255, 0.58), transparent), radial-gradient(0.7px 0.7px at 24px 114px, rgba(255, 236, 170, 0.33), transparent), radial-gradient(0.6px 0.6px at 177px 162px, rgba(255, 255, 255, 0.64), transparent), radial-gradient(0.9px 0.9px at 115px 167px, rgba(228, 222, 255, 0.53), transparent), radial-gradient(0.9px 0.9px at 159px 3px, rgba(255, 255, 255, 0.32), transparent), radial-gradient(1px 1px at 9px 48px, rgba(255, 236, 170, 0.51), transparent), radial-gradient(0.8px 0.8px at 118px 83px, rgba(255, 255, 255, 0.59), transparent), radial-gradient(0.9px 0.9px at 132px 59px, rgba(228, 222, 255, 0.47), transparent), radial-gradient(0.8px 0.8px at 169px 21px, rgba(255, 255, 255, 0.4), transparent), radial-gradient(0.9px 0.9px at 141px 21px, rgba(255, 236, 170, 0.41), transparent), radial-gradient(0.7px 0.7px at 58px 131px, rgba(255, 255, 255, 0.32), transparent), radial-gradient(0.6px 0.6px at 27px 102px, rgba(228, 222, 255, 0.4), transparent), radial-gradient(0.9px 0.9px at 17px 4px, rgba(255, 255, 255, 0.3), transparent), radial-gradient(0.8px 0.8px at 53px 13px, rgba(255, 236, 170, 0.64), transparent);"></div>
+  <div data-dc-tpl="4" aria-hidden="true" style="position: absolute; inset: 0px; pointer-events: none; background-image: radial-gradient(1.3px 1.3px at 242px 137px, rgba(255, 255, 255, 0.68), transparent), radial-gradient(1px 1px at 73px 195px, rgba(228, 222, 255, 0.58), transparent), radial-gradient(1.3px 1.3px at 140px 235px, rgba(255, 255, 255, 0.66), transparent), radial-gradient(1.3px 1.3px at 285px 0px, rgba(255, 236, 170, 0.5), transparent), radial-gradient(1.1px 1.1px at 225px 188px, rgba(255, 255, 255, 0.77), transparent), radial-gradient(1.4px 1.4px at 30px 295px, rgba(228, 222, 255, 0.48), transparent), radial-gradient(1.3px 1.3px at 351px 172px, rgba(255, 255, 255, 0.73), transparent), radial-gradient(1.5px 1.5px at 44px 9px, rgba(255, 236, 170, 0.74), transparent), radial-gradient(1.1px 1.1px at 338px 260px, rgba(255, 255, 255, 0.8), transparent), radial-gradient(1.1px 1.1px at 216px 227px, rgba(228, 222, 255, 0.6), transparent), radial-gradient(1.2px 1.2px at 69px 276px, rgba(255, 255, 255, 0.67), transparent), radial-gradient(1.3px 1.3px at 83px 26px, rgba(255, 236, 170, 0.63), transparent);"></div>
+  <div data-dc-tpl="5" aria-hidden="true" style="position: absolute; inset: 0px; pointer-events: none; display: none;"></div>
+  <span data-dc-tpl="7" aria-hidden="true" style="position: absolute; left: 64px; top: 128px; width: 2.6px; height: 2.6px; border-radius: 50%; background: rgb(255, 255, 255); box-shadow: rgb(255, 255, 255) 0px 0px 4px; pointer-events: none; animation: 7s ease-in-out infinite stTw;"></span><span data-dc-tpl="7" aria-hidden="true" style="position: absolute; left: 152px; top: 30px; width: 2px; height: 2px; border-radius: 50%; background: rgb(255, 255, 255); box-shadow: rgb(255, 255, 255) 0px 0px 4px; pointer-events: none; animation: 7s ease-in-out 0.8s infinite stTw;"></span><span data-dc-tpl="7" aria-hidden="true" style="position: absolute; left: 300px; top: 150px; width: 3px; height: 3px; border-radius: 50%; background: rgb(255, 243, 196); box-shadow: rgb(255, 243, 196) 0px 0px 4px; pointer-events: none; animation: 7s ease-in-out 1.3s infinite stTw;"></span><span data-dc-tpl="7" aria-hidden="true" style="position: absolute; left: 222px; top: 232px; width: 2px; height: 2px; border-radius: 50%; background: rgb(228, 222, 255); box-shadow: rgb(228, 222, 255) 0px 0px 4px; pointer-events: none; animation: 7s ease-in-out 2.1s infinite stTw;"></span><span data-dc-tpl="7" aria-hidden="true" style="position: absolute; left: 186px; top: 196px; width: 2.2px; height: 2.2px; border-radius: 50%; background: rgb(255, 255, 255); box-shadow: rgb(255, 255, 255) 0px 0px 4px; pointer-events: none; animation: 7s ease-in-out 0.4s infinite stTw;"></span><span data-dc-tpl="7" aria-hidden="true" style="position: absolute; left: 28px; top: 262px; width: 1.8px; height: 1.8px; border-radius: 50%; background: rgb(255, 255, 255); box-shadow: rgb(255, 255, 255) 0px 0px 4px; pointer-events: none; animation: 7s ease-in-out 1.7s infinite stTw;"></span><span data-dc-tpl="7" aria-hidden="true" style="position: absolute; left: 334px; top: 404px; width: 2px; height: 2px; border-radius: 50%; background: rgb(255, 243, 196); box-shadow: rgb(255, 243, 196) 0px 0px 4px; pointer-events: none; animation: 7s ease-in-out 3.1s infinite stTw;"></span><span data-dc-tpl="7" aria-hidden="true" style="position: absolute; left: 92px; top: 532px; width: 2.2px; height: 2.2px; border-radius: 50%; background: rgb(228, 222, 255); box-shadow: rgb(228, 222, 255) 0px 0px 4px; pointer-events: none; animation: 7s ease-in-out 4.4s infinite stTw;"></span><span data-dc-tpl="7" aria-hidden="true" style="position: absolute; left: 248px; top: 618px; width: 1.8px; height: 1.8px; border-radius: 50%; background: rgb(255, 255, 255); box-shadow: rgb(255, 255, 255) 0px 0px 4px; pointer-events: none; animation: 7s ease-in-out 2.6s infinite stTw;"></span><span data-dc-tpl="7" aria-hidden="true" style="position: absolute; left: 40px; top: 712px; width: 1.8px; height: 1.8px; border-radius: 50%; background: rgb(255, 255, 255); box-shadow: rgb(255, 255, 255) 0px 0px 4px; pointer-events: none; animation: 7s ease-in-out 5.2s infinite stTw;"></span>
+
+  <div data-dc-tpl="8" class="__stscroll" style="position: absolute; inset: 0px; overflow-y: auto; scrollbar-width: none; padding: 108px 0px 130px; box-sizing: border-box;">
+    <div data-dc-tpl="9">
+      
+      
+      
+      
+      
+      
+        <div data-dc-tpl="56" style="padding: 12px 0px 0px;">
+          
+          <div data-dc-tpl="59" style="margin: 0px 16px; border-radius: 24px; background: rgba(22, 24, 38, 0.62); backdrop-filter: blur(18px) saturate(140%); -webkit-backdrop-filter: blur(18px) saturate(140%); box-shadow: rgba(255, 255, 255, 0.1) 0px 0px 0px 0.5px inset; overflow: hidden;">
+            
+              <div data-dc-tpl="61" style="display: flex; flex-direction: column;">
+                <div data-dc-tpl="62" role="switch" aria-label="Show safe zone" class="scp0" style="display: flex; align-items: center; gap: 12px; min-height: 60px; padding: 6px 14px; box-sizing: border-box; cursor: pointer;">
+                  
+                  <div data-dc-tpl="67" style="flex: 1 1 0%; min-width: 0px;">
+                    <div data-dc-tpl="68" style="font-size: 17px; color: rgb(255, 255, 255); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"><span class="sc-interp">Show safe zone</span></div>
+                    <div data-dc-tpl="72" style="font-size: 13px; line-height: 1.3; color: rgba(235, 235, 245, 0.6); margin-top: 1px;"><span class="sc-interp">Where each app’s buttons and captions cover the frame</span></div>
+                  </div>
+                  
+                  
+                  
+                  <span data-dc-tpl="82" role="switch" aria-checked="true" style="width: 51px; height: 31px; border-radius: 16px; background: rgb(52, 199, 89); position: relative; flex-shrink: 0; transition: background 0.2s;"><span data-dc-tpl="83" style="position: absolute; top: 2px; left: 22px; width: 27px; height: 27px; border-radius: 50%; background: rgb(255, 255, 255); box-shadow: rgba(0, 0, 0, 0.25) 0px 2px 4px; transition: left 0.2s;"></span></span>
+                  
+                </div>
+                
+                
+                
+                
+              </div>
+            
+          </div>
+          
+        </div>
+      
+        <div data-dc-tpl="56" style="padding: 24px 0px 0px;">
+          <div data-dc-tpl="58" style="padding: 0px 20px 7px; font-size: 13px; font-weight: 600; color: rgba(235, 235, 245, 0.6); text-transform: uppercase; letter-spacing: 0.3px;"><span class="sc-interp">Platform</span></div>
+          <div data-dc-tpl="59" style="margin: 0px 16px; border-radius: 24px; background: rgba(22, 24, 38, 0.62); backdrop-filter: blur(18px) saturate(140%); -webkit-backdrop-filter: blur(18px) saturate(140%); box-shadow: rgba(255, 255, 255, 0.1) 0px 0px 0px 0.5px inset; overflow: hidden;">
+            
+              <div data-dc-tpl="61" style="display: flex; flex-direction: column;">
+                <div data-dc-tpl="62" role="radio" aria-label="TikTok" class="scp0" style="display: flex; align-items: center; gap: 12px; min-height: 50px; padding: 6px 14px; box-sizing: border-box; cursor: pointer;">
+                  
+                  <div data-dc-tpl="67" style="flex: 1 1 0%; min-width: 0px;">
+                    <div data-dc-tpl="68" style="font-size: 17px; color: rgb(255, 255, 255); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"><span class="sc-interp">TikTok</span></div>
+                    
+                  </div>
+                  
+                  
+                  
+                  
+                  <svg data-dc-tpl="85" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FFD60A" style="stroke-width: 2.8; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0;"><path data-dc-tpl="86" d="M5 12.5l4.5 4.5L19 7.5"></path></svg>
+                </div>
+                
+                
+                
+                <div data-dc-tpl="106" style="height: 0.5px; background: rgba(84, 84, 88, 0.55); margin-left: 14px;"></div>
+              </div>
+            
+              <div data-dc-tpl="61" style="display: flex; flex-direction: column;">
+                <div data-dc-tpl="62" role="radio" aria-label="Reels" class="scp0" style="display: flex; align-items: center; gap: 12px; min-height: 50px; padding: 6px 14px; box-sizing: border-box; cursor: pointer;">
+                  
+                  <div data-dc-tpl="67" style="flex: 1 1 0%; min-width: 0px;">
+                    <div data-dc-tpl="68" style="font-size: 17px; color: rgb(255, 255, 255); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"><span class="sc-interp">Reels</span></div>
+                    
+                  </div>
+                  
+                  
+                  
+                  
+                  
+                </div>
+                
+                
+                
+                <div data-dc-tpl="106" style="height: 0.5px; background: rgba(84, 84, 88, 0.55); margin-left: 14px;"></div>
+              </div>
+            
+              <div data-dc-tpl="61" style="display: flex; flex-direction: column;">
+                <div data-dc-tpl="62" role="radio" aria-label="Shorts" class="scp0" style="display: flex; align-items: center; gap: 12px; min-height: 50px; padding: 6px 14px; box-sizing: border-box; cursor: pointer;">
+                  
+                  <div data-dc-tpl="67" style="flex: 1 1 0%; min-width: 0px;">
+                    <div data-dc-tpl="68" style="font-size: 17px; color: rgb(255, 255, 255); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"><span class="sc-interp">Shorts</span></div>
+                    
+                  </div>
+                  
+                  
+                  
+                  
+                  
+                </div>
+                
+                
+                
+                <div data-dc-tpl="106" style="height: 0.5px; background: rgba(84, 84, 88, 0.55); margin-left: 14px;"></div>
+              </div>
+            
+              <div data-dc-tpl="61" style="display: flex; flex-direction: column;">
+                <div data-dc-tpl="62" role="radio" aria-label="Custom" class="scp0" style="display: flex; align-items: center; gap: 12px; min-height: 50px; padding: 6px 14px; box-sizing: border-box; cursor: pointer;">
+                  
+                  <div data-dc-tpl="67" style="flex: 1 1 0%; min-width: 0px;">
+                    <div data-dc-tpl="68" style="font-size: 17px; color: rgb(255, 255, 255); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"><span class="sc-interp">Custom</span></div>
+                    
+                  </div>
+                  
+                  
+                  
+                  
+                  
+                </div>
+                
+                
+                
+                
+              </div>
+            
+          </div>
+          <div data-dc-tpl="108" style="padding: 7px 32px 0px; font-size: 13px; line-height: 1.35; color: rgba(235, 235, 245, 0.6); text-wrap: pretty;"><span class="sc-interp">A guide, not a guarantee · Never recorded</span></div>
+        </div>
+      
+      
+    </div>
+  </div>
+
+  
+    <div data-dc-tpl="114" style="position: absolute; left: 0px; right: 0px; top: 0px; height: 112px; z-index: 6; background: linear-gradient(rgba(10, 11, 18, 0.96) 70%, rgba(10, 11, 18, 0)); pointer-events: none;"></div>
+    <div data-dc-tpl="115" style="position: absolute; left: 16px; right: 16px; top: 56px; height: 48px; z-index: 7; display: flex; align-items: center; gap: 8px;">
+      <div data-dc-tpl="116" role="button" aria-label="Back" class="scp1" style="width: 44px; height: 44px; border-radius: 22px; background: linear-gradient(rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.04)), rgba(30, 32, 48, 0.55); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); box-shadow: rgba(255, 255, 255, 0.35) 0px 0.5px 0px inset, rgba(255, 255, 255, 0.14) 0px 0px 0px 0.5px inset; display: flex; align-items: center; justify-content: center; flex-shrink: 0; cursor: pointer;"><svg data-dc-tpl="117" width="11" height="18" viewBox="0 0 12 20" fill="none" stroke="#fff" style="stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round;"><path data-dc-tpl="118" d="M10 2L2 10l8 8"></path></svg></div>
+      <div data-dc-tpl="119" style="flex: 1 1 0%; text-align: center; font-size: 17px; font-weight: 600; margin-right: 52px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"><span class="sc-interp">Social safe zone</span></div>
+    </div>
+  
+
+  <div data-dc-tpl="120" style="position: absolute; z-index: 8; left: 16px; right: 16px; bottom: 26px; height: 64px; border-radius: 32px; background: linear-gradient(rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.03) 45%, rgba(255, 255, 255, 0.05)), rgba(22, 24, 38, 0.42); -webkit-backdrop-filter: blur(22px) saturate(180%); backdrop-filter: blur(22px) saturate(180%); border: 0.5px solid rgba(255, 255, 255, 0.18); box-shadow: rgba(255, 255, 255, 0.22) 0px 1px 0px inset, rgba(255, 255, 255, 0.05) 0px -1px 0px inset, rgba(0, 0, 0, 0.35) 0px 10px 30px; display: grid; grid-template-columns: repeat(5, minmax(0px, 1fr)); align-items: center; padding: 0px 5px; box-sizing: border-box;">
+    <button data-dc-tpl="121" style="height: 54px; border: 0px; background: none; color: rgba(225, 228, 245, 0.62); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; font-family: inherit; font-size: 10px; font-weight: 500; padding: 0px;"><svg data-dc-tpl="122" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display: block; margin: 2px 0px;"><rect data-dc-tpl="123" x="5" y="3" width="14" height="18" rx="3.5"></rect><path data-dc-tpl="124" d="M9 8.5h6M9 12.5h6M9 16.5h3.5"></path></svg>Scripts</button>
+    <button data-dc-tpl="125" style="height: 54px; border: 0px; background: none; color: rgba(225, 228, 245, 0.62); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; font-family: inherit; font-size: 10px; font-weight: 500; padding: 0px;"><svg data-dc-tpl="126" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display: block; margin: 2px 0px;"><rect data-dc-tpl="127" x="3.5" y="6.5" width="14" height="14" rx="3.5"></rect><path data-dc-tpl="128" d="M7.5 3.5h9.5a3.5 3.5 0 0 1 3.5 3.5v9.5"></path><path data-dc-tpl="129" d="M9 10.6v5.8l4.8-2.9z" fill="currentColor" stroke="none"></path></svg>Takes</button>
+    <button data-dc-tpl="130" style="height: 54px; border: 0px; background: none; color: rgba(225, 228, 245, 0.62); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; font-family: inherit; font-size: 10px; font-weight: 500; padding: 0px;"><svg data-dc-tpl="131" width="30" height="30" viewBox="0 0 24 24" fill="none" aria-hidden="true" style="display: block;"><circle data-dc-tpl="132" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.6"></circle><circle data-dc-tpl="133" cx="12" cy="12" r="6.6" fill="#FF3B30"></circle></svg>Record</button>
+    <button data-dc-tpl="134" style="height: 54px; border: 0px; background: none; color: rgba(225, 228, 245, 0.62); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; font-family: inherit; font-size: 10px; font-weight: 500; padding: 0px;"><svg data-dc-tpl="135" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display: block; margin: 2px 0px;"><circle data-dc-tpl="136" cx="12" cy="12" r="9.2"></circle><circle data-dc-tpl="137" cx="12" cy="10" r="3.1"></circle><path data-dc-tpl="138" d="M6.6 18.3c1.3-2.1 3.2-3.1 5.4-3.1s4.1 1 5.4 3.1"></path></svg>Profile</button>
+    <button data-dc-tpl="139" style="position: relative; z-index: 0; isolation: isolate; height: 54px; border: 0px; border-radius: 27px; background: none; color: rgb(255, 214, 10); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; font-family: inherit; font-size: 10px; font-weight: 600; padding: 0px;"><svg data-dc-tpl="140" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display: block; margin: 2px 0px;"><path data-dc-tpl="141" d="M4 8h8.5M17.5 8H20M4 16h2.5M11.5 16H20"></path><circle data-dc-tpl="142" cx="15" cy="8" r="2.5"></circle><circle data-dc-tpl="143" cx="9" cy="16" r="2.5"></circle></svg>Settings<span data-dc-tpl="144" aria-hidden="true" style="position: absolute; left: 2px; right: 2px; top: 50%; height: 56px; margin-top: -28px; border-radius: 26px; background: linear-gradient(rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.06)); border: 0.5px solid rgba(255, 255, 255, 0.2); box-shadow: rgba(255, 255, 255, 0.25) 0px 1px 0px inset; z-index: -1;"></span></button>
+  </div>
+
+  
+
+  </div></div></div>
+
+
+
+</body></html>

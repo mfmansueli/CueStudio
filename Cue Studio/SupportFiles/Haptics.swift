@@ -49,6 +49,12 @@ enum Haptics {
         rigidGenerator.impactOccurred()
     }
 
+    /// One of the 3 · 2 · 1 of the practice's count-in.
+    static func rigid() {
+        guard isEnabled else { return }
+        rigidGenerator.impactOccurred()
+    }
+
     /// A recording or voice-over starts or stops, or "Let's Cue" ends the countdown.
     static func record() {
         guard isEnabled else { return }

@@ -26,12 +26,10 @@ final class TakesUITests: XCTestCase {
             XCTAssertTrue(app.buttons["takes.stage.\(stage)"].exists, "Missing the \(stage) stage")
         }
 
-        // The platform menu filters.
-        app.buttons["takes.platformMenu"].tap()
+        // The platform chips filter.
         app.buttons["takes.platform.youtube"].tap()
         XCTAssertTrue(videoRow(app, containing: "Weekly Q&A").waitForExistence(timeout: 5))
         XCTAssertFalse(videoRow(app, containing: "3 morning habits").exists)
-        app.buttons["takes.platformMenu"].tap()
         app.buttons["takes.platform.all"].tap()
 
         // A stage in the pipeline shows only its videos; tapping it again shows everything.
@@ -73,10 +71,12 @@ final class TakesUITests: XCTestCase {
         // Where the video is on its way out, and what the length does against the platform.
         XCTAssertTrue(element(app, "review.stageBar").exists)
 
-        // Compare: the chip steps to the other takes of the video.
-        XCTAssertTrue(element(app, "review.compareChip").exists)
-        app.buttons["review.previousTake"].tap()
-        app.buttons["review.previousTake"].tap()
+        // The pill is a menu: it steps to the other takes of the video.
+        for _ in 0..<2 {
+            element(app, "review.takeLabel").tap()
+            XCTAssertTrue(app.buttons["Previous take"].waitForExistence(timeout: 3))
+            app.buttons["Previous take"].tap()
+        }
         XCTAssertTrue(element(app, "review.takeLabel").label.localizedCaseInsensitiveContains("Take 1"))
 
         app.buttons["review.bestButton"].tap()
@@ -104,7 +104,7 @@ final class TakesUITests: XCTestCase {
         XCTAssertTrue(row.waitForExistence(timeout: 5))
         row.tap()
         XCTAssertTrue(app.buttons["review.shareButton"].waitForExistence(timeout: 5))
-        for id in ["review.editButton", "review.retakeButton", "review.saveButton", "review.muteButton", "review.fromScript"] {
+        for id in ["review.editButton", "review.retakeButton", "review.saveButton", "review.scriptButton"] {
             XCTAssertTrue(element(app, id).exists, "Missing \(id)")
         }
         // Share is the one yellow action: it names the platform.

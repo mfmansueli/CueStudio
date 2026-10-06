@@ -19,19 +19,13 @@ struct VoiceToneStep: View {
                     Button { onToggle(sound) } label: {
                         HStack(spacing: 12) {
                             VStack(alignment: .leading, spacing: 3) {
-                                HStack(spacing: 8) {
-                                    Text(sound.label)
-                                        .font(.body.weight(.semibold))
-                                        .foregroundStyle(Palette.ink)
-                                    if let role = draft.role, role.commonSounds.contains(sound) {
-                                        Text("Common for \(role.label.lowercased())")
-                                            .font(.caption2.weight(.semibold))
-                                            .foregroundStyle(Palette.accText)
-                                            .lineLimit(1)
-                                    }
+                                // The note goes beside the name when it fits, and under it when it doesn't (never cut off).
+                                ViewThatFits(in: .horizontal) {
+                                    HStack(spacing: 8) { name(of: sound) }
+                                    VStack(alignment: .leading, spacing: 2) { name(of: sound) }
                                 }
                                 Text(sound.example)
-                                    .font(.system(.footnote, design: .serif))
+                                    .font(.footnote)
                                     .italic()
                                     .foregroundStyle(Palette.ink2)
                             }
@@ -52,6 +46,20 @@ struct VoiceToneStep: View {
             Text(draft.sounds.count >= draft.soundCap ? "Up to \(draft.soundCap) · \(draft.sounds.count) of \(draft.soundCap)" : "Pick up to \(draft.soundCap)")
                 .font(.footnote)
                 .foregroundStyle(Palette.ink2)
+        }
+    }
+
+    /// The tone's name and, for the creator's own kind of video, a note that it is common there.
+    @ViewBuilder
+    private func name(of sound: VoiceSound) -> some View {
+        Text(sound.label)
+            .font(.body.weight(.semibold))
+            .foregroundStyle(Palette.ink)
+        if let role = draft.role, role.commonSounds.contains(sound) {
+            Text("Common for \(role.label.lowercased())")
+                .font(.caption2.weight(.semibold))
+                .foregroundStyle(Palette.accText)
+                .lineLimit(1)
         }
     }
 }

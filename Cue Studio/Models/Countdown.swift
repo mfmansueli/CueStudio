@@ -15,7 +15,7 @@ nonisolated enum Countdown: Int, Codable, CaseIterable, Identifiable, Sendable {
     var id: Int { rawValue }
 
     var label: String {
-        self == .off ? String(localized: "Off") : String(localized: "\(rawValue)s")
+        self == .off ? String(localized: "Off") : String(localized: "\(rawValue) s")
     }
 
     /// Compact label for the countdown button in the camera toolbar.

@@ -14,7 +14,7 @@ struct VoiceMeter: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack {
-                Text("VOICE \(strength)%")
+                Text("VOICE STRENGTH \(strength)%")
                     .font(.system(size: 10.5, weight: .semibold, design: .monospaced))
                     .tracking(1)
                     .foregroundStyle(Palette.ink)

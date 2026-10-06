@@ -14,7 +14,7 @@ import SwiftUI
 /// foreground, when something else takes the screen (a sheet, the camera, another tab) and when the dock goes away, and the
 /// recognizer still finishes the last words into the draft.
 struct ScriptsDock: View {
-    /// The first visit's dock has no Format chip (03 · 3.1).
+    /// Whether the Format chip is there (the first visit has it too: the owner asked for it, 6/10/2026).
     var showsFormat = true
     /// Row 1 folds away while the list scrolls down.
     var isFolded = false
@@ -296,7 +296,7 @@ struct ScriptsDock: View {
     /// Shown while the field is empty and nothing is suggested (no Apple Intelligence, or while it listens): what to do.
     private var placeholder: Text {
         if suggestion != nil { return Text(verbatim: "") }
-        return Text(hasAI ? "Say it or type your idea…" : "Type or say a title…").foregroundStyle(Palette.ink.opacity(0.55))
+        return Text(hasAI ? "Say it or type your idea…" : "Type or say a title…").foregroundStyle(Palette.inkHint)
     }
 
     private var anotherIdeaButton: some View {

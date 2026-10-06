@@ -57,7 +57,7 @@ final class IdeaTransitionService {
     private(set) var platformName = ""
     /// Whether the exit is because of an error (the toast says so) and not a Cancel.
     private(set) var leftBecauseOfError = false
-    /// A moment that makes timings half as long (Low Power Mode): one-shot transitions keep their order.
+    /// A factor on every timing (1 plays the board's own; UI tests shorten it): the transitions keep their order. Low Power Mode does not change it.
     var speed: Double = 1
 
     var isActive: Bool { phase != .idle }

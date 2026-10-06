@@ -35,6 +35,13 @@ travel" › Share to / Other apps, "On its way" › Share again, e o "download" 
 Export video, Share). `saveCover` salva só uma imagem e nunca conta. O compartilhamento de roteiros (texto) e do universo (imagem) não é
 exportação de vídeo.
 
+## 1.1. "Share to universe" (fase A): uma exportação por envio, uma rede por vez
+
+O botão amarelo da revisão renderiza o arquivo uma vez (`ExportAction.render`: nada sai, nada conta) e a fila (`ShareQueue`) leva o **mesmo arquivo** a cada rede escolhida, pela **folha de compartilhamento do sistema**
+(`ShareIntegrationConfiguration.integrationsEnabled = false`: `ShareRouteResolver` devolve `.activitySheet` para todos). Conta **uma** exportação: quando o arquivo sai (salvo em Fotos pela opção "Also save to Photos", ou a primeira atividade
+concluída), nunca por rede; editar e reexportar dentro da fila herda a contagem (`ExportLedgerService.begin(inheritingCountFrom:)`). Uma atividade concluída pergunta "Posted on {rede}?": só **Yes, it's live** marca a rede como postada,
+grava o `ShareRecord` (plataforma, data, tema) e acende o planeta; **Not yet** volta ao passo; cancelar a folha também. O Cue nunca afirma que algo foi publicado sem a resposta do criador.
+
 ## 2. Estados (`ExportPhase`) e mensagens
 
 `idle → preparing → savingToPhotos → delivering(destino?) → delivered(evidência) | cancelled | failed`. **Não existe estado "publicado"**:

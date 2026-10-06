@@ -24,6 +24,7 @@ struct TakeReviewView: View {
     var launchAction: ReviewLaunchAction?
     var onLaunchActionDone: () -> Void = {}
 
+    @State private var flow: ShareFlow
     @State private var player = AVPlayer()
     @State private var audioSession = PlaybackAudioManager()
     @State private var playbackTask: Task<Void, Never>?
@@ -62,7 +63,7 @@ struct TakeReviewView: View {
     ) {
         let store = services.store
         let languages = services.languages
-        _viewModel = State(initialValue: TakeReviewViewModel(
+        let model = TakeReviewViewModel(
             takeID: takeID,
             takes: services.takes,
             quota: services.quota,
@@ -79,6 +80,11 @@ struct TakeReviewView: View {
             drafts: services.drafts,
             toast: services.toast,
             speechLanguage: { languages.captionRequest(for: $0) }
+        )
+        _viewModel = State(initialValue: model)
+        _flow = State(initialValue: ShareFlow(
+            review: model, queues: services.shareQueue, milestones: services.milestones, library: services.library,
+            defaults: services.defaults, toast: services.toast
         ))
         self.services = services
         self.onRetake = onRetake
@@ -99,6 +105,15 @@ struct TakeReviewView: View {
                 chrome(for: take)
             } else {
                 ContentUnavailableView("This take was deleted", systemImage: "film")
+            }
+        }
+        .overlay(alignment: .bottom) {
+            if let queue = services.shareQueue.pending, queue.takeID == viewModel.takeID, viewModel.celebration == nil {
+                ContinuePostingCard(queue: queue) { continueQueue(nil) } onClose: {
+                    services.shareQueue.moveRestToLater(takeID: queue.takeID)
+                    services.toast.show(String(localized: "Saved · post when you’re ready"))
+                }
+                .padding(.bottom, 104)
             }
         }
         // A video player's controls: they stop growing at a large text size, or the actions land on
@@ -137,15 +152,15 @@ struct TakeReviewView: View {
             celebrationView(celebration)
         }
         .onChange(of: viewModel.celebration) { _, new in
-            guard case .sentOff(let video, _)? = new else { return }
-            // Every platform share counts, whether or not the story plays.
-            if let reached = milestones.recordShare(of: video.take.id) { reachedMilestone = reached }
+            guard case .sentOff? = new else { return }
+            // The networks the creator confirmed were counted as they were confirmed (`ShareFlow`); the milestone they reached is told after.
+            reachedMilestone = flow.reachedMilestone
             if !personalization.celebrations { viewModel.celebration = nil }
         }
         .fullScreenCover(isPresented: $tellsFirstStar) {
             if let take = viewModel.take {
                 FirstStarView(
-                    take: take, topics: universeTopics,
+                    take: take,
                     onStudio: { finishFirstStar() },
                     onEdit: { finishFirstStar(thenEdit: take) }
                 )
@@ -154,21 +169,15 @@ struct TakeReviewView: View {
         .fullScreenCover(isPresented: $tellsMilestone) {
             if let reached = reachedMilestone, let icon = AppIconChoice(milestone: reached) {
                 MilestoneView(
-                    milestone: reached, icon: icon, since: milestones.firstShareDate, isAvailable: !icon.needsPro || store.tier.isPro,
+                    milestone: reached, icon: icon, isAvailable: !icon.needsPro || store.tier.isPro,
                     onUse: { useMilestoneIcon(icon, reached: reached) },
                     onKeep: { finishMilestone(reached) }
                 )
             }
         }
-        .onAppear { applyLaunchAction(); considerFirstStar() }
+        .onAppear { connectFlow(); applyLaunchAction(); considerFirstStar(); showStoriesForTests() }
         .onDisappear { pausePlayback(); viewModel.leave() }
-        .sheet(isPresented: $viewModel.showsShareSheet) {
-            if let take = viewModel.take {
-                ShareToSheet(viewModel: viewModel, take: take)
-                    .modifier(ExportPresentations(viewModel: viewModel, isActive: true))
-            }
-        }
-        .modifier(ExportPresentations(viewModel: viewModel, isActive: !viewModel.showsShareSheet))
+        .modifier(ExportPresentations(viewModel: viewModel, isActive: viewModel.celebration == nil))
     }
 
     // MARK: - Video
@@ -209,7 +218,7 @@ struct TakeReviewView: View {
                 Button { togglePlayback() } label: {
                     Image(systemName: "play.fill").offset(x: 2)
                 }
-                .buttonStyle(.cueIcon(.glass, diameter: 76))
+                .buttonStyle(.cueIcon(.glass, diameter: 64))
                 .accessibilityLabel(Text("Play"))
             }
         }
@@ -229,38 +238,32 @@ struct TakeReviewView: View {
         return VStack(spacing: 0) {
             ReviewTopBar(
                 take: take,
+                placeLabel: placeLabel(for: take),
                 onBack: onBack,
                 onToggleBest: viewModel.toggleBest,
                 // Gone at once, with 4 s of Undo in the toast (04 · F4): no question first.
                 onDelete: {
                     pausePlayback()
                     onDeleted(viewModel.delete())
-                }
+                },
+                onPrevious: viewModel.neighbor(-1) == nil ? nil : { selectNeighbor(-1) },
+                onNext: viewModel.neighbor(1) == nil ? nil : { selectNeighbor(1) },
+                onSuggest: viewModel.offersBestSuggestion ? { suggestBest(from: take) } : nil
             )
-            .padding(.horizontal, 14)
-            if let place = viewModel.placeLabel, let index = viewModel.siblings.firstIndex(where: { $0.id == take.id }) {
-                ReviewCompareChip(
-                    count: viewModel.siblings.count, index: index, label: place,
-                    onPrevious: viewModel.neighbor(-1) == nil ? nil : { selectNeighbor(-1) },
-                    onNext: viewModel.neighbor(1) == nil ? nil : { selectNeighbor(1) }
-                )
-                .padding(.top, 8)
-            }
+            .padding(.horizontal, 16)
+            .padding(.top, 8)
             Spacer()
-            VStack(alignment: .leading, spacing: 14) {
-                if let url = viewModel.videoURL { scrubber(take: take, url: url) }
+            VStack(alignment: .leading, spacing: 0) {
+                ReviewScrubber(progress: progress, duration: take.duration) { seek(to: $0, of: take) }
+                Rectangle().fill(Color.white.opacity(0.1)).frame(height: 0.5).padding(.top, 14)
                 ReviewInfoPanel(
-                    take: take,
-                    stage: viewModel.stage,
-                    lengthFit: viewModel.lengthFit,
-                    scriptVersion: viewModel.scriptVersionLabel,
-                    onOpenScript: take.scriptID.map { id in { pausePlayback(); onOpenScript(id) } },
-                    onSuggest: viewModel.offersBestSuggestion ? { suggestBest(from: take) } : nil
+                    take: take, stage: viewModel.stage, lengthFit: viewModel.lengthFit, scriptVersion: viewModel.scriptVersionLabel,
+                    dotColor: themeColor(of: take)
                 )
+                    .padding(.top, 20)
                 ReviewActionBar(
                     runningAction: viewModel.runningAction,
                     glowsShare: glowsShare,
-                    shareTitle: take.platform.map { String(localized: "Share to \($0.label)") } ?? String(localized: "Share"),
                     editTitle: viewModel.hasOpenEdit ? String(localized: "Continue") : String(localized: "Edit"),
                     onEdit: {
                         pausePlayback()
@@ -268,52 +271,39 @@ struct TakeReviewView: View {
                     },
                     onRetake: onRetake,
                     onSave: { Task { await viewModel.save() } },
-                    onShare: {
-                        pausePlayback()
-                        viewModel.showsShareSheet = true
-                    }
+                    onScript: take.scriptID.map { id in { pausePlayback(); onOpenScript(id) } },
+                    onShare: { shareToUniverse() }
                 )
+                .padding(.top, 22)
                 if viewModel.photosDenied {
-                    PhotosDeniedCard { viewModel.photosDenied = false }
+                    PhotosDeniedCard { viewModel.photosDenied = false }.padding(.top, 10)
                 }
-                if let notice = viewModel.exportNotice {
-                    ReviewExportFooter(notice: notice, isExhausted: viewModel.exportsExhausted) {
-                        // "You've used your 5 free exports" is for when they are gone; with some left it is just browsing.
-                        viewModel.paywall = viewModel.exportsExhausted ? .export : .profile
-                    }
-                }
+                ReviewExportFooter(
+                    label: viewModel.exportLabel, showsGoPro: viewModel.exportsLeft != nil,
+                    later: services.shareQueue.later(forTake: viewModel.takeID).first?.network, onLater: { continueQueue(nil) },
+                    left: viewModel.exportsLeft,
+                    // The calm Pro is for when the free exports are gone; with some left it is just browsing.
+                    onGoPro: { viewModel.paywall = viewModel.exportsExhausted ? .export : .profile }
+                )
+                .padding(.top, 4)
             }
             .padding(.horizontal, Metrics.gutter)
-            .padding(.bottom, 8)
+            .padding(.bottom, 6)
         }
     }
 
-    /// The frames across the take with the playhead and the sound button, and the clock under it:
-    /// the time in yellow, the length in gray.
-    private func scrubber(take: Take, url: URL) -> some View {
-        VStack(spacing: 6) {
-            HStack(spacing: 10) {
-                FilmstripView(take: take, videoURL: url, progress: progress) { fraction in
-                    seek(to: fraction, of: take)
-                }
-                Button {
-                    isMuted.toggle()
-                    player.isMuted = isMuted
-                } label: {
-                    Image(systemName: isMuted ? "speaker.slash.fill" : "speaker.wave.2.fill")
-                }
-                .buttonStyle(.cueIcon(.glass, diameter: 40))
-                .accessibilityLabel(Text(isMuted ? "Unmute" : "Mute"))
-                .accessibilityIdentifier("review.muteButton")
-            }
-            HStack {
-                Text(DurationText.clock(take.duration * progress)).foregroundStyle(Palette.accText)
-                Spacer()
-                Text(DurationText.clock(take.duration)).foregroundStyle(Palette.ink2)
-            }
-            .font(.system(size: 11, weight: .heavy, design: .monospaced))
-            .padding(.trailing, 50)
-        }
+    /// The colour of the take's theme (the dot before its title), amber without one.
+    private func themeColor(of take: Take) -> Color {
+        let topic = services.library.scripts.first { $0.id == take.scriptID }?.topic
+        guard let topic, let index = universeTopics.firstIndex(where: { $0.id == topic }) else { return Palette.worldWarm }
+        return OnboardingTopic.color(at: index)
+    }
+
+    /// "TAKE 2 OF 3", or "TAKE 1" for a video of one take.
+    private func placeLabel(for take: Take) -> String {
+        let siblings = viewModel.siblings
+        guard siblings.count > 1, let index = siblings.firstIndex(where: { $0.id == take.id }) else { return String(localized: "TAKE \(take.number)") }
+        return String(localized: "TAKE \(index + 1) OF \(siblings.count)")
     }
 
     // MARK: - Takes
@@ -333,7 +323,7 @@ struct TakeReviewView: View {
         pendingOutcome = nil
         switch outcome {
         case .share:
-            viewModel.showsShareSheet = true
+            shareToUniverse()
         case .download:
             Task { await viewModel.save() }
         case .ready:
@@ -352,7 +342,9 @@ struct TakeReviewView: View {
         guard let launchAction, let take = viewModel.take else { return }
         onLaunchActionDone()
         switch launchAction {
-        case .share: viewModel.showsShareSheet = true
+        case .share: shareToUniverse()
+        case .continueQueue: continueQueue(nil)
+        case .postLater(let network): continueQueue(network)
         case .edit: editingTake = take
         case .pickBest: suggestBest(from: take)
         }
@@ -362,20 +354,67 @@ struct TakeReviewView: View {
     private func celebrationView(_ celebration: ExportCelebration) -> some View {
         switch celebration {
         case .readyToTravel(let video):
-            ReadyToTravelView(
-                video: video,
-                onShare: { destination in Task { await viewModel.send(video, to: destination) } },
-                onOtherApps: { shareAfterClosing(video) },
-                onClose: { viewModel.celebration = nil }
-            )
-        case .sentOff(let video, let destination):
+            ReadyToTravelView(video: video, review: viewModel, flow: flow, onClose: { viewModel.celebration = nil })
+                .modifier(ShareFlowPresentations(flow: flow, review: viewModel))
+                .modifier(ExportPresentations(viewModel: viewModel, isActive: flow.step == nil))
+        case .sentOff(let video, let networks):
             SendOffView(
-                video: video, destination: destination,
+                video: video, networks: networks, snapshot: sentOffSnapshot(networks),
                 onShareAgain: { shareAfterClosing(video) },
                 onUniverse: { viewModel.celebration = nil; services.presentation.selectedTab = .profile; onBack() },
                 onDone: { doneWithSendOff() }
             )
         }
+    }
+
+    // MARK: - Share to universe
+
+    /// The yellow button: the file is made (nothing leaves Cue, nothing is counted), "Ready to travel" comes up, and the networks with it.
+    private func shareToUniverse() {
+        pausePlayback()
+        Task {
+            await viewModel.render()
+            guard case .readyToTravel(let video)? = viewModel.celebration else { return }
+            try? await Task.sleep(for: .milliseconds(550))
+            flow.openPicker(with: video)
+        }
+    }
+
+    /// "Continue posting" and "POST TO LINKEDIN LATER": the queue picks up where it was.
+    private func continueQueue(_ network: ShareDestination?) {
+        pausePlayback()
+        Task { await flow.resume(network) }
+    }
+
+    /// What the flow tells the review: the send-off when the networks are done, the editor when the creator wants to edit first.
+    private func connectFlow() {
+        flow.onFinished = { video, networks in
+            viewModel.celebration = .sentOff(video, networks)
+        }
+        flow.onEditFirst = {
+            viewModel.celebration = nil
+            pausePlayback()
+            editingTake = viewModel.take
+        }
+    }
+
+    /// The year's universe with the shares just confirmed in it.
+    private func sentOffSnapshot(_ networks: [ShareDestination]) -> UniverseSnapshot {
+        let videos = UniverseVideo.resolve(
+            records: milestones.records, takes: services.takes.takes, scripts: services.library.scripts, fallbackDate: milestones.firstShareDate ?? .now
+        )
+        return UniverseSnapshot(videos: videos, year: UniverseYears.current(), topics: universeTopics)
+    }
+
+    /// UI tests (`-uiTestFirstStar`, `-uiTestMilestone`): the stories open on their own, to be looked at.
+    private func showStoriesForTests() {
+        #if DEBUG
+        if services.showsFirstStar { tellsFirstStar = true }
+        if let milestone = services.milestoneToShow, AppIconChoice(milestone: milestone) != nil {
+            reachedMilestone = milestone
+            tellsMilestone = true
+        }
+        #endif
     }
 
     /// The first take Cue ever recorded lights the first star (once, and only when the creator has done the first flight).

@@ -5,62 +5,56 @@
 
 import SwiftUI
 
-/// The header of the Takes tab: TO PICK › IN EDIT › READY › SHARED with how many videos are at each
-/// stage (tap one to see only those, tap again to see all), and below, what to do next: "NEXT · POST
-/// IT · 3 MORNING HABITS ›".
+/// The header of the Takes tab (6.2): four nodes on a line, TO PICK › IN EDIT › READY › SHARED, with how many videos are at each stage (tap one
+/// to see only those, tap again to see all). The line is grey up to READY and runs green into lilac after it; READY breathes a green ring.
 struct TakePipelineCard: View {
     let pipeline: TakePipeline
     let selected: TakeStage?
     let onSelect: (TakeStage) -> Void
-    let onNext: (TakePipeline.Next) -> Void
+
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
         let shape = RoundedRectangle(cornerRadius: Metrics.innerRadius, style: .continuous)
-        VStack(spacing: 10) {
-            HStack(spacing: 0) {
-                ForEach(TakeStage.allCases) { stage in
-                    cell(stage)
-                    if stage != TakeStage.allCases.last {
-                        Text("›")
-                            .font(.system(size: 12))
-                            .foregroundStyle(Palette.ink3)
-                            .frame(width: 12)
-                            .accessibilityHidden(true)
-                    }
-                }
+        ZStack(alignment: .top) {
+            LinearGradient(
+                stops: [
+                    .init(color: Palette.flightInk.opacity(0.25), location: 0), .init(color: Palette.flightInk.opacity(0.25), location: 0.5),
+                    .init(color: Palette.success, location: 0.66), .init(color: Palette.flightLilac, location: 1),
+                ],
+                startPoint: .leading, endPoint: .trailing
+            )
+            .frame(height: 2)
+            .padding(.horizontal, 44)
+            .padding(.top, 25)
+            HStack(alignment: .top, spacing: 0) {
+                ForEach(TakeStage.allCases) { stage in node(stage) }
             }
-            if let next = pipeline.next {
-                nextLine(next)
-            }
+            .padding(.top, 12)
         }
-        .padding(EdgeInsets(top: 10, leading: 8, bottom: 10, trailing: 8))
+        .frame(maxWidth: .infinity)
+        .frame(height: 86, alignment: .top)
         .background(Palette.surface, in: shape)
-        .overlay(shape.strokeBorder(Palette.glassBorder, lineWidth: 0.5))
+        .overlay(shape.strokeBorder(Palette.separator, lineWidth: 0.5))
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("takes.pipeline")
     }
 
-    private func cell(_ stage: TakeStage) -> some View {
+    private func node(_ stage: TakeStage) -> some View {
         let count = pipeline.count(of: stage)
         let isOn = selected == stage
-        let shape = RoundedRectangle(cornerRadius: 14, style: .continuous)
         return Button { onSelect(stage) } label: {
-            VStack(spacing: 2) {
-                Text(count.formatted(.number.precision(.integerLength(2...))))
-                    .font(.system(size: 17, weight: .heavy, design: .monospaced))
-                    .foregroundStyle(isOn ? Palette.accText : (count > 0 ? Palette.ink : Palette.ink2))
-                Text(stage.pipelineLabel)
-                    .textCase(.uppercase)
-                    .font(.system(size: 9, weight: .heavy, design: .monospaced))
-                    .tracking(0.6)
-                    .foregroundStyle(isOn ? Palette.accText : Palette.ink2)
+            VStack(spacing: 6) {
+                circle(stage, count: count, isOn: isOn)
+                Text(label(stage, count: count))
+                    .font(.system(size: 9.5, weight: .semibold, design: .monospaced))
+                    .tracking(0.76)
+                    .foregroundStyle(isOn ? Palette.accText : labelColor(stage))
                     .lineLimit(1)
                     .minimumScaleFactor(0.7)
             }
-            .frame(maxWidth: .infinity, minHeight: 50)
-            .background(isOn ? Palette.accSoft : Palette.fill.opacity(0.6), in: shape)
-            .overlay(shape.strokeBorder(isOn ? Palette.acc.opacity(0.5) : .clear, lineWidth: 1))
-            .contentShape(shape)
+            .frame(maxWidth: .infinity, minHeight: Metrics.hitTarget)
+            .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
         .accessibilityLabel(Text(stage.pipelineLabel))
@@ -69,33 +63,61 @@ struct TakePipelineCard: View {
         .accessibilityIdentifier("takes.stage.\(stage.stepKey)")
     }
 
-    private func nextLine(_ next: TakePipeline.Next) -> some View {
-        Button { onNext(next) } label: {
-            HStack(spacing: 8) {
-                Text("Next").textCase(.uppercase).foregroundStyle(Palette.accText)
-                Text((next.stage.nextVerb ?? "") + " · " + next.video.title)
-                    .textCase(.uppercase)
-                    .foregroundStyle(Palette.ink)
-                    .lineLimit(1)
-                    .truncationMode(.tail)
-                Spacer(minLength: 0)
-                Text("›").foregroundStyle(Palette.ink2)
-            }
-            .font(.system(size: 10.5, weight: .heavy, design: .monospaced))
-            .tracking(0.6)
-            .padding(.top, 10)
-            .padding(.horizontal, 6)
-            .frame(minHeight: Metrics.hitTarget)
-            .overlay(alignment: .top) {
-                Rectangle().fill(Palette.glassBorder).frame(height: 0.5)
-            }
-            .contentShape(Rectangle())
+    /// "TO PICK", "IN EDIT", "READY"; the shared node carries its count in the name ("3 SHARED"), its disc has the star.
+    private func label(_ stage: TakeStage, count: Int) -> String {
+        let name = stage.pipelineLabel.uppercased()
+        return stage == .shared ? "\(count) \(name)" : name
+    }
+
+    private func labelColor(_ stage: TakeStage) -> Color {
+        switch stage {
+        case .pick: Palette.flightInk.opacity(0.6)
+        case .edit: Palette.info
+        case .ready: Palette.success
+        case .shared: Palette.starLilac
         }
-        .buttonStyle(.plain)
-        .accessibilityElement(children: .ignore)
-        .accessibilityLabel(Text("\(next.stage.nextVerb ?? ""), \(next.video.title)"))
-        .accessibilityAddTraits(.isButton)
-        .accessibilityIdentifier("takes.next")
+    }
+
+    /// A 28 pt disc: the count in mono, or the star of what is shared.
+    private func circle(_ stage: TakeStage, count: Int, isOn: Bool) -> some View {
+        ZStack {
+            switch stage {
+            case .pick:
+                disc(fill: Palette.surface2, ring: Palette.flightInk.opacity(0.3), text: "\(count)", ink: .white)
+            case .edit:
+                disc(fill: Palette.surface2, ring: Palette.info.opacity(0.6), text: "\(count)", ink: Palette.info)
+            case .ready:
+                readyDisc(count: count)
+            case .shared:
+                Circle().fill(Palette.takesSharedNode)
+                    .overlay(Circle().strokeBorder(Palette.flightLilac, lineWidth: 1))
+                    .overlay { Text(verbatim: "✦").font(.system(size: 13)).foregroundStyle(Palette.acc) }
+                    .shadow(color: Palette.nightViolet.opacity(0.5), radius: 14)
+            }
+        }
+        .frame(width: 28, height: 28)
+        .overlay { if isOn { Circle().strokeBorder(Palette.acc, lineWidth: 1.5).padding(-4) } }
+    }
+
+    private func disc(fill: Color, ring: Color, text: String, ink: Color) -> some View {
+        Circle().fill(fill)
+            .overlay(Circle().strokeBorder(ring, lineWidth: 1))
+            .overlay { Text(verbatim: text).font(.system(size: 12, weight: .semibold, design: .monospaced)).foregroundStyle(ink) }
+    }
+
+    /// Filled green, black number, and a ring of green that goes out to 6 pt and back every 2 s (`pulse`; still with Reduce Motion).
+    private func readyDisc(count: Int) -> some View {
+        TimelineView(.animation(minimumInterval: 1.0 / 30, paused: reduceMotion)) { context in
+            let phase = context.date.timeIntervalSinceReferenceDate.truncatingRemainder(dividingBy: 2) / 2
+            let eased = 1 - pow(1 - (phase < 0.5 ? phase * 2 : (1 - phase) * 2), 2)
+            let spread = reduceMotion ? 0 : 6 * eased
+            Circle().fill(Palette.success)
+                .overlay { Text(verbatim: "\(count)").font(.system(size: 12, weight: .semibold, design: .monospaced)).foregroundStyle(.black) }
+                .background {
+                    Circle().fill(Palette.success.opacity(reduceMotion ? 0 : 0.5 * (1 - eased)))
+                        .frame(width: 28 + spread * 2, height: 28 + spread * 2)
+                }
+        }
     }
 }
 
@@ -121,7 +143,7 @@ extension TakeStage {
         TakeVideo(takes: [take], title: take.scriptTitle, platform: .tiktok, stage: .ready),
         TakeVideo(takes: [take], title: "Weekly Q&A", platform: .youtube, stage: .shared),
     ]
-    TakePipelineCard(pipeline: TakePipeline(videos: videos), selected: .ready, onSelect: { _ in }, onNext: { _ in })
+    TakePipelineCard(pipeline: TakePipeline(videos: videos), selected: .ready, onSelect: { _ in })
         .padding()
         .background(Palette.bg)
 }

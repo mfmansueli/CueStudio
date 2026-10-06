@@ -7,53 +7,64 @@ import Foundation
 import Testing
 @testable import Cue_Studio
 
-/// "Your universe": the shared videos counted by platform and by topic.
+/// One year of "Your universe": what was shared in it, by platform and by topic, and the dots on the map.
 @Suite("UniverseSnapshot")
 struct UniverseSnapshotTests {
-    private func take(_ script: Script, platform: Platform, number: Int, at date: Date = TestData.now) -> Take {
-        var take = TestData.take(scriptID: script.id, number: number, recordedAt: date)
-        take.platform = platform
-        return take
+    private let calendar = Calendar(identifier: .gregorian)
+
+    private func date(_ year: Int, _ month: Int = 6, _ day: Int = 10) -> Date {
+        calendar.date(from: DateComponents(year: year, month: month, day: day, hour: 12))!
+    }
+
+    private func video(_ year: Int, platform: Platform? = .tiktok, topic: OnboardingTopic? = nil, month: Int = 6) -> UniverseVideo {
+        UniverseVideo(date: date(year, month), platform: platform, topic: topic?.id)
     }
 
     @Test func videosAreCountedByPlatformAndByTopic() {
-        var food = TestData.script(title: "Dinners")
-        food.topic = OnboardingTopic.niche(.food).id
-        var tech = TestData.script(title: "Gadgets")
-        tech.topic = OnboardingTopic.niche(.tech).id
-        let takes = [take(food, platform: .tiktok, number: 1), take(food, platform: .tiktok, number: 2), take(tech, platform: .reels, number: 1)]
-        let snapshot = UniverseSnapshot(
-            sharedIDs: Set(takes.map(\.id)), takes: takes, scripts: [food, tech],
-            topics: [.niche(.food), .niche(.tech)], firstShare: TestData.now
-        )
+        let videos = [
+            video(2026, platform: .tiktok, topic: .niche(.food)), video(2026, platform: .tiktok, topic: .niche(.food)),
+            video(2026, platform: .reels, topic: .niche(.tech)),
+        ]
+        let snapshot = UniverseSnapshot(videos: videos, year: 2026, topics: [.niche(.food), .niche(.tech)], calendar: calendar)
         #expect(snapshot.total == 3)
         #expect(snapshot.platforms.map(\.platform) == [.tiktok, .reels])
         #expect(snapshot.count(for: .tiktok) == 2 && snapshot.count(for: .shorts) == 0)
         #expect(snapshot.topics.map(\.count) == [2, 1])
     }
 
-    @Test func onlySharedVideosCount() {
-        let script = TestData.script()
-        let shared = take(script, platform: .tiktok, number: 1)
-        let other = take(script, platform: .tiktok, number: 2)
-        let snapshot = UniverseSnapshot(sharedIDs: [shared.id], takes: [shared, other], scripts: [script], topics: [], firstShare: nil)
-        #expect(snapshot.total == 1 && snapshot.newest?.id == shared.id)
+    @Test func onlyTheVideosOfThatYearCount() {
+        let videos = [video(2026), video(2026), video(2025), video(2024)]
+        #expect(UniverseSnapshot(videos: videos, year: 2026, topics: [], calendar: calendar).total == 2)
+        #expect(UniverseSnapshot(videos: videos, year: 2025, topics: [], calendar: calendar).total == 1)
+        #expect(UniverseSnapshot(videos: videos, year: 2027, topics: [], calendar: calendar).total == 0)
     }
 
-    @Test func aDeletedVideoStillCountsButDrawsNoRoute() {
-        let snapshot = UniverseSnapshot(sharedIDs: [UUID()], takes: [], scripts: [], topics: [], firstShare: nil)
-        #expect(snapshot.total == 1 && snapshot.platforms.isEmpty && snapshot.newest == nil)
+    @Test func theFirstShareIsTheOldestEvenInAnotherYear() {
+        let snapshot = UniverseSnapshot(videos: [video(2026), video(2024)], year: 2026, topics: [], calendar: calendar)
+        #expect(snapshot.firstShare == date(2024))
     }
 
-    @Test func theYearCountsWhatWasMadeThisYear() {
-        let script = TestData.script()
-        let calendar = Calendar(identifier: .gregorian)
-        let now = Date(timeIntervalSince1970: 1_790_000_000)
-        let old = now.addingTimeInterval(-400 * 86_400)
-        let takes = [take(script, platform: .tiktok, number: 1, at: now), take(script, platform: .tiktok, number: 2, at: old)]
-        let snapshot = UniverseSnapshot(
-            sharedIDs: Set(takes.map(\.id)), takes: takes, scripts: [script], topics: [], firstShare: nil, now: now, calendar: calendar
-        )
-        #expect(snapshot.sharedThisYear == 1)
+    @Test func theNewestIsTheLastOneOfTheYear() {
+        let last = UniverseVideo(date: date(2026, 9), platform: .reels)
+        let snapshot = UniverseSnapshot(videos: [video(2026, month: 3), last, video(2025, month: 12)], year: 2026, topics: [], calendar: calendar)
+        #expect(snapshot.newest?.id == last.id)
+    }
+
+    @Test func aVideoWithoutPlatformStillCountsButDrawsNoRoute() {
+        let snapshot = UniverseSnapshot(videos: [video(2026, platform: nil)], year: 2026, topics: [], calendar: calendar)
+        #expect(snapshot.total == 1 && snapshot.platforms.isEmpty)
+    }
+
+    @Test func eachVideoOfATopicGetsItsOwnDotAndAtMostFortyAreDrawn() {
+        let videos = (0..<50).map { _ in video(2026, topic: .niche(.food)) }
+        let snapshot = UniverseSnapshot(videos: videos, year: 2026, topics: [.niche(.food)], calendar: calendar)
+        #expect(snapshot.total == 50)
+        #expect(snapshot.dots.count == UniverseSnapshot.dotLimit)
+        #expect(snapshot.dots.map(\.slot) == Array(0..<UniverseSnapshot.dotLimit))
+    }
+
+    @Test func aVideoOfAnUnknownTopicHasNoDot() {
+        let snapshot = UniverseSnapshot(videos: [video(2026, topic: .niche(.tech))], year: 2026, topics: [.niche(.food)], calendar: calendar)
+        #expect(snapshot.total == 1 && snapshot.dots.isEmpty)
     }
 }

@@ -36,6 +36,9 @@ nonisolated struct CreatorVoice: Hashable, Sendable {
         return (sound + phrase).joined(separator: " · ")
     }
 
+    /// The same idea with no voice on it: what most scripts sound like (the "Without" side of the preview).
+    var plainLine: String { String(localized: "Your first line matters more than your camera.") }
+
     /// A line in the creator's voice for the "Sounds like you" preview. Deterministic, so the
     /// preview changes only when the voice does.
     var sampleLine: String {

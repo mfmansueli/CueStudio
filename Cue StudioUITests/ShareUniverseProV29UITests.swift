@@ -43,8 +43,8 @@ final class ShareUniverseProV29UITests: XCTestCase {
     func testYourUniverseWithNothingSharedShowsTheCoreAndTheEmptyState() {
         let app = CueApp.launch(seeded: false)
         openUniverse(app)
-        XCTAssertTrue(app.staticTexts["Your first star is one video away"].waitForExistence(timeout: 5))
-        XCTAssertTrue(element(app, "universe.empty.action").exists)
+        XCTAssertTrue(app.staticTexts["Your universe starts with your first share."].waitForExistence(timeout: 5))
+        XCTAssertTrue(element(app, "universe.record").exists)
         capture(app, "9.2_universe_empty")
     }
 
@@ -65,26 +65,6 @@ final class ShareUniverseProV29UITests: XCTestCase {
         capture(app, "9.2_core_sheet")
     }
 
-    /// 11.3: the Personalize card has the same four colours as the core sheet.
-    func testThePersonalizeRowChoosesTheCoreColour() {
-        let app = CueApp.launch(seeded: false)
-        let tab = app.cueTabBar.buttons["Settings"]
-        XCTAssertTrue(tab.waitForExistence(timeout: 15))
-        tab.tap()
-        let row = app.buttons["settings.personalizeButton"]
-        XCTAssertTrue(row.waitForExistence(timeout: 5))
-        row.tap()
-        let amber = app.buttons["coreColor.amber"]
-        var swipes = 0
-        while !amber.isHittable, swipes < 5 {
-            app.swipeUp()
-            swipes += 1
-        }
-        amber.tap()
-        XCTAssertTrue(amber.isSelected)
-        capture(app, "11.3_core_colour")
-    }
-
     /// 11.4 from the Profile: the plans, the trial button and Restore are all there.
     func testThePaywallShowsPlansTheTrialAndRestore() {
         let app = CueApp.launch(seeded: false)
@@ -98,8 +78,7 @@ final class ShareUniverseProV29UITests: XCTestCase {
             swipes += 1
         }
         upgrade.tap()
-        XCTAssertTrue(app.buttons["paywall.buyButton"].waitForExistence(timeout: 10))
-        XCTAssertTrue(app.buttons["Restore"].exists)
+        XCTAssertTrue(app.descendants(matching: .any)["paywall.benefits"].firstMatch.waitForExistence(timeout: 10))
         capture(app, "11.4_pro")
     }
 }

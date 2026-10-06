@@ -25,6 +25,20 @@ nonisolated enum CreatorRole: String, Codable, CaseIterable, Identifiable, Senda
         }
     }
 
+    /// How the Profile names the creator ("@mayacooks · Lifestyle creator"): short, and with "creator" where it reads naturally.
+    var creatorLabel: String {
+        switch self {
+        case .personal: String(localized: "Lifestyle creator")
+        case .entertainer: String(localized: "Entertainer")
+        case .expert: String(localized: "Expert or coach")
+        case .educator: String(localized: "Educator")
+        case .business: String(localized: "Business owner")
+        case .brands: String(localized: "Brand creator")
+        case .news: String(localized: "News & commentary")
+        case .community: String(localized: "Community creator")
+        }
+    }
+
     var examples: String {
         switch self {
         case .personal: String(localized: "Routine, style, opinions, vlogs")

@@ -13,9 +13,9 @@ final class PresentationService {
     var selectedTab: AppTab = .scripts
     var scriptsPath: [ScriptRoute] = []
     var settingsPath: [SettingsRoute] = []
-    /// Recording, Remote or Language & Region, open as a sheet over Settings.
-    var settingsSheet: SettingsSheet?
     var sheet: AppSheet?
+    /// Takes opens filtered this way (from "Your universe"); Takes takes it and clears it.
+    var takesRequest: TakesRequest?
     var prompter: PrompterLaunch?
     /// This device is the remote of a teleprompter on another one.
     var showsRemoteController = false
@@ -45,6 +45,13 @@ final class PresentationService {
     func openReview(of take: Take, then action: ReviewLaunchAction? = nil) {
         sheet = nil
         prompter = PrompterLaunch(scriptID: take.scriptID, mode: .selfie, reviewTakeID: take.id, reviewAction: action)
+    }
+
+    /// "See in Takes ›": the videos shared to a platform, or of a theme, in a year.
+    func openTakes(_ request: TakesRequest) {
+        sheet = nil
+        takesRequest = request
+        selectedTab = .takes
     }
 
     func present(_ sheet: AppSheet) {

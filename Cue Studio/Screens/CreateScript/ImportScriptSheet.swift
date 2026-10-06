@@ -51,7 +51,7 @@ struct ImportScriptSheet: View {
         ScrollView {
             VStack(alignment: .leading, spacing: Metrics.blockGap) {
                 VStack(alignment: .leading, spacing: 4) {
-                    Text("Import · Scan · Photo · File · Paste")
+                    Text("Import")
                         .font(CueStudioFont.hud).textCase(.uppercase).tracking(1.2)
                         .foregroundStyle(Palette.accText)
                     Text("Bring a script in")
@@ -73,7 +73,6 @@ struct ImportScriptSheet: View {
                 Button(action: use) { Text("Use this script") }
                     .buttonStyle(.cuePrimary(.large))
                     .disabled(!canUse)
-                    .opacity(canUse ? 1 : 0.4)
                     .accessibilityIdentifier("import.use")
             }
             .padding(EdgeInsets(top: 20, leading: Metrics.gutter, bottom: 28, trailing: Metrics.gutter))
@@ -157,7 +156,8 @@ struct ImportScriptSheet: View {
             }
         }
         .frame(minHeight: 220)
-        .background(Palette.surface2, in: RoundedRectangle(cornerRadius: Metrics.innerRadius, style: .continuous))
+        .background(Palette.surface, in: RoundedRectangle(cornerRadius: Metrics.innerRadius, style: .continuous))
+        .overlay(RoundedRectangle(cornerRadius: Metrics.innerRadius, style: .continuous).strokeBorder(Palette.separator, lineWidth: 0.5))
     }
 
     /// Scan without the camera's permission: why, and the way to Settings.

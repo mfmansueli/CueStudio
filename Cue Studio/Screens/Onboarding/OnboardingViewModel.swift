@@ -20,6 +20,11 @@ final class OnboardingViewModel {
     private(set) var scriptState: ScriptState = .idle
     /// How many scripts were asked for: "Another" shows a different phrasing each time.
     private(set) var attempts = 0
+    /// When the model was asked, and when its message arrived: the card's slow states (09 §16) count from the first, its words arrive from the second.
+    private(set) var writingStartedAt: Date?
+    private(set) var readyAt: Date?
+    /// The model took too long and Cue wrote the built-in message by itself (the chapter says so with a toast).
+    private(set) var fellBackByItself = false
     private(set) var microphone: PermissionState
     private(set) var speech: PermissionState
     private(set) var camera: PermissionState
@@ -33,6 +38,7 @@ final class OnboardingViewModel {
     private let ideaDraft: IdeaDraftService
     private let presentation: PresentationService
     private var writingTask: Task<Void, Never>?
+    private var fallbackTask: Task<Void, Never>?
 
     init(
         onboarding: OnboardingService, writer: ScriptWriting, factory: ScriptRequestFactory, permissions: PermissionRequesting,
@@ -61,9 +67,11 @@ final class OnboardingViewModel {
         writingTask?.cancel()
         let topic = onboarding.mainTopic?.label ?? String(localized: "your day")
         attempts += 1
+        fellBackByItself = false
+        readyAt = nil
+        writingStartedAt = .now
         guard usesModel else {
-            script = .curated(topic: topic)
-            scriptState = .ready
+            useBuiltIn(topic: topic)
             return
         }
         scriptState = .writing
@@ -76,18 +84,44 @@ final class OnboardingViewModel {
                 guard !Task.isCancelled, let self else { return }
                 script = .parsing(title: generated.title.isEmpty ? topic : generated.title, text: generated.text)
                 scriptState = .ready
+                readyAt = .now
             } catch {
                 guard !Task.isCancelled, let self else { return }
                 // No model after all, or a language it can't write: ours, as practice.
-                script = .curated(topic: topic)
-                scriptState = .ready
+                useBuiltIn(topic: topic)
             }
         }
+        // Past 25 s without an answer Cue writes the built-in message by itself (09 §16).
+        fallbackTask?.cancel()
+        fallbackTask = Task { [weak self] in
+            try? await Task.sleep(for: .seconds(Self.fallbackAfter))
+            guard !Task.isCancelled, let self, scriptState == .writing else { return }
+            writingTask?.cancel()
+            fellBackByItself = true
+            useBuiltIn(topic: topic)
+        }
+    }
+
+    /// "Use a ready-made message" (after 15 s of waiting): the built-in message for the topic, at once.
+    func useReadyMade() {
+        writingTask?.cancel()
+        useBuiltIn(topic: onboarding.mainTopic?.label ?? String(localized: "your day"))
+    }
+
+    /// How long the model may take before Cue writes the message itself.
+    static let fallbackAfter = 25.0
+
+    private func useBuiltIn(topic: String) {
+        script = .curated(topic: topic)
+        scriptState = .ready
+        readyAt = .now
     }
 
     func cancelWriting() {
         writingTask?.cancel()
         writingTask = nil
+        fallbackTask?.cancel()
+        fallbackTask = nil
     }
 
     // MARK: - Permissions
