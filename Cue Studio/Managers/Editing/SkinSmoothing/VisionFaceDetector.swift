@@ -23,13 +23,13 @@ nonisolated final class VisionFaceDetector: FaceDetecting, @unchecked Sendable {
         let size = small.extent.size
         lock.lock()
         defer { lock.unlock() }
-        do {
+        // The handler and what Vision makes for one frame go with it (it runs on every frame of an export).
+        let performed: Bool = autoreleasepool {
             let handler = small.pixelBuffer.map { VNImageRequestHandler(cvPixelBuffer: $0, options: [:]) }
                 ?? VNImageRequestHandler(ciImage: small, options: [:])
-            try handler.perform([request])
-        } catch {
-            return []
+            return (try? handler.perform([request])) != nil
         }
+        guard performed else { return [] }
         let shorterSide = min(size.width, size.height)
         let found = (request.results ?? [])
             .filter { $0.boundingBox.height * size.height >= SkinSmoothingCalibration.minimumFaceShare * shorterSide }

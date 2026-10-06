@@ -15,6 +15,8 @@ struct ScriptTextEditor: View {
     /// Where the AI's words sit (violet), if it has just written some.
     let passage: Range<Int>?
     let textSize: ScriptTextSize
+    /// The Cues switch: off, the cue tags are kept in the words but not drawn.
+    var showsCues = true
     let isLocked: Bool
     var focus: FocusState<ScriptPageFocus?>.Binding
     let onEdit: () -> Void
@@ -60,6 +62,7 @@ struct ScriptTextEditor: View {
             }
             .onChange(of: passage) { _, _ in restyle() }
             .onChange(of: textSize) { _, _ in reload() }
+            .onChange(of: showsCues) { _, _ in reload() }
             .onChange(of: attributed) { _, new in report(new) }
             .onChange(of: attributedSelection) { _, _ in reportSelection() }
             .onChange(of: selection) { _, new in
@@ -72,29 +75,36 @@ struct ScriptTextEditor: View {
     // MARK: - Words
 
     private func reload() {
-        attributed = Self.styled(text, passage: passage, size: textSize.points)
+        attributed = Self.styled(text, passage: passage, size: textSize.points, showsCues: showsCues)
         lastReported = text
     }
 
     private func restyle() {
-        let styled = Self.styled(String(attributed.characters), passage: passage, size: textSize.points)
+        let styled = Self.styled(String(attributed.characters), passage: passage, size: textSize.points, showsCues: showsCues)
         if styled != attributed { attributed = styled }
     }
 
-    /// The creator typed: the page gets the words, and the cues in them get their tags.
+    /// The creator typed: the page gets the words, and the cues in them get their tags. Deleting into a cue deletes all of it.
     private func report(_ new: AttributedString) {
-        let plain = String(new.characters)
+        var plain = String(new.characters)
+        let completed = ScriptCueDeletion.completing(from: lastReported, to: plain)
+        if let completed { plain = completed.text }
         if plain != lastReported {
             lastReported = plain
             text = plain
             onEdit()
         }
-        let styled = Self.styled(plain, passage: passage, size: textSize.points)
+        let styled = Self.styled(plain, passage: passage, size: textSize.points, showsCues: showsCues)
         if styled != new { attributed = styled }
+        if let completed {
+            pushSelection(completed.caret..<completed.caret)
+            selection = completed.caret..<completed.caret
+        }
     }
 
-    /// The text with its cues tagged and the AI's passage in violet.
-    static func styled(_ text: String, passage: Range<Int>?, size: Double) -> AttributedString {
+    /// The text with its cues tagged (or, with the Cues switch off, kept but not drawn: clear and a point high, so the words close up
+    /// around them and editing still sees them) and the AI's passage in violet.
+    static func styled(_ text: String, passage: Range<Int>?, size: Double, showsCues: Bool = true) -> AttributedString {
         var result = AttributedString(text)
         result.font = .system(size: size)
         result.foregroundColor = Palette.ink
@@ -104,6 +114,11 @@ struct ScriptTextEditor: View {
             let upper = text.distance(from: text.startIndex, to: match.range.upperBound)
             let start = characters.index(characters.startIndex, offsetBy: lower)
             let end = characters.index(characters.startIndex, offsetBy: upper)
+            guard showsCues else {
+                result[start..<end].font = .system(size: 1)
+                result[start..<end].foregroundColor = .clear
+                continue
+            }
             result[start..<end].font = .system(size: size * 0.72, weight: .bold, design: .monospaced)
             result[start..<end].foregroundColor = Palette.accText
             result[start..<end].backgroundColor = Palette.accSoft

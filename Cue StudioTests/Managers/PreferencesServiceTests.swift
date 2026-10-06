@@ -21,6 +21,23 @@ struct PreferencesServiceTests {
         #expect(reloaded.camera.codec == .h264)
     }
 
+    @Test func theCreatorsCuesPersist() {
+        let store = TestDefaults()
+        defer { store.tearDown() }
+        #expect(PreferencesService(defaults: store.defaults).customCues.isEmpty)
+        PreferencesService(defaults: store.defaults).customCues = ["laugh", "hold the mug"]
+        #expect(PreferencesService(defaults: store.defaults).customCues == ["laugh", "hold the mug"])
+    }
+
+    /// The old full script editor is gone: the text size it kept goes at launch.
+    @Test func theOldEditorsTextSizeIsRemovedAtLaunch() {
+        let store = TestDefaults()
+        defer { store.tearDown() }
+        store.defaults.set(22, forKey: DefaultsKey.legacyScriptEditorTextSize)
+        _ = PreferencesService(defaults: store.defaults)
+        #expect(store.defaults.object(forKey: DefaultsKey.legacyScriptEditorTextSize) == nil)
+    }
+
     /// Test 1: Front, AirPods, 4K, 9:16, Large, a set speed — still there after relaunching.
     @Test func creatorSetupPersists() {
         let store = TestDefaults()

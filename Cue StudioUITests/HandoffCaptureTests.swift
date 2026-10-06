@@ -249,6 +249,20 @@ final class HandoffCaptureTests: XCTestCase {
         try shot(empty, "9.1_new-account", wait: 2)
     }
 
+    // MARK: - 4 · Script page (4.1, 4.2)
+
+    /// The page with Record in the system's bottom bar, then the keyboard with the cues in its own bar.
+    func test4_1_ScriptPage() throws {
+        _ = try requireFolder()
+        let app = CueApp.launch(seeded: true)
+        app.openScriptPage(titled: "Unboxing the Lumen desk lamp")
+        XCTAssertTrue(app.buttons["detail.recordButton"].waitForExistence(timeout: 10))
+        try shot(app, "4.1_page", wait: 1)
+        element(app, "page.editor").tap()
+        XCTAssertTrue(app.buttons["page.addCueButton"].waitForExistence(timeout: 5))
+        try shot(app, "4.2_cues-bar", wait: 1)
+    }
+
     // MARK: - 6 · Share to universe (8.1, 8.2, 6.3)
 
     func test8_1_ShareToUniverse() throws {

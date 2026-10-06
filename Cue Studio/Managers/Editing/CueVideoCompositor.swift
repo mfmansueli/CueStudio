@@ -23,7 +23,10 @@ final class CueVideoCompositor: NSObject, AVVideoCompositing, @unchecked Sendabl
     private let skin: SkinSmoother
     /// The frame composed last, which the preview holds on screen while it swaps to a new item.
     private let lastComposed = OSAllocatedUnfairLock<CVReadOnlyPixelBuffer?>(initialState: nil)
-    private let queue = DispatchQueue(label: "studio.cue.compositor")
+    /// One autorelease pool per frame: Core Image and Vision (Skin Smoothing, the person mask) leave autoreleased objects behind on every
+    /// frame, and on a queue that never drained them an export of a minute grew until the system killed the app (on the iPhone, sharing
+    /// a take with Skin Smoothing on).
+    private let queue = DispatchQueue(label: "studio.cue.compositor", autoreleaseFrequency: .workItem)
 
     override init() {
         let context = CIContext(options: [.cacheIntermediates: false])

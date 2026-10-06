@@ -5,13 +5,16 @@
 
 import SwiftUI
 
-/// Settings › Prompter: a preview that stays on top and, under it, how the text reads and looks. The same page opens from Aa in the
-/// recorder, over the settings of that recording (`bindings`).
+/// Settings › Prompter: a preview that stays on top and, under it, how the text reads and looks, over the sky. The same page opens from
+/// Aa in the recorder, over the settings of that recording (`bindings`), as a sheet like the camera's: no preview there (the real text
+/// window is right behind the sheet) and the sheet's still background instead of the sky.
 struct SettingsPrompterView: View {
     let bindings: SettingsBindings
     /// The mode of the recording the page opened from: the "· Selfie" sections show with Selfie, "Studio" with Studio. Settings
     /// itself has no mode and shows both.
     var activeMode: PrompterMode?
+    /// Opened from the recorder's Aa, as a sheet over the camera.
+    var isRecorderSheet = false
 
     @State private var screenScale = ReadingLinePercent.standard
 
@@ -84,10 +87,16 @@ struct SettingsPrompterView: View {
                 Text("Studio uses these too. The screen stays on while the prompter is open.")
             }
         }
-        .cueGroupedList()
-        .safeAreaInset(edge: .top, spacing: 8) {
-            PrompterPreviewCard(settings: bindings.prompter.wrappedValue)
-                .padding(.horizontal, Metrics.gutter)
+        .listStyle(.insetGrouped)
+        .scrollContentBackground(.hidden)
+        .background {
+            if !isRecorderSheet { SkyBackdrop() }
+        }
+        .safeAreaInset(edge: .top, spacing: isRecorderSheet ? 0 : 8) {
+            if !isRecorderSheet {
+                PrompterPreviewCard(settings: bindings.prompter.wrappedValue)
+                    .padding(.horizontal, Metrics.gutter)
+            }
         }
         .onGeometryChange(for: ReadingLinePercent.self) { proxy in
             ReadingLinePercent(

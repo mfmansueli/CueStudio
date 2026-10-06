@@ -18,8 +18,12 @@ nonisolated enum DefaultsKey {
     /// The Selfie reading line's first-time tip was dismissed. The tip is gone; removed at launch.
     static let legacyReadingLineTipSeen = "readingLineTipSeen"
     static let creatorProfile = "creatorProfile"
-    /// How big the script's text is while writing (`ScriptTextSize` raw value).
-    static let scriptEditorTextSize = "scriptEditorTextSize"
+    /// The creator's own cues on the script page's cues bar (`[String]`).
+    static let customCues = "customCues"
+    /// The script page's Cues switch (`Bool`; absent = on).
+    static let showsCuesOnPage = "showsCuesOnPage"
+    /// The text size of the old full script editor ("Versions & options"). The editor is gone; removed at launch.
+    static let legacyScriptEditorTextSize = "scriptEditorTextSize"
     /// The type the creator saved as "My style" in Quick edit (`TextLook`, JSON).
     static let myTextStyle = "myTextStyle"
     /// The cover style the creator saved as "My cover style" (`CoverLook`, JSON).

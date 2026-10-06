@@ -13,8 +13,11 @@ struct ProPlansScreen: View {
     let context: PaywallContext
     /// The second of the opening (`ProOpeningScript`); the end of it shows everything in place.
     var time = ProOpeningScript.settled
-    /// How far down the screen the safe area starts: the art is placed from the top of the screen, not of the safe area.
+    /// How far down the screen the content starts (under the navigation bar): the art is placed from the top of the screen, not of
+    /// the content.
     var topInset: CGFloat = 0
+    /// The navigation bar's height: the copy's room above it is the board's, measured from under the status bar.
+    var barHeight: CGFloat = 0
     let onPurchased: () -> Void
 
     @Environment(StoreManager.self) private var store
@@ -29,7 +32,7 @@ struct ProPlansScreen: View {
         VStack(spacing: 0) {
             ScrollView {
                 ProMarketing(context: context, aiIsAvailable: aiStatus.isAvailable, time: time)
-                    .padding(.top, 96)
+                    .padding(.top, max(0, 96 - barHeight))
                     .padding(.bottom, 20)
             }
             .scrollIndicators(.hidden)

@@ -36,27 +36,20 @@ struct ScriptDetailView: View {
         @Bindable var viewModel = viewModel
         Group {
             if let script = viewModel.script {
-                if viewModel.isEditing {
-                    ScriptEditorView(viewModel: viewModel)
-                } else {
-                    ScriptPageView(
-                        viewModel: viewModel,
-                        script: script,
-                        folders: library.folders,
-                        actions: actions,
-                        onBack: { dismiss() },
-                        onRecord: { presentation.openPrompter(scriptID: script.id, mode: .selfie) },
-                        onOpenTake: { presentation.openReview(of: $0) }
-                    )
-                }
+                ScriptPageView(
+                    viewModel: viewModel,
+                    script: script,
+                    folders: library.folders,
+                    actions: actions,
+                    onBack: { dismiss() },
+                    onRecord: { presentation.openPrompter(scriptID: script.id, mode: .selfie) },
+                    onOpenTake: { presentation.openReview(of: $0) }
+                )
             } else {
                 ContentUnavailableView("This script was deleted", systemImage: "doc.text")
             }
         }
         .background(Palette.bg)
-        // The page uses the system's bar (back, platform, •••); the writing editor has its own header, so nothing sits above it.
-        .toolbarVisibility(viewModel.isEditing ? .hidden : .visible, for: .navigationBar)
-        .navigationBarBackButtonHidden(viewModel.isEditing)
         .navigationBarTitleDisplayMode(.inline)
         .hidesCueTabBar()
         .task { viewModel.beginWritingIfNeeded() }
@@ -101,7 +94,8 @@ struct ScriptDetailView: View {
         ScriptActions(
             record: { presentation.openPrompter(scriptID: $0.id, mode: .selfie) },
             studio: { presentation.openPrompter(scriptID: $0.id, mode: .studio) },
-            edit: { _ in viewModel.startEditing() },
+            // The page is where the words are edited: its menu has no Edit.
+            edit: { _ in },
             duplicate: { _ in viewModel.duplicate() },
             move: { viewModel.move(to: $1) },
             moveToNewFolder: { _ in viewModel.startNewFolder() },

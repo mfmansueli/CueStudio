@@ -22,8 +22,6 @@ struct StudioModeView: View {
         ZStack {
             settings.studioBackground.color.ignoresSafeArea()
             VStack(spacing: 0) {
-                topBar
-                    .padding(.horizontal, 14)
                 VStack(spacing: 6) {
                     ProgressLine(viewModel: viewModel)
                     StudioTimeLine(viewModel: viewModel)
@@ -69,24 +67,44 @@ struct StudioModeView: View {
                 .transition(.opacity)
             }
         }
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbarBackgroundVisibility(.hidden, for: .navigationBar)
+        .toolbar { topBar }
     }
 
-    /// Close, the mode switch and Remote.
-    private var topBar: some View {
-        HStack {
-            Button(action: onClose) { Image(systemName: "xmark") }
-                .buttonStyle(.cueIcon(.glass, diameter: 40))
-                .accessibilityLabel(Text("Close"))
+    /// The navigation bar, the system's: close at the start, Selfie | Studio in the middle and, at the end, the script's platform ("● TikTok",
+    /// opens Create for, which sets the ideal length shown above the text) and Remote.
+    @ToolbarContentBuilder
+    private var topBar: some ToolbarContent {
+        ToolbarItem(placement: .topBarLeading) {
+            Button(role: .close, action: onClose)
                 .accessibilityIdentifier("prompter.closeButton")
-            Spacer()
+        }
+        ToolbarItem(placement: .principal) {
             ModeSwitcher(mode: .studio) { mode in
                 Task { await viewModel.switchMode(to: mode) }
             }
-            Spacer()
+        }
+        if let script = viewModel.script {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button { viewModel.platformChipTapped() } label: {
+                    HStack(spacing: 6) {
+                        PlatformDot(color: script.platform.tint)
+                        Text(script.platform.label).font(.footnote.weight(.semibold))
+                    }
+                    .foregroundStyle(Palette.ink)
+                }
+                .accessibilityLabel(Text("Create for"))
+                .accessibilityValue(Text(script.platform.label))
+                .accessibilityIdentifier("prompter.platformButton")
+            }
+            ToolbarSpacer(.fixed, placement: .topBarTrailing)
+        }
+        ToolbarItem(placement: .topBarTrailing) {
             Button { viewModel.openRemoteControl() } label: {
                 Image(systemName: "iphone.radiowaves.left.and.right")
+                    .foregroundStyle(viewModel.isRemoteConnected ? Palette.accText : Palette.ink)
             }
-            .buttonStyle(.cueIcon(viewModel.isRemoteConnected ? .accent : .glass, diameter: 40))
             .accessibilityLabel(Text("Remote Control"))
             .accessibilityValue(Text(viewModel.remote.state.label))
             .accessibilityIdentifier("prompter.remoteButton")

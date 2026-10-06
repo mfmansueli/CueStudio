@@ -299,6 +299,7 @@ final class PrompterViewModel {
     }
 
     func setScrollMode(_ mode: ScrollMode) {
+        bar.touch()
         guard session.prompter.scrollMode != mode else { return }
         session.prompter.scrollMode = mode
     }
@@ -377,6 +378,7 @@ final class PrompterViewModel {
     }
 
     func togglePlay() {
+        bar.touch()
         guard hasScript else { return }
         if countdown != nil {
             cancelCountdown()
@@ -426,6 +428,7 @@ final class PrompterViewModel {
     }
 
     func rewind() {
+        bar.touch()
         rewindText()
         pause()
         toast.show(String(localized: "Back to the top"))
@@ -477,6 +480,7 @@ final class PrompterViewModel {
     /// The speed slider: tenths, within the range. For this session; the default speed is in
     /// Creator Setup.
     func setSpeed(_ value: Double) {
+        bar.touch()
         let speed = PrompterSettings.clampedSpeed(value)
         guard speed != session.prompter.speed else { return }
         session.prompter.speed = speed

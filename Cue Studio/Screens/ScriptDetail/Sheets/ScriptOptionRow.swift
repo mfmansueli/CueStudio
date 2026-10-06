@@ -5,7 +5,7 @@
 
 import SwiftUI
 
-/// A row of the options and details lists: a name, what it's set to and a chevron, opening the
+/// A row of Script details: a name, what it's set to and a chevron, opening the
 /// sheet that changes it.
 struct ScriptOptionRow<Value: View>: View {
     let title: String

@@ -5,8 +5,8 @@
 
 import SwiftUI
 
-/// The ••• of the script page: ✦ Improve with Cue (with Apple Intelligence), Versions & options (the full editor), Script
-/// details and Studio mode, then what every script menu has.
+/// The ••• of the script page: ✦ Improve with Cue (with Apple Intelligence), Script details and Studio mode, then what every
+/// script menu has.
 struct ScriptPageMenu: View {
     let script: Script
     let folders: [String]
@@ -14,7 +14,6 @@ struct ScriptPageMenu: View {
     /// Apple Intelligence can write: without it there is no Improve.
     var hasAI = true
     let onImprove: () -> Void
-    let onVersions: () -> Void
     let onDetails: () -> Void
 
     @Environment(TopicTaggingService.self) private var tagging
@@ -22,7 +21,6 @@ struct ScriptPageMenu: View {
 
     var body: some View {
         if hasAI { Button(action: onImprove) { Label("Improve with Cue", systemImage: "sparkles") } }
-        Button(action: onVersions) { Label("Versions & options", systemImage: "square.stack") }
         Button(action: onDetails) { Label("Script details", systemImage: "info.circle") }
         Button { actions.studio(script) } label: { Label("Studio mode", systemImage: "text.alignleft") }
         if !tagging.topics.isEmpty {

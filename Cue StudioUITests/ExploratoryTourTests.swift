@@ -232,7 +232,14 @@ final class ExploratoryTourTests: XCTestCase {
     private func takesAndEditor() {
         tab(1)
         shot("takes")
-        if tap("takes.layout.list") { shot("takes-list") }
+        let list = app.segmentedControls["takes.layout"].buttons["List"]
+        if list.waitForExistence(timeout: 4) {
+            list.tap()
+            sleep(1)
+            shot("takes-list")
+        } else {
+            misses.append("takes.layout")
+        }
         let video = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH 'takes.video.'")).firstMatch
         if video.waitForExistence(timeout: 5) {
             video.tap()
@@ -284,7 +291,8 @@ final class ExploratoryTourTests: XCTestCase {
         }
         if tap("prompter.moreButton") { shot("prompter-more"); app.swipeDown() }
         if tap("prompter.cameraSettingsButton") { shot("prompter-camera"); closeSheet() }
-        if app.buttons["prompter.scrollMode.voice"].exists { app.buttons["prompter.scrollMode.voice"].tap(); shot("prompter-voice") }
+        let voice = app.segmentedControls["prompter.scrollMode"].buttons["Voice"]
+        if voice.exists { voice.tap(); shot("prompter-voice") }
         if app.buttons["Studio"].exists { app.buttons["Studio"].tap(); sleep(1); shot("prompter-studio"); app.buttons["Selfie"].tap(); sleep(1) }
         if tap("prompter.recordButton") {
             sleep(2)

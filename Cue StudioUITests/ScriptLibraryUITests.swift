@@ -209,6 +209,10 @@ final class ScriptLibraryUITests: XCTestCase {
         // The Draft | Shaped switch is gone; Record is the page's only one.
         XCTAssertFalse(app.buttons["page.mode.draft"].exists || app.buttons["page.mode.shaped"].exists)
         XCTAssertEqual(app.buttons.matching(identifier: "detail.recordButton").count, 1)
+        // Record stays at hand while the title is being typed (only the words' keyboard brings the cues in its place).
+        element(app, "page.titleField").tap()
+        XCTAssertTrue(app.buttons["detail.recordButton"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.buttons["detail.recordButton"].isHittable)
     }
 
     func testACueFromTheBarGoesIntoTheText() {
@@ -220,6 +224,47 @@ final class ScriptLibraryUITests: XCTestCase {
         XCTAssertTrue(element(app, "page.cuesBar").waitForExistence(timeout: 5))
         app.buttons["page.cue.pause"].tap()
         XCTAssertTrue((text.value as? String)?.contains("[pause]") == true)
+    }
+
+    /// Cues, by Improve, hides the cue tags on the page and shows them again; the words keep them either way.
+    func testTheCuesSwitchHidesAndShowsTheTags() {
+        let app = CueApp.launch(seeded: true)
+        openScript(app, Self.lamp)
+        let toggle = element(app, "page.cuesToggle")
+        XCTAssertTrue(toggle.waitForExistence(timeout: 5))
+        let state = { (toggle.value as? String) ?? String(toggle.isSelected) }
+        let before = state()
+        toggle.tap()
+        XCTAssertNotEqual(state(), before)
+        XCTAssertTrue((element(app, "page.editor").value as? String)?.contains("[pause]") == true)
+        toggle.tap()
+        XCTAssertEqual(state(), before)
+    }
+
+    /// Backspace into a cue takes the whole tag; "+" on the bar makes a cue of the creator's own, which stays on the bar.
+    func testDeletingIntoACueDeletesAllOfItAndANewCueStaysOnTheBar() {
+        let app = CueApp.launch(seeded: true)
+        openScript(app, Self.lamp)
+        let text = element(app, "page.editor")
+        XCTAssertTrue(text.waitForExistence(timeout: 5))
+        text.tap()
+        // Smile: the sample script has no smile of its own (it has a [pause]).
+        XCTAssertTrue(app.buttons["page.cue.smile"].waitForExistence(timeout: 5))
+        app.buttons["page.cue.smile"].tap()
+        XCTAssertTrue((text.value as? String)?.contains("[smile]") == true)
+        // The cue went in with a space after it: the first backspace takes the space, the second the whole cue.
+        text.typeText(XCUIKeyboardKey.delete.rawValue)
+        text.typeText(XCUIKeyboardKey.delete.rawValue)
+        let afterDelete = text.value as? String ?? ""
+        XCTAssertFalse(afterDelete.contains("smile") || afterDelete.contains("[smil"), "A piece of the cue stayed: \(afterDelete)")
+
+        app.buttons["page.addCueButton"].tap()
+        let alert = app.alerts["New cue"]
+        XCTAssertTrue(alert.waitForExistence(timeout: 5))
+        alert.textFields.firstMatch.typeText("laugh")
+        alert.buttons["Add"].tap()
+        XCTAssertTrue(app.buttons["page.cue.laugh"].waitForExistence(timeout: 5))
+        XCTAssertTrue((text.value as? String)?.contains("[laugh]") == true)
     }
 
     func testTheHookButtonOpensTheHooksSheetAndPickingOneChangesTheOpening() {
@@ -261,11 +306,14 @@ final class ScriptLibraryUITests: XCTestCase {
         XCTAssertTrue(format.waitForExistence(timeout: 5))
     }
 
-    func testTheMenuLeadsToImproveDetailsAndTheFullEditor() {
+    func testTheMenuLeadsToImproveAndDetails() {
         let app = CueApp.launch(seeded: true)
         openScript(app, Self.lamp)
 
         app.buttons["page.menuButton"].tap()
+        XCTAssertTrue(app.buttons["Improve with Cue"].waitForExistence(timeout: 5))
+        // The old full editor is gone: the page is where the words are written.
+        XCTAssertFalse(app.buttons["Versions & options"].exists)
         app.buttons["Improve with Cue"].tap()
         XCTAssertTrue(app.buttons["improve.tool.inMyVoice"].waitForExistence(timeout: 5))
         app.buttons["sheet.closeButton"].tap()
@@ -279,54 +327,6 @@ final class ScriptLibraryUITests: XCTestCase {
         XCTAssertTrue(tutorial.waitForExistence(timeout: 5))
         tutorial.tap()
         XCTAssertTrue(app.staticTexts.matching(NSPredicate(format: "label BEGINSWITH 'Sections:'")).firstMatch.waitForExistence(timeout: 5))
-    }
-
-    // MARK: - Versions & options (the writing editor)
-
-    func testVersionsAndOptionsOpenTheEditorAndDiscardingComesBackToThePage() {
-        let app = CueApp.launch(seeded: true)
-        openScript(app, Self.lamp)
-        openFullEditor(app)
-        // Options › Discard changes is how writing is given up.
-        app.buttons["editor.tool.options"].tap()
-        let discard = app.buttons["editor.discardButton"]
-        XCTAssertTrue(discard.waitForExistence(timeout: 5))
-        discard.tap()
-        XCTAssertTrue(app.buttons["detail.recordButton"].waitForExistence(timeout: 5))
-        app.pageBackButton.tap()
-        XCTAssertTrue(element(app, "scripts.promptCard").waitForExistence(timeout: 5))
-    }
-
-    func testTheWritingBarOpensItsPanelsInTheKeyboardsPlace() {
-        let app = CueApp.launch(seeded: true)
-        openScript(app, Self.lamp)
-        openFullEditor(app)
-        for tool in ["ai", "cues", "sections", "options"] {
-            let button = app.buttons["editor.tool.\(tool)"]
-            XCTAssertTrue(button.waitForExistence(timeout: 5), tool)
-            button.tap()
-            let panel = element(app, "editor.panel.\(tool)")
-            XCTAssertTrue(panel.waitForExistence(timeout: 5), "No panel for \(tool)")
-        }
-        // The keyboard button puts the panel away.
-        app.buttons["editor.keyboardButton"].tap()
-        XCTAssertFalse(element(app, "editor.panel.options").waitForExistence(timeout: 1))
-    }
-
-    func testACueGoesIntoTheTextAndDiscardingBringsTheScriptBack() {
-        let app = CueApp.launch(seeded: true)
-        openScript(app, Self.lamp)
-        openFullEditor(app)
-        app.buttons["editor.tool.cues"].tap()
-        let cue = app.buttons["editor.cue.smile"]
-        XCTAssertTrue(cue.waitForExistence(timeout: 5))
-        cue.tap()
-        let text = app.textViews["editor.paragraph.0"]
-        XCTAssertTrue((text.value as? String)?.contains("[smile]") == true)
-        app.buttons["editor.tool.options"].tap()
-        app.buttons["editor.discardButton"].tap()
-        XCTAssertTrue(app.buttons["detail.recordButton"].waitForExistence(timeout: 5))
-        XCTAssertFalse(app.staticTexts.matching(NSPredicate(format: "label CONTAINS 'SMILE'")).firstMatch.exists)
     }
 
     // MARK: - Library
@@ -361,13 +361,6 @@ final class ScriptLibraryUITests: XCTestCase {
     private func openScript(_ app: XCUIApplication, _ title: String) {
         app.openScriptPage(titled: title)
         XCTAssertTrue(app.buttons["detail.recordButton"].waitForExistence(timeout: 5))
-    }
-
-    /// ••• › Versions & options: the writing editor with its bar of tools.
-    private func openFullEditor(_ app: XCUIApplication) {
-        app.buttons["page.menuButton"].tap()
-        app.buttons["Versions & options"].tap()
-        XCTAssertTrue(app.buttons["editor.doneButton"].waitForExistence(timeout: 5))
     }
 
     private func element(_ app: XCUIApplication, _ identifier: String) -> XCUIElement {

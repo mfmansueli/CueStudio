@@ -240,6 +240,31 @@ final class EditorUITests: XCTestCase {
         XCTAssertTrue(app.buttons["review.editButton"].waitForExistence(timeout: 5))
     }
 
+    /// Done › "Yes — share": the edited video is made and "Ready to travel" opens over the review (it used to close the app).
+    func testSharingRightAfterEditingOpensReadyToTravel() {
+        let app = EditorApp.open()
+        EditorApp.tapTool(app, "edit")
+        EditorApp.scrub(app)
+        EditorApp.tapTool(app, "split")
+        EditorApp.done(app, answer: "share")
+        XCTAssertTrue(app.descendants(matching: .any)["ready.sheet"].waitForExistence(timeout: 30), "Ready to travel never opened")
+        XCTAssertEqual(app.state, .runningForeground)
+    }
+
+    /// Edited, back in the review: its Share makes the edited video and "Ready to travel" opens.
+    func testTheReviewsShareAfterAnEditOpensReadyToTravel() {
+        let app = EditorApp.open()
+        EditorApp.tapTool(app, "edit")
+        EditorApp.scrub(app)
+        EditorApp.tapTool(app, "split")
+        EditorApp.done(app)
+        let share = app.buttons["review.shareButton"]
+        XCTAssertTrue(share.waitForExistence(timeout: 10))
+        share.tap()
+        XCTAssertTrue(app.descendants(matching: .any)["ready.sheet"].waitForExistence(timeout: 30), "Ready to travel never opened")
+        XCTAssertEqual(app.state, .runningForeground)
+    }
+
     // MARK: - Timeline
 
     func testDraggingTheTimelineScrubsThePlayhead() {
