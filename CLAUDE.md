@@ -105,3 +105,18 @@ Toda tela, componente ou cor nova **precisa passar** no contraste antes de ser e
 - Compras são testadas localmente com `CueStudio.storekit` (selecionado no scheme).
 - Em Debug, uma instalação nova volta a ter as 5 exportações grátis: o contador fica no Keychain (sobrevive a reinstalar)
   e o `UsageQuotaService` o zera no primeiro lançamento depois de instalar (`DefaultsKey.installLaunched`). Release não zera.
+
+## Espaço em disco (não encher o Mac)
+
+Sessões do Claude Code já deixaram dezenas de GB de lixo em builds e simuladores. Para não repetir:
+
+- **Nunca chame `xcodebuild` direto nem crie DerivedData fora de `build/DerivedData`.** Nada de pastas `dd-*`, scratchpad ou
+  `/tmp` para builds: use sempre `scripts/build.sh` e `scripts/test.sh` (eles já usam o `build/DerivedData` do checkout).
+- **Não crie simuladores nem baixe runtimes de iOS** (`xcrun simctl create`, Xcode › Components). Use o simulador que os
+  scripts já definem.
+- **Testes em paralelo criam clones de simulador** em `~/Library/Developer/XCTestDevices` (o `du` mostra ~18 GB cada, mas são
+  cópias APFS que dividem dados com o original; mesmo assim crescem a cada rodada). Evite rodar testes em
+  paralelo (`-parallel-testing-enabled NO`); se o script não permitir, avise o usuário em vez de seguir. Ao terminar uma
+  rodada de testes, rode `xcrun simctl --set testing delete all`.
+- **Ao fim de cada sessão, apague o que você criou fora do repositório** (pastas temporárias, capturas, logs grandes) e o
+  `build/DerivedData` de worktrees descartados.
