@@ -83,7 +83,7 @@ struct TopicBirthPainter {
             context.fill(circle(at, sizes[index] / 2 * 0.6), with: .color(light.opacity(follower.opacity * fade)))
         }
         let head = pose(TopicBirth.head)
-        let hot = Palette.flightHot
+        let hot = Palette.Flight.hot
         guard head.opacity > 0.01, let along = head.along else { return }
         let point = point(onRouteAt: along)
         context.fill(
@@ -107,7 +107,7 @@ struct TopicBirthPainter {
         for glint in TopicBirth.glints {
             let glow = pose(glint.layer)
             cross(
-                at: birth.point(at: glint.along), size: glint.size, thickness: 1, pose: glow, tint: Palette.starWarm, glows: false, in: &context
+                at: birth.point(at: glint.along), size: glint.size, thickness: 1, pose: glow, tint: Palette.Universe.starWarm, glows: false, in: &context
             )
         }
     }

@@ -278,7 +278,9 @@ struct UniverseMap: View {
         layer.fill(
             Self.disc(.zero, 112),
             with: .radialGradient(
-                Gradient(colors: [Palette.nightViolet.opacity(0.34), Palette.nightViolet.opacity(0.12), Palette.nightViolet.opacity(0)]),
+                Gradient(colors: [
+                    Palette.Universe.nightViolet.opacity(0.34), Palette.Universe.nightViolet.opacity(0.12), Palette.Universe.nightViolet.opacity(0),
+                ]),
                 center: .zero, startRadius: 0, endRadius: 112
             )
         )
@@ -290,8 +292,11 @@ struct UniverseMap: View {
         func ellipse(_ size: CGSize) -> Path {
             Path(ellipseIn: CGRect(x: c.x - size.width, y: c.y - size.height, width: size.width * 2, height: size.height * 2))
         }
-        canvas.stroke(ellipse(Self.innerOrbit), with: .color(Palette.starLilac.opacity(0.22 * opacity)), lineWidth: 0.8)
-        canvas.stroke(ellipse(Self.outerOrbit), with: .color(Palette.starLilac.opacity(0.16 * opacity)), style: StrokeStyle(lineWidth: 0.8, dash: [2, 4]))
+        canvas.stroke(ellipse(Self.innerOrbit), with: .color(Palette.Universe.starLilac.opacity(0.22 * opacity)), lineWidth: 0.8)
+        canvas.stroke(
+            ellipse(Self.outerOrbit), with: .color(Palette.Universe.starLilac.opacity(0.16 * opacity)),
+            style: StrokeStyle(lineWidth: 0.8, dash: [2, 4])
+        )
     }
 
     /// Soft grey specks of depth scattered on the disc, still: the dust the prototype leaves between the videos.

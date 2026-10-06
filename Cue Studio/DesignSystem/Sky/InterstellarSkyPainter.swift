@@ -12,7 +12,7 @@ enum InterstellarSkyPainter {
         let diagonal = hypot(size.width, size.height)
         let width = StarfieldMath.bandWidth
         let peak = StarfieldMath.bandPeakOpacity
-        let light = Palette.interstellarBand
+        let light = Palette.Sky.interstellarBand
 
         var layer = canvas
         layer.translateBy(x: size.width / 2, y: size.height * 0.46)

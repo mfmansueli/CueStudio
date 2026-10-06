@@ -40,7 +40,7 @@ struct AddMediaSheet: View {
                 if viewModel.isImportingMedia {
                     ProgressView().tint(Palette.ink)
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
-                        .background(Palette.durationBadge)
+                        .background(Palette.Takes.durationBadge)
                 }
             }
         }

@@ -147,14 +147,14 @@ struct VoiceChapter: View {
                 )
             VStack(alignment: .leading, spacing: 1) {
                 Text(permission.title).font(.system(size: 16, weight: .semibold)).foregroundStyle(Palette.ink)
-                Text(permission.detail).font(.system(size: 12.5)).foregroundStyle(Palette.flightInk.opacity(0.6))
+                Text(permission.detail).font(.system(size: 12.5)).foregroundStyle(Palette.Flight.ink.opacity(0.6))
             }
             Spacer(minLength: 8)
             stateBadge(state, isNext: isNext, isFollowUp: permission.identifier == "camera" && model.microphone != .notAsked)
         }
         .padding(.horizontal, 14)
         .frame(minHeight: 64)
-        .background(isNext ? Palette.nightViolet.opacity(0.06) : .clear)
+        .background(isNext ? Palette.Universe.nightViolet.opacity(0.06) : .clear)
         .contentShape(Rectangle())
         if state == .allowed {
             content

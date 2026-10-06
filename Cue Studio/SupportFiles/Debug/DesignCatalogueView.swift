@@ -160,14 +160,14 @@ struct DesignCatalogueView: View {
             ("acc", Palette.acc), ("aiText", Palette.aiText), ("record", Palette.record), ("success", Palette.success),
             ("info", Palette.info), ("warn", Palette.warn), ("danger", Palette.danger), ("ink", Palette.ink),
             ("ink2", Palette.ink2), ("inkHint", Palette.inkHint), ("ink3", Palette.ink3), ("separator", Palette.separator),
-            ("warm", Palette.worldWarm), ("mint", Palette.worldMint), ("pink", Palette.worldPink), ("sky", Palette.worldSky),
-            ("TikTok", Palette.platformTikTok), ("Reels", Palette.platformReels), ("Shorts", Palette.platformShorts),
-            ("YouTube", Palette.platformYouTube), ("LinkedIn", Palette.platformLinkedIn), ("Stories", Palette.platformStories),
-            ("recPillRing", Palette.recPillRing),
-            ("sliderTrack", Palette.sliderTrack), ("sliderFill", Palette.sliderFill), ("sliderThumb", Palette.sliderThumb),
-            ("selectionBar", Palette.selectionBar), ("aiReplacedFill", Palette.aiReplacedFill), ("stripFill", Palette.stripFill),
-            ("stateReady", Palette.stateReadyFill), ("stateDraft", Palette.stateDraftFill), ("adTag", Palette.adTagFill),
-            ("emptyRing", Palette.emptyRing), ("emptyOrbiter", Palette.emptyOrbiter), ("skyStarYou", Palette.skyStarYou),
+            ("warm", Palette.World.warm), ("mint", Palette.World.mint), ("pink", Palette.World.pink), ("sky", Palette.World.sky),
+            ("TikTok", Palette.Platform.tikTok), ("Reels", Palette.Platform.reels), ("Shorts", Palette.Platform.shorts),
+            ("YouTube", Palette.Platform.youTube), ("LinkedIn", Palette.Platform.linkedIn), ("Stories", Palette.Platform.stories),
+            ("recPillRing", Palette.Camera.recPillRing),
+            ("Slider.track", Palette.Slider.track), ("Slider.fill", Palette.Slider.fill), ("Slider.thumb", Palette.Slider.thumb),
+            ("selectionBar", Palette.Page.selectionBar), ("aiReplacedFill", Palette.Page.aiReplacedFill), ("stripFill", Palette.Page.stripFill),
+            ("stateReady", Palette.Page.stateReadyFill), ("stateDraft", Palette.Page.stateDraftFill), ("adTag", Palette.Scripts.adTagFill),
+            ("emptyRing", Palette.Scripts.emptyRing), ("emptyOrbiter", Palette.Scripts.emptyOrbiter), ("skyStarYou", Palette.World.skyStarYou),
         ]
         return VStack(alignment: .leading, spacing: 16) {
             LazyVGrid(columns: columns, spacing: 12) {
@@ -303,15 +303,15 @@ struct DesignCatalogueView: View {
         VStack(alignment: .leading, spacing: 22) {
             heading("ThemeRail · row 3 × 30 · chip 3 × 14")
             HStack(spacing: 14) {
-                ForEach([Palette.worldWarm, Palette.worldMint, Palette.worldPink, Palette.worldSky], id: \.self) { ThemeRail(color: $0) }
-                ForEach([Palette.worldWarm, Palette.worldMint, Palette.worldPink], id: \.self) { ThemeRail(color: $0, size: .chip) }
+                ForEach([Palette.World.warm, Palette.World.mint, Palette.World.pink, Palette.World.sky], id: \.self) { ThemeRail(color: $0) }
+                ForEach([Palette.World.warm, Palette.World.mint, Palette.World.pink], id: \.self) { ThemeRail(color: $0, size: .chip) }
             }
             heading("PlatformDot · 7 · 6")
             HStack(spacing: 14) {
-                PlatformDot(color: Palette.platformTikTok)
-                PlatformDot(color: Palette.platformReels)
-                PlatformDot(color: Palette.platformShorts, isSmall: true)
-                PlatformDot(color: Palette.platformYouTube, isSmall: true)
+                PlatformDot(color: Palette.Platform.tikTok)
+                PlatformDot(color: Palette.Platform.reels)
+                PlatformDot(color: Palette.Platform.shorts, isSmall: true)
+                PlatformDot(color: Palette.Platform.youTube, isSmall: true)
             }
             heading("RecPill · 26 to see · 44 to touch")
             RecPill {}

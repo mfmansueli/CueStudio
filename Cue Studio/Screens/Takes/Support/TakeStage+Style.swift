@@ -24,7 +24,7 @@ extension TakeStage {
         case .pick: Palette.acc
         case .edit: .white
         case .ready: Palette.success
-        case .shared: Palette.flightInk.opacity(0.7)
+        case .shared: Palette.Flight.ink.opacity(0.7)
         }
     }
 
@@ -34,7 +34,7 @@ extension TakeStage {
         case .pick: Palette.acc
         case .edit: Palette.info
         case .ready: Palette.success
-        case .shared: Palette.starLilac
+        case .shared: Palette.Universe.starLilac
         }
     }
 
@@ -44,7 +44,7 @@ extension TakeStage {
         case .pick: Palette.acc.opacity(0.55)
         case .edit: Palette.info.opacity(0.45)
         case .ready: Palette.success.opacity(0.5)
-        case .shared: Palette.flightLilac.opacity(0.4)
+        case .shared: Palette.Flight.lilac.opacity(0.4)
         }
     }
 }

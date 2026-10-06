@@ -21,7 +21,7 @@ struct ProPlanCard: View {
         Button(action: action) {
             VStack(alignment: .leading, spacing: 3) {
                 Text(plan == .annual ? String(localized: "Yearly") : plan.label).font(.system(size: 15, weight: .bold)).foregroundStyle(Palette.ink)
-                Text(detail).font(.system(size: 13)).foregroundStyle(Palette.flightInk.opacity(0.75)).lineLimit(1).minimumScaleFactor(0.8)
+                Text(detail).font(.system(size: 13)).foregroundStyle(Palette.Flight.ink.opacity(0.75)).lineLimit(1).minimumScaleFactor(0.8)
             }
             .padding(.horizontal, 14)
             .frame(maxWidth: .infinity, alignment: .leading)

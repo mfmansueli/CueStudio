@@ -34,9 +34,9 @@ struct IdeaCardChip: View {
             if let isTag {
                 Text(verbatim: isTag)
                     .font(.system(size: 9.5, weight: .bold, design: .monospaced))
-                    .foregroundStyle(Palette.adTagInk)
+                    .foregroundStyle(Palette.Scripts.adTagInk)
                     .padding(.horizontal, 4).padding(.vertical, 1)
-                    .background(Palette.adTagFill, in: RoundedRectangle(cornerRadius: 4, style: .continuous))
+                    .background(Palette.Scripts.adTagFill, in: RoundedRectangle(cornerRadius: 4, style: .continuous))
             }
             if let glyph { Text(verbatim: glyph).foregroundStyle(Palette.aiText) }
             // At the biggest text sizes a chip grows and wraps: its words are what says what it does.
@@ -55,7 +55,7 @@ struct IdeaCardChip: View {
         .padding(.vertical, typeSize.isAccessibilitySize ? 8 : 0)
         .frame(minHeight: height)
         .background(background, in: Capsule())
-        .overlay { if style == .ai && !isCompact { Capsule().strokeBorder(Palette.heroChipAIStroke, lineWidth: 0.5) } }
+        .overlay { if style == .ai && !isCompact { Capsule().strokeBorder(Palette.Scripts.heroChipAIStroke, lineWidth: 0.5) } }
         .frame(minHeight: hitHeight)
         .contentShape(Capsule())
     }
@@ -70,8 +70,8 @@ struct IdeaCardChip: View {
 
     private var background: Color {
         switch style {
-        case .neutral: isCompact ? Palette.bg.opacity(0.45) : Palette.heroChip
-        case .ai: isCompact ? Color(hex: 0x9D8CFF, opacity: 0.26) : Palette.heroChipAI
+        case .neutral: isCompact ? Palette.bg.opacity(0.45) : Palette.Scripts.heroChip
+        case .ai: isCompact ? Color(hex: 0x9D8CFF, opacity: 0.26) : Palette.Scripts.heroChipAI
         case .off: Palette.fill
         }
     }

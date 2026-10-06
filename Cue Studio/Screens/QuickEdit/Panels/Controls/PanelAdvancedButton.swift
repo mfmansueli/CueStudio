@@ -24,7 +24,7 @@ struct PanelAdvancedButton: View {
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
-        .overlay(alignment: .top) { Rectangle().fill(Palette.editorSeparator).frame(height: 0.5) }
+        .overlay(alignment: .top) { Rectangle().fill(Palette.Editor.separator).frame(height: 0.5) }
         .accessibilityAddTraits(isOpen ? .isSelected : [])
         .accessibilityIdentifier("edit.panel.advanced")
     }

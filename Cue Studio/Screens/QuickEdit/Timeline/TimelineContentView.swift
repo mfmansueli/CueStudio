@@ -125,7 +125,7 @@ final class TimelineContentView: UIView {
             line.backgroundColor = UIColor.white.withAlphaComponent(tick.isMajor ? 0.6 : 0.3).cgColor
             layersRoot.addSublayer(line)
             if let label = tick.label, !geometry.isCompact || tick.isMajor {
-                let text = textLayer(label, size: 10, weight: .medium, color: UIColor(Palette.rulerLabel), monospaced: true)
+                let text = textLayer(label, size: 10, weight: .medium, color: UIColor(Palette.Editor.rulerLabel), monospaced: true)
                 text.frame.origin = CGPoint(x: x - text.frame.width / 2, y: top)
                 layersRoot.addSublayer(text)
             }
@@ -195,7 +195,7 @@ final class TimelineContentView: UIView {
                 if let image = frames.image(for: url, at: sourceTime + tileSeconds / 2, grid: grid) {
                     tile.contents = image.cgImage
                 } else {
-                    tile.backgroundColor = UIColor(Palette.thumbnailBottom).cgColor
+                    tile.backgroundColor = UIColor(Palette.Takes.thumbnailBottom).cgColor
                 }
                 container.addSublayer(tile)
             }
@@ -204,11 +204,11 @@ final class TimelineContentView: UIView {
         // The waveform under the frames.
         let well = CALayer()
         well.frame = CGRect(x: 0, y: clip.thumbnailHeight, width: visibleFrame.width, height: clip.waveformHeight)
-        well.backgroundColor = UIColor(Palette.waveformWell).cgColor
+        well.backgroundColor = UIColor(Palette.Editor.waveformWell).cgColor
         container.addSublayer(well)
         if let levels = waveforms.levels(for: url), !levels.isEmpty {
             let bars = CAShapeLayer()
-            bars.fillColor = UIColor(Palette.waveformBar).cgColor
+            bars.fillColor = UIColor(Palette.Editor.waveformBar).cgColor
             let path = CGMutablePath()
             let stride = pps < 22 ? 4 : pps < 34 ? 2 : 1
             let barWidth = max(1, CGFloat(0.1 / clip.speed) * pps * CGFloat(stride) * 0.55)
@@ -261,7 +261,7 @@ final class TimelineContentView: UIView {
             let dash = CAShapeLayer()
             dash.path = UIBezierPath(roundedRect: mark.bounds.insetBy(dx: 0.75, dy: 0.75), cornerRadius: 5).cgPath
             dash.fillColor = nil
-            dash.strokeColor = UIColor(Palette.pauseKeepBorder).cgColor
+            dash.strokeColor = UIColor(Palette.Editor.pauseKeepBorder).cgColor
             dash.lineWidth = 1.5
             dash.lineDashPattern = [4, 3]
             mark.addSublayer(dash)
@@ -275,7 +275,7 @@ final class TimelineContentView: UIView {
         let mark = CALayer()
         mark.frame = join.frame
         mark.cornerRadius = join.frame.width / 2
-        mark.backgroundColor = UIColor(hasTransition ? Palette.acc : Palette.joinMark).cgColor
+        mark.backgroundColor = UIColor(hasTransition ? Palette.acc : Palette.Editor.joinMark).cgColor
         mark.borderWidth = join.isSelected ? 2 : 1
         mark.borderColor = (join.isSelected ? UIColor(Palette.acc) : UIColor.white.withAlphaComponent(0.35)).cgColor
         let ink: UIColor = hasTransition ? .black : .white
@@ -337,7 +337,7 @@ final class TimelineContentView: UIView {
 
     /// What an empty track says: plain text, since a tap anywhere on the track does the job.
     private func drawGhost(_ ghost: TimelineGeometry.Ghost) {
-        let label = textLayer(ghost.label, size: 12, weight: .medium, color: UIColor(Palette.laneHintInk))
+        let label = textLayer(ghost.label, size: 12, weight: .medium, color: UIColor(Palette.Editor.laneHintInk))
         label.frame.origin = CGPoint(x: 0, y: ghost.lane.y + (ghost.lane.height - label.frame.height) / 2)
         label.zPosition = 2
         layersRoot.addSublayer(label)
@@ -434,12 +434,16 @@ final class TimelineContentView: UIView {
 
     private static func style(of kind: TimelineGeometry.ItemKind, selected: Bool) -> ItemStyle {
         switch kind {
-        case .text: ItemStyle(fill: UIColor(selected ? Palette.laneTextSelected : Palette.laneText), ink: UIColor(Palette.laneTextInk), symbol: "textformat")
-        case .media: ItemStyle(fill: UIColor(Palette.laneMedia), ink: UIColor(Palette.laneMediaInk), symbol: "photo")
-        case .caption: ItemStyle(fill: UIColor(Palette.laneCaption), ink: UIColor(Palette.laneCaptionInk), symbol: "captions.bubble")
-        case .music: ItemStyle(fill: UIColor(Palette.laneMusic), ink: UIColor(Palette.laneMusicInk), symbol: "music.note")
-        case .voiceOver: ItemStyle(fill: UIColor(Palette.laneVoiceOver), ink: UIColor(Palette.laneVoiceOverInk), symbol: "mic")
-        case .recording: ItemStyle(fill: UIColor(Palette.laneRecording), ink: .white, symbol: "mic.fill")
+        case .text:
+            ItemStyle(
+                fill: UIColor(selected ? Palette.Editor.laneTextSelected : Palette.Editor.laneText),
+                ink: UIColor(Palette.Editor.laneTextInk), symbol: "textformat"
+            )
+        case .media: ItemStyle(fill: UIColor(Palette.Editor.laneMedia), ink: UIColor(Palette.Editor.laneMediaInk), symbol: "photo")
+        case .caption: ItemStyle(fill: UIColor(Palette.Editor.laneCaption), ink: UIColor(Palette.Editor.laneCaptionInk), symbol: "captions.bubble")
+        case .music: ItemStyle(fill: UIColor(Palette.Editor.laneMusic), ink: UIColor(Palette.Editor.laneMusicInk), symbol: "music.note")
+        case .voiceOver: ItemStyle(fill: UIColor(Palette.Editor.laneVoiceOver), ink: UIColor(Palette.Editor.laneVoiceOverInk), symbol: "mic")
+        case .recording: ItemStyle(fill: UIColor(Palette.Editor.laneRecording), ink: .white, symbol: "mic.fill")
         }
     }
 
@@ -448,8 +452,8 @@ final class TimelineContentView: UIView {
     /// Diagonal stripes: yellow for a pause to remove, gray for one to keep.
     private static func hatch(marked: Bool) -> UIColor {
         if let known = hatches[marked] { return known }
-        let stripe = UIColor(marked ? Palette.pauseRemoveStripe : Palette.pauseKeepStripe)
-        let gap = UIColor(marked ? Palette.pauseRemoveGap : Palette.pauseKeepGap)
+        let stripe = UIColor(marked ? Palette.Editor.pauseRemoveStripe : Palette.Editor.pauseKeepStripe)
+        let gap = UIColor(marked ? Palette.Editor.pauseRemoveGap : Palette.Editor.pauseKeepGap)
         let side: CGFloat = 7 * 2.squareRoot()
         let image = UIGraphicsImageRenderer(size: CGSize(width: side, height: side)).image { context in
             gap.setFill()

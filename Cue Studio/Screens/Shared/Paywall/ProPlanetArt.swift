@@ -32,14 +32,14 @@ struct ProPlanetArt: View {
     private static let planetRadius: CGFloat = 30
 
     private static let orbits = [
-        Orbit(width: 192, height: 34, color: Palette.worldWarm.opacity(0.45)),
+        Orbit(width: 192, height: 34, color: Palette.World.warm.opacity(0.45)),
         Orbit(width: 300, height: 48, color: Palette.aiTextStrong.opacity(0.35)),
     ]
 
     private static let travellers = [
-        Traveller(orbit: 1, size: 11, color: Palette.platformTikTok, period: 26, start: 0.2),
-        Traveller(orbit: 1, size: 8, color: Palette.platformReels, period: 26, start: 3.4),
-        Traveller(orbit: 0, size: 7, color: Palette.platformShorts, period: 17, start: 1.1),
+        Traveller(orbit: 1, size: 11, color: Palette.Platform.tikTok, period: 26, start: 0.2),
+        Traveller(orbit: 1, size: 8, color: Palette.Platform.reels, period: 26, start: 3.4),
+        Traveller(orbit: 0, size: 7, color: Palette.Platform.shorts, period: 17, start: 1.1),
     ]
 
     var body: some View {
@@ -61,7 +61,7 @@ struct ProPlanetArt: View {
         // The atmosphere.
         layer.fill(
             Path(ellipseIn: CGRect(x: -96, y: -96, width: 192, height: 192)),
-            with: .radialGradient(Gradient(colors: [Palette.worldWarm.opacity(0.34), .clear]), center: .zero, startRadius: 0, endRadius: 96)
+            with: .radialGradient(Gradient(colors: [Palette.World.warm.opacity(0.34), .clear]), center: .zero, startRadius: 0, endRadius: 96)
         )
         // What is behind the planet: the far half of each orbit and the travellers on it.
         layer.drawLayer { behind in
@@ -83,16 +83,16 @@ struct ProPlanetArt: View {
         let radius = Self.planetRadius
         let disc = Path(ellipseIn: CGRect(x: -radius, y: -radius, width: radius * 2, height: radius * 2))
         canvas.drawLayer { layer in
-            layer.addFilter(.shadow(color: Palette.worldWarm.opacity(0.4), radius: 14))
+            layer.addFilter(.shadow(color: Palette.World.warm.opacity(0.4), radius: 14))
             layer.fill(disc, with: .radialGradient(
                 Gradient(stops: [
-                    .init(color: Palette.proPlanetLight, location: 0), .init(color: Palette.proPlanetMid, location: 0.32),
-                    .init(color: Palette.proPlanetShade, location: 0.66), .init(color: Palette.proPlanetDark, location: 1),
+                    .init(color: Palette.Universe.proPlanetLight, location: 0), .init(color: Palette.Universe.proPlanetMid, location: 0.32),
+                    .init(color: Palette.Universe.proPlanetShade, location: 0.66), .init(color: Palette.Universe.proPlanetDark, location: 1),
                 ]),
                 center: CGPoint(x: -radius * 0.4, y: -radius * 0.4), startRadius: 0, endRadius: radius * 1.7
             ))
         }
-        canvas.stroke(disc, with: .color(Palette.proPlanetLight.opacity(0.35)), lineWidth: 0.6)
+        canvas.stroke(disc, with: .color(Palette.Universe.proPlanetLight.opacity(0.35)), lineWidth: 0.6)
         // A faint band of light crossing it every 9 s.
         let cycle = time.truncatingRemainder(dividingBy: 9) / 9
         canvas.drawLayer { layer in

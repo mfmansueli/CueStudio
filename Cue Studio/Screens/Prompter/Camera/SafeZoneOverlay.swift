@@ -27,24 +27,24 @@ struct SafeZoneOverlay: View {
         let left = max(0, content.minX - frame.minX)
         let right = max(0, frame.maxX - content.maxX)
         ZStack(alignment: .topLeading) {
-            LinearGradient(colors: [Palette.safeZoneShade, Palette.safeZoneShadeFaint], startPoint: .top, endPoint: .bottom)
+            LinearGradient(colors: [Palette.Camera.safeZoneShade, Palette.Camera.safeZoneShadeFaint], startPoint: .top, endPoint: .bottom)
                 .frame(width: frame.width, height: top)
-            LinearGradient(colors: [Palette.safeZoneShadeFaint, Palette.safeZoneShade], startPoint: .top, endPoint: .bottom)
+            LinearGradient(colors: [Palette.Camera.safeZoneShadeFaint, Palette.Camera.safeZoneShade], startPoint: .top, endPoint: .bottom)
                 .frame(width: frame.width, height: bottom)
                 .offset(y: frame.height - bottom)
-            Palette.safeZoneSide
+            Palette.Camera.safeZoneSide
                 .frame(width: left, height: content.height)
                 .offset(y: top)
-            Palette.safeZoneSide
+            Palette.Camera.safeZoneSide
                 .frame(width: right, height: content.height)
                 .offset(x: frame.width - right, y: top)
             RoundedRectangle(cornerRadius: 12, style: .continuous)
-                .strokeBorder(Palette.safeZoneLine, style: StrokeStyle(lineWidth: 1, dash: [5, 4]))
+                .strokeBorder(Palette.Camera.safeZoneLine, style: StrokeStyle(lineWidth: 1, dash: [5, 4]))
                 .overlay(alignment: .bottomLeading) {
                     Text(label)
                         .font(.system(size: 9, weight: .bold))
                         .kerning(0.6)
-                        .foregroundStyle(Palette.safeZoneLabel)
+                        .foregroundStyle(Palette.Camera.safeZoneLabel)
                         .lineLimit(1)
                         .padding(EdgeInsets(top: 0, leading: 9, bottom: 7, trailing: 9))
                 }

@@ -54,9 +54,9 @@ struct VoiceTipViewStyle: TipViewStyle {
         HStack(spacing: 12) {
             Text(verbatim: "✦")
                 .font(.system(size: 15, weight: .semibold))
-                .foregroundStyle(Palette.tipGlyph)
+                .foregroundStyle(Palette.Scripts.tipGlyph)
                 .frame(width: 30, height: 30)
-                .background(Palette.tipGlyphFill, in: Circle())
+                .background(Palette.Scripts.tipGlyphFill, in: Circle())
                 .accessibilityHidden(true)
             VStack(alignment: .leading, spacing: 2) {
                 configuration.title

@@ -45,7 +45,7 @@ struct VoicePermissionsArt: View {
     private func drawGlows(in context: inout GraphicsContext) {
         let lights: [(centre: CGPoint, color: Color)] = [
             (CGPoint(x: 10 + 0.30 * 370, y: 6 + 0.52 * 170), Palette.acc.opacity(0.14)),
-            (CGPoint(x: 10 + 0.72 * 370, y: 6 + 0.52 * 170), Palette.nightViolet.opacity(0.22)),
+            (CGPoint(x: 10 + 0.72 * 370, y: 6 + 0.52 * 170), Palette.Universe.nightViolet.opacity(0.22)),
         ]
         for light in lights {
             var layer = context
@@ -57,7 +57,7 @@ struct VoicePermissionsArt: View {
             )
         }
         context.stroke(LightFX.disc(Self.voice, 64), with: .color(Palette.acc.opacity(0.12)), lineWidth: 1)
-        context.stroke(LightFX.disc(Self.camera, 64), with: .color(Palette.flightLilac.opacity(0.14)), lineWidth: 1)
+        context.stroke(LightFX.disc(Self.camera, 64), with: .color(Palette.Flight.lilac.opacity(0.14)), lineWidth: 1)
     }
 
     // MARK: - The voice orb
@@ -75,8 +75,8 @@ struct VoicePermissionsArt: View {
                 LightFX.disc(Self.voice, 42),
                 with: .radialGradient(
                     Gradient(stops: [
-                        .init(color: Palette.micGlassLight, location: 0), .init(color: Palette.micGlassMid, location: 0.48),
-                        .init(color: Palette.micGlassDark, location: 1),
+                        .init(color: Palette.Flight.micGlassLight, location: 0), .init(color: Palette.Flight.micGlassMid, location: 0.48),
+                        .init(color: Palette.Flight.micGlassDark, location: 1),
                     ]),
                     center: CGPoint(x: Self.voice.x - 42 + 0.34 * 84, y: Self.voice.y - 42 + 0.26 * 84), startRadius: 0, endRadius: 83
                 )
@@ -96,8 +96,8 @@ struct VoicePermissionsArt: View {
                 Path(roundedRect: CGRect(x: -2, y: -height / 2, width: 4, height: height), cornerRadius: 2),
                 with: .linearGradient(
                     Gradient(stops: [
-                        .init(color: Palette.starCream, location: 0), .init(color: Palette.acc, location: 0.55),
-                        .init(color: Palette.flightGoldShade, location: 1),
+                        .init(color: Palette.Universe.starCream, location: 0), .init(color: Palette.acc, location: 0.55),
+                        .init(color: Palette.Flight.goldShade, location: 1),
                     ]),
                     startPoint: CGPoint(x: 0, y: -height / 2), endPoint: CGPoint(x: 0, y: height / 2)
                 )
@@ -109,13 +109,13 @@ struct VoicePermissionsArt: View {
 
     private func drawBeam(in context: inout GraphicsContext) {
         context.drawLayer { layer in
-            layer.addFilter(.shadow(color: Palette.nightViolet.opacity(0.35), radius: 7))
+            layer.addFilter(.shadow(color: Palette.Universe.nightViolet.opacity(0.35), radius: 7))
             layer.fill(
                 Path(roundedRect: CGRect(x: 166, y: 97, width: 58, height: 2), cornerRadius: 1),
                 with: .linearGradient(
                     Gradient(stops: [
-                        .init(color: Palette.acc.opacity(0.85), location: 0), .init(color: Palette.starCream.opacity(0.55), location: 0.45),
-                        .init(color: Palette.flightLilac.opacity(0.85), location: 1),
+                        .init(color: Palette.acc.opacity(0.85), location: 0), .init(color: Palette.Universe.starCream.opacity(0.55), location: 0.45),
+                        .init(color: Palette.Flight.lilac.opacity(0.85), location: 1),
                     ]),
                     startPoint: CGPoint(x: 166, y: 0), endPoint: CGPoint(x: 224, y: 0)
                 )
@@ -131,7 +131,7 @@ struct VoicePermissionsArt: View {
                     LightFX.disc(point, 2.5),
                     with: .radialGradient(
                         Gradient(stops: [
-                            .init(color: .white, location: 0), .init(color: Palette.starGold, location: 0.55), .init(color: Palette.acc, location: 1),
+                            .init(color: .white, location: 0), .init(color: Palette.Universe.starGold, location: 0.55), .init(color: Palette.acc, location: 1),
                         ]),
                         center: point, startRadius: 0, endRadius: 2.5
                     )
@@ -147,23 +147,23 @@ struct VoicePermissionsArt: View {
         let ring = pose("L11")
         LightFX.ring(ring, at: Self.camera, radius: 42, color: Palette.success, in: &context)
         context.drawLayer { layer in
-            layer.addFilter(.shadow(color: Palette.nightViolet.opacity(0.4), radius: 23))
+            layer.addFilter(.shadow(color: Palette.Universe.nightViolet.opacity(0.4), radius: 23))
             layer.addFilter(.shadow(color: .black.opacity(0.45), radius: 13, y: 12))
             layer.fill(
                 LightFX.disc(Self.camera, 42),
                 with: .radialGradient(
-                    Gradient(colors: [Palette.lensRingLight, Palette.lensRingDark]),
+                    Gradient(colors: [Palette.Flight.lensRingLight, Palette.Flight.lensRingDark]),
                     center: CGPoint(x: Self.camera.x - 42 + 0.35 * 84, y: Self.camera.y - 42 + 0.3 * 84), startRadius: 0, endRadius: 83
                 )
             )
         }
-        context.stroke(LightFX.disc(Self.camera, 41.5), with: .color(Palette.flightLilac.opacity(0.7)), lineWidth: 1)
+        context.stroke(LightFX.disc(Self.camera, 41.5), with: .color(Palette.Flight.lilac.opacity(0.7)), lineWidth: 1)
         drawTicks(in: &context)
         context.stroke(LightFX.disc(Self.camera, 33), with: .conicGradient(
             Gradient(stops: [
-                .init(color: Palette.starLilac.opacity(0.55), location: 0), .init(color: .white.opacity(0.04), location: 0.25),
-                .init(color: Palette.flightLilac.opacity(0.4), location: 0.55), .init(color: .white.opacity(0.05), location: 0.8),
-                .init(color: Palette.starLilac.opacity(0.55), location: 1),
+                .init(color: Palette.Universe.starLilac.opacity(0.55), location: 0), .init(color: .white.opacity(0.04), location: 0.25),
+                .init(color: Palette.Flight.lilac.opacity(0.4), location: 0.55), .init(color: .white.opacity(0.05), location: 0.8),
+                .init(color: Palette.Universe.starLilac.opacity(0.55), location: 1),
             ]),
             center: Self.camera, angle: .degrees(210)
         ), lineWidth: 1.5)
@@ -177,7 +177,7 @@ struct VoicePermissionsArt: View {
             var path = Path()
             path.move(to: CGPoint(x: Self.camera.x + 37.5 * cos(angle), y: Self.camera.y + 37.5 * sin(angle)))
             path.addLine(to: CGPoint(x: Self.camera.x + 38 * cos(angle), y: Self.camera.y + 38 * sin(angle)))
-            context.stroke(path, with: .color(Palette.starLilac.opacity(0.45)), lineWidth: 1.4)
+            context.stroke(path, with: .color(Palette.Universe.starLilac.opacity(0.45)), lineWidth: 1.4)
         }
     }
 
@@ -186,7 +186,7 @@ struct VoicePermissionsArt: View {
     private func drawLens(in context: inout GraphicsContext) {
         var lens = context
         lens.clip(to: LightFX.disc(Self.camera, 25))
-        lens.fill(LightFX.disc(Self.camera, 25), with: .color(Palette.lensCore))
+        lens.fill(LightFX.disc(Self.camera, 25), with: .color(Palette.Flight.lensCore))
         drawCore(in: &lens)
         var iris = lens
         iris.translateBy(x: Self.camera.x, y: Self.camera.y)
@@ -198,8 +198,8 @@ struct VoicePermissionsArt: View {
         ]
         let shading = GraphicsContext.Shading.radialGradient(
             Gradient(stops: [
-                .init(color: Palette.lensGlassLight, location: 0), .init(color: Palette.lensRingLight, location: 0.45),
-                .init(color: Palette.lensRingDark, location: 1),
+                .init(color: Palette.Flight.lensGlassLight, location: 0), .init(color: Palette.Flight.lensRingLight, location: 0.45),
+                .init(color: Palette.Flight.lensRingDark, location: 1),
             ]),
             center: .zero, startRadius: 0, endRadius: 38
         )
@@ -217,7 +217,7 @@ struct VoicePermissionsArt: View {
             piece.translateBy(x: move.tx, y: move.ty)
             piece.rotate(by: .degrees(move.rot))
             piece.fill(shape, with: shading)
-            piece.stroke(shape, with: .color(Palette.flightLilac.opacity(0.5)), lineWidth: 0.6)
+            piece.stroke(shape, with: .color(Palette.Flight.lilac.opacity(0.5)), lineWidth: 0.6)
         }
         lens.fill(LightFX.disc(CGPoint(x: Self.camera.x - 6, y: Self.camera.y - 8), 2.2), with: .color(.white.opacity(0.8)))
         drawSweep(in: &lens)
@@ -230,10 +230,10 @@ struct VoicePermissionsArt: View {
         )
         lens.fill(
             LightFX.disc(CGPoint(x: Self.camera.x + 25 - 9 - 3, y: Self.camera.y + 25 - 8 - 3), 3),
-            with: .color(Palette.flightIce.opacity(0.45))
+            with: .color(Palette.Flight.ice.opacity(0.45))
         )
-        context.stroke(LightFX.disc(Self.camera, 24.5), with: .color(Palette.lensEdge), lineWidth: 3)
-        context.stroke(LightFX.disc(Self.camera, 23), with: .color(Palette.flightLilac.opacity(0.55)), lineWidth: 1)
+        context.stroke(LightFX.disc(Self.camera, 24.5), with: .color(Palette.Flight.lensEdge), lineWidth: 3)
+        context.stroke(LightFX.disc(Self.camera, 23), with: .color(Palette.Flight.lilac.opacity(0.55)), lineWidth: 1)
     }
 
     /// The yellow core behind the open iris: a 28 pt sphere in a soft light, breathing (×1.09, 1.2 s).
@@ -256,9 +256,9 @@ struct VoicePermissionsArt: View {
             LightFX.disc(.zero, 14),
             with: .radialGradient(
                 Gradient(stops: [
-                    .init(color: Palette.flightGoldCream, location: 0), .init(color: Palette.starGold, location: 0.3),
+                    .init(color: Palette.Flight.goldCream, location: 0), .init(color: Palette.Universe.starGold, location: 0.3),
                     .init(color: Palette.acc, location: 0.62),
-                    .init(color: Palette.flightGoldDeep, location: 1),
+                    .init(color: Palette.Flight.goldDeep, location: 1),
                 ]),
                 center: CGPoint(x: -14 + 0.38 * 28, y: -14 + 0.34 * 28), startRadius: 0, endRadius: 26
             )
@@ -286,7 +286,7 @@ struct VoicePermissionsArt: View {
         for (text, centre) in [("VOICE", Self.voice.x), ("CAMERA", Self.camera.x)] {
             context.draw(
                 Text(verbatim: text).font(.system(size: 9.5, weight: .semibold, design: .monospaced)).tracking(1.33)
-                    .foregroundStyle(Palette.flightInk.opacity(0.55)),
+                    .foregroundStyle(Palette.Flight.ink.opacity(0.55)),
                 at: CGPoint(x: centre, y: 156)
             )
         }

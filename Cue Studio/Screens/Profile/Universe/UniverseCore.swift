@@ -84,7 +84,7 @@ struct UniverseCore: View {
     private var rings: some View {
         Canvas { canvas, size in
             let center = CGPoint(x: size.width / 2, y: size.height / 2)
-            for (radius, color) in [(15.0, Palette.worldMint), (19, Palette.worldWarm), (23, Palette.worldPink)] {
+            for (radius, color) in [(15.0, Palette.World.mint), (19, Palette.World.warm), (23, Palette.World.pink)] {
                 canvas.stroke(Self.circle(center, radius), with: .color(color.opacity(0.45)), lineWidth: 1)
             }
         }

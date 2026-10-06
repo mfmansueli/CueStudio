@@ -17,7 +17,7 @@ struct FilmstripCell: View {
                 if let image {
                     Image(uiImage: image).resizable().scaledToFill()
                 } else {
-                    LinearGradient(colors: [Palette.thumbnailTop, Palette.thumbnailBottom], startPoint: .topLeading, endPoint: .bottomTrailing)
+                    LinearGradient(colors: [Palette.Takes.thumbnailTop, Palette.Takes.thumbnailBottom], startPoint: .topLeading, endPoint: .bottomTrailing)
                 }
             }
             .clipped()

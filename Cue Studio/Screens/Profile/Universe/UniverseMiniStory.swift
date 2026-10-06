@@ -11,7 +11,7 @@ struct UniverseMiniStory: View {
 
     var body: some View {
         ZStack {
-            LinearGradient(colors: [Palette.nightDeep, Palette.nightViolet.opacity(0.4)], startPoint: .top, endPoint: .bottom)
+            LinearGradient(colors: [Palette.Universe.nightDeep, Palette.Universe.nightViolet.opacity(0.4)], startPoint: .top, endPoint: .bottom)
             VStack(spacing: 2) {
                 HStack(spacing: 1.5) {
                     ForEach(0..<5, id: \.self) { _ in Capsule().fill(.white.opacity(0.7)).frame(height: 1) }

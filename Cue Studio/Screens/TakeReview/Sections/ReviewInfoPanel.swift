@@ -13,7 +13,7 @@ struct ReviewInfoPanel: View {
     let lengthFit: LengthFit?
     let scriptVersion: String?
     /// The colour of the take's theme, for the dot before the title.
-    var dotColor: Color = Palette.worldWarm
+    var dotColor: Color = Palette.World.warm
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
@@ -57,7 +57,7 @@ struct ReviewInfoPanel: View {
             line.append(run)
         }
         let platform = take.platform?.label ?? String(localized: "Freestyle")
-        add("● ", take.platform?.tint ?? Palette.platformNeutral)
+        add("● ", take.platform?.tint ?? Palette.Platform.neutral)
         add([platform, take.resolution.label, take.aspect.label].map { $0.uppercased() }.joined(separator: " · "), Palette.ink2)
         if let lengthFit {
             add(" · ", Palette.ink2)

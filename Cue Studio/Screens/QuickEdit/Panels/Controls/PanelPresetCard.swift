@@ -26,9 +26,9 @@ struct PanelPresetCard: View {
                     if let frame {
                         Image(uiImage: frame).resizable().scaledToFill()
                     } else {
-                        LinearGradient(colors: [Palette.thumbnailTop, Palette.thumbnailBottom], startPoint: .top, endPoint: .bottom)
+                        LinearGradient(colors: [Palette.Takes.thumbnailTop, Palette.Takes.thumbnailBottom], startPoint: .top, endPoint: .bottom)
                     }
-                    Palette.presetCardDim
+                    Palette.Editor.presetCardDim
                     if let sample {
                         Image(uiImage: sample)
                             .resizable()
@@ -41,7 +41,7 @@ struct PanelPresetCard: View {
                 .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
                 .overlay(
                     RoundedRectangle(cornerRadius: 12, style: .continuous)
-                        .strokeBorder(isSelected ? Palette.acc : Palette.presetCardBorder, lineWidth: 2)
+                        .strokeBorder(isSelected ? Palette.acc : Palette.Editor.presetCardBorder, lineWidth: 2)
                 )
                 Text(name)
                     .font(.system(.caption, weight: .semibold))

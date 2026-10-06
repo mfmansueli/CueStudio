@@ -41,7 +41,7 @@ final class TimelineLaneGutterView: UIView {
             let icon = UIImageView(image: UIImage(
                 systemName: symbol, withConfiguration: UIImage.SymbolConfiguration(pointSize: 14, weight: .semibold)
             ))
-            icon.tintColor = UIColor(isActive ? Palette.acc : Palette.laneGutterInk)
+            icon.tintColor = UIColor(isActive ? Palette.acc : Palette.Editor.laneGutterInk)
             icon.contentMode = .center
             icon.frame = cell.bounds
             cell.addSubview(icon)

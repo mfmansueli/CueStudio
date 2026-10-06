@@ -37,10 +37,10 @@ struct ThemeRail: View {
 #if DEBUG
 #Preview {
     HStack(spacing: 16) {
-        ThemeRail(color: Palette.worldWarm)
-        ThemeRail(color: Palette.worldMint, size: .chip)
-        ThemeRail(color: Palette.worldPink, size: .chip)
-        ThemeRail(color: Palette.worldSky)
+        ThemeRail(color: Palette.World.warm)
+        ThemeRail(color: Palette.World.mint, size: .chip)
+        ThemeRail(color: Palette.World.pink, size: .chip)
+        ThemeRail(color: Palette.World.sky)
     }
     .padding()
     .background(Palette.bg)

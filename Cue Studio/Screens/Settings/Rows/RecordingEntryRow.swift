@@ -84,7 +84,7 @@ struct RecordingEntryRow: View {
                         Text(aspect.label).font(.footnote.weight(.semibold)).foregroundStyle(Palette.ink)
                     }
                     .frame(maxWidth: .infinity, minHeight: 62)
-                    .background(isSelected ? Palette.accTile : Palette.surface2.opacity(0.7), in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+                    .background(isSelected ? Palette.Editor.accTile : Palette.surface2.opacity(0.7), in: RoundedRectangle(cornerRadius: 14, style: .continuous))
                     .overlay(RoundedRectangle(cornerRadius: 14, style: .continuous).strokeBorder(isSelected ? Palette.acc : .clear, lineWidth: 2))
                     .contentShape(Rectangle())
                 }

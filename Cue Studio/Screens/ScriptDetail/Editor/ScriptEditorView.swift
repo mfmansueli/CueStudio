@@ -37,7 +37,7 @@ struct ScriptEditorView: View {
             }
             .background(alignment: .bottom) {
                 // Under the home indicator too, in the color of what is above it.
-                (viewModel.tool == nil ? Palette.surface : Palette.editorPanel).ignoresSafeArea(edges: .bottom)
+                (viewModel.tool == nil ? Palette.surface : Palette.Editor.panel).ignoresSafeArea(edges: .bottom)
             }
         }
         .animation(reduceMotion ? nil : .easeOut(duration: 0.15), value: viewModel.tool)

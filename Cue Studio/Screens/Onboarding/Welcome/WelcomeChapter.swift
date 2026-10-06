@@ -46,7 +46,7 @@ struct WelcomeChapter: View {
         return ZStack(alignment: .topLeading) {
             WelcomeShootingStar(time: time)
             Circle()
-                .fill(RadialGradient(colors: [Palette.nightViolet.opacity(0.32), .clear], center: .center, startRadius: 0, endRadius: 140))
+                .fill(RadialGradient(colors: [Palette.Universe.nightViolet.opacity(0.32), .clear], center: .center, startRadius: 0, endRadius: 140))
                 .frame(width: 280, height: 280)
                 .scaleEffect(halo.scale)
                 .opacity(halo.opacity)
@@ -101,9 +101,12 @@ struct WelcomeChapter: View {
             OnboardingPrimaryButton(title: String(localized: "Get started"), shines: true, identifier: "onboarding.getStarted", action: onStart)
                 .opacity(primary.opacity)
                 .offset(y: primary.y)
+                // Invisible until the opening reaches them: VoiceOver (and a UI test) finds them when they show.
+                .accessibilityHidden(primary.opacity == 0)
             OnboardingSecondaryButton(title: String(localized: "I already use Cue"), identifier: "onboarding.returning", action: onReturning)
                 .opacity(secondary.opacity)
                 .offset(y: secondary.y)
+                .accessibilityHidden(secondary.opacity == 0)
         }
         .padding(.horizontal, 16)
         .padding(.bottom, 32)

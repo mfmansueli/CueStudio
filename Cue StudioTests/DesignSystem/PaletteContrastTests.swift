@@ -198,11 +198,11 @@ struct PaletteContrastTests {
     @Test func theScriptEditorsPanelReads() {
         for appearance in Appearance.allCases {
             for token in textTokens {
-                let value = ratio(token.color, on: Palette.editorPanel, in: appearance)
+                let value = ratio(token.color, on: Palette.Editor.panel, in: appearance)
                 #expect(value >= ColorContrast.textMinimum, "\(token.name) on the panel, \(appearance): \(value)")
             }
             #expect(
-                ratio(Palette.laneGhostBorder, on: Palette.editorPanel, in: appearance) >= ColorContrast.componentMinimum,
+                ratio(Palette.Editor.laneGhostBorder, on: Palette.Editor.panel, in: appearance) >= ColorContrast.componentMinimum,
                 "a dashed outline, \(appearance)"
             )
         }
@@ -267,25 +267,25 @@ struct PaletteContrastTests {
     // MARK: - The editor (always dark)
 
     @Test func theEditorsHintsAndIconsReadOnTheirTracks() {
-        let strip = rgb(Palette.laneStrip, in: .dark)
-        let active = rgb(Palette.laneStripActive, in: .dark)
+        let strip = rgb(Palette.Editor.laneStrip, in: .dark)
+        let active = rgb(Palette.Editor.laneStripActive, in: .dark)
         for background in [strip, active] {
-            let hint = rgb(Palette.laneHintInk, in: .dark, over: background)
+            let hint = rgb(Palette.Editor.laneHintInk, in: .dark, over: background)
             #expect(ColorContrast.ratio(hint, background) >= ColorContrast.textMinimum, "the hint on an empty track")
         }
         let black = ColorContrast.RGB(red: 0, green: 0, blue: 0)
-        let icon = rgb(Palette.laneGutterInk, in: .dark, over: black)
+        let icon = rgb(Palette.Editor.laneGutterInk, in: .dark, over: black)
         #expect(ColorContrast.ratio(icon, black) >= ColorContrast.componentMinimum, "a track's icon in the gutter")
     }
 
     /// v26 lanes: each track's ink on its own fill, over the strip it sits on.
     @Test func theLanesInksReadOnTheirFills() {
         let lanes: [(name: String, fill: Color, ink: Color)] = [
-            ("Aa", Palette.laneText, Palette.laneTextInk), ("Aa selected", Palette.laneTextSelected, Palette.laneTextInk),
-            ("captions", Palette.laneCaption, Palette.laneCaptionInk), ("music", Palette.laneMusic, Palette.laneMusicInk),
-            ("voice-over", Palette.laneVoiceOver, Palette.laneVoiceOverInk), ("overlay", Palette.laneMedia, Palette.laneMediaInk),
+            ("Aa", Palette.Editor.laneText, Palette.Editor.laneTextInk), ("Aa selected", Palette.Editor.laneTextSelected, Palette.Editor.laneTextInk),
+            ("captions", Palette.Editor.laneCaption, Palette.Editor.laneCaptionInk), ("music", Palette.Editor.laneMusic, Palette.Editor.laneMusicInk),
+            ("voice-over", Palette.Editor.laneVoiceOver, Palette.Editor.laneVoiceOverInk), ("overlay", Palette.Editor.laneMedia, Palette.Editor.laneMediaInk),
         ]
-        for strip in [Palette.laneStrip, Palette.laneStripActive] {
+        for strip in [Palette.Editor.laneStrip, Palette.Editor.laneStripActive] {
             let base = rgb(strip, in: .dark)
             for lane in lanes {
                 let fill = rgb(lane.fill, in: .dark, over: base)
@@ -299,12 +299,12 @@ struct PaletteContrastTests {
     /// `aiTextStrong`, the title and the icon's glyph. The warning card is night, with `ink2` lines.
     @Test func theCardsOverTheCameraReadOnTheirOwnFills() {
         let black = ColorContrast.RGB(red: 0, green: 0, blue: 0)
-        for fill in [Palette.recommendationTop, Palette.recommendationBottom] {
+        for fill in [Palette.Camera.recommendationTop, Palette.Camera.recommendationBottom] {
             let card = rgb(fill, in: .dark, over: black)
             #expect(ColorContrast.ratio(rgb(Palette.aiTextStrong, in: .dark, over: card), card) >= ColorContrast.textMinimum, "a line on the recommendation")
             #expect(ColorContrast.ratio(rgb(Palette.ink, in: .dark, over: card), card) >= ColorContrast.textMinimum, "the title on the recommendation")
-            let disc = rgb(Palette.recommendationIconFill, in: .dark, over: card)
-            #expect(ColorContrast.ratio(rgb(Palette.recommendationIcon, in: .dark, over: disc), disc) >= ColorContrast.componentMinimum, "the icon")
+            let disc = rgb(Palette.Camera.recommendationIconFill, in: .dark, over: card)
+            #expect(ColorContrast.ratio(rgb(Palette.Camera.recommendationIcon, in: .dark, over: disc), disc) >= ColorContrast.componentMinimum, "the icon")
         }
         let warning = rgb(Palette.warningCard, in: .dark, over: black)
         for token in [Palette.ink, Palette.ink2, Palette.warnText] {
@@ -328,8 +328,8 @@ struct PaletteContrastTests {
     /// Colored text inside a chip: the ink on the chip's fill, over each surface it can sit on.
     @Test func theStateChipsReadOnTheirFillsOverEverySurface() {
         let chips: [(name: String, ink: Color, fill: Color)] = [
-            ("READY", Palette.stateReadyInk, Palette.stateReadyFill), ("DRAFT", Palette.stateDraftInk, Palette.stateDraftFill),
-            ("RECORDED", Palette.stateRecordedInk, Palette.stateRecordedFill),
+            ("READY", Palette.Page.stateReadyInk, Palette.Page.stateReadyFill), ("DRAFT", Palette.Page.stateDraftInk, Palette.Page.stateDraftFill),
+            ("RECORDED", Palette.Page.stateRecordedInk, Palette.Page.stateRecordedFill),
         ]
         for appearance in Appearance.allCases {
             for chip in chips {
@@ -338,14 +338,14 @@ struct PaletteContrastTests {
                     #expect(value >= ColorContrast.textMinimum, "\(chip.name) on \(surface.name), \(appearance): \(value)")
                 }
             }
-            #expect(ratio(Palette.adTagInk, on: Palette.adTagFill, in: appearance) >= ColorContrast.textMinimum, "the #AD tag, \(appearance)")
+            #expect(ratio(Palette.Scripts.adTagInk, on: Palette.Scripts.adTagFill, in: appearance) >= ColorContrast.textMinimum, "the #AD tag, \(appearance)")
         }
     }
 
     @Test func textRewrittenByTheAIReadsBeforeItIsKept() {
         for appearance in Appearance.allCases {
             for surface in surfaces {
-                let value = ratio(Palette.aiReplacedInk, onTint: Palette.aiReplacedFill, over: surface.color, in: appearance)
+                let value = ratio(Palette.Page.aiReplacedInk, onTint: Palette.Page.aiReplacedFill, over: surface.color, in: appearance)
                 #expect(value >= ColorContrast.textMinimum, "pending AI text on \(surface.name), \(appearance): \(value)")
             }
         }
@@ -355,8 +355,8 @@ struct PaletteContrastTests {
     /// 92%): their labels read over any surface behind them.
     @Test func theSelectionBarAndTheStateStripReadOverTheScreen() {
         let bars: [(name: String, fill: Color, text: [Color])] = [
-            ("selection bar", Palette.selectionBar, [Palette.ink, Palette.aiText, Palette.aiTextStrong]),
-            ("state strip", Palette.stripFill, [Palette.ink, Palette.ink2, Palette.accText, Palette.successText, Palette.aiText]),
+            ("selection bar", Palette.Page.selectionBar, [Palette.ink, Palette.aiText, Palette.aiTextStrong]),
+            ("state strip", Palette.Page.stripFill, [Palette.ink, Palette.ink2, Palette.accText, Palette.successText, Palette.aiText]),
         ]
         for appearance in Appearance.allCases {
             for bar in bars {
@@ -374,13 +374,13 @@ struct PaletteContrastTests {
     @Test func theSliderPartsStandOutFromTheirSurface() {
         for appearance in Appearance.allCases {
             for surface in surfaces {
-                let thumb = ratio(Palette.sliderThumb, on: surface.color, in: appearance)
+                let thumb = ratio(Palette.Slider.thumb, on: surface.color, in: appearance)
                 #expect(thumb >= ColorContrast.componentMinimum, "thumb on \(surface.name)")
                 let base = rgb(surface.color, in: appearance)
-                let track = rgb(Palette.sliderTrack, in: appearance, over: base)
-                let fill = rgb(Palette.sliderFill, in: appearance, over: track)
+                let track = rgb(Palette.Slider.track, in: appearance, over: base)
+                let fill = rgb(Palette.Slider.fill, in: appearance, over: track)
                 #expect(ColorContrast.ratio(fill, track) >= ColorContrast.componentMinimum, "fill on the track over \(surface.name), \(appearance)")
-                let thumbOnTrack = ColorContrast.ratio(rgb(Palette.sliderThumb, in: appearance, over: track), track)
+                let thumbOnTrack = ColorContrast.ratio(rgb(Palette.Slider.thumb, in: appearance, over: track), track)
                 #expect(thumbOnTrack >= ColorContrast.componentMinimum, "thumb on the track")
             }
         }
@@ -394,7 +394,7 @@ struct PaletteContrastTests {
                 #expect(ratio(Palette.ink2, on: surface.color, in: appearance) >= ColorContrast.textMinimum, "the empty state's line on \(surface.name)")
             }
             // The violet core of the ring sits behind the title at its strongest.
-            let core = rgb(Palette.emptyRingCore, in: appearance, over: rgb(Palette.bg, in: appearance))
+            let core = rgb(Palette.Scripts.emptyRingCore, in: appearance, over: rgb(Palette.bg, in: appearance))
             #expect(ColorContrast.ratio(rgb(Palette.ink, in: appearance, over: core), core) >= ColorContrast.textMinimum)
         }
     }
@@ -405,17 +405,17 @@ struct PaletteContrastTests {
     /// brightest point: a wash light, a nebula's heart and the Milky Way band all on the same spot (the rule: the worst point, not the average).
     @Test func theInterstellarNightKeepsTheTextTokensReadableEvenAtItsBrightestPoint() {
         let washes: [(name: String, color: Color)] = [
-            ("indigo", Palette.interstellarWashIndigo), ("magenta", Palette.interstellarWashMagenta), ("teal", Palette.interstellarWashTeal),
+            ("indigo", Palette.Sky.interstellarWashIndigo), ("magenta", Palette.Sky.interstellarWashMagenta), ("teal", Palette.Sky.interstellarWashTeal),
         ]
         let nebulae: [(name: String, hue: NebulaHue)] = [("blue", .blue), ("magenta", .magenta), ("teal", .teal)]
         let nebulaPeak = StarfieldMath.interstellarNebulaOpacity.upperBound
-        let band = Palette.interstellarBand.opacity(StarfieldMath.bandPeakOpacity)
+        let band = Palette.Sky.interstellarBand.opacity(StarfieldMath.bandPeakOpacity)
         let tokens: [(name: String, color: Color)] = [("ink", Palette.ink), ("ink2", Palette.ink2), ("inkHint", Palette.inkHint)]
 
         for appearance in Appearance.allCases {
-            let base = rgb(Palette.interstellarBg, in: appearance)
+            let base = rgb(Palette.Sky.interstellarBg, in: appearance)
             for token in textTokens {
-                let value = ratio(token.color, on: Palette.interstellarBg, in: appearance)
+                let value = ratio(token.color, on: Palette.Sky.interstellarBg, in: appearance)
                 #expect(value >= ColorContrast.textMinimum, "\(token.name) on the interstellar night, \(appearance): \(value)")
             }
             for wash in washes {

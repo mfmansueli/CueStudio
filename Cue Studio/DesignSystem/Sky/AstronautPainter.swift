@@ -19,7 +19,7 @@ enum AstronautPainter {
         let unit = astronaut.size
         // One light for the whole body: white where it comes from (top left), a cool grey on the far side.
         let suit = GraphicsContext.Shading.linearGradient(
-            Gradient(colors: [Palette.astronautSuit, Palette.astronautSuitShade]),
+            Gradient(colors: [Palette.Sky.astronautSuit, Palette.Sky.astronautSuitShade]),
             startPoint: CGPoint(x: -0.32 * unit, y: -0.45 * unit), endPoint: CGPoint(x: 0.32 * unit, y: 0.5 * unit)
         )
 
@@ -43,11 +43,11 @@ enum AstronautPainter {
             to: CGPoint(x: (-0.40 + sway) * unit, y: 0.30 * unit),
             control1: CGPoint(x: (-0.42 + sway) * unit, y: -0.02 * unit), control2: CGPoint(x: (-0.30 - sway) * unit, y: 0.22 * unit)
         )
-        layer.stroke(cord, with: .color(Palette.astronautSilver.opacity(0.75)), style: StrokeStyle(lineWidth: max(0.5, unit * 0.014), lineCap: .round))
+        layer.stroke(cord, with: .color(Palette.Sky.astronautSilver.opacity(0.75)), style: StrokeStyle(lineWidth: max(0.5, unit * 0.014), lineCap: .round))
         let end = CGPoint(x: (-0.40 + sway) * unit, y: 0.30 * unit)
         layer.fill(
             Path(ellipseIn: CGRect(x: end.x - unit * 0.022, y: end.y - unit * 0.022, width: unit * 0.044, height: unit * 0.044)),
-            with: .color(Palette.astronautSilver)
+            with: .color(Palette.Sky.astronautSilver)
         )
     }
 
@@ -56,7 +56,7 @@ enum AstronautPainter {
         layer.fill(
             pack,
             with: .linearGradient(
-                Gradient(colors: [Palette.astronautSuitShade, Palette.astronautSuitDeep]),
+                Gradient(colors: [Palette.Sky.astronautSuitShade, Palette.Sky.astronautSuitDeep]),
                 startPoint: CGPoint(x: 0, y: -0.10 * unit), endPoint: CGPoint(x: 0, y: 0.16 * unit)
             )
         )
@@ -86,7 +86,7 @@ enum AstronautPainter {
             band(&layer, from: shoulder, to: hand, at: 0.5, width: 0.12 * unit, thickness: 0.03 * unit)
             layer.fill(
                 Path(ellipseIn: CGRect(x: hand.x - 0.062 * unit, y: hand.y - 0.062 * unit, width: 0.124 * unit, height: 0.124 * unit)),
-                with: .color(Palette.astronautSuitDeep)
+                with: .color(Palette.Sky.astronautSuitDeep)
             )
         }
     }
@@ -96,11 +96,11 @@ enum AstronautPainter {
     private static func drawTorso(_ layer: inout GraphicsContext, unit: CGFloat, time: TimeInterval, suit: GraphicsContext.Shading) {
         layer.fill(Path(roundedRect: CGRect(x: -0.17 * unit, y: -0.13 * unit, width: 0.34 * unit, height: 0.33 * unit), cornerRadius: 0.09 * unit), with: suit)
         // The belt.
-        layer.fill(Path(CGRect(x: -0.165 * unit, y: 0.145 * unit, width: 0.33 * unit, height: 0.03 * unit)), with: .color(Palette.astronautSuitDeep))
+        layer.fill(Path(CGRect(x: -0.165 * unit, y: 0.145 * unit, width: 0.33 * unit, height: 0.03 * unit)), with: .color(Palette.Sky.astronautSuitDeep))
         // The chest panel with its two lights: yellow, steady, and ion blue, pulsing once every 3 s.
         layer.fill(
             Path(roundedRect: CGRect(x: -0.10 * unit, y: -0.06 * unit, width: 0.20 * unit, height: 0.11 * unit), cornerRadius: 0.025 * unit),
-            with: .color(Palette.astronautSuitDeep)
+            with: .color(Palette.Sky.astronautSuitDeep)
         )
         let pulse = pow(max(0, sin(time * 2 * .pi / 3)), 4)
         let strength = 0.45 + 0.55 * pulse
@@ -108,13 +108,13 @@ enum AstronautPainter {
         layer.fill(
             Path(ellipseIn: CGRect(x: blue.x - 0.075 * unit, y: blue.y - 0.075 * unit, width: 0.15 * unit, height: 0.15 * unit)),
             with: .radialGradient(
-                Gradient(colors: [Palette.shipEngine.opacity(0.55 * strength), Palette.shipEngine.opacity(0)]),
+                Gradient(colors: [Palette.Sky.shipEngine.opacity(0.55 * strength), Palette.Sky.shipEngine.opacity(0)]),
                 center: blue, startRadius: 0, endRadius: 0.075 * unit
             )
         )
         layer.fill(
             Path(ellipseIn: CGRect(x: blue.x - 0.022 * unit, y: blue.y - 0.022 * unit, width: 0.044 * unit, height: 0.044 * unit)),
-            with: .color(Palette.shipEngine.opacity(strength))
+            with: .color(Palette.Sky.shipEngine.opacity(strength))
         )
         layer.fill(
             Path(ellipseIn: CGRect(x: -0.07 * unit, y: -0.027 * unit, width: 0.04 * unit, height: 0.04 * unit)),
@@ -131,13 +131,13 @@ enum AstronautPainter {
         // The neck ring.
         layer.fill(
             Path(roundedRect: CGRect(x: -0.115 * unit, y: -0.14 * unit, width: 0.23 * unit, height: 0.045 * unit), cornerRadius: 0.02 * unit),
-            with: .color(Palette.astronautSuitDeep)
+            with: .color(Palette.Sky.astronautSuitDeep)
         )
         let helmet = Path(ellipseIn: CGRect(x: -0.215 * unit, y: -0.525 * unit, width: 0.43 * unit, height: 0.43 * unit))
         layer.fill(
             helmet,
             with: .radialGradient(
-                Gradient(colors: [Palette.astronautSuit, Palette.astronautSuit, Palette.astronautSuitShade]),
+                Gradient(colors: [Palette.Sky.astronautSuit, Palette.Sky.astronautSuit, Palette.Sky.astronautSuitShade]),
                 center: CGPoint(x: -0.07 * unit, y: -0.40 * unit), startRadius: 0, endRadius: 0.34 * unit
             )
         )
@@ -153,7 +153,7 @@ enum AstronautPainter {
         layer.fill(
             glass,
             with: .linearGradient(
-                Gradient(colors: [Palette.astronautVisorTop, Palette.astronautVisorBottom]),
+                Gradient(colors: [Palette.Sky.astronautVisorTop, Palette.Sky.astronautVisorBottom]),
                 startPoint: CGPoint(x: 0, y: rect.minY), endPoint: CGPoint(x: 0, y: rect.maxY)
             )
         )
@@ -164,7 +164,7 @@ enum AstronautPainter {
         inside.fill(
             Path(CGRect(x: rect.minX, y: rect.midY, width: rect.width, height: rect.height / 2)),
             with: .linearGradient(
-                Gradient(colors: [Palette.astronautGlint.opacity(0), Palette.astronautGlint.opacity(0.28)]),
+                Gradient(colors: [Palette.Sky.astronautGlint.opacity(0), Palette.Sky.astronautGlint.opacity(0.28)]),
                 startPoint: CGPoint(x: 0, y: rect.midY), endPoint: CGPoint(x: 0, y: rect.maxY)
             )
         )
@@ -180,7 +180,7 @@ enum AstronautPainter {
             arm.addLine(to: CGPoint(x: glint.x + cos(radians) * 0.04 * unit, y: glint.y + sin(radians) * 0.04 * unit))
             inside.stroke(arm, with: .color(.white.opacity(0.95)), style: StrokeStyle(lineWidth: max(0.5, unit * 0.012), lineCap: .round))
         }
-        layer.stroke(glass, with: .color(Palette.astronautSilver), lineWidth: max(0.5, unit * 0.014))
+        layer.stroke(glass, with: .color(Palette.Sky.astronautSilver), lineWidth: max(0.5, unit * 0.014))
     }
 
     /// One slanted band of silver across the visor, from `top` (x range at the top edge) to `bottom` (x range at the bottom edge), fading as it goes.
@@ -196,7 +196,7 @@ enum AstronautPainter {
         layer.fill(
             band,
             with: .linearGradient(
-                Gradient(colors: [Palette.astronautSilver.opacity(strength), Palette.astronautSilver.opacity(0.05)]),
+                Gradient(colors: [Palette.Sky.astronautSilver.opacity(strength), Palette.Sky.astronautSilver.opacity(0.05)]),
                 startPoint: CGPoint(x: 0, y: rect.minY), endPoint: CGPoint(x: 0, y: rect.maxY)
             )
         )
@@ -222,7 +222,7 @@ enum AstronautPainter {
         var line = Path()
         line.move(to: CGPoint(x: centre.x - along.dx * thickness / 2, y: centre.y - along.dy * thickness / 2))
         line.addLine(to: CGPoint(x: centre.x + along.dx * thickness / 2, y: centre.y + along.dy * thickness / 2))
-        layer.stroke(line, with: .color(Palette.astronautSuitDeep), style: StrokeStyle(lineWidth: width, lineCap: .butt))
+        layer.stroke(line, with: .color(Palette.Sky.astronautSuitDeep), style: StrokeStyle(lineWidth: width, lineCap: .butt))
     }
 
     /// The point `length` from `start` at `angle` from straight down (positive is toward +x).

@@ -26,7 +26,7 @@ struct PanelSaveStyleCard: View {
                 .frame(width: 84, height: 74)
                 .overlay(
                     RoundedRectangle(cornerRadius: 12, style: .continuous)
-                        .strokeBorder(Palette.laneGhostBorder, style: StrokeStyle(lineWidth: 1.5, dash: [4, 3]))
+                        .strokeBorder(Palette.Editor.laneGhostBorder, style: StrokeStyle(lineWidth: 1.5, dash: [4, 3]))
                 )
                 // Lines up with the names under the preset cards.
                 Text(verbatim: " ").font(.system(.caption))

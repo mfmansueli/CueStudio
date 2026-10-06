@@ -87,7 +87,7 @@ final class ShareToUITests: XCTestCase {
     }
 
     func testNotYetKeepsTheNetworkAndYesSendsItOff() {
-        let app = openShare()
+        let app = openShare(animations: true)
         app.buttons["shareFlow.start"].tap()
         XCTAssertTrue(waitAllowingPhotos(for: app.buttons["shareFlow.send"]))
         app.buttons["shareFlow.send"].tap()
@@ -100,17 +100,12 @@ final class ShareToUITests: XCTestCase {
         app.buttons["shareFlow.send"].tap()
         app.buttons["debug.share.complete"].tap()
         app.buttons["shareFlow.live"].tap()
-        for second in [1.2, 2.5, 5.0] {
-            Thread.sleep(forTimeInterval: second == 1.2 ? 1.2 : second - (second == 2.5 ? 1.2 : 2.5))
-            let ids = app.descendants(matching: .any).matching(NSPredicate(format: "identifier != ''")).allElementsBoundByIndex.prefix(40).map(\.identifier)
-            print("DEBUGIDS \(second): \(ids.joined(separator: ","))")
-        }
         XCTAssertTrue(element(app, "sendoff.sheet").waitForExistence(timeout: 20))
         XCTAssertEqual(element(app, "sendoff.headline").label, "SHARED TO TIKTOK")
     }
 
     func testACancelledShareSheetGoesBackToTheStep() {
-        let app = openShare()
+        let app = openShare(animations: true)
         app.buttons["shareFlow.start"].tap()
         XCTAssertTrue(waitAllowingPhotos(for: app.buttons["shareFlow.send"]))
         app.buttons["shareFlow.send"].tap()
@@ -144,9 +139,11 @@ final class ShareToUITests: XCTestCase {
 
     // MARK: - Helpers
 
-    /// A take's review, "Share to universe" tapped: Ready to travel with the networks over it.
-    private func openShare() -> XCUIApplication {
-        let app = CueApp.launch(seeded: true, sampleVideo: true, extraArguments: ["-uiTestFakeShareSheet"])
+    /// A take's review, "Share to universe" tapped: Ready to travel with the networks over it. A test that ends the share sheet asks for
+    /// `animations`: the networks' sheet only comes back after the share sheet has animated away (`ShareFlow.settle`); without
+    /// animations SwiftUI never presents it again.
+    private func openShare(animations: Bool = false) -> XCUIApplication {
+        let app = CueApp.launch(seeded: true, sampleVideo: true, animations: animations, extraArguments: ["-uiTestFakeShareSheet"])
         let tab = app.cueTabBar.buttons["Takes"]
         XCTAssertTrue(tab.waitForExistence(timeout: 15))
         tab.tap()

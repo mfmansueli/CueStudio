@@ -1,0 +1,56 @@
+// App.xcconfig — the Cue Studio app target
+//
+// On top of Project.xcconfig, for Debug and Release alike. Info.plist entries are generated from the
+// INFOPLIST_KEY_ settings (with SupportFiles/Info.plist); their text is translated in InfoPlist.xcstrings.
+
+// Identity and signing
+CODE_SIGN_ENTITLEMENTS    = Cue Studio/SupportFiles/Cue Studio.entitlements
+CODE_SIGN_STYLE           = Automatic
+CURRENT_PROJECT_VERSION   = 1
+DEVELOPMENT_TEAM          = X5392U638Q
+MARKETING_VERSION         = 1.0
+PRODUCT_BUNDLE_IDENTIFIER = com.cuestudioteleprompter
+PRODUCT_NAME              = $(TARGET_NAME)
+
+// Platforms
+SDKROOT                               = iphoneos
+SUPPORTED_PLATFORMS                   = iphoneos iphonesimulator
+SUPPORTS_MACCATALYST                  = NO
+SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES
+TARGETED_DEVICE_FAMILY                = 1,2
+
+// Info.plist
+GENERATE_INFOPLIST_FILE                                = YES
+INFOPLIST_FILE                                         = Cue Studio/SupportFiles/Info.plist
+INFOPLIST_KEY_CFBundleDisplayName                      = Cue Studio
+INFOPLIST_KEY_NSCameraUsageDescription                 = Cue records your takes with the camera while your script scrolls under the lens.
+INFOPLIST_KEY_NSLocalNetworkUsageDescription           = Cue connects to your other iPhone or iPad nearby, so one can control the teleprompter on the other.
+INFOPLIST_KEY_NSMicrophoneUsageDescription             = Cue records your voice with each take and for voice-overs, can follow your voice to scroll the script, and listens when you dictate an idea.
+INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription        = Cue saves the takes you export to your photo library.
+INFOPLIST_KEY_NSSpeechRecognitionUsageDescription      = Cue recognizes your speech on this iPhone to keep the script on the line you're reading and to turn an idea you dictate into text. Nothing leaves the device.
+INFOPLIST_KEY_UIApplicationSceneManifest_Generation    = YES
+INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES
+INFOPLIST_KEY_UILaunchScreen_Generation                = YES
+INFOPLIST_KEY_UIStatusBarStyle                         = UIStatusBarStyleDefault
+INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad    = UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight
+INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone  = UIInterfaceOrientationPortrait
+INFOPLIST_KEY_UIUserInterfaceStyle                     = Dark
+
+// Asset catalog and app icons
+ASSETCATALOG_COMPILER_ALTERNATE_APPICON_NAMES    = AppIconAurora AppIconFirstLight AppIconDeepSpace AppIconConstellation
+ASSETCATALOG_COMPILER_APPICON_NAME               = AppIcon
+ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO
+
+// Swift
+SWIFT_APPROACHABLE_CONCURRENCY                  = YES
+SWIFT_DEFAULT_ACTOR_ISOLATION                   = MainActor
+SWIFT_EMIT_LOC_STRINGS                          = YES
+SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES
+SWIFT_VERSION                                   = 6.0
+
+// Everything else
+ENABLE_PREVIEWS                 = YES
+ENABLE_USER_SCRIPT_SANDBOXING   = NO
+LD_RUNPATH_SEARCH_PATHS         = @executable_path/Frameworks
+OTHER_LDFLAGS                   = $(inherited) -ObjC
+STRING_CATALOG_GENERATE_SYMBOLS = NO

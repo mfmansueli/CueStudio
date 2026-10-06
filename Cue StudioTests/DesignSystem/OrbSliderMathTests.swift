@@ -30,9 +30,11 @@ struct OrbSliderMathTests {
         #expect(size.snapped(1.4) == 1)
         #expect(size.snapped(1.6) == 2)
         #expect(size.snapped(9) == 3)
-        #expect(size.value(atFraction: 0.5) == 2 || size.value(atFraction: 0.5) == 1)
+        let middle = size.value(atFraction: 0.5)
+        #expect(middle == 2 || middle == 1)
         #expect(size.stepCount == 4)
-        #expect(size.stepFractions == [0, 1.0 / 3, 2.0 / 3, 1])
+        let thirds: [Double] = [0, 1.0 / 3, 2.0 / 3, 1]
+        #expect(size.stepFractions == thirds)
         #expect(size.stepIndex(of: 2.2) == 2)
     }
 

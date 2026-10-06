@@ -111,8 +111,8 @@ struct ScriptTextEditor: View {
         if let passage, passage.upperBound <= text.count, !passage.isEmpty {
             let start = characters.index(characters.startIndex, offsetBy: passage.lowerBound)
             let end = characters.index(characters.startIndex, offsetBy: passage.upperBound)
-            result[start..<end].foregroundColor = Palette.aiReplacedInk
-            result[start..<end].backgroundColor = Palette.aiReplacedFill
+            result[start..<end].foregroundColor = Palette.Page.aiReplacedInk
+            result[start..<end].backgroundColor = Palette.Page.aiReplacedFill
         }
         return result
     }

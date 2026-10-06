@@ -127,9 +127,9 @@ struct BrandBriefSheet: View {
             HStack(spacing: 10) {
                 Text(verbatim: "AD")
                     .font(.system(size: 9.5, weight: .bold, design: .monospaced))
-                    .foregroundStyle(Palette.adTagInk)
+                    .foregroundStyle(Palette.Scripts.adTagInk)
                     .padding(.horizontal, 5).padding(.vertical, 2)
-                    .background(Palette.adTagFill, in: RoundedRectangle(cornerRadius: 4, style: .continuous))
+                    .background(Palette.Scripts.adTagFill, in: RoundedRectangle(cornerRadius: 4, style: .continuous))
                 VStack(alignment: .leading, spacing: 2) {
                     Text("Paid partnership label").font(.subheadline.weight(.semibold)).foregroundStyle(Palette.ink)
                     Text("Adds #ad to your caption").font(.footnote).foregroundStyle(Palette.ink2)

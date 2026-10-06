@@ -380,7 +380,10 @@ struct HomeView: View {
 
 - **Tokens:**
   - `Palette`: `enum` com `static let`, cores light/dark via `Color(light:dark:)` e nomes semânticos
-    (`bg`, `surf`, `ink`, `ink2`, `acc`, `accInk`, `danger`...);
+    (`bg`, `surf`, `ink`, `ink2`, `acc`, `accInk`, `danger`...). O núcleo (`Tokens/Palette/Palette.swift`) é o que toda
+    tela usa; a cor de uma área só vai no namespace dela (`Palette.Editor`, `.Camera`, `.Scripts`, `.Page`, `.Takes`,
+    `.Platform`, `.World`, `.Aurora`, `.Slider`, `.Flight`, `.Universe`, `.Settings`, `.Sky`, um arquivo cada). Um token novo no núcleo recompila os ~290 arquivos
+    que usam cor; num namespace, só os daquela área;
   - `CueStudioFont`: fonte display com `relativeTo:` para escalar com Dynamic Type, registrada no launch;
   - `Color+Dynamic`: inits de hex e HSL.
 - **Estilos:** um `ButtonStyle` com `enum Variant` + helpers estáticos (`.appPrimary()`, `.appSoft()`...),
@@ -456,6 +459,15 @@ struct OwnProfileStatusServiceTests {
 - Tempo fixo e injetado (`now`), nunca `Date()` dentro da asserção.
 - Isole UserDefaults com ids únicos por teste (`"user-\(UUID())"`) e limpe com `defer`.
 - Priorize a lógica pura (seção 2.4): ela é a parte mais fácil e mais valiosa de testar.
+- Trabalho assíncrono se espera com `await Wait.until { condição }` (`Support/Wait.swift`): cede a vez e depois
+  espera pelo relógio até 30 s, registrando a falha onde o teste esperou. Nunca um número fixo de `Task.yield()`
+  nem um `sleep` para esperar algo acontecer (com a suíte em paralelo eles acabam antes); `sleep` só para provar
+  que algo **não** acontece durante um tempo.
+- Suites que exportam vídeo de verdade ficam dentro de `RealExports` (`extension RealExports { @Suite … }`): elas se
+  revezam no encoder enquanto o resto roda em paralelo, e o plano Fast as deixa de fora (tag `.realExports`,
+  `Support/TestTags.swift`). Uma tag nova que um plano filtra vai nesse arquivo e no `.xctestplan`.
+- Os testes de unidade rodam dentro do app, que nesse caso abre uma janela vazia (`TestHost`): sem `AppServices`,
+  TipKit nem céu. Cada teste monta o que precisa com fakes.
 
 ### UI: XCUITest
 
@@ -464,6 +476,13 @@ struct OwnProfileStatusServiceTests {
 - Elementos localizados por `accessibilityIdentifier`, não por texto.
 - `XCTSkip` quando a pré-condição do ambiente não existe (ex.: simulador já logado).
 - Helpers de launch e asserção agrupados em `// MARK: - Helpers`.
+- Lance pelo `CueApp.launch`: ele passa `-uiTestFastAnimations` (nada anima, nenhum passo espera uma animação); peça
+  `animations: true` só quando o teste olha uma ou espera algo que só fica na tela durante ela (o "Saved" de 0,9 s antes
+  de uma sheet fechar). `TEST_RUNNER_CUE_UI_ANIMATIONS=1` roda tudo com as reais, para comparar. Para chegar a um
+  elemento abaixo da dobra, `app.scroll(to:)`.
+- `sleep` só para tempo real (um áudio tocando, provar que algo não acontece) ou antes de uma foto do modo screenshot;
+  o resto espera uma condição (`waitForExistence`, `expectation(for: NSPredicate…)`). Um teste novo de um fluxo novo
+  entra também no plano `UISmoke` se for o caminho básico daquele fluxo.
 
 ---
 

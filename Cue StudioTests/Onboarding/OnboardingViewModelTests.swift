@@ -59,7 +59,7 @@ struct OnboardingViewModelTests {
         scenario.onboarding.platform = .reels
         scenario.model.writeScript()
         #expect(scenario.model.scriptState == .writing)
-        for _ in 0..<100 where scenario.model.scriptState != .ready { try? await Task.sleep(for: .milliseconds(20)) }
+        await Wait.until { scenario.model.scriptState == .ready }
         #expect(scenario.model.scriptState == .ready)
         let request = scenario.writer.lastRequest
         #expect(request?.platform == .reels)
@@ -85,7 +85,7 @@ struct OnboardingViewModelTests {
         defer { scenario.defaults.tearDown() }
         scenario.writer.error = ScriptAIError.emptyResponse
         scenario.model.writeScript()
-        for _ in 0..<100 where scenario.model.scriptState != .ready { try? await Task.sleep(for: .milliseconds(20)) }
+        await Wait.until { scenario.model.scriptState == .ready }
         #expect(scenario.model.scriptState == .ready && scenario.model.script?.isCurated == true)
     }
 

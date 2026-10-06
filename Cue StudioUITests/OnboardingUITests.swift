@@ -11,7 +11,10 @@ import XCTest
 final class OnboardingUITests: XCTestCase {
     private func launch(ai: Bool = true, permissions: String = "granted", extra: [String] = []) -> XCUIApplication {
         let app = XCUIApplication()
-        app.launchArguments = ["-uiTestInMemory", "-uiTestOnboarding", "-uiTestPermissions", permissions, ai ? "-uiTestStubAI" : "-uiTestNoAI"] + extra
+        app.launchArguments = [
+            "-uiTestInMemory", "-uiTestFastAnimations", "-uiTestOnboarding", "-uiTestPermissions", permissions,
+            ai ? "-uiTestStubAI" : "-uiTestNoAI",
+        ] + extra
         app.launch()
         return app
     }
@@ -20,11 +23,11 @@ final class OnboardingUITests: XCTestCase {
         app.descendants(matching: .any)[id].firstMatch
     }
 
-    /// The welcome plays its story first (the stars, the constellation, the words); the buttons arrive last.
+    /// The welcome plays its story first (the stars, the constellation, the words); the buttons arrive last, and only then
+    /// exist for accessibility.
     private func startFlight(_ app: XCUIApplication) {
         let start = app.buttons["onboarding.getStarted"]
         XCTAssertTrue(start.waitForExistence(timeout: 15))
-        sleep(4)
         start.tap()
     }
 
@@ -32,8 +35,8 @@ final class OnboardingUITests: XCTestCase {
     private func useScript(_ app: XCUIApplication) {
         let use = app.buttons["onboarding.useScript"]
         XCTAssertTrue(use.waitForExistence(timeout: 10))
-        for _ in 0..<50 where !use.isEnabled { usleep(200_000) }
-        XCTAssertTrue(use.isEnabled)
+        expectation(for: NSPredicate(format: "isEnabled == true"), evaluatedWith: use)
+        waitForExpectations(timeout: 10)
         use.tap()
     }
 
@@ -57,7 +60,6 @@ final class OnboardingUITests: XCTestCase {
         let app = launch()
         let start = app.buttons["onboarding.getStarted"]
         XCTAssertTrue(start.waitForExistence(timeout: 15))
-        sleep(4)
         shot(app, "1-welcome")
         start.tap()
 
@@ -68,16 +70,15 @@ final class OnboardingUITests: XCTestCase {
         app.buttons["onboarding.topic.niche.food"].tap()
         XCTAssertTrue(next.isEnabled)
         app.buttons["onboarding.topic.niche.fitness"].tap()
-        sleep(2)
         shot(app, "2-universe")
         next.tap()
 
         // 2 · the voyage: a platform and its format line.
         XCTAssertTrue(app.buttons["onboarding.platform.reels"].waitForExistence(timeout: 5))
         app.buttons["onboarding.platform.reels"].tap()
-        sleep(2)
-        XCTAssertTrue(element(app, "onboarding.formatLine").label.contains("REELS"))
-        XCTAssertTrue(element(app, "onboarding.formatHint").label.contains("9:16"))
+        expectation(for: NSPredicate(format: "label CONTAINS %@", "REELS"), evaluatedWith: element(app, "onboarding.formatLine"))
+        expectation(for: NSPredicate(format: "label CONTAINS %@", "9:16"), evaluatedWith: element(app, "onboarding.formatHint"))
+        waitForExpectations(timeout: 5)
         shot(app, "3-voyage")
         XCTAssertTrue(app.buttons["onboarding.continue"].label.contains("Reels"))
         app.buttons["onboarding.continue"].tap()
@@ -85,9 +86,9 @@ final class OnboardingUITests: XCTestCase {
         // 3 · the first script.
         let use = app.buttons["onboarding.useScript"]
         XCTAssertTrue(use.waitForExistence(timeout: 10))
-        for _ in 0..<50 where !use.isEnabled { usleep(200_000) }
-        XCTAssertTrue(use.isEnabled, "Load in teleprompter waits for the message to be written")
-        sleep(2)
+        // Load in teleprompter waits for the message to be written.
+        expectation(for: NSPredicate(format: "isEnabled == true"), evaluatedWith: use)
+        waitForExpectations(timeout: 10)
         shot(app, "4-script")
         use.tap()
 

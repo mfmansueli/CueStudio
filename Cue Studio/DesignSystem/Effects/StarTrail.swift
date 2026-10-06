@@ -13,7 +13,7 @@ struct StarTrail: View {
     let poses: [MotionPose]
 
     private static let looks: [(size: CGFloat, color: Color)] = [
-        (11, .white), (7.5, Palette.starCream), (6, Palette.starWarm), (5, Palette.starGold),
+        (11, .white), (7.5, Palette.Universe.starCream), (6, Palette.Universe.starWarm), (5, Palette.Universe.starGold),
     ]
 
     var body: some View {
@@ -21,7 +21,7 @@ struct StarTrail: View {
             // Back to front: the tail first, so the head is on top.
             ForEach(Array(poses.enumerated()).reversed(), id: \.offset) { index, pose in
                 let look = Self.looks[min(index, Self.looks.count - 1)]
-                GlowDot(diameter: look.size, color: look.color, glow: Palette.starCream.opacity(0.9), glowRadius: 7)
+                GlowDot(diameter: look.size, color: look.color, glow: Palette.Universe.starCream.opacity(0.9), glowRadius: 7)
                     .position(x: pose.tx, y: pose.ty)
                     .opacity(pose.opacity)
             }

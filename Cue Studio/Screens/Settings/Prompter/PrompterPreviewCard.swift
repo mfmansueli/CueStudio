@@ -57,7 +57,7 @@ struct PrompterPreviewCard: View {
         }
         .frame(maxWidth: .infinity)
         .frame(height: 132)
-        .background(Palette.previewWell, in: shape)
+        .background(Palette.Editor.previewWell, in: shape)
         .clipShape(shape)
         .overlay(shape.strokeBorder(Palette.glassBorder, lineWidth: 0.5))
         .accessibilityElement(children: .ignore)

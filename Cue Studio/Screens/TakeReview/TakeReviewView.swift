@@ -295,7 +295,7 @@ struct TakeReviewView: View {
     /// The colour of the take's theme (the dot before its title), amber without one.
     private func themeColor(of take: Take) -> Color {
         let topic = services.library.scripts.first { $0.id == take.scriptID }?.topic
-        guard let topic, let index = universeTopics.firstIndex(where: { $0.id == topic }) else { return Palette.worldWarm }
+        guard let topic, let index = universeTopics.firstIndex(where: { $0.id == topic }) else { return Palette.World.warm }
         return OnboardingTopic.color(at: index)
     }
 

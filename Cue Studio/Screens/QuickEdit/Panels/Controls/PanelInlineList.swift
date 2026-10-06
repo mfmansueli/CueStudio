@@ -43,12 +43,12 @@ struct PanelInlineList<Value: Hashable>: View {
                     .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
-                .overlay(alignment: .top) { Rectangle().fill(Palette.editorSeparator).frame(height: 0.5) }
+                .overlay(alignment: .top) { Rectangle().fill(Palette.Editor.separator).frame(height: 0.5) }
                 .accessibilityAddTraits(isOn ? .isSelected : [])
                 .accessibilityIdentifier("\(identifier).\(option.key)")
             }
         }
-        .background(Palette.panelCard, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+        .background(Palette.Editor.panelCard, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
         .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
     }
 }

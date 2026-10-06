@@ -82,10 +82,10 @@ struct OnboardingUniverseCanvas: View {
             let point = CGPoint(x: center.x + mote.from.x + mote.by.x * eased, y: center.y + mote.from.y + mote.by.y * eased)
             let radius = 1 * (1 - 0.7 * progress)
             canvas.drawLayer { layer in
-                layer.addFilter(.shadow(color: Palette.starLilac.opacity(0.9), radius: 5))
+                layer.addFilter(.shadow(color: Palette.Universe.starLilac.opacity(0.9), radius: 5))
                 layer.fill(
                     Path(ellipseIn: CGRect(x: point.x - radius, y: point.y - radius, width: radius * 2, height: radius * 2)),
-                    with: .color(Palette.starLilac.opacity(opacity))
+                    with: .color(Palette.Universe.starLilac.opacity(opacity))
                 )
             }
         }
@@ -99,7 +99,7 @@ struct OnboardingUniverseCanvas: View {
         let breath = reduceMotion ? 0 : 0.5 - 0.5 * cos(2 * .pi * time / 3)
         softDisc(
             in: &canvas, center: center, radius: 11 + 20 + 12 * breath, blur: 60 + 24 * breath,
-            color: Palette.nightViolet.opacity(0.30 + 0.10 * breath)
+            color: Palette.Universe.nightViolet.opacity(0.30 + 0.10 * breath)
         )
         softDisc(
             in: &canvas, center: center, radius: 11 + 6 + 4 * breath, blur: 18 + 8 * breath, color: .white.opacity(0.30 + 0.12 * breath)
@@ -110,21 +110,21 @@ struct OnboardingUniverseCanvas: View {
             let radius = 20 * halo.sx
             canvas.stroke(
                 Path(ellipseIn: CGRect(x: center.x - radius, y: center.y - radius, width: radius * 2, height: radius * 2)),
-                with: .color(Palette.starLilac.opacity(0.7 * halo.opacity)), lineWidth: 1.5
+                with: .color(Palette.Universe.starLilac.opacity(0.7 * halo.opacity)), lineWidth: 1.5
             )
         }
         canvas.fill(
             Path(ellipseIn: CGRect(x: center.x - 11, y: center.y - 11, width: 22, height: 22)),
             with: .radialGradient(
                 Gradient(stops: [
-                    .init(color: .white, location: 0), .init(color: Palette.flightCoreMid, location: 0.5),
-                    .init(color: Palette.flightCoreEdge, location: 1),
+                    .init(color: .white, location: 0), .init(color: Palette.Flight.coreMid, location: 0.5),
+                    .init(color: Palette.Flight.coreEdge, location: 1),
                 ]),
                 center: center, startRadius: 0, endRadius: 11
             )
         )
         canvas.draw(
-            Text("YOU").font(.system(size: 10, weight: .semibold, design: .monospaced)).tracking(1.4).foregroundStyle(Palette.flightInk.opacity(0.75)),
+            Text("YOU").font(.system(size: 10, weight: .semibold, design: .monospaced)).tracking(1.4).foregroundStyle(Palette.Flight.ink.opacity(0.75)),
             at: CGPoint(x: center.x, y: center.y + 33)
         )
     }
@@ -159,8 +159,9 @@ struct OnboardingUniverseCanvas: View {
                 wedge,
                 with: .radialGradient(
                     Gradient(stops: [
-                        .init(color: Palette.starLilac.opacity(0.10), location: 0), .init(color: Palette.starLilac.opacity(0.10), location: 9.8 / 44),
-                        .init(color: Palette.starLilac.opacity(0), location: 1),
+                        .init(color: Palette.Universe.starLilac.opacity(0.10), location: 0),
+                        .init(color: Palette.Universe.starLilac.opacity(0.10), location: 9.8 / 44),
+                        .init(color: Palette.Universe.starLilac.opacity(0), location: 1),
                     ]),
                     center: center, startRadius: 0, endRadius: 44
                 )
@@ -245,7 +246,7 @@ struct OnboardingUniverseCanvas: View {
             let start = max(0, -dash / 100), end = min(1, (-dash + 6) / 100)
             if end > start {
                 canvas.drawLayer { layer in
-                    layer.addFilter(.shadow(color: Palette.starCream.opacity(0.9), radius: 4))
+                    layer.addFilter(.shadow(color: Palette.Universe.starCream.opacity(0.9), radius: 4))
                     layer.stroke(path.trimmedPath(from: start, to: end), with: .color(.white), style: StrokeStyle(lineWidth: 2, lineCap: .round))
                 }
             }

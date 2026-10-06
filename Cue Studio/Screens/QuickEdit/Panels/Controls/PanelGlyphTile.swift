@@ -51,7 +51,7 @@ struct PanelGlyphTile: View {
             }
             .padding(10)
             .frame(width: width, height: 90, alignment: .topLeading)
-            .background(isOn ? Palette.accTile : (isSuggestion ? Palette.aiFill : Palette.panelCard), in: shape)
+            .background(isOn ? Palette.Editor.accTile : (isSuggestion ? Palette.aiFill : Palette.Editor.panelCard), in: shape)
             .overlay(shape.strokeBorder(isOn ? Palette.acc : .clear, lineWidth: 2))
             .contentShape(shape)
         }

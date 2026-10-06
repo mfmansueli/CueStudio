@@ -16,6 +16,8 @@ final class ScriptsV29UITests: XCTestCase {
         try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
         sleep(1)
         try app.screenshot().pngRepresentation.write(to: directory.appending(path: "\(name).png"))
+        // The hierarchy beside the picture, for `tools/contrast/audit.py`.
+        try app.debugDescription.write(to: directory.appending(path: "\(name).txt"), atomically: true, encoding: .utf8)
     }
 
     private func element(_ app: XCUIApplication, _ id: String) -> XCUIElement {
@@ -41,12 +43,9 @@ final class ScriptsV29UITests: XCTestCase {
 
     func testASearchWithNoResultShowsTheEmptyStateAndTheWayOut() throws {
         let app = CueApp.launch(seeded: true)
-        // The search is the navigation bar's own (`.searchable`): a magnifier that opens the system's field.
-        let magnifier = app.navigationBars.buttons["Search"].firstMatch
-        XCTAssertTrue(magnifier.waitForExistence(timeout: 15))
-        magnifier.tap()
-        let field = app.searchFields.firstMatch
-        XCTAssertTrue(field.waitForExistence(timeout: 5))
+        // The search is a field at the top of the list, always there.
+        let field = app.scriptsSearchField
+        XCTAssertTrue(field.waitForExistence(timeout: 15))
         field.tap()
         field.typeText("zzzzzz")
         XCTAssertTrue(element(app, "scripts.empty").waitForExistence(timeout: 5))
@@ -54,6 +53,30 @@ final class ScriptsV29UITests: XCTestCase {
         try capture(app, "3.2f_no_results")
         app.buttons["scripts.empty.action"].tap()
         XCTAssertTrue(element(app, "scripts.group.ready").waitForExistence(timeout: 5))
+    }
+
+    /// The search is a field at the top of the list, always there, and the dock stays while searching: typing narrows the list, and the
+    /// field's ✕ gives the whole list back.
+    func testTheSearchIsAlwaysThereAndTheDockStays() {
+        let app = CueApp.launch(seeded: true)
+        let dock = element(app, "scripts.promptCard")
+        XCTAssertTrue(dock.waitForExistence(timeout: 15))
+        let field = app.scriptsSearchField
+        XCTAssertTrue(field.exists, "the search is there without opening anything")
+        XCTAssertTrue(app.navigationBars.buttons["scripts.newButton"].exists)
+        XCTAssertFalse(app.navigationBars.buttons["Search"].exists, "no magnifier in the bar")
+        let draft = app.staticTexts["Cold showers: one month in"]
+        XCTAssertTrue(draft.exists)
+
+        field.tap()
+        field.typeText("Oat")
+        XCTAssertTrue(app.staticTexts["Oat & Co. — sponsored read"].waitForExistence(timeout: 5))
+        XCTAssertFalse(draft.exists)
+        XCTAssertTrue(dock.exists, "the dock stays while searching")
+
+        element(app, "scripts.search").buttons["Clear search"].tap()
+        XCTAssertTrue(draft.waitForExistence(timeout: 5), "the whole list is back")
+        XCTAssertTrue(dock.exists)
     }
 
     func testTheFirstVisitInvitesWithIdeasAndTwoWaysIn() throws {

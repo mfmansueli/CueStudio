@@ -43,7 +43,7 @@ enum SpaceshipPainter {
             guard moment >= 0 else { break }
             let to = ship.position(atTime: moment)
             let fade = pow(1 - fraction, 1.5) * flicker
-            let colour = Palette.shipEngine.mix(with: Palette.shipTrailFar, by: fraction)
+            let colour = Palette.Sky.shipEngine.mix(with: Palette.Sky.shipTrailFar, by: fraction)
             var segment = Path()
             segment.move(to: from)
             segment.addLine(to: to)
@@ -59,25 +59,25 @@ enum SpaceshipPainter {
     private static func drawWings(_ craft: inout GraphicsContext, length: CGFloat) {
         for side in [-1.0, 1.0] {
             let wing = polygon([(0.14, side * 0.07), (-0.34, side * 0.38), (-0.42, side * 0.36), (-0.30, side * 0.17), (-0.46, side * 0.06)], length)
-            craft.fill(wing, with: .color(Palette.shipWing))
+            craft.fill(wing, with: .color(Palette.Sky.shipWing))
             var edge = Path()
             edge.move(to: point(0.14, side * 0.07, length))
             edge.addLine(to: point(-0.34, side * 0.38, length))
-            craft.stroke(edge, with: .color(Palette.shipEngine.opacity(0.85)), lineWidth: max(0.4, length * 0.028))
+            craft.stroke(edge, with: .color(Palette.Sky.shipEngine.opacity(0.85)), lineWidth: max(0.4, length * 0.028))
         }
     }
 
     /// The faceted hull, the engine slits with their glow, and the visor.
     private static func drawHull(_ craft: inout GraphicsContext, length: CGFloat, flicker: Double) {
-        let engine = Palette.shipEngine
+        let engine = Palette.Sky.shipEngine
         let glow = point(-0.5, 0, length)
         craft.fill(
             Path(ellipseIn: CGRect(x: glow.x - length * 0.35, y: glow.y - length * 0.35, width: length * 0.7, height: length * 0.7)),
             with: .radialGradient(Gradient(colors: [engine.opacity(0.5 * flicker), engine.opacity(0)]), center: glow, startRadius: 0, endRadius: length * 0.35)
         )
 
-        craft.fill(polygon([(0.5, 0), (0.10, -0.08), (-0.5, -0.06), (-0.40, 0)], length), with: .color(Palette.shipHull))
-        craft.fill(polygon([(0.5, 0), (-0.40, 0), (-0.5, 0.06), (0.10, 0.08)], length), with: .color(Palette.shipHullShade))
+        craft.fill(polygon([(0.5, 0), (0.10, -0.08), (-0.5, -0.06), (-0.40, 0)], length), with: .color(Palette.Sky.shipHull))
+        craft.fill(polygon([(0.5, 0), (-0.40, 0), (-0.5, 0.06), (0.10, 0.08)], length), with: .color(Palette.Sky.shipHullShade))
 
         for side in [-1.0, 1.0] {
             craft.fill(polygon([(-0.46, side * 0.049), (-0.53, side * 0.049), (-0.53, side * 0.021), (-0.46, side * 0.021)], length), with: .color(engine))
@@ -90,8 +90,8 @@ enum SpaceshipPainter {
     private static func drawLights(_ craft: inout GraphicsContext, length: CGFloat, time: TimeInterval) {
         let phase = time.truncatingRemainder(dividingBy: 2.8) / 2.8
         let lights: [(side: Double, color: Color, lit: Bool)] = [
-            (-1, Palette.shipLightPort, phase < 0.05),
-            (1, Palette.shipLightStarboard, phase >= 0.5 && phase < 0.55),
+            (-1, Palette.Sky.shipLightPort, phase < 0.05),
+            (1, Palette.Sky.shipLightStarboard, phase >= 0.5 && phase < 0.55),
         ]
         for light in lights {
             let centre = point(-0.38, light.side * 0.375, length)

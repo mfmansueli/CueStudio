@@ -31,7 +31,7 @@ struct ProfileAvatar: View {
                 Image(uiImage: image).resizable().scaledToFill()
             } else {
                 ZStack {
-                    LinearGradient(colors: [Palette.avatarLight, Palette.avatarDeep], startPoint: .topLeading, endPoint: .bottomTrailing)
+                    LinearGradient(colors: [Palette.Universe.avatarLight, Palette.Universe.avatarDeep], startPoint: .topLeading, endPoint: .bottomTrailing)
                     if let initial {
                         Text(initial)
                             .font(.system(size: size * 0.47, weight: .semibold))

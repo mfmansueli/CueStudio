@@ -21,7 +21,7 @@ struct GridOverlay: View {
                 path.move(to: CGPoint(x: frame.minX, y: y))
                 path.addLine(to: CGPoint(x: frame.maxX, y: y))
             }
-            context.stroke(path, with: .color(Palette.gridLine), lineWidth: 0.5)
+            context.stroke(path, with: .color(Palette.Camera.gridLine), lineWidth: 0.5)
         }
         .ignoresSafeArea()
         .allowsHitTesting(false)

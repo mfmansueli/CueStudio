@@ -16,7 +16,7 @@ struct UniverseShareCard: View {
 
     var body: some View {
         ZStack {
-            LinearGradient(colors: [Palette.nightDeep, Palette.nightIndigo], startPoint: .top, endPoint: .bottom)
+            LinearGradient(colors: [Palette.Universe.nightDeep, Palette.Universe.nightIndigo], startPoint: .top, endPoint: .bottom)
             VStack(spacing: 14) {
                 Text("MY \(String(snapshot.year)) UNIVERSE")
                     .font(.system(size: 13, weight: .bold, design: .monospaced)).tracking(2).foregroundStyle(Palette.acc)

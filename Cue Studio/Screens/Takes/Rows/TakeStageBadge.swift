@@ -25,7 +25,7 @@ struct TakeStageBadge: View {
         .foregroundStyle(stage.boardTint)
         .padding(.horizontal, 7)
         .frame(height: 22)
-        .background(Palette.posterPill, in: Capsule())
+        .background(Palette.Takes.posterPill, in: Capsule())
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(Text(stage.sentence))
     }

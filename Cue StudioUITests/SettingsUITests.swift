@@ -44,12 +44,12 @@ final class SettingsUITests: XCTestCase {
         XCTAssertTrue(app.navigationBars["Prompter"].waitForExistence(timeout: 5))
         app.navigationBars["Prompter"].buttons.firstMatch.tap()
         XCTAssertTrue(app.navigationBars["Settings"].waitForExistence(timeout: 5))
-        scroll(app, to: row(app, "settings.languageRegion"))
+        app.scroll(to: row(app, "settings.languageRegion"))
         row(app, "settings.languageRegion").tap()
         XCTAssertTrue(app.navigationBars["Language & Region"].waitForExistence(timeout: 5))
         XCTAssertTrue(settings.isSelected)
         app.navigationBars["Language & Region"].buttons.firstMatch.tap()
-        scroll(app, to: row(app, "settings.privacy"))
+        app.scroll(to: row(app, "settings.privacy"))
         row(app, "settings.privacy").tap()
         XCTAssertTrue(app.navigationBars["Privacy & AI data"].waitForExistence(timeout: 5))
         app.navigationBars["Privacy & AI data"].buttons.firstMatch.tap()
@@ -64,7 +64,7 @@ final class SettingsUITests: XCTestCase {
         XCTAssertTrue(settings.waitForExistence(timeout: 15))
         settings.tap()
         let reset = app.buttons["creatorSetup.resetButton"]
-        scroll(app, to: reset)
+        app.scroll(to: reset)
         reset.tap()
         XCTAssertTrue(app.buttons["creatorSetup.confirmResetButton"].waitForExistence(timeout: 5))
         dismissDialog(app)
@@ -107,7 +107,7 @@ final class SettingsUITests: XCTestCase {
         XCTAssertTrue(row(app, "settings.followVoice").waitForExistence(timeout: 5))
         XCTAssertTrue(row(app, "settings.prompterPreview").exists)
         let mirror = row(app, "settings.mirrorText")
-        scroll(app, to: mirror)
+        app.scroll(to: mirror)
         XCTAssertTrue(row(app, "settings.flipVertically").exists)
     }
 
@@ -124,7 +124,7 @@ final class SettingsUITests: XCTestCase {
             XCTAssertTrue(row(app, "settings.recording").waitForExistence(timeout: 5))
             capture(app, name: "Settings · \(language)")
             // Everything stays reachable by scrolling, in every language.
-            scroll(app, to: row(app, "settings.restorePurchases"))
+            app.scroll(to: row(app, "settings.restorePurchases"))
             XCTAssertTrue(row(app, "settings.restorePurchases").isHittable)
             app.terminate()
         }
@@ -137,10 +137,10 @@ final class SettingsUITests: XCTestCase {
         let language = row(app, "settings.languageRegion")
         XCTAssertTrue(app.navigationBars["Einstellungen"].waitForExistence(timeout: 5))
         capture(app, name: "Settings · German · Accessibility XXXL")
-        scroll(app, to: language)
+        app.scroll(to: language)
         XCTAssertTrue(language.isHittable)
         let restore = row(app, "settings.restorePurchases")
-        scroll(app, to: restore)
+        app.scroll(to: restore)
         XCTAssertTrue(restore.isHittable)
         capture(app, name: "Settings · German · Accessibility XXXL · Bottom")
     }
@@ -151,7 +151,7 @@ final class SettingsUITests: XCTestCase {
         XCTAssertTrue(settings.waitForExistence(timeout: 15))
         settings.tap()
         let acknowledgements = row(app, "settings.acknowledgements")
-        scroll(app, to: acknowledgements)
+        app.scroll(to: acknowledgements)
         acknowledgements.tap()
         XCTAssertTrue(app.navigationBars["Acknowledgements"].waitForExistence(timeout: 5))
         let font = app.buttons.matching(identifier: "acknowledgements.font").firstMatch
@@ -192,13 +192,6 @@ final class SettingsUITests: XCTestCase {
         let symbols = ["doc.text", "film.stack", "", "person.crop.circle", "gearshape"]
         let symbol = symbols[index ?? labels.firstIndex(of: label) ?? 0]
         return app.buttons.matching(NSPredicate(format: "label == %@ AND identifier == %@", label, symbol)).firstMatch
-    }
-
-    private func scroll(_ app: XCUIApplication, to element: XCUIElement) {
-        for _ in 0..<8 where !(element.exists && element.isHittable) {
-            app.swipeUp()
-        }
-        XCTAssertTrue(element.waitForExistence(timeout: 5))
     }
 
     private func capture(_ app: XCUIApplication, name: String) {
@@ -245,7 +238,7 @@ final class SettingsUITests: XCTestCase {
         let settings = tab(app, label: "Settings")
         XCTAssertTrue(settings.waitForExistence(timeout: 15))
         settings.tap()
-        scroll(app, to: row(app, "settings.privacy"))
+        app.scroll(to: row(app, "settings.privacy"))
         row(app, "settings.privacy").tap()
     }
 

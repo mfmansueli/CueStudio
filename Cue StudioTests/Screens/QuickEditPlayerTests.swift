@@ -47,20 +47,8 @@ struct QuickEditPlayerTests {
         let player = QuickEditPlayer(videoURL: clip, editing: editing, audioSession: audioSession)
         let edit = TakeEdit(sourceDuration: TimeInterval(seconds), aspect: .portrait)
         player.show(edit)
-        try await waitUntil { player.state == .ready }
+        await Wait.until { player.state == .ready }
         return (player, edit, clip)
-    }
-
-    private func waitUntil(timeout: Duration = .seconds(10), _ condition: () -> Bool) async throws {
-        let clock = ContinuousClock()
-        let deadline = clock.now + timeout
-        while !condition() {
-            guard clock.now < deadline else {
-                Issue.record("Timed out")
-                return
-            }
-            try await Task.sleep(for: .milliseconds(20))
-        }
     }
 
     private func itemSeconds(_ player: QuickEditPlayer) -> TimeInterval {
@@ -105,7 +93,7 @@ struct QuickEditPlayerTests {
         defer { try? FileManager.default.removeItem(at: clip) }
         player.seek(to: 1.25)
         #expect(player.currentTime == 1.25)
-        try await waitUntil { abs(itemSeconds(player) - 1.25) < 0.001 }
+        await Wait.until { abs(itemSeconds(player) - 1.25) < 0.001 }
         player.stop()
     }
 
@@ -117,9 +105,9 @@ struct QuickEditPlayerTests {
         player.show(trimmed)
         player.play()
         #expect(player.isPlaying)
-        try await waitUntil { player.currentTime > 0.3 }
+        await Wait.until { player.currentTime > 0.3 }
         #expect(player.isPlaying)
-        try await waitUntil { !player.isPlaying }
+        await Wait.until { !player.isPlaying }
         #expect(abs(player.currentTime - 1) < 0.05)
         #expect(itemSeconds(player) <= 1.05)
         player.stop()
@@ -129,9 +117,9 @@ struct QuickEditPlayerTests {
         let (player, _, clip) = try await makePlayer(seconds: 2)
         defer { try? FileManager.default.removeItem(at: clip) }
         player.seek(to: 2)
-        try await waitUntil { abs(itemSeconds(player) - 2) < 0.05 }
+        await Wait.until { abs(itemSeconds(player) - 2) < 0.05 }
         player.play()
-        try await waitUntil { player.currentTime > 0.1 && player.currentTime < 1 }
+        await Wait.until { player.currentTime > 0.1 && player.currentTime < 1 }
         player.stop()
     }
 
@@ -140,13 +128,13 @@ struct QuickEditPlayerTests {
         defer { try? FileManager.default.removeItem(at: clip) }
         player.reviewedPart = 0.5...1.2
         player.seek(to: 0.7)
-        try await waitUntil { abs(itemSeconds(player) - 0.7) < 0.001 }
+        await Wait.until { abs(itemSeconds(player) - 0.7) < 0.001 }
         player.play()
-        try await waitUntil { player.currentTime > 0.9 }
+        await Wait.until { player.currentTime > 0.9 }
         #expect(player.isPlaying)
-        try await waitUntil { !player.isPlaying }
+        await Wait.until { !player.isPlaying }
         #expect(abs(player.currentTime - 1.2) < 0.001)
-        try await waitUntil { abs(itemSeconds(player) - 1.2) < 0.001 }
+        await Wait.until { abs(itemSeconds(player) - 1.2) < 0.001 }
         // It stays there: nothing past the part plays.
         try await Task.sleep(for: .milliseconds(300))
         #expect(abs(player.currentTime - 1.2) < 0.001)
@@ -159,10 +147,10 @@ struct QuickEditPlayerTests {
         defer { try? FileManager.default.removeItem(at: clip) }
         player.reviewedPart = 0.5...1
         player.seek(to: 1)
-        try await waitUntil { abs(itemSeconds(player) - 1) < 0.001 }
+        await Wait.until { abs(itemSeconds(player) - 1) < 0.001 }
         player.play()
         #expect(player.currentTime == 0.5)
-        try await waitUntil { !player.isPlaying }
+        await Wait.until { !player.isPlaying }
         #expect(abs(player.currentTime - 1) < 0.001)
         player.stop()
     }
@@ -172,9 +160,9 @@ struct QuickEditPlayerTests {
         defer { try? FileManager.default.removeItem(at: clip) }
         player.reviewedPart = 0.2...0.5
         player.seek(to: 1.2)
-        try await waitUntil { abs(itemSeconds(player) - 1.2) < 0.001 }
+        await Wait.until { abs(itemSeconds(player) - 1.2) < 0.001 }
         player.play()
-        try await waitUntil { !player.isPlaying }
+        await Wait.until { !player.isPlaying }
         #expect(abs(player.currentTime - 2) < 0.05)
         player.stop()
     }
@@ -184,9 +172,9 @@ struct QuickEditPlayerTests {
         defer { try? FileManager.default.removeItem(at: clip) }
         player.reviewedPart = 0...1
         player.play()
-        try await waitUntil { player.currentTime > 0.2 }
+        await Wait.until { player.currentTime > 0.2 }
         player.reviewedPart = nil
-        try await waitUntil { player.currentTime > 1.3 }
+        await Wait.until { player.currentTime > 1.3 }
         #expect(player.isPlaying)
         player.stop()
     }
@@ -195,7 +183,7 @@ struct QuickEditPlayerTests {
         let (player, _, clip) = try await makePlayer()
         defer { try? FileManager.default.removeItem(at: clip) }
         player.play()
-        try await waitUntil { player.currentTime > 0.4 }
+        await Wait.until { player.currentTime > 0.4 }
         player.pause()
         #expect(!player.isPlaying)
         #expect(abs(player.currentTime - itemSeconds(player)) < 0.005)
@@ -216,7 +204,7 @@ struct QuickEditPlayerTests {
         #expect(!player.isPlaying)
         #expect(player.currentTime == 2.2)
         player.endScrub()
-        try await waitUntil { abs(itemSeconds(player) - 2.2) < 0.001 }
+        await Wait.until { abs(itemSeconds(player) - 2.2) < 0.001 }
         #expect(!player.isPlaying)
         player.stop()
     }
@@ -233,7 +221,7 @@ struct QuickEditPlayerTests {
         #expect(abs((item?.forwardPlaybackEndTime.seconds ?? 0) - 2.5) < 0.01)
         // The edit starts one second into the recording.
         player.seek(to: 0.5)
-        try await waitUntil { abs(itemSeconds(player) - 1.5) < 0.001 }
+        await Wait.until { abs(itemSeconds(player) - 1.5) < 0.001 }
         player.stop()
     }
 
@@ -252,8 +240,8 @@ struct QuickEditPlayerTests {
         removed.timeline.removeSegment(id: removed.timeline.segments[1].id)
         player.show(removed)
         #expect(abs(player.currentTime - 1.5) < 0.000_1)
-        try await waitUntil { player.avPlayer.currentItem !== item && player.state == .ready }
-        try await waitUntil { abs(itemSeconds(player) - 1.5) < 0.001 }
+        await Wait.until { player.avPlayer.currentItem !== item && player.state == .ready }
+        await Wait.until { abs(itemSeconds(player) - 1.5) < 0.001 }
         player.stop()
     }
 
@@ -266,7 +254,7 @@ struct QuickEditPlayerTests {
         player.show(cut)
         let item = player.avPlayer.currentItem
         player.play()
-        try await waitUntil { player.currentTime > 0.3 }
+        await Wait.until { player.currentTime > 0.3 }
         // The middle piece: removing the last one would only move the end handle.
         var removed = cut
         removed.timeline.removeSegment(id: removed.timeline.segments[1].id)
@@ -274,7 +262,7 @@ struct QuickEditPlayerTests {
         // The old item stops at once: its times no longer match the edit.
         #expect(player.avPlayer.rate == 0)
         #expect(player.isPlaying)
-        try await waitUntil { player.avPlayer.currentItem !== item && player.avPlayer.rate > 0 }
+        await Wait.until { player.avPlayer.currentItem !== item && player.avPlayer.rate > 0 }
         #expect(player.isPlaying)
         #expect(player.currentTime <= 2)
         player.stop()
@@ -290,7 +278,7 @@ struct QuickEditPlayerTests {
         var mono = edit
         mono.filter = .mono
         player.show(mono)
-        try await waitUntil { drawnFilter(player) == .mono }
+        await Wait.until { drawnFilter(player) == .mono }
         #expect(player.avPlayer.currentItem === item)
     }
 
@@ -304,12 +292,12 @@ struct QuickEditPlayerTests {
             try? FileManager.default.removeItem(at: clip)
         }
         // The first second is red.
-        try await waitUntil { drawnColor(player).map { $0[0] > 150 && $0[1] < 100 } ?? false }
+        await Wait.until { drawnColor(player).map { $0[0] > 150 && $0[1] < 100 } ?? false }
         var mono = edit
         mono.filter = .mono
         player.show(mono)
         // The frame on screen is drawn again, gray.
-        try await waitUntil { drawnColor(player).map { abs($0[0] - $0[1]) < 20 && abs($0[1] - $0[2]) < 20 } ?? false }
+        await Wait.until { drawnColor(player).map { abs($0[0] - $0[1]) < 20 && abs($0[1] - $0[2]) < 20 } ?? false }
     }
 
     @Test(.enabled(if: drawsFrames, "Needs a device to draw frames"))
@@ -326,11 +314,11 @@ struct QuickEditPlayerTests {
             holds.count += 1
             view?.hold(frame)
         }
-        try await waitUntil { drawnColor(player) != nil }
+        await Wait.until { drawnColor(player) != nil }
         var looked = edit
         looked.filter = .mono
         player.show(looked)
-        try await waitUntil { drawnFilter(player) == .mono }
+        await Wait.until { drawnFilter(player) == .mono }
         // A new look needs no new item, so nothing is held.
         #expect(holds.count == 0)
 
@@ -340,11 +328,11 @@ struct QuickEditPlayerTests {
         removed.timeline.split(atEdited: 2)
         removed.timeline.removeSegment(id: removed.timeline.segments[1].id)
         player.show(removed)
-        try await waitUntil { player.avPlayer.currentItem !== item }
+        await Wait.until { player.avPlayer.currentItem !== item }
         #expect(holds.count == 1)
         #expect(view.isHoldingFrame)
         // Let go once the layer shows the new item's own picture.
-        try await waitUntil { !view.isHoldingFrame }
+        await Wait.until { !view.isHoldingFrame }
         #expect((view.layer as? AVPlayerLayer)?.isReadyForDisplay == true)
     }
 
@@ -361,7 +349,7 @@ struct QuickEditPlayerTests {
             changed.filter = filter
             player.show(changed)
         }
-        try await waitUntil { drawnFilter(player) == .cinema }
+        await Wait.until { drawnFilter(player) == .cinema }
         // The first change builds at once; the others wait for it and are built together.
         #expect(editing.previewItems - before == 2)
     }
@@ -369,7 +357,7 @@ struct QuickEditPlayerTests {
     @Test func aMissingFileFails() async throws {
         let player = QuickEditPlayer(videoURL: URL.temporaryDirectory.appending(path: "gone-\(UUID()).mov"), editing: TakeEditService())
         player.show(TakeEdit(sourceDuration: 3, aspect: .portrait))
-        try await waitUntil { player.state == .failed }
+        await Wait.until { player.state == .failed }
         player.play()
         #expect(!player.isPlaying)
     }
@@ -389,11 +377,11 @@ struct QuickEditPlayerTests {
         defer { player.stop(); try? FileManager.default.removeItem(at: clip) }
         #expect(audioSession.preparations == 0)
         player.play()
-        try await waitUntil { player.currentTime > 0.1 }
+        await Wait.until { player.currentTime > 0.1 }
         #expect(audioSession.preparations == 1)
         player.pause()
         player.play()
-        try await waitUntil { audioSession.preparations == 2 }
+        await Wait.until { audioSession.preparations == 2 }
     }
 
     @Test func mutedVoiceOverPlaybackDoesNotReplaceTheRecordingSession() async throws {
@@ -402,12 +390,12 @@ struct QuickEditPlayerTests {
         defer { player.stop(); try? FileManager.default.removeItem(at: clip) }
         player.isMuted = true
         player.play()
-        try await waitUntil { player.currentTime > 0.1 }
+        await Wait.until { player.currentTime > 0.1 }
         #expect(audioSession.preparations == 0)
         player.pause()
         player.isMuted = false
         player.play()
-        try await waitUntil { audioSession.preparations == 1 }
+        await Wait.until { audioSession.preparations == 1 }
     }
 
     @Test func pausingDuringAudioActivationDoesNotRestartPlayback() async throws {
@@ -416,7 +404,7 @@ struct QuickEditPlayerTests {
         let (player, _, clip) = try await makePlayer(audioSession: audioSession)
         defer { player.stop(); try? FileManager.default.removeItem(at: clip) }
         player.play()
-        try await waitUntil { audioSession.preparations == 1 }
+        await Wait.until { audioSession.preparations == 1 }
         player.pause()
         try await Task.sleep(for: .milliseconds(100))
         #expect(!player.isPlaying)
@@ -429,9 +417,9 @@ struct QuickEditPlayerTests {
         let (player, _, clip) = try await makePlayer(audioSession: audioSession)
         defer { player.stop(); try? FileManager.default.removeItem(at: clip) }
         player.play()
-        try await waitUntil { audioSession.preparations == 1 }
+        await Wait.until { audioSession.preparations == 1 }
         player.seek(to: 1)
-        try await waitUntil { player.currentTime > 1.1 }
+        await Wait.until { player.currentTime > 1.1 }
         #expect(player.isPlaying)
         #expect(audioSession.preparations >= 2)
     }
@@ -442,7 +430,7 @@ struct QuickEditPlayerTests {
         let (player, _, clip) = try await makePlayer(audioSession: audioSession)
         defer { try? FileManager.default.removeItem(at: clip) }
         player.play()
-        try await waitUntil { audioSession.preparations == 1 }
+        await Wait.until { audioSession.preparations == 1 }
         player.stop()
         try await Task.sleep(for: .milliseconds(100))
         #expect(!player.isPlaying)
