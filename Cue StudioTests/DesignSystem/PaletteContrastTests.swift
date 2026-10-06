@@ -401,6 +401,40 @@ struct PaletteContrastTests {
 
     // MARK: - The math
 
+    /// Interstellar (Starry sky): the night under every browse screen is darker than `bg`, so every text token reads on it, and still reads at its
+    /// brightest point: a wash light, a nebula's heart and the Milky Way band all on the same spot (the rule: the worst point, not the average).
+    @Test func theInterstellarNightKeepsTheTextTokensReadableEvenAtItsBrightestPoint() {
+        let washes: [(name: String, color: Color)] = [
+            ("indigo", Palette.Sky.interstellarWashIndigo), ("magenta", Palette.Sky.interstellarWashMagenta), ("teal", Palette.Sky.interstellarWashTeal),
+        ]
+        let nebulae: [(name: String, hue: NebulaHue)] = [("blue", .blue), ("magenta", .magenta), ("teal", .teal)]
+        let nebulaPeak = StarfieldMath.interstellarNebulaOpacity.upperBound
+        let band = Palette.Sky.interstellarBand.opacity(StarfieldMath.bandPeakOpacity)
+        let tokens: [(name: String, color: Color)] = [("ink", Palette.ink), ("ink2", Palette.ink2), ("inkHint", Palette.inkHint)]
+
+        for appearance in Appearance.allCases {
+            let base = rgb(Palette.Sky.interstellarBg, in: appearance)
+            for token in textTokens {
+                let value = ratio(token.color, on: Palette.Sky.interstellarBg, in: appearance)
+                #expect(value >= ColorContrast.textMinimum, "\(token.name) on the interstellar night, \(appearance): \(value)")
+            }
+            for wash in washes {
+                for nebula in nebulae {
+                    let lit = rgb(wash.color, in: appearance, over: base)
+                    let withNebula = rgb(nebula.hue.color.opacity(nebulaPeak), in: appearance, over: lit)
+                    let brightest = rgb(band, in: appearance, over: withNebula)
+                    for token in tokens {
+                        let value = ColorContrast.ratio(rgb(token.color, in: appearance, over: brightest), brightest)
+                        #expect(
+                            value >= ColorContrast.textMinimum,
+                            "\(token.name) on the \(wash.name) wash + \(nebula.name) nebula + band, \(appearance): \(value)"
+                        )
+                    }
+                }
+            }
+        }
+    }
+
     @Test func theRatioIsTheStandardOne() {
         let black = ColorContrast.RGB(red: 0, green: 0, blue: 0)
         let white = ColorContrast.RGB(red: 1, green: 1, blue: 1)

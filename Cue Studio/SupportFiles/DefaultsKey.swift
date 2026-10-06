@@ -33,7 +33,7 @@ nonisolated enum DefaultsKey {
     static let takesLayout = "takesLayout"
     /// The Sign in with Apple account (ID, and the name and email Apple shared once).
     static let appleAccount = "appleAccount"
-    /// Settings › Personalize: the sky (`SkyDensity` raw value; absent = full), the story moments, the
+    /// Settings › Personalize: the sky (`SkyDensity` raw value; absent = Calm), the story moments, the
     /// haptics and the automatic topic tag (absent = on).
     static let skyDensity = "skyDensity"
     static let celebrations = "celebrations"

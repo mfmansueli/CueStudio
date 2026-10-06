@@ -5,7 +5,7 @@
 
 import Foundation
 
-/// What the creator chose in Settings › Personalize: how alive the sky is, whether the story moments
+/// What the creator chose in Settings › Personalize: which sky the app has (Serene until they choose another), whether the story moments
 /// (send-off, milestones, the first star) play, whether the app taps back (haptics) and whether Cue
 /// tags new scripts with a topic by itself; the colour of the universe's core. Kept on this iPhone.
 @MainActor
@@ -40,7 +40,7 @@ final class PersonalizationService {
 
     init(defaults: UserDefaults = .standard) {
         self.defaults = defaults
-        sky = defaults.string(forKey: DefaultsKey.skyDensity).flatMap(SkyDensity.init(rawValue:)) ?? .lively
+        sky = defaults.string(forKey: DefaultsKey.skyDensity).flatMap(SkyDensity.init(saved:)) ?? .serene
         coreColor = defaults.string(forKey: DefaultsKey.coreColor).flatMap(CoreColor.init(rawValue:)) ?? .gold
         celebrations = defaults.object(forKey: DefaultsKey.celebrations) as? Bool ?? true
         haptics = defaults.object(forKey: DefaultsKey.hapticsEnabled) as? Bool ?? true

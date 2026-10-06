@@ -25,13 +25,23 @@ struct DesignCatalogueView: View {
     @State private var comet = 0
     @State private var words = 0
     @State private var aura = false
-    @State private var density: SkyDensity = .lively
+    @State private var density: SkyDensity = .adrift
+    @State private var shipShift: TimeInterval = 0
+    @State private var shipCount = 0
     @State private var transitionRun = 0
     @State private var writtenWords = 0
     @State private var transitionReady = 0
 
     init(section: Section = .colors) {
         _section = State(initialValue: section)
+        _density = State(initialValue: Self.launchDensity)
+    }
+
+    /// `-uiTestSky <off|serene|adrift|interstellar>` opens the sky demo on that sky.
+    private static var launchDensity: SkyDensity {
+        let arguments = CommandLine.arguments
+        guard let index = arguments.firstIndex(of: "-uiTestSky"), arguments.indices.contains(index + 1) else { return .adrift }
+        return SkyDensity(saved: arguments[index + 1]) ?? .adrift
     }
 
     private let columns = Array(repeating: GridItem(.flexible(), spacing: 10), count: 4)
@@ -360,11 +370,50 @@ struct DesignCatalogueView: View {
                 ForEach(SkyDensity.allCases) { Text($0.label).tag($0) }
             }
             .pickerStyle(.segmented)
-            StarfieldView(density: density)
-                .frame(height: 520)
+            // The astronaut as he is drawn, about four and a half times the size he floats at, to look at the suit and the visor.
+            if density.hasAstronaut {
+                heading("Astronaut, close up")
+                TimelineView(.animation(minimumInterval: 1.0 / 30)) { context in
+                    Canvas { canvas, size in
+                        let astronaut = StarfieldMath.Astronaut(
+                            position: CGPoint(x: size.width / 2, y: size.height / 2), angle: 0.18, size: 170, opacity: 1
+                        )
+                        AstronautPainter.draw(astronaut, time: context.date.timeIntervalSinceReferenceDate, in: &canvas)
+                    }
+                }
+                .frame(height: 210)
                 .background(Palette.bg, in: RoundedRectangle(cornerRadius: 20, style: .continuous))
-                .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
+            }
+            // The sky over the night glow of that sky, as a browse screen has them.
+            ZStack {
+                BgWash(lights: BgWash.browse(density), base: BgWash.browseBase(density))
+                StarfieldView(density: density, seed: Self.skySeed, scheduleShift: shipShift)
+            }
+            .frame(height: 520)
+            .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
+            if density.hasSpaceship {
+                Button(action: sendSpaceship) { Text(verbatim: "Send a spaceship") }
+                    .buttonStyle(.bordered)
+                    .accessibilityIdentifier("catalogue.sendSpaceship")
+            }
+            // The astronaut drifts about 8 pt a second: to see him bounce, jump the sky's clock ahead.
+            if density.hasAstronaut {
+                Button { shipShift += 30 } label: { Text(verbatim: "Skip 30 s") }
+                    .buttonStyle(.bordered)
+                    .accessibilityIdentifier("catalogue.skipAhead")
+            }
         }
+        // Interstellar shows its spaceship right away (it would come 12 s after launch).
+        .onAppear { if density.hasSpaceship { sendSpaceship() } }
+        .onChange(of: density) { _, sky in if sky.hasSpaceship { sendSpaceship() } }
+    }
+
+    private static let skySeed: UInt64 = 27
+
+    /// Moves the sky's schedule so the next spaceship (each tap, the next one) leaves in half a second.
+    private func sendSpaceship() {
+        shipShift = StarfieldMath.spaceshipBegin(index: shipCount, seed: Self.skySeed) - 0.5 - StarfieldView.sinceLaunch()
+        shipCount += 1
     }
 
     private func heading(_ text: String) -> some View {

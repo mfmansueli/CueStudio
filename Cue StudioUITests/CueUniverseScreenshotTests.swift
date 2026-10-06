@@ -45,7 +45,7 @@ final class CueUniverseScreenshotTests: XCTestCase {
     }
 
     func testPersonalizeAndPrompterSettings() {
-        let app = CueApp.launch(seeded: true, extraArguments: ["-uiTestSky", "calm"])
+        let app = CueApp.launch(seeded: true, extraArguments: ["-uiTestSky", "serene"])
         app.cueTabBar.buttons["Settings"].tap()
         XCTAssertTrue(element(app, "settings.recording").waitForExistence(timeout: 10))
         capture(app, "settings-1-home")

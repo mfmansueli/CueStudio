@@ -19,7 +19,7 @@ import Foundation
 /// - `-uiTestDemoCamera`: the recorder's camera records with no hardware (a small real video per take), for the Simulator.
 /// - `-uiTestAppsInstalled`: with the above, the platforms' apps count as installed and take the video (`DemoVideoSharing`:
 ///   the send-off after "Share to").
-/// - `-uiTestSky <off|calm|lively>`: with the above, the sky starts like that (off otherwise: an endless animation
+/// - `-uiTestSky <off|serene|adrift|interstellar>`: with the above, the sky starts like that (off otherwise: an endless animation
 ///   keeps UI tests from finding the app idle).
 /// - `-uiTestRemoteConnects`: with the above, a remote "connects" right after pairing starts (UI
 ///   tests have no second device). Without it the remote link stays offline.
@@ -174,7 +174,7 @@ struct LaunchOptions {
             UserDefaults().removePersistentDomain(forName: suite)
             options.defaults = UserDefaults(suiteName: suite) ?? .standard
             // A sky that never stops drawing keeps a UI test from ever finding the app idle: tests start with it off
-            // (`-uiTestSky calm|lively` brings it back for the ones that look at it).
+            // (`-uiTestSky serene|adrift|interstellar` brings it back for the ones that look at it).
             if let flag = arguments.firstIndex(of: "-uiTestSky"), arguments.indices.contains(flag + 1) {
                 options.defaults.set(arguments[flag + 1], forKey: DefaultsKey.skyDensity)
             } else {
