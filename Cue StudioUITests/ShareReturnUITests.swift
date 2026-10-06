@@ -18,7 +18,8 @@ final class ShareReturnUITests: XCTestCase {
     }
 
     func testTheSystemShareSheetEndsAndPostedAsksWithoutFreezingTheApp() {
-        let app = CueApp.launch(seeded: true, sampleVideo: true)
+        // The networks' sheet comes back once the share sheet has animated away: without animations SwiftUI never presents it again.
+        let app = CueApp.launch(seeded: true, sampleVideo: true, animations: true)
         let tab = app.cueTabBar.buttons["Takes"]
         XCTAssertTrue(tab.waitForExistence(timeout: 15))
         tab.tap()
@@ -53,11 +54,7 @@ final class ShareReturnUITests: XCTestCase {
 private extension XCUIElement {
     /// Waits for the element to exist and be hittable (so a frozen app fails here instead of passing).
     func waitForHittable(timeout: TimeInterval) -> Bool {
-        let deadline = Date().addingTimeInterval(timeout)
-        while Date() < deadline {
-            if exists && isHittable { return true }
-            usleep(200_000)
-        }
-        return exists && isHittable
+        let hittable = XCTNSPredicateExpectation(predicate: NSPredicate(format: "exists == true AND hittable == true"), object: self)
+        return XCTWaiter.wait(for: [hittable], timeout: timeout) == .completed
     }
 }

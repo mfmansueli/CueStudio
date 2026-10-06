@@ -173,8 +173,7 @@ final class PrompterUITests: XCTestCase {
         XCTAssertTrue(app.buttons["prompter.displayButton"].waitForExistence(timeout: 5))
         app.buttons["prompter.displayButton"].tap()
         let zone = element(app, "settings.socialSafeZone")
-        for _ in 0..<8 where !(zone.exists && zone.isHittable) { app.swipeUp() }
-        XCTAssertTrue(zone.waitForExistence(timeout: 5))
+        app.scroll(to: zone)
         zone.tap()
         XCTAssertTrue(element(app, "settings.safeZoneToggle").waitForExistence(timeout: 5))
         XCTAssertTrue(app.buttons["settings.safeZone.reels"].exists)

@@ -35,8 +35,8 @@ final class OnboardingUITests: XCTestCase {
     private func useScript(_ app: XCUIApplication) {
         let use = app.buttons["onboarding.useScript"]
         XCTAssertTrue(use.waitForExistence(timeout: 10))
-        for _ in 0..<50 where !use.isEnabled { usleep(200_000) }
-        XCTAssertTrue(use.isEnabled)
+        expectation(for: NSPredicate(format: "isEnabled == true"), evaluatedWith: use)
+        waitForExpectations(timeout: 10)
         use.tap()
     }
 

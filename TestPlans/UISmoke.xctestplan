@@ -33,10 +33,12 @@
         "FirstRunUITests/testRecordingWithoutAScript()",
         "FreePlanUITests/testSuggestBestPicksATake()",
         "ProfileUITests/testSignInWithAppleIsOfferedWhenSignedOut()",
+        "YourUniverseUITests/testTheLiveYearShowsItsCountPlanetsAndMilestone()",
         "VoiceV29UITests/testTheProfileCardShowsTheMeterTheSentenceAndTheNextQuestion()",
         "VoiceTipUITests/testTheTipAsksOneQuestionAndOffersOneMore()",
         "ShareUniverseProV29UITests/testThePaywallShowsPlansTheTrialAndRestore()",
         "ShareToUITests/testShareToUniverseOpensReadyAndTheNetworksWithTheScriptsOneTicked()",
+        "FreeExportsUITests/testWithNoneLeftSaveAsksYourVideoIsReadyAndNotNowKeepsTheTakeReady()",
         "SettingsUITests/testFontLicensesRemainReachableFromSettings()",
         "LanguageRegionUITests/testJapaneseInterfaceKeepsEnglishScripts()",
         "SettingsUITests/testChoicesMadeInRecordingShowOnTheSetupCard()"

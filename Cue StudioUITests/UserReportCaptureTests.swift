@@ -94,8 +94,7 @@ final class UserReportCaptureTests: XCTestCase {
         sleep(2)
         try shot(app, "u07_profile-with-voice")
         let preview = element(app, "profile.voicePreview")
-        for _ in 0..<6 where !(preview.exists && preview.isHittable) { app.swipeUp() }
-        XCTAssertTrue(preview.exists)
+        app.scroll(to: preview)
         preview.tap()
         XCTAssertTrue(element(app, "profile.voicePreviewSheet").waitForExistence(timeout: 5))
         try shot(app, "u09_profile-preview")
@@ -107,8 +106,7 @@ final class UserReportCaptureTests: XCTestCase {
         app.swipeDown(velocity: .fast)
         sleep(1)
         let edit = element(app, "profile.editVoice")
-        for _ in 0..<6 where !(edit.exists && edit.isHittable) { app.swipeUp() }
-        XCTAssertTrue(edit.exists)
+        app.scroll(to: edit)
         edit.tap()
         sleep(2)
         try shot(app, "u11_edit-voice")

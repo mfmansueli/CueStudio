@@ -122,9 +122,7 @@ final class LanguageRegionUITests: XCTestCase {
         XCTAssertTrue(settings.waitForExistence(timeout: 15))
         settings.tap()
         let page = row(app, "settings.languageRegion")
-        for _ in 0..<8 where !(page.exists && page.isHittable) {
-            app.swipeUp()
-        }
+        app.scroll(to: page)
         page.tap()
         XCTAssertTrue(row(app, "settings.appLanguage").waitForExistence(timeout: 5))
     }

@@ -76,8 +76,7 @@ final class VoiceTipUITests: XCTestCase {
         element(app, "voice.option.food").tap()
         XCTAssertTrue(app.buttons["voice.sheet.save"].exists)
         // "+ Something else" and "None of these" close the list, below the topics.
-        for _ in 0..<4 where !element(app, "voice.somethingElse").exists { app.swipeUp() }
-        XCTAssertTrue(element(app, "voice.somethingElse").waitForExistence(timeout: 5))
+        app.scroll(to: element(app, "voice.somethingElse"))
         XCTAssertTrue(element(app, "voice.sheet.none").exists)
         app.buttons["voice.sheet.save"].tap()
         XCTAssertTrue(element(app, "voice.saved").waitForExistence(timeout: 5))
