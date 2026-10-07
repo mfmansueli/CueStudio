@@ -61,8 +61,7 @@ struct MyCueVoicePage: View {
             header.padding(EdgeInsets(top: 14, leading: 16, bottom: 12, trailing: 16))
             ForEach(VoiceLayer.allCases, id: \.self) { layerView($0) }
         }
-        .background(Palette.surface, in: RoundedRectangle(cornerRadius: Metrics.profileBlockRadius, style: .continuous))
-        .overlay(RoundedRectangle(cornerRadius: Metrics.profileBlockRadius, style: .continuous).strokeBorder(Palette.glassBorder.opacity(0.7), lineWidth: 0.5))
+        .profileBlock()
     }
 
     private var header: some View {

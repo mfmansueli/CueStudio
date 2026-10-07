@@ -24,18 +24,17 @@ struct PrivacyView: View {
     var body: some View {
         List {
             Section {
-                SettingsEntryRow(entry: .onDeviceAI, bindings: bindings)
-                SettingsEntryRow(entry: .helpImprove, bindings: bindings)
+                SettingsEntryRows(entries: [.onDeviceAI, .helpImprove], bindings: bindings)
             } footer: {
                 Text("Nothing is sold or shared.")
             }
             Section {
                 if let url = AppLinks.privacyPolicy {
-                    Link(destination: url) { policyRow }.cardRowBackground()
+                    Link(destination: url) { policyRow }.cardRowBackground(position: .first)
                 } else {
-                    Button { showsPolicy = true } label: { policyRow }.buttonStyle(.plain).cardRowBackground()
+                    Button { showsPolicy = true } label: { policyRow }.buttonStyle(.plain).cardRowBackground(position: .first)
                 }
-                SettingsEntryRow(entry: .permissions, bindings: bindings)
+                SettingsEntryRow(entry: .permissions, bindings: bindings, position: .last)
             }
             Section {
                 SettingsEntryRow(entry: .deleteData, bindings: bindings)

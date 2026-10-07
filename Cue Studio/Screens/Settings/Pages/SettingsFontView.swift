@@ -12,7 +12,7 @@ struct SettingsFontView: View {
     var body: some View {
         List {
             Section {
-                ForEach(PrompterFont.allCases) { font in
+                ForEach(Array(PrompterFont.allCases.enumerated()), id: \.element.id) { index, font in
                     let isSelected = bindings.prompter.wrappedValue.font == font
                     Button { bindings.prompter.wrappedValue.font = font } label: {
                         HStack {
@@ -28,7 +28,7 @@ struct SettingsFontView: View {
                     .buttonStyle(.plain)
                     .accessibilityAddTraits(isSelected ? .isSelected : [])
                     .accessibilityIdentifier("settings.font.\(font.rawValue)")
-                    .cardRowBackground()
+                    .cardRowBackground(position: CardRowPosition(index: index, count: PrompterFont.allCases.count))
                 }
             } footer: {
                 Text("Fonts made for reading at a distance.")

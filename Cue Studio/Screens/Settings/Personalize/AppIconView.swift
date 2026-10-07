@@ -18,9 +18,9 @@ struct AppIconView: View {
     var body: some View {
         List {
             Section {
-                ForEach(AppIconChoice.allCases) { icon in
+                ForEach(Array(AppIconChoice.allCases.enumerated()), id: \.element.id) { index, icon in
                     row(icon)
-                        .cardRowBackground()
+                        .cardRowBackground(position: CardRowPosition(index: index, count: AppIconChoice.allCases.count))
                 }
             } footer: {
                 Text("Unlock with milestones. Some come with Pro.")

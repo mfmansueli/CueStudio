@@ -36,6 +36,7 @@ struct TakePipelineCard: View {
         .frame(height: 86, alignment: .top)
         .background(Palette.surface, in: shape)
         .overlay(shape.strokeBorder(Palette.separator, lineWidth: 0.5))
+        .cardDepth(shape, edge: nil)
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("takes.pipeline")
     }

@@ -5,14 +5,16 @@
 
 import SwiftUI
 
-/// The row of one `SettingsEntry`, the same on its page and in the search results.
+/// The row of one `SettingsEntry`, the same on its page and in the search results. `position` is where it sits in its section's card
+/// (a row alone is the whole card; `SettingsEntryRows` sets it for a section's rows).
 struct SettingsEntryRow: View {
     let entry: SettingsEntry
     let bindings: SettingsBindings
+    var position: CardRowPosition = .only
 
     var body: some View {
         content
-            .cardRowBackground()
+            .cardRowBackground(position: position)
     }
 
     @ViewBuilder

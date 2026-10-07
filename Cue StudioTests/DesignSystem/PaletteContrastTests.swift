@@ -131,6 +131,7 @@ struct PaletteContrastTests {
             #expect(ratio(Palette.inkOnLight, on: .white, in: appearance) >= ColorContrast.textMinimum, "inkOnLight on a white chip, \(appearance)")
             #expect(ratio(Palette.bg, on: Palette.ink, in: appearance) >= ColorContrast.textMinimum, "a selected chip, \(appearance)")
             #expect(ratio(.white, on: Palette.neutralAction, in: appearance) >= ColorContrast.textMinimum, "white on neutralAction, \(appearance)")
+            #expect(ratio(.white, on: Palette.Takes.shareAction, in: appearance) >= ColorContrast.textMinimum, "white on the Share action, \(appearance)")
             // v26 controls: the selected chip and the selected segment, with the text they carry.
             #expect(ratio(Palette.chipOnInk, on: Palette.chipOn, in: appearance) >= ColorContrast.textMinimum, "the selected chip, \(appearance)")
             #expect(ratio(Palette.ink, on: Palette.segmentOn, in: appearance) >= ColorContrast.textMinimum, "the selected segment, \(appearance)")

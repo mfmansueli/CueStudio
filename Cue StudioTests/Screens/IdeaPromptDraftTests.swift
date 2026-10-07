@@ -305,4 +305,88 @@ struct IdeaPromptDraftTests {
         draft.hear("again")
         #expect(draft.text == "Hello world again")
     }
+
+    // MARK: - The limit (200 characters)
+
+    private let limit = IdeaPromptDraft.maxCharacters
+
+    @Test func anIdeaWithinTheLimitIsLeftAlone() {
+        let text = String(repeating: "a", count: limit)
+        #expect(IdeaPromptDraft.limited(text, replacing: "") == text)
+        #expect(IdeaPromptDraft.limited("short", replacing: "") == "short")
+    }
+
+    @Test func aPasteThatDoesNotFitGoesInAsFarAsItDoes() {
+        let old = "Three ways to focus"
+        let pasted = String(repeating: "x", count: 300)
+        let result = IdeaPromptDraft.limited(old + pasted, replacing: old)
+        #expect(result.count == limit)
+        #expect(result.hasPrefix(old))
+    }
+
+    @Test func typingAtTheLimitDoesNothing() {
+        let old = String(repeating: "a", count: limit)
+        #expect(IdeaPromptDraft.limited(old + "b", replacing: old) == old)
+        // In the middle, too: the end of the idea is never what gives way.
+        let middle = String(old.prefix(100)) + "b" + String(old.suffix(100))
+        #expect(IdeaPromptDraft.limited(middle, replacing: old) == old)
+    }
+
+    @Test func aPasteInTheMiddleKeepsBothSidesOfIt() {
+        let head = String(repeating: "h", count: 90)
+        let tail = String(repeating: "t", count: 100)
+        let old = head + tail
+        let pasted = String(repeating: "p", count: 50)
+        let result = IdeaPromptDraft.limited(head + pasted + tail, replacing: old)
+        #expect(result.count == limit)
+        #expect(result.hasPrefix(head) && result.hasSuffix(tail))
+        #expect(result.filter { $0 == "p" }.count == 10)
+    }
+
+    @Test func aLetterWithAnAccentOrAnEmojiCountsOnce() {
+        let family = String(repeating: "👨‍👩‍👧", count: limit)
+        #expect(family.count == limit)
+        #expect(IdeaPromptDraft.limited(family, replacing: "") == family)
+        #expect(IdeaPromptDraft.limited(family + "é", replacing: family) == family)
+    }
+
+    @Test func theServiceNeverHoldsMoreThanTheLimit() {
+        let service = IdeaDraftService()
+        service.text = String(repeating: "a", count: 300)
+        #expect(service.text.count == limit)
+        service.text = "short"
+        #expect(service.text == "short")
+    }
+
+    @Test func aDictationStopsWritingWhereTheRoomEndsAndNeverCutsWhatWasThere() {
+        var draft = IdeaPromptDraft()
+        let before = String(repeating: "b", count: 100)
+        let after = String(repeating: "a", count: 80)
+        draft.text = before + after
+        draft.beginDictation(caret: before.count)
+        draft.hear("words " + String(repeating: "w", count: 100))
+        #expect(draft.text.count == limit)
+        #expect(draft.text.hasPrefix(before) && draft.text.hasSuffix(after))
+        draft.hear("short")
+        // The words are spaced from both neighbours, as always.
+        #expect(draft.text == before + " short " + after)
+    }
+
+    @Test func aFullFieldGivesDictationNoRoomAtAll() {
+        var draft = IdeaPromptDraft()
+        draft.text = String(repeating: "a", count: limit)
+        draft.beginDictation(caret: nil)
+        draft.hear("more words")
+        #expect(draft.text == String(repeating: "a", count: limit))
+    }
+
+    @Test func theCountShowsFromEightyPercentAndTheFieldIsFullAtTheLimit() {
+        var draft = IdeaPromptDraft()
+        draft.text = String(repeating: "a", count: IdeaPromptDraft.counterStart - 1)
+        #expect(!draft.showsCounter && !draft.isAtLimit)
+        draft.text += "a"
+        #expect(draft.showsCounter && !draft.isAtLimit)
+        draft.text = String(repeating: "a", count: limit)
+        #expect(draft.showsCounter && draft.isAtLimit)
+    }
 }

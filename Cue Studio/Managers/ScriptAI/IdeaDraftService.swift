@@ -31,12 +31,13 @@ final class IdeaDraftService {
     var wantsFocus = false
 
     /// The text as the creator sees it. Writing it here (typing, paste, an example) ends a dictation
-    /// that was still writing into it.
+    /// that was still writing into it. It never goes past `IdeaPromptDraft.maxCharacters`.
     var text: String {
         get { draft.text }
         set {
-            guard newValue != draft.text else { return }
-            draft.text = newValue
+            let limited = IdeaPromptDraft.limited(newValue, replacing: draft.text)
+            guard limited != draft.text else { return }
+            draft.text = limited
             draft.textChanged()
         }
     }

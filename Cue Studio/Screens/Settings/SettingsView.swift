@@ -77,7 +77,7 @@ struct SettingsView: View {
 
     private func section(_ title: String, _ entries: [SettingsEntry], _ bindings: SettingsBindings, footer: String? = nil) -> some View {
         Section {
-            ForEach(entries.filter(Self.isShown)) { SettingsEntryRow(entry: $0, bindings: bindings) }
+            SettingsEntryRows(entries: entries.filter(Self.isShown), bindings: bindings)
         } header: {
             CueSectionHeader(verbatim: title)
         } footer: {

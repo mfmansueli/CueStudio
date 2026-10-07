@@ -45,10 +45,15 @@ struct ScriptsView: View {
         self.drafts = drafts
     }
 
+    /// How much of its colour the list keeps while the dock's field has the keyboard (09 §6: brightness 0.5).
+    private static let dockDimLevel = 0.5
+
     var body: some View {
         @Bindable var viewModel = viewModel
         content
-            .brightness(isDockEditing ? -0.3 : 0)
+            // The board's "brightness 0.5 + blur 3 pt" (09 §6): every colour at half, so the cards stay cards. (`.brightness(-0.3)` took 0.3 off
+            // each channel, which turned every dark card into flat black next to the lighter sky.)
+            .colorMultiply(isDockEditing ? Color(white: Self.dockDimLevel) : .white)
             .blur(radius: isDockEditing ? 3 : 0)
             .animation(reduceMotion ? .easeOut(duration: 0.15) : CueMotion.dockDim, value: isDockEditing)
             .overlay { if isDockEditing { Color.clear.contentShape(Rectangle()).onTapGesture { endEditing() } } }
@@ -215,7 +220,7 @@ struct ScriptsView: View {
                             row(for: script, state: group.state)
                                 .listRowInsets(EdgeInsets(top: 0, leading: Metrics.gutter, bottom: 0, trailing: Metrics.gutter))
                                 .listRowBackground(
-                                    ScriptRowBackground(position: ScriptRowPosition(index: position, count: group.scripts.count))
+                                    ScriptRowBackground(position: CardRowPosition(index: position, count: group.scripts.count))
                                         .padding(.horizontal, Metrics.gutter)
                                 )
                                 .listRowSeparator(.hidden)

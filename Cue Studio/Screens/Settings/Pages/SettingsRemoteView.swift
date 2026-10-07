@@ -25,8 +25,7 @@ struct SettingsRemoteView: View {
                 Text("Both devices need Cue and Wi-Fi or Bluetooth on.")
             }
             Section {
-                SettingsEntryRow(entry: .enterCode, bindings: bindings)
-                SettingsEntryRow(entry: .scanCode, bindings: bindings)
+                SettingsEntryRows(entries: [.enterCode, .scanCode], bindings: bindings)
             } header: {
                 CueSectionHeader("Use this iPhone as a remote")
             }

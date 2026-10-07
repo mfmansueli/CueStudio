@@ -6,7 +6,7 @@
 import SwiftUI
 
 extension View {
-    /// A Profile block: `surface`, 22 pt radius and the faint violet edge.
+    /// A Profile block: `surface`, 22 pt radius, the faint violet edge and the card's depth (`cardDepth`).
     func profileBlock() -> some View {
         profileBlock(glow: Color.clear)
     }
@@ -22,5 +22,6 @@ extension View {
             .clipShape(shape)
         }
         .overlay(shape.strokeBorder(Palette.glassBorder.opacity(0.7), lineWidth: 0.5))
+        .cardDepth(shape, edge: nil)
     }
 }

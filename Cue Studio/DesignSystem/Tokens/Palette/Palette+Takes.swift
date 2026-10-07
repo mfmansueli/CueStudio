@@ -27,6 +27,10 @@ extension Palette {
         /// Duration label over a thumbnail.
         static let durationBadge = Color.black.opacity(0.6)
 
+        /// Behind white: the Share swipe action of a take in the list (Delete is `dangerFill`). 5.2:1 under white; the yellow it had
+        /// before (`acc`) is 1.4:1.
+        static let shareAction = Color(hex: 0x0A64F0)
+
         /// Tiles of the "Your takes" strip over the video.
         static let stripTile = Color(hex: 0x1F2236, opacity: 0.85)
     }
