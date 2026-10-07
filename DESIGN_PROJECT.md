@@ -55,6 +55,19 @@ página aberta por baixo não o pede de volta (título e texto são da IA; `load
 deixa de esperar quando virou roteiro. **Reduce Motion (`09` §7):** sem voo nem anel, fade de 0,2 s. **Low Power Mode não muda nada** (decisão do dono em 6/10/2026: as animações tocam em qualquer situação; `speed` só serve para encurtar nos testes de UI). Sem Apple Intelligence não há overlay (a seta é "Write it" e abre um rascunho). A estrela vira uma estrela do céu (`SkyMemory`) ao chegar. **"Your stars"** (as estrelas amarelas no alto de Scripts e o voo da nova até elas) **saíram** a pedido do dono (6/10/2026): Scripts mostra só o céu de fundo. `SkyMemory` continua guardando as estrelas. O fundo é um só em todas as telas de navegação (`skyBackground()`: `BgWash` + `StarfieldView` na densidade escolhida), e nada além dele desenha estrelas por cima.
 O catálogo de debug (`-uiTestCatalogue transition`) segura o estado de espera para fotografar.
 
+**Quanto já foi escrito (pedido do dono, 7/10/2026; não está no quadro):** sob a frase, uma linha mono em `ink2` diz quanto do roteiro já foi escrito
+("42%", `WritingProgressLabel`). O Apple Intelligence não diz quanto falta, então é uma **estimativa** (`WritingProgressEstimate`), feita do que o roteirista
+conta enquanto escreve (`ScriptWritingEvent`, num `WritingProgressMeter` por pedido): cada rascunho que sai, as palavras do rascunho a cada 0,2 s e cada bloco
+alongado. Antes das primeiras palavras (o modelo lendo o pedido, 1,4–1,7 s) sobe até 5% em 2 s; o primeiro rascunho vai de 5% a no máximo 85% pelas palavras
+contra o **mínimo** pedido (o modelo escreve menos do que se pede, §4.1): anda junto com elas até três quartos e depois cada vez mais devagar, sem nunca chegar,
+para um roteiro mais longo não parar num número. Cada rodada a mais (o rascunho escrito de novo por idioma, resposta vazia, regra da voz, roteiro fino demais ou o
+outro modelo; os blocos alongados um a um) preenche 60% do que falta até 95%. **Só o roteiro pronto é 100%, e o número nunca volta.** A linha tem o lugar
+guardado desde o começo (nada se mexe quando ela chega) e as três linhas do quadro ficam onde estavam. Os algarismos rolam (`numericText`); com Reduce Motion só
+trocam. VoiceOver lê "Written so far" e o valor. Contraste: `ink2` sobre a capa a 84% com uma tela branca atrás (o pior caso) dá ≈ 5,0:1 (conta à mão;
+`PaletteContrastTests.theStarsWordsReadOverItsCoverOnAnyScreen` mede o título, a ideia, a frase e o número sobre a capa com tela preta e branca). A ideia e o
+Cancel usavam cores soltas e viraram o token `Palette.Scripts.transitionInk`. O primeiro roteiro do onboarding (1.4, 15 s) não mostra número: termina em
+poucos segundos. Testes de UI: `-uiTestWriterStalls` faz o roteirista de teste mandar seis palavras a cada 0,4 s sem terminar.
+
 ## 4. My Cue Voice (`04` §F9, `08`)
 
 - **Dados:** `CreatorProfile` ganhou `style` (energia, frases, palavras, palavrão; o antigo `swearing` migra para cá), `avoid` + `avoidNone`,
@@ -201,7 +214,8 @@ modelo), e um cursor violeta de 2 pt pisca (1 s) depois da última palavra que c
 centrada embaixo) tem o brilho de borda de 2,4 s e o brilho branco que cruza o texto a cada 1,6 s. **A página escrevendo é a página escrita:** título e
 contador iguais, a faixa de estado já no lugar (com **Stop** onde vai ficar o Done), "Does it sound like you?" e o aviso de checar fatos esperando
 (desabilitados) desde a primeira palavra, e o texto chega com as margens (`ScriptTextEditor.textInsets`: 8 pt em cima e embaixo, 5 pt dos lados),
-o tamanho e as etiquetas de cue do editor; nada se move quando termina. Parar no meio tira a pergunta da voz. Reduce Motion: as
+o tamanho e as etiquetas de cue do editor; nada se move quando termina. Parar no meio tira a pergunta da voz. Quando a página escreve sem a estrela por cima (Try again depois de um erro), a pílula mostra a mesma porcentagem
+da estrela depois do texto enquanto espera o modelo ("✦ Writing in your voice 42%"); some quando as palavras começam a chegar. Reduce Motion: as
 palavras só aparecem (fade de 0,2 s), o cursor fica aceso e a pílula parada. `-uiTestCatalogue writing` mostra a cena. **Diferença:** a barra de 3 pt por
 seção do quadro (`sc10`) não existe na página única (as seções saíram da escrita); fica para quando a página mostrar as seções.
 

@@ -378,12 +378,17 @@ extension ScriptDetailViewModel {
         page.writingError = nil
         page.isWriting = true
         page.revealed = ""
+        // The star says how much is written while it waits; the page's pill says it when there is no star.
+        let meter = WritingProgressMeter(for: request)
+        page.progress = meter
+        transition?.track(meter)
         let startedAt = ContinuousClock.now
         pageWritingTask = Task { [weak self] in
             guard let self else { return }
             do {
-                let generated = try await writer.generate(request)
+                let generated = try await writer.generate(request, reporting: meter)
                 guard !Task.isCancelled else { return }
+                meter.finish()
                 let returnedAt = ContinuousClock.now
                 // The star opens the page (ring, crossfade) before the first word is written.
                 await transition?.contentReady()
@@ -404,6 +409,7 @@ extension ScriptDetailViewModel {
                 // Only the page's own cancel (Stop, Cancel, leaving) is quiet. A request the system ended by itself is a failure like
                 // any other: otherwise the star would wait for a script that never comes.
                 guard !Task.isCancelled else { return }
+                page.progress = nil
                 if let transition, transition.isActive {
                     // The star leaves the way Cancel does: no page, the idea kept, and a toast says why.
                     page.isWriting = false
@@ -446,6 +452,7 @@ extension ScriptDetailViewModel {
         let request = pendingRequest
         page.text = generated.text
         page.revealed = nil
+        page.progress = nil
         page.isWriting = false
         pageWritingTask = nil
         pendingRequest = nil
@@ -479,6 +486,7 @@ extension ScriptDetailViewModel {
             ideaDraft?.clear()
         }
         page.revealed = nil
+        page.progress = nil
         commitPage()
     }
 }

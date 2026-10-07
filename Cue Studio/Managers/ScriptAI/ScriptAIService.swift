@@ -62,6 +62,10 @@ final class ScriptAIService: ScriptWriting {
     // MARK: - Scripts
 
     func generate(_ request: ScriptRequest) async throws -> GeneratedScript {
+        try await generate(request, reporting: nil)
+    }
+
+    func generate(_ request: ScriptRequest, reporting meter: WritingProgressMeter?) async throws -> GeneratedScript {
         beginForeground()
         defer { endForeground() }
         let begin = ContinuousClock.now
@@ -90,24 +94,26 @@ final class ScriptAIService: ScriptWriting {
         // be the creator's doing, and a second run seldom does the same.
         let inputSize = ScriptPromptBuilder.instructions(for: request).count + ScriptPromptBuilder.prompt(for: request).count
         return try await withFallback(plan, retriesRunaway: inputSize < Self.smallInput, operation: "script", language: language) { model in
-            try await self.writeChecked(request, on: model, since: begin, language: language)
+            try await self.writeChecked(request, on: model, since: begin, language: language, meter: meter)
         }
     }
 
     /// One script on one model, kept to what the creator asked (`VoiceCheckedWriting`).
     private func writeChecked(
-        _ request: ScriptRequest, on model: AIModelRoute, since begin: ContinuousClock.Instant, language: String?
+        _ request: ScriptRequest, on model: AIModelRoute, since begin: ContinuousClock.Instant, language: String?, meter: WritingProgressMeter?
     ) async throws -> GeneratedScript {
         let writing = VoiceCheckedWriting(
             draft: { request, violations in
-                try await self.draftRepeatingLanguageOrEmpty(request, on: model, since: begin, language: language, correcting: violations)
+                try await self.draftRepeatingLanguageOrEmpty(
+                    request, on: model, since: begin, language: language, correcting: violations, meter: meter
+                )
             },
             isGuardrailRefusal: Self.isGuardrailRefusal,
             report: { error, operation in
                 AIFailureReport.note(error, operation: operation, route: model, language: language, seconds: 0, isFinal: false)
             }
         )
-        var script = await expandingIfShort(try await writing.write(request), for: request, on: model, language: language)
+        var script = await expandingIfShort(try await writing.write(request), for: request, on: model, language: language, meter: meter)
         // A script that is still a sliver of what was asked (the model wrote six words, or stopped after one block) is a failed sample, not a short one:
         // lengthening a block of a few words doesn't fix it, a fresh draft often does. One more, and the longer of the two is kept.
         let minimum = ReadTime.words(for: request.targetRange.lowerBound)
@@ -116,7 +122,7 @@ final class ScriptAIService: ScriptWriting {
                 ScriptAIError.emptyResponse, operation: "script.sliver", route: model, language: language, seconds: 0, isFinal: false
             )
             if let again = try? await writing.write(request) {
-                let second = await expandingIfShort(again, for: request, on: model, language: language)
+                let second = await expandingIfShort(again, for: request, on: model, language: language, meter: meter)
                 if ScriptExpansion.words(in: second.text) > ScriptExpansion.words(in: script.text) { script = second }
             }
         }
@@ -131,30 +137,30 @@ final class ScriptAIService: ScriptWriting {
     /// then a request comes back with nothing in it and the same one works at once.
     private func draftRepeatingLanguageOrEmpty(
         _ request: ScriptRequest, on model: AIModelRoute, since begin: ContinuousClock.Instant, language: String?,
-        correcting violations: [VoiceViolation] = []
+        correcting violations: [VoiceViolation] = [], meter: WritingProgressMeter?
     ) async throws -> GeneratedScript {
         let attempt = ContinuousClock.now
         do {
-            return try await draft(request, on: model, since: begin, correcting: violations)
+            return try await draft(request, on: model, since: begin, correcting: violations, meter: meter)
         } catch ScriptAIError.wrongLanguage {
             AIFailureReport.note(
                 ScriptAIError.wrongLanguage, operation: "script", route: model, language: language,
                 seconds: attempt.duration(to: .now).inSeconds, isFinal: false
             )
-            return try await draft(request, on: model, since: begin, insistsOnLanguage: true, correcting: violations)
+            return try await draft(request, on: model, since: begin, insistsOnLanguage: true, correcting: violations, meter: meter)
         } catch ScriptAIError.emptyResponse {
             AIFailureReport.note(
                 ScriptAIError.emptyResponse, operation: "script", route: model, language: language,
                 seconds: attempt.duration(to: .now).inSeconds, isFinal: false
             )
-            return try await draft(request, on: model, since: begin, correcting: violations)
+            return try await draft(request, on: model, since: begin, correcting: violations, meter: meter)
         } catch ScriptAIError.timedOut {
             // Measured on an iPhone 15 Pro: a request that went quiet. One more, from the start; if it goes quiet too, the creator is told.
             AIFailureReport.note(
                 ScriptAIError.timedOut, operation: "script", route: model, language: language,
                 seconds: attempt.duration(to: .now).inSeconds, isFinal: false
             )
-            return try await draft(request, on: model, since: begin, correcting: violations)
+            return try await draft(request, on: model, since: begin, correcting: violations, meter: meter)
         }
     }
 
@@ -180,12 +186,14 @@ final class ScriptAIService: ScriptWriting {
     /// for ever. What had arrived by then is used when it is a script.
     private func draft(
         _ request: ScriptRequest, on model: AIModelRoute, since begin: ContinuousClock.Instant, insistsOnLanguage: Bool = false,
-        correcting violations: [VoiceViolation] = []
+        correcting violations: [VoiceViolation] = [], meter: WritingProgressMeter?
     ) async throws -> GeneratedScript {
         let progress = GenerationProgress()
         let deadlines = Self.deadlines
         let work = Task {
-            try await self.streamDraft(request, on: model, since: begin, insistsOnLanguage: insistsOnLanguage, correcting: violations, progress: progress)
+            try await self.streamDraft(
+                request, on: model, since: begin, insistsOnLanguage: insistsOnLanguage, correcting: violations, progress: progress, meter: meter
+            )
         }
         let watchdog = Task {
             while !Task.isCancelled {
@@ -212,7 +220,7 @@ final class ScriptAIService: ScriptWriting {
     /// preparation, up to the moment the request goes out.
     private func streamDraft(
         _ request: ScriptRequest, on model: AIModelRoute, since begin: ContinuousClock.Instant, insistsOnLanguage: Bool,
-        correcting violations: [VoiceViolation], progress: GenerationProgress
+        correcting violations: [VoiceViolation], progress: GenerationProgress, meter: WritingProgressMeter?
     ) async throws -> GeneratedScript {
         let clock = ContinuousClock()
         let session = session(on: model, instructions: ScriptPromptBuilder.instructions(for: request, insistsOnLanguage: insistsOnLanguage))
@@ -226,12 +234,19 @@ final class ScriptAIService: ScriptWriting {
         // before "context size exceeded". The bound is generous (three tokens a word and room for the structure).
         let options = GenerationOptions(maximumResponseTokens: Self.responseTokens(for: request))
         var rescued: ScriptDraft?
+        meter?.record(.drafting)
+        var counted: ContinuousClock.Instant?
         do {
             for try await snapshot in session.streamResponse(to: prompt, generating: ScriptDraft.self, options: options) {
                 if firstResponse == nil { firstResponse = started.duration(to: clock.now) }
                 progress.noteProgress()
                 latest = snapshot.rawContent
                 partial = snapshot.content
+                // The words are counted a few times a second, not at every token: counting Japanese or Chinese runs a tokenizer.
+                if let meter, counted.map({ $0.duration(to: clock.now) >= Self.countInterval }) ?? true {
+                    counted = clock.now
+                    meter.record(.wrote(words: Self.words(in: snapshot.content)))
+                }
             }
         } catch {
             // A model that ran on past the end of a script it had already written, or went quiet before the end: what arrived is the script.
@@ -256,7 +271,7 @@ final class ScriptAIService: ScriptWriting {
                 draft = cut
             } else {
                 let blocks = partial?.blocks?.count ?? 0
-                let words = (partial?.blocks ?? []).reduce(0) { $0 + ReadTime.wordCount(in: $1.text ?? "") }
+                let words = partial.map(Self.words(in:)) ?? 0
                 Self.noteEmpty("the answer was not a script: \(blocks) blocks, \(words) words, cap \(Self.responseTokens(for: request)) tokens")
                 throw ScriptAIError.emptyResponse
             }
@@ -617,6 +632,14 @@ final class ScriptAIService: ScriptWriting {
         guard blocks.count >= 2 || Double(words) >= Double(low) * 0.7 else { return nil }
         return ScriptDraft(title: partial.title ?? "", blocks: blocks, statesFacts: partial.statesFacts ?? false)
     }
+
+    /// The words of a draft as it arrives (blocks still being written included).
+    static func words(in partial: ScriptDraft.PartiallyGenerated) -> Int {
+        (partial.blocks ?? []).reduce(0) { $0 + ReadTime.wordCount(in: $1.text ?? "") }
+    }
+
+    /// How often the words of a draft being written are counted for the percentage.
+    static let countInterval: Duration = .milliseconds(200)
 
     /// Characters of instructions and prompt below which a request can't fill the model's context by itself.
     private static let smallInput = 3_000

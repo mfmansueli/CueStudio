@@ -29,6 +29,10 @@ final class FakeScriptWriter: ScriptWriting {
     private(set) var topicsAsked = 0
     /// The voice the last request for ideas carried.
     private(set) var lastThemeVoice: CreatorVoice?
+    /// What the writer tells the page's meter before it answers.
+    var eventsToReport: [ScriptWritingEvent] = []
+    /// The meter the last script was written with.
+    private(set) var lastMeter: WritingProgressMeter?
     /// What `suggestIdeas` answers, one batch for each request (the last one again when they run out); empty: the fake `ideas`.
     var suggestionBatches: [[ThemeIdea]] = []
     private(set) var suggestionRequests: [(slots: [IdeaSlot], inspiration: [String])] = []
@@ -58,6 +62,12 @@ final class FakeScriptWriter: ScriptWriting {
             }
             return GeneratedScript(title: type.draftTitle(from: brief), text: type.draft(from: brief), usedLanguageModel: false)
         }
+    }
+
+    func generate(_ request: ScriptRequest, reporting meter: WritingProgressMeter?) async throws -> GeneratedScript {
+        lastMeter = meter
+        for event in eventsToReport { meter?.record(event) }
+        return try await generate(request)
     }
 
     func rewrite(_ text: String, with tool: ScriptTool, context: RewriteContext) async throws -> String {

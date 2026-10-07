@@ -171,4 +171,45 @@ struct IdeaTransitionServiceTests {
         #expect(phrases.last == "Shaping it for Reels")
         #expect(IdeaTransitionService.finishPhrase == "Almost camera-ready")
     }
+
+    // MARK: - How much is written
+
+    @Test func theStarShowsHowMuchOfItsScriptIsWritten() async {
+        let (service, clock, calls) = make()
+        let meter = WritingProgressMeter(expectedWords: 100)
+        service.track(meter)
+        #expect(service.progress == nil, "no star, nothing to show it on")
+        begin(service, calls)
+        service.track(meter)
+        #expect(service.progress === meter)
+        await clock.advance(1)
+        #expect(service.progress === meter, "still there while it waits")
+    }
+
+    @Test func theMeterGoesWhenTheStarHasLanded() async {
+        let (service, clock, calls) = make()
+        begin(service, calls)
+        service.track(WritingProgressMeter(expectedWords: 100))
+        await clock.advance(5)
+        let finished = ready(service)
+        await clock.advance(IdeaTransitionService.revealLead + 0.01)
+        await finished.value
+        #expect(service.progress != nil, "the finish still shows it")
+        await clock.advance(IdeaTransitionService.landingDuration + IdeaTransitionService.caretHold + 0.01)
+        #expect(service.phase == .idle && service.progress == nil)
+    }
+
+    @Test func theMeterGoesWithCancelAndANewStarStartsWithoutOne() async {
+        let (service, clock, calls) = make()
+        begin(service, calls)
+        service.track(WritingProgressMeter(expectedWords: 100))
+        service.cancel()
+        await clock.advance(IdeaTransitionService.fallDuration + IdeaTransitionService.leaveFadeDuration + 0.01)
+        #expect(service.phase == .idle && service.progress == nil)
+        begin(service, calls)
+        service.track(WritingProgressMeter(expectedWords: 100))
+        service.fail()
+        begin(service, calls)
+        #expect(service.progress == nil, "the last star's meter isn't the new one's")
+    }
 }

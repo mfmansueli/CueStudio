@@ -322,7 +322,8 @@ struct ScriptPageView: View {
                 .transition(.opacity.combined(with: .move(edge: .bottom)))
             }
             if viewModel.page.isWriting {
-                ScriptWritingPill(inMyVoice: viewModel.profile.writesInMyVoice)
+                // The percentage only while the model works: once the words arrive, they are the progress.
+                ScriptWritingPill(inMyVoice: viewModel.profile.writesInMyVoice, progress: viewModel.page.progress)
                     .padding(.bottom, 12)
                     .transition(.opacity.combined(with: .scale(scale: 0.96)))
             }
