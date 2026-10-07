@@ -10,20 +10,6 @@ import Testing
 @MainActor
 @Suite("Idea card · suggestion, format and brand")
 struct IdeaSuggestionTests {
-    @Test func theCardSuggestsAnIdeaFromTheCreatorsTopicsAndAnotherOneRotates() {
-        let draft = IdeaDraftService()
-        let first = draft.suggestion(for: [.finance])
-        draft.anotherSuggestion()
-        let second = draft.suggestion(for: [.finance])
-        #expect(first != nil && second != nil)
-        #expect(first != second)
-        #expect(first?.niche == .finance)
-    }
-
-    @Test func withNoTopicTheSuggestionComesFromLifestyle() {
-        #expect(IdeaDraftService().suggestion(for: [])?.niche == .lifestyle)
-    }
-
     @Test func theFormatChoiceKeepsTalkingHeadApartFromAuto() {
         let draft = IdeaDraftService()
         draft.formatChoice = .talkingHead

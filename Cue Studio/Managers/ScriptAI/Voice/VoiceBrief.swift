@@ -14,9 +14,11 @@ nonisolated struct VoiceBrief: Hashable, Sendable {
     /// quarters of the window for the script. Only the device measurement of the budget (`PromptBudgetDeviceTests`) changes it.
     nonisolated(unsafe) static var budget = 2100
 
-    /// What can be left out to make it fit, in the order cutting goes: the examples first, then the tags, then where and how long they post.
+    /// What can be left out to make it fit, in the order cutting goes: the examples first, then where and how long they post, and last the tags: those
+    /// are what the creator typed under "+ Something else" where the app had no list (a kind of tone, a format, a reason to watch), the one thing in the
+    /// brief that only they said.
     enum Trimmed: String, CaseIterable, Hashable, Sendable {
-        case examples, tags, reach
+        case examples, reach, tags
     }
 
     /// What is sent.

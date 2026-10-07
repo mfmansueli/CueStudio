@@ -54,6 +54,18 @@ final class StubScriptWriter: ScriptWriting {
         return ["Stub hook one.", "Stub hook two.", "Stub hook three."]
     }
 
+    /// Six ideas that each request brings new (numbered by the round), so that "another idea" can be walked through.
+    func suggestIdeas(about topics: [IdeaTopic], language: CueLanguage?, voice: CreatorVoice?, avoiding: [String], round: Int) async throws -> [ThemeIdea] {
+        guard availability.isAvailable else { throw ScriptAIError.modelUnavailable(availability.reason ?? "") }
+        let topic = topics.first
+        return (1...6).map { number in
+            ThemeIdea(
+                title: "Stub idea \(round * 6 + number)", kind: "List", length: .minute1, niche: topic?.niche ?? .lifestyle,
+                topic: topic?.niche == nil ? topic?.label : nil
+            )
+        }
+    }
+
     func themeIdeas(for niches: [Niche], language: CueLanguage?, voice: CreatorVoice?) async throws -> [ThemeIdea] {
         guard availability.isAvailable else { throw ScriptAIError.modelUnavailable(availability.reason ?? "") }
         return [ThemeIdea(title: "A stub idea for testing", kind: "List", length: .minute1, niche: niches.first ?? .lifestyle)]

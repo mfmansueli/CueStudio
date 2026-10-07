@@ -284,6 +284,26 @@ nonisolated enum ScriptPromptBuilder {
         return lines.joined(separator: "\n")
     }
 
+    /// Ideas for what the creator makes videos about, all of it: the first flight's topics, the ones only the voice offers and the ones they typed, with
+    /// what they cover inside each. Each of the six is ordered by its angle and its topic (`IdeaAngle`): told only what came before, the model copies it.
+    static func themesPrompt(about topics: [IdeaTopic], voice: CreatorVoice? = nil, language: CueLanguage? = nil, round: Int = 0) -> String {
+        func name(_ topic: IdeaTopic) -> String {
+            topic.subtopics.isEmpty ? topic.name : "\(topic.name) (\(topic.subtopics.joined(separator: ", ")))"
+        }
+        let angles = IdeaAngle.batch(round: round)
+        var prompt = "Suggest six fresh talking-head video ideas for a creator whose topics are: \(topics.map(name).joined(separator: "; ")). "
+            + "Each idea is a catchy title of at most nine words, written the way a creator would post it: natural, specific, never starting with the name of its angle as a label. In this order: "
+        prompt += angles.enumerated().map { index, angle in
+            let topic = IdeaAngle.topic(at: index, round: round, among: topics).map { " about \($0.name)" } ?? ""
+            return "\(index + 1). \(angle.ask)\(topic)"
+        }.joined(separator: "; ")
+        prompt += ". Each idea names its topic exactly as written."
+        if let language {
+            prompt += " Write the ideas in \(language.englishName)."
+        }
+        return prompt
+    }
+
     static func themesPrompt(for niches: [Niche], voice: CreatorVoice? = nil, language: CueLanguage? = nil) -> String {
         let names = (niches.isEmpty ? [Niche.lifestyle] : niches).map(\.label).joined(separator: ", ")
         var prompt = "Suggest six fresh talking-head video ideas for a creator whose niche is: \(names). Mix the niches and the kinds of video. Use each niche name exactly as written."

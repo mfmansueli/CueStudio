@@ -57,4 +57,32 @@ struct IdeasViewModelTests {
         await viewModel.loadNewIdeas()
         #expect(viewModel.ideas != before && !viewModel.canWrite)
     }
+
+    @Test func aCreatorWhoHoldsOnlyTheirOwnTopicsGetsTheModelsIdeasAboutThem() async {
+        let defaults = TestDefaults()
+        defer { defaults.tearDown() }
+        let writer = FakeScriptWriter()
+        writer.ideas = [ThemeIdea(title: "About my routine", kind: "List", length: .minute1, niche: .lifestyle, topic: "Daily Routine")]
+        let profile = CreatorProfileService(defaults: defaults.defaults)
+        profile.profile.customTopics = ["Daily Routine"]
+        let viewModel = IdeasViewModel(writer: writer, profile: profile, toast: ToastService(), interfaceLanguage: .english)
+        // No starter ideas exist for what they typed: the list opens empty and the model's come at once.
+        #expect(viewModel.ideas.isEmpty)
+        while viewModel.ideas.isEmpty { await Task.yield() }
+        #expect(viewModel.ideas.map(\.title) == ["About my routine"])
+        #expect(writer.suggestionRequests.first?.topics.map(\.name) == ["Daily Routine"])
+    }
+
+    @Test func whenTheModelNeverAnswersTheListIsNotAskedForAgainAndAgain() async {
+        let defaults = TestDefaults()
+        defer { defaults.tearDown() }
+        let writer = FakeScriptWriter()
+        writer.error = ScriptAIError.rateLimited
+        let profile = CreatorProfileService(defaults: defaults.defaults)
+        profile.profile.customTopics = ["Daily Routine"]
+        let viewModel = IdeasViewModel(writer: writer, profile: profile, toast: ToastService(), interfaceLanguage: .english)
+        for _ in 0..<20 { await Task.yield() }
+        #expect(writer.suggestionRequests.count == 1)
+        #expect(viewModel.ideas.isEmpty)
+    }
 }

@@ -27,6 +27,7 @@ struct AppServices {
     let speech: SpeechRecognitionManager
     let dictation: DictationService
     let ideaDraft: IdeaDraftService
+    let ideaSuggestions: IdeaSuggestionService
     let starter: ScriptStarter
     let ideaTransition: IdeaTransitionService
     /// The pause between the groups of words of a script the AI writes into the page.
@@ -146,6 +147,9 @@ struct AppServices {
             writer: options.writer, toast: toast
         )
         writer = options.writer
+        ideaSuggestions = IdeaSuggestionService(
+            writer: options.writer, profile: profile, interfaceLanguage: { [languages] in languages.interfaceLanguage }, defaults: options.defaults
+        )
         let busyWriter = options.writer
         styleReader = options.styleReader ?? AppleWritingStyleReader(isBusy: { busyWriter.isBusyForeground }, isEnabled: { busyWriter.isEnabled })
         scriptRevealPause = options.scriptRevealPause
@@ -209,6 +213,7 @@ extension View {
             .environment(services.speech)
             .environment(services.dictation)
             .environment(services.ideaDraft)
+            .environment(services.ideaSuggestions)
             .environment(services.starter)
             .environment(services.ideaTransition)
             .environment(services.textRecognizer)

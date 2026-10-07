@@ -224,11 +224,14 @@ struct VoiceBriefBuilderTests {
         #expect(brief.cost <= VoiceBrief.budget)
     }
 
-    @Test func theTagsGoAfterTheExamplesAndTheReachAfterTheTags() {
+    @Test func theReachGoesAfterTheExamplesAndTheTagsTheCreatorTypedAreTheLastToGo() {
         var voice = crowded()
         let squeezed = VoiceBriefBuilder.brief(for: voice, budget: 700)
-        #expect(squeezed.trimmed == [.examples, .tags, .reach] || squeezed.trimmed == [.examples, .tags], "\(squeezed.trimmed)")
-        #expect(!squeezed.text.contains("Also true of them"))
+        #expect(squeezed.trimmed == [.examples, .reach] || squeezed.trimmed == [.examples, .reach, .tags], "\(squeezed.trimmed)")
+        #expect(squeezed.trimmed.first == .examples && squeezed.trimmed.dropFirst().first == .reach)
+        // Room for the tags but not the reach: the creator's own words stay, where they post goes.
+        let roomy = VoiceBriefBuilder.brief(for: voice, budget: VoiceBriefBuilder.brief(for: voice, budget: 100_000).fullCost - 60)
+        #expect(roomy.text.contains("Also true of them, in their own words"), "the typed tags are what is kept")
         voice.customTags = []
         voice.reach = VoiceReach()
         #expect(VoiceBriefBuilder.brief(for: voice, budget: 100_000).trimmed.isEmpty)

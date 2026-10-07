@@ -6,7 +6,7 @@
 import Foundation
 
 /// "Length" when generating from a prompt. Auto follows the platform's ideal range.
-nonisolated enum ScriptLength: String, CaseIterable, Identifiable, Sendable {
+nonisolated enum ScriptLength: String, CaseIterable, Identifiable, Codable, Sendable {
     case auto, seconds30, minute1, minutes2, minutes3
 
     var id: String { rawValue }

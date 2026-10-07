@@ -90,6 +90,27 @@ final class ButtonPromisesUITests: XCTestCase {
         XCTAssertFalse(element(app, "logbook.tapToFinish").exists, "It keeps listening to nothing")
     }
 
+    // MARK: - The card's "another idea"
+
+    /// "↻" is a promise of another idea: ten taps bring many different ones, not the same three over and over (the starters are three for each topic;
+    /// the model's, six at a time, take their place).
+    func testAnotherIdeaKeepsBringingNewOnes() {
+        let app = CueApp.launch(seeded: true)
+        let field = element(app, "ideaCard.field")
+        XCTAssertTrue(field.waitForExistence(timeout: 15))
+        let another = element(app, "ideaCard.anotherIdea")
+        XCTAssertTrue(another.waitForExistence(timeout: 10))
+        // Let the first batch of the model's ideas arrive (the stub answers at once).
+        sleep(2)
+        var shown = Set<String>()
+        for _ in 0..<10 {
+            shown.insert(field.value as? String ?? "")
+            another.tap()
+            usleep(300_000)
+        }
+        XCTAssertGreaterThanOrEqual(shown.count, 8, "↻ brought only \(shown.count) different ideas in ten taps: \(shown)")
+    }
+
     // MARK: - The tools of "Improve script"
 
     /// The page's own "Improve" chip: the same sheet as the menu's "Improve with Cue", without a system menu in the way.

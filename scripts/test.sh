@@ -13,7 +13,7 @@
 #                                    (VoiceFollowingSpeechTests, VoiceFollowingLatencyTests, CaptionSpeechTests,
 #                                    LanguageModelDeviceTests, ScriptGenerationFlowDeviceTests, VoicePersonaDeviceTests,
 #                                    PromptBudgetDeviceTests, WritingImportDeviceTests, PlatformLengthDeviceTests,
-#                                    LengthVariantsDeviceTests, ScriptToolsDeviceTests, IdeaRelevanceDeviceTests, QuickEditPreviewLatencyTests)
+#                                    LengthVariantsDeviceTests, ScriptToolsDeviceTests, IdeaRelevanceDeviceTests, IdeaSuggestionsDeviceTests, QuickEditPreviewLatencyTests)
 #
 # After the mode: --no-build reuses the last build; --repeat N runs until a failure, at most N times (for flaky tests).
 
@@ -65,7 +65,7 @@ case "$mode" in
         # The suites skip themselves unless their flag is on (TEST_RUNNER_ reaches the tests without the prefix).
         case "${ids[0]}" in
             VoiceFollowingSpeechTests* | VoiceFollowingLatencyTests* | CaptionSpeechTests*) export TEST_RUNNER_CUE_SPEECH_E2E=1 ;;
-            LanguageModelDeviceTests* | ScriptGenerationFlowDeviceTests* | VoicePersonaDeviceTests* | PromptBudgetDeviceTests* | WritingImportDeviceTests* | PlatformLengthDeviceTests* | LengthVariantsDeviceTests* | ScriptToolsDeviceTests* | IdeaRelevanceDeviceTests*)
+            LanguageModelDeviceTests* | ScriptGenerationFlowDeviceTests* | VoicePersonaDeviceTests* | PromptBudgetDeviceTests* | WritingImportDeviceTests* | PlatformLengthDeviceTests* | LengthVariantsDeviceTests* | ScriptToolsDeviceTests* | IdeaRelevanceDeviceTests* | IdeaSuggestionsDeviceTests*)
                 export TEST_RUNNER_CUE_AI_E2E=1 ;;
             QuickEditPreviewLatencyTests*) export TEST_RUNNER_CUE_PREVIEW_LATENCY=1 ;;
             *) usage ;;

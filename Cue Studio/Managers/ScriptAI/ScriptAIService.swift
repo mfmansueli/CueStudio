@@ -359,6 +359,38 @@ final class ScriptAIService: ScriptWriting {
         }
     }
 
+    func suggestIdeas(about topics: [IdeaTopic], language: CueLanguage?, voice: CreatorVoice?, avoiding: [String], round: Int) async throws -> [ThemeIdea] {
+        guard !topics.isEmpty else { return try await themeIdeas(for: [], language: language, voice: voice) }
+        beginForeground()
+        defer { endForeground() }
+        let plan = try await plan(for: .themes, languages: language.map { [$0.locale.language] } ?? [])
+        let known = avoiding.map(IdeaSimilarity.words(in:))
+        let angles = IdeaAngle.batch(round: round)
+        return try await withFallback(plan, operation: "themes", language: language?.locale.identifier) { model in
+            let session = self.session(on: model, instructions: ScriptPromptBuilder.themesInstructions(voice: voice))
+            let prompt = ScriptPromptBuilder.themesPrompt(about: topics, voice: voice, language: language, round: round)
+            // A creative task: the idea is the point, not the one answer the model is surest of.
+            let options = GenerationOptions(temperature: 1.0)
+            let suggestions = try await self.answering { try await session.respond(to: prompt, generating: ThemeSuggestions.self, options: options).content }
+            var seen = known
+            var ideas: [ThemeIdea] = []
+            for (index, idea) in suggestions.ideas.enumerated() {
+                let title = ScriptPromptBuilder.cleanTitle(idea.title)
+                let words = IdeaSimilarity.words(in: title)
+                guard !title.isEmpty, !seen.contains(where: { IdeaSimilarity.areAlike($0, words) }) else { continue }
+                seen.append(words)
+                // The slot says the angle and the topic; the model's own label for either is not trusted.
+                let topic = IdeaAngle.topic(at: index, round: round, among: topics) ?? topics[0]
+                ideas.append(ThemeIdea(
+                    title: title, kind: index < angles.count ? angles[index].kind : idea.kind.capitalized, length: idea.minutes >= 2 ? .minutes2 : .minute1,
+                    niche: topic.niche ?? .lifestyle, topic: topic.niche == nil ? topic.label : nil
+                ))
+            }
+            guard !ideas.isEmpty else { throw ScriptAIError.emptyResponse }
+            return ideas
+        }
+    }
+
     func themeIdeas(for niches: [Niche], language: CueLanguage?, voice: CreatorVoice?) async throws -> [ThemeIdea] {
         beginForeground()
         defer { endForeground() }

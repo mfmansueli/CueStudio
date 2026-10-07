@@ -652,3 +652,15 @@ modelo pequeno tratou o subtema como o assunto; o perfil também dizia "vídeos 
   O que se perde: um TikTok sai com 55–115 palavras (25–45 s), às vezes abaixo dos 30 s ideais; o criador alonga com as ferramentas.
 - **Cue que se repete** (`ScriptPromptBuilder.collapsingRepeatedCues`): três ou mais iguais em sequência viram um só.
 
+**↻ another idea sem fim, sobre os assuntos do criador (7 de outubro de 2026, à noite):** o catálogo tinha **3 ideias fixas por assunto** e o card só olhava os 12 assuntos do primeiro voo; um criador com os assuntos que digitou no My Cue Voice ("Daily Routine", "Languages") via
+as 3 ideias de Lifestyle para sempre, que não são do que ele faz.
+- **`IdeaSuggestionService`** (`Managers/ScriptAI/`, no ambiente do app): o card mostra a ideia do modelo; ↻ anda pelas ideias e, quando restam duas, pede as próximas seis em segundo plano (também ao abrir Scripts e quando os assuntos mudam). As ideias que não foram vistas ficam guardadas
+  (`DefaultsKey.ideaSuggestions`) para os mesmos assuntos, idioma e voz; outros assuntos as apagam. As ideias de partida (3 por assunto do primeiro voo) só aparecem até as do modelo chegarem, ou se o modelo falhar; um criador que só tem assuntos próprios não vê ideia de partida de outro assunto (o card fica sem sugestão).
+- **Todos os assuntos** (`IdeaTopic`, `CreatorProfile.ideaTopics`): os 12 do primeiro voo, os que só o My Cue Voice oferece e os que o criador digitou, cada um com os subtemas. A folha "Need an idea?" também usa isso (e, sem ideias de partida, abre pedindo as do modelo).
+- **Por que cada lote é diferente** (`IdeaAngle`): contar ao modelo as ideias que já saíram faz ele **copiar a lista** (medido: o segundo lote foi o primeiro, palavra por palavra). Cada lote ordena as seis ideias por ângulo e assunto ("1. uma lista sobre X; 2. um erro comum sobre Y…"), e o próximo começa mais adiante nos 16 ângulos e nos assuntos;
+  temperatura 1,0; ideias que são a mesma com outras palavras (`IdeaSimilarity`) caem, e com menos de quatro novas há mais uma volta. Medido no iPhone 15 Pro (`IdeaSuggestionsDeviceTests`): 6–10 s por lote, 18 ideias diferentes em três lotes, todas sobre os assuntos.
+- **Acessibilidade:** o texto da sugestão estava escondido do VoiceOver; agora é o valor do campo ("Your idea").
+
+**O que o criador digita em "+ Something else" chega ao modelo** (`VoiceTypedValuesTests`: um valor único em cada campo, procurado no que é enviado): tipo de criador (`customRole`), credencial, público (`audienceNote`), abertura e fecho digitados, bordões (três por vez, para nenhum virar tique), o que evitar, exemplos, e o que não tem lista própria (tom,
+formato, motivo de assistir…), que fica em `customTags` e vai como "Also true of them, in their own words". Mudança: com o prompt grande demais, esses itens agora são **os últimos a sair** (antes de onde ele posta e do tamanho dos vídeos; os exemplos saem primeiro). Os assuntos que ele digita entram quando a ideia fala deles (§23, `IdeaFocus`).
+
