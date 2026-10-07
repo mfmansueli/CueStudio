@@ -24,8 +24,6 @@ nonisolated struct VoiceActivity: Hashable, Sendable {
     /// A montage's other recordings, by `ClipSource.id`.
     var sources: [UUID: [TimeSpan]] = [:]
 
-    var isEmpty: Bool { take.isEmpty && sources.values.allSatisfy(\.isEmpty) }
-
     /// Where someone speaks in a recording read as `levels` (dBFS, one every `interval` seconds).
     static func spans(levels: [Float], interval: TimeInterval = interval) -> [TimeSpan] {
         guard interval > 0 else { return [] }

@@ -68,18 +68,6 @@ struct WelcomeSpark: Sendable {
         let scale: Double
     }
 
-    /// `count` sparks from `startAngle`, `step` degrees apart, cycling through the given reaches, sizes and colours.
-    static func spread(
-        count: Int, startAngle: Double, step: Double, distances: [Double], sizes: [CGFloat], colors: [Color], timing: Timing
-    ) -> [WelcomeSpark] {
-        (0..<count).map { index in
-            WelcomeSpark(
-                angle: startAngle + Double(index) * step, size: sizes[index % sizes.count], color: colors[index % colors.count],
-                track: flight(timing, distance: distances[index % distances.count])
-            )
-        }
-    }
-
     private static func flight(_ timing: Timing, distance: Double) -> PoseTrack {
         PoseTrack(curve: .css(0.1, 0.7, 0.3, 1), [
             .init(timing.start, opacity: 0, scale: 1, x: timing.from), .init(timing.start + timing.peakAfter, scale: timing.scale, x: timing.to),

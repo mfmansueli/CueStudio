@@ -32,6 +32,4 @@ nonisolated enum SelectionAction: String, CaseIterable, Identifiable, Sendable {
         case .cut: nil
         }
     }
-
-    var usesAI: Bool { tool != nil }
 }

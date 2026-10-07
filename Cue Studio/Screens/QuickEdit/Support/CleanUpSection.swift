@@ -11,11 +11,4 @@ enum CleanUpSection: String, CaseIterable, Identifiable {
     case pauses, review
 
     var id: String { rawValue }
-
-    var label: String {
-        switch self {
-        case .pauses: String(localized: "Pauses")
-        case .review: String(localized: "Review")
-        }
-    }
 }

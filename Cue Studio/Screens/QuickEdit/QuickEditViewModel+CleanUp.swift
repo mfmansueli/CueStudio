@@ -9,7 +9,6 @@ import Foundation
 /// reviews one by one (Keep or Remove) or removes together when Clean Up is sure. Every decision is
 /// an undo step.
 extension QuickEditViewModel {
-    static let defaultPauseThreshold: TimeInterval = 0.7
     static let pauseThresholdRange: ClosedRange<TimeInterval> = 0.3...3
 
     // MARK: - Analysis
@@ -78,12 +77,6 @@ extension QuickEditViewModel {
         return count == 0 ? String(localized: "All clean") : String(localized: "\(count) to review")
     }
 
-    var reviewSubtitle: String {
-        pendingSuggestions.isEmpty
-            ? String(localized: "Every suggestion reviewed")
-            : String(localized: "Suggestions only — you decide what goes")
-    }
-
     /// "Remove all · 4", or "Done" when nothing sure is left.
     var removeAllLabel: String {
         let count = sureSuggestions.count
@@ -103,17 +96,6 @@ extension QuickEditViewModel {
         case 1: return String(localized: "1 short pause kept")
         default: return String(localized: "\(count) short pauses kept")
         }
-    }
-
-    /// "00:04.20 · 0.9s · May be intentional — for emphasis"
-    func detail(for suggestion: CleanUpSuggestion) -> String {
-        let length = suggestion.kind == .pause ? SilenceDetector.silenceLength(ofCut: suggestion.span) : suggestion.span.duration
-        let parts = [
-            DurationText.timecode(suggestion.span.start, total: edit.sourceDuration),
-            length.formatted(.number.precision(.fractionLength(1)).locale(.interface)) + "s",
-            suggestion.note,
-        ]
-        return parts.compactMap { $0 }.joined(separator: " · ")
     }
 
     /// Where a suggestion sits on the edited timeline; nil once it no longer plays.
@@ -166,33 +148,6 @@ extension QuickEditViewModel {
     }
 
     // MARK: - Review (words)
-
-    /// What Review lists: filler words and possible retakes (the pauses have their own section).
-    var wordSuggestions: [CleanUpSuggestion] {
-        cleanUpSuggestions.filter { $0.kind != .pause }
-    }
-
-    /// Words still to review.
-    var pendingWordSuggestions: [CleanUpSuggestion] {
-        pendingSuggestions.filter { $0.kind != .pause }
-    }
-
-    /// "3 to review" or "All clean", for the words.
-    var wordsReviewTitle: String {
-        let count = pendingWordSuggestions.count
-        return count == 0 ? String(localized: "All clean") : String(localized: "\(count) to review")
-    }
-
-    /// "Remove all · 2" for the words Clean Up is sure about, or "Done".
-    var removeAllWordsLabel: String {
-        let count = pendingWordSuggestions.filter(\.isSure).count
-        return count == 0 ? String(localized: "Done") : String(localized: "Remove all · \(count)")
-    }
-
-    /// "Remove all" in Review: the words Clean Up is sure about, in one undo step.
-    func removeAllSureWords() {
-        removeAllSure(pendingWordSuggestions.filter(\.isSure), among: pendingWordSuggestions)
-    }
 
     /// "Remove all": every pending suggestion Clean Up is sure about goes, in one undo step. The
     /// unsure ones stay for the creator to listen to.

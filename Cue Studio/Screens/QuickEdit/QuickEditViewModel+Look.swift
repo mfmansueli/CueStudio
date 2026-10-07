@@ -246,8 +246,4 @@ extension QuickEditViewModel {
     func setCropFit(_ fit: CropFit) {
         changeLook { $0.cropFit = fit }
     }
-
-    func resetCropPosition() {
-        changeLook { $0.cropOffset = 0 }
-    }
 }

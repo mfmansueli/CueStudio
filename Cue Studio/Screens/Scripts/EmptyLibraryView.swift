@@ -18,7 +18,6 @@ struct EmptyLibraryView: View {
     let onSkip: () -> Void
 
     @Environment(CreatorProfileService.self) private var profile
-    @Environment(PresentationService.self) private var presentation
     @Environment(ScriptStarter.self) private var starter
     @Environment(IdeaTransitionService.self) private var transition
     /// Where each idea's arrow is on the screen, for its star to leave from.

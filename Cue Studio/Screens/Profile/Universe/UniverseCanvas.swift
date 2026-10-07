@@ -68,14 +68,6 @@ struct UniverseMap: View {
         }
     }
 
-    /// Where a point of the board lands in a view of this size (the map is drawn at the largest scale that fits, centred).
-    static func viewPoint(_ point: CGPoint, in size: CGSize) -> CGPoint {
-        let scale = min(size.width / board.width, size.height / board.height)
-        return CGPoint(
-            x: (size.width - board.width * scale) / 2 + point.x * scale, y: (size.height - board.height * scale) / 2 + point.y * scale
-        )
-    }
-
     /// The newest video's star, on the right of the outer orbit.
     static let newestPoint = CGPoint(x: 301, y: 161)
 

@@ -20,8 +20,6 @@ struct StartRecordingSheet: View {
     let onNewScript: () -> Void
     var onSkip: () -> Void = {}
 
-    @Environment(\.dismiss) private var dismiss
-
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             SheetHeader(

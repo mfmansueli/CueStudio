@@ -9,11 +9,6 @@ import UIKit
 /// UIKit's system cascades shape Arabic, Devanagari, CJK and Thai locally. A whole unsupported
 /// script uses the system weight to avoid mixing a Latin display cut with missing glyph boxes.
 nonisolated enum CaptionFont {
-    /// The font of the first reading of a preset.
-    static func font(theme: CaptionTheme, size: CGFloat, text: String) -> UIFont {
-        font(spec: CaptionStyleSpec.spec(for: theme, version: 1), size: size, text: text)
-    }
-
     static func font(spec: CaptionStyleSpec, size: CGFloat, text: String) -> UIFont {
         let fallback = UIFont.systemFont(ofSize: size, weight: systemWeight(spec.fallbackWeight))
         guard let bundled = UIFont(name: spec.fontName, size: size) else { return fallback }

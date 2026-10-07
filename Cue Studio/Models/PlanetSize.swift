@@ -26,7 +26,6 @@ nonisolated enum PlanetSize {
         }
     }
 
-    static let minimum: CGFloat = 14
     static let maximum: CGFloat = 38
 
     /// The diameter for `videos` shared; 0 for none (no planet is drawn).

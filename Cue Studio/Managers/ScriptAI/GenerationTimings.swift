@@ -46,9 +46,4 @@ nonisolated enum GenerationLog {
             wordsAsked=\(requestedWords.lowerBound)-\(requestedWords.upperBound) wordsWritten=\(writtenWords)
             """)
     }
-
-    /// A request that was asked for again while one was running, or one that was cancelled or failed.
-    static func note(_ event: String) {
-        logger.notice("\(event, privacy: .public)")
-    }
 }

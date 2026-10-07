@@ -34,10 +34,4 @@ nonisolated enum ExportCelebration: Equatable, Identifiable, Sendable {
         case .sentOff(let video, let networks): "sent-\(video.take.id)-\(networks.map(\.rawValue).joined(separator: "+"))"
         }
     }
-
-    var video: ExportedVideo {
-        switch self {
-        case .readyToTravel(let video), .sentOff(let video, _): video
-        }
-    }
 }

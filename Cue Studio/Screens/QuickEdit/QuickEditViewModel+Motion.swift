@@ -136,15 +136,6 @@ extension QuickEditViewModel {
         }
     }
 
-    /// Where a bar's keyframes are (edited seconds from its start), for marks on its track.
-    func keyframeOffsets(of bar: LayerBar) -> [TimeInterval] {
-        switch bar.kind {
-        case .text: keyframes(of: .text(bar.id)).map(\.time).filter { $0 <= bar.span.duration }
-        case .media: keyframes(of: .media(bar.id)).map(\.time).filter { $0 <= bar.span.duration }
-        case .caption, .voiceOver, .music: []
-        }
-    }
-
     // MARK: - Private
 
     private func baseCenter(of item: MotionItem) -> OverlayPoint {

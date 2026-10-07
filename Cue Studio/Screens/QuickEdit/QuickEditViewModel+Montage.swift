@@ -37,12 +37,6 @@ extension QuickEditViewModel {
         }
     }
 
-    /// The file a section plays, for its thumbnail.
-    func videoURL(ofSource id: UUID?) -> URL {
-        guard let id, let source = edit.sources.first(where: { $0.id == id }) else { return videoURL }
-        return EditMediaFiles.url(for: source.fileName)
-    }
-
     /// The montage's other recordings' files, by source.
     var clipSourceURLs: [UUID: URL] {
         Dictionary(edit.sources.map { ($0.id, EditMediaFiles.url(for: $0.fileName)) }) { first, _ in first }

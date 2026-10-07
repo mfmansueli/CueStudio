@@ -14,10 +14,6 @@ extension QuickEditViewModel {
     /// New music goes in at 40%, under the voice.
     static let newMusicVolume: Double = 0.4
 
-    var selectedMusic: MusicClip? {
-        selectedMusicID.flatMap { id in edit.music.first { $0.id == id } }
-    }
-
     var musicBars: [LayerBar] {
         edit.music.compactMap { clip in
             guard let span = clip.span(inEditOf: edit.editedDuration) else { return nil }

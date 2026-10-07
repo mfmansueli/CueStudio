@@ -64,14 +64,6 @@ final class CreatorProfileService {
         profile = updated
     }
 
-    func toggleStyle(_ style: VoiceStyle) {
-        if let index = profile.styles.firstIndex(of: style) {
-            profile.styles.remove(at: index)
-        } else {
-            profile.styles.append(style)
-        }
-    }
-
     /// Adds a catchphrase. Returns false when it is empty or already there.
     @discardableResult
     func addPhrase(_ phrase: String) -> Bool {

@@ -16,7 +16,6 @@ struct BrandBriefSheet: View {
 
     @State private var model: BrandBriefViewModel
     @Environment(ToastService.self) private var toast
-    @Environment(\.dismiss) private var dismiss
 
     init(store: BrandStore, purpose: BrandBriefPurpose, canWriteWithAI: Bool, onConfirm: @escaping (BrandBrief) -> Void) {
         self.purpose = purpose

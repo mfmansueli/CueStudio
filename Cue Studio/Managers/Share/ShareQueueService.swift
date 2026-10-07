@@ -49,8 +49,6 @@ final class ShareQueueService {
 
     func resume(takeID: UUID, network: ShareDestination) { change(takeID) { $0.resume(network) } }
 
-    func retarget(takeID: UUID, to operationID: UUID) { change(takeID) { $0.retarget(to: operationID) } }
-
     func discard(takeID: UUID) {
         queues.removeAll { $0.takeID == takeID }
         save()

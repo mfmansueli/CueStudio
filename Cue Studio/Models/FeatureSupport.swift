@@ -32,6 +32,4 @@ nonisolated enum FeatureSupport: Hashable, Sendable {
     var isUsable: Bool {
         if case .unavailable = self { false } else { true }
     }
-
-    var isSupported: Bool { self == .supported }
 }

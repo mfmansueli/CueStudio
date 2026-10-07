@@ -62,14 +62,4 @@ nonisolated extension VoicePersonalityItem {
 }
 
 nonisolated extension CreatorProfile {
-    /// What the creator gave Cue for a Personality item, as readable values.
-    func values(for item: VoicePersonalityItem) -> [String] {
-        switch item {
-        case .openings: openings
-        case .endings: endings
-        case .phrases: phrases
-        case .formats: formats.map(\.label)
-        case .swearing: swearing.map { [$0.label] } ?? []
-        }
-    }
 }

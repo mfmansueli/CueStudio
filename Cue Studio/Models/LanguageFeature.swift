@@ -19,12 +19,4 @@ nonisolated enum LanguageFeature: String, CaseIterable, Hashable, Sendable {
     case voiceFollowing
     /// Captions and Clean Up listening to a take.
     case captions
-
-    /// The features that run on the Speech framework's recognizers.
-    var usesSpeechRecognition: Bool {
-        switch self {
-        case .dictation, .voiceFollowing, .captions: true
-        case .interface, .aiWriting: false
-        }
-    }
 }

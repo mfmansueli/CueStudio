@@ -270,13 +270,6 @@ extension QuickEditViewModel {
         edit.editedCaptions.first { $0.id == id }?.span
     }
 
-    /// Shows the line on the preview.
-    func showCaption(_ id: UUID) {
-        guard let span = editedSpan(ofCaption: id) else { return }
-        player.pause()
-        player.seek(to: span.start)
-    }
-
     // MARK: - Correcting
 
     /// A new line at the playhead, written by hand (the way to caption a take no model can hear),

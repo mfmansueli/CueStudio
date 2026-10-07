@@ -9,7 +9,6 @@ import SwiftUI
 /// credential, and "Scripts say I / We". The same field in the guided questions and in the editor.
 struct VoiceRoleField: View {
     @Environment(CreatorProfileService.self) private var profile
-    @Environment(ToastService.self) private var toast
 
     @State private var typesRole = false
 

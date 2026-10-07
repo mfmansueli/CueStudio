@@ -16,8 +16,6 @@ final class DisplayLinkDriver: NSObject {
         self.onFrame = onFrame
     }
 
-    var isRunning: Bool { link != nil }
-
     func start() {
         guard link == nil else { return }
         let link = CADisplayLink(target: self, selector: #selector(step(_:)))

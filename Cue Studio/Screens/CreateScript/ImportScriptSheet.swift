@@ -30,7 +30,6 @@ struct ImportScriptSheet: View {
     @Environment(DocumentImportService.self) private var importer
     @Environment(TextRecognitionManager.self) private var recognizer
     @Environment(ToastService.self) private var toast
-    @Environment(\.dismiss) private var dismiss
     @Environment(\.openURL) private var openURL
     @State private var source: Source = .paste
     @State private var text = ""

@@ -14,7 +14,6 @@ struct MainView: View {
     @Environment(ScriptLibraryService.self) private var library
     @Environment(PreferencesService.self) private var preferences
     @Environment(CreatorProfileService.self) private var profile
-    @Environment(DocumentImportService.self) private var importer
     @Environment(ToastService.self) private var toast
     @Environment(LanguageService.self) private var languages
     @Environment(VoiceQuestionScheduler.self) private var voiceQuestions

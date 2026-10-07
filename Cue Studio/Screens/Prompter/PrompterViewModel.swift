@@ -215,8 +215,6 @@ final class PrompterViewModel {
         return SetupRecommendation(platform: script.platform, preset: preset)
     }
 
-    var cameraStatus: CameraStatus { camera.status }
-
     // MARK: - Lifecycle
 
     func appear() async {

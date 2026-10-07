@@ -32,7 +32,7 @@ Uma exportação grátis é descontada **uma vez por operação** (um arquivo ex
 
 Caminhos de exportação (todos passam pelo razão): **Take Review** (`TakeReviewViewModel`: Save video, tiles de plataforma, More, "Ready to
 travel" › Share to / Other apps, "On its way" › Share again, e o "download" do fim do editor), **Quick edit** (`QuickEditExportModel`:
-Export video, Share). `saveCover` salva só uma imagem e nunca conta. O compartilhamento de roteiros (texto) e do universo (imagem) não é
+Export video, Share). `saveCoverIfChosen` salva só uma imagem e nunca conta. O compartilhamento de roteiros (texto) e do universo (imagem) não é
 exportação de vídeo.
 
 ## 1.1. "Share to universe" (fase A): uma exportação por envio, uma rede por vez

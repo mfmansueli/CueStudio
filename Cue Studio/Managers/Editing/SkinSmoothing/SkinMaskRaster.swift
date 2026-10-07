@@ -13,8 +13,6 @@ import CoreGraphics
 /// - the **core** is the forehead and the cheeks above the lips, further inside the face, with the features taken out wider still.
 /// Nothing here looks at the picture: the hair, the beard and the shadows are left out by the skin tone (`SkinToneAnalyzer`) and by the filter.
 nonisolated enum SkinMaskRaster {
-    /// Of the way from the brows to the chin, how far up the forehead goes.
-    private static let foreheadShare = 0.5
     /// How far the skin is drawn inside the jaw's outline.
     private static let insetShare = 0.04
 
