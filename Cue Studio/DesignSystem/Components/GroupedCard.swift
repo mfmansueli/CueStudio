@@ -5,7 +5,7 @@
 
 import SwiftUI
 
-/// Rows stacked in a rounded card with hairline separators between them.
+/// Rows stacked in a rounded card with hairline separators between them, raised off the sheet (`cardDepth`).
 struct GroupedCard<Content: View>: View {
     var background: Color = Palette.surface
     var radius: CGFloat = Metrics.cardRadius
@@ -31,6 +31,7 @@ struct GroupedCard<Content: View>: View {
             RoundedRectangle(cornerRadius: radius, style: .continuous)
                 .fill(background)
         }
+        .cardDepth(RoundedRectangle(cornerRadius: radius, style: .continuous))
     }
 }
 

@@ -63,6 +63,7 @@ struct TakeUpNextCard: View {
             .clipShape(shape)
         }
         .overlay(shape.strokeBorder(Palette.Takes.upNextRim, lineWidth: 0.5))
+        .cardDepth(shape, edge: nil)
     }
 
     @ViewBuilder

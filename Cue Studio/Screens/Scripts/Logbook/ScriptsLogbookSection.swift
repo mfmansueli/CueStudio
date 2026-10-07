@@ -42,6 +42,7 @@ struct ScriptsLogbookSection: View {
                     .accessibilityIdentifier("scripts.logbook.open")
                 }
                 .background(Palette.surface, in: RoundedRectangle(cornerRadius: Metrics.cardRadius, style: .continuous))
+                .cardDepth(RoundedRectangle(cornerRadius: Metrics.cardRadius, style: .continuous))
             }
             .accessibilityElement(children: .contain)
             .accessibilityIdentifier("scripts.logbook")

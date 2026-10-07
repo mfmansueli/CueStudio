@@ -27,6 +27,13 @@ nonisolated struct DictationSegment: Equatable, Sendable {
         heard = transcript
     }
 
+    /// The same, cut so that the whole text stays within `limit` characters: the words stop where the room ends, and what was
+    /// already written (before and after them) is never cut.
+    mutating func hear(_ transcript: String, limit: Int) {
+        heard = transcript
+        while !heard.isEmpty, text.count > limit { heard.removeLast() }
+    }
+
     /// The whole text with the words in place, spaced from their neighbours.
     var text: String {
         let words = heard.trimmingCharacters(in: .whitespacesAndNewlines)

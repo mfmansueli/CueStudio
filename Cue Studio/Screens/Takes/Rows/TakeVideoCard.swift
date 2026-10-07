@@ -20,6 +20,7 @@ struct TakeVideoCard: View {
             .overlay(alignment: .bottomLeading) { bottom }
             .clipShape(shape)
             .overlay(shape.strokeBorder(video.stage.cardRing, lineWidth: 1))
+            .cardDepth(shape, edge: nil)
             .contentShape(Rectangle())
             .accessibilityElement(children: .ignore)
             .accessibilityLabel(Text(accessibilityText))

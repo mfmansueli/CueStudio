@@ -63,7 +63,7 @@ struct LogbookView: View {
                     card(entry)
                         .listRowBackground(Color.clear)
                         .listRowSeparator(.hidden)
-                        .listRowInsets(EdgeInsets(top: 5, leading: Metrics.gutter, bottom: 5, trailing: Metrics.gutter))
+                        .listRowInsets(EdgeInsets(top: 6, leading: Metrics.gutter, bottom: 8, trailing: Metrics.gutter))
                         .swipeActions(edge: .trailing, allowsFullSwipe: true) {
                             Button(role: .destructive) { logbook.delete(entry.id) } label: {
                                 Label("Delete", systemImage: "trash")
@@ -222,6 +222,7 @@ struct LogbookView: View {
         }
         .padding(14)
         .background(Palette.surface, in: shape)
+        .cardDepth(shape)
         .contextMenu {
             Button(role: .destructive) { logbook.delete(entry.id) } label: { Label("Delete", systemImage: "trash") }
         }

@@ -10,9 +10,40 @@ import Foundation
 /// rules are here, apart from the views: nothing can be sent while the field holds only spaces or a
 /// dictation is still writing, and a dictation only ever writes its own segment of the text.
 nonisolated struct IdeaPromptDraft: Equatable, Sendable {
+    /// The most characters an idea can have. About five lines of the dock's field at the default text size and twice what it shows at
+    /// first: room for a few sentences, and a small slice of the model's 4096-token window in any writing (≈ 50 tokens in English,
+    /// 200 at most in Chinese or Japanese), so the idea never crowds out the script it asks for. The Logbook's ideas are cut at 160.
+    static let maxCharacters = 200
+    /// From here the field says how many characters are left to use.
+    static let counterStart = 160
+
     var text = ""
     /// Set from the moment dictation starts until the last word has been written; nil otherwise.
     private(set) var dictation: DictationSegment?
+
+    /// The field is full: nothing more can be typed, pasted or dictated into it.
+    var isAtLimit: Bool { text.count >= Self.maxCharacters }
+
+    /// The field is close enough to its limit to show the count.
+    var showsCounter: Bool { text.count >= Self.counterStart }
+
+    /// `new`, the text the field wants to become after an edit of `old`, kept within the limit. What was inserted is what gives way:
+    /// typing at the limit does nothing, a paste that doesn't fit goes in as far as it does, and the text on both sides of it stays
+    /// (the end of the idea is never what is cut).
+    static func limited(_ new: String, replacing old: String) -> String {
+        let overshoot = new.count - maxCharacters
+        guard overshoot > 0 else { return new }
+        let newer = Array(new)
+        let older = Array(old)
+        let shared = min(newer.count, older.count)
+        var head = 0
+        while head < shared, newer[head] == older[head] { head += 1 }
+        var tail = 0
+        while tail < shared - head, newer[newer.count - 1 - tail] == older[older.count - 1 - tail] { tail += 1 }
+        let inserted = newer[head..<(newer.count - tail)]
+        let kept = Array(newer[..<head]) + inserted.prefix(max(0, inserted.count - overshoot)) + Array(newer[(newer.count - tail)...])
+        return String(kept.prefix(maxCharacters))
+    }
 
     /// The text without the spaces around it: what is sent, and what decides whether anything can be.
     var trimmedText: String { text.trimmingCharacters(in: .whitespacesAndNewlines) }
@@ -45,7 +76,7 @@ nonisolated struct IdeaPromptDraft: Equatable, Sendable {
     /// dictation is running (a late result after the creator took over).
     mutating func hear(_ transcript: String) {
         guard var segment = dictation else { return }
-        segment.hear(transcript)
+        segment.hear(transcript, limit: Self.maxCharacters)
         text = segment.text
         dictation = segment
     }

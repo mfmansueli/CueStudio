@@ -26,9 +26,7 @@ struct SettingsSearchResults: View {
         } else {
             ForEach(groups) { group in
                 Section {
-                    ForEach(group.entries) { entry in
-                        SettingsEntryRow(entry: entry, bindings: bindings)
-                    }
+                    SettingsEntryRows(entries: group.entries, bindings: bindings)
                 } header: {
                     CueSectionHeader(verbatim: group.path)
                 }

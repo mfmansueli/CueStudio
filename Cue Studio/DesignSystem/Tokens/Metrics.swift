@@ -12,6 +12,9 @@ enum Metrics {
     /// Side margin for titles and loose text.
     static let textGutter: CGFloat = 20
     static let cardRadius: CGFloat = 26
+    /// The corners of an inset-grouped section (Settings, Takes list). The system clips each row to its own corner (about 24 pt on iOS 27),
+    /// so a `CardRowSlice` draws its shape at least that round: at 22 pt its edge fell outside the clip and vanished around every corner.
+    static let groupedListRadius: CGFloat = 26
     /// The blocks of the v29 Profile (identity, universe, voice, plan).
     static let profileBlockRadius: CGFloat = 22
     /// The idea card on Scripts (the board's `.hero`).

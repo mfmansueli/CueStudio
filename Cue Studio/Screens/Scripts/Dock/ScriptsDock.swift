@@ -6,8 +6,9 @@
 import SwiftUI
 
 /// The Scripts AI dock (v30 · 3.1, 3.2): clean glass fixed above the tab bar. Row 1 is the choices for the idea (Format, the platform and
-/// the voice); row 2 is the idea itself (two lines, the suggested idea while it is empty), "↻ another idea", the microphone and the
-/// yellow arrow. Scrolling the list down folds row 1 away (09 §6); focusing the field raises the dock with the keyboard.
+/// the voice); row 2 is the idea itself (two lines, opening to five while it is edited, the suggested idea while it is empty, and up to
+/// `IdeaPromptDraft.maxCharacters` characters), "↻ another idea", the microphone and the yellow arrow. Scrolling the list down folds
+/// row 1 away (09 §6); focusing the field raises the dock with the keyboard.
 ///
 /// The text is the one draft kept by `IdeaDraftService`. The microphone dictates into the field (speak, see the words, review,
 /// edit: it never sends anything itself). The dock owns the microphone while it is on screen: it lets go when the app leaves the
@@ -46,13 +47,18 @@ struct ScriptsDock: View {
     /// The height of a line of the field's text, which grows with Dynamic Type.
     @ScaledMetric(relativeTo: .body) private var lineHeight = 21.0
 
-    /// Lines of the field (the board clamps it to two): a longer idea scrolls inside it.
-    private static let visibleLines = 2
+    /// The field is two lines (the board) at rest. While it is being edited (the keyboard, or a dictation) it opens as far as the
+    /// idea needs, up to five lines, and goes back to two when the editing ends; a longer idea scrolls inside it.
+    private static let minLines = 2
+    private static let maxLines = 5
     /// Row 1: 30 pt chips with a 36 pt touch area.
     private static let topRowHeight: CGFloat = 36
     private static let rowSpacing: CGFloat = 10
     /// How much shorter the dock is with row 1 folded away.
     static let foldHeight = topRowHeight + rowSpacing
+
+    /// The field is being edited: it can open to show the whole idea (up to five lines). At rest it is back to its two.
+    private var isExpanded: Bool { isFocused || dictation.isActive }
 
     /// Apple Intelligence can write: the arrow sends the idea.
     private var hasAI: Bool { unavailableReason == nil }
@@ -106,6 +112,7 @@ struct ScriptsDock: View {
         .padding(EdgeInsets(top: 16, leading: 12, bottom: 12, trailing: 12))
         .dockSurface()
         .animation(.smooth(duration: 0.2), value: dictation.notice)
+        .animation(reduceMotion ? nil : .smooth(duration: 0.25), value: isExpanded)
         .accessibilityElement(children: .contain)
         .sheet(item: $voiceSetup) { mode in
             if mode == .edit {
@@ -141,6 +148,12 @@ struct ScriptsDock: View {
             // listens, the view follows the newest words.
             if !dictation.isActive, dictation.notice != nil { dictation.dismissNotice() }
             if dictation.isActive, followsEnd { scrollPosition.scrollTo(edge: .bottom) }
+        }
+        // The idea is as long as it can be: a dictation would write nothing more, so it ends, and the field says so (the count turns orange).
+        .onChange(of: ideaDraft.draft.isAtLimit) { _, isFull in
+            guard isFull else { return }
+            Haptics.soft()
+            if dictation.isActive { dictation.stop() }
         }
         // Stopped and interrupted notes pass by themselves; the ones with something to do stay.
         .task(id: dictation.notice) {
@@ -218,29 +231,49 @@ struct ScriptsDock: View {
 
     /// The idea in a dark box with "another idea", the microphone and the arrow at its end (their places never move).
     private var field: some View {
-        HStack(alignment: .center, spacing: 6) {
-            textArea
-                .padding(.leading, 14)
-            if suggestion != nil { anotherIdeaButton }
-            DictationButton(state: dictation.state, style: .plain, action: toggleDictation)
-            sendButton
+        HStack(alignment: .bottom, spacing: 6) {
+            VStack(alignment: .leading, spacing: 0) {
+                textArea
+                if isExpanded, ideaDraft.draft.showsCounter { counter }
+            }
+            .padding(.leading, 14)
+            // At the bottom, by the last line, as the field grows (5 pt up: centred, as they were, while it is two lines).
+            HStack(spacing: 6) {
+                if suggestion != nil { anotherIdeaButton }
+                DictationButton(state: dictation.state, style: .plain, action: toggleDictation)
+                sendButton
+            }
+            .padding(.bottom, 5)
         }
         .padding(EdgeInsets(top: 6, leading: 0, bottom: 6, trailing: 6))
         .frame(minHeight: 56)
         .background(Palette.Scripts.dockField, in: RoundedRectangle(cornerRadius: 20, style: .continuous))
     }
 
-    /// The field to type in; while dictating, the same words read-only, which keeps the newest in view as they grow (a field that
-    /// isn't being edited wouldn't scroll to them) and can still be scrolled to read earlier parts. Both have the same fixed height.
+    /// The field to type in; while dictating, the same words read-only over it, which keeps the newest in view as they grow (a field
+    /// that isn't being edited wouldn't scroll to them) and can still be scrolled to read earlier parts. The editor sets the height,
+    /// two lines to five as the idea needs, and stays while it listens (hidden), so both have the same height and the dock keeps its
+    /// size when the dictation starts and stops.
     private var textArea: some View {
-        ZStack {
-            if dictation.isActive {
-                transcript
-            } else {
-                editor
-            }
-        }
-        .frame(height: lineHeight * CGFloat(Self.visibleLines) + 12)
+        editor
+            .opacity(dictation.isActive ? 0 : 1)
+            .allowsHitTesting(!dictation.isActive)
+            .accessibilityHidden(dictation.isActive)
+            .overlay { if dictation.isActive { transcript } }
+            .frame(minHeight: lineHeight * CGFloat(Self.minLines) + 12, alignment: .top)
+    }
+
+    /// How much of the limit is used, from `IdeaPromptDraft.counterStart` on; orange when the field is full.
+    private var counter: some View {
+        let used = ideaDraft.text.count
+        let limit = IdeaPromptDraft.maxCharacters
+        return Text(verbatim: "\(used.formatted()) / \(limit.formatted())")
+            .font(.system(size: 10.5, weight: .semibold, design: .monospaced))
+            .foregroundStyle(ideaDraft.draft.isAtLimit ? Palette.warnText : Palette.ink)
+            .frame(maxWidth: .infinity, alignment: .trailing)
+            .padding(.bottom, 4)
+            .accessibilityLabel(Text("\(used) of \(limit) characters"))
+            .accessibilityIdentifier("ideaCard.counter")
     }
 
     private var editor: some View {
@@ -250,7 +283,7 @@ struct ScriptsDock: View {
                 Text(suggestion)
                     .font(.system(size: 16, weight: .medium))
                     .foregroundStyle(Palette.ink)
-                    .lineLimit(Self.visibleLines)
+                    .lineLimit(Self.minLines)
                     .padding(.vertical, 6)
                     .allowsHitTesting(false)
                     .accessibilityHidden(true)
@@ -263,7 +296,7 @@ struct ScriptsDock: View {
         TextField(text: textBinding, selection: $selection, prompt: placeholder, axis: .vertical) {
             Text("Your idea")
         }
-        .lineLimit(Self.visibleLines...Self.visibleLines)
+        .lineLimit(Self.minLines...(isExpanded ? Self.maxLines : Self.minLines))
         .focused($isFocused)
         .font(.system(size: 16, weight: .medium))
         .foregroundStyle(Palette.ink)

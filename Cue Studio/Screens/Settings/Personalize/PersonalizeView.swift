@@ -18,15 +18,12 @@ struct PersonalizeView: View {
                 CueSectionHeader("App icon")
             }
             Section {
-                SettingsEntryRow(entry: .topics, bindings: bindings)
-                SettingsEntryRow(entry: .autoTag, bindings: bindings)
+                SettingsEntryRows(entries: [.topics, .autoTag], bindings: bindings)
             } header: {
                 CueSectionHeader("Topics & colors")
             }
             Section {
-                SettingsEntryRow(entry: .starrySky, bindings: bindings)
-                SettingsEntryRow(entry: .celebrations, bindings: bindings)
-                SettingsEntryRow(entry: .haptics, bindings: bindings)
+                SettingsEntryRows(entries: [.starrySky, .celebrations, .haptics], bindings: bindings)
             } header: {
                 CueSectionHeader("Motion")
             } footer: {

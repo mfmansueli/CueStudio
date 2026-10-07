@@ -65,11 +65,14 @@ struct VoiceQuestionSheet: View {
     private var list: some View {
         List {
             Section {
-                ForEach(model.options) { option in
-                    answerRow(option)
+                let somethingElseIndex = model.options.count
+                let noneIndex = somethingElseIndex + (model.allowsSomethingElse ? 1 : 0)
+                let count = noneIndex + (model.allowsNone ? 1 : 0)
+                ForEach(Array(model.options.enumerated()), id: \.element.id) { index, option in
+                    answerRow(option, position: CardRowPosition(index: index, count: count))
                 }
-                if model.allowsSomethingElse { somethingElse }
-                if model.allowsNone { noneRow }
+                if model.allowsSomethingElse { somethingElse(position: CardRowPosition(index: somethingElseIndex, count: count)) }
+                if model.allowsNone { noneRow(position: CardRowPosition(index: noneIndex, count: count)) }
             } header: {
                 Text(model.title)
                     .font(.title2.bold())
@@ -101,7 +104,7 @@ struct VoiceQuestionSheet: View {
         }
     }
 
-    private func answerRow(_ option: VoiceOption) -> some View {
+    private func answerRow(_ option: VoiceOption, position: CardRowPosition) -> some View {
         let isOn = model.isSelected(option)
         return Button {
             Haptics.selection()
@@ -125,13 +128,13 @@ struct VoiceQuestionSheet: View {
         .buttonStyle(.plain)
         .accessibilityAddTraits(isOn ? .isSelected : [])
         .accessibilityIdentifier("voice.option.\(option.id)")
-        .listRowBackground(Palette.surface2.opacity(0.7))
+        .cardRowSurface(Palette.surface2.opacity(0.7), position: position)
     }
 
     // MARK: - Something else, None of these
 
     @ViewBuilder
-    private var somethingElse: some View {
+    private func somethingElse(position: CardRowPosition) -> some View {
         if model.showsSomethingElse {
             VStack(alignment: .leading, spacing: 8) {
                 HStack(spacing: 10) {
@@ -149,7 +152,7 @@ struct VoiceQuestionSheet: View {
                 if let feedback = model.feedback { feedbackView(feedback) }
             }
             .padding(.vertical, 4)
-            .listRowBackground(Palette.surface2.opacity(0.7))
+            .cardRowSurface(Palette.surface2.opacity(0.7), position: position)
         } else {
             Button {
                 model.showsSomethingElse = true
@@ -163,11 +166,11 @@ struct VoiceQuestionSheet: View {
             }
             .buttonStyle(.plain)
             .accessibilityIdentifier("voice.somethingElse")
-            .listRowBackground(Palette.surface2.opacity(0.7))
+            .cardRowSurface(Palette.surface2.opacity(0.7), position: position)
         }
     }
 
-    private var noneRow: some View {
+    private func noneRow(position: CardRowPosition) -> some View {
         Button { model.none() } label: {
             Text("None of these")
                 .font(.body)
@@ -177,7 +180,7 @@ struct VoiceQuestionSheet: View {
         }
         .buttonStyle(.plain)
         .accessibilityIdentifier("voice.sheet.none")
-        .listRowBackground(Palette.surface2.opacity(0.7))
+        .cardRowSurface(Palette.surface2.opacity(0.7), position: position)
     }
 
     @ViewBuilder

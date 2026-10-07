@@ -10,7 +10,7 @@ struct AcknowledgementsView: View {
     var body: some View {
         List {
             Section {
-                ForEach(FontCredit.all) { credit in
+                ForEach(Array(FontCredit.all.enumerated()), id: \.element.id) { index, credit in
                     // The board's list has no chevrons; the license is still one tap away.
                     ZStack(alignment: .leading) {
                         NavigationLink { LicenseTextView(credit: credit) } label: { EmptyView() }.opacity(0)
@@ -21,7 +21,7 @@ struct AcknowledgementsView: View {
                         .frame(minHeight: Metrics.listRowContent, alignment: .leading)
                     }
                     .accessibilityIdentifier("acknowledgements.font")
-                    .cardRowBackground()
+                    .cardRowBackground(position: CardRowPosition(index: index, count: FontCredit.all.count))
                 }
             } footer: {
                 Text("The free fonts Cue ships with.")

@@ -15,10 +15,10 @@ struct PermissionsView: View {
     var body: some View {
         List {
             Section {
-                row(String(localized: "Camera"), state(permissions.camera), "camera")
-                row(String(localized: "Microphone"), state(permissions.microphone), "microphone")
-                row(String(localized: "Speech recognition"), state(permissions.speech), "speech")
-                row(String(localized: "Photos"), photosLabel, "photos")
+                row(String(localized: "Camera"), state(permissions.camera), "camera", .first)
+                row(String(localized: "Microphone"), state(permissions.microphone), "microphone", .middle)
+                row(String(localized: "Speech recognition"), state(permissions.speech), "speech", .middle)
+                row(String(localized: "Photos"), photosLabel, "photos", .last)
             } footer: {
                 Text("Cue asks only when a feature needs it.")
             }
@@ -43,7 +43,7 @@ struct PermissionsView: View {
         }
     }
 
-    private func row(_ title: String, _ value: String, _ id: String) -> some View {
+    private func row(_ title: String, _ value: String, _ id: String, _ position: CardRowPosition) -> some View {
         HStack {
             Text(title).foregroundStyle(Palette.ink)
             Spacer(minLength: 8)
@@ -52,7 +52,7 @@ struct PermissionsView: View {
         .frame(minHeight: Metrics.listRowContent)
         .accessibilityElement(children: .combine)
         .accessibilityIdentifier("settings.permission.\(id)")
-        .cardRowBackground()
+        .cardRowBackground(position: position)
     }
 
     private func state(_ state: PermissionState) -> String {

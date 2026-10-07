@@ -214,22 +214,23 @@ struct TakesView: View {
             }
             ForEach(viewModel.sections) { section in
                 Section {
-                    ForEach(section.videos) { video in
+                    ForEach(Array(section.videos.enumerated()), id: \.element.id) { index, video in
                         Button { viewModel.open(video) } label: {
                             TakeVideoRow(video: video, whenLabel: video.latest.map(viewModel.whenLabel(for:)) ?? "")
                         }
                         .buttonStyle(.plain)
                         .listRowInsets(EdgeInsets())
-                        .listRowBackground(Palette.surface)
+                        .cardRowSurface(Palette.surface, position: CardRowPosition(index: index, count: section.videos.count))
                         .contextMenu { actions(for: video) } preview: { peek(video) }
                         .swipeActions(edge: .trailing, allowsFullSwipe: false) {
                             Button(role: .destructive) { viewModel.videoToDelete = video } label: {
                                 Label("Delete", systemImage: "trash")
                             }
+                            .tint(Palette.dangerFill)
                             Button { viewModel.open(video, then: .share) } label: {
                                 Label("Share", systemImage: "square.and.arrow.up")
                             }
-                            .tint(Palette.acc)
+                            .tint(Palette.Takes.shareAction)
                         }
                         .accessibilityIdentifier("takes.video.\(video.id)")
                     }

@@ -139,6 +139,7 @@ struct PickBestTakeView: View {
         .frame(width: width, height: width * 16 / 9)
         .clipShape(shape)
         .overlay(shape.strokeBorder(isChosen ? Palette.aiText : Palette.glassBorder, lineWidth: isChosen ? 2 : 0.5))
+        .cardDepth(shape, edge: nil)
         .shadow(color: isChosen ? Palette.aiText.opacity(0.45) : .clear, radius: 24)
         .accessibilityElement(children: .contain)
         .accessibilityLabel(Text("\(take.label), \(DurationText.clock(take.duration))"))

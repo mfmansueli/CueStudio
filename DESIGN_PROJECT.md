@@ -27,7 +27,7 @@ My Cue Voice (`VoiceTipViewStyle`).
 
 `Screens/Scripts/Dock/ScriptsDock.swift`: vidro limpo (sem céu dentro, `09` §2), fixo em `.safeAreaInset(.bottom)` acima da tab bar.
 Linha 1: **Format ⌄ · For {Rede} ⌄ · ✦ Voz nn%** (chips de 36 pt de toque; o Format some na primeira visita). Linha 2: campo de duas linhas
-(a ideia sugerida enquanto vazio), ↻, microfone e a seta amarela (**Write it** sem Apple Intelligence). A linha 1 recolhe ao rolar para baixo
+que **cresce até cinco** e aceita **até 200 caracteres** (§25; a ideia sugerida enquanto vazio), ↻, microfone e a seta amarela (**Write it** sem Apple Intelligence). A linha 1 recolhe ao rolar para baixo
 (`DockFold`: passa de 40 pt e mais de 2 pt de movimento, somando os passos pequenos de uma rolagem lenta; volta em qualquer subida; nunca com o
 campo focado; 0,28 s `(0.2,0.8,0.2,1)`). A dobra é um movimento só (`ScriptsView.foldDock`): a linha leva o espaçamento junto e o vidro fecha sobre os
 chips, que ficam parados e somem em 0,2 s. **A lista não sente a dobra:** o espaço que o dock reserva embaixo dela continua o mesmo (o lugar da linha
@@ -687,3 +687,55 @@ formato, motivo de assistir…), que fica em `customTags` e vai como "Also true 
 - **Amarração, medida no iPhone com o perfil do dono** (`CreatorDayDeviceTests`): ideias em 10 s; roteiro da ideia enviada em 10–16 s, sobre ela (não sobre os assuntos habituais); encurtar 102 → 63 palavras em 6 s; 3 ganchos em 3 s; tradução em 5 s; versão para YouTube 102 → 563 palavras em 28 s. Uma parte que passa da janela do modelo
   (a versão para YouTube estourou com "too long") agora tem a resposta limitada e, se ainda assim falha, fica como estava (`RewriteRunner`).
 
+
+## 24. Os cartões das listas são um pouco 3D (pedido do dono, 7 de outubro de 2026; não está no quadro)
+
+Todo cartão que vive numa lista ou numa grade ganhou **profundidade** (`cardDepth`, `DesignSystem/Components/CardDepth.swift`, tokens em `Palette.Depth`): duas sombras
+embaixo (uma larga e suave, 14 pt de desfoque e 8 de deslocamento, e uma curta junto da borda, 2 pt e 1,5) e **uma linha de luz na borda de cima** (violeta `B4A7FF` a 38%,
+some até 60% da altura). O fundo da página é `#0A0B12`, então só a sombra quase não aparece; a luz na borda é o que faz o cartão parecer levantado. É tudo decoração **fora**
+do texto: nenhum par de contraste mudou (o preenchimento do cartão continua `surface` / `card`).
+
+- **A sombra só existe fora do cartão** (o miolo é recortado da máscara), então o cartão translúcido de Settings (`Palette.card`, 64%) continua deixando as estrelas passarem.
+- **Um cartão feito de linhas é um cartão só** (`CardRowPosition`, `CardRowSlice`): uma `List` desenha uma linha de cada vez, então cada linha desenha a sua fatia do cartão
+  da seção: só a primeira tem a luz de cima e os cantos de cima, só a última tem a sombra de baixo e os cantos de baixo, e nenhuma sombra cruza a emenda entre duas linhas
+  (`openEdges`). **A posição é dada à linha ao criá-la** (`CardRowPosition(index:count:)`, como nos grupos de Scripts): `SettingsEntryRows` cria as linhas de uma seção de
+  Settings com a posição de cada uma, e as outras páginas (permissões, fontes, microfone, zona segura, ícones, licenças, as perguntas do My Cue Voice e a lista de Takes) passam a
+  posição de cada linha para `cardRowBackground(position:)` / `cardRowSurface(_:position:)`. Uma linha sozinha na seção é um cartão inteiro (`.only`). **Não dá para a linha descobrir
+  sozinha onde está:** a primeira tentativa (um `CardRows` com `ForEach(subviews:)` e a posição no ambiente) deixou cada linha como um cartão, porque uma `List` avalia cada linha
+  isolada e `listRowBackground` nem enxerga o ambiente da linha. **Cantos definidos:** o sistema recorta cada linha de uma seção `insetGrouped` no raio dele (uns 24 pt no iOS 27), então a fatia
+  desenha a própria forma com `Metrics.groupedListRadius` (**26 pt**, de propósito um pouco maior): com 22 pt a borda caía fora do recorte e sumia em volta de cada canto (visto em zoom de 7×).
+  Todo cartão tem **a mesma borda fina violeta** dos grupos de Scripts e dos blocos do Profile (`Palette.Depth.edge`, 0,5 pt, desenhada por `cardDepth`; os que já têm borda própria passam
+  `edge: nil`: os grupos de Scripts, os blocos do Profile, o anel de estágio das takes, a trilha de status, o Up next e os cartões do Pick the best take).
+- **A lista de Takes é nativa:** `List` `.insetGrouped` com as ações de deslizar (`swipeActions`: Share e Delete) e o menu de contexto do sistema; a linha é um `Button` (não um
+  `NavigationLink`) porque tocar nela abre a revisão como apresentação (`PresentationService.openReview`), não empurra uma tela. Cada dia é um cartão. **Cada ação de deslizar tem a sua cor,
+  como em Scripts** (Record vermelho, More cinza): Delete em `dangerFill` e Share em `Palette.Takes.shareAction` (azul, 5,2:1 sob o branco, medido em `PaletteContrastTests`; o amarelo que o Share tinha
+  dá 1,4:1). Numa linha alta o sistema desenha o botão redondo com o rótulo embaixo, e numa baixa (Scripts) a pílula com o rótulo ao lado: é do sistema, não dá para escolher.
+- **Onde** (as listas e grades): Scripts (os grupos de linhas e o cartão do Logbook no fim), a folha do Logbook, Takes (a grade, a lista, a trilha de status e o Up next), Profile e My Cue Voice
+  (`profileBlock()`), **todas as páginas de Settings** e as listas das perguntas do My Cue Voice, as listas de opções das folhas (`GroupedCard`: Improve, Hooks, Destination, formatos,
+  câmera, Share…), as grades de opções (`SelectableCard`: formatos, fontes, papéis, proporções) e os cartões do Pick the best take.
+- **Fora, de propósito:** os controles dentro de uma folha do editor (sliders, chips, painéis: não são cartões de uma lista), as folhas Privacy & AI data e Translate captions (listas do
+  sistema sem fundo próprio; a cor do sistema ficou como estava) e o dock de Scripts e o Pro, que já têm a própria sombra e brilho.
+- **Mudança de espaçamento:** as linhas do Logbook ganharam 1 pt a mais embaixo e 1 em cima (6/8, eram 5/5) para a sombra de um cartão não encostar no seguinte.
+- Testes: `CardDepthTests` e `CardRowPositionTests` (alcance da sombra, bordas abertas, cantos por posição); `CardDepthCaptureTests` (opt-in, `TEST_RUNNER_CUE_FIDELITY_DIR`) grava um PNG de cada lista.
+
+## 25. O campo do dock cresce até cinco linhas e tem 200 caracteres no máximo (pedido do dono, 7 de outubro de 2026; não está no quadro)
+
+O campo de ideia do dock de Scripts (§2) era fixo em duas linhas; uma ideia mais longa rolava dentro dele. Agora ele **em repouso tem as duas linhas do quadro, e enquanto o criador
+edita (o teclado, ou o ditado) abre uma linha por vez, até cinco, para mostrar a ideia inteira** (`ScriptsDock.minLines` / `maxLines` e `isExpanded`: `TextField` com `axis: .vertical` e
+`lineLimit(2...5)` só enquanto edita, `2...2` em repouso); passando de cinco linhas o texto rola dentro do campo. **Quando o teclado vai embora, o dock volta ao tamanho de antes**
+(0,25 s; sem animação com Reduzir Movimento), também depois de enviar a ideia ou apagar o texto, e a contagem some junto. O dock inteiro cresce e encolhe junto (ele é o `safeAreaInset`
+de baixo da lista, então a lista reserva o espaço que ele pede) e sobe com o teclado como antes.
+
+- **O editor define a altura**, também enquanto o microfone ouve: o texto ditado aparece **por cima** dele, somente leitura, no mesmo tamanho (o editor fica escondido da acessibilidade),
+  então o dock não muda de tamanho quando o ditado começa e termina. A altura mínima continua `lineHeight × 2 + 12`, igual à de antes.
+- **Os botões ficam embaixo** (↻, microfone e seta, alinhados à última linha, 5 pt acima do fundo: com duas linhas ficam centrados como estavam).
+- **Limite: 200 caracteres** (`IdeaPromptDraft.maxCharacters`; caracteres como o criador vê, então um emoji ou uma letra acentuada conta um). Cinco linhas mostram uns 125 caracteres no tamanho
+  de texto padrão, então o resto rola dentro do campo. Por que 200: cabe uns parágrafos curtos, é pouco para a janela de 4096 tokens do modelo em qualquer escrita (≈ 50 tokens em inglês, no máximo
+  200 em chinês ou japonês; um pedido sem voz já usa 427 a 850), então a ideia nunca tira o lugar do roteiro, e as ideias do Logbook já são cortadas em 160.
+- **O que não cabe não é escrito, e o que já estava nunca é cortado** (`IdeaPromptDraft.limited(_:replacing:)`): digitar com o campo cheio não faz nada; uma colagem que não cabe entra até onde
+  couber, e o texto dos dois lados dela fica (o fim da ideia nunca é o que cede, nem no meio do texto). Todo caminho de escrita passa por `IdeaDraftService.text`. **Ditado:**
+  `DictationSegment.hear(_:limit:)` para as palavras onde o espaço acaba, sem cortar o que estava antes e depois, e o ditado termina sozinho quando o campo enche.
+- **A contagem** ("184 / 200", mono 10,5 pt, `ink` sobre o poço escuro do campo, que já mede 18:1; laranja `warnText` quando está cheio) aparece **a partir de 160** (`counterStart`), embaixo do texto, à direita.
+  Um toque suave (`Haptics.soft`) avisa quando o campo enche. VoiceOver lê "184 of 200 characters" (`%lld of %lld characters`, nos 20 idiomas).
+- Testes: `IdeaPromptDraftTests` (colar no fim e no meio, digitar no limite, emoji, ditado com espaço que acaba, contagem), `DockGrowthUITests` (cresce de duas para cinco linhas, para em 200,
+  a contagem, volta às duas linhas em repouso e reabre).

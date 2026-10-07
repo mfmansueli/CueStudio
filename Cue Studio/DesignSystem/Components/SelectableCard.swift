@@ -18,6 +18,7 @@ struct SelectableCard<Content: View>: View {
             .frame(maxWidth: .infinity)
             .background(isSelected ? Palette.Editor.accTile : background, in: shape)
             .overlay(shape.strokeBorder(isSelected ? Palette.acc : .clear, lineWidth: 2))
+            .cardDepth(shape, edge: isSelected ? nil : Palette.Depth.edge)
             .contentShape(shape)
             .accessibilityAddTraits(isSelected ? .isSelected : [])
     }

@@ -20,8 +20,7 @@ struct SettingsRecordingView: View {
                 Text("Flip anytime while recording.")
             }
             Section {
-                SettingsEntryRow(entry: .resolution, bindings: bindings)
-                SettingsEntryRow(entry: .frameRate, bindings: bindings)
+                SettingsEntryRows(entries: [.resolution, .frameRate], bindings: bindings)
             } header: {
                 CueSectionHeader("Quality")
             } footer: {
@@ -42,8 +41,7 @@ struct SettingsRecordingView: View {
                 Text("Uses a connected mic when there is one.")
             }
             Section {
-                SettingsEntryRow(entry: .countdown, bindings: bindings)
-                SettingsEntryRow(entry: .grid, bindings: bindings)
+                SettingsEntryRows(entries: [.countdown, .grid], bindings: bindings)
             } header: {
                 CueSectionHeader("While recording")
             }

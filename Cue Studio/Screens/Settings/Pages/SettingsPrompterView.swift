@@ -26,26 +26,17 @@ struct SettingsPrompterView: View {
         bindings.screenScale = screenScale
         return List {
             Section {
-                row(.followVoice, bindings)
-                row(.speed, bindings)
-                row(.countdownBeforePlay, bindings)
-                row(.aiCoach, bindings)
+                SettingsEntryRows(entries: [.followVoice, .speed, .countdownBeforePlay, .aiCoach], bindings: bindings)
             } header: {
                 CueSectionHeader("Reading")
             }
             Section {
-                row(.textSize, bindings)
-                row(.font, bindings)
-                row(.lineSpacing, bindings)
-                row(.alignment, bindings)
-                row(.textColor, bindings)
+                SettingsEntryRows(entries: [.textSize, .font, .lineSpacing, .alignment, .textColor], bindings: bindings)
             } header: {
                 CueSectionHeader("Text")
             }
             Section {
-                row(.showReadingLine, bindings)
-                row(.readingLinePosition, bindings)
-                row(.resetReadingLine, bindings)
+                SettingsEntryRows(entries: [.showReadingLine, .readingLinePosition, .resetReadingLine], bindings: bindings)
             } header: {
                 CueSectionHeader("Reading line")
             } footer: {
@@ -53,18 +44,14 @@ struct SettingsPrompterView: View {
             }
             if showsSelfie {
                 Section {
-                    row(.windowHeight, bindings)
-                    row(.windowWidth, bindings)
-                    row(.sideMargins, bindings)
+                    SettingsEntryRows(entries: [.windowHeight, .windowWidth, .sideMargins], bindings: bindings)
                 } header: {
                     CueSectionHeader("Text window · Selfie")
                 } footer: {
                     Text("Or drag the ⌟ handle on the recorder.")
                 }
                 Section {
-                    row(.backgroundOpacity, bindings)
-                    row(.cameraBlur, bindings)
-                    row(.socialSafeZone, bindings)
+                    SettingsEntryRows(entries: [.backgroundOpacity, .cameraBlur, .socialSafeZone], bindings: bindings)
                 } header: {
                     CueSectionHeader("Over the camera · Selfie")
                 } footer: {
@@ -79,8 +66,7 @@ struct SettingsPrompterView: View {
                 }
             }
             Section {
-                row(.mirrorText, bindings)
-                row(.flipVertically, bindings)
+                SettingsEntryRows(entries: [.mirrorText, .flipVertically], bindings: bindings)
             } header: {
                 CueSectionHeader("Rigs")
             } footer: {

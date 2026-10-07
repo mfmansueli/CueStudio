@@ -69,30 +69,12 @@ struct ScriptRow: View {
     }
 }
 
-/// Where a row sits in its group, for the card the group makes: the first row has the top corners, the last the bottom ones.
-enum ScriptRowPosition {
-    case only, first, middle, last
-
-    init(index: Int, count: Int) {
-        switch (index, count) {
-        case (_, 1): self = .only
-        case (0, _): self = .first
-        case (count - 1, _): self = .last
-        default: self = .middle
-        }
-    }
-}
-
-/// One row's slice of the group card (`surface`, 20 pt corners, the faint violet edge) with the hairline between rows.
+/// One row's slice of the group card (`surface`, 20 pt corners, the faint violet edge, the group's shadow) with the hairline between rows.
 struct ScriptRowBackground: View {
-    let position: ScriptRowPosition
+    let position: CardRowPosition
 
     var body: some View {
-        let top: CGFloat = (position == .only || position == .first) ? 20 : 0
-        let bottom: CGFloat = (position == .only || position == .last) ? 20 : 0
-        let shape = UnevenRoundedRectangle(
-            topLeadingRadius: top, bottomLeadingRadius: bottom, bottomTrailingRadius: bottom, topTrailingRadius: top, style: .continuous
-        )
+        let shape = UnevenRoundedRectangle(cornerRadii: position.cornerRadii(20), style: .continuous)
         shape.fill(Palette.surface)
             .overlay(shape.strokeBorder(Palette.glassBorder.opacity(0.7), lineWidth: 0.5))
             .overlay(alignment: .top) {
@@ -100,6 +82,7 @@ struct ScriptRowBackground: View {
                     Rectangle().fill(Palette.glassBorder.opacity(0.55)).frame(height: 0.5)
                 }
             }
+            .cardDepth(shape, openEdges: position.openEdges, edge: nil)
     }
 }
 
