@@ -26,9 +26,10 @@ struct PrompterEntryRow: View {
             SettingsListToggle(title: entry.title, detail: entry.detail, isOn: followsVoice)
         case .speed:
             SettingsSliderRow(
-                title: entry.title, valueText: String(localized: "\(wordsPerMinute) wpm"), detail: entry.detail, value: speed,
-                range: 80...220, step: PrompterSettings.wordsPerMinuteStep,
-                minLabel: "80", maxLabel: String(localized: "220 wpm"), identifier: "settings.speedSlider"
+                title: entry.title, valueText: SpeedScale.label(forSpeed: settings.wrappedValue.speed), detail: entry.detail, value: speed,
+                range: 0...Double(SpeedScale.stops.count - 1), step: 1,
+                minLabel: SpeedScale.label(forMultiple: SpeedScale.stops[0]),
+                maxLabel: SpeedScale.label(forMultiple: SpeedScale.stops[SpeedScale.stops.count - 1]), identifier: "settings.speedSlider"
             )
         case .aiCoach:
             SettingsListToggle(title: entry.title, detail: entry.detail, isOn: settings.showsCues)
@@ -138,15 +139,16 @@ struct PrompterEntryRow: View {
         )
     }
 
-    private var wordsPerMinute: Int {
-        Int(PrompterSettings.wordsPerMinute(forSpeed: settings.wrappedValue.speed).rounded())
-    }
-
-    /// 80–220 words a minute, in steps of 5; stored as a speed.
+    /// The stop of `SpeedScale` the speed is nearest to (0.5× … 5×), a light tick at each one; stored as a speed.
     private var speed: Binding<Double> {
         Binding(
-            get: { PrompterSettings.wordsPerMinute(forSpeed: settings.wrappedValue.speed).rounded() },
-            set: { settings.wrappedValue.speed = PrompterSettings.speed(forWordsPerMinute: $0) }
+            get: { Double(SpeedScale.nearestStop(toSpeed: settings.wrappedValue.speed)) },
+            set: { newValue in
+                let index = min(SpeedScale.stops.count - 1, max(0, Int(newValue.rounded())))
+                guard index != SpeedScale.nearestStop(toSpeed: settings.wrappedValue.speed) else { return }
+                Haptics.selection()
+                settings.wrappedValue.speed = SpeedScale.speed(forMultiple: SpeedScale.stops[index])
+            }
         )
     }
 

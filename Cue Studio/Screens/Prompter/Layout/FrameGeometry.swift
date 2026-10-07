@@ -34,10 +34,17 @@ nonisolated struct FrameGeometry: Equatable, Sendable {
     }
 
     /// Where the preview goes on a screen: as wide as the screen and 16:9 tall (on wider screens,
-    /// as tall as the screen), a little above the middle and never past an edge. The real preview
-    /// layer then reports where the image actually landed (`SelfieScreenMetrics.videoRect`).
-    static func sensorRect(in screen: CGSize) -> CGRect {
+    /// as tall as the screen), a little above the middle and never past an edge, so the whole
+    /// recorded frame shows. With `fillsScreen`, on a phone (a screen taller than 9:16) the image is
+    /// as tall as the screen and centered instead: the sides that don't fit stay in the recording
+    /// and run past the screen's edges. A screen wider than 9:16 (an iPad) always shows the whole image.
+    /// The real preview layer then reports where the image actually landed (`SelfieScreenMetrics.videoRect`).
+    static func sensorRect(in screen: CGSize, fillsScreen: Bool = false) -> CGRect {
         guard screen.width > 0, screen.height > 0 else { return .zero }
+        if fillsScreen, screen.width / screen.height < sensorAspect {
+            let width = screen.height * sensorAspect
+            return CGRect(x: (screen.width - width) / 2, y: 0, width: width, height: screen.height)
+        }
         var size = CGSize(width: screen.width, height: screen.width / sensorAspect)
         if size.height > screen.height {
             size = CGSize(width: screen.height * sensorAspect, height: screen.height)

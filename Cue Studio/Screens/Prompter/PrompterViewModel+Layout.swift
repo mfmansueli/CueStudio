@@ -15,7 +15,7 @@ extension PrompterViewModel {
     var frameGeometry: FrameGeometry {
         let camera = session.camera
         return FrameGeometry(
-            sensorRect: screenMetrics.videoRect ?? FrameGeometry.sensorRect(in: screenMetrics.screen),
+            sensorRect: screenMetrics.videoRect ?? FrameGeometry.sensorRect(in: screenMetrics.screen, fillsScreen: session.fillsScreen),
             aspect: camera.aspect,
             resolution: camera.resolution
         )

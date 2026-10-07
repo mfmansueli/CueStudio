@@ -186,6 +186,18 @@ struct SessionSetupServiceTests {
         #expect(next.scrollMode == .voice)
     }
 
+    @Test func theCameraAlwaysOpensShowingTheWholeFrame() {
+        let defaults = TestDefaults()
+        defer { defaults.tearDown() }
+        let (session, preferences) = makeService(defaults)
+        #expect(!session.fillsScreen)
+        session.fillsScreen = true
+        session.rememberReadingLayout()
+        // Neither the next session nor the saved camera settings know about it.
+        #expect(!SessionSetupService(preferences: preferences).fillsScreen)
+        #expect(!SessionSetupService(preferences: PreferencesService(defaults: defaults.defaults)).fillsScreen)
+    }
+
     @Test func rememberingTheLayoutLeavesEverythingElseAlone() {
         let defaults = TestDefaults()
         defer { defaults.tearDown() }

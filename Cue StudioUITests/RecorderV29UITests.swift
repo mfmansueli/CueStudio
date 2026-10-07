@@ -38,7 +38,7 @@ final class RecorderV29UITests: XCTestCase {
     func testSelfieShowsTheWholeBarThenTheCompactOneWhileRecordingAndATapBringsItBack() throws {
         let app = launchRecorder()
         XCTAssertFalse(element(app, "prompter.compactBar").exists)
-        let scrollMode = app.segmentedControls["prompter.scrollMode"]
+        let scrollMode = app.descendants(matching: .any)["prompter.scrollMode"].firstMatch
         XCTAssertTrue(scrollMode.buttons["Voice"].exists && scrollMode.buttons["Steady"].exists)
         try capture(app, "5.2_idle")
         let box = element(app, "prompter.text")
@@ -48,13 +48,13 @@ final class RecorderV29UITests: XCTestCase {
         XCTAssertTrue(element(app, "prompter.compactBar").waitForExistence(timeout: 12))
         XCTAssertTrue(element(app, "prompter.recordingClock").exists)
         XCTAssertTrue(element(app, "prompter.modeChip").exists)
-        XCTAssertFalse(app.segmentedControls["prompter.scrollMode"].buttons["Voice"].exists, "the mode switch goes with the whole bar")
+        XCTAssertFalse(app.descendants(matching: .any)["prompter.scrollMode"].firstMatch.buttons["Voice"].exists, "the mode switch goes with the whole bar")
         XCTAssertLessThan(box.frame.width, idleWidth, "the box shrinks while recording")
         try capture(app, "5.2_recording_compact")
 
         // A tap on the screen brings the whole bar back for a few seconds; then it is compact again.
         element(app, "prompter.showControlsArea").tap()
-        XCTAssertTrue(app.segmentedControls["prompter.scrollMode"].buttons["Voice"].waitForExistence(timeout: 3))
+        XCTAssertTrue(app.descendants(matching: .any)["prompter.scrollMode"].firstMatch.buttons["Voice"].waitForExistence(timeout: 3))
         try capture(app, "5.2_recording_peek")
         XCTAssertTrue(element(app, "prompter.compactBar").waitForExistence(timeout: 8))
 

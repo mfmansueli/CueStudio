@@ -19,11 +19,6 @@ extension Palette {
         static let safeZoneLine = Color.white.opacity(0.4)
         static let safeZoneLabel = Color.white.opacity(0.62)
 
-        /// Safe zone shading, top and bottom (fading inward) and at the sides.
-        static let safeZoneShade = Color.black.opacity(0.4)
-        static let safeZoneShadeFaint = Color.black.opacity(0.1)
-        static let safeZoneSide = Color.black.opacity(0.16)
-
         /// Soft glow around the Selfie reading line.
         static let readingLineGlow = Color(hex: 0xFFD60A, opacity: 0.45)
 

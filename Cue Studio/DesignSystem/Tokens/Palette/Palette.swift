@@ -40,6 +40,8 @@ enum Palette {
     static let fill = Color(hex: 0x6E7496, opacity: 0.26)
     /// Buttons floating over the camera and prompter.
     static let overlayFill = Color.white.opacity(0.1)
+    /// The chosen segment of a segmented switch drawn by Cue (`ScrollModePicker`), over `overlayFill`.
+    static let segmentThumb = Color.white.opacity(0.22)
     static let separator = Color(normal: Color(hex: 0x505678, opacity: 0.5), increasedContrast: Color(hex: 0x8C92B4, opacity: 0.8))
     /// Secondary swipe actions ("More"): white text on it.
     static let neutralAction = Color(hex: 0x636366)

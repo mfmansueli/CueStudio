@@ -27,7 +27,7 @@ final class PrompterEntryPointsUITests: XCTestCase {
         } else {
             XCTAssertTrue(element(app, "prompter.addScriptButton").exists, "\(path): no Add script", file: file, line: line)
         }
-        XCTAssertFalse(element(app, "studio.showControls").exists, "\(path): opened Studio", file: file, line: line)
+        XCTAssertFalse(element(app, "prompter.remoteButton").exists, "\(path): opened Studio", file: file, line: line)
     }
 
     func testTheCameraButtonOpensSelfieWithTheScriptYouPick() throws {
@@ -73,7 +73,7 @@ final class PrompterEntryPointsUITests: XCTestCase {
     func testOnlyStudioModeOpensTheStudioPrompter() throws {
         let app = CueApp.launch(seeded: true)
         app.openStudio(titled: Self.ready)
-        XCTAssertTrue(element(app, "studio.showControls").waitForExistence(timeout: 15) || app.buttons["prompter.remoteButton"].waitForExistence(timeout: 5))
+        XCTAssertTrue(element(app, "prompter.remoteButton").waitForExistence(timeout: 15))
         XCTAssertFalse(element(app, "prompter.aspectButton").exists, "Studio has no camera frame")
     }
 }

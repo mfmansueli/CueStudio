@@ -36,11 +36,7 @@ struct SelfieModeView: View {
             }
             controls
             if let countdown = viewModel.countdown {
-                CountdownOverlay(
-                    value: countdown, total: session.camera.countdown.rawValue,
-                    hint: session.prompter.scrollMode == .voice && viewModel.hasScript ? String(localized: "Just talk. The text follows your voice.") : nil,
-                    onCancel: { Task { await viewModel.recordButtonTapped() } }
-                )
+                CountdownOverlay(value: countdown, onCancel: { Task { await viewModel.recordButtonTapped() } })
                 .transition(.opacity)
             }
         }
@@ -62,8 +58,9 @@ struct SelfieModeView: View {
         ZStack {
             // The practice records nothing: the camera covers the whole screen, with no frame, grid or safe zone.
             let screen = viewModel.screenMetrics.screen
+            let sensorRect = FrameGeometry.sensorRect(in: screen, fillsScreen: session.fillsScreen)
             CameraBackdrop(
-                sensorRect: viewModel.isPractice ? CGRect(origin: .zero, size: screen) : FrameGeometry.sensorRect(in: screen),
+                sensorRect: viewModel.isPractice ? CGRect(origin: .zero, size: screen) : sensorRect,
                 onVideoRectChange: { rect in viewModel.cameraImageMoved(to: rect) },
                 fillsScreen: viewModel.isPractice
             )
@@ -74,7 +71,9 @@ struct SelfieModeView: View {
                 FrameGuideOverlay(frame: geometry.frameRect)
             }
             if !viewModel.isPractice, viewModel.showsSafeZone, let zone = viewModel.safeZone, let content = viewModel.safeZoneContentRect {
-                SafeZoneOverlay(frame: geometry.frameRect, content: content, label: zone.overlayLabel)
+                let readable = CGRect(x: 0, y: 0, width: screen.width, height: min(screen.height, viewModel.screenMetrics.toolbarTop))
+                SafeZoneOverlay(frame: geometry.frameRect, content: content, label: zone.overlayLabel, visible: readable)
+                    .animation(.smooth(duration: 0.45), value: readable.height)
                     .transition(.opacity)
             }
             if viewModel.hasScript {

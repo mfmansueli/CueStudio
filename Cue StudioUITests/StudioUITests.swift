@@ -38,7 +38,7 @@ final class StudioUITests: XCTestCase {
         XCTAssertFalse(element(app, "prompter.studioPreview").exists)
         XCTAssertFalse(app.buttons["prompter.cameraSettingsButton"].exists)
         XCTAssertFalse(element(app, "prompter.audioInputButton").exists)
-        let scrollMode = app.segmentedControls["prompter.scrollMode"]
+        let scrollMode = app.descendants(matching: .any)["prompter.scrollMode"].firstMatch
         XCTAssertTrue(scrollMode.buttons["Voice"].exists && scrollMode.buttons["Steady"].exists)
         XCTAssertTrue(element(app, "prompter.speedSlider").exists)
         XCTAssertTrue(element(app, "studio.timeLeft").waitForExistence(timeout: 5))
@@ -75,15 +75,20 @@ final class StudioUITests: XCTestCase {
         XCTAssertEqual(mirror.value as? String, "Off")
     }
 
-    func testTheBarPutsItselfAwayAndComesBack() throws {
+    /// The chevron folds the quick adjustments and the speed into the bar's sheet, leaving the transport, and brings them back.
+    func testTheBarFoldsItsAdjustmentsAndOpensThemAgain() throws {
         let app = launchStudio()
-        app.buttons["studio.hideControls"].tap()
-        let show = app.buttons["studio.showControls"]
-        XCTAssertTrue(show.waitForExistence(timeout: 3))
-        XCTAssertFalse(app.buttons["prompter.playButton"].exists)
-        try capture(app, "studio_bar_hidden")
-        show.tap()
-        XCTAssertTrue(app.buttons["prompter.playButton"].waitForExistence(timeout: 3))
+        let handle = element(app, "prompter.sheetHandle")
+        XCTAssertTrue(handle.waitForExistence(timeout: 5))
+        XCTAssertTrue(app.buttons["studio.adjust.size"].isHittable)
+        handle.tap()
+        sleep(1)
+        XCTAssertFalse(app.buttons["studio.adjust.size"].isHittable, "The adjustments stayed out")
+        XCTAssertTrue(app.buttons["prompter.playButton"].isHittable, "The transport must stay")
+        try capture(app, "studio_bar_folded")
+        handle.tap()
+        sleep(1)
+        XCTAssertTrue(app.buttons["studio.adjust.size"].isHittable, "The adjustments did not come back")
     }
 
     /// Play from the top waits for the countdown set in Settings, so there is time to get in front of the other camera, then the text runs.

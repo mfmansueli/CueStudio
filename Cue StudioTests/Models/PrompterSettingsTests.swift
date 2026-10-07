@@ -68,7 +68,7 @@ struct PrompterSettingsTests {
     }
 
     // 1.0× meant 150 words a minute before the scale changed; the pace is kept on the 5 wpm step nearest it.
-    @Test(arguments: [(1.0, 150.0 / 215), (0.5, 75.0 / 215), (2.0, 300.0 / 215), (3.0, 2.0)])
+    @Test(arguments: [(1.0, 150.0 / 215), (0.5, 75.0 / 215), (2.0, 300.0 / 215), (6.0, 3.5)])
     func speedsSavedBeforeTheNewScaleKeepTheirPace(_ saved: Double, _ expected: Double) throws {
         let settings = try JSONDecoder().decode(PrompterSettings.self, from: Data(#"{"speed":\#(saved)}"#.utf8))
         #expect(settings.speed == expected)
@@ -85,7 +85,7 @@ struct PrompterSettingsTests {
         // 0.74× is 159 words a minute: the step of 5 nearest is 160.
         #expect(PrompterSettings.clampedSpeed(0.74) == 160 / ReadTime.wordsPerMinuteAtOneX)
         #expect(PrompterSettings.clampedSpeed(0.1) == 0.3)
-        #expect(PrompterSettings.clampedSpeed(2.4) == 2)
+        #expect(PrompterSettings.clampedSpeed(4) == 3.5)
     }
 
     @Test func marginsAboveTheNewRangeAreClamped() throws {

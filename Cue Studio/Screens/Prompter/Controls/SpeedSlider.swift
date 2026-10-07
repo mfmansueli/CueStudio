@@ -5,26 +5,30 @@
 
 import SwiftUI
 
-/// "SPEED  150 wpm": the speed of the prompter's bars, the system's slider, 80–220 words a minute in steps of 5; the value is always
-/// written. The stored speed is a multiplier (1.0× is `ReadTime.wordsPerMinuteAtOneX`), so the slider converts.
+/// "SPEED  1×": the speed of the prompter's bars as a multiple of the natural reading pace (`SpeedScale`), on the system's slider. It moves
+/// from stop to stop (0.5× · 0.8× · 1× · 1.2× · 1.5× · 2× · 3× · 4× · 5×), and each stop it reaches is felt as a light tick. The value is always
+/// written.
 struct SpeedSlider: View {
     let speed: Double
     let onChange: @MainActor @Sendable (Double) -> Void
 
-    private var spec: CueSliderSpec { .speed }
-
     var body: some View {
-        let wordsPerMinute = Int(PrompterSettings.wordsPerMinute(forSpeed: speed).rounded())
+        let stops = SpeedScale.stops
+        let current = SpeedScale.nearestStop(toSpeed: speed)
         LabeledSlider(
             label: String(localized: "Speed"),
-            valueText: String(localized: "\(wordsPerMinute) wpm"),
-            spokenValue: String(localized: "\(wordsPerMinute) words a minute"),
+            valueText: SpeedScale.label(forMultiple: stops[current]),
             value: Binding(
-                get: { PrompterSettings.wordsPerMinute(forSpeed: speed).rounded() },
-                set: { onChange(PrompterSettings.speed(forWordsPerMinute: $0)) }
+                get: { Double(current) },
+                set: { newValue in
+                    let index = min(stops.count - 1, max(0, Int(newValue.rounded())))
+                    guard index != current else { return }
+                    Haptics.selection()
+                    onChange(SpeedScale.speed(forMultiple: stops[index]))
+                }
             ),
-            range: spec.range,
-            step: spec.step,
+            range: 0...Double(stops.count - 1),
+            step: 1,
             accessibilityIdentifier: "prompter.speedSlider"
         )
         .frame(maxWidth: .infinity)

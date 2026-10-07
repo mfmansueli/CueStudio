@@ -34,7 +34,7 @@ struct ReadingLineLayer: View {
             ReadingGuide(level: level, showsParticles: showsParticles)
                 .frame(width: span.upperBound - span.lowerBound)
                 .position(x: (span.lowerBound + span.upperBound) / 2, y: layout.lineY)
-            if showsTag || dragStart != nil {
+            if showsTag {
                 tag.position(x: span.lowerBound + 2, y: layout.lineY - 16)
             }
             if showsHandle || dragStart != nil {
@@ -50,10 +50,7 @@ struct ReadingLineLayer: View {
     // MARK: - Parts
 
     private var tag: some View {
-        let text = dragStart != nil
-            ? String(localized: "READING LINE · \(Int(layout.lineOffset)) PT BELOW CAMERA")
-            : String(localized: "READING LINE")
-        return Text(text)
+        Text("READING LINE")
             .font(.system(size: 9.5, weight: .bold))
             .kerning(0.7)
             .foregroundStyle(Palette.accText)

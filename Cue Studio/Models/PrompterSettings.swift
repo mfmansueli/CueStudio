@@ -7,7 +7,8 @@ import Foundation
 
 /// How the prompter looks and scrolls. Shared by Selfie and Studio mode.
 nonisolated struct PrompterSettings: Codable, Hashable, Sendable {
-    static let speedRange: ClosedRange<Double> = 0.3...2
+    /// From 0.3 to 3.5 times 215 words a minute: the 5× the speed slider ends on (`SpeedScale`) is 3.49 of those.
+    static let speedRange: ClosedRange<Double> = 0.3...3.5
     static let sizeRange: ClosedRange<Double> = 16...56
     static let lineSpacingRange: ClosedRange<Double> = 1...2
     static let marginRange: ClosedRange<Double> = 8...40
@@ -98,8 +99,9 @@ nonisolated struct PrompterSettings: Codable, Hashable, Sendable {
 
     init() {}
 
+    /// "1×": how many times the natural reading pace (`SpeedScale`).
     var speedLabel: String {
-        speed.formatted(.number.precision(.fractionLength(1)).locale(.interface)) + "×"
+        SpeedScale.label(forSpeed: speed)
     }
 
     /// A speed on the slider: on a step of 5 words a minute, within the range.
