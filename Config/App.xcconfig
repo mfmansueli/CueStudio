@@ -23,6 +23,8 @@ TARGETED_DEVICE_FAMILY                = 1,2
 GENERATE_INFOPLIST_FILE                                = YES
 INFOPLIST_FILE                                         = Cue Studio/SupportFiles/Info.plist
 INFOPLIST_KEY_CFBundleDisplayName                      = Cue Studio
+// Only Apple's own encryption (HTTPS, CryptoKit for the Remote link): App Store Connect stops asking per build
+INFOPLIST_KEY_ITSAppUsesNonExemptEncryption            = NO
 INFOPLIST_KEY_NSCameraUsageDescription                 = Cue records your takes with the camera while your script scrolls under the lens.
 INFOPLIST_KEY_NSLocalNetworkUsageDescription           = Cue connects to your other iPhone or iPad nearby, so one can control the teleprompter on the other.
 INFOPLIST_KEY_NSMicrophoneUsageDescription             = Cue records your voice with each take and for voice-overs, can follow your voice to scroll the script, and listens when you dictate an idea.
