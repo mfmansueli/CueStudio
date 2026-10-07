@@ -280,7 +280,6 @@ final class ScriptDetailViewModel {
             if notice.changesScript {
                 adopt(result.text, message: notice.message)
             } else {
-                closeToolPanel()
                 sheet = nil
                 toast.show(notice.message)
             }

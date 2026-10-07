@@ -57,7 +57,10 @@ final class ButtonPromisesUITests: XCTestCase {
         button.tap()
         // A tap is not a hold, and it is not nothing: it keeps listening and says how to finish.
         XCTAssertTrue(element(app, "logbook.tapToFinish").waitForExistence(timeout: 5), "A tap on the button did nothing")
-        XCTAssertTrue(app.staticTexts.matching(NSPredicate(format: "label CONTAINS 'slow mornings'")).firstMatch.waitForExistence(timeout: 10))
+        // The words arrive in the field while it listens (the Logbook of the native-bars rework), and the next tap saves them.
+        let field = element(app, "logbook.field")
+        let heard = NSPredicate(format: "value CONTAINS 'slow mornings'")
+        XCTAssertEqual(XCTWaiter().wait(for: [XCTNSPredicateExpectation(predicate: heard, object: field)], timeout: 10), .completed, "Nothing was heard")
         button.tap()
         XCTAssertTrue(element(app, "logbook.entry").waitForExistence(timeout: 10), "The idea it heard did not reach the Logbook")
         XCTAssertFalse(element(app, "logbook.tapToFinish").exists)
@@ -255,6 +258,7 @@ final class ButtonPromisesUITests: XCTestCase {
                 let again = app.switches[id]
                 app.scroll(to: again)
                 XCTAssertEqual(again.value as? String, after, "\(id): the choice was forgotten")
+                usleep(500_000)
                 flip(again)
                 XCTAssertEqual(value(of: again, differentFrom: after), before, "\(id): it does not flip back")
                 backToSettings(app)
