@@ -18,8 +18,6 @@ struct ScriptsView: View {
     @Environment(CreatorProfileService.self) private var profile
     @Environment(LanguageService.self) private var languages
     @Environment(TopicTaggingService.self) private var tagging
-    @Environment(SkyMemory.self) private var sky
-    @Environment(PersonalizationService.self) private var personalization
     @Environment(IdeaDraftService.self) private var ideaDraft
     @Environment(LogbookService.self) private var logbook
     @Environment(ToastService.self) private var toast
@@ -27,6 +25,8 @@ struct ScriptsView: View {
 
     /// The dock's field has the keyboard: the list dims.
     @State private var isDockEditing = false
+    /// An action picked in the More menu, run once its popover has gone (it may open the prompter, a page or another sheet).
+    @State private var pendingAction: (() -> Void)?
     /// The search field at the top of the list has the keyboard.
     @FocusState private var isSearchFocused: Bool
     /// Whether the dock's first row is folded away by the list scrolling.
@@ -78,13 +78,6 @@ struct ScriptsView: View {
             // covered the results (and "No matches"). It is back in sight as soon as the keyboard goes (a scroll sends it away).
             .ignoresSafeArea(isSearchFocused ? .keyboard : [], edges: .bottom)
             .skyBackground()
-            // "Your stars": one for each idea sent, and the one on its way. Part of the sky, so with Starry sky Off there are none.
-            .overlay(alignment: .top) {
-                if personalization.sky.showsYourStars { SkyStarsLayer(stars: sky.visible).ignoresSafeArea(edges: .top) }
-            }
-            .overlay {
-                if personalization.sky.showsYourStars { StarFlightOverlay(flight: sky.flight).ignoresSafeArea() }
-            }
             // New scripts get their topic (on this iPhone) once they are long enough to say what they are about.
             .task(id: library.scripts.filter { $0.topic == nil }.map(\.id)) { await tagging.tagUntagged() }
             .navigationTitle("Scripts")
@@ -94,14 +87,6 @@ struct ScriptsView: View {
                 TextField("Folder name", text: $viewModel.newFolderName)
                 Button("Cancel", role: .cancel) {}
                 Button("Create") { viewModel.confirmNewFolder() }
-            }
-            .confirmationDialog(
-                viewModel.actionsTarget?.displayTitle ?? "",
-                isPresented: Binding(get: { viewModel.actionsTarget != nil }, set: { if !$0 { viewModel.actionsTarget = nil } }),
-                titleVisibility: .visible,
-                presenting: viewModel.actionsTarget
-            ) { script in
-                moreActions(for: script)
             }
             .sheet(item: $viewModel.shareTarget) { script in
                 ActivityView(items: [script.shareText])
@@ -311,15 +296,35 @@ struct ScriptsView: View {
             }
         }
         .tag(script.id)
-        .swipeActions(edge: .trailing) {
+        // The system's swipe actions: Record in the record red, More in the system's grey (it opens the actions sheet). No full swipe:
+        // a long swipe must never start a recording by itself.
+        .swipeActions(edge: .trailing, allowsFullSwipe: false) {
             Button { actions.record(script) } label: {
-                Label("Record", systemImage: "video.fill")
+                Label("Record", systemImage: "record.circle")
             }
-            .tint(Palette.accAction)
+            .tint(Palette.record)
             Button { viewModel.actionsTarget = script } label: {
-                Label("More", systemImage: "ellipsis")
+                Label("More", systemImage: "ellipsis.circle")
             }
-            .tint(Palette.neutralAction)
+            .tint(.gray)
+        }
+        // More (from the swipe): every action in a menu-like popover on this row. What opens something else waits until it is gone.
+        .popover(
+            isPresented: Binding(
+                get: { viewModel.actionsTarget?.id == script.id },
+                set: { if !$0 { viewModel.actionsTarget = nil } }
+            ),
+            arrowEdge: .top
+        ) {
+            ScriptActionsPopover(
+                script: script, folders: library.folders, actions: actions,
+                onShare: { viewModel.shareTarget = script },
+                perform: { action in
+                    pendingAction = action
+                    viewModel.actionsTarget = nil
+                }
+            )
+            .onDisappear(perform: runPendingAction)
         }
         .contextMenu {
             if state == .recorded {
@@ -404,18 +409,11 @@ struct ScriptsView: View {
         .selectionDisabled()
     }
 
-    @ViewBuilder
-    private func moreActions(for script: Script) -> some View {
-        Button("Record") { actions.record(script) }
-        Button("Studio mode") { actions.studio(script) }
-        Button("Edit") { actions.edit(script) }
-        Button("Duplicate") { actions.duplicate(script) }
-        ForEach(library.folders.filter { $0 != script.folder }, id: \.self) { folder in
-            Button("Move to “\(folder)”") { actions.move(script, folder) }
-        }
-        Button("Move to a new folder…") { actions.moveToNewFolder(script) }
-        Button("Share") { viewModel.shareTarget = script }
-        Button("Delete", role: .destructive) { actions.delete(script) }
+    /// What the More menu was asked to do, once its popover has gone.
+    private func runPendingAction() {
+        let action = pendingAction
+        pendingAction = nil
+        action?()
     }
 
     // MARK: - Actions

@@ -19,14 +19,28 @@ final class PreferencesService {
         didSet { store(camera, key: DefaultsKey.cameraSettings) }
     }
 
+    /// The creator's own cues, on the script page's cues bar after the board's four (oldest first).
+    var customCues: [String] {
+        didSet { defaults.set(customCues, forKey: DefaultsKey.customCues) }
+    }
+
+    /// The script page's Cues switch: whether the page draws the cue tags (on until the creator turns it off). The teleprompter has
+    /// its own (`PrompterSettings.showsCues`).
+    var showsCuesOnPage: Bool {
+        didSet { defaults.set(showsCuesOnPage, forKey: DefaultsKey.showsCuesOnPage) }
+    }
+
     private let defaults: UserDefaults
 
     init(defaults: UserDefaults = .standard) {
         self.defaults = defaults
         prompter = Self.load(PrompterSettings.self, key: DefaultsKey.prompterSettings, from: defaults) ?? PrompterSettings()
         camera = Self.load(CameraSettings.self, key: DefaultsKey.cameraSettings, from: defaults) ?? CameraSettings()
-        // The reading line's first-time tip is gone; so is the flag it left behind.
+        customCues = defaults.stringArray(forKey: DefaultsKey.customCues) ?? []
+        showsCuesOnPage = defaults.object(forKey: DefaultsKey.showsCuesOnPage) as? Bool ?? true
+        // The reading line's first-time tip and the old full script editor are gone; so is what they left behind.
         defaults.removeObject(forKey: DefaultsKey.legacyReadingLineTipSeen)
+        defaults.removeObject(forKey: DefaultsKey.legacyScriptEditorTextSize)
         resetLowReadingLineOnce()
     }
 

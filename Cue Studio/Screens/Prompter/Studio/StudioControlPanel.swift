@@ -45,17 +45,17 @@ struct StudioControlPanel: View {
         HStack(spacing: 8) {
             ScrollModePicker(selection: session.prompter.scrollMode) { viewModel.setScrollMode($0) }
             Button { viewModel.jump(lines: -3) } label: { Image(systemName: "chevron.backward.2") }
-                .buttonStyle(.cueIcon(.overlay))
+                .glassIconButton()
                 .accessibilityLabel(Text("Back three lines"))
                 .accessibilityIdentifier("prompter.backButton")
             Button { viewModel.togglePlay() } label: {
                 Image(systemName: viewModel.isPlaying ? "pause.fill" : "play.fill")
             }
-            .buttonStyle(.cueIcon(.overlay))
+            .glassIconButton()
             .accessibilityLabel(Text(viewModel.isPlaying ? "Pause" : "Play"))
             .accessibilityIdentifier("prompter.playButton")
             Button { viewModel.jump(lines: 3) } label: { Image(systemName: "chevron.forward.2") }
-                .buttonStyle(.cueIcon(.overlay))
+                .glassIconButton()
                 .accessibilityLabel(Text("Forward three lines"))
                 .accessibilityIdentifier("prompter.forwardButton")
         }

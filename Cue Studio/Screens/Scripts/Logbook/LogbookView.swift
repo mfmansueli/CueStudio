@@ -5,10 +5,11 @@
 
 import SwiftUI
 
-/// The Logbook: "Catch it now. Write it later." Hold the button and say an idea (or tap it to start and tap again to finish), or type it; each waits as
-/// a card with "✦ Write", which turns it into a script on the script page (Shape is only for adding cues). Without Apple Intelligence
+/// The Logbook: "Catch it now. Write it later." Hold the button and say an idea (its words arrive in the field, after anything typed
+/// there, and letting go saves them; or tap it once to start and again to finish), or type it; each waits as a card with
+/// "✦ Write", which turns it into a script on the script page (Shape is only for adding cues). Without Apple Intelligence
 /// the card says "Write it" and opens a blank draft titled with the idea. Speaking is on-device recognition: only the words are
-/// kept, never the sound.
+/// kept, never the sound. Swipe an idea to delete it (or hold it).
 struct LogbookView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(LogbookService.self) private var logbook
@@ -20,7 +21,8 @@ struct LogbookView: View {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     @State private var typed = ""
-    @State private var heard = ""
+    /// What was in the field when the hold began: the heard words go after it.
+    @State private var typedBeforeHold = ""
     @State private var isHolding = false
     /// A tap, not a hold: the capture goes on after the finger is lifted, until the button is tapped again.
     @State private var isLocked = false
@@ -31,37 +33,59 @@ struct LogbookView: View {
     @FocusState private var typing: Bool
 
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 0) {
-                header
-                captureButton.padding(.top, 28)
-                Text(isHolding ? (heard.isEmpty ? String(localized: "Listening…") : heard) : String(localized: "Hold to capture an idea, or tap to start"))
-                    .font(.system(size: 17))
-                    .foregroundStyle(isHolding ? Palette.ink : Palette.ink2)
-                    .multilineTextAlignment(.center)
-                    .frame(maxWidth: .infinity, minHeight: 44)
-                    .padding(.horizontal, 20)
-                    .padding(.top, 8)
-                    .accessibilityIdentifier("logbook.status")
-                if isLocked {
-                    Text("Tap the button again to finish")
-                        .font(.footnote).foregroundStyle(Palette.ink2).multilineTextAlignment(.center)
-                        .frame(maxWidth: .infinity)
-                        .accessibilityIdentifier("logbook.tapToFinish")
+        NavigationStack {
+            // One list for the whole page, so an idea can be swiped away the system's way.
+            List {
+                Group {
+                    captureButton.padding(.top, 8)
+                    // One line that never changes size: the words themselves go into the field below (they used to grow here and push
+                    // the page down and up while the creator spoke).
+                    Text(statusLine)
+                        .font(.system(size: 17))
+                        .foregroundStyle(isHolding ? Palette.ink : Palette.ink2)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.8)
+                        .frame(maxWidth: .infinity, minHeight: 44)
+                        .accessibilityIdentifier(isLocked ? "logbook.tapToFinish" : "logbook.status")
+                    if let notice = dictation.notice, !isHolding {
+                        Text(notice.message)
+                            .font(.footnote).foregroundStyle(Palette.warnText).multilineTextAlignment(.center)
+                            .frame(maxWidth: .infinity)
+                    }
+                    typeField.padding(.top, 16)
+                    listHeader.padding(.top, 20)
+                    if logbook.waiting.isEmpty { emptyState }
                 }
-                if let notice = dictation.notice, !isHolding {
-                    Text(notice.message)
-                        .font(.footnote).foregroundStyle(Palette.warnText).multilineTextAlignment(.center)
-                        .frame(maxWidth: .infinity).padding(.horizontal, 20)
+                .listRowBackground(Color.clear)
+                .listRowSeparator(.hidden)
+                .listRowInsets(EdgeInsets(top: 0, leading: Metrics.gutter, bottom: 0, trailing: Metrics.gutter))
+                ForEach(logbook.waiting) { entry in
+                    card(entry)
+                        .listRowBackground(Color.clear)
+                        .listRowSeparator(.hidden)
+                        .listRowInsets(EdgeInsets(top: 5, leading: Metrics.gutter, bottom: 5, trailing: Metrics.gutter))
+                        .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                            Button(role: .destructive) { logbook.delete(entry.id) } label: {
+                                Label("Delete", systemImage: "trash")
+                            }
+                        }
                 }
-                typeField.padding(.top, 24)
-                list.padding(.top, 28)
             }
-            .padding(.horizontal, Metrics.gutter)
-            .padding(.bottom, 40)
+            .listStyle(.plain)
+            .scrollContentBackground(.hidden)
+            .scrollDismissesKeyboard(.interactively)
+            .background(Palette.bg)
+            // The system's large title, with the line under it as its subtitle; both fold into the bar as the list scrolls.
+            .navigationTitle("Logbook")
+            .navigationSubtitle("Catch it now. Write it later.")
+            .navigationBarTitleDisplayMode(.large)
+            .toolbar {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Done") { dismiss() }
+                        .accessibilityIdentifier("logbook.doneButton")
+                }
+            }
         }
-        .scrollDismissesKeyboard(.interactively)
-        .background(Palette.bg)
         .onChange(of: dictation.state) { _, state in
             if state == .idle, heldSince != nil {
                 isLocked = false
@@ -77,37 +101,25 @@ struct LogbookView: View {
 
     // MARK: - Parts
 
-    private var header: some View {
-        HStack(alignment: .top) {
-            VStack(alignment: .leading, spacing: 6) {
-                Text("Logbook").font(.system(size: 34, weight: .bold)).foregroundStyle(Palette.ink)
-                Text("Catch it now. Write it later.").font(.system(size: 18)).foregroundStyle(Palette.ink2)
-            }
-            Spacer()
-            Button("Done") { dismiss() }
-                .font(.system(size: 18, weight: .semibold))
-                .foregroundStyle(Palette.accText)
-                .frame(minHeight: Metrics.hitTarget)
-                .accessibilityIdentifier("logbook.doneButton")
-        }
-        .padding(.top, 24)
-    }
-
-    /// Hold to talk: the circle grows and its rings follow the voice while the finger stays.
+    /// Hold to talk: the circle grows and its rings follow the voice while the finger stays. They grow by scale inside an area of a fixed
+    /// height (the largest ring fits), so the animation never resizes anything around it (it used to push the field and the list).
     private var captureButton: some View {
         ZStack {
             if isHolding {
                 Circle().stroke(Palette.acc.opacity(0.35), lineWidth: 2)
-                    .frame(width: 150 + dictation.level * 60, height: 150 + dictation.level * 60)
+                    .frame(width: 150, height: 150)
+                    .scaleEffect(1 + dictation.level * 0.4)
                     .animation(reduceMotion ? nil : .easeOut(duration: 0.1), value: dictation.level)
             }
             Circle()
                 .fill(Palette.acc)
-                .frame(width: isHolding ? 130 : 112, height: isHolding ? 130 : 112)
+                .frame(width: 112, height: 112)
+                .scaleEffect(isHolding ? 130.0 / 112.0 : 1)
                 .shadow(color: Palette.acc.opacity(isHolding ? 0.6 : 0.3), radius: isHolding ? 28 : 18)
             CueIconView(.dictate, size: 40).foregroundStyle(Palette.accInk)
         }
-        .frame(maxWidth: .infinity, minHeight: 190)
+        .frame(maxWidth: .infinity)
+        .frame(height: 220)
         .contentShape(Circle())
         .animation(reduceMotion ? nil : .spring(response: 0.3, dampingFraction: 0.7), value: isHolding)
         .onLongPressGesture(minimumDuration: .infinity, maximumDistance: 80, pressing: { pressing in
@@ -121,53 +133,60 @@ struct LogbookView: View {
         .accessibilityIdentifier("logbook.captureButton")
     }
 
+    /// Where an idea is typed, and where the words of a spoken one arrive while the button is held.
     private var typeField: some View {
-        let shape = Capsule()
-        return HStack(spacing: 12) {
-            Image(systemName: "pencil").foregroundStyle(Palette.ink2)
-            TextField("Or type an idea…", text: $typed)
+        let shape = RoundedRectangle(cornerRadius: 28, style: .continuous)
+        return HStack(alignment: .firstTextBaseline, spacing: 12) {
+            Image(systemName: isHolding ? "mic.fill" : "pencil")
+                .foregroundStyle(isHolding ? Palette.accText : Palette.ink2)
+                .accessibilityHidden(true)
+            TextField("Or type an idea…", text: $typed, axis: .vertical)
+                .lineLimit(1...4)
                 .focused($typing)
                 .submitLabel(.done)
                 .onSubmit(addTyped)
+                // The field grows to show a long idea, and Return still saves it (in a field that grows it would start a new line).
+                .onChange(of: typed) { _, text in
+                    guard text.contains("\n"), !isHolding else { return }
+                    typed = text.replacingOccurrences(of: "\n", with: "")
+                    addTyped()
+                }
                 .accessibilityIdentifier("logbook.field")
         }
         .padding(.horizontal, 20)
-        .frame(height: 56)
+        .padding(.vertical, 17)
+        .frame(minHeight: 56)
         .background(Palette.surface2, in: shape)
-        .overlay(shape.strokeBorder(Palette.glassBorder, lineWidth: 0.5))
+        .overlay(shape.strokeBorder(isHolding ? Palette.accLine : Palette.glassBorder, lineWidth: isHolding ? 1 : 0.5))
     }
 
-    @ViewBuilder
-    private var list: some View {
-        let waiting = logbook.waiting
+    private var listHeader: some View {
         HStack {
-            Text("WAITING · \(waiting.count)")
+            Text("WAITING · \(logbook.waiting.count)")
             Spacer()
             Text("NEWEST FIRST")
         }
         .font(CueStudioFont.hud)
         .tracking(1.2)
         .foregroundStyle(Palette.ink2)
-        if waiting.isEmpty {
-            // The empty state (E): the mark, what this is for and how to start; the capture button above is its action.
-            VStack(spacing: 14) {
-                EmptyStateMark(icon: .book)
-                Text("Your Logbook is empty")
-                    .font(.system(size: 22, weight: .bold)).tracking(-0.44).foregroundStyle(Palette.ink)
-                    .accessibilityAddTraits(.isHeader)
-                Text("Hold the mic to catch an idea. Write it later.")
-                    .font(.system(size: 15)).foregroundStyle(Palette.ink2)
-                    .multilineTextAlignment(.center)
-            }
-            .frame(maxWidth: .infinity)
-            .padding(.top, 24)
-            .accessibilityElement(children: .combine)
-            .accessibilityIdentifier("logbook.empty")
+    }
+
+    /// The empty state (E): the mark, what this is for and how to start; the capture button above is its action.
+    private var emptyState: some View {
+        VStack(spacing: 14) {
+            EmptyStateMark(icon: .book)
+            Text("Your Logbook is empty")
+                .font(.system(size: 22, weight: .bold)).tracking(-0.44).foregroundStyle(Palette.ink)
+                .accessibilityAddTraits(.isHeader)
+            Text("Hold the mic to catch an idea. Write it later.")
+                .font(.system(size: 15)).foregroundStyle(Palette.ink2)
+                .multilineTextAlignment(.center)
         }
-        VStack(spacing: 10) {
-            ForEach(waiting) { entry in card(entry) }
-        }
-        .padding(.top, 12)
+        .frame(maxWidth: .infinity)
+        .padding(.top, 24)
+        .padding(.bottom, 40)
+        .accessibilityElement(children: .combine)
+        .accessibilityIdentifier("logbook.empty")
     }
 
     private func card(_ entry: LogbookEntry) -> some View {
@@ -223,6 +242,12 @@ struct LogbookView: View {
 
     // MARK: - Capturing
 
+    /// The one line under the button, which never changes size: what it does, what it hears, or how to finish.
+    private var statusLine: String {
+        if isLocked { return String(localized: "Tap the button again to finish") }
+        return isHolding ? String(localized: "Listening…") : String(localized: "Hold to capture an idea, or tap to start")
+    }
+
     /// A finger down starts listening, unless a tap left it going: that finger is the one that ends it.
     private func press() {
         pressedAt = .now
@@ -253,13 +278,16 @@ struct LogbookView: View {
     private func beginCapture() {
         guard !isHolding, dictation.state == .idle else { return }
         isHolding = true
-        heard = ""
+        typing = false
+        typedBeforeHold = typed.trimmingCharacters(in: .whitespacesAndNewlines)
         heldSince = .now
         Haptics.selection()
-        let request = languages.dictationRequest(existingText: "")
+        let request = languages.dictationRequest(existingText: typedBeforeHold)
         isStarting = true
         Task {
-            await dictation.start(language: request) { heard = $0 }
+            await dictation.start(language: request) { heard in
+                typed = typedBeforeHold.isEmpty ? heard : typedBeforeHold + " " + heard
+            }
             isStarting = false
             // It never reached the microphone (no speech recognition here, no permission): there is nothing to keep listening for.
             if dictation.state == .idle, isLocked { stopCapture() }
@@ -283,8 +311,11 @@ struct LogbookView: View {
         guard let since = heldSince else { return }
         heldSince = nil
         let seconds = max(1, Int(Date.now.timeIntervalSince(since).rounded()))
-        let words = heard
-        heard = ""
+        // Nothing heard: whatever was typed stays in the field, untouched.
+        guard typed.trimmingCharacters(in: .whitespacesAndNewlines) != typedBeforeHold else { return }
+        let words = typed
+        typed = ""
+        typedBeforeHold = ""
         guard let entry = logbook.add(words, spokenSeconds: seconds) else { return }
         Haptics.success()
         tag(entry)

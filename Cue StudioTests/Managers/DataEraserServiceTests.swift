@@ -27,6 +27,7 @@ struct DataEraserServiceTests {
         profile.recordApproval(of: "Okay, real talk. " + String(repeating: "Mornings are hard for everybody and that is fine. ", count: 6))
         #expect(!profile.profile.excerpts.isEmpty && profile.profile.fingerprint != nil && !profile.profile.approvedSamples.isEmpty)
         let preferences = PreferencesService(defaults: defaults.defaults)
+        preferences.customCues = ["laugh"]
         let quota = UsageQuotaService(counter: FakeExportCountStore(count: 3), defaults: defaults.defaults)
         let brands = BrandStore(repository: InMemoryBrandRepository())
         _ = brands.save(BrandBrief(name: "Acme", product: "Soap"))
@@ -45,6 +46,8 @@ struct DataEraserServiceTests {
         #expect(sky.points.isEmpty)
         #expect(profile.profile == CreatorProfile())
         #expect(profile.profile.excerpts.isEmpty && profile.profile.fingerprint == nil && profile.profile.approvedSamples.isEmpty)
+        #expect(preferences.customCues.isEmpty)
+        #expect(PreferencesService(defaults: defaults.defaults).customCues.isEmpty)
         // The 3 exports used are still used: deleting data can't hand back free exports.
         #expect(quota.exportsLeft(for: .free) == 2)
     }

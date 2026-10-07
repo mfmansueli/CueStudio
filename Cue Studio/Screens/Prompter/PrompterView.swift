@@ -69,15 +69,22 @@ struct PrompterView: View {
                 .id(take.id)
                 .transition(.opacity)
             } else {
-                switch viewModel.mode {
-                case .selfie:
-                    SelfieModeView(viewModel: viewModel, onClose: presentation.closePrompter, onPractice: finishPractice)
-                case .studio:
-                    StudioModeView(viewModel: viewModel, onClose: presentation.closePrompter)
+                // A navigation stack for the recorder's bar (close, Selfie | Studio, the frame chip or Remote), the system's.
+                NavigationStack {
+                    switch viewModel.mode {
+                    case .selfie:
+                        SelfieModeView(viewModel: viewModel, onClose: presentation.closePrompter, onPractice: finishPractice)
+                    case .studio:
+                        StudioModeView(viewModel: viewModel, onClose: presentation.closePrompter)
+                    }
                 }
             }
         }
         .onGeometryChange(for: CGFloat.self) { $0.frame(in: .global).maxY } action: { safeAreaBottom = $0 }
+        // Where the status bar ends, measured outside the navigation stack (its bar would count too): the lens is estimated from it.
+        .onGeometryChange(for: CGFloat.self) { $0.frame(in: .global).minY } action: { top in
+            viewModel.measured { $0.topInset = top }
+        }
         .background(Color.black.ignoresSafeArea())
         .toastHost()
         .task {
@@ -120,7 +127,7 @@ struct PrompterView: View {
         case .display:
             // Selfie opens the Prompter page of Settings (09 §11); Studio keeps its own Display sheet.
             if viewModel.mode == .selfie {
-                PrompterSettingsSheet()
+                PrompterSettingsSheet(maxHeight: sheetMaxHeight)
             } else {
                 DisplaySettingsSheet(viewModel: viewModel, maxHeight: sheetMaxHeight)
             }

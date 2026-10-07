@@ -194,8 +194,8 @@ struct PaletteContrastTests {
         }
     }
 
-    /// The panels that stand in for the keyboard in the script editor.
-    @Test func theScriptEditorsPanelReads() {
+    /// The panels under Quick edit's timeline.
+    @Test func theEditorsPanelReads() {
         for appearance in Appearance.allCases {
             for token in textTokens {
                 let value = ratio(token.color, on: Palette.Editor.panel, in: appearance)
@@ -224,8 +224,8 @@ struct PaletteContrastTests {
                 let fill = rgb(Palette.overlayFill, in: appearance, over: base)
                 #expect(ColorContrast.ratio(rgb(Palette.ink, in: appearance, over: fill), fill) >= ColorContrast.textMinimum, "\(surface.name), \(appearance)")
             }
-            // The chosen text size in the script editor.
-            #expect(ratio(Palette.ink, on: Palette.surface3, in: appearance) >= ColorContrast.textMinimum, "the picked size, \(appearance)")
+            // A picked tile.
+            #expect(ratio(Palette.ink, on: Palette.surface3, in: appearance) >= ColorContrast.textMinimum, "a picked tile, \(appearance)")
         }
     }
 

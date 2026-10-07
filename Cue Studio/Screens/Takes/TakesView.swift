@@ -12,6 +12,9 @@ struct TakesView: View {
     @State private var viewModel: TakesViewModel
     @AppStorage(DefaultsKey.takesLayout) private var layoutValue = TakeLayout.grid.rawValue
 
+    /// Every service, for the lifted card (`peek`), which the system draws outside this screen's hierarchy.
+    private let services: AppServices
+
     @Environment(TakeLibraryService.self) private var takes
     @Environment(MilestoneService.self) private var milestones
     @Environment(ScriptLibraryService.self) private var library
@@ -19,6 +22,7 @@ struct TakesView: View {
     @Environment(\.scenePhase) private var scenePhase
 
     init(services: AppServices) {
+        self.services = services
         _viewModel = State(initialValue: TakesViewModel(
             takes: services.takes, library: services.library, drafts: services.drafts,
             presentation: services.presentation, toast: services.toast
@@ -58,7 +62,9 @@ struct TakesView: View {
         .toolbarTitleDisplayMode(.inlineLarge)
         .toolbar {
             if !viewModel.isEmpty {
+                // The segmented control has its own track: no glass capsule of the bar's around it.
                 ToolbarItem(placement: .topBarTrailing) { TakesLayoutToggle(layout: layout) }
+                    .sharedBackgroundVisibility(.hidden)
             }
         }
         .onAppear { viewModel.refresh(); takeRequest() }
@@ -257,12 +263,14 @@ struct TakesView: View {
         Button(role: .destructive) { viewModel.videoToDelete = video } label: { Label("Delete", systemImage: "trash") }
     }
 
+    /// The lifted card. The system draws it outside this screen's hierarchy, without the services the app hands its screens, so it
+    /// gets all of them here (its poster, `TakeThumbnail`, reads two); without them holding a video crashed.
     private func peek(_ video: TakeVideo) -> some View {
         TakeVideoCard(video: video)
             .frame(width: 220)
             .padding(10)
             .background(Palette.bg)
-            .environment(takes)
+            .environment(services)
     }
 }
 

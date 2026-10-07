@@ -183,10 +183,12 @@ struct AppServices {
         )
     }
 
-    /// Lets App Intents (Siri, Shortcuts) read the same script library the app shows.
+    /// Lets App Intents (Siri, Shortcuts) read the same script library the app shows, and save ideas in the same Logbook.
     func registerIntentDependencies() {
         let library = library
         AppDependencyManager.shared.add(dependency: library)
+        let logbook = logbook
+        AppDependencyManager.shared.add(dependency: logbook)
     }
 }
 

@@ -5,35 +5,20 @@
 
 import SwiftUI
 
-/// Selfie | Studio segmented control over the camera.
+/// Selfie | Studio over the camera: the system's segmented control, the same as Camera | Recording in the camera sheet's bar.
 struct ModeSwitcher: View {
     let mode: PrompterMode
     let onChange: (PrompterMode) -> Void
 
     var body: some View {
-        HStack(spacing: 2) {
+        Picker("Mode", selection: Binding(get: { mode }, set: { onChange($0) })) {
             ForEach(PrompterMode.allCases) { option in
-                Button {
-                    onChange(option)
-                } label: {
-                    Text(option.label)
-                        .font(.subheadline.weight(.semibold))
-                        .lineLimit(1)
-                        .fixedSize()
-                        .foregroundStyle(option == mode ? Color.black : Color.white)
-                        .padding(.horizontal, 16)
-                        .frame(maxHeight: .infinity)
-                        .background(option == mode ? Color.white : .clear, in: Capsule())
-                        .contentShape(Capsule())
-                }
-                .buttonStyle(.plain)
-                .accessibilityAddTraits(option == mode ? .isSelected : [])
-                .accessibilityIdentifier("prompter.mode.\(option.rawValue)")
+                Text(option.label).tag(option)
             }
         }
-        .padding(3)
-        .frame(height: 40)
-        .glassEffect(.regular, in: Capsule())
+        .pickerStyle(.segmented)
+        .fixedSize()
+        .accessibilityIdentifier("prompter.mode")
         // The mode names never truncate; the platform chip beside them gives way first.
         .layoutPriority(1)
     }

@@ -212,8 +212,27 @@ final class CreationSheetsUITests: XCTestCase {
         app.buttons["scripts.logbookButton"].tap()
         XCTAssertTrue(element(app, "logbook.empty").waitForExistence(timeout: 5))
         try capture(app, "3.6_logbook_empty")
-        let field = app.textFields["logbook.field"]
+        // A field that grows with the idea (a text view to the tests); Return saves it.
+        let field = element(app, "logbook.field")
         field.tap(); field.typeText("A video about slow mornings\n")
         XCTAssertTrue(app.buttons["logbook.write"].waitForExistence(timeout: 5))
+        // Done is in the navigation bar.
+        XCTAssertTrue(app.navigationBars.buttons["logbook.doneButton"].exists)
+    }
+
+    /// An idea swiped to the left is deleted, the system's way.
+    func testSwipingAnIdeaInTheLogbookDeletesIt() {
+        let app = CueApp.launch(seeded: true)
+        app.buttons["scripts.logbookButton"].tap()
+        let field = element(app, "logbook.field")
+        XCTAssertTrue(field.waitForExistence(timeout: 5))
+        field.tap(); field.typeText("Swipe me away\n")
+        let entry = element(app, "logbook.entry")
+        XCTAssertTrue(entry.waitForExistence(timeout: 5))
+        entry.swipeLeft()
+        let delete = app.buttons["Delete"]
+        XCTAssertTrue(delete.waitForExistence(timeout: 5))
+        delete.tap()
+        XCTAssertTrue(element(app, "logbook.empty").waitForExistence(timeout: 5))
     }
 }

@@ -52,7 +52,7 @@ voice", a ideia e 7 frases que mudam a cada 1,6 s, Cancel. Dura **no mínimo 3,0
 sólida (0,22 s), anel abrindo (0,42 s), a estrela pousa como cursor (0,44 s) e a página escreve. O teclado do campo desce quando a estrela sobe e a
 página aberta por baixo não o pede de volta (título e texto são da IA; `loadPage` não foca nada com um pedido pendente). **Cancel ou erro:** a estrela cai 40 pt e some
 (0,3 s), o overlay some (0,22 s), nenhum roteiro fica, a ideia continua no campo (erro: toast "Couldn’t write it · Try again"). A ideia do Logbook só
-deixa de esperar quando virou roteiro. **Reduce Motion (`09` §7):** sem voo nem anel, fade de 0,2 s. **Low Power Mode não muda nada** (decisão do dono em 6/10/2026: as animações tocam em qualquer situação; `speed` só serve para encurtar nos testes de UI). Sem Apple Intelligence não há overlay (a seta é "Write it" e abre um rascunho). A estrela vira uma estrela do céu (`SkyMemory`) ao chegar. **"Your stars"** (as até 14 estrelas amarelas de 3 pt no alto de Scripts, `SkyStarsLayer`) são parte do céu: com **Starry sky › Off** nenhuma tela desenha estrela alguma, Scripts incluída (`SkyDensity.showsYourStars`); as estrelas continuam guardadas e voltam com Calm ou Lively. O fundo é um só em todas as telas de navegação (`skyBackground()`: `BgWash` + `StarfieldView` na densidade escolhida), e nada além dele desenha estrelas por cima.
+deixa de esperar quando virou roteiro. **Reduce Motion (`09` §7):** sem voo nem anel, fade de 0,2 s. **Low Power Mode não muda nada** (decisão do dono em 6/10/2026: as animações tocam em qualquer situação; `speed` só serve para encurtar nos testes de UI). Sem Apple Intelligence não há overlay (a seta é "Write it" e abre um rascunho). A estrela vira uma estrela do céu (`SkyMemory`) ao chegar. **"Your stars"** (as estrelas amarelas no alto de Scripts e o voo da nova até elas) **saíram** a pedido do dono (6/10/2026): Scripts mostra só o céu de fundo. `SkyMemory` continua guardando as estrelas. O fundo é um só em todas as telas de navegação (`skyBackground()`: `BgWash` + `StarfieldView` na densidade escolhida), e nada além dele desenha estrelas por cima.
 O catálogo de debug (`-uiTestCatalogue transition`) segura o estado de espera para fotografar.
 
 ## 4. My Cue Voice (`04` §F9, `08`)
@@ -294,7 +294,7 @@ regra de contagem em `SHARING.md`):
 
 ## 10. Settings nativo, 1.1 e 1.2 (handoff de 5 de outubro · `design/cue-v30/handoff-atualizacao`)
 
-**Settings (11.1, `09` §11).** `List` `.insetGrouped` sobre o céu (`cueGroupedList()`, `cardRowBackground()`, cabeçalhos `CueSectionHeader`), `.searchable` na raiz, toda página
+**Settings (11.1, `09` §11).** `List` `.insetGrouped` sobre o céu (`cueGroupedList()`, `cardRowBackground()`, cabeçalhos `CueSectionHeader`), busca na raiz (um campo que rola com a lista, §22), toda página
 empurrada (`SettingsRoute`; não há mais sheets de Settings). Cada linha é um `SettingsEntry` (título, detalhe, caminho "Prompter › Rigs", palavras-chave) e é desenhada por
 `SettingsEntryRow`, a mesma na página e no resultado da busca (`SettingsSearchGroup`). Linhas com 52 pt (`Metrics.listRowContent` + o padding da lista), ícones 30 pt raio 8
 nas cores do `09` §11. Rodapé ≤ 60 caracteres, nenhum botão amarelo sólido. Recording, Prompter, Remote, Personalize (Deep Space 25 vídeos, First Light 50 · Pro no texto do
@@ -520,7 +520,89 @@ cabeça de lado (perfil) ou muito pequena não tem marcos e não é alisada. O V
 
 **Fica como está, por decisão de desenho:** a linha "3 VIDEOS TO UNLOCK" da revisão do universo e as linhas de um passo ainda bloqueado ficam a 62% (o `09` pede o estado inativo; a regra isenta componente inativo, e o toque explica o motivo); os chips de tema apagados quando 3 já foram escolhidos (desabilitados); setas de disclosure e separadores (decorativos).
 
-## 22. Caça a bugs pelo app inteiro (7 de outubro de 2026): o botão faz o que diz
+## 22. Pedidos do dono (6 de outubro de 2026, tarde)
+
+- **"Versions & options" saiu** (pedido do dono: recurso antigo). O item do ••• da página do script abria o editor completo antigo (`ScriptEditorView`: cabeçalho
+  próprio, parágrafos em blocos e a barra AI · Cues · Sections · Options sobre o teclado); tudo isso foi apagado, junto com o estado de rascunho do
+  `ScriptDetailViewModel` (`isEditing`, `draftParagraphs`, caret, painéis) e `ScriptParagraphs`. **A página é o único editor.** O que só existia lá: Text size
+  (a página tem o **Aa**), "Show cues while recording" (continua em Settings › Prompter e no Display do prompter), Discard changes (a página salva enquanto se
+  escreve). O tamanho de texto que o editor guardava é apagado no lançamento (`DefaultsKey.legacyScriptEditorTextSize`). **Fica:** "Make a version for…" (outro item do menu,
+  que cria uma cópia para outra rede) e a versão do roteiro (v2, v3…) que liga as takes ao texto lido.
+- **Record preso ao pé da página** (`ScriptRecordButton`, no `safeAreaBar` da página): a cápsula de largura toda de antes (`CueStudioButtonStyle` grande: Liquid Glass
+  tingido de amarelo; o de vidro sem tinta num roteiro gravado e sem mudança), agora sobre o efeito de borda do sistema, com o texto rolando por baixo (antes ficava numa faixa
+  opaca). **Sempre visível:** com o título focado também (sobe com o teclado); só o teclado do texto põe as cues no lugar dele; enquanto a IA escreve fica apagado no lugar.
+  Primeiro foi para a barra de baixo do sistema (`ToolbarItem(placement: .bottomBar)`), mas ali o botão não ocupa a largura e o dono pediu a cápsula de volta.
+- **Cues sobre o teclado** (`ScriptCuesBar`, no mesmo `safeAreaBar`, que sobe com o teclado e desfoca o texto que rola por baixo): **uma barra só** de Liquid Glass na
+  largura toda (cápsula, tingida com `surface` para ter fundo), com as cues como etiquetas amarelas que rolam dentro dela, recortadas e sumindo em degradê nas pontas, um
+  divisor e o **+** fixo no fim (nada passa por baixo dele). O + abre "New cue": o nome digitado (sem colchetes, até 24 caracteres, `ScriptCueName`) entra onde está o cursor e **fica na barra para todos os roteiros**, depois das quatro do quadro
+  (`PreferencesService.customCues`; "Delete my Cue data" apaga). Segurar uma cue do criador mostra "Remove from bar" (os roteiros que a usam continuam com ela). Uma que a barra já
+  tem só entra. **Por que não a barra de teclado do sistema** (`ToolbarItem(placement: .keyboard)`): foi a primeira tentativa, mas ali a fileira não recebe largura (o +
+  cobria as cues ao rolar) e as cues ficavam sem fundo sobre o texto.
+- **Cues ligadas ou desligadas** (botão **Cues** ao lado de Improve, um `Toggle` com `.toggleStyle(.button)`): mostra ou esconde as etiquetas de cue **na página**
+  (`PreferencesService.showsCuesOnPage`, ligado por padrão, vale para todos os roteiros; "Delete my Cue data" volta a ligar). Desligado (cinza, olho riscado) as cues ficam no
+  texto mas não são desenhadas (transparentes e com 1 pt, então as palavras se juntam e a edição ainda as vê). O teleprompter tem o seu próprio (Settings › Prompter,
+  `PrompterSettings.showsCues`, desligado por padrão): ligar os dois juntos faria a página nascer sem cues.
+- **Apagar uma cue apaga a cue inteira** (`ScriptCueDeletion`): backspace depois de "[pause]", ou qualquer exclusão que corte uma cue, leva a tag toda (e o espaço que sobraria
+  dobrado), com o cursor onde ela estava; nunca sobra "[paus".
+- **Revisão da take (6.3): o topo é a barra de navegação do sistema** (`ReviewToolbar`, num `NavigationStack` próprio do `TakeReviewView`, fundo da barra escondido sobre o
+  vídeo): voltar à esquerda, "TAKE 2 OF 3 ✦ ⌄" como título com menu (tomadas vizinhas e Suggest best), numa cápsula de vidro para continuar legível sobre qualquer quadro do
+  vídeo, e a estrela com a lixeira agrupadas numa cápsula de vidro à direita. A estrela é `star` / `star.fill` (o estado também pela forma, não só pela cor).
+- **Takes: segurar um vídeo travava o app.** O menu de contexto desenha o cartão fora da hierarquia da tela, e o pôster (`TakeThumbnail`) lia o `TakeLibraryService` e o
+  `VideoThumbnailService` do ambiente: "No Observable object of type VideoThumbnailService found". No iPhone isso acontecia mesmo com os dois passados à prévia (o sistema
+  redesenha o cartão num contexto sem o ambiente do app). Agora a prévia recebe todos os serviços (`.environment(services)`) e o pôster os lê como opcionais: sem eles, fica o
+  fundo de espera em vez de abortar. Teste: `TakesUITests.testHoldingAVideoShowsItsActions` (grade e lista).
+- **Compartilhar uma take com Skin Smoothing fechava o app no iPhone** (o sistema o matava durante a exportação, sinal 9, sem relatório de crash). O compositor
+  (`CueVideoCompositor`) desenha cada quadro numa fila serial que nunca esvaziava o *autorelease pool*; o Core Image e o Vision (a detecção de rosto do Skin Smoothing) deixam
+  objetos a cada quadro, e a exportação crescia até ser morta. A fila agora esvazia um pool por quadro (`autoreleaseFrequency: .workItem`) e a detecção de rosto roda dentro do
+  seu (`VisionFaceDetector`). No Simulator o Vision não acha rostos, então o caminho nunca rodava lá.
+- **Quick edit: o topo é a barra de navegação do sistema** (`EditorTopBar` virou `ToolbarContent`, num `NavigationStack` próprio do `QuickEditView`): voltar, o estado
+  "● IN EDIT · AUTOSAVED" como título e **Done** em `.glassProminent` amarelo, do tamanho do sistema, com o texto escuro (`accInk`; branco no amarelo daria 1,5:1) e `ink2`
+  enquanto o vídeo carrega (desabilitado o vidro perde o amarelo e o texto preto sumia). A barra some em tela cheia. O orçamento de altura (`EditorLayout`) não reserva mais a barra
+  própria de 44 pt: a altura usável já é a de baixo da barra do sistema, e os limites das classes caíram 44 pt (`EditorHeightClass`: regular a partir de 696, compacta de 636),
+  para os mesmos iPhones ficarem nas mesmas classes.
+- **Takes: List | Grid é o controle segmentado do sistema** (`TakesLayoutToggle`: `Picker` `.segmented` com um ícone por segmento), no lugar do par de botões desenhado à mão
+  dentro de uma cápsula, que na barra de vidro virava cápsula dentro de cápsula.
+- **Settings: a busca rola com a lista e o título é o da barra.** O campo (`SettingsSearchField`) é a primeira linha da lista (some ao rolar) e os resultados são seções da
+  mesma lista (o campo é o mesmo enquanto se digita, então o teclado não cai); o título é o grande do sistema (`.large`), que entra na barra de navegação ao rolar. Antes o
+  campo ficava parado acima da lista, num `VStack`.
+- **Pro: o fechar é o da barra de navegação** (`PaywallView` num `NavigationStack` próprio, `Button(role: .close)` em `.topBarTrailing`). A arte do quadro é medida do topo da
+  tela, então o texto devolve a altura da barra (`ProPlansScreen.barHeight`) e nada mais se move.
+- **O céu não recomeça ao trocar de aba.** Cada tela desenha o próprio céu, mas cada `StarfieldView` contava o tempo a partir de quando aparecia (e parava escondida), então
+  cada aba mostrava as estrelas, as nebulosas e o brilho num momento diferente. Agora todas leem o relógio do app (`StarfieldView.sinceLaunch()`, o mesmo do comet, da nave e do
+  astronauta): duas abas desenham o mesmo quadro. (Um céu só atrás do `TabView` não funciona no iOS: o conteúdo das abas é opaco e as telas ficavam pretas.) `SkyBackground`
+  ganhou arquivo próprio e o desenho virou `SkyBackdrop`.
+- **"AI can get facts wrong"** (`FactCheckBanner`): estrela, texto e Checked centralizados na vertical, com a mesma margem em cima e embaixo; o texto é `ink` (era
+  `ink.opacity(0.86)`).
+- **Selfie | Studio é o controle segmentado do sistema** (`ModeSwitcher`: `Picker` `.segmented` no tamanho do sistema, o mesmo de Camera | Recording), no meio da barra de navegação do gravador (ver abaixo), então fica no mesmo lugar nos dois modos.
+- **Ajustes do prompter (Aa do Selfie, `PrompterSettingsSheet`) como os da câmera:** a mesma altura máxima (`sheetMaxHeight`, a caixa de texto continua visível acima) e o mesmo
+  fundo parado (`Palette.surface`, sem o céu animado), e **sem a prévia no topo** (o texto de verdade está logo atrás da folha). Settings › Prompter, na aba, mantém a prévia e o céu
+  (`SettingsPrompterView.isRecorderSheet`).
+- **Logbook: o que se diz entra no campo.** Enquanto o botão está pressionado, a linha embaixo dele é só "Listening…" (uma linha que não muda de tamanho; antes as palavras cresciam
+  ali e a página pulava) e as palavras ouvidas aparecem dentro do campo, depois do que já estava digitado; soltar salva como antes (ideia falada). O campo cresce até 4 linhas e o
+  Return continua salvando.
+- **Logbook pela Siri, sem abrir o app** (`AddToLogbookIntent`, em segundo plano): "Add an idea to Cue" / "Save an idea in Cue" (nos 20 idiomas); a Siri pergunta "What's the
+  idea?" quando a frase não a traz e responde "Saved in your Logbook.". A ideia espera no Logbook como uma digitada (`LogbookService`, registrado em
+  `registerIntentDependencies`).
+- **A barra do gravador é a barra de navegação do sistema** (Selfie e Studio, num `NavigationStack` dentro do `PrompterView`; a revisão da take continua fora dele):
+  fechar no início, **Selfie | Studio** no meio (o `Picker` `.segmented` no tamanho do sistema, o mesmo componente de Camera | Recording) e o chip do quadro (Selfie) ou a rede do roteiro ("● TikTok", abre Create for) e Remote (Studio)
+  no fim; o fechar é o do sistema (`Button(role: .close)`); gravando, o REC ocupa o início. Na prática do primeiro voo a barra fica escondida (ela tem a sua). A caixa de texto do Selfie começa embaixo da barra
+  (`SelfieScreenMetrics.topBarBottom`, medido no topo dos controles) e a altura da barra de status, de onde sai a posição da lente, é medida fora da pilha
+  (`PrompterView`), para a barra não entrar na conta.
+- **Os controles de baixo do Selfie e do Studio são do sistema onde há um:** Voice | Steady é o `Picker` `.segmented` (`ScrollModePicker`); os botões redondos (voltar ao
+  topo, play, Aa, ±3 linhas, ajustes da câmera, virar a câmera) são `.glass` em círculo (`glassIconButton()`); a velocidade e os sliders de Size · Line · Margin são o `Slider`
+  do sistema com o nome e o valor escritos em cima (`LabeledSlider`); os chips Size · Line · Margin · Mirror · Aa são botões `.glass` (branco `.glassProminent` quando aberto ou
+  ligado). Ficam do Cue: o botão de gravar, o medidor da voz, a última take, os rótulos do microfone e do formato, e o painel de vidro noturno que os segura (precisa ler sobre
+  o vídeo).
+- **Scripts: deslizar uma linha mostra Record e More como ações do sistema** (Record no vermelho de gravar, More no cinza do sistema; sem deslize longo, que gravaria
+  sozinho). **More abre um menu na própria linha** (`ScriptActionsPopover`: um popover nativo desenhado como menu, porque o iOS não deixa um botão abrir o menu
+  de contexto da linha): Record, Studio mode, Edit · Duplicate, Move to folder (submenu do sistema), Script Language (submenu do sistema), Share · Delete em vermelho. Antes
+  era o `confirmationDialog`, que no iOS 26/27 abre como balão, e depois uma folha. O que abre outra coisa (gravar, uma página, compartilhar, nome de pasta nova, apagar)
+  fecha o menu primeiro e roda quando ele some.
+- **Logbook:** o título é o grande do sistema (`.large`), com "Catch it now. Write it later." como subtítulo; os dois entram na barra, ao lado de Done, ao rolar.
+- **O painel do Selfie não tem mais o gesto que cobria tudo** (mantinha a barra aberta durante a gravação): ele pegava os toques dos controles do sistema (Voice | Steady e o
+  slider não respondiam). Agora quem mantém a barra aberta são as próprias ações (`setScrollMode`, `setSpeed`, `togglePlay`, `rewind` chamam `bar.touch()`).
+
+## 23. Caça a bugs pelo app inteiro (7 de outubro de 2026): o botão faz o que diz
 
 O app foi percorrido como um criador percorre (rastreador de UI em `Cue StudioUITests/BugHuntUITests.swift`, opt-in com `TEST_RUNNER_CUE_HUNT_DIR=<pasta>`: toca em cada controle de cada aba, grava o mapa
 "botão → o que abriu → saídas" e os achados, com uma foto de cada tela nova) e cada botão foi conferido contra o que o rótulo promete (`ButtonPromisesUITests`, uma promessa por teste, e

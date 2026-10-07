@@ -23,20 +23,8 @@ struct CameraSettingsSheet: View {
     @State private var canFindPeople: Bool?
 
     var body: some View {
-        VStack(spacing: 0) {
-            HStack {
-                Picker("Settings", selection: $tab) {
-                    Text("Camera").tag(Tab.camera)
-                    Text("Recording").tag(Tab.recording)
-                }
-                .pickerStyle(.segmented)
-                .fixedSize()
-                Spacer()
-                Button("Done") { dismiss() }
-                    .buttonStyle(.cuePrimary(.compact, expands: false))
-                    .accessibilityIdentifier("camera.doneButton")
-            }
-            .padding(EdgeInsets(top: 18, leading: 16, bottom: 10, trailing: 16))
+        // A navigation bar of its own: Camera | Recording in its middle and Done at its end, as the system's toolbar items.
+        NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: 8) {
                     switch tab {
@@ -45,6 +33,24 @@ struct CameraSettingsSheet: View {
                     }
                 }
                 .padding(EdgeInsets(top: 4, leading: Metrics.gutter, bottom: 40, trailing: Metrics.gutter))
+            }
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbarBackgroundVisibility(.hidden, for: .navigationBar)
+            // The sheet's own still background, not the navigation stack's.
+            .containerBackground(Palette.surface, for: .navigation)
+            .toolbar {
+                ToolbarItem(placement: .principal) {
+                    Picker("Settings", selection: $tab) {
+                        Text("Camera").tag(Tab.camera)
+                        Text("Recording").tag(Tab.recording)
+                    }
+                    .pickerStyle(.segmented)
+                    .fixedSize()
+                }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Done") { dismiss() }
+                        .accessibilityIdentifier("camera.doneButton")
+                }
             }
         }
         .presentationDetents(detents)

@@ -50,10 +50,6 @@ nonisolated enum SkyDensity: String, CaseIterable, Identifiable, Sendable {
     /// Interstellar is its own look: a darker night under the browse screens and the colours of a galaxy in the nebulae.
     var isInterstellar: Bool { self == .interstellar }
 
-    /// "Your stars" (the small yellow one for each idea sent, above Scripts) belong to the sky: with Off no screen draws any star.
-    /// They are kept, so they are back when the sky is.
-    var showsYourStars: Bool { self != .off }
-
     var label: String {
         switch self {
         case .off: String(localized: "Off")

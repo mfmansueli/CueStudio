@@ -123,22 +123,6 @@ struct ScriptPageViewModelTests {
         #expect(scenario.library.script(id: scenario.viewModel.scriptID)?.text == "Rewritten with energy!")
     }
 
-    @Test func theFullEditorStartsFromWhatIsOnThePageAndComesBackWithItsChanges() {
-        let scenario = makeScenario()
-        defer { scenario.defaults.tearDown() }
-        scenario.viewModel.page.text = "Typed on the page."
-        scenario.viewModel.startEditing()
-        #expect(scenario.viewModel.draftText == "Typed on the page.")
-        scenario.viewModel.draftText = "Typed in the editor."
-        scenario.viewModel.finishEditing()
-        #expect(scenario.viewModel.page.text == "Typed in the editor.")
-        // Discarding brings the page back to what the script held.
-        scenario.viewModel.startEditing()
-        scenario.viewModel.draftText = "Thrown away."
-        scenario.viewModel.cancelEditing()
-        #expect(scenario.viewModel.page.text == "Typed in the editor.")
-    }
-
     // MARK: - Shaped
 
     @Test func theTipsAreDismissedForGood() {
@@ -185,7 +169,7 @@ struct ScriptPageViewModelTests {
     @Test func aCueFromTheBarGoesAtTheEndWhenThereIsNoCaret() {
         let scenario = makeScenario(script: TestData.script(text: "Hello there"))
         defer { scenario.defaults.tearDown() }
-        scenario.viewModel.insertCue(.pause)
+        scenario.viewModel.insertCue(named: ScriptCue.pause.name)
         #expect(scenario.viewModel.page.text == "Hello there [pause] ")
     }
 
@@ -193,13 +177,64 @@ struct ScriptPageViewModelTests {
         let scenario = makeScenario(script: TestData.script(text: "Hello world"))
         defer { scenario.defaults.tearDown() }
         scenario.viewModel.page.selection = 5..<5
-        scenario.viewModel.insertCue(.smile)
+        scenario.viewModel.insertCue(named: ScriptCue.smile.name)
         #expect(scenario.viewModel.page.text == "Hello [smile]  world")
         #expect(scenario.viewModel.page.selection == 14..<14)
     }
 
     @Test func theBarHasTheFourCuesOfTheBoard() {
         #expect(ScriptCue.bar.map(\.name) == ["pause", "smile", "emphasis", "look at camera"])
+    }
+
+    @Test func aNewCueGoesInAtTheCaretAndStaysOnTheBarForEveryScript() {
+        let scenario = makeScenario(script: TestData.script(text: "Hello world"))
+        defer { scenario.defaults.tearDown() }
+        scenario.viewModel.page.selection = 5..<5
+        scenario.viewModel.addCue("  [laugh] ")
+        #expect(scenario.viewModel.page.text == "Hello [laugh]  world")
+        #expect(scenario.viewModel.barCues == ["pause", "smile", "emphasis", "look at camera", "laugh"])
+        // Kept with the creator's preferences, not with this script.
+        #expect(PreferencesService(defaults: scenario.defaults.defaults).customCues == ["laugh"])
+    }
+
+    @Test func aCueTheBarAlreadyHasJustGoesIn() {
+        let scenario = makeScenario(script: TestData.script(text: "Go"))
+        defer { scenario.defaults.tearDown() }
+        scenario.viewModel.addCue("Pause")
+        #expect(scenario.viewModel.page.text == "Go [pause] ")
+        #expect(scenario.viewModel.preferences.customCues.isEmpty)
+        scenario.viewModel.addCue("   ")
+        #expect(scenario.viewModel.page.text == "Go [pause] ")
+    }
+
+    /// The page's Cues switch starts on, is remembered for every script, and leaves the teleprompter's own switch alone.
+    @Test func theCuesSwitchHidesTheTagsOnEveryPageAndLeavesThePrompterAlone() {
+        let scenario = makeScenario()
+        defer { scenario.defaults.tearDown() }
+        #expect(scenario.viewModel.showsCues)
+        let prompter = scenario.viewModel.preferences.prompter.showsCues
+        scenario.viewModel.showsCues = false
+        #expect(!PreferencesService(defaults: scenario.defaults.defaults).showsCuesOnPage)
+        #expect(scenario.viewModel.preferences.prompter.showsCues == prompter)
+    }
+
+    @Test func hiddenCuesStayInTheWordsButAreNotDrawn() {
+        let text = "Hi [smile] there"
+        let shown = ScriptTextEditor.styled(text, passage: nil, size: 19)
+        let hidden = ScriptTextEditor.styled(text, passage: nil, size: 19, showsCues: false)
+        #expect(String(hidden.characters) == text)
+        let cue = hidden.range(of: "[smile]")!
+        #expect(hidden[cue].foregroundColor == .clear)
+        #expect(shown[shown.range(of: "[smile]")!].foregroundColor == Palette.accText)
+    }
+
+    @Test func aCreatorsCueCanLeaveTheBarAndTheScriptsKeepIt() {
+        let scenario = makeScenario(script: TestData.script(text: "Go"))
+        defer { scenario.defaults.tearDown() }
+        scenario.viewModel.addCue("laugh")
+        scenario.viewModel.removeCue("laugh")
+        #expect(scenario.viewModel.barCues == ScriptCue.bar.map(\.name))
+        #expect(scenario.viewModel.page.text.contains("[laugh]"))
     }
 
     @Test func theTextSizeCyclesThroughTheThree() {

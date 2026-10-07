@@ -81,9 +81,6 @@ extension Palette {
         /// A selected card's wash (pauses to remove, a Zoom or Crop tile).
         static let accTile = Color(hex: 0xFFD60A, opacity: 0.12)
 
-        /// The row of a list the caret or the choice is in (Sections).
-        static let selectedRow = Color(hex: 0xFFD60A, opacity: 0.08)
-
         /// A pause card to remove.
         static let accCard = Color(hex: 0xFFD60A, opacity: 0.1)
 

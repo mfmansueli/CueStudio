@@ -28,7 +28,7 @@ extension ScriptDetailViewModel {
         page.isLoaded = true
     }
 
-    /// The library changed the words (a tool, a hook, the full editor): the page follows.
+    /// The library changed the words (a tool, a hook): the page follows.
     func syncPage() {
         guard let script, page.isLoaded else { return }
         page.title = script.title
@@ -202,8 +202,20 @@ extension ScriptDetailViewModel {
 
     // MARK: - Writing
 
+    /// The Cues switch by Improve: whether the page draws the cue tags, for every script. The cues stay in the words either way, and
+    /// the teleprompter has its own switch (Settings › Prompter).
+    var showsCues: Bool {
+        get { preferences.showsCuesOnPage }
+        set { preferences.showsCuesOnPage = newValue }
+    }
+
+    /// The cues bar above the keyboard: the board's four, then the creator's own.
+    var barCues: [String] {
+        ScriptCue.bar.map(\.name) + preferences.customCues
+    }
+
     /// A cue from the bar above the keyboard, where the caret is (over the selection, if there is one).
-    func insertCue(_ cue: ScriptCue) {
+    func insertCue(named name: String) {
         guard !page.isWriting else { return }
         var text = page.text
         let characters = text.count
@@ -212,11 +224,28 @@ extension ScriptDetailViewModel {
         let upper = text.index(text.startIndex, offsetBy: min(range.upperBound, characters))
         let offset = text.distance(from: text.startIndex, to: lower)
         let needsSpace = offset > 0 && !text[text.index(before: lower)].isWhitespace
-        let insertion = (needsSpace ? " " : "") + "[\(cue.name)] "
+        let insertion = (needsSpace ? " " : "") + "[\(name)] "
         text.replaceSubrange(lower..<upper, with: insertion)
         page.text = text
         page.selection = (offset + insertion.count)..<(offset + insertion.count)
         pageDidEdit()
+    }
+
+    /// "+" on the cues bar: a cue of the creator's own goes in where the caret was and stays on the bar for every script. One the
+    /// bar already has (in any case) just goes in.
+    func addCue(_ typed: String) {
+        guard let name = ScriptCueName.cleaned(typed) else { return }
+        if let existing = barCues.first(where: { $0.caseInsensitiveCompare(name) == .orderedSame }) {
+            insertCue(named: existing)
+            return
+        }
+        preferences.customCues.append(name)
+        insertCue(named: name)
+    }
+
+    /// One of the creator's cues leaves the bar (the scripts that use it keep it).
+    func removeCue(_ name: String) {
+        preferences.customCues.removeAll { $0 == name }
     }
 
     func cycleTextSize() {

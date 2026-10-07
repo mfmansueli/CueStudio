@@ -98,13 +98,23 @@ struct TakeReviewView: View {
 
     var body: some View {
         @Bindable var viewModel = viewModel
-        ZStack {
-            Color.black.ignoresSafeArea()
-            if let take = viewModel.take {
-                video(for: take)
-                chrome(for: take)
-            } else {
-                ContentUnavailableView("This take was deleted", systemImage: "film")
+        // A navigation stack of its own: the top controls are the system's bar, in its Liquid Glass, over the video.
+        NavigationStack {
+            ZStack {
+                Color.black.ignoresSafeArea()
+                if let take = viewModel.take {
+                    video(for: take)
+                    chrome(for: take)
+                } else {
+                    ContentUnavailableView("This take was deleted", systemImage: "film")
+                }
+            }
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbarBackgroundVisibility(.hidden, for: .navigationBar)
+            .toolbar {
+                if let take = viewModel.take {
+                    toolbar(for: take)
+                }
             }
         }
         .overlay(alignment: .bottom) {
@@ -233,25 +243,26 @@ struct TakeReviewView: View {
 
     // MARK: - Chrome
 
+    private func toolbar(for take: Take) -> ReviewToolbar {
+        ReviewToolbar(
+            take: take,
+            placeLabel: placeLabel(for: take),
+            onBack: onBack,
+            onToggleBest: viewModel.toggleBest,
+            // Gone at once, with 4 s of Undo in the toast (04 · F4): no question first.
+            onDelete: {
+                pausePlayback()
+                onDeleted(viewModel.delete())
+            },
+            onPrevious: viewModel.neighbor(-1) == nil ? nil : { selectNeighbor(-1) },
+            onNext: viewModel.neighbor(1) == nil ? nil : { selectNeighbor(1) },
+            onSuggest: viewModel.offersBestSuggestion ? { suggestBest(from: take) } : nil
+        )
+    }
+
     private func chrome(for take: Take) -> some View {
         _ = editorVisits
         return VStack(spacing: 0) {
-            ReviewTopBar(
-                take: take,
-                placeLabel: placeLabel(for: take),
-                onBack: onBack,
-                onToggleBest: viewModel.toggleBest,
-                // Gone at once, with 4 s of Undo in the toast (04 · F4): no question first.
-                onDelete: {
-                    pausePlayback()
-                    onDeleted(viewModel.delete())
-                },
-                onPrevious: viewModel.neighbor(-1) == nil ? nil : { selectNeighbor(-1) },
-                onNext: viewModel.neighbor(1) == nil ? nil : { selectNeighbor(1) },
-                onSuggest: viewModel.offersBestSuggestion ? { suggestBest(from: take) } : nil
-            )
-            .padding(.horizontal, 16)
-            .padding(.top, 8)
             Spacer()
             VStack(alignment: .leading, spacing: 0) {
                 ReviewScrubber(progress: progress, duration: take.duration) { seek(to: $0, of: take) }

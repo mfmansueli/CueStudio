@@ -28,7 +28,6 @@ struct StarfieldView: View {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.scenePhase) private var scenePhase
     @State private var isOnScreen = false
-    @State private var clock = MotionClock()
 
     private var twinkles: [StarfieldMath.Twinkle] { StarfieldMath.twinkles(count: twinkleCountOverride ?? density.twinkleCount, seed: seed) }
     private var nebulae: [StarfieldMath.Nebula] {
@@ -39,20 +38,16 @@ struct StarfieldView: View {
     var body: some View {
         Group {
             if density != .off {
-                TimelineView(.animation(minimumInterval: 1.0 / 30, paused: !isRunning)) { context in
-                    let time = clock.elapsed(at: context.date)
+                TimelineView(.animation(minimumInterval: 1.0 / 30, paused: !isRunning)) { _ in
+                    // The app's clock, not the screen's: every screen's sky is at the same moment, so changing tabs never shows the sky
+                    // start over (each one used to count from when it first appeared, and paused while hidden).
+                    let time = Self.sinceLaunch()
                     Canvas { canvas, size in
                         draw(in: &canvas, size: size, time: time)
                     }
                 }
                 .onAppear { isOnScreen = true }
-                .onDisappear {
-                    isOnScreen = false
-                    clock.setRunning(false, at: .now)
-                }
-                .onChange(of: isRunning, initial: true) { _, running in
-                    clock.setRunning(running, at: .now)
-                }
+                .onDisappear { isOnScreen = false }
             }
         }
         .allowsHitTesting(false)
@@ -193,40 +188,6 @@ struct StarfieldView: View {
             Path(ellipseIn: CGRect(x: head.x - 1.6, y: head.y - 1.6, width: 3.2, height: 3.2)),
             with: .color(.white.opacity(comet.opacity))
         )
-    }
-}
-
-/// The sky behind a browse screen, from the creator's Starry sky setting.
-struct SkyBackground: ViewModifier {
-    @Environment(PersonalizationService.self) private var personalization
-    /// The night glow and the colour under it: nil is the browse screens' (`BgWash.navigation` over `bg`, or the interstellar night at Interstellar),
-    /// otherwise the one a board of the stories draws.
-    var lights: [BgWash.Light]?
-    var base: Color?
-
-    func body(content: Content) -> some View {
-        let sky = personalization.sky
-        content.background {
-            ZStack {
-                // The night glow (v29): a violet light from the top left, the same on every browse screen, sky on or off.
-                BgWash(lights: lights ?? BgWash.browse(sky), base: base ?? BgWash.browseBase(sky))
-                StarfieldView(density: sky)
-            }
-            .ignoresSafeArea()
-        }
-    }
-}
-
-extension View {
-    /// The night and its stars behind this screen. Only on browse screens: never over the camera, a
-    /// take or the editor.
-    func skyBackground() -> some View {
-        modifier(SkyBackground())
-    }
-
-    /// The night and its stars with the glow of one board (`BgWash.sendOff`…), over `base`.
-    func skyBackground(wash lights: [BgWash.Light], base: Color = Palette.bg) -> some View {
-        modifier(SkyBackground(lights: lights, base: base))
     }
 }
 

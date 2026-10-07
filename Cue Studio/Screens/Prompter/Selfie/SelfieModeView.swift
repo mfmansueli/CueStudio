@@ -35,9 +35,6 @@ struct SelfieModeView: View {
                     .ignoresSafeArea()
             }
             controls
-                .onGeometryChange(for: CGFloat.self) { $0.frame(in: .global).minY } action: { top in
-                    viewModel.measured { $0.topInset = top }
-                }
             if let countdown = viewModel.countdown {
                 CountdownOverlay(
                     value: countdown, total: session.camera.countdown.rawValue,
@@ -45,6 +42,16 @@ struct SelfieModeView: View {
                     onCancel: { Task { await viewModel.recordButtonTapped() } }
                 )
                 .transition(.opacity)
+            }
+        }
+        // Close, Selfie | Studio and the frame chip are the system's navigation bar (`SelfieTopBar`), clear over the camera. The practice
+        // has its own top bar, placed from the screen's edges.
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbarBackgroundVisibility(.hidden, for: .navigationBar)
+        .toolbarVisibility(viewModel.isPractice ? .hidden : .visible, for: .navigationBar)
+        .toolbar {
+            if !viewModel.isPractice {
+                SelfieTopBar(viewModel: viewModel, session: session, onClose: onClose)
             }
         }
     }
@@ -173,11 +180,6 @@ struct SelfieModeView: View {
 
     private var recorderControls: some View {
         VStack(spacing: 0) {
-            SelfieTopBar(viewModel: viewModel, onClose: onClose)
-                .padding(.horizontal, 14)
-                .onGeometryChange(for: CGFloat.self) { $0.frame(in: .global).maxY } action: { bottom in
-                    viewModel.measured { $0.topBarBottom = bottom }
-                }
             Spacer(minLength: 0)
             if viewModel.showsRecommendation, let recommendation = viewModel.session.recommendation {
                 SetupRecommendationCard(
@@ -216,6 +218,10 @@ struct SelfieModeView: View {
         }
         .animation(.spring(duration: 0.3), value: viewModel.showsStopWarning)
         .animation(.spring(duration: 0.3), value: viewModel.showsRecommendation)
+        // The controls start under the navigation bar: that is where the text window may begin.
+        .onGeometryChange(for: CGFloat.self) { $0.frame(in: .global).minY } action: { top in
+            viewModel.measured { $0.topBarBottom = top }
+        }
     }
 }
 

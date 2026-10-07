@@ -11,13 +11,14 @@ struct FactCheckBanner: View {
 
     var body: some View {
         let shape = RoundedRectangle(cornerRadius: 16, style: .continuous)
-        HStack(alignment: .top, spacing: 10) {
+        // Everything on the card's middle line: the star, the words (one or two lines) and Checked, with the same room above and below.
+        HStack(alignment: .center, spacing: 10) {
             Image(systemName: "sparkles")
                 .foregroundStyle(Palette.warnText)
                 .accessibilityHidden(true)
             Text("AI can get facts wrong · Check before you record")
                 .font(.footnote)
-                .foregroundStyle(Palette.ink.opacity(0.86))
+                .foregroundStyle(Palette.ink)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .fixedSize(horizontal: false, vertical: true)
             Button("Checked", action: onChecked)
@@ -27,8 +28,9 @@ struct FactCheckBanner: View {
                 .accessibilityHint(Text("Hides this reminder"))
                 .accessibilityIdentifier("detail.factCheckedButton")
         }
-        .padding(.horizontal, 14)
-        .padding(.vertical, 4)
+        .padding(.leading, 14)
+        .padding(.trailing, 12)
+        .padding(.vertical, 6)
         .background(Palette.warnWash, in: shape)
         .overlay(shape.strokeBorder(Palette.warnBorder, lineWidth: 0.5))
     }

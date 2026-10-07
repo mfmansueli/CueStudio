@@ -5,8 +5,8 @@
 
 import Foundation
 
-/// Reading and editing one script. Edits happen on a draft that is only written on Done, so Cancel
-/// really cancels and versioning sees the whole change at once.
+/// Reading and editing one script. The words are written on the page (`page`), which saves them as the creator goes
+/// (`ScriptDetailViewModel+Page`).
 @MainActor
 @Observable
 final class ScriptDetailViewModel {
@@ -16,13 +16,8 @@ final class ScriptDetailViewModel {
     }
 
     let scriptID: UUID
-    private(set) var isEditing = false
-    var draftTitle = ""
-    /// The draft, a paragraph per entry (an empty one while the creator is about to type in it).
-    /// `draftText` is the same thing as the text that gets saved.
-    var draftParagraphs = [""]
     var sheet: Sheet?
-    /// The single page (Draft | Shaped) the creator is on while not in the full editor.
+    /// The script's one page: the words being written and the little states around them.
     var page = ScriptPageState()
     /// The pending save of what is being written on the page.
     var pageCommitTask: Task<Void, Never>?
@@ -34,31 +29,17 @@ final class ScriptDetailViewModel {
     /// The words shown to the creator, a few at a time; zero with Reduce Motion.
     let revealPause: Duration
     let ideaDraft: IdeaDraftService?
-    /// Where the editor is asked to put the caret (or to put the keyboard away).
-    var focus: ParagraphFocus?
-    /// The panel under the writing area in place of the keyboard.
-    var tool: EditorTool?
-    /// The paragraph with the caret, nil when none has it (the keyboard is away, or the title has it).
-    var activeParagraph: Int?
-    var isTitleFocused = false
-    /// The last place the caret was, kept while a panel hides the keyboard so a cue goes where it was.
-    var caret = ScriptParagraphs.Caret(index: 0, offset: 0)
-    /// The paragraph to bring into view in read mode (a tap on a block of the Details sheet).
+    /// The paragraph to bring into view (a tap on a block of the Details sheet).
     var readScrollTarget: Int?
     var isNamingFolder = false
     var newFolderName = ""
     private(set) var runningTool: ScriptTool?
-    /// Text before the last AI rewrite, for Undo.
-    private(set) var undoText: String?
     private(set) var hookRotation = 0
     /// Hooks written by the model for this script; nil until asked, or without Apple Intelligence.
     private(set) var generatedHooks: [String]?
     private(set) var isLoadingHooks = false
     /// The platform a "Make a version for…" copy is being written for.
     private(set) var versionInProgress: Platform?
-
-    private var originalTitle = ""
-    private var originalText = ""
 
     let library: ScriptLibraryService
     let takes: TakeLibraryService
@@ -108,16 +89,9 @@ final class ScriptDetailViewModel {
 
     var script: Script? { library.script(id: scriptID) }
 
-    /// The draft's text as it would be saved: paragraphs that say something, a blank line apart.
-    var draftText: String {
-        get { ScriptParagraphs.join(draftParagraphs) }
-        set { draftParagraphs = ScriptParagraphs.split(newValue) }
-    }
-
-    /// The draft while editing, the saved text otherwise.
+    /// The words on the page (the ones arriving while the AI writes), the saved text before it loads.
     var workingText: String {
-        if isEditing { return draftText }
-        return page.isLoaded ? (page.revealed ?? page.text) : (script?.text ?? "")
+        page.isLoaded ? (page.revealed ?? page.text) : (script?.text ?? "")
     }
 
     var structure: ScriptStructure { script?.structure ?? .generic }
@@ -187,74 +161,6 @@ final class ScriptDetailViewModel {
         script?.language?.locale.language ?? LanguageDetector.dominantLanguage(in: workingText)
     }
 
-    // MARK: - Editing
-
-    /// Opens the editor with the caret at the end of paragraph `paragraph` (the first when the
-    /// creator didn't tap one; the title for a script with nothing in it yet).
-    func startEditing(atParagraph paragraph: Int? = nil) {
-        commitPage()
-        guard let script else { return }
-        draftTitle = script.title
-        draftParagraphs = ScriptParagraphs.split(script.text)
-        originalTitle = script.title
-        originalText = script.text
-        undoText = nil
-        tool = nil
-        sheet = nil
-        activeParagraph = nil
-        isTitleFocused = false
-        isEditing = true
-        if script.title.isEmpty, script.isEmpty { return }
-        let index = min(max(0, paragraph ?? 0), draftParagraphs.count - 1)
-        caret = ScriptParagraphs.Caret(index: index, offset: draftParagraphs[index].utf16.count)
-        focus = .at(index, offset: caret.offset)
-    }
-
-    /// "Discard changes": the draft goes and the script stays as it was.
-    func cancelEditing() {
-        syncPage()
-        isEditing = false
-        undoText = nil
-        tool = nil
-        focus = .keyboardAway
-    }
-
-    /// Saves the draft. Changing the words of a script that has takes creates a new version, so
-    /// the takes stay tied to what was actually read.
-    func finishEditing() {
-        guard isEditing, let script else { return }
-        defer { syncPage() }
-        isEditing = false
-        undoText = nil
-        tool = nil
-        focus = .keyboardAway
-        // The words, not the way the lines were broken: a script is saved as it was when only the
-        // spacing between its paragraphs differs.
-        let textChanged = CueParser.paragraphs(in: draftText) != CueParser.paragraphs(in: originalText)
-        let titleChanged = draftTitle != originalTitle
-        guard textChanged || titleChanged else { return }
-
-        let takeCount = scriptTakes.count
-        let bumpsVersion = textChanged && takeCount > 0
-        let title = draftTitle
-        let text = textChanged ? draftText : originalText
-        library.update(scriptID) { script in
-            script.title = title
-            script.text = text
-            if bumpsVersion { script.version += 1 }
-        }
-        if titleChanged, let renamed = self.script {
-            takes.renameScript(scriptID, to: renamed.displayTitle)
-        }
-        if bumpsVersion {
-            toast.show(takeCount == 1
-                ? String(localized: "Saved as v\(script.version + 1) · Take on v\(script.version)")
-                : String(localized: "Saved as v\(script.version + 1) · \(takeCount) takes on v\(script.version)"))
-        } else {
-            toast.show(String(localized: "Saved"))
-        }
-    }
-
     // MARK: - Destination
 
     func setPlatform(_ platform: Platform) {
@@ -266,12 +172,8 @@ final class ScriptDetailViewModel {
     // MARK: - Hooks
 
     func replaceHook(with hook: String) {
-        if isEditing {
-            draftText = ScriptTextEditing.replacingOpening(of: draftText, with: hook)
-        } else {
-            library.update(scriptID) { $0.text = ScriptTextEditing.replacingOpening(of: $0.text, with: hook) }
-            syncPage()
-        }
+        library.update(scriptID) { $0.text = ScriptTextEditing.replacingOpening(of: $0.text, with: hook) }
+        syncPage()
         sheet = nil
         toast.show(String(localized: "Hook replaced · ~\(DurationText.short(ReadTime.seconds(for: hook, speed: preferences.prompter.speed)))"))
     }
@@ -317,7 +219,6 @@ final class ScriptDetailViewModel {
         guard runningTool == nil else { return }
         switch tool {
         case .newHooks:
-            closeToolPanel()
             await openHooks()
         case .addDisclosure:
             guard !ScriptTextEditing.hasDisclosure(workingText) else {
@@ -337,33 +238,9 @@ final class ScriptDetailViewModel {
         }
     }
 
-    /// Takes back the last change an AI tool made to the draft.
-    func undoRewrite() {
-        guard isEditing, let undoText else { return }
-        draftText = undoText
-        self.undoText = nil
-        toast.show(String(localized: "Undone"))
-    }
-
-    /// What a tool wrote becomes the script's words: the draft while writing (the panel closes and
-    /// the keyboard stays away, so the change is what's on screen), the saved text while reading.
-    /// The toast says what happened and takes it back.
+    /// What a tool wrote becomes the script's words, saved at once (a new version when takes were made
+    /// from the old ones). The toast says what happened, and its Undo puts the old words back.
     private func adopt(_ text: String, message: String) {
-        if isEditing {
-            undoText = draftText
-            draftText = text
-            closeToolPanel()
-            toast.show(message, duration: .seconds(4), action: ToastAction(title: String(localized: "Undo")) { [weak self] in
-                self?.undoRewrite()
-            })
-        } else {
-            saveWhileReading(text, message: message)
-        }
-    }
-
-    /// An AI tool from "Improve script" on a script that isn't being edited: the words are saved
-    /// at once (a new version when takes were made from the old ones) and Undo puts them back.
-    private func saveWhileReading(_ text: String, message: String) {
         guard let script else { return }
         let before = (text: script.text, version: script.version)
         let bumpsVersion = !scriptTakes.isEmpty
@@ -382,11 +259,6 @@ final class ScriptDetailViewModel {
             syncPage()
             toast.show(String(localized: "Undone"))
         })
-    }
-
-    private func closeToolPanel() {
-        tool = nil
-        focus = .keyboardAway
     }
 
     private func rewrite(with tool: ScriptTool) async {
@@ -443,7 +315,6 @@ final class ScriptDetailViewModel {
                 text: result.text, platform: script.platform, type: script.type, folder: script.folder,
                 language: language
             )
-            closeToolPanel()
             sheet = nil
             var message = String(localized: "\(language.localizedName) version saved")
             if result.leftAsWritten > 0 {

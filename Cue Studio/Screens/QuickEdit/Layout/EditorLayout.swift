@@ -5,9 +5,9 @@
 
 import CoreGraphics
 
-/// The editor's vertical height budget, from the usable height between the safe areas: top bar,
-/// preview, player bar, timeline, and the toolbar or a panel. Nothing is placed at fixed positions;
-/// every screen gets the same rules.
+/// The editor's vertical height budget, from the usable height under the navigation bar (Back · status · Done, the system's)
+/// and above the bottom safe area: preview, player bar, timeline, and the toolbar or a panel. Nothing is placed at fixed
+/// positions; every screen gets the same rules.
 ///
 /// - Nothing open: the timeline takes 32% (184–300 pt) and the preview the rest.
 /// - A panel open (it replaces the toolbar): the preview keeps its size and the timeline gives up
@@ -38,7 +38,6 @@ nonisolated struct EditorLayout: Equatable, Sendable {
     /// The keyboard takes part of the height.
     let keyboardIsUp: Bool
     let heightClass: EditorHeightClass
-    let topBar: CGFloat
     let preview: CGFloat
     let playerBar: CGFloat
     let timeline: CGFloat
@@ -75,7 +74,7 @@ nonisolated struct EditorLayout: Equatable, Sendable {
     }
 
     /// - Parameters:
-    ///   - usableHeight: between the safe areas, and above the keyboard when it is up.
+    ///   - usableHeight: under the navigation bar, above the bottom safe area, and above the keyboard when it is up.
     ///   - stableHeight: the same without the keyboard; nil when there is none.
     ///   - panel: the open panel's size, if any.
     ///   - panelFocusesLane: the open panel is about one track (texts, captions, voice-over), which
@@ -94,9 +93,8 @@ nonisolated struct EditorLayout: Equatable, Sendable {
         self.stableHeight = stable
         self.keyboardIsUp = keyboardIsUp
         self.heightClass = heightClass
-        topBar = heightClass.topBarHeight
         playerBar = heightClass.playerBarHeight
-        let bars = topBar + playerBar
+        let bars = playerBar
         let restingTimeline = Self.restingTimeline(for: usable)
         let restingPreview = max(0, usable - bars - restingTimeline - Self.toolbarHeight)
         let previewMinimum = min(Self.previewMinimum(for: usable), max(0, usable - bars))
@@ -117,7 +115,7 @@ nonisolated struct EditorLayout: Equatable, Sendable {
             // A sheet over the editor: the preview shrinks to its minimum so the sheet's tallest
             // height never covers it. It floats over the editor, so it is sized from the screen
             // and stays put when the keyboard comes up inside it.
-            let full = Self.sheetBudget(stable: stable, topBar: topBar, bars: bars)
+            let full = Self.sheetBudget(stable: stable, bars: bars)
             preview = full.preview
             timeline = full.timeline
             self.panel = 0
@@ -161,9 +159,9 @@ nonisolated struct EditorLayout: Equatable, Sendable {
     }
 
     /// What the editor behind a sheet panel gets, from the screen's height.
-    private static func sheetBudget(stable: CGFloat, topBar: CGFloat, bars: CGFloat) -> (preview: CGFloat, timeline: CGFloat, large: CGFloat) {
+    private static func sheetBudget(stable: CGFloat, bars: CGFloat) -> (preview: CGFloat, timeline: CGFloat, large: CGFloat) {
         let minimum = min(previewMinimum(for: stable), max(0, stable - bars))
-        return (minimum, max(0, stable - bars - minimum), max(0, stable - topBar - minimum))
+        return (minimum, max(0, stable - bars - minimum), max(0, stable - minimum))
     }
 
     /// Whether the timeline has room to show anything.
