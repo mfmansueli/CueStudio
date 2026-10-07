@@ -641,3 +641,14 @@ Undo dura 4 s). "In my voice" devolvia 45% do tamanho com "mantenha o tamanho" p
 tema, cores do núcleo e interruptores "não mudam nada" no mapa porque a seleção é um traço de acessibilidade e o toque no centro de uma linha de interruptor não é o interruptor; a última linha da lista fica sob
 o dock até rolar. Os interruptores de Settings (Recording, Prompter e Personalize: viram e continuam virados), as linhas do My Cue Voice abertas por Settings, as 4 cores do núcleo, o botão do Logbook, o "Show every video" e as ferramentas de IA estão cobertos por testes.
 
+**A ideia manda no assunto, a voz só no jeito (7 de outubro de 2026, à tarde):** um criador pediu "my daily routine with AI is not going so well" e recebeu "Bureaucracy in 5 Minutes", em quase um minuto e meio, com `[pause]... [pause]...` centenas de vezes.
+Reproduzido no iPhone 15 Pro com o perfil dele (`IdeaRelevanceDeviceTests`, condição `owner`): o My Cue Voice mandava "Who they are: Daily Routine" e "Topics: language learning (Italian); Daily Routine (Bureaucracy)", a ideia tinha "daily routine", e o
+modelo pequeno tratou o subtema como o assunto; o perfil também dizia "vídeos de 1 a 3 minutos", então o app pedia 225 a 450 palavras para uma linha de ideia, e o modelo enchia e entrava em laço até o limite.
+- **`IdeaFocus`** (`Managers/ScriptAI/Voice/IdeaFocus.swift`, usado por `CreatorProfile.voice(inLanguage:idea:)`): os temas só vão ao modelo quando a ideia fala deles (mesma palavra ou mesmo começo de 5 letras, sem acento nem caixa, sem palavras vazias), e os subtemas só quando a
+  ideia os nomeia; com uma ideia de menos de duas palavras (ou nenhuma) ficam todos. Para qualquer outro assunto a voz continua inteira (tom, estilo, público, bordões, como abre e fecha, o que evitar): muda só o *assunto*, que é o da ideia.
+- **O prompt diz isso:** a abertura da voz agora diz "como soam e para quem falam, nunca sobre o que é o vídeo"; depois de "The video: …" vem "Write about this idea and only this one"; e o fim, onde o modelo pequeno mais ouve, acaba em "Stay on the idea: …".
+- **Vídeo curto não é esticado** (`ScriptPromptBuilder.shortFormWords` = 200, `shortFormCeiling` = 300): um roteiro de até 200 palavras de mínimo (TikTok, Reels, Shorts, Stories, e o tamanho habitual de 1 a 3 min) é pedido como é, sem a regra de frases por bloco e sem alongar depois, e nunca se pede mais de 300
+  palavras. Medido com a mesma ideia: antes 45–93 s e 459–485 palavras (um laço de cues) ou falha depois de 73 s; **depois 7–12 s e 56–117 palavras, todas sobre o assunto**, com o perfil do dono, com voz de fundador e sem voz. YouTube continua comprido (1593 palavras em 73 s).
+  O que se perde: um TikTok sai com 55–115 palavras (25–45 s), às vezes abaixo dos 30 s ideais; o criador alonga com as ferramentas.
+- **Cue que se repete** (`ScriptPromptBuilder.collapsingRepeatedCues`): três ou mais iguais em sequência viram um só.
+

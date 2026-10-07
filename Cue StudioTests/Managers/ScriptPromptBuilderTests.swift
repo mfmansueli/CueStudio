@@ -131,4 +131,23 @@ struct ScriptPromptBuilderTests {
         #expect(!lines.contains { $0.hasPrefix("Their style") })
         #expect(lines.contains { $0.contains("Hey fam") })
     }
+
+    // MARK: - Short videos and a model stuck on a cue
+
+    @Test func aShortVideoIsAskedAsItIsAndNeverForMoreThanTwoMinutes() {
+        // One to three minutes of a creator's usual length: 150 to 450 words. For one line of idea, no more than two minutes.
+        let asked = ScriptPromptBuilder.askedRange(for: 60...180)
+        #expect(asked.low == 150)
+        #expect(asked.high == ScriptPromptBuilder.shortFormCeiling)
+        #expect(ScriptPromptBuilder.askedWords(75) == 75, "a TikTok minimum is not multiplied")
+        #expect(ScriptPromptBuilder.askedWords(600) > 600, "a long video still is")
+        #expect(!ScriptPromptBuilder.lengthRule(minimumWords: 150).contains("sentences in every block"))
+    }
+
+    @Test func aCueRepeatedOverAndOverStaysOnce() {
+        let stuck = "I start here. [pause]... [pause]... [pause]... [pause]... [pause]... and go on. [smile] [smile] [smile] Done."
+        #expect(ScriptPromptBuilder.collapsingRepeatedCues(stuck) == "I start here. [pause] and go on. [smile] Done.")
+        let fine = "One. [pause] Two. [pause] Three. [pause] [smile] Four. [pause][pause]"
+        #expect(ScriptPromptBuilder.collapsingRepeatedCues(fine) == fine, "two in a row, or the same cue far apart, is the creator's own")
+    }
 }
