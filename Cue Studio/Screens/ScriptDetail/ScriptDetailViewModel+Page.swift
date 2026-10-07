@@ -287,8 +287,13 @@ extension ScriptDetailViewModel {
         page.isRewriting = true
         defer { page.isRewriting = false }
         do {
-            let rewritten = try await writer.rewrite(selected, with: tool, context: rewriteContext)
-            replace(range, with: rewritten, action: action, original: selected)
+            let result = try await writer.rewriteReported(selected, with: tool, context: rewriteContext)
+            // The tool couldn't do what it says to these words: they stay, and the creator is told, instead of a "change" that changes nothing.
+            guard !result.isUntouched, result.text != selected else {
+                toast.show(String(localized: "Couldn’t write it · Try again"))
+                return
+            }
+            replace(range, with: result.text, action: action, original: selected)
         } catch is CancellationError {
             return
         } catch {

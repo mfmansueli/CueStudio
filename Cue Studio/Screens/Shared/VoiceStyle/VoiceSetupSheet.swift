@@ -6,9 +6,10 @@
 import SwiftUI
 
 /// My Cue Voice (V1): four questions, one at a time, with a progress bar ("01 / 04"): what kind of
-/// creator, what you talk about, who you talk to, how you sound. Answers go to the same profile
-/// fields Profile edits. A creator with an idea waiting on the card finishes with "Write my script",
-/// and the script that comes is the preview of the voice (see `VoicePreviewStrip`).
+/// creator, what you talk about, who is watching, how you sound. Each question is the field the editor
+/// shows for the same answer (`VoiceEditorSheet`), and an answer is kept as it is given: only the shell
+/// differs (Continue and "n of 4" here, Done there). A creator with an idea waiting on the card finishes
+/// with "Write my script", and the script that comes is the preview of the voice (see `VoicePreviewStrip`).
 struct VoiceSetupSheet: View {
     /// Which questions the sheet opens with: what is missing, or all of them to edit what was answered.
     enum Mode: String, Identifiable {
@@ -27,11 +28,9 @@ struct VoiceSetupSheet: View {
 
     @Environment(CreatorProfileService.self) private var profile
     @Environment(\.dismiss) private var dismiss
-    @Environment(ToastService.self) private var toast
-    @State private var draft: VoiceSetupDraft
+    @State private var plan: VoiceSetupPlan
     @State private var index = 0
     @State private var showsExample = false
-    private let confirmsExistingValues: Bool
 
     init(
         mode: Mode, profile: CreatorProfile, ideaText: String? = nil, startAt: VoiceSetupStep? = nil,
@@ -41,25 +40,17 @@ struct VoiceSetupSheet: View {
         self.ideaText = ideaText
         self.startAt = startAt
         self.onSaved = onSaved
-        let draft = VoiceSetupDraft(profile: profile, steps: mode == .edit ? VoiceSetupStep.allCases : nil)
-        confirmsExistingValues = draft.confirmsExistingValues
-        _index = State(initialValue: startAt.flatMap { draft.steps.firstIndex(of: $0) } ?? 0)
-        _draft = State(initialValue: draft)
+        let plan = VoiceSetupPlan(profile: profile, steps: mode == .edit ? VoiceSetupStep.allCases : nil)
+        _index = State(initialValue: startAt.flatMap { plan.steps.firstIndex(of: $0) } ?? 0)
+        _plan = State(initialValue: plan)
     }
 
-    private var step: VoiceSetupStep { draft.steps[min(index, draft.steps.count - 1)] }
-    private var isLast: Bool { index >= draft.steps.count - 1 }
+    private var step: VoiceSetupStep { plan.steps[min(index, plan.steps.count - 1)] }
+    private var isLast: Bool { index >= plan.steps.count - 1 }
     private var hasIdea: Bool { !(ideaText?.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ?? true) }
 
     /// Whether the answer for the question showing allows going on.
-    private var canContinue: Bool {
-        switch step {
-        case .role: draft.role != nil
-        case .niche: !draft.niches.isEmpty
-        case .audience: draft.vocabulary != nil
-        case .tone: !draft.sounds.isEmpty
-        }
-    }
+    private var canContinue: Bool { VoiceSetupPlan.canContinue(step, in: profile.profile) }
 
     var body: some View {
         VStack(spacing: 0) {
@@ -95,7 +86,7 @@ struct VoiceSetupSheet: View {
         .presentationDragIndicator(.visible)
         .cueSheetSurface()
         // A container of its own: the sheet's identifier would otherwise replace its controls' (Continue's).
-        .sheet(isPresented: $showsExample) { VoiceExamplesSheet() }
+        .sheet(isPresented: $showsExample) { VoiceEditorSheet(field: .examples) }
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("voiceSetup.sheet")
     }
@@ -106,37 +97,18 @@ struct VoiceSetupSheet: View {
         switch step {
         case .role: "Pick the closest. Change it anytime."
         case .niche: "Cue writes ideas and scripts about them."
-        case .audience: confirmsExistingValues ? "Confirm what’s here, or change it." : "They decide the words Cue uses."
-        case .tone: confirmsExistingValues ? "Confirm what’s here, or change it." : "Pick the closest. Change it anytime."
+        case .audience: plan.confirmsExistingValues ? "Confirm what’s here, or change it." : "They decide the words Cue uses."
+        case .tone: plan.confirmsExistingValues ? "Confirm what’s here, or change it." : "Pick the closest. Change it anytime."
         }
     }
 
     @ViewBuilder
     private var content: some View {
         switch step {
-        case .role:
-            VoiceRoleStep(draft: draft) { role in
-                Haptics.selection()
-                draft.choose(role)
-            }
-        case .niche:
-            VoiceNicheStep(draft: draft) { niche in
-                Haptics.selection()
-                if !draft.toggle(niche) { toast.show(VoiceLimits.message(max: draft.nicheCap, noun: String(localized: "topics"))) }
-            }
-        case .audience:
-            VoiceAudienceStep(draft: draft) { vocabulary in
-                Haptics.selection()
-                draft.choose(vocabulary)
-            } onLevel: { level in
-                Haptics.selection()
-                draft.choose(level)
-            }
-        case .tone:
-            VoiceToneStep(draft: draft) { sound in
-                Haptics.selection()
-                if !draft.toggle(sound) { toast.show(String(localized: "Max \(draft.soundCap) · tap to remove")) }
-            }
+        case .role: VoiceRoleField()
+        case .niche: VoiceTopicsField()
+        case .audience: VoiceAudienceField()
+        case .tone: VoiceToneField()
         }
     }
 
@@ -153,10 +125,10 @@ struct VoiceSetupSheet: View {
                 .accessibilityLabel(Text("Back"))
                 .accessibilityIdentifier("voiceSetup.back")
             }
-            VoiceFlowProgress(step: index, count: draft.steps.count)
+            VoiceFlowProgress(step: index, count: plan.steps.count)
             Spacer(minLength: 0)
             Button { dismiss() } label: {
-                Text(mode == .edit ? "Cancel" : "Not now")
+                Text(mode == .edit ? "Close" : "Not now")
                     .font(.body)
                     .foregroundStyle(Palette.ink2)
                     .frame(minHeight: Metrics.hitTarget)
@@ -208,7 +180,7 @@ struct VoiceSetupSheet: View {
                         .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
-                .disabled(!draft.canSave)
+                .disabled(!plan.canFinish(in: profile.profile))
                 .accessibilityIdentifier("voiceSetup.justSave")
             }
         }
@@ -230,6 +202,8 @@ struct VoiceSetupSheet: View {
 
     private func next() {
         guard canContinue else { return }
+        // What an older build saved is kept as it is and counts as answered once the creator goes on with it.
+        if !profile.profile.hasAnswered(step), profile.profile.isChosen(step) { profile.confirm(step) }
         if isLast {
             save(writesScript: hasIdea && mode != .edit)
         } else {
@@ -238,8 +212,9 @@ struct VoiceSetupSheet: View {
     }
 
     private func save(writesScript: Bool) {
-        guard draft.canSave else { return }
-        draft.save(to: profile)
+        guard plan.canFinish(in: profile.profile) else { return }
+        // Answered, the voice is on: this is what the creator set it up for.
+        profile.setWritesInMyVoice(true)
         Haptics.apply()
         onSaved(writesScript)
         dismiss()

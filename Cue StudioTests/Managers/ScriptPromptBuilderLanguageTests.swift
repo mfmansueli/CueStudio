@@ -38,9 +38,34 @@ struct ScriptPromptBuilderLanguageTests {
 
     @Test func theLengthIsAMinimumAndNotJustARange() {
         let prompt = ScriptPromptBuilder.prompt(for: request(.english))
-        #expect(prompt.contains("between \(ReadTime.words(for: 60)) and \(ReadTime.words(for: 90)) spoken words"))
-        #expect(prompt.contains("must be at least \(ReadTime.words(for: 60)) words"))
-        #expect(prompt.contains("several complete sentences"))
+        let asked = ScriptPromptBuilder.askedRange(for: 60...90)
+        #expect(prompt.contains("between \(asked.low) and \(asked.high) spoken words"))
+        #expect(prompt.contains("must be at least \(asked.low) words"))
+        #expect(asked.low >= ReadTime.words(for: 60) && asked.high >= ReadTime.words(for: 90), "the model is asked for at least what the platform needs")
+        #expect(prompt.contains("sentences in every block"), "a count of sentences, which the model can follow")
+    }
+
+    @Test func aLongScriptIsAskedAsItIsAndNotInSentencesForEveryBlock() {
+        let asked = ScriptPromptBuilder.askedRange(for: 480...900)
+        #expect(asked.low == ReadTime.words(for: 480), "the model already writes the length of a YouTube video")
+        #expect(ScriptPromptBuilder.lengthRule(minimumWords: asked.low, blocks: 6).contains("many complete sentences"))
+        #expect(!ScriptPromptBuilder.lengthRule(minimumWords: asked.low, blocks: 6).contains("in every block"))
+    }
+
+    @Test func aShortScriptIsAskedForMoreWordsThanItNeedsAndTheCeilingStaysPut() {
+        let asked = ScriptPromptBuilder.askedRange(for: 30...60)
+        #expect(asked.low == Int((Double(ReadTime.words(for: 30)) * ScriptPromptBuilder.lengthAskFactor).rounded()))
+        #expect(asked.high == max(ReadTime.words(for: 60), Int((Double(asked.low) * 1.25).rounded())))
+    }
+
+    @Test func theSentencesAskedForFollowHowLongTheCreatorsSentencesRun() {
+        #expect(ScriptPromptBuilder.sentenceWords(for: nil) == 12)
+        var voice = CreatorVoice(sounds: [], phrases: [], vocabulary: nil, styles: [], niches: [], role: nil)
+        voice.style.sentences = .short
+        #expect(ScriptPromptBuilder.sentenceWords(for: voice) == 9)
+        voice.style.sentences = .long
+        #expect(ScriptPromptBuilder.sentenceWords(for: voice) == 18)
+        #expect(ScriptPromptBuilder.lengthRule(minimumWords: 180, blocks: 4, sentenceWords: 9).contains("at least 5 sentences in every block"))
     }
 
     @Test func aRewriteNamesTheLanguageItMustStayIn() {

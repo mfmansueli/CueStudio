@@ -7,7 +7,7 @@ import SwiftUI
 
 /// 9.1 · My Cue Voice. Not set up: "Make scripts sound like you." and one yellow button that opens the four questions. Set up:
 /// the meter ("VOICE 65% · GOOD START"), one sentence of what Cue knows, the next question (answer it here), and two buttons —
-/// **Edit voice** (the full page, 9.3) and **✦ Preview** (a line in the creator's voice).
+/// **Edit voice** (the full page, 9.3) and **✦ Preview** (a sample in the creator's voice).
 struct MyCueVoiceCard: View {
     /// The sheet over this card, if one is up: the question to open on, or none for the first.
     @Binding var setup: ProfileVoiceSetup?
@@ -15,9 +15,8 @@ struct MyCueVoiceCard: View {
 
     @Environment(CreatorProfileService.self) private var profile
     @Environment(VoiceQuestionScheduler.self) private var scheduler
-    @Environment(ToastService.self) private var toast
     @Environment(AIStatus.self) private var aiStatus
-    @State private var question: VoiceQuestion?
+    @State private var editing: VoiceEditorField?
 
     private var isSet: Bool { profile.profile.hasMinimumVoice }
 
@@ -27,11 +26,7 @@ struct MyCueVoiceCard: View {
         }
         .padding(EdgeInsets(top: 14, leading: 16, bottom: 14, trailing: 16))
         .profileBlock(glow: RadialGradient(colors: [Palette.aiGlow, .clear], center: .topLeading, startRadius: 0, endRadius: 260))
-        .sheet(item: $question) { question in
-            VoiceQuestionSheet(model: VoiceQuestionSheetModel(
-                question: question, mode: .edit, fieldQuestions: [question], profile: profile, scheduler: scheduler, toast: toast
-            ))
-        }
+        .sheet(item: $editing) { VoiceEditorSheet(field: $0) }
     }
 
     // MARK: - Not set up
@@ -93,9 +88,9 @@ struct MyCueVoiceCard: View {
         }
     }
 
-    /// The next question in the queue, one line, answered in its sheet.
+    /// The next question in the queue, one line, answered in the editor of its field.
     private func nextQuestion(_ item: VoiceQuestion) -> some View {
-        Button { question = item } label: {
+        Button { editing = VoiceEditorField(item.field) } label: {
             HStack(spacing: 10) {
                 Text(verbatim: "✦").foregroundStyle(Palette.aiText)
                 Text(item.title)

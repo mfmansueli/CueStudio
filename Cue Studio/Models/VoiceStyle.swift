@@ -20,4 +20,15 @@ nonisolated enum VoiceStyle: String, Codable, CaseIterable, Identifiable, Sendab
         case .conversational: String(localized: "Conversational")
         }
     }
+
+    /// What the AI reads (English, whatever the interface language is).
+    var promptName: String {
+        switch self {
+        case .shortSentences: "short sentences"
+        case .storytelling: "storytelling"
+        case .educational: "educational"
+        case .opinionDriven: "opinionated"
+        case .conversational: "conversational"
+        }
+    }
 }

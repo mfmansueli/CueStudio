@@ -32,6 +32,8 @@ final class ScriptAIService: ScriptWriting {
     private let capabilities: AIModelCapabilities
     private let planner: AIModelPlanner
     private let logger = Logger(subsystem: "studio.cue", category: "ScriptAI")
+    private var foregroundRequests = 0
+    private var backgroundWork: [UUID: Task<String?, Never>] = [:]
 
     /// - Parameter capabilities: what the models can do and in which languages; Apple's own answers
     ///   unless a test gives a fixed list.
@@ -60,6 +62,8 @@ final class ScriptAIService: ScriptWriting {
     // MARK: - Scripts
 
     func generate(_ request: ScriptRequest) async throws -> GeneratedScript {
+        beginForeground()
+        defer { endForeground() }
         let begin = ContinuousClock.now
         let task: AIModelRoute.Task = request.isFreePrompt ? .freePrompt : .format
         let request = resolvingVariant(of: request)
@@ -86,26 +90,78 @@ final class ScriptAIService: ScriptWriting {
         // be the creator's doing, and a second run seldom does the same.
         let inputSize = ScriptPromptBuilder.instructions(for: request).count + ScriptPromptBuilder.prompt(for: request).count
         return try await withFallback(plan, retriesRunaway: inputSize < Self.smallInput, operation: "script", language: language) { model in
-            let attempt = ContinuousClock.now
-            do {
-                return try await self.draft(request, on: model, since: begin)
-            } catch ScriptAIError.wrongLanguage {
-                // Measured on an iPhone: a Japanese idea with an English catchphrase came back in English. One more try,
-                // told plainly; if it still isn't in the language, the creator is told and nothing is saved.
-                AIFailureReport.note(
-                    ScriptAIError.wrongLanguage, operation: "script", route: model, language: language,
-                    seconds: attempt.duration(to: .now).inSeconds, isFinal: false
-                )
-                return try await self.draft(request, on: model, since: begin, insistsOnLanguage: true)
-            } catch ScriptAIError.emptyResponse {
-                // Measured on an iPhone: now and then a request comes back with nothing in it, and the same one works at once.
-                AIFailureReport.note(
-                    ScriptAIError.emptyResponse, operation: "script", route: model, language: language,
-                    seconds: attempt.duration(to: .now).inSeconds, isFinal: false
-                )
-                return try await self.draft(request, on: model, since: begin)
+            try await self.writeChecked(request, on: model, since: begin, language: language)
+        }
+    }
+
+    /// One script on one model, kept to what the creator asked (`VoiceCheckedWriting`).
+    private func writeChecked(
+        _ request: ScriptRequest, on model: AIModelRoute, since begin: ContinuousClock.Instant, language: String?
+    ) async throws -> GeneratedScript {
+        let writing = VoiceCheckedWriting(
+            draft: { request, violations in
+                try await self.draftRepeatingLanguageOrEmpty(request, on: model, since: begin, language: language, correcting: violations)
+            },
+            isGuardrailRefusal: Self.isGuardrailRefusal,
+            report: { error, operation in
+                AIFailureReport.note(error, operation: operation, route: model, language: language, seconds: 0, isFinal: false)
+            }
+        )
+        var script = await expandingIfShort(try await writing.write(request), for: request, on: model, language: language)
+        // A script that is still a sliver of what was asked (the model wrote six words, or stopped after one block) is a failed sample, not a short one:
+        // lengthening a block of a few words doesn't fix it, a fresh draft often does. One more, and the longer of the two is kept.
+        let minimum = ReadTime.words(for: request.targetRange.lowerBound)
+        if script.usedLanguageModel, Self.expandsShortScripts, Double(ScriptExpansion.words(in: script.text)) < Double(minimum) * Self.sliver {
+            AIFailureReport.note(
+                ScriptAIError.emptyResponse, operation: "script.sliver", route: model, language: language, seconds: 0, isFinal: false
+            )
+            if let again = try? await writing.write(request) {
+                let second = await expandingIfShort(again, for: request, on: model, language: language)
+                if ScriptExpansion.words(in: second.text) > ScriptExpansion.words(in: script.text) { script = second }
             }
         }
+        return script
+    }
+
+    /// A script with fewer words than this share of its minimum, after it was lengthened, is written once more from the start.
+    static let sliver = 0.4
+
+    /// The script, with the one more try of what measured on an iPhone to fix itself: a Japanese idea with an English catchphrase came back
+    /// in English (told plainly the second time; if it still isn't in the language, the creator is told and nothing is saved), and now and
+    /// then a request comes back with nothing in it and the same one works at once.
+    private func draftRepeatingLanguageOrEmpty(
+        _ request: ScriptRequest, on model: AIModelRoute, since begin: ContinuousClock.Instant, language: String?,
+        correcting violations: [VoiceViolation] = []
+    ) async throws -> GeneratedScript {
+        let attempt = ContinuousClock.now
+        do {
+            return try await draft(request, on: model, since: begin, correcting: violations)
+        } catch ScriptAIError.wrongLanguage {
+            AIFailureReport.note(
+                ScriptAIError.wrongLanguage, operation: "script", route: model, language: language,
+                seconds: attempt.duration(to: .now).inSeconds, isFinal: false
+            )
+            return try await draft(request, on: model, since: begin, insistsOnLanguage: true, correcting: violations)
+        } catch ScriptAIError.emptyResponse {
+            AIFailureReport.note(
+                ScriptAIError.emptyResponse, operation: "script", route: model, language: language,
+                seconds: attempt.duration(to: .now).inSeconds, isFinal: false
+            )
+            return try await draft(request, on: model, since: begin, correcting: violations)
+        } catch ScriptAIError.timedOut {
+            // Measured on an iPhone 15 Pro: a request that went quiet. One more, from the start; if it goes quiet too, the creator is told.
+            AIFailureReport.note(
+                ScriptAIError.timedOut, operation: "script", route: model, language: language,
+                seconds: attempt.duration(to: .now).inSeconds, isFinal: false
+            )
+            return try await draft(request, on: model, since: begin, correcting: violations)
+        }
+    }
+
+    /// The framework refused the request itself (not the answer): worth asking again without the creator's own words.
+    private static func isGuardrailRefusal(_ error: any Error) -> Bool {
+        if case LanguageModelError.guardrailViolation = error { return true }
+        return false
     }
 
     /// The creator's regional variant is only asked of the model when the model writes it; otherwise
@@ -117,15 +173,51 @@ final class ScriptAIService: ScriptWriting {
         return resolved
     }
 
+    /// The limits a request to the model lives by (`GenerationDeadlines`); tests shorten them.
+    static var deadlines = GenerationDeadlines.standard
+
+    /// Writes the draft, and gives up on it when the model goes quiet (`ScriptAIError.timedOut`): a request that never answered kept the star on screen
+    /// for ever. What had arrived by then is used when it is a script.
+    private func draft(
+        _ request: ScriptRequest, on model: AIModelRoute, since begin: ContinuousClock.Instant, insistsOnLanguage: Bool = false,
+        correcting violations: [VoiceViolation] = []
+    ) async throws -> GeneratedScript {
+        let progress = GenerationProgress()
+        let deadlines = Self.deadlines
+        let work = Task {
+            try await self.streamDraft(request, on: model, since: begin, insistsOnLanguage: insistsOnLanguage, correcting: violations, progress: progress)
+        }
+        let watchdog = Task {
+            while !Task.isCancelled {
+                try? await Task.sleep(for: .seconds(1))
+                if Task.isCancelled { return }
+                if progress.checkStalled(against: deadlines) {
+                    work.cancel()
+                    return
+                }
+            }
+        }
+        defer { watchdog.cancel() }
+        do {
+            return try await withTaskCancellationHandler { try await work.value } onCancel: { work.cancel() }
+        } catch {
+            // Cancelled by the watchdog, not by the creator: the model went quiet.
+            if progress.didStall, !Task.isCancelled { throw ScriptAIError.timedOut }
+            throw error
+        }
+    }
+
     /// Streams the draft so the time to the first words can be told apart from the time to the last.
     /// `begin` is when `generate` was called: choosing the model and building the request count as
     /// preparation, up to the moment the request goes out.
-    private func draft(
-        _ request: ScriptRequest, on model: AIModelRoute, since begin: ContinuousClock.Instant, insistsOnLanguage: Bool = false
+    private func streamDraft(
+        _ request: ScriptRequest, on model: AIModelRoute, since begin: ContinuousClock.Instant, insistsOnLanguage: Bool,
+        correcting violations: [VoiceViolation], progress: GenerationProgress
     ) async throws -> GeneratedScript {
         let clock = ContinuousClock()
         let session = session(on: model, instructions: ScriptPromptBuilder.instructions(for: request, insistsOnLanguage: insistsOnLanguage))
-        let prompt = ScriptPromptBuilder.prompt(for: request)
+        var prompt = ScriptPromptBuilder.prompt(for: request)
+        if !violations.isEmpty { prompt += "\n" + ScriptPromptBuilder.correctionNote(for: violations) }
         let started = clock.now
         var firstResponse: Duration?
         var latest: GeneratedContent?
@@ -137,27 +229,35 @@ final class ScriptAIService: ScriptWriting {
         do {
             for try await snapshot in session.streamResponse(to: prompt, generating: ScriptDraft.self, options: options) {
                 if firstResponse == nil { firstResponse = started.duration(to: clock.now) }
+                progress.noteProgress()
                 latest = snapshot.rawContent
                 partial = snapshot.content
             }
         } catch {
-            // A model that ran on past the end of a script it had already written: what arrived is the script.
-                guard AIFailure(error) == .tooLong, let draft = Self.rescued(partial, request: request) else { throw error }
-            logger.notice("The model ran on past the end of the script; using what had arrived")
+            // A model that ran on past the end of a script it had already written, or went quiet before the end: what arrived is the script.
+            guard AIFailure(error) == .tooLong || progress.didStall, let draft = Self.rescued(partial, request: request) else { throw error }
+            logger.notice("The model stopped before the end of the script; using what had arrived")
             rescued = draft
         }
-        try Task.checkCancellation()
+        // The watchdog's own cancellation is not the creator's.
+        if !progress.didStall { try Task.checkCancellation() }
         let draft: ScriptDraft
         if let rescued {
             draft = rescued
         } else {
-            guard let latest else { throw ScriptAIError.emptyResponse }
+            guard let latest else {
+                Self.noteEmpty("no snapshot arrived (first response \(firstResponse.map { "\($0)" } ?? "never"))")
+                throw ScriptAIError.emptyResponse
+            }
             if let complete = try? ScriptDraft(latest) {
                 draft = complete
             } else if let cut = Self.rescued(partial, request: request) {
                 // The bound ended it before the last field: the blocks that arrived are the script.
                 draft = cut
             } else {
+                let blocks = partial?.blocks?.count ?? 0
+                let words = (partial?.blocks ?? []).reduce(0) { $0 + ReadTime.wordCount(in: $1.text ?? "") }
+                Self.noteEmpty("the answer was not a script: \(blocks) blocks, \(words) words, cap \(Self.responseTokens(for: request)) tokens")
                 throw ScriptAIError.emptyResponse
             }
         }
@@ -165,7 +265,10 @@ final class ScriptAIService: ScriptWriting {
             prepare: begin.duration(to: started), firstResponse: firstResponse, generation: started.duration(to: clock.now)
         )
         let text = ScriptPromptBuilder.clean(draft.scriptText)
-        guard !text.isEmpty else { throw ScriptAIError.emptyResponse }
+        guard !text.isEmpty else {
+            Self.noteEmpty("the script was empty once cleaned: \(draft.blocks.count) blocks")
+            throw ScriptAIError.emptyResponse
+        }
         try Self.requireLanguage(request.language?.locale.language, in: text)
         let title: String = switch request.source {
         case .format(let type, let brief): type.draftTitle(from: brief, language: request.language)
@@ -191,6 +294,13 @@ final class ScriptAIService: ScriptWriting {
     // MARK: - Editing
 
     func rewrite(_ text: String, with tool: ScriptTool, context: RewriteContext) async throws -> String {
+        try await rewriteReported(text, with: tool, context: context).text
+    }
+
+    /// The tool at work, a part of the script at a time and each part held to the tool's promise (`RewriteRunner`), with a report of what was done.
+    func rewriteReported(_ text: String, with tool: ScriptTool, context: RewriteContext) async throws -> RewriteResult {
+        beginForeground()
+        defer { endForeground() }
         // The language the result must be in: the target of a translation, otherwise the script's own.
         let expected: Locale.Language?
         var needed: [Locale.Language] = []
@@ -209,31 +319,39 @@ final class ScriptAIService: ScriptWriting {
         let operation = "rewrite.\(tool)"
         let language = expected?.minimalIdentifier
         let voice = tool == .inMyVoice ? context.voice : nil
-        func attempt(on model: AIModelRoute) async throws -> String {
-            let session = self.session(on: model, instructions: ScriptPromptBuilder.rewriteInstructions(voice: voice, language: expected))
-            let response = try await session.respond(to: ScriptPromptBuilder.rewritePrompt(for: text, tool: tool, context: context))
-            let rewritten = ScriptPromptBuilder.clean(response.content)
-            guard !rewritten.isEmpty else { throw ScriptAIError.emptyResponse }
-            try Self.requireLanguage(expected, in: rewritten)
-            return rewritten
-        }
-        return try await withFallback(plan, operation: operation, language: language) { model in
-            do {
-                return try await attempt(on: model)
-            } catch ScriptAIError.wrongLanguage {
-                AIFailureReport.note(ScriptAIError.wrongLanguage, operation: operation, route: model, language: language, seconds: 0, isFinal: false)
-                // Measured on an iPhone: "In my voice" on a Japanese script came back in English. One more try; then the
-                // creator is told and the script stays as it was.
-                return try await attempt(on: model)
+        let instructions = ScriptPromptBuilder.rewriteInstructions(voice: voice, language: expected)
+        let ask: RewriteRunner.Ask = { [self] part, details in
+            @MainActor func attempt(on model: AIModelRoute) async throws -> String {
+                let session = self.session(on: model, instructions: instructions, transformsText: true)
+                let prompt = ScriptPromptBuilder.rewritePrompt(for: part, tool: tool, context: context, part: details)
+                let response = try await self.answering { try await session.respond(to: prompt).content }
+                let rewritten = ScriptPromptBuilder.clean(response)
+                guard !rewritten.isEmpty else { throw ScriptAIError.emptyResponse }
+                try Self.requireLanguage(expected, in: rewritten)
+                return rewritten
+            }
+            return try await self.withFallback(plan, operation: operation, language: language) { model in
+                do {
+                    return try await attempt(on: model)
+                } catch ScriptAIError.wrongLanguage {
+                    AIFailureReport.note(ScriptAIError.wrongLanguage, operation: operation, route: model, language: language, seconds: 0, isFinal: false)
+                    // Measured on an iPhone: "In my voice" on a Japanese script came back in English. One more try; then the
+                    // creator is told and the script stays as it was.
+                    return try await attempt(on: model)
+                }
             }
         }
+        return try await RewriteRunner.run(text, tool: tool, context: context, ask: ask)
     }
 
     func hooks(for text: String, context: RewriteContext) async throws -> [String] {
+        beginForeground()
+        defer { endForeground() }
         let plan = try await plan(for: .hooks, languages: context.sourceLanguage.map { [$0] } ?? [])
         return try await withFallback(plan, operation: "hooks", language: context.sourceLanguage?.minimalIdentifier) { model in
             let session = self.session(on: model, instructions: ScriptPromptBuilder.rewriteInstructions(voice: context.voice))
-            let ideas = try await session.respond(to: ScriptPromptBuilder.hooksPrompt(for: text, context: context), generating: HookIdeas.self).content
+            let prompt = ScriptPromptBuilder.hooksPrompt(for: text, context: context)
+            let ideas = try await self.answering { try await session.respond(to: prompt, generating: HookIdeas.self).content }
             let hooks = ideas.hooks.map(ScriptPromptBuilder.cleanTitle).filter { !$0.isEmpty }
             guard !hooks.isEmpty else { throw ScriptAIError.emptyResponse }
             try Self.requireLanguage(context.sourceLanguage, in: hooks.joined(separator: " "))
@@ -241,13 +359,15 @@ final class ScriptAIService: ScriptWriting {
         }
     }
 
-    func themeIdeas(for niches: [Niche], language: CueLanguage?) async throws -> [ThemeIdea] {
+    func themeIdeas(for niches: [Niche], language: CueLanguage?, voice: CreatorVoice?) async throws -> [ThemeIdea] {
+        beginForeground()
+        defer { endForeground() }
         let plan = try await plan(for: .themes, languages: language.map { [$0.locale.language] } ?? [])
         let known = niches.isEmpty ? [Niche.lifestyle] : niches
         return try await withFallback(plan, operation: "themes", language: language?.locale.identifier) { model in
-            let session = self.session(on: model, instructions: "You suggest video ideas for creators who film themselves talking to camera.")
-            let prompt = ScriptPromptBuilder.themesPrompt(for: known, language: language)
-            let suggestions = try await session.respond(to: prompt, generating: ThemeSuggestions.self).content
+            let session = self.session(on: model, instructions: ScriptPromptBuilder.themesInstructions(voice: voice))
+            let prompt = ScriptPromptBuilder.themesPrompt(for: known, voice: voice, language: language)
+            let suggestions = try await self.answering { try await session.respond(to: prompt, generating: ThemeSuggestions.self).content }
             let ideas = suggestions.ideas.compactMap { idea -> ThemeIdea? in
                 let title = ScriptPromptBuilder.cleanTitle(idea.title)
                 guard !title.isEmpty else { return nil }
@@ -262,15 +382,79 @@ final class ScriptAIService: ScriptWriting {
     func pickTopic(for text: String, among topics: [String]) async -> String? {
         // The small on-device model is enough, and nothing about the script leaves the iPhone. A script in a
         // language it doesn't write stays untagged rather than tagged by a guess.
-        guard !topics.isEmpty, capabilities.deviceStatus == .available else { return nil }
+        guard !topics.isEmpty, capabilities.deviceStatus == .available, !isBusyForeground else { return nil }
         if let language = LanguageDetector.dominantLanguage(in: text), !capabilities.deviceSupports(Self.locale(for: language)) { return nil }
-        let session = LanguageModelSession(
-            model: SystemLanguageModel.default,
-            instructions: "You file a creator's video script under one of their topics. Answer with one topic exactly as given, or none."
-        )
         let prompt = "Topics: \(topics.joined(separator: " | "))\n\nScript:\n\(text.prefix(1500))"
-        guard let choice = try? await session.respond(to: prompt, generating: TopicChoice.self).content.topic else { return nil }
+        // Filing a script is never worth making a script wait: it runs behind whatever the creator asked for, is cancelled when they ask for
+        // something (`beginForeground`), and is given up on after a few seconds.
+        let id = UUID()
+        let work = Task { () -> String? in
+            let session = LanguageModelSession(
+                model: SystemLanguageModel.default,
+                instructions: "You file a creator's video script under one of their topics. Answer with one topic exactly as given, or none."
+            )
+            return try? await session.respond(to: prompt, generating: TopicChoice.self).content.topic
+        }
+        backgroundWork[id] = work
+        let watchdog = Task {
+            try? await Task.sleep(for: Self.topicLimit)
+            work.cancel()
+        }
+        defer {
+            watchdog.cancel()
+            backgroundWork[id] = nil
+        }
+        let choice = await withTaskCancellationHandler { await work.value } onCancel: { work.cancel() }
+        guard let choice else { return nil }
         return topics.first { $0.caseInsensitiveCompare(choice.trimmingCharacters(in: .whitespacesAndNewlines)) == .orderedSame }
+    }
+
+    // MARK: - What waits for what
+
+    /// Requests the creator is waiting for (a script, a rewrite, hooks, ideas) are under way: the work that can wait (filing scripts under topics) stands
+    /// aside. Measured on an iPhone 15 Pro: the arrow created a script, which started the filing of older ones on the same model, and the script waited
+    /// behind them with nothing to show for it.
+    var isBusyForeground: Bool { foregroundRequests > 0 }
+
+    private func beginForeground() {
+        foregroundRequests += 1
+        for work in backgroundWork.values { work.cancel() }
+    }
+
+    private func endForeground() {
+        foregroundRequests = max(0, foregroundRequests - 1)
+    }
+
+    /// How long filing a script under a topic may take.
+    private static let topicLimit: Duration = .seconds(15)
+    /// How long a request that answers in one piece (a rewrite, hooks, ideas) may take before the creator is told.
+    static var singleAnswerLimit: Duration = .seconds(90)
+
+    /// A request that answers in one piece, given up on (`ScriptAIError.timedOut`) when the model never does.
+    func answering<T: Sendable>(_ work: @escaping @MainActor () async throws -> T) async throws -> T {
+        let limit = Self.singleAnswerLimit
+        let task = Task { try await work() }
+        let flag = TimeoutFlag()
+        let watchdog = Task {
+            try? await Task.sleep(for: limit)
+            if !Task.isCancelled {
+                flag.isSet = true
+                task.cancel()
+            }
+        }
+        defer { watchdog.cancel() }
+        do {
+            return try await withTaskCancellationHandler { try await task.value } onCancel: { task.cancel() }
+        } catch {
+            if flag.isSet, !Task.isCancelled { throw ScriptAIError.timedOut }
+            throw error
+        }
+    }
+
+    /// Set by the watchdog of `answering` when it gave up.
+    @MainActor
+    private final class TimeoutFlag {
+        var isSet = false
     }
 
     // MARK: - Models
@@ -288,11 +472,15 @@ final class ScriptAIService: ScriptWriting {
         }
     }
 
-    private func session(on model: AIModelRoute, instructions: String) -> LanguageModelSession {
+    /// - Parameter transformsText: the model is only changing words the creator wrote (a rewrite, a translation). The framework has guardrails made for
+    ///   exactly that, which don't treat the creator's own words as a request: measured on an iPhone 15 Pro, the default ones refused a script about
+    ///   cold showers ("May contain unsafe content") when asked to fit it to the length of a platform.
+    func session(on model: AIModelRoute, instructions: String, transformsText: Bool = false) -> LanguageModelSession {
         if model == .privateCloud, let privateCloud {
             return LanguageModelSession(model: privateCloud, instructions: instructions)
         }
-        return LanguageModelSession(model: SystemLanguageModel.default, instructions: instructions)
+        let device = transformsText ? SystemLanguageModel(guardrails: .permissiveContentTransformations) : SystemLanguageModel.default
+        return LanguageModelSession(model: device, instructions: instructions)
     }
 
     /// Runs `work` on the plan's model and, when the other model can do what this one couldn't *and the
@@ -352,18 +540,29 @@ final class ScriptAIService: ScriptWriting {
         case .modelPreparing: ScriptAIError.modelPreparing
         case .rateLimited: ScriptAIError.rateLimited
         case .cancelled: CancellationError()
+        case .declined: ScriptAIError.declined
         case .cloudUnreachable, .other: error
         }
     }
 
-    /// Tokens the answer may take: three a word of the longest script asked for, and room for the structure around it.
+    /// Why the last answer was empty, for the console and the device measurements (never shown, never the creator's words).
+    nonisolated(unsafe) static var lastEmptyReason: String?
+
+    private static func noteEmpty(_ reason: String) {
+        lastEmptyReason = reason
+        Logger(subsystem: "studio.cue", category: "ScriptAI").notice("Empty answer: \(reason, privacy: .public)")
+    }
+
+    /// Tokens the answer may take: three a word of the longest script the request asks the model for (more than the platform's own, `askedWords`), and
+    /// room for the structure around it. Cut short, a script written for the doubled ask came back with its last block unfinished.
     static func responseTokens(for request: ScriptRequest) -> Int {
-        let words = ReadTime.words(for: request.targetRange.upperBound)
+        let words = ScriptPromptBuilder.askedRange(for: request.targetRange).high
         return min(1_800, max(600, words * 3 + 350))
     }
 
     /// The script out of an answer that stopped before it was complete: needs at least two blocks with text and half
-    /// the words asked for, so a few lines before a failure are never passed off as a script.
+    /// the words asked for (or one block with most of them), and not more than twice what was asked, so a few lines before a failure, or a block that
+    /// ran on, are never passed off as a script.
     static func rescued(_ partial: ScriptDraft.PartiallyGenerated?, request: ScriptRequest) -> ScriptDraft? {
         guard let partial else { return nil }
         let blocks = (partial.blocks ?? []).compactMap { block -> ScriptDraft.Block? in
@@ -371,7 +570,12 @@ final class ScriptAIService: ScriptWriting {
             return ScriptDraft.Block(label: block.label ?? "", text: text)
         }
         let words = blocks.reduce(0) { $0 + ReadTime.wordCount(in: CueParser.stripCues($1.text)) }
-        guard blocks.count >= 2, words >= max(15, ReadTime.words(for: request.targetRange.lowerBound) / 2) else { return nil }
+        let low = ReadTime.words(for: request.targetRange.lowerBound)
+        let high = ScriptPromptBuilder.askedRange(for: request.targetRange).high
+        guard words >= max(15, low / 2), words <= high * 2 else { return nil }
+        // One block alone is a script only when it holds most of one: measured on an iPhone 15 Pro the model sometimes put the whole script in its first
+        // block and stopped (103 to 120 words), and sometimes ran on in it without end (more than a thousand), which is not one.
+        guard blocks.count >= 2 || Double(words) >= Double(low) * 0.7 else { return nil }
         return ScriptDraft(title: partial.title ?? "", blocks: blocks, statesFacts: partial.statesFacts ?? false)
     }
 
@@ -392,7 +596,7 @@ final class ScriptAIService: ScriptWriting {
     }
 
     /// Nothing the model wrote replaces the creator's words if it isn't in the language asked for.
-    private static func requireLanguage(_ expected: Locale.Language?, in text: String) throws {
+    static func requireLanguage(_ expected: Locale.Language?, in text: String) throws {
         guard let expected, !OutputLanguageCheck.isPlausible(text, in: expected) else { return }
         throw ScriptAIError.wrongLanguage
     }

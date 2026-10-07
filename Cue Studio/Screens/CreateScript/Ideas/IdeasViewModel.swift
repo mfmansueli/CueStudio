@@ -53,7 +53,8 @@ final class IdeasViewModel {
         if writer.availability.isAvailable {
             isLoading = true
             defer { isLoading = false }
-            if let fresh = try? await writer.themeIdeas(for: niches, language: interfaceLanguage), !fresh.isEmpty {
+            let voice = profile.writesInMyVoice ? profile.profile.voice(inLanguage: interfaceLanguage?.locale.language.languageCode?.identifier) : nil
+            if let fresh = try? await writer.themeIdeas(for: niches, language: interfaceLanguage, voice: voice), !fresh.isEmpty {
                 ideas = Array(fresh.prefix(ThemeCatalog.pageSize))
                 return
             }

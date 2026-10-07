@@ -22,7 +22,10 @@ nonisolated enum AIFailure: Equatable, Sendable {
     case rateLimited
     /// The creator (or the app) cancelled the request. Not a failure to explain or to retry elsewhere.
     case cancelled
-    /// Anything another model wouldn't fix (a refusal, a guardrail, a bad response).
+    /// The model won't work on this text: its guardrails or a refusal (measured on an iPhone 15 Pro: "May contain unsafe content" over a script about
+    /// cold showers). Another model wouldn't do better, and the framework's own words mean nothing to a creator.
+    case declined
+    /// Anything another model wouldn't fix (a bad response).
     case other
 
     init(_ error: any Error) {
@@ -41,6 +44,7 @@ nonisolated enum AIFailure: Equatable, Sendable {
             case .contextSizeExceeded: self = .tooLong
             case .unsupportedLanguageOrLocale: self = .unsupportedLanguage
             case .rateLimited: self = .rateLimited
+            case .guardrailViolation, .refusal: self = .declined
             default: self = .other
             }
         default:

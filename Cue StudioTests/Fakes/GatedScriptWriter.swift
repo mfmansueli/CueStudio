@@ -51,5 +51,5 @@ final class GatedScriptWriter: ScriptWriting {
 
     func rewrite(_ text: String, with tool: ScriptTool, context: RewriteContext) async throws -> String { text }
     func hooks(for text: String, context: RewriteContext) async throws -> [String] { [] }
-    func themeIdeas(for niches: [Niche], language: CueLanguage?) async throws -> [ThemeIdea] { [] }
+    func themeIdeas(for niches: [Niche], language: CueLanguage?, voice: CreatorVoice?) async throws -> [ThemeIdea] { [] }
 }

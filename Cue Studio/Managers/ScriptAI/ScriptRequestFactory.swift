@@ -34,18 +34,37 @@ struct ScriptRequestFactory {
         let effectiveLength = length == .auto ? (ScriptLength.detected(in: text) ?? .auto) : length
         let preset = rules.preset(for: platform, monetizationGoals: profile.profile.monetizationGoals)
         let isSerious = format?.structure.isSerious ?? false
+        let language = writingLanguage(for: text)
+        let voice = profile.writesInMyVoice && !isSerious
+            ? profile.profile.voice(
+                inLanguage: language?.locale.language.languageCode?.identifier, idea: text, professional: PlatformRegister(platform) == .professional
+            ) : nil
         return ScriptRequest(
             source: .prompt(text),
             platform: platform,
             tone: nil,
-            voice: profile.writesInMyVoice && !isSerious ? profile.profile.voice : nil,
-            targetRange: effectiveLength.targetRange(ideal: preset.idealRange),
-            language: writingLanguage(for: text),
+            voice: voice,
+            targetRange: targetRange(for: effectiveLength, platform: platform, preset: preset, voice: voice),
+            language: language,
             languageVariant: writingVariant(for: text),
             format: format,
             // A brand brief only means something for a sponsored ad.
             brand: format == .ad ? brand : nil
         )
+    }
+
+    /// The least a spoken video can run and still say something (a hook, a point and a call to action, about 60 words at 150 a minute): what the creator's
+    /// usual length may bring a script down to. The platforms' own ideals start higher (`PlatformRules.json`, revision 3).
+    static let spokenFloor: TimeInterval = 25
+
+    /// How long the script runs: what the creator chose, or, on Auto, how long their videos usually are (they said so in My Cue Voice; a monetization
+    /// goal left on by default shouldn't outweigh it, but nothing goes below the spoken floor), or else the platform's ideal. Long-form on a rig and
+    /// Stories (a card of a few seconds, whatever their other videos are) keep the platform's own.
+    func targetRange(for length: ScriptLength, platform: Platform, preset: PlatformPreset, voice: CreatorVoice?) -> ClosedRange<TimeInterval> {
+        guard length == .auto, platform != .stories, !preset.prefersStudio, let usual = voice?.reach.length?.targetRange else {
+            return length.targetRange(ideal: preset.idealRange)
+        }
+        return max(usual.lowerBound, Self.spokenFloor)...usual.upperBound
     }
 
     /// The script language when one is set; otherwise the language the creator typed in; otherwise

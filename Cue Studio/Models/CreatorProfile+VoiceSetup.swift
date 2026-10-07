@@ -8,12 +8,12 @@ import Foundation
 nonisolated extension CreatorProfile {
     /// Which steps of the voice the creator has answered themselves. A new profile already holds a
     /// tone and a vocabulary (the defaults in `init`), and those are not proof that anyone set them,
-    /// so audience and tone count only once chosen in the setup or in Profile. Niches start empty,
-    /// so having one is the answer.
+    /// so audience and tone count only once chosen in the setup or in Profile. Topics start empty,
+    /// so having one (of the ten, one only My Cue Voice offers, or one the creator typed) is the answer.
     func hasAnswered(_ step: VoiceSetupStep) -> Bool {
         switch step {
-        case .role: role != nil
-        case .niche: !niches.isEmpty
+        case .role: role != nil || customRole != nil
+        case .niche: topicCount > 0
         case .audience, .tone: confirmedVoiceSteps.contains(step)
         }
     }
@@ -36,8 +36,16 @@ nonisolated extension CreatorProfile {
         VoiceSetupStep.allCases.filter { $0.isRequired && !hasAnswered($0) }
     }
 
-    /// Enough of the creator is known for the AI to write like them. With less, the voice is not applied.
+    /// The three things the voice is set up with are answered (a topic, the audience, the tone): the voice is "set". It is what the cards and the
+    /// nudges go by; the AI doesn't wait for it (`canWriteInMyVoice`).
     var hasMinimumVoice: Bool { missingVoiceSteps.isEmpty }
+
+    /// Something the creator answered is enough for the AI to start writing like them: what is known is used, and what isn't is left out (it was
+    /// all or nothing before: without the tone nothing of the voice was sent). Defaults a new profile starts with never count as answers, and
+    /// neither do the values an older build saved that can't be told from defaults until the creator confirms them.
+    var canWriteInMyVoice: Bool {
+        hasMinimumVoice || hasAnswered(.role) || topicCount > 0 || hasAnswered(.audience) || hasAnswered(.tone)
+    }
 
     // MARK: - Strength (v30 · 08 §1)
 
@@ -62,18 +70,19 @@ nonisolated extension CreatorProfile {
         return isFilled(field) ? field.weight : 0
     }
 
-    /// Examples that prove the voice: the ones pasted, plus one for every two approvals (at most three).
-    var provenExamples: Int { min(VoiceExample.limit, examples.count + approvals / 2) }
+    /// Examples that prove the voice: the ones pasted, plus one for every two approvals, plus what an import gave (four excerpts of their writing
+    /// make one, eight two, twelve three), at most three.
+    var provenExamples: Int { min(VoiceExample.limit, examples.count + approvals / 2 + min(VoiceExample.limit, excerpts.count / 4)) }
 
     /// Whether the creator has given Cue everything `field` asks for.
     func isFilled(_ field: VoiceField) -> Bool {
         switch field {
-        case .role: role != nil
-        case .topics: !niches.isEmpty || !customTopics.isEmpty
+        case .role: role != nil || customRole != nil
+        case .topics: topicCount > 0
         case .audience: isChosen(.audience) && audienceLevel != nil
         case .tone: isChosen(.tone) && (1...VoiceLimits.tones).contains(sounds.count)
         case .style: style.isComplete
-        case .formats: !formats.isEmpty || customTags.contains(where: { VoiceTextValidator.key($0) == VoiceTextValidator.key(Self.talkingHeadTag) })
+        case .formats: !formats.isEmpty || !formatTags.isEmpty
         case .openings: !openings.isEmpty
         case .endings: !endings.isEmpty
         case .phrases: !phrases.isEmpty
@@ -85,6 +94,12 @@ nonisolated extension CreatorProfile {
 
     /// The tag "Talking head" is kept under: it has no `ScriptType` of its own.
     static let talkingHeadTag = "Talking head"
+
+    /// The formats the creator filmed most that have no `ScriptType` ("Talking head", "Day in the life", "Q&A"…), as the tags they are kept under.
+    var formatTags: [String] {
+        let known = Set(VoiceQuestion.formatTags.values.map(VoiceTextValidator.key))
+        return customTags.filter { known.contains(VoiceTextValidator.key($0)) }
+    }
 
     /// Whether this one question has been answered (a field with several questions, like style and reach, is filled by all of them).
     func isAnswered(_ question: VoiceQuestion) -> Bool {

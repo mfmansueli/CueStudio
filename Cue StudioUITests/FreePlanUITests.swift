@@ -22,7 +22,7 @@ final class FreePlanUITests: XCTestCase {
         app.buttons["voiceSetup.skipRole"].tap()
         app.buttons["voiceSetup.niche.tech"].tap()
         app.buttons["voiceSetup.saveButton"].tap()
-        let technical = app.buttons["voiceSetup.audience.technical"]
+        let technical = app.buttons["voiceSetup.audience.insiders"]
         XCTAssertTrue(technical.waitForExistence(timeout: 5))
         technical.tap()
         XCTAssertFalse(app.buttons["paywall.closeButton"].waitForExistence(timeout: 2))

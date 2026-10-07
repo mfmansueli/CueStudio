@@ -133,10 +133,12 @@ struct CreatorProfileServiceTests {
         let old = #"{"name":"Maya","niches":["wellness"],"sounds":["funny","energetic"],"vocabulary":"genZ","phrases":["Hey fam"]}"#
         store.defaults.set(Data(old.utf8), forKey: DefaultsKey.creatorProfile)
         let service = CreatorProfileService(defaults: store.defaults)
-        #expect(!service.writesInMyVoice)
+        // What an older build saved can't be told from a default: the tone and the vocabulary are not used until the creator confirms them.
+        #expect(service.profile.voice.sounds.isEmpty && service.profile.voice.vocabulary == nil)
+        #expect(!service.profile.hasMinimumVoice)
         // Confirmed as it is, without picking anything again: the data is untouched.
         service.saveVoiceSetup(vocabulary: .genZ, sounds: [.funny, .energetic])
-        #expect(service.writesInMyVoice)
+        #expect(service.writesInMyVoice && service.profile.voice.sounds == [.funny, .energetic])
         #expect(service.profile.phrases == ["Hey fam"] && service.profile.niches == [.wellness])
         // It is remembered: nothing is asked again after a relaunch.
         let reloaded = CreatorProfileService(defaults: store.defaults)

@@ -27,4 +27,11 @@ enum TelemetryManager {
         crashlytics.log(failure.line)
         crashlytics.record(error: NSError(domain: "AppleIntelligence.\(failure.operation).\(failure.reason)", code: 0, userInfo: failure.keys))
     }
+
+    /// That a script had to be written once more because it broke what the creator asked (My Cue Voice), as a line in the next report: the kinds of
+    /// rule and how much of the voice was sent, never the words. Nothing when Firebase isn't running (tests, previews).
+    static func record(_ check: VoiceCheckReport) {
+        guard FirebaseApp.app() != nil else { return }
+        Crashlytics.crashlytics().log(check.line)
+    }
 }

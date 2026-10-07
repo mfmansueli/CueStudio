@@ -82,7 +82,7 @@ extension CreatorProfileService {
             profile = updated
             return .removed
         }
-        guard updated.formats.count < VoiceLimits.formats else { return .limit(VoicePersonalityItem.formats.limitMessage) }
+        guard updated.formats.count + updated.formatTags.count < VoiceLimits.formats else { return .limit(VoicePersonalityItem.formats.limitMessage) }
         updated.formats.append(format)
         updated.declinedVoiceItems.remove(.formats)
         profile = updated

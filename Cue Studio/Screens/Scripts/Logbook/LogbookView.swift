@@ -6,7 +6,7 @@
 import SwiftUI
 
 /// The Logbook: "Catch it now. Write it later." Hold the button and say an idea (its words arrive in the field, after anything typed
-/// there, and letting go saves them), or type it; each waits as a card with
+/// there, and letting go saves them; or tap it once to start and again to finish), or type it; each waits as a card with
 /// "✦ Write", which turns it into a script on the script page (Shape is only for adding cues). Without Apple Intelligence
 /// the card says "Write it" and opens a blank draft titled with the idea. Speaking is on-device recognition: only the words are
 /// kept, never the sound. Swipe an idea to delete it (or hold it).
@@ -24,6 +24,11 @@ struct LogbookView: View {
     /// What was in the field when the hold began: the heard words go after it.
     @State private var typedBeforeHold = ""
     @State private var isHolding = false
+    /// A tap, not a hold: the capture goes on after the finger is lifted, until the button is tapped again.
+    @State private var isLocked = false
+    /// The microphone is being asked for: it can't be told yet whether anything will listen.
+    @State private var isStarting = false
+    @State private var pressedAt: Date?
     @State private var heldSince: Date?
     @FocusState private var typing: Bool
 
@@ -35,12 +40,13 @@ struct LogbookView: View {
                     captureButton.padding(.top, 8)
                     // One line that never changes size: the words themselves go into the field below (they used to grow here and push
                     // the page down and up while the creator spoke).
-                    Text(isHolding ? String(localized: "Listening…") : String(localized: "Hold to capture an idea"))
+                    Text(statusLine)
                         .font(.system(size: 17))
                         .foregroundStyle(isHolding ? Palette.ink : Palette.ink2)
                         .lineLimit(1)
+                        .minimumScaleFactor(0.8)
                         .frame(maxWidth: .infinity, minHeight: 44)
-                        .accessibilityIdentifier("logbook.status")
+                        .accessibilityIdentifier(isLocked ? "logbook.tapToFinish" : "logbook.status")
                     if let notice = dictation.notice, !isHolding {
                         Text(notice.message)
                             .font(.footnote).foregroundStyle(Palette.warnText).multilineTextAlignment(.center)
@@ -81,9 +87,15 @@ struct LogbookView: View {
             }
         }
         .onChange(of: dictation.state) { _, state in
-            if state == .idle, heldSince != nil { finishCapture() }
+            if state == .idle, heldSince != nil {
+                isLocked = false
+                finishCapture()
+            }
         }
-        .onDisappear { dictation.cancel() }
+        .onDisappear {
+            isLocked = false
+            dictation.cancel()
+        }
         .accessibilityIdentifier("logbook.sheet")
     }
 
@@ -111,13 +123,13 @@ struct LogbookView: View {
         .contentShape(Circle())
         .animation(reduceMotion ? nil : .spring(response: 0.3, dampingFraction: 0.7), value: isHolding)
         .onLongPressGesture(minimumDuration: .infinity, maximumDistance: 80, pressing: { pressing in
-            pressing ? beginCapture() : endCapture()
+            pressing ? press() : release()
         }, perform: {})
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(Text("Capture an idea by voice"))
-        .accessibilityHint(Text("Double tap and hold, then speak"))
+        .accessibilityHint(Text("Double tap to start, double tap again to finish"))
         .accessibilityAddTraits(.isButton)
-        .accessibilityAction(named: Text("Start or stop")) { isHolding ? endCapture() : beginCapture() }
+        .accessibilityAction(named: Text("Start or stop")) { isHolding ? stopCapture() : beginCapture() }
         .accessibilityIdentifier("logbook.captureButton")
     }
 
@@ -230,6 +242,39 @@ struct LogbookView: View {
 
     // MARK: - Capturing
 
+    /// The one line under the button, which never changes size: what it does, what it hears, or how to finish.
+    private var statusLine: String {
+        if isLocked { return String(localized: "Tap the button again to finish") }
+        return isHolding ? String(localized: "Listening…") : String(localized: "Hold to capture an idea, or tap to start")
+    }
+
+    /// A finger down starts listening, unless a tap left it going: that finger is the one that ends it.
+    private func press() {
+        pressedAt = .now
+        guard !isHolding else { return }
+        beginCapture()
+    }
+
+    /// A finger up ends what it started. A tap (a touch too short to have said anything) is a start instead: it keeps listening until the next tap.
+    private func release() {
+        let held = pressedAt.map { Date.now.timeIntervalSince($0) } ?? .infinity
+        pressedAt = nil
+        guard isHolding else { return }
+        if isLocked {
+            stopCapture()
+        } else if held < Self.tapLimit {
+            // A tap where nothing can listen (no speech recognition, no permission) has nothing to keep going.
+            guard dictation.state != .idle || isStarting else { return stopCapture() }
+            isLocked = true
+            Haptics.selection()
+        } else {
+            endCapture()
+        }
+    }
+
+    /// Shorter than this, a touch is a tap.
+    private static let tapLimit: TimeInterval = 0.35
+
     private func beginCapture() {
         guard !isHolding, dictation.state == .idle else { return }
         isHolding = true
@@ -238,11 +283,20 @@ struct LogbookView: View {
         heldSince = .now
         Haptics.selection()
         let request = languages.dictationRequest(existingText: typedBeforeHold)
+        isStarting = true
         Task {
             await dictation.start(language: request) { heard in
                 typed = typedBeforeHold.isEmpty ? heard : typedBeforeHold + " " + heard
             }
+            isStarting = false
+            // It never reached the microphone (no speech recognition here, no permission): there is nothing to keep listening for.
+            if dictation.state == .idle, isLocked { stopCapture() }
         }
+    }
+
+    private func stopCapture() {
+        isLocked = false
+        endCapture()
     }
 
     private func endCapture() {

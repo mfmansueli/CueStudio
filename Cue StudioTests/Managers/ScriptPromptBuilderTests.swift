@@ -10,7 +10,7 @@ import Testing
 struct ScriptPromptBuilderTests {
     private let voice = CreatorVoice(
         sounds: [.casual, .confident], phrases: ["Hey fam"], vocabulary: .genZ,
-        styles: [.shortSentences, .storytelling], niches: [.wellness]
+        styles: [.shortSentences, .storytelling], niches: [.wellness], topics: [VoiceTopicEntry(topic: .niche(.wellness))]
     )
 
     private func formatRequest(type: ScriptType = .list, voice: CreatorVoice? = nil) -> ScriptRequest {
@@ -45,7 +45,8 @@ struct ScriptPromptBuilderTests {
     @Test func formatPromptCarriesStructureLengthAndBrief() {
         let prompt = ScriptPromptBuilder.prompt(for: formatRequest())
         #expect(prompt.contains("Hook → Tips → CTA"))
-        #expect(prompt.contains("between \(ReadTime.words(for: 60)) and \(ReadTime.words(for: 90)) spoken words"))
+        let asked = ScriptPromptBuilder.askedRange(for: 60...90)
+        #expect(prompt.contains("between \(asked.low) and \(asked.high) spoken words"))
         #expect(prompt.contains("- Topic: Morning habits"))
         #expect(prompt.contains("Tone: casual."))
     }
@@ -53,8 +54,9 @@ struct ScriptPromptBuilderTests {
     @Test func freePromptCarriesTheIdeaAndItsLength() {
         let prompt = ScriptPromptBuilder.prompt(for: promptRequest("How the electric shower was invented"))
         #expect(prompt.contains("The video: How the electric shower was invented"))
-        #expect(prompt.contains("between \(ReadTime.words(for: 108)) and \(ReadTime.words(for: 132)) spoken words"))
-        #expect(prompt.contains("YouTube · long-form"))
+        let asked = ScriptPromptBuilder.askedRange(for: 108...132)
+        #expect(prompt.contains("between \(asked.low) and \(asked.high) spoken words"))
+        #expect(prompt.contains("for YouTube (long-form)."), "the platform is named in English whatever the interface says")
         #expect(!prompt.contains("Tone:"))
     }
 
@@ -65,12 +67,12 @@ struct ScriptPromptBuilderTests {
 
     @Test func instructionsCarryTheCreatorsVoice() {
         let instructions = ScriptPromptBuilder.instructions(for: formatRequest(voice: voice))
-        #expect(instructions.contains("\"Hey fam\""))
+        #expect(instructions.contains("“Hey fam”"))
         #expect(instructions.contains("They sound casual and confident."))
-        #expect(instructions.contains("Gen Z slang"))
+        #expect(instructions.contains("casual slang"))
         #expect(instructions.contains("Their audience is young"))
-        #expect(instructions.contains("short sentences, storytelling"))
-        #expect(instructions.contains("Their niche: Wellness."))
+        #expect(instructions.contains("Style: storytelling."), "short sentences is what every profile holds: it is not told")
+        #expect(instructions.contains("Topics: wellness."))
     }
 
     @Test func withoutAVoiceTheInstructionsStayNeutral() {

@@ -144,7 +144,10 @@ struct V29MigrationTests {
     @Test func aV27ProfileRoundTripsWithTheNewFieldsAbsentOrEmpty() throws {
         let profile = try JSONDecoder().decode(CreatorProfile.self, from: Data(v27Profile.utf8))
         let decoded = try JSONDecoder().decode(CreatorProfile.self, from: JSONEncoder().encode(profile))
-        #expect(decoded == profile)
+        // Written again, it is of the version this build writes; nothing else changes.
+        var expected = profile
+        expected.voiceSchemaVersion = CreatorProfile.currentVoiceSchema
+        #expect(decoded == expected)
     }
 
     // MARK: - Prompter settings

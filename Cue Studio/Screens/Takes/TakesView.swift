@@ -134,7 +134,13 @@ struct TakesView: View {
         let sections = viewModel.sections
         if sections.isEmpty {
             VStack(spacing: 10) {
-                if let stage = viewModel.filter.stage {
+                if let platform = viewModel.filter.platform {
+                    // The platform is part of why it is empty: the stage's own words ("Nothing ready yet") would blame the stage alone.
+                    Text("No videos for \(platform.label) here").font(.title3.bold())
+                    Text("Pick another stage or platform, or show every video.")
+                        .font(.body)
+                        .foregroundStyle(Palette.ink2)
+                } else if let stage = viewModel.filter.stage {
                     Text(stage.emptyTitle).font(.title3.bold())
                     Text(stage.emptyDetail)
                         .font(.body)
@@ -144,11 +150,18 @@ struct TakesView: View {
                         .font(.subheadline)
                         .foregroundStyle(Palette.ink2)
                 }
+                if viewModel.isNarrowed {
+                    Button("Show every video") { viewModel.showEverything() }
+                        .buttonStyle(.cueSecondary(.compact, expands: false))
+                        .padding(.top, 6)
+                        .accessibilityIdentifier("takes.showAll")
+                }
             }
             .multilineTextAlignment(.center)
             .frame(maxWidth: .infinity)
             .padding(.horizontal, 32)
             .padding(.vertical, 50)
+            .accessibilityElement(children: .contain)
             .accessibilityIdentifier("takes.emptyStage")
         }
     }

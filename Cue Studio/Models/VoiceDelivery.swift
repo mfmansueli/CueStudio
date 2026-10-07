@@ -47,6 +47,15 @@ nonisolated enum VoiceEnergy: String, Codable, CaseIterable, Identifiable, Senda
         case .high: String(localized: "High")
         }
     }
+
+    /// What the AI reads (English, whatever the interface language is).
+    var promptName: String {
+        switch self {
+        case .calm: "calm"
+        case .balanced: "balanced"
+        case .high: "high and lively"
+        }
+    }
 }
 
 nonisolated enum SentenceLength: String, Codable, CaseIterable, Identifiable, Sendable {
@@ -61,6 +70,15 @@ nonisolated enum SentenceLength: String, Codable, CaseIterable, Identifiable, Se
         case .long: String(localized: "Long")
         }
     }
+
+    /// What the AI reads (English, whatever the interface language is).
+    var promptName: String {
+        switch self {
+        case .short: "short and punchy (under twelve words)"
+        case .mixed: "a mix of short and longer"
+        case .long: "longer and flowing, building an argument"
+        }
+    }
 }
 
 nonisolated enum WordLevel: String, Codable, CaseIterable, Identifiable, Sendable {
@@ -73,6 +91,15 @@ nonisolated enum WordLevel: String, Codable, CaseIterable, Identifiable, Sendabl
         case .plain: String(localized: "Plain")
         case .someSlang: String(localized: "Some slang")
         case .expertTerms: String(localized: "Expert terms")
+        }
+    }
+
+    /// What the AI reads (English, whatever the interface language is).
+    var promptName: String {
+        switch self {
+        case .plain: "plain and everyday"
+        case .someSlang: "some casual slang"
+        case .expertTerms: "the field's expert terms"
         }
     }
 }
@@ -115,6 +142,27 @@ nonisolated enum VideoLength: String, Codable, CaseIterable, Identifiable, Senda
         case .longer: String(localized: "Longer")
         }
     }
+
+    /// The seconds a script for a video that long should run (spoken: never below `ScriptRequestFactory.spokenFloor`); nil for "longer", which is the
+    /// platform's own ideal.
+    var targetRange: ClosedRange<TimeInterval>? {
+        switch self {
+        case .under30: 20...30
+        case .thirtyToSixty: 30...60
+        case .oneToThree: 60...180
+        case .longer: nil
+        }
+    }
+
+    /// What the AI reads (English, whatever the interface language is).
+    var promptName: String {
+        switch self {
+        case .under30: "under 30 seconds"
+        case .thirtyToSixty: "30 to 60 seconds"
+        case .oneToThree: "1 to 3 minutes"
+        case .longer: "longer than 3 minutes"
+        }
+    }
 }
 
 nonisolated enum HumorLevel: String, Codable, CaseIterable, Identifiable, Sendable {
@@ -130,6 +178,15 @@ nonisolated enum HumorLevel: String, Codable, CaseIterable, Identifiable, Sendab
         case .lot: String(localized: "A lot")
         }
     }
+
+    /// What the AI reads (English, whatever the interface language is).
+    var promptName: String {
+        switch self {
+        case .noHumor: "none, no jokes"
+        case .little: "a little"
+        case .lot: "a lot"
+        }
+    }
 }
 
 /// How much the creator's audience already knows (08 E3, second part).
@@ -143,6 +200,15 @@ nonisolated enum AudienceLevel: String, Codable, CaseIterable, Identifiable, Sen
         case .new: String(localized: "New to it")
         case .some: String(localized: "Some basics")
         case .experienced: String(localized: "Experienced")
+        }
+    }
+
+    /// What Cue does with it, under the choice.
+    var explanation: String {
+        switch self {
+        case .new: String(localized: "Cue explains terms and keeps steps simple.")
+        case .some: String(localized: "Cue skips the obvious and goes one level deeper.")
+        case .experienced: String(localized: "Cue uses the field’s terms and gets to the point.")
         }
     }
 }

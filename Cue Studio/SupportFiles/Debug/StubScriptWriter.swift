@@ -45,7 +45,8 @@ final class StubScriptWriter: ScriptWriting {
 
     func rewrite(_ text: String, with tool: ScriptTool, context: RewriteContext) async throws -> String {
         guard availability.isAvailable else { throw ScriptAIError.modelUnavailable(availability.reason ?? "") }
-        return text + "\n\n[smile] Rewritten."
+        // Each tool leaves its own mark, so a test can tell which button did what.
+        return text + "\n\n[smile] Rewritten with \(tool.rawValue)."
     }
 
     func hooks(for text: String, context: RewriteContext) async throws -> [String] {
@@ -53,7 +54,7 @@ final class StubScriptWriter: ScriptWriting {
         return ["Stub hook one.", "Stub hook two.", "Stub hook three."]
     }
 
-    func themeIdeas(for niches: [Niche], language: CueLanguage?) async throws -> [ThemeIdea] {
+    func themeIdeas(for niches: [Niche], language: CueLanguage?, voice: CreatorVoice?) async throws -> [ThemeIdea] {
         guard availability.isAvailable else { throw ScriptAIError.modelUnavailable(availability.reason ?? "") }
         return [ThemeIdea(title: "A stub idea for testing", kind: "List", length: .minute1, niche: niches.first ?? .lifestyle)]
     }

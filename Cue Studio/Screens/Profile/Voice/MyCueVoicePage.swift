@@ -5,41 +5,32 @@
 
 import SwiftUI
 
-/// 9.3 · My Cue Voice, the full page: the meter, the next question, and the three layers — Essentials (kind of creator, topics,
-/// audience, tone), Personality (style, formats, openings, endings, phrases, what to avoid, reach) and Proof (examples) — each row
-/// opening the question sheet on its field, then "What Cue sends": the brief as the model reads it. Without Apple Intelligence the data stays saved and
-/// editable, and the page says the voice needs it.
+/// 9.3 · My Cue Voice, the full page: what Cue uses with its switch, the meter and the next question, the three layers — Essentials (kind of creator,
+/// topics, audience, why they watch, tone), Personality (style, formats, openings, endings, what the videos are for, phrases, what to avoid, reach) and
+/// Proof (examples) — each row opening the one editor on its field, and, under them, **✦ Preview my voice** and **What Cue sends**. Without Apple
+/// Intelligence the data stays saved and editable, and the page says the voice needs it.
 struct MyCueVoicePage: View {
     @Environment(CreatorProfileService.self) private var profile
     @Environment(VoiceQuestionScheduler.self) private var scheduler
     @Environment(AIStatus.self) private var aiStatus
 
     @State private var setup: ProfileVoiceSetup?
-    @State private var editing: VoiceField?
-    @State private var confirmsReset = false
-    @Environment(ToastService.self) private var toast
+    @State private var editing: VoiceEditorField?
+    @State private var showsPreview = false
+    @State private var showsSends = false
 
     private var current: CreatorProfile { profile.profile }
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 20) {
+            VStack(alignment: .leading, spacing: 16) {
                 if !aiStatus.isAvailable { needsAI }
                 mainCard
-                NavigationLink { VoiceFineTunePage() } label: {
-                    HStack {
-                        Text("Fine-tune how you sound").font(.subheadline.weight(.semibold)).foregroundStyle(Palette.ink)
-                        Spacer()
-                        Image(systemName: "chevron.forward").font(.footnote.weight(.semibold)).foregroundStyle(Palette.ink3)
-                    }
-                    .padding(.horizontal, 14)
-                    .frame(minHeight: Metrics.hitTarget + 6)
-                    .background(Palette.surface, in: RoundedRectangle(cornerRadius: Metrics.cardRadius, style: .continuous))
-                }
-                .buttonStyle(.plain)
-                .accessibilityIdentifier("voicePage.fineTune")
-                whatCueSends
-                resetQuestions
+                Text("What Cue tells Apple Intelligence · on device")
+                    .font(.footnote)
+                    .foregroundStyle(Palette.ink2)
+                    .padding(.horizontal, 16)
+                buttons
             }
             .padding(EdgeInsets(top: 8, leading: Metrics.gutter, bottom: 40, trailing: Metrics.gutter))
         }
@@ -49,14 +40,13 @@ struct MyCueVoicePage: View {
         .sheet(item: $setup) { setup in
             VoiceSetupSheet(mode: setup.mode, profile: profile.profile, startAt: setup.startAt)
         }
-        .sheet(item: $editing) { field in
-            if field == .examples {
-                VoiceExamplesSheet()
-            } else {
-                VoiceQuestionSheet(model: VoiceQuestionSheetModel(
-                    question: field.questions[0], mode: .edit, fieldQuestions: field.questions,
-                    profile: profile, scheduler: scheduler, toast: toast
-                ))
+        .sheet(item: $editing) { VoiceEditorSheet(field: $0) }
+        .sheet(isPresented: $showsPreview) { VoicePreviewSheet() }
+        .sheet(isPresented: $showsSends) {
+            VoiceSendsSheet {
+                // "Answer the 4 questions again": the sheet goes and the guided questions come.
+                showsSends = false
+                setup = ProfileVoiceSetup(mode: .edit)
             }
         }
         .accessibilityIdentifier("voicePage")
@@ -122,11 +112,8 @@ struct MyCueVoicePage: View {
                 .foregroundStyle(Palette.ink2)
                 .padding(EdgeInsets(top: 14, leading: 16, bottom: 6, trailing: 16))
                 .accessibilityAddTraits(.isHeader)
-            ForEach(VoiceField.fields(of: layer), id: \.self) { field in
-                row(
-                    title: field.title, value: current.value(for: field),
-                    identifier: "voicePage.row.\(field.rawValue)"
-                ) { editing = field }
+            ForEach(VoicePageRow.rows(of: layer)) { row in
+                VoicePageRowView(row: row, profile: current) { editing = VoiceEditorField(row) }
             }
         }
     }
@@ -141,7 +128,7 @@ struct MyCueVoicePage: View {
 
     /// The next question in the queue, answered right here: "✦ Next: How do you usually end a video?  Answer".
     private func nextQuestion(_ question: VoiceQuestion) -> some View {
-        Button { editing = question.field } label: {
+        Button { editing = VoiceEditorField(question.field) } label: {
             HStack(spacing: 10) {
                 Text(verbatim: "✦").foregroundStyle(Palette.aiText)
                 Text("Next: \(question.title)")
@@ -159,88 +146,33 @@ struct MyCueVoicePage: View {
         .accessibilityIdentifier("voicePage.next")
     }
 
-    /// A row of the list: the field on the left in grey, what Cue knows on the right (or "+ Add · 1 tap" in yellow), a chevron, and a hairline above.
-    private func row(title: String, value: String, identifier: String, action: @escaping () -> Void) -> some View {
-        Button(action: action) {
-            HStack(spacing: 12) {
-                Text(title)
-                    .font(.subheadline)
-                    .foregroundStyle(Palette.ink2)
-                    .frame(width: 96, alignment: .leading)
-                Group {
-                    if !value.isEmpty {
-                        Text(value).font(.system(size: 16)).foregroundStyle(Palette.ink)
-                    } else {
-                        Text("+ Add · 1 tap").font(.system(size: 16, weight: .semibold)).foregroundStyle(Palette.accText)
-                    }
+    // MARK: - The two buttons
+
+    private var buttons: some View {
+        HStack(spacing: 8) {
+            if aiStatus.isAvailable {
+                Button { showsPreview = true } label: {
+                    Text("✦ Preview my voice")
+                        .font(.system(size: 14, weight: .semibold))
+                        .foregroundStyle(Palette.aiTextStrong)
+                        .frame(maxWidth: .infinity, minHeight: 40)
+                        .background(Palette.aiFill, in: Capsule())
+                        .overlay(Capsule().strokeBorder(Palette.aiBorder, lineWidth: 0.5))
+                        .contentShape(Capsule())
                 }
-                .multilineTextAlignment(.leading)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                Image(systemName: "chevron.forward")
-                    .font(.footnote.weight(.semibold))
-                    .foregroundStyle(Palette.ink3)
-                    .accessibilityHidden(true)
+                .buttonStyle(.plain)
+                .accessibilityIdentifier("voicePage.preview")
             }
-            .padding(.horizontal, 16)
-            .padding(.vertical, 8)
-            .frame(minHeight: 52)
-            .overlay(alignment: .top) { Rectangle().fill(Palette.separator).frame(height: 0.5).padding(.leading, 16) }
-            .contentShape(Rectangle())
-        }
-        .buttonStyle(.plain)
-        .accessibilityElement(children: .combine)
-        .accessibilityIdentifier(identifier)
-    }
-
-    // MARK: - Reset
-
-    /// "Reset My Cue Voice" (08 §4): the history of the tips starts over — what was snoozed, paused or skipped. The answers stay.
-    private var resetQuestions: some View {
-        Button { confirmsReset = true } label: {
-            Text("Reset My Cue Voice")
-                .font(.subheadline.weight(.semibold))
-                .foregroundStyle(Palette.ink2)
-                .frame(maxWidth: .infinity, minHeight: Metrics.hitTarget)
-                .contentShape(Rectangle())
-        }
-        .buttonStyle(.plain)
-        .accessibilityIdentifier("voicePage.reset")
-        .confirmationDialog("Reset My Cue Voice?", isPresented: $confirmsReset, titleVisibility: .visible) {
-            Button("Ask me everything again") {
-                scheduler.reset()
-                toast.show(String(localized: "Questions reset"))
+            Button { showsSends = true } label: {
+                Text("What Cue sends")
+                    .font(.system(size: 14, weight: .semibold))
+                    .foregroundStyle(Palette.ink)
+                    .frame(maxWidth: .infinity, minHeight: 40)
+                    .background(Palette.fill, in: Capsule())
+                    .contentShape(Capsule())
             }
-            Button("Cancel", role: .cancel) {}
-        } message: {
-            Text("Skipped and snoozed questions come back. Your answers stay.")
-        }
-    }
-
-    // MARK: - What Cue sends
-
-    private var whatCueSends: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Label("What Cue sends", systemImage: "sparkles")
-                .font(CueStudioFont.hud)
-                .textCase(.uppercase)
-                .tracking(1)
-                .foregroundStyle(Palette.aiText)
-                .padding(.horizontal, 4)
-            VStack(alignment: .leading, spacing: 8) {
-                Text("What Cue tells Apple Intelligence · on device")
-                    .font(.footnote)
-                    .foregroundStyle(Palette.ink2)
-                let brief = ScriptPromptBuilder.voiceBrief(current)
-                Text(brief.isEmpty ? String(localized: "Nothing yet. Set up the first questions and it shows here.") : brief)
-                    .font(.system(.footnote, design: .monospaced))
-                    .foregroundStyle(brief.isEmpty ? Palette.inkHint : Palette.ink)
-                    .fixedSize(horizontal: false, vertical: true)
-                    .textSelection(.enabled)
-                    .accessibilityIdentifier("voicePage.brief")
-            }
-            .padding(16)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .background(Palette.surface, in: RoundedRectangle(cornerRadius: Metrics.cardRadius, style: .continuous))
+            .buttonStyle(.plain)
+            .accessibilityIdentifier("voicePage.sends")
         }
     }
 }

@@ -52,7 +52,16 @@ struct AIFailureTests {
 
     @Test func anythingElseIsNotRetried() {
         #expect(AIFailure(LanguageModelError.timeout(.init(debugDescription: "slow"))) == .other)
-        #expect(AIFailure(LanguageModelError.refusal(.init(explanation: "no", debugDescription: "no"))) == .other)
         #expect(AIFailure(ScriptAIError.emptyResponse) == .other)
+    }
+
+    /// Measured on an iPhone 15 Pro: "May contain unsafe content" over a script about cold showers. Another model wouldn't do better, and the creator is
+    /// told in Cue's words.
+    @Test func aRefusalIsDeclinedAndExplained() {
+        #expect(AIFailure(LanguageModelError.refusal(.init(explanation: "no", debugDescription: "no"))) == .declined)
+        #expect(AIFailure(LanguageModelError.guardrailViolation(.init(debugDescription: "unsafe"))) == .declined)
+        #expect(AIModelRoute.onDevice.fallback(after: .declined) == nil)
+        #expect(ScriptAIError.declined.explainsItself)
+        #expect(ScriptAIError.declined.localizedDescription.contains("rewording"))
     }
 }

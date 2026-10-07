@@ -27,7 +27,9 @@ struct VoiceQuestionAnswerTests {
         #expect(VoiceQuestion.tone.options.map(\.label) == [
             "Conversational", "Straight to the point", "Educational", "Confident", "Warm & calm", "Energetic", "Playful", "Dry & sarcastic",
         ])
-        #expect(VoiceQuestion.topics.options.count == Niche.allCases.count)
+        // The ten of the first flight and the fifteen only My Cue Voice offers.
+        #expect(VoiceQuestion.topics.options.count == 25)
+        #expect(VoiceQuestion.topics.options.prefix(10).map(\.id) == Niche.offered.map(\.rawValue))
     }
 
     @Test func rowsWithoutFreeTextHaveNone() {
@@ -118,10 +120,11 @@ struct VoiceQuestionAnswerTests {
         var profile = VoiceQuestionSchedulerTests.fullProfile()
         profile.avoid = ["Clickbait", "Politics"]
         let brief = ScriptPromptBuilder.voiceBrief(profile)
-        #expect(brief.contains("Never write: Clickbait, Politics."))
-        #expect(brief.contains("Their energy on camera is high."))
-        #expect(brief.contains("They speak in mixed sentences."))
-        #expect(brief.contains("Their audience is some basics."))
-        #expect(brief.contains("humor in their videos: a lot"))
+        #expect(brief.contains("Rules: no clickbait"))
+        #expect(brief.contains("no politics"))
+        #expect(brief.contains("energy: high and lively"))
+        #expect(brief.contains("sentences: a mix of short and longer"))
+        #expect(brief.contains("They know some basics: skip the obvious"))
+        #expect(brief.contains("humor: a lot"))
     }
 }

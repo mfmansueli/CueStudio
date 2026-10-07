@@ -62,6 +62,36 @@ nonisolated struct CreatorProfile: Codable, Hashable, Sendable {
     var declinedVoiceItems: Set<VoicePersonalityItem>
     /// The photo (a small JPEG) the creator chose in Edit Profile; the avatar shows their initial without one. Stays on this iPhone.
     var photoData: Data?
+    // My Cue Voice for Apple Intelligence (v2). Every field is optional in what was saved before: absent is empty / nil.
+    /// Topics only My Cue Voice offers (`VoiceTopic`): with `niches` and `customTopics` at most `VoiceLimits.topics`. Not worlds in the universe.
+    var voiceTopics: [VoiceTopic]
+    /// Up to `VoiceLimits.details` subtopics under a topic, keyed by `VoiceTopicRef.id`: Cue's own are kept as their English text, typed ones as typed.
+    var topicDetails: [String: [String]]
+    /// Who is watching, as a group Cue offers (`audienceNote` is the creator's own words).
+    var audienceGroup: AudienceGroup?
+    /// The audience in the creator's own words ("Nurses on night shifts"); wins over `audienceGroup` when both are there.
+    var audienceNote: String?
+    /// Why the audience watches them (up to `WatchReason.limit`).
+    var watchReasons: [WatchReason]
+    /// What their videos are for (up to `ContentGoal.limit`).
+    var contentGoals: [ContentGoal]
+    /// A kind of creator in the creator's own words, in place of the eight (`role` is then left as the closest one, or nil).
+    var customRole: String?
+    /// A short credential ("Registered nurse"), for the AI to say it only when it is true of them.
+    var credential: String?
+    /// "I" or "we" in their scripts. Nil: the kind of creator decides (`CreatorRole.suggestedSpeaksAs`).
+    var speaksAs: SpeaksAs?
+    /// Scripts the creator approved with "Sounds like me" (up to `VoiceLimits.approvedSamples`, the oldest goes first): examples of their voice.
+    var approvedSamples: [VoiceExample]
+    /// A few sentences of what the creator imported ("Import my writing"), up to `VoiceExcerpt.limit`: the library each request picks examples from.
+    var excerpts: [VoiceExcerpt]
+    /// What was measured of that writing; nil when nothing was imported.
+    var fingerprint: VoiceFingerprint?
+    /// 1 before this work, `CreatorProfile.currentVoiceSchema` after.
+    var voiceSchemaVersion: Int
+
+    /// The version of the voice data this build writes.
+    static let currentVoiceSchema = 2
 
     init(
         name: String = "", handle: String = "", niches: [Niche] = [], customTopics: [String] = [], phrases: [String] = [],
@@ -73,7 +103,12 @@ nonisolated struct CreatorProfile: Codable, Hashable, Sendable {
         openings: [String] = [], endings: [String] = [], formats: [ScriptType] = [], swearing: Swearing? = nil,
         style: VoiceDelivery = VoiceDelivery(), avoid: [String] = [], avoidNone: Bool = false, reach: VoiceReach = VoiceReach(),
         audienceLevel: AudienceLevel? = nil, approvals: Int = 0,
-        examples: [VoiceExample] = [], customTags: [String] = [], declinedVoiceItems: Set<VoicePersonalityItem> = []
+        examples: [VoiceExample] = [], customTags: [String] = [], declinedVoiceItems: Set<VoicePersonalityItem> = [],
+        voiceTopics: [VoiceTopic] = [], topicDetails: [String: [String]] = [:], audienceGroup: AudienceGroup? = nil,
+        audienceNote: String? = nil, watchReasons: [WatchReason] = [], contentGoals: [ContentGoal] = [], customRole: String? = nil,
+        credential: String? = nil, speaksAs: SpeaksAs? = nil, approvedSamples: [VoiceExample] = [],
+        excerpts: [VoiceExcerpt] = [], fingerprint: VoiceFingerprint? = nil,
+        voiceSchemaVersion: Int = CreatorProfile.currentVoiceSchema
     ) {
         self.name = name
         self.handle = handle
@@ -103,14 +138,42 @@ nonisolated struct CreatorProfile: Codable, Hashable, Sendable {
         self.examples = examples
         self.customTags = customTags
         self.declinedVoiceItems = declinedVoiceItems
+        self.voiceTopics = voiceTopics
+        self.topicDetails = topicDetails
+        self.audienceGroup = audienceGroup
+        self.audienceNote = audienceNote
+        self.watchReasons = watchReasons
+        self.contentGoals = contentGoals
+        self.customRole = customRole
+        self.credential = credential
+        self.speaksAs = speaksAs
+        self.approvedSamples = approvedSamples
+        self.excerpts = Array(excerpts.prefix(VoiceExcerpt.limit))
+        self.fingerprint = fingerprint
+        self.voiceSchemaVersion = voiceSchemaVersion
     }
 
     var voice: CreatorVoice {
+        // Only what the creator answered: the tones and the vocabulary a new profile starts with (or an older build saved unverified) are not theirs yet.
         CreatorVoice(
-            sounds: sounds, phrases: phrases, vocabulary: vocabulary, styles: styles, niches: niches, role: role,
+            sounds: hasAnswered(.tone) ? sounds : [], phrases: phrases, vocabulary: hasAnswered(.audience) ? vocabulary : nil,
+            styles: styles, niches: niches, role: role,
             openings: openings, endings: endings, formats: formats, swearing: swearing, style: style, avoid: avoid, reach: reach,
-            audienceLevel: audienceLevel, examples: examples, customTags: customTags
+            audienceLevel: audienceLevel, examples: examples, customTags: customTags,
+            topics: topics.map { VoiceTopicEntry(topic: $0, subtopics: subtopics(of: $0)) },
+            audienceGroup: audienceGroup, audienceNote: audienceNote, watchReasons: watchReasons, contentGoals: contentGoals,
+            customRole: customRole, credential: credential, speaksAs: speaksAs, approvedSamples: approvedSamples,
+            excerpts: ExcerptRetriever.pick(from: excerpts, limit: VoiceExample.limit), fingerprint: fingerprint
         )
+    }
+
+    /// The voice for something written in `language` (a code like "en" or "pt-BR"; nil is not known): of what the creator imported, the excerpts in that
+    /// language that fit `idea` (a variety of how they open and go on, not a match of subject), and the measures only when they were taken in it.
+    func voice(inLanguage language: String?, idea: String? = nil, professional: Bool = false, excerpts limit: Int = 2) -> CreatorVoice {
+        var voice = self.voice
+        voice.excerpts = ExcerptRetriever.pick(from: excerpts, context: .init(language: language, idea: idea, professional: professional), limit: limit)
+        if let fingerprint, !fingerprint.applies(toLanguage: language) { voice.fingerprint = nil }
+        return voice
     }
 
     /// Swearing moved into `style` (v30); the old name still reads and writes it.
@@ -136,6 +199,8 @@ nonisolated struct CreatorProfile: Codable, Hashable, Sendable {
         case confirmedVoiceSteps, unverifiedVoiceSteps
         case openings, endings, formats, swearing, examples, customTags, declinedVoiceItems
         case style, avoid, avoidNone, reach, audienceLevel, approvals
+        case voiceTopics, topicDetails, audienceGroup, audienceNote, watchReasons, contentGoals, customRole, credential, speaksAs
+        case approvedSamples, excerpts, fingerprint, voiceSchemaVersion
         case photoData = "photo"
         /// v1 kept a single tone; it becomes the first "How I sound".
         case legacyTone = "tone"
@@ -188,6 +253,28 @@ nonisolated struct CreatorProfile: Codable, Hashable, Sendable {
         customTags = try container.decodeIfPresent([String].self, forKey: .customTags) ?? defaults.customTags
         declinedVoiceItems = (try? container.decodeIfPresent(Set<VoicePersonalityItem>.self, forKey: .declinedVoiceItems)) ?? []
         photoData = try container.decodeIfPresent(Data.self, forKey: .photoData)
+        // A value a newer build added (a topic, a group) reads as absent, so the rest of the profile still opens.
+        voiceTopics = (try? container.decodeIfPresent([String].self, forKey: .voiceTopics))?.compactMap(VoiceTopic.init(rawValue:)) ?? []
+        topicDetails = Self.cleaned(details: (try? container.decodeIfPresent([String: [String]].self, forKey: .topicDetails)) ?? [:])
+        audienceGroup = (try? container.decodeIfPresent(AudienceGroup.self, forKey: .audienceGroup)) ?? nil
+        audienceNote = Self.trimmed(try? container.decodeIfPresent(String.self, forKey: .audienceNote))
+        watchReasons = Array(
+            ((try? container.decodeIfPresent([String].self, forKey: .watchReasons)) ?? []).compactMap(WatchReason.init(rawValue:))
+                .prefix(WatchReason.limit)
+        )
+        contentGoals = Array(
+            ((try? container.decodeIfPresent([String].self, forKey: .contentGoals)) ?? []).compactMap(ContentGoal.init(rawValue:))
+                .prefix(ContentGoal.limit)
+        )
+        customRole = Self.trimmed(try? container.decodeIfPresent(String.self, forKey: .customRole))
+        credential = Self.trimmed(try? container.decodeIfPresent(String.self, forKey: .credential))
+        speaksAs = (try? container.decodeIfPresent(SpeaksAs.self, forKey: .speaksAs)) ?? nil
+        approvedSamples = Array(
+            ((try? container.decodeIfPresent([VoiceExample].self, forKey: .approvedSamples)) ?? []).suffix(VoiceLimits.approvedSamples)
+        )
+        excerpts = Array(((try? container.decodeIfPresent([VoiceExcerpt].self, forKey: .excerpts)) ?? []).prefix(VoiceExcerpt.limit))
+        fingerprint = (try? container.decodeIfPresent(VoiceFingerprint.self, forKey: .fingerprint)) ?? nil
+        voiceSchemaVersion = try container.decodeIfPresent(Int.self, forKey: .voiceSchemaVersion) ?? 1
         if let unverified = try container.decodeIfPresent(Set<VoiceSetupStep>.self, forKey: .unverifiedVoiceSteps) {
             unverifiedVoiceSteps = unverified
         } else if container.contains(.confirmedVoiceSteps) {
@@ -231,6 +318,38 @@ nonisolated struct CreatorProfile: Codable, Hashable, Sendable {
         try container.encode(customTags, forKey: .customTags)
         try container.encode(declinedVoiceItems, forKey: .declinedVoiceItems)
         try container.encodeIfPresent(photoData, forKey: .photoData)
+        try container.encode(voiceTopics.map(\.rawValue), forKey: .voiceTopics)
+        try container.encode(topicDetails, forKey: .topicDetails)
+        try container.encodeIfPresent(audienceGroup, forKey: .audienceGroup)
+        try container.encodeIfPresent(audienceNote, forKey: .audienceNote)
+        try container.encode(watchReasons.map(\.rawValue), forKey: .watchReasons)
+        try container.encode(contentGoals.map(\.rawValue), forKey: .contentGoals)
+        try container.encodeIfPresent(customRole, forKey: .customRole)
+        try container.encodeIfPresent(credential, forKey: .credential)
+        try container.encodeIfPresent(speaksAs, forKey: .speaksAs)
+        try container.encode(approvedSamples, forKey: .approvedSamples)
+        try container.encode(excerpts, forKey: .excerpts)
+        try container.encodeIfPresent(fingerprint, forKey: .fingerprint)
+        // Anything this build writes is of the current version, whatever it was read as.
+        try container.encode(Self.currentVoiceSchema, forKey: .voiceSchemaVersion)
+    }
+
+    /// Text typed by the creator: trimmed, and nil when nothing is left.
+    private static func trimmed(_ text: String?) -> String? {
+        guard let text else { return nil }
+        let value = text.trimmingCharacters(in: .whitespacesAndNewlines)
+        return value.isEmpty ? nil : value
+    }
+
+    /// Subtopics as they are kept: trimmed, without repeats, at most `VoiceLimits.details` under a topic, and no topic without any.
+    private static func cleaned(details: [String: [String]]) -> [String: [String]] {
+        details.compactMapValues { values in
+            var seen = Set<String>()
+            let kept = values.map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+                .filter { !$0.isEmpty && seen.insert($0.lowercased()).inserted }
+                .prefix(VoiceLimits.details)
+            return kept.isEmpty ? nil : Array(kept)
+        }
     }
 
     static func sounds(migratingFrom tone: Tone) -> [VoiceSound] {

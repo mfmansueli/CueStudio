@@ -11,14 +11,16 @@
 #   scripts/test.sh only <id>…       chosen tests: "Cue StudioTests/DockFoldTests", "Cue StudioUITests/TabBarUITests/testTabs()"
 #   scripts/test.sh device <suite>   a device-only suite on the iPhone named by CUE_DEVICE (name or id), one set at a time
 #                                    (VoiceFollowingSpeechTests, VoiceFollowingLatencyTests, CaptionSpeechTests,
-#                                    LanguageModelDeviceTests, ScriptGenerationFlowDeviceTests, QuickEditPreviewLatencyTests)
+#                                    LanguageModelDeviceTests, ScriptGenerationFlowDeviceTests, VoicePersonaDeviceTests,
+#                                    PromptBudgetDeviceTests, WritingImportDeviceTests, PlatformLengthDeviceTests,
+#                                    LengthVariantsDeviceTests, ScriptToolsDeviceTests, QuickEditPreviewLatencyTests)
 #
 # After the mode: --no-build reuses the last build; --repeat N runs until a failure, at most N times (for flaky tests).
 
 source "$(dirname "$0")/_xcode.sh"
 
 usage() {
-    sed -n '2,16p' "$0"
+    sed -n '2,17p' "$0"
     exit 64
 }
 
@@ -63,7 +65,8 @@ case "$mode" in
         # The suites skip themselves unless their flag is on (TEST_RUNNER_ reaches the tests without the prefix).
         case "${ids[0]}" in
             VoiceFollowingSpeechTests* | VoiceFollowingLatencyTests* | CaptionSpeechTests*) export TEST_RUNNER_CUE_SPEECH_E2E=1 ;;
-            LanguageModelDeviceTests* | ScriptGenerationFlowDeviceTests*) export TEST_RUNNER_CUE_AI_E2E=1 ;;
+            LanguageModelDeviceTests* | ScriptGenerationFlowDeviceTests* | VoicePersonaDeviceTests* | PromptBudgetDeviceTests* | WritingImportDeviceTests* | PlatformLengthDeviceTests* | LengthVariantsDeviceTests* | ScriptToolsDeviceTests*)
+                export TEST_RUNNER_CUE_AI_E2E=1 ;;
             QuickEditPreviewLatencyTests*) export TEST_RUNNER_CUE_PREVIEW_LATENCY=1 ;;
             *) usage ;;
         esac
@@ -80,7 +83,8 @@ esac
 result="$RESULTS/$mode-$(timestamp).xcresult"
 status=0
 # A test that runs past its allowance fails at once; without `never` xcodebuild then spends up to 10 minutes on a sysdiagnose.
-xcb "test-$mode" "${plan[@]}" -destination "$destination" -collect-test-diagnostics never \
+# `CUE_TEST_DIAGNOSTICS=on-failure` (or `on-failure`) keeps the crash reports and logs of a device run that dies.
+xcb "test-$mode" "${plan[@]}" -destination "$destination" -collect-test-diagnostics "${CUE_TEST_DIAGNOSTICS:-never}" \
     -resultBundlePath "$result" ${extra[@]+"${extra[@]}"} "$action" || status=$?
 
 if [ -d "$result" ]; then

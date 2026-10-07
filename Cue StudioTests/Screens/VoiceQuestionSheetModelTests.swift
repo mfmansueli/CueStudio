@@ -19,10 +19,8 @@ struct VoiceQuestionSheetModelTests {
         let toast: ToastService
         let defaults: TestDefaults
 
-        func model(_ question: VoiceQuestion, mode: VoiceQuestionSheetModel.Mode = .tip, field: [VoiceQuestion] = []) -> VoiceQuestionSheetModel {
-            VoiceQuestionSheetModel(
-                question: question, mode: mode, fieldQuestions: field, profile: profile, scheduler: scheduler, toast: toast
-            )
+        func model(_ question: VoiceQuestion) -> VoiceQuestionSheetModel {
+            VoiceQuestionSheetModel(question: question, profile: profile, scheduler: scheduler, toast: toast)
         }
     }
 
@@ -97,21 +95,7 @@ struct VoiceQuestionSheetModelTests {
         let setup = make()
         defer { setup.defaults.tearDown() }
         setup.profile.saveVoiceSetup(vocabulary: .simple)
-        #expect(setup.model(.audience, mode: .tip).asksAudienceLevel)
-        #expect(!setup.model(.audience, mode: .edit).asksAudienceLevel, "a row of the full page starts from the audience")
-    }
-
-    @Test func aRowOfTheFullPageWalksTheQuestionsOfItsField() {
-        let rig = make()
-        defer { rig.defaults.tearDown() }
-        let field = VoiceField.style.questions
-        let model = rig.model(field[0], mode: .edit, field: field)
-        for question in field {
-            #expect(model.question == question)
-            model.choose(option(question, question.options[0].id))
-        }
-        #expect(rig.profile.profile.style.isComplete)
-        #expect(model.shouldClose)
+        #expect(setup.model(.audience).asksAudienceLevel)
     }
 
     @Test func closingWithNothingAnsweredIsADismissalButAnAnswerOrNoneOfTheseIsNot() {
@@ -130,9 +114,6 @@ struct VoiceQuestionSheetModelTests {
         skipped.dismissedWithoutAnswer()
         #expect(rig.scheduler.state.dismissCount["openings"] == nil)
         #expect(rig.scheduler.state.skipped.contains("openings"))
-        // A row of the full page never counts as a dismissal.
-        rig.model(.length, mode: .edit).dismissedWithoutAnswer()
-        #expect(rig.scheduler.state.dismissCount["length"] == nil)
     }
 
     @Test func somethingElseIsCheckedAndAnAnswerOnceAdded() {

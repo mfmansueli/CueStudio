@@ -52,6 +52,11 @@ struct EditProfileSheet: View {
                     }
                     .background(Color.white.opacity(0.07), in: RoundedRectangle(cornerRadius: 22, style: .continuous))
                     footer.padding(.top, 8)
+                    sectionTitle(String(localized: "Creator preferences"))
+                    EditProfilePreferences(draft: $draft)
+                    sectionTitle(String(localized: "Account"))
+                    EditProfileAccount { name in if draft.name.isEmpty { draft.name = name } }
+                        .padding(.bottom, 24)
                 }
                 .padding(.horizontal, 16)
             }
@@ -87,6 +92,17 @@ struct EditProfileSheet: View {
         }
         .padding(.horizontal, 16)
         .frame(minHeight: 52)
+    }
+
+    private func sectionTitle(_ title: String) -> some View {
+        Text(title)
+            .font(.system(size: 12, weight: .semibold))
+            .textCase(.uppercase)
+            .tracking(0.6)
+            .foregroundStyle(Palette.ink2)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(EdgeInsets(top: 22, leading: 16, bottom: 8, trailing: 16))
+            .accessibilityAddTraits(.isHeader)
     }
 
     private var divider: some View {

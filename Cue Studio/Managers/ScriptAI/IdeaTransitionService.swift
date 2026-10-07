@@ -168,4 +168,10 @@ final class IdeaTransitionService {
     }
 
     static var finishPhrase: String { String(localized: "Almost camera-ready") }
+
+    /// Seconds after which the AI is said to be taking longer than usual (a request is given up on by itself a little later: `GenerationDeadlines`).
+    static let longWait: TimeInterval = 22
+
+    /// What the star says once the wait is long.
+    static var longWaitPhrase: String { String(localized: "Still writing · this one is taking a little longer") }
 }

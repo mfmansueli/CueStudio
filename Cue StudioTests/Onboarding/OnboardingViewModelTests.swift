@@ -189,6 +189,9 @@ struct OnboardingViewModelTests {
         let profile = try JSONDecoder().decode(CreatorProfile.self, from: Data(json.utf8))
         #expect(profile.customTopics.isEmpty && profile.niches == [.food])
         let round = try JSONDecoder().decode(CreatorProfile.self, from: JSONEncoder().encode(profile))
-        #expect(round == profile)
+        #expect(round.voiceSchemaVersion == CreatorProfile.currentVoiceSchema, "what this build writes is of the current version")
+        var expected = profile
+        expected.voiceSchemaVersion = round.voiceSchemaVersion
+        #expect(round == expected)
     }
 }

@@ -21,6 +21,11 @@ struct DataEraserServiceTests {
         takes.load()
         let profile = CreatorProfileService(defaults: defaults.defaults)
         profile.saveVoiceSetup(role: .entertainer, niches: [.food], vocabulary: .simple, sounds: [.casual])
+        // What the creator imported and what Cue learned from their approvals is theirs to erase too.
+        let imported = WritingAnalyzer.analyze(WritingSamples.maya.map { WritingPiece(text: $0) })
+        profile.apply(WritingImportProposalBuilder.build(analysis: imported, reading: nil, profile: profile.profile))
+        profile.recordApproval(of: "Okay, real talk. " + String(repeating: "Mornings are hard for everybody and that is fine. ", count: 6))
+        #expect(!profile.profile.excerpts.isEmpty && profile.profile.fingerprint != nil && !profile.profile.approvedSamples.isEmpty)
         let preferences = PreferencesService(defaults: defaults.defaults)
         preferences.customCues = ["laugh"]
         let quota = UsageQuotaService(counter: FakeExportCountStore(count: 3), defaults: defaults.defaults)
@@ -40,6 +45,7 @@ struct DataEraserServiceTests {
         #expect(brands.brands.isEmpty)
         #expect(sky.points.isEmpty)
         #expect(profile.profile == CreatorProfile())
+        #expect(profile.profile.excerpts.isEmpty && profile.profile.fingerprint == nil && profile.profile.approvedSamples.isEmpty)
         #expect(preferences.customCues.isEmpty)
         #expect(PreferencesService(defaults: defaults.defaults).customCues.isEmpty)
         // The 3 exports used are still used: deleting data can't hand back free exports.

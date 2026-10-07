@@ -14,26 +14,40 @@ nonisolated enum ScriptPromptBuilder {
 
     static func instructions(for request: ScriptRequest, insistsOnLanguage: Bool = false) -> String {
         let structure = request.structure
+        let voice = structure.isSerious ? nil : request.voice
         var lines = [
             "You write short-form video scripts that a creator reads from a teleprompter while filming themselves.",
-            "Write in the first person, as the creator, in natural spoken language with short sentences.",
+            "Write in the first person, as the creator, in natural spoken language\(sentenceClause(for: voice)).",
             "Fill in a short title and the script blocks. Block text is only what the creator says: no headings, labels, markdown or quotes around it.",
             cueHint,
         ]
         if structure.isSerious {
             lines.append(seriousRule)
+        } else {
+            // Where it is posted shapes the hook, the pace and the ending; a serious statement has none of those.
+            lines.append(PlatformGuide.line(for: request.platform))
+            lines.append(honestyRule)
         }
         if request.isFreePrompt {
             lines.append(accuracyRule)
         }
-        if let voice = request.voice, !structure.isSerious {
-            lines += voiceLines(voice)
+        if let voice {
+            lines += voiceLines(voice, platform: request.platform)
         }
         if let language = request.language {
             lines.append(languageRule(language, variant: request.languageVariant))
             if insistsOnLanguage || language != .english { lines.append(languageInsistence(language, variant: request.languageVariant)) }
         }
         return lines.joined(separator: "\n")
+    }
+
+    /// How long the sentences are, as the creator chose; short is what a teleprompter reads best when they didn't say.
+    static func sentenceClause(for voice: CreatorVoice?) -> String {
+        switch voice?.style.sentences {
+        case .long?: " with longer, flowing sentences"
+        case .mixed?: " with a mix of short and longer sentences"
+        case .short?, nil: " with short sentences"
+        }
     }
 
     /// Which language to write in, named in English so the rule reads the same whatever the
@@ -57,29 +71,53 @@ nonisolated enum ScriptPromptBuilder {
         return name
     }
 
+    /// How many times the words a short script needs the model is asked to write. Measured on an iPhone 15 Pro (iOS 27, TikTok, three ideas): asked for
+    /// 150 to 225 words the model wrote 64 to 105 (54 when the retry was told its draft was short), asked for 240 to 360 it wrote 122 to 206, asked
+    /// for 330 to 495 it wrote 130 to 216. It writes about half of what it is asked, and goes on writing less than asked however it is told (a count
+    /// of sentences for every block and the draft to expand were tried: 64 to 86 words). So the request asks for more than is needed. Only the
+    /// device measurement (`PlatformLengthDeviceTests`) changes it.
+    nonisolated(unsafe) static var lengthAskFactor = 1.5
+
+    /// The words to ask the model for when the script needs `words`: `lengthAskFactor` times as many for a short script, fewer times as the script gets
+    /// longer (a script of 1000 words or more is asked as it is: the model already writes the 1286 words of a YouTube video, and its answer is bounded).
+    static func askedWords(_ words: Int) -> Int {
+        let factor = words <= 250 ? lengthAskFactor : max(1.0, lengthAskFactor - (lengthAskFactor - 1.0) * Double(words - 250) / 750)
+        return Int((Double(words) * factor).rounded())
+    }
+
+    /// The words the request asks the model for when the script must run `range` seconds: the floor as `askedWords` has it, and a ceiling that is not
+    /// raised with it (a Short asked for 150 to 300 words wrote 310, two minutes of a script for a video of one), only kept above the floor.
+    static func askedRange(for range: ClosedRange<TimeInterval>) -> (low: Int, high: Int) {
+        let low = askedWords(ReadTime.words(for: range.lowerBound))
+        return (low, max(ReadTime.words(for: range.upperBound), Int((Double(low) * 1.25).rounded())))
+    }
+
     static func prompt(for request: ScriptRequest) -> String {
         let structure = request.structure
-        let low = ReadTime.words(for: request.targetRange.lowerBound)
-        let high = ReadTime.words(for: request.targetRange.upperBound)
+        let (low, high) = askedRange(for: request.targetRange)
         var lines: [String] = []
         // On the iPhone 18 Pro Max the model wrote every script in English when the creator's voice (English instructions, an
         // English catchphrase) was on, whatever the instructions said: the language is also asked for in the request itself.
         if let language = request.language, language != .english || request.languageVariant != nil {
             lines.append("Language of the script: \(languageName(language, variant: request.languageVariant)). Write all of it in \(languageName(language, variant: request.languageVariant)).")
         }
+        // The shape: the format the creator chose, or the one the idea asks for (only the AI is told), in English with what each block is for.
+        let guide = formatGuide(for: request)
         lines += [
-            "Write a \(structure.label.lowercased()) script for \(request.platform.destinationName).",
-            "Blocks, in this order: \(structure.blocks.joined(separator: " → ")).",
+            "Write a \(guide.name) script for \(request.platform.promptName).",
+            "Blocks, in this order: \(guide.order).",
+            "What each block does: \(guide.purpose)",
         ]
         if let tone = request.tone {
-            lines.append("Tone: \(tone.label.lowercased()).")
+            lines.append("Tone: \(tone.promptWord).")
         }
         lines.append("Length: between \(low) and \(high) spoken words in total.")
         // Measured on an iPhone: told only the range, the model wrote about a third of it (44 to 82 words for 150 to 225,
-        // in every language). Naming the minimum and what a block holds is what makes it write the length.
-        lines.append(lengthRule(minimumWords: low))
+        // in every language). Naming the minimum and what a block holds helps, and so does asking for more than is needed (`askedWords`).
+        lines.append(lengthRule(minimumWords: low, blocks: guide.blocks.count, sentenceWords: sentenceWords(for: request.voice)))
+        let voice = structure.isSerious ? nil : request.voice
         if !structure.isSerious {
-            lines.append("Open with a hook that works in the first 3 seconds.")
+            lines.append(hookRule(for: voice))
         }
         switch request.source {
         case .prompt(let text):
@@ -94,104 +132,89 @@ nonisolated enum ScriptPromptBuilder {
         if let brand = request.brand {
             lines += brandLines(brand)
         }
+        // Said again at the very end, where a small model listens best.
+        if let voice, let closing = closingRule(for: voice, platform: request.platform) {
+            lines.append(closing)
+        }
         return lines.joined(separator: "\n")
     }
 
-    /// Every block gets full sentences, and the script doesn't stop before its minimum.
-    static func lengthRule(minimumWords: Int) -> String {
-        "Do not stop early: the script must be at least \(minimumWords) words, so write every block in full, with several complete sentences each."
+    /// The shape of the script: the chosen format, else the one a free idea asks for (or the creator films most), else the generic one.
+    static func formatGuide(for request: ScriptRequest) -> FormatGuide {
+        if let type = request.type { return .guide(for: type) }
+        guard case .prompt(let idea) = request.source else { return .generic }
+        return .guide(for: FormatGuess.format(for: idea, usual: request.voice?.formats ?? []))
+    }
+
+    /// The hook, in the creator's own way of opening when they have one.
+    static func hookRule(for voice: CreatorVoice?) -> String {
+        guard let voice, !voice.openings.isEmpty else { return "Open with a hook that works in the first 3 seconds." }
+        return "Open with a hook that works in the first 3 seconds, in the creator's own way of opening."
+    }
+
+    /// What must hold whatever else the script does (who is talking, what to avoid), repeated after the idea; nil with nothing to repeat.
+    static func closingRule(for voice: CreatorVoice, platform: Platform? = nil) -> String? {
+        let rules = VoiceBriefBuilder.closingRules(for: voice, register: platform.map(PlatformRegister.init) ?? .casual)
+        return rules.isEmpty ? nil : "Remember: " + rules.joined(separator: " ")
+    }
+
+    /// The note added to a request the checker sent back: what the last draft got wrong, and what it must be.
+    static func correctionNote(for violations: [VoiceViolation]) -> String {
+        "Your last draft broke these rules: \(violations.map(\.detail).joined(separator: " ")) Write the whole script again and follow them."
+    }
+
+    /// Words in a sentence of this creator's: what they said ("short and punchy" is nine), what was measured of their writing, else twelve.
+    static func sentenceWords(for voice: CreatorVoice?) -> Int {
+        if let voice {
+            switch voice.style.sentences {
+            case .short?: return 9
+            case .long?: return 18
+            default: break
+            }
+            if let fingerprint = voice.fingerprint, fingerprint.isReliable, !WritingLexicon.isUnspaced(fingerprint.language) {
+                return min(20, max(5, Int(fingerprint.wordsPerSentence.rounded())))
+            }
+        }
+        return 12
+    }
+
+    /// Every block gets full sentences, and the script doesn't stop before its minimum. Measured on an iPhone 15 Pro (iOS 27): told "several complete
+    /// sentences" the model still wrote one or two a block, 54 words for the 150 it was asked, even on the second attempt. A count of sentences for
+    /// every block is something it can follow, where a count of words in total is not.
+    /// Whether the length is asked in sentences for every block (true), or in the words of the script alone (false): the device measurement compares them.
+    nonisolated(unsafe) static var asksSentencesPerBlock = true
+
+    static func lengthRule(minimumWords: Int, blocks: Int = 3, sentenceWords: Int = 12) -> String {
+        guard asksSentencesPerBlock else {
+            return "Do not stop early: the script must be at least \(minimumWords) words, so write every block in full, with several complete sentences each."
+        }
+        // A count of sentences is for a short script: asked for dozens in every block of a long one the model runs on until its answer is cut off.
+        guard minimumWords <= 400 else {
+            return "Do not stop early: the script must be at least \(minimumWords) words, so write every block in full, with many complete sentences each."
+        }
+        let sentences = Int((Double(minimumWords) / Double(max(1, sentenceWords))).rounded(.up))
+        let perBlock = max(2, Int((Double(sentences) / Double(max(1, blocks))).rounded(.up)))
+        return "Do not stop early: the script must be at least \(minimumWords) words, which is at least \(sentences) sentences in all. "
+            + "Write at least \(perBlock) sentences in every block, and none of them cut short."
     }
 
     // MARK: - Voice
 
-    /// My Cue Voice as instructions: how they sound, the words they use, their style, catchphrases
-    /// and niche.
-    static func voiceLines(_ voice: CreatorVoice) -> [String] {
-        var lines = ["Write in the creator's own voice."]
-        if let role = voice.role {
-            lines.append("They are a creator of this kind: \(role.label.lowercased()) (\(role.examples.lowercased())).")
-            if role.speaksAsWe { lines.append("They speak as a team: say \"we\", not \"I\".") }
-        }
-        if !voice.sounds.isEmpty {
-            lines.append("They sound \(list(voice.sounds.map(\.promptWord))).")
-        }
-        if let vocabulary = voice.vocabulary {
-            lines.append(vocabularyRule(vocabulary))
-        }
-        if !voice.styles.isEmpty {
-            lines.append("Their style: \(voice.styles.map { $0.label.lowercased() }.joined(separator: ", ")).")
-        }
-        if !voice.phrases.isEmpty {
-            lines.append("They often say: \(voice.phrases.map { "\"\($0)\"" }.joined(separator: ", ")). Use one of these naturally, ideally in the opening.")
-        }
-        if !voice.niches.isEmpty {
-            lines.append("Their niche: \(voice.niches.map(\.label).joined(separator: ", ")).")
-        }
-        if !voice.openings.isEmpty {
-            lines.append("They like to open a video like this: \(quoted(voice.openings)).")
-        }
-        if !voice.endings.isEmpty {
-            lines.append("They usually end a video like this: \(quoted(voice.endings)).")
-        }
-        if !voice.formats.isEmpty {
-            lines.append("They film mostly: \(voice.formats.map { $0.structure.label.lowercased() }.joined(separator: ", ")).")
-        }
-        if let swearing = voice.swearing {
-            lines.append(swearingRule(swearing))
-        }
-        lines += deliveryLines(voice)
-        if !voice.customTags.isEmpty {
-            lines.append("Also true of them: \(voice.customTags.joined(separator: ", ")).")
-        }
-        if !voice.examples.isEmpty {
-            lines.append("Here is how they write. Match the voice, never copy the content:")
-            lines += voice.examples.prefix(VoiceExample.limit).map { "- \"\($0.sentText)\"" }
-        }
-        return lines
+    /// My Cue Voice as the lines the model reads (`VoiceBriefBuilder`): who is talking, who is watching, what about, how they sound, how
+    /// they open and close, examples and the rules, in at most `VoiceBrief.budget` characters.
+    static func voiceLines(_ voice: CreatorVoice, platform: Platform? = nil) -> [String] {
+        VoiceBriefBuilder.brief(for: voice, register: platform.map(PlatformRegister.init) ?? .casual).lines
     }
 
-    /// "What Cue sends" (My Cue Voice, 9.3): the voice as the instructions the model reads, shown to the creator
-    /// as it is sent. Empty when the creator's voice has nothing to say yet.
+    /// "What Cue sends" (My Cue Voice): the voice as the model reads it, and what was cut to fit. Empty when nothing of the voice can be used yet.
+    static func brief(for profile: CreatorProfile) -> VoiceBrief {
+        guard profile.canWriteInMyVoice else { return .empty }
+        return VoiceBriefBuilder.brief(for: profile.voice)
+    }
+
+    /// The text of `brief(for:)`.
     static func voiceBrief(_ profile: CreatorProfile) -> String {
-        guard profile.hasMinimumVoice else { return "" }
-        return voiceLines(profile.voice).joined(separator: "\n")
-    }
-
-    /// What the question bank added: how they come across, who is watching, what to avoid and where they post.
-    private static func deliveryLines(_ voice: CreatorVoice) -> [String] {
-        var lines: [String] = []
-        if let energy = voice.style.energy {
-            lines.append("Their energy on camera is \(energy.label.lowercased()).")
-        }
-        if let sentences = voice.style.sentences {
-            lines.append("They speak in \(sentences.label.lowercased()) sentences.")
-        }
-        if let words = voice.style.words {
-            lines.append("Their words: \(words.label.lowercased()).")
-        }
-        if let level = voice.audienceLevel {
-            lines.append("Their audience is \(level.label.lowercased()).")
-        }
-        if !voice.avoid.isEmpty {
-            lines.append("Never write: \(voice.avoid.joined(separator: ", ")).")
-        }
-        var reach: [String] = []
-        if !voice.reach.platforms.isEmpty { reach.append("they mostly post on \(voice.reach.platforms.map(\.label).joined(separator: ", "))") }
-        if let length = voice.reach.length { reach.append("their videos are usually \(length.label)") }
-        if let humor = voice.reach.humor { reach.append("humor in their videos: \(humor.label.lowercased())") }
-        if !reach.isEmpty { lines.append(reach.joined(separator: "; ").capitalizedFirst + ".") }
-        return lines
-    }
-
-    private static func quoted(_ items: [String]) -> String {
-        items.map { "\"\($0)\"" }.joined(separator: ", ")
-    }
-
-    private static func swearingRule(_ swearing: Swearing) -> String {
-        switch swearing {
-        case .never: "Never swear."
-        case .mild: "Mild swearing is fine now and then. Never write strong swearing or slurs."
-        }
+        brief(for: profile).text
     }
 
     // MARK: - Sponsored ads
@@ -212,21 +235,10 @@ nonisolated enum ScriptPromptBuilder {
         return lines
     }
 
-    private static func vocabularyRule(_ vocabulary: Vocabulary) -> String {
-        switch vocabulary {
-        case .simple: "Their audience is everyday people: use simple, everyday words."
-        case .technical: "Their audience knows the field: technical terms are fine."
-        case .genZ: "Their audience is young: use casual Gen Z slang where it fits, without overdoing it."
-        case .professional: "Their audience is professionals: use polished, professional wording."
-        }
-    }
-
-    private static func list(_ items: [String]) -> String {
-        guard let last = items.last else { return "" }
-        return items.count == 1 ? last : items.dropLast().joined(separator: ", ") + " and " + last
-    }
-
     static let seriousRule = "This is a serious statement. Be sincere, specific and brief. No hooks, jokes, hype, emojis or calls to follow, like or subscribe. Never write \"but\" after taking responsibility."
+
+    /// Measured on an iPhone: scripts in the first person made up stories ("I see so many people come to me…", "my first year as a nurse").
+    static let honestyRule = "Never invent personal stories, clients, results, numbers or credentials for the creator: speak from general experience unless the idea gives the details."
 
     static let accuracyRule = "Be accurate. State only facts you are confident about; when unsure of a date, name or number, say it more generally instead of inventing it."
 
@@ -234,7 +246,7 @@ nonisolated enum ScriptPromptBuilder {
 
     static func hooksPrompt(for text: String, context: RewriteContext) -> String {
         """
-        Write three new opening lines for this \(context.structure.label.lowercased()) script for \(context.platform.destinationName). \
+        Write three new opening lines for this script, which will be posted on \(context.platform.promptName). \
         Each must grab attention in about three seconds and lead into the rest of the script. \
         Write them in the language the script is written in.
 
@@ -243,9 +255,20 @@ nonisolated enum ScriptPromptBuilder {
         """
     }
 
-    static func themesPrompt(for niches: [Niche], language: CueLanguage? = nil) -> String {
+    /// What the model is told before it suggests ideas: who it works for, and the creator's voice when there is one (their topics, who is
+    /// watching and why) so the ideas are theirs and not any creator's.
+    static func themesInstructions(voice: CreatorVoice? = nil) -> String {
+        var lines = ["You suggest video ideas for creators who film themselves talking to camera."]
+        if let voice { lines += voiceLines(voice) }
+        return lines.joined(separator: "\n")
+    }
+
+    static func themesPrompt(for niches: [Niche], voice: CreatorVoice? = nil, language: CueLanguage? = nil) -> String {
         let names = (niches.isEmpty ? [Niche.lifestyle] : niches).map(\.label).joined(separator: ", ")
         var prompt = "Suggest six fresh talking-head video ideas for a creator whose niche is: \(names). Mix the niches and the kinds of video. Use each niche name exactly as written."
+        if let voice, !voice.topics.isEmpty {
+            prompt += " Ideas may also be about their other topics, in the detail you were given."
+        }
         if let language {
             prompt += " Write the ideas in \(language.englishName)."
         }
@@ -259,7 +282,8 @@ nonisolated enum ScriptPromptBuilder {
     static func rewriteInstructions(voice: CreatorVoice? = nil, language: Locale.Language? = nil) -> String {
         var lines = [
             "You edit teleprompter scripts for video creators.",
-            "Keep the creator's voice and first person. Keep existing stage cues in square brackets unless the edit requires removing them.",
+            "Keep the creator's voice and first person. Keep the stage cues that are in square brackets where they are.",
+            "Never add stage cues, scene descriptions, sound effects or notes of your own: only the words the creator says.",
             "Return only the full edited script: no explanations, no headings, no markdown, no quotes around it.",
             "Separate paragraphs with a blank line.",
             "Keep the script in the language it is written in, unless you are asked to translate it.",
@@ -274,8 +298,42 @@ nonisolated enum ScriptPromptBuilder {
         return lines.joined(separator: "\n")
     }
 
-    static func rewritePrompt(for text: String, tool: ScriptTool, context: RewriteContext) -> String {
-        "\(instruction(for: tool, context: context))\n\nScript:\n\(text)"
+    /// What a part of a longer script is told about itself, and what it was told the last time it missed.
+    nonisolated struct RewritePart: Equatable, Sendable {
+        /// Which part this is, from 1, of how many.
+        var index = 1
+        var count = 1
+        /// The words the result is to have ("Fit to time", per part): a part gets its share of the whole.
+        var target: ClosedRange<Int>?
+        /// The paragraph before this one, for the model to read and leave out of its answer.
+        var leadIn: String?
+        /// What its last answer got wrong (`RewriteOutcome.correction`).
+        var correction: String?
+    }
+
+    static func rewritePrompt(for text: String, tool: ScriptTool, context: RewriteContext, part: RewritePart = RewritePart()) -> String {
+        var lines: [String] = []
+        if tool == .fitToTime, let target = part.target {
+            lines.append(fitInstruction(for: target, sourceWords: ReadTime.wordCount(in: text)))
+        } else {
+            lines.append(instruction(for: tool, context: context))
+        }
+        if part.count > 1 {
+            lines.append("This is part \(part.index) of \(part.count) of a longer script. Edit only this part and answer with only this part: no introduction and no ending that is not here.")
+        }
+        if let leadIn = part.leadIn {
+            lines.append("For context, the paragraph before it (leave it out of your answer):\n\(leadIn)")
+        }
+        if let correction = part.correction { lines.append(correction) }
+        return lines.joined(separator: "\n\n") + "\n\nScript:\n\(text)"
+    }
+
+    /// "Fit to time" for a part: the words it is to have, and how to get there.
+    static func fitInstruction(for target: ClosedRange<Int>, sourceWords: Int) -> String {
+        let how = sourceWords > target.upperBound
+            ? "Cut what matters least"
+            : "Make it longer with detail, examples and transitions that belong to what is already said, and never new facts, names or numbers"
+        return "Edit the script so it runs between \(target.lowerBound) and \(target.upperBound) spoken words (it has \(sourceWords) now), keeping every key point. \(how)."
     }
 
     static func instruction(for tool: ScriptTool, context: RewriteContext) -> String {
@@ -287,19 +345,21 @@ nonisolated enum ScriptPromptBuilder {
         case .moreEnergy:
             return "Rewrite with more energy: punchier verbs, shorter sentences, more excitement. Do not add facts."
         case .fixGrammar:
-            return "Fix grammar, spelling and punctuation only. Do not change the wording otherwise."
+            return "Fix grammar, spelling and punctuation only. Do not change the wording otherwise and do not add or remove anything: answer with the whole text."
         case .translate:
             return "Translate the script into \((context.language ?? .spanish).englishName), keeping the tone. Translate the stage cues too."
         case .strongerCTA:
-            return "Rewrite only the closing paragraph as a clearer, more direct call to action. Do not invent deadlines, discounts or facts that are not in the script."
+            return "Rewrite the closing below as a clearer, more direct call to action. Do not invent deadlines, discounts or facts that are not in the script."
         case .moreHuman:
             return "Make it sound more human and less scripted: plain words, no corporate phrasing."
         case .lessDefensive:
-            return "Remove defensive language, excuses and any \"but\" after an apology, keeping the substance."
+            return "Remove defensive language and excuses: delete lines like \"I didn't have a choice\" or \"it's not my fault\", and any \"but\" after " +
+                "an apology. Keep the substance."
         case .shorterAndDirect:
-            return "Make it shorter and more direct. Remove filler and repetition."
+            return "Make it about a third shorter and more direct. Remove filler and repetition, and keep every key point."
         case .inMyVoice:
-            return "Rewrite the script so it sounds like the creator described in your instructions: their tone, words, style and catchphrases. Keep every point and the same length."
+            return "Rewrite the script so it sounds like the creator described in your instructions: their tone, words, style and catchphrases. " +
+                "Put every sentence in their words, so that none stays as it is, and keep every point and about the same number of words as the script has."
         case .newHooks, .addDisclosure:
             return ""
         }
@@ -350,9 +410,4 @@ nonisolated enum ScriptPromptBuilder {
         let known = Set(ScriptType.allCases.flatMap { $0.structure.blocks } + ScriptStructure.generic.blocks)
         return known.contains { $0.caseInsensitiveCompare(label) == .orderedSame }
     }
-}
-
-private nonisolated extension String {
-    /// The first letter in capitals; the rest as it is.
-    var capitalizedFirst: String { prefix(1).uppercased() + dropFirst() }
 }

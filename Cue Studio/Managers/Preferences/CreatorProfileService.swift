@@ -92,15 +92,16 @@ final class CreatorProfileService {
     // MARK: - Write in my voice
 
     /// The one state behind every "Write in my voice" switch (the Prompt card, Generate, Profile):
-    /// on when the creator asked for it and the profile has what the AI needs. The defaults a new
-    /// profile starts with are not enough, so the voice is never applied from them.
-    var writesInMyVoice: Bool { profile.usesVoiceInAI && profile.hasMinimumVoice }
+    /// on when the creator asked for it and has answered something the AI can use. The defaults a new
+    /// profile starts with are not answers, so the voice is never applied from them; with an answer, what
+    /// is known is used and the rest is left out (`CreatorProfile.canWriteInMyVoice`).
+    var writesInMyVoice: Bool { profile.usesVoiceInAI && profile.canWriteInMyVoice }
 
     /// Turns the voice off or on. Returns false, and changes nothing, when it can't be turned on
-    /// yet: the setup has to run first (`saveVoiceSetup`).
+    /// yet: nothing is answered, so the setup has to run first (`saveVoiceSetup`).
     @discardableResult
     func setWritesInMyVoice(_ isOn: Bool) -> Bool {
-        if isOn, !profile.hasMinimumVoice { return false }
+        if isOn, !profile.canWriteInMyVoice { return false }
         profile.usesVoiceInAI = isOn
         return true
     }

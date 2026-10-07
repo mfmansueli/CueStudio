@@ -22,6 +22,13 @@ final class FakeScriptWriter: ScriptWriting {
     private(set) var lastRequest: ScriptRequest?
     private(set) var lastRewrite: (tool: ScriptTool, context: RewriteContext)?
     private(set) var hooksRequested = 0
+    /// A request the creator is waiting for is under way (topic filing stands aside).
+    var isBusyForeground = false
+    /// The topic the model files a script under; nil is "none fits".
+    var topicToPick: String?
+    private(set) var topicsAsked = 0
+    /// The voice the last request for ideas carried.
+    private(set) var lastThemeVoice: CreatorVoice?
 
     var isAvailable: Bool {
         get { availability.isAvailable }
@@ -64,9 +71,15 @@ final class FakeScriptWriter: ScriptWriting {
         return hookIdeas
     }
 
-    func themeIdeas(for niches: [Niche], language: CueLanguage?) async throws -> [ThemeIdea] {
+    func themeIdeas(for niches: [Niche], language: CueLanguage?, voice: CreatorVoice?) async throws -> [ThemeIdea] {
+        lastThemeVoice = voice
         if let error { throw error }
         guard availability.isAvailable else { throw ScriptAIError.modelUnavailable(availability.reason ?? "") }
         return ideas
+    }
+
+    func pickTopic(for text: String, among topics: [String]) async -> String? {
+        topicsAsked += 1
+        return topicToPick
     }
 }

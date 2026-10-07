@@ -47,7 +47,7 @@ struct VoiceQuestionTipHost: View {
         .task(id: tip?.id) { await watchClose() }
         .sheet(item: $sheetQuestion) { question in
             VoiceQuestionSheet(model: VoiceQuestionSheetModel(
-                question: question, mode: .tip, profile: profile, scheduler: scheduler, toast: toast
+                question: question, profile: profile, scheduler: scheduler, toast: toast
             ))
         }
     }

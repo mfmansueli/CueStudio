@@ -14,12 +14,13 @@ nonisolated extension VoicePersonalityItem {
         case .openings:
             [
                 String(localized: "Bold claim"), String(localized: "Question"), String(localized: "Story opener"),
-                String(localized: "Surprising fact"), String(localized: "POV"),
+                String(localized: "Surprising fact"), String(localized: "POV"), String(localized: "Mistake to avoid"),
+                String(localized: "Start with a number"),
             ]
         case .endings:
             [
                 String(localized: "Save this"), String(localized: "Follow for more"), String(localized: "Comment your answer"),
-                String(localized: "Link in bio"), String(localized: "Try it and tell me"),
+                String(localized: "Link in bio"), String(localized: "Try it and tell me"), String(localized: "No call to action"),
             ]
         case .formats, .swearing, .phrases:
             []

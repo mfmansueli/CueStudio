@@ -1,12 +1,12 @@
 {
   "schemaVersion": 2,
-  "revision": 2,
+  "revision": 3,
   "platforms": {
     "tiktok": {
       "aspect": "9:16",
       "resolution": "1080p",
       "frameRate": 30,
-      "ideal": [15, 60],
+      "ideal": [30, 90],
       "monetization": { "ideal": [60, 90], "minimum": 60, "goal": "creatorRewards" },
       "prefersStudio": false,
       "safeZone": { "aspect": "9:16", "videoWidth": 1080, "videoHeight": 1920, "top": 160, "bottom": 480, "left": 60, "right": 140 }
@@ -15,7 +15,7 @@
       "aspect": "9:16",
       "resolution": "1080p",
       "frameRate": 30,
-      "ideal": [15, 60],
+      "ideal": [30, 90],
       "prefersStudio": false,
       "safeZone": { "aspect": "9:16", "videoWidth": 1080, "videoHeight": 1920, "top": 220, "bottom": 420, "left": 60, "right": 120 }
     },
@@ -47,7 +47,7 @@
       "aspect": "9:16",
       "resolution": "1080p",
       "frameRate": 30,
-      "ideal": [8, 15],
+      "ideal": [15, 30],
       "prefersStudio": false,
       "safeZone": { "aspect": "9:16", "videoWidth": 1080, "videoHeight": 1920, "top": 250, "bottom": 250, "left": 60, "right": 60 }
     }

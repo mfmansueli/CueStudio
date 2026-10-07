@@ -40,25 +40,44 @@ nonisolated extension CreatorProfile {
     func value(for field: VoiceField) -> String {
         let separator = " · "
         switch field {
-        case .role: return role?.label ?? ""
-        case .topics: return (niches.map(\.label) + customTopics).joined(separator: separator)
+        case .role: return customRole ?? role?.label ?? ""
+        case .topics: return topics.map(\.label).joined(separator: separator)
         case .audience:
             guard isChosen(.audience) else { return "" }
-            return ([vocabulary.audienceLabel] + [audienceLevel?.label].compactMap { $0 }).joined(separator: separator)
+            let who = audienceNote ?? audienceGroup?.label ?? vocabulary.audienceLabel
+            return ([who] + [audienceLevel?.label].compactMap { $0 }).joined(separator: separator)
         case .tone: return isChosen(.tone) ? sounds.map(\.label).joined(separator: separator) : ""
         case .style:
             return [style.energy?.label, style.sentences?.label, style.words?.label, style.swearing?.label]
                 .compactMap { $0 }.joined(separator: separator)
         case .formats:
-            let tag = customTags.contains { VoiceTextValidator.key($0) == VoiceTextValidator.key(Self.talkingHeadTag) }
-            return ((tag ? [String(localized: "Talking head")] : []) + formats.map(\.label)).joined(separator: separator)
+            return (formatTags.map(VoiceQuestion.formatTagLabel) + formats.map(\.label)).joined(separator: separator)
         case .openings: return openings.joined(separator: separator)
         case .endings: return endings.joined(separator: separator)
         case .phrases: return phrases.joined(separator: separator)
         case .avoid: return avoidNone ? String(localized: "Nothing to avoid") : avoid.joined(separator: separator)
         case .reach:
             return (reach.platforms.map(\.label) + [reach.length?.label, reach.humor?.label].compactMap { $0 }).joined(separator: separator)
-        case .examples: return examples.isEmpty ? "" : String(localized: "\(examples.count) of \(VoiceExample.limit)")
+        case .examples: return examplesValue
+        }
+    }
+
+    /// "2 of 3 · Imported: 12": what they wrote or imported as proof of how they talk.
+    private var examplesValue: String {
+        examplesSummary(own: examples.count, of: VoiceExample.limit)
+    }
+
+    /// The same for the page's row, which also counts the scripts they approved (`approvedSamples`) among what they gave.
+    var examplesPageValue: String {
+        examplesSummary(own: examples.count + approvedSamples.count, of: VoiceExample.limit + VoiceLimits.approvedSamples)
+    }
+
+    private func examplesSummary(own: Int, of limit: Int) -> String {
+        switch (own, excerpts.count) {
+        case (0, 0): ""
+        case (let own, 0): String(localized: "\(own) of \(limit)")
+        case (0, let imported): String(localized: "Imported: \(imported)")
+        case (let own, let imported): String(localized: "\(own) of \(limit) · Imported: \(imported)")
         }
     }
 }

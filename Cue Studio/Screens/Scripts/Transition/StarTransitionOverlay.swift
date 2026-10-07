@@ -31,6 +31,8 @@ struct StarTransitionOverlay: View {
     @State private var landed: CGFloat = 0
     @State private var showsCaret = false
     @State private var phraseIndex = 0
+    /// The request has taken longer than usual: the phrase says so.
+    @State private var isTakingLong = false
     @State private var phraseShown = true
     @State private var finishShown = false
     @State private var overlayOpacity: Double = 0
@@ -177,6 +179,7 @@ struct StarTransitionOverlay: View {
 
     private var currentPhrase: String {
         if finishShown { return IdeaTransitionService.finishPhrase }
+        if isTakingLong { return IdeaTransitionService.longWaitPhrase }
         let phrases = IdeaTransitionService.phrases(platform: transition.platformName)
         return phrases[phraseIndex % phrases.count]
     }
@@ -240,6 +243,7 @@ struct StarTransitionOverlay: View {
         starOpacity = 1
         finishShown = false
         phraseIndex = 0
+        isTakingLong = false
         phraseShown = true
         showsCaret = false
         texts = 0
@@ -354,12 +358,16 @@ struct StarTransitionOverlay: View {
     private func rotatePhrases() async {
         guard transition.phase == .waiting else { return }
         let count = IdeaTransitionService.phrases(platform: transition.platformName).count
+        let clock = ContinuousClock()
+        let began = clock.now
         while !Task.isCancelled {
             try? await Task.sleep(for: .seconds(IdeaTransitionService.phraseInterval * speed))
             guard !Task.isCancelled, transition.phase == .waiting else { return }
             withAnimation(.easeOut(duration: 0.3 * speed)) { phraseShown = false }
             try? await Task.sleep(for: .seconds(0.3 * speed))
             guard !Task.isCancelled, transition.phase == .waiting else { return }
+            // A request that takes long says so once and stays on it (the system gives up on it by itself, and Cancel is there).
+            if began.duration(to: clock.now) >= .seconds(IdeaTransitionService.longWait * speed) { isTakingLong = true }
             phraseIndex = (phraseIndex + 1) % max(1, count)
             withAnimation(.easeOut(duration: 0.3 * speed)) { phraseShown = true }
             AccessibilityNotification.Announcement(currentPhrase).post()

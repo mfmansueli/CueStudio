@@ -63,9 +63,9 @@ struct ScriptPromptBuilderV29Tests {
         profile.customTags = ["Slow living"]
         profile.examples = [VoiceExample(text: "Here is how I really write.")]
         let brief = ScriptPromptBuilder.voiceBrief(profile)
-        #expect(brief.contains("\"Okay, real talk.\""))
-        #expect(brief.contains("\"Save this.\""))
-        #expect(brief.contains("tutorial"))
+        #expect(brief.contains("“Okay, real talk.”"), "an opening the creator typed is told as typed")
+        #expect(brief.contains("“Save this.”"), "so is an ending that is none of Cue's (this one has a full stop)")
+        #expect(brief.contains("tutorials"))
         #expect(brief.contains("Never swear."))
         #expect(brief.contains("Slow living"))
         #expect(brief.contains("Here is how I really write."))
