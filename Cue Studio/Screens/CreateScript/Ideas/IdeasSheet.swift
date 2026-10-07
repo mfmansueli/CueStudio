@@ -17,7 +17,11 @@ struct IdeasSheet: View {
     init(services: AppServices, onEdit: @escaping (ThemeIdea) -> Void, onWrite: @escaping (ThemeIdea) -> Void) {
         _viewModel = State(initialValue: IdeasViewModel(
             writer: services.writer, profile: services.profile, toast: services.toast,
-            interfaceLanguage: services.languages.interfaceLanguage
+            interfaceLanguage: services.languages.interfaceLanguage,
+            inspiration: { [library = services.library, logbook = services.logbook] in
+                IdeaInspiration.recent(scripts: library.scripts, notes: logbook.waiting)
+            },
+            taste: { [suggestions = services.ideaSuggestions] in suggestions.taste }
         ))
         self.onEdit = onEdit
         self.onWrite = onWrite

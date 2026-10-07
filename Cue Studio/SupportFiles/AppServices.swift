@@ -27,6 +27,7 @@ struct AppServices {
     let speech: SpeechRecognitionManager
     let dictation: DictationService
     let ideaDraft: IdeaDraftService
+    let ideaSuggestions: IdeaSuggestionService
     let starter: ScriptStarter
     let ideaTransition: IdeaTransitionService
     /// The pause between the groups of words of a script the AI writes into the page.
@@ -161,6 +162,11 @@ struct AppServices {
         sharing = options.sharing ?? VideoSharingService(apps: apps, tikTok: TikTokShareManager(), instagram: InstagramShareManager(apps: apps))
         remote = RemoteControlService(transport: options.remoteTransport)
         logbook = LogbookService(defaults: options.defaults)
+        ideaSuggestions = IdeaSuggestionService(
+            writer: options.writer, profile: profile, interfaceLanguage: { [languages] in languages.interfaceLanguage },
+            inspiration: { [library, logbook] in IdeaInspiration.recent(scripts: library.scripts, notes: logbook.waiting) },
+            notes: { [logbook] in logbook.waiting }, defaults: options.defaults
+        )
         brands = BrandStore(repository: options.brandRepository)
         self.sky = sky
         aiStatus = AIStatus(writer: options.writer)
@@ -209,6 +215,7 @@ extension View {
             .environment(services.speech)
             .environment(services.dictation)
             .environment(services.ideaDraft)
+            .environment(services.ideaSuggestions)
             .environment(services.starter)
             .environment(services.ideaTransition)
             .environment(services.textRecognizer)

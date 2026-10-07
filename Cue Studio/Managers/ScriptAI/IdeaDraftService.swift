@@ -27,8 +27,6 @@ final class IdeaDraftService {
     }
     /// The brand brief of a sponsored ad picked on the card: the ad is written from it, and from nothing else.
     var brand: BrandBrief?
-    /// "↻ Another idea": which of the creator's starter ideas the card suggests while its field is empty.
-    private(set) var suggestionRotation = 0
     /// "Let Cue write it" in Start a video: the card takes the keyboard (it turns false again once it has).
     var wantsFocus = false
 
@@ -54,17 +52,6 @@ final class IdeaDraftService {
 
     func canAskForIdea(isDictating: Bool) -> Bool {
         draft.canAskForIdea(isDictating: isDictating)
-    }
-
-    // MARK: - The suggested idea
-
-    /// The idea the card suggests while the field is empty, from the creator's topics (Lifestyle until they choose).
-    func suggestion(for niches: [Niche]) -> ThemeIdea? {
-        ThemeCatalog.page(for: niches, rotation: suggestionRotation).first
-    }
-
-    func anotherSuggestion() {
-        suggestionRotation += 1
     }
 
     // MARK: - Dictation

@@ -167,10 +167,13 @@ nonisolated struct CreatorProfile: Codable, Hashable, Sendable {
         )
     }
 
-    /// The voice for something written in `language` (a code like "en" or "pt-BR"; nil is not known): of what the creator imported, the excerpts in that
-    /// language that fit `idea` (a variety of how they open and go on, not a match of subject), and the measures only when they were taken in it.
+    /// The voice for something written in `language` (a code like "en" or "pt-BR"; nil is not known): the topics only when `idea` is about them (it says
+    /// what the video is about; the voice says how they sound), of what the creator imported the excerpts in that language that fit it (a variety of how
+    /// they open and go on, not a match of subject), and the measures only when they were taken in it.
     func voice(inLanguage language: String?, idea: String? = nil, professional: Bool = false, excerpts limit: Int = 2) -> CreatorVoice {
         var voice = self.voice
+        // The idea says what the video is about: the topics are only sent when it is about them (`IdeaFocus`).
+        voice.topics = IdeaFocus.topics(voice.topics, for: idea, language: language)
         voice.excerpts = ExcerptRetriever.pick(from: excerpts, context: .init(language: language, idea: idea, professional: professional), limit: limit)
         if let fingerprint, !fingerprint.applies(toLanguage: language) { voice.fingerprint = nil }
         return voice

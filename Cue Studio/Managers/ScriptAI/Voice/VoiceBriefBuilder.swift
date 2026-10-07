@@ -10,8 +10,8 @@ import Foundation
 /// end. What is known is used and what isn't is left out. Everything is in English and in the positive where it can be ("use plain
 /// words") next to the "never": what the creator typed stays as typed.
 ///
-/// The text fits `VoiceBrief.budget`: when it doesn't, the examples are shortened or dropped first, then the tags, then where and how long
-/// they post. One piece of code builds it, measures it and shows it ("What Cue sends").
+/// The text fits `VoiceBrief.budget`: when it doesn't, the examples are shortened or dropped first, then where and how long they post, and the tags
+/// (what the creator typed under "+ Something else") last. One piece of code builds it, measures it and shows it ("What Cue sends").
 nonisolated enum VoiceBriefBuilder {
     static func brief(for voice: CreatorVoice, budget: Int = VoiceBrief.budget, register: PlatformRegister = .casual) -> VoiceBrief {
         let parts = Parts(voice, register: register)
@@ -20,10 +20,10 @@ nonisolated enum VoiceBriefBuilder {
         let closing = closingRules(for: voice, register: register)
         if PromptCost.units(of: full) <= budget { return VoiceBrief(text: full, fullText: full, trimmed: [], closingRules: closing) }
 
-        // Cutting goes in order: the examples (shortened to the room there is, or dropped), then the tags, then the reach.
+        // Cutting goes in order: the examples (shortened to the room there is, or dropped), then the reach, then the tags.
         var dropped: [VoiceBrief.Trimmed] = []
         var best = (text: full, examples: parts.examples)
-        for step: VoiceBrief.Trimmed? in [nil, .tags, .reach] {
+        for step: VoiceBrief.Trimmed? in [nil, .reach, .tags] {
             if let step {
                 guard parts.has(step) else { continue }
                 dropped.append(step)
@@ -122,7 +122,7 @@ nonisolated enum VoiceBriefBuilder {
         // MARK: Identity
 
         private static func identity(_ voice: CreatorVoice) -> [String] {
-            var lines = ["Write in the creator's own voice."]
+            var lines = ["Write in the creator's own voice. What follows says how they sound and who they speak to, never what the video is about."]
             if let custom = voice.customRole {
                 lines.append("Who they are: \(custom).")
             } else if let role = voice.role {
@@ -255,7 +255,7 @@ nonisolated enum VoiceBriefBuilder {
 
         private static func tags(_ voice: CreatorVoice) -> [String] {
             let tags = voice.customTags.filter { !isFormatTag($0) }
-            return tags.isEmpty ? [] : ["Also true of them: \(tags.joined(separator: ", "))."]
+            return tags.isEmpty ? [] : ["Also true of them, in their own words: \(tags.joined(separator: ", "))."]
         }
 
         private static func rules(_ voice: CreatorVoice) -> [String] {
