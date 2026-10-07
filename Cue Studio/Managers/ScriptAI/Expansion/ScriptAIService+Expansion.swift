@@ -13,7 +13,10 @@ extension ScriptAIService {
     /// Whether a script far from its length is changed block by block (the device measurement compares it with leaving it be).
     nonisolated(unsafe) static var expandsShortScripts = true
 
-    func expandingIfShort(_ script: GeneratedScript, for request: ScriptRequest, on model: AIModelRoute, language: String?) async -> GeneratedScript {
+    /// - Parameter meter: told how many of the blocks are back (the percentage on the star).
+    func expandingIfShort(
+        _ script: GeneratedScript, for request: ScriptRequest, on model: AIModelRoute, language: String?, meter: WritingProgressMeter? = nil
+    ) async -> GeneratedScript {
         guard script.usedLanguageModel, Self.expandsShortScripts else { return script }
         let minimum = ReadTime.words(for: request.targetRange.lowerBound)
         let maximum = ReadTime.words(for: request.targetRange.upperBound)
@@ -22,7 +25,8 @@ extension ScriptAIService {
         let blocks = ScriptExpansion.blocks(of: script.text)
         let guide = ScriptPromptBuilder.formatGuide(for: request)
         var replacements: [Int: String] = [:]
-        for step in steps {
+        meter?.record(.lengthening(done: 0, of: steps.count))
+        for (done, step) in steps.enumerated() {
             if Task.isCancelled { return script }
             let purpose = guide.blocks.count == blocks.count ? guide.purposes[step.index] : nil
             let prompt = ScriptExpansionPrompt.prompt(for: step, of: blocks, request: request, purpose: purpose)
@@ -41,6 +45,7 @@ extension ScriptAIService {
                     error, operation: "script.expand", route: model, language: language, seconds: started.duration(to: .now).inSeconds, isFinal: false
                 )
             }
+            meter?.record(.lengthening(done: done + 1, of: steps.count))
         }
         guard !replacements.isEmpty else { return script }
         let text = ScriptExpansion.assembling(blocks, replacing: replacements)

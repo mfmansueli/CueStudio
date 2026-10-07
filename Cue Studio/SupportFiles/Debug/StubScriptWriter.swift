@@ -43,6 +43,18 @@ final class StubScriptWriter: ScriptWriting {
         }
     }
 
+    /// Stalling, the words still come in, six every 0.4 s, and the script never ends: the star's percentage moves while it waits.
+    func generate(_ request: ScriptRequest, reporting meter: WritingProgressMeter?) async throws -> GeneratedScript {
+        guard stalls, let meter else { return try await generate(request) }
+        meter.record(.drafting)
+        var words = 0
+        while true {
+            try await Task.sleep(for: .milliseconds(400))
+            words += 6
+            meter.record(.wrote(words: words))
+        }
+    }
+
     func rewrite(_ text: String, with tool: ScriptTool, context: RewriteContext) async throws -> String {
         guard availability.isAvailable else { throw ScriptAIError.modelUnavailable(availability.reason ?? "") }
         // Each tool leaves its own mark, so a test can tell which button did what.

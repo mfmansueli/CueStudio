@@ -17,6 +17,12 @@ extension Palette {
         static let aiReplacedInk = Color(hex: 0xE4DEFF)
         static let aiReplacedFill = Color(hex: 0x9D8CFF, opacity: 0.16)
 
+        /// "✦ Writing in your voice" (4.1): a violet pill at 20% with a rim and a glow that breathe (their opacity moves); the words are
+        /// `aiTextStrong`.
+        static let writingPillFill = Color(hex: 0x9D8CFF, opacity: 0.2)
+        static let writingPillRim = Color(hex: 0xB4A7FF)
+        static let writingPillGlow = Color(hex: 0x9D8CFF)
+
         /// The state strip of the script page: night at 92% over a blur, with a 0.5 pt violet rim.
         static let stripFill = Color(hex: 0x0E101C, opacity: 0.92)
         static let stripRim = Color(hex: 0xB4A7FF, opacity: 0.3)

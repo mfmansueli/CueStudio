@@ -28,6 +28,8 @@ extension Palette {
         static let transitionCover = Color(hex: 0x07080E)
         static let transitionHalo = Color(hex: 0x9D8CFF, opacity: 0.34)
         static let transitionPhrase = Color(hex: 0xC4B8FF)
+        /// The idea and Cancel under the star: a soft white (`PaletteContrastTests` measures it on the cover over a white screen).
+        static let transitionInk = Color(normal: Color(hex: 0xEBEBF5, opacity: 0.86), increasedContrast: Color(hex: 0xEBEBF5))
         static let dockField = Color(hex: 0x05060C, opacity: 0.45)
 
         /// A chip on the idea card (`rgba(5,6,12,0.42)`) and the voice chip's violet.

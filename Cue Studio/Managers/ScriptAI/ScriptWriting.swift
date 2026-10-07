@@ -18,6 +18,9 @@ protocol ScriptWriting: AnyObject {
     /// a free prompt throws `ScriptAIError.modelUnavailable`.
     func generate(_ request: ScriptRequest) async throws -> GeneratedScript
 
+    /// Drafts a script and tells `meter` what it is doing as it goes (the percentage on the star and the page). The caller finishes the meter.
+    func generate(_ request: ScriptRequest, reporting meter: WritingProgressMeter?) async throws -> GeneratedScript
+
     /// Rewrites `text` with a tool. Throws `ScriptAIError.modelUnavailable` without a model.
     func rewrite(_ text: String, with tool: ScriptTool, context: RewriteContext) async throws -> String
 
@@ -45,6 +48,11 @@ protocol ScriptWriting: AnyObject {
 }
 
 extension ScriptWriting {
+    /// A writer that can't tell how far it is (tests, the structured draft) says nothing until the script is there.
+    func generate(_ request: ScriptRequest, reporting meter: WritingProgressMeter?) async throws -> GeneratedScript {
+        try await generate(request)
+    }
+
     /// A writer that edits in one piece reports it as one part, done.
     func rewriteReported(_ text: String, with tool: ScriptTool, context: RewriteContext) async throws -> RewriteResult {
         RewriteResult(text: try await rewrite(text, with: tool, context: context), parts: 1, leftAsWritten: 0)

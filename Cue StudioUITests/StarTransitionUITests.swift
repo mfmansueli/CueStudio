@@ -99,6 +99,33 @@ final class StarTransitionUITests: XCTestCase {
         XCTAssertEqual(editor.frame.minX + 5, writingFrame.minX, accuracy: 1)
     }
 
+    /// While the AI writes, the star says how much of the script is written ("42%", an estimate), the number only goes up, and it is never 100%
+    /// before the script is there. The stub writer stalls: six words every 0.4 s and no end, until Cancel.
+    func testTheStarSaysHowMuchIsWrittenAndTheNumberOnlyGoesUp() throws {
+        let app = CueApp.launch(seeded: true, extraArguments: ["-uiTestStarTransition", "-uiTestWriterStalls"])
+        let send = app.buttons["ideaCard.submit"]
+        XCTAssertTrue(send.waitForExistence(timeout: 15))
+        send.tap()
+        let progress = app.descendants(matching: .any)["transition.progress"].firstMatch
+        XCTAssertTrue(progress.waitForExistence(timeout: 5), "No percentage under the star")
+        let first = percent(progress)
+        XCTAssertGreaterThanOrEqual(first, 0, "not a percentage: \(String(describing: progress.value))")
+        Thread.sleep(forTimeInterval: 2)
+        let later = percent(progress)
+        XCTAssertGreaterThan(later, first, "the words came in and the number stayed")
+        XCTAssertLessThan(later, 100, "100% only once the script is there")
+        try capture(app, "transition_progress")
+        app.buttons["transition.cancel"].tap()
+        expectation(for: NSPredicate(format: "exists == false"), evaluatedWith: progress)
+        waitForExpectations(timeout: 10)
+    }
+
+    /// The number in "42%"; -1 when the element says something else.
+    private func percent(_ element: XCUIElement) -> Int {
+        let digits = (element.value as? String ?? "").filter(\.isNumber)
+        return Int(digits) ?? -1
+    }
+
     /// Cancel is held in the design catalogue's demo, where the star waits as long as it takes to tap it.
     func testCancelMakesTheStarLeaveAndTheOverlayGo() {
         let app = CueApp.launch(seeded: false, extraArguments: ["-uiTestCatalogue", "transition", "-uiTestStarTransition"])

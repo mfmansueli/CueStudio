@@ -57,6 +57,8 @@ final class IdeaTransitionService {
     private(set) var platformName = ""
     /// Whether the exit is because of an error (the toast says so) and not a Cancel.
     private(set) var leftBecauseOfError = false
+    /// How much of the script is written, for the percentage under the phrase; nil until the page starts writing.
+    private(set) var progress: WritingProgressMeter?
     /// A factor on every timing (1 plays the board's own; UI tests shorten it): the transitions keep their order. Low Power Mode does not change it.
     var speed: Double = 1
 
@@ -90,6 +92,7 @@ final class IdeaTransitionService {
         self.idea = idea
         self.platformName = platformName
         leftBecauseOfError = false
+        progress = nil
         onAbort = abort
         onArrive = arrive
         phase = .rising
@@ -119,8 +122,15 @@ final class IdeaTransitionService {
         timer = Task { [weak self] in
             await self?.sleeper((Self.landingDuration + Self.caretHold) * (self?.speed ?? 1))
             guard !Task.isCancelled else { return }
-            self?.phase = .idle
+            self?.end()
         }
+    }
+
+    /// The page started writing the star's script: the star says how much of it is written. Nothing when there is no star (a script written
+    /// again from the page has its own pill).
+    func track(_ meter: WritingProgressMeter) {
+        guard phase == .rising || phase == .waiting else { return }
+        progress = meter
     }
 
     // MARK: - Leaving
@@ -148,8 +158,13 @@ final class IdeaTransitionService {
         timer = Task { [weak self] in
             await self?.sleeper((Self.fallDuration + Self.leaveFadeDuration) * (self?.speed ?? 1))
             guard !Task.isCancelled else { return }
-            self?.phase = .idle
+            self?.end()
         }
+    }
+
+    private func end() {
+        phase = .idle
+        progress = nil
     }
 
     // MARK: - Phrases

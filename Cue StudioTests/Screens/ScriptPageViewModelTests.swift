@@ -464,6 +464,37 @@ struct ScriptPageViewModelTests {
         #expect(scenario.toast.message == "Draft ready · Edit anything")
     }
 
+    @Test func whileThePageWaitsForTheScriptItSaysHowMuchIsWritten() async {
+        let scenario = makeScenario(script: TestData.script(title: "", text: ""), writing: request())
+        defer { scenario.defaults.tearDown() }
+        scenario.writer.eventsToReport = [.drafting, .wrote(words: 40)]
+        scenario.viewModel.beginWritingIfNeeded()
+        let meter = scenario.viewModel.page.progress
+        #expect(meter?.isFinished == false, "the pill has it while the page waits")
+        #expect(meter?.estimate.expectedWords == ReadTime.words(for: 30), "the fewest words asked for")
+        await scenario.viewModel.pageWritingTask?.value
+        #expect(scenario.writer.lastMeter === meter, "the writer reports to the same meter")
+        #expect(meter?.isFinished == true && meter?.fraction == 1)
+        #expect(scenario.viewModel.page.progress == nil, "the written page has no percentage")
+    }
+
+    @Test func aFailedWritingHasNoPercentageLeft() async {
+        let scenario = makeScenario(script: TestData.script(title: "", text: ""), writing: request())
+        defer { scenario.defaults.tearDown() }
+        scenario.writer.error = ScriptAIError.emptyResponse
+        scenario.viewModel.beginWritingIfNeeded()
+        await scenario.viewModel.pageWritingTask?.value
+        #expect(scenario.viewModel.page.writingError != nil && scenario.viewModel.page.progress == nil)
+    }
+
+    @Test func stoppingTakesThePercentageAway() {
+        let scenario = makeScenario(script: TestData.script(title: "", text: ""), writing: request())
+        defer { scenario.defaults.tearDown() }
+        scenario.viewModel.beginWritingIfNeeded()
+        scenario.viewModel.stopWriting()
+        #expect(scenario.viewModel.page.progress == nil)
+    }
+
     @Test func aFactualIdeaAsksForACheck() async {
         let factual = ScriptRequest(
             source: .prompt("2 minutes on how the electric shower was invented in Brazil"), platform: .tiktok, tone: nil, voice: nil,

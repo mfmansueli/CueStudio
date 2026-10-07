@@ -7,9 +7,10 @@ import SwiftUI
 
 /// Draws the star that is the transition from an idea to its script (`IdeaTransitionService`, 09 §8, `motion/README.md`), over the whole
 /// app: the star rises to the middle (34% of the height, 0.6 s, `(0.2, 0.8, 0.2, 1)`) while the screen behind darkens (84%); a halo breathes
-/// around it and twelve specks gather toward it; "Writing in your voice", the idea and a phrase that changes every 1.6 s sit under it, with
-/// Cancel at the bottom. When the script is ready the cover goes solid (0.22 s), the ring opens (0.42 s), the star lands as the caret
-/// (0.44 s) and the page writes. Cancel or an error: the star falls 40 pt (0.3 s), the overlay fades (0.22 s).
+/// around it and twelve specks gather toward it; "Writing in your voice", the idea, a phrase that changes every 1.6 s and how much of the script
+/// is written ("42%", an estimate: `WritingProgressEstimate`) sit under it, with Cancel at the bottom. When the script is ready the cover goes
+/// solid (0.22 s), the ring opens (0.42 s), the star lands as the caret (0.44 s) and the page writes. Cancel or an error: the star falls 40 pt
+/// (0.3 s), the overlay fades (0.22 s).
 ///
 /// Reduce Motion (09 §7): no rise or ring. The overlay fades in (0.2 s) with the text and Cancel in place, then crossfades into the page
 /// (0.3 s). The timings are the board's in every situation (`IdeaTransitionService.speed` is 1; only UI tests shorten it).
@@ -155,7 +156,7 @@ struct StarTransitionOverlay: View {
                 .accessibilityAddTraits(.isHeader)
             Text("“\(transition.idea)”")
                 .font(.system(size: 15))
-                .foregroundStyle(Color(red: 235 / 255, green: 235 / 255, blue: 245 / 255).opacity(0.86))
+                .foregroundStyle(Palette.Scripts.transitionInk)
                 .lineLimit(1)
                 .truncationMode(.tail)
                 .frame(maxWidth: 300)
@@ -168,13 +169,30 @@ struct StarTransitionOverlay: View {
                 .frame(height: 22)
                 .padding(.top, 4)
                 .accessibilityAddTraits(.updatesFrequently)
+            progressLine
         }
         .multilineTextAlignment(.center)
         .padding(.horizontal, 24)
         .frame(width: size.width)
-        .position(x: size.width / 2, y: centre.y + 104 + 36)
+        // The percentage's line is below the board's three: the block moves down by half of it, so they stay where the board puts them.
+        .position(x: size.width / 2, y: centre.y + 104 + 36 + (8 + Self.progressHeight) / 2)
         .opacity(texts)
         .offset(y: texts == 1 ? 0 : 8)
+    }
+
+    private static let progressHeight: CGFloat = 16
+
+    /// "42%" under the phrase, from the moment the page starts writing; its room is kept before that, so nothing moves when it comes.
+    private var progressLine: some View {
+        ZStack {
+            if let meter = transition.progress {
+                WritingProgressLabel(meter: meter)
+                    .font(CueStudioFont.hud)
+                    .foregroundStyle(Palette.ink2)
+                    .accessibilityIdentifier("transition.progress")
+            }
+        }
+        .frame(height: Self.progressHeight)
     }
 
     private var currentPhrase: String {
@@ -188,7 +206,7 @@ struct StarTransitionOverlay: View {
         Button { transition.cancel() } label: {
             Text("Cancel")
                 .font(.system(size: 15, weight: .semibold))
-                .foregroundStyle(.white.opacity(0.8))
+                .foregroundStyle(Palette.Scripts.transitionInk)
                 .padding(.horizontal, 18)
                 .frame(minHeight: Metrics.hitTarget)
                 .contentShape(Rectangle())
@@ -372,44 +390,5 @@ struct StarTransitionOverlay: View {
             withAnimation(.easeOut(duration: 0.3 * speed)) { phraseShown = true }
             AccessibilityNotification.Announcement(currentPhrase).post()
         }
-    }
-}
-
-/// Where the star is: on the curve from the arrow to the middle as `path` goes 0 → 1, then on the line from the middle to the caret as
-/// `landed` goes 0 → 1; `fall` pushes it down when it leaves. With Reduce Motion it just sits in the middle.
-private struct StarCourse: GeometryEffect {
-    var path: CGFloat
-    var landed: CGFloat
-    let from: CGPoint
-    let control: CGPoint
-    let centre: CGPoint
-    let caret: CGPoint
-    var fall: CGFloat
-    let flies: Bool
-
-    var animatableData: AnimatablePair<AnimatablePair<CGFloat, CGFloat>, CGFloat> {
-        get { AnimatablePair(AnimatablePair(path, landed), fall) }
-        set {
-            path = newValue.first.first
-            landed = newValue.first.second
-            fall = newValue.second
-        }
-    }
-
-    func effectValue(size: CGSize) -> ProjectionTransform {
-        let spot: CGPoint
-        if !flies {
-            spot = centre
-        } else if landed > 0 {
-            spot = CGPoint(x: centre.x + (caret.x - centre.x) * landed, y: centre.y + (caret.y - centre.y) * landed)
-        } else {
-            let t = path
-            let u = 1 - t
-            spot = CGPoint(
-                x: u * u * from.x + 2 * u * t * control.x + t * t * centre.x,
-                y: u * u * from.y + 2 * u * t * control.y + t * t * centre.y
-            )
-        }
-        return ProjectionTransform(CGAffineTransform(translationX: spot.x - size.width / 2, y: spot.y + fall - size.height / 2))
     }
 }

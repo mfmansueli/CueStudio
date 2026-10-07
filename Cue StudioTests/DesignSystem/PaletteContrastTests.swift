@@ -323,6 +323,31 @@ struct PaletteContrastTests {
         }
     }
 
+    /// The star's words over its cover (84% of `transitionCover`, 09 §8) on whatever the screen behind it shows: black, and at worst white.
+    @Test func theStarsWordsReadOverItsCoverOnAnyScreen() {
+        let words: [(name: String, color: Color)] = [
+            ("the title", Palette.ink), ("the idea and Cancel", Palette.Scripts.transitionInk), ("the phrase", Palette.Scripts.transitionPhrase),
+            ("the percentage", Palette.ink2),
+        ]
+        for screen in [ColorContrast.RGB(red: 0, green: 0, blue: 0), ColorContrast.RGB(red: 1, green: 1, blue: 1)] {
+            for appearance in Appearance.allCases {
+                let cover = ColorContrast.composite(rgb(Palette.Scripts.transitionCover, in: appearance), alpha: 0.84, over: screen)
+                for word in words {
+                    let measured = ColorContrast.ratio(rgb(word.color, in: appearance, over: cover), cover)
+                    #expect(measured >= ColorContrast.textMinimum, "\(word.name), \(appearance): \(measured)")
+                }
+            }
+        }
+    }
+
+    /// "✦ Writing in your voice 42%": the page's pill, its words on the violet fill over the page.
+    @Test func theWritingPillReadsOnItsFill() {
+        for appearance in Appearance.allCases {
+            let measured = ratio(Palette.aiTextStrong, onTint: Palette.Page.writingPillFill, over: Palette.bg, in: appearance)
+            #expect(measured >= ColorContrast.textMinimum, "\(appearance): \(measured)")
+        }
+    }
+
     // MARK: - v29
 
     /// Colored text inside a chip: the ink on the chip's fill, over each surface it can sit on.
