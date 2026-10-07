@@ -395,11 +395,23 @@ final class ScriptDetailViewModel {
             toast.show(writer.unavailableReason ?? String(localized: "AI isn't available now"))
             return
         }
+        let before = workingText
+        guard ReadTime.wordCount(in: before) > 0 else {
+            toast.show(String(localized: "Write something first, then Cue can improve it"))
+            return
+        }
         runningTool = tool
         defer { runningTool = nil }
         do {
-            let rewritten = try await writer.rewrite(workingText, with: tool, context: rewriteContext)
-            adopt(rewritten, message: doneMessage(for: tool))
+            let result = try await writer.rewriteReported(before, with: tool, context: rewriteContext)
+            let notice = RewriteNotice.after(tool, before: before, result: result, done: doneMessage(for: tool), idealRange: preset.idealRange)
+            if notice.changesScript {
+                adopt(result.text, message: notice.message)
+            } else {
+                closeToolPanel()
+                sheet = nil
+                toast.show(notice.message)
+            }
         } catch {
             showFailure(error)
         }
@@ -411,21 +423,33 @@ final class ScriptDetailViewModel {
             toast.show(writer.unavailableReason ?? String(localized: "AI isn't available now"))
             return
         }
+        guard ReadTime.wordCount(in: workingText) > 0 else {
+            toast.show(String(localized: "Write something first, then Cue can improve it"))
+            return
+        }
         runningTool = .translate
         defer { runningTool = nil }
         do {
             var context = rewriteContext
             context.language = language
-            let translated = try await writer.rewrite(workingText, with: .translate, context: context)
+            let result = try await writer.rewriteReported(workingText, with: .translate, context: context)
+            guard !result.isUntouched else {
+                toast.show(String(localized: "Couldn’t write it · Try again"))
+                return
+            }
             // A translation is a new script in the new language; the original stays as written.
             library.create(
                 title: String(localized: "\(script.displayTitle) (\(language.localizedName))"),
-                text: translated, platform: script.platform, type: script.type, folder: script.folder,
+                text: result.text, platform: script.platform, type: script.type, folder: script.folder,
                 language: language
             )
             closeToolPanel()
             sheet = nil
-            toast.show(String(localized: "\(language.localizedName) version saved"))
+            var message = String(localized: "\(language.localizedName) version saved")
+            if result.leftAsWritten > 0 {
+                message += " · " + String(localized: "\(result.leftAsWritten) of \(result.parts) parts left as written")
+            }
+            toast.show(message)
         } catch {
             showFailure(error)
         }
@@ -446,14 +470,20 @@ final class ScriptDetailViewModel {
         do {
             var context = rewriteContext
             context.platform = platform
-            context.idealRange = rules.preset(for: platform, monetizationGoals: profile.profile.monetizationGoals).idealRange
-            let text = try await writer.rewrite(script.text, with: .fitToTime, context: context)
+            let range = rules.preset(for: platform, monetizationGoals: profile.profile.monetizationGoals).idealRange
+            context.idealRange = range
+            let result = try await writer.rewriteReported(script.text, with: .fitToTime, context: context)
             library.create(
                 title: String(localized: "\(script.displayTitle) (\(platform.label))"),
-                text: text, platform: platform, type: script.type, folder: script.folder,
+                text: result.text, platform: platform, type: script.type, folder: script.folder,
                 language: script.language
             )
-            toast.show(String(localized: "\(platform.label) version saved"))
+            var message = String(localized: "\(platform.label) version saved")
+            // The version is the script as the platform's length asks it, or says how far it got.
+            if let length = RewriteNotice.lengthNote(words: ReadTime.wordCount(in: result.text), idealRange: range) {
+                message += " · " + length
+            }
+            toast.show(message)
         } catch {
             showFailure(error)
         }
@@ -510,8 +540,10 @@ final class ScriptDetailViewModel {
         move(to: name)
     }
 
+    /// Deletes, with Undo for 4 s as the list does: a script is a lot of words to lose to one tap next to "Share".
     func delete() {
+        guard let script else { return }
         library.delete([scriptID])
-        toast.show(String(localized: "Script deleted"))
+        toast.show(String(localized: "Script deleted"), action: ToastAction(title: String(localized: "Undo")) { [library] in library.restore([script]) })
     }
 }

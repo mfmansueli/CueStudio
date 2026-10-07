@@ -163,6 +163,7 @@ nonisolated struct AIFailureReport: Equatable, Sendable {
         case .wrongLanguage: "wrongLanguage"
         case .rateLimited: "rateLimited"
         case .timedOut: "timedOut"
+        case .declined: "declined"
         }
     }
 

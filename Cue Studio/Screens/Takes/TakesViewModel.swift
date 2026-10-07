@@ -114,6 +114,15 @@ final class TakesViewModel {
         scopeSetPlatform = false
     }
 
+    /// Whether a stage, a platform or a year is narrowing the list: when it comes up empty, that is why.
+    var isNarrowed: Bool { filter.stage != nil || filter.platform != nil || scope != nil }
+
+    /// The way out of an empty list: every video again.
+    func showEverything() {
+        clearScope()
+        filter = TakeLibraryFilter()
+    }
+
     /// Tapping the stage that is picked clears it.
     func toggle(_ stage: TakeStage) {
         filter.stage = filter.stage == stage ? nil : stage

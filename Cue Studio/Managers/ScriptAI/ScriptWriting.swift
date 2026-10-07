@@ -21,6 +21,10 @@ protocol ScriptWriting: AnyObject {
     /// Rewrites `text` with a tool. Throws `ScriptAIError.modelUnavailable` without a model.
     func rewrite(_ text: String, with tool: ScriptTool, context: RewriteContext) async throws -> String
 
+    /// Rewrites `text` with a tool and says what was done: the script is worked on a part at a time and a part that can't do what the tool says is left as
+    /// it was, so what is told to the creator must be what happened (`RewriteResult`).
+    func rewriteReported(_ text: String, with tool: ScriptTool, context: RewriteContext) async throws -> RewriteResult
+
     /// Three new opening lines for the script.
     func hooks(for text: String, context: RewriteContext) async throws -> [String]
 
@@ -41,6 +45,11 @@ protocol ScriptWriting: AnyObject {
 }
 
 extension ScriptWriting {
+    /// A writer that edits in one piece reports it as one part, done.
+    func rewriteReported(_ text: String, with tool: ScriptTool, context: RewriteContext) async throws -> RewriteResult {
+        RewriteResult(text: try await rewrite(text, with: tool, context: context), parts: 1, leftAsWritten: 0)
+    }
+
     /// Writers that run nothing in the background (tests, a device without Apple Intelligence) are never busy.
     var isBusyForeground: Bool { false }
 

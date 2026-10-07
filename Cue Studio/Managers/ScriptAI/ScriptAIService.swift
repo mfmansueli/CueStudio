@@ -294,6 +294,11 @@ final class ScriptAIService: ScriptWriting {
     // MARK: - Editing
 
     func rewrite(_ text: String, with tool: ScriptTool, context: RewriteContext) async throws -> String {
+        try await rewriteReported(text, with: tool, context: context).text
+    }
+
+    /// The tool at work, a part of the script at a time and each part held to the tool's promise (`RewriteRunner`), with a report of what was done.
+    func rewriteReported(_ text: String, with tool: ScriptTool, context: RewriteContext) async throws -> RewriteResult {
         beginForeground()
         defer { endForeground() }
         // The language the result must be in: the target of a translation, otherwise the script's own.
@@ -314,25 +319,29 @@ final class ScriptAIService: ScriptWriting {
         let operation = "rewrite.\(tool)"
         let language = expected?.minimalIdentifier
         let voice = tool == .inMyVoice ? context.voice : nil
-        func attempt(on model: AIModelRoute) async throws -> String {
-            let session = self.session(on: model, instructions: ScriptPromptBuilder.rewriteInstructions(voice: voice, language: expected))
-            let prompt = ScriptPromptBuilder.rewritePrompt(for: text, tool: tool, context: context)
-            let response = try await self.answering { try await session.respond(to: prompt).content }
-            let rewritten = ScriptPromptBuilder.clean(response)
-            guard !rewritten.isEmpty else { throw ScriptAIError.emptyResponse }
-            try Self.requireLanguage(expected, in: rewritten)
-            return rewritten
-        }
-        return try await withFallback(plan, operation: operation, language: language) { model in
-            do {
-                return try await attempt(on: model)
-            } catch ScriptAIError.wrongLanguage {
-                AIFailureReport.note(ScriptAIError.wrongLanguage, operation: operation, route: model, language: language, seconds: 0, isFinal: false)
-                // Measured on an iPhone: "In my voice" on a Japanese script came back in English. One more try; then the
-                // creator is told and the script stays as it was.
-                return try await attempt(on: model)
+        let instructions = ScriptPromptBuilder.rewriteInstructions(voice: voice, language: expected)
+        let ask: RewriteRunner.Ask = { [self] part, details in
+            @MainActor func attempt(on model: AIModelRoute) async throws -> String {
+                let session = self.session(on: model, instructions: instructions, transformsText: true)
+                let prompt = ScriptPromptBuilder.rewritePrompt(for: part, tool: tool, context: context, part: details)
+                let response = try await self.answering { try await session.respond(to: prompt).content }
+                let rewritten = ScriptPromptBuilder.clean(response)
+                guard !rewritten.isEmpty else { throw ScriptAIError.emptyResponse }
+                try Self.requireLanguage(expected, in: rewritten)
+                return rewritten
+            }
+            return try await self.withFallback(plan, operation: operation, language: language) { model in
+                do {
+                    return try await attempt(on: model)
+                } catch ScriptAIError.wrongLanguage {
+                    AIFailureReport.note(ScriptAIError.wrongLanguage, operation: operation, route: model, language: language, seconds: 0, isFinal: false)
+                    // Measured on an iPhone: "In my voice" on a Japanese script came back in English. One more try; then the
+                    // creator is told and the script stays as it was.
+                    return try await attempt(on: model)
+                }
             }
         }
+        return try await RewriteRunner.run(text, tool: tool, context: context, ask: ask)
     }
 
     func hooks(for text: String, context: RewriteContext) async throws -> [String] {
@@ -463,11 +472,15 @@ final class ScriptAIService: ScriptWriting {
         }
     }
 
-    func session(on model: AIModelRoute, instructions: String) -> LanguageModelSession {
+    /// - Parameter transformsText: the model is only changing words the creator wrote (a rewrite, a translation). The framework has guardrails made for
+    ///   exactly that, which don't treat the creator's own words as a request: measured on an iPhone 15 Pro, the default ones refused a script about
+    ///   cold showers ("May contain unsafe content") when asked to fit it to the length of a platform.
+    func session(on model: AIModelRoute, instructions: String, transformsText: Bool = false) -> LanguageModelSession {
         if model == .privateCloud, let privateCloud {
             return LanguageModelSession(model: privateCloud, instructions: instructions)
         }
-        return LanguageModelSession(model: SystemLanguageModel.default, instructions: instructions)
+        let device = transformsText ? SystemLanguageModel(guardrails: .permissiveContentTransformations) : SystemLanguageModel.default
+        return LanguageModelSession(model: device, instructions: instructions)
     }
 
     /// Runs `work` on the plan's model and, when the other model can do what this one couldn't *and the
@@ -527,6 +540,7 @@ final class ScriptAIService: ScriptWriting {
         case .modelPreparing: ScriptAIError.modelPreparing
         case .rateLimited: ScriptAIError.rateLimited
         case .cancelled: CancellationError()
+        case .declined: ScriptAIError.declined
         case .cloudUnreachable, .other: error
         }
     }

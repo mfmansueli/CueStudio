@@ -280,7 +280,27 @@ struct ScriptDetailViewModelTests {
         #expect(scenario.writer.lastRewrite?.context.platform == .reels)
         #expect(scenario.writer.lastRewrite?.context.idealRange == TestData.rules.preset(for: .reels, monetizationGoals: true).idealRange)
         #expect(scenario.library.script(id: script.id)?.text == script.text)
+        // It is saved, and says how far it is from the length when it is not there ("Short and punchy." is three words).
+        #expect(scenario.toast.message?.hasPrefix("Reels version saved · Closer to ") == true)
+    }
+
+    @Test func aVersionThatIsTheRightLengthIsJustSaved() async {
+        let script = TestData.script(title: "Habits", platform: .tiktok)
+        let scenario = makeScenario(script: script)
+        defer { scenario.defaults.tearDown() }
+        let range = TestData.rules.preset(for: .reels, monetizationGoals: true).idealRange
+        scenario.writer.rewrittenText = (0..<ReadTime.words(for: (range.lowerBound + range.upperBound) / 2)).map { "w\($0)" }.joined(separator: " ")
+        await scenario.viewModel.makeVersion(for: .reels)
         #expect(scenario.toast.message == "Reels version saved")
+    }
+
+    @Test func aToolHasNothingToWorkOnInAnEmptyScript() async {
+        let script = TestData.script(title: "Blank", text: "", platform: .tiktok)
+        let scenario = makeScenario(script: script)
+        defer { scenario.defaults.tearDown() }
+        await scenario.viewModel.run(.moreEnergy)
+        #expect(scenario.writer.lastRewrite == nil)
+        #expect(scenario.toast.message == "Write something first, then Cue can improve it")
     }
 
     @Test func destinationChangeAppliesThePreset() {

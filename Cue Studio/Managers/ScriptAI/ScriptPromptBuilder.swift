@@ -282,7 +282,8 @@ nonisolated enum ScriptPromptBuilder {
     static func rewriteInstructions(voice: CreatorVoice? = nil, language: Locale.Language? = nil) -> String {
         var lines = [
             "You edit teleprompter scripts for video creators.",
-            "Keep the creator's voice and first person. Keep existing stage cues in square brackets unless the edit requires removing them.",
+            "Keep the creator's voice and first person. Keep the stage cues that are in square brackets where they are.",
+            "Never add stage cues, scene descriptions, sound effects or notes of your own: only the words the creator says.",
             "Return only the full edited script: no explanations, no headings, no markdown, no quotes around it.",
             "Separate paragraphs with a blank line.",
             "Keep the script in the language it is written in, unless you are asked to translate it.",
@@ -297,8 +298,42 @@ nonisolated enum ScriptPromptBuilder {
         return lines.joined(separator: "\n")
     }
 
-    static func rewritePrompt(for text: String, tool: ScriptTool, context: RewriteContext) -> String {
-        "\(instruction(for: tool, context: context))\n\nScript:\n\(text)"
+    /// What a part of a longer script is told about itself, and what it was told the last time it missed.
+    nonisolated struct RewritePart: Equatable, Sendable {
+        /// Which part this is, from 1, of how many.
+        var index = 1
+        var count = 1
+        /// The words the result is to have ("Fit to time", per part): a part gets its share of the whole.
+        var target: ClosedRange<Int>?
+        /// The paragraph before this one, for the model to read and leave out of its answer.
+        var leadIn: String?
+        /// What its last answer got wrong (`RewriteOutcome.correction`).
+        var correction: String?
+    }
+
+    static func rewritePrompt(for text: String, tool: ScriptTool, context: RewriteContext, part: RewritePart = RewritePart()) -> String {
+        var lines: [String] = []
+        if tool == .fitToTime, let target = part.target {
+            lines.append(fitInstruction(for: target, sourceWords: ReadTime.wordCount(in: text)))
+        } else {
+            lines.append(instruction(for: tool, context: context))
+        }
+        if part.count > 1 {
+            lines.append("This is part \(part.index) of \(part.count) of a longer script. Edit only this part and answer with only this part: no introduction and no ending that is not here.")
+        }
+        if let leadIn = part.leadIn {
+            lines.append("For context, the paragraph before it (leave it out of your answer):\n\(leadIn)")
+        }
+        if let correction = part.correction { lines.append(correction) }
+        return lines.joined(separator: "\n\n") + "\n\nScript:\n\(text)"
+    }
+
+    /// "Fit to time" for a part: the words it is to have, and how to get there.
+    static func fitInstruction(for target: ClosedRange<Int>, sourceWords: Int) -> String {
+        let how = sourceWords > target.upperBound
+            ? "Cut what matters least"
+            : "Make it longer with detail, examples and transitions that belong to what is already said, and never new facts, names or numbers"
+        return "Edit the script so it runs between \(target.lowerBound) and \(target.upperBound) spoken words (it has \(sourceWords) now), keeping every key point. \(how)."
     }
 
     static func instruction(for tool: ScriptTool, context: RewriteContext) -> String {
@@ -310,19 +345,21 @@ nonisolated enum ScriptPromptBuilder {
         case .moreEnergy:
             return "Rewrite with more energy: punchier verbs, shorter sentences, more excitement. Do not add facts."
         case .fixGrammar:
-            return "Fix grammar, spelling and punctuation only. Do not change the wording otherwise."
+            return "Fix grammar, spelling and punctuation only. Do not change the wording otherwise and do not add or remove anything: answer with the whole text."
         case .translate:
             return "Translate the script into \((context.language ?? .spanish).englishName), keeping the tone. Translate the stage cues too."
         case .strongerCTA:
-            return "Rewrite only the closing paragraph as a clearer, more direct call to action. Do not invent deadlines, discounts or facts that are not in the script."
+            return "Rewrite the closing below as a clearer, more direct call to action. Do not invent deadlines, discounts or facts that are not in the script."
         case .moreHuman:
             return "Make it sound more human and less scripted: plain words, no corporate phrasing."
         case .lessDefensive:
-            return "Remove defensive language, excuses and any \"but\" after an apology, keeping the substance."
+            return "Remove defensive language and excuses: delete lines like \"I didn't have a choice\" or \"it's not my fault\", and any \"but\" after " +
+                "an apology. Keep the substance."
         case .shorterAndDirect:
-            return "Make it shorter and more direct. Remove filler and repetition."
+            return "Make it about a third shorter and more direct. Remove filler and repetition, and keep every key point."
         case .inMyVoice:
-            return "Rewrite the script so it sounds like the creator described in your instructions: their tone, words, style and catchphrases. Keep every point and the same length."
+            return "Rewrite the script so it sounds like the creator described in your instructions: their tone, words, style and catchphrases. " +
+                "Put every sentence in their words, so that none stays as it is, and keep every point and about the same number of words as the script has."
         case .newHooks, .addDisclosure:
             return ""
         }

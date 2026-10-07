@@ -519,3 +519,43 @@ cabeça de lado (perfil) ou muito pequena não tem marcos e não é alisada. O V
 - Medido à mão numa captura real: o texto do campo do dock (18:1), os cabeçalhos de seção (6,3:1) e "SELECT" (6,3:1) passam.
 
 **Fica como está, por decisão de desenho:** a linha "3 VIDEOS TO UNLOCK" da revisão do universo e as linhas de um passo ainda bloqueado ficam a 62% (o `09` pede o estado inativo; a regra isenta componente inativo, e o toque explica o motivo); os chips de tema apagados quando 3 já foram escolhidos (desabilitados); setas de disclosure e separadores (decorativos).
+
+## 22. Caça a bugs pelo app inteiro (7 de outubro de 2026): o botão faz o que diz
+
+O app foi percorrido como um criador percorre (rastreador de UI em `Cue StudioUITests/BugHuntUITests.swift`, opt-in com `TEST_RUNNER_CUE_HUNT_DIR=<pasta>`: toca em cada controle de cada aba, grava o mapa
+"botão → o que abriu → saídas" e os achados, com uma foto de cada tela nova) e cada botão foi conferido contra o que o rótulo promete (`ButtonPromisesUITests`, uma promessa por teste, e
+`ScriptToolsDeviceTests`, que roda cada ferramenta de IA num iPhone 15 Pro de verdade). Nenhuma tela nova: mudou o que os botões fazem e dizem.
+
+**O que o aparelho mostrou (antes da correção):** "Fix grammar" num roteiro de 374 palavras devolvia 188, e de 1309 também 188: o app trocava o roteiro por um terço dele e dizia "Grammar fixed" (o toast de
+Undo dura 4 s). "In my voice" devolvia 45% do tamanho com "mantenha o tamanho" pedido; "Fit to time" de 528 palavras para 150–225 devolvia 126; "Make a version for YouTube" devolvia o mesmo roteiro de 132 palavras
+(pedidas 600–1500) e o toast dizia "YouTube version saved"; "Fix grammar", "More energy" e "More human" inventavam linhas `[Scene: …]` que o app conta e mostra como cues; "Less defensive" deixava
+"it's not my fault"; um roteiro sobre banho frio era recusado com "May contain unsafe content" (a mensagem crua do framework).
+
+**Como as ferramentas funcionam agora** (`Managers/ScriptAI/Rewrite/`):
+- `RewriteChunker` corta o roteiro em partes de uns 150 palavras (parágrafos juntos; um parágrafo grande é cortado nas frases; custo medido por `PromptCost`, então vale em qualquer idioma) e cada parte vai ao modelo
+  sozinha: um roteiro de qualquer tamanho volta inteiro (374 → 374, 1309 → 1309, 1683 → 1683 palavras no aparelho; ≈ 5 s por 100 palavras). "Stronger CTA" só pergunta o último parágrafo, com o anterior ao lado
+  só para ler; o resto passa como estava. "Fit to time" que precisa crescer mais de 3× usa partes menores.
+- `RewriteOutcome` diz se cada parte cumpriu a promessa da ferramenta: *Shorter & direct* tem de ficar entre 45% e 90% das palavras, *Fix grammar* dentro de ±15%, *In my voice* 50–140% (uma voz concisa diz o mesmo em metade das palavras: medido, 132 → 57–95), *Fit to time* dentro da
+  faixa da plataforma (±15%), nenhuma ferramenta perde mais da metade dos cues do roteiro (tradução fica fora), e as mesmas palavras de volta não contam como feito (exceto *Fix grammar*: roteiro sem erro).
+  Cues que a ferramenta inventou (`[Scene: …]`, `[música]`) são tirados antes de qualquer coisa.
+- `RewriteRunner` pergunta de novo, uma vez, dizendo ao modelo o que errou em números ("sua última resposta tinha 188 palavras, esta parte tem 374 e a resposta precisa de 318 a 430"); quem erra duas vezes
+  **fica como o criador escreveu** (nunca vira um corte nem uma invenção), a não ser que ao menos fez parte do que foi pedido (encurtou, ou chegou mais perto do tamanho). *Fit to time* ainda faz uma segunda
+  rodada sobre o que sobrou. Uma parte que o modelo recusa não leva as outras junto. Um roteiro que já tem o tamanho não é tocado e nem pergunta ao modelo.
+- Os roteiros de reescrita usam as grades de proteção do framework feitas para transformar texto do próprio criador (`permissiveContentTransformations`); uma recusa que sobra vira
+  "Apple Intelligence won’t work on this text. Try rewording it, or use another tool." (`ScriptAIError.declined`), não a frase crua do framework.
+- `RewriteNotice` escolhe o que o toast diz a partir do que aconteceu: "Made it shorter and more direct · 132 → 53 words", "Closer to 1:00–1:30 · now 0:48" quando *Fit to time* não chegou, "Already fits 1:00–1:30",
+  "No mistakes to fix", "n of m parts left as written", e "Couldn’t write it · Try again" quando nada mudou (nada é salvo, não há Undo). Make a version for… diz o tamanho em que ficou. Um roteiro sem palavras
+  não chama o modelo: "Write something first, then Cue can improve it". A instrução das ferramentas agora pede o que a ferramenta diz ("cerca de um terço mais curto", "apague 'I didn't have a choice'…").
+
+**Outros caminhos que não levavam a lugar nenhum:**
+- **Logbook:** um toque no botão grande do microfone não fazia nada (só segurar gravava). Agora um toque começa a ouvir ("Tap the button again to finish") e o próximo toque termina; segurar continua como antes;
+  onde nada pode ouvir (sem reconhecimento de fala ou permissão) o toque diz por quê e não fica "ouvindo". Texto de repouso: "Hold to capture an idea, or tap to start".
+- **Takes:** uma lista vazia por causa do filtro (estágio + plataforma) dizia "Nothing ready yet — Tap Done in the editor…" sem saída. Agora diz de qual plataforma é ("No videos for Shorts here") e tem
+  **Show every video**, que limpa estágio, plataforma e ano.
+- **Página do script › ••• › Delete** apagava sem Undo (a lista dá Undo por 4 s): agora também.
+- O menu ••• do sistema e a folha Improve (que abre pela metade, com as ferramentas de baixo fora da vista) são normais; o `ButtonPromisesUITests` abre o Improve pelo chip da própria página.
+
+**Falsos alarmes do rastreador (para quem o rodar de novo):** botões "sem nome" de 28×36 pt são o botão interno do Menu da barra (o externo se chama "More"); os de 134×44 são a barra de sugestões do teclado; chips de
+tema, cores do núcleo e interruptores "não mudam nada" no mapa porque a seleção é um traço de acessibilidade e o toque no centro de uma linha de interruptor não é o interruptor; a última linha da lista fica sob
+o dock até rolar. Os interruptores de Settings (Recording, Prompter e Personalize: viram e continuam virados), as linhas do My Cue Voice abertas por Settings, as 4 cores do núcleo, o botão do Logbook, o "Show every video" e as ferramentas de IA estão cobertos por testes.
+

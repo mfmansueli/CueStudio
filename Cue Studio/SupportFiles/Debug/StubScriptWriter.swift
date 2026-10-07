@@ -45,7 +45,8 @@ final class StubScriptWriter: ScriptWriting {
 
     func rewrite(_ text: String, with tool: ScriptTool, context: RewriteContext) async throws -> String {
         guard availability.isAvailable else { throw ScriptAIError.modelUnavailable(availability.reason ?? "") }
-        return text + "\n\n[smile] Rewritten."
+        // Each tool leaves its own mark, so a test can tell which button did what.
+        return text + "\n\n[smile] Rewritten with \(tool.rawValue)."
     }
 
     func hooks(for text: String, context: RewriteContext) async throws -> [String] {
