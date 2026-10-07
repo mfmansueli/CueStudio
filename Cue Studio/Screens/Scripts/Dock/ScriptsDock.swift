@@ -25,6 +25,8 @@ struct ScriptsDock: View {
 
     @Environment(CreatorProfileService.self) private var profile
     @Environment(IdeaDraftService.self) private var ideaDraft
+    @Environment(IdeaSuggestionService.self) private var suggestions
+    @Environment(LogbookService.self) private var logbook
     @Environment(ScriptStarter.self) private var starter
     @Environment(DictationService.self) private var dictation
     @Environment(LanguageService.self) private var languages
@@ -63,7 +65,7 @@ struct ScriptsDock: View {
     /// The idea the dock suggests while its field is empty ("↻" brings the next).
     private var suggestion: String? {
         guard hasAI, ideaDraft.isEmpty, !dictation.isActive else { return nil }
-        return ideaDraft.suggestion(for: profile.profile.niches)?.title
+        return suggestions.current?.title
     }
 
     /// The arrow works with something to send: the typed idea or the suggestion. Without Apple Intelligence ("Write it")
@@ -157,7 +159,11 @@ struct ScriptsDock: View {
         .onAppear {
             // A dictation that finished while the dock was away leaves its segment behind.
             if !dictation.isActive { ideaDraft.endDictation() }
+            // The next ideas are written before "another idea" is tapped.
+            suggestions.prepare()
         }
+        // Other topics in My Cue Voice: the ideas written for the old ones go and new ones are asked for.
+        .onChange(of: profile.profile.ideaTopics) { suggestions.prepare() }
         .onDisappear {
             stopDictating()
             isEditing = false
@@ -264,6 +270,8 @@ struct ScriptsDock: View {
         .tint(Palette.acc)
         .padding(.vertical, 6)
         .writingToolsBehavior(.limited)
+        // The suggestion is drawn behind the field and hidden from VoiceOver: the field says it, so that whoever listens knows what the arrow sends.
+        .accessibilityValue(Text(suggestion ?? ideaDraft.text))
         .accessibilityHint(Text("Say or type an idea"))
         .accessibilityIdentifier("ideaCard.field")
     }
@@ -302,13 +310,18 @@ struct ScriptsDock: View {
     private var anotherIdeaButton: some View {
         Button {
             Haptics.selection()
-            ideaDraft.anotherSuggestion()
+            suggestions.another()
         } label: {
-            Text(verbatim: "↻")
-                .font(.system(size: 17))
-                .foregroundStyle(Palette.aiTextStrong.opacity(0.75))
-                .frame(width: 32, height: Metrics.hitTarget)
-                .contentShape(Rectangle())
+            // At the end of the ideas, with more on their way: the arrow turns into a wait instead of going quiet.
+            Group {
+                if suggestions.isWaiting {
+                    ProgressView().controlSize(.small).tint(Palette.aiTextStrong)
+                } else {
+                    Text(verbatim: "↻").font(.system(size: 17)).foregroundStyle(Palette.aiTextStrong.opacity(0.75))
+                }
+            }
+            .frame(width: 32, height: Metrics.hitTarget)
+            .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
         .accessibilityLabel(Text("Another idea"))
@@ -418,8 +431,15 @@ struct ScriptsDock: View {
         }
         let idea = hasTypedIdea ? nil : suggestion
         Haptics.medium()
-        starter.write(idea: idea, from: sendCenter)
-        if idea != nil { ideaDraft.anotherSuggestion() }
+        guard idea != nil else {
+            starter.write(idea: nil, from: sendCenter)
+            return
+        }
+        // The idea sent is what they like (the next ones lean that way); when it was a note of theirs, the note has become a script.
+        let note = suggestions.sent()
+        starter.write(idea: idea, from: sendCenter) { [logbook] scriptID in
+            if let note { logbook.markShaped(note, as: scriptID) }
+        }
     }
 }
 

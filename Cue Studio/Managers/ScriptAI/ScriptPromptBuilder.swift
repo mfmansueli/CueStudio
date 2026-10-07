@@ -78,9 +78,22 @@ nonisolated enum ScriptPromptBuilder {
     /// device measurement (`PlatformLengthDeviceTests`) changes it.
     nonisolated(unsafe) static var lengthAskFactor = 1.5
 
+    /// A script whose minimum is this many words or fewer (a video of a minute or so: TikTok, Reels, Shorts, Stories) is asked for as it is, with no
+    /// sentence counts and no lengthening afterwards. Measured on an iPhone 15 Pro with "my daily routine with AI is not going so well" (three runs each,
+    /// with and without a voice): asked as it was, the answer came in 6 to 35 s with 43 to 118 words, on the subject every time; asked for 1.5× with a
+    /// count of sentences for every block it took 13 to 83 s for 132 to 262 words, padded with the same sentences again, and one run in six failed after
+    /// 73 s. For a short video the wait and the subject matter more than 40 words; for a long one (YouTube) the model writes half of what it is
+    /// asked and the extra ask is what gets the minutes (`PlatformLengthDeviceTests`).
+    static let shortFormWords = 200
+
+    /// The most a short video is asked to run to, whatever its creator's usual length: two minutes at 150 words a minute.
+    static let shortFormCeiling = 300
+
     /// The words to ask the model for when the script needs `words`: `lengthAskFactor` times as many for a short script, fewer times as the script gets
     /// longer (a script of 1000 words or more is asked as it is: the model already writes the 1286 words of a YouTube video, and its answer is bounded).
     static func askedWords(_ words: Int) -> Int {
+        // A short-form video is asked as it is (`shortFormWords`): see there.
+        guard words > shortFormWords else { return words }
         let factor = words <= 250 ? lengthAskFactor : max(1.0, lengthAskFactor - (lengthAskFactor - 1.0) * Double(words - 250) / 750)
         return Int((Double(words) * factor).rounded())
     }
@@ -89,7 +102,11 @@ nonisolated enum ScriptPromptBuilder {
     /// raised with it (a Short asked for 150 to 300 words wrote 310, two minutes of a script for a video of one), only kept above the floor.
     static func askedRange(for range: ClosedRange<TimeInterval>) -> (low: Int, high: Int) {
         let low = askedWords(ReadTime.words(for: range.lowerBound))
-        return (low, max(ReadTime.words(for: range.upperBound), Int((Double(low) * 1.25).rounded())))
+        var high = max(ReadTime.words(for: range.upperBound), Int((Double(low) * 1.25).rounded()))
+        // A creator whose videos run one to three minutes asked 225 to 450 words for one line of idea (measured on an iPhone 15 Pro): the model
+        // padded it with the same sentences and ran into its limit after 45 to 93 s. A short video is asked for no more than this.
+        if low <= shortFormWords { high = min(high, shortFormCeiling) }
+        return (low, max(low, high))
     }
 
     static func prompt(for request: ScriptRequest) -> String {
@@ -122,6 +139,8 @@ nonisolated enum ScriptPromptBuilder {
         switch request.source {
         case .prompt(let text):
             lines.append("The video: \(text)")
+            // The idea is the subject. The voice only changes how it is said: a creator with other topics still gets a script about this one.
+            if voice != nil { lines.append("Write about this idea and only this one: the creator's voice is how they sound, never what to talk about.") }
         case .format(let type, let brief):
             if request.brand == nil {
                 let resolved = type.resolvedBrief(brief)
@@ -133,9 +152,11 @@ nonisolated enum ScriptPromptBuilder {
             lines += brandLines(brand)
         }
         // Said again at the very end, where a small model listens best.
-        if let voice, let closing = closingRule(for: voice, platform: request.platform) {
-            lines.append(closing)
+        var closing = voice.flatMap { closingRule(for: $0, platform: request.platform) }
+        if voice != nil, case .prompt(let text) = request.source {
+            closing = [closing, "Stay on the idea: \(text)"].compactMap { $0 }.joined(separator: " ")
         }
+        if let closing { lines.append(closing) }
         return lines.joined(separator: "\n")
     }
 
@@ -185,7 +206,7 @@ nonisolated enum ScriptPromptBuilder {
     nonisolated(unsafe) static var asksSentencesPerBlock = true
 
     static func lengthRule(minimumWords: Int, blocks: Int = 3, sentenceWords: Int = 12) -> String {
-        guard asksSentencesPerBlock else {
+        guard asksSentencesPerBlock, minimumWords > shortFormWords else {
             return "Do not stop early: the script must be at least \(minimumWords) words, so write every block in full, with several complete sentences each."
         }
         // A count of sentences is for a short script: asked for dozens in every block of a long one the model runs on until its answer is cut off.
@@ -261,6 +282,30 @@ nonisolated enum ScriptPromptBuilder {
         var lines = ["You suggest video ideas for creators who film themselves talking to camera."]
         if let voice { lines += voiceLines(voice) }
         return lines.joined(separator: "\n")
+    }
+
+    /// Ideas for what the creator makes videos about, all of it: the first flight's topics, the ones only the voice offers and the ones they typed, with
+    /// what they cover inside each. Each of the six is ordered by its angle and its topic (`IdeaSlot`): told only what came before, the model copies it.
+    /// `inspiration` is what the creator wrote or said lately (their Logbook, their latest scripts): the ideas are in its direction, never the same.
+    static func themesPrompt(slots: [IdeaSlot], voice: CreatorVoice? = nil, language: CueLanguage? = nil, inspiration: [String] = []) -> String {
+        func name(_ topic: IdeaTopic) -> String {
+            topic.subtopics.isEmpty ? topic.name : "\(topic.name) (\(topic.subtopics.joined(separator: ", ")))"
+        }
+        var topics: [IdeaTopic] = []
+        for slot in slots where !topics.contains(slot.topic) { topics.append(slot.topic) }
+        var prompt = "Suggest \(slots.count) fresh talking-head video ideas for a creator whose topics are: \(topics.map(name).joined(separator: "; ")). "
+            + "Each idea is a title of at most nine words, written the way a creator would post it: natural, specific, and promising something the viewer gets "
+            + "(a number, a surprise, a mistake, a result), never a generic \"Top 5\" and never starting with the name of its angle as a label. In this order: "
+        prompt += slots.enumerated().map { index, slot in "\(index + 1). \(slot.angle.ask) about \(slot.topic.name)" }.joined(separator: "; ")
+        prompt += ". Each idea names its topic exactly as written."
+        if !inspiration.isEmpty {
+            prompt += " The creator has been thinking about: \(inspiration.prefix(8).map { "“\($0.prefix(140))”" }.joined(separator: "; ")). "
+                + "Let the ideas grow from what interests them, in new ways: never repeat these."
+        }
+        if let language {
+            prompt += " Write the ideas in \(language.englishName)."
+        }
+        return prompt
     }
 
     static func themesPrompt(for niches: [Niche], voice: CreatorVoice? = nil, language: CueLanguage? = nil) -> String {
@@ -391,7 +436,13 @@ nonisolated enum ScriptPromptBuilder {
         if text.count > 2, let first = text.first, let last = text.last, "\"“".contains(first), "\"”".contains(last) {
             text = String(text.dropFirst().dropLast())
         }
-        return ScriptTextNormalizer.normalize(text)
+        return ScriptTextNormalizer.normalize(collapsingRepeatedCues(text))
+    }
+
+    /// A cue repeated three times in a row or more is the model stuck: "[pause]... [pause]... [pause]..." went on for hundreds, until its answer
+    /// ran out (measured on an iPhone 15 Pro, 45 to 93 s for one idea). It stays once.
+    static func collapsingRepeatedCues(_ text: String) -> String {
+        text.replacing(/(\[[^\]\n]{1,40}\])(?:[\s.…]*\1){2,}[.…]*/) { String($0.output.1) }
     }
 
     /// A title or a single line (hook, idea): one line, no markdown or wrapping quotes.

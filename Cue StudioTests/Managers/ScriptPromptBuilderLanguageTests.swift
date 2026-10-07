@@ -42,7 +42,15 @@ struct ScriptPromptBuilderLanguageTests {
         #expect(prompt.contains("between \(asked.low) and \(asked.high) spoken words"))
         #expect(prompt.contains("must be at least \(asked.low) words"))
         #expect(asked.low >= ReadTime.words(for: 60) && asked.high >= ReadTime.words(for: 90), "the model is asked for at least what the platform needs")
-        #expect(prompt.contains("sentences in every block"), "a count of sentences, which the model can follow")
+        // A video of a minute or so is asked as it is, with no count of sentences (`shortFormWords`): that is what made one idea take minutes.
+        #expect(asked.low == ReadTime.words(for: 60))
+        #expect(!prompt.contains("sentences in every block"))
+    }
+
+    @Test func aScriptOfAFewMinutesIsAskedInSentencesForEveryBlock() {
+        let asked = ScriptPromptBuilder.askedRange(for: 90...150)
+        let rule = ScriptPromptBuilder.lengthRule(minimumWords: asked.low, blocks: 3)
+        #expect(rule.contains("sentences in every block"), "a count of sentences, which the model can follow")
     }
 
     @Test func aLongScriptIsAskedAsItIsAndNotInSentencesForEveryBlock() {
@@ -52,10 +60,10 @@ struct ScriptPromptBuilderLanguageTests {
         #expect(!ScriptPromptBuilder.lengthRule(minimumWords: asked.low, blocks: 6).contains("in every block"))
     }
 
-    @Test func aShortScriptIsAskedForMoreWordsThanItNeedsAndTheCeilingStaysPut() {
-        let asked = ScriptPromptBuilder.askedRange(for: 30...60)
-        #expect(asked.low == Int((Double(ReadTime.words(for: 30)) * ScriptPromptBuilder.lengthAskFactor).rounded()))
-        #expect(asked.high == max(ReadTime.words(for: 60), Int((Double(asked.low) * 1.25).rounded())))
+    @Test func aScriptOfAFewMinutesIsAskedForMoreWordsThanItNeedsAndTheCeilingStaysPut() {
+        let asked = ScriptPromptBuilder.askedRange(for: 90...120)
+        #expect(asked.low == Int((Double(ReadTime.words(for: 90)) * ScriptPromptBuilder.lengthAskFactor).rounded()))
+        #expect(asked.high == max(ReadTime.words(for: 120), Int((Double(asked.low) * 1.25).rounded())))
     }
 
     @Test func theSentencesAskedForFollowHowLongTheCreatorsSentencesRun() {
@@ -65,7 +73,7 @@ struct ScriptPromptBuilderLanguageTests {
         #expect(ScriptPromptBuilder.sentenceWords(for: voice) == 9)
         voice.style.sentences = .long
         #expect(ScriptPromptBuilder.sentenceWords(for: voice) == 18)
-        #expect(ScriptPromptBuilder.lengthRule(minimumWords: 180, blocks: 4, sentenceWords: 9).contains("at least 5 sentences in every block"))
+        #expect(ScriptPromptBuilder.lengthRule(minimumWords: 240, blocks: 4, sentenceWords: 9).contains("at least 7 sentences in every block"))
     }
 
     @Test func aRewriteNamesTheLanguageItMustStayIn() {

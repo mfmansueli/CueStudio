@@ -18,6 +18,8 @@ nonisolated enum DefaultsKey {
     /// The Selfie reading line's first-time tip was dismissed. The tip is gone; removed at launch.
     static let legacyReadingLineTipSeen = "readingLineTipSeen"
     static let creatorProfile = "creatorProfile"
+    /// The card's suggested ideas written by the model and not yet shown, and the titles of the ones that were (`IdeaSuggestionService`).
+    static let ideaSuggestions = "ideaSuggestions"
     /// The creator's own cues on the script page's cues bar (`[String]`).
     static let customCues = "customCues"
     /// The script page's Cues switch (`Bool`; absent = on).

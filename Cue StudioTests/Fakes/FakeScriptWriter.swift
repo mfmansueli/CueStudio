@@ -29,6 +29,9 @@ final class FakeScriptWriter: ScriptWriting {
     private(set) var topicsAsked = 0
     /// The voice the last request for ideas carried.
     private(set) var lastThemeVoice: CreatorVoice?
+    /// What `suggestIdeas` answers, one batch for each request (the last one again when they run out); empty: the fake `ideas`.
+    var suggestionBatches: [[ThemeIdea]] = []
+    private(set) var suggestionRequests: [(slots: [IdeaSlot], inspiration: [String])] = []
 
     var isAvailable: Bool {
         get { availability.isAvailable }
@@ -76,6 +79,15 @@ final class FakeScriptWriter: ScriptWriting {
         if let error { throw error }
         guard availability.isAvailable else { throw ScriptAIError.modelUnavailable(availability.reason ?? "") }
         return ideas
+    }
+
+    func suggestIdeas(slots: [IdeaSlot], language: CueLanguage?, voice: CreatorVoice?, inspiration: [String]) async throws -> [ThemeIdea] {
+        suggestionRequests.append((slots, inspiration))
+        lastThemeVoice = voice
+        if let error { throw error }
+        guard availability.isAvailable else { throw ScriptAIError.modelUnavailable(availability.reason ?? "") }
+        guard !suggestionBatches.isEmpty else { return ideas }
+        return suggestionBatches[min(suggestionRequests.count - 1, suggestionBatches.count - 1)]
     }
 
     func pickTopic(for text: String, among topics: [String]) async -> String? {

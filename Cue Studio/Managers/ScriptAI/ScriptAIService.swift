@@ -324,7 +324,10 @@ final class ScriptAIService: ScriptWriting {
             @MainActor func attempt(on model: AIModelRoute) async throws -> String {
                 let session = self.session(on: model, instructions: instructions, transformsText: true)
                 let prompt = ScriptPromptBuilder.rewritePrompt(for: part, tool: tool, context: context, part: details)
-                let response = try await self.answering { try await session.respond(to: prompt).content }
+                // A bound on what a part may answer: a part that goes on and on (measured on an iPhone 15 Pro, a script lengthened for YouTube) ran into the
+                // model's window and took the whole tool down with "too long". Cut at its bound it is a part that missed, and is asked again or left as it was.
+                let options = GenerationOptions(maximumResponseTokens: Self.rewriteTokens(for: part, details: details))
+                let response = try await self.answering { try await session.respond(to: prompt, options: options).content }
                 let rewritten = ScriptPromptBuilder.clean(response)
                 guard !rewritten.isEmpty else { throw ScriptAIError.emptyResponse }
                 try Self.requireLanguage(expected, in: rewritten)
@@ -344,6 +347,13 @@ final class ScriptAIService: ScriptWriting {
         return try await RewriteRunner.run(text, tool: tool, context: context, ask: ask)
     }
 
+    /// The most a part may answer: what it holds, or what it is asked to grow to, and half as much again, with room for the structure.
+    static func rewriteTokens(for part: String, details: ScriptPromptBuilder.RewritePart) -> Int {
+        let held = PromptCost.tokens(of: part)
+        let asked = (details.target?.upperBound ?? 0) * 2
+        return max(400, Int(Double(max(held, asked)) * 1.8) + 150)
+    }
+
     func hooks(for text: String, context: RewriteContext) async throws -> [String] {
         beginForeground()
         defer { endForeground() }
@@ -356,6 +366,35 @@ final class ScriptAIService: ScriptWriting {
             guard !hooks.isEmpty else { throw ScriptAIError.emptyResponse }
             try Self.requireLanguage(context.sourceLanguage, in: hooks.joined(separator: " "))
             return Array(hooks.prefix(3))
+        }
+    }
+
+    func suggestIdeas(slots: [IdeaSlot], language: CueLanguage?, voice: CreatorVoice?, inspiration: [String]) async throws -> [ThemeIdea] {
+        guard !slots.isEmpty else { return try await themeIdeas(for: [], language: language, voice: voice) }
+        beginForeground()
+        defer { endForeground() }
+        let plan = try await plan(for: .themes, languages: language.map { [$0.locale.language] } ?? [])
+        return try await withFallback(plan, operation: "themes", language: language?.locale.identifier) { model in
+            let session = self.session(on: model, instructions: ScriptPromptBuilder.themesInstructions(voice: voice))
+            let prompt = ScriptPromptBuilder.themesPrompt(slots: slots, voice: voice, language: language, inspiration: inspiration)
+            // A creative task: the idea is the point, not the one answer the model is surest of.
+            let options = GenerationOptions(temperature: 1.0)
+            let suggestions = try await self.answering { try await session.respond(to: prompt, generating: ThemeSuggestions.self, options: options).content }
+            var ideas: [ThemeIdea] = []
+            for (index, idea) in suggestions.ideas.enumerated() where index < slots.count {
+                let title = ScriptPromptBuilder.cleanTitle(idea.title)
+                guard !title.isEmpty else { continue }
+                // The slot says the angle and the topic; the model's own label for either is not trusted.
+                let slot = slots[index]
+                var made = ThemeIdea(
+                    title: title, kind: slot.angle.kind, length: idea.minutes >= 2 ? .minutes2 : .minute1,
+                    niche: slot.topic.niche ?? .lifestyle, topic: slot.topic.niche == nil ? slot.topic.label : nil
+                )
+                made.angle = slot.angle.rawValue
+                ideas.append(made)
+            }
+            guard !ideas.isEmpty else { throw ScriptAIError.emptyResponse }
+            return ideas
         }
     }
 

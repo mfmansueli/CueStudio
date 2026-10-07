@@ -13,6 +13,11 @@ final class StubScriptWriter: ScriptWriting {
     let availability: AIAvailability
 
     var isEnabled = true
+    private var suggestionCount = 0
+    private static let stubWords = [
+        "alpha", "bravo", "charlie", "delta", "echo", "foxtrot", "golf", "hotel", "india", "juliet", "kilo", "lima", "mike", "november", "oscar", "papa",
+        "quebec", "romeo", "sierra", "tango", "uniform", "victor", "whiskey", "xray", "yankee", "zulu", "amber", "birch", "cedar", "dune", "ember", "frost",
+    ]
     /// The model never answers (until the request is cancelled): the slow states of the first message are photographed with it.
     let stalls: Bool
 
@@ -52,6 +57,22 @@ final class StubScriptWriter: ScriptWriting {
     func hooks(for text: String, context: RewriteContext) async throws -> [String] {
         guard availability.isAvailable else { throw ScriptAIError.modelUnavailable(availability.reason ?? "") }
         return ["Stub hook one.", "Stub hook two.", "Stub hook three."]
+    }
+
+    /// One idea for each slot, numbered as they come, so that "another idea" can be walked through.
+    func suggestIdeas(slots: [IdeaSlot], language: CueLanguage?, voice: CreatorVoice?, inspiration: [String]) async throws -> [ThemeIdea] {
+        guard availability.isAvailable else { throw ScriptAIError.modelUnavailable(availability.reason ?? "") }
+        suggestionCount += 1
+        return slots.enumerated().map { index, slot in
+            // Titles that differ in a word, so that the card does not take them for one idea said again (`IdeaSimilarity`).
+            let word = Self.stubWords[((suggestionCount - 1) * 6 + index) % Self.stubWords.count]
+            var idea = ThemeIdea(
+                title: "Stub \(word)", kind: slot.angle.kind, length: .minute1, niche: slot.topic.niche ?? .lifestyle,
+                topic: slot.topic.niche == nil ? slot.topic.label : nil
+            )
+            idea.angle = slot.angle.rawValue
+            return idea
+        }
     }
 
     func themeIdeas(for niches: [Niche], language: CueLanguage?, voice: CreatorVoice?) async throws -> [ThemeIdea] {

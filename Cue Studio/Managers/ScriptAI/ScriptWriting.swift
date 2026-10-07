@@ -32,6 +32,11 @@ protocol ScriptWriting: AnyObject {
     /// Ideas written in `language` (the interface's, where they are shown), or the model's choice.
     func themeIdeas(for niches: [Niche], language: CueLanguage?, voice: CreatorVoice?) async throws -> [ThemeIdea]
 
+    /// Fresh video ideas, one for each slot (an angle on one of the creator's topics, the ones typed and the ones only the voice offers among them),
+    /// in the direction of what the creator has been writing (`inspiration`): what the card's "another idea" draws from. A writer that can't tell the
+    /// topics apart answers as `themeIdeas(for:)` does.
+    func suggestIdeas(slots: [IdeaSlot], language: CueLanguage?, voice: CreatorVoice?, inspiration: [String]) async throws -> [ThemeIdea]
+
     /// Why Apple Intelligence can't write in `languages` right now (a translation lists both), told before
     /// anything is sent; nil when it can. Being available says nothing about a language.
     func writingFailure(in languages: [Locale.Language]) -> AIPlanFailure?
@@ -45,6 +50,10 @@ protocol ScriptWriting: AnyObject {
 }
 
 extension ScriptWriting {
+    func suggestIdeas(slots: [IdeaSlot], language: CueLanguage?, voice: CreatorVoice?, inspiration: [String]) async throws -> [ThemeIdea] {
+        try await themeIdeas(for: slots.compactMap(\.topic.niche), language: language, voice: voice)
+    }
+
     /// A writer that edits in one piece reports it as one part, done.
     func rewriteReported(_ text: String, with tool: ScriptTool, context: RewriteContext) async throws -> RewriteResult {
         RewriteResult(text: try await rewrite(text, with: tool, context: context), parts: 1, leftAsWritten: 0)
