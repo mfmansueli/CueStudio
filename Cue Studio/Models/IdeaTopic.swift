@@ -18,6 +18,11 @@ nonisolated struct IdeaTopic: Hashable, Codable, Sendable {
     var subtopics: [String] = []
 }
 
+extension IdeaTopic {
+    /// What ideas are about until the creator chooses a topic: Lifestyle, as the starter ideas are.
+    static let lifestyle = IdeaTopic(name: Niche.lifestyle.promptName, label: Niche.lifestyle.label, niche: .lifestyle)
+}
+
 extension CreatorProfile {
     /// Every topic the creator holds, with their subtopics, in the order they hold them; empty until they choose.
     var ideaTopics: [IdeaTopic] {

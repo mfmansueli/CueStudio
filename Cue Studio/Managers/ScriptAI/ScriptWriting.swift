@@ -32,10 +32,10 @@ protocol ScriptWriting: AnyObject {
     /// Ideas written in `language` (the interface's, where they are shown), or the model's choice.
     func themeIdeas(for niches: [Niche], language: CueLanguage?, voice: CreatorVoice?) async throws -> [ThemeIdea]
 
-    /// Fresh video ideas about all the creator's topics, the ones typed and the ones only the voice offers among them, none of `avoiding`: what the card's
-    /// "another idea" draws from. Each `round` looks at the topics from other angles (`IdeaAngle`). A writer that can't tell the topics apart answers as
-    /// `themeIdeas(for:)` does.
-    func suggestIdeas(about topics: [IdeaTopic], language: CueLanguage?, voice: CreatorVoice?, avoiding: [String], round: Int) async throws -> [ThemeIdea]
+    /// Fresh video ideas, one for each slot (an angle on one of the creator's topics, the ones typed and the ones only the voice offers among them),
+    /// in the direction of what the creator has been writing (`inspiration`): what the card's "another idea" draws from. A writer that can't tell the
+    /// topics apart answers as `themeIdeas(for:)` does.
+    func suggestIdeas(slots: [IdeaSlot], language: CueLanguage?, voice: CreatorVoice?, inspiration: [String]) async throws -> [ThemeIdea]
 
     /// Why Apple Intelligence can't write in `languages` right now (a translation lists both), told before
     /// anything is sent; nil when it can. Being available says nothing about a language.
@@ -50,9 +50,8 @@ protocol ScriptWriting: AnyObject {
 }
 
 extension ScriptWriting {
-    func suggestIdeas(about topics: [IdeaTopic], language: CueLanguage?, voice: CreatorVoice?, avoiding: [String], round: Int) async throws -> [ThemeIdea] {
-        let known = Set(avoiding.map { $0.lowercased() })
-        return try await themeIdeas(for: topics.compactMap(\.niche), language: language, voice: voice).filter { !known.contains($0.title.lowercased()) }
+    func suggestIdeas(slots: [IdeaSlot], language: CueLanguage?, voice: CreatorVoice?, inspiration: [String]) async throws -> [ThemeIdea] {
+        try await themeIdeas(for: slots.compactMap(\.topic.niche), language: language, voice: voice)
     }
 
     /// A writer that edits in one piece reports it as one part, done.

@@ -147,9 +147,6 @@ struct AppServices {
             writer: options.writer, toast: toast
         )
         writer = options.writer
-        ideaSuggestions = IdeaSuggestionService(
-            writer: options.writer, profile: profile, interfaceLanguage: { [languages] in languages.interfaceLanguage }, defaults: options.defaults
-        )
         let busyWriter = options.writer
         styleReader = options.styleReader ?? AppleWritingStyleReader(isBusy: { busyWriter.isBusyForeground }, isEnabled: { busyWriter.isEnabled })
         scriptRevealPause = options.scriptRevealPause
@@ -165,6 +162,11 @@ struct AppServices {
         sharing = options.sharing ?? VideoSharingService(apps: apps, tikTok: TikTokShareManager(), instagram: InstagramShareManager(apps: apps))
         remote = RemoteControlService(transport: options.remoteTransport)
         logbook = LogbookService(defaults: options.defaults)
+        ideaSuggestions = IdeaSuggestionService(
+            writer: options.writer, profile: profile, interfaceLanguage: { [languages] in languages.interfaceLanguage },
+            inspiration: { [library, logbook] in IdeaInspiration.recent(scripts: library.scripts, notes: logbook.waiting) },
+            notes: { [logbook] in logbook.waiting }, defaults: options.defaults
+        )
         brands = BrandStore(repository: options.brandRepository)
         self.sky = sky
         aiStatus = AIStatus(writer: options.writer)

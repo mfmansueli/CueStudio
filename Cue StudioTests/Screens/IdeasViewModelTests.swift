@@ -70,7 +70,7 @@ struct IdeasViewModelTests {
         #expect(viewModel.ideas.isEmpty)
         while viewModel.ideas.isEmpty { await Task.yield() }
         #expect(viewModel.ideas.map(\.title) == ["About my routine"])
-        #expect(writer.suggestionRequests.first?.topics.map(\.name) == ["Daily Routine"])
+        #expect(Set(writer.suggestionRequests.first?.slots.map(\.topic.name) ?? []) == ["Daily Routine"])
     }
 
     @Test func whenTheModelNeverAnswersTheListIsNotAskedForAgainAndAgain() async {

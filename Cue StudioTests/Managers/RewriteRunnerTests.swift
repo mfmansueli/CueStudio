@@ -160,6 +160,25 @@ struct RewriteRunnerTests {
         #expect(result.text.contains("ok"))
     }
 
+    @Test func aPartThatRanOnPastTheModelsWindowIsLeftAndTheOthersAreDone() async throws {
+        let text = Self.script(paragraphs: 8, words: 70)
+        let first = String(text.prefix(40))
+        let model = Model { part, _ in
+            if part.hasPrefix(first) { throw ScriptAIError.tooLong }
+            return part + " ok"
+        }
+        let result = try await RewriteRunner.run(text, tool: .moreEnergy, context: Self.context, ask: model.ask)
+        #expect(result.leftAsWritten == 1 && result.text.hasPrefix(first) && result.text.contains("ok"))
+    }
+
+    @Test func theMostAPartMayAnswerFollowsWhatItHoldsAndWhatItIsAskedToGrowTo() {
+        let part = Self.paragraph(1, words: 100)
+        let held = ScriptAIService.rewriteTokens(for: part, details: ScriptPromptBuilder.RewritePart())
+        let grown = ScriptAIService.rewriteTokens(for: part, details: ScriptPromptBuilder.RewritePart(target: 300...400))
+        #expect(held >= 400 && grown > held, "asked to grow, it may answer more")
+        #expect(grown < 2_000, "and still far from the model's window")
+    }
+
     @Test func whenTheModelWontTouchAnythingTheCreatorIsTold() async {
         let model = Model { _, _ in throw ScriptAIError.declined }
         await #expect(throws: ScriptAIError.self) {

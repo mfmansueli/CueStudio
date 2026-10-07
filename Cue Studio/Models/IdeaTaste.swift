@@ -41,7 +41,7 @@ nonisolated struct IdeaTaste: Codable, Hashable, Sendable {
 
     /// The six ideas to ask for in a round: the creator's favourite angles first, then the ones seen least, and the topics in turn, the ones they send
     /// more often.
-    func slots(round: Int, among topics: [IdeaTopic], count: Int = 6) -> [IdeaSlot] {
+    func slots(round: Int, among topics: [IdeaTopic], count: Int = IdeaAngle.batchSize) -> [IdeaSlot] {
         guard !topics.isEmpty else { return [] }
         let chosen = Self.favourites(angles, round: round, count: min(Self.favoured, count))
         let rest = IdeaAngle.allCases.filter { !chosen.contains($0) }
@@ -67,7 +67,7 @@ nonisolated struct IdeaTaste: Codable, Hashable, Sendable {
     private static func position(of angle: IdeaAngle, round: Int) -> Int {
         let all = IdeaAngle.allCases
         guard let index = all.firstIndex(of: angle) else { return 0 }
-        return (index - (round * 6) % all.count + all.count) % all.count
+        return (index - (round * IdeaAngle.batchSize) % all.count + all.count) % all.count
     }
 
     /// The topics in the order the slots take them: each as many times as the creator sends it (one more than it has been sent, at most three),

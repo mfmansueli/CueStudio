@@ -7,7 +7,7 @@ import Foundation
 import Testing
 @testable import Cue_Studio
 
-/// Each batch of ideas is ordered differently (`IdeaAngle`), because the model copies a list of what to avoid.
+/// Each batch of ideas is ordered by angle and topic (`IdeaSlot`), because the model copies a list of what to avoid.
 struct IdeaAngleTests {
     private let topics = [
         IdeaTopic(name: "Daily Routine", label: "Daily Routine", niche: nil, subtopics: ["Bureaucracy"]),
@@ -22,25 +22,39 @@ struct IdeaAngleTests {
         #expect(IdeaAngle.batch(round: 0) == IdeaAngle.batch(round: 0))
     }
 
-    @Test func theTopicsTakeTurnsAndStartOneFurtherEachRound() {
-        let round0 = (0..<4).compactMap { IdeaAngle.topic(at: $0, round: 0, among: topics)?.name }
-        let round1 = (0..<4).compactMap { IdeaAngle.topic(at: $0, round: 1, among: topics)?.name }
-        #expect(round0 == ["Daily Routine", "language learning", "Daily Routine", "language learning"])
-        #expect(round1 == ["language learning", "Daily Routine", "language learning", "Daily Routine"])
-        #expect(IdeaAngle.topic(at: 0, round: 0, among: []) == nil)
+    @Test func thePromptOrdersEveryIdeaByAngleAndTopicWithoutListingWhatCameBefore() {
+        let slots = IdeaTaste().slots(round: 0, among: topics)
+        let prompt = ScriptPromptBuilder.themesPrompt(slots: slots)
+        #expect(slots.count == 6)
+        #expect(prompt.contains("Daily Routine (Bureaucracy); language learning (Italian)"))
+        #expect(prompt.contains("1. \(slots[0].angle.ask) about \(slots[0].topic.name)"))
+        #expect(!prompt.contains("Do not repeat or reword"))
+        #expect(ScriptPromptBuilder.themesPrompt(slots: IdeaTaste().slots(round: 1, among: topics)) != prompt)
     }
 
-    @Test func thePromptOrdersEveryIdeaByAngleAndTopicWithoutListingWhatCameBefore() {
-        let prompt = ScriptPromptBuilder.themesPrompt(about: topics, round: 0)
-        #expect(prompt.contains("Daily Routine (Bureaucracy); language learning (Italian)"))
-        #expect(prompt.contains("1. a list of things about Daily Routine; 2. a common mistake and how to fix it about language learning"))
-        #expect(!prompt.contains("Do not repeat"))
-        #expect(ScriptPromptBuilder.themesPrompt(about: topics, round: 1) != prompt)
+    @Test func whatTheCreatorWroteLatelyIsWhatTheIdeasGrowFrom() {
+        let slots = IdeaTaste().slots(round: 0, among: topics)
+        let prompt = ScriptPromptBuilder.themesPrompt(slots: slots, inspiration: ["Why Italian forms take three tries", "My morning with the AI planner"])
+        #expect(prompt.contains("The creator has been thinking about: “Why Italian forms take three tries”; “My morning with the AI planner”"))
+        #expect(prompt.contains("never repeat these"))
+        #expect(!ScriptPromptBuilder.themesPrompt(slots: slots).contains("has been thinking about"))
     }
 
     @Test func wordsInADifferentOrderAreTheSameIdea() {
         let one = IdeaSimilarity.words(in: "Morning Check-Ins: Daily Routine")
         #expect(IdeaSimilarity.areAlike(one, IdeaSimilarity.words(in: "Daily Routine Morning Check-Ins")))
         #expect(!IdeaSimilarity.areAlike(one, IdeaSimilarity.words(in: "Italian Basics: 10 Words to Learn")))
+    }
+
+    @Test func theInspirationIsTheNotesFirstThenTheLatestScriptTitlesWithoutRepeats() {
+        let notes = [LogbookEntry(text: "A video about slow mornings", createdAt: .now), LogbookEntry(text: "Italian forms", createdAt: .now)]
+        let scripts = [
+            TestData.script(title: "Italian forms"), TestData.script(title: "   "), TestData.script(title: "Cold showers: one month in"),
+        ]
+        let found = IdeaInspiration.recent(scripts: scripts, notes: notes)
+        #expect(found.first == "A video about slow mornings")
+        #expect(found.filter { $0.lowercased() == "italian forms" }.count == 1)
+        #expect(found.contains("Cold showers: one month in") && !found.contains(""))
+        #expect(found.count <= IdeaInspiration.limit)
     }
 }

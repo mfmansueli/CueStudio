@@ -7,7 +7,8 @@ import Foundation
 
 /// The way an idea looks at its topic. Asked for six ideas about a topic and told which ones came before, the on-device model copies the list back to
 /// the letter (measured on an iPhone 15 Pro: the second batch was the first, word for word). So each batch is given its own order instead: idea one is
-/// a list about the first topic, idea two a mistake about the second… and the next batch starts further along the angles and the topics.
+/// a list about the first topic, idea two a mistake about the second… (`IdeaSlot`), and the next batch starts further along the angles and the topics;
+/// `IdeaTaste` leans the order toward what the creator sends.
 nonisolated enum IdeaAngle: String, CaseIterable, Codable, Sendable {
     case list, mistake, myth, story, tutorial, opinion, fact, beforeAfter, beginner, comparison, challenge, dayInLife, tool, lesson, question, prediction
 
@@ -46,16 +47,13 @@ nonisolated enum IdeaAngle: String, CaseIterable, Codable, Sendable {
         }
     }
 
-    /// The angles of a batch: `count` consecutive ones, starting further along each round, so that no two rounds ask the same six.
-    static func batch(round: Int, count: Int = 6) -> [IdeaAngle] {
-        let all = allCases
-        let start = ((round * count) % all.count + all.count) % all.count
-        return (0..<count).map { all[(start + $0) % all.count] }
-    }
+    /// How many ideas a batch has.
+    static let batchSize = 6
 
-    /// The topic each of a batch's ideas is about: one after another, starting one further each round.
-    static func topic(at index: Int, round: Int, among topics: [IdeaTopic]) -> IdeaTopic? {
-        guard !topics.isEmpty else { return nil }
-        return topics[(index + round) % topics.count]
+    /// The angles of a batch: `count` consecutive ones, starting further along each round (a whole batch further), so that no two rounds ask the same.
+    static func batch(round: Int, count: Int = batchSize) -> [IdeaAngle] {
+        let all = allCases
+        let start = ((round * batchSize) % all.count + all.count) % all.count
+        return (0..<count).map { all[(start + $0) % all.count] }
     }
 }

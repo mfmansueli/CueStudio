@@ -26,6 +26,7 @@ struct ScriptsDock: View {
     @Environment(CreatorProfileService.self) private var profile
     @Environment(IdeaDraftService.self) private var ideaDraft
     @Environment(IdeaSuggestionService.self) private var suggestions
+    @Environment(LogbookService.self) private var logbook
     @Environment(ScriptStarter.self) private var starter
     @Environment(DictationService.self) private var dictation
     @Environment(LanguageService.self) private var languages
@@ -311,11 +312,16 @@ struct ScriptsDock: View {
             Haptics.selection()
             suggestions.another()
         } label: {
-            Text(verbatim: "↻")
-                .font(.system(size: 17))
-                .foregroundStyle(Palette.aiTextStrong.opacity(0.75))
-                .frame(width: 32, height: Metrics.hitTarget)
-                .contentShape(Rectangle())
+            // At the end of the ideas, with more on their way: the arrow turns into a wait instead of going quiet.
+            Group {
+                if suggestions.isWaiting {
+                    ProgressView().controlSize(.small).tint(Palette.aiTextStrong)
+                } else {
+                    Text(verbatim: "↻").font(.system(size: 17)).foregroundStyle(Palette.aiTextStrong.opacity(0.75))
+                }
+            }
+            .frame(width: 32, height: Metrics.hitTarget)
+            .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
         .accessibilityLabel(Text("Another idea"))
@@ -425,8 +431,15 @@ struct ScriptsDock: View {
         }
         let idea = hasTypedIdea ? nil : suggestion
         Haptics.medium()
-        starter.write(idea: idea, from: sendCenter)
-        if idea != nil { suggestions.another() }
+        guard idea != nil else {
+            starter.write(idea: nil, from: sendCenter)
+            return
+        }
+        // The idea sent is what they like (the next ones lean that way); when it was a note of theirs, the note has become a script.
+        let note = suggestions.sent()
+        starter.write(idea: idea, from: sendCenter) { [logbook] scriptID in
+            if let note { logbook.markShaped(note, as: scriptID) }
+        }
     }
 }
 

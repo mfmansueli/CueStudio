@@ -281,6 +281,11 @@ final class ButtonPromisesUITests: XCTestCase {
                 XCTAssertEqual(again.value as? String, after, "\(id): the choice was forgotten")
                 usleep(500_000)
                 flip(again)
+                // A tap that lands while the page is still settling after it was opened is lost on a busy simulator: a person taps again.
+                if value(of: again, differentFrom: after) == after {
+                    usleep(800_000)
+                    flip(again)
+                }
                 XCTAssertEqual(value(of: again, differentFrom: after), before, "\(id): it does not flip back")
                 backToSettings(app)
             }

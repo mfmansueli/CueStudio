@@ -285,19 +285,23 @@ nonisolated enum ScriptPromptBuilder {
     }
 
     /// Ideas for what the creator makes videos about, all of it: the first flight's topics, the ones only the voice offers and the ones they typed, with
-    /// what they cover inside each. Each of the six is ordered by its angle and its topic (`IdeaAngle`): told only what came before, the model copies it.
-    static func themesPrompt(about topics: [IdeaTopic], voice: CreatorVoice? = nil, language: CueLanguage? = nil, round: Int = 0) -> String {
+    /// what they cover inside each. Each of the six is ordered by its angle and its topic (`IdeaSlot`): told only what came before, the model copies it.
+    /// `inspiration` is what the creator wrote or said lately (their Logbook, their latest scripts): the ideas are in its direction, never the same.
+    static func themesPrompt(slots: [IdeaSlot], voice: CreatorVoice? = nil, language: CueLanguage? = nil, inspiration: [String] = []) -> String {
         func name(_ topic: IdeaTopic) -> String {
             topic.subtopics.isEmpty ? topic.name : "\(topic.name) (\(topic.subtopics.joined(separator: ", ")))"
         }
-        let angles = IdeaAngle.batch(round: round)
-        var prompt = "Suggest six fresh talking-head video ideas for a creator whose topics are: \(topics.map(name).joined(separator: "; ")). "
-            + "Each idea is a catchy title of at most nine words, written the way a creator would post it: natural, specific, never starting with the name of its angle as a label. In this order: "
-        prompt += angles.enumerated().map { index, angle in
-            let topic = IdeaAngle.topic(at: index, round: round, among: topics).map { " about \($0.name)" } ?? ""
-            return "\(index + 1). \(angle.ask)\(topic)"
-        }.joined(separator: "; ")
+        var topics: [IdeaTopic] = []
+        for slot in slots where !topics.contains(slot.topic) { topics.append(slot.topic) }
+        var prompt = "Suggest \(slots.count) fresh talking-head video ideas for a creator whose topics are: \(topics.map(name).joined(separator: "; ")). "
+            + "Each idea is a title of at most nine words, written the way a creator would post it: natural, specific, and promising something the viewer gets "
+            + "(a number, a surprise, a mistake, a result), never a generic \"Top 5\" and never starting with the name of its angle as a label. In this order: "
+        prompt += slots.enumerated().map { index, slot in "\(index + 1). \(slot.angle.ask) about \(slot.topic.name)" }.joined(separator: "; ")
         prompt += ". Each idea names its topic exactly as written."
+        if !inspiration.isEmpty {
+            prompt += " The creator has been thinking about: \(inspiration.prefix(8).map { "“\($0.prefix(140))”" }.joined(separator: "; ")). "
+                + "Let the ideas grow from what interests them, in new ways: never repeat these."
+        }
         if let language {
             prompt += " Write the ideas in \(language.englishName)."
         }

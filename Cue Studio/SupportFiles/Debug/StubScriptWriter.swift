@@ -13,6 +13,11 @@ final class StubScriptWriter: ScriptWriting {
     let availability: AIAvailability
 
     var isEnabled = true
+    private var suggestionCount = 0
+    private static let stubWords = [
+        "alpha", "bravo", "charlie", "delta", "echo", "foxtrot", "golf", "hotel", "india", "juliet", "kilo", "lima", "mike", "november", "oscar", "papa",
+        "quebec", "romeo", "sierra", "tango", "uniform", "victor", "whiskey", "xray", "yankee", "zulu", "amber", "birch", "cedar", "dune", "ember", "frost",
+    ]
     /// The model never answers (until the request is cancelled): the slow states of the first message are photographed with it.
     let stalls: Bool
 
@@ -54,15 +59,19 @@ final class StubScriptWriter: ScriptWriting {
         return ["Stub hook one.", "Stub hook two.", "Stub hook three."]
     }
 
-    /// Six ideas that each request brings new (numbered by the round), so that "another idea" can be walked through.
-    func suggestIdeas(about topics: [IdeaTopic], language: CueLanguage?, voice: CreatorVoice?, avoiding: [String], round: Int) async throws -> [ThemeIdea] {
+    /// One idea for each slot, numbered as they come, so that "another idea" can be walked through.
+    func suggestIdeas(slots: [IdeaSlot], language: CueLanguage?, voice: CreatorVoice?, inspiration: [String]) async throws -> [ThemeIdea] {
         guard availability.isAvailable else { throw ScriptAIError.modelUnavailable(availability.reason ?? "") }
-        let topic = topics.first
-        return (1...6).map { number in
-            ThemeIdea(
-                title: "Stub idea \(round * 6 + number)", kind: "List", length: .minute1, niche: topic?.niche ?? .lifestyle,
-                topic: topic?.niche == nil ? topic?.label : nil
+        suggestionCount += 1
+        return slots.enumerated().map { index, slot in
+            // Titles that differ in a word, so that the card does not take them for one idea said again (`IdeaSimilarity`).
+            let word = Self.stubWords[((suggestionCount - 1) * 6 + index) % Self.stubWords.count]
+            var idea = ThemeIdea(
+                title: "Stub \(word)", kind: slot.angle.kind, length: .minute1, niche: slot.topic.niche ?? .lifestyle,
+                topic: slot.topic.niche == nil ? slot.topic.label : nil
             )
+            idea.angle = slot.angle.rawValue
+            return idea
         }
     }
 

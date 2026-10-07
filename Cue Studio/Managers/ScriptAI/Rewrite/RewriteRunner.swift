@@ -147,7 +147,7 @@ nonisolated enum RewriteRunner {
     private static func isSkippable(_ error: any Error) -> Bool {
         guard let error = error as? ScriptAIError else { return false }
         switch error {
-        case .emptyResponse, .declined: return true
+        case .emptyResponse, .declined, .tooLong: return true
         default: return false
         }
     }

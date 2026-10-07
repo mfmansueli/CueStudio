@@ -16,6 +16,8 @@ nonisolated struct ThemeIdea: Hashable, Identifiable, Codable, Sendable {
     var topic: String?
     /// How it looks at its topic (`IdeaAngle.rawValue`), for the ones the model wrote; what the card learns the creator's taste from.
     var angle: String?
+    /// The Logbook entry it is, when the creator's own note is what the card suggests.
+    var logbookID: UUID?
 
     var id: String { "\(niche.rawValue).\(title)" }
 

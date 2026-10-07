@@ -32,7 +32,16 @@ final class IdeasViewModel {
     /// What the interface is in: ideas are shown in it.
     private let interfaceLanguage: CueLanguage?
 
-    init(writer: ScriptWriting, profile: CreatorProfileService, toast: ToastService, interfaceLanguage: CueLanguage?) {
+    /// What the creator wrote lately (the ideas grow from it) and what the card has learned they like.
+    private let inspiration: () -> [String]
+    private let taste: () -> IdeaTaste
+
+    init(
+        writer: ScriptWriting, profile: CreatorProfileService, toast: ToastService, interfaceLanguage: CueLanguage?,
+        inspiration: @escaping () -> [String] = { [] }, taste: @escaping () -> IdeaTaste = { IdeaTaste() }
+    ) {
+        self.inspiration = inspiration
+        self.taste = taste
         self.writer = writer
         self.profile = profile
         self.toast = toast
@@ -52,7 +61,7 @@ final class IdeasViewModel {
 
     /// The topics ideas are asked for: the one picked, or all the creator holds (the ones they typed, and the ones only My Cue Voice offers, with them).
     private var ideaTopics: [IdeaTopic] {
-        guard let topic else { return profile.profile.ideaTopics }
+        guard let topic else { return profile.profile.ideaTopics.isEmpty ? [.lifestyle] : profile.profile.ideaTopics }
         return [IdeaTopic(name: topic.promptName, label: topic.label, niche: topic, subtopics: profile.profile.subtopics(of: .niche(topic)))]
     }
 
@@ -78,10 +87,10 @@ final class IdeasViewModel {
             isLoading = true
             defer { isLoading = false }
             let voice = profile.writesInMyVoice ? profile.profile.voice(inLanguage: interfaceLanguage?.locale.language.languageCode?.identifier) : nil
-            let asking = round
+            let slots = taste().slots(round: round, among: ideaTopics)
             round += 1
             if let fresh = try? await writer.suggestIdeas(
-                about: ideaTopics, language: interfaceLanguage, voice: voice, avoiding: ideas.map(\.title), round: asking
+                slots: slots, language: interfaceLanguage, voice: voice, inspiration: inspiration()
             ), !fresh.isEmpty {
                 ideas = Array(fresh.prefix(ThemeCatalog.pageSize))
                 return
