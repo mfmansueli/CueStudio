@@ -47,10 +47,10 @@ extension ScriptDetailViewModel {
         page.voicePreview = current
     }
 
-    /// "Sounds like me": the voice is kept, and the strip goes.
+    /// "Sounds like me": the voice is kept, the script's opening is learned from (kept on this iPhone, removable in Examples), and the strip goes.
     func approveVoice() {
         profile.profile.voiceApproved = true
-        profile.profile.approvals += 1
+        profile.recordApproval(of: page.text)
         page.voicePreview = nil
         toast.show(String(localized: "Got it · Writing like this"))
     }

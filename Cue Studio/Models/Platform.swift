@@ -16,6 +16,18 @@ nonisolated enum Platform: String, Codable, CaseIterable, Identifiable, Sendable
     /// to plan a script around, so they only show up once a script uses them.
     static let primary: [Platform] = [.tiktok, .reels, .shorts, .youtube, .linkedin]
 
+    /// What the AI reads (English, whatever the interface language is).
+    var promptName: String {
+        switch self {
+        case .tiktok: "TikTok"
+        case .reels: "Instagram Reels"
+        case .shorts: "YouTube Shorts"
+        case .youtube: "YouTube (long-form)"
+        case .linkedin: "LinkedIn"
+        case .stories: "Instagram Stories"
+        }
+    }
+
     var label: String {
         switch self {
         case .tiktok: String(localized: "TikTok")

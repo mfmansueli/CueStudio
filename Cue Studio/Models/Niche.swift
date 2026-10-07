@@ -50,4 +50,22 @@ nonisolated enum Niche: String, Codable, CaseIterable, Identifiable, Sendable {
         case .education: String(localized: "Education")
         }
     }
+
+    /// What the AI reads (English and in full, whatever the interface language is): "Travel" alone told it little.
+    var promptName: String {
+        switch self {
+        case .fitness: "fitness and wellness"
+        case .food: "food and cooking"
+        case .beauty: "beauty and skincare"
+        case .fashion: "fashion and style"
+        case .finance: "personal finance"
+        case .tech: "tech and AI"
+        case .travel: "budget travel"
+        case .productivity: "productivity and career"
+        case .parenting: "parenting and family"
+        case .lifestyle: "morning routines and daily life"
+        case .wellness: "wellness"
+        case .education: "education"
+        }
+    }
 }

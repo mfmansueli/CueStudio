@@ -70,6 +70,8 @@ struct LaunchOptions {
     /// UI tests and previews swap in rules read from the bundle only (no cache, no download).
     var platformRules: PlatformRulesService = PlatformRulesService()
     var writer: ScriptWriting = ScriptAIService()
+    /// Nil is the model on this iPhone (`AppleWritingStyleReader`).
+    var styleReader: (any WritingStyleReading)?
     var credentialChecker: AppleIDCredentialChecking = AppleIDCredentialChecker()
     var remoteTransport: RemoteTransport = NearbyRemoteTransport()
     var languageStore: AppLanguageStoring = SystemAppLanguageStore()
@@ -217,6 +219,7 @@ struct LaunchOptions {
             }
             if arguments.contains("-uiTestStubAI") || arguments.contains("-uiTestNoAI") {
                 options.writer = StubScriptWriter(available: !arguments.contains("-uiTestNoAI"), stalls: arguments.contains("-uiTestWriterStalls"))
+                options.styleReader = arguments.contains("-uiTestNoAI") ? NoStyleReader() : StubStyleReader()
                 // A test never waits for words to arrive one by one, unless it is looking at them arrive.
                 options.scriptRevealPause = arguments.contains("-uiTestSlowWriting") ? .milliseconds(2_000) : .zero
             }

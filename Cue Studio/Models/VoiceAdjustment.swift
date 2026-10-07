@@ -43,15 +43,20 @@ nonisolated enum VoiceAdjustment: String, CaseIterable, Identifiable, Sendable {
             profile.sounds.removeAll { $0 == .professional }
             if !profile.sounds.contains(.casual) { profile.sounds.append(.casual) }
             if profile.vocabulary == .professional { profile.vocabulary = .simple }
+            if profile.style.words == .expertTerms { profile.style.words = .plain }
         case .tooMuchSlang:
             if profile.vocabulary == .genZ { profile.vocabulary = .simple }
+            if profile.style.words == .someSlang { profile.style.words = .plain }
         case .tooOverTheTop:
             profile.sounds.removeAll { $0 == .energetic || $0 == .funny }
             if profile.sounds.isEmpty { profile.sounds = [.casual] }
+            if profile.style.energy == .high { profile.style.energy = .calm }
         case .notMyPhrase:
             profile.phrases = []
         case .tooLong:
             if !profile.styles.contains(.shortSentences) { profile.styles.append(.shortSentences) }
+            // What the prompt reads is the answer to "Short sentences or longer ones?", not the legacy styles.
+            if profile.style.sentences != nil { profile.style.sentences = .short }
         }
         return profile
     }

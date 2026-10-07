@@ -26,21 +26,21 @@ final class ProfileUITests: XCTestCase {
         XCTAssertTrue(upgrade.waitForExistence(timeout: 5))
     }
 
-    /// A catchphrase is an answer of "My phrases" on the full page (9.3): the question sheet opens with its field ready.
+    /// A catchphrase is an answer of "My phrases" on the full page (9.3): the editor opens on it and the phrase stays in the list.
     func testAddingACatchphrase() {
-        // The "Saved" shows for 0.9 s before the sheet closes; without the closing animation it can be gone before the test looks.
-        let app = openProfile(animations: true)
+        let app = openProfile()
         setUpVoice(app)
         openVoicePage(app)
         let row = app.buttons["voicePage.row.phrases"]
         app.scroll(to: row)
         row.tap()
-        let field = app.descendants(matching: .any)["voice.field"].firstMatch
-        XCTAssertTrue(field.waitForExistence(timeout: 5))
+        XCTAssertTrue(app.descendants(matching: .any)["voice.editor.phrases"].waitForExistence(timeout: 5))
+        let field = app.textFields["voice.phrases.field"]
+        app.scroll(to: field)
         field.tap()
         field.typeText("Bora")
-        app.buttons["voice.add"].tap()
-        XCTAssertTrue(app.descendants(matching: .any)["voice.saved"].waitForExistence(timeout: 5))
+        app.buttons["voice.phrases.field.add"].tap()
+        XCTAssertTrue(app.staticTexts["“Bora”"].waitForExistence(timeout: 5))
     }
 
     func testANewProfileOffersToSetUpMyCueVoiceAndThenShowsWhatCueUses() {
@@ -54,56 +54,58 @@ final class ProfileUITests: XCTestCase {
         let audience = app.buttons["voicePage.row.audience"]
         XCTAssertTrue(audience.waitForExistence(timeout: 5))
         audience.tap()
-        XCTAssertTrue(app.descendants(matching: .any)["voice.option.technical"].waitForExistence(timeout: 5))
-        app.buttons["sheet.closeButton"].tap()
+        XCTAssertTrue(app.descendants(matching: .any)["voiceSetup.audience.insiders"].waitForExistence(timeout: 5))
+        app.buttons["voice.editor.done"].tap()
     }
 
-    /// The card's ✦ Preview shows a line in the creator's voice once My Cue Voice is set up.
+    /// The card's ✦ Preview shows a sample in the creator's voice once My Cue Voice is set up.
     func testVoicePreviewFollowsHowYouSound() {
         let app = openProfile()
         setUpVoice(app)
         let preview = app.buttons["profile.voicePreview"]
         app.scroll(to: preview)
         preview.tap()
-        let sample = app.staticTexts["profile.voiceSample"]
-        XCTAssertTrue(sample.waitForExistence(timeout: 5))
-        XCTAssertTrue(sample.label.contains("So, real quick."))
+        let card = app.descendants(matching: .any)["voice.preview.card"].firstMatch
+        XCTAssertTrue(card.waitForExistence(timeout: 5))
+        // The tone chosen in the setup is the conversational one: its line is the one the sample opens with.
+        XCTAssertTrue(card.label.contains("I used to hit snooze four times."))
     }
 
-    /// Sign in with Apple lives at the end of Fine-tune (My Cue Voice › Fine-tune how you sound), optional like everything about an account.
+    /// Sign in with Apple lives in Edit Profile, optional like everything about an account.
     func testSignInWithAppleIsOfferedWhenSignedOut() {
         let app = openProfile()
-        setUpVoice(app)
-        openVoicePage(app)
-        let fineTune = app.staticTexts["Fine-tune how you sound"]
-        app.scroll(to: fineTune)
-        fineTune.tap()
+        app.descendants(matching: .any)["profile.creatorCard"].firstMatch.tap()
+        XCTAssertTrue(app.textFields["editProfile.nameField"].waitForExistence(timeout: 5))
         let signIn = app.buttons["profile.signInButton"]
         app.scroll(to: signIn)
         XCTAssertTrue(signIn.exists)
         XCTAssertFalse(app.buttons["profile.signOutButton"].exists)
     }
 
-    /// The creative preferences are with the fine-tuning (My Cue Voice › Fine-tune), not in Settings or in the board's Edit Profile, and they survive
-    /// tab changes.
-    func testCreativePreferencesLiveInFineTuneAndSurviveTabChanges() {
+    /// The creative preferences are in Edit Profile (kept with Done), not in Settings or on the voice page, and they survive tab changes.
+    func testCreativePreferencesLiveInEditProfileAndSurviveTabChanges() {
         let app = openProfile()
-        setUpVoice(app)
-        openVoicePage(app)
-        let fineTune = app.staticTexts["Fine-tune how you sound"]
-        app.scroll(to: fineTune)
-        fineTune.tap()
+        app.descendants(matching: .any)["profile.creatorCard"].firstMatch.tap()
+        let name = app.textFields["editProfile.nameField"]
+        XCTAssertTrue(name.waitForExistence(timeout: 5))
+        name.tap()
+        name.typeText("Maya Costa")
+        let handle = app.textFields["editProfile.handleField"]
+        handle.tap()
+        handle.typeText("mayacooks")
         let goals = app.switches["profile.monetizationGoalsToggle"]
         app.scroll(to: goals)
         XCTAssertTrue(app.buttons["profile.defaultPlatformPicker"].exists)
         goals.tap()
         let saved = goals.value as? String
+        app.buttons["editProfile.doneButton"].tap()
         // Settings has none of them.
         app.cueTabBar.buttons["Settings"].tap()
         XCTAssertTrue(app.descendants(matching: .any)["settings.recording"].waitForExistence(timeout: 10))
         XCTAssertFalse(app.switches["profile.monetizationGoalsToggle"].exists)
-        // Back on the Profile tab, the page is where it was left, with the value kept.
+        // Back on the Profile tab, Edit Profile shows the value kept.
         app.cueTabBar.buttons["Profile"].tap()
+        app.descendants(matching: .any)["profile.creatorCard"].firstMatch.tap()
         let again = app.switches["profile.monetizationGoalsToggle"]
         app.scroll(to: again)
         XCTAssertEqual(again.value as? String, saved)
@@ -182,7 +184,7 @@ final class ProfileUITests: XCTestCase {
         app.buttons["voiceSetup.skipRole"].tap()
         app.buttons["voiceSetup.niche.food"].tap()
         app.buttons["voiceSetup.saveButton"].tap()
-        app.buttons["voiceSetup.audience.simple"].tap()
+        app.buttons["voiceSetup.audience.parents"].tap()
         app.buttons["voiceSetup.saveButton"].tap()
         app.buttons["voiceSetup.tone.casual"].tap()
         app.buttons["voiceSetup.saveButton"].tap()

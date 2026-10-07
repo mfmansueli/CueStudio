@@ -44,7 +44,7 @@ struct PersonalizeEntryRow: View {
             }
             .buttonStyle(.plain)
             .sheet(isPresented: $showsTopics) {
-                VoiceSetupSheet(mode: .edit, profile: profile.profile, startAt: .niche)
+                VoiceEditorSheet(field: .topics)
             }
         case .autoTag:
             SettingsListToggle(title: entry.title, detail: entry.detail, isOn: personalization.autoTagsTopics)
@@ -66,6 +66,6 @@ struct PersonalizeEntryRow: View {
     }
 
     private var topicCount: Int {
-        profile.profile.niches.count + profile.profile.customTopics.count
+        profile.profile.topicCount
     }
 }

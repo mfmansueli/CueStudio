@@ -28,12 +28,15 @@ struct ScriptDetailViewModelTests {
         takes.load()
         let writer = FakeScriptWriter()
         let toast = ToastService()
+        // A creator who has answered the voice: what "In my voice" sends is what they answered.
+        let profile = CreatorProfileService(defaults: defaults.defaults)
+        profile.saveVoiceSetup(niches: [.tech], vocabulary: .simple, sounds: [.casual, .confident])
         let viewModel = ScriptDetailViewModel(
             scriptID: script.id,
             library: library,
             takes: takes,
             preferences: PreferencesService(defaults: defaults.defaults),
-            profile: CreatorProfileService(defaults: defaults.defaults),
+            profile: profile,
             rules: TestData.rulesService(),
             writer: writer,
             toast: toast

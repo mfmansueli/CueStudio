@@ -22,4 +22,18 @@ nonisolated enum Tone: String, Codable, CaseIterable, Identifiable, Sendable {
         case .direct: String(localized: "Direct")
         }
     }
+
+    /// What the AI reads (English, whatever the interface language is).
+    var promptWord: String {
+        switch self {
+        case .casual: "casual"
+        case .energetic: "energetic"
+        case .expert: "expert"
+        case .funny: "funny"
+        case .premium: "premium"
+        case .sincere: "sincere"
+        case .calm: "calm"
+        case .direct: "direct"
+        }
+    }
 }

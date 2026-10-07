@@ -36,25 +36,25 @@ struct CreatorRoleTests {
     @Test func theAIIsToldWhoIsTalkingAndTeamsSayWe() {
         let team = CreatorVoice(sounds: [.casual], phrases: [], vocabulary: nil, styles: [], niches: [], role: .business)
         let lines = ScriptPromptBuilder.voiceLines(team).joined(separator: "\n")
-        #expect(lines.contains("my own business") && lines.contains("say \"we\""))
+        #expect(lines.contains("the owner of a business") && lines.contains("say “we” and “our”, never “I”"))
         let solo = CreatorVoice(sounds: [.casual], phrases: [], vocabulary: nil, styles: [], niches: [], role: .personal)
-        #expect(!ScriptPromptBuilder.voiceLines(solo).joined(separator: "\n").contains("say \"we\""))
+        #expect(!ScriptPromptBuilder.voiceLines(solo).joined(separator: "\n").contains("say “we”"))
         #expect(!ScriptPromptBuilder.voiceLines(CreatorVoice(sounds: [], phrases: [], vocabulary: nil, styles: [], niches: [])).joined().contains("kind"))
     }
 
     @MainActor
     @Test func theSetupAsksTheRoleFirstOnlyFromScratch() {
-        var draft = VoiceSetupDraft(profile: CreatorProfile())
-        #expect(draft.steps.first == .role)
-        draft.choose(.educator)
-        draft.toggle(Niche.tech)
-        draft.choose(.technical)
-        draft.toggle(VoiceSound.educational)
-        #expect(draft.canSave)
         let service = CreatorProfileService(defaults: UserDefaults(suiteName: "CreatorRoleTests-\(UUID())")!)
-        draft.save(to: service)
+        let plan = VoiceSetupPlan(profile: service.profile)
+        #expect(plan.steps.first == .role)
+        service.answer(.role, with: VoiceOption(id: CreatorRole.educator.rawValue, label: "Educator"))
+        service.toggleTopic(.niche(.tech))
+        service.setAudienceGroup(.insiders)
+        service.answer(.tone, with: VoiceOption(id: VoiceSound.educational.rawValue, label: "Educational"))
+        #expect(plan.canFinish(in: service.profile))
+        service.setWritesInMyVoice(true)
         #expect(service.profile.role == .educator && service.writesInMyVoice)
         // Asked again, the role isn't asked a second time.
-        #expect(VoiceSetupDraft(profile: service.profile).steps.isEmpty)
+        #expect(VoiceSetupPlan(profile: service.profile).steps.isEmpty)
     }
 }

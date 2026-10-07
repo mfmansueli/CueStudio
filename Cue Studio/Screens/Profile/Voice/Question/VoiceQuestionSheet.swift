@@ -5,7 +5,7 @@
 
 import SwiftUI
 
-/// The My Cue Voice question sheet (04 §F9): the system's sheet, a grabber, the close button in a glass circle (leading; it counts as
+/// The My Cue Voice tip's question sheet (04 §F9): the system's sheet, a grabber, the close button in a glass circle (leading; it counts as
 /// "Not now"), "My Cue Voice · ✦ nn%" in the bar, the question as a large title, the answers as an inset-grouped list (one tap is the
 /// answer), then "+ Something else" (violet) and "None of these". A list that takes several answers has Save. After an answer it says
 /// "Saved · voice nn%" and offers one more question.
@@ -22,7 +22,7 @@ struct VoiceQuestionSheet: View {
         NavigationStack {
             Group {
                 if model.question == .example {
-                    VoiceExamplesBody()
+                    ScrollView { VoiceExamplesField().padding(Metrics.gutter) }
                 } else if let saved = model.savedStrength {
                     savedView(strength: saved)
                 } else {
@@ -43,7 +43,7 @@ struct VoiceQuestionSheet: View {
                 }
             }
         }
-        .presentationDetents(model.mode == .tip ? [.medium, .large] : [.large])
+        .presentationDetents([.medium, .large])
         .presentationDragIndicator(.visible)
         .cueSheetSurface()
         .onDisappear { model.dismissedWithoutAnswer() }

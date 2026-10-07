@@ -5,24 +5,17 @@
 
 import Foundation
 
-/// The state of the My Cue Voice question sheet (04 §F9, 08 §4): the tip's sheet asks one question at a time (a tap is the answer; a
-/// list that takes several has Save), says "Saved · voice nn%" and offers one more (at most three answers in a row), and the full
-/// page opens the same sheet on one field. "+ Something else" is checked as it is typed; "None of these" skips the question for good.
+/// The state of the My Cue Voice tip's question sheet (04 §F9, 08 §4): it asks one question at a time (a tap is the answer; a list that
+/// takes several has Save), says "Saved · voice nn%" and offers one more (at most three answers in a row). "+ Something else" is checked as it
+/// is typed; "None of these" skips the question for good. Editing an answer is the editor's job (`VoiceEditorSheet`), not this sheet's.
 @MainActor
 @Observable
 final class VoiceQuestionSheetModel {
-    /// Where the sheet was opened from: the tip (a queue of questions, which counts toward the dismissals) or a row of the full page.
-    enum Mode: Equatable {
-        case tip
-        case edit
-    }
-
     enum Feedback: Equatable {
         case message(String)
         case typo(suggestion: String, original: String)
     }
 
-    let mode: Mode
     private(set) var question: VoiceQuestion
     /// The second part of "Who's watching?".
     private(set) var asksAudienceLevel = false
@@ -36,20 +29,15 @@ final class VoiceQuestionSheetModel {
     private let profile: CreatorProfileService
     private let scheduler: VoiceQuestionScheduler
     private let toast: ToastService
-    /// The questions of the row being edited, in order; empty for the tip.
-    private var pending: [VoiceQuestion]
     private var answeredCurrent = false
 
-    init(question: VoiceQuestion, mode: Mode, fieldQuestions: [VoiceQuestion] = [], profile: CreatorProfileService,
-         scheduler: VoiceQuestionScheduler, toast: ToastService) {
+    init(question: VoiceQuestion, profile: CreatorProfileService, scheduler: VoiceQuestionScheduler, toast: ToastService) {
         self.question = question
-        self.mode = mode
         self.profile = profile
         self.scheduler = scheduler
         self.toast = toast
-        pending = fieldQuestions.filter { $0 != question }
-        // The tip asks only what is missing: an audience chosen in the setup lacks its level. A row of the full page starts from the audience.
-        asksAudienceLevel = mode == .tip && question == .audience && profile.profile.isChosen(.audience) && profile.profile.audienceLevel == nil
+        // The tip asks only what is missing: an audience chosen in the setup lacks its level.
+        asksAudienceLevel = question == .audience && profile.profile.isChosen(.audience) && profile.profile.audienceLevel == nil
     }
 
     // MARK: - Reading
@@ -78,8 +66,7 @@ final class VoiceQuestionSheetModel {
 
     /// Another question can follow the one just answered (the tip allows three in a row).
     var canAskMore: Bool {
-        if mode == .edit { return !pending.isEmpty }
-        return answersInARow < VoiceQuestionScheduler.answersInARow && nextInQueue != nil
+        answersInARow < VoiceQuestionScheduler.answersInARow && nextInQueue != nil
     }
 
     private var nextInQueue: VoiceQuestion? {
@@ -156,11 +143,11 @@ final class VoiceQuestionSheetModel {
         addSomethingElse(keepingTyped: true)
     }
 
-    /// "One more question": the next in the queue (or in the row's field).
+    /// "One more question": the next in the queue.
     func askMore() {
-        guard let next = pending.isEmpty ? nextInQueue : pending.removeFirst() else { return }
+        guard let next = nextInQueue else { return }
         question = next
-        asksAudienceLevel = mode == .tip && next == .audience && profile.profile.isChosen(.audience) && profile.profile.audienceLevel == nil
+        asksAudienceLevel = next == .audience && profile.profile.isChosen(.audience) && profile.profile.audienceLevel == nil
         savedStrength = nil
         answeredCurrent = false
         typed = ""
@@ -173,15 +160,15 @@ final class VoiceQuestionSheetModel {
     /// The sheet closes with no answer (close, a swipe down or a tap on the backdrop): the tip's question waits three days. A sheet
     /// that already gave an answer is not a dismissal.
     func dismissedWithoutAnswer() {
-        guard mode == .tip, answersInARow == 0, !answeredCurrent else { return }
+        guard answersInARow == 0, !answeredCurrent else { return }
         scheduler.dismissed(question)
     }
 
     // MARK: - Moving on
 
     private func advanceAfterSingleAnswer() {
-        // The audience is followed by its level (a row of the full page always asks it, to keep or change).
-        if question == .audience, mode == .edit || profile.profile.audienceLevel == nil {
+        // The audience is followed by its level.
+        if question == .audience, profile.profile.audienceLevel == nil {
             scheduler.answered(question)
             asksAudienceLevel = true
             return
@@ -201,24 +188,18 @@ final class VoiceQuestionSheetModel {
         moveOn(saved: true)
     }
 
-    /// After an answer (or "None of these"): the sheet says "Saved" and offers one more, goes to the next question of the row, or closes.
+    /// After an answer (or "None of these"): the sheet says "Saved" and offers one more, or closes.
     private func moveOn(saved: Bool) {
         if saved { answersInARow += 1 }
         if scheduler.completionToastIsDue() {
             scheduler.completionToastShown()
             toast.show(String(localized: "✓ Cue Voice complete"))
         }
-        if mode == .edit, !pending.isEmpty {
-            askMore()
-        } else {
-            savedStrength = strength
-        }
+        savedStrength = strength
     }
 
-    /// The sheet should close now: edit mode with nothing more to ask, or the third answer in a row.
+    /// The sheet should close now: nothing more to ask, or the third answer in a row.
     var shouldClose: Bool {
-        guard savedStrength != nil else { return false }
-        if mode == .edit { return pending.isEmpty }
-        return !canAskMore
+        savedStrength != nil && !canAskMore
     }
 }

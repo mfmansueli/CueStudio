@@ -5,7 +5,7 @@
 
 import SwiftUI
 
-/// "0:45" over "IDEAL 0:15–1:00" and a 4 pt track with the ideal range in green and the script's
+/// "0:45" over "IDEAL 0:30–1:30" and a 4 pt track with the ideal range in green and the script's
 /// length in yellow (orange once it passes the range).
 struct ScriptLengthBar: View {
     let zone: LengthZone

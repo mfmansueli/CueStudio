@@ -73,13 +73,13 @@ final class UserReportCaptureTests: XCTestCase {
         }
     }
 
-    func testProfileEmptyPreviewAndFineTune() throws {
+    func testProfileEmptyPreviewAndVoicePage() throws {
         let app = CueApp.launch(seeded: true)
         let tab = app.cueTabBar.buttons["Profile"]
         XCTAssertTrue(tab.waitForExistence(timeout: 15))
         tab.tap()
         sleep(2)
-        // Set up My Cue Voice with the first answer of each question, so Preview and Fine-tune have a voice to work on.
+        // Set up My Cue Voice with the first answer of each question, so Preview and the voice page have a voice to work on.
         let setUp = element(app, "profile.setUpVoiceButton")
         XCTAssertTrue(setUp.waitForExistence(timeout: 5))
         setUp.tap()
@@ -96,28 +96,26 @@ final class UserReportCaptureTests: XCTestCase {
         let preview = element(app, "profile.voicePreview")
         app.scroll(to: preview)
         preview.tap()
-        XCTAssertTrue(element(app, "profile.voicePreviewSheet").waitForExistence(timeout: 5))
+        XCTAssertTrue(element(app, "voice.preview").waitForExistence(timeout: 5))
         try shot(app, "u09_profile-preview")
-        let mode = element(app, "profile.voicePreviewMode")
-        if mode.exists {
-            app.buttons["Without"].firstMatch.tap()
+        let without = app.segmentedControls.buttons["Without"].firstMatch
+        if without.exists {
+            without.tap()
             try shot(app, "u10_profile-preview-without")
         }
-        app.swipeDown(velocity: .fast)
+        app.buttons["voice.preview.done"].tap()
         sleep(1)
         let edit = element(app, "profile.editVoice")
         app.scroll(to: edit)
         edit.tap()
         sleep(2)
         try shot(app, "u11_edit-voice")
-        let fine = app.staticTexts["Fine-tune how you sound"]
-        for _ in 0..<8 where !(fine.exists && fine.isHittable) { app.swipeUp() }
-        if fine.exists, fine.isHittable {
-            fine.tap()
+        let sends = element(app, "voicePage.sends")
+        app.scroll(to: sends)
+        if sends.exists, sends.isHittable {
+            sends.tap()
             sleep(2)
-            try shot(app, "u12_fine-tune")
-            app.swipeUp()
-            try shot(app, "u13_fine-tune-scrolled")
+            try shot(app, "u12_what-cue-sends")
         }
     }
 

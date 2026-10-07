@@ -162,6 +162,7 @@ nonisolated struct AIFailureReport: Equatable, Sendable {
         case .modelPreparing: "modelPreparing"
         case .wrongLanguage: "wrongLanguage"
         case .rateLimited: "rateLimited"
+        case .timedOut: "timedOut"
         }
     }
 

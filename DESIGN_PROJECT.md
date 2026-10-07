@@ -73,6 +73,67 @@ O catálogo de debug (`-uiTestCatalogue transition`) segura o estado de espera p
 - **9.3:** as três camadas pelos campos, cada linha abre a folha daquele campo; "What Cue sends" mostra os campos novos; Reset My Cue Voice.
 - **Fluxo de 4 perguntas** (2.1–2.4): a audiência pergunta também o nível ("How much do they already know?") e o último passo tem "Add a voice example".
 
+### 4.1 My Cue Voice → Apple Intelligence (v2, 6–7 de outubro de 2026)
+
+O plano está em `~/.claude/paste-cache/cb677cf5de6473e1.txt`; o que ficou e por quê:
+
+- **Dados (aditivos, tudo opcional; `CreatorProfile.currentVoiceSchema = 2`):** `voiceTopics` (os 15 temas que só o My Cue Voice oferece, `VoiceTopic`, **fora** de `Niche` para não virarem mundos no universo) e `topicDetails` (até 3 subtemas
+  por tema, guardados pelo id em inglês), `audienceGroup` ou `audienceNote` (digitado), `watchReasons` (até 2) e `contentGoals` (até 2), `customRole`, `credential`, `speaksAs` (I / We), `approvedSamples` (até 3, "Sounds like me"), e, da
+  importação (§4.2), `excerpts` e `fingerprint`. Um perfil antigo abre igual; o que o criador digitou nunca é reescrito.
+- **Um editor só** (`VoiceEditorSheet` + `Screens/Profile/Voice/Editor/*`): a página, as 4 perguntas do setup, a dica do dock e Settings abrem o mesmo campo, então uma resposta é editada igual onde quer que se chegue; toda escrita passa por
+  `CreatorProfileService+VoiceAnswers/+VoiceDetails/+Personality` (limites e validação num lugar). 25 temas (10 do primeiro voo + 15), 7 subtemas sugeridos por tema, 11 formatos, 7 aberturas, 6 fechos, 9 itens de "Avoid".
+- **Página 9.3** (`MyCueVoicePage`): Essentials (I am · Topics · Audience · **They watch to** · Voice), Personality (Style · Usual formats · Opens with · Ends with · **Videos are for** · My phrases · Avoid · Reach), Proof (Examples), e dois botões no
+  rodapé, **Preview** (`VoicePreviewSheet`: a mesma frase com e sem a voz, "Sounds like me") e **What Cue sends** (`VoiceSendsSheet`). O Profile ficou só com o cartão da voz; Create for, Monetization goals e Sign in with Apple foram para o
+  **Edit Profile** (`EditProfilePreferences`, `EditProfileAccount`).
+- **O prompt** (`Managers/ScriptAI/Voice/*`, `Context/*`): `VoiceBriefBuilder` monta, em inglês e nesta ordem, quem fala → para quem e por quê → temas → como soa → como abre e fecha → exemplos → regras, e repete as regras que não podem
+  falhar ("Remember: …") no fim do pedido, onde o modelo pequeno mais atende. Cada bloco do formato diz para que serve (`FormatGuide`), a plataforma dá o registro (`PlatformGuide`; LinkedIn sem gíria) e o comprimento vem de `PlatformRules.json`
+  (revisão 3). Regra de honestidade: nada de história, número, cliente ou credencial inventados. Voz parcial funciona: qualquer resposta de Essentials já liga a voz (`canWriteInMyVoice`).
+- **Depois do roteiro** (`VoiceConstraintChecker`, `VoiceCheckedWriting`): palavra proibida, "eu" no roteiro de "nós" (e o contrário; en/pt/es), bordão como primeira frase, nome do estilo de abertura escrito, emoji, roteiro muito curto. Se algo quebrou, o
+  roteiro é escrito **uma** vez mais, dizendo qual regra; nunca bloqueia, e o primeiro vale se o segundo não for melhor. O guardrail da Apple recusando o pedido com o que o criador digitou é respondido uma vez só com o que o Cue oferece
+  (`catalogOnly`). Medido no iPhone 18 Pro Max antes: 58% dos roteiros abriam com o nome do estilo, 36% com o bordão, 33% curtos demais, e o criador de finanças (um "get rich quick" em Avoid) era recusado em 100%.
+- **Tempo de espera** (`GenerationDeadlines`, `GenerationProgress`): o relógio de cão de guarda corta o que o modelo nunca responde (`ScriptAIError.timedOut`, com mensagem), a frase "Still writing · this one is taking a little longer" aparece
+  depois de um tempo, e a marcação de roteiros por tema (`TopicTaggingService`) **sai da frente** enquanto um pedido do criador roda. Era o "carrega para sempre" do iPhone 15 Pro: o roteiro esperava atrás da marcação de roteiros antigos no mesmo modelo.
+- **Comprimentos falados** (`PlatformRules.json` r3, `ScriptRequestFactory`, `ScriptLength`): vídeo falado precisa de mais que 15 s. TikTok e Reels 30–90 s, Stories 15–30 s; na opção Auto, vale o comprimento habitual do criador (nunca abaixo de 25 s, `spokenFloor`) e
+  só depois o ideal da plataforma. Uma fonte só (`preset.idealRange`) alimenta a barra de comprimento, o roteirista, a prévia e a checagem. O arquivo hospedado de regras precisa ter `revision ≥ 3`: `PlatformRulesService` só aceita revisão mais nova.
+- **O modelo escreve menos do que lhe pedem** (medido no iPhone 15 Pro, TikTok, 150–225 palavras pedidas, 5 execuções de cada jeito, `LengthVariantsDeviceTests`): como era, **69 palavras em média, 0 de 5 dentro do mínimo de 105**; pedindo
+  1,5× as palavras, 91 (1 de 5); mais "pelo menos N frases em cada bloco" (`ScriptPromptBuilder.lengthRule`: o modelo conta frases, não palavras), 177 (3 de 5, e 1 resposta que não era roteiro); e com os blocos curtos
+  alongados um a um (`ScriptExpansion`, `ScriptAIService.expandingIfShort`, só quando o roteiro tem menos de 70% do mínimo; a pedido de frases, não de palavras, que ele não segue) **145 em média, 4 de 5 dentro, nenhuma falha**.
+  Pedir o dobro (2×) fazia o modelo parar depois do primeiro bloco (5 de 12 pedidos); uma segunda tentativa inteira "o roteiro está curto" escrevia 64 a 86 palavras de novo, por isso **roteiro curto não gera mais segunda tentativa**
+  (`VoiceViolation.isSoft`). Um roteiro que chega num bloco só vale quando tem 70% do mínimo (`ScriptAIService.rescued`); o teto pedido não sobe junto (`askedRange`) porque um Short pedido de 150 a 300 palavras escreveu 310.
+  Roteiros longos (YouTube, 1200+ palavras) são pedidos como são: o modelo já escreve 1286 palavras e a regra de frases por bloco só vale até 400 palavras (cobrar dezenas por bloco o fazia correr até o limite).
+- **Orçamento do prompt** (`VoiceBrief.budget`, `PromptCost`): era 1200 caracteres, número do protótipo e nunca medido. A janela do modelo do aparelho é de **4096 tokens** divididos entre as instruções, a voz, a ideia e o roteiro que ele escreve.
+  Medido no iPhone 15 Pro (iOS 27, `PromptBudgetDeviceTests`): um pedido sem voz tem 427 tokens e o modelo começa a responder em 1,4 s; com 1200 caracteres de voz, 794 tokens e 1,7 s; com 1441, 850 e 1,7 s. O mesmo número de caracteres
+  custa tokens diferentes por escrita (0,21 token/caractere em inglês, 0,52 em japonês, 0,78 em chinês), então o orçamento agora é em **"caracteres de inglês"** (`PromptCost.units`, pesos por escrita conferidos contra os números medidos em
+  `PromptCostTests`) e subiu para **2100** (≈ 640 tokens, uns 25% da janela, três quartos livres para o roteiro). Corta na mesma ordem: exemplos, tags, onde posta. "What Cue sends" mostra o custo (para inglês é o número de caracteres).
+- **Aprendizado** ("Sounds like me", `recordApproval`): o começo do roteiro aprovado vira exemplo de como o criador escreve (3, o mais antigo sai); cada duas aprovações contam como um exemplo na força; "Delete my Cue data" apaga tudo.
+- **Medição** (§6 do plano): 14 criadores inventados (`VoicePersonas`) × 3 ideias, escritos pelo modelo de verdade (`VoicePersonaDeviceTests`, um criador por execução; a rodada `before` foi no iPhone 18 Pro Max com o motor antigo, a `after`
+  no iPhone 15 Pro com o novo, só "com voz", porque seis roteiros de um criador passam dos 5 minutos que um teste tem), comparadas por `VoiceRunMetrics` (`tools/voice/collect_runs.py`; relatório em `build/reports/voice-report.txt`). Com a voz ligada, antes → depois,
+  sobre 42 roteiros: nome do estilo escrito como primeiras palavras **58% → 0%**, bordão como primeira frase **36% → 0%**, curtos demais **47% → 12%**, palavras proibidas **3% → 0%**, abre do jeito que o criador escolheu **20% → 80%**, frases do tamanho
+  que ele escolheu **58% → 85%**, "eu"/"nós" trocado **14% → 12%** (o que sobrou), média de palavras **105 → 147**, e o criador de finanças deixou de ser recusado pelo guardrail (**36 → 41** de 42 roteiros escritos; o que falta é uma
+  resposta vazia do modelo). Os 10 pares anônimos para o dono julgar (`tools/voice/make_pairs.py`) estão numa página privada e em `build/reports/pairs/`.
+
+### 4.2 Import my writing (7 de outubro de 2026)
+
+Para quem vem de outros apps e já tem texto guardado (roteiros, legendas, notas): **Import my writing**, na linha Examples (a página, as 4 perguntas e o setup chegam todos a `VoiceExamplesField`). Sem modelo treinado:
+
+- **Entrada** (`WritingImportSheet`, 3 passos: `WritingImportCollectView`, `…ReadingView`, `…ReviewView`): colar (textos separados por uma linha de `---`) ou abrir arquivos `.txt`, `.md`, `.rtf`, `.pdf` (`WritingFileReader`); "I wrote these myself" tem que estar ligado. Os roteiros
+  da biblioteca **não** entram: podem ser escritos pela IA, e aprender com o texto dela é um ciclo. `WritingCleaner` tira Markdown, rótulos (Hook:, CTA:), pistas `[pause]`, links, e-mails, telefones, @ e #, e separa os textos (no máximo 60, 80 mil caracteres).
+- **Medições** (`WritingAnalyzer`, sem modelo, igual em todo iPhone): tamanho médio da frase, parte de perguntas e de exclamações, emoji, "eu" ou "nós", mediana de palavras (vira o comprimento habitual), e a `VoiceFingerprint` guardada. Com 3 ou mais textos
+  (`PhraseMiner`, `WritingOpeningReader`): os bordões (frases que voltam em textos diferentes, que começam ou terminam uma frase, nunca "e depois", e os pedidos curtos tipo "save this" ficam para os fechos), como abre (pergunta, número, história, POV, erro) e como fecha
+  (salvar, seguir, comentar, link na bio, testar). Léxico para en, pt, es, fr, de, it; os outros idiomas ficam só com as medidas que não dependem de palavras. Japonês, chinês e tailandês não recebem tamanho de frase (a palavra do tokenizador não compara).
+- **Apple Intelligence só para escolher de listas** (`StyleReading` com `@Generable` e `.anyOf`): tom, temas (25), público e humor; **só o modelo do aparelho**, nunca o Private Cloud Compute (a promessa é nada sair do iPhone), com limite de 40 s, e sem modelo, ocupado, ou
+  num idioma que ele não escreve, a importação segue só com as medidas. O que vai ao modelo são os trechos (≤ 300 caracteres), nunca os textos inteiros.
+- **Revisão** ("Here's what Cue heard"): uma linha por achado com chave (`WritingFindingRow`); o que já está respondido pelo criador e seria trocado vem **desligado** e diz "Replaces: …"; listas (bordões, aberturas, fechos, temas) só acrescentam, dentro do limite.
+  Nada é salvo antes de "Add to My Cue Voice" (`CreatorProfileService.apply`, uma escrita só). Ficam até **24 trechos** (`VoiceExcerpt`: frases inteiras, ≤ 300 caracteres, abertura/meio/fecho, no máximo 2 por texto, nada com número longo, link ou @) e as medidas;
+  os originais somem. Aparece como "Imported from your writing · Excerpts: n" no editor, com **Import more** e **Forget** (`clearImportedWriting`). Conta na força do Proof (4 trechos = 1 exemplo, 8 = 2, 12 = 3).
+- **No pedido** (`ExcerptRetriever`, `ScriptRequestFactory.narrowed`): só trechos **do idioma do roteiro**, e a **variedade** manda, não o assunto: a pesquisa (arXiv 2509.14543) mostra que de 2 a 10 exemplos pouco muda e que escolher por semelhança de tema piora o estilo. Vão 2 trechos (como abre e como segue; um terceiro, como fecha,
+  quando sobra espaço), sempre os mesmos para a mesma ideia. As medidas viram até 2 regras curtas ("Their sentences average about N words.", "They almost never use exclamation marks.") só para o que o criador não respondeu, e **só para roteiros no idioma medido**.
+- **Depois do roteiro** (`VoiceFingerprintRules.drift`): tamanho de frase 45% fora da média do criador ou exclamações em quem quase nunca usa viram `sentenceLength` / `exclamation`, **"soft"**: só contam (e entram na segunda tentativa que já ia acontecer); nunca causam uma segunda tentativa
+  sozinhas, porque custa ~20 s num iPhone.
+- **Medido no iPhone 15 Pro** (`WritingImportDeviceTests`, 3 criadores inventados em 2 idiomas, 3 roteiros cada, o criador só com as 4 perguntas versus o mesmo depois de aceitar tudo): a distância do tamanho de frase ao do próprio texto do criador caiu de **0,73 → 0,28** (Maya),
+  **0,45 → 0,20** (Daniel) e **0,40 → 0,24** (Rafa, em português); o bordão apareceu em **8 de 9** roteiros importados contra **0 de 9**; os roteiros "curtos demais" (3 de 3 da Rafa antes) sumiram. Exclamações continuam raras: o modelo quase nunca escreve "!".
+- **Privacidade:** tudo no aparelho; só as medidas e até 24 trechos ficam, e **Delete my Cue data** apaga (`DataEraserServiceTests`). Texto novo: 32 strings nos 20 idiomas.
+
 ## 5. Movimento
 
 Céu (`StarfieldMath`, `SkyDensity`): **Serene** é só as estrelas de fundo (3 camadas, deriva 260/160/85 s) e as 2 nebulosas, sem estrelas piscando e sem cometa; **Adrift** tem tudo: as mesmas camadas e nebulosas, 14 estrelas piscando de 7 s e **menores** que no quadro (1,2–2 pt em vez de 1,8–3; a cruz de brilho com 5,5 pt de meia haste em vez de 8; pedido do dono em 6/10/2026) e o comet a cada 105–135 s (o primeiro aos 25 s, relógio do app), **e um astronauta flutuando** (seção 5.0.1); **Interstellar** (o quarto, pedido do dono em 6/10/2026; `StarfieldMath+Interstellar`, `InterstellarSkyPainter`, `SpaceshipPainter`) é o Adrift com as cores de uma galáxia e **uma nave no lugar do comet** (detalhes na seção 5.0); nebulosa
@@ -285,6 +346,9 @@ reduzida a 512 px, guardada em `CreatorProfile.photoData`), Name, Username e Cre
 e **Done só vale com tudo válido** ("Profile updated"). Abaixo ficam as preferências de criador (Create for padrão, Monetization goals) e o Sign in with Apple, que já existiam e não estão no protótipo (decisão do dono:
 manter ou mover). Mudança de comportamento: uma conta sem nome ainda não pode tocar Done; Cancel sai.
 
+**Atualização (7 de outubro de 2026):** o Profile ficou só com identidade, Your universe, o cartão My Cue Voice e o plano. **Create for**, **Monetization goals** e **Sign in with Apple** (que não estão no protótipo) foram para o **Edit Profile**
+(`EditProfilePreferences`, `EditProfileAccount`), como o plano pedia; o Sign in with Apple continua sendo uma ação imediata, fora do Cancel / Done. `CreatorDefaultsSection`, `AccountSection`, `CreatorVoiceSection` e `VoiceFineTunePage` saíram.
+
 ## 14. Your universe, um por ano (9.2)
 
 Dados: cada compartilhamento confirmado é um `ShareRecord` (take, data, **redes**, tema); um vídeo conta uma vez, e cada rede confirmada soma um no seu planeta. Os vídeos de antes dos registros usam a data, a plataforma
@@ -320,7 +384,7 @@ app mantém a regra de ícones que já tinha). **1.7 First star** (`FirstStarVie
 a estrela (1,6–2,9 s, sobras de brilho no caminho), a estrela acende (2,95 s, `.success`) com explosão de 10 fagulhas, dois anéis e uma cruz de luz, a linha de YOU até ela se desenha (3,3–4,1 s), "CHAPTER 5 · FIRST STAR" e **"Your universe has its first star."** entram
 palavra por palavra (desfoque 8 → 0), depois "Saved in Takes. Share it to light your 2026 universe." (o texto do handoff e do print; o HTML diz outra coisa) e os botões; o brilho cruza "Go to my studio" uma vez. O quadro repete; o app toca uma vez a 7,5 s e fica, com as
 órbitas ainda girando. `-uiTestStoryAt <s>` congela as duas. **9.3 My Cue Voice:** um cartão de material só (✦ WHAT CUE USES com a chave, medidor, "Next: …" com Answer, depois ESSENCIAIS / PERSONALITY / PROOF em caixa alta com linhas de 52 pt: rótulo cinza à esquerda,
-valor à direita ou "+ Add · 1 tap" em amarelo). **6.2 Takes:** vindo de um planeta ou tema, o chip amarelo "{ANO} · SHARED ✕" mostra só os vídeos compartilhados naquele ano, daquela plataforma/tema; ✕ limpa. **Year in review** abre como `fullScreenCover`
+valor à direita ou "+ Add · 1 tap" em amarelo; **em 7/10/2026 a página ganhou as linhas "They watch to" e "Videos are for" e os botões Preview / What Cue sends no rodapé, ver §4.1**). **6.2 Takes:** vindo de um planeta ou tema, o chip amarelo "{ANO} · SHARED ✕" mostra só os vídeos compartilhados naquele ano, daquela plataforma/tema; ✕ limpa. **Year in review** abre como `fullScreenCover`
 (esconde a tab bar), com fade de 0,3 s; barras e ✕ respeitam a área segura.
 
 ## 17. Confirmações como o quadro desenha (11.1 "reset confirm")

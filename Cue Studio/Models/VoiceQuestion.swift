@@ -140,7 +140,7 @@ nonisolated enum VoiceQuestion: String, CaseIterable, Identifiable, Sendable {
     var options: [VoiceOption] {
         switch self {
         case .role: CreatorRole.allCases.map { VoiceOption(id: $0.rawValue, label: $0.label, detail: $0.examples) }
-        case .topics: Niche.allCases.map { VoiceOption(id: $0.rawValue, label: $0.chipLabel) }
+        case .topics: Self.topicOptions
         case .audience: Vocabulary.allCases.map { VoiceOption(id: $0.rawValue, label: $0.audienceLabel) }
         case .tone: VoiceSound.allCases.map { VoiceOption(id: $0.rawValue, label: $0.label, detail: $0.example) }
         case .endings: VoicePersonalityItem.endings.options.map { VoiceOption(id: $0, label: $0) }
@@ -161,11 +161,39 @@ nonisolated enum VoiceQuestion: String, CaseIterable, Identifiable, Sendable {
         }
     }
 
+    /// The 25 topics: the ten of the first flight, then the fifteen only My Cue Voice offers. A topic a creator already holds outside these
+    /// (wellness, education) is shown by the editor next to them.
+    static var topicOptions: [VoiceOption] {
+        Niche.offered.map { VoiceOption(id: $0.rawValue, label: $0.chipLabel) }
+            + VoiceTopic.allCases.map { VoiceOption(id: $0.rawValue, label: $0.label) }
+    }
+
     /// "Nothing to avoid": an answer of its own that counts as filled.
     static let nothingToAvoidID = "nothing"
 
-    /// What the creator films most. "Talking head" has no `ScriptType` (it is kept as a tag) and "Reaction" is the Hot take / reply format.
+    /// What the creator films most. "Reaction" is the Hot take / reply format and "Myth vs fact" has its own; the formats that have no `ScriptType`
+    /// ("Talking head", "Day in the life", "Q&A", "Behind the scenes", "Before/after") are kept as a tag in `customTags` (`formatTags`).
     static let talkingHeadID = "talkingHead"
+    static let dayInTheLifeID = "dayInTheLife"
+    static let questionsID = "questionsAndAnswers"
+    static let behindTheScenesID = "behindTheScenes"
+    static let beforeAfterID = "beforeAfter"
+
+    /// The tag each format with no `ScriptType` is kept under (English, the way "Talking head" always was).
+    static let formatTags: [String: String] = [
+        talkingHeadID: CreatorProfile.talkingHeadTag,
+        dayInTheLifeID: "Day in the life",
+        questionsID: "Q&A",
+        behindTheScenesID: "Behind the scenes",
+        beforeAfterID: "Before/after",
+    ]
+
+    /// The name a format kept as a tag is shown under (the interface language's), whatever case it was kept in.
+    static func formatTagLabel(_ tag: String) -> String {
+        let id = formatTags.first { VoiceTextValidator.key($0.value) == VoiceTextValidator.key(tag) }?.key
+        return formatOptions.first { $0.id == id }?.label ?? tag
+    }
+
     private static var formatOptions: [VoiceOption] {
         [
             VoiceOption(id: talkingHeadID, label: String(localized: "Talking head")),
@@ -174,6 +202,11 @@ nonisolated enum VoiceQuestion: String, CaseIterable, Identifiable, Sendable {
             VoiceOption(id: ScriptType.list.rawValue, label: String(localized: "List / tips")),
             VoiceOption(id: ScriptType.review.rawValue, label: String(localized: "Review")),
             VoiceOption(id: ScriptType.opinion.rawValue, label: String(localized: "Reaction")),
+            VoiceOption(id: dayInTheLifeID, label: String(localized: "Day in the life")),
+            VoiceOption(id: ScriptType.mythFact.rawValue, label: String(localized: "Myth vs fact")),
+            VoiceOption(id: questionsID, label: String(localized: "Q&A")),
+            VoiceOption(id: behindTheScenesID, label: String(localized: "Behind the scenes")),
+            VoiceOption(id: beforeAfterID, label: String(localized: "Before/after")),
         ]
     }
 
@@ -184,6 +217,9 @@ nonisolated enum VoiceQuestion: String, CaseIterable, Identifiable, Sendable {
             VoiceOption(id: "Emojis in captions", label: String(localized: "Emojis in captions")),
             VoiceOption(id: "Medical claims", label: String(localized: "Medical claims")),
             VoiceOption(id: "Politics", label: String(localized: "Politics")),
+            VoiceOption(id: "Exaggerated promises", label: String(localized: "Exaggerated promises")),
+            VoiceOption(id: "False urgency", label: String(localized: "False urgency")),
+            VoiceOption(id: "Naming competitors", label: String(localized: "Naming competitors")),
             VoiceOption(id: nothingToAvoidID, label: String(localized: "Nothing to avoid")),
         ]
     }

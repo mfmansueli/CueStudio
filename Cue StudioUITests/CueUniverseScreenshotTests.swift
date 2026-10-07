@@ -57,7 +57,7 @@ final class CueUniverseScreenshotTests: XCTestCase {
         XCTAssertTrue(element(app, "settings.appIcon").waitForExistence(timeout: 5))
         capture(app, "settings-2-personalize")
         let sky = element(app, "settings.starrySky")
-        XCTAssertEqual(sky.value as? String, "Calm")
+        XCTAssertEqual(sky.value as? String, "Serene")
         element(app, "settings.appIcon").tap()
         // Default is the one lit; the others open with videos shared.
         XCTAssertTrue(app.buttons["settings.appIcon.standard"].waitForExistence(timeout: 5))

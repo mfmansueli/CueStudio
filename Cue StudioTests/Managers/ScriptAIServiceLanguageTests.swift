@@ -329,6 +329,23 @@ struct ScriptAIServiceRunawayTests {
         #expect(rescued?.title == "Coffee")
     }
 
+    private func words(_ count: Int) -> String {
+        Array(repeating: "word", count: count).joined(separator: " ")
+    }
+
+    @Test func aScriptThatCameInOneBlockIsRescuedWhenItHoldsMostOfOne() throws {
+        let low = ReadTime.words(for: 60)
+        let whole = try partial(title: "Coffee", blocks: [("Hook", words(Int(Double(low) * 0.8)))])
+        #expect(ScriptAIService.rescued(whole, request: request(60...90)) != nil, "103 to 120 words of 150 in one block was a script")
+        let few = try partial(title: "Coffee", blocks: [("Hook", words(46))])
+        #expect(ScriptAIService.rescued(few, request: request(60...90)) == nil, "a few lines are not")
+    }
+
+    @Test func aBlockThatRanOnWithoutEndIsNotAScript() throws {
+        let runaway = try partial(title: "Coffee", blocks: [("Hook", words(1_061))])
+        #expect(ScriptAIService.rescued(runaway, request: request(60...90)) == nil)
+    }
+
     @Test func aFewLinesBeforeAFailureAreNeverPassedOffAsAScript() throws {
         let draft = try partial(title: "Coffee", blocks: [("Hook", "Hey fam, I stopped.")])
         #expect(ScriptAIService.rescued(draft, request: request(30...45)) == nil)

@@ -44,6 +44,20 @@ struct VoiceAdjustmentTests {
         #expect(VoiceAdjustment.tooLong.applied(to: short).styles == short.styles)
     }
 
+    @Test func theAdjustmentsChangeWhatThePromptReadsNotJustTheLegacyFields() {
+        var voiced = profile
+        voiced.style = VoiceDelivery(energy: .high, sentences: .long, words: .someSlang, swearing: .mild)
+        #expect(VoiceAdjustment.tooLong.applied(to: voiced).style.sentences == .short)
+        #expect(VoiceAdjustment.tooMuchSlang.applied(to: voiced).style.words == .plain)
+        #expect(VoiceAdjustment.tooOverTheTop.applied(to: voiced).style.energy == .calm)
+        var expert = voiced
+        expert.style.words = .expertTerms
+        #expect(VoiceAdjustment.tooFormal.applied(to: expert).style.words == .plain)
+        // What was never answered stays unanswered: an adjustment doesn't invent an answer.
+        #expect(VoiceAdjustment.tooLong.applied(to: profile).style.sentences == nil)
+        #expect(VoiceAdjustment.tooOverTheTop.applied(to: profile).style.energy == nil)
+    }
+
     @Test func severalAdjustmentsApplyOneAfterTheOther() {
         let adjusted = VoiceAdjustment.applying([.tooMuchSlang, .notMyPhrase, .tooLong], to: profile)
         #expect(adjusted.vocabulary == .simple && adjusted.phrases.isEmpty && adjusted.styles.contains(.shortSentences))

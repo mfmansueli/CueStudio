@@ -32,6 +32,8 @@ struct AppServices {
     /// The pause between the groups of words of a script the AI writes into the page.
     let scriptRevealPause: Duration
     let writer: ScriptWriting
+    /// Reads what the creator imports for how they sound (Import my writing), with the model on this iPhone.
+    let styleReader: any WritingStyleReading
     let textRecognizer: TextRecognitionManager
     let importer: DocumentImportService
     let exporter: VideoExportService
@@ -144,6 +146,8 @@ struct AppServices {
             writer: options.writer, toast: toast
         )
         writer = options.writer
+        let busyWriter = options.writer
+        styleReader = options.styleReader ?? AppleWritingStyleReader(isBusy: { busyWriter.isBusyForeground }, isEnabled: { busyWriter.isEnabled })
         scriptRevealPause = options.scriptRevealPause
         textRecognizer = TextRecognitionManager()
         importer = DocumentImportService()
@@ -229,6 +233,7 @@ extension View {
             .environment(services.eraser)
             .environment(services.privacy)
             .environment(services.permissionStatus)
+            .environment(\.styleReader, services.styleReader)
             .environment(\.proOpeningFrozenAt, services.proFrozenTime)
             .environment(\.onboardingChapterFrozenAt, services.chapterFrozenTime)
             .environment(\.sendOffFrozenAt, services.sendOffFrozenTime)

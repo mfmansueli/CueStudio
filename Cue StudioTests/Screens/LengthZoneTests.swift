@@ -26,12 +26,13 @@ struct LengthZoneTests {
     }
 
     @Test func overTheIdealRange() {
-        let zone = LengthZone(text: TestData.words(258), preset: reels, speed: 1)
+        // Reels' ideal is 0:30–1:30 for a spoken video: 365 words take 1:42.
+        let zone = LengthZone(text: TestData.words(365), preset: reels, speed: 1)
         #expect(zone.status == "12s over ideal")
     }
 
     @Test func underTheIdealRangeWithoutMinimum() {
-        let zone = LengthZone(text: TestData.words(43), preset: reels, speed: 1)
+        let zone = LengthZone(text: TestData.words(97), preset: reels, speed: 1)
         #expect(zone.status == "3s under ideal")
     }
 

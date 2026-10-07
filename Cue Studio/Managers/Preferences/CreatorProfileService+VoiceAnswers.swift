@@ -15,7 +15,7 @@ extension CreatorProfileService {
         let held = profile
         switch question {
         case .role: return held.role?.rawValue == option.id
-        case .topics: return held.niches.contains { $0.rawValue == option.id }
+        case .topics: return held.niches.contains { $0.rawValue == option.id } || held.voiceTopics.contains { $0.rawValue == option.id }
         case .audience: return held.isChosen(.audience) && held.vocabulary.rawValue == option.id
         case .tone: return held.isChosen(.tone) && held.sounds.contains { $0.rawValue == option.id }
         case .endings: return Self.holds(option.id, in: held.endings)
@@ -34,7 +34,7 @@ extension CreatorProfileService {
     }
 
     private func isFormatSelected(_ option: VoiceOption, in held: CreatorProfile) -> Bool {
-        if option.id == VoiceQuestion.talkingHeadID { return Self.holds(CreatorProfile.talkingHeadTag, in: held.customTags) }
+        if let tag = VoiceQuestion.formatTags[option.id] { return Self.holds(tag, in: held.customTags) }
         return held.formats.contains { $0.rawValue == option.id }
     }
 
@@ -79,18 +79,14 @@ extension CreatorProfileService {
         switch question {
         case .role:
             updated.role = CreatorRole(rawValue: option.id)
+            // One of the eight replaces what the creator typed for themselves.
+            updated.customRole = nil
             result = .added
         case .topics:
-            guard let niche = Niche(rawValue: option.id) else { return .alreadyThere }
-            if let index = updated.niches.firstIndex(of: niche) {
-                updated.niches.remove(at: index)
-                result = .removed
-            } else if updated.niches.count + updated.customTopics.count >= VoiceLimits.topics {
-                return .limit(VoiceLimits.message(max: VoiceLimits.topics, noun: String(localized: "topics")))
-            } else {
-                updated.niches.append(niche)
-                result = .added
-            }
+            guard let topic = Self.topicRef(for: option.id) else { return .alreadyThere }
+            let toggled = Self.toggle(topic, in: &updated)
+            if case .limit = toggled { return toggled }
+            result = toggled
         case .audience:
             guard let vocabulary = Vocabulary(rawValue: option.id) else { return .alreadyThere }
             updated.vocabulary = vocabulary
@@ -182,11 +178,10 @@ extension CreatorProfileService {
                 $0.avoidNone = false
             }
         case .topics:
-            let existing = profile.customTopics + profile.niches.map(\.label)
-            let held = profile.niches.count + profile.customTopics.count
+            let existing = profile.topics.map(\.label)
             return addText(
-                raw, vocabulary: keepingTyped ? [] : Niche.allCases.map(\.chipLabel), existing: existing,
-                held: held, limit: (VoiceLimits.topics, String(localized: "topics"))
+                raw, vocabulary: keepingTyped ? [] : Niche.allCases.map(\.chipLabel) + VoiceTopic.allCases.map(\.label), existing: existing,
+                held: profile.topicCount, limit: (VoiceLimits.topics, String(localized: "topics"))
             ) { $0.customTopics.append($1) }
         default:
             return addText(raw, vocabulary: [], existing: profile.customTags, limit: (Int.max, "")) { $0.customTags.append($1) }
@@ -214,18 +209,19 @@ extension CreatorProfileService {
     // MARK: - Helpers
 
     private func toggleFormat(_ option: VoiceOption) -> VoiceEditResult {
-        if option.id == VoiceQuestion.talkingHeadID {
+        if let tag = VoiceQuestion.formatTags[option.id] {
             var updated = profile
-            let key = VoiceTextValidator.key(CreatorProfile.talkingHeadTag)
+            let key = VoiceTextValidator.key(tag)
             if let index = updated.customTags.firstIndex(where: { VoiceTextValidator.key($0) == key }) {
                 updated.customTags.remove(at: index)
                 profile = updated
                 return .removed
             }
-            guard updated.formats.count < VoiceLimits.formats else {
+            guard updated.formats.count + updated.formatTags.count < VoiceLimits.formats else {
                 return .limit(VoiceLimits.message(max: VoiceLimits.formats, noun: String(localized: "formats")))
             }
-            updated.customTags.append(CreatorProfile.talkingHeadTag)
+            updated.customTags.append(tag)
+            updated.declinedVoiceItems.remove(.formats)
             profile = updated
             return .added
         }

@@ -36,7 +36,9 @@ struct CreatorProfileTests {
     }
 
     @Test func theVoiceCarriesEverything() {
-        let profile = CreatorProfile(niches: [.tech], phrases: ["Bora"], sounds: [.funny], vocabulary: .genZ, styles: [.storytelling])
+        let profile = CreatorProfile(
+            niches: [.tech], phrases: ["Bora"], sounds: [.funny], vocabulary: .genZ, styles: [.storytelling], confirmedVoiceSteps: [.audience, .tone]
+        )
         let voice = profile.voice
         #expect(voice.sounds == [.funny])
         #expect(voice.phrases == ["Bora"])

@@ -24,13 +24,16 @@ protocol ScriptWriting: AnyObject {
     /// Three new opening lines for the script.
     func hooks(for text: String, context: RewriteContext) async throws -> [String]
 
-    /// Fresh video ideas for the creator's niches.
+    /// Fresh video ideas for the creator's niches, in the creator's voice when there is one (their topics and what they know of who is watching).
     /// Ideas written in `language` (the interface's, where they are shown), or the model's choice.
-    func themeIdeas(for niches: [Niche], language: CueLanguage?) async throws -> [ThemeIdea]
+    func themeIdeas(for niches: [Niche], language: CueLanguage?, voice: CreatorVoice?) async throws -> [ThemeIdea]
 
     /// Why Apple Intelligence can't write in `languages` right now (a translation lists both), told before
     /// anything is sent; nil when it can. Being available says nothing about a language.
     func writingFailure(in languages: [Locale.Language]) -> AIPlanFailure?
+
+    /// A request the creator is waiting for is under way: work that can wait (filing scripts under topics) stands aside until it ends.
+    var isBusyForeground: Bool { get }
 
     /// Which of the creator's topics (their names) a script is about, chosen on this iPhone; nil when none fits or
     /// no model can tell.
@@ -38,6 +41,14 @@ protocol ScriptWriting: AnyObject {
 }
 
 extension ScriptWriting {
+    /// Writers that run nothing in the background (tests, a device without Apple Intelligence) are never busy.
+    var isBusyForeground: Bool { false }
+
+    /// Ideas with no voice behind them.
+    func themeIdeas(for niches: [Niche], language: CueLanguage?) async throws -> [ThemeIdea] {
+        try await themeIdeas(for: niches, language: language, voice: nil)
+    }
+
     /// Writers that don't know languages (tests) take any.
     func writingFailure(in languages: [Locale.Language]) -> AIPlanFailure? { nil }
 

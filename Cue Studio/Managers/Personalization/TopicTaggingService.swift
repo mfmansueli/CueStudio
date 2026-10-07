@@ -41,9 +41,13 @@ final class TopicTaggingService {
             $0.topic == nil && ReadTime.wordCount(in: $0.text) >= Self.minimumWords && !inFlight.contains($0.id)
         }
         for script in candidates.prefix(5) {
+            // A script the creator is waiting for comes first; this runs again when the library changes.
+            guard !writer.isBusyForeground, !Task.isCancelled else { return }
             inFlight.insert(script.id)
             let choice = await topic(for: script)
             inFlight.remove(script.id)
+            // The model stood aside or was cancelled: that is not "no topic", so the script is left to be filed another time.
+            guard !writer.isBusyForeground, !Task.isCancelled else { return }
             // The creator may have set one while the model was reading.
             guard library.script(id: script.id)?.topic == nil else { continue }
             library.setTopic(choice?.id ?? "", of: script.id)

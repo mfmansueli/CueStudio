@@ -177,7 +177,7 @@ final class ScriptDetailViewModel {
             platform: script?.platform ?? .tiktok,
             idealRange: preset.idealRange,
             sourceLanguage: textLanguage,
-            voice: profile.profile.voice
+            voice: profile.profile.voice(inLanguage: textLanguage?.languageCode?.identifier, idea: workingText)
         )
     }
 

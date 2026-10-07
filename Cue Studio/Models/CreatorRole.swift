@@ -65,6 +65,20 @@ nonisolated enum CreatorRole: String, Codable, CaseIterable, Identifiable, Senda
         }
     }
 
+    /// What the AI reads (English, whatever the interface language is).
+    var promptName: String {
+        switch self {
+        case .personal: "a lifestyle and personal creator"
+        case .entertainer: "an entertainer"
+        case .expert: "an expert, coach or professional in their field"
+        case .educator: "a teacher or explainer"
+        case .business: "the owner of a business (a shop, salon, studio or service)"
+        case .brands: "a creator who makes content for brands"
+        case .news: "a news and commentary creator"
+        case .community: "a creator for a community or a cause"
+        }
+    }
+
     /// The tones that are common for this kind of creator: suggested, never chosen for them.
     var commonSounds: [VoiceSound] {
         switch self {
@@ -79,6 +93,9 @@ nonisolated enum CreatorRole: String, Codable, CaseIterable, Identifiable, Senda
         }
     }
 
+    /// Who is likely talking: businesses and brands say "we". A suggestion only; the creator's own choice (`CreatorProfile.speaksAs`) wins.
+    var suggestedSpeaksAs: SpeaksAs { self == .business || self == .brands ? .we : .i }
+
     /// Who is talking, for the AI: businesses and brands say "we".
-    var speaksAsWe: Bool { self == .business || self == .brands }
+    var speaksAsWe: Bool { suggestedSpeaksAs == .we }
 }

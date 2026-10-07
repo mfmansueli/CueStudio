@@ -94,6 +94,11 @@ Toda tela, componente ou cor nova **precisa passar** no contraste antes de ser e
   ouvido, tempos, sincronia) e `TEST_RUNNER_CUE_AI_E2E=1 … -only-testing:"Cue StudioTests/LanguageModelDeviceTests"` ou `…/ScriptGenerationFlowDeviceTests`
   (Apple Intelligence de verdade: idioma do resultado, tradução, My Cue Voice, o fluxo do card até o script salvo). Um idioma que o aparelho não roda
   aparece como **não validado** (teste cancelado), nunca como aprovado. Resultados e limites: `LOCALIZATION.md` §5.
+- **My Cue Voice no aparelho** (opt-in, um conjunto por vez, iPhone desbloqueado e com a tela acesa; `CUE_DEVICE="<iPhone>" scripts/test.sh device <Suite>`):
+  `VoicePersonaDeviceTests` (14 criadores inventados × 3 ideias, com e sem voz; `TEST_RUNNER_CUE_VOICE_RUN`, `…_PERSONAS`, `…_IDEAS=shared`; `tools/voice/collect_runs.py` junta os resultados e
+  `tools/voice/make_pairs.py` faz os 10 pares anônimos para o dono), `PromptBudgetDeviceTests` (tokens por idioma e o custo do orçamento do prompt), `WritingImportDeviceTests` (o roteiro fica mais perto do
+  texto importado?), `PlatformLengthDeviceTests` e `LengthVariantsDeviceTests` (quantas palavras o modelo escreve por plataforma e por jeito de pedir). Um teste de aparelho tem 5 minutos: por isso os
+  conjuntos pegam poucos casos por execução (`TEST_RUNNER_CUE_IMPORT_CREATORS`, `…_PLATFORMS`, `…_VARIANT`, `…_RUNS`). Resultados e números: `DESIGN_PROJECT.md` §4.1 e §4.2.
 - A prévia do Quick edit tem uma medição opt-in no aparelho: `TEST_RUNNER_CUE_PREVIEW_LATENCY=1 xcodebuild …
   -only-testing:"Cue StudioTests/QuickEditPreviewLatencyTests" test` (quanto uma mudança leva para
   aparecer e se a imagem some, com filtro, texto, fundo Blur, 4K e corte).
