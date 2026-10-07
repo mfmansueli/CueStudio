@@ -23,8 +23,6 @@ struct NewScriptSheet: View {
     /// AI (the first goes away; a reply is written by hand).
     var hasAI = true
 
-    @Environment(\.dismiss) private var dismiss
-
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             SheetHeader(

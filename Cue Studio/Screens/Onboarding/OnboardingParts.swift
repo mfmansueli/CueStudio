@@ -158,16 +158,3 @@ struct OnboardingSecondaryButton: View {
         .accessibilityIdentifier(identifier)
     }
 }
-
-/// A mono label in a chapter: "3 OF 3 · TAP TO CHANGE".
-struct OnboardingCaption: View {
-    let text: String
-
-    var body: some View {
-        Text(text)
-            .font(CueStudioFont.hud)
-            .textCase(.uppercase)
-            .tracking(1.2)
-            .foregroundStyle(Palette.inkHint)
-    }
-}

@@ -12,11 +12,4 @@ enum SpeedScope: String, CaseIterable, Identifiable {
     case whole
 
     var id: String { rawValue }
-
-    var label: String {
-        switch self {
-        case .section: String(localized: "This section")
-        case .whole: String(localized: "Whole video")
-        }
-    }
 }

@@ -12,7 +12,6 @@ struct ScriptDetailsSheet: View {
     let viewModel: ScriptDetailViewModel
 
     @Environment(CreatorProfileService.self) private var profile
-    @Environment(\.dismiss) private var dismiss
 
     var body: some View {
         @Bindable var profile = profile

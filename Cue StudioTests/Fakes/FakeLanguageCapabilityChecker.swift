@@ -25,10 +25,6 @@ nonisolated final class FakeLanguageCapabilityChecker: LanguageCapabilityCheckin
         state.withLock { $0.answers[feature, default: [:]][language] = support }
     }
 
-    func setEverything(to support: FeatureSupport) {
-        state.withLock { $0.fallback = support; $0.answers = [:] }
-    }
-
     func setTranslation(_ support: FeatureSupport) {
         state.withLock { $0.translation = support }
     }

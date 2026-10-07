@@ -11,8 +11,6 @@ struct ScriptTypeSheet: View {
     let current: ScriptType?
     let onPick: (ScriptType?) -> Void
 
-    @Environment(\.dismiss) private var dismiss
-
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 14) {

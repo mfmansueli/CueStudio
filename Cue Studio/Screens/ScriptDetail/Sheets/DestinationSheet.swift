@@ -12,7 +12,6 @@ struct DestinationSheet: View {
 
     @Environment(CreatorProfileService.self) private var profile
     @Environment(PlatformRulesService.self) private var rules
-    @Environment(\.dismiss) private var dismiss
 
     var body: some View {
         @Bindable var profile = profile

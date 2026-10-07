@@ -6,29 +6,6 @@
 import Foundation
 
 nonisolated extension VoiceField {
-    /// The row's name on the full page (9.3).
-    var title: String {
-        switch self {
-        case .role: String(localized: "I am")
-        case .topics: String(localized: "Topics")
-        case .audience: String(localized: "Audience")
-        case .tone: String(localized: "Voice")
-        case .style: String(localized: "Style")
-        case .formats: String(localized: "Usual formats")
-        case .openings: String(localized: "Opens with")
-        case .endings: String(localized: "Ends with")
-        case .phrases: String(localized: "My phrases")
-        case .avoid: String(localized: "Avoid")
-        case .reach: String(localized: "Reach")
-        case .examples: String(localized: "Examples")
-        }
-    }
-
-    /// The questions that fill this field, in the order they are asked.
-    var questions: [VoiceQuestion] {
-        VoiceQuestion.allCases.filter { $0.field == self }
-    }
-
     /// The fields of a layer, in the order the page lists them.
     static func fields(of layer: VoiceLayer) -> [VoiceField] {
         allCases.filter { $0.layer == layer }

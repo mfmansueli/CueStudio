@@ -23,10 +23,6 @@ nonisolated struct DictationSegment: Equatable, Sendable {
         after = String(text[split...])
     }
 
-    mutating func hear(_ transcript: String) {
-        heard = transcript
-    }
-
     /// The same, cut so that the whole text stays within `limit` characters: the words stop where the room ends, and what was
     /// already written (before and after them) is never cut.
     mutating func hear(_ transcript: String, limit: Int) {

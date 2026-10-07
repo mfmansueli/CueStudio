@@ -11,9 +11,7 @@ import Foundation
 /// Preview and export render the same recipe, and the take can be edited again from where it was
 /// left.
 nonisolated struct TakeEdit: Codable, Hashable, Sendable {
-    static let volumeRange: ClosedRange<Double> = 0...1.5
     static let adjustmentRange: ClosedRange<Double> = -100...100
-    static let cropOffsetRange: ClosedRange<Double> = -1...1
 
     // MARK: Timeline
     /// What plays: pieces of the recording, in order.

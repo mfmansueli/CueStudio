@@ -81,10 +81,6 @@ final class StoreManager {
         return products[plan]?.displayPrice
     }
 
-    func price(for plan: ProPlan) -> Decimal? {
-        products[plan]?.price
-    }
-
     /// "$3.33" for the annual plan, so it can be compared with monthly.
     func monthlyEquivalentText(for plan: ProPlan) -> String? {
         #if DEBUG

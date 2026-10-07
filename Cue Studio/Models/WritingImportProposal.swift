@@ -24,7 +24,4 @@ nonisolated struct WritingImportProposal: Hashable, Sendable {
 
     /// Something worth saving came out of it.
     var hasAnything: Bool { findings.contains { $0.isOn } || !excerpts.isEmpty }
-
-    /// How many findings will be saved.
-    var acceptedCount: Int { findings.filter(\.isOn).count }
 }

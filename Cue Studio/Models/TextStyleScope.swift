@@ -18,15 +18,6 @@ nonisolated enum TextStyleScope: String, CaseIterable, Identifiable, Sendable {
 
     var id: String { rawValue }
 
-    var label: String {
-        switch self {
-        case .selected: String(localized: "This text")
-        case .allTexts: String(localized: "All texts")
-        case .allCaptions: String(localized: "All captions")
-        case .textsAndCaptions: String(localized: "+ Captions")
-        }
-    }
-
     /// The look this scope is drawn with: titles for texts, captions for captions.
     var use: TextUse {
         self == .allCaptions ? .caption : .title

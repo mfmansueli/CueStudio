@@ -207,8 +207,6 @@ nonisolated struct TimelineGeometry: Equatable, Sendable {
     /// A cut's mark, and the least room each clip beside it needs for it to show.
     static let joinSize: CGFloat = 20
     static let joinRoom: CGFloat = 26
-    /// A tap moves less than this.
-    static let tapSlop: CGFloat = 4
     /// The voice-over being recorded has no id of its own yet.
     static let recordingID = UUID(uuidString: "00000000-0000-0000-0000-000000000000") ?? UUID()
 

@@ -14,7 +14,6 @@ import Foundation
 final class VoiceQuestionScheduler {
     static let snoozeInterval: TimeInterval = 3 * 24 * 3600
     static let pauseInterval: TimeInterval = 14 * 24 * 3600
-    static let dailyCap = 1
     static let weeklyCap = 3
     static let dismissalsBeforePause = 3
     static let dismissalsBeforeLast = 2

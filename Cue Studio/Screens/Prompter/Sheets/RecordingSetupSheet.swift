@@ -12,7 +12,6 @@ struct RecordingSetupSheet: View {
     let viewModel: PrompterViewModel
 
     @Environment(SessionSetupService.self) private var session
-    @Environment(\.dismiss) private var dismiss
 
     /// What the sheet lists, in reading order.
     private static let fields: [SetupField] = [.camera, .microphone, .format, .quality, .frameRate, .textSize, .speed, .mirror, .safeZones]

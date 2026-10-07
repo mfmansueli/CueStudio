@@ -19,7 +19,6 @@ nonisolated struct ScriptShape: Equatable, Sendable {
         let isMissingCTA: Bool
 
         var id: Int { firstParagraph }
-        var text: String { paragraphs.joined(separator: "\n\n") }
     }
 
     enum Tip: Equatable, Hashable, Sendable {

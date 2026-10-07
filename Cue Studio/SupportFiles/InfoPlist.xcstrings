@@ -15,7 +15,7 @@
       "shouldTranslate" : false
     },
     "CFBundleName" : {
-      "comment" : "Bundle name",
+      "comment" : "The app's bundle name. A brand: not translated.",
       "extractionState" : "extracted_with_value",
       "localizations" : {
         "en" : {
@@ -24,7 +24,8 @@
             "value" : "Cue Studio"
           }
         }
-      }
+      },
+      "shouldTranslate" : false
     },
     "NSCameraUsageDescription" : {
       "comment" : "Privacy description shown in the system permission prompt.",

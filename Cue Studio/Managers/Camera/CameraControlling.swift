@@ -8,7 +8,6 @@ import AVFAudio
 /// What the prompter needs from the camera. Tests drive the recording flow with a fake.
 protocol CameraControlling: AnyObject {
     var status: CameraStatus { get }
-    var isRecording: Bool { get }
     /// The camera in use. Can differ from the one asked for when that one isn't on this device.
     var activeLens: CameraLens? { get }
     /// The background effect for the next takes (this session only): shown live while recording

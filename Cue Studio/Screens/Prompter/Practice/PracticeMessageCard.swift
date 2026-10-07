@@ -10,8 +10,6 @@ import SwiftUI
 struct PracticeMessageCard: View {
     let stage: PracticeStage
 
-    private static let clip = MotionLibrary.clip("1.6_practice")
-
     var body: some View {
         ZStack {
             card(

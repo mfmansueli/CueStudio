@@ -27,9 +27,6 @@ nonisolated struct TakeVideo: Hashable, Identifiable, Sendable {
 
     var isEdited: Bool { takes.contains(where: \.isEdited) }
 
-    /// None of its takes was saved or shared yet.
-    var isNotShared: Bool { !takes.contains(where: \.isExported) }
-
     /// "3 takes · Best: Take 3"
     var takesLabel: String? {
         guard takes.count > 1 else { return nil }

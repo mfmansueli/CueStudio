@@ -414,7 +414,7 @@ agora cada tela com movimento lê o do próprio quadro.
 **Motor** (`DesignSystem/Motion`): `tools/bake_motion.py` transforma os `@keyframes` dos HTMLs (camadas `L<n>`) em `Motion/Data/screens-motion.json`; `MotionLibrary.clip("1.2_topics")` entrega um `MotionClip`,
 que responde `pose(of: "L16", at: segundo)` (opacidade, deslocamento, escala, rotação, desfoque, traço desenhado, posição ao longo de um caminho, cor, brilho, recorte) com as curvas de cada trecho. `MotionScreen` é o
 **relógio único** da tela (um `TimelineView`; toca uma vez e segura em `hold`; `loops` mantém o movimento de fundo; toque pula quando `skippable`), `MotionTime` leva o segundo da coreografia e o do ambiente. Efeitos
-reutilizáveis em `DesignSystem/Effects` (`GlowDot`, `StarTrail`, `ImpactRing`, `CrossFlare`, `LightFX`); as galáxias de 1.3 e 1.4 são desenhadas por `GalaxyPainter` a partir de `galaxies.json`
+reutilizáveis em `DesignSystem/Effects` (`GlowDot`, `StarTrail`, `LightFX`); as galáxias de 1.3 e 1.4 são desenhadas por `GalaxyPainter` a partir de `galaxies.json`
 (`tools/bake_galaxies.py`) com cache (`HeroDiscCache`). **Conferir:** `tools/fidelity` (HTML parado num segundo × app com o relógio congelado; `README.md` lá) e `HandoffCaptureTests` (um PNG por tela).
 Cada quadro tem o próprio `.night`: `BgWash+Presets` (`welcome`, `universe`, `voyage`, `message`, `permissions`, `firstStar`, `yourUniverse`, `sendOff`, `milestone`, `pro`, `share`) e
 `skyBackground(wash:base:)`; as cores de onboarding, prática e send-off sem papel próprio estão em `Palette+Flight.swift` (nenhum hex solto em `Screens/Onboarding` nem `Screens/Prompter/Practice`).

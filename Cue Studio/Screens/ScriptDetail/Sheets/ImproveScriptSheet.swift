@@ -11,8 +11,6 @@ import SwiftUI
 struct ImproveScriptSheet: View {
     let viewModel: ScriptDetailViewModel
 
-    @Environment(\.dismiss) private var dismiss
-
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 14) {

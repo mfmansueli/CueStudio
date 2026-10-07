@@ -37,7 +37,6 @@ final class IdeaTransitionService {
     /// The overlay darkens to cover the screen (0.22 s) before the ring opens.
     static let coverDuration: TimeInterval = 0.22
     static let ringDuration: TimeInterval = 0.42
-    static let crossfadeDuration: TimeInterval = 0.22
     /// The star flying to the caret, and the caret blinking for a moment.
     static let landingDuration: TimeInterval = 0.44
     static let caretHold: TimeInterval = 0.4

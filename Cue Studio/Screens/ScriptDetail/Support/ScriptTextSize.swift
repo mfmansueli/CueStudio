@@ -14,14 +14,6 @@ nonisolated enum ScriptTextSize: Int, CaseIterable, Identifiable, Sendable {
 
     var id: Int { rawValue }
 
-    var label: String {
-        switch self {
-        case .small: String(localized: "Small")
-        case .medium: String(localized: "Medium")
-        case .large: String(localized: "Large")
-        }
-    }
-
     /// Points at the default Dynamic Type size; the page scales them with the creator's setting.
     var points: Double { Double(rawValue) }
 }

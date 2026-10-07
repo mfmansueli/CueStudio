@@ -106,11 +106,4 @@ enum EditorApp {
             .matching(NSPredicate(format: "label CONTAINS %@", text)).firstMatch
             .waitForExistence(timeout: timeout)
     }
-
-    /// Plays for about `seconds`, then pauses.
-    static func play(_ app: XCUIApplication, for seconds: UInt32) {
-        app.buttons["edit.playButton"].tap()
-        sleep(seconds)
-        app.buttons["edit.playButton"].tap()
-    }
 }

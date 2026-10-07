@@ -4,9 +4,13 @@ as the entries it touched and nothing else.
 
   scripts/strings.py add <file.json> [--catalog NAME]   adds or updates entries from a JSON file (format below)
   scripts/strings.py missing [--catalog NAME]           entries missing a language, or still marked "new"
-  scripts/strings.py stale [--remove] [--catalog NAME]  stale entries (Xcode no longer finds them in the code): lists
+  scripts/strings.py stale [--remove]                   stale entries (Xcode no longer finds them in the code): lists
                                                          them, and with --remove deletes the ones no file of the app
                                                          uses any more (as a literal or an interpolation)
+  scripts/strings.py unused [--remove]                  Localizable entries no Swift file uses as a string literal
+                                                         (comments don't count), whatever Xcode last wrote in
+                                                         extractionState: only the Xcode IDE rewrites that, and the
+                                                         scripts build without it, so "stale" can be months old
 
 NAME is Localizable (default), InfoPlist or AppShortcuts. The JSON for `add` maps each key (the English text, with
 %@ / %lld where the code interpolates) to its comment and every other language of the catalog:
@@ -23,6 +27,8 @@ import re
 import subprocess
 import sys
 import tempfile
+
+from swift_lex import strip_comments
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CATALOGS = {
@@ -144,38 +150,64 @@ def missing(name):
 
 
 def app_text():
-    """Every Swift, JSON and plist file of the app, as one string to search."""
+    """Every Swift, JSON and plist file of the app, as one string to search (Swift comments blanked out)."""
     texts = []
     for folder, _, files in os.walk(os.path.join(ROOT, "Cue Studio")):
         for file in files:
             if file.endswith((".swift", ".json", ".plist")):
                 with open(os.path.join(folder, file), encoding="utf-8", errors="ignore") as handle:
-                    texts.append(handle.read())
+                    text = handle.read()
+                texts.append(strip_comments(text) if file.endswith(".swift") else text)
     return "\n".join(texts)
 
 
 def used(key, text):
-    """Whether `key` is in the app as a literal, or as Swift interpolations where it has %@ / %lld."""
+    """Whether `key` is in the app as a string literal, or as Swift interpolations where it has %@ / %lld.
+
+    The literal has to be a whole string (between its quotes): "Copy" is not used because "Copyright" is.
+    """
     escaped = key.replace("\\", "\\\\").replace('"', '\\"').replace("\n", "\\n")
-    if escaped in text or key in text:
-        return True
-    pattern = r"\\\(.*?\)".join(re.escape(part) for part in SPECIFIER.sub("\x00", escaped).split("\x00"))
-    return re.search(pattern, text) is not None
+    for candidate in (escaped, key):
+        if not SPECIFIER.search(candidate) and "%%" not in candidate:
+            if '"' + candidate + '"' in text:
+                return True
+            continue
+        parts = SPECIFIER.sub("\x00", candidate.replace("%%", "%")).split("\x00")
+        pattern = '"' + r"\\\(.*?\)".join(re.escape(part) for part in parts) + '"'
+        if re.search(pattern, text, re.DOTALL if "\n" in candidate else 0):
+            return True
+    return False
+
+
+def report_unused(name, keys, label, remove):
+    """Lists the `keys` of the catalog that no file of the app uses, and with `remove` deletes them."""
+    # AppShortcuts phrases are written with `\(.applicationName)` / `\(\.$parameter)`, which the catalog spells
+    # ${applicationName}: a text search can't tell them from nothing (and `--remove` would delete phrases in use),
+    # and InfoPlist keys are not string literals in the code. Only Localizable is checked this way.
+    if name != "Localizable":
+        sys.exit(f"stale and unused only check Localizable, not {name}.")
+    path, catalog, newline = load(name)
+    text = app_text()
+    gone = [key for key in keys if not used(key, text)]
+    print(f"{len(keys)} {label} in {CATALOGS[name]}: {len(keys) - len(gone)} still in the app's files, {len(gone)} nowhere")
+    for key in gone:
+        print(f"  {key!r}")
+    if remove and gone:
+        for key in gone:
+            del catalog["strings"][key]
+        save(path, catalog, newline)
+        print(f"✔ removed {len(gone)}")
 
 
 def stale(name, remove):
-    path, catalog, newline = load(name)
+    _, catalog, _ = load(name)
     keys = [key for key, entry in catalog["strings"].items() if entry.get("extractionState") == "stale"]
-    text = app_text()
-    unused = [key for key in keys if not used(key, text)]
-    print(f"{len(keys)} stale in {CATALOGS[name]}: {len(keys) - len(unused)} still in the app's files, {len(unused)} nowhere")
-    for key in unused:
-        print(f"  {key!r}")
-    if remove and unused:
-        for key in unused:
-            del catalog["strings"][key]
-        save(path, catalog, newline)
-        print(f"✔ removed {len(unused)}")
+    report_unused(name, keys, "stale", remove)
+
+
+def unused(name, remove):
+    _, catalog, _ = load(name)
+    report_unused(name, list(catalog["strings"]), "keys", remove)
 
 
 def main(arguments):
@@ -193,6 +225,8 @@ def main(arguments):
         missing(name)
     elif command == "stale" and len(arguments) in (1, 2):
         stale(name, remove="--remove" in arguments)
+    elif command == "unused" and len(arguments) in (1, 2):
+        unused(name, remove="--remove" in arguments)
     else:
         sys.exit(__doc__)
 

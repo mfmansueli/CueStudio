@@ -36,17 +36,6 @@ extension QuickEditViewModel {
         toast.show(String(localized: "Saved as My style"))
     }
 
-    /// Which preset `scope` shows now, to mark it: the text's own, the one on every text, or the
-    /// captions'. Nil for "My style" or a look set another way.
-    func currentPreset(for scope: TextStyleScope) -> TypePreset? {
-        switch scope {
-        case .selected: styledTextID.flatMap { id in edit.texts.first { $0.id == id } }?.preset
-        case .allTexts: edit.textPreset
-        case .allCaptions: edit.captionPreset
-        case .textsAndCaptions: edit.textPreset == edit.captionPreset ? edit.textPreset : nil
-        }
-    }
-
     /// Changes one part of a text's look by hand: it is remembered, so "Keep my changes" keeps it
     /// when a preset goes on every text.
     func customizeText(_ id: UUID, _ field: TextLookField, key: String? = nil, _ update: (inout TextOverlay) -> Void) {

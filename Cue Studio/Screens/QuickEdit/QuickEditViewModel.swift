@@ -424,12 +424,6 @@ final class QuickEditViewModel {
         return value
     }
 
-    /// Where a handle is in the recording.
-    func handleAccessibilityValue(_ handle: TrimHandle) -> String {
-        let time = handle == .start ? edit.timeline.trimStart : edit.timeline.trimEnd
-        return DurationText.timecode(time, total: edit.sourceDuration)
-    }
-
     // MARK: - Playback
 
     func togglePlayback() {
@@ -455,16 +449,6 @@ final class QuickEditViewModel {
     }
 
     // MARK: - Screen
-
-    /// Export: the sheet that makes the video file (Done is what saves the edit on the take).
-    func openExport() {
-        guard isReady else { return }
-        endChange()
-        player.pause()
-        selection = nil
-        panel = nil
-        sheet = .export
-    }
 
     /// The preview fills the screen (or comes back); what was picked and the open panel are let go.
     func toggleFullScreen() {
@@ -498,10 +482,6 @@ final class QuickEditViewModel {
         let id = edit.timeline.segments[index].id
         selectedJoinID = nil
         selectedSegmentID = selectedSegmentID == id ? nil : id
-    }
-
-    func selectPieceAtPlayhead() {
-        tapTimeline(onPiece: edit.timeline.segmentIndex(atEdited: player.currentTime))
     }
 
     // MARK: - Undo

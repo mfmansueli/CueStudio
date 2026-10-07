@@ -309,17 +309,6 @@ nonisolated struct EditTimeline: Codable, Hashable, Sendable {
         return (0..<count).map { sourceTime(forEdited: length * (Double($0) + 0.5) / Double(count)) }
     }
 
-    /// Like `sourceTimes(evenlyAcross:)`, with the recording each moment is of (a montage plays
-    /// several).
-    func sourcePositions(evenlyAcross count: Int) -> [(source: UUID?, time: TimeInterval)] {
-        let length = editedDuration
-        guard count > 0, length > 0 else { return [] }
-        return (0..<count).map { index in
-            let time = length * (Double(index) + 0.5) / Double(count)
-            return (segments[segmentIndex(atEdited: time)].sourceID, sourceTime(forEdited: time))
-        }
-    }
-
     /// The parts of the recording that play between two edited moments, in order: what "Remove
     /// part" takes out. A range across a cut gives one span per piece.
     func sourceSpans(forEdited range: ClosedRange<TimeInterval>) -> [TimeSpan] {

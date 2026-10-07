@@ -62,14 +62,6 @@ nonisolated enum SafeZoneChoice: Hashable, Sendable {
         }
     }
 
-    /// Under "Show safe zone": "Instagram Reels · buttons, caption & header".
-    var detail: String {
-        switch self {
-        case .platform(let platform): String(localized: "\(platform.destinationName) · buttons, caption & header")
-        case .custom: String(localized: "Your own margins")
-        }
-    }
-
     /// For identifiers: "reels", "custom".
     var key: String {
         switch self {

@@ -218,9 +218,6 @@ final class TakeReviewViewModel {
         self.quality = quality
     }
 
-    /// A cover was chosen in Quick edit: it's saved to Photos with every export.
-    var hasCover: Bool { take?.edit?.cover != nil }
-
     // MARK: - Actions
 
     // MARK: - Best take
@@ -311,18 +308,6 @@ final class TakeReviewViewModel {
         guard let take else { return "" }
         let title = take.isFreestyle ? "" : take.scriptTitle
         return [title, isSponsored ? Self.adCaption : nil].compactMap { $0 }.filter { !$0.isEmpty }.joined(separator: " ")
-    }
-
-    /// Saves the cover to Photos on its own. A picture, not a video: it never counts as an export.
-    func saveCover() async {
-        guard runningAction == nil else { return }
-        do {
-            if try await saveCoverIfChosen() {
-                toast.show(String(localized: "Cover saved to Photos"))
-            }
-        } catch {
-            report(error)
-        }
     }
 
     /// A refused Photos permission is a card with the way out; anything else is "Couldn't export · Try again" and the export

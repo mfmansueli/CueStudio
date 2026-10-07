@@ -37,8 +37,6 @@ actor CaptureEngine {
         endedByItself = handler
     }
 
-    var isRecording: Bool { movieOutput.isRecording }
-
     /// Unique ID of the camera in use, for the preview's rotation coordinator.
     var activeDeviceID: String? { videoInput?.device.uniqueID }
 

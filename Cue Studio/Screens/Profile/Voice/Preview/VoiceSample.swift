@@ -12,6 +12,4 @@ struct VoiceSample: Equatable {
     var cta: String
     /// What shaped it ("says “I”", "conversational", "question hook"…).
     var tags: [String] = []
-
-    var parts: [String] { [hook, body, cta].filter { !$0.isEmpty } }
 }

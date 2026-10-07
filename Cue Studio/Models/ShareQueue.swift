@@ -48,9 +48,6 @@ nonisolated struct ShareQueue: Codable, Hashable, Identifiable, Sendable {
 
     // MARK: - Changing
 
-    /// The file was made again after an edit.
-    mutating func retarget(to operationID: UUID) { self.operationID = operationID }
-
     mutating func markPosted(_ network: ShareDestination) { set(network, to: .posted) }
 
     mutating func postLater(_ network: ShareDestination) { set(network, to: .later) }

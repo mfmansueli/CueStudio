@@ -120,14 +120,6 @@ extension QuickEditViewModel {
         player.endScrub()
     }
 
-    /// VoiceOver: moves a handle by `seconds`.
-    func nudgeTrim(_ handle: TrimHandle, by seconds: TimeInterval) {
-        beginTrim(handle)
-        let from = handle == .start ? edit.timeline.trimStart : edit.timeline.trimEnd
-        trim(handle, toSource: from + seconds)
-        endTrim()
-    }
-
     // MARK: - Cut and delete
 
     /// Cuts the section under the playhead in two and selects the second half, ready for Delete.

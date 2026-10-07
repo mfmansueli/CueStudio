@@ -51,9 +51,6 @@ nonisolated enum VoiceQuestion: String, CaseIterable, Identifiable, Sendable {
 
     var id: String { rawValue }
 
-    /// "vq.role" and friends: the key of the question in `strings-en.csv`.
-    var key: String { "vq.\(rawValue)" }
-
     var field: VoiceField {
         switch self {
         case .role: .role

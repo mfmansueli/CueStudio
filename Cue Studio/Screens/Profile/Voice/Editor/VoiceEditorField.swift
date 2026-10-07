@@ -40,16 +40,6 @@ enum VoiceEditorField: String, CaseIterable, Identifiable {
         }
     }
 
-    /// The editor of a step of the guided questions.
-    init(_ step: VoiceSetupStep) {
-        switch step {
-        case .role: self = .role
-        case .niche: self = .topics
-        case .audience: self = .audience
-        case .tone: self = .tone
-        }
-    }
-
     var title: String {
         switch self {
         case .role: String(localized: "What kind of creator are you?")
