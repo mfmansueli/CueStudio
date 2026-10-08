@@ -285,17 +285,14 @@ struct ScriptsView: View {
         let rowView = ScriptRow(
             script: script, state: state, line: line(of: script, state: state), takeCount: takes.count(for: script.id),
             topicColor: tagging.color(for: script), showsTrailing: !viewModel.isSelecting,
-            onRecord: { actions.record(script) }
+            onRecord: { actions.record(script) },
+            onTakes: { presentation.selectedTab = .takes }
         )
         return Group {
             if viewModel.isSelecting {
                 rowView
-            } else if state == .recorded {
-                // A script with takes goes to its videos; its page is one tap away from there ("From script").
-                Button { presentation.selectedTab = .takes } label: { rowView }
-                    .buttonStyle(.plain)
             } else {
-                // Ready opens its page; a draft opens straight into writing.
+                // The row opens its page, whatever its state (a draft straight into writing); a recorded script's videos are its "×3 ›".
                 NavigationLink(value: ScriptRoute(scriptID: script.id, startsEditing: state == .draft)) { rowView }
                     .navigationLinkIndicatorVisibility(.hidden)
             }
@@ -332,10 +329,6 @@ struct ScriptsView: View {
             .onDisappear(perform: runPendingAction)
         }
         .contextMenu {
-            if state == .recorded {
-                Button("Open script", systemImage: "doc.text") { presentation.scriptsPath.append(ScriptRoute(scriptID: script.id)) }
-                Divider()
-            }
             ScriptActionsMenu(script: script, folders: library.folders, actions: actions)
         } preview: {
             ScriptPreviewCard(script: script, readSeconds: readSeconds(script))

@@ -37,6 +37,10 @@ recolhida parada no fim; uma que quase não rola (menos de 16 pt) nunca recolhe.
 (`studio.cue` / `DockFold`, com a fase da rolagem). Com o campo focado a lista escurece e desfoca (0,25 s). Durante a seleção o dock sai. **Busca:** um campo sempre visível no topo da lista (`SearchField`, entre a linha "6 SCRIPTS · 1 READY" e os filtros, rola com a lista), e o dock fica durante a busca (decisão do criador, 6/10/2026). Enquanto o teclado é da busca o dock fica embaixo, sob o teclado, em vez de subir com ele (por cima ele cobria os resultados e o "No matches"). **Diferença do `07`:** o quadro pedia a busca do sistema na barra (`.searchable`); com `.searchToolbarBehavior(.minimize)` o ✕ do iOS 27 só minimizava a busca (ela reabria, a lista ficava filtrada e o dock não voltava), e o campo no conteúdo resolve isso e deixa o dock sempre à mão. O texto de dica do campo é `ink2` (5,2:1 medido na imagem; o cinza do sistema ficava perto de 2,4:1). Ditado, rascunho e voz são os de antes
 (`IdeaDraftService`, `DictationService`).
 
+**Linhas:** um toque na linha abre a página do roteiro em qualquer estado (um rascunho já abre escrevendo); a ponta direita é a ação do estado: **● REC** grava,
+**Continue ›** é só rótulo e **×3 ›** (roteiro com takes) é um botão próprio que leva a Takes. Antes (até 8/10/2026) a linha inteira de um roteiro gravado ia para
+Takes e a página só abria pelo menu de contexto ("Open script", que saiu); o dono pediu a página no toque.
+
 Abaixo da lista: **Logbook · n waiting** (até 2 ideias com ✦ Write e "Open Logbook ›"), `ScriptsLogbookSection`. Enquanto a biblioteca carrega,
 `ScriptRowSkeleton` com o brilho de 1,4 s (`SkeletonShine`).
 
