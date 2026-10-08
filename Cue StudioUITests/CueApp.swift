@@ -95,16 +95,9 @@ extension XCUIApplication {
         return row
     }
 
-    /// Opens a script's page whatever its state: a tap on a ready script or a draft opens it, and a recorded script's row
-    /// leads to its videos, so its page is "Open script" in the row's menu.
+    /// Opens a script's page: a tap on its row opens it, whatever its state (a recorded one's videos are its "×n ›").
     func openScriptPage(titled title: String) {
-        let row = scriptRow(title)
-        row.tap()
-        if buttons["detail.recordButton"].waitForExistence(timeout: 3) || pageBackButton.exists { return }
-        tabBars.buttons["Scripts"].tap()
-        let again = scriptRow(title)
-        again.press(forDuration: 1.2)
-        buttons["Open script"].tap()
+        scriptRow(title).tap()
         XCTAssertTrue(pageBackButton.waitForExistence(timeout: 5), "No page for \(title)")
     }
 
