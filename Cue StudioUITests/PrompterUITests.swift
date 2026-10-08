@@ -42,7 +42,7 @@ final class PrompterUITests: XCTestCase {
         XCTAssertTrue(element(app, "prompter.speedSlider").waitForExistence(timeout: 5))
         XCTAssertTrue(app.buttons["prompter.backButton"].exists)
         XCTAssertTrue(app.buttons["prompter.forwardButton"].exists)
-        app.segmentedControls["prompter.scrollMode"].buttons["Voice"].tap()
+        app.descendants(matching: .any)["prompter.scrollMode"].firstMatch.buttons["Voice"].tap()
         allowMicrophoneIfAsked()
         XCTAssertTrue(element(app, "prompter.voiceIndicator").waitForExistence(timeout: 5))
         XCTAssertFalse(element(app, "prompter.speedSlider").exists)
@@ -66,12 +66,12 @@ final class PrompterUITests: XCTestCase {
         XCTAssertTrue(record.waitForExistence(timeout: 15))
         record.tap()
 
-        let voice = app.segmentedControls["prompter.scrollMode"].buttons["Voice"]
+        let voice = app.descendants(matching: .any)["prompter.scrollMode"].firstMatch.buttons["Voice"]
         XCTAssertTrue(voice.waitForExistence(timeout: 5))
         let speed = element(app, "prompter.speedSlider")
         XCTAssertTrue(speed.exists)
-        // The natural pace, in words a minute.
-        XCTAssertEqual(speed.value as? String, "150 words a minute")
+        // The natural pace: 1×.
+        XCTAssertEqual(speed.value as? String, "1×")
         voice.tap()
         allowMicrophoneIfAsked()
         let indicator = element(app, "prompter.voiceIndicator")
@@ -83,7 +83,7 @@ final class PrompterUITests: XCTestCase {
         let settled = NSPredicate(format: "value == 'Paused'")
         XCTAssertEqual(XCTWaiter.wait(for: [expectation(for: settled, evaluatedWith: indicator)], timeout: 10), .completed)
 
-        app.segmentedControls["prompter.scrollMode"].buttons["Steady"].tap()
+        app.descendants(matching: .any)["prompter.scrollMode"].firstMatch.buttons["Steady"].tap()
         XCTAssertFalse(element(app, "prompter.voiceIndicator").waitForExistence(timeout: 2))
         XCTAssertTrue(speed.exists)
         app.buttons["prompter.closeButton"].tap()
@@ -265,10 +265,10 @@ final class PrompterUITests: XCTestCase {
         XCTAssertTrue(record.waitForExistence(timeout: 15))
         record.tap()
 
-        XCTAssertTrue(app.segmentedControls["prompter.scrollMode"].buttons["Voice"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.descendants(matching: .any)["prompter.scrollMode"].firstMatch.buttons["Voice"].waitForExistence(timeout: 5))
         // The system's segmented control: each segment says its short name.
-        XCTAssertEqual(app.segmentedControls["prompter.scrollMode"].buttons["Voice"].label, "Voice")
-        XCTAssertTrue(app.segmentedControls["prompter.scrollMode"].buttons["Steady"].exists)
+        XCTAssertEqual(app.descendants(matching: .any)["prompter.scrollMode"].firstMatch.buttons["Voice"].label, "Voice")
+        XCTAssertTrue(app.descendants(matching: .any)["prompter.scrollMode"].firstMatch.buttons["Steady"].exists)
         for id in ["prompter.playButton", "prompter.displayButton", "prompter.audioInputButton", "prompter.setupButton",
                    "prompter.cameraSettingsButton", "prompter.recordButton", "prompter.moreButton", "prompter.lastTakeButton",
         ] {

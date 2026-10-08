@@ -37,22 +37,19 @@ struct RecorderMoreMenu: View {
             Text("•••")
                 .font(.system(size: 15, weight: .bold))
                 .tracking(1)
-                .foregroundStyle(Palette.ink)
-                .frame(width: 40, height: 40)
-                .background(Palette.overlayFill, in: Circle())
-                .overlay(alignment: .topTrailing) {
-                    if countdown != .off {
-                        Text(countdown.shortLabel)
-                            .font(.system(size: 9.5, weight: .heavy, design: .monospaced))
-                            .foregroundStyle(Palette.accInk)
-                            .padding(.horizontal, 4)
-                            .frame(height: 16)
-                            .background(Palette.acc, in: Capsule())
-                            .offset(x: 6, y: -4)
-                    }
-                }
-                .frame(minWidth: Metrics.hitTarget, minHeight: Metrics.hitTarget)
-                .contentShape(Circle())
+        }
+        // Liquid Glass, like the round buttons beside it.
+        .glassIconButton()
+        .overlay(alignment: .topTrailing) {
+            if countdown != .off {
+                Text(countdown.shortLabel)
+                    .font(.system(size: 9.5, weight: .heavy, design: .monospaced))
+                    .foregroundStyle(Palette.accInk)
+                    .padding(.horizontal, 4)
+                    .frame(height: 16)
+                    .background(Palette.acc, in: Capsule())
+                    .offset(x: 6, y: -4)
+            }
         }
         .menuOrder(.fixed)
         .accessibilityLabel(Text("More"))

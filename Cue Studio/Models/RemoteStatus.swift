@@ -23,8 +23,8 @@ nonisolated struct RemoteStatus: Codable, Hashable, Sendable {
         followsVoice: false, progress: 0, isRecording: false
     )
 
-    /// "0.7×"
+    /// "1×": how many times the natural reading pace (`SpeedScale`), as on the prompter.
     var speedLabel: String {
-        speed.formatted(.number.precision(.fractionLength(1)).locale(.interface)) + "×"
+        SpeedScale.label(forSpeed: speed)
     }
 }

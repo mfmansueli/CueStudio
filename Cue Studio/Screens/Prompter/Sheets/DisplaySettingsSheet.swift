@@ -9,56 +9,54 @@ import SwiftUI
 /// instead (`PrompterSettingsSheet`).
 struct DisplaySettingsSheet: View {
     let viewModel: PrompterViewModel
-    /// Tallest the sheet may grow in Selfie mode, so the text window above stays in sight.
+    /// Tallest the sheet may grow, so the text above stays in sight (nil: as tall as its content, whatever that is).
     var maxHeight: CGFloat?
 
     @Environment(SessionSetupService.self) private var session
     @Environment(\.dismiss) private var dismiss
 
-    /// The medium detent, as in the design.
-    private static let compactHeight: CGFloat = 330
+    /// The controls' own height, measured; until then, a guess.
+    @State private var contentHeight: CGFloat = 330
 
     private var mode: PrompterMode { viewModel.mode }
 
     var body: some View {
         @Bindable var session = session
-        VStack(spacing: 0) {
-            header
+        // A navigation bar of its own: the title and, under it, that the preview behind is live; Done at its end, as the system's toolbar item.
+        NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: 10) {
                     DisplaySettingsControls(settings: $session.prompter, mode: mode)
                 }
-                .padding(EdgeInsets(top: 0, leading: Metrics.gutter, bottom: 40, trailing: Metrics.gutter))
+                .padding(EdgeInsets(top: 4, leading: Metrics.gutter, bottom: 24, trailing: Metrics.gutter))
+                .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { contentHeight = $0 }
+            }
+            .scrollBounceBehavior(.basedOnSize)
+            .navigationTitle("Display")
+            .navigationSubtitle("Live preview")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbarBackgroundVisibility(.hidden, for: .navigationBar)
+            // The sheet's own glass, not the navigation stack's.
+            .containerBackground(Palette.sheetGlass, for: .navigation)
+            .toolbar {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Done") { dismiss() }
+                        .accessibilityIdentifier("display.doneButton")
+                }
             }
         }
-        .presentationDetents(detents)
+        .presentationDetents([.height(height)])
+        .presentationDragIndicator(.visible)
         .presentationBackground(Palette.sheetGlass)
         .presentationCornerRadius(32)
         .presentationBackgroundInteraction(.enabled)
     }
 
-    private var detents: Set<PresentationDetent> {
-        guard let maxHeight else { return [.height(Self.compactHeight), .large] }
-        return [.height(min(Self.compactHeight, maxHeight)), .height(maxHeight)]
-    }
-
-    // MARK: - Sections
-
-    private var header: some View {
-        HStack(alignment: .firstTextBaseline, spacing: 10) {
-            Text("Display").font(.title3.bold())
-            HStack(spacing: 5) {
-                Circle().fill(Palette.live).frame(width: 6, height: 6)
-                Text("Live preview")
-            }
-            .font(.caption.weight(.semibold))
-            .foregroundStyle(Palette.ink2)
-            Spacer()
-            Button("Done") { dismiss() }
-                .buttonStyle(.cuePrimary(.compact, expands: false))
-                .accessibilityIdentifier("display.doneButton")
-        }
-        .padding(EdgeInsets(top: 18, leading: 20, bottom: 10, trailing: 16))
+    /// As tall as the controls and the bar over them, and no taller (the system's grabber has nothing to stretch it to), unless that is more than
+    /// the text above can spare: then the controls scroll.
+    private var height: CGFloat {
+        let fitted = contentHeight + Metrics.sheetBarHeight
+        return maxHeight.map { min(fitted, $0) } ?? fitted
     }
 }
 

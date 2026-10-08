@@ -10,15 +10,15 @@ import SwiftUI
 struct RemoteControlSheet: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            SheetHeader(
-                title: String(localized: "Remote Control"),
-                subtitle: String(localized: "Control your teleprompter from another device.")
-            )
-            .padding(.horizontal, 4)
+            Text("Control your teleprompter from another device.")
+                .font(.subheadline)
+                .foregroundStyle(Palette.ink2)
+                .fixedSize(horizontal: false, vertical: true)
+                .padding(.horizontal, 4)
             RemotePairingPanel()
         }
-        .padding(EdgeInsets(top: 20, leading: Metrics.gutter, bottom: 24, trailing: Metrics.gutter))
-        .fittedSheet()
+        .padding(EdgeInsets(top: 8, leading: Metrics.gutter, bottom: 24, trailing: Metrics.gutter))
+        .fittedSheet(title: String(localized: "Remote Control"))
     }
 }
 

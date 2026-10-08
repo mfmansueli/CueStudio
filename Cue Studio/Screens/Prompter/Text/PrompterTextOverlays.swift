@@ -5,8 +5,8 @@
 
 import SwiftUI
 
-/// What sits on the text window besides the words: the section rail on its right edge, "✦ FOLLOWING YOUR VOICE"
-/// at the bottom left and the section label at the bottom right.
+/// What sits on the text window besides the words: the section rail on its right edge and "✦ FOLLOWING YOUR VOICE" at the bottom left (not while a
+/// take records: the waveform in the controls already says it, and the words are all that should be there).
 struct PrompterTextOverlays: View {
     let viewModel: PrompterViewModel
 
@@ -23,14 +23,8 @@ struct PrompterTextOverlays: View {
                     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .trailing)
             }
             HStack(alignment: .bottom) {
-                if viewModel.followsSpeech && viewModel.isPlaying { FollowingVoiceChip().transition(.opacity) }
+                if viewModel.followsSpeech && viewModel.isPlaying && !viewModel.isRecording { FollowingVoiceChip().transition(.opacity) }
                 Spacer(minLength: 8)
-                if isMeaningful {
-                    SectionLabel(title: sections.title(at: current))
-                        .padding(.horizontal, 8)
-                        .frame(height: 22)
-                        .background(Color.black.opacity(0.4), in: Capsule())
-                }
             }
             .padding(.horizontal, 12)
             .padding(.bottom, 10)

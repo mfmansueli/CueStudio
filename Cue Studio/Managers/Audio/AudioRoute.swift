@@ -13,6 +13,7 @@ nonisolated enum AudioRoute {
     static func configureForCapture() throws {
         let session = AVAudioSession.sharedInstance()
         try session.setCategory(.playAndRecord, mode: .videoRecording, options: [.allowBluetoothHFP, .defaultToSpeaker])
+        allowHapticsDuringRecording(true)
         // The capture session activates it too; doing it here makes the route (and the inputs
         // list) current before the first frame. Blocks, so never on the main thread.
         try? session.setActive(true)
@@ -23,6 +24,14 @@ nonisolated enum AudioRoute {
         let session = AVAudioSession.sharedInstance()
         guard session.category != .playAndRecord else { return }
         try? session.setCategory(.playAndRecord, mode: .videoRecording, options: [.allowBluetoothHFP, .defaultToSpeaker])
+        allowHapticsDuringRecording(true)
+    }
+
+    /// While the audio session records (and the recorder's microphone is always on, to meter the voice) the system turns the phone's haptics and
+    /// system sounds off, unless the session says otherwise: the speed slider and the buttons of Selfie were silent, unlike Studio's. The
+    /// recorder allows them, except while a take records (`PrompterViewModel`), when the motor's buzz could be heard in the take's audio.
+    static func allowHapticsDuringRecording(_ allowed: Bool) {
+        try? AVAudioSession.sharedInstance().setAllowHapticsAndSystemSoundsDuringRecording(allowed)
     }
 
     /// Built-in, wired, Bluetooth and USB inputs connected now.

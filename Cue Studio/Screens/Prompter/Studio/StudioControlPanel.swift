@@ -5,40 +5,115 @@
 
 import SwiftUI
 
-/// Studio's bar (v30): the prompter and nothing else, in the same night glass as Selfie's. Row 1 is the transport: Voice | Steady, back
-/// three lines, play, forward three lines. Row 2 is the speed (Steady) or what Voice Following is doing. Row 3 is the quick
-/// adjustments (`StudioAdjustBar`). No microphone line, no setup, no capture row: Studio doesn't record.
+/// Studio's bar (v30): the prompter and nothing else, in the same night glass and the same folding sheet (`ControlSheet`) as Selfie's. Always in
+/// the sheet, at the bottom: the transport (Voice | Steady, back three lines, play, forward three lines). Folded into it, above: the quick
+/// adjustments (`StudioAdjustBar`), the slider of the one chosen and the speed (Steady) or what Voice Following is doing. The chevron on top
+/// brings them out and puts them back; they arrive from the bottom up, one after another (`SheetReveal`). No microphone line, no setup, no capture
+/// row: Studio doesn't record.
 struct StudioControlPanel: View {
     let viewModel: PrompterViewModel
-    let onHide: () -> Void
+    /// The speed and the quick adjustments are out of the sheet.
+    @Binding var isOut: Bool
 
     @Environment(SessionSetupService.self) private var session
 
+    /// The blocks' own heights, measured; until then, guesses. The slider of the chosen adjustment is measured on its own (what it adds), apart from
+    /// what the screen reserves for the sheet (the chips and the speed), so choosing one never changes that.
+    @State private var chipsHeight: CGFloat = 62
+    @State private var speedHeight: CGFloat = 60
+    @State private var adjustmentHeight: CGFloat = 80
+    @State private var transportHeight: CGFloat = 80
+    /// The quick adjustment chosen in the bar, the last one chosen (its slider is still there while it fades out) and how open its slider is, 0...1.
+    @State private var selected: StudioAdjustment?
+    @State private var lastSelected: StudioAdjustment = .size
+    @State private var adjustmentOpen: CGFloat = 0
+    /// The sheet has already folded itself for a first play: it does so once; after that it stays as the creator leaves it.
+    @State private var hasFoldedForPlay = false
+
+    private static let motion: Animation = .smooth(duration: 0.55)
+
+    /// What the sheet brings out without an adjustment chosen: the chips and the speed, with their room (8 above, 10 between and 10 under).
+    private var travel: CGFloat { 8 + chipsHeight + 10 + speedHeight + 10 }
+
     var body: some View {
-        let shape = RoundedRectangle(cornerRadius: 40, style: .continuous)
-        VStack(spacing: 10) {
-            hideHandle
-            transport
-            reading
-            StudioAdjustBar(onMore: { viewModel.sheet = .display })
+        ControlSheet(
+            isOut: $isOut, isRecording: false,
+            baseHeight: transportHeight, travel: travel, recordingHeight: transportHeight,
+            extra: adjustmentOpen * adjustmentHeight
+        ) { progress, _ in
+            VStack(spacing: 0) {
+                foldable(progress)
+                    // Half way out they are neither for touching nor for VoiceOver.
+                    .allowsHitTesting(progress > 0.92)
+                    .accessibilityHidden(progress < 0.5)
+                // Room above the buttons: folded, they are the top of what shows, and their glass reaches past their frames, which the sheet's edge
+                // would cut.
+                transport
+                    .padding(.top, 10)
+                    .padding(.bottom, 20)
+                    .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { transportHeight = $0 }
+            }
+            .padding(.horizontal, 12)
         }
-        .padding(EdgeInsets(top: 4, leading: 12, bottom: 20, trailing: 12))
-        .background(.ultraThinMaterial, in: shape)
-        .glassNight(in: shape, density: .solid)
+        .onChange(of: selected) { _, new in
+            if let new { lastSelected = new }
+            withAnimation(Self.motion) { adjustmentOpen = new == nil ? 0 : 1 }
+        }
+        // The first time the text starts (the countdown that leads to it counts), the speed and the adjustments fold away, so what is left is the
+        // text and the transport. Only the first time: a creator who brings them back for the next play means to have them.
+        .onChange(of: viewModel.isPlaying || viewModel.countdown != nil) { _, starting in
+            guard starting, !hasFoldedForPlay else { return }
+            hasFoldedForPlay = true
+            isOut = false
+        }
     }
 
-    /// A small grabber that puts the bar away, so only the words are left on the screen.
-    private var hideHandle: some View {
-        Button(action: onHide) {
-            Capsule()
-                .fill(Palette.ink3)
-                .frame(width: 36, height: 5)
-                .frame(maxWidth: .infinity, minHeight: 24)
-                .contentShape(Rectangle())
+    /// What the chevron brings out: the quick adjustments, the slider of the one chosen (opening between them and the speed while one is chosen,
+    /// with a divider under it) and the speed (or the voice line), right above the transport. The speed stays; choosing an adjustment makes
+    /// the sheet grow upward to make room, and the new slider arrives as it does.
+    private func foldable(_ progress: CGFloat) -> some View {
+        VStack(spacing: 0) {
+            StudioAdjustBar(
+                selected: $selected,
+                progress: progress,
+                onMore: { viewModel.sheet = .display },
+                onRemote: { viewModel.openRemoteControl() },
+                isRemoteConnected: viewModel.isRemoteConnected,
+                remoteStatus: viewModel.remote.state.label
+            )
+            .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { chipsHeight = $0 }
+            .padding(.top, 8)
+            .padding(.bottom, 10)
+            adjustmentSlider
+            VStack(spacing: 10) {
+                reading
+            }
+            .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { speedHeight = $0 }
+            .padding(.bottom, 10)
+            .sheetReveal(progress, from: 0.08, to: 0.6)
         }
-        .buttonStyle(.plain)
-        .accessibilityLabel(Text("Hide controls"))
-        .accessibilityIdentifier("studio.hideControls")
+    }
+
+    /// The slider of the chosen adjustment and a divider under it. Its height opens from nothing to its own and it fades in as it does, and the same
+    /// the other way; the sheet's growth (`ControlSheet`'s `extra`) is the same number, so the two move together.
+    private var adjustmentSlider: some View {
+        VStack(spacing: 10) {
+            StudioAdjustSlider(adjustment: lastSelected)
+                .id(lastSelected)
+                .transition(.opacity)
+            Rectangle()
+                .fill(Palette.glassBorder)
+                .frame(height: 1)
+                .accessibilityHidden(true)
+        }
+        .padding(.bottom, 10)
+        .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { adjustmentHeight = $0 }
+        .animation(Self.motion, value: lastSelected)
+        .frame(height: adjustmentOpen * adjustmentHeight, alignment: .top)
+        .clipped()
+        .opacity(adjustmentOpen)
+        .allowsHitTesting(selected != nil)
+        .accessibilityHidden(selected == nil)
     }
 
     private var transport: some View {

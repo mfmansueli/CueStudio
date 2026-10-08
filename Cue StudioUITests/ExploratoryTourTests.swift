@@ -291,7 +291,7 @@ final class ExploratoryTourTests: XCTestCase {
         }
         if tap("prompter.moreButton") { shot("prompter-more"); app.swipeDown() }
         if tap("prompter.cameraSettingsButton") { shot("prompter-camera"); closeSheet() }
-        let voice = app.segmentedControls["prompter.scrollMode"].buttons["Voice"]
+        let voice = app.descendants(matching: .any)["prompter.scrollMode"].firstMatch.buttons["Voice"]
         if voice.exists { voice.tap(); shot("prompter-voice") }
         if app.buttons["Studio"].exists { app.buttons["Studio"].tap(); sleep(1); shot("prompter-studio"); app.buttons["Selfie"].tap(); sleep(1) }
         if tap("prompter.recordButton") {

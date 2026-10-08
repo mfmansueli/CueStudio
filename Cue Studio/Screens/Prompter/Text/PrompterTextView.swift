@@ -18,6 +18,8 @@ struct PrompterTextView: View {
     var guideOffset: CGFloat?
     /// Selfie draws the reading line as a layer of its own, over the camera.
     var drawsGuide = true
+    /// Studio: how far the reading line stays from the edges of the screen (`ReadingLayout.lineInset`).
+    var guideInset: CGFloat = 0
     /// Selfie: what was already read fades above the line.
     var fadesReadText = false
     var onTap: (() -> Void)?
@@ -68,6 +70,7 @@ struct PrompterTextView: View {
             .overlay(alignment: .top) {
                 if drawsGuide && settings.showsGuide {
                     ReadingGuide(level: viewModel.followsSpeech ? viewModel.voiceLevel : nil, showsParticles: viewModel.isPlaying)
+                        .padding(.horizontal, guideInset)
                         .offset(y: guideY - ReadingGuide.height / 2)
                 }
             }

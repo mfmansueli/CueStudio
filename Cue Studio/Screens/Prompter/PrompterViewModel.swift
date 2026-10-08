@@ -551,9 +551,12 @@ final class PrompterViewModel {
         // Recording without answering the recommendation keeps the Creator Setup, which is what the
         // screen showed.
         session.settleUndecided()
+        // The phone does not buzz while the take records: it could be heard in its audio (`AudioRoute.allowHapticsDuringRecording`).
+        AudioRoute.allowHapticsDuringRecording(false)
         do {
             try await camera.startRecording(settings: session.camera)
         } catch {
+            AudioRoute.allowHapticsDuringRecording(true)
             toast.show(error.localizedDescription)
             return
         }
@@ -584,6 +587,7 @@ final class PrompterViewModel {
         showsStopWarning = false
         pause()
         let clip = await camera.stopRecording()
+        AudioRoute.allowHapticsDuringRecording(true)
         isRecording = false
         bar.collapse()
         file(clip, openReview: openReview, message: nil)
@@ -597,6 +601,7 @@ final class PrompterViewModel {
         autoStopTask?.cancel()
         showsStopWarning = false
         pause()
+        AudioRoute.allowHapticsDuringRecording(true)
         isRecording = false
         bar.collapse()
         file(clip, openReview: true, message: reason.toast)

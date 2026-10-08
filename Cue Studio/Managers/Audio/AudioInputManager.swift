@@ -83,6 +83,8 @@ final class AudioInputManager: AudioLevelMetering, MicrophoneListing {
         let session = AVAudioSession.sharedInstance()
         do {
             try session.setCategory(.playAndRecord, mode: .default, options: [.allowBluetoothHFP, .defaultToSpeaker, .mixWithOthers])
+            // Studio listens to the voice too: its haptics stay on (see `AudioRoute.allowHapticsDuringRecording`).
+            AudioRoute.allowHapticsDuringRecording(true)
             // Activation waits for the audio hardware, so it must not block the main thread.
             guard try await session.activate(options: []) else { return false }
         } catch {

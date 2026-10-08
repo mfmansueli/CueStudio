@@ -113,6 +113,11 @@ struct CameraSettingsSheet: View {
                 detail: String(localized: "Shows where app buttons and captions cover the frame"),
                 isOn: $session.camera.showsSafeZones, minHeight: 52
             )
+            SettingToggleRow(
+                title: String(localized: "Fill the screen"),
+                detail: String(localized: "The sides that don’t fit are still recorded, just not shown"),
+                isOn: $session.fillsScreen, minHeight: 52
+            )
             SettingToggleRow(title: String(localized: "Stabilization"), isOn: $session.camera.stabilization, minHeight: 52)
         }
         .padding(.top, 10)

@@ -27,26 +27,34 @@ struct PickBestTakeView: View {
     private var isBestChosen: Bool { chosen.id == proposal.best.id }
 
     var body: some View {
-        GeometryReader { proxy in
-            let cardWidth = min(proxy.size.width * 0.6, max(150, (proxy.size.height - 500) * 9 / 16))
-            ZStack {
-                Palette.bg.ignoresSafeArea()
-                RadialGradient(colors: [Palette.aiGlow, .clear], center: .center, startRadius: 0, endRadius: proxy.size.width * 0.8)
-                    .ignoresSafeArea()
-                VStack(spacing: 0) {
-                    topBar
-                    Text("Pick your best take")
-                        .font(.system(size: 30, weight: .bold))
-                        .foregroundStyle(Palette.ink)
-                        .padding(.top, 14)
-                    carousel(cardWidth: cardWidth, screenWidth: proxy.size.width)
-                        .padding(.top, 14)
-                    dots.padding(.top, 8)
-                    reasons
-                        .padding(.horizontal, 16)
-                        .padding(.top, 14)
-                    Spacer(minLength: 12)
-                    buttons.padding(.horizontal, 16).padding(.bottom, 8)
+        NavigationStack {
+            GeometryReader { proxy in
+                // The card takes what is left under the navigation bar after everything else on the screen.
+                let cardWidth = min(proxy.size.width * 0.6, max(150, (proxy.size.height - 440) * 9 / 16))
+                ZStack {
+                    Palette.bg.ignoresSafeArea()
+                    RadialGradient(colors: [Palette.aiGlow, .clear], center: .center, startRadius: 0, endRadius: proxy.size.width * 0.8)
+                        .ignoresSafeArea()
+                    VStack(spacing: 0) {
+                        carousel(cardWidth: cardWidth, screenWidth: proxy.size.width)
+                            .padding(.top, 8)
+                        dots.padding(.top, 8)
+                        reasons
+                            .padding(.horizontal, 16)
+                            .padding(.top, 14)
+                        Spacer(minLength: 12)
+                        buttons.padding(.horizontal, 16).padding(.bottom, 8)
+                    }
+                }
+            }
+            .navigationTitle("Pick your best take")
+            .navigationSubtitle("TO PICK · \(proposal.takes.count) TAKES")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbarBackgroundVisibility(.hidden, for: .navigationBar)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button(role: .close, action: onClose)
+                        .accessibilityIdentifier("pick.closeButton")
                 }
             }
         }
@@ -56,24 +64,6 @@ struct PickBestTakeView: View {
     }
 
     // MARK: - Parts
-
-    private var topBar: some View {
-        ZStack {
-            HStack {
-                Button(action: onClose) { Image(systemName: "xmark") }
-                    .buttonStyle(.cueIcon(.glass, diameter: 40))
-                    .accessibilityLabel(Text("Close"))
-                    .accessibilityIdentifier("pick.closeButton")
-                Spacer()
-            }
-            Text("TO PICK · \(proposal.takes.count) TAKES")
-                .font(CueStudioFont.hud)
-                .tracking(1.5)
-                .foregroundStyle(Palette.ink2)
-        }
-        .padding(.horizontal, 16)
-        .padding(.top, 8)
-    }
 
     private func carousel(cardWidth: CGFloat, screenWidth: CGFloat) -> some View {
         ScrollView(.horizontal) {
@@ -92,6 +82,10 @@ struct PickBestTakeView: View {
         }
         .contentMargins(.horizontal, (screenWidth - cardWidth) / 2, for: .scrollContent)
         .scrollIndicators(.hidden)
+        // The chosen take's glow reaches well past the carousel's frame (24 pt of it, over a 12 pt margin): a scroll view cuts what leaves its
+        // frame, which showed as a straight edge of the glow against the navigation bar and against the dots and the reasons card. Left
+        // uncut, the glow spreads behind them instead, and the cards that come after the carousel draw over it.
+        .scrollClipDisabled()
         .scrollTargetBehavior(.viewAligned)
         .scrollPosition(id: $selection, anchor: .center)
         .frame(height: cardWidth * 16 / 9 + 24)
@@ -191,7 +185,7 @@ struct PickBestTakeView: View {
     // MARK: - Why
 
     private var reasons: some View {
-        let shape = RoundedRectangle(cornerRadius: 22, style: .continuous)
+        let shape = RoundedRectangle(cornerRadius: Metrics.cardRadius, style: .continuous)
         return VStack(alignment: .leading, spacing: 12) {
             Text(isBestChosen ? "✦ WHY CUE PICKED \(chosen.label.uppercased())" : "✦ \(chosen.label.uppercased()) · CUE PICKED \(proposal.best.label.uppercased())")
                 .font(CueStudioFont.hud)
@@ -209,7 +203,7 @@ struct PickBestTakeView: View {
         .padding(16)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(Palette.surface, in: shape)
-        .overlay(shape.strokeBorder(Palette.aiBorder, lineWidth: 0.5))
+        .cardDepth(shape)
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("pick.reasons")
     }

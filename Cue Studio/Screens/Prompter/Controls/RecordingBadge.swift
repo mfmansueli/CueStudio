@@ -5,37 +5,30 @@
 
 import SwiftUI
 
-/// The REC pill at the top while recording: a red capsule with a pulsing dot, the take clock in
-/// monospaced digits and, when it applies, the time left to the monetization minimum.
+/// The REC pill at the top while recording: a red capsule with a pulsing dot and the take clock in monospaced digits, large enough to read
+/// at a glance and never cut short by the bar (it keeps its own size). The take's name and the time left to the monetization minimum are
+/// beside it (`RecordingTakeTitle`).
 struct RecordingBadge: View {
     let seconds: Int
-    let monetizationChip: String?
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var dotVisible = true
 
     var body: some View {
-        HStack(spacing: 8) {
+        HStack(spacing: 9) {
             Circle()
                 .fill(Color.white)
-                .frame(width: 8, height: 8)
+                .frame(width: 10, height: 10)
                 .opacity(dotVisible ? 1 : 0.2)
             Text(DurationText.recording(seconds))
                 .monospacedDigit()
-            if let monetizationChip {
-                Text(monetizationChip)
-                    .font(.footnote.weight(.semibold))
-                    .padding(.leading, 9)
-                    .overlay(alignment: .leading) {
-                        Rectangle().fill(.white.opacity(0.45)).frame(width: 1, height: 16)
-                    }
-            }
+                .fixedSize()
         }
-        .font(.system(.subheadline, design: .monospaced, weight: .bold))
+        .font(.system(size: 19, weight: .bold, design: .monospaced))
         .tracking(0.5)
         .foregroundStyle(.white)
-        .padding(.horizontal, 14)
-        .frame(height: 34)
+        .padding(.horizontal, 16)
+        .frame(height: 40)
         .background(Palette.record, in: Capsule())
         .onAppear {
             guard !reduceMotion else { return }
@@ -49,7 +42,7 @@ struct RecordingBadge: View {
 
 #if DEBUG
 #Preview {
-    RecordingBadge(seconds: 42, monetizationChip: "18s to 1:00")
+    RecordingBadge(seconds: 42)
         .padding()
         .background(Color.black)
 }

@@ -20,6 +20,14 @@ nonisolated enum ScrollMode: String, Codable, CaseIterable, Identifiable, Sendab
         }
     }
 
+    /// The SF Symbol that stands for the mode, beside its word in the switch and, while recording, beside the waveform.
+    var symbolName: String {
+        switch self {
+        case .steady: "text.line.first.and.arrowtriangle.forward"
+        case .voice: "person.wave.2"
+        }
+    }
+
     /// The word in the toolbar's switch ("Voice" | "Steady"); `label` is the full name for VoiceOver.
     var shortLabel: String {
         switch self {

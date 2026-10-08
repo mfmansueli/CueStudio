@@ -69,6 +69,62 @@ struct FrameGeometryTests {
         #expect(geometry.frameRect == geometry.sensorRect)
     }
 
+    // MARK: - Filling the screen
+
+    static let phones = screens.filter { $0.name.hasPrefix("iPhone") }
+
+    @Test(arguments: phones)
+    func fillingMakesTheSensorAsTallAsThePhoneAndCenteredOnIt(_ screen: Screen) {
+        let sensor = FrameGeometry.sensorRect(in: screen.size, fillsScreen: true)
+        #expect(isClose(sensor.width / sensor.height, 9.0 / 16.0))
+        #expect(isClose(sensor.minY, 0) && isClose(sensor.height, screen.size.height))
+        #expect(isClose(sensor.midX, screen.size.width / 2))
+        // Nothing of the screen is left empty: the image covers all of it.
+        #expect(sensor.insetBy(dx: -0.5, dy: -0.5).contains(CGRect(origin: .zero, size: screen.size)))
+    }
+
+    @Test(arguments: screens)
+    func notFillingKeepsTheWholeFrameOnScreen(_ screen: Screen) {
+        #expect(FrameGeometry.sensorRect(in: screen.size, fillsScreen: false) == FrameGeometry.sensorRect(in: screen.size))
+    }
+
+    @Test func aScreenWiderThanNineBySixteenNeverFills() {
+        // An iPad would lose a third of the image above and below: it shows the whole thing instead.
+        let ipad = CGSize(width: 820, height: 1180)
+        #expect(FrameGeometry.sensorRect(in: ipad, fillsScreen: true) == FrameGeometry.sensorRect(in: ipad))
+    }
+
+    @Test func fillingKeepsEveryFrameCenteredOnTheScreen() {
+        let screen = CGSize(width: 440, height: 956)
+        for aspect in AspectRatio.allCases {
+            let geometry = FrameGeometry(sensorRect: FrameGeometry.sensorRect(in: screen, fillsScreen: true), aspect: aspect, resolution: .hd1080)
+            #expect(isClose(geometry.frameRect.midX, screen.width / 2))
+            #expect(isClose(geometry.frameRect.midY, screen.height / 2))
+        }
+    }
+
+    /// What a creator loses sight of on a Pro Max: about 9% of each side (98 of the 1080 px), all of it still in the video.
+    @Test func fillingHidesAboutNinePercentOfEachSideOfTheVideo() {
+        let screen = CGSize(width: 440, height: 956)
+        let geometry = FrameGeometry(sensorRect: FrameGeometry.sensorRect(in: screen, fillsScreen: true), aspect: .portrait, resolution: .hd1080)
+        let hidden = -geometry.frameRect.minX / geometry.frameRect.width * 1080
+        #expect(isClose(hidden, 98, within: 1))
+    }
+
+    /// On that screen Reels' left margin (60 px) is under the screen's edge and the right one (120 px) is still on it: the guide's left
+    /// line is off screen when the preview fills it, and the full frame shows both.
+    @Test func fillingTakesTheLeftSafeLineOffScreenButNotTheRightOne() throws {
+        let screen = CGSize(width: 440, height: 956)
+        let zone = try #require(TestData.rules.safeZone(for: .reels))
+        let full = FrameGeometry(sensorRect: FrameGeometry.sensorRect(in: screen), aspect: .portrait, resolution: .hd1080)
+        let filled = FrameGeometry(sensorRect: FrameGeometry.sensorRect(in: screen, fillsScreen: true), aspect: .portrait, resolution: .hd1080)
+        let fullContent = full.toScreen(zone.recommendedContentRect, in: zone.videoSize)
+        let filledContent = filled.toScreen(zone.recommendedContentRect, in: zone.videoSize)
+        #expect(fullContent.minX > 0 && fullContent.maxX < screen.width)
+        #expect(filledContent.minX < 0)
+        #expect(filledContent.maxX < screen.width)
+    }
+
     // MARK: - VideoSpace
 
     @Test(arguments: [

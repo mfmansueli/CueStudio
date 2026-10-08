@@ -104,8 +104,14 @@ nonisolated struct ReadingLayout: Equatable, Sendable {
 
     /// The line spans the window and a little more on each side, so it reads as a guide across the text.
     var lineSpan: ClosedRange<CGFloat> {
-        let inset = max(8, windowRect.minX - 16)
+        let inset = Self.lineInset(textLeading: windowRect.minX)
         return inset...max(inset, screenWidth - inset)
+    }
+
+    /// How far the reading line stays from the screen's edge: 16 pt past where the text starts, and never closer than 8 pt. Selfie's line
+    /// and Studio's follow this one rule, so they have the same room at their ends.
+    static func lineInset(textLeading: CGFloat) -> CGFloat {
+        max(8, textLeading - 16)
     }
 
     private static func clamp<Value: Comparable>(_ value: Value, to range: ClosedRange<Value>) -> Value {

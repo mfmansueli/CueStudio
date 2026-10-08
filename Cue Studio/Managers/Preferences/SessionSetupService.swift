@@ -20,6 +20,11 @@ import Foundation
 final class SessionSetupService {
     private(set) var setup = SessionSetup()
 
+    /// The Selfie preview fills the screen and the sides that don't fit run past its edges (the recording keeps the whole
+    /// frame). Never saved: every time the camera opens it shows the whole frame, so the creator sees all of the image the
+    /// social networks will show, and the choice lives only as long as the prompter.
+    var fillsScreen = false
+
     private let preferences: PreferencesService
     let creatorSetup: CreatorSetup
     private let initialPrompter: PrompterSettings
