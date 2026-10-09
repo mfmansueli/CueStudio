@@ -13,6 +13,8 @@ nonisolated enum NotificationIdentifier {
     static let reminderPrefix = "cue.reminder."
     static let routinePrefix = "cue.routine."
     static let operationPrefix = "cue.done."
+    /// Debug builds: the preview of every notification (Settings › Notifications › DEBUG). Planning never cancels them.
+    static let debugPrefix = "cue.debug."
 
     static func reminder(_ id: UUID) -> String { reminderPrefix + id.uuidString }
 

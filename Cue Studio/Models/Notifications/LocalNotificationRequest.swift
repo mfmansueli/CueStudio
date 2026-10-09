@@ -13,8 +13,8 @@ nonisolated struct LocalNotificationRequest: Hashable, Sendable {
         case at(LocalDateTime)
         /// Every week on that weekday (1 is Sunday) at that clock time.
         case weekly(weekday: Int, hour: Int, minute: Int)
-        /// In a second (a finished export while Cue isn't on screen).
-        case soon
+        /// In that many seconds (a finished export while Cue isn't on screen: 1; the Debug preview: a few).
+        case after(TimeInterval)
     }
 
     var identifier: String

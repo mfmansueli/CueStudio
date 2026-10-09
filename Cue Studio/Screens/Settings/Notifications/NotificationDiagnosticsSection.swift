@@ -6,9 +6,11 @@
 #if DEBUG
 import SwiftUI
 
-/// Debug builds only: what iOS allows, Cue's pending requests, the local counters of every campaign, and "Plan again". Never in a release.
+/// Debug builds only: what iOS allows, Cue's pending requests, the local counters of every campaign, "Plan again", and "Preview every
+/// notification" (one of each kind, seconds apart, to see and tap them on a real iPhone). Never in a release.
 struct NotificationDiagnosticsSection: View {
     @Environment(NotificationService.self) private var notifications
+    @Environment(ToastService.self) private var toast
 
     var body: some View {
         Section {
@@ -23,6 +25,18 @@ struct NotificationDiagnosticsSection: View {
             }
             Button { Task { await notifications.reconcile() } } label: { Text(verbatim: "Plan again") }
                 .accessibilityIdentifier("notifications.debug.reconcile")
+            Button {
+                Task {
+                    let count = await notifications.previewEveryNotification()
+                    let message = count == 0
+                        ? "Notifications are off for Cue in iOS Settings"
+                        : "\(count) notifications, one every 6 s from 5 s · lock the iPhone to see them"
+                    toast.show(message, duration: .seconds(4))
+                }
+            } label: {
+                Text(verbatim: "Preview every notification")
+            }
+            .accessibilityIdentifier("notifications.debug.preview")
         } header: {
             Text(verbatim: "DEBUG")
         }

@@ -90,7 +90,7 @@ extension NotificationService {
         let request = LocalNotificationRequest(
             identifier: NotificationIdentifier.exportReady(takeID: takeID), content: NotificationCopy.exportReady(savedToPhotos: savedToPhotos),
             payload: NotificationPayload(campaign: .exportReady, destination: .takeReview(takeID), projectKey: ProjectKey.take(takeID)),
-            trigger: .soon
+            trigger: .after(1)
         )
         do {
             try await center.add(request)

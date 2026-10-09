@@ -152,7 +152,10 @@ extension NotificationService {
     private func apply(_ desired: [LocalNotificationRequest]) async -> Set<String> {
         let pending = Set(await center.pendingIdentifiers())
         let wanted = Set(desired.map(\.identifier))
-        let stale = pending.filter { !wanted.contains($0) && !$0.hasPrefix(NotificationIdentifier.operationPrefix) }
+        let stale = pending.filter { identifier in
+            !wanted.contains(identifier) && !identifier.hasPrefix(NotificationIdentifier.operationPrefix)
+                && !identifier.hasPrefix(NotificationIdentifier.debugPrefix)
+        }
         center.removePending(Array(stale))
         for identifier in stale where NotificationIdentifier.isAutomatic(identifier) {
             let record = state.automatic.last { $0.requestID == identifier }

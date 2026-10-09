@@ -39,8 +39,8 @@ final class SystemNotificationCenter: NotificationCenterClient {
             trigger = UNCalendarNotificationTrigger(dateMatching: time.components, repeats: false)
         case .weekly(let weekday, let hour, let minute):
             trigger = UNCalendarNotificationTrigger(dateMatching: DateComponents(hour: hour, minute: minute, weekday: weekday), repeats: true)
-        case .soon:
-            trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
+        case .after(let seconds):
+            trigger = UNTimeIntervalNotificationTrigger(timeInterval: max(1, seconds), repeats: false)
         }
         try await center.add(UNNotificationRequest(identifier: request.identifier, content: content, trigger: trigger))
     }

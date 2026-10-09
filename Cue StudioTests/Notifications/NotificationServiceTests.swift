@@ -201,7 +201,7 @@ struct NotificationServiceTests {
         harness.service.isAppActive = false
         await harness.service.exportFinished(takeID: take, savedToPhotos: true)
         let request = harness.center.requests[NotificationIdentifier.exportReady(takeID: take)]
-        #expect(request?.trigger == .soon && request?.payload.destination == .takeReview(take))
+        #expect(request?.trigger == .after(1) && request?.payload.destination == .takeReview(take))
     }
 
     @Test func erasingTakesEverythingBackButKeepsTheChoices() async {
