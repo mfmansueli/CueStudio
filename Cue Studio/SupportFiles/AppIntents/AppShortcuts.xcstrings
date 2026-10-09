@@ -505,7 +505,7 @@
       }
     },
     "Save an idea in ${applicationName}" : {
-      "extractionState" : "extracted_with_value",
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {

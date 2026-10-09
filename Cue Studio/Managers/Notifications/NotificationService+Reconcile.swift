@@ -15,7 +15,11 @@ extension NotificationService {
     func reconcile() async {
         let moment = now()
         await refreshAuthorization()
-        let facts = await factsSource.facts(now: moment, events: usedFeatures, capabilities: true)
+        // What this iPhone does in each language is asked only when a tool could be offered (discovery on and allowed): planning never makes
+        // the speech or translation frameworks work for nothing.
+        let facts = await factsSource.facts(
+            now: moment, events: usedFeatures, capabilities: authorization.canSchedule && isOn(.discovery)
+        )
         tidy(at: moment, version: facts.appVersion)
         let projects = ProjectCampaigns.candidates(facts: facts, startedAt: state.startedAt, policy: policy)
         noteProgress(facts: facts, projects: projects, at: moment)

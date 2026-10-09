@@ -65,7 +65,6 @@ struct LogbookView: View {
                 .listRowInsets(EdgeInsets(top: 0, leading: Metrics.gutter, bottom: 0, trailing: Metrics.gutter))
                 ForEach(logbook.waiting) { entry in
                     card(entry)
-                        .id(entry.id)
                         .listRowBackground(Color.clear)
                         .listRowSeparator(.hidden)
                         .listRowInsets(EdgeInsets(top: 6, leading: Metrics.gutter, bottom: 8, trailing: Metrics.gutter))
