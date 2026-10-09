@@ -92,6 +92,63 @@ final class IdeaSuggestionService {
         pool.first { IdeaKey.of($0) == key }
     }
 
+    // MARK: - Find inspiration (the roulette)
+    //
+    // The roulette and the card share one pool, one taste and one memory: an idea shown in one is not shown again in the other, and what the
+    // creator does with an idea in either teaches both. Three things are told apart (`IdeaTaste`): passing an idea ("Another idea"), picking it
+    // to change ("Use this idea"), and a script written from it.
+
+    /// The idea the roulette shows for `filter`: the next of the pool about it, else a starter about it. Nil while the first ideas for a topic
+    /// with no starters are on their way (see `isWaiting(in:)`).
+    func current(in filter: IdeaTopicFilter) -> ThemeIdea? {
+        guard case .topic = filter else { return current }
+        if let idea = pool.indices.dropFirst(position).lazy.map({ self.pool[$0] }).first(where: filter.includes) { return idea }
+        guard case .topic(let topic) = filter, let niche = topic.niche else { return nil }
+        let starters = ThemeCatalog.ideas(for: niche)
+        return starters.isEmpty ? nil : starters[starterRotation % starters.count]
+    }
+
+    /// "Another idea" in the roulette: the creator passed the one shown (a light signal), the next comes at once from what is ready.
+    func another(in filter: IdeaTopicFilter) {
+        guard case .topic = filter else { return another() }
+        refreshIfTopicsChanged()
+        guard let shown = current(in: filter) else { return prepare(for: filter) }
+        if shown.angle != nil { taste.passed(shown) }
+        if let index = pool.firstIndex(of: shown), index >= position {
+            pool.remove(at: index)
+            seen.append(shown.title)
+        } else {
+            starterRotation += 1
+        }
+        if let next = current(in: filter) { taste.showed(next) }
+        persist()
+        prepare(for: filter)
+    }
+
+    /// The roulette is open on `filter`: ideas about it are ready before they are asked for.
+    func prepare(for filter: IdeaTopicFilter) {
+        prepare()
+    }
+
+    /// The next ideas for `filter` are on their way and nothing about it is ready to show.
+    func isWaiting(in filter: IdeaTopicFilter) -> Bool {
+        current(in: filter) == nil && (isRefilling || task != nil)
+    }
+
+    /// "Use this idea": the creator picked it to change before it is written. Liked, not yet used.
+    func selected(_ idea: ThemeIdea) {
+        if idea.angle != nil { taste.sent(idea) }
+        if let index = pool.firstIndex(of: idea), index >= position {
+            pool.remove(at: index)
+            seen.append(idea.title)
+        }
+        persist()
+        refillIfLow()
+    }
+
+    /// A script was written from `brief` (what of it the creator's text still said): the strongest signal there is.
+    func generated(from brief: IdeaBrief) {}
+
     private var starter: ThemeIdea? {
         let topics = profile.profile.ideaTopics
         if topics.isEmpty { return ThemeCatalog.page(for: [], rotation: starterRotation).first }
