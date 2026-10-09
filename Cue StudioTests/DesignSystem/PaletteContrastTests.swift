@@ -220,6 +220,13 @@ struct PaletteContrastTests {
                 ratio(Palette.Editor.laneGhostBorder, on: Palette.Editor.panel, in: appearance) >= ColorContrast.componentMinimum,
                 "a dashed outline, \(appearance)"
             )
+            // Text style and Caption style: the expand button's arrows, and the scope's and the
+            // captions action's label on their gray (ink on `fill`, over the panel); an unpicked
+            // segment is ink2 on the same gray.
+            for token in [("ink", Palette.ink), ("ink2", Palette.ink2)] {
+                let onFill = ratio(token.1, onTint: Palette.fill, over: Palette.Editor.panel, in: appearance)
+                #expect(onFill >= ColorContrast.textMinimum, "\(token.0) on fill over the panel, \(appearance): \(onFill)")
+            }
         }
     }
 

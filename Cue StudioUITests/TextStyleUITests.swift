@@ -41,6 +41,27 @@ final class TextStyleUITests: XCTestCase {
         app.windows.firstMatch.frame.height < 700
     }
 
+    /// Swipes the panel's content up until `element` can be tapped above the keyboard. The scroll view runs under
+    /// the keyboard (it insets its content instead), so a swipe at its middle would land on the keys: the drag
+    /// stays in the part that shows.
+    private func scrollAboveKeyboard(_ app: XCUIApplication, to element: XCUIElement, file: StaticString = #filePath, line: UInt = #line) {
+        let keyboardTop = app.keyboards.firstMatch.frame.minY
+        for _ in 0..<8 where !(element.isHittable && element.frame.maxY <= keyboardTop + 1) {
+            let scroll = content(app)
+            let top = scroll.frame.minY, bottom = min(scroll.frame.maxY, keyboardTop)
+            let origin = scroll.coordinate(withNormalizedOffset: .zero)
+            let start = origin.withOffset(CGVector(dx: scroll.frame.width / 2, dy: bottom - top - 12))
+            let end = origin.withOffset(CGVector(dx: scroll.frame.width / 2, dy: 12))
+            start.press(forDuration: 0.05, thenDragTo: end)
+        }
+        XCTAssertTrue(element.waitForExistence(timeout: 5), "\(element) isn't there", file: file, line: line)
+    }
+
+    /// A full touch target: 44 pt, give or take the layout's rounding.
+    private func assertFullTarget(_ element: XCUIElement, _ message: String = "", file: StaticString = #filePath, line: UInt = #line) {
+        XCTAssertGreaterThanOrEqual(element.frame.height.rounded(), 44, message, file: file, line: line)
+    }
+
     private func waitFor(_ condition: @escaping () -> Bool, timeout: TimeInterval = 5) -> Bool {
         let deadline = Date().addingTimeInterval(timeout)
         while Date() < deadline {
@@ -56,7 +77,7 @@ final class TextStyleUITests: XCTestCase {
         let preview = app.descendants(matching: .any)["edit.preview"]
         let expand = app.buttons["edit.panel.expand"]
         XCTAssertEqual(expand.label, "Expand panel")
-        XCTAssertGreaterThanOrEqual(expand.frame.height, 44)
+        assertFullTarget(expand)
         let panelHeight = panel.frame.height
         let previewHeight = preview.frame.height
         expand.tap()
@@ -69,16 +90,16 @@ final class TextStyleUITests: XCTestCase {
         for tab in ["presets", "font", "color", "motion"] {
             let button = app.buttons["edit.panel.tab.\(tab)"]
             XCTAssertTrue(button.isHittable, tab)
-            XCTAssertGreaterThanOrEqual(button.frame.height, 44, tab)
+            assertFullTarget(button, tab)
         }
         let swatch = app.buttons["edit.textColor.white"]
         app.scroll(to: swatch, in: content(app))
-        XCTAssertGreaterThanOrEqual(swatch.frame.height, 44)
+        assertFullTarget(swatch)
         // At the end of the content, the last control sits well above the Home Indicator.
         let copy = app.buttons["edit.style.copyToCaptions"]
         app.scroll(to: copy, in: content(app))
         content(app).swipeUp()
-        XCTAssertGreaterThanOrEqual(copy.frame.height, 44)
+        assertFullTarget(copy)
         XCTAssertLessThanOrEqual(copy.frame.maxY, app.windows.firstMatch.frame.maxY - 44)
 
         // Caption style opens expanded too.
@@ -132,12 +153,12 @@ final class TextStyleUITests: XCTestCase {
             XCTAssertLessThanOrEqual(app.buttons[id].frame.maxY, top + 1, id)
         }
         let copy = app.buttons["edit.style.copyToCaptions"]
-        app.scroll(to: copy, in: content(app))
+        scrollAboveKeyboard(app, to: copy)
         XCTAssertTrue(copy.isHittable)
         XCTAssertLessThanOrEqual(copy.frame.maxY, top + 1)
         app.buttons["edit.panel.tab.color"].tap()
         let outline = app.buttons["edit.textShadow.outline"]
-        app.scroll(to: outline, in: content(app))
+        scrollAboveKeyboard(app, to: outline)
         XCTAssertTrue(outline.isHittable)
         XCTAssertLessThanOrEqual(outline.frame.maxY, top + 1)
         outline.tap()
@@ -156,14 +177,14 @@ final class TextStyleUITests: XCTestCase {
         XCTAssertTrue(alert.waitForExistence(timeout: 5))
         XCTAssertTrue(alert.staticTexts["Apply this style to captions?"].exists)
         XCTAssertTrue(alert.staticTexts.matching(NSPredicate(format: "label CONTAINS %@", "Your captions use the Cue preset.")).firstMatch.exists)
-        alert.buttons["Cancel"].tap()
+        alert.buttons["Cancel"].firstMatch.tap()
         XCTAssertTrue(waitFor { !alert.exists })
         XCTAssertFalse(EditorApp.toastSays(app, "Captions use this style", timeout: 1))
 
         // Apply.
         copy.tap()
         XCTAssertTrue(alert.waitForExistence(timeout: 5))
-        alert.buttons["Apply"].tap()
+        alert.buttons["Apply"].firstMatch.tap()
         XCTAssertTrue(EditorApp.toastSays(app, "Captions use this style"))
 
         // Caption style shows the copy as Custom, picked.

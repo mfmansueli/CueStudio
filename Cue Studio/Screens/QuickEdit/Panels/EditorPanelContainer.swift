@@ -83,7 +83,7 @@ struct EditorPanelContainer<Fixed: View, Content: View, Footer: View>: View {
             if let onReset {
                 Button("Reset", action: onReset)
                     .font(.system(.subheadline, weight: .semibold))
-                    .foregroundStyle(Palette.ink.opacity(0.75))
+                    .foregroundStyle(Palette.ink2)
                     .frame(minWidth: Metrics.hitTarget, minHeight: Metrics.hitTarget)
                     .buttonStyle(.plain)
                     .accessibilityIdentifier("edit.panel.reset")

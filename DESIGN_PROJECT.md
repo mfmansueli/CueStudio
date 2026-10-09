@@ -841,3 +841,33 @@ gravador rolam pela própria lista. A suíte inteira também rodou em 2 simulado
 
 **Limite do Simulator (não é falha do app):** a prévia do Quick edit não toca no Simulator (a composição falha com -12784 antes de ficar pronta, como já dizia
 `QuickEditPlayerTests`); os testes de UI conferem lá o estado do botão (Play/Pause) e só no aparelho o tempo andando (`EditorUITests.testPlayPlaysAndPauseHoldsThePlayhead`).
+
+## 29. Text style e Caption style: o painel que cresce, o escopo só do visual e "Apply this style to captions" (9 de outubro de 2026; não está no quadro)
+
+O Text style (Quick edit › Text › Style) misturava três coisas no mesmo seletor ("This title · All texts · 3 · + Captions"), os controles ficavam apertados sob um vídeo que
+ocupava quase toda a tela, e "+ Captions" ligava as legendas aos textos de um jeito que não se via (mudar um título mudava as legendas). O que mudou:
+
+- **O painel cresce** (`EditorPanelContainer(expansion:)`): Text style e Caption style ganham uma alça no topo (decorativa, `ink3`) e um botão de expandir no cabeçalho
+  (setas para fora/para dentro, `ink` sobre `fill`, 44 pt de toque, VoiceOver "Expand panel" / "Collapse panel"); arrastar o cabeçalho para cima ou para baixo faz o mesmo
+  (24 pt). Expandido, o vídeo vai ao **menor tamanho** que o editor já usa e o resto é dos controles (`EditorLayout(panelIsExpanded:)`); a escolha vale para os dois painéis
+  enquanto o editor está aberto (`QuickEditViewModel.stylePanelIsExpanded`). A altura normal de um painel `.full` passou de 44% para **metade da tela** (330–420 pt). No **iPhone SE**
+  (o painel é uma folha) o botão troca a folha entre as duas alturas dela e arrastar a folha faz o mesmo. O conteúdo para 18 pt acima do Home Indicator
+  (`Metrics.editorStylePanelBottomClearance`) e some em degradê embaixo enquanto rola (`scrollEdgeEffectStyle(.soft)`).
+- **Abas na largura toda:** Presets · Font · Color · Motion (Text style) e as do Caption style dividem a largura por igual, com 44 pt de toque; o campo do texto e as abas ficam
+  fixos (sobre o teclado também) e só o que está embaixo rola. As cores (`PanelSwatches`) passaram a 34 pt e os segmentos a 38 pt nos dois painéis. A aba mostrada e o conteúdo
+  nunca discordam (`textStyleTab`).
+- **O escopo é só do visual:** "Style applies to" **This title | All texts · N** aparece só nas abas que mudam o visual (Presets, Font, Color), com a nota "Words, timing and
+  motion stay with each text." quando é todos. Em Motion o escopo some e o subtítulo diz "Motion and timing change only this text"; ao voltar, o escopo está como ficou.
+- **"+ Captions" saiu.** As legendas são estilizadas no Caption style. Um texto só passa o visual para elas por **Apply this style to captions** (`PanelButton` no fim de Presets,
+  Font e Color, quando a take tem legendas), que **pergunta antes** (alerta do sistema: o que é trocado, "Your captions use the Cue preset…" ou o estilo atual delas; o que fica —
+  palavras, tempos, traduções, posição, tamanho e como as linhas aparecem —; e, quando a cor de destaque sumiria sobre o novo visual, para qual ela muda, `CaptionAccent.standingOut`).
+  Apply copia **uma vez** (`CaptionStyleCopy`): um passo de desfazer, toast "Captions use this style" com Undo, nenhum outro texto muda e nada fica ligado depois.
+- **Onde a cópia mora:** no conjunto de legendas (`CaptionSettings.customLook`), então elas mantêm lugar, zona segura, tamanho, cor de destaque e entrada. O Caption style a mostra
+  como o cartão **Custom**, primeiro e escolhido, com a nota "Custom style copied from a text. Pick a preset to replace it."; Font edita família, peso e cor dela; escolher um preset
+  a substitui (só nas legendas). Legendas de antes do conjunto recebem o visual como o `captionLook` delas, mantendo o tamanho. A prévia e a exportação desenham igual
+  (`CaptionCollectionRenderer`, teste de exportação real).
+- **Contraste:** só tokens. `PaletteContrastTests.theEditorsPanelReads` mede agora também `ink` e `ink2` sobre o `fill` por cima do painel (o ícone de expandir, o botão das legendas e os
+  segmentos). Três opacidades inventadas para texto viraram `ink2`: o segmento não escolhido (`PanelSegmented`, era `ink` a 72%), o Reset do cabeçalho (75%) e o nome do cartão de preset (80%).
+- 15 textos novos nos 20 idiomas; três que só "+ Captions" usava foram apagados.
+- **Testes:** `CaptionStyleCopyTests`, `CaptionAccentTests`, `QuickEditCaptionStyleCopyTests`, `QuickEditTextStyleTests`, `EditorLayoutTests` (painel expandido),
+  `CaptionCollectionRendererTests` e `CaptionCollectionExportTests` (o visual copiado), e `TextStyleUITests` (expandir, escopo, teclado, a pergunta e o Custom, no 6,1" e no SE).

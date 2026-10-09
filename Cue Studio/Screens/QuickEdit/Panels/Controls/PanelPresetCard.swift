@@ -45,7 +45,7 @@ struct PanelPresetCard: View {
                 )
                 Text(name)
                     .font(.system(.caption, weight: .semibold))
-                    .foregroundStyle(Palette.ink.opacity(0.8))
+                    .foregroundStyle(Palette.ink2)
                     .lineLimit(1)
                     .minimumScaleFactor(0.8)
             }
