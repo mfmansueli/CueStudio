@@ -792,8 +792,10 @@ O sistema inteiro (campanhas, limites, consentimento, testes, roteiro no aparelh
 com componentes que já existiam:
 
 - **Settings › Notifications** (`NotificationsSettingsView`, na seção General, entre Language & Region e Privacy; ícone `bell.badge.fill` em
-  `Palette.danger`, valor "Off" quando o iOS não deixa ou "Reminders: n"). Lista agrupada sobre o céu como as outras páginas: o cartão do estado
-  da permissão (não perguntado ainda, desligado com **Open Settings**, ou entrega silenciosa), **What Cue sends** (as cinco categorias como
+  `Palette.danger`, valor "Off" quando o iOS não deixa ou "Reminders: n"). Lista agrupada sobre o céu como as outras páginas: **On this iPhone**
+  com o interruptor **Allow notifications** (`NotificationPermissionSection`, pedido do dono em 9/10/2026; `SettingsListToggle` como os outros, a
+  linha de baixo diz On, Delivered quietly, Off in iOS Settings ou Not asked yet, e o rodapé diz o que o toque faz: o iOS pergunta uma vez, ou abre
+  o Cue nos Ajustes do iOS, porque só o iOS dá ou tira a permissão; no lugar do cartão com Open Settings), **What Cue sends** (as cinco categorias como
   `SettingsListToggle`; ferramentas e novidades desligadas), **Days and time** (só com a rotina ligada: um chip redondo por dia na ordem da semana
   do iPhone — amarelo `acc` com `accInk` quando escolhido, `surface3` com `ink` quando não — e um `DatePicker` de hora), **My reminders** (toque
   edita, deslizar remove; estado em `ink2`: Set, Kept in Cue, Due), **Automatic notifications** (quiet hours e a pausa de 7/30 dias num `Menu`) e
@@ -808,9 +810,13 @@ com componentes que já existiam:
   benefício, a nota do que ela usa (Apple Intelligence, modelo de fala, download, segundo aparelho, "Free. Nothing changes until you choose."),
   **Try it** (primário), **Not now** (secundário) e "Don’t suggest this" em `ink2`. "Try it" abre a ferramenta; o Quick edit abre direto no painel
   (`EditorTool`, `QuickEditViewModel+Opening`) e o Adjust já com o dial Skin Smoothing escolhido e à vista (`adjustOpensOn`).
+- **Convite para notificações** (`NotificationInviteSheet`, folha da altura do conteúdo, mesmo desenho da introdução de uma ferramenta): sino
+  `bell.badge` em `aiText` num azulejo `surface2`, a pergunta ("Want Cue to remind you to finish this video?" ou "Want a reminder to record this
+  script?"), "One notification when something is waiting, at most one a day. You can change it in Settings.", **Allow notifications** (primário,
+  só ele traz a pergunta do sistema) e **Not now** (secundário). Quando aparece: `NOTIFICATIONS.md` §3.
 - **Logbook:** a nota de uma notificação vem para o centro com um contorno `acc` de 1,5 pt.
 - **Your universe** pode abrir pela aba Profile com a história do ano já aberta (`ProfileRoute`, `YourUniverseView(opensYearInReview:)`).
 - **Contraste:** só tokens medidos. `PaletteContrastTests.theNotificationSheetsReadOnTheirNight` mede `ink`, `ink2` e `warnText` na noite das
   folhas, `aiText` no azulejo (3:1, ícone que informa), `accInk` no amarelo e `ink` no `surface3` dos dias da rotina, com e sem Aumentar
   Contraste; nas linhas de Settings vale `ink`/`ink2` sobre o cartão translúcido (§21).
-- **Sem animação nova;** Reduce Motion não muda nada aqui. Os textos entram nos 20 idiomas (163 chaves).
+- **Sem animação nova;** Reduce Motion não muda nada aqui. Os textos entram nos 20 idiomas.

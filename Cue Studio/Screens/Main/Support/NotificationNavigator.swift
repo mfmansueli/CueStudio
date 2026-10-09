@@ -12,6 +12,10 @@ import Foundation
 struct NotificationNavigator {
     let services: AppServices
 
+    /// How long "That script is no longer in Cue" stays: it often comes up as Cue opens from the lock screen, when 2.4 s is gone before
+    /// the creator has read it.
+    static let goneDuration: Duration = .seconds(5)
+
     private var presentation: PresentationService { services.presentation }
 
     func go(to destination: NotificationDestination) async {
@@ -103,7 +107,7 @@ struct NotificationNavigator {
         guard let take = services.takes.take(id: takeID) else { return goneTake() }
         guard let queue = services.shareQueue.queue(forTake: takeID), !waiting(queue).isEmpty else {
             presentation.openReview(of: take)
-            services.toast.show(String(localized: "Already shared on the networks you chose"))
+            services.toast.show(String(localized: "Already shared on the networks you chose"), duration: Self.goneDuration)
             return
         }
         if let network, waiting(queue).contains(network), queue.current?.network != network {
@@ -118,7 +122,7 @@ struct NotificationNavigator {
         presentation.selectedTab = .scripts
         presentation.scriptsPath = []
         guard let idea = services.ideaSuggestions.idea(forKey: key) else {
-            services.toast.show(String(localized: "That idea isn’t here any more · try ↻ for another"))
+            services.toast.show(String(localized: "That idea isn’t here any more · try ↻ for another"), duration: Self.goneDuration)
             return
         }
         services.ideaDraft.text = idea.prompt
@@ -130,7 +134,7 @@ struct NotificationNavigator {
         presentation.selectedTab = .scripts
         guard services.aiStatus.isAvailable else {
             presentation.scriptsPath = []
-            services.toast.show(String(localized: "Apple Intelligence isn’t available on this iPhone right now"))
+            services.toast.show(String(localized: "Apple Intelligence isn’t available on this iPhone right now"), duration: Self.goneDuration)
             return
         }
         switch destination {
@@ -152,11 +156,11 @@ struct NotificationNavigator {
     private func gone(_ message: String) {
         presentation.selectedTab = .scripts
         presentation.scriptsPath = []
-        services.toast.show(message)
+        services.toast.show(message, duration: Self.goneDuration)
     }
 
     private func goneTake() {
         presentation.selectedTab = .takes
-        services.toast.show(String(localized: "That recording is no longer in Cue"))
+        services.toast.show(String(localized: "That recording is no longer in Cue"), duration: Self.goneDuration)
     }
 }

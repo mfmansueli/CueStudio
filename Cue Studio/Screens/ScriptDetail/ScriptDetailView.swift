@@ -12,6 +12,8 @@ struct ScriptDetailView: View {
     @Environment(PresentationService.self) private var presentation
     @Environment(PreferencesService.self) private var preferences
     @Environment(ToastService.self) private var toast
+    @Environment(NotificationService.self) private var notifications
+    @Environment(TakeLibraryService.self) private var takes
     @Environment(\.dismiss) private var dismiss
 
     init(route: ScriptRoute, services: AppServices) {
@@ -54,6 +56,7 @@ struct ScriptDetailView: View {
         .navigationBarTitleDisplayMode(.inline)
         .hidesCueTabBar()
         .task { viewModel.beginWritingIfNeeded() }
+        .onDisappear(perform: offerReminderInvite)
         .alert("Couldn't write the script", isPresented: Binding(
             get: { viewModel.page.writingError != nil },
             set: { if !$0 { viewModel.page.writingError = nil } }
@@ -92,6 +95,17 @@ struct ScriptDetailView: View {
                     ReminderSheet(subject: .script(script.id), title: script.displayTitle) { ReminderFeedback.show($0, toast: toast) }
                 }
             }
+        }
+    }
+
+    /// Leaving a finished script without recording it: the second invitation to allow notifications (only after a "Not now", 14 days on).
+    private func offerReminderInvite() {
+        guard let script = viewModel.script, script.isFinished, takes.takes(for: script.id).isEmpty else { return }
+        let (notifications, presentation, hasRecorded) = (notifications, presentation, !takes.takes.isEmpty)
+        Task {
+            guard let reason = await notifications.invite(.readyScript, hasRecorded: hasRecorded),
+                  presentation.sheet == nil, presentation.prompter == nil else { return }
+            presentation.present(.notificationInvite(reason))
         }
     }
 

@@ -14,12 +14,12 @@ falta", comentário sobre aparência ou promessa de views e seguidores.
 | Valores (categoria, campanha, destino, payload, lembrete, rotina, estado…) | `Models/Notifications/` |
 | Regras puras: `ProjectCampaigns`, `NotificationPlanner`, `NotificationPolicy`, `PlanningContext` | `Managers/Notifications/Planning/` |
 | Descoberta: `FeatureCatalog` (dados), `DiscoveryRules`, `FeatureAdoption`, `FeatureID+Copy`, `WhatsNewCatalog` | `Managers/Notifications/Discovery/` |
-| Serviço: `NotificationService` (+`Reconcile`, `+Plan`, `+Reminders`, `+Discovery`, `+Opening`, `+Metrics`) | `Managers/Notifications/` |
+| Serviço: `NotificationService` (+`Reconcile`, `+Plan`, `+Reminders`, `+Discovery`, `+Opening`, `+Invite`, `+Metrics`) | `Managers/Notifications/` |
 | Fatos lidos do app: `AppNotificationFacts` (atrás de `NotificationFactsSource`) | `Managers/Notifications/` |
 | Sistema: `NotificationCenterClient` → `SystemNotificationCenter`; `NotificationCenterDelegate`; `NotificationRouter` | `Managers/Notifications/Center/` |
 | Textos: `NotificationCopy`, `FeatureID+Copy`, `FeatureIntro.Note.text` | idem |
 | Navegação: `NotificationNavigator`; gatilhos: `NotificationTriggers` | `Screens/Main/Support/` |
-| Telas: Settings › Notifications, `ReminderSheet`, `FeatureIntroSheet`, menu "Post later" | `Screens/Settings/Notifications/`, `Screens/Shared/{Reminders,Discovery}/`, `ShareQueueStep` |
+| Telas: Settings › Notifications (com `NotificationPermissionSection`), `ReminderSheet`, `FeatureIntroSheet`, `NotificationInviteSheet`, menu "Post later" | `Screens/Settings/Notifications/`, `Screens/Shared/{Reminders,Discovery,Notifications}/`, `ShareQueueStep` |
 
 O serviço é criado em `AppServices.makeNotifications` e injetado no ambiente; o delegate do sistema é registrado em `CueStudioApp.init`, antes do
 fim do lançamento, para um toque que abriu o app chegar.
@@ -54,9 +54,24 @@ Prioridade 1 é a primeira. "Automática" = o Cue decide a hora, sob os limites 
   and ideas** e **What’s new in Cue** começam **desligadas** e só ligam com um sim. O consentimento de descoberta vale também para as
   introduções dentro do app.
 - **Permissão do iOS é separada** e nunca é consentimento para promoções. O Cue **não pede no lançamento**: pede ao criar o primeiro lembrete, ao
-  ligar uma categoria ou ao configurar a rotina. Com `.notDetermined`, nada é agendado. Recusada: o app segue igual, o lembrete fica em Cue
-  ("Kept in Cue"), a página mostra **Open Settings** (toque do criador) e o Cue **nunca pergunta de novo**. `.provisional` agenda (entrega
-  silenciosa) e a página explica. O estado é relido quando o app fica ativo e ao voltar dos Ajustes.
+  ligar uma categoria, ao configurar a rotina, quando o criador liga o interruptor da permissão ou diz sim ao convite (abaixo). Com
+  `.notDetermined`, nada é agendado. Recusada: o app segue igual, o lembrete fica em Cue ("Kept in Cue") e o Cue **nunca pergunta de novo**.
+  `.provisional` agenda (entrega silenciosa) e a página explica. O estado é relido quando o app fica ativo e ao voltar dos Ajustes.
+- **Interruptor "Allow notifications"** (topo de Settings › Notifications, seção "On this iPhone", `NotificationPermissionSection`, pedido do dono
+  em 9/10/2026): mostra o que o iOS deixa (ligado com `.authorized`, `.provisional` ou `.ephemeral`; a linha de baixo diz On, Delivered quietly,
+  Off in iOS Settings ou Not asked yet). **Quem manda é o iOS:** um app não pode se dar nem se tirar a permissão. Ligar sem nunca ter sido
+  perguntado traz a pergunta do sistema (uma vez) e replaneja; qualquer outra mudança (ligar depois de um não, desligar) abre a página do Cue nos
+  Ajustes (`openNotificationSettingsURLString`). O interruptor volta a mostrar o estado real na hora, e de novo ao voltar dos Ajustes; o rodapé
+  diz o que o toque faz em cada estado. Desligar as notificações sem sair do Cue é desligar as categorias, logo abaixo.
+- **Convite antes da pergunta do sistema** (`NotificationService+Invite`, `NotificationInviteSheet`): o iOS pergunta uma vez só, então o Cue a
+  gasta num momento em que ela tem motivo. **Primeira vez:** ao fechar o gravador (ou o editor) com pelo menos uma take, "Want Cue to remind you
+  to finish this video?". **Segunda e última:** só depois de um "Not now", 14 dias depois, ao sair de um roteiro pronto que não foi gravado ("Want
+  a reminder to record this script?"). Nunca no primeiro lançamento nem no primeiro voo, nunca gravando, editando, exportando ou com o remoto,
+  nunca no dia de uma dica do My Cue Voice ou de uma introdução de ferramenta, no máximo uma introdução por sessão (o convite conta como uma), e
+  só enquanto o iOS não foi perguntado. **Allow notifications** fecha a folha e traz a pergunta do sistema; **Not now** guarda a pergunta.
+  Medido como `invite.firstRecording` / `invite.readyScript`: `eligible` (mostrado), `feature_started` (Allow), `feature_completed` (o iOS
+  deixou), `snoozed` (Not now). As datas dos convites (`invitesShown`) ficam depois de "Delete my Cue data": apagar os dados não traz o convite
+  de volta. Nos testes de UI o convite só existe com `-uiTestNotificationInvite`.
 - **Quiet hours** (21:00–09:00 por padrão, editáveis), **pausa** de 7 ou 30 dias (só automáticas) e **Show titles in previews** (desligado: "your
   script"). Script, comentário e texto importado **nunca** entram numa notificação; o payload só tem tipos e IDs.
 
@@ -184,14 +199,18 @@ planejar, padrões, negado nunca pergunta de novo, lembrete agendado/mantido/fal
 Post later cancelado ao postar, rotina, descoberta só com sim, categoria desligada cancela, pausa, reenvio só quando muda e com idioma novo,
 exportação só fora da tela, apagar dados), `NotificationServiceOpeningTests` (uma abertura por entrega, payload inválido/alheio, introdução
 antes da ferramenta, lembrete aberto some, crédito em 24 h e expiração, próximo passo concluído, primeiro plano ocupado, objeto apagado,
-introdução no app uma por sessão, Not now/Don’t suggest, Try it ≠ concluído, eventos), e em `VoiceQuestionSchedulerTests` /
+introdução no app uma por sessão, Not now/Don’t suggest, Try it ≠ concluído, eventos), `NotificationInviteTests` (só com o iOS sem
+resposta, o primeiro depois de uma gravação, o segundo 14 dias depois de um Not now, dois no máximo, nada ocupado/desligado/no dia de outra
+introdução, Allow pergunta uma vez e conta a resposta, Not now não pergunta, sobrevive a apagar os dados, estado antigo), e em `VoiceQuestionSchedulerTests` /
 `ShareQueueServiceTests` a coordenação com a dica e o carimbo da fila.
 
-**UI (XCUITest), `NotificationsUITests`:** padrões da página, permissão negada, lembrete pelo script (e listado), lembrete guardado com
+**UI (XCUITest), `NotificationsUITests`:** padrões da página, o interruptor da permissão (pergunta uma vez e mostra o sim; negada abre os
+Ajustes do iOS e continua desligado), o convite depois de uma sessão (Allow pergunta, Not now não), lembrete pelo script (e listado), lembrete guardado com
 notificações desligadas, toque frio abre o script, introdução da ferramenta e Not now, Try it abre Clean Up na take, script apagado, payload
 ilegível, toque repetido; `ShareToUITests.testPostLaterCanRemindTheCreatorTomorrow`. Ganchos Debug: `-uiTestNotificationAuth
 <notDetermined|refuses|authorized|denied|provisional>` (central em memória, sem prompt do sistema) e `-uiTestNotificationTap
-<script|cleanUp|share|deletedScript|invalid|duplicate|routine|logbook|universe>`.
+<script|cleanUp|share|deletedScript|invalid|duplicate|routine|logbook|universe>` e `-uiTestNotificationInvite` (o convite pode aparecer;
+sem ele nunca aparece num teste de UI).
 
 Resultados desta entrega: ver o relatório final do PR (suíte completa e `check-warnings.sh`).
 

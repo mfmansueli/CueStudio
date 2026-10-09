@@ -55,6 +55,7 @@ import Foundation
 ///   center that answers the permission at once (no system prompt; `notDetermined` by default, which allows when asked).
 /// - `-uiTestNotificationTap <script|cleanUp|share|deletedScript|invalid|duplicate|routine|logbook|universe>`: Cue opens as if launched
 ///   from that notification (`DebugNotificationTaps`).
+/// - `-uiTestNotificationInvite`: Cue's invitation to allow notifications may show (UI tests leave it out otherwise, like the voice tip).
 /// - `-uiTestAppLanguage <lproj>`: with `-uiTestInMemory`, Cue's interface starts in that language
 ///   (as if picked in Language & Region) without changing the simulator's. The interface language
 ///   always lives in memory under `-uiTestInMemory`.
@@ -127,6 +128,8 @@ struct LaunchOptions {
     var notificationCenter: NotificationCenterClient?
     /// UI tests: Cue opens as if launched from this notification (`-uiTestNotificationTap`).
     var notificationTap: String?
+    /// Cue's invitation to allow notifications; UI tests leave it out unless `-uiTestNotificationInvite`.
+    var notificationInvites = true
 
     /// The arguments that stand a screen still at a second of its timeline (to take its pictures), and the milestone to open on.
     private static func readFrozenTimes(_ arguments: [String], into options: inout LaunchOptions) {
@@ -219,6 +222,7 @@ struct LaunchOptions {
                 arguments.indices.contains(index + 1) ? InMemoryNotificationCenter.Start(rawValue: arguments[index + 1]) : nil
             }
             options.notificationCenter = InMemoryNotificationCenter(start: notificationStart ?? .notDetermined)
+            options.notificationInvites = arguments.contains("-uiTestNotificationInvite")
             options.notificationTap = arguments.firstIndex(of: "-uiTestNotificationTap").flatMap { index in
                 arguments.indices.contains(index + 1) ? arguments[index + 1] : nil
             }

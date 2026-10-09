@@ -11,8 +11,8 @@ import Foundation
 /// `NotificationPlanner`); this service gathers the facts, keeps the state, and talks to the system through `NotificationCenterClient`.
 ///
 /// The OS permission and the categories are separate: iOS allowing Cue is never a yes to tools or news (both start off), and Cue asks iOS
-/// only when the creator sets a reminder or turns something on. Its parts: `+Reconcile` (what is scheduled), `+Reminders`, `+Discovery`,
-/// `+Opening` (taps and the foreground), `+Metrics`.
+/// only when the creator sets a reminder or turns something on, or says yes to its invitation (`+Invite`). Its parts: `+Reconcile` (what
+/// is scheduled), `+Reminders`, `+Discovery`, `+Opening` (taps and the foreground), `+Invite`, `+Metrics`.
 @MainActor
 @Observable
 final class NotificationService {
@@ -47,6 +47,8 @@ final class NotificationService {
     @ObservationIgnored var isAppActive = true
     /// The in-app introductions shown in this session (one at most).
     @ObservationIgnored var introsThisSession = 0
+    /// Cue may invite the creator to allow notifications (off in UI tests unless `-uiTestNotificationInvite`).
+    @ObservationIgnored var invitesEnabled = true
     @ObservationIgnored var reconcileTask: Task<Void, Never>?
 
     init(
@@ -166,6 +168,7 @@ final class NotificationService {
             fresh.showsTitles = state.showsTitles
             fresh.notInterested = state.notInterested
             fresh.lastSeenVersion = state.lastSeenVersion
+            fresh.invitesShown = state.invitesShown
             state = fresh
         }
         pendingIdentifiers = []

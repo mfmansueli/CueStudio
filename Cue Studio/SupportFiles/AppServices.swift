@@ -258,6 +258,7 @@ extension AppServices {
         let notifications = NotificationService(
             center: options.notificationCenter ?? SystemNotificationCenter(), store: NotificationStateStore(defaults: options.defaults), facts: facts
         )
+        notifications.invitesEnabled = options.notificationInvites
         let (languages, privacy, voiceQuestions) = (wiring.languages, wiring.privacy, wiring.voiceQuestions)
         let (presentation, remote, transition) = (wiring.presentation, wiring.remote, wiring.transition)
         notifications.interfaceLanguage = { languages.interfaceLanguage.rawValue }

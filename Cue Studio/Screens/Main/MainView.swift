@@ -256,7 +256,7 @@ struct MainView: View {
                 services.ideaDraft.platform = $0
                 presentation.sheet = nil
             }
-        case .featureIntro, .voiceSetup, .importWriting:
+        case .featureIntro, .voiceSetup, .importWriting, .notificationInvite:
             notificationSheet(sheet)
         }
     }
@@ -268,6 +268,7 @@ struct MainView: View {
         case .featureIntro(let request): featureIntro(request)
         case .voiceSetup: VoiceSetupSheet(mode: .missing, profile: profile.profile)
         case .importWriting: WritingImportSheet()
+        case .notificationInvite(let reason): notificationInvite(reason)
         default: EmptyView()
         }
     }
@@ -295,13 +296,37 @@ struct MainView: View {
         .onAppear { notifications.introShown(request) }
     }
 
-    /// One introduction at a quiet moment: a tool whose notification came while the creator was busy, or one that fits after a session.
+    /// One thing at a quiet moment after a session at the camera or the editor: the invitation to allow notifications (the first time there
+    /// is a recording to finish), else a tool's introduction.
     private func offerIntroduction() {
         Task {
-            guard let request = await services.notifications.inAppIntro(afterSession: true),
+            let notifications = services.notifications
+            if let reason = await notifications.invite(.firstRecording, hasRecorded: !services.takes.takes.isEmpty) {
+                guard presentation.sheet == nil, presentation.prompter == nil else { return }
+                presentation.present(.notificationInvite(reason))
+                return
+            }
+            guard let request = await notifications.inAppIntro(afterSession: true),
                   presentation.sheet == nil, presentation.prompter == nil else { return }
             presentation.present(.featureIntro(request))
         }
+    }
+
+    /// "Allow notifications" brings up the system's question; "Not now" keeps it for later.
+    private func notificationInvite(_ reason: NotificationInviteReason) -> some View {
+        let notifications = services.notifications
+        return NotificationInviteSheet(
+            reason: reason,
+            onAllow: {
+                presentation.sheet = nil
+                Task { await notifications.inviteAccepted(reason) }
+            },
+            onNotNow: {
+                notifications.inviteDeclined(reason)
+                presentation.sheet = nil
+            }
+        )
+        .onAppear { notifications.inviteShown(reason) }
     }
 
     private func writeNewScript() {

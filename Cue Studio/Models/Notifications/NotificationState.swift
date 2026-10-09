@@ -58,6 +58,8 @@ nonisolated struct NotificationState: Codable, Hashable, Sendable {
     var scheduledSignatures: [String: String] = [:]
     /// When an "eligible" or "suppressed" was last counted for a request, so a plan made many times a day counts it once a day.
     var recentMeasures: [String: Date] = [:]
+    /// When Cue invited the creator to allow notifications (twice at most, `NotificationService+Invite`).
+    var invitesShown: [Date] = []
 
     init(startedAt: Date) {
         self.startedAt = startedAt
@@ -79,7 +81,7 @@ nonisolated struct NotificationState: Codable, Hashable, Sendable {
     private enum CodingKeys: String, CodingKey {
         case schema, startedAt, consent, quietHours, pausedUntil, showsTitles, reminders, routine, automatic, exposures
         case adopted, used, notInterested, snoozedFeatures, lastActivity, lastSeenVersion, updatedFromVersion, announcedWhatsNew, announcedYearReviews
-        case handledInteractions, attribution, counters, contentLanguage, deferredIntro, scheduledSignatures, recentMeasures
+        case handledInteractions, attribution, counters, contentLanguage, deferredIntro, scheduledSignatures, recentMeasures, invitesShown
     }
 
     /// Every field has a default; a list that holds one entry this build can't read (a newer campaign) drops only that entry.
@@ -111,6 +113,7 @@ nonisolated struct NotificationState: Codable, Hashable, Sendable {
         deferredIntro = try? container.decodeIfPresent(FeatureID.self, forKey: .deferredIntro)
         scheduledSignatures = (try? container.decodeIfPresent([String: String].self, forKey: .scheduledSignatures)) ?? [:]
         recentMeasures = (try? container.decodeIfPresent([String: Date].self, forKey: .recentMeasures)) ?? [:]
+        invitesShown = (try? container.decodeIfPresent([Date].self, forKey: .invitesShown)) ?? []
     }
 
     /// The entries of a list that this build can read.

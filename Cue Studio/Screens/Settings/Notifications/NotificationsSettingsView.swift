@@ -5,9 +5,10 @@
 
 import SwiftUI
 
-/// Settings › Notifications: what iOS allows, the five kinds of notification (tools and news start off), the routine's days and time, the
-/// reminders set (edit with a tap, remove with a swipe), quiet hours, a pause for the automatic ones, and whether a project's title may appear
-/// in a notification (off: "your script"). A Debug build adds what is scheduled and counted.
+/// Settings › Notifications: whether iOS allows Cue (a switch, `NotificationPermissionSection`), the five kinds of notification (tools and
+/// news start off), the routine's days and time, the reminders set (edit with a tap, remove with a swipe), quiet hours, a pause for the
+/// automatic ones, and whether a project's title may appear in a notification (off: "your script"). A Debug build adds what is scheduled
+/// and counted.
 struct NotificationsSettingsView: View {
     @Environment(NotificationService.self) private var notifications
     @Environment(\.scenePhase) private var scenePhase
@@ -18,9 +19,7 @@ struct NotificationsSettingsView: View {
 
     var body: some View {
         List {
-            if notifications.authorization != .authorized {
-                Section { NotificationPermissionCard(authorization: notifications.authorization).cardRowBackground(position: .only) }
-            }
+            NotificationPermissionSection()
             categories
             if notifications.isOn(.routine) { routine }
             reminders

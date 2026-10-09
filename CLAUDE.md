@@ -83,7 +83,8 @@ Toda tela, componente ou cor nova **precisa passar** no contraste antes de ser e
   ver `SimulatedSceneCapture` e `DESIGN_PROJECT.md` §26: a gravação do próprio Simulator não marca a cena como capturada).
   Notificações (ver `NOTIFICATIONS.md`): `-uiTestNotificationAuth <notDetermined|refuses|authorized|denied|provisional>` (central em memória, sem o
   prompt do sistema; `notDetermined` por padrão, que permite ao pedir) e `-uiTestNotificationTap <script|cleanUp|share|deletedScript|invalid|duplicate|routine|logbook|universe>`
-  (o app abre como se tivesse sido aberto por essa notificação).
+  (o app abre como se tivesse sido aberto por essa notificação); `-uiTestNotificationInvite` (o convite para permitir notificações pode
+  aparecer depois de uma sessão; sem ele, nunca aparece num teste de UI).
   Testes de UI: `-uiTestFastAnimations` (nada anima: sheets, pushes e as transações do SwiftUI; o `CueApp.launch` passa por padrão
   e `animations: true` pede as reais).
 - Idiomas: `LOCALIZATION.md` (três idiomas independentes, terminologia, RTL). Todo texto novo entra

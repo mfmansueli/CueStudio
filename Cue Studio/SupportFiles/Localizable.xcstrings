@@ -40892,6 +40892,125 @@
         }
       }
     },
+    "Allow notifications" : {
+      "comment" : "Invitation button: brings up the system's question",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "السماح بالإشعارات"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tillad notifikationer"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mitteilungen erlauben"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Permitir notificaciones"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Autoriser les notifications"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "सूचनाओं की अनुमति दें"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Izinkan notifikasi"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Consenti notifiche"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "通知を許可"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "알림 허용"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tillat varsler"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Meldingen toestaan"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Permitir notificações"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tillåt notiser"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "อนุญาตการแจ้งเตือน"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bildirimlere izin ver"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cho phép thông báo"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "允许通知"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "允許通知"
+          }
+        }
+      }
+    },
     "Allowed" : {
       "localizations" : {
         "ar" : {
@@ -83525,125 +83644,6 @@
         }
       }
     },
-    "Cue asks iOS for permission when you set a reminder or turn something on here." : {
-      "comment" : "Permission card, not asked yet",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "يطلب Cue الإذن من iOS عندما تضبط تذكيرًا أو تشغّل شيئًا هنا."
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cue beder iOS om tilladelse, når du opretter en påmindelse eller slår noget til her."
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cue fragt iOS um Erlaubnis, wenn du eine Erinnerung festlegst oder hier etwas einschaltest."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cue pide permiso a iOS cuando creas un recordatorio o activas algo aquí."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cue demande l’autorisation à iOS quand vous créez un rappel ou activez une option ici."
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "जब आप रिमाइंडर सेट करते हैं या यहाँ कुछ चालू करते हैं, तब Cue iOS से अनुमति माँगता है।"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cue meminta izin iOS saat kamu mengatur pengingat atau menyalakan sesuatu di sini."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cue chiede il permesso a iOS quando imposti un promemoria o attivi qualcosa qui."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "リマインダーを設定したり、ここで何かをオンにしたときに、CueがiOSに許可を求めます。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "리마인더를 설정하거나 여기서 무언가를 켤 때 Cue가 iOS에 권한을 요청합니다."
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cue ber iOS om tillatelse når du lager en påminnelse eller slår på noe her."
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cue vraagt iOS om toestemming als je een herinnering instelt of hier iets aanzet."
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "O Cue pede permissão ao iOS quando você cria um lembrete ou ativa algo aqui."
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cue ber iOS om tillåtelse när du ställer in en påminnelse eller slår på något här."
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cue จะขออนุญาตจาก iOS เมื่อคุณตั้งการเตือนหรือเปิดอะไรบางอย่างที่นี่"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bir hatırlatıcı kurduğunda ya da burada bir şeyi açtığında Cue, iOS’tan izin ister."
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cue xin phép iOS khi bạn đặt lời nhắc hoặc bật một mục ở đây."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "当你设置提醒或在此开启某项内容时，Cue 才会向 iOS 请求权限。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "當你設定提醒或在此開啟某項內容時，Cue 才會向 iOS 請求權限。"
-          }
-        }
-      }
-    },
     "Cue asks only when a feature needs it." : {
       "localizations" : {
         "ar" : {
@@ -91798,6 +91798,125 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "將從此 iPhone 刪除你的腳本、拍攝、剪輯和 My Cue Voice。此操作無法復原。"
+          }
+        }
+      }
+    },
+    "Delivered quietly" : {
+      "comment" : "Settings › Notifications: iOS delivers Cue's notifications only to Notification Center",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تصل بهدوء"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Leveres lydløst"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ohne Ton zugestellt"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Entrega silenciosa"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Distribution discrète"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "चुपचाप डिलीवर"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dikirim diam-diam"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Consegna silenziosa"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "目立たない配信"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "조용히 전달"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Leveres stille"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stil afgeleverd"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Entrega silenciosa"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Levereras tyst"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ส่งแบบเงียบ"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sessizce iletilir"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gửi im lặng"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "静默递送"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "安靜傳送"
           }
         }
       }
@@ -144944,6 +145063,125 @@
         }
       }
     },
+    "iOS keeps this setting. Turning it off opens Cue in iOS Settings." : {
+      "comment" : "Settings › Notifications footer, notifications allowed: the switch can only be turned off in iOS Settings",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يحتفظ iOS بهذا الإعداد. إيقافه يفتح Cue في إعدادات iOS."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iOS styrer denne indstilling. Slår du den fra, åbnes Cue i iOS-indstillinger."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diese Einstellung liegt bei iOS. Beim Ausschalten öffnet sich Cue in den iOS-Einstellungen."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iOS controla este ajuste. Al desactivarlo se abre Cue en Ajustes de iOS."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ce réglage appartient à iOS. Le désactiver ouvre Cue dans les Réglages d’iOS."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "यह सेटिंग iOS के पास है। इसे बंद करने पर iOS सेटिंग्स में Cue खुलता है।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pengaturan ini dikelola iOS. Menonaktifkannya membuka Cue di Pengaturan iOS."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Questa impostazione è gestita da iOS. Disattivandola si apre Cue nelle Impostazioni di iOS."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "この設定はiOSが管理します。オフにするとiOSの設定でCueが開きます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이 설정은 iOS가 관리합니다. 끄면 iOS 설정에서 Cue가 열립니다."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iOS styrer denne innstillingen. Slår du den av, åpnes Cue i iOS-innstillinger."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iOS beheert deze instelling. Uitzetten opent Cue in iOS-instellingen."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esse ajuste é do iOS. Desativar abre o Cue nos Ajustes do iOS."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iOS styr den här inställningen. Om du stänger av den öppnas Cue i iOS-inställningar."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iOS เป็นผู้ควบคุมการตั้งค่านี้ การปิดจะเปิด Cue ในการตั้งค่า iOS"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu ayarı iOS yönetir. Kapatmak, Cue’yu iOS Ayarları’nda açar."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iOS quản lý cài đặt này. Tắt sẽ mở Cue trong Cài đặt iOS."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "此设置由 iOS 管理。关闭时会在 iOS 设置中打开 Cue。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "此設定由 iOS 管理。關閉時會在 iOS 設定中打開 Cue。"
+          }
+        }
+      }
+    },
     "iPhone" : {
       "comment" : "Name of the microphone on the iPhone.",
       "isCommentAutoGenerated" : true,
@@ -189559,125 +189797,6 @@
         }
       }
     },
-    "Notifications are off for Cue" : {
-      "comment" : "Permission card title",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "إشعارات Cue متوقفة"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Notifikationer er slået fra for Cue"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mitteilungen für Cue sind aus"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Las notificaciones de Cue están desactivadas"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Les notifications de Cue sont désactivées"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cue के लिए सूचनाएँ बंद हैं"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Notifikasi untuk Cue mati"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Le notifiche di Cue sono disattivate"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cueの通知はオフです"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cue 알림이 꺼져 있습니다"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Varsler er av for Cue"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Meldingen voor Cue staan uit"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "As notificações do Cue estão desligadas"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Notiser är av för Cue"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "การแจ้งเตือนของ Cue ปิดอยู่"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cue için bildirimler kapalı"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Thông báo của Cue đang tắt"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cue 的通知已关闭"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cue 的通知已關閉"
-          }
-        }
-      }
-    },
     "Notifications are off for Cue in iOS Settings. The reminder is kept here in Cue." : {
       "comment" : "Reminder sheet note when denied",
       "localizations" : {
@@ -191101,6 +191220,125 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "關閉"
+          }
+        }
+      }
+    },
+    "Off in iOS Settings" : {
+      "comment" : "Settings › Notifications: the creator turned Cue's notifications off in iOS",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "متوقف في إعدادات iOS"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Slået fra i iOS-indstillinger"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "In den iOS-Einstellungen aus"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Desactivadas en Ajustes de iOS"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Désactivées dans les Réglages d’iOS"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iOS सेटिंग्स में बंद"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nonaktif di Pengaturan iOS"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Disattivate nelle Impostazioni di iOS"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iOSの設定でオフ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iOS 설정에서 꺼짐"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Av i iOS-innstillinger"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uit in iOS-instellingen"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Desativadas nos Ajustes do iOS"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Av i iOS-inställningar"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ปิดอยู่ในการตั้งค่า iOS"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iOS Ayarları’nda kapalı"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Đã tắt trong Cài đặt iOS"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已在 iOS 设置中关闭"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已在 iOS 設定中關閉"
           }
         }
       }
@@ -193583,6 +193821,125 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "再問一個"
+          }
+        }
+      }
+    },
+    "One notification when something is waiting, at most one a day. You can change it in Settings." : {
+      "comment" : "Invitation to allow notifications, the promise",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "إشعار واحد عندما ينتظرك شيء، وواحد في اليوم على الأكثر. يمكنك تغيير ذلك في الإعدادات."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Én notifikation, når noget venter, højst én om dagen. Du kan ændre det i Indstillinger."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eine Mitteilung, wenn etwas wartet, höchstens eine am Tag. Du kannst das in den Einstellungen ändern."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Una notificación cuando algo te espera, como máximo una al día. Puedes cambiarlo en Ajustes."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Une notification quand quelque chose vous attend, au plus une par jour. Vous pouvez le modifier dans Réglages."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "जब कुछ इंतज़ार कर रहा हो तब एक सूचना, दिन में ज़्यादा से ज़्यादा एक। आप इसे सेटिंग्स में बदल सकते हैं।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Satu notifikasi saat ada yang menunggu, paling banyak satu sehari. Kamu bisa mengubahnya di Pengaturan."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Una notifica quando qualcosa ti aspetta, al massimo una al giorno. Puoi cambiarlo in Impostazioni."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "待っているものがあるときに通知します。多くても1日1回です。設定でいつでも変更できます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "기다리는 작업이 있을 때 알림을 보내며 하루 최대 1개입니다. 설정에서 바꿀 수 있습니다."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ett varsel når noe venter, høyst ett om dagen. Du kan endre det i Innstillinger."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eén melding als er iets wacht, hooguit één per dag. Je kunt dit wijzigen in Instellingen."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uma notificação quando algo estiver esperando, no máximo uma por dia. Você pode mudar isso em Ajustes."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En notis när något väntar, högst en om dagen. Du kan ändra det i Inställningar."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "แจ้งเตือนหนึ่งครั้งเมื่อมีงานรออยู่ ไม่เกินวันละครั้ง เปลี่ยนได้ในการตั้งค่า"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bekleyen bir şey olduğunda tek bir bildirim, günde en fazla bir. Bunu Ayarlar’dan değiştirebilirsin."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Một thông báo khi có việc đang chờ, tối đa mỗi ngày một lần. Bạn có thể đổi trong Cài đặt."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "有内容在等你时发送一条通知，每天最多一条。你可以在设置中更改。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "有內容在等你時傳送一則通知，每天最多一則。你可以在設定中更改。"
           }
         }
       }
@@ -310163,6 +310520,125 @@
         }
       }
     },
+    "Turn it on and iOS asks you once. Cue also asks when you set a reminder." : {
+      "comment" : "Settings › Notifications footer, permission never asked",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "شغّله وسيسألك iOS مرة واحدة. يسأل Cue أيضًا عندما تضبط تذكيرًا."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Slå det til, så spørger iOS dig én gang. Cue spørger også, når du indstiller en påmindelse."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schalte es ein, dann fragt iOS dich einmal. Cue fragt auch, wenn du eine Erinnerung stellst."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Actívalo e iOS te preguntará una vez. Cue también pregunta cuando creas un recordatorio."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Activez-le et iOS vous posera la question une fois. Cue la pose aussi quand vous créez un rappel."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "इसे चालू करें, iOS आपसे एक बार पूछेगा। रिमाइंडर सेट करने पर भी Cue पूछता है।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aktifkan dan iOS akan bertanya sekali. Cue juga bertanya saat kamu membuat pengingat."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Attivala e iOS te lo chiederà una volta. Cue lo chiede anche quando imposti un promemoria."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "オンにするとiOSが一度だけ確認します。リマインダーを設定するときにもCueが確認します。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "켜면 iOS가 한 번 묻습니다. 리마인더를 설정할 때도 Cue가 묻습니다."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Slå det på, så spør iOS deg én gang. Cue spør også når du stiller inn en påminnelse."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zet het aan en iOS vraagt het je één keer. Cue vraagt het ook als je een herinnering instelt."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ative e o iOS pergunta uma vez. O Cue também pergunta quando você cria um lembrete."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Slå på det så frågar iOS dig en gång. Cue frågar också när du ställer in en påminnelse."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "เปิดแล้ว iOS จะถามคุณหนึ่งครั้ง Cue จะถามด้วยเมื่อคุณตั้งการเตือน"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Açtığında iOS sana bir kez sorar. Cue da bir hatırlatıcı kurduğunda sorar."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bật lên và iOS sẽ hỏi bạn một lần. Cue cũng hỏi khi bạn đặt lời nhắc."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "打开后 iOS 会询问你一次。你设置提醒时 Cue 也会询问。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "開啟後 iOS 會詢問你一次。你設定提醒時 Cue 也會詢問。"
+          }
+        }
+      }
+    },
     "Turn on" : {
       "localizations" : {
         "ar" : {
@@ -322456,6 +322932,244 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "想換個背景嗎？"
+          }
+        }
+      }
+    },
+    "Want a reminder to record this script?" : {
+      "comment" : "Invitation to allow notifications, leaving a finished script",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "هل تريد تذكيرًا بتسجيل هذا النص؟"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vil du have en påmindelse om at optage dette manuskript?"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Möchtest du eine Erinnerung, dieses Skript aufzunehmen?"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¿Quieres un recordatorio para grabar este guion?"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Voulez-vous un rappel pour filmer ce script ?"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "क्या इस स्क्रिप्ट को रिकॉर्ड करने का रिमाइंडर चाहिए?"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mau pengingat untuk merekam naskah ini?"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vuoi un promemoria per registrare questo copione?"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "この台本を録画するリマインダーを受け取りますか？"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이 대본을 녹화하라는 리마인더를 받을까요?"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vil du ha en påminnelse om å ta opp dette manuset?"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wil je een herinnering om dit script op te nemen?"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quer um lembrete para gravar este roteiro?"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vill du ha en påminnelse om att spela in det här manuset?"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ต้องการการเตือนให้อัดสคริปต์นี้ไหม"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu senaryoyu kaydetmen için bir hatırlatıcı ister misin?"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bạn muốn được nhắc quay kịch bản này?"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "需要提醒你录制这个脚本吗？"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "需要提醒你錄製這個腳本嗎？"
+          }
+        }
+      }
+    },
+    "Want Cue to remind you to finish this video?" : {
+      "comment" : "Invitation to allow notifications, after the first recording",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "هل تريد أن يذكّرك Cue بإنهاء هذا الفيديو؟"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skal Cue minde dig om at gøre denne video færdig?"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Soll Cue dich erinnern, dieses Video fertigzustellen?"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¿Quieres que Cue te recuerde terminar este video?"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Voulez-vous que Cue vous rappelle de terminer cette vidéo ?"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "क्या Cue आपको यह वीडियो पूरा करने की याद दिलाए?"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mau Cue mengingatkanmu menyelesaikan video ini?"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vuoi che Cue ti ricordi di finire questo video?"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "この動画を仕上げるよう、Cueからお知らせしましょうか？"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이 영상을 마무리하도록 Cue가 알려 드릴까요?"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skal Cue minne deg på å gjøre ferdig denne videoen?"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wil je dat Cue je eraan herinnert deze video af te maken?"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quer que o Cue te lembre de terminar este vídeo?"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vill du att Cue påminner dig om att göra klart den här videon?"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ให้ Cue เตือนให้คุณทำวิดีโอนี้ให้เสร็จไหม"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue bu videoyu bitirmeni sana hatırlatsın mı?"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bạn muốn Cue nhắc bạn hoàn thành video này?"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "需要 Cue 提醒你完成这个视频吗？"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "需要 Cue 提醒你完成這支影片嗎？"
           }
         }
       }
@@ -343408,121 +344122,121 @@
         }
       }
     },
-    "Your reminders stay here in Cue. To get them on time, allow notifications for Cue in iOS Settings." : {
-      "comment" : "Permission card, notifications denied",
+    "Your reminders stay here in Cue. Turning this on opens Cue in iOS Settings." : {
+      "comment" : "Settings › Notifications footer, notifications off in iOS",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "تبقى تذكيراتك هنا في Cue. لتصلك في وقتها، اسمح بإشعارات Cue في إعدادات iOS."
+            "value" : "تبقى تذكيراتك هنا في Cue. تشغيل هذا يفتح Cue في إعدادات iOS."
           }
         },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dine påmindelser bliver her i Cue. Tillad notifikationer for Cue i iOS-indstillinger for at få dem til tiden."
+            "value" : "Dine påmindelser bliver her i Cue. Slår du dette til, åbnes Cue i iOS-indstillinger."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Deine Erinnerungen bleiben hier in Cue. Damit sie pünktlich kommen, erlaube Mitteilungen für Cue in den iOS-Einstellungen."
+            "value" : "Deine Erinnerungen bleiben hier in Cue. Beim Einschalten öffnet sich Cue in den iOS-Einstellungen."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tus recordatorios se quedan aquí, en Cue. Para recibirlos a tiempo, permite las notificaciones de Cue en Ajustes de iOS."
+            "value" : "Tus recordatorios se quedan aquí en Cue. Al activarlo se abre Cue en Ajustes de iOS."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Vos rappels restent ici, dans Cue. Pour les recevoir à l’heure, autorisez les notifications de Cue dans Réglages iOS."
+            "value" : "Vos rappels restent ici dans Cue. L’activer ouvre Cue dans les Réglages d’iOS."
           }
         },
         "hi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "आपके रिमाइंडर Cue में ही रहते हैं। समय पर पाने के लिए iOS सेटिंग्स में Cue की सूचनाएँ चालू करें।"
+            "value" : "आपके रिमाइंडर यहीं Cue में रहते हैं। इसे चालू करने पर iOS सेटिंग्स में Cue खुलता है।"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pengingatmu tetap ada di Cue. Agar tiba tepat waktu, izinkan notifikasi Cue di Pengaturan iOS."
+            "value" : "Pengingatmu tetap ada di Cue. Mengaktifkannya membuka Cue di Pengaturan iOS."
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "I tuoi promemoria restano qui in Cue. Per riceverli in tempo, consenti le notifiche di Cue in Impostazioni di iOS."
+            "value" : "I tuoi promemoria restano qui in Cue. Attivandola si apre Cue nelle Impostazioni di iOS."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "リマインダーはCueの中に残ります。時間どおりに受け取るには、iOSの設定でCueの通知を許可してください。"
+            "value" : "リマインダーはCueに残ります。オンにするとiOSの設定でCueが開きます。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "리마인더는 Cue 안에 그대로 있습니다. 제때 받으려면 iOS 설정에서 Cue 알림을 허용하세요."
+            "value" : "리마인더는 Cue에 그대로 있습니다. 켜면 iOS 설정에서 Cue가 열립니다."
           }
         },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Påminnelsene blir værende her i Cue. Tillat varsler for Cue i iOS-innstillinger for å få dem i tide."
+            "value" : "Påminnelsene dine blir her i Cue. Slår du dette på, åpnes Cue i iOS-innstillinger."
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Je herinneringen blijven hier in Cue. Sta meldingen voor Cue toe in iOS-instellingen om ze op tijd te krijgen."
+            "value" : "Je herinneringen blijven hier in Cue. Aanzetten opent Cue in iOS-instellingen."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Seus lembretes ficam aqui no Cue. Para recebê-los na hora, permita as notificações do Cue nos Ajustes do iOS."
+            "value" : "Seus lembretes ficam aqui no Cue. Ativar abre o Cue nos Ajustes do iOS."
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dina påminnelser finns kvar här i Cue. Tillåt notiser för Cue i iOS-inställningar för att få dem i tid."
+            "value" : "Dina påminnelser stannar här i Cue. Om du slår på detta öppnas Cue i iOS-inställningar."
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "การเตือนของคุณยังอยู่ใน Cue หากต้องการได้รับตรงเวลา ให้อนุญาตการแจ้งเตือนของ Cue ในการตั้งค่า iOS"
+            "value" : "การเตือนของคุณยังอยู่ใน Cue การเปิดจะเปิด Cue ในการตั้งค่า iOS"
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Hatırlatıcıların burada, Cue’da kalır. Zamanında almak için iOS Ayarları’nda Cue bildirimlerine izin ver."
+            "value" : "Hatırlatıcıların burada, Cue’da kalır. Açmak, Cue’yu iOS Ayarları’nda açar."
           }
         },
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Lời nhắc của bạn vẫn ở trong Cue. Để nhận đúng giờ, hãy cho phép thông báo của Cue trong Cài đặt iOS."
+            "value" : "Lời nhắc của bạn vẫn ở trong Cue. Bật sẽ mở Cue trong Cài đặt iOS."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "你的提醒会保留在 Cue 中。若要准时收到，请在 iOS 设置中允许 Cue 发送通知。"
+            "value" : "你的提醒会保留在 Cue 中。打开时会在 iOS 设置中打开 Cue。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "你的提醒會保留在 Cue 中。若要準時收到，請在 iOS 設定中允許 Cue 傳送通知。"
+            "value" : "你的提醒會保留在 Cue 中。開啟時會在 iOS 設定中打開 Cue。"
           }
         }
       }

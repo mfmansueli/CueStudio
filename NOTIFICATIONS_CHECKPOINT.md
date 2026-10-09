@@ -60,7 +60,17 @@ destination/section; `VoiceQuestionScheduler.otherIntroductionToday` + `onTipSho
 - [x] 11. Docs: `NOTIFICATIONS.md`, `ARCHITECTURE.md` (§2.5), `DESIGN_PROJECT.md` §27, `CLAUDE.md` launch args; contrast test
       `PaletteContrastTests.theNotificationSheetsReadOnTheirNight`; reminder status uses `ink2`.
 - [x] Debug: Settings › Notifications › DEBUG › Preview every notification (`NotificationService+DebugPreview`), at the user's request.
-- [ ] Install on "iago Lima iphone" (UDID 00008130-001274381451001C): queued after the full suite (`CUE_DEVICE=… scripts/build.sh install`).
+- [x] Installed on both iPhones (Iago 15 Pro, Mansuelli 18 Pro Max) at 14:58; new app icon `AppIcon.icon` (old icons removed).
+- [x] Soft permission invite (user approved): after the first recording (prompter closes with takes), second chance leaving a READY script
+      page without recording, 14+ days after a "Not now"; at most 2; Debug/UI tests gate `-uiTestNotificationInvite`.
+      `NotificationInviteTests` (11) + 2 UI tests pass.
+- [x] User request (9/10): Settings › Notifications › "On this iPhone" › **Allow notifications** switch (`NotificationPermissionSection`,
+      replaces `NotificationPermissionCard`): not asked → iOS asks; anything else → Cue's page in iOS Settings. 2 UI tests pass.
+- [x] Navigator "gone" toasts last 5 s (the deleted-script UI test raced the 2.4 s toast at cold launch).
+- [x] Baseline on `main`: 13 of the 14 UI failures also fail there (pre-existing, not ours): CreationSheets swipe Logbook, CueUniverse
+      ReadyToTravel, FirstRun card height, 7× PrompterUITests, RecorderV29 compact bar, ScreenCapture editor, ScriptLibrary recorded script.
+      `SettingsUITests/testResetCreatorSetupKeepsItsRowAndAsksFirst` passed on main and passes on this branch when run alone.
+- [ ] Delete `.claude/worktrees/baseline-main` and its build/DerivedData.
 - [ ] 12. `scripts/test.sh full` (running), then `scripts/check-warnings.sh`, `xcrun simctl --set testing delete all`, final report
       (in Portuguese), delete this file.
 

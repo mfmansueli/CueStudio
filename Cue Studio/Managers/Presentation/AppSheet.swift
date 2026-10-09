@@ -32,6 +32,8 @@ enum AppSheet: Identifiable, Hashable {
     case voiceSetup
     /// Import my writing, opened from a notification.
     case importWriting
+    /// Cue's invitation to allow notifications, before the system's question.
+    case notificationInvite(NotificationInviteReason)
 
     var id: String {
         switch self {
@@ -48,6 +50,7 @@ enum AppSheet: Identifiable, Hashable {
         case .featureIntro(let request): "featureIntro.\(request.id)"
         case .voiceSetup: "voiceSetup"
         case .importWriting: "importWriting"
+        case .notificationInvite(let reason): "notificationInvite.\(reason.rawValue)"
         }
     }
 }
