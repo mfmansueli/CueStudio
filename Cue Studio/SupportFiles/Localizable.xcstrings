@@ -31671,6 +31671,125 @@
         }
       }
     },
+    "A subtle finish, if you want one. It starts at zero and you choose the intensity." : {
+      "comment" : "Introduction benefit (Skin Smoothing); never about appearance",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "لمسة نهائية خفيفة إن أردتها. تبدأ من الصفر وأنت تختار شدتها."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En diskret finish, hvis du vil have en. Den starter på nul, og du vælger styrken."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ein dezenter Feinschliff, wenn du magst. Er beginnt bei null, und du wählst die Stärke."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un acabado sutil, si lo quieres. Empieza en cero y tú eliges la intensidad."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Une finition subtile, si vous le souhaitez. Elle commence à zéro et vous choisissez l’intensité."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "अगर आप चाहें तो एक हल्का फ़िनिश। यह शून्य से शुरू होता है और तीव्रता आप चुनते हैं।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sentuhan akhir yang halus, jika kamu mau. Mulai dari nol dan kamu memilih intensitasnya."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Una finitura delicata, se la vuoi. Parte da zero e scegli tu l’intensità."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "お好みで、さりげない仕上げを。ゼロから始まり、強さはあなたが選びます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "원한다면 은은한 마무리를. 0에서 시작하며 강도는 직접 고르세요."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En diskret finish, hvis du vil. Den starter på null, og du velger styrken."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Een subtiele afwerking, als je wilt. Hij begint op nul en jij kiest de sterkte."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Um acabamento sutil, se você quiser. Começa em zero e você escolhe a intensidade."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En diskret finish, om du vill. Den börjar på noll och du väljer styrkan."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "การแต่งภาพแบบบางเบา ถ้าคุณต้องการ เริ่มที่ศูนย์ และคุณเลือกความเข้มเอง"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "İstersen hafif bir son dokunuş. Sıfırdan başlar, yoğunluğu sen seçersin."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Một lớp hoàn thiện nhẹ nhàng, nếu bạn muốn. Bắt đầu từ số không và bạn chọn cường độ."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "如果你需要，可以加一点轻柔的润饰。从零开始，强度由你选择。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "如果你需要，可以加一點輕柔的潤飾。從零開始，強度由你選擇。"
+          }
+        }
+      }
+    },
     "a thin ring" : {
       "localizations" : {
         "ar" : {
@@ -53922,6 +54041,125 @@
         }
       }
     },
+    "Blur or change the background behind you." : {
+      "comment" : "Introduction benefit (backgrounds)",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اجعل الخلفية خلفك ضبابية أو غيّرها."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Slør eller skift baggrunden bag dig."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mach den Hintergrund hinter dir unscharf oder tausche ihn aus."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Desenfoca o cambia el fondo detrás de ti."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Floutez ou changez l’arrière-plan derrière vous."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "अपने पीछे का बैकग्राउंड धुंधला करें या बदलें।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buramkan atau ganti latar di belakangmu."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sfoca o cambia lo sfondo dietro di te."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "後ろの背景をぼかしたり変えたりできます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "뒤의 배경을 흐리게 하거나 바꿔 보세요."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gjør bakgrunnen bak deg uskarp, eller bytt den ut."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vervaag of vervang de achtergrond achter je."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Desfoque ou troque o fundo atrás de você."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gör bakgrunden bakom dig suddig eller byt ut den."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "เบลอหรือเปลี่ยนพื้นหลังด้านหลังคุณ"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Arkandaki arka planı bulanıklaştır ya da değiştir."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Làm mờ hoặc thay nền phía sau bạn."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "虚化或更换你身后的背景。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "模糊或更換你身後的背景。"
+          }
+        }
+      }
+    },
     "Blur strength" : {
       "localizations" : {
         "ar" : {
@@ -63747,6 +63985,125 @@
         }
       }
     },
+    "Captions written from your voice, so your audience can follow without sound." : {
+      "comment" : "Introduction benefit (Auto captions)",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ترجمة نصية تُكتب من صوتك، ليتابع جمهورك دون صوت."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Undertekster skrevet ud fra din stemme, så dit publikum kan følge med uden lyd."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Untertitel aus deiner Stimme, damit dein Publikum auch ohne Ton folgen kann."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Subtítulos escritos a partir de tu voz, para que tu público te siga sin sonido."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Des sous-titres écrits à partir de votre voix, pour être suivi même sans le son."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "आपकी आवाज़ से लिखे कैप्शन, ताकि दर्शक बिना आवाज़ के भी समझ सकें।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Teks yang ditulis dari suaramu, agar penonton bisa mengikuti tanpa suara."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sottotitoli scritti dalla tua voce, così il pubblico ti segue anche senza audio."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "声から字幕を作成。音なしでも見てもらえます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "목소리로 자막을 만들어 소리 없이도 따라갈 수 있게 합니다."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Undertekster skrevet fra stemmen din, så publikum kan følge med uten lyd."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ondertitels uit je stem, zodat je publiek ook zonder geluid kan meekijken."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Legendas escritas a partir da sua voz, para o público acompanhar sem som."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Undertexter skrivna från din röst, så att publiken kan följa med utan ljud."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "คำบรรยายที่สร้างจากเสียงของคุณ ให้ผู้ชมตามได้แม้ปิดเสียง"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sesinden yazılan altyazılar; izleyicilerin sessiz de takip edebilir."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Phụ đề viết từ giọng nói của bạn, để khán giả theo dõi khi tắt tiếng."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "根据你的声音生成字幕，观众静音也能看懂。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "依你的聲音產生字幕，觀眾靜音也能看懂。"
+          }
+        }
+      }
+    },
     "Capture an idea by voice" : {
       "localizations" : {
         "ar" : {
@@ -68124,6 +68481,125 @@
         }
       }
     },
+    "Choose the first image that introduces your video." : {
+      "comment" : "Introduction benefit (cover)",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اختر أول صورة تقدّم الفيديو."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vælg det første billede, der præsenterer din video."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wähl das erste Bild, das dein Video vorstellt."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elige la primera imagen que presenta tu video."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choisissez la première image qui présente votre vidéo."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "वह पहली तस्वीर चुनें जो आपके वीडियो का परिचय दे।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pilih gambar pertama yang memperkenalkan videomu."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scegli la prima immagine che presenta il tuo video."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "動画の顔になる最初の1枚を選びましょう。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "영상을 소개할 첫 이미지를 고르세요."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Velg det første bildet som presenterer videoen."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kies het eerste beeld dat je video introduceert."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escolha a primeira imagem que apresenta o seu vídeo."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Välj den första bilden som presenterar din video."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "เลือกภาพแรกที่แนะนำวิดีโอของคุณ"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Videonu tanıtan ilk görseli seç."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chọn hình ảnh đầu tiên giới thiệu video của bạn."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "选择介绍你视频的第一张画面。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "選擇介紹你影片的第一張畫面。"
+          }
+        }
+      }
+    },
     "Choose the microphone to record with" : {
       "localizations" : {
         "ar" : {
@@ -69190,6 +69666,125 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "簡潔"
+          }
+        }
+      }
+    },
+    "Clean Up" : {
+      "comment" : "Tool name (Quick edit's pauses, filler words and retakes)",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تنظيف"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oprydning"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aufräumen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Limpieza"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nettoyage"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "क्लीन अप"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bersihkan"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pulizia"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "クリーンアップ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "정리"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rydd opp"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Opschonen"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Limpeza"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rensa"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "เก็บกวาด"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Temizleme"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dọn dẹp"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "清理"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "清理"
           }
         }
       }
@@ -106836,6 +107431,125 @@
         }
       }
     },
+    "Explore a clearer sound for your voice. Nothing changes until you choose a level." : {
+      "comment" : "Introduction benefit (Studio Voice)",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "استكشف صوتًا أوضح لصوتك. لا يتغير شيء حتى تختار مستوى."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Udforsk en klarere lyd til din stemme. Intet ændres, før du vælger et niveau."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Entdecke einen klareren Klang für deine Stimme. Nichts ändert sich, bis du eine Stufe wählst."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Explora un sonido más claro para tu voz. No cambia nada hasta que eliges un nivel."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Découvrez un son plus clair pour votre voix. Rien ne change tant que vous ne choisissez pas de niveau."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "अपनी आवाज़ के लिए ज़्यादा साफ़ साउंड आज़माएँ। लेवल चुनने तक कुछ नहीं बदलता।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Coba suara yang lebih jernih untuk vokalmu. Tidak ada yang berubah sampai kamu memilih level."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scopri un suono più chiaro per la tua voce. Non cambia nulla finché non scegli un livello."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "声をもっとクリアに。レベルを選ぶまで何も変わりません。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "더 깨끗한 목소리를 들어 보세요. 단계를 고르기 전에는 아무것도 바뀌지 않습니다."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Utforsk en klarere lyd for stemmen din. Ingenting endres før du velger et nivå."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ontdek een helderder geluid voor je stem. Er verandert niets tot je een niveau kiest."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Experimente um som mais claro para a sua voz. Nada muda até você escolher um nível."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Utforska ett klarare ljud för din röst. Inget ändras förrän du väljer en nivå."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ลองเสียงที่ชัดขึ้นสำหรับเสียงพูดของคุณ จะไม่มีอะไรเปลี่ยนจนกว่าคุณจะเลือกระดับ"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sesin için daha net bir ses keşfet. Bir seviye seçene kadar hiçbir şey değişmez."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Khám phá âm thanh rõ hơn cho giọng nói. Không có gì thay đổi cho đến khi bạn chọn mức."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "让你的声音更清晰。在你选择级别前不会有任何改变。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "讓你的聲音更清晰。在你選擇級別前不會有任何改變。"
+          }
+        }
+      }
+    },
     "Explore an idea for your next video about %@." : {
       "comment" : "Notification body; one of Cue's topic names",
       "localizations" : {
@@ -110976,6 +111690,125 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "理財"
+          }
+        }
+      }
+    },
+    "Find pauses and repetitions. You choose what stays." : {
+      "comment" : "Introduction benefit (Clean Up)",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اعثر على الوقفات والتكرارات. أنت تختار ما يبقى."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Find pauser og gentagelser. Du vælger, hvad der bliver."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Finde Pausen und Wiederholungen. Du entscheidest, was bleibt."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Encuentra pausas y repeticiones. Tú eliges qué se queda."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Repérez pauses et répétitions. Vous choisissez ce qui reste."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "पॉज़ और दोहराव खोजें। क्या रहेगा, यह आप तय करते हैं।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Temukan jeda dan pengulangan. Kamu yang memilih apa yang dipertahankan."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trova pause e ripetizioni. Scegli tu cosa resta."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "間や言い直しを見つけます。残す部分はあなたが選びます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "멈춤과 반복을 찾아 드립니다. 무엇을 남길지는 직접 고르세요."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Finn pauser og gjentakelser. Du velger hva som blir."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vind pauzes en herhalingen. Jij kiest wat blijft."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Encontre pausas e repetições. Você escolhe o que fica."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hitta pauser och upprepningar. Du väljer vad som blir kvar."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "หาช่วงเงียบและคำซ้ำ คุณเลือกเองว่าจะเก็บอะไร"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Duraklamaları ve tekrarları bul. Neyin kalacağını sen seçersin."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tìm quãng lặng và đoạn lặp. Bạn chọn đoạn nào giữ lại."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "找出停顿和重复，保留什么由你决定。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "找出停頓和重複，保留什麼由你決定。"
           }
         }
       }
@@ -118541,6 +119374,125 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "免費試用 · 含 %lld 次匯出。之後免費 7 天。"
+          }
+        }
+      }
+    },
+    "Free. Nothing changes until you choose." : {
+      "comment" : "Introduction note",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مجاني. لا يتغير شيء حتى تختار."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gratis. Intet ændres, før du vælger."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kostenlos. Nichts ändert sich, bis du wählst."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gratis. No cambia nada hasta que eliges."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gratuit. Rien ne change tant que vous ne choisissez pas."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "मुफ़्त। आपके चुनने तक कुछ नहीं बदलता।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gratis. Tidak ada yang berubah sampai kamu memilih."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gratis. Non cambia nulla finché non scegli."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "無料。選ぶまで何も変わりません。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "무료. 직접 고르기 전에는 아무것도 바뀌지 않습니다."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gratis. Ingenting endres før du velger."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gratis. Er verandert niets tot je kiest."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Grátis. Nada muda até você escolher."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gratis. Inget ändras förrän du väljer."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ฟรี จะไม่มีอะไรเปลี่ยนจนกว่าคุณจะเลือก"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ücretsiz. Sen seçene kadar hiçbir şey değişmez."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Miễn phí. Không có gì thay đổi cho đến khi bạn chọn."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "免费。在你选择前不会有任何改变。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "免費。在你選擇前不會有任何改變。"
           }
         }
       }
@@ -136301,6 +137253,125 @@
         }
       }
     },
+    "Ideas for the topics you make videos about. Nothing is written until you pick one." : {
+      "comment" : "Introduction benefit (ideas)",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "أفكار للمواضيع التي تصنع عنها فيديوهات. لا يُكتب شيء حتى تختار واحدة."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Idéer til de emner, du laver videoer om. Intet bliver skrevet, før du vælger en."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ideen zu den Themen deiner Videos. Nichts wird geschrieben, bis du eine auswählst."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ideas para los temas de tus videos. No se escribe nada hasta que eliges una."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Des idées pour les thèmes de vos vidéos. Rien n’est écrit tant que vous n’en choisissez pas une."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "जिन विषयों पर आप वीडियो बनाते हैं, उनके लिए आइडिया। जब तक आप एक न चुनें, कुछ नहीं लिखा जाता।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ide untuk topik videomu. Tidak ada yang ditulis sampai kamu memilih."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Idee per gli argomenti dei tuoi video. Non si scrive nulla finché non ne scegli una."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "あなたが動画にするトピックのアイデア。選ぶまで何も書かれません。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "영상 주제에 맞는 아이디어. 하나를 고르기 전에는 아무것도 쓰지 않습니다."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Idéer til emnene du lager videoer om. Ingenting skrives før du velger en."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ideeën voor de onderwerpen van je video’s. Er wordt niets geschreven tot je er een kiest."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ideias para os temas dos seus vídeos. Nada é escrito até você escolher uma."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Idéer för ämnena du gör videor om. Inget skrivs förrän du väljer en."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ไอเดียตามหัวข้อที่คุณทำวิดีโอ จะไม่มีการเขียนอะไรจนกว่าคุณจะเลือก"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Video yaptığın konular için fikirler. Sen birini seçene kadar hiçbir şey yazılmaz."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ý tưởng theo chủ đề video của bạn. Chưa có gì được viết cho đến khi bạn chọn."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "按你的视频主题给出点子。在你选中前不会写任何内容。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "依你的影片主題提供點子。在你選定前不會寫任何內容。"
+          }
+        }
+      }
+    },
     "Ideas for you" : {
       "localizations" : {
         "ar" : {
@@ -136533,6 +137604,125 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "為你推薦的點子 · 點一下開始"
+          }
+        }
+      }
+    },
+    "Ideas for your topics" : {
+      "comment" : "Tool name in its introduction",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "أفكار لمواضيعك"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Idéer til dine emner"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ideen zu deinen Themen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ideas para tus temas"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Idées pour vos thèmes"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "आपके विषयों के लिए आइडिया"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ide untuk topikmu"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Idee per i tuoi argomenti"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "トピック別のアイデア"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "주제별 아이디어"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Idéer til emnene dine"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ideeën voor je onderwerpen"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ideias para os seus temas"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Idéer för dina ämnen"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ไอเดียสำหรับหัวข้อของคุณ"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Konuların için fikirler"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ý tưởng cho chủ đề của bạn"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "适合你主题的点子"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "適合你主題的點子"
           }
         }
       }
@@ -153558,6 +154748,125 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "聆聽中…"
+          }
+        }
+      }
+    },
+    "Listens on this iPhone. Some languages download a model the first time." : {
+      "comment" : "Introduction note",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يستمع على هذا iPhone. بعض اللغات تنزّل نموذجًا في المرة الأولى."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lytter på denne iPhone. Nogle sprog henter en model første gang."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hört auf diesem iPhone zu. Manche Sprachen laden beim ersten Mal ein Modell."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escucha en este iPhone. Algunos idiomas descargan un modelo la primera vez."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Écoute sur cet iPhone. Certaines langues téléchargent un modèle la première fois."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "इसी iPhone पर सुनता है। कुछ भाषाएँ पहली बार एक मॉडल डाउनलोड करती हैं।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mendengarkan di iPhone ini. Beberapa bahasa mengunduh model saat pertama kali."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ascolta su questo iPhone. Alcune lingue scaricano un modello la prima volta."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このiPhoneで聞き取ります。言語によっては初回にモデルをダウンロードします。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이 iPhone에서 음성을 듣습니다. 일부 언어는 처음에 모델을 다운로드합니다."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lytter på denne iPhonen. Noen språk laster ned en modell første gang."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Luistert op deze iPhone. Sommige talen downloaden de eerste keer een model."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escuta neste iPhone. Alguns idiomas baixam um modelo na primeira vez."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lyssnar på den här iPhonen. Vissa språk laddar ned en modell första gången."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ฟังบน iPhone เครื่องนี้ บางภาษาจะดาวน์โหลดโมเดลในครั้งแรก"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu iPhone’da dinler. Bazı diller ilk seferde bir model indirir."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nghe trên iPhone này. Một số ngôn ngữ tải mô hình ở lần đầu."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在此 iPhone 上聆听。部分语言首次使用时需下载模型。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在此 iPhone 上聆聽。部分語言首次使用時需下載模型。"
           }
         }
       }
@@ -172034,6 +173343,125 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "需要點子嗎？"
+          }
+        }
+      }
+    },
+    "Needs another iPhone or iPad with Cue, nearby." : {
+      "comment" : "Introduction note",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يحتاج إلى iPhone أو iPad آخر عليه Cue، بالقرب منك."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kræver en anden iPhone eller iPad med Cue i nærheden."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Braucht ein anderes iPhone oder iPad mit Cue in der Nähe."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Necesita otro iPhone o iPad con Cue cerca."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nécessite un autre iPhone ou iPad avec Cue, à proximité."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "पास में Cue वाला दूसरा iPhone या iPad चाहिए।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Perlu iPhone atau iPad lain dengan Cue di dekatmu."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Serve un altro iPhone o iPad con Cue, vicino."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cueが入った別のiPhoneまたはiPadが近くに必要です。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue가 설치된 다른 iPhone이나 iPad가 근처에 있어야 합니다."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trenger en annen iPhone eller iPad med Cue i nærheten."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Werkt met een andere iPhone of iPad met Cue in de buurt."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Precisa de outro iPhone ou iPad com o Cue, por perto."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kräver en annan iPhone eller iPad med Cue i närheten."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ต้องมี iPhone หรือ iPad อีกเครื่องที่มี Cue อยู่ใกล้ๆ"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yakında Cue yüklü başka bir iPhone ya da iPad gerekir."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cần một iPhone hoặc iPad khác có Cue ở gần."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "需要附近另一台装有 Cue 的 iPhone 或 iPad。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "需要附近另一台裝有 Cue 的 iPhone 或 iPad。"
           }
         }
       }
@@ -218114,7 +219542,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Baca sesuai temponya kamu"
+            "value" : "Baca sesuai tempomu"
           }
         },
         "it" : {
@@ -218187,6 +219615,125 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "按自己的節奏念"
+          }
+        }
+      }
+    },
+    "Read at your own pace: the text moves when you speak and waits when you pause." : {
+      "comment" : "Introduction benefit (Voice Following)",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اقرأ بإيقاعك: يتحرك النص عندما تتكلم وينتظر عندما تتوقف."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Læs i dit eget tempo: teksten bevæger sig, når du taler, og venter, når du holder pause."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lies in deinem Tempo: Der Text läuft, wenn du sprichst, und wartet, wenn du pausierst."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lee a tu ritmo: el texto avanza cuando hablas y espera cuando haces una pausa."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lisez à votre rythme : le texte avance quand vous parlez et attend quand vous faites une pause."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "अपनी रफ़्तार से पढ़ें: बोलने पर टेक्स्ट चलता है और रुकने पर इंतज़ार करता है।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Baca sesuai tempomu: teks bergerak saat kamu bicara dan menunggu saat kamu jeda."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Leggi al tuo ritmo: il testo scorre quando parli e aspetta quando fai una pausa."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "自分のペースで：話すとテキストが進み、止まると待ちます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "나만의 속도로: 말하면 텍스트가 움직이고 멈추면 기다립니다."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les i ditt eget tempo: teksten flytter seg når du snakker, og venter når du tar pause."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lees in je eigen tempo: de tekst loopt mee als je praat en wacht als je pauzeert."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Leia no seu ritmo: o texto anda quando você fala e espera quando você pausa."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Läs i din egen takt: texten rör sig när du pratar och väntar när du pausar."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "อ่านตามจังหวะของคุณ: ข้อความเลื่อนเมื่อคุณพูด และรอเมื่อคุณหยุด"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kendi hızında oku: konuştukça metin ilerler, durunca bekler."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Đọc theo nhịp của bạn: chữ chạy khi bạn nói và dừng khi bạn ngừng."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "按自己的节奏念：你说话时文字前进，停顿时文字等你。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "按自己的節奏念：你說話時文字前進，停頓時文字等你。"
           }
         }
       }
@@ -221734,6 +223281,125 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "錄影"
+          }
+        }
+      }
+    },
+    "Record a narration over your edit. Nothing records until you press the button." : {
+      "comment" : "Introduction benefit (voice-over)",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "سجّل تعليقًا صوتيًا فوق التعديل. لا يبدأ التسجيل حتى تضغط الزر."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Optag en fortælling over din redigering. Intet optages, før du trykker på knappen."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nimm einen Kommentar über deinen Schnitt auf. Aufgenommen wird erst, wenn du die Taste drückst."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Graba una narración sobre tu edición. No se graba nada hasta que pulsas el botón."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enregistrez une narration sur votre montage. Rien n’est enregistré avant que vous n’appuyiez sur le bouton."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "अपने एडिट पर नैरेशन रिकॉर्ड करें। बटन दबाने तक कुछ रिकॉर्ड नहीं होता।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rekam narasi di atas editanmu. Tidak ada yang terekam sampai kamu menekan tombol."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Registra una narrazione sul montaggio. Non si registra nulla finché non premi il pulsante."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "編集した動画にナレーションを録音。ボタンを押すまで録音されません。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "편집본 위에 내레이션을 녹음하세요. 버튼을 누르기 전에는 녹음되지 않습니다."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ta opp en fortelling over redigeringen. Ingenting tas opp før du trykker på knappen."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Neem een voice-over op over je bewerking. Er wordt niets opgenomen tot je op de knop drukt."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Grave uma narração por cima da edição. Nada é gravado até você apertar o botão."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spela in en berättarröst över din redigering. Inget spelas in förrän du trycker på knappen."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "อัดเสียงบรรยายทับวิดีโอที่ตัดต่อ จะไม่มีการอัดจนกว่าคุณจะกดปุ่ม"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Düzenlemenin üzerine anlatım kaydet. Düğmeye basana kadar hiçbir şey kaydedilmez."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ghi âm thuyết minh trên bản dựng. Không ghi gì cho đến khi bạn nhấn nút."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "为剪辑录制解说。按下按钮前不会录音。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "為剪輯錄製解說。按下按鈕前不會錄音。"
           }
         }
       }
@@ -235486,6 +237152,125 @@
         }
       }
     },
+    "Save an idea before it disappears, and develop it later." : {
+      "comment" : "Introduction benefit (Logbook)",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "احفظ الفكرة قبل أن تختفي، وطوّرها لاحقًا."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gem en idé, før den forsvinder, og arbejd videre med den senere."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Halte eine Idee fest, bevor sie verschwindet, und bau sie später aus."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Guarda una idea antes de que se te escape y desarróllala después."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gardez une idée avant qu’elle ne s’envole et développez-la plus tard."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "आइडिया गायब होने से पहले सेव करें, और बाद में आगे बढ़ाएँ।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Simpan ide sebelum hilang, lalu kembangkan nanti."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Salva un’idea prima che svanisca e sviluppala dopo."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アイデアが消える前に保存して、あとで形にしましょう。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "아이디어가 사라지기 전에 저장하고 나중에 발전시키세요."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ta vare på en idé før den forsvinner, og utvikle den senere."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bewaar een idee voordat het verdwijnt en werk het later uit."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Salve uma ideia antes que ela escape e desenvolva depois."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spara en idé innan den försvinner och utveckla den senare."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "เก็บไอเดียไว้ก่อนมันหายไป แล้วค่อยพัฒนาทีหลัง"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bir fikri kaybolmadan kaydet, sonra geliştir."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lưu ý tưởng trước khi nó biến mất và phát triển sau."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在点子溜走前记下来，以后再完善。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在點子溜走前記下來，以後再發展。"
+          }
+        }
+      }
+    },
     "Save as my style" : {
       "localizations" : {
         "ar" : {
@@ -243188,6 +244973,125 @@
         }
       }
     },
+    "Scripts that sound more like you. Four questions, and you can change any answer." : {
+      "comment" : "Introduction benefit (My Cue Voice)",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "نصوص تشبه أسلوبك أكثر. أربعة أسئلة، ويمكنك تغيير أي إجابة."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Manuskripter, der lyder mere som dig. Fire spørgsmål, og du kan ændre alle svar."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skripte, die mehr nach dir klingen. Vier Fragen, und du kannst jede Antwort ändern."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Guiones que suenan más a ti. Cuatro preguntas, y puedes cambiar cualquier respuesta."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Des scripts qui vous ressemblent davantage. Quatre questions, et chaque réponse reste modifiable."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ऐसी स्क्रिप्ट जो आपकी तरह लगें। चार सवाल, और कोई भी जवाब बदल सकते हैं।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Naskah yang terdengar lebih seperti kamu. Empat pertanyaan, dan semua jawaban bisa diubah."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copioni che suonano più come te. Quattro domande, e puoi cambiare ogni risposta."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "もっと自分らしい台本に。質問は4つ、答えはいつでも変えられます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "더 나다운 대본. 질문은 네 개뿐이고 답은 언제든 바꿀 수 있습니다."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Manus som høres mer ut som deg. Fire spørsmål, og du kan endre alle svar."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scripts die meer als jou klinken. Vier vragen, en je kunt elk antwoord wijzigen."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Roteiros com mais a sua cara. Quatro perguntas, e você pode mudar qualquer resposta."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Manus som låter mer som du. Fyra frågor, och du kan ändra alla svar."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "สคริปต์ที่เป็นตัวคุณมากขึ้น ตอบสี่คำถาม และเปลี่ยนคำตอบได้ทุกเมื่อ"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Daha çok sana benzeyen senaryolar. Dört soru, her yanıtı değiştirebilirsin."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kịch bản giống giọng bạn hơn. Bốn câu hỏi, và bạn có thể đổi mọi câu trả lời."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "让脚本更像你。只需四个问题，答案随时可改。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "讓腳本更像你。只需四個問題，答案隨時可改。"
+          }
+        }
+      }
+    },
     "scripts you approved" : {
       "comment" : "My Cue Voice (Apple Intelligence plan)",
       "localizations" : {
@@ -244967,6 +246871,125 @@
         }
       }
     },
+    "See how the videos you share are shaping your universe." : {
+      "comment" : "Introduction benefit (Your universe)",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "شاهد كيف تشكّل الفيديوهات التي تشاركها كونك."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se, hvordan de videoer, du deler, former dit univers."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sieh, wie die Videos, die du teilst, dein Universum formen."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mira cómo los videos que compartes dan forma a tu universo."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Voyez comment les vidéos que vous partagez façonnent votre univers."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "देखें कि आपके शेयर किए वीडियो आपका ब्रह्मांड कैसे बना रहे हैं।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lihat bagaimana video yang kamu bagikan membentuk semestamu."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Guarda come i video che condividi danno forma al tuo universo."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "共有した動画があなたの宇宙をどうつくっているか見てみましょう。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "공유한 영상이 당신의 우주를 어떻게 만드는지 확인하세요."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se hvordan videoene du deler, former universet ditt."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zie hoe de video’s die je deelt je universum vormen."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Veja como os vídeos que você compartilha estão formando o seu universo."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se hur videorna du delar formar ditt universum."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ดูว่าวิดีโอที่คุณแชร์สร้างจักรวาลของคุณอย่างไร"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Paylaştığın videoların evrenini nasıl şekillendirdiğini gör."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Xem những video bạn chia sẻ đang tạo nên vũ trụ của bạn thế nào."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "看看你分享的视频如何塑造你的宇宙。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "看看你分享的影片如何塑造你的宇宙。"
+          }
+        }
+      }
+    },
     "See how your videos are shaping your universe" : {
       "comment" : "Discovery title (Your universe)",
       "localizations" : {
@@ -245437,6 +247460,125 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "查看 Pro 的內容"
+          }
+        }
+      }
+    },
+    "See where TikTok, Reels and Shorts put their buttons while you record." : {
+      "comment" : "Introduction benefit (safe zones)",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "شاهد أين تضع TikTok وReels وShorts أزرارها أثناء التسجيل."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se, hvor TikTok, Reels og Shorts placerer deres knapper, mens du optager."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sieh beim Aufnehmen, wo TikTok, Reels und Shorts ihre Buttons platzieren."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mira dónde ponen sus botones TikTok, Reels y Shorts mientras grabas."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Voyez où TikTok, Reels et Shorts placent leurs boutons pendant que vous filmez."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "रिकॉर्ड करते समय देखें कि TikTok, Reels और Shorts अपने बटन कहाँ रखते हैं।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lihat posisi tombol TikTok, Reels, dan Shorts saat kamu merekam."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Guarda dove TikTok, Reels e Shorts mettono i loro pulsanti mentre registri."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "録画中に、TikTok、Reels、Shortsのボタンの位置がわかります。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "녹화하는 동안 TikTok, Reels, Shorts의 버튼 위치를 확인하세요."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se hvor TikTok, Reels og Shorts legger knappene sine mens du tar opp."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zie tijdens het opnemen waar TikTok, Reels en Shorts hun knoppen plaatsen."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Veja onde TikTok, Reels e Shorts colocam os botões enquanto você grava."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se var TikTok, Reels och Shorts placerar sina knappar medan du spelar in."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ดูตำแหน่งปุ่มของ TikTok, Reels และ Shorts ขณะที่คุณอัด"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kayıt sırasında TikTok, Reels ve Shorts’un düğmelerini nereye koyduğunu gör."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Xem TikTok, Reels và Shorts đặt nút ở đâu khi bạn quay."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "录制时就能看到 TikTok、Reels 和 Shorts 的按钮位置。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "錄影時就能看到 TikTok、Reels 和 Shorts 的按鈕位置。"
           }
         }
       }
@@ -254071,6 +256213,125 @@
         }
       }
     },
+    "Show Cue something you wrote, and it learns how you put things." : {
+      "comment" : "Introduction benefit (Import my writing)",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "أرِ Cue شيئًا كتبته، وسيتعلّم طريقتك في التعبير."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vis Cue noget, du har skrevet, så lærer det, hvordan du udtrykker dig."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zeig Cue etwas, das du geschrieben hast, und es lernt, wie du dich ausdrückst."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Muéstrale a Cue algo que hayas escrito y aprenderá cómo te expresas."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Montrez à Cue un texte de vous : il apprend votre façon de dire les choses."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue को अपनी लिखी कोई चीज़ दिखाएँ, वह सीखेगा कि आप बातें कैसे कहते हैं।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tunjukkan tulisanmu ke Cue, dan ia mempelajari caramu menyampaikan sesuatu."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostra a Cue qualcosa che hai scritto e imparerà come ti esprimi."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "書いたものを見せると、Cueがあなたの言い回しを学びます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "직접 쓴 글을 보여 주면 Cue가 당신의 표현 방식을 배웁니다."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vis Cue noe du har skrevet, så lærer den hvordan du uttrykker deg."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Laat Cue iets zien wat je schreef en het leert hoe jij dingen zegt."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostre ao Cue algo que você escreveu, e ele aprende o seu jeito de dizer as coisas."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Visa Cue något du har skrivit, så lär den sig hur du uttrycker dig."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ให้ Cue ดูงานเขียนของคุณ แล้วมันจะเรียนรู้วิธีที่คุณสื่อสาร"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue’ya yazdığın bir şeyi göster, kendini nasıl ifade ettiğini öğrensin."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cho Cue xem bài bạn viết, Cue sẽ học cách bạn diễn đạt."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "给 Cue 看看你写的东西，它会学习你的表达方式。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "給 Cue 看看你寫的東西，它會學習你的表達方式。"
+          }
+        }
+      }
+    },
     "Show cues" : {
       "comment" : "Script page: VoiceOver label of the Cues switch by Improve, which shows or hides the cue tags in the script's text",
       "localizations" : {
@@ -254424,6 +256685,125 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "邊說邊展示範例"
+          }
+        }
+      }
+    },
+    "Show examples while you speak: add a photo or a clip over your video." : {
+      "comment" : "Introduction benefit (B-roll)",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اعرض أمثلة أثناء حديثك: أضف صورة أو مقطعًا فوق الفيديو."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vis eksempler, mens du taler: læg et billede eller klip oven på din video."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zeig Beispiele, während du sprichst: Leg ein Foto oder einen Clip über dein Video."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Muestra ejemplos mientras hablas: añade una foto o un clip sobre tu video."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Montrez des exemples pendant que vous parlez : ajoutez une photo ou un extrait par-dessus votre vidéo."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "बोलते समय उदाहरण दिखाएँ: वीडियो पर फ़ोटो या क्लिप जोड़ें।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tampilkan contoh saat bicara: tambahkan foto atau klip di atas videomu."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostra esempi mentre parli: aggiungi una foto o una clip sopra il video."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "話しながら例を見せよう：写真やクリップを動画に重ねられます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "말하면서 예시를 보여 주세요: 영상 위에 사진이나 클립을 추가하세요."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vis eksempler mens du snakker: legg et bilde eller et klipp over videoen."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Laat voorbeelden zien terwijl je praat: zet een foto of clip over je video."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostre exemplos enquanto fala: adicione uma foto ou um clipe por cima do vídeo."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Visa exempel medan du pratar: lägg en bild eller ett klipp över videon."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "แสดงตัวอย่างระหว่างพูด: เพิ่มรูปหรือคลิปซ้อนบนวิดีโอ"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Konuşurken örnek göster: videonun üzerine bir fotoğraf ya da klip ekle."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Minh họa khi bạn nói: thêm ảnh hoặc clip lên video."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "边说边展示示例：在视频上叠加照片或片段。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "邊說邊展示範例：在影片上疊加照片或片段。"
           }
         }
       }
@@ -261050,6 +263430,125 @@
         }
       }
     },
+    "Some languages download before the first translation." : {
+      "comment" : "Introduction note",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "بعض اللغات تُنزَّل قبل أول ترجمة."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nogle sprog hentes før den første oversættelse."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Manche Sprachen werden vor der ersten Übersetzung geladen."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Algunos idiomas se descargan antes de la primera traducción."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Certaines langues se téléchargent avant la première traduction."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "कुछ भाषाएँ पहले अनुवाद से पहले डाउनलोड होती हैं।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beberapa bahasa diunduh sebelum terjemahan pertama."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alcune lingue si scaricano prima della prima traduzione."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "言語によっては最初の翻訳の前にダウンロードされます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "일부 언어는 첫 번역 전에 다운로드됩니다."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Noen språk lastes ned før den første oversettelsen."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sommige talen worden vóór de eerste vertaling gedownload."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alguns idiomas são baixados antes da primeira tradução."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vissa språk laddas ned före den första översättningen."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "บางภาษาจะดาวน์โหลดก่อนการแปลครั้งแรก"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bazı diller ilk çeviriden önce indirilir."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Một số ngôn ngữ cần tải về trước lần dịch đầu tiên."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "部分语言需在首次翻译前下载。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "部分語言需在首次翻譯前下載。"
+          }
+        }
+      }
+    },
     "Some of you felt misled" : {
       "localizations" : {
         "ar" : {
@@ -265892,6 +268391,125 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "從你自己的話開始"
+          }
+        }
+      }
+    },
+    "Start, pause and scroll the teleprompter from another iPhone or iPad." : {
+      "comment" : "Introduction benefit (Remote Control)",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ابدأ الملقّن وأوقفه مؤقتًا ومرّره من iPhone أو iPad آخر."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Start, sæt på pause og rul teleprompteren fra en anden iPhone eller iPad."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Starte, pausiere und scrolle den Teleprompter von einem anderen iPhone oder iPad."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inicia, pausa y desplaza el teleprompter desde otro iPhone o iPad."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lancez, mettez en pause et faites défiler le téléprompteur depuis un autre iPhone ou iPad."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "दूसरे iPhone या iPad से टेलीप्रॉम्प्टर शुरू करें, रोकें और स्क्रॉल करें।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mulai, jeda, dan gulir teleprompter dari iPhone atau iPad lain."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Avvia, metti in pausa e scorri il teleprompter da un altro iPhone o iPad."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "別のiPhoneやiPadからプロンプターの開始、一時停止、スクロールができます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "다른 iPhone이나 iPad로 프롬프터를 시작, 일시 정지, 스크롤하세요."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Start, sett på pause og rull teleprompteren fra en annen iPhone eller iPad."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Start, pauzeer en scroll de teleprompter vanaf een andere iPhone of iPad."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inicie, pause e role o teleprompter por outro iPhone ou iPad."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Starta, pausa och rulla teleprompten från en annan iPhone eller iPad."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "เริ่ม หยุดชั่วคราว และเลื่อนเทเลพรอมป์เตอร์จาก iPhone หรือ iPad อีกเครื่อง"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Teleprompter’ı başka bir iPhone ya da iPad’den başlat, duraklat ve kaydır."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bắt đầu, tạm dừng và cuộn teleprompter từ iPhone hoặc iPad khác."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "用另一台 iPhone 或 iPad 开始、暂停和滚动提词器。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "用另一台 iPhone 或 iPad 開始、暫停和捲動提詞機。"
           }
         }
       }
@@ -297378,6 +299996,125 @@
         }
       }
     },
+    "Translated captions" : {
+      "comment" : "Tool name in its introduction",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ترجمة نصية مترجمة"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oversatte undertekster"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Übersetzte Untertitel"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Subtítulos traducidos"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sous-titres traduits"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "अनुवादित कैप्शन"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Teks terjemahan"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sottotitoli tradotti"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "翻訳字幕"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "번역 자막"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oversatte undertekster"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vertaalde ondertitels"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Legendas traduzidas"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Översatta undertexter"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "คำบรรยายที่แปลแล้ว"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Çevrilmiş altyazılar"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Phụ đề đã dịch"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "翻译字幕"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "翻譯字幕"
+          }
+        }
+      }
+    },
     "Translated on your iPhone · Nothing is sent" : {
       "localizations" : {
         "ar" : {
@@ -306832,6 +309569,125 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "有已連接的麥克風時會優先使用。"
+          }
+        }
+      }
+    },
+    "Uses Apple Intelligence on this iPhone." : {
+      "comment" : "Introduction note",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يستخدم Apple Intelligence على هذا iPhone."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bruger Apple Intelligence på denne iPhone."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nutzt Apple Intelligence auf diesem iPhone."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usa Apple Intelligence en este iPhone."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Utilise Apple Intelligence sur cet iPhone."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "इस iPhone पर Apple Intelligence का उपयोग करता है।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Menggunakan Apple Intelligence di iPhone ini."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usa Apple Intelligence su questo iPhone."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このiPhoneのApple Intelligenceを使います。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이 iPhone의 Apple Intelligence를 사용합니다."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bruker Apple Intelligence på denne iPhonen."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gebruikt Apple Intelligence op deze iPhone."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usa o Apple Intelligence neste iPhone."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Använder Apple Intelligence på den här iPhonen."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ใช้ Apple Intelligence บน iPhone เครื่องนี้"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu iPhone’daki Apple Intelligence’ı kullanır."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dùng Apple Intelligence trên iPhone này."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "使用此 iPhone 上的 Apple Intelligence。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "使用此 iPhone 上的 Apple Intelligence。"
           }
         }
       }
@@ -329302,6 +332158,125 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "字幕已在影片裡 · 請保持自動字幕關閉"
+          }
+        }
+      }
+    },
+    "Your captions in another language, next to the originals." : {
+      "comment" : "Introduction benefit (caption translation)",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ترجمتك النصية بلغة أخرى، إلى جانب الأصل."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dine undertekster på et andet sprog, ved siden af de originale."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deine Untertitel in einer anderen Sprache, neben den Originalen."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tus subtítulos en otro idioma, junto a los originales."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vos sous-titres dans une autre langue, à côté des originaux."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "आपके कैप्शन दूसरी भाषा में, मूल कैप्शन के साथ।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Teksmu dalam bahasa lain, di samping aslinya."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "I tuoi sottotitoli in un’altra lingua, accanto agli originali."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "元の字幕と並べて、別の言語の字幕を。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "원본 자막과 함께 다른 언어 자막을."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Undertekstene dine på et annet språk, ved siden av originalene."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Je ondertitels in een andere taal, naast de originele."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Suas legendas em outro idioma, ao lado das originais."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dina undertexter på ett annat språk, bredvid originalen."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "คำบรรยายของคุณในภาษาอื่น อยู่คู่กับต้นฉบับ"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Altyazıların başka bir dilde, orijinallerin yanında."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Phụ đề của bạn bằng ngôn ngữ khác, bên cạnh bản gốc."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "其他语言的字幕，与原字幕并列。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "其他語言的字幕，與原字幕並列。"
           }
         }
       }

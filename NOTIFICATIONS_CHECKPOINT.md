@@ -51,8 +51,9 @@ destination/section; `VoiceQuestionScheduler.otherIntroductionToday` + `onTipSho
       Logbook focus + yellow outline.
 - [x] 7. `scripts/build.sh app` succeeds with zero warnings (FeatureCopy became `FeatureID+Copy.swift` computed properties; note text is
       `FeatureIntro.Note.text`; navigator/MainView switches split for SwiftLint).
-- [ ] 8. Strings: batch 1 (Settings page, 34 keys) added. Remaining batches: reminders/sheets, notification copy, feature copy.
-      Find what is still missing with the scratchpad-free check: `git diff main -U0` keys vs the catalog (see session notes).
+- [x] 8. Strings: 163 keys in 20 languages (`scripts/strings.py missing` → 0). Debug diagnostics use `Text(verbatim:)`.
+- [ ] 9. Unit tests (next): planner, campaigns, discovery, adoption, LocalDateTime/DST, quiet hours, state migration, payload,
+      service (fake center + fake facts), router, reminders.
 
 ## Left to do
 
