@@ -154,6 +154,23 @@ final class ScriptLibraryUITests: XCTestCase {
         }
     }
 
+    /// A script that already has takes opens its page with a tap on the row, like any other; its "×3 ›" is the way to its videos.
+    func testARecordedScriptOpensItsPageAndItsCountGoesToTakes() {
+        let app = CueApp.launch(seeded: true)
+        let row = app.scriptRow(Self.habits)
+        row.tap()
+        XCTAssertTrue(app.buttons["detail.recordButton"].waitForExistence(timeout: 5), "the row opens the script's page")
+        XCTAssertTrue(app.tabBars.buttons["Scripts"].isSelected)
+        app.pageBackButton.tap()
+        XCTAssertTrue(element(app, "scripts.promptCard").waitForExistence(timeout: 5))
+
+        let count = app.buttons["row.takes"].firstMatch
+        XCTAssertTrue(count.waitForExistence(timeout: 5), "a recorded row has its ×n button")
+        count.tap()
+        XCTAssertTrue(element(app, "takes.pipeline").waitForExistence(timeout: 5), "×3 › goes to Takes")
+        XCTAssertFalse(app.pageBackButton.exists)
+    }
+
     func testNewScriptOpensInTheDraftWithTheTitleReady() {
         let app = CueApp.launch(seeded: true)
         let plus = app.buttons["scripts.newButton"]
