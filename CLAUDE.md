@@ -79,6 +79,8 @@ Toda tela, componente ou cor nova **precisa passar** no contraste antes de ser e
   `-uiTestExportsLeft <0…5>` (quantas exportações grátis restam; 0 abre "Your video is ready"), `-uiTestWelcomeAt <s>` / `-uiTestProAt <s>` (congelam a abertura da 1.1 / do Pro nesse segundo), `-uiTestUniverse sample|newYear|newAccount` (o que o Your universe guarda, como o painel APP DATA do protótipo), `-uiTestFirstStar` / `-uiTestMilestone <n>` (a revisão abre direto na história da 1.7 / do 8.3), `-uiTestSendOffAt <s>` (congela o send-off 8.2), `-uiTestStoryAt <s>` (congela o 8.3 e a 1.7), `-uiTestFakeShareSheet` (um substituto com Complete/Cancel no lugar da folha de compartilhamento do sistema), `-uiTestShareQueue` (uma fila do Share to universe deixada para o take de exemplo: o card Continue posting),
   `-uiTestOnboardingStep welcome|universe|voyage|script|voice|practice` (com `-uiTestOnboarding`, o primeiro voo abre nesse capítulo), `-uiTestChapterAt <s>` (congela a abertura do capítulo na tela, 1.2 a 1.6, nesse segundo),
   `-uiTestWelcomeOpening` (a abertura da 1.1 toca inteira, ≈ 8 s; nos testes de UI ela mostra só o estado final).
+  `-uiTestSceneCapture on|off` (a cena começa gravada/espelhada ou não, e o teste liga e desliga a captura com `notify_post`;
+  ver `SimulatedSceneCapture` e `DESIGN_PROJECT.md` §26: a gravação do próprio Simulator não marca a cena como capturada).
   Testes de UI: `-uiTestFastAnimations` (nada anima: sheets, pushes e as transações do SwiftUI; o `CueApp.launch` passa por padrão
   e `animations: true` pede as reais).
 - Idiomas: `LOCALIZATION.md` (três idiomas independentes, terminologia, RTL). Todo texto novo entra

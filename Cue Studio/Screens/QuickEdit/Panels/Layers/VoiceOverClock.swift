@@ -5,8 +5,8 @@
 
 import SwiftUI
 
-/// "Starts at 00:04.1", or how long it has been recording: reads the player's clock in its own
-/// small view so the panel doesn't redraw while the video plays.
+/// "Starts at 00:04.1", or how long it has been recording: reads the player's clock (the
+/// microphone's while recording) in its own small view so the panel doesn't redraw while the video plays.
 struct VoiceOverClock: View {
     let viewModel: QuickEditViewModel
 

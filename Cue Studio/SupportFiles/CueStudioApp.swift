@@ -22,6 +22,9 @@ struct CueStudioApp: App {
         // Hosting the unit tests: an empty window (some tests put a view in it), nothing loaded, nothing drawing.
         guard !TestHost.isHostingUnitTests else { return }
         let options = LaunchOptions.fromProcess()
+        #if DEBUG
+        SimulatedSceneCapture.shared.start(arguments: ProcessInfo.processInfo.arguments)
+        #endif
         let services = AppServices(options: options)
         services.load()
         services.registerIntentDependencies()

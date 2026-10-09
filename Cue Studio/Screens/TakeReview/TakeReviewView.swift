@@ -25,12 +25,9 @@ struct TakeReviewView: View {
     var onLaunchActionDone: () -> Void = {}
 
     @State private var flow: ShareFlow
-    @State private var player = AVPlayer()
-    @State private var audioSession = PlaybackAudioManager()
-    @State private var playbackTask: Task<Void, Never>?
-    @State private var isPlaying = false
-    @State private var isMuted = false
-    @State private var progress: Double = 0
+    @State private var playback = ReviewPlayback()
+    /// The screen is recorded or mirrored: the video hides behind `CaptureShield` and `playback` holds still.
+    @SceneCaptured private var isSceneCaptured
 
     /// "Pick your best take", opened by ✦ Suggest best.
     @State private var proposal: BestTakeProposal?
@@ -130,6 +127,8 @@ struct TakeReviewView: View {
         // top of each other and the stage names turn into "ESC…".
         .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
         .task(id: PlayerKey(takeID: viewModel.takeID, edit: viewModel.take?.edit)) { await runPlayer() }
+        // On appear too: a recording that started before this screen (or before launch) holds it from the first frame.
+        .onChange(of: isSceneCaptured, initial: true) { _, captured in playback.isPlaybackBlocked = captured }
         .onChange(of: viewModel.take?.edit?.showsCaptions ?? false) { _, shown in
             viewModel.burnsInCaptions = shown
         }
@@ -186,7 +185,7 @@ struct TakeReviewView: View {
             }
         }
         .onAppear { connectFlow(); applyLaunchAction(); considerFirstStar(); showStoriesForTests() }
-        .onDisappear { pausePlayback(); viewModel.leave() }
+        .onDisappear { playback.pause(); viewModel.leave() }
         .modifier(ExportPresentations(viewModel: viewModel, isActive: viewModel.celebration == nil))
     }
 
@@ -195,7 +194,7 @@ struct TakeReviewView: View {
     private func video(for take: Take) -> some View {
         GeometryReader { proxy in
             let frame = frameSize(for: take.outputAspect, in: proxy.size)
-            PlayerView(player: player)
+            PlayerView(player: playback.player)
                 .frame(width: frame.width, height: frame.height)
                 .clipped()
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -214,8 +213,10 @@ struct TakeReviewView: View {
             .ignoresSafeArea()
             .allowsHitTesting(false)
         }
+        // Under the shield the swipe to another take still works; a tap asks a held player to play and nothing happens.
+        .captureShielded(isSceneCaptured)
         .contentShape(Rectangle())
-        .onTapGesture { togglePlayback() }
+        .onTapGesture { playback.toggle() }
         .simultaneousGesture(
             DragGesture(minimumDistance: 40).onEnded { drag in
                 // A clear horizontal swipe goes to the next (left) or the previous (right) take.
@@ -224,8 +225,8 @@ struct TakeReviewView: View {
             }
         )
         .overlay {
-            if !isPlaying {
-                Button { togglePlayback() } label: {
+            if !playback.isPlaying, !isSceneCaptured {
+                Button { playback.toggle() } label: {
                     Image(systemName: "play.fill").offset(x: 2)
                 }
                 .buttonStyle(.cueIcon(.glass, diameter: 64))
@@ -251,7 +252,7 @@ struct TakeReviewView: View {
             onToggleBest: viewModel.toggleBest,
             // Gone at once, with 4 s of Undo in the toast (04 · F4): no question first.
             onDelete: {
-                pausePlayback()
+                playback.pause()
                 onDeleted(viewModel.delete())
             },
             onPrevious: viewModel.neighbor(-1) == nil ? nil : { selectNeighbor(-1) },
@@ -265,7 +266,7 @@ struct TakeReviewView: View {
         return VStack(spacing: 0) {
             Spacer()
             VStack(alignment: .leading, spacing: 0) {
-                ReviewScrubber(progress: progress, duration: take.duration) { seek(to: $0, of: take) }
+                ReviewScrubber(progress: playback.progress, duration: take.duration) { playback.seek(to: $0, of: take.duration) }
                 Rectangle().fill(Color.white.opacity(0.1)).frame(height: 0.5).padding(.top, 14)
                 ReviewInfoPanel(
                     take: take, stage: viewModel.stage, lengthFit: viewModel.lengthFit, scriptVersion: viewModel.scriptVersionLabel,
@@ -277,12 +278,12 @@ struct TakeReviewView: View {
                     glowsShare: glowsShare,
                     editTitle: viewModel.hasOpenEdit ? String(localized: "Continue") : String(localized: "Edit"),
                     onEdit: {
-                        pausePlayback()
+                        playback.pause()
                         editingTake = take
                     },
                     onRetake: onRetake,
                     onSave: { Task { await viewModel.save() } },
-                    onScript: take.scriptID.map { id in { pausePlayback(); onOpenScript(id) } },
+                    onScript: take.scriptID.map { id in { playback.pause(); onOpenScript(id) } },
                     onShare: { shareToUniverse() }
                 )
                 .padding(.top, 22)
@@ -322,7 +323,7 @@ struct TakeReviewView: View {
     /// Swipe or the chip: another take of the same video, paused.
     private func selectNeighbor(_ offset: Int) {
         guard let next = viewModel.neighbor(offset) else { return }
-        pausePlayback()
+        playback.pause()
         onSelect(next)
     }
 
@@ -382,7 +383,7 @@ struct TakeReviewView: View {
 
     /// The yellow button: the file is made (nothing leaves Cue, nothing is counted), "Ready to travel" comes up, and the networks with it.
     private func shareToUniverse() {
-        pausePlayback()
+        playback.pause()
         Task {
             await viewModel.render()
             guard case .readyToTravel(let video)? = viewModel.celebration else { return }
@@ -393,7 +394,7 @@ struct TakeReviewView: View {
 
     /// "Continue posting" and "POST TO LINKEDIN LATER": the queue picks up where it was.
     private func continueQueue(_ network: ShareDestination?) {
-        pausePlayback()
+        playback.pause()
         Task { await flow.resume(network) }
     }
 
@@ -404,7 +405,7 @@ struct TakeReviewView: View {
         }
         flow.onEditFirst = {
             viewModel.celebration = nil
-            pausePlayback()
+            playback.pause()
             editingTake = viewModel.take
         }
     }
@@ -492,7 +493,7 @@ struct TakeReviewView: View {
     /// Opens "Pick your best take" with Cue's suggestion.
     private func suggestBest(from take: Take) {
         guard let found = viewModel.bestProposal() else { return }
-        pausePlayback()
+        playback.pause()
         proposal = found
     }
 
@@ -505,57 +506,15 @@ struct TakeReviewView: View {
     }
 
     private func runPlayer() async {
-        pausePlayback()
+        playback.pause()
         guard let url = viewModel.videoURL else { return }
         if let edit = viewModel.take?.edit, let item = try? await editing.previewItem(forVideoAt: url, edit: edit) {
-            player.replaceCurrentItem(with: item)
+            playback.load(item)
         } else {
-            player.replaceCurrentItem(with: AVPlayerItem(url: url))
+            playback.load(AVPlayerItem(url: url))
         }
         guard !Task.isCancelled else { return }
         // Opens paused: the play button starts it.
-        player.isMuted = isMuted
-        while !Task.isCancelled {
-            let duration = viewModel.take?.duration ?? 0
-            let seconds = player.currentTime().seconds
-            progress = duration > 0 && seconds.isFinite ? min(1, seconds / duration) : 0
-            isPlaying = playbackTask != nil || player.timeControlStatus != .paused
-            if progress >= 0.999 && !isPlaying {
-                await player.seek(to: .zero)
-                progress = 0
-            }
-            try? await Task.sleep(for: .milliseconds(100))
-        }
-    }
-
-    private func togglePlayback() {
-        if isPlaying {
-            pausePlayback()
-        } else {
-            startPlayback()
-        }
-    }
-
-    private func startPlayback() {
-        playbackTask?.cancel()
-        isPlaying = true
-        playbackTask = Task {
-            await audioSession.prepareForPlayback()
-            guard !Task.isCancelled else { return }
-            playbackTask = nil
-            player.play()
-        }
-    }
-
-    private func pausePlayback() {
-        playbackTask?.cancel()
-        playbackTask = nil
-        player.pause()
-        isPlaying = false
-    }
-
-    private func seek(to fraction: Double, of take: Take) {
-        progress = fraction
-        player.seek(to: CMTime(seconds: take.duration * fraction, preferredTimescale: 600), toleranceBefore: .zero, toleranceAfter: .zero)
+        await playback.follow { viewModel.take?.duration ?? 0 }
     }
 }

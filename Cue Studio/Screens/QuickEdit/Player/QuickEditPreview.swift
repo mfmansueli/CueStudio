@@ -9,7 +9,7 @@ import SwiftUI
 /// Crop tool, dragging moves the crop; with Text or Media, handles move what is laid on the video
 /// (`OverlayEditingLayer`); with Cover, the cover shows instead (`CoverPreviewLayer`). Says so
 /// when the recording can't be opened, and shows "Processing…" when a change takes a moment to
-/// build.
+/// build. While the screen is recorded or mirrored all of it hides behind `CaptureShield`.
 struct QuickEditPreview: View {
     let viewModel: QuickEditViewModel
     let size: CGSize
@@ -17,6 +17,7 @@ struct QuickEditPreview: View {
     var isFullScreen = false
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @SceneCaptured private var isSceneCaptured
     @State private var dragStartOffset: Double?
 
     var body: some View {
@@ -50,8 +51,10 @@ struct QuickEditPreview: View {
             }
             .overlay { recordingBadge }
             .overlay { status }
+            // The video, a held frame, the cover and everything laid on them; the player itself is held by the editor.
+            .captureShielded(isSceneCaptured)
             .clipShape(RoundedRectangle(cornerRadius: isFullScreen ? 0 : Metrics.editorPreviewRadius, style: .continuous))
-            .gesture(cropDrag, isEnabled: viewModel.panel == .crop && !isFullScreen)
+            .gesture(cropDrag, isEnabled: viewModel.panel == .crop && !isFullScreen && !isSceneCaptured)
             .onTapGesture {
                 if isFullScreen {
                     if !viewModel.isRecordingVoiceOver { viewModel.togglePlayback() }
@@ -64,7 +67,7 @@ struct QuickEditPreview: View {
             .accessibilityElement(children: isFullScreen ? .combine : .contain)
             .accessibilityLabel(Text("Preview"))
             .accessibilityValue(Text(statusDescription ?? ""))
-            .accessibilityHint(isFullScreen ? Text("Tap to play or pause") : Text(""))
+            .accessibilityHint(isFullScreen && !isSceneCaptured ? Text("Tap to play or pause") : Text(""))
             .accessibilityAddTraits(.startsMediaSession)
             .accessibilityIdentifier("edit.preview")
     }
@@ -121,6 +124,7 @@ struct QuickEditPreview: View {
 
     /// What VoiceOver reads after "Preview" when something is wrong or slow.
     private var statusDescription: String? {
+        if isSceneCaptured { return String(localized: "Stop screen recording or mirroring to view this preview.") }
         if viewModel.source == .unavailable { return String(localized: "This video can't be opened") }
         if viewModel.player.state == .failed { return String(localized: "The preview couldn't be built") }
         if viewModel.player.isProcessing { return String(localized: "Processing…") }

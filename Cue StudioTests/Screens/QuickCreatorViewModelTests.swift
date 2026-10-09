@@ -570,6 +570,58 @@ struct QuickCreatorViewModelTests {
         #expect(viewModel.edit.voiceOvers.isEmpty)
     }
 
+    @Test func screenCaptureDuringAVoiceOverHoldsTheVideoAndKeepsRecording() async throws {
+        let scenario = await makeScenario()
+        let viewModel = scenario.viewModel
+        scenario.player.seek(to: 12)
+        await viewModel.startVoiceOver()
+        scenario.recorder.elapsed = 1.5
+        viewModel.sceneCaptureChanged(true)
+        #expect(viewModel.isRecordingVoiceOver)
+        #expect(!scenario.recorder.cancelled)
+        #expect(!scenario.player.isPlaying)
+        // The microphone's clock, not the held video's.
+        #expect(viewModel.voiceOverTimeLabel == DurationText.editor(1.5))
+
+        viewModel.sceneCaptureChanged(false)
+        #expect(!scenario.player.isPlaying)
+        #expect(scenario.player.isMuted)
+        viewModel.stopVoiceOver()
+        let clip = try #require(viewModel.edit.voiceOvers.first)
+        #expect(clip.anchor == 12)
+        #expect(clip.duration == 4)
+    }
+
+    @Test func aVoiceOverStartedWhileTheScreenIsCapturedRecordsWithTheVideoHeld() async throws {
+        let scenario = await makeScenario()
+        let viewModel = scenario.viewModel
+        viewModel.sceneCaptureChanged(true)
+        await viewModel.startVoiceOver()
+        #expect(viewModel.isRecordingVoiceOver)
+        #expect(!scenario.player.isPlaying)
+        // Its playback after Stop waits for capture to end too.
+        viewModel.stopVoiceOver()
+        #expect(viewModel.edit.voiceOvers.count == 1)
+        #expect(!scenario.player.isPlaying)
+    }
+
+    @Test func editsMadeWhileTheScreenIsCapturedStayAndNothingPlays() async {
+        let scenario = await makeScenario()
+        let viewModel = scenario.viewModel
+        scenario.player.seek(to: 10)
+        viewModel.sceneCaptureChanged(true)
+        viewModel.togglePlayback()
+        #expect(!scenario.player.isPlaying)
+        viewModel.addText(.title)
+        viewModel.sceneCaptureChanged(false)
+        #expect(viewModel.edit.texts.count == 1)
+        #expect(viewModel.hasUnsavedChanges)
+        #expect(scenario.player.currentTime == 10)
+        #expect(!scenario.player.isPlaying)
+        viewModel.togglePlayback()
+        #expect(scenario.player.isPlaying)
+    }
+
     @Test func cancelDropsARecordingInProgress() async {
         let scenario = await makeScenario()
         await scenario.viewModel.startVoiceOver()

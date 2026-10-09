@@ -22,6 +22,10 @@ protocol EditPlayback: AnyObject {
     var reviewedPart: ClosedRange<TimeInterval>? { get set }
     /// Silent while a voice-over is recorded, so the take's sound doesn't leak into it.
     var isMuted: Bool { get set }
+    /// The scene is recorded or mirrored (`SceneCaptured`): turning it on pauses, and while it is on nothing plays (a tap, an
+    /// audio session coming ready, a seek or rebuild landing, a preview of a change). Turning it off leaves the playhead where
+    /// it was, paused: playback never starts on its own. Seeking still moves the playhead (the timeline edits around it).
+    var isPlaybackBlocked: Bool { get set }
 
     /// Plays `edit` from now on, keeping the playhead on the same moment of the recording (or
     /// where the edit picks up, when that moment was cut).

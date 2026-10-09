@@ -20,9 +20,10 @@ extension QuickEditViewModel {
         DurationText.timecode(recorder.elapsed, total: edit.editedDuration)
     }
 
-    /// Under the record button: where it will start, or how long it has been recording.
+    /// Under the record button: where it will start, or how long it has been recording (the microphone's clock: the video
+    /// under it may be held while the screen is recorded).
     var voiceOverTimeLabel: String {
-        if let recordingStart { return DurationText.editor(max(0, player.currentTime - recordingStart)) }
+        if recordingStart != nil { return DurationText.editor(recorder.elapsed) }
         return String(localized: "Starts at \(DurationText.editor(player.currentTime))")
     }
 
