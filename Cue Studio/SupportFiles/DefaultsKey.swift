@@ -20,6 +20,8 @@ nonisolated enum DefaultsKey {
     static let creatorProfile = "creatorProfile"
     /// The card's suggested ideas written by the model and not yet shown, and the titles of the ones that were (`IdeaSuggestionService`).
     static let ideaSuggestions = "ideaSuggestions"
+    /// The library has held a script at least once (`LibraryHistory`): an empty Scripts is then the returning state, not the first-use one.
+    static let hasEverHadScript = "hasEverHadScript"
     /// The creator's own cues on the script page's cues bar (`[String]`).
     static let customCues = "customCues"
     /// The script page's Cues switch (`Bool`; absent = on).
