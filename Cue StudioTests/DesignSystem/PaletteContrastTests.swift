@@ -446,6 +446,34 @@ struct PaletteContrastTests {
         }
     }
 
+    /// Find inspiration: the featured card's words on its violet night and at its brightest point (the light of its top corner), the chosen
+    /// topic chip (white words on violet; the chip apart from the sheet's night, 3:1, since it is what says which topic is chosen), the dock's
+    /// lightbulb (an icon that informs, 3:1) and the empty Scripts' cards (their words and their icons on their tiles).
+    @Test func findInspirationReadsOnItsCardItsChipsAndItsWaysIn() {
+        for appearance in Appearance.allCases {
+            let card = Palette.Scripts.inspirationCard
+            for (name, token) in [("ink", Palette.ink), ("ink2", Palette.ink2), ("aiText", Palette.aiText)] {
+                let flat = ratio(token, on: card, in: appearance)
+                let lit = ratio(token, onTint: Palette.Scripts.inspirationCardGlow, over: card, in: appearance)
+                #expect(flat >= ColorContrast.textMinimum, "\(name) on the inspiration card, \(appearance): \(flat)")
+                #expect(lit >= ColorContrast.textMinimum, "\(name) under the card's light, \(appearance): \(lit)")
+            }
+            let chip = ratio(Palette.ink, on: Palette.Scripts.inspirationChipOn, in: appearance)
+            #expect(chip >= ColorContrast.textMinimum, "the chosen chip's words, \(appearance): \(chip)")
+            let chipEdge = ratio(Palette.Scripts.inspirationChipOn, on: Palette.sheetNight, in: appearance)
+            #expect(chipEdge >= ColorContrast.componentMinimum, "the chosen chip on the sheet, \(appearance): \(chipEdge)")
+            let bulb = ratio(Palette.accText, onTint: Palette.Scripts.heroChip, over: Palette.Scripts.dockBase, in: appearance)
+            #expect(bulb >= ColorContrast.componentMinimum, "the dock's lightbulb, \(appearance): \(bulb)")
+            for surface in [Palette.surface, Palette.sheetNight] {
+                #expect(ratio(Palette.ink, on: surface, in: appearance) >= ColorContrast.textMinimum, "a way in's title, \(appearance)")
+                #expect(ratio(Palette.ink2, on: surface, in: appearance) >= ColorContrast.textMinimum, "a way in's line, \(appearance)")
+            }
+            let accentIcon = ratio(Palette.accText, onTint: Palette.accSoft, over: Palette.surface, in: appearance)
+            #expect(accentIcon >= ColorContrast.componentMinimum, "Find inspiration's lightbulb on its tile, \(appearance): \(accentIcon)")
+            #expect(ratio(Palette.ink, on: Palette.surface3, in: appearance) >= ColorContrast.componentMinimum, "the other icons, \(appearance)")
+        }
+    }
+
     // MARK: - The math
 
     /// Interstellar (Starry sky): the night under every browse screen is darker than `bg`, so every text token reads on it, and still reads at its
