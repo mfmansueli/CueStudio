@@ -127,7 +127,10 @@ final class ShareToUITests: XCTestCase {
         app.buttons["shareFlow.notYet"].tap()
         XCTAssertTrue(app.buttons["shareFlow.send"].waitForExistence(timeout: 5), "back to the step: it can be sent again")
         app.buttons["shareFlow.send"].tap()
+        // Each step waits for its screen: a tap that comes early lands on the step under it (Post later is a menu there).
+        XCTAssertTrue(app.buttons["debug.share.complete"].waitForExistence(timeout: 10))
         app.buttons["debug.share.complete"].tap()
+        XCTAssertTrue(app.buttons["shareFlow.live"].waitForExistence(timeout: 10))
         app.buttons["shareFlow.live"].tap()
         XCTAssertTrue(element(app, "sendoff.sheet").waitForExistence(timeout: 20))
         XCTAssertEqual(element(app, "sendoff.headline").label, "SHARED TO TIKTOK")

@@ -27,6 +27,9 @@ struct StudioControlPanel: View {
     @State private var selected: StudioAdjustment?
     @State private var lastSelected: StudioAdjustment = .size
     @State private var adjustmentOpen: CGFloat = 0
+    /// The slider is in the view while it is open or closing, and leaves when it has closed: the system slider ignores a parent's
+    /// `accessibilityHidden`, and VoiceOver would land on a slider nobody can see.
+    @State private var showsSlider = false
     /// The sheet has already folded itself for a first play: it does so once; after that it stays as the creator leaves it.
     @State private var hasFoldedForPlay = false
 
@@ -56,8 +59,15 @@ struct StudioControlPanel: View {
             .padding(.horizontal, 12)
         }
         .onChange(of: selected) { _, new in
-            if let new { lastSelected = new }
-            withAnimation(Self.motion) { adjustmentOpen = new == nil ? 0 : 1 }
+            if let new {
+                lastSelected = new
+                showsSlider = true
+            }
+            withAnimation(Self.motion) {
+                adjustmentOpen = new == nil ? 0 : 1
+            } completion: {
+                if selected == nil { showsSlider = false }
+            }
         }
         // The first time the text starts (the countdown that leads to it counts), the speed and the adjustments fold away, so what is left is the
         // text and the transport. Only the first time: a creator who brings them back for the next play means to have them.
@@ -98,16 +108,19 @@ struct StudioControlPanel: View {
     /// the other way; the sheet's growth (`ControlSheet`'s `extra`) is the same number, so the two move together.
     private var adjustmentSlider: some View {
         VStack(spacing: 10) {
-            StudioAdjustSlider(adjustment: lastSelected)
-                .id(lastSelected)
-                .transition(.opacity)
+            if showsSlider {
+                StudioAdjustSlider(adjustment: lastSelected)
+                    .id(lastSelected)
+                    .transition(.opacity)
+            }
             Rectangle()
                 .fill(Palette.glassBorder)
                 .frame(height: 1)
                 .accessibilityHidden(true)
         }
         .padding(.bottom, 10)
-        .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { adjustmentHeight = $0 }
+        // Measured while the slider is there: without it the block is only the divider.
+        .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { if showsSlider { adjustmentHeight = $0 } }
         .animation(Self.motion, value: lastSelected)
         .frame(height: adjustmentOpen * adjustmentHeight, alignment: .top)
         .clipped()

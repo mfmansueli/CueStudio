@@ -267,7 +267,7 @@ final class ButtonPromisesUITests: XCTestCase {
             for id in ids {
                 openSettingsPage(app, page)
                 let toggle = app.switches[id]
-                app.scroll(to: toggle)
+                app.scrollAboveTabBar(to: toggle)
                 let before = toggle.value as? String
                 XCTAssertTrue(toggle.isEnabled, "\(id) is off for good")
                 flip(toggle)
@@ -277,7 +277,7 @@ final class ButtonPromisesUITests: XCTestCase {
                 backToSettings(app)
                 openSettingsPage(app, page)
                 let again = app.switches[id]
-                app.scroll(to: again)
+                app.scrollAboveTabBar(to: again)
                 XCTAssertEqual(again.value as? String, after, "\(id): the choice was forgotten")
                 usleep(500_000)
                 flip(again)
@@ -296,7 +296,7 @@ final class ButtonPromisesUITests: XCTestCase {
         let app = CueApp.launch(seeded: true)
         openSettingsPage(app, "prompter")
         let toggle = app.switches["settings.flipVertically"]
-        app.scroll(to: toggle)
+        app.scrollAboveTabBar(to: toggle)
         let before = toggle.frame.minY
         snap(app, "flip-before")
         flip(toggle)

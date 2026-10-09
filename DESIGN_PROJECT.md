@@ -833,6 +833,11 @@ mostravam problemas de verdade, corrigidos no app:
   (`SettingsPrompterView.screen`).
 - **Gravando no Selfie:** os controles de leitura recolhidos na linha da gravação continuavam ao alcance do VoiceOver; agora ficam escondidos e sem toque enquanto
   a folha está recolhida (`SelfieControlSheet`).
+- **Studio, Size · Line · Margin:** o slider fechado (altura zero, invisível) continuava ao alcance do VoiceOver (o `Slider` do sistema não obedece ao
+  `accessibilityHidden` do pai); agora ele só existe enquanto está aberto ou fechando e sai quando a animação termina (`StudioControlPanel.showsSlider`).
+
+Nos testes, a última linha de uma página fica "tocável" atrás da tab bar e o toque cai na aba (`XCUIApplication.scrollAboveTabBar`); as folhas curtas do
+gravador rolam pela própria lista. A suíte inteira também rodou em 2 simuladores em paralelo nesta sessão (exceção pedida pelo dono; os clones foram apagados).
 
 **Limite do Simulator (não é falha do app):** a prévia do Quick edit não toca no Simulator (a composição falha com -12784 antes de ficar pronta, como já dizia
 `QuickEditPlayerTests`); os testes de UI conferem lá o estado do botão (Play/Pause) e só no aparelho o tempo andando (`EditorUITests.testPlayPlaysAndPauseHoldsThePlayhead`).
