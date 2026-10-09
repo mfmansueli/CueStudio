@@ -379,20 +379,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 000000000000000000000032 /* App.xcconfig */;
 			buildSettings = {
-				INFOPLIST_KEY_CFBundleDisplayName = "Cue Studio";
-				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
-				INFOPLIST_KEY_NSCameraUsageDescription = "Cue records your takes with the camera while your script scrolls under the lens.";
-				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "Cue connects to your other iPhone or iPad nearby, so one can control the teleprompter on the other.";
-				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Cue records your voice with each take and for voice-overs, can follow your voice to scroll the script, and listens when you dictate an idea.";
-				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Cue saves the takes you export to your photo library.";
-				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "Cue recognizes your speech on this iPhone to keep the script on the line you're reading and to turn an idea you dictate into text. Nothing leaves the device.";
-				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
-				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UIStatusBarStyle = UIStatusBarStyleDefault;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;
-				INFOPLIST_KEY_UIUserInterfaceStyle = Dark;
 			};
 			name = Debug;
 		};
@@ -400,20 +386,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 000000000000000000000032 /* App.xcconfig */;
 			buildSettings = {
-				INFOPLIST_KEY_CFBundleDisplayName = "Cue Studio";
-				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
-				INFOPLIST_KEY_NSCameraUsageDescription = "Cue records your takes with the camera while your script scrolls under the lens.";
-				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "Cue connects to your other iPhone or iPad nearby, so one can control the teleprompter on the other.";
-				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Cue records your voice with each take and for voice-overs, can follow your voice to scroll the script, and listens when you dictate an idea.";
-				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Cue saves the takes you export to your photo library.";
-				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "Cue recognizes your speech on this iPhone to keep the script on the line you're reading and to turn an idea you dictate into text. Nothing leaves the device.";
-				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
-				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UIStatusBarStyle = UIStatusBarStyleDefault;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;
-				INFOPLIST_KEY_UIUserInterfaceStyle = Dark;
 			};
 			name = Release;
 		};
