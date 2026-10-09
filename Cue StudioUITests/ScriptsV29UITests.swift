@@ -79,13 +79,12 @@ final class ScriptsV29UITests: XCTestCase {
         XCTAssertTrue(dock.exists)
     }
 
-    func testTheFirstVisitInvitesWithIdeasAndTwoWaysIn() throws {
+    func testTheFirstVisitOffersThreeWaysIn() throws {
         let app = CueApp.launch(seeded: false)
         XCTAssertTrue(element(app, "empty.promptCard").waitForExistence(timeout: 15))
+        XCTAssertTrue(element(app, "empty.inspirationButton").exists)
         XCTAssertTrue(element(app, "empty.writeButton").exists)
         XCTAssertTrue(element(app, "empty.importButton").exists)
-        let ideas = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH 'empty.idea.'"))
-        XCTAssertEqual(ideas.count, 3)
         // The Logbook is in the bar and Format on the card from the first visit on, not only after the first script.
         XCTAssertTrue(app.buttons["scripts.logbookButton"].exists, "No Logbook on the empty Scripts")
         XCTAssertTrue(app.buttons["ideaCard.formatChip"].exists, "No Format on the empty Scripts' card")
@@ -106,11 +105,15 @@ final class ScriptsV29UITests: XCTestCase {
         XCTAssertTrue(app.buttons["detail.recordButton"].waitForExistence(timeout: 10) || app.textFields["page.titleField"].waitForExistence(timeout: 10))
     }
 
-    func testTappingAnIdeaWithAppleIntelligenceWritesIt() throws {
+    func testFindInspirationFromTheFirstVisitWritesAnIdea() throws {
         let app = CueApp.launch(seeded: false)
-        let first = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH 'empty.idea.'")).firstMatch
-        XCTAssertTrue(first.waitForExistence(timeout: 15))
-        first.tap()
+        let inspiration = app.buttons["empty.inspirationButton"]
+        XCTAssertTrue(inspiration.waitForExistence(timeout: 15))
+        inspiration.tap()
+        let write = app.buttons["inspiration.writeNow"]
+        XCTAssertTrue(write.waitForExistence(timeout: 5))
+        XCTAssertTrue(element(app, "inspiration.card.title").waitForExistence(timeout: 10))
+        write.tap()
         XCTAssertTrue(app.buttons["detail.recordButton"].waitForExistence(timeout: 15))
     }
 }

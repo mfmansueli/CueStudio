@@ -85,7 +85,7 @@ extension XCUIApplication {
     /// The system tab bar: its buttons are the five tabs, in order Scripts, Takes, Record, Profile, Settings.
     var cueTabBar: XCUIElement { tabBars.firstMatch }
 
-    /// Opens "Need an idea?" from "+" › Let Cue write it (the card's lightbulb chip is gone in v29).
+    /// Opens Find inspiration from "+" › Let Cue write it (the dock's lightbulb opens it too).
     func openIdeas() {
         let plus = buttons["scripts.newButton"]
         XCTAssertTrue(plus.waitForExistence(timeout: 15))
@@ -93,7 +93,7 @@ extension XCUIApplication {
         let letCue = buttons["newScript.letCue"]
         XCTAssertTrue(letCue.waitForExistence(timeout: 5))
         letCue.tap()
-        XCTAssertTrue(descendants(matching: .any)["ideas.sheet"].waitForExistence(timeout: 5), "No ideas sheet")
+        XCTAssertTrue(descendants(matching: .any)["inspiration.sheet"].waitForExistence(timeout: 5), "No Find inspiration")
     }
 
     /// A script's row on Scripts, scrolled into reach.
