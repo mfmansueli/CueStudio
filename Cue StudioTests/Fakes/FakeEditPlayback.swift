@@ -18,6 +18,9 @@ final class FakeEditPlayback: EditPlayback {
     var isProcessing = false
     var reviewedPart: ClosedRange<TimeInterval>?
     var isMuted = false
+    var isPlaybackBlocked = false {
+        didSet { if isPlaybackBlocked { isPlaying = false } }
+    }
     private(set) var shown: [TakeEdit] = []
     private(set) var isScrubbing = false
     private(set) var isStopped = false
@@ -32,9 +35,9 @@ final class FakeEditPlayback: EditPlayback {
         currentTime = min(max(0, currentTime), duration)
     }
 
-    func play() { isPlaying = true }
+    func play() { isPlaying = !isPlaybackBlocked }
     func pause() { isPlaying = false }
-    func togglePlayback() { isPlaying.toggle() }
+    func togglePlayback() { if isPlaying { pause() } else { play() } }
 
     func seek(to time: TimeInterval) {
         currentTime = min(max(0, time), duration)

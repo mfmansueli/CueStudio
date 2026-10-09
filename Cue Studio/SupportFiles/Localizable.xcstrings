@@ -256481,6 +256481,125 @@
         }
       }
     },
+    "Stop screen recording or mirroring to view this preview." : {
+      "comment" : "Shown in place of a video preview (take review, Quick edit, the recorder's camera) while the screen is being recorded, mirrored or AirPlayed. Uses the system's names for Screen Recording and Screen Mirroring.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "أوقِف تسجيل الشاشة أو النسخ المطابق للشاشة لعرض هذه المعاينة."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stop skærmoptagelsen eller skærmdubleringen for at se denne forhåndsvisning."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beende die Bildschirmaufnahme oder die Bildschirmsynchronisierung, um diese Vorschau zu sehen."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Detén la grabación o la duplicación de pantalla para ver esta vista previa."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Arrêtez l’enregistrement ou la recopie de l’écran pour voir cet aperçu."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "यह प्रीव्यू देखने के लिए स्क्रीन रिकॉर्डिंग या स्क्रीन मिररिंग बंद करें।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hentikan rekam layar atau pencerminan layar untuk melihat pratinjau ini."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Interrompi la registrazione o la duplicazione dello schermo per vedere questa anteprima."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このプレビューを見るには、画面収録または画面ミラーリングを停止してください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이 미리보기를 보려면 화면 기록이나 화면 미러링을 멈춰 주세요."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stopp skjermopptaket eller skjermspeilingen for å se denne forhåndsvisningen."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stop de schermopname of schermsynchronisatie om dit voorbeeld te zien."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pare a gravação ou o espelhamento da tela para ver esta prévia."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stoppa skärminspelningen eller skärmdubbleringen för att se den här förhandsvisningen."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "หยุดการบันทึกหน้าจอหรือการสะท้อนหน้าจอเพื่อดูพรีวิวนี้"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu önizlemeyi görmek için ekran kaydını veya ekran yansıtmayı durdur."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dừng ghi màn hình hoặc phản chiếu màn hình để xem phần xem trước này."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "停止屏幕录制或屏幕镜像后即可查看此预览。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "停止螢幕錄製或螢幕鏡像輸出後即可檢視此預覽。"
+          }
+        }
+      }
+    },
     "Stop scrolling for ten seconds." : {
       "localizations" : {
         "ar" : {

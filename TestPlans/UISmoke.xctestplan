@@ -41,7 +41,8 @@
         "FreeExportsUITests/testWithNoneLeftSaveAsksYourVideoIsReadyAndNotNowKeepsTheTakeReady()",
         "SettingsUITests/testFontLicensesRemainReachableFromSettings()",
         "LanguageRegionUITests/testJapaneseInterfaceKeepsEnglishScripts()",
-        "SettingsUITests/testChoicesMadeInRecordingShowOnTheSetupCard()"
+        "SettingsUITests/testChoicesMadeInRecordingShowOnTheSetupCard()",
+        "ScreenCaptureUITests/testCaptureDuringPlaybackHidesTheReviewAndItsEndLeavesItPausedWhereItWas()"
       ],
       "target" : {
         "containerPath" : "container:Cue Studio.xcodeproj",

@@ -437,4 +437,121 @@ struct QuickEditPlayerTests {
         #expect(player.avPlayer.rate == 0)
         #expect(player.avPlayer.currentItem == nil)
     }
+
+    // MARK: - Screen capture
+
+    @Test func captureStartingDuringPlaybackPausesOnTheShownFrame() async throws {
+        let audioSession = FakePlaybackAudioSession()
+        let (player, _, clip) = try await makePlayer(seconds: 3, audioSession: audioSession)
+        defer { player.stop(); try? FileManager.default.removeItem(at: clip) }
+        player.play()
+        await Wait.until { player.currentTime > 0.3 }
+        player.isPlaybackBlocked = true
+        #expect(!player.isPlaying)
+        #expect(player.avPlayer.rate == 0)
+        let held = player.currentTime
+        try await Task.sleep(for: .milliseconds(300))
+        #expect(abs(player.currentTime - held) < 0.001)
+        #expect(abs(itemSeconds(player) - held) < 0.05)
+    }
+
+    @Test func captureAlreadyOnRefusesToPlay() async throws {
+        let audioSession = FakePlaybackAudioSession()
+        let (player, _, clip) = try await makePlayer(audioSession: audioSession)
+        defer { player.stop(); try? FileManager.default.removeItem(at: clip) }
+        player.isPlaybackBlocked = true
+        player.play()
+        player.togglePlayback()
+        try await Task.sleep(for: .milliseconds(300))
+        #expect(!player.isPlaying)
+        #expect(player.avPlayer.rate == 0)
+        #expect(player.currentTime == 0)
+        #expect(audioSession.preparations == 0)
+    }
+
+    @Test func anAudioSessionReadyAfterCaptureStartsDoesNotPlay() async throws {
+        let audioSession = FakePlaybackAudioSession()
+        audioSession.delay = .milliseconds(500)
+        let (player, _, clip) = try await makePlayer(audioSession: audioSession)
+        defer { player.stop(); try? FileManager.default.removeItem(at: clip) }
+        player.play()
+        await Wait.until { audioSession.preparations == 1 }
+        player.isPlaybackBlocked = true
+        try await Task.sleep(for: .milliseconds(900))
+        #expect(!player.isPlaying)
+        #expect(player.avPlayer.rate == 0)
+        #expect(player.currentTime == 0)
+    }
+
+    @Test func aSeekLandingAfterCaptureStartsDoesNotResume() async throws {
+        let (player, _, clip) = try await makePlayer(seconds: 2)
+        defer { player.stop(); try? FileManager.default.removeItem(at: clip) }
+        player.seek(to: 2)
+        await Wait.until { abs(itemSeconds(player) - 2) < 0.05 }
+        // From the end, play seeks back to the start and plays once the seek lands.
+        player.play()
+        player.isPlaybackBlocked = true
+        await Wait.until { abs(itemSeconds(player)) < 0.05 }
+        try await Task.sleep(for: .milliseconds(400))
+        #expect(!player.isPlaying)
+        #expect(player.avPlayer.rate == 0)
+        #expect(player.currentTime < 0.05)
+    }
+
+    @Test func aRebuildLandingAfterCaptureStartsDoesNotResume() async throws {
+        let (player, edit, clip) = try await makePlayer()
+        defer { player.stop(); try? FileManager.default.removeItem(at: clip) }
+        var cut = edit
+        cut.timeline.split(atEdited: 1)
+        cut.timeline.split(atEdited: 2)
+        player.show(cut)
+        let item = player.avPlayer.currentItem
+        player.play()
+        await Wait.until { player.currentTime > 0.3 }
+        // New pieces: the new item would play on from the playhead once it is in.
+        var removed = cut
+        removed.timeline.removeSegment(id: removed.timeline.segments[1].id)
+        player.show(removed)
+        player.isPlaybackBlocked = true
+        await Wait.until { player.avPlayer.currentItem !== item && player.state == .ready }
+        try await Task.sleep(for: .milliseconds(400))
+        #expect(!player.isPlaying)
+        #expect(player.avPlayer.rate == 0)
+    }
+
+    @Test func aPlayerStartedBehindItsBackStopsOnItsFirstTick() async throws {
+        let (player, _, clip) = try await makePlayer()
+        defer { player.stop(); try? FileManager.default.removeItem(at: clip) }
+        player.isPlaybackBlocked = true
+        player.avPlayer.play()
+        await Wait.until { player.avPlayer.rate == 0 }
+        #expect(!player.isPlaying)
+    }
+
+    @Test func captureEndingKeepsThePlayheadAndTheMuteAndDoesNotPlay() async throws {
+        let (player, _, clip) = try await makePlayer()
+        defer { player.stop(); try? FileManager.default.removeItem(at: clip) }
+        player.seek(to: 1.25)
+        await Wait.until { abs(itemSeconds(player) - 1.25) < 0.001 }
+        player.isMuted = true
+        player.isPlaybackBlocked = true
+        // The timeline still moves the playhead while the preview is hidden.
+        player.seek(to: 1.5)
+        await Wait.until { abs(itemSeconds(player) - 1.5) < 0.001 }
+        player.isPlaybackBlocked = false
+        try await Task.sleep(for: .milliseconds(300))
+        #expect(!player.isPlaying)
+        #expect(player.avPlayer.rate == 0)
+        #expect(player.currentTime == 1.5)
+        #expect(player.isMuted)
+        #expect(player.avPlayer.isMuted)
+        player.play()
+        await Wait.until { player.currentTime > 1.6 }
+    }
+
+    @Test func theVideoNeverGoesToAnAirPlayReceiver() async throws {
+        let (player, _, clip) = try await makePlayer()
+        defer { player.stop(); try? FileManager.default.removeItem(at: clip) }
+        #expect(!player.avPlayer.allowsExternalPlayback)
+    }
 }

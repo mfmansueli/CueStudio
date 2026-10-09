@@ -18,6 +18,12 @@ struct SelfieModeView: View {
     @Environment(AudioInputManager.self) private var audio
     /// A finger is on the window's corner: the window follows it right away instead of gliding.
     @State private var isResizingWindow = false
+    /// The screen is recorded or mirrored: the camera hides behind `CaptureShield` (the text, the controls and a take that is
+    /// recording carry on), and so do the frame, grid and safe zone drawn over it.
+    @SceneCaptured private var isSceneCaptured
+    /// The practice's card bottom and buttons top, measured: the shield's message goes between them.
+    @State private var practiceCardBottom: CGFloat?
+    @State private var practiceBarTop: CGFloat?
 
     var body: some View {
         let geometry = viewModel.frameGeometry
@@ -62,15 +68,17 @@ struct SelfieModeView: View {
             CameraBackdrop(
                 sensorRect: viewModel.isPractice ? CGRect(origin: .zero, size: screen) : sensorRect,
                 onVideoRectChange: { rect in viewModel.cameraImageMoved(to: rect) },
-                fillsScreen: viewModel.isPractice
+                fillsScreen: viewModel.isPractice,
+                captureMessageY: captureMessageY
             )
-            if session.camera.showsGrid, !viewModel.isPractice {
+            if session.camera.showsGrid, !viewModel.isPractice, !isSceneCaptured {
                 GridOverlay(frame: geometry.frameRect)
             }
-            if !viewModel.isPractice {
+            if !viewModel.isPractice, !isSceneCaptured {
                 FrameGuideOverlay(frame: geometry.frameRect)
             }
-            if !viewModel.isPractice, viewModel.showsSafeZone, let zone = viewModel.safeZone, let content = viewModel.safeZoneContentRect {
+            if !viewModel.isPractice, !isSceneCaptured, viewModel.showsSafeZone, let zone = viewModel.safeZone,
+               let content = viewModel.safeZoneContentRect {
                 let readable = CGRect(x: 0, y: 0, width: screen.width, height: min(screen.height, viewModel.screenMetrics.toolbarTop))
                 SafeZoneOverlay(frame: geometry.frameRect, content: content, label: zone.overlayLabel, visible: readable)
                     .animation(.smooth(duration: 0.45), value: readable.height)
@@ -106,6 +114,22 @@ struct SelfieModeView: View {
         }
         .ignoresSafeArea()
         .animation(.easeOut(duration: 0.2), value: viewModel.showsSafeZone)
+    }
+
+    /// The middle of the camera left free between the text (the practice's card) and the controls, in screen points: where
+    /// the shield says why the camera is hidden, instead of under the text window.
+    private var captureMessageY: CGFloat {
+        let metrics = viewModel.screenMetrics
+        let top: CGFloat
+        let bottom: CGFloat
+        if viewModel.isPractice {
+            top = practiceCardBottom ?? viewModel.readingLayout.windowRect.maxY
+            bottom = practiceBarTop ?? metrics.screen.height
+        } else {
+            top = viewModel.hasScript ? viewModel.readingLayout.windowRect.maxY : metrics.topBarBottom
+            bottom = metrics.toolbarTop
+        }
+        return ((top + max(top, bottom)) / 2).rounded()
     }
 
     /// Dark enough to read over any background, with the camera optionally blurred behind the text.
@@ -167,9 +191,12 @@ struct SelfieModeView: View {
                 PracticeMessageCard(stage: viewModel.practiceStage)
                     .padding(.horizontal, 16)
                     .padding(.top, 372)
+                    .onGeometryChange(for: CGFloat.self) { $0.frame(in: .global).maxY } action: { practiceCardBottom = $0 }
                 VStack(spacing: 0) {
                     Spacer(minLength: 0)
-                    PracticeBottomBar(viewModel: viewModel, onChoose: onPractice).padding(.bottom, 36)
+                    PracticeBottomBar(viewModel: viewModel, onChoose: onPractice)
+                        .onGeometryChange(for: CGFloat.self) { $0.frame(in: .global).minY } action: { practiceBarTop = $0 }
+                        .padding(.bottom, 36)
                 }
             }
             .frame(width: proxy.size.width, height: proxy.size.height, alignment: .top)

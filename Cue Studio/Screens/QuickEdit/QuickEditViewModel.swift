@@ -448,6 +448,13 @@ final class QuickEditViewModel {
         player.seek(to: player.currentTime + seconds)
     }
 
+    /// The scene started or stopped being recorded or mirrored (`SceneCaptured`): the preview pauses and nothing plays it until
+    /// capture ends, then it waits paused on the same frame. The edit, the draft and the mute stay as they are, and a voice-over
+    /// being recorded keeps recording (only the video under it stops).
+    func sceneCaptureChanged(_ isCaptured: Bool) {
+        player.isPlaybackBlocked = isCaptured
+    }
+
     // MARK: - Screen
 
     /// The preview fills the screen (or comes back); what was picked and the open panel are let go.

@@ -743,3 +743,45 @@ de baixo da lista, então a lista reserva o espaço que ele pede) e sobe com o t
   Um toque suave (`Haptics.soft`) avisa quando o campo enche. VoiceOver lê "184 of 200 characters" (`%lld of %lld characters`, nos 20 idiomas).
 - Testes: `IdeaPromptDraftTests` (colar no fim e no meio, digitar no limite, emoji, ditado com espaço que acaba, contagem), `DockGrowthUITests` (cresce de duas para cinco linhas, para em 200,
   a contagem, volta às duas linhas em repouso e reabre).
+
+## 26. Gravação e espelhamento da tela escondem as prévias (8 de outubro de 2026; não está no quadro)
+
+Gravar a tela enquanto uma prévia toca daria o vídeo sem passar pela exportação (e pelas 5 exportações grátis). Enquanto a cena está sendo
+gravada, espelhada ou mandada por AirPlay, toda superfície que mostra vídeo troca o vídeo por um cartão opaco e o player para; nada mais muda.
+Vale para grátis e Pro, e não há interruptor.
+
+- **Detecção** (`SceneCaptured`, `SupportFiles/`): o `isSceneCaptured` do SwiftUI, que segue o traço `sceneCaptureState` da **própria cena**
+  da tela (iOS 17+; o `UIScreen.isCaptured` está marcado para ser descontinuado no SDK do iOS 27). Já vale quando a tela aparece com uma gravação
+  começada antes (antes de abrir o app, ou em outra tela) e o sistema o atualiza quando a captura começa e termina, a tela muda de cena (iPad) e
+  o app volta ao primeiro plano; cada tela lê o seu ao aparecer (`onChange(initial: true)`), sem notificação e sem relógio. A gravação do próprio
+  Cue (câmera, voice-over) não marca a cena: só a captura da tela pelo sistema.
+- **Onde:** a revisão da take (6.3), a prévia do Quick edit e a tela cheia dele, e a câmera do gravador Selfie e da prática (1.6). Nenhuma outra
+  tela toca vídeo: pôsteres, capas das listas e os quadros da linha do tempo são imagens paradas e ficam.
+- **O cartão** (`CaptureShield`, `DesignSystem/Components`; `captureShielded(_:)`): `Palette.surface` opaco, `eye.slash` em `ink2` e "Stop screen
+  recording or mirroring to view this preview." em `ink` (subheadline semibold), nos 20 idiomas. Entra sem animação. A superfície fica na árvore
+  com opacidade 0 e sem toques: o player guarda o item e a posição (com o quadro segurado e a capa, que ficam por baixo) e a prévia da câmera
+  continua dando a rotação que a gravação lê. Na câmera a frase fica entre a janela de texto (ou o cartão da prática) e os controles, e a moldura,
+  a grade e as zonas seguras somem junto; o texto do teleprompter e os controles continuam. Contraste: `ink` e `ink2` sobre `surface` já são
+  medidos em `PaletteContrastTests` (≈ 17,6:1 para `ink`, com e sem Aumentar Contraste); o fundo é opaco, então não há pior ponto.
+- **O player** (`ReviewPlayback`, tirado do `TakeReviewView`, e `QuickEditPlayer`/`EditPlayback.isPlaybackBlocked`): ligar pausa no quadro que está
+  na tela; enquanto vale, nada toca (o botão e o toque na prévia, a sessão de áudio que fica pronta depois, uma busca ou uma reconstrução que
+  terminam, as prévias de uma mudança, o voice-over), e um player que algo de fora tenha ligado é parado no primeiro tique. Na revisão o scrubber
+  não move a take; no editor a linha do tempo continua movendo a agulha (é ferramenta de edição). Desligar **não toca**: a prévia volta parada onde
+  estava, com a edição, o rascunho e o mudo como estavam. Os dois players não mandam vídeo por AirPlay (`allowsExternalPlayback = false`): isso não
+  marca a cena como capturada, então nada esconderia o vídeo; o som continua indo para a saída escolhida.
+- **Gravações em andamento:** uma take sendo gravada continua (só a prévia some) e um voice-over continua gravando com o vídeo parado por baixo;
+  o relógio do voice-over agora é o do microfone (`recorder.elapsed`), não o do vídeo, que pode estar parado.
+- **Exportações:** nada muda. Esconder a prévia, pausar ou parar de tocar nunca desconta uma exportação; salvar e compartilhar com a tela sendo
+  gravada seguem as regras de sempre (`SHARING.md`) e não são bloqueados.
+- **Limites (é detecção, não bloqueio):** o iOS não impede capturas de tela (só avisa depois); o quadro que estava na tela quando a captura começa
+  pode entrar na gravação antes de o cartão ser desenhado; uma tela escondida atrás de outra (a revisão sob o editor) só recebe o novo estado
+  quando volta, e pode mostrar um quadro parado por um instante; uma câmera apontada para a tela ou uma placa de captura no cabo não são detectáveis.
+- **Testes:** `ReviewPlaybackTests` e `QuickEditPlayerTests` (seção Screen capture: começar durante a reprodução pausa no quadro, já ligada recusa
+  o primeiro play, a sessão de áudio que fica pronta depois / a busca / a reconstrução não religam, um player ligado por fora para, terminar não
+  toca e mantém posição e mudo, sem AirPlay de vídeo), `QuickCreatorViewModelTests` (voice-over continua; edições ficam), `ExportAccountingTests`
+  (nada é descontado; um save no meio conta uma vez) e `ScreenCaptureUITests` (revisão, editor e tela cheia, gravação em andamento). No Simulator a
+  captura é simulada (`-uiTestSceneCapture`, `SimulatedSceneCapture`).
+- **Conferir no aparelho** (o Simulator não marca a cena como capturada): Gravação de Tela pela Central de Controle durante a revisão tocando e
+  com ela parada; gravação começada antes de abrir o Cue; o editor e a tela cheia dele; voltar ao primeiro plano depois de começar ou parar a
+  gravação fora do Cue; Espelhamento de Tela para uma Apple TV ou Mac; e a gravação começando no meio de uma take na câmera (a take continua, sai em
+  pé e é salva) e de um voice-over.
