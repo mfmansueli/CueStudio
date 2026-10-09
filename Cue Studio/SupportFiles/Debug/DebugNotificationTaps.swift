@@ -26,9 +26,10 @@ enum DebugNotificationTaps {
             return [tap(NotificationPayload(campaign: .readyToRecord, destination: .script(ready.id), projectKey: ProjectKey.script(ready.id)))]
         case "cleanUp":
             guard let take else { return [] }
-            return [tap(NotificationPayload(
+            let payload = NotificationPayload(
                 campaign: .feature, feature: .cleanUp, destination: .takeEditor(take.id, tool: .cleanUp), projectKey: ProjectKey.of(take: take)
-            ))]
+            )
+            return [tap(payload)]
         case "share":
             guard let take else { return [] }
             return [tap(NotificationPayload(campaign: .incompleteSharing, destination: .shareQueue(takeID: take.id, network: nil)))]

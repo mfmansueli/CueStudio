@@ -14,7 +14,7 @@ struct FeatureIntroSheet: View {
     let onDecline: () -> Void
 
     private var symbol: String { FeatureCatalog.intro(for: request.feature)?.symbol ?? "sparkles" }
-    private var note: String? { FeatureCatalog.intro(for: request.feature).map { FeatureCopy.note($0.note) } }
+    private var note: String? { FeatureCatalog.intro(for: request.feature)?.note.text }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
@@ -25,7 +25,7 @@ struct FeatureIntroSheet: View {
                     .frame(width: 48, height: 48)
                     .background(Palette.surface2, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
                     .accessibilityHidden(true)
-                SheetHeader(title: FeatureCopy.name(request.feature), subtitle: FeatureCopy.benefit(request.feature))
+                SheetHeader(title: request.feature.name, subtitle: request.feature.benefit)
             }
             if let note {
                 Label(note, systemImage: "info.circle")

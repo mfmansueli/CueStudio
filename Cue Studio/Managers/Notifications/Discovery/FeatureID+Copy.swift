@@ -1,5 +1,5 @@
 //
-//  FeatureCopy.swift
+//  FeatureID+Copy.swift
 //  Cue Studio
 //
 
@@ -8,9 +8,9 @@ import Foundation
 /// The words that introduce each tool: the notification (title and line) and the introduction in the app (the tool's name, one clear
 /// benefit, and what it uses). Benefit first; the creator's choice in every line. Nothing about how anyone looks: Skin Smoothing is a
 /// finish the creator may choose, starting at zero.
-nonisolated enum FeatureCopy {
-    static func notificationTitle(_ feature: FeatureID) -> String {
-        switch feature {
+nonisolated extension FeatureID {
+    var notificationTitle: String {
+        switch self {
         case .myCueVoice: String(localized: "Want scripts that sound more like you?")
         case .importWriting: String(localized: "Show Cue something you wrote")
         case .ideas: String(localized: "Not sure what to record?")
@@ -31,8 +31,8 @@ nonisolated enum FeatureCopy {
         }
     }
 
-    static func notificationBody(_ feature: FeatureID) -> String {
-        switch feature {
+    var notificationBody: String {
+        switch self {
         case .myCueVoice: String(localized: "Answer four quick questions and Cue writes in your voice.")
         case .importWriting: String(localized: "Refine your writing style from texts you wrote. It stays on this iPhone.")
         case .ideas: String(localized: "Explore ideas for your topics.")
@@ -54,8 +54,8 @@ nonisolated enum FeatureCopy {
     }
 
     /// The introduction's title: the tool's own name.
-    static func name(_ feature: FeatureID) -> String {
-        switch feature {
+    var name: String {
+        switch self {
         case .myCueVoice: String(localized: "My Cue Voice")
         case .importWriting: String(localized: "Import my writing")
         case .ideas: String(localized: "Ideas for your topics")
@@ -77,8 +77,8 @@ nonisolated enum FeatureCopy {
     }
 
     /// The one benefit the introduction promises.
-    static func benefit(_ feature: FeatureID) -> String {
-        switch feature {
+    var benefit: String {
+        switch self {
         case .myCueVoice: String(localized: "Scripts that sound more like you. Four questions, and you can change any answer.")
         case .importWriting: String(localized: "Show Cue something you wrote, and it learns how you put things.")
         case .ideas: String(localized: "Ideas for the topics you make videos about. Nothing is written until you pick one.")
@@ -96,17 +96,6 @@ nonisolated enum FeatureCopy {
         case .remoteControl: String(localized: "Start, pause and scroll the teleprompter from another iPhone or iPad.")
         case .safeZones: String(localized: "See where TikTok, Reels and Shorts put their buttons while you record.")
         case .yourUniverse: String(localized: "See how the videos you share are shaping your universe.")
-        }
-    }
-
-    /// What the tool uses or needs, said before "Try it".
-    static func note(_ note: FeatureIntro.Note) -> String {
-        switch note {
-        case .appleIntelligence: String(localized: "Uses Apple Intelligence on this iPhone.")
-        case .speechModel: String(localized: "Listens on this iPhone. Some languages download a model the first time.")
-        case .translationDownload: String(localized: "Some languages download before the first translation.")
-        case .secondDevice: String(localized: "Needs another iPhone or iPad with Cue, nearby.")
-        case .nothingChanges: String(localized: "Free. Nothing changes until you choose.")
         }
     }
 }

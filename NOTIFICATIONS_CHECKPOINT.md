@@ -49,7 +49,9 @@ destination/section; `VoiceQuestionScheduler.otherIntroductionToday` + `onTipSho
       (ids `shareFlow.postLater` → `shareFlow.noReminder` / `remindTonight` / `remindTomorrow` / `remindPick`); UI tests updated.
 - [x] 6. `recordUse(.ideas)` in dock + IdeasSheet; export hooks (`TakeReviewViewModel.onExported`, `QuickEditExportModel.onFinished`);
       Logbook focus + yellow outline.
-- [ ] 7. Build (next).
+- [x] 7. `scripts/build.sh app` succeeds with zero warnings (FeatureCopy became `FeatureID+Copy.swift` computed properties; note text is
+      `FeatureIntro.Note.text`; navigator/MainView switches split for SwiftLint).
+- [ ] 8. Strings (next): extract new keys, add 20 languages with `scripts/strings.py add`.
 
 ## Left to do
 

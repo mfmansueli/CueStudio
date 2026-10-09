@@ -21,6 +21,19 @@ struct NotificationNavigator {
             try? await Task.sleep(for: .milliseconds(450))
         }
         switch destination {
+        case .script, .scriptEditor, .voiceFollowing, .takeReview, .takeEditor, .shareQueue:
+            openProject(destination)
+        case .nextAction:
+            let next = await services.notifications.nextActionDestination()
+            if next != .nextAction { await go(to: next) }
+        default:
+            openPlace(destination)
+        }
+    }
+
+    /// A script, a take or a queue: opened when it is still there, else its list with a line.
+    private func openProject(_ destination: NotificationDestination) {
+        switch destination {
         case .script(let id), .voiceFollowing(let id):
             guard services.library.script(id: id) != nil else { return gone(String(localized: "That script is no longer in Cue")) }
             presentation.openScript(id)
@@ -35,6 +48,14 @@ struct NotificationNavigator {
             presentation.openReview(of: take, then: tool.map { .editTool($0) } ?? .edit)
         case .shareQueue(let takeID, let network):
             openQueue(takeID: takeID, network: network)
+        default:
+            break
+        }
+    }
+
+    /// A place of the app: a sheet, a tab, a page of Settings.
+    private func openPlace(_ destination: NotificationDestination) {
+        switch destination {
         case .logbook(let entryID):
             presentation.selectedTab = .scripts
             presentation.logbookFocus = entryID.flatMap { id in services.logbook.waiting.contains { $0.id == id } ? id : nil }
@@ -53,14 +74,11 @@ struct NotificationNavigator {
         case .newScript:
             presentation.selectedTab = .scripts
             presentation.present(.newScript)
-        case .scripts:
-            presentation.selectedTab = .scripts
-            presentation.scriptsPath = []
-        case .nextAction:
-            let next = await services.notifications.nextActionDestination()
-            if next != .nextAction { await go(to: next) }
         case .notificationSettings:
             openSettings([.notifications])
+        default:
+            presentation.selectedTab = .scripts
+            presentation.scriptsPath = []
         }
     }
 

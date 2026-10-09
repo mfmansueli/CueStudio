@@ -31,7 +31,7 @@ nonisolated struct NotificationPayload: Codable, Hashable, Sendable {
 
     func encoded() -> String {
         guard let data = try? JSONEncoder().encode(self) else { return "" }
-        return String(decoding: data, as: UTF8.self)
+        return String(bytes: data, encoding: .utf8) ?? ""
     }
 
     /// The payload of a notification, or nil when it isn't Cue's, is damaged, or comes from a version this build doesn't read.

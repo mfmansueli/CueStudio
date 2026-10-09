@@ -6,7 +6,7 @@
 import Foundation
 
 /// One entry of the discovery catalog (`FeatureCatalog`): which tool, under which campaign, when it fits, where it opens and how it is
-/// told. The words are `FeatureCopy`'s; what counts as having used it is `FeatureAdoption`'s.
+/// told. The words are `FeatureID+Copy`'s; what counts as having used it is `FeatureAdoption`'s.
 nonisolated struct FeatureIntro: Hashable, Sendable {
     enum Channel: Hashable, Sendable {
         /// A discovery notification (with the creator's yes to "Discover tools and ideas").
@@ -37,4 +37,17 @@ nonisolated struct FeatureIntro: Hashable, Sendable {
     let target: DiscoveryTarget
     let channels: Set<Channel>
     let note: Note
+}
+
+nonisolated extension FeatureIntro.Note {
+    /// What the tool uses or needs, said before "Try it".
+    var text: String {
+        switch self {
+        case .appleIntelligence: String(localized: "Uses Apple Intelligence on this iPhone.")
+        case .speechModel: String(localized: "Listens on this iPhone. Some languages download a model the first time.")
+        case .translationDownload: String(localized: "Some languages download before the first translation.")
+        case .secondDevice: String(localized: "Needs another iPhone or iPad with Cue, nearby.")
+        case .nothingChanges: String(localized: "Free. Nothing changes until you choose.")
+        }
+    }
 }

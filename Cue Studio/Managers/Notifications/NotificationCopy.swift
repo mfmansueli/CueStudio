@@ -32,7 +32,7 @@ nonisolated enum NotificationCopy {
                 body: String(localized: "Cue has an idea ready for your topics. Explore it when you’re ready.")
             )
         case .feature(let feature):
-            return NotificationContent(title: FeatureCopy.notificationTitle(feature), body: FeatureCopy.notificationBody(feature))
+            return NotificationContent(title: feature.notificationTitle, body: feature.notificationBody)
         case .yearReview:
             return NotificationContent(
                 title: String(localized: "Your year in review is ready"),

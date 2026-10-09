@@ -256,12 +256,19 @@ struct MainView: View {
                 services.ideaDraft.platform = $0
                 presentation.sheet = nil
             }
-        case .featureIntro(let request):
-            featureIntro(request)
-        case .voiceSetup:
-            VoiceSetupSheet(mode: .missing, profile: profile.profile)
-        case .importWriting:
-            WritingImportSheet()
+        case .featureIntro, .voiceSetup, .importWriting:
+            notificationSheet(sheet)
+        }
+    }
+
+    /// What a notification opens as a sheet: a tool's introduction, My Cue Voice's questions, Import my writing.
+    @ViewBuilder
+    private func notificationSheet(_ sheet: AppSheet) -> some View {
+        switch sheet {
+        case .featureIntro(let request): featureIntro(request)
+        case .voiceSetup: VoiceSetupSheet(mode: .missing, profile: profile.profile)
+        case .importWriting: WritingImportSheet()
+        default: EmptyView()
         }
     }
 
