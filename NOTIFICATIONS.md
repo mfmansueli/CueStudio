@@ -197,7 +197,12 @@ Resultados desta entrega: ver o relatório final do PR (suíte completa e `check
 
 ## 13. Conferir num iPhone de verdade
 
-O Simulator agenda, mas a entrega, o Foco e a abertura a frio só se confirmam no aparelho:
+O Simulator agenda, mas a entrega, o Foco e a abertura a frio só se confirmam no aparelho. Para ver **todas** sem esperar o plano (que espalha
+as automáticas por dias), um build Debug tem em Settings › Notifications › DEBUG o botão **Preview every notification**: uma de cada tipo, com os
+textos reais e apontando para os scripts, takes e ferramentas do aparelho, a cada 6 s a partir de 5 s (limites e consentimento ignorados só
+aqui; nada é contado). Ligue antes "Discover tools and ideas" e "What's new" se quiser vê-las com a permissão já dada, toque no botão e bloqueie o
+iPhone.
+
 
 1. Primeiro lembrete (página do script › ••• › Remind me… › Tomorrow): o prompt do iOS aparece **só agora**; aceitar → "Reminder set";
    recusar → "Saved in Cue · notifications are off" e a página mostra Open Settings.

@@ -59,6 +59,8 @@ destination/section; `VoiceQuestionScheduler.otherIntroductionToday` + `onTipSho
       environment values are captured before the async reminder call. `UISmoke` has `testAReminderFromAScriptIsSetAndListed`.
 - [x] 11. Docs: `NOTIFICATIONS.md`, `ARCHITECTURE.md` (§2.5), `DESIGN_PROJECT.md` §27, `CLAUDE.md` launch args; contrast test
       `PaletteContrastTests.theNotificationSheetsReadOnTheirNight`; reminder status uses `ink2`.
+- [x] Debug: Settings › Notifications › DEBUG › Preview every notification (`NotificationService+DebugPreview`), at the user's request.
+- [ ] Install on "iago Lima iphone" (UDID 00008130-001274381451001C): queued after the full suite (`CUE_DEVICE=… scripts/build.sh install`).
 - [ ] 12. `scripts/test.sh full` (running), then `scripts/check-warnings.sh`, `xcrun simctl --set testing delete all`, final report
       (in Portuguese), delete this file.
 
