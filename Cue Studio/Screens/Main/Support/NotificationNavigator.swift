@@ -15,7 +15,11 @@ struct NotificationNavigator {
     private var presentation: PresentationService { services.presentation }
 
     func go(to destination: NotificationDestination) async {
-        presentation.sheet = nil
+        if presentation.sheet != nil {
+            // The sheet (a tool's introduction) leaves first: a cover or another sheet can't come up while it is still going.
+            presentation.sheet = nil
+            try? await Task.sleep(for: .milliseconds(450))
+        }
         switch destination {
         case .script(let id), .voiceFollowing(let id):
             guard services.library.script(id: id) != nil else { return gone(String(localized: "That script is no longer in Cue")) }

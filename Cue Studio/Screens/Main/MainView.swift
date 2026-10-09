@@ -44,6 +44,10 @@ struct MainView: View {
             .fullScreenCover(isPresented: $presentation.showsRemoteController) {
                 RemoteControllerView()
             }
+            // Back from the teleprompter or the editor: a tool's introduction may fit now (one a session at most).
+            .onChange(of: presentation.prompter == nil) { _, closed in
+                if closed { offerIntroduction() }
+            }
             // The My Cue Voice tip waits until the app has been opened on two different days.
             .task { voiceQuestions.registerAppOpen() }
             .onChange(of: scenePhase) { _, phase in
@@ -110,8 +114,13 @@ struct MainView: View {
                 Label { Text("Record") } icon: { Image(uiImage: CueTabImage.record) }
             }
             Tab(value: AppTab.profile) {
-                NavigationStack { ProfileView() }
-                    .toolbarVisibility(barVisibility, for: .tabBar)
+                NavigationStack(path: $presentation.profilePath) {
+                    ProfileView()
+                        .navigationDestination(for: ProfileRoute.self) { route in
+                            YourUniverseView(opensYearInReview: route == .yearInReview)
+                        }
+                }
+                .toolbarVisibility(barVisibility, for: .tabBar)
             } label: {
                 Label { Text("Profile") } icon: { Image(uiImage: CueTabImage.template(.profile)) }
             }
@@ -179,10 +188,14 @@ struct MainView: View {
             IdeasSheet(
                 services: services,
                 onEdit: { idea in
+                    services.notifications.recordUse(.ideas)
                     services.ideaDraft.text = idea.prompt
                     services.ideaDraft.length = idea.length
                 },
-                onWrite: { idea in services.starter.write(idea: idea.prompt, length: idea.length) }
+                onWrite: { idea in
+                    services.notifications.recordUse(.ideas)
+                    services.starter.write(idea: idea.prompt, length: idea.length)
+                }
             )
         case .logbook:
             LogbookView()
@@ -243,6 +256,44 @@ struct MainView: View {
                 services.ideaDraft.platform = $0
                 presentation.sheet = nil
             }
+        case .featureIntro(let request):
+            featureIntro(request)
+        case .voiceSetup:
+            VoiceSetupSheet(mode: .missing, profile: profile.profile)
+        case .importWriting:
+            WritingImportSheet()
+        }
+    }
+
+    // MARK: - Introductions
+
+    /// "Try it" opens the tool on the creator's own script or take; "Not now" waits 30 days; "Don't suggest this" is for good.
+    private func featureIntro(_ request: FeatureIntroRequest) -> some View {
+        let notifications = services.notifications
+        return FeatureIntroSheet(
+            request: request,
+            onTry: {
+                notifications.introAccepted(request)
+                Task { await NotificationNavigator(services: services).go(to: request.destination) }
+            },
+            onNotNow: {
+                notifications.introSnoozed(request)
+                presentation.sheet = nil
+            },
+            onDecline: {
+                notifications.introDeclined(request)
+                presentation.sheet = nil
+            }
+        )
+        .onAppear { notifications.introShown(request) }
+    }
+
+    /// One introduction at a quiet moment: a tool whose notification came while the creator was busy, or one that fits after a session.
+    private func offerIntroduction() {
+        Task {
+            guard let request = await services.notifications.inAppIntro(afterSession: true),
+                  presentation.sheet == nil, presentation.prompter == nil else { return }
+            presentation.present(.featureIntro(request))
         }
     }
 

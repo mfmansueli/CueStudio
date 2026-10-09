@@ -71,6 +71,9 @@ final class ShareToUITests: XCTestCase {
         XCTAssertEqual(element(app, "shareFlow.position").label, "1 OF 2")
         XCTAssertTrue(app.buttons["shareFlow.send"].exists && app.buttons["shareFlow.editFirst"].exists && app.buttons["shareFlow.postLater"].exists)
         app.buttons["shareFlow.postLater"].tap()
+        // Post later is a menu (a reminder or none): "No reminder" leaves the network for later, as the button did.
+        XCTAssertTrue(app.buttons["shareFlow.noReminder"].waitForExistence(timeout: 5))
+        app.buttons["shareFlow.noReminder"].tap()
         XCTAssertTrue(app.staticTexts["Post to Reels"].waitForExistence(timeout: 5))
         XCTAssertEqual(element(app, "shareFlow.position").label, "2 OF 2")
     }
@@ -80,6 +83,9 @@ final class ShareToUITests: XCTestCase {
         app.buttons["shareFlow.start"].tap()
         XCTAssertTrue(waitAllowingPhotos(for: app.buttons["shareFlow.postLater"]))
         app.buttons["shareFlow.postLater"].tap()
+        // Post later is a menu (a reminder or none): "No reminder" leaves the network for later, as the button did.
+        XCTAssertTrue(app.buttons["shareFlow.noReminder"].waitForExistence(timeout: 5))
+        app.buttons["shareFlow.noReminder"].tap()
         XCTAssertTrue(app.staticTexts["Saved · continue anytime"].waitForExistence(timeout: 5))
         app.buttons["ready.closeButton"].tap()
         XCTAssertTrue(app.buttons["review.postLater"].waitForExistence(timeout: 5))

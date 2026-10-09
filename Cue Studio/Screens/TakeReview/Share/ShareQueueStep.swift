@@ -6,12 +6,19 @@
 import SwiftUI
 
 /// 8.1 · Post to {network}: "1 OF 3", the bar, what to do there (the caption is copied and can be edited, the captions are in the video, the share
-/// sheet), the "◀ Cue" reminder, and **Send to {app}**, **Edit first**, **Post later**.
+/// sheet), the "◀ Cue" reminder, and **Send to {app}**, **Edit first**, **Post later**. Post later is a menu: a reminder tonight, tomorrow or at a
+/// time the creator picks, or none; every choice leaves the network for later, as before.
 struct ShareQueueStep: View {
     @Bindable var flow: ShareFlow
     let queue: ShareQueue
     let network: ShareDestination
     let hasCaptions: Bool
+
+    @Environment(NotificationService.self) private var notifications
+    @Environment(ToastService.self) private var toast
+    @State private var picksTime = false
+
+    private var subject: ReminderSubject { .share(takeID: queue.takeID, network: network) }
 
     private var item: ShareQueueItem { queue.items.first { $0.network == network } ?? ShareQueueItem(network: network, state: .pending) }
 
@@ -28,7 +35,7 @@ struct ShareQueueStep: View {
                 HStack {
                     Button("Edit first") { flow.editFirst() }.accessibilityIdentifier("shareFlow.editFirst")
                     Spacer()
-                    Button("Post later") { flow.postLater(network) }.accessibilityIdentifier("shareFlow.postLater")
+                    postLater
                 }
                 .font(.system(size: 17, weight: .semibold))
                 .foregroundStyle(Palette.ink2)
@@ -40,6 +47,47 @@ struct ShareQueueStep: View {
         .padding(.bottom, 12)
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("shareFlow.step")
+    }
+
+    private var postLater: some View {
+        let calendar = Calendar.current
+        return Menu {
+            if let tonight = ReminderChoice.tonight.time(now: .now, calendar: calendar) {
+                Button { remind(at: tonight) } label: { Label("Tonight · \(clock(tonight))", systemImage: "moon") }
+                    .accessibilityIdentifier("shareFlow.remindTonight")
+            }
+            if let tomorrow = ReminderChoice.tomorrow.time(now: .now, calendar: calendar) {
+                Button { remind(at: tomorrow) } label: { Label("Tomorrow · \(clock(tomorrow))", systemImage: "sunrise") }
+                    .accessibilityIdentifier("shareFlow.remindTomorrow")
+            }
+            Button { picksTime = true } label: { Label("Pick a date and time…", systemImage: "calendar") }
+                .accessibilityIdentifier("shareFlow.remindPick")
+            Divider()
+            Button { flow.postLater(network) } label: { Label("No reminder", systemImage: "bell.slash") }
+                .accessibilityIdentifier("shareFlow.noReminder")
+        } label: {
+            Text("Post later")
+        }
+        .accessibilityIdentifier("shareFlow.postLater")
+        .sheet(isPresented: $picksTime) {
+            ReminderSheet(subject: subject, title: queue.title, startsPicking: true) { result in
+                flow.postLater(network)
+                ReminderFeedback.show(result, toast: toast)
+            }
+        }
+    }
+
+    private func clock(_ time: LocalDateTime) -> String {
+        (time.date(in: .current) ?? .now).formatted(Date.FormatStyle(date: .omitted, time: .shortened).locale(.interface))
+    }
+
+    /// The network waits for later, and the reminder is set for it (the toast says whether iOS took it).
+    private func remind(at time: LocalDateTime) {
+        flow.postLater(network)
+        Task {
+            let result = await notifications.setReminder(subject, title: queue.title, at: time)
+            ReminderFeedback.show(result, toast: toast)
+        }
     }
 
     private var header: some View {

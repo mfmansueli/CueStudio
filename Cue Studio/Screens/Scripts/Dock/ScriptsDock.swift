@@ -27,6 +27,7 @@ struct ScriptsDock: View {
     @Environment(CreatorProfileService.self) private var profile
     @Environment(IdeaDraftService.self) private var ideaDraft
     @Environment(IdeaSuggestionService.self) private var suggestions
+    @Environment(NotificationService.self) private var notifications
     @Environment(LogbookService.self) private var logbook
     @Environment(ScriptStarter.self) private var starter
     @Environment(DictationService.self) private var dictation
@@ -470,6 +471,8 @@ struct ScriptsDock: View {
         }
         // The idea sent is what they like (the next ones lean that way); when it was a note of theirs, the note has become a script.
         let note = suggestions.sent()
+        // A suggested idea used for real: its introduction stops (a note of their own is the Logbook's, not the ideas').
+        if note == nil { notifications.recordUse(.ideas) }
         starter.write(idea: idea, from: sendCenter) { [logbook] scriptID in
             if let note { logbook.markShaped(note, as: scriptID) }
         }

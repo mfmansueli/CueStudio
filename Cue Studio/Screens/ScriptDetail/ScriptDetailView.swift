@@ -11,6 +11,7 @@ struct ScriptDetailView: View {
     @Environment(ScriptLibraryService.self) private var library
     @Environment(PresentationService.self) private var presentation
     @Environment(PreferencesService.self) private var preferences
+    @Environment(ToastService.self) private var toast
     @Environment(\.dismiss) private var dismiss
 
     init(route: ScriptRoute, services: AppServices) {
@@ -86,6 +87,10 @@ struct ScriptDetailView: View {
                 ScriptDetailsSheet(viewModel: viewModel)
             case .scriptType:
                 ScriptTypeSheet(current: viewModel.script?.type) { viewModel.setType($0) }
+            case .reminder:
+                if let script = viewModel.script {
+                    ReminderSheet(subject: .script(script.id), title: script.displayTitle) { ReminderFeedback.show($0, toast: toast) }
+                }
             }
         }
     }

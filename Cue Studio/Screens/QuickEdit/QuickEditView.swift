@@ -23,6 +23,8 @@ struct QuickEditView: View {
     private let services: AppServices
     /// How the creator left: the review they return to carries on from it (share, download…).
     let onClose: (EditorOutcome) -> Void
+    /// The tool to open on once the take is ready (a notification's "Try it"); it opens, nothing runs.
+    private let opening: EditorTool?
 
     /// The height the editor has with no keyboard (see `measuresStableHeight`).
     @State private var stableHeight: CGFloat = 0
@@ -35,7 +37,7 @@ struct QuickEditView: View {
     /// The screen is recorded or mirrored: the previews hide behind `CaptureShield` and the player holds still.
     @SceneCaptured private var isSceneCaptured
 
-    init(take: Take, services: AppServices, onClose: @escaping (EditorOutcome) -> Void) {
+    init(take: Take, services: AppServices, opening: EditorTool? = nil, onClose: @escaping (EditorOutcome) -> Void) {
         let languages = services.languages
         _viewModel = State(initialValue: QuickEditViewModel(
             take: take, takes: services.takes, library: services.library,
@@ -44,6 +46,7 @@ struct QuickEditView: View {
             languageConflict: { languages.languageConflict(for: $0) }
         ))
         self.services = services
+        self.opening = opening
         self.onClose = onClose
     }
 
@@ -72,6 +75,7 @@ struct QuickEditView: View {
         .task {
             viewModel.creatorHandle = services.profile.profile.handle
             await viewModel.prepare()
+            if let opening { viewModel.open(opening) }
         }
         .onChange(of: viewModel.panel) { _, panel in
             // Not tied to the panel: leaving Pauses doesn't stop it listening.

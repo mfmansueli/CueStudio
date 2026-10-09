@@ -20,11 +20,14 @@ struct QuickEditExportSheet: View {
     init(viewModel: QuickEditViewModel, services: AppServices) {
         self.viewModel = viewModel
         let store = services.store
-        _model = State(initialValue: QuickEditExportModel(
+        let model = QuickEditExportModel(
             take: viewModel.take, videoURL: viewModel.videoURL, edit: { viewModel.edit },
             takes: services.takes, quota: services.quota, tier: { store.tier },
             exporter: services.exporter, photos: services.photos, editing: services.editing, ledger: services.ledger
-        ))
+        )
+        let notifications = services.notifications
+        model.onFinished = { takeID in Task { await notifications.exportFinished(takeID: takeID, savedToPhotos: true) } }
+        _model = State(initialValue: model)
     }
 
     var body: some View {

@@ -46,6 +46,8 @@ final class TakeReviewViewModel {
     @ObservationIgnored var queueInterceptor: ((ShareDestination, ActivityResult) -> Bool)?
     /// The queue that edits are made for: re-exporting inside it costs no second export.
     @ObservationIgnored var queueOperation: () -> UUID? = { nil }
+    /// An export finished (the take, and whether it went to Photos): a notification tells a creator who left Cue meanwhile.
+    @ObservationIgnored var onExported: (UUID, Bool) -> Void = { _, _ in }
     /// "Share to".
     var showsShareSheet = false
     /// Photos refused the save: the review shows a card with Open Settings instead of a toast.
@@ -381,6 +383,7 @@ final class TakeReviewViewModel {
                 return
             }
             try await deliver(action, operation: operation, take: take)
+            onExported(take.id, savedOperations.contains(operation.id))
         } catch {
             phase = .failed
             report(error)

@@ -18,6 +18,9 @@ struct LogbookView: View {
     @Environment(TopicTaggingService.self) private var tagging
     @Environment(ScriptStarter.self) private var starter
     @Environment(AIStatus.self) private var aiStatus
+    @Environment(PresentationService.self) private var presentation
+    /// The note a notification was about: brought into view and outlined in yellow.
+    @State private var focused: UUID?
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     @State private var typed = ""
@@ -34,6 +37,7 @@ struct LogbookView: View {
 
     var body: some View {
         NavigationStack {
+            ScrollViewReader { proxy in
             // One list for the whole page, so an idea can be swiped away the system's way.
             List {
                 Group {
@@ -61,6 +65,7 @@ struct LogbookView: View {
                 .listRowInsets(EdgeInsets(top: 0, leading: Metrics.gutter, bottom: 0, trailing: Metrics.gutter))
                 ForEach(logbook.waiting) { entry in
                     card(entry)
+                        .id(entry.id)
                         .listRowBackground(Color.clear)
                         .listRowSeparator(.hidden)
                         .listRowInsets(EdgeInsets(top: 6, leading: Metrics.gutter, bottom: 8, trailing: Metrics.gutter))
@@ -75,6 +80,13 @@ struct LogbookView: View {
             .scrollContentBackground(.hidden)
             .scrollDismissesKeyboard(.interactively)
             .background(Palette.bg)
+            .task {
+                guard let id = presentation.logbookFocus else { return }
+                presentation.logbookFocus = nil
+                focused = id
+                proxy.scrollTo(id, anchor: .center)
+            }
+            }
             // The system's large title, with the line under it as its subtitle; both fold into the bar as the list scrolls.
             .navigationTitle("Logbook")
             .navigationSubtitle("Catch it now. Write it later.")
@@ -222,6 +234,7 @@ struct LogbookView: View {
         }
         .padding(14)
         .background(Palette.surface, in: shape)
+        .overlay { if focused == entry.id { shape.strokeBorder(Palette.acc, lineWidth: 1.5) } }
         .cardDepth(shape)
         .contextMenu {
             Button(role: .destructive) { logbook.delete(entry.id) } label: { Label("Delete", systemImage: "trash") }

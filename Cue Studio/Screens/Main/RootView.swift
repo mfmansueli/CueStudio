@@ -52,6 +52,11 @@ struct RootView: View {
             .onChange(of: IntentRouter.shared.pending, initial: true) {
                 handleIntent()
             }
+            // A notification tapped (also the one that launched Cue): taken once the first flight is over and nothing is being recorded.
+            .onChange(of: NotificationRouter.shared.pending.count, initial: true) { handleNotificationTaps() }
+            .onChange(of: services.onboarding.isActive) { handleNotificationTaps() }
+            .onChange(of: services.presentation.prompter == nil) { handleNotificationTaps() }
+            .modifier(NotificationTriggers(services: services, onActive: handleNotificationTaps))
             // A remote pairing code scanned with the Camera on this device.
             .onOpenURL { url in
                 // TikTok's Share Kit answers through a universal link.
@@ -89,6 +94,25 @@ struct RootView: View {
         return DesignCatalogueView.Section.allCases.first { $0.rawValue.lowercased() == arguments[index + 1].lowercased() } ?? .colors
     }
     #endif
+
+    /// The first flight, the camera, the editor or the remote hold a tap back until they close; then it opens what it names (checked
+    /// again by `NotificationNavigator`), or the tool's introduction first.
+    private func handleNotificationTaps() {
+        let presentation = services.presentation
+        guard !services.onboarding.isActive, presentation.prompter == nil, !presentation.showsRemoteController,
+              let interaction = NotificationRouter.shared.take() else { return }
+        Task {
+            if let opening = await services.notifications.open(interaction) {
+                if let intro = opening.intro {
+                    presentation.scriptsPath = []
+                    presentation.present(.featureIntro(intro))
+                } else {
+                    await NotificationNavigator(services: services).go(to: opening.destination)
+                }
+            }
+            handleNotificationTaps()
+        }
+    }
 
     private func handleIntent() {
         guard let route = IntentRouter.shared.take() else { return }

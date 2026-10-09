@@ -20,6 +20,8 @@ struct TakesView: View {
     @Environment(ScriptLibraryService.self) private var library
     @Environment(PresentationService.self) private var presentation
     @Environment(\.scenePhase) private var scenePhase
+    /// "Remind me…" from a video's menu: a reminder for its best take.
+    @State private var reminding: TakeVideo?
 
     init(services: AppServices) {
         self.services = services
@@ -83,6 +85,11 @@ struct TakesView: View {
             }
         } message: { _ in
             Text("The videos are removed from Cue. Copies you saved to Photos stay there.")
+        }
+        .sheet(item: $reminding) { video in
+            if let take = video.best {
+                ReminderSheet(subject: .take(take.id), title: video.title) { ReminderFeedback.show($0, toast: services.toast) }
+            }
         }
     }
 
@@ -254,6 +261,7 @@ struct TakesView: View {
         Button { viewModel.open(video, then: .share) } label: { Label("Share", systemImage: "square.and.arrow.up") }
         Button { viewModel.open(video, then: .edit) } label: { Label("Edit", systemImage: "pencil") }
         Button { viewModel.retake(video) } label: { Label("Retake", systemImage: "arrow.counterclockwise") }
+        Button { reminding = video } label: { Label("Remind me…", systemImage: "bell") }
         Button { viewModel.markBest(video) } label: {
             if video.best?.isBest == true {
                 Label("Best take", systemImage: "star.fill")

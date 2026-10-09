@@ -7,6 +7,7 @@ import AppIntents
 import SwiftUI
 import TipKit
 import UIKit
+import UserNotifications
 
 @main
 struct CueStudioApp: App {
@@ -25,9 +26,12 @@ struct CueStudioApp: App {
         #if DEBUG
         SimulatedSceneCapture.shared.start(arguments: ProcessInfo.processInfo.arguments)
         #endif
+        // Before launch finishes, so a notification that opened Cue reaches the app (`NotificationRouter` holds it for `RootView`).
+        UNUserNotificationCenter.current().delegate = NotificationCenterDelegate.shared
         let services = AppServices(options: options)
         services.load()
         services.registerIntentDependencies()
+        services.connectNotifications(tap: options.notificationTap)
         Self.configureTips(inMemory: options.isInMemory)
         _services = State(initialValue: services)
         if options.animationsOff {

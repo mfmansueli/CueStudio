@@ -37,6 +37,20 @@ destination/section; `VoiceQuestionScheduler.otherIntroductionToday` + `onTipSho
 `Screens/Shared/Reminders/ReminderSheet` + `ReminderFeedback`, `Screens/Settings/Notifications/` (`NotificationsSettingsView`,
 `NotificationPermissionCard`, `NotificationRoutineEditor`, `NotificationReminderRow`, `NotificationDiagnosticsSection` (DEBUG)).
 
+## Progress log (session 2)
+
+- [x] 1. App init: delegate + `connectNotifications`.
+- [x] 2. RootView: taps when ready; `Screens/Main/Support/NotificationTriggers` (scene phase, change triggers, time zone, remote use).
+- [x] 3. MainView: `.featureIntro` / `.voiceSetup` / `.importWriting` sheets, Profile path, intro after a session, `recordUse(.ideas)`;
+      `YourUniverseView(opensYearInReview:)` + `recordUse(.yourUniverse)`; navigator waits for a sheet to leave.
+- [x] 4. `ReviewLaunchAction.editTool` → `QuickEditView(opening:)` → `QuickEditViewModel+Opening.open(_:)`; Adjust opens on a dial
+      (`adjustOpensOn`).
+- [x] 5. Remind me…: script page ••• (`ScriptDetailViewModel.Sheet.reminder`), Takes context menu, `ShareQueueStep` Post later menu
+      (ids `shareFlow.postLater` → `shareFlow.noReminder` / `remindTonight` / `remindTomorrow` / `remindPick`); UI tests updated.
+- [x] 6. `recordUse(.ideas)` in dock + IdeasSheet; export hooks (`TakeReviewViewModel.onExported`, `QuickEditExportModel.onFinished`);
+      Logbook focus + yellow outline.
+- [ ] 7. Build (next).
+
 ## Left to do
 
 1. `CueStudioApp.init`: `UNUserNotificationCenter.current().delegate = NotificationCenterDelegate.shared` (after the unit-test guard,
