@@ -12,15 +12,27 @@ final class NotificationServiceHarness {
     let center: FakeNotificationCenter
     let facts: FakeNotificationFacts
     let defaults = TestDefaults()
-    var now = NotificationFixtures.monday
-    private(set) var service: NotificationService!
+    let service: NotificationService
+    private let clock: Clock
+
+    /// The moment the service reads.
+    var now: Date {
+        get { clock.now }
+        set { clock.now = newValue }
+    }
+
+    private final class Clock {
+        var now = NotificationFixtures.monday
+    }
 
     init(status: NotificationAuthorization = .authorized, facts: NotificationFacts? = nil, policy: NotificationPolicy = .standard) {
+        let clock = Clock()
+        self.clock = clock
         center = FakeNotificationCenter(status: status)
         self.facts = FakeNotificationFacts(facts ?? NotificationFacts(now: NotificationFixtures.monday))
         service = NotificationService(
             center: center, store: NotificationStateStore(defaults: defaults.defaults), facts: self.facts, policy: policy,
-            now: { [unowned self] in now }, calendar: { NotificationFixtures.utc }
+            now: { clock.now }, calendar: { NotificationFixtures.utc }
         )
     }
 

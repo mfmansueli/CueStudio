@@ -14,6 +14,8 @@ nonisolated struct CampaignCandidate: Hashable, Sendable {
     var earliest: Date
     var destination: NotificationDestination
     var subject: NotificationSubject
+    /// Among candidates of the same priority and moment, lower goes first (the order `DiscoveryRules` chose the tools in).
+    var rank = 0
 
     var requestID: String { NotificationIdentifier.automatic(campaign, feature: feature, projectKey: projectKey) }
 

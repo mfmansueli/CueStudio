@@ -10,7 +10,7 @@ import Testing
 /// Clock times for reminders (`LocalDateTime`, `ReminderChoice`), quiet hours and the routine, across daylight saving and time zones.
 @Suite("Notification times")
 struct NotificationTimeTests {
-    private typealias F = NotificationFixtures
+    private typealias Fixtures = NotificationFixtures
     private let newYork = NotificationFixtures.calendar("America/New_York")
 
     // MARK: - LocalDateTime
@@ -26,13 +26,13 @@ struct NotificationTimeTests {
     @Test func aTimeThatHappensTwiceRingsTheFirstTime() {
         // 1 November 2026, New York: 1:00–2:00 happens twice.
         let twice = LocalDateTime(year: 2026, month: 11, day: 1, hour: 1, minute: 30)
-        let first = F.date(2026, 11, 1, 5, 30) // 1:30 EDT is 5:30 UTC; the second 1:30 (EST) is 6:30 UTC.
+        let first = Fixtures.date(2026, 11, 1, 5, 30) // 1:30 EDT is 5:30 UTC; the second 1:30 (EST) is 6:30 UTC.
         #expect(twice.date(in: newYork) == first)
     }
 
     @Test func aReminderKeepsItsClockTimeInANewTimeZone() {
         let ten = LocalDateTime(year: 2026, month: 10, day: 13, hour: 10, minute: 0)
-        let tokyo = F.calendar("Asia/Tokyo")
+        let tokyo = Fixtures.calendar("Asia/Tokyo")
         #expect(ten.date(in: tokyo).map { LocalDateTime($0, calendar: tokyo) } == ten)
         #expect(ten.date(in: tokyo) != ten.date(in: newYork))
     }
@@ -46,20 +46,20 @@ struct NotificationTimeTests {
     // MARK: - Choices
 
     @Test func tonightIsEightUntilHalfPastSeven() {
-        let afternoon = F.date(2026, 10, 12, 15)
-        #expect(ReminderChoice.tonight.time(now: afternoon, calendar: F.utc) == LocalDateTime(year: 2026, month: 10, day: 12, hour: 20, minute: 0))
-        #expect(ReminderChoice.tonight.time(now: F.date(2026, 10, 12, 19, 45), calendar: F.utc) == nil)
+        let afternoon = Fixtures.date(2026, 10, 12, 15)
+        #expect(ReminderChoice.tonight.time(now: afternoon, calendar: Fixtures.utc) == LocalDateTime(year: 2026, month: 10, day: 12, hour: 20, minute: 0))
+        #expect(ReminderChoice.tonight.time(now: Fixtures.date(2026, 10, 12, 19, 45), calendar: Fixtures.utc) == nil)
     }
 
     @Test func tomorrowIsTenInTheMorning() {
-        let late = F.date(2026, 10, 12, 23, 30)
-        #expect(ReminderChoice.tomorrow.time(now: late, calendar: F.utc) == LocalDateTime(year: 2026, month: 10, day: 13, hour: 10, minute: 0))
+        let late = Fixtures.date(2026, 10, 12, 23, 30)
+        #expect(ReminderChoice.tomorrow.time(now: late, calendar: Fixtures.utc) == LocalDateTime(year: 2026, month: 10, day: 13, hour: 10, minute: 0))
     }
 
     @Test func aTimeInThePastIsRefused() {
-        let now = F.date(2026, 10, 12, 15)
-        #expect(ReminderChoice.isPast(LocalDateTime(year: 2026, month: 10, day: 12, hour: 14, minute: 0), now: now, calendar: F.utc))
-        #expect(!ReminderChoice.isPast(LocalDateTime(year: 2026, month: 10, day: 12, hour: 16, minute: 0), now: now, calendar: F.utc))
+        let now = Fixtures.date(2026, 10, 12, 15)
+        #expect(ReminderChoice.isPast(LocalDateTime(year: 2026, month: 10, day: 12, hour: 14, minute: 0), now: now, calendar: Fixtures.utc))
+        #expect(!ReminderChoice.isPast(LocalDateTime(year: 2026, month: 10, day: 12, hour: 16, minute: 0), now: now, calendar: Fixtures.utc))
     }
 
     // MARK: - Quiet hours
@@ -75,8 +75,8 @@ struct NotificationTimeTests {
 
     @Test func theNextAllowedMomentIsTheEndOfTheQuiet() {
         let quiet = QuietHours.standard
-        #expect(quiet.nextAllowed(after: F.date(2026, 10, 12, 23), calendar: F.utc) == F.date(2026, 10, 13, 9))
-        #expect(quiet.nextAllowed(after: F.date(2026, 10, 12, 14), calendar: F.utc) == F.date(2026, 10, 12, 14))
+        #expect(quiet.nextAllowed(after: Fixtures.date(2026, 10, 12, 23), calendar: Fixtures.utc) == Fixtures.date(2026, 10, 13, 9))
+        #expect(quiet.nextAllowed(after: Fixtures.date(2026, 10, 12, 14), calendar: Fixtures.utc) == Fixtures.date(2026, 10, 12, 14))
     }
 
     // MARK: - Routine
@@ -84,7 +84,7 @@ struct NotificationTimeTests {
     @Test func theRoutineRingsOnItsDaysAtItsTime() {
         // Monday, Wednesday and Friday at 18:00, from Monday 12 October 14:00 for a week.
         let routine = CreationRoutine(weekdays: [2, 4, 6], hour: 18, minute: 0)
-        let times = routine.occurrences(after: F.monday, until: F.monday + F.days(7), calendar: F.utc)
-        #expect(times == [F.date(2026, 10, 12, 18), F.date(2026, 10, 14, 18), F.date(2026, 10, 16, 18)])
+        let times = routine.occurrences(after: Fixtures.monday, until: Fixtures.monday + Fixtures.days(7), calendar: Fixtures.utc)
+        #expect(times == [Fixtures.date(2026, 10, 12, 18), Fixtures.date(2026, 10, 14, 18), Fixtures.date(2026, 10, 16, 18)])
     }
 }

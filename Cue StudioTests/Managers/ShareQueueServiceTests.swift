@@ -41,7 +41,9 @@ struct ShareQueueServiceTests {
     }
 
     @Test func aQueueSavedBeforeTheTimestampStillOpens() throws {
-        let old = Data(#"[{"takeID":"00000000-0000-0000-0000-000000000009","operationID":"00000000-0000-0000-0000-00000000000A","title":"A","items":[{"network":"tiktok","state":"pending"}]}]"#.utf8)
+        // A queue without `updatedAt` is what builds before the notifications saved.
+        let old = try JSONEncoder().encode([ShareQueue(takeID: UUID(), operationID: UUID(), title: "A", networks: [.tiktok])])
+        #expect(!(String(bytes: old, encoding: .utf8) ?? "").contains("updatedAt"))
         let queues = try JSONDecoder().decode([ShareQueue].self, from: old)
         #expect(queues.first?.updatedAt == nil && queues.first?.current?.network == .tiktok)
     }

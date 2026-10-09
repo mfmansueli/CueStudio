@@ -29,7 +29,7 @@ nonisolated enum NotificationPlanner {
         var placed: [PlannedNotification] = []
         var projects: Set<String> = []
         let ordered = candidates.sorted { lhs, rhs in
-            (lhs.campaign.priority, lhs.earliest, lhs.requestID) < (rhs.campaign.priority, rhs.earliest, rhs.requestID)
+            (lhs.campaign.priority, lhs.earliest, lhs.rank, lhs.requestID) < (rhs.campaign.priority, rhs.earliest, rhs.rank, rhs.requestID)
         }
         for candidate in ordered {
             if projects.contains(candidate.projectKey) {

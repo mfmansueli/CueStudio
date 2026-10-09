@@ -12,7 +12,7 @@ import Testing
 @MainActor
 @Suite("NotificationService opening")
 struct NotificationServiceOpeningTests {
-    private typealias F = NotificationFixtures
+    private typealias Fixtures = NotificationFixtures
 
     @Test func aTapOpensItsDestinationOnceHoweverOftenTheSystemCallsBack() async {
         let harness = NotificationServiceHarness()
@@ -25,9 +25,9 @@ struct NotificationServiceOpeningTests {
 
     @Test func aPayloadThisBuildCantReadOpensNothing() async {
         let harness = NotificationServiceHarness()
-        let damaged = NotificationInteraction(requestID: "cue.auto.x", payloadText: "{\"version\": 99}", deliveredAt: F.monday)
+        let damaged = NotificationInteraction(requestID: "cue.auto.x", payloadText: "{\"version\": 99}", deliveredAt: Fixtures.monday)
         let foreign = NotificationInteraction(
-            requestID: "someone.else", payloadText: NotificationPayload(campaign: .routine, destination: .scripts).encoded(), deliveredAt: F.monday
+            requestID: "someone.else", payloadText: NotificationPayload(campaign: .routine, destination: .scripts).encoded(), deliveredAt: Fixtures.monday
         )
         #expect(await harness.service.open(damaged) == nil)
         #expect(await harness.service.open(foreign) == nil)
@@ -69,7 +69,7 @@ struct NotificationServiceOpeningTests {
         _ = await harness.service.open(harness.tap(payload))
         await harness.service.reconcile()
         #expect(harness.service.count(.featureCompleted, campaign: "discover.covers") == 0)
-        harness.now = F.monday + F.hours(25)
+        harness.now = Fixtures.monday + Fixtures.hours(25)
         harness.facts.facts.adopted = [.covers]
         await harness.service.reconcile()
         #expect(harness.service.count(.featureCompleted, campaign: "discover.covers") == 0)
@@ -82,7 +82,7 @@ struct NotificationServiceOpeningTests {
         let payload = NotificationPayload(campaign: .firstRecording, destination: .script(script), projectKey: ProjectKey.script(script))
         _ = await harness.service.open(harness.tap(payload))
         harness.facts.facts.scripts[0].state = .recorded
-        harness.facts.facts.takes = [F.take(scriptID: script)]
+        harness.facts.facts.takes = [Fixtures.take(scriptID: script)]
         await harness.service.reconcile()
         #expect(harness.service.count(.nextActionCompleted, campaign: "projects.firstRecording") == 1)
     }
@@ -111,8 +111,8 @@ struct NotificationServiceOpeningTests {
     // MARK: - In the app
 
     @Test func anIntroductionInTheAppNeedsTheCreatorsYesAndComesOnceASession() async {
-        var facts = NotificationFacts(now: F.monday)
-        facts.takes = [F.take(scriptID: nil)]
+        var facts = NotificationFacts(now: Fixtures.monday)
+        facts.takes = [Fixtures.take(scriptID: nil)]
         let harness = NotificationServiceHarness(facts: facts)
         #expect(await harness.service.inAppIntro(afterSession: true) == nil)
         await harness.service.setCategory(.discovery, isOn: true)
@@ -127,7 +127,7 @@ struct NotificationServiceOpeningTests {
         let harness = NotificationServiceHarness()
         let request = FeatureIntroRequest(feature: .covers, destination: .scripts, projectKey: "p", source: .inApp)
         harness.service.introSnoozed(request)
-        #expect(harness.service.state.snoozedFeatures[FeatureID.covers.rawValue] == F.monday + F.days(30))
+        #expect(harness.service.state.snoozedFeatures[FeatureID.covers.rawValue] == Fixtures.monday + Fixtures.days(30))
         harness.service.introDeclined(request)
         #expect(harness.service.state.isNotInterested(in: .covers))
         #expect(harness.service.count(.optedOut, campaign: "inApp.covers") == 1)

@@ -29,8 +29,11 @@ nonisolated struct NotificationPayload: Codable, Hashable, Sendable {
         return "\(category.rawValue).\(campaign.rawValue)"
     }
 
+    /// The same payload always gives the same text (sorted keys): an unchanged request is recognised and never handed to the system again.
     func encoded() -> String {
-        guard let data = try? JSONEncoder().encode(self) else { return "" }
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = .sortedKeys
+        guard let data = try? encoder.encode(self) else { return "" }
         return String(bytes: data, encoding: .utf8) ?? ""
     }
 

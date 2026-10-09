@@ -77,6 +77,11 @@ struct NotificationStorageTests {
         #expect(!text.contains("title") && !text.contains("text"))
     }
 
+    @Test func aPayloadAlwaysEncodesTheSameSoAnUnchangedRequestIsRecognised() {
+        let payload = NotificationPayload(campaign: .reminder, destination: .shareQueue(takeID: UUID(), network: .reels), projectKey: "p", reminderID: UUID())
+        #expect(Set((0..<20).map { _ in payload.encoded() }).count == 1)
+    }
+
     @Test func aPayloadFromANewerBuildOrDamagedIsRefused() {
         var newer = NotificationPayload(campaign: .routine, destination: .nextAction)
         newer.version = NotificationPayload.currentVersion + 1

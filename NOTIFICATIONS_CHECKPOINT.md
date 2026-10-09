@@ -52,8 +52,11 @@ destination/section; `VoiceQuestionScheduler.otherIntroductionToday` + `onTipSho
 - [x] 7. `scripts/build.sh app` succeeds with zero warnings (FeatureCopy became `FeatureID+Copy.swift` computed properties; note text is
       `FeatureIntro.Note.text`; navigator/MainView switches split for SwiftLint).
 - [x] 8. Strings: 163 keys in 20 languages (`scripts/strings.py missing` → 0). Debug diagnostics use `Text(verbatim:)`.
-- [ ] 9. Unit tests (next): planner, campaigns, discovery, adoption, LocalDateTime/DST, quiet hours, state migration, payload,
-      service (fake center + fake facts), router, reminders.
+- [x] 9. Unit tests: `Cue StudioTests/Notifications/` (planner, campaigns, discovery, adoption, times/DST, storage/payload/router,
+      service + opening) + coordination tests in `VoiceQuestionSchedulerTests` / `ShareQueueServiceTests`: 116 pass. Fixes found:
+      sorted-keys payload JSON (unchanged requests were re-added), `CampaignCandidate.rank` tie-break.
+- [ ] 10. UI tests (next): `NotificationsUITests` (settings page, denied card, reminder from script page, Post later menu,
+      `-uiTestNotificationTap` script/cleanUp/deletedScript/invalid/duplicate); add the basic one to `UISmoke`.
 
 ## Left to do
 

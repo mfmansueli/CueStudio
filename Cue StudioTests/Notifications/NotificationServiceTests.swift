@@ -12,7 +12,7 @@ import Testing
 @MainActor
 @Suite("NotificationService")
 struct NotificationServiceTests {
-    private typealias F = NotificationFixtures
+    private typealias Fixtures = NotificationFixtures
 
     // MARK: - Permission and consent
 
@@ -45,7 +45,7 @@ struct NotificationServiceTests {
         let harness = NotificationServiceHarness(status: .notDetermined)
         let script = harness.addReadyScript()
         let result = await harness.service.setReminder(.script(script), title: "Morning habits", at: harness.tomorrowAtTen())
-        #expect(result == .scheduled(F.date(2026, 10, 13, 10)))
+        #expect(result == .scheduled(Fixtures.date(2026, 10, 13, 10)))
         #expect(harness.center.requestCount == 1)
         let reminder = harness.service.state.reminders.first
         #expect(reminder?.isScheduled == true)
@@ -97,7 +97,7 @@ struct NotificationServiceTests {
         policy.maxPending = policy.routineCapacity + policy.automaticCapacity + 1
         let harness = NotificationServiceHarness(policy: policy)
         let script = harness.addReadyScript()
-        #expect(await harness.service.setReminder(.script(script), title: "A", at: harness.tomorrowAtTen()) == .scheduled(F.date(2026, 10, 13, 10)))
+        #expect(await harness.service.setReminder(.script(script), title: "A", at: harness.tomorrowAtTen()) == .scheduled(Fixtures.date(2026, 10, 13, 10)))
         let later = LocalDateTime(year: 2026, month: 10, day: 20, hour: 10, minute: 0)
         #expect(await harness.service.setReminder(.script(script), title: "A", at: later) == .savedWaiting)
     }
@@ -114,9 +114,9 @@ struct NotificationServiceTests {
 
     @Test func aPostLaterReminderGoesOnceThatNetworkIsPosted() async {
         let take = UUID()
-        var facts = NotificationFacts(now: F.monday)
-        facts.takes = [F.take(id: take, scriptID: nil)]
-        facts.queues = [NotificationFacts.QueueFact(takeID: take, title: "A", waiting: [.reels], updatedAt: F.monday)]
+        var facts = NotificationFacts(now: Fixtures.monday)
+        facts.takes = [Fixtures.take(id: take, scriptID: nil)]
+        facts.queues = [NotificationFacts.QueueFact(takeID: take, title: "A", waiting: [.reels], updatedAt: Fixtures.monday)]
         let harness = NotificationServiceHarness(facts: facts)
         _ = await harness.service.setReminder(.share(takeID: take, network: .reels), title: "A", at: harness.tomorrowAtTen())
         await harness.service.reconcile()
@@ -139,7 +139,7 @@ struct NotificationServiceTests {
         harness.addReadyScript()
         await harness.service.reconcile()
         let first = harness.automatic().first { $0.payload.campaign == .firstRecording }
-        #expect(first?.trigger == .at(LocalDateTime(F.monday + F.hours(48), calendar: F.utc)))
+        #expect(first?.trigger == .at(LocalDateTime(Fixtures.monday + Fixtures.hours(48), calendar: Fixtures.utc)))
         #expect(first?.isPassive == false)
         await harness.service.setRoutine(CreationRoutine(weekdays: [2, 6], hour: 18, minute: 0))
         let routine = harness.center.requests(of: .routine)
@@ -148,8 +148,8 @@ struct NotificationServiceTests {
 
     @Test func toolsAreOnlyScheduledWithTheCreatorsYes() async {
         // Two drafts too short to nudge about: only the tool can be planned.
-        var facts = NotificationFacts(now: F.monday)
-        facts.scripts = [F.script(.draft, words: 3), F.script(.draft, words: 3)]
+        var facts = NotificationFacts(now: Fixtures.monday)
+        facts.scripts = [Fixtures.script(.draft, words: 3), Fixtures.script(.draft, words: 3)]
         facts.capabilities.aiWriting = true
         let harness = NotificationServiceHarness(facts: facts)
         await harness.service.reconcile()
@@ -176,9 +176,9 @@ struct NotificationServiceTests {
         await harness.service.reconcile()
         let dates = harness.automatic().compactMap { request -> Date? in
             guard case .at(let time) = request.trigger else { return nil }
-            return time.date(in: F.utc)
+            return time.date(in: Fixtures.utc)
         }
-        #expect(!dates.isEmpty && dates.allSatisfy { $0 >= F.monday + F.days(7) })
+        #expect(!dates.isEmpty && dates.allSatisfy { $0 >= Fixtures.monday + Fixtures.days(7) })
     }
 
     @Test func anUnchangedPlanIsNotHandedToTheSystemAgainButANewLanguageIs() async {

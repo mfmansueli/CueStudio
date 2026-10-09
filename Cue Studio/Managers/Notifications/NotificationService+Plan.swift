@@ -62,10 +62,10 @@ extension NotificationService {
             measureOnceADay(.suppressed, requestID: name, campaign: name, category: .discovery, reason: held.reason)
         }
         let earliest = lastActivity + policy.discoveryDelay
-        var found = offers.prefix(3).map { offer in
+        var found = offers.prefix(3).enumerated().map { index, offer in
             CampaignCandidate(
                 campaign: .feature, feature: offer.intro.feature, projectKey: "discover.\(offer.projectKey)", earliest: earliest,
-                destination: offer.destination, subject: .feature(offer.intro.feature)
+                destination: offer.destination, subject: .feature(offer.intro.feature), rank: index
             )
         }
         if let idea = facts.ideas.first {
