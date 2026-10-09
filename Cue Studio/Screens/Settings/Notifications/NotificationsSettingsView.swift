@@ -81,7 +81,7 @@ struct NotificationsSettingsView: View {
             }
             .cardRowBackground(position: .only)
         } header: {
-            CueSectionHeader(verbatim: String(localized: "Routine"))
+            CueSectionHeader(verbatim: String(localized: "Days and time"))
         } footer: {
             Text("On those days Cue opens on your next step.")
         }
@@ -164,7 +164,8 @@ struct NotificationsSettingsView: View {
                 Button("30 days") { notifications.pauseAutomatic(days: 30) }
                 if notifications.pausedUntil != nil { Button("Resume now") { notifications.resumeAutomatic() } }
             } label: {
-                Text(notifications.pausedUntil == nil ? "Pause" : "Change").foregroundStyle(Palette.accText)
+                Text(notifications.pausedUntil == nil ? String(localized: "Pause for…") : String(localized: "Change"))
+                    .foregroundStyle(Palette.accText)
             }
             .accessibilityIdentifier("notifications.pause")
         }

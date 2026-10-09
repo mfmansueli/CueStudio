@@ -15,7 +15,7 @@ struct NotificationReminderRow: View {
     private var kind: String {
         switch reminder.subject {
         case .script: String(localized: "Script")
-        case .take: String(localized: "Recording")
+        case .take: String(localized: "Take")
         case .share(_, let network): String(localized: "Post on \(network.platform.label)")
         }
     }
@@ -31,7 +31,7 @@ struct NotificationReminderRow: View {
                 Text(reminder.title.isEmpty ? kind : reminder.title)
                     .foregroundStyle(Palette.ink)
                     .lineLimit(1)
-                Text("\(kind) · \(reminder.time.date(in: calendar).map { ReminderFeedback.when($0) } ?? "")")
+                Text(verbatim: "\(kind) · \(reminder.time.date(in: calendar).map { ReminderFeedback.when($0) } ?? "")")
                     .font(.footnote)
                     .foregroundStyle(Palette.ink2)
             }
