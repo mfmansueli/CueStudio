@@ -70,7 +70,7 @@ struct ShareQueueStep: View {
         }
         .accessibilityIdentifier("shareFlow.postLater")
         .sheet(isPresented: $picksTime) {
-            ReminderSheet(subject: subject, title: queue.title, startsPicking: true) { result in
+            ReminderSheet(subject: subject, title: queue.title, startsPicking: true) { [toast] result in
                 flow.postLater(network)
                 ReminderFeedback.show(result, toast: toast)
             }
@@ -83,9 +83,11 @@ struct ShareQueueStep: View {
 
     /// The network waits for later, and the reminder is set for it (the toast says whether iOS took it).
     private func remind(at time: LocalDateTime) {
+        // Taken now: leaving the network for later replaces this step, and the view's environment goes with it.
+        let (notifications, toast, subject, title) = (notifications, toast, subject, queue.title)
         flow.postLater(network)
         Task {
-            let result = await notifications.setReminder(subject, title: queue.title, at: time)
+            let result = await notifications.setReminder(subject, title: title, at: time)
             ReminderFeedback.show(result, toast: toast)
         }
     }

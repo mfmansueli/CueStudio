@@ -105,8 +105,8 @@ final class NotificationsUITests: XCTestCase {
         let tryIt = app.buttons["featureIntro.try"]
         XCTAssertTrue(tryIt.waitForExistence(timeout: 15))
         tryIt.tap()
-        let pauses = element(app, "edit.pauses.threshold")
-        XCTAssertTrue(pauses.waitForExistence(timeout: 30), "Quick edit opens on Clean Up")
+        XCTAssertTrue(element(app, "edit.panel.pauses").waitForExistence(timeout: 30), "Quick edit opens on Clean Up")
+        XCTAssertTrue(app.buttons["edit.pauses.threshold.minus"].exists)
     }
 
     func testANotificationAboutADeletedScriptSaysSo() {

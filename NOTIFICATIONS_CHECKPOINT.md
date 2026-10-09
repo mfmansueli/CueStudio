@@ -55,8 +55,10 @@ destination/section; `VoiceQuestionScheduler.otherIntroductionToday` + `onTipSho
 - [x] 9. Unit tests: `Cue StudioTests/Notifications/` (planner, campaigns, discovery, adoption, times/DST, storage/payload/router,
       service + opening) + coordination tests in `VoiceQuestionSchedulerTests` / `ShareQueueServiceTests`: 116 pass. Fixes found:
       sorted-keys payload JSON (unchanged requests were re-added), `CampaignCandidate.rank` tie-break.
-- [ ] 10. UI tests (next): `NotificationsUITests` (settings page, denied card, reminder from script page, Post later menu,
-      `-uiTestNotificationTap` script/cleanUp/deletedScript/invalid/duplicate); add the basic one to `UISmoke`.
+- [x] 10. UI tests: `NotificationsUITests` (10) + `ShareToUITests.testPostLaterCanRemindTheCreatorTomorrow`; all pass. Post later's
+      environment values are captured before the async reminder call. `UISmoke` has `testAReminderFromAScriptIsSetAndListed`.
+- [ ] 11. Docs (next): `NOTIFICATIONS.md`, `ARCHITECTURE.md`, `DESIGN_PROJECT.md` §27, `CLAUDE.md` launch args. Then `scripts/test.sh full`,
+      `scripts/check-warnings.sh`, `xcrun simctl --set testing delete all`, final report.
 
 ## Left to do
 

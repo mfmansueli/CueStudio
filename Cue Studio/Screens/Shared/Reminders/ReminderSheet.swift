@@ -152,8 +152,9 @@ struct ReminderSheet: View {
             return
         }
         isSaving = true
+        let (notifications, subject, title, replacing) = (notifications, subject, title, editing?.id)
         Task {
-            let result = await notifications.setReminder(subject, title: title, at: time, replacing: editing?.id)
+            let result = await notifications.setReminder(subject, title: title, at: time, replacing: replacing)
             isSaving = false
             if result == .past {
                 problem = String(localized: "Pick a time in the future")

@@ -101,10 +101,18 @@ final class ShareToUITests: XCTestCase {
         XCTAssertTrue(tomorrow.waitForExistence(timeout: 5))
         XCTAssertTrue(app.buttons["shareFlow.remindPick"].exists && app.buttons["shareFlow.noReminder"].exists)
         tomorrow.tap()
-        let set = app.staticTexts.matching(NSPredicate(format: "label BEGINSWITH 'Reminder set'")).firstMatch
-        XCTAssertTrue(set.waitForExistence(timeout: 5))
+        XCTAssertTrue(app.buttons["ready.closeButton"].waitForExistence(timeout: 5))
         app.buttons["ready.closeButton"].tap()
         XCTAssertTrue(app.buttons["review.postLater"].waitForExistence(timeout: 5), "The network still waits for later")
+        app.buttons["review.backButton"].tap()
+        // The reminder is listed in Settings › Notifications, for that network.
+        app.cueTabBar.buttons["Settings"].tap()
+        let notifications = app.descendants(matching: .any)["settings.notifications"].firstMatch
+        app.scroll(to: notifications)
+        notifications.tap()
+        let reminder = app.descendants(matching: .any)["notifications.reminder"].firstMatch
+        XCTAssertTrue(reminder.waitForExistence(timeout: 5))
+        XCTAssertTrue(reminder.label.contains("Post on TikTok"), reminder.label)
     }
 
     func testNotYetKeepsTheNetworkAndYesSendsItOff() {
