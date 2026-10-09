@@ -57,8 +57,10 @@ destination/section; `VoiceQuestionScheduler.otherIntroductionToday` + `onTipSho
       sorted-keys payload JSON (unchanged requests were re-added), `CampaignCandidate.rank` tie-break.
 - [x] 10. UI tests: `NotificationsUITests` (10) + `ShareToUITests.testPostLaterCanRemindTheCreatorTomorrow`; all pass. Post later's
       environment values are captured before the async reminder call. `UISmoke` has `testAReminderFromAScriptIsSetAndListed`.
-- [ ] 11. Docs (next): `NOTIFICATIONS.md`, `ARCHITECTURE.md`, `DESIGN_PROJECT.md` §27, `CLAUDE.md` launch args. Then `scripts/test.sh full`,
-      `scripts/check-warnings.sh`, `xcrun simctl --set testing delete all`, final report.
+- [x] 11. Docs: `NOTIFICATIONS.md`, `ARCHITECTURE.md` (§2.5), `DESIGN_PROJECT.md` §27, `CLAUDE.md` launch args; contrast test
+      `PaletteContrastTests.theNotificationSheetsReadOnTheirNight`; reminder status uses `ink2`.
+- [ ] 12. `scripts/test.sh full` (running), then `scripts/check-warnings.sh`, `xcrun simctl --set testing delete all`, final report
+      (in Portuguese), delete this file.
 
 ## Left to do
 
