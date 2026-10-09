@@ -13,6 +13,10 @@ final class PresentationService {
     var selectedTab: AppTab = .scripts
     var scriptsPath: [ScriptRoute] = []
     var settingsPath: [SettingsRoute] = []
+    /// The Profile tab's pages opened from elsewhere (a notification's "Your universe").
+    var profilePath: [ProfileRoute] = []
+    /// The Logbook note to bring into view when the Logbook opens (a notification about it); the Logbook clears it.
+    var logbookFocus: UUID?
     var sheet: AppSheet?
     /// Takes opens filtered this way (from "Your universe"); Takes takes it and clears it.
     var takesRequest: TakesRequest?

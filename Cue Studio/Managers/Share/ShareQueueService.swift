@@ -13,9 +13,11 @@ final class ShareQueueService {
     private(set) var queues: [ShareQueue]
 
     private let defaults: UserDefaults
+    private let now: () -> Date
 
-    init(defaults: UserDefaults = .standard) {
+    init(defaults: UserDefaults = .standard, now: @escaping () -> Date = { .now }) {
         self.defaults = defaults
+        self.now = now
         queues = defaults.data(forKey: DefaultsKey.shareQueues).flatMap { try? JSONDecoder().decode([ShareQueue].self, from: $0) } ?? []
     }
 
@@ -34,7 +36,7 @@ final class ShareQueueService {
     /// A new queue for a video (it replaces one that was left for it before).
     @discardableResult
     func begin(takeID: UUID, operationID: UUID, title: String, networks: [ShareDestination]) -> ShareQueue {
-        let queue = ShareQueue(takeID: takeID, operationID: operationID, title: title, networks: networks)
+        let queue = ShareQueue(takeID: takeID, operationID: operationID, title: title, networks: networks, updatedAt: now())
         queues.removeAll { $0.takeID == takeID }
         queues.append(queue)
         save()
@@ -57,6 +59,7 @@ final class ShareQueueService {
     private func change(_ takeID: UUID, _ change: (inout ShareQueue) -> Void) {
         guard let index = queues.firstIndex(where: { $0.takeID == takeID }) else { return }
         change(&queues[index])
+        queues[index].updatedAt = now()
         if queues[index].isDone { queues.remove(at: index) }
         save()
     }

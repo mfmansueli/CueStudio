@@ -20,7 +20,7 @@ struct SettingsEntryRow: View {
     @ViewBuilder
     private var content: some View {
         switch entry {
-        case .recording, .prompter, .remote, .myCueVoice, .personalize, .languageRegion, .privacy, .cuePro, .restorePurchases,
+        case .recording, .prompter, .remote, .myCueVoice, .personalize, .languageRegion, .notifications, .privacy, .cuePro, .restorePurchases,
              .privacyPolicy, .termsOfUse, .acknowledgements, .version:
             SettingsRootRow(entry: entry, bindings: bindings)
         case .startsWith, .resolution, .frameRate, .defaultFormat, .microphone, .countdown, .countdownBeforePlay, .grid:

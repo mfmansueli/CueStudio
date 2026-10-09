@@ -3,6 +3,7 @@
 //  Cue Studio
 //
 
+import FirebaseAnalytics
 import FirebaseCore
 import FirebaseCrashlytics
 import Foundation
@@ -33,5 +34,12 @@ enum TelemetryManager {
     static func record(_ check: VoiceCheckReport) {
         guard FirebaseApp.app() != nil else { return }
         Crashlytics.crashlytics().log(check.line)
+    }
+
+    /// A notification campaign's outcome (scheduled, opened, a tool used…), as an Analytics event: the campaign, category, outcome and
+    /// reason, nothing else. Only called with "Help improve Cue" on (`NotificationService`); nothing when Firebase isn't running.
+    static func record(_ event: NotificationTelemetryEvent) {
+        guard FirebaseApp.app() != nil else { return }
+        Analytics.logEvent("cue_notification", parameters: event.parameters)
     }
 }

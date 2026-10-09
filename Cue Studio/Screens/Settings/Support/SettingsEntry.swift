@@ -10,7 +10,7 @@ import Foundation
 nonisolated enum SettingsEntry: String, CaseIterable, Identifiable, Sendable {
     // The root
     case recording, prompter, remote, myCueVoice, personalize
-    case languageRegion, privacy
+    case languageRegion, notifications, privacy
     case cuePro, restorePurchases
     case privacyPolicy, termsOfUse, acknowledgements, version
     // Recording
@@ -43,6 +43,7 @@ nonisolated enum SettingsEntry: String, CaseIterable, Identifiable, Sendable {
         case .myCueVoice: String(localized: "My Cue Voice")
         case .personalize: String(localized: "Personalize")
         case .languageRegion: String(localized: "Language & Region")
+        case .notifications: String(localized: "Notifications")
         case .privacy: String(localized: "Privacy & AI data")
         case .cuePro: String(localized: "Cue Pro")
         case .restorePurchases: String(localized: "Restore purchases")
@@ -121,7 +122,7 @@ nonisolated enum SettingsEntry: String, CaseIterable, Identifiable, Sendable {
         switch self {
         case .recording, .prompter, .remote: String(localized: "Create")
         case .myCueVoice, .personalize: String(localized: "Your Cue")
-        case .languageRegion, .privacy: String(localized: "General")
+        case .languageRegion, .notifications, .privacy: String(localized: "General")
         case .cuePro, .restorePurchases: String(localized: "Pro")
         case .privacyPolicy, .termsOfUse, .acknowledgements, .version: String(localized: "About")
         case .startsWith: Self.path(.recording, String(localized: "Camera"))
@@ -155,6 +156,7 @@ nonisolated enum SettingsEntry: String, CaseIterable, Identifiable, Sendable {
         case .myCueVoice: ["voice", "style", "tone"]
         case .personalize: ["icon", "sky", "haptics"]
         case .languageRegion: ["language", "locale", "translate"]
+        case .notifications: ["reminders", "routine", "alerts", "quiet hours", "pause"]
         case .privacy: ["data", "ai", "delete", "permissions"]
         case .cuePro: ["pro", "subscription", "plan", "upgrade", "trial"]
         case .restorePurchases: ["purchase", "subscription"]

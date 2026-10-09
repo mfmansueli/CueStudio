@@ -82,6 +82,16 @@ final class IdeaSuggestionService {
         return starter
     }
 
+    /// The ideas the model wrote that the card hasn't shown yet, kept on this iPhone: the only ideas a notification may say exist.
+    var unseenModelIdeas: [ThemeIdea] {
+        pool.indices.filter { $0 > position || ($0 == position && logbookCard != nil) }.map { pool[$0] }.filter { $0.angle != nil }
+    }
+
+    /// The idea a notification named (`IdeaKey`), if Cue still has it.
+    func idea(forKey key: String) -> ThemeIdea? {
+        pool.first { IdeaKey.of($0) == key }
+    }
+
     private var starter: ThemeIdea? {
         let topics = profile.profile.ideaTopics
         if topics.isEmpty { return ThemeCatalog.page(for: [], rotation: starterRotation).first }

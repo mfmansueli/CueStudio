@@ -15,6 +15,7 @@ enum SettingsRoute: Hashable {
     case myCueVoice
     case personalize, appIcon
     case languageRegion
+    case notifications
     case privacy, permissions
     case acknowledgements
 }
