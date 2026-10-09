@@ -5,11 +5,13 @@
 
 import SwiftUI
 
-/// Colors to pick from, the picked one ringed in yellow.
+/// Colors to pick from, the picked one ringed in yellow; each a 44 pt target, the color as large as
+/// `diameter` (the styling panels show them bigger).
 struct PanelSwatches: View {
     let label: String
     let colors: [OverlayColor]
     let selection: OverlayColor?
+    var diameter: CGFloat = 30
     let identifier: String
     let onSelect: (OverlayColor) -> Void
 
@@ -25,7 +27,7 @@ struct PanelSwatches: View {
                     } label: {
                         Circle()
                             .fill(color.color)
-                            .frame(width: 30, height: 30)
+                            .frame(width: diameter, height: diameter)
                             .overlay(Circle().strokeBorder(Color.white.opacity(0.22), lineWidth: 1))
                             .padding(3)
                             .overlay(Circle().strokeBorder(isOn ? Palette.acc : .clear, lineWidth: 2))

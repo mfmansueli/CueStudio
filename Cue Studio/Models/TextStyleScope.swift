@@ -5,7 +5,9 @@
 
 import Foundation
 
-/// What a preset or "My style" is applied to.
+/// What a preset or "My style" is applied to. Text style offers the first two; the captions are
+/// styled in Caption style, and a text's look reaches them only through "Apply this style to
+/// captions", once (`CaptionStyleCopy`).
 nonisolated enum TextStyleScope: String, CaseIterable, Identifiable, Sendable {
     /// The text picked on the preview or its track.
     case selected
@@ -13,8 +15,6 @@ nonisolated enum TextStyleScope: String, CaseIterable, Identifiable, Sendable {
     case allTexts
     /// The captions.
     case allCaptions
-    /// Every text and the captions, together ("+ Captions").
-    case textsAndCaptions
 
     var id: String { rawValue }
 

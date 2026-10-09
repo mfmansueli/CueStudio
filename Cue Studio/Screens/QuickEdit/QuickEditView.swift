@@ -136,6 +136,7 @@ struct QuickEditView: View {
         .onChange(of: isSceneCaptured, initial: true) { _, captured in viewModel.sceneCaptureChanged(captured) }
         .onDisappear { viewModel.pauseAndKeepDraft() }
         .animation(reduceMotion ? nil : .easeOut(duration: 0.22), value: viewModel.panel)
+        .animation(reduceMotion ? nil : .easeInOut(duration: 0.28), value: viewModel.stylePanelIsExpanded)
         .animation(reduceMotion ? nil : .easeInOut(duration: 0.25), value: viewModel.isFullScreen)
     }
 
@@ -161,7 +162,8 @@ struct QuickEditView: View {
                 if let panel = viewModel.panel, case .sheet(let medium, let large) = layout.panelPresentation {
                     EditorPanelView(viewModel: viewModel, panel: panel)
                         .environment(\.editorHeightClass, layout.heightClass)
-                        .presentationDetents([.height(medium), .height(large)])
+                        // Expanding the panel is the sheet's taller height, and dragging the sheet expands it.
+                        .presentationDetents([.height(medium), .height(large)], selection: sheetDetentBinding(medium: medium, large: large))
                         .presentationBackgroundInteraction(.enabled(upThrough: .height(large)))
                         .presentationCornerRadius(Metrics.editorSheetRadius)
                         .presentationBackground(Palette.Editor.panel)
@@ -195,7 +197,8 @@ struct QuickEditView: View {
             stableHeight: stableHeight > 0 ? stableHeight : nil,
             panel: viewModel.panel?.size,
             panelFocusesLane: viewModel.panel?.focusedLane != nil,
-            largeText: dynamicTypeSize >= .xxLarge
+            largeText: dynamicTypeSize >= .xxLarge,
+            panelIsExpanded: viewModel.stylePanelIsExpanded && viewModel.panel?.isExpandable == true
         )
     }
 
@@ -284,6 +287,13 @@ struct QuickEditView: View {
             height = screen.width / aspect
         }
         return CGSize(width: width.rounded(), height: height.rounded())
+    }
+
+    private func sheetDetentBinding(medium: CGFloat, large: CGFloat) -> Binding<PresentationDetent> {
+        Binding(
+            get: { viewModel.stylePanelIsExpanded ? .height(large) : .height(medium) },
+            set: { viewModel.stylePanelIsExpanded = $0 == .height(large) }
+        )
     }
 
     private func sheetPanelBinding(_ layout: EditorLayout) -> Binding<Bool> {

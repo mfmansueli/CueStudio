@@ -7666,124 +7666,6 @@
         }
       }
     },
-    "%@ on all text + captions" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ على كل النصوص + الترجمة النصية"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ på al tekst + undertitler"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ auf allem Text + Untertiteln"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ en todo el texto + subtítulos"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ sur tous les textes + sous-titres"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "सभी टेक्स्ट + कैप्शन पर %@"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ di semua tulisan + teks"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ su tutti i testi + sottotitoli"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "すべてのテキスト＋字幕に%@"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "모든 텍스트 + 자막에 %@ 적용"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ på all tekst + undertekster"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ op alle tekst + ondertitels"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ em todo texto + legendas"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ på all text + undertexter"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ กับข้อความ + คำบรรยายทั้งหมด"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tüm metin + altyazılarda %@"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ cho mọi chữ + phụ đề"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "所有文字+字幕已使用%@"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ 套用到所有文字＋字幕"
-          }
-        }
-      }
-    },
     "%@ on every cut" : {
       "localizations" : {
         "ar" : {
@@ -20646,124 +20528,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "+ 加入 · 輕點一下"
-          }
-        }
-      }
-    },
-    "+ Captions" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "+ الترجمة النصية"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "+ Undertekster"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "+ Untertitel"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "+ Subtítulos"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "+ Sous-titres"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "+ कैप्शन"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "+ Teks"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "+ Sottotitoli"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "+ 字幕"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "+ 자막"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "+ Undertekster"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "+ Ondertitels"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "+ Legendas"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "+ Undertexter"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "+ คำบรรยาย"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "+ Altyazılar"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "+ Phụ đề"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "+ 字幕"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "+ 字幕"
           }
         }
       }
@@ -40184,124 +39948,6 @@
         }
       }
     },
-    "All texts and captions change together" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "تتغيّر كل النصوص والترجمة النصية معًا"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Alle tekster og undertekster ændres sammen"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Alle Texte und Untertitel ändern sich gemeinsam"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Todos los textos y subtítulos cambian a la vez"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tous les textes et sous-titres changent ensemble"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "सभी टेक्स्ट और कैप्शन एक साथ बदलते हैं"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Semua tulisan dan teks berubah bersamaan"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tutti i testi e i sottotitoli cambiano insieme"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "すべてのテキストと字幕が一緒に変わります"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "모든 텍스트와 자막이 함께 바뀝니다"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Alle tekster og undertekster endres sammen"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Alle teksten en ondertitels veranderen samen"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Todos os textos e legendas mudam juntos"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Alla texter och undertexter ändras tillsammans"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ข้อความและคำบรรยายทั้งหมดเปลี่ยนพร้อมกัน"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tüm metinler ve altyazılar birlikte değişir"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mọi chữ và phụ đề cùng thay đổi"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "所有文字和字幕会一起更改"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "所有文字與字幕會一起變更"
-          }
-        }
-      }
-    },
     "All topics" : {
       "localizations" : {
         "ar" : {
@@ -46938,6 +46584,244 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "套用我的封面風格"
+          }
+        }
+      }
+    },
+    "Apply this style to captions?" : {
+      "comment" : "Text style: title of the question before a text's look replaces the captions' look",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "هل تريد تطبيق هذا النمط على الترجمة النصية؟"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Brug denne stil på underteksterne?"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diesen Stil auf Untertitel anwenden?"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¿Aplicar este estilo a los subtítulos?"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Appliquer ce style aux sous-titres ?"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "यह स्टाइल कैप्शन पर लगाएँ?"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Terapkan gaya ini ke teks?"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Applicare questo stile ai sottotitoli?"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このスタイルを字幕に適用しますか？"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이 스타일을 자막에 적용할까요?"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bruke denne stilen på undertekstene?"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deze stijl op ondertitels toepassen?"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aplicar este estilo às legendas?"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Använda stilen på undertexterna?"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ใช้สไตล์นี้กับคำบรรยายไหม"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu stil altyazılara uygulansın mı?"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Áp dụng kiểu này cho phụ đề?"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "将此样式应用到字幕？"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "要將此風格套用到字幕嗎？"
+          }
+        }
+      }
+    },
+    "Apply this style to captions" : {
+      "comment" : "Text style: button that copies the picked text's look onto the captions, once (asks first)",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "طبّق هذا النمط على الترجمة النصية"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Brug denne stil på underteksterne"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diesen Stil auf Untertitel anwenden"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aplicar este estilo a los subtítulos"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Appliquer ce style aux sous-titres"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "यह स्टाइल कैप्शन पर लगाएँ"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Terapkan gaya ini ke teks"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Applica questo stile ai sottotitoli"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このスタイルを字幕に適用"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이 스타일을 자막에 적용"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bruk denne stilen på undertekstene"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deze stijl op ondertitels toepassen"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aplicar este estilo às legendas"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Använd stilen på undertexterna"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ใช้สไตล์นี้กับคำบรรยาย"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu stili altyazılara uygula"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Áp dụng kiểu này cho phụ đề"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "将此样式应用到字幕"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "將此風格套用到字幕"
           }
         }
       }
@@ -65521,6 +65405,125 @@
         }
       }
     },
+    "Captions use this style" : {
+      "comment" : "Toast after a text's look was copied onto the captions (with Undo)",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تستخدم الترجمة النصية هذا النمط"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Underteksterne bruger denne stil"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Untertitel nutzen jetzt diesen Stil"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Los subtítulos usan este estilo"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les sous-titres utilisent ce style"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "कैप्शन पर यह स्टाइल लगा"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Teks memakai gaya ini"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "I sottotitoli usano questo stile"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "字幕にこのスタイルを適用しました"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "자막에 이 스타일을 적용함"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Undertekstene bruker denne stilen"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ondertitels gebruiken deze stijl"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Legendas com este estilo"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Undertexterna använder stilen"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "คำบรรยายใช้สไตล์นี้แล้ว"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Altyazılar bu stili kullanıyor"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Phụ đề đã dùng kiểu này"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "字幕已使用此样式"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "字幕已套用此風格"
+          }
+        }
+      }
+    },
     "Captions written from your voice, so your audience can follow without sound." : {
       "comment" : "Introduction benefit (Auto captions)",
       "localizations" : {
@@ -73810,6 +73813,125 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "程式設計"
+          }
+        }
+      }
+    },
+    "Collapse panel" : {
+      "comment" : "Text style and Caption style: VoiceOver label of the header button that makes an expanded panel shorter again",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تصغير اللوحة"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Formindsk panelet"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bereich verkleinern"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reducir panel"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Réduire le panneau"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "पैनल छोटा करें"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Perkecil panel"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Riduci il pannello"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "パネルを縮める"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "패널 접기"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gjør panelet mindre"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Paneel verkleinen"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recolher painel"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Minimera panelen"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ย่อแผง"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Paneli daralt"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Thu gọn bảng"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "收起面板"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "收合面板"
           }
         }
       }
@@ -88250,6 +88372,125 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "自訂速度"
+          }
+        }
+      }
+    },
+    "Custom style copied from a text. Pick a preset to replace it." : {
+      "comment" : "Caption style: note under the presets while the captions use a look copied from a text (the Custom card)",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "نمط مخصص منسوخ من نص. اختر إعدادًا جاهزًا لاستبداله."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tilpasset stil kopieret fra en tekst. Vælg et preset for at erstatte den."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eigener Stil, aus einem Text übernommen. Wähle eine Vorlage, um ihn zu ersetzen."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Estilo personalizado copiado de un texto. Elige un ajuste preestablecido para reemplazarlo."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Style personnalisé copié d’un texte. Choisissez un préréglage pour le remplacer."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "एक टेक्स्ट से कॉपी की गई कस्टम स्टाइल। इसे बदलने के लिए कोई प्रीसेट चुनें।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gaya kustom disalin dari tulisan. Pilih preset untuk menggantinya."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stile personalizzato copiato da un testo. Scegli una preimpostazione per sostituirlo."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "テキストからコピーしたカスタムスタイルです。置き換えるにはプリセットを選んでください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "텍스트에서 복사한 사용자 지정 스타일입니다. 바꾸려면 프리셋을 고르세요."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Egendefinert stil kopiert fra en tekst. Velg en forhåndsinnstilling for å erstatte den."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aangepaste stijl, overgenomen van een tekst. Kies een preset om hem te vervangen."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Estilo personalizado copiado de um texto. Escolha uma predefinição para trocá-lo."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anpassad stil kopierad från en text. Välj en förinställning för att ersätta den."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "สไตล์กำหนดเองที่คัดลอกจากข้อความ เลือกพรีเซ็ตเพื่อแทนที่"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bir metinden kopyalanan özel stil. Değiştirmek için bir hazır ayar seç."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kiểu tùy chỉnh chép từ một chữ. Chọn mẫu có sẵn để thay thế."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "从文字复制的自定样式。选取预设即可替换。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "從文字複製的自訂風格。選擇預設即可取代。"
           }
         }
       }
@@ -108730,6 +108971,125 @@
         }
       }
     },
+    "Expand panel" : {
+      "comment" : "Text style and Caption style: VoiceOver label of the header button that makes the panel taller and the video smaller",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "توسيع اللوحة"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Udvid panelet"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bereich vergrößern"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ampliar panel"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Agrandir le panneau"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "पैनल बड़ा करें"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Perbesar panel"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Espandi il pannello"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "パネルを広げる"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "패널 펼치기"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Utvid panelet"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Paneel vergroten"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Expandir painel"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Expandera panelen"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ขยายแผง"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Paneli genişlet"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mở rộng bảng"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "展开面板"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "展開面板"
+          }
+        }
+      }
+    },
     "Expanded" : {
       "localizations" : {
         "ar" : {
@@ -126590,6 +126950,125 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "讓觀眾在靜音時也能看懂你的影片。"
+          }
+        }
+      }
+    },
+    "Gives the controls more room" : {
+      "comment" : "VoiceOver hint of Expand panel",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يمنح عناصر التحكم مساحة أكبر"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Giver knapperne mere plads"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gibt den Steuerelementen mehr Platz"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Da más espacio a los controles"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Donne plus de place aux commandes"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "कंट्रोल को ज़्यादा जगह देता है"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Memberi kontrol lebih banyak ruang"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dà più spazio ai controlli"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "コントロールの表示領域を広げます"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "컨트롤에 공간을 더 줍니다"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gir kontrollene mer plass"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Geeft de bediening meer ruimte"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dá mais espaço aos controles"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ger reglagen mer plats"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ให้พื้นที่กับตัวควบคุมมากขึ้น"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Denetimlere daha fazla yer açar"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cho các điều khiển thêm chỗ"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "为控件留出更多空间"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "為控制項留出更多空間"
           }
         }
       }
@@ -171094,6 +171573,125 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "動態"
+          }
+        }
+      }
+    },
+    "Motion and timing change only this text" : {
+      "comment" : "Text style: panel subtitle on the Motion tab (keyframes and timing are the picked text's, whatever the scope)",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تتغيّر الحركة والتوقيت لهذا النص فقط"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bevægelse og timing ændres kun for denne tekst"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bewegung und Timing ändern sich nur für diesen Text"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El movimiento y los tiempos cambian solo en este texto"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le mouvement et le minutage ne changent que pour ce texte"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "मोशन और टाइमिंग सिर्फ़ इस टेक्स्ट के बदलते हैं"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gerakan dan waktu hanya berubah untuk tulisan ini"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Movimento e tempi cambiano solo per questo testo"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "モーションとタイミングはこのテキストだけ変わります"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "모션과 타이밍은 이 텍스트만 바뀝니다"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bevegelse og timing endres bare for denne teksten"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beweging en timing veranderen alleen voor deze tekst"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Movimento e tempo mudam só neste texto"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rörelse och tajming ändras bara för den här texten"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "การเคลื่อนไหวและจังหวะเวลาเปลี่ยนเฉพาะข้อความนี้"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hareket ve zamanlama yalnızca bu metinde değişir"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chuyển động và thời điểm chỉ đổi cho chữ này"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "运动和时间只更改这段文字"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "動態和時間只會變更這段文字"
           }
         }
       }
@@ -264137,6 +264735,125 @@
         }
       }
     },
+    "Shows the video larger" : {
+      "comment" : "VoiceOver hint of Collapse panel",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يعرض الفيديو بحجم أكبر"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Viser videoen større"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zeigt das Video größer"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Muestra el video más grande"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Affiche la vidéo en plus grand"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "वीडियो बड़ा दिखाता है"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Menampilkan video lebih besar"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostra il video più grande"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "動画を大きく表示します"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "동영상을 더 크게 보여 줍니다"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Viser videoen større"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toont de video groter"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostra o vídeo maior"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Visar videon större"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "แสดงวิดีโอให้ใหญ่ขึ้น"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Videoyu daha büyük gösterir"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hiện video lớn hơn"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "将视频显示得更大"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "將影片顯示得更大"
+          }
+        }
+      }
+    },
     "Shows this block in the script" : {
       "localizations" : {
         "ar" : {
@@ -281526,6 +282243,125 @@
         }
       }
     },
+    "Style applies to" : {
+      "comment" : "Text style: label over the scope control (This title | All texts · 3); the scope only changes the look",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يُطبَّق النمط على"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stilen gælder for"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stil gilt für"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El estilo se aplica a"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le style s’applique à"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "स्टाइल किस पर लगे"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gaya berlaku untuk"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lo stile vale per"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "スタイルの適用先"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "스타일 적용 대상"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stilen gjelder for"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stijl geldt voor"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O estilo vale para"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stilen gäller för"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ใช้สไตล์กับ"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stilin uygulanacağı yer"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Áp dụng kiểu cho"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "样式应用于"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "風格套用到"
+          }
+        }
+      }
+    },
     "Subject lift" : {
       "localizations" : {
         "ar" : {
@@ -293479,6 +294315,125 @@
         }
       }
     },
+    "The highlight color changes so the word being said stands out: %@." : {
+      "comment" : "Question before copying a text's look onto the captions, when the lit word would vanish on it. %@ is a highlight color (Yellow, White, Lime, Peach)",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يتغيّر لون التمييز لتبرز الكلمة المنطوقة: %@."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fremhævningsfarven skifter, så ordet, der bliver sagt, skiller sig ud: %@."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Hervorhebungsfarbe ändert sich, damit das gesprochene Wort hervorsticht: %@."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El color de resaltado cambia para que destaque la palabra que se dice: %@."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La couleur de surbrillance change pour que le mot prononcé ressorte : %@."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "हाइलाइट रंग बदलता है ताकि बोला जा रहा शब्द अलग दिखे: %@."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Warna sorotan berubah agar kata yang diucapkan menonjol: %@."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Il colore evidenziazione cambia perché la parola pronunciata risalti: %@."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "話している単語が目立つように、強調色が変わります：%@。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "말하는 단어가 눈에 띄도록 강조 색상이 바뀝니다: %@."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uthevingsfargen endres så ordet som blir sagt, skiller seg ut: %@."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "De markeringskleur verandert zodat het uitgesproken woord opvalt: %@."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A cor do destaque muda para a palavra falada aparecer: %@."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Markeringsfärgen ändras så att ordet som sägs syns: %@."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "สีเน้นจะเปลี่ยนเพื่อให้คำที่กำลังพูดเด่นขึ้น: %@"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Söylenen sözcük öne çıksın diye vurgu rengi değişir: %@."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Màu nhấn sẽ đổi để từ đang nói nổi bật: %@."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "高亮颜色会更改，让正在说的词更醒目：%@。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "強調顏色會變更，讓正在說的字詞更醒目：%@。"
+          }
+        }
+      }
+    },
     "The hook sets retention for the whole video." : {
       "localizations" : {
         "ar" : {
@@ -300225,6 +301180,125 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "此鏡頭已被刪除"
+          }
+        }
+      }
+    },
+    "This text’s font, colors, background, shadow and glow replace your captions’ current style." : {
+      "comment" : "Question before copying a text's look onto captions that already have a look of their own (copied before, or from an older version)",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "سيحلّ خط هذا النص وألوانه وخلفيته وظله وتوهّجه محلّ النمط الحالي للترجمة النصية."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Denne teksts skrifttype, farver, baggrund, skygge og glød erstatter underteksternes nuværende stil."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schrift, Farben, Hintergrund, Schatten und Leuchten dieses Texts ersetzen den aktuellen Stil deiner Untertitel."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La fuente, los colores, el fondo, la sombra y el brillo de este texto reemplazan el estilo actual de tus subtítulos."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La police, les couleurs, l’arrière-plan, l’ombre et la lueur de ce texte remplacent le style actuel de vos sous-titres."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "इस टेक्स्ट का फ़ॉन्ट, रंग, बैकग्राउंड, शैडो और चमक आपके कैप्शन की मौजूदा स्टाइल की जगह ले लेंगे।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Font, warna, latar, bayangan, dan cahaya tulisan ini akan menggantikan gaya teksmu saat ini."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Font, colori, sfondo, ombra e bagliore di questo testo sostituiscono lo stile attuale dei tuoi sottotitoli."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このテキストのフォント、カラー、背景、影、グローが、字幕の今のスタイルに置き換わります。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이 텍스트의 서체, 색상, 배경, 그림자, 글로우가 현재 자막 스타일을 대신합니다."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skrifttypen, fargene, bakgrunnen, skyggen og gløden til denne teksten erstatter den nåværende stilen på undertekstene."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Het lettertype, de kleuren, de achtergrond, de schaduw en de gloed van deze tekst vervangen de huidige stijl van je ondertitels."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A fonte, as cores, o fundo, a sombra e o brilho deste texto substituem o estilo atual das suas legendas."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Den här textens teckensnitt, färger, bakgrund, skugga och glöd ersätter undertexternas nuvarande stil."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ฟอนต์ สี พื้นหลัง เงา และแสงเรืองของข้อความนี้จะมาแทนสไตล์ปัจจุบันของคำบรรยาย"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu metnin yazı tipi, renkleri, arka planı, gölgesi ve parıltısı altyazılarının şu anki stilinin yerini alır."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Phông chữ, màu, nền, bóng đổ và hiệu ứng phát sáng của chữ này sẽ thay thế kiểu hiện tại của phụ đề."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "这段文字的字体、颜色、背景、阴影和光晕将取代字幕当前的样式。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "這段文字的字體、顏色、背景、陰影和光暈將取代字幕目前的風格。"
           }
         }
       }
@@ -334171,6 +335245,244 @@
         }
       }
     },
+    "Words, timing, translations, position, size and how lines appear stay the same. Other texts don’t change." : {
+      "comment" : "Question before copying a text's look onto the captions: what stays",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تبقى الكلمات والتوقيت والترجمات والموضع والحجم وطريقة ظهور الأسطر كما هي. ولا تتغيّر النصوص الأخرى."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ord, timing, oversættelser, placering, størrelse og måden linjerne vises på forbliver de samme. Andre tekster ændres ikke."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wörter, Timing, Übersetzungen, Position, Größe und das Einblenden der Zeilen bleiben gleich. Andere Texte ändern sich nicht."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Las palabras, los tiempos, las traducciones, la posición, el tamaño y la aparición de las líneas no cambian. Los demás textos tampoco."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les mots, le minutage, les traductions, la position, la taille et l’apparition des lignes ne changent pas. Les autres textes non plus."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "शब्द, टाइमिंग, अनुवाद, जगह, साइज़ और लाइनें दिखने का तरीका वैसे ही रहते हैं। दूसरे टेक्स्ट नहीं बदलते।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kata, waktu, terjemahan, posisi, ukuran, dan cara baris muncul tetap sama. Tulisan lain tidak berubah."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Parole, tempi, traduzioni, posizione, dimensione e comparsa delle righe restano uguali. Gli altri testi non cambiano."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "言葉、タイミング、翻訳、位置、サイズ、行の表示方法はそのままです。ほかのテキストは変わりません。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "문구, 타이밍, 번역, 위치, 크기, 줄이 나타나는 방식은 그대로입니다. 다른 텍스트는 바뀌지 않습니다."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ord, timing, oversettelser, plassering, størrelse og hvordan linjene vises, forblir det samme. Andre tekster endres ikke."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Woorden, timing, vertalingen, positie, grootte en hoe regels verschijnen blijven gelijk. Andere teksten veranderen niet."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Palavras, tempo, traduções, posição, tamanho e o jeito de as linhas aparecerem continuam iguais. Os outros textos não mudam."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ord, tajming, översättningar, position, storlek och hur raderna visas förblir desamma. Andra texter ändras inte."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "คำ จังหวะเวลา คำแปล ตำแหน่ง ขนาด และการแสดงบรรทัดยังเหมือนเดิม ข้อความอื่นไม่เปลี่ยน"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sözcükler, zamanlama, çeviriler, konum, boyut ve satırların belirişi aynı kalır. Diğer metinler değişmez."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lời, thời điểm, bản dịch, vị trí, kích thước và cách hiện dòng vẫn giữ nguyên. Các chữ khác không đổi."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "文字内容、时间、翻译、位置、大小和字幕行的显示方式保持不变。其他文字不会更改。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "文字內容、時間、翻譯、位置、大小和字幕行的顯示方式維持不變。其他文字不會變更。"
+          }
+        }
+      }
+    },
+    "Words, timing and motion stay with each text." : {
+      "comment" : "Text style: note under the scope when All texts is picked",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تبقى الكلمات والتوقيت والحركة خاصة بكل نص."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ord, timing og bevægelse hører til hver tekst."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wörter, Timing und Bewegung bleiben bei jedem Text."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Las palabras, los tiempos y el movimiento son de cada texto."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les mots, le minutage et le mouvement restent propres à chaque texte."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "शब्द, टाइमिंग और मोशन हर टेक्स्ट के अपने रहते हैं।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kata, waktu, dan gerakan tetap milik tiap tulisan."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Parole, tempi e movimento restano di ciascun testo."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "言葉、タイミング、モーションはテキストごとに保たれます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "문구, 타이밍, 모션은 텍스트마다 그대로입니다."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ord, timing og bevegelse hører til hver tekst."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Woorden, timing en beweging blijven per tekst."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Palavras, tempo e movimento continuam de cada texto."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ord, tajming och rörelse hör till varje text."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "คำ จังหวะเวลา และการเคลื่อนไหวยังเป็นของแต่ละข้อความ"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sözcükler, zamanlama ve hareket her metinde kendine kalır."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lời, thời điểm và chuyển động vẫn riêng cho từng chữ."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "文字内容、时间和运动仍各自独立。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "文字內容、時間和動態仍各自獨立。"
+          }
+        }
+      }
+    },
     "Working professionals" : {
       "comment" : "My Cue Voice (Apple Intelligence plan)",
       "localizations" : {
@@ -340789,6 +342101,125 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "其他語言的字幕，與原字幕並列。"
+          }
+        }
+      }
+    },
+    "Your captions use the %@ preset. This text’s font, colors, background, shadow and glow replace it." : {
+      "comment" : "Question before copying a text's look onto the captions: what it replaces. %@ is a caption preset's name (Cue, Pop…)",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تستخدم الترجمة النصية الإعداد الجاهز %@. سيحلّ محلّه خط هذا النص وألوانه وخلفيته وظله وتوهّجه."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dine undertekster bruger presettet %@. Denne teksts skrifttype, farver, baggrund, skygge og glød erstatter det."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deine Untertitel nutzen die Vorlage %@. Schrift, Farben, Hintergrund, Schatten und Leuchten dieses Texts ersetzen sie."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tus subtítulos usan el ajuste preestablecido %@. La fuente, los colores, el fondo, la sombra y el brillo de este texto lo reemplazan."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vos sous-titres utilisent le préréglage %@. La police, les couleurs, l’arrière-plan, l’ombre et la lueur de ce texte le remplacent."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "आपके कैप्शन %@ प्रीसेट इस्तेमाल करते हैं। इस टेक्स्ट का फ़ॉन्ट, रंग, बैकग्राउंड, शैडो और चमक उसकी जगह ले लेंगे।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Teksmu memakai preset %@. Font, warna, latar, bayangan, dan cahaya tulisan ini akan menggantikannya."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "I tuoi sottotitoli usano la preimpostazione %@. Font, colori, sfondo, ombra e bagliore di questo testo la sostituiscono."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "字幕はプリセット「%@」を使っています。このテキストのフォント、カラー、背景、影、グローに置き換わります。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "자막에 %@ 프리셋이 적용되어 있습니다. 이 텍스트의 서체, 색상, 배경, 그림자, 글로우로 바뀝니다."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Undertekstene dine bruker forhåndsinnstillingen %@. Skrifttypen, fargene, bakgrunnen, skyggen og gløden til denne teksten erstatter den."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Je ondertitels gebruiken de preset %@. Het lettertype, de kleuren, de achtergrond, de schaduw en de gloed van deze tekst vervangen die."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Suas legendas usam a predefinição %@. A fonte, as cores, o fundo, a sombra e o brilho deste texto a substituem."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dina undertexter använder förinställningen %@. Den här textens teckensnitt, färger, bakgrund, skugga och glöd ersätter den."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "คำบรรยายของคุณใช้พรีเซ็ต %@ ฟอนต์ สี พื้นหลัง เงา และแสงเรืองของข้อความนี้จะมาแทนที่"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Altyazıların %@ hazır ayarını kullanıyor. Bu metnin yazı tipi, renkleri, arka planı, gölgesi ve parıltısı onun yerini alır."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Phụ đề của bạn đang dùng mẫu %@. Phông chữ, màu, nền, bóng đổ và hiệu ứng phát sáng của chữ này sẽ thay thế mẫu đó."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你的字幕使用“%@”预设。这段文字的字体、颜色、背景、阴影和光晕将取而代之。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你的字幕使用「%@」預設。這段文字的字體、顏色、背景、陰影和光暈將取而代之。"
           }
         }
       }

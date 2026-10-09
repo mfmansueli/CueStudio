@@ -62,9 +62,11 @@ nonisolated enum TextOverlayRenderer {
 
     /// The text drawn on a transparent image of its box, at 1 pixel per point. With `emphasis`,
     /// the word being said stands out (the box and the size stay those of the plain line, so the
-    /// line doesn't move from one word to the next).
+    /// line doesn't move from one word to the next); `highlight` lights it in a caption collection's
+    /// color instead of the emphasis's own.
     static func image(
-        for text: TextOverlay, frameWidth: CGFloat, widthFraction: CGFloat = maxWidthFraction, emphasis: WordEmphasis? = nil
+        for text: TextOverlay, frameWidth: CGFloat, widthFraction: CGFloat = maxWidthFraction, emphasis: WordEmphasis? = nil,
+        highlight: UIColor? = nil
     ) -> UIImage? {
         guard let layout = layout(for: text, frameWidth: frameWidth, widthFraction: widthFraction) else { return nil }
         let format = UIGraphicsImageRendererFormat()
@@ -90,14 +92,14 @@ nonisolated enum TextOverlayRenderer {
             manager.addTextContainer(container)
             switch emphasis.style {
             case .color(let color):
-                storage.addAttribute(.foregroundColor, value: Self.color(color), range: range)
+                storage.addAttribute(.foregroundColor, value: highlight ?? Self.color(color), range: range)
             case .box(let fill, let ink):
                 let glyphs = manager.glyphRange(forCharacterRange: range, actualCharacterRange: nil)
                 let unit = frameWidth / referenceWidth
                 let word = manager.boundingRect(forGlyphRange: glyphs, in: container)
                     .offsetBy(dx: layout.textRect.minX, dy: layout.textRect.minY)
                     .insetBy(dx: -4 * unit, dy: -1 * unit)
-                Self.color(fill).setFill()
+                (highlight ?? Self.color(fill)).setFill()
                 UIBezierPath(roundedRect: word, cornerRadius: 6 * unit).fill()
                 storage.addAttribute(.foregroundColor, value: Self.color(ink), range: range)
                 // No outline or shadow on the boxed word: it reads on its box.

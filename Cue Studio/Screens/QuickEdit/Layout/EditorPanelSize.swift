@@ -12,6 +12,8 @@ nonisolated enum EditorPanelSize: Equatable, Sendable {
     /// A list or several controls: Voice, Pauses, Captions, Adjust, Background, Cover.
     case medium
     /// Styling, with tabs: Text style, Caption style. The timeline may go, it isn't needed to style.
+    /// Half the height (it was 44%, and its controls were cramped under a video that kept most of the
+    /// screen); expanded, it takes everything but the smallest video (`EditorLayout`).
     case full
 
     /// Height for a usable height of `usable` points, inside the panel's limits.
@@ -19,7 +21,7 @@ nonisolated enum EditorPanelSize: Equatable, Sendable {
         switch self {
         case .mini: Self.clamp(0.27 * usable, 200, 250)
         case .medium: Self.clamp(0.38 * usable, 250, 340)
-        case .full: Self.clamp(0.44 * usable, 300, 380)
+        case .full: Self.clamp(0.5 * usable, 330, 420)
         }
     }
 

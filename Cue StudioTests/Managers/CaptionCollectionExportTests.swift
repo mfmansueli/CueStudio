@@ -102,6 +102,36 @@ extension RealExports {
             try Data(contentsOf: output).write(to: folder.appending(path: "\(theme.rawValue).mov"))
         }
 
+        /// A text's look copied onto the captions ("Apply this style to captions") burns in as the preview shows it,
+        /// where the collection puts the lines, and goes away at the line's end.
+        @Test func aCopiedLookExportsAsItPreviews() async throws {
+            let clip = try await TestClip.make(seconds: 4)
+            defer { try? FileManager.default.removeItem(at: clip) }
+            var edit = TakeEdit(sourceDuration: 4, aspect: .portrait)
+            edit.voiceEnhancement = .off
+            edit.showsCaptions = true
+            edit.captionCollection?.center = OverlayPoint(x: 0.5, y: 0.3)
+            edit.captionCollection?.customLook = TextLook(
+                font: .dmSerif, weight: .regular, color: .lavender, background: .pill, backgroundColor: .black, hasShadow: false
+            )
+            let words = ["Sua", "ideia", "merece", "ganhar", "vida."].enumerated().map { index, word in
+                CaptionWord(text: word, start: 0.5 + Double(index) * 0.4, end: 0.8 + Double(index) * 0.4)
+            }
+            edit.captions = [CaptionCue(words: words)]
+            let preview = try await TakeEditService().previewItem(forVideoAt: clip, edit: edit)
+            let output = try await VideoExportService().export(videoAt: clip, options: ExportOptions(aspect: .portrait, edit: edit, burnsInCaptions: true))
+            defer { try? FileManager.default.removeItem(at: output) }
+            let shown = try await image(preview.asset, composition: preview.videoComposition, at: 1.4)
+            let exported = try await image(AVURLAsset(url: output), composition: nil, at: 1.4)
+            let original = try await image(AVURLAsset(url: clip), composition: nil, at: 1.4)
+            #expect(try meanDifference(shown, exported) < 3)
+            #expect(try meanDifference(original, exported) > 0.15)
+            let after = try await image(AVURLAsset(url: output), composition: nil, at: 3.4)
+            let untouched = try await image(AVURLAsset(url: clip), composition: nil, at: 3.4)
+            #expect(try meanDifference(after, untouched) < 2)
+            Attachment.record(try #require(exported.pngData()), named: "copied-look-export.png")
+        }
+
         @Test func disabledCaptionsExportWithoutAnyOverlay() async throws {
             let clip = try await TestClip.make(seconds: 2)
             defer { try? FileManager.default.removeItem(at: clip) }

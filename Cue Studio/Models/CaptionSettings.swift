@@ -19,6 +19,12 @@ nonisolated struct CaptionSettings: Codable, Hashable, Sendable {
     /// Which reading of the preset draws (`CaptionStyleSpec`): nil in settings saved before the
     /// complete presets, which keep the look they were made with.
     var styleVersion: Int?
+    /// A text's look copied onto the captions (Text style › "Apply this style to captions"): the
+    /// lines are drawn in its font, colors, fill, shadow and glow instead of the preset's. The rest
+    /// stays the collection's: where the lines sit, their size, the highlight color and how they
+    /// come and go (the preset's own way, `spec`). Nil draws the preset; picking a preset clears it.
+    /// Settings saved before it read as nil.
+    var customLook: TextLook?
 
     init(theme: CaptionTheme = .cue) {
         self.theme = theme

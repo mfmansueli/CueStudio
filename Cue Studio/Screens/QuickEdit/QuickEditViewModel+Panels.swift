@@ -72,9 +72,12 @@ extension QuickEditViewModel {
         }
     }
 
+    /// What the tab on show changes: the look on the scope (Presets, Font, Color), or the picked text's
+    /// motion and timing whatever the scope (Motion).
     private var textStyleSubtitle: String {
+        guard textStyleTabChangesLook else { return String(localized: "Motion and timing change only this text") }
         switch textStyleScope {
-        case .selected:
+        case .selected, .allCaptions:
             switch selectedText?.role ?? .title {
             case .title: return String(localized: "Only this title changes")
             case .subtitle: return String(localized: "Only this subtitle changes")
@@ -82,7 +85,6 @@ extension QuickEditViewModel {
             case .callout: return String(localized: "Only this callout changes")
             }
         case .allTexts: return String(localized: "All \(edit.texts.count) texts change together")
-        case .allCaptions, .textsAndCaptions: return String(localized: "All texts and captions change together")
         }
     }
 

@@ -138,9 +138,38 @@ extension QuickEditViewModel {
 
     // MARK: - Caption style
 
-    /// The collection's look the presets show as picked; nil while captions draw with a text
-    /// look (set from Text style's "+ Captions") or the old caption style.
-    var captionTheme: CaptionTheme? { edit.captionCollection?.theme }
+    /// The collection's look the presets show as picked; nil while captions draw with a text's look
+    /// (copied with "Apply this style to captions", or set by an older version) or the old caption
+    /// style.
+    var captionTheme: CaptionTheme? {
+        guard let settings = edit.captionCollection, settings.customLook == nil else { return nil }
+        return settings.theme
+    }
+
+    /// The look the captions draw with when it isn't a preset of the collection: a text's look copied
+    /// onto them, or (before the collection) their type look. Caption style shows it as Custom.
+    var captionCustomLook: TextLook? {
+        guard let settings = edit.captionCollection else { return edit.captionLook }
+        return settings.customLook
+    }
+
+    /// What Caption style › Font changes besides the highlight color: a copied look, or the type look
+    /// of captions from before the collection (Cue's until one is set). A preset has none.
+    var captionEditableLook: TextLook? {
+        guard let settings = edit.captionCollection else { return edit.captionLook ?? TypePreset.cue.look(for: .caption) }
+        return settings.customLook
+    }
+
+    /// Custom's name: a type preset an older version put on the captions keeps its own.
+    var captionCustomLookName: String {
+        if edit.captionCollection == nil, let preset = edit.captionPreset { return preset.label }
+        return String(localized: "Custom")
+    }
+
+    /// The tab Caption style shows: the one picked, when it is one of Caption style's.
+    var captionStyleTab: EditorPanelTab {
+        EditorPanelTab.captionStyle.contains(panelTab) ? panelTab : .presets
+    }
 
     /// A collection preset on every line (one undo step). A preset is a complete recipe, so it
     /// brings its own reveal with it (Educational lights the word said, Interview only fades the
@@ -228,10 +257,17 @@ extension QuickEditViewModel {
 }
 
 extension QuickEditViewModel {
-    /// Captions drawn with a text look ("+ Captions" in Text style, or an edit from before the
-    /// collection): Font changes it for every line (one undo step).
+    /// Captions drawn with a text's look (copied with "Apply this style to captions", or an edit from
+    /// before the collection): Font changes it for every line (one undo step).
     func updateCaptionLook(_ update: (inout TextLook) -> Void) {
         change { snapshot in
+            if var settings = snapshot.captionCollection {
+                guard var look = settings.customLook else { return }
+                update(&look)
+                settings.customLook = look
+                snapshot.captionCollection = settings
+                return
+            }
             var look = snapshot.captionLook ?? TypePreset.cue.look(for: .caption)
             update(&look)
             snapshot.captionLook = look

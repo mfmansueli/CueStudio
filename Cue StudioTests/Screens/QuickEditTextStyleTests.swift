@@ -7,8 +7,9 @@ import Foundation
 import Testing
 @testable import Cue_Studio
 
-/// Text style's explicit scope: only the picked text, every text, or every text and the captions;
-/// typing is one undo step; the editorial preset on one title, then on all of them.
+/// Text style's explicit scope: only the picked text or every text, for the look only (the words,
+/// timing and motion are the picked text's, and the captions are never touched); typing is one undo
+/// step; the editorial preset on one title, then on all of them.
 @MainActor
 @Suite("Quick edit text style")
 struct QuickEditTextStyleTests {
@@ -77,19 +78,79 @@ struct QuickEditTextStyleTests {
         #expect(viewModel.edit.captionCollection == captions)
     }
 
-    @Test func plusCaptionsChangesTheCaptionsToo() async {
+    @Test func textStyleOffersOnlyThisTextAndAllTexts() async {
         let viewModel = await makeViewModel()
         _ = twoTexts(viewModel)
-        viewModel.textStyleScope = .textsAndCaptions
-        viewModel.restyleText(.shadow(.outline))
-        #expect(viewModel.edit.texts.allSatisfy { $0.hasOutline })
-        #expect(viewModel.edit.captionCollection == nil)
-        #expect(viewModel.edit.captionLook?.hasOutline == true)
-        // Size only changes texts: the captions keep a size a line of five words fits in.
-        let captionScale = viewModel.edit.captionLook?.sizeScale
-        viewModel.restyleText(.size(40))
-        #expect(viewModel.edit.texts.allSatisfy { abs($0.size - 40) < 0.001 })
-        #expect(viewModel.edit.captionLook?.sizeScale == captionScale)
+        #expect(QuickEditViewModel.textStyleScopes == [.selected, .allTexts])
+        #expect(viewModel.textStyleScopeLabel(.selected) == "This title")
+        #expect(viewModel.textStyleScopeLabel(.allTexts) == "All texts · 2")
+    }
+
+    @Test func noScopeChangesTheCaptions() async {
+        let viewModel = await makeViewModel()
+        _ = twoTexts(viewModel)
+        let captions = viewModel.edit.captionCollection
+        let look = viewModel.edit.captionLook
+        for scope in QuickEditViewModel.textStyleScopes {
+            viewModel.textStyleScope = scope
+            viewModel.restyleText(.shadow(.outline))
+            viewModel.restyleText(.font(.dmSerif))
+            viewModel.pickTextPreset(.pop)
+            viewModel.saveMyStyle()
+            viewModel.pickTextPreset(nil)
+        }
+        #expect(viewModel.edit.captionCollection == captions)
+        #expect(viewModel.edit.captionLook == look)
+    }
+
+    @Test func wordsTimingAndMotionStayWithThePickedTextUnderAllTexts() async {
+        let viewModel = await makeViewModel()
+        let ids = twoTexts(viewModel)
+        viewModel.textStyleScope = .allTexts
+        let subtitle = viewModel.edit.texts.first { $0.id == ids.subtitle }
+        viewModel.setTextContent(ids.title, "Só o título")
+        viewModel.nudgeLayerEdge(.end, by: 0.1)
+        viewModel.player.seek(to: (viewModel.editedSpan(ofText: ids.title)?.start ?? 0) + 0.05)
+        viewModel.toggleKeyframe()
+        #expect(viewModel.edit.texts.first { $0.id == ids.subtitle } == subtitle)
+        let title = viewModel.edit.texts.first { $0.id == ids.title }
+        #expect(title?.text == "Só o título")
+        #expect(title?.keyframes.count == 1)
+    }
+
+    @Test func motionSaysItIsThePickedTextsWhateverTheScope() async {
+        let viewModel = await makeViewModel()
+        _ = twoTexts(viewModel)
+        viewModel.textStyleScope = .allTexts
+        #expect(viewModel.textStyleTabChangesLook)
+        #expect(viewModel.panelSubtitle(.textStyle) == "All 2 texts change together")
+        viewModel.panelTab = .motion
+        #expect(!viewModel.textStyleTabChangesLook)
+        #expect(viewModel.panelSubtitle(.textStyle) == "Motion and timing change only this text")
+    }
+
+    @Test func aTabFromAnotherPanelShowsPresetsInBothTheTabsAndTheContent() async {
+        let viewModel = await makeViewModel()
+        _ = twoTexts(viewModel)
+        viewModel.panelTab = .reveal
+        #expect(viewModel.textStyleTab == .presets)
+        #expect(viewModel.textStyleTabChangesLook)
+        viewModel.panelTab = .font
+        #expect(viewModel.textStyleTab == .font)
+        viewModel.panelTab = .frame
+        #expect(viewModel.captionStyleTab == .presets)
+    }
+
+    @Test func theExpandedPanelIsKeptBetweenTheStylingPanels() async {
+        let viewModel = await makeViewModel()
+        _ = twoTexts(viewModel)
+        #expect(!viewModel.stylePanelIsExpanded)
+        viewModel.stylePanelIsExpanded = true
+        viewModel.selection = nil
+        viewModel.panel = .captionStyle
+        #expect(viewModel.stylePanelIsExpanded)
+        #expect(EditorPanel.captionStyle.isExpandable && EditorPanel.textStyle.isExpandable)
+        #expect(!EditorPanel.captions.isExpandable && !EditorPanel.cover.isExpandable)
     }
 
     @Test func editorialOnTheTitleThenOnEveryText() async {

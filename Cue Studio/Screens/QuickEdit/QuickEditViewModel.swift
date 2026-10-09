@@ -89,8 +89,14 @@ final class QuickEditViewModel {
     var handleDrag: TimelineHandleDrag?
     /// Where the dragged handle last stuck, so the haptic plays once per snap.
     @ObservationIgnored var lastHandleSnap: TimeInterval?
-    /// What Text style changes: this text, every text, or every text and the captions.
+    /// What Text style's look changes: this text or every text. The words, timing and motion are
+    /// always the picked text's.
     var textStyleScope: TextStyleScope = .selected
+    /// The text whose look "Apply this style to captions" is asking to copy; nil when not asking.
+    var captionStyleCopySourceID: UUID?
+    /// The styling panels (Text style, Caption style) are expanded: the video gets as small as it
+    /// ever gets so the controls have room. Kept while the editor is open.
+    var stylePanelIsExpanded = false
     /// The Text style panel's field takes the keyboard (a text was just added, or Edit was tapped).
     var focusesTextField = false
     /// The picked caption line's field takes the keyboard (a line was just added).
