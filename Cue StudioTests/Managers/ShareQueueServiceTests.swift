@@ -27,6 +27,25 @@ struct ShareQueueServiceTests {
         #expect(again.pending?.current?.network == .reels)
     }
 
+    @Test func aQueueRemembersWhenItLastMovedForTheNotifications() {
+        let defaults = TestDefaults()
+        defer { defaults.tearDown() }
+        var now = TestData.now
+        let service = ShareQueueService(defaults: defaults.defaults, now: { now })
+        let take = UUID()
+        service.begin(takeID: take, operationID: UUID(), title: "A", networks: [.tiktok, .reels])
+        #expect(service.queue(forTake: take)?.updatedAt == TestData.now)
+        now += 3600
+        service.postLater(takeID: take, network: .tiktok)
+        #expect(service.queue(forTake: take)?.updatedAt == TestData.now + 3600)
+    }
+
+    @Test func aQueueSavedBeforeTheTimestampStillOpens() throws {
+        let old = Data(#"[{"takeID":"00000000-0000-0000-0000-000000000009","operationID":"00000000-0000-0000-0000-00000000000A","title":"A","items":[{"network":"tiktok","state":"pending"}]}]"#.utf8)
+        let queues = try JSONDecoder().decode([ShareQueue].self, from: old)
+        #expect(queues.first?.updatedAt == nil && queues.first?.current?.network == .tiktok)
+    }
+
     @Test func aNewQueueForTheSameVideoReplacesTheOldOne() {
         let (service, defaults) = make()
         defer { defaults.tearDown() }

@@ -111,6 +111,19 @@ struct VoiceQuestionSchedulerTests {
         #expect(tip(ready) == .endings)
     }
 
+    @Test func noTipOnADayAToolWasIntroducedAndAShownTipTellsTheNotifications() {
+        let rig = make()
+        defer { rig.defaults.tearDown() }
+        var told = 0
+        rig.scheduler.onTipShown = { told += 1 }
+        rig.scheduler.otherIntroductionToday = { true }
+        #expect(tip(rig) == nil)
+        rig.scheduler.otherIntroductionToday = { false }
+        #expect(tip(rig) == .endings)
+        rig.scheduler.tipShown()
+        #expect(told == 1)
+    }
+
     @Test func noTipWhenTheVoiceIsOffOrComplete() {
         let rig = make()
         defer { rig.defaults.tearDown() }
