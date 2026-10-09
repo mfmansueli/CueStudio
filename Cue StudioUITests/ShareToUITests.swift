@@ -92,6 +92,21 @@ final class ShareToUITests: XCTestCase {
         XCTAssertEqual(app.buttons["review.postLater"].label, "POST TO TIKTOK LATER")
     }
 
+    func testPostLaterCanRemindTheCreatorTomorrow() {
+        let app = openShare()
+        app.buttons["shareFlow.start"].tap()
+        XCTAssertTrue(waitAllowingPhotos(for: app.buttons["shareFlow.postLater"]))
+        app.buttons["shareFlow.postLater"].tap()
+        let tomorrow = app.buttons["shareFlow.remindTomorrow"]
+        XCTAssertTrue(tomorrow.waitForExistence(timeout: 5))
+        XCTAssertTrue(app.buttons["shareFlow.remindPick"].exists && app.buttons["shareFlow.noReminder"].exists)
+        tomorrow.tap()
+        let set = app.staticTexts.matching(NSPredicate(format: "label BEGINSWITH 'Reminder set'")).firstMatch
+        XCTAssertTrue(set.waitForExistence(timeout: 5))
+        app.buttons["ready.closeButton"].tap()
+        XCTAssertTrue(app.buttons["review.postLater"].waitForExistence(timeout: 5), "The network still waits for later")
+    }
+
     func testNotYetKeepsTheNetworkAndYesSendsItOff() {
         let app = openShare(animations: true)
         app.buttons["shareFlow.start"].tap()
