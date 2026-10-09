@@ -65,6 +65,10 @@ final class SettingsUITests: XCTestCase {
         settings.tap()
         let reset = app.buttons["creatorSetup.resetButton"]
         app.scroll(to: reset)
+        // The last row: hittable can mean behind the tab bar, where a tap would switch tabs. Up to where the list ends, above the bar.
+        for _ in 0..<3 where app.cueTabBar.exists && reset.frame.maxY > app.cueTabBar.frame.minY {
+            app.swipeUp()
+        }
         reset.tap()
         XCTAssertTrue(app.buttons["creatorSetup.confirmResetButton"].waitForExistence(timeout: 5))
         dismissDialog(app)

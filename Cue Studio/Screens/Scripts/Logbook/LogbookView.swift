@@ -33,6 +33,8 @@ struct LogbookView: View {
     @State private var isStarting = false
     @State private var pressedAt: Date?
     @State private var heldSince: Date?
+    /// An idea just saved with Return: brought into view above the keyboard, which stays up for the next one.
+    @State private var justSaved: UUID?
     @FocusState private var typing: Bool
 
     var body: some View {
@@ -84,6 +86,11 @@ struct LogbookView: View {
                 presentation.logbookFocus = nil
                 focused = id
                 proxy.scrollTo(id, anchor: .center)
+            }
+            .onChange(of: justSaved) { _, id in
+                guard let id else { return }
+                justSaved = nil
+                withAnimation(reduceMotion ? nil : .smooth(duration: 0.3)) { proxy.scrollTo(id, anchor: .bottom) }
             }
             }
             // The system's large title, with the line under it as its subtitle; both fold into the bar as the list scrolls.
@@ -338,6 +345,7 @@ struct LogbookView: View {
         guard let entry = logbook.add(typed) else { return }
         typed = ""
         Haptics.apply()
+        justSaved = entry.id
         tag(entry)
     }
 

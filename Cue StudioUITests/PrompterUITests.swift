@@ -26,7 +26,11 @@ final class PrompterUITests: XCTestCase {
         waitForExpectations(timeout: 10)
         play.tap()
 
-        app.buttons["prompter.displayButton"].tap()
+        // The first play folds the adjustments into the bar; the chevron brings Aa back.
+        bringStudioBarOut(app)
+        let display = app.buttons["prompter.displayButton"]
+        waitUntilHittable(display)
+        display.tap()
         let done = app.buttons["display.doneButton"]
         XCTAssertTrue(done.waitForExistence(timeout: 5))
         done.tap()
@@ -40,6 +44,7 @@ final class PrompterUITests: XCTestCase {
         app.openStudio(titled: "Oat & Co. — sponsored read")
 
         XCTAssertTrue(element(app, "prompter.speedSlider").waitForExistence(timeout: 5))
+        let speedLabel = element(app, "prompter.speedSlider").value as? String ?? "1×"
         XCTAssertTrue(app.buttons["prompter.backButton"].exists)
         XCTAssertTrue(app.buttons["prompter.forwardButton"].exists)
         app.descendants(matching: .any)["prompter.scrollMode"].firstMatch.buttons["Voice"].tap()
@@ -48,11 +53,16 @@ final class PrompterUITests: XCTestCase {
         XCTAssertFalse(element(app, "prompter.speedSlider").exists)
         let play = app.buttons["prompter.playButton"]
         play.tap()
+        // From the top it counts down first (a tap then would cancel it); the first play folds the voice line into the bar, and the chevron
+        // brings it back.
+        let playing = XCTNSPredicateExpectation(predicate: NSPredicate(format: "label == 'Pause'"), object: play)
+        XCTAssertEqual(XCTWaiter.wait(for: [playing], timeout: 10), .completed)
+        bringStudioBarOut(app)
         // The Simulator can't run speech recognition: there the text scrolls at the set speed while
         // you talk, and says so, speed included. It never claims to follow the words.
         let status = element(app, "prompter.voiceStatus")
         XCTAssertTrue(status.waitForExistence(timeout: 5))
-        let honest = NSPredicate(format: "label CONTAINS 'while you talk' AND label CONTAINS '7×'")
+        let honest = NSPredicate(format: "label CONTAINS 'while you talk' AND label CONTAINS %@", speedLabel)
         XCTAssertEqual(XCTWaiter.wait(for: [expectation(for: honest, evaluatedWith: status)], timeout: 10), .completed)
         XCTAssertNotEqual(status.label, "Follows your words")
         play.tap()
@@ -90,7 +100,8 @@ final class PrompterUITests: XCTestCase {
         XCTAssertTrue(record.waitForExistence(timeout: 5))
     }
 
-    /// Aa opens the Prompter page of Settings (09 §11) over the recording, with a preview on top.
+    /// Aa opens the Prompter page of Settings (09 §11) over the recording, without the preview (the real text window is right behind the
+    /// sheet, `DESIGN_PROJECT.md` §22).
     func testAaOpensThePrompterPageOverTheRecorder() {
         let app = CueApp.launch(seeded: true)
         let record = app.buttons["row.recordButton"].firstMatch
@@ -100,7 +111,7 @@ final class PrompterUITests: XCTestCase {
         XCTAssertTrue(element(app, "prompter.text").waitForExistence(timeout: 5))
         app.buttons["prompter.displayButton"].tap()
         XCTAssertTrue(app.buttons["display.doneButton"].waitForExistence(timeout: 5))
-        XCTAssertTrue(element(app, "settings.prompterPreview").exists)
+        XCTAssertFalse(element(app, "settings.prompterPreview").exists)
         XCTAssertTrue(element(app, "settings.followVoice").exists)
         XCTAssertTrue(element(app, "settings.speed").exists)
         app.buttons["display.doneButton"].tap()
@@ -172,16 +183,36 @@ final class PrompterUITests: XCTestCase {
 
         XCTAssertTrue(app.buttons["prompter.displayButton"].waitForExistence(timeout: 5))
         app.buttons["prompter.displayButton"].tap()
+        XCTAssertTrue(element(app, "settings.followVoice").waitForExistence(timeout: 5))
+        // The sheet is the lower part of the screen (the text window stays above it): the swipes go to its list, which is short, so they
+        // are quick ones.
         let zone = element(app, "settings.socialSafeZone")
-        app.scroll(to: zone)
+        let page = app.collectionViews["settings.prompterPage"]
+        let sheetBottom = app.windows.firstMatch.frame.maxY - 40
+        for _ in 0..<12 where !(zone.exists && zone.frame.maxY < sheetBottom) {
+            page.swipeUp(velocity: .fast)
+        }
+        XCTAssertLessThan(zone.frame.maxY, sheetBottom, "Social safe zone isn't reachable in the sheet")
         zone.tap()
         XCTAssertTrue(element(app, "settings.safeZoneToggle").waitForExistence(timeout: 5))
         XCTAssertTrue(app.buttons["settings.safeZone.reels"].exists)
         XCTAssertFalse(element(app, "settings.safeZoneMargin.top").exists)
+        // The page is in the same short sheet: Custom and its margins are further down.
+        // `isHittable` says yes for a row past the sheet's bottom: its place on screen is what counts.
+        let zonePage = app.collectionViews["settings.safeZonePage"]
         let custom = app.buttons["settings.safeZone.custom"]
+        let bottom = app.windows.firstMatch.frame.maxY - 40
+        for _ in 0..<6 where !(custom.exists && custom.frame.maxY < bottom) {
+            zonePage.swipeUp(velocity: .fast)
+        }
+        XCTAssertLessThan(custom.frame.maxY, bottom, "Custom is out of sight")
         custom.tap()
         XCTAssertTrue(custom.isSelected)
-        XCTAssertTrue(element(app, "settings.safeZoneMargin.top").waitForExistence(timeout: 2))
+        let top = element(app, "settings.safeZoneMargin.top")
+        for _ in 0..<6 where !(top.exists && top.frame.maxY < bottom) {
+            zonePage.swipeUp(velocity: .fast)
+        }
+        XCTAssertTrue(top.waitForExistence(timeout: 2))
     }
 
     func testPlatformChipOpensCreateFor() {
@@ -190,23 +221,26 @@ final class PrompterUITests: XCTestCase {
         XCTAssertTrue(record.waitForExistence(timeout: 15))
         record.tap()
 
+        // With a script the chip is the platform ("● TikTok"): "Create for", the network as its value.
         let chip = app.buttons["prompter.aspectButton"]
         XCTAssertTrue(chip.waitForExistence(timeout: 5))
-        XCTAssertTrue(chip.label.contains("TikTok"))
+        XCTAssertEqual(chip.label, "Create for")
+        XCTAssertEqual(chip.value as? String, "TikTok")
         chip.tap()
         let youtube = app.buttons["destination.youtube"]
         XCTAssertTrue(youtube.waitForExistence(timeout: 5))
         youtube.tap()
         // The toast is brief; the chip is the lasting proof the platform changed.
-        let youtubeChip = app.buttons.matching(NSPredicate(format: "identifier == 'prompter.aspectButton' AND label CONTAINS 'YouTube'")).firstMatch
+        let youtubeChip = app.buttons.matching(NSPredicate(format: "identifier == 'prompter.aspectButton' AND value == 'YouTube'")).firstMatch
         XCTAssertTrue(youtubeChip.waitForExistence(timeout: 5))
-        // YouTube's 16:9 · 4K · 24 fps is offered, not applied: the frame stays 9:16 until the creator picks.
-        XCTAssertTrue(youtubeChip.label.contains("9:16"))
+        // YouTube's 16:9 · 4K · 24 fps is offered, not applied: the frame (in the setup line) stays 9:16 until the creator picks.
+        let setup = app.buttons["prompter.setupButton"]
+        XCTAssertTrue((setup.value as? String ?? "").contains("9:16"))
         let use = app.buttons["prompter.useRecommendedButton"]
         XCTAssertTrue(use.waitForExistence(timeout: 5))
         XCTAssertEqual(use.label, "Use Recommended")
         use.tap()
-        let landscape = app.buttons.matching(NSPredicate(format: "identifier == 'prompter.aspectButton' AND label CONTAINS '16:9'")).firstMatch
+        let landscape = app.buttons.matching(NSPredicate(format: "identifier == 'prompter.setupButton' AND value CONTAINS '16:9'")).firstMatch
         XCTAssertTrue(landscape.waitForExistence(timeout: 5))
         app.buttons["prompter.closeButton"].tap()
     }
@@ -274,13 +308,11 @@ final class PrompterUITests: XCTestCase {
         ] {
             XCTAssertTrue(element(app, id).exists, "Missing \(id)")
         }
-        // Dragging the thumb along the speed slider changes the speed.
-        let speed = element(app, "prompter.speedSlider")
+        // The speed is the system's slider (`LabeledSlider`): moving it changes the speed.
+        let speed = app.sliders["prompter.speedSlider"]
         XCTAssertTrue(speed.exists)
         let before = speed.value as? String
-        // The orb sits a little past the middle of the pill at the natural pace.
-        let start = speed.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5))
-        start.press(forDuration: 0.1, thenDragTo: start.withOffset(CGVector(dx: 70, dy: 0)))
+        speed.adjust(toNormalizedSliderPosition: 0.8)
         XCTAssertNotEqual(speed.value as? String, before)
         app.buttons["prompter.closeButton"].tap()
     }
@@ -327,6 +359,22 @@ final class PrompterUITests: XCTestCase {
     }
 
     // MARK: - Helpers
+
+    /// The first play folds Studio's adjustments and speed (or voice line) into the bar (`StudioControlPanel`); the chevron brings them back.
+    private func bringStudioBarOut(_ app: XCUIApplication) {
+        let handle = element(app, "prompter.sheetHandle")
+        XCTAssertTrue(handle.waitForExistence(timeout: 5))
+        let folded = XCTNSPredicateExpectation(predicate: NSPredicate(format: "value == 'Hidden'"), object: handle)
+        XCTAssertEqual(XCTWaiter.wait(for: [folded], timeout: 5), .completed, "The bar didn't fold for the first play")
+        handle.tap()
+        let out = XCTNSPredicateExpectation(predicate: NSPredicate(format: "value == 'Shown'"), object: handle)
+        XCTAssertEqual(XCTWaiter.wait(for: [out], timeout: 5), .completed, "The chevron didn't bring the bar back")
+    }
+
+    private func waitUntilHittable(_ element: XCUIElement, file: StaticString = #filePath, line: UInt = #line) {
+        let hittable = XCTNSPredicateExpectation(predicate: NSPredicate(format: "hittable == true"), object: element)
+        XCTAssertEqual(XCTWaiter.wait(for: [hittable], timeout: 5), .completed, "\(element) can't be tapped", file: file, line: line)
+    }
 
     private func element(_ app: XCUIApplication, _ identifier: String) -> XCUIElement {
         app.descendants(matching: .any)[identifier].firstMatch

@@ -42,9 +42,10 @@ struct SelfieControlSheet: View {
             VStack(spacing: 0) {
                 reading(progress)
                     .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { readingHeight = $0 }
-                    // Half way out they are neither for touching nor for VoiceOver.
-                    .allowsHitTesting(progress > 0.92)
-                    .accessibilityHidden(progress < 0.5)
+                    // Half way out they are neither for touching nor for VoiceOver, and neither while a take gathers the sheet into its row
+                    // (they are folded out of sight then, and VoiceOver would still land on them).
+                    .allowsHitTesting(progress > 0.92 && recording < 0.1)
+                    .accessibilityHidden(progress < 0.5 || recording > 0.5)
                 capture(recording)
                     .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { captureHeight = $0 }
             }

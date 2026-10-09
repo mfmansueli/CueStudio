@@ -84,7 +84,8 @@ final class CueUniverseScreenshotTests: XCTestCase {
 
     /// "Ready to travel", then the networks, a network's step and the send-off.
     func testReadyToTravelAndTheSendOff() {
-        let app = CueApp.launch(seeded: true, sampleVideo: true, extraArguments: ["-uiTestFakeShareSheet"])
+        // Ending the share sheet hands back to the networks' sheet only with real animations (ShareToUITests.openShare).
+        let app = CueApp.launch(seeded: true, sampleVideo: true, animations: true, extraArguments: ["-uiTestFakeShareSheet"])
         let tab = app.cueTabBar.buttons["Takes"]
         XCTAssertTrue(tab.waitForExistence(timeout: 15))
         tab.tap()

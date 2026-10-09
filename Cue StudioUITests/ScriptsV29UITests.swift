@@ -229,6 +229,9 @@ final class CreationSheetsUITests: XCTestCase {
         field.tap(); field.typeText("Swipe me away\n")
         let entry = element(app, "logbook.entry")
         XCTAssertTrue(entry.waitForExistence(timeout: 5))
+        // The keyboard stays up for the next idea, and the one just saved comes into view above it.
+        let visible = XCTNSPredicateExpectation(predicate: NSPredicate(format: "hittable == true"), object: entry)
+        XCTAssertEqual(XCTWaiter.wait(for: [visible], timeout: 5), .completed, "The saved idea is under the keyboard")
         entry.swipeLeft()
         let delete = app.buttons["Delete"]
         XCTAssertTrue(delete.waitForExistence(timeout: 5))

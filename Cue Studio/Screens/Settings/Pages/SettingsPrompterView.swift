@@ -15,6 +15,9 @@ struct SettingsPrompterView: View {
     var activeMode: PrompterMode?
     /// Opened from the recorder's Aa, as a sheet over the camera.
     var isRecorderSheet = false
+    /// The recorder's screen, when the page is a sheet over it: the sheet is shorter than the screen, so its own height can't say where a
+    /// percent of the screen is (the reading line slider read 43% for the recommended line and moved it nowhere).
+    var screen: ReadingLinePercent?
 
     @State private var screenScale = ReadingLinePercent.standard
 
@@ -23,7 +26,7 @@ struct SettingsPrompterView: View {
 
     var body: some View {
         var bindings = bindings
-        bindings.screenScale = screenScale
+        bindings.screenScale = screen ?? screenScale
         return List {
             Section {
                 SettingsEntryRows(entries: [.followVoice, .speed, .countdownBeforePlay, .aiCoach], bindings: bindings)
@@ -75,6 +78,7 @@ struct SettingsPrompterView: View {
         }
         .listStyle(.insetGrouped)
         .scrollContentBackground(.hidden)
+        .accessibilityIdentifier("settings.prompterPage")
         .background {
             if !isRecorderSheet { SkyBackdrop() }
         }

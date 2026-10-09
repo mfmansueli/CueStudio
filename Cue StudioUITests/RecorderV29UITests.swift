@@ -5,8 +5,8 @@
 
 import XCTest
 
-/// The recorder (v29 · 5.2) with a stand-in camera (`-uiTestDemoCamera`: the Simulator has none): the whole bar when idle, the compact
-/// one while recording, the box that shrinks and a tap that brings the whole bar back (Studio is in `StudioUITests`).
+/// The recorder (v29 · 5.2, v30 bar) with a stand-in camera (`-uiTestDemoCamera`: the Simulator has none): the whole bar when idle, one row
+/// while recording and a tap that brings the whole bar back (Studio is in `StudioUITests`).
 /// `TEST_RUNNER_CUE_SCREENSHOT_DIR=<folder>` saves a picture of each state.
 @MainActor
 final class RecorderV29UITests: XCTestCase {
@@ -35,28 +35,31 @@ final class RecorderV29UITests: XCTestCase {
         return app
     }
 
-    func testSelfieShowsTheWholeBarThenTheCompactOneWhileRecordingAndATapBringsItBack() throws {
+    /// v30: while a take records, the REC pill and its clock take the start of the navigation bar, and the controls gather into one row (the
+    /// mode switch and the reading controls fold away); a tap on the picture brings them all back for a few seconds (`SelfieControlSheet`).
+    func testSelfieShowsTheWholeBarThenOneRowWhileRecordingAndATapBringsItBack() throws {
         let app = launchRecorder()
-        XCTAssertFalse(element(app, "prompter.compactBar").exists)
+        XCTAssertFalse(element(app, "prompter.recordingBadge").exists)
+        XCTAssertFalse(element(app, "prompter.showControlsArea").exists)
         let scrollMode = app.descendants(matching: .any)["prompter.scrollMode"].firstMatch
         XCTAssertTrue(scrollMode.buttons["Voice"].exists && scrollMode.buttons["Steady"].exists)
         try capture(app, "5.2_idle")
-        let box = element(app, "prompter.text")
-        let idleWidth = box.frame.width
 
         app.buttons["prompter.recordButton"].tap()
-        XCTAssertTrue(element(app, "prompter.compactBar").waitForExistence(timeout: 12))
-        XCTAssertTrue(element(app, "prompter.recordingClock").exists)
-        XCTAssertTrue(element(app, "prompter.modeChip").exists)
-        XCTAssertFalse(app.descendants(matching: .any)["prompter.scrollMode"].firstMatch.buttons["Voice"].exists, "the mode switch goes with the whole bar")
-        XCTAssertLessThan(box.frame.width, idleWidth, "the box shrinks while recording")
-        try capture(app, "5.2_recording_compact")
+        XCTAssertTrue(element(app, "prompter.recordingBadge").waitForExistence(timeout: 12), "REC and the clock are in the bar")
+        XCTAssertTrue(element(app, "prompter.showControlsArea").waitForExistence(timeout: 5), "the controls gather into one row")
+        // Folded away with the reading controls: out of sight and out of reach.
+        let voice = app.descendants(matching: .any)["prompter.scrollMode"].firstMatch.buttons["Voice"]
+        let folded = XCTNSPredicateExpectation(predicate: NSPredicate(format: "exists == false OR hittable == false"), object: voice)
+        XCTAssertEqual(XCTWaiter.wait(for: [folded], timeout: 3), .completed, "the mode switch goes with the reading controls")
+        try capture(app, "5.2_recording_row")
 
-        // A tap on the screen brings the whole bar back for a few seconds; then it is compact again.
+        // A tap on the screen brings the whole bar back for a few seconds; then it is one row again.
         element(app, "prompter.showControlsArea").tap()
-        XCTAssertTrue(app.descendants(matching: .any)["prompter.scrollMode"].firstMatch.buttons["Voice"].waitForExistence(timeout: 3))
+        let back = XCTNSPredicateExpectation(predicate: NSPredicate(format: "exists == true AND hittable == true"), object: voice)
+        XCTAssertEqual(XCTWaiter.wait(for: [back], timeout: 3), .completed, "the tap didn't bring the controls back")
         try capture(app, "5.2_recording_peek")
-        XCTAssertTrue(element(app, "prompter.compactBar").waitForExistence(timeout: 8))
+        XCTAssertTrue(element(app, "prompter.showControlsArea").waitForExistence(timeout: 8))
 
         app.buttons["prompter.recordButton"].tap()
         XCTAssertTrue(app.buttons["review.shareButton"].waitForExistence(timeout: 20) || element(app, "review.takeLabel").waitForExistence(timeout: 20))

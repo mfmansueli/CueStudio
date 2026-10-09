@@ -820,3 +820,19 @@ com componentes que já existiam:
   folhas, `aiText` no azulejo (3:1, ícone que informa), `accInk` no amarelo e `ink` no `surface3` dos dias da rotina, com e sem Aumentar
   Contraste; nas linhas de Settings vale `ink`/`ink2` sobre o cartão translúcido (§21).
 - **Sem animação nova;** Reduce Motion não muda nada aqui. Os textos entram nos 20 idiomas.
+
+## 28. Testes de UI que falhavam no `main` (9 de outubro de 2026)
+
+Treze testes de UI falhavam também no `main`; a maioria descrevia telas que mudaram (a barra do gravador do sistema, o Studio da v30, o campo do dock que cresce até
+cinco linhas, a folha Aa sem prévia, o chip "Create for" com a rede como valor, a página do roteiro sem a tab bar) e foi reescrita para o que o app faz hoje. Três
+mostravam problemas de verdade, corrigidos no app:
+
+- **Logbook:** uma ideia salva com Return ficava embaixo do teclado (que continua aberto para a próxima): a lista agora a traz para a vista, logo acima dele.
+- **Aa do Selfie, linha de leitura:** a folha (`PrompterSettingsSheet`, mais baixa que a tela desde que ganhou `sheetMaxHeight`) media a porcentagem da linha pela
+  própria altura: o controle dizia 43% para a linha recomendada e movê-lo não movia a linha. A folha agora recebe a tela e a lente do gravador
+  (`SettingsPrompterView.screen`).
+- **Gravando no Selfie:** os controles de leitura recolhidos na linha da gravação continuavam ao alcance do VoiceOver; agora ficam escondidos e sem toque enquanto
+  a folha está recolhida (`SelfieControlSheet`).
+
+**Limite do Simulator (não é falha do app):** a prévia do Quick edit não toca no Simulator (a composição falha com -12784 antes de ficar pronta, como já dizia
+`QuickEditPlayerTests`); os testes de UI conferem lá o estado do botão (Play/Pause) e só no aparelho o tempo andando (`EditorUITests.testPlayPlaysAndPauseHoldsThePlayhead`).
