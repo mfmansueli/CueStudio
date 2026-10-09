@@ -93,7 +93,9 @@ struct MainView: View {
         return TabView(selection: tabSelection) {
             Tab(value: AppTab.scripts) {
                 NavigationStack(path: $presentation.scriptsPath) {
-                    ScriptsView(library: services.library, toast: services.toast, writer: services.writer, drafts: services.drafts)
+                    ScriptsView(
+                        library: services.library, toast: services.toast, writer: services.writer, drafts: services.drafts, defaults: services.defaults
+                    )
                         .navigationDestination(for: ScriptRoute.self) { route in
                             ScriptDetailView(route: route, services: services)
                         }
@@ -185,18 +187,7 @@ struct MainView: View {
                 }
             )
         case .ideas:
-            IdeasSheet(
-                services: services,
-                onEdit: { idea in
-                    services.notifications.recordUse(.ideas)
-                    services.ideaDraft.text = idea.prompt
-                    services.ideaDraft.length = idea.length
-                },
-                onWrite: { idea in
-                    services.notifications.recordUse(.ideas)
-                    services.starter.write(idea: idea.prompt, length: idea.length)
-                }
-            )
+            FindInspirationSheet(services: services)
         case .logbook:
             LogbookView()
                 .presentationDetents([.large])

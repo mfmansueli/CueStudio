@@ -6,8 +6,10 @@
 import SwiftUI
 
 /// The first visit's mark (3.1): a yellow star with a halo that breathes (14 → 19 → 14 pt over 3 s) at the end of a dotted line that
-/// joins three small stars, in a 160 × 104 box. Still under Reduce Motion.
+/// joins three small stars, in a 160 × 104 box (`scale` draws it smaller: the empty Scripts uses it at 0.8). Still under Reduce Motion.
 struct ScriptsConstellation: View {
+    var scale: CGFloat = 1
+
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.scenePhase) private var scenePhase
 
@@ -17,6 +19,7 @@ struct ScriptsConstellation: View {
             // r: 14 → 19 → 14 on a 3 s cycle (SVG `animate values="14;19;14" dur="3s"`).
             let halo = 14 + 5 * (0.5 - 0.5 * cos(time * 2 * .pi / 3))
             Canvas { canvas, _ in
+                canvas.scaleBy(x: scale, y: scale)
                 var line = Path()
                 line.move(to: CGPoint(x: 24, y: 78))
                 line.addLine(to: CGPoint(x: 64, y: 44))
@@ -34,7 +37,7 @@ struct ScriptsConstellation: View {
                 canvas.fill(Path(ellipseIn: CGRect(x: core.x - 5, y: core.y - 5, width: 10, height: 10)), with: .color(Palette.acc))
                 canvas.fill(Path(ellipseIn: CGRect(x: core.x - 2, y: core.y - 2, width: 4, height: 4)), with: .color(Color(hex: 0xFFF6C2)))
             }
-            .frame(width: 160, height: 104)
+            .frame(width: 160 * scale, height: 104 * scale)
         }
         .accessibilityHidden(true)
     }

@@ -6,9 +6,9 @@
 import SwiftUI
 
 /// The Scripts AI dock (v30 · 3.1, 3.2): clean glass fixed above the tab bar. Row 1 is the choices for the idea (Format, the platform and
-/// the voice); row 2 is the idea itself (two lines, opening to five while it is edited, the suggested idea while it is empty, and up to
-/// `IdeaPromptDraft.maxCharacters` characters), "↻ another idea", the microphone and the yellow arrow. Scrolling the list down folds
-/// row 1 away (09 §6); focusing the field raises the dock with the keyboard.
+/// the voice), and once there are scripts a lightbulb to Find inspiration; row 2 is the idea itself (two lines, opening to five while it
+/// is edited, the suggested idea while it is empty, and up to `IdeaPromptDraft.maxCharacters` characters), "↻ another idea", the microphone
+/// and the yellow arrow. Scrolling the list down folds row 1 away (09 §6); focusing the field raises the dock with the keyboard.
 ///
 /// The text is the one draft kept by `IdeaDraftService`. The microphone dictates into the field (speak, see the words, review,
 /// edit: it never sends anything itself). The dock owns the microphone while it is on screen: it lets go when the app leaves the
@@ -23,6 +23,8 @@ struct ScriptsDock: View {
     @Binding var isEditing: Bool
     /// Why Apple Intelligence can't write now; nil when it can. The arrow says "Write it" then.
     var unavailableReason: String?
+    /// The lightbulb to Find inspiration after the voice chip (there are scripts: the empty Scripts has its own way in).
+    var showsInspiration = false
 
     @Environment(CreatorProfileService.self) private var profile
     @Environment(IdeaDraftService.self) private var ideaDraft
@@ -194,17 +196,38 @@ struct ScriptsDock: View {
         if dictation.isActive {
             DictationStatusRow(state: dictation.state, level: dictation.level)
                 .frame(maxWidth: .infinity, alignment: .leading)
+        } else if showsInspiration {
+            // The lightbulb sits right after the voice chip while the row fits; when it doesn't (a narrow iPhone, big text), the chips
+            // scroll and the lightbulb stays at the end, in reach, instead of any chip being squeezed.
+            ViewThatFits(in: .horizontal) {
+                HStack(spacing: 6) {
+                    choiceChips
+                    InspirationDockButton { presentation.present(.ideas) }
+                }
+                .fixedSize()
+                HStack(spacing: 6) {
+                    ScrollView(.horizontal) {
+                        HStack(spacing: 6) { choiceChips }
+                    }
+                    .scrollIndicators(.hidden)
+                    InspirationDockButton { presentation.present(.ideas) }
+                }
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
         } else {
             ScrollView(.horizontal) {
-                HStack(spacing: 6) {
-                    if showsFormat { formatChip }
-                    platformChip
-                    if hasAI { MyCueVoiceChip(setup: $voiceSetup, hitHeight: Self.topRowHeight) }
-                }
+                HStack(spacing: 6) { choiceChips }
             }
             .scrollIndicators(.hidden)
             .scrollClipDisabled()
         }
+    }
+
+    @ViewBuilder
+    private var choiceChips: some View {
+        if showsFormat { formatChip }
+        platformChip
+        if hasAI { MyCueVoiceChip(setup: $voiceSetup, hitHeight: Self.topRowHeight) }
     }
 
     private var platformChip: some View {

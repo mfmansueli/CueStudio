@@ -56,6 +56,8 @@ import Foundation
 /// - `-uiTestNotificationTap <script|cleanUp|share|deletedScript|invalid|duplicate|routine|logbook|universe>`: Cue opens as if launched
 ///   from that notification (`DebugNotificationTaps`).
 /// - `-uiTestNotificationInvite`: Cue's invitation to allow notifications may show (UI tests leave it out otherwise, like the voice tip).
+/// - `-uiTestTopics <list>`: with `-uiTestInMemory`, the creator holds these topics (comma separated: a first-flight topic by its id, `fitness`,
+///   or one they typed, `custom:Daily Routine`): Find inspiration's filters with several topics, only typed ones, or none (no argument).
 /// - `-uiTestAppLanguage <lproj>`: with `-uiTestInMemory`, Cue's interface starts in that language
 ///   (as if picked in Language & Region) without changing the simulator's. The interface language
 ///   always lives in memory under `-uiTestInMemory`.
@@ -147,6 +149,21 @@ struct LaunchOptions {
         options.onboardingStep = value("-uiTestOnboardingStep").flatMap { name in OnboardingStep.allCases.first { "\($0)" == name } }
     }
 
+    #if DEBUG
+    /// `-uiTestTopics fitness,custom:Daily Routine`: a profile that holds those topics and nothing else.
+    private static func writeTopics(_ list: String, to defaults: UserDefaults) {
+        var profile = CreatorProfile()
+        for item in list.split(separator: ",").map({ $0.trimmingCharacters(in: .whitespaces) }) where !item.isEmpty {
+            if item.hasPrefix("custom:") {
+                profile.customTopics.append(String(item.dropFirst("custom:".count)))
+            } else if let niche = Niche(rawValue: item) {
+                profile.niches.append(niche)
+            }
+        }
+        defaults.set(try? JSONEncoder().encode(profile), forKey: DefaultsKey.creatorProfile)
+    }
+    #endif
+
     static func fromProcess() -> LaunchOptions {
         var options = LaunchOptions()
         #if DEBUG
@@ -194,6 +211,9 @@ struct LaunchOptions {
                 options.defaults.set(arguments[flag + 1], forKey: DefaultsKey.skyDensity)
             } else {
                 options.defaults.set(SkyDensity.off.rawValue, forKey: DefaultsKey.skyDensity)
+            }
+            if let index = arguments.firstIndex(of: "-uiTestTopics"), arguments.indices.contains(index + 1) {
+                Self.writeTopics(arguments[index + 1], to: options.defaults)
             }
             if let index = arguments.firstIndex(of: "-uiTestUniverse"), arguments.indices.contains(index + 1),
                let kind = UniverseSeed.Kind(rawValue: arguments[index + 1]) {
