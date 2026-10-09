@@ -97,6 +97,20 @@ struct PaletteContrastTests {
         }
     }
 
+    /// The reminder sheet and a tool's introduction (`ReminderSheet`, `FeatureIntroSheet`): their words on the sheet's night, the "past" warning
+    /// included, and the tool's icon (3:1, it informs) on its tile.
+    @Test func theNotificationSheetsReadOnTheirNight() {
+        for appearance in Appearance.allCases {
+            for (name, token) in [("ink", Palette.ink), ("ink2", Palette.ink2), ("warnText", Palette.warnText)] {
+                let value = ratio(token, on: Palette.sheetNight, in: appearance)
+                #expect(value >= ColorContrast.textMinimum, "\(name) on sheetNight, \(appearance): \(value)")
+            }
+            #expect(ratio(Palette.aiText, on: Palette.surface2, in: appearance) >= 3, "the tool's icon, \(appearance)")
+            #expect(ratio(Palette.accInk, on: Palette.acc, in: appearance) >= ColorContrast.textMinimum, "a routine day picked, \(appearance)")
+            #expect(ratio(Palette.ink, on: Palette.surface3, in: appearance) >= ColorContrast.textMinimum, "a routine day not picked, \(appearance)")
+        }
+    }
+
     @Test func inkAndSecondaryInkAlsoReadOnTheTileSurface() {
         for appearance in Appearance.allCases {
             for token in [Palette.ink, Palette.ink2] {

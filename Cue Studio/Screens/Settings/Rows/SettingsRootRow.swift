@@ -16,6 +16,7 @@ struct SettingsRootRow: View {
     @Environment(RemoteControlService.self) private var remote
     @Environment(CreatorProfileService.self) private var profile
     @Environment(UsageQuotaService.self) private var quota
+    @Environment(NotificationService.self) private var notifications
 
     @State private var paywall: PaywallContext?
     @State private var showsPrivacy = false
@@ -41,6 +42,8 @@ struct SettingsRootRow: View {
             link(.personalize, "sparkles", Palette.Settings.iconPurple, badge: String(localized: "NEW"))
         case .languageRegion:
             link(.languageRegion, "globe", Palette.Settings.iconTeal, value: languages.interfaceLanguage.nativeName)
+        case .notifications:
+            link(.notifications, "bell.badge.fill", Palette.danger, value: notificationsValue)
         case .privacy:
             link(.privacy, "hand.raised.fill", Palette.success)
         case .cuePro:
@@ -91,6 +94,13 @@ struct SettingsRootRow: View {
     private var proValue: String {
         guard let left = quota.exportsLeft(for: store.tier) else { return String(localized: "Pro") }
         return String(localized: "Free · \(left) left")
+    }
+
+    /// "Off" when iOS doesn't allow Cue's notifications, else how many reminders are set.
+    private var notificationsValue: String? {
+        if notifications.authorization == .denied { return String(localized: "Off") }
+        let count = notifications.upcomingReminders.count
+        return count == 0 ? nil : String(localized: "Reminders: \(count)")
     }
 
     /// "Front · 1080p"

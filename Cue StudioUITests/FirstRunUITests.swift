@@ -37,8 +37,8 @@ final class FirstRunUITests: XCTestCase {
         XCTAssertTrue(app.staticTexts["My first script"].waitForExistence(timeout: 5))
     }
 
-    /// The idea is answered in the card itself: tapping the field takes the keyboard, no
-    /// sheet opens, the field keeps its three lines however long the idea gets, and the draft stays.
+    /// The idea is answered in the card itself: tapping the field takes the keyboard, no sheet opens, the field
+    /// grows to five lines at most however long the idea gets (`DESIGN_PROJECT.md` §25), and the draft stays.
     func testTheIdeaIsTypedInTheCardWithoutASheetAndTheCardNeverGrows() {
         let app = CueApp.launch(seeded: false)
         let field = element(app, "ideaCard.field")
@@ -52,6 +52,7 @@ final class FirstRunUITests: XCTestCase {
         XCTAssertTrue(element(app, "ideaCard.anotherIdea").exists)
         let card = element(app, "empty.promptCard")
         let emptyHeight = card.frame.height
+        let twoLines = field.frame.height
 
         field.tap()
         XCTAssertTrue(app.keyboards.firstMatch.waitForExistence(timeout: 5))
@@ -60,10 +61,11 @@ final class FirstRunUITests: XCTestCase {
         let unavailable = element(app, "generate.unavailableNote").exists
         XCTAssertEqual(app.buttons["ideaCard.submit"].isEnabled, !unavailable)
 
-        // A long idea scrolls inside the field instead of growing the card.
-        let long = Array(repeating: "and another thing about the idea", count: 8).joined(separator: " ")
+        // A long idea opens the field to five lines at most (two at rest), then scrolls inside it (`DockGrowthUITests` has the details).
+        let long = Array(repeating: "and another thing about the idea", count: 4).joined(separator: " ")
         field.typeText(" " + long)
-        XCTAssertEqual(card.frame.height, emptyHeight, accuracy: 1)
+        XCTAssertGreaterThan(card.frame.height, emptyHeight, "The card opens up while the idea is written")
+        XCTAssertLessThanOrEqual(card.frame.height - emptyHeight, twoLines * 1.6 + 1, "The card grew past five lines")
         XCTAssertEqual(field.value as? String, "Three ways to focus " + long)
     }
 

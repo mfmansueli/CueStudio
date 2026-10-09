@@ -101,6 +101,10 @@ final class StudioUITests: XCTestCase {
         let playing = NSPredicate(format: "label == 'Pause'")
         expectation(for: playing, evaluatedWith: play)
         waitForExpectations(timeout: 10)
+        // The first play folds the bar, and the transport moves with it: tap once it has settled.
+        let folded = XCTNSPredicateExpectation(predicate: NSPredicate(format: "value == 'Hidden'"), object: element(app, "prompter.sheetHandle"))
+        XCTAssertEqual(XCTWaiter.wait(for: [folded], timeout: 5), .completed)
+        sleep(1)
         play.tap()
         XCTAssertEqual(play.label, "Play")
     }

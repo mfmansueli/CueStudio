@@ -111,6 +111,7 @@ final class ScreenCaptureUITests: XCTestCase {
         app.buttons["edit.playButton"].tap()
         sleep(2)
         XCTAssertEqual(time.value as? String ?? time.label, start, "the play button can't start a captured preview")
+        XCTAssertEqual(app.buttons["edit.playButton"].label, "Play", "the play button can't start a captured preview")
 
         app.buttons["edit.fullScreenButton"].tap()
         XCTAssertTrue(element(app, "edit.exitFullScreen").waitForExistence(timeout: 5))
@@ -118,16 +119,28 @@ final class ScreenCaptureUITests: XCTestCase {
         // The middle of the screen is the full-screen preview: a tap there plays or pauses.
         app.windows.firstMatch.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).tap()
         sleep(1)
-        element(app, "edit.exitFullScreen").tap()
+        // Outside the video, under it: a 9:16 take fills the width, so the middle of "exit" is the video itself. The editor's own preview stays
+        // under the full-screen one: the full-screen one is the taller.
+        let previews = app.descendants(matching: .any).matching(identifier: "edit.preview").allElementsBoundByIndex
+        let fullScreen = previews.max { $0.frame.height < $1.frame.height } ?? preview
+        let below = (fullScreen.frame.maxY + app.windows.firstMatch.frame.maxY) / 2
+        app.windows.firstMatch.coordinate(withNormalizedOffset: .zero).withOffset(CGVector(dx: app.windows.firstMatch.frame.midX, dy: below)).tap()
+        XCTAssertTrue(element(app, "edit.exitFullScreen").waitForNonExistence(timeout: 5), "out of full screen")
         XCTAssertEqual(time.value as? String ?? time.label, start, "a tap on the full-screen preview plays nothing")
 
         capture(false)
         XCTAssertTrue(shield(app).waitForNonExistence(timeout: 5))
         sleep(1)
         XCTAssertEqual(time.value as? String ?? time.label, start, "capture ending doesn't play")
+        XCTAssertEqual(app.buttons["edit.playButton"].label, "Play", "capture ending doesn't play")
+        // Once capture ends the creator plays it again: play is no longer refused. The playhead only moves on a device (the Simulator
+        // can't draw the editor's composition: `EditorUITests.testPlayPlaysAndPauseHoldsThePlayhead`).
         app.buttons["edit.playButton"].tap()
+        XCTAssertEqual(app.buttons["edit.playButton"].label, "Pause")
+        #if !targetEnvironment(simulator)
         let playing = expectation(for: NSPredicate(format: "value != %@", start), evaluatedWith: time)
         wait(for: [playing], timeout: 5)
+        #endif
     }
 
     // MARK: - Recorder

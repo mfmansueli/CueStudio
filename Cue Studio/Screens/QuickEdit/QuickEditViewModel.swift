@@ -122,6 +122,8 @@ final class QuickEditViewModel {
     var editingCaptionID: UUID?
     /// The Translate sheet is open.
     var showsTranslation = false
+    /// The setting Adjust opens on, once (`open(_:)`); nil opens where it always does.
+    var adjustOpensOn: Adjustment?
     /// Translating the captions (see `QuickEditViewModel+Translation`).
     var translationState: TranslationState = .idle
     /// The translation the view asks the system for; nil when none is wanted.

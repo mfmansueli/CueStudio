@@ -127,7 +127,12 @@ struct PrompterView: View {
         case .display:
             // Selfie opens the Prompter page of Settings (09 §11); Studio keeps its own Display sheet.
             if viewModel.mode == .selfie {
-                PrompterSettingsSheet(maxHeight: sheetMaxHeight)
+                PrompterSettingsSheet(
+                    maxHeight: sheetMaxHeight,
+                    screen: ReadingLinePercent(
+                        screenHeight: Double(viewModel.screenMetrics.screen.height), lensY: Double(viewModel.screenMetrics.lensY)
+                    )
+                )
             } else {
                 DisplaySettingsSheet(viewModel: viewModel, maxHeight: sheetMaxHeight)
             }

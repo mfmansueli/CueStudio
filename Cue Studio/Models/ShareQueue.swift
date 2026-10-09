@@ -14,14 +14,18 @@ nonisolated struct ShareQueue: Codable, Hashable, Identifiable, Sendable {
     /// The script's title, for "Next: TikTok · 3 habits that fixed my mornings".
     let title: String
     var items: [ShareQueueItem]
+    /// When the creator last moved it (began it, posted, left a network for later). Nil in queues saved before notifications: they count
+    /// from when the notifications started (`NotificationState.startedAt`).
+    var updatedAt: Date?
 
     var id: UUID { takeID }
 
-    init(takeID: UUID, operationID: UUID, title: String, networks: [ShareDestination]) {
+    init(takeID: UUID, operationID: UUID, title: String, networks: [ShareDestination], updatedAt: Date? = nil) {
         self.takeID = takeID
         self.operationID = operationID
         self.title = title
         items = networks.map { ShareQueueItem(network: $0, state: .pending) }
+        self.updatedAt = updatedAt
     }
 
     // MARK: - Reading

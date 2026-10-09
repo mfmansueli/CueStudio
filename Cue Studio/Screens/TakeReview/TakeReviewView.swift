@@ -32,6 +32,8 @@ struct TakeReviewView: View {
     /// "Pick your best take", opened by ✦ Suggest best.
     @State private var proposal: BestTakeProposal?
     @State private var editingTake: Take?
+    /// The tool the editor opens on (a notification's "Try it"), for the next time it opens.
+    @State private var editingTool: EditorTool?
     /// How the editor was left, acted on once its cover is gone (share, download, ready later).
     @State private var pendingOutcome: EditorOutcome?
     /// Share glows for a few seconds after "Ready, I'll post later".
@@ -78,6 +80,8 @@ struct TakeReviewView: View {
             toast: services.toast,
             speechLanguage: { languages.captionRequest(for: $0) }
         )
+        let notifications = services.notifications
+        model.onExported = { takeID, saved in Task { await notifications.exportFinished(takeID: takeID, savedToPhotos: saved) } }
         _viewModel = State(initialValue: model)
         _flow = State(initialValue: ShareFlow(
             review: model, queues: services.shareQueue, milestones: services.milestones, library: services.library,
@@ -133,8 +137,9 @@ struct TakeReviewView: View {
             viewModel.burnsInCaptions = shown
         }
         .fullScreenCover(item: $editingTake, onDismiss: handleEditorOutcome) { take in
-            QuickEditView(take: take, services: services) { outcome in
+            QuickEditView(take: take, services: services, opening: editingTool) { outcome in
                 pendingOutcome = outcome
+                editingTool = nil
                 editingTake = nil
             }
         }
@@ -358,6 +363,9 @@ struct TakeReviewView: View {
         case .continueQueue: continueQueue(nil)
         case .postLater(let network): continueQueue(network)
         case .edit: editingTake = take
+        case .editTool(let tool):
+            editingTool = tool
+            editingTake = take
         case .pickBest: suggestBest(from: take)
         }
     }

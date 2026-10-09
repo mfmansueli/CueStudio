@@ -31,6 +31,11 @@ final class VoiceQuestionScheduler {
     /// Debug: every gate but the queue is open (`-uiTestVoiceTip`).
     private let skipsGates: Bool
     private(set) var state: VoiceQuestionState
+    /// A tool was introduced today (a discovery notification or the app's introduction): the tip waits for another day, so the creator never
+    /// gets both on one day (`NotificationService.introducedToday`).
+    @ObservationIgnored var otherIntroductionToday: () -> Bool = { false }
+    /// A tip went on screen: the notifications move a tool planned for today to another day.
+    @ObservationIgnored var onTipShown: () -> Void = {}
 
     init(
         profile: CreatorProfileService, defaults: UserDefaults = .standard, now: @escaping () -> Date = { .now },
@@ -91,7 +96,7 @@ final class VoiceQuestionScheduler {
         guard isAIAvailable, profile.profile.usesVoiceInAI, profile.profile.voiceStrength < 100 else { return false }
         if skipsGates { return true }
         let moment = now()
-        guard scriptCount >= 1, state.firstEligibleDays.count >= Self.daysBeforeFirstTip else { return false }
+        guard scriptCount >= 1, state.firstEligibleDays.count >= Self.daysBeforeFirstTip, !otherIntroductionToday() else { return false }
         if let paused = state.pausedUntil, paused > moment { return false }
         let week = state.shownDates.filter { moment.timeIntervalSince($0) < 7 * 24 * 3600 }
         return week.count < Self.weeklyCap && !week.contains { calendar.isDate($0, inSameDayAs: moment) }
@@ -134,6 +139,7 @@ final class VoiceQuestionScheduler {
         let moment = now()
         state.shownDates = state.shownDates.filter { moment.timeIntervalSince($0) < 7 * 24 * 3600 } + [moment]
         save()
+        onTipShown()
     }
 
     /// Not now, ✕, a swipe down or a tap on the backdrop: the question waits three days, and the next one comes first.

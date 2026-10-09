@@ -70,18 +70,27 @@ struct AdjustPanel: View {
     // MARK: - Pieces
 
     private var dials: some View {
-        ScrollView(.horizontal) {
-            HStack(spacing: 8) {
-                autoChip
-                ForEach(QuickEditViewModel.Adjustment.allCases) { adjustment in
-                    chip(adjustment)
+        ScrollViewReader { proxy in
+            ScrollView(.horizontal) {
+                HStack(spacing: 8) {
+                    autoChip
+                    ForEach(QuickEditViewModel.Adjustment.allCases) { adjustment in
+                        chip(adjustment).id(adjustment)
+                    }
                 }
             }
+            .scrollIndicators(.hidden)
+            // The row runs to the panel's edges, so a chip doesn't stop short of them when it scrolls.
+            .padding(.horizontal, -16)
+            .contentMargins(.horizontal, 16, for: .scrollContent)
+            .onAppear {
+                // Opened on one setting (a notification's "Try it" for Skin Smoothing): its chip is picked and in view; nothing changes.
+                guard let start = viewModel.adjustOpensOn else { return }
+                viewModel.adjustOpensOn = nil
+                current = .dial(start)
+                proxy.scrollTo(start, anchor: .trailing)
+            }
         }
-        .scrollIndicators(.hidden)
-        // The row runs to the panel's edges, so a chip doesn't stop short of them when it scrolls.
-        .padding(.horizontal, -16)
-        .contentMargins(.horizontal, 16, for: .scrollContent)
     }
 
     /// A setting as a chip: its name and, once it is off zero, its value in yellow. The picked one is

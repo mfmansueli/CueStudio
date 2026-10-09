@@ -294,6 +294,9 @@ final class HandoffCaptureTests: XCTestCase {
         app.buttons["shareFlow.live"].tap()
         XCTAssertTrue(element(app, "shareFlow.step").waitForExistence(timeout: 5))
         app.buttons["shareFlow.postLater"].tap()
+        // Post later is a menu (a reminder or none): "No reminder" leaves the network for later, as the button did.
+        XCTAssertTrue(app.buttons["shareFlow.noReminder"].waitForExistence(timeout: 5))
+        app.buttons["shareFlow.noReminder"].tap()
         XCTAssertTrue(element(app, "shareFlow.step").waitForExistence(timeout: 5))
         app.buttons["shareFlow.send"].tap()
         app.buttons["debug.share.complete"].tap()

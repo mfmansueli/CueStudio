@@ -156,6 +156,28 @@ final class EditorUITests: XCTestCase {
         XCTAssertTrue(ruler.isHittable)
     }
 
+    /// Play plays and pause stops. On a device the playhead moves through the take while it plays; the Simulator can't draw the editor's
+    /// composition (the item fails with -12784 before it is ready, as `QuickEditPlayerTests` notes), so there only the state is checked.
+    func testPlayPlaysAndPauseHoldsThePlayhead() {
+        let app = EditorApp.open()
+        let play = app.buttons["edit.playButton"]
+        XCTAssertTrue(play.waitForExistence(timeout: 5))
+        XCTAssertEqual(play.label, "Play")
+        let time = app.staticTexts["edit.timeLabel"]
+        let start = time.value as? String ?? time.label
+        play.tap()
+        XCTAssertEqual(play.label, "Pause")
+        #if !targetEnvironment(simulator)
+        let moving = XCTNSPredicateExpectation(predicate: NSPredicate(format: "value != %@", start), object: time)
+        XCTAssertEqual(XCTWaiter.wait(for: [moving], timeout: 8), .completed, "the playhead didn't move")
+        #endif
+        play.tap()
+        XCTAssertEqual(play.label, "Play")
+        let held = time.value as? String
+        sleep(1)
+        XCTAssertEqual(time.value as? String, held, "pause didn't hold the playhead")
+    }
+
     func testFullScreenShowsOnlyTheVideoAndComesBack() {
         let app = EditorApp.open()
         app.buttons["edit.fullScreenButton"].tap()

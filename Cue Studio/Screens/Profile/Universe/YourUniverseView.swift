@@ -27,6 +27,14 @@ struct YourUniverseView: View {
     /// "Share my {year}" from the story: its sheet opens once the story has gone.
     @State private var pendingShare: UniverseYearRequest?
     @State private var previousCounts: [Platform: Int] = [:]
+    @Environment(NotificationService.self) private var notifications
+    /// Opened from "Your year in review is ready": the story opens as the screen appears (once).
+    private let opensYearInReview: Bool
+    @State private var openedYearInReview = false
+
+    init(opensYearInReview: Bool = false) {
+        self.opensYearInReview = opensYearInReview
+    }
 
     private var videos: [UniverseVideo] {
         UniverseVideo.resolve(records: milestones.records, takes: takes.takes, scripts: library.scripts, fallbackDate: milestones.firstShareDate ?? .now)
@@ -61,6 +69,13 @@ struct YourUniverseView: View {
         .toolbar(.hidden, for: .navigationBar)
         .background { InteractivePopEnabler() }
         .task(id: content.selectedYear) { await notePlanets(content.snapshot) }
+        .onAppear {
+            // Visiting is what "Your universe" is for: its introduction stops.
+            notifications.recordUse(.yourUniverse)
+            guard opensYearInReview, !openedYearInReview else { return }
+            openedYearInReview = true
+            openReview(content)
+        }
         .sheet(isPresented: $showsCore) { UniverseCoreSheet(snapshot: snapshot) }
         .sheet(item: $shareRequest) { request in
             UniverseShareSheet(viewModel: UniverseShareViewModel(

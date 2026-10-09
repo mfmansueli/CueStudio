@@ -26,6 +26,14 @@ enum AppSheet: Identifiable, Hashable {
     case logbook
     /// A question from the audience, turned into a script.
     case answerComment
+    /// A tool introduced in the app (a discovery notification, or a quiet moment): one benefit, "Try it", "Not now".
+    case featureIntro(FeatureIntroRequest)
+    /// My Cue Voice's four questions, opened from a notification.
+    case voiceSetup
+    /// Import my writing, opened from a notification.
+    case importWriting
+    /// Cue's invitation to allow notifications, before the system's question.
+    case notificationInvite(NotificationInviteReason)
 
     var id: String {
         switch self {
@@ -39,6 +47,10 @@ enum AppSheet: Identifiable, Hashable {
         case .createFor: "createFor"
         case .logbook: "logbook"
         case .answerComment: "answerComment"
+        case .featureIntro(let request): "featureIntro.\(request.id)"
+        case .voiceSetup: "voiceSetup"
+        case .importWriting: "importWriting"
+        case .notificationInvite(let reason): "notificationInvite.\(reason.rawValue)"
         }
     }
 }

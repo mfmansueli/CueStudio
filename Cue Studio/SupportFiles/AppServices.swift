@@ -63,6 +63,8 @@ struct AppServices {
     let sky: SkyMemory
     let aiStatus: AIStatus
     let voiceQuestions: VoiceQuestionScheduler
+    /// Reminders, the routine, project nudges and the tools' introductions (local notifications only).
+    let notifications: NotificationService
     let eraser: DataEraserService
     let privacy: PrivacyPreferencesService
     let appIcon: AppIconService
@@ -172,9 +174,14 @@ struct AppServices {
         aiStatus = AIStatus(writer: options.writer)
         privacy = PrivacyPreferencesService(defaults: options.defaults, writer: options.writer)
         voiceQuestions = VoiceQuestionScheduler(profile: profile, defaults: options.defaults, skipsGates: options.voiceTipSkipsGates)
+        notifications = Self.makeNotifications(options: options, services: NotificationWiring(
+            library: library, takes: takes, shareQueue: shareQueue, logbook: logbook, ideas: ideaSuggestions, profile: profile,
+            preferences: preferences, capabilities: capabilities, languages: languages, milestones: milestones, writer: options.writer,
+            privacy: privacy, voiceQuestions: voiceQuestions, presentation: presentation, remote: remote, transition: ideaTransition
+        ))
         eraser = DataEraserService(
             library: library, takes: takes, drafts: options.draftStore, logbook: logbook, brands: brands, sky: sky,
-            profile: profile, preferences: preferences, defaults: options.defaults
+            profile: profile, preferences: preferences, defaults: options.defaults, notifications: notifications
         )
         topicTagging = TopicTaggingService(library: library, profile: profile, personalization: personalization, writer: writer)
     }
@@ -189,12 +196,80 @@ struct AppServices {
         )
     }
 
+    /// What a notification opens is checked against the app's own objects; and a tap that launched Cue (or a UI test's) waits for the UI.
+    func connectNotifications(tap scenario: String?) {
+        let services = self
+        notifications.isAlive = { NotificationNavigator(services: services).exists($0) }
+        NotificationRouter.shared.foreground = { [notifications] payload, _ in notifications.foregroundPresentation(for: payload) }
+        #if DEBUG
+        if let scenario {
+            for interaction in DebugNotificationTaps.interactions(for: scenario, services: self) { NotificationRouter.shared.receive(interaction) }
+        }
+        #endif
+    }
+
     /// Lets App Intents (Siri, Shortcuts) read the same script library the app shows, and save ideas in the same Logbook.
     func registerIntentDependencies() {
         let library = library
         AppDependencyManager.shared.add(dependency: library)
         let logbook = logbook
         AppDependencyManager.shared.add(dependency: logbook)
+    }
+}
+
+extension AppServices {
+    /// What the notifications are built from (one argument, so the list stays readable).
+    struct NotificationWiring {
+        let library: ScriptLibraryService
+        let takes: TakeLibraryService
+        let shareQueue: ShareQueueService
+        let logbook: LogbookService
+        let ideas: IdeaSuggestionService
+        let profile: CreatorProfileService
+        let preferences: PreferencesService
+        let capabilities: LanguageCapabilityService
+        let languages: LanguageService
+        let milestones: MilestoneService
+        let writer: ScriptWriting
+        let privacy: PrivacyPreferencesService
+        let voiceQuestions: VoiceQuestionScheduler
+        let presentation: PresentationService
+        let remote: RemoteControlService
+        let transition: IdeaTransitionService
+    }
+
+    private static func makeNotifications(options: LaunchOptions, services wiring: NotificationWiring) -> NotificationService {
+        let (milestones, takes, library, writer) = (wiring.milestones, wiring.takes, wiring.library, wiring.writer)
+        let facts = AppNotificationFacts(sources: AppNotificationFacts.Sources(
+            library: library, takes: takes, drafts: options.draftStore, shareQueue: wiring.shareQueue, logbook: wiring.logbook,
+            ideas: wiring.ideas, profile: wiring.profile, preferences: wiring.preferences, capabilities: wiring.capabilities,
+            languages: wiring.languages, milestones: milestones,
+            aiWriting: { writer.isLanguageModelAvailable },
+            yearReview: {
+                // The universe's own rules: the review row unlocked and the story ready (December onwards).
+                let videos = UniverseVideo.resolve(
+                    records: milestones.records, takes: takes.takes, scripts: library.scripts, fallbackDate: milestones.firstShareDate ?? .now
+                )
+                let row = UniverseContent(videos: videos, topics: []).review
+                return !row.isLocked && UniverseYears.storyIsReady(year: row.year) ? row.year : nil
+            },
+            backgrounds: { await BackgroundSupport.canFindPeople() }
+        ))
+        let notifications = NotificationService(
+            center: options.notificationCenter ?? SystemNotificationCenter(), store: NotificationStateStore(defaults: options.defaults), facts: facts
+        )
+        notifications.invitesEnabled = options.notificationInvites
+        let (languages, privacy, voiceQuestions) = (wiring.languages, wiring.privacy, wiring.voiceQuestions)
+        let (presentation, remote, transition) = (wiring.presentation, wiring.remote, wiring.transition)
+        notifications.interfaceLanguage = { languages.interfaceLanguage.rawValue }
+        notifications.sendsUsage = { privacy.helpsImproveCue }
+        notifications.tipDays = { voiceQuestions.state.shownDates }
+        notifications.isForegroundBusy = {
+            presentation.prompter != nil || presentation.showsRemoteController || remote.state.isConnected || transition.phase != .idle
+        }
+        voiceQuestions.otherIntroductionToday = { notifications.introducedToday }
+        voiceQuestions.onTipShown = { notifications.setNeedsReconcile() }
+        return notifications
     }
 }
 
@@ -239,6 +314,7 @@ extension View {
             .environment(services.sky)
             .environment(services.aiStatus)
             .environment(services.voiceQuestions)
+            .environment(services.notifications)
             .environment(services.eraser)
             .environment(services.privacy)
             .environment(services.permissionStatus)

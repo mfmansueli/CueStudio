@@ -65,6 +65,17 @@ extension XCUIApplication {
         XCTAssertTrue(element.waitForExistence(timeout: 5), "Scrolled eight times and \(element) isn't there", file: file, line: line)
     }
 
+    /// `scroll(to:)`, then on to where the list ends when `element` is still under the tab bar: the last row of a page counts as
+    /// hittable there, and a tap on it lands on a tab (on the selected one it goes back to the tab's root).
+    func scrollAboveTabBar(to element: XCUIElement, file: StaticString = #filePath, line: UInt = #line) {
+        scroll(to: element, file: file, line: line)
+        for _ in 0..<3 where cueTabBar.exists && element.frame.maxY > cueTabBar.frame.minY {
+            swipeUp()
+        }
+        let limit = cueTabBar.exists ? cueTabBar.frame.minY : frame.maxY
+        XCTAssertLessThanOrEqual(element.frame.maxY, limit, "\(element) is under the tab bar", file: file, line: line)
+    }
+
     /// The script page's back button: the navigation bar's own (v30).
     var pageBackButton: XCUIElement { navigationBars.buttons["BackButton"].firstMatch }
 

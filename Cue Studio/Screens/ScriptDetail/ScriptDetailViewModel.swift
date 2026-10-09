@@ -12,6 +12,8 @@ import Foundation
 final class ScriptDetailViewModel {
     enum Sheet: String, Identifiable {
         case destination, hooks, improve, details, scriptType
+        /// "Remind me…": a reminder for this script.
+        case reminder
         var id: String { rawValue }
     }
 

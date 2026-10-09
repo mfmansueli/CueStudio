@@ -42,6 +42,8 @@ final class QuickEditExportModel {
     private var pendsAfterPurchase = false
     private var operationID: UUID?
     private var handledActivities: Set<UUID> = []
+    /// The export was saved to Photos: a notification tells a creator who left Cue meanwhile.
+    @ObservationIgnored var onFinished: (UUID) -> Void = { _ in }
 
     init(
         take: Take, videoURL: URL, edit: @escaping () -> TakeEdit, takes: TakeLibraryService, quota: UsageQuotaService,
@@ -170,6 +172,7 @@ final class QuickEditExportModel {
             takes.markExported(take.id)
             await saveCover(of: current)
             phase = .done(file)
+            onFinished(take.id)
         } catch {
             phase = .failed(UIApplication.shared.applicationState == .active
                 ? error.localizedDescription

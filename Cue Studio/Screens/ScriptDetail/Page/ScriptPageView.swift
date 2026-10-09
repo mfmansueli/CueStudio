@@ -162,7 +162,8 @@ struct ScriptPageView: View {
                     script: script, folders: folders, actions: actions,
                     hasAI: viewModel.isLanguageModelAvailable,
                     onImprove: { viewModel.sheet = .improve },
-                    onDetails: { viewModel.sheet = .details }
+                    onDetails: { viewModel.sheet = .details },
+                    onRemind: { viewModel.sheet = .reminder }
                 )
             } label: {
                 Image(systemName: "ellipsis")

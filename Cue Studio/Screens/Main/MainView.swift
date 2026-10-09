@@ -44,6 +44,10 @@ struct MainView: View {
             .fullScreenCover(isPresented: $presentation.showsRemoteController) {
                 RemoteControllerView()
             }
+            // Back from the teleprompter or the editor: a tool's introduction may fit now (one a session at most).
+            .onChange(of: presentation.prompter == nil) { _, closed in
+                if closed { offerIntroduction() }
+            }
             // The My Cue Voice tip waits until the app has been opened on two different days.
             .task { voiceQuestions.registerAppOpen() }
             .onChange(of: scenePhase) { _, phase in
@@ -110,8 +114,13 @@ struct MainView: View {
                 Label { Text("Record") } icon: { Image(uiImage: CueTabImage.record) }
             }
             Tab(value: AppTab.profile) {
-                NavigationStack { ProfileView() }
-                    .toolbarVisibility(barVisibility, for: .tabBar)
+                NavigationStack(path: $presentation.profilePath) {
+                    ProfileView()
+                        .navigationDestination(for: ProfileRoute.self) { route in
+                            YourUniverseView(opensYearInReview: route == .yearInReview)
+                        }
+                }
+                .toolbarVisibility(barVisibility, for: .tabBar)
             } label: {
                 Label { Text("Profile") } icon: { Image(uiImage: CueTabImage.template(.profile)) }
             }
@@ -179,10 +188,14 @@ struct MainView: View {
             IdeasSheet(
                 services: services,
                 onEdit: { idea in
+                    services.notifications.recordUse(.ideas)
                     services.ideaDraft.text = idea.prompt
                     services.ideaDraft.length = idea.length
                 },
-                onWrite: { idea in services.starter.write(idea: idea.prompt, length: idea.length) }
+                onWrite: { idea in
+                    services.notifications.recordUse(.ideas)
+                    services.starter.write(idea: idea.prompt, length: idea.length)
+                }
             )
         case .logbook:
             LogbookView()
@@ -243,7 +256,77 @@ struct MainView: View {
                 services.ideaDraft.platform = $0
                 presentation.sheet = nil
             }
+        case .featureIntro, .voiceSetup, .importWriting, .notificationInvite:
+            notificationSheet(sheet)
         }
+    }
+
+    /// What a notification opens as a sheet: a tool's introduction, My Cue Voice's questions, Import my writing.
+    @ViewBuilder
+    private func notificationSheet(_ sheet: AppSheet) -> some View {
+        switch sheet {
+        case .featureIntro(let request): featureIntro(request)
+        case .voiceSetup: VoiceSetupSheet(mode: .missing, profile: profile.profile)
+        case .importWriting: WritingImportSheet()
+        case .notificationInvite(let reason): notificationInvite(reason)
+        default: EmptyView()
+        }
+    }
+
+    // MARK: - Introductions
+
+    /// "Try it" opens the tool on the creator's own script or take; "Not now" waits 30 days; "Don't suggest this" is for good.
+    private func featureIntro(_ request: FeatureIntroRequest) -> some View {
+        let notifications = services.notifications
+        return FeatureIntroSheet(
+            request: request,
+            onTry: {
+                notifications.introAccepted(request)
+                Task { await NotificationNavigator(services: services).go(to: request.destination) }
+            },
+            onNotNow: {
+                notifications.introSnoozed(request)
+                presentation.sheet = nil
+            },
+            onDecline: {
+                notifications.introDeclined(request)
+                presentation.sheet = nil
+            }
+        )
+        .onAppear { notifications.introShown(request) }
+    }
+
+    /// One thing at a quiet moment after a session at the camera or the editor: the invitation to allow notifications (the first time there
+    /// is a recording to finish), else a tool's introduction.
+    private func offerIntroduction() {
+        Task {
+            let notifications = services.notifications
+            if let reason = await notifications.invite(.firstRecording, hasRecorded: !services.takes.takes.isEmpty) {
+                guard presentation.sheet == nil, presentation.prompter == nil else { return }
+                presentation.present(.notificationInvite(reason))
+                return
+            }
+            guard let request = await notifications.inAppIntro(afterSession: true),
+                  presentation.sheet == nil, presentation.prompter == nil else { return }
+            presentation.present(.featureIntro(request))
+        }
+    }
+
+    /// "Allow notifications" brings up the system's question; "Not now" keeps it for later.
+    private func notificationInvite(_ reason: NotificationInviteReason) -> some View {
+        let notifications = services.notifications
+        return NotificationInviteSheet(
+            reason: reason,
+            onAllow: {
+                presentation.sheet = nil
+                Task { await notifications.inviteAccepted(reason) }
+            },
+            onNotNow: {
+                notifications.inviteDeclined(reason)
+                presentation.sheet = nil
+            }
+        )
+        .onAppear { notifications.inviteShown(reason) }
     }
 
     private func writeNewScript() {

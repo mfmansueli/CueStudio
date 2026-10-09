@@ -18,6 +18,9 @@ struct LogbookView: View {
     @Environment(TopicTaggingService.self) private var tagging
     @Environment(ScriptStarter.self) private var starter
     @Environment(AIStatus.self) private var aiStatus
+    @Environment(PresentationService.self) private var presentation
+    /// The note a notification was about: brought into view and outlined in yellow.
+    @State private var focused: UUID?
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     @State private var typed = ""
@@ -30,10 +33,13 @@ struct LogbookView: View {
     @State private var isStarting = false
     @State private var pressedAt: Date?
     @State private var heldSince: Date?
+    /// An idea just saved with Return: brought into view above the keyboard, which stays up for the next one.
+    @State private var justSaved: UUID?
     @FocusState private var typing: Bool
 
     var body: some View {
         NavigationStack {
+            ScrollViewReader { proxy in
             // One list for the whole page, so an idea can be swiped away the system's way.
             List {
                 Group {
@@ -75,6 +81,18 @@ struct LogbookView: View {
             .scrollContentBackground(.hidden)
             .scrollDismissesKeyboard(.interactively)
             .background(Palette.bg)
+            .task {
+                guard let id = presentation.logbookFocus else { return }
+                presentation.logbookFocus = nil
+                focused = id
+                proxy.scrollTo(id, anchor: .center)
+            }
+            .onChange(of: justSaved) { _, id in
+                guard let id else { return }
+                justSaved = nil
+                withAnimation(reduceMotion ? nil : .smooth(duration: 0.3)) { proxy.scrollTo(id, anchor: .bottom) }
+            }
+            }
             // The system's large title, with the line under it as its subtitle; both fold into the bar as the list scrolls.
             .navigationTitle("Logbook")
             .navigationSubtitle("Catch it now. Write it later.")
@@ -222,6 +240,7 @@ struct LogbookView: View {
         }
         .padding(14)
         .background(Palette.surface, in: shape)
+        .overlay { if focused == entry.id { shape.strokeBorder(Palette.acc, lineWidth: 1.5) } }
         .cardDepth(shape)
         .contextMenu {
             Button(role: .destructive) { logbook.delete(entry.id) } label: { Label("Delete", systemImage: "trash") }
@@ -326,6 +345,7 @@ struct LogbookView: View {
         guard let entry = logbook.add(typed) else { return }
         typed = ""
         Haptics.apply()
+        justSaved = entry.id
         tag(entry)
     }
 

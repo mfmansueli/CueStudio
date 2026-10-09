@@ -58,6 +58,7 @@ struct SettingsSafeZoneView: View {
             }
         }
         .cueGroupedList()
+        .accessibilityIdentifier("settings.safeZonePage")
         .navigationTitle("Social safe zone")
         .navigationBarTitleDisplayMode(.inline)
         .contentMargins(.top, 0, for: .scrollContent)

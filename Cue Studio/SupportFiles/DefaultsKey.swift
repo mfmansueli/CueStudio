@@ -71,6 +71,8 @@ nonisolated enum DefaultsKey {
     /// Settings › Privacy & AI data: Apple Intelligence on or off (absent = on) and the anonymous usage switch (absent = off).
     static let onDeviceAI = "onDeviceAI"
     static let helpImproveCue = "helpImproveCue"
+    /// The notifications: the creator's choices, reminders and routine, and the history the caps read (`NotificationState`, JSON).
+    static let notificationState = "notifications.state"
     /// v1's monthly AI counters ("aiScriptsUsed_2026-09"), removed at launch.
     static let legacyAIScriptsUsedPrefix = "aiScriptsUsed_"
 }

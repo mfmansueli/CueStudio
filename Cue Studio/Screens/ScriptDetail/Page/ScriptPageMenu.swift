@@ -5,8 +5,8 @@
 
 import SwiftUI
 
-/// The ••• of the script page: ✦ Improve with Cue (with Apple Intelligence), Script details and Studio mode, then what every
-/// script menu has.
+/// The ••• of the script page: ✦ Improve with Cue (with Apple Intelligence), Script details, Studio mode and Remind me…, then what
+/// every script menu has.
 struct ScriptPageMenu: View {
     let script: Script
     let folders: [String]
@@ -15,6 +15,8 @@ struct ScriptPageMenu: View {
     var hasAI = true
     let onImprove: () -> Void
     let onDetails: () -> Void
+    /// "Remind me…": a reminder to come back to this script.
+    let onRemind: () -> Void
 
     @Environment(TopicTaggingService.self) private var tagging
     @Environment(ScriptLibraryService.self) private var library
@@ -23,6 +25,8 @@ struct ScriptPageMenu: View {
         if hasAI { Button(action: onImprove) { Label("Improve with Cue", systemImage: "sparkles") } }
         Button(action: onDetails) { Label("Script details", systemImage: "info.circle") }
         Button { actions.studio(script) } label: { Label("Studio mode", systemImage: "text.alignleft") }
+        Button(action: onRemind) { Label("Remind me…", systemImage: "bell") }
+            .accessibilityIdentifier("page.remindMe")
         if !tagging.topics.isEmpty {
             // Cue picked it on this iPhone; the creator has the last word.
             Menu {

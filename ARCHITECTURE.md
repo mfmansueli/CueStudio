@@ -189,6 +189,11 @@ Esses tipos ficam em `Screens/<Feature>/Support/` enquanto só uma feature os us
 - `MainView` é uma `TabView` com `Tab(...)`, e cada aba tem o **próprio** `NavigationStack`.
 - Fluxos secundários abrem em `sheet`. Celebrações e visualizadores de mídia abrem em `fullScreenCover`.
 - Push e deep links: o AppDelegate posta uma `Notification.Name` (declarada em extensão) e a UI escuta.
+- Notificações locais (`NOTIFICATIONS.md`): o delegate do sistema (`NotificationCenterDelegate`, registrado no `init` do App) entrega o toque
+  ao `NotificationRouter` (singleton, como o `IntentRouter`); o `RootView` o pega quando o app está pronto e o `NotificationNavigator` abre o
+  destino tipado (`NotificationDestination`), conferindo de novo que o objeto existe. Regras de quando notificar são tipos puros
+  (`NotificationPlanner`, `ProjectCampaigns`, `DiscoveryRules`); o `NotificationService` só junta fatos, guarda estado e fala com o sistema
+  atrás de `NotificationCenterClient`.
 
 ### 2.6 Concorrência (Swift 6)
 

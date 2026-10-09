@@ -22,6 +22,7 @@ struct SettingsDestination: View {
         case .personalize: PersonalizeView(bindings: bindings)
         case .appIcon: AppIconView()
         case .languageRegion: LanguageRegionView(bindings: bindings)
+        case .notifications: NotificationsSettingsView()
         case .privacy: PrivacyView(bindings: bindings)
         case .permissions: PermissionsView()
         case .acknowledgements: AcknowledgementsView()

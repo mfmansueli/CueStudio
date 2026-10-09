@@ -160,9 +160,11 @@ final class ScriptLibraryUITests: XCTestCase {
         let row = app.scriptRow(Self.habits)
         row.tap()
         XCTAssertTrue(app.buttons["detail.recordButton"].waitForExistence(timeout: 5), "the row opens the script's page")
-        XCTAssertTrue(app.tabBars.buttons["Scripts"].isSelected)
+        // The page hides the tab bar (`hidesTabBar`): back on the list it is there again, still on Scripts.
         app.pageBackButton.tap()
         XCTAssertTrue(element(app, "scripts.promptCard").waitForExistence(timeout: 5))
+        XCTAssertTrue(app.cueTabBar.buttons["Scripts"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.cueTabBar.buttons["Scripts"].isSelected, "the row didn't leave Scripts")
 
         let count = app.buttons["row.takes"].firstMatch
         XCTAssertTrue(count.waitForExistence(timeout: 5), "a recorded row has its ×n button")

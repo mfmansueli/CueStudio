@@ -785,3 +785,59 @@ Vale para grátis e Pro, e não há interruptor.
   com ela parada; gravação começada antes de abrir o Cue; o editor e a tela cheia dele; voltar ao primeiro plano depois de começar ou parar a
   gravação fora do Cue; Espelhamento de Tela para uma Apple TV ou Mac; e a gravação começando no meio de uma take na câmera (a take continua, sai em
   pé e é salva) e de um voice-over.
+
+## 27. Notificações, lembretes e introdução de ferramentas (9 de outubro de 2026; não está no quadro)
+
+O sistema inteiro (campanhas, limites, consentimento, testes, roteiro no aparelho) está em `NOTIFICATIONS.md`. Na interface, só o necessário,
+com componentes que já existiam:
+
+- **Settings › Notifications** (`NotificationsSettingsView`, na seção General, entre Language & Region e Privacy; ícone `bell.badge.fill` em
+  `Palette.danger`, valor "Off" quando o iOS não deixa ou "Reminders: n"). Lista agrupada sobre o céu como as outras páginas: **On this iPhone**
+  com o interruptor **Allow notifications** (`NotificationPermissionSection`, pedido do dono em 9/10/2026; `SettingsListToggle` como os outros, a
+  linha de baixo diz On, Delivered quietly, Off in iOS Settings ou Not asked yet, e o rodapé diz o que o toque faz: o iOS pergunta uma vez, ou abre
+  o Cue nos Ajustes do iOS, porque só o iOS dá ou tira a permissão; no lugar do cartão com Open Settings), **What Cue sends** (as cinco categorias como
+  `SettingsListToggle`; ferramentas e novidades desligadas), **Days and time** (só com a rotina ligada: um chip redondo por dia na ordem da semana
+  do iPhone — amarelo `acc` com `accInk` quando escolhido, `surface3` com `ink` quando não — e um `DatePicker` de hora), **My reminders** (toque
+  edita, deslizar remove; estado em `ink2`: Set, Kept in Cue, Due), **Automatic notifications** (quiet hours e a pausa de 7/30 dias num `Menu`) e
+  **Show titles in previews**. Em Debug, uma seção DEBUG com o que está agendado e os contadores.
+- **Remind me…**: no ••• da página do script e no menu de contexto de um vídeo em Takes. `ReminderSheet` é uma folha da altura do conteúdo
+  (`fittedSheet`): `SheetHeader`, um `GroupedCard` com Tonight (até 19:30), Tomorrow e **Pick a date and time** (abre um `DatePicker` e **Set
+  reminder**), a nota de quiet hours quando a hora cai nelas, e os lembretes já marcados com ✕. O toast confirma ("Reminder set · Tomorrow
+  10:00 AM") só quando o sistema aceitou.
+- **Post later** (8.1, passo de uma rede) virou um `Menu` do sistema no mesmo lugar e com o mesmo rótulo: Tonight · hora, Tomorrow · hora, Pick a
+  date and time… (a mesma folha) e **No reminder**. Todas deixam a rede para depois, como o botão fazia.
+- **Introdução de uma ferramenta** (`FeatureIntroSheet`, folha da altura do conteúdo): ícone `aiText` num azulejo `surface2`, o nome, um
+  benefício, a nota do que ela usa (Apple Intelligence, modelo de fala, download, segundo aparelho, "Free. Nothing changes until you choose."),
+  **Try it** (primário), **Not now** (secundário) e "Don’t suggest this" em `ink2`. "Try it" abre a ferramenta; o Quick edit abre direto no painel
+  (`EditorTool`, `QuickEditViewModel+Opening`) e o Adjust já com o dial Skin Smoothing escolhido e à vista (`adjustOpensOn`).
+- **Convite para notificações** (`NotificationInviteSheet`, folha da altura do conteúdo, mesmo desenho da introdução de uma ferramenta): sino
+  `bell.badge` em `aiText` num azulejo `surface2`, a pergunta ("Want Cue to remind you to finish this video?" ou "Want a reminder to record this
+  script?"), "One notification when something is waiting, at most one a day. You can change it in Settings.", **Allow notifications** (primário,
+  só ele traz a pergunta do sistema) e **Not now** (secundário). Quando aparece: `NOTIFICATIONS.md` §3.
+- **Logbook:** a nota de uma notificação vem para o centro com um contorno `acc` de 1,5 pt.
+- **Your universe** pode abrir pela aba Profile com a história do ano já aberta (`ProfileRoute`, `YourUniverseView(opensYearInReview:)`).
+- **Contraste:** só tokens medidos. `PaletteContrastTests.theNotificationSheetsReadOnTheirNight` mede `ink`, `ink2` e `warnText` na noite das
+  folhas, `aiText` no azulejo (3:1, ícone que informa), `accInk` no amarelo e `ink` no `surface3` dos dias da rotina, com e sem Aumentar
+  Contraste; nas linhas de Settings vale `ink`/`ink2` sobre o cartão translúcido (§21).
+- **Sem animação nova;** Reduce Motion não muda nada aqui. Os textos entram nos 20 idiomas.
+
+## 28. Testes de UI que falhavam no `main` (9 de outubro de 2026)
+
+Treze testes de UI falhavam também no `main`; a maioria descrevia telas que mudaram (a barra do gravador do sistema, o Studio da v30, o campo do dock que cresce até
+cinco linhas, a folha Aa sem prévia, o chip "Create for" com a rede como valor, a página do roteiro sem a tab bar) e foi reescrita para o que o app faz hoje. Três
+mostravam problemas de verdade, corrigidos no app:
+
+- **Logbook:** uma ideia salva com Return ficava embaixo do teclado (que continua aberto para a próxima): a lista agora a traz para a vista, logo acima dele.
+- **Aa do Selfie, linha de leitura:** a folha (`PrompterSettingsSheet`, mais baixa que a tela desde que ganhou `sheetMaxHeight`) media a porcentagem da linha pela
+  própria altura: o controle dizia 43% para a linha recomendada e movê-lo não movia a linha. A folha agora recebe a tela e a lente do gravador
+  (`SettingsPrompterView.screen`).
+- **Gravando no Selfie:** os controles de leitura recolhidos na linha da gravação continuavam ao alcance do VoiceOver; agora ficam escondidos e sem toque enquanto
+  a folha está recolhida (`SelfieControlSheet`).
+- **Studio, Size · Line · Margin:** o slider fechado (altura zero, invisível) continuava ao alcance do VoiceOver (o `Slider` do sistema não obedece ao
+  `accessibilityHidden` do pai); agora ele só existe enquanto está aberto ou fechando e sai quando a animação termina (`StudioControlPanel.showsSlider`).
+
+Nos testes, a última linha de uma página fica "tocável" atrás da tab bar e o toque cai na aba (`XCUIApplication.scrollAboveTabBar`); as folhas curtas do
+gravador rolam pela própria lista. A suíte inteira também rodou em 2 simuladores em paralelo nesta sessão (exceção pedida pelo dono; os clones foram apagados).
+
+**Limite do Simulator (não é falha do app):** a prévia do Quick edit não toca no Simulator (a composição falha com -12784 antes de ficar pronta, como já dizia
+`QuickEditPlayerTests`); os testes de UI conferem lá o estado do botão (Play/Pause) e só no aparelho o tempo andando (`EditorUITests.testPlayPlaysAndPauseHoldsThePlayhead`).

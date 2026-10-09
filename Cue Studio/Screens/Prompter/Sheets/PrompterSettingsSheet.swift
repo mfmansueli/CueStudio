@@ -11,6 +11,8 @@ import SwiftUI
 struct PrompterSettingsSheet: View {
     /// Tallest the sheet may grow, so the script above it stays readable. `nil` lets it go from medium to large.
     var maxHeight: CGFloat?
+    /// The recorder's screen and lens: the reading line's percent is of the screen, not of this sheet.
+    var screen: ReadingLinePercent = .standard
 
     @Environment(SessionSetupService.self) private var session
     @Environment(\.dismiss) private var dismiss
@@ -19,7 +21,7 @@ struct PrompterSettingsSheet: View {
         @Bindable var session = session
         let bindings = SettingsBindings(prompter: $session.prompter, camera: $session.camera)
         NavigationStack {
-            SettingsPrompterView(bindings: bindings, activeMode: .selfie, isRecorderSheet: true)
+            SettingsPrompterView(bindings: bindings, activeMode: .selfie, isRecorderSheet: true, screen: screen)
                 .navigationDestination(for: SettingsRoute.self) { SettingsDestination(route: $0, bindings: bindings) }
                 .toolbar {
                     ToolbarItem(placement: .cancellationAction) {

@@ -28,6 +28,8 @@ enum ReviewLaunchAction: Hashable {
     case postLater(ShareDestination)
     /// Opens Quick edit.
     case edit
+    /// Opens Quick edit on one tool, without running it (a notification's "Try it").
+    case editTool(EditorTool)
     /// Opens "Pick your best take" (6.1): after a stop that leaves two or more takes and no ★.
     case pickBest
 }

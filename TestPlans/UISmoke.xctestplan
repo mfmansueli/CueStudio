@@ -42,7 +42,8 @@
         "SettingsUITests/testFontLicensesRemainReachableFromSettings()",
         "LanguageRegionUITests/testJapaneseInterfaceKeepsEnglishScripts()",
         "SettingsUITests/testChoicesMadeInRecordingShowOnTheSetupCard()",
-        "ScreenCaptureUITests/testCaptureDuringPlaybackHidesTheReviewAndItsEndLeavesItPausedWhereItWas()"
+        "ScreenCaptureUITests/testCaptureDuringPlaybackHidesTheReviewAndItsEndLeavesItPausedWhereItWas()",
+        "NotificationsUITests/testAReminderFromAScriptIsSetAndListed()"
       ],
       "target" : {
         "containerPath" : "container:Cue Studio.xcodeproj",

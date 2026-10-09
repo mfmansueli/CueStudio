@@ -469,10 +469,11 @@ struct PrompterViewModelTests {
         defer { scenario.defaults.tearDown() }
         scenario.viewModel.setSpeed(1.04)
         #expect(scenario.viewModel.session.prompter.speed == 225 / ReadTime.wordsPerMinuteAtOneX)
+        // Past the ends, the range's ends (0.3× to 3.5× since the speed went to multiples).
         scenario.viewModel.setSpeed(5)
-        #expect(scenario.viewModel.session.prompter.speed == 2)
+        #expect(scenario.viewModel.session.prompter.speed == PrompterSettings.speedRange.upperBound)
         scenario.viewModel.setSpeed(0.1)
-        #expect(scenario.viewModel.session.prompter.speed == 0.3)
+        #expect(scenario.viewModel.session.prompter.speed == PrompterSettings.speedRange.lowerBound)
         #expect(scenario.preferences.prompter.speed == ReadTime.naturalSpeed)
     }
 

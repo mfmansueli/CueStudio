@@ -71,6 +71,9 @@ final class ShareToUITests: XCTestCase {
         XCTAssertEqual(element(app, "shareFlow.position").label, "1 OF 2")
         XCTAssertTrue(app.buttons["shareFlow.send"].exists && app.buttons["shareFlow.editFirst"].exists && app.buttons["shareFlow.postLater"].exists)
         app.buttons["shareFlow.postLater"].tap()
+        // Post later is a menu (a reminder or none): "No reminder" leaves the network for later, as the button did.
+        XCTAssertTrue(app.buttons["shareFlow.noReminder"].waitForExistence(timeout: 5))
+        app.buttons["shareFlow.noReminder"].tap()
         XCTAssertTrue(app.staticTexts["Post to Reels"].waitForExistence(timeout: 5))
         XCTAssertEqual(element(app, "shareFlow.position").label, "2 OF 2")
     }
@@ -80,10 +83,36 @@ final class ShareToUITests: XCTestCase {
         app.buttons["shareFlow.start"].tap()
         XCTAssertTrue(waitAllowingPhotos(for: app.buttons["shareFlow.postLater"]))
         app.buttons["shareFlow.postLater"].tap()
+        // Post later is a menu (a reminder or none): "No reminder" leaves the network for later, as the button did.
+        XCTAssertTrue(app.buttons["shareFlow.noReminder"].waitForExistence(timeout: 5))
+        app.buttons["shareFlow.noReminder"].tap()
         XCTAssertTrue(app.staticTexts["Saved · continue anytime"].waitForExistence(timeout: 5))
         app.buttons["ready.closeButton"].tap()
         XCTAssertTrue(app.buttons["review.postLater"].waitForExistence(timeout: 5))
         XCTAssertEqual(app.buttons["review.postLater"].label, "POST TO TIKTOK LATER")
+    }
+
+    func testPostLaterCanRemindTheCreatorTomorrow() {
+        let app = openShare()
+        app.buttons["shareFlow.start"].tap()
+        XCTAssertTrue(waitAllowingPhotos(for: app.buttons["shareFlow.postLater"]))
+        app.buttons["shareFlow.postLater"].tap()
+        let tomorrow = app.buttons["shareFlow.remindTomorrow"]
+        XCTAssertTrue(tomorrow.waitForExistence(timeout: 5))
+        XCTAssertTrue(app.buttons["shareFlow.remindPick"].exists && app.buttons["shareFlow.noReminder"].exists)
+        tomorrow.tap()
+        XCTAssertTrue(app.buttons["ready.closeButton"].waitForExistence(timeout: 5))
+        app.buttons["ready.closeButton"].tap()
+        XCTAssertTrue(app.buttons["review.postLater"].waitForExistence(timeout: 5), "The network still waits for later")
+        app.buttons["review.backButton"].tap()
+        // The reminder is listed in Settings › Notifications, for that network.
+        app.cueTabBar.buttons["Settings"].tap()
+        let notifications = app.descendants(matching: .any)["settings.notifications"].firstMatch
+        app.scroll(to: notifications)
+        notifications.tap()
+        let reminder = app.descendants(matching: .any)["notifications.reminder"].firstMatch
+        XCTAssertTrue(reminder.waitForExistence(timeout: 5))
+        XCTAssertTrue(reminder.label.contains("Post on TikTok"), reminder.label)
     }
 
     func testNotYetKeepsTheNetworkAndYesSendsItOff() {
@@ -98,7 +127,10 @@ final class ShareToUITests: XCTestCase {
         app.buttons["shareFlow.notYet"].tap()
         XCTAssertTrue(app.buttons["shareFlow.send"].waitForExistence(timeout: 5), "back to the step: it can be sent again")
         app.buttons["shareFlow.send"].tap()
+        // Each step waits for its screen: a tap that comes early lands on the step under it (Post later is a menu there).
+        XCTAssertTrue(app.buttons["debug.share.complete"].waitForExistence(timeout: 10))
         app.buttons["debug.share.complete"].tap()
+        XCTAssertTrue(app.buttons["shareFlow.live"].waitForExistence(timeout: 10))
         app.buttons["shareFlow.live"].tap()
         XCTAssertTrue(element(app, "sendoff.sheet").waitForExistence(timeout: 20))
         XCTAssertEqual(element(app, "sendoff.headline").label, "SHARED TO TIKTOK")
