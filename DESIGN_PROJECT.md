@@ -785,3 +785,32 @@ Vale para grátis e Pro, e não há interruptor.
   com ela parada; gravação começada antes de abrir o Cue; o editor e a tela cheia dele; voltar ao primeiro plano depois de começar ou parar a
   gravação fora do Cue; Espelhamento de Tela para uma Apple TV ou Mac; e a gravação começando no meio de uma take na câmera (a take continua, sai em
   pé e é salva) e de um voice-over.
+
+## 27. Notificações, lembretes e introdução de ferramentas (9 de outubro de 2026; não está no quadro)
+
+O sistema inteiro (campanhas, limites, consentimento, testes, roteiro no aparelho) está em `NOTIFICATIONS.md`. Na interface, só o necessário,
+com componentes que já existiam:
+
+- **Settings › Notifications** (`NotificationsSettingsView`, na seção General, entre Language & Region e Privacy; ícone `bell.badge.fill` em
+  `Palette.danger`, valor "Off" quando o iOS não deixa ou "Reminders: n"). Lista agrupada sobre o céu como as outras páginas: o cartão do estado
+  da permissão (não perguntado ainda, desligado com **Open Settings**, ou entrega silenciosa), **What Cue sends** (as cinco categorias como
+  `SettingsListToggle`; ferramentas e novidades desligadas), **Days and time** (só com a rotina ligada: um chip redondo por dia na ordem da semana
+  do iPhone — amarelo `acc` com `accInk` quando escolhido, `surface3` com `ink` quando não — e um `DatePicker` de hora), **My reminders** (toque
+  edita, deslizar remove; estado em `ink2`: Set, Kept in Cue, Due), **Automatic notifications** (quiet hours e a pausa de 7/30 dias num `Menu`) e
+  **Show titles in previews**. Em Debug, uma seção DEBUG com o que está agendado e os contadores.
+- **Remind me…**: no ••• da página do script e no menu de contexto de um vídeo em Takes. `ReminderSheet` é uma folha da altura do conteúdo
+  (`fittedSheet`): `SheetHeader`, um `GroupedCard` com Tonight (até 19:30), Tomorrow e **Pick a date and time** (abre um `DatePicker` e **Set
+  reminder**), a nota de quiet hours quando a hora cai nelas, e os lembretes já marcados com ✕. O toast confirma ("Reminder set · Tomorrow
+  10:00 AM") só quando o sistema aceitou.
+- **Post later** (8.1, passo de uma rede) virou um `Menu` do sistema no mesmo lugar e com o mesmo rótulo: Tonight · hora, Tomorrow · hora, Pick a
+  date and time… (a mesma folha) e **No reminder**. Todas deixam a rede para depois, como o botão fazia.
+- **Introdução de uma ferramenta** (`FeatureIntroSheet`, folha da altura do conteúdo): ícone `aiText` num azulejo `surface2`, o nome, um
+  benefício, a nota do que ela usa (Apple Intelligence, modelo de fala, download, segundo aparelho, "Free. Nothing changes until you choose."),
+  **Try it** (primário), **Not now** (secundário) e "Don’t suggest this" em `ink2`. "Try it" abre a ferramenta; o Quick edit abre direto no painel
+  (`EditorTool`, `QuickEditViewModel+Opening`) e o Adjust já com o dial Skin Smoothing escolhido e à vista (`adjustOpensOn`).
+- **Logbook:** a nota de uma notificação vem para o centro com um contorno `acc` de 1,5 pt.
+- **Your universe** pode abrir pela aba Profile com a história do ano já aberta (`ProfileRoute`, `YourUniverseView(opensYearInReview:)`).
+- **Contraste:** só tokens medidos. `PaletteContrastTests.theNotificationSheetsReadOnTheirNight` mede `ink`, `ink2` e `warnText` na noite das
+  folhas, `aiText` no azulejo (3:1, ícone que informa), `accInk` no amarelo e `ink` no `surface3` dos dias da rotina, com e sem Aumentar
+  Contraste; nas linhas de Settings vale `ink`/`ink2` sobre o cartão translúcido (§21).
+- **Sem animação nova;** Reduce Motion não muda nada aqui. Os textos entram nos 20 idiomas (163 chaves).

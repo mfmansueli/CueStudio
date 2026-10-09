@@ -38,7 +38,8 @@ struct NotificationReminderRow: View {
             Spacer(minLength: 8)
             Text(status)
                 .font(.footnote)
-                .foregroundStyle(reminder.isScheduled ? Palette.ink2 : Palette.warnText)
+                // `ink2` is the token measured on Settings' translucent cards (DESIGN_PROJECT §21); the word says the state.
+                .foregroundStyle(Palette.ink2)
         }
         .frame(minHeight: Metrics.listRowContent)
         .contentShape(Rectangle())
