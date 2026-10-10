@@ -85,6 +85,7 @@ Toda tela, componente ou cor nova **precisa passar** no contraste antes de ser e
   prompt do sistema; `notDetermined` por padrão, que permite ao pedir) e `-uiTestNotificationTap <script|cleanUp|share|deletedScript|invalid|duplicate|routine|logbook|universe>`
   (o app abre como se tivesse sido aberto por essa notificação); `-uiTestNotificationInvite` (o convite para permitir notificações pode
   aparecer depois de uma sessão; sem ele, nunca aparece num teste de UI).
+  Find inspiration: `-uiTestTopics fitness,custom:Daily Routine` (os temas do criador), `-uiTestIdeasSlow` / `-uiTestIdeasFail` (com `-uiTestStubAI`, cada lote de ideias leva 4 s / falha), `-uiTestCatalogue inspire`.
   Testes de UI: `-uiTestFastAnimations` (nada anima: sheets, pushes e as transações do SwiftUI; o `CueApp.launch` passa por padrão
   e `animations: true` pede as reais).
 - Idiomas: `LOCALIZATION.md` (três idiomas independentes, terminologia, RTL). Todo texto novo entra
