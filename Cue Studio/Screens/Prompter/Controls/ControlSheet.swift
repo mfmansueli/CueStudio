@@ -202,6 +202,9 @@ private struct SheetFrame<Content: View, Drag: Gesture>: View, Animatable {
             .onTapGesture {
                 if gathered > 0.9 { onRecordingTap?() }
             }
+            // A container of the controls, never an element: with the tap above SwiftUI could fold it into one of them, and the play button took
+            // the whole frame (VoiceOver's ring around the bar, its activation in the middle, on Voice | Steady).
+            .accessibilityElement(children: .contain)
         }
         .frame(height: handleHeight + shown, alignment: .top)
         .clipShape(shape)
