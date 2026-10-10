@@ -23,8 +23,9 @@ struct ScriptsDock: View {
     @Binding var isEditing: Bool
     /// Why Apple Intelligence can't write now; nil when it can. The arrow says "Write it" then.
     var unavailableReason: String?
-    /// The lightbulb to Find inspiration after the voice chip (there are scripts: the empty Scripts has its own way in).
-    var showsInspiration = false
+    /// The lightbulb to Find inspiration after the voice chip: always, in every state of Scripts (the owner's call, 10/10/2026; the empty
+    /// Scripts has no inspiration card of its own).
+    var showsInspiration = true
 
     @Environment(CreatorProfileService.self) private var profile
     @Environment(IdeaDraftService.self) private var ideaDraft

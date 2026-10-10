@@ -5,7 +5,7 @@
 
 import Foundation
 
-/// Where each step of the first voyage starts: the way to write (Scripts), the teleprompter to practice (Studio) or to record
+/// Where each step of the first voyage starts: Find inspiration to write, the teleprompter to practice (Studio) or to record
 /// (Selfie), the review of the take to pick, polish (the editor) or share. The script is the one changed last; the take is the
 /// latest, or the best take of its script once there is one.
 @MainActor
@@ -17,7 +17,10 @@ struct VoyageNavigator {
     func start(_ step: VoyageStep) {
         switch step {
         case .write:
+            // Ideas from the creator's topics, the way in that asks least ("An idea is enough"); a brief used there goes into the dock on
+            // Scripts, so Scripts is where it opens.
             presentation.select(.scripts)
+            presentation.present(.ideas)
         case .practice:
             presentation.openPrompter(scriptID: latestScript?.id, mode: .studio)
         case .record:

@@ -73,7 +73,7 @@ struct ScriptsView: View {
                         VoiceQuestionTipHost(isQuiet: isQuiet)
                         ScriptsDock(
                             showsFormat: true, isFolded: isDockFolded, isEditing: $isDockEditing,
-                            unavailableReason: writerUnavailableReason, showsInspiration: emptyState == .list
+                            unavailableReason: writerUnavailableReason
                         )
                         .accessibilityIdentifier(isFirstVisit ? "empty.promptCard" : "scripts.promptCard")
                     }
@@ -186,8 +186,6 @@ struct ScriptsView: View {
         case .firstUse, .returning:
             EmptyLibraryView(
                 kind: emptyState == .firstUse ? .firstUse : .returning,
-                unavailableReason: writerUnavailableReason,
-                onInspiration: { presentation.present(.ideas) },
                 onWrite: newBlankScript,
                 onImport: { presentation.present(.importScript) }
             )

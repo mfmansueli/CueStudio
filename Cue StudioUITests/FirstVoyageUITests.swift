@@ -37,7 +37,11 @@ final class FirstVoyageUITests: XCTestCase {
         let app = CueApp.launch(seeded: false, extraArguments: ["-uiTestVoyage"])
         let strip = element(app, "voyage.strip")
         XCTAssertTrue(strip.waitForExistence(timeout: 10))
-        XCTAssertTrue(element(app, "empty.inspirationButton").exists, "the three ways in are the first step")
+        XCTAssertTrue(app.buttons["empty.writeButton"].exists && app.buttons["ideaCard.inspirationButton"].exists, "the ways in are the first step")
+        // Everything fits above the dock, which never moves: nothing to scroll to.
+        let dock = element(app, "empty.promptCard")
+        XCTAssertLessThanOrEqual(app.buttons["empty.importButton"].frame.maxY, dock.frame.minY, "the last way in is under the dock")
+        XCTAssertGreaterThanOrEqual(element(app, "empty.title").frame.minY, strip.frame.maxY, "the title is under the strip")
         strip.tap()
 
         XCTAssertTrue(element(app, "voyage.steps").waitForExistence(timeout: 5))
@@ -46,6 +50,13 @@ final class FirstVoyageUITests: XCTestCase {
         }
         XCTAssertEqual(element(app, "voyage.step.1").value as? String, "Next")
         XCTAssertEqual(element(app, "voyage.step.6").value as? String, "Not done yet")
+        // Start on the first step opens Find inspiration (it used to only select the Scripts tab it was already on).
+        app.buttons["voyage.step.start"].tap()
+        XCTAssertTrue(element(app, "inspiration.sheet").waitForExistence(timeout: 5), "Start did nothing")
+        app.buttons["sheet.closeButton"].firstMatch.tap()
+        XCTAssertTrue(waitForGone(element(app, "inspiration.sheet")))
+        strip.tap()
+        XCTAssertTrue(element(app, "voyage.steps").waitForExistence(timeout: 5))
         let hide = app.buttons["voyage.hide"]
         app.scroll(to: hide)
         hide.tap()

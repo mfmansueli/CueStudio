@@ -18,21 +18,22 @@ final class FindInspirationUITests: XCTestCase {
 
     // MARK: - The empty Scripts
 
-    func testTheFirstUseOffersThreeWaysInAndTheListTakesItsPlaceAfterTheFirstScript() throws {
+    /// Two cards (Write it yourself, Import a script) and the dock's lightbulb, which is in every state of Scripts (10/10/2026).
+    func testTheFirstUseOffersItsWaysInAndTheListTakesItsPlaceAfterTheFirstScript() throws {
         let app = CueApp.launch(seeded: false)
         XCTAssertTrue(element(app, "empty.firstUse").waitForExistence(timeout: 15))
         XCTAssertEqual(element(app, "empty.title").label, "How do you want to start?")
-        for id in ["empty.inspirationButton", "empty.writeButton", "empty.importButton"] {
+        for id in ["empty.writeButton", "empty.importButton"] {
             XCTAssertTrue(app.buttons[id].exists, "No \(id)")
         }
-        XCTAssertTrue(app.buttons["empty.inspirationButton"].label.contains("Find inspiration"))
-        XCTAssertFalse(app.buttons["ideaCard.inspirationButton"].exists, "The empty Scripts has its own way in: no lightbulb in the dock")
+        XCTAssertFalse(app.buttons["empty.inspirationButton"].exists, "Find inspiration is the dock's lightbulb, not a card")
+        XCTAssertTrue(app.buttons["ideaCard.inspirationButton"].exists, "The lightbulb is in the dock from the first visit")
         XCTAssertTrue(app.buttons["ideaCard.submit"].exists, "The dock stays the place to type an idea")
         try shoot(app, "01-first-use")
 
         writeFirstScript(app, titled: "My first script")
         XCTAssertFalse(element(app, "empty.firstUse").exists)
-        XCTAssertTrue(app.buttons["ideaCard.inspirationButton"].waitForExistence(timeout: 5), "No lightbulb once there are scripts")
+        XCTAssertTrue(app.buttons["ideaCard.inspirationButton"].waitForExistence(timeout: 5), "The lightbulb stays with scripts")
     }
 
     func testDeletingEveryScriptShowsTheReturningStateNotTheFirstUse() throws {
@@ -47,12 +48,12 @@ final class FindInspirationUITests: XCTestCase {
         XCTAssertTrue(element(app, "empty.returning").waitForExistence(timeout: 10), "An emptied library went back to the first use")
         XCTAssertFalse(element(app, "empty.firstUse").exists)
         XCTAssertEqual(element(app, "empty.title").label, "Ready for the next one?")
-        for id in ["empty.inspirationButton", "empty.writeButton", "empty.importButton"] {
+        for id in ["empty.writeButton", "empty.importButton", "ideaCard.inspirationButton"] {
             XCTAssertTrue(app.buttons[id].exists, "No \(id) in the returning state")
         }
         sleep(5) // The Undo toast goes before the picture.
         try shoot(app, "05-returning")
-        app.buttons["empty.inspirationButton"].tap()
+        app.buttons["ideaCard.inspirationButton"].tap()
         XCTAssertTrue(element(app, "inspiration.sheet").waitForExistence(timeout: 5))
     }
 
@@ -167,8 +168,8 @@ final class FindInspirationUITests: XCTestCase {
 
     func testWithoutTopicsTheSheetStillSuggestsAndOffersToAddThem() {
         let app = CueApp.launch(seeded: false)
-        XCTAssertTrue(app.buttons["empty.inspirationButton"].waitForExistence(timeout: 15))
-        app.buttons["empty.inspirationButton"].tap()
+        XCTAssertTrue(app.buttons["ideaCard.inspirationButton"].waitForExistence(timeout: 15))
+        app.buttons["ideaCard.inspirationButton"].tap()
         XCTAssertTrue(element(app, "inspiration.noTopicsNote").waitForExistence(timeout: 5))
         XCTAssertTrue(element(app, "inspiration.card.title").waitForExistence(timeout: 10), "No general ideas without topics")
         XCTAssertEqual(app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH 'inspiration.filter.'")).count, 1)
@@ -237,8 +238,8 @@ final class FindInspirationUITests: XCTestCase {
 
     func testWithoutAppleIntelligenceTheDirectWayIsWritingItYourself() {
         let app = CueApp.launch(seeded: false, ai: .none, extraArguments: ["-uiTestTopics", "travel"])
-        XCTAssertTrue(app.buttons["empty.inspirationButton"].waitForExistence(timeout: 15))
-        app.buttons["empty.inspirationButton"].tap()
+        XCTAssertTrue(app.buttons["ideaCard.inspirationButton"].waitForExistence(timeout: 15))
+        app.buttons["ideaCard.inspirationButton"].tap()
         XCTAssertTrue(element(app, "inspiration.startersNote").waitForExistence(timeout: 5))
         XCTAssertTrue(element(app, "inspiration.card.title").waitForExistence(timeout: 5))
         let write = app.buttons["inspiration.writeNow"]

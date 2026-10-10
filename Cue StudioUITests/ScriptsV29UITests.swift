@@ -79,10 +79,10 @@ final class ScriptsV29UITests: XCTestCase {
         XCTAssertTrue(dock.exists)
     }
 
-    func testTheFirstVisitOffersThreeWaysIn() throws {
+    func testTheFirstVisitOffersItsWaysIn() throws {
         let app = CueApp.launch(seeded: false)
         XCTAssertTrue(element(app, "empty.promptCard").waitForExistence(timeout: 15))
-        XCTAssertTrue(element(app, "empty.inspirationButton").exists)
+        XCTAssertTrue(app.buttons["ideaCard.inspirationButton"].exists, "Find inspiration is the dock's lightbulb")
         XCTAssertTrue(element(app, "empty.writeButton").exists)
         XCTAssertTrue(element(app, "empty.importButton").exists)
         // The Logbook is in the bar and Format on the card from the first visit on, not only after the first script.
@@ -107,7 +107,7 @@ final class ScriptsV29UITests: XCTestCase {
 
     func testFindInspirationFromTheFirstVisitWritesAnIdea() throws {
         let app = CueApp.launch(seeded: false)
-        let inspiration = app.buttons["empty.inspirationButton"]
+        let inspiration = app.buttons["ideaCard.inspirationButton"]
         XCTAssertTrue(inspiration.waitForExistence(timeout: 15))
         inspiration.tap()
         let write = app.buttons["inspiration.writeNow"]
