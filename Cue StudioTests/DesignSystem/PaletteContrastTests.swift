@@ -230,6 +230,23 @@ struct PaletteContrastTests {
         }
     }
 
+    /// Background's Cutout card (and the tiles): text on `panelCard` over the panel, and the segmented control's gray inside the card.
+    @Test func theBackgroundPanelsCutoutCardReads() {
+        for appearance in Appearance.allCases {
+            let panel = rgb(Palette.Editor.panel, in: appearance)
+            let card = rgb(Palette.Editor.panelCard, in: appearance, over: panel)
+            let well = rgb(Palette.fill, in: appearance, over: card)
+            for token in [("ink", Palette.ink), ("ink2", Palette.ink2), ("accText", Palette.accText), ("warnText", Palette.warnText)] {
+                let onCard = ColorContrast.ratio(rgb(token.1, in: appearance, over: card), card)
+                #expect(onCard >= ColorContrast.textMinimum, "\(token.0) on the card, \(appearance): \(onCard)")
+            }
+            for token in [("ink", Palette.ink), ("ink2", Palette.ink2)] {
+                let inWell = ColorContrast.ratio(rgb(token.1, in: appearance, over: well), well)
+                #expect(inWell >= ColorContrast.textMinimum, "\(token.0) in the segmented well on the card, \(appearance): \(inWell)")
+            }
+        }
+    }
+
     @Test func settingsSheetsOverTheCameraRead() {
         for appearance in Appearance.allCases {
             for token in textTokens {

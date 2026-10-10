@@ -4,6 +4,7 @@
 //
 
 import CoreImage
+import os
 import Vision
 
 /// Finds the person in a frame with Vision, on the iPhone: a mask, white where the person is,
@@ -12,6 +13,10 @@ import Vision
 nonisolated final class PersonMasker: @unchecked Sendable {
     /// Masks kept at once (a few seconds of video).
     static let cacheLimit = 90
+
+    private static let logger = Logger(subsystem: "studio.cue", category: "Background")
+    /// The reasons already logged: a failing frame fails again on every frame after it, so each reason is said once.
+    private static let logged = OSAllocatedUnfairLock<Set<String>>(initialState: [])
 
     private let cache = NSCache<NSString, CIImage>()
     private let request: VNGeneratePersonSegmentationRequest
@@ -56,13 +61,23 @@ nonisolated final class PersonMasker: @unchecked Sendable {
         do {
             try handler.perform([request])
         } catch {
+            logOnce("Vision couldn't find the person in a \(Int(extent.width))×\(Int(extent.height)) frame: \(error)")
             return nil
         }
-        guard let buffer = request.results?.first?.pixelBuffer else { return nil }
+        guard let buffer = request.results?.first?.pixelBuffer else {
+            logOnce("Vision gave no mask for a \(Int(extent.width))×\(Int(extent.height)) frame")
+            return nil
+        }
         let mask = CIImage(cvPixelBuffer: buffer)
         let scaleX = extent.width / mask.extent.width, scaleY = extent.height / mask.extent.height
         return mask
             .transformed(by: CGAffineTransform(scaleX: scaleX, y: scaleY))
             .transformed(by: CGAffineTransform(translationX: extent.minX, y: extent.minY))
+    }
+
+    /// Without a mask the background effect leaves the frame as it is, which shows as "nothing happens": the Console says why.
+    private static func logOnce(_ reason: String) {
+        guard logged.withLock({ $0.insert(reason).inserted }) else { return }
+        logger.error("\(reason, privacy: .public)")
     }
 }

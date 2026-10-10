@@ -833,6 +833,10 @@ mostravam problemas de verdade, corrigidos no app:
   (`SettingsPrompterView.screen`).
 - **Gravando no Selfie:** os controles de leitura recolhidos na linha da gravação continuavam ao alcance do VoiceOver; agora ficam escondidos e sem toque enquanto
   a folha está recolhida (`SelfieControlSheet`).
+- **Studio, play depois da contagem (10/10/2026):** com a folha recolhida, o SwiftUI juntava a área de toque da folha (`ControlSheet`, a que serve ao toque
+  durante a gravação) ao botão de play: o VoiceOver via um "Pause" do tamanho da barra (382 × 74 pt), com a ativação no meio, em Voice | Steady, e às vezes o
+  rótulo ficava "Play" com o texto andando. Em cerca de metade das execuções; a área agora é um contêiner de acessibilidade (`.accessibilityElement(children:
+  .contain)`), 10 de 10 certas, e o teste confere o tamanho do botão.
 - **Studio, Size · Line · Margin:** o slider fechado (altura zero, invisível) continuava ao alcance do VoiceOver (o `Slider` do sistema não obedece ao
   `accessibilityHidden` do pai); agora ele só existe enquanto está aberto ou fechando e sai quando a animação termina (`StudioControlPanel.showsSlider`).
 
@@ -877,3 +881,30 @@ ocupava quase toda a tela, e "+ Captions" ligava as legendas aos textos de um je
 - 15 textos novos nos 20 idiomas; três que só "+ Captions" usava foram apagados.
 - **Testes:** `CaptionStyleCopyTests`, `CaptionAccentTests`, `QuickEditCaptionStyleCopyTests`, `QuickEditTextStyleTests`, `EditorLayoutTests` (painel expandido),
   `CaptionCollectionRendererTests` e `CaptionCollectionExportTests` (o visual copiado), e `TextStyleUITests` (expandir, escopo, teclado, a pergunta e o Custom, no 6,1" e no SE).
+
+## 31. Background reorganizado (10 de outubro de 2026; não está no quadro)
+
+O painel Background (Quick edit) fazia tudo, mas confundia: o dono achou que **Color** não mudava nada, e era o interruptor "Color key", escondido em **Advanced**,
+que estava ligado: com ele o Cue não procura a pessoa, só troca o verde ou o azul do vídeo, e num vídeo sem tela verde nada muda. Medido no iPhone 18 Pro Max (log
+temporário): a escolha chegava ao compositor e o Vision devolvia a máscara; o processamento estava certo. Mudaram só o layout, a hierarquia e os nomes
+(`BackgroundPanel`); nenhum recurso entrou ou saiu, e os valores, o preview, a exportação, o desfazer e o salvamento são os de antes.
+
+- **Cabeçalho** (fixo enquanto o conteúdo rola, com Reset e ✓): o subtítulo diz o alcance e o que está atrás do criador agora, "Whole take · Blur behind you",
+  "This clip · Color on the green or blue screen", "Whole take · As recorded" (`QuickEditViewModel.backgroundSubtitle` / `backgroundSummary`).
+- **Regra do alcance** (uma nota só quando existe): aberto de um clipe que usa o fundo do take, "Shows the whole take's background. A change here is for this clip only.";
+  quando o clipe tem o seu, "This clip has its own background. Reset gives it the whole take's again." (o Reset do cabeçalho só aparece aí); no take inteiro com clipes
+  que têm o seu, "Clips with their own background keep it." (`backgroundScopeNote`). As regras de `ClipLook` não mudaram.
+- **Behind you**: Original · Blur · Color · Image e, logo abaixo, **só o controle da opção escolhida** (Blur strength saiu do Advanced; as cores; a foto; em Original,
+  uma linha dizendo que é o vídeo como foi gravado).
+- **Cutout**, num cartão próprio (`Palette.Editor.panelCard`, secundário ao fundo): **Automatic | Green or blue screen** (o antigo interruptor, agora à vista), com uma
+  frase do que cada um faz; "Can't find people here" continua no Automatic. No modo tela verde/azul: **Screen color** (Green screen | Blue screen, "Your own color"
+  quando escolhida à mão) e "Pick the screen's color"; **Tolerance, Edge e Spill** ficam recolhidos em "Fine-tune the cutout", que diz "· adjusted" quando algum saiu do
+  valor inicial, e cada um tem uma linha do que faz de verdade (`ChromaKeyCube`: faixa de cor removida, largura da borda suave, tom refletido tirado da pessoa).
+  Com Original o cartão diz "Used once a background is picked" e continua editável.
+- **Salvamento:** a última linha diz "Changes show in the preview and are saved as you make them. ✓ closes the panel." (a barra do editor já diz "IN EDIT · AUTOSAVED").
+- **Tamanho:** continua `.medium` (não expande como Text style): um painel `.full` não guarda a régua e a trilha do vídeo, e o Background depende do clipe e da gravação
+  sob a agulha. Ganhou a folga maior acima do Home Indicator e o esmaecimento ao rolar dos painéis de estilo (`EditorPanel.scrollsClearOfHomeIndicator`).
+- **Contraste:** `PaletteContrastTests.theBackgroundPanelsCutoutCardReads` mede `ink`, `ink2`, `accText` e `warnText` no cartão e `ink`/`ink2` no poço do segmentado dentro
+  dele. `PanelAdvancedButton` usava `ink.opacity(0.75)` para o texto; virou `ink2`.
+- 30 textos novos nos 20 idiomas; 5 que só o painel antigo usava saíram. Testes: `QuickEditBackgroundPanelTests`, `BackgroundPanelUITests` (6,1" e SE),
+  `BackgroundCompositionTests` (o fundo chega ao quadro do preview) e `BackgroundDeviceTests` (opt-in, Vision de verdade no iPhone).

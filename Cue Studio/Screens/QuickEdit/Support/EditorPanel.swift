@@ -38,6 +38,10 @@ enum EditorPanel: String, CaseIterable, Identifiable {
     /// The styling panels can be expanded, giving their controls the room the video gives up.
     var isExpandable: Bool { size == .full }
 
+    /// The panels with many rows to scroll (the styling ones, and Background with its green screen's settings): their content stops further
+    /// above the Home Indicator and fades under it while it scrolls.
+    var scrollsClearOfHomeIndicator: Bool { isExpandable || self == .background }
+
     /// Panels about one track bring it up under the ruler.
     var focusedLane: TimelineLane? {
         switch self {
