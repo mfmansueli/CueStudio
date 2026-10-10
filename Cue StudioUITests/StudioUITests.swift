@@ -105,6 +105,8 @@ final class StudioUITests: XCTestCase {
         let folded = XCTNSPredicateExpectation(predicate: NSPredicate(format: "value == 'Hidden'"), object: element(app, "prompter.sheetHandle"))
         XCTAssertEqual(XCTWaiter.wait(for: [folded], timeout: 5), .completed)
         sleep(1)
+        // Folded, the sheet's tap area once took the play button in (VoiceOver's ring and the tap on Voice | Steady): it keeps its own size.
+        XCTAssertLessThan(play.frame.width, 80, "The play button is \(play.frame)")
         play.tap()
         // Under load (two simulators) the label can take a moment to turn.
         let paused = XCTNSPredicateExpectation(predicate: NSPredicate(format: "label == 'Play'"), object: play)
