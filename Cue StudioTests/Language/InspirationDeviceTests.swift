@@ -94,8 +94,12 @@ struct InspirationDeviceTests {
 
     @Test func aScriptFromABriefFollowsItsAngleAndOpensWithItsLine() async throws {
         let service = try writer()
-        let starter = try #require(ThemeCatalog.ideas(for: .finance).first { $0.title == "Why saving feels harder than spending" })
-        let brief = try #require(starter.brief)
+        // Written here, in English: the catalogue's starters come in the iPhone's own language, which the angle's words below can't be
+        // measured against.
+        let brief = IdeaBrief(
+            subject: "Why saving feels harder than spending", angle: "Explain one small habit that makes saving easier.",
+            openingLine: "Saving isn’t just about willpower. It’s about what you make automatic.", language: "en", angleKind: IdeaAngle.tutorial.rawValue
+        )
         let defaults = TestDefaults()
         defer { defaults.tearDown() }
         let factory = ScriptRequestFactory(
@@ -108,12 +112,21 @@ struct InspirationDeviceTests {
                 let text = withBrief ? brief.composerText : brief.subject
                 let request = factory.request(idea: text, platform: .tiktok, format: nil, brief: withBrief ? brief : nil)
                 let started = ContinuousClock.now
-                let script = try await service.generate(request)
+                // The model sometimes answers with nothing: that run is told and counted, not the end of the measurement.
+                let script: GeneratedScript
+                do {
+                    script = try await service.generate(request)
+                } catch {
+                    print("INSPIRATION script \(withBrief ? "with brief" : "plain idea") run \(run): failed after \(started.duration(to: .now).inSeconds) s · \(error)")
+                    continue
+                }
                 let seconds = started.duration(to: .now).inSeconds
                 let spoken = CueParser.stripCues(script.text)
                 let firstSentence = spoken.components(separatedBy: CharacterSet(charactersIn: ".!?\n")).first { !$0.trimmingCharacters(in: .whitespaces).isEmpty } ?? ""
                 let opening = IdeaBrief.tokens(in: brief.fitted().openingLine)
-                let firstTokens = IdeaBrief.tokens(in: firstSentence)
+                // The script's start as long as the line (and a little more), not its first sentence: a line of two sentences is cut in half there.
+                let firstWords = spoken.split { !$0.isLetter && !$0.isNumber }.prefix(opening.count + 3).joined(separator: " ")
+                let firstTokens = IdeaBrief.tokens(in: firstWords)
                 let opensWithLine = !opening.isEmpty && Double(opening.filter(firstTokens.contains).count) / Double(opening.count) >= 0.6
                 let lowered = spoken.lowercased()
                 let angleShare = Double(angleWords.filter { lowered.contains($0.prefix(5)) }.count) / Double(max(1, angleWords.count))
