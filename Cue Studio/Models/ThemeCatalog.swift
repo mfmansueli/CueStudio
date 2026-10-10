@@ -5,14 +5,11 @@
 
 import Foundation
 
-/// Starter ideas, shown before (or without) the model's own: in "Need an idea?", on the card's ↻ until the first ideas arrive, and in Find
-/// inspiration. Each is a whole brief, like the model's (a headline, the angle to take and a first sentence to say), so the roulette's card reads
-/// the same whether Apple Intelligence wrote it or not. Local on purpose: they are starting points, never presented as trends (trends in real
-/// time would need a backend). Opening lines say nothing about the creator's own life, results or numbers: they are things anyone could say.
+/// Starter ideas, shown before (or without) the model's own: on the card's ↻ until the first ideas arrive, and in Find inspiration. Each is a
+/// whole brief, like the model's (a headline, the angle to take and a first sentence to say), so the roulette's card reads the same whether
+/// Apple Intelligence wrote it or not. Local on purpose: they are starting points, never presented as trends (trends in real time would need a
+/// backend). Opening lines say nothing about the creator's own life, results or numbers: they are things anyone could say.
 nonisolated enum ThemeCatalog {
-    /// How many ideas the Themes tab shows at once.
-    static let pageSize = 6
-
     /// One starter as it is written here.
     private struct Entry {
         var title: String
@@ -472,17 +469,5 @@ nonisolated enum ThemeCatalog {
     /// The language the starters are read in (the app's own localization), as a minimal identifier.
     private static var interfaceLanguage: String? {
         Bundle.main.preferredLocalizations.first.map { Locale.Language(identifier: $0).minimalIdentifier }
-    }
-
-    /// Ideas for the creator's niches (Lifestyle when none is set), the niches in turn, rotated by `rotation` so
-    /// "New ideas" brings different ones to the top, `pageSize` at a time.
-    static func page(for niches: [Niche], rotation: Int) -> [ThemeIdea] {
-        let lists = (niches.isEmpty ? [.lifestyle] : niches).map(ideas(for:))
-        let longest = lists.map(\.count).max() ?? 0
-        let all = (0..<longest).flatMap { index in lists.compactMap { index < $0.count ? $0[index] : nil } }
-        guard !all.isEmpty else { return [] }
-        let start = ((rotation % all.count) + all.count) % all.count
-        let rotated = Array(all[start...] + all[..<start])
-        return Array(rotated.prefix(pageSize))
     }
 }

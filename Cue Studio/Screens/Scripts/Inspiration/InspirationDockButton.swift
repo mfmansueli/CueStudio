@@ -5,7 +5,7 @@
 
 import SwiftUI
 
-/// The dock's way to Find inspiration once there are scripts: a yellow outline lightbulb in a small glass capsule, right after the "✦ Voice"
+/// The dock's way to Find inspiration once there are scripts: a yellow outline bulb lighting up in a small glass capsule, right after the "✦ Voice"
 /// chip. As tall as the dock's chips to see (36 × 30 pt) and 44 × 44 to touch (the touch area reaches past it, the way Select does on the
 /// list). Icon only: its name is VoiceOver's, and the large content viewer shows it at the biggest text sizes.
 struct InspirationDockButton: View {
@@ -16,8 +16,8 @@ struct InspirationDockButton: View {
             Haptics.selection()
             action()
         } label: {
-            Image(systemName: "lightbulb")
-                .font(.system(size: 14, weight: .semibold))
+            Image(systemName: FindInspirationSheet.symbol)
+                .font(.system(size: 16, weight: .semibold))
                 .foregroundStyle(Palette.accText)
                 .frame(width: 36, height: 30)
                 .background(Palette.Scripts.heroChip, in: Capsule())
@@ -32,7 +32,7 @@ struct InspirationDockButton: View {
         .accessibilityLabel(Text("Find inspiration"))
         .accessibilityHint(Text("Ideas from your topics."))
         .accessibilityShowsLargeContentViewer {
-            Image(systemName: "lightbulb")
+            Image(systemName: FindInspirationSheet.symbol)
             Text("Find inspiration")
         }
         .accessibilityIdentifier("ideaCard.inspirationButton")

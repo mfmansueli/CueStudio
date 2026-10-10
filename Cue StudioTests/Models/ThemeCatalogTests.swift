@@ -61,26 +61,8 @@ struct ThemeCatalogTests {
         #expect(ThemeCatalog.ideas(for: topics).prefix(4).map(\.niche) == [.finance, .travel, .finance, .travel])
     }
 
-    @Test func twoNichesFillAPageOfSix() {
-        let page = ThemeCatalog.page(for: [.lifestyle, .wellness], rotation: 0)
-        #expect(page.count == 6)
-        #expect(page.first?.title == "3 things I stopped buying this year")
-    }
-
-    @Test func noNicheFallsBackToLifestyle() {
-        #expect(ThemeCatalog.page(for: [], rotation: 0).allSatisfy { $0.niche == .lifestyle })
-    }
-
-    @Test func rotationBringsOtherIdeasToTheTop() {
-        let niches: [Niche] = [.lifestyle, .wellness]
-        let total = niches.flatMap(ThemeCatalog.ideas(for:)).count
-        #expect(ThemeCatalog.page(for: niches, rotation: 2).first == ThemeCatalog.page(for: niches, rotation: 0)[2])
-        #expect(ThemeCatalog.page(for: niches, rotation: total) == ThemeCatalog.page(for: niches, rotation: 0))
-    }
-
-    @Test func ideaReadsAsAPromptAndAMetaLine() {
+    @Test func ideaReadsAsAPrompt() {
         let idea = ThemeCatalog.ideas(for: .finance)[0]
         #expect(idea.prompt == "1 min explainer video: Compound interest, explained simply")
-        #expect(idea.meta == "Explainer · ~1 min · Finance")
     }
 }

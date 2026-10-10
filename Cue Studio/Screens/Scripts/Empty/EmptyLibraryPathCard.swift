@@ -77,7 +77,7 @@ struct EmptyLibraryPathCard: View {
 #Preview {
     VStack(spacing: 10) {
         EmptyLibraryPathCard(
-            symbol: "lightbulb", title: "Find inspiration", subtitle: "Discover video ideas from your topics.", tint: .accent
+            symbol: FindInspirationSheet.symbol, title: "Find inspiration", subtitle: "Discover video ideas from your topics.", tint: .accent
         ) {}
         EmptyLibraryPathCard(symbol: "pencil", title: "Write it yourself", subtitle: "A blank page, your words.") {}
     }

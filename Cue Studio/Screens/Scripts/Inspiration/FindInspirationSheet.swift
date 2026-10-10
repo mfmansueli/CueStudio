@@ -12,6 +12,9 @@ import SwiftUI
 /// it, writes it as it is and the star rises. Without Apple Intelligence the ideas are the starters, said so, and the direct way is
 /// "Write it yourself" (a blank draft with the idea as its title). Nothing is presented as a trend or as research: they are suggestions.
 struct FindInspirationSheet: View {
+    /// The feature's sign wherever it is offered (the dock, the empty Scripts, its introduction): a bulb that is lighting up.
+    static let symbol = "lightbulb.max"
+
     @State private var viewModel: FindInspirationViewModel
     private let writer: ScriptWriting
 
@@ -68,6 +71,10 @@ struct FindInspirationSheet: View {
                         .padding(.horizontal, Metrics.gutter)
                         .padding(.top, 8)
                 }
+                // Right under the card it turns: the two read as one control, and the space between them is gone.
+                anotherButton
+                    .frame(maxWidth: .infinity)
+                    .padding(.top, 14)
                 if typeSize.isAccessibilitySize {
                     // At the biggest sizes the actions scroll with the card: pinned, they would take most of the screen.
                     actions.padding(.top, 20)
@@ -115,7 +122,7 @@ struct FindInspirationSheet: View {
         }
         if !hasAI {
             note(
-                symbol: "lightbulb",
+                symbol: Self.symbol,
                 text: Text("Starter ideas from Cue, to write yourself. With Apple Intelligence, Cue writes new ones about your topics."),
                 identifier: "inspiration.startersNote"
             )
@@ -277,25 +284,29 @@ struct FindInspirationSheet: View {
 
     // MARK: - Actions
 
-    /// "Another idea", the yellow "Use this idea", what it does, and the quieter direct way.
+    /// "Another idea", under the card.
+    private var anotherButton: some View {
+        Button(action: another) {
+            if viewModel.isFindingMore {
+                // At the end of the ready ideas, the next are on their way: the card stays and the button says so.
+                HStack(spacing: 8) {
+                    ProgressView().controlSize(.small).tint(Palette.aiText)
+                    Text("Finding more ideas…")
+                }
+            } else {
+                Label("Another idea", systemImage: "arrow.triangle.2.circlepath")
+            }
+        }
+        .buttonStyle(.cueSecondary(.medium, expands: false))
+        .disabled(viewModel.idea == nil || viewModel.isFindingMore)
+        .accessibilityHint(Text("Shows the next idea."))
+        .accessibilityIdentifier("inspiration.another")
+    }
+
+    /// The yellow "Use this idea", what it does, and the quieter direct way.
     private var actions: some View {
         let idea = viewModel.idea
         return VStack(spacing: 10) {
-            Button(action: another) {
-                if viewModel.isFindingMore {
-                    // At the end of the ready ideas, the next are on their way: the card stays and the button says so.
-                    HStack(spacing: 8) {
-                        ProgressView().controlSize(.small).tint(Palette.aiText)
-                        Text("Finding more ideas…")
-                    }
-                } else {
-                    Label("Another idea", systemImage: "arrow.triangle.2.circlepath")
-                }
-            }
-            .buttonStyle(.cueSecondary(.medium, expands: false))
-            .disabled(idea == nil || viewModel.isFindingMore)
-            .accessibilityHint(Text("Shows the next idea."))
-            .accessibilityIdentifier("inspiration.another")
             Button {
                 if let idea { use(idea) }
             } label: {

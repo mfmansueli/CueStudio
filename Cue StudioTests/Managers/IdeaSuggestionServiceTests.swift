@@ -266,11 +266,4 @@ struct IdeaSuggestionServiceTests {
         #expect(otherLanguage.pool.isEmpty, "ideas written in one language are not shown in another")
         #expect(otherLanguage.taste.angles[IdeaAngle.story.rawValue, default: 0] > 0, "what they like is theirs in any language")
     }
-
-    @Test func anIdeaForOneOfTheCreatorsOwnTopicsSaysWhichInItsLabel() {
-        let idea = ThemeIdea(title: "T", kind: "List", length: .minute1, niche: .lifestyle, topic: "Daily Routine")
-        #expect(idea.meta == "List · ~1 min · Daily Routine")
-        let starter = ThemeIdea(title: "T", kind: "List", length: .minute1, niche: .finance)
-        #expect(starter.meta == "List · ~1 min · \(Niche.finance.label)")
-    }
 }

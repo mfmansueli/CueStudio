@@ -48,7 +48,7 @@ struct IdeaSuggestionsDeviceTests {
             let ideas = try await service.suggestIdeas(slots: slots, language: .english, voice: nil, inspiration: inspiration)
             let seconds = started.duration(to: .now).inSeconds
             print(String(format: "SUGGEST batch %d: %.0f s, %d ideas, angles %@", batch, seconds, ideas.count, slots.map(\.angle.rawValue).joined(separator: ",")))
-            for idea in ideas { print("SUGGEST   \(idea.meta) · \(idea.title)") }
+            for idea in ideas { print("SUGGEST   \(idea.kind) · \(idea.topic ?? idea.niche.label) · \(idea.title)") }
             let again = ideas.filter { idea in seen.contains { IdeaSimilarity.areAlike($0.words, IdeaSimilarity.words(in: idea.title)) } }.map(\.title)
             // The card drops a reworded idea (`IdeaSuggestionService`); asked for directly, one in twenty-four may come back in other words.
             #expect(again.count <= 1, "Ideas came back twice or reworded: \(again)")

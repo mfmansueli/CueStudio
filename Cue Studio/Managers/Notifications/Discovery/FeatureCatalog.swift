@@ -23,7 +23,7 @@ nonisolated enum FeatureCatalog {
             note: .appleIntelligence
         ),
         FeatureIntro(
-            feature: .ideas, campaignID: "discover.ideas.v1", symbol: "lightbulb",
+            feature: .ideas, campaignID: "discover.ideas.v1", symbol: "lightbulb.max",
             requirements: [.appleIntelligence, .topics], target: .place(.ideas), channels: both, note: .appleIntelligence
         ),
         FeatureIntro(

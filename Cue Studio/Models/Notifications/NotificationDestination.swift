@@ -23,7 +23,7 @@ nonisolated enum NotificationDestination: Codable, Hashable, Sendable {
     case logbook(entryID: UUID?)
     /// The idea the model wrote, by its key (`IdeaKey`): it goes in the card's field, nothing is written.
     case suggestedIdea(key: String)
-    /// "Need an idea?".
+    /// Find inspiration.
     case ideas
     /// My Cue Voice's four questions.
     case voiceSetup

@@ -390,7 +390,7 @@ final class ScriptAIService: ScriptWriting {
     /// inspiration: the device measurement (`InspirationDeviceTests`) compares the two.
     nonisolated(unsafe) static var writesIdeaBriefs = true
 
-    /// "Need an idea?" and the device measurements: the creator is waiting for these.
+    /// Find inspiration and the device measurements: the creator is waiting for these.
     func suggestIdeas(slots: [IdeaSlot], language: CueLanguage?, voice: CreatorVoice?, inspiration: [String]) async throws -> [ThemeIdea] {
         try await suggestIdeas(slots: slots, language: language, voice: voice, inspiration: inspiration, priority: .waiting)
     }

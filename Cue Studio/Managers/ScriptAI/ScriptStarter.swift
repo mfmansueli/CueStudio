@@ -8,7 +8,7 @@ import Foundation
 
 /// Sends an idea to the script page: a new empty script is opened and Apple Intelligence writes
 /// into it, so the creator watches the words arrive instead of waiting on a sheet. The card's
-/// arrow and the ↑ on an idea in "Need an idea?" both come here.
+/// arrow and "Write the script now" in Find inspiration both come here.
 @MainActor
 @Observable
 final class ScriptStarter {

@@ -66,11 +66,11 @@ struct InspirationDeviceTests {
             print(String(format: "INSPIRATION %@ batch %d: %.1f s, %d ideas", asBriefs ? "briefs" : "titles", round, seconds, ideas.count))
             for idea in ideas {
                 guard let brief = idea.brief else {
-                    print("INSPIRATION   \(idea.meta) · \(idea.title)")
+                    print("INSPIRATION   \(idea.kind) · \(idea.topic ?? idea.niche.label) · \(idea.title)")
                     continue
                 }
                 briefs.append(brief)
-                print("INSPIRATION   \(idea.meta) · \(brief.subject) | \(brief.angle) | “\(brief.openingLine)”")
+                print("INSPIRATION   \(idea.kind) · \(idea.topic ?? idea.niche.label) · \(brief.subject) | \(brief.angle) | “\(brief.openingLine)”")
             }
             #expect(ideas.count >= 3)
             #expect(seconds < 60, "A batch took \(Int(seconds)) s")

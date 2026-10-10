@@ -95,7 +95,7 @@ struct EmptyLibraryView: View {
     private var paths: some View {
         VStack(spacing: 10) {
             EmptyLibraryPathCard(
-                symbol: "lightbulb", title: "Find inspiration",
+                symbol: FindInspirationSheet.symbol, title: "Find inspiration",
                 subtitle: hasAI ? "Discover video ideas from your topics." : "Starter ideas for your topics, to write yourself.",
                 tint: .accent, action: onInspiration
             )

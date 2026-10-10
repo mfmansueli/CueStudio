@@ -33,7 +33,7 @@ struct IdeaPromptDraftTests {
         #expect(!draft.canSubmit(isAvailable: false))
     }
 
-    /// With nothing written the arrow asks for ideas instead ("Need an idea?"), with or without a
+    /// With nothing written the arrow asks for ideas instead (Find inspiration), with or without a
     /// model (the ideas are local), but never while a dictation is still writing, and never with an idea
     /// already typed: then it sends.
     @Test func withNothingWrittenTheArrowAsksForIdeas() {
