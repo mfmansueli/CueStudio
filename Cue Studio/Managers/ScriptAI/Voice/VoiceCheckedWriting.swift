@@ -62,7 +62,7 @@ struct VoiceCheckedWriting {
     private func violations(in script: GeneratedScript, for request: ScriptRequest) -> [VoiceViolation] {
         VoiceConstraintChecker.violations(
             in: script.text, voice: request.voice, language: request.language,
-            minimumWords: ReadTime.words(for: request.targetRange.lowerBound)
+            minimumWords: ReadTime.words(for: request.targetRange.lowerBound), openingLine: request.brief?.openingLine
         )
     }
 }

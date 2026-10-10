@@ -70,6 +70,9 @@ final class IdeaDraftService {
         brief = idea.brief
     }
 
+    /// "Use this idea" replaced text the creator had written: Undo can put it back.
+    var canUndoUse: Bool { replacedText != nil }
+
     /// Undo after "Use this idea": the creator's text comes back, without the brief.
     func undoUse() {
         guard let replacedText else { return }

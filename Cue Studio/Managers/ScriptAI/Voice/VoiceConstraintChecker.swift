@@ -18,7 +18,11 @@ nonisolated enum VoiceConstraintChecker {
     ///   - voice: the creator's voice; nil checks only the length.
     ///   - language: the language the script is in, when it is known (the pronoun check reads English, Portuguese and Spanish).
     ///   - minimumWords: the fewest spoken words that were asked for; 0 skips the length.
-    static func violations(in text: String, voice: CreatorVoice?, language: CueLanguage? = nil, minimumWords: Int = 0) -> [VoiceViolation] {
+    ///   - openingLine: the first sentence the creator picked in Find inspiration (`IdeaBrief`), when the script was asked to open with it: a script
+    ///     that does is doing what was asked, even when the line happens to start like a catchphrase or an opening style's name.
+    static func violations(
+        in text: String, voice: CreatorVoice?, language: CueLanguage? = nil, minimumWords: Int = 0, openingLine: String? = nil
+    ) -> [VoiceViolation] {
         let spoken = CueParser.stripCues(text).trimmingCharacters(in: .whitespacesAndNewlines)
         guard !spoken.isEmpty else { return [] }
         var found: [VoiceViolation] = []
@@ -33,7 +37,7 @@ nonisolated enum VoiceConstraintChecker {
         guard let voice else { return found }
         found += avoided(in: spoken, voice: voice)
         if let violation = pronoun(in: spoken, expected: voice.resolvedSpeaksAs, language: language) { found.append(violation) }
-        found += opening(of: spoken, voice: voice)
+        if !opensWith(openingLine, spoken) { found += opening(of: spoken, voice: voice) }
         found += VoiceFingerprintRules.drift(in: spoken, voice: voice, language: language)
         return found
     }
@@ -101,6 +105,14 @@ nonisolated enum VoiceConstraintChecker {
     private static func firstWords(of spoken: String) -> String {
         let head = spoken.prefix(100)
         return VoiceTextValidator.key(String(head)).filter { $0.isLetter || $0.isNumber || $0 == " " }
+    }
+
+    /// The script starts with the opening line it was given (its first words, the same once folded).
+    static func opensWith(_ line: String?, _ spoken: String) -> Bool {
+        guard let line else { return false }
+        let start = firstWords(of: line).split(separator: " ").prefix(4).joined(separator: " ")
+        guard start.count >= 3 else { return false }
+        return firstWords(of: spoken).split(separator: " ").joined(separator: " ").hasPrefix(start)
     }
 
     private static func opening(of spoken: String, voice: CreatorVoice) -> [VoiceViolation] {

@@ -133,12 +133,14 @@ nonisolated enum ScriptPromptBuilder {
         // in every language). Naming the minimum and what a block holds helps, and so does asking for more than is needed (`askedWords`).
         lines.append(lengthRule(minimumWords: low, blocks: guide.blocks.count, sentenceWords: sentenceWords(for: request.voice)))
         let voice = structure.isSerious ? nil : request.voice
+        let brief = structure.isSerious ? nil : request.brief
         if !structure.isSerious {
-            lines.append(hookRule(for: voice))
+            lines.append(briefOpeningRule(brief) ?? hookRule(for: voice))
         }
         switch request.source {
         case .prompt(let text):
             lines.append("The video: \(text)")
+            if let angle = briefAngleRule(brief) { lines.append(angle) }
             // The idea is the subject. The voice only changes how it is said: a creator with other topics still gets a script about this one.
             if voice != nil { lines.append("Write about this idea and only this one: the creator's voice is how they sound, never what to talk about.") }
         case .format(let type, let brief):
@@ -165,6 +167,19 @@ nonisolated enum ScriptPromptBuilder {
         if let type = request.type { return .guide(for: type) }
         guard case .prompt(let idea) = request.source else { return .generic }
         return .guide(for: FormatGuess.format(for: idea, usual: request.voice?.formats ?? []))
+    }
+
+    /// An idea from Find inspiration brings its own first sentence (`IdeaBrief`): the script opens with it, or with it said the creator's way,
+    /// instead of a hook of the model's that would leave the line the creator picked unsaid. Nil when the creator's text no longer has it.
+    static func briefOpeningRule(_ brief: IdeaBrief?) -> String? {
+        guard let line = brief?.openingLine, !line.isEmpty else { return nil }
+        return "Open with this line, as it is or adapted only to the creator's way of speaking: “\(line)” It is the hook: write no other before it."
+    }
+
+    /// The angle of an idea from Find inspiration, when the creator's text still has it: what the script does with the subject.
+    static func briefAngleRule(_ brief: IdeaBrief?) -> String? {
+        guard let angle = brief?.angle, !angle.isEmpty else { return nil }
+        return "Follow this angle all the way through: \(angle)"
     }
 
     /// The hook, in the creator's own way of opening when they have one.
@@ -287,26 +302,47 @@ nonisolated enum ScriptPromptBuilder {
     /// Ideas for what the creator makes videos about, all of it: the first flight's topics, the ones only the voice offers and the ones they typed, with
     /// what they cover inside each. Each of the six is ordered by its angle and its topic (`IdeaSlot`): told only what came before, the model copies it.
     /// `inspiration` is what the creator wrote or said lately (their Logbook, their latest scripts): the ideas are in its direction, never the same.
-    static func themesPrompt(slots: [IdeaSlot], voice: CreatorVoice? = nil, language: CueLanguage? = nil, inspiration: [String] = []) -> String {
+    /// - Parameter asBriefs: each idea as a whole brief (a title, the angle to take and an opening line, `IdeaBriefSuggestions`), as Find
+    ///   inspiration and the card show them; false asks for titles alone (`ThemeSuggestions`), what the card had before, kept to measure the two
+    ///   against each other on a device.
+    static func themesPrompt(
+        slots: [IdeaSlot], voice: CreatorVoice? = nil, language: CueLanguage? = nil, inspiration: [String] = [], asBriefs: Bool = false
+    ) -> String {
         func name(_ topic: IdeaTopic) -> String {
             topic.subtopics.isEmpty ? topic.name : "\(topic.name) (\(topic.subtopics.joined(separator: ", ")))"
         }
         var topics: [IdeaTopic] = []
         for slot in slots where !topics.contains(slot.topic) { topics.append(slot.topic) }
         var prompt = "Suggest \(slots.count) fresh talking-head video ideas for a creator whose topics are: \(topics.map(name).joined(separator: "; ")). "
-            + "Each idea is a title of at most nine words, written the way a creator would post it: natural, specific, and promising something the viewer gets "
-            + "(a number, a surprise, a mistake, a result), never a generic \"Top 5\" and never starting with the name of its angle as a label. In this order: "
+        if asBriefs {
+            prompt += "Each idea has a title of at most eight words, written the way a creator would post it: natural, specific, and promising something the "
+                + "viewer gets, never a generic \"Top 5\" and never starting with the name of its angle as a label; an angle, one short sentence that tells the "
+                + "creator what to do in the video, starting with a verb; and an opening line, the first sentence they say to camera, which leads straight into "
+                + "the angle. Title, angle and opening line are one idea. In this order: "
+        } else {
+            prompt += "Each idea is a title of at most nine words, written the way a creator would post it: natural, specific, and promising something the viewer gets "
+                + "(a number, a surprise, a mistake, a result), never a generic \"Top 5\" and never starting with the name of its angle as a label. In this order: "
+        }
         prompt += slots.enumerated().map { index, slot in "\(index + 1). \(slot.angle.ask) about \(slot.topic.name)" }.joined(separator: "; ")
-        prompt += ". Each idea names its topic exactly as written."
+        prompt += asBriefs ? "." : ". Each idea names its topic exactly as written."
         if !inspiration.isEmpty {
             prompt += " The creator has been thinking about: \(inspiration.prefix(8).map { "“\($0.prefix(140))”" }.joined(separator: "; ")). "
                 + "Let the ideas grow from what interests them, in new ways: never repeat these."
+        }
+        if asBriefs {
+            // Said last, where the small model listens best: the line is put in the creator's mouth, so it must be something they can say honestly.
+            prompt += " " + openingHonestyRule
         }
         if let language {
             prompt += " Write the ideas in \(language.englishName)."
         }
         return prompt
     }
+
+    /// The opening line of an idea is said by the creator as their own: nothing in it may be something they haven't lived or can't stand behind, and
+    /// nothing is presented as news or a trend (the ideas are not research).
+    static let openingHonestyRule = "Opening lines must be true for anyone to say: no personal story, result, number or credential of the creator's, "
+        + "and no statistic, study, news or trend."
 
     static func themesPrompt(for niches: [Niche], voice: CreatorVoice? = nil, language: CueLanguage? = nil) -> String {
         let names = (niches.isEmpty ? [Niche.lifestyle] : niches).map(\.label).joined(separator: ", ")

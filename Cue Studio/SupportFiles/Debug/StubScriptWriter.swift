@@ -20,9 +20,15 @@ final class StubScriptWriter: ScriptWriting {
     ]
     /// The model never answers (until the request is cancelled): the slow states of the first message are photographed with it.
     let stalls: Bool
+    /// How long a batch of ideas takes (`-uiTestIdeasSlow`): Find inspiration's waiting states are seen with it.
+    let ideasDelay: Duration?
+    /// Every batch of ideas fails (`-uiTestIdeasFail`): "Couldn't get new ideas · Try again".
+    let ideasFail: Bool
 
-    init(available: Bool, stalls: Bool = false) {
+    init(available: Bool, stalls: Bool = false, ideasDelay: Duration? = nil, ideasFail: Bool = false) {
         self.stalls = stalls
+        self.ideasDelay = ideasDelay
+        self.ideasFail = ideasFail
         availability = available
             ? AIAvailability(onDevice: true, privateCloud: true, reason: nil)
             : .unavailable
@@ -71,20 +77,23 @@ final class StubScriptWriter: ScriptWriting {
         return ["Stub hook one.", "Stub hook two.", "Stub hook three."]
     }
 
-    /// One idea for each slot, numbered as they come, so that "another idea" can be walked through.
+    /// One idea for each slot, numbered as they come, so that "another idea" can be walked through: each a whole brief (a title, the angle, an
+    /// opening line) that says its slot's topic, so Find inspiration's cards read like the model's.
     func suggestIdeas(slots: [IdeaSlot], language: CueLanguage?, voice: CreatorVoice?, inspiration: [String]) async throws -> [ThemeIdea] {
         guard availability.isAvailable else { throw ScriptAIError.modelUnavailable(availability.reason ?? "") }
+        if let ideasDelay { try await Task.sleep(for: ideasDelay) }
+        if ideasFail { throw ScriptAIError.emptyResponse }
         suggestionCount += 1
-        return slots.enumerated().map { index, slot in
+        let answers = slots.indices.map { index in
             // Titles that differ in a word, so that the card does not take them for one idea said again (`IdeaSimilarity`).
             let word = Self.stubWords[((suggestionCount - 1) * 6 + index) % Self.stubWords.count]
-            var idea = ThemeIdea(
-                title: "Stub \(word)", kind: slot.angle.kind, length: .minute1, niche: slot.topic.niche ?? .lifestyle,
-                topic: slot.topic.niche == nil ? slot.topic.label : nil
+            let topic = slots[index].topic.label
+            return IdeaBriefReader.Answer(
+                title: "Stub \(word)", angle: "Explain the \(word) side of \(topic) in three steps.",
+                openingLine: "Here is the \(word) way to think about \(topic)."
             )
-            idea.angle = slot.angle.rawValue
-            return idea
         }
+        return IdeaBriefReader.ideas(from: answers, slots: slots, language: language?.locale.language.minimalIdentifier)
     }
 
     func themeIdeas(for niches: [Niche], language: CueLanguage?, voice: CreatorVoice?) async throws -> [ThemeIdea] {

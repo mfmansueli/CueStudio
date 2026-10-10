@@ -169,6 +169,7 @@ struct AppServices {
             inspiration: { [library, logbook] in IdeaInspiration.recent(scripts: library.scripts, notes: logbook.waiting) },
             notes: { [logbook] in logbook.waiting }, defaults: options.defaults
         )
+        starter.briefWritten = { [ideaSuggestions] brief in ideaSuggestions.generated(from: brief) }
         brands = BrandStore(repository: options.brandRepository)
         self.sky = sky
         aiStatus = AIStatus(writer: options.writer)

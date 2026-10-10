@@ -66,4 +66,33 @@ struct IdeaTasteTests {
         let again = try JSONDecoder().decode(IdeaTaste.self, from: JSONEncoder().encode(taste))
         #expect(again == taste)
     }
+
+    // MARK: - Find inspiration
+
+    @Test func pickingAnIdeaIsWorthLessThanSendingItAndAScriptFromItMost() {
+        var picked = IdeaTaste()
+        picked.selected(idea(.myth))
+        var sent = IdeaTaste()
+        sent.sent(idea(.myth))
+        var written = IdeaTaste()
+        written.generated(IdeaBrief(subject: "S", angle: "A.", openingLine: "O.", angleKind: IdeaAngle.myth.rawValue, topicKey: "Daily Routine"))
+        let score = { (taste: IdeaTaste) in taste.angles[IdeaAngle.myth.rawValue, default: 0] }
+        #expect(score(picked) > 0 && score(picked) < score(sent) && score(sent) < score(written))
+        #expect(written.topics["Daily Routine", default: 0] == IdeaTaste.generateWeight)
+    }
+
+    @Test func aScriptWhoseAngleWasRewrittenCountsForTheTopicOnly() {
+        var taste = IdeaTaste()
+        taste.generated(IdeaBrief(subject: "S", angle: "", openingLine: "O.", angleKind: IdeaAngle.myth.rawValue, topicKey: "Languages"))
+        #expect(taste.angles[IdeaAngle.myth.rawValue] == nil)
+        #expect(taste.topics["Languages", default: 0] > 0)
+    }
+
+    @Test func aStarterTeachesByTheAngleOfItsBrief() {
+        var taste = IdeaTaste()
+        let starter = ThemeCatalog.ideas(for: .finance)[0]
+        taste.passed(starter)
+        #expect(taste.angles[starter.brief?.angleKind ?? "", default: 0] < 0)
+        #expect(taste.topics[Niche.finance.rawValue, default: 0] < 0)
+    }
 }

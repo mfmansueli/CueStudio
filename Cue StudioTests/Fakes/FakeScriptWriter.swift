@@ -36,6 +36,24 @@ final class FakeScriptWriter: ScriptWriting {
     /// What `suggestIdeas` answers, one batch for each request (the last one again when they run out); empty: the fake `ideas`.
     var suggestionBatches: [[ThemeIdea]] = []
     private(set) var suggestionRequests: [(slots: [IdeaSlot], inspiration: [String])] = []
+    /// How each request for ideas was asked (a prefetch, or the creator waiting).
+    private(set) var suggestionPriorities: [IdeaRequestPriority] = []
+    /// Set, a request for ideas waits until it is false again (or is cancelled): a model still writing.
+    var holdsSuggestions = false
+    /// Requests for ideas that were cancelled while they waited.
+    private(set) var cancelledSuggestions = 0
+    private var interruptsSuggestions = false
+
+    /// A script begins, as on the real writer (`beginForeground`): the creator waits for it, and ideas being written stand aside.
+    func beginScript() {
+        isBusyForeground = true
+        interruptsSuggestions = true
+    }
+
+    func endScript() {
+        isBusyForeground = false
+        interruptsSuggestions = false
+    }
 
     var isAvailable: Bool {
         get { availability.isAvailable }
@@ -92,7 +110,25 @@ final class FakeScriptWriter: ScriptWriting {
     }
 
     func suggestIdeas(slots: [IdeaSlot], language: CueLanguage?, voice: CreatorVoice?, inspiration: [String]) async throws -> [ThemeIdea] {
+        try await suggestIdeas(slots: slots, language: language, voice: voice, inspiration: inspiration, priority: .waiting)
+    }
+
+    /// As the real writer: a prefetch is refused while the creator waits for something else.
+    func suggestIdeas(
+        slots: [IdeaSlot], language: CueLanguage?, voice: CreatorVoice?, inspiration: [String], priority: IdeaRequestPriority
+    ) async throws -> [ThemeIdea] {
+        if priority == .prefetch, isBusyForeground { throw CancellationError() }
         suggestionRequests.append((slots, inspiration))
+        suggestionPriorities.append(priority)
+        do {
+            while holdsSuggestions {
+                if interruptsSuggestions { throw CancellationError() }
+                try await Task.sleep(for: .milliseconds(5))
+            }
+        } catch {
+            cancelledSuggestions += 1
+            throw error
+        }
         lastThemeVoice = voice
         if let error { throw error }
         guard availability.isAvailable else { throw ScriptAIError.modelUnavailable(availability.reason ?? "") }
