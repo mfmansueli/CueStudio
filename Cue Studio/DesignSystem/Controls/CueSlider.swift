@@ -217,13 +217,22 @@ struct CueSlider: View {
                                 .frame(width: thumb + 10, height: thumb + 10)
                         }
                     }
-                    .offset(x: thumbX - thumb / 2)
+                    // The thumb is what is dragged, through a full touch target around it.
+                    .frame(width: Metrics.hitTarget, height: Metrics.hitTarget)
+                    .contentShape(Rectangle())
+                    .offset(x: thumbX - Metrics.hitTarget / 2)
                     .animation(math.showsStepDots ? CueMotion.sliderSnap : nil, value: value)
                     .onTapGesture(count: 2) { reset() }
+                    .highPriorityGesture(drag(length: length))
             }
             .frame(height: Metrics.hitTarget)
+            .coordinateSpace(.named(Self.trackSpace))
+            // Only the thumb takes a drag: a swipe that starts on the track scrolls the page it is in (a panel, a list), the way
+            // the system's slider lets it. A drag anywhere on the track used to take every scroll that started on it, and moved
+            // the value instead (a swipe up through Text style turned Size from 53 to 72 pt). A tap on the track still moves
+            // the thumb there.
             .contentShape(Rectangle())
-            .highPriorityGesture(drag(length: length))
+            .onTapGesture { location in jump(toX: location.x, length: length) }
         }
         .frame(height: Metrics.hitTarget)
         .opacity(isEnabled ? 1 : 0.6)
@@ -231,19 +240,18 @@ struct CueSlider: View {
 
     // MARK: - Interaction
 
+    /// The track's own coordinates: the thumb moves while it is dragged, so the drag is measured on the track.
+    private static let trackSpace = "CueSlider.track"
+
     private func drag(length: CGFloat) -> some Gesture {
-        DragGesture(minimumDistance: 0)
+        DragGesture(minimumDistance: 0, coordinateSpace: .named(Self.trackSpace))
             .onChanged { drag in
                 guard isEnabled else { return }
                 if dragAnchor == nil {
                     isHeld = true
                     onEditingChanged(true)
-                    // A touch on the track itself moves the thumb there.
-                    let touched = math.value(atFraction: Double((drag.startLocation.x - thumb / 2) / length))
-                    let old = value
-                    value = touched
-                    dragAnchor = (touched, drag.startLocation.x)
-                    feedback(from: old, to: touched)
+                    // Taking hold of the thumb doesn't move it: it follows the finger from where it was.
+                    dragAnchor = (value, drag.startLocation.x)
                 }
                 guard let anchor = dragAnchor else { return }
                 let newPrecision = math.precision(forVerticalDrag: max(0, drag.translation.height))
@@ -265,6 +273,18 @@ struct CueSlider: View {
                 onEditingChanged(false)
                 precision = .full
             }
+    }
+
+    /// A tap on the track: the thumb goes there, as one change (one undo step).
+    private func jump(toX x: CGFloat, length: CGFloat) {
+        guard isEnabled else { return }
+        let old = value
+        let touched = math.value(atFraction: Double((x - thumb / 2) / length))
+        guard touched != old else { return }
+        onEditingChanged(true)
+        value = touched
+        feedback(from: old, to: touched)
+        onEditingChanged(false)
     }
 
     private func feedback(from old: Double, to new: Double) {

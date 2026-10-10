@@ -15,8 +15,11 @@ enum SampleTakes {
             let day = calendar.date(byAdding: .day, value: -daysAgo, to: now) ?? now
             return calendar.date(bySettingHour: hour, minute: minute, second: 0, of: day) ?? day
         }
-        // Today's takes sit a few minutes in the past, whatever the time the tests run.
-        func today(minutesAgo: Double) -> Date { now.addingTimeInterval(-minutesAgo * 60) }
+        // Today's takes sit a few minutes in the past, whatever the time the tests run. Just after midnight the minutes shrink, in the same
+        // order, so the takes stay today's (an hour back at 00:13 was yesterday's, and Takes lost its "Today").
+        let sinceMidnight = now.timeIntervalSince(calendar.startOfDay(for: now))
+        let squeeze = min(1, sinceMidnight / (61 * 60))
+        func today(minutesAgo: Double) -> Date { now.addingTimeInterval(-minutesAgo * 60 * squeeze) }
 
         let habits = SampleScripts.morningHabits
         let lamp = SampleScripts.lampReview
