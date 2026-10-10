@@ -464,6 +464,17 @@ struct ScriptPageViewModelTests {
         #expect(scenario.toast.message == "Draft ready · Edit anything")
     }
 
+    /// "Write the script now" in Find inspiration writes an idea that isn't the card's: the creator's own draft stays in the card.
+    @Test func aScriptWrittenFromAnotherIdeaLeavesTheCardsDraft() async {
+        let scenario = makeScenario(script: TestData.script(title: "", text: ""), writing: request())
+        defer { scenario.defaults.tearDown() }
+        scenario.ideaDraft.text = "my own half idea"
+        scenario.viewModel.beginWritingIfNeeded()
+        await scenario.viewModel.pageWritingTask?.value
+        #expect(scenario.library.script(id: scenario.viewModel.scriptID)?.isFinished == true)
+        #expect(scenario.ideaDraft.text == "my own half idea")
+    }
+
     @Test func whileThePageWaitsForTheScriptItSaysHowMuchIsWritten() async {
         let scenario = makeScenario(script: TestData.script(title: "", text: ""), writing: request())
         defer { scenario.defaults.tearDown() }
