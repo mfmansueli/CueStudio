@@ -5,8 +5,9 @@
 
 import SwiftUI
 
-/// The tabs of a styling panel, underlined in yellow. Inline, they sit on another row (Text
-/// style's scope, on a compact screen) without their own scroll and separator.
+/// The tabs of a styling panel, underlined in yellow. On their own row they share the width evenly
+/// (every tab in view, each a wide target), and scroll sideways only when large text doesn't fit.
+/// Inline, they sit on another row (Cover's) without their own scroll and separator.
 struct PanelTabs: View {
     let tabs: [EditorPanelTab]
     let selection: EditorPanelTab
@@ -15,29 +16,35 @@ struct PanelTabs: View {
 
     var body: some View {
         if isInline {
-            row
+            row(spacing: 16, fills: false)
         } else {
-            ScrollView(.horizontal) {
-                row.padding(.horizontal, 20)
+            ViewThatFits(in: .horizontal) {
+                row(spacing: 8, fills: true).padding(.horizontal, 12)
+                ScrollView(.horizontal) {
+                    row(spacing: 20, fills: false).padding(.horizontal, 20)
+                }
+                .scrollIndicators(.hidden)
             }
-            .scrollIndicators(.hidden)
             .overlay(alignment: .bottom) { Rectangle().fill(Palette.Editor.separator).frame(height: 0.5) }
         }
     }
 
-    private var row: some View {
-        HStack(spacing: isInline ? 16 : 20) {
+    private func row(spacing: CGFloat, fills: Bool) -> some View {
+        HStack(spacing: spacing) {
             ForEach(tabs) { tab in
                 let isOn = tab == selection
                 Button { onSelect(tab) } label: {
                     Text(tab.label)
                         .font(.system(.subheadline, weight: .semibold))
                         .foregroundStyle(isOn ? Palette.ink : Palette.ink2)
+                        .lineLimit(1)
                         .fixedSize()
                         .frame(minHeight: Metrics.hitTarget)
+                        // Underlines the word, however wide the tab is.
                         .overlay(alignment: .bottom) {
                             Rectangle().fill(isOn ? Palette.acc : .clear).frame(height: 2)
                         }
+                        .frame(maxWidth: fills ? .infinity : nil)
                         .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)

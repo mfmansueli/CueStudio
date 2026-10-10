@@ -31,7 +31,7 @@ struct PanelSegmented<Value: Hashable>: View {
                             .font(.system(.footnote, weight: .semibold))
                             .lineLimit(1)
                             .minimumScaleFactor(12 / 13.5)
-                            .foregroundStyle(isOn ? (accent ? Palette.accInk : Palette.ink) : Palette.ink.opacity(0.72))
+                            .foregroundStyle(isOn ? (accent ? Palette.accInk : Palette.ink) : Palette.ink2)
                             .frame(maxWidth: .infinity, minHeight: height)
                             .background(
                                 isOn ? (accent ? Palette.acc : Palette.segmentOn) : .clear,

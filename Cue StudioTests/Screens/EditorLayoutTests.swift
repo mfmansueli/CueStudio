@@ -94,10 +94,65 @@ struct EditorLayoutTests {
         let usable = Screen.iPhone16Pro.rawValue
         #expect(EditorLayout(usableHeight: usable, panel: .mini).panel == EditorPanelSize.clamp(0.27 * usable, 200, 250))
         #expect(EditorLayout(usableHeight: usable, panel: .medium).panel == 0.38 * usable)
-        #expect(EditorLayout(usableHeight: usable, panel: .full).panel == 0.44 * usable)
+        #expect(EditorLayout(usableHeight: usable, panel: .full).panel == 0.5 * usable)
         #expect(EditorPanelSize.mini.height(for: 2_000) == 250)
         #expect(EditorPanelSize.medium.height(for: 400) == 250)
-        #expect(EditorPanelSize.full.height(for: 2_000) == 380)
+        #expect(EditorPanelSize.full.height(for: 2_000) == 420)
+        #expect(EditorPanelSize.full.height(for: 400) == 330)
+    }
+
+    // MARK: - Expanded styling panels
+
+    @Test func anExpandedStylingPanelLeavesOnlyTheSmallestPreview() {
+        for screen in Screen.allCases where screen != .iPhoneSE {
+            let usable = screen.rawValue
+            let standard = EditorLayout(usableHeight: usable, panel: .full)
+            let expanded = EditorLayout(usableHeight: usable, panel: .full, panelIsExpanded: true)
+            #expect(expanded.panelPresentation == .inline, "\(screen)")
+            #expect(abs(expanded.preview - EditorLayout.previewMinimum(for: usable)) < 0.01, "\(screen)")
+            #expect(expanded.panel > standard.panel + 60, "\(screen)")
+            #expect(expanded.preview < standard.preview, "\(screen)")
+            #expect(!expanded.panelIsCompressed, "\(screen)")
+            #expect(abs(expanded.preview + expanded.playerBar + expanded.timeline + expanded.panel - usable) < 0.5, "\(screen)")
+        }
+    }
+
+    @Test func onlyStylingPanelsExpand() {
+        let usable = Screen.iPhone16Pro.rawValue
+        for size in [EditorPanelSize.mini, .medium] {
+            #expect(EditorLayout(usableHeight: usable, panel: size, panelIsExpanded: true) == EditorLayout(usableHeight: usable, panel: size))
+        }
+        #expect(EditorLayout(usableHeight: usable, panelIsExpanded: true) == EditorLayout(usableHeight: usable))
+    }
+
+    /// The standard styling panel gives its controls more room than it did (44%, 300–380 pt), and the
+    /// video still shows large.
+    @Test func theStandardStylingPanelIsHalfTheHeight() {
+        for screen in Screen.allCases where screen != .iPhoneSE {
+            let layout = EditorLayout(usableHeight: screen.rawValue, panel: .full)
+            #expect(layout.panel >= 330, "\(screen)")
+            #expect(layout.preview >= 0.4 * screen.rawValue, "\(screen)")
+        }
+    }
+
+    @Test func withTheKeyboardUpAnExpandedPanelSharesTheHeightLikeAnyOther() {
+        for screen in Screen.allCases where screen != .iPhoneSE {
+            let usable = screen.rawValue - keyboard
+            let expanded = EditorLayout(usableHeight: usable, stableHeight: screen.rawValue, panel: .full, panelIsExpanded: true)
+            #expect(expanded.preview >= EditorLayout.previewMinimumWithKeyboard(for: usable) - 0.01, "\(screen)")
+            #expect(abs(expanded.preview + expanded.playerBar + expanded.timeline + expanded.panel - usable) < 0.5, "\(screen)")
+        }
+    }
+
+    @Test func onTheSEExpandingIsTheSheetsTallerHeight() {
+        let usable = Screen.iPhoneSE.rawValue
+        let expanded = EditorLayout(usableHeight: usable, panel: .full, panelIsExpanded: true)
+        #expect(expanded.panelPresentation == EditorLayout(usableHeight: usable, panel: .full).panelPresentation)
+        guard case .sheet(let medium, let large) = expanded.panelPresentation else {
+            Issue.record("Expected a sheet")
+            return
+        }
+        #expect(medium < large)
     }
 
     @Test func onABigScreenAPanelTakesItsRoomFromTheTimeline() {
@@ -196,8 +251,8 @@ struct EditorLayoutTests {
     @Test func aFullPanelGetsRoomForItsFieldAndTabsOverTheKeyboardOnEveryInlineScreen() {
         for screen in Screen.allCases where screen != .iPhoneSE {
             let layout = EditorLayout(usableHeight: screen.rawValue - keyboard, stableHeight: screen.rawValue, panel: .full)
-            // Header 56 + field 52 + the scope and tabs row of the compact layout, 152 pt, is the least.
-            #expect(layout.panel >= 152, "\(screen)")
+            // Header 56 + the field 54 + the tabs 44 is the least (the scope scrolls under them).
+            #expect(layout.panel >= 154, "\(screen)")
         }
     }
 

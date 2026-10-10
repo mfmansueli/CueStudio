@@ -5,14 +5,15 @@
 
 import Foundation
 
-/// Text style: the picked text's words, and its look on an explicit scope (only this text, every
-/// text, or every text and the captions); its keyframes and when it starts and ends. Every change
-/// is an undo step; typing and a slider's drag are one.
+/// Text style: the picked text's words, and its look on an explicit scope (only this text, or
+/// every text); its keyframes and when it starts and ends, always the picked text's. Every change
+/// is an undo step; typing and a slider's drag are one. The captions are styled in Caption style
+/// (a text's look reaches them only through "Apply this style to captions").
 extension QuickEditViewModel {
     /// The scopes Text style offers.
-    static let textStyleScopes: [TextStyleScope] = [.selected, .allTexts, .textsAndCaptions]
+    static let textStyleScopes: [TextStyleScope] = [.selected, .allTexts]
 
-    /// "This title", "All texts · 3", "+ Captions".
+    /// "This title", "All texts · 3".
     func textStyleScopeLabel(_ scope: TextStyleScope) -> String {
         switch scope {
         case .selected:
@@ -23,9 +24,18 @@ extension QuickEditViewModel {
             case .callout: String(localized: "This callout")
             }
         case .allTexts: String(localized: "All texts · \(edit.texts.count)")
-        case .allCaptions, .textsAndCaptions: String(localized: "+ Captions")
+        case .allCaptions: String(localized: "Captions")
         }
     }
+
+    /// The tab Text style shows: the one picked, when it is one of Text style's (the tabs and what
+    /// shows under them never disagree).
+    var textStyleTab: EditorPanelTab {
+        EditorPanelTab.textStyle.contains(panelTab) ? panelTab : .presets
+    }
+
+    /// Presets, Font and Color change the look, on the scope; Motion is the picked text's.
+    var textStyleTabChangesLook: Bool { textStyleTab != .motion }
 
     /// "Type your title".
     var textFieldPlaceholder: String {
@@ -42,35 +52,21 @@ extension QuickEditViewModel {
         updateText(id, key: "text.\(id)") { $0.text = content }
     }
 
-    /// A Font or Color change on the scope: this text (remembered as changed by hand), every text,
-    /// or every text and the captions' look. A slider's quick changes are one undo step.
+    /// A Font or Color change on the scope: this text (remembered as changed by hand) or every
+    /// text. A slider's quick changes are one undo step. The captions keep their own look.
     func restyleText(_ style: TextStyleEdit, key: String? = nil) {
         guard isReady, let id = selectedTextID else { return }
         switch textStyleScope {
         case .selected:
             customizeText(id, style.field, key: key.map { "\($0).\(id)" }) { style.apply(to: &$0) }
-        case .allTexts, .allCaptions, .textsAndCaptions:
-            let withCaptions = textStyleScope == .textsAndCaptions
-            let picked = selectedText
+        case .allTexts:
             change(key: key.map { "\($0).all" }) { snapshot in
                 for index in snapshot.texts.indices { style.apply(to: &snapshot.texts[index]) }
-                guard withCaptions, style.field != .size else { return }
-                // The captions take the texts' look the first time, at a caption's size.
-                var look = snapshot.captionLook ?? picked.map(Self.captionLook(from:)) ?? TypePreset.cue.look(for: .caption)
-                style.apply(to: &look)
-                snapshot.captionCollection = nil
-                snapshot.captionLook = look
-                snapshot.captionPreset = nil
             }
+        case .allCaptions:
+            // Not one of Text style's scopes: captions are styled in Caption style.
+            return
         }
-    }
-
-    /// A text's look as the captions' (no taller than a line of five words fits, at their place).
-    static func captionLook(from text: TextOverlay) -> TextLook {
-        var look = TextLook(of: text)
-        look.sizeScale = 1
-        look.verticalOffset = 0
-        return look
     }
 
     /// The preset Text style marks: the picked text's.

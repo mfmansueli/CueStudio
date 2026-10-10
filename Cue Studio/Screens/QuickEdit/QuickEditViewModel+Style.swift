@@ -5,9 +5,9 @@
 
 import Foundation
 
-/// Type presets and "My style": the look of texts and captions, applied to one text, every text or
-/// the captions. Only the type changes: filters, Adjust and the cover are left alone, and each
-/// application is one undo step.
+/// Type presets and "My style": the look of texts, applied to one text or every text (and, from older
+/// flows, to the captions' type look). Only the type changes: filters, Adjust and the cover are left
+/// alone, and each application is one undo step.
 extension QuickEditViewModel {
     /// The text a scope of "This text" means: the one picked, or the one open in its sheet.
     var styledTextID: UUID? { selectedTextID ?? editingTextID }
@@ -81,23 +81,6 @@ extension QuickEditViewModel {
                 snapshot.captionPreset = preset
             }
             toast.show(String(localized: "\(name) on the captions"))
-        case .textsAndCaptions:
-            var captionLook = look
-            captionLook.sizeScale = min(look.sizeScale, Self.largestCaptionScale)
-            change { snapshot in
-                snapshot.textLook = look
-                snapshot.textPreset = preset
-                for index in snapshot.texts.indices {
-                    let kept = keepingCustomizations ? snapshot.texts[index].customized : []
-                    look.apply(to: &snapshot.texts[index], keeping: kept)
-                    snapshot.texts[index].preset = preset
-                    if !keepingCustomizations { snapshot.texts[index].customized = [] }
-                }
-                snapshot.captionCollection = nil
-                snapshot.captionLook = captionLook
-                snapshot.captionPreset = preset
-            }
-            toast.show(String(localized: "\(name) on all text + captions"))
         }
     }
 }

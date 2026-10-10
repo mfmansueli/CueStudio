@@ -5,7 +5,8 @@
 
 import SwiftUI
 
-/// A panel's frame with its title and subtitle from the view model, ✓ closing it.
+/// A panel's frame with its title and subtitle from the view model, ✓ closing it. The styling
+/// panels expand (`QuickEditViewModel.stylePanelIsExpanded`).
 struct PanelFrame<Fixed: View, Content: View, Footer: View>: View {
     let viewModel: QuickEditViewModel
     let panel: EditorPanel
@@ -17,9 +18,14 @@ struct PanelFrame<Fixed: View, Content: View, Footer: View>: View {
     var body: some View {
         EditorPanelContainer(
             title: viewModel.panelTitle(panel), subtitle: viewModel.panelSubtitle(panel), onReset: onReset,
+            expansion: panel.isExpandable ? expansion : nil, contentKey: viewModel.panelTab,
             onApply: viewModel.closePanel, fixed: { fixed }, content: { content }, footer: { footer }
         )
         .accessibilityIdentifier("edit.panel.\(panel.rawValue)")
+    }
+
+    private var expansion: Binding<Bool> {
+        Binding(get: { viewModel.stylePanelIsExpanded }, set: { viewModel.stylePanelIsExpanded = $0 })
     }
 }
 

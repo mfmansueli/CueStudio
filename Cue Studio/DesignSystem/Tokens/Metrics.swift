@@ -48,6 +48,11 @@ enum Metrics {
     /// Room kept under a panel's last control, on top of the bottom safe area (the Home Indicator's
     /// strip): the panel's background runs to the screen's edge, its controls stop above both.
     static let editorPanelBottomClearance: CGFloat = 8
+    /// The same under the styling panels (Text style, Caption style), whose controls scroll: their last
+    /// row (swatches, the captions action) kept clear of the Home Indicator, with the fade above it.
+    static let editorStylePanelBottomClearance: CGFloat = 18
+    /// The styling panels' grabber, a hint that the panel expands (the expand button does it too).
+    static let editorPanelGrabber = CGSize(width: 36, height: 5)
     /// Top corners of the editor's sheets.
     static let editorSheetRadius: CGFloat = 28
     /// Clips on the video track.

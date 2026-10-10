@@ -1,0 +1,246 @@
+//
+//  TextStyleUITests.swift
+//  Cue StudioUITests
+//
+
+import XCTest
+
+/// Text style and Caption style on the design's demo take (a title and a subtitle, eight caption lines in
+/// Cue's preset): the panel expands (the video gets smaller, the controls get the room, every tab and
+/// control a full touch target), the scope is for the look only, the controls stay in reach over the
+/// keyboard, and a text's style reaches the captions only through "Apply this style to captions", which
+/// asks first and shows in Caption style as Custom until a preset replaces it (Undo and Redo take it back
+/// and forth). Run on the iPhone SE and a 6.1" iPhone: on the SE the styling panels are a sheet.
+@MainActor
+final class TextStyleUITests: XCTestCase {
+    override func setUp() {
+        continueAfterFailure = false
+    }
+
+    /// Text › Style all, then only the title.
+    private func openTextStyle(_ app: XCUIApplication) -> XCUIElement {
+        EditorApp.tapTool(app, "text")
+        EditorApp.tapTool(app, "styleAll")
+        let panel = app.descendants(matching: .any)["edit.panel.textStyle"]
+        XCTAssertTrue(panel.waitForExistence(timeout: 5))
+        let selected = app.buttons["edit.style.scope.selected"]
+        XCTAssertTrue(selected.waitForExistence(timeout: 5))
+        selected.tap()
+        return panel
+    }
+
+    /// What scrolls under the open styling panel's fixed rows (a swipe on the field or the tabs scrolls
+    /// nothing): the panel's first scroll view (the preset cards and font chips scroll inside it).
+    private func content(_ app: XCUIApplication) -> XCUIElement {
+        app.descendants(matching: .any).matching(NSPredicate(format: "identifier BEGINSWITH 'edit.panel.' AND identifier ENDSWITH 'Style'"))
+            .firstMatch.scrollViews.firstMatch
+    }
+
+    /// The SE shows the styling panels as a sheet over a preview that doesn't move.
+    private func isSheet(_ app: XCUIApplication) -> Bool {
+        app.windows.firstMatch.frame.height < 700
+    }
+
+    /// Scrolls the panel's content up until `element` can be tapped where it shows: above the keyboard when it is up, above the
+    /// screen's bottom otherwise. Without the keyboard, a slow swipe on the content (a quick one, or one down the panel's margin,
+    /// didn't move it). With it, the scroll view runs under the keys (it insets its content instead), so the drag stays in the
+    /// part that shows.
+    private func scrollPanel(_ app: XCUIApplication, to element: XCUIElement, file: StaticString = #filePath, line: UInt = #line) {
+        let keyboard = app.keyboards.firstMatch
+        let limit = keyboard.exists ? keyboard.frame.minY : app.windows.firstMatch.frame.maxY
+        for _ in 0..<10 where !(element.exists && element.frame.maxY <= limit + 1 && element.isHittable) {
+            let scroll = content(app)
+            // Above what shows (scrolled past it): back down.
+            let isAbove = element.exists && element.frame.maxY < scroll.frame.minY
+            guard keyboard.exists else {
+                if isAbove { scroll.swipeDown(velocity: .slow) } else { scroll.swipeUp(velocity: .slow) }
+                continue
+            }
+            // The keyboard's element starts under its suggestions bar (a drag there picks a word): stop above the bar.
+            let top = scroll.frame.minY, bottom = min(scroll.frame.maxY, limit - 48)
+            let origin = scroll.coordinate(withNormalizedOffset: .zero)
+            let start = origin.withOffset(CGVector(dx: scroll.frame.width / 2, dy: bottom - top - 4))
+            let end = origin.withOffset(CGVector(dx: scroll.frame.width / 2, dy: 4))
+            if isAbove {
+                end.press(forDuration: 0.2, thenDragTo: start, withVelocity: 300, thenHoldForDuration: 0.2)
+            } else {
+                start.press(forDuration: 0.2, thenDragTo: end, withVelocity: 300, thenHoldForDuration: 0.2)
+            }
+        }
+        XCTAssertTrue(element.waitForExistence(timeout: 5), "\(element) isn't there", file: file, line: line)
+    }
+
+    /// A full touch target: 44 pt, give or take the layout's rounding.
+    private func assertFullTarget(_ element: XCUIElement, _ message: String = "", file: StaticString = #filePath, line: UInt = #line) {
+        XCTAssertGreaterThanOrEqual(element.frame.height.rounded(), 44, message, file: file, line: line)
+    }
+
+    private func waitFor(_ condition: @escaping () -> Bool, timeout: TimeInterval = 5) -> Bool {
+        let deadline = Date().addingTimeInterval(timeout)
+        while Date() < deadline {
+            if condition() { return true }
+            RunLoop.current.run(until: Date().addingTimeInterval(0.1))
+        }
+        return condition()
+    }
+
+    func testExpandingGivesTheControlsTheVideosRoomAndIsKeptForCaptionStyle() {
+        let app = EditorApp.open(demo: true)
+        let panel = openTextStyle(app)
+        let preview = app.descendants(matching: .any)["edit.preview"]
+        let expand = app.buttons["edit.panel.expand"]
+        XCTAssertEqual(expand.label, "Expand panel")
+        assertFullTarget(expand)
+        let panelHeight = panel.frame.height
+        let previewHeight = preview.frame.height
+        expand.tap()
+        XCTAssertTrue(waitFor { panel.frame.height > panelHeight + 40 }, "\(panel.frame.height) vs \(panelHeight)")
+        XCTAssertEqual(expand.label, "Collapse panel")
+        if !isSheet(app) {
+            XCTAssertLessThan(preview.frame.height, previewHeight - 40)
+        }
+        // Every tab in view and a full target; the panel's controls stop above the Home Indicator.
+        for tab in ["presets", "font", "color", "motion"] {
+            let button = app.buttons["edit.panel.tab.\(tab)"]
+            XCTAssertTrue(button.isHittable, tab)
+            assertFullTarget(button, tab)
+        }
+        let swatch = app.buttons["edit.textColor.white"]
+        scrollPanel(app, to: swatch)
+        assertFullTarget(swatch)
+        // At the end of the content, the last control sits well above the Home Indicator.
+        let copy = app.buttons["edit.style.copyToCaptions"]
+        scrollPanel(app, to: copy)
+        assertFullTarget(copy)
+        XCTAssertLessThanOrEqual(copy.frame.maxY, app.windows.firstMatch.frame.maxY - 44)
+
+        // Caption style opens expanded too.
+        app.buttons["edit.panel.apply"].tap()
+        let back = app.buttons["edit.toolbar.back"]
+        if back.waitForExistence(timeout: 3) { back.tap() }
+        EditorApp.tapTool(app, "captions")
+        let style = app.buttons["edit.captionsStyleButton"]
+        XCTAssertTrue(style.waitForExistence(timeout: 5))
+        style.tap()
+        XCTAssertTrue(app.descendants(matching: .any)["edit.panel.captionStyle"].waitForExistence(timeout: 5))
+        XCTAssertEqual(app.buttons["edit.panel.expand"].label, "Collapse panel")
+        app.buttons["edit.panel.expand"].tap()
+        XCTAssertTrue(waitFor { app.buttons["edit.panel.expand"].label == "Expand panel" })
+    }
+
+    /// A swipe that starts on a slider's track scrolls the panel and leaves the value alone (only the thumb is dragged): it used to
+    /// take the scroll and set Size to wherever the finger was.
+    func testASwipeOverASliderScrollsThePanel() {
+        let app = EditorApp.open(demo: true)
+        _ = openTextStyle(app)
+        let size = app.descendants(matching: .any)["edit.textSize"]
+        XCTAssertTrue(size.waitForExistence(timeout: 5))
+        let value = size.value as? String
+        let top = size.frame.minY
+        // The track's right end: the thumb is nearer the middle of 24–120 pt.
+        let start = size.coordinate(withNormalizedOffset: .zero).withOffset(CGVector(dx: size.frame.width - 14, dy: size.frame.height - 12))
+        start.press(forDuration: 0.05, thenDragTo: start.withOffset(CGVector(dx: 0, dy: -160)))
+        XCTAssertTrue(waitFor { size.frame.minY < top - 40 }, "\(size.frame.minY) vs \(top)")
+        XCTAssertEqual(size.value as? String, value)
+    }
+
+    func testTheScopeIsForTheLookAndMotionIsThisTextsAlone() {
+        let app = EditorApp.open(demo: true)
+        _ = openTextStyle(app)
+        let subtitle = app.staticTexts["edit.panel.subtitle"]
+        XCTAssertEqual(subtitle.label, "Only this title changes")
+        XCTAssertFalse(app.staticTexts["edit.style.scopeNote"].exists)
+        app.buttons["edit.style.scope.allTexts"].tap()
+        XCTAssertEqual(subtitle.label, "All 2 texts change together")
+        XCTAssertTrue(app.staticTexts["edit.style.scopeNote"].waitForExistence(timeout: 3))
+        // Motion is the picked text's: no scope, no captions action, and the header says so.
+        app.buttons["edit.panel.tab.motion"].tap()
+        XCTAssertTrue(waitFor { subtitle.label == "Motion and timing change only this text" }, subtitle.label)
+        XCTAssertFalse(app.buttons["edit.style.scope.allTexts"].exists)
+        XCTAssertFalse(app.buttons["edit.style.copyToCaptions"].exists)
+        XCTAssertTrue(app.buttons["edit.keyframe.toggle"].exists)
+        // Back on a look's tab, the scope is where it was left.
+        app.buttons["edit.panel.tab.color"].tap()
+        XCTAssertTrue(app.buttons["edit.style.scope.allTexts"].waitForExistence(timeout: 3))
+        XCTAssertTrue(app.buttons["edit.style.scope.allTexts"].isSelected)
+        XCTAssertEqual(subtitle.label, "All 2 texts change together")
+    }
+
+    /// With the keyboard up the field, the tabs and ✓ stay over it, and the controls under them scroll into
+    /// reach: the last one of Presets (the captions action) and of Color (Shadow).
+    func testEveryControlIsReachableWithTheKeyboardUp() {
+        let app = EditorApp.open(demo: true)
+        _ = openTextStyle(app)
+        let field = app.textFields["edit.textField"]
+        XCTAssertTrue(field.waitForExistence(timeout: 5))
+        field.tap()
+        let keyboard = app.keyboards.firstMatch
+        XCTAssertTrue(keyboard.waitForExistence(timeout: 5))
+        let top = keyboard.frame.minY
+        for id in ["edit.panel.apply", "edit.panel.tab.presets", "edit.panel.tab.color"] {
+            XCTAssertLessThanOrEqual(app.buttons[id].frame.maxY, top + 1, id)
+        }
+        let copy = app.buttons["edit.style.copyToCaptions"]
+        scrollPanel(app, to: copy)
+        XCTAssertTrue(copy.isHittable)
+        XCTAssertLessThanOrEqual(copy.frame.maxY, top + 1)
+        app.buttons["edit.panel.tab.color"].tap()
+        let outline = app.buttons["edit.textShadow.outline"]
+        scrollPanel(app, to: outline)
+        XCTAssertTrue(outline.isHittable)
+        XCTAssertLessThanOrEqual(outline.frame.maxY, top + 1)
+        outline.tap()
+        XCTAssertTrue(outline.isSelected)
+    }
+
+    func testApplyingATextsStyleToCaptionsAsksThenShowsCustomUntilAPresetReplacesIt() {
+        let app = EditorApp.open(demo: true)
+        _ = openTextStyle(app)
+        let copy = app.buttons["edit.style.copyToCaptions"]
+        scrollPanel(app, to: copy)
+
+        // Cancel: nothing happens.
+        copy.tap()
+        let alert = app.alerts.firstMatch
+        XCTAssertTrue(alert.waitForExistence(timeout: 5))
+        XCTAssertTrue(alert.staticTexts["Apply this style to captions?"].exists)
+        XCTAssertTrue(alert.staticTexts.matching(NSPredicate(format: "label CONTAINS %@", "Your captions use the Cue preset.")).firstMatch.exists)
+        alert.buttons["Cancel"].firstMatch.tap()
+        XCTAssertTrue(waitFor { !alert.exists })
+        XCTAssertFalse(EditorApp.toastSays(app, "Captions use this style", timeout: 1))
+
+        // Apply.
+        copy.tap()
+        XCTAssertTrue(alert.waitForExistence(timeout: 5))
+        alert.buttons["Apply"].firstMatch.tap()
+        XCTAssertTrue(EditorApp.toastSays(app, "Captions use this style"))
+
+        // Caption style shows the copy as Custom, picked.
+        app.buttons["edit.panel.apply"].tap()
+        let back = app.buttons["edit.toolbar.back"]
+        if back.waitForExistence(timeout: 3) { back.tap() }
+        EditorApp.tapTool(app, "captions")
+        let style = app.buttons["edit.captionsStyleButton"]
+        XCTAssertTrue(style.waitForExistence(timeout: 5))
+        style.tap()
+        let custom = app.buttons["edit.captionPreset.custom"]
+        XCTAssertTrue(custom.waitForExistence(timeout: 5))
+        XCTAssertTrue(custom.isSelected)
+        XCTAssertFalse(app.buttons["edit.captionPreset.cue"].isSelected)
+        XCTAssertTrue(app.staticTexts["edit.captionCustomNote"].exists)
+
+        // A preset replaces it; Undo brings the copy back, Redo the preset. Custom comes first in the row, so Pop may be past its edge.
+        let pop = app.buttons["edit.captionPreset.pop"]
+        let catalog = app.descendants(matching: .any)["edit.captionCatalog"]
+        for _ in 0..<4 where pop.frame.maxX > app.windows.firstMatch.frame.maxX { catalog.swipeLeft(velocity: .slow) }
+        pop.tap()
+        XCTAssertTrue(waitFor { !custom.exists })
+        XCTAssertTrue(app.buttons["edit.captionPreset.pop"].isSelected)
+        app.buttons["edit.undoButton"].tap()
+        XCTAssertTrue(custom.waitForExistence(timeout: 3))
+        XCTAssertTrue(custom.isSelected)
+        app.buttons["edit.redoButton"].tap()
+        XCTAssertTrue(waitFor { !custom.exists })
+        XCTAssertTrue(app.buttons["edit.captionPreset.pop"].isSelected)
+    }
+}

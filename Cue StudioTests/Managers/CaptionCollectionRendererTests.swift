@@ -142,6 +142,109 @@ struct CaptionCollectionRendererTests {
         }
     }
 
+    // MARK: - A text's look copied onto the captions
+
+    /// A look far from every preset's: serif, lavender, on a black pill.
+    private var copiedLook: TextLook {
+        TextLook(font: .dmSerif, weight: .regular, color: .lavender, background: .pill, backgroundColor: .black, hasShadow: false)
+    }
+
+    private func center(_ overlay: FrameOverlay) -> CGPoint {
+        CGPoint(x: overlay.origin.x + overlay.size.width / 2, y: overlay.origin.y + overlay.size.height / 2)
+    }
+
+    @Test(arguments: [CaptionTheme.cue, .educational, .interview, .impact])
+    func aCopiedLookKeepsThePlaceTheTimingAndTheRevealOfTheCollection(_ theme: CaptionTheme) throws {
+        var settings = CaptionSettings(theme: theme)
+        settings.center = OverlayPoint(x: 0.5, y: 0.32)
+        var copied = settings
+        copied.customLook = copiedLook
+        let preset = CaptionCollectionRenderer.overlays([cue], settings: settings, position: .bottom, frame: frame, animation: .highlight)
+        let custom = CaptionCollectionRenderer.overlays([cue], settings: copied, position: .bottom, frame: frame, animation: .highlight)
+        // The same states at the same times: the word said still lights (or the line still fades) as before.
+        #expect(custom.map(\.span) == preset.map(\.span))
+        #expect(custom.map { $0.lazyText?.emphasis?.index } == preset.map { $0.lazyText?.emphasis?.index })
+        #expect(custom.first?.popScale == preset.first?.popScale && custom.first?.fadeIn == preset.first?.fadeIn)
+        // At the height the creator put the captions, inside the safe area (a wider line is kept clear of the
+        // platform's buttons the same way the preset's would be).
+        let first = try #require(custom.first)
+        let placed = try #require(preset.first)
+        #expect(abs(center(first).y - center(placed).y) < 1)
+        let safe = CaptionCollectionRenderer.contentRect(copied, frame: frame).insetBy(dx: -1, dy: -1)
+        let box = CGRect(x: first.origin.x, y: frame.height - first.origin.y - first.size.height, width: first.size.width, height: first.size.height)
+        #expect(safe.contains(box))
+        // The line doesn't move from one word to the next, and each state is drawn at its measured size.
+        #expect(Set(custom.map(\.origin.y)).count == 1 && Set(custom.map(\.size.width)).count == 1)
+        for state in custom {
+            let lazy = try #require(state.lazyText)
+            #expect(lazy.collection?.customLook == copiedLook)
+            let image = try #require(CaptionCollectionRenderer.image(lazy.text.text, settings: copied, frame: frame, emphasis: lazy.emphasis))
+            #expect(image.size == state.size)
+        }
+    }
+
+    @Test func aCopiedLookIsDrawnInsteadOfThePreset() throws {
+        let settings = CaptionSettings(theme: .cue)
+        var copied = settings
+        copied.customLook = copiedLook
+        let preset = try #require(CaptionCollectionRenderer.image(cue.text, settings: settings, frame: frame)?.pngData())
+        let custom = try #require(CaptionCollectionRenderer.image(cue.text, settings: copied, frame: frame)?.pngData())
+        #expect(preset != custom)
+        // The lit word takes the collection's highlight color.
+        let emphasis = WordEmphasis(words: words, index: 2, style: .color(.yellow))
+        var lime = copied
+        lime.accent = .lime
+        var peach = copied
+        peach.accent = .peach
+        let litLime = try #require(CaptionCollectionRenderer.image(cue.text, settings: lime, frame: frame, emphasis: emphasis)?.pngData())
+        let litPeach = try #require(CaptionCollectionRenderer.image(cue.text, settings: peach, frame: frame, emphasis: emphasis)?.pngData())
+        #expect(litLime != litPeach)
+    }
+
+    @Test func aCopiedLookKeepsTheCaptionsSizeNotTheTitles() throws {
+        var copied = CaptionSettings(theme: .cue)
+        var huge = copiedLook
+        huge.sizeScale = 2.4
+        copied.customLook = huge
+        let text = CaptionCollectionRenderer.customCaption(cue.text, look: huge, settings: copied, frame: frame).text
+        // Cue's 26 pt at the collection's scale, whatever the look's own scale says.
+        #expect(abs(text.size - 26) < 0.001)
+        copied.sizeScale = 1.5
+        let bigger = CaptionCollectionRenderer.customCaption(cue.text, look: huge, settings: copied, frame: frame).text
+        #expect(abs(bigger.size - 39) < 0.001)
+    }
+
+    @Test func aCopiedLookStaysInsideSafeMargins() {
+        for size in [CGSize(width: 1080, height: 1920), CGSize(width: 1920, height: 1080), CGSize(width: 1080, height: 1080)] {
+            var settings = CaptionSettings(theme: .cue)
+            settings.customLook = copiedLook
+            settings.sizeScale = 1.5
+            settings.center = OverlayPoint(x: 0.99, y: 0.99)
+            let safe = CaptionCollectionRenderer.contentRect(settings, frame: size).insetBy(dx: -1, dy: -1)
+            let overlays = CaptionCollectionRenderer.overlays([cue], settings: settings, position: .bottom, frame: size)
+            #expect(!overlays.isEmpty)
+            for overlay in overlays {
+                let rect = CGRect(x: overlay.origin.x, y: size.height - overlay.origin.y - overlay.size.height,
+                                  width: overlay.size.width, height: overlay.size.height)
+                #expect(safe.contains(rect), "\(size)")
+            }
+        }
+    }
+
+    @Test func bothLanguagesOfBilingualCaptionsTakeTheCopiedLook() {
+        var edit = TakeEdit(sourceDuration: 5, aspect: .portrait)
+        edit.showsCaptions = true
+        edit.captions = [cue]
+        edit.captionCollection?.customLook = copiedLook
+        let line = TranslatedCaptionLine(cueIDs: [cue.id], sourceText: cue.text, text: "Your idea deserves life.", start: cue.start, end: cue.end)
+        edit.captionTranslations = [CaptionTranslation(language: .english, lines: [line])]
+        edit.captionDisplay = .bilingual(.english)
+        let overlays = EditedComposition.captionOverlays(for: edit, frame: frame)
+        let lines = Set(overlays.compactMap { $0.lazyText?.text.text })
+        #expect(lines == [cue.text, "Your idea deserves life."])
+        #expect(overlays.allSatisfy { $0.lazyText?.collection?.customLook == copiedLook })
+    }
+
     @Test func settingsAndLegacyLooksSurviveSaving() throws {
         var edit = TakeEdit(sourceDuration: 5, aspect: .portrait)
         edit.captionCollection = CaptionSettings(theme: .editorial)

@@ -15,8 +15,10 @@ import CoreGraphics
 ///   video track (and the track it is about) visible, taking that room from the preview down to its
 ///   minimum (30% of the height, at least 190 pt): the video never goes. Past that the panel gets
 ///   shorter and scrolls inside.
+/// - A full panel (Text style, Caption style) can be expanded: the preview goes down to its minimum
+///   and the panel takes the rest, so its controls have room.
 /// - On a very compact screen (iPhone SE) the full panels open as a sheet whose top stops under the
-///   smallest preview, never over the video.
+///   smallest preview, never over the video (expanded, the sheet is at that height).
 /// - With the keyboard up (a field in a panel is being typed in) the height left is shorter, but what
 ///   the screen *is* doesn't change: the height class and how the panel is shown come from the
 ///   height without the keyboard (`stableHeight`), so opening the keyboard can't turn the panel into
@@ -80,9 +82,10 @@ nonisolated struct EditorLayout: Equatable, Sendable {
     ///   - panelFocusesLane: the open panel is about one track (texts, captions, voice-over), which
     ///     then shows under the ruler too.
     ///   - largeText: Dynamic Type is large enough to make a regular screen compact.
+    ///   - panelIsExpanded: a full panel takes all the room but the smallest preview's.
     init(
         usableHeight: CGFloat, stableHeight: CGFloat? = nil, panel: EditorPanelSize? = nil,
-        panelFocusesLane: Bool = false, largeText: Bool = false
+        panelFocusesLane: Bool = false, largeText: Bool = false, panelIsExpanded: Bool = false
     ) {
         let usable = max(0, usableHeight)
         let stable = max(usable, stableHeight ?? usable)
@@ -135,6 +138,15 @@ nonisolated struct EditorLayout: Equatable, Sendable {
             preview = room - fitting
             timeline = 0
             panelIsCompressed = fitting < panelHeight
+            return
+        }
+        let room = max(0, usable - bars)
+        if panel == .full, panelIsExpanded, room - previewMinimum > panelHeight {
+            // Expanded: the video at its smallest, all the rest for the panel's controls.
+            preview = previewMinimum
+            timeline = 0
+            self.panel = room - previewMinimum
+            panelIsCompressed = false
             return
         }
         let available = max(0, usable - bars - panelHeight)

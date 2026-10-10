@@ -28,9 +28,26 @@ nonisolated enum CaptionCollectionRenderer {
         let reveal = effectiveAnimation(settings: settings, animation: animation)
         return cues.flatMap { cue in
             let words = cue.lineWords
-            let text = TextOverlay.caption(CaptionText.joined(words.map(\.text)), look: TypePreset.cue.look(for: .caption), position: position, span: cue.span)
-            guard let layout = layout(text.text, settings: settings, frame: frame) else { return [FrameOverlay]() }
-            let size = layout.size
+            let line = CaptionText.joined(words.map(\.text))
+            // The drawing is named by its text (and, for a copied look, measured with it): the image is
+            // made from the same line and settings when it shows (`image`).
+            let text: TextOverlay
+            let size: CGSize
+            let widthFraction: CGFloat
+            if let look = settings.customLook {
+                let custom = customCaption(line, look: look, settings: settings, frame: frame)
+                text = custom.text
+                widthFraction = custom.widthFraction
+                // Whole pixels, as the image is drawn: the box placed is the box drawn.
+                let measured = TextOverlayRenderer.size(for: text, frameWidth: frame.width, widthFraction: widthFraction)
+                size = CGSize(width: measured.width.rounded(.up), height: measured.height.rounded(.up))
+                guard size.width > 0, size.height > 0 else { return [FrameOverlay]() }
+            } else {
+                text = TextOverlay.caption(line, look: TypePreset.cue.look(for: .caption), position: position, span: cue.span)
+                widthFraction = 0.8
+                guard let layout = layout(text.text, settings: settings, frame: frame) else { return [FrameOverlay]() }
+                size = layout.size
+            }
             let safe = contentRect(settings, frame: frame)
             let requested = settings.center ?? OverlayPoint(x: Double(safe.midX / frame.width), y: position.verticalFraction)
             let x = min(max(CGFloat(requested.clamped.x) * frame.width, safe.minX + size.width / 2), safe.maxX - size.width / 2)
@@ -44,7 +61,7 @@ nonisolated enum CaptionCollectionRenderer {
             func overlay(_ span: TimeSpan, index: Int?) -> FrameOverlay {
                 let emphasis = index.map { WordEmphasis(words: words.map(\.text), index: $0, style: style) }
                 var overlay = FrameOverlay(
-                    lazyText: LazyText(text: text, emphasis: emphasis, frameWidth: frame.width, widthFraction: 0.8,
+                    lazyText: LazyText(text: text, emphasis: emphasis, frameWidth: frame.width, widthFraction: widthFraction,
                                        collection: settings, frameHeight: frame.height),
                     size: size, origin: origin, span: span
                 )
@@ -82,6 +99,9 @@ nonisolated enum CaptionCollectionRenderer {
     }
 
     static func image(_ text: String, settings: CaptionSettings, frame: CGSize, emphasis: WordEmphasis? = nil) -> UIImage? {
+        if let look = settings.customLook {
+            return customImage(text, look: look, settings: settings, frame: frame, emphasis: emphasis)
+        }
         guard let layout = layout(text, settings: settings, frame: frame) else { return nil }
         let spec = settings.spec
         let display = spec.uppercase ? text.uppercased() : text
@@ -163,6 +183,45 @@ nonisolated enum CaptionCollectionRenderer {
         let unit = margins.unitContentRect
         return CGRect(x: unit.minX * frame.width, y: unit.minY * frame.height, width: unit.width * frame.width, height: unit.height * frame.height)
     }
+
+    // MARK: - A copied look
+
+    /// A line in a text's look copied onto the captions (`CaptionSettings.customLook`), drawn by the
+    /// texts' renderer. It keeps the captions' size: the preset's own type size at the collection's
+    /// scale (measured, like the preset, on the frame's shorter side), never the title's. Its lines
+    /// wrap inside the safe area, where the collection places them.
+    static func customCaption(_ line: String, look: TextLook, settings: CaptionSettings, frame: CGSize) -> (text: TextOverlay, widthFraction: CGFloat) {
+        let width = max(frame.width, 1)
+        let points = settings.spec.baseSize * settings.clampedScale * Double(min(frame.width, frame.height) / width)
+        var sized = look
+        sized.sizeScale = points / TextLook.captionBaseSize
+        let text = TextOverlay.caption(line, look: sized, position: .bottom, span: TimeSpan(start: 0, end: 0))
+        let safe = contentRect(settings, frame: frame)
+        let widthFraction = min(TextOverlayRenderer.captionWidthFraction, max(0.3, safe.width / width))
+        return (text, widthFraction)
+    }
+
+    /// The word being said stands out the collection's way (Cue boxes it, the others color it, Words
+    /// shows only the words said so far), in its highlight color.
+    private static func customImage(_ line: String, look: TextLook, settings: CaptionSettings, frame: CGSize, emphasis: WordEmphasis?) -> UIImage? {
+        let custom = customCaption(line, look: look, settings: settings, frame: frame)
+        let boxes = settings.spec.highlightsWithBox
+        let lit = emphasis.map { emphasis in
+            let style: WordEmphasis.Style = switch emphasis.style {
+            case .reveal: .reveal
+            case .box: .box(fill: .yellow, text: .black)
+            case .color where boxes: .box(fill: .yellow, text: .black)
+            case .color: .color(.yellow)
+            }
+            return WordEmphasis(words: emphasis.words, index: emphasis.index, style: style)
+        }
+        return TextOverlayRenderer.image(
+            for: custom.text, frameWidth: frame.width, widthFraction: custom.widthFraction, emphasis: lit,
+            highlight: color(settings.highlightColor)
+        )
+    }
+
+    // MARK: - Layout
 
     private static func layout(_ text: String, settings: CaptionSettings, frame: CGSize) -> Layout? {
         guard !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty, min(frame.width, frame.height) > 0 else { return nil }

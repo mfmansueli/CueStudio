@@ -6,23 +6,30 @@
 import SwiftUI
 import UIKit
 
-/// Caption style, always for every line: the collection's presets, how lines appear (tapping one
-/// plays the current line with it), where they sit and how big, and the highlight color (or, for
-/// captions drawn with a text look, its family, weight and color).
+/// Caption style, always for every line, and the one place captions are styled: the collection's
+/// presets, how lines appear (tapping one plays the current line with it), where they sit and how
+/// big, and the highlight color. Captions drawn with a text's look (copied with "Apply this style to
+/// captions", or from an older version) show it as Custom, first and picked, and Font changes its
+/// family, weight and color; picking a preset replaces it, on the captions only. The panel expands
+/// like Text style.
 struct CaptionStylePanel: View {
     @Bindable var viewModel: QuickEditViewModel
 
     @Environment(VideoThumbnailService.self) private var thumbnails
     @State private var frame: UIImage?
 
+    /// The colors here are what the panel is for: larger than in other panels.
+    private static let swatchDiameter: CGFloat = 34
+
     var body: some View {
+        let tab = viewModel.captionStyleTab
         PanelFrame(
             viewModel: viewModel, panel: .captionStyle,
             onReset: resetAction
         ) {
-            PanelTabs(tabs: EditorPanelTab.captionStyle, selection: viewModel.panelTab) { viewModel.panelTab = $0 }
+            PanelTabs(tabs: EditorPanelTab.captionStyle, selection: tab) { viewModel.panelTab = $0 }
         } content: {
-            switch viewModel.panelTab {
+            switch tab {
             case .reveal: reveal
             case .position: position
             case .font: font
@@ -35,7 +42,7 @@ struct CaptionStylePanel: View {
         }
     }
 
-    /// Reset puts the collection's look back to its defaults.
+    /// Reset puts the collection's look back to its defaults (a copied look goes too).
     private var resetAction: (() -> Void)? {
         guard viewModel.edit.captionCollection != nil else { return nil }
         return { viewModel.resetCaptionTheme() }
@@ -49,9 +56,11 @@ struct CaptionStylePanel: View {
 
     // MARK: - Tabs
 
+    @ViewBuilder
     private var presets: some View {
         ScrollView(.horizontal) {
             HStack(spacing: 8) {
+                if let look = viewModel.captionCustomLook { customCard(look) }
                 ForEach(shownThemes) { theme in
                     PanelPresetCard(
                         name: theme.label, sample: CaptionThemePreview.image(theme), frame: frame,
@@ -65,6 +74,23 @@ struct CaptionStylePanel: View {
         .scrollIndicators(.hidden)
         .padding(.horizontal, -16)
         .accessibilityIdentifier("edit.captionCatalog")
+        if viewModel.captionCustomLook != nil {
+            PanelNote(text: String(localized: "Custom style copied from a text. Pick a preset to replace it."))
+                .accessibilityIdentifier("edit.captionCustomNote")
+        }
+    }
+
+    /// The look the captions have now when it isn't a preset: picked, drawn as the export draws it.
+    private func customCard(_ look: TextLook) -> some View {
+        let sample: UIImage? = if let settings = viewModel.edit.captionCollection {
+            CaptionThemePreview.image(settings)
+        } else {
+            TypeLookPreview.image(look, use: .caption, sample: "Big idea")
+        }
+        return PanelPresetCard(
+            name: viewModel.captionCustomLookName, sample: sample, frame: frame, isSelected: true,
+            identifier: "edit.captionPreset.custom"
+        ) {}
     }
 
     @ViewBuilder
@@ -92,7 +118,7 @@ struct CaptionStylePanel: View {
         PanelSegmented(
             label: String(localized: "Position"),
             options: CaptionPosition.allCases.map { PanelOption($0, $0.label) },
-            selection: viewModel.captionPositionStop, identifier: "edit.captionPosition"
+            selection: viewModel.captionPositionStop, height: 38, identifier: "edit.captionPosition"
         ) { viewModel.setCaptionPositionStop($0) }
         CueSlider(
             value: Binding(
@@ -107,12 +133,10 @@ struct CaptionStylePanel: View {
         PanelNote(text: String(localized: "You can also drag the caption in the video."))
     }
 
+    /// A preset's highlight color; for a custom look, its family, weight and color too.
     @ViewBuilder
     private var font: some View {
-        if let accent = viewModel.captionAccent {
-            accents(accent)
-        } else {
-            let look = viewModel.edit.captionLook ?? TypePreset.cue.look(for: .caption)
+        if let look = viewModel.captionEditableLook {
             PanelChips(
                 options: TextOverlayFont.editorFonts.map { PanelOption($0, $0.label) }, selection: look.font,
                 font: { CueStudioFont.chip($0) }, identifier: "edit.captionFont",
@@ -125,11 +149,15 @@ struct CaptionStylePanel: View {
             )
             PanelSegmented(
                 label: String(localized: "Weight"), options: look.font.weights.map { PanelOption($0, $0.label) },
-                selection: look.weight, identifier: "edit.captionWeight"
+                selection: look.weight, height: 38, identifier: "edit.captionWeight"
             ) { weight in viewModel.updateCaptionLook { $0.weight = weight } }
             PanelSwatches(
-                label: String(localized: "Color"), colors: OverlayColor.textSwatches, selection: look.color, identifier: "edit.captionColor"
+                label: String(localized: "Color"), colors: OverlayColor.textSwatches, selection: look.color,
+                diameter: Self.swatchDiameter, identifier: "edit.captionColor"
             ) { color in viewModel.updateCaptionLook { $0.color = color } }
+        }
+        if let accent = viewModel.captionAccent {
+            accents(accent)
         }
     }
 
@@ -147,7 +175,7 @@ struct CaptionStylePanel: View {
                     } label: {
                         Circle()
                             .fill(Color(red: parts.red, green: parts.green, blue: parts.blue))
-                            .frame(width: 30, height: 30)
+                            .frame(width: Self.swatchDiameter, height: Self.swatchDiameter)
                             .padding(3)
                             .overlay(Circle().strokeBorder(isOn ? Palette.acc : .clear, lineWidth: 2))
                             .frame(width: Metrics.hitTarget, height: Metrics.hitTarget)

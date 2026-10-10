@@ -35,6 +35,9 @@ enum EditorPanel: String, CaseIterable, Identifiable {
         }
     }
 
+    /// The styling panels can be expanded, giving their controls the room the video gives up.
+    var isExpandable: Bool { size == .full }
+
     /// Panels about one track bring it up under the ruler.
     var focusedLane: TimelineLane? {
         switch self {
