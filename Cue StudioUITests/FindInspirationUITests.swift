@@ -216,18 +216,23 @@ final class FindInspirationUITests: XCTestCase {
         app.buttons["ideaCard.inspirationButton"].tap()
         app.buttons["inspiration.filter.custom.daily-routine"].tap()
         let title = element(app, "inspiration.card.title")
-        let loading = element(app, "inspiration.loading")
-        XCTAssertTrue(title.waitForExistence(timeout: 10) || loading.exists, "Neither a card nor the wait")
-        // Tapping on quickly reaches the end of what is ready: the button waits ("Finding more ideas…") and the card stays.
-        var sawWait = loading.exists
-        for _ in 0..<12 where !sawWait {
-            let another = app.buttons["inspiration.another"]
+        // The first six take 12 s (`-uiTestIdeasSlow`): longer than tapping through them, so the end of what is ready is always reached.
+        XCTAssertTrue(title.waitForExistence(timeout: 30), "The first ideas never came")
+        let first = title.label
+        // Tapping on reaches the end of what is ready: the button waits ("Finding more ideas…") and the card stays.
+        let another = app.buttons["inspiration.another"]
+        var sawWait = false
+        for _ in 0..<10 {
             if !another.isEnabled || another.label.contains("Finding") { sawWait = true; break }
             another.tap()
         }
-        XCTAssertTrue(sawWait || loading.exists, "The wait for the next ideas was never shown")
+        XCTAssertTrue(sawWait, "The wait for the next ideas was never shown")
+        XCTAssertTrue(title.exists, "The card went while the next ideas were on their way")
         try shoot(app, "11-finding-more")
-        XCTAssertTrue(title.waitForExistence(timeout: 15), "The next idea never came")
+        let ready = XCTNSPredicateExpectation(predicate: NSPredicate(format: "enabled == true AND NOT (label CONTAINS 'Finding')"), object: another)
+        XCTAssertEqual(XCTWaiter.wait(for: [ready], timeout: 30), .completed, "The next ideas never came")
+        another.tap()
+        XCTAssertNotEqual(title.label, first)
     }
 
     func testWithoutAppleIntelligenceTheDirectWayIsWritingItYourself() {
