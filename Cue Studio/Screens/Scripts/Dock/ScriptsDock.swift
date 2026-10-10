@@ -502,11 +502,13 @@ struct ScriptsDock: View {
             starter.write(idea: nil, from: sendCenter)
             return
         }
+        // The card's own idea follows its angle and opening line (read before `sent()` brings the next one).
+        let brief = suggestions.current?.brief
         // The idea sent is what they like (the next ones lean that way); when it was a note of theirs, the note has become a script.
         let note = suggestions.sent()
         // A suggested idea used for real: its introduction stops (a note of their own is the Logbook's, not the ideas').
         if note == nil { notifications.recordUse(.ideas) }
-        starter.write(idea: idea, from: sendCenter) { [logbook] scriptID in
+        starter.write(idea: idea, brief: brief, from: sendCenter) { [logbook] scriptID in
             if let note { logbook.markShaped(note, as: scriptID) }
         }
     }

@@ -17,7 +17,9 @@ final class FindInspirationViewModel {
         case idea(ThemeIdea)
         /// The first ideas about the chosen topic are on their way and nothing about it is ready yet.
         case waiting
-        /// Nothing to show and nothing on its way (the model is unavailable or failed, and the topic has no starters).
+        /// The ideas asked for the chosen topic didn't come (the model failed): "Try again".
+        case failed
+        /// Nothing to show and nothing on its way (no Apple Intelligence, and the topic has no starters).
         case nothing
     }
 
@@ -53,8 +55,15 @@ final class FindInspirationViewModel {
 
     var content: Content {
         if let idea = suggestions.current(in: filter) { return .idea(idea) }
+        if suggestions.refillFailed(in: filter) { return .failed }
         return suggestions.isWaiting(in: filter) ? .waiting : .nothing
     }
+
+    /// A card is shown and the next ideas are on their way (the creator reached the end of the ready ones): "Another idea" waits for them.
+    var isFindingMore: Bool { idea != nil && suggestions.isWaiting(in: filter) }
+
+    /// A card is shown, but the next ideas didn't come: the card stays and says so, with "Try again".
+    var couldNotFindMore: Bool { idea != nil && suggestions.refillFailed(in: filter) }
 
     /// The idea on the card, if there is one.
     var idea: ThemeIdea? {
@@ -97,11 +106,17 @@ final class FindInspirationViewModel {
         suggestions.prepare(for: filter)
     }
 
-    /// "Another idea": the next one comes at once (the shown one counts as passed).
+    /// "Another idea": the next one comes at once (the shown one counts as passed). At the end of what is ready the card stays until the next
+    /// ideas arrive (`isFindingMore`); the transition only plays when the card changed.
     func another() {
-        guard idea != nil else { return }
+        guard let shown = idea, !isFindingMore else { return }
         suggestions.another(in: filter)
-        turn += 1
+        if idea != shown { turn += 1 }
+    }
+
+    /// "Try again" after the ideas didn't come.
+    func retry() {
+        suggestions.retry(in: filter)
     }
 
     /// "Use this idea": its brief goes into the composer to be changed before it is written. Returns whether it took the place of words
@@ -110,7 +125,7 @@ final class FindInspirationViewModel {
     func use(_ idea: ThemeIdea) -> Bool {
         suggestions.selected(idea)
         draft.use(idea)
-        return draft.replacedText != nil
+        return draft.canUndoUse
     }
 
     func undoUse() {

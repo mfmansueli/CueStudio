@@ -63,6 +63,11 @@ struct FindInspirationSheet: View {
                 cardArea
                     .padding(.horizontal, Metrics.gutter)
                     .padding(.top, showsOrbit ? 38 : 18)
+                if viewModel.couldNotFindMore {
+                    couldNotFindMoreNote
+                        .padding(.horizontal, Metrics.gutter)
+                        .padding(.top, 8)
+                }
                 if typeSize.isAccessibilitySize {
                     // At the biggest sizes the actions scroll with the card: pinned, they would take most of the screen.
                     actions.padding(.top, 20)
@@ -150,8 +155,11 @@ struct FindInspirationSheet: View {
             case .waiting:
                 InspirationCardSkeleton(topic: chosenTopicLabel)
                     .transition(.opacity)
+            case .failed:
+                emptyCard(failed: true)
+                    .transition(.opacity)
             case .nothing:
-                nothingCard
+                emptyCard(failed: false)
                     .transition(.opacity)
             }
         }
@@ -176,6 +184,7 @@ struct FindInspirationSheet: View {
         switch viewModel.content {
         case .idea(let idea): idea.id
         case .waiting: "waiting"
+        case .failed: "failed"
         case .nothing: "nothing"
         }
     }
@@ -194,19 +203,26 @@ struct FindInspirationSheet: View {
         }
     }
 
-    /// Nothing to show and nothing coming: why, honestly, and what to do.
-    private var nothingCard: some View {
+    /// Nothing to show: the ideas asked for didn't come (`failed`, with "Try again"), or nothing can come (no Apple Intelligence and nothing
+    /// ready for the topic). Why, honestly, and what to do.
+    private func emptyCard(failed: Bool) -> some View {
         let shape = RoundedRectangle(cornerRadius: Metrics.cardRadius, style: .continuous)
         return VStack(alignment: .leading, spacing: 10) {
-            Text("No ideas here right now")
-                .font(.headline)
-                .foregroundStyle(Palette.ink)
-                .accessibilityAddTraits(.isHeader)
+            Group {
+                if failed {
+                    Text("Couldn’t get new ideas")
+                } else {
+                    Text("No ideas here right now")
+                }
+            }
+            .font(.headline)
+            .foregroundStyle(Palette.ink)
+            .accessibilityAddTraits(.isHeader)
             Group {
                 if hasAI {
                     Text("Cue couldn’t write ideas about this topic just now. Try again in a moment.")
                 } else {
-                    Text("Cue’s starter ideas cover the topics it suggests. Apple Intelligence writes ideas about the ones you add yourself.")
+                    Text("Try another topic, or type your own idea in the composer.")
                 }
             }
             .font(.subheadline)
@@ -215,7 +231,7 @@ struct FindInspirationSheet: View {
             HStack(spacing: 10) {
                 if hasAI {
                     Button {
-                        viewModel.appear()
+                        viewModel.retry()
                     } label: {
                         Label("Try again", systemImage: "arrow.clockwise")
                     }
@@ -236,7 +252,27 @@ struct FindInspirationSheet: View {
         .overlay { shape.strokeBorder(Palette.Scripts.inspirationCardBorder, lineWidth: 0.5) }
         .cardDepth(shape, edge: nil)
         .accessibilityElement(children: .contain)
-        .accessibilityIdentifier("inspiration.nothing")
+        .accessibilityIdentifier(failed ? "inspiration.failed" : "inspiration.nothing")
+    }
+
+    /// Under a card that stays because the next ideas didn't come: one quiet line and "Try again".
+    private var couldNotFindMoreNote: some View {
+        HStack(spacing: 8) {
+            Image(systemName: "exclamationmark.circle")
+                .foregroundStyle(Palette.ink2)
+                .accessibilityHidden(true)
+            Text("Couldn’t get new ideas")
+                .foregroundStyle(Palette.ink2)
+            Button("Try again") { viewModel.retry() }
+                .foregroundStyle(Palette.aiText)
+                .fontWeight(.semibold)
+                .frame(minHeight: Metrics.hitTarget)
+                .accessibilityIdentifier("inspiration.retryMore")
+        }
+        .font(.footnote)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .accessibilityElement(children: .contain)
+        .accessibilityIdentifier("inspiration.couldNotFindMore")
     }
 
     // MARK: - Actions
@@ -246,10 +282,18 @@ struct FindInspirationSheet: View {
         let idea = viewModel.idea
         return VStack(spacing: 10) {
             Button(action: another) {
-                Label("Another idea", systemImage: "arrow.triangle.2.circlepath")
+                if viewModel.isFindingMore {
+                    // At the end of the ready ideas, the next are on their way: the card stays and the button says so.
+                    HStack(spacing: 8) {
+                        ProgressView().controlSize(.small).tint(Palette.aiText)
+                        Text("Finding more ideas…")
+                    }
+                } else {
+                    Label("Another idea", systemImage: "arrow.triangle.2.circlepath")
+                }
             }
             .buttonStyle(.cueSecondary(.medium, expands: false))
-            .disabled(idea == nil)
+            .disabled(idea == nil || viewModel.isFindingMore)
             .accessibilityHint(Text("Shows the next idea."))
             .accessibilityIdentifier("inspiration.another")
             Button {

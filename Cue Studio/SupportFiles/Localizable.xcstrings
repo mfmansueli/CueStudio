@@ -84272,6 +84272,125 @@
         }
       }
     },
+    "Couldn’t get new ideas" : {
+      "comment" : "Find inspiration: the ideas asked for didn't come (with Try again)",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تعذّر الحصول على أفكار جديدة"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kunne ikke hente nye idéer"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keine neuen Ideen gefunden"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se pudieron obtener ideas nuevas"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Impossible d’obtenir de nouvelles idées"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "नए आइडिया नहीं मिल सके"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tidak bisa mendapatkan ide baru"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Impossibile ottenere nuove idee"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "新しいアイデアを取得できませんでした"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "새 아이디어를 가져오지 못했어요"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kunne ikke hente nye idéer"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kon geen nieuwe ideeën ophalen"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não foi possível obter novas ideias"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kunde inte hämta nya idéer"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ไม่สามารถรับไอเดียใหม่ได้"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yeni fikirler alınamadı"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Không thể lấy ý tưởng mới"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无法获取新想法"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "無法取得新想法"
+          }
+        }
+      }
+    },
     "Couldn't import" : {
       "localizations" : {
         "ar" : {
@@ -91831,125 +91950,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Cue 的通知會安靜地出現在通知中心。在 iOS 設定中允許後即可看到橫幅。"
-          }
-        }
-      }
-    },
-    "Cue’s starter ideas cover the topics it suggests. Apple Intelligence writes ideas about the ones you add yourself." : {
-      "comment" : "Find inspiration: a typed topic without Apple Intelligence has no ideas",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "تغطي أفكار Cue الأولية المواضيع التي يقترحها. يكتب Apple Intelligence أفكارًا عن المواضيع التي تضيفها بنفسك."
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cues startidéer dækker de emner, Cue foreslår. Apple Intelligence skriver idéer om dem, du selv tilføjer."
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cues Startideen decken die Themen ab, die Cue vorschlägt. Apple Intelligence schreibt Ideen zu denen, die du selbst hinzufügst."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Las ideas iniciales de Cue cubren los temas que sugiere. Apple Intelligence escribe ideas sobre los que añades tú."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Les idées de départ de Cue couvrent les sujets qu’il propose. Apple Intelligence écrit des idées sur ceux que vous ajoutez vous-même."
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cue के शुरुआती आइडिया उन विषयों के लिए हैं जो वह सुझाता है। आपके खुद जोड़े विषयों पर आइडिया Apple Intelligence लिखता है।"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ide awal Cue mencakup topik yang disarankannya. Apple Intelligence menulis ide tentang topik yang kamu tambahkan sendiri."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Le idee di partenza di Cue coprono gli argomenti che suggerisce. Apple Intelligence scrive idee su quelli che aggiungi tu."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cueのスターターアイデアは、Cueが提案するトピックが対象です。自分で追加したトピックのアイデアはApple Intelligenceが書きます。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cue의 기본 아이디어는 Cue가 제안하는 주제를 다뤄요. 직접 추가한 주제의 아이디어는 Apple Intelligence가 써요."
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cues startidéer dekker emnene Cue foreslår. Apple Intelligence skriver idéer om dem du legger til selv."
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "De startideeën van Cue gaan over de onderwerpen die Cue voorstelt. Apple Intelligence schrijft ideeën over de onderwerpen die je zelf toevoegt."
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "As ideias iniciais do Cue cobrem os temas que ele sugere. O Apple Intelligence escreve ideias sobre os que você mesmo adiciona."
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cues startidéer gäller ämnena som Cue föreslår. Apple Intelligence skriver idéer om dem du lägger till själv."
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ไอเดียเริ่มต้นของ Cue ครอบคลุมหัวข้อที่ Cue แนะนำ ส่วนหัวข้อที่คุณเพิ่มเอง Apple Intelligence จะเขียนไอเดียให้"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cue’nun başlangıç fikirleri önerdiği konuları kapsar. Kendi eklediğin konular için fikirleri Apple Intelligence yazar."
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ý tưởng khởi đầu của Cue dành cho các chủ đề Cue gợi ý. Apple Intelligence sẽ viết ý tưởng cho các chủ đề bạn tự thêm."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cue 的入门想法只涵盖它推荐的主题。你自己添加的主题，由 Apple Intelligence 来写想法。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cue 的入門想法只涵蓋它推薦的主題。你自己新增的主題，由 Apple Intelligence 來寫想法。"
           }
         }
       }
@@ -121437,6 +121437,125 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "正在尋找關於%@的想法…"
+          }
+        }
+      }
+    },
+    "Finding more ideas…" : {
+      "comment" : "Find inspiration: 'Another idea' while the next ideas are on their way",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "جارٍ البحث عن مزيد من الأفكار…"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Finder flere idéer…"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Weitere Ideen werden gesucht …"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buscando más ideas…"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recherche d’autres idées…"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "और आइडिया खोजे जा रहे हैं…"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mencari ide lainnya…"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cerco altre idee…"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "さらにアイデアを探しています…"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "아이디어를 더 찾는 중…"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Finner flere idéer…"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Meer ideeën zoeken…"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buscando mais ideias…"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Letar fler idéer…"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "กำลังหาไอเดียเพิ่ม…"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Daha fazla fikir aranıyor…"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Đang tìm thêm ý tưởng…"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在寻找更多想法…"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在尋找更多想法…"
           }
         }
       }
@@ -332074,6 +332193,125 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "試試其他變更，或取消後重新開啟鏡頭。"
+          }
+        }
+      }
+    },
+    "Try another topic, or type your own idea in the composer." : {
+      "comment" : "Find inspiration: nothing to show for the chosen topic (no Apple Intelligence)",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "جرّب موضوعًا آخر، أو اكتب فكرتك في حقل الفكرة."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prøv et andet emne, eller skriv din egen idé i idéfeltet."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versuch ein anderes Thema oder tipp deine eigene Idee ins Ideenfeld."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prueba otro tema o escribe tu propia idea en el campo de ideas."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Essayez un autre sujet, ou tapez votre propre idée dans le champ d’idée."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "कोई दूसरा विषय आज़माएँ, या आइडिया फ़ील्ड में अपना आइडिया लिखें।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Coba topik lain, atau ketik idemu sendiri di kolom ide."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prova un altro argomento o scrivi la tua idea nel campo dell’idea."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "別のトピックを試すか、アイデア欄に自分のアイデアを入力してください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "다른 주제를 시도하거나 아이디어 입력란에 직접 아이디어를 입력해 보세요."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prøv et annet emne, eller skriv din egen idé i idéfeltet."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Probeer een ander onderwerp of typ je eigen idee in het ideeënveld."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tente outro tema ou digite sua própria ideia no campo de ideia."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prova ett annat ämne eller skriv din egen idé i idéfältet."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ลองหัวข้ออื่น หรือพิมพ์ไอเดียของคุณเองในช่องไอเดีย"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Başka bir konu dene ya da kendi fikrini fikir alanına yaz."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hãy thử chủ đề khác, hoặc gõ ý tưởng của bạn vào ô ý tưởng."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "试试别的主题，或在想法输入框里写下你自己的想法。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "試試別的主題，或在想法輸入框裡寫下你自己的想法。"
           }
         }
       }

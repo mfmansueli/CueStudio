@@ -178,16 +178,56 @@ final class FindInspirationUITests: XCTestCase {
         XCTAssertTrue(element(app, "voice.editor.topics").waitForExistence(timeout: 5), "Add topics didn't open the topics")
     }
 
-    func testOnlyTypedTopicsWithoutAppleIntelligenceSaySoHonestly() {
+    func testOnlyTypedTopicsWithoutAppleIntelligenceGetStartersAboutThemSaidToBeStarters() {
         let app = CueApp.launch(seeded: true, ai: .none, extraArguments: ["-uiTestTopics", "custom:Daily Routine"])
         XCTAssertTrue(app.buttons["ideaCard.inspirationButton"].waitForExistence(timeout: 15), "The lightbulb is there without Apple Intelligence too")
         app.buttons["ideaCard.inspirationButton"].tap()
         XCTAssertTrue(element(app, "inspiration.startersNote").waitForExistence(timeout: 5))
         app.buttons["inspiration.filter.custom.daily-routine"].tap()
-        XCTAssertTrue(element(app, "inspiration.nothing").waitForExistence(timeout: 5), "A typed topic without a model showed something made up")
-        XCTAssertFalse(app.buttons["inspiration.use"].isEnabled)
-        app.buttons["inspiration.showAll"].tap()
-        XCTAssertTrue(app.buttons["inspiration.filter.all"].isSelected)
+        let category = element(app, "inspiration.card.category")
+        XCTAssertTrue(category.waitForExistence(timeout: 5))
+        XCTAssertTrue(category.label.localizedCaseInsensitiveContains("Daily Routine"), category.label)
+        XCTAssertTrue(app.buttons["inspiration.use"].isEnabled)
+        XCTAssertEqual(app.buttons["inspiration.writeNow"].label, "Write it yourself")
+    }
+
+    func testWhenTheIdeasDontComeTheSheetSaysSoAndOffersTryAgain() throws {
+        let app = CueApp.launch(seeded: true, extraArguments: ["-uiTestTopics", "custom:Daily Routine", "-uiTestIdeasFail"])
+        XCTAssertTrue(app.buttons["ideaCard.inspirationButton"].waitForExistence(timeout: 15))
+        app.buttons["ideaCard.inspirationButton"].tap()
+        app.buttons["inspiration.filter.custom.daily-routine"].tap()
+        // Through the starters about the topic, to where only the model's ideas could come: they fail, and the sheet says so.
+        let failed = element(app, "inspiration.failed")
+        let note = element(app, "inspiration.couldNotFindMore")
+        for _ in 0..<12 where !failed.exists && !note.exists {
+            let another = app.buttons["inspiration.another"]
+            if another.isEnabled { another.tap() } else { sleep(1) }
+        }
+        XCTAssertTrue(failed.waitForExistence(timeout: 10) || note.exists, "A failure looked like nothing happened")
+        try shoot(app, "10-ideas-failed")
+        let retry = failed.exists ? app.buttons["inspiration.retry"] : app.buttons["inspiration.retryMore"]
+        XCTAssertTrue(retry.exists)
+        retry.tap()
+    }
+
+    func testWhileTheNextIdeasAreOnTheirWayTheCardStaysAndSaysSo() throws {
+        let app = CueApp.launch(seeded: true, extraArguments: ["-uiTestTopics", "custom:Daily Routine", "-uiTestIdeasSlow"])
+        XCTAssertTrue(app.buttons["ideaCard.inspirationButton"].waitForExistence(timeout: 15))
+        app.buttons["ideaCard.inspirationButton"].tap()
+        app.buttons["inspiration.filter.custom.daily-routine"].tap()
+        let title = element(app, "inspiration.card.title")
+        let loading = element(app, "inspiration.loading")
+        XCTAssertTrue(title.waitForExistence(timeout: 10) || loading.exists, "Neither a card nor the wait")
+        // Tapping on quickly reaches the end of what is ready: the button waits ("Finding more ideas…") and the card stays.
+        var sawWait = loading.exists
+        for _ in 0..<12 where !sawWait {
+            let another = app.buttons["inspiration.another"]
+            if !another.isEnabled || another.label.contains("Finding") { sawWait = true; break }
+            another.tap()
+        }
+        XCTAssertTrue(sawWait || loading.exists, "The wait for the next ideas was never shown")
+        try shoot(app, "11-finding-more")
+        XCTAssertTrue(title.waitForExistence(timeout: 15), "The next idea never came")
     }
 
     func testWithoutAppleIntelligenceTheDirectWayIsWritingItYourself() {

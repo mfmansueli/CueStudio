@@ -12,7 +12,7 @@ enum InspirationSamples {
     static let finance: ThemeIdea = {
         var idea = ThemeIdea(title: "Why saving feels harder than spending", kind: "Explainer", length: .minute1, niche: .finance)
         idea.brief = IdeaBrief(
-            subject: "Saving money", angle: "Explain one small habit that makes saving easier.",
+            subject: "Why saving feels harder than spending", angle: "Explain one small habit that makes saving easier.",
             openingLine: "Saving isn't just about willpower. It's about what you make automatic.", language: "en"
         )
         return idea
@@ -21,7 +21,7 @@ enum InspirationSamples {
     static let fitness: ThemeIdea = {
         var idea = ThemeIdea(title: "The desk stretches nobody does", kind: "List", length: .minute1, niche: .fitness)
         idea.brief = IdeaBrief(
-            subject: "Desk stretches", angle: "the three that undo a day of sitting, and why people skip them",
+            subject: "The desk stretches nobody does", angle: "the three that undo a day of sitting, and why people skip them",
             openingLine: "If your back hurts by 3 p.m., this one's for you.", subtopic: "Yoga & stretching", language: "en"
         )
         return idea

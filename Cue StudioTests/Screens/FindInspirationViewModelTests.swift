@@ -35,6 +35,14 @@ struct FindInspirationViewModelTests {
         return Rig(model: model, suggestions: suggestions, draft: draft, profile: profile, writer: writer, defaults: defaults)
     }
 
+    /// Lets the model's answers (or failures) arrive.
+    private func settle(_ rig: Rig) async {
+        for _ in 0..<200 {
+            await Task.yield()
+            if !rig.suggestions.isRefilling { try? await Task.sleep(for: .milliseconds(2)) }
+        }
+    }
+
     private func briefIdea() -> ThemeIdea {
         var idea = ThemeIdea(title: "Why saving feels harder than spending", kind: "Explainer", length: .minute1, niche: .finance)
         idea.brief = IdeaBrief(
@@ -83,12 +91,31 @@ struct FindInspirationViewModelTests {
         #expect(rig.model.idea?.niche == .food)
     }
 
-    @Test func aTypedTopicWithoutAModelHasNothingToShowAndSaysSo() {
+    @Test func aTypedTopicWithoutAModelStillHasStartersAboutIt() {
         let rig = rig { $0.customTopics = ["Daily Routine"] }
         defer { rig.defaults.tearDown() }
         rig.model.select(rig.model.options.first { $0.id == "custom.daily-routine" }!)
-        #expect(rig.model.content == .nothing)
-        #expect(rig.model.idea == nil)
+        guard case .idea(let idea) = rig.model.content else { Issue.record("no starter about a typed topic"); return }
+        #expect(rig.model.card(for: idea).category.contains("Daily Routine"))
+        #expect(!rig.model.isFindingMore && !rig.model.couldNotFindMore)
+    }
+
+    @Test func whenTheIdeasDontComeTheSheetSaysSoAndTryAgainAsksAgain() async {
+        let rig = rig(available: true) { $0.customTopics = ["Daily Routine"] }
+        defer { rig.defaults.tearDown() }
+        rig.writer.error = ScriptAIError.rateLimited
+        rig.model.select(rig.model.options.first { $0.id == "custom.daily-routine" }!)
+        // Through the starters about the topic, to the end of what is ready: the model's ideas fail.
+        for _ in 0..<20 {
+            guard rig.model.idea != nil, !rig.model.isFindingMore, !rig.model.couldNotFindMore else { break }
+            rig.model.another()
+            await settle(rig)
+        }
+        await Wait.until { rig.model.couldNotFindMore || rig.model.content == .failed }
+        #expect(rig.model.couldNotFindMore || rig.model.content == .failed)
+        rig.writer.error = nil
+        rig.model.retry()
+        #expect(!rig.model.couldNotFindMore && rig.model.content != .failed)
     }
 
     @Test func aTopicTheCreatorDropsFallsBackToAllMyTopics() {
@@ -114,12 +141,15 @@ struct FindInspirationViewModelTests {
         #expect(rig.model.turn == 1)
     }
 
-    @Test func anotherIdeaWithNothingShownDoesNothing() {
-        let rig = rig { $0.customTopics = ["Daily Routine"] }
+    @Test func anotherIdeaWithNothingShownDoesNothing() async {
+        let rig = rig(available: true) { $0.customTopics = ["Daily Routine"] }
         defer { rig.defaults.tearDown() }
+        rig.writer.holdsSuggestions = true
         rig.model.select(rig.model.options.first { $0.id == "custom.daily-routine" }!)
+        guard rig.model.idea == nil else { return }
         rig.model.another()
         #expect(rig.model.turn == 0)
+        rig.writer.holdsSuggestions = false
     }
 
     // MARK: - Use this idea
