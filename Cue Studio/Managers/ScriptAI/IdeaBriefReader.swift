@@ -7,7 +7,7 @@ import Foundation
 
 /// The model's ideas as the card and Find inspiration show them. Pure text, so it is tested without the model: each answer is cleaned (markdown,
 /// wrapping quotes, a label like "Angle:" the model wrote out), matched to the slot it was asked for (the slot says the angle, the topic and so the
-/// kind of video; the model's own word for either is not trusted), and fitted to the composer (`IdeaBrief.fitted`). An answer without a title or
+/// kind of video; the model's own word for either is not trusted), and kept to the size of a card (`cardLimit`). An answer without a title or
 /// an opening line is no idea and is dropped.
 nonisolated enum IdeaBriefReader {
     /// One idea as the model wrote it.
@@ -35,11 +35,15 @@ nonisolated enum IdeaBriefReader {
         idea.brief = IdeaBrief(
             subject: title, angle: angle, openingLine: opening, subtopic: subtopic(of: slot.topic, in: [title, angle, opening], language: language),
             language: language, angleKind: slot.angle.rawValue, topicKey: IdeaTaste.topicKey(of: slot.topic)
-        ).fitted()
+        ).fitted(to: Self.cardLimit)
         // The headline the card shows is the brief's, cut the same way.
         idea.title = idea.brief?.subject ?? title
         return idea
     }
+
+    /// The most a brief of the model's may hold, laid out: a model that runs on is cut here (at a word) so the card stays a card; the field gets
+    /// its own 200 (`IdeaBrief.composerText`).
+    static let cardLimit = 300
 
     /// A story or a day in the life takes longer to tell than a tip.
     static func length(for angle: IdeaAngle) -> ScriptLength {

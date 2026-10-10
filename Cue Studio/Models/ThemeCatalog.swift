@@ -387,7 +387,7 @@ nonisolated enum ThemeCatalog {
             idea.brief = IdeaBrief(
                 subject: entry.title, angle: entry.angle, openingLine: entry.openingLine, language: interfaceLanguage,
                 angleKind: entry.angleKind.rawValue, topicKey: niche.rawValue
-            ).fitted()
+            )
             return idea
         }
     }
@@ -407,7 +407,7 @@ nonisolated enum ThemeCatalog {
             idea.brief = IdeaBrief(
                 subject: parts.title, angle: parts.angle, openingLine: parts.openingLine, subtopic: subtopic, language: interfaceLanguage,
                 angleKind: parts.angleKind.rawValue, topicKey: topic.label
-            ).fitted()
+            )
             return idea
         }
     }

@@ -59,8 +59,8 @@ nonisolated struct IdeaBrief: Hashable, Codable, Sendable {
 
     /// The brief made to fit `limit` characters once laid out for the composer: a second sentence goes first (the opening line's, then the angle's),
     /// then words from the end of the longer of the two, so neither is cut to nothing while the other runs on; the subject (the headline) is only
-    /// shortened past `limit` itself. A part that was cut ends in "…", and never in half a word. What the card shows is this, so what the creator
-    /// reads is what the field gets.
+    /// shortened past `limit` itself. A part that was cut ends in "…", and never in half a word. The card shows the brief whole (in German or
+    /// French a starter's three parts often run past 200 characters); only the field is fitted, and what still stands of it is the whole part.
     func fitted(to limit: Int = IdeaPromptDraft.maxCharacters) -> IdeaBrief {
         var brief = self
         brief.subject = Self.trimmed(subject)
@@ -84,12 +84,15 @@ nonisolated struct IdeaBrief: Hashable, Codable, Sendable {
     /// wrote always wins over what the card said. Nil when the subject is gone (the idea took another direction); the angle or the opening
     /// line are left empty when their words are gone. A part stands when most of its words are still there, in any order: a comma, a
     /// changed word or a moved line keep it, a rewritten one doesn't.
+    ///
+    /// The parts are looked for as the field got them (`fitted`): a line the field had to shorten still stands whole, so the model gets all of it.
     func standing(in text: String) -> IdeaBrief? {
         let words = Self.tokens(in: text)
-        guard Self.stands(subject, in: words, share: Self.subjectShare) else { return nil }
+        let given = fitted()
+        guard Self.stands(given.subject, in: words, share: Self.subjectShare) else { return nil }
         var kept = self
-        if !Self.stands(angle, in: words, share: Self.partShare) { kept.angle = "" }
-        if !Self.stands(openingLine, in: words, share: Self.partShare) { kept.openingLine = "" }
+        if !Self.stands(given.angle, in: words, share: Self.partShare) { kept.angle = "" }
+        if !Self.stands(given.openingLine, in: words, share: Self.partShare) { kept.openingLine = "" }
         return kept
     }
 

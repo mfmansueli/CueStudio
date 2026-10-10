@@ -44,6 +44,16 @@ struct IdeaBriefTests {
         #expect(text == fitted.composerText, "the card shows what the field gets")
     }
 
+    @Test func aBriefTheFieldHadToShortenStillGoesWholeToTheScript() {
+        let long = IdeaBrief(
+            subject: "Pourquoi les routines parfaites échouent",
+            angle: "Explique pourquoi de petites habitudes souples battent les plannings stricts, avec un exemple concret.",
+            openingLine: "La routine parfaite est souvent la première qu’on abandonne, et ce n’est pas un manque de volonté de ta part."
+        )
+        #expect(long.composerText.contains("…"), "the field got a shorter line")
+        #expect(long.standing(in: long.composerText) == long, "what the creator kept is the whole idea")
+    }
+
     @Test func anAngleOrALineWithNothingInItHasNoLine() {
         var partial = brief
         partial.angle = ""
