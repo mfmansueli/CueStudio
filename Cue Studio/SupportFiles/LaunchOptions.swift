@@ -47,6 +47,8 @@ import Foundation
 /// - `-uiTestTopicBirthAt <seconds>`: on 1.2, three topics are picked and the last one's birth stands still at that second after the pick.
 /// - `-uiTestPlatformAt <seconds>`: on 1.3, TikTok is picked and the light of the pick stands still at that second after the pick.
 /// - `-uiTestWriterStalls`: with `-uiTestStubAI`, the model never answers the first message (its slow states, 1.4b).
+/// - `-uiTestIdeasSlow`: with `-uiTestStubAI`, every batch of ideas takes 4 s (Find inspiration waiting for the next ones).
+/// - `-uiTestIdeasFail`: with `-uiTestStubAI`, every batch of ideas fails (Find inspiration's "Try again").
 /// - `-uiTestChapterAt <seconds>`: the opening of the chapter on screen (1.2 to 1.6) stands still at that second of its timeline.
 /// - `-uiTestWelcomeOpening`: the welcome's star opening (1.1) plays in full (about 8 s); UI tests otherwise show its final state.
 /// - `-uiTestSceneCapture <on|off>`: the scene starts recorded or mirrored (`on`) or not, and the test runner can start and stop
@@ -259,7 +261,10 @@ struct LaunchOptions {
                 options.dictation = DictationService(audio: scripted, speech: scripted, microphone: scripted.microphone)
             }
             if arguments.contains("-uiTestStubAI") || arguments.contains("-uiTestNoAI") {
-                options.writer = StubScriptWriter(available: !arguments.contains("-uiTestNoAI"), stalls: arguments.contains("-uiTestWriterStalls"))
+                options.writer = StubScriptWriter(
+                    available: !arguments.contains("-uiTestNoAI"), stalls: arguments.contains("-uiTestWriterStalls"),
+                    ideasDelay: arguments.contains("-uiTestIdeasSlow") ? .seconds(4) : nil, ideasFail: arguments.contains("-uiTestIdeasFail")
+                )
                 options.styleReader = arguments.contains("-uiTestNoAI") ? NoStyleReader() : StubStyleReader()
                 // A test never waits for words to arrive one by one, unless it is looking at them arrive.
                 options.scriptRevealPause = arguments.contains("-uiTestSlowWriting") ? .milliseconds(2_000) : .zero

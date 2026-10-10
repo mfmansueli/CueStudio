@@ -40,6 +40,11 @@ protocol ScriptWriting: AnyObject {
     /// topics apart answers as `themeIdeas(for:)` does.
     func suggestIdeas(slots: [IdeaSlot], language: CueLanguage?, voice: CreatorVoice?, inspiration: [String]) async throws -> [ThemeIdea]
 
+    /// `suggestIdeas` as whole briefs (`ThemeIdea.brief`), asked `priority` (`IdeaRequestPriority`): a prefetch never makes a script wait.
+    func suggestIdeas(
+        slots: [IdeaSlot], language: CueLanguage?, voice: CreatorVoice?, inspiration: [String], priority: IdeaRequestPriority
+    ) async throws -> [ThemeIdea]
+
     /// Why Apple Intelligence can't write in `languages` right now (a translation lists both), told before
     /// anything is sent; nil when it can. Being available says nothing about a language.
     func writingFailure(in languages: [Locale.Language]) -> AIPlanFailure?
@@ -60,6 +65,13 @@ extension ScriptWriting {
 
     func suggestIdeas(slots: [IdeaSlot], language: CueLanguage?, voice: CreatorVoice?, inspiration: [String]) async throws -> [ThemeIdea] {
         try await themeIdeas(for: slots.compactMap(\.topic.niche), language: language, voice: voice)
+    }
+
+    /// A writer with no queue of its own (tests, the structured draft) answers every request the same way.
+    func suggestIdeas(
+        slots: [IdeaSlot], language: CueLanguage?, voice: CreatorVoice?, inspiration: [String], priority: IdeaRequestPriority
+    ) async throws -> [ThemeIdea] {
+        try await suggestIdeas(slots: slots, language: language, voice: voice, inspiration: inspiration)
     }
 
     /// A writer that edits in one piece reports it as one part, done.

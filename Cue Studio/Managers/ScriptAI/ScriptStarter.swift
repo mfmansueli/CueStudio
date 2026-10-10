@@ -22,6 +22,9 @@ final class ScriptStarter {
     private let sky: SkyMemory
     private let writer: ScriptWriting
     private let toast: ToastService
+    /// Told when a script was written from an idea of Find inspiration's (what of its brief the creator's text still said): the strongest sign of
+    /// what they want, which the next ideas lean to (`IdeaSuggestionService.generated(from:)`). Set by `AppServices`, so no screen has to.
+    var briefWritten: ((IdeaBrief) -> Void)?
 
     init(
         library: ScriptLibraryService, rules: PlatformRulesService, profile: CreatorProfileService,
@@ -84,6 +87,7 @@ final class ScriptStarter {
             abort: { [weak self] in self?.abort(scriptID) },
             arrive: { [weak self] in
                 self?.sky.addStar()
+                if let brief = request.brief { self?.briefWritten?(brief) }
                 whenWritten?(scriptID)
             }
         )

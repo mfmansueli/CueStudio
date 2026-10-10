@@ -125,7 +125,13 @@ struct NotificationNavigator {
             services.toast.show(String(localized: "That idea isn’t here any more · try ↻ for another"), duration: Self.goneDuration)
             return
         }
-        services.ideaDraft.text = idea.prompt
+        // An idea with a brief goes in whole (title, angle, opening line), as "Use this idea" puts it, so the script follows it.
+        if idea.brief != nil {
+            services.ideaDraft.use(idea)
+            services.ideaSuggestions.selected(idea)
+        } else {
+            services.ideaDraft.text = idea.prompt
+        }
         services.ideaDraft.length = idea.length
     }
 

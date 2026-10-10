@@ -44,20 +44,26 @@ struct IdeaSuggestionServiceTests {
         (1...count).map { number in
             var idea = ThemeIdea(title: "\(prefix) \(number)", kind: "List", length: .minute1, niche: niche)
             idea.angle = angle?.rawValue
+            idea.brief = IdeaBrief(
+                subject: idea.title, angle: "Explain \(prefix) \(number).", openingLine: "Here is \(prefix) \(number).", angleKind: angle?.rawValue,
+                topicKey: niche.rawValue
+            )
             return idea
         }
     }
 
     // MARK: - Starters
 
-    @Test func withNoTopicsTheStartersAreLifestyleAndAnotherOneRotates() {
+    @Test func withNoTopicsTheStartersAreEverydayOnesAndAnotherOneRotates() {
         let rig = rig()
         defer { rig.defaults.tearDown() }
         let first = rig.service.current
         rig.service.another()
         let second = rig.service.current
-        #expect(first?.niche == .lifestyle && second?.niche == .lifestyle)
+        #expect(first?.niche == .lifestyle)
+        #expect([Niche.lifestyle, .productivity, .food].contains(second?.niche ?? .beauty))
         #expect(first != second)
+        #expect(first?.brief != nil, "a starter is a whole brief too")
     }
 
     @Test func aFirstFlightTopicHasItsOwnStarters() {
@@ -66,10 +72,14 @@ struct IdeaSuggestionServiceTests {
         #expect(rig.service.current?.niche == .finance)
     }
 
-    @Test func aCreatorWhoHoldsOnlyTheirOwnTopicsGetsNoStarterAboutSomethingElse() {
+    @Test func aCreatorWhoHoldsOnlyTheirOwnTopicsGetsStartersAboutThemNotAboutSomethingElse() {
         let rig = rig { $0.customTopics = ["Daily Routine"]; $0.voiceTopics = [.languages] }
         defer { rig.defaults.tearDown() }
-        #expect(rig.service.current == nil)
+        let first = rig.service.current
+        #expect(first?.topic != nil, "made from one of their topics, not a first-flight niche")
+        #expect(first?.title.contains(first?.topic ?? "-") == true)
+        rig.service.another()
+        #expect(rig.service.current?.topic != first?.topic, "their topics in turn")
     }
 
     // MARK: - The model's ideas
@@ -237,7 +247,7 @@ struct IdeaSuggestionServiceTests {
         rig.profile.profile = profile
         rig.service.prepare()
         #expect(rig.service.pool.isEmpty)
-        #expect(rig.service.current == nil)
+        #expect(rig.service.current?.topic == "Gardening", "a starter about the new topic until its ideas come")
         #expect(rig.service.taste.angles[IdeaAngle.myth.rawValue, default: 0] > 0)
     }
 

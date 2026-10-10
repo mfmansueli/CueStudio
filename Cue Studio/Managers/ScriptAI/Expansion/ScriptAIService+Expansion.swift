@@ -53,7 +53,9 @@ extension ScriptAIService {
         let text = ScriptExpansion.assembling(blocks, replacing: replacements)
         // Only a script that is still in its language, and breaks no more of what the creator asked than before, takes the place of the first.
         guard (try? Self.requireLanguage(request.language?.locale.language, in: text)) != nil else { return script }
-        let kinds = VoiceConstraintChecker.violations(in: text, voice: request.voice, language: request.language, minimumWords: minimum).map(\.kind)
+        let kinds = VoiceConstraintChecker.violations(
+            in: text, voice: request.voice, language: request.language, minimumWords: minimum, openingLine: request.brief?.openingLine
+        ).map(\.kind)
         guard kinds.filter({ $0 != .tooShort }).count <= script.voiceViolations.filter({ $0 != .tooShort }).count else { return script }
         var longer = script
         longer.text = text
