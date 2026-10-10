@@ -34,7 +34,7 @@ nonisolated enum PaywallCopy {
     /// What Pro offers, as the board lists it (11.4).
     static let benefits: [ProBenefit] = [
         ProBenefit(mark: "✓", text: String(localized: "Unlimited exports, up to 4K"), tag: String(localized: "EXPORT"), tone: .plain),
-        ProBenefit(mark: "✓", text: String(localized: "Full My Cue Voice + sponsored-ad scripts"), tag: String(localized: "AI"), tone: .ai),
+        ProBenefit(mark: "✓", text: String(localized: "Full My Cue Voice + sponsored-ad drafts"), tag: String(localized: "AI"), tone: .ai),
         ProBenefit(mark: "✓", text: String(localized: "Hook variations, platform versions, best-take picks"), tag: String(localized: "AI"), tone: .ai),
         ProBenefit(mark: "✓", text: String(localized: "Cover styles, series tags, “Text behind me”"), tag: String(localized: "EDIT"), tone: .plain),
         ProBenefit(

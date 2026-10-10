@@ -7,7 +7,7 @@ import Foundation
 import Testing
 @testable import Cue_Studio
 
-/// One inspiration as one brief: what "Use this idea" puts in the field, never past its 200 characters, and what of it still stands once the creator
+/// One inspiration as one brief: what "Start with it" puts in the field, never past its 200 characters, and what of it still stands once the creator
 /// has changed the text (their words win over the card's).
 @Suite("Idea brief")
 struct IdeaBriefTests {

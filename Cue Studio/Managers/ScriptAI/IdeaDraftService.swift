@@ -27,12 +27,12 @@ final class IdeaDraftService {
     }
     /// The brand brief of a sponsored ad picked on the card: the ad is written from it, and from nothing else.
     var brand: BrandBrief?
-    /// "Let Cue write it" in Start a video: the card takes the keyboard (it turns false again once it has).
+    /// "Let Cue draft it" in Start a video: the card takes the keyboard (it turns false again once it has).
     var wantsFocus = false
-    /// The inspiration the text came from ("Use this idea" in Find inspiration). Kept as it was given; what is sent is only what the text
+    /// The inspiration the text came from ("Start with it" in Find inspiration). Kept as it was given; what is sent is only what the text
     /// still says of it (`submittedBrief`), so a creator who changes the idea's direction is never overridden by the card.
     private(set) var brief: IdeaBrief?
-    /// What the field held before "Use this idea" replaced it: Undo puts it back.
+    /// What the field held before "Start with it" replaced it: Undo puts it back.
     private(set) var replacedText: String?
 
     /// The text as the creator sees it. Writing it here (typing, paste, an example) ends a dictation
@@ -60,7 +60,7 @@ final class IdeaDraftService {
 
     // MARK: - Inspiration
 
-    /// "Use this idea": the whole brief in the field, to change before it is written. The format, platform and voice chosen on the card stay.
+    /// "Start with it": the whole brief in the field, to change before it is written. The format, platform and voice chosen on the card stay.
     /// What the field held is kept for `undoUse()`: an idea never silently replaces the creator's own.
     func use(_ idea: ThemeIdea) {
         let previous = draft.trimmedText
@@ -70,10 +70,10 @@ final class IdeaDraftService {
         brief = idea.brief
     }
 
-    /// "Use this idea" replaced text the creator had written: Undo can put it back.
+    /// "Start with it" replaced text the creator had written: Undo can put it back.
     var canUndoUse: Bool { replacedText != nil }
 
-    /// Undo after "Use this idea": the creator's text comes back, without the brief.
+    /// Undo after "Start with it": the creator's text comes back, without the brief.
     func undoUse() {
         guard let replacedText else { return }
         draft = IdeaPromptDraft()

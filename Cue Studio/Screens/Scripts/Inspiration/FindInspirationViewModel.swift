@@ -6,8 +6,8 @@
 import Foundation
 
 /// Find inspiration: one idea at a time about the topic chosen in the filters (all of them, or one), "Another idea" for the next, and the
-/// two ways to take one: "Use this idea" puts its brief in the dock's composer to change first (what the field held comes back with Undo),
-/// and "Write the script now" writes it as it is. The ideas, their order and what the creator's choices teach are `IdeaSuggestionService`'s;
+/// two ways to take one: "Start with it" puts its brief in the dock's composer to change first (what the field held comes back with Undo),
+/// and "Draft it now" writes it as it is. The ideas, their order and what the creator's choices teach are `IdeaSuggestionService`'s;
 /// this keeps the filter and says what the card shows.
 @MainActor
 @Observable
@@ -119,7 +119,7 @@ final class FindInspirationViewModel {
         suggestions.retry(in: filter)
     }
 
-    /// "Use this idea": its brief goes into the composer to be changed before it is written. Returns whether it took the place of words
+    /// "Start with it": its brief goes into the composer to be changed before it is written. Returns whether it took the place of words
     /// the creator had there (they come back with `undoUse()`; an idea never silently replaces the creator's own).
     @discardableResult
     func use(_ idea: ThemeIdea) -> Bool {
@@ -132,7 +132,7 @@ final class FindInspirationViewModel {
         draft.undoUse()
     }
 
-    /// "Write the script now": the idea was picked as it is (the script it becomes is the engine's to count).
+    /// "Draft it now": the idea was picked as it is (the script it becomes is the engine's to count).
     func willWrite(_ idea: ThemeIdea) {
         suggestions.selected(idea)
     }

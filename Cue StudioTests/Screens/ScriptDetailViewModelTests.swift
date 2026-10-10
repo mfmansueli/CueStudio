@@ -226,7 +226,7 @@ struct ScriptDetailViewModelTests {
         defer { scenario.defaults.tearDown() }
         await scenario.viewModel.run(.moreEnergy)
         #expect(scenario.writer.lastRewrite == nil)
-        #expect(scenario.toast.message == "Write something first, then Cue can improve it")
+        #expect(scenario.toast.message == "Write a few lines. Cue builds on them.")
     }
 
     @Test func destinationChangeAppliesThePreset() {

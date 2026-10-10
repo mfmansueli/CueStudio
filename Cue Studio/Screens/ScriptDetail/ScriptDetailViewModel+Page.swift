@@ -290,7 +290,7 @@ extension ScriptDetailViewModel {
             let result = try await writer.rewriteReported(selected, with: tool, context: rewriteContext)
             // The tool couldn't do what it says to these words: they stay, and the creator is told, instead of a "change" that changes nothing.
             guard !result.isUntouched, result.text != selected else {
-                toast.show(String(localized: "Couldn’t write it · Try again"))
+                toast.show(String(localized: "Couldn’t draft it · Try again"))
                 return
             }
             replace(range, with: result.text, action: action, original: selected)
@@ -429,7 +429,7 @@ extension ScriptDetailViewModel {
     /// waiting), otherwise "Try again".
     static func failureMessage(for error: any Error) -> String {
         if let error = error as? ScriptAIError, error.explainsItself { return error.localizedDescription }
-        return String(localized: "Couldn’t write it · Try again")
+        return String(localized: "Couldn’t draft it · Try again")
     }
 
     /// "Try again" after an error: the same idea, once more.
@@ -466,6 +466,7 @@ extension ScriptDetailViewModel {
         // The idea became a script: the card starts empty the next time.
         clearDraft(writtenFrom: request)
         if request?.voice != nil { voiceQuestions?.recordVoiceScript(scriptID) }
+        draftLearning?.noteDraft(generated.text, for: scriptID)
         toast.show(generated.needsFactCheck
             ? String(localized: "Draft ready · Check facts")
             : String(localized: "Draft ready · Edit anything"))

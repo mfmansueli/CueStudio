@@ -91,10 +91,10 @@ struct MessageCard: View {
         .frame(height: 22)
     }
 
-    /// "✦ WRITING YOUR MESSAGE" with the light crossing it and three dots that bob.
+    /// "✦ DRAFTING YOUR MESSAGE" with the light crossing it and three dots that bob.
     private var writingLabel: some View {
         HStack(spacing: 0) {
-            Text("✦ WRITING YOUR MESSAGE")
+            Text("✦ DRAFTING YOUR MESSAGE")
                 .foregroundStyle(Palette.aiText)
                 .overlay { shimmer }
             HStack(spacing: 2) {
@@ -116,7 +116,7 @@ struct MessageCard: View {
                 .frame(width: proxy.size.width * 0.5)
                 .offset(x: center - proxy.size.width * 0.25)
         }
-        .mask { Text("✦ WRITING YOUR MESSAGE") }
+        .mask { Text("✦ DRAFTING YOUR MESSAGE") }
         .allowsHitTesting(false)
     }
 

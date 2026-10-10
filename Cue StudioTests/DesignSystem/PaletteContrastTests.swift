@@ -395,7 +395,7 @@ struct PaletteContrastTests {
         }
     }
 
-    /// "✦ Writing in your voice 42%": the page's pill, its words on the violet fill over the page.
+    /// "✦ Drafting in your voice 42%": the page's pill, its words on the violet fill over the page.
     @Test func theWritingPillReadsOnItsFill() {
         for appearance in Appearance.allCases {
             let measured = ratio(Palette.aiTextStrong, onTint: Palette.Page.writingPillFill, over: Palette.bg, in: appearance)

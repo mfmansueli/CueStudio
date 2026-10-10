@@ -54,6 +54,8 @@ nonisolated enum DefaultsKey {
     static let firstStarShown = "firstStarShown"
     /// The first voyage's own marks (`VoyageMarks`, JSON): its stage, the practice, a skipped Polish, tips closed, segments lit.
     static let firstVoyage = "firstVoyage"
+    /// The words Cue drafted for each script, until it is recorded (`DraftLearningService`).
+    static let cueDrafts = "cueDrafts"
     /// The videos shared (once each), the day of the first one, and the milestones already told.
     static let sharedTakeIDs = "sharedTakeIDs"
     static let firstShareDate = "firstShareDate"

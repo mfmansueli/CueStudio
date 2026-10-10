@@ -369,7 +369,7 @@ struct DesignCatalogueView: View {
             WordsFromLight(text: "Okay, real talk. Three tiny habits completely changed my mornings.", trigger: words)
                 .contentShape(Rectangle()).onTapGesture { words += 1 }
             heading("AI aura (tap)")
-            Text("✦ Writing in your voice").foregroundStyle(Palette.aiText).frame(maxWidth: .infinity, minHeight: 80)
+            Text("✦ Drafting in your voice").foregroundStyle(Palette.aiText).frame(maxWidth: .infinity, minHeight: 80)
                 .background(Palette.surface, in: RoundedRectangle(cornerRadius: Metrics.cardRadius, style: .continuous))
                 .aiAura(isActive: aura).onTapGesture { aura.toggle() }
             heading("Shine sweep")

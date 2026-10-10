@@ -39,7 +39,7 @@ nonisolated struct IdeaBrief: Hashable, Codable, Sendable {
         self.topicKey = topicKey
     }
 
-    /// What "Use this idea" puts in the composer: the whole brief, as text the creator can change. Never longer than the composer takes
+    /// What "Start with it" puts in the composer: the whole brief, as text the creator can change. Never longer than the composer takes
     /// (`IdeaPromptDraft.maxCharacters`): a brief that is longer loses the end of its opening line, then of its angle, at a word, never
     /// in the middle of one (`fitted`).
     var composerText: String {

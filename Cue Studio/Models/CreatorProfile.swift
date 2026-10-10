@@ -24,7 +24,7 @@ nonisolated struct CreatorProfile: Codable, Hashable, Sendable {
     var sounds: [VoiceSound]
     var vocabulary: Vocabulary
     var styles: [VoiceStyle]
-    /// "Use my voice in AI scripts": the default of "Write in my voice" when generating.
+    /// "Use my voice in drafts": the default of "Write in my voice" when generating.
     var usesVoiceInAI: Bool
     var defaultPlatform: Platform
     /// Aims length goals at what earns money (TikTok 1:00+, YouTube 8:00+).

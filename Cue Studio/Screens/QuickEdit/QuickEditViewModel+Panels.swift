@@ -64,7 +64,7 @@ extension QuickEditViewModel {
 
     private func captionSubtitle(_ panel: EditorPanel) -> String {
         switch panel {
-        case .autoCaptions: return String(localized: "Cue listens to your take and writes the lines")
+        case .autoCaptions: return String(localized: "Cue drafts the lines. Fix any word.")
         case .captionStyle: return String(localized: "Applies to all \(editedCaptionLines.count) lines")
         default:
             guard edit.showsCaptions else { return String(localized: "Hidden in the video") }

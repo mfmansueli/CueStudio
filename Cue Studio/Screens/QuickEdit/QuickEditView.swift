@@ -245,12 +245,15 @@ struct QuickEditView: View {
 
     private var polishTip: some View {
         VoyageTipCard(
-            step: .polish, symbol: "captions.bubble", title: String(localized: "Add captions"),
-            message: String(localized: "Lots of people watch with the sound off. Cue writes them from your voice, on this iPhone."),
-            primary: (String(localized: "Add captions"), { viewModel.openCaptions() }),
-            secondary: (String(localized: "Skip this step"), { withAnimation(.smooth(duration: 0.25)) { services.voyage.skipPolish() } }),
-            onClose: { withAnimation(.smooth(duration: 0.25)) { services.voyage.closeTip(.polish) } }
+            step: .polish, symbol: VoyageStep.polish.symbol, title: VoyageStep.polish.tipTitle(), message: VoyageStep.polish.tipMessage(),
+            primary: (VoyageStep.polish.tipAction(), {
+                services.voyage.tipActed(.polish, at: .editor)
+                viewModel.openCaptions()
+            }),
+            secondary: (String(localized: "Skip"), { withAnimation(.smooth(duration: 0.25)) { services.voyage.skipPolish(at: .editor) } }),
+            onClose: { withAnimation(.smooth(duration: 0.25)) { services.voyage.closeTip(.polish, at: .editor) } }
         )
+        .onAppear { services.voyage.tipShown(.polish, at: .editor) }
     }
 
     @ViewBuilder

@@ -215,7 +215,7 @@ final class ButtonPromisesUITests: XCTestCase {
         scrollSheet(app, to: app.buttons["improve.tool.moreEnergy"])
         app.buttons["improve.tool.moreEnergy"].tap()
         XCTAssertTrue(
-            app.staticTexts["Write something first, then Cue can improve it"].waitForExistence(timeout: 5),
+            app.staticTexts["Write a few lines. Cue builds on them."].waitForExistence(timeout: 5),
             "A tool ran on a script with nothing in it, or said nothing"
         )
         XCTAssertFalse(editorText(app).contains("Rewritten"))

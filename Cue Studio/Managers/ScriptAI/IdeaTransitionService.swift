@@ -171,9 +171,9 @@ final class IdeaTransitionService {
     /// The phrases while the AI writes, in order; the last is always the one shown at the end. `platform` fills "Shaping it for …".
     static func phrases(platform: String) -> [String] {
         [
-            String(localized: "Finding your hook…"),
+            String(localized: "Drafting a hook…"),
             String(localized: "Lining up the stars"),
-            String(localized: "Making it sound like you"),
+            String(localized: "Shaping it your way"),
             String(localized: "Saving room for your pause"),
             String(localized: "Trimming the extra words"),
             String(localized: "Warming up the prompter"),
@@ -181,11 +181,11 @@ final class IdeaTransitionService {
         ]
     }
 
-    static var finishPhrase: String { String(localized: "Almost camera-ready") }
+    static var finishPhrase: String { String(localized: "Draft almost ready") }
 
     /// Seconds after which the AI is said to be taking longer than usual (a request is given up on by itself a little later: `GenerationDeadlines`).
     static let longWait: TimeInterval = 22
 
     /// What the star says once the wait is long.
-    static var longWaitPhrase: String { String(localized: "Still writing · this one is taking a little longer") }
+    static var longWaitPhrase: String { String(localized: "Still drafting · taking a little longer") }
 }

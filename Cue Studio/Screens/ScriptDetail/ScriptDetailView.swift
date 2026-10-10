@@ -31,7 +31,8 @@ struct ScriptDetailView: View {
             writer: services.writer,
             toast: services.toast,
             voiceQuestions: services.voiceQuestions,
-            transition: services.ideaTransition
+            transition: services.ideaTransition,
+            draftLearning: services.draftLearning
         ))
     }
 
@@ -57,7 +58,7 @@ struct ScriptDetailView: View {
         .hidesCueTabBar()
         .task { viewModel.beginWritingIfNeeded() }
         .onDisappear(perform: offerReminderInvite)
-        .alert("Couldn't write the script", isPresented: Binding(
+        .alert("Couldn't draft the script", isPresented: Binding(
             get: { viewModel.page.writingError != nil },
             set: { if !$0 { viewModel.page.writingError = nil } }
         )) {

@@ -69,8 +69,9 @@ struct ScriptsView: View {
                 // the list (the owner's call, 6/10/2026).
                 if !viewModel.isSelecting {
                     VStack(spacing: 10) {
-                        // The My Cue Voice question, 10 pt above the dock.
-                        VoiceQuestionTipHost(isQuiet: isQuiet)
+                        // The first voyage's next step, 10 pt above the dock; the My Cue Voice question waits while it has one.
+                        VoyageFloatingTip(place: .scripts, isQuiet: isQuiet)
+                        VoiceQuestionTipHost(isQuiet: isQuiet && voyage.floatingStep == nil)
                         ScriptsDock(
                             showsFormat: true, isFolded: isDockFolded, isEditing: $isDockEditing,
                             unavailableReason: writerUnavailableReason
@@ -209,10 +210,6 @@ struct ScriptsView: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.horizontal, 4)
                     .accessibilityIdentifier("scripts.summary")
-            }
-            if voyage.showsCard, !viewModel.isSelecting, viewModel.query.isEmpty {
-                // The first voyage's next step, over the list until the first video is shared.
-                blockRow(top: 14) { VoyageCard(host: .scripts) }
             }
             blockRow(top: 14) {
                 SearchField(text: $viewModel.query, prompt: "Search scripts", isFocused: $isSearchFocused)

@@ -25,6 +25,7 @@ struct ScriptPageView: View {
     @State private var newCue = ""
     @Environment(\.scenePhase) private var scenePhase
     @Environment(FirstVoyageService.self) private var voyage
+    @Environment(DraftLearningService.self) private var draftLearning
     /// The editor's own minimum height, kept by the words the AI writes in too.
     @ScaledMetric(relativeTo: .body) private var editorMinimumHeight = 300.0
 
@@ -341,10 +342,17 @@ struct ScriptPageView: View {
                     onRemove: { viewModel.removeCue($0) }
                 )
             } else if let strip = viewModel.strip {
-                if voyage.showsTip(for: .practice), !viewModel.page.isWriting {
-                    practiceTip
-                        .padding(.bottom, 10)
-                        .transition(.opacity.combined(with: .move(edge: .bottom)))
+                if !viewModel.page.isWriting {
+                    // The first voyage: Cue's first draft is the creator's to change, then read it once. One at a time.
+                    if voyage.showsDraftTip(isCueDraft: draftLearning.isCueDraft(script.id)) {
+                        draftTip
+                            .padding(.bottom, 10)
+                            .transition(.opacity.combined(with: .move(edge: .bottom)))
+                    } else if voyage.showsTip(for: .practice) {
+                        practiceTip
+                            .padding(.bottom, 10)
+                            .transition(.opacity.combined(with: .move(edge: .bottom)))
+                    }
                 }
                 ScriptRecordButton(title: strip.recordsAgain ? "Retake" : "Record", isPrimary: strip.recordIsPrimary, action: record)
                     .disabled(viewModel.page.isWriting)
@@ -391,18 +399,34 @@ struct ScriptPageView: View {
         if viewModel.recordsNow() { onRecord() }
     }
 
-    /// The first voyage's second step, over Record: read it once in Studio (nothing is recorded), or record now.
+    /// Over Record, once, after Cue's first draft: it is a starting point, the creator's to change, and Cue learns from what they keep.
+    private var draftTip: some View {
+        VoyageTipCard(
+            step: voyage.progress.current ?? .practice, symbol: "pencil.line", title: String(localized: "A first draft. Yours to change."),
+            message: String(localized: "Rewrite freely. Tap Sounds like me and Cue learns from it."),
+            primary: (String(localized: "Edit"), {
+                withAnimation(.smooth(duration: 0.25)) { voyage.finishDraftTip(acted: true) }
+                focus = .text
+            }),
+            identifier: "voyage.tip.draft",
+            onClose: { withAnimation(.smooth(duration: 0.25)) { voyage.finishDraftTip(acted: false) } }
+        )
+        .onAppear { voyage.draftTipShown() }
+    }
+
+    /// The first voyage's second step, over Record: read it out loud once in Studio (nothing is recorded).
     private var practiceTip: some View {
         VoyageTipCard(
-            step: .practice, symbol: "text.alignleft", title: String(localized: "Practice it once"),
-            message: String(localized: "Read it on the teleprompter. The text follows your voice; nothing is recorded."),
-            primary: (String(localized: "Practice"), {
+            step: .practice, symbol: VoyageStep.practice.symbol, title: VoyageStep.practice.tipTitle(),
+            message: VoyageStep.practice.tipMessage(duration: script.isEmpty ? nil : DurationText.clock(ReadTime.seconds(for: viewModel.page.text))),
+            primary: (VoyageStep.practice.tipAction(), {
+                voyage.tipActed(.practice, at: .page)
                 focus = nil
                 viewModel.commitPage()
                 actions.studio(script)
             }),
-            secondary: (String(localized: "Skip, record now"), record),
-            onClose: { withAnimation(.smooth(duration: 0.25)) { voyage.closeTip(.practice) } }
+            onClose: { withAnimation(.smooth(duration: 0.25)) { voyage.closeTip(.practice, at: .page) } }
         )
+        .onAppear { voyage.tipShown(.practice, at: .page) }
     }
 }

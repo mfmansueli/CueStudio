@@ -42,4 +42,11 @@ enum TelemetryManager {
         guard FirebaseApp.app() != nil else { return }
         Analytics.logEvent("cue_notification", parameters: event.parameters)
     }
+
+    /// A first voyage tip shown, acted on or closed, or a step done, as an Analytics event: the step, the place and the outcome, nothing
+    /// else. Only called with "Help improve Cue" on (`AppServices`); nothing when Firebase isn't running.
+    static func record(_ event: VoyageTelemetryEvent) {
+        guard FirebaseApp.app() != nil else { return }
+        Analytics.logEvent("cue_voyage", parameters: event.parameters)
+    }
 }

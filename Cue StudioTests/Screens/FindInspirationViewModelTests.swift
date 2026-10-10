@@ -7,7 +7,7 @@ import Foundation
 import Testing
 @testable import Cue_Studio
 
-/// Find inspiration: the filters it offers, what the card shows, "Another idea", and "Use this idea" with its Undo.
+/// Find inspiration: the filters it offers, what the card shows, "Another idea", and "Start with it" with its Undo.
 @MainActor
 @Suite("Find inspiration")
 struct FindInspirationViewModelTests {
@@ -152,7 +152,7 @@ struct FindInspirationViewModelTests {
         rig.writer.holdsSuggestions = false
     }
 
-    // MARK: - Use this idea
+    // MARK: - Start with it
 
     @Test func usingAnIdeaInAnEmptyComposerPutsTheWholeBriefThereAndOffersNoUndo() {
         let rig = rig()

@@ -32,6 +32,11 @@ struct TakesView: View {
         ))
     }
 
+    /// Nothing else has Takes: no sheet, camera or other tab.
+    private var isQuiet: Bool {
+        presentation.sheet == nil && presentation.prompter == nil && presentation.selectedTab == .takes
+    }
+
     private var layout: Binding<TakeLayout> {
         Binding(get: { TakeLayout(rawValue: layoutValue) ?? .grid }, set: { layoutValue = $0.rawValue })
     }
@@ -40,14 +45,7 @@ struct TakesView: View {
         @Bindable var viewModel = viewModel
         Group {
             if viewModel.isEmpty {
-                VStack(spacing: 0) {
-                    if voyage.showsCard {
-                        VoyageCard(host: .takes)
-                            .padding(.horizontal, Metrics.gutter)
-                            .padding(.top, 8)
-                    }
-                    emptyTakes
-                }
+                emptyTakes
             } else if layout.wrappedValue == .grid {
                 grid
             } else {
@@ -55,10 +53,13 @@ struct TakesView: View {
             }
         }
         .safeAreaInset(edge: .bottom, spacing: 0) {
-            // The My Cue Voice question, 10 pt above the tab bar.
-            VoiceQuestionTipHost(isQuiet: presentation.sheet == nil && presentation.prompter == nil && presentation.selectedTab == .takes)
-                .padding(.horizontal, 12)
-                .padding(.bottom, 10)
+            // The first voyage's next step, 10 pt above the tab bar; the My Cue Voice question waits while it has one.
+            VStack(spacing: 10) {
+                VoyageFloatingTip(place: .takes, isQuiet: isQuiet && services.toast.message == nil)
+                VoiceQuestionTipHost(isQuiet: isQuiet && voyage.floatingStep == nil)
+            }
+            .padding(.horizontal, 12)
+            .padding(.bottom, 10)
         }
         .skyBackground()
         .navigationTitle("Takes")
@@ -124,9 +125,6 @@ struct TakesView: View {
         return VStack(alignment: .leading, spacing: 14) {
             HUDLine(values: viewModel.summaryValues, separator: " · ")
                 .padding(.horizontal, 4)
-            if voyage.showsCard {
-                VoyageCard(host: .takes)
-            }
             TakePipelineCard(pipeline: pipeline, selected: viewModel.filter.stage, onSelect: { viewModel.toggle($0) })
             if let next = pipeline.next {
                 TakeUpNextCard(

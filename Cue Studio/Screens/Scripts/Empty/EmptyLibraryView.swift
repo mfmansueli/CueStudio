@@ -11,7 +11,7 @@ import SwiftUI
 ///
 /// The first use has the small constellation, "How do you want to start?" and "Pick the easiest way to get your words flowing."; a creator
 /// who had scripts and deleted them all (`ScriptsEmptyState.returning`) gets the same cards under a lighter header, without the illustration.
-/// While the first voyage is on, a slim strip above says these ways in are its first step (`VoyageStrip`).
+/// While the first voyage is on, its first tip sits above the dock (`VoyageFloatingTip`), not here.
 ///
 /// It fits between the title and the dock without scrolling (the dock never moves): the version with the constellation when there is
 /// room, without it when not, and only past that (very large text, the smallest iPhone) it scrolls.
@@ -24,8 +24,6 @@ struct EmptyLibraryView: View {
     let kind: Kind
     let onWrite: () -> Void
     let onImport: () -> Void
-
-    @Environment(FirstVoyageService.self) private var voyage
 
     var body: some View {
         ViewThatFits(in: .vertical) {
@@ -45,7 +43,6 @@ struct EmptyLibraryView: View {
             HUDLine(values: [kind == .firstUse ? String(localized: "No scripts yet") : String(localized: "No scripts right now")], tint: Palette.inkHint)
                 .padding(.horizontal, 4)
                 .accessibilityIdentifier("scripts.summary")
-            voyageStep
             header(showsConstellation: showsConstellation && kind == .firstUse)
                 .padding(.top, 16)
             paths
@@ -57,21 +54,6 @@ struct EmptyLibraryView: View {
     }
 
     // MARK: - Pieces
-
-    /// The first voyage: a slim strip while writing is the step (the three ways in below are that step), else its card.
-    @ViewBuilder
-    private var voyageStep: some View {
-        if voyage.showsCard {
-            Group {
-                if voyage.progress.current == .write {
-                    VoyageStrip()
-                } else {
-                    VoyageCard(host: .scripts)
-                }
-            }
-            .padding(.top, 12)
-        }
-    }
 
     @ViewBuilder
     private func header(showsConstellation: Bool) -> some View {

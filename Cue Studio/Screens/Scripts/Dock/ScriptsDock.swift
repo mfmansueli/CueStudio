@@ -139,7 +139,7 @@ struct ScriptsDock: View {
         .onChange(of: ideaDraft.wantsFocus) { _, wants in
             guard wants else { return }
             ideaDraft.wantsFocus = false
-            // The caret goes after the text that was put there ("Use this idea"), not where it stood in the text it replaced.
+            // The caret goes after the text that was put there ("Start with it"), not where it stood in the text it replaced.
             selection = IdeaPromptDraft.selection(at: ideaDraft.text.count, in: ideaDraft.text)
             isFocused = true
         }

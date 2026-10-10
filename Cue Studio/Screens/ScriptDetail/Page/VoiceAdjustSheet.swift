@@ -18,7 +18,7 @@ struct VoiceAdjustSheet: View {
         VStack(alignment: .leading, spacing: 16) {
             SheetHeader(
                 title: String(localized: "What didn’t sound like you?"),
-                subtitle: String(localized: "Pick what to change. Cue rewrites it.")
+                subtitle: String(localized: "Cue suggests. You decide.")
             )
             FlowLayout(spacing: 8, lineSpacing: 0) {
                 ForEach(VoiceAdjustment.allCases) { adjustment in

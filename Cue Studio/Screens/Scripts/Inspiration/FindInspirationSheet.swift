@@ -5,10 +5,10 @@
 
 import SwiftUI
 
-/// Find inspiration (the empty Scripts' first way in, the dock's lightbulb, "+ › Let Cue write it" and the ideas notification): a large
-/// sheet with "Find inspiration" and "Ideas from your topics.", the topics as chips, one featured idea (`InspirationCard`) with a small
-/// orbit beside it, then "Another idea", the yellow "Use this idea" and a line saying where it goes. "Use this idea" puts the idea's brief in
-/// the dock's composer, to change before anything is written (what was there comes back with Undo); "Write the script now", quieter under
+/// Find inspiration (the empty Scripts' first way in, the dock's lightbulb, "+ › Let Cue draft it" and the ideas notification): a large
+/// sheet with "Find inspiration" and "Ideas to start from.", the topics as chips, one featured idea (`InspirationCard`) with a small
+/// orbit beside it, then "Another idea", the yellow "Start with it" and a line saying where it goes. "Start with it" puts the idea's brief in
+/// the dock's composer, to change before anything is written (what was there comes back with Undo); "Draft it now", quieter under
 /// it, writes it as it is and the star rises. Without Apple Intelligence the ideas are the starters, said so, and the direct way is
 /// "Write it yourself" (a blank draft with the idea as its title). Nothing is presented as a trend or as research: they are suggestions.
 struct FindInspirationSheet: View {
@@ -33,11 +33,11 @@ struct FindInspirationSheet: View {
     @Environment(\.dynamicTypeSize) private var typeSize
 
     @State private var editsTopics = false
-    /// Where "Write the script now" is: the star leaves from there.
+    /// Where "Draft it now" is: the star leaves from there.
     @State private var writeCenter: CGPoint?
-    /// "Use this idea" was tapped: the composer takes the keyboard once the sheet has gone.
+    /// "Start with it" was tapped: the composer takes the keyboard once the sheet has gone.
     @State private var focusesComposer = false
-    /// "Use this idea" took the place of the creator's words: the Undo toast comes once the sheet has gone, so all of its time is seen.
+    /// "Start with it" took the place of the creator's words: the Undo toast comes once the sheet has gone, so all of its time is seen.
     @State private var offersUndo = false
 
     init(services: AppServices) {
@@ -53,7 +53,7 @@ struct FindInspirationSheet: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 0) {
-                SheetHeader(title: String(localized: "Find inspiration"), subtitle: String(localized: "Ideas from your topics."))
+                SheetHeader(title: String(localized: "Find inspiration"), subtitle: String(localized: "Ideas to start from."))
                     .padding(.horizontal, Metrics.gutter)
                     .accessibilityAddTraits(.isHeader)
                 InspirationFilterBar(
@@ -123,7 +123,7 @@ struct FindInspirationSheet: View {
         if !hasAI {
             note(
                 symbol: Self.symbol,
-                text: Text("Starter ideas from Cue, to write yourself. With Apple Intelligence, Cue writes new ones about your topics."),
+                text: Text("Starter ideas to write yourself. With Apple Intelligence, Cue suggests more."),
                 identifier: "inspiration.startersNote"
             )
             .padding(.top, 14)
@@ -303,20 +303,20 @@ struct FindInspirationSheet: View {
         .accessibilityIdentifier("inspiration.another")
     }
 
-    /// The yellow "Use this idea", what it does, and the quieter direct way.
+    /// The yellow "Start with it", what it does, and the quieter direct way.
     private var actions: some View {
         let idea = viewModel.idea
         return VStack(spacing: 10) {
             Button {
                 if let idea { use(idea) }
             } label: {
-                Text("Use this idea")
+                Text("Start with it")
             }
             .buttonStyle(.cuePrimary(.large))
             .disabled(idea == nil || transition.isActive)
-            .accessibilityHint(Text("Puts the idea in the composer, to change before it is written."))
+            .accessibilityHint(Text("Puts it in the composer to make it yours."))
             .accessibilityIdentifier("inspiration.use")
-            Text("It goes into the composer, so you can make it yours before Cue writes.")
+            Text("It goes into the composer. Make it yours first.")
                 .font(.footnote)
                 .foregroundStyle(Palette.ink2)
                 .multilineTextAlignment(.center)
@@ -330,7 +330,7 @@ struct FindInspirationSheet: View {
         .padding(.bottom, 8)
     }
 
-    /// The direct way, as a quiet text action so it never competes with "Use this idea": "✦ Write the script now" with Apple Intelligence,
+    /// The direct way, as a quiet text action so it never competes with "Start with it": "✦ Draft it now" with Apple Intelligence,
     /// "Write it yourself" (a blank draft) without it.
     private func writeNowButton(_ idea: ThemeIdea?) -> some View {
         Button {
@@ -340,7 +340,7 @@ struct FindInspirationSheet: View {
                 if hasAI {
                     HStack(spacing: 6) {
                         Text(verbatim: "✦").accessibilityHidden(true)
-                        Text("Write the script now")
+                        Text("Draft it now")
                     }
                 } else {
                     Text("Write it yourself")
@@ -364,7 +364,7 @@ struct FindInspirationSheet: View {
     }
 
     private var writeNowHint: LocalizedStringKey {
-        hasAI ? "Writes a script from this idea now, as it is." : "Opens a blank draft with this idea as its title."
+        hasAI ? "Drafts it now. Change anything after." : "Opens a blank draft with this idea as its title."
     }
 
     private func another() {

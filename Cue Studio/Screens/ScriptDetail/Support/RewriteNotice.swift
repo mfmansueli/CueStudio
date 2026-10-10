@@ -62,7 +62,7 @@ nonisolated struct RewriteNotice: Equatable, Sendable {
             let range = DurationText.clock(idealRange.lowerBound) + "–" + DurationText.clock(idealRange.upperBound)
             return String(localized: "Already fits \(range)")
         default:
-            return String(localized: "Couldn’t write it · Try again")
+            return String(localized: "Couldn’t draft it · Try again")
         }
     }
 }

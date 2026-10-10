@@ -32,7 +32,7 @@ struct VoiceReachField: View {
                     values: VideoLength.allCases, selection: current.reach.length, label: \.label,
                     onPick: { profile.answer(.length, with: VoiceOption(id: $0.rawValue, label: $0.label)) }, identifier: "voice.length"
                 )
-                Text("When you don’t pick a length, Cue writes for this one.")
+                Text("Without a length, Cue drafts for this one.")
                     .font(.footnote)
                     .foregroundStyle(Palette.ink2)
                     .padding(.horizontal, 4)

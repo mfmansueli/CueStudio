@@ -5,7 +5,7 @@
 
 import SwiftUI
 
-/// "✦ Writing in your voice" (v30 · 4.1): a 34 pt violet pill over the bottom of the page while the AI writes. Its edge glows every 2.4 s
+/// "✦ Drafting in your voice" (v30 · 4.1): a 34 pt violet pill over the bottom of the page while the AI writes. Its edge glows every 2.4 s
 /// (rim 36% → 50%, a 24 pt violet halo up to 45%) and a white shimmer runs across the words every 1.6 s. Still under Reduce Motion.
 /// While the page waits for the model (no star over it: a script written again from the page) it also says how much is written, "42%".
 struct ScriptWritingPill: View {
@@ -39,7 +39,7 @@ struct ScriptWritingPill: View {
         }
         .fixedSize()
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel(Text(inMyVoice ? "Writing in your voice" : "Writing…"))
+        .accessibilityLabel(Text(inMyVoice ? "Drafting in your voice" : "Drafting…"))
         .accessibilityValue(progressValue)
         .accessibilityIdentifier("page.writingPill")
     }
@@ -52,7 +52,7 @@ struct ScriptWritingPill: View {
 
     /// The words in `aiTextStrong` (`#E4DEFF`) with a white band (38% → 62% of a gradient 2.4× as wide as the text) sliding across.
     private func label(sweep: Double) -> some View {
-        let text = Text(inMyVoice ? "Writing in your voice" : "Writing…").font(.system(size: 13, weight: .semibold))
+        let text = Text(inMyVoice ? "Drafting in your voice" : "Drafting…").font(.system(size: 13, weight: .semibold))
         return text
             .foregroundStyle(Palette.aiTextStrong)
             .overlay {

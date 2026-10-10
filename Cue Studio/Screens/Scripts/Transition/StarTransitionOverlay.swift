@@ -7,7 +7,7 @@ import SwiftUI
 
 /// Draws the star that is the transition from an idea to its script (`IdeaTransitionService`, 09 §8, `motion/README.md`), over the whole
 /// app: the star rises to the middle (34% of the height, 0.6 s, `(0.2, 0.8, 0.2, 1)`) while the screen behind darkens (84%); a halo breathes
-/// around it and twelve specks gather toward it; "Writing in your voice", the idea, a phrase that changes every 1.6 s and how much of the script
+/// around it and twelve specks gather toward it; "Drafting in your voice", the idea, a phrase that changes every 1.6 s and how much of the script
 /// is written ("42%", an estimate: `WritingProgressEstimate`) sit under it, with Cancel at the bottom. When the script is ready the cover goes
 /// solid (0.22 s), the ring opens (0.42 s), the star lands as the caret (0.44 s) and the page writes. Cancel or an error: the star falls 40 pt
 /// (0.3 s), the overlay fades (0.22 s).
@@ -149,7 +149,7 @@ struct StarTransitionOverlay: View {
 
     private func textBlock(size: CGSize, centre: CGPoint) -> some View {
         VStack(spacing: 8) {
-            Text("Writing in your voice")
+            Text("Drafting in your voice")
                 .font(.system(size: 20, weight: .bold))
                 .tracking(-0.2)
                 .foregroundStyle(.white)
@@ -313,7 +313,7 @@ struct StarTransitionOverlay: View {
     /// The AI is writing: the words come up (0.4 s, a beat late) and Cancel fades in 0.3 s after them.
     private func wait() {
         // VoiceOver hears what is happening, then each phrase (polite), and starts on Cancel.
-        AccessibilityNotification.Announcement(String(localized: "Writing in your voice")).post()
+        AccessibilityNotification.Announcement(String(localized: "Drafting in your voice")).post()
         cancelHasFocus = true
         if reduceMotion { return }
         withAnimation(.easeOut(duration: 0.4 * speed).delay(0.1 * speed)) { texts = 1 }

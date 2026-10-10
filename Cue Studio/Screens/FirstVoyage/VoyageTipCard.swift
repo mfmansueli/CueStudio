@@ -5,17 +5,22 @@
 
 import SwiftUI
 
-/// A step's tip, in the place the step happens (the script page, the review, the editor, the share sheet): "STEP 4 OF 6", what to do
-/// and why, at most two buttons and ✕. Inline, never over what it talks about. The voyage decides when it shows (one at a time: the
-/// next step's) and ✕ closes it for good.
+/// A first voyage tip: "★ 4 OF 6" (which opens the list of steps), what to do and why in a line, at most two buttons and ✕. Above the
+/// dock or the tab bar (`VoyageFloatingTip`), or in the place its step happens, never over what it talks about. The voyage decides
+/// when it shows (one at a time: the next step's).
 struct VoyageTipCard: View {
+    /// The step the eyebrow counts: the one the tip is about, or the one ahead (the first draft's tip).
     let step: VoyageStep
     let symbol: String
     let title: String
     let message: String
     var primary: (title: String, action: () -> Void)?
     var secondary: (title: String, action: () -> Void)?
+    /// The tip's own name for UI tests ("voyage.tip.3", "voyage.tip.draft").
+    var identifier: String?
     let onClose: () -> Void
+
+    @State private var showsSteps = false
 
     private static let shape = RoundedRectangle(cornerRadius: 20, style: .continuous)
 
@@ -29,20 +34,19 @@ struct VoyageTipCard: View {
                     .background(Palette.aiFill, in: RoundedRectangle(cornerRadius: 11, style: .continuous))
                     .accessibilityHidden(true)
                 VStack(alignment: .leading, spacing: 4) {
-                    Text("STEP \(step.number) OF \(VoyageProgress.stepCount)")
-                        .font(.system(size: 10.5, weight: .semibold, design: .monospaced))
-                        .tracking(1.2)
-                        .foregroundStyle(Palette.aiText)
-                    Text(title)
-                        .font(.body.weight(.semibold))
-                        .foregroundStyle(Palette.ink)
-                    Text(message)
-                        .font(.subheadline)
-                        .foregroundStyle(Palette.ink2)
-                        .fixedSize(horizontal: false, vertical: true)
+                    eyebrow
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text(title)
+                            .font(.body.weight(.semibold))
+                            .foregroundStyle(Palette.ink)
+                        Text(message)
+                            .font(.subheadline)
+                            .foregroundStyle(Palette.ink2)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                    .accessibilityElement(children: .combine)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
-                .accessibilityElement(children: .combine)
                 Button(action: onClose) {
                     Image(systemName: "xmark")
                         .font(.system(size: 12, weight: .bold))
@@ -80,7 +84,34 @@ struct VoyageTipCard: View {
         .background(Palette.surface, in: Self.shape)
         .overlay(Self.shape.fill(Palette.aiFill).allowsHitTesting(false))
         .overlay(Self.shape.strokeBorder(Palette.aiBorder, lineWidth: 1).allowsHitTesting(false))
+        .sheet(isPresented: $showsSteps) { VoyageStepsSheet() }
         .accessibilityElement(children: .contain)
-        .accessibilityIdentifier("voyage.tip.\(step.number)")
+        .accessibilityIdentifier(identifier ?? "voyage.tip.\(step.number)")
+    }
+
+    /// "★ 4 OF 6": where the creator is, and the way to every step.
+    private var eyebrow: some View {
+        Button { showsSteps = true } label: {
+            HStack(spacing: 5) {
+                Image(systemName: "star.fill")
+                    .font(.system(size: 9, weight: .bold))
+                    .foregroundStyle(Palette.acc)
+                Text("\(step.number) OF \(VoyageProgress.stepCount)")
+                    .font(.system(size: 10.5, weight: .semibold, design: .monospaced))
+                    .tracking(1.2)
+                    .foregroundStyle(Palette.aiText)
+            }
+            .frame(minHeight: 24)
+            // 44 pt to touch, without pushing the words down.
+            .padding(.vertical, 10)
+            .padding(.trailing, 16)
+            .contentShape(Rectangle())
+            .padding(.vertical, -10)
+            .padding(.trailing, -16)
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel(Text("Step \(step.number) of \(VoyageProgress.stepCount)"))
+        .accessibilityHint(Text("Shows every step"))
+        .accessibilityIdentifier("voyage.tip.steps")
     }
 }

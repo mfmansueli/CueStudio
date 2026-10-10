@@ -8,7 +8,7 @@ import Foundation
 /// What the creator's taps say about the ideas they want. A creator taps "↻" (or "Another idea" in Find inspiration) until an idea is one they would
 /// film; the ones they pass, the one they pick and the one that becomes a script are the only honest signal of what they like, so all are remembered, by
 /// angle and by topic, and the next ideas are asked for more of what they use and less of what they pass. Four signals, from weakest to strongest:
-/// passing an idea (it may only have been the wrong one that day), picking it to change in the field ("Use this idea": liked, not yet used), sending
+/// passing an idea (it may only have been the wrong one that day), picking it to change in the field ("Start with it": liked, not yet used), sending
 /// the card's idea as it is, and a script written from a brief (`generated`). Never all of it: some of every batch is left to look at other angles,
 /// because a taste that only narrows ends in the same idea over and over.
 nonisolated struct IdeaTaste: Codable, Hashable, Sendable {

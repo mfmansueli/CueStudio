@@ -181,7 +181,7 @@ final class IdeaSuggestionService {
 
     // MARK: - Find inspiration (the roulette)
     //
-    // Three things the creator does with an idea are told apart (`IdeaTaste`): passing it ("Another idea"), picking it to change ("Use this idea"),
+    // Three things the creator does with an idea are told apart (`IdeaTaste`): passing it ("Another idea"), picking it to change ("Start with it"),
     // and a script written from it (`generated(from:)`, through `ScriptStarter`).
 
     /// The idea the roulette shows for `filter`: the one it showed last, else the next one ready about it (the model's first, then a starter about
@@ -247,7 +247,7 @@ final class IdeaSuggestionService {
         ensureRefill(for: filter, evenIfAhead: true)
     }
 
-    /// "Use this idea": the creator picked it to change before it is written. Liked, not yet used; it leaves the roulette and the card.
+    /// "Start with it": the creator picked it to change before it is written. Liked, not yet used; it leaves the roulette and the card.
     func selected(_ idea: ThemeIdea) {
         refreshIfTopicsChanged()
         if idea.angle != nil || idea.brief?.angleKind != nil { taste.selected(idea) }

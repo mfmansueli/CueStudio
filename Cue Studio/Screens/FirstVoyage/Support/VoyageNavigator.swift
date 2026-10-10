@@ -27,8 +27,7 @@ struct VoyageNavigator {
             presentation.openPrompter(scriptID: latestScript?.id, mode: .selfie)
         case .pick:
             guard let take = latestTake else { return }
-            let siblings = takes.takes.filter { $0.scriptID == take.scriptID }
-            presentation.openReview(of: take, then: siblings.count > 1 && !siblings.contains(where: \.isBest) ? .pickBest : nil)
+            presentation.openReview(of: take, then: canCompare ? .pickBest : nil)
         case .polish:
             guard let take = videoTake else { return }
             presentation.openReview(of: take, then: .edit)
@@ -36,6 +35,13 @@ struct VoyageNavigator {
             guard let take = videoTake else { return }
             presentation.openReview(of: take, then: .share)
         }
+    }
+
+    /// The latest take has siblings to compare with and none is the best yet: Pick opens "Pick the best take".
+    var canCompare: Bool {
+        guard let take = latestTake else { return false }
+        let siblings = takes.takes.filter { $0.scriptID == take.scriptID }
+        return siblings.count > 1 && !siblings.contains(where: \.isBest)
     }
 
     var latestScript: Script? {

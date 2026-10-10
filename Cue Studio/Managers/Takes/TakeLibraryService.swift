@@ -13,6 +13,9 @@ final class TakeLibraryService {
     /// Newest first.
     private(set) var takes: [Take] = []
 
+    /// Told about each take recorded (Cue learns from a draft the creator made their own, `DraftLearningService`).
+    @ObservationIgnored var onTakeAdded: ((Take) -> Void)?
+
     private let repository: TakeRepository
     private let now: () -> Date
     private let logger = Logger(subsystem: "studio.cue", category: "TakeLibrary")
@@ -92,6 +95,7 @@ final class TakeLibraryService {
         }
         takes.insert(take, at: 0)
         persist()
+        onTakeAdded?(take)
         return take
     }
 

@@ -44,7 +44,7 @@ struct AISelectionBar: View {
             case .writing:
                 HStack(spacing: 8) {
                     ProgressView().tint(Palette.aiText).scaleEffect(0.8)
-                    Text("Writing…")
+                    Text("Drafting…")
                         .font(.system(size: 10.5, weight: .bold, design: .monospaced))
                         .textCase(.uppercase)
                         .tracking(1)

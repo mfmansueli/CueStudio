@@ -5,9 +5,10 @@
 
 import XCTest
 
-/// The first voyage (`-uiTestVoyage`; every other UI test runs without it): the strip over an empty Scripts and the list of steps,
-/// "Hide guide" and Settings › Personalize bringing it back; and, on the sample library (four steps done), the card taking the creator
-/// to the editor with Polish it's tip, whose "Skip this step" moves the card on to sharing.
+/// The first voyage (`-uiTestVoyage`; every other UI test runs without it), as tips: on an empty Scripts the first step's tip above the
+/// dock (which never moves), its "Get an idea", the list of steps from "★ 1 OF 6", ✕ for the session and Settings › Personalize bringing
+/// the guide back; and, on the sample library (four steps done), the floating tip taking the creator to the editor with Polish it's tip,
+/// whose "Skip" moves the tip above the dock on to sharing.
 @MainActor
 final class FirstVoyageUITests: XCTestCase {
     override func setUp() {
@@ -33,74 +34,73 @@ final class FirstVoyageUITests: XCTestCase {
 
     // MARK: - An empty library
 
-    func testAnEmptyLibraryShowsTheStripAndHidingItComesBackFromSettings() {
+    func testAnEmptyLibraryShowsTheFirstTipAboveTheDockAndSettingsBringsItBack() {
         let app = CueApp.launch(seeded: false, extraArguments: ["-uiTestVoyage"])
-        let strip = element(app, "voyage.strip")
-        XCTAssertTrue(strip.waitForExistence(timeout: 10))
-        XCTAssertTrue(app.buttons["empty.writeButton"].exists && app.buttons["ideaCard.inspirationButton"].exists, "the ways in are the first step")
-        // Everything fits above the dock, which never moves: nothing to scroll to.
+        let tip = element(app, "voyage.tip.1")
+        XCTAssertTrue(tip.waitForExistence(timeout: 10), "the first step's tip comes above the dock")
         let dock = element(app, "empty.promptCard")
-        XCTAssertLessThanOrEqual(app.buttons["empty.importButton"].frame.maxY, dock.frame.minY, "the last way in is under the dock")
-        XCTAssertGreaterThanOrEqual(element(app, "empty.title").frame.minY, strip.frame.maxY, "the title is under the strip")
-        strip.tap()
+        XCTAssertLessThanOrEqual(tip.frame.maxY, dock.frame.minY + 1, "the tip sits above the dock, not over it")
+        XCTAssertTrue(app.buttons["empty.writeButton"].exists, "the ways in are still there")
+        XCTAssertTrue(tip.label.contains("Your idea, Cue's draft.") || app.staticTexts["Your idea, Cue's draft."].exists)
 
+        // "Get an idea" opens Find inspiration.
+        app.buttons["voyage.tip.primary"].tap()
+        XCTAssertTrue(element(app, "inspiration.sheet").waitForExistence(timeout: 5), "Get an idea did nothing")
+        app.buttons["sheet.closeButton"].firstMatch.tap()
+        XCTAssertTrue(waitForGone(element(app, "inspiration.sheet")))
+
+        // "★ 1 OF 6" opens every step.
+        XCTAssertTrue(tip.waitForExistence(timeout: 5))
+        app.buttons["voyage.tip.steps"].tap()
         XCTAssertTrue(element(app, "voyage.steps").waitForExistence(timeout: 5))
         for number in 1...6 {
             XCTAssertTrue(element(app, "voyage.step.\(number)").exists, "step \(number)")
         }
         XCTAssertEqual(element(app, "voyage.step.1").value as? String, "Next")
         XCTAssertEqual(element(app, "voyage.step.6").value as? String, "Not done yet")
-        // Start on the first step opens Find inspiration (it used to only select the Scripts tab it was already on).
-        app.buttons["voyage.step.start"].tap()
-        XCTAssertTrue(element(app, "inspiration.sheet").waitForExistence(timeout: 5), "Start did nothing")
         app.buttons["sheet.closeButton"].firstMatch.tap()
-        XCTAssertTrue(waitForGone(element(app, "inspiration.sheet")))
-        strip.tap()
-        XCTAssertTrue(element(app, "voyage.steps").waitForExistence(timeout: 5))
-        let hide = app.buttons["voyage.hide"]
-        app.scroll(to: hide)
-        hide.tap()
-        XCTAssertTrue(waitForGone(strip), "Hide guide put the strip away")
+        XCTAssertTrue(waitForGone(element(app, "voyage.steps")))
 
+        // ✕ puts it away for the session.
+        app.buttons["voyage.tip.close"].tap()
+        XCTAssertTrue(waitForGone(tip), "✕ closed the tip")
+
+        // Settings › Personalize: off and on again brings it back.
         goToTab(app, "Settings")
         let personalize = element(app, "settings.personalize")
         app.scroll(to: personalize)
         personalize.tap()
         let toggle = app.switches["settings.firstVoyage"]
         app.scrollAboveTabBar(to: toggle)
-        XCTAssertEqual(toggle.value as? String, "0")
-        toggle.coordinate(withNormalizedOffset: CGVector(dx: 0.93, dy: 0.5)).tap()
-        let on = XCTNSPredicateExpectation(predicate: NSPredicate(format: "value == '1'"), object: toggle)
-        XCTAssertEqual(XCTWaiter.wait(for: [on], timeout: 4), .completed)
-
+        XCTAssertEqual(toggle.value as? String, "1")
+        for expected in ["0", "1"] {
+            toggle.coordinate(withNormalizedOffset: CGVector(dx: 0.93, dy: 0.5)).tap()
+            let changed = XCTNSPredicateExpectation(predicate: NSPredicate(format: "value == %@", expected), object: toggle)
+            XCTAssertEqual(XCTWaiter.wait(for: [changed], timeout: 4), .completed)
+        }
         goToTab(app, "Scripts")
-        XCTAssertTrue(element(app, "voyage.strip").waitForExistence(timeout: 5), "Settings brought the guide back")
+        XCTAssertTrue(element(app, "voyage.tip.1").waitForExistence(timeout: 8), "Settings brought the guide back, its tip too")
     }
 
-    // MARK: - The card leads to the next step
+    // MARK: - The tip leads to the next step
 
-    func testTheCardOpensTheEditorWithPolishsTipAndSkippingMovesOnToSharing() {
+    func testTheTipOpensTheEditorWithPolishsTipAndSkippingMovesOnToSharing() {
         let app = CueApp.launch(seeded: true, sampleVideo: true, extraArguments: ["-uiTestVoyage"])
-        let card = element(app, "voyage.card")
-        XCTAssertTrue(card.waitForExistence(timeout: 10))
-        // The button reads the line and what it takes as one (VoiceOver too).
-        XCTAssertTrue(element(app, "voyage.next").label.hasPrefix("Next: polish it"), element(app, "voyage.next").label)
-        XCTAssertTrue(element(app, "voyage.count").label.contains("4 OF 6"), element(app, "voyage.count").label)
+        let floating = element(app, "voyage.tip.5")
+        XCTAssertTrue(floating.waitForExistence(timeout: 10), "four steps done: Polish it's tip floats above the dock")
+        app.buttons["voyage.tip.primary"].tap()
 
-        app.buttons["voyage.action"].tap()
         let tip = element(app, "voyage.tip.5")
-        XCTAssertTrue(tip.waitForExistence(timeout: 15), "the editor opens with Polish it's tip")
+        XCTAssertTrue(app.buttons["edit.backButton"].waitForExistence(timeout: 15), "the tip opened the editor")
+        XCTAssertTrue(tip.waitForExistence(timeout: 10), "the editor opens with Polish it's tip")
         XCTAssertTrue(app.buttons["edit.toolbar.captions"].exists || app.buttons["edit.toolbar.edit"].exists, "the tools are under it")
         app.buttons["voyage.tip.secondary"].tap()
-        XCTAssertTrue(waitForGone(tip), "Skip this step closes the tip")
+        XCTAssertTrue(waitForGone(tip), "Skip closes the tip")
 
         app.buttons["edit.backButton"].tap()
         let back = app.buttons["review.backButton"]
         XCTAssertTrue(back.waitForExistence(timeout: 10))
         back.tap()
-        XCTAssertTrue(card.waitForExistence(timeout: 10))
-        let next = element(app, "voyage.next")
-        let sharing = XCTNSPredicateExpectation(predicate: NSPredicate(format: "label BEGINSWITH 'Next: share to your universe'"), object: next)
-        XCTAssertEqual(XCTWaiter.wait(for: [sharing], timeout: 5), .completed, next.label)
+        XCTAssertTrue(element(app, "voyage.tip.6").waitForExistence(timeout: 10), "the tip above the dock moved on to sharing")
     }
 }

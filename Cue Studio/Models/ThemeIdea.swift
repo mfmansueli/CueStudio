@@ -19,7 +19,7 @@ nonisolated struct ThemeIdea: Hashable, Identifiable, Codable, Sendable {
     /// The Logbook entry it is, when the creator's own note is what the card suggests.
     var logbookID: UUID?
     /// The whole inspiration (what it is about, the angle, an opening line), for the ones that have one: Find inspiration shows it and
-    /// "Use this idea" carries it to the composer.
+    /// "Start with it" carries it to the composer.
     var brief: IdeaBrief?
 
     var id: String { "\(niche.rawValue).\(title)" }

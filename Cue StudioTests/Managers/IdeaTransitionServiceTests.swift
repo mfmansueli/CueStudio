@@ -167,9 +167,9 @@ struct IdeaTransitionServiceTests {
     @Test func thePhrasesEndWithTheOneForThePlatformAndTheFinishIsSeparate() {
         let phrases = IdeaTransitionService.phrases(platform: "Reels")
         #expect(phrases.count == 7)
-        #expect(phrases.first == "Finding your hook…")
+        #expect(phrases.first == "Drafting a hook…")
         #expect(phrases.last == "Shaping it for Reels")
-        #expect(IdeaTransitionService.finishPhrase == "Almost camera-ready")
+        #expect(IdeaTransitionService.finishPhrase == "Draft almost ready")
     }
 
     // MARK: - How much is written

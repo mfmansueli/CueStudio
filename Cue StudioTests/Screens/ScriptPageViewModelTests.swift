@@ -330,7 +330,7 @@ struct ScriptPageViewModelTests {
         scenario.viewModel.page.selection = 0..<21
         await scenario.viewModel.rewriteSelection(.rewrite)
         #expect(scenario.viewModel.page.passage == nil && scenario.viewModel.page.text == "Hello there my friend")
-        #expect(scenario.toast.message == "Couldn’t write it · Try again")
+        #expect(scenario.toast.message == "Couldn’t draft it · Try again")
     }
 
     /// A reason the creator can act on is told as it is; "Try again" is only for what trying again can fix.
@@ -354,8 +354,8 @@ struct ScriptPageViewModelTests {
     }
 
     @Test func whichErrorsExplainThemselves() {
-        #expect(ScriptDetailViewModel.failureMessage(for: ScriptAIError.emptyResponse) == "Couldn’t write it · Try again")
-        #expect(ScriptDetailViewModel.failureMessage(for: URLError(.timedOut)) == "Couldn’t write it · Try again")
+        #expect(ScriptDetailViewModel.failureMessage(for: ScriptAIError.emptyResponse) == "Couldn’t draft it · Try again")
+        #expect(ScriptDetailViewModel.failureMessage(for: URLError(.timedOut)) == "Couldn’t draft it · Try again")
         for error in [ScriptAIError.unsupportedLanguage, .modelPreparing, .wrongLanguage, .tooLong] {
             #expect(ScriptDetailViewModel.failureMessage(for: error) == error.localizedDescription)
         }
@@ -464,7 +464,7 @@ struct ScriptPageViewModelTests {
         #expect(scenario.toast.message == "Draft ready · Edit anything")
     }
 
-    /// "Write the script now" in Find inspiration writes an idea that isn't the card's: the creator's own draft stays in the card.
+    /// "Draft it now" in Find inspiration writes an idea that isn't the card's: the creator's own draft stays in the card.
     @Test func aScriptWrittenFromAnotherIdeaLeavesTheCardsDraft() async {
         let scenario = makeScenario(script: TestData.script(title: "", text: ""), writing: request())
         defer { scenario.defaults.tearDown() }

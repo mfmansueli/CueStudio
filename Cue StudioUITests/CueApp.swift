@@ -85,7 +85,7 @@ extension XCUIApplication {
     /// The system tab bar: its buttons are the five tabs, in order Scripts, Takes, Record, Profile, Settings.
     var cueTabBar: XCUIElement { tabBars.firstMatch }
 
-    /// Opens Find inspiration from "+" › Let Cue write it (the dock's lightbulb opens it too).
+    /// Opens Find inspiration from "+" › Let Cue draft it (the dock's lightbulb opens it too).
     func openIdeas() {
         let plus = buttons["scripts.newButton"]
         XCTAssertTrue(plus.waitForExistence(timeout: 15))

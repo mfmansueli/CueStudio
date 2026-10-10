@@ -452,12 +452,24 @@ struct TakeReviewView: View {
         services.voyage.showsTip(for: .pick) && viewModel.take != nil && !tellsFirstStar && editingTake == nil && viewModel.celebration == nil
     }
 
+    /// The take on screen, when it has siblings to compare with ("Compare" opens "Pick the best take").
+    private var comparableTake: Take? {
+        guard let take = viewModel.take, services.takes.siblings(of: take).count > 1 else { return nil }
+        return take
+    }
+
     private var pickTip: some View {
         VoyageTipCard(
-            step: .pick, symbol: "star", title: String(localized: "Keep your best take"),
-            message: String(localized: "Tap the star on the one you'll post. You can change it anytime, and the others stay in Takes."),
-            onClose: { withAnimation(.smooth(duration: 0.25)) { services.voyage.closeTip(.pick) } }
+            step: .pick, symbol: VoyageStep.pick.symbol, title: VoyageStep.pick.tipTitle(), message: VoyageStep.pick.tipMessage(),
+            primary: comparableTake.map { take in
+                (VoyageStep.pick.tipAction(canCompare: true), {
+                    services.voyage.tipActed(.pick, at: .review)
+                    suggestBest(from: take)
+                })
+            },
+            onClose: { withAnimation(.smooth(duration: 0.25)) { services.voyage.closeTip(.pick, at: .review) } }
         )
+        .onAppear { services.voyage.tipShown(.pick, at: .review) }
     }
 
     /// The first take Cue ever recorded lights the first star (once, and only when the creator has done the first flight).

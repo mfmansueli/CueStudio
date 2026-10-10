@@ -30,7 +30,7 @@ struct InspirationDockButton: View {
         .padding(.vertical, -4)
         .padding(.horizontal, -4)
         .accessibilityLabel(Text("Find inspiration"))
-        .accessibilityHint(Text("Ideas from your topics."))
+        .accessibilityHint(Text("Ideas to start from."))
         .accessibilityShowsLargeContentViewer {
             Image(systemName: FindInspirationSheet.symbol)
             Text("Find inspiration")

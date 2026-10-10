@@ -64,7 +64,7 @@ struct PersonalizeEntryRow: View {
         case .firstVoyage:
             SettingsListToggle(
                 title: entry.title, detail: voyage.canBeTurnedOn ? entry.detail : String(localized: "You finished your first voyage"),
-                isOn: Binding(get: { voyage.showsCard }, set: { voyage.setOn($0) })
+                isOn: Binding(get: { voyage.isActive }, set: { voyage.setOn($0) })
             )
             .disabled(!voyage.canBeTurnedOn)
         default:

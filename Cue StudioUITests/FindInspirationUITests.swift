@@ -6,8 +6,8 @@
 import XCTest
 
 /// Find inspiration and the empty Scripts: the three ways in on a first use and their lighter returning state, the dock's lightbulb once there
-/// are scripts, the topic filters (several topics, only typed ones, none), "Another idea", "Use this idea" into the composer with Undo, the
-/// direct "Write the script now", and the screen at the biggest text sizes. Each test keeps a picture (an attachment); with
+/// are scripts, the topic filters (several topics, only typed ones, none), "Another idea", "Start with it" into the composer with Undo, the
+/// direct "Draft it now", and the screen at the biggest text sizes. Each test keeps a picture (an attachment); with
 /// `TEST_RUNNER_CUE_INSPIRATION_DIR=<folder>` the pictures and their accessibility hierarchies are also written there, for
 /// `tools/contrast/audit.py`.
 @MainActor

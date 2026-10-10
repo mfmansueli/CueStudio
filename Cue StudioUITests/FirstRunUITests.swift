@@ -149,7 +149,7 @@ final class FirstRunUITests: XCTestCase {
         XCTAssertTrue(app.buttons["voiceSetup.tone.funny"].waitForExistence(timeout: 5))
         app.buttons["voiceSetup.tone.funny"].tap()
         // With an idea on the card, the last question writes it.
-        XCTAssertEqual(next.label, "✦ Write my script")
+        XCTAssertEqual(next.label, "✦ Draft my script")
         next.tap()
 
         // The script is the preview: it can be compared with the one without the voice, and approved.
