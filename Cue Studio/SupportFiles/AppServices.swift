@@ -54,6 +54,8 @@ struct AppServices {
     let personalization: PersonalizationService
     let onboarding: OnboardingService
     let milestones: MilestoneService
+    /// The guide from the first script to the first video shared.
+    let voyage: FirstVoyageService
     let shareQueue: ShareQueueService
     /// The settings store (the app's, or the UI tests' in-memory one).
     let defaults: UserDefaults
@@ -103,6 +105,10 @@ struct AppServices {
         personalization = PersonalizationService(defaults: options.defaults)
         onboarding = OnboardingService(defaults: options.defaults, isEnabled: options.showsOnboarding, startStep: options.onboardingStep)
         milestones = MilestoneService(defaults: options.defaults)
+        voyage = FirstVoyageService(
+            library: library, takes: takes, milestones: milestones, defaults: options.defaults,
+            isEnabled: !options.isInMemory || options.showsVoyage
+        )
         shareQueue = ShareQueueService(defaults: options.defaults)
         defaults = options.defaults
         let iconSwitcher: any AppIconSwitching = options.isInMemory ? InMemoryAppIcon() : SystemAppIcon()
@@ -182,7 +188,7 @@ struct AppServices {
         ))
         eraser = DataEraserService(
             library: library, takes: takes, drafts: options.draftStore, logbook: logbook, brands: brands, sky: sky,
-            profile: profile, preferences: preferences, defaults: options.defaults, notifications: notifications
+            profile: profile, preferences: preferences, defaults: options.defaults, notifications: notifications, voyage: voyage
         )
         topicTagging = TopicTaggingService(library: library, profile: profile, personalization: personalization, writer: writer)
     }
@@ -307,6 +313,7 @@ extension View {
             .environment(services.personalization)
             .environment(services.onboarding)
             .environment(services.milestones)
+            .environment(services.voyage)
             .environment(services.shareQueue)
             .environment(services.appIcon)
             .environment(services.topicTagging)

@@ -24,6 +24,7 @@ struct ScriptPageView: View {
     @State private var isAddingCue = false
     @State private var newCue = ""
     @Environment(\.scenePhase) private var scenePhase
+    @Environment(FirstVoyageService.self) private var voyage
     /// The editor's own minimum height, kept by the words the AI writes in too.
     @ScaledMetric(relativeTo: .body) private var editorMinimumHeight = 300.0
 
@@ -340,6 +341,11 @@ struct ScriptPageView: View {
                     onRemove: { viewModel.removeCue($0) }
                 )
             } else if let strip = viewModel.strip {
+                if voyage.showsTip(for: .practice), !viewModel.page.isWriting {
+                    practiceTip
+                        .padding(.bottom, 10)
+                        .transition(.opacity.combined(with: .move(edge: .bottom)))
+                }
                 ScriptRecordButton(title: strip.recordsAgain ? "Retake" : "Record", isPrimary: strip.recordIsPrimary, action: record)
                     .disabled(viewModel.page.isWriting)
             }
@@ -383,5 +389,20 @@ struct ScriptPageView: View {
     private func record() {
         focus = nil
         if viewModel.recordsNow() { onRecord() }
+    }
+
+    /// The first voyage's second step, over Record: read it once in Studio (nothing is recorded), or record now.
+    private var practiceTip: some View {
+        VoyageTipCard(
+            step: .practice, symbol: "text.alignleft", title: String(localized: "Practice it once"),
+            message: String(localized: "Read it on the teleprompter. The text follows your voice; nothing is recorded."),
+            primary: (String(localized: "Practice"), {
+                focus = nil
+                viewModel.commitPage()
+                actions.studio(script)
+            }),
+            secondary: (String(localized: "Skip, record now"), record),
+            onClose: { withAnimation(.smooth(duration: 0.25)) { voyage.closeTip(.practice) } }
+        )
     }
 }

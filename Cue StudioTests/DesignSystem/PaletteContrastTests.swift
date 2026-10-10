@@ -230,6 +230,22 @@ struct PaletteContrastTests {
         }
     }
 
+    /// The first voyage: its tips (text on `aiFill` over `surface`, the step's row in the list the same) and its card (`surface`).
+    @Test func theFirstVoyageReadsOnItsTipsAndItsCard() {
+        for appearance in Appearance.allCases {
+            for token in [("ink", Palette.ink), ("ink2", Palette.ink2), ("aiText", Palette.aiText)] {
+                let onTip = ratio(token.1, onTint: Palette.aiFill, over: Palette.surface, in: appearance)
+                #expect(onTip >= ColorContrast.textMinimum, "\(token.0) on a tip, \(appearance): \(onTip)")
+                let onSheet = ratio(token.1, onTint: Palette.aiFill, over: Palette.sheetNight, in: appearance)
+                #expect(onSheet >= ColorContrast.textMinimum, "\(token.0) on the next step's row, \(appearance): \(onSheet)")
+                let onCard = ratio(token.1, on: Palette.surface, in: appearance)
+                #expect(onCard >= ColorContrast.textMinimum, "\(token.0) on the card, \(appearance): \(onCard)")
+            }
+            // The segments: done (yellow) against the track, as a part of a control.
+            #expect(ratio(Palette.acc, on: Palette.surface3, in: appearance) >= ColorContrast.componentMinimum, "a done segment, \(appearance)")
+        }
+    }
+
     /// Background's Cutout card (and the tiles): text on `panelCard` over the panel, and the segmented control's gray inside the card.
     @Test func theBackgroundPanelsCutoutCardReads() {
         for appearance in Appearance.allCases {

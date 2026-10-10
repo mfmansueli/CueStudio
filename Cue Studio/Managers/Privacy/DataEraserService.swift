@@ -7,7 +7,7 @@ import Foundation
 
 /// "Delete my Cue data" (Settings › Privacy & AI data, 04 · F8): everything the creator made leaves this iPhone for good —
 /// scripts, takes and their videos and edits, the Logbook, saved brands, "your stars", My Cue Voice, the recording
-/// setup, and the reminders, routine and notifications waiting. Not touched: the purchase (it belongs to the Apple ID), the
+/// setup, the first voyage's marks, and the reminders, routine and notifications waiting. Not touched: the purchase (it belongs to the Apple ID), the
 /// free-export counter (kept in the Keychain so deleting data can't hand back free exports), the language and what Photos
 /// already holds. Irreversible, so the screen asks first.
 @MainActor
@@ -26,11 +26,12 @@ final class DataEraserService {
     @ObservationIgnored private let preferences: PreferencesService
     @ObservationIgnored private let defaults: UserDefaults
     @ObservationIgnored private let notifications: NotificationService?
+    @ObservationIgnored private let voyage: FirstVoyageService?
 
     init(
         library: ScriptLibraryService, takes: TakeLibraryService, drafts: QuickEditDraftStoring, logbook: LogbookService,
         brands: BrandStore, sky: SkyMemory, profile: CreatorProfileService, preferences: PreferencesService, defaults: UserDefaults = .standard,
-        notifications: NotificationService? = nil
+        notifications: NotificationService? = nil, voyage: FirstVoyageService? = nil
     ) {
         self.library = library
         self.takes = takes
@@ -42,6 +43,7 @@ final class DataEraserService {
         self.preferences = preferences
         self.defaults = defaults
         self.notifications = notifications
+        self.voyage = voyage
     }
 
     func eraseEverything() {
@@ -62,6 +64,8 @@ final class DataEraserService {
         ] {
             defaults.removeObject(forKey: key)
         }
+        // With nothing made, the first voyage starts over (a video shared before still counts: it stays off then).
+        voyage?.reset()
         // Reminders, the routine and the history go with the rest; pending and delivered notifications are taken back.
         if let notifications { Task { await notifications.eraseAll() } }
     }

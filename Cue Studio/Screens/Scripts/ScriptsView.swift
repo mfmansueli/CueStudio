@@ -21,6 +21,7 @@ struct ScriptsView: View {
     @Environment(IdeaDraftService.self) private var ideaDraft
     @Environment(LogbookService.self) private var logbook
     @Environment(ToastService.self) private var toast
+    @Environment(FirstVoyageService.self) private var voyage
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     /// The dock's field has the keyboard: the list dims.
@@ -210,6 +211,10 @@ struct ScriptsView: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.horizontal, 4)
                     .accessibilityIdentifier("scripts.summary")
+            }
+            if voyage.showsCard, !viewModel.isSelecting, viewModel.query.isEmpty {
+                // The first voyage's next step, over the list until the first video is shared.
+                blockRow(top: 14) { VoyageCard(host: .scripts) }
             }
             blockRow(top: 14) {
                 SearchField(text: $viewModel.query, prompt: "Search scripts", isFocused: $isSearchFocused)

@@ -14,6 +14,8 @@ struct ShareNetworkPicker: View {
 
     @State private var showsOptions = false
 
+    @Environment(FirstVoyageService.self) private var voyage
+
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 14) {
@@ -26,6 +28,14 @@ struct ShareNetworkPicker: View {
                             .accessibilityIdentifier("shareFlow.options")
                     }
                 header
+                if voyage.showsTip(for: .share) {
+                    // The first voyage's last step.
+                    VoyageTipCard(
+                        step: .share, symbol: "star.fill", title: String(localized: "Your first share lights a star"),
+                        message: String(localized: "Pick where it goes. Cue opens each app with your video and caption ready; you post it there."),
+                        onClose: { withAnimation(.smooth(duration: 0.25)) { voyage.closeTip(.share) } }
+                    )
+                }
                 GroupedCard(background: Palette.surface2, radius: 22) {
                     ForEach(Array(ShareNetworkLine.networks.enumerated()), id: \.element) { index, network in
                         if index > 0 { Divider().padding(.leading, 56) }

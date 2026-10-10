@@ -923,3 +923,38 @@ temporário): a escolha chegava ao compositor e o Vision devolvia a máscara; o 
   dele. `PanelAdvancedButton` usava `ink.opacity(0.75)` para o texto; virou `ink2`.
 - 30 textos novos nos 20 idiomas; 5 que só o painel antigo usava saíram. Testes: `QuickEditBackgroundPanelTests`, `BackgroundPanelUITests` (6,1" e SE),
   `BackgroundCompositionTests` (o fundo chega ao quadro do preview) e `BackgroundDeviceTests` (opt-in, Vision de verdade no iPhone).
+
+## 32. A primeira viagem: o guia do primeiro vídeo (10 de outubro de 2026; não está no quadro, protótipo aprovado pelo dono)
+
+O primeiro voo (1.1–1.7) termina no primeiro roteiro e no treino; do primeiro take ao primeiro vídeo publicado o criador ficava sozinho. A pesquisa (HIG "Teach
+through interactivity" e "a collection of context-specific tips instead of a single onboarding flow"; NN/g: tutorial em cartões não melhora acerto nem tempo e faz o
+app parecer mais difícil; progresso já começado motiva a terminar) virou a **primeira viagem**: seis passos, um cartão que diz o próximo e uma dica no lugar de cada
+passo. Protótipo: a página privada "Your first voyage" (8 telas).
+
+- **Os passos** (`VoyageStep`): Write your first script · Practice with the teleprompter · Record a take · Pick your best take · Polish it (legendas e Clean Up,
+  opcional) · Share to your universe. **Lidos do que o criador tem** (`VoyageProgress`, puro): um roteiro (ou um take); o treino (o teleprompter tocou um roteiro, no
+  Studio, no Selfie ou na prática do primeiro voo) ou um take; um take; um take com ★ ou com edição; legendas feitas, uma pausa cortada pelo Clean Up ou "Skip this
+  step"; o primeiro compartilhamento (`MilestoneService`). Nada é travado: um passo feito fora de ordem conta, o cartão diz o primeiro que falta, e o primeiro vídeo
+  compartilhado conclui a viagem. A viagem guarda só as suas marcas (`VoyageMarks` em `DefaultsKey.firstVoyage`): estágio, treino, Polish pulado, dicas fechadas e
+  segmentos já acesos.
+- **Para quem:** só quem ainda não compartilhou um vídeo, decidido uma vez (`VoyageStage.notNeeded` para quem já tinha). "Hide guide" esconde até Settings ›
+  Personalize › **Getting started** › "First video guide" trazer de volta; o cartão completo tem **Done**, que encerra para sempre. "Delete my Cue data" recomeça.
+- **O cartão** (`VoyageCard`, no topo da lista de Scripts e no cabeçalho de Takes, também sobre o estado vazio de Takes): "★ YOUR FIRST VOYAGE · 4 OF 6", os seis
+  segmentos (`VoyageProgressBar`), "Next: polish it" com o que leva, "All steps ›" (a folha) e o botão do passo, que leva direto ao lugar (`VoyageNavigator`: Scripts
+  para escrever, o Studio para treinar, o Selfie para gravar, a revisão do take para escolher, o editor, ou "Share to universe"). É um cartão, nunca uma camada:
+  nada espera por ele. Completo: "Your first video is out there." e Done.
+- **Scripts vazio:** uma faixa fina (`VoyageStrip`) sobre "How do you want to start?" (§30): os três caminhos são o próprio passo 1, então a faixa não tem botão.
+- **A folha** (`VoyageStepsSheet`, da altura do conteúdo): feitos (✓ amarelo), o próximo (anel amarelo, num fundo `aiFill`, com Start) e os seguintes (número), e
+  "Hide guide" com onde reabrir.
+- **As dicas** (`VoyageTipCard`, uma por vez: a do próximo passo, até ✕): na página do roteiro sobre o Record ("Practice it once" · Practice / Skip, record now), na
+  revisão sob a barra ("Keep your best take"), no editor sobre a parte de baixo da linha do tempo, logo acima das ferramentas ("Add captions" · Add captions / Skip this
+  step), e na folha "Share to universe" ("Your first share lights a star"). **Diferença da proposta:** são vistas do Cue, não do TipKit: a ordem, o passo atual e o
+  que foi fechado são o estado da viagem, e o TipKit duplicaria isso (e fica difícil de controlar nos testes de UI). O comportamento é o recomendado: dentro da tela,
+  nunca por cima do que explicam, uma por vez, e somem quando o passo é feito.
+- **Celebração:** pequena em cada passo, quando o cartão volta à tela: o segmento enche da esquerda e brilha (0,6 s), um toque `.soft`, e 1,4 s depois fica só
+  aceso; só o cartão da aba visível acende. Reduzir Movimento: já cheio. A grande é a que o app já tem (a estrela do primeiro take, o send-off do compartilhamento) e o
+  cartão completo; nenhuma tela cheia nova.
+- **Contraste:** só tokens; `PaletteContrastTests.theFirstVoyageReadsOnItsTipsAndItsCard` mede `ink`, `ink2` e `aiText` na dica (`aiFill` sobre `surface`), na linha do
+  próximo passo da folha (`aiFill` sobre `sheetNight`) e no cartão, e o segmento feito contra o trilho (3:1).
+- 53 textos novos nos 20 idiomas. Testes: `VoyageProgressTests`, `FirstVoyageServiceTests`, `FirstVoyageUITests` (o segundo no plano UISmoke). Testes de UI só veem a
+  viagem com `-uiTestVoyage`.

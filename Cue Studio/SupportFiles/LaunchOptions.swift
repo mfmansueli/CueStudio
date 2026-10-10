@@ -28,6 +28,7 @@ import Foundation
 ///   (`speech`), or is refused the microphone, can't recognize the language, or hears nothing.
 /// - `-uiTestOnboarding`: with the above, the first flight shows (it is off in UI tests otherwise).
 /// - `-uiTestPermissions <granted|denied>`: the first flight's permission prompts are answered at once.
+/// - `-uiTestVoyage`: the first voyage (the first video guide) is on; without it no UI test sees its card, strip or tips.
 /// - `-uiTestVoiceTip`: the My Cue Voice tip needs no second day, script, wait or cap (tests of the tip itself); without it the
 ///   tip stays away in UI tests (they open the app on one day).
 /// - `-uiTestStarTransition`: the idea's star transition keeps its real timings (3 s at least); UI tests shorten it otherwise.
@@ -102,6 +103,8 @@ struct LaunchOptions {
     var appsAreInstalled = false
     /// UI tests of the My Cue Voice tip: its gates are open (`-uiTestVoiceTip`).
     var voiceTipSkipsGates = false
+    /// UI tests of the first voyage: the guide is on (`-uiTestVoyage`); every other UI test runs without it.
+    var showsVoyage = false
     /// UI tests of the star transition: it takes its real time (`-uiTestStarTransition`).
     var keepsStarTransitionTimings = false
     /// UI tests: nothing animates (`-uiTestFastAnimations`).
@@ -231,6 +234,7 @@ struct LaunchOptions {
             options.platformRules = PlatformRulesService(cacheURL: nil, remoteURL: nil)
             options.showsOnboarding = arguments.contains("-uiTestOnboarding")
             options.voiceTipSkipsGates = arguments.contains("-uiTestVoiceTip")
+            options.showsVoyage = arguments.contains("-uiTestVoyage")
             options.keepsStarTransitionTimings = arguments.contains("-uiTestStarTransition")
             options.animationsOff = arguments.contains("-uiTestFastAnimations")
             options.keepsWelcomeOpening = arguments.contains("-uiTestWelcomeOpening")

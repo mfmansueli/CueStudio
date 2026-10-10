@@ -22,6 +22,7 @@ struct PrompterView: View {
     @Environment(DocumentImportService.self) private var importer
     @Environment(ToastService.self) private var toast
     @Environment(LanguageService.self) private var languages
+    @Environment(FirstVoyageService.self) private var voyage
 
     init(launch: PrompterLaunch, services: AppServices) {
         self.services = services
@@ -99,6 +100,10 @@ struct PrompterView: View {
         // The session's camera: the Creator Setup, an accepted recommendation or a change for this take.
         .onChange(of: viewModel.session.camera) {
             Task { await viewModel.cameraSettingsChanged() }
+        }
+        // Reading a script on the teleprompter, in Studio, Selfie or the first flight's practice, is the first voyage's practice.
+        .onChange(of: viewModel.isPlaying) { _, playing in
+            if playing, viewModel.hasScript { voyage.markPracticed() }
         }
         .onChange(of: viewModel.session.prompter.scrollMode) {
             viewModel.scrollModeChanged()

@@ -110,6 +110,14 @@ struct TakeReviewView: View {
                     ContentUnavailableView("This take was deleted", systemImage: "film")
                 }
             }
+            .overlay(alignment: .top) {
+                if showsPickTip {
+                    pickTip
+                        .padding(.horizontal, 16)
+                        .padding(.top, 8)
+                        .transition(.opacity.combined(with: .move(edge: .top)))
+                }
+            }
             .navigationBarTitleDisplayMode(.inline)
             .toolbarBackgroundVisibility(.hidden, for: .navigationBar)
             .toolbar {
@@ -435,6 +443,21 @@ struct TakeReviewView: View {
             tellsMilestone = true
         }
         #endif
+    }
+
+    // MARK: - The first voyage
+
+    /// The voyage's fourth step: keep the best take. Not over the stories, the editor or a celebration.
+    private var showsPickTip: Bool {
+        services.voyage.showsTip(for: .pick) && viewModel.take != nil && !tellsFirstStar && editingTake == nil && viewModel.celebration == nil
+    }
+
+    private var pickTip: some View {
+        VoyageTipCard(
+            step: .pick, symbol: "star", title: String(localized: "Keep your best take"),
+            message: String(localized: "Tap the star on the one you'll post. You can change it anytime, and the others stay in Takes."),
+            onClose: { withAnimation(.smooth(duration: 0.25)) { services.voyage.closeTip(.pick) } }
+        )
     }
 
     /// The first take Cue ever recorded lights the first star (once, and only when the creator has done the first flight).

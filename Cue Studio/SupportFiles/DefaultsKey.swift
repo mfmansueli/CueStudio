@@ -52,6 +52,8 @@ nonisolated enum DefaultsKey {
     /// The first flight (onboarding) is over, and its "first star" has been told.
     static let onboardingCompleted = "onboardingCompleted"
     static let firstStarShown = "firstStarShown"
+    /// The first voyage's own marks (`VoyageMarks`, JSON): its stage, the practice, a skipped Polish, tips closed, segments lit.
+    static let firstVoyage = "firstVoyage"
     /// The videos shared (once each), the day of the first one, and the milestones already told.
     static let sharedTakeIDs = "sharedTakeIDs"
     static let firstShareDate = "firstShareDate"

@@ -11,7 +11,8 @@ import SwiftUI
 ///
 /// The first use has the small constellation, "How do you want to start?" and "Pick the easiest way to get your words flowing."; a creator
 /// who had scripts and deleted them all (`ScriptsEmptyState.returning`) gets the same three cards under a lighter header, without the
-/// illustration. Without Apple Intelligence, Find inspiration says its ideas are starters to write yourself.
+/// illustration. Without Apple Intelligence, Find inspiration says its ideas are starters to write yourself. While the first voyage is on, a slim
+/// strip above says these ways in are its first step (`VoyageStrip`).
 struct EmptyLibraryView: View {
     enum Kind {
         case firstUse
@@ -25,6 +26,8 @@ struct EmptyLibraryView: View {
     let onWrite: () -> Void
     let onImport: () -> Void
 
+    @Environment(FirstVoyageService.self) private var voyage
+
     private var hasAI: Bool { unavailableReason == nil }
 
     var body: some View {
@@ -33,6 +36,7 @@ struct EmptyLibraryView: View {
                 HUDLine(values: [kind == .firstUse ? String(localized: "No scripts yet") : String(localized: "No scripts right now")], tint: Palette.inkHint)
                     .padding(.horizontal, 4)
                     .accessibilityIdentifier("scripts.summary")
+                voyageStep
                 header
                     .padding(.top, kind == .firstUse ? 4 : 20)
                 paths
@@ -47,6 +51,21 @@ struct EmptyLibraryView: View {
     }
 
     // MARK: - Pieces
+
+    /// The first voyage: a slim strip while writing is the step (the three ways in below are that step), else its card.
+    @ViewBuilder
+    private var voyageStep: some View {
+        if voyage.showsCard {
+            Group {
+                if voyage.progress.current == .write {
+                    VoyageStrip()
+                } else {
+                    VoyageCard(host: .scripts)
+                }
+            }
+            .padding(.top, 12)
+        }
+    }
 
     @ViewBuilder
     private var header: some View {

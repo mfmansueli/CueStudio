@@ -28,6 +28,7 @@ nonisolated enum SettingsEntry: String, CaseIterable, Identifiable, Sendable {
     // Personalize
     case appIcon, topics, autoTag
     case starrySky, celebrations, haptics
+    case firstVoyage
     // Language & Region
     case appLanguage, voiceFollowingLanguage, scriptLanguage
     // Privacy & AI data
@@ -88,6 +89,7 @@ nonisolated enum SettingsEntry: String, CaseIterable, Identifiable, Sendable {
         case .starrySky: String(localized: "Starry sky")
         case .celebrations: String(localized: "Celebrations")
         case .haptics: String(localized: "Haptics")
+        case .firstVoyage: String(localized: "First video guide")
         case .appLanguage: String(localized: "App language")
         case .voiceFollowingLanguage: String(localized: "Voice following")
         case .scriptLanguage: String(localized: "Script language")
@@ -111,6 +113,7 @@ nonisolated enum SettingsEntry: String, CaseIterable, Identifiable, Sendable {
         case .appIcon: String(localized: "Aurora and First Light unlock with milestones")
         case .topics: String(localized: "Edit them in My Cue Voice")
         case .autoTag: String(localized: "Cue picks the topic on this iPhone")
+        case .firstVoyage: String(localized: "Your next step, until your first video is out")
         case .onDeviceAI: String(localized: "Scripts and My Cue Voice stay on this iPhone")
         case .helpImprove: String(localized: "Anonymous usage, never videos or scripts")
         default: nil
@@ -142,6 +145,7 @@ nonisolated enum SettingsEntry: String, CaseIterable, Identifiable, Sendable {
         case .appIcon: Self.path(.personalize, String(localized: "App icon"))
         case .topics, .autoTag: Self.path(.personalize, String(localized: "Topics & colors"))
         case .starrySky, .celebrations, .haptics: Self.path(.personalize, String(localized: "Motion"))
+        case .firstVoyage: Self.path(.personalize, String(localized: "Getting started"))
         case .appLanguage, .voiceFollowingLanguage, .scriptLanguage: SettingsEntry.languageRegion.title
         case .onDeviceAI, .helpImprove, .permissions, .deleteData: SettingsEntry.privacy.title
         }
@@ -191,6 +195,7 @@ nonisolated enum SettingsEntry: String, CaseIterable, Identifiable, Sendable {
         case .starrySky: ["stars", "motion", "serene", "adrift", "interstellar", "calm", "lively", "galactic", "spaceship", "astronaut", "space", "background"]
         case .celebrations: ["confetti", "milestone", "motion"]
         case .haptics: ["vibration", "feedback", "taps"]
+        case .firstVoyage: ["guide", "tips", "tutorial", "onboarding", "help", "first video", "voyage", "steps"]
         case .appLanguage: ["interface", "english", "português"]
         case .voiceFollowingLanguage: ["speech", "listen", "recognition"]
         case .scriptLanguage: ["write", "new scripts", "auto-detect"]

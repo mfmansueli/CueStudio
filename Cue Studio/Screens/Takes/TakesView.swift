@@ -19,6 +19,7 @@ struct TakesView: View {
     @Environment(MilestoneService.self) private var milestones
     @Environment(ScriptLibraryService.self) private var library
     @Environment(PresentationService.self) private var presentation
+    @Environment(FirstVoyageService.self) private var voyage
     @Environment(\.scenePhase) private var scenePhase
     /// "Remind me…" from a video's menu: a reminder for its best take.
     @State private var reminding: TakeVideo?
@@ -39,14 +40,14 @@ struct TakesView: View {
         @Bindable var viewModel = viewModel
         Group {
             if viewModel.isEmpty {
-                // The empty state (E): the mark, one line, one action and a way to a script.
-                EmptyState(
-                    icon: .takes, title: "No takes yet", message: "Record a script. Every take lands here.", actionTitle: "Record",
-                    actionDot: Palette.record, action: { presentation.present(.startRecording) },
-                    linkTitle: "Pick a script ›", link: { presentation.selectedTab = .scripts },
-                    accessibilityPrefix: "takes.empty"
-                )
-                .frame(maxHeight: .infinity)
+                VStack(spacing: 0) {
+                    if voyage.showsCard {
+                        VoyageCard(host: .takes)
+                            .padding(.horizontal, Metrics.gutter)
+                            .padding(.top, 8)
+                    }
+                    emptyTakes
+                }
             } else if layout.wrappedValue == .grid {
                 grid
             } else {
@@ -103,6 +104,17 @@ struct TakesView: View {
         viewModel.apply(request, sharedVideos: videos)
     }
 
+    /// The empty state (E): the mark, one line, one action and a way to a script.
+    private var emptyTakes: some View {
+        EmptyState(
+            icon: .takes, title: "No takes yet", message: "Record a script. Every take lands here.", actionTitle: "Record",
+            actionDot: Palette.record, action: { presentation.present(.startRecording) },
+            linkTitle: "Pick a script ›", link: { presentation.selectedTab = .scripts },
+            accessibilityPrefix: "takes.empty"
+        )
+        .frame(maxHeight: .infinity)
+    }
+
     // MARK: - Header
 
     /// The count in yellow mono, the pipeline, what to do next and the filters: above both layouts (6.2).
@@ -112,6 +124,9 @@ struct TakesView: View {
         return VStack(alignment: .leading, spacing: 14) {
             HUDLine(values: viewModel.summaryValues, separator: " · ")
                 .padding(.horizontal, 4)
+            if voyage.showsCard {
+                VoyageCard(host: .takes)
+            }
             TakePipelineCard(pipeline: pipeline, selected: viewModel.filter.stage, onSelect: { viewModel.toggle($0) })
             if let next = pipeline.next {
                 TakeUpNextCard(
