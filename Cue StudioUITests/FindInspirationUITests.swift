@@ -123,9 +123,9 @@ final class FindInspirationUITests: XCTestCase {
         let ideaTitle = title.label
         app.buttons["inspiration.use"].tap()
 
-        XCTAssertFalse(element(app, "inspiration.sheet").waitForExistence(timeout: 2))
-        let undo = app.buttons["Undo"]
-        XCTAssertTrue(undo.waitForExistence(timeout: 3), "The creator's words were replaced without an Undo")
+        let undo = app.buttons["toast.action"]
+        XCTAssertTrue(undo.waitForExistence(timeout: 5), "The creator's words were replaced without an Undo")
+        XCTAssertFalse(element(app, "inspiration.sheet").exists)
         let used = field.value as? String ?? ""
         // The brief (subject, angle and "Open with: …") when the idea has one, its title otherwise.
         XCTAssertTrue(hasBrief ? used.contains("Open with") : used.contains(ideaTitle), "The composer says \(used)")
@@ -200,6 +200,22 @@ final class FindInspirationUITests: XCTestCase {
         XCTAssertEqual(write.label, "Write it yourself")
         write.tap()
         XCTAssertTrue(app.textFields["page.titleField"].waitForExistence(timeout: 10), "No blank draft")
+    }
+
+    // MARK: - The card with a whole brief
+
+    /// The stub writer's ideas have no brief yet: the design catalogue shows the card with one (`-uiTestCatalogue inspire`).
+    func testTheCardReadsAsOneBriefTitleAngleAndOpeningLine() throws {
+        let app = CueApp.launch(seeded: false, extraArguments: ["-uiTestCatalogue", "inspire"])
+        let card = element(app, "catalogue.inspire.brief")
+        XCTAssertTrue(card.waitForExistence(timeout: 15))
+        XCTAssertTrue(card.staticTexts["Why saving feels harder than spending"].exists)
+        let angle = card.descendants(matching: .any)["inspiration.card.angle"].firstMatch
+        let opening = card.descendants(matching: .any)["inspiration.card.opening"].firstMatch
+        XCTAssertTrue(angle.label.contains("Explain one small habit"), angle.label)
+        XCTAssertTrue(opening.label.contains("what you make automatic"), opening.label)
+        XCTAssertLessThan(angle.frame.minY, opening.frame.minY, "The angle comes before the opening line")
+        try shoot(app, "09-card-with-brief")
     }
 
     // MARK: - Big text

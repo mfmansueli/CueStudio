@@ -464,11 +464,22 @@ extension ScriptDetailViewModel {
             script.isFinished = true
         }
         // The idea became a script: the card starts empty the next time.
-        ideaDraft?.clear()
+        clearDraft(writtenFrom: request)
         if request?.voice != nil { voiceQuestions?.recordVoiceScript(scriptID) }
         toast.show(generated.needsFactCheck
             ? String(localized: "Draft ready · Check facts")
             : String(localized: "Draft ready · Edit anything"))
+    }
+
+    /// The card's idea became this script: it starts empty the next time. A script written from something else (an idea written as it is
+    /// from Find inspiration, an answered comment) leaves the creator's own draft where it was.
+    private func clearDraft(writtenFrom request: ScriptRequest?) {
+        guard let ideaDraft else { return }
+        if case .prompt(let text) = request?.source, let draft = ideaDraft.submission,
+           text.trimmingCharacters(in: .whitespacesAndNewlines) != draft.trimmingCharacters(in: .whitespacesAndNewlines) {
+            return
+        }
+        ideaDraft.clear()
     }
 
     /// "Stop": the words that have arrived stay; the rest isn't written.
@@ -477,13 +488,14 @@ extension ScriptDetailViewModel {
         pageWritingTask = nil
         guard page.isWriting else { return }
         page.isWriting = false
+        let request = pendingRequest
         pendingRequest = nil
         // A script stopped halfway isn't the one to judge the voice by.
         page.voicePreview = nil
         // The idea leaves the card only if some of it became a script: stopped before the first word, it stays.
         if let revealed = page.revealed, !revealed.isEmpty {
             page.text = revealed
-            ideaDraft?.clear()
+            clearDraft(writtenFrom: request)
         }
         page.revealed = nil
         page.progress = nil

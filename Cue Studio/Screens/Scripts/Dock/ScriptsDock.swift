@@ -197,17 +197,23 @@ struct ScriptsDock: View {
             DictationStatusRow(state: dictation.state, level: dictation.level)
                 .frame(maxWidth: .infinity, alignment: .leading)
         } else if showsInspiration {
-            // The lightbulb sits right after the voice chip while the row fits; when it doesn't (a narrow iPhone, big text), the chips
-            // scroll and the lightbulb stays at the end, in reach, instead of any chip being squeezed.
+            // The lightbulb sits right after the voice chip while the row fits. When it doesn't, the platform chip says only the
+            // platform ("TikTok" for "For TikTok"); when that isn't enough either (a narrow iPhone, big text), the chips scroll and the
+            // lightbulb stays at the end, in reach, instead of any chip being squeezed.
             ViewThatFits(in: .horizontal) {
                 HStack(spacing: 6) {
-                    choiceChips
+                    choiceChips(shortPlatform: false)
+                    InspirationDockButton { presentation.present(.ideas) }
+                }
+                .fixedSize()
+                HStack(spacing: 6) {
+                    choiceChips(shortPlatform: true)
                     InspirationDockButton { presentation.present(.ideas) }
                 }
                 .fixedSize()
                 HStack(spacing: 6) {
                     ScrollView(.horizontal) {
-                        HStack(spacing: 6) { choiceChips }
+                        HStack(spacing: 6) { choiceChips(shortPlatform: false) }
                     }
                     .scrollIndicators(.hidden)
                     InspirationDockButton { presentation.present(.ideas) }
@@ -216,23 +222,27 @@ struct ScriptsDock: View {
             .frame(maxWidth: .infinity, alignment: .leading)
         } else {
             ScrollView(.horizontal) {
-                HStack(spacing: 6) { choiceChips }
+                HStack(spacing: 6) { choiceChips(shortPlatform: false) }
             }
             .scrollIndicators(.hidden)
             .scrollClipDisabled()
         }
     }
 
+    /// `shortPlatform`: the platform chip says only the platform, to make room for the lightbulb.
     @ViewBuilder
-    private var choiceChips: some View {
+    private func choiceChips(shortPlatform: Bool) -> some View {
         if showsFormat { formatChip }
-        platformChip
+        platformChip(short: shortPlatform)
         if hasAI { MyCueVoiceChip(setup: $voiceSetup, hitHeight: Self.topRowHeight) }
     }
 
-    private var platformChip: some View {
+    private func platformChip(short: Bool) -> some View {
         Button { presentation.present(.createFor) } label: {
-            IdeaCardChip(label: String(localized: "For \(starter.platform.label)"), dotColor: starter.platform.tint, hitHeight: Self.topRowHeight)
+            IdeaCardChip(
+                label: short ? starter.platform.label : String(localized: "For \(starter.platform.label)"), dotColor: starter.platform.tint,
+                hitHeight: Self.topRowHeight
+            )
         }
         .buttonStyle(.plain)
         .accessibilityLabel(Text("Platform, \(starter.platform.label)"))

@@ -11,7 +11,7 @@ import SwiftUI
 struct DesignCatalogueView: View {
     enum Section: String, CaseIterable, Identifiable {
         case colors = "Colors", icons = "Icons", sliders = "Sliders", tabBar = "Tabbar", components = "Parts", effects = "Effects"
-        case sky = "Sky", transition = "Transition", universe = "Universe", writing = "Writing"
+        case sky = "Sky", transition = "Transition", universe = "Universe", writing = "Writing", inspire = "Inspire"
         var id: String { rawValue }
     }
 
@@ -67,6 +67,7 @@ struct DesignCatalogueView: View {
                     case .transition: transitionDemo
                     case .universe: universeDemo
                     case .writing: writingDemo
+                    case .inspire: inspireDemo
                     }
                 }
                 .padding(.horizontal, 16)
@@ -75,6 +76,28 @@ struct DesignCatalogueView: View {
         }
         .background(Palette.bg.ignoresSafeArea())
         .accessibilityIdentifier("catalogue.root")
+    }
+
+    // MARK: - Find inspiration
+
+    /// Find inspiration's card with a whole brief (and with the subtopic), with only a title, as a Logbook note, waiting, and the dock's lightbulb.
+    private var inspireDemo: some View {
+        let topics = [IdeaTopic(name: "personal finance", label: Niche.finance.chipLabel, niche: .finance)]
+        func card(_ idea: ThemeIdea, world: Int) -> some View {
+            InspirationCard(
+                content: InspirationCardContent(idea: idea, topics: topics, logbookLabel: String(localized: "From your Logbook")),
+                worldColor: OnboardingTopic.color(at: world)
+            )
+        }
+        return VStack(alignment: .leading, spacing: 22) {
+            card(InspirationSamples.finance, world: 0).accessibilityIdentifier("catalogue.inspire.brief")
+            card(InspirationSamples.fitness, world: 1)
+            card(InspirationSamples.titleOnly, world: 2)
+            card(InspirationSamples.note, world: 0)
+            InspirationCardSkeleton(topic: "Daily Routine")
+            HStack { InspirationDockButton {} }
+        }
+        .background(Palette.sheetNight)
     }
 
     // MARK: - Writing

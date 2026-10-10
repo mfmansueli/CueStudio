@@ -100,13 +100,8 @@ struct InspirationCard: View {
 
 #if DEBUG
 #Preview {
-    var idea = ThemeIdea(title: "Why saving feels harder than spending", kind: "Explainer", length: .minute1, niche: .finance)
-    idea.brief = IdeaBrief(
-        subject: "Saving", angle: "Explain one small habit that makes saving easier.",
-        openingLine: "Saving isn't just about willpower. It's about what you make automatic."
-    )
-    return InspirationCard(
-        content: InspirationCardContent(idea: idea, topics: [], logbookLabel: "From your Logbook"), worldColor: Palette.World.warm
+    InspirationCard(
+        content: InspirationCardContent(idea: InspirationSamples.finance, topics: [], logbookLabel: "From your Logbook"), worldColor: Palette.World.warm
     )
     .padding()
     .background(Palette.sheetNight)

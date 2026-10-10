@@ -23,6 +23,8 @@ struct FindInspirationSheet: View {
     @Environment(IdeaTransitionService.self) private var transition
     @Environment(PresentationService.self) private var presentation
     @Environment(CreatorProfileService.self) private var profile
+    @Environment(ScriptLibraryService.self) private var library
+    @Environment(LanguageService.self) private var languages
     @Environment(\.dismiss) private var dismiss
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.dynamicTypeSize) private var typeSize
@@ -32,6 +34,8 @@ struct FindInspirationSheet: View {
     @State private var writeCenter: CGPoint?
     /// "Use this idea" was tapped: the composer takes the keyboard once the sheet has gone.
     @State private var focusesComposer = false
+    /// "Use this idea" took the place of the creator's words: the Undo toast comes once the sheet has gone, so all of its time is seen.
+    @State private var offersUndo = false
 
     init(services: AppServices) {
         _viewModel = State(initialValue: FindInspirationViewModel(
@@ -58,7 +62,7 @@ struct FindInspirationSheet: View {
                     .padding(.horizontal, Metrics.gutter)
                 cardArea
                     .padding(.horizontal, Metrics.gutter)
-                    .padding(.top, showsOrbit ? 30 : 18)
+                    .padding(.top, showsOrbit ? 38 : 18)
                 if typeSize.isAccessibilitySize {
                     // At the biggest sizes the actions scroll with the card: pinned, they would take most of the screen.
                     actions.padding(.top, 20)
@@ -78,6 +82,13 @@ struct FindInspirationSheet: View {
         .onChange(of: profile.profile.ideaTopics) { viewModel.topicsChanged() }
         .onDisappear {
             if focusesComposer { ideaDraft.wantsFocus = true }
+            if offersUndo {
+                let model = viewModel
+                toast.show(
+                    String(localized: "This idea replaced your draft"),
+                    action: ToastAction(title: String(localized: "Undo")) { model.undoUse() }
+                )
+            }
         }
         .sheet(isPresented: $editsTopics) { VoiceEditorSheet(field: .topics) }
         .accessibilityElement(children: .contain)
@@ -146,7 +157,7 @@ struct FindInspirationSheet: View {
         }
         .overlay { InspirationStarBurst(trigger: viewModel.turn) }
         .overlay(alignment: .topTrailing) {
-            if showsOrbit { InspirationOrbit().offset(x: 6, y: -30) }
+            if showsOrbit { InspirationOrbit().offset(x: 4, y: -40) }
         }
         .animation(reduceMotion ? .easeInOut(duration: 0.2) : .smooth(duration: 0.32), value: contentKey)
     }
@@ -316,14 +327,8 @@ struct FindInspirationSheet: View {
         presentation.selectedTab = .scripts
         presentation.scriptsPath = []
         focusesComposer = true
+        offersUndo = replaced
         dismiss()
-        if replaced {
-            let model = viewModel
-            toast.show(
-                String(localized: "This idea replaced your draft"),
-                action: ToastAction(title: String(localized: "Undo")) { model.undoUse() }
-            )
-        }
     }
 
     /// Written as it is: the star rises from the button and the page opens under it. Without Apple Intelligence, a blank draft named after it.
@@ -332,7 +337,11 @@ struct FindInspirationSheet: View {
         viewModel.willWrite(idea)
         dismiss()
         guard hasAI else {
-            starter.writeByHand(idea: idea.title)
+            // Not `starter.writeByHand`, which empties the composer: the creator's own draft stays where it was.
+            let script = library.create(
+                title: idea.title, text: "", platform: starter.platform, type: ideaDraft.format, language: languages.scriptLanguage, isFinished: false
+            )
+            presentation.openScript(script.id, editing: true)
             return
         }
         Haptics.medium()
