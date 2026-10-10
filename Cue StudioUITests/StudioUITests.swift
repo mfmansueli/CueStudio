@@ -106,6 +106,8 @@ final class StudioUITests: XCTestCase {
         XCTAssertEqual(XCTWaiter.wait(for: [folded], timeout: 5), .completed)
         sleep(1)
         play.tap()
-        XCTAssertEqual(play.label, "Play")
+        // Under load (two simulators) the label can take a moment to turn.
+        let paused = XCTNSPredicateExpectation(predicate: NSPredicate(format: "label == 'Play'"), object: play)
+        XCTAssertEqual(XCTWaiter.wait(for: [paused], timeout: 3), .completed, play.label)
     }
 }

@@ -18,7 +18,7 @@ struct PanelFrame<Fixed: View, Content: View, Footer: View>: View {
     var body: some View {
         EditorPanelContainer(
             title: viewModel.panelTitle(panel), subtitle: viewModel.panelSubtitle(panel), onReset: onReset,
-            expansion: panel.isExpandable ? expansion : nil,
+            expansion: panel.isExpandable ? expansion : nil, contentKey: viewModel.panelTab,
             onApply: viewModel.closePanel, fixed: { fixed }, content: { content }, footer: { footer }
         )
         .accessibilityIdentifier("edit.panel.\(panel.rawValue)")

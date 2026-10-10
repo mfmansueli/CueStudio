@@ -868,6 +868,12 @@ ocupava quase toda a tela, e "+ Captions" ligava as legendas aos textos de um je
   (`CaptionCollectionRenderer`, teste de exportação real).
 - **Contraste:** só tokens. `PaletteContrastTests.theEditorsPanelReads` mede agora também `ink` e `ink2` sobre o `fill` por cima do painel (o ícone de expandir, o botão das legendas e os
   segmentos). Três opacidades inventadas para texto viraram `ink2`: o segmento não escolhido (`PanelSegmented`, era `ink` a 72%), o Reset do cabeçalho (75%) e o nome do cartão de preset (80%).
+- **Rolar um painel por cima de um slider** (achado pelos testes de UI): o `CueSlider` pegava qualquer arraste que começasse na faixa dele (`DragGesture(minimumDistance: 0)` de prioridade alta em
+  toda a trilha), então um dedo que rolava o Text style por cima do Size mudava o tamanho (53 → 72 pt, visto na gravação) e o painel não rolava. Agora, como no slider do sistema, **só o polegar
+  arrasta** (com 44 pt de toque em volta dele, medido na trilha) e pegar o polegar não o faz pular; um toque na trilha ainda leva o polegar até lá, como um passo de desfazer. Vale para todo
+  `CueSlider` do app (painéis do editor, Settings, prompter).
+- **Trocar de aba volta ao topo do conteúdo** (`EditorPanelContainer.contentKey`, a aba do painel): uma aba aberta com a anterior rolada até o fim mostrava o meio dos próprios controles, com os
+  primeiros fora da vista.
 - 15 textos novos nos 20 idiomas; três que só "+ Captions" usava foram apagados.
 - **Testes:** `CaptionStyleCopyTests`, `CaptionAccentTests`, `QuickEditCaptionStyleCopyTests`, `QuickEditTextStyleTests`, `EditorLayoutTests` (painel expandido),
   `CaptionCollectionRendererTests` e `CaptionCollectionExportTests` (o visual copiado), e `TextStyleUITests` (expandir, escopo, teclado, a pergunta e o Custom, no 6,1" e no SE).

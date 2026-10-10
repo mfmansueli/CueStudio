@@ -19,6 +19,9 @@ struct EditorPanelContainer<Fixed: View, Content: View, Footer: View>: View {
     let subtitle: String
     var onReset: (() -> Void)?
     var expansion: Binding<Bool>?
+    /// What the content shows (the panel's tab): when it changes, the content starts again from its top. A tab opened while the
+    /// last one was scrolled to its end showed the middle of its own controls, with the first ones out of sight above.
+    var contentKey: AnyHashable?
     let onApply: () -> Void
     @ViewBuilder var fixed: Fixed
     @ViewBuilder var content: Content
@@ -40,6 +43,7 @@ struct EditorPanelContainer<Fixed: View, Content: View, Footer: View>: View {
                 .padding(.bottom, 12)
                 .frame(maxWidth: .infinity, alignment: .leading)
             }
+            .id(contentKey)
             .scrollIndicators(.hidden)
             .scrollBounceBehavior(.basedOnSize)
             .scrollEdgeEffectStyle(expansion == nil ? nil : .soft, for: .bottom)
