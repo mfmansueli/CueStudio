@@ -20,6 +20,8 @@ nonisolated enum DefaultsKey {
     static let creatorProfile = "creatorProfile"
     /// The card's suggested ideas written by the model and not yet shown, and the titles of the ones that were (`IdeaSuggestionService`).
     static let ideaSuggestions = "ideaSuggestions"
+    /// The library has held a script at least once (`LibraryHistory`): an empty Scripts is then the returning state, not the first-use one.
+    static let hasEverHadScript = "hasEverHadScript"
     /// The creator's own cues on the script page's cues bar (`[String]`).
     static let customCues = "customCues"
     /// The script page's Cues switch (`Bool`; absent = on).
@@ -50,6 +52,10 @@ nonisolated enum DefaultsKey {
     /// The first flight (onboarding) is over, and its "first star" has been told.
     static let onboardingCompleted = "onboardingCompleted"
     static let firstStarShown = "firstStarShown"
+    /// The first voyage's own marks (`VoyageMarks`, JSON): its stage, the practice, a skipped Polish, tips closed, segments lit.
+    static let firstVoyage = "firstVoyage"
+    /// The words Cue drafted for each script, until it is recorded (`DraftLearningService`).
+    static let cueDrafts = "cueDrafts"
     /// The videos shared (once each), the day of the first one, and the milestones already told.
     static let sharedTakeIDs = "sharedTakeIDs"
     static let firstShareDate = "firstShareDate"

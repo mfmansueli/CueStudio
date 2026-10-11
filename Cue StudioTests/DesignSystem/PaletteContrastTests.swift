@@ -230,6 +230,39 @@ struct PaletteContrastTests {
         }
     }
 
+    /// The first voyage: its tips (text on `aiFill` over `surface`, the step's row in the list the same) and its card (`surface`).
+    @Test func theFirstVoyageReadsOnItsTipsAndItsCard() {
+        for appearance in Appearance.allCases {
+            for token in [("ink", Palette.ink), ("ink2", Palette.ink2), ("aiText", Palette.aiText)] {
+                let onTip = ratio(token.1, onTint: Palette.aiFill, over: Palette.surface, in: appearance)
+                #expect(onTip >= ColorContrast.textMinimum, "\(token.0) on a tip, \(appearance): \(onTip)")
+                let onSheet = ratio(token.1, onTint: Palette.aiFill, over: Palette.sheetNight, in: appearance)
+                #expect(onSheet >= ColorContrast.textMinimum, "\(token.0) on the next step's row, \(appearance): \(onSheet)")
+                let onCard = ratio(token.1, on: Palette.surface, in: appearance)
+                #expect(onCard >= ColorContrast.textMinimum, "\(token.0) on the card, \(appearance): \(onCard)")
+            }
+            // The segments: done (yellow) against the track, as a part of a control.
+            #expect(ratio(Palette.acc, on: Palette.surface3, in: appearance) >= ColorContrast.componentMinimum, "a done segment, \(appearance)")
+        }
+    }
+
+    /// Background's Cutout card (and the tiles): text on `panelCard` over the panel, and the segmented control's gray inside the card.
+    @Test func theBackgroundPanelsCutoutCardReads() {
+        for appearance in Appearance.allCases {
+            let panel = rgb(Palette.Editor.panel, in: appearance)
+            let card = rgb(Palette.Editor.panelCard, in: appearance, over: panel)
+            let well = rgb(Palette.fill, in: appearance, over: card)
+            for token in [("ink", Palette.ink), ("ink2", Palette.ink2), ("accText", Palette.accText), ("warnText", Palette.warnText)] {
+                let onCard = ColorContrast.ratio(rgb(token.1, in: appearance, over: card), card)
+                #expect(onCard >= ColorContrast.textMinimum, "\(token.0) on the card, \(appearance): \(onCard)")
+            }
+            for token in [("ink", Palette.ink), ("ink2", Palette.ink2)] {
+                let inWell = ColorContrast.ratio(rgb(token.1, in: appearance, over: well), well)
+                #expect(inWell >= ColorContrast.textMinimum, "\(token.0) in the segmented well on the card, \(appearance): \(inWell)")
+            }
+        }
+    }
+
     @Test func settingsSheetsOverTheCameraRead() {
         for appearance in Appearance.allCases {
             for token in textTokens {
@@ -362,7 +395,7 @@ struct PaletteContrastTests {
         }
     }
 
-    /// "✦ Writing in your voice 42%": the page's pill, its words on the violet fill over the page.
+    /// "✦ Drafting in your voice 42%": the page's pill, its words on the violet fill over the page.
     @Test func theWritingPillReadsOnItsFill() {
         for appearance in Appearance.allCases {
             let measured = ratio(Palette.aiTextStrong, onTint: Palette.Page.writingPillFill, over: Palette.bg, in: appearance)
@@ -443,6 +476,34 @@ struct PaletteContrastTests {
             // The violet core of the ring sits behind the title at its strongest.
             let core = rgb(Palette.Scripts.emptyRingCore, in: appearance, over: rgb(Palette.bg, in: appearance))
             #expect(ColorContrast.ratio(rgb(Palette.ink, in: appearance, over: core), core) >= ColorContrast.textMinimum)
+        }
+    }
+
+    /// Find inspiration: the featured card's words on its violet night and at its brightest point (the light of its top corner), the chosen
+    /// topic chip (white words on violet; the chip apart from the sheet's night, 3:1, since it is what says which topic is chosen), the dock's
+    /// lightbulb (an icon that informs, 3:1) and the empty Scripts' cards (their words and their icons on their tiles).
+    @Test func findInspirationReadsOnItsCardItsChipsAndItsWaysIn() {
+        for appearance in Appearance.allCases {
+            let card = Palette.Scripts.inspirationCard
+            for (name, token) in [("ink", Palette.ink), ("ink2", Palette.ink2), ("aiText", Palette.aiText)] {
+                let flat = ratio(token, on: card, in: appearance)
+                let lit = ratio(token, onTint: Palette.Scripts.inspirationCardGlow, over: card, in: appearance)
+                #expect(flat >= ColorContrast.textMinimum, "\(name) on the inspiration card, \(appearance): \(flat)")
+                #expect(lit >= ColorContrast.textMinimum, "\(name) under the card's light, \(appearance): \(lit)")
+            }
+            let chip = ratio(Palette.ink, on: Palette.Scripts.inspirationChipOn, in: appearance)
+            #expect(chip >= ColorContrast.textMinimum, "the chosen chip's words, \(appearance): \(chip)")
+            let chipEdge = ratio(Palette.Scripts.inspirationChipOn, on: Palette.sheetNight, in: appearance)
+            #expect(chipEdge >= ColorContrast.componentMinimum, "the chosen chip on the sheet, \(appearance): \(chipEdge)")
+            let bulb = ratio(Palette.accText, onTint: Palette.Scripts.heroChip, over: Palette.Scripts.dockBase, in: appearance)
+            #expect(bulb >= ColorContrast.componentMinimum, "the dock's lightbulb, \(appearance): \(bulb)")
+            for surface in [Palette.surface, Palette.sheetNight] {
+                #expect(ratio(Palette.ink, on: surface, in: appearance) >= ColorContrast.textMinimum, "a way in's title, \(appearance)")
+                #expect(ratio(Palette.ink2, on: surface, in: appearance) >= ColorContrast.textMinimum, "a way in's line, \(appearance)")
+            }
+            let accentIcon = ratio(Palette.accText, onTint: Palette.accSoft, over: Palette.surface, in: appearance)
+            #expect(accentIcon >= ColorContrast.componentMinimum, "Find inspiration's lightbulb on its tile, \(appearance): \(accentIcon)")
+            #expect(ratio(Palette.ink, on: Palette.surface3, in: appearance) >= ColorContrast.componentMinimum, "the other icons, \(appearance)")
         }
     }
 

@@ -6,9 +6,9 @@
 import SwiftUI
 
 /// The Scripts AI dock (v30 · 3.1, 3.2): clean glass fixed above the tab bar. Row 1 is the choices for the idea (Format, the platform and
-/// the voice); row 2 is the idea itself (two lines, opening to five while it is edited, the suggested idea while it is empty, and up to
-/// `IdeaPromptDraft.maxCharacters` characters), "↻ another idea", the microphone and the yellow arrow. Scrolling the list down folds
-/// row 1 away (09 §6); focusing the field raises the dock with the keyboard.
+/// the voice), and once there are scripts a lightbulb to Find inspiration; row 2 is the idea itself (two lines, opening to five while it
+/// is edited, the suggested idea while it is empty, and up to `IdeaPromptDraft.maxCharacters` characters), "↻ another idea", the microphone
+/// and the yellow arrow. Scrolling the list down folds row 1 away (09 §6); focusing the field raises the dock with the keyboard.
 ///
 /// The text is the one draft kept by `IdeaDraftService`. The microphone dictates into the field (speak, see the words, review,
 /// edit: it never sends anything itself). The dock owns the microphone while it is on screen: it lets go when the app leaves the
@@ -23,6 +23,9 @@ struct ScriptsDock: View {
     @Binding var isEditing: Bool
     /// Why Apple Intelligence can't write now; nil when it can. The arrow says "Write it" then.
     var unavailableReason: String?
+    /// The lightbulb to Find inspiration after the voice chip: always, in every state of Scripts (the owner's call, 10/10/2026; the empty
+    /// Scripts has no inspiration card of its own).
+    var showsInspiration = true
 
     @Environment(CreatorProfileService.self) private var profile
     @Environment(IdeaDraftService.self) private var ideaDraft
@@ -136,6 +139,8 @@ struct ScriptsDock: View {
         .onChange(of: ideaDraft.wantsFocus) { _, wants in
             guard wants else { return }
             ideaDraft.wantsFocus = false
+            // The caret goes after the text that was put there ("Start with it"), not where it stood in the text it replaced.
+            selection = IdeaPromptDraft.selection(at: ideaDraft.text.count, in: ideaDraft.text)
             isFocused = true
         }
         .onChange(of: isFocused) { _, _ in isEditing = isFocused || dictation.isActive }
@@ -194,22 +199,53 @@ struct ScriptsDock: View {
         if dictation.isActive {
             DictationStatusRow(state: dictation.state, level: dictation.level)
                 .frame(maxWidth: .infinity, alignment: .leading)
+        } else if showsInspiration {
+            // The lightbulb sits right after the voice chip while the row fits. When it doesn't, the platform chip says only the
+            // platform ("TikTok" for "For TikTok"); when that isn't enough either (a narrow iPhone, big text), the chips scroll and the
+            // lightbulb stays at the end, in reach, instead of any chip being squeezed.
+            ViewThatFits(in: .horizontal) {
+                HStack(spacing: 6) {
+                    choiceChips(shortPlatform: false)
+                    InspirationDockButton { presentation.present(.ideas) }
+                }
+                .fixedSize()
+                HStack(spacing: 6) {
+                    choiceChips(shortPlatform: true)
+                    InspirationDockButton { presentation.present(.ideas) }
+                }
+                .fixedSize()
+                HStack(spacing: 6) {
+                    ScrollView(.horizontal) {
+                        HStack(spacing: 6) { choiceChips(shortPlatform: false) }
+                    }
+                    .scrollIndicators(.hidden)
+                    InspirationDockButton { presentation.present(.ideas) }
+                }
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
         } else {
             ScrollView(.horizontal) {
-                HStack(spacing: 6) {
-                    if showsFormat { formatChip }
-                    platformChip
-                    if hasAI { MyCueVoiceChip(setup: $voiceSetup, hitHeight: Self.topRowHeight) }
-                }
+                HStack(spacing: 6) { choiceChips(shortPlatform: false) }
             }
             .scrollIndicators(.hidden)
             .scrollClipDisabled()
         }
     }
 
-    private var platformChip: some View {
+    /// `shortPlatform`: the platform chip says only the platform, to make room for the lightbulb.
+    @ViewBuilder
+    private func choiceChips(shortPlatform: Bool) -> some View {
+        if showsFormat { formatChip }
+        platformChip(short: shortPlatform)
+        if hasAI { MyCueVoiceChip(setup: $voiceSetup, hitHeight: Self.topRowHeight) }
+    }
+
+    private func platformChip(short: Bool) -> some View {
         Button { presentation.present(.createFor) } label: {
-            IdeaCardChip(label: String(localized: "For \(starter.platform.label)"), dotColor: starter.platform.tint, hitHeight: Self.topRowHeight)
+            IdeaCardChip(
+                label: short ? starter.platform.label : String(localized: "For \(starter.platform.label)"), dotColor: starter.platform.tint,
+                hitHeight: Self.topRowHeight
+            )
         }
         .buttonStyle(.plain)
         .accessibilityLabel(Text("Platform, \(starter.platform.label)"))
@@ -469,11 +505,13 @@ struct ScriptsDock: View {
             starter.write(idea: nil, from: sendCenter)
             return
         }
+        // The card's own idea follows its angle and opening line (read before `sent()` brings the next one).
+        let brief = suggestions.current?.brief
         // The idea sent is what they like (the next ones lean that way); when it was a note of theirs, the note has become a script.
         let note = suggestions.sent()
         // A suggested idea used for real: its introduction stops (a note of their own is the Logbook's, not the ideas').
         if note == nil { notifications.recordUse(.ideas) }
-        starter.write(idea: idea, from: sendCenter) { [logbook] scriptID in
+        starter.write(idea: idea, brief: brief, from: sendCenter) { [logbook] scriptID in
             if let note { logbook.markShaped(note, as: scriptID) }
         }
     }

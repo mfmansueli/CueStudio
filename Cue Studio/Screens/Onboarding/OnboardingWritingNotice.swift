@@ -28,7 +28,7 @@ struct OnboardingWritingNotice: View {
             .frame(maxWidth: .infinity, minHeight: 150)
         }
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel(Text("Writing with Apple Intelligence, on this iPhone"))
+        .accessibilityLabel(Text("Drafting with Apple Intelligence, on this iPhone"))
         .accessibilityIdentifier("onboarding.writingNotice")
     }
 
@@ -48,7 +48,7 @@ struct OnboardingWritingNotice: View {
 
     /// The words in `#E4DEFF` with a white band sliding across.
     private func message(sweep: Double) -> some View {
-        let text = Text("Writing with Apple Intelligence, on this iPhone")
+        let text = Text("Drafting with Apple Intelligence, on this iPhone")
             .font(.system(size: 15, weight: .semibold))
             .multilineTextAlignment(.center)
         return text

@@ -62,7 +62,7 @@ struct ScriptStarterTests {
         #expect(scenario.ideaDraft.text == "  Carnival in Salvador ")
     }
 
-    @Test func anIdeaFromTheIdeasSheetIsWrittenAsIs() {
+    @Test func anIdeaFromFindInspirationIsWrittenAsIs() {
         let scenario = makeScenario()
         defer { scenario.defaults.tearDown() }
         scenario.starter.write(idea: "1 min list video: 3 things I stopped buying", length: .minute1)

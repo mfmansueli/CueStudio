@@ -35,6 +35,9 @@ nonisolated struct ScriptRequest: Hashable, Sendable {
     var format: ScriptType?
     /// The brand brief of a sponsored ad: the only claims the ad may make. Nil for everything else.
     var brand: BrandBrief?
+    /// The inspiration the idea came from, what of it the creator's text still says (`IdeaBrief.standing(in:)`): the script follows its
+    /// angle and opens with its line, or close to it.
+    var brief: IdeaBrief?
 
     var type: ScriptType? {
         if case .format(let type, _) = source { type } else { format }

@@ -54,6 +54,10 @@ struct AppServices {
     let personalization: PersonalizationService
     let onboarding: OnboardingService
     let milestones: MilestoneService
+    /// The guide from the first script to the first video shared.
+    let voyage: FirstVoyageService
+    /// Cue's drafts, and what the creator made of them once recorded.
+    let draftLearning: DraftLearningService
     let shareQueue: ShareQueueService
     /// The settings store (the app's, or the UI tests' in-memory one).
     let defaults: UserDefaults
@@ -103,6 +107,10 @@ struct AppServices {
         personalization = PersonalizationService(defaults: options.defaults)
         onboarding = OnboardingService(defaults: options.defaults, isEnabled: options.showsOnboarding, startStep: options.onboardingStep)
         milestones = MilestoneService(defaults: options.defaults)
+        voyage = FirstVoyageService(
+            library: library, takes: takes, milestones: milestones, defaults: options.defaults,
+            isEnabled: !options.isInMemory || options.showsVoyage
+        )
         shareQueue = ShareQueueService(defaults: options.defaults)
         defaults = options.defaults
         let iconSwitcher: any AppIconSwitching = options.isInMemory ? InMemoryAppIcon() : SystemAppIcon()
@@ -169,10 +177,16 @@ struct AppServices {
             inspiration: { [library, logbook] in IdeaInspiration.recent(scripts: library.scripts, notes: logbook.waiting) },
             notes: { [logbook] in logbook.waiting }, defaults: options.defaults
         )
+        starter.briefWritten = { [ideaSuggestions] brief in ideaSuggestions.generated(from: brief) }
         brands = BrandStore(repository: options.brandRepository)
         self.sky = sky
         aiStatus = AIStatus(writer: options.writer)
         privacy = PrivacyPreferencesService(defaults: options.defaults, writer: options.writer)
+        draftLearning = DraftLearningService(profile: profile, toast: toast, defaults: options.defaults)
+        takes.onTakeAdded = { [draftLearning] take in draftLearning.tookTake(of: take.scriptReference) }
+        voyage.report = { [privacy] event in
+            if privacy.helpsImproveCue { TelemetryManager.record(event) }
+        }
         voiceQuestions = VoiceQuestionScheduler(profile: profile, defaults: options.defaults, skipsGates: options.voiceTipSkipsGates)
         notifications = Self.makeNotifications(options: options, services: NotificationWiring(
             library: library, takes: takes, shareQueue: shareQueue, logbook: logbook, ideas: ideaSuggestions, profile: profile,
@@ -181,7 +195,8 @@ struct AppServices {
         ))
         eraser = DataEraserService(
             library: library, takes: takes, drafts: options.draftStore, logbook: logbook, brands: brands, sky: sky,
-            profile: profile, preferences: preferences, defaults: options.defaults, notifications: notifications
+            profile: profile, preferences: preferences, defaults: options.defaults, notifications: notifications, voyage: voyage,
+            draftLearning: draftLearning
         )
         topicTagging = TopicTaggingService(library: library, profile: profile, personalization: personalization, writer: writer)
     }
@@ -306,6 +321,8 @@ extension View {
             .environment(services.personalization)
             .environment(services.onboarding)
             .environment(services.milestones)
+            .environment(services.voyage)
+            .environment(services.draftLearning)
             .environment(services.shareQueue)
             .environment(services.appIcon)
             .environment(services.topicTagging)

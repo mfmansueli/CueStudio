@@ -33,7 +33,7 @@ nonisolated extension FeatureID {
 
     var notificationBody: String {
         switch self {
-        case .myCueVoice: String(localized: "Answer four quick questions and Cue writes in your voice.")
+        case .myCueVoice: String(localized: "Four quick questions. Cue's drafts start closer to you.")
         case .importWriting: String(localized: "Refine your writing style from texts you wrote. It stays on this iPhone.")
         case .ideas: String(localized: "Explore ideas for your topics.")
         case .logbook: String(localized: "Catch it in the Logbook now. Develop it later.")
@@ -85,7 +85,7 @@ nonisolated extension FeatureID {
         case .logbook: String(localized: "Save an idea before it disappears, and develop it later.")
         case .voiceFollowing: String(localized: "Read at your own pace: the text moves when you speak and waits when you pause.")
         case .cleanUp: String(localized: "Find pauses and repetitions. You choose what stays.")
-        case .autoCaptions: String(localized: "Captions written from your voice, so your audience can follow without sound.")
+        case .autoCaptions: String(localized: "Drafted from your voice, so people can follow muted.")
         case .captionTranslation: String(localized: "Your captions in another language, next to the originals.")
         case .studioVoice: String(localized: "Explore a clearer sound for your voice. Nothing changes until you choose a level.")
         case .skinSmoothing: String(localized: "A subtle finish, if you want one. It starts at zero and you choose the intensity.")

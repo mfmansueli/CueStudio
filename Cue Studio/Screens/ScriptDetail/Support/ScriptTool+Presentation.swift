@@ -27,7 +27,7 @@ extension ScriptTool {
     /// destination, which only the caller knows.
     func subtitle(idealRange: ClosedRange<TimeInterval>, platform: Platform) -> String {
         switch self {
-        case .inMyVoice: String(localized: "Rewrite so it sounds like you")
+        case .inMyVoice: String(localized: "Closer to how you talk")
         case .newHooks: String(localized: "Shorter openings to test")
         case .fitToTime:
             String(localized: "Ideal for \(platform.label): \(DurationText.clock(idealRange.lowerBound))–\(DurationText.clock(idealRange.upperBound))")

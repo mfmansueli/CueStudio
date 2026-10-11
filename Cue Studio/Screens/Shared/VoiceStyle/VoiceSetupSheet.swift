@@ -9,7 +9,7 @@ import SwiftUI
 /// creator, what you talk about, who is watching, how you sound. Each question is the field the editor
 /// shows for the same answer (`VoiceEditorSheet`), and an answer is kept as it is given: only the shell
 /// differs (Continue and "n of 4" here, Done there). A creator with an idea waiting on the card finishes
-/// with "Write my script", and the script that comes is the preview of the voice (see `VoicePreviewStrip`).
+/// with "Draft my script", and the script that comes is the preview of the voice (see `VoicePreviewStrip`).
 struct VoiceSetupSheet: View {
     /// Which questions the sheet opens with: what is missing, or all of them to edit what was answered.
     enum Mode: String, Identifiable {
@@ -96,7 +96,7 @@ struct VoiceSetupSheet: View {
     private var subtitle: LocalizedStringKey {
         switch step {
         case .role: "Pick the closest. Change it anytime."
-        case .niche: "Cue writes ideas and scripts about them."
+        case .niche: "Cue suggests ideas about them."
         case .audience: plan.confirmsExistingValues ? "Confirm what’s here, or change it." : "They decide the words Cue uses."
         case .tone: plan.confirmsExistingValues ? "Confirm what’s here, or change it." : "Pick the closest. Change it anytime."
         }
@@ -190,7 +190,7 @@ struct VoiceSetupSheet: View {
     private var ctaLabel: LocalizedStringKey {
         if !isLast { return "Continue" }
         if mode == .edit { return "Done" }
-        return hasIdea ? "✦ Write my script" : "Done"
+        return hasIdea ? "✦ Draft my script" : "Done"
     }
 
     // MARK: - Actions

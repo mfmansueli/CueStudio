@@ -13,12 +13,14 @@ import SwiftUI
 ///
 /// With `expansion` (the styling panels), a grabber and an expand button in the header make the
 /// panel taller and the video smaller; dragging the header up or down does the same. Their content
-/// stops further above the Home Indicator and fades under it while it scrolls.
+/// (and Background's, `clearsHomeIndicator`) stops further above the Home Indicator and fades under it while it scrolls.
 struct EditorPanelContainer<Fixed: View, Content: View, Footer: View>: View {
     let title: String
     let subtitle: String
     var onReset: (() -> Void)?
     var expansion: Binding<Bool>?
+    /// The content stops further above the Home Indicator and fades under it while it scrolls (always with `expansion`).
+    var clearsHomeIndicator = false
     /// What the content shows (the panel's tab): when it changes, the content starts again from its top. A tab opened while the
     /// last one was scrolled to its end showed the middle of its own controls, with the first ones out of sight above.
     var contentKey: AnyHashable?
@@ -26,6 +28,8 @@ struct EditorPanelContainer<Fixed: View, Content: View, Footer: View>: View {
     @ViewBuilder var fixed: Fixed
     @ViewBuilder var content: Content
     @ViewBuilder var footer: Footer
+
+    private var isRoomy: Bool { expansion != nil || clearsHomeIndicator }
 
     /// How far the header has to be dragged to expand or collapse the panel.
     private static var dragThreshold: CGFloat { 24 }
@@ -46,14 +50,14 @@ struct EditorPanelContainer<Fixed: View, Content: View, Footer: View>: View {
             .id(contentKey)
             .scrollIndicators(.hidden)
             .scrollBounceBehavior(.basedOnSize)
-            .scrollEdgeEffectStyle(expansion == nil ? nil : .soft, for: .bottom)
+            .scrollEdgeEffectStyle(isRoomy ? .soft : nil, for: .bottom)
             footer
                 .padding(.horizontal, 16)
                 .padding(.bottom, Footer.self == EmptyView.self ? 0 : 10)
         }
         // The background below runs to the screen's edge; the controls stop above the bottom safe
         // area (the Home Indicator), wherever the panel is shown: under the timeline or in a sheet.
-        .safeAreaPadding(.bottom, expansion == nil ? Metrics.editorPanelBottomClearance : Metrics.editorStylePanelBottomClearance)
+        .safeAreaPadding(.bottom, isRoomy ? Metrics.editorStylePanelBottomClearance : Metrics.editorPanelBottomClearance)
         .background(alignment: .top) {
             UnevenRoundedRectangle(topLeadingRadius: Metrics.editorPanelRadius, topTrailingRadius: Metrics.editorPanelRadius, style: .continuous)
                 .fill(Palette.Editor.panel)

@@ -110,6 +110,14 @@ struct TakeReviewView: View {
                     ContentUnavailableView("This take was deleted", systemImage: "film")
                 }
             }
+            .overlay(alignment: .top) {
+                if showsPickTip {
+                    pickTip
+                        .padding(.horizontal, 16)
+                        .padding(.top, 8)
+                        .transition(.opacity.combined(with: .move(edge: .top)))
+                }
+            }
             .navigationBarTitleDisplayMode(.inline)
             .toolbarBackgroundVisibility(.hidden, for: .navigationBar)
             .toolbar {
@@ -435,6 +443,33 @@ struct TakeReviewView: View {
             tellsMilestone = true
         }
         #endif
+    }
+
+    // MARK: - The first voyage
+
+    /// The voyage's fourth step: keep the best take. Not over the stories, the editor or a celebration.
+    private var showsPickTip: Bool {
+        services.voyage.showsTip(for: .pick) && viewModel.take != nil && !tellsFirstStar && editingTake == nil && viewModel.celebration == nil
+    }
+
+    /// The take on screen, when it has siblings to compare with ("Compare" opens "Pick the best take").
+    private var comparableTake: Take? {
+        guard let take = viewModel.take, services.takes.siblings(of: take).count > 1 else { return nil }
+        return take
+    }
+
+    private var pickTip: some View {
+        VoyageTipCard(
+            step: .pick, symbol: VoyageStep.pick.symbol, title: VoyageStep.pick.tipTitle(), message: VoyageStep.pick.tipMessage(),
+            primary: comparableTake.map { take in
+                (VoyageStep.pick.tipAction(canCompare: true), {
+                    services.voyage.tipActed(.pick, at: .review)
+                    suggestBest(from: take)
+                })
+            },
+            onClose: { withAnimation(.smooth(duration: 0.25)) { services.voyage.closeTip(.pick, at: .review) } }
+        )
+        .onAppear { services.voyage.tipShown(.pick, at: .review) }
     }
 
     /// The first take Cue ever recorded lights the first star (once, and only when the creator has done the first flight).

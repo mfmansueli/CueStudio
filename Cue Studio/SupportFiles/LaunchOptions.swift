@@ -28,6 +28,7 @@ import Foundation
 ///   (`speech`), or is refused the microphone, can't recognize the language, or hears nothing.
 /// - `-uiTestOnboarding`: with the above, the first flight shows (it is off in UI tests otherwise).
 /// - `-uiTestPermissions <granted|denied>`: the first flight's permission prompts are answered at once.
+/// - `-uiTestVoyage`: the first voyage (the first video guide) is on; without it no UI test sees its card, strip or tips.
 /// - `-uiTestVoiceTip`: the My Cue Voice tip needs no second day, script, wait or cap (tests of the tip itself); without it the
 ///   tip stays away in UI tests (they open the app on one day).
 /// - `-uiTestStarTransition`: the idea's star transition keeps its real timings (3 s at least); UI tests shorten it otherwise.
@@ -47,6 +48,8 @@ import Foundation
 /// - `-uiTestTopicBirthAt <seconds>`: on 1.2, three topics are picked and the last one's birth stands still at that second after the pick.
 /// - `-uiTestPlatformAt <seconds>`: on 1.3, TikTok is picked and the light of the pick stands still at that second after the pick.
 /// - `-uiTestWriterStalls`: with `-uiTestStubAI`, the model never answers the first message (its slow states, 1.4b).
+/// - `-uiTestIdeasSlow`: with `-uiTestStubAI`, every batch of ideas takes 12 s (Find inspiration waiting for the next ones: longer than tapping through six).
+/// - `-uiTestIdeasFail`: with `-uiTestStubAI`, every batch of ideas fails (Find inspiration's "Try again").
 /// - `-uiTestChapterAt <seconds>`: the opening of the chapter on screen (1.2 to 1.6) stands still at that second of its timeline.
 /// - `-uiTestWelcomeOpening`: the welcome's star opening (1.1) plays in full (about 8 s); UI tests otherwise show its final state.
 /// - `-uiTestSceneCapture <on|off>`: the scene starts recorded or mirrored (`on`) or not, and the test runner can start and stop
@@ -56,6 +59,8 @@ import Foundation
 /// - `-uiTestNotificationTap <script|cleanUp|share|deletedScript|invalid|duplicate|routine|logbook|universe>`: Cue opens as if launched
 ///   from that notification (`DebugNotificationTaps`).
 /// - `-uiTestNotificationInvite`: Cue's invitation to allow notifications may show (UI tests leave it out otherwise, like the voice tip).
+/// - `-uiTestTopics <list>`: with `-uiTestInMemory`, the creator holds these topics (comma separated: a first-flight topic by its id, `fitness`,
+///   or one they typed, `custom:Daily Routine`): Find inspiration's filters with several topics, only typed ones, or none (no argument).
 /// - `-uiTestAppLanguage <lproj>`: with `-uiTestInMemory`, Cue's interface starts in that language
 ///   (as if picked in Language & Region) without changing the simulator's. The interface language
 ///   always lives in memory under `-uiTestInMemory`.
@@ -98,6 +103,8 @@ struct LaunchOptions {
     var appsAreInstalled = false
     /// UI tests of the My Cue Voice tip: its gates are open (`-uiTestVoiceTip`).
     var voiceTipSkipsGates = false
+    /// UI tests of the first voyage: the guide is on (`-uiTestVoyage`); every other UI test runs without it.
+    var showsVoyage = false
     /// UI tests of the star transition: it takes its real time (`-uiTestStarTransition`).
     var keepsStarTransitionTimings = false
     /// UI tests: nothing animates (`-uiTestFastAnimations`).
@@ -147,6 +154,21 @@ struct LaunchOptions {
         options.onboardingStep = value("-uiTestOnboardingStep").flatMap { name in OnboardingStep.allCases.first { "\($0)" == name } }
     }
 
+    #if DEBUG
+    /// `-uiTestTopics fitness,custom:Daily Routine`: a profile that holds those topics and nothing else.
+    private static func writeTopics(_ list: String, to defaults: UserDefaults) {
+        var profile = CreatorProfile()
+        for item in list.split(separator: ",").map({ $0.trimmingCharacters(in: .whitespaces) }) where !item.isEmpty {
+            if item.hasPrefix("custom:") {
+                profile.customTopics.append(String(item.dropFirst("custom:".count)))
+            } else if let niche = Niche(rawValue: item) {
+                profile.niches.append(niche)
+            }
+        }
+        defaults.set(try? JSONEncoder().encode(profile), forKey: DefaultsKey.creatorProfile)
+    }
+    #endif
+
     static func fromProcess() -> LaunchOptions {
         var options = LaunchOptions()
         #if DEBUG
@@ -195,6 +217,9 @@ struct LaunchOptions {
             } else {
                 options.defaults.set(SkyDensity.off.rawValue, forKey: DefaultsKey.skyDensity)
             }
+            if let index = arguments.firstIndex(of: "-uiTestTopics"), arguments.indices.contains(index + 1) {
+                Self.writeTopics(arguments[index + 1], to: options.defaults)
+            }
             if let index = arguments.firstIndex(of: "-uiTestUniverse"), arguments.indices.contains(index + 1),
                let kind = UniverseSeed.Kind(rawValue: arguments[index + 1]) {
                 UniverseSeed.apply(kind, to: options.defaults)
@@ -209,6 +234,7 @@ struct LaunchOptions {
             options.platformRules = PlatformRulesService(cacheURL: nil, remoteURL: nil)
             options.showsOnboarding = arguments.contains("-uiTestOnboarding")
             options.voiceTipSkipsGates = arguments.contains("-uiTestVoiceTip")
+            options.showsVoyage = arguments.contains("-uiTestVoyage")
             options.keepsStarTransitionTimings = arguments.contains("-uiTestStarTransition")
             options.animationsOff = arguments.contains("-uiTestFastAnimations")
             options.keepsWelcomeOpening = arguments.contains("-uiTestWelcomeOpening")
@@ -239,7 +265,10 @@ struct LaunchOptions {
                 options.dictation = DictationService(audio: scripted, speech: scripted, microphone: scripted.microphone)
             }
             if arguments.contains("-uiTestStubAI") || arguments.contains("-uiTestNoAI") {
-                options.writer = StubScriptWriter(available: !arguments.contains("-uiTestNoAI"), stalls: arguments.contains("-uiTestWriterStalls"))
+                options.writer = StubScriptWriter(
+                    available: !arguments.contains("-uiTestNoAI"), stalls: arguments.contains("-uiTestWriterStalls"),
+                    ideasDelay: arguments.contains("-uiTestIdeasSlow") ? .seconds(12) : nil, ideasFail: arguments.contains("-uiTestIdeasFail")
+                )
                 options.styleReader = arguments.contains("-uiTestNoAI") ? NoStyleReader() : StubStyleReader()
                 // A test never waits for words to arrive one by one, unless it is looking at them arrive.
                 options.scriptRevealPause = arguments.contains("-uiTestSlowWriting") ? .milliseconds(2_000) : .zero

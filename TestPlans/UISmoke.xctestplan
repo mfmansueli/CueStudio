@@ -18,6 +18,7 @@
     {
       "selectedTests" : [
         "TabBarUITests/testEachTabIsSelectedAndTheBarIsTheSystemsOwn()",
+        "FirstVoyageUITests/testTheCardOpensTheEditorWithPolishsTipAndSkippingMovesOnToSharing()",
         "OnboardingUITests/testSkipGoesToTheEmptyScriptsScreen()",
         "ScriptsV29UITests/testTheListIsGroupedByState()",
         "GenerateScriptUITests/testTheFormatChipChoosesHowCueBuildsTheScript()",

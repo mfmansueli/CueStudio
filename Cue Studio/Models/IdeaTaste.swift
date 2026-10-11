@@ -5,20 +5,20 @@
 
 import Foundation
 
-/// One idea to be written: the way it looks at its topic and which topic it is about.
-nonisolated struct IdeaSlot: Hashable, Sendable {
-    var angle: IdeaAngle
-    var topic: IdeaTopic
-}
-
-/// What the creator's taps say about the ideas they want. A creator taps "↻" until an idea is one they would film; the ones they pass and the one they
-/// send are the only honest signal of what they like, so both are remembered, by angle and by topic, and the next ideas are asked for more of what
-/// they send and less of what they pass. Never all of it: some of every batch is left to look at other angles, because a taste that only narrows
-/// ends in the same idea over and over.
+/// What the creator's taps say about the ideas they want. A creator taps "↻" (or "Another idea" in Find inspiration) until an idea is one they would
+/// film; the ones they pass, the one they pick and the one that becomes a script are the only honest signal of what they like, so all are remembered, by
+/// angle and by topic, and the next ideas are asked for more of what they use and less of what they pass. Four signals, from weakest to strongest:
+/// passing an idea (it may only have been the wrong one that day), picking it to change in the field ("Start with it": liked, not yet used), sending
+/// the card's idea as it is, and a script written from a brief (`generated`). Never all of it: some of every batch is left to look at other angles,
+/// because a taste that only narrows ends in the same idea over and over.
 nonisolated struct IdeaTaste: Codable, Hashable, Sendable {
     /// What a send is worth, and what a pass costs (an idea passed may only have been the wrong one that day).
     static let sendWeight = 3.0
     static let passWeight = 0.35
+    /// Picked to change: half a send, since the creator may still take the idea somewhere else.
+    static let selectWeight = 1.5
+    /// A script was written from it: what they want, more than anything they tapped.
+    static let generateWeight = 4.0
     /// How many of a batch's six look at the angles the creator likes; the rest are the ones they have seen least.
     static let favoured = 4
 
@@ -28,15 +28,31 @@ nonisolated struct IdeaTaste: Codable, Hashable, Sendable {
 
     mutating func passed(_ idea: ThemeIdea) { record(idea, weight: -Self.passWeight) }
     mutating func sent(_ idea: ThemeIdea) { record(idea, weight: Self.sendWeight) }
+    mutating func selected(_ idea: ThemeIdea) { record(idea, weight: Self.selectWeight) }
+
+    /// A script was written from `brief`, what of it the creator's text still said: its topic counts, and its angle only when the angle still stood
+    /// (a creator who rewrote the angle made the video about the topic, not about that way of looking at it).
+    mutating func generated(_ brief: IdeaBrief) {
+        if let angle = brief.angleKind, !brief.angle.isEmpty { angles[angle, default: 0] += Self.generateWeight }
+        if let topic = brief.topicKey { topics[topic, default: 0] += Self.generateWeight }
+    }
 
     private mutating func record(_ idea: ThemeIdea, weight: Double) {
-        if let angle = idea.angle { angles[angle, default: 0] += weight }
-        let topic = idea.topic ?? idea.niche.rawValue
-        topics[topic, default: 0] += weight
+        if let angle = idea.angle ?? idea.brief?.angleKind { angles[angle, default: 0] += weight }
+        topics[Self.topicKey(of: idea), default: 0] += weight
     }
 
     mutating func showed(_ idea: ThemeIdea) {
-        if let angle = idea.angle { seenAngles[angle, default: 0] += 1 }
+        if let angle = idea.angle ?? idea.brief?.angleKind { seenAngles[angle, default: 0] += 1 }
+    }
+
+    /// How a topic is kept: a first-flight niche by its raw value, any other topic by its label (what `IdeaTopicFilter` and the slots match on).
+    static func topicKey(of idea: ThemeIdea) -> String {
+        idea.topic ?? idea.niche.rawValue
+    }
+
+    static func topicKey(of topic: IdeaTopic) -> String {
+        topic.niche?.rawValue ?? topic.label
     }
 
     /// The six ideas to ask for in a round: the creator's favourite angles first, then the ones seen least, and the topics in turn, the ones they send
@@ -74,7 +90,7 @@ nonisolated struct IdeaTaste: Codable, Hashable, Sendable {
     /// starting one further each round.
     private func turns(among topics: [IdeaTopic], round: Int) -> [IdeaTopic] {
         let weighted = topics.flatMap { topic -> [IdeaTopic] in
-            let score = self.topics[topic.niche?.rawValue ?? topic.label, default: 0]
+            let score = self.topics[Self.topicKey(of: topic), default: 0]
             return Array(repeating: topic, count: 1 + max(0, min(2, Int((score / Self.sendWeight).rounded(.down)))))
         }
         // Interleaved, so that no topic has three slots in a row: the topic with the most turns first, then the others in turn.

@@ -18,13 +18,11 @@ nonisolated struct ThemeIdea: Hashable, Identifiable, Codable, Sendable {
     var angle: String?
     /// The Logbook entry it is, when the creator's own note is what the card suggests.
     var logbookID: UUID?
+    /// The whole inspiration (what it is about, the angle, an opening line), for the ones that have one: Find inspiration shows it and
+    /// "Start with it" carries it to the composer.
+    var brief: IdeaBrief?
 
     var id: String { "\(niche.rawValue).\(title)" }
-
-    /// "List · ~1 min · Lifestyle"
-    var meta: String {
-        "\(kind) · ~\(length.label) · \(topic ?? niche.label)"
-    }
 
     /// What "Use" puts in the prompt box: "1 min list video: 3 things I stopped buying this year".
     var prompt: String {

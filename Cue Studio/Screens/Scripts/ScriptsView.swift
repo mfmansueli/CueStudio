@@ -21,6 +21,7 @@ struct ScriptsView: View {
     @Environment(IdeaDraftService.self) private var ideaDraft
     @Environment(LogbookService.self) private var logbook
     @Environment(ToastService.self) private var toast
+    @Environment(FirstVoyageService.self) private var voyage
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     /// The dock's field has the keyboard: the list dims.
@@ -33,14 +34,20 @@ struct ScriptsView: View {
     @State private var isDockFolded = false
     /// Reads the scroll for the fold. It changes on every frame of a scroll without redrawing the screen; only `isDockFolded` does.
     @State private var dockFold = DockFold()
+    /// Whether there was ever a script: an empty library is then the returning state, not the first use.
+    @State private var history: LibraryHistory
 
     /// Tells the idea card whether Apple Intelligence can write.
     private let writer: ScriptWriting?
     /// Which takes have an edit left open: a row's stage reads it.
     private let drafts: QuickEditDraftStoring?
 
-    init(library: ScriptLibraryService, toast: ToastService, writer: ScriptWriting? = nil, drafts: QuickEditDraftStoring? = nil) {
+    init(
+        library: ScriptLibraryService, toast: ToastService, writer: ScriptWriting? = nil, drafts: QuickEditDraftStoring? = nil,
+        defaults: UserDefaults = .standard
+    ) {
         _viewModel = State(initialValue: ScriptsViewModel(library: library, toast: toast))
+        _history = State(initialValue: LibraryHistory(defaults: defaults))
         self.writer = writer
         self.drafts = drafts
     }
@@ -62,8 +69,9 @@ struct ScriptsView: View {
                 // the list (the owner's call, 6/10/2026).
                 if !viewModel.isSelecting {
                     VStack(spacing: 10) {
-                        // The My Cue Voice question, 10 pt above the dock.
-                        VoiceQuestionTipHost(isQuiet: isQuiet)
+                        // The first voyage's next step, 10 pt above the dock; the My Cue Voice question waits while it has one.
+                        VoyageFloatingTip(place: .scripts, isQuiet: isQuiet)
+                        VoiceQuestionTipHost(isQuiet: isQuiet && voyage.floatingStep == nil)
                         ScriptsDock(
                             showsFormat: true, isFolded: isDockFolded, isEditing: $isDockEditing,
                             unavailableReason: writerUnavailableReason
@@ -85,6 +93,8 @@ struct ScriptsView: View {
             .skyBackground()
             // New scripts get their topic (on this iPhone) once they are long enough to say what they are about.
             .task(id: library.scripts.filter { $0.topic == nil }.map(\.id)) { await tagging.tagUntagged() }
+            // A library that has held a script (written, imported, seeded, or already there when the app opened) is never "first use" again.
+            .onChange(of: library.scripts.count, initial: true) { _, count in history.note(scriptCount: count) }
             .navigationTitle("Scripts")
             .toolbarTitleDisplayMode(.inlineLarge)
             .toolbar { toolbarItems }
@@ -101,7 +111,12 @@ struct ScriptsView: View {
 
     /// The first visit: no scripts yet (the dock names the empty prompt card, and the first visit only has its own tip).
     private var isFirstVisit: Bool {
-        library.hasLoaded && library.scripts.isEmpty
+        emptyState.isEmpty
+    }
+
+    /// The list, the skeleton, or one of the two empty states.
+    private var emptyState: ScriptsEmptyState {
+        history.state(hasLoaded: library.hasLoaded, scriptCount: library.scripts.count)
     }
 
     /// Nothing else has the screen, so a tip may come: no sheet, prompter, toast or keyboard, no selection or search.
@@ -159,7 +174,8 @@ struct ScriptsView: View {
 
     @ViewBuilder
     private var content: some View {
-        if !library.hasLoaded {
+        switch emptyState {
+        case .loading:
             // The structure of the list, with the shine (04 · Global states): no spinner over content.
             VStack(spacing: 8) {
                 ForEach(0..<4, id: \.self) { _ in ScriptRowSkeleton() }
@@ -168,14 +184,13 @@ struct ScriptsView: View {
             .padding(.horizontal, Metrics.gutter)
             .padding(.top, 16)
             .accessibilityIdentifier("scripts.loading")
-        } else if library.scripts.isEmpty {
+        case .firstUse, .returning:
             EmptyLibraryView(
-                unavailableReason: writerUnavailableReason,
+                kind: emptyState == .firstUse ? .firstUse : .returning,
                 onWrite: newBlankScript,
-                onImport: { presentation.present(.importScript) },
-                onSkip: { presentation.openPrompter(scriptID: nil, mode: .selfie) }
+                onImport: { presentation.present(.importScript) }
             )
-        } else {
+        case .list:
             scriptList
         }
     }

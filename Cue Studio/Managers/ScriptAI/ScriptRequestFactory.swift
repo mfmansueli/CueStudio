@@ -27,7 +27,7 @@ struct ScriptRequestFactory {
     }
 
     func request(
-        idea: String, platform: Platform?, format: ScriptType?, length: ScriptLength = .auto, brand: BrandBrief? = nil
+        idea: String, platform: Platform?, format: ScriptType?, length: ScriptLength = .auto, brand: BrandBrief? = nil, brief: IdeaBrief? = nil
     ) -> ScriptRequest {
         let text = idea.trimmingCharacters(in: .whitespacesAndNewlines)
         let platform = platform ?? defaultPlatform
@@ -49,7 +49,9 @@ struct ScriptRequestFactory {
             languageVariant: writingVariant(for: text),
             format: format,
             // A brand brief only means something for a sponsored ad.
-            brand: format == .ad ? brand : nil
+            brand: format == .ad ? brand : nil,
+            // What the creator's text no longer says is not sent: their words win over the card's.
+            brief: brief?.standing(in: text)
         )
     }
 

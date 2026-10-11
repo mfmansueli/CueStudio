@@ -19,7 +19,7 @@ struct NewScriptSheet: View {
     var onStartFromFormat: () -> Void = {}
     var onAnswer: () -> Void = {}
     var onFreestyle: () -> Void = {}
-    /// Whether Apple Intelligence can write: without it, "Let Cue write it" and "Answer a comment" aren't offered as
+    /// Whether Apple Intelligence can write: without it, "Let Cue draft it" and "Answer a comment" aren't offered as
     /// AI (the first goes away; a reply is written by hand).
     var hasAI = true
 
@@ -37,7 +37,7 @@ struct NewScriptSheet: View {
                 case .new:
                     if hasAI {
                         row(
-                            "Let Cue write it", detail: "Say or type an idea · in your voice", systemImage: "sparkles",
+                            "Let Cue draft it", detail: "Your idea · drafted in your voice", systemImage: "sparkles",
                             style: .ai, identifier: "newScript.letCue", action: onLetCue
                         )
                     }
@@ -83,7 +83,7 @@ struct NewScriptSheet: View {
 
     private enum RowStyle { case ai, primary, plain }
 
-    /// A full-width row: Let Cue write it in violet, the others in the sheet's grey.
+    /// A full-width row: Let Cue draft it in violet, the others in the sheet's grey.
     private func row(
         _ title: LocalizedStringKey, detail: LocalizedStringKey, systemImage: String, style: RowStyle,
         badge: LocalizedStringKey? = nil, identifier: String, action: @escaping () -> Void

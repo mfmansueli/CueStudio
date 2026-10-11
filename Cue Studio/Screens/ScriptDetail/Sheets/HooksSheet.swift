@@ -47,7 +47,7 @@ struct HooksSheet: View {
                 if isLoading {
                     HStack(spacing: 10) {
                         ProgressView().tint(Palette.accText)
-                        Text("Writing hooks with Apple Intelligence…")
+                        Text("Drafting hooks…")
                             .font(.subheadline)
                             .foregroundStyle(Palette.accText)
                     }

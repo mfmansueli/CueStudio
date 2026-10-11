@@ -53,6 +53,9 @@ struct StudioModeView: View {
                     .padding(.horizontal, 10)
                     .opacity(viewModel.countdown == nil ? 1 : 0)
                     .allowsHitTesting(viewModel.countdown == nil)
+                    // VoiceOver loses it too, as touch does. Left in the accessibility tree while invisible, it came back stale: "Play" while
+                    // the text played.
+                    .accessibilityHidden(viewModel.countdown != nil)
                     .animation(.easeOut(duration: 0.2), value: viewModel.countdown == nil)
             }
             if let countdown = viewModel.countdown {

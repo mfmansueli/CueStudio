@@ -213,6 +213,15 @@ struct QuickEditView: View {
             timeline(layout)
                 .frame(height: layout.timeline)
                 .clipped()
+                .overlay(alignment: .bottom) {
+                    // The first voyage's Polish step, over the timeline's lower part and right above the tools it talks about.
+                    if layout.toolbar > 0, showsPolishTip {
+                        polishTip
+                            .padding(.horizontal, 16)
+                            .padding(.bottom, 8)
+                            .transition(.opacity.combined(with: .move(edge: .bottom)))
+                    }
+                }
             if layout.toolbar > 0 {
                 EditorToolbar(viewModel: viewModel, heightClass: layout.heightClass)
                     .frame(height: layout.toolbar)
@@ -226,6 +235,25 @@ struct QuickEditView: View {
             }
         }
         .disabled(viewModel.isFullScreen)
+    }
+
+    // MARK: - The first voyage
+
+    private var showsPolishTip: Bool {
+        services.voyage.showsTip(for: .polish) && viewModel.panel == nil && viewModel.toolMenu == nil && !viewModel.isFullScreen
+    }
+
+    private var polishTip: some View {
+        VoyageTipCard(
+            step: .polish, symbol: VoyageStep.polish.symbol, title: VoyageStep.polish.tipTitle(), message: VoyageStep.polish.tipMessage(),
+            primary: (VoyageStep.polish.tipAction(), {
+                services.voyage.tipActed(.polish, at: .editor)
+                viewModel.openCaptions()
+            }),
+            secondary: (String(localized: "Skip"), { withAnimation(.smooth(duration: 0.25)) { services.voyage.skipPolish(at: .editor) } }),
+            onClose: { withAnimation(.smooth(duration: 0.25)) { services.voyage.closeTip(.polish, at: .editor) } }
+        )
+        .onAppear { services.voyage.tipShown(.polish, at: .editor) }
     }
 
     @ViewBuilder

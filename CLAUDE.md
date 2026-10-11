@@ -74,7 +74,8 @@ Toda tela, componente ou cor nova **precisa passar** no contraste antes de ser e
   `-uiTestAppLanguage <lproj>` (a interface começa nesse idioma, em memória, sem mudar o simulador).
   v27: `-uiTestOnboarding`, `-uiTestPermissions granted|denied`, `-uiTestSky off|serene|adrift|interstellar` (off por padrão nos testes), `-uiTestAppsInstalled` (os apps das plataformas contam como instalados e "recebem" o vídeo, só para ver a tela de envio; ver `SHARING.md`),
   `-uiTestCatalogue <seção>` (a seção `transition` mostra a estrela; ver `DESIGN_PROJECT.md`).
-  v30: `-uiTestVoiceTip` (abre as portas da dica do My Cue Voice), `-uiTestStarTransition` (a estrela da ideia mantém os tempos reais; nos testes de UI ela é encurtada)
+  v30: `-uiTestVoiceTip` (abre as portas da dica do My Cue Voice), `-uiTestVoyage` (liga a primeira viagem, o guia do primeiro vídeo; sem ele nenhum teste de UI
+  vê as dicas), `-uiTestStarTransition` (a estrela da ideia mantém os tempos reais; nos testes de UI ela é encurtada)
   e `-uiTestSlowWriting` (com o roteirista de teste, as palavras chegam devagar na página).
   `-uiTestExportsLeft <0…5>` (quantas exportações grátis restam; 0 abre "Your video is ready"), `-uiTestWelcomeAt <s>` / `-uiTestProAt <s>` (congelam a abertura da 1.1 / do Pro nesse segundo), `-uiTestUniverse sample|newYear|newAccount` (o que o Your universe guarda, como o painel APP DATA do protótipo), `-uiTestFirstStar` / `-uiTestMilestone <n>` (a revisão abre direto na história da 1.7 / do 8.3), `-uiTestSendOffAt <s>` (congela o send-off 8.2), `-uiTestStoryAt <s>` (congela o 8.3 e a 1.7), `-uiTestFakeShareSheet` (um substituto com Complete/Cancel no lugar da folha de compartilhamento do sistema), `-uiTestShareQueue` (uma fila do Share to universe deixada para o take de exemplo: o card Continue posting),
   `-uiTestOnboardingStep welcome|universe|voyage|script|voice|practice` (com `-uiTestOnboarding`, o primeiro voo abre nesse capítulo), `-uiTestChapterAt <s>` (congela a abertura do capítulo na tela, 1.2 a 1.6, nesse segundo),
@@ -85,6 +86,7 @@ Toda tela, componente ou cor nova **precisa passar** no contraste antes de ser e
   prompt do sistema; `notDetermined` por padrão, que permite ao pedir) e `-uiTestNotificationTap <script|cleanUp|share|deletedScript|invalid|duplicate|routine|logbook|universe>`
   (o app abre como se tivesse sido aberto por essa notificação); `-uiTestNotificationInvite` (o convite para permitir notificações pode
   aparecer depois de uma sessão; sem ele, nunca aparece num teste de UI).
+  Find inspiration: `-uiTestTopics fitness,custom:Daily Routine` (os temas do criador), `-uiTestIdeasSlow` / `-uiTestIdeasFail` (com `-uiTestStubAI`, cada lote de ideias leva 12 s / falha), `-uiTestCatalogue inspire`.
   Testes de UI: `-uiTestFastAnimations` (nada anima: sheets, pushes e as transações do SwiftUI; o `CueApp.launch` passa por padrão
   e `animations: true` pede as reais).
 - Idiomas: `LOCALIZATION.md` (três idiomas independentes, terminologia, RTL). Todo texto novo entra

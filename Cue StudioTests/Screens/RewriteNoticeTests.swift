@@ -32,7 +32,7 @@ struct RewriteNoticeTests {
         let before = Self.words(40)
         let notice = Self.notice(.moreHuman, before: before, after: before)
         #expect(!notice.changesScript)
-        #expect(notice.message == "Couldn’t write it · Try again")
+        #expect(notice.message == "Couldn’t draft it · Try again")
     }
 
     @Test func aScriptWithNothingWrongSaysSo() {

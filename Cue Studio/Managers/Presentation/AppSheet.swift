@@ -12,7 +12,7 @@ enum AppSheet: Identifiable, Hashable {
     /// The Record tab: read from a recent script, start a new one, or record freestyle.
     case startRecording
     case importScript
-    /// "Need an idea?" on the idea card: ideas from the creator's topics.
+    /// Find inspiration: ideas from the creator's topics, one at a time.
     case ideas
     /// "Format ⌄" on the idea card: how Cue builds the script.
     case format

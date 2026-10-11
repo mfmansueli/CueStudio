@@ -64,8 +64,10 @@ extension QuickEditViewModel {
 
     /// What an Adjust, Filters or Background panel says it changes.
     func lookSubtitle(for panel: EditorPanel) -> String {
+        // Background says its scope and what is behind the creator; its scope's rule is a note inside the panel.
+        if panel == .background { return backgroundSubtitle }
         if lookClip != nil { return String(localized: "This clip · the rest stays as it is") }
         if someClipKeepsItsOwn(for: panel) { return String(localized: "Whole take · some clips keep their own") }
-        return panel == .background ? String(localized: "Whole take · your recording stays untouched") : String(localized: "Whole take")
+        return String(localized: "Whole take")
     }
 }

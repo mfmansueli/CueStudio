@@ -44,6 +44,15 @@ extension Palette {
         static let adTagFill = Palette.acc
         static let adTagInk = Color.black
 
+        // Find inspiration: the featured card (a solid violet night, so its text is measured on what is really behind it, with a softer
+        // violet light from its top corner) and the chosen topic chip (violet with white words; `PaletteContrastTests` measures both).
+        static let inspirationCard = Color(hex: 0x1D1A3E)
+        static let inspirationCardGlow = Color(hex: 0x9D8CFF, opacity: 0.16)
+        static let inspirationCardBorder = Color(hex: 0xB4A7FF, opacity: 0.34)
+        static let inspirationChipOn = Color(hex: 0x6A5AE0)
+        /// The decorative orbit beside the card.
+        static let inspirationOrbit = Color(hex: 0xB4A7FF, opacity: 0.28)
+
         // The empty-state mark: a ring, a violet core and a star that orbits it.
         static let emptyRing = Color(hex: 0xB4A7FF, opacity: 0.22)
         static let emptyRingCore = Color(hex: 0x9D8CFF, opacity: 0.22)

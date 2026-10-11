@@ -48,6 +48,43 @@ extension QuickEditViewModel {
         lookClip?.look?.background != nil
     }
 
+    /// The panel's subtitle: what it changes, and what is behind the creator now ("This clip · Blur behind you").
+    var backgroundSubtitle: String {
+        let scope = lookClip == nil ? String(localized: "Whole take") : String(localized: "This clip")
+        return String(localized: "\(scope) · \(Self.backgroundSummary(of: currentBackground))")
+    }
+
+    /// What is behind the creator, in a few words: Original, or the background and how it's cut out.
+    static func backgroundSummary(of effect: BackgroundEffect) -> String {
+        switch (effect.style, effect.cutout) {
+        case (.original, _): String(localized: "As recorded")
+        case (.image, _) where effect.imageFileName == nil: String(localized: "No photo chosen yet")
+        case (.blur, .person): String(localized: "Blur behind you")
+        case (.color, .person): String(localized: "Color behind you")
+        case (.image, .person): String(localized: "Image behind you")
+        case (.blur, .colorKey): String(localized: "Blur on the green or blue screen")
+        case (.color, .colorKey): String(localized: "Color on the green or blue screen")
+        case (.image, .colorKey): String(localized: "Image on the green or blue screen")
+        }
+    }
+
+    /// The rule of the panel's scope, when there is one to tell: a clip with its own background (Reset gives it the take's again), a clip
+    /// showing the take's, or a take with clips that keep their own.
+    var backgroundScopeNote: String? {
+        if lookClip != nil {
+            return clipOverridesBackground
+                ? String(localized: "This clip has its own background. Reset gives it the whole take's again.")
+                : String(localized: "Shows the whole take's background. A change here is for this clip only.")
+        }
+        return someClipKeepsItsOwn(for: .background) ? String(localized: "Clips with their own background keep it.") : nil
+    }
+
+    /// The green or blue screen's Tolerance, Edge or Spill was moved from where it starts.
+    var backgroundKeyIsAdjusted: Bool {
+        let key = currentBackground.key, start = ChromaKey.green
+        return abs(key.tolerance - start.tolerance) > 0.001 || abs(key.softness - start.softness) > 0.001 || abs(key.spill - start.spill) > 0.001
+    }
+
     /// The clip's recording's background again.
     func resetClipBackground() {
         updateClipLook { $0.background = nil }

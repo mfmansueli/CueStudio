@@ -141,6 +141,12 @@ names in **bold** stay in English in every language.
   interface's language, and inserts them between ASCII brackets; the panel's own name is "Cues" /
   *Indicaciones* / *Marcações* / *Hinweise*…, never a word another tab already uses (pt-BR *Dicas*
   and tr *İpuçları* are Tips).
+- **Draft** (what Cue's AI writes) is always the draft word, never "write" or "the script" (10 Oct 2026, the owner's
+  message for the whole app: the creator creates and improves, Cue helps and gives the first pass): es *borrador /
+  redactar*, pt-BR *rascunho / rascunhar*, fr *brouillon / rédiger*, de *Entwurf / entwerfen*, it *bozza*, ja *下書き*, ko
+  *초안*, zh-Hans/zh-Hant *草稿 / 起草*, hi *ड्राफ़्ट*, id *draf*, ar *مسودة*, tr *taslak*, th *ฉบับร่าง / ร่าง*, vi *bản nháp
+  / soạn nháp*, nl *concept*, sv/nb *utkast*, da *udkast*. These texts are kept as short as the English (German and French
+  run about 30% longer), so each line still fits where it sits.
 - "%@ to %@" is a countdown ("18s to 1:00", "12s to monetize"), not a range.
 - Quick edit's Audio category holds Voice (the take's own speech), Music and Voice-over, and a
   video over the take has its Sound: where a language has one word for all of them (ar *الصوت*, tr
@@ -191,6 +197,7 @@ before a public release.
 | Voice (Quick edit tool) | Voz | Voz | Voix | Stimme | Voce | 声 | 목소리 | 人声 | आवाज़ | Suara | الكلام | Konuşma | เสียงพูด | Giọng nói |
 | Background | Fondo | Fundo | Arrière-plan | Hintergrund | Sfondo | 背景 | 배경 | 背景 | बैकग्राउंड | Latar | الخلفية | Arka plan | พื้นหลัง | Nền |
 | Color key | Clave de color | Chroma key | Incrustation | Farbschlüssel | Chroma key | カラーキー | 컬러 키 | 色键抠像 | कलर की | Kunci warna | مفتاح اللون | Renk anahtarı | คีย์สี | Tách màu nền |
+| Draft | Borrador | Rascunho | Brouillon | Entwurf | Bozza | 下書き | 초안 | 草稿 | ड्राफ़्ट | Draf | مسودة | Taslak | ฉบับร่าง | Bản nháp |
 | Language & Region | Idioma y región | Idioma e região | Langue et région | Sprache & Region | Lingua e area geografica | 言語と地域 | 언어 및 지역 | 语言与地区 | भाषा और क्षेत्र | Bahasa & Wilayah | اللغة والمنطقة | Dil ve Bölge | ภาษาและภูมิภาค | Ngôn ngữ & Vùng |
 
 ## 3. Right to left and longer text

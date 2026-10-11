@@ -5,13 +5,14 @@
 
 import SwiftUI
 
-/// The rows of Settings › Personalize: the app icon, the topics, and how alive the app feels.
+/// The rows of Settings › Personalize: the app icon, the topics, how alive the app feels, and the first video guide.
 struct PersonalizeEntryRow: View {
     let entry: SettingsEntry
 
     @Environment(PersonalizationService.self) private var personalization
     @Environment(AppIconService.self) private var appIcon
     @Environment(CreatorProfileService.self) private var profile
+    @Environment(FirstVoyageService.self) private var voyage
 
     @State private var showsTopics = false
 
@@ -60,6 +61,12 @@ struct PersonalizeEntryRow: View {
             SettingsListToggle(title: entry.title, isOn: personalization.celebrations)
         case .haptics:
             SettingsListToggle(title: entry.title, isOn: personalization.haptics)
+        case .firstVoyage:
+            SettingsListToggle(
+                title: entry.title, detail: voyage.canBeTurnedOn ? entry.detail : String(localized: "You finished your first voyage"),
+                isOn: Binding(get: { voyage.isActive }, set: { voyage.setOn($0) })
+            )
+            .disabled(!voyage.canBeTurnedOn)
         default:
             EmptyView()
         }

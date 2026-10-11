@@ -8,7 +8,7 @@ import Foundation
 
 /// Sends an idea to the script page: a new empty script is opened and Apple Intelligence writes
 /// into it, so the creator watches the words arrive instead of waiting on a sheet. The card's
-/// arrow and the ↑ on an idea in "Need an idea?" both come here.
+/// arrow and "Draft it now" in Find inspiration both come here.
 @MainActor
 @Observable
 final class ScriptStarter {
@@ -22,6 +22,9 @@ final class ScriptStarter {
     private let sky: SkyMemory
     private let writer: ScriptWriting
     private let toast: ToastService
+    /// Told when a script was written from an idea of Find inspiration's (what of its brief the creator's text still said): the strongest sign of
+    /// what they want, which the next ideas lean to (`IdeaSuggestionService.generated(from:)`). Set by `AppServices`, so no screen has to.
+    var briefWritten: ((IdeaBrief) -> Void)?
 
     init(
         library: ScriptLibraryService, rules: PlatformRulesService, profile: CreatorProfileService,
@@ -54,16 +57,18 @@ final class ScriptStarter {
     /// (`IdeaTransitionService`): it rises from `origin` (the arrow; the bottom of the screen when nil) while the page is opened under it
     /// and the AI writes.
     /// - Parameter comment: the audience comment the script answers, kept on the script.
+    /// - Parameter brief: the inspiration `idea` came from (the card's own brief when the card's text is written); only what the text still
+    ///   says of it reaches the model.
     /// - Parameter whenWritten: runs when the idea has become a script (not when it was cancelled or failed).
     @discardableResult
     func write(
-        idea: String? = nil, length: ScriptLength? = nil, comment: ScriptComment? = nil, platform: Platform? = nil, from origin: CGPoint? = nil,
-        whenWritten: ((UUID) -> Void)? = nil
+        idea: String? = nil, length: ScriptLength? = nil, comment: ScriptComment? = nil, platform: Platform? = nil, brief: IdeaBrief? = nil,
+        from origin: CGPoint? = nil, whenWritten: ((UUID) -> Void)? = nil
     ) -> UUID? {
         guard let text = idea ?? ideaDraft.submission, !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return nil }
         let request = factory.request(
             idea: text, platform: platform ?? ideaDraft.platform, format: ideaDraft.format, length: length ?? ideaDraft.length,
-            brand: ideaDraft.brand
+            brand: ideaDraft.brand, brief: brief ?? (idea == nil ? ideaDraft.brief : nil)
         )
         // A language Apple Intelligence doesn't write is told now, not after three seconds of star: the idea
         // becomes a blank draft to write by hand, the way it does without Apple Intelligence.
@@ -82,6 +87,7 @@ final class ScriptStarter {
             abort: { [weak self] in self?.abort(scriptID) },
             arrive: { [weak self] in
                 self?.sky.addStar()
+                if let brief = request.brief { self?.briefWritten?(brief) }
                 whenWritten?(scriptID)
             }
         )

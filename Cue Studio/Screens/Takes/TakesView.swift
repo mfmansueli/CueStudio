@@ -19,6 +19,7 @@ struct TakesView: View {
     @Environment(MilestoneService.self) private var milestones
     @Environment(ScriptLibraryService.self) private var library
     @Environment(PresentationService.self) private var presentation
+    @Environment(FirstVoyageService.self) private var voyage
     @Environment(\.scenePhase) private var scenePhase
     /// "Remind me…" from a video's menu: a reminder for its best take.
     @State private var reminding: TakeVideo?
@@ -31,6 +32,11 @@ struct TakesView: View {
         ))
     }
 
+    /// Nothing else has Takes: no sheet, camera or other tab.
+    private var isQuiet: Bool {
+        presentation.sheet == nil && presentation.prompter == nil && presentation.selectedTab == .takes
+    }
+
     private var layout: Binding<TakeLayout> {
         Binding(get: { TakeLayout(rawValue: layoutValue) ?? .grid }, set: { layoutValue = $0.rawValue })
     }
@@ -39,14 +45,7 @@ struct TakesView: View {
         @Bindable var viewModel = viewModel
         Group {
             if viewModel.isEmpty {
-                // The empty state (E): the mark, one line, one action and a way to a script.
-                EmptyState(
-                    icon: .takes, title: "No takes yet", message: "Record a script. Every take lands here.", actionTitle: "Record",
-                    actionDot: Palette.record, action: { presentation.present(.startRecording) },
-                    linkTitle: "Pick a script ›", link: { presentation.selectedTab = .scripts },
-                    accessibilityPrefix: "takes.empty"
-                )
-                .frame(maxHeight: .infinity)
+                emptyTakes
             } else if layout.wrappedValue == .grid {
                 grid
             } else {
@@ -54,10 +53,13 @@ struct TakesView: View {
             }
         }
         .safeAreaInset(edge: .bottom, spacing: 0) {
-            // The My Cue Voice question, 10 pt above the tab bar.
-            VoiceQuestionTipHost(isQuiet: presentation.sheet == nil && presentation.prompter == nil && presentation.selectedTab == .takes)
-                .padding(.horizontal, 12)
-                .padding(.bottom, 10)
+            // The first voyage's next step, 10 pt above the tab bar; the My Cue Voice question waits while it has one.
+            VStack(spacing: 10) {
+                VoyageFloatingTip(place: .takes, isQuiet: isQuiet && services.toast.message == nil)
+                VoiceQuestionTipHost(isQuiet: isQuiet && voyage.floatingStep == nil)
+            }
+            .padding(.horizontal, 12)
+            .padding(.bottom, 10)
         }
         .skyBackground()
         .navigationTitle("Takes")
@@ -101,6 +103,17 @@ struct TakesView: View {
             records: milestones.records, takes: takes.takes, scripts: library.scripts, fallbackDate: milestones.firstShareDate ?? .now
         )
         viewModel.apply(request, sharedVideos: videos)
+    }
+
+    /// The empty state (E): the mark, one line, one action and a way to a script.
+    private var emptyTakes: some View {
+        EmptyState(
+            icon: .takes, title: "No takes yet", message: "Record a script. Every take lands here.", actionTitle: "Record",
+            actionDot: Palette.record, action: { presentation.present(.startRecording) },
+            linkTitle: "Pick a script ›", link: { presentation.selectedTab = .scripts },
+            accessibilityPrefix: "takes.empty"
+        )
+        .frame(maxHeight: .infinity)
     }
 
     // MARK: - Header

@@ -34,6 +34,8 @@ final class ScriptAIService: ScriptWriting {
     private let logger = Logger(subsystem: "studio.cue", category: "ScriptAI")
     private var foregroundRequests = 0
     private var backgroundWork: [UUID: Task<String?, Never>] = [:]
+    /// Ideas being written (`suggestIdeas`): cancelled when the creator asks for something that is not ideas.
+    private var ideaWork: [UUID: Task<[ThemeIdea], any Error>] = [:]
 
     /// - Parameter capabilities: what the models can do and in which languages; Apple's own answers
     ///   unless a test gives a fixed list.
@@ -384,29 +386,68 @@ final class ScriptAIService: ScriptWriting {
         }
     }
 
+    /// Whether ideas are asked for as whole briefs (a title, the angle, an opening line), or as titles alone, what the card asked for before Find
+    /// inspiration: the device measurement (`InspirationDeviceTests`) compares the two.
+    nonisolated(unsafe) static var writesIdeaBriefs = true
+
+    /// Find inspiration and the device measurements: the creator is waiting for these.
     func suggestIdeas(slots: [IdeaSlot], language: CueLanguage?, voice: CreatorVoice?, inspiration: [String]) async throws -> [ThemeIdea] {
+        try await suggestIdeas(slots: slots, language: language, voice: voice, inspiration: inspiration, priority: .waiting)
+    }
+
+    /// Ideas run on the same model as scripts, and a batch of six briefs takes seconds: fetched ahead of the taps (`prefetch`) they never start while
+    /// the creator waits for something, and whatever the priority, a script, a rewrite or hooks begun meanwhile cancel them (`beginForeground`), so
+    /// the script is never written behind them. Asked while Find inspiration has nothing to show (`waiting`) they count as the creator's request:
+    /// filing scripts under topics stands aside for them.
+    func suggestIdeas(
+        slots: [IdeaSlot], language: CueLanguage?, voice: CreatorVoice?, inspiration: [String], priority: IdeaRequestPriority
+    ) async throws -> [ThemeIdea] {
         guard !slots.isEmpty else { return try await themeIdeas(for: [], language: language, voice: voice) }
-        beginForeground()
-        defer { endForeground() }
+        if priority == .prefetch, isBusyForeground { throw CancellationError() }
+        if priority == .waiting {
+            foregroundRequests += 1
+            for work in backgroundWork.values { work.cancel() }
+        }
+        defer { if priority == .waiting { endForeground() } }
+        let id = UUID()
+        let work = Task { try await self.writeIdeas(slots: slots, language: language, voice: voice, inspiration: inspiration) }
+        ideaWork[id] = work
+        defer { ideaWork[id] = nil }
+        return try await withTaskCancellationHandler { try await work.value } onCancel: { work.cancel() }
+    }
+
+    private func writeIdeas(slots: [IdeaSlot], language: CueLanguage?, voice: CreatorVoice?, inspiration: [String]) async throws -> [ThemeIdea] {
         let plan = try await plan(for: .themes, languages: language.map { [$0.locale.language] } ?? [])
+        let asBriefs = Self.writesIdeaBriefs
+        let languageCode = language?.locale.language.minimalIdentifier
         return try await withFallback(plan, operation: "themes", language: language?.locale.identifier) { model in
             let session = self.session(on: model, instructions: ScriptPromptBuilder.themesInstructions(voice: voice))
-            let prompt = ScriptPromptBuilder.themesPrompt(slots: slots, voice: voice, language: language, inspiration: inspiration)
+            let prompt = ScriptPromptBuilder.themesPrompt(slots: slots, voice: voice, language: language, inspiration: inspiration, asBriefs: asBriefs)
             // A creative task: the idea is the point, not the one answer the model is surest of.
             let options = GenerationOptions(temperature: 1.0)
-            let suggestions = try await self.answering { try await session.respond(to: prompt, generating: ThemeSuggestions.self, options: options).content }
             var ideas: [ThemeIdea] = []
-            for (index, idea) in suggestions.ideas.enumerated() where index < slots.count {
-                let title = ScriptPromptBuilder.cleanTitle(idea.title)
-                guard !title.isEmpty else { continue }
-                // The slot says the angle and the topic; the model's own label for either is not trusted.
-                let slot = slots[index]
-                var made = ThemeIdea(
-                    title: title, kind: slot.angle.kind, length: idea.minutes >= 2 ? .minutes2 : .minute1,
-                    niche: slot.topic.niche ?? .lifestyle, topic: slot.topic.niche == nil ? slot.topic.label : nil
-                )
-                made.angle = slot.angle.rawValue
-                ideas.append(made)
+            if asBriefs {
+                let suggestions = try await self.answering {
+                    try await session.respond(to: prompt, generating: IdeaBriefSuggestions.self, options: options).content
+                }
+                let answers = suggestions.ideas.map { IdeaBriefReader.Answer(title: $0.title, angle: $0.angle, openingLine: $0.openingLine) }
+                ideas = IdeaBriefReader.ideas(from: answers, slots: slots, language: languageCode)
+            } else {
+                let suggestions = try await self.answering {
+                    try await session.respond(to: prompt, generating: ThemeSuggestions.self, options: options).content
+                }
+                for (index, idea) in suggestions.ideas.enumerated() where index < slots.count {
+                    let title = ScriptPromptBuilder.cleanTitle(idea.title)
+                    guard !title.isEmpty else { continue }
+                    // The slot says the angle and the topic; the model's own label for either is not trusted.
+                    let slot = slots[index]
+                    var made = ThemeIdea(
+                        title: title, kind: slot.angle.kind, length: idea.minutes >= 2 ? .minutes2 : .minute1,
+                        niche: slot.topic.niche ?? .lifestyle, topic: slot.topic.niche == nil ? slot.topic.label : nil
+                    )
+                    made.angle = slot.angle.rawValue
+                    ideas.append(made)
+                }
             }
             guard !ideas.isEmpty else { throw ScriptAIError.emptyResponse }
             return ideas
@@ -465,14 +506,16 @@ final class ScriptAIService: ScriptWriting {
 
     // MARK: - What waits for what
 
-    /// Requests the creator is waiting for (a script, a rewrite, hooks, ideas) are under way: the work that can wait (filing scripts under topics) stands
-    /// aside. Measured on an iPhone 15 Pro: the arrow created a script, which started the filing of older ones on the same model, and the script waited
-    /// behind them with nothing to show for it.
+    /// Requests the creator is waiting for (a script, a rewrite, hooks, ideas they wait for) are under way: the work that can wait (filing scripts
+    /// under topics, ideas fetched ahead) stands aside. Measured on an iPhone 15 Pro: the arrow created a script, which started the filing of older
+    /// ones on the same model, and the script waited behind them with nothing to show for it.
     var isBusyForeground: Bool { foregroundRequests > 0 }
 
     private func beginForeground() {
         foregroundRequests += 1
         for work in backgroundWork.values { work.cancel() }
+        // Ideas are never worth making a script, a rewrite or hooks wait: they are asked for again later (`IdeaSuggestionService`).
+        for work in ideaWork.values { work.cancel() }
     }
 
     private func endForeground() {

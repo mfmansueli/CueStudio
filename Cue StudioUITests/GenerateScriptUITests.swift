@@ -29,22 +29,21 @@ final class GenerateScriptUITests: XCTestCase {
         XCTAssertFalse(checked.waitForExistence(timeout: 2))
     }
 
-    func testIdeasSheetOffersIdeasWritesOneAndEditsAnother() {
+    func testFindInspirationPutsAnIdeaInTheCardOrWritesIt() {
         let app = CueApp.launch(seeded: true)
         app.openIdeas()
-        let firstIdea = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH 'ideas.write.'")).firstMatch
-        XCTAssertTrue(firstIdea.waitForExistence(timeout: 5))
-        XCTAssertTrue(app.buttons["ideas.moreButton"].exists)
-        // A tap on the idea itself puts it on the card, to change before it is written.
-        let row = app.descendants(matching: .any).matching(NSPredicate(format: "identifier BEGINSWITH 'ideas.row.'")).firstMatch
-        row.buttons.firstMatch.tap()
+        XCTAssertTrue(element(app, "inspiration.card.title").waitForExistence(timeout: 10))
+        XCTAssertTrue(app.buttons["inspiration.another"].exists)
+        // "Start with it" puts it on the card, to change before it is written.
+        app.buttons["inspiration.use"].tap()
         let field = element(app, "ideaCard.field")
         XCTAssertTrue(field.waitForExistence(timeout: 5))
-        XCTAssertTrue((field.value as? String)?.contains("video:") == true)
+        XCTAssertFalse((field.value as? String ?? "").isEmpty)
 
-        // ↑ writes it into a new page at once.
+        // "Draft it now" writes it into a new page at once.
         app.openIdeas()
-        app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH 'ideas.write.'")).firstMatch.tap()
+        XCTAssertTrue(element(app, "inspiration.card.title").waitForExistence(timeout: 10))
+        app.buttons["inspiration.writeNow"].tap()
         XCTAssertTrue(app.pageBackButton.waitForExistence(timeout: 10))
         XCTAssertTrue(element(app, "page.editor").waitForExistence(timeout: 10))
     }
@@ -117,7 +116,7 @@ final class GenerateScriptUITests: XCTestCase {
         let voice = element(app, "improve.tool.inMyVoice")
         XCTAssertTrue(voice.waitForExistence(timeout: 5))
         voice.tap()
-        XCTAssertTrue(app.staticTexts.containing(NSPredicate(format: "label BEGINSWITH 'Rewrote in your voice'")).firstMatch.waitForExistence(timeout: 5))
+        XCTAssertTrue(app.staticTexts.containing(NSPredicate(format: "label BEGINSWITH 'In your voice'")).firstMatch.waitForExistence(timeout: 5))
         XCTAssertFalse(app.buttons["paywall.closeButton"].exists)
     }
 

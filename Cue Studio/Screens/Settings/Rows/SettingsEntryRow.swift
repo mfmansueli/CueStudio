@@ -31,7 +31,7 @@ struct SettingsEntryRow: View {
             PrompterEntryRow(entry: entry, bindings: bindings)
         case .connectDevice, .enterCode, .scanCode:
             RemoteEntryRow(entry: entry)
-        case .appIcon, .topics, .autoTag, .starrySky, .celebrations, .haptics:
+        case .appIcon, .topics, .autoTag, .starrySky, .celebrations, .haptics, .firstVoyage:
             PersonalizeEntryRow(entry: entry)
         case .appLanguage, .voiceFollowingLanguage, .scriptLanguage:
             LanguageEntryRow(entry: entry)

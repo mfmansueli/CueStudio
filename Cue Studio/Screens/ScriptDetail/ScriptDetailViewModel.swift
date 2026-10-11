@@ -54,6 +54,8 @@ final class ScriptDetailViewModel {
     let voiceQuestions: VoiceQuestionScheduler?
     /// The idea's star while the AI writes into this page: it waits for the star to open the page, and an error is its exit.
     let transition: IdeaTransitionService?
+    /// Where Cue's draft is kept until the script is recorded, to learn from what the creator changes.
+    let draftLearning: DraftLearningService?
 
     init(
         scriptID: UUID,
@@ -69,9 +71,11 @@ final class ScriptDetailViewModel {
         writer: ScriptWriting,
         toast: ToastService,
         voiceQuestions: VoiceQuestionScheduler? = nil,
-        transition: IdeaTransitionService? = nil
+        transition: IdeaTransitionService? = nil,
+        draftLearning: DraftLearningService? = nil
     ) {
         self.voiceQuestions = voiceQuestions
+        self.draftLearning = draftLearning
         self.transition = transition
         self.scriptID = scriptID
         self.library = library
@@ -271,7 +275,7 @@ final class ScriptDetailViewModel {
         }
         let before = workingText
         guard ReadTime.wordCount(in: before) > 0 else {
-            toast.show(String(localized: "Write something first, then Cue can improve it"))
+            toast.show(String(localized: "Write a few lines. Cue builds on them."))
             return
         }
         runningTool = tool
@@ -297,7 +301,7 @@ final class ScriptDetailViewModel {
             return
         }
         guard ReadTime.wordCount(in: workingText) > 0 else {
-            toast.show(String(localized: "Write something first, then Cue can improve it"))
+            toast.show(String(localized: "Write a few lines. Cue builds on them."))
             return
         }
         runningTool = .translate
@@ -307,7 +311,7 @@ final class ScriptDetailViewModel {
             context.language = language
             let result = try await writer.rewriteReported(workingText, with: .translate, context: context)
             guard !result.isUntouched else {
-                toast.show(String(localized: "Couldn’t write it · Try again"))
+                toast.show(String(localized: "Couldn’t draft it · Try again"))
                 return
             }
             // A translation is a new script in the new language; the original stays as written.
@@ -338,7 +342,7 @@ final class ScriptDetailViewModel {
         }
         versionInProgress = platform
         defer { versionInProgress = nil }
-        toast.show(String(localized: "Writing the \(platform.label) version…"))
+        toast.show(String(localized: "Drafting the \(platform.label) version…"))
         do {
             var context = rewriteContext
             context.platform = platform
@@ -374,13 +378,13 @@ final class ScriptDetailViewModel {
             return String(localized: "Fitted to \(range)")
         case .inMyVoice:
             let sounds = profile.profile.sounds.prefix(2).map { $0.label.lowercased() }.joined(separator: ", ")
-            return String(localized: "Rewrote in your voice · \(sounds)")
-        case .moreEnergy: return String(localized: "Rewrote with more energy")
+            return String(localized: "In your voice · \(sounds)")
+        case .moreEnergy: return String(localized: "More energy")
         case .fixGrammar: return String(localized: "Grammar fixed")
-        case .strongerCTA: return String(localized: "Call to action strengthened")
-        case .moreHuman: return String(localized: "Made it sound more human")
+        case .strongerCTA: return String(localized: "Stronger call to action")
+        case .moreHuman: return String(localized: "More natural")
         case .lessDefensive: return String(localized: "Removed defensive lines")
-        case .shorterAndDirect: return String(localized: "Made it shorter and more direct")
+        case .shorterAndDirect: return String(localized: "Shorter")
         case .newHooks, .addDisclosure, .translate: return String(localized: "Done")
         }
     }
