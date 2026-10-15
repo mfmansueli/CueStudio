@@ -32,13 +32,13 @@ struct ProPlansScreen: View {
         VStack(spacing: 0) {
             ScrollView {
                 ProMarketing(context: context, aiIsAvailable: aiStatus.isAvailable, time: time)
-                    .padding(.top, max(0, 96 - barHeight))
+                    .padding(.top, max(0, 146 - barHeight))
                     .padding(.bottom, 20)
             }
             .scrollIndicators(.hidden)
-            // The planet that is you, above the title: the board's art starts 18 pt from the top of the screen (its centre is 100 pt down).
+            // The planet that is you, above the title, its centre `PaywallView.planetY` from the top of the screen.
             .overlay(alignment: .top) {
-                ProPlanetArt(ignition: ProOpeningScript.planet.pose(at: time)).offset(y: 18 - topInset)
+                ProPlanetArt(time: time).offset(y: PaywallView.planetY - ProPlanetArt.centreY - topInset)
             }
             // The footer (the plans, the button and the small print) stops growing at a large size: at the biggest it left no room above it.
             footer.dynamicTypeSize(...DynamicTypeSize.xxxLarge).revealed(7, at: time)

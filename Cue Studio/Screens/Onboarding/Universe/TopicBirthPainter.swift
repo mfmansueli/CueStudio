@@ -72,16 +72,14 @@ struct TopicBirthPainter {
         head(in: &context)
     }
 
-    /// The light itself: a glow with a hot core, and the eight dots that follow it a little later each (5 to 18 pt, fainter and fainter).
+    /// The light itself: 1.1's trail (`StarRibbon`) in the topic's colours along the route, and a glow with a hot core.
     private func head(in context: inout GraphicsContext) {
-        let sizes: [CGFloat] = [18, 15, 13, 11, 9, 7, 6, 5]
-        for (index, layer) in TopicBirth.followers.enumerated().reversed() {
-            let follower = pose(layer)
-            guard follower.opacity > 0.01, let along = follower.along else { continue }
-            let at = point(onRouteAt: along)
-            let fade = 0.85 - Double(index) * 0.1
-            context.fill(circle(at, sizes[index] / 2 * 0.6), with: .color(light.opacity(follower.opacity * fade)))
+        let trail = StarRibbon.trail(at: age) { second in
+            let pose = TopicBirth.pose(TopicBirth.head, at: second)
+            guard let along = pose.along else { return (birth.from, 0) }
+            return (point(onRouteAt: along), pose.opacity)
         }
+        StarRibbon.draw(trail, colors: [.white, light, birth.color], width: 4, in: &context)
         let head = pose(TopicBirth.head)
         let hot = Palette.Flight.hot
         guard head.opacity > 0.01, let along = head.along else { return }

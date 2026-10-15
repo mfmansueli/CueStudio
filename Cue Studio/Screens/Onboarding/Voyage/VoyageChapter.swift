@@ -25,6 +25,9 @@ struct VoyageChapter: View {
     @State private var picked: Platform?
     @State private var pickedAt = Date.now
     @State private var firstPickedAt: Date?
+    /// The screen's y under the heading and above the chips: the galaxies fit between them.
+    @State private var headingBottom: CGFloat?
+    @State private var chipsTop: CGFloat?
 
     private static let clip = MotionLibrary.clip("1.3_voyage")
     /// Everything of the opening is in place (the button has landed at 3.3 s).
@@ -60,7 +63,7 @@ struct VoyageChapter: View {
         // The sky pulls back less than the foreground, and drifts once, with the first light that crosses it.
         let skyClock = firstPickedAt.map { 3.4 + (frozenPickAge ?? time.now.timeIntervalSince($0)) } ?? clock
         return ZStack {
-            VoyageScene(time: time, picked: picked, pickAge: age, onTapGalaxy: choose)
+            VoyageScene(time: time, picked: picked, pickAge: age, fit: fit, onTapGalaxy: choose)
                 .ignoresSafeArea()
             VStack(alignment: .leading, spacing: 0) {
                 OnboardingHeading(
@@ -69,9 +72,11 @@ struct VoyageChapter: View {
                     poses: ["L2", "L3", "L4"].map { pose($0, clock) }
                 )
                 .padding(.horizontal, 20)
+                .onGeometryChange(for: CGFloat.self) { $0.frame(in: .global).maxY } action: { headingBottom = $0 }
                 Spacer(minLength: 0)
                 destination(time, age: age)
-                Spacer(minLength: 0).frame(height: 74)
+                    .onGeometryChange(for: CGFloat.self) { $0.frame(in: .global).minY } action: { chipsTop = $0 }
+                Spacer(minLength: 0).frame(height: 36)
                 OnboardingPrimaryButton(
                     title: String(localized: "Continue with \(picked?.label ?? onboarding.platform.label)"),
                     disabledTitle: String(localized: "Choose a platform"), isEnabled: picked != nil,
@@ -83,6 +88,12 @@ struct VoyageChapter: View {
         }
         .onChange(of: skyClock) { _, second in sky.pose = Self.clip.pose(of: "L1", at: second) }
         .onAppear { sky.pose = Self.clip.pose(of: "L1", at: skyClock) }
+    }
+
+    /// The galaxies between the heading and the chips, 14 pt from each.
+    private var fit: VoyageFit {
+        guard let headingBottom, let chipsTop, chipsTop - 14 > headingBottom + 14 else { return .board }
+        return VoyageFit(band: (headingBottom + 14)...(chipsTop - 14))
     }
 
     /// The line, the chips and the hint under them (a mono line saying what to do, five chips, the format for the choice).

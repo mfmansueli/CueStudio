@@ -42,7 +42,7 @@ struct PaywallCopyTests {
     @Test func theBoardsSixLinesAreListedInOrder() {
         #expect(PaywallCopy.benefits.map(\.tag) == ["EXPORT", "AI", "AI", "EDIT", "STUDIO", "UNIVERSE"])
         #expect(PaywallCopy.benefits.first?.text == "Unlimited exports, up to 4K")
-        #expect(PaywallCopy.benefits.last?.mark == "✦")
+        #expect(PaywallCopy.benefits.last?.symbol == "sparkle")
         #expect(ProPlan.allCases == [.annual, .monthly])
     }
 

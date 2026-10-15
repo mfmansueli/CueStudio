@@ -6,7 +6,10 @@
 import SwiftUI
 
 /// What 1.7 draws on the 390 × 844 frame of the board, as a pure function of the story's time and the world's time: the three tilted orbits with their
-/// planets, YOU, the comet and its sparkles, the star with its burst, rings, cross and halo, the line from YOU, the dust and the label.
+/// planets, YOU, the comet and its sparkles, the star with its burst, rings, cross and halo, the line from YOU, the dust and the label. On top of
+/// the board (the owner's pass): where the take folds, a lens flare and a shockwave; the comet leaves the first flight's trail (`StarRibbon`);
+/// the universe holds its breath before the star lights, a bloom as it does, a wave of light across the orbits and YOU pulsing; a bead of light
+/// draws the line; the lit star keeps glinting, and once the story rests a shooting star crosses the sky now and then.
 struct FirstStarScene: View {
     /// Seconds into the story (held at `FirstStarScript.hold` once it has played).
     let story: Double
@@ -16,9 +19,13 @@ struct FirstStarScene: View {
 
     var body: some View {
         Canvas { canvas, _ in
-            drawOrbits(&canvas)
-            drawCore(&canvas)
+            drawShootingStar(&canvas)
+            var universe = canvas
+            universe.opacity = FirstStarScript.universeLight(at: story)
+            drawOrbits(&universe)
+            drawCore(&universe)
             drawLine(&canvas)
+            drawFold(&canvas)
             drawComet(&canvas)
             drawStar(&canvas)
             drawDust(&canvas)
@@ -38,7 +45,14 @@ struct FirstStarScene: View {
             let ring = Path(ellipseIn: CGRect(x: -radius, y: -radius * flat, width: radius * 2, height: radius * 2 * flat))
                 .applying(CGAffineTransform(rotationAngle: FirstStarScript.tilt.radians))
                 .applying(CGAffineTransform(translationX: core.x, y: core.y))
+            let wave = FirstStarScript.orbitWave(radius: radius, at: story)
             canvas.stroke(ring, with: .color(rim(orbit.tone)), lineWidth: 1)
+            if wave > 0.01 {
+                canvas.drawLayer { layer in
+                    layer.addFilter(.shadow(color: world(orbit.tone).opacity(0.9 * wave), radius: 6))
+                    layer.stroke(ring, with: .color(world(orbit.tone).opacity(0.85 * wave)), lineWidth: 1 + 1.4 * wave)
+                }
+            }
             let point = FirstStarScript.planet(orbit, at: reduceMotion ? 0 : world)
             let size = orbit.planet
             glow(&canvas, at: point, radius: size, colors: [world(orbit.tone).opacity(0.5), world(orbit.tone).opacity(0)], inner: size / 2)
@@ -52,7 +66,7 @@ struct FirstStarScene: View {
 
     private func drawCore(_ canvas: inout GraphicsContext) {
         let center = FirstStarScript.core
-        let pulse = reduceMotion ? 0 : FirstStarScript.breath(at: world, period: 3)
+        let pulse = (reduceMotion ? 0 : FirstStarScript.breath(at: world, period: 3)) + 1.4 * FirstStarScript.youPulse(at: story)
         // The board's `box-shadow`s on the 22 pt ball (`core`, 3 s): a wide violet one under a tight white one, both swelling together.
         light(&canvas, at: center, reach: 11 + 20 + 12 * pulse, blur: 60 + 24 * pulse, color: Palette.Universe.nightViolet.opacity(0.45 + 0.15 * pulse))
         light(&canvas, at: center, reach: 11 + 6 + 4 * pulse, blur: 18 + 8 * pulse, color: .white.opacity(0.5 + 0.2 * pulse))
@@ -77,25 +91,55 @@ struct FirstStarScene: View {
         line.move(to: FirstStarScript.core)
         line.addLine(to: FirstStarScript.star)
         canvas.stroke(
-            line.trimmedPath(from: 0, to: drawn), with: .color(Palette.Universe.starLilac.opacity(0.5)),
+            line.trimmedPath(from: 0, to: drawn),
+            with: .linearGradient(
+                Gradient(colors: [Palette.Universe.starLilac.opacity(0.5), Palette.Universe.starGold.opacity(0.55)]),
+                startPoint: FirstStarScript.core, endPoint: FirstStarScript.star
+            ),
             style: StrokeStyle(lineWidth: 1.2, lineCap: .round)
         )
+        // A bead of light draws it, and goes out into the star.
+        guard drawn < 1 else { return }
+        let core = FirstStarScript.core
+        let star = FirstStarScript.star
+        let bead = CGPoint(x: core.x + (star.x - core.x) * drawn, y: core.y + (star.y - core.y) * drawn)
+        glow(&canvas, at: bead, radius: 9, colors: [Palette.Universe.starCream.opacity(0.9), Palette.acc.opacity(0)], inner: 0)
+        canvas.fill(Self.disc(bead, radius: 1.8), with: .color(.white))
+    }
+
+    /// Where the take becomes light: a horizontal lens flare (a thinner upright one with it) and a shockwave ring.
+    private func drawFold(_ canvas: inout GraphicsContext) {
+        let fold = FirstStarScript.fold(at: story)
+        let center = FirstStarScript.routeStart
+        if fold.flareOpacity > 0.01 {
+            let fade = Gradient(stops: [
+                .init(color: Palette.acc.opacity(0), location: 0), .init(color: Palette.Universe.starCream.opacity(0.7 * fold.flareOpacity), location: 0.4),
+                .init(color: Color.white.opacity(fold.flareOpacity), location: 0.5),
+                .init(color: Palette.Universe.starCream.opacity(0.7 * fold.flareOpacity), location: 0.6), .init(color: Palette.acc.opacity(0), location: 1),
+            ])
+            canvas.drawLayer { layer in
+                layer.addFilter(.shadow(color: Palette.acc.opacity(0.8 * fold.flareOpacity), radius: 5))
+                let wide = fold.flare
+                layer.fill(
+                    Path(roundedRect: CGRect(x: center.x - wide, y: center.y - 1.3, width: wide * 2, height: 2.6), cornerRadius: 1.3),
+                    with: .linearGradient(fade, startPoint: CGPoint(x: center.x - wide, y: center.y), endPoint: CGPoint(x: center.x + wide, y: center.y))
+                )
+                let tall = fold.flare * 0.32
+                layer.fill(
+                    Path(roundedRect: CGRect(x: center.x - 0.8, y: center.y - tall, width: 1.6, height: tall * 2), cornerRadius: 0.8),
+                    with: .linearGradient(fade, startPoint: CGPoint(x: center.x, y: center.y - tall), endPoint: CGPoint(x: center.x, y: center.y + tall))
+                )
+            }
+        }
+        if fold.waveOpacity > 0.01 {
+            canvas.stroke(Self.disc(center, radius: fold.wave), with: .color(Palette.Universe.starCream.opacity(fold.waveOpacity)), lineWidth: 1.4)
+        }
     }
 
     private func drawComet(_ canvas: inout GraphicsContext) {
         let comet = FirstStarScript.comet(at: story)
-        if comet.trail > 0, comet.head > comet.tail {
-            var trail = Path()
-            let steps = 24
-            for step in 0...steps {
-                let point = FirstStarScript.route(comet.tail + (comet.head - comet.tail) * Double(step) / Double(steps))
-                if step == 0 { trail.move(to: point) } else { trail.addLine(to: point) }
-            }
-            canvas.drawLayer { layer in
-                layer.addFilter(.shadow(color: Palette.acc.opacity(0.95), radius: 6))
-                layer.stroke(trail, with: .color(Palette.Universe.starCream.opacity(comet.trail)), style: StrokeStyle(lineWidth: 3, lineCap: .round))
-            }
-        }
+        let trail = StarRibbon.trail(at: story, length: 0.4) { FirstStarScript.cometHead(at: $0) }
+        StarRibbon.draw(trail, width: 5, in: &canvas)
         if comet.orb > 0 {
             let point = FirstStarScript.route(comet.head)
             let orb = Gradient(stops: [
@@ -103,6 +147,7 @@ struct FirstStarScene: View {
                 .init(color: Palette.acc.opacity(0), location: 0.7),
             ])
             canvas.fill(Self.disc(point, radius: 17), with: .radialGradient(orb, center: point, startRadius: 0, endRadius: 17))
+            StarRibbon.head(at: point, opacity: comet.orb, spin: story, in: &canvas)
         }
         let flash = FirstStarScript.glow(at: story)
         if flash.opacity > 0 {
@@ -124,6 +169,14 @@ struct FirstStarScene: View {
     }
 
     private func drawStar(_ canvas: inout GraphicsContext) {
+        let bloom = FirstStarScript.bloom(at: story)
+        if bloom.opacity > 0.01 {
+            let colors = [Color.white.opacity(bloom.opacity), Palette.Universe.starGold.opacity(0.55 * bloom.opacity), Palette.acc.opacity(0)]
+            canvas.fill(
+                Self.disc(FirstStarScript.star, radius: bloom.radius),
+                with: .radialGradient(stops(colors, at: [0, 0.25, 1]), center: FirstStarScript.star, startRadius: 0, endRadius: bloom.radius)
+            )
+        }
         drawBurst(&canvas)
         let star = FirstStarScript.star
         for ring in FirstStarScript.rings(at: story) where ring.opacity > 0.01 {
@@ -134,10 +187,12 @@ struct FirstStarScene: View {
         let pose = FirstStarScript.starPose(at: story)
         guard pose.opacity > 0.01 else { return }
         let breath = reduceMotion ? 0.5 : FirstStarScript.breath(at: world, period: 2.4)
-        let halo = 20 * pose.scale * (1 + 0.4 * breath)
+        let glint = reduceMotion ? 0 : FirstStarScript.starGlint(at: world)
+        let halo = 20 * pose.scale * (1 + 0.4 * breath + 0.5 * glint)
         let strength = 0.45 * (0.22 + 0.18 * breath) / 0.4 * pose.opacity
         glow(&canvas, at: star, radius: halo, colors: [Palette.acc.opacity(strength), Palette.acc.opacity(0)], inner: 0)
-        canvas.fill(Self.fourPointStar(center: star, size: 20 * pose.scale), with: .color(Palette.acc.opacity(pose.opacity)))
+        canvas.fill(Self.fourPointStar(center: star, size: 20 * pose.scale * (1 + 0.12 * breath)), with: .color(Palette.acc.opacity(pose.opacity)))
+        canvas.fill(Self.disc(star, radius: 2.2 * pose.scale), with: .color(Palette.Universe.starCream.opacity(pose.opacity * (0.7 + 0.3 * glint))))
     }
 
     /// The ten specks that fly out as the star lights.
@@ -160,8 +215,11 @@ struct FirstStarScene: View {
         let star = FirstStarScript.star
         let cross = FirstStarScript.cross(at: story)
         guard cross.opacity > 0.01, cross.scale > 0.01 else { return }
-        let halfWide = 85 * cross.scale
-        let halfTall = 59.5 * cross.scale
+        // It turns slowly, and grows for a moment with each glint of the star.
+        let glint = reduceMotion ? 0 : FirstStarScript.starGlint(at: world)
+        let reach = cross.scale + 0.25 * glint
+        let halfWide = 85 * reach
+        let halfTall = 59.5 * reach
         let fade = Gradient(stops: [
             .init(color: Palette.Universe.starGold.opacity(0), location: 0),
             .init(color: Palette.Universe.starGold.opacity(0.4 * cross.opacity), location: 0.3),
@@ -171,6 +229,20 @@ struct FirstStarScene: View {
         ])
         canvas.drawLayer { layer in
             layer.addFilter(.shadow(color: Palette.acc.opacity(0.9), radius: 3))
+            layer.translateBy(x: star.x, y: star.y)
+            layer.rotate(by: .degrees(reduceMotion ? 0 : world * 5))
+            layer.translateBy(x: -star.x, y: -star.y)
+            // The thin diagonal spikes of a lens, with the cross.
+            let spike = halfTall * 0.55
+            for angle in [45.0, -45.0] {
+                var diagonal = layer
+                diagonal.translateBy(x: star.x, y: star.y)
+                diagonal.rotate(by: .degrees(angle))
+                diagonal.fill(
+                    Path(CGRect(x: -spike, y: -0.5, width: spike * 2, height: 1)),
+                    with: .linearGradient(fade, startPoint: CGPoint(x: -spike, y: 0), endPoint: CGPoint(x: spike, y: 0))
+                )
+            }
             layer.fill(
                 Path(CGRect(x: star.x - halfWide, y: star.y - 0.9, width: halfWide * 2, height: 1.8)),
                 with: .linearGradient(fade, startPoint: CGPoint(x: star.x - halfWide, y: star.y), endPoint: CGPoint(x: star.x + halfWide, y: star.y))
@@ -179,6 +251,18 @@ struct FirstStarScene: View {
                 Path(CGRect(x: star.x - 0.9, y: star.y - halfTall, width: 1.8, height: halfTall * 2)),
                 with: .linearGradient(fade, startPoint: CGPoint(x: star.x, y: star.y - halfTall), endPoint: CGPoint(x: star.x, y: star.y + halfTall))
             )
+        }
+    }
+
+    /// Once the story rests, now and then a shooting star crosses the sky above the universe, with the first flight's trail.
+    private func drawShootingStar(_ canvas: inout GraphicsContext) {
+        guard !reduceMotion, FirstStarScript.shootingStar(at: world) != nil || FirstStarScript.shootingStar(at: world - 0.3) != nil else { return }
+        let trail = StarRibbon.trail(at: world, length: 0.3) { second in
+            FirstStarScript.shootingStar(at: second) ?? (CGPoint(x: 120, y: 124), 0)
+        }
+        StarRibbon.draw(trail, width: 2.6, in: &canvas)
+        if let head = FirstStarScript.shootingStar(at: world) {
+            StarRibbon.head(at: head.point, opacity: 0.85 * head.opacity, spin: world, radius: 2.6, in: &canvas)
         }
     }
 

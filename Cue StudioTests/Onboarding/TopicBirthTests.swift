@@ -48,7 +48,7 @@ struct TopicBirthTests {
             TopicBirth.planet, TopicBirth.orbit, TopicBirth.orbitLight, TopicBirth.label,
         ]
         let layers = single
-            + TopicBirth.chipSparks + TopicBirth.followers + TopicBirth.landingSparks + TopicBirth.streaks + TopicBirth.rings
+            + TopicBirth.chipSparks + TopicBirth.landingSparks + TopicBirth.streaks + TopicBirth.rings
             + TopicBirth.glints.map(\.layer)
         for layer in layers { #expect(TopicBirth.clip.has(layer), "\(layer) is not in 1.2_topics") }
     }
@@ -57,7 +57,6 @@ struct TopicBirthTests {
         #expect(TopicBirth.chipSparks.count == 8)
         #expect(TopicBirth.landingSparks.count == 9)
         #expect(TopicBirth.streaks.count == 10)
-        #expect(TopicBirth.followers.count == 8)
         #expect(TopicBirth.glints.count == 5)
         #expect(TopicBirth.rings.count == 3)
     }
@@ -107,7 +106,7 @@ struct TopicBirthTests {
     @Test func nothingOfTheLightShowIsLeftWhenTheBirthEnds() {
         let single = [TopicBirth.chipRing, TopicBirth.chipCross, TopicBirth.routeLine, TopicBirth.routeTail, TopicBirth.head, TopicBirth.landingCross]
         let overlay = single
-            + TopicBirth.chipSparks + TopicBirth.followers + TopicBirth.landingSparks + TopicBirth.streaks + TopicBirth.rings
+            + TopicBirth.chipSparks + TopicBirth.landingSparks + TopicBirth.streaks + TopicBirth.rings
             + TopicBirth.glints.map(\.layer)
         for layer in overlay {
             #expect(TopicBirth.pose(layer, at: TopicBirth.duration).opacity == 0, "\(layer) is still lit at \(TopicBirth.duration) s")

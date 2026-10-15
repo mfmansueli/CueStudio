@@ -8,7 +8,7 @@ import SwiftUI
 /// Plays `ProOpeningScript` over `content` and tells the content which second it is (so each block can fade up in its turn). Once; tappable from
 /// 1.4 s to skip to the end. With Reduce Motion, and in the calm Pro, there is no warp, core, ring or flash: the content fades in
 /// over 0.3 s. A skip eases the blocks to their places and fades the light out (`CueMotion.skipSettle`). Haptics: `.soft` at the ignition
-/// (1.25 s), `.success` when the last block lands.
+/// (1.25 s), `.success` when the planet is born (2.16 s).
 struct ProOpening<Content: View>: View {
     let plays: Bool
     /// Where the planet that is you sits, from the top of the screen.

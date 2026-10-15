@@ -168,7 +168,6 @@ struct VoiceChapter: View {
         }
         .padding(.horizontal, 14)
         .frame(minHeight: 64)
-        .background(isNext ? Palette.Universe.nightViolet.opacity(0.06) : .clear)
         .contentShape(Rectangle())
         if state == .allowed {
             content

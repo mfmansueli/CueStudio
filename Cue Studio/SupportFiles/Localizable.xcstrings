@@ -34170,6 +34170,125 @@
         }
       }
     },
+    "A teleprompter made for your creative universe." : {
+      "comment" : "1.1 Welcome: the title (one sentence, arrives word by word)",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ملقّن مصمَّم لكونك الإبداعي."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En teleprompter skabt til dit kreative univers."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ein Teleprompter, gemacht für dein kreatives Universum."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un teleprompter hecho para tu universo creativo."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un téléprompteur conçu pour votre univers créatif."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "आपके रचनात्मक ब्रह्मांड के लिए बना टेलीप्रॉम्प्टर।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Teleprompter yang dibuat untuk semesta kreatifmu."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un teleprompter fatto per il tuo universo creativo."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "あなたのクリエイティブな宇宙のためのプロンプター。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "나의 크리에이티브 우주를 위한 프롬프터."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En teleprompter laget for ditt kreative univers."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Een teleprompter gemaakt voor jouw creatieve universum."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Um teleprompter feito para o seu universo criativo."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En teleprompter gjord för ditt kreativa universum."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "เทเลพรอมป์เตอร์ที่สร้างมาเพื่อจักรวาลแห่งความคิดสร้างสรรค์ของคุณ"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yaratıcı evrenin için yapılmış bir teleprompter."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Teleprompter dành cho vũ trụ sáng tạo của bạn."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "为你的创作宇宙打造的提词器。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "為你的創作宇宙打造的提詞機。"
+          }
+        }
+      }
+    },
     "a thin ring" : {
       "localizations" : {
         "ar" : {
@@ -96960,6 +97079,125 @@
         }
       }
     },
+    "Daily routines" : {
+      "comment" : "A topic (the lifestyle one): a chip on 1.2 and a world in the universe",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الروتين اليومي"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Daglige rutiner"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tagesroutinen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rutinas diarias"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Routines du quotidien"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "रोज़ की दिनचर्या"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rutinitas harian"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Routine quotidiane"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "毎日のルーティン"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "데일리 루틴"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Daglige rutiner"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dagelijkse routines"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rotinas diárias"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dagliga rutiner"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "กิจวัตรประจำวัน"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Günlük rutinler"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Thói quen hằng ngày"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "日常作息"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "日常作息"
+          }
+        }
+      }
+    },
     "Dark gray" : {
       "localizations" : {
         "ar" : {
@@ -152875,124 +153113,6 @@
         }
       }
     },
-    "I already use Cue" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "أستخدم Cue بالفعل"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Jeg bruger allerede Cue"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ich nutze Cue schon"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ya uso Cue"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "J’utilise déjà Cue"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "मैं पहले से Cue इस्तेमाल करता हूँ"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aku sudah pakai Cue"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Uso già Cue"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "すでにCueを使っています"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "이미 Cue를 쓰고 있어요"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Jeg bruker allerede Cue"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ik gebruik Cue al"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Eu já uso o Cue"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Jag använder redan Cue"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ฉันใช้ Cue อยู่แล้ว"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cue’yu zaten kullanıyorum"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tôi đã dùng Cue"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "我已在使用 Cue"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "我已經在使用 Cue"
-          }
-        }
-      }
-    },
     "I am" : {
       "localizations" : {
         "ar" : {
@@ -188046,124 +188166,6 @@
         }
       }
     },
-    "Morning routines" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "الروتين الصباحي"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Morgenrutiner"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Morgenroutinen"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Rutinas de mañana"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Routines du matin"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "सुबह की दिनचर्या"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Rutinitas pagi"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Routine mattutine"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "朝のルーティン"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "모닝 루틴"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Morgenrutiner"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ochtendroutines"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Rotinas matinais"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Morgonrutiner"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "กิจวัตรตอนเช้า"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sabah rutinleri"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Thói quen buổi sáng"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "晨间习惯"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "晨間習慣"
-          }
-        }
-      }
-    },
     "Morning workouts" : {
       "comment" : "My Cue Voice: a more specific topic inside a topic",
       "localizations" : {
@@ -208535,6 +208537,125 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "這裡還沒有內容"
+          }
+        }
+      }
+    },
+    "Nothing is recorded." : {
+      "comment" : "1.6 practice card: the practice is not recorded",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "لن يُسجَّل شيء."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Intet bliver optaget."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Es wird nichts aufgenommen."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se graba nada."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rien n’est filmé."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "कुछ भी रिकॉर्ड नहीं होता।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tidak ada yang direkam."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Non si registra niente."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "録画はされません。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "아무것도 녹화되지 않아요."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ingenting tas opp."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Er wordt niets opgenomen."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nada é gravado."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inget spelas in."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ไม่มีการอัด"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kayıt yapılmaz."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Không có gì được quay."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "不会录制。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "不會錄影。"
           }
         }
       }
@@ -247361,363 +247482,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "讀取我的文字"
-          }
-        }
-      }
-    },
-    "Read out loud. The text scrolls at a steady pace." : {
-      "comment" : "1.6 Practice card: what the text will do without the microphone",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "اقرأ بصوت عالٍ. يتحرك النص بسرعة ثابتة."
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Læs højt. Teksten ruller i et jævnt tempo."
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lies laut. Der Text läuft gleichmäßig."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lee en voz alta. El texto avanza a un ritmo constante."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lisez à voix haute. Le texte défile à vitesse constante."
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ज़ोर से पढ़ें। टेक्स्ट एक जैसी गति से चलता है।"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bacalah dengan suara keras. Teks bergulir dengan kecepatan tetap."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Leggi ad alta voce. Il testo scorre a velocità costante."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "声に出して読みましょう。文字は一定の速さで流れます。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "소리 내어 읽어 보세요. 텍스트가 일정한 속도로 흘러가요."
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Les høyt. Teksten ruller i jevnt tempo."
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lees hardop. De tekst schuift in een vast tempo."
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Leia em voz alta. O texto rola em velocidade constante."
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Läs högt. Texten rullar i jämn takt."
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "อ่านออกเสียง ข้อความจะเลื่อนด้วยความเร็วคงที่"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sesli oku. Metin sabit hızda kayar."
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Đọc to lên. Chữ cuộn với tốc độ đều."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "大声读出来。文字会匀速滚动。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "大聲讀出來。文字會等速捲動。"
-          }
-        }
-      }
-    },
-    "Read out loud. The text moves while you talk." : {
-      "comment" : "1.6 Practice card: what the text will do when words can't be followed here",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "اقرأ بصوت عالٍ. يتحرك النص أثناء كلامك."
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Læs højt. Teksten ruller, mens du taler."
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lies laut. Der Text läuft, während du sprichst."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lee en voz alta. El texto avanza mientras hablas."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lisez à voix haute. Le texte défile pendant que vous parlez."
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ज़ोर से पढ़ें। आपके बोलते समय टेक्स्ट चलता है।"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bacalah dengan suara keras. Teks bergerak saat kamu bicara."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Leggi ad alta voce. Il testo scorre mentre parli."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "声に出して読みましょう。話している間、文字が進みます。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "소리 내어 읽어 보세요. 말하는 동안 텍스트가 움직여요."
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Les høyt. Teksten ruller mens du snakker."
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lees hardop. De tekst schuift mee terwijl je praat."
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Leia em voz alta. O texto anda enquanto você fala."
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Läs högt. Texten rullar medan du pratar."
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "อ่านออกเสียง ข้อความจะเลื่อนขณะที่คุณพูด"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sesli oku. Metin sen konuşurken ilerler."
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Đọc to lên. Chữ chạy khi bạn nói."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "大声读出来。你说话时，文字才会滚动。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "大聲讀出來。你說話時，文字才會捲動。"
-          }
-        }
-      }
-    },
-    "Read out loud. The text waits, then follows your voice." : {
-      "comment" : "1.6 Practice card: what the text will do with Voice Following",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "اقرأ بصوت عالٍ. ينتظر النص، ثم يتبع صوتك."
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Læs højt. Teksten venter og følger så din stemme."
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lies laut. Der Text wartet und folgt dann deiner Stimme."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lee en voz alta. El texto espera y luego sigue tu voz."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lisez à voix haute. Le texte attend, puis suit votre voix."
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ज़ोर से पढ़ें। टेक्स्ट इंतज़ार करता है, फिर आपकी आवाज़ के साथ चलता है।"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bacalah dengan suara keras. Teks menunggu, lalu mengikuti suaramu."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Leggi ad alta voce. Il testo aspetta, poi segue la tua voce."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "声に出して読みましょう。文字はあなたを待ってから、声についていきます。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "소리 내어 읽어 보세요. 텍스트가 기다렸다가 목소리를 따라와요."
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Les høyt. Teksten venter, så følger den stemmen din."
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lees hardop. De tekst wacht en volgt dan je stem."
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Leia em voz alta. O texto espera e depois segue a sua voz."
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Läs högt. Texten väntar och följer sedan din röst."
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "อ่านออกเสียง ข้อความจะรอ แล้วตามเสียงของคุณ"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sesli oku. Metin bekler, sonra sesini takip eder."
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Đọc to lên. Chữ sẽ chờ, rồi theo giọng nói của bạn."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "大声读出来。文字会先等你，再跟着你的声音走。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "大聲讀出來。文字會先等你，再跟著你的聲音走。"
           }
         }
       }
@@ -314425,6 +314189,363 @@
         }
       }
     },
+    "Tap play and wait for the count. Then read: the text scrolls at a steady pace." : {
+      "comment" : "1.6 practice card: what to do, without the microphone",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اضغط على تشغيل وانتظر العدّ. ثم اقرأ: يمرّ النص بسرعة ثابتة."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tryk på afspil, og vent på nedtællingen. Læs så: teksten ruller i et jævnt tempo."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tippe auf Play und warte den Countdown ab. Dann lies: Der Text läuft in gleichmäßigem Tempo."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toca play y espera la cuenta atrás. Luego lee: el texto avanza a un ritmo constante."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Touchez lecture et attendez le décompte. Puis lisez : le texte défile à un rythme régulier."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "प्ले पर टैप करें और गिनती पूरी होने दें। फिर पढ़ें: टेक्स्ट एक समान गति से चलता है।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ketuk putar dan tunggu hitungan mundur. Lalu bacalah: teks bergulir dengan kecepatan tetap."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tocca play e aspetta il conto alla rovescia. Poi leggi: il testo scorre a ritmo costante."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "再生をタップして、カウントダウンを待ちましょう。そのあと読み始めると、文字が一定の速さで流れます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "재생을 탭하고 카운트다운을 기다리세요. 그다음 읽으면 텍스트가 일정한 속도로 흘러가요."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trykk på spill av og vent på nedtellingen. Les så: teksten ruller i jevnt tempo."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tik op afspelen en wacht op het aftellen. Lees dan: de tekst schuift in een vast tempo."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toque no play e espere a contagem. Depois leia: o texto rola num ritmo constante."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tryck på spela upp och vänta på nedräkningen. Läs sedan: texten rullar i jämn takt."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "แตะเล่นแล้วรอนับถอยหลัง จากนั้นอ่าน ข้อความจะเลื่อนด้วยความเร็วคงที่"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oynat’a dokun ve geri sayımı bekle. Sonra oku: metin sabit bir hızla kayar."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chạm phát và chờ đếm ngược. Rồi đọc: chữ sẽ cuộn với tốc độ đều."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "点击播放，等倒数结束。然后开始读：文字会匀速滚动。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "點一下播放，等倒數結束。然後開始讀：文字會等速捲動。"
+          }
+        }
+      }
+    },
+    "Tap play and wait for the count. Then read out loud: the text moves while you talk." : {
+      "comment" : "1.6 practice card: what to do, when this iPhone can't follow the words",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اضغط على تشغيل وانتظر العدّ. ثم اقرأ بصوت عالٍ: يتحرك النص وأنت تتحدث."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tryk på afspil, og vent på nedtællingen. Læs så højt: teksten bevæger sig, mens du taler."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tippe auf Play und warte den Countdown ab. Dann lies laut: Der Text bewegt sich, während du sprichst."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toca play y espera la cuenta atrás. Luego lee en voz alta: el texto avanza mientras hablas."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Touchez lecture et attendez le décompte. Puis lisez à voix haute : le texte avance pendant que vous parlez."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "प्ले पर टैप करें और गिनती पूरी होने दें। फिर ज़ोर से पढ़ें: आपके बोलते समय टेक्स्ट आगे बढ़ता है।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ketuk putar dan tunggu hitungan mundur. Lalu bacalah dengan suara keras: teks bergerak saat kamu bicara."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tocca play e aspetta il conto alla rovescia. Poi leggi ad alta voce: il testo si muove mentre parli."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "再生をタップして、カウントダウンを待ちましょう。そのあと声に出して読むと、話している間に文字が進みます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "재생을 탭하고 카운트다운을 기다리세요. 그다음 소리 내어 읽으면 말하는 동안 텍스트가 움직여요."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trykk på spill av og vent på nedtellingen. Les så høyt: teksten beveger seg mens du snakker."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tik op afspelen en wacht op het aftellen. Lees dan hardop: de tekst beweegt terwijl je praat."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toque no play e espere a contagem. Depois leia em voz alta: o texto anda enquanto você fala."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tryck på spela upp och vänta på nedräkningen. Läs sedan högt: texten rör sig medan du pratar."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "แตะเล่นแล้วรอนับถอยหลัง จากนั้นอ่านออกเสียง ข้อความจะเลื่อนขณะที่คุณพูด"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oynat’a dokun ve geri sayımı bekle. Sonra sesli oku: metin sen konuşurken ilerler."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chạm phát và chờ đếm ngược. Rồi đọc to lên: chữ sẽ chạy khi bạn nói."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "点击播放，等倒数结束。然后大声读出来：你说话时文字会往前走。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "點一下播放，等倒數結束。然後大聲讀出來：你說話時文字會往前走。"
+          }
+        }
+      }
+    },
+    "Tap play and wait for the count. Then read out loud: the text follows your voice." : {
+      "comment" : "1.6 practice card: what to do, with Voice Following",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اضغط على تشغيل وانتظر العدّ. ثم اقرأ بصوت عالٍ: النص يتبع صوتك."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tryk på afspil, og vent på nedtællingen. Læs så højt: teksten følger din stemme."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tippe auf Play und warte den Countdown ab. Dann lies laut: Der Text folgt deiner Stimme."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toca play y espera la cuenta atrás. Luego lee en voz alta: el texto sigue tu voz."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Touchez lecture et attendez le décompte. Puis lisez à voix haute : le texte suit votre voix."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "प्ले पर टैप करें और गिनती पूरी होने दें। फिर ज़ोर से पढ़ें: टेक्स्ट आपकी आवाज़ के साथ चलता है।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ketuk putar dan tunggu hitungan mundur. Lalu bacalah dengan suara keras: teks mengikuti suaramu."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tocca play e aspetta il conto alla rovescia. Poi leggi ad alta voce: il testo segue la tua voce."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "再生をタップして、カウントダウンを待ちましょう。そのあと声に出して読むと、文字が声についていきます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "재생을 탭하고 카운트다운을 기다리세요. 그다음 소리 내어 읽으면 텍스트가 목소리를 따라와요."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trykk på spill av og vent på nedtellingen. Les så høyt: teksten følger stemmen din."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tik op afspelen en wacht op het aftellen. Lees dan hardop: de tekst volgt je stem."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toque no play e espere a contagem. Depois leia em voz alta: o texto segue a sua voz."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tryck på spela upp och vänta på nedräkningen. Läs sedan högt: texten följer din röst."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "แตะเล่นแล้วรอนับถอยหลัง จากนั้นอ่านออกเสียง ข้อความจะตามเสียงของคุณ"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oynat’a dokun ve geri sayımı bekle. Sonra sesli oku: metin sesini takip eder."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chạm phát và chờ đếm ngược. Rồi đọc to lên: chữ sẽ theo giọng nói của bạn."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "点击播放，等倒数结束。然后大声读出来：文字会跟着你的声音走。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "點一下播放，等倒數結束。然後大聲讀出來：文字會跟著你的聲音走。"
+          }
+        }
+      }
+    },
     "Tap play, then start reading" : {
       "localizations" : {
         "ar" : {
@@ -357513,125 +357634,6 @@
         }
       }
     },
-    "We’ll count you in. Nothing is recorded." : {
-      "comment" : "1.6 Practice card: a count-in comes first, and the practice records no video",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "سنعدّ لك قبل البدء. لن يُسجَّل شيء."
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Vi tæller ned for dig. Intet bliver optaget."
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Wir zählen dich ein. Es wird nichts aufgenommen."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Te haremos la cuenta atrás. No se graba nada."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "On vous fait un décompte. Rien n’est filmé."
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "हम उलटी गिनती करेंगे। कुछ भी रिकॉर्ड नहीं होता।"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kami hitung mundur dulu. Tidak ada yang direkam."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Prima un conto alla rovescia. Non si registra niente."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "カウントダウンしてから始めます。録画はされません。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "카운트다운 후에 시작해요. 아무것도 녹화되지 않아요."
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Vi teller deg inn. Ingenting tas opp."
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "We tellen je af. Er wordt niets opgenomen."
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "A gente faz a contagem pra você. Nada é gravado."
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Vi räknar in dig. Inget spelas in."
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "เราจะนับถอยหลังให้ ไม่มีการอัด"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Geri sayımla başlıyoruz. Kayıt yapılmaz."
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Chúng tôi sẽ đếm ngược cho bạn. Không có gì được quay."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "我们会先倒数。不会录制。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "我們會先倒數。不會錄影。"
-          }
-        }
-      }
-    },
     "weeks with at least one video" : {
       "localizations" : {
         "ar" : {
@@ -359639,121 +359641,121 @@
         }
       }
     },
-    "What do you want to talk about?" : {
-      "comment" : "1.2 Topics: the title",
+    "What do you usually talk about?" : {
+      "comment" : "1.2 Topics: the title (about what the creator already talks about)",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "عمّ تريد أن تتحدث؟"
+            "value" : "عمّ تتحدث عادةً؟"
           }
         },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Hvad vil du tale om?"
+            "value" : "Hvad taler du normalt om?"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Worüber möchtest du sprechen?"
+            "value" : "Worüber sprichst du normalerweise?"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "¿De qué quieres hablar?"
+            "value" : "¿De qué sueles hablar?"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "De quoi voulez-vous parler ?"
+            "value" : "De quoi parlez-vous d’habitude ?"
           }
         },
         "hi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "आप किस बारे में बात करना चाहते हैं?"
+            "value" : "आप आमतौर पर किस बारे में बात करते हैं?"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kamu mau bahas apa?"
+            "value" : "Biasanya kamu bahas apa?"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Di cosa vuoi parlare?"
+            "value" : "Di cosa parli di solito?"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "何について話したいですか？"
+            "value" : "ふだん何について話していますか？"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "어떤 이야기를 하고 싶나요?"
+            "value" : "평소에 어떤 이야기를 하나요?"
           }
         },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Hva vil du snakke om?"
+            "value" : "Hva snakker du vanligvis om?"
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Waar wil je over praten?"
+            "value" : "Waar praat je meestal over?"
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sobre o que você quer falar?"
+            "value" : "Sobre o que você costuma falar?"
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Vad vill du prata om?"
+            "value" : "Vad brukar du prata om?"
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "คุณอยากพูดเรื่องอะไร"
+            "value" : "ปกติคุณพูดเรื่องอะไร"
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ne hakkında konuşmak istiyorsun?"
+            "value" : "Genelde ne hakkında konuşuyorsun?"
           }
         },
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bạn muốn nói về điều gì?"
+            "value" : "Bạn thường nói về điều gì?"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "你想聊些什么？"
+            "value" : "你平时都聊些什么？"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "你想聊些什麼？"
+            "value" : "你平時都聊些什麼？"
           }
         }
       }
@@ -382154,125 +382156,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "你的話，你的方式。"
-          }
-        }
-      }
-    },
-    "Your words. Your voice. Your teleprompter." : {
-      "comment" : "1.1 Welcome: the title (three short phrases)",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "كلماتك. صوتك. ملقّنك."
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dine ord. Din stemme. Din teleprompter."
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Deine Worte. Deine Stimme. Dein Teleprompter."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tus palabras. Tu voz. Tu teleprompter."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Vos mots. Votre voix. Votre téléprompteur."
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "आपके शब्द। आपकी आवाज़। आपका टेलीप्रॉम्प्टर।"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kata-katamu. Suaramu. Teleprompter-mu."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Le tue parole. La tua voce. Il tuo teleprompter."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "あなたの言葉。あなたの声。あなたのプロンプター。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "나의 말. 나의 목소리. 나의 프롬프터."
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dine ord. Din stemme. Din teleprompter."
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Jouw woorden. Jouw stem. Jouw teleprompter."
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Suas palavras. Sua voz. Seu teleprompter."
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dina ord. Din röst. Din teleprompter."
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "คำพูดของคุณ เสียงของคุณ เทเลพรอมป์เตอร์ของคุณ"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Senin sözlerin. Senin sesin. Senin teleprompter'ın."
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lời của bạn. Giọng của bạn. Teleprompter của bạn."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "你的文字。你的声音。你的提词器。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "你的文字。你的聲音。你的提詞機。"
           }
         }
       }

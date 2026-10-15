@@ -74,6 +74,73 @@ enum UniverseSphere {
         canvas.stroke(ball, with: .color(Palette.Universe.coreRim), lineWidth: 1)
     }
 
+    /// The map's YOU as a real body (not the small cores'): soft bands of atmosphere along its tilt, two faint storms that turn with it (a lap in
+    /// 36 s), going narrow toward the edge as they turn away, the limb darkening, a soft specular light and a fine line of air round it. `time` nil
+    /// holds it still.
+    static func drawSurface(_ canvas: inout GraphicsContext, at center: CGPoint, color: CoreColor, swell: Double, time: Double?) {
+        let stops = color.stops
+        let radius = diameter / 2 * (1 + 0.04 * swell)
+        let ball = Path(ellipseIn: CGRect(x: center.x - radius, y: center.y - radius, width: radius * 2, height: radius * 2))
+        canvas.drawLayer { surface in
+            surface.clip(to: ball)
+            surface.translateBy(x: center.x, y: center.y)
+            surface.rotate(by: .degrees(-14))
+            // Bands: lighter and darker belts, soft at their edges.
+            let bands: [(y: CGFloat, height: CGFloat, color: UInt32, opacity: Double)] = [
+                (-0.62, 0.18, stops.edge, 0.12), (-0.18, 0.14, stops.edge, 0.1), (0.14, 0.24, stops.light, 0.1), (0.5, 0.16, stops.edge, 0.13),
+            ]
+            for band in bands {
+                let rect = CGRect(x: -radius, y: radius * band.y, width: radius * 2, height: radius * band.height)
+                let tone = Color(hex: band.color)
+                surface.fill(
+                    Path(rect),
+                    with: .linearGradient(
+                        Gradient(colors: [tone.opacity(0), tone.opacity(band.opacity), tone.opacity(0)]),
+                        startPoint: CGPoint(x: 0, y: rect.minY), endPoint: CGPoint(x: 0, y: rect.maxY)
+                    )
+                )
+            }
+            // Storms that turn with the sphere: across the face, narrowing toward the limb, hidden on the far side.
+            let turn = (time ?? 0) / 36 * 2 * .pi
+            let storms: [(latitude: Double, longitude: Double, size: CGFloat)] = [(-0.3, 0.4, 0.22), (0.3, 3.2, 0.16)]
+            for storm in storms {
+                let longitude = storm.longitude + turn
+                let facing = cos(longitude)
+                guard facing > 0.05 else { continue }
+                let across = sqrt(max(0, 1 - storm.latitude * storm.latitude))
+                let x = radius * across * sin(longitude)
+                let y = radius * storm.latitude
+                let width = radius * storm.size * facing
+                let height = radius * storm.size * 0.55
+                let oval = Path(ellipseIn: CGRect(x: x - width, y: y - height, width: width * 2, height: height * 2))
+                surface.fill(
+                    oval,
+                    with: .radialGradient(
+                        Gradient(colors: [Color(hex: stops.edge).opacity(0.22 * facing), Color(hex: stops.body).opacity(0.08 * facing), .clear]),
+                        center: CGPoint(x: x, y: y), startRadius: 0, endRadius: max(width, height)
+                    )
+                )
+            }
+        }
+        // The limb darkens, the light falls soft on the lit side, and a thin halo of air holds the ball.
+        canvas.fill(
+            ball,
+            with: .radialGradient(
+                Gradient(stops: [.init(color: .clear, location: 0.62), .init(color: .black.opacity(0.28), location: 1)]),
+                center: center, startRadius: 0, endRadius: radius
+            )
+        )
+        let shine = CGPoint(x: center.x - radius * 0.36, y: center.y - radius * 0.4)
+        canvas.fill(
+            Path(ellipseIn: CGRect(x: shine.x - radius * 0.34, y: shine.y - radius * 0.24, width: radius * 0.68, height: radius * 0.48)),
+            with: .radialGradient(Gradient(colors: [.white.opacity(0.3), .white.opacity(0)]), center: shine, startRadius: 0, endRadius: radius * 0.34)
+        )
+        canvas.stroke(
+            Path(ellipseIn: CGRect(x: center.x - radius - 0.8, y: center.y - radius - 0.8, width: (radius + 0.8) * 2, height: (radius + 0.8) * 2)),
+            with: .color(Color(hex: stops.highlight).opacity(0.28)), lineWidth: 0.7
+        )
+    }
+
     /// The near halves of the rings and their beads that are in front of the ball.
     static func drawFront(_ canvas: inout GraphicsContext, at center: CGPoint, time: Double) {
         for ring in rings { draw(ring, in: &canvas, at: center, time: time, front: true) }

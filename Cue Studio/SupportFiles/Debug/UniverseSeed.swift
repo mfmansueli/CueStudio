@@ -17,7 +17,7 @@ enum UniverseSeed {
     static func apply(_ kind: Kind, to defaults: UserDefaults, now: Date = .now, calendar: Calendar = .current) {
         var profile = CreatorProfile(name: "Maya Costa", handle: "mayacooks", role: .personal)
         profile.niches = [.finance]
-        profile.customTopics = ["Morning routines", "Travel"]
+        profile.customTopics = ["Daily routines", "Travel"]
         // Enough of My Cue Voice for the card to be the one of the board (the meter, the sentence, the next question).
         profile.confirmedVoiceSteps = [.audience, .tone]
         profile.audienceLevel = .new
@@ -33,11 +33,11 @@ enum UniverseSeed {
 
     /// The videos of a year, spread over its months (the live year only up to today), with the topics taking turns.
     private static func make(year: Int, counts: [(Platform, Int)], now: Date, calendar: Calendar) -> [ShareRecord] {
-        // The board's legend: Morning routines 12, Finance 7, Travel 4 of 23 (the year before takes turns).
+        // The board's legend (its Morning routines is Daily routines here): Daily routines 12, Finance 7, Travel 4 of 23 (the year before takes turns).
         let live = calendar.component(.year, from: now) == year
-        let plan = Array(repeating: "custom.morning routines", count: 12) + Array(repeating: "niche.finance", count: 7)
+        let plan = Array(repeating: "custom.daily routines", count: 12) + Array(repeating: "niche.finance", count: 7)
             + Array(repeating: "custom.travel", count: 4)
-        let topics = live ? plan : ["custom.morning routines", "niche.finance", "custom.travel"]
+        let topics = live ? plan : ["custom.daily routines", "niche.finance", "custom.travel"]
         let lastMonth = live ? calendar.component(.month, from: now) : 12
         var records: [ShareRecord] = []
         var index = 0

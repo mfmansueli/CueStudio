@@ -52,6 +52,7 @@ struct CueStudioApp: App {
         WindowGroup {
             if let services {
                 RootView(services: services)
+                    .environment(\.playsUniverseOpening, !animationsOff)
                     .transaction { transaction in
                         guard animationsOff else { return }
                         transaction.animation = nil

@@ -14,10 +14,10 @@ struct ProMarketing: View {
     var time = ProOpeningScript.settled
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 46) {
+        VStack(alignment: .leading, spacing: 22) {
             VStack(alignment: .leading, spacing: 6) {
                 Text(verbatim: PaywallCopy.eyebrow(for: context))
-                    .font(.system(size: 11, weight: .semibold, design: .monospaced))
+                    .font(.system(size: 12, weight: .semibold, design: .monospaced))
                     .tracking(1.5)
                     .foregroundStyle(Palette.accText)
                 Text(PaywallCopy.title(for: context))
@@ -29,8 +29,8 @@ struct ProMarketing: View {
                     .fixedSize(horizontal: false, vertical: true)
                     .accessibilityAddTraits(.isHeader)
                 Text(PaywallCopy.subtitle(for: context))
-                    .font(.system(size: 13.5))
-                    .foregroundStyle(Palette.ink.opacity(0.65))
+                    .font(.system(size: 15))
+                    .foregroundStyle(Palette.ink2)
                     .fixedSize(horizontal: false, vertical: true)
             }
             .padding(.horizontal, 8)
@@ -40,37 +40,49 @@ struct ProMarketing: View {
         .padding(.horizontal, 16)
     }
 
+    /// Each line with its symbol in a tinted tile, the line in 16 pt and its tag.
     private var benefits: some View {
         let items = PaywallCopy.visibleBenefits(aiIsAvailable: aiIsAvailable)
         return VStack(spacing: 0) {
             ForEach(Array(items.enumerated()), id: \.offset) { index, benefit in
-                HStack(spacing: 10) {
-                    Text(benefit.mark).foregroundStyle(Palette.accText)
+                HStack(spacing: 12) {
+                    Image(systemName: benefit.symbol)
+                        .font(.system(size: 15, weight: .semibold))
+                        .foregroundStyle(symbolTint(benefit.tone))
+                        .frame(width: 32, height: 32)
+                        .background(symbolTint(benefit.tone).opacity(0.14), in: RoundedRectangle(cornerRadius: 9, style: .continuous))
                     Text(benefit.text)
-                        .font(.system(size: 14))
+                        .font(.system(size: 16, weight: .medium))
                         .foregroundStyle(Palette.ink)
+                        .fixedSize(horizontal: false, vertical: true)
                         .frame(maxWidth: .infinity, alignment: .leading)
                     Text(benefit.tag)
-                        .font(.system(size: 10, weight: .bold, design: .monospaced))
+                        .font(.system(size: 10.5, weight: .bold, design: .monospaced))
                         .tracking(0.6)
                         .foregroundStyle(tint(benefit.tone))
                 }
-                .frame(minHeight: 38)
+                .padding(.vertical, 8)
+                .frame(minHeight: 50)
                 .overlay(alignment: .top) { if index > 0 { Rectangle().fill(Palette.separator).frame(height: 0.5) } }
                 .revealed(index + 1, at: time)
             }
         }
         .padding(.horizontal, 14)
-        .padding(.vertical, 2)
+        .padding(.vertical, 4)
         // The card comes up with its first row, not before it: an empty box under the warp spoils the opening.
         .background {
-            let shape = RoundedRectangle(cornerRadius: 20, style: .continuous)
+            let shape = RoundedRectangle(cornerRadius: 22, style: .continuous)
             shape.fill(Palette.surface)
                 .overlay(shape.strokeBorder(Palette.separator, lineWidth: 0.5))
                 .revealed(1, at: time)
         }
         .accessibilityElement(children: .combine)
         .accessibilityIdentifier("paywall.benefits")
+    }
+
+    /// The symbol's colour: Cue's yellow, or the lilac of the AI.
+    private func symbolTint(_ tone: ProBenefit.Tone) -> Color {
+        tone == .ai ? Palette.aiText : Palette.accText
     }
 
     private func tint(_ tone: ProBenefit.Tone) -> Color {

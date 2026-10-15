@@ -5,10 +5,9 @@
 
 import SwiftUI
 
-/// The five-segment bar and "Skip" at the top of the first flight. Skip goes to the Scripts empty state with defaults.
+/// The five-segment bar at the top of the first flight. There is no Skip: every new creator goes through the whole flight (the owner's call).
 struct OnboardingChrome: View {
     let step: OnboardingStep
-    let onSkip: () -> Void
 
     var body: some View {
         HStack(spacing: 5) {
@@ -20,25 +19,10 @@ struct OnboardingChrome: View {
             }
             .animation(CueMotion.card, value: step)
             Spacer(minLength: 8)
-            // The permissions are asked in the story, not skipped (the board has no "Skip" there).
-            if step != .voice { skipButton }
         }
+        // A 44 pt row, so the chapters below sit where the boards put them.
+        .frame(height: Metrics.hitTarget)
         .padding(.horizontal, 20)
-    }
-
-    private var skipButton: some View {
-        Button(action: onSkip) {
-            Text("Skip")
-                .font(.body)
-                .foregroundStyle(Palette.ink2)
-                // A word, never two lines: it shrinks before it breaks ("Überspringen" at the largest sizes).
-                .lineLimit(1)
-                .minimumScaleFactor(0.5)
-                .fixedSize(horizontal: true, vertical: false)
-                .frame(minWidth: Metrics.hitTarget, minHeight: Metrics.hitTarget)
-                .contentShape(Rectangle())
-        }
-        .accessibilityIdentifier("onboarding.skip")
     }
 }
 
@@ -137,24 +121,5 @@ struct OnboardingPrimaryButton: View {
         func body(content: Content) -> some View {
             if shines { content.shineSweep(interval: 5) } else { content }
         }
-    }
-}
-
-/// The quiet button under the yellow one: text only, in `Palette.Flight.quietInk`.
-struct OnboardingSecondaryButton: View {
-    let title: String
-    let identifier: String
-    let action: () -> Void
-
-    var body: some View {
-        Button(action: action) {
-            Text(title)
-                .font(.system(size: 16, weight: .medium))
-                .foregroundStyle(Palette.Flight.quietInk)
-                .frame(maxWidth: .infinity, minHeight: Metrics.hitTarget)
-                .contentShape(Rectangle())
-        }
-        .buttonStyle(.plain)
-        .accessibilityIdentifier(identifier)
     }
 }

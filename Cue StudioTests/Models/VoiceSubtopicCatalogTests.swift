@@ -41,7 +41,7 @@ struct VoiceSubtopicCatalogTests {
             #expect(!topic.promptName.isEmpty && topic.promptName.allSatisfy(\.isASCII), "\(topic.id): English words only")
         }
         #expect(VoiceTopicRef.niche(.travel).promptName == "budget travel", "“Travel” alone told the model little")
-        #expect(VoiceTopicRef.niche(.lifestyle).promptName == "morning routines and daily life")
+        #expect(VoiceTopicRef.niche(.lifestyle).promptName == "daily routines and daily life")
         #expect(Set(everyTopic.map(\.promptName)).count == everyTopic.count)
     }
 

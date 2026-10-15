@@ -5,11 +5,11 @@
 
 import Foundation
 
-/// A line of what Pro offers (11.4): the mark in front of it, the line, its mono tag, and which colour the tag takes.
+/// A line of what Pro offers (11.4): the SF Symbol in front of it, the line, its mono tag, and which colour the symbol and the tag take.
 nonisolated struct ProBenefit: Sendable {
     enum Tone: Sendable { case plain, ai, universe }
 
-    let mark: String
+    let symbol: String
     let text: String
     let tag: String
     let tone: Tone

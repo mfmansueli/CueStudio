@@ -93,10 +93,9 @@ nonisolated enum FirstStarScript {
     private static let trailOpacity = Keyframes([(0, 0), (20, 0), (20.375, 1), (36.25, 1), (37.5, 0), (100, 0)], duration: duration)
     private static let orbOpacity = Keyframes([(0, 0), (17.5, 0), (17.875, 1), (36.25, 1), (37.5, 0), (100, 0)], duration: duration)
 
-    /// How far along the route the comet is (0 → 1), the trail behind it and how visible each is.
-    static func comet(at time: Double) -> (head: Double, tail: Double, trail: Double, orb: Double) {
-        let head = travel.value(at: time)
-        return (head, max(0, head - 0.18), trailOpacity.value(at: time), orbOpacity.value(at: time))
+    /// How far along the route the comet is (0 → 1), how visible its orb is, and how visible its head is while it travels.
+    static func comet(at time: Double) -> (head: Double, orb: Double, travelling: Double) {
+        (travel.value(at: time), orbOpacity.value(at: time), trailOpacity.value(at: time))
     }
 
     /// The point `fraction` of the way along the comet's route.
@@ -211,8 +210,112 @@ nonisolated enum FirstStarScript {
     static let studioStart = 59.375
     static let editStart = 61.25
 
+    /// The gold light that crosses the title once, after its last word (0 → 1 across it, 5.35–6.35 s).
+    static func titleSweep(at time: Double) -> Double {
+        Keyframes([(0, 0), (seconds(5.35), 0), (seconds(6.35), 1), (100, 1)], curve: .css(0.4, 0, 0.2, 1), duration: duration).value(at: time)
+    }
+
     /// The shine across "Explore Cue" (77.5–87.5% of the cycle).
     static func shine(at time: Double) -> Double {
         Keyframes([(0, 0), (77.5, 0), (87.5, 1), (100, 1)], curve: .css(0.4, 0, 0.2, 1), duration: duration).value(at: time)
+    }
+
+    // MARK: - The finish (the owner's pass, on top of the board)
+
+    /// A second of the story as a percent of the cycle, for the keyframes written in seconds.
+    private static func seconds(_ value: Double) -> Double { value / duration * 100 }
+
+    /// The light that runs once round the take's edge before it folds (the end of the lit stretch, 0 → 1 round the card, 0.95–1.45 s).
+    static func rimLight(at time: Double) -> (end: Double, opacity: Double) {
+        let end = Keyframes([(0, 0), (seconds(0.95), 0), (seconds(1.45), 1), (100, 1)], curve: .css(0.5, 0, 0.5, 1), duration: duration)
+        let opacity = Keyframes(
+            [(0, 0), (seconds(0.95), 0), (seconds(1.05), 1), (seconds(1.4), 1), (seconds(1.55), 0), (100, 0)], duration: duration
+        )
+        return (end.value(at: time), opacity.value(at: time))
+    }
+
+    /// Where the take becomes light: a horizontal flare like a cinema lens's (its half width, 0 → 120 pt) and a shockwave ring (its radius).
+    static func fold(at time: Double) -> (flare: Double, flareOpacity: Double, wave: Double, waveOpacity: Double) {
+        let curve = UnitCurve.css(0.1, 0.7, 0.3, 1)
+        let flare = Keyframes([(0, 0), (seconds(1.45), 0), (seconds(1.7), 120), (seconds(2.2), 150), (100, 150)], curve: curve, duration: duration)
+        let flareOpacity = Keyframes(
+            [(0, 0), (seconds(1.45), 0), (seconds(1.55), 1), (seconds(2.2), 0), (100, 0)], curve: .css(0, 0, 0.58, 1), duration: duration
+        )
+        let wave = Keyframes([(0, 6), (seconds(1.5), 6), (seconds(2.2), 74), (100, 74)], curve: curve, duration: duration)
+        let waveOpacity = Keyframes([(0, 0), (seconds(1.5), 0), (seconds(1.53), 0.8), (seconds(2.2), 0), (100, 0)], duration: duration)
+        return (flare.value(at: time), flareOpacity.value(at: time), wave.value(at: time), waveOpacity.value(at: time))
+    }
+
+    /// Where the comet's head is at `time` and how visible, for its trail (`StarRibbon`).
+    static func cometHead(at time: Double) -> (point: CGPoint, opacity: Double) {
+        let comet = comet(at: time)
+        return (route(comet.head), comet.travelling)
+    }
+
+    /// The light taps the hand feels while the comet flies, closer and stronger as it nears the star (the last is the landing's success).
+    static let flightTaps: [(second: Double, isStrong: Bool)] = [(1.75, false), (2.2, false), (2.5, false), (2.7, true), (2.83, true)]
+
+    /// How lit the universe is: it dims a little just before the star lights (the breath before it), and comes back as it does.
+    static func universeLight(at time: Double) -> Double {
+        Keyframes(
+            [(0, 1), (seconds(2.7), 1), (seconds(2.9), 0.55), (seconds(3.0), 0.55), (seconds(3.5), 1), (100, 1)], curve: .css(0.4, 0, 0.2, 1),
+            duration: duration
+        ).value(at: time)
+    }
+
+    /// The flash as the star lights: a wide bloom of white and gold (radius, opacity).
+    static func bloom(at time: Double) -> (radius: Double, opacity: Double) {
+        let radius = Keyframes(
+            [(0, 10), (seconds(2.9), 10), (seconds(3.05), 95), (seconds(3.8), 120), (100, 120)], curve: .css(0.1, 0.7, 0.3, 1), duration: duration
+        )
+        let opacity = Keyframes(
+            [(0, 0), (seconds(2.9), 0), (seconds(2.98), 0.9), (seconds(3.8), 0), (100, 0)], curve: .css(0, 0, 0.58, 1), duration: duration
+        )
+        return (radius.value(at: time), opacity.value(at: time))
+    }
+
+    /// The wave of light that crosses the orbits outward once the star is lit, and the pulse of YOU with it: how much more light an orbit of
+    /// `radius` has (0...1).
+    static func orbitWave(radius: Double, at time: Double) -> Double {
+        let start = 3.0 + (radius - 70) / 76 * 0.32
+        return Keyframes(
+            [(0, 0), (seconds(start), 0), (seconds(start + 0.12), 1), (seconds(start + 0.8), 0), (100, 0)], curve: .css(0, 0, 0.58, 1),
+            duration: duration
+        ).value(at: time)
+    }
+
+    static func youPulse(at time: Double) -> Double {
+        Keyframes([(0, 0), (seconds(2.98), 0), (seconds(3.1), 1), (seconds(3.9), 0), (100, 0)], curve: .css(0, 0, 0.58, 1), duration: duration)
+            .value(at: time)
+    }
+
+    /// The camera's slow push into the universe over the story (×1 → ×1.04), eased at both ends.
+    static func push(at time: Double) -> Double {
+        1 + 0.04 * Keyframes([(0, 0), (seconds(hold), 1), (100, 1)], curve: .css(0.45, 0, 0.55, 1), duration: duration).value(at: time)
+    }
+
+    /// The lit star's life once the story rests: how bright it breathes is `breath`; every few seconds it glints (0...1, a 0.4 s flash).
+    static func starGlint(at world: Double) -> Double {
+        let start = landing + 1.6
+        guard world > start else { return 0 }
+        let period = 3.4
+        let into = (world - start).truncatingRemainder(dividingBy: period)
+        return into < 0.4 ? sin(.pi * into / 0.4) : 0
+    }
+
+    /// A shooting star that crosses the sky above the universe once the story rests, every 9 s from 8.5 s: where its head is and how visible
+    /// (nil between two).
+    static func shootingStar(at world: Double) -> (point: CGPoint, opacity: Double)? {
+        let first = 8.5
+        let period = 9.0
+        let flight = 0.9
+        guard world >= first else { return nil }
+        let into = (world - first).truncatingRemainder(dividingBy: period)
+        guard into <= flight else { return nil }
+        let progress = UnitCurve.css(0.3, 0, 0.7, 1).value(at: into / flight)
+        let from = CGPoint(x: 400, y: 36)
+        let to = CGPoint(x: 120, y: 124)
+        let opacity = min(1, into / 0.15, (flight - into) / 0.25)
+        return (CGPoint(x: from.x + (to.x - from.x) * progress, y: from.y + (to.y - from.y) * progress), max(0, opacity))
     }
 }

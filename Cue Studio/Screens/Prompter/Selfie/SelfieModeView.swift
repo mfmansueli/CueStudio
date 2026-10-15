@@ -184,18 +184,19 @@ struct SelfieModeView: View {
     }
 
     /// The practice's top bar, what moves the text (under the box), the card and the two ways on, placed from the screen's edges as the board
-    /// has them (the box is at 100 pt, the card at 372 pt, the buttons 36 pt above the bottom).
+    /// has them (the box is at 100 pt, the voice's capsule 6 pt under it, the card 8 pt under that, the buttons 36 pt above the bottom).
     private var practiceControls: some View {
         GeometryReader { proxy in
             ZStack(alignment: .top) {
                 PracticeTopBar().frame(height: 32).padding(.top, 56)
                 PracticeVoiceStatus(
-                    voice: viewModel.practiceVoice, isReading: viewModel.practiceStage == .reading, isListening: viewModel.isVoiceActive
+                    voice: viewModel.practiceVoice, isReading: viewModel.practiceStage == .reading, isListening: viewModel.isVoiceActive,
+                    level: viewModel.voiceLevel
                 )
-                .padding(.top, viewModel.readingLayout.windowRect.maxY + 4)
+                .padding(.top, viewModel.readingLayout.windowRect.maxY + 6)
                 PracticeMessageCard(stage: viewModel.practiceStage, voice: viewModel.practiceVoice)
                     .padding(.horizontal, 16)
-                    .padding(.top, 372)
+                    .padding(.top, viewModel.readingLayout.windowRect.maxY + 58)
                     .onGeometryChange(for: CGFloat.self) { $0.frame(in: .global).maxY } action: { practiceCardBottom = $0 }
                 VStack(spacing: 0) {
                     Spacer(minLength: 0)

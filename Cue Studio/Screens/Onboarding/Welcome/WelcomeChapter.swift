@@ -6,21 +6,20 @@
 import SwiftUI
 
 /// 1.1: a star comes in from the top right and lights the dots of a C, arcs down to three words and returns to explode into the last dot;
-/// the wordmark, the promise and the buttons arrive after it (09 §12, `WelcomeScript`). It plays once and holds. With Reduce Motion it
-/// is the final state only: the C lit, the three words, the wordmark, the title and the buttons. Its clock stops off screen and while the app
-/// is not active (`MotionClock`), and the haptics are beats of that clock, so a call or Control Center in the middle never skips the story ahead.
+/// the wordmark, the promise and the button arrive after it (09 §12, `WelcomeScript`). It plays once and holds, the lit dots still shining
+/// (their clock keeps running past the end). With Reduce Motion it is the final state only, nothing shining: the C lit, the three words,
+/// the wordmark, the title and the button. Its clock stops off screen and while the app is not active (`MotionClock`), and the haptics are
+/// beats of that clock, so a call or Control Center in the middle never skips the story ahead.
 struct WelcomeChapter: View {
     let plays: Bool
     /// A second of the timeline to stand still at (UI tests taking pictures); nil plays.
     var frozenAt: Double?
     let onStart: () -> Void
-    let onReturning: () -> Void
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.scenePhase) private var scenePhase
     @State private var clock = MotionClock()
     @State private var isOnScreen = false
-    @State private var isFinished = false
     /// The centres of the three words in the board's frame, once laid out; the star's last flights go to them.
     @State private var wordCentres: [CGPoint] = []
     @State private var starPath = WelcomeScript.starPath(words: [])
@@ -31,18 +30,16 @@ struct WelcomeChapter: View {
     private func runs(onScreen: Bool, phase: ScenePhase) -> Bool { animates && onScreen && phase == .active }
 
     var body: some View {
-        TimelineView(.animation(paused: !runs(onScreen: isOnScreen, phase: scenePhase) || isFinished)) { context in
-            let time = frozenAt ?? (animates ? min(WelcomeScript.finalTime, clock.elapsed(at: context.date)) : WelcomeScript.finalTime)
+        TimelineView(.animation(paused: !runs(onScreen: isOnScreen, phase: scenePhase))) { context in
+            let elapsed = clock.elapsed(at: context.date)
+            let time = frozenAt ?? (animates ? min(WelcomeScript.finalTime, elapsed) : WelcomeScript.finalTime)
             ZStack {
-                scene(time)
+                scene(time, ambient: animates ? elapsed : time)
                     .ignoresSafeArea()
-                buttons(time)
+                button(time)
             }
             .onChange(of: WelcomeScript.beatsPassed(at: time)) { passed, now in
                 if animates, now > passed { play(WelcomeScript.orderedBeats[now - 1].beat) }
-            }
-            .onChange(of: time >= WelcomeScript.finalTime) { _, isOver in
-                if isOver, animates { isFinished = true }
             }
         }
         .onAppear {
@@ -60,7 +57,7 @@ struct WelcomeChapter: View {
     // MARK: - The scene
 
     /// The board's 390 × 844 frame, centred on the screen, from the top.
-    private func scene(_ time: Double) -> some View {
+    private func scene(_ time: Double, ambient: Double) -> some View {
         let halo = WelcomeScript.halo.pose(at: time)
         return ZStack(alignment: .topLeading) {
             WelcomeShootingStar(time: time)
@@ -85,7 +82,7 @@ struct WelcomeChapter: View {
         .frame(width: WelcomeScript.frame.width, height: WelcomeScript.frame.height, alignment: .topLeading)
         .coordinateSpace(name: Self.frameSpace)
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-        .background { WelcomeStarCanvas(time: time, starPath: starPath) }
+        .background { WelcomeStarCanvas(time: time, ambient: ambient, starPath: starPath) }
     }
 
     private func pills(_ time: Double) -> some View {
@@ -108,27 +105,22 @@ struct WelcomeChapter: View {
         .fixedSize()
     }
 
-    // MARK: - The buttons
+    // MARK: - The button
 
-    private func buttons(_ time: Double) -> some View {
-        let primary = WelcomeScript.primaryButton.pose(at: time)
-        let secondary = WelcomeScript.secondaryButton.pose(at: time)
-        // As the board has them: the yellow one ends 82 pt above the bottom edge, the quiet one 32 below it (its 44 pt target ends at 812, so
-        // the bottom 34 pt of the screen stay free of controls).
-        return VStack(spacing: 6) {
+    /// "Get started", the only way on: every new creator goes through the first flight (the owner's call). It ends 82 pt above the bottom
+    /// edge, where the board has it.
+    private func button(_ time: Double) -> some View {
+        let pose = WelcomeScript.primaryButton.pose(at: time)
+        return VStack {
             Spacer()
             OnboardingPrimaryButton(title: String(localized: "Get started"), shines: true, identifier: "onboarding.getStarted", action: onStart)
-                .opacity(primary.opacity)
-                .offset(y: primary.y)
-                // Invisible until the opening reaches them: VoiceOver (and a UI test) finds them when they show.
-                .accessibilityHidden(primary.opacity == 0)
-            OnboardingSecondaryButton(title: String(localized: "I already use Cue"), identifier: "onboarding.returning", action: onReturning)
-                .opacity(secondary.opacity)
-                .offset(y: secondary.y)
-                .accessibilityHidden(secondary.opacity == 0)
+                .opacity(pose.opacity)
+                .offset(y: pose.y)
+                // Invisible until the opening reaches it: VoiceOver (and a UI test) finds it when it shows.
+                .accessibilityHidden(pose.opacity == 0)
         }
         .padding(.horizontal, 16)
-        .padding(.bottom, 32)
+        .padding(.bottom, 82)
         .ignoresSafeArea(edges: .bottom)
     }
 

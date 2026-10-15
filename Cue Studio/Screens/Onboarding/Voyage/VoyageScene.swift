@@ -9,7 +9,8 @@ import SwiftUI
 /// the middle of the screen), pulls back while the galaxy glides to the bottom left, and the five platforms' galaxies are born as it does,
 /// each from a point with a ring and its name. A pick sends a light along a route from "YOU" to the chosen galaxy, which lights up on arrival.
 ///
-/// It draws in the board's 390 × 844 coordinates, from the screen's top left (centred if the screen is wider), and every moving thing reads
+/// It draws in the board's 390 × 844 coordinates, from the screen's top left (centred if the screen is wider), moved and scaled into the room
+/// between the heading and the chips (`VoyageFit`), and every moving thing reads
 /// its pose from a layer of the board (`MotionClip`) at the second of the opening (`time.clock`) or, for what a pick sets off, at the
 /// board's own second of that moment (`pickClock` + the age of the pick).
 struct VoyageScene: View {
@@ -17,6 +18,8 @@ struct VoyageScene: View {
     let picked: Platform?
     /// Seconds since the pick; nil while nothing is picked.
     let pickAge: Double?
+    /// Where the galaxies go on this screen.
+    var fit = VoyageFit.board
     let onTapGalaxy: (Platform) -> Void
 
     /// Where this view sits on the screen: the board's origin is the screen's top left, not this view's (it starts below the progress bar).
@@ -28,6 +31,10 @@ struct VoyageScene: View {
     private static let cameraOrigin = CGPoint(x: 78, y: 477)
     /// The creator's galaxy is drawn at the middle of its 360 pt box, which is where it opens.
     private static let heroOrigin = CGPoint(x: 195, y: 366)
+    /// The galaxies are drawn bigger than the board's, each about its own centre, so they grow without coming closer (the owner's call): the
+    /// platforms' by a quarter, the creator's a little less (its "YOU" grows with it).
+    static let socialGrowth = 1.25
+    static let heroGrowth = 1.12
     /// The second of the board at which its demo taps the galaxy: what a pick sets off is read from there.
     static let pickClock = 3.4
 
@@ -38,15 +45,16 @@ struct VoyageScene: View {
         Canvas { context, size in
             var board = context
             board.translateBy(x: (size.width - Self.boardWidth) / 2 - frame.minX, y: -frame.minY)
+            fit.apply(to: &board)
             drawSocial(in: &board)
             drawHero(in: &board)
         }
         .onGeometryChange(for: CGRect.self) { $0.frame(in: .global) } action: { frame = $0 }
         .contentShape(Rectangle())
         .gesture(SpatialTapGesture().onEnded { tap in
-            let point = CGPoint(x: tap.location.x - (frame.width - Self.boardWidth) / 2, y: tap.location.y + frame.minY)
+            let point = fit.boardPoint(CGPoint(x: tap.location.x - (frame.width - Self.boardWidth) / 2, y: tap.location.y + frame.minY))
             let nearest = VoyageGalaxy.all.min { distance($0.centre, point) < distance($1.centre, point) }
-            if let nearest, distance(nearest.centre, point) < 38 { onTapGalaxy(nearest.platform) }
+            if let nearest, distance(nearest.centre, point) < 38 * Self.socialGrowth { onTapGalaxy(nearest.platform) }
         })
         .accessibilityHidden(true)
     }
@@ -71,7 +79,7 @@ struct VoyageScene: View {
             let standing = standing(of: galaxy)
             var drawn = layer
             drawn.opacity = birth.opacity * standing.opacity
-            GalaxyPainter.drawSocial(social, in: &drawn, spin: time.ambient / social.spin * 360, scale: birth.sx * standing.scale)
+            GalaxyPainter.drawSocial(social, in: &drawn, spin: time.ambient / social.spin * 360, scale: birth.sx * standing.scale * Self.socialGrowth)
         }
         drawRoute(in: &layer)
         drawBirthRings(in: &layer)
@@ -93,7 +101,7 @@ struct VoyageScene: View {
 
     private func drawBirthRings(in context: inout GraphicsContext) {
         for galaxy in VoyageGalaxy.all {
-            LightFX.ring(pose(galaxy.ring), at: galaxy.centre, radius: 22, color: Palette.Universe.starCream, lineWidth: 1.2, in: &context)
+            LightFX.ring(pose(galaxy.ring), at: galaxy.centre, radius: 22 * Self.socialGrowth, color: Palette.Universe.starCream, lineWidth: 1.2, in: &context)
         }
     }
 
@@ -107,9 +115,17 @@ struct VoyageScene: View {
             layer.draw(
                 Text(galaxy.platform.label.uppercased()).font(.system(size: galaxy.nameSize, weight: .semibold, design: .monospaced))
                     .tracking(galaxy.nameSize * 0.12).foregroundStyle(nameColor(of: galaxy)),
-                at: galaxy.nameCentre
+                at: nameCentre(of: galaxy)
             )
         }
+    }
+
+    /// Where a name goes: the board's place, as far again from its galaxy as the galaxy grew, so the bigger galaxy never covers it.
+    private func nameCentre(of galaxy: VoyageGalaxy) -> CGPoint {
+        let centre = galaxy.centre
+        return CGPoint(
+            x: centre.x + (galaxy.nameCentre.x - centre.x) * Self.socialGrowth, y: centre.y + (galaxy.nameCentre.y - centre.y) * Self.socialGrowth
+        )
     }
 
     /// A name is quiet (TikTok's in its own colour at 55%, the others a pale grey) until its galaxy is the destination.
@@ -221,8 +237,8 @@ struct VoyageScene: View {
             at: centre, size: 120, thickness: 1.8, verticalRatio: 0.7, pose: pose("L22", at: second),
             color: tint.mix(with: .white, by: 0.7), glow: tint.opacity(0.9), in: &context
         )
-        LightFX.ring(pose("L24", at: second), at: centre, radius: 22, color: tint, in: &context)
-        LightFX.ring(pose("L25", at: second), at: centre, radius: 22, color: Palette.Flight.ice.opacity(0.8), lineWidth: 1, in: &context)
+        LightFX.ring(pose("L24", at: second), at: centre, radius: 22 * Self.socialGrowth, color: tint, in: &context)
+        LightFX.ring(pose("L25", at: second), at: centre, radius: 22 * Self.socialGrowth, color: Palette.Flight.ice.opacity(0.8), lineWidth: 1, in: &context)
         for index in 0..<10 { LightFX.streak(pose("L\(48 + index)", at: second), at: centre, from: tint, in: &context) }
         let sizes: [CGFloat] = [3, 2, 2.5]
         for index in 0..<9 {
@@ -234,7 +250,7 @@ struct VoyageScene: View {
         if chosen > 0.01 {
             var halo = Self.clip.pose(of: "L27", at: time.ambient, loops: true)
             halo.opacity *= chosen
-            LightFX.ring(halo, at: centre, radius: 18, color: tint, in: &context)
+            LightFX.ring(halo, at: centre, radius: 18 * Self.socialGrowth, color: tint, in: &context)
         }
     }
 
@@ -247,7 +263,7 @@ struct VoyageScene: View {
         var layer = context
         layer.opacity = hero.opacity
         layer.translateBy(x: Self.heroOrigin.x + hero.tx, y: Self.heroOrigin.y + hero.ty)
-        layer.scaleBy(x: hero.sx, y: hero.sy)
+        layer.scaleBy(x: hero.sx * Self.heroGrowth, y: hero.sy * Self.heroGrowth)
         let disc = HeroDiscCache.image.map { context.resolve(Image(uiImage: $0)) }
         GalaxyPainter.drawHero(art.hero, in: &layer, time: time.ambient, disc: disc)
         drawYou(in: &layer)

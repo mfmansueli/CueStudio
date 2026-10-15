@@ -79,10 +79,13 @@ nonisolated struct ReadingLayout: Equatable, Sendable {
         )
     }
 
-    /// The practice run's layout (1.6): a box of 238 pt, 12 pt in from the sides and 100 pt from the top, with the line 128 pt down it. It does
-    /// not follow the creator's own box and line: the practice is the same for everyone, and nothing of it is kept.
+    /// The practice run's layout (1.6): a box 12 pt in from the sides and 100 pt from the top, with the line 128 pt down it. The box is 310 pt
+    /// tall (the board's 238 and 30% more below the line, the owner's call), less on a short screen so the card and the buttons still fit
+    /// under it, never less than the board's. It does not follow the creator's own box and line: the practice is the same for everyone, and
+    /// nothing of it is kept.
     init(practiceScreen screen: CGSize) {
-        let box = CGRect(x: 12, y: 100, width: max(0, screen.width - 24), height: 238)
+        let height = min(max(screen.height - 542, 238), 310)
+        let box = CGRect(x: 12, y: 100, width: max(0, screen.width - 24), height: height)
         lensY = 0
         screenWidth = screen.width
         windowRect = box

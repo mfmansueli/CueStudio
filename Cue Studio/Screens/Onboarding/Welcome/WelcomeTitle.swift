@@ -5,13 +5,13 @@
 
 import SwiftUI
 
-/// The promise and the line under it: "Your words. Your voice. Your teleprompter." comes word by word out of the blur (85 ms apart), then
+/// The promise and the line under it: "A teleprompter made for your creative universe." comes word by word out of the blur (85 ms apart), then
 /// the line that says what Cue does, from the script to sharing.
 struct WelcomeTitle: View {
     let time: Double
 
     var body: some View {
-        let title = String(localized: "Your words. Your voice. Your teleprompter.")
+        let title = String(localized: "A teleprompter made for your creative universe.")
         // By dictionary word in a language written without spaces, so the title breaks into lines instead of running off the screen.
         let words = OnboardingWords.pieces(of: title)
         VStack(alignment: .leading, spacing: 12) {

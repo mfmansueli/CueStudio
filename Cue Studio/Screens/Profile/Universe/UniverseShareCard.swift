@@ -54,7 +54,7 @@ struct UniverseShareCard: View {
         }
     }
 
-    /// "videos · TikTok · Morning routines"
+    /// "videos · TikTok · Daily routines"
     private var subtitle: String {
         var parts = [String(localized: "videos")]
         if let top = snapshot.platforms.first { parts.append(top.platform.label) }

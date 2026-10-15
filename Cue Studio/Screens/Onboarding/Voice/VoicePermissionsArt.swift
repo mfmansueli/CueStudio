@@ -7,9 +7,9 @@ import SwiftUI
 
 /// The art at the top of 1.5: two orbs, "VOICE" and "CAMERA", joined by a beam of light with small lights flowing along it. The voice orb's
 /// bars always move and rings open from it; the camera's lens is a closed iris of six blades until the camera is allowed, when they
-/// open and a yellow core lights behind them (a green ring opens from the orb, a light crosses the glass). It draws in a 390 × 200 box (the
-/// board's art starts at y 112). The unlock is a function of the seconds since the camera was allowed, read from the board's layers
-/// (`MotionClip`: the board allows the camera at 4.4 s).
+/// open and a yellow core lights behind them (a green ring opens from the orb, a light crosses the glass). It draws in the board's 390 × 200
+/// box (its art starts at y 112), scaled to the screen's width and centred: a little bigger on a wider iPhone (up to ×1.15). The unlock is a
+/// function of the seconds since the camera was allowed, read from the board's layers (`MotionClip`: the board allows the camera at 4.4 s).
 struct VoicePermissionsArt: View {
     /// Seconds since the camera was allowed; nil while it is not. A large number is the open iris at rest.
     let unlockAge: Double?
@@ -21,16 +21,21 @@ struct VoicePermissionsArt: View {
     private static let unlockStart = 3.7
     private static let voice = CGPoint(x: 122, y: 98)
     private static let camera = CGPoint(x: 268, y: 98)
+    private static let board = CGSize(width: 390, height: 200)
+    private static let maxScale = 1.15
 
     var body: some View {
-        Canvas { context, _ in
+        Canvas { context, size in
+            let scale = size.width / Self.board.width
+            context.scaleBy(x: scale, y: scale)
             drawGlows(in: &context)
             drawVoice(in: &context)
             drawBeam(in: &context)
             drawCamera(in: &context)
             drawLabels(in: &context)
         }
-        .frame(height: 200)
+        .aspectRatio(Self.board.width / Self.board.height, contentMode: .fit)
+        .frame(maxWidth: Self.board.width * Self.maxScale)
         .accessibilityHidden(true)
     }
 

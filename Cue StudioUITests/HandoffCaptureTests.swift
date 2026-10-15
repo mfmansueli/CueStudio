@@ -375,6 +375,22 @@ final class HandoffCaptureTests: XCTestCase {
         try shot(takes, "6.2_takes-from-planet", wait: 1)
     }
 
+    /// 1.7 at the seconds of its finish on top of the board: the light round the take, the flare where it folds, the comet's trail, the
+    /// universe holding its breath, the bloom, the wave across the orbits and the gold light on the title.
+    func test1_7_FirstStarFinish() throws {
+        _ = try requireFolder()
+        for second in ["1.25", "1.6", "2.3", "2.92", "3.05", "3.4", "3.8", "5.85", "7.5"] {
+            let app = CueApp.launch(seeded: true, sampleVideo: true, extraArguments: ["-uiTestFirstStar", "-uiTestStoryAt", second])
+            app.cueTabBar.buttons["Takes"].tap()
+            let row = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH 'takes.video.' AND label CONTAINS '3 morning habits'")).firstMatch
+            XCTAssertTrue(row.waitForExistence(timeout: 10))
+            row.tap()
+            XCTAssertTrue(element(app, "firstStar.sheet").waitForExistence(timeout: 15))
+            try shot(app, "1.7_finish_\(second)", wait: 1)
+            app.terminate()
+        }
+    }
+
     /// The 1.7 and 8.3 stories at fixed seconds, to compare each keyframe with the board.
     func test7_StoryFrames() throws {
         _ = try requireFolder()

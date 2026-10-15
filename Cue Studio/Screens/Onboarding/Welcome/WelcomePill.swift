@@ -6,7 +6,8 @@
 import SwiftUI
 
 /// One of the three words under the title (TELEPROMPTER, AUTO CAPTIONS, ✦ AI SCRIPTS): dim until the star lands on it, then it jumps
-/// 12 pt and lights yellow, an oval of light crosses it (clipped by its own radius), a ring opens round it, and it settles back.
+/// 12 pt and becomes a solid yellow pill with black letters, an oval of light crosses it (clipped by its own radius), a ring opens round it,
+/// and it stays yellow with a faint glow.
 struct WelcomePill: View {
     let text: String
     let isAI: Bool
@@ -19,19 +20,20 @@ struct WelcomePill: View {
         let lit = pose.blur
         let sweep = WelcomeScript.sweep(hit: hit).pose(at: time)
         let ring = WelcomeScript.wordRing(hit: hit).pose(at: time)
+        let glow = WelcomeScript.pillGlow(hit: hit).pose(at: time).opacity
         Text(text)
             .font(.system(size: 10, weight: .semibold, design: .monospaced))
             .tracking(0.8)
             .lineLimit(1)
-            .foregroundStyle((isAI ? Palette.aiTextStrong : Palette.ink2).mix(with: Palette.accText, by: lit))
+            .foregroundStyle((isAI ? Palette.aiTextStrong : Palette.ink2).mix(with: Palette.accInk, by: lit))
             .padding(.horizontal, 9)
             .frame(height: 26)
             .background {
                 Capsule().fill(isAI ? Palette.aiFill : Palette.fill)
-                Capsule().fill(Palette.acc.opacity(0.28 * lit))
+                Capsule().fill(Palette.acc.opacity(lit))
             }
             .overlay { oval(progress: sweep.scale).opacity(sweep.opacity).clipShape(Capsule()) }
-            .shadow(color: Palette.acc.opacity(0.45 * lit), radius: 12 * lit)
+            .shadow(color: Palette.acc.opacity(0.5 * glow), radius: 12 * glow)
             .overlay {
                 Circle()
                     .strokeBorder(Palette.acc, lineWidth: 1.2)

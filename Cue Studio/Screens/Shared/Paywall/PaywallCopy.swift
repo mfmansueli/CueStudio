@@ -33,15 +33,19 @@ nonisolated enum PaywallCopy {
 
     /// What Pro offers, as the board lists it (11.4).
     static let benefits: [ProBenefit] = [
-        ProBenefit(mark: "✓", text: String(localized: "Unlimited exports, up to 4K"), tag: String(localized: "EXPORT"), tone: .plain),
-        ProBenefit(mark: "✓", text: String(localized: "Full My Cue Voice + sponsored-ad drafts"), tag: String(localized: "AI"), tone: .ai),
-        ProBenefit(mark: "✓", text: String(localized: "Hook variations, platform versions, best-take picks"), tag: String(localized: "AI"), tone: .ai),
-        ProBenefit(mark: "✓", text: String(localized: "Cover styles, series tags, “Text behind me”"), tag: String(localized: "EDIT"), tone: .plain),
+        ProBenefit(symbol: "square.and.arrow.up", text: String(localized: "Unlimited exports, up to 4K"), tag: String(localized: "EXPORT"), tone: .plain),
+        ProBenefit(symbol: "waveform", text: String(localized: "Full My Cue Voice + sponsored-ad drafts"), tag: String(localized: "AI"), tone: .ai),
         ProBenefit(
-            mark: "✓", text: String(localized: "Remote from Apple Watch, iPad & Mac sync"), tag: String(localized: "STUDIO"), tone: .plain,
+            symbol: "wand.and.stars", text: String(localized: "Hook variations, platform versions, best-take picks"), tag: String(localized: "AI"), tone: .ai
+        ),
+        ProBenefit(
+            symbol: "paintpalette", text: String(localized: "Cover styles, series tags, “Text behind me”"), tag: String(localized: "EDIT"), tone: .plain
+        ),
+        ProBenefit(
+            symbol: "applewatch", text: String(localized: "Remote from Apple Watch, iPad & Mac sync"), tag: String(localized: "STUDIO"), tone: .plain,
             isAvailable: false
         ),
-        ProBenefit(mark: "✦", text: String(localized: "Every milestone app icon"), tag: String(localized: "UNIVERSE"), tone: .universe),
+        ProBenefit(symbol: "sparkle", text: String(localized: "Every milestone app icon"), tag: String(localized: "UNIVERSE"), tone: .universe),
     ]
 
     /// The lines for this iPhone: the ones about AI stay out where Apple Intelligence can't run, and the ones for what the app cannot do yet stay out
