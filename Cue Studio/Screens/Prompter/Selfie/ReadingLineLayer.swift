@@ -17,6 +17,8 @@ struct ReadingLineLayer: View {
     var level: Double?
     /// Specks rise from the line while the text moves.
     var showsParticles = false
+    /// The camera is recording: the line is calm (`ReadingGuide.isCalm`).
+    var isCalm = false
     /// The line's new position while dragging, in screen points.
     let onMove: (CGFloat) -> Void
     /// ↑ / ↓ from VoiceOver.
@@ -31,7 +33,7 @@ struct ReadingLineLayer: View {
     var body: some View {
         let span = layout.lineSpan
         ZStack(alignment: .topLeading) {
-            ReadingGuide(level: level, showsParticles: showsParticles)
+            ReadingGuide(level: level, showsParticles: showsParticles, isCalm: isCalm)
                 .frame(width: span.upperBound - span.lowerBound)
                 .position(x: (span.lowerBound + span.upperBound) / 2, y: layout.lineY)
             if showsTag {

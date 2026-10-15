@@ -156,6 +156,7 @@ struct LogbookView: View {
         let shape = RoundedRectangle(cornerRadius: 28, style: .continuous)
         return HStack(alignment: .firstTextBaseline, spacing: 12) {
             Image(systemName: isHolding ? "mic.fill" : "pencil")
+                .symbolSwap(value: isHolding)
                 .foregroundStyle(isHolding ? Palette.accText : Palette.ink2)
                 .accessibilityHidden(true)
             TextField("Or type an idea…", text: $typed, axis: .vertical)

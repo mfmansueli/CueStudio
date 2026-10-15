@@ -45,7 +45,7 @@ struct MyCueVoiceChip: View {
         Button(action: openQuestions) {
             chip
         }
-        .buttonStyle(.plain)
+        .buttonStyle(.cuePress)
         .accessibilityLabel(Text("My Cue Voice"))
         .accessibilityValue(Text(isSet ? "\(profile.profile.voiceStrength)%" : "Set up"))
         .accessibilityHint(Text(isSet ? "Opens your voice questions to change them." : "Answer a few questions so scripts sound like you."))

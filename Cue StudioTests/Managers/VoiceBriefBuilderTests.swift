@@ -131,7 +131,8 @@ struct VoiceBriefBuilderTests {
         #expect(text.contains("Open with a question or a bold claim: show it in the script, never write the style's name."))
         let rule = ScriptPromptBuilder.hookRule(for: CreatorProfile(openings: ["Question"]).voice)
         #expect(rule.contains("in the creator's own way of opening"))
-        #expect(ScriptPromptBuilder.hookRule(for: nil) == "Open with a hook that works in the first 3 seconds.")
+        #expect(ScriptPromptBuilder.hookRule(for: nil).hasPrefix("Open with a hook that works in the first 3 seconds."))
+        #expect(ScriptPromptBuilder.hookRule(for: nil).contains("never a greeting or a filler word"), "no “Olha só” before the subject")
     }
 
     @Test func anEndingIsAskedForInPlainEnglishAndWhatTheCreatorTypedIsQuoted() {
@@ -249,7 +250,7 @@ struct VoiceBriefBuilderTests {
         #expect(!none.text.contains("Here is how they write"))
     }
 
-    @Test func approvedScriptsJoinThePastedExamplesNewestFirst() {
+    @Test func theNewestApprovedScriptLeadsThenThePastedExamplesThenOlderApprovedOnes() {
         var profile = VoicePersonas.yogaTeacher.profile
         profile.examples = [VoiceExample(text: "Pasted by me: breathe in and let the shoulders drop.")]
         profile.approvedSamples = [
@@ -258,7 +259,8 @@ struct VoiceBriefBuilderTests {
         let text = brief(profile.voice)
         let lines = text.components(separatedBy: "\n").filter { $0.hasPrefix("- “") }
         #expect(lines.count == 3)
-        #expect(lines[0].contains("Pasted by me") && lines[1].contains("Newer approved") && lines[2].contains("Older approved"))
+        // The creator said the newest approved script is them: it reached the model in none of the baseline run's scripts behind the others.
+        #expect(lines[0].contains("Newer approved") && lines[1].contains("Pasted by me") && lines[2].contains("Older approved"))
     }
 
     @Test func atMostThreeExamplesAreSent() {

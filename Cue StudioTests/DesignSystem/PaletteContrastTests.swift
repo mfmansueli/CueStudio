@@ -480,6 +480,16 @@ struct PaletteContrastTests {
         }
     }
 
+    /// The first star's "✓ SAVED" pill over the take's own picture, at its worst: a white frame under the pill's black.
+    @Test func theFirstStarsSavedPillReads() {
+        for appearance in Appearance.allCases {
+            let white = ColorContrast.RGB(red: 1, green: 1, blue: 1)
+            let pill = ColorContrast.composite(ColorContrast.RGB(red: 0, green: 0, blue: 0), alpha: FirstStarView.savedPillShade, over: white)
+            let value = ColorContrast.ratio(rgb(Palette.successText, in: appearance, over: pill), pill)
+            #expect(value >= ColorContrast.textMinimum, "✓ SAVED on a white frame, \(appearance): \(value)")
+        }
+    }
+
     /// The "● REC" label, and the empty state's title and line, over the night.
     @Test func theRecPillAndTheEmptyStateRead() {
         for appearance in Appearance.allCases {

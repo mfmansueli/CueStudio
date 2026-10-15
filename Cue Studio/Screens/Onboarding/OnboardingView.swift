@@ -43,13 +43,18 @@ struct OnboardingView: View {
     }
 
     var body: some View {
+        // A chapter change moves three depths at three speeds: the chapter (out in 0.22 s, the next in a beat later), the haze behind it
+        // (0.8 s) and the sky (0.95 s), so the far things lag the near ones as they would through a window.
         ZStack {
-            BgWash(lights: washLights, base: Palette.Flight.night)
+            Palette.Flight.night.ignoresSafeArea()
+            BgWash(lights: washLights, base: .clear)
+                .id(onboarding.step)
+                .transition(.opacity.animation(reduceMotion ? CueMotion.fade : CueMotion.hazeShift))
             OnboardingSky(step: onboarding.step, plays: services.playsWelcomeOpening, frozenAt: services.welcomeFrozenTime)
                 .ignoresSafeArea()
                 // The sky shifts a little with each chapter (parallax).
                 .offset(y: reduceMotion ? 0 : -CGFloat(onboarding.step.rawValue) * 24)
-                .animation(.easeInOut(duration: 0.6), value: onboarding.step)
+                .animation(CueMotion.skyShift, value: onboarding.step)
             VStack(spacing: 0) {
                 if onboarding.step != .welcome {
                     OnboardingChrome(step: onboarding.step, onSkip: skip)
@@ -58,10 +63,7 @@ struct OnboardingView: View {
                 }
                 chapter
                     .id(onboarding.step)
-                    .transition(reduceMotion ? .opacity : .asymmetric(
-                        insertion: .scale(scale: 1.04).combined(with: .opacity),
-                        removal: .scale(scale: 0.96).combined(with: .opacity)
-                    ))
+                    .transition(.depth(reduceMotion: reduceMotion))
             }
         }
         .animation(.easeInOut(duration: 0.45), value: onboarding.step)

@@ -19,6 +19,8 @@ nonisolated struct ScriptDraft {
     @Guide(description: "True when the script states facts a viewer could check, such as history, science, dates, names or numbers.")
     var statesFacts: Bool
 
+    /// A field of a few words for what each block adds, written before the block, was tried on an iPhone 15 Pro (`ScriptQualityDeviceTests`, run
+    /// `after-3`): the opening's promise was kept less often (5 of 13 against 9 of 15), the angle covered less and the scripts invented more. Left out.
     @Generable
     nonisolated struct Block {
         @Guide(description: "The block name from the requested structure, for example Hook, Body or CTA.")

@@ -39,9 +39,13 @@ struct VoiceCheckedWritingTests {
         }
     }
 
-    private static let clean = ok(text: Array(repeating: "plain words here", count: 20).joined(separator: " "))
-    private static let hype = ok(text: "This is a game-changer " + Array(repeating: "plain words here", count: 20).joined(separator: " "))
-    private static let veryHype = ok(text: "A game-changer, insane and unbelievable " + Array(repeating: "plain words here", count: 20).joined(separator: " "))
+    /// Sixty-odd words that never repeat themselves, as a script would.
+    private static let prose = "Mornings feel hard because the night before decides them. Put your phone in another room, set out water by the bed, "
+        + "and choose one small task you can finish before breakfast. Open the curtains as soon as you wake up, because light tells your body the day "
+        + "has started. Move for two minutes, even just a walk to the kitchen, and the rest gets easier."
+    private static let clean = ok(text: Self.prose)
+    private static let hype = ok(text: "This is a game-changer " + Self.prose)
+    private static let veryHype = ok(text: "A game-changer, insane and unbelievable " + Self.prose)
 
     private static func ok(text: String) -> Result<GeneratedScript, any Error> {
         .success(GeneratedScript(title: "T", text: text, usedLanguageModel: true))
@@ -87,6 +91,23 @@ struct VoiceCheckedWritingTests {
         #expect(model.asked.count == 2)
         #expect(script.attempts == 1 && !script.text.contains("insane"))
         #expect(script.voiceViolations == [.avoided], "what the script still breaks is counted, never told")
+    }
+
+    @Test func aSecondScriptAsSeriousAsTheFirstIsNotTheOneTheCreatorGets() async throws {
+        // One forbidden word for another: the same count was enough before; now the second must be better where it was asked to be.
+        let other = Self.ok(text: "This is insane " + Self.prose)
+        let model = Model([Self.hype, other])
+        let script = try await model.writing.write(request(voice: avoidsHype))
+        #expect(model.asked.count == 2)
+        #expect(script.attempts == 1 && script.text.contains("game-changer"))
+        #expect(script.discardedDraft?.contains("insane") == true, "the draft not kept is there for the measurements")
+    }
+
+    @Test func aSecondScriptThatFixesTheRuleButSaysHalfAsMuchIsNotUsed() async throws {
+        let long = Self.ok(text: "A game-changer. " + Self.prose + " " + Self.prose.replacingOccurrences(of: "Mornings", with: "Evenings"))
+        let model = Model([long, Self.ok(text: "Plain words here. Plain words there.")])
+        let script = try await model.writing.write(request(voice: avoidsHype))
+        #expect(script.attempts == 1 && script.text.contains("game-changer"))
     }
 
     @Test func aSecondAttemptThatFailsLeavesTheFirstScript() async throws {

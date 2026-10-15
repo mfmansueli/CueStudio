@@ -109,7 +109,7 @@ struct OnboardingPrimaryButton: View {
         Button(action: action) {
             Text(!isEnabled ? disabledTitle ?? title : title)
                 .font(.system(size: 17, weight: .bold))
-                .foregroundStyle(isGrey ? Palette.ink3 : isDimmed && disabledTitle != nil ? Color.white.opacity(0.8) : Palette.accInk)
+                .foregroundStyle(isGrey ? Palette.ink3 : isDimmed && disabledTitle != nil ? Palette.Flight.quietInk : Palette.accInk)
                 .frame(maxWidth: .infinity, minHeight: 54)
                 .background(isGrey ? Palette.fill : Palette.acc.opacity(isDimmed ? 0.2 : 1), in: Capsule())
                 .modifier(OptionalShine(shines: shines && isEnabled))
@@ -123,7 +123,7 @@ struct OnboardingPrimaryButton: View {
     /// The system dims a disabled button; this one draws its own disabled look (`disabledStyle`) and leaves the label as it is.
     private struct PillButtonStyle: ButtonStyle {
         func makeBody(configuration: Configuration) -> some View {
-            configuration.label.opacity(configuration.isPressed ? 0.85 : 1)
+            configuration.label.pressResponse(configuration.isPressed)
         }
     }
 
@@ -140,7 +140,7 @@ struct OnboardingPrimaryButton: View {
     }
 }
 
-/// The quiet button under the yellow one: text only, at 75% white.
+/// The quiet button under the yellow one: text only, in `Palette.Flight.quietInk`.
 struct OnboardingSecondaryButton: View {
     let title: String
     let identifier: String
@@ -150,7 +150,7 @@ struct OnboardingSecondaryButton: View {
         Button(action: action) {
             Text(title)
                 .font(.system(size: 16, weight: .medium))
-                .foregroundStyle(Color.white.opacity(0.75))
+                .foregroundStyle(Palette.Flight.quietInk)
                 .frame(maxWidth: .infinity, minHeight: Metrics.hitTarget)
                 .contentShape(Rectangle())
         }

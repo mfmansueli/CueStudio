@@ -16,8 +16,8 @@ struct ScriptWritingPill: View {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
-        TimelineView(.animation(minimumInterval: 1.0 / 30, paused: reduceMotion)) { context in
-            let time = reduceMotion ? 0 : context.date.timeIntervalSinceReferenceDate
+        AmbientTimeline { ambient in
+            let time = reduceMotion ? 0 : ambient.seconds
             // `glow 2.4s`: 0 → 1 → 0, eased.
             let pulse = reduceMotion ? 0 : 0.5 - 0.5 * cos(time * 2 * .pi / 2.4)
             // `shimx 1.6s linear`: the highlight travels from the right edge to past the left one.

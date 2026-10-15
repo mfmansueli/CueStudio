@@ -69,7 +69,10 @@ struct PrompterTextView: View {
             }
             .overlay(alignment: .top) {
                 if drawsGuide && settings.showsGuide {
-                    ReadingGuide(level: viewModel.followsSpeech ? viewModel.voiceLevel : nil, showsParticles: viewModel.isPlaying)
+                    ReadingGuide(
+                        level: viewModel.followsSpeech ? viewModel.voiceLevel : nil, showsParticles: viewModel.isPlaying,
+                        isCalm: viewModel.isRecording
+                    )
                         .padding(.horizontal, guideInset)
                         .offset(y: guideY - ReadingGuide.height / 2)
                 }

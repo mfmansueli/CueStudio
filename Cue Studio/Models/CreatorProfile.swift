@@ -175,6 +175,14 @@ nonisolated struct CreatorProfile: Codable, Hashable, Sendable {
         // The idea says what the video is about: the topics are only sent when it is about them (`IdeaFocus`).
         voice.topics = IdeaFocus.topics(voice.topics, for: idea, language: language)
         voice.excerpts = ExcerptRetriever.pick(from: excerpts, context: .init(language: language, idea: idea, professional: professional), limit: limit)
+        // An example on the video's own subject is copied, not imitated: the examples and approved scripts about the idea go after the others.
+        if let idea {
+            let wanted = ExcerptRetriever.contentWords(idea)
+            let isAbout = { (example: VoiceExample) in ExcerptRetriever.isAbout(ExcerptRetriever.contentWords(example.text), wanted) }
+            voice.examples = voice.examples.filter { !isAbout($0) } + voice.examples.filter(isAbout)
+            // Approved scripts are read newest last: the ones about the idea go to the front, the oldest end.
+            voice.approvedSamples = voice.approvedSamples.filter(isAbout) + voice.approvedSamples.filter { !isAbout($0) }
+        }
         if let fingerprint, !fingerprint.applies(toLanguage: language) { voice.fingerprint = nil }
         return voice
     }

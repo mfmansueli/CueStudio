@@ -102,6 +102,7 @@ struct SelfieModeView: View {
                         showsHandle: !viewModel.isPlaying && !viewModel.isRecording && !viewModel.isPractice,
                         level: viewModel.followsSpeech ? viewModel.voiceLevel : nil,
                         showsParticles: viewModel.isPlaying,
+                        isCalm: viewModel.isRecording,
                         onMove: { viewModel.moveReadingLine(toY: $0) },
                         onNudge: { viewModel.nudgeReadingLine(by: $0) }
                     )

@@ -26,6 +26,8 @@ final class IdeaSuggestionService {
         var pool: [ThemeIdea]
         var position: Int
         var seen: [String]
+        /// The ideas shown, with their angle and opening line (`IdeaEcho`); absent in what older versions kept.
+        var echoes: [IdeaEcho]?
         var round: Int
         var taste: IdeaTaste?
     }
@@ -50,6 +52,8 @@ final class IdeaSuggestionService {
     private var sinceLogbook = 0
     private var starterRotation = 0
     private var seen: [String] = []
+    /// The ideas used up or shown, as what tells a repeat (`IdeaSimilarity.repeats`): their title, angle and opening line.
+    private var echoes: [IdeaEcho] = []
     /// How many batches were asked for these topics: each starts further along the angles and the topics.
     private var round = 0
     private var signature = ""
@@ -305,7 +309,8 @@ final class IdeaSuggestionService {
         idea.angle == nil || waitingFilters.contains(filter) || queued(filter).contains(idea)
     }
 
-    /// The idea is used up: out of the pool (remembered by its title, so it never comes back in other words), or a starter not to show again.
+    /// The idea is used up: out of the pool (remembered by its title, angle and opening line, so it never comes back in other words), or a
+    /// starter not to show again.
     private func consume(_ idea: ThemeIdea) {
         guard idea.angle != nil else {
             shownStarters.insert(idea.id)
@@ -314,6 +319,7 @@ final class IdeaSuggestionService {
         guard let index = pool.firstIndex(of: idea), index >= position else { return }
         pool.remove(at: index)
         seen.append(idea.title)
+        echoes.append(IdeaEcho(idea))
     }
 
     private func forgetDisplayed(_ idea: ThemeIdea) {
@@ -450,7 +456,9 @@ final class IdeaSuggestionService {
         let asked = signature
         let language = interfaceLanguage()
         let voice = profile.writesInMyVoice ? profile.profile.voice(inLanguage: language?.locale.language.languageCode?.identifier) : nil
-        let known = (seen + pool.map(\.title)).map(IdeaSimilarity.words(in:))
+        // What came before, by title alone for what an older version kept, by title, angle and opening line for the rest.
+        let known = seen.filter { title in !echoes.contains { $0.title == IdeaSimilarity.words(in: title) } }.map(IdeaEcho.init(title:))
+            + echoes + pool.map(IdeaEcho.init)
         let topics: [IdeaTopic] = switch filter {
         case .all: profile.profile.ideaTopics.isEmpty ? [.lifestyle] : profile.profile.ideaTopics
         case .topic(let topic): [topic]
@@ -473,21 +481,29 @@ final class IdeaSuggestionService {
             }
             guard !Task.isCancelled else { return asked == signature ? .cancelled : .stale }
             guard asked == signature else { return .stale }
-            let taken = known + new.map { IdeaSimilarity.words(in: $0.title) }
-            new += fresh.filter { idea in
-                let words = IdeaSimilarity.words(in: idea.title)
-                return !taken.contains { IdeaSimilarity.areAlike($0, words) }
+            // A brief with two weaknesses is no idea (`IdeaSpecificity`); one that repeats another, here or before, is the same idea twice. The
+            // ones with a weakness come after the others of the batch.
+            var taken = known + new.map(IdeaEcho.init)
+            var kept: [ThemeIdea] = []
+            for idea in fresh where !IdeaSpecificity.isUnusable(idea) {
+                let echo = IdeaEcho(idea)
+                guard !taken.contains(where: { IdeaSimilarity.repeats(echo, $0) }) else { continue }
+                taken.append(echo)
+                kept.append(idea)
             }
+            new += kept.filter { IdeaSpecificity.weaknesses(of: $0).isEmpty } + kept.filter { !IdeaSpecificity.weaknesses(of: $0).isEmpty }
         }
         guard !new.isEmpty else { return failed ? .failed : .nothingNew }
         pool.append(contentsOf: new)
-        // The ones already shown are only remembered by their titles.
+        // The ones already shown are only remembered by what tells a repeat (`IdeaEcho`).
         if position > Self.lowWater * 3 {
             seen += pool.prefix(position).map(\.title)
+            echoes += pool.prefix(position).map(IdeaEcho.init)
             pool.removeFirst(position)
             position = 0
         }
         seen = Array(seen.suffix(Self.memory))
+        echoes = Array(echoes.suffix(Self.memory))
         persist()
         return .added
     }
@@ -516,6 +532,7 @@ final class IdeaSuggestionService {
         pool = []
         position = 0
         seen = []
+        echoes = []
         round = 0
         logbookCard = nil
         isWaiting = false
@@ -528,7 +545,7 @@ final class IdeaSuggestionService {
     // MARK: - Memory
 
     private func persist() {
-        let stored = Stored(signature: signature, pool: pool, position: position, seen: seen, round: round, taste: taste)
+        let stored = Stored(signature: signature, pool: pool, position: position, seen: seen, echoes: echoes, round: round, taste: taste)
         if let data = try? JSONEncoder().encode(stored) { defaults.set(data, forKey: DefaultsKey.ideaSuggestions) }
     }
 
@@ -539,6 +556,7 @@ final class IdeaSuggestionService {
         pool = stored.pool
         position = min(stored.position, stored.pool.count)
         seen = stored.seen
+        echoes = stored.echoes ?? []
         round = stored.round
     }
 }
