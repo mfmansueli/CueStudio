@@ -203,7 +203,7 @@ struct ScriptsView: View {
     private var scriptList: some View {
         @Bindable var viewModel = viewModel
         let groups = viewModel.groups(takeCount: { takes.count(for: $0) })
-        return List(selection: $viewModel.selection) {
+        return List {
             // The count under the large title ("8 SCRIPTS · 3 READY"), the search, then the platform filters: free blocks.
             blockRow(top: 0) {
                 HUDLine(values: viewModel.summaryValues(takeCount: { takes.count(for: $0) }))
@@ -230,7 +230,6 @@ struct ScriptsView: View {
                             .listRowInsets(EdgeInsets(top: 22, leading: Metrics.gutter, bottom: 0, trailing: Metrics.gutter))
                             .listRowBackground(Color.clear)
                             .listRowSeparator(.hidden)
-                            .selectionDisabled()
                         ForEach(Array(group.scripts.enumerated()), id: \.element.id) { position, script in
                             row(for: script, state: group.state)
                                 .listRowInsets(EdgeInsets(top: 0, leading: Metrics.gutter, bottom: 0, trailing: Metrics.gutter))
@@ -253,7 +252,6 @@ struct ScriptsView: View {
         .listSectionSpacing(0)
         .environment(\.defaultMinListRowHeight, 0)
         .scrollContentBackground(.hidden)
-        .environment(\.editMode, .constant(viewModel.isSelecting ? .active : .inactive))
         .scrollDismissesKeyboard(.immediately)
         .onScrollGeometryChange(for: DockFold.Position.self) { geometry in
             // From the top of the list (0) to the farthest it scrolls, whatever the bars above and the dock below cover.
@@ -291,7 +289,6 @@ struct ScriptsView: View {
             .listRowInsets(EdgeInsets(top: top, leading: horizontal, bottom: 0, trailing: horizontal))
             .listRowBackground(Color.clear)
             .listRowSeparator(.hidden)
-            .selectionDisabled()
     }
 
     // MARK: - Rows
@@ -300,30 +297,41 @@ struct ScriptsView: View {
         let rowView = ScriptRow(
             script: script, state: state, line: line(of: script, state: state), takeCount: takes.count(for: script.id),
             topicColor: tagging.color(for: script), showsTrailing: !viewModel.isSelecting,
+            isSelected: viewModel.isSelecting ? viewModel.selection.contains(script.id) : nil,
             onRecord: { actions.record(script) },
             onTakes: { presentation.selectedTab = .takes }
         )
         return Group {
             if viewModel.isSelecting {
-                rowView
+                // The row picks the script (its mark is inside the card, not on its edge where the list's edit mode put it).
+                let isSelected = viewModel.selection.contains(script.id)
+                Button {
+                    Haptics.selection()
+                    viewModel.toggleSelection(of: script.id)
+                } label: {
+                    rowView.contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+                .accessibilityAddTraits(isSelected ? .isSelected : [])
             } else {
                 // The row opens its page, whatever its state (a draft straight into writing); a recorded script's videos are its "×3 ›".
                 NavigationLink(value: ScriptRoute(scriptID: script.id, startsEditing: state == .draft)) { rowView }
                     .navigationLinkIndicatorVisibility(.hidden)
             }
         }
-        .tag(script.id)
         // The system's swipe actions: Record in the record red, More in the system's grey (it opens the actions sheet). No full swipe:
-        // a long swipe must never start a recording by itself.
+        // a long swipe must never start a recording by itself. None while selecting.
         .swipeActions(edge: .trailing, allowsFullSwipe: false) {
-            Button { actions.record(script) } label: {
-                Label("Record", systemImage: "record.circle")
+            if !viewModel.isSelecting {
+                Button { actions.record(script) } label: {
+                    Label("Record", systemImage: "record.circle")
+                }
+                .tint(Palette.record)
+                Button { viewModel.actionsTarget = script } label: {
+                    Label("More", systemImage: "ellipsis.circle")
+                }
+                .tint(.gray)
             }
-            .tint(Palette.record)
-            Button { viewModel.actionsTarget = script } label: {
-                Label("More", systemImage: "ellipsis.circle")
-            }
-            .tint(.gray)
         }
         // More (from the swipe): every action in a menu-like popover on this row. What opens something else waits until it is gone.
         .popover(
@@ -419,7 +427,6 @@ struct ScriptsView: View {
         .padding(.vertical, 24)
         .listRowBackground(Color.clear)
         .listRowSeparator(.hidden)
-        .selectionDisabled()
     }
 
     /// What the More menu was asked to do, once its popover has gone.

@@ -7,7 +7,8 @@ import SwiftUI
 
 /// A script on the Scripts list (v29): the topic's bar, the title, a mono line ("● TIKTOK · 0:47 · 4 CUES") and the one
 /// way forward for its state: "● REC" when it is ready, "Continue ›" for a draft, "×3 ›" (its videos, in Takes) once it has
-/// takes. A tap anywhere else on the row opens the script's page, whatever its state.
+/// takes. A tap anywhere else on the row opens the script's page, whatever its state. While Scripts selects, the way forward gives
+/// its place to nothing and the row starts with its selection mark (`ScriptSelectionMark`), inside the card.
 struct ScriptRow: View {
     let script: Script
     let state: ScriptState
@@ -16,11 +17,17 @@ struct ScriptRow: View {
     /// The world color of the script's topic; nil until it has one.
     let topicColor: Color?
     let showsTrailing: Bool
+    /// Whether the script is picked while Scripts selects; nil when it doesn't.
+    var isSelected: Bool?
     let onRecord: () -> Void
     let onTakes: () -> Void
 
     var body: some View {
         HStack(spacing: 12) {
+            if let isSelected {
+                ScriptSelectionMark(isSelected: isSelected)
+                    .transition(.scale(scale: 0.6).combined(with: .opacity))
+            }
             ThemeRail(color: topicColor ?? Palette.separator)
             VStack(alignment: .leading, spacing: 3) {
                 Text(script.displayTitle)

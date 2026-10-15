@@ -109,6 +109,11 @@ final class ScriptsViewModel {
         isSelecting.toggle()
     }
 
+    /// A tap on a row while selecting: picks the script, or lets it go.
+    func toggleSelection(of id: UUID) {
+        if selection.remove(id) == nil { selection.insert(id) }
+    }
+
     func deleteSelection() {
         let doomed = library.scripts.filter { selection.contains($0.id) }
         guard !doomed.isEmpty else { return }

@@ -167,8 +167,11 @@ final class CreationSheetsUITests: XCTestCase {
     func testTheCardsFormatSheetHasAutoAndSetsTheChip() throws {
         let app = CueApp.launch(seeded: true)
         app.buttons["ideaCard.formatChip"].tap()
-        XCTAssertTrue(element(app, "format.sheet").waitForExistence(timeout: 5))
+        let sheet = element(app, "format.sheet")
+        XCTAssertTrue(sheet.waitForExistence(timeout: 5))
         XCTAssertTrue(element(app, "format.auto").exists)
+        // Full height, like the dock's other sheets (the platform, My Cue Voice, Find inspiration): no half-height stop.
+        XCTAssertLessThan(sheet.frame.minY, app.windows.firstMatch.frame.height * 0.2, "The format sheet opens at full height")
         try capture(app, "F_format_card")
         element(app, "format.review").tap()
         element(app, "format.confirm").tap()

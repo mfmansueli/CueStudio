@@ -7,8 +7,8 @@ import SwiftUI
 
 /// The format sheet (v30 · F, 09 §1): a grid of nine tiles (Auto, Talking head, Tutorial, Storytime, List / tips, Review, Myth vs
 /// fact, POV, Sponsored ad), each with its sections in mono ("HOOK › POINT › WHY IT MATTERS › CTA"), and "More formats" under it: a
-/// row for each remaining format (Hot take / reply, Announcement, Apology). It is the system's sheet (medium and large, it scrolls)
-/// with the native close and confirm buttons. Two ways in:
+/// row for each remaining format (Hot take / reply, Announcement, Apology). It is the system's sheet at full height, like the dock's other
+/// sheets (the platform, My Cue Voice, Find inspiration), and it scrolls, with the native close and confirm buttons. Two ways in:
 /// the dock's Format ⌄ ("Comes ready: sections, cues, timing.", with Auto) and "Start from a format" in "+" (a blank
 /// draft you write, no Auto). Picking a choice only selects it; **Done** or **Open** confirms, and Sponsored ad goes on to its
 /// brand brief.
@@ -78,8 +78,7 @@ struct FormatSheet: View {
                 }
             }
         }
-        .presentationDetents([.medium, .large])
-        .presentationDragIndicator(.visible)
+        .presentationDetents([.large])
         .cueSheetSurface()
         .accessibilityIdentifier(mode == .blank ? "format.startSheet" : "format.sheet")
     }

@@ -35,6 +35,19 @@ struct ScriptsViewModelTests {
         #expect(toast.message == "2 deleted")
     }
 
+    @Test func aTapOnARowPicksTheScriptAndASecondLetsItGo() {
+        let a = TestData.script(title: "A"), b = TestData.script(title: "B")
+        let (viewModel, _, _) = makeViewModel(scripts: [a, b])
+        viewModel.toggleSelecting()
+        viewModel.toggleSelection(of: a.id)
+        viewModel.toggleSelection(of: b.id)
+        #expect(viewModel.selection == [a.id, b.id])
+        viewModel.toggleSelection(of: a.id)
+        #expect(viewModel.selection == [b.id])
+        viewModel.toggleSelecting()
+        #expect(viewModel.selection.isEmpty, "Done lets every script go")
+    }
+
     @Test func newFolderWithScriptsMovesThem() {
         let script = TestData.script()
         let (viewModel, library, toast) = makeViewModel(scripts: [script])

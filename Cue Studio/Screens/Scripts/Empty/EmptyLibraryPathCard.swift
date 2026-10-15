@@ -5,21 +5,13 @@
 
 import SwiftUI
 
-/// One way in on the empty Scripts ("Find inspiration", "Write it yourself", "Import a script"): a softly rounded dark card with a hairline,
-/// the icon in a small tinted square on the left, the title and a line under it, and a disclosure chevron. The whole card is the button.
+/// One way in on the empty Scripts ("Write it yourself", "Import a script"): a softly rounded dark card with a hairline,
+/// the icon in a small grey square on the left, the title and a line under it, and a disclosure chevron. The whole card is the button.
 /// At the biggest text sizes the icon goes above the words, so the words keep the width.
 struct EmptyLibraryPathCard: View {
-    enum Tint {
-        /// The app's yellow (the way the screen leads with).
-        case accent
-        /// A quiet grey square with a white icon.
-        case neutral
-    }
-
     let symbol: String
     let title: LocalizedStringKey
     let subtitle: LocalizedStringKey
-    var tint: Tint = .neutral
     let action: () -> Void
 
     @Environment(\.dynamicTypeSize) private var typeSize
@@ -66,9 +58,9 @@ struct EmptyLibraryPathCard: View {
     private var icon: some View {
         Image(systemName: symbol)
             .font(.system(size: 17, weight: .semibold))
-            .foregroundStyle(tint == .accent ? Palette.accText : Palette.ink)
+            .foregroundStyle(Palette.ink)
             .frame(width: 40, height: 40)
-            .background(tint == .accent ? Palette.accSoft : Palette.surface3, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+            .background(Palette.surface3, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
             .accessibilityHidden(true)
     }
 }
@@ -76,10 +68,8 @@ struct EmptyLibraryPathCard: View {
 #if DEBUG
 #Preview {
     VStack(spacing: 10) {
-        EmptyLibraryPathCard(
-            symbol: FindInspirationSheet.symbol, title: "Find inspiration", subtitle: "Discover video ideas from your topics.", tint: .accent
-        ) {}
         EmptyLibraryPathCard(symbol: "pencil", title: "Write it yourself", subtitle: "A blank page, your words.") {}
+        EmptyLibraryPathCard(symbol: "doc.text", title: "Import a script", subtitle: "Bring something you already wrote.") {}
     }
     .padding()
     .background(Palette.bg)
