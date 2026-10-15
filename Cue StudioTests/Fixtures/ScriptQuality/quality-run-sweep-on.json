@@ -1,0 +1,2287 @@
+[
+  {
+    "condition": "sweep",
+    "failure": "unsupportedLanguage",
+    "hasBrief": true,
+    "idea": "list@Lifestyle, mistake@Lifestyle, myth@Lifestyle, story@Lifestyle, tutorial@Lifestyle, opinion@Lifestyle",
+    "index": 0,
+    "instructionTokens": 60,
+    "instructions": "You suggest video ideas for creators who film themselves talking to camera.",
+    "kind": "ideas",
+    "language": "ar-SA",
+    "prompt": "Suggest 6 fresh talking-head video ideas for a creator whose topics are: morning routines and daily life. Each idea has a title of at most eight words, written the way a creator would post it: natural, specific, and promising something the viewer gets, never a generic \"Top 5\" and never starting with the name of its angle as a label; an angle, one short sentence that tells the creator what to do in the video, starting with a verb; and an opening line, the first sentence they say to camera, which leads straight into the angle. Title, angle and opening line are one idea. In this order: 1. a list of things about morning routines and daily life; 2. a common mistake and how to fix it about morning routines and daily life; 3. a myth to bust about morning routines and daily life; 4. a short story from experience about morning routines and daily life; 5. a quick how-to about morning routines and daily life; 6. an honest opinion about morning routines and daily life. Opening lines must be true for anyone to say: no personal story, result, number or credential of the creator's, and no statistic, study, news or trend. Write the ideas in Arabic.",
+    "promptTokens": 261,
+    "run": "sweep-on",
+    "schemaTokens": 238,
+    "seconds": 0.001309875
+  },
+  {
+    "condition": "sweep",
+    "hasBrief": true,
+    "idea": "list@Lifestyle, mistake@Lifestyle, myth@Lifestyle, story@Lifestyle, tutorial@Lifestyle, opinion@Lifestyle",
+    "ideas": [
+      {
+        "angle": "Skriv et kort, dagligt ritual ned",
+        "angleKind": "list",
+        "openingLine": "Jeg starter altid dagen med en kop kaffe",
+        "title": "6 ting, jeg gør hver morgen",
+        "topic": "lifestyle"
+      },
+      {
+        "angle": "Identificér én rutine, der hæmmer dig",
+        "angleKind": "mistake",
+        "openingLine": "En stille morgen gør alt lettere",
+        "title": "Sådan retter du en almindelig fejl",
+        "topic": "lifestyle"
+      },
+      {
+        "angle": "Forklar, hvorfor en idé ikke fungerer",
+        "angleKind": "myth",
+        "openingLine": "Jeg har oplevet, at ro hjælper meget",
+        "title": "Denne myte er bare ikke sand",
+        "topic": "lifestyle"
+      },
+      {
+        "angle": "Beskriv en konkret morgenproces",
+        "angleKind": "story",
+        "openingLine": "Jeg har en fast rytme, når solen står op",
+        "title": "Hvordan min dag ser ud",
+        "topic": "lifestyle"
+      },
+      {
+        "angle": "Lav en enkel, praktisk skitse",
+        "angleKind": "tutorial",
+        "openingLine": "Små handlinger gør meget",
+        "title": "Min hurtige morgen-guide",
+        "topic": "lifestyle"
+      },
+      {
+        "angle": "Del en oprigtig refleksion",
+        "angleKind": "opinion",
+        "openingLine": "Morgenrutiner former dagen",
+        "title": "Min ærlige morgen-betragtning",
+        "topic": "lifestyle"
+      }
+    ],
+    "index": 0,
+    "instructionTokens": 60,
+    "instructions": "You suggest video ideas for creators who film themselves talking to camera.",
+    "kind": "ideas",
+    "language": "da-DK",
+    "prompt": "Suggest 6 fresh talking-head video ideas for a creator whose topics are: morning routines and daily life. Each idea has a title of at most eight words, written the way a creator would post it: natural, specific, and promising something the viewer gets, never a generic \"Top 5\" and never starting with the name of its angle as a label; an angle, one short sentence that tells the creator what to do in the video, starting with a verb; and an opening line, the first sentence they say to camera, which leads straight into the angle. Title, angle and opening line are one idea. In this order: 1. a list of things about morning routines and daily life; 2. a common mistake and how to fix it about morning routines and daily life; 3. a myth to bust about morning routines and daily life; 4. a short story from experience about morning routines and daily life; 5. a quick how-to about morning routines and daily life; 6. an honest opinion about morning routines and daily life. Opening lines must be true for anyone to say: no personal story, result, number or credential of the creator's, and no statistic, study, news or trend. Write the ideas in Danish.",
+    "promptTokens": 261,
+    "run": "sweep-on",
+    "schemaTokens": 238,
+    "seconds": 11.694546917
+  },
+  {
+    "condition": "sweep",
+    "hasBrief": true,
+    "idea": "list@Lifestyle, mistake@Lifestyle, myth@Lifestyle, story@Lifestyle, tutorial@Lifestyle, opinion@Lifestyle",
+    "ideas": [
+      {
+        "angle": "Notieren, wie ich meinen Morgenfluss gestalte",
+        "angleKind": "list",
+        "openingLine": "Ich starte meinen Tag mit klaren Absichten.",
+        "title": "Frühstücksideen für den Alltag",
+        "topic": "lifestyle"
+      },
+      {
+        "angle": "Analysieren, wie man den größten Fehler vermeidet",
+        "angleKind": "mistake",
+        "openingLine": "Der Beginn des Tages kann uns viel verraten.",
+        "title": "Morgenroutine-Mist aufdecken",
+        "topic": "lifestyle"
+      },
+      {
+        "angle": "Begründen, warum ich eine falsche Annahme widerlege",
+        "angleKind": "myth",
+        "openingLine": "Ein typischer Fehler beeinflusst unseren Morgen-Rhythmus.",
+        "title": "Morgenroutine-Mythos entkräften",
+        "topic": "lifestyle"
+      },
+      {
+        "angle": "Beschreiben, wie ich den Morgen anders angehe",
+        "angleKind": "story",
+        "openingLine": "Ein bewährter Ansatz verändert meinen Start.",
+        "title": "Mein Morgenritual erleben",
+        "topic": "lifestyle"
+      },
+      {
+        "angle": "Planen, wie man morgens effizient arbeitet",
+        "angleKind": "tutorial",
+        "openingLine": "Ein kurzer Leitfaden hilft beim Alltag.",
+        "title": "Schnelle Morgenroutine-Tipps",
+        "topic": "lifestyle"
+      },
+      {
+        "angle": "Teilen, was ich über den Morgen denke",
+        "angleKind": "opinion",
+        "openingLine": "Ich reflektiere meine Gedanken zum Morgenritual.",
+        "title": "Aufrichtige Meinung zum Morgen",
+        "topic": "lifestyle"
+      }
+    ],
+    "index": 0,
+    "instructionTokens": 60,
+    "instructions": "You suggest video ideas for creators who film themselves talking to camera.",
+    "kind": "ideas",
+    "language": "de-DE",
+    "prompt": "Suggest 6 fresh talking-head video ideas for a creator whose topics are: morning routines and daily life. Each idea has a title of at most eight words, written the way a creator would post it: natural, specific, and promising something the viewer gets, never a generic \"Top 5\" and never starting with the name of its angle as a label; an angle, one short sentence that tells the creator what to do in the video, starting with a verb; and an opening line, the first sentence they say to camera, which leads straight into the angle. Title, angle and opening line are one idea. In this order: 1. a list of things about morning routines and daily life; 2. a common mistake and how to fix it about morning routines and daily life; 3. a myth to bust about morning routines and daily life; 4. a short story from experience about morning routines and daily life; 5. a quick how-to about morning routines and daily life; 6. an honest opinion about morning routines and daily life. Opening lines must be true for anyone to say: no personal story, result, number or credential of the creator's, and no statistic, study, news or trend. Write the ideas in German.",
+    "promptTokens": 261,
+    "run": "sweep-on",
+    "schemaTokens": 238,
+    "seconds": 9.639593958
+  },
+  {
+    "condition": "sweep",
+    "hasBrief": true,
+    "idea": "list@Lifestyle, mistake@Lifestyle, myth@Lifestyle, story@Lifestyle, tutorial@Lifestyle, opinion@Lifestyle",
+    "ideas": [
+      {
+        "angle": "List the easiest morning activities",
+        "angleKind": "list",
+        "openingLine": "I'm sharing small morning rituals.",
+        "title": "Simple morning habits revealed",
+        "topic": "lifestyle"
+      },
+      {
+        "angle": "Show the biggest morning error and fix it",
+        "angleKind": "mistake",
+        "openingLine": "Morning interruptions slow productivity.",
+        "title": "How to avoid morning distraction trap",
+        "topic": "lifestyle"
+      },
+      {
+        "angle": "Explain a common morning misconception",
+        "angleKind": "myth",
+        "openingLine": "The idea of perfect mornings confuses many.",
+        "title": "Morning myth: actually, it's not true",
+        "topic": "lifestyle"
+      },
+      {
+        "angle": "Tell a morning mishap and recovery",
+        "angleKind": "story",
+        "openingLine": "Yesterday's morning rush taught me something.",
+        "title": "Morning calm after a chaotic start",
+        "topic": "lifestyle"
+      },
+      {
+        "angle": "Demonstrate a morning self-care practice",
+        "angleKind": "tutorial",
+        "openingLine": "Taking care in the morning matters.",
+        "title": "Quick tip: morning self-care routine",
+        "topic": "lifestyle"
+      },
+      {
+        "angle": "Share my unfiltered morning truth",
+        "angleKind": "opinion",
+        "openingLine": "Truth is my morning compass.",
+        "title": "Morning priority: honesty first",
+        "topic": "lifestyle"
+      }
+    ],
+    "index": 0,
+    "instructionTokens": 60,
+    "instructions": "You suggest video ideas for creators who film themselves talking to camera.",
+    "kind": "ideas",
+    "language": "en-US",
+    "prompt": "Suggest 6 fresh talking-head video ideas for a creator whose topics are: morning routines and daily life. Each idea has a title of at most eight words, written the way a creator would post it: natural, specific, and promising something the viewer gets, never a generic \"Top 5\" and never starting with the name of its angle as a label; an angle, one short sentence that tells the creator what to do in the video, starting with a verb; and an opening line, the first sentence they say to camera, which leads straight into the angle. Title, angle and opening line are one idea. In this order: 1. a list of things about morning routines and daily life; 2. a common mistake and how to fix it about morning routines and daily life; 3. a myth to bust about morning routines and daily life; 4. a short story from experience about morning routines and daily life; 5. a quick how-to about morning routines and daily life; 6. an honest opinion about morning routines and daily life. Opening lines must be true for anyone to say: no personal story, result, number or credential of the creator's, and no statistic, study, news or trend. Write the ideas in English.",
+    "promptTokens": 261,
+    "run": "sweep-on",
+    "schemaTokens": 238,
+    "seconds": 9.575879625
+  },
+  {
+    "condition": "sweep",
+    "hasBrief": true,
+    "idea": "list@Lifestyle, mistake@Lifestyle, myth@Lifestyle, story@Lifestyle, tutorial@Lifestyle, opinion@Lifestyle",
+    "ideas": [
+      {
+        "angle": "Escribo tres cosas que hago por la mañana",
+        "angleKind": "list",
+        "openingLine": "Cada mañana me siento un poco más tranquilo.",
+        "title": "Cuatro hábitos que hago al despertar",
+        "topic": "lifestyle"
+      },
+      {
+        "angle": "Observo cómo comienzo el día y ajusto algo",
+        "angleKind": "mistake",
+        "openingLine": "Hay una costumbre que me impide empezar bien.",
+        "title": "Un error común que intento evitar",
+        "topic": "lifestyle"
+      },
+      {
+        "angle": "Analizo por qué no funciona bien",
+        "angleKind": "myth",
+        "openingLine": "A veces pienso que algo es clave, pero no lo es.",
+        "title": "La idea equivocada sobre mi rutina matutina",
+        "topic": "lifestyle"
+      },
+      {
+        "angle": "Comparto lo que aprendí hoy sobre el orden del día",
+        "angleKind": "story",
+        "openingLine": "Hoy descubrí algo interesante en mi rutina diaria.",
+        "title": "Un momento revelador con mis rutinas",
+        "topic": "lifestyle"
+      },
+      {
+        "angle": "Incluyo tres pasos para estructurar las horas",
+        "angleKind": "tutorial",
+        "openingLine": "Aquí tienes una técnica fácil para organizar tu tiempo.",
+        "title": "La manera simple de organizar el día",
+        "topic": "lifestyle"
+      },
+      {
+        "angle": "Expongo qué pienso sobre el orden diario",
+        "angleKind": "opinion",
+        "openingLine": "No siempre me gusta seguir el mismo ritmo diario.",
+        "title": "Mi opinión honesta sobre las rutinas",
+        "topic": "lifestyle"
+      }
+    ],
+    "index": 0,
+    "instructionTokens": 60,
+    "instructions": "You suggest video ideas for creators who film themselves talking to camera.",
+    "kind": "ideas",
+    "language": "es-ES",
+    "prompt": "Suggest 6 fresh talking-head video ideas for a creator whose topics are: morning routines and daily life. Each idea has a title of at most eight words, written the way a creator would post it: natural, specific, and promising something the viewer gets, never a generic \"Top 5\" and never starting with the name of its angle as a label; an angle, one short sentence that tells the creator what to do in the video, starting with a verb; and an opening line, the first sentence they say to camera, which leads straight into the angle. Title, angle and opening line are one idea. In this order: 1. a list of things about morning routines and daily life; 2. a common mistake and how to fix it about morning routines and daily life; 3. a myth to bust about morning routines and daily life; 4. a short story from experience about morning routines and daily life; 5. a quick how-to about morning routines and daily life; 6. an honest opinion about morning routines and daily life. Opening lines must be true for anyone to say: no personal story, result, number or credential of the creator's, and no statistic, study, news or trend. Write the ideas in Spanish.",
+    "promptTokens": 261,
+    "run": "sweep-on",
+    "schemaTokens": 238,
+    "seconds": 9.899452
+  },
+  {
+    "condition": "sweep",
+    "hasBrief": true,
+    "idea": "list@Lifestyle, mistake@Lifestyle, myth@Lifestyle, story@Lifestyle, tutorial@Lifestyle, opinion@Lifestyle",
+    "ideas": [
+      {
+        "angle": "Mentionner les petites habitudes matinales qui changent la vie.",
+        "angleKind": "list",
+        "openingLine": "Mon réveil commence toujours par une tasse de café chaud.",
+        "title": "Comment commencer la journée ?",
+        "topic": "lifestyle"
+      },
+      {
+        "angle": "Expliquer pourquoi une mauvaise habitude matinale nuit à la journée.",
+        "angleKind": "mistake",
+        "openingLine": "Un petit raccourci du matin peut provoquer des frustrations inutiles.",
+        "title": "Un faux pas courant à la maison ?",
+        "topic": "lifestyle"
+      },
+      {
+        "angle": "Décrire comment éviter une croyance qui freine la productivité.",
+        "angleKind": "myth",
+        "openingLine": "Certaines croyances sur l'organisation empêchent une meilleure gestion du temps.",
+        "title": "Une idée reçue sur la routine ?",
+        "topic": "lifestyle"
+      },
+      {
+        "angle": "Partager une expérience personnelle liée aux tâches quotidiennes.",
+        "angleKind": "story",
+        "openingLine": "Une expérience quotidienne m'a montré l'importance des petites actions.",
+        "title": "Une leçon tirée de la vie ?",
+        "topic": "lifestyle"
+      },
+      {
+        "angle": "Partager une technique simple pour organiser efficacement les tâches.",
+        "angleKind": "tutorial",
+        "openingLine": "Une petite astuce matinale peut booster votre quotidien.",
+        "title": "Une astuce rapide pour le matin ?",
+        "topic": "lifestyle"
+      },
+      {
+        "angle": "Exprimer une réflexion honnête sur les habitudes quotidiennes.",
+        "angleKind": "opinion",
+        "openingLine": "Il faut écouter son intuition pour bien structurer sa journée.",
+        "title": "Mon avis sur la routine ?",
+        "topic": "lifestyle"
+      }
+    ],
+    "index": 0,
+    "instructionTokens": 60,
+    "instructions": "You suggest video ideas for creators who film themselves talking to camera.",
+    "kind": "ideas",
+    "language": "fr-FR",
+    "prompt": "Suggest 6 fresh talking-head video ideas for a creator whose topics are: morning routines and daily life. Each idea has a title of at most eight words, written the way a creator would post it: natural, specific, and promising something the viewer gets, never a generic \"Top 5\" and never starting with the name of its angle as a label; an angle, one short sentence that tells the creator what to do in the video, starting with a verb; and an opening line, the first sentence they say to camera, which leads straight into the angle. Title, angle and opening line are one idea. In this order: 1. a list of things about morning routines and daily life; 2. a common mistake and how to fix it about morning routines and daily life; 3. a myth to bust about morning routines and daily life; 4. a short story from experience about morning routines and daily life; 5. a quick how-to about morning routines and daily life; 6. an honest opinion about morning routines and daily life. Opening lines must be true for anyone to say: no personal story, result, number or credential of the creator's, and no statistic, study, news or trend. Write the ideas in French.",
+    "promptTokens": 261,
+    "run": "sweep-on",
+    "schemaTokens": 238,
+    "seconds": 10.553776584
+  },
+  {
+    "condition": "sweep",
+    "failure": "unsupportedLanguage",
+    "hasBrief": true,
+    "idea": "list@Lifestyle, mistake@Lifestyle, myth@Lifestyle, story@Lifestyle, tutorial@Lifestyle, opinion@Lifestyle",
+    "index": 0,
+    "instructionTokens": 60,
+    "instructions": "You suggest video ideas for creators who film themselves talking to camera.",
+    "kind": "ideas",
+    "language": "hi-IN",
+    "prompt": "Suggest 6 fresh talking-head video ideas for a creator whose topics are: morning routines and daily life. Each idea has a title of at most eight words, written the way a creator would post it: natural, specific, and promising something the viewer gets, never a generic \"Top 5\" and never starting with the name of its angle as a label; an angle, one short sentence that tells the creator what to do in the video, starting with a verb; and an opening line, the first sentence they say to camera, which leads straight into the angle. Title, angle and opening line are one idea. In this order: 1. a list of things about morning routines and daily life; 2. a common mistake and how to fix it about morning routines and daily life; 3. a myth to bust about morning routines and daily life; 4. a short story from experience about morning routines and daily life; 5. a quick how-to about morning routines and daily life; 6. an honest opinion about morning routines and daily life. Opening lines must be true for anyone to say: no personal story, result, number or credential of the creator's, and no statistic, study, news or trend. Write the ideas in Hindi.",
+    "promptTokens": 261,
+    "run": "sweep-on",
+    "schemaTokens": 238,
+    "seconds": 0.001971791
+  },
+  {
+    "condition": "sweep",
+    "failure": "unsupportedLanguage",
+    "hasBrief": true,
+    "idea": "list@Lifestyle, mistake@Lifestyle, myth@Lifestyle, story@Lifestyle, tutorial@Lifestyle, opinion@Lifestyle",
+    "index": 0,
+    "instructionTokens": 60,
+    "instructions": "You suggest video ideas for creators who film themselves talking to camera.",
+    "kind": "ideas",
+    "language": "id-ID",
+    "prompt": "Suggest 6 fresh talking-head video ideas for a creator whose topics are: morning routines and daily life. Each idea has a title of at most eight words, written the way a creator would post it: natural, specific, and promising something the viewer gets, never a generic \"Top 5\" and never starting with the name of its angle as a label; an angle, one short sentence that tells the creator what to do in the video, starting with a verb; and an opening line, the first sentence they say to camera, which leads straight into the angle. Title, angle and opening line are one idea. In this order: 1. a list of things about morning routines and daily life; 2. a common mistake and how to fix it about morning routines and daily life; 3. a myth to bust about morning routines and daily life; 4. a short story from experience about morning routines and daily life; 5. a quick how-to about morning routines and daily life; 6. an honest opinion about morning routines and daily life. Opening lines must be true for anyone to say: no personal story, result, number or credential of the creator's, and no statistic, study, news or trend. Write the ideas in Indonesian.",
+    "promptTokens": 261,
+    "run": "sweep-on",
+    "schemaTokens": 238,
+    "seconds": 0.001384334
+  },
+  {
+    "condition": "sweep",
+    "hasBrief": true,
+    "idea": "list@Lifestyle, mistake@Lifestyle, myth@Lifestyle, story@Lifestyle, tutorial@Lifestyle, opinion@Lifestyle",
+    "ideas": [
+      {
+        "angle": "Documentare cosa faccio al mattino",
+        "angleKind": "list",
+        "openingLine": "Ogni mattina preparo la mia giornata",
+        "title": "Morning rituals I swear by",
+        "topic": "lifestyle"
+      },
+      {
+        "angle": "Mostrare come correggere un difetto mattutino",
+        "angleKind": "mistake",
+        "openingLine": "Spesso dimentico qualcosa al mattino",
+        "title": "Errore comune: evitare questa abitudine",
+        "topic": "lifestyle"
+      },
+      {
+        "angle": "Mostrare un'abitudine creata da credenze sbagliate",
+        "angleKind": "myth",
+        "openingLine": "C'è una credenza comune sul tempo al mattino",
+        "title": "Mito sfatato: questa pratica non è vera",
+        "topic": "lifestyle"
+      },
+      {
+        "angle": "Raccontare un piccolo dettaglio della giornata",
+        "angleKind": "story",
+        "openingLine": "Ogni giorno prendo una scelta importante",
+        "title": "Momento reale: decisione mattutina",
+        "topic": "lifestyle"
+      },
+      {
+        "angle": "Mostrare un modo rapido per migliorare",
+        "angleKind": "tutorial",
+        "openingLine": "Cerco di migliorare la routine quotidiana",
+        "title": "Consiglio veloce: ottimizza la mattinata",
+        "topic": "lifestyle"
+      },
+      {
+        "angle": "Condividere un'opinione sulla routine",
+        "angleKind": "opinion",
+        "openingLine": "La prima ora determina molto nel giorno",
+        "title": "Pensiero sincero: quanto conta la prima ora",
+        "topic": "lifestyle"
+      }
+    ],
+    "index": 0,
+    "instructionTokens": 60,
+    "instructions": "You suggest video ideas for creators who film themselves talking to camera.",
+    "kind": "ideas",
+    "language": "it-IT",
+    "prompt": "Suggest 6 fresh talking-head video ideas for a creator whose topics are: morning routines and daily life. Each idea has a title of at most eight words, written the way a creator would post it: natural, specific, and promising something the viewer gets, never a generic \"Top 5\" and never starting with the name of its angle as a label; an angle, one short sentence that tells the creator what to do in the video, starting with a verb; and an opening line, the first sentence they say to camera, which leads straight into the angle. Title, angle and opening line are one idea. In this order: 1. a list of things about morning routines and daily life; 2. a common mistake and how to fix it about morning routines and daily life; 3. a myth to bust about morning routines and daily life; 4. a short story from experience about morning routines and daily life; 5. a quick how-to about morning routines and daily life; 6. an honest opinion about morning routines and daily life. Opening lines must be true for anyone to say: no personal story, result, number or credential of the creator's, and no statistic, study, news or trend. Write the ideas in Italian.",
+    "promptTokens": 261,
+    "run": "sweep-on",
+    "schemaTokens": 238,
+    "seconds": 9.647677917
+  },
+  {
+    "condition": "sweep",
+    "hasBrief": true,
+    "idea": "list@Lifestyle, mistake@Lifestyle, myth@Lifestyle, story@Lifestyle, tutorial@Lifestyle, opinion@Lifestyle",
+    "ideas": [
+      {
+        "angle": "記録する自分の朝の動きを始める",
+        "angleKind": "list",
+        "openingLine": "朝の準備にいつも工夫しています",
+        "title": "毎日のルーティンで、気づくこと",
+        "topic": "lifestyle"
+      },
+      {
+        "angle": "気づいた問題を解決する手順を解説する",
+        "angleKind": "mistake",
+        "openingLine": "朝の習慣に改善ポイントを探しています",
+        "title": "朝の失敗をなくすコツ",
+        "topic": "lifestyle"
+      },
+      {
+        "angle": "よくある間違いを説明する",
+        "angleKind": "myth",
+        "openingLine": "朝の取り組みに意外な落とし穴があります",
+        "title": "朝の習慣の誤解を解く",
+        "topic": "lifestyle"
+      },
+      {
+        "angle": "自分の経験を映像で伝える",
+        "angleKind": "story",
+        "openingLine": "朝のひとときは大切な発見になります",
+        "title": "朝のルーティンから学んだこと",
+        "topic": "lifestyle"
+      },
+      {
+        "angle": "効率的な習慣を紹介する",
+        "angleKind": "tutorial",
+        "openingLine": "朝の時間を有効に使いたいと思っています",
+        "title": "朝のルーティンを速くするコツ",
+        "topic": "lifestyle"
+      },
+      {
+        "angle": "個人的な意見をシェアする",
+        "angleKind": "opinion",
+        "openingLine": "朝の過ごし方に意味を見つけています",
+        "title": "朝のルーティンの本当の価値",
+        "topic": "lifestyle"
+      }
+    ],
+    "index": 0,
+    "instructionTokens": 60,
+    "instructions": "You suggest video ideas for creators who film themselves talking to camera.",
+    "kind": "ideas",
+    "language": "ja-JP",
+    "prompt": "Suggest 6 fresh talking-head video ideas for a creator whose topics are: morning routines and daily life. Each idea has a title of at most eight words, written the way a creator would post it: natural, specific, and promising something the viewer gets, never a generic \"Top 5\" and never starting with the name of its angle as a label; an angle, one short sentence that tells the creator what to do in the video, starting with a verb; and an opening line, the first sentence they say to camera, which leads straight into the angle. Title, angle and opening line are one idea. In this order: 1. a list of things about morning routines and daily life; 2. a common mistake and how to fix it about morning routines and daily life; 3. a myth to bust about morning routines and daily life; 4. a short story from experience about morning routines and daily life; 5. a quick how-to about morning routines and daily life; 6. an honest opinion about morning routines and daily life. Opening lines must be true for anyone to say: no personal story, result, number or credential of the creator's, and no statistic, study, news or trend. Write the ideas in Japanese.",
+    "promptTokens": 261,
+    "run": "sweep-on",
+    "schemaTokens": 238,
+    "seconds": 8.373383917
+  },
+  {
+    "condition": "sweep",
+    "hasBrief": true,
+    "idea": "list@Lifestyle, mistake@Lifestyle, myth@Lifestyle, story@Lifestyle, tutorial@Lifestyle, opinion@Lifestyle",
+    "ideas": [
+      {
+        "angle": "쓰기: 오늘의 간단한 아침 루틴을 적어보자",
+        "angleKind": "list",
+        "openingLine": "아침 루틴이 마음을 차분하게 시작하게 해준다는 걸 알아.",
+        "title": "아침에 시작하는 것들",
+        "topic": "lifestyle"
+      },
+      {
+        "angle": "검토하기: 아침에 자주 반복되는 잘못된 습관을 확인해보자",
+        "angleKind": "mistake",
+        "openingLine": "아침 시간의 효율을 높이는 작은 변화가 필요해.",
+        "title": "아침 실수, 바로잡기",
+        "topic": "lifestyle"
+      },
+      {
+        "angle": "조사하기: 흔히 알려진 아침 전설의 진짜 의미를 탐구해보자",
+        "angleKind": "myth",
+        "openingLine": "어떤 사람이 말하는 아침의 상징이 사실이 아닐 때가 있어.",
+        "title": "아침의 전설을 깨다",
+        "topic": "lifestyle"
+      },
+      {
+        "angle": "이야기하기: 아침 루틴에 겪은 경험을 공유하자",
+        "angleKind": "story",
+        "openingLine": "아침에 했던 경험이 하루를 더 좋게 만들어준 걸 느껴.",
+        "title": "오전 경험 이야기",
+        "topic": "lifestyle"
+      },
+      {
+        "angle": "실행하기: 아침 루틴을 간단한 단계로 정리해보자",
+        "angleKind": "tutorial",
+        "openingLine": "아침을 빠르게 준비하는 방법을 배운 사람들과 나누고 싶어.",
+        "title": "빠른 아침 방법",
+        "topic": "lifestyle"
+      },
+      {
+        "angle": "표현하기: 아침 루틴에 대한 개인적인 생각을 솔직히 말해보자",
+        "angleKind": "opinion",
+        "openingLine": "아침에 느끼는 생각이 우리 하루를 어떻게 바꿔.",
+        "title": "솔직한 아침 생각",
+        "topic": "lifestyle"
+      }
+    ],
+    "index": 0,
+    "instructionTokens": 60,
+    "instructions": "You suggest video ideas for creators who film themselves talking to camera.",
+    "kind": "ideas",
+    "language": "ko-KR",
+    "prompt": "Suggest 6 fresh talking-head video ideas for a creator whose topics are: morning routines and daily life. Each idea has a title of at most eight words, written the way a creator would post it: natural, specific, and promising something the viewer gets, never a generic \"Top 5\" and never starting with the name of its angle as a label; an angle, one short sentence that tells the creator what to do in the video, starting with a verb; and an opening line, the first sentence they say to camera, which leads straight into the angle. Title, angle and opening line are one idea. In this order: 1. a list of things about morning routines and daily life; 2. a common mistake and how to fix it about morning routines and daily life; 3. a myth to bust about morning routines and daily life; 4. a short story from experience about morning routines and daily life; 5. a quick how-to about morning routines and daily life; 6. an honest opinion about morning routines and daily life. Opening lines must be true for anyone to say: no personal story, result, number or credential of the creator's, and no statistic, study, news or trend. Write the ideas in Korean.",
+    "promptTokens": 261,
+    "run": "sweep-on",
+    "schemaTokens": 238,
+    "seconds": 13.068232583
+  },
+  {
+    "condition": "sweep",
+    "hasBrief": true,
+    "idea": "list@Lifestyle, mistake@Lifestyle, myth@Lifestyle, story@Lifestyle, tutorial@Lifestyle, opinion@Lifestyle",
+    "ideas": [
+      {
+        "angle": "Skriv ned tre ting du gjør hver morgen",
+        "angleKind": "list",
+        "openingLine": "Her er tre ting jeg gjør hver morgen",
+        "title": "6 vanlige ting i hverdagen",
+        "topic": "lifestyle"
+      },
+      {
+        "angle": "Forklar hvorfor du må drikke vann først på morgenen",
+        "angleKind": "mistake",
+        "openingLine": "Mange gjør en feil når morgenen starter",
+        "title": "Feil: Ikke start dagen med vann",
+        "topic": "lifestyle"
+      },
+      {
+        "angle": "Vis hvordan en sen start fungerer bra",
+        "angleKind": "myth",
+        "openingLine": "En vanlig oppfatning sier du trenger å stå opp tidlig",
+        "title": "Mytet: Du må stå tidlig opp",
+        "topic": "lifestyle"
+      },
+      {
+        "angle": "Del en enkel morgenrutine",
+        "angleKind": "story",
+        "openingLine": "Her får du en liten morgenstart-tips",
+        "title": "Hvordan en dag begynner for meg",
+        "topic": "lifestyle"
+      },
+      {
+        "angle": "Lag en enkel morgenplan",
+        "angleKind": "tutorial",
+        "openingLine": "Her kommer en rask morgenregel",
+        "title": "Hva du bør gjøre morgen",
+        "topic": "lifestyle"
+      },
+      {
+        "angle": "Uttrykk din tanker rundt morgenen",
+        "angleKind": "opinion",
+        "openingLine": "Morgenrutiner er vanskelige å finne helt riktig",
+        "title": "Min mening om morgenen",
+        "topic": "lifestyle"
+      }
+    ],
+    "index": 0,
+    "instructionTokens": 60,
+    "instructions": "You suggest video ideas for creators who film themselves talking to camera.",
+    "kind": "ideas",
+    "language": "nb-NO",
+    "prompt": "Suggest 6 fresh talking-head video ideas for a creator whose topics are: morning routines and daily life. Each idea has a title of at most eight words, written the way a creator would post it: natural, specific, and promising something the viewer gets, never a generic \"Top 5\" and never starting with the name of its angle as a label; an angle, one short sentence that tells the creator what to do in the video, starting with a verb; and an opening line, the first sentence they say to camera, which leads straight into the angle. Title, angle and opening line are one idea. In this order: 1. a list of things about morning routines and daily life; 2. a common mistake and how to fix it about morning routines and daily life; 3. a myth to bust about morning routines and daily life; 4. a short story from experience about morning routines and daily life; 5. a quick how-to about morning routines and daily life; 6. an honest opinion about morning routines and daily life. Opening lines must be true for anyone to say: no personal story, result, number or credential of the creator's, and no statistic, study, news or trend. Write the ideas in Norwegian Bokmål.",
+    "promptTokens": 264,
+    "run": "sweep-on",
+    "schemaTokens": 238,
+    "seconds": 12.093379
+  },
+  {
+    "condition": "sweep",
+    "hasBrief": true,
+    "idea": "list@Lifestyle, mistake@Lifestyle, myth@Lifestyle, story@Lifestyle, tutorial@Lifestyle, opinion@Lifestyle",
+    "ideas": [
+      {
+        "angle": "Schrijf drie dingen op die helpen bij mijn dagelijks leven.",
+        "angleKind": "list",
+        "openingLine": "Mijn ochtend begint altijd op dezelfde manier.",
+        "title": "Hoe ik mijn ochtend start",
+        "topic": "lifestyle"
+      },
+      {
+        "angle": "Bekijk hoe ik een slechte gewoonte verbeter.",
+        "angleKind": "mistake",
+        "openingLine": "Een slechte gewoonte in de ochtend stoppen.",
+        "title": "Mijn meest voorkomende fout bij het opstaan",
+        "topic": "lifestyle"
+      },
+      {
+        "angle": "Vertel waarom een veelvoorkomend idee misleidend is.",
+        "angleKind": "myth",
+        "openingLine": "Een veelvoorkomend idee over de ochtend lijkt simpel, maar toch niet waar.",
+        "title": "De mythe die ik heb ontkracht bij de ochtend",
+        "topic": "lifestyle"
+      },
+      {
+        "angle": "Vertel hoe een kleine ervaring een groot verschil maakte.",
+        "angleKind": "story",
+        "openingLine": "Een klein moment in de ochtend veranderde alles.",
+        "title": "Een moment dat mijn dag beïnvloedde",
+        "topic": "lifestyle"
+      },
+      {
+        "angle": "Vertel hoe ik elke dag eenvoudige hulp gebruik.",
+        "angleKind": "tutorial",
+        "openingLine": "Een korte truc maakt mijn dag makkelijker.",
+        "title": "Een snelle truc voor mijn dag",
+        "topic": "lifestyle"
+      },
+      {
+        "angle": "Deel een persoonlijke observatie over mijn gewoonten.",
+        "angleKind": "opinion",
+        "openingLine": "De ochtend is lastiger dan ik dacht.",
+        "title": "Wat ik eerlijk vind over de ochtend",
+        "topic": "lifestyle"
+      }
+    ],
+    "index": 0,
+    "instructionTokens": 60,
+    "instructions": "You suggest video ideas for creators who film themselves talking to camera.",
+    "kind": "ideas",
+    "language": "nl-NL",
+    "prompt": "Suggest 6 fresh talking-head video ideas for a creator whose topics are: morning routines and daily life. Each idea has a title of at most eight words, written the way a creator would post it: natural, specific, and promising something the viewer gets, never a generic \"Top 5\" and never starting with the name of its angle as a label; an angle, one short sentence that tells the creator what to do in the video, starting with a verb; and an opening line, the first sentence they say to camera, which leads straight into the angle. Title, angle and opening line are one idea. In this order: 1. a list of things about morning routines and daily life; 2. a common mistake and how to fix it about morning routines and daily life; 3. a myth to bust about morning routines and daily life; 4. a short story from experience about morning routines and daily life; 5. a quick how-to about morning routines and daily life; 6. an honest opinion about morning routines and daily life. Opening lines must be true for anyone to say: no personal story, result, number or credential of the creator's, and no statistic, study, news or trend. Write the ideas in Dutch.",
+    "promptTokens": 261,
+    "run": "sweep-on",
+    "schemaTokens": 238,
+    "seconds": 10.796850125
+  },
+  {
+    "condition": "sweep",
+    "hasBrief": true,
+    "idea": "list@Lifestyle, mistake@Lifestyle, myth@Lifestyle, story@Lifestyle, tutorial@Lifestyle, opinion@Lifestyle",
+    "ideas": [
+      {
+        "angle": "Listar pequenas coisas para começar o dia bem.",
+        "angleKind": "list",
+        "openingLine": "Começar o dia bem começa com pequenas ações.",
+        "title": "5 pequenas coisas matinais",
+        "topic": "lifestyle"
+      },
+      {
+        "angle": "Mostrar como corrigir erros comuns da rotina.",
+        "angleKind": "mistake",
+        "openingLine": "A rotina pode ter pequenos desafios.",
+        "title": "Como evitar o atraso matinal",
+        "topic": "lifestyle"
+      },
+      {
+        "angle": "Revelar ideias erradas sobre o início do dia.",
+        "angleKind": "myth",
+        "openingLine": "Há mitos sobre o que fazer pela manhã.",
+        "title": "O mito da perfeição matinal",
+        "topic": "lifestyle"
+      },
+      {
+        "angle": "Compartilhar uma experiência pessoal matinal.",
+        "angleKind": "story",
+        "openingLine": "Descobrir o dia pode trazer surpresas.",
+        "title": "Uma manhã diferente",
+        "topic": "lifestyle"
+      },
+      {
+        "angle": "Mostrar um método simples para a rotina diária.",
+        "angleKind": "tutorial",
+        "openingLine": "Resolver tarefas pode ser fácil.",
+        "title": "Um truque matinal rápido",
+        "topic": "lifestyle"
+      },
+      {
+        "angle": "Compartilhar uma visão honesta sobre o cotidiano.",
+        "angleKind": "opinion",
+        "openingLine": "Pensar no dia a dia pode mudar tudo.",
+        "title": "Minha opinião sobre o dia a dia",
+        "topic": "lifestyle"
+      }
+    ],
+    "index": 0,
+    "instructionTokens": 60,
+    "instructions": "You suggest video ideas for creators who film themselves talking to camera.",
+    "kind": "ideas",
+    "language": "pt-BR",
+    "prompt": "Suggest 6 fresh talking-head video ideas for a creator whose topics are: morning routines and daily life. Each idea has a title of at most eight words, written the way a creator would post it: natural, specific, and promising something the viewer gets, never a generic \"Top 5\" and never starting with the name of its angle as a label; an angle, one short sentence that tells the creator what to do in the video, starting with a verb; and an opening line, the first sentence they say to camera, which leads straight into the angle. Title, angle and opening line are one idea. In this order: 1. a list of things about morning routines and daily life; 2. a common mistake and how to fix it about morning routines and daily life; 3. a myth to bust about morning routines and daily life; 4. a short story from experience about morning routines and daily life; 5. a quick how-to about morning routines and daily life; 6. an honest opinion about morning routines and daily life. Opening lines must be true for anyone to say: no personal story, result, number or credential of the creator's, and no statistic, study, news or trend. Write the ideas in Portuguese (Brazil).",
+    "promptTokens": 263,
+    "run": "sweep-on",
+    "schemaTokens": 238,
+    "seconds": 8.440622208
+  },
+  {
+    "condition": "sweep",
+    "hasBrief": true,
+    "idea": "list@Lifestyle, mistake@Lifestyle, myth@Lifestyle, story@Lifestyle, tutorial@Lifestyle, opinion@Lifestyle",
+    "ideas": [
+      {
+        "angle": "Lista upp saker i morgonrutiner och vardag",
+        "angleKind": "list",
+        "openingLine": "Jag vet att morgonrutiner är viktiga.",
+        "title": "Tre saker i morgonrutiner",
+        "topic": "lifestyle"
+      },
+      {
+        "angle": "Visa hur en vanlig missuppfattning ser ut",
+        "angleKind": "mistake",
+        "openingLine": "Många tror att vardagens rutiner är komplicerade.",
+        "title": "Det här är en vanlig missuppfattning",
+        "topic": "lifestyle"
+      },
+      {
+        "angle": "Presentera en missuppfattning om morgonrutiner",
+        "angleKind": "myth",
+        "openingLine": "Jag brukar tänka på vanliga missuppfattningar.",
+        "title": "Den här myten är inte sann",
+        "topic": "lifestyle"
+      },
+      {
+        "angle": "Berätta om en erfarenhet med morgonrutiner",
+        "angleKind": "story",
+        "openingLine": "Jag har märkt hur små förändringar kan göra skillnad.",
+        "title": "Mitt första tips för morgonrutiner",
+        "topic": "lifestyle"
+      },
+      {
+        "angle": "Visa hur du fixar en vanlig morgonritual",
+        "angleKind": "tutorial",
+        "openingLine": "Jag använder enkla metoder för en bättre morgon.",
+        "title": "Så här fixar du morgonen",
+        "topic": "lifestyle"
+      },
+      {
+        "angle": "Dela min åsikt om morgonrutiner",
+        "angleKind": "opinion",
+        "openingLine": "Morgonrutiner påverkar min dag.",
+        "title": "Min åsikt om morgonrutiner",
+        "topic": "lifestyle"
+      }
+    ],
+    "index": 0,
+    "instructionTokens": 60,
+    "instructions": "You suggest video ideas for creators who film themselves talking to camera.",
+    "kind": "ideas",
+    "language": "sv-SE",
+    "prompt": "Suggest 6 fresh talking-head video ideas for a creator whose topics are: morning routines and daily life. Each idea has a title of at most eight words, written the way a creator would post it: natural, specific, and promising something the viewer gets, never a generic \"Top 5\" and never starting with the name of its angle as a label; an angle, one short sentence that tells the creator what to do in the video, starting with a verb; and an opening line, the first sentence they say to camera, which leads straight into the angle. Title, angle and opening line are one idea. In this order: 1. a list of things about morning routines and daily life; 2. a common mistake and how to fix it about morning routines and daily life; 3. a myth to bust about morning routines and daily life; 4. a short story from experience about morning routines and daily life; 5. a quick how-to about morning routines and daily life; 6. an honest opinion about morning routines and daily life. Opening lines must be true for anyone to say: no personal story, result, number or credential of the creator's, and no statistic, study, news or trend. Write the ideas in Swedish.",
+    "promptTokens": 261,
+    "run": "sweep-on",
+    "schemaTokens": 238,
+    "seconds": 9.837850333
+  },
+  {
+    "condition": "sweep",
+    "failure": "unsupportedLanguage",
+    "hasBrief": true,
+    "idea": "list@Lifestyle, mistake@Lifestyle, myth@Lifestyle, story@Lifestyle, tutorial@Lifestyle, opinion@Lifestyle",
+    "index": 0,
+    "instructionTokens": 60,
+    "instructions": "You suggest video ideas for creators who film themselves talking to camera.",
+    "kind": "ideas",
+    "language": "th-TH",
+    "prompt": "Suggest 6 fresh talking-head video ideas for a creator whose topics are: morning routines and daily life. Each idea has a title of at most eight words, written the way a creator would post it: natural, specific, and promising something the viewer gets, never a generic \"Top 5\" and never starting with the name of its angle as a label; an angle, one short sentence that tells the creator what to do in the video, starting with a verb; and an opening line, the first sentence they say to camera, which leads straight into the angle. Title, angle and opening line are one idea. In this order: 1. a list of things about morning routines and daily life; 2. a common mistake and how to fix it about morning routines and daily life; 3. a myth to bust about morning routines and daily life; 4. a short story from experience about morning routines and daily life; 5. a quick how-to about morning routines and daily life; 6. an honest opinion about morning routines and daily life. Opening lines must be true for anyone to say: no personal story, result, number or credential of the creator's, and no statistic, study, news or trend. Write the ideas in Thai.",
+    "promptTokens": 261,
+    "run": "sweep-on",
+    "schemaTokens": 238,
+    "seconds": 0.001360416
+  },
+  {
+    "condition": "sweep",
+    "hasBrief": true,
+    "idea": "list@Lifestyle, mistake@Lifestyle, myth@Lifestyle, story@Lifestyle, tutorial@Lifestyle, opinion@Lifestyle",
+    "ideas": [
+      {
+        "angle": "Yıllardır kullandığım ürünleri listeleyin.",
+        "angleKind": "list",
+        "openingLine": "Gün içinde en etkili şeylerden biri temiz olmak.",
+        "title": "Sabah hazırlıkları şık oluyor",
+        "topic": "lifestyle"
+      },
+      {
+        "angle": "Uyku düzenini gözlemleyin ve önlem alın.",
+        "angleKind": "mistake",
+        "openingLine": "Sabah yapmam gereken bir şey keşfettim.",
+        "title": "Yanlış kalkmak çok yoruyor",
+        "topic": "lifestyle"
+      },
+      {
+        "angle": "Bir alışkanlığı sorgulayın ve değiştirin.",
+        "angleKind": "myth",
+        "openingLine": "Aradan çok zaman geçti ama hâlâ unutulan küçük detaylar var.",
+        "title": "Sabah uyandığında yapılanlar önemlidir",
+        "topic": "lifestyle"
+      },
+      {
+        "angle": "Akşam yemeğinde yeni tarifler deneyin.",
+        "angleKind": "story",
+        "openingLine": "Sabahdan sonra işler ne kadar kolaylaşıyor acaba.",
+        "title": "Öğleden sonra tatlı yerine kahve",
+        "topic": "lifestyle"
+      },
+      {
+        "angle": "Ara öğünlere odaklanın ve tarifleri gözden geçirin.",
+        "angleKind": "tutorial",
+        "openingLine": "Her sabah farklı bir enerji dengesi yaşanıyor.",
+        "title": "Sabah yemeğiyle enerji kazanılır",
+        "topic": "lifestyle"
+      },
+      {
+        "angle": "Öğleden sonraya kadar küçük öğünler hazırlayın.",
+        "angleKind": "opinion",
+        "openingLine": "Gündemin hızla şekillenmesi için küçük adımlar önemli.",
+        "title": "Sabahı doğal atıştırarak başlatmak sağlıyor",
+        "topic": "lifestyle"
+      }
+    ],
+    "index": 0,
+    "instructionTokens": 60,
+    "instructions": "You suggest video ideas for creators who film themselves talking to camera.",
+    "kind": "ideas",
+    "language": "tr-TR",
+    "prompt": "Suggest 6 fresh talking-head video ideas for a creator whose topics are: morning routines and daily life. Each idea has a title of at most eight words, written the way a creator would post it: natural, specific, and promising something the viewer gets, never a generic \"Top 5\" and never starting with the name of its angle as a label; an angle, one short sentence that tells the creator what to do in the video, starting with a verb; and an opening line, the first sentence they say to camera, which leads straight into the angle. Title, angle and opening line are one idea. In this order: 1. a list of things about morning routines and daily life; 2. a common mistake and how to fix it about morning routines and daily life; 3. a myth to bust about morning routines and daily life; 4. a short story from experience about morning routines and daily life; 5. a quick how-to about morning routines and daily life; 6. an honest opinion about morning routines and daily life. Opening lines must be true for anyone to say: no personal story, result, number or credential of the creator's, and no statistic, study, news or trend. Write the ideas in Turkish.",
+    "promptTokens": 261,
+    "run": "sweep-on",
+    "schemaTokens": 238,
+    "seconds": 13.378540459
+  },
+  {
+    "condition": "sweep",
+    "hasBrief": true,
+    "idea": "list@Lifestyle, mistake@Lifestyle, myth@Lifestyle, story@Lifestyle, tutorial@Lifestyle, opinion@Lifestyle",
+    "ideas": [
+      {
+        "angle": "ghi lại những điểm quan trọng về cuộc sống hàng ngày",
+        "angleKind": "list",
+        "openingLine": "Mình dành thời gian để bắt đầu ngày mới đúng cách.",
+        "title": "Những điều cần nhớ về buổi sáng",
+        "topic": "lifestyle"
+      },
+      {
+        "angle": "chia sẻ cách khắc phục thói quen không hiệu quả",
+        "angleKind": "mistake",
+        "openingLine": "Mình đã trải nghiệm cách thay đổi công việc ban đầu.",
+        "title": "Lỗi thường gặp trong sáng tạo buổi sáng",
+        "topic": "lifestyle"
+      },
+      {
+        "angle": "phân tích lý do khiến sáng tạo kém hiệu quả",
+        "angleKind": "myth",
+        "openingLine": "Mình từng tự hỏi làm sao để sáng tạo mọi lúc mọi nơi.",
+        "title": "Lập trình sai về sáng tạo buổi sáng",
+        "topic": "lifestyle"
+      },
+      {
+        "angle": "chia sẻ kinh nghiệm thực tế trong ngày thường",
+        "angleKind": "story",
+        "openingLine": "Mình nhận ra rằng mọi thứ diễn ra như thế này.",
+        "title": "Câu chuyện về một buổi sáng bình thường",
+        "topic": "lifestyle"
+      },
+      {
+        "angle": "tham khảo phương pháp đơn giản để sáng tạo dễ dàng hơn",
+        "angleKind": "tutorial",
+        "openingLine": "Mình muốn đưa ra mẹo nhỏ để tận dụng thời gian tốt nhất.",
+        "title": "Cách tối ưu hóa buổi sáng hàng ngày",
+        "topic": "lifestyle"
+      },
+      {
+        "angle": "đưa ra quan điểm cá nhân về cuộc sống",
+        "angleKind": "opinion",
+        "openingLine": "Mình nghĩ rằng mỗi sáng đều mang lại điều đặc biệt.",
+        "title": "Suy nghĩ thực về buổi sáng",
+        "topic": "lifestyle"
+      }
+    ],
+    "index": 0,
+    "instructionTokens": 60,
+    "instructions": "You suggest video ideas for creators who film themselves talking to camera.",
+    "kind": "ideas",
+    "language": "vi-VN",
+    "prompt": "Suggest 6 fresh talking-head video ideas for a creator whose topics are: morning routines and daily life. Each idea has a title of at most eight words, written the way a creator would post it: natural, specific, and promising something the viewer gets, never a generic \"Top 5\" and never starting with the name of its angle as a label; an angle, one short sentence that tells the creator what to do in the video, starting with a verb; and an opening line, the first sentence they say to camera, which leads straight into the angle. Title, angle and opening line are one idea. In this order: 1. a list of things about morning routines and daily life; 2. a common mistake and how to fix it about morning routines and daily life; 3. a myth to bust about morning routines and daily life; 4. a short story from experience about morning routines and daily life; 5. a quick how-to about morning routines and daily life; 6. an honest opinion about morning routines and daily life. Opening lines must be true for anyone to say: no personal story, result, number or credential of the creator's, and no statistic, study, news or trend. Write the ideas in Vietnamese.",
+    "promptTokens": 261,
+    "run": "sweep-on",
+    "schemaTokens": 238,
+    "seconds": 9.956481791
+  },
+  {
+    "condition": "sweep",
+    "hasBrief": true,
+    "idea": "list@Lifestyle, mistake@Lifestyle, myth@Lifestyle, story@Lifestyle, tutorial@Lifestyle, opinion@Lifestyle",
+    "ideas": [
+      {
+        "angle": "写下五个有助于开始新一天的事情",
+        "angleKind": "list",
+        "openingLine": "早上醒来后，我先查看我的计划",
+        "title": "每日例行的简单习惯",
+        "topic": "lifestyle"
+      },
+      {
+        "angle": "分享一个让早晨更高效的小技巧",
+        "angleKind": "mistake",
+        "openingLine": "很多人认为早起需要特别的勇气",
+        "title": "早起常见误区揭秘",
+        "topic": "lifestyle"
+      },
+      {
+        "angle": "解释为什么早晨的决定对一天很重要",
+        "angleKind": "myth",
+        "openingLine": "关于早晨的习惯，我发现一个有趣的规律",
+        "title": "关于早晨的常见误解",
+        "topic": "lifestyle"
+      },
+      {
+        "angle": "讲述一个早晨如何影响一天的生活",
+        "angleKind": "story",
+        "openingLine": "今天早上，我遇到了一些让我惊讶的事情",
+        "title": "早晨的真实经历分享",
+        "topic": "lifestyle"
+      },
+      {
+        "angle": "尝试一个能节省时间的早晨方法",
+        "angleKind": "tutorial",
+        "openingLine": "有一个简单的步骤能让早晨变得更有条理",
+        "title": "快速提升早晨效率技巧",
+        "topic": "lifestyle"
+      },
+      {
+        "angle": "分享我对早晨生活的个人看法",
+        "angleKind": "opinion",
+        "openingLine": "早晨对我来说很重要，我发现了一些值得注意的事物",
+        "title": "早晨生活真实的感受",
+        "topic": "lifestyle"
+      }
+    ],
+    "index": 0,
+    "instructionTokens": 60,
+    "instructions": "You suggest video ideas for creators who film themselves talking to camera.",
+    "kind": "ideas",
+    "language": "zh-CN",
+    "prompt": "Suggest 6 fresh talking-head video ideas for a creator whose topics are: morning routines and daily life. Each idea has a title of at most eight words, written the way a creator would post it: natural, specific, and promising something the viewer gets, never a generic \"Top 5\" and never starting with the name of its angle as a label; an angle, one short sentence that tells the creator what to do in the video, starting with a verb; and an opening line, the first sentence they say to camera, which leads straight into the angle. Title, angle and opening line are one idea. In this order: 1. a list of things about morning routines and daily life; 2. a common mistake and how to fix it about morning routines and daily life; 3. a myth to bust about morning routines and daily life; 4. a short story from experience about morning routines and daily life; 5. a quick how-to about morning routines and daily life; 6. an honest opinion about morning routines and daily life. Opening lines must be true for anyone to say: no personal story, result, number or credential of the creator's, and no statistic, study, news or trend. Write the ideas in Chinese, Simplified.",
+    "promptTokens": 263,
+    "run": "sweep-on",
+    "schemaTokens": 238,
+    "seconds": 9.41943
+  },
+  {
+    "condition": "sweep",
+    "hasBrief": true,
+    "idea": "list@Lifestyle, mistake@Lifestyle, myth@Lifestyle, story@Lifestyle, tutorial@Lifestyle, opinion@Lifestyle",
+    "ideas": [
+      {
+        "angle": "列出早上與日常生活的東西",
+        "angleKind": "list",
+        "openingLine": "早晨的瞬間總能啟動心情",
+        "title": "輕鬆早晨習慣清單",
+        "topic": "lifestyle"
+      },
+      {
+        "angle": "說明常見早晨錯誤並修復方法",
+        "angleKind": "mistake",
+        "openingLine": "起床過程中有些小錯誤會影響一天",
+        "title": "避免早晨錯誤的簡單方法",
+        "topic": "lifestyle"
+      },
+      {
+        "angle": "揭露關於早晨生活的小說",
+        "angleKind": "myth",
+        "openingLine": "關於早晨生活的想法不總是正確",
+        "title": "早晨生活迷思破解版",
+        "topic": "lifestyle"
+      },
+      {
+        "angle": "分享來自實踐的早晨故事",
+        "angleKind": "story",
+        "openingLine": "許多人忽略早晨的簡單時刻",
+        "title": "真實早晨經驗分享",
+        "topic": "lifestyle"
+      },
+      {
+        "angle": "展示快速早晨習慣步驟",
+        "angleKind": "tutorial",
+        "openingLine": "學習早晨如何高效開始一天",
+        "title": "快速早晨習慣指南",
+        "topic": "lifestyle"
+      },
+      {
+        "angle": "分享對早晨生活的真實思考",
+        "angleKind": "opinion",
+        "openingLine": "早晨對每個人來說都有不同的意義",
+        "title": "關於早晨的真誠看法",
+        "topic": "lifestyle"
+      }
+    ],
+    "index": 0,
+    "instructionTokens": 60,
+    "instructions": "You suggest video ideas for creators who film themselves talking to camera.",
+    "kind": "ideas",
+    "language": "zh-TW",
+    "prompt": "Suggest 6 fresh talking-head video ideas for a creator whose topics are: morning routines and daily life. Each idea has a title of at most eight words, written the way a creator would post it: natural, specific, and promising something the viewer gets, never a generic \"Top 5\" and never starting with the name of its angle as a label; an angle, one short sentence that tells the creator what to do in the video, starting with a verb; and an opening line, the first sentence they say to camera, which leads straight into the angle. Title, angle and opening line are one idea. In this order: 1. a list of things about morning routines and daily life; 2. a common mistake and how to fix it about morning routines and daily life; 3. a myth to bust about morning routines and daily life; 4. a short story from experience about morning routines and daily life; 5. a quick how-to about morning routines and daily life; 6. an honest opinion about morning routines and daily life. Opening lines must be true for anyone to say: no personal story, result, number or credential of the creator's, and no statistic, study, news or trend. Write the ideas in Chinese, Traditional.",
+    "promptTokens": 263,
+    "run": "sweep-on",
+    "schemaTokens": 238,
+    "seconds": 8.395893292
+  },
+  {
+    "askedWords": [
+      150,
+      225
+    ],
+    "condition": "sweep",
+    "contextSize": 4096,
+    "countMilliseconds": 493.7135,
+    "emptyReason": "the answer was not a script: 1 blocks, 57 words, cap 1800 tokens; [Hook:57]; title 4w, statesFacts missing",
+    "failure": "unsupportedLanguage",
+    "hasBrief": false,
+    "idea": "3 عادات تسرق وقتك كل يوم دون أن تشعر",
+    "index": 0,
+    "instructionTokens": 327,
+    "instructions": "You write short-form video scripts that a creator reads from a teleprompter while filming themselves.\nWrite in the first person, as the creator, in natural spoken language with short sentences.\nFill in a short title and the script blocks. Block text is only what the creator says: no headings, labels, markdown or quotes around it.\nAdd short stage cues in square brackets where they help delivery, like [pause], [smile] or [look at camera]. Never put spoken words inside brackets.\nPlatform: TikTok, vertical and fast. Hook in the first 3 seconds, one idea only, short punchy lines spoken like a friend; end with one easy action (comment, follow or save).\nNever invent personal stories, clients, results, numbers or credentials for the creator: speak from general experience unless the idea gives the details. Never say the creator did, tried, discovered or was saved by something unless the idea says so.\nBe accurate. State only facts you are confident about; when unsure of a date, name or number, say it more generally instead of inventing it.\nWrite the title and every block in Arabic (Saudi Arabia).\nThe script is in Arabic (Saudi Arabia), not in English: write it in Arabic (Saudi Arabia) even though these instructions are in English. Only the creator's catchphrases stay as they are.",
+    "kind": "script",
+    "language": "ar-SA",
+    "minimumWords": 150,
+    "prompt": "Language of the script: Arabic (Saudi Arabia). Write all of it in Arabic (Saudi Arabia).\nWrite a talking video script for TikTok.\nBlocks, in this order: Hook → Body → CTA.\nWhat each block does: Hook: grab attention in 3 seconds with the main promise. Body: explain the one idea in small, concrete steps. CTA: one clear action.\nLength: between 150 and 225 spoken words in total.\nMake it worth at least 150 words: give 3 concrete points. For each, name the real thing (an ingredient, a step, an amount, a tool, a place or an example the viewer can use) and say in one or two sentences why it helps. Never a vague point like “choose good ingredients” or “follow an easy recipe”.\nOpen with a hook that works in the first 3 seconds. The first words are already about the subject (a claim, a question or a number), never a greeting or a filler word such as “hey”, “hi”, “so” or “look”.\nThe video: 3 عادات تسرق وقتك كل يوم دون أن تشعر",
+    "promptTokens": 247,
+    "responseCap": 1025,
+    "run": "sweep-on",
+    "schemaTokens": 271,
+    "seconds": 0.001716291
+  },
+  {
+    "askedWords": [
+      150,
+      225
+    ],
+    "condition": "sweep",
+    "contextSize": 4096,
+    "countMilliseconds": 420.60279099999997,
+    "emptyReason": "the answer was not a script: 1 blocks, 57 words, cap 1800 tokens; [Hook:57]; title 4w, statesFacts missing",
+    "failure": "unsupportedLanguage",
+    "hasBrief": true,
+    "idea": "قهوة الصباح: قبل الفطور أم بعده؟\nAngle: ⁨قارن بين شرب القهوة قبل الفطور وبعده.⁩\nOpen with: “⁨توقيت قهوتك الصباحية أهم مما تظن.⁩”",
+    "index": 1,
+    "instructionTokens": 327,
+    "instructions": "You write short-form video scripts that a creator reads from a teleprompter while filming themselves.\nWrite in the first person, as the creator, in natural spoken language with short sentences.\nFill in a short title and the script blocks. Block text is only what the creator says: no headings, labels, markdown or quotes around it.\nAdd short stage cues in square brackets where they help delivery, like [pause], [smile] or [look at camera]. Never put spoken words inside brackets.\nPlatform: TikTok, vertical and fast. Hook in the first 3 seconds, one idea only, short punchy lines spoken like a friend; end with one easy action (comment, follow or save).\nNever invent personal stories, clients, results, numbers or credentials for the creator: speak from general experience unless the idea gives the details. Never say the creator did, tried, discovered or was saved by something unless the idea says so.\nBe accurate. State only facts you are confident about; when unsure of a date, name or number, say it more generally instead of inventing it.\nWrite the title and every block in Arabic (Saudi Arabia).\nThe script is in Arabic (Saudi Arabia), not in English: write it in Arabic (Saudi Arabia) even though these instructions are in English. Only the creator's catchphrases stay as they are.",
+    "kind": "script",
+    "language": "ar-SA",
+    "minimumWords": 150,
+    "prompt": "Language of the script: Arabic (Saudi Arabia). Write all of it in Arabic (Saudi Arabia).\nWrite a talking video script for TikTok.\nBlocks, in this order: Hook → Body → CTA.\nWhat each block does: Hook: grab attention in 3 seconds with the main promise. Body: explain the one idea in small, concrete steps. CTA: one clear action.\nLength: between 150 and 225 spoken words in total.\nMake it worth at least 150 words: give 3 concrete points. For each, name the real thing (an ingredient, a step, an amount, a tool, a place or an example the viewer can use) and say in one or two sentences why it helps. Never a vague point like “choose good ingredients” or “follow an easy recipe”.\nOpen with this line, as it is or adapted only to the creator's way of speaking: “توقيت قهوتك الصباحية أهم مما تظن.” It is the hook: write no other before it.\nThe video: قهوة الصباح: قبل الفطور أم بعده؟\nAngle: ⁨قارن بين شرب القهوة قبل الفطور وبعده.⁩\nOpen with: “⁨توقيت قهوتك الصباحية أهم مما تظن.⁩”\nFollow this angle all the way through: قارن بين شرب القهوة قبل الفطور وبعده.",
+    "promptTokens": 308,
+    "responseCap": 1025,
+    "run": "sweep-on",
+    "schemaTokens": 271,
+    "seconds": 0.001674708
+  },
+  {
+    "askedWords": [
+      150,
+      225
+    ],
+    "attempts": 1,
+    "condition": "sweep",
+    "contextSize": 4096,
+    "countMilliseconds": 600.482833,
+    "expandedBlocks": 0,
+    "firstResponse": 2.339836208,
+    "hasBrief": false,
+    "idea": "3 fejl, der giver ondt i knæene, når du løber",
+    "index": 0,
+    "instructionTokens": 324,
+    "instructions": "You write short-form video scripts that a creator reads from a teleprompter while filming themselves.\nWrite in the first person, as the creator, in natural spoken language with short sentences.\nFill in a short title and the script blocks. Block text is only what the creator says: no headings, labels, markdown or quotes around it.\nAdd short stage cues in square brackets where they help delivery, like [pause], [smile] or [look at camera]. Never put spoken words inside brackets.\nPlatform: TikTok, vertical and fast. Hook in the first 3 seconds, one idea only, short punchy lines spoken like a friend; end with one easy action (comment, follow or save).\nNever invent personal stories, clients, results, numbers or credentials for the creator: speak from general experience unless the idea gives the details. Never say the creator did, tried, discovered or was saved by something unless the idea says so.\nBe accurate. State only facts you are confident about; when unsure of a date, name or number, say it more generally instead of inventing it.\nWrite the title and every block in Danish (Denmark).\nThe script is in Danish (Denmark), not in English: write it in Danish (Denmark) even though these instructions are in English. Only the creator's catchphrases stay as they are.",
+    "kind": "script",
+    "language": "da-DK",
+    "minimumWords": 150,
+    "outputTokens": 123,
+    "progressionDefects": [],
+    "prompt": "Language of the script: Danish (Denmark). Write all of it in Danish (Denmark).\nWrite a talking video script for TikTok.\nBlocks, in this order: Hook → Body → CTA.\nWhat each block does: Hook: grab attention in 3 seconds with the main promise. Body: explain the one idea in small, concrete steps. CTA: one clear action.\nLength: between 150 and 225 spoken words in total.\nMake it worth at least 150 words: give 3 concrete points. For each, name the real thing (an ingredient, a step, an amount, a tool, a place or an example the viewer can use) and say in one or two sentences why it helps. Never a vague point like “choose good ingredients” or “follow an easy recipe”.\nOpen with a hook that works in the first 3 seconds. The first words are already about the subject (a claim, a question or a number), never a greeting or a filler word such as “hey”, “hi”, “so” or “look”.\nThe video: 3 fejl, der giver ondt i knæene, når du løber",
+    "promptTokens": 247,
+    "responseCap": 1025,
+    "run": "sweep-on",
+    "schemaTokens": 271,
+    "seconds": 17.589804083,
+    "text": "Du har sikkert set videoer om løb... [pause] ... men disse 3 fejl gør ondt i knæene.\n\nFørst: Brug for meget sukker i energidrikke. Det kan belaste leddene. [look at camera] Andet: Spring opvarmning over. Din krop har brug for forberedelse. [smile] Sidste: Brug forkert underlag. Det kan føre til belastning. [pause]\n\nKommentér, hvad du gør, når du løber. [pause] Følg med!",
+    "title": "3 fejl, der giver ondt i knæene",
+    "violations": [
+      "tooShort"
+    ],
+    "voiceUse": "none"
+  },
+  {
+    "askedWords": [
+      150,
+      225
+    ],
+    "attempts": 1,
+    "condition": "sweep",
+    "contextSize": 4096,
+    "countMilliseconds": 302.863709,
+    "expandedBlocks": 0,
+    "firstResponse": 1.952014167,
+    "hasBrief": true,
+    "idea": "Kom i gang med at løbe\nAngle: Forklar, hvordan man kommer i gang med at løbe uden at blive skadet.\nOpen with: “Du behøver ikke løbe hurtigt for at være en løber.”",
+    "index": 1,
+    "instructionTokens": 324,
+    "instructions": "You write short-form video scripts that a creator reads from a teleprompter while filming themselves.\nWrite in the first person, as the creator, in natural spoken language with short sentences.\nFill in a short title and the script blocks. Block text is only what the creator says: no headings, labels, markdown or quotes around it.\nAdd short stage cues in square brackets where they help delivery, like [pause], [smile] or [look at camera]. Never put spoken words inside brackets.\nPlatform: TikTok, vertical and fast. Hook in the first 3 seconds, one idea only, short punchy lines spoken like a friend; end with one easy action (comment, follow or save).\nNever invent personal stories, clients, results, numbers or credentials for the creator: speak from general experience unless the idea gives the details. Never say the creator did, tried, discovered or was saved by something unless the idea says so.\nBe accurate. State only facts you are confident about; when unsure of a date, name or number, say it more generally instead of inventing it.\nWrite the title and every block in Danish (Denmark).\nThe script is in Danish (Denmark), not in English: write it in Danish (Denmark) even though these instructions are in English. Only the creator's catchphrases stay as they are.",
+    "kind": "script",
+    "language": "da-DK",
+    "minimumWords": 150,
+    "outputTokens": 135,
+    "progressionDefects": [],
+    "prompt": "Language of the script: Danish (Denmark). Write all of it in Danish (Denmark).\nWrite a talking video script for TikTok.\nBlocks, in this order: Hook → Body → CTA.\nWhat each block does: Hook: grab attention in 3 seconds with the main promise. Body: explain the one idea in small, concrete steps. CTA: one clear action.\nLength: between 150 and 225 spoken words in total.\nMake it worth at least 150 words: give 3 concrete points. For each, name the real thing (an ingredient, a step, an amount, a tool, a place or an example the viewer can use) and say in one or two sentences why it helps. Never a vague point like “choose good ingredients” or “follow an easy recipe”.\nOpen with this line, as it is or adapted only to the creator's way of speaking: “Du behøver ikke løbe hurtigt for at være en løber.” It is the hook: write no other before it.\nThe video: Kom i gang med at løbe\nAngle: Forklar, hvordan man kommer i gang med at løbe uden at blive skadet.\nOpen with: “Du behøver ikke løbe hurtigt for at være en løber.”\nFollow this angle all the way through: Forklar, hvordan man kommer i gang med at løbe uden at blive skadet.",
+    "promptTokens": 301,
+    "responseCap": 1025,
+    "run": "sweep-on",
+    "schemaTokens": 271,
+    "seconds": 8.295126834,
+    "text": "Du behøver ikke løbe hurtigt for at være en løber. [smile] Kom i gang med at løbe uden skader – det er lettere, end du tror. [pause]\n\nStart med korte ture for at styrke kroppen. Brug gode løbebeklædninger for at mindske slid. Vælg en flad bane for at reducere risikoen for skader. [pause] Det hjælper at lave en plan. [look at camera] Hold fokus på fremskridt, ikke perfektion. [pause]\n\nKom i gang – kommentér nedenfor, hvad du vil løbe for. [pause]",
+    "title": "Start at løbe uden skader",
+    "violations": [
+      "tooShort"
+    ],
+    "voiceUse": "none"
+  },
+  {
+    "askedWords": [
+      150,
+      225
+    ],
+    "attempts": 1,
+    "condition": "sweep",
+    "contextSize": 4096,
+    "countMilliseconds": 138.012458,
+    "expandedBlocks": 0,
+    "firstResponse": 2.600341041,
+    "hasBrief": false,
+    "idea": "5 Fehler, die deinen Muskelaufbau ausbremsen",
+    "index": 0,
+    "instructionTokens": 324,
+    "instructions": "You write short-form video scripts that a creator reads from a teleprompter while filming themselves.\nWrite in the first person, as the creator, in natural spoken language with short sentences.\nFill in a short title and the script blocks. Block text is only what the creator says: no headings, labels, markdown or quotes around it.\nAdd short stage cues in square brackets where they help delivery, like [pause], [smile] or [look at camera]. Never put spoken words inside brackets.\nPlatform: TikTok, vertical and fast. Hook in the first 3 seconds, one idea only, short punchy lines spoken like a friend; end with one easy action (comment, follow or save).\nNever invent personal stories, clients, results, numbers or credentials for the creator: speak from general experience unless the idea gives the details. Never say the creator did, tried, discovered or was saved by something unless the idea says so.\nBe accurate. State only facts you are confident about; when unsure of a date, name or number, say it more generally instead of inventing it.\nWrite the title and every block in German (Germany).\nThe script is in German (Germany), not in English: write it in German (Germany) even though these instructions are in English. Only the creator's catchphrases stay as they are.",
+    "kind": "script",
+    "language": "de-DE",
+    "minimumWords": 150,
+    "outputTokens": 130,
+    "progressionDefects": [],
+    "prompt": "Language of the script: German (Germany). Write all of it in German (Germany).\nWrite a talking video script for TikTok.\nBlocks, in this order: Hook → Body → CTA.\nWhat each block does: Hook: grab attention in 3 seconds with the main promise. Body: explain the one idea in small, concrete steps. CTA: one clear action.\nLength: between 150 and 225 spoken words in total.\nMake it worth at least 150 words: give 5 concrete points. For each, name the real thing (an ingredient, a step, an amount, a tool, a place or an example the viewer can use) and say in one or two sentences why it helps. Never a vague point like “choose good ingredients” or “follow an easy recipe”.\nOpen with a hook that works in the first 3 seconds. The first words are already about the subject (a claim, a question or a number), never a greeting or a filler word such as “hey”, “hi”, “so” or “look”.\nThe video: 5 Fehler, die deinen Muskelaufbau ausbremsen",
+    "promptTokens": 242,
+    "responseCap": 1025,
+    "run": "sweep-on",
+    "schemaTokens": 271,
+    "seconds": 9.742723417,
+    "text": "Du hast keine Muskeln? 5 Fehler bremsen dich aus. [Pause]\n\nZuerst: Zu viel Gewicht. Ein Satz mit 8 Kilogramm kann deine Technik stören. Zweitens: Keine Erholung. Nach dem Training braucht dein Körper Zeit zur Regeneration. Drittens: Falsche Ernährung. Zu viele Kohlenhydrate bremsen den Fortschritt. Viertens: Kein Krafttraining. Alle Muskeln brauchen Reiz. Fünftens: Kein Fortschritt. Konsequente Übungen sind entscheidend. [Look at camera]\n\nSag in die Kommentare, welcher Fehler dich stört. [Smile]",
+    "title": "5 Fehler beim Muskelaufbau vermeiden",
+    "violations": [
+      "tooShort"
+    ],
+    "voiceUse": "none"
+  },
+  {
+    "askedWords": [
+      150,
+      225
+    ],
+    "attempts": 1,
+    "condition": "sweep",
+    "contextSize": 4096,
+    "countMilliseconds": 340.172667,
+    "expandedBlocks": 0,
+    "firstResponse": 2.299186209,
+    "hasBrief": true,
+    "idea": "Muskelkater: weitertrainieren oder Pause?\nAngle: Räum mit dem Mythos auf, dass Muskelkater ein gutes Zeichen ist.\nOpen with: “Muskelkater heißt nicht, dass dein Training gut war.”",
+    "index": 1,
+    "instructionTokens": 324,
+    "instructions": "You write short-form video scripts that a creator reads from a teleprompter while filming themselves.\nWrite in the first person, as the creator, in natural spoken language with short sentences.\nFill in a short title and the script blocks. Block text is only what the creator says: no headings, labels, markdown or quotes around it.\nAdd short stage cues in square brackets where they help delivery, like [pause], [smile] or [look at camera]. Never put spoken words inside brackets.\nPlatform: TikTok, vertical and fast. Hook in the first 3 seconds, one idea only, short punchy lines spoken like a friend; end with one easy action (comment, follow or save).\nNever invent personal stories, clients, results, numbers or credentials for the creator: speak from general experience unless the idea gives the details. Never say the creator did, tried, discovered or was saved by something unless the idea says so.\nBe accurate. State only facts you are confident about; when unsure of a date, name or number, say it more generally instead of inventing it.\nWrite the title and every block in German (Germany).\nThe script is in German (Germany), not in English: write it in German (Germany) even though these instructions are in English. Only the creator's catchphrases stay as they are.",
+    "kind": "script",
+    "language": "de-DE",
+    "minimumWords": 150,
+    "outputTokens": 163,
+    "progressionDefects": [],
+    "prompt": "Language of the script: German (Germany). Write all of it in German (Germany).\nWrite a talking video script for TikTok.\nBlocks, in this order: Hook → Body → CTA.\nWhat each block does: Hook: grab attention in 3 seconds with the main promise. Body: explain the one idea in small, concrete steps. CTA: one clear action.\nLength: between 150 and 225 spoken words in total.\nMake it worth at least 150 words: give 3 concrete points. For each, name the real thing (an ingredient, a step, an amount, a tool, a place or an example the viewer can use) and say in one or two sentences why it helps. Never a vague point like “choose good ingredients” or “follow an easy recipe”.\nOpen with this line, as it is or adapted only to the creator's way of speaking: “Muskelkater heißt nicht, dass dein Training gut war.” It is the hook: write no other before it.\nThe video: Muskelkater: weitertrainieren oder Pause?\nAngle: Räum mit dem Mythos auf, dass Muskelkater ein gutes Zeichen ist.\nOpen with: “Muskelkater heißt nicht, dass dein Training gut war.”\nFollow this angle all the way through: Räum mit dem Mythos auf, dass Muskelkater ein gutes Zeichen ist.",
+    "promptTokens": 297,
+    "responseCap": 1025,
+    "run": "sweep-on",
+    "schemaTokens": 271,
+    "seconds": 18.041584,
+    "text": "Muskelkater heißt nicht, dass dein Training gut war. [pause] Klar: Das ist ein Mythos. [look at camera]\n\nIch hole ein Beispiel raus: Eine ausreichende Erholungszeit ist entscheidend. [pause] Stell dir vor: 48 Stunden Pause stärkt die Muskelfasern. [smile] Ein weiteres Zeichen: Flüssigkeitsaufnahme hilft beim Abbau. [pause] Achte darauf: 1,5 Liter Wasser täglich unterstützen die Regeneration. [emphasis] Schließlich: Eine gezielte Ernährung verhindert Muskelkater. [pause] Denk daran: Proteinreiche Mahlzeiten reduzieren den Abbau. [look at camera]\n\nLass es mir wissen: Welche Pause hast du gemacht? [pause] Kommentiere unten. [follow]",
+    "title": "Muskelkater: Pause statt weitermachen",
+    "violations": [
+      "tooShort"
+    ],
+    "voiceUse": "none"
+  },
+  {
+    "askedWords": [
+      150,
+      225
+    ],
+    "attempts": 1,
+    "condition": "sweep",
+    "contextSize": 4096,
+    "countMilliseconds": 88.12075,
+    "expandedBlocks": 0,
+    "firstResponse": 2.225987625,
+    "hasBrief": false,
+    "idea": "5 habits that quietly waste your mornings",
+    "index": 0,
+    "instructionTokens": 284,
+    "instructions": "You write short-form video scripts that a creator reads from a teleprompter while filming themselves.\nWrite in the first person, as the creator, in natural spoken language with short sentences.\nFill in a short title and the script blocks. Block text is only what the creator says: no headings, labels, markdown or quotes around it.\nAdd short stage cues in square brackets where they help delivery, like [pause], [smile] or [look at camera]. Never put spoken words inside brackets.\nPlatform: TikTok, vertical and fast. Hook in the first 3 seconds, one idea only, short punchy lines spoken like a friend; end with one easy action (comment, follow or save).\nNever invent personal stories, clients, results, numbers or credentials for the creator: speak from general experience unless the idea gives the details. Never say the creator did, tried, discovered or was saved by something unless the idea says so.\nBe accurate. State only facts you are confident about; when unsure of a date, name or number, say it more generally instead of inventing it.\nWrite the title and every block in English (United States).",
+    "kind": "script",
+    "language": "en-US",
+    "minimumWords": 150,
+    "outputTokens": 92,
+    "progressionDefects": [],
+    "prompt": "Language of the script: English (United States). Write all of it in English (United States).\nWrite a list of tips script for TikTok.\nBlocks, in this order: Hook → Tips → CTA.\nWhat each block does: Hook: say how many tips and what they give. Tips: each tip is one sentence plus one reason. CTA: ask them to save it or share their own tip.\nLength: between 150 and 225 spoken words in total.\nMake it worth at least 150 words: give 5 concrete points. For each, name the real thing (an ingredient, a step, an amount, a tool, a place or an example the viewer can use) and say in one or two sentences why it helps. Never a vague point like “choose good ingredients” or “follow an easy recipe”.\nOpen with a hook that works in the first 3 seconds. The first words are already about the subject (a claim, a question or a number), never a greeting or a filler word such as “hey”, “hi”, “so” or “look”.\nThe video: 5 habits that quietly waste your mornings",
+    "promptTokens": 245,
+    "responseCap": 1025,
+    "run": "sweep-on",
+    "schemaTokens": 271,
+    "seconds": 14.188327333,
+    "text": "Five tiny habits cost you hours. I’ll show you five ways they drain your morning.\n\nUse a timer for 10 minutes before scrolling. It blocks mindless browsing. Drink a glass of water right away. Hydration resets focus. Store clothes near the door. Convenience saves time. Prep snacks the night before. Speed prevents hunger drama. Clean counters first thing. Order builds calm.\n\nSave this list. Share your own morning tip below.",
+    "title": "5 Morning Habits That Waste Your Day",
+    "violations": [
+      "tooShort"
+    ],
+    "voiceUse": "none"
+  },
+  {
+    "askedWords": [
+      401,
+      501
+    ],
+    "condition": "sweep",
+    "contextSize": 4096,
+    "countMilliseconds": 86.913875,
+    "emptyReason": "the answer was not a script: 1 blocks, 57 words, cap 1800 tokens; [Hook:57]; title 4w, statesFacts missing",
+    "failure": "emptyResponse",
+    "hasBrief": true,
+    "idea": "The two-minute desk reset\nAngle: Show how to clear your desk in two minutes at the end of the day.\nOpen with: “A messy desk steals more focus than you think.”",
+    "index": 1,
+    "instructionTokens": 284,
+    "instructions": "You write short-form video scripts that a creator reads from a teleprompter while filming themselves.\nWrite in the first person, as the creator, in natural spoken language with short sentences.\nFill in a short title and the script blocks. Block text is only what the creator says: no headings, labels, markdown or quotes around it.\nAdd short stage cues in square brackets where they help delivery, like [pause], [smile] or [look at camera]. Never put spoken words inside brackets.\nPlatform: TikTok, vertical and fast. Hook in the first 3 seconds, one idea only, short punchy lines spoken like a friend; end with one easy action (comment, follow or save).\nNever invent personal stories, clients, results, numbers or credentials for the creator: speak from general experience unless the idea gives the details. Never say the creator did, tried, discovered or was saved by something unless the idea says so.\nBe accurate. State only facts you are confident about; when unsure of a date, name or number, say it more generally instead of inventing it.\nWrite the title and every block in English (United States).",
+    "kind": "script",
+    "language": "en-US",
+    "minimumWords": 270,
+    "prompt": "Language of the script: English (United States). Write all of it in English (United States).\nWrite a talking video script for TikTok.\nBlocks, in this order: Hook → Body → CTA.\nWhat each block does: Hook: grab attention in 3 seconds with the main promise. Body: explain the one idea in small, concrete steps. CTA: one clear action.\nLength: between 401 and 501 spoken words in total.\nDo not stop early: the script must be at least 401 words, so write every block in full, with many complete sentences each.\nOpen with this line, as it is or adapted only to the creator's way of speaking: “A messy desk steals more focus than you think.” It is the hook: write no other before it.\nThe video: The two-minute desk reset\nAngle: Show how to clear your desk in two minutes at the end of the day.\nOpen with: “A messy desk steals more focus than you think.”\nFollow this angle all the way through: Show how to clear your desk in two minutes at the end of the day.",
+    "promptTokens": 241,
+    "responseCap": 1800,
+    "run": "sweep-on",
+    "schemaTokens": 271,
+    "seconds": 80.1371015
+  },
+  {
+    "askedWords": [
+      150,
+      225
+    ],
+    "attempts": 1,
+    "condition": "sweep",
+    "contextSize": 4096,
+    "countMilliseconds": 548.658875,
+    "expandedBlocks": 0,
+    "firstResponse": 2.3924695,
+    "hasBrief": false,
+    "idea": "4 errores que arruinan tu tortilla de patatas",
+    "index": 0,
+    "instructionTokens": 324,
+    "instructions": "You write short-form video scripts that a creator reads from a teleprompter while filming themselves.\nWrite in the first person, as the creator, in natural spoken language with short sentences.\nFill in a short title and the script blocks. Block text is only what the creator says: no headings, labels, markdown or quotes around it.\nAdd short stage cues in square brackets where they help delivery, like [pause], [smile] or [look at camera]. Never put spoken words inside brackets.\nPlatform: TikTok, vertical and fast. Hook in the first 3 seconds, one idea only, short punchy lines spoken like a friend; end with one easy action (comment, follow or save).\nNever invent personal stories, clients, results, numbers or credentials for the creator: speak from general experience unless the idea gives the details. Never say the creator did, tried, discovered or was saved by something unless the idea says so.\nBe accurate. State only facts you are confident about; when unsure of a date, name or number, say it more generally instead of inventing it.\nWrite the title and every block in Spanish (Spain).\nThe script is in Spanish (Spain), not in English: write it in Spanish (Spain) even though these instructions are in English. Only the creator's catchphrases stay as they are.",
+    "kind": "script",
+    "language": "es-ES",
+    "minimumWords": 150,
+    "outputTokens": 90,
+    "progressionDefects": [],
+    "prompt": "Language of the script: Spanish (Spain). Write all of it in Spanish (Spain).\nWrite a talking video script for TikTok.\nBlocks, in this order: Hook → Body → CTA.\nWhat each block does: Hook: grab attention in 3 seconds with the main promise. Body: explain the one idea in small, concrete steps. CTA: one clear action.\nLength: between 150 and 225 spoken words in total.\nMake it worth at least 150 words: give 4 concrete points. For each, name the real thing (an ingredient, a step, an amount, a tool, a place or an example the viewer can use) and say in one or two sentences why it helps. Never a vague point like “choose good ingredients” or “follow an easy recipe”.\nOpen with a hook that works in the first 3 seconds. The first words are already about the subject (a claim, a question or a number), never a greeting or a filler word such as “hey”, “hi”, “so” or “look”.\nThe video: 4 errores que arruinan tu tortilla de patatas",
+    "promptTokens": 242,
+    "responseCap": 1025,
+    "run": "sweep-on",
+    "schemaTokens": 271,
+    "seconds": 14.9781415,
+    "text": "Tienes 5 minutos para saber qué arruina tu tortilla... [mirar cámara]\n\nPrimero, usar demasiada cebolla cambia el sabor original. Luego, cocinarla a fuego lento hace que se seque. Después, añadir queso en exceso hace que pierda textura. Por último, usar agua en lugar de aceite impide que quede dorada. [gesticar]\n\nComenta cuál error ves en tu cocina. [sonrisa]",
+    "title": "4 errores en tu tortilla de patatas",
+    "violations": [
+      "tooShort"
+    ],
+    "voiceUse": "none"
+  },
+  {
+    "askedWords": [
+      150,
+      225
+    ],
+    "attempts": 1,
+    "condition": "sweep",
+    "contextSize": 4096,
+    "countMilliseconds": 358.393958,
+    "expandedBlocks": 0,
+    "firstResponse": 1.921525833,
+    "hasBrief": true,
+    "idea": "Cómo gastar menos en el súper\nAngle: Da tres trucos sencillos para ahorrar en la compra de cada semana.\nOpen with: “La lista de la compra te puede ahorrar más de lo que crees.”",
+    "index": 1,
+    "instructionTokens": 324,
+    "instructions": "You write short-form video scripts that a creator reads from a teleprompter while filming themselves.\nWrite in the first person, as the creator, in natural spoken language with short sentences.\nFill in a short title and the script blocks. Block text is only what the creator says: no headings, labels, markdown or quotes around it.\nAdd short stage cues in square brackets where they help delivery, like [pause], [smile] or [look at camera]. Never put spoken words inside brackets.\nPlatform: TikTok, vertical and fast. Hook in the first 3 seconds, one idea only, short punchy lines spoken like a friend; end with one easy action (comment, follow or save).\nNever invent personal stories, clients, results, numbers or credentials for the creator: speak from general experience unless the idea gives the details. Never say the creator did, tried, discovered or was saved by something unless the idea says so.\nBe accurate. State only facts you are confident about; when unsure of a date, name or number, say it more generally instead of inventing it.\nWrite the title and every block in Spanish (Spain).\nThe script is in Spanish (Spain), not in English: write it in Spanish (Spain) even though these instructions are in English. Only the creator's catchphrases stay as they are.",
+    "kind": "script",
+    "language": "es-ES",
+    "minimumWords": 150,
+    "outputTokens": 98,
+    "progressionDefects": [],
+    "prompt": "Language of the script: Spanish (Spain). Write all of it in Spanish (Spain).\nWrite a talking video script for TikTok.\nBlocks, in this order: Hook → Body → CTA.\nWhat each block does: Hook: grab attention in 3 seconds with the main promise. Body: explain the one idea in small, concrete steps. CTA: one clear action.\nLength: between 150 and 225 spoken words in total.\nMake it worth at least 150 words: give 3 concrete points. For each, name the real thing (an ingredient, a step, an amount, a tool, a place or an example the viewer can use) and say in one or two sentences why it helps. Never a vague point like “choose good ingredients” or “follow an easy recipe”.\nOpen with this line, as it is or adapted only to the creator's way of speaking: “La lista de la compra te puede ahorrar más de lo que crees.” It is the hook: write no other before it.\nThe video: Cómo gastar menos en el súper\nAngle: Da tres trucos sencillos para ahorrar en la compra de cada semana.\nOpen with: “La lista de la compra te puede ahorrar más de lo que crees.”\nFollow this angle all the way through: Da tres trucos sencillos para ahorrar en la compra de cada semana.",
+    "promptTokens": 293,
+    "responseCap": 1025,
+    "run": "sweep-on",
+    "schemaTokens": 271,
+    "seconds": 15.535780125,
+    "text": "La lista de la compra te puede ahorrar más de lo que crees. [smile] Cambiar una cosa pequeña puede hacer una gran diferencia. [pause]\n\nPrimero, comprar frutas locales evita transportar largas distancias. Segundo, usar un envase reutilizable reduce gastos de plástico. Tercero, comparar precios por marca ayuda a elegir lo mejor. [look at camera]\n\nComenta cuál es tu truco favorito. [pause] ¡Sigue este contenido! [smile]",
+    "title": "Ahorrar en supermercado: 3 trucos",
+    "violations": [
+      "tooShort"
+    ],
+    "voiceUse": "none"
+  },
+  {
+    "askedWords": [
+      150,
+      225
+    ],
+    "attempts": 1,
+    "condition": "sweep",
+    "contextSize": 4096,
+    "countMilliseconds": 126.28979100000001,
+    "expandedBlocks": 0,
+    "firstResponse": 2.513216333,
+    "hasBrief": false,
+    "idea": "3 erreurs qui font que tu oublies tout ce que tu révises",
+    "index": 0,
+    "instructionTokens": 324,
+    "instructions": "You write short-form video scripts that a creator reads from a teleprompter while filming themselves.\nWrite in the first person, as the creator, in natural spoken language with short sentences.\nFill in a short title and the script blocks. Block text is only what the creator says: no headings, labels, markdown or quotes around it.\nAdd short stage cues in square brackets where they help delivery, like [pause], [smile] or [look at camera]. Never put spoken words inside brackets.\nPlatform: TikTok, vertical and fast. Hook in the first 3 seconds, one idea only, short punchy lines spoken like a friend; end with one easy action (comment, follow or save).\nNever invent personal stories, clients, results, numbers or credentials for the creator: speak from general experience unless the idea gives the details. Never say the creator did, tried, discovered or was saved by something unless the idea says so.\nBe accurate. State only facts you are confident about; when unsure of a date, name or number, say it more generally instead of inventing it.\nWrite the title and every block in French (France).\nThe script is in French (France), not in English: write it in French (France) even though these instructions are in English. Only the creator's catchphrases stay as they are.",
+    "kind": "script",
+    "language": "fr-FR",
+    "minimumWords": 150,
+    "outputTokens": 99,
+    "progressionDefects": [],
+    "prompt": "Language of the script: French (France). Write all of it in French (France).\nWrite a talking video script for TikTok.\nBlocks, in this order: Hook → Body → CTA.\nWhat each block does: Hook: grab attention in 3 seconds with the main promise. Body: explain the one idea in small, concrete steps. CTA: one clear action.\nLength: between 150 and 225 spoken words in total.\nMake it worth at least 150 words: give 3 concrete points. For each, name the real thing (an ingredient, a step, an amount, a tool, a place or an example the viewer can use) and say in one or two sentences why it helps. Never a vague point like “choose good ingredients” or “follow an easy recipe”.\nOpen with a hook that works in the first 3 seconds. The first words are already about the subject (a claim, a question or a number), never a greeting or a filler word such as “hey”, “hi”, “so” or “look”.\nThe video: 3 erreurs qui font que tu oublies tout ce que tu révises",
+    "promptTokens": 246,
+    "responseCap": 1025,
+    "run": "sweep-on",
+    "schemaTokens": 271,
+    "seconds": 8.22329275,
+    "text": "Tu révises mais tout disparaît ? [pause] Voici 3 erreurs qui freinent la concentration.\n\nTu lis trop de textes sans faire de pauses entre les sujets. La mémoire peine à retenir. [smile] Tu utilises des notes sans les organiser. Les idées se perdent. [look at camera] Tu révises dans un endroit trop bruyant. Le cerveau ne peut pas se concentrer. [pause]\n\nTeste ces conseils et laisse un commentaire.",
+    "title": "3 erreurs qui sabotent la révision",
+    "violations": [
+      "tooShort"
+    ],
+    "voiceUse": "none"
+  },
+  {
+    "askedWords": [
+      150,
+      225
+    ],
+    "attempts": 1,
+    "condition": "sweep",
+    "contextSize": 4096,
+    "countMilliseconds": 312.369666,
+    "expandedBlocks": 0,
+    "firstResponse": 2.4079553750000002,
+    "hasBrief": true,
+    "idea": "La méthode Pomodoro, ça marche vraiment ?\nAngle: Compare des révisions par blocs de 25 minutes et d'une traite.\nOpen with: “Réviser quatre heures d'affilée, c'est souvent du temps perdu.”",
+    "index": 1,
+    "instructionTokens": 324,
+    "instructions": "You write short-form video scripts that a creator reads from a teleprompter while filming themselves.\nWrite in the first person, as the creator, in natural spoken language with short sentences.\nFill in a short title and the script blocks. Block text is only what the creator says: no headings, labels, markdown or quotes around it.\nAdd short stage cues in square brackets where they help delivery, like [pause], [smile] or [look at camera]. Never put spoken words inside brackets.\nPlatform: TikTok, vertical and fast. Hook in the first 3 seconds, one idea only, short punchy lines spoken like a friend; end with one easy action (comment, follow or save).\nNever invent personal stories, clients, results, numbers or credentials for the creator: speak from general experience unless the idea gives the details. Never say the creator did, tried, discovered or was saved by something unless the idea says so.\nBe accurate. State only facts you are confident about; when unsure of a date, name or number, say it more generally instead of inventing it.\nWrite the title and every block in French (France).\nThe script is in French (France), not in English: write it in French (France) even though these instructions are in English. Only the creator's catchphrases stay as they are.",
+    "kind": "script",
+    "language": "fr-FR",
+    "minimumWords": 150,
+    "outputTokens": 131,
+    "progressionDefects": [],
+    "prompt": "Language of the script: French (France). Write all of it in French (France).\nWrite a talking video script for TikTok.\nBlocks, in this order: Hook → Body → CTA.\nWhat each block does: Hook: grab attention in 3 seconds with the main promise. Body: explain the one idea in small, concrete steps. CTA: one clear action.\nLength: between 150 and 225 spoken words in total.\nMake it worth at least 150 words: give 3 concrete points. For each, name the real thing (an ingredient, a step, an amount, a tool, a place or an example the viewer can use) and say in one or two sentences why it helps. Never a vague point like “choose good ingredients” or “follow an easy recipe”.\nOpen with this line, as it is or adapted only to the creator's way of speaking: “Réviser quatre heures d'affilée, c'est souvent du temps perdu.” It is the hook: write no other before it.\nThe video: La méthode Pomodoro, ça marche vraiment ?\nAngle: Compare des révisions par blocs de 25 minutes et d'une traite.\nOpen with: “Réviser quatre heures d'affilée, c'est souvent du temps perdu.”\nFollow this angle all the way through: Compare des révisions par blocs de 25 minutes et d'une traite.",
+    "promptTokens": 307,
+    "responseCap": 1025,
+    "run": "sweep-on",
+    "schemaTokens": 271,
+    "seconds": 16.309155125,
+    "text": "Réviser quatre heures d'affilée, c'est souvent du temps perdu. [pause] Comparez des révisions par blocs de 25 minutes et d'une traite. [œil sur l'écran]\n\nUtilisez une pause de 5 minutes entre chaque session pour rester concentré. [pause] Essayez de visualiser chaque bloc comme une étape clé. [regard direct] Récupérez 15 minutes de repos pour éviter l'épuisement. [accent] Optez pour un espace calme pour mieux réfléchir. [confiance]\n\nEssayez et laissez un commentaire. [simple sourire]",
+    "title": "La méthode Pomodoro : efficacité prouvée",
+    "violations": [
+      "tooShort"
+    ],
+    "voiceUse": "none"
+  },
+  {
+    "askedWords": [
+      150,
+      225
+    ],
+    "condition": "sweep",
+    "contextSize": 4096,
+    "countMilliseconds": 600.069541,
+    "emptyReason": "the answer was not a script: 1 blocks, 57 words, cap 1800 tokens; [Hook:57]; title 4w, statesFacts missing",
+    "failure": "unsupportedLanguage",
+    "hasBrief": false,
+    "idea": "वज़न कम करते समय की जाने वाली 3 सबसे बड़ी गलतियाँ",
+    "index": 0,
+    "instructionTokens": 324,
+    "instructions": "You write short-form video scripts that a creator reads from a teleprompter while filming themselves.\nWrite in the first person, as the creator, in natural spoken language with short sentences.\nFill in a short title and the script blocks. Block text is only what the creator says: no headings, labels, markdown or quotes around it.\nAdd short stage cues in square brackets where they help delivery, like [pause], [smile] or [look at camera]. Never put spoken words inside brackets.\nPlatform: TikTok, vertical and fast. Hook in the first 3 seconds, one idea only, short punchy lines spoken like a friend; end with one easy action (comment, follow or save).\nNever invent personal stories, clients, results, numbers or credentials for the creator: speak from general experience unless the idea gives the details. Never say the creator did, tried, discovered or was saved by something unless the idea says so.\nBe accurate. State only facts you are confident about; when unsure of a date, name or number, say it more generally instead of inventing it.\nWrite the title and every block in Hindi (India).\nThe script is in Hindi (India), not in English: write it in Hindi (India) even though these instructions are in English. Only the creator's catchphrases stay as they are.",
+    "kind": "script",
+    "language": "hi-IN",
+    "minimumWords": 150,
+    "prompt": "Language of the script: Hindi (India). Write all of it in Hindi (India).\nWrite a talking video script for TikTok.\nBlocks, in this order: Hook → Body → CTA.\nWhat each block does: Hook: grab attention in 3 seconds with the main promise. Body: explain the one idea in small, concrete steps. CTA: one clear action.\nLength: between 150 and 225 spoken words in total.\nMake it worth at least 150 words: give 3 concrete points. For each, name the real thing (an ingredient, a step, an amount, a tool, a place or an example the viewer can use) and say in one or two sentences why it helps. Never a vague point like “choose good ingredients” or “follow an easy recipe”.\nOpen with a hook that works in the first 3 seconds. The first words are already about the subject (a claim, a question or a number), never a greeting or a filler word such as “hey”, “hi”, “so” or “look”.\nThe video: वज़न कम करते समय की जाने वाली 3 सबसे बड़ी गलतियाँ",
+    "promptTokens": 244,
+    "responseCap": 1025,
+    "run": "sweep-on",
+    "schemaTokens": 271,
+    "seconds": 0.00221725
+  },
+  {
+    "askedWords": [
+      150,
+      225
+    ],
+    "condition": "sweep",
+    "contextSize": 4096,
+    "countMilliseconds": 353.51075,
+    "emptyReason": "the answer was not a script: 1 blocks, 57 words, cap 1800 tokens; [Hook:57]; title 4w, statesFacts missing",
+    "failure": "unsupportedLanguage",
+    "hasBrief": true,
+    "idea": "पाँच मिनट में हेल्दी नाश्ता\nAngle: पाँच मिनट में बनने वाला एक आसान और पौष्टिक नाश्ता बनाकर दिखाइए।\nOpen with: “सुबह जल्दी हो, तब भी नाश्ता छोड़ने की ज़रूरत नहीं है।”",
+    "index": 1,
+    "instructionTokens": 324,
+    "instructions": "You write short-form video scripts that a creator reads from a teleprompter while filming themselves.\nWrite in the first person, as the creator, in natural spoken language with short sentences.\nFill in a short title and the script blocks. Block text is only what the creator says: no headings, labels, markdown or quotes around it.\nAdd short stage cues in square brackets where they help delivery, like [pause], [smile] or [look at camera]. Never put spoken words inside brackets.\nPlatform: TikTok, vertical and fast. Hook in the first 3 seconds, one idea only, short punchy lines spoken like a friend; end with one easy action (comment, follow or save).\nNever invent personal stories, clients, results, numbers or credentials for the creator: speak from general experience unless the idea gives the details. Never say the creator did, tried, discovered or was saved by something unless the idea says so.\nBe accurate. State only facts you are confident about; when unsure of a date, name or number, say it more generally instead of inventing it.\nWrite the title and every block in Hindi (India).\nThe script is in Hindi (India), not in English: write it in Hindi (India) even though these instructions are in English. Only the creator's catchphrases stay as they are.",
+    "kind": "script",
+    "language": "hi-IN",
+    "minimumWords": 150,
+    "prompt": "Language of the script: Hindi (India). Write all of it in Hindi (India).\nWrite a talking video script for TikTok.\nBlocks, in this order: Hook → Body → CTA.\nWhat each block does: Hook: grab attention in 3 seconds with the main promise. Body: explain the one idea in small, concrete steps. CTA: one clear action.\nLength: between 150 and 225 spoken words in total.\nMake it worth at least 150 words: give 3 concrete points. For each, name the real thing (an ingredient, a step, an amount, a tool, a place or an example the viewer can use) and say in one or two sentences why it helps. Never a vague point like “choose good ingredients” or “follow an easy recipe”.\nOpen with this line, as it is or adapted only to the creator's way of speaking: “सुबह जल्दी हो, तब भी नाश्ता छोड़ने की ज़रूरत नहीं है।” It is the hook: write no other before it.\nThe video: पाँच मिनट में हेल्दी नाश्ता\nAngle: पाँच मिनट में बनने वाला एक आसान और पौष्टिक नाश्ता बनाकर दिखाइए।\nOpen with: “सुबह जल्दी हो, तब भी नाश्ता छोड़ने की ज़रूरत नहीं है।”\nFollow this angle all the way through: पाँच मिनट में बनने वाला एक आसान और पौष्टिक नाश्ता बनाकर दिखाइए।",
+    "promptTokens": 297,
+    "responseCap": 1025,
+    "run": "sweep-on",
+    "schemaTokens": 271,
+    "seconds": 0.001751541
+  },
+  {
+    "askedWords": [
+      150,
+      225
+    ],
+    "condition": "sweep",
+    "contextSize": 4096,
+    "countMilliseconds": 601.348875,
+    "emptyReason": "the answer was not a script: 1 blocks, 57 words, cap 1800 tokens; [Hook:57]; title 4w, statesFacts missing",
+    "failure": "unsupportedLanguage",
+    "hasBrief": false,
+    "idea": "5 kesalahan waktu liburan ke Bali yang bikin dompet jebol",
+    "index": 0,
+    "instructionTokens": 324,
+    "instructions": "You write short-form video scripts that a creator reads from a teleprompter while filming themselves.\nWrite in the first person, as the creator, in natural spoken language with short sentences.\nFill in a short title and the script blocks. Block text is only what the creator says: no headings, labels, markdown or quotes around it.\nAdd short stage cues in square brackets where they help delivery, like [pause], [smile] or [look at camera]. Never put spoken words inside brackets.\nPlatform: TikTok, vertical and fast. Hook in the first 3 seconds, one idea only, short punchy lines spoken like a friend; end with one easy action (comment, follow or save).\nNever invent personal stories, clients, results, numbers or credentials for the creator: speak from general experience unless the idea gives the details. Never say the creator did, tried, discovered or was saved by something unless the idea says so.\nBe accurate. State only facts you are confident about; when unsure of a date, name or number, say it more generally instead of inventing it.\nWrite the title and every block in Indonesian (Indonesia).\nThe script is in Indonesian (Indonesia), not in English: write it in Indonesian (Indonesia) even though these instructions are in English. Only the creator's catchphrases stay as they are.",
+    "kind": "script",
+    "language": "id-ID",
+    "minimumWords": 150,
+    "prompt": "Language of the script: Indonesian (Indonesia). Write all of it in Indonesian (Indonesia).\nWrite a talking video script for TikTok.\nBlocks, in this order: Hook → Body → CTA.\nWhat each block does: Hook: grab attention in 3 seconds with the main promise. Body: explain the one idea in small, concrete steps. CTA: one clear action.\nLength: between 150 and 225 spoken words in total.\nMake it worth at least 150 words: give 5 concrete points. For each, name the real thing (an ingredient, a step, an amount, a tool, a place or an example the viewer can use) and say in one or two sentences why it helps. Never a vague point like “choose good ingredients” or “follow an easy recipe”.\nOpen with a hook that works in the first 3 seconds. The first words are already about the subject (a claim, a question or a number), never a greeting or a filler word such as “hey”, “hi”, “so” or “look”.\nThe video: 5 kesalahan waktu liburan ke Bali yang bikin dompet jebol",
+    "promptTokens": 244,
+    "responseCap": 1025,
+    "run": "sweep-on",
+    "schemaTokens": 271,
+    "seconds": 0.0016885
+  },
+  {
+    "askedWords": [
+      150,
+      225
+    ],
+    "condition": "sweep",
+    "contextSize": 4096,
+    "countMilliseconds": 460.10450000000003,
+    "emptyReason": "the answer was not a script: 1 blocks, 57 words, cap 1800 tokens; [Hook:57]; title 4w, statesFacts missing",
+    "failure": "unsupportedLanguage",
+    "hasBrief": true,
+    "idea": "Packing satu ransel untuk seminggu\nAngle: Tunjukkan cara mengemas barang untuk seminggu cukup dalam satu ransel.\nOpen with: “Liburan seminggu cukup bawa satu ransel, serius.”",
+    "index": 1,
+    "instructionTokens": 324,
+    "instructions": "You write short-form video scripts that a creator reads from a teleprompter while filming themselves.\nWrite in the first person, as the creator, in natural spoken language with short sentences.\nFill in a short title and the script blocks. Block text is only what the creator says: no headings, labels, markdown or quotes around it.\nAdd short stage cues in square brackets where they help delivery, like [pause], [smile] or [look at camera]. Never put spoken words inside brackets.\nPlatform: TikTok, vertical and fast. Hook in the first 3 seconds, one idea only, short punchy lines spoken like a friend; end with one easy action (comment, follow or save).\nNever invent personal stories, clients, results, numbers or credentials for the creator: speak from general experience unless the idea gives the details. Never say the creator did, tried, discovered or was saved by something unless the idea says so.\nBe accurate. State only facts you are confident about; when unsure of a date, name or number, say it more generally instead of inventing it.\nWrite the title and every block in Indonesian (Indonesia).\nThe script is in Indonesian (Indonesia), not in English: write it in Indonesian (Indonesia) even though these instructions are in English. Only the creator's catchphrases stay as they are.",
+    "kind": "script",
+    "language": "id-ID",
+    "minimumWords": 150,
+    "prompt": "Language of the script: Indonesian (Indonesia). Write all of it in Indonesian (Indonesia).\nWrite a talking video script for TikTok.\nBlocks, in this order: Hook → Body → CTA.\nWhat each block does: Hook: grab attention in 3 seconds with the main promise. Body: explain the one idea in small, concrete steps. CTA: one clear action.\nLength: between 150 and 225 spoken words in total.\nMake it worth at least 150 words: give 3 concrete points. For each, name the real thing (an ingredient, a step, an amount, a tool, a place or an example the viewer can use) and say in one or two sentences why it helps. Never a vague point like “choose good ingredients” or “follow an easy recipe”.\nOpen with this line, as it is or adapted only to the creator's way of speaking: “Liburan seminggu cukup bawa satu ransel, serius.” It is the hook: write no other before it.\nThe video: Packing satu ransel untuk seminggu\nAngle: Tunjukkan cara mengemas barang untuk seminggu cukup dalam satu ransel.\nOpen with: “Liburan seminggu cukup bawa satu ransel, serius.”\nFollow this angle all the way through: Tunjukkan cara mengemas barang untuk seminggu cukup dalam satu ransel.",
+    "promptTokens": 292,
+    "responseCap": 1025,
+    "run": "sweep-on",
+    "schemaTokens": 271,
+    "seconds": 0.001721042
+  },
+  {
+    "askedWords": [
+      150,
+      225
+    ],
+    "attempts": 1,
+    "condition": "sweep",
+    "contextSize": 4096,
+    "countMilliseconds": 143.71204200000003,
+    "expandedBlocks": 0,
+    "firstResponse": 2.333039916,
+    "hasBrief": false,
+    "idea": "3 errori che rovinano la tua carbonara",
+    "index": 0,
+    "instructionTokens": 324,
+    "instructions": "You write short-form video scripts that a creator reads from a teleprompter while filming themselves.\nWrite in the first person, as the creator, in natural spoken language with short sentences.\nFill in a short title and the script blocks. Block text is only what the creator says: no headings, labels, markdown or quotes around it.\nAdd short stage cues in square brackets where they help delivery, like [pause], [smile] or [look at camera]. Never put spoken words inside brackets.\nPlatform: TikTok, vertical and fast. Hook in the first 3 seconds, one idea only, short punchy lines spoken like a friend; end with one easy action (comment, follow or save).\nNever invent personal stories, clients, results, numbers or credentials for the creator: speak from general experience unless the idea gives the details. Never say the creator did, tried, discovered or was saved by something unless the idea says so.\nBe accurate. State only facts you are confident about; when unsure of a date, name or number, say it more generally instead of inventing it.\nWrite the title and every block in Italian (Italy).\nThe script is in Italian (Italy), not in English: write it in Italian (Italy) even though these instructions are in English. Only the creator's catchphrases stay as they are.",
+    "kind": "script",
+    "language": "it-IT",
+    "minimumWords": 150,
+    "outputTokens": 93,
+    "progressionDefects": [],
+    "prompt": "Language of the script: Italian (Italy). Write all of it in Italian (Italy).\nWrite a talking video script for TikTok.\nBlocks, in this order: Hook → Body → CTA.\nWhat each block does: Hook: grab attention in 3 seconds with the main promise. Body: explain the one idea in small, concrete steps. CTA: one clear action.\nLength: between 150 and 225 spoken words in total.\nMake it worth at least 150 words: give 3 concrete points. For each, name the real thing (an ingredient, a step, an amount, a tool, a place or an example the viewer can use) and say in one or two sentences why it helps. Never a vague point like “choose good ingredients” or “follow an easy recipe”.\nOpen with a hook that works in the first 3 seconds. The first words are already about the subject (a claim, a question or a number), never a greeting or a filler word such as “hey”, “hi”, “so” or “look”.\nThe video: 3 errori che rovinano la tua carbonara",
+    "promptTokens": 241,
+    "responseCap": 1025,
+    "run": "sweep-on",
+    "schemaTokens": 271,
+    "seconds": 16.1048725,
+    "text": "Hai mai fatto la carbonara con troppe uova? [smirk] Ecco come evitare i disastri.\n\nPrima di tutto, usa solo 4 tuorli freschi. Questo regola il sapore. In secondo luogo, evita di cuocere troppo il formaggio. Così mantiene la cremosità. Infine, non usare il burro bollito. Questo cambia la consistenza. [nod]\n\nProva subito e lascia un commento.",
+    "title": "3 errori nella carbonara",
+    "violations": [
+      "tooShort"
+    ],
+    "voiceUse": "none"
+  },
+  {
+    "askedWords": [
+      150,
+      225
+    ],
+    "attempts": 1,
+    "condition": "sweep",
+    "contextSize": 4096,
+    "countMilliseconds": 335.70191700000004,
+    "expandedBlocks": 0,
+    "firstResponse": 2.609815958,
+    "hasBrief": true,
+    "idea": "Il caffè con la moka fatto bene\nAngle: Spiega passo per passo come preparare la moka senza bruciare il caffè.\nOpen with: “Se il tuo caffè sa di bruciato, il problema è la fiamma.”",
+    "index": 1,
+    "instructionTokens": 324,
+    "instructions": "You write short-form video scripts that a creator reads from a teleprompter while filming themselves.\nWrite in the first person, as the creator, in natural spoken language with short sentences.\nFill in a short title and the script blocks. Block text is only what the creator says: no headings, labels, markdown or quotes around it.\nAdd short stage cues in square brackets where they help delivery, like [pause], [smile] or [look at camera]. Never put spoken words inside brackets.\nPlatform: TikTok, vertical and fast. Hook in the first 3 seconds, one idea only, short punchy lines spoken like a friend; end with one easy action (comment, follow or save).\nNever invent personal stories, clients, results, numbers or credentials for the creator: speak from general experience unless the idea gives the details. Never say the creator did, tried, discovered or was saved by something unless the idea says so.\nBe accurate. State only facts you are confident about; when unsure of a date, name or number, say it more generally instead of inventing it.\nWrite the title and every block in Italian (Italy).\nThe script is in Italian (Italy), not in English: write it in Italian (Italy) even though these instructions are in English. Only the creator's catchphrases stay as they are.",
+    "kind": "script",
+    "language": "it-IT",
+    "minimumWords": 150,
+    "outputTokens": 120,
+    "progressionDefects": [],
+    "prompt": "Language of the script: Italian (Italy). Write all of it in Italian (Italy).\nWrite a talking video script for TikTok.\nBlocks, in this order: Hook → Body → CTA.\nWhat each block does: Hook: grab attention in 3 seconds with the main promise. Body: explain the one idea in small, concrete steps. CTA: one clear action.\nLength: between 150 and 225 spoken words in total.\nMake it worth at least 150 words: give 3 concrete points. For each, name the real thing (an ingredient, a step, an amount, a tool, a place or an example the viewer can use) and say in one or two sentences why it helps. Never a vague point like “choose good ingredients” or “follow an easy recipe”.\nOpen with this line, as it is or adapted only to the creator's way of speaking: “Se il tuo caffè sa di bruciato, il problema è la fiamma.” It is the hook: write no other before it.\nThe video: Il caffè con la moka fatto bene\nAngle: Spiega passo per passo come preparare la moka senza bruciare il caffè.\nOpen with: “Se il tuo caffè sa di bruciato, il problema è la fiamma.”\nFollow this angle all the way through: Spiega passo per passo come preparare la moka senza bruciare il caffè.",
+    "promptTokens": 302,
+    "responseCap": 1025,
+    "run": "sweep-on",
+    "schemaTokens": 271,
+    "seconds": 15.232420625,
+    "text": "Se il tuo caffè sa di bruciato, il problema è la fiamma. [pause] Preparare la moka bene è semplice. [smile]\n\nPrima cosa, usa acqua a temperatura ambiente. [look at camera] Così il caffè cuoce senza esaurire la fiamma. In secondo luogo, controlla la qualità della miscela. [pause] Ingredienti freschi danno risultati migliori. Infine, usa il filtro adatto. [gesto di conferma] Un filtro giusto evita bruciature. [emphasis]\n\nProva subito: commenta la tua esperienza. [pause]",
+    "title": "Moka perfetta, senza bruciature",
+    "violations": [
+      "tooShort"
+    ],
+    "voiceUse": "none"
+  },
+  {
+    "askedWords": [
+      150,
+      225
+    ],
+    "attempts": 1,
+    "condition": "sweep",
+    "contextSize": 4096,
+    "countMilliseconds": 586.712459,
+    "expandedBlocks": 0,
+    "firstResponse": 2.22444325,
+    "hasBrief": false,
+    "idea": "朝のスキンケアでやりがちな3つの間違い",
+    "index": 0,
+    "instructionTokens": 324,
+    "instructions": "You write short-form video scripts that a creator reads from a teleprompter while filming themselves.\nWrite in the first person, as the creator, in natural spoken language with short sentences.\nFill in a short title and the script blocks. Block text is only what the creator says: no headings, labels, markdown or quotes around it.\nAdd short stage cues in square brackets where they help delivery, like [pause], [smile] or [look at camera]. Never put spoken words inside brackets.\nPlatform: TikTok, vertical and fast. Hook in the first 3 seconds, one idea only, short punchy lines spoken like a friend; end with one easy action (comment, follow or save).\nNever invent personal stories, clients, results, numbers or credentials for the creator: speak from general experience unless the idea gives the details. Never say the creator did, tried, discovered or was saved by something unless the idea says so.\nBe accurate. State only facts you are confident about; when unsure of a date, name or number, say it more generally instead of inventing it.\nWrite the title and every block in Japanese (Japan).\nThe script is in Japanese (Japan), not in English: write it in Japanese (Japan) even though these instructions are in English. Only the creator's catchphrases stay as they are.",
+    "kind": "script",
+    "language": "ja-JP",
+    "minimumWords": 150,
+    "outputTokens": 96,
+    "progressionDefects": [],
+    "prompt": "Language of the script: Japanese (Japan). Write all of it in Japanese (Japan).\nWrite a talking video script for TikTok.\nBlocks, in this order: Hook → Body → CTA.\nWhat each block does: Hook: grab attention in 3 seconds with the main promise. Body: explain the one idea in small, concrete steps. CTA: one clear action.\nLength: between 150 and 225 spoken words in total.\nMake it worth at least 150 words: give 3 concrete points. For each, name the real thing (an ingredient, a step, an amount, a tool, a place or an example the viewer can use) and say in one or two sentences why it helps. Never a vague point like “choose good ingredients” or “follow an easy recipe”.\nOpen with a hook that works in the first 3 seconds. The first words are already about the subject (a claim, a question or a number), never a greeting or a filler word such as “hey”, “hi”, “so” or “look”.\nThe video: 朝のスキンケアでやりがちな3つの間違い",
+    "promptTokens": 241,
+    "responseCap": 1025,
+    "run": "sweep-on",
+    "schemaTokens": 271,
+    "seconds": 8.018495583,
+    "text": "朝のスキンケアでよくある間違い… [pause] 実は簡単だよ！\n\nまず、保湿剤の量を守る。 乾燥を防ぐために、少なすぎないことが大事だよ。 次に、洗顔の順番を間違わない。 外からの汚れをしっかり落とすのがポイント。 最後に、紫外線対策を忘れない。 朝の光を防ぐために、しっかりするんだよ。\n\nこの方法を試したら、コメントで教えてね！",
+    "title": "朝のスキンケアで避ける3つの間違い",
+    "violations": [
+      "tooShort"
+    ],
+    "voiceUse": "none"
+  },
+  {
+    "askedWords": [
+      150,
+      225
+    ],
+    "attempts": 1,
+    "condition": "sweep",
+    "contextSize": 4096,
+    "countMilliseconds": 372.61587499999996,
+    "expandedBlocks": 0,
+    "firstResponse": 1.862104083,
+    "hasBrief": true,
+    "idea": "日焼け止めの正しい塗り直し方\nAngle: メイクの上からでもできる塗り直しのコツを紹介する。\nOpen with: “日焼け止め、朝に塗っただけで安心していませんか？”",
+    "index": 1,
+    "instructionTokens": 324,
+    "instructions": "You write short-form video scripts that a creator reads from a teleprompter while filming themselves.\nWrite in the first person, as the creator, in natural spoken language with short sentences.\nFill in a short title and the script blocks. Block text is only what the creator says: no headings, labels, markdown or quotes around it.\nAdd short stage cues in square brackets where they help delivery, like [pause], [smile] or [look at camera]. Never put spoken words inside brackets.\nPlatform: TikTok, vertical and fast. Hook in the first 3 seconds, one idea only, short punchy lines spoken like a friend; end with one easy action (comment, follow or save).\nNever invent personal stories, clients, results, numbers or credentials for the creator: speak from general experience unless the idea gives the details. Never say the creator did, tried, discovered or was saved by something unless the idea says so.\nBe accurate. State only facts you are confident about; when unsure of a date, name or number, say it more generally instead of inventing it.\nWrite the title and every block in Japanese (Japan).\nThe script is in Japanese (Japan), not in English: write it in Japanese (Japan) even though these instructions are in English. Only the creator's catchphrases stay as they are.",
+    "kind": "script",
+    "language": "ja-JP",
+    "minimumWords": 150,
+    "outputTokens": 108,
+    "progressionDefects": [],
+    "prompt": "Language of the script: Japanese (Japan). Write all of it in Japanese (Japan).\nWrite a talking video script for TikTok.\nBlocks, in this order: Hook → Body → CTA.\nWhat each block does: Hook: grab attention in 3 seconds with the main promise. Body: explain the one idea in small, concrete steps. CTA: one clear action.\nLength: between 150 and 225 spoken words in total.\nMake it worth at least 150 words: give 3 concrete points. For each, name the real thing (an ingredient, a step, an amount, a tool, a place or an example the viewer can use) and say in one or two sentences why it helps. Never a vague point like “choose good ingredients” or “follow an easy recipe”.\nOpen with this line, as it is or adapted only to the creator's way of speaking: “日焼け止め、朝に塗っただけで安心していませんか？” It is the hook: write no other before it.\nThe video: 日焼け止めの正しい塗り直し方\nAngle: メイクの上からでもできる塗り直しのコツを紹介する。\nOpen with: “日焼け止め、朝に塗っただけで安心していませんか？”\nFollow this angle all the way through: メイクの上からでもできる塗り直しのコツを紹介する。",
+    "promptTokens": 286,
+    "responseCap": 1025,
+    "run": "sweep-on",
+    "schemaTokens": 271,
+    "seconds": 7.162565459,
+    "text": "日焼け止め、朝に塗っただけで安心していませんか？[pause] メイクの上からでもできる塗り直しを紹介します。[smile]\n\nまず、朝の塗り直しに使われるクリームがあると効果が高まります。[pause] 次に、顔の汚れを拭くためにティッシュを使うと、より均一な塗り直しができます。[pause] 最後に、顔を軽く押すだけで、塗り直しの面積を広げられます。[pause]\n\nこのコツを試してみて、コメントしてください。[look at camera]",
+    "title": "日焼け止め塗り直しコツ",
+    "violations": [
+      "tooShort"
+    ],
+    "voiceUse": "none"
+  },
+  {
+    "askedWords": [
+      150,
+      225
+    ],
+    "attempts": 1,
+    "condition": "sweep",
+    "contextSize": 4096,
+    "countMilliseconds": 135.993375,
+    "expandedBlocks": 0,
+    "firstResponse": 2.591545667,
+    "hasBrief": false,
+    "idea": "공부 집중력을 망치는 습관 3가지",
+    "index": 0,
+    "instructionTokens": 327,
+    "instructions": "You write short-form video scripts that a creator reads from a teleprompter while filming themselves.\nWrite in the first person, as the creator, in natural spoken language with short sentences.\nFill in a short title and the script blocks. Block text is only what the creator says: no headings, labels, markdown or quotes around it.\nAdd short stage cues in square brackets where they help delivery, like [pause], [smile] or [look at camera]. Never put spoken words inside brackets.\nPlatform: TikTok, vertical and fast. Hook in the first 3 seconds, one idea only, short punchy lines spoken like a friend; end with one easy action (comment, follow or save).\nNever invent personal stories, clients, results, numbers or credentials for the creator: speak from general experience unless the idea gives the details. Never say the creator did, tried, discovered or was saved by something unless the idea says so.\nBe accurate. State only facts you are confident about; when unsure of a date, name or number, say it more generally instead of inventing it.\nWrite the title and every block in Korean (South Korea).\nThe script is in Korean (South Korea), not in English: write it in Korean (South Korea) even though these instructions are in English. Only the creator's catchphrases stay as they are.",
+    "kind": "script",
+    "language": "ko-KR",
+    "minimumWords": 150,
+    "outputTokens": 133,
+    "progressionDefects": [],
+    "prompt": "Language of the script: Korean (South Korea). Write all of it in Korean (South Korea).\nWrite a talking video script for TikTok.\nBlocks, in this order: Hook → Body → CTA.\nWhat each block does: Hook: grab attention in 3 seconds with the main promise. Body: explain the one idea in small, concrete steps. CTA: one clear action.\nLength: between 150 and 225 spoken words in total.\nMake it worth at least 150 words: give 3 concrete points. For each, name the real thing (an ingredient, a step, an amount, a tool, a place or an example the viewer can use) and say in one or two sentences why it helps. Never a vague point like “choose good ingredients” or “follow an easy recipe”.\nOpen with a hook that works in the first 3 seconds. The first words are already about the subject (a claim, a question or a number), never a greeting or a filler word such as “hey”, “hi”, “so” or “look”.\nThe video: 공부 집중력을 망치는 습관 3가지",
+    "promptTokens": 242,
+    "responseCap": 1025,
+    "run": "sweep-on",
+    "schemaTokens": 271,
+    "seconds": 17.271511459,
+    "text": "10분 집중해야 하는데... 집중력이 안 돼? [걱정] 공부 집중력을 높이는 팁 알려줄게!\n\n첫째, 화면 앞에 책상에 있는 물건을 정리해봐. 공간이 깨끗하면 집중력이 좋아져. 둘째, 공부 중간에 짧게 스트레칭해봐. 몸을 움직이면 집중력이 높아져. 셋째, 공부 시간 동안 음악 소리를 끄고 집중해봐. 소음이 없으면 집중력이 높아져.\n\n이 팁이 도움이 됐다면 댓글에 적어줘! [참여] 좋아요와 팔로우도 잊지 마!",
+    "title": "공부 집중력 망치는 습관 3가지",
+    "violations": [
+      "tooShort"
+    ],
+    "voiceUse": "none"
+  },
+  {
+    "askedWords": [
+      150,
+      225
+    ],
+    "attempts": 1,
+    "condition": "sweep",
+    "contextSize": 4096,
+    "countMilliseconds": 87.234709,
+    "expandedBlocks": 0,
+    "firstResponse": 2.149340917,
+    "hasBrief": true,
+    "idea": "폰 없이 공부하는 법\nAngle: 공부할 때 휴대폰을 멀리 두는 간단한 방법을 알려 주세요.\nOpen with: “공부가 안 되는 건 의지가 약해서가 아닐 수도 있어요.”",
+    "index": 1,
+    "instructionTokens": 327,
+    "instructions": "You write short-form video scripts that a creator reads from a teleprompter while filming themselves.\nWrite in the first person, as the creator, in natural spoken language with short sentences.\nFill in a short title and the script blocks. Block text is only what the creator says: no headings, labels, markdown or quotes around it.\nAdd short stage cues in square brackets where they help delivery, like [pause], [smile] or [look at camera]. Never put spoken words inside brackets.\nPlatform: TikTok, vertical and fast. Hook in the first 3 seconds, one idea only, short punchy lines spoken like a friend; end with one easy action (comment, follow or save).\nNever invent personal stories, clients, results, numbers or credentials for the creator: speak from general experience unless the idea gives the details. Never say the creator did, tried, discovered or was saved by something unless the idea says so.\nBe accurate. State only facts you are confident about; when unsure of a date, name or number, say it more generally instead of inventing it.\nWrite the title and every block in Korean (South Korea).\nThe script is in Korean (South Korea), not in English: write it in Korean (South Korea) even though these instructions are in English. Only the creator's catchphrases stay as they are.",
+    "kind": "script",
+    "language": "ko-KR",
+    "minimumWords": 150,
+    "outputTokens": 121,
+    "progressionDefects": [],
+    "prompt": "Language of the script: Korean (South Korea). Write all of it in Korean (South Korea).\nWrite a talking video script for TikTok.\nBlocks, in this order: Hook → Body → CTA.\nWhat each block does: Hook: grab attention in 3 seconds with the main promise. Body: explain the one idea in small, concrete steps. CTA: one clear action.\nLength: between 150 and 225 spoken words in total.\nMake it worth at least 150 words: give 3 concrete points. For each, name the real thing (an ingredient, a step, an amount, a tool, a place or an example the viewer can use) and say in one or two sentences why it helps. Never a vague point like “choose good ingredients” or “follow an easy recipe”.\nOpen with this line, as it is or adapted only to the creator's way of speaking: “공부가 안 되는 건 의지가 약해서가 아닐 수도 있어요.” It is the hook: write no other before it.\nThe video: 폰 없이 공부하는 법\nAngle: 공부할 때 휴대폰을 멀리 두는 간단한 방법을 알려 주세요.\nOpen with: “공부가 안 되는 건 의지가 약해서가 아닐 수도 있어요.”\nFollow this angle all the way through: 공부할 때 휴대폰을 멀리 두는 간단한 방법을 알려 주세요.",
+    "promptTokens": 296,
+    "responseCap": 1025,
+    "run": "sweep-on",
+    "schemaTokens": 271,
+    "seconds": 14.74142,
+    "text": "공부가 안 되는 건 의지가 약해서가 아닐 수도 있어요. 공부할 때 휴대폰을 멀리 두는 간단한 방법을 알려 드릴게요. [smile]\n\n첫째, 공부 공간에 책상 위에 있는 스마트폰을 멀리 두는 거예요. 둘째, 공부 중간에 휴대폰을 잠깐 챙겨보는 습관을 끊어요. 셋째, 공부 시간 동안 휴대폰 화면을 보지 않도록 설정하는 것이 도움이 돼요. [pause]\n\n이 방법을 시도해 보세요. 좋아요와 댓글로 알려주세요. [look at camera]",
+    "title": "폰 없이 공부하는 법",
+    "violations": [
+      "tooShort"
+    ],
+    "voiceUse": "none"
+  },
+  {
+    "askedWords": [
+      150,
+      225
+    ],
+    "attempts": 1,
+    "condition": "sweep",
+    "contextSize": 4096,
+    "countMilliseconds": 137.725375,
+    "expandedBlocks": 0,
+    "firstResponse": 2.505834042,
+    "hasBrief": false,
+    "idea": "5 ting du må ha med på din første fjelltur",
+    "index": 0,
+    "instructionTokens": 333,
+    "instructions": "You write short-form video scripts that a creator reads from a teleprompter while filming themselves.\nWrite in the first person, as the creator, in natural spoken language with short sentences.\nFill in a short title and the script blocks. Block text is only what the creator says: no headings, labels, markdown or quotes around it.\nAdd short stage cues in square brackets where they help delivery, like [pause], [smile] or [look at camera]. Never put spoken words inside brackets.\nPlatform: TikTok, vertical and fast. Hook in the first 3 seconds, one idea only, short punchy lines spoken like a friend; end with one easy action (comment, follow or save).\nNever invent personal stories, clients, results, numbers or credentials for the creator: speak from general experience unless the idea gives the details. Never say the creator did, tried, discovered or was saved by something unless the idea says so.\nBe accurate. State only facts you are confident about; when unsure of a date, name or number, say it more generally instead of inventing it.\nWrite the title and every block in Norwegian Bokmål (Norway).\nThe script is in Norwegian Bokmål (Norway), not in English: write it in Norwegian Bokmål (Norway) even though these instructions are in English. Only the creator's catchphrases stay as they are.",
+    "kind": "script",
+    "language": "nb-NO",
+    "minimumWords": 150,
+    "outputTokens": 128,
+    "progressionDefects": [],
+    "prompt": "Language of the script: Norwegian Bokmål (Norway). Write all of it in Norwegian Bokmål (Norway).\nWrite a talking video script for TikTok.\nBlocks, in this order: Hook → Body → CTA.\nWhat each block does: Hook: grab attention in 3 seconds with the main promise. Body: explain the one idea in small, concrete steps. CTA: one clear action.\nLength: between 150 and 225 spoken words in total.\nMake it worth at least 150 words: give 5 concrete points. For each, name the real thing (an ingredient, a step, an amount, a tool, a place or an example the viewer can use) and say in one or two sentences why it helps. Never a vague point like “choose good ingredients” or “follow an easy recipe”.\nOpen with a hook that works in the first 3 seconds. The first words are already about the subject (a claim, a question or a number), never a greeting or a filler word such as “hey”, “hi”, “so” or “look”.\nThe video: 5 ting du må ha med på din første fjelltur",
+    "promptTokens": 249,
+    "responseCap": 1025,
+    "run": "sweep-on",
+    "schemaTokens": 271,
+    "seconds": 17.724411792,
+    "text": "Har du tatt fjelltur før? Her er fem ting du må ha med [pause]\n\nKart. Et godt kart hjelper deg å finne veien [smil]. Kompass. Et kompass hjelper deg å holde riktig retning [smil]. Vannflaske. Vann holder deg hydrert [smil]. Solkrem. Solkrem beskytter huden din [smil]. Førsteposisjonsredskap. Førsteposisjonsredskap hjelper deg hvis noe går galt [smil]\n\nLagre videoen hvis du liker tipsene [smil]",
+    "title": "5 ting du må ha på din første fjelltur",
+    "violations": [
+      "tooShort"
+    ],
+    "voiceUse": "none"
+  },
+  {
+    "askedWords": [
+      150,
+      225
+    ],
+    "attempts": 1,
+    "condition": "sweep",
+    "contextSize": 4096,
+    "countMilliseconds": 97.811958,
+    "expandedBlocks": 0,
+    "firstResponse": 2.077084375,
+    "hasBrief": true,
+    "idea": "Hytteturen som ikke koster skjorta\nAngle: Gi tre konkrete tips til en billig hyttetur med venner.\nOpen with: “En hyttetur trenger ikke å koste mye.”",
+    "index": 1,
+    "instructionTokens": 333,
+    "instructions": "You write short-form video scripts that a creator reads from a teleprompter while filming themselves.\nWrite in the first person, as the creator, in natural spoken language with short sentences.\nFill in a short title and the script blocks. Block text is only what the creator says: no headings, labels, markdown or quotes around it.\nAdd short stage cues in square brackets where they help delivery, like [pause], [smile] or [look at camera]. Never put spoken words inside brackets.\nPlatform: TikTok, vertical and fast. Hook in the first 3 seconds, one idea only, short punchy lines spoken like a friend; end with one easy action (comment, follow or save).\nNever invent personal stories, clients, results, numbers or credentials for the creator: speak from general experience unless the idea gives the details. Never say the creator did, tried, discovered or was saved by something unless the idea says so.\nBe accurate. State only facts you are confident about; when unsure of a date, name or number, say it more generally instead of inventing it.\nWrite the title and every block in Norwegian Bokmål (Norway).\nThe script is in Norwegian Bokmål (Norway), not in English: write it in Norwegian Bokmål (Norway) even though these instructions are in English. Only the creator's catchphrases stay as they are.",
+    "kind": "script",
+    "language": "nb-NO",
+    "minimumWords": 150,
+    "outputTokens": 124,
+    "progressionDefects": [],
+    "prompt": "Language of the script: Norwegian Bokmål (Norway). Write all of it in Norwegian Bokmål (Norway).\nWrite a talking video script for TikTok.\nBlocks, in this order: Hook → Body → CTA.\nWhat each block does: Hook: grab attention in 3 seconds with the main promise. Body: explain the one idea in small, concrete steps. CTA: one clear action.\nLength: between 150 and 225 spoken words in total.\nMake it worth at least 150 words: give 3 concrete points. For each, name the real thing (an ingredient, a step, an amount, a tool, a place or an example the viewer can use) and say in one or two sentences why it helps. Never a vague point like “choose good ingredients” or “follow an easy recipe”.\nOpen with this line, as it is or adapted only to the creator's way of speaking: “En hyttetur trenger ikke å koste mye.” It is the hook: write no other before it.\nThe video: Hytteturen som ikke koster skjorta\nAngle: Gi tre konkrete tips til en billig hyttetur med venner.\nOpen with: “En hyttetur trenger ikke å koste mye.”\nFollow this angle all the way through: Gi tre konkrete tips til en billig hyttetur med venner.",
+    "promptTokens": 295,
+    "responseCap": 1025,
+    "run": "sweep-on",
+    "schemaTokens": 271,
+    "seconds": 8.534889209,
+    "text": "En hyttetur trenger ikke å koste mye. [pause] Her får du tre enkle tips for en hyggelig tur uten å bruke alt sparepengene. [smil]\n\nBruk en campingvogn i stedet for en hytte. Det sparer penger og gjør turen enklere. Ta med mat fra kjøkkenet. Det holder budsjettet. Lag bål med ved fra eget område. Det er bærekraftig og gratis. [smil]\n\nLegg igjen en kommentar. [pause] Så følger jeg deg. [smil]",
+    "title": "Billig hyttetur med venner",
+    "violations": [
+      "tooShort"
+    ],
+    "voiceUse": "none"
+  },
+  {
+    "askedWords": [
+      150,
+      225
+    ],
+    "attempts": 1,
+    "condition": "sweep",
+    "contextSize": 4096,
+    "countMilliseconds": 126.25208299999998,
+    "expandedBlocks": 0,
+    "firstResponse": 2.541741666,
+    "hasBrief": false,
+    "idea": "3 fouten waardoor bedtijd elke avond een strijd wordt",
+    "index": 0,
+    "instructionTokens": 324,
+    "instructions": "You write short-form video scripts that a creator reads from a teleprompter while filming themselves.\nWrite in the first person, as the creator, in natural spoken language with short sentences.\nFill in a short title and the script blocks. Block text is only what the creator says: no headings, labels, markdown or quotes around it.\nAdd short stage cues in square brackets where they help delivery, like [pause], [smile] or [look at camera]. Never put spoken words inside brackets.\nPlatform: TikTok, vertical and fast. Hook in the first 3 seconds, one idea only, short punchy lines spoken like a friend; end with one easy action (comment, follow or save).\nNever invent personal stories, clients, results, numbers or credentials for the creator: speak from general experience unless the idea gives the details. Never say the creator did, tried, discovered or was saved by something unless the idea says so.\nBe accurate. State only facts you are confident about; when unsure of a date, name or number, say it more generally instead of inventing it.\nWrite the title and every block in Dutch (Netherlands).\nThe script is in Dutch (Netherlands), not in English: write it in Dutch (Netherlands) even though these instructions are in English. Only the creator's catchphrases stay as they are.",
+    "kind": "script",
+    "language": "nl-NL",
+    "minimumWords": 150,
+    "outputTokens": 129,
+    "progressionDefects": [],
+    "prompt": "Language of the script: Dutch (Netherlands). Write all of it in Dutch (Netherlands).\nWrite a talking video script for TikTok.\nBlocks, in this order: Hook → Body → CTA.\nWhat each block does: Hook: grab attention in 3 seconds with the main promise. Body: explain the one idea in small, concrete steps. CTA: one clear action.\nLength: between 150 and 225 spoken words in total.\nMake it worth at least 150 words: give 3 concrete points. For each, name the real thing (an ingredient, a step, an amount, a tool, a place or an example the viewer can use) and say in one or two sentences why it helps. Never a vague point like “choose good ingredients” or “follow an easy recipe”.\nOpen with a hook that works in the first 3 seconds. The first words are already about the subject (a claim, a question or a number), never a greeting or a filler word such as “hey”, “hi”, “so” or “look”.\nThe video: 3 fouten waardoor bedtijd elke avond een strijd wordt",
+    "promptTokens": 245,
+    "responseCap": 1025,
+    "run": "sweep-on",
+    "schemaTokens": 271,
+    "seconds": 9.231223167,
+    "text": "Ik sta vroeg op. Mijn bedtijd is niet meer chill. [look at camera]\n\nEerst: verlicht de kamer een uur voor het slapengaan. Een zachte gloed helpt je lichaam ontspannen. [pause] Dan: stop met schermtijd minstens een uur voor het slapen. Licht en blauwe golven maken het moeilijker om in slaap te komen. [smile] Tot slot: neem een glas water een uur voor het slapen. Hydratatie ondersteunt een rustige nacht. [emphasis]\n\nCommenteer wat jouw nachtroutine nodig heeft. [pause]",
+    "title": "3 fouten voor een betere avondroutine",
+    "violations": [
+      "tooShort"
+    ],
+    "voiceUse": "none"
+  },
+  {
+    "askedWords": [
+      150,
+      225
+    ],
+    "attempts": 1,
+    "condition": "sweep",
+    "contextSize": 4096,
+    "countMilliseconds": 304.41691599999996,
+    "expandedBlocks": 0,
+    "firstResponse": 2.4211489999999998,
+    "hasBrief": true,
+    "idea": "Een vast avondritueel voor kleine kinderen\nAngle: Laat zien hoe je in vier stappen een rustig avondritueel opbouwt.\nOpen with: “Bedtijd hoeft niet elke avond een gevecht te zijn.”",
+    "index": 1,
+    "instructionTokens": 324,
+    "instructions": "You write short-form video scripts that a creator reads from a teleprompter while filming themselves.\nWrite in the first person, as the creator, in natural spoken language with short sentences.\nFill in a short title and the script blocks. Block text is only what the creator says: no headings, labels, markdown or quotes around it.\nAdd short stage cues in square brackets where they help delivery, like [pause], [smile] or [look at camera]. Never put spoken words inside brackets.\nPlatform: TikTok, vertical and fast. Hook in the first 3 seconds, one idea only, short punchy lines spoken like a friend; end with one easy action (comment, follow or save).\nNever invent personal stories, clients, results, numbers or credentials for the creator: speak from general experience unless the idea gives the details. Never say the creator did, tried, discovered or was saved by something unless the idea says so.\nBe accurate. State only facts you are confident about; when unsure of a date, name or number, say it more generally instead of inventing it.\nWrite the title and every block in Dutch (Netherlands).\nThe script is in Dutch (Netherlands), not in English: write it in Dutch (Netherlands) even though these instructions are in English. Only the creator's catchphrases stay as they are.",
+    "kind": "script",
+    "language": "nl-NL",
+    "minimumWords": 150,
+    "outputTokens": 140,
+    "progressionDefects": [],
+    "prompt": "Language of the script: Dutch (Netherlands). Write all of it in Dutch (Netherlands).\nWrite a talking video script for TikTok.\nBlocks, in this order: Hook → Body → CTA.\nWhat each block does: Hook: grab attention in 3 seconds with the main promise. Body: explain the one idea in small, concrete steps. CTA: one clear action.\nLength: between 150 and 225 spoken words in total.\nMake it worth at least 150 words: give 3 concrete points. For each, name the real thing (an ingredient, a step, an amount, a tool, a place or an example the viewer can use) and say in one or two sentences why it helps. Never a vague point like “choose good ingredients” or “follow an easy recipe”.\nOpen with this line, as it is or adapted only to the creator's way of speaking: “Bedtijd hoeft niet elke avond een gevecht te zijn.” It is the hook: write no other before it.\nThe video: Een vast avondritueel voor kleine kinderen\nAngle: Laat zien hoe je in vier stappen een rustig avondritueel opbouwt.\nOpen with: “Bedtijd hoeft niet elke avond een gevecht te zijn.”\nFollow this angle all the way through: Laat zien hoe je in vier stappen een rustig avondritueel opbouwt.",
+    "promptTokens": 305,
+    "responseCap": 1025,
+    "run": "sweep-on",
+    "schemaTokens": 271,
+    "seconds": 28.653514792,
+    "text": "Bedtijd hoeft niet elke avond een gevecht te zijn. [smile] Ik bouw rust in met vier eenvoudige stappen. [pause]\n\nEerst zorg je voor een vaste rustmoment. Je zet bijvoorbeeld een verhalend boek neer. [look at camera] Daarna creëer je een rustige ruimte. Een stille kamer helpt hierbij. [pause] Een derde stap is een korte bezinning. Een paar minuten stil zijn werkt goed. [emphasis] Tot slot zorg je voor een duidelijk ritueel. Een vaste volgorde geeft zekerheid. [pause]\n\nProbeer het zelf uit. Laat het weten in de reacties. [pause]",
+    "title": "Rustige bedtijdrituelen voor kinderen",
+    "violations": [
+      "tooShort"
+    ],
+    "voiceUse": "none"
+  },
+  {
+    "askedWords": [
+      150,
+      225
+    ],
+    "attempts": 1,
+    "condition": "sweep",
+    "contextSize": 4096,
+    "countMilliseconds": 121.570209,
+    "expandedBlocks": 0,
+    "firstResponse": 2.4064138330000002,
+    "hasBrief": false,
+    "idea": "3 gastos pequenos que estão detonando seu salário",
+    "index": 0,
+    "instructionTokens": 324,
+    "instructions": "You write short-form video scripts that a creator reads from a teleprompter while filming themselves.\nWrite in the first person, as the creator, in natural spoken language with short sentences.\nFill in a short title and the script blocks. Block text is only what the creator says: no headings, labels, markdown or quotes around it.\nAdd short stage cues in square brackets where they help delivery, like [pause], [smile] or [look at camera]. Never put spoken words inside brackets.\nPlatform: TikTok, vertical and fast. Hook in the first 3 seconds, one idea only, short punchy lines spoken like a friend; end with one easy action (comment, follow or save).\nNever invent personal stories, clients, results, numbers or credentials for the creator: speak from general experience unless the idea gives the details. Never say the creator did, tried, discovered or was saved by something unless the idea says so.\nBe accurate. State only facts you are confident about; when unsure of a date, name or number, say it more generally instead of inventing it.\nWrite the title and every block in Portuguese (Brazil).\nThe script is in Portuguese (Brazil), not in English: write it in Portuguese (Brazil) even though these instructions are in English. Only the creator's catchphrases stay as they are.",
+    "kind": "script",
+    "language": "pt-BR",
+    "minimumWords": 150,
+    "outputTokens": 103,
+    "progressionDefects": [],
+    "prompt": "Language of the script: Portuguese (Brazil). Write all of it in Portuguese (Brazil).\nWrite a talking video script for TikTok.\nBlocks, in this order: Hook → Body → CTA.\nWhat each block does: Hook: grab attention in 3 seconds with the main promise. Body: explain the one idea in small, concrete steps. CTA: one clear action.\nLength: between 150 and 225 spoken words in total.\nMake it worth at least 150 words: give 3 concrete points. For each, name the real thing (an ingredient, a step, an amount, a tool, a place or an example the viewer can use) and say in one or two sentences why it helps. Never a vague point like “choose good ingredients” or “follow an easy recipe”.\nOpen with a hook that works in the first 3 seconds. The first words are already about the subject (a claim, a question or a number), never a greeting or a filler word such as “hey”, “hi”, “so” or “look”.\nThe video: 3 gastos pequenos que estão detonando seu salário",
+    "promptTokens": 240,
+    "responseCap": 1025,
+    "run": "sweep-on",
+    "schemaTokens": 271,
+    "seconds": 8.482269791,
+    "text": "Você sabia que gastos pequenos podem prejudicar seu bolso? [pause] Vamos descobrir como evitar isso agora.\n\nUse uma água engarrafada para substituir refrigerantes – é mais barato e menos prejudicial à saúde. [smile] Coma uma maçã inteira ao invés de suco, que contém mais açúcar. [look at camera] Escolha produtos locais para reduzir custos com transporte e apoio à economia. [pause]\n\nComente qual gasto você quer reduzir. [pause] Vamos ajudar juntos.",
+    "title": "3 gastos pequenos que estão detonando seu salário",
+    "violations": [
+      "tooShort"
+    ],
+    "voiceUse": "none"
+  },
+  {
+    "askedWords": [
+      150,
+      225
+    ],
+    "attempts": 1,
+    "condition": "sweep",
+    "contextSize": 4096,
+    "countMilliseconds": 87.388791,
+    "expandedBlocks": 0,
+    "firstResponse": 2.3194835830000002,
+    "hasBrief": true,
+    "idea": "Reserva de emergência ganhando pouco\nAngle: Desminta a ideia de que só quem ganha bem consegue guardar dinheiro.\nOpen with: “Reserva de emergência não é coisa de quem ganha muito.”",
+    "index": 1,
+    "instructionTokens": 324,
+    "instructions": "You write short-form video scripts that a creator reads from a teleprompter while filming themselves.\nWrite in the first person, as the creator, in natural spoken language with short sentences.\nFill in a short title and the script blocks. Block text is only what the creator says: no headings, labels, markdown or quotes around it.\nAdd short stage cues in square brackets where they help delivery, like [pause], [smile] or [look at camera]. Never put spoken words inside brackets.\nPlatform: TikTok, vertical and fast. Hook in the first 3 seconds, one idea only, short punchy lines spoken like a friend; end with one easy action (comment, follow or save).\nNever invent personal stories, clients, results, numbers or credentials for the creator: speak from general experience unless the idea gives the details. Never say the creator did, tried, discovered or was saved by something unless the idea says so.\nBe accurate. State only facts you are confident about; when unsure of a date, name or number, say it more generally instead of inventing it.\nWrite the title and every block in Portuguese (Brazil).\nThe script is in Portuguese (Brazil), not in English: write it in Portuguese (Brazil) even though these instructions are in English. Only the creator's catchphrases stay as they are.",
+    "kind": "script",
+    "language": "pt-BR",
+    "minimumWords": 150,
+    "outputTokens": 102,
+    "progressionDefects": [],
+    "prompt": "Language of the script: Portuguese (Brazil). Write all of it in Portuguese (Brazil).\nWrite a talking video script for TikTok.\nBlocks, in this order: Hook → Body → CTA.\nWhat each block does: Hook: grab attention in 3 seconds with the main promise. Body: explain the one idea in small, concrete steps. CTA: one clear action.\nLength: between 150 and 225 spoken words in total.\nMake it worth at least 150 words: give 3 concrete points. For each, name the real thing (an ingredient, a step, an amount, a tool, a place or an example the viewer can use) and say in one or two sentences why it helps. Never a vague point like “choose good ingredients” or “follow an easy recipe”.\nOpen with this line, as it is or adapted only to the creator's way of speaking: “Reserva de emergência não é coisa de quem ganha muito.” It is the hook: write no other before it.\nThe video: Reserva de emergência ganhando pouco\nAngle: Desminta a ideia de que só quem ganha bem consegue guardar dinheiro.\nOpen with: “Reserva de emergência não é coisa de quem ganha muito.”\nFollow this angle all the way through: Desminta a ideia de que só quem ganha bem consegue guardar dinheiro.",
+    "promptTokens": 293,
+    "responseCap": 1025,
+    "run": "sweep-on",
+    "schemaTokens": 271,
+    "seconds": 17.106147292,
+    "text": "Reserva de emergência não é coisa de quem ganha muito. [smile] Veja como guardar dinheiro mesmo com orçamento apertado. [pause]\n\nUse uma conta separada para separar emergências. [pause] Compre alimentos em promoções para cortar custos. [olhar para a câmera] Planeje gastos fixos para evitar surpresas. [gesto de mão]\n\nComente qual dica você vai usar. [olhar para a câmera] Siga para mais dicas. [pause]",
+    "title": "Reserva de emergência ganhando pouco",
+    "violations": [
+      "tooShort"
+    ],
+    "voiceUse": "none"
+  },
+  {
+    "askedWords": [
+      150,
+      225
+    ],
+    "attempts": 1,
+    "condition": "sweep",
+    "contextSize": 4096,
+    "countMilliseconds": 567.126083,
+    "expandedBlocks": 0,
+    "firstResponse": 2.4128395,
+    "hasBrief": false,
+    "idea": "3 inställningar i mobilen som tömmer batteriet i onödan",
+    "index": 0,
+    "instructionTokens": 324,
+    "instructions": "You write short-form video scripts that a creator reads from a teleprompter while filming themselves.\nWrite in the first person, as the creator, in natural spoken language with short sentences.\nFill in a short title and the script blocks. Block text is only what the creator says: no headings, labels, markdown or quotes around it.\nAdd short stage cues in square brackets where they help delivery, like [pause], [smile] or [look at camera]. Never put spoken words inside brackets.\nPlatform: TikTok, vertical and fast. Hook in the first 3 seconds, one idea only, short punchy lines spoken like a friend; end with one easy action (comment, follow or save).\nNever invent personal stories, clients, results, numbers or credentials for the creator: speak from general experience unless the idea gives the details. Never say the creator did, tried, discovered or was saved by something unless the idea says so.\nBe accurate. State only facts you are confident about; when unsure of a date, name or number, say it more generally instead of inventing it.\nWrite the title and every block in Swedish (Sweden).\nThe script is in Swedish (Sweden), not in English: write it in Swedish (Sweden) even though these instructions are in English. Only the creator's catchphrases stay as they are.",
+    "kind": "script",
+    "language": "sv-SE",
+    "minimumWords": 150,
+    "outputTokens": 113,
+    "progressionDefects": [],
+    "prompt": "Language of the script: Swedish (Sweden). Write all of it in Swedish (Sweden).\nWrite a talking video script for TikTok.\nBlocks, in this order: Hook → Body → CTA.\nWhat each block does: Hook: grab attention in 3 seconds with the main promise. Body: explain the one idea in small, concrete steps. CTA: one clear action.\nLength: between 150 and 225 spoken words in total.\nMake it worth at least 150 words: give 3 concrete points. For each, name the real thing (an ingredient, a step, an amount, a tool, a place or an example the viewer can use) and say in one or two sentences why it helps. Never a vague point like “choose good ingredients” or “follow an easy recipe”.\nOpen with a hook that works in the first 3 seconds. The first words are already about the subject (a claim, a question or a number), never a greeting or a filler word such as “hey”, “hi”, “so” or “look”.\nThe video: 3 inställningar i mobilen som tömmer batteriet i onödan",
+    "promptTokens": 248,
+    "responseCap": 1025,
+    "run": "sweep-on",
+    "schemaTokens": 271,
+    "seconds": 43.584796084,
+    "text": "Din mobil tar slut på batteriet hela tiden? [pause] Håll den igång med dessa enkla knep.\n\n1. Stäng ned oanvända appar. De drar energi. [nod] 2. Använd ett batteribeskydd. Det minskar nedgången. [glimt av appar] 3. Ladda i lägre watt. Det är skonsammare för batteriet. [kläm fingrar]\n\nGilla och spara för att se fler tips. [loggar in]",
+    "title": "3 sätt att ladda mobilen snabbare",
+    "violations": [
+      "tooShort"
+    ],
+    "voiceUse": "none"
+  },
+  {
+    "askedWords": [
+      150,
+      225
+    ],
+    "attempts": 1,
+    "condition": "sweep",
+    "contextSize": 4096,
+    "countMilliseconds": 351.47095900000005,
+    "expandedBlocks": 0,
+    "firstResponse": 2.463564125,
+    "hasBrief": true,
+    "idea": "Så rensar du mobilen på fem minuter\nAngle: Visa hur man frigör lagringsutrymme utan att radera bilder.\nOpen with: “Fullt lagringsutrymme igen? Det går att fixa på fem minuter.”",
+    "index": 1,
+    "instructionTokens": 324,
+    "instructions": "You write short-form video scripts that a creator reads from a teleprompter while filming themselves.\nWrite in the first person, as the creator, in natural spoken language with short sentences.\nFill in a short title and the script blocks. Block text is only what the creator says: no headings, labels, markdown or quotes around it.\nAdd short stage cues in square brackets where they help delivery, like [pause], [smile] or [look at camera]. Never put spoken words inside brackets.\nPlatform: TikTok, vertical and fast. Hook in the first 3 seconds, one idea only, short punchy lines spoken like a friend; end with one easy action (comment, follow or save).\nNever invent personal stories, clients, results, numbers or credentials for the creator: speak from general experience unless the idea gives the details. Never say the creator did, tried, discovered or was saved by something unless the idea says so.\nBe accurate. State only facts you are confident about; when unsure of a date, name or number, say it more generally instead of inventing it.\nWrite the title and every block in Swedish (Sweden).\nThe script is in Swedish (Sweden), not in English: write it in Swedish (Sweden) even though these instructions are in English. Only the creator's catchphrases stay as they are.",
+    "kind": "script",
+    "language": "sv-SE",
+    "minimumWords": 150,
+    "outputTokens": 74,
+    "progressionDefects": [],
+    "prompt": "Language of the script: Swedish (Sweden). Write all of it in Swedish (Sweden).\nWrite a talking video script for TikTok.\nBlocks, in this order: Hook → Body → CTA.\nWhat each block does: Hook: grab attention in 3 seconds with the main promise. Body: explain the one idea in small, concrete steps. CTA: one clear action.\nLength: between 150 and 225 spoken words in total.\nMake it worth at least 150 words: give 3 concrete points. For each, name the real thing (an ingredient, a step, an amount, a tool, a place or an example the viewer can use) and say in one or two sentences why it helps. Never a vague point like “choose good ingredients” or “follow an easy recipe”.\nOpen with this line, as it is or adapted only to the creator's way of speaking: “Fullt lagringsutrymme igen? Det går att fixa på fem minuter.” It is the hook: write no other before it.\nThe video: Så rensar du mobilen på fem minuter\nAngle: Visa hur man frigör lagringsutrymme utan att radera bilder.\nOpen with: “Fullt lagringsutrymme igen? Det går att fixa på fem minuter.”\nFollow this angle all the way through: Visa hur man frigör lagringsutrymme utan att radera bilder.",
+    "promptTokens": 305,
+    "responseCap": 1025,
+    "run": "sweep-on",
+    "schemaTokens": 271,
+    "seconds": 13.275141166,
+    "text": "Fullt lagringsutrymme igen? Det går att fixa på fem minuter. [pause]\n\nTa bort gamla aviseringar – det frigör plats. Ta bort oanvända appar – det hjälper. Radera stora filer – det gör skillnad. [smile]\n\nKommentera vad du sparar. [look at camera]",
+    "title": "Fem minuter fri plats på mobilen",
+    "violations": [
+      "tooShort"
+    ],
+    "voiceUse": "none"
+  },
+  {
+    "askedWords": [
+      150,
+      225
+    ],
+    "condition": "sweep",
+    "contextSize": 4096,
+    "countMilliseconds": 547.560834,
+    "emptyReason": "the answer was not a script: 1 blocks, 57 words, cap 1800 tokens; [Hook:57]; title 4w, statesFacts missing",
+    "failure": "unsupportedLanguage",
+    "hasBrief": false,
+    "idea": "3 ข้อผิดพลาดที่ทำให้ไปเที่ยวญี่ปุ่นแล้วงบบานปลาย",
+    "index": 0,
+    "instructionTokens": 324,
+    "instructions": "You write short-form video scripts that a creator reads from a teleprompter while filming themselves.\nWrite in the first person, as the creator, in natural spoken language with short sentences.\nFill in a short title and the script blocks. Block text is only what the creator says: no headings, labels, markdown or quotes around it.\nAdd short stage cues in square brackets where they help delivery, like [pause], [smile] or [look at camera]. Never put spoken words inside brackets.\nPlatform: TikTok, vertical and fast. Hook in the first 3 seconds, one idea only, short punchy lines spoken like a friend; end with one easy action (comment, follow or save).\nNever invent personal stories, clients, results, numbers or credentials for the creator: speak from general experience unless the idea gives the details. Never say the creator did, tried, discovered or was saved by something unless the idea says so.\nBe accurate. State only facts you are confident about; when unsure of a date, name or number, say it more generally instead of inventing it.\nWrite the title and every block in Thai (Thailand).\nThe script is in Thai (Thailand), not in English: write it in Thai (Thailand) even though these instructions are in English. Only the creator's catchphrases stay as they are.",
+    "kind": "script",
+    "language": "th-TH",
+    "minimumWords": 150,
+    "prompt": "Language of the script: Thai (Thailand). Write all of it in Thai (Thailand).\nWrite a talking video script for TikTok.\nBlocks, in this order: Hook → Body → CTA.\nWhat each block does: Hook: grab attention in 3 seconds with the main promise. Body: explain the one idea in small, concrete steps. CTA: one clear action.\nLength: between 150 and 225 spoken words in total.\nMake it worth at least 150 words: give 3 concrete points. For each, name the real thing (an ingredient, a step, an amount, a tool, a place or an example the viewer can use) and say in one or two sentences why it helps. Never a vague point like “choose good ingredients” or “follow an easy recipe”.\nOpen with a hook that works in the first 3 seconds. The first words are already about the subject (a claim, a question or a number), never a greeting or a filler word such as “hey”, “hi”, “so” or “look”.\nThe video: 3 ข้อผิดพลาดที่ทำให้ไปเที่ยวญี่ปุ่นแล้วงบบานปลาย",
+    "promptTokens": 245,
+    "responseCap": 1025,
+    "run": "sweep-on",
+    "schemaTokens": 271,
+    "seconds": 0.002230125
+  },
+  {
+    "askedWords": [
+      150,
+      225
+    ],
+    "condition": "sweep",
+    "contextSize": 4096,
+    "countMilliseconds": 434.086458,
+    "emptyReason": "the answer was not a script: 1 blocks, 57 words, cap 1800 tokens; [Hook:57]; title 4w, statesFacts missing",
+    "failure": "unsupportedLanguage",
+    "hasBrief": true,
+    "idea": "เที่ยวเชียงใหม่ 3 วันแบบประหยัด\nAngle: แนะนำวิธีวางแผนทริปสามวันให้คุ้มโดยไม่ต้องรีบ\nOpen with: “เที่ยวเชียงใหม่ให้สนุกไม่จำเป็นต้องใช้เงินเยอะ”",
+    "index": 1,
+    "instructionTokens": 324,
+    "instructions": "You write short-form video scripts that a creator reads from a teleprompter while filming themselves.\nWrite in the first person, as the creator, in natural spoken language with short sentences.\nFill in a short title and the script blocks. Block text is only what the creator says: no headings, labels, markdown or quotes around it.\nAdd short stage cues in square brackets where they help delivery, like [pause], [smile] or [look at camera]. Never put spoken words inside brackets.\nPlatform: TikTok, vertical and fast. Hook in the first 3 seconds, one idea only, short punchy lines spoken like a friend; end with one easy action (comment, follow or save).\nNever invent personal stories, clients, results, numbers or credentials for the creator: speak from general experience unless the idea gives the details. Never say the creator did, tried, discovered or was saved by something unless the idea says so.\nBe accurate. State only facts you are confident about; when unsure of a date, name or number, say it more generally instead of inventing it.\nWrite the title and every block in Thai (Thailand).\nThe script is in Thai (Thailand), not in English: write it in Thai (Thailand) even though these instructions are in English. Only the creator's catchphrases stay as they are.",
+    "kind": "script",
+    "language": "th-TH",
+    "minimumWords": 150,
+    "prompt": "Language of the script: Thai (Thailand). Write all of it in Thai (Thailand).\nWrite a talking video script for TikTok.\nBlocks, in this order: Hook → Body → CTA.\nWhat each block does: Hook: grab attention in 3 seconds with the main promise. Body: explain the one idea in small, concrete steps. CTA: one clear action.\nLength: between 150 and 225 spoken words in total.\nMake it worth at least 150 words: give 3 concrete points. For each, name the real thing (an ingredient, a step, an amount, a tool, a place or an example the viewer can use) and say in one or two sentences why it helps. Never a vague point like “choose good ingredients” or “follow an easy recipe”.\nOpen with this line, as it is or adapted only to the creator's way of speaking: “เที่ยวเชียงใหม่ให้สนุกไม่จำเป็นต้องใช้เงินเยอะ” It is the hook: write no other before it.\nThe video: เที่ยวเชียงใหม่ 3 วันแบบประหยัด\nAngle: แนะนำวิธีวางแผนทริปสามวันให้คุ้มโดยไม่ต้องรีบ\nOpen with: “เที่ยวเชียงใหม่ให้สนุกไม่จำเป็นต้องใช้เงินเยอะ”\nFollow this angle all the way through: แนะนำวิธีวางแผนทริปสามวันให้คุ้มโดยไม่ต้องรีบ",
+    "promptTokens": 299,
+    "responseCap": 1025,
+    "run": "sweep-on",
+    "schemaTokens": 271,
+    "seconds": 0.001664542
+  },
+  {
+    "askedWords": [
+      150,
+      225
+    ],
+    "attempts": 1,
+    "condition": "sweep",
+    "contextSize": 4096,
+    "countMilliseconds": 421.573875,
+    "expandedBlocks": 0,
+    "firstResponse": 2.416199625,
+    "hasBrief": false,
+    "idea": "Kombinlerini ucuz gösteren 3 hata",
+    "index": 0,
+    "instructionTokens": 324,
+    "instructions": "You write short-form video scripts that a creator reads from a teleprompter while filming themselves.\nWrite in the first person, as the creator, in natural spoken language with short sentences.\nFill in a short title and the script blocks. Block text is only what the creator says: no headings, labels, markdown or quotes around it.\nAdd short stage cues in square brackets where they help delivery, like [pause], [smile] or [look at camera]. Never put spoken words inside brackets.\nPlatform: TikTok, vertical and fast. Hook in the first 3 seconds, one idea only, short punchy lines spoken like a friend; end with one easy action (comment, follow or save).\nNever invent personal stories, clients, results, numbers or credentials for the creator: speak from general experience unless the idea gives the details. Never say the creator did, tried, discovered or was saved by something unless the idea says so.\nBe accurate. State only facts you are confident about; when unsure of a date, name or number, say it more generally instead of inventing it.\nWrite the title and every block in Turkish (Türkiye).\nThe script is in Turkish (Türkiye), not in English: write it in Turkish (Türkiye) even though these instructions are in English. Only the creator's catchphrases stay as they are.",
+    "kind": "script",
+    "language": "tr-TR",
+    "minimumWords": 150,
+    "outputTokens": 106,
+    "progressionDefects": [],
+    "prompt": "Language of the script: Turkish (Türkiye). Write all of it in Turkish (Türkiye).\nWrite a talking video script for TikTok.\nBlocks, in this order: Hook → Body → CTA.\nWhat each block does: Hook: grab attention in 3 seconds with the main promise. Body: explain the one idea in small, concrete steps. CTA: one clear action.\nLength: between 150 and 225 spoken words in total.\nMake it worth at least 150 words: give 3 concrete points. For each, name the real thing (an ingredient, a step, an amount, a tool, a place or an example the viewer can use) and say in one or two sentences why it helps. Never a vague point like “choose good ingredients” or “follow an easy recipe”.\nOpen with a hook that works in the first 3 seconds. The first words are already about the subject (a claim, a question or a number), never a greeting or a filler word such as “hey”, “hi”, “so” or “look”.\nThe video: Kombinlerini ucuz gösteren 3 hata",
+    "promptTokens": 240,
+    "responseCap": 1025,
+    "run": "sweep-on",
+    "schemaTokens": 271,
+    "seconds": 15.855785084,
+    "text": "3 basit hata, kombinlerin maliyetini yükseltir… [durak]\n\nÖnce yanlış ürün kullanmak… Yüksek fiyatlı sebzelerle başlayabilir. Ardından doğru ölçüyü atlamak… 10 gram yerine 20 gram almak maliyet artırır. Son olarak uygun ekipmanı kullanmamak… Basit bir blender yerine profesyonel bir makine tercih etmek gerektirir.\n\nBu hataları fark etmek için yorum bırakın… [göz hizasına bak]",
+    "title": "Ucuz Kombin Hataları",
+    "violations": [
+      "tooShort"
+    ],
+    "voiceUse": "none"
+  },
+  {
+    "askedWords": [
+      150,
+      225
+    ],
+    "attempts": 1,
+    "condition": "sweep",
+    "contextSize": 4096,
+    "countMilliseconds": 304.236792,
+    "expandedBlocks": 0,
+    "firstResponse": 2.095432458,
+    "hasBrief": true,
+    "idea": "Kapsül gardırop nasıl kurulur?\nAngle: Az parçayla çok kombin yapmanın yolunu adım adım anlat.\nOpen with: “Dolabın dolu ama giyecek bir şeyin yok mu?”",
+    "index": 1,
+    "instructionTokens": 324,
+    "instructions": "You write short-form video scripts that a creator reads from a teleprompter while filming themselves.\nWrite in the first person, as the creator, in natural spoken language with short sentences.\nFill in a short title and the script blocks. Block text is only what the creator says: no headings, labels, markdown or quotes around it.\nAdd short stage cues in square brackets where they help delivery, like [pause], [smile] or [look at camera]. Never put spoken words inside brackets.\nPlatform: TikTok, vertical and fast. Hook in the first 3 seconds, one idea only, short punchy lines spoken like a friend; end with one easy action (comment, follow or save).\nNever invent personal stories, clients, results, numbers or credentials for the creator: speak from general experience unless the idea gives the details. Never say the creator did, tried, discovered or was saved by something unless the idea says so.\nBe accurate. State only facts you are confident about; when unsure of a date, name or number, say it more generally instead of inventing it.\nWrite the title and every block in Turkish (Türkiye).\nThe script is in Turkish (Türkiye), not in English: write it in Turkish (Türkiye) even though these instructions are in English. Only the creator's catchphrases stay as they are.",
+    "kind": "script",
+    "language": "tr-TR",
+    "minimumWords": 150,
+    "outputTokens": 129,
+    "progressionDefects": [],
+    "prompt": "Language of the script: Turkish (Türkiye). Write all of it in Turkish (Türkiye).\nWrite a talking video script for TikTok.\nBlocks, in this order: Hook → Body → CTA.\nWhat each block does: Hook: grab attention in 3 seconds with the main promise. Body: explain the one idea in small, concrete steps. CTA: one clear action.\nLength: between 150 and 225 spoken words in total.\nMake it worth at least 150 words: give 3 concrete points. For each, name the real thing (an ingredient, a step, an amount, a tool, a place or an example the viewer can use) and say in one or two sentences why it helps. Never a vague point like “choose good ingredients” or “follow an easy recipe”.\nOpen with this line, as it is or adapted only to the creator's way of speaking: “Dolabın dolu ama giyecek bir şeyin yok mu?” It is the hook: write no other before it.\nThe video: Kapsül gardırop nasıl kurulur?\nAngle: Az parçayla çok kombin yapmanın yolunu adım adım anlat.\nOpen with: “Dolabın dolu ama giyecek bir şeyin yok mu?”\nFollow this angle all the way through: Az parçayla çok kombin yapmanın yolunu adım adım anlat.",
+    "promptTokens": 290,
+    "responseCap": 1025,
+    "run": "sweep-on",
+    "schemaTokens": 271,
+    "seconds": 8.0621995,
+    "text": "Dolabın dolu ama giyecek bir şeyin yok mu? [pause] Az parçayla çok kombin yapmanın sırrı burada... [smile]\n\nÖnce temel bir renk paleti oluşturmak lazım. Örneğin, beyaz ve gri tonları çok uyum sağlar. [pause] Ardından, bir aksesuar eklemek işin kolaylaşır. Küçük bir deri çantayla kombinler canlanır. [look at camera] Son olarak, aynı modeli farklı kumaşlarla yeniden sunmak etkili olabilir. [pause]\n\nBu yöntemle alışveriş yapmayı deneyin, lütfen yorum yapın! [pause] [follow]",
+    "title": "Az Parçayla Çok Kombin",
+    "violations": [
+      "tooShort"
+    ],
+    "voiceUse": "none"
+  },
+  {
+    "askedWords": [
+      150,
+      225
+    ],
+    "attempts": 1,
+    "condition": "sweep",
+    "contextSize": 4096,
+    "countMilliseconds": 88.714083,
+    "expandedBlocks": 0,
+    "firstResponse": 1.934445791,
+    "hasBrief": false,
+    "idea": "3 sai lầm khiến bạn học tiếng Anh mãi không giỏi",
+    "index": 0,
+    "instructionTokens": 324,
+    "instructions": "You write short-form video scripts that a creator reads from a teleprompter while filming themselves.\nWrite in the first person, as the creator, in natural spoken language with short sentences.\nFill in a short title and the script blocks. Block text is only what the creator says: no headings, labels, markdown or quotes around it.\nAdd short stage cues in square brackets where they help delivery, like [pause], [smile] or [look at camera]. Never put spoken words inside brackets.\nPlatform: TikTok, vertical and fast. Hook in the first 3 seconds, one idea only, short punchy lines spoken like a friend; end with one easy action (comment, follow or save).\nNever invent personal stories, clients, results, numbers or credentials for the creator: speak from general experience unless the idea gives the details. Never say the creator did, tried, discovered or was saved by something unless the idea says so.\nBe accurate. State only facts you are confident about; when unsure of a date, name or number, say it more generally instead of inventing it.\nWrite the title and every block in Vietnamese (Vietnam).\nThe script is in Vietnamese (Vietnam), not in English: write it in Vietnamese (Vietnam) even though these instructions are in English. Only the creator's catchphrases stay as they are.",
+    "kind": "script",
+    "language": "vi-VN",
+    "minimumWords": 150,
+    "outputTokens": 97,
+    "progressionDefects": [],
+    "prompt": "Language of the script: Vietnamese (Vietnam). Write all of it in Vietnamese (Vietnam).\nWrite a talking video script for TikTok.\nBlocks, in this order: Hook → Body → CTA.\nWhat each block does: Hook: grab attention in 3 seconds with the main promise. Body: explain the one idea in small, concrete steps. CTA: one clear action.\nLength: between 150 and 225 spoken words in total.\nMake it worth at least 150 words: give 3 concrete points. For each, name the real thing (an ingredient, a step, an amount, a tool, a place or an example the viewer can use) and say in one or two sentences why it helps. Never a vague point like “choose good ingredients” or “follow an easy recipe”.\nOpen with a hook that works in the first 3 seconds. The first words are already about the subject (a claim, a question or a number), never a greeting or a filler word such as “hey”, “hi”, “so” or “look”.\nThe video: 3 sai lầm khiến bạn học tiếng Anh mãi không giỏi",
+    "promptTokens": 243,
+    "responseCap": 1025,
+    "run": "sweep-on",
+    "schemaTokens": 271,
+    "seconds": 6.658438125,
+    "text": "Bạn học tiếng Anh suốt đời mà vẫn tệ? [pause] Hãy xem 3 sai lầm này ngay!\n\nBạn dùng công cụ học sai: không dùng ứng dụng học từ vựng theo ngữ cảnh. [look at camera] Bạn không luyện phát âm: đọc sai ngữ điệu trong câu. [smile] Bạn học quá ít: mỗi ngày chỉ học 5 từ mới thôi. [pause]\n\nHãy bình luận chia sẻ sai lầm của bạn nhé!",
+    "title": "3 sai lầm khiến bạn học tiếng Anh mãi không giỏi",
+    "violations": [
+      "tooShort"
+    ],
+    "voiceUse": "none"
+  },
+  {
+    "askedWords": [
+      150,
+      225
+    ],
+    "attempts": 1,
+    "condition": "sweep",
+    "contextSize": 4096,
+    "countMilliseconds": 88.226709,
+    "expandedBlocks": 0,
+    "firstResponse": 2.02124825,
+    "hasBrief": true,
+    "idea": "Vì sao học từ vựng mãi không nhớ\nAngle: Chỉ ra lỗi phổ biến nhất khi học từ vựng và cách sửa.\nOpen with: “Học từ mới hôm nay, mai đã quên sạch?”",
+    "index": 1,
+    "instructionTokens": 324,
+    "instructions": "You write short-form video scripts that a creator reads from a teleprompter while filming themselves.\nWrite in the first person, as the creator, in natural spoken language with short sentences.\nFill in a short title and the script blocks. Block text is only what the creator says: no headings, labels, markdown or quotes around it.\nAdd short stage cues in square brackets where they help delivery, like [pause], [smile] or [look at camera]. Never put spoken words inside brackets.\nPlatform: TikTok, vertical and fast. Hook in the first 3 seconds, one idea only, short punchy lines spoken like a friend; end with one easy action (comment, follow or save).\nNever invent personal stories, clients, results, numbers or credentials for the creator: speak from general experience unless the idea gives the details. Never say the creator did, tried, discovered or was saved by something unless the idea says so.\nBe accurate. State only facts you are confident about; when unsure of a date, name or number, say it more generally instead of inventing it.\nWrite the title and every block in Vietnamese (Vietnam).\nThe script is in Vietnamese (Vietnam), not in English: write it in Vietnamese (Vietnam) even though these instructions are in English. Only the creator's catchphrases stay as they are.",
+    "kind": "script",
+    "language": "vi-VN",
+    "minimumWords": 150,
+    "outputTokens": 170,
+    "progressionDefects": [],
+    "prompt": "Language of the script: Vietnamese (Vietnam). Write all of it in Vietnamese (Vietnam).\nWrite a talking video script for TikTok.\nBlocks, in this order: Hook → Body → CTA.\nWhat each block does: Hook: grab attention in 3 seconds with the main promise. Body: explain the one idea in small, concrete steps. CTA: one clear action.\nLength: between 150 and 225 spoken words in total.\nMake it worth at least 150 words: give 3 concrete points. For each, name the real thing (an ingredient, a step, an amount, a tool, a place or an example the viewer can use) and say in one or two sentences why it helps. Never a vague point like “choose good ingredients” or “follow an easy recipe”.\nOpen with this line, as it is or adapted only to the creator's way of speaking: “Học từ mới hôm nay, mai đã quên sạch?” It is the hook: write no other before it.\nThe video: Vì sao học từ vựng mãi không nhớ\nAngle: Chỉ ra lỗi phổ biến nhất khi học từ vựng và cách sửa.\nOpen with: “Học từ mới hôm nay, mai đã quên sạch?”\nFollow this angle all the way through: Chỉ ra lỗi phổ biến nhất khi học từ vựng và cách sửa.",
+    "promptTokens": 289,
+    "responseCap": 1025,
+    "run": "sweep-on",
+    "schemaTokens": 271,
+    "seconds": 9.558489708,
+    "text": "Học từ mới hôm nay, mai đã quên sạch? [pause] Học từ vựng chưa bao giờ đơn giản đến thế.\n\nCó một lỗi phổ biến: học từng từ riêng lẻ. Thay vì vậy, hãy học theo ngữ cảnh câu. Ví dụ, học cụm từ như “đi học” thay vì chỉ “đi” và “học”. [smile] Tiếp theo, sử dụng sơ đồ tư duy. Vẽ sơ đồ từ gốc và các biến thể. Điều này giúp nhớ lâu hơn. [look at camera] Cuối cùng, lặp lại từ trong các tình huống thực tế. Sử dụng từ trong câu chuyện nhỏ hoặc danh sách hàng ngày. Cách này giúp ghi nhớ hiệu quả. [pause]\n\nBạn có câu hỏi? Hãy bình luận bên dưới. [pause] Theo dõi để học thêm nhé.",
+    "title": "Từ vựng mãi không nhớ, giải đáp ngay",
+    "violations": [],
+    "voiceUse": "none"
+  },
+  {
+    "askedWords": [
+      150,
+      225
+    ],
+    "attempts": 1,
+    "condition": "sweep",
+    "contextSize": 4096,
+    "countMilliseconds": 620.925833,
+    "expandedBlocks": 0,
+    "firstResponse": 2.26157875,
+    "hasBrief": false,
+    "idea": "月光族一定要改掉的3个花钱习惯",
+    "index": 0,
+    "instructionTokens": 327,
+    "instructions": "You write short-form video scripts that a creator reads from a teleprompter while filming themselves.\nWrite in the first person, as the creator, in natural spoken language with short sentences.\nFill in a short title and the script blocks. Block text is only what the creator says: no headings, labels, markdown or quotes around it.\nAdd short stage cues in square brackets where they help delivery, like [pause], [smile] or [look at camera]. Never put spoken words inside brackets.\nPlatform: TikTok, vertical and fast. Hook in the first 3 seconds, one idea only, short punchy lines spoken like a friend; end with one easy action (comment, follow or save).\nNever invent personal stories, clients, results, numbers or credentials for the creator: speak from general experience unless the idea gives the details. Never say the creator did, tried, discovered or was saved by something unless the idea says so.\nBe accurate. State only facts you are confident about; when unsure of a date, name or number, say it more generally instead of inventing it.\nWrite the title and every block in Chinese (China mainland).\nThe script is in Chinese (China mainland), not in English: write it in Chinese (China mainland) even though these instructions are in English. Only the creator's catchphrases stay as they are.",
+    "kind": "script",
+    "language": "zh-CN",
+    "minimumWords": 150,
+    "outputTokens": 105,
+    "progressionDefects": [],
+    "prompt": "Language of the script: Chinese (China mainland). Write all of it in Chinese (China mainland).\nWrite a talking video script for TikTok.\nBlocks, in this order: Hook → Body → CTA.\nWhat each block does: Hook: grab attention in 3 seconds with the main promise. Body: explain the one idea in small, concrete steps. CTA: one clear action.\nLength: between 150 and 225 spoken words in total.\nMake it worth at least 150 words: give 3 concrete points. For each, name the real thing (an ingredient, a step, an amount, a tool, a place or an example the viewer can use) and say in one or two sentences why it helps. Never a vague point like “choose good ingredients” or “follow an easy recipe”.\nOpen with a hook that works in the first 3 seconds. The first words are already about the subject (a claim, a question or a number), never a greeting or a filler word such as “hey”, “hi”, “so” or “look”.\nThe video: 月光族一定要改掉的3个花钱习惯",
+    "promptTokens": 244,
+    "responseCap": 1025,
+    "run": "sweep-on",
+    "schemaTokens": 271,
+    "seconds": 17.297571375,
+    "text": "凌晨咖啡加了糖，预算瞬间炸了……[惊愕] [快速切入]\n\n第一步：减少冲浪平台的广告推送，能节省不少流量费用。[动作：轻拍桌面] 第二步：购买本地超市的蔬菜，价格比大卖场便宜。[镜头：移向超市标志] 第三步：学习用一次性餐具，避免购买一次性用品。[画面：展示环保餐具]\n\n试试这些方法，记得在下方留言！[指向评论区]",
+    "title": "月光族必须改掉的3个花钱习惯",
+    "violations": [
+      "tooShort"
+    ],
+    "voiceUse": "none"
+  },
+  {
+    "askedWords": [
+      150,
+      225
+    ],
+    "attempts": 1,
+    "condition": "sweep",
+    "contextSize": 4096,
+    "countMilliseconds": 330.108583,
+    "expandedBlocks": 0,
+    "firstResponse": 2.027788125,
+    "hasBrief": true,
+    "idea": "记账总是坚持不下去怎么办\nAngle: 教大家一个每天只花一分钟的记账方法。\nOpen with: “记账坚持不下去，不是因为你懒。”",
+    "index": 1,
+    "instructionTokens": 327,
+    "instructions": "You write short-form video scripts that a creator reads from a teleprompter while filming themselves.\nWrite in the first person, as the creator, in natural spoken language with short sentences.\nFill in a short title and the script blocks. Block text is only what the creator says: no headings, labels, markdown or quotes around it.\nAdd short stage cues in square brackets where they help delivery, like [pause], [smile] or [look at camera]. Never put spoken words inside brackets.\nPlatform: TikTok, vertical and fast. Hook in the first 3 seconds, one idea only, short punchy lines spoken like a friend; end with one easy action (comment, follow or save).\nNever invent personal stories, clients, results, numbers or credentials for the creator: speak from general experience unless the idea gives the details. Never say the creator did, tried, discovered or was saved by something unless the idea says so.\nBe accurate. State only facts you are confident about; when unsure of a date, name or number, say it more generally instead of inventing it.\nWrite the title and every block in Chinese (China mainland).\nThe script is in Chinese (China mainland), not in English: write it in Chinese (China mainland) even though these instructions are in English. Only the creator's catchphrases stay as they are.",
+    "kind": "script",
+    "language": "zh-CN",
+    "minimumWords": 150,
+    "outputTokens": 97,
+    "progressionDefects": [],
+    "prompt": "Language of the script: Chinese (China mainland). Write all of it in Chinese (China mainland).\nWrite a talking video script for TikTok.\nBlocks, in this order: Hook → Body → CTA.\nWhat each block does: Hook: grab attention in 3 seconds with the main promise. Body: explain the one idea in small, concrete steps. CTA: one clear action.\nLength: between 150 and 225 spoken words in total.\nMake it worth at least 150 words: give 3 concrete points. For each, name the real thing (an ingredient, a step, an amount, a tool, a place or an example the viewer can use) and say in one or two sentences why it helps. Never a vague point like “choose good ingredients” or “follow an easy recipe”.\nOpen with this line, as it is or adapted only to the creator's way of speaking: “记账坚持不下去，不是因为你懒。” It is the hook: write no other before it.\nThe video: 记账总是坚持不下去怎么办\nAngle: 教大家一个每天只花一分钟的记账方法。\nOpen with: “记账坚持不下去，不是因为你懒。”\nFollow this angle all the way through: 教大家一个每天只花一分钟的记账方法。",
+    "promptTokens": 284,
+    "responseCap": 1025,
+    "run": "sweep-on",
+    "schemaTokens": 271,
+    "seconds": 7.386441958,
+    "text": "记账坚持不下去，不是因为你懒。[pause] 教大家一个每天只花一分钟的记账方法。[smile]\n\n先选一个简单的工具，比如手机里的记账App。[look at camera] 每天只记下今天花钱的总额。[pause] 然后把数字记录在纸上，这样更稳定。[emphasis] 坚持这种习惯，账目自然清晰。[pause]\n\n试试看，记得评论告诉我效果。[pause]",
+    "title": "每天一分钟记账技巧",
+    "violations": [
+      "tooShort"
+    ],
+    "voiceUse": "none"
+  },
+  {
+    "askedWords": [
+      150,
+      225
+    ],
+    "attempts": 1,
+    "condition": "sweep",
+    "contextSize": 4096,
+    "countMilliseconds": 595.9525,
+    "expandedBlocks": 0,
+    "firstResponse": 2.328071959,
+    "hasBrief": false,
+    "idea": "3個讓你越睡越累的壞習慣",
+    "index": 0,
+    "instructionTokens": 324,
+    "instructions": "You write short-form video scripts that a creator reads from a teleprompter while filming themselves.\nWrite in the first person, as the creator, in natural spoken language with short sentences.\nFill in a short title and the script blocks. Block text is only what the creator says: no headings, labels, markdown or quotes around it.\nAdd short stage cues in square brackets where they help delivery, like [pause], [smile] or [look at camera]. Never put spoken words inside brackets.\nPlatform: TikTok, vertical and fast. Hook in the first 3 seconds, one idea only, short punchy lines spoken like a friend; end with one easy action (comment, follow or save).\nNever invent personal stories, clients, results, numbers or credentials for the creator: speak from general experience unless the idea gives the details. Never say the creator did, tried, discovered or was saved by something unless the idea says so.\nBe accurate. State only facts you are confident about; when unsure of a date, name or number, say it more generally instead of inventing it.\nWrite the title and every block in Chinese (Taiwan).\nThe script is in Chinese (Taiwan), not in English: write it in Chinese (Taiwan) even though these instructions are in English. Only the creator's catchphrases stay as they are.",
+    "kind": "script",
+    "language": "zh-TW",
+    "minimumWords": 150,
+    "outputTokens": 135,
+    "progressionDefects": [],
+    "prompt": "Language of the script: Chinese (Taiwan). Write all of it in Chinese (Taiwan).\nWrite a talking video script for TikTok.\nBlocks, in this order: Hook → Body → CTA.\nWhat each block does: Hook: grab attention in 3 seconds with the main promise. Body: explain the one idea in small, concrete steps. CTA: one clear action.\nLength: between 150 and 225 spoken words in total.\nMake it worth at least 150 words: give 3 concrete points. For each, name the real thing (an ingredient, a step, an amount, a tool, a place or an example the viewer can use) and say in one or two sentences why it helps. Never a vague point like “choose good ingredients” or “follow an easy recipe”.\nOpen with a hook that works in the first 3 seconds. The first words are already about the subject (a claim, a question or a number), never a greeting or a filler word such as “hey”, “hi”, “so” or “look”.\nThe video: 3個讓你越睡越累的壞習慣",
+    "promptTokens": 241,
+    "responseCap": 1025,
+    "run": "sweep-on",
+    "schemaTokens": 271,
+    "seconds": 9.780000208,
+    "text": "凌晨醒來想睡又睡不醒？[pause] 這三個壞習慣讓你越睡越累。[smile] 立即試試看！\n\n睡前吃太多糖分，會讓身體一直處於高血糖狀態，影響休息品質。[pause] 睡前用手機看藍光，會干擾大腦釋放褪黑激素，讓你難以入睡。[pause] 睡覺時把頭埋得太深，會阻礙血液循環，讓身體覺得疲憊。[look at camera]\n\n現在就留言告訴我，你覺得哪個習慣最嚴重！[pause] 記得按讚跟進！",
+    "title": "睡不醒？3個壞習慣秒廢棄",
+    "violations": [
+      "tooShort"
+    ],
+    "voiceUse": "none"
+  },
+  {
+    "askedWords": [
+      150,
+      225
+    ],
+    "attempts": 1,
+    "condition": "sweep",
+    "contextSize": 4096,
+    "countMilliseconds": 85.701291,
+    "expandedBlocks": 0,
+    "firstResponse": 2.025185416,
+    "hasBrief": true,
+    "idea": "睡前滑手機真的那麼糟嗎？\nAngle: 用簡單的方式解釋睡前看手機對睡眠的影響。\nOpen with: “睡前滑手機，可能是你早上爬不起來的原因。”",
+    "index": 1,
+    "instructionTokens": 324,
+    "instructions": "You write short-form video scripts that a creator reads from a teleprompter while filming themselves.\nWrite in the first person, as the creator, in natural spoken language with short sentences.\nFill in a short title and the script blocks. Block text is only what the creator says: no headings, labels, markdown or quotes around it.\nAdd short stage cues in square brackets where they help delivery, like [pause], [smile] or [look at camera]. Never put spoken words inside brackets.\nPlatform: TikTok, vertical and fast. Hook in the first 3 seconds, one idea only, short punchy lines spoken like a friend; end with one easy action (comment, follow or save).\nNever invent personal stories, clients, results, numbers or credentials for the creator: speak from general experience unless the idea gives the details. Never say the creator did, tried, discovered or was saved by something unless the idea says so.\nBe accurate. State only facts you are confident about; when unsure of a date, name or number, say it more generally instead of inventing it.\nWrite the title and every block in Chinese (Taiwan).\nThe script is in Chinese (Taiwan), not in English: write it in Chinese (Taiwan) even though these instructions are in English. Only the creator's catchphrases stay as they are.",
+    "kind": "script",
+    "language": "zh-TW",
+    "minimumWords": 150,
+    "outputTokens": 129,
+    "progressionDefects": [],
+    "prompt": "Language of the script: Chinese (Taiwan). Write all of it in Chinese (Taiwan).\nWrite a talking video script for TikTok.\nBlocks, in this order: Hook → Body → CTA.\nWhat each block does: Hook: grab attention in 3 seconds with the main promise. Body: explain the one idea in small, concrete steps. CTA: one clear action.\nLength: between 150 and 225 spoken words in total.\nMake it worth at least 150 words: give 3 concrete points. For each, name the real thing (an ingredient, a step, an amount, a tool, a place or an example the viewer can use) and say in one or two sentences why it helps. Never a vague point like “choose good ingredients” or “follow an easy recipe”.\nOpen with this line, as it is or adapted only to the creator's way of speaking: “睡前滑手機，可能是你早上爬不起來的原因。” It is the hook: write no other before it.\nThe video: 睡前滑手機真的那麼糟嗎？\nAngle: 用簡單的方式解釋睡前看手機對睡眠的影響。\nOpen with: “睡前滑手機，可能是你早上爬不起來的原因。”\nFollow this angle all the way through: 用簡單的方式解釋睡前看手機對睡眠的影響。",
+    "promptTokens": 288,
+    "responseCap": 1025,
+    "run": "sweep-on",
+    "schemaTokens": 271,
+    "seconds": 8.227135333,
+    "text": "睡前滑手機，可能是你早上爬不起來的原因。[pause]\n\n睡前看手機會干擾褪黑激素的分泌，影響睡眠品質。[點頭] 研究顯示，睡前一小時內不使用藍光強烈的裝置，能幫助身體調整時鐘。[微笑] 此外，睡前做深呼吸或閱讀書籍，有助於舒緩心情，促進睡眠進入深度階段。[看向鏡頭] 調整睡前習慣，例如減少藍光暴露，也能改善睡眠狀態。[眼神交流]\n\n試試看調整睡前習慣，然後留言給我吧！[點讚]",
+    "title": "睡前手機與睡眠的真相",
+    "violations": [
+      "tooShort"
+    ],
+    "voiceUse": "none"
+  }
+]

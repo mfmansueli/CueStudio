@@ -41,7 +41,8 @@ struct IdeaRouletteTests {
             let angle = IdeaAngle.allCases[index % IdeaAngle.allCases.count]
             let slot = IdeaSlot(angle: angle, topic: IdeaTopic(name: topic ?? niche.promptName, label: topic ?? niche.label, niche: topic == nil ? niche : nil))
             let answer = IdeaBriefReader.Answer(
-                title: "\(prefix) \(Self.words[index % Self.words.count])", angle: "Explain the \(prefix) part.", openingLine: "Here is \(prefix)."
+                title: "\(prefix) \(Self.words[index % Self.words.count])", angle: "\(prefix)\(Self.words[index % Self.words.count]) \(prefix)\(Self.words[(index + 6) % Self.words.count]).",
+                openingLine: "\(prefix)\(Self.words[(index + 3) % Self.words.count]) \(prefix)\(Self.words[(index + 9) % Self.words.count])."
             )
             return IdeaBriefReader.idea(from: answer, slot: slot, language: "en")!
         }

@@ -25,6 +25,11 @@ nonisolated struct GeneratedScript: Hashable, Sendable {
     var expandedBlocks: Int = 0
     /// What of the creator's voice was sent: all of it, or only what Cue offers when the model refused what the creator typed.
     var voiceUse: VoiceUse = .none
+    /// The draft that was written and not kept, when the model wrote two (the first, when the second took its place; the second, when it was no
+    /// better): what the device measurements compare. Never saved and never shown.
+    var discardedDraft: String?
+    /// Where the script stops moving forward (`ScriptProgressionCheck`), by kind: counted, never shown.
+    var progressionDefects: [ProgressionDefect.Kind] = []
 }
 
 /// How much of the creator's voice a script was written with.

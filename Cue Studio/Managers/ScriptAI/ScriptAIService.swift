@@ -31,6 +31,8 @@ final class ScriptAIService: ScriptWriting {
     private let privateCloud: PrivateCloudComputeLanguageModel?
     private let capabilities: AIModelCapabilities
     private let planner: AIModelPlanner
+    /// The on-device model's own count of a request, for fitting it to the window (`ContextBudget`).
+    let measure: PromptMeasuring
     private let logger = Logger(subsystem: "studio.cue", category: "ScriptAI")
     private var foregroundRequests = 0
     private var backgroundWork: [UUID: Task<String?, Never>] = [:]
@@ -39,8 +41,12 @@ final class ScriptAIService: ScriptWriting {
 
     /// - Parameter capabilities: what the models can do and in which languages; Apple's own answers
     ///   unless a test gives a fixed list.
-    init(usesPrivateCloudCompute: Bool = ScriptAIService.hasPrivateCloudComputeEntitlement, capabilities: AIModelCapabilities? = nil) {
+    init(
+        usesPrivateCloudCompute: Bool = ScriptAIService.hasPrivateCloudComputeEntitlement, capabilities: AIModelCapabilities? = nil,
+        measure: PromptMeasuring = OnDeviceMeasure()
+    ) {
         privateCloud = usesPrivateCloudCompute ? PrivateCloudComputeLanguageModel() : nil
+        self.measure = measure
         let capabilities = capabilities ?? AppleAIModelCapabilities(usesPrivateCloudCompute: usesPrivateCloudCompute)
         self.capabilities = capabilities
         planner = AIModelPlanner(capabilities: capabilities)
@@ -91,12 +97,14 @@ final class ScriptAIService: ScriptWriting {
                 usedLanguageModel: false
             )
         }
+        // A request near the edge of the window leaves out what is optional of the voice first (`ContextBudget`).
+        let fitting = await fitted(request, on: plan.route)
         // A short request that still ran out of room (the model went on and on) is worth one more try on the
         // same model: the instructions and the idea are nowhere near the model's context, so "too long" can't
         // be the creator's doing, and a second run seldom does the same.
-        let inputSize = ScriptPromptBuilder.instructions(for: request).count + ScriptPromptBuilder.prompt(for: request).count
+        let inputSize = ScriptPromptBuilder.instructions(for: fitting).count + ScriptPromptBuilder.prompt(for: fitting).count
         return try await withFallback(plan, retriesRunaway: inputSize < Self.smallInput, operation: "script", language: language) { model in
-            try await self.writeChecked(request, on: model, since: begin, language: language, meter: meter)
+            try await self.writeChecked(fitting, on: model, since: begin, language: language, meter: meter)
         }
     }
 
@@ -127,6 +135,13 @@ final class ScriptAIService: ScriptWriting {
                 let second = await expandingIfShort(again, for: request, on: model, language: language, meter: meter)
                 if ScriptExpansion.words(in: second.text) > ScriptExpansion.words(in: script.text) { script = second }
             }
+        }
+        // Where it stops moving forward is counted, never repaired: written again on its own, the one faulty block of the device run came back
+        // with "Depois," in front of every vague sentence until the count was kept, and the script was worse (`ScriptProgressionCheck`).
+        if script.usedLanguageModel {
+            script.progressionDefects = ScriptProgressionCheck.defects(
+                in: script.text, idea: ScriptProgressionCheck.promiseSource(of: request), language: request.language?.locale.language.languageCode?.identifier
+            ).map(\.kind)
         }
         return script
     }
@@ -274,14 +289,20 @@ final class ScriptAIService: ScriptWriting {
             } else {
                 let blocks = partial?.blocks?.count ?? 0
                 let words = partial.map(Self.words(in:)) ?? 0
-                Self.noteEmpty("the answer was not a script: \(blocks) blocks, \(words) words, cap \(Self.responseTokens(for: request)) tokens")
+                // Only the shape of the answer, never its words: what each block is called and how long it is, whether the title and the last field came.
+                let shape = (partial?.blocks ?? []).map { "\($0.label ?? "?"):\(ReadTime.wordCount(in: $0.text ?? ""))" }.joined(separator: ",")
+                let title = partial?.title.map { "\(ReadTime.wordCount(in: $0))w" } ?? "missing"
+                let fields = "title \(title), statesFacts \(partial?.statesFacts == nil ? "missing" : "set")"
+                Self.noteEmpty(
+                    "the answer was not a script: \(blocks) blocks, \(words) words, cap \(Self.responseTokens(for: request)) tokens; [\(shape)]; \(fields)"
+                )
                 throw ScriptAIError.emptyResponse
             }
         }
         let timings = GenerationTimings(
             prepare: begin.duration(to: started), firstResponse: firstResponse, generation: started.duration(to: clock.now)
         )
-        let text = ScriptPromptBuilder.clean(draft.scriptText)
+        let text = ScriptPromptBuilder.collapsingRepeatedSentences(ScriptPromptBuilder.clean(draft.scriptText))
         guard !text.isEmpty else {
             Self.noteEmpty("the script was empty once cleaned: \(draft.blocks.count) blocks")
             throw ScriptAIError.emptyResponse
@@ -431,7 +452,7 @@ final class ScriptAIService: ScriptWriting {
                     try await session.respond(to: prompt, generating: IdeaBriefSuggestions.self, options: options).content
                 }
                 let answers = suggestions.ideas.map { IdeaBriefReader.Answer(title: $0.title, angle: $0.angle, openingLine: $0.openingLine) }
-                ideas = IdeaBriefReader.ideas(from: answers, slots: slots, language: languageCode)
+                ideas = IdeaBriefReader.ideas(from: answers, slots: slots, language: languageCode, phrases: voice?.phrases ?? [])
             } else {
                 let suggestions = try await self.answering {
                     try await session.respond(to: prompt, generating: ThemeSuggestions.self, options: options).content

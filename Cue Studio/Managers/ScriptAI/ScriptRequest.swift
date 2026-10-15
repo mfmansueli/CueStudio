@@ -38,6 +38,9 @@ nonisolated struct ScriptRequest: Hashable, Sendable {
     /// The inspiration the idea came from, what of it the creator's text still says (`IdeaBrief.standing(in:)`): the script follows its
     /// angle and opens with its line, or close to it.
     var brief: IdeaBrief?
+    /// The most the voice may cost (`VoiceBrief.budget` units) when the request had to be fitted to the model's window (`ContextBudget`); nil is the
+    /// usual budget.
+    var voiceBudget: Int?
 
     var type: ScriptType? {
         if case .format(let type, _) = source { type } else { format }

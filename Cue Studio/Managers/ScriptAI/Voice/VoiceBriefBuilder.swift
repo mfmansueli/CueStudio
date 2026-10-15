@@ -71,7 +71,8 @@ nonisolated enum VoiceBriefBuilder {
 
     /// The lines of the brief, by what they are about.
     private struct Parts {
-        static let examplesHeader = "Here is how they write. Match the voice, never copy the content:"
+        /// Measured on the baseline run: a script took a pasted example's first sentence word for word.
+        static let examplesHeader = "Here is how they write. Match the voice; never reuse these sentences, facts or stories:"
         /// An example shorter than this says too little to be worth the room.
         static let shortestExample = 70
 
@@ -263,12 +264,13 @@ nonisolated enum VoiceBriefBuilder {
             return ["Rules: \(voice.avoid.map(VoiceAvoidRule.instruction(for:)).joined(separator: "; "))."]
         }
 
-        /// What was imported and fits the request first (`ExcerptRetriever`), then the examples the creator pasted, then the scripts approved with
-        /// "Sounds like me", newest first; at most three.
+        /// The newest script approved with "Sounds like me" first (the creator said it is them), then what was imported and fits the request
+        /// (`ExcerptRetriever`), then the examples they pasted, then older approved scripts; at most three. On the baseline run the approved
+        /// script never reached the model: two excerpts and a pasted example took the three places.
         private static func examples(_ voice: CreatorVoice) -> [String] {
-            let approved = voice.approvedSamples.reversed()
+            let approved = Array(voice.approvedSamples.reversed())
             let imported = voice.excerpts.map(\.asExample)
-            return Array((imported + voice.examples + approved).map(\.sentText).prefix(VoiceExample.limit))
+            return Array((approved.prefix(1) + imported + voice.examples + approved.dropFirst()).map(\.sentText).prefix(VoiceExample.limit))
         }
 
         private static func isFormatTag(_ tag: String) -> Bool {

@@ -32,7 +32,7 @@ nonisolated enum ScriptPromptBuilder {
             lines.append(accuracyRule)
         }
         if let voice {
-            lines += voiceLines(voice, platform: request.platform)
+            lines += voiceLines(voice, platform: request.platform, budget: request.voiceBudget)
         }
         if let language = request.language {
             lines.append(languageRule(language, variant: request.languageVariant))
@@ -138,8 +138,8 @@ nonisolated enum ScriptPromptBuilder {
             lines.append(briefOpeningRule(brief) ?? hookRule(for: voice))
         }
         switch request.source {
-        case .prompt(let text):
-            lines.append("The video: \(text)")
+        case .prompt:
+            lines.append("The video: \(videoText(for: request))")
             if let angle = briefAngleRule(brief) { lines.append(angle) }
             // The idea is the subject. The voice only changes how it is said: a creator with other topics still gets a script about this one.
             if voice != nil { lines.append("Write about this idea and only this one: the creator's voice is how they sound, never what to talk about.") }
@@ -155,8 +155,8 @@ nonisolated enum ScriptPromptBuilder {
         }
         // Said again at the very end, where a small model listens best.
         var closing = voice.flatMap { closingRule(for: $0, platform: request.platform) }
-        if voice != nil, case .prompt(let text) = request.source {
-            closing = [closing, "Stay on the idea: \(text)"].compactMap { $0 }.joined(separator: " ")
+        if voice != nil, case .prompt = request.source {
+            closing = [closing, "Stay on the idea: \(videoText(for: request))"].compactMap { $0 }.joined(separator: " ")
         }
         if let closing { lines.append(closing) }
         return lines.joined(separator: "\n")
@@ -167,6 +167,24 @@ nonisolated enum ScriptPromptBuilder {
         if let type = request.type { return .guide(for: type) }
         guard case .prompt(let idea) = request.source else { return .generic }
         return .guide(for: FormatGuess.format(for: idea, usual: request.voice?.formats ?? []))
+    }
+
+    /// What the video is about, as the creator's text says it: for an idea from Find inspiration, without the lines of its angle and its opening line,
+    /// which the request gives as rules of their own (`briefAngleRule`, `briefOpeningRule`). Measured on an iPhone 15 Pro: sent twice (as "Angle: … /
+    /// Open with: “…”" and as rules) the brief came back as its opening block alone in 11 of 54 requests and the creator saw an error after ~50 s;
+    /// sent once, 1 of 27, in 10.7 s on average against 19.9, as long and with the opening line kept every time.
+    static func videoText(for request: ScriptRequest) -> String {
+        guard case .prompt(let text) = request.source else { return "" }
+        guard let brief = request.brief else { return text }
+        let given = [brief.angle, brief.openingLine].filter { !$0.isEmpty }.map { IdeaBrief.tokens(in: $0) }
+        guard !given.isEmpty else { return text }
+        let kept = text.components(separatedBy: "\n").filter { line in
+            let words = IdeaBrief.tokens(in: line)
+            // A line that is mostly the angle or the opening line, in any order, with or without its label.
+            return !given.contains { part in !part.isEmpty && Double(part.intersection(words).count) / Double(part.count) >= IdeaBrief.partShare }
+        }
+        let subject = kept.joined(separator: "\n").trimmingCharacters(in: .whitespacesAndNewlines)
+        return subject.isEmpty ? text : subject
     }
 
     /// An idea from Find inspiration brings its own first sentence (`IdeaBrief`): the script opens with it, or with it said the creator's way,
@@ -182,10 +200,19 @@ nonisolated enum ScriptPromptBuilder {
         return "Follow this angle all the way through: \(angle)"
     }
 
-    /// The hook, in the creator's own way of opening when they have one.
+    /// Whether the first words must be about the subject, never a greeting or a filler: the device measurement (`ScriptQualityDeviceTests`,
+    /// `TEST_RUNNER_CUE_QUALITY_SUBSTANCE=off`) compares it with the request as it was.
+    nonisolated(unsafe) static var forbidsFillerOpening = true
+
+    /// The hook, in the creator's own way of opening when they have one, never after a filler. Measured on an iPhone 15 Pro: told only "a hook", the
+    /// model opened with one ("Olha só", "Hey", "¡Hola!") in 6 of 9 scripts with no voice; told this, in none.
     static func hookRule(for voice: CreatorVoice?) -> String {
-        guard let voice, !voice.openings.isEmpty else { return "Open with a hook that works in the first 3 seconds." }
-        return "Open with a hook that works in the first 3 seconds, in the creator's own way of opening."
+        let filler = forbidsFillerOpening
+            ? " The first words are already about the subject (a claim, a question or a number), never a greeting or a filler word such as “hey”, “hi”, "
+                + "“so” or “look”."
+            : ""
+        guard let voice, !voice.openings.isEmpty else { return "Open with a hook that works in the first 3 seconds." + filler }
+        return "Open with a hook that works in the first 3 seconds, in the creator's own way of opening." + filler
     }
 
     /// What must hold whatever else the script does (who is talking, what to avoid), repeated after the idea; nil with nothing to repeat.
@@ -220,6 +247,9 @@ nonisolated enum ScriptPromptBuilder {
     /// Whether the length is asked in sentences for every block (true), or in the words of the script alone (false): the device measurement compares them.
     nonisolated(unsafe) static var asksSentencesPerBlock = true
 
+    /// A short script asked for "concrete points that name the real thing" instead of words was tried on an iPhone 15 Pro (run `substance`): it came
+    /// out shorter (half its minimum, against 0.7), kept its opening's promise less (3 of 18 against 7 of 13) and invented ("filtro físico, como
+    /// camuflagem"). Left out.
     static func lengthRule(minimumWords: Int, blocks: Int = 3, sentenceWords: Int = 12) -> String {
         guard asksSentencesPerBlock, minimumWords > shortFormWords else {
             return "Do not stop early: the script must be at least \(minimumWords) words, so write every block in full, with several complete sentences each."
@@ -238,8 +268,8 @@ nonisolated enum ScriptPromptBuilder {
 
     /// My Cue Voice as the lines the model reads (`VoiceBriefBuilder`): who is talking, who is watching, what about, how they sound, how
     /// they open and close, examples and the rules, in at most `VoiceBrief.budget` characters.
-    static func voiceLines(_ voice: CreatorVoice, platform: Platform? = nil) -> [String] {
-        VoiceBriefBuilder.brief(for: voice, register: platform.map(PlatformRegister.init) ?? .casual).lines
+    static func voiceLines(_ voice: CreatorVoice, platform: Platform? = nil, budget: Int? = nil) -> [String] {
+        VoiceBriefBuilder.brief(for: voice, budget: budget ?? VoiceBrief.budget, register: platform.map(PlatformRegister.init) ?? .casual).lines
     }
 
     /// "What Cue sends" (My Cue Voice): the voice as the model reads it, and what was cut to fit. Empty when nothing of the voice can be used yet.
@@ -274,7 +304,8 @@ nonisolated enum ScriptPromptBuilder {
     static let seriousRule = "This is a serious statement. Be sincere, specific and brief. No hooks, jokes, hype, emojis or calls to follow, like or subscribe. Never write \"but\" after taking responsibility."
 
     /// Measured on an iPhone: scripts in the first person made up stories ("I see so many people come to me…", "my first year as a nurse").
-    static let honestyRule = "Never invent personal stories, clients, results, numbers or credentials for the creator: speak from general experience unless the idea gives the details."
+    static let honestyRule = "Never invent personal stories, clients, results, numbers or credentials for the creator: speak from general experience unless "
+        + "the idea gives the details. Never say the creator did, tried, discovered or was saved by something unless the idea says so."
 
     static let accuracyRule = "Be accurate. State only facts you are confident about; when unsure of a date, name or number, say it more generally instead of inventing it."
 
@@ -293,9 +324,9 @@ nonisolated enum ScriptPromptBuilder {
 
     /// What the model is told before it suggests ideas: who it works for, and the creator's voice when there is one (their topics, who is
     /// watching and why) so the ideas are theirs and not any creator's.
-    static func themesInstructions(voice: CreatorVoice? = nil) -> String {
+    static func themesInstructions(voice: CreatorVoice? = nil, voiceBudget: Int? = nil) -> String {
         var lines = ["You suggest video ideas for creators who film themselves talking to camera."]
-        if let voice { lines += voiceLines(voice) }
+        if let voice { lines += voiceLines(voice, budget: voiceBudget) }
         return lines.joined(separator: "\n")
     }
 
@@ -479,6 +510,26 @@ nonisolated enum ScriptPromptBuilder {
     /// ran out (measured on an iPhone 15 Pro, 45 to 93 s for one idea). It stays once.
     static func collapsingRepeatedCues(_ text: String) -> String {
         text.replacing(/(\[[^\]\n]{1,40}\])(?:[\s.…]*\1){2,}[.…]*/) { String($0.output.1) }
+    }
+
+    /// A sentence said again word for word, after the first time, goes: a model that loops ("Esa es nuestra esencia. … Esa es nuestra misión. … Esa
+    /// es nuestra esencia.") ran until its answer was cut off on the iPhone (1 script of 27 in a device run). Only for a script the model wrote: the
+    /// creator may repeat a line on purpose. Sentences of fewer than three words ("Save this.") stay.
+    static func collapsingRepeatedSentences(_ text: String) -> String {
+        var seen = Set<String>()
+        let paragraphs = text.components(separatedBy: "\n\n").compactMap { paragraph -> String? in
+            let sentences = paragraph.matches(of: /[^.!?…。！？]+(?:[.!?…。！？]+|$)(?:\s*\[[^\]\n]{1,40}\])*/).map { String($0.output) }
+            guard !sentences.isEmpty else { return paragraph }
+            let kept = sentences.filter { sentence in
+                let key = CueParser.stripCues(sentence).lowercased().filter { $0.isLetter || $0.isNumber || $0 == " " }
+                    .split(separator: " ").joined(separator: " ")
+                guard key.split(separator: " ").count >= 3 else { return true }
+                return seen.insert(key).inserted
+            }
+            let joined = kept.map { $0.trimmingCharacters(in: .whitespaces) }.filter { !$0.isEmpty }.joined(separator: " ")
+            return joined.isEmpty ? nil : joined
+        }
+        return paragraphs.joined(separator: "\n\n")
     }
 
     /// A title or a single line (hook, idea): one line, no markdown or wrapping quotes.
