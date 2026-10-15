@@ -20,7 +20,10 @@ struct SendOffView: View {
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.sendOffFrozenAt) private var frozenAt
+    @Environment(\.scenePhase) private var scenePhase
     @State private var start = Date.now
+    /// The send-off has played: anything still moving is ambient, at 30 fps.
+    @State private var isSettled = false
 
     private var counts: [Platform: Int] {
         Dictionary(uniqueKeysWithValues: Platform.allCases.map { ($0, snapshot.count(for: $0)) })
@@ -29,12 +32,15 @@ struct SendOffView: View {
     var body: some View {
         GeometryReader { proxy in
             let fit = min(proxy.size.width / SendOffLayout.board.width, proxy.size.height / SendOffLayout.board.height)
-            TimelineView(.animation(paused: reduceMotion || frozenAt != nil)) { context in
+            TimelineView(.animation(
+                minimumInterval: isSettled ? 1.0 / 30 : nil, paused: reduceMotion || frozenAt != nil || scenePhase != .active
+            )) { context in
                 let time = frozenAt ?? (reduceMotion ? SendOffScript.end(networks: networks.count) + 1 : context.date.timeIntervalSince(start))
                 board(time: time)
                     .frame(width: SendOffLayout.board.width, height: SendOffLayout.board.height)
                     .scaleEffect(fit)
                     .frame(width: proxy.size.width, height: proxy.size.height)
+                    .onChange(of: time >= SendOffScript.end(networks: networks.count)) { _, settled in isSettled = settled }
             }
         }
         .ignoresSafeArea()

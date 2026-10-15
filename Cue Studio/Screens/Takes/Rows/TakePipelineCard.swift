@@ -108,8 +108,8 @@ struct TakePipelineCard: View {
 
     /// Filled green, black number, and a ring of green that goes out to 6 pt and back every 2 s (`pulse`; still with Reduce Motion).
     private func readyDisc(count: Int) -> some View {
-        TimelineView(.animation(minimumInterval: 1.0 / 30, paused: reduceMotion)) { context in
-            let phase = context.date.timeIntervalSinceReferenceDate.truncatingRemainder(dividingBy: 2) / 2
+        AmbientTimeline { ambient in
+            let phase = ambient.seconds.truncatingRemainder(dividingBy: 2) / 2
             let eased = 1 - pow(1 - (phase < 0.5 ? phase * 2 : (1 - phase) * 2), 2)
             let spread = reduceMotion ? 0 : 6 * eased
             Circle().fill(Palette.success)

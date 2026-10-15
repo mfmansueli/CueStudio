@@ -59,7 +59,7 @@ struct EmptyLibraryPathCard: View {
             .cardDepth(Self.shape, edge: nil)
             .contentShape(Self.shape)
         }
-        .buttonStyle(.plain)
+        .buttonStyle(.cuePressCard)
         .accessibilityElement(children: .combine)
     }
 

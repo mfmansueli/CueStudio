@@ -7,7 +7,8 @@ import SwiftUI
 
 /// 1.1: a star comes in from the top right and lights the dots of a C, arcs down to three words and returns to explode into the last dot;
 /// the wordmark, the promise and the buttons arrive after it (09 §12, `WelcomeScript`). It plays once and holds. With Reduce Motion it
-/// is the final state only: the C lit, the three words, the wordmark, the title and the buttons.
+/// is the final state only: the C lit, the three words, the wordmark, the title and the buttons. Its clock stops off screen and while the app
+/// is not active (`MotionClock`), and the haptics are beats of that clock, so a call or Control Center in the middle never skips the story ahead.
 struct WelcomeChapter: View {
     let plays: Bool
     /// A second of the timeline to stand still at (UI tests taking pictures); nil plays.
@@ -16,7 +17,9 @@ struct WelcomeChapter: View {
     let onReturning: () -> Void
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
-    @State private var start = Date.now
+    @Environment(\.scenePhase) private var scenePhase
+    @State private var clock = MotionClock()
+    @State private var isOnScreen = false
     @State private var isFinished = false
     /// The centres of the three words in the board's frame, once laid out; the star's last flights go to them.
     @State private var wordCentres: [CGPoint] = []
@@ -25,16 +28,32 @@ struct WelcomeChapter: View {
     private nonisolated static let frameSpace = "welcomeFrame"
     private var animates: Bool { plays && frozenAt == nil && !reduceMotion }
 
+    private func runs(onScreen: Bool, phase: ScenePhase) -> Bool { animates && onScreen && phase == .active }
+
     var body: some View {
-        TimelineView(.animation(paused: !animates || isFinished)) { context in
-            let time = frozenAt ?? (animates ? min(WelcomeScript.finalTime, context.date.timeIntervalSince(start)) : WelcomeScript.finalTime)
+        TimelineView(.animation(paused: !runs(onScreen: isOnScreen, phase: scenePhase) || isFinished)) { context in
+            let time = frozenAt ?? (animates ? min(WelcomeScript.finalTime, clock.elapsed(at: context.date)) : WelcomeScript.finalTime)
             ZStack {
                 scene(time)
                     .ignoresSafeArea()
                 buttons(time)
             }
+            .onChange(of: WelcomeScript.beatsPassed(at: time)) { passed, now in
+                if animates, now > passed { play(WelcomeScript.orderedBeats[now - 1].beat) }
+            }
+            .onChange(of: time >= WelcomeScript.finalTime) { _, isOver in
+                if isOver, animates { isFinished = true }
+            }
         }
-        .task(id: animates) { await run() }
+        .onAppear {
+            isOnScreen = true
+            clock.setRunning(runs(onScreen: true, phase: scenePhase), at: .now)
+        }
+        .onDisappear {
+            isOnScreen = false
+            clock.setRunning(false, at: .now)
+        }
+        .onChange(of: scenePhase) { _, phase in clock.setRunning(runs(onScreen: isOnScreen, phase: phase), at: .now) }
         .onChange(of: wordCentres) { _, centres in starPath = WelcomeScript.starPath(words: centres) }
     }
 
@@ -115,22 +134,12 @@ struct WelcomeChapter: View {
 
     // MARK: - Time
 
-    /// The haptics, each at its second, and the end of the timeline.
-    private func run() async {
-        guard animates else { return }
-        start = .now
-        isFinished = false
-        for (second, beat) in WelcomeScript.beats {
-            let wait = second - Date.now.timeIntervalSince(start)
-            if wait > 0 { try? await Task.sleep(for: .seconds(wait)) }
-            if Task.isCancelled { return }
-            switch beat {
-            case .dot: Haptics.soft()
-            case .word: Haptics.apply()
-            case .explosion: Haptics.success()
-            }
+    /// The haptic of a beat the timeline just passed.
+    private func play(_ beat: WelcomeScript.Beat) {
+        switch beat {
+        case .dot: Haptics.soft()
+        case .word: Haptics.apply()
+        case .explosion: Haptics.success()
         }
-        try? await Task.sleep(for: .seconds(max(0, WelcomeScript.finalTime + 0.2 - Date.now.timeIntervalSince(start))))
-        isFinished = true
     }
 }

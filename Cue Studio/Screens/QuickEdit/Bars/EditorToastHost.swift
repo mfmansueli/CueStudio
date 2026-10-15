@@ -55,7 +55,7 @@ struct EditorToastHost: ViewModifier {
                     .padding(.horizontal, 16)
                     .padding(.top, 10)
                     .id(message)
-                    .transition(reduceMotion ? .opacity : .move(edge: .top).combined(with: .opacity))
+                    .transition(.toast(reduceMotion: reduceMotion))
                     .onTapGesture { toast.dismiss() }
                     .accessibilityElement(children: .contain)
                 }

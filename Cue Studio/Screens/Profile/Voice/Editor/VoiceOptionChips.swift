@@ -29,7 +29,7 @@ struct VoiceOptionChips: View {
                         .frame(minHeight: Metrics.hitTarget)
                         .fixedSize()
                 }
-                .buttonStyle(.plain)
+                .buttonStyle(.cuePress)
                 .accessibilityIdentifier("\(identifier).\(option.id)")
             }
             ForEach(extras, id: \.self) { value in
@@ -41,7 +41,7 @@ struct VoiceOptionChips: View {
                         .frame(minHeight: Metrics.hitTarget)
                         .fixedSize()
                 }
-                .buttonStyle(.plain)
+                .buttonStyle(.cuePress)
                 .accessibilityIdentifier("\(identifier).typed")
             }
         }

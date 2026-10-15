@@ -17,8 +17,8 @@ struct ProfileMiniCore: View {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
-        TimelineView(.animation(minimumInterval: 1.0 / 30, paused: reduceMotion)) { context in
-            let time = reduceMotion ? 0 : context.date.timeIntervalSinceReferenceDate
+        AmbientTimeline { ambient in
+            let time = reduceMotion ? 0 : ambient.seconds
             Canvas { canvas, size in
                 draw(in: &canvas, size: size, time: time)
             }

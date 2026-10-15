@@ -244,7 +244,7 @@ struct ScriptPageView: View {
         let isOn = viewModel.showsCues
         return Toggle(isOn: $viewModel.showsCues) {
             HStack(spacing: 5) {
-                Image(systemName: isOn ? "eye" : "eye.slash").font(.system(size: 12, weight: .bold))
+                Image(systemName: isOn ? "eye" : "eye.slash").font(.system(size: 12, weight: .bold)).symbolSwap(value: isOn)
                 Text("Cues")
             }
             .font(.system(size: 14, weight: .semibold))

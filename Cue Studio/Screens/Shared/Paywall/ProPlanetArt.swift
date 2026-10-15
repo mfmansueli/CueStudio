@@ -43,9 +43,9 @@ struct ProPlanetArt: View {
     ]
 
     var body: some View {
-        TimelineView(.animation(minimumInterval: 1.0 / 30, paused: reduceMotion)) { context in
+        AmbientTimeline { ambient in
             Canvas { canvas, size in
-                draw(in: &canvas, size: size, time: reduceMotion ? 0 : context.date.timeIntervalSinceReferenceDate)
+                draw(in: &canvas, size: size, time: reduceMotion ? 0 : ambient.seconds)
             }
         }
         .frame(height: 170)

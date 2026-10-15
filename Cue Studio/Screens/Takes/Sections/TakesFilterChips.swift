@@ -43,7 +43,7 @@ struct TakesFilterChips: View {
             .frame(minHeight: Metrics.hitTarget)
             .contentShape(Capsule())
         }
-        .buttonStyle(.plain)
+        .buttonStyle(.cuePress)
         .accessibilityLabel(Text(option == nil ? String(localized: "All platforms") : title))
         .accessibilityAddTraits(isOn ? .isSelected : [])
         .accessibilityIdentifier("takes.platform.\(option?.rawValue ?? "all")")

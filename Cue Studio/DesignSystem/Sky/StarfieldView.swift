@@ -6,7 +6,8 @@
 import SwiftUI
 
 /// The sky of the browse screens and the onboarding: three layers of stars drifting down at their own
-/// speed and two soft violet nebulae (all of Serene), and, at Adrift only, 14 small twinkling stars (half with the cross glint of a
+/// speed, each swaying a few points to the side on its own period and every tile with its own stars, and two soft violet nebulae
+/// wandering on slow curves (all of Serene), and, at Adrift only, 14 small twinkling stars (half with the cross glint of a
 /// phone-camera star), a comet every two minutes or so and a small astronaut floating in zero gravity, bouncing softly off the edges of the
 /// screen. Interstellar is Adrift with the colours of a galaxy (three nebulae, the Milky Way
 /// band) and a spaceship in place of the comet. Never over the camera, a take or the editor.
@@ -83,16 +84,20 @@ struct StarfieldView: View {
     private func drawLayer(
         _ layer: StarfieldMath.Layer, seed: UInt64, in canvas: inout GraphicsContext, size: CGSize, time: TimeInterval
     ) {
-        let stars = StarfieldMath.stars(in: layer, seed: seed)
         let offset = StarfieldMath.drift(of: layer, at: time)
+        let sway = StarfieldMath.sway(of: layer, at: time)
         let columns = Int(ceil(size.width / layer.tile.width))
         let rows = Int(ceil(size.height / layer.tile.height)) + 1
+        // One more column each side: the sway uncovers a few points of the next tile.
         for row in -1..<rows {
-            for column in 0..<columns {
-                let origin = CGPoint(x: CGFloat(column) * layer.tile.width, y: CGFloat(row) * layer.tile.height + offset)
+            let tileRow = StarfieldMath.tileRow(row, of: layer, at: time)
+            for column in -1...columns {
+                let origin = CGPoint(x: CGFloat(column) * layer.tile.width + sway, y: CGFloat(row) * layer.tile.height + offset)
+                guard origin.x < size.width + 4, origin.x + layer.tile.width > -4 else { continue }
+                let stars = StarfieldMath.stars(in: layer, seed: StarfieldMath.tileSeed(seed, column: column, row: tileRow))
                 for star in stars {
                     let point = CGPoint(x: origin.x + star.x * layer.tile.width, y: origin.y + star.y * layer.tile.height)
-                    guard point.y > -4, point.y < size.height + 4 else { continue }
+                    guard point.y > -4, point.y < size.height + 4, point.x > -4, point.x < size.width + 4 else { continue }
                     let size = star.size * look.size
                     let rect = CGRect(x: point.x - size / 2, y: point.y - size / 2, width: size, height: size)
                     canvas.fill(Path(ellipseIn: rect), with: .color(.white.opacity(star.opacity * look.opacity)))
@@ -104,9 +109,9 @@ struct StarfieldView: View {
     private func drawNebula(
         _ nebula: StarfieldMath.Nebula, in canvas: inout GraphicsContext, size: CGSize, time: TimeInterval
     ) {
-        let phase = StarfieldMath.nebulaPhase(at: time, period: nebula.period)
-        let center = CGPoint(x: size.width * nebula.x + (phase - 0.5) * 40, y: size.height * nebula.y + (0.5 - phase) * 40)
-        let radius = nebula.diameter / 2 * (1 + 0.16 * phase)
+        let pose = StarfieldMath.nebulaPose(nebula, at: time)
+        let center = CGPoint(x: size.width * nebula.x + pose.offset.dx, y: size.height * nebula.y + pose.offset.dy)
+        let radius = nebula.diameter / 2 * pose.scale
         let violet = nebula.hue.color
         canvas.fill(
             Path(ellipseIn: CGRect(x: center.x - radius, y: center.y - radius, width: radius * 2, height: radius * 2)),

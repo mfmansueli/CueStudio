@@ -27,20 +27,26 @@ struct OnboardingUniverseCanvas: View {
     private static let periods: [Double] = [14, 22, 9, 18]
     private static let diameters: [CGFloat] = [18, 14, 16, 14]
 
+    /// Where on its orbit the planet of the topic at `index` is at `time` (radians): a little faster in front, slower behind (`OrbitMotion`).
+    static func worldAngle(index: Int, time: TimeInterval) -> Double {
+        OrbitMotion.angle(mean: Double(index) * 2.1 + 2 * .pi * time / periods[min(index, periods.count - 1)])
+    }
+
     /// Where the planet of the topic at `index` is, on a canvas of `size`, at `time` (seconds since the reference date).
     static func worldPoint(index: Int, in size: CGSize, time: TimeInterval) -> CGPoint {
         let center = CGPoint(x: size.width / 2, y: size.height / 2)
         let radiusX = Self.radiusX(index)
-        let angle = Double(index) * 2.1 + 2 * .pi * time / periods[min(index, periods.count - 1)]
+        let angle = worldAngle(index: index, time: time)
         let local = CGPoint(x: radiusX * cos(angle), y: radiusX * squash * sin(angle))
         let cosT = cos(tilt.radians), sinT = sin(tilt.radians)
         return CGPoint(x: center.x + local.x * cosT - local.y * sinT, y: center.y + local.x * sinT + local.y * cosT)
     }
 
     var body: some View {
-        TimelineView(.animation(minimumInterval: 1.0 / 30, paused: reduceMotion)) { context in
+        // The wall clock, not the loop's: where a world lands is worked out from it (`UniverseChapter`), so the two must agree.
+        AmbientTimeline { ambient in
             Canvas { canvas, size in
-                draw(in: &canvas, size: size, time: reduceMotion ? 0 : context.date.timeIntervalSinceReferenceDate, now: context.date)
+                draw(in: &canvas, size: size, time: reduceMotion ? 0 : ambient.date.timeIntervalSinceReferenceDate, now: ambient.date)
             }
         }
     }
@@ -255,8 +261,11 @@ struct OnboardingUniverseCanvas: View {
         let pop = TopicBirth.pose(TopicBirth.planet, at: age)
         guard pop.opacity > 0.01, pop.sx > 0.01 else { return }
         let point = Self.worldPoint(index: index, in: size, time: time)
-        let diameter = Self.diameters[min(index, Self.diameters.count - 1)] * pop.sx
+        // Bigger and brighter in front of the core, smaller and dimmer behind it: depth without 3D.
+        let angle = Self.worldAngle(index: index, time: time)
+        let diameter = Self.diameters[min(index, Self.diameters.count - 1)] * pop.sx * OrbitMotion.scale(at: angle)
         canvas.drawLayer { layer in
+            layer.opacity = OrbitMotion.light(at: angle)
             layer.addFilter(.shadow(color: color.opacity(0.8), radius: 6))
             layer.fill(
                 Path(ellipseIn: CGRect(x: point.x - diameter / 2, y: point.y - diameter / 2, width: diameter, height: diameter)),

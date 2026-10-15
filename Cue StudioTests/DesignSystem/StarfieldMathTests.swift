@@ -40,11 +40,65 @@ struct StarfieldMathTests {
         #expect(StarfieldMath.drift(of: layer, at: 0) == 0)
     }
 
+    /// A tile keeps its stars all the way down: across the moment the drift wraps, the tile that was at a row is drawn one row lower, at the
+    /// same place on the screen, with the same number (so with the same stars), and nothing jumps.
+    @Test func aTileKeepsItsStarsAcrossTheDriftsWrap() {
+        let layer = StarfieldMath.near
+        let before = layer.drift * 3 - 0.0001
+        let after = layer.drift * 3 + 0.0001
+        for row in -1..<3 {
+            let tile = StarfieldMath.tileRow(row, of: layer, at: before)
+            #expect(StarfieldMath.tileRow(row + 1, of: layer, at: after) == tile)
+            let yBefore = CGFloat(row) * layer.tile.height + StarfieldMath.drift(of: layer, at: before)
+            let yAfter = CGFloat(row + 1) * layer.tile.height + StarfieldMath.drift(of: layer, at: after)
+            #expect(abs(yBefore - yAfter) < 0.1)
+        }
+    }
+
+    /// Neighbouring tiles have their own stars (the far layer's 180 pt tile used to repeat in columns), and a tile is the same every time.
+    @Test func everyTileHasItsOwnStars() {
+        let layer = StarfieldMath.far
+        let seeds = (-1...2).flatMap { column in (-1...5).map { row in StarfieldMath.tileSeed(27, column: column, row: row) } }
+        #expect(Set(seeds).count == seeds.count)
+        let tile = StarfieldMath.stars(in: layer, seed: StarfieldMath.tileSeed(27, column: 1, row: 4))
+        #expect(tile == StarfieldMath.stars(in: layer, seed: StarfieldMath.tileSeed(27, column: 1, row: 4)))
+        #expect(tile != StarfieldMath.stars(in: layer, seed: StarfieldMath.tileSeed(27, column: 2, row: 4)))
+        // The first tile is the sky's own seed: a screen that never drifts (a still frame) keeps the stars it had.
+        #expect(StarfieldMath.tileSeed(27, column: 0, row: 0) == 27)
+    }
+
+    /// The layers sway a few points, the nearer the wider and quicker, and the near one the other way: they never move together.
+    @Test func theLayersSwayApartWithinAFewPoints() {
+        let layers = StarfieldMath.layers
+        #expect(layers.map { abs($0.sway) } == layers.map { abs($0.sway) }.sorted())
+        #expect(layers.map(\.swayPeriod) == layers.map(\.swayPeriod).sorted(by: >))
+        for layer in layers {
+            let samples = stride(from: 0.0, through: 400, by: 0.5).map { StarfieldMath.sway(of: layer, at: $0) }
+            #expect(samples.allSatisfy { abs($0) <= abs(layer.sway) + 0.0001 })
+            // Continuous: under a tenth of a point between two frames at 30 fps.
+            let steps = stride(from: 0.0, through: 400, by: 1.0 / 30).map { StarfieldMath.sway(of: layer, at: $0) }
+            #expect(zip(steps, steps.dropFirst()).allSatisfy { abs($1 - $0) < 0.1 })
+        }
+        let early = 5.0
+        #expect(StarfieldMath.sway(of: StarfieldMath.near, at: early) < 0 && StarfieldMath.sway(of: StarfieldMath.far, at: early) > 0)
+    }
+
+    /// A nebula keeps the design's ranges (±20 pt, 1 → 1.16) but wanders on a curve: it is not on one diagonal, and its growth is not its drift.
+    @Test func aNebulaWandersOnACurveWithinTheDesignsRanges() {
+        let nebula = StarfieldMath.nebulae(seed: 27)[0]
+        let poses = stride(from: 0.0, through: 600, by: 0.25).map { StarfieldMath.nebulaPose(nebula, at: $0) }
+        #expect(poses.allSatisfy { abs($0.offset.dx) <= 20.0001 && abs($0.offset.dy) <= 20.0001 && (1...1.16).contains($0.scale) })
+        #expect(poses.contains { abs($0.offset.dx + $0.offset.dy) > 5 })
+        #expect(poses.contains { abs(($0.scale - 1) / 0.16 - ($0.offset.dx / 40 + 0.5)) > 0.2 })
+    }
+
     @Test func twinklesStayWithinTheirRanges() {
         let twinkles = StarfieldMath.twinkles(count: 14, seed: 9)
         #expect(twinkles.count == 14)
-        // A 7 s cycle for every star, each starting 0 to 5.2 s in.
-        #expect(twinkles.allSatisfy { StarfieldMath.twinkleSize.contains($0.size) && $0.cycle == 7 && (0...(5.2 / 7)).contains($0.phase) })
+        // About the design's 7 s cycle (±12%, each star its own, so the sky never pulses in one rhythm), each starting 0 to 5.2 s in.
+        #expect(twinkles.allSatisfy { StarfieldMath.twinkleSize.contains($0.size) && (6.16...7.84).contains($0.cycle) && (0...(5.2 / 7)).contains($0.phase) })
+        #expect(Set(twinkles.map(\.cycle)).count == twinkles.count)
+        #expect(abs(twinkles.map(\.cycle).reduce(0, +) / Double(twinkles.count) - 7) < 0.5)
         // About half have the cross glint.
         #expect(twinkles.filter(\.hasGlint).count == 7)
     }

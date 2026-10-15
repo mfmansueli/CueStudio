@@ -38,9 +38,8 @@ struct CueIconButtonStyle: ButtonStyle {
             }
             .glassEffect(variant == .glass ? .regular.interactive() : .identity, in: shape)
             .contentShape(shape)
-            .opacity(configuration.isPressed ? 0.7 : 1)
-            .scaleEffect(configuration.isPressed ? 0.94 : 1)
-            .animation(.easeOut(duration: 0.15), value: configuration.isPressed)
+            // Glass answers the touch itself (`.interactive()`); the solid ones sink and darken (`PressResponse`).
+            .pressResponse(configuration.isPressed && variant != .glass, depth: PressResponse.iconDepth)
             // Keeps the touch target at 44pt even for smaller visuals.
             .frame(minWidth: Metrics.hitTarget, minHeight: Metrics.hitTarget)
     }
