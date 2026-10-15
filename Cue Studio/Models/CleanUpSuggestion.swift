@@ -15,16 +15,23 @@ nonisolated struct CleanUpSuggestion: Codable, Hashable, Identifiable, Sendable 
 
     var id = UUID()
     var kind: CleanUpKind
-    /// Seconds of the original recording.
+    /// Seconds of the recording it was heard in.
     var span: TimeSpan
+    /// That recording: nil for the take, else another recording of the montage (`ClipSource.id`). Suggestions saved before
+    /// montages were listened to are the take's.
+    var sourceID: UUID?
     /// What was said ("um", "let me start again"); nil for pauses.
     var text: String?
     /// 0 to 1: how sure the detector is.
     var confidence: Double
     var status: CleanUpStatus = .pending
 
-    init(id: UUID = UUID(), kind: CleanUpKind, span: TimeSpan, text: String? = nil, confidence: Double, status: CleanUpStatus = .pending) {
+    init(
+        id: UUID = UUID(), kind: CleanUpKind, span: TimeSpan, text: String? = nil, confidence: Double, status: CleanUpStatus = .pending,
+        sourceID: UUID? = nil
+    ) {
         self.id = id
+        self.sourceID = sourceID
         self.kind = kind
         self.span = span
         self.text = text
@@ -55,7 +62,7 @@ nonisolated struct CleanUpSuggestion: Codable, Hashable, Identifiable, Sendable 
     // MARK: - Coding
 
     private enum CodingKeys: String, CodingKey {
-        case id, kind, span, text, confidence, status
+        case id, kind, span, text, confidence, status, sourceID
         /// Before statuses: kept or not.
         case isKept
     }
@@ -67,6 +74,7 @@ nonisolated struct CleanUpSuggestion: Codable, Hashable, Identifiable, Sendable 
         span = try container.decode(TimeSpan.self, forKey: .span)
         text = try container.decodeIfPresent(String.self, forKey: .text)
         confidence = try container.decode(Double.self, forKey: .confidence)
+        sourceID = try? container.decodeIfPresent(UUID.self, forKey: .sourceID)
         if let status = try container.decodeIfPresent(CleanUpStatus.self, forKey: .status) {
             self.status = status
         } else {
@@ -82,5 +90,6 @@ nonisolated struct CleanUpSuggestion: Codable, Hashable, Identifiable, Sendable 
         try container.encodeIfPresent(text, forKey: .text)
         try container.encode(confidence, forKey: .confidence)
         try container.encode(status, forKey: .status)
+        try container.encodeIfPresent(sourceID, forKey: .sourceID)
     }
 }

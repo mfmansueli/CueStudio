@@ -23,6 +23,8 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
     var suggestions: [CleanUpSuggestion] = []
     /// Clean Up has listened to the take (so an empty list means it found nothing).
     var cleanUpAnalyzed = false
+    /// The montage's other recordings Clean Up has listened to (`ClipSource.id`).
+    var cleanUpAnalyzedSources: [UUID] = []
     /// Pauses: only silences at least this long are listed ("Pauses longer than").
     var pauseThreshold: TimeInterval = 0.7
 
@@ -38,6 +40,11 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
     var audioVersion = VoiceProcessing.currentVersion
     var voiceEnhancement: AudioStrength = .soft
     var noiseReduction: AudioStrength = .off
+    /// Which recordings Studio Voice treats: every one in new edits; only the take in edits saved before montages were.
+    var voiceReach: StudioVoiceReach = .standard
+    /// "Even out volume": in a montage, the treated recordings' speech is brought to the take's level (within limits, never
+    /// clipping), so a quieter take doesn't drop in the middle of the video. Off in edits saved before it.
+    var evensOutVoices = true
     /// The creator's music and sounds, under the video.
     var music: [MusicClip] = []
     /// Backgrounds blurred or replaced, per recording.
@@ -173,6 +180,7 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
         untouched.captionLanguage = captionLanguage
         untouched.suggestions = suggestions
         untouched.cleanUpAnalyzed = cleanUpAnalyzed
+        untouched.cleanUpAnalyzedSources = cleanUpAnalyzedSources
         if timeline.isWhole { untouched.timeline = timeline }
         return self != untouched
     }
@@ -271,6 +279,11 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
         }
     }
 
+    /// The recordings the edit plays that Clean Up hasn't listened to yet (nil: the take).
+    var recordingsToCleanUp: [UUID?] {
+        playedRecordingIDs.filter { id in id.map { !cleanUpAnalyzedSources.contains($0) } ?? !cleanUpAnalyzed }
+    }
+
     /// Whether any music goes down while someone speaks, so the voices need listening to.
     var ducksMusic: Bool {
         music.contains { !$0.isMuted && $0.ducksUnderVoice }
@@ -307,8 +320,8 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
     // MARK: - Coding
 
     private enum CodingKeys: String, CodingKey {
-        case timeline, sources, suggestions, cleanUpAnalyzed, volume, enhancesVoice, reducesNoise,
-        audioVersion, voiceEnhancement, noiseReduction, music, backgrounds, exposure, contrast, warmth, filter
+        case timeline, sources, suggestions, cleanUpAnalyzed, cleanUpAnalyzedSources, volume, enhancesVoice, reducesNoise,
+        audioVersion, voiceEnhancement, noiseReduction, voiceReach, evensOutVoices, music, backgrounds, exposure, contrast, warmth, filter
         case saturation, highlights, shadows, sharpness, filterAmount, cropFit, pauseThreshold
         case vibrance, tint, autoCorrection, autoAmount, lookVersion, skinSmoothing
         case aspect, cropOffset, showsCaptions, captionStyle, captionLook, captionPreset, captionPosition, captions
@@ -330,6 +343,7 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
             sources = (try? container.decodeIfPresent([ClipSource].self, forKey: .sources)) ?? []
             suggestions = try container.decodeIfPresent([CleanUpSuggestion].self, forKey: .suggestions) ?? []
             cleanUpAnalyzed = try container.decodeIfPresent(Bool.self, forKey: .cleanUpAnalyzed) ?? false
+            cleanUpAnalyzedSources = (try? container.decodeIfPresent([UUID].self, forKey: .cleanUpAnalyzedSources)) ?? []
         } else {
             (timeline, suggestions) = try Self.legacyTimeline(from: decoder)
         }
@@ -340,6 +354,9 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
         audioVersion = (try? container.decodeIfPresent(Int.self, forKey: .audioVersion)) ?? 1
         voiceEnhancement = (try? container.decodeIfPresent(AudioStrength.self, forKey: .voiceEnhancement)) ?? (enhancesVoice ? .soft : .off)
         noiseReduction = (try? container.decodeIfPresent(AudioStrength.self, forKey: .noiseReduction)) ?? (reducesNoise ? .soft : .off)
+        // Edits saved before montages could be treated keep their other recordings as they were.
+        voiceReach = (try? container.decodeIfPresent(StudioVoiceReach.self, forKey: .voiceReach)) ?? .takeOnly
+        evensOutVoices = (try? container.decodeIfPresent(Bool.self, forKey: .evensOutVoices)) ?? false
         music = (try? container.decodeIfPresent([MusicClip].self, forKey: .music)) ?? []
         backgrounds = (try? container.decodeIfPresent([RecordingBackground].self, forKey: .backgrounds)) ?? []
         exposure = try container.decodeIfPresent(Double.self, forKey: .exposure) ?? 0

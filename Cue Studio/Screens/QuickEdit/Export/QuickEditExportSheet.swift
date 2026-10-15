@@ -8,7 +8,8 @@ import UIKit
 
 /// Export: what goes out (the take, its length, its format, captions and texts burned in), at
 /// which resolution and frame rate, about how big, and the free exports left. Then the real
-/// progress ("Exporting · keep Cue open"), and "Saved to Photos" with Done and Share.
+/// progress ("Exporting · keep Cue open"), and "Saved to Photos" with Done and Share. The cover has its own row there: saving,
+/// saved (Share cover) or not saved (why, Try again and Share cover), and never takes the saved video back.
 struct QuickEditExportSheet: View {
     @State private var model: QuickEditExportModel
     let viewModel: QuickEditViewModel
@@ -56,6 +57,12 @@ struct QuickEditExportSheet: View {
         .sheet(isPresented: Binding(get: { model.activity != nil }, set: { if !$0 { model.activity = nil } })) {
             if let share = model.activity {
                 ActivityView(items: [share.url]) { model.activityFinished($0, for: share) }
+                    .presentationDetents([.medium, .large])
+            }
+        }
+        .sheet(isPresented: Binding(get: { model.coverActivity != nil }, set: { if !$0 { model.coverActivity = nil } })) {
+            if let file = model.coverActivity {
+                ActivityView(items: [file]) { _ in model.coverActivity = nil }
                     .presentationDetents([.medium, .large])
             }
         }
@@ -122,7 +129,7 @@ struct QuickEditExportSheet: View {
             }
         }
         .font(.system(.footnote).monospacedDigit())
-        .foregroundStyle(Palette.ink.opacity(0.7))
+        .foregroundStyle(Palette.ink2)
         Button { Task { await model.start() } } label: {
             Text("Export video")
                 .font(.system(.body, weight: .bold))
@@ -167,6 +174,7 @@ struct QuickEditExportSheet: View {
         }
         .frame(maxWidth: .infinity)
         .padding(.top, 14)
+        if model.cover != .none { coverRow }
         HStack(spacing: 10) {
             Button { dismiss() } label: {
                 Text("Done").font(.system(.callout, weight: .semibold))
@@ -188,6 +196,65 @@ struct QuickEditExportSheet: View {
             .buttonStyle(.plain)
             .accessibilityIdentifier("edit.export.share")
         }
+    }
+
+    /// The cover's own outcome, under the video's.
+    private var coverRow: some View {
+        HStack(alignment: .center, spacing: 12) {
+            CoverFileThumbnail(file: model.cover.file)
+            VStack(alignment: .leading, spacing: 2) {
+                Text(coverTitle).font(.system(.callout, weight: .semibold))
+                if case .failed(let message, _) = model.cover {
+                    Text(message).font(.system(.footnote)).foregroundStyle(Palette.ink2).fixedSize(horizontal: false, vertical: true)
+                }
+            }
+            .accessibilityElement(children: .combine)
+            .accessibilityIdentifier("edit.export.coverStatus")
+            Spacer(minLength: 4)
+            if model.cover == .saving {
+                ProgressView().tint(Palette.ink)
+            } else {
+                coverActions
+            }
+        }
+        .padding(12)
+        .background(Palette.fill, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+    }
+
+    private var coverTitle: String {
+        switch model.cover {
+        case .none: ""
+        case .saving: String(localized: "Saving the cover…")
+        case .saved: String(localized: "Cover saved to Photos")
+        case .failed: String(localized: "Cover not saved")
+        }
+    }
+
+    @ViewBuilder
+    private var coverActions: some View {
+        HStack(spacing: 6) {
+            if case .failed = model.cover {
+                Button { Task { await model.retryCover() } } label: {
+                    Image(systemName: "arrow.clockwise").font(.system(size: 15, weight: .semibold))
+                        .frame(width: Metrics.hitTarget, height: Metrics.hitTarget)
+                        .background(Palette.surface2, in: Circle())
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel(Text("Try saving the cover again"))
+                .accessibilityIdentifier("edit.export.coverRetry")
+            }
+            if model.cover.file != nil {
+                Button { model.shareCover() } label: {
+                    Image(systemName: "square.and.arrow.up").font(.system(size: 15, weight: .semibold))
+                        .frame(width: Metrics.hitTarget, height: Metrics.hitTarget)
+                        .background(Palette.surface2, in: Circle())
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel(Text("Share cover"))
+                .accessibilityIdentifier("edit.export.coverShare")
+            }
+        }
+        .foregroundStyle(Palette.ink)
     }
 
     @ViewBuilder

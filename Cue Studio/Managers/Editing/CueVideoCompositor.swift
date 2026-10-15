@@ -166,8 +166,10 @@ final class CueVideoCompositor: NSObject, AVVideoCompositing, @unchecked Sendabl
                 image = blend(outgoing, into: incoming, amount: dissolve.progress(at: time))
             }
         }
-        // Every photo and video showing, lowest layer first.
-        for shown in instruction.media.filter({ $0.isVisible(at: time) }).sorted(by: { $0.layer < $1.layer }) {
+        // Every photo and video showing, lowest layer first; the same layer in the order they come in the edit, as the
+        // editor stacks them (`QuickEditViewModel.visibleMediaStack`).
+        let showing = instruction.media.enumerated().filter { $0.element.isVisible(at: time) }
+        for shown in showing.sorted(by: { ($0.element.layer, $0.offset) < ($1.element.layer, $1.offset) }).map(\.element) {
             image = laid(shown, frame: shown.trackID.flatMap { media[$0] }, over: image, at: time)
         }
         return decorated(image, instruction: instruction, at: time, cache: cache)

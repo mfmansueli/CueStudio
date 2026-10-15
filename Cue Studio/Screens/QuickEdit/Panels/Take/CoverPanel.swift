@@ -79,7 +79,16 @@ struct CoverPanel: View {
             }
             if !viewModel.coverIsPhoto {
                 frameStrip
-                PanelNote(text: String(localized: "Drag to pick the frame"))
+                if viewModel.coverFrameLeftTheEdit {
+                    // The part it came from was cut: the cover stays as it is until another frame is picked.
+                    PanelNote(text: String(localized: "This frame is from a part you removed. It stays the cover until you pick another."))
+                    PanelButton(
+                        label: String(localized: "Use the frame at the playhead"), systemImage: "photo.on.rectangle",
+                        identifier: "edit.coverUsePlayhead"
+                    ) { viewModel.useFrameAsCover() }
+                } else {
+                    PanelNote(text: String(localized: "Drag to pick the frame"))
+                }
             }
         }
     }

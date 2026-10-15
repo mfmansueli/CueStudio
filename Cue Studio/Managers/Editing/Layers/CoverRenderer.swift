@@ -7,8 +7,8 @@ import AVFoundation
 import CoreImage
 import UIKit
 
-/// Draws a take's cover: a frame of the recording (cropped to the take's frame, with its look) or
-/// a photo filling that frame, then the title set like the edit's texts. All on the device.
+/// Draws a take's cover: a frame of one of the edit's recordings (cropped to the take's frame, with the look of the clip it was
+/// picked on) or a photo filling that frame, then the title set like the edit's texts. All on the device.
 nonisolated enum CoverRenderer {
     /// Width of the cover image in pixels.
     static let width: CGFloat = 1080
@@ -18,8 +18,9 @@ nonisolated enum CoverRenderer {
         let size = CGSize(width: width.rounded(), height: (width / aspect).rounded())
         let picture: UIImage?
         switch cover.source {
-        case .frame(let time):
-            picture = await frame(of: videoURL, at: time, edit: edit).map { UIImage(cgImage: $0) }
+        case .frame, .clipFrame:
+            guard let frame = cover.source.frame, let url = recordingURL(of: frame, videoURL: videoURL, edit: edit) else { return nil }
+            picture = await self.frame(of: url, frame: frame, edit: edit).map { UIImage(cgImage: $0) }
         case .photo(let fileName):
             // Drawing a UIImage honors its orientation.
             picture = UIImage(contentsOfFile: EditMediaFiles.url(for: fileName).path(percentEncoded: false))
@@ -74,8 +75,16 @@ nonisolated enum CoverRenderer {
         }
     }
 
-    /// The frame at `time` of the recording, upright, cropped like the edit and with its look.
-    private static func frame(of url: URL, at time: TimeInterval, edit: TakeEdit) async -> CGImage? {
+    /// The file of the recording `frame` is from: the take's, or another recording of the montage's (nil when the edit no
+    /// longer knows it).
+    static func recordingURL(of frame: CoverFrame, videoURL: URL, edit: TakeEdit) -> URL? {
+        guard let id = frame.sourceID else { return videoURL }
+        return edit.sources.first { $0.id == id }.map { EditMediaFiles.url(for: $0.fileName) }
+    }
+
+    /// `frame` of the recording at `url`, upright, cropped like the edit and with the look of the clip showing it.
+    private static func frame(of url: URL, frame picked: CoverFrame, edit: TakeEdit) async -> CGImage? {
+        let time = picked.time
         let generator = AVAssetImageGenerator(asset: AVURLAsset(url: url))
         generator.appliesPreferredTrackTransform = true
         generator.requestedTimeToleranceBefore = .zero
@@ -92,9 +101,9 @@ nonisolated enum CoverRenderer {
             // Fit: the whole frame on black, like the video.
             image = CueVideoCompositor.fitted(CIImage(cgImage: full), into: crop.size)
         }
-        // The clip's background and look at that moment of the take, like the video.
-        let clip = edit.timeline.segments.first { $0.sourceID == nil && $0.sourceStart <= time && time < $0.sourceEnd }
-        let effect = clip.map { edit.background(for: $0) } ?? edit.background(for: nil)
+        // The background and look of the clip showing it, like the video; the recording's own once no clip does.
+        let clip = edit.clip(showing: picked)?.segment
+        let effect = clip.map { edit.background(for: $0) } ?? edit.background(for: picked.sourceID)
         let look = clip.map { edit.lookSettings(for: $0) } ?? LookSettings(edit)
         let context = CIContext(options: [.cacheIntermediates: false])
         // Skin Smoothing like the video's: the faces of this frame, found on the frame as recorded (before a background goes behind the creator).

@@ -17,7 +17,7 @@ extension QuickEditViewModel {
 
     /// Filler words and possible retakes still playing, to remove or kept.
     var wordCandidates: [CleanUpSuggestion] {
-        cleanUpSuggestions.filter { $0.kind != .pause && $0.status != .removed && !edit.timeline.isRemoved($0.span) }
+        cleanUpSuggestions.filter { $0.kind != .pause && $0.status != .removed && !edit.timeline.isRemoved($0) }
     }
 
     /// Whether a suggestion is marked to go: pauses by default, words when Clean Up is sure.
@@ -37,7 +37,7 @@ extension QuickEditViewModel {
     func tapCleanUpCard(_ id: UUID) {
         toggleMark(id)
         guard let suggestion = edit.suggestions.first(where: { $0.id == id }),
-              let start = edit.timeline.editedSpan(forSource: suggestion.span)?.start else { return }
+              let start = edit.timeline.editedSpan(of: suggestion)?.start else { return }
         player.pause()
         player.seek(to: max(0, start - 0.4))
     }
@@ -50,7 +50,7 @@ extension QuickEditViewModel {
     /// Seconds of the edit the marked ones would take out.
     var cleanUpSaving: TimeInterval {
         markedCleanUp.reduce(0) { total, suggestion in
-            total + (edit.timeline.editedSpan(forSource: suggestion.span)?.duration ?? 0)
+            total + (edit.timeline.editedSpan(of: suggestion)?.duration ?? 0)
         }
     }
 
@@ -83,7 +83,7 @@ extension QuickEditViewModel {
         let kept = Set((pauseCandidates + wordCandidates).filter { !isMarked($0) }.map(\.id))
         let removed = Set(marked.map(\.id))
         var timeline = edit.timeline
-        guard timeline.remove(marked.map(\.span)) else {
+        guard timeline.remove(marked) else {
             toast.show(String(localized: "Keep at least one clip"))
             return
         }
@@ -107,7 +107,7 @@ extension QuickEditViewModel {
     /// Listen: 1.2 s before to 1.2 s after; a marked one is skipped, so what plays is the result.
     func listen(to id: UUID) {
         guard isReady, let suggestion = edit.suggestions.first(where: { $0.id == id }),
-              let span = edit.timeline.editedSpan(forSource: suggestion.span) else { return }
+              let span = edit.timeline.editedSpan(of: suggestion) else { return }
         let total = edit.editedDuration
         let before = max(0, span.start - Self.listenMargin)...span.start
         let after = span.end...min(total, span.end + Self.listenMargin)
@@ -139,8 +139,9 @@ extension QuickEditViewModel {
         return DurationText.tenths(length)
     }
 
-    /// Where a card's moment is in the edit: "00:04.1".
+    /// Where a card's moment is in the edit: "00:04.1", or "Take 2 · 00:04.1" in a montage.
     func cardTime(_ suggestion: CleanUpSuggestion) -> String {
-        DurationText.editor(edit.timeline.editedSpan(forSource: suggestion.span)?.start ?? 0)
+        let time = DurationText.editor(edit.timeline.editedSpan(of: suggestion)?.start ?? 0)
+        return recordingLabel(of: suggestion).map { "\($0) · \(time)" } ?? time
     }
 }

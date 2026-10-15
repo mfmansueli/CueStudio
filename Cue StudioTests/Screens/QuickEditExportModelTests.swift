@@ -24,7 +24,8 @@ struct QuickEditExportModelTests {
     }
 
     private func makeScenario(
-        resolution: VideoResolution = .hd1080, frameRate: FrameRate = .fps30, used: Int = 0, tier: MembershipTier = .free
+        resolution: VideoResolution = .hd1080, frameRate: FrameRate = .fps30, used: Int = 0, tier: MembershipTier = .free,
+        cover: VideoCover? = nil, editor: FakeTakeEditor = FakeTakeEditor()
     ) -> Scenario {
         var take = TestData.take(scriptID: nil, number: 3)
         take.resolution = resolution
@@ -38,9 +39,10 @@ struct QuickEditExportModelTests {
         let ledger = ExportLedgerService(store: FakeExportLedgerStore(), quota: quota)
         var edit = TakeEdit(sourceDuration: 20, aspect: .portrait)
         edit.timeline.trimEnd(to: 10)
+        edit.cover = cover
         let model = QuickEditExportModel(
             take: take, videoURL: URL(fileURLWithPath: "/tmp/take.mov"), edit: { edit }, takes: takes, quota: quota,
-            tier: { tier }, exporter: exporter, photos: photos, editing: FakeTakeEditor(), ledger: ledger
+            tier: { tier }, exporter: exporter, photos: photos, editing: editor, ledger: ledger
         )
         return Scenario(model: model, exporter: exporter, photos: photos, quota: quota, ledger: ledger, takes: takes, take: take)
     }
@@ -178,5 +180,68 @@ struct QuickEditExportModelTests {
         scenario.model.leave()
         #expect(!scenario.ledger.fileExists(for: operation))
         #expect(scenario.quota.exportsUsed == 1)
+    }
+
+    // MARK: - Cover
+
+    private struct CoverRefused: LocalizedError {
+        var errorDescription: String? { "Photos is full" }
+    }
+
+    @Test func aCoverThatFailsLeavesTheVideoSavedAndCanBeTriedAgain() async throws {
+        let scenario = makeScenario(cover: VideoCover(source: .frame(2)))
+        scenario.photos.imageError = CoverRefused()
+        await scenario.model.start()
+        // The video is saved and counted, whatever happens to its cover.
+        guard case .done = scenario.model.phase else {
+            Issue.record("The export didn't finish: \(scenario.model.phase)")
+            return
+        }
+        #expect(scenario.photos.savedURLs.count == 1)
+        guard case .failed(let message, let file) = scenario.model.cover else {
+            Issue.record("The cover's failure wasn't told: \(scenario.model.cover)")
+            return
+        }
+        #expect(message == "Photos is full")
+        let drawn = try #require(file)
+        #expect(FileManager.default.fileExists(atPath: drawn.path(percentEncoded: false)))
+        // It can be shared on its own, and saved again without exporting the video again.
+        scenario.model.shareCover()
+        #expect(scenario.model.coverActivity == drawn)
+        scenario.model.coverActivity = nil
+        scenario.photos.imageError = nil
+        await scenario.model.retryCover()
+        #expect(scenario.model.cover == .saved(file: drawn))
+        #expect(scenario.photos.savedImages == [drawn])
+        #expect(scenario.exporter.exports.count == 1)
+        // Closing the export removes the image.
+        scenario.model.leave()
+        #expect(!FileManager.default.fileExists(atPath: drawn.path(percentEncoded: false)))
+    }
+
+    @Test func aCoverThatCantBeDrawnSaysSo() async {
+        let editor = FakeTakeEditor()
+        editor.coverData = nil
+        let scenario = makeScenario(cover: VideoCover(source: .frame(2)), editor: editor)
+        await scenario.model.start()
+        guard case .done = scenario.model.phase, case .failed(_, let file) = scenario.model.cover else {
+            Issue.record("Expected a saved video and a failed cover: \(scenario.model.phase), \(scenario.model.cover)")
+            return
+        }
+        #expect(file == nil)
+        #expect(scenario.photos.savedURLs.count == 1)
+        // Drawn again when tried again.
+        editor.coverData = Data([0xFF, 0xD8, 0xFF])
+        await scenario.model.retryCover()
+        #expect(scenario.model.cover.file != nil)
+        #expect(editor.drawnCovers.count == 2)
+        scenario.model.leave()
+    }
+
+    @Test func noCoverNoRow() async {
+        let scenario = makeScenario()
+        await scenario.model.start()
+        #expect(scenario.model.cover == .none)
+        #expect(scenario.photos.savedImages.isEmpty)
     }
 }

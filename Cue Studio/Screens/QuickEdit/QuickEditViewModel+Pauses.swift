@@ -19,7 +19,7 @@ extension QuickEditViewModel {
     /// The pauses Pauses lists and marks on the timeline: still playing, at least as long as the
     /// threshold, to remove or kept.
     var pauseCandidates: [CleanUpSuggestion] {
-        cleanUpSuggestions.filter { $0.kind == .pause && $0.status != .removed && !edit.timeline.isRemoved($0.span) }
+        cleanUpSuggestions.filter { $0.kind == .pause && $0.status != .removed && !edit.timeline.isRemoved($0) }
     }
 
     /// The pauses the preview took out (none when it isn't playing).
@@ -59,7 +59,7 @@ extension QuickEditViewModel {
         guard !pauses.isEmpty else { return }
         endChange()
         var timeline = edit.timeline
-        guard timeline.remove(pauses.map(\.span)) else {
+        guard timeline.remove(pauses) else {
             toast.show(String(localized: "Keep at least one section"))
             return
         }
@@ -87,7 +87,7 @@ extension QuickEditViewModel {
         let pauses = removablePauses
         guard !pauses.isEmpty else { return }
         var timeline = edit.timeline
-        guard timeline.remove(pauses.map(\.span)) else {
+        guard timeline.remove(pauses) else {
             toast.show(String(localized: "Keep at least one section"))
             return
         }

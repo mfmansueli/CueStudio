@@ -35,6 +35,9 @@ nonisolated struct EditLook: Codable, Hashable, Sendable {
     var reducesNoise: Bool
     var voiceEnhancement: AudioStrength
     var noiseReduction: AudioStrength
+    /// Added with Studio Voice over montages: nil in steps saved before, which leave them as they are.
+    var voiceReach: StudioVoiceReach?
+    var evensOutVoices: Bool?
     var showsCaptions: Bool
     var pauseThreshold: TimeInterval
 
@@ -62,6 +65,8 @@ nonisolated struct EditLook: Codable, Hashable, Sendable {
         reducesNoise = edit.reducesNoise
         voiceEnhancement = edit.voiceEnhancement
         noiseReduction = edit.noiseReduction
+        voiceReach = edit.voiceReach
+        evensOutVoices = edit.evensOutVoices
         showsCaptions = edit.showsCaptions
         pauseThreshold = edit.pauseThreshold
     }
@@ -93,6 +98,8 @@ nonisolated struct EditLook: Codable, Hashable, Sendable {
         edit.reducesNoise = reducesNoise
         edit.voiceEnhancement = voiceEnhancement
         edit.noiseReduction = noiseReduction
+        if let voiceReach { edit.voiceReach = voiceReach }
+        if let evensOutVoices { edit.evensOutVoices = evensOutVoices }
         edit.showsCaptions = showsCaptions
         edit.pauseThreshold = pauseThreshold
     }

@@ -5,56 +5,93 @@
 
 import Foundation
 
-/// Clean Up: pauses, filler words and possible retakes found in the take, as suggestions the creator
-/// reviews one by one (Keep or Remove) or removes together when Clean Up is sure. Every decision is
-/// an undo step.
+/// Clean Up: pauses, filler words and possible retakes found in the take and, in a montage, in every other recording it
+/// plays, as suggestions the creator reviews one by one (Keep or Remove) or removes together when Clean Up is sure. Each
+/// suggestion stays with its recording: cuts, a new order, copies and speed move where it plays, never what it is. Every
+/// decision is an undo step.
 extension QuickEditViewModel {
     static let pauseThresholdRange: ClosedRange<TimeInterval> = 0.3...3
 
     // MARK: - Analysis
 
-    /// Listens to the take the first time Clean Up opens: loudness for pauses, the transcript (in
-    /// the Voice Following language, or the script's) for filler words and retakes. Nothing is
-    /// removed.
+    /// Listens to each recording the edit plays the first time Clean Up opens on it (the take, then a montage's other takes
+    /// and videos): loudness for pauses, the transcript (in the Voice Following language, or the script's) for filler words and
+    /// retakes. Nothing is removed. A recording that can't be listened to leaves the others' suggestions in.
     func analyzeIfNeeded() async {
         guard isReady, analysis != .running else { return }
-        guard !edit.cleanUpAnalyzed else {
+        let pending = edit.recordingsToCleanUp
+        guard !pending.isEmpty else {
             analysis = .done
             return
         }
         analysis = .running
-        let found: [CleanUpSuggestion]
-        do {
-            found = try await editing.cleanUpSuggestions(forVideoAt: videoURL, language: speechLanguage)
-        } catch {
+        let urls = clipSourceURLs
+        var found: [CleanUpSuggestion] = []
+        var listened: [UUID?] = []
+        var failed = false
+        for source in pending {
+            let file: URL? = if let source { urls[source] } else { videoURL }
+            guard let url = file else { continue }
+            do {
+                let heard = try await editing.cleanUpSuggestions(forVideoAt: url, language: speechLanguage)
+                found += heard.map { suggestion in
+                    var mine = suggestion
+                    mine.sourceID = source
+                    return mine
+                }
+                listened.append(source)
+            } catch {
+                failed = true
+            }
             guard !isClosed else { return }
+        }
+        var analyzed = edit
+        // Only the recordings listened to now get fresh suggestions; the others keep theirs.
+        let kept = edit.suggestions.filter { !listened.contains($0.sourceID) }
+        analyzed.suggestions = kept + CleanUpAnalyzer.merged(found, into: edit.suggestions.filter { listened.contains($0.sourceID) })
+        for source in listened {
+            if let source { analyzed.cleanUpAnalyzedSources.append(source) } else { analyzed.cleanUpAnalyzed = true }
+        }
+        edit = analyzed
+        if failed, listened.isEmpty {
             analysis = .failed
             toast.show(String(localized: "Couldn't listen to this take"))
             return
         }
-        guard !isClosed else { return }
-        var analyzed = edit
-        analyzed.suggestions = CleanUpAnalyzer.merged(found, into: edit.suggestions)
-        analyzed.cleanUpAnalyzed = true
-        edit = analyzed
         analysis = .done
+        if failed { toast.show(String(localized: "Couldn't listen to every clip")) }
     }
 
     // MARK: - Reading
 
-    /// What Clean Up lists: suggestions between the handles, in the order they're heard, without
-    /// the pauses under "Ignore pauses under".
+    /// What Clean Up lists: suggestions within the part of their recording the edit plays (between the handles, for the
+    /// take alone), in the order the edit plays them, without the pauses under "Ignore pauses under".
     var cleanUpSuggestions: [CleanUpSuggestion] {
         let timeline = edit.timeline
         return edit.suggestions
-            .filter { $0.span.start >= timeline.trimStart - 0.001 && $0.span.end <= timeline.trimEnd + 0.001 }
+            .filter { suggestion in
+                guard let extent = timeline.playedExtent(of: suggestion.sourceID) else { return false }
+                return suggestion.span.start >= extent.start - 0.001 && suggestion.span.end <= extent.end + 0.001
+            }
             .filter { $0.kind != .pause || SilenceDetector.silenceLength(ofCut: $0.span) >= pauseThreshold - 0.001 }
-            .sorted { $0.span.start < $1.span.start }
+            .sorted { playOrder($0) < playOrder($1) }
+    }
+
+    /// Where a suggestion comes in the edit, for the list's order: where it plays, or where it would (a removed one).
+    private func playOrder(_ suggestion: CleanUpSuggestion) -> TimeInterval {
+        edit.timeline.editedTime(following: suggestion.span.start, in: suggestion.sourceID)
+    }
+
+    /// Which recording a suggestion is in, for its card, once the edit plays more than one: "Take 2".
+    func recordingLabel(of suggestion: CleanUpSuggestion) -> String? {
+        guard !edit.playedSources.isEmpty else { return nil }
+        guard let id = suggestion.sourceID else { return String(localized: "This take") }
+        return edit.sources.first { $0.id == id }?.title ?? String(localized: "Video")
     }
 
     /// Still to review: not decided, and still playing (a cut by hand may have taken it already).
     var pendingSuggestions: [CleanUpSuggestion] {
-        cleanUpSuggestions.filter { $0.status == .pending && !edit.timeline.isRemoved($0.span) }
+        cleanUpSuggestions.filter { $0.status == .pending && !edit.timeline.isRemoved($0) }
     }
 
     /// What "Remove all" takes: the pending suggestions Clean Up is sure about.
@@ -65,9 +102,10 @@ extension QuickEditViewModel {
     /// Pauses under the threshold, left out of the list.
     var ignoredPauseCount: Int {
         let timeline = edit.timeline
-        return edit.suggestions.filter {
-            $0.kind == .pause && $0.span.start >= timeline.trimStart && $0.span.end <= timeline.trimEnd
-                && SilenceDetector.silenceLength(ofCut: $0.span) < pauseThreshold - 0.001
+        return edit.suggestions.filter { suggestion in
+            guard suggestion.kind == .pause, let extent = timeline.playedExtent(of: suggestion.sourceID) else { return false }
+            return suggestion.span.start >= extent.start && suggestion.span.end <= extent.end
+                && SilenceDetector.silenceLength(ofCut: suggestion.span) < pauseThreshold - 0.001
         }.count
     }
 
@@ -100,8 +138,8 @@ extension QuickEditViewModel {
 
     /// Where a suggestion sits on the edited timeline; nil once it no longer plays.
     func editedStart(of suggestion: CleanUpSuggestion) -> TimeInterval? {
-        guard suggestion.status != .removed, !edit.timeline.isRemoved(suggestion.span) else { return nil }
-        return edit.timeline.editedTime(following: suggestion.span.start)
+        guard suggestion.status != .removed, !edit.timeline.isRemoved(suggestion) else { return nil }
+        return edit.timeline.editedTime(following: suggestion.span.start, in: suggestion.sourceID)
     }
 
     // MARK: - Decisions
@@ -121,8 +159,8 @@ extension QuickEditViewModel {
     func removeSuggestion(_ id: UUID) {
         guard isReady, let suggestion = suggestion(id) else { return }
         var timeline = edit.timeline
-        if !timeline.isRemoved(suggestion.span) {
-            guard timeline.remove([suggestion.span]) else {
+        if !timeline.isRemoved(suggestion) {
+            guard timeline.remove([suggestion]) else {
                 toast.show(String(localized: "Keep at least one section"))
                 return
             }
@@ -160,7 +198,7 @@ extension QuickEditViewModel {
         guard isReady else { return }
         guard !sure.isEmpty else { return }
         var timeline = edit.timeline
-        guard timeline.remove(sure.map(\.span)) else {
+        guard timeline.remove(sure) else {
             toast.show(String(localized: "Keep at least one section"))
             return
         }

@@ -328,9 +328,17 @@ nonisolated struct EditTimeline: Codable, Hashable, Sendable {
         return spans
     }
 
-    /// Whether nothing of `span` of the take plays any more.
-    func isRemoved(_ span: TimeSpan) -> Bool {
-        !segments.contains { $0.sourceID == nil && $0.span.overlaps(span) }
+    /// Whether nothing of `span` of the recording `source` (nil: the take) plays any more.
+    func isRemoved(_ span: TimeSpan, in source: UUID? = nil) -> Bool {
+        !segments.contains { $0.sourceID == source && $0.span.overlaps(span) }
+    }
+
+    /// From the earliest to the latest second of the recording `source` (nil: the take) that the edit can play: between the
+    /// handles for the take of a plain edit, and across all its clips in a montage. Nil when no clip plays it.
+    func playedExtent(of source: UUID?) -> TimeSpan? {
+        let pieces = segments.filter { $0.sourceID == source }
+        guard let start = pieces.map(\.sourceStart).min(), let end = pieces.map(\.sourceEnd).max() else { return nil }
+        return TimeSpan(start: start, end: end)
     }
 
     // MARK: - Editing
@@ -481,15 +489,14 @@ nonisolated struct EditTimeline: Codable, Hashable, Sendable {
         return true
     }
 
-    /// Takes `spans` of the recording out of the pieces (Clean Up); slivers shorter than
-    /// `minimumDuration` go with them. False, and no change, when nothing would be left or
-    /// nothing changes.
+    /// Takes `spans` of the recording `source` (nil: the take) out of the pieces that play it (Clean Up), wherever they play;
+    /// slivers shorter than `minimumDuration` go with them. False, and no change, when nothing would be left or nothing changes.
     @discardableResult
-    mutating func remove(_ spans: [TimeSpan]) -> Bool {
+    mutating func remove(_ spans: [TimeSpan], in source: UUID? = nil) -> Bool {
         var result: [EditSegment] = []
         for segment in segments {
-            // Spans are of the take itself: pieces of other recordings stay whole.
-            guard segment.sourceID == nil else {
+            // Spans are of that recording: pieces of the others stay whole.
+            guard segment.sourceID == source else {
                 result.append(segment)
                 continue
             }

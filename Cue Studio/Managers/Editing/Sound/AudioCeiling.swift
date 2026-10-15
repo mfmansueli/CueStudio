@@ -50,6 +50,18 @@ nonisolated enum AudioCeiling {
         return scaled
     }
 
+    /// A copy of the file `decibels` louder or quieter ("Even out volume"), never raised past the ceiling: a recording whose
+    /// loudest moment would go over it is raised only as far as it can go, so evening out never distorts. (Running it through
+    /// the peak limiter instead lowered mono recordings by about 3 dB more than asked.) The file itself when there's nothing
+    /// to change.
+    static func leveled(_ url: URL, gain decibels: Float) throws -> URL {
+        let peak = try peak(of: url)
+        let headroom = peak > 0 ? 20 * log10(ceiling / peak) : decibels
+        let gain = min(decibels, headroom)
+        guard abs(gain) >= 0.05 else { return url }
+        return try scaled(url, by: pow(10, gain / 20))
+    }
+
     /// A copy of the file `gain` times as loud.
     static func scaled(_ url: URL, by gain: Float) throws -> URL {
         let input = try AVAudioFile(forReading: url)

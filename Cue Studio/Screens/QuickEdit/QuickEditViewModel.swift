@@ -136,6 +136,9 @@ final class QuickEditViewModel {
     var translationRequest: TranslationRequest?
     /// Auto measuring the clip (see `QuickEditViewModel+AutoLook`).
     var autoState: AutoAdjustState = .idle
+    /// The text or photo or video a finger is moving on the preview: the video leaves it out meanwhile
+    /// (`hidingDraggedOverlay(in:)`).
+    var draggedOverlay: EditorSelection?
     /// Adjust › Compare: the preview shows the picture without Auto, Adjust and Filters.
     var comparesPicture = false {
         didSet {
@@ -330,7 +333,7 @@ final class QuickEditViewModel {
             toast.show(String(localized: "Draft restored"))
         }
         edit = start
-        if edit.cleanUpAnalyzed { analysis = .done }
+        if edit.cleanUpAnalyzed, edit.recordingsToCleanUp.isEmpty { analysis = .done }
         source = .ready
         player.show(edit)
         player.seek(to: playhead)

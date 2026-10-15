@@ -37,7 +37,8 @@ struct QuickEditCoverTests {
         #expect(player.currentTime == 12)
         #expect(!viewModel.showsCoverImage)
         viewModel.endCoverScrub(atEdited: 12)
-        #expect(viewModel.edit.cover?.source == .frame(12))
+        #expect(viewModel.edit.cover?.source.frame?.time == 12)
+        #expect(viewModel.edit.cover?.source.frame?.sourceID == nil)
         // A new cover is a v26 design: the Hook layout, in Anton, nothing on top.
         #expect(viewModel.edit.cover?.design?.layout == .hook)
         #expect(abs(viewModel.coverEditedTime - 12) < 0.001)
@@ -48,7 +49,7 @@ struct QuickEditCoverTests {
         let (viewModel, player) = await makeViewModel()
         player.seek(to: 5)
         viewModel.setCoverTitle("5 comidas de SP")
-        #expect(viewModel.edit.cover?.source == .frame(5))
+        #expect(viewModel.edit.cover?.source.frame?.time == 5)
         #expect(viewModel.edit.cover?.title == "5 comidas de SP")
         #expect(viewModel.edit.cover?.design?.font == .anton)
         viewModel.removeCover()

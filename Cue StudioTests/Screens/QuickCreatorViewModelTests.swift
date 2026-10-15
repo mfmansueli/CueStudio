@@ -637,7 +637,7 @@ struct QuickCreatorViewModelTests {
         let viewModel = scenario.viewModel
         scenario.player.seek(to: 20)
         viewModel.useFrameAsCover()
-        #expect(viewModel.edit.cover?.source == .frame(20))
+        #expect(viewModel.edit.cover?.source.frame?.time == 20)
         viewModel.setCoverTitle("3 erros que todo creator comete")
         viewModel.setCoverTitlePosition(2)
         #expect(viewModel.edit.cover?.title == "3 erros que todo creator comete")

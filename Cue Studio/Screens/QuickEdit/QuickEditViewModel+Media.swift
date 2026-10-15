@@ -127,13 +127,6 @@ extension QuickEditViewModel {
         toast.show(String(localized: "Media removed"))
     }
 
-    /// The photo or video showing at the playhead, for the preview's handles.
-    var visibleMedia: MediaOverlay? {
-        let time = player.currentTime
-        guard let bar = mediaBars.first(where: { $0.span.contains(time) }) else { return nil }
-        return edit.media.first { $0.id == bar.id }
-    }
-
     /// Its place on a preview of `size` (from the top left), as the export places it.
     func frame(ofMedia media: MediaOverlay, in size: CGSize) -> CGRect {
         let placed = MediaPlacement.rect(for: media, in: size)

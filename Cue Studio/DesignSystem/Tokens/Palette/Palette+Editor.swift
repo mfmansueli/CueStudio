@@ -14,6 +14,11 @@ extension Palette {
         /// Behind "Classic" captions.
         static let captionBox = Color.black.opacity(0.62)
 
+        /// The dashed outline of a photo or video on the preview that isn't picked: white over a dark halo
+        /// (`overlayOutlineHalo`), so it reads on any picture, light or dark (WCAG 1.4.11).
+        static let overlayOutline = Color.white
+        static let overlayOutlineHalo = Color.black.opacity(0.75)
+
         /// Behind the preview before the video loads.
         static let previewWell = Color(hex: 0x0E101C)
 

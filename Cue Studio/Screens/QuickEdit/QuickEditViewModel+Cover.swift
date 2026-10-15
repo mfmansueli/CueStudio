@@ -20,8 +20,7 @@ extension QuickEditViewModel {
     /// Uses the frame under the playhead.
     func useFrameAsCover() {
         guard isReady else { return }
-        let time = edit.timeline.sourceTime(forEdited: player.currentTime)
-        setCoverSource(.frame(time))
+        setCoverSource(.clipFrame(edit.coverFrame(atEdited: player.currentTime)))
         isPickingCoverFrame = false
         player.pause()
         toast.show(String(localized: "Cover set to this frame"))
@@ -52,7 +51,7 @@ extension QuickEditViewModel {
     func setCoverTitle(_ title: String) {
         if edit.cover == nil {
             guard isReady else { return }
-            setCoverSource(.frame(edit.timeline.sourceTime(forEdited: player.currentTime)))
+            setCoverSource(.clipFrame(edit.coverFrame(atEdited: player.currentTime)))
         }
         change(key: "coverTitle") { $0.cover?.title = title }
     }
@@ -66,11 +65,15 @@ extension QuickEditViewModel {
     }
 
     /// Where the cover's frame is in the edit (edited seconds): the playhead while there's no
-    /// cover.
+    /// cover, or once the frame's part was removed (`coverFrameLeftTheEdit`).
     var coverEditedTime: TimeInterval {
-        guard case .frame(let time)? = edit.cover?.source else { return player.currentTime }
-        return min(max(0, edit.timeline.editedTime(following: time)), edit.editedDuration)
+        guard let frame = edit.cover?.source.frame, let time = edit.editedTime(of: frame) else { return player.currentTime }
+        return time
     }
+
+    /// The cover's frame is from a part removed from the edit: it stays the cover (from its recording), and Cover offers the
+    /// playhead's frame instead.
+    var coverFrameLeftTheEdit: Bool { edit.coverFrameLeftTheEdit }
 
     /// Frames along the edit for Cover's strip: the recording and second each one comes from.
     func coverStripSamples(count: Int) -> [(url: URL, time: TimeInterval)] {
@@ -98,13 +101,13 @@ extension QuickEditViewModel {
     func endCoverScrub(atEdited time: TimeInterval) {
         guard isReady else { return }
         let edited = min(max(0, time), edit.editedDuration)
-        setCoverSource(.frame(edit.timeline.sourceTime(forEdited: edited)))
+        setCoverSource(.clipFrame(edit.coverFrame(atEdited: edited)))
         isPickingCoverFrame = false
     }
 
-    /// "Frame from video": back to a frame (the playhead's) after a photo.
+    /// "Frame from video": back to a frame (the playhead's) after a photo, or after the frame's part left the edit.
     func useVideoFrameForCover() {
-        guard coverIsPhoto || edit.cover == nil else { return }
+        guard coverIsPhoto || edit.cover == nil || coverFrameLeftTheEdit else { return }
         useFrameAsCover()
     }
 

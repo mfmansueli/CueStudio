@@ -104,9 +104,9 @@ extension QuickEditViewModel {
     /// to change.
     private func ensureCover() {
         guard edit.cover == nil, isReady else { return }
-        let time = edit.timeline.sourceTime(forEdited: player.currentTime)
+        let frame = edit.coverFrame(atEdited: player.currentTime)
         change { snapshot in
-            var cover = VideoCover(source: .frame(time), style: snapshot.creatorStyle ?? .bold)
+            var cover = VideoCover(source: .clipFrame(frame), style: snapshot.creatorStyle ?? .bold)
             cover.design = newCoverDesign
             snapshot.cover = cover
         }

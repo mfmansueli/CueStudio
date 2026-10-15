@@ -87,7 +87,7 @@ extension QuickEditViewModel {
     /// The pauses on the video track while Pauses is open, marked to go or kept.
     var timelinePauses: [TimelineGeometry.PauseInput] {
         pauseCandidates.compactMap { pause in
-            guard let span = edit.timeline.editedSpan(forSource: pause.span) else { return nil }
+            guard let span = edit.timeline.editedSpan(of: pause) else { return nil }
             return TimelineGeometry.PauseInput(id: pause.id, span: span, isMarked: isMarked(pause))
         }
     }

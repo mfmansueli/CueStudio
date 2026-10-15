@@ -295,24 +295,31 @@ extension QuickEditViewModel {
         updateCaption(id, key: "captionText.\(id)") { CaptionRevision.retimed($0, text: text) }
     }
 
-    /// Moves a line's start or end by `seconds` of the edit, never past its neighbors or the other
-    /// end. Its word times stay: a line moved by hand keeps its words where the voice put them.
+    /// Moves a line's start or end by `seconds` of the edit, never past its neighbors, the other
+    /// end or the clip it shows in (a line's times are of its own recording). Its word times stay: a
+    /// line moved by hand keeps its words where the voice put them.
     func nudgeCaption(_ id: UUID, edge: TrimHandle, by seconds: TimeInterval) {
         guard let span = editedSpan(ofCaption: id) else { return }
         let timeline = edit.timeline
         let lines = editedCaptionLines
         guard let index = lines.firstIndex(where: { $0.id == id }) else { return }
-        let floor = index > 0 ? lines[index - 1].end : 0
-        let ceiling = index + 1 < lines.count ? lines[index + 1].start : edit.editedDuration
+        // The clip the line shows in: its edge moves inside it, at its speed.
+        let piece = timeline.segmentIndex(atEdited: edge == .start ? span.start : max(span.start, span.end - 0.000_1))
+        let pieceStart = timeline.editedStart(ofSegmentAt: piece)
+        let segment = timeline.segments[piece]
+        let floor = max(index > 0 ? lines[index - 1].end : 0, edge == .start ? pieceStart : 0)
+        let ceiling = min(index + 1 < lines.count ? lines[index + 1].start : edit.editedDuration, pieceStart + segment.duration)
+        func source(_ edited: TimeInterval) -> TimeInterval {
+            min(max(segment.sourceStart, segment.sourceStart + (edited - pieceStart) * segment.speed), segment.sourceEnd)
+        }
         updateCaption(id, key: "captionNudge.\(id).\(edge)") { cue in
             var revised = cue
+            guard segment.sourceID == cue.sourceID else { return cue }
             switch edge {
             case .start:
-                let edited = min(max(floor, span.start + seconds), span.end - CaptionCue.minimumDuration)
-                revised.start = timeline.sourceTime(forEdited: edited)
+                revised.start = source(min(max(floor, span.start + seconds), span.end - CaptionCue.minimumDuration))
             case .end:
-                let edited = max(min(ceiling, span.end + seconds), span.start + CaptionCue.minimumDuration)
-                revised.end = timeline.sourceTime(forEdited: edited)
+                revised.end = source(max(min(ceiling, span.end + seconds), span.start + CaptionCue.minimumDuration))
             }
             revised.isRevised = true
             // Words now outside the line's time fold into it; the line keeps its look and its words.
@@ -351,13 +358,15 @@ extension QuickEditViewModel {
         }
     }
 
-    /// Joins a line with the one after it.
+    /// Joins a line with the one that plays after it, when that's the next thing said in the same recording
+    /// (`CaptionJoin`).
     func mergeCaptionWithNext(_ id: UUID) {
+        guard case .next(let nextID) = CaptionJoin.next(after: id, in: edit) else { return }
         change { snapshot in
-            guard var lines = snapshot.captions?.sorted(by: { $0.start < $1.start }),
-                  let position = lines.firstIndex(where: { $0.id == id }), position + 1 < lines.count else { return }
-            lines[position] = CaptionRevision.merged(lines[position], lines[position + 1])
-            lines.remove(at: position + 1)
+            guard var lines = snapshot.captions, let position = lines.firstIndex(where: { $0.id == id }),
+                  let other = lines.firstIndex(where: { $0.id == nextID }) else { return }
+            lines[position] = CaptionRevision.merged(lines[position], lines[other])
+            lines.remove(at: other)
             snapshot.captions = lines
         }
     }
@@ -370,8 +379,11 @@ extension QuickEditViewModel {
     /// Caption › Split: splits the line at the playhead, between the words nearest to it, and picks
     /// the second part.
     func splitCaptionAtPlayhead(_ id: UUID) {
-        guard let cue = edit.captions.first(where: { $0.id == id }), let span = editedSpan(ofCaption: id) else { return }
+        guard let cue = edit.captions.first(where: { $0.id == id }) else { return }
         let time = player.currentTime
+        // The part of the line under the playhead (a copied clip shows it again).
+        let instances = edit.editedCaptionInstances.filter { $0.cueID == id }
+        guard let span = (instances.first { $0.line.span.contains(time) } ?? instances.first)?.line.span else { return }
         guard time > span.start + 0.15, time < span.end - 0.15 else {
             toast.show(String(localized: "Move playhead into the line"))
             return
@@ -391,8 +403,8 @@ extension QuickEditViewModel {
 
     /// Caption › Join next.
     func joinCaption(_ id: UUID) {
-        guard canMergeCaption(id) else {
-            toast.show(String(localized: "This is the last line"))
+        if let refusal = CaptionJoin.next(after: id, in: edit).refusal {
+            toast.show(refusal)
             return
         }
         mergeCaptionWithNext(id)
@@ -413,11 +425,10 @@ extension QuickEditViewModel {
         return edit.sourceTranscripts.first { $0.sourceID == source }
     }
 
-    /// Whether the line can be joined with the next one.
+    /// Whether the line can be joined with the next one (`CaptionJoin`).
     func canMergeCaption(_ id: UUID) -> Bool {
-        let lines = edit.captions.sorted { $0.start < $1.start }
-        guard let position = lines.firstIndex(where: { $0.id == id }) else { return false }
-        return position + 1 < lines.count
+        if case .next = CaptionJoin.next(after: id, in: edit) { return true }
+        return false
     }
 
     /// The editing sheet closed: a line left empty goes.

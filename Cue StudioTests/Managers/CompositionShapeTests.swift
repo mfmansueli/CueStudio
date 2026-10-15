@@ -14,7 +14,7 @@ import Testing
 struct CompositionShapeTests {
     private func shape(of edit: TakeEdit, clip: URL) async throws -> CompositionShape? {
         let built = try await EditedComposition.build(
-            source: clip, edit: edit, processedAudio: nil, options: .init(burnsInCaptions: true, shortSide: 1080)
+            source: clip, edit: edit, options: .init(burnsInCaptions: true, shortSide: 1080)
         )
         return CompositionShape(of: built.asset)
     }

@@ -182,8 +182,14 @@ extension QuickEditViewModel {
                 item.clipAnchor = pinned.anchor
             }
         case .caption:
-            // A line stays with its recording: only its time on it changes.
-            moveCaption(captionCueID(forLine: bar.id), to: edit.timeline.anchoredSpan(forEdited: span).span)
+            // A line stays with its recording: only its time on it changes, and only over a clip of that recording.
+            let cueID = captionCueID(forLine: bar.id)
+            let target = edit.timeline.anchoredSpan(forEdited: span)
+            guard target.anchor.sourceID == edit.captions.first(where: { $0.id == cueID })?.sourceID else {
+                toast.show(String(localized: "A line stays on its own clip"))
+                return
+            }
+            moveCaption(cueID, to: target.span)
         case .voiceOver:
             change { snapshot in
                 guard let index = snapshot.voiceOvers.firstIndex(where: { $0.id == bar.id }) else { return }
