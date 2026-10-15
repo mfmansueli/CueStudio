@@ -27,6 +27,7 @@ struct SelfieControlParts {
     var playButton: some View {
         Button { viewModel.togglePlay() } label: {
             Image(systemName: viewModel.isPlaying ? "pause.fill" : "play.fill")
+                .symbolSwap(value: viewModel.isPlaying)
         }
         .glassIconButton()
         .accessibilityLabel(Text(viewModel.isPlaying ? "Pause" : "Play"))

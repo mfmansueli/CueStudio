@@ -41,7 +41,7 @@ struct ProfilePlanCard: View {
             .profileBlock()
             .contentShape(Rectangle())
         }
-        .buttonStyle(.plain)
+        .buttonStyle(.cuePressCard)
         .accessibilityElement(children: .combine)
         .accessibilityIdentifier(store.tier.isPro ? "profile.manageButton" : "profile.upgradeButton")
     }

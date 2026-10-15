@@ -7,17 +7,19 @@ import SwiftUI
 
 /// The reading line, the signature of the brand: a 2 pt yellow line with fading ends and a soft glow, and
 /// a small arrow at the left. It breathes on a 2.4 s cycle; when the text follows the voice its glow can
-/// flicker with the input level. Still under Reduce Motion.
+/// flicker with the input level. Still under Reduce Motion, and when `breathes` is false (while the camera records: the line is a tool
+/// then, not a light show; the voice's flicker stays, since it says the voice is being followed).
 struct HorizonLine: View {
     /// 0...1 voice level; nil keeps the line breathing.
     var level: Double?
     var showsArrow = true
+    var breathes = true
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
-        TimelineView(.animation(minimumInterval: 1.0 / 30, paused: reduceMotion)) { context in
-            let breath = reduceMotion ? 1 : Self.breath(at: context.date.timeIntervalSinceReferenceDate)
+        AmbientTimeline(paused: !breathes) { ambient in
+            let breath = reduceMotion || !breathes ? 1 : Self.breath(at: ambient.seconds)
             let glow = level.map { 0.75 + 0.25 * min(1, max(0, $0)) } ?? breath
             HStack(spacing: 0) {
                 if showsArrow {

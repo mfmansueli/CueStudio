@@ -210,7 +210,15 @@ enum WelcomeScript {
 
     enum Beat: Sendable { case dot, word, explosion }
 
+    /// How many beats the story has passed at `time`: the haptic of the latest (`orderedBeats[passed - 1]`) plays when this grows.
+    static func beatsPassed(at time: Double) -> Int {
+        beats.filter { $0.time <= time }.count
+    }
+
     /// What the hand feels and when: a soft tap on each of the five dots, a light one on each word, a success on the explosion.
     static let beats: [(time: Double, beat: Beat)] =
         dots.map { ($0.hit, Beat.dot) } + wordHits.map { ($0, Beat.word) } + [(explosionTime, Beat.explosion)]
+
+    /// The beats in the order they come.
+    static let orderedBeats = beats.sorted { $0.time < $1.time }
 }

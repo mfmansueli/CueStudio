@@ -16,14 +16,20 @@ struct FirstStarView: View {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.storyFrozenAt) private var frozenAt
     @Environment(PersonalizationService.self) private var personalization
+    @Environment(\.scenePhase) private var scenePhase
     @State private var start = Date.now
+    /// The story has played: what still moves (the bar's pulse, the orbits) is ambient, at 30 fps.
+    @State private var isSettled = false
 
     var body: some View {
         GeometryReader { proxy in
-            TimelineView(.animation(paused: reduceMotion && frozenAt == nil)) { context in
+            TimelineView(.animation(
+                minimumInterval: isSettled ? 1.0 / 30 : nil, paused: (reduceMotion && frozenAt == nil) || scenePhase != .active
+            )) { context in
                 let world = frozenAt ?? (reduceMotion ? FirstStarScript.hold : context.date.timeIntervalSince(start))
                 let story = min(world, FirstStarScript.hold)
                 content(story: story, world: world, in: proxy.size)
+                    .onChange(of: world >= FirstStarScript.hold) { _, settled in isSettled = settled }
             }
         }
         .ignoresSafeArea()
@@ -61,6 +67,9 @@ struct FirstStarView: View {
 
     // MARK: - The take
 
+    /// How dark the "✓ SAVED" pill is over the take's picture.
+    static let savedPillShade = 0.8
+
     /// The take, 70 × 124 pt at the left, shrinking toward its top centre as it folds into light.
     private func takePoster(at story: Double) -> some View {
         let pose = FirstStarScript.take(at: story)
@@ -69,13 +78,15 @@ struct FirstStarView: View {
         return TakeThumbnail(take: take)
             .frame(width: 70, height: 124)
             .overlay(alignment: .bottom) {
+                // The take's own picture is behind the pill (a bright one too): at 80% black the green reads at 4.5:1 or more on any frame
+                // (`PaletteContrastTests.theFirstStarsSavedPillReads`).
                 Text("✓ SAVED")
                     .font(.system(size: 8, weight: .semibold, design: .monospaced))
                     .tracking(0.8)
-                    .foregroundStyle(Palette.success)
+                    .foregroundStyle(Palette.successText)
                     .frame(maxWidth: .infinity)
                     .frame(height: 18)
-                    .background(.black.opacity(0.55), in: Capsule())
+                    .background(.black.opacity(Self.savedPillShade), in: Capsule())
                     .padding(6)
                     .opacity(saved.opacity)
                     .offset(y: saved.lift)

@@ -63,6 +63,27 @@ nonisolated enum CueMotion {
     /// The list dimming while the dock's field has the keyboard (09 §6: 0.25 s, ease-out).
     static let dockDim = Animation.easeOut(duration: 0.25)
 
+    /// A finger landing on a button: it sinks at once, with no bounce (the answer has to be there before the finger settles).
+    static let pressIn = Animation.spring(response: 0.16, dampingFraction: 0.9)
+    /// The finger lifting: the button comes back a little slower and settles past its place, so the release reads as a release.
+    static let pressRelease = Animation.spring(response: 0.34, dampingFraction: 0.62)
+
+    /// A chapter of the first flight leaving: short and accelerating, so it is out of the way before the next one arrives.
+    static let chapterExit = Animation.easeIn(duration: 0.22)
+    /// The next chapter arriving, a beat after the last one starts to leave (one thing moves at a time): light's curve, fast then a long settle.
+    static let chapterEnter = light(duration: 0.55).delay(0.1)
+    /// The night's haze moving to the next chapter's: slower than the chapter, as a far thing is (the background lags the foreground).
+    static let hazeShift = Animation.easeInOut(duration: 0.8)
+    /// An SF Symbol swapping for another (`symbolSwap`): quick, no bounce.
+    static let symbolSwap = Animation.snappy(duration: 0.22)
+    /// A full-screen story coming over the screen (`StoryCover`): light's curve, and going, quicker.
+    static let storyIn = light(duration: 0.35)
+    static let storyOut = Animation.easeIn(duration: 0.25)
+    /// A story skipped with a tap: everything eases to its final place instead of jumping there.
+    static let skipSettle = Animation.easeOut(duration: 0.3)
+    /// The sky drifting up a little with each chapter: slower still, the farthest layer of the three.
+    static let skyShift = Animation.timingCurve(0.45, 0, 0.25, 1, duration: 0.95)
+
     /// The prompter's glide to the next line (`cubic-bezier(.45,0,.25,1)`).
     static let glide = Animation.timingCurve(0.45, 0, 0.25, 1, duration: Duration.voiceGlide)
 

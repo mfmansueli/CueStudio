@@ -34,7 +34,7 @@ struct PanelChips<Value: Hashable>: View {
                             .frame(minHeight: Metrics.hitTarget)
                             .contentShape(Rectangle())
                     }
-                    .buttonStyle(.plain)
+                    .buttonStyle(.cuePress)
                     .accessibilityAddTraits(isOn ? .isSelected : [])
                     .accessibilityIdentifier("\(identifier).\(option.key)")
                 }

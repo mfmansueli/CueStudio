@@ -11,14 +11,13 @@ struct SkeletonShine: ViewModifier {
     static let period: TimeInterval = 1.4
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
-    @Environment(\.scenePhase) private var scenePhase
 
     func body(content: Content) -> some View {
         content.overlay {
             if !reduceMotion {
-                TimelineView(.animation(minimumInterval: 1.0 / 30, paused: scenePhase != .active)) { context in
+                AmbientTimeline { ambient in
                     GeometryReader { proxy in
-                        let phase = context.date.timeIntervalSinceReferenceDate.truncatingRemainder(dividingBy: Self.period) / Self.period
+                        let phase = ambient.seconds.truncatingRemainder(dividingBy: Self.period) / Self.period
                         LinearGradient(colors: [.clear, .white.opacity(0.08), .clear], startPoint: .leading, endPoint: .trailing)
                             .frame(width: proxy.size.width * 0.6)
                             .offset(x: proxy.size.width * (phase * 1.6 - 0.6))

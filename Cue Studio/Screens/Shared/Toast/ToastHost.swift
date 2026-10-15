@@ -22,7 +22,7 @@ struct ToastHost: ViewModifier {
                     .padding(.horizontal, Metrics.gutter)
                     .padding(.top, 8)
                     .id(message)
-                    .transition(reduceMotion ? .opacity : .move(edge: .top).combined(with: .opacity))
+                    .transition(.toast(reduceMotion: reduceMotion))
                     .onTapGesture { toast.dismiss() }
                     .accessibilityIdentifier("toast")
                 }

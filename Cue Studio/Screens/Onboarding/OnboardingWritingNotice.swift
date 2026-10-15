@@ -12,8 +12,8 @@ struct OnboardingWritingNotice: View {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
-        TimelineView(.animation(minimumInterval: 1.0 / 30, paused: reduceMotion)) { context in
-            let time = reduceMotion ? 0 : context.date.timeIntervalSinceReferenceDate
+        AmbientTimeline { ambient in
+            let time = reduceMotion ? 0 : ambient.seconds
             // 0 → 1 → 0 every 2.4 s, eased: the star's breath and its halo.
             let pulse = reduceMotion ? 0.5 : 0.5 - 0.5 * cos(time * 2 * .pi / 2.4)
             let sweep = reduceMotion ? 0.5 : 1 - (time.truncatingRemainder(dividingBy: 1.6) / 1.6)

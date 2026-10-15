@@ -16,8 +16,8 @@ struct AIAura: ViewModifier {
 
     func body(content: Content) -> some View {
         content.overlay {
-            TimelineView(.animation(minimumInterval: 1.0 / 30, paused: !isActive || reduceMotion)) { context in
-                let turn = reduceMotion ? 0 : context.date.timeIntervalSinceReferenceDate / CueMotion.Duration.auraTurn
+            AmbientTimeline(paused: !isActive) { ambient in
+                let turn = reduceMotion ? 0 : ambient.seconds / CueMotion.Duration.auraTurn
                 RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
                     .strokeBorder(
                         AngularGradient(

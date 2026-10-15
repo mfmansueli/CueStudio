@@ -32,6 +32,9 @@ struct ReviewToolbar: ToolbarContent {
         ToolbarItemGroup(placement: .topBarTrailing) {
             Button(action: onToggleBest) {
                 Image(systemName: take.isBest ? "star.fill" : "star")
+                    .symbolSwap(value: take.isBest)
+                    // Choosing the best take is a small win: the star gives a small bounce as it changes.
+                    .symbolEffect(.bounce, value: take.isBest ? 1 : 0)
                     .foregroundStyle(take.isBest ? Palette.acc : Palette.ink)
             }
             .accessibilityLabel(Text("Best take"))

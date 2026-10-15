@@ -33,6 +33,7 @@ struct RemoteStatusHero: View {
                 Circle().fill(color.opacity(0.1)).frame(width: 96, height: 96)
                 Circle().strokeBorder(color, lineWidth: 2).frame(width: 58, height: 58)
                 Image(systemName: state.isConnected ? "checkmark" : "iphone.radiowaves.left.and.right")
+                    .symbolSwap(value: state.isConnected)
                     .font(.system(size: 22, weight: .regular))
                     .foregroundStyle(color)
             }

@@ -31,9 +31,9 @@ struct HorizonParticles: View {
 
     var body: some View {
         if !reduceMotion {
-            TimelineView(.animation(minimumInterval: 1.0 / 30)) { context in
+            AmbientTimeline { ambient in
                 Canvas { canvas, size in
-                    let time = context.date.timeIntervalSinceReferenceDate
+                    let time = ambient.seconds
                     for speck in Self.specks {
                         let cycle = ((time - speck.delay).truncatingRemainder(dividingBy: speck.period) + speck.period)
                             .truncatingRemainder(dividingBy: speck.period) / speck.period

@@ -11,11 +11,10 @@ struct ScriptsConstellation: View {
     var scale: CGFloat = 1
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
-    @Environment(\.scenePhase) private var scenePhase
 
     var body: some View {
-        TimelineView(.animation(minimumInterval: 1.0 / 30, paused: reduceMotion || scenePhase != .active)) { context in
-            let time = reduceMotion ? 0 : context.date.timeIntervalSinceReferenceDate
+        AmbientTimeline { ambient in
+            let time = reduceMotion ? 0 : ambient.seconds
             // r: 14 → 19 → 14 on a 3 s cycle (SVG `animate values="14;19;14" dur="3s"`).
             let halo = 14 + 5 * (0.5 - 0.5 * cos(time * 2 * .pi / 3))
             Canvas { canvas, _ in

@@ -22,7 +22,7 @@ struct PlatformFilterChips: View {
                     } label: {
                         chip(filter)
                     }
-                    .buttonStyle(.plain)
+                    .buttonStyle(.cuePress)
                     .accessibilityElement(children: .ignore)
                     .accessibilityLabel(Text(filter.label))
                     .accessibilityValue(Text("\(count(filter))"))

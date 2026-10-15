@@ -34,6 +34,7 @@ struct EditorPlayerBar: View {
             }
             Button(action: viewModel.togglePlayback) {
                 Image(systemName: isPlaying ? "pause.fill" : "play.fill")
+                    .symbolSwap(value: isPlaying)
                     .font(.system(size: 22))
                     .foregroundStyle(Palette.ink)
                     .frame(width: Metrics.hitTarget, height: Metrics.hitTarget)

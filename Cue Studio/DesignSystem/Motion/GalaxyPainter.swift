@@ -8,6 +8,10 @@ import SwiftUI
 /// Draws the galaxies of `GalaxyArt` into a `Canvas`: a platform's galaxy (glow, two arms of gas and light turning slowly, a few stars, a core)
 /// and the creator's (the same with a thousand stars, a bulge, three orbits with a planet each, a turning cross of light and a lit core).
 /// All lengths are the board's points: the platform galaxies are drawn where they sit on the 390 × 844 board, the hero at its own 360 pt.
+///
+/// Light adds up (`.plusLighter`, `ANIMACOES.md` §5 "Brilho aditivo"): where an arm crosses the glow, a star sits on the gas or the halo meets the
+/// cross, the two get brighter together, as light does, instead of the top one covering the other. Over the empty night it draws exactly as before
+/// (light added to nothing is itself). Solid things stay solid: the planets, the orbits' lines and the creator's lit core.
 enum GalaxyPainter {
     // MARK: - A platform's galaxy
 
@@ -18,6 +22,7 @@ enum GalaxyPainter {
         layer.translateBy(x: art.center[0], y: art.center[1])
         layer.rotate(by: .degrees(art.rotation))
         layer.scaleBy(x: scale, y: scale * art.squash)
+        layer.blendMode = .plusLighter
         // The soft disc under it.
         layer.fill(
             circle(art.glowRadius),
@@ -68,6 +73,8 @@ enum GalaxyPainter {
     /// The disc of the creator's galaxy (the gas, the light and the stars) without the sky around it: the part that only turns, drawn once into
     /// an image (360 × 360 pt) and turned afterwards. The context's origin is the middle of the image.
     static func drawHeroDisc(_ hero: GalaxyArt.Hero, in context: inout GraphicsContext) {
+        var context = context
+        context.blendMode = .plusLighter
         for arm in hero.arms {
             let path = polyline(arm.points)
             let color = Color(hex: hex(arm.stroke ?? "#FFFFFF")).opacity(arm.opacity)
@@ -98,6 +105,7 @@ enum GalaxyPainter {
         // The galaxy: a soft gold-and-violet light, the disc turning once in 140 s, and the bulge, all squashed to 0.52 high.
         var flat = tilted
         flat.scaleBy(x: 1, y: 0.52)
+        flat.blendMode = .plusLighter
         flat.fill(circle(175), with: .radialGradient(Gradient(stops: heroGlow), center: .zero, startRadius: 0, endRadius: 175))
         var turning = flat
         turning.rotate(by: .degrees(time / 140 * 360))
@@ -108,8 +116,10 @@ enum GalaxyPainter {
         }
         flat.fill(circle(60), with: .radialGradient(Gradient(stops: heroBulge), center: .zero, startRadius: 0, endRadius: 60))
         drawOrbits(in: tilted, time: time)
-        context.fill(circle(64), with: .radialGradient(Gradient(stops: heroHalo), center: .zero, startRadius: 0, endRadius: 64))
-        drawFlare(in: context, time: time)
+        var light = context
+        light.blendMode = .plusLighter
+        light.fill(circle(64), with: .radialGradient(Gradient(stops: heroHalo), center: .zero, startRadius: 0, endRadius: 64))
+        drawFlare(in: light, time: time)
         drawCore(in: context)
     }
 
@@ -135,14 +145,18 @@ enum GalaxyPainter {
                 Path(ellipseIn: CGRect(x: -orbit.rx, y: -orbit.ry, width: orbit.rx * 2, height: orbit.ry * 2)),
                 with: .color(Palette.Universe.starLilac.opacity(0.26)), lineWidth: 1.1
             )
-            // The planet laps its ellipse clockwise from its right-hand end, `period` seconds a lap.
-            let angle = (time - orbit.begin) / orbit.period * 2 * .pi
+            // The planet laps its ellipse clockwise from its right-hand end, `period` seconds a lap: a little faster, bigger and brighter in
+            // front, slower, smaller and dimmer behind (`OrbitMotion`).
+            let angle = OrbitMotion.angle(mean: (time - orbit.begin) / orbit.period * 2 * .pi)
             let centre = CGPoint(x: orbit.rx * cos(angle), y: orbit.ry * sin(angle))
-            layer.fill(
-                Path(ellipseIn: CGRect(x: centre.x - orbit.radius, y: centre.y - orbit.radius, width: orbit.radius * 2, height: orbit.radius * 2)),
+            let radius = orbit.radius * OrbitMotion.scale(at: angle)
+            var planet = layer
+            planet.opacity = OrbitMotion.light(at: angle)
+            planet.fill(
+                Path(ellipseIn: CGRect(x: centre.x - radius, y: centre.y - radius, width: radius * 2, height: radius * 2)),
                 with: .radialGradient(
-                    Gradient(stops: orbit.stops), center: CGPoint(x: centre.x - orbit.radius * 0.32, y: centre.y - orbit.radius * 0.4),
-                    startRadius: 0, endRadius: orbit.radius * 1.56
+                    Gradient(stops: orbit.stops), center: CGPoint(x: centre.x - radius * 0.32, y: centre.y - radius * 0.4),
+                    startRadius: 0, endRadius: radius * 1.56
                 )
             )
         }

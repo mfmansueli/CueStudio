@@ -13,14 +13,13 @@ struct ShineSweep<S: Shape>: ViewModifier {
     var interval: Double = 6
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
-    @Environment(\.scenePhase) private var scenePhase
 
     func body(content: Content) -> some View {
         content.overlay {
-            if !reduceMotion, scenePhase == .active {
-                TimelineView(.animation(minimumInterval: 1.0 / 30)) { context in
+            if !reduceMotion {
+                AmbientTimeline { ambient in
                     GeometryReader { proxy in
-                        let phase = Self.phase(at: context.date.timeIntervalSinceReferenceDate, interval: interval)
+                        let phase = Self.phase(at: ambient.seconds + interval - Self.firstSweep, interval: interval)
                         if let phase {
                             let width = proxy.size.width + 140
                             Rectangle()
@@ -40,6 +39,9 @@ struct ShineSweep<S: Shape>: ViewModifier {
             }
         }
     }
+
+    /// Seconds from the button appearing to its first sweep: it arrives first, then shines.
+    static var firstSweep: Double { 1.2 }
 
     /// 0...1 while a sweep is crossing, nil in between.
     static func phase(at time: TimeInterval, interval: Double) -> Double? {
