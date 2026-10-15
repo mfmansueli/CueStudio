@@ -6,16 +6,18 @@
 import SwiftUI
 
 /// Draws the welcome's star scene at one second of `WelcomeScript` (09 §12): the C's line and dots, the dust, rings, flares and sparks,
-/// the star with its trail, and the explosion on the sixth dot. Everything is a pose read from a track at `time`.
+/// the star with its trail, and the explosion on the sixth dot. Everything is a pose read from a track at `time`; the lit dots keep shining
+/// after the story ends, so their shine reads `ambient` (the seconds since the opening began, past its end).
 struct WelcomeStarPainter {
     let time: Double
+    let ambient: Double
     /// Where the star goes after the C, which depends on where the three words are on this screen.
     let starPath: PoseTrack
 
     func paint(in context: inout GraphicsContext) {
         drawLines(in: &context)
         drawDust(in: &context)
-        for dot in WelcomeScript.dots { drawDot(dot, in: &context) }
+        for (index, dot) in WelcomeScript.dots.enumerated() { drawDot(dot, index: index, in: &context) }
         drawSparks(in: &context)
         drawExplosion(in: &context)
         drawStar(in: &context)
@@ -46,14 +48,24 @@ struct WelcomeStarPainter {
         if dim > 0.01 { context.fill(circle(WelcomeScript.cue, 3.3), with: .color(Palette.aiTextStrong.opacity(dim))) }
     }
 
-    private func drawDot(_ dot: WelcomeDot, in context: inout GraphicsContext) {
+    /// A dot: a soft halo, the coloured light and a white-hot centre, bigger and brighter at the hit, then breathing (`shine`) and glinting
+    /// now and then, like a star.
+    private func drawDot(_ dot: WelcomeDot, index: Int, in context: inout GraphicsContext) {
         let pop = dot.pop.pose(at: time)
         if pop.opacity > 0.01 {
-            let size = dot.radius * pop.scale
+            let shine = WelcomeScript.shine(of: index, lit: dot.hit, at: ambient)
+            let flash = dot.flash.pose(at: time).opacity
+            let size = dot.radius * pop.scale * (1 + 0.2 * shine)
+            let halo = (0.3 + 0.25 * shine + 0.5 * flash) * pop.opacity
+            glow(at: dot.point, radius: dot.radius * (3 + 3 * flash + 1.2 * shine), color: dot.color, opacity: halo, in: &context)
             context.drawLayer { layer in
-                layer.addFilter(.shadow(color: dot.color.opacity(0.7), radius: dot.radius * pop.scale * 0.9))
+                layer.addFilter(.shadow(color: dot.color.opacity(0.8), radius: dot.radius * (0.9 + 0.9 * shine + 1.6 * flash)))
                 layer.fill(circle(dot.point, size), with: .color(dot.color.opacity(pop.opacity)))
             }
+            context.fill(circle(dot.point, size * 0.45), with: .color(.white.opacity((0.55 + 0.45 * max(shine, flash)) * pop.opacity)))
+            let glint = WelcomeScript.glint(of: index, lit: dot.hit, at: ambient)
+            let sparkle = Pose(opacity: glint, scale: 0.5 + 0.5 * glint, rotation: dot.twinkles ? 45 : 0)
+            cross(at: dot.point, horizontal: dot.radius * 6, vertical: dot.radius * 6, thickness: 1.2, color: .white, pose: sparkle, in: &context)
         }
         let ring = dot.ring.pose(at: time)
         if ring.opacity > 0.01 {
@@ -103,17 +115,14 @@ struct WelcomeStarPainter {
 
     // MARK: - The star
 
+    /// The star and its tail (`StarRibbon`), along the path it takes this time.
     private func drawStar(in context: inout GraphicsContext) {
-        for follower in WelcomeScript.trail.reversed() {
-            let pose = starPath.pose(at: time - follower.delay)
-            let opacity = pose.opacity * follower.opacity
-            guard opacity > 0.01 else { continue }
-            let point = CGPoint(x: pose.x, y: pose.y)
-            context.drawLayer { layer in
-                layer.addFilter(.shadow(color: Palette.Universe.starCream.opacity(0.7 * opacity), radius: follower.size * 1.6))
-                layer.fill(circle(point, follower.size / 2), with: .color(follower.color.opacity(opacity)))
-            }
+        let trail = StarRibbon.trail(at: time) { second in
+            let pose = starPath.pose(at: second)
+            return (CGPoint(x: pose.x, y: pose.y), pose.opacity)
         }
+        StarRibbon.draw(trail, in: &context)
+        if let head = trail.first { StarRibbon.head(at: head.point, opacity: head.opacity, spin: ambient, in: &context) }
     }
 
     // MARK: - The explosion
@@ -121,8 +130,10 @@ struct WelcomeStarPainter {
     /// The star becomes the sixth dot: the core, its glow, two rings and the cross of yellow light.
     private func drawExplosion(in context: inout GraphicsContext) {
         let centre = WelcomeScript.cue
-        let core = WelcomeScript.core.pose(at: time).scale
+        let shine = WelcomeScript.shine(of: 5, lit: WelcomeScript.explosionTime + 0.2, at: ambient)
+        let core = WelcomeScript.core.pose(at: time).scale * (1 + 0.12 * shine)
         if core > 0.01 {
+            glow(at: centre, radius: 26 * core, color: Palette.acc, opacity: 0.18 + 0.2 * shine, in: &context)
             context.fill(circle(centre, 16 * core), with: .color(Palette.acc.opacity(0.22)))
             context.drawLayer { layer in
                 layer.addFilter(.shadow(color: Palette.acc.opacity(0.6), radius: 6))
@@ -130,6 +141,11 @@ struct WelcomeStarPainter {
             }
             context.fill(circle(centre, 2.6 * core), with: .color(Palette.Universe.starCream))
         }
+        let glint = WelcomeScript.glint(of: 5, lit: WelcomeScript.explosionTime + 0.2, at: ambient)
+        cross(
+            at: centre, horizontal: 40, vertical: 30, thickness: 1.3, color: Palette.Universe.starCream,
+            pose: Pose(opacity: glint, scale: 0.5 + 0.5 * glint), in: &context
+        )
         let ring = WelcomeScript.ring.pose(at: time)
         if ring.opacity > 0.01 { context.stroke(circle(centre, 10 * ring.scale), with: .color(Palette.acc.opacity(ring.opacity)), lineWidth: 1.2) }
         let second = WelcomeScript.secondRing.pose(at: time)
@@ -143,6 +159,15 @@ struct WelcomeStarPainter {
     }
 
     // MARK: - Shapes
+
+    /// A soft round light: `color` at `opacity` in the middle, nothing at `radius`.
+    private func glow(at centre: CGPoint, radius: CGFloat, color: Color, opacity: Double, in context: inout GraphicsContext) {
+        guard opacity > 0.01, radius > 0.1 else { return }
+        let shading = GraphicsContext.Shading.radialGradient(
+            Gradient(colors: [color.opacity(opacity), color.opacity(0)]), center: centre, startRadius: 0, endRadius: radius
+        )
+        context.fill(circle(centre, radius), with: shading)
+    }
 
     private func circle(_ centre: CGPoint, _ radius: CGFloat) -> Path {
         Path(ellipseIn: CGRect(x: centre.x - radius, y: centre.y - radius, width: radius * 2, height: radius * 2))

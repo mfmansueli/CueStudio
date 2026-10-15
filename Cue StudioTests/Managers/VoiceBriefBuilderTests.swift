@@ -56,7 +56,7 @@ struct VoiceBriefBuilderTests {
             niches: [.travel, .lifestyle], customTopics: ["Van life"], topicDetails: ["travel": ["Cheap flights", "Solo travel"]]
         )
         let text = brief(profile.voice)
-        #expect(text.contains("Topics: budget travel (Cheap flights, Solo travel); morning routines and daily life; Van life."))
+        #expect(text.contains("Topics: budget travel (Cheap flights, Solo travel); daily routines and daily life; Van life."))
     }
 
     @Test func aTopicOnlyTheVoiceOffersIsToldToo() {

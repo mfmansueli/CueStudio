@@ -6,8 +6,9 @@
 import SwiftUI
 
 /// The first take (1.7): it shows "✓ SAVED", folds into light, a comet carries it to the creator's universe and it lights the first star, joined to YOU;
-/// then "Your first video. Your first star." comes in word by word. Told once, after the first take Cue ever recorded. The story is `FirstStarScript`
-/// (the board's keyframes); the app plays it once and holds, with the orbits still turning.
+/// then "Your first video. Your first star." comes in word by word and a gold light crosses it. Told once, after the first take Cue ever recorded.
+/// The story is `FirstStarScript` (the board's keyframes and the owner's finish on top); the app plays it once, pushing in a little, and holds,
+/// with the orbits still turning, the star glinting and a shooting star now and then.
 struct FirstStarView: View {
     let take: Take
     let onStudio: () -> Void
@@ -51,10 +52,15 @@ struct FirstStarView: View {
         let across = (size.width - 390) / 2
         let down = max(0, size.height - 844)
         return ZStack(alignment: .topLeading) {
-            FirstStarScene(story: story, world: world, reduceMotion: reduceMotion)
-                .frame(width: 390, height: 520)
-                .offset(x: across)
-            takePoster(at: story).offset(x: across)
+            ZStack(alignment: .topLeading) {
+                FirstStarScene(story: story, world: world, reduceMotion: reduceMotion)
+                    .frame(width: 390, height: 520)
+                takePoster(at: story)
+            }
+            .frame(width: 390, height: 520, alignment: .topLeading)
+            // The camera pushes slowly into the universe, about YOU.
+            .scaleEffect(FirstStarScript.push(at: story), anchor: UnitPoint(x: FirstStarScript.core.x / 390, y: FirstStarScript.core.y / 520))
+            .offset(x: across)
             texts(at: story).offset(y: 474 + down)
             VStack(spacing: 0) {
                 Spacer()
@@ -93,12 +99,26 @@ struct FirstStarView: View {
             }
             .clipShape(shape)
             .overlay(shape.strokeBorder(Palette.acc.opacity(0.7), lineWidth: 1.5))
+            .overlay { rimLight(at: story, shape: shape) }
             .shadow(color: .black.opacity(0.5), radius: 15, y: 12)
             .brightness((pose.brightness - 1) * 0.35)
             .scaleEffect(pose.scale, anchor: .top)
             .opacity(pose.opacity)
             .offset(x: 34, y: 300)
             .accessibilityHidden(true)
+    }
+
+    /// The light that runs once round the take's edge before it folds: a bright stretch of the border, white into gold.
+    private func rimLight(at story: Double, shape: RoundedRectangle) -> some View {
+        let rim = FirstStarScript.rimLight(at: story)
+        return shape
+            .trim(from: max(0, rim.end - 0.22), to: rim.end)
+            .stroke(
+                LinearGradient(colors: [Palette.acc, .white], startPoint: .bottom, endPoint: .top),
+                style: StrokeStyle(lineWidth: 2.5, lineCap: .round)
+            )
+            .shadow(color: Palette.acc.opacity(0.9), radius: 6)
+            .opacity(rim.opacity)
     }
 
     // MARK: - Words
@@ -109,14 +129,15 @@ struct FirstStarView: View {
         let subtitle = FirstStarScript.arrival(startingAt: FirstStarScript.subtitleStart, length: 10, at: story)
         return VStack(spacing: 8) {
             Text("FIRST VIDEO · FIRST STAR")
-                .font(.system(size: 11, weight: .semibold, design: .monospaced))
+                .font(.system(size: 12, weight: .semibold, design: .monospaced))
                 .tracking(1.54)
                 .foregroundStyle(Palette.acc)
                 .opacity(chapter)
                 .offset(y: 8 * (1 - chapter))
             title(at: story)
             Text("Saved in Takes. Add captions, edit it or share it to light up your \(String(UniverseYears.current())) universe.")
-                .font(.system(size: 15))
+                .font(.system(size: 17))
+                .lineSpacing(3)
                 .foregroundStyle(Palette.ink2)
                 .multilineTextAlignment(.center)
                 .fixedSize(horizontal: false, vertical: true)
@@ -129,7 +150,31 @@ struct FirstStarView: View {
 
     private func title(at story: Double) -> some View {
         let sentence = String(localized: "Your first video. Your first star.")
-        // A language without spaces between words comes in as one piece.
+        let sweep = FirstStarScript.titleSweep(at: story)
+        return titleWords(sentence, at: story, color: Palette.ink)
+            // The title holds to 300 pt, so it breaks into the board's two lines (one sentence each in English).
+            .frame(maxWidth: 300)
+            .overlay {
+                // A gold light crosses the words once, after the last one has come.
+                GeometryReader { proxy in
+                    LinearGradient(
+                        colors: [Palette.Universe.starGold.opacity(0), Palette.Universe.starGold, Palette.Universe.starGold.opacity(0)],
+                        startPoint: .leading, endPoint: .trailing
+                    )
+                    .frame(width: 90)
+                    .offset(x: -90 + (proxy.size.width + 90) * sweep)
+                }
+                .mask { titleWords(sentence, at: story, color: .white).frame(maxWidth: 300) }
+                .opacity(sweep > 0 && sweep < 1 ? 1 : 0)
+                .allowsHitTesting(false)
+            }
+            .accessibilityElement(children: .ignore)
+        .accessibilityLabel(sentence)
+        .accessibilityAddTraits(.isHeader)
+    }
+
+    /// The title's words, each coming in out of a blur (a language without spaces between words comes in as one piece).
+    private func titleWords(_ sentence: String, at story: Double, color: Color) -> some View {
         let words = sentence.contains(" ") ? sentence.split(separator: " ").map(String.init) : [sentence]
         return WordFlow(spacing: 7, lineSpacing: 0) {
             ForEach(Array(words.enumerated()), id: \.offset) { index, word in
@@ -137,17 +182,12 @@ struct FirstStarView: View {
                 Text(verbatim: word)
                     .font(.system(size: 30, weight: .bold))
                     .tracking(-0.6)
-                    .foregroundStyle(Palette.ink)
+                    .foregroundStyle(color)
                     .blur(radius: 8 * (1 - arrived))
                     .opacity(arrived)
                     .offset(y: 14 * (1 - arrived))
             }
         }
-        // The title holds to 300 pt, so it breaks into the board's two lines (one sentence each in English).
-        .frame(maxWidth: 300)
-        .accessibilityElement(children: .ignore)
-        .accessibilityLabel(sentence)
-        .accessibilityAddTraits(.isHeader)
     }
 
     private func buttons(at story: Double) -> some View {
@@ -192,11 +232,18 @@ struct FirstStarView: View {
 
     // MARK: - Haptic
 
-    /// `.success` as the star lights.
+    /// Taps while the comet flies, closer and stronger as it nears the star, and `.success` as the star lights.
     private func haptic() async {
         guard !reduceMotion, frozenAt == nil else { return }
         start = .now
-        try? await Task.sleep(for: .seconds(FirstStarScript.landing))
+        for tap in FirstStarScript.flightTaps {
+            let wait = tap.second - Date.now.timeIntervalSince(start)
+            if wait > 0 { try? await Task.sleep(for: .seconds(wait)) }
+            if Task.isCancelled { return }
+            if tap.isStrong { Haptics.light() } else { Haptics.soft() }
+        }
+        let wait = FirstStarScript.landing - Date.now.timeIntervalSince(start)
+        if wait > 0 { try? await Task.sleep(for: .seconds(wait)) }
         if !Task.isCancelled { Haptics.success() }
     }
 }

@@ -23,13 +23,13 @@ struct NicheTests {
     @Test func eachChipHasTheBoardsName() {
         #expect(Niche.offered.map(\.chipLabel) == [
             "Fitness & wellness", "Food & cooking", "Beauty & skincare", "Fashion & style", "Personal finance", "Tech & AI", "Budget travel",
-            "Productivity & career", "Parenting & family", "Morning routines",
+            "Productivity & career", "Parenting & family", "Daily routines",
         ])
         #expect(Set(Niche.allCases.map(\.chipLabel)).count == Niche.allCases.count, "no two topics share a name")
     }
 
     @Test func aWorldIsCalledWhatTheCreatorPicked() {
-        #expect(OnboardingTopic.niche(.lifestyle).label == "Morning routines")
+        #expect(OnboardingTopic.niche(.lifestyle).label == "Daily routines")
         #expect(OnboardingTopic.custom("Chess").label == "Chess")
     }
 

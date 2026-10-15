@@ -21,7 +21,7 @@ struct PaywallView: View {
     @State private var statusInset: CGFloat = 0
 
     /// The planet that is you sits here, from the top of the screen.
-    private static let planetY: CGFloat = 100
+    static let planetY: CGFloat = 150
 
     var body: some View {
         // A navigation stack of its own: the close button is the system's, in the bar's Liquid Glass.

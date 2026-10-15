@@ -5,8 +5,9 @@
 
 import SwiftUI
 
-/// The card under the practice's box (1.6): "Your teleprompter practice." before and while Cue counts in, with what will move the text
-/// (`PracticeVoice.instruction`) and that nothing is recorded; "You’ve got it. Ready to record?" once the text has been read. 96 pt of glass;
+/// The card under the practice's box (1.6): "Your teleprompter practice." before and while Cue counts in, with what to do (tap play, wait for
+/// the count, read) and what will move the text (`PracticeVoice.instruction`), and that nothing is recorded; "You’ve got it. Ready to
+/// record?" once the text has been read. At least 96 pt of glass;
 /// each rises 12 pt as it comes (0.6 s) and the first leaves up as the text starts to move.
 struct PracticeMessageCard: View {
     let stage: PracticeStage
@@ -16,7 +17,7 @@ struct PracticeMessageCard: View {
         ZStack {
             card(
                 title: String(localized: "Your teleprompter practice."),
-                lines: [voice.instruction, String(localized: "We’ll count you in. Nothing is recorded.")]
+                lines: [voice.instruction, String(localized: "Nothing is recorded.")]
             )
             .motion(intro)
             card(
@@ -54,7 +55,8 @@ struct PracticeMessageCard: View {
                 Text(line)
                     .font(.system(size: 14))
                     .foregroundStyle(Palette.Flight.quietInk)
-                    .lineLimit(2)
+                    .lineLimit(3)
+                    .fixedSize(horizontal: false, vertical: true)
             }
         }
         .padding(.horizontal, 18)

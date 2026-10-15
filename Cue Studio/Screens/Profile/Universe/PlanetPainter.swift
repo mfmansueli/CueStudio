@@ -5,8 +5,9 @@
 
 import SwiftUI
 
-/// A platform's planet on the universe map (9.2): a sphere lit from the upper left in the platform's colour, with the details it earns, a glow at 52
-/// videos, a thin ring at 156 and a small moon at 365 (`PlanetSize`). Drawn in board points.
+/// A platform's planet on the universe map (9.2): a crisp sphere lit from the upper left in the platform's colour, its night side softly shaded, with
+/// the details it earns, a glow at 52 videos, a thin ring at 156 and a small moon at 365 (`PlanetSize`); born white-hot on the opening (`white`).
+/// Drawn in board points.
 enum PlanetPainter {
     /// How far its label sits from the planet's centre along x: 6 pt beyond the planet, or beyond the ring when there is one.
     static func labelDistance(diameter: CGFloat, detail: PlanetSize.Detail) -> CGFloat {
@@ -15,18 +16,19 @@ enum PlanetPainter {
     }
 
     static func draw(
-        in canvas: inout GraphicsContext, center: CGPoint, diameter: CGFloat, detail: PlanetSize.Detail, tint: Color, opacity: Double = 1, flash: Double = 0
+        in canvas: inout GraphicsContext, center: CGPoint, diameter: CGFloat, detail: PlanetSize.Detail, tint: Color, opacity: Double = 1, flash: Double = 0,
+        white: Double = 0
     ) {
         guard diameter > 0 else { return }
         let faded = canvas.opacity
         canvas.opacity = faded * opacity
         defer { canvas.opacity = faded }
         let radius = diameter / 2
-        let halo = detail >= .glow ? radius * 2.6 : radius * 1.8
+        let halo = detail >= .glow ? radius * 2.2 : radius * 1.5
         canvas.fill(
             Path(ellipseIn: CGRect(x: center.x - halo, y: center.y - halo, width: halo * 2, height: halo * 2)),
             with: .radialGradient(
-                Gradient(colors: [tint.opacity(detail >= .glow ? 0.5 : 0.28), tint.opacity(0)]),
+                Gradient(colors: [tint.opacity(detail >= .glow ? 0.36 : 0.2), tint.opacity(0)]),
                 center: center, startRadius: radius * 0.6, endRadius: halo
             )
         )
@@ -39,6 +41,20 @@ enum PlanetPainter {
                 center: CGPoint(x: center.x - radius * 0.35, y: center.y - radius * 0.4), startRadius: 0, endRadius: radius * 1.4
             )
         )
+        // The night side, softly.
+        canvas.fill(
+            Path(ellipseIn: sphere),
+            with: .radialGradient(
+                Gradient(colors: [.clear, .clear, .black.opacity(0.2)]), center: CGPoint(x: center.x - radius * 0.4, y: center.y - radius * 0.45),
+                startRadius: 0, endRadius: radius * 2
+            )
+        )
+        if white > 0.01 {
+            canvas.drawLayer { hot in
+                hot.addFilter(.shadow(color: .white.opacity(white), radius: radius))
+                hot.fill(Path(ellipseIn: sphere), with: .color(.white.opacity(white)))
+            }
+        }
         if detail >= .ring { drawRing(in: &canvas, center: center, radius: radius, tint: tint, front: true) }
         if detail >= .moon {
             let moon = CGRect(x: center.x + radius * 1.7 - radius * 0.2, y: center.y - radius * 1.1 - radius * 0.2, width: radius * 0.4, height: radius * 0.4)

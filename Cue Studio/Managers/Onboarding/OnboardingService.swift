@@ -91,7 +91,7 @@ final class OnboardingService {
         step = previous
     }
 
-    /// The last chapter, or "Skip": the story is over.
+    /// The last chapter: the story is over.
     func complete() {
         markCompleted()
     }

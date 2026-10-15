@@ -9,8 +9,10 @@ import SwiftUI
 /// lifted over the middle of the disc (`UniverseSphere`), a violet haze under it, two elliptical orbits (70 × 43 and a dashed 122 × 80, radii), one round
 /// dot for every video shared, coloured by its topic, on the disc that turns around the sphere once in 140 s (the far half dimmer and smaller, the near half
 /// brighter), the platforms as planets at the edges (their size grows with the videos, `PlanetSize`) joined to the sphere by dashed curves, and the newest
-/// video as a yellow star that pulses (2.6 s). Everything stops with Reduce Motion. A sealed year (`isSealed`) is dimmer and still. Planets, dots and the
-/// core are buttons when `onOpen…` is given.
+/// video as a yellow star that pulses (2.6 s). On top of the board (the owner's pass, the Pro planet's language): on Your universe the map builds itself as
+/// it opens (`UniverseOpening`), and YOU is a real body (soft bands, storms turning slowly with it, the limb, a line of air); the dots are crisp, with
+/// no halo (the owner's call: clean and sharp, few motions). Everything stops with Reduce Motion. A sealed year (`isSealed`) is dimmer and still.
+/// Planets, dots and the core are buttons when `onOpen…` is given.
 struct UniverseMap: View {
     let snapshot: UniverseSnapshot
     var animates = true
@@ -37,8 +39,11 @@ struct UniverseMap: View {
     var showsCounts = true
     /// The newest video's dash; the send-off lights it itself.
     var showsNewest = true
+    /// The map builds itself as it appears (`UniverseOpening`): Your universe, not its pictures.
+    var playsOpening = false
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.playsUniverseOpening) private var openingAllowed
     @State private var appearedAt = Date.now
     @State private var openPlanet: Platform?
 
@@ -117,6 +122,24 @@ struct UniverseMap: View {
         .accessibilityElement(children: onCore == nil && onSeeInTakes == nil ? .ignore : .contain)
         .accessibilityLabel(Text("Your universe"))
         .accessibilityValue(Text("\(snapshot.total) videos shared"))
+        .task { await openingHaptics() }
+    }
+
+    // MARK: - The opening
+
+    private var opens: Bool { playsOpening && openingAllowed && !isStill }
+
+    /// Seconds into the opening; past its end when there is none.
+    private func openingAge(now: Date) -> Double { opens ? now.timeIntervalSince(appearedAt) : UniverseOpening.duration + 1 }
+
+    private func openingHaptics() async {
+        guard opens, snapshot.total > 0 else { return }
+        for beat in UniverseOpening.beats(planets: snapshot.platforms.count) {
+            let wait = beat.second - Date.now.timeIntervalSince(appearedAt)
+            if wait > 0 { try? await Task.sleep(for: .seconds(wait)) }
+            if Task.isCancelled { return }
+            if beat.isPlanet { Haptics.light() } else { Haptics.soft() }
+        }
     }
 
     /// The line under YOU while nothing is shared: lower and narrower (two lines) when last year's ghost is behind it.
@@ -207,12 +230,15 @@ struct UniverseMap: View {
 
     // MARK: - Growth
 
-    private var isGrowing: Bool { !previousCounts.isEmpty && Date.now.timeIntervalSince(appearedAt) < growthDelay + Self.growthDuration + 0.1 }
+    private var isGrowing: Bool { !previousCounts.isEmpty && Date.now.timeIntervalSince(appearedAt) < delay + Self.growthDuration + 0.1 }
+
+    /// The planets grow once they are born, when the map builds itself.
+    private var delay: TimeInterval { opens ? max(growthDelay, UniverseOpening.duration) : growthDelay }
 
     /// 0 → 1 (past 1 with the spring) since the screen opened; 1 when nothing is growing.
     private func growthProgress(now: Date) -> Double {
         guard !previousCounts.isEmpty, !reduceMotion, animates, !isSealed, frozenTime == nil else { return 1 }
-        let t = min(1, max(0, (now.timeIntervalSince(appearedAt) - growthDelay) / Self.growthDuration))
+        let t = min(1, max(0, (now.timeIntervalSince(appearedAt) - delay) / Self.growthDuration))
         return Self.growth.value(at: t)
     }
 
@@ -228,38 +254,80 @@ struct UniverseMap: View {
         let core = Self.corePoint
         let spin = frozenTime == nil ? time * 2 * .pi / Self.spinPeriod : 0
         let hasVideos = snapshot.total > 0
+        let age = openingAge(now: now)
         drawHaze(in: &canvas, at: center)
-        drawOrbits(in: &canvas, opacity: !hasVideos && ghost == nil ? 0.55 : 1)
+        drawOrbits(in: &canvas, opacity: !hasVideos && ghost == nil ? 0.55 : 1, age: age)
         if let ghost {
-            // Last year, very faint behind this one: its routes, dots and planets, with no labels.
+            // Last year, very faint behind this one: its routes and planets, with no labels and no dots (they clouded the disc).
             for item in ghost.platforms { drawRoute(to: item.platform, opacity: 0.35, in: &canvas) }
-            drawVideos(of: ghost, visible: ghost.dots.count, opacity: 0.18, spin: 0, front: nil, in: &canvas)
             for item in ghost.platforms {
-                drawPlanet(item.platform, count: item.count, previous: item.count, progress: 1, opacity: 0.2, labeled: false, in: &canvas)
+                drawPlanet(item, previous: item.count, progress: 1, opacity: 0.2, labeled: false, in: &canvas)
             }
         }
         let visible = Int((Double(snapshot.dots.count) * min(1, build / 0.8)).rounded(.up))
         if hasVideos {
-            drawDust(in: &canvas)
-            for item in snapshot.platforms where build >= 0.15 { drawRoute(to: item.platform, opacity: 1, in: &canvas) }
-            drawVideos(of: snapshot, visible: visible, opacity: 1, spin: spin, front: false, in: &canvas)
+            for (index, item) in snapshot.platforms.enumerated() where build >= 0.15 {
+                drawRoute(to: item.platform, opacity: 1, drawn: UniverseOpening.routeLight(index: index, at: age), in: &canvas)
+            }
+            drawVideos(of: snapshot, visible: visible, opacity: 1, motion: DotMotion(spin: spin, age: age), front: false, in: &canvas)
         } else if ghost == nil {
             // Nothing shared yet: the routes to where the first star will go, very faint.
             for platform in [Platform.tiktok, .reels, .shorts] { drawRoute(to: platform, opacity: 0.45, in: &canvas) }
         }
-        let swell = UniverseSphere.swell(at: time)
-        UniverseSphere.drawGlow(&canvas, at: core, color: coreColor, swell: swell)
-        UniverseSphere.drawBack(&canvas, at: core, time: time)
-        UniverseSphere.drawBall(&canvas, at: core, color: coreColor, swell: swell)
-        UniverseSphere.drawFront(&canvas, at: core, time: time)
+        drawCore(in: &canvas, at: core, time: time, age: age)
         guard hasVideos else { return }
-        drawVideos(of: snapshot, visible: visible, opacity: 1, spin: spin, front: true, in: &canvas)
+        drawVideos(of: snapshot, visible: visible, opacity: 1, motion: DotMotion(spin: spin, age: age), front: true, in: &canvas)
+        for (index, item) in snapshot.platforms.enumerated() where age < UniverseOpening.duration {
+            drawRouteLight(to: item.platform, progress: UniverseOpening.routeLight(index: index, at: age), at: age, in: &canvas)
+        }
         let progress = growthProgress(now: now)
         for (index, item) in snapshot.platforms.enumerated() where build >= 0.2 + 0.1 * Double(index) {
             let previous = previousCounts[item.platform] ?? item.count
-            drawPlanet(item.platform, count: item.count, previous: previous, progress: progress, opacity: 1, labeled: true, in: &canvas)
+            let birth = UniverseOpening.planet(index: index, at: age)
+            guard birth.scale > 0.001 else { continue }
+            let look = PlanetLook(scale: birth.scale, white: birth.white)
+            drawPlanet(item, previous: previous, progress: progress, opacity: 1, labeled: true, look: look, in: &canvas)
+            let sparks = UniverseOpening.planetSparks(index: index, at: age)
+            drawPlanetSparks(at: Self.node(item.platform).point, tint: item.platform.tint, sparks: sparks, in: &canvas)
         }
-        if showsNewest, build >= 0.95 { drawNewest(in: &canvas, time: time) }
+        if showsNewest, build >= 0.95 { drawNewest(in: &canvas, time: time, age: age) }
+    }
+
+    /// YOU: its glow, its rings and the ball, born white-hot in a bloom on the opening and cooling to its colour; a rim of light and a glint on the
+    /// live map.
+    private func drawCore(in canvas: inout GraphicsContext, at core: CGPoint, time: TimeInterval, age: Double) {
+        let bloom = UniverseOpening.bloom.pose(at: age)
+        if bloom.opacity > 0.01 {
+            let reach = 90 * bloom.scale
+            canvas.fill(
+                Self.disc(core, reach),
+                with: .radialGradient(
+                    Gradient(colors: [.white.opacity(bloom.opacity), Palette.acc.opacity(0.4 * bloom.opacity), Palette.acc.opacity(0)]),
+                    center: core, startRadius: 0, endRadius: reach
+                )
+            )
+        }
+        let birth = UniverseOpening.core.pose(at: age)
+        guard birth.opacity > 0.01 else { return }
+        var layer = canvas
+        layer.opacity = birth.opacity
+        layer.translateBy(x: core.x, y: core.y)
+        layer.scaleBy(x: birth.scale, y: birth.scale)
+        layer.translateBy(x: -core.x, y: -core.y)
+        let swell = UniverseSphere.swell(at: time)
+        UniverseSphere.drawGlow(&layer, at: core, color: coreColor, swell: swell)
+        UniverseSphere.drawBack(&layer, at: core, time: time)
+        UniverseSphere.drawBall(&layer, at: core, color: coreColor, swell: swell)
+        UniverseSphere.drawSurface(&layer, at: core, color: coreColor, swell: swell, time: isStill ? nil : time)
+        let white = UniverseOpening.coreWhite.pose(at: age).opacity
+        if white > 0.01 {
+            let radius = UniverseSphere.diameter / 2
+            layer.drawLayer { hot in
+                hot.addFilter(.shadow(color: .white.opacity(white), radius: 14))
+                hot.fill(Self.disc(core, radius), with: .color(.white.opacity(white)))
+            }
+        }
+        UniverseSphere.drawFront(&layer, at: core, time: time)
     }
 
     /// The haze under the sphere: violet, on the disc (wider than tall), and gone at the edge of the outer orbit.
@@ -278,55 +346,101 @@ struct UniverseMap: View {
         )
     }
 
-    /// Two elliptical orbits: 70 × 43 (solid, 22%) and 122 × 80 (dashed 2·4, 16%); `opacity` dims them (a new account: 55%).
-    private func drawOrbits(in canvas: inout GraphicsContext, opacity: Double) {
+    /// Two elliptical orbits: 70 × 43 (solid, 22%) and 122 × 80 (dashed 2·4, 16%); `opacity` dims them (a new account: 55%). On the opening they draw
+    /// round YOU, the inner one first.
+    private func drawOrbits(in canvas: inout GraphicsContext, opacity: Double, age: Double) {
         let c = Self.center
         func ellipse(_ size: CGSize) -> Path {
             Path(ellipseIn: CGRect(x: c.x - size.width, y: c.y - size.height, width: size.width * 2, height: size.height * 2))
         }
-        canvas.stroke(ellipse(Self.innerOrbit), with: .color(Palette.Universe.starLilac.opacity(0.22 * opacity)), lineWidth: 0.8)
+        let inner = UniverseOpening.innerOrbit.pose(at: age).scale
+        let outer = UniverseOpening.outerOrbit.pose(at: age).scale
         canvas.stroke(
-            ellipse(Self.outerOrbit), with: .color(Palette.Universe.starLilac.opacity(0.16 * opacity)),
+            ellipse(Self.innerOrbit).trimmedPath(from: 0, to: inner), with: .color(Palette.Universe.starLilac.opacity(0.22 * opacity)), lineWidth: 0.8
+        )
+        canvas.stroke(
+            ellipse(Self.outerOrbit).trimmedPath(from: 0, to: outer), with: .color(Palette.Universe.starLilac.opacity(0.16 * opacity)),
             style: StrokeStyle(lineWidth: 0.8, dash: [2, 4])
         )
     }
 
-    /// Soft grey specks of depth scattered on the disc, still: the dust the prototype leaves between the videos.
-    private func drawDust(in canvas: inout GraphicsContext) {
-        let c = Self.center
-        for index in 0..<16 {
-            let angle = Double(index) * 2.399_963
-            let reach = (Double(index) + 0.5).squareRoot() / 4 * 1.04
-            let size = 2 + 2.5 * (Double(index) * 0.618_034).truncatingRemainder(dividingBy: 1)
-            let fade = 0.1 + 0.08 * (Double(index) * 0.37).truncatingRemainder(dividingBy: 1)
-            let point = CGPoint(x: c.x + Self.outerOrbit.width * reach * cos(angle), y: c.y + Self.outerOrbit.height * reach * sin(angle))
-            canvas.fill(Self.disc(point, size), with: .color(Palette.ink2.opacity(fade)))
-        }
-    }
-
-    /// A dashed (2·4) curve from the sphere to a platform's planet, in its colour at 35%.
-    private func drawRoute(to platform: Platform, opacity: Double, in canvas: inout GraphicsContext) {
+    /// A dashed (2·4) curve from the sphere to a platform's planet, in its colour at 35%, drawn as far as `drawn` (the opening's light draws it).
+    private func drawRoute(to platform: Platform, opacity: Double, drawn: Double = 1, in canvas: inout GraphicsContext) {
+        guard drawn > 0.001 else { return }
         let node = Self.node(platform)
         var route = Path()
         route.move(to: Self.corePoint)
         route.addQuadCurve(to: node.point, control: node.control)
-        canvas.stroke(route, with: .color(platform.tint.opacity(0.35 * opacity)), style: StrokeStyle(lineWidth: 1, dash: [2, 4]))
+        canvas.stroke(
+            route.trimmedPath(from: 0, to: drawn), with: .color(platform.tint.opacity(0.35 * opacity)), style: StrokeStyle(lineWidth: 1, dash: [2, 4])
+        )
+    }
+
+    /// The point `t` (0...1) of the way along the route to a platform.
+    private static func routePoint(to platform: Platform, at t: Double) -> CGPoint {
+        let node = node(platform)
+        let from = corePoint
+        let u = 1 - t
+        return CGPoint(
+            x: u * u * from.x + 2 * u * t * node.control.x + t * t * node.point.x, y: u * u * from.y + 2 * u * t * node.control.y + t * t * node.point.y
+        )
+    }
+
+    /// On the opening, the light that runs out along a route to where its planet is born, with the first flight's trail.
+    private func drawRouteLight(to platform: Platform, progress: Double, at age: Double, in canvas: inout GraphicsContext) {
+        guard progress > 0, progress < 1 else { return }
+        let index = snapshot.platforms.firstIndex { $0.platform == platform } ?? 0
+        let trail = StarRibbon.trail(at: age, length: 0.22) { second in
+            let along = UniverseOpening.routeLight(index: index, at: second)
+            return (Self.routePoint(to: platform, at: along), along > 0 && along < 1 ? 1 : 0)
+        }
+        StarRibbon.draw(trail, colors: [.white, platform.tint.mix(with: .white, by: 0.4), platform.tint], width: 3, in: &canvas)
+        StarRibbon.head(at: Self.routePoint(to: platform, at: progress), opacity: 1, spin: age, radius: 2.4, halo: platform.tint, in: &canvas)
+    }
+
+    /// The sparks a planet's birth throws out.
+    private func drawPlanetSparks(at center: CGPoint, tint: Color, sparks: (reach: Double, opacity: Double), in canvas: inout GraphicsContext) {
+        guard sparks.opacity > 0.01 else { return }
+        for index in 0..<10 {
+            let angle = Double(index) / 10 * 2 * .pi + 0.4
+            let reach = 8 + (14 + Double((index * 29) % 12)) * sparks.reach
+            let point = CGPoint(x: center.x + cos(angle) * reach, y: center.y + sin(angle) * reach)
+            let color = index.isMultiple(of: 2) ? Color.white : tint.mix(with: .white, by: 0.4)
+            canvas.fill(Self.disc(point, 1.3 * (1 - 0.6 * sparks.reach) + 0.3), with: .color(color.opacity(sparks.opacity)))
+        }
     }
 
     /// One round dot for each video (up to 40 drawn), in its topic's colour, on the disc that has turned `spin` radians. The far half (`front: false`) is
-    /// smaller and dimmer than the near half; nil draws both (last year's ghost).
-    private func drawVideos(of snapshot: UniverseSnapshot, visible: Int, opacity: Double, spin: Double, front: Bool?, in canvas: inout GraphicsContext) {
+    /// smaller and dimmer than the near half.
+    /// On the opening each dot flies out of YOU to its place and lands with a small ring (`age`).
+    /// How the dots move: how far the disc has turned and the opening's second (nil: none).
+    private struct DotMotion {
+        var spin: Double
+        var age: Double?
+    }
+
+    private func drawVideos(
+        of snapshot: UniverseSnapshot, visible: Int, opacity: Double, motion: DotMotion, front: Bool, in canvas: inout GraphicsContext
+    ) {
+        let spin = motion.spin
+        let age = motion.age
         let c = Self.center
-        for dot in snapshot.dots.prefix(visible) {
+        let count = min(visible, snapshot.dots.count)
+        for (index, dot) in snapshot.dots.prefix(visible).enumerated() {
             let spot = Self.videoSpot(topic: dot.topicIndex, dot: dot.slot, drawn: dot.slot)
             let isFront = sin(spot.angle + spin) >= 0
-            if let front, front != isFront { continue }
+            if front != isFront { continue }
             let offset = spot.point(spin: spin)
-            let point = CGPoint(x: c.x + offset.x, y: c.y + offset.y)
+            let flight = age.map { UniverseOpening.dotFlight(index: index, count: count, at: $0) } ?? 1
+            guard flight > 0 else { continue }
+            let core = Self.corePoint
+            let point = CGPoint(x: core.x + (c.x + offset.x - core.x) * flight, y: core.y + (c.y + offset.y - core.y) * flight)
             let radius = spot.radius * (isFront ? 1.1 : 0.8)
+            if let age, let ring = UniverseOpening.dotLanding(index: index, count: count, at: age) {
+                let color = OnboardingTopic.color(at: dot.topicIndex)
+                canvas.stroke(Self.disc(point, radius + 7 * ring), with: .color(color.opacity(0.8 * (1 - ring))), lineWidth: 0.8)
+            }
             let color = OnboardingTopic.color(at: dot.topicIndex)
-            let halo = Gradient(colors: [color.opacity(0.28 * opacity), color.opacity(0)])
-            canvas.fill(Self.disc(point, radius * 2.6), with: .radialGradient(halo, center: point, startRadius: 0, endRadius: radius * 2.6))
             canvas.fill(Self.disc(point, radius), with: .color(color.opacity((isFront ? 1 : 0.6) * opacity)))
         }
     }
@@ -358,38 +472,56 @@ struct UniverseMap: View {
 
     /// A platform's planet and "TIKTOK · 12" beside it, 6 pt beyond the planet (beyond its ring), moving outward as it grows. A planet that just
     /// grew goes from its old size to the new one, and flashes when it wins a detail.
+    /// How a planet looks at this moment besides its size: how far it is born (× its size) and how white it still is (the opening).
+    private struct PlanetLook {
+        var scale = 1.0
+        var white = 0.0
+    }
+
     private func drawPlanet(
-        _ platform: Platform, count: Int, previous: Int, progress: Double, opacity: Double, labeled: Bool, in canvas: inout GraphicsContext
+        _ item: (platform: Platform, count: Int), previous: Int, progress: Double, opacity: Double, labeled: Bool, look: PlanetLook = PlanetLook(),
+        in canvas: inout GraphicsContext
     ) {
+        let platform = item.platform
+        let count = item.count
+        let birth = look
         let node = Self.node(platform)
         let from = PlanetSize.diameter(videos: previous)
         let to = PlanetSize.diameter(videos: count)
-        let diameter = max(0, from + (to - from) * CGFloat(progress))
+        let diameter = max(0, from + (to - from) * CGFloat(progress)) * birth.scale
         let detail = PlanetSize.detail(videos: count)
         let gainedDetail = PlanetSize.detail(videos: previous) < detail
         let flash = gainedDetail ? max(0, 1 - abs(progress - 1) * 4) : 0
-        PlanetPainter.draw(in: &canvas, center: node.point, diameter: diameter, detail: detail, tint: platform.tint, opacity: opacity, flash: flash)
+        PlanetPainter.draw(
+            in: &canvas, center: node.point, diameter: diameter, detail: detail, tint: platform.tint, opacity: opacity, flash: flash, white: birth.white
+        )
         guard labeled else { return }
         let distance = PlanetPainter.labelDistance(diameter: diameter, detail: detail)
         let side: CGFloat = node.labelAnchor == .trailing ? -1 : 1
         let name = showsCounts ? "\(platform.label.uppercased()) · \(count)" : platform.label.uppercased()
         let label = Text(name).font(.system(size: 9.5, weight: .semibold, design: .monospaced))
-        canvas.draw(
+        var named = canvas
+        named.opacity = min(1, birth.scale)
+        named.draw(
             label.foregroundStyle(Palette.ink.opacity(0.7)), at: CGPoint(x: node.point.x + side * distance, y: node.point.y + 4), anchor: node.labelAnchor
         )
     }
 
-    /// The newest video: a bright yellow dot (3.6 pt) in a halo that breathes (2.6 s), on the right of the outer orbit.
-    private func drawNewest(in canvas: inout GraphicsContext, time: TimeInterval) {
+    /// The newest video: a bright yellow dot (3.6 pt) in a halo that breathes (2.6 s), on the right of the outer orbit; on the opening it ignites last.
+    private func drawNewest(in canvas: inout GraphicsContext, time: TimeInterval, age: Double) {
         guard snapshot.newest != nil else { return }
+        let ignite = UniverseOpening.newest.pose(at: age)
+        guard ignite.opacity > 0.01 else { return }
+        var layer = canvas
+        layer.opacity = ignite.opacity
         let p = Self.newestPoint
         let pulse = 0.5 - 0.5 * cos(time * 2 * .pi / 2.6)
-        let halo = 9 + 4 * pulse
-        canvas.fill(
+        let halo = (9 + 4 * pulse) * ignite.scale
+        layer.fill(
             Self.disc(p, halo),
             with: .radialGradient(Gradient(colors: [Palette.acc.opacity(0.55), Palette.acc.opacity(0)]), center: p, startRadius: 0, endRadius: halo)
         )
-        canvas.fill(Self.disc(p, 2.4 + 1.2 * pulse), with: .color(Palette.acc))
+        layer.fill(Self.disc(p, (2.4 + 1.2 * pulse) * ignite.scale), with: .color(Palette.acc))
     }
 
     private static func disc(_ center: CGPoint, _ radius: CGFloat) -> Path {

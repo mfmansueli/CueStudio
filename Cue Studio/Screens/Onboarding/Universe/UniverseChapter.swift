@@ -74,7 +74,7 @@ struct UniverseChapter: View {
         let clock = time.clock
         return VStack(alignment: .leading, spacing: 0) {
             OnboardingHeading(
-                label: OnboardingStep.universe.chapterLabel, title: String(localized: "What do you want to talk about?"),
+                label: OnboardingStep.universe.chapterLabel, title: String(localized: "What do you usually talk about?"),
                 subtitle: String(localized: "Pick up to 3. Cue uses them for your video ideas, and each one becomes a world."),
                 poses: ["L1", "L2", "L3"].map { Self.clip.pose(of: $0, at: clock) }
             )
@@ -119,21 +119,20 @@ struct UniverseChapter: View {
         }
     }
 
-    /// The star of 1.1 comes in from the top right, crosses the title and lands on the core with a soft tap of the hand (09 §14b). The board's
-    /// path ends at (195, 366); here its last stretch bends toward the core wherever this screen put it.
+    /// The star of 1.1 comes in from the top right, crosses the title and lands on the core with a soft tap of the hand (09 §14b), leaving
+    /// 1.1's trail (`StarRibbon`). The board's path (its head, layer L73) ends at (195, 366); here its last stretch bends toward the core
+    /// wherever this screen put it.
     private func openingStar(at clock: Double) -> some View {
         let toCore = CGPoint(x: canvasOnScreen.midX - Self.boardCore.x, y: canvasOnScreen.midY - Self.boardCore.y)
-        let poses = ["L73", "L72", "L71", "L70"].map { id -> MotionPose in
-            var pose = Self.clip.pose(of: id, at: clock)
+        let head: (Double) -> StarRibbon.Point = { second in
+            let pose = Self.clip.pose(of: "L73", at: second)
             let weight = min(max((430 - pose.tx) / (430 - Self.boardCore.x), 0), 1)
-            pose.tx += toCore.x * weight
-            pose.ty += toCore.y * weight
-            return pose
+            return (CGPoint(x: pose.tx + toCore.x * weight, y: pose.ty + toCore.y * weight), pose.opacity)
         }
         // The poses are from the screen's top left; this overlay starts where the chapter does, below the progress bar.
         return GeometryReader { proxy in
             let origin = proxy.frame(in: .global).origin
-            StarTrail(poses: poses).offset(x: -origin.x, y: -origin.y)
+            StarTrail(time: clock, head: head).offset(x: -origin.x, y: -origin.y)
         }
         .ignoresSafeArea()
         .allowsHitTesting(false)

@@ -5,9 +5,10 @@
 
 import SwiftUI
 
-/// The two ways on at the bottom of the practice (1.6): "Record my first video" (yellow, with a red dot; it takes a soft glow when the text
-/// has been read) opens the real recorder with the same text, and "Explore Cue first" goes to Scripts. Without the microphone, a line above
-/// them says Voice Following needs it and the way to Settings.
+/// The ways on at the bottom of the practice (1.6): "Explore Cue first" is always there, the way out, and goes to Scripts; "Record my first
+/// video" (yellow, with a red dot and a soft glow) rises above it once play has been tapped (the owner's call: the practice comes first),
+/// and opens the real recorder with the same text. Without the microphone, a line above them says Voice Following needs it and the
+/// way to Settings.
 struct PracticeBottomBar: View {
     let viewModel: PrompterViewModel
     let onChoose: (PracticeOutcome) -> Void
@@ -16,17 +17,23 @@ struct PracticeBottomBar: View {
     @Environment(\.scenePhase) private var scenePhase
 
     private var microphoneIsOff: Bool { viewModel.practiceVoice == .steady }
+    private var hasStarted: Bool { viewModel.practiceStage != .idle }
 
     var body: some View {
         VStack(spacing: 0) {
             if microphoneIsOff { microphoneNote.padding(.bottom, 10) }
-            recordButton
-            studioButton.padding(.top, 8)
+            if hasStarted {
+                recordButton
+                    .padding(.bottom, 8)
+                    .transition(.move(edge: .bottom).combined(with: .opacity))
+            }
+            studioButton
         }
         .padding(.horizontal, 16)
         // Back from Settings, where it may have been turned on.
         .onChange(of: scenePhase) { _, phase in if phase == .active { viewModel.refreshPracticeMicrophone() } }
         .animation(.smooth(duration: 0.25), value: microphoneIsOff)
+        .animation(.smooth(duration: 0.5), value: hasStarted)
     }
 
     private var recordButton: some View {
@@ -39,8 +46,7 @@ struct PracticeBottomBar: View {
             .frame(maxWidth: .infinity, minHeight: 58)
             .background(Palette.acc, in: Capsule())
             .shineSweep(interval: 5)
-            .shadow(color: Palette.acc.opacity(viewModel.practiceStage == .done ? 0.45 : 0), radius: 15)
-            .animation(.easeOut(duration: 0.6), value: viewModel.practiceStage == .done)
+            .shadow(color: Palette.acc.opacity(0.45), radius: 15)
         }
         .buttonStyle(.plain)
         .accessibilityIdentifier("practice.recordForReal")

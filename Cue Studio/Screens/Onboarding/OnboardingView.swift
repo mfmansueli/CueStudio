@@ -7,7 +7,7 @@ import SwiftUI
 
 /// The first flight: a welcome and five short chapters over a night sky, ending with a practice run of the
 /// teleprompter. It lies over the whole app (not a cover, so the prompter can open above it) until it is
-/// finished or skipped.
+/// finished: there is no way to skip it.
 struct OnboardingView: View {
     @State private var model: OnboardingViewModel
     @State private var skyDirector = SkyDirector()
@@ -57,7 +57,7 @@ struct OnboardingView: View {
                 .animation(CueMotion.skyShift, value: onboarding.step)
             VStack(spacing: 0) {
                 if onboarding.step != .welcome {
-                    OnboardingChrome(step: onboarding.step, onSkip: skip)
+                    OnboardingChrome(step: onboarding.step)
                         .padding(.top, 8)
                         .transition(.opacity)
                 }
@@ -82,7 +82,7 @@ struct OnboardingView: View {
         switch onboarding.step {
         case .welcome:
             WelcomeChapter(
-                plays: services.playsWelcomeOpening, frozenAt: services.welcomeFrozenTime, onStart: advance, onReturning: returning
+                plays: services.playsWelcomeOpening, frozenAt: services.welcomeFrozenTime, onStart: advance
             )
         case .universe:
             UniverseChapter(
@@ -109,17 +109,6 @@ struct OnboardingView: View {
     private func advance() {
         Haptics.selection()
         onboarding.advance()
-    }
-
-    /// "Skip": straight to the Scripts empty state, with what was picked so far (and TikTok if nothing).
-    private func skip() {
-        model.finish()
-    }
-
-    /// "I already use Cue": the story is not for them. Restoring purchases and signing in live in Profile.
-    private func returning() {
-        model.finish()
-        presentation.selectedTab = .profile
     }
 
     /// "Try the teleprompter": the practice script becomes a real one in the library, and the flight goes on to the permissions.

@@ -6,7 +6,8 @@
 import SwiftUI
 
 /// The top of the practice (1.6): the first flight's five segments (the fourth is this chapter, as it is the permissions') and, at the other end, the one
-/// status label the practice has: "✦ PRACTICE · NOT RECORDING".
+/// status label the practice has: "✦ PRACTICE · NOT RECORDING". It is a notice, so it sits on a solid capsule (`Palette.surface3` with a lilac
+/// rim), never glass: it reads the same over any camera picture.
 struct PracticeTopBar: View {
     var body: some View {
         HStack(spacing: 10) {
@@ -30,7 +31,8 @@ struct PracticeTopBar: View {
             .minimumScaleFactor(0.7)
             .padding(.horizontal, 10)
             .frame(height: 26)
-            .glassEffect(.regular, in: .capsule)
+            .background(Palette.surface3, in: Capsule())
+            .overlay(Capsule().strokeBorder(Palette.aiText.opacity(0.45), lineWidth: 1))
             .accessibilityIdentifier("practice.chip")
         }
         .padding(.horizontal, 20)

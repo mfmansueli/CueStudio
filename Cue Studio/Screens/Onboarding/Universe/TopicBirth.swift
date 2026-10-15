@@ -51,11 +51,11 @@ struct TopicBirth: Sendable {
     static let chipRing = "L80"
     static let chipCross = "L82"
     static let chipSparks = (83...90).map { "L\($0)" }
-    /// The light on the route: the line that draws behind it, the bright stretch at its tail, its head, and the eight dots that follow the head.
+    /// The light on the route: the line that draws behind it, the bright stretch at its tail, and its head (its trail is drawn from the head's
+    /// path, `StarRibbon`).
     static let routeLine = "L25"
     static let routeTail = "L26"
     static let head = "L27"
-    static let followers = (28...35).map { "L\($0)" }
     /// The five glints on the route: the layer, how far along the route (0...1), and how big across (pt).
     static let glints: [(layer: String, along: Double, size: CGFloat)] = [
         ("L36", 0.188, 14), ("L37", 0.365, 10), ("L38", 0.545, 14), ("L39", 0.716, 10), ("L40", 0.862, 14),

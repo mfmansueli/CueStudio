@@ -111,6 +111,14 @@ struct PaletteContrastTests {
         }
     }
 
+    /// The practice's "✦ PRACTICE · NOT RECORDING" notice: its words and its star on the solid capsule, over any camera picture.
+    @Test func thePracticeNoticeReadsOnItsSolidCapsule() {
+        for appearance in Appearance.allCases {
+            #expect(ratio(Palette.aiTextStrong, on: Palette.surface3, in: appearance) >= ColorContrast.textMinimum, "the notice, \(appearance)")
+            #expect(ratio(Palette.Flight.lilac, on: Palette.surface3, in: appearance) >= ColorContrast.componentMinimum, "its star, \(appearance)")
+        }
+    }
+
     @Test func inkAndSecondaryInkAlsoReadOnTheTileSurface() {
         for appearance in Appearance.allCases {
             for token in [Palette.ink, Palette.ink2] {
@@ -466,7 +474,7 @@ struct PaletteContrastTests {
         }
     }
 
-    /// The first flight's quiet words (`Palette.Flight.quietInk`): "I already use Cue" on the night, at the strongest haze of a chapter (its
+    /// The first flight's quiet words (`Palette.Flight.quietInk`): its words on the night, at the strongest haze of a chapter (its
     /// violet light, the brightest of the washes, over the night), and a waiting yellow button's title on the yellow at 20%.
     @Test func theFirstFlightsQuietWordsRead() {
         for appearance in Appearance.allCases {

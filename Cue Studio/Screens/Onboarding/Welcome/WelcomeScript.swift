@@ -7,13 +7,13 @@ import SwiftUI
 
 /// The 1.1 opening, written as the board has it (09 §12, `motion/README.md`): in a 390 × 844 frame a star comes in from the top right,
 /// lights five dots that draw the C, draws the leg without lighting the sixth, arcs down to three words, returns and explodes into the
-/// sixth dot; then the wordmark, the title and the buttons arrive. Every moment is a `PoseTrack`, so the scene is a function of the second
+/// sixth dot; then the wordmark, the title and the button arrive. Every moment is a `PoseTrack`, so the scene is a function of the second
 /// it is drawn at, and holds still once the last one is over.
 enum WelcomeScript {
     /// The frame of the board; the scene is laid out in it, centred on the screen.
     static let frame = CGSize(width: 390, height: 844)
-    /// Everything is in place (the buttons land at 7.75–7.9 s).
-    static let finalTime = 7.9
+    /// Everything is in place (the button lands at 7.75 s).
+    static let finalTime = 7.75
 
     // MARK: - The C
 
@@ -97,11 +97,6 @@ enum WelcomeScript {
 
     // MARK: - The star
 
-    /// The star and its three followers, from the largest to the smallest: how late each is, how big, how bright and what colour.
-    static let trail: [(delay: Double, size: CGFloat, opacity: Double, color: Color)] = [
-        (0, 9, 1, .white), (0.08, 6.5, 0.6, Palette.Universe.starCream), (0.14, 5, 0.4, Palette.Universe.starWarm), (0.2, 4, 0.25, Palette.Universe.starGold),
-    ]
-
     /// Where the star is (`x`, `y`) and how visible (`opacity`), for the three words it visits: at their centres (frame coordinates).
     /// Between two dots it takes a small arc; to and from the words a bigger one, bending the way the board has it.
     static func starPath(words: [CGPoint]) -> PoseTrack {
@@ -132,20 +127,53 @@ enum WelcomeScript {
         ])
     }
 
+    // MARK: - The shine of the dots
+
+    /// How long each dot takes to brighten and dim again, and where in that it starts: different for each, so the C never pulses as one.
+    private static let shinePeriods: [Double] = [1.7, 2.3, 1.9, 2.6, 2.1, 2.8]
+    private static let shinePhases: [Double] = [0, 0.4, 0.15, 0.7, 0.55, 0.3]
+    /// Every few seconds a dot glints: a short cross of white light.
+    private static let glintPeriods: [Double] = [3.1, 3.7, 2.9, 4.3, 3.4, 3.9]
+    private static let glintOffsets: [Double] = [0.1, 0.55, 0.3, 0.8, 0.65, 0.2]
+
+    /// How bright a lit dot is at `time` (0...1): nothing before the star reaches it, then it grows in over 0.6 s and keeps breathing.
+    /// The sixth dot is index 5 (it lights with the explosion).
+    static func shine(of index: Int, lit: Double, at time: Double) -> Double {
+        let start = lit + 0.35
+        guard time > start else { return 0 }
+        let ramp = min(1, (time - start) / 0.6)
+        let wave = 0.5 + 0.5 * sin(2 * .pi * ((time - start) / shinePeriods[index] + shinePhases[index]) - .pi / 2)
+        return ramp * wave
+    }
+
+    /// The glint of a lit dot at `time` (0...1): a quick flash of 0.35 s, once every few seconds, the first one a second after it lit.
+    static func glint(of index: Int, lit: Double, at time: Double) -> Double {
+        let start = lit + 1
+        guard time > start else { return 0 }
+        let cycle = (time - start) / glintPeriods[index] + glintOffsets[index]
+        let seconds = (cycle - cycle.rounded(.down)) * glintPeriods[index]
+        return seconds < 0.35 ? sin(.pi * seconds / 0.35) : 0
+    }
+
     // MARK: - The words
 
     /// When the star lands on each word.
     static let wordHits: [Double] = [2.95, 3.55, 4.15]
 
-    /// A word's pill: it appears dim at 1.0 s, jumps 12 pt and lights yellow when the star lands (`y`, `scale`, `opacity`), and goes back to
-    /// its colours (`blur` here is how lit it is, 0...1).
+    /// A word's pill: it appears dim at 1.0 s, jumps 12 pt when the star lands and becomes a solid yellow pill (`y`, `scale`, `opacity`), and stays
+    /// solid (`blur` here is how much yellow it is, 0...1).
     static func pill(hit: Double) -> PoseTrack {
         PoseTrack(curve: .cssEaseOut, [
             .init(0.6, opacity: 0, scale: 0.85, y: 8), .init(1.0, opacity: 0.35),
             .init(hit - 0.12, opacity: 0.35, curve: .css(0.2, 0.9, 0.3, 1)),
             .init(hit, opacity: 1, scale: 1.1, y: -12, blur: 1, curve: .css(0.5, 0, 0.8, 0.6)),
-            .init(hit + 0.22, opacity: 1, scale: 1, y: 0, blur: 0.7), .init(hit + 1.3, opacity: 1, blur: 0),
+            .init(hit + 0.22, opacity: 1, scale: 1, y: 0, blur: 1),
         ])
+    }
+
+    /// The yellow glow round a pill: it flares when the star lands and settles to a faint one that stays.
+    static func pillGlow(hit: Double) -> PoseTrack {
+        PoseTrack(curve: .cssEaseOut, [.init(hit - 0.02, opacity: 0), .init(hit, opacity: 1), .init(hit + 1.3, opacity: 0.3)])
     }
 
     /// The oval of light that crosses a word once the star is on it, left to right, in 0.44 s (0 before, 1 after).
@@ -201,10 +229,9 @@ enum WelcomeScript {
         return PoseTrack(curve: .css(0.16, 1, 0.3, 1), [.init(start, opacity: 0, y: 16, blur: 10), .init(start + 0.85)])
     }
 
-    /// The line under the title (6.55–7.45 s), the yellow button (6.95–7.75 s) and the quiet one (7.1–7.9 s).
+    /// The line under the title (6.55–7.45 s) and the yellow button (6.95–7.75 s).
     static let subtitle = PoseTrack(curve: .css(0.16, 1, 0.3, 1), [.init(6.55, opacity: 0, y: 10), .init(7.45)])
     static let primaryButton = PoseTrack(curve: .css(0.16, 1, 0.3, 1), [.init(6.95, opacity: 0, y: 22), .init(7.75)])
-    static let secondaryButton = PoseTrack(curve: .css(0.16, 1, 0.3, 1), [.init(7.1, opacity: 0, y: 22), .init(7.9)])
 
     // MARK: - Haptics
 

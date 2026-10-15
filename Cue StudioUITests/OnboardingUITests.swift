@@ -148,11 +148,13 @@ final class OnboardingUITests: XCTestCase {
     func testThePracticeStartsWithVoiceFollowingOn() {
         let app = practice(voice: "listening")
         expectVoiceStatus(app, "Voice Following is on")
-        XCTAssertTrue(app.staticTexts["Read out loud. The text waits, then follows your voice."].exists)
+        XCTAssertTrue(app.staticTexts["Tap play and wait for the count. Then read out loud: the text follows your voice."].exists)
         XCTAssertFalse(element(app, "practice.microphoneOff").exists)
         shot(app, "6c-practice-voice-on")
-        // Started: nobody speaks, so the text waits for the voice.
+        XCTAssertFalse(app.buttons["practice.recordForReal"].exists)
+        // Started: nobody speaks, so the text waits for the voice, and the way to record is there.
         app.buttons["practice.play"].tap()
+        XCTAssertTrue(app.buttons["practice.recordForReal"].waitForExistence(timeout: 5))
         expectVoiceStatus(app, "Waiting for your voice")
     }
 
@@ -166,7 +168,7 @@ final class OnboardingUITests: XCTestCase {
     func testWhenWordsCantBeFollowedThePracticeSaysTheTextMovesWhileYouTalk() {
         let app = practice(voice: "unavailable")
         expectVoiceStatus(app, "Moves while you talk")
-        XCTAssertTrue(app.staticTexts["Read out loud. The text moves while you talk."].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.staticTexts["Tap play and wait for the count. Then read out loud: the text moves while you talk."].waitForExistence(timeout: 5))
         shot(app, "6e-practice-voice-unavailable")
     }
 
@@ -175,7 +177,7 @@ final class OnboardingUITests: XCTestCase {
         let app = practice(voice: "listening", permissions: "denied")
         expectVoiceStatus(app, "Microphone off · Steady scroll")
         XCTAssertTrue(element(app, "practice.microphoneOff").exists)
-        XCTAssertTrue(app.staticTexts["Read out loud. The text scrolls at a steady pace."].exists)
+        XCTAssertTrue(app.staticTexts["Tap play and wait for the count. Then read: the text scrolls at a steady pace."].exists)
         shot(app, "6f-practice-microphone-off")
     }
 
@@ -235,8 +237,8 @@ final class OnboardingUITests: XCTestCase {
         XCTAssertTrue(element(app, "practice.chip").waitForExistence(timeout: 10))
     }
 
-    /// The practice has the recorder's own controls (Voice | Steady, play, speed) over the camera, and both ways out stay in reach.
-    func testThePracticeHasTheRecordersControlsAndBothWaysOut() {
+    /// The practice has play over the camera and the way out; "Record my first video" waits for the tap on play.
+    func testThePracticeHasPlayAndTheWayOutAndRecordWaitsForPlay() {
         let app = launch()
         startFlight(app)
         pick(app, "onboarding.topic.niche.food")
@@ -247,21 +249,21 @@ final class OnboardingUITests: XCTestCase {
         XCTAssertTrue(element(app, "onboarding.permission.microphone").waitForExistence(timeout: 8))
         app.buttons["onboarding.continue"].tap()
         XCTAssertTrue(element(app, "practice.chip").waitForExistence(timeout: 10))
-        // The practice is the board's 1.6: the text, play, and the two ways out (no Voice | Steady switch: that is the recorder's).
+        // The practice is the board's 1.6: the text, play, and the way out (no Voice | Steady switch: that is the recorder's).
         XCTAssertTrue(app.buttons["practice.play"].waitForExistence(timeout: 5))
-        XCTAssertTrue(app.buttons["practice.recordForReal"].isHittable)
         XCTAssertTrue(app.buttons["practice.notNow"].isHittable)
+        XCTAssertFalse(app.buttons["practice.recordForReal"].exists)
         shot(app, "6b-practice-controls")
     }
 
-    /// Skip goes straight to the Scripts empty state.
-    func testSkipGoesToTheEmptyScriptsScreen() {
+    /// The flight can't be skipped: no Skip on any chapter, and 1.1 has only Get started.
+    func testTheFlightHasNoWayToSkipIt() {
         let app = launch()
+        XCTAssertTrue(app.buttons["onboarding.getStarted"].waitForExistence(timeout: 10))
+        XCTAssertFalse(app.buttons["onboarding.returning"].exists)
         startFlight(app)
-        XCTAssertTrue(app.buttons["onboarding.skip"].waitForExistence(timeout: 5))
-        app.buttons["onboarding.skip"].tap()
-        XCTAssertTrue(element(app, "empty.promptCard").waitForExistence(timeout: 10))
-        XCTAssertFalse(element(app, "onboarding.root").exists)
+        XCTAssertTrue(app.buttons["onboarding.continue"].waitForExistence(timeout: 5))
+        XCTAssertFalse(app.buttons["onboarding.skip"].exists)
     }
 
     /// "+ Your own" adds a topic of their own.

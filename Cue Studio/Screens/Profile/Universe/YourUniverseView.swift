@@ -110,7 +110,8 @@ struct YourUniverseView: View {
             previousCounts: previousCounts,
             onCore: { showsCore = true },
             onSeeInTakes: { openTakes(platform: $0, year: snapshot.year) },
-            onDot: { openTake($0) }
+            onDot: { openTake($0) },
+            playsOpening: true
         )
         .id(content.selectedYear)
         .frame(maxWidth: .infinity)

@@ -31,12 +31,12 @@ guarda o texto aprovado e as decisões, para a próxima revisão.
 ## Copy aplicada (inglês)
 
 ### 1.1 Welcome
-- Título: Your words. Your voice. Your teleprompter.
+- Título: A teleprompter made for your creative universe.
 - Apoio: Write your script, read it while you look at the camera, and record. Then add captions, edit, and share.
-- Chips (sem mudança): TELEPROMPTER / AUTO CAPTIONS / ✦ AI SCRIPTS · Botões: Get started / I already use Cue
+- Chips (sem mudança): TELEPROMPTER / AUTO CAPTIONS / ✦ AI SCRIPTS · Botão: Get started (sem "I already use Cue": o primeiro voo é obrigatório)
 
 ### 1.2 Topics
-- CHAPTER 1 · YOUR TOPICS · What do you want to talk about?
+- CHAPTER 1 · YOUR TOPICS · What do you usually talk about?
 - Pick up to 3. Cue uses them for your video ideas, and each one becomes a world.
 - Contador, chips, "+ Your own", "Pick a topic" / "Continue": como o `09` §14 define (sem mudança).
 

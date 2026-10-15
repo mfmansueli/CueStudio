@@ -45,7 +45,7 @@ nonisolated enum Niche: String, Codable, CaseIterable, Identifiable, Sendable {
         case .travel: String(localized: "Budget travel")
         case .productivity: String(localized: "Productivity & career")
         case .parenting: String(localized: "Parenting & family")
-        case .lifestyle: String(localized: "Morning routines")
+        case .lifestyle: String(localized: "Daily routines")
         case .wellness: String(localized: "Wellness")
         case .education: String(localized: "Education")
         }
@@ -63,7 +63,7 @@ nonisolated enum Niche: String, Codable, CaseIterable, Identifiable, Sendable {
         case .travel: "budget travel"
         case .productivity: "productivity and career"
         case .parenting: "parenting and family"
-        case .lifestyle: "morning routines and daily life"
+        case .lifestyle: "daily routines and daily life"
         case .wellness: "wellness"
         case .education: "education"
         }

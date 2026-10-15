@@ -61,12 +61,13 @@ nonisolated enum PracticeVoice: Equatable, Sendable {
         }
     }
 
-    /// What the card says the text will do.
+    /// What the card tells the creator to do, and what the text will do then.
     var instruction: String {
         switch self {
-        case .preparing, .downloading, .following: String(localized: "Read out loud. The text waits, then follows your voice.")
-        case .scrollsWhileTalking: String(localized: "Read out loud. The text moves while you talk.")
-        case .steady: String(localized: "Read out loud. The text scrolls at a steady pace.")
+        case .preparing, .downloading, .following:
+            String(localized: "Tap play and wait for the count. Then read out loud: the text follows your voice.")
+        case .scrollsWhileTalking: String(localized: "Tap play and wait for the count. Then read out loud: the text moves while you talk.")
+        case .steady: String(localized: "Tap play and wait for the count. Then read: the text scrolls at a steady pace.")
         }
     }
 }

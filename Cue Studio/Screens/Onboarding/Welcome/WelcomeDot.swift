@@ -6,7 +6,7 @@
 import SwiftUI
 
 /// One of the C's dots, as the star lights it (09 §12): where it is in the 390 × 844 frame of the board, how big and what colour, when
-/// the star reaches it, and how it pops, flares and rings.
+/// the star reaches it, and how it pops, flashes, flares and rings.
 struct WelcomeDot: Sendable {
     let point: CGPoint
     let radius: CGFloat
@@ -21,6 +21,8 @@ struct WelcomeDot: Sendable {
     let flare: PoseTrack
     /// The white ring that opens around it.
     let ring: PoseTrack
+    /// The flash of the hit: its light blooms at once and fades over 0.9 s, before the dot settles into its shine.
+    let flash: PoseTrack
     /// The nine sparks that leave it.
     let sparks: [WelcomeSpark]
 
@@ -44,6 +46,7 @@ struct WelcomeDot: Sendable {
             .init(hit - 0.01, opacity: 0, scale: 0.5), .init(hit, opacity: 0.9, scale: 0.5),
             .init(hit + 0.5, opacity: 0, scale: 3 + Double(index) * 0.5),
         ])
+        flash = PoseTrack(curve: .cssEaseOut, [.init(hit - 0.02, opacity: 0), .init(hit, opacity: 1), .init(hit + 0.9, opacity: 0)])
         sparks = WelcomeSpark.burst(index, start: hit)
     }
 }

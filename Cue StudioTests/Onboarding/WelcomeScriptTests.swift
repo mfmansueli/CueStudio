@@ -79,12 +79,26 @@ struct WelcomeScriptTests {
         #expect(beats.last?.time == WelcomeScript.explosionTime)
     }
 
-    @Test func aWordIsDimThenJumpsAndLightsAtTheHitThenSettles() {
+    @Test func aWordIsDimThenJumpsAndTurnsSolidYellowAtTheHitAndStays() {
         let pill = WelcomeScript.pill(hit: 2.95)
         #expect(abs(pill.pose(at: 2).opacity - 0.35) < 0.0001)
         let hit = pill.pose(at: 2.95)
         #expect(hit.y == -12 && hit.scale == 1.1 && hit.blur == 1)
-        #expect(pill.pose(at: 6).blur == 0 && pill.pose(at: 6).y == 0 && pill.pose(at: 6).opacity == 1)
+        #expect(pill.pose(at: 6).blur == 1 && pill.pose(at: 6).y == 0 && pill.pose(at: 6).opacity == 1)
+        let glow = WelcomeScript.pillGlow(hit: 2.95)
+        #expect(glow.pose(at: 2.95).opacity == 1 && abs(glow.pose(at: 6).opacity - 0.3) < 0.0001)
+    }
+
+    @Test func aLitDotShinesAndGlintsOnlyAfterTheStarReachesIt() {
+        for (index, dot) in WelcomeScript.dots.enumerated() {
+            #expect(WelcomeScript.shine(of: index, lit: dot.hit, at: dot.hit) == 0)
+            #expect(WelcomeScript.glint(of: index, lit: dot.hit, at: dot.hit + 0.9) == 0)
+            let shines = stride(from: dot.hit + 1, to: dot.hit + 12, by: 0.05).map { WelcomeScript.shine(of: index, lit: dot.hit, at: $0) }
+            #expect(shines.allSatisfy { (0...1).contains($0) })
+            #expect(shines.max()! > 0.95 && shines.min()! < 0.05)
+            let glints = stride(from: dot.hit + 1, to: dot.hit + 12, by: 0.02).map { WelcomeScript.glint(of: index, lit: dot.hit, at: $0) }
+            #expect(glints.max()! > 0.9 && glints.filter { $0 > 0 }.count < glints.count / 4)
+        }
     }
 
     @Test func theWordmarkLettersGoOutwardAndAllSettle() {
@@ -106,7 +120,6 @@ struct WelcomeScriptTests {
         }
         #expect(WelcomeScript.subtitle.pose(at: end).opacity == 1)
         #expect(WelcomeScript.primaryButton.pose(at: end).opacity == 1)
-        #expect(WelcomeScript.secondaryButton.pose(at: end).opacity == 1)
         #expect(WelcomeScript.halo.pose(at: end).opacity == 1)
         // The words of the title come 85 ms apart.
         let first = WelcomeScript.titleWord(0).keyframes[0].time
