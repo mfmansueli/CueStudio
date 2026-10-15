@@ -5,9 +5,9 @@
 
 import SwiftUI
 
-/// One part of the message (HOOK, BODY or CTA) as words that arrive one by one out of a blur, each with a glow that fades (09 §16). The board
-/// writes 19 words (3 + 11 + 5) with their own times; a message of another length takes the board's time of the word at the same place in
-/// its part, so the arrival always has the board's rhythm.
+/// One part of the script (HOOK, BODY or CTA) as words that arrive one by one out of a blur, each with a glow that fades (09 §16). The board
+/// writes 19 words (3 + 11 + 5) with their own times; a script of another length takes the board's time of the word at the same place in
+/// its part, so the arrival always has the board's rhythm. Japanese, Chinese and Thai arrive by dictionary word, with nothing between them.
 struct MessageWords: View {
     enum Part {
         case hook, body, cta
@@ -30,25 +30,28 @@ struct MessageWords: View {
     /// A caret that blinks after the last word (the CTA's).
     var caret: Color?
     let ambient: Double
+    /// The words' size: the card picks the largest that fits the screen (`MessageCard`).
+    var size: CGFloat = 21
 
     private static let clip = MotionLibrary.clip("1.4_first-message")
 
     var body: some View {
-        let words = Self.displayed(text).split(whereSeparator: \.isWhitespace).map(String.init)
-        FlowLayout(spacing: 6, lineSpacing: 0) {
+        let shown = Self.displayed(text)
+        let words = OnboardingWords.pieces(of: shown)
+        FlowLayout(spacing: OnboardingWords.isUnspaced(shown) ? 0 : size * 0.29, lineSpacing: 0) {
             ForEach(Array(words.enumerated()), id: \.offset) { index, word in
                 let pose = pose(of: index, in: words.count)
                 Text(word)
-                    .font(.system(size: 21, weight: .semibold))
+                    .font(.system(size: size, weight: .semibold))
                     .foregroundStyle(color)
                     .shadow(color: pose.glow ?? .clear, radius: pose.glowRadius)
-                    .frame(height: 28)
+                    .frame(height: (size * 1.33).rounded())
                     .motion(pose)
             }
             if let caret {
                 Rectangle()
                     .fill(caret)
-                    .frame(width: 2, height: 22)
+                    .frame(width: 2, height: (size * 1.05).rounded())
                     .padding(.leading, -3)
                     .opacity(caretOpacity)
             }

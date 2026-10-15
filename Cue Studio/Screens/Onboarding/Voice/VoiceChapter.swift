@@ -5,7 +5,8 @@
 
 import SwiftUI
 
-/// Chapter 4, 1.5: "Your script is ready. Now it needs you." The microphone and the camera, asked for in the story, one row each: a row
+/// Chapter 4, 1.5: "Let the text follow your voice." The microphone (with Speech, which Voice Following listens through) and the camera,
+/// asked for in the story, one row each: a row
 /// the creator has not answered says "Allow" (the next one in yellow) and asks the system; one they refused says "Off · Turn on" and opens
 /// Settings (the system doesn't ask twice); **Continue** asks for what is left. The flight never stops for a refusal. The art at the top
 /// (`VoicePermissionsArt`) lights the camera's lens when the camera is allowed.
@@ -49,8 +50,9 @@ struct VoiceChapter: View {
                 .frame(maxWidth: .infinity)
                 .ignoresSafeArea(edges: .horizontal)
             OnboardingHeading(
-                label: OnboardingStep.voice.chapterLabel, title: Self.twoLines(String(localized: "Your script is ready. Now it needs you.")),
-                subtitle: String(localized: "For voice following and framing. Stays on this iPhone."), poses: [MotionPose(), MotionPose(), MotionPose()]
+                label: OnboardingStep.voice.chapterLabel, title: Self.twoLines(String(localized: "Let the text follow your voice.")),
+                subtitle: String(localized: "The microphone lets the teleprompter follow your words, on this iPhone. The camera shows you while you read."),
+                poses: [MotionPose(), MotionPose(), MotionPose()]
             )
             .padding(.horizontal, 24)
             .padding(.top, 10)
@@ -94,7 +96,7 @@ struct VoiceChapter: View {
         return VStack(spacing: 0) {
             row(
                 Permission(
-                    symbol: "mic", title: String(localized: "Microphone"), detail: String(localized: "So the text follows your voice"),
+                    symbol: "mic", title: String(localized: "Microphone"), detail: String(localized: "So the teleprompter follows your voice"),
                     tint: Palette.accText, identifier: "microphone"
                 ),
                 state: model.microphone, isNext: model.microphone == .notAsked
@@ -113,14 +115,26 @@ struct VoiceChapter: View {
         .overlay(shape.strokeBorder(Palette.separator, lineWidth: 0.5))
     }
 
-    /// Reassurance first; if something was refused, the way on: the practice still works, and Settings is where it changes.
+    /// Reassurance first; if something was refused, the way on: the practice still works (without the microphone the text scrolls at a steady
+    /// pace instead of following the voice), and Settings is where it changes.
     @ViewBuilder
     private var footnote: some View {
         if model.hasDenied {
-            Text("No problem, you can still practice. Turn them on in Settings whenever you want to record.")
+            Text(deniedNote)
                 .accessibilityIdentifier("onboarding.permission.deniedNote")
         } else {
             Text("Cue only records when you tap Record.")
+        }
+    }
+
+    private var deniedNote: String {
+        switch (model.microphone == .denied, model.camera == .denied) {
+        case (true, true):
+            String(localized: "No problem, you can still practice. The text will scroll at a steady pace. Turn them on in Settings to follow your voice and record.")
+        case (true, false):
+            String(localized: "No problem, you can still practice. The text will scroll at a steady pace. Turn on the microphone in Settings to follow your voice.")
+        default:
+            String(localized: "No problem, you can still practice. Turn on the camera in Settings when you want to record.")
         }
     }
 

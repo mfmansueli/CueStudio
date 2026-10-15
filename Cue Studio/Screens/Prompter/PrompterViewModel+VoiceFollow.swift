@@ -87,6 +87,8 @@ extension PrompterViewModel {
                 noticedSpeechUnavailable = reason
                 toast.show(reason.message)
             }
+            // The practice script stops saying the teleprompter follows the voice.
+            matchPracticeScript()
             return
         case .cancelled:
             return
@@ -101,7 +103,10 @@ extension PrompterViewModel {
         voiceMetrics.listening(at: clock())
         for await heard in started.transcripts {
             let received = clock()
+            // Words heard while the text stands still (counting in, paused) don't move it: it would jump when it starts.
+            guard isPlaying else { continue }
             if speechTracker.hear(heard) {
+                heardFirstWord = true
                 speechRestarts = 0
                 voiceMetrics.confirmed(ahead: speechLead.position - Double(speechTracker.position))
                 speechLead.confirm(speechTracker.position, at: received)
@@ -176,6 +181,7 @@ extension PrompterViewModel {
 
     private func hear(_ sample: AudioLevelSample) {
         let speaking = voiceGate.hear(level: sample.level, at: sample.time, duration: sample.duration)
+        if isPlaying { speechOnset.hear(isLoud: voiceGate.counts(sample.level), at: sample.time, duration: sample.duration) }
         let changed = speaking != isVoiceActive
         showVoice(speaking, heardAt: sample.time)
         // The meter jumps with the voice starting or stopping; in between it redraws at a steady pace.

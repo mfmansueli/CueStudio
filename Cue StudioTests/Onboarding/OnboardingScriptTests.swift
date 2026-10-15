@@ -7,46 +7,34 @@ import Foundation
 import Testing
 @testable import Cue_Studio
 
-/// The first script: a hook, a body and a call to action.
+/// The practice script: the same for everyone, a hook, a body and a call to action, and a version that doesn't claim the text follows
+/// the voice.
 @Suite("OnboardingScript")
 struct OnboardingScriptTests {
-    @Test func threeParagraphsAreTheHookTheBodyAndTheCallToAction() {
-        let script = OnboardingScript.parsing(title: "T", text: "Okay, real talk.\n\nNo phone for twenty minutes.\n\nTry it tomorrow.")
-        #expect(script.hook == "Okay, real talk.")
-        #expect(script.body == "No phone for twenty minutes.")
-        #expect(script.cta == "Try it tomorrow.")
-        #expect(!script.isCurated)
+    @Test func thePracticeScriptIsTheOwnersFixedText() {
+        let script = OnboardingScript.practice()
+        #expect(script.hook == "An idea is good. Seeing it become a video is even better.")
+        #expect(script.body == "Cue Studio helps me write it, read it with a teleprompter that follows my voice, and record it right here. I can add automatic captions and edit my take before sharing it.")
+        #expect(script.cta == "My idea gets to sound like me and reach the people I made it for.")
+        #expect(script.text == [script.hook, script.body, script.cta].joined(separator: "\n\n"))
     }
 
-    @Test func moreParagraphsFoldTheMiddleIntoTheBody() {
-        let script = OnboardingScript.parsing(title: "T", text: "One.\n\nTwo.\n\nThree.\n\nFour.")
-        #expect(script.hook == "One." && script.cta == "Four.")
-        #expect(script.body == "Two. Three.")
+    @Test func withoutVoiceFollowingItMakesNoClaimAboutTheVoice() {
+        let plain = OnboardingScript.practice(followsVoice: false)
+        #expect(!plain.body.contains("voice"))
+        #expect(plain.hook == OnboardingScript.practice().hook && plain.cta == OnboardingScript.practice().cta)
     }
 
-    @Test func oneParagraphIsSplitIntoSentences() {
-        let script = OnboardingScript.parsing(title: "T", text: "Hello there. This is the middle. And this is the end.")
-        #expect(script.hook == "Hello there.")
-        #expect(script.body == "This is the middle.")
-        #expect(script.cta == "And this is the end.")
+    /// 59 words at a natural 150 a minute: 24 seconds, the time the card shows (not the board's 15).
+    @Test func theReadingTimeIsMeasuredFromTheWords() {
+        #expect(ReadTime.wordCount(in: OnboardingScript.practice().text) == 59)
+        #expect(OnboardingScript.practice().readingSeconds == 24)
+        #expect(OnboardingScript.practice(followsVoice: false).readingSeconds == 22)
     }
 
-    @Test func aVeryShortTextStillMakesAScript() {
-        let script = OnboardingScript.parsing(title: "T", text: "Just one line")
-        #expect(script.hook == "Just one line")
-        #expect(script.text == "Just one line")
-    }
-
-    @Test func theTextJoinsThePartsWithBlankLines() {
-        let script = OnboardingScript(title: "T", hook: "A.", body: "B.", cta: "C.", isCurated: false)
-        #expect(script.text == "A.\n\nB.\n\nC.")
-        #expect(OnboardingScript(title: "T", hook: "A.", body: "", cta: "C.", isCurated: false).text == "A.\n\nC.")
-    }
-
-    @Test func ourOwnScriptIsLabelledAndNamesTheTopic() {
-        let script = OnboardingScript.curated(topic: "Budget travel")
-        #expect(script.isCurated)
-        #expect(script.hook.contains("Budget travel"))
-        #expect(!script.body.isEmpty && !script.cta.isEmpty)
+    @Test func newScriptCopyHasNoEmDashes() {
+        for script in [OnboardingScript.practice(), OnboardingScript.practice(followsVoice: false)] {
+            #expect(!script.text.contains("—") && !script.title.contains("—"))
+        }
     }
 }

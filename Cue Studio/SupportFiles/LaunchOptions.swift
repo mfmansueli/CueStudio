@@ -26,6 +26,8 @@ import Foundation
 /// - `-uiTestDictation <speech|denied|unavailable|silence>`: dictation without a microphone or a
 ///   model (the simulator has neither): it hears `-uiTestDictationText <words>` a word at a time
 ///   (`speech`), or is refused the microphone, can't recognize the language, or hears nothing.
+/// - `-uiTestVoiceFollowing <listening|preparing|unavailable>`: the prompter's Voice Following recognition is scripted (the simulator
+///   can't recognize speech): it listens and hears nothing, stays getting ready, or can't follow the words here (`ScriptedVoiceFollowing`).
 /// - `-uiTestOnboarding`: with the above, the first flight shows (it is off in UI tests otherwise).
 /// - `-uiTestPermissions <granted|denied>`: the first flight's permission prompts are answered at once.
 /// - `-uiTestVoyage`: the first voyage (the first video guide) is on; without it no UI test sees its card, strip or tips.
@@ -47,7 +49,7 @@ import Foundation
 /// - `-uiTestOnboardingStep <welcome|universe|voyage|script|voice|practice>`: with `-uiTestOnboarding`, the first flight opens on that chapter.
 /// - `-uiTestTopicBirthAt <seconds>`: on 1.2, three topics are picked and the last one's birth stands still at that second after the pick.
 /// - `-uiTestPlatformAt <seconds>`: on 1.3, TikTok is picked and the light of the pick stands still at that second after the pick.
-/// - `-uiTestWriterStalls`: with `-uiTestStubAI`, the model never answers the first message (its slow states, 1.4b).
+/// - `-uiTestWriterStalls`: with `-uiTestStubAI`, the model never answers (the star transition's slow states).
 /// - `-uiTestIdeasSlow`: with `-uiTestStubAI`, every batch of ideas takes 12 s (Find inspiration waiting for the next ones: longer than tapping through six).
 /// - `-uiTestIdeasFail`: with `-uiTestStubAI`, every batch of ideas fails (Find inspiration's "Try again").
 /// - `-uiTestChapterAt <seconds>`: the opening of the chapter on screen (1.2 to 1.6) stands still at that second of its timeline.
@@ -91,6 +93,8 @@ struct LaunchOptions {
     var languageCapabilities: LanguageCapabilityChecking = AppleLanguageCapabilityChecker()
     /// Nil is the real microphone and recognizer.
     var dictation: DictationService?
+    /// The prompter's Voice Following recognition; nil is the real one (`-uiTestVoiceFollowing`).
+    var prompterSpeech: SpeechTranscribing?
     /// How long each few words of a script the AI writes stay on screen before the next arrive.
     var scriptRevealPause: Duration = .milliseconds(55)
     /// The first flight (onboarding) shows on a fresh install. UI tests turn it off unless `-uiTestOnboarding`.
@@ -263,6 +267,10 @@ struct LaunchOptions {
                 } ?? "a video about my morning coffee routine"
                 let scripted = ScriptedDictation(scenario: scenario, text: text)
                 options.dictation = DictationService(audio: scripted, speech: scripted, microphone: scripted.microphone)
+            }
+            if let index = arguments.firstIndex(of: "-uiTestVoiceFollowing"), arguments.indices.contains(index + 1),
+               let scenario = ScriptedVoiceFollowing.Scenario(rawValue: arguments[index + 1]) {
+                options.prompterSpeech = ScriptedVoiceFollowing(scenario: scenario)
             }
             if arguments.contains("-uiTestStubAI") || arguments.contains("-uiTestNoAI") {
                 options.writer = StubScriptWriter(

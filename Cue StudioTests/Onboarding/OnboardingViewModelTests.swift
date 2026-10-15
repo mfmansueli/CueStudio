@@ -14,7 +14,6 @@ struct OnboardingViewModelTests {
     private struct Scenario {
         let model: OnboardingViewModel
         let onboarding: OnboardingService
-        let writer: FakeScriptWriter
         let permissions: StubPermissions
         let library: ScriptLibraryService
         let profile: CreatorProfileService
@@ -23,78 +22,36 @@ struct OnboardingViewModelTests {
         let defaults: TestDefaults
     }
 
-    private func make(grants: Bool = true, aiAvailable: Bool = true) -> Scenario {
+    private func make(grants: Bool = true) -> Scenario {
         let defaults = TestDefaults()
         let library = ScriptLibraryService(repository: FakeScriptRepository(scripts: []), now: { TestData.now })
         library.load()
         let profile = CreatorProfileService(defaults: defaults.defaults)
-        let languages = TestData.languages(defaults: defaults.defaults)
-        let writer = FakeScriptWriter()
-        writer.isAvailable = aiAvailable
         let onboarding = OnboardingService(defaults: defaults.defaults)
         onboarding.resolve(hasExistingContent: false)
         let ideaDraft = IdeaDraftService()
         let presentation = PresentationService()
         let permissions = StubPermissions(grants: grants)
-        let factory = ScriptRequestFactory(
-            rules: TestData.rulesService(), profile: profile, scriptLanguage: nil, interfaceLanguage: nil
-        )
-        _ = languages
         let model = OnboardingViewModel(
-            onboarding: onboarding, writer: writer, factory: factory, permissions: permissions, library: library,
-            profile: profile, ideaDraft: ideaDraft, presentation: presentation
+            onboarding: onboarding, permissions: permissions, library: library, profile: profile, ideaDraft: ideaDraft, presentation: presentation
         )
         return Scenario(
-            model: model, onboarding: onboarding, writer: writer, permissions: permissions, library: library,
+            model: model, onboarding: onboarding, permissions: permissions, library: library,
             profile: profile, ideaDraft: ideaDraft, presentation: presentation, defaults: defaults
         )
     }
 
-    // MARK: - The first script
+    // MARK: - The practice script
 
-    @Test func theModelWritesAFifteenSecondScriptInTheTopicForThePlatform() async {
+    /// The same script for any topic, there at once: nothing is written and nothing waits for a model.
+    @Test func thePracticeScriptIsThereAtOnceWhateverTheTopic() {
         let scenario = make()
-        defer { scenario.defaults.tearDown() }
-        scenario.onboarding.toggle(.niche(.fitness))
-        scenario.onboarding.platform = .reels
-        scenario.model.writeScript()
-        #expect(scenario.model.scriptState == .writing)
-        await Wait.until { scenario.model.scriptState == .ready }
-        #expect(scenario.model.scriptState == .ready)
-        let request = scenario.writer.lastRequest
-        #expect(request?.platform == .reels)
-        #expect(request?.targetRange == 12...18)
-        if case .prompt(let idea) = request?.source { #expect(idea.contains("Fitness")) } else { Issue.record("a free prompt") }
-        #expect(scenario.model.script?.isCurated == false)
-        #expect(scenario.model.script?.hook == "Hey there. [pause]")
-    }
-
-    @Test func withoutAModelTheScriptIsOursAndLabelledAsPractice() {
-        let scenario = make(aiAvailable: false)
         defer { scenario.defaults.tearDown() }
         scenario.onboarding.addCustom("Budget travel")
-        scenario.model.writeScript()
-        #expect(scenario.model.scriptState == .ready)
-        #expect(scenario.model.script?.isCurated == true)
-        #expect(scenario.model.script?.hook.contains("Budget travel") == true)
-        #expect(scenario.writer.lastRequest == nil, "the model is never called")
-    }
-
-    @Test func aFailureFallsBackToOurScriptInsteadOfStoppingTheFlight() async {
-        let scenario = make()
-        defer { scenario.defaults.tearDown() }
-        scenario.writer.error = ScriptAIError.emptyResponse
-        scenario.model.writeScript()
-        await Wait.until { scenario.model.scriptState == .ready }
-        #expect(scenario.model.scriptState == .ready && scenario.model.script?.isCurated == true)
-    }
-
-    @Test func anotherAsksAgainAndCountsTheAttempts() {
-        let scenario = make(aiAvailable: false)
-        defer { scenario.defaults.tearDown() }
-        scenario.model.writeScript()
-        scenario.model.writeScript()
-        #expect(scenario.model.attempts == 2)
+        scenario.model.prepareScript()
+        #expect(scenario.model.script == .practice())
+        #expect(scenario.model.readyAt != nil)
+        #expect(scenario.model.script?.text.contains("Budget travel") == false)
     }
 
     // MARK: - Permissions
@@ -163,10 +120,10 @@ struct OnboardingViewModelTests {
     }
 
     @Test func usingTheScriptMakesARealOneForThePlatform() {
-        let scenario = make(aiAvailable: false)
+        let scenario = make()
         defer { scenario.defaults.tearDown() }
         scenario.onboarding.platform = .youtube
-        scenario.model.writeScript()
+        scenario.model.prepareScript()
         let created = scenario.model.keepScript()
         #expect(created?.platform == .youtube)
         #expect(scenario.library.scripts.count == 1)

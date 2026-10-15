@@ -71,8 +71,8 @@ final class SessionSetupService {
 
     /// What the creator adjusted while reading (the box, the line, the text size, the speed, the mode…) becomes what the next session opens
     /// with, so the prompter comes back as it was left. Only the reading layout is kept: the camera, a platform recommendation or any
-    /// other change for one take stays with its session.
-    func rememberReadingLayout() {
+    /// other change for one take stays with its session. `includingScrollMode` false keeps the saved mode (one the practice set by itself).
+    func rememberReadingLayout(includingScrollMode: Bool = true) {
         let now = prompter
         var stored = preferences.prompter
         stored.readingLineOffset = now.readingLineOffset
@@ -84,7 +84,7 @@ final class SessionSetupService {
         stored.margin = now.margin
         stored.isMirrored = now.isMirrored
         stored.isFlippedVertically = now.isFlippedVertically
-        stored.scrollMode = now.scrollMode
+        if includingScrollMode { stored.scrollMode = now.scrollMode }
         if stored != preferences.prompter { preferences.prompter = stored }
     }
 

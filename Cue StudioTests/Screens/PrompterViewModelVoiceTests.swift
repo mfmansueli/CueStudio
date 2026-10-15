@@ -370,6 +370,101 @@ struct PrompterViewModelVoiceTests {
         await scenario.viewModel.disappear()
     }
 
+    // MARK: - Waiting for the voice
+
+    /// Starting playback, the time passing and the room's quiet never move the line: it waits at the first word for as long as the creator
+    /// is silent.
+    @Test func aLongSilenceAfterPlayKeepsTheLineStill() async {
+        let scenario = makeScenario()
+        defer { scenario.defaults.tearDown() }
+        await startListening(scenario)
+        await learnTheRoom(scenario)
+        scenario.viewModel.play()
+        await run(scenario, for: 8)
+        #expect(scenario.viewModel.engine.offset == 0)
+        #expect(scenario.viewModel.isPlaying)
+        await scenario.viewModel.disappear()
+    }
+
+    /// A fan, a click every second and a cough: none is a word, so the line doesn't move (before, the lead ran the text up to half a line
+    /// ahead on each loud moment).
+    @Test func backgroundNoiseAndSpikesDontMoveTheLineBeforeTheFirstWord() async {
+        let scenario = makeScenario()
+        defer { scenario.defaults.tearDown() }
+        await startListening(scenario)
+        await run(scenario, for: 0.6, level: -45)
+        scenario.viewModel.play()
+        for _ in 0..<5 {
+            await run(scenario, for: 0.1, level: -15)
+            await run(scenario, for: 0.9, level: -45)
+        }
+        await run(scenario, for: 0.4, level: -18)
+        await run(scenario, for: 1, level: -45)
+        #expect(scenario.viewModel.engine.offset == 0)
+        await scenario.viewModel.disappear()
+    }
+
+    /// The creator waits, then reads: the line starts with the first word recognized, however late it comes, and glides there.
+    @Test func aLateFirstWordStartsTheLineThenAndGlides() async {
+        let scenario = makeScenario()
+        defer { scenario.defaults.tearDown() }
+        await startListening(scenario)
+        await learnTheRoom(scenario)
+        let viewModel = scenario.viewModel
+        viewModel.play()
+        await run(scenario, for: 5)
+        #expect(viewModel.engine.offset == 0)
+        scenario.speech.say("one two")
+        await settle()
+        var previous = viewModel.engine.offset
+        var largestStep = 0.0
+        for _ in 0..<60 {
+            scenario.clock.now += 1.0 / 60
+            await hear(scenario, -20)
+            viewModel.advance(by: 1.0 / 60)
+            largestStep = max(largestStep, viewModel.engine.offset - previous)
+            previous = viewModel.engine.offset
+        }
+        #expect(viewModel.engine.offset > 0)
+        #expect(largestStep < viewModel.lineHeight * 0.25, "a glide, not a jump: \(largestStep)")
+        await viewModel.disappear()
+    }
+
+    /// Words said while the text stands still (counting in, before play) don't move it when it starts: it would jump to them.
+    @Test func wordsHeardBeforePlayDontMoveTheLine() async {
+        let scenario = makeScenario()
+        defer { scenario.defaults.tearDown() }
+        await startListening(scenario)
+        await learnTheRoom(scenario)
+        let before = scenario.speech.discardCount
+        scenario.speech.say("one two three four")
+        await settle()
+        scenario.viewModel.play()
+        #expect(scenario.speech.discardCount == before + 1, "play starts the transcript over")
+        await run(scenario, for: 3)
+        #expect(scenario.viewModel.engine.offset == 0)
+        await scenario.viewModel.disappear()
+    }
+
+    /// Without word recognition the text moves while the creator talks, but a spike doesn't start it: only a voice does.
+    @Test func withoutWordsASpikeWaitsAndAVoiceStartsTheText() async {
+        let scenario = makeScenario { $0.unavailable = .unsupported(.thai) }
+        defer { scenario.defaults.tearDown() }
+        await scenario.viewModel.appear()
+        await Wait.until { scenario.viewModel.speechUnavailable != nil }
+        await learnTheRoom(scenario)
+        scenario.viewModel.play()
+        await run(scenario, for: 3)
+        for _ in 0..<3 {
+            await run(scenario, for: 0.08, level: -15)
+            await run(scenario, for: 0.9)
+        }
+        #expect(scenario.viewModel.engine.offset == 0)
+        await run(scenario, for: 0.6, level: -20)
+        #expect(scenario.viewModel.engine.offset > 0)
+        await scenario.viewModel.disappear()
+    }
+
     // MARK: - Running ahead of the words
 
     /// Word by word, the text also moves while the voice goes on, a little past the last word

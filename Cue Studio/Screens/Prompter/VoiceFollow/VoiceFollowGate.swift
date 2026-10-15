@@ -71,6 +71,12 @@ nonisolated struct VoiceFollowGate: Sendable {
         return isSpeaking(at: time)
     }
 
+    /// Whether a buffer at `level` is loud enough to be a voice, now that the room has been heard (never before: a noisy room would pass
+    /// for one). Unlike `hear`, it says nothing about the gaps between words.
+    func counts(_ level: Float) -> Bool {
+        noiseFloor != nil && level > effectiveThreshold
+    }
+
     /// Whether the creator still counts as speaking at `time`: within `hangover` of the last loud
     /// buffer.
     func isSpeaking(at time: TimeInterval) -> Bool {

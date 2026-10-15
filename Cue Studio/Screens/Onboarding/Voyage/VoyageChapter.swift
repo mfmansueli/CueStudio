@@ -64,8 +64,8 @@ struct VoyageChapter: View {
                 .ignoresSafeArea()
             VStack(alignment: .leading, spacing: 0) {
                 OnboardingHeading(
-                    label: OnboardingStep.voyage.chapterLabel, title: String(localized: "Every video is a voyage."),
-                    subtitle: String(localized: "Where is it headed? Cue sets format, length and safe zones."),
+                    label: OnboardingStep.voyage.chapterLabel, title: String(localized: "Where will you share your videos?"),
+                    subtitle: String(localized: "Cue sets the frame, the ideal length and the safe zones for that platform."),
                     poses: ["L2", "L3", "L4"].map { pose($0, clock) }
                 )
                 .padding(.horizontal, 20)
@@ -73,8 +73,8 @@ struct VoyageChapter: View {
                 destination(time, age: age)
                 Spacer(minLength: 0).frame(height: 74)
                 OnboardingPrimaryButton(
-                    title: String(localized: "Head to \(picked?.label ?? onboarding.platform.label)"),
-                    disabledTitle: String(localized: "Choose a galaxy"), isEnabled: picked != nil,
+                    title: String(localized: "Continue with \(picked?.label ?? onboarding.platform.label)"),
+                    disabledTitle: String(localized: "Choose a platform"), isEnabled: picked != nil,
                     identifier: "onboarding.continue", action: onContinue
                 )
                 .padding(.horizontal, 16)
@@ -104,11 +104,11 @@ struct VoyageChapter: View {
         }
     }
 
-    /// "PICK ONE DESTINATION" until a pick, then "TIKTOK · TAP ANOTHER TO SWITCH" in yellow.
+    /// "CHOOSE ONE PLATFORM" until a pick, then "TIKTOK · TAP ANOTHER TO SWITCH" in yellow.
     private func line(_ time: MotionTime) -> some View {
         let arrived = pose("L77", min(time.clock, 3)).opacity
         return ZStack(alignment: .leading) {
-            Text("PICK ONE DESTINATION")
+            Text("CHOOSE ONE PLATFORM")
                 .foregroundStyle(Color.white.opacity(0.82))
                 .opacity(picked == nil ? 1 : 0)
                 .accessibilityHidden(picked != nil)
@@ -129,7 +129,8 @@ struct VoyageChapter: View {
         .accessibilityIdentifier("onboarding.formatLine")
     }
 
-    /// "9:16 · IDEAL 1:00–1:30 · SAFE ZONES ON", typed in 34 steps once the light has landed (the board's `clip-path` reveal).
+    /// "9:16 · IDEAL 1:00–1:30 · SAFE ZONES ON" (OFF for a platform without them), typed in 34 steps once the light has landed (the board's
+    /// `clip-path` reveal).
     private func hint(age: Double?) -> some View {
         let text = hintText
         let revealed = age.map { 1 - (pose("L82", $0 + VoyageScene.pickClock).clipRight ?? 1) } ?? 0
@@ -149,7 +150,8 @@ struct VoyageChapter: View {
         guard let picked else { return "" }
         let preset = rules.preset(for: picked, monetizationGoals: true)
         let range = "\(DurationText.clock(preset.idealRange.lowerBound))–\(DurationText.clock(preset.idealRange.upperBound))"
-        return "\(preset.aspect.label) · \(String(localized: "IDEAL")) \(range) · \(String(localized: "SAFE ZONES ON"))"
+        let zones = preset.showsSafeZones ? String(localized: "SAFE ZONES ON") : String(localized: "SAFE ZONES OFF")
+        return "\(preset.aspect.label) · \(String(localized: "IDEAL")) \(range) · \(zones)"
     }
 
     // MARK: - Picking

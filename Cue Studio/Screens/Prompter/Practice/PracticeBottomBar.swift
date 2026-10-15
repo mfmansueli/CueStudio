@@ -3,31 +3,29 @@
 //  Cue Studio
 //
 
-import AVFAudio
 import SwiftUI
 
-/// The two ways on at the bottom of the practice (1.6): "Record it for real" (yellow, with a red dot; it takes a soft glow when the text has
-/// been read) opens the real recorder with the same text, and "Not now — take me to my studio" goes to Scripts. Without the microphone, a
-/// line above them says Voice Following needs it and the way to Settings.
+/// The two ways on at the bottom of the practice (1.6): "Record my first video" (yellow, with a red dot; it takes a soft glow when the text
+/// has been read) opens the real recorder with the same text, and "Explore Cue first" goes to Scripts. Without the microphone, a line above
+/// them says Voice Following needs it and the way to Settings.
 struct PracticeBottomBar: View {
     let viewModel: PrompterViewModel
     let onChoose: (PracticeOutcome) -> Void
 
-    @Environment(SessionSetupService.self) private var session
     @Environment(\.openURL) private var openURL
     @Environment(\.scenePhase) private var scenePhase
-    @State private var microphoneIsOff = false
+
+    private var microphoneIsOff: Bool { viewModel.practiceVoice == .steady }
 
     var body: some View {
         VStack(spacing: 0) {
-            if microphoneIsOff, session.prompter.scrollMode == .voice { microphoneNote.padding(.bottom, 10) }
+            if microphoneIsOff { microphoneNote.padding(.bottom, 10) }
             recordButton
             studioButton.padding(.top, 8)
         }
         .padding(.horizontal, 16)
-        .onAppear(perform: readMicrophone)
         // Back from Settings, where it may have been turned on.
-        .onChange(of: scenePhase) { _, phase in if phase == .active { readMicrophone() } }
+        .onChange(of: scenePhase) { _, phase in if phase == .active { viewModel.refreshPracticeMicrophone() } }
         .animation(.smooth(duration: 0.25), value: microphoneIsOff)
     }
 
@@ -35,7 +33,7 @@ struct PracticeBottomBar: View {
         Button { onChoose(.recordForReal) } label: {
             HStack(spacing: 10) {
                 Circle().fill(Palette.record).frame(width: 14, height: 14)
-                Text("Record it for real").font(.system(size: 17, weight: .bold))
+                Text("Record my first video").font(.system(size: 17, weight: .bold))
             }
             .foregroundStyle(Palette.accInk)
             .frame(maxWidth: .infinity, minHeight: 58)
@@ -50,9 +48,9 @@ struct PracticeBottomBar: View {
 
     private var studioButton: some View {
         Button { onChoose(.studio) } label: {
-            Text("Not now — take me to my studio")
+            Text("Explore Cue first")
                 .font(.system(size: 15, weight: .semibold))
-                .foregroundStyle(Color.white.opacity(0.8))
+                .foregroundStyle(Palette.Flight.quietInk)
                 .frame(maxWidth: .infinity, minHeight: 44)
                 .contentShape(Rectangle())
         }
@@ -65,7 +63,7 @@ struct PracticeBottomBar: View {
             Image(systemName: "mic.slash.fill")
                 .font(.system(size: 14, weight: .semibold))
                 .foregroundStyle(Palette.warnText)
-            Text("Voice Following needs the microphone.")
+            Text("Turn on the microphone so the text can follow your voice.")
                 .font(.caption)
                 .foregroundStyle(Palette.ink2)
                 .lineLimit(2)
@@ -80,9 +78,5 @@ struct PracticeBottomBar: View {
         .padding(.horizontal, 10)
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("practice.microphoneOff")
-    }
-
-    private func readMicrophone() {
-        microphoneIsOff = AVAudioApplication.shared.recordPermission == .denied
     }
 }

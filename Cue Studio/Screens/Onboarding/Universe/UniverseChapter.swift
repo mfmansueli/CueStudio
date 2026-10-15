@@ -74,8 +74,8 @@ struct UniverseChapter: View {
         let clock = time.clock
         return VStack(alignment: .leading, spacing: 0) {
             OnboardingHeading(
-                label: OnboardingStep.universe.chapterLabel, title: String(localized: "This is your universe."),
-                subtitle: String(localized: "Pick your topics. Each one becomes a world."),
+                label: OnboardingStep.universe.chapterLabel, title: String(localized: "What do you want to talk about?"),
+                subtitle: String(localized: "Pick up to 3. Cue uses them for your video ideas, and each one becomes a world."),
                 poses: ["L1", "L2", "L3"].map { Self.clip.pose(of: $0, at: clock) }
             )
             .padding(.horizontal, 20)

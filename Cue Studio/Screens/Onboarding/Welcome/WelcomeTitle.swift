@@ -5,16 +5,17 @@
 
 import SwiftUI
 
-/// The promise and the line under it: "Every creator has a universe to share." comes word by word out of the blur (85 ms apart), then
-/// "Script, teleprompter, captions and edit. One place."
+/// The promise and the line under it: "Your words. Your voice. Your teleprompter." comes word by word out of the blur (85 ms apart), then
+/// the line that says what Cue does, from the script to sharing.
 struct WelcomeTitle: View {
     let time: Double
 
     var body: some View {
-        let title = String(localized: "Every creator has a universe to share.")
-        let words = title.split(separator: " ").map(String.init)
+        let title = String(localized: "Your words. Your voice. Your teleprompter.")
+        // By dictionary word in a language written without spaces, so the title breaks into lines instead of running off the screen.
+        let words = OnboardingWords.pieces(of: title)
         VStack(alignment: .leading, spacing: 12) {
-            FlowLayout(spacing: 34 * 0.26, lineSpacing: 0) {
+            FlowLayout(spacing: OnboardingWords.isUnspaced(title) ? 0 : 34 * 0.26, lineSpacing: 0) {
                 ForEach(Array(words.enumerated()), id: \.offset) { index, word in
                     let pose = WelcomeScript.titleWord(index).pose(at: time)
                     Text(word)
@@ -33,7 +34,7 @@ struct WelcomeTitle: View {
             .accessibilityLabel(Text(title))
             .accessibilityAddTraits(.isHeader)
             let line = WelcomeScript.subtitle.pose(at: time)
-            Text("Script, teleprompter, captions and edit. One place.")
+            Text("Write your script, read it while you look at the camera, and record. Then add captions, edit, and share.")
                 .font(.system(size: 16))
                 .foregroundStyle(Palette.ink2)
                 .fixedSize(horizontal: false, vertical: true)
