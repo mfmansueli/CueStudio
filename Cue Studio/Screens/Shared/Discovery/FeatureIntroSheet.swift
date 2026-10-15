@@ -13,14 +13,13 @@ struct FeatureIntroSheet: View {
     let onNotNow: () -> Void
     let onDecline: () -> Void
 
-    private var symbol: String { FeatureCatalog.intro(for: request.feature)?.symbol ?? "sparkles" }
+    private var symbol: FeatureIntro.Symbol { FeatureCatalog.intro(for: request.feature)?.symbol ?? "sparkles" }
     private var note: String? { FeatureCatalog.intro(for: request.feature)?.note.text }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
             HStack(alignment: .top, spacing: 14) {
-                Image(systemName: symbol)
-                    .font(.system(size: 22, weight: .semibold))
+                symbolImage
                     .foregroundStyle(Palette.aiText)
                     .frame(width: 48, height: 48)
                     .background(Palette.surface2, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
@@ -52,6 +51,13 @@ struct FeatureIntroSheet: View {
         .fittedSheet()
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("featureIntro.sheet")
+    }
+
+    @ViewBuilder private var symbolImage: some View {
+        switch symbol {
+        case .system(let name): Image(systemName: name).font(.system(size: 22, weight: .semibold))
+        case .cue(let icon): CueIconView(icon, size: 26)
+        }
     }
 }
 

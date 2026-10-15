@@ -77,6 +77,20 @@ struct CueIconGeometryTests {
         #expect(takes.count == 3 && takes[2].filled && takes[0].stroked && !takes[0].filled)
     }
 
+    @Test func findInspirationsOrbitPassesBehindTheBulbAndAcrossIt() {
+        let parts = CueIconGeometry.elements(for: .findInspiration)
+        let glass = SVGPathParser.path(from: "M9 17v-1.6c0-1.2-.6-2.2-1.5-3.1A6.3 6.3 0 1 1 16.5 12.3c-.9.9-1.5 1.9-1.5 3.1V17z")
+        let farSide = parts[0], nearSide = parts[3]
+        #expect(parts.count == 4 && parts.allSatisfy { $0.stroked && !$0.filled })
+        #expect(farSide.opacity < 1 && parts.dropFirst().allSatisfy { $0.opacity == 1 }, "only the far side of the orbit is softer")
+        // The far side stops where the glass hides it (nothing of it inside the bulb); the near side crosses it.
+        func points(along path: Path) -> [CGPoint] {
+            stride(from: 0.04, through: 0.96, by: 0.04).compactMap { path.trimmedPath(from: 0, to: $0).currentPoint }
+        }
+        #expect(!points(along: farSide.path).contains { glass.contains($0) }, "the far side stays behind the glass")
+        #expect(points(along: nearSide.path).contains { glass.contains($0) }, "the near side passes in front of the glass")
+    }
+
     @Test func aMarkedBestTakeCanFillItsClosedShapes() {
         let best = CueIconGeometry.elements(for: .bestTake)
         #expect(best.contains { $0.closed && $0.stroked })

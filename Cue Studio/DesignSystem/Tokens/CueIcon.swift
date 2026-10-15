@@ -5,18 +5,20 @@
 
 import SwiftUI
 
-/// The icon set (v29): 53 icons on a 24 pt grid, round caps and joins, one color that comes from the context (62%
+/// The icon set (v29): 54 icons on a 24 pt grid, round caps and joins, one color that comes from the context (62%
 /// white at rest, yellow when active or a signal, violet for AI, red only for recording). Filled where the
 /// design says: play, the triangle inside Takes, a marked best take. They are drawn in code from the SVG
 /// geometry (`CueIconGeometry`), because the stroke has to stay about 1.6 pt at every size, which an asset that
 /// scales as a whole can't do.
 ///
-/// Generated from `design/cue-universe-v27/05 Icons/in-app` (`design/cue-v29/tools/generate_cue_icons.py`); keep
-/// the case names in step with the files.
+/// Generated from `design/cue-universe-v27/05 Icons/in-app` (`design/cue-v29/tools/generate_cue_icons.py`, in the git history);
+/// `findInspiration` was drawn later on the same grid.
 enum CueIcon: String, CaseIterable, Sendable {
     // MARK: Create and AI
 
     case dictate = "cueicon.create-ai.dictate"
+    /// Find inspiration: a bulb with an orbit passing behind it and across it, like the planets of Your universe.
+    case findInspiration = "cueicon.create-ai.find-inspiration"
     case hooks = "cueicon.create-ai.hooks"
     case importText = "cueicon.create-ai.import-text"
     case needAnIdea = "cueicon.create-ai.need-an-idea"
@@ -115,6 +117,7 @@ struct CueIconView: View {
             context.drawLayer { layer in
                 for element in elements {
                     let path = element.path.applying(transform)
+                    layer.opacity = element.opacity
                     if element.filled, isFilled, hasShell, !element.stroked {
                         layer.blendMode = .destinationOut
                         layer.fill(path, with: .color(.black))

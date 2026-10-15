@@ -12,8 +12,8 @@ import SwiftUI
 /// it, writes it as it is and the star rises. Without Apple Intelligence the ideas are the starters, said so, and the direct way is
 /// "Write it yourself" (a blank draft with the idea as its title). Nothing is presented as a trend or as research: they are suggestions.
 struct FindInspirationSheet: View {
-    /// The feature's sign wherever it is offered (the dock, the empty Scripts, its introduction): a bulb that is lighting up.
-    static let symbol = "lightbulb.max"
+    /// The feature's sign wherever it is offered (the dock, its introduction): a bulb with an orbit around it.
+    static let icon = CueIcon.findInspiration
 
     @State private var viewModel: FindInspirationViewModel
     private let writer: ScriptWriting
@@ -31,6 +31,8 @@ struct FindInspirationSheet: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.dynamicTypeSize) private var typeSize
+    /// The feature's icon in the starters note, as big as the footnote's symbols.
+    @ScaledMetric(relativeTo: .footnote) private var noteIconSize: CGFloat = 16
 
     @State private var editsTopics = false
     /// Where "Draft it now" is: the star leaves from there.
@@ -114,26 +116,28 @@ struct FindInspirationSheet: View {
     private var notes: some View {
         if !viewModel.hasTopics {
             note(
-                symbol: "sparkles",
                 text: Text("Pick your topics and the ideas will be about what you make. Until then, here are a few to start."),
                 identifier: "inspiration.noTopicsNote"
-            )
+            ) {
+                Image(systemName: "sparkles").font(.footnote.weight(.semibold))
+            }
             .padding(.top, 14)
         }
         if !hasAI {
             note(
-                symbol: Self.symbol,
                 text: Text("Starter ideas to write yourself. With Apple Intelligence, Cue suggests more."),
                 identifier: "inspiration.startersNote"
-            )
+            ) {
+                // The bulb's base sits on the text's first baseline.
+                CueIconView(Self.icon, size: noteIconSize).alignmentGuide(.firstTextBaseline) { $0.height * 0.92 }
+            }
             .padding(.top, 14)
         }
     }
 
-    private func note(symbol: String, text: Text, identifier: String) -> some View {
+    private func note(text: Text, identifier: String, @ViewBuilder mark: () -> some View) -> some View {
         HStack(alignment: .firstTextBaseline, spacing: 10) {
-            Image(systemName: symbol)
-                .font(.footnote.weight(.semibold))
+            mark()
                 .foregroundStyle(Palette.aiText)
                 .accessibilityHidden(true)
             text

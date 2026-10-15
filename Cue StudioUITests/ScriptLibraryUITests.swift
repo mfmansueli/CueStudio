@@ -59,6 +59,33 @@ final class ScriptLibraryUITests: XCTestCase {
         XCTAssertTrue(prompt.exists, "the dock stays while searching")
     }
 
+    /// Select: a tap on a row picks the script (its mark is drawn inside the card) and a second lets it go; no swipe while selecting.
+    func testSelectingPicksScriptsWithATapOnTheirRow() throws {
+        let app = CueApp.launch(seeded: true)
+        XCTAssertTrue(app.buttons["scripts.selectButton"].waitForExistence(timeout: 15))
+        app.buttons["scripts.selectButton"].tap()
+        let rows = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH 'scripts.row.'"))
+        XCTAssertTrue(rows.firstMatch.waitForExistence(timeout: 5))
+        let first = rows.element(boundBy: 0), second = rows.element(boundBy: 1)
+        XCTAssertFalse(first.isSelected)
+        XCTAssertTrue(app.staticTexts["Select scripts"].exists)
+        first.tap()
+        second.tap()
+        XCTAssertTrue(first.isSelected && second.isSelected)
+        XCTAssertTrue(app.staticTexts["2 selected"].waitForExistence(timeout: 2))
+        if let folder = ProcessInfo.processInfo.environment["CUE_SCREENSHOT_DIR"] {
+            let directory = URL(fileURLWithPath: folder, isDirectory: true)
+            try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+            try app.screenshot().pngRepresentation.write(to: directory.appending(path: "scripts-selecting.png"))
+        }
+        first.tap()
+        XCTAssertFalse(first.isSelected)
+        XCTAssertTrue(app.staticTexts["1 selected"].waitForExistence(timeout: 2))
+        first.swipeLeft()
+        XCTAssertFalse(app.buttons["Record"].exists, "No swipe actions while selecting")
+        XCTAssertFalse(app.pageBackButton.exists, "A tap while selecting doesn't open the script")
+    }
+
     func testTheCardsArrowWritesTheIdeaIntoANewPage() {
         let app = CueApp.launch(seeded: true)
         let field = element(app, "ideaCard.field")

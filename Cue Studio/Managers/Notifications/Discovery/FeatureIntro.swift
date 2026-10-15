@@ -15,6 +15,16 @@ nonisolated struct FeatureIntro: Hashable, Sendable {
         case inApp
     }
 
+    /// The tool's sign on the introduction: an SF Symbol by name (a string literal), or one of the app's own icons.
+    enum Symbol: Hashable, Sendable, ExpressibleByStringLiteral {
+        case system(String)
+        case cue(CueIcon)
+
+        init(stringLiteral name: String) {
+            self = .system(name)
+        }
+    }
+
     /// What the introduction says before "Try it", so nothing comes as a surprise: what the tool uses or needs.
     enum Note: Hashable, Sendable {
         /// Runs with Apple Intelligence on this iPhone.
@@ -32,7 +42,7 @@ nonisolated struct FeatureIntro: Hashable, Sendable {
     let feature: FeatureID
     /// Versioned: a new wording or rule is a new campaign, measured on its own.
     let campaignID: String
-    let symbol: String
+    let symbol: Symbol
     let requirements: [FeatureRequirement]
     let target: DiscoveryTarget
     let channels: Set<Channel>
