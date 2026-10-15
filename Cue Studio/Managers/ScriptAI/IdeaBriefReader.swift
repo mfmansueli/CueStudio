@@ -17,15 +17,16 @@ nonisolated enum IdeaBriefReader {
         var openingLine: String
     }
 
-    /// The ideas of a batch, in the slots' order; `language` is the one they were asked in (a minimal identifier).
-    static func ideas(from answers: [Answer], slots: [IdeaSlot], language: String?) -> [ThemeIdea] {
-        zip(answers, slots).compactMap { answer, slot in idea(from: answer, slot: slot, language: language) }
+    /// The ideas of a batch, in the slots' order; `language` is the one they were asked in (a minimal identifier), `phrases` the creator's
+    /// catchphrases.
+    static func ideas(from answers: [Answer], slots: [IdeaSlot], language: String?, phrases: [String] = []) -> [ThemeIdea] {
+        zip(answers, slots).compactMap { answer, slot in idea(from: answer, slot: slot, language: language, phrases: phrases) }
     }
 
-    static func idea(from answer: Answer, slot: IdeaSlot, language: String?) -> ThemeIdea? {
+    static func idea(from answer: Answer, slot: IdeaSlot, language: String?, phrases: [String] = []) -> ThemeIdea? {
         let title = clean(answer.title, labels: ["title"])
         let angle = clean(answer.angle, labels: ["angle", "your angle"])
-        let opening = clean(answer.openingLine, labels: ["opening line", "opening", "hook", "open with"])
+        let opening = withoutCatchphrase(clean(answer.openingLine, labels: ["opening line", "opening", "hook", "open with"]), phrases: phrases)
         guard !title.isEmpty, !opening.isEmpty else { return nil }
         var idea = ThemeIdea(
             title: title, kind: slot.angle.kind, length: length(for: slot.angle), niche: slot.topic.niche ?? .lifestyle,
@@ -64,6 +65,11 @@ nonisolated enum IdeaBriefReader {
             let needed = IdeaFocus.words(in: subtopic, language: nil)
             return !needed.isEmpty && needed.allSatisfy { word in words.contains { same($0, word) } }
         }
+    }
+
+    /// The opening line without the creator's catchphrase in front of it (`CatchphraseTrim`).
+    static func withoutCatchphrase(_ line: String, phrases: [String]) -> String {
+        CatchphraseTrim.trimmingLeading(line, phrases: phrases)
     }
 
     /// One line, without markdown, wrapping quotes or the label of the field ("Opening line: …").

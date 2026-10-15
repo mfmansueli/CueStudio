@@ -1,0 +1,1978 @@
+[
+  {
+    "condition": "full",
+    "hasBrief": true,
+    "idea": "list@Fitness & wellness, mistake@Wellness, myth@Fitness & wellness, story@Wellness, tutorial@Fitness & wellness, opinion@Wellness",
+    "ideas": [
+      {
+        "angle": "Demonstrate hinge motions to release tension",
+        "angleKind": "list",
+        "openingLine": "Do you feel stiff when sitting? Try this now.",
+        "title": "3 easy mobility moves for desks",
+        "topic": "fitness"
+      },
+      {
+        "angle": "Show how to align elbows for strength",
+        "angleKind": "mistake",
+        "openingLine": "Want better push-ups? Watch this shift.",
+        "title": "1 wrong wrist position in push-ups",
+        "topic": "wellness"
+      },
+      {
+        "angle": "Explaining why lifting straight is risky",
+        "angleKind": "myth",
+        "openingLine": "Think you can lift heavy without curves? Let’s clear this up.",
+        "title": "Fitness myth: lifting without bending",
+        "topic": "fitness"
+      },
+      {
+        "angle": "Share simple desk stretches to ease pain",
+        "angleKind": "story",
+        "openingLine": "Sitting long hours? Here’s a quick fix.",
+        "title": "Stretch sequence for lazy afternoons",
+        "topic": "wellness"
+      },
+      {
+        "angle": "Demonstrate shoulder-opening drills",
+        "angleKind": "tutorial",
+        "openingLine": "Need looser shoulders? Follow this pattern.",
+        "title": "Fix cramped shoulders at home",
+        "topic": "fitness"
+      },
+      {
+        "angle": "Discuss balancing rest with gentle movement",
+        "angleKind": "opinion",
+        "openingLine": "Steady bodies don’t mean no activity.",
+        "title": "Truth: stillness vs. movement",
+        "topic": "wellness"
+      }
+    ],
+    "index": 0,
+    "instructionTokens": 547,
+    "instructions": "You suggest video ideas for creators who film themselves talking to camera.\nWrite in the creator's own voice. What follows says how they sound and who they speak to, never what the video is about.\nWho they are: an expert, coach or professional in their field.\nCredential: certified personal trainer. Mention it only where it fits; never invent another.\nThey speak as one person: say “I” and “my”.\nTheir audience: young adults.\nThey are new to the topic: explain terms and keep steps simple.\nThey watch to learn something and solve a problem.\nTheir videos aim to teach something useful and grow their audience.\nTopics: fitness and wellness (Home workouts, Mobility); wellness.\nThey sound energetic and confident.\nDelivery: energy: high and lively; sentences: short and punchy (under twelve words); words: plain and everyday; humor: a little.\nNever swear.\nOpen with a question: show it in the script, never write the style's name.\nEnd by asking viewers to save the video.\nThey film mostly: lists and tips, tutorials.\nThey often say: “Okay, real talk.” — use one once after the first sentence, never as the first words.\nThey post on TikTok, Reels; videos are usually 30 to 60 seconds.\nAlso true of them, in their own words: no-equipment workouts.\nHere is how they write. Match the voice; never reuse these sentences, facts or stories:\n- “Is your back sore after leg day? Okay, real talk. You're skipping the hinge. Push your hips back, keep your chest proud, and go slow. Do ten of these before every workout. Save this for leg day.”\n- “3 mistakes ruining your push-ups! Okay, real talk. Number one: your hips sag. Number two: your elbows flare out. Number three: you rush every rep. Slow down and squeeze your chest.”\n- “I weighed my food for one week and I was shocked. I was eating half of what I needed. Now I track it with one simple app. Easy! Save this and send it to a friend.”\nRules: no hype words (game-changer, insane, mind-blowing, unbelievable): use plain, specific words; no medical claims: never say something cures, treats or heals, and speak in general terms.",
+    "kind": "ideas",
+    "language": "en-US",
+    "prompt": "Suggest 6 fresh talking-head video ideas for a creator whose topics are: fitness and wellness (Home workouts, Mobility); wellness. Each idea has a title of at most eight words, written the way a creator would post it: natural, specific, and promising something the viewer gets, never a generic \"Top 5\" and never starting with the name of its angle as a label; an angle, one short sentence that tells the creator what to do in the video, starting with a verb; and an opening line, the first sentence they say to camera, which leads straight into the angle. Title, angle and opening line are one idea. In this order: 1. a list of things about fitness and wellness; 2. a common mistake and how to fix it about wellness; 3. a myth to bust about fitness and wellness; 4. a short story from experience about wellness; 5. a quick how-to about fitness and wellness; 6. an honest opinion about wellness. The creator has been thinking about: “Mobility routine for people who sit all day”; “Why I stopped doing cardio first”. Let the ideas grow from what interests them, in new ways: never repeat these. Opening lines must be true for anyone to say: no personal story, result, number or credential of the creator's, and no statistic, study, news or trend. Write the ideas in English.",
+    "promptTokens": 291,
+    "run": "after-3",
+    "schemaTokens": 238,
+    "seconds": 11.538358083
+  },
+  {
+    "condition": "full",
+    "hasBrief": true,
+    "idea": "fact@Wellness, beforeAfter@Fitness & wellness, beginner@Wellness, comparison@Fitness & wellness, challenge@Wellness, dayInLife@Fitness & wellness",
+    "ideas": [
+      {
+        "angle": "Demonstrate 3 simple standing moves.",
+        "angleKind": "fact",
+        "openingLine": "Do these moves every hour.",
+        "title": "Standing stretches boost relaxation",
+        "topic": "wellness"
+      },
+      {
+        "angle": "Show how to check hip tension.",
+        "angleKind": "beforeAfter",
+        "openingLine": "Feel stiffness in your low back?",
+        "title": "Tight hips block movement",
+        "topic": "fitness"
+      },
+      {
+        "angle": "Share 2 quick mobility hacks.",
+        "angleKind": "beginner",
+        "openingLine": "Try this stretch before sitting.",
+        "title": "How to stay flexible all day",
+        "topic": "wellness"
+      },
+      {
+        "angle": "Compare 2 stretching spots.",
+        "angleKind": "comparison",
+        "openingLine": "Which space feels better?",
+        "title": "Chair vs. floor stretches",
+        "topic": "fitness"
+      },
+      {
+        "angle": "Add 2 seconds to your desk moves.",
+        "angleKind": "challenge",
+        "openingLine": "Add this to your morning stretch.",
+        "title": "20-second desk-saver routine",
+        "topic": "wellness"
+      },
+      {
+        "angle": "Perform 4 light moves before screens.",
+        "angleKind": "dayInLife",
+        "openingLine": "Move your shoulders now.",
+        "title": "Quick warm-up for workdays",
+        "topic": "fitness"
+      }
+    ],
+    "index": 1,
+    "instructionTokens": 547,
+    "instructions": "You suggest video ideas for creators who film themselves talking to camera.\nWrite in the creator's own voice. What follows says how they sound and who they speak to, never what the video is about.\nWho they are: an expert, coach or professional in their field.\nCredential: certified personal trainer. Mention it only where it fits; never invent another.\nThey speak as one person: say “I” and “my”.\nTheir audience: young adults.\nThey are new to the topic: explain terms and keep steps simple.\nThey watch to learn something and solve a problem.\nTheir videos aim to teach something useful and grow their audience.\nTopics: fitness and wellness (Home workouts, Mobility); wellness.\nThey sound energetic and confident.\nDelivery: energy: high and lively; sentences: short and punchy (under twelve words); words: plain and everyday; humor: a little.\nNever swear.\nOpen with a question: show it in the script, never write the style's name.\nEnd by asking viewers to save the video.\nThey film mostly: lists and tips, tutorials.\nThey often say: “Okay, real talk.” — use one once after the first sentence, never as the first words.\nThey post on TikTok, Reels; videos are usually 30 to 60 seconds.\nAlso true of them, in their own words: no-equipment workouts.\nHere is how they write. Match the voice; never reuse these sentences, facts or stories:\n- “Is your back sore after leg day? Okay, real talk. You're skipping the hinge. Push your hips back, keep your chest proud, and go slow. Do ten of these before every workout. Save this for leg day.”\n- “3 mistakes ruining your push-ups! Okay, real talk. Number one: your hips sag. Number two: your elbows flare out. Number three: you rush every rep. Slow down and squeeze your chest.”\n- “I weighed my food for one week and I was shocked. I was eating half of what I needed. Now I track it with one simple app. Easy! Save this and send it to a friend.”\nRules: no hype words (game-changer, insane, mind-blowing, unbelievable): use plain, specific words; no medical claims: never say something cures, treats or heals, and speak in general terms.",
+    "kind": "ideas",
+    "language": "en-US",
+    "prompt": "Suggest 6 fresh talking-head video ideas for a creator whose topics are: wellness; fitness and wellness (Home workouts, Mobility). Each idea has a title of at most eight words, written the way a creator would post it: natural, specific, and promising something the viewer gets, never a generic \"Top 5\" and never starting with the name of its angle as a label; an angle, one short sentence that tells the creator what to do in the video, starting with a verb; and an opening line, the first sentence they say to camera, which leads straight into the angle. Title, angle and opening line are one idea. In this order: 1. a surprising fact about wellness; 2. a before and after about fitness and wellness; 3. the question every beginner asks about wellness; 4. a comparison of two options about fitness and wellness; 5. a challenge to try about wellness; 6. a day in the life about fitness and wellness. The creator has been thinking about: “Mobility routine for people who sit all day”; “Why I stopped doing cardio first”. Let the ideas grow from what interests them, in new ways: never repeat these. Opening lines must be true for anyone to say: no personal story, result, number or credential of the creator's, and no statistic, study, news or trend. Write the ideas in English.",
+    "promptTokens": 288,
+    "run": "after-3",
+    "schemaTokens": 238,
+    "seconds": 10.12362225
+  },
+  {
+    "condition": "half",
+    "hasBrief": true,
+    "idea": "list@Fitness & wellness, mistake@Fitness & wellness, myth@Fitness & wellness, story@Fitness & wellness, tutorial@Fitness & wellness, opinion@Fitness & wellness",
+    "ideas": [
+      {
+        "angle": "Move your hips while scrolling",
+        "angleKind": "list",
+        "openingLine": "Your body needs movement now",
+        "title": "Stretch more while sitting",
+        "topic": "fitness"
+      },
+      {
+        "angle": "Roll shoulders forward gently",
+        "angleKind": "mistake",
+        "openingLine": "Tight shoulders stop good posture",
+        "title": "Avoid holding shoulders tight",
+        "topic": "fitness"
+      },
+      {
+        "angle": "Try dynamic movements now",
+        "angleKind": "myth",
+        "openingLine": "Movement fights stiffness",
+        "title": "Forget static stretches",
+        "topic": "fitness"
+      },
+      {
+        "angle": "Add deep breaths after standing",
+        "angleKind": "story",
+        "openingLine": "Breathing shapes recovery",
+        "title": "Create a standing cooldown",
+        "topic": "fitness"
+      },
+      {
+        "angle": "Shift weight between legs",
+        "angleKind": "tutorial",
+        "openingLine": "Every shift saves strain",
+        "title": "Simplify your desk flow",
+        "topic": "fitness"
+      },
+      {
+        "angle": "Share one mobility tip daily",
+        "angleKind": "opinion",
+        "openingLine": "Truths unlock energy",
+        "title": "Speak up on mobility truths",
+        "topic": "fitness"
+      }
+    ],
+    "index": 0,
+    "instructionTokens": 179,
+    "instructions": "You suggest video ideas for creators who film themselves talking to camera.\nWrite in the creator's own voice. What follows says how they sound and who they speak to, never what the video is about.\nWho they are: an expert, coach or professional in their field.\nThey speak as one person: say “I” and “my”.\nTheir audience is everyday people: use simple, everyday words.\nTopics: fitness and wellness.\nThey sound energetic.\nDelivery: sentences: short and punchy (under twelve words).\nThey often say: “Okay, real talk.” — use one naturally, ideally in the opening.",
+    "kind": "ideas",
+    "language": "en-US",
+    "prompt": "Suggest 6 fresh talking-head video ideas for a creator whose topics are: fitness and wellness. Each idea has a title of at most eight words, written the way a creator would post it: natural, specific, and promising something the viewer gets, never a generic \"Top 5\" and never starting with the name of its angle as a label; an angle, one short sentence that tells the creator what to do in the video, starting with a verb; and an opening line, the first sentence they say to camera, which leads straight into the angle. Title, angle and opening line are one idea. In this order: 1. a list of things about fitness and wellness; 2. a common mistake and how to fix it about fitness and wellness; 3. a myth to bust about fitness and wellness; 4. a short story from experience about fitness and wellness; 5. a quick how-to about fitness and wellness; 6. an honest opinion about fitness and wellness. The creator has been thinking about: “Mobility routine for people who sit all day”; “Why I stopped doing cardio first”. Let the ideas grow from what interests them, in new ways: never repeat these. Opening lines must be true for anyone to say: no personal story, result, number or credential of the creator's, and no statistic, study, news or trend. Write the ideas in English.",
+    "promptTokens": 290,
+    "run": "after-3",
+    "schemaTokens": 238,
+    "seconds": 8.829427583
+  },
+  {
+    "condition": "half",
+    "hasBrief": true,
+    "idea": "fact@Fitness & wellness, beforeAfter@Fitness & wellness, beginner@Fitness & wellness, comparison@Fitness & wellness, challenge@Fitness & wellness, dayInLife@Fitness & wellness",
+    "ideas": [
+      {
+        "angle": "Talk about mobility exercises you can do now",
+        "angleKind": "fact",
+        "openingLine": "Move more—feel better every day.",
+        "title": "Stretch your body before sitting",
+        "topic": "fitness"
+      },
+      {
+        "angle": "Share simple mobility moves you can try",
+        "angleKind": "beforeAfter",
+        "openingLine": "Ease tension—stay light on your body.",
+        "title": "See less stiffness, less pain",
+        "topic": "fitness"
+      },
+      {
+        "angle": "Explain beginner-friendly mobility routines",
+        "angleKind": "beginner",
+        "openingLine": "Begin small—watch this first step.",
+        "title": "How to start moving slowly",
+        "topic": "fitness"
+      },
+      {
+        "angle": "Compare mobility habits for different body types",
+        "angleKind": "comparison",
+        "openingLine": "Find balance—listen to your joints.",
+        "title": "Choose between sitting or standing",
+        "topic": "fitness"
+      },
+      {
+        "angle": "Perform a mobility stretch twice daily",
+        "angleKind": "challenge",
+        "openingLine": "Act now—move with purpose.",
+        "title": "Try this stretch right now",
+        "topic": "fitness"
+      },
+      {
+        "angle": "Outline a simple mobility schedule",
+        "angleKind": "dayInLife",
+        "openingLine": "Wake up—make movement part of your day.",
+        "title": "Plan a morning movement block",
+        "topic": "fitness"
+      }
+    ],
+    "index": 1,
+    "instructionTokens": 179,
+    "instructions": "You suggest video ideas for creators who film themselves talking to camera.\nWrite in the creator's own voice. What follows says how they sound and who they speak to, never what the video is about.\nWho they are: an expert, coach or professional in their field.\nThey speak as one person: say “I” and “my”.\nTheir audience is everyday people: use simple, everyday words.\nTopics: fitness and wellness.\nThey sound energetic.\nDelivery: sentences: short and punchy (under twelve words).\nThey often say: “Okay, real talk.” — use one naturally, ideally in the opening.",
+    "kind": "ideas",
+    "language": "en-US",
+    "prompt": "Suggest 6 fresh talking-head video ideas for a creator whose topics are: fitness and wellness. Each idea has a title of at most eight words, written the way a creator would post it: natural, specific, and promising something the viewer gets, never a generic \"Top 5\" and never starting with the name of its angle as a label; an angle, one short sentence that tells the creator what to do in the video, starting with a verb; and an opening line, the first sentence they say to camera, which leads straight into the angle. Title, angle and opening line are one idea. In this order: 1. a surprising fact about fitness and wellness; 2. a before and after about fitness and wellness; 3. the question every beginner asks about fitness and wellness; 4. a comparison of two options about fitness and wellness; 5. a challenge to try about fitness and wellness; 6. a day in the life about fitness and wellness. The creator has been thinking about: “Mobility routine for people who sit all day”; “Why I stopped doing cardio first”. Let the ideas grow from what interests them, in new ways: never repeat these. Opening lines must be true for anyone to say: no personal story, result, number or credential of the creator's, and no statistic, study, news or trend. Write the ideas in English.",
+    "promptTokens": 287,
+    "run": "after-3",
+    "schemaTokens": 238,
+    "seconds": 10.075885333
+  },
+  {
+    "condition": "none",
+    "hasBrief": true,
+    "idea": "list@Fitness & wellness, mistake@Fitness & wellness, myth@Fitness & wellness, story@Fitness & wellness, tutorial@Fitness & wellness, opinion@Fitness & wellness",
+    "ideas": [
+      {
+        "angle": "Demonstrate how to stretch every 30 minutes",
+        "angleKind": "list",
+        "openingLine": "Moving more helps when you sit for long periods",
+        "title": "Stretch before sitting for 5 mins",
+        "topic": "fitness"
+      },
+      {
+        "angle": "Show a quick way to straighten your posture",
+        "angleKind": "mistake",
+        "openingLine": "Tight muscles affect how we hold ourselves",
+        "title": "Fix rounded shoulders with one move",
+        "topic": "fitness"
+      },
+      {
+        "angle": "Explain how stillness builds tension in joints",
+        "angleKind": "myth",
+        "openingLine": "Holding certain positions strains the body unnecessarily",
+        "title": "Uncover why static tension hurts",
+        "topic": "fitness"
+      },
+      {
+        "angle": "Perform slow, rhythmic back-and-forth motions",
+        "angleKind": "story",
+        "openingLine": "Small, controlled movements support spinal health",
+        "title": "Practice gentle rocking daily",
+        "topic": "fitness"
+      },
+      {
+        "angle": "Perform basic leg lifts while standing",
+        "angleKind": "tutorial",
+        "openingLine": "Balanced legs form the foundation for stability",
+        "title": "Master standing strength exercises",
+        "topic": "fitness"
+      },
+      {
+        "angle": "Observe your movement patterns throughout the day",
+        "angleKind": "opinion",
+        "openingLine": "Routine movement shapes overall wellbeing",
+        "title": "Reassess daily activity habits",
+        "topic": "fitness"
+      }
+    ],
+    "index": 0,
+    "instructionTokens": 60,
+    "instructions": "You suggest video ideas for creators who film themselves talking to camera.",
+    "kind": "ideas",
+    "language": "en-US",
+    "prompt": "Suggest 6 fresh talking-head video ideas for a creator whose topics are: fitness and wellness. Each idea has a title of at most eight words, written the way a creator would post it: natural, specific, and promising something the viewer gets, never a generic \"Top 5\" and never starting with the name of its angle as a label; an angle, one short sentence that tells the creator what to do in the video, starting with a verb; and an opening line, the first sentence they say to camera, which leads straight into the angle. Title, angle and opening line are one idea. In this order: 1. a list of things about fitness and wellness; 2. a common mistake and how to fix it about fitness and wellness; 3. a myth to bust about fitness and wellness; 4. a short story from experience about fitness and wellness; 5. a quick how-to about fitness and wellness; 6. an honest opinion about fitness and wellness. The creator has been thinking about: “Mobility routine for people who sit all day”; “Why I stopped doing cardio first”. Let the ideas grow from what interests them, in new ways: never repeat these. Opening lines must be true for anyone to say: no personal story, result, number or credential of the creator's, and no statistic, study, news or trend. Write the ideas in English.",
+    "promptTokens": 290,
+    "run": "after-3",
+    "schemaTokens": 238,
+    "seconds": 9.956273667
+  },
+  {
+    "condition": "none",
+    "hasBrief": true,
+    "idea": "fact@Fitness & wellness, beforeAfter@Fitness & wellness, beginner@Fitness & wellness, comparison@Fitness & wellness, challenge@Fitness & wellness, dayInLife@Fitness & wellness",
+    "ideas": [
+      {
+        "angle": "Show the body performing gentle stretches daily.",
+        "angleKind": "fact",
+        "openingLine": "Your body needs space to move freely.",
+        "title": "How stillness boosts movement",
+        "topic": "fitness"
+      },
+      {
+        "angle": "Demonstrate a quick shift from seated to active posture.",
+        "angleKind": "beforeAfter",
+        "openingLine": "Standing strengthens the core in unexpected ways.",
+        "title": "Transition from sitting to standing",
+        "topic": "fitness"
+      },
+      {
+        "angle": "Share a simple breathing technique to stay energized.",
+        "angleKind": "beginner",
+        "openingLine": "Even short breaths can support active living.",
+        "title": "What fuels consistent movement",
+        "topic": "fitness"
+      },
+      {
+        "angle": "Compare two morning routines: mobility vs. strength.",
+        "angleKind": "comparison",
+        "openingLine": "Balancing movement styles leads to better health.",
+        "title": "Choose between flexibility and endurance",
+        "topic": "fitness"
+      },
+      {
+        "angle": "Perform a seated shoulder glide exercise slowly.",
+        "angleKind": "challenge",
+        "openingLine": "Small movements improve daily stability.",
+        "title": "Try a seated mobility drill",
+        "topic": "fitness"
+      },
+      {
+        "angle": "Film a slow sequence of arm and leg movements.",
+        "angleKind": "dayInLife",
+        "openingLine": "Movement in the morning sets the tone for the day.",
+        "title": "Observe a morning mobility flow",
+        "topic": "fitness"
+      }
+    ],
+    "index": 1,
+    "instructionTokens": 60,
+    "instructions": "You suggest video ideas for creators who film themselves talking to camera.",
+    "kind": "ideas",
+    "language": "en-US",
+    "prompt": "Suggest 6 fresh talking-head video ideas for a creator whose topics are: fitness and wellness. Each idea has a title of at most eight words, written the way a creator would post it: natural, specific, and promising something the viewer gets, never a generic \"Top 5\" and never starting with the name of its angle as a label; an angle, one short sentence that tells the creator what to do in the video, starting with a verb; and an opening line, the first sentence they say to camera, which leads straight into the angle. Title, angle and opening line are one idea. In this order: 1. a surprising fact about fitness and wellness; 2. a before and after about fitness and wellness; 3. the question every beginner asks about fitness and wellness; 4. a comparison of two options about fitness and wellness; 5. a challenge to try about fitness and wellness; 6. a day in the life about fitness and wellness. The creator has been thinking about: “Mobility routine for people who sit all day”; “Why I stopped doing cardio first”. Let the ideas grow from what interests them, in new ways: never repeat these. Opening lines must be true for anyone to say: no personal story, result, number or credential of the creator's, and no statistic, study, news or trend. Write the ideas in English.",
+    "promptTokens": 287,
+    "run": "after-3",
+    "schemaTokens": 238,
+    "seconds": 8.411342792
+  },
+  {
+    "condition": "full",
+    "hasBrief": true,
+    "idea": "list@Business & marketing, mistake@Cerámica artesanal, myth@Business & marketing, story@Cerámica artesanal, tutorial@Business & marketing, opinion@Cerámica artesanal",
+    "ideas": [
+      {
+        "angle": "Mostrar las diferencias de textura para elegir bien",
+        "angleKind": "list",
+        "openingLine": "Observar las diferencias entre colores es clave para la elección",
+        "title": "Cómo elegir piezas cerámicas",
+        "topic": "Business & marketing"
+      },
+      {
+        "angle": "Explicar la importancia de secado lento para la calidad",
+        "angleKind": "mistake",
+        "openingLine": "Entender que cada pieza requiere atención en su acabado",
+        "title": "Cómo evitar grietas en tazas manuales",
+        "topic": "Cerámica artesanal"
+      },
+      {
+        "angle": "Mostrar el cuidado en cada etapa para la calidad",
+        "angleKind": "myth",
+        "openingLine": "Preparar cada producto requiere paciencia en el taller",
+        "title": "Por qué no hay prisa en la producción",
+        "topic": "Business & marketing"
+      },
+      {
+        "angle": "Compartir ejemplos concretos de pedidos únicos",
+        "angleKind": "story",
+        "openingLine": "Cada consulta es una oportunidad para innovar",
+        "title": "Historias detrás de pedidos personalizados",
+        "topic": "Cerámica artesanal"
+      },
+      {
+        "angle": "Explicar cómo presentar piezas para atraer clientes",
+        "angleKind": "tutorial",
+        "openingLine": "Organizar la exhibición ayuda a conectar con la audiencia",
+        "title": "Pasos básicos para vender productos artesanales",
+        "topic": "Business & marketing"
+      },
+      {
+        "angle": "Explorar las causas de la demanda repetida",
+        "angleKind": "opinion",
+        "openingLine": "El uso de esmaltes afecta la percepción del cliente",
+        "title": "La verdad sobre el acabado azul",
+        "topic": "Cerámica artesanal"
+      }
+    ],
+    "index": 0,
+    "instructionTokens": 503,
+    "instructions": "You suggest video ideas for creators who film themselves talking to camera.\nWrite in the creator's own voice. What follows says how they sound and who they speak to, never what the video is about.\nWho they are: the owner of a business (a shop, salon, studio or service).\nThey speak as a team: say “we” and “our”, never “I”.\nTheir audience: people in the creator's local community.\nThey are new to the topic: explain terms and keep steps simple.\nThey watch to get inspired and decide what to buy.\nTheir videos aim to sell a product or service and build a community.\nTopics: business and marketing; Cerámica artesanal (Tazas, Esmaltes).\nThey sound warm and calm and casual.\nDelivery: energy: balanced; sentences: a mix of short and longer; words: plain and everyday; humor: none, no jokes.\nNever swear.\nOpen with the start of a short story: show it in the script, never write the style's name.\nEnd by inviting them to follow for more.\nThey film mostly: storytimes, tutorials.\nThey often say: “Hola, familia.” — use one once after the first sentence, never as the first words.\nThey post on Reels; videos are usually 30 to 60 seconds.\nHere is how they write. Match the voice; never reuse these sentences, facts or stories:\n- “Hoy les contamos por qué nuestras tazas tardan dos semanas. Nosotros dejamos secar cada pieza despacio, porque si la apuramos, se agrieta en el horno. Síguenos para ver el proceso completo.”\n- “En nuestro taller nosotros preparamos cada pedido a mano. Nuestro equipo empieza a las siete de la mañana. Nosotros cuidamos cada detalle porque nuestros clientes lo notan.”\n- “Nosotros abrimos nuestra tienda hace tres años con una sola mesa. Nuestro primer cliente fue una vecina. Nosotros todavía recordamos ese día. Sígueme para ver nuestra historia completa.”\nRules: no hype words (game-changer, insane, mind-blowing, unbelievable): use plain, specific words.",
+    "kind": "ideas",
+    "language": "es-ES",
+    "prompt": "Suggest 6 fresh talking-head video ideas for a creator whose topics are: business and marketing; Cerámica artesanal (Tazas, Esmaltes). Each idea has a title of at most eight words, written the way a creator would post it: natural, specific, and promising something the viewer gets, never a generic \"Top 5\" and never starting with the name of its angle as a label; an angle, one short sentence that tells the creator what to do in the video, starting with a verb; and an opening line, the first sentence they say to camera, which leads straight into the angle. Title, angle and opening line are one idea. In this order: 1. a list of things about business and marketing; 2. a common mistake and how to fix it about Cerámica artesanal; 3. a myth to bust about business and marketing; 4. a short story from experience about Cerámica artesanal; 5. a quick how-to about business and marketing; 6. an honest opinion about Cerámica artesanal. The creator has been thinking about: “Clientes que piden tazas personalizadas”; “El esmalte azul que siempre se agota”. Let the ideas grow from what interests them, in new ways: never repeat these. Opening lines must be true for anyone to say: no personal story, result, number or credential of the creator's, and no statistic, study, news or trend. Write the ideas in Spanish.",
+    "promptTokens": 308,
+    "run": "after-3",
+    "schemaTokens": 238,
+    "seconds": 12.187315625
+  },
+  {
+    "condition": "full",
+    "hasBrief": true,
+    "idea": "fact@Cerámica artesanal, beforeAfter@Business & marketing, beginner@Cerámica artesanal, comparison@Business & marketing, challenge@Cerámica artesanal, dayInLife@Business & marketing",
+    "ideas": [
+      {
+        "angle": "Mostrar cómo cambiamos el color en las tazas.",
+        "angleKind": "fact",
+        "openingLine": "Cada pieza de cerámica pasa por varias etapas.",
+        "title": "¿Sabías que las tazas cambian de color?",
+        "topic": "Cerámica artesanal"
+      },
+      {
+        "angle": "Mostrar el camino de un producto a una identidad.",
+        "angleKind": "beforeAfter",
+        "openingLine": "Nos interesa cómo nuestros clientes ven nuestro trabajo.",
+        "title": "De producto a marca, ¿qué cambia?",
+        "topic": "Business & marketing"
+      },
+      {
+        "angle": "Explicar qué desafíos surgen al pedir piezas únicas.",
+        "angleKind": "beginner",
+        "openingLine": "Hay detalles en la fabricación que afectan la calidad.",
+        "title": "¿Qué complica personalizar tazas?",
+        "topic": "Cerámica artesanal"
+      },
+      {
+        "angle": "Mostrar la diferencia entre dos técnicas de esmalte.",
+        "angleKind": "comparison",
+        "openingLine": "Queremos mostrar cómo afectan los materiales al resultado.",
+        "title": "Comparar dos estilos de recubrimiento:",
+        "topic": "Business & marketing"
+      },
+      {
+        "angle": "Mostrar pasos básicos para diseñar piezas propias.",
+        "angleKind": "challenge",
+        "openingLine": "Una pequeña modificación cambia el uso de la pieza.",
+        "title": "Prueba: crea tu diseño en cerámica.",
+        "topic": "Cerámica artesanal"
+      },
+      {
+        "angle": "Mostrar cómo se trabaja el material cada día.",
+        "angleKind": "dayInLife",
+        "openingLine": "Observamos cómo evolucionan las formas en la producción.",
+        "title": "Un día en nuestro taller artesanal.",
+        "topic": "Business & marketing"
+      }
+    ],
+    "index": 1,
+    "instructionTokens": 503,
+    "instructions": "You suggest video ideas for creators who film themselves talking to camera.\nWrite in the creator's own voice. What follows says how they sound and who they speak to, never what the video is about.\nWho they are: the owner of a business (a shop, salon, studio or service).\nThey speak as a team: say “we” and “our”, never “I”.\nTheir audience: people in the creator's local community.\nThey are new to the topic: explain terms and keep steps simple.\nThey watch to get inspired and decide what to buy.\nTheir videos aim to sell a product or service and build a community.\nTopics: business and marketing; Cerámica artesanal (Tazas, Esmaltes).\nThey sound warm and calm and casual.\nDelivery: energy: balanced; sentences: a mix of short and longer; words: plain and everyday; humor: none, no jokes.\nNever swear.\nOpen with the start of a short story: show it in the script, never write the style's name.\nEnd by inviting them to follow for more.\nThey film mostly: storytimes, tutorials.\nThey often say: “Hola, familia.” — use one once after the first sentence, never as the first words.\nThey post on Reels; videos are usually 30 to 60 seconds.\nHere is how they write. Match the voice; never reuse these sentences, facts or stories:\n- “Hoy les contamos por qué nuestras tazas tardan dos semanas. Nosotros dejamos secar cada pieza despacio, porque si la apuramos, se agrieta en el horno. Síguenos para ver el proceso completo.”\n- “En nuestro taller nosotros preparamos cada pedido a mano. Nuestro equipo empieza a las siete de la mañana. Nosotros cuidamos cada detalle porque nuestros clientes lo notan.”\n- “Nosotros abrimos nuestra tienda hace tres años con una sola mesa. Nuestro primer cliente fue una vecina. Nosotros todavía recordamos ese día. Sígueme para ver nuestra historia completa.”\nRules: no hype words (game-changer, insane, mind-blowing, unbelievable): use plain, specific words.",
+    "kind": "ideas",
+    "language": "es-ES",
+    "prompt": "Suggest 6 fresh talking-head video ideas for a creator whose topics are: Cerámica artesanal (Tazas, Esmaltes); business and marketing. Each idea has a title of at most eight words, written the way a creator would post it: natural, specific, and promising something the viewer gets, never a generic \"Top 5\" and never starting with the name of its angle as a label; an angle, one short sentence that tells the creator what to do in the video, starting with a verb; and an opening line, the first sentence they say to camera, which leads straight into the angle. Title, angle and opening line are one idea. In this order: 1. a surprising fact about Cerámica artesanal; 2. a before and after about business and marketing; 3. the question every beginner asks about Cerámica artesanal; 4. a comparison of two options about business and marketing; 5. a challenge to try about Cerámica artesanal; 6. a day in the life about business and marketing. The creator has been thinking about: “Clientes que piden tazas personalizadas”; “El esmalte azul que siempre se agota”. Let the ideas grow from what interests them, in new ways: never repeat these. Opening lines must be true for anyone to say: no personal story, result, number or credential of the creator's, and no statistic, study, news or trend. Write the ideas in Spanish.",
+    "promptTokens": 305,
+    "run": "after-3",
+    "schemaTokens": 238,
+    "seconds": 12.71271325
+  },
+  {
+    "condition": "half",
+    "hasBrief": true,
+    "idea": "list@Cerámica artesanal, mistake@Cerámica artesanal, myth@Cerámica artesanal, story@Cerámica artesanal, tutorial@Cerámica artesanal, opinion@Cerámica artesanal",
+    "ideas": [
+      {
+        "angle": "Mostrar las formas creativas del esmalte azul",
+        "angleKind": "list",
+        "openingLine": "Sabemos que el esmalte azul se agota.",
+        "title": "Ideas para cerámicas únicas",
+        "topic": "Cerámica artesanal"
+      },
+      {
+        "angle": "Explicar la importancia de la preparación adecuada",
+        "angleKind": "mistake",
+        "openingLine": "Queremos ayudar a evitar errores habituales.",
+        "title": "Cómo evitar errores comunes",
+        "topic": "Cerámica artesanal"
+      },
+      {
+        "angle": "Analizar por qué algunas personas creen otra cosa",
+        "angleKind": "myth",
+        "openingLine": "Hay ideas que no son ciertas sobre nuestra artesanía.",
+        "title": "Desmintiendo creencias sobre cerámica",
+        "topic": "Cerámica artesanal"
+      },
+      {
+        "angle": "Compartir cómo aplicamos nuestras experiencias cotidianas",
+        "angleKind": "story",
+        "openingLine": "La práctica diaria nos enseña cosas valiosas.",
+        "title": "Aprendiendo de la práctica diaria",
+        "topic": "Cerámica artesanal"
+      },
+      {
+        "angle": "Demostrar técnicas básicas de decoración",
+        "angleKind": "tutorial",
+        "openingLine": "Queremos mostrar trucos sencillos de creación.",
+        "title": "Mini taller rápido",
+        "topic": "Cerámica artesanal"
+      },
+      {
+        "angle": "Compartir nuestra visión sobre la calidad artesanal",
+        "angleKind": "opinion",
+        "openingLine": "Nuestra visión sobre la cerámica es clara.",
+        "title": "Opinión honesta sobre cerámicas",
+        "topic": "Cerámica artesanal"
+      }
+    ],
+    "index": 0,
+    "instructionTokens": 176,
+    "instructions": "You suggest video ideas for creators who film themselves talking to camera.\nWrite in the creator's own voice. What follows says how they sound and who they speak to, never what the video is about.\nWho they are: the owner of a business (a shop, salon, studio or service).\nThey speak as a team: say “we” and “our”, never “I”.\nTheir audience is everyday people: use simple, everyday words.\nTopics: Cerámica artesanal.\nThey sound warm and calm.\nThey often say: “Hola, familia.” — use one naturally, ideally in the opening.",
+    "kind": "ideas",
+    "language": "es-ES",
+    "prompt": "Suggest 6 fresh talking-head video ideas for a creator whose topics are: Cerámica artesanal. Each idea has a title of at most eight words, written the way a creator would post it: natural, specific, and promising something the viewer gets, never a generic \"Top 5\" and never starting with the name of its angle as a label; an angle, one short sentence that tells the creator what to do in the video, starting with a verb; and an opening line, the first sentence they say to camera, which leads straight into the angle. Title, angle and opening line are one idea. In this order: 1. a list of things about Cerámica artesanal; 2. a common mistake and how to fix it about Cerámica artesanal; 3. a myth to bust about Cerámica artesanal; 4. a short story from experience about Cerámica artesanal; 5. a quick how-to about Cerámica artesanal; 6. an honest opinion about Cerámica artesanal. The creator has been thinking about: “Clientes que piden tazas personalizadas”; “El esmalte azul que siempre se agota”. Let the ideas grow from what interests them, in new ways: never repeat these. Opening lines must be true for anyone to say: no personal story, result, number or credential of the creator's, and no statistic, study, news or trend. Write the ideas in Spanish.",
+    "promptTokens": 299,
+    "run": "after-3",
+    "schemaTokens": 238,
+    "seconds": 11.162330875
+  },
+  {
+    "condition": "half",
+    "hasBrief": true,
+    "idea": "fact@Cerámica artesanal, beforeAfter@Cerámica artesanal, beginner@Cerámica artesanal, comparison@Cerámica artesanal, challenge@Cerámica artesanal, dayInLife@Cerámica artesanal",
+    "ideas": [
+      {
+        "angle": "Mostrar el proceso de creación de diseños personalizados",
+        "angleKind": "fact",
+        "openingLine": "Aquí aprendemos a crear piezas únicas!",
+        "title": "Cómo hacer platos cerámicos únicos",
+        "topic": "Cerámica artesanal"
+      },
+      {
+        "angle": "Comparar técnicas tradicionales y modernas",
+        "angleKind": "beforeAfter",
+        "openingLine": "Exploramos cómo cambian las formas antiguas",
+        "title": "Platos nuevos frente a viejos estilos",
+        "topic": "Cerámica artesanal"
+      },
+      {
+        "angle": "Demostrar la relación entre colores y emociones",
+        "angleKind": "beginner",
+        "openingLine": "Descubrimos qué colores inspiran calidad",
+        "title": "¿Cómo elegir el color perfecto para cerámica?",
+        "topic": "Cerámica artesanal"
+      },
+      {
+        "angle": "Proponer combinaciones de colores para cada cliente",
+        "angleKind": "comparison",
+        "openingLine": "Ajustamos el esmalte según cada proyecto",
+        "title": "Adaptar esmaltes a necesidades personales",
+        "topic": "Cerámica artesanal"
+      },
+      {
+        "angle": "Resolver errores comunes en la decoración",
+        "angleKind": "challenge",
+        "openingLine": "Abordamos desafíos en la aplicación de colores",
+        "title": "Resolver problemas comunes con cerámicas",
+        "topic": "Cerámica artesanal"
+      },
+      {
+        "angle": "Mostrar cómo inspirarse en la naturaleza",
+        "angleKind": "dayInLife",
+        "openingLine": "Seguimos una rutina inspiradora cada día",
+        "title": "Una rutina diaria creativa",
+        "topic": "Cerámica artesanal"
+      }
+    ],
+    "index": 1,
+    "instructionTokens": 176,
+    "instructions": "You suggest video ideas for creators who film themselves talking to camera.\nWrite in the creator's own voice. What follows says how they sound and who they speak to, never what the video is about.\nWho they are: the owner of a business (a shop, salon, studio or service).\nThey speak as a team: say “we” and “our”, never “I”.\nTheir audience is everyday people: use simple, everyday words.\nTopics: Cerámica artesanal.\nThey sound warm and calm.\nThey often say: “Hola, familia.” — use one naturally, ideally in the opening.",
+    "kind": "ideas",
+    "language": "es-ES",
+    "prompt": "Suggest 6 fresh talking-head video ideas for a creator whose topics are: Cerámica artesanal. Each idea has a title of at most eight words, written the way a creator would post it: natural, specific, and promising something the viewer gets, never a generic \"Top 5\" and never starting with the name of its angle as a label; an angle, one short sentence that tells the creator what to do in the video, starting with a verb; and an opening line, the first sentence they say to camera, which leads straight into the angle. Title, angle and opening line are one idea. In this order: 1. a surprising fact about Cerámica artesanal; 2. a before and after about Cerámica artesanal; 3. the question every beginner asks about Cerámica artesanal; 4. a comparison of two options about Cerámica artesanal; 5. a challenge to try about Cerámica artesanal; 6. a day in the life about Cerámica artesanal. The creator has been thinking about: “Clientes que piden tazas personalizadas”; “El esmalte azul que siempre se agota”. Let the ideas grow from what interests them, in new ways: never repeat these. Opening lines must be true for anyone to say: no personal story, result, number or credential of the creator's, and no statistic, study, news or trend. Write the ideas in Spanish.",
+    "promptTokens": 296,
+    "run": "after-3",
+    "schemaTokens": 238,
+    "seconds": 11.416576166
+  },
+  {
+    "condition": "none",
+    "hasBrief": true,
+    "idea": "list@Cerámica artesanal, mistake@Cerámica artesanal, myth@Cerámica artesanal, story@Cerámica artesanal, tutorial@Cerámica artesanal, opinion@Cerámica artesanal",
+    "ideas": [
+      {
+        "angle": "Explorar materiales que usa la cerámica",
+        "angleKind": "list",
+        "openingLine": "La cerámica artesanal usa materiales únicos.",
+        "title": "Materiales que usamos en tazas",
+        "topic": "Cerámica artesanal"
+      },
+      {
+        "angle": "Mostrar consejos para evitar manchas en esmaltes",
+        "angleKind": "mistake",
+        "openingLine": "El esmalte azul se agota rápidamente.",
+        "title": "Cómo evitar manchas en esmaltes",
+        "topic": "Cerámica artesanal"
+      },
+      {
+        "angle": "Desentrañar creencias sobre el esmalte perfecto",
+        "angleKind": "myth",
+        "openingLine": "El esmalte azul siempre deja marcas.",
+        "title": "La leyenda del esmalte perfecto",
+        "topic": "Cerámica artesanal"
+      },
+      {
+        "angle": "Transformar piezas rotas en obras únicas",
+        "angleKind": "story",
+        "openingLine": "Cada error puede convertirse en arte.",
+        "title": "Transformación de una pieza rota",
+        "topic": "Cerámica artesanal"
+      },
+      {
+        "angle": "Compartir técnicas esenciales para cerámicas",
+        "angleKind": "tutorial",
+        "openingLine": "Las técnicas básicas demuestran creatividad.",
+        "title": "Resumen de técnicas básicas",
+        "topic": "Cerámica artesanal"
+      },
+      {
+        "angle": "Exponer opiniones sobre el uso del esmalte",
+        "angleKind": "opinion",
+        "openingLine": "El esmalte tiene limitaciones inesperadas.",
+        "title": "La verdad detrás del esmalte",
+        "topic": "Cerámica artesanal"
+      }
+    ],
+    "index": 0,
+    "instructionTokens": 60,
+    "instructions": "You suggest video ideas for creators who film themselves talking to camera.",
+    "kind": "ideas",
+    "language": "es-ES",
+    "prompt": "Suggest 6 fresh talking-head video ideas for a creator whose topics are: Cerámica artesanal. Each idea has a title of at most eight words, written the way a creator would post it: natural, specific, and promising something the viewer gets, never a generic \"Top 5\" and never starting with the name of its angle as a label; an angle, one short sentence that tells the creator what to do in the video, starting with a verb; and an opening line, the first sentence they say to camera, which leads straight into the angle. Title, angle and opening line are one idea. In this order: 1. a list of things about Cerámica artesanal; 2. a common mistake and how to fix it about Cerámica artesanal; 3. a myth to bust about Cerámica artesanal; 4. a short story from experience about Cerámica artesanal; 5. a quick how-to about Cerámica artesanal; 6. an honest opinion about Cerámica artesanal. The creator has been thinking about: “Clientes que piden tazas personalizadas”; “El esmalte azul que siempre se agota”. Let the ideas grow from what interests them, in new ways: never repeat these. Opening lines must be true for anyone to say: no personal story, result, number or credential of the creator's, and no statistic, study, news or trend. Write the ideas in Spanish.",
+    "promptTokens": 299,
+    "run": "after-3",
+    "schemaTokens": 238,
+    "seconds": 10.189862250000001
+  },
+  {
+    "condition": "none",
+    "hasBrief": true,
+    "idea": "fact@Cerámica artesanal, beforeAfter@Cerámica artesanal, beginner@Cerámica artesanal, comparison@Cerámica artesanal, challenge@Cerámica artesanal, dayInLife@Cerámica artesanal",
+    "ideas": [
+      {
+        "angle": "Mostrar cómo el esmalte azul cambia el acabado",
+        "angleKind": "fact",
+        "openingLine": "El esmalte azul transforma cualquier taza.",
+        "title": "El color azul en tazas personales",
+        "topic": "Cerámica artesanal"
+      },
+      {
+        "angle": "Describir detalles escondidos en diseños personalizados",
+        "angleKind": "beforeAfter",
+        "openingLine": "Cada diseño guarda una historia oculta.",
+        "title": "El diseño personalizado revela secretos",
+        "topic": "Cerámica artesanal"
+      },
+      {
+        "angle": "Demostrar cómo el esmalte resiste el uso diario",
+        "angleKind": "beginner",
+        "openingLine": "El esmalte responde a cada uso.",
+        "title": "La resistencia del esmalte explicado",
+        "topic": "Cerámica artesanal"
+      },
+      {
+        "angle": "Comparar cómo la textura influye en la calidad",
+        "angleKind": "comparison",
+        "openingLine": "La textura define la diferencia visible.",
+        "title": "El impacto de la textura artesanal",
+        "topic": "Cerámica artesanal"
+      },
+      {
+        "angle": "Practicar técnicas simples para personalizar",
+        "angleKind": "challenge",
+        "openingLine": "Pruebe métodos accesibles para personalizar.",
+        "title": "Crear patrones personalizados fáciles",
+        "topic": "Cerámica artesanal"
+      },
+      {
+        "angle": "Documentar pasos diarios en la creación",
+        "angleKind": "dayInLife",
+        "openingLine": "Cada día comienza con la creación.",
+        "title": "Una rutina diaria de cerámica",
+        "topic": "Cerámica artesanal"
+      }
+    ],
+    "index": 1,
+    "instructionTokens": 60,
+    "instructions": "You suggest video ideas for creators who film themselves talking to camera.",
+    "kind": "ideas",
+    "language": "es-ES",
+    "prompt": "Suggest 6 fresh talking-head video ideas for a creator whose topics are: Cerámica artesanal. Each idea has a title of at most eight words, written the way a creator would post it: natural, specific, and promising something the viewer gets, never a generic \"Top 5\" and never starting with the name of its angle as a label; an angle, one short sentence that tells the creator what to do in the video, starting with a verb; and an opening line, the first sentence they say to camera, which leads straight into the angle. Title, angle and opening line are one idea. In this order: 1. a surprising fact about Cerámica artesanal; 2. a before and after about Cerámica artesanal; 3. the question every beginner asks about Cerámica artesanal; 4. a comparison of two options about Cerámica artesanal; 5. a challenge to try about Cerámica artesanal; 6. a day in the life about Cerámica artesanal. The creator has been thinking about: “Clientes que piden tazas personalizadas”; “El esmalte azul que siempre se agota”. Let the ideas grow from what interests them, in new ways: never repeat these. Opening lines must be true for anyone to say: no personal story, result, number or credential of the creator's, and no statistic, study, news or trend. Write the ideas in Spanish.",
+    "promptTokens": 296,
+    "run": "after-3",
+    "schemaTokens": 238,
+    "seconds": 8.332851084
+  },
+  {
+    "condition": "full",
+    "hasBrief": true,
+    "idea": "list@Beauty & skincare, mistake@Beauty & skincare, myth@Beauty & skincare, story@Beauty & skincare, tutorial@Beauty & skincare, opinion@Beauty & skincare",
+    "ideas": [
+      {
+        "angle": "Organizar produtos antes de começar a rotina.",
+        "angleKind": "list",
+        "openingLine": "Arrume seu produto, vai começar.",
+        "title": "3 passos para uma rotina rápida",
+        "topic": "beauty"
+      },
+      {
+        "angle": "Verificar se todos usam hidratante regularmente.",
+        "angleKind": "mistake",
+        "openingLine": "Aquela sensação de pele seca aparece sempre.",
+        "title": "Mistério: hidratante é essencial?",
+        "topic": "beauty"
+      },
+      {
+        "angle": "Testar cores leves antes de decidir.",
+        "angleKind": "myth",
+        "openingLine": "Testar tons claros pode mudar tudo.",
+        "title": "Como escolher sombras que combinam bem",
+        "topic": "beauty"
+      },
+      {
+        "angle": "Mostrar como usar um creme específico nos olhos.",
+        "angleKind": "story",
+        "openingLine": "O que dá aquela hidratação extra?",
+        "title": "Dicas: um creme para olhos funciona bem",
+        "topic": "beauty"
+      },
+      {
+        "angle": "Criar combinações rápidas sem complicações.",
+        "angleKind": "tutorial",
+        "openingLine": "Combinar produtos sem esforço é legal.",
+        "title": "Mistura: maquiagem com pouca preparação",
+        "topic": "beauty"
+      },
+      {
+        "angle": "Comparar diferentes opções de acabamento.",
+        "angleKind": "opinion",
+        "openingLine": "Olhar além do brilho é interessante.",
+        "title": "Opinião: acabamento natural, não perfeito",
+        "topic": "beauty"
+      }
+    ],
+    "index": 0,
+    "instructionTokens": 500,
+    "instructions": "You suggest video ideas for creators who film themselves talking to camera.\nWrite in the creator's own voice. What follows says how they sound and who they speak to, never what the video is about.\nWho they are: a lifestyle and personal creator.\nThey speak as one person: say “I” and “my”.\nTheir audience: young adults.\nThey know some basics: skip the obvious and go one level deeper.\nThey watch to learn something and decide what to buy.\nTheir videos aim to grow their audience and entertain.\nTopics: beauty and skincare (Skincare barato, Maquiagem rápida).\nThey sound casual and funny.\nDelivery: energy: high and lively; sentences: short and punchy (under twelve words); words: some casual slang; humor: a little.\nNever swear.\nOpen with a common mistake to avoid: show it in the script, never write the style's name.\nEnd by asking them to comment their answer.\nThey film mostly: lists and tips.\nThey often say: “Fala, galera!” — use one once after the first sentence, never as the first words.\nThey post on TikTok; videos are usually 30 to 60 seconds.\nHere is how they write. Match the voice; never reuse these sentences, facts or stories:\n- “Você tá lavando o rosto errado. Tipo, água quente demais resseca tudo. Usa água morna, sabonete suave e seca sem esfregar. Comenta aqui se você fazia isso!”\n- “5 produtos baratos que eu uso todo dia. Tipo, nenhum passa de vinte reais! O meu favorito é o hidratante de farmácia. Me conta qual você já usa! Salva pra não esquecer.”\n- “Pare de passar o protetor solar só no rosto! O pescoço também precisa. Tipo, é a primeira parte que envelhece. Bora cuidar? Segue pra mais dicas!”\nRules: no medical claims: never say something cures, treats or heals, and speak in general terms; no clickbait (“you won't believe…”, “what happens next”): say the real point up front.",
+    "kind": "ideas",
+    "language": "pt-BR",
+    "prompt": "Suggest 6 fresh talking-head video ideas for a creator whose topics are: beauty and skincare (Skincare barato, Maquiagem rápida). Each idea has a title of at most eight words, written the way a creator would post it: natural, specific, and promising something the viewer gets, never a generic \"Top 5\" and never starting with the name of its angle as a label; an angle, one short sentence that tells the creator what to do in the video, starting with a verb; and an opening line, the first sentence they say to camera, which leads straight into the angle. Title, angle and opening line are one idea. In this order: 1. a list of things about beauty and skincare; 2. a common mistake and how to fix it about beauty and skincare; 3. a myth to bust about beauty and skincare; 4. a short story from experience about beauty and skincare; 5. a quick how-to about beauty and skincare; 6. an honest opinion about beauty and skincare. The creator has been thinking about: “Rotina de skincare com três produtos de farmácia”; “Batom que dura o dia inteiro existe?”. Let the ideas grow from what interests them, in new ways: never repeat these. Opening lines must be true for anyone to say: no personal story, result, number or credential of the creator's, and no statistic, study, news or trend. Write the ideas in Portuguese (Brazil).",
+    "promptTokens": 304,
+    "run": "after-3",
+    "schemaTokens": 238,
+    "seconds": 12.130105208
+  },
+  {
+    "condition": "full",
+    "hasBrief": true,
+    "idea": "fact@Beauty & skincare, beforeAfter@Beauty & skincare, beginner@Beauty & skincare, comparison@Beauty & skincare, challenge@Beauty & skincare, dayInLife@Beauty & skincare",
+    "ideas": [
+      {
+        "angle": "Misturar com óleo antes de aplicar.",
+        "angleKind": "fact",
+        "openingLine": "Misturar bem a tintura transforma tudo.",
+        "title": "Tintura facial funciona sem esforço",
+        "topic": "beauty"
+      },
+      {
+        "angle": "Mostrar combinação de cores que dão efeito.",
+        "angleKind": "beforeAfter",
+        "openingLine": "Combinar cores certeiras muda o olhar.",
+        "title": "Batom dura mais: confira a dica!",
+        "topic": "beauty"
+      },
+      {
+        "angle": "Comparar fórmulas leves e absorventes.",
+        "angleKind": "beginner",
+        "openingLine": "Testar opções leves ajuda muito.",
+        "title": "Como escolher hidratante pra maquiagem?",
+        "topic": "beauty"
+      },
+      {
+        "angle": "Demonstrar aplicação simples na raiz.",
+        "angleKind": "comparison",
+        "openingLine": "Aplicar óleo na raiz é diferente.",
+        "title": "Óleo capilar é essencial?",
+        "topic": "beauty"
+      },
+      {
+        "angle": "Experimentar sombras que secam rápido.",
+        "angleKind": "challenge",
+        "openingLine": "Testar sombras leves na rotina é útil.",
+        "title": "Dica de maquiagem para dias corridos",
+        "topic": "beauty"
+      },
+      {
+        "angle": "Explorar produtos para textura da pele.",
+        "angleKind": "dayInLife",
+        "openingLine": "Investir em textura afina o cuidado.",
+        "title": "Rotina de cuidados pós-banho precisa?",
+        "topic": "beauty"
+      }
+    ],
+    "index": 1,
+    "instructionTokens": 500,
+    "instructions": "You suggest video ideas for creators who film themselves talking to camera.\nWrite in the creator's own voice. What follows says how they sound and who they speak to, never what the video is about.\nWho they are: a lifestyle and personal creator.\nThey speak as one person: say “I” and “my”.\nTheir audience: young adults.\nThey know some basics: skip the obvious and go one level deeper.\nThey watch to learn something and decide what to buy.\nTheir videos aim to grow their audience and entertain.\nTopics: beauty and skincare (Skincare barato, Maquiagem rápida).\nThey sound casual and funny.\nDelivery: energy: high and lively; sentences: short and punchy (under twelve words); words: some casual slang; humor: a little.\nNever swear.\nOpen with a common mistake to avoid: show it in the script, never write the style's name.\nEnd by asking them to comment their answer.\nThey film mostly: lists and tips.\nThey often say: “Fala, galera!” — use one once after the first sentence, never as the first words.\nThey post on TikTok; videos are usually 30 to 60 seconds.\nHere is how they write. Match the voice; never reuse these sentences, facts or stories:\n- “Você tá lavando o rosto errado. Tipo, água quente demais resseca tudo. Usa água morna, sabonete suave e seca sem esfregar. Comenta aqui se você fazia isso!”\n- “5 produtos baratos que eu uso todo dia. Tipo, nenhum passa de vinte reais! O meu favorito é o hidratante de farmácia. Me conta qual você já usa! Salva pra não esquecer.”\n- “Pare de passar o protetor solar só no rosto! O pescoço também precisa. Tipo, é a primeira parte que envelhece. Bora cuidar? Segue pra mais dicas!”\nRules: no medical claims: never say something cures, treats or heals, and speak in general terms; no clickbait (“you won't believe…”, “what happens next”): say the real point up front.",
+    "kind": "ideas",
+    "language": "pt-BR",
+    "prompt": "Suggest 6 fresh talking-head video ideas for a creator whose topics are: beauty and skincare (Skincare barato, Maquiagem rápida). Each idea has a title of at most eight words, written the way a creator would post it: natural, specific, and promising something the viewer gets, never a generic \"Top 5\" and never starting with the name of its angle as a label; an angle, one short sentence that tells the creator what to do in the video, starting with a verb; and an opening line, the first sentence they say to camera, which leads straight into the angle. Title, angle and opening line are one idea. In this order: 1. a surprising fact about beauty and skincare; 2. a before and after about beauty and skincare; 3. the question every beginner asks about beauty and skincare; 4. a comparison of two options about beauty and skincare; 5. a challenge to try about beauty and skincare; 6. a day in the life about beauty and skincare. The creator has been thinking about: “Rotina de skincare com três produtos de farmácia”; “Batom que dura o dia inteiro existe?”. Let the ideas grow from what interests them, in new ways: never repeat these. Opening lines must be true for anyone to say: no personal story, result, number or credential of the creator's, and no statistic, study, news or trend. Write the ideas in Portuguese (Brazil).",
+    "promptTokens": 301,
+    "run": "after-3",
+    "schemaTokens": 238,
+    "seconds": 11.637072917
+  },
+  {
+    "condition": "half",
+    "hasBrief": true,
+    "idea": "list@Beauty & skincare, mistake@Beauty & skincare, myth@Beauty & skincare, story@Beauty & skincare, tutorial@Beauty & skincare, opinion@Beauty & skincare",
+    "ideas": [
+      {
+        "angle": "Mostre como usar cada produto corretamente.",
+        "angleKind": "list",
+        "openingLine": "Pequenas dicas podem mudar tudo.",
+        "title": "3 produtos simples para brilho",
+        "topic": "beauty"
+      },
+      {
+        "angle": "Mostre um truque rápido para equilibrar a pele.",
+        "angleKind": "mistake",
+        "openingLine": "Pequenas dicas podem mudar tudo.",
+        "title": "Como evitar pele oleosa",
+        "topic": "beauty"
+      },
+      {
+        "angle": "Mostre a verdade sobre algo que parece verdade.",
+        "angleKind": "myth",
+        "openingLine": "Pequenas dicas podem mudar tudo.",
+        "title": "Mitologia de maquiagem desmascarada",
+        "topic": "beauty"
+      },
+      {
+        "angle": "Conte o que aconteceu ao usar um produto novo.",
+        "angleKind": "story",
+        "openingLine": "Pequenas dicas podem mudar tudo.",
+        "title": "Experiência com protetor solar",
+        "topic": "beauty"
+      },
+      {
+        "angle": "Demonstre uma rotina de 5 minutos.",
+        "angleKind": "tutorial",
+        "openingLine": "Pequenas dicas podem mudar tudo.",
+        "title": "Ritual rápido de cuidado facial",
+        "topic": "beauty"
+      },
+      {
+        "angle": "Compartilhe uma opinião honesta sobre cuidado.",
+        "angleKind": "opinion",
+        "openingLine": "Pequenas dicas podem mudar tudo.",
+        "title": "Sobre a importância da hidratação",
+        "topic": "beauty"
+      }
+    ],
+    "index": 0,
+    "instructionTokens": 160,
+    "instructions": "You suggest video ideas for creators who film themselves talking to camera.\nWrite in the creator's own voice. What follows says how they sound and who they speak to, never what the video is about.\nWho they are: a lifestyle and personal creator.\nThey speak as one person: say “I” and “my”.\nTheir audience is everyday people: use simple, everyday words.\nTopics: beauty and skincare.\nThey sound casual.\nThey often say: “Fala, galera!” — use one naturally, ideally in the opening.",
+    "kind": "ideas",
+    "language": "pt-BR",
+    "prompt": "Suggest 6 fresh talking-head video ideas for a creator whose topics are: beauty and skincare. Each idea has a title of at most eight words, written the way a creator would post it: natural, specific, and promising something the viewer gets, never a generic \"Top 5\" and never starting with the name of its angle as a label; an angle, one short sentence that tells the creator what to do in the video, starting with a verb; and an opening line, the first sentence they say to camera, which leads straight into the angle. Title, angle and opening line are one idea. In this order: 1. a list of things about beauty and skincare; 2. a common mistake and how to fix it about beauty and skincare; 3. a myth to bust about beauty and skincare; 4. a short story from experience about beauty and skincare; 5. a quick how-to about beauty and skincare; 6. an honest opinion about beauty and skincare. The creator has been thinking about: “Rotina de skincare com três produtos de farmácia”; “Batom que dura o dia inteiro existe?”. Let the ideas grow from what interests them, in new ways: never repeat these. Opening lines must be true for anyone to say: no personal story, result, number or credential of the creator's, and no statistic, study, news or trend. Write the ideas in Portuguese (Brazil).",
+    "promptTokens": 295,
+    "run": "after-3",
+    "schemaTokens": 238,
+    "seconds": 10.600559333
+  },
+  {
+    "condition": "half",
+    "hasBrief": true,
+    "idea": "fact@Beauty & skincare, beforeAfter@Beauty & skincare, beginner@Beauty & skincare, comparison@Beauty & skincare, challenge@Beauty & skincare, dayInLife@Beauty & skincare",
+    "ideas": [
+      {
+        "angle": "Mostre como identificar ingredientes sutis",
+        "angleKind": "fact",
+        "openingLine": "Um truque simples pode mudar tudo.",
+        "title": "Como escolher cremes leves",
+        "topic": "beauty"
+      },
+      {
+        "angle": "Compare duas fórmulas e explique a escolha",
+        "angleKind": "beforeAfter",
+        "openingLine": "Saber o que funciona é essencial.",
+        "title": "Diferença entre brilho natural e falso",
+        "topic": "beauty"
+      },
+      {
+        "angle": "Teste dicas de combinação de produtos",
+        "angleKind": "beginner",
+        "openingLine": "Produtos certos fazem a diferença.",
+        "title": "Quais produtos combinam bem com pele seca",
+        "topic": "beauty"
+      },
+      {
+        "angle": "Mostre pequenas mudanças na rotina diária",
+        "angleKind": "comparison",
+        "openingLine": "Pequenas ações geram grandes resultados.",
+        "title": "Transformando hábitos de rotina de skincare",
+        "topic": "beauty"
+      },
+      {
+        "angle": "Use produtos e compartilhe a experiência",
+        "angleKind": "challenge",
+        "openingLine": "Experimentar ajuda a entender melhor.",
+        "title": "Testando produtos com efeito matador",
+        "topic": "beauty"
+      },
+      {
+        "angle": "Mostre a aplicação completa dos produtos",
+        "angleKind": "dayInLife",
+        "openingLine": "Preparar o rosto é um ritual.",
+        "title": "Momento de rotina de beleza completa",
+        "topic": "beauty"
+      }
+    ],
+    "index": 1,
+    "instructionTokens": 160,
+    "instructions": "You suggest video ideas for creators who film themselves talking to camera.\nWrite in the creator's own voice. What follows says how they sound and who they speak to, never what the video is about.\nWho they are: a lifestyle and personal creator.\nThey speak as one person: say “I” and “my”.\nTheir audience is everyday people: use simple, everyday words.\nTopics: beauty and skincare.\nThey sound casual.\nThey often say: “Fala, galera!” — use one naturally, ideally in the opening.",
+    "kind": "ideas",
+    "language": "pt-BR",
+    "prompt": "Suggest 6 fresh talking-head video ideas for a creator whose topics are: beauty and skincare. Each idea has a title of at most eight words, written the way a creator would post it: natural, specific, and promising something the viewer gets, never a generic \"Top 5\" and never starting with the name of its angle as a label; an angle, one short sentence that tells the creator what to do in the video, starting with a verb; and an opening line, the first sentence they say to camera, which leads straight into the angle. Title, angle and opening line are one idea. In this order: 1. a surprising fact about beauty and skincare; 2. a before and after about beauty and skincare; 3. the question every beginner asks about beauty and skincare; 4. a comparison of two options about beauty and skincare; 5. a challenge to try about beauty and skincare; 6. a day in the life about beauty and skincare. The creator has been thinking about: “Rotina de skincare com três produtos de farmácia”; “Batom que dura o dia inteiro existe?”. Let the ideas grow from what interests them, in new ways: never repeat these. Opening lines must be true for anyone to say: no personal story, result, number or credential of the creator's, and no statistic, study, news or trend. Write the ideas in Portuguese (Brazil).",
+    "promptTokens": 292,
+    "run": "after-3",
+    "schemaTokens": 238,
+    "seconds": 11.276270083
+  },
+  {
+    "condition": "none",
+    "hasBrief": true,
+    "idea": "list@Beauty & skincare, mistake@Beauty & skincare, myth@Beauty & skincare, story@Beauty & skincare, tutorial@Beauty & skincare, opinion@Beauty & skincare",
+    "ideas": [
+      {
+        "angle": "Mostrar como usar produtos de forma simples",
+        "angleKind": "list",
+        "openingLine": "A pele precisa de cuidados diretos.",
+        "title": "3 ingredientes secretos da rotina",
+        "topic": "beauty"
+      },
+      {
+        "angle": "Explicar como corrigir erros comuns no rosto",
+        "angleKind": "mistake",
+        "openingLine": "Seu cuidado pode atrapalhar o resultado.",
+        "title": "Como evitar uma textura oleosa",
+        "topic": "beauty"
+      },
+      {
+        "angle": "Testar produtos acessíveis em rotina",
+        "angleKind": "myth",
+        "openingLine": "Há crenças que enganam quem busca beleza.",
+        "title": "Desmistifique a necessidade de produtos caros",
+        "topic": "beauty"
+      },
+      {
+        "angle": "Demonstrar uma rotina eficiente ao acordar",
+        "angleKind": "story",
+        "openingLine": "Começar o dia com o rosto limpo.",
+        "title": "Compartilhar dicas de rotina matinal",
+        "topic": "beauty"
+      },
+      {
+        "angle": "Mostrar truques para manter a pele hidratada",
+        "angleKind": "tutorial",
+        "openingLine": "Hidratação é essencial em muitos produtos.",
+        "title": "Escrever dicas rápidas de hidratação",
+        "topic": "beauty"
+      },
+      {
+        "angle": "Comparar experiências com marcas populares",
+        "angleKind": "opinion",
+        "openingLine": "Há opiniões sobre produtos que surpreendem.",
+        "title": "Dividir opiniões sobre produtos que duram",
+        "topic": "beauty"
+      }
+    ],
+    "index": 0,
+    "instructionTokens": 60,
+    "instructions": "You suggest video ideas for creators who film themselves talking to camera.",
+    "kind": "ideas",
+    "language": "pt-BR",
+    "prompt": "Suggest 6 fresh talking-head video ideas for a creator whose topics are: beauty and skincare. Each idea has a title of at most eight words, written the way a creator would post it: natural, specific, and promising something the viewer gets, never a generic \"Top 5\" and never starting with the name of its angle as a label; an angle, one short sentence that tells the creator what to do in the video, starting with a verb; and an opening line, the first sentence they say to camera, which leads straight into the angle. Title, angle and opening line are one idea. In this order: 1. a list of things about beauty and skincare; 2. a common mistake and how to fix it about beauty and skincare; 3. a myth to bust about beauty and skincare; 4. a short story from experience about beauty and skincare; 5. a quick how-to about beauty and skincare; 6. an honest opinion about beauty and skincare. The creator has been thinking about: “Rotina de skincare com três produtos de farmácia”; “Batom que dura o dia inteiro existe?”. Let the ideas grow from what interests them, in new ways: never repeat these. Opening lines must be true for anyone to say: no personal story, result, number or credential of the creator's, and no statistic, study, news or trend. Write the ideas in Portuguese (Brazil).",
+    "promptTokens": 295,
+    "run": "after-3",
+    "schemaTokens": 238,
+    "seconds": 8.944818958
+  },
+  {
+    "condition": "none",
+    "hasBrief": true,
+    "idea": "fact@Beauty & skincare, beforeAfter@Beauty & skincare, beginner@Beauty & skincare, comparison@Beauty & skincare, challenge@Beauty & skincare, dayInLife@Beauty & skincare",
+    "ideas": [
+      {
+        "angle": "Testar a textura de cremes ao vivo",
+        "angleKind": "fact",
+        "openingLine": "Toda rotina começa com produtos adequados.",
+        "title": "Como escolher cremes suaves",
+        "topic": "beauty"
+      },
+      {
+        "angle": "Demonstrar a aplicação de produtos sobre a pele",
+        "angleKind": "beforeAfter",
+        "openingLine": "Uma pele saudável exige cuidado direto.",
+        "title": "Mudar a rotina para brilho instantâneo",
+        "topic": "beauty"
+      },
+      {
+        "angle": "Experimentar a aplicação de batom sem mãos",
+        "angleKind": "beginner",
+        "openingLine": "A prática transforma produtos em hábito.",
+        "title": "Dificuldade: pintar lábios sem esforço",
+        "topic": "beauty"
+      },
+      {
+        "angle": "Comparar cores e formatos de produtos",
+        "angleKind": "comparison",
+        "openingLine": "Elementos visuais dizem muito sobre eficácia.",
+        "title": "Comparar embalagens modernas de hidratação",
+        "topic": "beauty"
+      },
+      {
+        "angle": "Criar uma rotina rápida em 5 minutos",
+        "angleKind": "challenge",
+        "openingLine": "Rotinas curtas mantêm a pele hidratada.",
+        "title": "Desafio: transformar cuidados em ritual",
+        "topic": "beauty"
+      },
+      {
+        "angle": "Mostrar a aplicação de produtos no rosto",
+        "angleKind": "dayInLife",
+        "openingLine": "A conexão com a pele é essencial no dia a dia.",
+        "title": "Momentos íntimos com produtos naturais",
+        "topic": "beauty"
+      }
+    ],
+    "index": 1,
+    "instructionTokens": 60,
+    "instructions": "You suggest video ideas for creators who film themselves talking to camera.",
+    "kind": "ideas",
+    "language": "pt-BR",
+    "prompt": "Suggest 6 fresh talking-head video ideas for a creator whose topics are: beauty and skincare. Each idea has a title of at most eight words, written the way a creator would post it: natural, specific, and promising something the viewer gets, never a generic \"Top 5\" and never starting with the name of its angle as a label; an angle, one short sentence that tells the creator what to do in the video, starting with a verb; and an opening line, the first sentence they say to camera, which leads straight into the angle. Title, angle and opening line are one idea. In this order: 1. a surprising fact about beauty and skincare; 2. a before and after about beauty and skincare; 3. the question every beginner asks about beauty and skincare; 4. a comparison of two options about beauty and skincare; 5. a challenge to try about beauty and skincare; 6. a day in the life about beauty and skincare. The creator has been thinking about: “Rotina de skincare com três produtos de farmácia”; “Batom que dura o dia inteiro existe?”. Let the ideas grow from what interests them, in new ways: never repeat these. Opening lines must be true for anyone to say: no personal story, result, number or credential of the creator's, and no statistic, study, news or trend. Write the ideas in Portuguese (Brazil).",
+    "promptTokens": 292,
+    "run": "after-3",
+    "schemaTokens": 238,
+    "seconds": 9.546692333
+  },
+  {
+    "askedWords": [
+      75,
+      150
+    ],
+    "attempts": 1,
+    "condition": "full",
+    "contextSize": 4096,
+    "countMilliseconds": 1212.706375,
+    "expandedBlocks": 0,
+    "firstResponse": 2.891579125,
+    "hasBrief": false,
+    "idea": "3 mistakes that ruin your home workouts",
+    "index": 0,
+    "instructionTokens": 744,
+    "instructions": "You write short-form video scripts that a creator reads from a teleprompter while filming themselves.\nWrite in the first person, as the creator, in natural spoken language with short sentences.\nFill in a short title and the script blocks. Block text is only what the creator says: no headings, labels, markdown or quotes around it.\nAdd short stage cues in square brackets where they help delivery, like [pause], [smile] or [look at camera]. Never put spoken words inside brackets.\nPlatform: TikTok, vertical and fast. Hook in the first 3 seconds, one idea only, short punchy lines spoken like a friend; end with one easy action (comment, follow or save).\nNever invent personal stories, clients, results, numbers or credentials for the creator: speak from general experience unless the idea gives the details.\nBe accurate. State only facts you are confident about; when unsure of a date, name or number, say it more generally instead of inventing it.\nWrite in the creator's own voice. What follows says how they sound and who they speak to, never what the video is about.\nWho they are: an expert, coach or professional in their field.\nCredential: certified personal trainer. Mention it only where it fits; never invent another.\nThey speak as one person: say “I” and “my”.\nTheir audience: young adults.\nThey are new to the topic: explain terms and keep steps simple.\nThey watch to learn something and solve a problem.\nTheir videos aim to teach something useful and grow their audience.\nThey sound energetic and confident.\nDelivery: energy: high and lively; sentences: short and punchy (under twelve words); words: plain and everyday; humor: a little.\nNever swear.\nOpen with a question: show it in the script, never write the style's name.\nEnd by asking viewers to save the video.\nThey film mostly: lists and tips, tutorials.\nThey often say: “Okay, real talk.” — use one once after the first sentence, never as the first words.\nThey post on TikTok, Reels; videos are usually 30 to 60 seconds.\nAlso true of them, in their own words: no-equipment workouts.\nHere is how they write. Match the voice; never reuse these sentences, facts or stories:\n- “Is your back sore after leg day? Okay, real talk. You're skipping the hinge. Push your hips back, keep your chest proud, and go slow. Do ten of these before every workout. Save this for leg day.”\n- “7 days. 7 minutes. Okay, real talk. That's all I ask you to do! Wake up, stretch, drink water, move. I did this for a month and my energy changed. Don't overthink it!”\n- “I weighed my food for one week and I was shocked. I was eating half of what I needed. Now I track it with one simple app. Easy! Save this and send it to a friend.”\nRules: no hype words (game-changer, insane, mind-blowing, unbelievable): use plain, specific words; no medical claims: never say something cures, treats or heals, and speak in general terms.\nWrite the title and every block in English (United States).",
+    "kind": "script",
+    "language": "en-US",
+    "minimumWords": 75,
+    "outputTokens": 101,
+    "progressionDefects": [],
+    "prompt": "Language of the script: English (United States). Write all of it in English (United States).\nWrite a list of tips script for TikTok.\nBlocks, in this order: Hook → Tips → CTA.\nWhat each block does: Hook: say how many tips and what they give. Tips: each tip is one sentence plus one reason. CTA: ask them to save it or share their own tip.\nLength: between 75 and 150 spoken words in total.\nDo not stop early: the script must be at least 75 words, so write every block in full, with several complete sentences each.\nOpen with a hook that works in the first 3 seconds, in the creator's own way of opening.\nThe video: 3 mistakes that ruin your home workouts\nWrite about this idea and only this one: the creator's voice is how they sound, never what to talk about.\nRemember: Speak as one person (“I”). Avoid: hype words, medical claims. Never write the name of an opening style or open with a catchphrase. Stay on the idea: 3 mistakes that ruin your home workouts",
+    "promptTokens": 240,
+    "responseCap": 800,
+    "run": "after-3",
+    "schemaTokens": 321,
+    "seconds": 8.627008042,
+    "text": "How many mistakes mess up home workouts? Okay, real talk. I see three big ones that stop progress. First, I share simple fixes. Let’s tackle these together. Save this for tomorrow. [pause]\n\nFirst, keep your core tight. This stops strain. Second, avoid bouncing. Steady movement builds strength. Third, use proper space. This protects joints. [smile]\n\nThese tips are mine. Save this video. Or share your own fix. [look at camera]",
+    "title": "3 Home Workout Mistakes",
+    "violations": [],
+    "voiceTrimmed": [],
+    "voiceUse": "full"
+  },
+  {
+    "askedWords": [
+      75,
+      150
+    ],
+    "attempts": 1,
+    "condition": "full",
+    "contextSize": 4096,
+    "countMilliseconds": 108.390708,
+    "expandedBlocks": 0,
+    "firstResponse": 2.516704792,
+    "hasBrief": false,
+    "idea": "Why rest days make you stronger",
+    "index": 1,
+    "instructionTokens": 737,
+    "instructions": "You write short-form video scripts that a creator reads from a teleprompter while filming themselves.\nWrite in the first person, as the creator, in natural spoken language with short sentences.\nFill in a short title and the script blocks. Block text is only what the creator says: no headings, labels, markdown or quotes around it.\nAdd short stage cues in square brackets where they help delivery, like [pause], [smile] or [look at camera]. Never put spoken words inside brackets.\nPlatform: TikTok, vertical and fast. Hook in the first 3 seconds, one idea only, short punchy lines spoken like a friend; end with one easy action (comment, follow or save).\nNever invent personal stories, clients, results, numbers or credentials for the creator: speak from general experience unless the idea gives the details.\nBe accurate. State only facts you are confident about; when unsure of a date, name or number, say it more generally instead of inventing it.\nWrite in the creator's own voice. What follows says how they sound and who they speak to, never what the video is about.\nWho they are: an expert, coach or professional in their field.\nCredential: certified personal trainer. Mention it only where it fits; never invent another.\nThey speak as one person: say “I” and “my”.\nTheir audience: young adults.\nThey are new to the topic: explain terms and keep steps simple.\nThey watch to learn something and solve a problem.\nTheir videos aim to teach something useful and grow their audience.\nThey sound energetic and confident.\nDelivery: energy: high and lively; sentences: short and punchy (under twelve words); words: plain and everyday; humor: a little.\nNever swear.\nOpen with a question: show it in the script, never write the style's name.\nEnd by asking viewers to save the video.\nThey film mostly: lists and tips, tutorials.\nThey often say: “Okay, real talk.” — use one once after the first sentence, never as the first words.\nThey post on TikTok, Reels; videos are usually 30 to 60 seconds.\nAlso true of them, in their own words: no-equipment workouts.\nHere is how they write. Match the voice; never reuse these sentences, facts or stories:\n- “Is your back sore after leg day? Okay, real talk. You're skipping the hinge. Push your hips back, keep your chest proud, and go slow. Do ten of these before every workout. Save this for leg day.”\n- “3 mistakes ruining your push-ups! Okay, real talk. Number one: your hips sag. Number two: your elbows flare out. Number three: you rush every rep. Slow down and squeeze your chest.”\n- “I weighed my food for one week and I was shocked. I was eating half of what I needed. Now I track it with one simple app. Easy! Save this and send it to a friend.”\nRules: no hype words (game-changer, insane, mind-blowing, unbelievable): use plain, specific words; no medical claims: never say something cures, treats or heals, and speak in general terms.\nWrite the title and every block in English (United States).",
+    "kind": "script",
+    "language": "en-US",
+    "minimumWords": 75,
+    "outputTokens": 79,
+    "progressionDefects": [],
+    "prompt": "Language of the script: English (United States). Write all of it in English (United States).\nWrite a list of tips script for TikTok.\nBlocks, in this order: Hook → Tips → CTA.\nWhat each block does: Hook: say how many tips and what they give. Tips: each tip is one sentence plus one reason. CTA: ask them to save it or share their own tip.\nLength: between 75 and 150 spoken words in total.\nDo not stop early: the script must be at least 75 words, so write every block in full, with several complete sentences each.\nOpen with a hook that works in the first 3 seconds, in the creator's own way of opening.\nThe video: Why rest days make you stronger\nWrite about this idea and only this one: the creator's voice is how they sound, never what to talk about.\nRemember: Speak as one person (“I”). Avoid: hype words, medical claims. Never write the name of an opening style or open with a catchphrase. Stay on the idea: Why rest days make you stronger",
+    "promptTokens": 236,
+    "responseCap": 800,
+    "run": "after-3",
+    "schemaTokens": 321,
+    "seconds": 8.525066375,
+    "text": "Is your body feeling tired? Okay, real talk. I’ve got three quick reasons rest days boost strength. Watch this and learn why taking time off builds power. [pause]\n\nFirst, rest lets muscles recover. Second, it prevents overuse. Third, it keeps you steady. [look at camera]\n\nSave this and share your own tip. [emphasis] [pause]",
+    "title": "Rest Days: 3 Simple Reasons They Matter",
+    "violations": [
+      "tooShort"
+    ],
+    "voiceTrimmed": [],
+    "voiceUse": "full"
+  },
+  {
+    "askedWords": [
+      75,
+      150
+    ],
+    "attempts": 1,
+    "condition": "full",
+    "contextSize": 4096,
+    "countMilliseconds": 106.43483300000001,
+    "expandedBlocks": 0,
+    "firstResponse": 2.62689125,
+    "hasBrief": true,
+    "idea": "The warm-up most people skip\nAngle: Show a five-minute warm-up anyone can do at home.\nOpen with: “Your workout starts before the first squat.”",
+    "index": 2,
+    "instructionTokens": 737,
+    "instructions": "You write short-form video scripts that a creator reads from a teleprompter while filming themselves.\nWrite in the first person, as the creator, in natural spoken language with short sentences.\nFill in a short title and the script blocks. Block text is only what the creator says: no headings, labels, markdown or quotes around it.\nAdd short stage cues in square brackets where they help delivery, like [pause], [smile] or [look at camera]. Never put spoken words inside brackets.\nPlatform: TikTok, vertical and fast. Hook in the first 3 seconds, one idea only, short punchy lines spoken like a friend; end with one easy action (comment, follow or save).\nNever invent personal stories, clients, results, numbers or credentials for the creator: speak from general experience unless the idea gives the details.\nBe accurate. State only facts you are confident about; when unsure of a date, name or number, say it more generally instead of inventing it.\nWrite in the creator's own voice. What follows says how they sound and who they speak to, never what the video is about.\nWho they are: an expert, coach or professional in their field.\nCredential: certified personal trainer. Mention it only where it fits; never invent another.\nThey speak as one person: say “I” and “my”.\nTheir audience: young adults.\nThey are new to the topic: explain terms and keep steps simple.\nThey watch to learn something and solve a problem.\nTheir videos aim to teach something useful and grow their audience.\nThey sound energetic and confident.\nDelivery: energy: high and lively; sentences: short and punchy (under twelve words); words: plain and everyday; humor: a little.\nNever swear.\nOpen with a question: show it in the script, never write the style's name.\nEnd by asking viewers to save the video.\nThey film mostly: lists and tips, tutorials.\nThey often say: “Okay, real talk.” — use one once after the first sentence, never as the first words.\nThey post on TikTok, Reels; videos are usually 30 to 60 seconds.\nAlso true of them, in their own words: no-equipment workouts.\nHere is how they write. Match the voice; never reuse these sentences, facts or stories:\n- “Is your back sore after leg day? Okay, real talk. You're skipping the hinge. Push your hips back, keep your chest proud, and go slow. Do ten of these before every workout. Save this for leg day.”\n- “3 mistakes ruining your push-ups! Okay, real talk. Number one: your hips sag. Number two: your elbows flare out. Number three: you rush every rep. Slow down and squeeze your chest.”\n- “I weighed my food for one week and I was shocked. I was eating half of what I needed. Now I track it with one simple app. Easy! Save this and send it to a friend.”\nRules: no hype words (game-changer, insane, mind-blowing, unbelievable): use plain, specific words; no medical claims: never say something cures, treats or heals, and speak in general terms.\nWrite the title and every block in English (United States).",
+    "kind": "script",
+    "language": "en-US",
+    "minimumWords": 75,
+    "outputTokens": 108,
+    "progressionDefects": [],
+    "prompt": "Language of the script: English (United States). Write all of it in English (United States).\nWrite a list of tips script for TikTok.\nBlocks, in this order: Hook → Tips → CTA.\nWhat each block does: Hook: say how many tips and what they give. Tips: each tip is one sentence plus one reason. CTA: ask them to save it or share their own tip.\nLength: between 75 and 150 spoken words in total.\nDo not stop early: the script must be at least 75 words, so write every block in full, with several complete sentences each.\nOpen with this line, as it is or adapted only to the creator's way of speaking: “Your workout starts before the first squat.” It is the hook: write no other before it.\nThe video: The warm-up most people skip\nAngle: Show a five-minute warm-up anyone can do at home.\nOpen with: “Your workout starts before the first squat.”\nFollow this angle all the way through: Show a five-minute warm-up anyone can do at home.\nWrite about this idea and only this one: the creator's voice is how they sound, never what to talk about.\nRemember: Speak as one person (“I”). Avoid: hype words, medical claims. Never write the name of an opening style or open with a catchphrase. Stay on the idea: The warm-up most people skip\nAngle: Show a five-minute warm-up anyone can do at home.\nOpen with: “Your workout starts before the first squat.”",
+    "promptTokens": 338,
+    "responseCap": 800,
+    "run": "after-3",
+    "schemaTokens": 321,
+    "seconds": 7.113844958,
+    "text": "Your workout starts before the first squat. I know five moves most skip. These are quick, no-equipment lifts. I show you a five-minute routine you can do at home. Save this for your mornings. [smile]\n\nFirst, stretch your shoulders. This helps your muscles prepare. Second, activate your core. Strong abs support your body. Third, lift gently. Slow moves build strength. [pause]\n\nThese tips are easy to follow. I hope this helps. Save this video. [look at camera]",
+    "title": "Warm-up: 5-Minute Fix",
+    "violations": [],
+    "voiceTrimmed": [],
+    "voiceUse": "full"
+  },
+  {
+    "askedWords": [
+      150,
+      225
+    ],
+    "attempts": 1,
+    "condition": "half",
+    "contextSize": 4096,
+    "countMilliseconds": 93.777875,
+    "expandedBlocks": 0,
+    "firstResponse": 1.9505055420000001,
+    "hasBrief": false,
+    "idea": "3 mistakes that ruin your home workouts",
+    "index": 0,
+    "instructionTokens": 376,
+    "instructions": "You write short-form video scripts that a creator reads from a teleprompter while filming themselves.\nWrite in the first person, as the creator, in natural spoken language with short sentences.\nFill in a short title and the script blocks. Block text is only what the creator says: no headings, labels, markdown or quotes around it.\nAdd short stage cues in square brackets where they help delivery, like [pause], [smile] or [look at camera]. Never put spoken words inside brackets.\nPlatform: TikTok, vertical and fast. Hook in the first 3 seconds, one idea only, short punchy lines spoken like a friend; end with one easy action (comment, follow or save).\nNever invent personal stories, clients, results, numbers or credentials for the creator: speak from general experience unless the idea gives the details.\nBe accurate. State only facts you are confident about; when unsure of a date, name or number, say it more generally instead of inventing it.\nWrite in the creator's own voice. What follows says how they sound and who they speak to, never what the video is about.\nWho they are: an expert, coach or professional in their field.\nThey speak as one person: say “I” and “my”.\nTheir audience is everyday people: use simple, everyday words.\nThey sound energetic.\nDelivery: sentences: short and punchy (under twelve words).\nThey often say: “Okay, real talk.” — use one naturally, ideally in the opening.\nWrite the title and every block in English (United States).",
+    "kind": "script",
+    "language": "en-US",
+    "minimumWords": 150,
+    "outputTokens": 186,
+    "progressionDefects": [],
+    "prompt": "Language of the script: English (United States). Write all of it in English (United States).\nWrite a list of tips script for TikTok.\nBlocks, in this order: Hook → Tips → CTA.\nWhat each block does: Hook: say how many tips and what they give. Tips: each tip is one sentence plus one reason. CTA: ask them to save it or share their own tip.\nLength: between 150 and 225 spoken words in total.\nDo not stop early: the script must be at least 150 words, so write every block in full, with several complete sentences each.\nOpen with a hook that works in the first 3 seconds.\nThe video: 3 mistakes that ruin your home workouts\nWrite about this idea and only this one: the creator's voice is how they sound, never what to talk about.\nRemember: Speak as one person (“I”). Stay on the idea: 3 mistakes that ruin your home workouts",
+    "promptTokens": 209,
+    "responseCap": 1025,
+    "run": "after-3",
+    "schemaTokens": 321,
+    "seconds": 11.044472541,
+    "text": "Okay, real talk. I’m dropping three tips that mess up home workouts. These are quick fixes. They change everything. [pause] You’ll see the difference. Trust me. [smile]\n\nFirst, bad posture. It hurts your body. Even small moves matter. [look at camera] I see this all the time. It’s avoidable. [pause] Fix it now. [emphasis]\n\nSecond, overworking. Muscles need time. Push too hard. [pause] I’ve been there. Recovery builds strength. [smile] Listen to your body. [emphasis]\n\nThird, tiny rooms. They limit movement. Space matters. [pause] I’ve tried this. It’s tough. [look at camera] Change now. [pause]\n\nSave this. Share your tip. Let’s fix workouts together. [pause] Comment below. [smile]",
+    "title": "3 Home Workout Mistakes",
+    "violations": [
+      "tooShort"
+    ],
+    "voiceTrimmed": [],
+    "voiceUse": "full"
+  },
+  {
+    "askedWords": [
+      150,
+      225
+    ],
+    "attempts": 1,
+    "condition": "half",
+    "contextSize": 4096,
+    "countMilliseconds": 477.244834,
+    "expandedBlocks": 0,
+    "firstResponse": 2.074095583,
+    "hasBrief": false,
+    "idea": "Why rest days make you stronger",
+    "index": 1,
+    "instructionTokens": 376,
+    "instructions": "You write short-form video scripts that a creator reads from a teleprompter while filming themselves.\nWrite in the first person, as the creator, in natural spoken language with short sentences.\nFill in a short title and the script blocks. Block text is only what the creator says: no headings, labels, markdown or quotes around it.\nAdd short stage cues in square brackets where they help delivery, like [pause], [smile] or [look at camera]. Never put spoken words inside brackets.\nPlatform: TikTok, vertical and fast. Hook in the first 3 seconds, one idea only, short punchy lines spoken like a friend; end with one easy action (comment, follow or save).\nNever invent personal stories, clients, results, numbers or credentials for the creator: speak from general experience unless the idea gives the details.\nBe accurate. State only facts you are confident about; when unsure of a date, name or number, say it more generally instead of inventing it.\nWrite in the creator's own voice. What follows says how they sound and who they speak to, never what the video is about.\nWho they are: an expert, coach or professional in their field.\nThey speak as one person: say “I” and “my”.\nTheir audience is everyday people: use simple, everyday words.\nThey sound energetic.\nDelivery: sentences: short and punchy (under twelve words).\nThey often say: “Okay, real talk.” — use one naturally, ideally in the opening.\nWrite the title and every block in English (United States).",
+    "kind": "script",
+    "language": "en-US",
+    "minimumWords": 150,
+    "outputTokens": 130,
+    "progressionDefects": [],
+    "prompt": "Language of the script: English (United States). Write all of it in English (United States).\nWrite a talking video script for TikTok.\nBlocks, in this order: Hook → Body → CTA.\nWhat each block does: Hook: grab attention in 3 seconds with the main promise. Body: explain the one idea in small, concrete steps. CTA: one clear action.\nLength: between 150 and 225 spoken words in total.\nDo not stop early: the script must be at least 150 words, so write every block in full, with several complete sentences each.\nOpen with a hook that works in the first 3 seconds.\nThe video: Why rest days make you stronger\nWrite about this idea and only this one: the creator's voice is how they sound, never what to talk about.\nRemember: Speak as one person (“I”). Stay on the idea: Why rest days make you stronger",
+    "promptTokens": 200,
+    "responseCap": 1025,
+    "run": "after-3",
+    "schemaTokens": 321,
+    "seconds": 7.248993875,
+    "text": "Okay, real talk. Rest days are the real secret. I know you want results. But here’s the truth: you can’t skip them. [pause] [look at camera] You need them. Trust me. [smile]\n\nI’ll break it down for you. First, listen to your body. It needs time to recover. Second, don’t push too hard. Take a break. [pause] [emphasis] Third, stay flexible. Adapt your plan. [look at camera] That’s it. [confident]\n\nComment below. I’ll reply. [pause] [smile]",
+    "title": "Rest Days: Build Strength Fast",
+    "violations": [
+      "tooShort"
+    ],
+    "voiceTrimmed": [],
+    "voiceUse": "full"
+  },
+  {
+    "askedWords": [
+      150,
+      225
+    ],
+    "attempts": 1,
+    "condition": "half",
+    "contextSize": 4096,
+    "countMilliseconds": 87.900667,
+    "expandedBlocks": 0,
+    "firstResponse": 2.087592334,
+    "hasBrief": true,
+    "idea": "The warm-up most people skip\nAngle: Show a five-minute warm-up anyone can do at home.\nOpen with: “Your workout starts before the first squat.”",
+    "index": 2,
+    "instructionTokens": 376,
+    "instructions": "You write short-form video scripts that a creator reads from a teleprompter while filming themselves.\nWrite in the first person, as the creator, in natural spoken language with short sentences.\nFill in a short title and the script blocks. Block text is only what the creator says: no headings, labels, markdown or quotes around it.\nAdd short stage cues in square brackets where they help delivery, like [pause], [smile] or [look at camera]. Never put spoken words inside brackets.\nPlatform: TikTok, vertical and fast. Hook in the first 3 seconds, one idea only, short punchy lines spoken like a friend; end with one easy action (comment, follow or save).\nNever invent personal stories, clients, results, numbers or credentials for the creator: speak from general experience unless the idea gives the details.\nBe accurate. State only facts you are confident about; when unsure of a date, name or number, say it more generally instead of inventing it.\nWrite in the creator's own voice. What follows says how they sound and who they speak to, never what the video is about.\nWho they are: an expert, coach or professional in their field.\nThey speak as one person: say “I” and “my”.\nTheir audience is everyday people: use simple, everyday words.\nThey sound energetic.\nDelivery: sentences: short and punchy (under twelve words).\nThey often say: “Okay, real talk.” — use one naturally, ideally in the opening.\nWrite the title and every block in English (United States).",
+    "kind": "script",
+    "language": "en-US",
+    "minimumWords": 150,
+    "outputTokens": 262,
+    "progressionDefects": [],
+    "prompt": "Language of the script: English (United States). Write all of it in English (United States).\nWrite a talking video script for TikTok.\nBlocks, in this order: Hook → Body → CTA.\nWhat each block does: Hook: grab attention in 3 seconds with the main promise. Body: explain the one idea in small, concrete steps. CTA: one clear action.\nLength: between 150 and 225 spoken words in total.\nDo not stop early: the script must be at least 150 words, so write every block in full, with several complete sentences each.\nOpen with this line, as it is or adapted only to the creator's way of speaking: “Your workout starts before the first squat.” It is the hook: write no other before it.\nThe video: The warm-up most people skip\nAngle: Show a five-minute warm-up anyone can do at home.\nOpen with: “Your workout starts before the first squat.”\nFollow this angle all the way through: Show a five-minute warm-up anyone can do at home.\nWrite about this idea and only this one: the creator's voice is how they sound, never what to talk about.\nRemember: Speak as one person (“I”). Stay on the idea: The warm-up most people skip\nAngle: Show a five-minute warm-up anyone can do at home.\nOpen with: “Your workout starts before the first squat.”",
+    "promptTokens": 312,
+    "responseCap": 1025,
+    "run": "after-3",
+    "schemaTokens": 321,
+    "seconds": 11.162470708,
+    "text": "Your workout starts before the first squat. Okay, real talk. Most people rush past this part. I see it all the time. That’s why I’m sharing something small but powerful. Let’s get moving—without overthinking. This is the shift I make every day. [pause] You don’t need fancy gear. Just a few minutes of movement. Trust me, it makes a difference. [smile] I’m here to help you avoid this mistake. [look at camera] Let’s keep it real. [pause]\n\nHere’s what I do: five minutes of gentle stretching. I start with shoulder circles. Then I do leg swings. I include torso twists too. It’s simple, but it works. [emphasis] I repeat this daily. It builds strength quietly. [pause] No big deal—just consistency. [look at camera] I see progress when people stick with this. [smile] It’s not complicated. [pause]\n\nTry this warm-up today. Comment below if you’ll do it. Let’s keep improving together. [pause] Save this for later. [look at camera] I’ll be here. [smile] [pause] Follow me for more. [pause]",
+    "title": "Warm-Up: Don’t Skip It",
+    "violations": [],
+    "voiceTrimmed": [],
+    "voiceUse": "full"
+  },
+  {
+    "askedWords": [
+      150,
+      225
+    ],
+    "attempts": 1,
+    "condition": "none",
+    "contextSize": 4096,
+    "countMilliseconds": 94.452375,
+    "expandedBlocks": 0,
+    "firstResponse": 1.825696583,
+    "hasBrief": false,
+    "idea": "3 mistakes that ruin your home workouts",
+    "index": 0,
+    "instructionTokens": 264,
+    "instructions": "You write short-form video scripts that a creator reads from a teleprompter while filming themselves.\nWrite in the first person, as the creator, in natural spoken language with short sentences.\nFill in a short title and the script blocks. Block text is only what the creator says: no headings, labels, markdown or quotes around it.\nAdd short stage cues in square brackets where they help delivery, like [pause], [smile] or [look at camera]. Never put spoken words inside brackets.\nPlatform: TikTok, vertical and fast. Hook in the first 3 seconds, one idea only, short punchy lines spoken like a friend; end with one easy action (comment, follow or save).\nNever invent personal stories, clients, results, numbers or credentials for the creator: speak from general experience unless the idea gives the details.\nBe accurate. State only facts you are confident about; when unsure of a date, name or number, say it more generally instead of inventing it.\nWrite the title and every block in English (United States).",
+    "kind": "script",
+    "language": "en-US",
+    "minimumWords": 150,
+    "outputTokens": 165,
+    "progressionDefects": [],
+    "prompt": "Language of the script: English (United States). Write all of it in English (United States).\nWrite a list of tips script for TikTok.\nBlocks, in this order: Hook → Tips → CTA.\nWhat each block does: Hook: say how many tips and what they give. Tips: each tip is one sentence plus one reason. CTA: ask them to save it or share their own tip.\nLength: between 150 and 225 spoken words in total.\nDo not stop early: the script must be at least 150 words, so write every block in full, with several complete sentences each.\nOpen with a hook that works in the first 3 seconds.\nThe video: 3 mistakes that ruin your home workouts",
+    "promptTokens": 160,
+    "responseCap": 1025,
+    "run": "after-3",
+    "schemaTokens": 321,
+    "seconds": 9.180825083,
+    "text": "Hey, I’m about to show you three tips that mess up your home workouts. [pause] These are easy fixes for anyone who trains at home. [smile] No fancy equipment needed—just smart habits. [emphasis] Let’s get straight to the ones that stop progress. [look at camera]\n\nFirst, working out without a routine. Without structure, your body never adapts. [pause] Second, ignoring rest days. Skipping recovery burns energy instead of building strength. [smile] Third, lifting heavy without form. Poor posture causes injury over time. [pause] These small oversights add up. [look at camera]\n\nWant to avoid these errors? Save this video or share your own workout fix in the comments. [pause] Let’s keep improving together. [smile]",
+    "title": "3 Home Workout Mistakes",
+    "violations": [
+      "tooShort"
+    ],
+    "voiceUse": "none"
+  },
+  {
+    "askedWords": [
+      150,
+      225
+    ],
+    "attempts": 1,
+    "condition": "none",
+    "contextSize": 4096,
+    "countMilliseconds": 95.757125,
+    "expandedBlocks": 0,
+    "firstResponse": 2.027627792,
+    "hasBrief": false,
+    "idea": "Why rest days make you stronger",
+    "index": 1,
+    "instructionTokens": 264,
+    "instructions": "You write short-form video scripts that a creator reads from a teleprompter while filming themselves.\nWrite in the first person, as the creator, in natural spoken language with short sentences.\nFill in a short title and the script blocks. Block text is only what the creator says: no headings, labels, markdown or quotes around it.\nAdd short stage cues in square brackets where they help delivery, like [pause], [smile] or [look at camera]. Never put spoken words inside brackets.\nPlatform: TikTok, vertical and fast. Hook in the first 3 seconds, one idea only, short punchy lines spoken like a friend; end with one easy action (comment, follow or save).\nNever invent personal stories, clients, results, numbers or credentials for the creator: speak from general experience unless the idea gives the details.\nBe accurate. State only facts you are confident about; when unsure of a date, name or number, say it more generally instead of inventing it.\nWrite the title and every block in English (United States).",
+    "kind": "script",
+    "language": "en-US",
+    "minimumWords": 150,
+    "outputTokens": 253,
+    "progressionDefects": [],
+    "prompt": "Language of the script: English (United States). Write all of it in English (United States).\nWrite a talking video script for TikTok.\nBlocks, in this order: Hook → Body → CTA.\nWhat each block does: Hook: grab attention in 3 seconds with the main promise. Body: explain the one idea in small, concrete steps. CTA: one clear action.\nLength: between 150 and 225 spoken words in total.\nDo not stop early: the script must be at least 150 words, so write every block in full, with several complete sentences each.\nOpen with a hook that works in the first 3 seconds.\nThe video: Why rest days make you stronger",
+    "promptTokens": 153,
+    "responseCap": 1025,
+    "run": "after-3",
+    "schemaTokens": 321,
+    "seconds": 10.484183541,
+    "text": "Hey, I’m here to show you one simple truth: rest days actually make you stronger. [pause] Trust me, it’s not just for the couch. [smile] When you step away from intense workouts, your body repairs itself. That repair is what builds resilience. [look at camera] It’s the foundation for real progress. [pause] So let’s talk about how you can use rest to get better. [emphasis]\n\nFirst, I’ll say this: active recovery isn’t a break—it’s a strategy. [pause] Simple activities like walking or gentle stretching help flush out toxins. [smile] Your muscles use that time to rebuild fibers. [pause] I’ll also mention sleep quality—getting enough rest isn’t optional. [look at camera] It’s the secret ingredient. [pause] When you combine movement with rest, you’re optimizing your performance. [emphasis]\n\nWant to level up? Hit that comment button. [pause] Share what rest means to you. [smile] I’ll see it. [pause] Or follow for more tips. [look at camera] Save this video if you’re ready to change. [pause]",
+    "title": "Rest Days: Why They Build Strength",
+    "violations": [],
+    "voiceUse": "none"
+  },
+  {
+    "askedWords": [
+      150,
+      225
+    ],
+    "attempts": 1,
+    "condition": "none",
+    "contextSize": 4096,
+    "countMilliseconds": 324.269875,
+    "expandedBlocks": 0,
+    "firstResponse": 1.9523973749999999,
+    "hasBrief": true,
+    "idea": "The warm-up most people skip\nAngle: Show a five-minute warm-up anyone can do at home.\nOpen with: “Your workout starts before the first squat.”",
+    "index": 2,
+    "instructionTokens": 264,
+    "instructions": "You write short-form video scripts that a creator reads from a teleprompter while filming themselves.\nWrite in the first person, as the creator, in natural spoken language with short sentences.\nFill in a short title and the script blocks. Block text is only what the creator says: no headings, labels, markdown or quotes around it.\nAdd short stage cues in square brackets where they help delivery, like [pause], [smile] or [look at camera]. Never put spoken words inside brackets.\nPlatform: TikTok, vertical and fast. Hook in the first 3 seconds, one idea only, short punchy lines spoken like a friend; end with one easy action (comment, follow or save).\nNever invent personal stories, clients, results, numbers or credentials for the creator: speak from general experience unless the idea gives the details.\nBe accurate. State only facts you are confident about; when unsure of a date, name or number, say it more generally instead of inventing it.\nWrite the title and every block in English (United States).",
+    "kind": "script",
+    "language": "en-US",
+    "minimumWords": 150,
+    "outputTokens": 180,
+    "progressionDefects": [],
+    "prompt": "Language of the script: English (United States). Write all of it in English (United States).\nWrite a talking video script for TikTok.\nBlocks, in this order: Hook → Body → CTA.\nWhat each block does: Hook: grab attention in 3 seconds with the main promise. Body: explain the one idea in small, concrete steps. CTA: one clear action.\nLength: between 150 and 225 spoken words in total.\nDo not stop early: the script must be at least 150 words, so write every block in full, with several complete sentences each.\nOpen with this line, as it is or adapted only to the creator's way of speaking: “Your workout starts before the first squat.” It is the hook: write no other before it.\nThe video: The warm-up most people skip\nAngle: Show a five-minute warm-up anyone can do at home.\nOpen with: “Your workout starts before the first squat.”\nFollow this angle all the way through: Show a five-minute warm-up anyone can do at home.",
+    "promptTokens": 234,
+    "responseCap": 1025,
+    "run": "after-3",
+    "schemaTokens": 321,
+    "seconds": 8.548372875,
+    "text": "Your workout starts before the first squat. [pause] Five minutes of prep clears the way. Anyone can fit this into their morning. [smile] No fancy gym gear needed. [look at camera] Just a few moves to wake up your body. [pause] This is the secret to stronger results. [pause] Jump in. [pause]\n\nI start with light cardio to get blood flowing. [pause] Then I stretch major muscle groups. [pause] I focus on breathing deeply. [pause] This routine takes five minutes. [pause] It primes your joints for action. [pause] I do this every day. [pause] Even beginners benefit. [pause]\n\nTry this warm-up today. [pause] Comment below if you try it. [pause] Or follow for more tips. [pause] Save the video if it helps. [pause]",
+    "title": "Warm-Up Before Your First Squat",
+    "violations": [
+      "tooShort"
+    ],
+    "voiceUse": "none"
+  },
+  {
+    "askedWords": [
+      75,
+      150
+    ],
+    "attempts": 2,
+    "condition": "full",
+    "contextSize": 4096,
+    "countMilliseconds": 332.72275,
+    "discardedDraft": "Hola, familia. Sabemos que abrir una tienda pequeña trae incertidumbre, pero en nuestro taller algo cambió: comenzamos con materiales de calidad, aunque no fue así para todos. [mirar a la cámara] Esto nos enseñó que la preparación es clave.\n\nNosotros trabajamos con clientes locales y nos enfocamos en ofrecer productos adaptados a sus necesidades. [sonrisa] La mayoría de los errores ocurren en la organización inicial, pero nosotros seguimos un orden claro.\n\nDescubrimos que no todos los empleados comprendían la importancia de la limpieza, lo que afectó la percepción inicial. [gesto de cabeza] Esto nos hizo replantearnos cada detalle.\n\nLo simple funciona mejor: un espacio limpio y organizado genera confianza. [señalar al público] ¡Síguenos para aprender más!",
+    "expandedBlocks": 0,
+    "firstResponse": 2.948716334,
+    "hasBrief": false,
+    "idea": "Tres errores al abrir una tienda pequeña",
+    "index": 0,
+    "instructionTokens": 725,
+    "instructions": "You write short-form video scripts that a creator reads from a teleprompter while filming themselves.\nWrite in the first person, as the creator, in natural spoken language with a mix of short and longer sentences.\nFill in a short title and the script blocks. Block text is only what the creator says: no headings, labels, markdown or quotes around it.\nAdd short stage cues in square brackets where they help delivery, like [pause], [smile] or [look at camera]. Never put spoken words inside brackets.\nPlatform: TikTok, vertical and fast. Hook in the first 3 seconds, one idea only, short punchy lines spoken like a friend; end with one easy action (comment, follow or save).\nNever invent personal stories, clients, results, numbers or credentials for the creator: speak from general experience unless the idea gives the details.\nBe accurate. State only facts you are confident about; when unsure of a date, name or number, say it more generally instead of inventing it.\nWrite in the creator's own voice. What follows says how they sound and who they speak to, never what the video is about.\nWho they are: the owner of a business (a shop, salon, studio or service).\nThey speak as a team: say “we” and “our”, never “I”.\nTheir audience: people in the creator's local community.\nThey are new to the topic: explain terms and keep steps simple.\nThey watch to get inspired and decide what to buy.\nTheir videos aim to sell a product or service and build a community.\nThey sound warm and calm and casual.\nDelivery: energy: balanced; sentences: a mix of short and longer; words: plain and everyday; humor: none, no jokes.\nNever swear.\nOpen with the start of a short story: show it in the script, never write the style's name.\nEnd by inviting them to follow for more.\nThey film mostly: storytimes, tutorials.\nThey often say: “Hola, familia.” — use one once after the first sentence, never as the first words.\nThey post on Reels; videos are usually 30 to 60 seconds.\nHere is how they write. Match the voice; never reuse these sentences, facts or stories:\n- “Hoy les contamos por qué nuestras tazas tardan dos semanas. Nosotros dejamos secar cada pieza despacio, porque si la apuramos, se agrieta en el horno. Síguenos para ver el proceso completo.”\n- “En nuestro taller nosotros preparamos cada pedido a mano. Nuestro equipo empieza a las siete de la mañana. Nosotros cuidamos cada detalle porque nuestros clientes lo notan.”\n- “Primero, nuestro inventario. Después, nuestras ofertas. Nosotros creemos que lo simple funciona mejor. Si te sirvió, sígueme para más ideas.”\nRules: no hype words (game-changer, insane, mind-blowing, unbelievable): use plain, specific words.\nWrite the title and every block in Spanish (Spain).\nThe script is in Spanish (Spain), not in English: write it in Spanish (Spain) even though these instructions are in English. Only the creator's catchphrases stay as they are.",
+    "kind": "script",
+    "language": "es-ES",
+    "minimumWords": 75,
+    "outputTokens": 196,
+    "progressionDefects": [],
+    "prompt": "Language of the script: Spanish (Spain). Write all of it in Spanish (Spain).\nWrite a storytime script for TikTok.\nBlocks, in this order: Hook → Setup → Twist → Payoff.\nWhat each block does: Hook: the most surprising line first. Setup: where, when and who, briefly. Twist: the one thing that went differently. Payoff: what it meant, in a line the viewer remembers.\nLength: between 75 and 150 spoken words in total.\nDo not stop early: the script must be at least 75 words, so write every block in full, with several complete sentences each.\nOpen with a hook that works in the first 3 seconds, in the creator's own way of opening.\nThe video: Tres errores al abrir una tienda pequeña\nWrite about this idea and only this one: the creator's voice is how they sound, never what to talk about.\nRemember: Say “we”, never “I”. Avoid: hype words. Never write the name of an opening style or open with a catchphrase. Stay on the idea: Tres errores al abrir una tienda pequeña",
+    "promptTokens": 242,
+    "responseCap": 800,
+    "run": "after-3",
+    "schemaTokens": 321,
+    "seconds": 27.62217025,
+    "text": "Hoy vemos tres errores comunes al abrir una tienda pequeña. Nosotros trabajamos con un equipo local y sabemos que cada decisión importa. [pause] Primero, hay que organizar bien las herramientas. Luego, elegir el lugar adecuado. [smile] Aunque parezca sencillo, cada detalle marca la diferencia.\n\nCuando empezamos, uno de los errores fue subestimar el tiempo necesario para preparar el espacio. Nosotros tuvimos que dedicar horas a limpiar y organizar. [look at camera] Trabajamos juntos para asegurar que todo estuviera listo antes de abrir. [emphasis] Eso nos ayudó a evitar retrasos.\n\nLo que más nos sorprendió fue descubrir que usar métodos manuales ayudaba a detectar problemas antes. Nosotros ajustamos nuestras rutinas para asegurar la calidad. [pause] Esto nos dio una ventaja inesperada.\n\nLo esencial es prepararse bien antes de lanzar. [confident] Seguimos aprendiendo cada día. [pause] Únete a nuestra comunidad para compartir consejos.",
+    "title": "Tres errores al abrir una tienda pequeña",
+    "violations": [],
+    "voiceTrimmed": [],
+    "voiceUse": "full"
+  },
+  {
+    "askedWords": [
+      75,
+      150
+    ],
+    "attempts": 1,
+    "condition": "full",
+    "contextSize": 4096,
+    "countMilliseconds": 97.724167,
+    "expandedBlocks": 0,
+    "firstResponse": 2.5349947090000002,
+    "hasBrief": false,
+    "idea": "Por qué hacemos cada pieza a mano",
+    "index": 1,
+    "instructionTokens": 729,
+    "instructions": "You write short-form video scripts that a creator reads from a teleprompter while filming themselves.\nWrite in the first person, as the creator, in natural spoken language with a mix of short and longer sentences.\nFill in a short title and the script blocks. Block text is only what the creator says: no headings, labels, markdown or quotes around it.\nAdd short stage cues in square brackets where they help delivery, like [pause], [smile] or [look at camera]. Never put spoken words inside brackets.\nPlatform: TikTok, vertical and fast. Hook in the first 3 seconds, one idea only, short punchy lines spoken like a friend; end with one easy action (comment, follow or save).\nNever invent personal stories, clients, results, numbers or credentials for the creator: speak from general experience unless the idea gives the details.\nBe accurate. State only facts you are confident about; when unsure of a date, name or number, say it more generally instead of inventing it.\nWrite in the creator's own voice. What follows says how they sound and who they speak to, never what the video is about.\nWho they are: the owner of a business (a shop, salon, studio or service).\nThey speak as a team: say “we” and “our”, never “I”.\nTheir audience: people in the creator's local community.\nThey are new to the topic: explain terms and keep steps simple.\nThey watch to get inspired and decide what to buy.\nTheir videos aim to sell a product or service and build a community.\nThey sound warm and calm and casual.\nDelivery: energy: balanced; sentences: a mix of short and longer; words: plain and everyday; humor: none, no jokes.\nNever swear.\nOpen with the start of a short story: show it in the script, never write the style's name.\nEnd by inviting them to follow for more.\nThey film mostly: storytimes, tutorials.\nThey often say: “Hola, familia.” — use one once after the first sentence, never as the first words.\nThey post on Reels; videos are usually 30 to 60 seconds.\nHere is how they write. Match the voice; never reuse these sentences, facts or stories:\n- “Hoy les contamos por qué nuestras tazas tardan dos semanas. Nosotros dejamos secar cada pieza despacio, porque si la apuramos, se agrieta en el horno. Síguenos para ver el proceso completo.”\n- “Nosotros abrimos nuestra tienda hace tres años con una sola mesa. Nuestro primer cliente fue una vecina. Nosotros todavía recordamos ese día. Sígueme para ver nuestra historia completa.”\n- “Primero, nuestro inventario. Después, nuestras ofertas. Nosotros creemos que lo simple funciona mejor. Si te sirvió, sígueme para más ideas.”\nRules: no hype words (game-changer, insane, mind-blowing, unbelievable): use plain, specific words.\nWrite the title and every block in Spanish (Spain).\nThe script is in Spanish (Spain), not in English: write it in Spanish (Spain) even though these instructions are in English. Only the creator's catchphrases stay as they are.",
+    "kind": "script",
+    "language": "es-ES",
+    "minimumWords": 75,
+    "outputTokens": 152,
+    "progressionDefects": [],
+    "prompt": "Language of the script: Spanish (Spain). Write all of it in Spanish (Spain).\nWrite a storytime script for TikTok.\nBlocks, in this order: Hook → Setup → Twist → Payoff.\nWhat each block does: Hook: the most surprising line first. Setup: where, when and who, briefly. Twist: the one thing that went differently. Payoff: what it meant, in a line the viewer remembers.\nLength: between 75 and 150 spoken words in total.\nDo not stop early: the script must be at least 75 words, so write every block in full, with several complete sentences each.\nOpen with a hook that works in the first 3 seconds, in the creator's own way of opening.\nThe video: Por qué hacemos cada pieza a mano\nWrite about this idea and only this one: the creator's voice is how they sound, never what to talk about.\nRemember: Say “we”, never “I”. Avoid: hype words. Never write the name of an opening style or open with a catchphrase. Stay on the idea: Por qué hacemos cada pieza a mano",
+    "promptTokens": 242,
+    "responseCap": 800,
+    "run": "after-3",
+    "schemaTokens": 321,
+    "seconds": 12.455877667,
+    "text": "Hoy vemos cómo cada pieza nace sin moldes ni máquinas. [curiosity] Nos tomamos el tiempo para esculpir cada borde a mano, algo que quizás no esperabas. [smile]\n\nAquí, en nuestro taller local, hemos perfeccionado esta técnica durante años. [gestures] Trabajamos con materiales naturales, siguiendo métodos transmitidos de generación en generación. [pause]\n\nLo que muchos no saben es que cada pieza se trabaja con precisión visual, no solo táctica. [emphasis] Esto hace que cada acabado sea único, incluso entre piezas iguales. [look at camera]\n\nCuando eliges nuestra artesanía, eliges calidad y conexión. [calm] Ven y descubre cómo cada detalle cuenta. [call to action]",
+    "title": "Por qué hacemos cada pieza a mano",
+    "violations": [],
+    "voiceTrimmed": [],
+    "voiceUse": "full"
+  },
+  {
+    "askedWords": [
+      75,
+      150
+    ],
+    "attempts": 1,
+    "condition": "full",
+    "contextSize": 4096,
+    "countMilliseconds": 98.050209,
+    "expandedBlocks": 0,
+    "firstResponse": 3.25707975,
+    "hasBrief": true,
+    "idea": "Cómo elegir una taza que dure años\nAngle: Explica tres señales de una taza de cerámica bien hecha.\nOpen with: “No todas las tazas de cerámica son iguales.”",
+    "index": 2,
+    "instructionTokens": 736,
+    "instructions": "You write short-form video scripts that a creator reads from a teleprompter while filming themselves.\nWrite in the first person, as the creator, in natural spoken language with a mix of short and longer sentences.\nFill in a short title and the script blocks. Block text is only what the creator says: no headings, labels, markdown or quotes around it.\nAdd short stage cues in square brackets where they help delivery, like [pause], [smile] or [look at camera]. Never put spoken words inside brackets.\nPlatform: TikTok, vertical and fast. Hook in the first 3 seconds, one idea only, short punchy lines spoken like a friend; end with one easy action (comment, follow or save).\nNever invent personal stories, clients, results, numbers or credentials for the creator: speak from general experience unless the idea gives the details.\nBe accurate. State only facts you are confident about; when unsure of a date, name or number, say it more generally instead of inventing it.\nWrite in the creator's own voice. What follows says how they sound and who they speak to, never what the video is about.\nWho they are: the owner of a business (a shop, salon, studio or service).\nThey speak as a team: say “we” and “our”, never “I”.\nTheir audience: people in the creator's local community.\nThey are new to the topic: explain terms and keep steps simple.\nThey watch to get inspired and decide what to buy.\nTheir videos aim to sell a product or service and build a community.\nTopics: Cerámica artesanal (Tazas).\nThey sound warm and calm and casual.\nDelivery: energy: balanced; sentences: a mix of short and longer; words: plain and everyday; humor: none, no jokes.\nNever swear.\nOpen with the start of a short story: show it in the script, never write the style's name.\nEnd by inviting them to follow for more.\nThey film mostly: storytimes, tutorials.\nThey often say: “Hola, familia.” — use one once after the first sentence, never as the first words.\nThey post on Reels; videos are usually 30 to 60 seconds.\nHere is how they write. Match the voice; never reuse these sentences, facts or stories:\n- “Hoy les contamos por qué nuestras tazas tardan dos semanas. Nosotros dejamos secar cada pieza despacio, porque si la apuramos, se agrieta en el horno. Síguenos para ver el proceso completo.”\n- “En nuestro taller nosotros preparamos cada pedido a mano. Nuestro equipo empieza a las siete de la mañana. Nosotros cuidamos cada detalle porque nuestros clientes lo notan.”\n- “Primero, nuestro inventario. Después, nuestras ofertas. Nosotros creemos que lo simple funciona mejor. Si te sirvió, sígueme para más ideas.”\nRules: no hype words (game-changer, insane, mind-blowing, unbelievable): use plain, specific words.\nWrite the title and every block in Spanish (Spain).\nThe script is in Spanish (Spain), not in English: write it in Spanish (Spain) even though these instructions are in English. Only the creator's catchphrases stay as they are.",
+    "kind": "script",
+    "language": "es-ES",
+    "minimumWords": 75,
+    "outputTokens": 169,
+    "progressionDefects": [],
+    "prompt": "Language of the script: Spanish (Spain). Write all of it in Spanish (Spain).\nWrite a storytime script for TikTok.\nBlocks, in this order: Hook → Setup → Twist → Payoff.\nWhat each block does: Hook: the most surprising line first. Setup: where, when and who, briefly. Twist: the one thing that went differently. Payoff: what it meant, in a line the viewer remembers.\nLength: between 75 and 150 spoken words in total.\nDo not stop early: the script must be at least 75 words, so write every block in full, with several complete sentences each.\nOpen with this line, as it is or adapted only to the creator's way of speaking: “No todas las tazas de cerámica son iguales.” It is the hook: write no other before it.\nThe video: Cómo elegir una taza que dure años\nAngle: Explica tres señales de una taza de cerámica bien hecha.\nOpen with: “No todas las tazas de cerámica son iguales.”\nFollow this angle all the way through: Explica tres señales de una taza de cerámica bien hecha.\nWrite about this idea and only this one: the creator's voice is how they sound, never what to talk about.\nRemember: Say “we”, never “I”. Avoid: hype words. Never write the name of an opening style or open with a catchphrase. Stay on the idea: Cómo elegir una taza que dure años\nAngle: Explica tres señales de una taza de cerámica bien hecha.\nOpen with: “No todas las tazas de cerámica son iguales.”",
+    "promptTokens": 342,
+    "responseCap": 800,
+    "run": "after-3",
+    "schemaTokens": 321,
+    "seconds": 35.635398667,
+    "text": "No todas las tazas de cerámica son iguales [pause]. Nos damos cuenta de que algunas tienen grietas invisibles al tacto, algo que muchos no buscan. Observamos cómo nuestras tazas se moldean a mano, y eso afecta su resistencia. [smile]\n\nEn nuestro taller, elaboramos cada pieza con materiales naturales. Trabajamos durante horas para asegurar que cada detalle esté perfecto. Nuestro equipo cuida cada rincón, desde la preparación hasta la cocción. [look at camera]\n\nDescubrimos que una marca puede usar capas de color artificiales, algo que afecta su durabilidad. Eso es algo que no habíamos visto antes en otros productos. [emphasis]\n\nLo esencial es revisar la calidad de la superficie: debe ser lisa y uniforme. Eso es lo que hace que una taza dure años. [pause]",
+    "title": "Cómo elegir una taza de cerámica duradera",
+    "violations": [],
+    "voiceTrimmed": [],
+    "voiceUse": "full"
+  },
+  {
+    "askedWords": [
+      150,
+      225
+    ],
+    "attempts": 1,
+    "condition": "half",
+    "contextSize": 4096,
+    "countMilliseconds": 84.365833,
+    "expandedBlocks": 0,
+    "firstResponse": 2.070364166,
+    "hasBrief": false,
+    "idea": "Tres errores al abrir una tienda pequeña",
+    "index": 0,
+    "instructionTokens": 412,
+    "instructions": "You write short-form video scripts that a creator reads from a teleprompter while filming themselves.\nWrite in the first person, as the creator, in natural spoken language with short sentences.\nFill in a short title and the script blocks. Block text is only what the creator says: no headings, labels, markdown or quotes around it.\nAdd short stage cues in square brackets where they help delivery, like [pause], [smile] or [look at camera]. Never put spoken words inside brackets.\nPlatform: TikTok, vertical and fast. Hook in the first 3 seconds, one idea only, short punchy lines spoken like a friend; end with one easy action (comment, follow or save).\nNever invent personal stories, clients, results, numbers or credentials for the creator: speak from general experience unless the idea gives the details.\nBe accurate. State only facts you are confident about; when unsure of a date, name or number, say it more generally instead of inventing it.\nWrite in the creator's own voice. What follows says how they sound and who they speak to, never what the video is about.\nWho they are: the owner of a business (a shop, salon, studio or service).\nThey speak as a team: say “we” and “our”, never “I”.\nTheir audience is everyday people: use simple, everyday words.\nThey sound warm and calm.\nThey often say: “Hola, familia.” — use one naturally, ideally in the opening.\nWrite the title and every block in Spanish (Spain).\nThe script is in Spanish (Spain), not in English: write it in Spanish (Spain) even though these instructions are in English. Only the creator's catchphrases stay as they are.",
+    "kind": "script",
+    "language": "es-ES",
+    "minimumWords": 150,
+    "outputTokens": 180,
+    "progressionDefects": [],
+    "prompt": "Language of the script: Spanish (Spain). Write all of it in Spanish (Spain).\nWrite a talking video script for TikTok.\nBlocks, in this order: Hook → Body → CTA.\nWhat each block does: Hook: grab attention in 3 seconds with the main promise. Body: explain the one idea in small, concrete steps. CTA: one clear action.\nLength: between 150 and 225 spoken words in total.\nDo not stop early: the script must be at least 150 words, so write every block in full, with several complete sentences each.\nOpen with a hook that works in the first 3 seconds.\nThe video: Tres errores al abrir una tienda pequeña\nWrite about this idea and only this one: the creator's voice is how they sound, never what to talk about.\nRemember: Say “we”, never “I”. Stay on the idea: Tres errores al abrir una tienda pequeña",
+    "promptTokens": 201,
+    "responseCap": 1025,
+    "run": "after-3",
+    "schemaTokens": 321,
+    "seconds": 12.185788375,
+    "text": "Hola, familia. [smile] Abrir una tienda pequeña tiene desafíos. Sabemos que cada decisión cuenta. Nos preocupa mucho que muchas personas cometan errores comunes al comenzar. Estos errores pueden afectar el éxito de nuestro negocio. [pause] Queremos compartir tres errores clave para evitar. Así que sigamos adelante con cuidado. [look at camera]\n\nPrimero, no debemos olvidar la importancia de una buena ubicación. La cercanía a clientes potenciales es esencial. Luego, es fundamental contar con un presupuesto claro. Gestionar los recursos es clave. También debemos considerar la calidad del servicio. Cada detalle importa mucho. [pause] Estas decisiones afectan directamente nuestra reputación. Trabajamos juntos para minimizar riesgos. [emphasis] Al seguir estos pasos, nuestra tienda crecerá. [smile]\n\nComenta cuál error crees que es más importante. [pause] ¡Gracias por estar aquí! [follow]",
+    "title": "Tres errores al abrir una tienda pequeña",
+    "violations": [],
+    "voiceTrimmed": [],
+    "voiceUse": "full"
+  },
+  {
+    "askedWords": [
+      150,
+      225
+    ],
+    "attempts": 1,
+    "condition": "half",
+    "contextSize": 4096,
+    "countMilliseconds": 367.19345799999996,
+    "expandedBlocks": 0,
+    "firstResponse": 1.8285065,
+    "hasBrief": false,
+    "idea": "Por qué hacemos cada pieza a mano",
+    "index": 1,
+    "instructionTokens": 412,
+    "instructions": "You write short-form video scripts that a creator reads from a teleprompter while filming themselves.\nWrite in the first person, as the creator, in natural spoken language with short sentences.\nFill in a short title and the script blocks. Block text is only what the creator says: no headings, labels, markdown or quotes around it.\nAdd short stage cues in square brackets where they help delivery, like [pause], [smile] or [look at camera]. Never put spoken words inside brackets.\nPlatform: TikTok, vertical and fast. Hook in the first 3 seconds, one idea only, short punchy lines spoken like a friend; end with one easy action (comment, follow or save).\nNever invent personal stories, clients, results, numbers or credentials for the creator: speak from general experience unless the idea gives the details.\nBe accurate. State only facts you are confident about; when unsure of a date, name or number, say it more generally instead of inventing it.\nWrite in the creator's own voice. What follows says how they sound and who they speak to, never what the video is about.\nWho they are: the owner of a business (a shop, salon, studio or service).\nThey speak as a team: say “we” and “our”, never “I”.\nTheir audience is everyday people: use simple, everyday words.\nThey sound warm and calm.\nThey often say: “Hola, familia.” — use one naturally, ideally in the opening.\nWrite the title and every block in Spanish (Spain).\nThe script is in Spanish (Spain), not in English: write it in Spanish (Spain) even though these instructions are in English. Only the creator's catchphrases stay as they are.",
+    "kind": "script",
+    "language": "es-ES",
+    "minimumWords": 150,
+    "outputTokens": 183,
+    "progressionDefects": [],
+    "prompt": "Language of the script: Spanish (Spain). Write all of it in Spanish (Spain).\nWrite a talking video script for TikTok.\nBlocks, in this order: Hook → Body → CTA.\nWhat each block does: Hook: grab attention in 3 seconds with the main promise. Body: explain the one idea in small, concrete steps. CTA: one clear action.\nLength: between 150 and 225 spoken words in total.\nDo not stop early: the script must be at least 150 words, so write every block in full, with several complete sentences each.\nOpen with a hook that works in the first 3 seconds.\nThe video: Por qué hacemos cada pieza a mano\nWrite about this idea and only this one: the creator's voice is how they sound, never what to talk about.\nRemember: Say “we”, never “I”. Stay on the idea: Por qué hacemos cada pieza a mano",
+    "promptTokens": 201,
+    "responseCap": 1025,
+    "run": "after-3",
+    "schemaTokens": 321,
+    "seconds": 11.382585875,
+    "text": "Hola, familia. [smile] Sabemos que cada detalle importa para nuestra gente. [pausa] Esa es la fuerza detrás de cada creación: la dedicación de nuestro equipo. [mirar cámara] Trabajamos con manos expertas para asegurar calidad. [mirar cámara] Esa es la promesa que hacemos con cada proyecto.\n\nPrimero, elegimos materiales de alta calidad. [pausa] Luego, aplicamos técnicas tradicionales. [mirar cámara] Finalmente, verificamos cada resultado. [mirar cámara] Ese es el paso que garantiza resultados únicos. [mirar cámara] Esa es la esencia de nuestro trabajo.\n\nQueremos saber qué opinas. [mirar cámara] Coméntanos abajo. [pausa] Seguirnos es fácil. [mirar cámara] Nos ayudas a crecer. [mirar cámara] Dale un me gusta si te interesa. [mirar cámara]",
+    "title": "Cada pieza a mano: nuestra filosofía",
+    "violations": [
+      "tooShort"
+    ],
+    "voiceTrimmed": [],
+    "voiceUse": "full"
+  },
+  {
+    "askedWords": [
+      150,
+      225
+    ],
+    "attempts": 1,
+    "condition": "half",
+    "contextSize": 4096,
+    "countMilliseconds": 390.335041,
+    "expandedBlocks": 0,
+    "firstResponse": 2.142395792,
+    "hasBrief": true,
+    "idea": "Cómo elegir una taza que dure años\nAngle: Explica tres señales de una taza de cerámica bien hecha.\nOpen with: “No todas las tazas de cerámica son iguales.”",
+    "index": 2,
+    "instructionTokens": 420,
+    "instructions": "You write short-form video scripts that a creator reads from a teleprompter while filming themselves.\nWrite in the first person, as the creator, in natural spoken language with short sentences.\nFill in a short title and the script blocks. Block text is only what the creator says: no headings, labels, markdown or quotes around it.\nAdd short stage cues in square brackets where they help delivery, like [pause], [smile] or [look at camera]. Never put spoken words inside brackets.\nPlatform: TikTok, vertical and fast. Hook in the first 3 seconds, one idea only, short punchy lines spoken like a friend; end with one easy action (comment, follow or save).\nNever invent personal stories, clients, results, numbers or credentials for the creator: speak from general experience unless the idea gives the details.\nBe accurate. State only facts you are confident about; when unsure of a date, name or number, say it more generally instead of inventing it.\nWrite in the creator's own voice. What follows says how they sound and who they speak to, never what the video is about.\nWho they are: the owner of a business (a shop, salon, studio or service).\nThey speak as a team: say “we” and “our”, never “I”.\nTheir audience is everyday people: use simple, everyday words.\nTopics: Cerámica artesanal.\nThey sound warm and calm.\nThey often say: “Hola, familia.” — use one naturally, ideally in the opening.\nWrite the title and every block in Spanish (Spain).\nThe script is in Spanish (Spain), not in English: write it in Spanish (Spain) even though these instructions are in English. Only the creator's catchphrases stay as they are.",
+    "kind": "script",
+    "language": "es-ES",
+    "minimumWords": 150,
+    "outputTokens": 139,
+    "progressionDefects": [],
+    "prompt": "Language of the script: Spanish (Spain). Write all of it in Spanish (Spain).\nWrite a talking video script for TikTok.\nBlocks, in this order: Hook → Body → CTA.\nWhat each block does: Hook: grab attention in 3 seconds with the main promise. Body: explain the one idea in small, concrete steps. CTA: one clear action.\nLength: between 150 and 225 spoken words in total.\nDo not stop early: the script must be at least 150 words, so write every block in full, with several complete sentences each.\nOpen with this line, as it is or adapted only to the creator's way of speaking: “No todas las tazas de cerámica son iguales.” It is the hook: write no other before it.\nThe video: Cómo elegir una taza que dure años\nAngle: Explica tres señales de una taza de cerámica bien hecha.\nOpen with: “No todas las tazas de cerámica son iguales.”\nFollow this angle all the way through: Explica tres señales de una taza de cerámica bien hecha.\nWrite about this idea and only this one: the creator's voice is how they sound, never what to talk about.\nRemember: Say “we”, never “I”. Stay on the idea: Cómo elegir una taza que dure años\nAngle: Explica tres señales de una taza de cerámica bien hecha.\nOpen with: “No todas las tazas de cerámica son iguales.”",
+    "promptTokens": 311,
+    "responseCap": 1025,
+    "run": "after-3",
+    "schemaTokens": 321,
+    "seconds": 9.208405333,
+    "text": "Hola, familia. No todas las tazas de cerámica son iguales. Sabemos que elegir bien es clave. Nuestra experiencia nos enseña tres señales que debemos conocer. [smile] Vamos a explicar lo que buscamos.\n\nPrimero, la superficie debe ser lisa. Esto asegura resistencia y evita grietas. Observamos cómo se siente la textura. [pause] Luego, la estructura interna debe ser sólida. Esto garantiza estabilidad. La fuerza de la unión es importante. [look at camera] Finalmente, la artesanía debe ser precisa. Esto refleja dedicación. Cada detalle cuenta. [emphasis]\n\nComenta cuál es tu señal favorita. [pause] ¡Síguenos para aprender más!",
+    "title": "Tazas de cerámica que duran años",
+    "violations": [
+      "tooShort"
+    ],
+    "voiceTrimmed": [],
+    "voiceUse": "full"
+  },
+  {
+    "askedWords": [
+      150,
+      225
+    ],
+    "attempts": 1,
+    "condition": "none",
+    "contextSize": 4096,
+    "countMilliseconds": 89.326417,
+    "expandedBlocks": 0,
+    "firstResponse": 1.826443917,
+    "hasBrief": false,
+    "idea": "Tres errores al abrir una tienda pequeña",
+    "index": 0,
+    "instructionTokens": 304,
+    "instructions": "You write short-form video scripts that a creator reads from a teleprompter while filming themselves.\nWrite in the first person, as the creator, in natural spoken language with short sentences.\nFill in a short title and the script blocks. Block text is only what the creator says: no headings, labels, markdown or quotes around it.\nAdd short stage cues in square brackets where they help delivery, like [pause], [smile] or [look at camera]. Never put spoken words inside brackets.\nPlatform: TikTok, vertical and fast. Hook in the first 3 seconds, one idea only, short punchy lines spoken like a friend; end with one easy action (comment, follow or save).\nNever invent personal stories, clients, results, numbers or credentials for the creator: speak from general experience unless the idea gives the details.\nBe accurate. State only facts you are confident about; when unsure of a date, name or number, say it more generally instead of inventing it.\nWrite the title and every block in Spanish (Spain).\nThe script is in Spanish (Spain), not in English: write it in Spanish (Spain) even though these instructions are in English. Only the creator's catchphrases stay as they are.",
+    "kind": "script",
+    "language": "es-ES",
+    "minimumWords": 150,
+    "outputTokens": 255,
+    "progressionDefects": [],
+    "prompt": "Language of the script: Spanish (Spain). Write all of it in Spanish (Spain).\nWrite a talking video script for TikTok.\nBlocks, in this order: Hook → Body → CTA.\nWhat each block does: Hook: grab attention in 3 seconds with the main promise. Body: explain the one idea in small, concrete steps. CTA: one clear action.\nLength: between 150 and 225 spoken words in total.\nDo not stop early: the script must be at least 150 words, so write every block in full, with several complete sentences each.\nOpen with a hook that works in the first 3 seconds.\nThe video: Tres errores al abrir una tienda pequeña",
+    "promptTokens": 152,
+    "responseCap": 1025,
+    "run": "after-3",
+    "schemaTokens": 321,
+    "seconds": 14.274122708,
+    "text": "¡Olvida estos tres errores al empezar una tienda pequeña! [mirar cámara] [sonrisa] [energía] Comienzas con entusiasmo, pero hay trampas comunes que pueden afectar tu éxito. [gesto de advertencia] Muchas personas creen que basta con una buena ubicación. Pero esa decisión es crucial. [gesto de pensar] Necesitas entender bien tu público antes de abrir. [gesto de enfoque] Aquí te explico tres errores que debes evitar. [mirar cámara] [pausa]. [sonrisa] [gesto de decisión].\n\nPrimero, no subestimes la investigación de mercado. Es esencial conocer las necesidades de tus clientes. [gesto de análisis] Luego, evita depender solo de redes sociales. Necesitas una estrategia sólida. [gesto de conexión] También, piensa en la gestión financiera desde el principio. Es complicado manejar los gastos iniciales. [gesto de preocupación] Muchas veces, falta planificación. [gesto de advertencia] [mirar cámara]. [sonrisa] [gesto de claridad].\n\nCorre a tu feed y comenta si conoces otro error común. [gesto de invitación] [mirar cámara]. [sonrisa] [pausa]. [seguir]",
+    "title": "Tres errores al abrir una tienda pequeña",
+    "violations": [],
+    "voiceUse": "none"
+  },
+  {
+    "askedWords": [
+      150,
+      225
+    ],
+    "attempts": 1,
+    "condition": "none",
+    "contextSize": 4096,
+    "countMilliseconds": 83.383042,
+    "expandedBlocks": 0,
+    "firstResponse": 2.395174042,
+    "hasBrief": false,
+    "idea": "Por qué hacemos cada pieza a mano",
+    "index": 1,
+    "instructionTokens": 304,
+    "instructions": "You write short-form video scripts that a creator reads from a teleprompter while filming themselves.\nWrite in the first person, as the creator, in natural spoken language with short sentences.\nFill in a short title and the script blocks. Block text is only what the creator says: no headings, labels, markdown or quotes around it.\nAdd short stage cues in square brackets where they help delivery, like [pause], [smile] or [look at camera]. Never put spoken words inside brackets.\nPlatform: TikTok, vertical and fast. Hook in the first 3 seconds, one idea only, short punchy lines spoken like a friend; end with one easy action (comment, follow or save).\nNever invent personal stories, clients, results, numbers or credentials for the creator: speak from general experience unless the idea gives the details.\nBe accurate. State only facts you are confident about; when unsure of a date, name or number, say it more generally instead of inventing it.\nWrite the title and every block in Spanish (Spain).\nThe script is in Spanish (Spain), not in English: write it in Spanish (Spain) even though these instructions are in English. Only the creator's catchphrases stay as they are.",
+    "kind": "script",
+    "language": "es-ES",
+    "minimumWords": 150,
+    "outputTokens": 152,
+    "progressionDefects": [],
+    "prompt": "Language of the script: Spanish (Spain). Write all of it in Spanish (Spain).\nWrite a talking video script for TikTok.\nBlocks, in this order: Hook → Body → CTA.\nWhat each block does: Hook: grab attention in 3 seconds with the main promise. Body: explain the one idea in small, concrete steps. CTA: one clear action.\nLength: between 150 and 225 spoken words in total.\nDo not stop early: the script must be at least 150 words, so write every block in full, with several complete sentences each.\nOpen with a hook that works in the first 3 seconds.\nThe video: Por qué hacemos cada pieza a mano",
+    "promptTokens": 152,
+    "responseCap": 1025,
+    "run": "after-3",
+    "schemaTokens": 321,
+    "seconds": 18.062131792,
+    "text": "¡Hola! [sonrisa] ¿Sabías que cada creación tiene una historia? [mirar cámara] Nos tomamos el tiempo para hacer cada pieza a mano. [gesto] Eso importa. [mirar cámara] Te aseguro que el cuidado se nota. [mirar cámara] ¡Eso es lo que hacemos mejor! [gesto]\n\nPrimero, elegimos materiales de calidad. [gesto] Luego, trabajamos con precisión. [mirar cámara] Cada paso es clave. [gesto] Eso hace la diferencia. [mirar cámara] No hay sustituto para la mano. [gesto]\n\nDeja tu opinión abajo. [sonrisa] ¡Sígueme para más contenido! [mirar cámara]",
+    "title": "Cada pieza, hecha a mano",
+    "violations": [
+      "tooShort"
+    ],
+    "voiceUse": "none"
+  },
+  {
+    "askedWords": [
+      150,
+      225
+    ],
+    "attempts": 1,
+    "condition": "none",
+    "contextSize": 4096,
+    "countMilliseconds": 341.82775,
+    "expandedBlocks": 0,
+    "firstResponse": 2.002397084,
+    "hasBrief": true,
+    "idea": "Cómo elegir una taza que dure años\nAngle: Explica tres señales de una taza de cerámica bien hecha.\nOpen with: “No todas las tazas de cerámica son iguales.”",
+    "index": 2,
+    "instructionTokens": 304,
+    "instructions": "You write short-form video scripts that a creator reads from a teleprompter while filming themselves.\nWrite in the first person, as the creator, in natural spoken language with short sentences.\nFill in a short title and the script blocks. Block text is only what the creator says: no headings, labels, markdown or quotes around it.\nAdd short stage cues in square brackets where they help delivery, like [pause], [smile] or [look at camera]. Never put spoken words inside brackets.\nPlatform: TikTok, vertical and fast. Hook in the first 3 seconds, one idea only, short punchy lines spoken like a friend; end with one easy action (comment, follow or save).\nNever invent personal stories, clients, results, numbers or credentials for the creator: speak from general experience unless the idea gives the details.\nBe accurate. State only facts you are confident about; when unsure of a date, name or number, say it more generally instead of inventing it.\nWrite the title and every block in Spanish (Spain).\nThe script is in Spanish (Spain), not in English: write it in Spanish (Spain) even though these instructions are in English. Only the creator's catchphrases stay as they are.",
+    "kind": "script",
+    "language": "es-ES",
+    "minimumWords": 150,
+    "outputTokens": 151,
+    "progressionDefects": [],
+    "prompt": "Language of the script: Spanish (Spain). Write all of it in Spanish (Spain).\nWrite a talking video script for TikTok.\nBlocks, in this order: Hook → Body → CTA.\nWhat each block does: Hook: grab attention in 3 seconds with the main promise. Body: explain the one idea in small, concrete steps. CTA: one clear action.\nLength: between 150 and 225 spoken words in total.\nDo not stop early: the script must be at least 150 words, so write every block in full, with several complete sentences each.\nOpen with this line, as it is or adapted only to the creator's way of speaking: “No todas las tazas de cerámica son iguales.” It is the hook: write no other before it.\nThe video: Cómo elegir una taza que dure años\nAngle: Explica tres señales de una taza de cerámica bien hecha.\nOpen with: “No todas las tazas de cerámica son iguales.”\nFollow this angle all the way through: Explica tres señales de una taza de cerámica bien hecha.",
+    "promptTokens": 232,
+    "responseCap": 1025,
+    "run": "after-3",
+    "schemaTokens": 321,
+    "seconds": 10.478783375,
+    "text": "No todas las tazas de cerámica son iguales. [Mira a la cámara] ¿Sabías que la calidad afecta el uso diario? [Sonríe] Aquí te explico cómo elegir una opción sólida. [Pausa]\n\nPrimero, la resistencia a la temperatura. [Pausa] Verás si mantiene su forma bajo presión. Segundo, la uniformidad del color. [Observa] La consistencia indica calidad. Tercero, la ausencia de defectos visibles. [Mira a la cámara] Estos detalles marcan la diferencia. [Sonríe]\n\nComenta qué buscas en una taza. [Mira a la cámara] ¡Gracias por ver! [Sonríe] Dale me gusta y sigue el contenido. [Pausa]",
+    "title": "Taza cerámica duradera",
+    "violations": [
+      "tooShort"
+    ],
+    "voiceUse": "none"
+  },
+  {
+    "askedWords": [
+      75,
+      150
+    ],
+    "attempts": 1,
+    "condition": "full",
+    "contextSize": 4096,
+    "countMilliseconds": 330.407542,
+    "discardedDraft": "Fala, galera! Sei um truque simples: evitar três erros que destroem sua pele de manhã. Vou compartilhar cada um deles e o motivo. [pause] É só começar com atenção. [smile]\n\nPrimeiro: usar água morna, não quente. Isso evita danos na camada superficial. [look at camera] A pele precisa de cuidado, não de pressão. [pause]\n\nSegundo: proteger também o pescoço. É a área mais exposta. [emphasis] Cuidar dele evita sinais de envelhecimento. [pause]\n\nTerceiro: aplicar proteção em toda a superfície. Isso mantém a hidratação. [pause] Cada área precisa de cuidado. [smile]\n\nAgora, me conte: qual desses erros você já enfrentou? [pause] Comente aí sua experiência. [look at camera] Salve o vídeo ou compartilhe sua dica. [pause]",
+    "expandedBlocks": 0,
+    "firstResponse": 2.619700625,
+    "hasBrief": false,
+    "idea": "3 erros que estragam sua pele de manhã",
+    "index": 0,
+    "instructionTokens": 728,
+    "instructions": "You write short-form video scripts that a creator reads from a teleprompter while filming themselves.\nWrite in the first person, as the creator, in natural spoken language with short sentences.\nFill in a short title and the script blocks. Block text is only what the creator says: no headings, labels, markdown or quotes around it.\nAdd short stage cues in square brackets where they help delivery, like [pause], [smile] or [look at camera]. Never put spoken words inside brackets.\nPlatform: TikTok, vertical and fast. Hook in the first 3 seconds, one idea only, short punchy lines spoken like a friend; end with one easy action (comment, follow or save).\nNever invent personal stories, clients, results, numbers or credentials for the creator: speak from general experience unless the idea gives the details.\nBe accurate. State only facts you are confident about; when unsure of a date, name or number, say it more generally instead of inventing it.\nWrite in the creator's own voice. What follows says how they sound and who they speak to, never what the video is about.\nWho they are: a lifestyle and personal creator.\nThey speak as one person: say “I” and “my”.\nTheir audience: young adults.\nThey know some basics: skip the obvious and go one level deeper.\nThey watch to learn something and decide what to buy.\nTheir videos aim to grow their audience and entertain.\nThey sound casual and funny.\nDelivery: energy: high and lively; sentences: short and punchy (under twelve words); words: some casual slang; humor: a little.\nNever swear.\nOpen with a common mistake to avoid: show it in the script, never write the style's name.\nEnd by asking them to comment their answer.\nThey film mostly: lists and tips.\nThey often say: “Fala, galera!” — use one once after the first sentence, never as the first words.\nThey post on TikTok; videos are usually 30 to 60 seconds.\nHere is how they write. Match the voice; never reuse these sentences, facts or stories:\n- “Você tá lavando o rosto errado. Tipo, água quente demais resseca tudo. Usa água morna, sabonete suave e seca sem esfregar. Comenta aqui se você fazia isso!”\n- “5 produtos baratos que eu uso todo dia. Tipo, nenhum passa de vinte reais! O meu favorito é o hidratante de farmácia. Me conta qual você já usa! Salva pra não esquecer.”\n- “Pare de passar o protetor solar só no rosto! O pescoço também precisa. Tipo, é a primeira parte que envelhece. Bora cuidar? Segue pra mais dicas!”\nRules: no medical claims: never say something cures, treats or heals, and speak in general terms; no clickbait (“you won't believe…”, “what happens next”): say the real point up front.\nWrite the title and every block in Portuguese (Brazil).\nThe script is in Portuguese (Brazil), not in English: write it in Portuguese (Brazil) even though these instructions are in English. Only the creator's catchphrases stay as they are.",
+    "kind": "script",
+    "language": "pt-BR",
+    "minimumWords": 75,
+    "outputTokens": 126,
+    "progressionDefects": [],
+    "prompt": "Language of the script: Portuguese (Brazil). Write all of it in Portuguese (Brazil).\nWrite a list of tips script for TikTok.\nBlocks, in this order: Hook → Tips → CTA.\nWhat each block does: Hook: say how many tips and what they give. Tips: each tip is one sentence plus one reason. CTA: ask them to save it or share their own tip.\nLength: between 75 and 150 spoken words in total.\nDo not stop early: the script must be at least 75 words, so write every block in full, with several complete sentences each.\nOpen with a hook that works in the first 3 seconds, in the creator's own way of opening.\nThe video: 3 erros que estragam sua pele de manhã\nWrite about this idea and only this one: the creator's voice is how they sound, never what to talk about.\nRemember: Speak as one person (“I”). Avoid: medical claims, clickbait. Never write the name of an opening style or open with a catchphrase. Stay on the idea: 3 erros que estragam sua pele de manhã",
+    "promptTokens": 244,
+    "responseCap": 800,
+    "run": "after-3",
+    "schemaTokens": 321,
+    "seconds": 25.769926,
+    "text": "Fala, galera! Sei um truque simples: evitar erros comuns da manhã. Primeiro, parar de esquecer de proteger áreas menos visíveis. Segundo, ajustar a hidratação. Terceiro, mudar hábitos prejudiciais. [pause] Essas ações fazem a diferença. [smile]\n\nPrimeiro, o pescoço precisa de proteção. Segundo, a pele seca mais rápido sem cuidado. Terceiro, a hidratação uniforme é essencial. [look at camera] [emphasis]\n\nMe conte qual erro você evita. Salve para revisar ou compartilhe seu segredo. [pause] [confident]",
+    "title": "3 Erros que Estragam Sua Pele da Manhã",
+    "violations": [
+      "catchphraseFirst"
+    ],
+    "voiceTrimmed": [],
+    "voiceUse": "full"
+  },
+  {
+    "askedWords": [
+      75,
+      150
+    ],
+    "attempts": 1,
+    "condition": "full",
+    "contextSize": 4096,
+    "countMilliseconds": 304.26675,
+    "discardedDraft": "Fala, galera! Sei um truque: poucos produtos baratos funcionam bem. Primeiro, nem todos têm proteção adequada. Segundo, alguns são mais eficazes que parece. Terceiro, eles são mais acessíveis. [pause] [smile] [pause]\n\nPrimeiro, ingredientes simples protegem melhor. Segundo, alguns oferecem proteção UV eficiente. Terceiro, a escolha certa garante proteção garantida. [look at camera] [pause]\n\nFala, galera! Comente aqui sua dica para usar protetor solar barato. [pause] [emphasis] [pause] Salve esse vídeo ou compartilhe sua opinião. [smile] [pause]",
+    "expandedBlocks": 0,
+    "firstResponse": 2.465881916,
+    "hasBrief": false,
+    "idea": "Por que protetor solar barato também funciona",
+    "index": 1,
+    "instructionTokens": 730,
+    "instructions": "You write short-form video scripts that a creator reads from a teleprompter while filming themselves.\nWrite in the first person, as the creator, in natural spoken language with short sentences.\nFill in a short title and the script blocks. Block text is only what the creator says: no headings, labels, markdown or quotes around it.\nAdd short stage cues in square brackets where they help delivery, like [pause], [smile] or [look at camera]. Never put spoken words inside brackets.\nPlatform: TikTok, vertical and fast. Hook in the first 3 seconds, one idea only, short punchy lines spoken like a friend; end with one easy action (comment, follow or save).\nNever invent personal stories, clients, results, numbers or credentials for the creator: speak from general experience unless the idea gives the details.\nBe accurate. State only facts you are confident about; when unsure of a date, name or number, say it more generally instead of inventing it.\nWrite in the creator's own voice. What follows says how they sound and who they speak to, never what the video is about.\nWho they are: a lifestyle and personal creator.\nThey speak as one person: say “I” and “my”.\nTheir audience: young adults.\nThey know some basics: skip the obvious and go one level deeper.\nThey watch to learn something and decide what to buy.\nTheir videos aim to grow their audience and entertain.\nThey sound casual and funny.\nDelivery: energy: high and lively; sentences: short and punchy (under twelve words); words: some casual slang; humor: a little.\nNever swear.\nOpen with a common mistake to avoid: show it in the script, never write the style's name.\nEnd by asking them to comment their answer.\nThey film mostly: lists and tips.\nThey often say: “Fala, galera!” — use one once after the first sentence, never as the first words.\nThey post on TikTok; videos are usually 30 to 60 seconds.\nHere is how they write. Match the voice; never reuse these sentences, facts or stories:\n- “Você tá lavando o rosto errado. Tipo, água quente demais resseca tudo. Usa água morna, sabonete suave e seca sem esfregar. Comenta aqui se você fazia isso!”\n- “5 produtos baratos que eu uso todo dia. Tipo, nenhum passa de vinte reais! O meu favorito é o hidratante de farmácia. Me conta qual você já usa! Salva pra não esquecer.”\n- “Minha rotina de noite é simples, tipo, só quatro passos. Limpar, tonificar, hidratar e dormir. Bora criar o hábito? Segue pra mais dicas e salva esse vídeo!”\nRules: no medical claims: never say something cures, treats or heals, and speak in general terms; no clickbait (“you won't believe…”, “what happens next”): say the real point up front.\nWrite the title and every block in Portuguese (Brazil).\nThe script is in Portuguese (Brazil), not in English: write it in Portuguese (Brazil) even though these instructions are in English. Only the creator's catchphrases stay as they are.",
+    "kind": "script",
+    "language": "pt-BR",
+    "minimumWords": 75,
+    "outputTokens": 149,
+    "progressionDefects": [],
+    "prompt": "Language of the script: Portuguese (Brazil). Write all of it in Portuguese (Brazil).\nWrite a list of tips script for TikTok.\nBlocks, in this order: Hook → Tips → CTA.\nWhat each block does: Hook: say how many tips and what they give. Tips: each tip is one sentence plus one reason. CTA: ask them to save it or share their own tip.\nLength: between 75 and 150 spoken words in total.\nDo not stop early: the script must be at least 75 words, so write every block in full, with several complete sentences each.\nOpen with a hook that works in the first 3 seconds, in the creator's own way of opening.\nThe video: Por que protetor solar barato também funciona\nWrite about this idea and only this one: the creator's voice is how they sound, never what to talk about.\nRemember: Speak as one person (“I”). Avoid: medical claims, clickbait. Never write the name of an opening style or open with a catchphrase. Stay on the idea: Por que protetor solar barato também funciona",
+    "promptTokens": 238,
+    "responseCap": 800,
+    "run": "after-3",
+    "schemaTokens": 321,
+    "seconds": 22.300352541,
+    "text": "Fala, galera! Sei um truque: até produtos baratos podem proteger. Aqui vão 3 dicas simples para isso acontecer. [pause] Meu ponto é: escolher bem faz a diferença. [smile] Não precisa gastar muito para ter proteção eficaz. [look at camera]\n\nPrimeiro, escolha fórmulas mais leves. Isso melhora a absorção e evita irritação. [emphasis] Segundo, procure filtros que resistam ao suor. Isso garante proteção em diferentes atividades. [pause] Terceiro, combine com roupas adequadas. Isso aumenta a eficácia geral. [confident]\n\nMe conta qual dica você acha importante. Salve esse vídeo para lembrar. [pause] Comente aí sua resposta. [smile]",
+    "title": "Por que protetor solar barato funciona",
+    "violations": [
+      "catchphraseFirst"
+    ],
+    "voiceTrimmed": [],
+    "voiceUse": "full"
+  },
+  {
+    "askedWords": [
+      75,
+      150
+    ],
+    "condition": "full",
+    "contextSize": 4096,
+    "countMilliseconds": 86.18425,
+    "emptyReason": "the answer was not a script: 1 blocks, 33 words, cap 800 tokens; [Hook:33]; title 7w, statesFacts missing",
+    "failure": "emptyResponse",
+    "hasBrief": true,
+    "idea": "A maquiagem de 5 minutos para o dia a dia\nAngle: Mostre uma maquiagem completa em cinco passos rápidos.\nOpen with: “Dá pra ficar pronta em cinco minutos, sério.”",
+    "index": 2,
+    "instructionTokens": 728,
+    "instructions": "You write short-form video scripts that a creator reads from a teleprompter while filming themselves.\nWrite in the first person, as the creator, in natural spoken language with short sentences.\nFill in a short title and the script blocks. Block text is only what the creator says: no headings, labels, markdown or quotes around it.\nAdd short stage cues in square brackets where they help delivery, like [pause], [smile] or [look at camera]. Never put spoken words inside brackets.\nPlatform: TikTok, vertical and fast. Hook in the first 3 seconds, one idea only, short punchy lines spoken like a friend; end with one easy action (comment, follow or save).\nNever invent personal stories, clients, results, numbers or credentials for the creator: speak from general experience unless the idea gives the details.\nBe accurate. State only facts you are confident about; when unsure of a date, name or number, say it more generally instead of inventing it.\nWrite in the creator's own voice. What follows says how they sound and who they speak to, never what the video is about.\nWho they are: a lifestyle and personal creator.\nThey speak as one person: say “I” and “my”.\nTheir audience: young adults.\nThey know some basics: skip the obvious and go one level deeper.\nThey watch to learn something and decide what to buy.\nTheir videos aim to grow their audience and entertain.\nThey sound casual and funny.\nDelivery: energy: high and lively; sentences: short and punchy (under twelve words); words: some casual slang; humor: a little.\nNever swear.\nOpen with a common mistake to avoid: show it in the script, never write the style's name.\nEnd by asking them to comment their answer.\nThey film mostly: lists and tips.\nThey often say: “Fala, galera!” — use one once after the first sentence, never as the first words.\nThey post on TikTok; videos are usually 30 to 60 seconds.\nHere is how they write. Match the voice; never reuse these sentences, facts or stories:\n- “Você tá lavando o rosto errado. Tipo, água quente demais resseca tudo. Usa água morna, sabonete suave e seca sem esfregar. Comenta aqui se você fazia isso!”\n- “5 produtos baratos que eu uso todo dia. Tipo, nenhum passa de vinte reais! O meu favorito é o hidratante de farmácia. Me conta qual você já usa! Salva pra não esquecer.”\n- “Pare de passar o protetor solar só no rosto! O pescoço também precisa. Tipo, é a primeira parte que envelhece. Bora cuidar? Segue pra mais dicas!”\nRules: no medical claims: never say something cures, treats or heals, and speak in general terms; no clickbait (“you won't believe…”, “what happens next”): say the real point up front.\nWrite the title and every block in Portuguese (Brazil).\nThe script is in Portuguese (Brazil), not in English: write it in Portuguese (Brazil) even though these instructions are in English. Only the creator's catchphrases stay as they are.",
+    "kind": "script",
+    "language": "pt-BR",
+    "minimumWords": 75,
+    "prompt": "Language of the script: Portuguese (Brazil). Write all of it in Portuguese (Brazil).\nWrite a list of tips script for TikTok.\nBlocks, in this order: Hook → Tips → CTA.\nWhat each block does: Hook: say how many tips and what they give. Tips: each tip is one sentence plus one reason. CTA: ask them to save it or share their own tip.\nLength: between 75 and 150 spoken words in total.\nDo not stop early: the script must be at least 75 words, so write every block in full, with several complete sentences each.\nOpen with this line, as it is or adapted only to the creator's way of speaking: “Dá pra ficar pronta em cinco minutos, sério.” It is the hook: write no other before it.\nThe video: A maquiagem de 5 minutos para o dia a dia\nAngle: Mostre uma maquiagem completa em cinco passos rápidos.\nOpen with: “Dá pra ficar pronta em cinco minutos, sério.”\nFollow this angle all the way through: Mostre uma maquiagem completa em cinco passos rápidos.\nWrite about this idea and only this one: the creator's voice is how they sound, never what to talk about.\nRemember: Speak as one person (“I”). Avoid: medical claims, clickbait. Never write the name of an opening style or open with a catchphrase. Stay on the idea: A maquiagem de 5 minutos para o dia a dia\nAngle: Mostre uma maquiagem completa em cinco passos rápidos.\nOpen with: “Dá pra ficar pronta em cinco minutos, sério.”",
+    "promptTokens": 354,
+    "responseCap": 800,
+    "run": "after-3",
+    "schemaTokens": 321,
+    "seconds": 42.798888333,
+    "voiceTrimmed": []
+  },
+  {
+    "askedWords": [
+      150,
+      225
+    ],
+    "attempts": 1,
+    "condition": "half",
+    "contextSize": 4096,
+    "countMilliseconds": 511.554875,
+    "expandedBlocks": 0,
+    "firstResponse": 2.163487875,
+    "hasBrief": false,
+    "idea": "3 erros que estragam sua pele de manhã",
+    "index": 0,
+    "instructionTokens": 397,
+    "instructions": "You write short-form video scripts that a creator reads from a teleprompter while filming themselves.\nWrite in the first person, as the creator, in natural spoken language with short sentences.\nFill in a short title and the script blocks. Block text is only what the creator says: no headings, labels, markdown or quotes around it.\nAdd short stage cues in square brackets where they help delivery, like [pause], [smile] or [look at camera]. Never put spoken words inside brackets.\nPlatform: TikTok, vertical and fast. Hook in the first 3 seconds, one idea only, short punchy lines spoken like a friend; end with one easy action (comment, follow or save).\nNever invent personal stories, clients, results, numbers or credentials for the creator: speak from general experience unless the idea gives the details.\nBe accurate. State only facts you are confident about; when unsure of a date, name or number, say it more generally instead of inventing it.\nWrite in the creator's own voice. What follows says how they sound and who they speak to, never what the video is about.\nWho they are: a lifestyle and personal creator.\nThey speak as one person: say “I” and “my”.\nTheir audience is everyday people: use simple, everyday words.\nThey sound casual.\nThey often say: “Fala, galera!” — use one naturally, ideally in the opening.\nWrite the title and every block in Portuguese (Brazil).\nThe script is in Portuguese (Brazil), not in English: write it in Portuguese (Brazil) even though these instructions are in English. Only the creator's catchphrases stay as they are.",
+    "kind": "script",
+    "language": "pt-BR",
+    "minimumWords": 150,
+    "outputTokens": 174,
+    "progressionDefects": [],
+    "prompt": "Language of the script: Portuguese (Brazil). Write all of it in Portuguese (Brazil).\nWrite a talking video script for TikTok.\nBlocks, in this order: Hook → Body → CTA.\nWhat each block does: Hook: grab attention in 3 seconds with the main promise. Body: explain the one idea in small, concrete steps. CTA: one clear action.\nLength: between 150 and 225 spoken words in total.\nDo not stop early: the script must be at least 150 words, so write every block in full, with several complete sentences each.\nOpen with a hook that works in the first 3 seconds.\nThe video: 3 erros que estragam sua pele de manhã\nWrite about this idea and only this one: the creator's voice is how they sound, never what to talk about.\nRemember: Speak as one person (“I”). Stay on the idea: 3 erros que estragam sua pele de manhã",
+    "promptTokens": 208,
+    "responseCap": 1025,
+    "run": "after-3",
+    "schemaTokens": 321,
+    "seconds": 11.815124791,
+    "text": "Fala, galera! [pause] Começar o dia mal pode afetar a pele. [smile] Eu sei que nem sempre é fácil lembrar de pequenas coisas. [look at camera] Mas esses pequenos deslizes podem acabar com o cuidado diário. [pause]\n\nPrimeiro, esquecer de limpar bem a pele antes de dormir. [emphasis] Isso deixa sujeira acumulada. [pause] Depois, usar produtos com ingredientes agressivos. [look at camera] Esses podem irritar a camada mais sensível. [smile] Por último, deixar a pele exposta ao frio direto. [pause] Isso pode comprometer a hidratação. [emphasis]\n\nComece revisando seus hábitos matinais. [pause] Comente abaixo qual erro você acha mais comum. [look at camera] Não esqueça de seguir. [pause]",
+    "title": "3 Erros que Estragam Sua Pele pela Manhã",
+    "violations": [
+      "tooShort"
+    ],
+    "voiceTrimmed": [],
+    "voiceUse": "full"
+  },
+  {
+    "askedWords": [
+      150,
+      225
+    ],
+    "attempts": 1,
+    "condition": "half",
+    "contextSize": 4096,
+    "countMilliseconds": 96.311333,
+    "expandedBlocks": 0,
+    "firstResponse": 1.96307925,
+    "hasBrief": false,
+    "idea": "Por que protetor solar barato também funciona",
+    "index": 1,
+    "instructionTokens": 397,
+    "instructions": "You write short-form video scripts that a creator reads from a teleprompter while filming themselves.\nWrite in the first person, as the creator, in natural spoken language with short sentences.\nFill in a short title and the script blocks. Block text is only what the creator says: no headings, labels, markdown or quotes around it.\nAdd short stage cues in square brackets where they help delivery, like [pause], [smile] or [look at camera]. Never put spoken words inside brackets.\nPlatform: TikTok, vertical and fast. Hook in the first 3 seconds, one idea only, short punchy lines spoken like a friend; end with one easy action (comment, follow or save).\nNever invent personal stories, clients, results, numbers or credentials for the creator: speak from general experience unless the idea gives the details.\nBe accurate. State only facts you are confident about; when unsure of a date, name or number, say it more generally instead of inventing it.\nWrite in the creator's own voice. What follows says how they sound and who they speak to, never what the video is about.\nWho they are: a lifestyle and personal creator.\nThey speak as one person: say “I” and “my”.\nTheir audience is everyday people: use simple, everyday words.\nThey sound casual.\nThey often say: “Fala, galera!” — use one naturally, ideally in the opening.\nWrite the title and every block in Portuguese (Brazil).\nThe script is in Portuguese (Brazil), not in English: write it in Portuguese (Brazil) even though these instructions are in English. Only the creator's catchphrases stay as they are.",
+    "kind": "script",
+    "language": "pt-BR",
+    "minimumWords": 150,
+    "outputTokens": 188,
+    "progressionDefects": [],
+    "prompt": "Language of the script: Portuguese (Brazil). Write all of it in Portuguese (Brazil).\nWrite a talking video script for TikTok.\nBlocks, in this order: Hook → Body → CTA.\nWhat each block does: Hook: grab attention in 3 seconds with the main promise. Body: explain the one idea in small, concrete steps. CTA: one clear action.\nLength: between 150 and 225 spoken words in total.\nDo not stop early: the script must be at least 150 words, so write every block in full, with several complete sentences each.\nOpen with a hook that works in the first 3 seconds.\nThe video: Por que protetor solar barato também funciona\nWrite about this idea and only this one: the creator's voice is how they sound, never what to talk about.\nRemember: Speak as one person (“I”). Stay on the idea: Por que protetor solar barato também funciona",
+    "promptTokens": 202,
+    "responseCap": 1025,
+    "run": "after-3",
+    "schemaTokens": 321,
+    "seconds": 12.149995833,
+    "text": "Fala, galera! Eu sei que muitos ficam preocupados com produtos baratos. Mas nem sempre é preciso gastar muito para ter proteção. [pause] A verdade é que certos produtos acessíveis ainda oferecem boas defesas. [confidente] Isso pode parecer estranho, mas há uma lógica por trás disso. [olhar para a câmera] [sorriso]\n\nPrimeiro, olho na composição. Ingredientes simples costumam ser mais eficazes. [olhar para a tela] Depois, verifico a certificação. Produtos reconhecidos têm garantia de segurança. [pause] É importante testar antes de confiar. [sorriso] Mesmo com orçamento limitado, é possível encontrar opções confiáveis. [olhar para a câmera] [confidente]\n\nComente aqui qual é seu produto favorito econômico. [olhar para a câmera] [sorriso] Não esqueça de seguir e salvar. [pause]",
+    "title": "Protetor Solar Barato Funciona",
+    "violations": [
+      "tooShort"
+    ],
+    "voiceTrimmed": [],
+    "voiceUse": "full"
+  },
+  {
+    "askedWords": [
+      150,
+      225
+    ],
+    "attempts": 1,
+    "condition": "half",
+    "contextSize": 4096,
+    "countMilliseconds": 340.59024999999997,
+    "expandedBlocks": 0,
+    "firstResponse": 2.131649209,
+    "hasBrief": true,
+    "idea": "A maquiagem de 5 minutos para o dia a dia\nAngle: Mostre uma maquiagem completa em cinco passos rápidos.\nOpen with: “Dá pra ficar pronta em cinco minutos, sério.”",
+    "index": 2,
+    "instructionTokens": 397,
+    "instructions": "You write short-form video scripts that a creator reads from a teleprompter while filming themselves.\nWrite in the first person, as the creator, in natural spoken language with short sentences.\nFill in a short title and the script blocks. Block text is only what the creator says: no headings, labels, markdown or quotes around it.\nAdd short stage cues in square brackets where they help delivery, like [pause], [smile] or [look at camera]. Never put spoken words inside brackets.\nPlatform: TikTok, vertical and fast. Hook in the first 3 seconds, one idea only, short punchy lines spoken like a friend; end with one easy action (comment, follow or save).\nNever invent personal stories, clients, results, numbers or credentials for the creator: speak from general experience unless the idea gives the details.\nBe accurate. State only facts you are confident about; when unsure of a date, name or number, say it more generally instead of inventing it.\nWrite in the creator's own voice. What follows says how they sound and who they speak to, never what the video is about.\nWho they are: a lifestyle and personal creator.\nThey speak as one person: say “I” and “my”.\nTheir audience is everyday people: use simple, everyday words.\nThey sound casual.\nThey often say: “Fala, galera!” — use one naturally, ideally in the opening.\nWrite the title and every block in Portuguese (Brazil).\nThe script is in Portuguese (Brazil), not in English: write it in Portuguese (Brazil) even though these instructions are in English. Only the creator's catchphrases stay as they are.",
+    "kind": "script",
+    "language": "pt-BR",
+    "minimumWords": 150,
+    "outputTokens": 145,
+    "progressionDefects": [
+      "unkeptCount"
+    ],
+    "prompt": "Language of the script: Portuguese (Brazil). Write all of it in Portuguese (Brazil).\nWrite a talking video script for TikTok.\nBlocks, in this order: Hook → Body → CTA.\nWhat each block does: Hook: grab attention in 3 seconds with the main promise. Body: explain the one idea in small, concrete steps. CTA: one clear action.\nLength: between 150 and 225 spoken words in total.\nDo not stop early: the script must be at least 150 words, so write every block in full, with several complete sentences each.\nOpen with this line, as it is or adapted only to the creator's way of speaking: “Dá pra ficar pronta em cinco minutos, sério.” It is the hook: write no other before it.\nThe video: A maquiagem de 5 minutos para o dia a dia\nAngle: Mostre uma maquiagem completa em cinco passos rápidos.\nOpen with: “Dá pra ficar pronta em cinco minutos, sério.”\nFollow this angle all the way through: Mostre uma maquiagem completa em cinco passos rápidos.\nWrite about this idea and only this one: the creator's voice is how they sound, never what to talk about.\nRemember: Speak as one person (“I”). Stay on the idea: A maquiagem de 5 minutos para o dia a dia\nAngle: Mostre uma maquiagem completa em cinco passos rápidos.\nOpen with: “Dá pra ficar pronta em cinco minutos, sério.”",
+    "promptTokens": 328,
+    "responseCap": 1025,
+    "run": "after-3",
+    "schemaTokens": 321,
+    "seconds": 9.755289084,
+    "text": "Fala, galera! Dá pra ficar pronta em cinco minutos, sério. [pause] Primeiro, eu uso uma base leve. [look at camera] Isso ajuda a uniformizar a pele rápido. [smile]\n\nDepois, eu aplico corretivo discreto. [pause] Esse passo corrige manchas sem exagerar. [pause] Em seguida, eu reforço os olhos com sombra. [emphasis] É um toque fácil, mas poderoso. [look at camera] Por fim, eu faço um blush suave. [pause]\n\nCom essas dicas, a rotina fica mais simples. [smile] Comente aqui qual produto você usa. [pause] Não esqueça de seguir e salvar. [pause]",
+    "title": "Maquiagem de 5 minutos",
+    "violations": [
+      "tooShort"
+    ],
+    "voiceTrimmed": [],
+    "voiceUse": "full"
+  },
+  {
+    "askedWords": [
+      150,
+      225
+    ],
+    "attempts": 1,
+    "condition": "none",
+    "contextSize": 4096,
+    "countMilliseconds": 92.810958,
+    "expandedBlocks": 0,
+    "firstResponse": 1.921136208,
+    "hasBrief": false,
+    "idea": "3 erros que estragam sua pele de manhã",
+    "index": 0,
+    "instructionTokens": 304,
+    "instructions": "You write short-form video scripts that a creator reads from a teleprompter while filming themselves.\nWrite in the first person, as the creator, in natural spoken language with short sentences.\nFill in a short title and the script blocks. Block text is only what the creator says: no headings, labels, markdown or quotes around it.\nAdd short stage cues in square brackets where they help delivery, like [pause], [smile] or [look at camera]. Never put spoken words inside brackets.\nPlatform: TikTok, vertical and fast. Hook in the first 3 seconds, one idea only, short punchy lines spoken like a friend; end with one easy action (comment, follow or save).\nNever invent personal stories, clients, results, numbers or credentials for the creator: speak from general experience unless the idea gives the details.\nBe accurate. State only facts you are confident about; when unsure of a date, name or number, say it more generally instead of inventing it.\nWrite the title and every block in Portuguese (Brazil).\nThe script is in Portuguese (Brazil), not in English: write it in Portuguese (Brazil) even though these instructions are in English. Only the creator's catchphrases stay as they are.",
+    "kind": "script",
+    "language": "pt-BR",
+    "minimumWords": 150,
+    "outputTokens": 203,
+    "progressionDefects": [
+      "unkeptCount"
+    ],
+    "prompt": "Language of the script: Portuguese (Brazil). Write all of it in Portuguese (Brazil).\nWrite a talking video script for TikTok.\nBlocks, in this order: Hook → Body → CTA.\nWhat each block does: Hook: grab attention in 3 seconds with the main promise. Body: explain the one idea in small, concrete steps. CTA: one clear action.\nLength: between 150 and 225 spoken words in total.\nDo not stop early: the script must be at least 150 words, so write every block in full, with several complete sentences each.\nOpen with a hook that works in the first 3 seconds.\nThe video: 3 erros que estragam sua pele de manhã",
+    "promptTokens": 156,
+    "responseCap": 1025,
+    "run": "after-3",
+    "schemaTokens": 321,
+    "seconds": 13.276631458,
+    "text": "Olha só! Quase ninguém percebe esses pequenos deslizes pela manhã... [sorriso] Esses hábitos podem acabar com a saúde da sua pele antes mesmo de você acordar... [olhar para a câmera] Vou te mostrar exatamente quais são os maiores erros que fazem isso acontecer... [pausa] É hora de dar uma olhada nos passos simples que mudam tudo... [gesto com a mão]\n\nPrimeiro, evite usar produtos com ingredientes muito agressivos... [olhar para a câmera] Depois, não esqueça de limpar bem antes de dormir... [pausa] Um cuidado extra é usar produtos hidratantes adequados para o seu tipo... [gesto de apontar] Esses pequenos ajustes fazem uma diferença enorme no seu dia a dia... [sorriso]\n\nTeste essa dica hoje mesmo! Comente abaixo qual é o seu maior erro matinal... [olhar para a câmera] Clique no botão de seguir... [gesto de apontar para o botão]",
+    "title": "3 Erros que Estragam Sua Pele de Manhã",
+    "violations": [],
+    "voiceUse": "none"
+  },
+  {
+    "askedWords": [
+      150,
+      225
+    ],
+    "attempts": 1,
+    "condition": "none",
+    "contextSize": 4096,
+    "countMilliseconds": 83.020709,
+    "expandedBlocks": 0,
+    "firstResponse": 2.3851553340000002,
+    "hasBrief": false,
+    "idea": "Por que protetor solar barato também funciona",
+    "index": 1,
+    "instructionTokens": 304,
+    "instructions": "You write short-form video scripts that a creator reads from a teleprompter while filming themselves.\nWrite in the first person, as the creator, in natural spoken language with short sentences.\nFill in a short title and the script blocks. Block text is only what the creator says: no headings, labels, markdown or quotes around it.\nAdd short stage cues in square brackets where they help delivery, like [pause], [smile] or [look at camera]. Never put spoken words inside brackets.\nPlatform: TikTok, vertical and fast. Hook in the first 3 seconds, one idea only, short punchy lines spoken like a friend; end with one easy action (comment, follow or save).\nNever invent personal stories, clients, results, numbers or credentials for the creator: speak from general experience unless the idea gives the details.\nBe accurate. State only facts you are confident about; when unsure of a date, name or number, say it more generally instead of inventing it.\nWrite the title and every block in Portuguese (Brazil).\nThe script is in Portuguese (Brazil), not in English: write it in Portuguese (Brazil) even though these instructions are in English. Only the creator's catchphrases stay as they are.",
+    "kind": "script",
+    "language": "pt-BR",
+    "minimumWords": 150,
+    "outputTokens": 151,
+    "progressionDefects": [],
+    "prompt": "Language of the script: Portuguese (Brazil). Write all of it in Portuguese (Brazil).\nWrite a talking video script for TikTok.\nBlocks, in this order: Hook → Body → CTA.\nWhat each block does: Hook: grab attention in 3 seconds with the main promise. Body: explain the one idea in small, concrete steps. CTA: one clear action.\nLength: between 150 and 225 spoken words in total.\nDo not stop early: the script must be at least 150 words, so write every block in full, with several complete sentences each.\nOpen with a hook that works in the first 3 seconds.\nThe video: Por que protetor solar barato também funciona",
+    "promptTokens": 153,
+    "responseCap": 1025,
+    "run": "after-3",
+    "schemaTokens": 321,
+    "seconds": 37.035761459,
+    "text": "Olha só: protetor solar barato pode proteger bem a pele [sorriso]. A maioria das pessoas busca proteção, mas nem sempre escolhe bem. Existem opções eficientes mesmo sem gastar muito. [olhar para a câmera] [pause]. Descubra como escolher bem.\n\nPrimeiro, procure pelo filtro protetor correto. Mesmo produtos baratos devem conter proteção UV. [gesto de cabeça] Depois, observe o fator de proteção. Nem sempre é só preço, mas também qualidade. [olhar para a tela] [pause]. Entender isso muda tudo.\n\nComente qual é o seu produto favorito e compartilhe a experiência. [sorriso] [pause]. Não esqueça: siga e salve para mais dicas!",
+    "title": "Protetor Solar Funciona Mesmo Barato",
+    "violations": [
+      "tooShort"
+    ],
+    "voiceUse": "none"
+  },
+  {
+    "askedWords": [
+      150,
+      225
+    ],
+    "attempts": 1,
+    "condition": "none",
+    "contextSize": 4096,
+    "countMilliseconds": 83.24225,
+    "expandedBlocks": 0,
+    "firstResponse": 2.277510167,
+    "hasBrief": true,
+    "idea": "A maquiagem de 5 minutos para o dia a dia\nAngle: Mostre uma maquiagem completa em cinco passos rápidos.\nOpen with: “Dá pra ficar pronta em cinco minutos, sério.”",
+    "index": 2,
+    "instructionTokens": 304,
+    "instructions": "You write short-form video scripts that a creator reads from a teleprompter while filming themselves.\nWrite in the first person, as the creator, in natural spoken language with short sentences.\nFill in a short title and the script blocks. Block text is only what the creator says: no headings, labels, markdown or quotes around it.\nAdd short stage cues in square brackets where they help delivery, like [pause], [smile] or [look at camera]. Never put spoken words inside brackets.\nPlatform: TikTok, vertical and fast. Hook in the first 3 seconds, one idea only, short punchy lines spoken like a friend; end with one easy action (comment, follow or save).\nNever invent personal stories, clients, results, numbers or credentials for the creator: speak from general experience unless the idea gives the details.\nBe accurate. State only facts you are confident about; when unsure of a date, name or number, say it more generally instead of inventing it.\nWrite the title and every block in Portuguese (Brazil).\nThe script is in Portuguese (Brazil), not in English: write it in Portuguese (Brazil) even though these instructions are in English. Only the creator's catchphrases stay as they are.",
+    "kind": "script",
+    "language": "pt-BR",
+    "minimumWords": 150,
+    "outputTokens": 108,
+    "progressionDefects": [],
+    "prompt": "Language of the script: Portuguese (Brazil). Write all of it in Portuguese (Brazil).\nWrite a talking video script for TikTok.\nBlocks, in this order: Hook → Body → CTA.\nWhat each block does: Hook: grab attention in 3 seconds with the main promise. Body: explain the one idea in small, concrete steps. CTA: one clear action.\nLength: between 150 and 225 spoken words in total.\nDo not stop early: the script must be at least 150 words, so write every block in full, with several complete sentences each.\nOpen with this line, as it is or adapted only to the creator's way of speaking: “Dá pra ficar pronta em cinco minutos, sério.” It is the hook: write no other before it.\nThe video: A maquiagem de 5 minutos para o dia a dia\nAngle: Mostre uma maquiagem completa em cinco passos rápidos.\nOpen with: “Dá pra ficar pronta em cinco minutos, sério.”\nFollow this angle all the way through: Mostre uma maquiagem completa em cinco passos rápidos.",
+    "promptTokens": 242,
+    "responseCap": 1025,
+    "run": "after-3",
+    "schemaTokens": 321,
+    "seconds": 18.7213025,
+    "text": "Dá pra ficar pronta em cinco minutos, sério. [pause] Mostro uma maquiagem completa em cinco passos rápidos. [smile]\n\nPrimeiro, aplique uma base leve. Depois, uma cor de sombra discreta. Em seguida, um corretivo suave. Depois, um brilho delicado. Por fim, finalize com um toque de gloss. [look at camera] Cada etapa é rápida e fácil.\n\nExperimente e me conte como foi. [pause] Comente ou siga. [smile]",
+    "title": "Maquiagem de 5 minutos para o dia a dia",
+    "violations": [
+      "tooShort"
+    ],
+    "voiceUse": "none"
+  }
+]

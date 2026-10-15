@@ -13,10 +13,12 @@ padrão, corrija-o.
 
 ## Design
 
-A fonte de verdade do design é `design/cue-v30/handoff-telas/` (comece por `LEIA-ME.md` e `docs/09-Decisions.md`; as telas em
-`screens/*.html` são a referência visual e `ANIMACOES.md` tem o movimento; o pacote anterior, com o protótipo `Cue App v30.dc.html` e os
-documentos 01–08, saiu da árvore e continua no histórico do git, commit `bb39f35`). @DESIGN_PROJECT.md diz como o app ficou e onde as decisões foram
-tomadas. Atualize-o junto com a UI.
+A fonte de verdade do design é `design/cue-v30/handoff-telas/`: comece por `LEIA-ME.md` e `docs/09-Decisions.md` (vale mais que os outros
+documentos); as telas em `screens/*.html` são a referência visual e `ANIMACOES.md` / `docs/motion-README.md` têm o movimento. Pacotes antigos
+(protótipo `Cue App v30.dc.html`, documentos 01–08, `handoff-hoje`, `handoff-atualizacao`) só existem no histórico do git (commit `bb39f35`).
+
+`DESIGN_PROJECT.md` diz **como o app está hoje** e as decisões do dono que divergem do quadro, por tela. **Leia a seção da tela antes de mexer
+nela** (não é carregado automaticamente) e atualize-a na mesma entrega, descrevendo o estado atual (sem histórico: o que saiu, sai do texto).
 
 ## Contraste (WCAG 2.2 AA, HIG da Apple)
 
@@ -58,66 +60,41 @@ Toda tela, componente ou cor nova **precisa passar** no contraste antes de ser e
 - **SwiftLint** (`brew install swiftlint`) roda em todo build do app (Build Phases › SwiftLint) com
   `.swiftlint.yml`. Corrija o código em vez de afrouxar a configuração; `swiftlint --fix` resolve
   parte, mas revise o formato do que ele muda.
-- **Firebase** (projeto `cuestudio-app`, SPM `firebase-ios-sdk`): só Analytics (`FirebaseAnalyticsCore`, sem IDFA) e
-  Crashlytics, iniciados em `Managers/Telemetry/TelemetryManager.swift`, o único arquivo que importa o SDK. Testes de
-  unidade, de UI (`-uiTestInMemory`) e previews não enviam nada (`TelemetryPolicy`). O upload dos dSYMs roda só em
-  archive (Build Phases › Upload dSYMs to Crashlytics). Para ver eventos no DebugView: `-FIRAnalyticsDebugEnabled`.
-  Falhas do Apple Intelligence (`AIFailureReport`): cada tentativa que falha vai para o Console (`studio.cue` / `ScriptAI`) com o motivo exato do
-  framework (guardrailViolation, timeout, concurrentRequests…) e as condições (modelo pronto, calor, Low Power, memória, app em primeiro plano,
-  aparelho); a que chega ao criador vira um non-fatal no Crashlytics (`AppleIntelligence.<operação>.<motivo>`). Nunca o texto.
+- **Firebase** (projeto `cuestudio-app`, SPM `firebase-ios-sdk`): só Analytics (`FirebaseAnalyticsCore`, sem IDFA) e Crashlytics, iniciados em
+  `Managers/Telemetry/TelemetryManager.swift`, o único arquivo que importa o SDK. Testes, `-uiTestInMemory` e previews não enviam nada
+  (`TelemetryPolicy`). Upload dos dSYMs só em archive. DebugView: `-FIRAnalyticsDebugEnabled`. Falhas do Apple Intelligence (`AIFailureReport`):
+  cada uma vai ao Console (`studio.cue` / `ScriptAI`) com o motivo do framework e as condições do aparelho; a que chega ao criador vira non-fatal
+  (`AppleIntelligence.<operação>.<motivo>`). Nunca o texto.
 - O build Release também precisa compilar: previews usam dados de `SupportFiles/Debug/` e ficam em `#if DEBUG`.
-- Launch arguments (só em Debug, ver `SupportFiles/LaunchOptions.swift`): `-uiTestInMemory` (armazenamento
-  em memória), `-uiTestSeedSamples` (scripts de exemplo), `-uiTestPro` (começa no Cue Pro),
-  `-uiTestSampleVideo` (vídeos reais pequenos atrás dos takes de "3 morning habits", para o Quick edit),
-  `-uiTestRemoteConnects` (um iPad de mentira entra logo depois do pareamento do Remote Control),
-  `-uiTestAppearance <light|dark>` (as telas do Cue começam claras ou escuras, como em Settings › Appearance),
-  `-uiTestAppLanguage <lproj>` (a interface começa nesse idioma, em memória, sem mudar o simulador).
-  v27: `-uiTestOnboarding`, `-uiTestPermissions granted|denied`, `-uiTestSky off|serene|adrift|interstellar` (off por padrão nos testes), `-uiTestAppsInstalled` (os apps das plataformas contam como instalados e "recebem" o vídeo, só para ver a tela de envio; ver `SHARING.md`),
-  `-uiTestCatalogue <seção>` (a seção `transition` mostra a estrela; ver `DESIGN_PROJECT.md`).
-  v30: `-uiTestVoiceTip` (abre as portas da dica do My Cue Voice), `-uiTestVoyage` (liga a primeira viagem, o guia do primeiro vídeo; sem ele nenhum teste de UI
-  vê as dicas), `-uiTestStarTransition` (a estrela da ideia mantém os tempos reais; nos testes de UI ela é encurtada)
-  e `-uiTestSlowWriting` (com o roteirista de teste, as palavras chegam devagar na página).
-  `-uiTestExportsLeft <0…5>` (quantas exportações grátis restam; 0 abre "Your video is ready"), `-uiTestWelcomeAt <s>` / `-uiTestProAt <s>` (congelam a abertura da 1.1 / do Pro nesse segundo), `-uiTestUniverse sample|newYear|newAccount` (o que o Your universe guarda, como o painel APP DATA do protótipo), `-uiTestFirstStar` / `-uiTestMilestone <n>` (a revisão abre direto na história da 1.7 / do 8.3), `-uiTestSendOffAt <s>` (congela o send-off 8.2), `-uiTestStoryAt <s>` (congela o 8.3 e a 1.7), `-uiTestFakeShareSheet` (um substituto com Complete/Cancel no lugar da folha de compartilhamento do sistema), `-uiTestShareQueue` (uma fila do Share to universe deixada para o take de exemplo: o card Continue posting),
-  `-uiTestOnboardingStep welcome|universe|voyage|script|voice|practice` (com `-uiTestOnboarding`, o primeiro voo abre nesse capítulo), `-uiTestChapterAt <s>` (congela a abertura do capítulo na tela, 1.2 a 1.6, nesse segundo),
-  `-uiTestWelcomeOpening` (a abertura da 1.1 toca inteira, ≈ 8 s; nos testes de UI ela mostra só o estado final).
-  `-uiTestSceneCapture on|off` (a cena começa gravada/espelhada ou não, e o teste liga e desliga a captura com `notify_post`;
-  ver `SimulatedSceneCapture` e `DESIGN_PROJECT.md` §26: a gravação do próprio Simulator não marca a cena como capturada).
-  Notificações (ver `NOTIFICATIONS.md`): `-uiTestNotificationAuth <notDetermined|refuses|authorized|denied|provisional>` (central em memória, sem o
-  prompt do sistema; `notDetermined` por padrão, que permite ao pedir) e `-uiTestNotificationTap <script|cleanUp|share|deletedScript|invalid|duplicate|routine|logbook|universe>`
-  (o app abre como se tivesse sido aberto por essa notificação); `-uiTestNotificationInvite` (o convite para permitir notificações pode
-  aparecer depois de uma sessão; sem ele, nunca aparece num teste de UI).
-  Find inspiration: `-uiTestTopics fitness,custom:Daily Routine` (os temas do criador), `-uiTestIdeasSlow` / `-uiTestIdeasFail` (com `-uiTestStubAI`, cada lote de ideias leva 12 s / falha), `-uiTestCatalogue inspire`.
-  Testes de UI: `-uiTestFastAnimations` (nada anima: sheets, pushes e as transações do SwiftUI; o `CueApp.launch` passa por padrão
-  e `animations: true` pede as reais).
-- Idiomas: `LOCALIZATION.md` (três idiomas independentes, terminologia, RTL). Todo texto novo entra
-  nos 20 idiomas dos String Catalogs. O teste de fala de verdade é opt-in:
-  `TEST_RUNNER_CUE_SPEECH_E2E=1 xcodebuild … -only-testing:"Cue StudioTests/VoiceFollowingSpeechTests" test`,
-  num aparelho: o Simulator lista os idiomas mas não roda o reconhecimento de fala. Com o mesmo
-  flag, `-only-testing:"Cue StudioTests/VoiceFollowingLatencyTests"` mede a latência do Voice
-  Following no aparelho (uma gravação tocada em tempo real pelo caminho de áudio da câmera: voz →
-  indicador, palavra → texto p50/p95, quanto o texto se adianta, sala com ruído) e
-  `VoiceFollowingSpeechTests/availabilityOnThisDevice()` lista os 20 idiomas sem baixar nada.
-- Mais testes opt-in no aparelho (um conjunto por vez, com o iPhone desbloqueado e a tela acesa: o modelo da Apple é limitado em segundo plano e dois
-  conjuntos de fala disputam os 5 idiomas): `TEST_RUNNER_CUE_SPEECH_E2E=1 … -only-testing:"Cue StudioTests/CaptionSpeechTests"` (legendas: o que foi
-  ouvido, tempos, sincronia) e `TEST_RUNNER_CUE_AI_E2E=1 … -only-testing:"Cue StudioTests/LanguageModelDeviceTests"` ou `…/ScriptGenerationFlowDeviceTests`
-  (Apple Intelligence de verdade: idioma do resultado, tradução, My Cue Voice, o fluxo do card até o script salvo). Um idioma que o aparelho não roda
-  aparece como **não validado** (teste cancelado), nunca como aprovado. Resultados e limites: `LOCALIZATION.md` §5.
-- **My Cue Voice no aparelho** (opt-in, um conjunto por vez, iPhone desbloqueado e com a tela acesa; `CUE_DEVICE="<iPhone>" scripts/test.sh device <Suite>`):
-  `VoicePersonaDeviceTests` (14 criadores inventados × 3 ideias, com e sem voz; `TEST_RUNNER_CUE_VOICE_RUN`, `…_PERSONAS`, `…_IDEAS=shared`; `tools/voice/collect_runs.py` junta os resultados e
-  `tools/voice/make_pairs.py` faz os 10 pares anônimos para o dono), `PromptBudgetDeviceTests` (tokens por idioma e o custo do orçamento do prompt), `WritingImportDeviceTests` (o roteiro fica mais perto do
-  texto importado?), `PlatformLengthDeviceTests` e `LengthVariantsDeviceTests` (quantas palavras o modelo escreve por plataforma e por jeito de pedir) e `ScriptToolsDeviceTests` (cada ferramenta do "Improve script" cumpre o que o nome promete: mais curto é mais curto, Fit to time cai na faixa, roteiros longos voltam inteiros) e `IdeaRelevanceDeviceTests` (uma ideia vira um roteiro sobre a ideia, e em quantos segundos; inclui o perfil do dono; `TEST_RUNNER_CUE_IDEA_TEXT`, `…_CONDITIONS`, `…_RUNS`) `IdeaSuggestionsDeviceTests` (o ↻ do card traz ideias novas, a partir do Logbook e do que ele gosta, em quantos segundos) e `CreatorDayDeviceTests` (o dia de um criador: ideia → roteiro sobre ela → ferramentas → versão para YouTube). Um teste de aparelho tem 5 minutos: por isso os
-  conjuntos pegam poucos casos por execução (`TEST_RUNNER_CUE_IMPORT_CREATORS`, `…_PLATFORMS`, `…_VARIANT`, `…_RUNS`). Resultados e números: `DESIGN_PROJECT.md` §4.1 e §4.2.
-- A prévia do Quick edit tem uma medição opt-in no aparelho: `TEST_RUNNER_CUE_PREVIEW_LATENCY=1 xcodebuild …
-  -only-testing:"Cue StudioTests/QuickEditPreviewLatencyTests" test` (quanto uma mudança leva para
-  aparecer e se a imagem some, com filtro, texto, fundo Blur, 4K e corte).
-- **Skin Smoothing** (Quick edit › Adjust) tem uma medição opt-in com rosto de verdade, no aparelho (o Vision não acha rostos no Simulator; os testes de
-  unidade usam um detector falso e um rosto desenhado): `TEST_RUNNER_CUE_SKIN_E2E=1 TEST_RUNNER_CUE_SKIN_MEDIA=Documents/skin.jpg xcodebuild … -destination
-  "platform=iOS,id=<UDID>" -only-testing:"Cue StudioTests/SkinSmoothingDeviceTests" test`, com uma foto de retrato em `Documents` do app (`xcrun devicectl
-  device copy to … --domain-type appDataContainer --domain-identifier com.cuestudioteleprompter --destination Documents/skin.jpg`). Mede o custo de um quadro
-  em 1080p e 4K, se o rosto fica firme com movimento e se a prévia e a exportação saem iguais; os resultados vão como anexos (`SKIN SMOOTHING …`) do xcresult.
-- Compras são testadas localmente com `CueStudio.storekit` (selecionado no scheme).
-- Em Debug, uma instalação nova volta a ter as 5 exportações grátis: o contador fica no Keychain (sobrevive a reinstalar)
-  e o `UsageQuotaService` o zera no primeiro lançamento depois de instalar (`DefaultsKey.installLaunched`). Release não zera.
+- **Launch arguments** (só Debug; a lista completa e o que cada um faz está em `SupportFiles/LaunchOptions.swift`). Os mais usados:
+  - Estado: `-uiTestInMemory`, `-uiTestSeedSamples`, `-uiTestPro`, `-uiTestSampleVideo`, `-uiTestAppLanguage <lproj>`, `-uiTestExportsLeft <0…5>`,
+    `-uiTestUniverse sample|newYear|newAccount`, `-uiTestTopics …`, `-uiTestSky off|serene|adrift|interstellar` (off nos testes).
+  - Fluxos: `-uiTestOnboarding` (+ `-uiTestOnboardingStep <capítulo>`, `-uiTestPermissions granted|denied`), `-uiTestVoyage` (sem ele nenhum teste vê
+    as dicas da primeira viagem), `-uiTestVoiceTip`, `-uiTestNotificationInvite`, `-uiTestNotificationAuth <estado>`, `-uiTestNotificationTap <destino>`
+    (`NOTIFICATIONS.md`), `-uiTestShareQueue`, `-uiTestFakeShareSheet`, `-uiTestAppsInstalled` (`SHARING.md`), `-uiTestRemoteConnects`.
+  - IA de teste: `-uiTestStubAI`, `-uiTestSlowWriting`, `-uiTestWriterStalls`, `-uiTestIdeasSlow`, `-uiTestIdeasFail`.
+  - Tempo e animação: `-uiTestFastAnimations` (padrão do `CueApp.launch`; `animations: true` pede as reais), `-uiTestStarTransition`,
+    `-uiTestWelcomeOpening`, e os que congelam uma cena num segundo (`-uiTestWelcomeAt`, `-uiTestProAt`, `-uiTestChapterAt`, `-uiTestStoryAt`,
+    `-uiTestSendOffAt`, `-uiTestFirstStar`, `-uiTestMilestone <n>`).
+  - `-uiTestCatalogue <seção>` (transition, writing, universe, sky, inspire…) e `-uiTestSceneCapture on|off` (`DESIGN_PROJECT.md` §26).
+- **Idiomas:** `LOCALIZATION.md` (três idiomas independentes, terminologia, RTL). Todo texto novo entra nos 20 idiomas dos String Catalogs.
+- Compras são testadas localmente com `CueStudio.storekit` (selecionado no scheme). Em Debug, uma instalação nova volta a ter as 5 exportações
+  grátis (o contador fica no Keychain; `UsageQuotaService` o zera no primeiro lançamento, `DefaultsKey.installLaunched`). Release não zera.
+
+### Testes no aparelho (opt-in)
+
+Sempre `CUE_DEVICE="<iPhone>" scripts/test.sh device <Suite>`: um conjunto por vez, iPhone desbloqueado e com a tela acesa (o modelo da Apple é
+limitado em segundo plano e dois conjuntos de fala disputam os 5 idiomas). O script liga a variável `TEST_RUNNER_CUE_…` certa. Um teste de
+aparelho tem 5 minutos, por isso os conjuntos pegam poucos casos por execução (variáveis `TEST_RUNNER_CUE_…` de cada suíte). Um idioma que o
+aparelho não roda aparece como **não validado** (teste cancelado), nunca aprovado.
+
+| Assunto | Suítes | Onde ficam os resultados |
+|---|---|---|
+| Fala (o Simulator não roda o reconhecimento) | `VoiceFollowingSpeechTests` (inclui `availabilityOnThisDevice()`), `VoiceFollowingLatencyTests`, `CaptionSpeechTests` | `LOCALIZATION.md` §5 |
+| Apple Intelligence | `LanguageModelDeviceTests`, `ScriptGenerationFlowDeviceTests` | `LOCALIZATION.md` §5 |
+| My Cue Voice e roteirista | `VoicePersonaDeviceTests` (`tools/voice/collect_runs.py`, `make_pairs.py`), `PromptBudgetDeviceTests`, `WritingImportDeviceTests`, `PlatformLengthDeviceTests`, `LengthVariantsDeviceTests`, `ScriptToolsDeviceTests`, `IdeaRelevanceDeviceTests`, `IdeaSuggestionsDeviceTests`, `CreatorDayDeviceTests`, `InspirationDeviceTests` | `DESIGN_PROJECT.md` §4, §23, §30 |
+| Qualidade de roteiros e ideias (PT/EN/ES, voz completa, meia e sem voz) | `ScriptQualityDeviceTests` (`TEST_RUNNER_CUE_QUALITY_RUN=<nome>`; `tools/quality/collect.py`, `report.py`; reaplicar a lógica pura nos textos: `QualityReplayTests`) | `DESIGN_PROJECT.md` §4.1 |
+| Quick edit | `QuickEditPreviewLatencyTests`; `SkinSmoothingDeviceTests` e `BackgroundDeviceTests` (Vision de verdade; foto de retrato em `Documents` do app via `xcrun devicectl device copy to … --domain-identifier com.cuestudioteleprompter`, `TEST_RUNNER_CUE_SKIN_MEDIA=Documents/skin.jpg`) | `DESIGN_PROJECT.md` §20, §31 |
 
 ## Espaço em disco (não encher o Mac)
 

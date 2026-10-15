@@ -122,9 +122,13 @@ nonisolated enum VoiceConstraintChecker {
         for phrase in voice.phrases {
             let normalized = VoiceTextValidator.key(phrase).filter { $0.isLetter || $0.isNumber || $0 == " " }
             if normalized.count >= 3, head.hasPrefix(normalized) || head.prefix(normalized.count + 12).contains(normalized) {
+                // A catchphrase of a few words said first is a greeting ("Fala, galera!"): measured on an iPhone 15 Pro, a creator whose writing
+                // opens with one got it first in 2 of 3 scripts, and writing the script again took it away in 2 of about 13 tries, ~10 s each.
+                // Counted, never written again for.
                 found.append(VoiceViolation(
                     kind: .catchphraseFirst,
-                    detail: "It opens with the catchphrase “\(phrase)”: open the way the creator opens instead, and use the catchphrase later, if at all."
+                    detail: "It opens with the catchphrase “\(phrase)”: open the way the creator opens instead, and use the catchphrase later, if at all.",
+                    countedOnly: normalized.split(separator: " ").count <= 3
                 ))
                 break
             }

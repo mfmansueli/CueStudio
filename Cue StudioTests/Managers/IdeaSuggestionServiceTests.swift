@@ -40,12 +40,18 @@ struct IdeaSuggestionServiceTests {
         return Rig(service: service, writer: writer, profile: profile, defaults: defaults, notes: notes)
     }
 
+    /// Words no other idea of the test shares, so the ideas are told apart as the model's are (`IdeaSimilarity.repeats`).
+    private static func distinct(_ number: Int, in prefix: String) -> String {
+        let words = ["amber", "basil", "cedar", "dune", "ember", "fjord", "garnet", "harbor", "iris", "juniper", "kelp", "lotus", "maple", "nectar"]
+        return "\(prefix)\(words[number % words.count]) \(prefix.lowercased())\(number)\(words[(number * 5 + 3) % words.count])."
+    }
+
     private func batch(_ prefix: String, count: Int = 6, niche: Niche = .lifestyle, angle: IdeaAngle? = .list) -> [ThemeIdea] {
         (1...count).map { number in
             var idea = ThemeIdea(title: "\(prefix) \(number)", kind: "List", length: .minute1, niche: niche)
             idea.angle = angle?.rawValue
             idea.brief = IdeaBrief(
-                subject: idea.title, angle: "Explain \(prefix) \(number).", openingLine: "Here is \(prefix) \(number).", angleKind: angle?.rawValue,
+                subject: idea.title, angle: Self.distinct(number, in: prefix), openingLine: Self.distinct(number + 20, in: prefix), angleKind: angle?.rawValue,
                 topicKey: niche.rawValue
             )
             return idea

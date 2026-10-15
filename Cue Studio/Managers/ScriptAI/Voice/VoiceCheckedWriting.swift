@@ -10,7 +10,8 @@ import Foundation
 ///
 /// - The model refusing a request that carries the creator's own words (a guardrail) is answered once with a request that has only what Cue offers.
 /// - A script that breaks their rules (`VoiceConstraintChecker`) is written once more, told which rule.
-/// - It never blocks: if the new attempt fails or is no better, the first script stands.
+/// - It never blocks: if the new attempt fails, or is not better where it was asked to be without losing anything else (`RevisionChoice`), the
+///   first script stands.
 @MainActor
 struct VoiceCheckedWriting {
     /// Writes the script for a request; the violations are what the last draft got wrong, empty for the first attempt.
@@ -43,13 +44,20 @@ struct VoiceCheckedWriting {
         do {
             var second = try await draft(request, violations)
             let remaining = self.violations(in: second, for: request)
-            TelemetryManager.record(VoiceCheckReport(first: violations.map(\.kind), remaining: remaining.map(\.kind), use: use))
-            if remaining.count <= violations.count {
+            // The second draft is kept only when what it breaks is less serious and it lost nothing that made the first worth having.
+            let verdict = RevisionChoice.verdict(
+                original: DraftAssessment(text: script.text, violations: violations, request: request),
+                revision: DraftAssessment(text: second.text, violations: remaining, request: request)
+            )
+            TelemetryManager.record(VoiceCheckReport(first: violations.map(\.kind), remaining: remaining.map(\.kind), use: use, verdict: verdict))
+            if verdict.takesRevision {
                 second.attempts = 2
                 second.voiceViolations = remaining.map(\.kind)
                 second.voiceUse = use
+                second.discardedDraft = script.text
                 return second
             }
+            script.discardedDraft = second.text
         } catch is CancellationError {
             throw CancellationError()
         } catch {

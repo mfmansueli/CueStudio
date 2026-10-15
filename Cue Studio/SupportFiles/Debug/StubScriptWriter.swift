@@ -84,13 +84,15 @@ final class StubScriptWriter: ScriptWriting {
         if let ideasDelay { try await Task.sleep(for: ideasDelay) }
         if ideasFail { throw ScriptAIError.emptyResponse }
         suggestionCount += 1
+        let words = Self.stubWords
         let answers = slots.indices.map { index in
-            // Titles that differ in a word, so that the card does not take them for one idea said again (`IdeaSimilarity`).
-            let word = Self.stubWords[((suggestionCount - 1) * 6 + index) % Self.stubWords.count]
-            let topic = slots[index].topic.label
+            // Titles that differ in a word, and angles and opening lines made of words no other idea of a few batches has, so that the card does not
+            // take them for one idea said again (`IdeaSimilarity.repeats` compares all three).
+            let number = (suggestionCount - 1) * 6 + index
+            func word(_ offset: Int) -> String { words[(number + offset) % words.count] }
             return IdeaBriefReader.Answer(
-                title: "Stub \(word)", angle: "Explain the \(word) side of \(topic) in three steps.",
-                openingLine: "Here is the \(word) way to think about \(topic)."
+                title: "Stub \(word(0))", angle: "\(word(5).capitalized) \(word(6)) \(word(9)).",
+                openingLine: "\(word(14).capitalized) \(word(16)) \(word(21))."
             )
         }
         return IdeaBriefReader.ideas(from: answers, slots: slots, language: language?.locale.language.minimalIdentifier)

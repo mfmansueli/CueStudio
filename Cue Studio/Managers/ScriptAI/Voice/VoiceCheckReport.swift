@@ -13,8 +13,11 @@ nonisolated struct VoiceCheckReport: Sendable, Equatable {
     /// What the new attempt still broke.
     let remaining: [VoiceViolation.Kind]
     let use: VoiceUse
+    /// Which draft the creator got, and why (`RevisionChoice`).
+    let verdict: RevisionChoice.Verdict
 
     var line: String {
         "voice.check first=\(first.map(\.rawValue).joined(separator: ",")) remaining=\(remaining.map(\.rawValue).joined(separator: ",")) use=\(use.rawValue)"
+            + " kept=\(verdict.rawValue)"
     }
 }
