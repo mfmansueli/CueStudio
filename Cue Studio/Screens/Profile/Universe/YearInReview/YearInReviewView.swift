@@ -6,7 +6,9 @@
 import SwiftUI
 
 /// 9.2 · Your {year} in review: a full-screen story of up to 5 slides, 3.2 s each, with 3 pt bars on top. A tap on the right half goes on, on the left
-/// half goes back, the ✕ closes; the last slide has **Share my {year}**. Reduce Motion: the bars don't fill and nothing advances by itself.
+/// half goes back, the ✕ closes; the last slide has **Share my {year}**. A slide recedes as the next comes forward (`DepthTransition`). The story's
+/// clock stops while the app is not active, so a call or Control Center never skips slides. Reduce Motion: the bars don't fill, nothing advances by
+/// itself and the slides fade.
 struct YearInReviewView: View {
     let stats: YearStats
     let isSealed: Bool
@@ -14,9 +16,11 @@ struct YearInReviewView: View {
     let onClose: () -> Void
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.scenePhase) private var scenePhase
     @State private var index = 0
-    @State private var slideStart = Date.now
-    @State private var slideShown = false
+    /// Seconds of `clock` at which the slide on screen came.
+    @State private var slideStart: TimeInterval = 0
+    @State private var clock = MotionClock()
     /// The whole story fades in over 0.3 s (9.2 · "Year in review · open") and out over 0.2 s.
     @State private var visible = false
 
@@ -29,8 +33,8 @@ struct YearInReviewView: View {
     var body: some View {
         ZStack {
             background
-            TimelineView(.animation(minimumInterval: 1.0 / 30, paused: reduceMotion)) { context in
-                let progress = reduceMotion ? 1 : min(1, context.date.timeIntervalSince(slideStart) / Self.slideDuration)
+            TimelineView(.animation(minimumInterval: 1.0 / 30, paused: !isRunning)) { context in
+                let progress = reduceMotion ? 1 : min(1, max(0, (clock.elapsed(at: context.date) - slideStart) / Self.slideDuration))
                 VStack(spacing: 0) {
                     YearInReviewBars(count: slides.count, index: index, progress: progress)
                         .padding(.horizontal, 12)
@@ -44,8 +48,7 @@ struct YearInReviewView: View {
             if slides.indices.contains(index) {
                 YearInReviewSlideView(slide: slides[index], stats: stats, isSealed: isSealed)
                     .id(index)
-                    .opacity(slideShown ? 1 : 0)
-                    .scaleEffect(slideShown ? 1 : 0.94)
+                    .transition(.depth(reduceMotion: reduceMotion))
             }
             taps
             VStack {
@@ -65,6 +68,7 @@ struct YearInReviewView: View {
         .preferredColorScheme(.dark)
         .opacity(visible ? 1 : 0)
         .presentationBackground(.clear)
+        .onChange(of: isRunning, initial: true) { _, running in clock.setRunning(running, at: .now) }
         .onAppear {
             show()
             withAnimation(.easeOut(duration: reduceMotion ? 0.2 : 0.3)) { visible = true }
@@ -122,10 +126,10 @@ struct YearInReviewView: View {
 
     // MARK: - Moving between slides
 
+    private var isRunning: Bool { !reduceMotion && scenePhase == .active }
+
     private func show() {
-        slideShown = false
-        slideStart = .now
-        withAnimation(reduceMotion ? .easeOut(duration: 0.2) : .easeOut(duration: 0.4)) { slideShown = true }
+        slideStart = clock.elapsed(at: .now)
     }
 
     private func advance() {

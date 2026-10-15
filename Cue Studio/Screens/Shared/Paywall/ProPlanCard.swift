@@ -41,7 +41,7 @@ struct ProPlanCard: View {
             }
             .contentShape(shape)
         }
-        .buttonStyle(.plain)
+        .buttonStyle(.cuePressCard)
         .accessibilityAddTraits(isSelected ? .isSelected : [])
         .accessibilityIdentifier("paywall.plan.\(plan.rawValue)")
     }

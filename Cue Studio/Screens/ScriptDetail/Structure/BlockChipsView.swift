@@ -17,7 +17,7 @@ struct BlockChipsView: View {
         FlowLayout(spacing: 6, lineSpacing: 6) {
             ForEach(summaries) { summary in
                 Button { onTap(summary) } label: { chip(summary) }
-                    .buttonStyle(.plain)
+                    .buttonStyle(.cuePress)
                     .accessibilityElement(children: .combine)
                     .accessibilityHint(Text("Shows this block in the script"))
                     .accessibilityIdentifier("detail.blockChip.\(summary.firstParagraph)")

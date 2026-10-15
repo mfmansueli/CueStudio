@@ -153,7 +153,7 @@ Para quem vem de outros apps e já tem texto guardado (roteiros, legendas, notas
 
 ## 5. Movimento
 
-Céu (`StarfieldMath`, `SkyDensity`): **Serene** é só as estrelas de fundo (3 camadas, deriva 260/160/85 s) e as 2 nebulosas, sem estrelas piscando e sem cometa; **Adrift** tem tudo: as mesmas camadas e nebulosas, 14 estrelas piscando de 7 s e **menores** que no quadro (1,2–2 pt em vez de 1,8–3; a cruz de brilho com 5,5 pt de meia haste em vez de 8; pedido do dono em 6/10/2026) e o comet a cada 105–135 s (o primeiro aos 25 s, relógio do app), **e um astronauta flutuando** (seção 5.0.1); **Interstellar** (o quarto, pedido do dono em 6/10/2026; `StarfieldMath+Interstellar`, `InterstellarSkyPainter`, `SpaceshipPainter`) é o Adrift com as cores de uma galáxia e **uma nave no lugar do comet** (detalhes na seção 5.0); nebulosa
+Céu (`StarfieldMath`, `SkyDensity`): **Serene** é só as estrelas de fundo (3 camadas, deriva 260/160/85 s, cada uma balançando de lado no seu ritmo e cada bloco com estrelas próprias: seção 34) e as 2 nebulosas, sem estrelas piscando e sem cometa; **Adrift** tem tudo: as mesmas camadas e nebulosas, 14 estrelas piscando de cerca de 7 s (cada uma no seu ritmo, seção 34) e **menores** que no quadro (1,2–2 pt em vez de 1,8–3; a cruz de brilho com 5,5 pt de meia haste em vez de 8; pedido do dono em 6/10/2026) e o comet a cada 105–135 s (o primeiro aos 25 s, relógio do app), **e um astronauta flutuando** (seção 5.0.1); **Interstellar** (o quarto, pedido do dono em 6/10/2026; `StarfieldMath+Interstellar`, `InterstellarSkyPainter`, `SpaceshipPainter`) é o Adrift com as cores de uma galáxia e **uma nave no lugar do comet** (detalhes na seção 5.0); nebulosa
 26 s. Tudo o mais segue `motion/README.md` e as seções 12 e 13 da v27/v29 já implementadas (contagem, send-off, marco, first star, núcleo YOU, empty state).
 
 ## 5.0. Interstellar, o quarto céu (Settings › Personalize › Starry sky)
@@ -987,3 +987,45 @@ aprovou o princípio, o plano e os textos numa página privada ("Você cria. O C
   a palavra, sem cues, caixa nem pontuação —, o começo da versão gravada vira um dos exemplos de como ele escreve (o mesmo lugar do Sounds like me, os últimos três,
   fonte "Your edits"; não conta como aprovação do texto do Cue) e um toast diz **"Cue learned from this"** com **Undo**. Um rascunho gravado como veio espera (ele pode
   mudar e gravar de novo); cada rascunho ensina uma vez; "Delete my Cue data" apaga os rascunhos. Testes: `DraftLearningTests`.
+
+## 34. Direção de movimento (14 de outubro de 2026; pedido do dono, não está no quadro)
+
+Mais expressão nas cenas de descoberta e celebração, discrição no roteiro, na gravação e na edição; um movimento principal por vez. O que vale hoje:
+
+- **Troca de capítulo do onboarding** (`OnboardingView`, `DepthTransition`, `CueMotion.chapterExit/chapterEnter/hazeShift/skyShift`): três profundidades
+  em três velocidades. O capítulo que sai recua (×0,97, 8 pt para cima, desfoque 4 pt) em 0,22 s acelerando; o próximo chega um instante depois (0,1 s)
+  de perto do vidro (×1,03, 14 pt abaixo, desfoque 4 pt) na curva da luz (0,55 s, `(0.16, 1, 0.3, 1)`). A névoa do fundo (`BgWash`) passa para a do
+  próximo capítulo em 0,8 s (antes trocava de uma vez) e o céu sobe 24 pt em 0,95 s: o que está longe se move depois e mais devagar. Reduce Motion:
+  só fades (0,2 s), o céu parado.
+- **Céu** (`StarfieldMath`, `StarfieldView`): cada bloco de estrelas tem as suas (`tileSeed`, `tileRow`: o bloco mantém as estrelas enquanto desce), em vez do
+  mesmo desenho repetido em colunas; as camadas balançam de lado ±2, ±4 e ∓7 pt em 97, 71 e 53 s (a mais perto, para o outro lado), então nunca andam
+  juntas; as nebulosas andam numa curva lenta (deriva horizontal, vertical e crescimento em períodos diferentes, nos ±20 pt e 1 → 1,16 do quadro). Mesma
+  quantidade de estrelas e mesmo custo de desenho; tudo função do relógio do app, sem saltos ao trocar de aba.
+- **Resposta ao toque** (`PressResponse`, `CueMotion.pressIn/pressRelease`): botão sólido afunda e escurece 8% na hora (mola de 0,16 s, sem quique) e
+  volta numa mola de 0,34 s que passa um pouco do lugar; nunca fica transparente. Afunda 3% (50 pt ou mais), 5% (compactos) ou 6% (ícones): mais ou
+  menos os mesmos pontos de movimento. Botões de Liquid Glass (amarelo e secundário de `CueStudioButtonStyle`, ícones de vidro) ficam só com a
+  resposta do `.interactive()` do sistema. O "Get started" e os outros amarelos do onboarding usam a mesma resposta. Reduce Motion: só escurece.
+- **Relógios que param quando ninguém vê** (`MotionScreen`, `AmbientTimeline`, `WelcomeChapter`, `YearInReviewView`): fora da tela, rolado para fora
+  ou com o app inativo (ligação, Central de Controle, alternador de apps) o relógio para (`MotionClock`) e, ao voltar, continua do quadro em que estava.
+  Todo laço ambiente usa `AmbientTimeline`: linha de leitura, partículas do horizonte, brilho dos botões, aura da IA, constelação do dock, shimmer do
+  esqueleto, pílula "Drafting in your voice", etapa READY de Takes, núcleo YOU e mininúcleo, planeta do Pro, a escrita do onboarding, "Opening your
+  edit" e o universo do 1.2. As vibrações da abertura (1.1) são batidas do relógio da cena, e os slides da retrospectiva não avançam com o app fora.
+- **Gravação calma** (`ReadingGuide.isCalm`, `HorizonLine.breathes`): com a câmera gravando, a linha de leitura não respira e as partículas somem; o
+  brilho que acompanha a voz continua (diz que a voz está sendo seguida).
+- **Ritmos próprios:** cada estrela que pisca tem o seu ciclo (7 s ±12%, `StarfieldMath.twinkleRhythm`; as posições não mudaram). Os planetas do 1.2 e
+  da galáxia YOU do 1.3 andam um pouco mais rápido na frente e mais devagar atrás, e ficam 10% maiores e mais claros na frente e menores e 20% mais
+  apagados atrás (`OrbitMotion`), com a mesma volta. O universo do Perfil (9.2) continua linear, como o quadro diz.
+- **Pular uma história** (`MotionScreen` com `skippable`, `ProOpening`): o toque leva tudo ao estado final em 0,3 s (`CueMotion.skipSettle`) em vez de
+  saltar. **Retrospectiva:** o slide recua e o próximo avança (`DepthTransition`).
+- **Luz que soma** (só no 1.3, para comparar; `GalaxyPainter`): halos, braços, estrelas, bojo e cruz de luz das galáxias usam `.plusLighter`, como pede
+  `ANIMACOES.md` §5; onde não há outra luz embaixo, desenha igual ao quadro. Planetas, linhas das órbitas e o núcleo continuam sólidos.
+- **Celebrações** (`StoryCover`, `CueMotion.storyIn/storyOut`): a primeira estrela e o marco entram em fade sobre a revisão do take (0,35 s, curva da
+  luz) e saem em 0,25 s, sem subir como folha; de "Ready to travel" para o send-off a capa troca sem descer e subir de novo. Depois que a história
+  termina, a primeira estrela, o send-off e o marco desenham a 30 fps, e param com o app inativo.
+- **Toasts** (`AnyTransition.toast`, do app e do editor): entram descendo 8 pt em 0,25 s e saem em fade de 0,2 s (`motion/README.md`), em vez de cair do
+  alto da tela.
+- **Ícones que trocam** (`symbolSwap`, `CueMotion.symbolSwap`): play/pause do gravador e do editor, o olho dos cues, o microfone do Logbook, a conexão
+  do controle remoto e a estrela de melhor take (que dá um pequeno pulo) trocam com o `replace` do sistema em vez de saltar.
+- **Chips e cartões** (`CuePressButtonStyle`, `.cuePress` / `.cuePressCard`): os chips de filtro (Scripts, Takes, voz, blocos, painéis do editor) e os
+  cartões que são um botão só (planos do Pro e do Perfil, caminhos da biblioteca vazia, presets do editor) afundam como os botões (cartão 1,5%).
+

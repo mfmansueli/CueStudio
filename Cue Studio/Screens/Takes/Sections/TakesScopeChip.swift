@@ -27,7 +27,7 @@ struct TakesScopeChip: View {
             .frame(minHeight: Metrics.hitTarget)
             .contentShape(Capsule())
         }
-        .buttonStyle(.plain)
+        .buttonStyle(.cuePress)
         .accessibilityLabel(Text("\(String(year)) shared · clear the filter"))
         .accessibilityIdentifier("takes.scopeChip")
     }

@@ -50,8 +50,8 @@ struct EditorOpeningOverlay: View {
                     .font(.system(size: 16, weight: .semibold))
                     .foregroundStyle(Palette.aiTextStrong)
             }
-            TimelineView(.animation(minimumInterval: 1.0 / 30, paused: reduceMotion)) { context in
-                let phase = reduceMotion ? 0.5 : (context.date.timeIntervalSinceReferenceDate / 1.4).truncatingRemainder(dividingBy: 1)
+            AmbientTimeline { ambient in
+                let phase = reduceMotion ? 0.5 : (ambient.seconds / 1.4).truncatingRemainder(dividingBy: 1)
                 GeometryReader { proxy in
                     Capsule().fill(Color.white.opacity(0.12))
                         .overlay(alignment: .leading) {

@@ -19,11 +19,16 @@ struct MilestoneView: View {
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.storyFrozenAt) private var frozenAt
+    @Environment(\.scenePhase) private var scenePhase
     @State private var start = Date.now
+    /// The story has played: anything still moving is ambient, at 30 fps.
+    @State private var isSettled = false
 
     var body: some View {
         GeometryReader { proxy in
-            TimelineView(.animation(paused: reduceMotion || frozenAt != nil)) { context in
+            TimelineView(.animation(
+                minimumInterval: isSettled ? 1.0 / 30 : nil, paused: reduceMotion || frozenAt != nil || scenePhase != .active
+            )) { context in
                 let time = frozenAt ?? (reduceMotion ? MilestoneScript.duration : context.date.timeIntervalSince(start))
                 ZStack(alignment: .top) {
                     Text(eyebrow)
@@ -68,6 +73,7 @@ struct MilestoneView: View {
                     .frame(height: proxy.size.height)
                 }
                 .frame(width: proxy.size.width, height: proxy.size.height, alignment: .top)
+                .onChange(of: time >= MilestoneScript.duration) { _, settled in isSettled = settled }
             }
         }
         .ignoresSafeArea()

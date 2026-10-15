@@ -179,7 +179,7 @@ struct TakeReviewView: View {
             reachedMilestone = flow.reachedMilestone
             if !personalization.celebrations { viewModel.celebration = nil }
         }
-        .fullScreenCover(isPresented: $tellsFirstStar) {
+        .storyCover(isPresented: $tellsFirstStar) {
             if let take = viewModel.take {
                 FirstStarView(
                     take: take,
@@ -188,7 +188,7 @@ struct TakeReviewView: View {
                 )
             }
         }
-        .fullScreenCover(isPresented: $tellsMilestone) {
+        .storyCover(isPresented: $tellsMilestone) {
             if let reached = reachedMilestone, let icon = AppIconChoice(milestone: reached) {
                 MilestoneView(
                     milestone: reached, icon: icon, isAvailable: !icon.needsPro || store.tier.isPro,
@@ -417,7 +417,10 @@ struct TakeReviewView: View {
     /// What the flow tells the review: the send-off when the networks are done, the editor when the creator wants to edit first.
     private func connectFlow() {
         flow.onFinished = { video, networks in
-            viewModel.celebration = .sentOff(video, networks)
+            // From "Ready to travel" to the send-off without the cover sliding down and up again: both are the same night.
+            var instant = Transaction()
+            instant.disablesAnimations = true
+            withTransaction(instant) { viewModel.celebration = .sentOff(video, networks) }
         }
         flow.onEditFirst = {
             viewModel.celebration = nil

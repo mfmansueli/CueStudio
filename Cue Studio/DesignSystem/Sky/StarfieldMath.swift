@@ -19,11 +19,21 @@ nonisolated enum StarfieldMath {
         let tile: CGSize
         /// Seconds for the pattern to drift one tile, downward.
         let drift: Double
+        /// Points the layer sways from side to side as it drifts (a sine), and the seconds of one sway. The nearer the layer, the wider and
+        /// quicker, and the near one starts the other way: the three layers never move together, which is what reads as depth.
+        var sway = 0.0
+        var swayPeriod = 60.0
     }
 
-    static let far = Layer(starsPerTile: 16, size: 0.6...1.0, opacity: 0.30...0.65, tile: CGSize(width: 180, height: 170), drift: 260)
-    static let mid = Layer(starsPerTile: 12, size: 1.0...1.5, opacity: 0.45...0.80, tile: CGSize(width: 390, height: 310), drift: 160)
-    static let near = Layer(starsPerTile: 7, size: 1.6...2.4, opacity: 0.60...0.95, tile: CGSize(width: 390, height: 600), drift: 85)
+    static let far = Layer(
+        starsPerTile: 16, size: 0.6...1.0, opacity: 0.30...0.65, tile: CGSize(width: 180, height: 170), drift: 260, sway: 2, swayPeriod: 97
+    )
+    static let mid = Layer(
+        starsPerTile: 12, size: 1.0...1.5, opacity: 0.45...0.80, tile: CGSize(width: 390, height: 310), drift: 160, sway: 4, swayPeriod: 71
+    )
+    static let near = Layer(
+        starsPerTile: 7, size: 1.6...2.4, opacity: 0.60...0.95, tile: CGSize(width: 390, height: 600), drift: 85, sway: -7, swayPeriod: 53
+    )
     static let layers = [far, mid, near]
 
     /// How strongly the stars are drawn: the drifting stars' and the twinkles' opacity are multiplied by `opacity`, and the drifting stars' size by
@@ -63,6 +73,25 @@ nonisolated enum StarfieldMath {
         return CGFloat(progress) * layer.tile.height
     }
 
+    /// How far to the side, in points, a layer has swayed `time` seconds in.
+    static func sway(of layer: Layer, at time: TimeInterval) -> CGFloat {
+        guard layer.swayPeriod > 0 else { return 0 }
+        return CGFloat(layer.sway * sin(2 * .pi * time / layer.swayPeriod))
+    }
+
+    /// Which tile of the endless sky sits at drawn row `row` (counted from the top, before the drift's offset) `time` seconds in. Each time
+    /// the drift wraps, the tile that was at a row moves to the next one down, so a tile keeps its number (and its stars) all the way down.
+    static func tileRow(_ row: Int, of layer: Layer, at time: TimeInterval) -> Int {
+        guard layer.drift > 0 else { return row }
+        return row - Int((time / layer.drift).rounded(.down))
+    }
+
+    /// The seed of one tile of a layer: every tile has its own stars, so the sky never shows the same little pattern over and over (a tile is
+    /// 180 pt across in the far layer: the same 16 stars used to repeat in columns across the screen).
+    static func tileSeed(_ seed: UInt64, column: Int, row: Int) -> UInt64 {
+        seed &+ UInt64(bitPattern: Int64(column)) &* 0x9E37_79B9_7F4A_7C15 &+ UInt64(bitPattern: Int64(row)) &* 0xC2B2_AE3D_27D4_EB4F
+    }
+
     // MARK: - Twinkles
 
     struct Twinkle: Equatable, Sendable {
@@ -71,7 +100,7 @@ nonisolated enum StarfieldMath {
         let y: Double
         /// `twinkleSize`.
         let size: Double
-        /// 7 s for one cycle (`motion/README.md`).
+        /// Seconds for one cycle: the design's 7 s, ±12% from star to star (`twinkleRhythm`), so the sky never pulses in one rhythm.
         let cycle: Double
         let phase: Double
         /// Half of them have the phone-camera cross glint.
@@ -82,10 +111,12 @@ nonisolated enum StarfieldMath {
 
     static func twinkles(count: Int, seed: UInt64) -> [Twinkle] {
         var random = SeededRandom(seed: seed &+ 7919)
+        // Its own generator, so the stars stay where they were and only their rhythm changes.
+        var rhythm = SeededRandom(seed: seed &+ 15_485_863)
         return (0..<count).map { index in
             Twinkle(
                 x: random.next(in: 0.06...0.94), y: random.next(in: 0.05...0.9),
-                size: random.next(in: twinkleSize), cycle: twinkleCycle,
+                size: random.next(in: twinkleSize), cycle: twinkleCycle * rhythm.next(in: twinkleRhythm),
                 // Each star starts 0 to 5.2 s into its cycle.
                 phase: random.next(in: 0...5.2) / twinkleCycle,
                 hasGlint: index % 2 == 0,
@@ -94,8 +125,9 @@ nonisolated enum StarfieldMath {
         }
     }
 
-    /// Seconds for one twinkle.
+    /// Seconds for one twinkle (the design's), and how far a star's own cycle strays from it.
     static let twinkleCycle = 7.0
+    static let twinkleRhythm = 0.88...1.12
 
     /// A twinkling star's size at its fullest, in points: small, close to the near layer's stars (1.6 to 2.4 pt), so it is the light
     /// coming and going that gives it away (the design's 1.8 to 3 pt, made smaller on 6/10/2026 at the owner's request).
@@ -191,7 +223,7 @@ nonisolated enum StarfieldMath {
 
     // MARK: - Nebulae
 
-    /// A soft violet blob: 240 to 320 pt, drifting ±20 pt and growing 1 → 1.16 over 26 to 34 s, then back.
+    /// A soft violet blob: 240 to 320 pt, drifting ±20 pt and growing 1 → 1.16 over 26 to 34 s, then back (`nebulaPose`).
     struct Nebula: Equatable, Sendable {
         let x: Double
         let y: Double
@@ -218,6 +250,16 @@ nonisolated enum StarfieldMath {
         let t = (time / period).truncatingRemainder(dividingBy: 2)
         let triangle = t <= 1 ? t : 2 - t
         return triangle * triangle * (3 - 2 * triangle)
+    }
+
+    /// Where a nebula is (points from its place) and how big (× its diameter) `time` seconds in. Across and down, and the growth, each
+    /// breathe on their own period (the nebula's, 1.31 and 0.87 times it), so it wanders on a slow curve instead of sliding back and forth
+    /// on one diagonal, and never grows in step with its drift. The ranges are the design's: ±20 pt, 1 → 1.16.
+    static func nebulaPose(_ nebula: Nebula, at time: TimeInterval) -> (offset: CGVector, scale: Double) {
+        let across = nebulaPhase(at: time, period: nebula.period)
+        let down = nebulaPhase(at: time, period: nebula.period * 1.31)
+        let growth = nebulaPhase(at: time, period: nebula.period * 0.87)
+        return (CGVector(dx: (across - 0.5) * 40, dy: (0.5 - down) * 40), 1 + 0.16 * growth)
     }
 }
 

@@ -22,8 +22,8 @@ struct UniverseCore: View {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
-        TimelineView(.animation(minimumInterval: 1.0 / 30, paused: !animates || reduceMotion)) { context in
-            let time = (animates && !reduceMotion) ? context.date.timeIntervalSinceReferenceDate : 0
+        AmbientTimeline(paused: !animates) { ambient in
+            let time = animates ? ambient.seconds : 0
             // The breath is a swell and back: 0 → 1 → 0 over six seconds, eased.
             let swell = UniverseSphere.swell(at: time)
             ZStack {

@@ -466,6 +466,30 @@ struct PaletteContrastTests {
         }
     }
 
+    /// The first flight's quiet words (`Palette.Flight.quietInk`): "I already use Cue" on the night, at the strongest haze of a chapter (its
+    /// violet light, the brightest of the washes, over the night), and a waiting yellow button's title on the yellow at 20%.
+    @Test func theFirstFlightsQuietWordsRead() {
+        for appearance in Appearance.allCases {
+            let night = rgb(Palette.Flight.night, in: appearance)
+            let haze = rgb(Palette.Universe.nightViolet.opacity(0.30), in: appearance, over: night)
+            let waiting = rgb(Palette.acc.opacity(0.2), in: appearance, over: night)
+            for (name, surface) in [("night", night), ("the haze", haze), ("the waiting button", waiting)] {
+                let value = ColorContrast.ratio(rgb(Palette.Flight.quietInk, in: appearance, over: surface), surface)
+                #expect(value >= ColorContrast.textMinimum, "quietInk on \(name), \(appearance): \(value)")
+            }
+        }
+    }
+
+    /// The first star's "✓ SAVED" pill over the take's own picture, at its worst: a white frame under the pill's black.
+    @Test func theFirstStarsSavedPillReads() {
+        for appearance in Appearance.allCases {
+            let white = ColorContrast.RGB(red: 1, green: 1, blue: 1)
+            let pill = ColorContrast.composite(ColorContrast.RGB(red: 0, green: 0, blue: 0), alpha: FirstStarView.savedPillShade, over: white)
+            let value = ColorContrast.ratio(rgb(Palette.successText, in: appearance, over: pill), pill)
+            #expect(value >= ColorContrast.textMinimum, "✓ SAVED on a white frame, \(appearance): \(value)")
+        }
+    }
+
     /// The "● REC" label, and the empty state's title and line, over the night.
     @Test func theRecPillAndTheEmptyStateRead() {
         for appearance in Appearance.allCases {

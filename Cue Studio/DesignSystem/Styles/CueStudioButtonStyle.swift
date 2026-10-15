@@ -74,9 +74,13 @@ struct CueStudioButtonStyle: ButtonStyle {
                 }
                 .glassEffect(glass, in: shape)
                 .contentShape(shape)
-                .opacity(isEnabled ? (configuration.isPressed ? 0.75 : 1) : 0.4)
-                .scaleEffect(configuration.isPressed ? 0.98 : 1)
-                .animation(.easeOut(duration: 0.15), value: configuration.isPressed)
+                // Glass answers the touch itself (`.interactive()`); the solid ones sink and darken (`PressResponse`).
+                .pressResponse(configuration.isPressed && !usesGlass, depth: pressDepth)
+                .opacity(isEnabled ? 1 : 0.4)
+        }
+
+        private var pressDepth: CGFloat {
+            size == .compact || size == .medium ? PressResponse.compactDepth : PressResponse.regularDepth
         }
 
         /// The primary (yellow) and secondary buttons are Liquid Glass, as `.glassProminent` and `.glass` are (07 §1); the tinted,
