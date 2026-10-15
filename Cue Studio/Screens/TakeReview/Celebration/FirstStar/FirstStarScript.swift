@@ -211,7 +211,7 @@ nonisolated enum FirstStarScript {
     static let studioStart = 59.375
     static let editStart = 61.25
 
-    /// The shine across "Go to my studio" (77.5–87.5% of the cycle).
+    /// The shine across "Explore Cue" (77.5–87.5% of the cycle).
     static func shine(at time: Double) -> Double {
         Keyframes([(0, 0), (77.5, 0), (87.5, 1), (100, 1)], curve: .css(0.4, 0, 0.2, 1), duration: duration).value(at: time)
     }

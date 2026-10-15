@@ -293,7 +293,9 @@ every human accent. Everything below is measured; what isn't is under *Not valid
 
 ¹ A negative time means the text reached a word before the recognizer's own time for it ends: the lead
 (`SpeechLead`) runs a little ahead of a word still being said. No language moved before speech began, none moved back,
-and none ran more than 2 words ahead of the voice (`VoiceFollowingLatencyTests`).
+and none ran more than 2 words ahead of the voice (`VoiceFollowingLatencyTests`). Since 15 Oct 2026 the text waits for the first word recognized
+after play (`DESIGN_PROJECT.md` §35): measured again on an iPhone 18 Pro Max and an iPhone 15 Pro in all 20 languages, it never moved before speech,
+and its first move came 0.85 s (Dutch) to 1.73 s (Turkish) after the voice began (English 1.0 s); word to text stayed as above.
 
 Apple Intelligence ("AI writing"), 16 of Cue's 20 languages written by the on-device model; **Hindi, Indonesian, Arabic
 and Thai are not** (`SystemLanguageModel.supportedLanguages`, 24 locales; the app's own check agreed with the model for

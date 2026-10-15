@@ -71,6 +71,9 @@ final class PrompterViewModel {
     /// Where the practice run is (waiting, counting in, reading, done); moved only by `PrompterViewModel+Practice`.
     var practiceStage = PracticeStage.idle
     var practiceTask: Task<Void, Never>?
+    /// The practice set the scrolling mode itself (Voice Following, or Steady without the microphone): the creator didn't pick it, so it
+    /// isn't remembered for the next session. Picking a mode clears it.
+    var practiceChoseScrollMode = false
 
     // MARK: Selfie layout (see PrompterViewModel+Layout)
     /// What the Selfie screen measured on this device.
@@ -81,7 +84,7 @@ final class PrompterViewModel {
     /// This recording's setup. Views read and bind `session.camera` / `session.prompter`.
     let session: SessionSetupService
 
-    private let library: ScriptLibraryService
+    let library: ScriptLibraryService
     let takes: TakeLibraryService
     private let profile: CreatorProfileService
     let rules: PlatformRulesService
@@ -92,6 +95,8 @@ final class PrompterViewModel {
     let languages: LanguageService
     let remote: RemoteControlService
     let toast: ToastService
+    /// Whether the microphone was refused (the practice then reads at a steady pace).
+    let microphone: MicrophoneAccess
 
     private var driver: DisplayLinkDriver?
     private var countdownTask: Task<Void, Never>?
@@ -113,6 +118,11 @@ final class PrompterViewModel {
     var transcription: SpeechTranscription?
     var voiceGate = VoiceFollowGate()
     var speechLead = SpeechLead()
+    /// Since the text last began to play: a word was recognized (`followsSpeech`), and the voice really started (the level, when the words
+    /// can't be followed). Until then the text stays where it is: counting in, starting, getting ready, a noise or the time passing never
+    /// move it.
+    var heardFirstWord = false
+    var speechOnset = SpeechOnset()
     /// When the level meter last changed, so it redraws at most `levelInterval` apart.
     var levelShownAt: TimeInterval = 0
     var scriptWords = ScriptWords(text: "")
@@ -155,6 +165,7 @@ final class PrompterViewModel {
         languages: LanguageService,
         remote: RemoteControlService,
         toast: ToastService,
+        microphone: MicrophoneAccess = MicrophoneAccess(),
         clock: @escaping () -> TimeInterval = { ProcessInfo.processInfo.systemUptime },
         speechRestartDelay: Duration = .seconds(1)
     ) {
@@ -173,6 +184,7 @@ final class PrompterViewModel {
         self.languages = languages
         self.remote = remote
         self.toast = toast
+        self.microphone = microphone
         self.clock = clock
         reviewingTake = takes.take(id: launch.reviewTakeID)
         openedOnReview = launch.reviewTakeID != nil
@@ -225,12 +237,13 @@ final class PrompterViewModel {
         )
         camera.onRecordingEnded = { [weak self] clip, reason in self?.recordingEndedByItself(clip, reason: reason) }
         guard reviewingTake == nil else { return }
+        preparePractice()
         await enter(mode)
     }
 
     func disappear() async {
         // What the creator adjusted here (the box, the line, the size, the speed…) is what the next session opens with.
-        if !isPractice { session.rememberReadingLayout() }
+        if !isPractice { session.rememberReadingLayout(includingScrollMode: !practiceChoseScrollMode) }
         countdownTask?.cancel()
         autoStopTask?.cancel()
         practiceTask?.cancel()
@@ -298,6 +311,7 @@ final class PrompterViewModel {
 
     func setScrollMode(_ mode: ScrollMode) {
         bar.touch()
+        practiceChoseScrollMode = false
         guard session.prompter.scrollMode != mode else { return }
         session.prompter.scrollMode = mode
     }
@@ -402,8 +416,12 @@ final class PrompterViewModel {
             engine.rewind()
             resumeSpeech(at: 0)
         }
-        // Nothing predicted carries over a pause.
+        // Nothing predicted carries over a pause, and the text waits for the voice again: the first word recognized (or, without
+        // recognition, the voice really starting) moves it, and nothing heard before this moment counts.
         speechLead.reset(to: speechTracker.position)
+        heardFirstWord = false
+        speechOnset.reset()
+        if followsSpeech { speech.discardHeard() }
         isPlaying = true
         if driver == nil {
             driver = DisplayLinkDriver { [weak self] seconds in self?.advance(by: seconds) }
@@ -454,7 +472,9 @@ final class PrompterViewModel {
         case .voice where followsSpeech:
             let now = clock()
             showVoice(voiceGate.isSpeaking(at: now), heardAt: now)
-            speechLead.advance(to: now, quiet: voiceGate.quietTime(at: now))
+            speechLead.advance(to: now, quiet: heardFirstWord ? voiceGate.quietTime(at: now) : nil)
+            // Until a word is recognized the text stays exactly where it is.
+            guard heardFirstWord else { return }
             guard let target = speechTarget else { return }
             let start = engine.offset
             let glideTime = voiceGlide.time(forDistance: target - start, lineHeight: lineHeight)
@@ -463,7 +483,7 @@ final class PrompterViewModel {
         case .voice:
             let now = clock()
             showVoice(voiceGate.isSpeaking(at: now), heardAt: now)
-            guard isVoiceActive else { return }
+            guard isVoiceActive, speechOnset.hasStarted else { return }
             reachedEnd = engine.advance(by: seconds, speed: settings.speed)
             voiceMetrics.moved(at: now)
         case .steady:

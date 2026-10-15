@@ -458,6 +458,40 @@ final class HandoffCaptureTests: XCTestCase {
         sleep(4)
         try shot(app, "1.2_final", wait: 0)
     }
+
+    /// Each chapter of the first flight as it rests, in English and in a long (German) and an unspaced (Japanese) language: the copy fits,
+    /// and `tools/contrast/audit.py` measures it. The practice with Voice Following on, getting ready, and without the microphone.
+    func test1_FirstFlightCopy() throws {
+        _ = try requireFolder()
+        for language in ["en", "de", "ja"] {
+            for step in ["welcome", "universe", "voyage", "script", "voice"] {
+                var arguments = ["-uiTestOnboarding", "-uiTestOnboardingStep", step, "-uiTestAppLanguage", language, "-uiTestPermissions", "granted"]
+                if step == "voyage" { arguments += ["-uiTestPlatformAt", "4"] }
+                let app = CueApp.launch(seeded: false, extraArguments: arguments)
+                XCTAssertTrue(element(app, "onboarding.root").waitForExistence(timeout: 15))
+                try shot(app, "1.x_\(step)_\(language)", wait: 3)
+                app.terminate()
+            }
+        }
+        for (voice, permissions) in [("listening", "granted"), ("preparing", "granted"), ("unavailable", "granted"), ("listening", "denied")] {
+            let arguments = ["-uiTestOnboarding", "-uiTestOnboardingStep", "voice", "-uiTestPermissions", permissions, "-uiTestVoiceFollowing", voice]
+            let app = CueApp.launch(seeded: false, extraArguments: arguments)
+            let next = app.buttons["onboarding.continue"]
+            XCTAssertTrue(next.waitForExistence(timeout: 15))
+            next.tap()
+            if permissions == "denied" { try shot(app, "1.5_denied", wait: 0) }
+            XCTAssertTrue(element(app, "practice.chip").waitForExistence(timeout: 10))
+            try shot(app, "1.6_\(voice)_\(permissions)", wait: 2)
+            app.terminate()
+        }
+        let app = CueApp.launch(seeded: true, sampleVideo: true, extraArguments: ["-uiTestFirstStar", "-uiTestStoryAt", "9"])
+        app.cueTabBar.buttons["Takes"].tap()
+        let row = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH 'takes.video.' AND label CONTAINS '3 morning habits'")).firstMatch
+        XCTAssertTrue(row.waitForExistence(timeout: 10))
+        row.tap()
+        XCTAssertTrue(element(app, "firstStar.sheet").waitForExistence(timeout: 15))
+        try shot(app, "1.7_final", wait: 1)
+    }
 }
 
 private extension XCUIElement {

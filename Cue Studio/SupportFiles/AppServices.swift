@@ -25,6 +25,8 @@ struct AppServices {
     let recorderCamera: any CameraControlling
     let audio: AudioInputManager
     let speech: SpeechRecognitionManager
+    /// What the prompter's Voice Following listens through: `speech`, or a scripted one in UI tests.
+    let prompterSpeech: SpeechTranscribing
     let dictation: DictationService
     let ideaDraft: IdeaDraftService
     let ideaSuggestions: IdeaSuggestionService
@@ -144,6 +146,7 @@ struct AppServices {
         recorderCamera = options.recorderCamera ?? realCamera
         audio = AudioInputManager()
         speech = SpeechRecognitionManager()
+        prompterSpeech = options.prompterSpeech ?? speech
         dictation = options.dictation ?? DictationService(audio: AudioInputManager(), speech: SpeechRecognitionManager(use: .dictation))
         ideaDraft = IdeaDraftService()
         let sky = SkyMemory(defaults: options.defaults)

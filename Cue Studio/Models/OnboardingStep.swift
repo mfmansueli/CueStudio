@@ -13,7 +13,7 @@ nonisolated enum OnboardingStep: Int, CaseIterable, Sendable {
     case universe
     /// Chapter 2: pick the first platform (a galaxy).
     case voyage
-    /// Chapter 3: the first script, written in the topic.
+    /// Chapter 3: the practice script, ready to read.
     case script
     /// Chapter 4: microphone and camera, in the story.
     case voice
@@ -28,14 +28,14 @@ nonisolated enum OnboardingStep: Int, CaseIterable, Sendable {
 
     static let segmentCount = 5
 
-    /// "CHAPTER 2 · YOUR FIRST VOYAGE".
+    /// "CHAPTER 2 · YOUR FIRST VIDEO".
     var chapterLabel: String {
         switch self {
         case .welcome: String(localized: "CUE STUDIO")
-        case .universe: String(localized: "CHAPTER 1 · YOUR UNIVERSE")
-        case .voyage: String(localized: "CHAPTER 2 · YOUR FIRST VOYAGE")
-        case .script: String(localized: "CHAPTER 3 · YOUR FIRST MESSAGE")
-        case .voice: String(localized: "CHAPTER 4 · GIVE IT A VOICE")
+        case .universe: String(localized: "CHAPTER 1 · YOUR TOPICS")
+        case .voyage: String(localized: "CHAPTER 2 · YOUR FIRST VIDEO")
+        case .script: String(localized: "CHAPTER 3 · YOUR FIRST SCRIPT")
+        case .voice: String(localized: "CHAPTER 4 · CAMERA & VOICE")
         case .practice: String(localized: "CHAPTER 5 · PRACTICE")
         }
     }

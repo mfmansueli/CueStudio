@@ -6,7 +6,7 @@
 import SwiftUI
 
 /// The first take (1.7): it shows "✓ SAVED", folds into light, a comet carries it to the creator's universe and it lights the first star, joined to YOU;
-/// then "Your universe has its first star." comes in word by word. Told once, after the first take Cue ever recorded. The story is `FirstStarScript`
+/// then "Your first video. Your first star." comes in word by word. Told once, after the first take Cue ever recorded. The story is `FirstStarScript`
 /// (the board's keyframes); the app plays it once and holds, with the orbits still turning.
 struct FirstStarView: View {
     let take: Take
@@ -92,19 +92,19 @@ struct FirstStarView: View {
 
     // MARK: - Words
 
-    /// "CHAPTER 5 · FIRST STAR", the title coming in word by word (blur 8 → 0, 14 pt up) and the line under it.
+    /// "FIRST VIDEO · FIRST STAR", the title coming in word by word (blur 8 → 0, 14 pt up) and the line under it.
     private func texts(at story: Double) -> some View {
         let chapter = FirstStarScript.arrival(startingAt: FirstStarScript.chapterStart.percent, length: FirstStarScript.chapterStart.length, at: story)
         let subtitle = FirstStarScript.arrival(startingAt: FirstStarScript.subtitleStart, length: 10, at: story)
         return VStack(spacing: 8) {
-            Text("CHAPTER 5 · FIRST STAR")
+            Text("FIRST VIDEO · FIRST STAR")
                 .font(.system(size: 11, weight: .semibold, design: .monospaced))
                 .tracking(1.54)
                 .foregroundStyle(Palette.acc)
                 .opacity(chapter)
                 .offset(y: 8 * (1 - chapter))
             title(at: story)
-            Text("Saved in Takes. Share it to light your \(String(UniverseYears.current())) universe.")
+            Text("Saved in Takes. Add captions, edit it or share it to light up your \(String(UniverseYears.current())) universe.")
                 .font(.system(size: 15))
                 .foregroundStyle(Palette.ink2)
                 .multilineTextAlignment(.center)
@@ -117,7 +117,7 @@ struct FirstStarView: View {
     }
 
     private func title(at story: Double) -> some View {
-        let sentence = String(localized: "Your universe has its first star.")
+        let sentence = String(localized: "Your first video. Your first star.")
         // A language without spaces between words comes in as one piece.
         let words = sentence.contains(" ") ? sentence.split(separator: " ").map(String.init) : [sentence]
         return WordFlow(spacing: 7, lineSpacing: 0) {
@@ -132,7 +132,7 @@ struct FirstStarView: View {
                     .offset(y: 14 * (1 - arrived))
             }
         }
-        // The board's two lines break after "its" (its font is wider than the system's): the title holds to 300 pt.
+        // The title holds to 300 pt, so it breaks into the board's two lines (one sentence each in English).
         .frame(maxWidth: 300)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(sentence)
@@ -143,14 +143,14 @@ struct FirstStarView: View {
         let studio = FirstStarScript.arrival(startingAt: FirstStarScript.studioStart, length: 8.75, at: story)
         let edit = FirstStarScript.arrival(startingAt: FirstStarScript.editStart, length: 8.75, at: story)
         return VStack(spacing: 6) {
-            Button(action: onStudio) { Text("Go to my studio") }
+            Button(action: onStudio) { Text("Explore Cue") }
                 .buttonStyle(.cuePrimary(.large))
                 .overlay { shine(at: story) }
                 .opacity(studio)
                 .offset(y: 18 * (1 - studio))
                 .accessibilityIdentifier("firstStar.studio")
             Button(action: onEdit) {
-                Text("Edit this take first")
+                Text("Edit my video")
                     .font(.system(size: 15, weight: .semibold))
                     .foregroundStyle(Palette.ink2)
                     .frame(maxWidth: .infinity, minHeight: 40)
@@ -164,7 +164,7 @@ struct FirstStarView: View {
         .padding(.bottom, 32)
     }
 
-    /// The white band that crosses "Go to my studio" once (77.5–87.5% of the cycle).
+    /// The white band that crosses "Explore Cue" once (77.5–87.5% of the cycle).
     private func shine(at story: Double) -> some View {
         GeometryReader { proxy in
             let phase = FirstStarScript.shine(at: story)

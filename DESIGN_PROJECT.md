@@ -223,21 +223,19 @@ da estrela depois do texto enquanto espera o modelo ("✦ Drafting in your voice
 palavras só aparecem (fade de 0,2 s), o cursor fica aceso e a pílula parada. `-uiTestCatalogue writing` mostra a cena. **Diferença:** a barra de 3 pt por
 seção do quadro (`sc10`) não existe na página única (as seções saíram da escrita); fica para quando a página mostrar as seções.
 
-## 5.3. Onboarding: a escrita e as permissões
+## 5.3. Onboarding: o roteiro de prática e as permissões
 
-- **Escrita do primeiro roteiro** (`OnboardingWritingNotice`, dentro do card do `ScriptChapter` enquanto `scriptState == .writing`): uma estrela que respira
-  num halo violeta (2,4 s), "Drafting with Apple Intelligence, on this iPhone" com o brilho branco que cruza as palavras a cada 1,6 s (o mesmo da
-  pílula da página) e "Written on this iPhone. Nothing leaves it." Parada com Reduce Motion. Sem modelo não há espera (o roteiro de prática aparece na hora).
+- **O roteiro da 1.4 é fixo** (decisão do dono, 15/10/2026; §35): o mesmo para todos, sem Apple Intelligence e sem espera; não há estado lento (1.4b).
 - **Permissões** (`VoiceChapter`): cada linha é um botão. Sem resposta mostra **Allow** (a primeira sem resposta em amarelo, "a próxima"); tocar pede aquela
   permissão (o microfone pede também a Fala). Negada mostra **Off · Turn on** e abre os Ajustes (o sistema não pergunta duas vezes). Voltar dos Ajustes
-  relê o estado. **Continue** pede o que faltar. Se algo foi negado, o rodapé vira "No problem, you can still practice…": o fluxo nunca trava.
+  relê o estado. **Continue** pede o que faltar. Se algo foi negado, o rodapé vira "No problem, you can still practice…" (sem microfone diz que o
+  texto rola em ritmo constante; só sem câmera, que ela se liga nos Ajustes para gravar): o fluxo nunca trava.
 - **Tópicos** (`UniverseChapter`): o que se escreve em "+ Your own" entra na lista como chip (`customTopics`), escolhido; se for solto o chip continua
   na lista e pode ser escolhido de novo.
 - **Prática** (`SelfieModeView` + `PracticeBottomBar`): a câmera cobre **a tela toda** (`CameraBackdrop(fillsScreen:)`, `resizeAspectFill`; a prática não grava,
-  então não há moldura, grade nem zona segura). O painel de baixo é o do gravador, em vidro noturno: **Voice | Steady** (`ScrollModePicker`), voltar ao
-  topo, play, e a linha de voz ou o slider de velocidade; embaixo os dois caminhos como botões de verdade: **Record it for real** (amarelo) e **Not now — take
-  me to my studio** (vidro). O modo escolhido vale também na gravação de verdade (mesma sessão). Sem microfone o Voice fica apagado, a prática usa Steady
-  (`PrompterViewModel.startPractice`) e uma linha diz "Voice Following needs the microphone." com **Open Settings** (relê o estado ao voltar dos Ajustes).
+  então não há moldura, grade nem zona segura). Não há seletor de modo: a prática escolhe sozinha (§35) e diz o que move o texto numa cápsula sob a caixa
+  (`PracticeVoiceStatus`). Embaixo os dois caminhos: **Record my first video** (amarelo) e **Explore Cue first**. Sem microfone uma linha diz "Turn on the
+  microphone so the text can follow your voice." com **Open Settings**; ao voltar dos Ajustes a prática relê a permissão (`refreshPracticeMicrophone`).
   Sem câmera o `CameraBackdrop` já avisa e leva aos Ajustes. Depois da prática, `MicrophoneNeededCard` cuida do Record.
 - **Fala** (`SystemPermissions.requestSpeech`): o callback do `SFSpeechRecognizer.requestAuthorization` volta numa fila de fundo; o closure fica num
   `nonisolated static` (dentro de uma classe `@MainActor` ele herdaria o isolamento e o Swift 6 aborta com `dispatch_assert_queue_fail`).
@@ -432,14 +430,16 @@ Cada quadro tem o próprio `.night`: `BgWash+Presets` (`welcome`, `universe`, `v
   Parenting & family · Morning routines) + "+ Your own"; `Wellness` e `Education` saem da oferta mas continuam válidos para quem já os escolheu. O nome do chip é o do mundo em todo o app (`Niche.chipLabel`, usado por
   `OnboardingTopic.label`). De 1 a 3 temas; **Continue** fica cinza ("Pick a topic") até o primeiro, o contador (`TopicCounter`) diz quantos faltam; a luz que sai do chip, o planeta, a órbita e o nome vêm das camadas do quadro
   (`TopicBirth`, instante `idade + 2,6 s`). Com 3 escolhidos os outros chips ficam apagados (um toque neles só dá um aviso tátil); tocar em um escolhido o solta, e então outro pode entrar.
-- **1.3 Voyage:** `VoyageScene` (Canvas) com a galáxia do criador (`HeroDiscCache`), as galáxias das redes e a rota até a escolhida; nada vem marcado: **Continue** diz "Choose a galaxy" até um chip ou galáxia ser tocado e depois
-  "Head to {rede}"; a linha "9:16 · IDEAL … · SAFE ZONES ON" é digitada em 34 passos.
-- **1.4 First message:** `ScriptChapter` com o cartão (`MessageCard`: gancho, corpo, CTA e destino chegam palavra por palavra), o esqueleto, a cápsula "MESSAGE READY FOR LAUNCH" e **Load in teleprompter**; mais de 15 s de espera
-  oferecem **Use a ready-made message** (a mensagem embutida do tema); 25 s sem resposta a embutida entra sozinha com o toast "Message ready" (`OnboardingViewModel`).
+- **1.3 Voyage:** `VoyageScene` (Canvas) com a galáxia do criador (`HeroDiscCache`), as galáxias das redes e a rota até a escolhida; nada vem marcado: o botão diz "Choose a platform" até um chip ou galáxia ser tocado e
+  depois "Continue with {rede}"; a linha "9:16 · IDEAL … · SAFE ZONES ON" (OFF em YouTube e LinkedIn, que não têm zonas seguras) é digitada em 34 passos.
+- **1.4 First script:** `ScriptChapter` com o cartão (`MessageCard`: gancho, corpo e CTA do roteiro de prática chegam palavra por palavra no ritmo do quadro, com "VIDEO FOR · {REDE}" e o tempo de leitura medido),
+  a cápsula "SCRIPT READY · LET’S TRY IT", "It’s just practice. Nothing is recorded." e **Try the teleprompter** (§35).
 - **1.5 Permissions:** arte da câmera e do microfone (`VoicePermissionsArt`), linhas tocáveis com **Allow** (a primeira) e **Next** (a seguinte); recusa vira "Off · Turn on".
 - **1.6 Practice:** a câmera inteira com a caixa do teleprompter do app (`PrompterView` com `isPractice`), texto de 24 pt, **sem** trilho de seção nem linha de leitura até a contagem; o play abre **GET READY 3 · 2 · 1** com
-  anéis, depois **READ!**, a mensagem "Nice. That's your teleprompter." e os dois caminhos (`PracticeStage`, `PracticeBoxOverlay`, `PracticeMessageCard`, `PracticeBottomBar`). Não grava nada.
-- **1.7 First star:** `FirstStarView` com o `.night` próprio (`BgWash.firstStar`) e o céu por cima; o núcleo respira com os `box-shadow` do quadro (violeta largo sob branco apertado); o título cabe em 300 pt para quebrar depois de "its".
+  anéis, depois **READ!**; o texto então espera a voz (§35); no fim "You’ve got it. Ready to record?" e os dois caminhos (`PracticeStage`, `PracticeBoxOverlay`, `PracticeMessageCard`, `PracticeVoiceStatus`,
+  `PracticeBottomBar`). Não grava nada.
+- **1.7 First star:** `FirstStarView` com o `.night` próprio (`BgWash.firstStar`) e o céu por cima; o núcleo respira com os `box-shadow` do quadro (violeta largo sob branco apertado); o título ("Your first video. Your first
+  star.") cabe em 300 pt, uma frase por linha.
 
 **8.2 Send-off (refeito no quadro de 390 × 844, escalado à tela):** `SendOffLayout` (órbitas de 316 e 220 pt achatadas a 32% e giradas −9°, YOU de 56 pt, planetas nos pontos do quadro com diâmetros 20/18/17/16/14/12 por ordem de vídeos,
 cartão de 54 × 96 pt, estrela nova em (236, 262)), `SendOffScript` (tempos do `ANIMACOES` §2: cartão 0,65 s; estrela de cada rede em 0,52 s + 0,35 s·i, voo de 1,05 s com nove pontos de rastro a 38 ms; pulso ×1,35 → ×1,12 em 0,6 s;
@@ -980,10 +980,56 @@ aprovou o princípio, o plano e os textos numa página privada ("Você cria. O C
   "Still drafting · taking a little longer"), erros ("Couldn't draft the script", "Couldn’t draft it · Try again"), "+" › **Let Cue draft it**, Find inspiration (**Start
   with it**, **Draft it now**, "Ideas to start from."), o Improve script (subtítulo "Cue suggests. You decide."; avisos curtos: "New version", "In your voice · …",
   "More energy", "Stronger call to action", "More natural", "Shorter · 132 → 53 words"; roteiro vazio: "Write a few lines. Cue builds on them."), "Saved · Cue learns
-  from it" depois de Sounds like me, My Cue Voice ("Use my voice in drafts", "Four quick questions. Cue's drafts start closer to you."), o primeiro voo
-  ("✦ DRAFTING YOUR MESSAGE"), legendas ("Cue drafts the lines. Fix any word.") e o Pro. Nenhuma tela mudou de layout.
+  from it" depois de Sounds like me, My Cue Voice ("Use my voice in drafts", "Four quick questions. Cue's drafts start closer to you."), legendas ("Cue drafts the lines. Fix any word.") e o Pro. Nenhuma tela mudou de layout.
 - **"Aprende com você" de verdade** (`DraftLearningService`, `DraftEdits`, `CueDraft`): cada roteiro que o Cue rascunha guarda as palavras como chegaram, no iPhone
   (até 30, `DefaultsKey.cueDrafts`). Quando o roteiro é **gravado** e o criador o fez seu — pelo menos 20% das palavras e 8 palavras mudaram contra o rascunho, palavra
   a palavra, sem cues, caixa nem pontuação —, o começo da versão gravada vira um dos exemplos de como ele escreve (o mesmo lugar do Sounds like me, os últimos três,
   fonte "Your edits"; não conta como aprovação do texto do Cue) e um toast diz **"Cue learned from this"** com **Undo**. Um rascunho gravado como veio espera (ele pode
   mudar e gravar de novo); cada rascunho ensina uma vez; "Delete my Cue data" apaga os rascunhos. Testes: `DraftLearningTests`.
+
+## 35. O texto do primeiro voo e o Voice Following da prática (15 de outubro de 2026; pedido do dono)
+
+O primeiro voo explica o app para quem chegou procurando um teleprompter: preparar o roteiro, ler olhando para a câmera, gravar no app, legendas
+automáticas, editar o take e compartilhar. Telas, fluxo, universo e animações são os mesmos; mudou o texto de 1.1 a 1.7 (inglês e os 20 idiomas; a lista
+completa e o roteiro estão em `ONBOARDING_COPY_MEMORY.md`), e a prática passou a demonstrar o que promete.
+
+- **Texto** (onde diverge do quadro, vale este): 1.1 "Your words. Your voice. Your teleprompter." e a linha do que o Cue faz; 1.2 "What do you want to talk
+  about?"; 1.3 "Where will you share your videos?", **Choose a platform** / **Continue with {rede}**, "CHOOSE ONE PLATFORM" e "SAFE ZONES ON/OFF" conforme a
+  rede (antes dizia ON sempre); 1.4 "Your first script. Ready to read." e **Try the teleprompter**; 1.5 "Let the text follow your voice." e três recusas
+  (microfone e câmera, só microfone, só câmera); 1.6 o cartão diz o que move o texto, **Record my first video** e **Explore Cue first**; 1.7 "Your first
+  video. Your first star.", **Explore Cue** e **Edit my video**. Os rótulos dos capítulos: YOUR TOPICS, YOUR FIRST VIDEO, YOUR FIRST SCRIPT, CAMERA &
+  VOICE. Nenhum travessão em texto novo.
+- **Roteiro fixo** (decisão do dono: sempre o mesmo, nada de IA no onboarding): `OnboardingScript.practice(followsVoice:)`, título "From idea to video",
+  gancho, corpo e CTA do dono. A 1.4 o mostra chegando no console com o ritmo do quadro (`MessageTimeline`); o tamanho das palavras é o maior que cabe
+  (21, 19, 17, 15 ou 13 pt, `ViewThatFits`), para o cartão, a cápsula e o botão ficarem numa tela também em alemão; japonês, chinês e tailandês chegam por
+  palavra do dicionário (`OnboardingWords`, que também quebra o título da 1.1 nessas línguas, antes uma linha só que saía da tela). A duração é medida
+  (`readingSeconds`, 150 palavras por minuto): **24 s** em inglês. O cartão não mostra mais o tema (o roteiro não é sobre ele). `OnboardingWritingNotice`,
+  `MessageSkeleton`, o botão "Use a ready-made message" e o roteiro embutido por tema saíram.
+- **Voice Following na prática** (`PrompterViewModel+Practice`): ao abrir, com o microfone liberado a sessão passa para **Voice Following**; sem ele, Steady.
+  O reconhecimento começa a se preparar ali mesmo, durante a apresentação, antes do toque no play. O modo é **só desta sessão**: `practiceChoseScrollMode`
+  faz `rememberReadingLayout(includingScrollMode: false)`, então a preferência salva do criador não muda; se ele escolher um modo depois (no gravador),
+  vale a escolha. "Record my first video" continua com Voice Following naquela gravação.
+- **O estado de verdade** (`PracticeVoice`, cápsula `PracticeVoiceStatus` sob a caixa e a linha do cartão): "Getting ready to follow your voice"
+  (modelo carregando), "Getting Voice Following ready · 40%" (baixando), "Voice Following is on" antes do play, "Waiting for your voice" / "Following your
+  voice" lendo, "Moves while you talk" quando o iPhone não segue as palavras daquele idioma, "Microphone off · Steady scroll" sem microfone.
+- **O roteiro diz só o que é verdade** (`matchPracticeScript`): sem microfone, ou quando o reconhecimento diz que não segue o idioma, a prática troca para o
+  corpo sem "follows my voice", só enquanto o texto ainda está escurecido (antes do texto andar). Preparando ou baixando, fica a versão com a frase (é o que
+  vai acontecer); se o download falhar no meio da leitura o texto não troca, e a cápsula e o aviso dizem o que houve.
+- **A linha espera a voz** (vale para todo Voice Following, prática e gravador): `play()` zera a previsão, descarta o que foi ouvido antes (palavras ditas na
+  contagem) e o texto só anda depois do **primeiro trecho reconhecido** desde o play (`heardFirstWord`); palavras ouvidas com o texto parado não movem nada.
+  Sem reconhecimento por palavra o texto anda enquanto a pessoa fala, mas só depois de um início de fala de verdade (`SpeechOnset`: 0,25 s de som acima da
+  sala em 0,6 s), então um clique, uma batida ou uma tosse não o movem. Steady (sem microfone) não ouve ninguém: rola no ritmo definido depois do READ!,
+  e a prática diz isso.
+- **Testes:** `PrompterPracticeTests` (modo da sessão sem mudar o salvo, versão do roteiro sem microfone e sem idioma, contagem e silêncio sem mover a linha,
+  primeira palavra move), `PrompterViewModelVoiceTests` (silêncio longo, ruído e picos antes da primeira palavra, primeira palavra atrasada em deslize,
+  palavras antes do play, pico vs. voz sem reconhecimento), `SpeechOnsetTests`, `OnboardingScriptTests`, `OnboardingUITests` (estados da prática com
+  `-uiTestVoiceFollowing listening|preparing|unavailable` e microfone negado). Sem a correção, quatro dos testes novos falham.
+- **Medido nos iPhones** (`VoiceFollowingLatencyTests`, gravações dos 20 idiomas tocadas pelo caminho de áudio da câmera, 15/10/2026; iPhone 18 Pro
+  Max e iPhone 15 Pro, 5 de 5 em cada): o texto **nunca andou antes da fala** em nenhum idioma, nem com ruído de sala (−45 e −36 dBFS); todos seguidos
+  até o fim, nunca mais de 2 palavras à frente; palavra → texto p50 de −0,28 a 0,49 s (como na tabela do `LOCALIZATION.md` §5). O custo: a primeira
+  movimentação espera a primeira palavra reconhecida, de 0,85 s (holandês) a 1,73 s (turco) depois do início da voz, 0,98–1,0 s em inglês, os dois
+  aparelhos com diferença de no máximo 0,03 s (antes, a previsão começava com a voz). Que a linha fica parada com alguém em silêncio e anda natural ao
+  ler só se confirma com uma pessoa falando no aparelho.
+- **Contraste:** medido nos pixels das capturas (`HandoffCaptureTests.test1_FirstFlightCopy`, inglês, alemão e japonês): o menor texto novo fica em
+  4,9:1 (rótulo BODY, já existente), a cápsula da prática em 15,7:1, "24 SEC" em 11,5:1; `Palette.Flight.quietInk` (o mesmo token da branch de movimento)
+  substitui `Color.white.opacity(0.8)` e `Flight.ink.opacity(0.78)` na prática e entra em `PaletteContrastTests`.

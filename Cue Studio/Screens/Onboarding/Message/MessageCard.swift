@@ -5,16 +5,12 @@
 
 import SwiftUI
 
-/// The transmission console of 1.4 (09 §16): the card the first message is written in. A ring of light turns round its edge while it writes
-/// (2.8 s a turn), four brackets close on it, specks of light rise, the destination and a ring of progress sit under the header, and the
-/// message arrives word by word under HOOK, BODY and CTA; when it is written a line of light sweeps down it. The model's slowness shows
-/// as a skeleton in place of the words (1.4b).
+/// The transmission console of 1.4 (09 §16): the card the practice script arrives in. A ring of light turns round its edge while it comes
+/// (2.8 s a turn), four brackets close on it, specks of light rise, the platform and a ring of progress sit under the header, and the
+/// script arrives word by word under HOOK, BODY and CTA, with how long it takes to read; when it is all there a line of light sweeps down it.
 struct MessageCard: View {
     let script: OnboardingScript?
     let platform: Platform
-    let topic: OnboardingTopic?
-    /// The model has kept the creator waiting past 6 s: grey bars stand for the message.
-    let isSlow: Bool
     /// The second of the board (`MessageTimeline`) and the time since the chapter appeared (for what runs on its own).
     let board: Double
     let ambient: Double
@@ -86,15 +82,14 @@ struct MessageCard: View {
             .font(.system(size: 10.5, weight: .semibold, design: .monospaced))
             .tracking(1.05)
             .frame(maxWidth: .infinity, alignment: .leading)
-            topicPill
         }
         .frame(height: 22)
     }
 
-    /// "✦ DRAFTING YOUR MESSAGE" with the light crossing it and three dots that bob.
+    /// "✦ PREPARING YOUR SCRIPT" with the light crossing it and three dots that bob.
     private var writingLabel: some View {
         HStack(spacing: 0) {
-            Text("✦ DRAFTING YOUR MESSAGE")
+            Text("✦ PREPARING YOUR SCRIPT")
                 .foregroundStyle(Palette.aiText)
                 .overlay { shimmer }
             HStack(spacing: 2) {
@@ -116,36 +111,16 @@ struct MessageCard: View {
                 .frame(width: proxy.size.width * 0.5)
                 .offset(x: center - proxy.size.width * 0.25)
         }
-        .mask { Text("✦ DRAFTING YOUR MESSAGE") }
+        .mask { Text("✦ PREPARING YOUR SCRIPT") }
         .allowsHitTesting(false)
     }
 
-    private var readyLabel: String {
-        if script?.isCurated == true { return String(localized: "✦ READY · BUILT-IN") }
-        return String(localized: "✦ READY FOR \(platform.label.uppercased()) · 15S")
-    }
-
-    private var topicPill: some View {
-        HStack(spacing: 6) {
-            RoundedRectangle(cornerRadius: 1.5)
-                .fill(OnboardingTopic.color(at: 0))
-                .frame(width: 3, height: 14)
-                .shadow(color: OnboardingTopic.color(at: 0).opacity(0.6), radius: 4)
-            Text(topic?.label ?? "")
-                .font(.system(size: 11.5, weight: .semibold))
-                .foregroundStyle(.white)
-                .lineLimit(1)
-        }
-        .padding(.horizontal, 8)
-        .frame(height: 22)
-        .background(Palette.Universe.nightDeep.opacity(0.45), in: Capsule())
-        .opacity(topic == nil ? 0 : 1)
-    }
+    private var readyLabel: String { String(localized: "✦ PRACTICE SCRIPT · READY") }
 
     private var destination: some View {
         HStack(spacing: 8) {
             Circle().fill(platform.tint).frame(width: 7, height: 7).shadow(color: platform.tint, radius: 4)
-            Text("DESTINATION · \(platform.label.uppercased())")
+            Text("VIDEO FOR · \(platform.label.uppercased())")
                 .font(.system(size: 10, weight: .semibold, design: .monospaced))
                 .tracking(1)
                 .foregroundStyle(Palette.Flight.ink.opacity(0.72))
@@ -161,13 +136,13 @@ struct MessageCard: View {
         .motion(Self.clip.pose(of: "L21", at: board))
     }
 
+    /// How long the script takes to read out loud at a natural pace (`OnboardingScript.readingSeconds`), "24 SEC".
     private var durationLabel: String {
-        guard let script else { return "-- S" }
-        let seconds = max(1, Int((Double(MessageWords.displayed(script.text).split(whereSeparator: \.isWhitespace).count) / 2.5).rounded()))
-        return String(localized: "\(seconds) S")
+        guard let script else { return "-- SEC" }
+        return String(localized: "\(script.readingSeconds) SEC")
     }
 
-    /// 16 pt: it fills as the words arrive and ends in a check; while the model hasn't answered it is a spinner.
+    /// 16 pt: it fills as the words arrive and ends in a check; before the script is there it is a spinner.
     private var progressRing: some View {
         let fill = Self.clip.pose(of: "L22", at: board).drawn
         let check = Self.clip.pose(of: "L23", at: board).opacity
@@ -190,32 +165,45 @@ struct MessageCard: View {
 
     // MARK: - The message
 
+    /// The script, as big as the screen lets it be: the board's 21 pt for a short one, smaller for the practice script's three sentences or a
+    /// longer language, so the card, the capsule and the button stay on one screen.
     @ViewBuilder
     private var messageBody: some View {
         if let script {
-            VStack(alignment: .leading, spacing: 14) {
-                part("HOOK", text: script.hook, part: .hook, tint: Palette.accText, color: .white, labelLayer: "L25")
-                if !script.body.isEmpty {
-                    part("BODY", text: script.body, part: .body, tint: Palette.Flight.ink.opacity(0.6), color: .white, labelLayer: "L29")
+            ViewThatFits(in: .vertical) {
+                ForEach(Self.wordSizes, id: \.self) { size in
+                    parts(of: script, size: size)
                 }
-                part(
-                    "CTA", text: script.cta, part: .cta, tint: Palette.Flight.ink.opacity(0.6),
-                    color: script.isCurated ? .white : Palette.Flight.lilac, labelLayer: "L41", caret: Palette.Flight.lilac
-                )
             }
-        } else if isSlow {
-            MessageSkeleton().transition(.opacity)
         }
     }
 
-    private func part(_ label: String, text: String, part: MessageWords.Part, tint: Color, color: Color, labelLayer: String, caret: Color? = nil) -> some View {
+    private static let wordSizes: [CGFloat] = [21, 19, 17, 15, 13]
+
+    private func parts(of script: OnboardingScript, size: CGFloat) -> some View {
+        VStack(alignment: .leading, spacing: size * 0.6) {
+            part("HOOK", text: script.hook, part: .hook, tint: Palette.accText, color: .white, labelLayer: "L25", size: size)
+            if !script.body.isEmpty {
+                part("BODY", text: script.body, part: .body, tint: Palette.Flight.ink.opacity(0.6), color: .white, labelLayer: "L29", size: size)
+            }
+            part(
+                "CTA", text: script.cta, part: .cta, tint: Palette.Flight.ink.opacity(0.6), color: Palette.Flight.lilac, labelLayer: "L41",
+                caret: Palette.Flight.lilac, size: size
+            )
+        }
+    }
+
+    private func part(
+        _ label: LocalizedStringKey, text: String, part: MessageWords.Part, tint: Color, color: Color, labelLayer: String, caret: Color? = nil,
+        size: CGFloat
+    ) -> some View {
         VStack(alignment: .leading, spacing: 4) {
             Text(label)
                 .font(.system(size: 10, weight: .semibold, design: .monospaced))
                 .tracking(1)
                 .foregroundStyle(tint)
                 .motion(Self.clip.pose(of: labelLayer, at: board))
-            MessageWords(text: text, part: part, color: color, board: board, caret: caret, ambient: ambient)
+            MessageWords(text: text, part: part, color: color, board: board, caret: caret, ambient: ambient, size: size)
         }
     }
 

@@ -20,8 +20,6 @@ struct OnboardingView: View {
         self.services = services
         _model = State(initialValue: OnboardingViewModel(
             onboarding: services.onboarding,
-            writer: services.writer,
-            factory: services.starter.factory,
             permissions: services.permissions,
             library: services.library,
             profile: services.profile,
@@ -122,18 +120,18 @@ struct OnboardingView: View {
         presentation.selectedTab = .profile
     }
 
-    /// "Use this script": it becomes a real script; "Another" and "I'll write my own" are the other ways out.
+    /// "Try the teleprompter": the practice script becomes a real one in the library, and the flight goes on to the permissions.
     private func useScript() {
         model.applyChoices()
         _ = model.keepScript()
         advance()
     }
 
-    /// The practice run is the real prompter over the front camera, on the script just made, not recording.
+    /// The practice run is the real prompter over the front camera, on the practice script of 1.4, not recording.
     private func startPractice() {
-        // The script of 1.4 is normally there; a flight opened on this chapter directly gets the built-in practice message.
+        // The script of 1.4 is normally there; a flight opened on this chapter directly gets it here.
         if services.library.scripts.isEmpty {
-            let practice = OnboardingScript.curated(topic: onboarding.mainTopic?.label ?? String(localized: "your day"))
+            let practice = OnboardingScript.practice()
             _ = services.library.create(title: practice.title, text: practice.text, platform: onboarding.platform, language: nil)
         }
         let scriptID = services.library.scripts.first?.id

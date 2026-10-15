@@ -5,20 +5,25 @@
 
 import SwiftUI
 
-/// The card under the practice's box (1.6): "A quick test run." before and while Cue counts in, "Nice. That's your teleprompter." once the text
-/// has been read. 96 pt of glass; each rises 12 pt as it comes (0.6 s) and the first leaves up as the text starts to move.
+/// The card under the practice's box (1.6): "Your teleprompter practice." before and while Cue counts in, with what will move the text
+/// (`PracticeVoice.instruction`) and that nothing is recorded; "You’ve got it. Ready to record?" once the text has been read. 96 pt of glass;
+/// each rises 12 pt as it comes (0.6 s) and the first leaves up as the text starts to move.
 struct PracticeMessageCard: View {
     let stage: PracticeStage
+    let voice: PracticeVoice
 
     var body: some View {
         ZStack {
             card(
-                title: String(localized: "A quick test run."),
-                lines: [String(localized: "Read your message out loud, like a real take."), String(localized: "Cue counts you in. Nothing is recorded.")]
+                title: String(localized: "Your teleprompter practice."),
+                lines: [voice.instruction, String(localized: "We’ll count you in. Nothing is recorded.")]
             )
             .motion(intro)
-            card(title: String(localized: "Nice. That’s your teleprompter."), lines: [String(localized: "Now do it for real, with your own text.")])
-                .motion(done)
+            card(
+                title: String(localized: "You’ve got it. Ready to record?"),
+                lines: [String(localized: "Record this script for real, or start with your own.")]
+            )
+            .motion(done)
         }
         .animation(.easeOut(duration: 0.6), value: stage == .done)
         .accessibilityElement(children: .contain)
@@ -48,7 +53,7 @@ struct PracticeMessageCard: View {
             ForEach(lines, id: \.self) { line in
                 Text(line)
                     .font(.system(size: 14))
-                    .foregroundStyle(Palette.Flight.ink.opacity(0.78))
+                    .foregroundStyle(Palette.Flight.quietInk)
                     .lineLimit(2)
             }
         }

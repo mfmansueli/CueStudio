@@ -5,8 +5,8 @@
 
 import XCTest
 
-/// The first flight: the welcome and five chapters, with and without Apple Intelligence, with the permissions
-/// allowed and refused. `TEST_RUNNER_CUE_SCREENSHOT_DIR=<folder>` also saves a picture of each chapter.
+/// The first flight: the welcome and five chapters, with the permissions allowed and refused, and the practice's Voice Following ready,
+/// getting ready, unavailable or without the microphone. `TEST_RUNNER_CUE_SCREENSHOT_DIR=<folder>` also saves a picture of each chapter.
 @MainActor
 final class OnboardingUITests: XCTestCase {
     private func launch(ai: Bool = true, permissions: String = "granted", extra: [String] = []) -> XCUIApplication {
@@ -31,7 +31,7 @@ final class OnboardingUITests: XCTestCase {
         start.tap()
     }
 
-    /// "Use this script" waits for the script to be written.
+    /// "Try the teleprompter" is there once the practice script has arrived.
     private func useScript(_ app: XCUIApplication) {
         let use = app.buttons["onboarding.useScript"]
         XCTAssertTrue(use.waitForExistence(timeout: 10))
@@ -86,7 +86,7 @@ final class OnboardingUITests: XCTestCase {
         // 3 · the first script.
         let use = app.buttons["onboarding.useScript"]
         XCTAssertTrue(use.waitForExistence(timeout: 10))
-        // Load in teleprompter waits for the message to be written.
+        // Try the teleprompter is enabled once the practice script is there.
         expectation(for: NSPredicate(format: "isEnabled == true"), evaluatedWith: use)
         waitForExpectations(timeout: 10)
         shot(app, "4-script")
@@ -104,12 +104,12 @@ final class OnboardingUITests: XCTestCase {
         app.buttons["practice.notNow"].tap()
         XCTAssertTrue(app.tabBars.buttons["Scripts"].waitForExistence(timeout: 10))
         XCTAssertFalse(element(app, "onboarding.root").exists)
-        // The script it wrote is in the library, and the platform stuck.
+        // The practice script is in the library, and the platform stuck.
         XCTAssertTrue(app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH 'scripts.row.'")).firstMatch.waitForExistence(timeout: 5))
     }
 
-    /// Without Apple Intelligence the message is the built-in one, and says so.
-    func testWithoutAppleIntelligenceTheFirstMessageIsTheBuiltInOne() {
+    /// 1.4 is the practice script, the same with or without Apple Intelligence, with the time it really takes to read (59 words: 24 s).
+    func testTheFirstScriptIsThePracticeScriptWithItsReadingTime() {
         let app = launch(ai: false)
         startFlight(app)
         pick(app, "onboarding.topic.niche.tech")
@@ -117,8 +117,66 @@ final class OnboardingUITests: XCTestCase {
         pick(app, "onboarding.platform.tiktok")
         app.buttons["onboarding.continue"].tap()
         XCTAssertTrue(app.buttons["onboarding.useScript"].waitForExistence(timeout: 10))
-        XCTAssertTrue(app.staticTexts["✦ READY · BUILT-IN"].waitForExistence(timeout: 10))
-        shot(app, "4b-script-built-in")
+        XCTAssertEqual(app.buttons["onboarding.useScript"].label, "Try the teleprompter")
+        XCTAssertTrue(app.staticTexts["✦ PRACTICE SCRIPT · READY"].waitForExistence(timeout: 10))
+        XCTAssertTrue(app.staticTexts["24 SEC"].exists)
+        XCTAssertFalse(app.staticTexts["15 SEC"].exists)
+        XCTAssertTrue(app.staticTexts["It’s just practice. Nothing is recorded."].exists)
+        shot(app, "4-script-practice")
+    }
+
+    // MARK: - Voice Following in the practice
+
+    /// From the permissions to the practice, with Voice Following's recognition scripted (the simulator can't recognize speech).
+    private func practice(voice: String, permissions: String = "granted") -> XCUIApplication {
+        let app = launch(permissions: permissions, extra: ["-uiTestOnboardingStep", "voice", "-uiTestVoiceFollowing", voice])
+        let next = app.buttons["onboarding.continue"]
+        XCTAssertTrue(next.waitForExistence(timeout: 10))
+        next.tap()
+        XCTAssertTrue(element(app, "practice.chip").waitForExistence(timeout: 10))
+        return app
+    }
+
+    private func expectVoiceStatus(_ app: XCUIApplication, _ text: String) {
+        let status = element(app, "practice.voiceStatus")
+        XCTAssertTrue(status.waitForExistence(timeout: 10))
+        expectation(for: NSPredicate(format: "value == %@", text), evaluatedWith: status)
+        waitForExpectations(timeout: 10)
+    }
+
+    /// With the microphone and recognition ready, the practice starts with Voice Following on and says so.
+    func testThePracticeStartsWithVoiceFollowingOn() {
+        let app = practice(voice: "listening")
+        expectVoiceStatus(app, "Voice Following is on")
+        XCTAssertTrue(app.staticTexts["Read out loud. The text waits, then follows your voice."].exists)
+        XCTAssertFalse(element(app, "practice.microphoneOff").exists)
+        shot(app, "6c-practice-voice-on")
+        // Started: nobody speaks, so the text waits for the voice.
+        app.buttons["practice.play"].tap()
+        expectVoiceStatus(app, "Waiting for your voice")
+    }
+
+    func testThePracticeSaysWhileRecognitionGetsReady() {
+        let app = practice(voice: "preparing")
+        expectVoiceStatus(app, "Getting ready to follow your voice")
+        shot(app, "6d-practice-voice-preparing")
+    }
+
+    /// Words this iPhone can't follow: the text moves while the creator talks, and the card says that instead.
+    func testWhenWordsCantBeFollowedThePracticeSaysTheTextMovesWhileYouTalk() {
+        let app = practice(voice: "unavailable")
+        expectVoiceStatus(app, "Moves while you talk")
+        XCTAssertTrue(app.staticTexts["Read out loud. The text moves while you talk."].waitForExistence(timeout: 5))
+        shot(app, "6e-practice-voice-unavailable")
+    }
+
+    /// The microphone refused: a steady scroll, said plainly, with the way to Settings.
+    func testWithoutTheMicrophoneThePracticeScrollsSteadilyAndSaysSo() {
+        let app = practice(voice: "listening", permissions: "denied")
+        expectVoiceStatus(app, "Microphone off · Steady scroll")
+        XCTAssertTrue(element(app, "practice.microphoneOff").exists)
+        XCTAssertTrue(app.staticTexts["Read out loud. The text scrolls at a steady pace."].exists)
+        shot(app, "6f-practice-microphone-off")
     }
 
     /// A refusal never blocks the flight: it goes on to the practice.

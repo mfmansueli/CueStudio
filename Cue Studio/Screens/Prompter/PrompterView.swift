@@ -36,10 +36,12 @@ struct PrompterView: View {
             camera: services.recorderCamera,
             audio: services.audio,
             microphones: services.audio,
-            speech: services.speech,
+            speech: services.prompterSpeech,
             languages: services.languages,
             remote: services.remote,
-            toast: services.toast
+            toast: services.toast,
+            // The first flight's answers (stubbed in UI tests), the system's otherwise.
+            microphone: MicrophoneAccess(isDenied: { services.permissions.microphone() == .denied })
         ))
     }
 
