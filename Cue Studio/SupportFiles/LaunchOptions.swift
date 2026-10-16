@@ -14,6 +14,8 @@ import Foundation
 /// - `-uiTestStubAI` / `-uiTestNoAI`: instant, predictable AI, or none at all.
 /// - `-uiTestLongTake <seconds>`: "3 morning habits" Take 3 becomes a full-size take that long, with captions (device export
 ///   measurements); `-uiTestContinuedTasks` turns iOS's continued tasks on for exports in UI tests.
+/// - `-uiTestSlowExport`: the review's exports take a few seconds, so its progress can be seen; `-uiTestStoppedExport`: Take 3's
+///   export stopped with Cue the last time, and its review says so.
 /// - `-uiTestDemoEdit`: "3 morning habits" Take 3 opens in the editor as the v10 design's demo
 ///   (`SampleEdit`); with `-uiTestDemoTranscript` its words were heard too, for Edit by text.
 /// - `-uiTestSampleVideo`: with the sample takes, writes small real videos behind the "3 morning
@@ -107,6 +109,8 @@ struct LaunchOptions {
     var isInMemory = false
     /// iOS's continued tasks for exports (off in UI tests unless `-uiTestContinuedTasks`).
     var usesContinuedTasks = true
+    /// `-uiTestSlowExport`: the review's exports take a few seconds (`SlowVideoExporter`).
+    var slowExports = false
     /// UI tests: the platforms' apps count as installed (`-uiTestAppsInstalled`).
     var appsAreInstalled = false
     /// UI tests of the My Cue Voice tip: its gates are open (`-uiTestVoiceTip`).
@@ -210,6 +214,7 @@ struct LaunchOptions {
             // Videos written by an earlier launch stay in the temporary folder: without the flag
             // they go, so every launch starts from the state it asked for.
             options.usesContinuedTasks = arguments.contains("-uiTestContinuedTasks")
+            options.slowExports = arguments.contains("-uiTestSlowExport")
             let habits = takes.filter { $0.scriptID == SampleScripts.morningHabits.id }
             // A long, full-size take with captions for measuring exports on a device (`-uiTestLongTake <seconds>`).
             if let flag = arguments.firstIndex(of: "-uiTestLongTake"), arguments.indices.contains(flag + 1),
@@ -230,6 +235,12 @@ struct LaunchOptions {
             let suite = "studio.cue.uitests"
             UserDefaults().removePersistentDomain(forName: suite)
             options.defaults = UserDefaults(suiteName: suite) ?? .standard
+            // "3 morning habits" Take 3 was exporting when Cue last stopped (its review shows the stopped notice).
+            if arguments.contains("-uiTestStoppedExport"), let take = takes.first(where: {
+                $0.scriptID == SampleScripts.morningHabits.id && $0.number == 3
+            }) {
+                options.defaults.set([take.id.uuidString], forKey: DefaultsKey.exportsInFlight)
+            }
             // A sky that never stops drawing keeps a UI test from ever finding the app idle: tests start with it off
             // (`-uiTestSky serene|adrift|interstellar` brings it back for the ones that look at it).
             if let flag = arguments.firstIndex(of: "-uiTestSky"), arguments.indices.contains(flag + 1) {

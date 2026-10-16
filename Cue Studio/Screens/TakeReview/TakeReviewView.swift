@@ -67,7 +67,7 @@ struct TakeReviewView: View {
             takes: services.takes,
             quota: services.quota,
             tier: { store.tier },
-            exporter: services.exporter,
+            exporter: services.reviewExporter,
             photos: services.photos,
             sharing: services.sharing,
             ledger: services.ledger,
