@@ -66,13 +66,23 @@ final class RealTakeWorkflowUITests: XCTestCase {
             if listen.exists { flow.tap(listen, "Listen to the video") }
         }
         XCTAssertTrue(firstWord.waitForExistence(timeout: 120), "Edit by text has no words for the real voice")
-        flow.tap(firstWord, "the first word")
+        // Two words in a row still in the video (a run before this one may have cut some: they stay listed, crossed out).
+        let pick = try XCTUnwrap((4..<60).first { index in
+            [index, index + 1].allSatisfy { word in
+                let button = app.buttons["edit.transcript.word.\(word)"]
+                return button.exists && !button.label.hasSuffix(", cut")
+            }
+        }, "No two words in a row left to cut")
+        print("CREATOR STEP real-take · cutting words \(pick) and \(pick + 1)")
+        flow.tap(app.buttons["edit.transcript.word.\(pick)"], "the first word")
         XCTAssertTrue(app.descendants(matching: .any)["edit.transcript.pickGuide"].waitForExistence(timeout: 3), "No guide after the first word")
-        flow.tap(app.buttons["edit.transcript.word.5"], "the last word")
+        flow.tap(app.buttons["edit.transcript.word.\(pick + 1)"], "the last word")
         flow.tap(app.buttons["edit.transcript.cut"], "Cut from video")
         XCTAssertTrue(flow.toastSays("Words cut", timeout: 5), "No toast after cutting")
         flow.capture("cut")
-        app.swipeDown()
+        // The sheet's ×: a swipe on the words scrolls them instead of closing it.
+        flow.tap(app.buttons["sheet.closeButton"].firstMatch, "Edit by text's ×")
+        XCTAssertFalse(firstWord.waitForExistence(timeout: 2), "Edit by text stayed open")
 
         flow.step("✦ Smart › Templates › Bold hook")
         flow.tool("smart")
