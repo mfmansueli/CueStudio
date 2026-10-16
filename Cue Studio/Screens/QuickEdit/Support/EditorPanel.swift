@@ -29,8 +29,8 @@ enum EditorPanel: String, CaseIterable, Identifiable {
 
     var size: EditorPanelSize {
         switch self {
-        case .speed, .zoom, .volume, .filters, .crop, .voiceOver, .autoCaptions, .media, .transition, .smart: .mini
-        case .voice, .pauses, .captions, .adjust, .background: .medium
+        case .speed, .zoom, .volume, .filters, .crop, .voiceOver, .autoCaptions, .transition, .smart: .mini
+        case .voice, .pauses, .captions, .adjust, .background, .media: .medium
         case .textStyle, .captionStyle: .full
         }
     }

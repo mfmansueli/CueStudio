@@ -255,6 +255,8 @@ final class QuickEditViewModel {
     let styles: TextStyleStoring
     /// Cover Studio's pictures.
     let coverPictures: CoverPicturing
+    /// Hears a sound effect before it's added.
+    let soundPreviews: SoundEffectPreviewing
     let translations: TranslationAvailabilityChecking
     /// The library of takes (a montage adds others from it).
     let takes: TakeLibraryService
@@ -285,7 +287,7 @@ final class QuickEditViewModel {
         take: Take, takes: TakeLibraryService, library: ScriptLibraryService, editing: TakeEditing,
         drafts: QuickEditDraftStoring, toast: ToastService, player: EditPlayback? = nil,
         mediaImporter: EditMediaImporting? = nil, recorder: VoiceOverRecording? = nil, styles: TextStyleStoring? = nil,
-        coverPictures: CoverPicturing? = nil,
+        coverPictures: CoverPicturing? = nil, soundPreviews: SoundEffectPreviewing? = nil,
         translations: TranslationAvailabilityChecking = AppleTranslationAvailability(),
         speechLanguage: @escaping (Script?) -> SpeechLanguageRequest = SpeechLanguageRequest.script,
         languageConflict: @escaping (Script?) -> SpeechLanguageConflict? = { _ in nil }
@@ -296,6 +298,7 @@ final class QuickEditViewModel {
         self.translations = translations
         myStyle = self.styles.myStyle
         self.coverPictures = coverPictures ?? CoverPictureService()
+        self.soundPreviews = soundPreviews ?? SoundEffectPreviewPlayer()
         speechLanguageFor = speechLanguage
         self.mediaImporter = mediaImporter ?? EditMediaImporter()
         self.recorder = recorder ?? VoiceOverRecorder()

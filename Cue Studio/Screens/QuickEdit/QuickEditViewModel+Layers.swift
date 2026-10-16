@@ -163,7 +163,7 @@ extension QuickEditViewModel {
 
     private func longestLength(of bar: LayerBar) -> TimeInterval? {
         guard bar.kind == .media else { return nil }
-        return edit.media.first { $0.id == bar.id }?.mediaDuration
+        return edit.media.first { $0.id == bar.id }.flatMap { $0.mediaDuration == nil ? nil : $0.longestDuration }
     }
 
     /// Pins a bar to where it was dropped: to the take's seconds, or in an arranged edit to the

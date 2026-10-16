@@ -459,14 +459,16 @@ nonisolated struct EditedComposition: @unchecked Sendable {
                 if CMTimeCompare(start, tracks[slot].filled) > 0 {
                     track.insertEmptyTimeRange(CMTimeRange(start: tracks[slot].filled, end: start))
                 }
+                // The part of the video the creator picked, from where it starts in the file.
+                let inFile = CMTime(seconds: entry.media.startInFile, preferredTimescale: 600)
                 do {
-                    try track.insertTimeRange(CMTimeRange(start: .zero, end: end - start), of: source, at: start)
+                    try track.insertTimeRange(CMTimeRange(start: inFile, duration: end - start), of: source, at: start)
                 } catch {
                     continue
                 }
                 tracks[slot].filled = end
                 if let volume = entry.media.audioVolume, volume > 0,
-                   let sound = await placeSound(of: asset, from: start, to: end, in: composition) {
+                   let sound = await placeSound(of: asset, from: start, to: end, inFile: inFile, in: composition) {
                     sounds.append((sound, Float(min(max(volume, 0), 1))))
                 }
                 var frame = MediaFrame(
@@ -493,16 +495,20 @@ nonisolated struct EditedComposition: @unchecked Sendable {
         return OverlayMotion(keyframes, animation: media.animation, length: span.duration, base: OverlayMotion.State(center: center, scale: 1, opacity: 1))
     }
 
-    /// A video's own sound on a sound track of its own, from its start for as long as it shows.
+    /// A video's own sound on a sound track of its own, from where it starts in the file for as long as it shows.
     private static func placeSound(
-        of asset: AVURLAsset, from start: CMTime, to end: CMTime, in composition: AVMutableComposition
+        of asset: AVURLAsset, from start: CMTime, to end: CMTime, inFile: CMTime, in composition: AVMutableComposition
     ) async -> AVMutableCompositionTrack? {
         guard let source = try? await asset.loadTracks(withMediaType: .audio).first,
               let track = composition.addMutableTrack(withMediaType: .audio, preferredTrackID: kCMPersistentTrackID_Invalid)
         else { return nil }
-        let available = (try? await source.load(.timeRange).duration) ?? (end - start)
+        let available = CMTimeSubtract((try? await source.load(.timeRange).duration) ?? (end - start + inFile), inFile)
+        guard CMTimeCompare(available, .zero) > 0 else {
+            composition.removeTrack(track)
+            return nil
+        }
         do {
-            try track.insertTimeRange(CMTimeRange(start: .zero, duration: CMTimeMinimum(end - start, available)), of: source, at: start)
+            try track.insertTimeRange(CMTimeRange(start: inFile, duration: CMTimeMinimum(end - start, available)), of: source, at: start)
         } catch {
             composition.removeTrack(track)
             return nil

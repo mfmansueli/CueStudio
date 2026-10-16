@@ -7,8 +7,8 @@ import Foundation
 
 /// A photo or video from the creator's library laid over the take (B-roll). The file is a copy
 /// kept by the app (`EditMediaFiles`), so the edit never depends on the library. Pinned to the
-/// recording like texts; one at a time, never on top of another, so there are no layers to manage.
-/// A video plays from its start, without its sound, for as long as it shows.
+/// recording like texts, stacked when they overlap (up to `simultaneousLimit`). A video plays from `startInFile` (its own
+/// start unless the creator picked another part of it), muted unless its sound is kept, for as long as it shows.
 nonisolated struct MediaOverlay: Codable, Hashable, Identifiable, Sendable {
     /// Narrowest a window can be, as a fraction of the frame's width.
     static let widthRange: ClosedRange<Double> = 0.25...1
@@ -28,6 +28,9 @@ nonisolated struct MediaOverlay: Codable, Hashable, Identifiable, Sendable {
     var aspect: Double
     /// Length of a video; nil for a photo.
     var mediaDuration: TimeInterval?
+    /// Where in the video it starts playing (seconds of the file); nil from its start (media added before a part could be
+    /// picked). Apart from `span`, which is where it shows in the edit: picking another part never moves it.
+    var mediaStart: TimeInterval?
     /// Seconds of the recording it is pinned to.
     var span: TimeSpan
     /// In an arranged edit, the piece it is pinned to (`span` is then of that piece's recording).
@@ -63,8 +66,14 @@ nonisolated struct MediaOverlay: Codable, Hashable, Identifiable, Sendable {
         self.span = span
     }
 
-    /// The longest it can show in the edit: a video's own length, else no limit.
+    /// Seconds of the video where it starts playing, kept inside the file.
+    var startInFile: TimeInterval {
+        guard let mediaDuration else { return 0 }
+        return min(max(0, mediaStart ?? 0), max(0, mediaDuration - Self.minimumDuration))
+    }
+
+    /// The longest it can show in the edit: what's left of a video from where it starts, else no limit.
     var longestDuration: TimeInterval {
-        mediaDuration ?? .greatestFiniteMagnitude
+        mediaDuration.map { $0 - startInFile } ?? .greatestFiniteMagnitude
     }
 }

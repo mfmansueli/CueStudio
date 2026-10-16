@@ -127,6 +127,31 @@ extension QuickEditViewModel {
         toast.show(String(localized: "Media removed"))
     }
 
+    // MARK: - The part of a video
+
+    /// Plays another part of the video (`start`, seconds of the file) in the same place of the edit, for as long as it shows
+    /// there; kept inside the file. A drag is one undo step (`beginChange`).
+    func slipMedia(_ id: UUID, toStart start: TimeInterval) {
+        guard let media = edit.media.first(where: { $0.id == id }), let length = media.mediaDuration,
+              let shown = mediaBars.first(where: { $0.id == id })?.span.duration else { return }
+        let clamped = min(max(0, start), max(0, length - shown))
+        updateMedia(id) { $0.mediaStart = clamped > 0.000_1 ? clamped : nil }
+    }
+
+    /// How long the photo or video shows, from where it starts in the edit: longer is as far as the video (from its part) and the
+    /// edit allow. One undo step per tap.
+    func setMediaLength(_ id: UUID, _ seconds: TimeInterval) {
+        guard let media = edit.media.first(where: { $0.id == id }), let bar = mediaBars.first(where: { $0.id == id }) else { return }
+        let longest = min(media.longestDuration, edit.editedDuration - bar.span.start)
+        let length = min(max(seconds, MediaOverlay.minimumDuration), longest)
+        guard abs(length - bar.span.duration) > 0.01 else { return }
+        let pinned = edit.pin(TimeSpan(start: bar.span.start, end: bar.span.start + length))
+        updateMedia(id) { item in
+            item.span = pinned.span
+            item.clipAnchor = pinned.anchor
+        }
+    }
+
     /// Its place on a preview of `size` (from the top left), as the export places it.
     func frame(ofMedia media: MediaOverlay, in size: CGSize) -> CGRect {
         let placed = MediaPlacement.rect(for: media, in: size)

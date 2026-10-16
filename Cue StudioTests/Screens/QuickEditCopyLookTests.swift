@@ -101,3 +101,38 @@ struct QuickEditCopyLookTests {
         #expect(viewModel.mediaInsertMode == .overlay)
     }
 }
+
+/// Adding a sound effect from the editor: at the playhead, over music, never ducking, one undo step.
+@MainActor
+@Suite("Quick edit sound effects")
+struct QuickEditSoundEffectTests {
+    @Test func anEffectGoesOverMusicAtThePlayhead() async throws {
+        var take = TestData.take(scriptID: nil, number: 3)
+        take.duration = 30
+        let takes = TakeLibraryService(repository: FakeTakeRepository(takes: [take]))
+        takes.load()
+        let library = ScriptLibraryService(repository: FakeScriptRepository(scripts: []))
+        library.load()
+        let editor = FakeTakeEditor()
+        editor.duration = 30
+        let player = FakeEditPlayback()
+        let viewModel = QuickEditViewModel(
+            take: takes.takes[0], takes: takes, library: library, editing: editor, drafts: FakeDraftStore(), toast: ToastService(),
+            player: player, mediaImporter: FakeMediaImporter(), recorder: FakeVoiceRecorder(), styles: FakeTextStyleStore()
+        )
+        await viewModel.prepare()
+        // Music fills the whole edit.
+        viewModel.addMusic(ImportedAudio(fileName: "song-\(UUID().uuidString).m4a", title: "Song", duration: 60))
+        player.currentTime = 12
+        let steps = viewModel.history.past.count
+        viewModel.addSoundEffect(.whoosh)
+        let effect = try #require(viewModel.edit.music.first { $0.effect == .whoosh })
+        defer { EditMediaFiles.remove([effect.fileName]) }
+        #expect(abs(effect.start - 12) < 0.001)
+        #expect(!effect.ducksUnderVoice)
+        #expect(viewModel.edit.music.count == 2)
+        #expect(viewModel.history.past.count == steps + 1)
+        #expect(EditMediaFiles.exists(effect.fileName))
+        #expect(viewModel.edit.mediaFileNames.contains(effect.fileName))
+    }
+}

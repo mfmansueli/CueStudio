@@ -47,7 +47,8 @@ extension QuickEditViewModel {
             replaceMusic(replacing, with: imported)
             return
         }
-        let occupied = edit.music.compactMap { $0.span(inEditOf: edit.editedDuration) }
+        // Sound effects can play over music: only music takes room.
+        let occupied = edit.music.filter { $0.effect == nil }.compactMap { $0.span(inEditOf: edit.editedDuration) }
         guard let slot = MusicPlacement.slot(playhead: player.currentTime, editDuration: edit.editedDuration, occupied: occupied) else {
             discard(imported)
             toast.show(String(localized: "No room · Move the playhead"))
@@ -92,6 +93,41 @@ extension QuickEditViewModel {
         }
         selectedMusicID = id
         toast.show(String(localized: "Music replaced"))
+    }
+
+    // MARK: - Sound effects
+
+    /// Adds a sound effect at the playhead (over music or another effect), at 80%, never going down under the voice. The file is
+    /// made by Cue (`SoundEffectSynth`) and linked into the edit's media.
+    func addSoundEffect(_ effect: SoundEffect) {
+        guard isReady else { return }
+        do {
+            let name = try EditMediaFiles.link(try SoundEffectSynth.file(for: effect))
+            importedFiles.insert(name)
+            let duration = Double(SoundEffectSynth.samples(for: effect).count) / SoundEffectSynth.sampleRate
+            let total = edit.editedDuration
+            let start = min(player.currentTime, max(0, total - MusicClip.minimumDuration))
+            let length = min(duration, total - start)
+            guard length >= MusicClip.minimumDuration else {
+                EditMediaFiles.remove([name])
+                importedFiles.remove(name)
+                toast.show(String(localized: "No room · Move the playhead"))
+                return
+            }
+            var clip = MusicClip(fileName: name, title: effect.label, fileDuration: duration, start: start, length: length)
+            clip.effect = effect
+            clip.volume = 0.8
+            clip.fadeIn = 0
+            clip.fadeOut = 0
+            clip.ducksUnderVoice = false
+            change { $0.music = ($0.music ?? []) + [clip] }
+            selectedMusicID = clip.id
+            player.pause()
+            player.seek(to: start)
+            toast.show(String(localized: "\(effect.label) added"))
+        } catch {
+            toast.show(String(localized: "Can't add this sound"))
+        }
     }
 
     private func discard(_ imported: ImportedAudio) {
