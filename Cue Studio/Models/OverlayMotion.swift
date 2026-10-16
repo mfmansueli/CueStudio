@@ -10,7 +10,7 @@ import Foundation
 /// next at the pace the next one asks for. Pure, so the preview, the export and the tests read the
 /// same motion.
 nonisolated struct OverlayMotion: Hashable, Sendable {
-    struct State: Equatable {
+    struct State: Hashable {
         var center: OverlayPoint
         var scale: Double
         var opacity: Double
@@ -18,13 +18,42 @@ nonisolated struct OverlayMotion: Hashable, Sendable {
 
     /// In time order.
     let keyframes: [OverlayKeyframe]
+    /// A preset laid over the keyframes (or over `base` without them), on an item that shows for `length` seconds.
+    let animation: OverlayAnimation?
+    let length: TimeInterval
+    /// Where the item is without keyframes.
+    let base: State?
 
     init(_ keyframes: [OverlayKeyframe]) {
         self.keyframes = keyframes.sorted { $0.time < $1.time }
+        animation = nil
+        length = 0
+        base = nil
     }
 
-    /// The state `time` seconds into the item; nil without keyframes (the item stands still).
+    /// Keyframes and a preset: the preset moves the item from where its keyframes (or `base`) have it.
+    init(_ keyframes: [OverlayKeyframe], animation: OverlayAnimation?, length: TimeInterval, base: State) {
+        self.keyframes = keyframes.sorted { $0.time < $1.time }
+        self.animation = animation
+        self.length = length
+        self.base = base
+    }
+
+    /// Whether anything moves.
+    var isEmpty: Bool { keyframes.isEmpty && animation == nil }
+
+    /// The state `time` seconds into the item; nil when nothing moves it (the item stands still).
     func state(at time: TimeInterval) -> State? {
+        guard let animation else { return keyframeState(at: time) }
+        guard var state = keyframeState(at: time) ?? base else { return nil }
+        let change = animation.modifier(at: time, length: length)
+        state.center = OverlayPoint(x: state.center.x + change.dx, y: state.center.y + change.dy)
+        state.scale *= change.scale
+        state.opacity *= change.opacity
+        return state
+    }
+
+    private func keyframeState(at time: TimeInterval) -> State? {
         guard let first = keyframes.first, let last = keyframes.last else { return nil }
         if time <= first.time { return State(first) }
         if time >= last.time { return State(last) }

@@ -61,6 +61,9 @@ struct EditorToolbar: View {
                 ScrollView(.horizontal) {
                     HStack(spacing: 0) {
                         ForEach(items) { item in
+                            if item.startsGroup {
+                                Rectangle().fill(Palette.Editor.separator).frame(width: 0.5, height: 30).padding(.horizontal, 2)
+                            }
                             itemButton(item)
                         }
                     }
@@ -136,6 +139,20 @@ struct EditorToolbar: View {
                     .font(.system(size: 21, weight: .light))
                     .foregroundStyle(tint)
                     .frame(height: 24)
+                    .overlay(alignment: .topTrailing) {
+                        if let badge = item.scopeBadge {
+                            Text(badge)
+                                .font(.system(size: 8.5, weight: .heavy))
+                                .textCase(.uppercase)
+                                .foregroundStyle(Palette.accInk)
+                                .padding(.horizontal, 3.5)
+                                .padding(.vertical, 1)
+                                .background(Palette.acc, in: Capsule())
+                                .fixedSize()
+                                .offset(x: 12, y: -6)
+                                .accessibilityHidden(true)
+                        }
+                    }
                 if heightClass.toolbarShowsLabels {
                     Text(item.label)
                         .font(.system(size: heightClass.toolbarLabelSize, weight: .medium))
@@ -153,7 +170,7 @@ struct EditorToolbar: View {
             guard !heightClass.toolbarShowsLabels else { return }
             show(tooltip: item.label)
         })
-        .accessibilityLabel(Text(item.label))
+        .accessibilityLabel(item.scopeBadge == nil ? Text(item.label) : Text("\(item.label), whole video"))
         .accessibilityHint(item.style == .dimmed ? Text("Not available here") : Text(""))
         .accessibilityIdentifier("edit.toolbar.\(item.id)")
     }

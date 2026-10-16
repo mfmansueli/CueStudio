@@ -43,7 +43,7 @@ struct QuickEditToolbarTests {
 
     @Test func theMainToolbarHasEveryToolWithNothingPicked() async {
         let viewModel = await makeScenario().viewModel
-        #expect(ids(viewModel) == ["edit", "audio", "text", "captions", "filters", "smart", "cover"])
+        #expect(ids(viewModel) == ["edit", "audio", "text", "addMedia", "captions", "filters", "smart", "cover"])
         #expect(viewModel.toolbarContextLabel == nil)
     }
 
@@ -81,7 +81,10 @@ struct QuickEditToolbarTests {
         viewModel.perform(.selectClipAtPlayhead)
         #expect(viewModel.selection == .clip(viewModel.edit.timeline.segments[0].id))
         #expect(viewModel.toolbarContextLabel == "Clip")
-        #expect(ids(viewModel) == ["split", "speed", "adjust", "filters", "background", "zoom", "volume", "voice", "duplicate", "crop", "media", "delete"])
+        #expect(ids(viewModel) == [
+            "split", "speed", "adjust", "filters", "background", "zoom", "volume", "duplicate", "copyLook", "pasteLook", "crop", "voice", "media",
+            "delete",
+        ])
         #expect(viewModel.toolbarItems.last?.style == .destructive)
     }
 

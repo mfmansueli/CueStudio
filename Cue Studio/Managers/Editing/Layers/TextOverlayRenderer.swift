@@ -29,8 +29,11 @@ nonisolated enum TextOverlayRenderer {
             // Core Image measures y from the bottom.
             let y = frame.height * (1 - CGFloat(center.y)) - size.height / 2
             var overlay = FrameOverlay(image: ciImage, origin: CGPoint(x: x.rounded(), y: y.rounded()), span: entry.span)
-            if !entry.text.keyframes.isEmpty {
-                overlay.motion = OverlayMotion(entry.text.keyframes)
+            if !entry.text.keyframes.isEmpty || entry.text.animation != nil {
+                overlay.motion = OverlayMotion(
+                    entry.text.keyframes, animation: entry.text.animation, length: entry.span.duration,
+                    base: OverlayMotion.State(center: center, scale: 1, opacity: 1)
+                )
                 overlay.frameSize = frame
             }
             return overlay

@@ -40,6 +40,7 @@ extension QuickEditViewModel {
             EditorToolbarItem(id: "edit", label: String(localized: "Edit"), systemImage: "scissors", action: .selectClipAtPlayhead),
             EditorToolbarItem(id: "audio", label: String(localized: "Audio"), systemImage: "music.note", action: .openMenu(.audio)),
             EditorToolbarItem(id: "text", label: String(localized: "Text"), systemImage: "textformat", action: .openMenu(.text)),
+            EditorToolbarItem(id: "addMedia", label: String(localized: "Media"), systemImage: "photo.badge.plus", action: .addMediaChoice),
             EditorToolbarItem(id: "captions", label: String(localized: "Captions"), systemImage: "captions.bubble", action: .openCaptions),
             EditorToolbarItem(id: "filters", label: String(localized: "Filters"), systemImage: "camera.filters", action: .open(.filters)),
             EditorToolbarItem(id: "smart", label: String(localized: "✦ Smart"), systemImage: "sparkles", style: .smart, action: .open(.smart)),
@@ -106,11 +107,24 @@ extension QuickEditViewModel {
                 ),
                 EditorToolbarItem(id: "zoom", label: String(localized: "Zoom"), systemImage: "arrow.up.left.and.arrow.down.right", action: .open(.zoom)),
                 EditorToolbarItem(id: "volume", label: String(localized: "Volume"), systemImage: "speaker.wave.2", action: .open(.volume)),
-                EditorToolbarItem(id: "voice", label: String(localized: "Studio Voice"), systemImage: "waveform.and.mic", action: .open(.voice)),
                 EditorToolbarItem(id: "duplicate", label: String(localized: "Duplicate"), systemImage: "plus.square.on.square", action: .duplicateClip),
-                // The output's own: the frame of the whole take, and a photo or video on top.
-                EditorToolbarItem(id: "crop", label: String(localized: "Crop"), systemImage: "crop", action: .open(.crop)),
-                EditorToolbarItem(id: "media", label: String(localized: "Overlay"), systemImage: "photo.badge.plus", action: .addMedia),
+                EditorToolbarItem(id: "copyLook", label: String(localized: "Copy look"), systemImage: "doc.on.doc", action: .copyLook),
+                EditorToolbarItem(
+                    id: "pasteLook", label: String(localized: "Paste look"), systemImage: "doc.on.clipboard",
+                    style: canPasteLook ? .normal : .dimmed, action: .pasteLook
+                ),
+                // Tools of the whole video, shown here too: marked, so they never pass for the clip's own.
+                EditorToolbarItem(
+                    id: "crop", label: String(localized: "Crop"), systemImage: "crop", action: .open(.crop),
+                    scopeBadge: String(localized: "All", comment: "Badge on a tool that changes the whole video"), startsGroup: true
+                ),
+                EditorToolbarItem(
+                    id: "voice", label: String(localized: "Studio Voice"), systemImage: "waveform.and.mic", action: .open(.voice),
+                    scopeBadge: String(localized: "All", comment: "Badge on a tool that changes the whole video")
+                ),
+                EditorToolbarItem(
+                    id: "media", label: String(localized: "Overlay"), systemImage: "photo.badge.plus", action: .addMedia, startsGroup: true
+                ),
                 EditorToolbarItem(id: "delete", label: delete, systemImage: "trash", style: .destructive, action: .deleteClip),
             ]
         case .text:
@@ -169,7 +183,7 @@ extension QuickEditViewModel {
             // From a picked clip, Adjust, Filters and Background change that clip only.
             lookScopeIsClip = panel.hasClipScope && selection?.clipID != nil
             self.panel = panel
-        case .addMedia:
+        case .addMedia, .addMediaChoice:
             mediaInsertMode = .overlay
             sheet = .media
         case .addText(let role): addStyledText(role)
@@ -197,10 +211,8 @@ extension QuickEditViewModel {
 
     /// The actions on the picked item. False when `action` isn't one of them.
     private func performOnSelection(_ action: EditorAction) -> Bool {
+        if performOnClip(action) { return true }
         switch action {
-        case .splitClip: splitClip()
-        case .duplicateClip: selection?.clipID.map(duplicateClip)
-        case .deleteClip: selection?.clipID.map(deleteClip)
         case .toggleKeyframe: toggleKeyframe()
         case .duplicateText: selection?.textID.map(duplicateText)
         case .deleteText: selection?.textID.map(deleteText)
@@ -213,6 +225,19 @@ extension QuickEditViewModel {
         case .deleteVoiceOver: selection?.voiceOverID.map(deleteVoiceOver)
         case .replaceMedia: replaceSelectedMedia()
         case .deleteMedia: selection?.mediaID.map(deleteMedia)
+        default: return false
+        }
+        return true
+    }
+
+    /// The actions on a picked clip. False when `action` isn't one of them.
+    private func performOnClip(_ action: EditorAction) -> Bool {
+        switch action {
+        case .splitClip: splitClip()
+        case .duplicateClip: selection?.clipID.map(duplicateClip)
+        case .copyLook: copyClipLook()
+        case .pasteLook: askToPasteLook()
+        case .deleteClip: selection?.clipID.map(deleteClip)
         default: return false
         }
         return true

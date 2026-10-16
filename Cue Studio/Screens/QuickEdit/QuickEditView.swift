@@ -129,6 +129,9 @@ struct QuickEditView: View {
         .sheet(isPresented: $viewModel.showsTranslation) {
             CaptionTranslationSheet(viewModel: viewModel)
         }
+        .sheet(isPresented: $viewModel.showsPasteLook) {
+            PasteLookSheet(viewModel: viewModel)
+        }
         .fullScreenCover(item: $viewModel.coverStudio) { studio in
             CoverStudioView(
                 viewModel: studio, frameRate: Double(viewModel.take.frameRate.rawValue),

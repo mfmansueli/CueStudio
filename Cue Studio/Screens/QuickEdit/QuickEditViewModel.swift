@@ -203,6 +203,11 @@ final class QuickEditViewModel {
     var isDrawingCover = false
     /// Cover Studio, while it's open over the editor.
     var coverStudio: CoverStudioViewModel?
+    /// "Copy look": what a clip's look was when copied; nil until one is.
+    var copiedLook: CopiedClipLook?
+    /// "Paste look": which parts go, and whether its sheet is open.
+    var pastesLookParts: Set<ClipLookPart> = Set(ClipLookPart.allCases)
+    var showsPasteLook = false
     /// Remove Pauses: the edit before its preview, while the result plays without the pauses. Apply
     /// keeps it as one undo step; anything else puts it back.
     var pausePreviewBase: EditSnapshot?

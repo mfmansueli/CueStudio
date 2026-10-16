@@ -435,8 +435,8 @@ nonisolated struct EditedComposition: @unchecked Sendable {
             case .photo:
                 guard let image = CIImage(contentsOf: url, options: [.applyOrientationProperty: true]) else { continue }
                 var frame = MediaFrame(span: entry.span, rect: rect, image: image, transform: .identity, layer: entry.media.stackOrder)
-                if let keyframes = entry.media.keyframes, !keyframes.isEmpty {
-                    frame.motion = OverlayMotion(keyframes)
+                if let motion = Self.motion(of: entry.media, rect: topLeft, span: frame.span, in: size) {
+                    frame.motion = motion
                     frame.frameSize = size
                 }
                 frames.append(frame)
@@ -473,8 +473,8 @@ nonisolated struct EditedComposition: @unchecked Sendable {
                     span: TimeSpan(start: start.seconds, end: end.seconds), rect: rect, image: nil, transform: transform,
                     trackID: track.trackID, layer: entry.media.stackOrder
                 )
-                if let keyframes = entry.media.keyframes, !keyframes.isEmpty {
-                    frame.motion = OverlayMotion(keyframes)
+                if let motion = Self.motion(of: entry.media, rect: topLeft, span: frame.span, in: size) {
+                    frame.motion = motion
                     frame.frameSize = size
                 }
                 frames.append(frame)
@@ -483,6 +483,14 @@ nonisolated struct EditedComposition: @unchecked Sendable {
         let used = tracks.map(\.track).filter { track in frames.contains { $0.trackID == track.trackID } }
         for (track, _) in tracks where !used.contains(where: { $0.trackID == track.trackID }) { composition.removeTrack(track) }
         return (used, frames, sounds)
+    }
+
+    /// A photo's or video's keyframes and preset, over where its window is (`rect`, from the top left); nil when nothing moves it.
+    private static func motion(of media: MediaOverlay, rect: CGRect, span: TimeSpan, in size: CGSize) -> OverlayMotion? {
+        let keyframes = media.keyframes ?? []
+        guard !keyframes.isEmpty || media.animation != nil else { return nil }
+        let center = OverlayPoint(x: Double(rect.midX / max(1, size.width)), y: Double(rect.midY / max(1, size.height)))
+        return OverlayMotion(keyframes, animation: media.animation, length: span.duration, base: OverlayMotion.State(center: center, scale: 1, opacity: 1))
     }
 
     /// A video's own sound on a sound track of its own, from its start for as long as it shows.

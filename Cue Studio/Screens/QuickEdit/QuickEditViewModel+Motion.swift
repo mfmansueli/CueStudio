@@ -57,7 +57,69 @@ extension QuickEditViewModel {
     func motionState(of item: MotionItem) -> OverlayMotion.State {
         let base = OverlayMotion.State(center: baseCenter(of: item), scale: 1, opacity: 1)
         guard let local = localTime(of: item) else { return base }
-        return OverlayMotion(keyframes(of: item)).state(at: local) ?? base
+        let length = editedSpan(of: item)?.duration ?? 0
+        return OverlayMotion(keyframes(of: item), animation: animation(of: item), length: length, base: base).state(at: local) ?? base
+    }
+
+    // MARK: - Ready-made motion
+
+    /// The picked item's ready-made motion, if it has one.
+    func animation(of item: MotionItem) -> OverlayAnimation? {
+        switch item {
+        case .text(let id): edit.texts.first { $0.id == id }?.animation
+        case .media(let id): edit.media.first { $0.id == id }?.animation
+        }
+    }
+
+    var selectedAnimation: OverlayAnimation? {
+        motionItem.flatMap(animation(of:))
+    }
+
+    /// Picks a ready-made motion for the picked item (nil: none), keeping its duration and strength when it had one. One undo
+    /// step; the keyframes stay as they are. The playhead goes to the item's start, to see it.
+    func setMotionPreset(_ preset: MotionPreset?) {
+        guard let item = motionItem else { return }
+        let current = animation(of: item)
+        let next = preset.map { OverlayAnimation(preset: $0, duration: current?.duration ?? 0.5, intensity: current?.intensity ?? 0.5) }
+        setAnimation(next, of: item)
+        if next != nil, let span = editedSpan(of: item) {
+            player.pause()
+            player.seek(to: span.start)
+        }
+        Haptics.selection()
+    }
+
+    func setMotionDuration(_ duration: TimeInterval) {
+        guard let item = motionItem, var animation = animation(of: item) else { return }
+        animation.duration = min(max(duration, OverlayAnimation.durationRange.lowerBound), OverlayAnimation.durationRange.upperBound)
+        setAnimation(animation, of: item, key: "motionDuration")
+    }
+
+    func setMotionIntensity(_ intensity: Double) {
+        guard let item = motionItem, var animation = animation(of: item) else { return }
+        animation.intensity = min(max(intensity, 0), 1)
+        setAnimation(animation, of: item, key: "motionIntensity")
+    }
+
+    /// Plays the picked item from its start, to see its motion.
+    func previewMotion() {
+        guard let item = motionItem, let span = editedSpan(of: item) else { return }
+        previewPart(span.start...min(span.end, span.start + max(1.2, (animation(of: item)?.duration ?? 0.5) * 2.5)), back: span.start)
+    }
+
+    private func setAnimation(_ animation: OverlayAnimation?, of item: MotionItem, key: String? = nil) {
+        switch item {
+        case .text(let id):
+            change(key: key) { snapshot in
+                guard let index = snapshot.texts.firstIndex(where: { $0.id == id }) else { return }
+                snapshot.texts[index].animation = animation
+            }
+        case .media(let id):
+            change(key: key) { snapshot in
+                guard let index = snapshot.media.firstIndex(where: { $0.id == id }) else { return }
+                snapshot.media[index].animation = animation
+            }
+        }
     }
 
     /// Adds a keyframe at the playhead where the item is now, or takes away the one there.

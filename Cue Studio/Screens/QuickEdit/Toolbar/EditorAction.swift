@@ -15,11 +15,15 @@ enum EditorAction: Hashable {
     case openCaptions
     case open(EditorPanel)
     case addMedia
+    /// "Media" on the main toolbar: a photo or video on top of the video or as a clip, chosen in the sheet.
+    case addMediaChoice
     /// Cover Studio, over the editor.
     case openCoverStudio
     // Clip
     case splitClip
     case duplicateClip
+    case copyLook
+    case pasteLook
     case deleteClip
     // Text
     case addText(TextOverlayRole)

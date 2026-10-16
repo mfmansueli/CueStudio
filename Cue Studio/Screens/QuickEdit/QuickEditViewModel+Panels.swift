@@ -34,7 +34,7 @@ extension QuickEditViewModel {
         case .voice: voiceScopeLabel
         case .adjust, .filters, .background: lookSubtitle(for: panel)
         case .pauses: String(localized: "Marked in yellow on the timeline")
-        case .crop: String(localized: "Format for where you post")
+        case .crop: String(localized: "Whole video · format for where you post")
         case .captions, .autoCaptions, .captionStyle: captionSubtitle(panel)
         case .textStyle: textStyleSubtitle
         case .voiceOver: String(localized: "Records from the playhead · the video plays muted")

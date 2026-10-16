@@ -42,6 +42,8 @@ nonisolated struct TextOverlay: Codable, Hashable, Identifiable, Sendable {
     /// nil pins it to the take's own seconds.
     var clipAnchor: ClipAnchor?
     /// Where it goes, how big and how opaque over its own time; none stands still at `center`.
+    /// A ready-made entrance (or exit) over its place and keyframes; nil for none.
+    var animation: OverlayAnimation?
     var keyframes: [OverlayKeyframe] = []
     /// The preset it was last set in; nil for a look set another way (a legacy style, "My
     /// style").
@@ -100,7 +102,7 @@ nonisolated struct TextOverlay: Codable, Hashable, Identifiable, Sendable {
 
     private enum CodingKeys: String, CodingKey {
         case id, text, role, font, weight, size, tracking, isUppercase, alignment, color, background, backgroundColor
-        case backgroundOpacity, hasShadow, hasOutline, glow, center, span, preset, customized, clipAnchor, keyframes
+        case backgroundOpacity, hasShadow, hasOutline, glow, center, span, preset, customized, clipAnchor, keyframes, animation
     }
 
     /// Texts saved before letter spacing, fill opacity and presets read with none of them.
@@ -128,6 +130,7 @@ nonisolated struct TextOverlay: Codable, Hashable, Identifiable, Sendable {
         customized = Set(((try? container.decodeIfPresent([String].self, forKey: .customized)) ?? []).compactMap(TextLookField.init(rawValue:)))
         clipAnchor = try? container.decodeIfPresent(ClipAnchor.self, forKey: .clipAnchor)
         keyframes = (try? container.decodeIfPresent([OverlayKeyframe].self, forKey: .keyframes)) ?? []
+        animation = try? container.decodeIfPresent(OverlayAnimation.self, forKey: .animation)
     }
 
     func encode(to encoder: Encoder) throws {
@@ -156,5 +159,6 @@ nonisolated struct TextOverlay: Codable, Hashable, Identifiable, Sendable {
         try container.encode(customized.map(\.rawValue).sorted(), forKey: .customized)
         try container.encodeIfPresent(clipAnchor, forKey: .clipAnchor)
         if !keyframes.isEmpty { try container.encode(keyframes, forKey: .keyframes) }
+        try container.encodeIfPresent(animation, forKey: .animation)
     }
 }

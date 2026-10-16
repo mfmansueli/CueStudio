@@ -38,6 +38,8 @@ nonisolated struct MediaOverlay: Codable, Hashable, Identifiable, Sendable {
 
     /// Where it goes, how big and how opaque over its own time; nil or empty stands still.
     var keyframes: [OverlayKeyframe]?
+    /// A ready-made entrance (or exit) over its place and keyframes; nil for none.
+    var animation: OverlayAnimation?
 
     /// Whether a video has its own sound; nil for media added before sound could play.
     var hasSound: Bool?

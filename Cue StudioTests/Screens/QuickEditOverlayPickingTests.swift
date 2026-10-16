@@ -106,3 +106,44 @@ struct QuickEditOverlayPickingTests {
         #expect(viewModel.edit.media.first { $0.id == ids[0] }?.center == OverlayPoint(x: 0.5, y: 0.5))
     }
 }
+
+/// Motion presets from the editor: one undo step each, the keyframes untouched, the duration and strength kept when the preset
+/// changes.
+@MainActor
+@Suite("Quick edit motion presets")
+struct QuickEditMotionPresetTests {
+    @Test func aPresetIsOneStepAndLeavesTheKeyframes() async throws {
+        var take = TestData.take(scriptID: nil, number: 3)
+        take.duration = 20
+        let takes = TakeLibraryService(repository: FakeTakeRepository(takes: [take]))
+        takes.load()
+        let library = ScriptLibraryService(repository: FakeScriptRepository(scripts: []))
+        library.load()
+        let editor = FakeTakeEditor()
+        editor.duration = 20
+        let player = FakeEditPlayback()
+        let viewModel = QuickEditViewModel(
+            take: takes.takes[0], takes: takes, library: library, editing: editor, drafts: FakeDraftStore(), toast: ToastService(),
+            player: player, mediaImporter: FakeMediaImporter(), recorder: FakeVoiceRecorder(), styles: FakeTextStyleStore()
+        )
+        await viewModel.prepare()
+        player.currentTime = 2
+        viewModel.addText(.title)
+        let id = try #require(viewModel.edit.texts.first?.id)
+        viewModel.selection = .text(id)
+        viewModel.toggleKeyframe()
+        let keyframes = viewModel.edit.texts[0].keyframes
+        let steps = viewModel.history.past.count
+        viewModel.setMotionPreset(.slideUp)
+        #expect(viewModel.edit.texts[0].animation?.preset == .slideUp)
+        #expect(viewModel.edit.texts[0].keyframes == keyframes)
+        #expect(viewModel.history.past.count == steps + 1)
+        viewModel.setMotionDuration(1.2)
+        viewModel.setMotionPreset(.pop)
+        #expect(viewModel.edit.texts[0].animation?.duration == 1.2)
+        viewModel.setMotionPreset(nil)
+        #expect(viewModel.edit.texts[0].animation == nil)
+        viewModel.undo()
+        #expect(viewModel.edit.texts[0].animation?.preset == .pop)
+    }
+}
