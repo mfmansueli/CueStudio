@@ -88,5 +88,41 @@ extension RealExports {
             let original = try await image(AVURLAsset(url: clip), composition: nil, at: 0.5)
             #expect(try meanDifference(original, try await image(exported, composition: nil, at: 0.5)) > 0.5)
         }
+
+        /// Everything new at once (`EditorMontage`): a Zoom and a Flash transition caught halfway, a frozen frame, the part of a
+        /// B-roll, an arrow sliding up and Bold hook captions draw the same in the preview and the export, which is as long and
+        /// has the sound effect where it was put.
+        @Test func aMontageWithTheNewToolsExportsAsPreviewed() async throws {
+            let take = try await TestClip.make(seconds: 6)
+            let other = try await TestClip.make(seconds: 4)
+            let broll = try await TestClip.make(seconds: 6)
+            defer { [take, other, broll].forEach { try? FileManager.default.removeItem(at: $0) } }
+            let otherName = try EditMediaFiles.link(other)
+            let brollName = try EditMediaFiles.link(broll)
+            let stillName = try await StillClipWriter.write(frameOf: other, at: 2.5, length: 5)
+            let soundName = try EditMediaFiles.link(try SoundEffectSynth.file(for: .whoosh))
+            defer { EditMediaFiles.remove([otherName, brollName, stillName, soundName]) }
+            let edit = EditorMontage.edit(files: EditorMontage.Files(other: otherName, broll: brollName, still: stillName, sound: soundName))
+
+            let preview = try await TakeEditService().previewItem(forVideoAt: take, edit: edit)
+            let output = try await VideoExportService(sounds: RecordingSoundCache()).export(
+                videoAt: take, options: ExportOptions(aspect: .portrait, edit: edit, shortSide: 1080, frameRate: 30)
+            )
+            defer { try? FileManager.default.removeItem(at: output) }
+            let exported = AVURLAsset(url: output)
+            #expect(abs(try await exported.load(.duration).seconds - EditorMontage.duration) < 0.05)
+            // Inside the arrow's slide, the Zoom (2.7–3.3 s), the frozen frame, the Flash (around 6 s) and the B-roll. On frames
+            // of the 30 fps export: in between, the preview draws the exact moment and a flash changes fast.
+            for frame in [12, 87, 93, 165, 178, 179, 210] {
+                let time = Double(frame) / 30
+                let shown = try await image(preview.asset, composition: preview.videoComposition, at: time)
+                let written = try await image(exported, composition: nil, at: time)
+                let difference = try meanDifference(shown, written)
+                #expect(difference < 3, "at \(time) s: \(difference)")
+                Attachment.record(try #require(written.pngData()), named: "montage-\(time).png")
+            }
+            // The whoosh plays from 2.6 s; the frozen frame has no sound of its own.
+            #expect(try await TestClip.loudness(of: output, from: 2.65, to: 2.9) > -40)
+        }
     }
 }
