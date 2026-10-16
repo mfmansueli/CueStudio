@@ -82,7 +82,7 @@ struct QuickEditToolbarTests {
         #expect(viewModel.selection == .clip(viewModel.edit.timeline.segments[0].id))
         #expect(viewModel.toolbarContextLabel == "Clip")
         #expect(ids(viewModel) == [
-            "split", "speed", "adjust", "filters", "background", "zoom", "volume", "duplicate", "copyLook", "pasteLook", "crop", "voice", "media",
+            "split", "speed", "adjust", "filters", "background", "zoom", "volume", "duplicate", "freeze", "copyLook", "pasteLook", "crop", "voice", "media",
             "delete",
         ])
         #expect(viewModel.toolbarItems.last?.style == .destructive)
@@ -191,9 +191,9 @@ struct QuickEditToolbarTests {
         let viewModel = await makeScenario().viewModel
         viewModel.perform(.openMenu(.captions))
         #expect(viewModel.toolbarContextLabel == "Captions")
-        #expect(ids(viewModel) == ["autoCaptions", "writeCaptions"])
+        #expect(ids(viewModel) == ["autoCaptions", "writeCaptions", "editByText"])
         viewModel.edit.captions = [CaptionCue(text: "Oi", start: 1, end: 2, origin: .manual)]
-        #expect(ids(viewModel) == ["addLine", "allLines", "style", "deleteAll"])
+        #expect(ids(viewModel) == ["addLine", "allLines", "style", "editByText", "deleteAll"])
         #expect(viewModel.toolbarItems.last?.action == .deleteAllCaptions)
         #expect(viewModel.toolbarItems.last?.isPinned == true)
     }
