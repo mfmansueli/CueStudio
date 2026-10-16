@@ -63,15 +63,15 @@ corrigidos).
 CapCut e InShot mostram a porcentagem numa tela cheia com "não bloqueie a tela nem troque de app". O Cue mostra a porcentagem na tela da take,
 sem tirar a pessoa dali, e diz se dá para sair (tarefa aceita pelo iOS) ou não. Nenhuma diferença que peça mudança de layout.
 
-## 5a. Testes
+## 6. Testes
 
 - Unidade: `BackgroundExportRunnerTests` (aceito, sem GPU, recusado, encerrado pelo iOS, erro do trabalho), `TakeReviewBackgroundExportTests`
   (tarefa com progresso, marcação, aviso de parada, iOS encerrando, falta de espaço); suítes antigas da revisão, contagem e compartilhamento: 104 ok.
 - UI: `ExportProgressUITests` (os dois cartões, com captura e contraste medido: 15,7 / 5,6 / 11,1 : 1).
 - Aparelho: `ContinuedTaskDeviceTests`, `BackgroundExportDeviceUITests` (resultados no §2).
 - Textos novos nos 20 idiomas (8).
-- Fechamento: ver §6.
+- Fechamento: ver §7.
 
-## 6. Fechamento
+## 7. Fechamento
 
 (preenchido ao fim: check-warnings, Full, instalação, roteiro do dono)
