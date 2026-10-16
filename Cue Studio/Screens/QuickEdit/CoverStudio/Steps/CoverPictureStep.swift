@@ -13,6 +13,7 @@ struct CoverPictureStep: View {
     let frameRate: Double
 
     @State private var photo: PhotosPickerItem?
+    @Environment(\.dynamicTypeSize) private var typeSize
 
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
@@ -23,7 +24,8 @@ struct CoverPictureStep: View {
                 ) { viewModel.editsSecondPicture = $0 }
             }
             HStack(spacing: 8) {
-                sourceButton(String(localized: "Frame from video"), systemImage: "film", isOn: !viewModel.pictureIsPhoto) {
+                let frameTitle = typeSize.isAccessibilitySize ? String(localized: "Video") : String(localized: "Frame from video")
+                sourceButton(frameTitle, systemImage: "film", isOn: !viewModel.pictureIsPhoto) {
                     if viewModel.pictureIsPhoto { viewModel.useFrame(atEdited: 0) }
                 }
                 let isPhoto = viewModel.pictureIsPhoto

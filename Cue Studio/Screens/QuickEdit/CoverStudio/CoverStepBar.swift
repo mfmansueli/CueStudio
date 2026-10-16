@@ -8,6 +8,7 @@ import SwiftUI
 /// Cover Studio's five steps along the bottom, numbered, the open one in yellow. Any can be opened.
 struct CoverStepBar: View {
     @Bindable var viewModel: CoverStudioViewModel
+    @Environment(\.dynamicTypeSize) private var typeSize
 
     var body: some View {
         HStack(spacing: 0) {
@@ -19,7 +20,10 @@ struct CoverStepBar: View {
                 } label: {
                     VStack(spacing: 3) {
                         Image(systemName: step.systemImage).font(.system(size: 17, weight: .semibold))
-                        Text(step.label).font(.system(.caption2, weight: .semibold)).lineLimit(1).minimumScaleFactor(0.7)
+                        // With the largest text sizes only the icons: five names never fit, and the panel above names the open step.
+                        if !typeSize.isAccessibilitySize {
+                            Text(step.label).font(.system(.caption2, weight: .semibold)).lineLimit(1).minimumScaleFactor(0.7)
+                        }
                     }
                     .foregroundStyle(isOn ? Palette.accText : Palette.ink2)
                     .frame(maxWidth: .infinity, minHeight: 50)

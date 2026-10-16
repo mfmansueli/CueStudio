@@ -162,8 +162,11 @@ struct QuickEditVideoTemplateTests {
         #expect(viewModel.edit.texts.filter { $0.graphic == nil }.count == 1)
         #expect(viewModel.edit.texts.first { $0.graphic == nil }?.text == hook.text)
         #expect(viewModel.edit.texts.first { $0.graphic == nil }?.preset == .editorial)
+        #expect(viewModel.appliedVideoTemplate == .story)
         viewModel.undo()
+        #expect(viewModel.appliedVideoTemplate == .boldHook)
         viewModel.undo()
+        #expect(viewModel.appliedVideoTemplate == nil)
         #expect(viewModel.edit.texts == before.texts)
         #expect(viewModel.edit.captionCollection == before.captionCollection)
     }

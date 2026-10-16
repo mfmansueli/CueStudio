@@ -9,6 +9,14 @@ import Foundation
 /// and way of showing words (their lines stay), every text but graphics gets its type and motion (the words stay), new texts
 /// start in it, and with no text yet a hook with the script's title opens the video.
 extension QuickEditViewModel {
+    /// The template the edit is in now: its captions look and show words the template's way and new texts start in its type.
+    var appliedVideoTemplate: VideoTemplate? {
+        VideoTemplate.allCases.first { template in
+            edit.captionCollection?.theme == template.captionTheme && edit.captionAnimation == template.captionReveal
+                && edit.textPreset == template.textPreset
+        }
+    }
+
     func applyVideoTemplate(_ template: VideoTemplate) {
         guard isReady else { return }
         let opening = coverSuggestions.first

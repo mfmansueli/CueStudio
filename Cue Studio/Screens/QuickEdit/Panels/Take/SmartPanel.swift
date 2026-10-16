@@ -5,12 +5,14 @@
 
 import SwiftUI
 
-/// ✦ Smart: what Cue can do for the take with one tap, as violet tiles: Auto captions,
-/// Remove pauses, Studio Voice, Auto adjust and the take's Background. Each opens the panel that does it (Auto adjust
-/// opens Adjust and measures the picture), so nothing happens that the creator can't see and undo.
-/// Violet is the AI's color; everything here runs on the iPhone.
+/// ✦ Smart, in two categories (`SmartPanelSection`). **Tools**: what Cue can do for the take with one tap, as violet tiles:
+/// Auto captions, Remove pauses, Studio Voice, Auto adjust and the take's Background. Each opens the panel that does it (Auto
+/// adjust opens Adjust and measures the picture), so nothing happens that the creator can't see and undo. **Templates**: a whole
+/// look for a kind of video (`VideoTemplate`), one card each with what it changes, the one the edit is in marked; one Undo
+/// puts everything back. Violet is the AI's color; everything here runs on the iPhone.
 struct SmartPanel: View {
     let viewModel: QuickEditViewModel
+    @State private var section: SmartPanelSection = .tools
 
     var body: some View {
         EditorPanelContainer(
@@ -18,8 +20,14 @@ struct SmartPanel: View {
             subtitle: viewModel.panelSubtitle(.smart),
             onApply: { viewModel.closePanel() },
             content: {
-                tiles
-                templates
+                PanelSegmented(
+                    options: SmartPanelSection.allCases.map { PanelOption($0, $0.label, key: $0.rawValue) },
+                    selection: section, identifier: "edit.smart.section"
+                ) { section = $0 }
+                switch section {
+                case .tools: tiles.padding(.top, 4)
+                case .templates: templates
+                }
             }
         )
     }
@@ -56,31 +64,56 @@ struct SmartPanel: View {
     /// Templates: a whole look for a kind of video, in one tap (one Undo).
     private var templates: some View {
         VStack(alignment: .leading, spacing: 8) {
-            PanelRowLabel(label: String(localized: "Templates"), detail: String(localized: "Captions, titles and motion together · your words stay"))
-            ScrollView(.horizontal) {
-                HStack(spacing: 8) {
-                    ForEach(VideoTemplate.allCases) { template in
-                        Button { viewModel.applyVideoTemplate(template) } label: {
-                            VStack(alignment: .leading, spacing: 6) {
-                                Image(systemName: template.systemImage).font(.system(size: 17, weight: .semibold)).foregroundStyle(Palette.accText)
-                                Text(template.label).font(.system(size: 13, weight: .semibold)).foregroundStyle(Palette.ink).lineLimit(2)
-                            }
-                            .padding(12)
-                            .frame(width: 100, height: 76, alignment: .topLeading)
-                            .background(Palette.Editor.panelCard, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
-                            .contentShape(Rectangle())
-                        }
-                        .buttonStyle(.cuePressCard)
-                        .accessibilityIdentifier("edit.template.\(template.rawValue)")
-                    }
-                }
-                .padding(.horizontal, 16)
-                .padding(.vertical, 2)
+            ForEach(VideoTemplate.allCases) { template in
+                templateCard(template, isOn: viewModel.appliedVideoTemplate == template)
             }
-            .scrollIndicators(.hidden)
-            .padding(.horizontal, -16)
+            // After the cards, so the first template shows right under the tabs even with large text.
+            Text("Captions, titles and motion together · your words stay")
+                .font(.footnote)
+                .foregroundStyle(Palette.ink2)
+                .fixedSize(horizontal: false, vertical: true)
+                .padding(.top, 2)
         }
-        .padding(.top, 10)
+        .padding(.top, 4)
+    }
+
+    private func templateCard(_ template: VideoTemplate, isOn: Bool) -> some View {
+        let shape = RoundedRectangle(cornerRadius: 16, style: .continuous)
+        return Button {
+            Haptics.selection()
+            viewModel.applyVideoTemplate(template)
+        } label: {
+            HStack(spacing: 12) {
+                Image(systemName: template.systemImage)
+                    .font(.system(size: 17, weight: .semibold))
+                    .foregroundStyle(Palette.accText)
+                    .frame(width: 36, height: 36)
+                    .background(Palette.Editor.accTile, in: Circle())
+                    .accessibilityHidden(true)
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(template.label).font(.subheadline.weight(.semibold)).foregroundStyle(Palette.ink)
+                    Text(template.summary).font(.footnote).foregroundStyle(Palette.ink2).fixedSize(horizontal: false, vertical: true)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                if isOn {
+                    Image(systemName: "checkmark.circle.fill")
+                        .font(.system(size: 20))
+                        .foregroundStyle(Palette.accText)
+                        .accessibilityHidden(true)
+                }
+            }
+            .padding(.horizontal, 12)
+            .padding(.vertical, 10)
+            .frame(minHeight: Metrics.hitTarget)
+            .background(isOn ? Palette.Editor.accTile : Palette.Editor.panelCard, in: shape)
+            .overlay(shape.strokeBorder(isOn ? Palette.acc : Color.clear, lineWidth: 1.5))
+            .contentShape(shape)
+        }
+        .buttonStyle(.cuePressCard)
+        .accessibilityElement(children: .combine)
+        .accessibilityAddTraits(isOn ? .isSelected : [])
+        .accessibilityHint(Text("Applies to the whole video. Undo puts it back."))
+        .accessibilityIdentifier("edit.template.\(template.rawValue)")
     }
 
     /// A 100 × 100 tile: the icon at the top, the name and, in mono capitals, what is on.

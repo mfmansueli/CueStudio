@@ -289,6 +289,24 @@ final class EditorUITests: XCTestCase {
 
     // MARK: - Timeline
 
+    /// ✦ Smart keeps its tools and its templates apart: Templates is a tab of its own; a template applies to the whole video,
+    /// is marked as the one in use and comes off with one Undo.
+    func testSmartHasTemplatesInATabOfTheirOwn() {
+        let app = EditorApp.open()
+        EditorApp.tapTool(app, "smart")
+        XCTAssertTrue(app.buttons["edit.smart.voice"].waitForExistence(timeout: 5))
+        XCTAssertFalse(app.buttons["edit.template.boldHook"].exists)
+        app.buttons["edit.smart.section.templates"].tap()
+        let boldHook = app.buttons["edit.template.boldHook"]
+        XCTAssertTrue(boldHook.waitForExistence(timeout: 5))
+        XCTAssertFalse(app.buttons["edit.smart.voice"].exists)
+        boldHook.tap()
+        XCTAssertTrue(EditorApp.toastSays(app, "Bold hook on the whole video"))
+        XCTAssertTrue(boldHook.isSelected)
+        app.buttons["edit.undoButton"].tap()
+        XCTAssertFalse(boldHook.isSelected)
+    }
+
     func testDraggingTheTimelineScrubsThePlayhead() {
         let app = EditorApp.open()
         let time = app.staticTexts["edit.timeLabel"]

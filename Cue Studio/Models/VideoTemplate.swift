@@ -32,6 +32,17 @@ nonisolated enum VideoTemplate: String, CaseIterable, Identifiable, Sendable {
         }
     }
 
+    /// What it changes, in a line under its name.
+    var summary: String {
+        switch self {
+        case .boldHook: String(localized: "Big captions that light each word · a hook that pops in")
+        case .tutorial: String(localized: "Clear step-by-step captions · labels that slide up")
+        case .story: String(localized: "Quiet captions that fade in · editorial titles")
+        case .clean: String(localized: "Simple captions line by line · minimal titles")
+        case .interview: String(localized: "Captions made for talking · soft titles from the side")
+        }
+    }
+
     var systemImage: String {
         switch self {
         case .boldHook: "bolt.fill"

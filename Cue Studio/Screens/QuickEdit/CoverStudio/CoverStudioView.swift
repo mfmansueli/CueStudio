@@ -96,7 +96,8 @@ struct CoverStudioView: View {
                         viewModel.step = next
                     } label: {
                         HStack(spacing: 4) {
-                            Text("Next: \(next.label)")
+                            // With the largest text sizes, just "Next": the step's name would be cut.
+                            if typeSize.isAccessibilitySize { Text("Next") } else { Text("Next: \(next.label)") }
                             Image(systemName: "chevron.right").font(.system(size: 12, weight: .bold))
                         }
                         .font(.system(.subheadline, weight: .semibold))

@@ -50,7 +50,9 @@ Branch `feature/editor-award` (worktree `.claude/worktrees/editor-award`), a par
 - ✅ Animações prontas (Fade, Slide up, Slide in, Gentle zoom, Pop, In and out) com duração e força, sobre os keyframes (edição manual mantida)
 - ✅ Manipulação na prévia sem duplicação (o item some do vídeo durante o arraste; alças de mídias sobrepostas) — etapa 1
 - ✅ Copiar e colar look entre clipes, escolhendo Adjust / Filter / Background / Zoom, num clipe ou em todos
-- 🟡 Telas menores e Dynamic Type: painéis novos usam os controles do editor (rolagem, 44 pt); conferência em captura no SE e em XXXL na validação
+- ✅ Telas menores e Dynamic Type: capturas de todo o editor no iPhone 17 e no iPhone SE em AX L; cortes corrigidos (blocos em 3 colunas, subtítulos
+  em 2 linhas, Cover Studio com rótulos curtos)
+- ✅ ✦ Smart com Templates numa aba própria (pedido do dono)
 
 ## 4. Funcionalidades
 - ✅ Trecho do B-roll (início e duração próprios, nunca além do arquivo)
