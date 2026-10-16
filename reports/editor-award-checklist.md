@@ -45,26 +45,38 @@ Branch `feature/editor-award` (worktree `.claude/worktrees/editor-award`), a par
 - ✅ Efeitos (força de Dim/Blur; "No person found") e estilo salvo sem conteúdo; capas antigas convertidas só ao abrir
 
 ## 3. Usabilidade do editor
-- ⬜ Escopo explícito
-- ⬜ Adicionar mídia (clipe × sobre o vídeo)
-- ⬜ Animações prontas
-- ⬜ Manipulação na prévia sem duplicação
-- ⬜ Copiar e colar ajustes entre clipes
+- ✅ Escopo explícito: Crop e Studio Voice com selo **All** e grupo próprio na barra do clipe; VoiceOver "…, whole video"; subtítulo do Crop
+- ✅ Adicionar mídia: **Media** na barra principal, com a diferença entre sobre o vídeo (B-roll) e clipe na sequência explicada na folha
+- ✅ Animações prontas (Fade, Slide up, Slide in, Gentle zoom, Pop, In and out) com duração e força, sobre os keyframes (edição manual mantida)
+- ✅ Manipulação na prévia sem duplicação (o item some do vídeo durante o arraste; alças de mídias sobrepostas) — etapa 1
+- ✅ Copiar e colar look entre clipes, escolhendo Adjust / Filter / Background / Zoom, num clipe ou em todos
+- 🟡 Telas menores e Dynamic Type: painéis novos usam os controles do editor (rolagem, 44 pt); conferência em captura no SE e em XXXL na validação
 
 ## 4. Funcionalidades
-- ⬜ Trecho do B-roll
-- ⬜ Efeitos sonoros (biblioteca própria)
-- ⬜ Elementos gráficos no vídeo
+- ✅ Trecho do B-roll (início e duração próprios, nunca além do arquivo)
+- ✅ Efeitos sonoros: 11 sons sintetizados pelo Cue (nenhum arquivo de terceiros, nenhum download)
+- ✅ Elementos gráficos no vídeo (Arrow, Circle, Tag), desenhados como na capa
 
 ## 5. Edição por transcrição e templates
-- ⬜ Cortar pelo texto
-- ⬜ Templates completos
+- ✅ Edit by text: "Cut from video" (corta o vídeo) × "Fix caption text" (só a legenda); Put back; transcrição no aparelho
+- ✅ Templates (Bold hook, Tutorial, Story, Clean, Interview) num passo de desfazer, preservando palavras, cortes, som e gráficos
 
 ## 6. Recursos adicionais
-- ⬜ Congelar quadro, reverso, curvas de velocidade, batidas, reenquadramento, estabilização, rastreamento (avaliar)
+- ✅ Transições novas (Zoom, Blur, Flash, Push, Punch, Wipe) com duração ajustável, adaptadas do GL Transitions (MIT, atribuído)
+- ✅ Congelar quadro (clipe de quadro parado, com o look do clipe; exportação real testada)
+- ⛔ Reverso: exige reescrever o trecho de trás para frente (AVAssetReader em blocos + arquivo novo, áudio invertido ou mudo); feito às pressas
+  seria lento e pesado em 4K. Pendente.
+- ⛔ Curvas de velocidade: a composição só estica trechos com velocidade constante (`scaleTimeRange`); uma curva exige dividir em muitos pedaços
+  (degraus visíveis, áudio picotado) ou um compositor com tempo próprio. Pendente.
+- ⛔ Cortes nas batidas: precisa de detecção de batida na música (onset/tempo) e do ímã na timeline; a música do Cue ainda não tem marcas. Pendente.
+- ⛔ Reenquadramento por rosto: o Crop é um enquadramento fixo do vídeo inteiro; seguir o rosto exige trilha de enquadramento por tempo
+  (Vision por quadro + suavização) que a prévia e a exportação ainda não têm. Pendente.
+- ⛔ Estabilização e rastreamento: dependem de análise de movimento por quadro (Vision `VNTranslationalImageRegistrationRequest` /
+  `VNTrackObjectRequest`) e de keyframes gerados; não cabem com qualidade nesta entrega. Pendente.
 
 ## Referências do GitHub
-- ⬜ VideoLab, MTTransitions, MetalPetal, Cabbage, VideoEditorKit (licença, o que serve, o que foi aproveitado)
+- ✅ VideoLab, MTTransitions, MetalPetal, Cabbage, VideoEditorKit estudados (`reports/editor-references.md`): nenhum adotado como dependência;
+  GL Transitions (MIT) usado como referência de movimento, reescrito em Core Image; licença e atribuições em `THIRD_PARTY_NOTICES.md` e no app
 
 ## Validação
 - ⬜ Testes de regressão de cada bug

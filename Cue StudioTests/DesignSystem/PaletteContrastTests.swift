@@ -271,6 +271,21 @@ struct PaletteContrastTests {
         }
     }
 
+    /// The editor's picked tiles (a motion preset, a template, a transition): the yellow tint over the panel and the card, its
+    /// name and icon on it.
+    @Test func theEditorsPickedTilesRead() {
+        for appearance in Appearance.allCases {
+            let panel = rgb(Palette.Editor.panel, in: appearance)
+            for (name, under) in [("panel", panel), ("card", rgb(Palette.Editor.panelCard, in: appearance, over: panel))] {
+                let tile = rgb(Palette.Editor.accTile, in: appearance, over: under)
+                for token in [("accText", Palette.accText), ("ink", Palette.ink), ("ink2", Palette.ink2)] {
+                    let measured = ColorContrast.ratio(rgb(token.1, in: appearance, over: tile), tile)
+                    #expect(measured >= ColorContrast.textMinimum, "\(token.0) on a picked tile over the \(name), \(appearance): \(measured)")
+                }
+            }
+        }
+    }
+
     @Test func settingsSheetsOverTheCameraRead() {
         for appearance in Appearance.allCases {
             for token in textTokens {

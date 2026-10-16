@@ -888,7 +888,7 @@ auditoria: `reports/editor-award-checklist.md`.
 - **Capa de qualquer gravação** (`CoverSource.clipFrame`, `CoverFrame`: gravação, clipe e segundo da gravação; `TakeEdit+Cover`). O quadro é sempre o
   da gravação onde foi escolhido, desenhado com o look do clipe que o mostra (uma cópia pode ter o seu); trocar a ordem, duplicar, dividir ou mudar a
   velocidade só muda onde ele toca. Capas antigas (`.frame(segundos)`) são quadros do take. **Se o trecho sai da edição**, a capa continua a mesma
-  (da gravação) e a aba Frame diz "This frame is from a part you removed…" com **Use the frame at the playhead**.
+  (da gravação); a etapa Picture mostra a faixa da edição de agora, e escolher outro quadro troca a capa.
 - **Cover Studio** (`Screens/QuickEdit/CoverStudio/`, `CoverStudioViewModel`, `CoverComposition`): a capa é feita em tela cheia, sobre o editor (Capa
   na barra, o bloco de capa da timeline, "Try it" de notificação), em **cinco etapas** com Next e barra de etapas: **Picture** (quadro da faixa, ±1
   quadro, ou foto; zoom/mover com os dedos ou o controle, Reset; no antes/depois, Before | After com a metade emoldurada em amarelo, rótulos
@@ -928,8 +928,44 @@ auditoria: `reports/editor-award-checklist.md`.
 - **Legendas na montagem** (`CaptionJoin`): **Join next** junta só a próxima coisa dita na mesma gravação, pela ordem de reprodução; outra gravação
   ("The next line is from another clip") ou um momento anterior ("…said earlier in this clip") são recusados. O ajuste de início/fim fica dentro do
   clipe da linha; arrastar a barra para um clipe de outra gravação é recusado ("A line stays on its own clip"); Split funciona numa cópia.
+- **Escopo das ferramentas:** na barra do clipe, Crop e Studio Voice têm o selo **All** e ficam num grupo separado (VoiceOver: "Crop, whole
+  video"); o subtítulo do Crop é "Whole video · format for where you post".
+- **Mídia na barra principal** (**Media**, `.addMediaChoice`): a folha explica cada caminho — **Over the video** (B-roll: "Plays over your video…
+  Move and resize it on the preview") e **As a clip** ("Becomes a clip of its own in the sequence, after the clip at the playhead. Videos only.").
+- **Animações prontas** (`MotionPreset`, `OverlayAnimation`, `MotionPresetPicker` no topo do painel de movimento de textos, gráficos e mídias):
+  Fade, Slide up, Slide in, Gentle zoom, Pop e In and out, com **Duration** (0,2–1,5 s) e **Strength**, e **Play it**. A animação é calculada por
+  cima dos keyframes (base + animação), então a edição manual em **Keyframes** ("To move it your own way") continua valendo junto.
+- **Copiar e colar o look** (`CopiedClipLook`, `ClipLookPart`, `PasteLookSheet`): **Copy look** na barra do clipe guarda Adjust, Filter,
+  Background e Zoom do clipe; **Paste look** abre a folha para escolher as partes ("The words, sound and timing stay") e colar no clipe ou em
+  **Every clip**, num passo de desfazer.
+- **Trecho do B-roll** (`MediaOverlay.mediaStart`, `MediaTrimStrip`): no painel da mídia, **Part of the video** mostra a faixa do arquivo com o trecho
+  ("0:03 to 0:05 of 0:06"); arrastar escolhe de onde começa, **Plays for** muda a duração; nunca passa do fim do arquivo. Edições antigas: do 0.
+- **Efeitos sonoros** (`SoundEffect`, `SoundEffectSynth`, na folha "Add music or a sound"): 11 sons **sintetizados no aparelho pelo próprio Cue**
+  (Whoosh, Pop, Click, Ding, Sparkle, Riser, Boom, Ping, Typing, Shutter, Wrong), agrupados por uso (Transitions, Text appears, Big moment, Right
+  answer, Mistake, Taps, steps…) — "Made by Cue · free to use in your videos": nenhum arquivo de terceiros, nenhum download. Ouvir antes ("Hear …"),
+  adicionar na agulha; entram na faixa de música como clipes curtos (mínimo 0,5 s, pico −3 dBFS).
+- **Gráficos no vídeo** (`TextOverlay.graphic`, desenhados por `CoverCompositionRenderer` como na capa): o menu de texto ganha **Arrow, Circle e
+  Tag**; mover, pinçar, girar, cor e animação como um texto (`GraphicStylePanel`); "Style all" não muda gráficos.
+- **Edit by text** (`TranscriptEditSheet`, `TranscriptEditing`, menu de legendas): **Listen to the video** transcreve no aparelho (Speech, nada sai
+  do iPhone); tocar uma palavra e outra escolhe o intervalo. **Cut from video · N words** corta o vídeo (com 0,05 s antes e 0,15 s depois, sem
+  invadir as palavras vizinhas); **Fix caption text** muda só o texto da legenda; palavras cortadas aparecem riscadas, com **Put back**. A
+  explicação "Cut removes the words from the video. Fix caption text only changes what the caption says." fica na folha.
+- **Templates** (`VideoTemplate`, ✦ Smart › **Templates**: Bold hook, Tutorial, Story, Clean, Interview): legendas (tema e revelação, mantendo linhas,
+  posição e margens), tipo e animação de todos os textos (não dos gráficos) e o estilo dos próximos; sem texto, abre o vídeo com o título do
+  roteiro. As palavras, os cortes, o som e os gráficos ficam; **um** Undo desfaz tudo ("Bold hook on the whole video" · Undo).
+- **Transições** (`EditTransition`, `TransitionDrawing`, Core Image sem kernel próprio): além de None, Dissolve, Fade e Slide, **Zoom, Blur,
+  Flash, Push, Punch e Wipe** (movimento adaptado do GL Transitions, MIT; atribuição em Settings › Acknowledgements e `THIRD_PARTY_NOTICES.md`).
+  **Duration** de 0,2 a 1,5 s por corte (`EditSegment.transitionDuration`; nil = a duração própria; um clipe curto encurta). O painel passou a
+  `.medium` e as opções quebram em linhas de 5.
+- **Freeze frame** (barra do clipe, `StillClipWriter`): o quadro da agulha vira um vídeo mudo de 5 s na mídia da edição e entra como clipe de 2 s
+  ali (o clipe é dividido), com o look do clipe de origem; a alça do fim estica até 5 s. A música e as narrações continuam; a gravação nunca muda.
+- **Fora desta entrega** (avaliado, não feito para não entregar demonstração frágil; ver `reports/editor-award-checklist.md`): reverso, curvas de
+  velocidade, cortes nas batidas da música, reenquadramento por rosto, estabilização e rastreamento.
 - **Testes:** `CoverTextLayoutTests` (títulos longos, árabe, tailandês, japonês, emoji, alemão), `CoverCompositionTests`, `CoverStudioViewModelTests`,
   `QuickEditCoverTests`, `CoverStudioUITests` (cinco etapas, cancelar, antes/depois), `CoverGalleryCaptureTests` (opt-in: todos os modelos × títulos ×
   idiomas × foto clara/escura), `PaletteContrastTests.theCoverGuidesAndOverlayOutlinesReadOnAnyPicture`, `TakeEditCoverTests`, `CoverRendererTests` (vídeos reais), `QuickEditExportModelTests` (capa), `StudioVoiceReachTests`,
   `StudioVoiceMontageExportTests` (áudio real: −9 dB → dentro de 2 dB), `QuickEditMontageCleanUpTests`, `QuickEditOverlayPickingTests`,
-  `QuickEditMontageCaptionTests`.
+  `QuickEditMontageCaptionTests`, `OverlayAnimationTests`, `QuickEditMotionPresetTests`, `QuickEditCopyLookTests`, `BrollPartTests`/`BrollPartExportTests`,
+  `SoundEffectSynthTests`/`SoundEffectExportTests`, `QuickEditSoundEffectTests`, `QuickEditGraphicsTests`, `QuickEditTranscriptEditTests`,
+  `QuickEditVideoTemplateTests`, `TransitionDrawingTests`, `CodeCreditTests`, `QuickEditFreezeFrameTests`/`FreezeFrameExportTests`,
+  `PaletteContrastTests.theEditorsPickedTilesRead`.
