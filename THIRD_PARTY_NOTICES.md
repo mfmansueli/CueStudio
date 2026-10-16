@@ -51,3 +51,49 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ```
+
+## GL Transitions (adapted: six transitions rewritten with Core Image; no code copied)
+
+Quick edit › Transitions offers Zoom, Blur, Flash, Push, Punch and Wipe. Their motion follows six transitions of
+[gl-transitions/gl-transitions](https://github.com/gl-transitions/gl-transitions) (reference commit
+`c06c4905958446b7da2d121b12942495e18c99c0`, 15 Oct 2026). Cue draws them with Core Image's built-in filters
+(`Cue Studio/Managers/Editing/TransitionDrawing.swift`); no GLSL is copied. Because the formulas and constants are taken from there,
+the work is treated as an adaptation and the MIT notice ships with the app (Settings › Acknowledgements; file
+`Cue Studio/SupportFiles/Licenses/gl-transitions-MIT.txt`).
+
+| Cue | Source file | Author (file header) | License | What differs in Cue |
+|---|---|---|---|---|
+| Zoom | `CrossZoom.glsl` | rectalogic (ported by gre); based on glfx.js `zoomblur.js`, © 2011 Evan Wallace, MIT | MIT | `CIZoomBlur` on each side, centered (9:16), then a dissolve on the same exponential ease |
+| Blur | `LinearBlur.glsl` | gre (Gaëtan Renaudeau) | MIT | Gaussian blur, triangular strength, edges clamped |
+| Flash | `Overexposure.glsl` | Ben Zhang | MIT | Exposure (up to 1.6 stops, sin² curve) on the blend, since adding in Core Image adds alpha too |
+| Push | `Directional.glsl` | Gaëtan Renaudeau | MIT | Cubic ease in-out instead of `directional-easing` (it finished the move in a third of the cut) |
+| Punch | `zoomInOut.glsl` | OllyOllyOlly | MIT | Zoom capped at 1.5× so a face never shows its pixels |
+| Wipe | `directionalwipe.glsl` | gre | MIT | `CILinearGradient` mask, leaning left to right |
+
+Not used: `InvertedPageCurl` (BSD-3-Clause) and `StereoViewer` (BSD-2-Clause). Studied and not adopted (no code copied, nothing ships):
+VideoLab (MIT), MTTransitions (MIT, depends on MetalPetal), MetalPetal (MIT; its examples are non-commercial), Cabbage (MIT) and
+VideoEditorKit (MIT). The evaluation is in `reports/editor-references.md`.
+
+```
+The MIT License (MIT)
+
+Copyright (c) 2017-present gl-transitions contributors
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+```

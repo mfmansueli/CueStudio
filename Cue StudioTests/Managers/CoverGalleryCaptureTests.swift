@@ -3,6 +3,7 @@
 //  Cue StudioTests
 //
 
+import CoreImage
 import Foundation
 import Testing
 import UIKit
@@ -69,6 +70,28 @@ struct CoverGalleryCaptureTests {
                 let file = folder.appending(path: "cover-\(light ? "light" : "dark")-\(name).png")
                 try #require(image.pngData()).write(to: file)
             }
+        }
+    }
+
+    @Test func drawEveryTransition() throws {
+        let folder = URL(fileURLWithPath: try #require(ProcessInfo.processInfo.environment["CUE_COVER_GALLERY"]))
+        try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
+        let from = try #require(CIImage(image: picture(light: true))).transformed(by: CGAffineTransform(scaleX: 1.0 / 3, y: 1.0 / 3))
+        let to = try #require(CIImage(image: picture(light: false))).transformed(by: CGAffineTransform(scaleX: 1.0 / 3, y: 1.0 / 3))
+        let steps = [0.0, 0.2, 0.4, 0.5, 0.6, 0.8, 1.0]
+        let size = from.extent.size
+        let context = CIContext()
+        for transition in [EditTransition.zoom, .blur, .flash, .push, .punch, .wipe] {
+            let sheet = CGSize(width: size.width * CGFloat(steps.count), height: size.height)
+            let image = UIGraphicsImageRenderer(size: sheet).image { _ in
+                for (column, step) in steps.enumerated() {
+                    let frame = TransitionDrawing.draw(transition, from: from, to: to, progress: step)
+                    if let cg = context.createCGImage(frame, from: from.extent) {
+                        UIImage(cgImage: cg).draw(in: CGRect(origin: CGPoint(x: size.width * CGFloat(column), y: 0), size: size))
+                    }
+                }
+            }
+            try #require(image.pngData()).write(to: folder.appending(path: "transition-\(transition.rawValue).png"))
         }
     }
 }

@@ -51,6 +51,22 @@ extension QuickEditViewModel {
         }
     }
 
+    /// How long the selected cut's transition lasts.
+    var selectedTransitionDuration: TimeInterval? {
+        guard let index = selectedJoinIndex, let transition = selectedTransition, transition != .hardCut else { return nil }
+        return edit.timeline.segments[index].transitionDuration ?? transition.duration
+    }
+
+    /// The selected cut's transition `seconds` long (a drag of the slider is one undo step). When a clip next to it is too short,
+    /// it plays shorter.
+    func setTransitionDuration(_ seconds: TimeInterval) {
+        guard isReady, let index = selectedJoinIndex else { return }
+        let clamped = min(max(seconds, EditTransition.durationRange.lowerBound), EditTransition.durationRange.upperBound)
+        var timeline = edit.timeline
+        guard timeline.setTransitionDuration(clamped, atJoin: index) else { return }
+        commit(timeline, key: "transitionDuration.\(index)")
+    }
+
     /// The same transition on every cut, in one undo step.
     func setTransitionOnEveryCut(_ transition: EditTransition) {
         guard isReady else { return }

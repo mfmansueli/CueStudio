@@ -5,7 +5,7 @@
 
 import SwiftUI
 
-/// Settings › Acknowledgements: the fonts Cue ships, and the license of each.
+/// Settings › Acknowledgements: the fonts Cue ships and the work its code adapts, and the license of each.
 struct AcknowledgementsView: View {
     var body: some View {
         List {
@@ -13,7 +13,9 @@ struct AcknowledgementsView: View {
                 ForEach(Array(FontCredit.all.enumerated()), id: \.element.id) { index, credit in
                     // The board's list has no chevrons; the license is still one tap away.
                     ZStack(alignment: .leading) {
-                        NavigationLink { LicenseTextView(credit: credit) } label: { EmptyView() }.opacity(0)
+                        NavigationLink {
+                            LicenseTextView(name: credit.name, copyright: credit.copyright, text: credit.licenseText)
+                        } label: { EmptyView() }.opacity(0)
                         VStack(alignment: .leading, spacing: 2) {
                             Text(verbatim: credit.name).foregroundStyle(Palette.ink)
                             Text("SIL Open Font License 1.1").font(.footnote).foregroundStyle(Palette.ink2)
@@ -25,6 +27,24 @@ struct AcknowledgementsView: View {
                 }
             } footer: {
                 Text("The free fonts Cue ships with.")
+            }
+            Section {
+                ForEach(Array(CodeCredit.all.enumerated()), id: \.element.id) { index, credit in
+                    ZStack(alignment: .leading) {
+                        NavigationLink {
+                            LicenseTextView(name: credit.name, copyright: credit.copyright, text: credit.licenseText)
+                        } label: { EmptyView() }.opacity(0)
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text(verbatim: credit.name).foregroundStyle(Palette.ink)
+                            Text(verbatim: credit.license).font(.footnote).foregroundStyle(Palette.ink2)
+                        }
+                        .frame(minHeight: Metrics.listRowContent, alignment: .leading)
+                    }
+                    .accessibilityIdentifier("acknowledgements.code")
+                    .cardRowBackground(position: CardRowPosition(index: index, count: CodeCredit.all.count))
+                }
+            } footer: {
+                Text("Video transitions in Cue's editor follow the motion of these open-source designs, rewritten for Cue.")
             }
         }
         .cueGroupedList()

@@ -14,7 +14,7 @@ struct PanelTiles<Value: Hashable>: View {
     let onSelect: (Value) -> Void
 
     var body: some View {
-        LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 8), count: max(1, options.count)), spacing: 8) {
+        LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 8), count: max(1, min(options.count, 5))), spacing: 8) {
             ForEach(options) { option in
                 let isOn = option.value == selection
                 Button {

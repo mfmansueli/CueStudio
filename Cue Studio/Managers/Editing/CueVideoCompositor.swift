@@ -160,10 +160,10 @@ final class CueVideoCompositor: NSObject, AVVideoCompositing, @unchecked Sendabl
             )
             // Before the cut the main track still shows the outgoing piece; after it, the incoming one.
             let (outgoing, incoming) = time < dissolve.cut ? (image, otherSide) : (otherSide, image)
-            if dissolve.transition == .slide {
-                image = slide(incoming, over: outgoing, amount: dissolve.slideProgress(at: time))
-            } else {
-                image = blend(outgoing, into: incoming, amount: dissolve.progress(at: time))
+            switch dissolve.transition {
+            case .slide: image = slide(incoming, over: outgoing, amount: dissolve.slideProgress(at: time))
+            case .dissolve, .hardCut, .fade: image = blend(outgoing, into: incoming, amount: dissolve.progress(at: time))
+            default: image = TransitionDrawing.draw(dissolve.transition, from: outgoing, to: incoming, progress: dissolve.progress(at: time))
             }
         }
         // Every photo and video showing, lowest layer first; the same layer in the order they come in the edit, as the

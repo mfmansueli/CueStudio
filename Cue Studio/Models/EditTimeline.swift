@@ -436,6 +436,15 @@ nonisolated struct EditTimeline: Codable, Hashable, Sendable {
         return true
     }
 
+    /// Sets how long the transition into the piece at `index` lasts (nil: its own length). False, and no change, for the first
+    /// piece or when nothing changes.
+    @discardableResult
+    mutating func setTransitionDuration(_ duration: TimeInterval?, atJoin index: Int) -> Bool {
+        guard index > 0, index < segments.count, segments[index].transitionDuration != duration else { return false }
+        segments[index].transitionDuration = duration
+        return true
+    }
+
     /// Cuts the piece playing at `time` (edited seconds) in two. False when either side would be
     /// shorter than `minimumDuration`: at an edge or right next to another cut.
     @discardableResult

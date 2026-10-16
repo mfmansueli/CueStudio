@@ -72,7 +72,10 @@ nonisolated struct TransitionWindow: Hashable, Sendable {
             guard transition != .hardCut else { continue }
             let outgoing = segments[index - 1]
             let incoming = segments[index]
-            var half = min(transition.duration / 2, outgoing.duration / 2 - margin, incoming.duration / 2 - margin)
+            let asked = incoming.transitionDuration.map {
+                min(max($0, EditTransition.durationRange.lowerBound), EditTransition.durationRange.upperBound)
+            } ?? transition.duration
+            var half = min(asked / 2, outgoing.duration / 2 - margin, incoming.duration / 2 - margin)
             if transition.showsBothSides {
                 let outgoingLength = timeline.duration(ofSource: outgoing.sourceID)
                 half = min(half, (outgoingLength - outgoing.sourceEnd) / outgoing.speed, incoming.sourceStart / incoming.speed)
