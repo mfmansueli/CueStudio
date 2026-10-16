@@ -228,6 +228,6 @@ Nenhuma mudança deixou a tela em branco.
 
 ### Achados que ficam para depois
 
-- **`QuickEditExportSheet` / `QuickEditExportModel` são código morto:** nada abre `EditorSheet.export`, e esse caminho exportaria **sem legendas** (`burnsInCaptions: false`). O Download video passa pela revisão da take (`TakeReviewViewModel`), que grava as legendas. Na branch de exportação confiável: apagar ou reaproveitar, sem esquecer as legendas.
+- **`QuickEditExportSheet` / `QuickEditExportModel` são código morto:** nada abre `EditorSheet.export`. O Download video passa pela revisão da take (`TakeReviewViewModel`), que grava as legendas. Por isso **o aviso de falta de espaço, o de iPhone quente e o estado separado da capa (§1, §2, DESIGN_PROJECT §37) não chegam ao criador**: só existem nessa folha. A branch `feature/export-reliability` os leva para a exportação real.
 - **iPhone 15 comum (A16):** o dono não tem um. As medições da próxima etapa serão no 15 Pro, e o A16 fica como **não validado**.
 - **Pendências técnicas de antes** (§7) seguem: plural, congelar quadro em HDR e o aviso logo depois de fechar uma folha no XCUITest.

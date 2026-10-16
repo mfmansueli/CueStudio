@@ -33,8 +33,6 @@ Branch `feature/editor-award` → `main`. Detalhes: `reports/editor-award-report
   - 6 transições com duração ajustável, adaptadas do GL Transitions (MIT, atribuído);
   - congelar quadro.
 - **Robustez:**
-  - aviso de falta de espaço antes de exportar;
-  - aviso de iPhone quente;
   - limpeza dos sons temporários;
   - MetricKit no Crashlytics;
   - bibliotecas de takes, roteiros e marcas protegidas contra um item corrompido, sem nunca gravar por cima de uma biblioteca ilegível.
@@ -57,7 +55,9 @@ Branch `feature/editor-award` → `main`. Detalhes: `reports/editor-award-report
 
 - Reverso, curvas de velocidade, cortes nas batidas, Seguir rosto, estabilização e rastreamento.
 - Localizar e trocar nas legendas, Replace clip e Extract audio.
-- `QuickEditExportSheet`, que nada abre e exportaria sem legendas: apagar ou reaproveitar na próxima branch.
+- **Avisos de falta de espaço e de iPhone quente, e a capa exportada à parte:** foram feitos na `QuickEditExportSheet`, mas nada no app abre
+  essa folha (a exportação real é a da revisão da take, depois de Done › Download video). Não chegam ao criador nesta entrega; a branch
+  `feature/export-reliability` os leva para o caminho real e apaga a folha.
 - Exportação que continua fora do app: plano em `reports/next-export-reliability-plan.md`. Depende da capability Background GPU, já ativada no portal.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
