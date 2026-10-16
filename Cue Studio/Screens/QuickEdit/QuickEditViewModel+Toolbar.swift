@@ -85,6 +85,9 @@ extension QuickEditViewModel {
             EditorToolbarItem(id: "addLine", label: String(localized: "Add line"), systemImage: "captions.bubble", action: .openCaptions),
             EditorToolbarItem(id: "allLines", label: String(localized: "All lines"), systemImage: "list.bullet", action: .openCaptions),
             EditorToolbarItem(id: "style", label: String(localized: "Style"), systemImage: "textformat.alt", action: .open(.captionStyle)),
+            EditorToolbarItem(
+                id: "findReplace", label: String(localized: "Find and replace"), systemImage: "text.magnifyingglass", action: .findInCaptions
+            ),
             EditorToolbarItem(id: "editByText", label: String(localized: "Edit by text"), systemImage: "text.badge.minus", action: .editByText),
             EditorToolbarItem(
                 id: "deleteAll", label: String(localized: "Delete all"), systemImage: "trash", style: .destructive, action: .deleteAllCaptions
@@ -195,6 +198,7 @@ extension QuickEditViewModel {
             sheet = .media
         case .addText, .addGraphic, .addCommentCard, .styleAllTexts, .editText: performTextAction(action)
         case .deleteAllCaptions: deleteAllCaptions()
+        case .findInCaptions: openCaptionFind()
         case .editByText:
             toolMenu = nil
             panel = nil

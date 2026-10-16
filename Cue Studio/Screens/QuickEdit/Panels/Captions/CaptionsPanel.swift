@@ -42,6 +42,7 @@ struct CaptionsPanel: View {
                             label: String(localized: "Edit by text · cut words from the video"), systemImage: "text.badge.minus",
                             identifier: "edit.captionsEditByText"
                         ) { viewModel.perform(.editByText) }
+                        lineTools
                     }
                     switch picker {
                     case .language: languageList
@@ -255,6 +256,15 @@ struct CaptionsPanel: View {
                 .buttonStyle(.plain)
                 .accessibilityIdentifier("edit.captionsDeleteAll")
             }
+        }
+    }
+
+    /// Find and replace in every line, as CapCut's caption editor has it.
+    private var lineTools: some View {
+        HStack(spacing: 8) {
+            PanelButton(
+                label: String(localized: "Find and replace"), systemImage: "text.magnifyingglass", identifier: "edit.captionsFind"
+            ) { viewModel.openCaptionFind() }
         }
     }
 

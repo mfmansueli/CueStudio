@@ -17,6 +17,8 @@ enum EditorSheet: String, Identifiable {
     case transcript
     /// Reorder: the clips in play order, to drag.
     case clipOrder
+    /// Find and replace in the caption lines.
+    case findInCaptions
 
     var id: String { rawValue }
 }

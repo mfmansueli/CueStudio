@@ -230,7 +230,7 @@ struct QuickEditToolbarTests {
         #expect(viewModel.toolbarContextLabel == "Captions")
         #expect(ids(viewModel) == ["autoCaptions", "writeCaptions", "editByText"])
         viewModel.edit.captions = [CaptionCue(text: "Oi", start: 1, end: 2, origin: .manual)]
-        #expect(ids(viewModel) == ["addLine", "allLines", "style", "editByText", "deleteAll"])
+        #expect(ids(viewModel) == ["addLine", "allLines", "style", "findReplace", "editByText", "deleteAll"])
         #expect(viewModel.toolbarItems.last?.action == .deleteAllCaptions)
         #expect(viewModel.toolbarItems.last?.isPinned == true)
     }

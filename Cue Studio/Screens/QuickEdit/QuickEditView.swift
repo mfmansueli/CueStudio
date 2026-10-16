@@ -86,6 +86,7 @@ struct QuickEditView: View {
             case .music: AddMusicSheet(viewModel: viewModel)
             case .media: AddMediaSheet(viewModel: viewModel)
             case .transcript: TranscriptEditSheet(viewModel: viewModel)
+            case .findInCaptions: CaptionFindSheet(viewModel: viewModel)
             case .clipOrder: ClipOrderSheet(viewModel: viewModel, thumbnails: services.thumbnails)
             case .done:
                 EditorDoneSheet(

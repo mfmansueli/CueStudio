@@ -47,6 +47,8 @@ enum EditorAction: Hashable {
     /// Edit by text: cut words out of the video.
     case editByText
     case deleteAllCaptions
+    /// Find and replace in every line.
+    case findInCaptions
     // Caption
     case editCaption
     case splitCaption
