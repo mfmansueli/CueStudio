@@ -78,7 +78,7 @@ final class RealTakeWorkflowUITests: XCTestCase {
         XCTAssertTrue(app.descendants(matching: .any)["edit.transcript.pickGuide"].waitForExistence(timeout: 3), "No guide after the first word")
         flow.tap(app.buttons["edit.transcript.word.\(pick + 1)"], "the last word")
         flow.tap(app.buttons["edit.transcript.cut"], "Cut from video")
-        XCTAssertTrue(flow.toastSays("Words cut", timeout: 5), "No toast after cutting")
+        XCTAssertTrue(flow.toastSays("words cut", timeout: 5), "No toast after cutting")
         flow.capture("cut")
         // The sheet's ×: a swipe on the words scrolls them instead of closing it.
         flow.tap(app.buttons["sheet.closeButton"].firstMatch, "Edit by text's ×")

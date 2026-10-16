@@ -82,7 +82,7 @@ struct TranscriptEditSheet: View {
                 pickGuide(picked)
                 if picked.contains(where: { !$0.isRemoved }) {
                     PanelButton(
-                        label: String(localized: "Cut from video (\(picked.filter { !$0.isRemoved }.count))"), systemImage: "scissors",
+                        label: String(localized: "Cut \(picked.filter { !$0.isRemoved }.count) words from the video"), systemImage: "scissors",
                         isPrimary: true, identifier: "edit.transcript.cut"
                     ) { viewModel.cutSelectedWords() }
                     PanelButton(

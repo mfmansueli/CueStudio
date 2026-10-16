@@ -77,7 +77,7 @@ extension QuickEditViewModel {
         transcriptSelection = nil
         Haptics.delete()
         toast.show(
-            String(localized: "Words cut: \(picked.count) · \(DurationText.tenths(removed))"),
+            String(localized: "\(picked.count) words cut · \(DurationText.tenths(removed))"),
             action: ToastAction(title: String(localized: "Undo")) { [weak self] in self?.undo() }
         )
     }

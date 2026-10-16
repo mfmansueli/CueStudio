@@ -175,7 +175,7 @@ final class CreatorWorkflowUITests: XCTestCase {
 
         flow.step("Cut from video")
         flow.tap(cut, "Cut from video")
-        XCTAssertTrue(flow.toastSays("Words cut: 2"), "No toast after cutting \(words)")
+        XCTAssertTrue(flow.toastSays("2 words cut"), "No toast after cutting \(words)")
         XCTAssertNotEqual(EditorApp.length(app), fullLength, "Cutting \(words) didn't shorten the video")
 
         flow.step("Undo in the toast")
