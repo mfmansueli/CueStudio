@@ -17,7 +17,10 @@ struct SmartPanel: View {
             title: viewModel.panelTitle(.smart),
             subtitle: viewModel.panelSubtitle(.smart),
             onApply: { viewModel.closePanel() },
-            content: { tiles }
+            content: {
+                tiles
+                templates
+            }
         )
     }
 
@@ -48,6 +51,36 @@ struct SmartPanel: View {
         }
         .scrollIndicators(.hidden)
         .padding(.horizontal, -16)
+    }
+
+    /// Templates: a whole look for a kind of video, in one tap (one Undo).
+    private var templates: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            PanelRowLabel(label: String(localized: "Templates"), detail: String(localized: "Captions, titles and motion together · your words stay"))
+            ScrollView(.horizontal) {
+                HStack(spacing: 8) {
+                    ForEach(VideoTemplate.allCases) { template in
+                        Button { viewModel.applyVideoTemplate(template) } label: {
+                            VStack(alignment: .leading, spacing: 6) {
+                                Image(systemName: template.systemImage).font(.system(size: 17, weight: .semibold)).foregroundStyle(Palette.accText)
+                                Text(template.label).font(.system(size: 13, weight: .semibold)).foregroundStyle(Palette.ink).lineLimit(2)
+                            }
+                            .padding(12)
+                            .frame(width: 100, height: 76, alignment: .topLeading)
+                            .background(Palette.Editor.panelCard, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+                            .contentShape(Rectangle())
+                        }
+                        .buttonStyle(.cuePressCard)
+                        .accessibilityIdentifier("edit.template.\(template.rawValue)")
+                    }
+                }
+                .padding(.horizontal, 16)
+                .padding(.vertical, 2)
+            }
+            .scrollIndicators(.hidden)
+            .padding(.horizontal, -16)
+        }
+        .padding(.top, 10)
     }
 
     /// A 100 × 100 tile: the icon at the top, the name and, in mono capitals, what is on.
