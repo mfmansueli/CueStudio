@@ -30,6 +30,17 @@ final class PreferencesService {
         didSet { defaults.set(showsCuesOnPage, forKey: DefaultsKey.showsCuesOnPage) }
     }
 
+    /// Takes with an export running now.
+    var exportsInFlight: Set<UUID> {
+        didSet { Self.store(exportsInFlight, key: DefaultsKey.exportsInFlight, in: defaults) }
+    }
+
+    /// Takes whose export was still running when Cue last stopped (closed from the app switcher, or ended by iOS), until
+    /// their review says so.
+    var stoppedExports: Set<UUID> {
+        didSet { Self.store(stoppedExports, key: DefaultsKey.stoppedExports, in: defaults) }
+    }
+
     private let defaults: UserDefaults
 
     init(defaults: UserDefaults = .standard) {
@@ -38,6 +49,11 @@ final class PreferencesService {
         camera = Self.load(CameraSettings.self, key: DefaultsKey.cameraSettings, from: defaults) ?? CameraSettings()
         customCues = defaults.stringArray(forKey: DefaultsKey.customCues) ?? []
         showsCuesOnPage = defaults.object(forKey: DefaultsKey.showsCuesOnPage) as? Bool ?? true
+        // An export still marked as running belongs to the last time Cue ran: it stopped with it.
+        stoppedExports = Self.ids(DefaultsKey.stoppedExports, in: defaults).union(Self.ids(DefaultsKey.exportsInFlight, in: defaults))
+        exportsInFlight = []
+        Self.store(stoppedExports, key: DefaultsKey.stoppedExports, in: defaults)
+        Self.store([], key: DefaultsKey.exportsInFlight, in: defaults)
         // The reading line's first-time tip and the old full script editor are gone; so is what they left behind.
         defaults.removeObject(forKey: DefaultsKey.legacyReadingLineTipSeen)
         defaults.removeObject(forKey: DefaultsKey.legacyScriptEditorTextSize)
@@ -87,6 +103,14 @@ final class PreferencesService {
     private func store<Value: Encodable>(_ value: Value, key: String) {
         guard let data = try? JSONEncoder().encode(value) else { return }
         defaults.set(data, forKey: key)
+    }
+
+    private static func ids(_ key: String, in defaults: UserDefaults) -> Set<UUID> {
+        Set((defaults.stringArray(forKey: key) ?? []).compactMap(UUID.init(uuidString:)))
+    }
+
+    private static func store(_ ids: Set<UUID>, key: String, in defaults: UserDefaults) {
+        defaults.set(ids.map(\.uuidString).sorted(), forKey: key)
     }
 
     /// A settings blob from an older build that no longer decodes falls back to the defaults.

@@ -40,6 +40,8 @@ struct AppServices {
     let textRecognizer: TextRecognitionManager
     let importer: DocumentImportService
     let exporter: VideoExportService
+    /// Exports that go on when the creator leaves Cue (iOS's continued tasks, with the GPU); none in UI tests and previews.
+    let backgroundExports: BackgroundExportRunner
     let photos: PhotoLibraryManager
     let thumbnails: VideoThumbnailService
     let editing: TakeEditService
@@ -166,6 +168,7 @@ struct AppServices {
         textRecognizer = TextRecognitionManager()
         importer = DocumentImportService()
         exporter = VideoExportService()
+        backgroundExports = BackgroundExportRunner(scheduler: options.isInMemory ? nil : SystemContinuedTaskScheduler())
         photos = PhotoLibraryManager()
         thumbnails = VideoThumbnailService()
         editing = TakeEditService()

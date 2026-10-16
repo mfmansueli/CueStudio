@@ -61,6 +61,12 @@ final class TakeReviewViewModel {
     /// Why the video being exported has no captions although they were asked for.
     @ObservationIgnored private var captionNotice: String?
     private(set) var quality: ExportQuality = .hd1080
+    /// How far the running export is, 0 to 1 (nil when none runs).
+    private(set) var exportProgress: Double?
+    /// Whether the running export goes on if the creator leaves Cue (nil when none runs).
+    private(set) var exportMode: BackgroundExportMode?
+    /// The last export of this take stopped with Cue (closed from the app switcher, or ended by iOS) before it finished.
+    private(set) var exportStopped = false
 
     private var pendingAction: ExportAction?
     /// Share sheets already acted on: a completion heard twice counts and tells once.
@@ -80,6 +86,9 @@ final class TakeReviewViewModel {
     private let preferences: PreferencesService
     private let drafts: QuickEditDraftStoring
     private let toast: ToastService
+    private let background: BackgroundExportRunning
+    /// Bytes free on the iPhone (`StorageSpace.available`); a test gives its own.
+    private let freeSpace: () -> Int64?
     /// What a script is heard in for captions (`LanguageService.captionRequest(for:)`).
     private let speechLanguageFor: (Script?) -> SpeechLanguageRequest
 
@@ -99,6 +108,8 @@ final class TakeReviewViewModel {
         preferences: PreferencesService,
         drafts: QuickEditDraftStoring,
         toast: ToastService,
+        background: BackgroundExportRunning? = nil,
+        freeSpace: @escaping () -> Int64? = { StorageSpace.available() },
         speechLanguage: @escaping (Script?) -> SpeechLanguageRequest = SpeechLanguageRequest.script
     ) {
         speechLanguageFor = speechLanguage
@@ -117,7 +128,16 @@ final class TakeReviewViewModel {
         self.preferences = preferences
         self.drafts = drafts
         self.toast = toast
+        self.background = background ?? BackgroundExportRunner(scheduler: nil)
+        self.freeSpace = freeSpace
         burnsInCaptions = takes.take(id: takeID)?.edit?.showsCaptions ?? false
+        exportStopped = preferences.stoppedExports.contains(takeID)
+    }
+
+    /// The stopped export was seen (its notice closed, or the take exported again).
+    func dismissStoppedExport() {
+        exportStopped = false
+        preferences.stoppedExports.remove(takeID)
     }
 
     // MARK: - Reading
@@ -208,6 +228,12 @@ final class TakeReviewViewModel {
     }
 
     /// 4K keeps the recording's resolution (a 1080p take isn't upscaled); 1080p scales 4K down.
+    /// About 2.2 MB a second at 1080p and 6.5 at 4K (the export's HEVC), for the space check.
+    private func estimatedMegabytes(of take: Take) -> Double {
+        let perSecond = quality == .uhd4K && take.resolution == .uhd4K ? 6.5 : 2.2
+        return max(1, ((take.edit?.editedDuration ?? take.duration) * perSecond).rounded())
+    }
+
     private func outputShortSide(for take: Take) -> CGFloat? {
         take.resolution == .uhd4K && quality == .hd1080 ? quality.shortSide : nil
     }
@@ -315,9 +341,14 @@ final class TakeReviewViewModel {
     /// A refused Photos permission is a card with the way out; anything else is "Couldn't export · Try again" and the export
     /// count stays where it was (04 · F6).
     private func report(_ error: Error) {
-        if case PhotoLibraryError.notAuthorized = error {
+        switch error {
+        case PhotoLibraryError.notAuthorized:
             photosDenied = true
-        } else {
+        case ExportPreflightError.notEnoughSpace(let megabytes):
+            toast.show(String(localized: "Not enough space on this iPhone. Free about \(megabytes) MB and try again."))
+        case BackgroundExportError.stoppedBySystem:
+            toast.show(String(localized: "iOS stopped the export · Try again"))
+        default:
             toast.show(String(localized: "Couldn't export · Try again"))
         }
     }
@@ -376,14 +407,31 @@ final class TakeReviewViewModel {
         }
         runningAction = action
         phase = .preparing
-        defer { runningAction = nil }
+        exportProgress = 0
+        dismissStoppedExport()
+        // Marked while it runs: still marked when Cue opens again means it stopped with Cue.
+        preferences.exportsInFlight.insert(take.id)
+        defer {
+            runningAction = nil
+            exportProgress = nil
+            exportMode = nil
+            preferences.exportsInFlight.remove(take.id)
+        }
         do {
-            guard let operation = try await prepareOperation(for: take, action: action, continuing: operationID) else {
-                phase = .idle
-                return
-            }
-            try await deliver(action, operation: operation, take: take)
-            onExported(take.id, savedOperations.contains(operation.id))
+            // The file and where it goes, as one piece of work iOS can let run outside Cue.
+            let delivered = try await background.run(
+                title: String(localized: "Exporting your video"), subtitle: take.label, started: { exportMode = $0 }, work: { report in
+                guard let operation = try await self.prepareOperation(for: take, action: action, continuing: operationID, progress: { fraction in
+                    self.exportProgress = fraction
+                    report(fraction)
+                }) else {
+                    return false
+                }
+                try await self.deliver(action, operation: operation, take: take)
+                self.onExported(take.id, self.savedOperations.contains(operation.id))
+                return true
+            })
+            if !delivered { phase = .idle }
         } catch {
             phase = .failed
             report(error)
@@ -392,7 +440,9 @@ final class TakeReviewViewModel {
 
     /// The file for this export: the one already made for the same edit and settings, else a new render. Nil when the
     /// free exports are used up (the paywall is open). An operation that was already counted never needs the quota again.
-    private func prepareOperation(for take: Take, action: ExportAction, continuing operationID: UUID?) async throws -> ExportOperation? {
+    private func prepareOperation(
+        for take: Take, action: ExportAction, continuing operationID: UUID?, progress: @escaping @MainActor (Double) -> Void
+    ) async throws -> ExportOperation? {
         let options = ExportOptions(
             aspect: take.outputAspect, edit: await editForExport(take),
             burnsInCaptions: burnsInCaptions, shortSide: outputShortSide(for: take)
@@ -408,7 +458,11 @@ final class TakeReviewViewModel {
             return nil
         }
         if let reusable { return reusable }
-        let url = try await exporter.export(videoAt: source, options: options)
+        // A full iPhone is told now, with how much to free, never after minutes of work.
+        if let missing = StorageSpace.shortfall(forExportOf: estimatedMegabytes(of: take), available: freeSpace()) {
+            throw ExportPreflightError.notEnoughSpace(megabytes: missing)
+        }
+        let url = try await exporter.export(videoAt: source, options: options, progress: progress)
         if let continued {
             // The same export, its file made again after the system cleared the first: not a second export.
             ledger.replaceFile(of: continued.id, with: url)
