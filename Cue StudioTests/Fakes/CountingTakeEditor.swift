@@ -57,4 +57,8 @@ final class CountingTakeEditor: TakeEditing {
     func stillClip(ofVideoAt url: URL, at time: TimeInterval, length: TimeInterval) async throws -> String {
         try await editing.stillClip(ofVideoAt: url, at: time, length: length)
     }
+
+    func extractSound(_ request: SoundExtraction) async throws -> ExtractedSound {
+        try await editing.extractSound(request)
+    }
 }

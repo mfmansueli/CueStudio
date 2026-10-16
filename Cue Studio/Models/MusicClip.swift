@@ -38,6 +38,14 @@ nonisolated struct MusicClip: Codable, Hashable, Identifiable, Sendable {
     var ducksUnderVoice = true
     /// The sound effect it is (`SoundEffectSynth`); nil for the creator's own file. Effects can play over music and each other.
     var effect: SoundEffect?
+    /// The sound of a clip or a video taken out to this track (Extract audio); nil for music and effects.
+    var extractedFrom: ExtractedSoundOrigin?
+
+    /// Follows the moment of the video it was put on when the cuts change: effects and extracted sounds. Music keeps its place.
+    var followsTheVideo: Bool { effect != nil || extractedFrom != nil }
+
+    /// Music takes the room it plays in (new music goes beside it); effects and extracted sounds play over it.
+    var takesMusicRoom: Bool { !followsTheVideo }
 
     init(fileName: String, title: String, fileDuration: TimeInterval, start: TimeInterval, length: TimeInterval) {
         self.fileName = fileName

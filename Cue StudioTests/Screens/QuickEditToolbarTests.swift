@@ -95,8 +95,8 @@ struct QuickEditToolbarTests {
         #expect(viewModel.selection == .clip(viewModel.edit.timeline.segments[0].id))
         #expect(viewModel.toolbarContextLabel == "Clip")
         #expect(ids(viewModel) == [
-            "split", "speed", "zoom", "volume", "duplicate", "freeze", "reorder", "adjust", "filters", "background", "copyLook", "pasteLook",
-            "delete",
+            "split", "speed", "zoom", "volume", "duplicate", "freeze", "replace", "extractAudio", "reorder", "adjust", "filters", "background",
+            "copyLook", "pasteLook", "delete",
         ])
         #expect(viewModel.toolbarItems.last?.style == .destructive)
     }

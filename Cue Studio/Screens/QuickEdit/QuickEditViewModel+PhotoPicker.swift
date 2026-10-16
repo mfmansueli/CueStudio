@@ -22,6 +22,7 @@ extension QuickEditViewModel {
         switch request.purpose {
         case .background: await importBackgroundImage(item)
         case .replaceMedia(let id, _): await replaceMedia(id, importing: item)
+        case .replaceClip(let id): await replaceClip(id, importing: item)
         }
     }
 

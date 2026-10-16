@@ -569,14 +569,14 @@ final class QuickEditViewModel {
     /// are one step (`EditHistory.coalescingInterval`).
     func commit(_ next: EditSnapshot, key: String? = nil) {
         var next = next
-        // Sound effects follow the moment they were put on when the cuts change (and nothing moved them in this step). Inside
-        // a gesture, from where the gesture began, so dragging a handle out and back leaves them where they were.
+        // Sound effects and extracted sounds follow the moment they were put on when the cuts change (and nothing moved them in
+        // this step). Inside a gesture, from where the gesture began, so dragging a handle out and back leaves them where they were.
         let current = snapshot
         let origin = changeBase ?? current
-        if next.timeline != current.timeline, next.music == current.music, let music = origin.music, music.contains(where: { $0.effect != nil }) {
+        if next.timeline != current.timeline, next.music == current.music, let music = origin.music, music.contains(where: \.followsTheVideo) {
             let followed = MusicClip.following(music, from: origin.timeline, to: next.timeline)
             next.music = current.music?.map { clip in
-                clip.effect == nil ? clip : (followed.first { $0.id == clip.id } ?? clip)
+                clip.followsTheVideo ? (followed.first { $0.id == clip.id } ?? clip) : clip
             }
         }
         guard next != current else { return }

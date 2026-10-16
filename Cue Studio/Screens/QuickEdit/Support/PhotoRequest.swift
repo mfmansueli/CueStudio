@@ -14,16 +14,20 @@ nonisolated struct PhotoRequest: Equatable, Sendable {
         case background
         /// Another file for a photo or video already on the media track (`kind` is what it is now).
         case replaceMedia(UUID, kind: MediaKind)
+        /// Another video for a clip of the timeline (Replace clip).
+        case replaceClip(UUID)
     }
 
     /// Every request is its own, so asking again for the same thing after a cancel shows the picker again.
     let id = UUID()
     let purpose: Purpose
 
-    /// Replacing a video offers videos; everything else offers photos.
+    /// Replacing a video or a clip offers videos; everything else offers photos.
     var offersVideos: Bool {
-        if case .replaceMedia(_, .video) = purpose { return true }
-        return false
+        switch purpose {
+        case .replaceMedia(_, .video), .replaceClip: true
+        default: false
+        }
     }
 
     var filter: PHPickerFilter { offersVideos ? .videos : .images }

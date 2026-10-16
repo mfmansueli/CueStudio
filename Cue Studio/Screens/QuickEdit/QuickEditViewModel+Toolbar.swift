@@ -119,6 +119,10 @@ extension QuickEditViewModel {
                 EditorToolbarItem(id: "volume", label: String(localized: "Volume"), systemImage: "speaker.wave.2", action: .open(.volume)),
                 EditorToolbarItem(id: "duplicate", label: String(localized: "Duplicate"), systemImage: "plus.square.on.square", action: .duplicateClip),
                 EditorToolbarItem(id: "freeze", label: String(localized: "Freeze frame"), systemImage: "pause.rectangle", action: .freezeFrame),
+                EditorToolbarItem(id: "replace", label: String(localized: "Replace"), systemImage: "arrow.left.arrow.right", action: .replaceClip),
+                EditorToolbarItem(
+                    id: "extractAudio", label: String(localized: "Extract audio"), systemImage: "waveform.badge.plus", action: .extractAudio
+                ),
                 EditorToolbarItem(
                     id: "reorder", label: String(localized: "Reorder"), systemImage: "arrow.up.arrow.down",
                     style: edit.timeline.segments.count > 1 ? .normal : .dimmed, action: .reorderClips
@@ -169,12 +173,19 @@ extension QuickEditViewModel {
                 EditorToolbarItem(id: "delete", label: delete, systemImage: "trash", style: .destructive, action: .deleteVoiceOver),
             ]
         case .media:
-            return [
+            var items = [
                 EditorToolbarItem(id: "editMedia", label: String(localized: "Edit"), systemImage: "pencil", action: .open(.media)),
                 EditorToolbarItem(id: "duplicate", label: String(localized: "Duplicate"), systemImage: "plus.square.on.square", action: .duplicateMedia),
                 EditorToolbarItem(id: "replaceMedia", label: String(localized: "Replace"), systemImage: "arrow.left.arrow.right", action: .replaceMedia),
-                EditorToolbarItem(id: "delete", label: delete, systemImage: "trash", style: .destructive, action: .deleteMedia),
             ]
+            // Only a video with a sound of its own has one to take out.
+            if canExtractAudio {
+                items.append(EditorToolbarItem(
+                    id: "extractAudio", label: String(localized: "Extract audio"), systemImage: "waveform.badge.plus", action: .extractAudio
+                ))
+            }
+            items.append(EditorToolbarItem(id: "delete", label: delete, systemImage: "trash", style: .destructive, action: .deleteMedia))
+            return items
         }
     }
 
@@ -267,6 +278,8 @@ extension QuickEditViewModel {
         case .duplicateClip: selection?.clipID.map(duplicateClip)
         case .reorderClips: openClipOrder()
         case .freezeFrame: Task { await freezeFrame() }
+        case .replaceClip: askToReplaceClip()
+        case .extractAudio: Task { await extractAudio() }
         case .copyLook: copyClipLook()
         case .pasteLook: askToPasteLook()
         case .deleteClip: selection?.clipID.map(deleteClip)

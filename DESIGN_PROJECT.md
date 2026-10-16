@@ -945,12 +945,27 @@ auditoria: `reports/editor-award-checklist.md`.
   sem ele) e é desenhado por `CaptionCollectionRenderer` na prévia e na exportação; legendas antigas sem coleção (`captionCollection` nil) não
   separam estilo por linha e o painel diz "Pick a look in Style…". Dividir uma linha mantém o estilo nas duas metades; traduções mostram as
   linhas sem o estilo. Sair da lista (outro painel) termina a seleção; a timeline continua mostrando uma linha escolhida por vez.
+- **Replace clip** (barra do clipe › **Replace**, `QuickEditViewModel+ReplaceClip`, `EditTimeline.replaceSource`, `TakeEdit.moveOverlays`; o
+  padrão do CapCut): o Fotos abre só com vídeos; o escolhido entra no lugar do clipe, do começo do vídeo, pela mesma duração (se o vídeo é mais
+  curto, o clipe fica do tamanho dele: "Clip replaced · the video is shorter, so the clip is too"), com a mesma velocidade, zoom, volume,
+  transição e look. Textos, mídias e narrações presos ao clipe ficam no mesmo momento dele. Legendas e Studio Voice são da gravação: a nova não
+  tem legendas até Auto captions ouvir de novo. A gravação antiga nunca muda; um Undo ("Clip replaced" · Undo) a traz de volta. Foto: "Pick a
+  video first"; menos de 0,3 s: "Video too short to add".
+- **Extract audio** (barra do clipe e, num vídeo com som por cima, a da mídia; `QuickEditViewModel+ExtractAudio`, `SoundExtractor`,
+  `TakeEditing.extractSound`): o som do clipe sai para a faixa de música como um clipe próprio ("Sound · Clip 2" / "Sound · Video",
+  `MusicClip.extractedFrom`), onde tocava, no volume do clipe (ou do vídeo), sem fades e sem abaixar sob a voz, e o clipe (ou o vídeo) fica mudo:
+  nada toca duas vezes ("Sound on its own track · the clip is muted" · Undo; o novo som fica escolhido, com Volume, Replace e Delete). O som sai
+  como o Cue toca: do clipe, com o tratamento do Studio Voice e o nivelamento entre gravações (`RecordingSounds`), e na velocidade do clipe
+  (mantendo o tom da voz se o clipe mantém), num `.m4a` do próprio aparelho (AAC, `EditMediaFiles`). Na faixa de música ele se move, apara,
+  ganha fades e volume como uma música, mas, como um efeito sonoro, segue o seu momento quando algo antes dele é cortado e nunca ocupa o lugar
+  de uma música nova (`MusicClip.followsTheVideo`, `takesMusicRoom`). Sem som: "This clip has no sound"; se os cortes mudarem enquanto o som é
+  escrito, nada entra ("The video changed meanwhile · Extract the sound again").
 - **Barras como um editor de celular (decisão do dono, 16/10/2026, depois de comparar com CapCut, Edits e InShot; diverge da ordem do quadro
   v29 · 7.2).** Principal: **Edit · Captions · Text · ✦ Smart · Media · Audio · Format · Filters · Cover** — a ordem em que um vídeo falado é feito, as
   cinco primeiras na tela do iPhone. **Format** (antes Crop, só na barra do clipe) abre o painel "Format" ("Whole video · format for where you post").
-  Clipe: **Split · Speed · Zoom · Volume · Duplicate · Freeze frame · Reorder · Adjust · Filters · Background · Copy look · Paste look · Delete**: só o
-  que é do clipe, o mais usado primeiro; o que muda o vídeo inteiro (Format, Studio Voice, Media) fica na principal. Texto ganha **Animation** (Style ›
-  Motion); mídia ganha **Duplicate** (por cima, mesmo arquivo).
+  Clipe: **Split · Speed · Zoom · Volume · Duplicate · Freeze frame · Replace · Extract audio · Reorder · Adjust · Filters · Background · Copy look ·
+  Paste look · Delete**: só o que é do clipe, o mais usado primeiro; o que muda o vídeo inteiro (Format, Studio Voice, Media) fica na principal. Texto
+  ganha **Animation** (Style › Motion); mídia ganha **Duplicate** (por cima, mesmo arquivo) e, num vídeo com som, **Extract audio**.
 - **Reordenar clipes** (`ClipOrderSheet`): **segurar um clipe** na timeline (0,45 s, toque háptico) ou **Reorder** na barra do clipe abre a lista dos
   clipes com quadro, número, origem e duração, arrastados pela alça; cada mudança é um passo de desfazer e o que toca no clipe vai junto. Um clipe só:
   "Split or add a clip to reorder".

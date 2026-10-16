@@ -648,6 +648,24 @@ nonisolated struct EditTimeline: Codable, Hashable, Sendable {
         return piece.id
     }
 
+    /// Replace clip: the piece `id` plays another recording (`source`, `duration` long) from its start, for as long as it did
+    /// (shorter when the new one is shorter), keeping its place, speed, zoom, sound and look. The edit becomes arranged.
+    /// Returns the stretch of its old recording it played, nil (and no change) when there's no such piece or the new
+    /// recording is too short.
+    @discardableResult
+    mutating func replaceSource(ofSegment id: UUID, with source: UUID, duration: TimeInterval) -> TimeSpan? {
+        guard let index = index(ofSegment: id), duration >= Self.minimumClipDuration else { return nil }
+        let old = segments[index]
+        otherSources[source] = duration
+        isArranged = true
+        var piece = old
+        piece.sourceID = source
+        piece.sourceStart = 0
+        piece.sourceEnd = min(old.sourceLength, duration)
+        segments[index] = piece
+        return old.span
+    }
+
     /// Where a stretch of a recording pinned to a piece (`anchor`) plays: in that piece when it
     /// still holds the stretch's start, else in the first piece of the same recording that does
     /// (after a split or a Clean Up cut the piece has a new identity). The stretch keeps its
