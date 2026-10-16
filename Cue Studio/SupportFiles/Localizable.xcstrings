@@ -119856,6 +119856,125 @@
         }
       }
     },
+    "End of the pick" : {
+      "comment" : "VoiceOver: the last picked word",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "نهاية التحديد"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Slut på valget"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ende der Auswahl"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fin de la selección"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fin de la sélection"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "चुने हुए हिस्से का अंत"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Akhir pilihan"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fine della selezione"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "選択の終わり"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "선택의 끝"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Slutt på valget"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Einde van de selectie"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fim da seleção"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Slutet av valet"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "จุดสิ้นสุดของส่วนที่เลือก"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seçimin sonu"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cuối đoạn đã chọn"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "所选内容的结尾"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "所選內容的結尾"
+          }
+        }
+      }
+    },
     "endings" : {
       "localizations" : {
         "ar" : {
@@ -143430,6 +143549,125 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "來自"
+          }
+        }
+      }
+    },
+    "From “%@” to “%@”" : {
+      "comment" : "Edit by text: the picked stretch",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "من «%1$@» إلى «%2$@»"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fra “%1$@” til “%2$@”"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Von „%1$@“ bis „%2$@“"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "De «%1$@» a «%2$@»"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "De « %1$@ » à « %2$@ »"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“%1$@” से “%2$@” तक"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dari “%1$@” sampai “%2$@”"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Da «%1$@» a «%2$@»"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "「%1$@」から「%2$@」まで"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“%1$@”부터 “%2$@”까지"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fra «%1$@» til «%2$@»"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Van ‘%1$@’ tot ‘%2$@’"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "De “%1$@” a “%2$@”"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Från ”%1$@” till ”%2$@”"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ตั้งแต่ “%1$@” ถึง “%2$@”"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“%1$@” ile “%2$@” arası"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Từ “%1$@” đến “%2$@”"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "从“%1$@”到“%2$@”"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "從「%1$@」到「%2$@」"
           }
         }
       }
@@ -241530,6 +241768,125 @@
         }
       }
     },
+    "Pick again" : {
+      "comment" : "Edit by text: clear the pick",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اختر من جديد"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vælg igen"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Neu wählen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elegir de nuevo"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choisir à nouveau"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "फिर से चुनें"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pilih ulang"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scegli di nuovo"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "選び直す"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "다시 선택"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Velg på nytt"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Opnieuw kiezen"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escolher de novo"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Välj igen"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "เลือกใหม่"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yeniden seç"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chọn lại"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "重新选择"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "重新選擇"
+          }
+        }
+      }
+    },
     "Pick another frame or a photo." : {
       "comment" : "Cover Studio: a picture that can't be read",
       "localizations" : {
@@ -316045,6 +316402,125 @@
         }
       }
     },
+    "Start of the pick" : {
+      "comment" : "VoiceOver: the first picked word",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "بداية التحديد"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Start på valget"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anfang der Auswahl"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inicio de la selección"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Début de la sélection"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "चुने हुए हिस्से की शुरुआत"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Awal pilihan"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inizio della selezione"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "選択の開始"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "선택의 시작"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Start på valget"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Begin van de selectie"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Início da seleção"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Början av valet"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "จุดเริ่มต้นของส่วนที่เลือก"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seçimin başı"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Đầu đoạn đã chọn"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "所选内容的开头"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "所選內容的開頭"
+          }
+        }
+      }
+    },
     "Start or stop" : {
       "localizations" : {
         "ar" : {
@@ -317343,6 +317819,125 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "用另一台 iPhone 或 iPad 開始、暫停和捲動提詞機。"
+          }
+        }
+      }
+    },
+    "Start: “%@”. Now tap the last word of the part." : {
+      "comment" : "Edit by text after the first tap",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "البداية: «%@». اضغط الآن آخر كلمة في الجزء."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Start: “%@”. Tryk nu på det sidste ord i delen."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anfang: „%@“. Tippe jetzt auf das letzte Wort des Teils."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inicio: «%@». Ahora toca la última palabra de la parte."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Début : « %@ ». Touchez maintenant le dernier mot du passage."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "शुरुआत: “%@”। अब हिस्से के आखिरी शब्द पर टैप करें।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Awal: “%@”. Sekarang ketuk kata terakhir bagian itu."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inizio: «%@». Ora tocca l'ultima parola della parte."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "開始：「%@」。次に、その部分の最後の言葉をタップします。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "시작: “%@”. 이제 그 부분의 마지막 단어를 탭하세요."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Start: «%@». Trykk nå på det siste ordet i delen."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Begin: ‘%@’. Tik nu op het laatste woord van het stuk."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Início: “%@”. Agora toque na última palavra do trecho."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Start: ”%@”. Tryck nu på det sista ordet i delen."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "เริ่ม: “%@” แตะคำสุดท้ายของส่วนนั้น"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Başlangıç: “%@”. Şimdi bölümün son kelimesine dokun."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bắt đầu: “%@”. Giờ hãy chạm từ cuối cùng của đoạn."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "开始：“%@”。现在轻点这部分的最后一个字词。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "開始：「%@」。現在點一下這部分的最後一個字詞。"
           }
         }
       }
@@ -329556,244 +330151,6 @@
         }
       }
     },
-    "Tap a word, then another to pick everything between. Crossed-out words were cut." : {
-      "comment" : "Edit by text hint",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "اضغط كلمة ثم أخرى لتحديد كل ما بينهما. الكلمات المشطوبة قُصّت."
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tryk på et ord og så et andet for at vælge alt imellem. Overstregede ord er klippet."
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tippe auf ein Wort und dann auf ein anderes, um alles dazwischen zu wählen. Durchgestrichene Wörter wurden geschnitten."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Toca una palabra y luego otra para elegir todo lo que hay entre ellas. Las palabras tachadas se cortaron."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Touchez un mot puis un autre pour sélectionner tout ce qui est entre les deux. Les mots barrés ont été coupés."
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "एक शब्द पर, फिर दूसरे पर टैप करें ताकि बीच का सब चुना जाए। कटे हुए शब्दों पर लाइन है।"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ketuk satu kata, lalu kata lain untuk memilih semua di antaranya. Kata yang dicoret sudah dipotong."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tocca una parola e poi un'altra per scegliere tutto quello che c'è in mezzo. Le parole barrate sono state tagliate."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "言葉をタップし、別の言葉をタップすると間をすべて選べます。取り消し線の言葉はカット済みです。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "단어를 탭한 다음 다른 단어를 탭하면 그 사이가 모두 선택됩니다. 줄이 그어진 단어는 잘린 것입니다."
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Trykk på et ord og så et annet for å velge alt imellom. Overstrekede ord er klippet."
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tik op een woord en dan op een ander om alles ertussen te kiezen. Doorgestreepte woorden zijn geknipt."
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Toque numa palavra e depois em outra para escolher tudo entre elas. Palavras riscadas foram cortadas."
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tryck på ett ord och sedan ett annat för att välja allt däremellan. Överstrukna ord är klippta."
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "แตะคำหนึ่ง แล้วแตะอีกคำเพื่อเลือกทุกอย่างระหว่างนั้น คำที่ขีดฆ่าถูกตัดแล้ว"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bir kelimeye, sonra başka birine dokunarak aradaki her şeyi seç. Üstü çizili kelimeler kesildi."
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Chạm một từ rồi chạm từ khác để chọn mọi thứ ở giữa. Các từ bị gạch đã được cắt."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "轻点一个字词，再轻点另一个即可选中两者之间的全部内容。划掉的字词已剪掉。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "點一下一個字詞，再點另一個即可選取兩者之間的全部內容。劃掉的字詞已剪掉。"
-          }
-        }
-      }
-    },
-    "Tap a word, then another to pick everything between. Undo brings back what you cut." : {
-      "comment" : "Edit by text hint in a montage",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "اضغط كلمة ثم أخرى لتحديد كل ما بينهما. التراجع يعيد ما قصصته."
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tryk på et ord og så et andet for at vælge alt imellem. Fortryd henter det, du klippede."
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tippe auf ein Wort und dann auf ein anderes, um alles dazwischen zu wählen. Widerrufen holt Geschnittenes zurück."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Toca una palabra y luego otra para elegir todo lo que hay entre ellas. Deshacer recupera lo que cortaste."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Touchez un mot puis un autre pour sélectionner tout ce qui est entre les deux. Annuler rétablit ce que vous avez coupé."
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "एक शब्द पर, फिर दूसरे पर टैप करें ताकि बीच का सब चुना जाए। 'पहले जैसा करें' से कटा हुआ वापस आता है।"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ketuk satu kata, lalu kata lain untuk memilih semua di antaranya. Urungkan mengembalikan yang kamu potong."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tocca una parola e poi un'altra per scegliere tutto quello che c'è in mezzo. Annulla riporta ciò che hai tagliato."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "言葉をタップし、別の言葉をタップすると間をすべて選べます。カットしたものは取り消すと戻ります。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "단어를 탭한 다음 다른 단어를 탭하면 그 사이가 모두 선택됩니다. 실행 취소로 자른 부분을 되돌릴 수 있습니다."
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Trykk på et ord og så et annet for å velge alt imellom. Angre henter tilbake det du klippet."
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tik op een woord en dan op een ander om alles ertussen te kiezen. Ongedaan maken zet terug wat je knipte."
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Toque numa palavra e depois em outra para escolher tudo entre elas. Desfazer traz de volta o que você cortou."
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tryck på ett ord och sedan ett annat för att välja allt däremellan. Ångra hämtar tillbaka det du klippte."
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "แตะคำหนึ่ง แล้วแตะอีกคำเพื่อเลือกทุกอย่างระหว่างนั้น เลิกทำเพื่อเอาสิ่งที่ตัดกลับมา"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bir kelimeye, sonra başka birine dokunarak aradaki her şeyi seç. Geri al, kestiğini geri getirir."
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Chạm một từ rồi chạm từ khác để chọn mọi thứ ở giữa. Hoàn tác để lấy lại phần đã cắt."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "轻点一个字词，再轻点另一个即可选中两者之间的全部内容。撤销可恢复剪掉的部分。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "點一下一個字詞，再點另一個即可選取兩者之間的全部內容。還原可復原剪掉的部分。"
-          }
-        }
-      }
-    },
     "TAP ANYWHERE TO CANCEL" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -330739,6 +331096,244 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "再次輕點按鈕結束"
+          }
+        }
+      }
+    },
+    "Tap the first word of the part to cut, then its last word. Crossed-out words were cut." : {
+      "comment" : "Edit by text hint",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اضغط أول كلمة في الجزء المراد قصّه، ثم آخر كلمة فيه. الكلمات المشطوبة قُصّت."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tryk på det første ord i den del, du vil klippe, og derefter på det sidste. Overstregede ord er klippet."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tippe auf das erste Wort des Teils, den du schneiden willst, dann auf sein letztes Wort. Durchgestrichene Wörter wurden geschnitten."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toca la primera palabra de la parte que quieres cortar y luego la última. Las palabras tachadas se cortaron."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Touchez le premier mot du passage à couper, puis son dernier mot. Les mots barrés ont été coupés."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "जिस हिस्से को काटना है उसके पहले शब्द पर टैप करें, फिर आखिरी शब्द पर। कटे हुए शब्दों पर लाइन है।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ketuk kata pertama bagian yang ingin dipotong, lalu kata terakhirnya. Kata yang dicoret sudah dipotong."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tocca la prima parola della parte da tagliare, poi l'ultima. Le parole barrate sono state tagliate."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "カットしたい部分の最初の言葉をタップし、次に最後の言葉をタップします。取り消し線の言葉はカット済みです。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "자를 부분의 첫 단어를 탭한 다음 마지막 단어를 탭하세요. 줄이 그어진 단어는 잘린 것입니다."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trykk på det første ordet i delen du vil klippe, og så på det siste. Overstrekede ord er klippet."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tik op het eerste woord van het stuk dat je wilt knippen en daarna op het laatste. Doorgestreepte woorden zijn geknipt."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toque na primeira palavra do trecho que quer cortar e depois na última. Palavras riscadas foram cortadas."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tryck på det första ordet i delen du vill klippa och sedan på det sista. Överstrukna ord är klippta."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "แตะคำแรกของส่วนที่จะตัด แล้วแตะคำสุดท้าย คำที่ขีดฆ่าถูกตัดแล้ว"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kesmek istediğin bölümün ilk kelimesine, sonra son kelimesine dokun. Üstü çizili kelimeler kesildi."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chạm từ đầu tiên của đoạn cần cắt, rồi chạm từ cuối cùng. Các từ bị gạch đã được cắt."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "先轻点要剪掉部分的第一个字词，再轻点最后一个。划掉的字词已剪掉。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "先點一下要剪掉部分的第一個字詞，再點最後一個。劃掉的字詞已剪掉。"
+          }
+        }
+      }
+    },
+    "Tap the first word of the part to cut, then its last word. Undo brings back what you cut." : {
+      "comment" : "Edit by text hint in a montage",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اضغط أول كلمة في الجزء المراد قصّه، ثم آخر كلمة فيه. التراجع يعيد ما قصصته."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tryk på det første ord i den del, du vil klippe, og derefter på det sidste. Fortryd henter det, du klippede."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tippe auf das erste Wort des Teils, den du schneiden willst, dann auf sein letztes Wort. Widerrufen holt Geschnittenes zurück."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toca la primera palabra de la parte que quieres cortar y luego la última. Deshacer recupera lo que cortaste."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Touchez le premier mot du passage à couper, puis son dernier mot. Annuler rétablit ce que vous avez coupé."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "जिस हिस्से को काटना है उसके पहले शब्द पर टैप करें, फिर आखिरी शब्द पर। 'पहले जैसा करें' से कटा हुआ वापस आता है।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ketuk kata pertama bagian yang ingin dipotong, lalu kata terakhirnya. Urungkan mengembalikan yang kamu potong."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tocca la prima parola della parte da tagliare, poi l'ultima. Annulla riporta ciò che hai tagliato."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "カットしたい部分の最初の言葉をタップし、次に最後の言葉をタップします。カットしたものは取り消すと戻ります。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "자를 부분의 첫 단어를 탭한 다음 마지막 단어를 탭하세요. 실행 취소로 자른 부분을 되돌릴 수 있습니다."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trykk på det første ordet i delen du vil klippe, og så på det siste. Angre henter tilbake det du klippet."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tik op het eerste woord van het stuk dat je wilt knippen en daarna op het laatste. Ongedaan maken zet terug wat je knipte."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toque na primeira palavra do trecho que quer cortar e depois na última. Desfazer traz de volta o que você cortou."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tryck på det första ordet i delen du vill klippa och sedan på det sista. Ångra hämtar tillbaka det du klippte."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "แตะคำแรกของส่วนที่จะตัด แล้วแตะคำสุดท้าย เลิกทำเพื่อเอาสิ่งที่ตัดกลับมา"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kesmek istediğin bölümün ilk kelimesine, sonra son kelimesine dokun. Geri al, kestiğini geri getirir."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chạm từ đầu tiên của đoạn cần cắt, rồi chạm từ cuối cùng. Hoàn tác để lấy lại phần đã cắt."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "先轻点要剪掉部分的第一个字词，再轻点最后一个。撤销可恢复剪掉的部分。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "先點一下要剪掉部分的第一個字詞，再點最後一個。還原可復原剪掉的部分。"
           }
         }
       }

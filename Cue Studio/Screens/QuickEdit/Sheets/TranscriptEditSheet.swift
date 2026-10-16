@@ -38,8 +38,15 @@ struct TranscriptEditSheet: View {
             FlowLayout(spacing: 4, lineSpacing: 0) {
                 ForEach(Array(list.enumerated()), id: \.element.id) { index, word in
                     let isPicked = picked?.contains(index) ?? false
+                    // The two ends of the pick carry a mark: where the cut starts, and (once tapped) where it ends.
+                    let isStart = picked?.lowerBound == index
+                    let isEnd = picked.map { $0.upperBound == index && $0.lowerBound != index } ?? false
                     Button { viewModel.tapTranscriptWord(at: index) } label: {
-                        Text(word.text)
+                        HStack(spacing: 3) {
+                            if isStart { Image(systemName: "arrow.right.to.line").font(.system(size: 11, weight: .bold)) }
+                            Text(word.text)
+                            if isEnd { Image(systemName: "arrow.left.to.line").font(.system(size: 11, weight: .bold)) }
+                        }
                             .font(.system(.body, weight: isPicked ? .semibold : .regular))
                             .strikethrough(word.isRemoved, color: Palette.ink2)
                             .foregroundStyle(isPicked ? Palette.accInk : (word.isRemoved ? Palette.ink2 : Palette.ink))
@@ -52,6 +59,7 @@ struct TranscriptEditSheet: View {
                     }
                     .buttonStyle(.plain)
                     .accessibilityLabel(word.isRemoved ? Text("\(word.text), cut") : Text(verbatim: word.text))
+                    .accessibilityValue(isStart ? Text("Start of the pick") : (isEnd ? Text("End of the pick") : Text(verbatim: "")))
                     .accessibilityAddTraits(isPicked ? .isSelected : [])
                     .accessibilityIdentifier("edit.transcript.word.\(index)")
                 }
@@ -67,10 +75,11 @@ struct TranscriptEditSheet: View {
         if picked.isEmpty {
             // A montage's cut words leave the list (they may be from a copy of a clip): there, Undo brings them back.
             PanelNote(text: viewModel.edit.timeline.isArranged
-                ? String(localized: "Tap a word, then another to pick everything between. Undo brings back what you cut.")
-                : String(localized: "Tap a word, then another to pick everything between. Crossed-out words were cut."))
+                ? String(localized: "Tap the first word of the part to cut, then its last word. Undo brings back what you cut.")
+                : String(localized: "Tap the first word of the part to cut, then its last word. Crossed-out words were cut."))
         } else {
             VStack(spacing: 8) {
+                pickGuide(picked)
                 if picked.contains(where: { !$0.isRemoved }) {
                     PanelButton(
                         label: String(localized: "Cut from video (\(picked.filter { !$0.isRemoved }.count))"), systemImage: "scissors",
@@ -88,6 +97,30 @@ struct TranscriptEditSheet: View {
                 PanelNote(text: String(localized: "Cut removes the words from the video. Fix caption text only changes what the caption says."))
             }
             .padding(.bottom, 8)
+        }
+    }
+
+    /// Says where the pick is: after the first tap, that it's the start and the next tap picks the end; after the second, the
+    /// stretch and a way to start over.
+    private func pickGuide(_ picked: [TranscriptWord]) -> some View {
+        HStack(alignment: .firstTextBaseline, spacing: 8) {
+            Group {
+                if picked.count == 1, let first = picked.first {
+                    Text("Start: “\(first.text)”. Now tap the last word of the part.")
+                } else if let first = picked.first, let last = picked.last {
+                    Text("From “\(first.text)” to “\(last.text)”")
+                }
+            }
+            .font(.system(.subheadline, weight: .semibold))
+            .foregroundStyle(Palette.ink)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .fixedSize(horizontal: false, vertical: true)
+            .accessibilityIdentifier("edit.transcript.pickGuide")
+            Button(String(localized: "Pick again")) { viewModel.clearTranscriptSelection() }
+                .font(.system(.subheadline, weight: .semibold))
+                .foregroundStyle(Palette.accText)
+                .frame(minHeight: Metrics.hitTarget)
+                .accessibilityIdentifier("edit.transcript.pickAgain")
         }
     }
 
