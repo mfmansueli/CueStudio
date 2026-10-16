@@ -119,7 +119,7 @@ struct QuickEditToolbarTests {
         let viewModel = await makeScenario().viewModel
         viewModel.perform(.openMenu(.text))
         #expect(viewModel.toolbarContextLabel == "Text")
-        #expect(ids(viewModel) == ["title", "subtitle", "hook", "callout"])
+        #expect(ids(viewModel) == ["title", "subtitle", "hook", "callout", "graphic.arrow", "graphic.circle", "graphic.tag"])
         viewModel.perform(.addText(.hook))
         viewModel.leaveToolbarContext()
         viewModel.perform(.openMenu(.text))

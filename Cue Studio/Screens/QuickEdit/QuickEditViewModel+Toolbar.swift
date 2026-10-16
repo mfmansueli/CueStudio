@@ -55,6 +55,12 @@ extension QuickEditViewModel {
             EditorToolbarItem(id: "hook", label: String(localized: "Hook"), systemImage: "bolt", action: .addText(.hook)),
             EditorToolbarItem(id: "callout", label: String(localized: "Callout"), systemImage: "text.bubble", action: .addText(.callout)),
         ]
+        items += [CoverItemKind.arrow, .circle, .tag].map { kind in
+            EditorToolbarItem(
+                id: "graphic.\(kind.rawValue)", label: kind.label, systemImage: kind.systemImage, action: .addGraphic(kind),
+                startsGroup: kind == .arrow
+            )
+        }
         if commentForCard != nil {
             items.append(EditorToolbarItem(id: "comment", label: String(localized: "Comment"), systemImage: "text.bubble.fill", action: .addCommentCard))
         }
@@ -70,12 +76,14 @@ extension QuickEditViewModel {
             return [
                 EditorToolbarItem(id: "autoCaptions", label: String(localized: "Auto captions"), systemImage: "captions.bubble", action: .openCaptions),
                 EditorToolbarItem(id: "writeCaptions", label: String(localized: "Write them"), systemImage: "pencil", action: .writeCaptionsByHand),
+                EditorToolbarItem(id: "editByText", label: String(localized: "Edit by text"), systemImage: "text.badge.minus", action: .editByText),
             ]
         }
         return [
             EditorToolbarItem(id: "addLine", label: String(localized: "Add line"), systemImage: "captions.bubble", action: .openCaptions),
             EditorToolbarItem(id: "allLines", label: String(localized: "All lines"), systemImage: "list.bullet", action: .openCaptions),
             EditorToolbarItem(id: "style", label: String(localized: "Style"), systemImage: "textformat.alt", action: .open(.captionStyle)),
+            EditorToolbarItem(id: "editByText", label: String(localized: "Edit by text"), systemImage: "text.badge.minus", action: .editByText),
             EditorToolbarItem(
                 id: "deleteAll", label: String(localized: "Delete all"), systemImage: "trash", style: .destructive, action: .deleteAllCaptions
             ),
@@ -186,18 +194,31 @@ extension QuickEditViewModel {
         case .addMedia, .addMediaChoice:
             mediaInsertMode = .overlay
             sheet = .media
-        case .addText(let role): addStyledText(role)
-        case .addCommentCard: addCommentCard()
-        case .styleAllTexts: styleAllTexts()
-        case .editText:
-            panel = .textStyle
-            focusesTextField = true
+        case .addText, .addGraphic, .addCommentCard, .styleAllTexts, .editText: performTextAction(action)
         case .deleteAllCaptions: deleteAllCaptions()
+        case .editByText:
+            toolMenu = nil
+            transcriptSelection = nil
+            sheet = .transcript
         case .writeCaptionsByHand:
             toolMenu = nil
             writeCaptionsByHand()
         case .openMusic, .replaceMusic: openMusicSheet(replacing: action == .replaceMusic)
         case .openCoverStudio: openCoverStudio()
+        default: break
+        }
+    }
+
+    /// The Text menu's actions and Edit on a picked text.
+    private func performTextAction(_ action: EditorAction) {
+        switch action {
+        case .addText(let role): addStyledText(role)
+        case .addGraphic(let kind): addGraphic(kind)
+        case .addCommentCard: addCommentCard()
+        case .styleAllTexts: styleAllTexts()
+        case .editText:
+            panel = .textStyle
+            focusesTextField = true
         default: break
         }
     }

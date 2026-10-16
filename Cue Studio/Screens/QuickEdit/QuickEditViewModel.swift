@@ -208,6 +208,10 @@ final class QuickEditViewModel {
     /// "Paste look": which parts go, and whether its sheet is open.
     var pastesLookParts: Set<ClipLookPart> = Set(ClipLookPart.allCases)
     var showsPasteLook = false
+    /// Edit by text: the picked words (indices in `transcriptWords`).
+    var transcriptSelection: ClosedRange<Int>?
+    /// Listening was asked for Edit by text: the captions it makes stay hidden if they were.
+    var keepsCaptionsHiddenAfterListening = false
     /// Remove Pauses: the edit before its preview, while the result plays without the pauses. Apply
     /// keeps it as one undo step; anything else puts it back.
     var pausePreviewBase: EditSnapshot?

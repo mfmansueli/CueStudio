@@ -85,6 +85,7 @@ struct QuickEditView: View {
             switch sheet {
             case .music: AddMusicSheet(viewModel: viewModel)
             case .media: AddMediaSheet(viewModel: viewModel)
+            case .transcript: TranscriptEditSheet(viewModel: viewModel)
             case .export: QuickEditExportSheet(viewModel: viewModel, services: services)
             case .done:
                 EditorDoneSheet(

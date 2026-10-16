@@ -5,6 +5,7 @@
 
 import Foundation
 import Testing
+import UIKit
 @testable import Cue_Studio
 
 /// Copy look and Paste look between clips: the copied clip's look as it plays (the take's with its own on top), only the parts
@@ -134,5 +135,70 @@ struct QuickEditSoundEffectTests {
         #expect(viewModel.history.past.count == steps + 1)
         #expect(EditMediaFiles.exists(effect.fileName))
         #expect(viewModel.edit.mediaFileNames.contains(effect.fileName))
+    }
+}
+
+/// Graphics over the video: Cover Studio's arrow, circle and tag, timed and moved like a text, drawn by the same code, never
+/// restyled by a type preset meant for words.
+@MainActor
+@Suite("Quick edit graphics")
+struct QuickEditGraphicsTests {
+    private func makeViewModel() async -> QuickEditViewModel {
+        var take = TestData.take(scriptID: nil, number: 3)
+        take.duration = 30
+        let takes = TakeLibraryService(repository: FakeTakeRepository(takes: [take]))
+        takes.load()
+        let library = ScriptLibraryService(repository: FakeScriptRepository(scripts: []))
+        library.load()
+        let editor = FakeTakeEditor()
+        editor.duration = 30
+        let viewModel = QuickEditViewModel(
+            take: takes.takes[0], takes: takes, library: library, editing: editor, drafts: FakeDraftStore(), toast: ToastService(),
+            player: FakeEditPlayback(), mediaImporter: FakeMediaImporter(), recorder: FakeVoiceRecorder(), styles: FakeTextStyleStore()
+        )
+        await viewModel.prepare()
+        return viewModel
+    }
+
+    @Test func aGraphicIsAddedPickedAndDrawn() async throws {
+        let viewModel = await makeViewModel()
+        viewModel.toolMenu = .text
+        #expect(viewModel.toolbarItems.contains { $0.id == "graphic.arrow" })
+        viewModel.perform(.addGraphic(.tag))
+        let tag = try #require(viewModel.edit.texts.first)
+        #expect(tag.graphic?.kind == .tag)
+        #expect(tag.text == "NEW")
+        #expect(viewModel.panel == .textStyle)
+        #expect(viewModel.panelTitle(.textStyle) == CoverItemKind.tag.label)
+        let image = try #require(TextOverlayRenderer.image(for: tag, frameWidth: 360))
+        #expect(image.size.width > 20)
+        viewModel.setGraphicRotation(tag.id, degrees: 90)
+        #expect(abs((viewModel.edit.texts[0].graphic?.rotation ?? 0) - .pi / 2) < 0.000_1)
+        // Turned a quarter, its box turns with it.
+        let turned = TextOverlayRenderer.size(for: viewModel.edit.texts[0], frameWidth: 360)
+        #expect(turned.height > turned.width)
+        #expect(viewModel.textBars.first?.title.hasPrefix(CoverItemKind.tag.label) == true)
+    }
+
+    @Test func aTypePresetForEveryTextLeavesGraphicsAlone() async throws {
+        let viewModel = await makeViewModel()
+        viewModel.addGraphic(.circle)
+        viewModel.addText(.title)
+        viewModel.applyPreset(.editorial, to: .allTexts)
+        let circle = try #require(viewModel.edit.texts.first { $0.graphic != nil })
+        #expect(circle.color == CoverItemKind.circle.defaultColor)
+        #expect(circle.preset != .editorial)
+        #expect(viewModel.edit.texts.first { $0.graphic == nil }?.preset == .editorial)
+    }
+
+    @Test func textsSavedBeforeAreTexts() throws {
+        let text = TextOverlay(role: .title, style: .bold, span: TimeSpan(start: 0, end: 2))
+        let decoded = try JSONDecoder().decode(TextOverlay.self, from: JSONEncoder().encode(text))
+        #expect(decoded.graphic == nil)
+        var arrow = text
+        arrow.graphic = TextGraphic(kind: .arrow, rotation: 0.3)
+        arrow.text = ""
+        #expect(!arrow.isEmpty)
+        #expect(try JSONDecoder().decode(TextOverlay.self, from: JSONEncoder().encode(arrow)).graphic == arrow.graphic)
     }
 }

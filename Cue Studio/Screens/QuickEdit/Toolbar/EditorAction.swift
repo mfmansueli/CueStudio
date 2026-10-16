@@ -27,6 +27,8 @@ enum EditorAction: Hashable {
     case deleteClip
     // Text
     case addText(TextOverlayRole)
+    /// An arrow, a circle or a tag over the video (Cover Studio's graphics, timed like a text).
+    case addGraphic(CoverItemKind)
     /// The comment this script answers, as a card over the first seconds.
     case addCommentCard
     case styleAllTexts
@@ -36,6 +38,8 @@ enum EditorAction: Hashable {
     case deleteText
     // Captions menu
     case writeCaptionsByHand
+    /// Edit by text: cut words out of the video.
+    case editByText
     case deleteAllCaptions
     // Caption
     case editCaption

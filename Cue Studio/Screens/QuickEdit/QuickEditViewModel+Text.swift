@@ -40,6 +40,42 @@ extension QuickEditViewModel {
         focusesTextField = true
     }
 
+    // MARK: - Graphics
+
+    /// Text menu › Arrow, Circle or Tag: a graphic in the middle of the video at the playhead, for three seconds, picked, with its
+    /// panel open. A tag starts as "NEW".
+    func addGraphic(_ kind: CoverItemKind) {
+        guard isReady else { return }
+        player.pause()
+        let span = placement(at: player.currentTime, length: 3)
+        let pinned = edit.pin(span)
+        var text = edit.newText(.callout, span: pinned.span)
+        text.clipAnchor = pinned.anchor
+        text.graphic = TextGraphic(kind: kind)
+        text.color = kind.defaultColor
+        text.size = TextGraphic.baseSize
+        text.center = .center
+        text.text = switch kind {
+        case .tag: String(localized: "NEW", comment: "Default words of a tag on a cover")
+        case .handle: creatorHandle
+        case .arrow, .circle: ""
+        }
+        text.isUppercase = false
+        change { $0.texts.append(text) }
+        selectedTextID = text.id
+        toolMenu = nil
+        textStyleScope = .selected
+        panel = .textStyle
+        toast.show(String(localized: "\(kind.label) added · drag it on the video"))
+    }
+
+    /// A graphic turned to `degrees` (one undo step per drag of the slider).
+    func setGraphicRotation(_ id: UUID, degrees: Double) {
+        updateText(id, key: "graphicTurn.\(id)") { text in
+            text.graphic?.rotation = degrees * .pi / 180
+        }
+    }
+
     /// A copy of the text a little lower, picked.
     func duplicateText(_ id: UUID) {
         guard let original = edit.texts.first(where: { $0.id == id }) else { return }

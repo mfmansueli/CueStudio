@@ -24,7 +24,7 @@ extension QuickEditViewModel {
     }
 
     func panelTitle(_ panel: EditorPanel) -> String {
-        if panel == .textStyle, let text = selectedText { return text.role.label }
+        if panel == .textStyle, let text = selectedText { return text.graphic?.kind.label ?? text.role.label }
         return panel.title
     }
 

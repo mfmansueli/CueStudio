@@ -233,7 +233,8 @@ extension QuickEditViewModel {
         change { $0.captions = lines.sorted { $0.start < $1.start } }
         edit.captionTranscript = takeTranscript
         edit.sourceTranscripts = others
-        edit.showsCaptions = true
+        edit.showsCaptions = !keepsCaptionsHiddenAfterListening
+        keepsCaptionsHiddenAfterListening = false
         // Lines made, but a language they should have had was left out: the creator is told, never left to find out.
         captionState = unheard.isEmpty ? .idle : .missingLanguages(unheard)
         // Auto captions turns into the list of the new lines.

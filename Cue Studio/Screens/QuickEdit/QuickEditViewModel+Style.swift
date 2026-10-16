@@ -66,7 +66,8 @@ extension QuickEditViewModel {
             change { snapshot in
                 snapshot.textLook = look
                 snapshot.textPreset = preset
-                for index in snapshot.texts.indices {
+                // Graphics keep their own look: a type preset is for words.
+                for index in snapshot.texts.indices where snapshot.texts[index].graphic == nil {
                     let kept = keepingCustomizations ? snapshot.texts[index].customized : []
                     look.apply(to: &snapshot.texts[index], keeping: kept)
                     snapshot.texts[index].preset = preset

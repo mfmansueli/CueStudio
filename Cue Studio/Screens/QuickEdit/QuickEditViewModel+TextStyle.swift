@@ -61,7 +61,7 @@ extension QuickEditViewModel {
             customizeText(id, style.field, key: key.map { "\($0).\(id)" }) { style.apply(to: &$0) }
         case .allTexts:
             change(key: key.map { "\($0).all" }) { snapshot in
-                for index in snapshot.texts.indices { style.apply(to: &snapshot.texts[index]) }
+                for index in snapshot.texts.indices where snapshot.texts[index].graphic == nil { style.apply(to: &snapshot.texts[index]) }
             }
         case .allCaptions:
             // Not one of Text style's scopes: captions are styled in Caption style.

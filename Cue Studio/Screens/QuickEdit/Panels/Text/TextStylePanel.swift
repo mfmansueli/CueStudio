@@ -25,7 +25,9 @@ struct TextStylePanel: View {
     private static let swatchDiameter: CGFloat = 34
 
     var body: some View {
-        if let text = viewModel.selectedText {
+        if let text = viewModel.selectedText, let graphic = text.graphic {
+            GraphicStylePanel(viewModel: viewModel, text: text, graphic: graphic)
+        } else if let text = viewModel.selectedText {
             let tab = viewModel.textStyleTab
             PanelFrame(viewModel: viewModel, panel: .textStyle) {
                 fixed(text, tab: tab)

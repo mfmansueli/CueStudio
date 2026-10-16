@@ -14,7 +14,9 @@ extension QuickEditViewModel {
     var textBars: [LayerBar] {
         edit.texts.compactMap { text in
             guard let span = TakeEdit.editedSpan(text.span, anchor: text.clipAnchor, in: edit.timeline) else { return nil }
-            let title = text.isEmpty ? text.role.label : text.displayText
+            let title = text.graphic.map { graphic in
+                graphic.kind.hasText && !text.isEmpty ? "\(graphic.kind.label) · \(text.displayText)" : graphic.kind.label
+            } ?? (text.isEmpty ? text.role.label : text.displayText)
             return LayerBar(
                 id: text.id, kind: .text, span: span, title: title, isSelected: text.id == selectedTextID,
                 keyframes: text.keyframes.map(\.time).filter { $0 <= span.duration }

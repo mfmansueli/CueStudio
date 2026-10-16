@@ -60,7 +60,8 @@ nonisolated enum TextOverlayRenderer {
 
     /// The text's box on a frame `frameWidth` wide (background and room for the shadow included).
     static func size(for text: TextOverlay, frameWidth: CGFloat, widthFraction: CGFloat = maxWidthFraction) -> CGSize {
-        layout(for: text, frameWidth: frameWidth, widthFraction: widthFraction)?.size ?? .zero
+        if let item = text.coverItem { return CoverCompositionRenderer.image(of: item, coverWidth: frameWidth)?.size ?? .zero }
+        return layout(for: text, frameWidth: frameWidth, widthFraction: widthFraction)?.size ?? .zero
     }
 
     /// The text drawn on a transparent image of its box, at 1 pixel per point. With `emphasis`,
@@ -71,6 +72,8 @@ nonisolated enum TextOverlayRenderer {
         for text: TextOverlay, frameWidth: CGFloat, widthFraction: CGFloat = maxWidthFraction, emphasis: WordEmphasis? = nil,
         highlight: UIColor? = nil
     ) -> UIImage? {
+        // A graphic is drawn by Cover Studio's own code, so it looks the same on the cover and in the video.
+        if let item = text.coverItem { return text.isEmpty ? nil : CoverCompositionRenderer.image(of: item, coverWidth: frameWidth) }
         guard let layout = layout(for: text, frameWidth: frameWidth, widthFraction: widthFraction) else { return nil }
         let format = UIGraphicsImageRendererFormat()
         format.scale = 1

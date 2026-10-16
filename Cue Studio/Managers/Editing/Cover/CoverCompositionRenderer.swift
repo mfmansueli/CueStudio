@@ -285,7 +285,8 @@ nonisolated enum CoverCompositionRenderer {
         }
     }
 
-    private static func draw(_ item: CoverItem, size: CGSize, in context: CGContext) {
+    /// `item` drawn on a cover of `size`.
+    static func draw(_ item: CoverItem, size: CGSize, in context: CGContext) {
         let shape = Self.size(of: item, coverSize: size)
         let tint = color(item.color)
         context.saveGState()
