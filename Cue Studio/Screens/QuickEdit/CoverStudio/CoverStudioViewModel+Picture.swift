@@ -27,8 +27,9 @@ extension CoverStudioViewModel {
 
     /// A frame picked on the strip (edited seconds): one undo step per lift of the finger.
     func useFrame(atEdited time: TimeInterval) {
-        let frame = edit.coverFrame(atEdited: min(max(0, time), edit.editedDuration))
-        setSource(.clipFrame(frame))
+        let clamped = min(max(0, time), edit.editedDuration)
+        if !editsSecondPicture { lastFrameTime = clamped }
+        setSource(.clipFrame(edit.coverFrame(atEdited: clamped)))
     }
 
     /// One frame earlier or later (`frames` at the recording's rate), for the exact moment.

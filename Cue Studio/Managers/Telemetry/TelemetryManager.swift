@@ -17,6 +17,17 @@ enum TelemetryManager {
     static func start(process: ProcessInfo = .processInfo) {
         guard TelemetryPolicy.sendsReports(arguments: process.arguments, environment: process.environment) else { return }
         FirebaseApp.configure()
+        DiagnosticsObserver.shared.start()
+    }
+
+    /// A freeze, CPU or disk-write problem MetricKit measured on the iPhone, as a non-fatal report: one issue per kind, with how
+    /// big it was, the build and the system as keys and the call stack in the log line before it. Never anything the creator
+    /// made. Nothing when Firebase isn't running.
+    static func record(_ diagnostic: DeviceDiagnosticReport) {
+        guard FirebaseApp.app() != nil else { return }
+        let crashlytics = Crashlytics.crashlytics()
+        if !diagnostic.callStack.isEmpty { crashlytics.log(diagnostic.callStack) }
+        crashlytics.record(error: NSError(domain: diagnostic.domain, code: 0, userInfo: diagnostic.keys))
     }
 
     /// An Apple Intelligence request that failed in front of the creator, as a non-fatal report (sent with the next launch): one issue

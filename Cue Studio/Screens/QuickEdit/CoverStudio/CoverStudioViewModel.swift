@@ -81,6 +81,10 @@ final class CoverStudioViewModel: Identifiable {
     @ObservationIgnored private var secondPicture: (source: CoverSource, image: UIImage)?
     @ObservationIgnored private var cutout: (key: CutoutKey, cutout: CoverDesignRenderer.Cutout?)?
     @ObservationIgnored private var renderTask: Task<Void, Never>?
+    /// Reading the picture a change asks for; a newer change cancels it (scrubbing the strip asks for many).
+    @ObservationIgnored private var pictureTask: Task<Void, Never>?
+    /// The last frame of the edit the cover showed (edited seconds), so going back from a photo to the video finds it.
+    @ObservationIgnored var lastFrameTime: TimeInterval?
     @ObservationIgnored private var thumbnailTask: Task<Void, Never>?
     @ObservationIgnored private var renderGeneration = 0
 
@@ -135,6 +139,7 @@ final class CoverStudioViewModel: Identifiable {
 
     /// Reads the pictures and draws the cover and the templates.
     func start() async {
+        if !pictureIsPhoto { lastFrameTime = pictureEditedTime }
         await loadPictures()
         scheduleRender()
         scheduleThumbnails()
@@ -145,7 +150,10 @@ final class CoverStudioViewModel: Identifiable {
         defer { isLoadingPicture = false }
         let source = cover.source
         if mainPicture?.source != source {
-            guard let image = await pictures.picture(for: source, videoURL: videoURL, edit: edit) else {
+            let image = await pictures.picture(for: source, videoURL: videoURL, edit: edit)
+            // A newer frame was asked for meanwhile: it wins, never this one.
+            guard !Task.isCancelled, cover.source == source else { return }
+            guard let image else {
                 pictureFailed = true
                 return
             }
@@ -153,7 +161,9 @@ final class CoverStudioViewModel: Identifiable {
         }
         pictureFailed = false
         if let second = composition.activeSplit?.source, secondPicture?.source != second {
-            secondPicture = await pictures.picture(for: second, videoURL: videoURL, edit: edit).map { (second, $0) }
+            let image = await pictures.picture(for: second, videoURL: videoURL, edit: edit)
+            guard !Task.isCancelled, composition.activeSplit?.source == second else { return }
+            secondPicture = image.map { (second, $0) }
         }
     }
 
@@ -223,10 +233,12 @@ final class CoverStudioViewModel: Identifiable {
     private func coverDidChange(reloadsPictures: Bool = false) {
         if let id = selection?.itemID, composition.item(id) == nil { selection = nil }
         if reloadsPictures || mainPicture?.source != cover.source || composition.activeSplit?.source != secondPicture?.source {
-            Task {
+            pictureTask?.cancel()
+            pictureTask = Task {
                 await loadPictures()
+                guard !Task.isCancelled else { return }
                 scheduleRender()
-                scheduleThumbnails()
+                if !isGesturing { scheduleThumbnails() }
             }
             return
         }

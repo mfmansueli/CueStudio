@@ -17,6 +17,8 @@ struct QuickEditExportSheet: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(VideoThumbnailService.self) private var thumbnails
     @State private var thumbnail: UIImage?
+    /// How hot the iPhone is, followed while the sheet is open (`DeviceHeat`).
+    @State private var heat = ProcessInfo.processInfo.thermalState
 
     init(viewModel: QuickEditViewModel, services: AppServices) {
         self.viewModel = viewModel
@@ -53,6 +55,11 @@ struct QuickEditExportSheet: View {
         .task {
             guard thumbnail == nil else { return }
             thumbnail = await thumbnails.thumbnail(for: viewModel.videoURL, maxPixelSize: 240)
+        }
+        .task {
+            for await _ in NotificationCenter.default.notifications(named: ProcessInfo.thermalStateDidChangeNotification) {
+                heat = ProcessInfo.processInfo.thermalState
+            }
         }
         .sheet(isPresented: Binding(get: { model.activity != nil }, set: { if !$0 { model.activity = nil } })) {
             if let share = model.activity {
@@ -121,6 +128,10 @@ struct QuickEditExportSheet: View {
         if let note = model.limitNote {
             PanelNote(text: note)
         }
+        if let note = DeviceHeat.exportNote(for: heat) {
+            PanelNote(text: note, tint: Palette.warnText)
+                .accessibilityIdentifier("edit.export.heat")
+        }
         HStack {
             Text(String(localized: "Estimated size \(model.estimatedSize)"))
             Spacer(minLength: 8)
@@ -155,6 +166,9 @@ struct QuickEditExportSheet: View {
             }
             .frame(height: 6)
             Text("Exporting · keep Cue open").font(.system(.subheadline)).foregroundStyle(Palette.ink2)
+            if let note = DeviceHeat.exportNote(for: heat) {
+                Text(note).font(.footnote).foregroundStyle(Palette.warnText).multilineTextAlignment(.center)
+            }
         }
         .frame(maxWidth: .infinity)
         .padding(.top, 28)

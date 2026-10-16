@@ -93,12 +93,16 @@ final class EditorScreenshotTests: XCTestCase {
         try capture("16-voice-over")
         apply()
         back()
-        for (index, tool) in ["adjust", "filters", "background", "crop"].enumerated() {
+        for (index, tool) in ["adjust", "filters", "background"].enumerated() {
             EditorApp.tapTool(app, tool)
             try capture("\(17 + index)-\(tool)")
             apply()
         }
         back()
+        // Format (the whole video's crop) is on the main bar.
+        EditorApp.tapTool(app, "format")
+        try capture("20-format")
+        apply()
         EditorApp.tapTool(app, "smart")
         try capture("23-smart")
         app.buttons["edit.smart.section.templates"].tap()

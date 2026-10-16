@@ -220,7 +220,8 @@ extension QuickEditViewModel {
     func beginTimelineHandle(_ target: TimelineGeometry.HandleTarget, snapTimes: [TimeInterval]) {
         guard isReady, handleDrag == nil else { return }
         player.pause()
-        beginChange()
+        // The undo step begins only once the drag holds something: a stale target never leaves a change open.
+        defer { if handleDrag != nil { beginChange() } }
         let playhead = player.currentTime
         switch target {
         case .clip(let id, let edge):
@@ -239,6 +240,13 @@ extension QuickEditViewModel {
                 clipSpan: nil, clipSpeed: 1, bar: bar,
                 snapTimes: snapTimes.filter { time in !own.contains { abs($0 - time) < 0.000_1 } }
             )
+        case .move(let kind, let id):
+            guard let bar = layerBar(kind, id) ?? (kind == .music ? musicBars.first { $0.id == id } : nil) else { return }
+            let own = [bar.span.start, bar.span.end]
+            handleDrag = TimelineHandleDrag(
+                target: target, playhead: playhead, edgeTime: bar.span.start, clipSpan: nil, clipSpeed: 1, bar: bar,
+                snapTimes: snapTimes.filter { time in !own.contains { abs($0 - time) < 0.000_1 } }
+            )
         }
     }
 
@@ -249,6 +257,7 @@ extension QuickEditViewModel {
     func moveTimelineHandle(by offset: TimeInterval) -> (label: String, compensation: TimeInterval) {
         guard let drag = handleDrag else { return ("", 0) }
         let pps = TimelineGeometry.basePointsPerSecond * timelineZoom
+        if case .move = drag.target { return moveHeldItem(drag, by: offset, pointsPerSecond: pps) }
         var edge = drag.edgeTime + offset
         if let snap = TimelineSnapping.snapped(edge, to: drag.snapTimes, pointsPerSecond: pps) {
             if abs(snap - (lastHandleSnap ?? -1)) > 0.000_1 { Haptics.snap() }
@@ -279,6 +288,8 @@ extension QuickEditViewModel {
             player.scrub(to: side == .start ? start : max(start, start + segment.duration - 0.03))
             let compensation = side == .start ? -(segment.sourceStart - span.start) / drag.clipSpeed : 0
             return (DurationText.tenths(segment.duration), compensation)
+        case .move:
+            return ("", 0)
         case .item(_, _, let side):
             guard let bar = drag.bar else { return ("", 0) }
             resizeBar(bar, edge: side == .start ? .start : .end, to: edge)
@@ -301,6 +312,29 @@ extension QuickEditViewModel {
 
     // MARK: - Private
 
+    /// The picked item moved by `offset`, its length kept: its start, or else its end, sticks to cuts and edges nearby.
+    private func moveHeldItem(
+        _ drag: TimelineHandleDrag, by offset: TimeInterval, pointsPerSecond pps: CGFloat
+    ) -> (label: String, compensation: TimeInterval) {
+        guard let bar = drag.bar else { return ("", 0) }
+        let length = bar.span.duration
+        var start = drag.edgeTime + offset
+        var snapped: TimeInterval?
+        if let snap = TimelineSnapping.snapped(start, to: drag.snapTimes, pointsPerSecond: pps) {
+            start = snap
+            snapped = snap
+        } else if let snap = TimelineSnapping.snapped(start + length, to: drag.snapTimes, pointsPerSecond: pps) {
+            start = snap - length
+            snapped = snap
+        }
+        if let snapped, abs(snapped - (lastHandleSnap ?? -1)) > 0.000_1 { Haptics.snap() }
+        lastHandleSnap = snapped
+        moveBar(bar, toStart: start)
+        guard let now = layerBarForDrag(bar) else { return ("", 0) }
+        player.scrub(to: min(now.span.start, max(0, edit.editedDuration - 0.03)))
+        return (DurationText.editor(now.span.start), 0)
+    }
+
     private func layerBar(_ kind: TimelineGeometry.ItemKind, _ id: UUID) -> LayerBar? {
         switch kind {
         case .text: textBars.first { $0.id == id }
@@ -317,6 +351,7 @@ extension QuickEditViewModel {
         case .media: mediaBars.first { $0.id == bar.id }
         case .caption:
             captionBars.first { captionCueID(forLine: $0.id) == captionCueID(forLine: bar.id) }
+        case .music: musicBars.first { $0.id == bar.id }
         default: nil
         }
     }

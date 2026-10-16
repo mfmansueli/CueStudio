@@ -76,17 +76,53 @@ struct QuickEditCopyLookTests {
         viewModel.selection = .clip(viewModel.edit.timeline.segments[0].id)
         viewModel.copyClipLook()
         viewModel.changeLook { $0.warmth = 0 }
+        // A clip with a look of its own loses it for the pasted parts.
+        var third = viewModel.edit.timeline.segments[2]
+        var own = ClipLook()
+        own.warmth = -20
+        third.look = own
+        var timeline = viewModel.edit.timeline
+        timeline.replaceSegment(third)
+        viewModel.commit(timeline)
         viewModel.pasteLook(on: true)
-        #expect(viewModel.edit.timeline.segments.allSatisfy { $0.look?.warmth == 40 })
+        // Every clip warm through the video's own setting, so Adjust on the whole video still reaches every clip.
+        #expect(viewModel.edit.warmth == 40)
+        #expect(viewModel.edit.timeline.segments.allSatisfy { $0.look?.warmth == nil })
+        #expect(viewModel.edit.timeline.segments.allSatisfy { viewModel.edit.lookSettings(for: $0).warmth == 40 })
+        viewModel.undo()
+        #expect(viewModel.edit.warmth == 0)
+        #expect(viewModel.edit.timeline.segments[2].look?.warmth == -20)
     }
 
-    @Test func theClipsWholeVideoToolsSaySo() async {
+    @Test func aPasteOnOneClipKeepsOnlyWhatDiffersFromTheVideo() async throws {
+        let (viewModel, _) = await makeViewModel()
+        viewModel.changeLook { $0.filter = .film }
+        var first = viewModel.edit.timeline.segments[0]
+        var look = ClipLook()
+        look.exposure = 25
+        first.look = look
+        var timeline = viewModel.edit.timeline
+        timeline.replaceSegment(first)
+        viewModel.commit(timeline)
+        viewModel.selection = .clip(first.id)
+        viewModel.copyClipLook()
+        let second = viewModel.edit.timeline.segments[1].id
+        viewModel.selection = .clip(second)
+        viewModel.pasteLook(on: false)
+        let pasted = try #require(viewModel.edit.timeline.segment(id: second)?.look)
+        #expect(pasted.exposure == 25)
+        // The filter is the video's: the clip doesn't own a copy, so Filters on the whole video still changes it.
+        #expect(pasted.filter == nil)
+        #expect(pasted.background == nil)
+    }
+
+    @Test func theClipBarHoldsOnlyTheClipsOwnToolsAndPasteWaitsForACopy() async {
         let (viewModel, _) = await makeViewModel()
         viewModel.selection = .clip(viewModel.edit.timeline.segments[0].id)
         let items = viewModel.toolbarItems
-        #expect(items.first { $0.id == "crop" }?.scopeBadge != nil)
-        #expect(items.first { $0.id == "voice" }?.scopeBadge != nil)
-        #expect(items.first { $0.id == "speed" }?.scopeBadge == nil)
+        // Format and Studio Voice change the whole video: they're on the main bar, not marked "All" here.
+        #expect(!items.contains { $0.id == "crop" || $0.id == "voice" })
+        #expect(items.allSatisfy { $0.scopeBadge == nil })
         #expect(items.first { $0.id == "pasteLook" }?.style == .dimmed)
         viewModel.perform(.pasteLook)
         #expect(!viewModel.showsPasteLook)

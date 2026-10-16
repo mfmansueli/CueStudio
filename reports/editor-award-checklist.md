@@ -45,7 +45,7 @@ Branch `feature/editor-award` (worktree `.claude/worktrees/editor-award`), a par
 - ✅ Efeitos (força de Dim/Blur; "No person found") e estilo salvo sem conteúdo; capas antigas convertidas só ao abrir
 
 ## 3. Usabilidade do editor
-- ✅ Escopo explícito: Crop e Studio Voice com selo **All** e grupo próprio na barra do clipe; VoiceOver "…, whole video"; subtítulo do Crop
+- ✅ Escopo explícito: o que muda o vídeo inteiro (Format, Studio Voice, Media) saiu da barra do clipe e está na principal; subtítulo do Format
 - ✅ Adicionar mídia: **Media** na barra principal, com a diferença entre sobre o vídeo (B-roll) e clipe na sequência explicada na folha
 - ✅ Animações prontas (Fade, Slide up, Slide in, Gentle zoom, Pop, In and out) com duração e força, sobre os keyframes (edição manual mantida)
 - ✅ Manipulação na prévia sem duplicação (o item some do vídeo durante o arraste; alças de mídias sobrepostas) — etapa 1
@@ -75,6 +75,18 @@ Branch `feature/editor-award` (worktree `.claude/worktrees/editor-award`), a par
   (Vision por quadro + suavização) que a prévia e a exportação ainda não têm. Pendente.
 - ⛔ Estabilização e rastreamento: dependem de análise de movimento por quadro (Vision `VNTranslationalImageRegistrationRequest` /
   `VNTrackObjectRequest`) e de keyframes gerados; não cabem com qualidade nesta entrega. Pendente.
+
+## 7. Auditoria de UX/confiabilidade e paridade com editores de celular (16/10)
+- ✅ Auditoria (agente): 6 P1, 8 P2, 10 P3 verificados no código; corrigidos os P1 e P2 e os P3 de main thread, 44 pt, VoiceOver, large content
+  viewer e tamanho do efeito. Fica: plural de "Cut N words" (o catálogo do projeto não usa plurais)
+- ✅ Pesquisa CapCut / Edits / InShot / VN (agente) e comparação com o Cue, verificada no código
+- ✅ Reordenar clipes (segurar ou Reorder), arrastar itens no tempo, barras na ordem de uso, Format na principal, Edit by text no ✦ Smart e nas
+  Legendas, Animation no texto, Duplicate na mídia
+- ✅ Robustez: espaço antes de exportar, limpeza ao abrir, MetricKit, congelar quadro fora da thread da interface
+- 🟡 Testes da etapa (agente) · Full · check-warnings · capturas · aparelho
+- ⬜ Próxima branch: exportação que continua fora do app, aviso de aparelho quente, medição no iPhone 15 (A16); depois análise de movimento, Seguir
+  rosto, rastreamento, estabilização, tempo variável, cortes nas batidas (só faixas dos Files)
+- ⬜ Pendências da pesquisa (não feitas nesta entrega): localizar e trocar / seleção múltipla nas legendas, Replace clip, Extract audio
 
 ## Referências do GitHub
 - ✅ VideoLab, MTTransitions, MetalPetal, Cabbage, VideoEditorKit estudados (`reports/editor-references.md`): nenhum adotado como dependência;

@@ -24,6 +24,8 @@ enum EditorAction: Hashable {
     case duplicateClip
     /// Freeze frame: the frame under the playhead held as a clip of its own.
     case freezeFrame
+    /// Reorder: the clips in a list to drag (also holding a clip on the timeline).
+    case reorderClips
     case copyLook
     case pasteLook
     case deleteClip
@@ -37,6 +39,8 @@ enum EditorAction: Hashable {
     case editText
     case toggleKeyframe
     case duplicateText
+    /// The picked text's Style › Motion, where its ready animations are.
+    case openTextAnimation
     case deleteText
     // Captions menu
     case writeCaptionsByHand
@@ -56,5 +60,6 @@ enum EditorAction: Hashable {
     case deleteVoiceOver
     // Media
     case replaceMedia
+    case duplicateMedia
     case deleteMedia
 }

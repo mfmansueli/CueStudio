@@ -23,6 +23,8 @@ final class TimelineScrollingView: UIView, UIScrollViewDelegate, UIGestureRecogn
         /// The edge moved by these edited seconds; returns the bubble and the content's shift.
         var moveHandle: (TimeInterval) -> (label: String, compensation: TimeInterval) = { _ in ("", 0) }
         var endHandle: () -> Void = {}
+        /// A clip held still: Reorder opens (CapCut's long-press).
+        var holdClip: (UUID) -> Void = { _ in }
         var zoom: (CGFloat) -> Void = { _ in }
         /// VoiceOver.
         var nudge: (TimeInterval) -> Void = { _ in }
@@ -99,6 +101,11 @@ final class TimelineScrollingView: UIView, UIScrollViewDelegate, UIGestureRecogn
         handlePan.maximumNumberOfTouches = 1
         scrollView.addGestureRecognizer(handlePan)
         scrollView.panGestureRecognizer.require(toFail: handlePan)
+
+        let hold = UILongPressGestureRecognizer(target: self, action: #selector(held(_:)))
+        hold.minimumPressDuration = 0.45
+        hold.delegate = self
+        scrollView.addGestureRecognizer(hold)
 
         let pinch = UIPinchGestureRecognizer(target: self, action: #selector(pinched(_:)))
         pinch.delegate = self
@@ -274,9 +281,9 @@ final class TimelineScrollingView: UIView, UIScrollViewDelegate, UIGestureRecogn
     override func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
         guard let pan = gestureRecognizer as? UIPanGestureRecognizer else { return super.gestureRecognizerShouldBegin(gestureRecognizer) }
         if pan.view === scrollView, pan !== scrollView.panGestureRecognizer {
-            // A handle's pan only starts on a handle.
+            // A handle's pan only starts on a handle, or on the picked item's body (to move it).
             guard let point = touchDown, let geometry else { return false }
-            return geometry.handle(at: point) != nil
+            return geometry.dragTarget(at: point) != nil
         }
         if pan.allowedTouchTypes.isEmpty {
             return pan.modifierFlags.contains(.control) || pan.modifierFlags.contains(.command)
@@ -303,7 +310,7 @@ final class TimelineScrollingView: UIView, UIScrollViewDelegate, UIGestureRecogn
         guard let geometry else { return }
         switch recognizer.state {
         case .began:
-            guard let point = touchDown, let found = geometry.handle(at: point) else { return }
+            guard let point = touchDown, let found = geometry.dragTarget(at: point) else { return }
             scrollView.setContentOffset(scrollView.contentOffset, animated: false)
             handle = (found.target, time, 0)
             actions.beginHandle(found.target, geometry.snapTimes)
@@ -325,6 +332,14 @@ final class TimelineScrollingView: UIView, UIScrollViewDelegate, UIGestureRecogn
             actions.endHandle()
             setOffset(for: time)
         }
+    }
+
+    @objc private func held(_ recognizer: UILongPressGestureRecognizer) {
+        guard recognizer.state == .began, let geometry, handle == nil else { return }
+        let point = recognizer.location(in: content)
+        guard geometry.handle(at: point) == nil, case .clip(let id)? = geometry.hit(at: point) else { return }
+        Haptics.selection()
+        actions.holdClip(id)
     }
 
     @objc private func pinched(_ recognizer: UIPinchGestureRecognizer) {

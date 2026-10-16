@@ -18,7 +18,18 @@ struct LocalTakeRepository: TakeRepository {
         // Unencoded: `path()` gives "Application%20Support", which FileManager never finds.
         guard FileManager.default.fileExists(atPath: metadataURL.path(percentEncoded: false)) else { return [] }
         let data = try Data(contentsOf: metadataURL)
-        return try JSONDecoder.library.decode([Take].self, from: data)
+        // Take by take: one that can't be read stays out, never the whole library; the file as it was is kept aside first,
+        // since the next save writes the library without it.
+        let list = try JSONDecoder.library.decode(LossyList<Take>.self, from: data)
+        if list.dropped > 0 { keepCopy(of: data) }
+        return list.elements
+    }
+
+    /// `takes.json` as it was, next to it (`takes-kept-<date>.json`), once per damaged file.
+    private func keepCopy(of data: Data) {
+        let stamp = ISO8601DateFormatter().string(from: .now).replacingOccurrences(of: ":", with: "-")
+        let copy = directory.appending(path: "takes-kept-\(stamp).json")
+        try? data.write(to: copy, options: .atomic)
     }
 
     func saveTakes(_ takes: [Take]) throws {

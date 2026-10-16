@@ -15,6 +15,8 @@ final class ScriptLibraryService {
     private(set) var scripts: [Script] = []
     private(set) var folders: [String] = []
     private(set) var hasLoaded = false
+    /// False when the library on disk couldn't be read: writing would replace it with what's in memory.
+    @ObservationIgnored private var canSave = true
 
     private let repository: ScriptRepository
     private let now: () -> Date
@@ -32,7 +34,11 @@ final class ScriptLibraryService {
             let snapshot = try repository.load()
             scripts = snapshot.scripts.sorted { $0.updatedAt > $1.updatedAt }
             folders = snapshot.folders
+            canSave = true
         } catch {
+            // The library is there but couldn't be read (say, before the first unlock): saving now would write an empty
+            // library over it. Nothing is saved until a launch reads it.
+            canSave = false
             logger.error("Could not load scripts: \(error.localizedDescription)")
         }
         hasLoaded = true
@@ -169,6 +175,10 @@ final class ScriptLibraryService {
     // MARK: - Persistence
 
     private func persist() {
+        guard canSave else {
+            logger.error("Not saving scripts: the library on disk couldn't be read at launch")
+            return
+        }
         do {
             try repository.save(ScriptLibrarySnapshot(scripts: scripts, folders: folders))
         } catch {

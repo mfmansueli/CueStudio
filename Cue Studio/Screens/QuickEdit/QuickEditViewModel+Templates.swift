@@ -38,9 +38,10 @@ extension QuickEditViewModel {
             snapshot.captionCollection = settings
             snapshot.captionAnimation = template.captionReveal
             for index in snapshot.texts.indices where snapshot.texts[index].graphic == nil {
-                look.apply(to: &snapshot.texts[index])
+                // Where the creator put each text stays: only its type and motion change.
+                look.apply(to: &snapshot.texts[index], keeping: [.position, .alignment])
                 snapshot.texts[index].preset = template.textPreset
-                snapshot.texts[index].customized = []
+                snapshot.texts[index].customized.formIntersection([.position, .alignment])
                 snapshot.texts[index].animation = template.textMotion
             }
             if let hook { snapshot.texts.append(hook) }

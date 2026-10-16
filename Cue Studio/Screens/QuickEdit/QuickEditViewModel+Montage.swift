@@ -148,6 +148,17 @@ extension QuickEditViewModel {
         toast.show(String(localized: "\(source.title) added"))
     }
 
+    /// Reorder: the clips in a list to drag, from the clip's tools or holding a clip on the timeline. One clip: nothing to order.
+    func openClipOrder() {
+        guard isReady else { return }
+        guard edit.timeline.segments.count > 1 else {
+            toast.show(String(localized: "Split or add a clip to reorder"))
+            return
+        }
+        player.pause()
+        sheet = .clipOrder
+    }
+
     // MARK: - Freeze frame
 
     /// How long a freeze frame holds at first; its file is longer, so its end handle can stretch it.
@@ -166,6 +177,7 @@ extension QuickEditViewModel {
         isImportingMedia = true
         defer { isImportingMedia = false }
         player.pause()
+        toast.show(String(localized: "Freezing the frame…"))
         let name: String
         do {
             name = try await editing.stillClip(ofVideoAt: url, at: timeline.sourceTime(forEdited: time), length: Self.freezeFileLength)
@@ -173,14 +185,29 @@ extension QuickEditViewModel {
             toast.show(String(localized: "Can't freeze this frame"))
             return
         }
+        // The frame took a moment (about 2 s in 4K): if the cuts changed meanwhile, the place it was for may be gone.
+        guard edit.timeline == timeline else {
+            EditMediaFiles.remove([name])
+            toast.show(String(localized: "The video changed meanwhile · Freeze the frame again"))
+            return
+        }
         importedFiles.insert(name)
         var next = arranged(edit)
-        next.timeline.split(atEdited: time)
-        // After the split, the frame goes where the playhead is: after every piece that starts before it.
-        let at = next.timeline.segments.indices.filter { next.timeline.editedStart(ofSegmentAt: $0) < time - 0.001 }.count
+        let at: Int
+        if next.timeline.split(atEdited: time) {
+            at = index + 1
+        } else {
+            // Too close to an edge to split: before the clip near its start, after it near its end.
+            let start = timeline.editedStart(ofSegmentAt: index)
+            at = time - start < segment.duration / 2 ? index : index + 1
+        }
+        // The clip's look, and the background its recording plays with (the frozen frame is a recording of its own).
+        var look = segment.look ?? ClipLook()
+        if look.background == nil, let background = edit.background(for: segment) { look.background = background }
         let source = ClipSource(fileName: name, duration: Self.freezeFileLength, title: String(localized: "Freeze frame"))
         guard let id = next.timeline.insertClip(
-            source: source.id, duration: source.duration, span: TimeSpan(start: 0, end: Self.freezeLength), at: at, look: segment.look
+            source: source.id, duration: source.duration, span: TimeSpan(start: 0, end: Self.freezeLength), at: at,
+            look: look.isEmpty ? nil : look
         ), let inserted = next.timeline.index(ofSegment: id) else { return }
         next.sources.append(source)
         commit(EditSnapshot(next))

@@ -32,13 +32,19 @@ extension QuickEditViewModel {
     func pasteLook(on everyClip: Bool) {
         guard let copied = copiedLook, !pastesLookParts.isEmpty else { return }
         let target = selection?.clipID
-        var timeline = edit.timeline
-        for segment in timeline.segments where everyClip || segment.id == target {
-            timeline.replaceSegment(copied.pasted(pastesLookParts, on: segment))
-        }
         showsPasteLook = false
-        guard timeline != edit.timeline else { return }
-        commit(timeline)
+        if everyClip {
+            let next = copied.pastedEverywhere(pastesLookParts, in: edit)
+            guard next != edit else { return }
+            commit(EditSnapshot(next))
+        } else {
+            var timeline = edit.timeline
+            for segment in timeline.segments where segment.id == target {
+                timeline.replaceSegment(copied.pasted(pastesLookParts, on: segment, in: edit))
+            }
+            guard timeline != edit.timeline else { return }
+            commit(timeline)
+        }
         toast.show(everyClip ? String(localized: "Look pasted on every clip") : String(localized: "Look pasted"))
     }
 

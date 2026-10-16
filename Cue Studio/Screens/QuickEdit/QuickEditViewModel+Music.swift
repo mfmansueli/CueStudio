@@ -102,9 +102,10 @@ extension QuickEditViewModel {
     func addSoundEffect(_ effect: SoundEffect) {
         guard isReady else { return }
         do {
-            let name = try EditMediaFiles.link(try SoundEffectSynth.file(for: effect))
+            let file = try SoundEffectSynth.file(for: effect)
+            let name = try EditMediaFiles.link(file)
             importedFiles.insert(name)
-            let duration = Double(SoundEffectSynth.samples(for: effect).count) / SoundEffectSynth.sampleRate
+            let duration = SoundEffectSynth.duration(ofFile: file) ?? Double(SoundEffectSynth.samples(for: effect).count) / SoundEffectSynth.sampleRate
             let total = edit.editedDuration
             let start = min(player.currentTime, max(0, total - MusicClip.minimumDuration))
             let length = min(duration, total - start)

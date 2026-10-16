@@ -54,6 +54,33 @@ struct QuickEditMontageTests {
 
     // MARK: - Copies and order
 
+    @Test func reorderNeedsMoreThanOneClip() async {
+        let scenario = await makeScenario()
+        let viewModel = scenario.viewModel
+        viewModel.perform(.selectClipAtPlayhead)
+        #expect(viewModel.toolbarItems.first { $0.id == "reorder" }?.style == .dimmed)
+        viewModel.perform(.reorderClips)
+        #expect(viewModel.sheet == nil)
+        #expect(scenario.toast.message == "Split or add a clip to reorder")
+    }
+
+    @Test func reorderOpensTheClipsInPlayOrderPaused() async {
+        let scenario = await makeScenario()
+        let viewModel = scenario.viewModel
+        scenario.player.currentTime = 32
+        viewModel.cut()
+        viewModel.perform(.selectClipAtPlayhead)
+        #expect(viewModel.toolbarItems.first { $0.id == "reorder" }?.style == .normal)
+        scenario.player.play()
+        viewModel.perform(.reorderClips)
+        #expect(viewModel.sheet == .clipOrder)
+        #expect(!scenario.player.isPlaying)
+        // Holding a clip on the timeline opens the same list.
+        viewModel.sheet = nil
+        viewModel.openClipOrder()
+        #expect(viewModel.sheet == .clipOrder)
+    }
+
     @Test func aCopiedSectionGetsItsOwnTextsInOneStep() async {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel

@@ -32,6 +32,7 @@ struct CoverStepBar: View {
                 .buttonStyle(.plain)
                 .accessibilityLabel(Text("Step \(index + 1) of \(CoverStudioStep.allCases.count): \(step.label)"))
                 .accessibilityAddTraits(isOn ? [.isSelected] : [])
+                .accessibilityShowsLargeContentViewer { Label(step.label, systemImage: step.systemImage) }
                 .accessibilityIdentifier("cover.step.\(step.rawValue)")
             }
         }

@@ -90,7 +90,7 @@ enum EditorPanel: String, CaseIterable, Identifiable {
         case .pauses: String(localized: "Pauses")
         case .adjust: String(localized: "Adjust")
         case .filters: String(localized: "Filters")
-        case .crop: String(localized: "Crop")
+        case .crop: String(localized: "Format")
         case .background: String(localized: "Background")
         case .captions: String(localized: "Captions")
         case .autoCaptions: String(localized: "Auto captions")

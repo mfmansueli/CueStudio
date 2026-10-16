@@ -36,9 +36,9 @@ extension QuickEditViewModel {
         toast.show(cover == nil ? String(localized: "Cover removed") : String(localized: "Cover saved · Goes to Photos with the video"))
     }
 
-    /// Cancel: the edit keeps its cover; photos copied in for nothing go.
+    /// Cancel: the edit keeps its cover; every photo copied in this time goes, unless the edit already reads it.
     func cancelCoverStudio(_ studio: CoverStudioViewModel) {
-        EditMediaFiles.remove(studio.unusedImports.subtracting(edit.mediaFileNames))
+        EditMediaFiles.remove(studio.importedFiles.subtracting(edit.mediaFileNames))
         coverStudio = nil
     }
 
@@ -95,7 +95,7 @@ extension QuickEditViewModel {
             script.text.split(whereSeparator: { ".!?\n".contains($0) }).first.map { $0.trimmingCharacters(in: .whitespaces) }
         }
         var seen = Set<String>()
-        return [edit.texts.first?.text, take.scriptTitle, sentence]
+        return [edit.texts.first { $0.graphic == nil }?.text, take.scriptTitle, sentence]
             .compactMap { $0?.trimmingCharacters(in: .whitespacesAndNewlines) }
             .filter { !$0.isEmpty && $0.count <= 60 && seen.insert($0.lowercased()).inserted }
             .prefix(3)
@@ -106,11 +106,12 @@ extension QuickEditViewModel {
 
     /// Draws the cover for the timeline's cover block, a moment after it changed.
     func drawCover() {
-        guard drawnCover != edit.cover || coverImage == nil else { return }
+        let key = edit.coverDrawingKey
+        guard drawnCoverKey != key || coverImage == nil else { return }
         coverTask?.cancel()
         guard let cover = edit.cover else {
             coverImage = nil
-            drawnCover = nil
+            drawnCoverKey = nil
             isDrawingCover = false
             return
         }
@@ -122,7 +123,7 @@ extension QuickEditViewModel {
             let image = await self.editing.coverImage(cover, forVideoAt: self.videoURL, edit: current)
             guard !Task.isCancelled else { return }
             self.coverImage = image
-            self.drawnCover = cover
+            self.drawnCoverKey = key
             self.isDrawingCover = false
         }
     }

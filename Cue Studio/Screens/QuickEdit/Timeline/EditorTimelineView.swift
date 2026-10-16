@@ -60,6 +60,10 @@ struct EditorTimelineView: UIViewRepresentable {
                 beginHandle: { viewModel.beginTimelineHandle($0, snapTimes: $1) },
                 moveHandle: { viewModel.moveTimelineHandle(by: $0) },
                 endHandle: { viewModel.endTimelineHandle() },
+                holdClip: { id in
+                    viewModel.selection = .clip(id)
+                    viewModel.openClipOrder()
+                },
                 zoom: { viewModel.setTimelineZoom($0) },
                 nudge: { viewModel.nudgePlayhead(by: $0) },
                 selectClipAtPlayhead: { viewModel.selectClipAtPlayhead() },

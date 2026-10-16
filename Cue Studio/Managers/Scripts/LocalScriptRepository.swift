@@ -18,7 +18,19 @@ struct LocalScriptRepository: ScriptRepository {
         // Unencoded: `path()` gives "Application%20Support", which FileManager never finds.
         guard FileManager.default.fileExists(atPath: fileURL.path(percentEncoded: false)) else { return ScriptLibrarySnapshot() }
         let data = try Data(contentsOf: fileURL)
-        return try JSONDecoder.library.decode(ScriptLibrarySnapshot.self, from: data)
+        let snapshot = try JSONDecoder.library.decode(ScriptLibrarySnapshot.self, from: data)
+        // A script that couldn't be read is left out; the next save writes the library without it, so the file as it was is
+        // kept aside first.
+        let saved = ((try? JSONSerialization.jsonObject(with: data)) as? [String: Any])?["scripts"] as? [Any]
+        if let saved, saved.count > snapshot.scripts.count { keepCopy(of: data) }
+        return snapshot
+    }
+
+    /// `scripts.json` as it was, next to it (`scripts-kept-<date>.json`).
+    private func keepCopy(of data: Data) {
+        let stamp = ISO8601DateFormatter().string(from: .now).replacingOccurrences(of: ":", with: "-")
+        let copy = fileURL.deletingLastPathComponent().appending(path: "scripts-kept-\(stamp).json")
+        try? data.write(to: copy, options: [.atomic, .completeFileProtection])
     }
 
     func save(_ snapshot: ScriptLibrarySnapshot) throws {

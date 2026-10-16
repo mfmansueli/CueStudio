@@ -6,7 +6,7 @@
 import SwiftUI
 
 /// ✦ Smart, in two categories (`SmartPanelSection`). **Tools**: what Cue can do for the take with one tap, as violet tiles:
-/// Auto captions, Remove pauses, Studio Voice, Auto adjust and the take's Background. Each opens the panel that does it (Auto
+/// Edit by text, Auto captions, Remove pauses, Studio Voice, Auto adjust and the take's Background. Each opens the panel that does it (Auto
 /// adjust opens Adjust and measures the picture), so nothing happens that the creator can't see and undo. **Templates**: a whole
 /// look for a kind of video (`VideoTemplate`), one card each with what it changes, the one the edit is in marked; one Undo
 /// puts everything back. Violet is the AI's color; everything here runs on the iPhone.
@@ -35,6 +35,10 @@ struct SmartPanel: View {
     private var tiles: some View {
         ScrollView(.horizontal) {
             HStack(spacing: 8) {
+                // The editor's most "magic" tool first: cut the video by its words.
+                tile(id: "editByText", title: "Edit by text", systemImage: "text.badge.minus", status: nil) {
+                    viewModel.perform(.editByText)
+                }
                 tile(id: "captions", title: "Auto captions", systemImage: "captions.bubble", status: viewModel.smartCaptionsStatus) {
                     viewModel.openCaptions()
                 }
@@ -64,6 +68,13 @@ struct SmartPanel: View {
     /// Templates: a whole look for a kind of video, in one tap (one Undo).
     private var templates: some View {
         VStack(alignment: .leading, spacing: 8) {
+            // A template styles the captions: without them yet, one tap makes them first.
+            if viewModel.edit.captions.isEmpty {
+                PanelNote(text: String(localized: "No captions yet. Make them and the template styles them too."))
+                PanelButton(label: String(localized: "Make captions"), systemImage: "captions.bubble", identifier: "edit.template.makeCaptions") {
+                    viewModel.openCaptions()
+                }
+            }
             ForEach(VideoTemplate.allCases) { template in
                 templateCard(template, isOn: viewModel.appliedVideoTemplate == template)
             }

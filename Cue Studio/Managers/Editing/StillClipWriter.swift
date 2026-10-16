@@ -16,7 +16,9 @@ nonisolated enum StillClipWriter {
     /// Frames per second of the still: the compositor shows the latest one at any rate.
     static let frameRate: Int32 = 15
 
-    /// Writes `length` seconds of the frame at `time` of the video at `url`. Returns the new file's name in `EditMediaFiles`.
+    /// Writes `length` seconds of the frame at `time` of the video at `url`, off the main actor (a 4K frame takes about 2 s).
+    /// Returns the new file's name in `EditMediaFiles`.
+    @concurrent
     static func write(frameOf url: URL, at time: TimeInterval, length: TimeInterval) async throws -> String {
         let generator = AVAssetImageGenerator(asset: AVURLAsset(url: url))
         generator.appliesPreferredTrackTransform = true

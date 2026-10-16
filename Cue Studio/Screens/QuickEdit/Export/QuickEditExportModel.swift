@@ -44,6 +44,8 @@ final class QuickEditExportModel {
     private let photos: PhotoSaving
     private let editing: TakeEditing
     private let ledger: ExportLedgerService
+    /// Bytes free on the iPhone (`StorageSpace.available`); a test gives its own.
+    private let freeSpace: () -> Int64?
     private var pendsAfterPurchase = false
     /// The cover drawn for this export, reused by "Try again" and removed when the export closes.
     private var coverFile: URL?
@@ -55,9 +57,10 @@ final class QuickEditExportModel {
     init(
         take: Take, videoURL: URL, edit: @escaping () -> TakeEdit, takes: TakeLibraryService, quota: UsageQuotaService,
         tier: @escaping () -> MembershipTier, exporter: VideoExporting, photos: PhotoSaving, editing: TakeEditing,
-        ledger: ExportLedgerService
+        ledger: ExportLedgerService, freeSpace: @escaping () -> Int64? = { StorageSpace.available() }
     ) {
         self.take = take
+        self.freeSpace = freeSpace
         self.videoURL = videoURL
         self.edit = edit
         self.takes = takes
@@ -108,13 +111,16 @@ final class QuickEditExportModel {
 
     /// "≈ 48 MB": about 1.1 MB a second at 720p, 2.2 at 1080p and 6.5 at 4K, half again at 60 fps.
     var estimatedSize: String {
+        String(localized: "≈ \(Int(estimatedMegabytes)) MB")
+    }
+
+    private var estimatedMegabytes: Double {
         let perSecond = switch resolution {
         case .hd720: 1.1
         case .hd1080: 2.2
         case .uhd4K: 6.5
         }
-        let megabytes = max(1, (edit().editedDuration * perSecond * (frameRate >= 50 ? 1.5 : 1)).rounded())
-        return String(localized: "≈ \(Int(megabytes)) MB")
+        return max(1, (edit().editedDuration * perSecond * (frameRate >= 50 ? 1.5 : 1)).rounded())
     }
 
     /// "4 of 5 free exports left"; nil on Pro.
@@ -166,6 +172,11 @@ final class QuickEditExportModel {
                     paywall = .export
                     return
                 }
+                // A full iPhone is told now, with how much to free, never after minutes of work.
+                if let missing = StorageSpace.shortfall(forExportOf: estimatedMegabytes, available: freeSpace()) {
+                    phase = .failed(String(localized: "Not enough space on this iPhone. Free about \(missing) MB and try again."))
+                    return
+                }
                 let url = try await exporter.export(videoAt: videoURL, options: options) { [weak self] fraction in
                     guard let self, self.isExporting else { return }
                     self.phase = .exporting(min(max(fraction, 0), 1))
@@ -204,7 +215,8 @@ final class QuickEditExportModel {
     /// The editor's export closed with nothing in flight: the rendered file and the cover image go.
     func leave() {
         guard !isExporting, activity == nil else { return }
-        if let coverFile {
+        // The cover image stays while its share sheet is open.
+        if let coverFile, coverActivity == nil {
             try? FileManager.default.removeItem(at: coverFile)
             self.coverFile = nil
         }

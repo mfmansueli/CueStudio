@@ -17,6 +17,32 @@ Progresso item a item: `reports/editor-award-checklist.md`. Estado atual de cada
 | "Join next" juntava legendas de gravações diferentes | Junta só a próxima fala da mesma gravação |
 | Ajuste e arraste de legenda gravavam o tempo da gravação errada | Limitados ao clipe da própria linha |
 
+### Achados da auditoria de UX e da revisão de código (16/10), corrigidos
+
+**Auditoria de UX e confiabilidade:**
+
+| Bug | Correção |
+|---|---|
+| Cache do Studio Voice podia apagar um som em uso numa montagem | Arquivo reusado conta como recente; arquivo de outra chave nunca é apagado; arquivo usado nos últimos 2 min fica |
+| "Colar look em todos" desligava Filters, Adjust e Background do vídeo inteiro | Em todos: vai para os ajustes do vídeo e limpa as cópias dos clipes; num clipe: guarda só o que difere |
+| Congelar quadro perdia o fundo, entrava no lugar errado perto do início de um clipe e pesava na thread da interface | Fundo e look do clipe; antes do clipe quando colado no início; fora da thread da interface |
+| Templates moviam os textos de lugar | A posição e o alinhamento de cada texto ficam |
+| A etiqueta "NEW" virava título da capa e hook do template | Gráficos não sugerem título |
+| "Use on every cut" não copiava a duração | Copia; se já está em todos, avisa |
+| Edit by text cortava todas as cópias do clipe e mantinha a seleção depois do Undo | Corta só o clipe onde as palavras foram lidas; a seleção limpa quando os cortes mudam |
+| Efeitos sonoros não acompanhavam os cortes | Seguem o momento em que foram postos, como os textos |
+| Cover Studio: quadro antigo podia vencer ao arrastar a faixa; Vision e o look na thread da interface | O mais recente vence; desenho fora da thread da interface |
+
+**Revisão de código antes do PR:**
+
+| Bug | Correção |
+|---|---|
+| A limpeza de arquivos apagaria todas as mídias com mais de 7 dias se a lista de takes falhasse ao carregar | A limpeza de mídias foi descartada; só sons temporários de sessões anteriores são apagados |
+| O efeito sonoro saía do lugar ao arrastar uma ponta para fora e de volta | O efeito é recalculado a partir de onde o gesto começou |
+| O congelar quadro entrava no lugar errado se a pessoa cortasse durante a espera (~2 s em 4K) | Se os cortes mudaram, nada entra e um aviso pede para congelar de novo |
+| Um arraste que não pegava nada deixava o desfazer travado | O passo de desfazer só começa quando o arraste pega algo |
+| A capa deixava fotos para trás ao cancelar; o arquivo da capa era apagado com a folha de compartilhar aberta | As duas coisas corrigidas |
+
 ## 2. Melhorias
 
 - **Capa refeita (Cover Studio):** tela cheia, 5 etapas (Imagem → Modelo → Título → Gráficos → Finalizar).
@@ -30,6 +56,20 @@ Progresso item a item: `reports/editor-award-checklist.md`. Estado atual de cada
 - **"Media" na barra principal:** a folha explica a diferença entre sobre o vídeo (B-roll) e clipe na sequência.
 - **Animações prontas** (Fade, Slide up, Slide in, Gentle zoom, Pop, In and out): com duração e força, por cima dos keyframes, que continuam editáveis.
 - **Copiar e colar look:** escolhendo Adjust, Filter, Background e Zoom, num clipe ou em todos.
+- **Layout de editor de celular** (depois de comparar com CapCut, Edits e InShot; decisão sua):
+  - **Barras:**
+    - Principal: Edit · Captions · Text · ✦ Smart · Media · Audio · **Format** · Filters · Cover.
+    - Clipe: só ferramentas do clipe, as mais usadas primeiro (Split, Speed, Zoom, Volume…), com **Reorder**.
+    - Texto: ganha **Animation**. Mídia: ganha **Duplicate**.
+  - **Reordenar clipes:** segurar um clipe na timeline abre a lista para arrastar.
+  - **Arrastar no tempo:** com um texto, B-roll, legenda ou som escolhido, arrastar o bloco o move, com ímã nos cortes.
+  - **Edit by text à vista:** primeiro bloco do ✦ Smart e botão no painel de Legendas.
+  - **Templates:** aba própria no ✦ Smart.
+- **Texto grande** (conferido no iPhone SE em tamanho de acessibilidade): nada cortado nos painéis novos.
+- **Robustez:**
+  - Exportação avisa antes quando falta espaço ("Free about N MB").
+  - Sons temporários de sessões anteriores são apagados ao abrir o app.
+  - Travamentos, CPU e escrita em disco medidos pelo MetricKit chegam ao Crashlytics (sem conteúdo do usuário).
 
 ## 3. Funcionalidades novas
 
@@ -112,6 +152,17 @@ Nenhuma mudança deixou a tela em branco.
 **Congelar quadro:** gerar o clipe leva 0,6 s em 1080p e 1,8 s em 4K.
 
 ## 7. Limitações e o que não foi validado
+
+- **Diferenças com o CapCut que ficaram para depois:**
+  - localizar e trocar nas legendas, e seleção de várias linhas;
+  - Replace clip;
+  - Extract audio.
+- **Bibliotecas protegidas (problema anterior a esta branch, corrigido nela):**
+  - **Antes:** uma única take ou um único roteiro ilegível fazia a biblioteca inteira carregar vazia, e a próxima gravação a salvava vazia por cima do arquivo, apagando tudo.
+  - **Agora:**
+    - cada take, roteiro, texto, mídia, música e legenda é lido separado, e só o item com problema fica de fora;
+    - o arquivo original é guardado ao lado (`takes-kept-…json` / `scripts-kept-…json`);
+    - uma biblioteca que não pôde ser lida, por exemplo antes do primeiro desbloqueio do aparelho, nunca é sobrescrita.
 
 - **Travamento na primeira medição de latência:** o cenário de fundo desfocado passou de 5 minutos logo depois das exportações 4K. Rodei a `main` e esta branch de novo, com o aparelho descansado, e as duas passaram com os mesmos números. Concluí que foi o estado do aparelho, mas não reproduzi a causa.
 - **Congelar quadro em vídeo HDR:** o quadro sai em SDR. Num vídeo HDR pode ficar um pouco diferente dos clipes vizinhos. Não testado com gravação HDR real.

@@ -928,8 +928,18 @@ auditoria: `reports/editor-award-checklist.md`.
 - **Legendas na montagem** (`CaptionJoin`): **Join next** junta só a próxima coisa dita na mesma gravação, pela ordem de reprodução; outra gravação
   ("The next line is from another clip") ou um momento anterior ("…said earlier in this clip") são recusados. O ajuste de início/fim fica dentro do
   clipe da linha; arrastar a barra para um clipe de outra gravação é recusado ("A line stays on its own clip"); Split funciona numa cópia.
-- **Escopo das ferramentas:** na barra do clipe, Crop e Studio Voice têm o selo **All** e ficam num grupo separado (VoiceOver: "Crop, whole
-  video"); o subtítulo do Crop é "Whole video · format for where you post".
+- **Barras como um editor de celular (decisão do dono, 16/10/2026, depois de comparar com CapCut, Edits e InShot; diverge da ordem do quadro
+  v29 · 7.2).** Principal: **Edit · Captions · Text · ✦ Smart · Media · Audio · Format · Filters · Cover** — a ordem em que um vídeo falado é feito, as
+  cinco primeiras na tela do iPhone. **Format** (antes Crop, só na barra do clipe) abre o painel "Format" ("Whole video · format for where you post").
+  Clipe: **Split · Speed · Zoom · Volume · Duplicate · Freeze frame · Reorder · Adjust · Filters · Background · Copy look · Paste look · Delete**: só o
+  que é do clipe, o mais usado primeiro; o que muda o vídeo inteiro (Format, Studio Voice, Media) fica na principal. Texto ganha **Animation** (Style ›
+  Motion); mídia ganha **Duplicate** (por cima, mesmo arquivo).
+- **Reordenar clipes** (`ClipOrderSheet`): **segurar um clipe** na timeline (0,45 s, toque háptico) ou **Reorder** na barra do clipe abre a lista dos
+  clipes com quadro, número, origem e duração, arrastados pela alça; cada mudança é um passo de desfazer e o que toca no clipe vai junto. Um clipe só:
+  "Split or add a clip to reorder".
+- **Arrastar no tempo:** com um texto, mídia, legenda ou som escolhido, arrastar o **corpo** do bloco o move (o tamanho fica), grudando nos cortes e
+  bordas com toque háptico; as pontas amarelas continuam aparando (`TimelineGeometry.bodies`, `HandleTarget.move`).
+- **Edit by text à vista:** primeiro bloco de ✦ Smart › Tools, botão "Edit by text · cut words from the video" no painel de legendas e o menu da faixa.
 - **Mídia na barra principal** (**Media**, `.addMediaChoice`): a folha explica cada caminho — **Over the video** (B-roll: "Plays over your video…
   Move and resize it on the preview") e **As a clip** ("Becomes a clip of its own in the sequence, after the clip at the playhead. Videos only.").
 - **Animações prontas** (`MotionPreset`, `OverlayAnimation`, `MotionPresetPicker` no topo do painel de movimento de textos, gráficos e mídias):
@@ -937,7 +947,8 @@ auditoria: `reports/editor-award-checklist.md`.
   cima dos keyframes (base + animação), então a edição manual em **Keyframes** ("To move it your own way") continua valendo junto.
 - **Copiar e colar o look** (`CopiedClipLook`, `ClipLookPart`, `PasteLookSheet`): **Copy look** na barra do clipe guarda Adjust, Filter,
   Background e Zoom do clipe; **Paste look** abre a folha para escolher as partes ("The words, sound and timing stay") e colar no clipe ou em
-  **Every clip**, num passo de desfazer.
+  **Every clip**, num passo de desfazer. Em todos os clipes, o look vai para os ajustes do vídeo e cada clipe perde a cópia própria das partes
+  coladas (Filters, Adjust e Background do vídeo inteiro continuam valendo); num clipe, ele guarda só o que difere do vídeo.
 - **Trecho do B-roll** (`MediaOverlay.mediaStart`, `MediaTrimStrip`): no painel da mídia, **Part of the video** mostra a faixa do arquivo com o trecho
   ("0:03 to 0:05 of 0:06"); arrastar escolhe de onde começa, **Plays for** muda a duração; nunca passa do fim do arquivo. Edições antigas: do 0.
 - **Efeitos sonoros** (`SoundEffect`, `SoundEffectSynth`, na folha "Add music or a sound"): 11 sons **sintetizados no aparelho pelo próprio Cue**
@@ -957,13 +968,28 @@ auditoria: `reports/editor-award-checklist.md`.
   no Cover Studio, "Next" sem o nome da etapa, "Video" no lugar de "Frame from video" e a barra de etapas só com ícones.
 - **Templates** (`VideoTemplate`, ✦ Smart › **Templates**: Bold hook, Tutorial, Story, Clean, Interview): legendas (tema e revelação, mantendo linhas,
   posição e margens), tipo e animação de todos os textos (não dos gráficos) e o estilo dos próximos; sem texto, abre o vídeo com o título do
-  roteiro. As palavras, os cortes, o som e os gráficos ficam; **um** Undo desfaz tudo ("Bold hook on the whole video" · Undo).
+  roteiro. As palavras, a posição de cada texto, os cortes, o som e os gráficos ficam; **um** Undo desfaz tudo ("Bold hook on the whole video" ·
+  Undo). Sem legendas, a aba diz "No captions yet…" com **Make captions**.
 - **Transições** (`EditTransition`, `TransitionDrawing`, Core Image sem kernel próprio): além de None, Dissolve, Fade e Slide, **Zoom, Blur,
   Flash, Push, Punch e Wipe** (movimento adaptado do GL Transitions, MIT; atribuição em Settings › Acknowledgements e `THIRD_PARTY_NOTICES.md`).
   **Duration** de 0,2 a 1,5 s por corte (`EditSegment.transitionDuration`; nil = a duração própria; um clipe curto encurta). O painel passou a
   `.medium` e as opções quebram em linhas de 5.
-- **Freeze frame** (barra do clipe, `StillClipWriter`): o quadro da agulha vira um vídeo mudo de 5 s na mídia da edição e entra como clipe de 2 s
-  ali (o clipe é dividido), com o look do clipe de origem; a alça do fim estica até 5 s. A música e as narrações continuam; a gravação nunca muda.
+- **Freeze frame** (barra do clipe, `StillClipWriter`, fora da thread da interface, toast "Freezing the frame…"; se os cortes mudarem enquanto o
+  quadro é feito, nada entra e o toast pede para congelar de novo): o quadro da agulha vira um vídeo
+  mudo de 5 s na mídia da edição e entra como clipe de 2 s ali (o clipe é dividido; colado no início de um clipe, entra antes dele), com o look e o
+  fundo do clipe de origem; a alça do fim estica até 5 s. A música e as narrações continuam; a gravação nunca muda.
+- **Efeitos sonoros seguem o momento** (`MusicClip.following`): um corte antes de um efeito o traz junto, como textos e legendas; a música fica.
+- **Use on every cut** copia também a duração; se todos já têm, o toast diz "Every cut already has it".
+- **Edit by text numa montagem** corta só o clipe onde as palavras foram lidas (uma cópia as mantém); palavras com 44 pt; a nota diz que Undo traz
+  de volta o que foi cortado.
+- **iPhone quente** (`DeviceHeat`, `thermalState` seguido com a folha aberta): em `.serious`/`.critical` a exportação diz "The iPhone is hot, so
+  the export takes longer. Let it cool down if you can." (`warnText`), na escolha e durante o progresso; a qualidade e as animações não mudam.
+- **Espaço e arquivos:** antes de exportar, "Not enough space on this iPhone. Free about N MB and try again." (`StorageSpace`, o dobro do tamanho
+  estimado + 150 MB); no lançamento, `EditStorageCleaner` apaga só os sons temporários de sessões passadas (as mídias das edições
+  nunca são varridas: só a edição remove o que acrescentou; um varredor de "órfãos" foi descartado na revisão porque uma lista de takes que não
+  carregasse apagaria tudo). **Bibliotecas:** takes, roteiros e as listas de uma edição (textos, mídias, músicas,
+  legendas…) são lidos item por item (`LossyList`); um item ilegível fica de fora sozinho e o arquivo como era é guardado ao lado
+  (`takes-kept-…`/`scripts-kept-…`); uma biblioteca que não pôde ser lida nunca é gravada por cima. Travamentos, CPU e escrita em disco medidos pelo MetricKit chegam ao Crashlytics como non-fatal (`DiagnosticsObserver`).
 - **Fora desta entrega** (avaliado, não feito para não entregar demonstração frágil; ver `reports/editor-award-checklist.md`): reverso, curvas de
   velocidade, cortes nas batidas da música, reenquadramento por rosto, estabilização e rastreamento.
 - **Testes:** `CoverTextLayoutTests` (títulos longos, árabe, tailandês, japonês, emoji, alemão), `CoverCompositionTests`, `CoverStudioViewModelTests`,

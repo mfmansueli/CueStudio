@@ -36,6 +36,12 @@ nonisolated enum SoundEffectSynth {
         return normalized(raw) + [Float](repeating: 0, count: max(0, shortest - raw.count))
     }
 
+    /// How long the effect's file plays, read from the file (cheap), not by making the sound again.
+    static func duration(ofFile url: URL) -> TimeInterval? {
+        guard let file = try? AVAudioFile(forReading: url) else { return nil }
+        return Double(file.length) / file.processingFormat.sampleRate
+    }
+
     /// The effect as a file in the caches folder, made the first time it's asked for.
     static func file(for effect: SoundEffect) throws -> URL {
         let folder = URL.cachesDirectory.appending(path: "SoundEffects", directoryHint: .isDirectory)

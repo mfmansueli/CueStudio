@@ -341,7 +341,7 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         if let timeline = try container.decodeIfPresent(EditTimeline.self, forKey: .timeline) {
             self.timeline = timeline
-            sources = (try? container.decodeIfPresent([ClipSource].self, forKey: .sources)) ?? []
+            sources = container.decodeLossy([ClipSource].self, forKey: .sources)
             suggestions = try container.decodeIfPresent([CleanUpSuggestion].self, forKey: .suggestions) ?? []
             cleanUpAnalyzed = try container.decodeIfPresent(Bool.self, forKey: .cleanUpAnalyzed) ?? false
             cleanUpAnalyzedSources = (try? container.decodeIfPresent([UUID].self, forKey: .cleanUpAnalyzedSources)) ?? []
@@ -358,8 +358,8 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
         // Edits saved before montages could be treated keep their other recordings as they were.
         voiceReach = (try? container.decodeIfPresent(StudioVoiceReach.self, forKey: .voiceReach)) ?? .takeOnly
         evensOutVoices = (try? container.decodeIfPresent(Bool.self, forKey: .evensOutVoices)) ?? false
-        music = (try? container.decodeIfPresent([MusicClip].self, forKey: .music)) ?? []
-        backgrounds = (try? container.decodeIfPresent([RecordingBackground].self, forKey: .backgrounds)) ?? []
+        music = container.decodeLossy([MusicClip].self, forKey: .music)
+        backgrounds = container.decodeLossy([RecordingBackground].self, forKey: .backgrounds)
         exposure = try container.decodeIfPresent(Double.self, forKey: .exposure) ?? 0
         contrast = try container.decodeIfPresent(Double.self, forKey: .contrast) ?? 0
         warmth = try container.decodeIfPresent(Double.self, forKey: .warmth) ?? 0
@@ -386,7 +386,8 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
         captionLook = try? container.decodeIfPresent(TextLook.self, forKey: .captionLook)
         captionPreset = try? container.decodeIfPresent(TypePreset.self, forKey: .captionPreset)
         captionPosition = try container.decodeIfPresent(CaptionPosition.self, forKey: .captionPosition) ?? .bottom
-        captions = try container.decodeIfPresent([CaptionCue].self, forKey: .captions) ?? []
+        // One line that can't be read never takes the others (or the whole edit) with it.
+        captions = container.decodeLossy([CaptionCue].self, forKey: .captions)
         captionTranscript = try? container.decodeIfPresent(CaptionTranscript.self, forKey: .captionTranscript)
         sourceTranscripts = (try? container.decodeIfPresent([CaptionTranscript].self, forKey: .sourceTranscripts)) ?? []
         captionLanguage = try? container.decodeIfPresent(CueLanguage.self, forKey: .captionLanguage)
@@ -394,9 +395,9 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
         captionTranslations = (try? container.decodeIfPresent([CaptionTranslation].self, forKey: .captionTranslations)) ?? []
         captionDisplay = (try? container.decodeIfPresent(CaptionDisplay.self, forKey: .captionDisplay)) ?? .original
         // Added later: edits saved before have none, and a damaged one loses only that part.
-        texts = (try? container.decodeIfPresent([TextOverlay].self, forKey: .texts)) ?? []
-        media = (try? container.decodeIfPresent([MediaOverlay].self, forKey: .media)) ?? []
-        voiceOvers = (try? container.decodeIfPresent([VoiceOverClip].self, forKey: .voiceOvers)) ?? []
+        texts = container.decodeLossy([TextOverlay].self, forKey: .texts)
+        media = container.decodeLossy([MediaOverlay].self, forKey: .media)
+        voiceOvers = container.decodeLossy([VoiceOverClip].self, forKey: .voiceOvers)
         creatorStyle = try? container.decodeIfPresent(CreatorStyle.self, forKey: .creatorStyle)
         textLook = try? container.decodeIfPresent(TextLook.self, forKey: .textLook)
         textPreset = try? container.decodeIfPresent(TypePreset.self, forKey: .textPreset)

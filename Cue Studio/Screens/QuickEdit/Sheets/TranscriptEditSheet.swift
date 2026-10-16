@@ -35,7 +35,7 @@ struct TranscriptEditSheet: View {
         let list = viewModel.transcriptWords
         let picked = viewModel.transcriptSelection
         return ScrollView {
-            FlowLayout(spacing: 4, lineSpacing: 6) {
+            FlowLayout(spacing: 4, lineSpacing: 0) {
                 ForEach(Array(list.enumerated()), id: \.element.id) { index, word in
                     let isPicked = picked?.contains(index) ?? false
                     Button { viewModel.tapTranscriptWord(at: index) } label: {
@@ -46,11 +46,12 @@ struct TranscriptEditSheet: View {
                             .padding(.horizontal, 5)
                             .padding(.vertical, 3)
                             .background(isPicked ? Palette.acc : Color.clear, in: RoundedRectangle(cornerRadius: 6, style: .continuous))
-                            .frame(minHeight: 34)
+                            // Each word is a 44 pt target (HIG), rows touching.
+                            .frame(minHeight: Metrics.hitTarget)
                             .contentShape(Rectangle())
                     }
                     .buttonStyle(.plain)
-                    .accessibilityLabel(Text(word.isRemoved ? "\(word.text), cut" : word.text))
+                    .accessibilityLabel(word.isRemoved ? Text("\(word.text), cut") : Text(verbatim: word.text))
                     .accessibilityAddTraits(isPicked ? .isSelected : [])
                     .accessibilityIdentifier("edit.transcript.word.\(index)")
                 }
@@ -64,12 +65,15 @@ struct TranscriptEditSheet: View {
     private var actions: some View {
         let picked = viewModel.selectedTranscriptWords
         if picked.isEmpty {
-            PanelNote(text: String(localized: "Tap a word, then another to pick everything between. Crossed-out words were cut."))
+            // A montage's cut words leave the list (they may be from a copy of a clip): there, Undo brings them back.
+            PanelNote(text: viewModel.edit.timeline.isArranged
+                ? String(localized: "Tap a word, then another to pick everything between. Undo brings back what you cut.")
+                : String(localized: "Tap a word, then another to pick everything between. Crossed-out words were cut."))
         } else {
             VStack(spacing: 8) {
                 if picked.contains(where: { !$0.isRemoved }) {
                     PanelButton(
-                        label: String(localized: "Cut from video · \(picked.filter { !$0.isRemoved }.count) words"), systemImage: "scissors",
+                        label: String(localized: "Cut from video (\(picked.filter { !$0.isRemoved }.count))"), systemImage: "scissors",
                         isPrimary: true, identifier: "edit.transcript.cut"
                     ) { viewModel.cutSelectedWords() }
                     PanelButton(

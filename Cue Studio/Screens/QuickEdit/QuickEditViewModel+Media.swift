@@ -122,6 +122,27 @@ extension QuickEditViewModel {
         return up ? position < ordered.count - 1 : position > 0
     }
 
+    /// A copy of the photo or video on top of the others, a little lower when it doesn't fill the frame, picked. The file is
+    /// shared (it goes only when nothing names it).
+    func duplicateMedia(_ id: UUID) {
+        guard let original = edit.media.first(where: { $0.id == id }) else { return }
+        // The copy shows over the same moment: never more than the export draws at once.
+        let shown = mediaBars.first { $0.id == id }?.span ?? original.span
+        guard LayerLanes.peak(of: mediaBars.map(\.span), within: shown) < MediaOverlay.simultaneousLimit else {
+            toast.show(String(localized: "Max 3 photos or videos"))
+            return
+        }
+        var copy = original
+        copy.id = UUID()
+        copy.layer = (edit.media.map(\.stackOrder).max() ?? 0) + 1
+        if copy.layout != .fullFrame {
+            copy.center = OverlayPoint(x: original.center.x, y: min(0.9, original.center.y + 0.08)).clamped
+        }
+        change { $0.media.append(copy) }
+        selection = .media(copy.id)
+        toast.show(String(localized: "Media duplicated"))
+    }
+
     func deleteMedia(_ id: UUID) {
         change { $0.media.removeAll { $0.id == id } }
         toast.show(String(localized: "Media removed"))

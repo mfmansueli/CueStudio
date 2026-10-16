@@ -67,15 +67,20 @@ extension QuickEditViewModel {
         commit(timeline, key: "transitionDuration.\(index)")
     }
 
-    /// The same transition on every cut, in one undo step.
+    /// The same transition on every cut, as long as the picked cut's, in one undo step. Already everywhere: a toast says so.
     func setTransitionOnEveryCut(_ transition: EditTransition) {
         guard isReady else { return }
+        let duration = selectedJoinIndex.flatMap { edit.timeline.segments[$0].transitionDuration }
         var timeline = edit.timeline
         var changed = false
-        for index in timeline.segments.indices.dropFirst() where timeline.setTransition(transition, atJoin: index) {
-            changed = true
+        for index in timeline.segments.indices.dropFirst() {
+            if timeline.setTransition(transition, atJoin: index) { changed = true }
+            if transition != .hardCut, timeline.setTransitionDuration(duration, atJoin: index) { changed = true }
         }
-        guard changed else { return }
+        guard changed else {
+            toast.show(String(localized: "Every cut already has it"))
+            return
+        }
         commit(timeline)
         toast.show(transition == .hardCut
             ? String(localized: "Every cut is a hard cut")

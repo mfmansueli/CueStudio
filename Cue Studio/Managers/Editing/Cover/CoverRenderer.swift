@@ -14,6 +14,7 @@ nonisolated enum CoverRenderer {
     /// Width of the cover image in pixels.
     static let width: CGFloat = 1080
 
+    @concurrent
     static func image(for cover: VideoCover, videoURL: URL, edit: TakeEdit, width: CGFloat = CoverRenderer.width) async -> UIImage? {
         let aspect = CGFloat(edit.aspect.widthOverHeight)
         let size = CGSize(width: width.rounded(), height: (width / aspect).rounded())
@@ -79,6 +80,8 @@ nonisolated enum CoverRenderer {
 
     /// The picture `source` shows: a frame of one of the edit's recordings (cropped to the take's frame, with its clip's look),
     /// or a photo, upright. Nil when it can't be read.
+    /// Off the main actor: Vision (skin, the person) and the full frame's look are heavy.
+    @concurrent
     static func picture(for source: CoverSource, videoURL: URL, edit: TakeEdit) async -> UIImage? {
         switch source {
         case .frame, .clipFrame:

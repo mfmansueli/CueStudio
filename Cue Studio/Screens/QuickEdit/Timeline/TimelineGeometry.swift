@@ -160,10 +160,13 @@ nonisolated struct TimelineGeometry: Equatable, Sendable {
     enum HandleTarget: Equatable, Sendable {
         case clip(UUID, TrimHandle)
         case item(ItemKind, UUID, TrimHandle)
+        /// The picked item's body: dragging it moves the item in time, keeping its length (CapCut's grammar).
+        case move(ItemKind, UUID)
 
         var edge: TrimHandle {
             switch self {
             case .clip(_, let edge), .item(_, _, let edge): edge
+            case .move: .start
             }
         }
     }
@@ -219,6 +222,8 @@ nonisolated struct TimelineGeometry: Equatable, Sendable {
     let pauses: [Pause]
     let joins: [Join]
     let handles: [Handle]
+    /// The picked track item's body, held to move it (never drawn: the item itself shows).
+    let bodies: [Handle]
     let ghosts: [Ghost]
     let coverFrame: CGRect
     let addFrame: CGRect
@@ -334,6 +339,7 @@ nonisolated struct TimelineGeometry: Equatable, Sendable {
         }
 
         var items: [Item] = []
+        var bodies: [Handle] = []
         func add(_ kind: ItemKind, _ inputs: [ItemInput]) {
             guard let lane = lanes.first(where: { $0.lane == kind.lane }) else { return }
             for item in inputs {
@@ -353,6 +359,10 @@ nonisolated struct TimelineGeometry: Equatable, Sendable {
                     handles.append(Self.handle(.item(kind, id, .start), x: x - Self.itemHandleWidth, width: Self.itemHandleWidth, lane: lane))
                     handles.append(Self.handle(.item(kind, id, .end), x: x + width, width: Self.itemHandleWidth, lane: lane))
                 }
+                if isSelected, kind != .voiceOver, kind != .recording {
+                    let body = CGRect(x: x, y: lane.y, width: width, height: lane.height)
+                    bodies.append(Handle(target: .move(kind, id), frame: body, hitFrame: body))
+                }
             }
         }
         add(.text, input.texts)
@@ -370,6 +380,7 @@ nonisolated struct TimelineGeometry: Equatable, Sendable {
         }
         self.items = items
         self.handles = handles
+        self.bodies = bodies
 
         var ghosts: [Ghost] = []
         if input.texts.isEmpty, input.media.isEmpty, let lane = lanes.first(where: { $0.lane == .text }) {
@@ -411,6 +422,11 @@ nonisolated struct TimelineGeometry: Equatable, Sendable {
     /// The handle under `point`, if any: handles come first.
     func handle(at point: CGPoint) -> Handle? {
         handles.first { $0.hitFrame.contains(point) }
+    }
+
+    /// What a drag starting at `point` holds: a handle (trims), else the picked item's body (moves it).
+    func dragTarget(at point: CGPoint) -> Handle? {
+        handle(at: point) ?? bodies.first { $0.hitFrame.contains(point) }
     }
 
     /// What a tap at `point` lands on, after handles: the cover, the "+", a pause, a cut's mark, a

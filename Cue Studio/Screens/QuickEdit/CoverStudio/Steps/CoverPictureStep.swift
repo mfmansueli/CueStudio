@@ -26,7 +26,8 @@ struct CoverPictureStep: View {
             HStack(spacing: 8) {
                 let frameTitle = typeSize.isAccessibilitySize ? String(localized: "Video") : String(localized: "Frame from video")
                 sourceButton(frameTitle, systemImage: "film", isOn: !viewModel.pictureIsPhoto) {
-                    if viewModel.pictureIsPhoto { viewModel.useFrame(atEdited: 0) }
+                    // Back to the frame it showed before the photo.
+                    if viewModel.pictureIsPhoto { viewModel.useFrame(atEdited: viewModel.lastFrameTime ?? 0) }
                 }
                 let isPhoto = viewModel.pictureIsPhoto
                 let ink = isPhoto ? Palette.chipOnInk : Palette.ink

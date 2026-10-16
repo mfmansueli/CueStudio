@@ -43,14 +43,25 @@ struct QuickEditToolbarTests {
 
     @Test func theMainToolbarHasEveryToolWithNothingPicked() async {
         let viewModel = await makeScenario().viewModel
-        #expect(ids(viewModel) == ["edit", "audio", "text", "addMedia", "captions", "filters", "smart", "cover"])
+        #expect(ids(viewModel) == ["edit", "captions", "text", "smart", "addMedia", "audio", "format", "filters", "cover"])
         #expect(viewModel.toolbarContextLabel == nil)
     }
 
-    @Test func smartComesBeforeCoverAndIsTheOnlyVioletOne() async {
+    @Test func formatIsOnTheMainBarAndOpensTheFormatPanel() async {
+        let viewModel = await makeScenario().viewModel
+        let format = viewModel.toolbarItems.first { $0.id == "format" }
+        #expect(format?.label == "Format")
+        #expect(format?.action == .open(.crop))
+        viewModel.perform(.open(.crop))
+        #expect(viewModel.panel == .crop)
+        #expect(EditorPanel.crop.title == "Format")
+    }
+
+    @Test func smartIsAmongTheFirstFiveAndIsTheOnlyVioletOne() async {
         let viewModel = await makeScenario().viewModel
         let items = viewModel.toolbarItems
-        #expect(items.map(\.id).suffix(2) == ["smart", "cover"])
+        #expect(items.prefix(5).map(\.id).contains("smart"))
+        #expect(items.last?.id == "cover")
         let smart = items.first { $0.id == "smart" }
         #expect(smart?.style == .smart)
         #expect(smart?.action == .open(.smart))
@@ -60,12 +71,14 @@ struct QuickEditToolbarTests {
         #expect(!items.contains { $0.id == "pauses" })
     }
 
-    @Test func adjustCropBackgroundAndOverlayAreInEditsClipToolsAndOverlayIsNamedOverlay() async {
+    @Test func theClipBarHasOnlyTheClipsOwnTools() async {
         let viewModel = await makeScenario().viewModel
         viewModel.perform(.selectClipAtPlayhead)
         let items = viewModel.toolbarItems
-        #expect(["adjust", "crop", "background", "media"].allSatisfy { id in items.contains { $0.id == id } })
-        #expect(items.first { $0.id == "media" }?.label == "Overlay")
+        #expect(["adjust", "background", "filters"].allSatisfy { id in items.contains { $0.id == id } })
+        // What changes the whole video lives on the main bar: no "All" badges on the clip's tools.
+        #expect(!items.contains { ["crop", "voice", "media"].contains($0.id) })
+        #expect(items.allSatisfy { $0.scopeBadge == nil })
         #expect(items.last?.id == "delete")
     }
 
@@ -82,7 +95,7 @@ struct QuickEditToolbarTests {
         #expect(viewModel.selection == .clip(viewModel.edit.timeline.segments[0].id))
         #expect(viewModel.toolbarContextLabel == "Clip")
         #expect(ids(viewModel) == [
-            "split", "speed", "adjust", "filters", "background", "zoom", "volume", "duplicate", "freeze", "copyLook", "pasteLook", "crop", "voice", "media",
+            "split", "speed", "zoom", "volume", "duplicate", "freeze", "reorder", "adjust", "filters", "background", "copyLook", "pasteLook",
             "delete",
         ])
         #expect(viewModel.toolbarItems.last?.style == .destructive)
@@ -99,7 +112,7 @@ struct QuickEditToolbarTests {
         let viewModel = await makeScenario().viewModel
         viewModel.perform(.addText(.title))
         #expect(viewModel.toolbarContextLabel == "Text")
-        #expect(ids(viewModel) == ["editText", "style", "keyframe", "duplicate", "delete"])
+        #expect(ids(viewModel) == ["editText", "style", "animation", "keyframe", "duplicate", "delete"])
         let line = CaptionCue(text: "Massa fina, muito recheio", start: 12.4, end: 14.6, origin: .manual)
         viewModel.edit.captions = [line]
         viewModel.selection = .caption(line.id)
@@ -113,6 +126,30 @@ struct QuickEditToolbarTests {
         viewModel.edit.voiceOvers = [voice]
         viewModel.selection = .voiceOver(voice.id)
         #expect(ids(viewModel) == ["volume", "reRecord", "delete"])
+    }
+
+    @Test func aTextsAnimationToolOpensItsStyleOnTheMotionTab() async throws {
+        let viewModel = await makeScenario().viewModel
+        viewModel.perform(.addText(.title))
+        viewModel.closePanel()
+        let animation = try #require(viewModel.toolbarItems.first { $0.id == "animation" })
+        #expect(animation.label == "Animation")
+        #expect(animation.action == .openTextAnimation)
+        viewModel.perform(animation.action)
+        #expect(viewModel.panel == .textStyle)
+        #expect(viewModel.panelTab == .motion)
+        #expect(viewModel.textStyleScope == .selected)
+    }
+
+    @Test func aPickedMediaCanBeDuplicatedFromItsTools() async throws {
+        let viewModel = await makeScenario().viewModel
+        let media = MediaOverlay(kind: .photo, fileName: "p.jpg", aspect: 1, mediaDuration: nil, span: TimeSpan(start: 2, end: 5))
+        viewModel.edit.media = [media]
+        viewModel.selection = .media(media.id)
+        #expect(ids(viewModel) == ["editMedia", "duplicate", "replaceMedia", "delete"])
+        viewModel.perform(.duplicateMedia)
+        #expect(viewModel.edit.media.count == 2)
+        #expect(viewModel.selection != .media(media.id))
     }
 
     @Test func textAndAudioMenus() async {

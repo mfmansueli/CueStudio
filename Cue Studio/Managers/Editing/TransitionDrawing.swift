@@ -130,12 +130,13 @@ nonisolated enum TransitionDrawing {
         _ image: CIImage, in extent: CGRect, by detail: CGFloat, blur: (CIImage, CGFloat) -> CIImage?
     ) -> CIImage {
         let scale = min(1, max(0.25, 1 / max(detail, 1)))
-        let small = image.clampedToExtent()
-            .transformed(by: CGAffineTransform(translationX: -extent.minX, y: -extent.minY).scaledBy(x: scale, y: scale))
+        // To a copy at the origin, `scale` as big; then back: the inverse, in the inverse order.
+        let down = CGAffineTransform(translationX: -extent.minX, y: -extent.minY).concatenating(CGAffineTransform(scaleX: scale, y: scale))
+        let small = image.clampedToExtent().transformed(by: down)
         let smallExtent = CGRect(x: 0, y: 0, width: extent.width * scale, height: extent.height * scale)
         guard let blurred = blur(small, scale) else { return image }
         return blurred.cropped(to: smallExtent).clampedToExtent()
-            .transformed(by: CGAffineTransform(scaleX: 1 / scale, y: 1 / scale).translatedBy(x: extent.minX * scale, y: extent.minY * scale))
+            .transformed(by: down.inverted())
             .cropped(to: extent)
     }
 

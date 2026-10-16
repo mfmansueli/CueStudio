@@ -36,6 +36,13 @@ struct CaptionsPanel: View {
                             .accessibilityIdentifier("edit.captionsLanguageNote")
                     }
                     CaptionStatusRow(viewModel: viewModel)
+                    // Edit by text from where the words are: cut the video by its words.
+                    if picker == nil, !viewModel.edit.captions.isEmpty {
+                        PanelButton(
+                            label: String(localized: "Edit by text · cut words from the video"), systemImage: "text.badge.minus",
+                            identifier: "edit.captionsEditByText"
+                        ) { viewModel.perform(.editByText) }
+                    }
                     switch picker {
                     case .language: languageList
                     case .translation: translationList

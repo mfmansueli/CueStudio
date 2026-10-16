@@ -50,7 +50,9 @@ struct CoverTitleStep: View {
                 }
             }
             group(String(localized: "Color")) {
-                PanelSwatches(label: String(localized: "Text"), colors: OverlayColor.textSwatches, selection: style.textColor, identifier: "cover.textColor") { color in
+                PanelSwatches(
+                    label: String(localized: "Text"), colors: OverlayColor.textSwatches, selection: style.textColor, identifier: "cover.textColor"
+                ) { color in
                     viewModel.updateTitle { $0.textColor = color }
                 }
                 PanelSwatches(label: String(localized: "Highlight"), colors: Self.accents, selection: style.accent, identifier: "cover.accent") { color in

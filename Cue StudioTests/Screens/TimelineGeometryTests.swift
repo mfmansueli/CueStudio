@@ -235,6 +235,51 @@ struct TimelineGeometryTests {
         #expect(geometry.handle(at: CGPoint(x: 5 * 44, y: end.frame.midY)) == nil)
     }
 
+    @Test func aDragTakesATrimHandleBeforeThePickedItemsBody() throws {
+        let geometry = TimelineGeometry(input { input in
+            input.texts = [TimelineGeometry.ItemInput(id: text, span: TimeSpan(start: 1, end: 4), label: "Title")]
+            input.selection = .text(text)
+        })
+        let lane = try #require(geometry.lane(.text))
+        let y = lane.y + lane.height / 2
+        // The start handle sits just before the bar, the end one just after; the body in between moves it.
+        #expect(geometry.dragTarget(at: CGPoint(x: 1 * 44 - 4, y: y))?.target == .item(.text, text, .start))
+        #expect(geometry.dragTarget(at: CGPoint(x: 2.5 * 44, y: y))?.target == .move(.text, text))
+        #expect(geometry.dragTarget(at: CGPoint(x: 4 * 44 + 2, y: y))?.target == .item(.text, text, .end))
+        // A tap is still a tap: the body is not a handle.
+        #expect(geometry.handle(at: CGPoint(x: 2.5 * 44, y: y)) == nil)
+        #expect(geometry.bodies.map(\.target) == [.move(.text, text)])
+    }
+
+    @Test func onlyThePickedItemsBodyCanBeDragged() throws {
+        let other = UUID()
+        let geometry = TimelineGeometry(input { input in
+            input.texts = [
+                TimelineGeometry.ItemInput(id: text, span: TimeSpan(start: 1, end: 4), label: "Title"),
+                TimelineGeometry.ItemInput(id: other, span: TimeSpan(start: 8, end: 11), label: "Subtitle"),
+            ]
+            input.selection = .text(text)
+        })
+        let lane = try #require(geometry.lane(.text))
+        #expect(geometry.dragTarget(at: CGPoint(x: 9.5 * 44, y: lane.y + lane.height / 2)) == nil)
+        // Nothing picked: no body at all.
+        let none = TimelineGeometry(input { input in
+            input.texts = [TimelineGeometry.ItemInput(id: text, span: TimeSpan(start: 1, end: 4), label: "Title")]
+        })
+        #expect(none.bodies.isEmpty)
+        #expect(none.dragTarget(at: CGPoint(x: 2.5 * 44, y: lane.y + lane.height / 2)) == nil)
+    }
+
+    @Test func aPickedMusicClipMovesByItsBodyWithoutTrimHandles() throws {
+        let music = UUID()
+        let geometry = TimelineGeometry(input { input in
+            input.music = [TimelineGeometry.ItemInput(id: music, span: TimeSpan(start: 2, end: 12), label: "Morning loop")]
+            input.selection = .music(music)
+        })
+        #expect(geometry.handles.isEmpty)
+        #expect(geometry.bodies.map(\.target) == [.move(.music, music)])
+    }
+
     // MARK: - Snapping
 
     @Test func snapTimesAreCutsEdgesAndKeyframes() {

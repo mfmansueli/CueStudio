@@ -214,6 +214,16 @@ struct AppServices {
         )
     }
 
+    /// Gives back the space past sessions' sound files take (`EditStorageCleaner`), a few seconds after launch so it never
+    /// competes with it, off the main actor. The edits' media are never swept: only an edit removes what it added.
+    func cleanUpStorage() {
+        let launchedAt = Date()
+        Task.detached(priority: .background) {
+            try? await Task.sleep(for: .seconds(8))
+            await EditStorageCleaner.clean(launchedAt: launchedAt)
+        }
+    }
+
     /// What a notification opens is checked against the app's own objects; and a tap that launched Cue (or a UI test's) waits for the UI.
     func connectNotifications(tap scenario: String?) {
         let services = self

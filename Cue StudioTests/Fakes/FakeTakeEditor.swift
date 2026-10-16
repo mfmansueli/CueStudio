@@ -132,9 +132,15 @@ final class FakeTakeEditor: TakeEditing {
     /// Freeze frames asked for: the recording and the moment.
     var stillClips: [(url: URL, time: TimeInterval, length: TimeInterval)] = []
     var stillClipFails = false
+    /// What the creator does while the frame is being made (the call suspends first, as the real one does for ~2 s in 4K).
+    var whileFreezing: (() -> Void)?
 
     func stillClip(ofVideoAt url: URL, at time: TimeInterval, length: TimeInterval) async throws -> String {
         stillClips.append((url, time, length))
+        if let whileFreezing {
+            await Task.yield()
+            whileFreezing()
+        }
         if stillClipFails { throw CocoaError(.fileReadCorruptFile) }
         return "still-\(stillClips.count).mov"
     }

@@ -101,7 +101,12 @@ final class QuickEditViewModel {
     /// The picked caption line's field takes the keyboard (a line was just added).
     var focusesCaptionField = false
     var edit: TakeEdit {
-        didSet { editDidChange() }
+        didSet {
+            // Edit by text picks words by their place in the list, which any change of the cuts moves (the sheet lets the
+            // timeline be used behind it).
+            if oldValue.timeline != edit.timeline { transcriptSelection = nil }
+            editDidChange()
+        }
     }
     private(set) var source: Source = .loading
     private(set) var history = EditHistory<EditSnapshot>()
@@ -280,8 +285,8 @@ final class QuickEditViewModel {
     /// Media files copied in while Quick edit is open, so what the edit doesn't keep is removed.
     @ObservationIgnored var importedFiles: Set<String> = []
     @ObservationIgnored var coverTask: Task<Void, Never>?
-    /// The cover `coverImage` was drawn from.
-    @ObservationIgnored var drawnCover: VideoCover?
+    /// `TakeEdit.coverDrawingKey` of the cover block's drawing.
+    @ObservationIgnored var drawnCoverKey: Int?
     /// A short part playing to show a change (a zoom, a reveal, a pause heard).
     @ObservationIgnored var previewTask: Task<Void, Never>?
     @ObservationIgnored private var draftTask: Task<Void, Never>?
@@ -367,7 +372,7 @@ final class QuickEditViewModel {
         // A change is no longer what was being compared.
         if comparesPicture { comparesPicture = false }
         player.show(playedEdit)
-        if edit.cover != drawnCover { drawCover() }
+        if edit.coverDrawingKey != drawnCoverKey { drawCover() }
         scheduleDraftSave()
     }
 
@@ -528,6 +533,8 @@ final class QuickEditViewModel {
         endChange()
         guard let previous = history.undo(from: snapshot) else { return }
         restore(previous)
+        // Edit by text picks words by their place in the list, which an undone cut changes.
+        transcriptSelection = nil
     }
 
     func redo() {
@@ -535,6 +542,7 @@ final class QuickEditViewModel {
         endChange()
         guard let next = history.redo(from: snapshot) else { return }
         restore(next)
+        transcriptSelection = nil
     }
 
     /// What undo keeps of the edit: the timeline, the suggestions' decisions, what was added on top
@@ -555,10 +563,21 @@ final class QuickEditViewModel {
     /// already taken when it began. Changes with the same `key` in a quick row (a slider, typing)
     /// are one step (`EditHistory.coalescingInterval`).
     func commit(_ next: EditSnapshot, key: String? = nil) {
-        guard next != snapshot else { return }
-        if changeBase == nil { history.record(snapshot, key: key, at: .now) }
+        var next = next
+        // Sound effects follow the moment they were put on when the cuts change (and nothing moved them in this step). Inside
+        // a gesture, from where the gesture began, so dragging a handle out and back leaves them where they were.
+        let current = snapshot
+        let origin = changeBase ?? current
+        if next.timeline != current.timeline, next.music == current.music, let music = origin.music, music.contains(where: { $0.effect != nil }) {
+            let followed = MusicClip.following(music, from: origin.timeline, to: next.timeline)
+            next.music = current.music?.map { clip in
+                clip.effect == nil ? clip : (followed.first { $0.id == clip.id } ?? clip)
+            }
+        }
+        guard next != current else { return }
+        if changeBase == nil { history.record(current, key: key, at: .now) }
         var changed = edit
-        Self.apply(next, to: &changed)
+        changed.apply(next)
         edit = changed
     }
 
@@ -596,40 +615,13 @@ final class QuickEditViewModel {
     func restore(_ step: EditSnapshot) {
         let decisions = Dictionary(step.suggestions.map { ($0.id, $0.status) }, uniquingKeysWith: { first, _ in first })
         var changed = edit
-        Self.apply(step, to: &changed)
+        changed.apply(step)
         changed.suggestions = edit.suggestions.map { suggestion in
             var restored = suggestion
             restored.status = decisions[suggestion.id] ?? .pending
             return restored
         }
         edit = changed
-    }
-
-    /// Everything undo keeps, set on `edit`.
-    private static func apply(_ step: EditSnapshot, to edit: inout TakeEdit) {
-        edit.timeline = step.timeline
-        edit.suggestions = step.suggestions
-        edit.texts = step.texts
-        edit.media = step.media
-        edit.voiceOvers = step.voiceOvers
-        edit.cover = step.cover
-        edit.creatorStyle = step.creatorStyle
-        edit.captionStyle = step.captionStyle
-        edit.filter = step.filter
-        edit.textLook = step.textLook
-        edit.textPreset = step.textPreset
-        edit.captionLook = step.captionLook
-        edit.captionPreset = step.captionPreset
-        if step.captionCollectionVersion != nil { edit.captionCollection = step.captionCollection }
-        if let position = step.captionPosition { edit.captionPosition = position }
-        if let captions = step.captions { edit.captions = captions }
-        if let sources = step.sources { edit.sources = sources }
-        if let animation = step.captionAnimation { edit.captionAnimation = animation }
-        if let translations = step.captionTranslations { edit.captionTranslations = translations }
-        if let display = step.captionDisplay { edit.captionDisplay = display }
-        if let music = step.music { edit.music = music }
-        if let backgrounds = step.backgrounds { edit.backgrounds = backgrounds }
-        step.look?.apply(to: &edit)
     }
 
     /// The take's script, or nothing for a freestyle take.
@@ -762,7 +754,7 @@ final class QuickEditViewModel {
         guard source == .ready, !isClosed else { return }
         // A pauses preview that wasn't applied isn't part of the edit.
         var kept = edit
-        if let base = pausePreviewBase { Self.apply(base, to: &kept) }
+        if let base = pausePreviewBase { kept.apply(base) }
         if kept != original || forced {
             drafts.save(QuickEditDraft(takeID: take.id, edit: kept, playhead: player.currentTime, history: history, savedAt: .now))
         } else {

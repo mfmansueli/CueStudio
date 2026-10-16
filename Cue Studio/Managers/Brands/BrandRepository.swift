@@ -21,7 +21,8 @@ struct LocalBrandRepository: BrandRepository {
 
     func load() throws -> [BrandBrief] {
         guard FileManager.default.fileExists(atPath: fileURL.path(percentEncoded: false)) else { return [] }
-        return try JSONDecoder().decode([BrandBrief].self, from: Data(contentsOf: fileURL))
+        // Brand by brand: one that can't be read stays out, never the whole list.
+        return try JSONDecoder().decode(LossyList<BrandBrief>.self, from: Data(contentsOf: fileURL)).elements
     }
 
     func save(_ brands: [BrandBrief]) throws {

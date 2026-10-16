@@ -499,14 +499,15 @@ nonisolated struct EditTimeline: Codable, Hashable, Sendable {
         return true
     }
 
-    /// Takes `spans` of the recording `source` (nil: the take) out of the pieces that play it (Clean Up), wherever they play;
+    /// Takes `spans` of the recording `source` (nil: the take) out of the pieces that play it (Clean Up), wherever they play
+    /// (or only in the pieces `only` names: Edit by text cuts the words of the clip they were read in, not of its copies);
     /// slivers shorter than `minimumDuration` go with them. False, and no change, when nothing would be left or nothing changes.
     @discardableResult
-    mutating func remove(_ spans: [TimeSpan], in source: UUID? = nil) -> Bool {
+    mutating func remove(_ spans: [TimeSpan], in source: UUID? = nil, only: Set<UUID>? = nil) -> Bool {
         var result: [EditSegment] = []
         for segment in segments {
             // Spans are of that recording: pieces of the others stay whole.
-            guard segment.sourceID == source else {
+            guard segment.sourceID == source, only?.contains(segment.id) ?? true else {
                 result.append(segment)
                 continue
             }

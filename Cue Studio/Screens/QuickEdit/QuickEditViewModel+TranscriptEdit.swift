@@ -58,7 +58,9 @@ extension QuickEditViewModel {
                 from: first, to: last, transcript: transcript(ofRecording: first.sourceID),
                 recordingLength: edit.timeline.duration(ofSource: first.sourceID)
             )
-            if timeline.remove([span], in: first.sourceID) { removed += span.duration }
+            // Arranged, only the clip the words were read in: a copy of it keeps them.
+            let clips = timeline.isArranged ? Set(run.compactMap(\.segmentID)) : nil
+            if timeline.remove([span], in: first.sourceID, only: clips) { removed += span.duration }
         }
         guard timeline != edit.timeline else {
             toast.show(String(localized: "Keep at least one section"))
@@ -69,7 +71,7 @@ extension QuickEditViewModel {
         transcriptSelection = nil
         Haptics.delete()
         toast.show(
-            String(localized: "Cut \(picked.count) words · \(DurationText.tenths(removed))"),
+            String(localized: "Words cut: \(picked.count) · \(DurationText.tenths(removed))"),
             action: ToastAction(title: String(localized: "Undo")) { [weak self] in self?.undo() }
         )
     }

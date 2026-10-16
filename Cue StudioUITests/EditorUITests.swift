@@ -19,8 +19,9 @@ final class EditorUITests: XCTestCase {
         XCTAssertTrue(app.buttons["edit.backButton"].exists)
         XCTAssertFalse(app.buttons["edit.exportButton"].exists)
         XCTAssertTrue(app.buttons["edit.playButton"].exists)
-        // v29 · 7.2: CapCut's order, Smart before Cover; Adjust, Crop, Background and Overlay are Edit's clip tools.
-        for tool in ["edit", "audio", "text", "addMedia", "captions", "filters", "smart", "cover"] {
+        // The owner's order (2026-10-16): Edit, Captions, Text, ✦ Smart, Media, Audio, Format, Filters, Cover; Adjust and
+        // Background are Edit's clip tools, and the old Crop and Overlay are gone (Format and Media replace them).
+        for tool in ["edit", "captions", "text", "smart", "addMedia", "audio", "format", "filters", "cover"] {
             XCTAssertTrue(app.buttons["edit.toolbar.\(tool)"].exists, tool)
         }
         for tool in ["adjust", "crop", "background", "media"] {
@@ -335,5 +336,42 @@ final class EditorUITests: XCTestCase {
         XCTAssertFalse(EditorApp.length(app).hasPrefix("01:02.0"))
         app.buttons["edit.undoButton"].tap()
         XCTAssertTrue(EditorApp.length(app).hasPrefix("01:02.0"))
+    }
+
+    // MARK: - Layout (owner's order, 2026-10-16)
+
+    /// Format, the whole video's crop, is on the main bar and opens the Format panel.
+    func testFormatIsOnTheMainBarAndOpensTheFormatPanel() {
+        let app = EditorApp.open()
+        XCTAssertTrue(app.buttons["edit.toolbar.format"].exists)
+        EditorApp.tapTool(app, "format")
+        let apply = app.buttons["edit.panel.apply"]
+        XCTAssertTrue(apply.waitForExistence(timeout: 5))
+        XCTAssertTrue(app.staticTexts["Format"].exists)
+        apply.tap()
+        XCTAssertTrue(app.buttons["edit.toolbar.format"].waitForExistence(timeout: 5))
+    }
+
+    /// Reorder, from the clip's tools once there are two clips: the clips in a list to drag.
+    func testReorderFromTheClipToolsOpensTheListOfClips() {
+        let app = EditorApp.open()
+        EditorApp.tapTool(app, "edit")
+        EditorApp.scrub(app)
+        EditorApp.tapTool(app, "split")
+        XCTAssertTrue(app.staticTexts.matching(NSPredicate(format: "label BEGINSWITH 'Split at'")).firstMatch.waitForExistence(timeout: 5))
+        EditorApp.tapTool(app, "reorder")
+        XCTAssertTrue(app.descendants(matching: .any)["edit.reorder.list"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.descendants(matching: .any)["edit.reorder.clip.0"].exists)
+        XCTAssertTrue(app.descendants(matching: .any)["edit.reorder.clip.1"].exists)
+    }
+
+    /// ✦ Smart opens with Edit by text, and the tile opens the transcript sheet.
+    func testSmartOpensWithEditByText() {
+        let app = EditorApp.open()
+        EditorApp.tapTool(app, "smart")
+        let tile = app.buttons["edit.smart.editByText"]
+        XCTAssertTrue(tile.waitForExistence(timeout: 5))
+        tile.tap()
+        XCTAssertTrue(app.descendants(matching: .any)["edit.transcript"].firstMatch.waitForExistence(timeout: 5))
     }
 }
