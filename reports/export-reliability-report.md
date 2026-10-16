@@ -26,6 +26,10 @@ Estado atual da tela e regras: `DESIGN_PROJECT.md` §38. Plano de partida: `repo
 | Sem tarefa, take de 2:30 em 1080p com legendas | 37 s com o Cue aberto; com 60 s fora (Home + Câmera), pronta na volta |
 | Sem tarefa, take de 6:40 | 60 s fora: na volta estava em 73% e seguiu; terminou em 97 s, o mesmo tempo de com o Cue aberto |
 
+**Mansuelli iPhone 18 Pro Max (iOS 27), com autorização do dono (17/10/2026):** `supportedResources` também vazio e a tarefa com GPU recusada; a
+sem GPU foi aceita e o handler rodou sem fechar o app (a correção da fila confirmada). Take de 2:30 com o Cue aberto: 22 s. Take de 6:40 com
+60 s fora: 88% na volta, pronta em 71 s (com o Cue aberto seriam uns 59 s).
+
 **Decisões tomadas por causa disso:**
 - Nunca pedir tarefa só de CPU (era pior do que não pedir).
 - Pedir tarefa com GPU só onde `supportedResources` tem `.gpu`; nos outros iPhones, o comportamento de sempre com o aviso "Keep Cue open".
@@ -33,8 +37,8 @@ Estado atual da tela e regras: `DESIGN_PROJECT.md` §38. Plano de partida: `repo
 
 **Ressalvas honestas:**
 - As medições de segundo plano rodaram sob XCUITest. O iOS pode tratar um app aberto pelo teste de outro jeito; o roteiro do dono confere à mão.
-- **Não validados:** o caminho com GPU e Live Activity (nenhum aparelho disponível tem GPU em segundo plano; o Mansuelli iPhone 18 Pro Max
-  pode ter, não foi usado sem pedir), o iPhone 15 comum (A16; o dono não tem), um export que passe de vários minutos fora do Cue.
+- **Não validados:** o caminho com GPU e Live Activity (nem o 15 Pro nem o 18 Pro Max têm GPU em segundo plano), o iPhone 15 comum (A16; o dono
+  não tem), uma exportação que passe de vários minutos fora do Cue.
 - Os tempos de exportação da branch anterior (1080p 0,75× e 4K 1,03× da duração no 15 Pro) não foram medidos de novo: esta branch não mexe no
   desenho dos quadros nem na codificação.
 

@@ -32,7 +32,7 @@ Branch `feature/export-reliability` → `main` (parte de `feature/editor-award`:
   - uma tarefa só de CPU travava a exportação, por isso nunca é pedida;
   - sem tarefa, uma take de 6:40 seguiu exportando com o Cue fora por 60 s e terminou no mesmo tempo.
 - **Não validado:**
-  - o caminho com GPU e Live Activity (nenhum aparelho testado tem GPU em segundo plano);
+  - o caminho com GPU e Live Activity (nem o 15 Pro nem o 18 Pro Max têm GPU em segundo plano);
   - o iPhone 15 comum (A16);
   - o uso à mão pelo dono (roteiro enviado).
 
