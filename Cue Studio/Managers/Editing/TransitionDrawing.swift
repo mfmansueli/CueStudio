@@ -123,7 +123,8 @@ nonisolated enum TransitionDrawing {
     // MARK: - Building blocks
 
     /// A blur drawn on a smaller copy of the picture and scaled back: the blur hides the detail the smaller copy loses, and a
-    /// 4K frame blurs in a fraction of the time (on an iPhone 15 Pro, a 4K Zoom frame went from 118 to 11 ms and a Blur one from 41 to 13 ms; `EditorExportDeviceTests`).
+    /// 4K frame blurs in a fraction of the time (on an iPhone 15 Pro, a 4K Zoom frame went from 118 to 11 ms and a Blur one
+    /// from 41 to 13 ms; `EditorExportDeviceTests`).
     /// `detail` is the size, in pixels of the frame, of the finest thing the blur leaves; the copy is never under a quarter.
     private static func softened(
         _ image: CIImage, in extent: CGRect, by detail: CGFloat, blur: (CIImage, CGFloat) -> CIImage?
