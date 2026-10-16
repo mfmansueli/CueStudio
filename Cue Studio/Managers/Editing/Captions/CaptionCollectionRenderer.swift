@@ -248,7 +248,9 @@ nonisolated enum CaptionCollectionRenderer {
         let widest = words.map { measure($0, font: initialFont) }.max() ?? 0
         if widest > maxWidth { pointSize *= maxWidth / widest }
         var result: Layout?
-        for _ in 0..<24 {
+        // How much narrower than one line a short sentence is balanced to; widened before the type ever shrinks.
+        var balanceRatio = CGFloat(spec.balanceRatio)
+        for _ in 0..<32 {
             let font = CaptionFont.font(spec: spec, size: pointSize, text: display)
             paragraph.lineSpacing = CGFloat(spec.lineSpacing) * unit
             var attributes: [NSAttributedString.Key: Any] = [
@@ -272,7 +274,7 @@ nonisolated enum CaptionCollectionRenderer {
             // Favor two balanced lines for a short sentence, while keeping the longest word whole.
             let fullWidth = measure(display, font: font)
             let longest = words.map { measure($0, font: font) }.max() ?? 0
-            let balanced = words.count > spec.balanceFromWords ? max(longest + 2 * unit, fullWidth / spec.balanceRatio) : fullWidth
+            let balanced = words.count > spec.balanceFromWords ? max(longest + 2 * unit, fullWidth / balanceRatio) : fullWidth
             let width = min(maxWidth, max(1, balanced))
             let container = NSTextContainer(size: CGSize(width: width, height: .greatestFiniteMagnitude))
             container.lineFragmentPadding = 0
@@ -286,6 +288,12 @@ nonisolated enum CaptionCollectionRenderer {
             result = Layout(storage: storage, manager: manager, container: container, size: size,
                             origin: CGPoint(x: padding.width, y: padding.height), unit: unit)
             if count <= spec.maxLines, size.height <= safe.height { break }
+            // Too many lines while the balanced width is still narrower than the room: widen it first. Shrinking the type
+            // shrinks that width with it, so the line count would never drop and the caption would end up a few points tall.
+            if count > spec.maxLines, width < maxWidth - 0.5, balanceRatio > 1 {
+                balanceRatio = max(1, balanceRatio * 0.85)
+                continue
+            }
             pointSize *= 0.9
         }
         return result

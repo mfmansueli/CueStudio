@@ -308,10 +308,12 @@ nonisolated struct TimelineGeometry: Equatable, Sendable {
             )
         }
 
-        // A cut's mark, unless a clip is picked (its handles sit there) or Pauses is open.
+        // A cut's mark, always within reach (tapping it opens Transitions, CapCut's grammar), except at the picked clip's own
+        // edges (its handles sit there) and while Pauses is open.
         var joins: [Join] = []
-        if selection?.clipID == nil, input.pauses.isEmpty {
-            for (index, clip) in input.clips.enumerated() where index > 0 {
+        let picked = selection?.clipID.flatMap { id in input.clips.firstIndex { $0.id == id } }
+        if input.pauses.isEmpty {
+            for (index, clip) in input.clips.enumerated() where index > 0 && index != picked && index - 1 != picked {
                 let before = CGFloat(input.clips[index - 1].duration) * pps
                 guard before >= Self.joinRoom, CGFloat(clip.duration) * pps >= Self.joinRoom else { continue }
                 let x = CGFloat(clip.start) * pps

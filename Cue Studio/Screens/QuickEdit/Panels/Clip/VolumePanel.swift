@@ -12,23 +12,29 @@ struct VolumePanel: View {
 
     var body: some View {
         PanelFrame(viewModel: viewModel, panel: .volume) {
-            CueSlider(
-                value: Binding(get: { viewModel.targetVolume * 100 }, set: { viewModel.setTargetVolume(($0 / 5).rounded() * 5 / 100) }),
-                range: spec.range, step: spec.step, defaultValue: spec.defaultValue, style: .full, label: volumeLabel,
-                valueText: PanelValueFormat.percent.text(viewModel.targetVolume * 100), systemIcon: volumeIcon,
-                minCaption: PanelValueFormat.percent.text(spec.range.lowerBound), maxCaption: PanelValueFormat.percent.text(spec.range.upperBound),
-                accessibilityIdentifier: "edit.volume", onEditingChanged: { _ in }
-            )
-            switch viewModel.selection {
-            case .music(let id):
-                if let music = viewModel.edit.music.first(where: { $0.id == id }) { musicAdvanced(music) }
-            case .voiceOver:
-                EmptyView()
-            default:
-                PanelToggleRow(
-                    label: String(localized: "Mute this clip"), isOn: viewModel.targetClip?.isMuted ?? false,
-                    identifier: "edit.volume.mute"
-                ) { viewModel.setClipMuted(!(viewModel.targetClip?.isMuted ?? false)) }
+            // The slider and the switch under it, 8 pt apart and without the 0%/200% captions (the value is written above the
+            // track): "Mute this clip" then shows whole above the Home Indicator in the short panel of an iPhone 17 or SE.
+            VStack(alignment: .leading, spacing: 8) {
+                CueSlider(
+                    value: Binding(get: { viewModel.targetVolume * 100 }, set: { viewModel.setTargetVolume(($0 / 5).rounded() * 5 / 100) }),
+                    range: spec.range, step: spec.step, defaultValue: spec.defaultValue, style: .full, label: volumeLabel,
+                    valueText: PanelValueFormat.percent.text(viewModel.targetVolume * 100), systemIcon: volumeIcon,
+                    accessibilityIdentifier: "edit.volume", onEditingChanged: { _ in }
+                )
+                switch viewModel.selection {
+                case .music(let id):
+                    if let music = viewModel.edit.music.first(where: { $0.id == id }) { ducking(music) }
+                case .voiceOver:
+                    EmptyView()
+                default:
+                    PanelToggleRow(
+                        label: String(localized: "Mute this clip"), isOn: viewModel.targetClip?.isMuted ?? false,
+                        identifier: "edit.volume.mute"
+                    ) { viewModel.setClipMuted(!(viewModel.targetClip?.isMuted ?? false)) }
+                }
+            }
+            if case .music(let id) = viewModel.selection, let music = viewModel.edit.music.first(where: { $0.id == id }) {
+                musicAdvanced(music)
             }
         }
     }
@@ -53,12 +59,15 @@ struct VolumePanel: View {
         return .audio
     }
 
-    @ViewBuilder
-    private func musicAdvanced(_ music: MusicClip) -> some View {
+    private func ducking(_ music: MusicClip) -> some View {
         PanelToggleRow(
             label: String(localized: "Lower under voice"), detail: String(localized: "Quieter while someone speaks"),
             isOn: music.ducksUnderVoice, identifier: "edit.musicDucks"
         ) { viewModel.setMusicDucks(music.id, !music.ducksUnderVoice) }
+    }
+
+    @ViewBuilder
+    private func musicAdvanced(_ music: MusicClip) -> some View {
         PanelAdvancedButton(isOpen: viewModel.showsAdvanced) { viewModel.showsAdvanced.toggle() }
         if viewModel.showsAdvanced {
             PanelSlider(

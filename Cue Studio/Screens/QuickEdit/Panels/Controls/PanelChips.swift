@@ -27,10 +27,10 @@ struct PanelChips<Value: Hashable>: View {
                             .font(font(option.value))
                             .lineLimit(1)
                             .fixedSize()
-                            .foregroundStyle(isOn ? Color.black : Palette.ink)
+                            .foregroundStyle(isOn ? Palette.chipOnInk : Palette.ink)
                             .padding(.horizontal, 14)
                             .frame(height: 38)
-                            .background(isOn ? Color.white : Palette.fill, in: Capsule())
+                            .background(isOn ? Palette.chipOn : Palette.fill, in: Capsule())
                             .frame(minHeight: Metrics.hitTarget)
                             .contentShape(Rectangle())
                     }

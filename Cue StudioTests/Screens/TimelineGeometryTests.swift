@@ -56,6 +56,20 @@ struct TimelineGeometryTests {
         #expect(short.joins.isEmpty)
     }
 
+    /// With a clip picked, the other cuts keep their marks (a tap opens Transitions, as in CapCut); only the picked clip's own
+    /// edges lose them to its handles.
+    @Test func otherCutsKeepTheirMarksWhileAClipIsPicked() {
+        let third = UUID()
+        let geometry = TimelineGeometry(input { input in
+            input.clips[1].duration = 5.8
+            input.clips.append(TimelineGeometry.ClipInput(
+                id: third, start: 15.8, duration: 5.8, sourceStart: 15.8, sourceEnd: 21.6, speed: 1, sourceID: nil
+            ))
+            input.selection = .clip(first)
+        })
+        #expect(geometry.joins.map(\.id) == [third])
+    }
+
     // MARK: - Lanes
 
     @Test func restingOrderIsVideoThenTextCaptionsAndAudio() {

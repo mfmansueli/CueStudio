@@ -89,27 +89,24 @@ struct CaptionLineCard: View {
             .background(Palette.surface, in: RoundedRectangle(cornerRadius: 10, style: .continuous))
             .overlay(RoundedRectangle(cornerRadius: 10, style: .continuous).strokeBorder(Palette.acc, lineWidth: 1.5))
             .accessibilityIdentifier("edit.captionField")
-            HStack(spacing: 6) {
-                stepper
-                iconChip("play.fill", label: Text("Play"), identifier: "edit.captionPlay") {
-                    viewModel.playCaptionLine(start: line.start, end: line.end)
+            // On one row when it fits; with large text, More goes under the others so "3/12" and its name read whole.
+            ViewThatFits(in: .horizontal) {
+                HStack(spacing: 6) {
+                    stepper
+                    playChip
+                    moreChip
+                    Spacer(minLength: 0)
+                    deleteButton
                 }
-                chip(String(localized: "More"), systemImage: showsMore ? "chevron.up" : "ellipsis", identifier: "edit.captionMore") {
-                    moreOverride = !showsMore
+                VStack(alignment: .leading, spacing: 0) {
+                    HStack(spacing: 6) {
+                        stepper
+                        playChip
+                        Spacer(minLength: 0)
+                        deleteButton
+                    }
+                    moreChip
                 }
-                Spacer(minLength: 0)
-                Button { viewModel.deleteCaptionLine(cueID) } label: {
-                    Image(systemName: "trash")
-                        .font(.system(size: 14, weight: .semibold))
-                        .foregroundStyle(Palette.dangerText)
-                        .frame(width: 36, height: 32)
-                        .background(Palette.Editor.dangerWash, in: Capsule())
-                        .frame(minWidth: Metrics.hitTarget, minHeight: Metrics.hitTarget)
-                        .contentShape(Rectangle())
-                }
-                .buttonStyle(.plain)
-                .accessibilityLabel(Text("Delete line"))
-                .accessibilityIdentifier("edit.captionDelete")
             }
             if showsMore {
                 HStack(spacing: 8) {
@@ -122,6 +119,33 @@ struct CaptionLineCard: View {
                 }
             }
         }
+    }
+
+    private var playChip: some View {
+        iconChip("play.fill", label: Text("Play"), identifier: "edit.captionPlay") {
+            viewModel.playCaptionLine(start: line.start, end: line.end)
+        }
+    }
+
+    private var moreChip: some View {
+        chip(String(localized: "More"), systemImage: showsMore ? "chevron.up" : "ellipsis", identifier: "edit.captionMore") {
+            moreOverride = !showsMore
+        }
+    }
+
+    private var deleteButton: some View {
+        Button { viewModel.deleteCaptionLine(cueID) } label: {
+            Image(systemName: "trash")
+                .font(.system(size: 14, weight: .semibold))
+                .foregroundStyle(Palette.dangerText)
+                .frame(width: 36, height: 32)
+                .background(Palette.Editor.dangerWash, in: Capsule())
+                .frame(minWidth: Metrics.hitTarget, minHeight: Metrics.hitTarget)
+                .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel(Text("Delete line"))
+        .accessibilityIdentifier("edit.captionDelete")
     }
 
     /// Typing goes to the line; Return (a new line in the field) goes on to the next one with the
@@ -143,6 +167,8 @@ struct CaptionLineCard: View {
             Text(verbatim: position.map { "\($0.number)/\($0.total)" } ?? "–")
                 .font(.system(.footnote, weight: .semibold).monospacedDigit())
                 .foregroundStyle(Palette.ink2)
+                .lineLimit(1)
+                .fixedSize()
                 .frame(minWidth: 36)
                 .accessibilityLabel(position.map { Text("Line \($0.number) of \($0.total)") } ?? Text(verbatim: ""))
             stepButton("chevron.right", label: Text("Next line"), identifier: "edit.captionNext", step: 1)
@@ -175,7 +201,7 @@ struct CaptionLineCard: View {
         HStack(spacing: 2) {
             Text(label)
                 .font(.system(.footnote))
-                .foregroundStyle(Palette.ink.opacity(0.7))
+                .foregroundStyle(Palette.ink2)
             Spacer(minLength: 4)
             nudge("minus", label: edge == .start ? Text("Start earlier") : Text("End earlier"),
                   identifier: "edit.caption\(edge == .start ? "Start" : "End").minus") {
@@ -211,7 +237,8 @@ struct CaptionLineCard: View {
                 Text(label).font(.system(.footnote, weight: .semibold)).lineLimit(1)
             }
             .padding(.horizontal, 12)
-            .frame(height: 32)
+            .padding(.vertical, 6)
+            .frame(minHeight: 32)
             .background(Palette.fill, in: Capsule())
             .frame(minHeight: Metrics.hitTarget)
             .contentShape(Rectangle())

@@ -35,17 +35,32 @@ extension QuickEditViewModel {
         showsPasteLook = false
         if everyClip {
             let next = copied.pastedEverywhere(pastesLookParts, in: edit)
-            guard next != edit else { return }
+            // Nothing to change says so: a sheet that closes in silence reads as a button that didn't work.
+            guard next != edit else {
+                sayAfterSheet(String(localized: "Every clip already looks like this"))
+                return
+            }
             commit(EditSnapshot(next))
         } else {
             var timeline = edit.timeline
             for segment in timeline.segments where segment.id == target {
                 timeline.replaceSegment(copied.pasted(pastesLookParts, on: segment, in: edit))
             }
-            guard timeline != edit.timeline else { return }
+            guard timeline != edit.timeline else {
+                sayAfterSheet(String(localized: "This clip already looks like this"))
+                return
+            }
             commit(timeline)
         }
-        toast.show(everyClip ? String(localized: "Look pasted on every clip") : String(localized: "Look pasted"))
+        sayAfterSheet(everyClip ? String(localized: "Look pasted on every clip") : String(localized: "Look pasted"))
+    }
+
+    /// The paste's toast once the sheet has gone (about 0.35 s), so it's seen over the editor, not under a closing sheet.
+    private func sayAfterSheet(_ message: String) {
+        Task { [weak self] in
+            try? await Task.sleep(for: .milliseconds(350))
+            self?.toast.show(message)
+        }
     }
 
     func togglePasteLookPart(_ part: ClipLookPart) {

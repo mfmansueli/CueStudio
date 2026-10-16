@@ -138,6 +138,18 @@ struct CoverStudioView: View {
 
     @ToolbarContentBuilder
     private var toolbar: some ToolbarContent {
+        // "Cover" when the bar has room for the whole word; on a small screen (iPhone SE) the buttons
+        // leave none, and a cut "C…" says nothing: the step's name under the cover says where you are.
+        ToolbarItem(placement: .principal) {
+            ViewThatFits(in: .horizontal) {
+                Text("Cover")
+                    .font(.headline)
+                    .foregroundStyle(Palette.ink)
+                    .lineLimit(1)
+                    .accessibilityAddTraits(.isHeader)
+                Color.clear.frame(width: 1, height: 1).accessibilityHidden(true)
+            }
+        }
         ToolbarItem(placement: .topBarLeading) {
             Button(role: .close) {
                 if viewModel.canUndo { confirmsDiscard = true } else { onCancel(viewModel) }

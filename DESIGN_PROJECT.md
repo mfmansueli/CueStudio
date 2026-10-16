@@ -653,8 +653,10 @@ Sistema completo em `NOTIFICATIONS.md`. Na interface:
   painéis enquanto o editor está aberto (`stylePanelIsExpanded`). Altura normal de um painel `.full`: metade da tela (330–420 pt). No iPhone SE o painel é
   folha e o botão troca as duas alturas. O conteúdo para 18 pt acima do Home Indicator (`Metrics.editorStylePanelBottomClearance`) e some em degradê
   (`scrollEdgeEffectStyle(.soft)`).
-- **Abas na largura toda** (Presets · Font · Color · Motion), 44 pt; campo e abas fixos, só o resto rola; trocar de aba volta ao topo (`contentKey`). Cores
-  (`PanelSwatches`) de 34 pt, segmentos de 38 pt.
+- **Abas na largura toda** (Presets · Font · Color · Motion), 44 pt, com pelo menos 16 pt entre os nomes (sem esse espaço, rolam de lado); campo e abas
+  fixos, só o resto rola; trocar de aba volta ao topo (`contentKey`). Em tamanhos de acessibilidade só as abas ficam fixas: o campo rola com o resto
+  e os controles da aba vêm antes de "Style applies to". Cores (`PanelSwatches`) de 34 pt, segmentos de 38 pt.
+- **Presets do Caption style em grade** (colunas de 104 pt: três por linha no iPhone), todos à vista, sem rolar de lado.
 - **Escopo só do visual:** "Style applies to" **This title | All texts · N** só em Presets, Font e Color ("Words, timing and motion stay with each text.");
   em Motion: "Motion and timing change only this text".
 - **Apply this style to captions** (`PanelButton` no fim de Presets, Font e Color, quando há legendas): pergunta antes (alerta: o que troca, o que fica, e
@@ -939,6 +941,10 @@ auditoria: `reports/editor-award-checklist.md`.
   "Split or add a clip to reorder".
 - **Arrastar no tempo:** com um texto, mídia, legenda ou som escolhido, arrastar o **corpo** do bloco o move (o tamanho fica), grudando nos cortes e
   bordas com toque háptico; as pontas amarelas continuam aparando (`TimelineGeometry.bodies`, `HandleTarget.move`).
+- **Marcas de corte sempre à mão:** com um clipe escolhido, os outros cortes mantêm a marca (tocar abre Transitions); só as bordas do clipe
+  escolhido a cedem às alças. **Use on every cut** fica num rodapé fixo do painel de transição (sempre visível, mesmo no SE).
+- **Nada termina em silêncio:** Paste look que não muda nada diz "Every clip already looks like this" / "This clip already looks like this";
+  Edit by text que não ouviu palavras mostra o motivo (`CaptionState.message`, em `warnText`) e só oferece **Try again** quando pode ajudar.
 - **Edit by text à vista:** primeiro bloco de ✦ Smart › Tools, botão "Edit by text · cut words from the video" no painel de legendas e o menu da faixa.
 - **Mídia na barra principal** (**Media**, `.addMediaChoice`): a folha explica cada caminho — **Over the video** (B-roll: "Plays over your video…
   Move and resize it on the preview") e **As a clip** ("Becomes a clip of its own in the sequence, after the clip at the playhead. Videos only.").
@@ -965,7 +971,20 @@ auditoria: `reports/editor-award-checklist.md`.
   Remove pauses, Studio Voice, Auto adjust, Background); Templates é a lista de modelos, cada um num cartão com o que muda ("Big captions that light
   each word · a hook that pops in") e o ✓ amarelo no que a edição está usando (`appliedVideoTemplate`).
 - **Texto grande** (tamanhos de acessibilidade, conferido no iPhone SE em AX L): blocos de opção em 3 colunas, subtítulo do painel em até 2 linhas;
-  no Cover Studio, "Next" sem o nome da etapa, "Video" no lugar de "Frame from video" e a barra de etapas só com ícones.
+  no Cover Studio, "Next" sem o nome da etapa, "Video" no lugar de "Frame from video" e a barra de etapas só com ícones. Na linha de cima das
+  legendas, quando não cabe numa linha (SE, texto grande): a chave e Style em cima, idioma e tradução embaixo; no cartão da linha, More desce
+  para baixo de ‹ 3/12 ›. "Is it ready to post?" rola quando passa da altura da tela (começa pelo "EDIT SAVED"). O título "Cover" do Cover
+  Studio só aparece quando cabe inteiro (no SE, não).
+- **Painéis com texto grande e em telas estreitas** (`EditorLayout.largeTextPanelGrowth`, controles de `Panels/Controls`): de xxLarge para cima um
+  painel mini ou médio cresce até 1,5× a sua altura e o vídeo cede até o mínimo (régua e trilha do vídeo ficam); os painéis de estilo não mudam.
+  Nenhum rótulo quebra no meio da palavra nem botão empilha letras: **Adjust** põe nome, valor, ◐ e Auto numa linha; a nota de um clipe ("From the
+  whole take") fica embaixo do nome, na mesma altura, quando não cabe ao lado (iPhone 17 e SE), e com texto grande nome, nota e botões têm
+  linhas próprias; segmentos (Speed) com
+  mais de 3 opções vão em linhas de 3 nos tamanhos de acessibilidade; os cartões de **Filters** se alinham pelo topo e alargam com o texto (até
+  96 pt). **Pauses:** cartão em duas linhas (duração e Remove/Keep; quando e o círculo de Listen, 44 pt de toque), a 8 pt do "Pauses longer than",
+  inteiro no SE; a largura deixa o próximo cartão aparecendo na borda quando há mais (`PausesPanel.cardWidth`); com texto grande o botão "Remove N
+  pauses" desce para uma linha própria. **Volume:** sem os rótulos 0%/200% (o valor fica escrito em cima), e "Mute this clip" a 8 pt do slider,
+  inteiro acima do Home Indicator.
 - **Templates** (`VideoTemplate`, ✦ Smart › **Templates**: Bold hook, Tutorial, Story, Clean, Interview): legendas (tema e revelação, mantendo linhas,
   posição e margens), tipo e animação de todos os textos (não dos gráficos) e o estilo dos próximos; sem texto, abre o vídeo com o título do
   roteiro. As palavras, a posição de cada texto, os cortes, o som e os gráficos ficam; **um** Undo desfaz tudo ("Bold hook on the whole video" ·

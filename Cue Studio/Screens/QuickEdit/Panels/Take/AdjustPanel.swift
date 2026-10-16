@@ -12,8 +12,8 @@ import SwiftUI
 /// until the clip sets its own, and Reset gives the clip the take's values again. ◐ shows the picture as recorded
 /// for as long as it is held. The Auto chip is the measured correction (a step before the other settings, which
 /// stay as they are on top of it): its ruler is how much of it shows. Auto, ◐ and the picked setting's name, value
-/// and Reset share one line, so the controls fit the panel without scrolling on an ordinary iPhone. Reset puts
-/// them all back, and the setting on the ruler has its own.
+/// and Reset share one line (two or three on a narrow screen or with large text), so the controls fit the panel without
+/// scrolling on an ordinary iPhone. Reset puts them all back, and the setting on the ruler has its own.
 struct AdjustPanel: View {
     @Bindable var viewModel: QuickEditViewModel
 
@@ -103,7 +103,7 @@ struct AdjustPanel: View {
             } else if let valueText {
                 Text(valueText)
                     .font(.system(size: 12, weight: .bold).monospacedDigit())
-                    .foregroundStyle(isPicked ? Palette.chipOnInk.opacity(0.75) : Palette.accText)
+                    .foregroundStyle(isPicked ? Palette.chipOnInk : Palette.accText)
             }
         }
         .foregroundStyle(isPicked ? Palette.chipOnInk : Palette.ink)
@@ -154,39 +154,81 @@ struct AdjustPanel: View {
         .accessibilityIdentifier("edit.adjust.\(adjustment.rawValue)")
     }
 
-    /// "Exposure  +10" with its own Reset once it is off zero; Compare and Auto at the other end.
+    /// "Exposure  +10" with its own Reset once it is off zero; Compare and Auto at the other end. All on one line when it fits;
+    /// otherwise the note goes under the name in the same line's height, and with large text the name, the note and the buttons
+    /// each have a line of their own. A word never breaks and no label is cut.
     private var readout: some View {
-        HStack(alignment: .center, spacing: 10) {
-            HStack(alignment: .firstTextBaseline, spacing: 10) {
-                Text(currentLabel).font(.system(.subheadline, weight: .semibold))
-                Text(currentValueText)
-                    .font(.system(.subheadline, weight: .bold).monospacedDigit())
-                    .foregroundStyle(Palette.accText)
+        ViewThatFits(in: .horizontal) {
+            HStack(alignment: .center, spacing: 10) {
+                nameAndValue
+                if let note = inheritedNote { noteText(note, lines: 1) }
+                resetButton
+                Spacer(minLength: 0)
+                compareButton
+                autoButton
             }
-            .accessibilityElement(children: .combine)
-            if let note = inheritedNote {
-                Text(note)
-                    .font(.system(.footnote))
-                    .foregroundStyle(Palette.ink2)
+            .frame(maxWidth: .infinity, minHeight: Metrics.hitTarget)
+            // Narrower (a clip's "From the whole take" on an iPhone): the note under the name, in the same 44 pt line, so the
+            // ruler stays where it was and shows whole.
+            HStack(alignment: .center, spacing: 10) {
+                VStack(alignment: .leading, spacing: 0) {
+                    nameAndValue
+                    if let note = inheritedNote { noteText(note, lines: 1) }
+                }
+                resetButton
+                Spacer(minLength: 0)
+                compareButton
+                autoButton
+            }
+            .frame(maxWidth: .infinity, minHeight: Metrics.hitTarget)
+            VStack(alignment: .leading, spacing: 4) {
+                nameAndValue
                     .lineLimit(1)
-                    .minimumScaleFactor(0.8)
+                    .minimumScaleFactor(0.7)
+                if let note = inheritedNote { noteText(note, lines: 3) }
+                HStack(alignment: .center, spacing: 10) {
+                    resetButton
+                    Spacer(minLength: 0)
+                    compareButton
+                    autoButton
+                }
+                .frame(maxWidth: .infinity, minHeight: Metrics.hitTarget)
             }
-            if canResetCurrent {
-                Button("Reset") { resetCurrent() }
-                    .font(.system(.footnote, weight: .semibold))
-                    .foregroundStyle(Palette.ink2)
-                    .buttonStyle(.plain)
-                    .frame(minWidth: Metrics.hitTarget, minHeight: Metrics.hitTarget)
-                    .contentShape(Rectangle())
-                    .accessibilityLabel(Text("Reset"))
-                    .accessibilityValue(Text(currentLabel))
-                    .accessibilityIdentifier("edit.adjust.resetOne")
-            }
-            Spacer(minLength: 0)
-            compareButton
-            autoButton
         }
-        .frame(maxWidth: .infinity, minHeight: Metrics.hitTarget)
+    }
+
+    private var nameAndValue: some View {
+        HStack(alignment: .firstTextBaseline, spacing: 10) {
+            Text(currentLabel).font(.system(.subheadline, weight: .semibold))
+            Text(currentValueText)
+                .font(.system(.subheadline, weight: .bold).monospacedDigit())
+                .foregroundStyle(Palette.accText)
+        }
+        .accessibilityElement(children: .combine)
+    }
+
+    private func noteText(_ note: String, lines: Int) -> some View {
+        Text(note)
+            .font(.system(.footnote))
+            .foregroundStyle(Palette.ink2)
+            .lineLimit(lines)
+            .fixedSize(horizontal: false, vertical: true)
+    }
+
+    @ViewBuilder private var resetButton: some View {
+        if canResetCurrent {
+            Button("Reset") { resetCurrent() }
+                .font(.system(.footnote, weight: .semibold))
+                .foregroundStyle(Palette.ink2)
+                .lineLimit(1)
+                .fixedSize()
+                .buttonStyle(.plain)
+                .frame(minWidth: Metrics.hitTarget, minHeight: Metrics.hitTarget)
+                .contentShape(Rectangle())
+                .accessibilityLabel(Text("Reset"))
+                .accessibilityValue(Text(currentLabel))
+                .accessibilityIdentifier("edit.adjust.resetOne")
+        }
     }
 
     private var currentLabel: String {
@@ -259,6 +301,8 @@ struct AdjustPanel: View {
         } label: {
             Label(isWorking ? String(localized: "Measuring…") : String(localized: "Auto"), systemImage: "sparkles")
                 .font(.system(.subheadline, weight: .semibold))
+                .lineLimit(1)
+                .fixedSize()
                 .foregroundStyle(Palette.ink)
                 .padding(.horizontal, 14)
                 .frame(minHeight: Metrics.hitTarget)

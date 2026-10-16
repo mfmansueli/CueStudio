@@ -98,16 +98,25 @@ struct TranscriptEditSheet: View {
                 .font(.system(.subheadline))
                 .foregroundStyle(Palette.ink2)
                 .fixedSize(horizontal: false, vertical: true)
-            if viewModel.captionState.isWorking {
+            let state = viewModel.captionState
+            if state.isWorking {
                 HStack(spacing: 10) {
                     ProgressView().tint(Palette.ink)
-                    Text("Listening…").font(.system(.subheadline, weight: .semibold))
+                    Text(state.message ?? String(localized: "Listening…")).font(.system(.subheadline, weight: .semibold))
                 }
                 .frame(maxWidth: .infinity, minHeight: Metrics.hitTarget)
             } else {
-                PanelButton(
-                    label: String(localized: "Listen to the video"), systemImage: "waveform", isPrimary: true, identifier: "edit.transcript.listen"
-                ) { viewModel.listenForTranscript() }
+                // Listening ended without words: why, and a second try only when one can help (never a button that loops).
+                if state != .idle, let message = state.message {
+                    PanelNote(text: message, tint: Palette.warnText)
+                        .accessibilityIdentifier("edit.transcript.problem")
+                }
+                if state == .idle || state.canRetry {
+                    PanelButton(
+                        label: state == .idle ? String(localized: "Listen to the video") : String(localized: "Try again"),
+                        systemImage: "waveform", isPrimary: true, identifier: "edit.transcript.listen"
+                    ) { viewModel.listenForTranscript() }
+                }
             }
             Spacer(minLength: 0)
         }

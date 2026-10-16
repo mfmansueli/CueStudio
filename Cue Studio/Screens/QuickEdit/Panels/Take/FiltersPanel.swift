@@ -15,11 +15,16 @@ struct FiltersPanel: View {
 
     @Environment(VideoThumbnailService.self) private var thumbnails
     @State private var previews: [VideoFilter: UIImage] = [:]
+    /// The cards widen with the text size (to 96 pt), so a name like "Editorial" fits whole on its line.
+    @ScaledMetric(relativeTo: .caption) private var scaledCardWidth: CGFloat = 62
+
+    private var cardWidth: CGFloat { min(max(62, scaledCardWidth), 96) }
 
     var body: some View {
         PanelFrame(viewModel: viewModel, panel: .filters, onReset: reset) {
             ScrollView(.horizontal) {
-                HStack(spacing: 8) {
+                // Top-aligned: a name on two lines doesn't push its thumbnail down.
+                HStack(alignment: .top, spacing: 8) {
                     ForEach(shownFilters) { filter in
                         card(filter)
                     }
@@ -68,16 +73,16 @@ struct FiltersPanel: View {
                         Palette.surface2
                     }
                 }
-                .frame(width: 62, height: 88)
+                .frame(width: cardWidth, height: 88)
                 .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
                 .overlay(RoundedRectangle(cornerRadius: 10, style: .continuous).strokeBorder(isOn ? Palette.acc : .clear, lineWidth: 2))
                 Text(filter.label)
                     .font(.system(.caption, weight: .semibold))
-                    .foregroundStyle(isOn ? Palette.accText : Palette.ink.opacity(0.75))
+                    .foregroundStyle(isOn ? Palette.accText : Palette.ink2)
                     .lineLimit(2)
                     .minimumScaleFactor(0.8)
                     .multilineTextAlignment(.center)
-                    .frame(width: 62)
+                    .frame(width: cardWidth)
             }
             .contentShape(Rectangle())
         }

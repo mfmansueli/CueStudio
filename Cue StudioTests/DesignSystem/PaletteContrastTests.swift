@@ -271,6 +271,14 @@ struct PaletteContrastTests {
         }
     }
 
+    /// The quieter line on a yellow button reads on it.
+    @Test func theSecondLineOnAYellowButtonReads() {
+        for appearance in Appearance.allCases {
+            let measured = ratio(Palette.accInk2, on: Palette.acc, in: appearance)
+            #expect(measured >= ColorContrast.textMinimum, "accInk2 on acc, \(appearance): \(measured)")
+        }
+    }
+
     /// The editor's picked tiles (a motion preset, a template, a transition): the yellow tint over the panel and the card, its
     /// name and icon on it.
     @Test func theEditorsPickedTilesRead() {

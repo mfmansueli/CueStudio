@@ -94,6 +94,22 @@ struct QuickEditCopyLookTests {
         #expect(viewModel.edit.timeline.segments[2].look?.warmth == -20)
     }
 
+    @Test func aPasteThatChangesNothingSaysSo() async throws {
+        let (viewModel, _) = await makeViewModel()
+        viewModel.selection = .clip(viewModel.edit.timeline.segments[0].id)
+        viewModel.copyClipLook()
+        let steps = viewModel.history.past.count
+        viewModel.pasteLook(on: true)
+        #expect(viewModel.history.past.count == steps)
+        // Said once the sheet has gone.
+        try await Task.sleep(for: .milliseconds(500))
+        #expect(viewModel.toast.message == "Every clip already looks like this")
+        viewModel.selection = .clip(viewModel.edit.timeline.segments[1].id)
+        viewModel.pasteLook(on: false)
+        try await Task.sleep(for: .milliseconds(500))
+        #expect(viewModel.toast.message == "This clip already looks like this")
+    }
+
     @Test func aPasteOnOneClipKeepsOnlyWhatDiffersFromTheVideo() async throws {
         let (viewModel, _) = await makeViewModel()
         viewModel.changeLook { $0.filter = .film }

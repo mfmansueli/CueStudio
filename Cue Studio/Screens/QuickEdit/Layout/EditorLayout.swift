@@ -15,6 +15,9 @@ import CoreGraphics
 ///   video track (and the track it is about) visible, taking that room from the preview down to its
 ///   minimum (30% of the height, at least 190 pt): the video never goes. Past that the panel gets
 ///   shorter and scrolls inside.
+/// - With large text (Dynamic Type from xxLarge, which also makes a regular screen compact) a mini or
+///   medium panel grows by up to half its height, from the preview down to its minimum: its labels and
+///   controls take more lines, and the video is what can give.
 /// - A full panel (Text style, Caption style) can be expanded: the preview goes down to its minimum
 ///   and the panel takes the rest, so its controls have room.
 /// - On a very compact screen (iPhone SE) the full panels open as a sheet whose top stops under the
@@ -58,6 +61,8 @@ nonisolated struct EditorLayout: Equatable, Sendable {
     /// Room left under the last track.
     static let timelineBottomPadding: CGFloat = 8
     static let laneGap: CGFloat = 6
+    /// How much taller a mini or medium panel may get with large text (`largeText`).
+    static let largeTextPanelGrowth: CGFloat = 1.5
 
     /// The smallest the preview gets, whatever is open.
     static func previewMinimum(for usable: CGFloat) -> CGFloat {
@@ -149,17 +154,23 @@ nonisolated struct EditorLayout: Equatable, Sendable {
             panelIsCompressed = false
             return
         }
-        let available = max(0, usable - bars - panelHeight)
         var needed: CGFloat = 0
         if panel != .full {
             needed = heightClass.rulerHeight + heightClass.panelMainTrackHeight + Self.timelineBottomPadding
             if panelFocusesLane { needed += Self.laneGap + heightClass.laneHeight }
         }
+        var inlineHeight = panelHeight
+        if largeText, panel != .full {
+            // Large text: the controls need more lines, so the panel grows (by half at most) and the video gives the room, down
+            // to its minimum. The ruler and the video track stay.
+            inlineHeight = max(panelHeight, min(panelHeight * Self.largeTextPanelGrowth, room - previewMinimum - needed))
+        }
+        let available = max(0, usable - bars - inlineHeight)
         let preview = min(restingPreview, max(previewMinimum, available - needed))
         if preview <= available {
             self.preview = max(preview, previewMinimum)
             timeline = max(0, available - self.preview)
-            self.panel = panelHeight
+            self.panel = inlineHeight
             panelIsCompressed = false
         } else {
             // Not even the smallest preview fits beside the panel: the panel gives way and scrolls.

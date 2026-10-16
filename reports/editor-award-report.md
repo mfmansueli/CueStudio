@@ -153,6 +153,10 @@ Nenhuma mudança deixou a tela em branco.
 
 ## 7. Limitações e o que não foi validado
 
+- **Aviso depois de fechar uma folha:** o aviso que aparece logo após fechar uma folha (por exemplo "Every clip already looks like this") é visível
+  na tela e anunciado em voz pelo VoiceOver. Mesmo assim, o teste automático de UI (XCUITest) não o encontra na árvore de acessibilidade naquele
+  instante. O texto do aviso é verificado por teste de unidade; o comportamento no VoiceOver com o dedo não foi conferido.
+
 - **Diferenças com o CapCut que ficaram para depois:**
   - localizar e trocar nas legendas, e seleção de várias linhas;
   - Replace clip;

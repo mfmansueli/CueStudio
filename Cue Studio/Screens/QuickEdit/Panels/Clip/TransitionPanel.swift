@@ -27,6 +27,8 @@ struct TransitionPanel: View {
             if let note = viewModel.transitionNote {
                 PanelNote(text: note)
             }
+        } footer: {
+            // Always in reach, under the scrolling choices: the panel is short on a small iPhone.
             if viewModel.cuts.count > 1, let transition = viewModel.selectedTransition {
                 PanelButton(
                     label: String(localized: "Use on every cut"), systemImage: "square.on.square",
