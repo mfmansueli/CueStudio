@@ -28,8 +28,8 @@ Branch `feature/editor-award` → `main`. Detalhes: `reports/editor-award-report
   - trecho do B-roll;
   - 11 efeitos sonoros feitos pelo Cue;
   - gráficos no vídeo;
-  - Edit by text: cortar o vídeo pelas palavras;
-  - 5 templates;
+  - Edit by text: cortar o vídeo pelas palavras, com início e fim marcados e Pick again;
+  - 5 templates, com legendas escolhidas pelo dono (todas sobre placa ou cartão, medidas no contraste);
   - 6 transições com duração ajustável, adaptadas do GL Transitions (MIT, atribuído);
   - congelar quadro.
 - **Robustez:**
@@ -47,12 +47,17 @@ Branch `feature/editor-award` → `main`. Detalhes: `reports/editor-award-report
   - exportação 1080p 0,75× a duração e 4K 1,03×;
   - transições de 2 a 13 ms por quadro em 4K;
   - latência da prévia igual à da `main`.
-- **Não validado:** uso com o dedo pelo dono, congelar quadro em gravação HDR real e iPhone 15 comum (A16).
+- No iPhone, com fala real: Edit by text cortou a frase certa nas fixtures pt-BR/en e em cópias de 3 takes do dono; o dia de criador
+  inteiro numa take real (pausas, legendas, corte pelo texto, Bold hook, capa, Download video) passou.
+- Full: 3.763 testes. As 2 falhas da rodada eram dos testes e foram corrigidas: as comparações prévia × exportação agora gravam a
+  legenda, e os textos de `VoiceBriefSnapshotTests` (desatualizados na `main`) foram regravados e são lidos do pacote de testes.
+- **Não validado:** uso com o dedo pelo dono, congelar quadro em gravação HDR real e iPhone 15 comum (A16; o dono não tem um).
 
 ## Fora desta entrega
 
 - Reverso, curvas de velocidade, cortes nas batidas, Seguir rosto, estabilização e rastreamento.
 - Localizar e trocar nas legendas, Replace clip e Extract audio.
+- `QuickEditExportSheet`, que nada abre e exportaria sem legendas: apagar ou reaproveitar na próxima branch.
 - Exportação que continua fora do app: plano em `reports/next-export-reliability-plan.md`. Depende da capability Background GPU, já ativada no portal.
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)

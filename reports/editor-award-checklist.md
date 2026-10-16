@@ -83,8 +83,8 @@ Branch `feature/editor-award` (worktree `.claude/worktrees/editor-award`), a par
 - ✅ Reordenar clipes (segurar ou Reorder), arrastar itens no tempo, barras na ordem de uso, Format na principal, Edit by text no ✦ Smart e nas
   Legendas, Animation no texto, Duplicate na mídia
 - ✅ Robustez: espaço antes de exportar, limpeza ao abrir, MetricKit, congelar quadro fora da thread da interface
-- 🟡 Testes da etapa (agente) · Full · check-warnings · capturas · aparelho
-- ⬜ Próxima branch: exportação que continua fora do app, aviso de aparelho quente, medição no iPhone 15 (A16); depois análise de movimento, Seguir
+- ✅ Testes da etapa · Full (3.763; as 2 falhas eram dos testes e foram corrigidas) · check-warnings · Edit by text e dia de criador no aparelho
+- ⬜ Próxima branch: exportação que continua fora do app, aviso de aparelho quente, medição no iPhone 15 Pro (o dono não tem o 15 comum: A16 não validado); depois análise de movimento, Seguir
   rosto, rastreamento, estabilização, tempo variável, cortes nas batidas (só faixas dos Files)
 - ⬜ Pendências da pesquisa (não feitas nesta entrega): localizar e trocar / seleção múltipla nas legendas, Replace clip, Extract audio
 
@@ -93,7 +93,8 @@ Branch `feature/editor-award` (worktree `.claude/worktrees/editor-award`), a par
   GL Transitions (MIT) usado como referência de movimento, reescrito em Core Image; licença e atribuições em `THIRD_PARTY_NOTICES.md` e no app
 
 ## Validação
-- ⬜ Testes de regressão de cada bug
-- ⬜ Prévia × exportação (imagem, áudio, duração, sincronia)
-- ⬜ Medições 1080p e 4K no iago Lima iphone
-- ⬜ `check-warnings.sh`, planos Fast e Full
+- ✅ Testes de regressão de cada bug
+- ✅ Prévia × exportação (imagem com a legenda gravada, áudio, duração, sincronia)
+- ✅ Medições 1080p e 4K no iago Lima iphone
+- ✅ `check-warnings.sh`, planos Fast e Full
+- ✅ Edit by text com início/fim e Pick again; legendas dos templates escolhidas pelo dono e medidas no contraste

@@ -1,6 +1,6 @@
 # Editor "award winning": relatório final
 
-Branch `feature/editor-award` (a partir de `main` 4653ecc). 15 commits, 210 arquivos. Aparelho de teste: iago Lima iphone (iPhone 15 Pro).
+Branch `feature/editor-award` (a partir de `main` 4653ecc). 23 commits, 288 arquivos. Aparelho de teste: iago Lima iphone (iPhone 15 Pro).
 Progresso item a item: `reports/editor-award-checklist.md`. Estado atual de cada tela: `DESIGN_PROJECT.md` §37. Referências: `reports/editor-references.md`.
 
 ## 1. Bugs corrigidos (todos confirmados no código antes e com teste de regressão)
@@ -116,9 +116,9 @@ Nenhuma dependência nova, nenhum serviço pago e nada na nuvem. A IA e a transc
 - **UI:** 3 testes do Cover Studio.
 
 **Resultados:**
-- **Fast:** 3.389 passaram. Uma falha intermitente do `VoiceBriefSnapshotTests`, que lê do disco do Mac um arquivo diferente a cada rodada. As fixtures e o código de voz estão iguais aos da `main`.
+- **Fast:** 3.389 passaram. A falha intermitente do `VoiceBriefSnapshotTests` foi explicada e corrigida no fechamento (§8).
 - **UI:** Smoke 26/26; editor, Cover Studio e Ajustes 34/34.
-- **Full:** ver §8.
+- **Full:** 3.763 passaram (§8).
 - **Zero warnings** (`check-warnings.sh`): simulador, aparelho e Release.
 - **Contraste:** `PaletteContrastTests` 38/38, inclusive os tokens novos (contorno das mídias, guias da capa, blocos escolhidos).
 
@@ -176,3 +176,58 @@ Nenhuma mudança deixou a tela em branco.
 - **Plural:** "Cut 1 words" sai sem plural, como em outras strings do projeto, que não usa variações de plural no catálogo.
 - **Clones de simulador:** os testes rodam em paralelo com clones (o script não permite desligar). Apaguei os clones depois de cada rodada.
 - **Recursos não feitos:** reverso, curvas de velocidade, batidas, reenquadramento, estabilização e rastreamento (§3).
+
+## 8. Fechamento (16/10, noite)
+
+### O que entrou
+
+- **Edit by text com início e fim:**
+  - o 1º toque marca o começo, com uma seta na palavra, e a folha diz "Start: “x”. Now tap the last word of the part.";
+  - o 2º toque marca o fim e mostra "From “x” to “y”";
+  - **Pick again** recomeça a escolha.
+  - O demo dos testes ganhou as palavras ditas (`-uiTestDemoTranscript`), então o corte pelo texto agora é testado no Simulador em vez de pulado.
+- **Legendas dos templates (escolha do dono numa página de opções):**
+
+  | Template | Legenda |
+  |---|---|
+  | Bold hook | Pop (faixa violeta por linha), 1,2×, palavra dita em amarelo |
+  | Tutorial | Label (maiúsculas num cartão escuro), palavra dita em amarelo |
+  | Story | Editorial, palavra dita em pêssego |
+  | Clean | placa Educational, linha a linha |
+  | Interview | Soft (cartão branco, letra escura) |
+
+  - A placa do estilo Editorial passou de 55% para **62%** de preto, para o texto e o pêssego passarem no contraste sobre uma cena branca:
+    - texto: de 4,4 para 5,7:1;
+    - pêssego: de 2,9 para 3,8:1.
+  - Vale também para quem escolhe o Editorial no painel de Legendas.
+  - A frase do cartão Story mudou para "Serif captions that light each word · editorial titles", nos 20 idiomas.
+
+### Testes e medições
+
+- **Edit by text no iago Lima iphone, com fala real:** 2 de 2 aprovados.
+  - Fixtures pt-BR e en: cortei 3 palavras, a frase sumiu do áudio exportado e as palavras vizinhas ficaram.
+  - Cópias de 3 takes de Paris do dono (33,8 s, 31,2 s e 36,3 s): a frase sumiu nas 3, exportando 1080p em 5,4 a 6,3 s.
+- **Dia de criador numa take real** (`RealTakeWorkflowUITests`, no iPhone): aprovado na 3ª rodada.
+  - Passos: abrir a take mais recente, tirar as pausas, legendas da voz, cortar 2 palavras pelo texto, Bold hook, capa e Download video. O vídeo foi salvo no Fotos.
+  - As duas primeiras rodadas falharam por erros do próprio teste, já corrigidos:
+    - deslizar rolava as palavras em vez de fechar a folha; agora o teste toca no ×;
+    - na segunda rodada ele tentou cortar palavras já cortadas; agora escolhe duas ainda no vídeo.
+  - **Mudou no aparelho:**
+    - a take do roteiro "Dicas de passeios em Paris: veja aqui" (TikTok, 0:34) ficou editada: pausas removidas, legendas, 2 cortes de 2 palavras e o Bold hook. O vídeo original não foi alterado;
+    - 1 vídeo novo no Fotos.
+- **Contraste das legendas dos templates** (`VideoTemplateCaptionContrastTests`), sobre cena branca e preta:
+  - texto contra a placa, o cartão ou o contorno: pelo menos 4,5:1;
+  - palavra dita, onde ela só muda de cor: pelo menos 3:1.
+- **Full:** 3.763 aprovados, 2 falhas, ambas nos testes e não no app. As duas suítes passaram depois da correção; o código do app não mudou desde aquela rodada:
+  - **`EditorExportMatchesPreviewTests`**: os testes de prévia × exportação nunca pediam a legenda gravada (`burnsInCaptions`). As legendas da montagem nunca tinham sido comparadas de verdade; a faixa roxa do Bold hook novo é que revelou isso. Agora a legenda é gravada e comparada, e passa (diferença abaixo de 3).
+  - **`VoiceBriefSnapshotTests`**:
+    - o macOS nega ao Simulador, de vez em quando, a leitura da pasta Mesa (erro 257). Por isso falhava uma persona diferente a cada rodada;
+    - além disso, os 14 textos guardados estavam desatualizados na própria `main`: o commit `2c8fd40` (Script engineering) acrescentou duas frases ao prompt do roteirista e não os regravou;
+    - agora a leitura usa os arquivos do pacote de testes, e os textos foram regravados. O diff traz só as duas frases e um contador de 2 caracteres.
+- **Zero warnings** (`check-warnings.sh`): Simulador, aparelho e Release, antes do Full; os builds de teste depois também saíram sem warnings.
+
+### Achados que ficam para depois
+
+- **`QuickEditExportSheet` / `QuickEditExportModel` são código morto:** nada abre `EditorSheet.export`, e esse caminho exportaria **sem legendas** (`burnsInCaptions: false`). O Download video passa pela revisão da take (`TakeReviewViewModel`), que grava as legendas. Na branch de exportação confiável: apagar ou reaproveitar, sem esquecer as legendas.
+- **iPhone 15 comum (A16):** o dono não tem um. As medições da próxima etapa serão no 15 Pro, e o A16 fica como **não validado**.
+- **Pendências técnicas de antes** (§7) seguem: plural, congelar quadro em HDR e o aviso logo depois de fechar uma folha no XCUITest.
