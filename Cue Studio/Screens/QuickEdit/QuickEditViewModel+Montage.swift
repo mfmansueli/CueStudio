@@ -148,6 +148,49 @@ extension QuickEditViewModel {
         toast.show(String(localized: "\(source.title) added"))
     }
 
+    // MARK: - Freeze frame
+
+    /// How long a freeze frame holds at first; its file is longer, so its end handle can stretch it.
+    static let freezeLength: TimeInterval = 2
+    static let freezeFileLength: TimeInterval = 5
+
+    /// Holds the frame under the playhead: the clip is split there and the frame plays as a clip of its own, silent, with the
+    /// look of the clip it came from (the music and voice-overs keep going). One undo step; the recording is never touched.
+    func freezeFrame() async {
+        guard isReady, !isImportingMedia else { return }
+        let time = player.currentTime
+        let timeline = edit.timeline
+        let index = timeline.segmentIndex(atEdited: time)
+        let segment = timeline.segments[index]
+        let url = segment.sourceID.flatMap { clipSourceURLs[$0] } ?? videoURL
+        isImportingMedia = true
+        defer { isImportingMedia = false }
+        player.pause()
+        let name: String
+        do {
+            name = try await editing.stillClip(ofVideoAt: url, at: timeline.sourceTime(forEdited: time), length: Self.freezeFileLength)
+        } catch {
+            toast.show(String(localized: "Can't freeze this frame"))
+            return
+        }
+        importedFiles.insert(name)
+        var next = arranged(edit)
+        next.timeline.split(atEdited: time)
+        // After the split, the frame goes where the playhead is: after every piece that starts before it.
+        let at = next.timeline.segments.indices.filter { next.timeline.editedStart(ofSegmentAt: $0) < time - 0.001 }.count
+        let source = ClipSource(fileName: name, duration: Self.freezeFileLength, title: String(localized: "Freeze frame"))
+        guard let id = next.timeline.insertClip(
+            source: source.id, duration: source.duration, span: TimeSpan(start: 0, end: Self.freezeLength), at: at, look: segment.look
+        ), let inserted = next.timeline.index(ofSegment: id) else { return }
+        next.sources.append(source)
+        commit(EditSnapshot(next))
+        player.seek(to: next.timeline.editedStart(ofSegmentAt: inserted))
+        toast.show(
+            String(localized: "Frame frozen for \(Int(Self.freezeLength)) seconds · drag its end to hold longer"),
+            action: ToastAction(title: String(localized: "Undo")) { [weak self] in self?.undo() }
+        )
+    }
+
     // MARK: - Private
 
     /// `edit` ready to be arranged: pinned to its sections the first time.

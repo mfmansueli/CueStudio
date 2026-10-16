@@ -124,6 +124,10 @@ final class TakeEditService: TakeEditing {
         return image?.jpegData(compressionQuality: 0.92)
     }
 
+    func stillClip(ofVideoAt url: URL, at time: TimeInterval, length: TimeInterval) async throws -> String {
+        try await StillClipWriter.write(frameOf: url, at: time, length: length)
+    }
+
     func matchedOriginalVolume(forVideoAt url: URL, edit: TakeEdit) async -> Double? {
         guard let treated = try? await processedAudio(for: url, edit: edit),
               let untreated = try? await audioFile(for: url) else { return nil }

@@ -40,6 +40,9 @@ protocol TakeEditing: AnyObject {
     /// The cover drawn as a JPEG (a frame or photo, cropped to the take's frame, with its title);
     /// nil when its picture can't be read.
     func coverImage(_ cover: VideoCover, forVideoAt url: URL, edit: TakeEdit) async -> Data?
+    /// Freeze frame: the frame at `time` of the recording at `url` as a silent video `length` seconds long, in the edit's
+    /// media (`EditMediaFiles`). Returns its file name; throws when the frame can't be read or written.
+    func stillClip(ofVideoAt url: URL, at time: TimeInterval, length: TimeInterval) async throws -> String
 }
 
 extension TakeEditing {

@@ -22,6 +22,8 @@ enum EditorAction: Hashable {
     // Clip
     case splitClip
     case duplicateClip
+    /// Freeze frame: the frame under the playhead held as a clip of its own.
+    case freezeFrame
     case copyLook
     case pasteLook
     case deleteClip

@@ -460,6 +460,7 @@ nonisolated struct EditTimeline: Codable, Hashable, Sendable {
         right.id = UUID()
         right.sourceStart = cut
         right.transitionIn = .hardCut
+        right.transitionDuration = nil
         segments.insert(right, at: index + 1)
         return true
     }
@@ -630,13 +631,16 @@ nonisolated struct EditTimeline: Codable, Hashable, Sendable {
     /// Adds `span` of another recording (`source`, `duration` long) to the montage, at `index`
     /// (the end by default). The edit becomes arranged. Returns the new piece's identity.
     @discardableResult
-    mutating func insertClip(source: UUID, duration: TimeInterval, span: TimeSpan? = nil, at index: Int? = nil) -> UUID? {
+    mutating func insertClip(
+        source: UUID, duration: TimeInterval, span: TimeSpan? = nil, at index: Int? = nil, look: ClipLook? = nil
+    ) -> UUID? {
         guard duration >= Self.minimumDuration else { return nil }
         otherSources[source] = duration
         let stretch = span ?? TimeSpan(start: 0, end: duration)
-        let piece = EditSegment(
+        var piece = EditSegment(
             span: TimeSpan(start: max(0, stretch.start), end: min(duration, stretch.end)), sourceID: source
         )
+        piece.look = look
         guard piece.sourceLength >= Self.minimumDuration else { return nil }
         isArranged = true
         segments.insert(piece, at: min(max(0, index ?? segments.count), segments.count))

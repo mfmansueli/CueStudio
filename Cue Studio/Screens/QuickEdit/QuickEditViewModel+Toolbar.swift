@@ -116,6 +116,7 @@ extension QuickEditViewModel {
                 EditorToolbarItem(id: "zoom", label: String(localized: "Zoom"), systemImage: "arrow.up.left.and.arrow.down.right", action: .open(.zoom)),
                 EditorToolbarItem(id: "volume", label: String(localized: "Volume"), systemImage: "speaker.wave.2", action: .open(.volume)),
                 EditorToolbarItem(id: "duplicate", label: String(localized: "Duplicate"), systemImage: "plus.square.on.square", action: .duplicateClip),
+                EditorToolbarItem(id: "freeze", label: String(localized: "Freeze frame"), systemImage: "pause.rectangle", action: .freezeFrame),
                 EditorToolbarItem(id: "copyLook", label: String(localized: "Copy look"), systemImage: "doc.on.doc", action: .copyLook),
                 EditorToolbarItem(
                     id: "pasteLook", label: String(localized: "Paste look"), systemImage: "doc.on.clipboard",
@@ -256,6 +257,7 @@ extension QuickEditViewModel {
         switch action {
         case .splitClip: splitClip()
         case .duplicateClip: selection?.clipID.map(duplicateClip)
+        case .freezeFrame: Task { await freezeFrame() }
         case .copyLook: copyClipLook()
         case .pasteLook: askToPasteLook()
         case .deleteClip: selection?.clipID.map(deleteClip)

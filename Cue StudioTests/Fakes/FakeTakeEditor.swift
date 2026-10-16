@@ -128,4 +128,14 @@ final class FakeTakeEditor: TakeEditing {
         drawnCovers.append(cover)
         return coverData
     }
+
+    /// Freeze frames asked for: the recording and the moment.
+    var stillClips: [(url: URL, time: TimeInterval, length: TimeInterval)] = []
+    var stillClipFails = false
+
+    func stillClip(ofVideoAt url: URL, at time: TimeInterval, length: TimeInterval) async throws -> String {
+        stillClips.append((url, time, length))
+        if stillClipFails { throw CocoaError(.fileReadCorruptFile) }
+        return "still-\(stillClips.count).mov"
+    }
 }
