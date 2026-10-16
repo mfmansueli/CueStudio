@@ -13,7 +13,7 @@ import UIKit
 /// preview, the template thumbnails and the saved image are the same cover at different sizes.
 nonisolated enum CoverCompositionRenderer {
     /// The cover's pictures: its own, and a before/after's second (nil: the same picture on both sides).
-    struct Pictures {
+    struct Pictures: Sendable {
         var main: UIImage
         var second: UIImage?
     }
@@ -35,7 +35,7 @@ nonisolated enum CoverCompositionRenderer {
             if composition.title.background == .shadow || composition.title.background == .none, !layout.lines.isEmpty {
                 drawScrim(behind: layout.bounds, size: size, in: context)
             }
-            if let split = composition.split { drawSplitMarks(split, size: size, in: context) }
+            if let split = composition.activeSplit { drawSplitMarks(split, size: size, in: context) }
             drawTitle(layout, style: composition.title, size: size, in: context)
             if let cutout {
                 cutout.outline?.draw(in: rect)
@@ -49,7 +49,7 @@ nonisolated enum CoverCompositionRenderer {
     /// what Cover Studio's handles go around.
     static func titleLayout(title: String, composition: CoverComposition, size: CGSize) -> CoverTextLayout {
         var avoid = composition.items.filter { $0.kind.hasText }.map { frame(of: $0, coverSize: size) }
-        if let split = composition.split, split.showsLabels { avoid += labelFrames(split, size: size) }
+        if let split = composition.activeSplit, split.showsLabels { avoid += labelFrames(split, size: size) }
         return CoverTextLayout.layout(title: title, style: composition.title, coverSize: size, avoid: avoid)
     }
 
@@ -75,7 +75,7 @@ nonisolated enum CoverCompositionRenderer {
 
     /// The frames each picture fills: the whole cover, or the left and right of the divider.
     static func pictureFrames(_ composition: CoverComposition, size: CGSize) -> (main: CGRect, second: CGRect?) {
-        guard let split = composition.split else { return (CGRect(origin: .zero, size: size), nil) }
+        guard let split = composition.activeSplit else { return (CGRect(origin: .zero, size: size), nil) }
         let x = (min(max(split.position, CoverSplit.positionRange.lowerBound), CoverSplit.positionRange.upperBound) * size.width).rounded()
         return (CGRect(x: 0, y: 0, width: x, height: size.height), CGRect(x: x, y: 0, width: size.width - x, height: size.height))
     }
@@ -86,7 +86,7 @@ nonisolated enum CoverCompositionRenderer {
         context.clip(to: frames.main)
         pictures.main.draw(in: composition.framing.rect(for: pictures.main.size, in: frames.main))
         context.restoreGState()
-        guard let second = frames.second, let split = composition.split else { return }
+        guard let second = frames.second, let split = composition.activeSplit else { return }
         let picture = pictures.second ?? pictures.main
         context.saveGState()
         context.clip(to: second)

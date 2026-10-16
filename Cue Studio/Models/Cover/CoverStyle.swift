@@ -67,7 +67,6 @@ nonisolated struct CoverStyle: Codable, Hashable, Sendable {
         styled.effect = effect
         styled.effectAmount = effectAmount
         if template == .beforeAfter, styled.split == nil { styled.split = CoverSplit() }
-        if template != .beforeAfter { styled.split = nil }
         return styled
     }
 }

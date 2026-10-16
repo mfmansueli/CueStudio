@@ -7,7 +7,7 @@ import SwiftUI
 
 /// The edit playing in its frame. Tap to play or pause (a play sign shows while paused); with the
 /// Crop tool, dragging moves the crop; with Text or Media, handles move what is laid on the video
-/// (`OverlayEditingLayer`); with Cover, the cover shows instead (`CoverPreviewLayer`). Says so
+/// (`OverlayEditingLayer`). Says so
 /// when the recording can't be opened, and shows "Processing…" when a change takes a moment to
 /// build. While the screen is recorded or mirrored all of it hides behind `CaptureShield`.
 struct QuickEditPreview: View {
@@ -40,13 +40,8 @@ struct QuickEditPreview: View {
                 if isFullScreen { playBadge }
             }
             .overlay {
-                if !isFullScreen, viewModel.panel != .crop, !viewModel.showsCoverImage {
+                if !isFullScreen, viewModel.panel != .crop {
                     OverlayEditingLayer(viewModel: viewModel, size: size)
-                }
-            }
-            .overlay {
-                if viewModel.showsCoverImage {
-                    CoverPreviewLayer(viewModel: viewModel, size: size)
                 }
             }
             .overlay { recordingBadge }
@@ -76,7 +71,7 @@ struct QuickEditPreview: View {
     /// preview is.
     @ViewBuilder
     private var playBadge: some View {
-        if viewModel.isReady, viewModel.player.state == .ready, !viewModel.player.isPlaying, !viewModel.showsCoverImage {
+        if viewModel.isReady, viewModel.player.state == .ready, !viewModel.player.isPlaying {
             Image(systemName: "play.fill")
                 .font(.system(size: 22, weight: .semibold))
                 .foregroundStyle(Palette.ink)

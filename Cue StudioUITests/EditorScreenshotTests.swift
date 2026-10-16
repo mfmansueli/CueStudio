@@ -96,11 +96,13 @@ final class EditorScreenshotTests: XCTestCase {
             apply()
         }
         back()
-        for tool in ["smart", "cover"] {
-            EditorApp.tapTool(app, tool)
-            try capture("23-\(tool)")
-            apply()
-        }
+        EditorApp.tapTool(app, "smart")
+        try capture("23-smart")
+        apply()
+        EditorApp.tapTool(app, "cover")
+        XCTAssertTrue(app.buttons["cover.done"].waitForExistence(timeout: 5))
+        try capture("23-cover")
+        app.buttons["cover.done"].tap()
         app.buttons["edit.doneButton"].tap()
         XCTAssertTrue(app.buttons["edit.done.share"].waitForExistence(timeout: 5))
         try capture("21-done-question")

@@ -32,6 +32,8 @@ nonisolated enum DefaultsKey {
     static let myTextStyle = "myTextStyle"
     /// The cover style the creator saved as "My cover style" (`CoverLook`, JSON).
     static let myCoverStyle = "myCoverStyle"
+    /// Cover Studio's "My cover style" (`CoverStyle`).
+    static let myCoverStudioStyle = "myCoverStudioStyle"
     /// Free exports used, before the count moved to the Keychain; migrated and removed at launch.
     static let legacyCleanExportsUsed = "cleanExportsUsed"
     /// Debug builds: this install has launched before. UserDefaults goes with the app and the Keychain stays, so without

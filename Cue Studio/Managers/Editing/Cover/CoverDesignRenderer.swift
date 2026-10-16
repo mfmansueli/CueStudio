@@ -32,7 +32,7 @@ nonisolated enum CoverDesignRenderer {
     }
 
     /// The person cut out of the cover's picture, and (for "Outline me") the white silhouette behind it.
-    struct Cutout {
+    struct Cutout: Sendable {
         let person: UIImage
         let outline: UIImage?
     }

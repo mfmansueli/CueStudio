@@ -122,8 +122,7 @@ extension QuickEditViewModel {
         }
         switch hit {
         case .cover:
-            selection = nil
-            panel = .cover
+            openCoverStudio()
         case .addClip:
             mediaInsertMode = .clip
             sheet = .media

@@ -1,0 +1,37 @@
+//
+//  CoverStepBar.swift
+//  Cue Studio
+//
+
+import SwiftUI
+
+/// Cover Studio's five steps along the bottom, numbered, the open one in yellow. Any can be opened.
+struct CoverStepBar: View {
+    @Bindable var viewModel: CoverStudioViewModel
+
+    var body: some View {
+        HStack(spacing: 0) {
+            ForEach(Array(CoverStudioStep.allCases.enumerated()), id: \.element) { index, step in
+                let isOn = viewModel.step == step
+                Button {
+                    Haptics.selection()
+                    viewModel.step = step
+                } label: {
+                    VStack(spacing: 3) {
+                        Image(systemName: step.systemImage).font(.system(size: 17, weight: .semibold))
+                        Text(step.label).font(.system(.caption2, weight: .semibold)).lineLimit(1).minimumScaleFactor(0.7)
+                    }
+                    .foregroundStyle(isOn ? Palette.accText : Palette.ink2)
+                    .frame(maxWidth: .infinity, minHeight: 50)
+                    .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel(Text("Step \(index + 1) of \(CoverStudioStep.allCases.count): \(step.label)"))
+                .accessibilityAddTraits(isOn ? [.isSelected] : [])
+                .accessibilityIdentifier("cover.step.\(step.rawValue)")
+            }
+        }
+        .padding(.horizontal, 8)
+        .background(Palette.Editor.toolbarFill)
+    }
+}

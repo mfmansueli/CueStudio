@@ -19,6 +19,11 @@ extension Palette {
         static let overlayOutline = Color.white
         static let overlayOutlineHalo = Color.black.opacity(0.75)
 
+        /// Cover Studio's crop guide: the part a profile grid hides, shaded, and the guide's label (white on it reads on any
+        /// picture: the shade and the label's own dark pill).
+        static let cropShade = Color.black.opacity(0.45)
+        static let cropLabel = Color.black.opacity(0.72)
+
         /// Behind the preview before the video loads.
         static let previewWell = Color(hex: 0x0E101C)
 

@@ -35,13 +35,14 @@ Branch `feature/editor-award` (worktree `.claude/worktrees/editor-award`), a par
   rodada; não é do editor).
 
 ## 2. Capa
-- ⬜ Fluxo imagem → modelo → título → detalhes → salvar
-- ⬜ Enquadramento (ampliar, mover, restaurar), frame preciso
-- ⬜ Modelos com miniatura real (Educativo, Opinião, Lista, Demonstração, Antes/depois, Série)
-- ⬜ Texto: posição, tamanho, alinhamento, cores, fundo/contorno/sombra, maiúsculas, destaque, ajuste do bloco
-- ⬜ Elementos gráficos editáveis
-- ⬜ Antes/depois com duas imagens
-- ⬜ Efeitos e estilo salvo
+- ✅ Fluxo imagem → modelo → título → detalhes → salvar (Cover Studio em tela cheia, 5 etapas, desfazer próprio)
+- ✅ Enquadramento (pinça, arraste, Reset, zoom por controle), frame preciso (faixa + ±1 quadro)
+- ✅ Modelos com miniatura real (Educativo, Opinião, Lista, Demonstração, Antes/depois, Série); galeria conferida em 8 títulos/idiomas × claro/escuro
+- ✅ Texto: posição (arraste com guias), tamanho (pinça/controle), largura (alça/controle), alinhamento, cores, sombra/contorno/caixa, maiúsculas,
+  várias palavras em destaque (cor ou caixa), linha acima, ajuste do bloco inteiro sem cortar palavras (RTL, CJK, tailandês, emoji)
+- ✅ Elementos gráficos editáveis (selecionar, arrastar, pinçar/girar, alça de canto, cor, duplicar, excluir, ordem, guias)
+- ✅ Antes/depois com duas imagens, enquadramento próprio, divisor arrastável, rótulos editáveis e localizados
+- ✅ Efeitos (força de Dim/Blur; "No person found") e estilo salvo sem conteúdo; capas antigas convertidas só ao abrir
 
 ## 3. Usabilidade do editor
 - ⬜ Escopo explícito

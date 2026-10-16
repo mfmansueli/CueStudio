@@ -20,7 +20,7 @@ nonisolated enum CoverRenderer {
         guard let picture = await picture(for: cover.source, videoURL: videoURL, edit: edit) else { return nil }
         if let composition = cover.composition {
             var pictures = CoverCompositionRenderer.Pictures(main: picture)
-            if let second = composition.split?.source { pictures.second = await self.picture(for: second, videoURL: videoURL, edit: edit) }
+            if let second = composition.activeSplit?.source { pictures.second = await self.picture(for: second, videoURL: videoURL, edit: edit) }
             let cutout = composition.effect.needsPersonMask
                 ? CoverDesignRenderer.cutout(
                     of: CoverCompositionRenderer.picturesLayer(composition, pictures: pictures, size: size), outlined: composition.effect == .outline

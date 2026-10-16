@@ -21,7 +21,6 @@ extension QuickEditViewModel {
         photoRequest = nil
         switch request.purpose {
         case .background: await importBackgroundImage(item)
-        case .cover: await useCoverPhoto(item)
         case .replaceMedia(let id, _): await replaceMedia(id, importing: item)
         }
     }

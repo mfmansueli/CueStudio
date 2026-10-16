@@ -96,7 +96,8 @@ struct QuickEditTimelineTests {
         viewModel.tapTimeline(nil)
         #expect(viewModel.selection == nil)
         viewModel.tapTimeline(.cover)
-        #expect(viewModel.panel == .cover)
+        #expect(viewModel.coverStudio != nil)
+        viewModel.coverStudio = nil
         viewModel.tapTimeline(.lane(.text))
         #expect(viewModel.toolMenu == .text)
         #expect(viewModel.panel == nil)

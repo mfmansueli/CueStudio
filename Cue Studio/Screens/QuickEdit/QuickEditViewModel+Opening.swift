@@ -31,7 +31,7 @@ extension QuickEditViewModel {
             lookScopeIsClip = false
             panel = .background
         case .cover:
-            panel = .cover
+            openCoverStudio()
         case .media:
             mediaInsertMode = .overlay
             sheet = .media

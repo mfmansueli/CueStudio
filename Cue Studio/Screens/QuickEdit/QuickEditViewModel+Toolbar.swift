@@ -43,7 +43,7 @@ extension QuickEditViewModel {
             EditorToolbarItem(id: "captions", label: String(localized: "Captions"), systemImage: "captions.bubble", action: .openCaptions),
             EditorToolbarItem(id: "filters", label: String(localized: "Filters"), systemImage: "camera.filters", action: .open(.filters)),
             EditorToolbarItem(id: "smart", label: String(localized: "✦ Smart"), systemImage: "sparkles", style: .smart, action: .open(.smart)),
-            EditorToolbarItem(id: "cover", label: String(localized: "Cover"), systemImage: "photo.artframe", action: .open(.cover)),
+            EditorToolbarItem(id: "cover", label: String(localized: "Cover"), systemImage: "photo.artframe", action: .openCoverStudio),
         ]
     }
 
@@ -183,6 +183,7 @@ extension QuickEditViewModel {
             toolMenu = nil
             writeCaptionsByHand()
         case .openMusic, .replaceMusic: openMusicSheet(replacing: action == .replaceMusic)
+        case .openCoverStudio: openCoverStudio()
         default: break
         }
     }

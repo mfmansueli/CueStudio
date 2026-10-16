@@ -308,6 +308,7 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
         names.formUnion(backgrounds.compactMap(\.effect.imageFileName))
         names.formUnion(timeline.segments.compactMap { $0.look?.background?.imageFileName })
         if case .photo(let name)? = cover?.source { names.insert(name) }
+        if case .photo(let name)? = cover?.composition?.split?.source { names.insert(name) }
         return names
     }
 

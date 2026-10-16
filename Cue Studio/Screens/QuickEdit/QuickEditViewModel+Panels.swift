@@ -18,7 +18,7 @@ extension QuickEditViewModel {
     var acceptsSpaceToPlay: Bool {
         guard sheet == nil else { return false }
         switch panel {
-        case .textStyle?, .captions?, .cover?: return false
+        case .textStyle?, .captions?: return false
         default: return true
         }
     }
@@ -35,7 +35,6 @@ extension QuickEditViewModel {
         case .adjust, .filters, .background: lookSubtitle(for: panel)
         case .pauses: String(localized: "Marked in yellow on the timeline")
         case .crop: String(localized: "Format for where you post")
-        case .cover: String(localized: "Shown before the video plays")
         case .captions, .autoCaptions, .captionStyle: captionSubtitle(panel)
         case .textStyle: textStyleSubtitle
         case .voiceOver: String(localized: "Records from the playhead · the video plays muted")

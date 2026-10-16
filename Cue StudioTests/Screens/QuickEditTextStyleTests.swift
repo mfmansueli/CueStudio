@@ -137,7 +137,7 @@ struct QuickEditTextStyleTests {
         #expect(viewModel.textStyleTabChangesLook)
         viewModel.panelTab = .font
         #expect(viewModel.textStyleTab == .font)
-        viewModel.panelTab = .frame
+        viewModel.panelTab = .motion
         #expect(viewModel.captionStyleTab == .presets)
     }
 
@@ -150,7 +150,7 @@ struct QuickEditTextStyleTests {
         viewModel.panel = .captionStyle
         #expect(viewModel.stylePanelIsExpanded)
         #expect(EditorPanel.captionStyle.isExpandable && EditorPanel.textStyle.isExpandable)
-        #expect(!EditorPanel.captions.isExpandable && !EditorPanel.cover.isExpandable)
+        #expect(!EditorPanel.captions.isExpandable && !EditorPanel.background.isExpandable)
     }
 
     @Test func editorialOnTheTitleThenOnEveryText() async {

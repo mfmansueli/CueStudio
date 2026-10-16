@@ -49,7 +49,6 @@ final class QuickEditViewModel {
             // Leaving Pauses without removing them puts them back.
             cancelPausePreview()
             if recorder.isRecording { stopVoiceOver() }
-            isPickingCoverFrame = false
             if oldValue == .transition { selectedJoinID = nil }
             if panel == .pauses { cleanUpMarks = [:] }
             if panel == nil { lookScopeIsClip = false }
@@ -199,11 +198,11 @@ final class QuickEditViewModel {
     }
     /// Edited seconds where the voice-over being recorded started.
     var recordingStart: TimeInterval?
-    /// The cover as drawn, for the preview; nil until drawn or without a cover.
+    /// The cover as drawn, for the timeline's cover block; nil until drawn or without a cover.
     var coverImage: Data?
     var isDrawingCover = false
-    /// Cover: the video shows instead of the cover while another frame is picked.
-    var isPickingCoverFrame = false
+    /// Cover Studio, while it's open over the editor.
+    var coverStudio: CoverStudioViewModel?
     /// Remove Pauses: the edit before its preview, while the result plays without the pauses. Apply
     /// keeps it as one undo step; anything else puts it back.
     var pausePreviewBase: EditSnapshot?
@@ -211,12 +210,8 @@ final class QuickEditViewModel {
     var speedScope: SpeedScope = .whole
     /// The type the creator saved as "My style" (see `QuickEditViewModel+Style`).
     var myStyle: TextLook?
-    /// The cover style saved as "My cover style".
-    var myCoverLook: CoverLook?
-    /// The creator's handle, for the cover's "@handle" element (set by the screen).
+    /// The creator's handle, for the cover's "@handle" graphic and series (set by the screen).
     var creatorHandle = ""
-    /// Cover's preview: the cover as it will be posted, or inside a profile's grid.
-    var coverPreview: CoverPreviewMode = .feed
 
     // MARK: Background
     /// Whether this iPhone can find people in video; nil until checked.
@@ -253,6 +248,8 @@ final class QuickEditViewModel {
     let mediaImporter: EditMediaImporting
     let recorder: VoiceOverRecording
     let styles: TextStyleStoring
+    /// Cover Studio's pictures.
+    let coverPictures: CoverPicturing
     let translations: TranslationAvailabilityChecking
     /// The library of takes (a montage adds others from it).
     let takes: TakeLibraryService
@@ -272,6 +269,8 @@ final class QuickEditViewModel {
     /// Media files copied in while Quick edit is open, so what the edit doesn't keep is removed.
     @ObservationIgnored var importedFiles: Set<String> = []
     @ObservationIgnored var coverTask: Task<Void, Never>?
+    /// The cover `coverImage` was drawn from.
+    @ObservationIgnored var drawnCover: VideoCover?
     /// A short part playing to show a change (a zoom, a reveal, a pause heard).
     @ObservationIgnored var previewTask: Task<Void, Never>?
     @ObservationIgnored private var draftTask: Task<Void, Never>?
@@ -281,6 +280,7 @@ final class QuickEditViewModel {
         take: Take, takes: TakeLibraryService, library: ScriptLibraryService, editing: TakeEditing,
         drafts: QuickEditDraftStoring, toast: ToastService, player: EditPlayback? = nil,
         mediaImporter: EditMediaImporting? = nil, recorder: VoiceOverRecording? = nil, styles: TextStyleStoring? = nil,
+        coverPictures: CoverPicturing? = nil,
         translations: TranslationAvailabilityChecking = AppleTranslationAvailability(),
         speechLanguage: @escaping (Script?) -> SpeechLanguageRequest = SpeechLanguageRequest.script,
         languageConflict: @escaping (Script?) -> SpeechLanguageConflict? = { _ in nil }
@@ -290,7 +290,7 @@ final class QuickEditViewModel {
         self.styles = styles ?? TextStyleStore()
         self.translations = translations
         myStyle = self.styles.myStyle
-        myCoverLook = self.styles.myCoverLook
+        self.coverPictures = coverPictures ?? CoverPictureService()
         speechLanguageFor = speechLanguage
         self.mediaImporter = mediaImporter ?? EditMediaImporter()
         self.recorder = recorder ?? VoiceOverRecorder()
@@ -337,6 +337,7 @@ final class QuickEditViewModel {
         source = .ready
         player.show(edit)
         player.seek(to: playhead)
+        drawCover()
     }
 
     private func editDidChange() {
@@ -354,6 +355,7 @@ final class QuickEditViewModel {
         // A change is no longer what was being compared.
         if comparesPicture { comparesPicture = false }
         player.show(playedEdit)
+        if edit.cover != drawnCover { drawCover() }
         scheduleDraftSave()
     }
 

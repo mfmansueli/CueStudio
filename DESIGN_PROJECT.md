@@ -889,6 +889,27 @@ auditoria: `reports/editor-award-checklist.md`.
   da gravação onde foi escolhido, desenhado com o look do clipe que o mostra (uma cópia pode ter o seu); trocar a ordem, duplicar, dividir ou mudar a
   velocidade só muda onde ele toca. Capas antigas (`.frame(segundos)`) são quadros do take. **Se o trecho sai da edição**, a capa continua a mesma
   (da gravação) e a aba Frame diz "This frame is from a part you removed…" com **Use the frame at the playhead**.
+- **Cover Studio** (`Screens/QuickEdit/CoverStudio/`, `CoverStudioViewModel`, `CoverComposition`): a capa é feita em tela cheia, sobre o editor (Capa
+  na barra, o bloco de capa da timeline, "Try it" de notificação), em **cinco etapas** com Next e barra de etapas: **Picture** (quadro da faixa, ±1
+  quadro, ou foto; zoom/mover com os dedos ou o controle, Reset; no antes/depois, Before | After com a metade emoldurada em amarelo, rótulos
+  editáveis), **Template** (Educational, Opinion, List, Demo, Before/After, Series, cada miniatura desenhada com a foto e o título reais; trocar de
+  modelo mantém título, destaques, enquadramento, segunda foto e os gráficos do criador; os do modelo, se não tocados, são trocados), **Title**
+  (texto ou ✦ sugestões, palavras em destaque (várias), Type: fonte, tamanho, largura, alinhamento, maiúsculas; Color: texto, destaque e "Color |
+  Box"; Readability: None, Shadow, Outline, Box + cor da caixa; Line above), **Graphics** (Arrow, Circle, Tag, @handle como objetos: tocar,
+  arrastar, pinçar e girar com dois dedos ou a alça do canto, ✕, cor, texto, tamanho e giro por controle, Copy, In front, Behind, Delete) e
+  **Finish** (Clean, Text behind me, Outline me, Dim, Blur com Strength; sem pessoa: "No person found" e a explicação; My cover style: Save as my
+  style / Use my style; Remove cover). Desfazer/refazer próprio; Done é **um** passo no editor; Cancel com mudanças pergunta. Guias amarelas no
+  meio e nos terços; guia de recorte "Profile grid 3:4 · approx." / "Square 1:1 · approx." (aproximações: o Cue não define a capa em nenhuma rede).
+  O teclado esconde a barra de etapas; tocar na capa o recolhe. A timeline mostra a capa desenhada no bloco de capa.
+- **Texto da capa** (`CoverTextLayout`, Core Text): o bloco inteiro cabe — a letra diminui (até 3,4% da largura) até a palavra mais longa, as
+  linhas (até 6) e a altura caberem, sempre dentro da capa em volta do centro e longe de tags, @handle e rótulos do antes/depois. Quebra só no
+  início de uma palavra (separação de palavras do sistema: espaços, ou dicionário em japonês, chinês e tailandês); RTL alinha do próprio lado;
+  fontes sem a escrita caem para as versões em negrito do sistema (Thonburi-Bold, Hiragino W7, PingFang, Geeza Pro…); emoji e acentos medidos
+  como glifos. Destaque em caixa só passa da palavra onde há espaço. "Too long to fit…" quando nem o menor tamanho cabe. Sombra suave atrás de
+  palavras sem caixa (lê em foto clara); contorno com junção redonda; tinta automática sobre a cor de destaque/caixa (contraste ≥ 3 ou troca).
+- **Estilo salvo** (`CoverStyle`, `DefaultsKey.myCoverStudioStyle`; o antigo `myCoverLook` é convertido): modelo, como o título é composto, efeito
+  e força, gráficos (lugar, tamanho, giro, cor); nunca palavras, destaques, foto, enquadramento, texto do kicker ou de uma tag.
+- **Capas antigas** desenham como antes até serem abertas no estúdio; aí viram o modelo mais próximo (`CoverComposition(legacy:)`). Cancel não muda nada.
 - **Exportação: vídeo e capa separados** (`QuickEditExportModel.cover`, `CoverExportState`). "Saved to Photos" é do vídeo; embaixo, a linha da capa:
   Saving the cover… / Cover saved to Photos / Cover not saved (com o motivo), **Tentar de novo** (só salva de novo; desenha só se nunca desenhou) e
   **Share cover**. A imagem fica no temporário até a folha fechar e então é apagada.
@@ -907,6 +928,8 @@ auditoria: `reports/editor-award-checklist.md`.
 - **Legendas na montagem** (`CaptionJoin`): **Join next** junta só a próxima coisa dita na mesma gravação, pela ordem de reprodução; outra gravação
   ("The next line is from another clip") ou um momento anterior ("…said earlier in this clip") são recusados. O ajuste de início/fim fica dentro do
   clipe da linha; arrastar a barra para um clipe de outra gravação é recusado ("A line stays on its own clip"); Split funciona numa cópia.
-- **Testes:** `TakeEditCoverTests`, `CoverRendererTests` (vídeos reais), `QuickEditExportModelTests` (capa), `StudioVoiceReachTests`,
+- **Testes:** `CoverTextLayoutTests` (títulos longos, árabe, tailandês, japonês, emoji, alemão), `CoverCompositionTests`, `CoverStudioViewModelTests`,
+  `QuickEditCoverTests`, `CoverStudioUITests` (cinco etapas, cancelar, antes/depois), `CoverGalleryCaptureTests` (opt-in: todos os modelos × títulos ×
+  idiomas × foto clara/escura), `PaletteContrastTests.theCoverGuidesAndOverlayOutlinesReadOnAnyPicture`, `TakeEditCoverTests`, `CoverRendererTests` (vídeos reais), `QuickEditExportModelTests` (capa), `StudioVoiceReachTests`,
   `StudioVoiceMontageExportTests` (áudio real: −9 dB → dentro de 2 dB), `QuickEditMontageCleanUpTests`, `QuickEditOverlayPickingTests`,
   `QuickEditMontageCaptionTests`.

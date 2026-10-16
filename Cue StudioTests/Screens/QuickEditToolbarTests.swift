@@ -55,7 +55,7 @@ struct QuickEditToolbarTests {
         #expect(smart?.style == .smart)
         #expect(smart?.action == .open(.smart))
         #expect(items.filter { $0.id != "smart" }.allSatisfy { $0.style == .normal })
-        #expect(items.first { $0.id == "cover" }?.action == .open(.cover))
+        #expect(items.first { $0.id == "cover" }?.action == .openCoverStudio)
         // Pauses live in Smart.
         #expect(!items.contains { $0.id == "pauses" })
     }

@@ -17,8 +17,12 @@ nonisolated struct CoverComposition: Codable, Hashable, Sendable {
     var effect: CoverEffect = .clean
     /// How strong Dim or Blur is, 0 to 1.
     var effectAmount = 0.5
-    /// The before/after's second half; nil for every other cover.
+    /// The before/after's second half. Kept when another template is tried (so coming back finds it), drawn only by the
+    /// before/after (`activeSplit`).
     var split: CoverSplit?
+
+    /// The second half as drawn: the before/after's; nil for every other template.
+    var activeSplit: CoverSplit? { template == .beforeAfter ? split : nil }
 
     init(template: CoverTemplate) {
         self.template = template

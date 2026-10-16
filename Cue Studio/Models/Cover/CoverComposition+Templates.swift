@@ -97,7 +97,7 @@ nonisolated extension CoverComposition {
         next.framing = framing
         if !title.isEmpty, !self.title.highlights.isEmpty, template != .list { next.title.highlights = self.title.highlights }
         if !self.title.kicker.isEmpty, template == .series || self.template != .series { next.title.kicker = self.title.kicker }
-        if template == .beforeAfter, let split { next.split = split }
+        if let split { next.split = split }
         let kept = items.filter { !$0.isFromTemplate }
         next.items += kept
         return next

@@ -15,6 +15,8 @@ enum EditorAction: Hashable {
     case openCaptions
     case open(EditorPanel)
     case addMedia
+    /// Cover Studio, over the editor.
+    case openCoverStudio
     // Clip
     case splitClip
     case duplicateClip

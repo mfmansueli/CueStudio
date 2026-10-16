@@ -22,7 +22,6 @@ struct EditorPanelView: View {
         case .filters: FiltersPanel(viewModel: viewModel)
         case .crop: CropPanel(viewModel: viewModel)
         case .background: BackgroundPanel(viewModel: viewModel)
-        case .cover: CoverPanel(viewModel: viewModel)
         case .captions: CaptionsPanel(viewModel: viewModel)
         case .autoCaptions: AutoCaptionsPanel(viewModel: viewModel)
         case .captionStyle: CaptionStylePanel(viewModel: viewModel)

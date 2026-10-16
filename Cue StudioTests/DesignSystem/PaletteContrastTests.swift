@@ -386,6 +386,21 @@ struct PaletteContrastTests {
         }
     }
 
+    /// Cover Studio's crop guide label (white on its dark pill over the shade) and the dashed outline of a photo or video on
+    /// the preview (white over its dark halo), on the worst picture: white. The outline is a control boundary (3:1).
+    @Test func theCoverGuidesAndOverlayOutlinesReadOnAnyPicture() {
+        for picture in [ColorContrast.RGB(red: 0, green: 0, blue: 0), ColorContrast.RGB(red: 1, green: 1, blue: 1)] {
+            let shaded = rgb(Palette.Editor.cropShade, in: .dark, over: picture)
+            let pill = rgb(Palette.Editor.cropLabel, in: .dark, over: shaded)
+            let label = ColorContrast.ratio(rgb(Palette.ink, in: .dark, over: pill), pill)
+            #expect(label >= ColorContrast.textMinimum, "crop label: \(label)")
+            // The halo is a 1.5 pt shadow right under the line: the line is read against it.
+            let halo = rgb(Palette.Editor.overlayOutlineHalo, in: .dark, over: picture)
+            let outline = ColorContrast.ratio(rgb(Palette.Editor.overlayOutline, in: .dark, over: halo), halo)
+            #expect(outline >= 3, "overlay outline: \(outline)")
+        }
+    }
+
     /// The star's words over its cover (84% of `transitionCover`, 09 §8) on whatever the screen behind it shows: black, and at worst white.
     @Test func theStarsWordsReadOverItsCoverOnAnyScreen() {
         let words: [(name: String, color: Color)] = [
