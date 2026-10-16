@@ -259166,125 +259166,6 @@
         }
       }
     },
-    "Quiet captions that fade in · editorial titles" : {
-      "comment" : "Video template summary",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ترجمة هادئة تظهر تدريجيًا · عناوين بطابع تحريري"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Rolige undertekster, der toner frem · redaktionelle titler"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ruhige Untertitel, die einblenden · redaktionelle Titel"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Subtítulos discretos que aparecen suavemente · títulos editoriales"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sous-titres discrets qui apparaissent en fondu · titres éditoriaux"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "धीरे से उभरते शांत कैप्शन · एडिटोरियल टाइटल"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Teks tenang yang muncul perlahan · judul bergaya editorial"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sottotitoli discreti in dissolvenza · titoli editoriali"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ふわっと現れる静かな字幕 · エディトリアルなタイトル"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "은은하게 나타나는 자막 · 에디토리얼 제목"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Rolige tekster som toner inn · redaksjonelle titler"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Rustige ondertitels die invloeien · redactionele titels"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Legendas discretas que aparecem suavemente · títulos editoriais"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lugna undertexter som tonar in · redaktionella titlar"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "คำบรรยายเรียบๆ ที่ค่อยๆ ปรากฏ · ชื่อเรื่องสไตล์นิตยสาร"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Yavaşça beliren sakin altyazılar · editoryal başlıklar"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Phụ đề nhẹ nhàng hiện dần · tiêu đề phong cách tạp chí"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "渐显的低调字幕 · 杂志风标题"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "漸顯的低調字幕 · 雜誌風標題"
-          }
-        }
-      }
-    },
     "Quiet from" : {
       "comment" : "Start of the quiet hours",
       "localizations" : {
@@ -293303,6 +293184,125 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "襯線體"
+          }
+        }
+      }
+    },
+    "Serif captions that light each word · editorial titles" : {
+      "comment" : "Video template card: what the Story template changes",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ترجمة بخط مذيّل تُضيء كل كلمة · عناوين بطابع تحريري"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Undertekster med serif, der lyser hvert ord op · redaktionelle titler"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Serifen-Untertitel, die jedes Wort hervorheben · redaktionelle Titel"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Subtítulos con serifa que iluminan cada palabra · títulos editoriales"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sous-titres à empattements qui éclairent chaque mot · titres éditoriaux"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "सेरिफ़ कैप्शन जो हर शब्द को चमकाते हैं · एडिटोरियल टाइटल"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Teks serif yang menyorot tiap kata · judul bergaya editorial"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sottotitoli con grazie che illuminano ogni parola · titoli editoriali"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "一語ずつ光るセリフ体の字幕 · エディトリアルなタイトル"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "단어마다 빛나는 세리프 자막 · 에디토리얼 제목"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Serif-tekster som lyser opp hvert ord · redaksjonelle titler"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schreefondertitels die elk woord oplichten · redactionele titels"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Legendas serifadas que acendem cada palavra · títulos editoriais"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Serif-undertexter som lyser upp varje ord · redaktionella titlar"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "คำบรรยายตัวมีเชิงที่ไฮไลต์ทีละคำ · ชื่อเรื่องสไตล์นิตยสาร"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Her kelimeyi vurgulayan serifli altyazılar · editoryal başlıklar"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Phụ đề chữ có chân làm sáng từng từ · tiêu đề phong cách tạp chí"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "逐词点亮的衬线字幕 · 杂志风标题"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "逐字點亮的襯線字幕 · 雜誌風標題"
           }
         }
       }

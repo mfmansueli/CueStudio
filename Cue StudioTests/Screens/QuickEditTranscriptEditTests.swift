@@ -163,7 +163,12 @@ struct QuickEditVideoTemplateTests {
         let steps = viewModel.history.past.count
         viewModel.applyVideoTemplate(.boldHook)
         #expect(viewModel.history.past.count == steps + 1)
-        #expect(viewModel.edit.captionCollection?.theme == .impact)
+        // Bold hook's captions: heavy type on a violet band behind each line, bigger, the word being said in yellow.
+        let captions = try #require(viewModel.edit.captionCollection)
+        #expect(captions.theme == .pop)
+        #expect(captions.customLook == nil)
+        #expect(captions.accent == .yellow)
+        #expect(captions.sizeScale > 1)
         #expect(viewModel.edit.captionAnimation == .highlight)
         #expect(viewModel.edit.captions == before.captions)
         // A hook with the title opens the video; the arrow is untouched.

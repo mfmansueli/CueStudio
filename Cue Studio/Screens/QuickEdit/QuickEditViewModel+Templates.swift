@@ -31,10 +31,9 @@ extension QuickEditViewModel {
         }
         hook?.animation = template.textMotion
         change { snapshot in
-            var settings = CaptionSettings(theme: template.captionTheme)
+            var settings = template.captionSettings
             settings.center = snapshot.captionCollection?.center
             settings.safeMargins = snapshot.captionCollection?.safeMargins ?? margins
-            settings.followsWords = template.captionReveal.followsWords
             snapshot.captionCollection = settings
             snapshot.captionAnimation = template.captionReveal
             for index in snapshot.texts.indices where snapshot.texts[index].graphic == nil {

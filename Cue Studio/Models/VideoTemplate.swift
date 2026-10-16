@@ -13,7 +13,7 @@ nonisolated enum VideoTemplate: String, CaseIterable, Identifiable, Sendable {
     case boldHook
     /// Clear step-by-step captions and labels sliding up.
     case tutorial
-    /// Quiet, elegant captions fading in, editorial type.
+    /// Serif captions on a dark plate that light the word being said in peach, editorial type.
     case story
     /// Clean captions and minimal type, barely moving.
     case clean
@@ -37,7 +37,7 @@ nonisolated enum VideoTemplate: String, CaseIterable, Identifiable, Sendable {
         switch self {
         case .boldHook: String(localized: "Big captions that light each word · a hook that pops in")
         case .tutorial: String(localized: "Clear step-by-step captions · labels that slide up")
-        case .story: String(localized: "Quiet captions that fade in · editorial titles")
+        case .story: String(localized: "Serif captions that light each word · editorial titles")
         case .clean: String(localized: "Simple captions line by line · minimal titles")
         case .interview: String(localized: "Captions made for talking · soft titles from the side")
         }
@@ -55,10 +55,10 @@ nonisolated enum VideoTemplate: String, CaseIterable, Identifiable, Sendable {
 
     var captionTheme: CaptionTheme {
         switch self {
-        case .boldHook: .impact
+        case .boldHook: .pop
         case .tutorial: .educational
         case .story: .editorial
-        case .clean: .clean
+        case .clean: .educational
         case .interview: .interview
         }
     }
@@ -66,11 +66,41 @@ nonisolated enum VideoTemplate: String, CaseIterable, Identifiable, Sendable {
     var captionReveal: CaptionAnimation {
         switch self {
         case .boldHook: .highlight
-        case .tutorial: .groups
-        case .story: .fade
+        case .tutorial: .highlight
+        case .story: .highlight
         case .clean: .line
         case .interview: .line
         }
+    }
+
+    /// A text look drawn on the captions over the theme (`CaptionSettings.customLook`). Every template's captions sit on a
+    /// plate or a card, so they read over a bright scene too (owner's picks, 2026-10-16).
+    var captionLook: TypePreset? {
+        switch self {
+        case .tutorial: .label
+        case .interview: .soft
+        case .boldHook, .story, .clean: nil
+        }
+    }
+
+    /// How much bigger than the theme's size the captions are.
+    var captionSize: Double {
+        self == .boldHook ? 1.2 : 1
+    }
+
+    /// The color of the word being said.
+    var captionAccent: CaptionAccent {
+        self == .story ? .peach : .yellow
+    }
+
+    /// The captions' settings: the theme, the reveal, the look, the size and the color of the word being said.
+    var captionSettings: CaptionSettings {
+        var settings = CaptionSettings(theme: captionTheme)
+        settings.followsWords = captionReveal.followsWords
+        settings.accent = captionAccent
+        settings.sizeScale = captionSize
+        settings.customLook = captionLook?.look(for: .caption)
+        return settings
     }
 
     var textPreset: TypePreset {

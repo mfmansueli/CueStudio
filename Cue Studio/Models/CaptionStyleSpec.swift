@@ -182,11 +182,12 @@ nonisolated struct CaptionStyleSpec: Equatable, Sendable {
                 animation: .highlight, defaultAccent: .yellow, entry: Entry(popScale: 0.86, popDuration: 0.18)
             )
         case .editorial:
-            // Elegant: a display serif with open spacing and generous leading on a soft plate, and a slow fade.
+            // Elegant: a display serif with open spacing and generous leading on a dark plate, and a slow fade.
             return CaptionStyleSpec(
                 fontName: "DMSerifDisplay-Regular", fontWeight: 400, fallbackWeight: 700, baseSize: 25, tracking: 0.6, lineSpacing: 4,
                 textColor: RGB(red: 0.96, green: 0.96, blue: 0.96),
-                plate: .block(color: RGB(red: 0, green: 0, blue: 0, alpha: 0.55), radius: 4, insetX: 14, insetY: 6),
+                // 62%: over a white scene the words reach 5.7:1 and a peach word being said 3.8:1 (55% gave 4.4 and 2.9).
+                plate: .block(color: RGB(red: 0, green: 0, blue: 0, alpha: 0.62), radius: 4, insetX: 14, insetY: 6),
                 widthFraction: 0.78, animation: .highlight, defaultAccent: .peach, entry: Entry(fade: 0.2)
             )
         }

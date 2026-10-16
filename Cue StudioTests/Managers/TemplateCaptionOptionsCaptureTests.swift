@@ -49,7 +49,10 @@ struct TemplateCaptionOptionsCaptureTests {
     private static let moments: [(name: String, time: TimeInterval)] = [("“merece”", 1.2), ("“vida.”", 2.2)]
 
     private static func options(for template: VideoTemplate) -> [Option] {
-        let current = Option(name: "current", theme: template.captionTheme, reveal: template.captionReveal)
+        let current = Option(
+            name: "current", theme: template.captionTheme, reveal: template.captionReveal, accent: template.captionAccent, size: template.captionSize,
+            look: template.captionLook
+        )
         let proposed: [Option] = switch template {
         case .boldHook: [
             Option(name: "A", theme: .impact, reveal: .box, accent: .yellow, size: 1.25),
