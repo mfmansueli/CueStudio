@@ -54,7 +54,8 @@ struct EditByTextDeviceTests {
         let phrase = words[first...(first + 2)].map(\.text)
         var edit = TakeEdit(sourceDuration: length, aspect: .portrait)
         edit.voiceEnhancement = .off
-        #expect(edit.timeline.remove([cut]))
+        let removed = edit.timeline.remove([cut])
+        #expect(removed)
 
         let started = ProcessInfo.processInfo.systemUptime
         let output = try await VideoExportService(sounds: RecordingSoundCache()).export(
@@ -128,7 +129,8 @@ struct EditByTextDeviceTests {
             let phrase = words[first...(first + 2)].map(\.text)
             var edit = TakeEdit(sourceDuration: length, aspect: .portrait)
             edit.voiceEnhancement = .soft
-            #expect(edit.timeline.remove([cut]))
+            let removed = edit.timeline.remove([cut])
+            #expect(removed)
             let started = ProcessInfo.processInfo.systemUptime
             let output = try await VideoExportService(sounds: RecordingSoundCache()).export(
                 videoAt: copy, options: ExportOptions(aspect: .portrait, edit: edit, shortSide: 1080, frameRate: 30)

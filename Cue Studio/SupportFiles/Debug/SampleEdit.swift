@@ -8,7 +8,8 @@ import Foundation
 
 /// The v10 design's demo edit, for UI tests (`-uiTestDemoEdit`): a 21.6 s take with eight caption
 /// lines (one with "caudo", one with "não, pera"), a title and a subtitle, and the four pauses
-/// between the lines already found by Clean Up.
+/// between the lines already found by Clean Up. `heard`: the words were heard too (`-uiTestDemoTranscript`), so Edit by text
+/// lists them without the speech recognition the Simulator lacks.
 enum SampleEdit {
     static let duration: TimeInterval = 21.6
 
@@ -24,9 +25,15 @@ enum SampleEdit {
         (17.8, 20.6, "Segue pra ver os outros quatro."),
     ]
 
-    static func make(aspect: AspectRatio) -> TakeEdit {
+    static func make(aspect: AspectRatio, heard: Bool = false) -> TakeEdit {
         var edit = TakeEdit(sourceDuration: duration, aspect: aspect)
-        edit.captions = lines.map { CaptionCue(text: $0.2, start: $0.0, end: $0.1) }
+        if heard {
+            let words = lines.map(heardWords)
+            edit.captionTranscript = CaptionTranscript(words: words.flatMap(\.self), languageCode: "pt")
+            edit.captions = words.map { CaptionCue(words: $0) }
+        } else {
+            edit.captions = lines.map { CaptionCue(text: $0.2, start: $0.0, end: $0.1) }
+        }
         edit.showsCaptions = true
         var title = TextOverlay(
             role: .title, look: TypePreset.cue.look(for: .title), preset: .cue, span: TimeSpan(start: 0.2, end: 3.8)
@@ -40,6 +47,16 @@ enum SampleEdit {
         edit.suggestions = pauses.map { CleanUpSuggestion(kind: .pause, span: $0, confidence: 0.9) }
         edit.cleanUpAnalyzed = true
         return edit
+    }
+
+    /// A line's words, each a share of the line's time with a short gap after it.
+    private static func heardWords(_ line: (TimeInterval, TimeInterval, String)) -> [CaptionWord] {
+        let texts = line.2.split(separator: " ").map(String.init)
+        let share = (line.1 - line.0) / Double(texts.count)
+        return texts.enumerated().map { index, text in
+            let start = line.0 + Double(index) * share
+            return CaptionWord(text: text, start: start, end: start + share * 0.8)
+        }
     }
 
     /// The silences between the lines, each cut keeping a breath on both sides (none at the end).

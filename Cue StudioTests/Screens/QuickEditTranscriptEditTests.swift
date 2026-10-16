@@ -85,6 +85,21 @@ struct QuickEditTranscriptEditTests {
         #expect(abs(viewModel.edit.editedDuration - 8.5) < 0.000_1)
     }
 
+    /// The pick has a start and an end: the first tap is the start, the next the end (in either order), and Pick again starts over.
+    @Test func thePickHasAStartAndAnEndAndStartsOver() async throws {
+        let (viewModel, _) = await makeViewModel()
+        viewModel.tapTranscriptWord(at: 5)
+        #expect(viewModel.selectedTranscriptWords.map(\.text) == ["show"])
+        // The end tapped before the start: still every word between them.
+        viewModel.tapTranscriptWord(at: 3)
+        #expect(viewModel.selectedTranscriptWords.map(\.text) == ["want", "to", "show"])
+        viewModel.clearTranscriptSelection()
+        #expect(viewModel.transcriptSelection == nil)
+        #expect(viewModel.selectedTranscriptWords.isEmpty)
+        viewModel.tapTranscriptWord(at: 7)
+        #expect(viewModel.selectedTranscriptWords.map(\.text) == ["three"])
+    }
+
     @Test func fixingCaptionTextNeverCuts() async throws {
         let (viewModel, _) = await makeViewModel()
         viewModel.sheet = .transcript

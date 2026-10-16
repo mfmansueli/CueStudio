@@ -24,14 +24,14 @@ extension QuickEditViewModel {
         return Array(words[range])
     }
 
-    /// A word tapped: picked alone (the playhead goes to it), or, with a word already picked, every word between them; the only
-    /// picked word tapped again lets go.
     /// "Pick again": no word picked.
     func clearTranscriptSelection() {
         Haptics.selection()
         transcriptSelection = nil
     }
 
+    /// A word tapped: picked alone (the playhead goes to it), or, with a word already picked, every word between them; the only
+    /// picked word tapped again lets go.
     func tapTranscriptWord(at index: Int) {
         let words = transcriptWords
         guard words.indices.contains(index) else { return }

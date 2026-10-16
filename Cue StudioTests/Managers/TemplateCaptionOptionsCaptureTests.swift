@@ -168,7 +168,9 @@ struct TemplateCaptionOptionsCaptureTests {
             UIColor(white: 0.12, alpha: 1).setFill()
             context.fill(CGRect(origin: .zero, size: size))
             let title: [NSAttributedString.Key: Any] = [.font: UIFont.systemFont(ofSize: 30, weight: .bold), .foregroundColor: UIColor.white]
-            let detail: [NSAttributedString.Key: Any] = [.font: UIFont.systemFont(ofSize: 19, weight: .medium), .foregroundColor: UIColor(white: 0.85, alpha: 1)]
+            let detail: [NSAttributedString.Key: Any] = [
+                .font: UIFont.systemFont(ofSize: 19, weight: .medium), .foregroundColor: UIColor(white: 0.85, alpha: 1)
+            ]
             for (column, option) in options.enumerated() {
                 let x = gutter + CGFloat(column) * (tile.width + gap)
                 (option.name as NSString).draw(at: CGPoint(x: x + 6, y: 10), withAttributes: title)

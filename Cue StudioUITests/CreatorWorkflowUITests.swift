@@ -118,7 +118,8 @@ final class CreatorWorkflowUITests: XCTestCase {
 
     /// Two words out of the video by their text, and Undo in the toast brings them back.
     func testEditByTextCutsTwoWordsAndUndoBringsThemBack() throws {
-        let app = EditorApp.open(demo: true)
+        // The demo's words were heard already: the Simulator can't recognize speech.
+        let app = EditorApp.open(demo: true, arguments: ["-uiTestDemoTranscript"])
         let flow = CreatorWorkflow("edit-by-text", app: app)
         let fullLength = EditorApp.length(app)
 
@@ -158,8 +159,16 @@ final class CreatorWorkflowUITests: XCTestCase {
         flow.step("Pick two words")
         let second = app.buttons["edit.transcript.word.3"]
         let words = "\(first.label) \(second.label)"
+        let guide = app.staticTexts["edit.transcript.pickGuide"]
+        flow.tap(first, "the first word")
+        // The first tap is the start of the part; the sheet says so and asks for the last word.
+        XCTAssertTrue(flow.waits(for: guide, "the pick guide"))
+        XCTAssertTrue(guide.label.hasPrefix("Start:"), guide.label)
+        flow.tap(app.buttons["edit.transcript.pickAgain"], "Pick again")
+        XCTAssertFalse(guide.waitForExistence(timeout: 1), "Pick again left a word picked")
         flow.tap(first, "the first word")
         flow.tap(second, "the second word")
+        XCTAssertTrue(guide.label.hasPrefix("From"), guide.label)
         let cut = app.buttons["edit.transcript.cut"]
         XCTAssertTrue(flow.waits(for: cut, "Cut from video"))
         XCTAssertTrue(cut.label.contains("(2)"), cut.label)
