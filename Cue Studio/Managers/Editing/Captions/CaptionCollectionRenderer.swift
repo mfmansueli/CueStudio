@@ -21,12 +21,14 @@ nonisolated enum CaptionCollectionRenderer {
     /// How the collection's lines come and go: a still line, faded, words appearing, the word said
     /// lit (the theme's own way: Cue boxes it, the others color it) or boxed. A line whose words
     /// have no times of their own (written or corrected by hand) gets the same effects over its
-    /// words shared across its time (`CaptionCue.lineWords`).
+    /// words shared across its time (`CaptionCue.lineWords`). A line with a style of its own (`CaptionLineStyle`) is drawn
+    /// bigger, and an emphasized one shows lit whole for its whole time instead of word by word.
     static func overlays(
         _ cues: [CaptionCue], settings: CaptionSettings, position: CaptionPosition, frame: CGSize, animation: CaptionAnimation = .line
     ) -> [FrameOverlay] {
         let reveal = effectiveAnimation(settings: settings, animation: animation)
         return cues.flatMap { cue in
+            let settings = styled(settings, for: cue.lineStyle)
             let words = cue.lineWords
             let line = CaptionText.joined(words.map(\.text))
             // The drawing is named by its text (and, for a copied look, measured with it): the image is
@@ -58,8 +60,11 @@ nonisolated enum CaptionCollectionRenderer {
             case .box: .box(fill: .yellow, text: .black)
             default: .color(.yellow)
             }
-            func overlay(_ span: TimeSpan, index: Int?) -> FrameOverlay {
-                let emphasis = index.map { WordEmphasis(words: words.map(\.text), index: $0, style: style) }
+            func overlay(_ span: TimeSpan, index: Int?, wholeLine: Bool = false) -> FrameOverlay {
+                // A line lit whole takes the color the word said takes (boxed where the reveal boxes it), never the reveal.
+                let emphasis = wholeLine
+                    ? WordEmphasis.wholeLine(words.map(\.text), style: reveal == .box ? style : .color(.yellow))
+                    : index.map { WordEmphasis(words: words.map(\.text), index: $0, style: style) }
                 var overlay = FrameOverlay(
                     lazyText: LazyText(text: text, emphasis: emphasis, frameWidth: frame.width, widthFraction: widthFraction,
                                        collection: settings, frameHeight: frame.height),
@@ -78,6 +83,9 @@ nonisolated enum CaptionCollectionRenderer {
                 states[first].popDuration = spec.entry.popDuration
                 states[last].fadeOut = spec.entry.fade
                 return states
+            }
+            if cue.lineStyle?.isEmphasized == true, !words.isEmpty {
+                return entered([overlay(cue.span, index: nil, wholeLine: true)])
             }
             guard reveal.followsWords, !words.isEmpty else { return entered([overlay(cue.span, index: nil)]) }
             // Each word lights over its own interval; gaps between measured words remain plain.
@@ -167,6 +175,14 @@ nonisolated enum CaptionCollectionRenderer {
         case .groups, .box, .highlight: return animation
         case .line, .fade: return .highlight
         }
+    }
+
+    /// The collection's settings for one line: its own size on top of the collection's (kept inside the size range).
+    static func styled(_ settings: CaptionSettings, for style: CaptionLineStyle?) -> CaptionSettings {
+        guard let style, style.size != .regular else { return settings }
+        var sized = settings
+        sized.sizeScale = settings.clampedScale * style.size.scale
+        return sized
     }
 
     static func color(_ color: CaptionStyleSpec.RGB) -> UIColor {

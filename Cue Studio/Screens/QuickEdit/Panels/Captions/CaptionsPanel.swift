@@ -37,7 +37,7 @@ struct CaptionsPanel: View {
                     }
                     CaptionStatusRow(viewModel: viewModel)
                     // Edit by text from where the words are: cut the video by its words.
-                    if picker == nil, !viewModel.edit.captions.isEmpty {
+                    if picker == nil, !viewModel.edit.captions.isEmpty, !viewModel.isPickingCaptions {
                         PanelButton(
                             label: String(localized: "Edit by text · cut words from the video"), systemImage: "text.badge.minus",
                             identifier: "edit.captionsEditByText"
@@ -47,7 +47,9 @@ struct CaptionsPanel: View {
                     switch picker {
                     case .language: languageList
                     case .translation: translationList
-                    case nil: lines
+                    case nil:
+                        if viewModel.isPickingCaptions { CaptionPickTools(viewModel: viewModel) }
+                        lines
                     }
                 }
                 .onChange(of: viewModel.selection) { _, selection in
@@ -230,42 +232,60 @@ struct CaptionsPanel: View {
                 CaptionLineCard(
                     viewModel: viewModel, line: instance.line, cueID: instance.cueID,
                     isSelected: viewModel.selection == .caption(instance.cueID),
-                    isActive: activeID == instance.cueID, index: index, focusesField: $focusesField
+                    isActive: activeID == instance.cueID, index: index, focusesField: $focusesField,
+                    isPicked: viewModel.captionPicks.map { $0.contains(instance.cueID) }
                 )
                 .id(instance.cueID)
             }
-            Button(action: viewModel.addCaptionAtPlayhead) {
-                Label("Add a line at the playhead", systemImage: "plus")
-                    .font(.system(.subheadline, weight: .semibold))
-                    .foregroundStyle(Palette.ink2)
-                    .frame(maxWidth: .infinity, minHeight: Metrics.hitTarget)
-                    .overlay(Capsule().strokeBorder(Palette.Editor.laneGhostBorder, style: StrokeStyle(lineWidth: 1, dash: [4, 3])))
-                    .contentShape(Capsule())
-            }
-            .buttonStyle(.plain)
-            .accessibilityIdentifier("edit.captionsAddButton")
-            if !lines.isEmpty {
-                // Every line at once; Undo in the toast brings them back.
-                Button(action: viewModel.deleteAllCaptions) {
-                    Label("Delete all captions", systemImage: "trash")
-                        .font(.system(.subheadline, weight: .semibold))
-                        .foregroundStyle(Palette.dangerText)
-                        .frame(maxWidth: .infinity, minHeight: Metrics.hitTarget)
-                        .contentShape(Rectangle())
-                }
-                .buttonStyle(.plain)
-                .accessibilityIdentifier("edit.captionsDeleteAll")
-            }
+            if !viewModel.isPickingCaptions { addAndDeleteAll(hasLines: !lines.isEmpty) }
         }
     }
 
-    /// Find and replace in every line, as CapCut's caption editor has it.
-    private var lineTools: some View {
-        HStack(spacing: 8) {
-            PanelButton(
-                label: String(localized: "Find and replace"), systemImage: "text.magnifyingglass", identifier: "edit.captionsFind"
-            ) { viewModel.openCaptionFind() }
+    @ViewBuilder
+    private func addAndDeleteAll(hasLines: Bool) -> some View {
+        Button(action: viewModel.addCaptionAtPlayhead) {
+            Label("Add a line at the playhead", systemImage: "plus")
+                .font(.system(.subheadline, weight: .semibold))
+                .foregroundStyle(Palette.ink2)
+                .frame(maxWidth: .infinity, minHeight: Metrics.hitTarget)
+                .overlay(Capsule().strokeBorder(Palette.Editor.laneGhostBorder, style: StrokeStyle(lineWidth: 1, dash: [4, 3])))
+                .contentShape(Capsule())
         }
+        .buttonStyle(.plain)
+        .accessibilityIdentifier("edit.captionsAddButton")
+        if hasLines {
+            // Every line at once; Undo in the toast brings them back.
+            Button(action: viewModel.deleteAllCaptions) {
+                Label("Delete all captions", systemImage: "trash")
+                    .font(.system(.subheadline, weight: .semibold))
+                    .foregroundStyle(Palette.dangerText)
+                    .frame(maxWidth: .infinity, minHeight: Metrics.hitTarget)
+                    .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+            .accessibilityIdentifier("edit.captionsDeleteAll")
+        }
+    }
+
+    /// Find and replace in every line, and Select to change several lines together, as CapCut's caption editor has them.
+    /// Side by side when they fit, one over the other with large text.
+    private var lineTools: some View {
+        ViewThatFits(in: .horizontal) {
+            HStack(spacing: 8) { findButton; selectButton }
+            VStack(spacing: 8) { findButton; selectButton }
+        }
+    }
+
+    private var findButton: some View {
+        PanelButton(
+            label: String(localized: "Find and replace"), systemImage: "text.magnifyingglass", identifier: "edit.captionsFind"
+        ) { viewModel.openCaptionFind() }
+    }
+
+    private var selectButton: some View {
+        PanelButton(
+            label: String(localized: "Select lines"), systemImage: "checkmark.circle", identifier: "edit.captionsSelect"
+        ) { viewModel.startPickingCaptions() }
     }
 
     private func scroll(_ proxy: ScrollViewProxy, to id: UUID) {

@@ -52,6 +52,8 @@ final class QuickEditViewModel {
             if oldValue == .transition { selectedJoinID = nil }
             if panel == .pauses { cleanUpMarks = [:] }
             if panel == nil { lookScopeIsClip = false }
+            // Picking several lines belongs to the list of lines.
+            if panel != .captions { captionPicks = nil }
         }
     }
     /// The one thing picked on the timeline or in the preview; its tools replace the toolbar's.
@@ -130,6 +132,9 @@ final class QuickEditViewModel {
     var confirmsCaptionReplacement = false
     /// The caption line open in its sheet.
     var editingCaptionID: UUID?
+    /// Captions › Select: the lines picked to be styled, moved or deleted together (`QuickEditViewModel+CaptionPicks`); nil
+    /// while lines are picked one at a time.
+    var captionPicks: Set<UUID>?
     /// The Translate sheet is open.
     var showsTranslation = false
     /// The setting Adjust opens on, once (`open(_:)`); nil opens where it always does.

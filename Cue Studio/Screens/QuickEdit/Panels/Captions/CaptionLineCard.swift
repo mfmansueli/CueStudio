@@ -9,7 +9,9 @@ import SwiftUI
 /// it plays. Picked, it opens for working line by line: the words in a field outlined in yellow
 /// (Return goes on to the next line, with the keyboard still up), ‹ 3/12 › to step between lines,
 /// Play and delete; More opens Start and End −/+ in tenths, Split and Join next, and opens by
-/// itself on a line whose timing needs a look. A long press on any line offers Play and Delete.
+/// itself on a line whose timing needs a look. A long press on any line offers Play, Select and Delete. While lines are
+/// picked together (Captions › Select), a line shows a check circle and a tap puts it in or out; the field and its tools
+/// stay closed.
 struct CaptionLineCard: View {
     let viewModel: QuickEditViewModel
     let line: CaptionCue
@@ -18,6 +20,8 @@ struct CaptionLineCard: View {
     let isActive: Bool
     let index: Int
     var focusesField: FocusState<Bool>.Binding
+    /// Whether the line is picked while picking several (Captions › Select); nil when lines are picked one at a time.
+    var isPicked: Bool?
 
     /// The creator's choice for More; nil follows the line (open when its timing needs a look).
     @State private var moreOverride: Bool?
@@ -25,34 +29,51 @@ struct CaptionLineCard: View {
     private var showsMore: Bool { moreOverride ?? line.needsTimingReview }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 6) {
-            header
-            if isSelected {
-                editor
-            } else {
-                Text(line.text.isEmpty ? String(localized: "Empty line") : line.text)
-                    .font(.system(.subheadline))
-                    .foregroundStyle(isActive ? Palette.accText : (line.text.isEmpty ? Palette.ink2 : Palette.ink))
-                    .multilineTextAlignment(.leading)
-                    .frame(maxWidth: .infinity, alignment: .leading)
+        HStack(alignment: .top, spacing: 10) {
+            if let isPicked {
+                Image(systemName: isPicked ? "checkmark.circle.fill" : "circle")
+                    .font(.system(size: 20, weight: .semibold))
+                    .foregroundStyle(isPicked ? Palette.accText : Palette.ink2)
+                    .accessibilityHidden(true)
+            }
+            VStack(alignment: .leading, spacing: 6) {
+                header
+                if isSelected, isPicked == nil {
+                    editor
+                } else {
+                    Text(line.text.isEmpty ? String(localized: "Empty line") : line.text)
+                        .font(.system(.subheadline, weight: line.lineStyle?.isEmphasized == true ? .bold : .regular))
+                        .foregroundStyle(isActive ? Palette.accText : (line.text.isEmpty ? Palette.ink2 : Palette.ink))
+                        .multilineTextAlignment(.leading)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                }
             }
         }
         .padding(.horizontal, 12)
         .padding(.vertical, 10)
         .background(background, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
         .contentShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
-        .onTapGesture { if !isSelected { viewModel.pickCaptionLine(cueID, at: line.start) } }
-        .contextMenu {
-            Button("Play", systemImage: "play.fill") { viewModel.playCaptionLine(start: line.start, end: line.end) }
-            Button("Delete line", systemImage: "trash", role: .destructive) { viewModel.deleteCaptionLine(cueID) }
+        .onTapGesture {
+            if isPicked != nil {
+                viewModel.toggleCaptionPick(cueID)
+            } else if !isSelected {
+                viewModel.pickCaptionLine(cueID, at: line.start)
+            }
         }
-        .accessibilityElement(children: isSelected ? .contain : .combine)
-        .accessibilityAddTraits(isSelected ? .isSelected : .isButton)
+        .contextMenu {
+            if isPicked == nil {
+                Button("Play", systemImage: "play.fill") { viewModel.playCaptionLine(start: line.start, end: line.end) }
+                Button("Select lines", systemImage: "checkmark.circle") { viewModel.startPickingCaptions(with: cueID) }
+                Button("Delete line", systemImage: "trash", role: .destructive) { viewModel.deleteCaptionLine(cueID) }
+            }
+        }
+        .accessibilityElement(children: isSelected && isPicked == nil ? .contain : .combine)
+        .accessibilityAddTraits(isSelected || isPicked == true ? .isSelected : .isButton)
         .accessibilityIdentifier("edit.captionLine.\(index)")
     }
 
     private var background: Color {
-        if isSelected { return Palette.surface2 }
+        if isSelected, isPicked == nil { return Palette.surface2 }
         return isActive ? Palette.Editor.accCard : Palette.Editor.panelCard
     }
 
@@ -60,6 +81,9 @@ struct CaptionLineCard: View {
         HStack(spacing: 8) {
             Text(verbatim: "\(DurationText.editor(line.start)) → \(DurationText.editor(line.end))")
             Spacer(minLength: 4)
+            if let style = line.lineStyle, style.size != .regular {
+                Text(style.size.label)
+            }
             if line.needsTimingReview {
                 HStack(spacing: 4) {
                     Circle().fill(Palette.warn).frame(width: 6, height: 6)
