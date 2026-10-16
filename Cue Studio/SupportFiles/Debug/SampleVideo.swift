@@ -47,7 +47,7 @@ enum SampleVideo {
         let finished = DispatchSemaphore(value: 0)
         Task.detached {
             do {
-                try await writeFrames(to: partial, seconds: seconds)
+                try await writeFrames(to: partial, seconds: seconds, size: size, framesPerSecond: framesPerSecond, compressed: false)
                 try FileManager.default.moveItem(at: partial, to: url)
             } catch {
                 print("SampleVideo: couldn't write \(url.lastPathComponent): \(error)")
@@ -58,14 +58,61 @@ enum SampleVideo {
         finished.wait()
     }
 
+    /// A full-size take (1080 × 1920, 30 fps, HEVC) for export measurements on a device (`-uiTestLongTake`): ten seconds are
+    /// encoded and copied end to end without encoding again, so even a long take is written in seconds (a launch that took
+    /// longer would be ended by iOS). The Simulator's encoder may stall: device only.
+    static func writeLong(to url: URL, seconds: TimeInterval) {
+        guard !FileManager.default.fileExists(atPath: url.path(percentEncoded: false)) else { return }
+        let partial = partialURL(for: url)
+        let chunk = url.deletingPathExtension().appendingPathExtension("chunk").appendingPathExtension("mov")
+        [partial, chunk].forEach { try? FileManager.default.removeItem(at: $0) }
+        let finished = DispatchSemaphore(value: 0)
+        Task.detached {
+            do {
+                try await writeFrames(to: chunk, seconds: 10, size: CGSize(width: 1080, height: 1920), framesPerSecond: 30, compressed: true)
+                try await repeatChunk(chunk, to: partial, seconds: seconds)
+                try FileManager.default.moveItem(at: partial, to: url)
+            } catch {
+                print("SampleVideo: couldn't write \(url.lastPathComponent): \(error)")
+                try? FileManager.default.removeItem(at: partial)
+            }
+            try? FileManager.default.removeItem(at: chunk)
+            finished.signal()
+        }
+        finished.wait()
+    }
+
+    /// `chunk` end to end until `seconds`, copied as it is (passthrough).
+    nonisolated private static func repeatChunk(_ chunk: URL, to url: URL, seconds: TimeInterval) async throws {
+        let asset = AVURLAsset(url: chunk)
+        let length = try await asset.load(.duration)
+        let composition = AVMutableComposition()
+        var cursor = CMTime.zero
+        let end = CMTime(seconds: seconds, preferredTimescale: 600)
+        while cursor < end {
+            let piece = CMTimeMinimum(length, end - cursor)
+            try await composition.insertTimeRange(CMTimeRange(start: .zero, duration: piece), of: asset, at: cursor)
+            cursor = CMTimeAdd(cursor, piece)
+        }
+        guard let session = AVAssetExportSession(asset: composition, presetName: AVAssetExportPresetPassthrough) else {
+            throw CocoaError(.fileWriteUnknown)
+        }
+        try await session.export(to: url, as: .mov)
+    }
+
     nonisolated private static func partialURL(for url: URL) -> URL {
         url.deletingPathExtension().appendingPathExtension("partial").appendingPathExtension("mov")
     }
 
-    nonisolated private static func writeFrames(to url: URL, seconds: TimeInterval) async throws {
+    nonisolated private static func writeFrames(
+        to url: URL, seconds: TimeInterval, size: CGSize, framesPerSecond: Int32, compressed: Bool
+    ) async throws {
         let writer = try AVAssetWriter(outputURL: url, fileType: .mov)
-        // No output settings: the pixel buffers go into the file as they are, uncompressed.
-        let input = AVAssetWriterInput(mediaType: .video, outputSettings: nil)
+        // Without output settings (the sample takes) the pixel buffers go into the file as they are, uncompressed.
+        let settings: [String: Any]? = compressed
+            ? [AVVideoCodecKey: AVVideoCodecType.hevc, AVVideoWidthKey: Int(size.width), AVVideoHeightKey: Int(size.height)]
+            : nil
+        let input = AVAssetWriterInput(mediaType: .video, outputSettings: settings)
         let attributes = CVPixelBufferCreationAttributes(
             pixelFormatType: CVPixelFormatType(rawValue: kCVPixelFormatType_32BGRA),
             size: CVImageSize(width: Int(size.width), height: Int(size.height))

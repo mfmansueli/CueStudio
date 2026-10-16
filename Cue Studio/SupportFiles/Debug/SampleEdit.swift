@@ -59,6 +59,23 @@ enum SampleEdit {
         }
     }
 
+    /// A long take's edit for export measurements: a caption every two seconds, shown in Bold hook's look, and the voice
+    /// left as recorded.
+    static func long(seconds: TimeInterval, aspect: AspectRatio) -> TakeEdit {
+        var edit = TakeEdit(sourceDuration: seconds, aspect: aspect)
+        edit.voiceEnhancement = .off
+        let words = ["Real", "talk", "about", "pizza", "and", "the", "crust"]
+        edit.captions = stride(from: 0.0, to: seconds - 2, by: 2).map { start in
+            let first = Int(start / 2) % words.count
+            let text = (0..<4).map { words[(first + $0) % words.count] }.joined(separator: " ")
+            return CaptionCue(text: text, start: start, end: start + 1.9)
+        }
+        edit.captionCollection = VideoTemplate.boldHook.captionSettings
+        edit.captionAnimation = VideoTemplate.boldHook.captionReveal
+        edit.showsCaptions = true
+        return edit
+    }
+
     /// The silences between the lines, each cut keeping a breath on both sides (none at the end).
     private static var pauses: [TimeSpan] {
         let padding = SilenceDetector.padding

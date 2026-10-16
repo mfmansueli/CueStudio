@@ -168,7 +168,7 @@ struct AppServices {
         textRecognizer = TextRecognitionManager()
         importer = DocumentImportService()
         exporter = VideoExportService()
-        backgroundExports = BackgroundExportRunner(scheduler: options.isInMemory ? nil : SystemContinuedTaskScheduler())
+        backgroundExports = BackgroundExportRunner(scheduler: options.usesContinuedTasks ? SystemContinuedTaskScheduler() : nil)
         photos = PhotoLibraryManager()
         thumbnails = VideoThumbnailService()
         editing = TakeEditService()

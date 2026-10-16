@@ -31,7 +31,9 @@ final class BackgroundExportRunner: BackgroundExportRunning {
         started: @MainActor (BackgroundExportMode) -> Void,
         work: @escaping @MainActor (_ progress: @escaping @MainActor (Double) -> Void) async throws -> Value
     ) async throws -> Value {
-        if let scheduler, scheduler.supportsBackgroundGPU, let task = await scheduler.start(title: title, subtitle: subtitle) {
+        // Never without the GPU: measured on an iPhone 15 Pro (no background GPU), a task on the CPU alone kept Cue awake while
+        // the frames stopped being drawn, and the export never ended; without a task it went on for as long as iOS let it.
+        if let scheduler, scheduler.supportsBackgroundGPU, let task = await scheduler.start(title: title, subtitle: subtitle, gpu: true) {
             started(.continuesOutside)
             return try await run(work, in: task)
         }

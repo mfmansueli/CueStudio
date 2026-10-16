@@ -19,6 +19,8 @@ final class SystemContinuedTaskScheduler: ContinuedTaskScheduling {
 
     private let logger = Logger(subsystem: "studio.cue", category: "BackgroundExport")
     private let prefix: String
+    /// Why the last request didn't run in the background (nil when it did), for the log and the device tests.
+    private(set) var lastRefusal: String?
 
     init(bundleIdentifier: String = Bundle.main.bundleIdentifier ?? "com.cuestudioteleprompter") {
         prefix = "\(bundleIdentifier).export"
@@ -28,21 +30,24 @@ final class SystemContinuedTaskScheduler: ContinuedTaskScheduling {
         BGTaskScheduler.supportedResources.contains(.gpu)
     }
 
-    func start(title: String, subtitle: String) async -> ContinuedTaskHandle? {
+    func start(title: String, subtitle: String, gpu: Bool) async -> ContinuedTaskHandle? {
         let identifier = "\(prefix).\(UUID().uuidString)"
         let signal = TaskStartSignal()
-        let registered = BGTaskScheduler.shared.register(forTaskWithIdentifier: identifier, using: nil) { task in
+        // On the main queue: the handler is written on the main actor, and iOS would call it on a queue of its own.
+        let registered = BGTaskScheduler.shared.register(forTaskWithIdentifier: identifier, using: .main) { task in
             guard let task = task as? BGContinuedProcessingTask else { return }
             // Too late: Cue already exported the usual way.
             if !signal.deliver(StartedTask(task: task)) { task.setTaskCompleted(success: false) }
         }
         guard registered else {
+            lastRefusal = "not registered"
             logger.error("Continued task not registered: \(identifier, privacy: .public) isn't permitted by Info.plist")
             return nil
         }
         do {
-            try await Self.submit(identifier: identifier, title: title, subtitle: subtitle)
+            try await Self.submit(identifier: identifier, title: title, subtitle: subtitle, gpu: gpu)
         } catch {
+            lastRefusal = "refused: \((error as NSError).domain) \((error as NSError).code) \(error.localizedDescription)"
             logger.notice("Continued task refused: \(error.localizedDescription, privacy: .public)")
             return nil
         }
@@ -52,20 +57,22 @@ final class SystemContinuedTaskScheduler: ContinuedTaskScheduling {
         }
         defer { timeout.cancel() }
         guard let started = await signal.wait() else {
+            lastRefusal = "not started in time"
             logger.notice("Continued task not started within \(Self.startTimeout, privacy: .public): exporting in Cue")
             BGTaskScheduler.shared.cancel(taskRequestWithIdentifier: identifier)
             return nil
         }
-        logger.info("Continued task started with the GPU")
+        lastRefusal = nil
+        logger.info("Continued task started \(gpu ? "with" : "without", privacy: .public) the GPU")
         return SystemContinuedTask(task: started.task)
     }
 
-    /// The request, failing rather than queueing, with the GPU; submitted off the main thread, as iOS asks.
+    /// The request, failing rather than queueing, with the GPU when asked; submitted off the main thread, as iOS asks.
     @concurrent
-    private nonisolated static func submit(identifier: String, title: String, subtitle: String) async throws {
+    private nonisolated static func submit(identifier: String, title: String, subtitle: String, gpu: Bool) async throws {
         let request = BGContinuedProcessingTaskRequest(identifier: identifier, title: title, subtitle: subtitle)
         request.strategy = .fail
-        request.requiredResources = .gpu
+        request.requiredResources = gpu ? .gpu : []
         try await BGTaskScheduler.shared.submitTaskRequest(request)
     }
 

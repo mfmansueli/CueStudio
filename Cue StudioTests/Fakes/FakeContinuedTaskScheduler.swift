@@ -12,10 +12,10 @@ final class FakeContinuedTaskScheduler: ContinuedTaskScheduling {
     var supportsBackgroundGPU = true
     /// Nil refuses the request (busy, background activity off).
     var task: FakeContinuedTask? = FakeContinuedTask()
-    private(set) var requests: [(title: String, subtitle: String)] = []
+    private(set) var requests: [(title: String, subtitle: String, gpu: Bool)] = []
 
-    func start(title: String, subtitle: String) async -> ContinuedTaskHandle? {
-        requests.append((title, subtitle))
+    func start(title: String, subtitle: String, gpu: Bool) async -> ContinuedTaskHandle? {
+        requests.append((title, subtitle, gpu))
         return task
     }
 }

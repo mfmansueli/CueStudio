@@ -29,7 +29,7 @@ struct ExportProgressCard: View {
                 .tint(Palette.acc)
                 .accessibilityHidden(true)
             if let mode {
-                Text(mode == .continuesOutside ? "You can leave Cue. The export goes on." : "Keep Cue open until it's done.")
+                Text(mode == .continuesOutside ? "You can leave Cue. The export goes on." : "Keep Cue open until it’s done.")
                     .font(.footnote)
                     .foregroundStyle(Palette.ink2)
                     .fixedSize(horizontal: false, vertical: true)

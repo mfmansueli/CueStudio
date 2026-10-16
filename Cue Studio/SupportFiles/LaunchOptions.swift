@@ -12,6 +12,8 @@ import Foundation
 /// - `-uiTestSeedSamples`: with the above, starts with the sample scripts and takes.
 /// - `-uiTestPro`: starts on Cue Pro (read by `StoreManager`).
 /// - `-uiTestStubAI` / `-uiTestNoAI`: instant, predictable AI, or none at all.
+/// - `-uiTestLongTake <seconds>`: "3 morning habits" Take 3 becomes a full-size take that long, with captions (device export
+///   measurements); `-uiTestContinuedTasks` turns iOS's continued tasks on for exports in UI tests.
 /// - `-uiTestDemoEdit`: "3 morning habits" Take 3 opens in the editor as the v10 design's demo
 ///   (`SampleEdit`); with `-uiTestDemoTranscript` its words were heard too, for Edit by text.
 /// - `-uiTestSampleVideo`: with the sample takes, writes small real videos behind the "3 morning
@@ -103,6 +105,8 @@ struct LaunchOptions {
     var permissions: PermissionRequesting?
     /// UI tests must not bring up the system's "icon changed" alert: the icon choice stays in memory.
     var isInMemory = false
+    /// iOS's continued tasks for exports (off in UI tests unless `-uiTestContinuedTasks`).
+    var usesContinuedTasks = true
     /// UI tests: the platforms' apps count as installed (`-uiTestAppsInstalled`).
     var appsAreInstalled = false
     /// UI tests of the My Cue Voice tip: its gates are open (`-uiTestVoiceTip`).
@@ -205,7 +209,19 @@ struct LaunchOptions {
             if options.appsAreInstalled { options.sharing = DemoVideoSharing() }
             // Videos written by an earlier launch stay in the temporary folder: without the flag
             // they go, so every launch starts from the state it asked for.
+            options.usesContinuedTasks = arguments.contains("-uiTestContinuedTasks")
             let habits = takes.filter { $0.scriptID == SampleScripts.morningHabits.id }
+            // A long, full-size take with captions for measuring exports on a device (`-uiTestLongTake <seconds>`).
+            if let flag = arguments.firstIndex(of: "-uiTestLongTake"), arguments.indices.contains(flag + 1),
+               let seconds = Double(arguments[flag + 1]), let index = takes.firstIndex(where: {
+                   $0.scriptID == SampleScripts.morningHabits.id && $0.number == 3
+               }) {
+                takes[index].duration = seconds
+                takes[index].fileName = "sample-long-\(Int(seconds)).mov"
+                takes[index].edit = SampleEdit.long(seconds: seconds, aspect: takes[index].aspect)
+                try? repository.saveTakes(takes)
+                SampleVideo.writeLong(to: repository.videoURL(named: takes[index].fileName), seconds: seconds)
+            }
             if arguments.contains("-uiTestSampleVideo") {
                 SampleVideo.writeMissing(for: habits, in: repository)
             } else {

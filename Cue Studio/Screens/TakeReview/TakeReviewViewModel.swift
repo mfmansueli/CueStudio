@@ -346,7 +346,7 @@ final class TakeReviewViewModel {
             photosDenied = true
         case ExportPreflightError.notEnoughSpace(let megabytes):
             toast.show(String(localized: "Not enough space on this iPhone. Free about \(megabytes) MB and try again."))
-        case BackgroundExportError.stoppedBySystem:
+        case BackgroundExportError.stoppedBySystem, VideoExportError.interrupted:
             toast.show(String(localized: "iOS stopped the export · Try again"))
         default:
             toast.show(String(localized: "Couldn't export · Try again"))
