@@ -47,9 +47,7 @@ enum EditorMontage {
         edit.texts = [arrow]
 
         let template = VideoTemplate.boldHook
-        var captions = CaptionSettings(theme: template.captionTheme)
-        captions.followsWords = template.captionReveal.followsWords
-        edit.captionCollection = captions
+        edit.captionCollection = template.captionSettings
         edit.captionAnimation = template.captionReveal
         edit.showsCaptions = true
         edit.captions = [

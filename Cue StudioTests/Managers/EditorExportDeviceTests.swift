@@ -46,7 +46,7 @@ struct EditorExportDeviceTests {
 
         let started = uptime
         let output = try await VideoExportService(sounds: RecordingSoundCache()).export(
-            videoAt: take, options: ExportOptions(aspect: .portrait, edit: edit, shortSide: CGFloat(shortSide), frameRate: 30)
+            videoAt: take, options: ExportOptions(aspect: .portrait, edit: edit, burnsInCaptions: true, shortSide: CGFloat(shortSide), frameRate: 30)
         )
         let took = uptime - started
         defer { try? FileManager.default.removeItem(at: output) }

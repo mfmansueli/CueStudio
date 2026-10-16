@@ -67,7 +67,7 @@ extension RealExports {
             edit.contrast = 20
             let preview = try await TakeEditService().previewItem(forVideoAt: clip, edit: edit)
             let output = try await VideoExportService().export(
-                videoAt: clip, options: ExportOptions(aspect: .portrait, edit: edit, shortSide: 1080, frameRate: 30)
+                videoAt: clip, options: ExportOptions(aspect: .portrait, edit: edit, burnsInCaptions: true, shortSide: 1080, frameRate: 30)
             )
             defer { try? FileManager.default.removeItem(at: output) }
             let exported = AVURLAsset(url: output)
@@ -106,7 +106,7 @@ extension RealExports {
 
             let preview = try await TakeEditService().previewItem(forVideoAt: take, edit: edit)
             let output = try await VideoExportService(sounds: RecordingSoundCache()).export(
-                videoAt: take, options: ExportOptions(aspect: .portrait, edit: edit, shortSide: 1080, frameRate: 30)
+                videoAt: take, options: ExportOptions(aspect: .portrait, edit: edit, burnsInCaptions: true, shortSide: 1080, frameRate: 30)
             )
             defer { try? FileManager.default.removeItem(at: output) }
             let exported = AVURLAsset(url: output)

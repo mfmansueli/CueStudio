@@ -71,9 +71,11 @@ dependem do sistema e só se provam no iPhone.
 - **Na prévia:** nenhuma mudança. As animações também não mudam: o dono decidiu que o modo de pouca energia não para animações, e o mesmo vale aqui.
 - **Testes:** unidade com estado térmico injetado. No aparelho, só observação, porque não há como forçar o calor.
 
-## 3. Medição no iPhone 15 comum (A16), o piso do público
+## 3. Medição no iPhone 15 Pro (o dono não tem um iPhone 15 comum)
 
-Rodar `EditorExportDeviceTests` e `QuickEditPreviewLatencyTests` num iPhone 15 (não Pro), com o aparelho descansado e um conjunto por vez.
+O piso do público é o iPhone 15 comum (A16), mas o dono não tem um (16/10/2026): rodar `EditorExportDeviceTests` e
+`QuickEditPreviewLatencyTests` no iago Lima iphone (15 Pro, A17 Pro), com o aparelho descansado e um conjunto por vez, e registrar no relatório
+que o A16 **não foi validado** (sem estimar números para ele).
 - **Metas:** prévia abaixo de 33 ms por quadro em 1080p; exportação 1080p da montagem completa abaixo de 1× a duração.
 - **Hoje, no 15 Pro:** 0,75× em 1080p e 1,03× em 4K.
 

@@ -4,7 +4,7 @@ Write in the first person, as the creator, in natural spoken language with short
 Fill in a short title and the script blocks. Block text is only what the creator says: no headings, labels, markdown or quotes around it.
 Add short stage cues in square brackets where they help delivery, like [pause], [smile] or [look at camera]. Never put spoken words inside brackets.
 Platform: TikTok, vertical and fast. Hook in the first 3 seconds, one idea only, short punchy lines spoken like a friend; end with one easy action (comment, follow or save).
-Never invent personal stories, clients, results, numbers or credentials for the creator: speak from general experience unless the idea gives the details.
+Never invent personal stories, clients, results, numbers or credentials for the creator: speak from general experience unless the idea gives the details. Never say the creator did, tried, discovered or was saved by something unless the idea says so.
 Be accurate. State only facts you are confident about; when unsure of a date, name or number, say it more generally instead of inventing it.
 Write in the creator's own voice. What follows says how they sound and who they speak to, never what the video is about.
 Who they are: an entertainer.
@@ -28,12 +28,12 @@ Blocks, in this order: Hook → Setup → Twist → Payoff.
 What each block does: Hook: the most surprising line first. Setup: where, when and who, briefly. Twist: the one thing that went differently. Payoff: what it meant, in a line the viewer remembers.
 Length: between 75 and 150 spoken words in total.
 Do not stop early: the script must be at least 75 words, so write every block in full, with several complete sentences each.
-Open with a hook that works in the first 3 seconds, in the creator's own way of opening.
+Open with a hook that works in the first 3 seconds, in the creator's own way of opening. The first words are already about the subject (a claim, a question or a number), never a greeting or a filler word such as “hey”, “hi”, “so” or “look”.
 The video: Things I pretended to understand as an adult
 Write about this idea and only this one: the creator's voice is how they sound, never what to talk about.
 Remember: Speak as one person (“I”). Avoid: politics. Never write the name of an opening style or open with a catchphrase. Stay on the idea: Things I pretended to understand as an adult
 
-WHAT CUE SENDS · 945 / 2100
+WHAT CUE SENDS · 943 / 2100
 Write in the creator's own voice. What follows says how they sound and who they speak to, never what the video is about.
 Who they are: an entertainer.
 They speak as one person: say “I” and “my”.
