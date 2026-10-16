@@ -8,7 +8,8 @@ import CoreImage
 import UIKit
 
 /// Draws a take's cover: a frame of one of the edit's recordings (cropped to the take's frame, with the look of the clip it was
-/// picked on) or a photo filling that frame, then the title set like the edit's texts. All on the device.
+/// picked on) or a photo filling that frame, then the Cover Studio composition (`CoverCompositionRenderer`), the v26 design or
+/// the plain title of covers made before them. All on the device.
 nonisolated enum CoverRenderer {
     /// Width of the cover image in pixels.
     static let width: CGFloat = 1080
@@ -16,16 +17,17 @@ nonisolated enum CoverRenderer {
     static func image(for cover: VideoCover, videoURL: URL, edit: TakeEdit, width: CGFloat = CoverRenderer.width) async -> UIImage? {
         let aspect = CGFloat(edit.aspect.widthOverHeight)
         let size = CGSize(width: width.rounded(), height: (width / aspect).rounded())
-        let picture: UIImage?
-        switch cover.source {
-        case .frame, .clipFrame:
-            guard let frame = cover.source.frame, let url = recordingURL(of: frame, videoURL: videoURL, edit: edit) else { return nil }
-            picture = await self.frame(of: url, frame: frame, edit: edit).map { UIImage(cgImage: $0) }
-        case .photo(let fileName):
-            // Drawing a UIImage honors its orientation.
-            picture = UIImage(contentsOfFile: EditMediaFiles.url(for: fileName).path(percentEncoded: false))
+        guard let picture = await picture(for: cover.source, videoURL: videoURL, edit: edit) else { return nil }
+        if let composition = cover.composition {
+            var pictures = CoverCompositionRenderer.Pictures(main: picture)
+            if let second = composition.split?.source { pictures.second = await self.picture(for: second, videoURL: videoURL, edit: edit) }
+            let cutout = composition.effect.needsPersonMask
+                ? CoverDesignRenderer.cutout(
+                    of: CoverCompositionRenderer.picturesLayer(composition, pictures: pictures, size: size), outlined: composition.effect == .outline
+                )
+                : nil
+            return CoverCompositionRenderer.image(title: cover.title, composition: composition, pictures: pictures, size: size, cutout: cutout)
         }
-        guard let picture else { return nil }
         if let design = cover.design { return designImage(cover: cover, design: design, picture: picture, size: size) }
         let title = cover.titleOverlay.flatMap { TextOverlayRenderer.image(for: $0, frameWidth: size.width) }
         let format = UIGraphicsImageRendererFormat()
@@ -72,6 +74,19 @@ nonisolated enum CoverRenderer {
         return UIGraphicsImageRenderer(size: size, format: format).image { context in
             background.draw(in: CGRect(origin: .zero, size: size))
             CoverDesignRenderer.draw(cover: cover, design: design, size: size, cutout: cutout, in: context.cgContext)
+        }
+    }
+
+    /// The picture `source` shows: a frame of one of the edit's recordings (cropped to the take's frame, with its clip's look),
+    /// or a photo, upright. Nil when it can't be read.
+    static func picture(for source: CoverSource, videoURL: URL, edit: TakeEdit) async -> UIImage? {
+        switch source {
+        case .frame, .clipFrame:
+            guard let frame = source.frame, let url = recordingURL(of: frame, videoURL: videoURL, edit: edit) else { return nil }
+            return await self.frame(of: url, frame: frame, edit: edit).map { UIImage(cgImage: $0) }
+        case .photo(let fileName):
+            // Drawing a UIImage honors its orientation.
+            return UIImage(contentsOfFile: EditMediaFiles.url(for: fileName).path(percentEncoded: false))
         }
     }
 

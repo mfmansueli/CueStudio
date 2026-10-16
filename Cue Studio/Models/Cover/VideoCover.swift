@@ -19,6 +19,8 @@ nonisolated struct VideoCover: Codable, Hashable, Sendable {
     /// The v26 design (layout, typeface, highlighted word, effect and elements). Nil for covers made
     /// before it, which keep drawing their title the old way.
     var design: CoverDesign?
+    /// Made in Cover Studio: drawn instead of `design` (which stays, so an older version of the app still draws something).
+    var composition: CoverComposition?
 
     init(source: CoverSource, style: CreatorStyle = .bold, preset: TypePreset? = nil) {
         self.source = source
