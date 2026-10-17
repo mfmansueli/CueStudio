@@ -75,7 +75,8 @@ struct CaptionFindSheet: View {
                 .font(.system(size: 14, weight: .semibold))
                 .foregroundStyle(Palette.ink2)
                 .accessibilityHidden(true)
-            TextField(label, text: text, prompt: Text(prompt).foregroundStyle(Palette.inkHint))
+            // The prompt in `ink2`, as `SearchField`: `inkHint` is 4.3:1 on the field's fill over the sheet.
+            TextField(label, text: text, prompt: Text(prompt).foregroundStyle(Palette.ink2))
                 .font(.system(.body))
                 .foregroundStyle(Palette.ink)
                 .textInputAutocapitalization(.never)
