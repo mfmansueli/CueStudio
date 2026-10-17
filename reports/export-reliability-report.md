@@ -78,4 +78,15 @@ sem tirar a pessoa dali, e diz se dá para sair (tarefa aceita pelo iOS) ou não
 
 ## 7. Fechamento
 
-(preenchido ao fim: check-warnings, Full, instalação, roteiro do dono)
+- **`scripts/check-warnings.sh`:** sem nenhum warning (Simulador, aparelho e Release) em `afce6f9`, e de novo nas branches que vêm depois
+  desta (`feature/editor-capcut-gaps` e `feature/editor-motion` a contêm inteira).
+- **Full:** rodado uma vez só, em `feature/editor-motion` (`60cb278`), que tem esta branch inteira mais as duas seguintes. Resultado: 3.862
+  aprovados e 3 falhas, nenhuma desta branch.
+  - Duas exportações estouraram o tempo sob a carga do plano em paralelo e passam sozinhas: `EditorExportMatchesPreviewTests` em 2,9 s e
+    `QuickCreatorExportTests/aVoiceOverIsHeardFromWhereItStarts` em 2,7 s.
+  - Um teste de UI de Edit by text esperava um rótulo antigo; foi corrigido na branch de movimento.
+- **Instalação (17/10):** a build Debug de `feature/editor-motion`, que inclui esta exportação, foi para o **iago Lima iphone** e para o
+  **Mansuelli iPhone 18 Pro Max**.
+- **Roteiro do dono** (exportar com o Cue fora, o aviso de calor, o cartão de progresso): https://claude.ai/artifact/Xag3bDmwyaG7gB9BaxHcTs.
+  Ainda não foi feito à mão; as medições do §2 rodaram sob XCUITest.
+- **Clones de simulador** apagados no fim da fase de testes.
