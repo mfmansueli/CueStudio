@@ -936,11 +936,14 @@ auditoria: `reports/editor-award-checklist.md`.
   voz (`CaptionRevision.retimed`); linhas de trechos cortados ficam como estão. Tocar num resultado leva a agulha à linha (a folha fica a meia
   altura, com o vídeo à vista).
 - **Várias linhas de legenda de uma vez** (`CaptionPickTools`, `QuickEditViewModel+CaptionPicks`; Captions › **Select lines**, ou segurar uma
-  linha › Select lines, como a edição em lote do CapCut): cada linha ganha um círculo; tocar põe ou tira; em cima, "N selected", **Select all** /
-  **Deselect all** e **Done**. Com linhas escolhidas: **Emphasis** (a linha inteira na cor de destaque, como a palavra dita; em caixa onde a
-  revelação usa caixa), **Size** (Regular, Bigger 1,25×, Biggest 1,5×, nunca menor, para não cair abaixo do tamanho em que as cores foram
-  medidas; dentro do limite da coleção), **Move earlier / Move later** (0,1 s por toque, todas juntas, até onde a que tem menos espaço pode ir:
-  dentro do seu clipe e sem encostar numa linha não escolhida; "The lines can’t move further") e a lixeira ("N lines deleted" · Undo). Cada ação
+  linha › Select lines, como a edição em lote do CapCut): cada linha ganha um círculo; tocar põe ou tira. Enquanto escolhe, o painel cresce até
+  a altura dos painéis de estilo (`openPanelSize`), no lugar da chave e dos chips fica "N selected", **Select all** / **Deselect all** e **Done**,
+  e as ações ficam fixas embaixo da lista (rodapé do painel, como no CapCut, que as mantém à mão enquanto a lista rola; decisão depois de
+  comparar: no topo da lista elas sumiam ao rolar e as linhas mal cabiam): chip **Emphasis** (a linha inteira na cor de destaque, como a palavra
+  dita; em caixa onde a revelação usa caixa; ligado em `accText` sobre `accSoft`), menu **Size** (Regular, Bigger 1,25×, Biggest 1,5×, nunca
+  menor, para não cair abaixo do tamanho em que as cores foram medidas; dentro do limite da coleção), ‹ › (**Move earlier / Move later**, 0,1 s
+  por toque, todas juntas, até onde a que tem menos espaço pode ir: dentro do seu clipe e sem encostar numa linha não escolhida; "The lines
+  can’t move further") e a lixeira ("N lines deleted" · Undo). Cada ação
   é um passo de desfazer (toques seguidos de mover são um). O estilo fica na linha (`CaptionCue.lineStyle`, `CaptionLineStyle`; linhas antigas
   sem ele) e é desenhado por `CaptionCollectionRenderer` na prévia e na exportação; legendas antigas sem coleção (`captionCollection` nil) não
   separam estilo por linha e o painel diz "Pick a look in Style…". Dividir uma linha mantém o estilo nas duas metades; traduções mostram as

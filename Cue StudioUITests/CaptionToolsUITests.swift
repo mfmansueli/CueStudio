@@ -45,7 +45,8 @@ final class CaptionToolsUITests: XCTestCase {
         )
     }
 
-    /// Select lines: two lines picked, Emphasis on both, then both deleted together; the list keeps the six others.
+    /// Select lines: all lines picked but the first, Emphasis on them, then deleted together; the first line stays. The actions
+    /// stay pinned under the list.
     func testSelectedLinesAreStyledAndDeletedTogether() {
         let app = EditorApp.open(demo: true)
         EditorApp.tapTool(app, "captions")
@@ -55,17 +56,18 @@ final class CaptionToolsUITests: XCTestCase {
         let count = app.staticTexts["edit.captionPicks.count"]
         XCTAssertTrue(count.waitForExistence(timeout: 5))
         XCTAssertEqual(count.label, "0 selected")
+        app.buttons["edit.captionPicks.all"].tap()
+        XCTAssertEqual(count.label, "8 selected")
         app.descendants(matching: .any)["edit.captionLine.0"].tap()
-        app.descendants(matching: .any)["edit.captionLine.1"].tap()
-        XCTAssertEqual(count.label, "2 selected")
-        let emphasis = app.buttons["edit.captionPicks.emphasis"]
+        XCTAssertEqual(count.label, "7 selected")
+        let emphasis = app.descendants(matching: .any)["edit.captionPicks.emphasis"]
         XCTAssertTrue(emphasis.waitForExistence(timeout: 5))
         emphasis.tap()
-        XCTAssertEqual(emphasis.value as? String, "On")
+        XCTAssertTrue(["On", "1"].contains(emphasis.value as? String ?? ""), "Emphasis didn't turn on")
         app.buttons["edit.captionPicks.delete"].tap()
-        XCTAssertTrue(EditorApp.toastSays(app, "2 lines deleted"), "No toast after deleting the picked lines")
+        XCTAssertTrue(EditorApp.toastSays(app, "7 lines deleted"), "No toast after deleting the picked lines")
         XCTAssertFalse(app.staticTexts["edit.captionPicks.count"].exists, "Picking didn't end after Delete")
-        XCTAssertTrue(app.descendants(matching: .any)["edit.captionLine.5"].waitForExistence(timeout: 5))
-        XCTAssertFalse(app.descendants(matching: .any)["edit.captionLine.6"].exists, "The two lines weren't deleted")
+        XCTAssertTrue(app.descendants(matching: .any)["edit.captionLine.0"].waitForExistence(timeout: 5))
+        XCTAssertFalse(app.descendants(matching: .any)["edit.captionLine.1"].exists, "The picked lines weren't deleted")
     }
 }

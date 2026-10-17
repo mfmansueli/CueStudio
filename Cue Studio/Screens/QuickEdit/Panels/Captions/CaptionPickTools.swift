@@ -5,67 +5,107 @@
 
 import SwiftUI
 
-/// Captions › Select, over the list of lines: how many are picked, Select all and Done; then what changes them together:
-/// Emphasis (the whole line in the highlight color), Size, Earlier and Later (a tenth of a second each), Delete.
+/// Captions › Select, around the list of lines (as CapCut's batch edit keeps them at hand while the list scrolls; the panel
+/// grows to the styling panels' height meanwhile): above it, how many lines are picked, Select all and Done (`.header`, in
+/// place of the switch and chips); under it, what changes them together (`.actions`): Emphasis (the whole line in the
+/// highlight color), Size, a tenth of a second earlier or later, and Delete.
 struct CaptionPickTools: View {
+    enum Part {
+        case header, actions
+    }
+
     let viewModel: QuickEditViewModel
+    let part: Part
 
     var body: some View {
+        switch part {
+        case .header: header
+        case .actions: actions
+        }
+    }
+
+    private var header: some View {
+        HStack(spacing: 8) {
+            Text("\(viewModel.captionPicks?.count ?? 0) selected")
+                .font(.system(.subheadline, weight: .semibold))
+                .foregroundStyle(Palette.ink)
+                .lineLimit(1)
+                .accessibilityIdentifier("edit.captionPicks.count")
+            Spacer(minLength: 4)
+            textButton(viewModel.picksEveryCaption ? String(localized: "Deselect all") : String(localized: "Select all"),
+                       identifier: "edit.captionPicks.all") { viewModel.togglePickAllCaptions() }
+            textButton(String(localized: "Done"), identifier: "edit.captionPicks.done") { viewModel.stopPickingCaptions() }
+        }
+        .padding(.horizontal, 16)
+    }
+
+    private var actions: some View {
         let count = viewModel.captionPicks?.count ?? 0
-        VStack(alignment: .leading, spacing: 8) {
-            HStack(spacing: 8) {
-                Text("\(count) selected")
-                    .font(.system(.subheadline, weight: .semibold))
-                    .foregroundStyle(Palette.ink)
-                    .lineLimit(1)
-                    .accessibilityIdentifier("edit.captionPicks.count")
-                Spacer(minLength: 4)
-                textButton(viewModel.picksEveryCaption ? String(localized: "Deselect all") : String(localized: "Select all"),
-                           identifier: "edit.captionPicks.all") { viewModel.togglePickAllCaptions() }
-                textButton(String(localized: "Done"), identifier: "edit.captionPicks.done") { viewModel.stopPickingCaptions() }
-            }
+        return VStack(alignment: .leading, spacing: 4) {
             if count == 0 {
                 PanelNote(text: String(localized: "Tap the lines to change together."))
+                    .frame(minHeight: Metrics.hitTarget, alignment: .leading)
             } else {
-                style
-                moveAndDelete
+                if !viewModel.canStyleCaptionLines {
+                    PanelNote(text: String(localized: "Pick a look in Style to style lines on their own."))
+                }
+                // On one row when it fits; with large text, the style on one row and moving and deleting on the next.
+                ViewThatFits(in: .horizontal) {
+                    HStack(spacing: 6) { style; Spacer(minLength: 0); moveAndDelete }
+                    VStack(alignment: .leading, spacing: 0) {
+                        HStack(spacing: 6) { style }
+                        HStack(spacing: 6) { Spacer(minLength: 0); moveAndDelete }
+                    }
+                }
             }
         }
-        .padding(12)
-        .background(Palette.Editor.panelCard, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+        .padding(.horizontal, 16)
+        .padding(.top, 4)
     }
 
     @ViewBuilder
     private var style: some View {
         if viewModel.canStyleCaptionLines {
-            PanelToggleRow(
-                label: String(localized: "Emphasis"), detail: String(localized: "The whole line in the highlight color"),
-                isOn: viewModel.pickedCaptionsAreEmphasized, identifier: "edit.captionPicks.emphasis"
-            ) { viewModel.setPickedCaptionsEmphasized(!viewModel.pickedCaptionsAreEmphasized) }
-            PanelSegmented(
-                label: String(localized: "Size"),
-                options: CaptionLineStyle.Size.allCases.map { PanelOption($0, $0.label, key: $0.rawValue) },
-                selection: viewModel.pickedCaptionSize, identifier: "edit.captionPicks.size"
-            ) { viewModel.setPickedCaptionSize($0) }
-        } else {
-            PanelNote(text: String(localized: "Pick a look in Style to style lines on their own."))
+            let emphasized = viewModel.pickedCaptionsAreEmphasized
+            Button { viewModel.setPickedCaptionsEmphasized(!emphasized) } label: {
+                chipLabel(String(localized: "Emphasis"), systemImage: "highlighter", isOn: emphasized)
+            }
+            .buttonStyle(.plain)
+            .accessibilityValue(emphasized ? Text("On") : Text("Off"))
+            .accessibilityHint(Text("The whole line in the highlight color"))
+            .accessibilityAddTraits(.isToggle)
+            .accessibilityIdentifier("edit.captionPicks.emphasis")
+            Menu {
+                Picker(String(localized: "Size"), selection: Binding(
+                    get: { viewModel.pickedCaptionSize },
+                    set: { if let size = $0 { viewModel.setPickedCaptionSize(size) } }
+                )) {
+                    ForEach(CaptionLineStyle.Size.allCases) { size in
+                        Text(size.label).tag(Optional(size))
+                    }
+                }
+            } label: {
+                chipLabel(viewModel.pickedCaptionSize?.label ?? String(localized: "Size"), systemImage: "textformat.size", isOn: false)
+            }
+            .accessibilityLabel(Text("Size"))
+            .accessibilityValue(Text(viewModel.pickedCaptionSize?.label ?? ""))
+            .accessibilityIdentifier("edit.captionPicks.size")
         }
     }
 
     private var moveAndDelete: some View {
-        HStack(spacing: 6) {
-            chip(String(localized: "Move earlier"), systemImage: "chevron.left", identifier: "edit.captionPicks.earlier") {
+        HStack(spacing: 4) {
+            iconButton("chevron.left", label: Text("Move earlier"), identifier: "edit.captionPicks.earlier") {
                 viewModel.movePickedCaptions(by: -QuickEditViewModel.captionGroupStep)
             }
-            chip(String(localized: "Move later"), systemImage: "chevron.right", identifier: "edit.captionPicks.later") {
+            iconButton("chevron.right", label: Text("Move later"), identifier: "edit.captionPicks.later") {
                 viewModel.movePickedCaptions(by: QuickEditViewModel.captionGroupStep)
             }
-            Spacer(minLength: 0)
             Button { viewModel.deletePickedCaptions() } label: {
                 Image(systemName: "trash")
                     .font(.system(size: 14, weight: .semibold))
                     .foregroundStyle(Palette.dangerText)
-                    .frame(width: 36, height: 32)
+                    .frame(width: 40, height: 32)
                     .background(Palette.Editor.dangerWash, in: Capsule())
                     .frame(minWidth: Metrics.hitTarget, minHeight: Metrics.hitTarget)
                     .contentShape(Rectangle())
@@ -74,6 +114,19 @@ struct CaptionPickTools: View {
             .accessibilityLabel(Text("Delete the selected lines"))
             .accessibilityIdentifier("edit.captionPicks.delete")
         }
+    }
+
+    private func chipLabel(_ label: String, systemImage: String, isOn: Bool) -> some View {
+        HStack(spacing: 5) {
+            Image(systemName: systemImage).font(.system(size: 12, weight: .semibold))
+            Text(label).font(.system(.footnote, weight: .semibold)).lineLimit(1)
+        }
+        .foregroundStyle(isOn ? Palette.accText : Palette.ink)
+        .padding(.horizontal, 12)
+        .frame(minHeight: 32)
+        .background(isOn ? Palette.accSoft : Palette.fill, in: Capsule())
+        .frame(minHeight: Metrics.hitTarget)
+        .contentShape(Rectangle())
     }
 
     private func textButton(_ label: String, identifier: String, action: @escaping () -> Void) -> some View {
@@ -89,20 +142,18 @@ struct CaptionPickTools: View {
         .accessibilityIdentifier(identifier)
     }
 
-    private func chip(_ label: String, systemImage: String, identifier: String, action: @escaping () -> Void) -> some View {
+    private func iconButton(_ symbol: String, label: Text, identifier: String, action: @escaping () -> Void) -> some View {
         Button(action: action) {
-            HStack(spacing: 5) {
-                Image(systemName: systemImage).font(.system(size: 10, weight: .bold))
-                Text(label).font(.system(.footnote, weight: .semibold)).lineLimit(1)
-            }
-            .foregroundStyle(Palette.ink)
-            .padding(.horizontal, 12)
-            .frame(minHeight: 32)
-            .background(Palette.fill, in: Capsule())
-            .frame(minHeight: Metrics.hitTarget)
-            .contentShape(Rectangle())
+            Image(systemName: symbol)
+                .font(.system(size: 13, weight: .bold))
+                .foregroundStyle(Palette.ink)
+                .frame(width: 40, height: 32)
+                .background(Palette.fill, in: Capsule())
+                .frame(minWidth: Metrics.hitTarget, minHeight: Metrics.hitTarget)
+                .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
+        .accessibilityLabel(label)
         .accessibilityIdentifier(identifier)
     }
 }

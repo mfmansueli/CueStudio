@@ -22,9 +22,13 @@ struct CaptionsPanel: View {
     @FocusState private var focusesField: Bool
 
     var body: some View {
-        PanelFrame(viewModel: viewModel, panel: .captions) {
-            controls
-        } content: {
+        PanelFrame(viewModel: viewModel, panel: .captions, fixed: {
+            if viewModel.isPickingCaptions {
+                CaptionPickTools(viewModel: viewModel, part: .header)
+            } else {
+                controls
+            }
+        }, content: {
             ScrollViewReader { proxy in
                 VStack(alignment: .leading, spacing: 10) {
                     CaptionPlayheadWatcher(viewModel: viewModel) { id in
@@ -47,9 +51,7 @@ struct CaptionsPanel: View {
                     switch picker {
                     case .language: languageList
                     case .translation: translationList
-                    case nil:
-                        if viewModel.isPickingCaptions { CaptionPickTools(viewModel: viewModel) }
-                        lines
+                    case nil: lines
                     }
                 }
                 .onChange(of: viewModel.selection) { _, selection in
@@ -61,7 +63,10 @@ struct CaptionsPanel: View {
                     if let id = viewModel.selection?.captionID { scroll(proxy, to: id) }
                 }
             }
-        }
+        }, footer: {
+            // Select's actions stay at hand while the lines scroll.
+            if viewModel.isPickingCaptions { CaptionPickTools(viewModel: viewModel, part: .actions) }
+        })
         .onChange(of: viewModel.focusesCaptionField) { _, focuses in
             guard focuses else { return }
             viewModel.focusesCaptionField = false

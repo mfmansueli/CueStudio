@@ -206,7 +206,7 @@ struct QuickEditView: View {
         EditorLayout(
             usableHeight: height,
             stableHeight: stableHeight > 0 ? stableHeight : nil,
-            panel: viewModel.panel?.size,
+            panel: viewModel.openPanelSize,
             panelFocusesLane: viewModel.panel?.focusedLane != nil,
             largeText: dynamicTypeSize >= .xxLarge,
             panelIsExpanded: viewModel.stylePanelIsExpanded && viewModel.panel?.isExpandable == true
