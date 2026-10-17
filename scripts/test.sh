@@ -10,18 +10,20 @@
 #   scripts/test.sh full             the Full plan: unit and UI tests (what ⌘U runs)
 #   scripts/test.sh only <id>…       chosen tests: "Cue StudioTests/DockFoldTests", "Cue StudioUITests/TabBarUITests/testTabs()"
 #   scripts/test.sh device <suite>   a device-only suite on the iPhone named by CUE_DEVICE (name or id), one set at a time
-#                                    (VoiceFollowingSpeechTests, VoiceFollowingLatencyTests, CaptionSpeechTests,
+#                                    (VoiceFollowingSpeechTests, VoiceFollowingLatencyTests, CaptionSpeechTests, EditByTextDeviceTests,
 #                                    LanguageModelDeviceTests, ScriptGenerationFlowDeviceTests, VoicePersonaDeviceTests,
 #                                    PromptBudgetDeviceTests, WritingImportDeviceTests, PlatformLengthDeviceTests,
 #                                    LengthVariantsDeviceTests, ScriptToolsDeviceTests, IdeaRelevanceDeviceTests, IdeaSuggestionsDeviceTests, CreatorDayDeviceTests,
-#                                    InspirationDeviceTests, QuickEditPreviewLatencyTests, SkinSmoothingDeviceTests, BackgroundDeviceTests)
+#                                    InspirationDeviceTests, QuickEditPreviewLatencyTests, EditorExportDeviceTests, SkinSmoothingDeviceTests,
+#                                    BackgroundDeviceTests)
+#   scripts/test.sh device-ui <class>  a UI test class (or Class/test) on that iPhone (opt-in classes skip without their flag)
 #
 # After the mode: --no-build reuses the last build; --repeat N runs until a failure, at most N times (for flaky tests).
 
 source "$(dirname "$0")/_xcode.sh"
 
 usage() {
-    sed -n '2,18p' "$0"
+    sed -n '2,21p' "$0"
     exit 64
 }
 
@@ -65,10 +67,11 @@ case "$mode" in
         fi
         # The suites skip themselves unless their flag is on (TEST_RUNNER_ reaches the tests without the prefix).
         case "${ids[0]}" in
-            VoiceFollowingSpeechTests* | VoiceFollowingLatencyTests* | CaptionSpeechTests*) export TEST_RUNNER_CUE_SPEECH_E2E=1 ;;
+            VoiceFollowingSpeechTests* | VoiceFollowingLatencyTests* | CaptionSpeechTests* | EditByTextDeviceTests*) export TEST_RUNNER_CUE_SPEECH_E2E=1 ;;
             LanguageModelDeviceTests* | ScriptGenerationFlowDeviceTests* | VoicePersonaDeviceTests* | PromptBudgetDeviceTests* | WritingImportDeviceTests* | PlatformLengthDeviceTests* | LengthVariantsDeviceTests* | ScriptToolsDeviceTests* | IdeaRelevanceDeviceTests* | IdeaSuggestionsDeviceTests* | CreatorDayDeviceTests* | InspirationDeviceTests* | ScriptQualityDeviceTests*)
                 export TEST_RUNNER_CUE_AI_E2E=1 ;;
             QuickEditPreviewLatencyTests*) export TEST_RUNNER_CUE_PREVIEW_LATENCY=1 ;;
+            EditorExportDeviceTests*) export TEST_RUNNER_CUE_EDITOR_EXPORT=1 ;;
             # A portrait in the app's Documents on the device: TEST_RUNNER_CUE_SKIN_MEDIA=Documents/skin.jpg (see SkinSmoothingDeviceTests).
             SkinSmoothingDeviceTests* | BackgroundDeviceTests*) export TEST_RUNNER_CUE_SKIN_E2E=1 ;;
             *) usage ;;
@@ -79,6 +82,20 @@ case "$mode" in
             destination="platform=iOS,name=$CUE_DEVICE"
         fi
         extra+=(-only-testing:"Cue StudioTests/${ids[0]}")
+        ;;
+    device-ui)
+        # A UI test class (or one test) on a real iPhone, e.g. RealTakeWorkflowUITests (opt-in through its own TEST_RUNNER_ flag).
+        [ ${#ids[@]} -eq 1 ] || usage
+        if [ -z "${CUE_DEVICE:-}" ]; then
+            echo "Set CUE_DEVICE to the iPhone's name or id (xcrun devicectl list devices)." >&2
+            exit 64
+        fi
+        if [[ "$CUE_DEVICE" =~ ^[0-9A-Fa-f-]{20,}$ ]]; then
+            destination="platform=iOS,id=$CUE_DEVICE"
+        else
+            destination="platform=iOS,name=$CUE_DEVICE"
+        fi
+        extra+=(-only-testing:"Cue StudioUITests/${ids[0]}")
         ;;
     *) usage ;;
 esac

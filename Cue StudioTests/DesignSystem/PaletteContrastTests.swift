@@ -271,6 +271,29 @@ struct PaletteContrastTests {
         }
     }
 
+    /// The quieter line on a yellow button reads on it.
+    @Test func theSecondLineOnAYellowButtonReads() {
+        for appearance in Appearance.allCases {
+            let measured = ratio(Palette.accInk2, on: Palette.acc, in: appearance)
+            #expect(measured >= ColorContrast.textMinimum, "accInk2 on acc, \(appearance): \(measured)")
+        }
+    }
+
+    /// The editor's picked tiles (a motion preset, a template, a transition): the yellow tint over the panel and the card, its
+    /// name and icon on it.
+    @Test func theEditorsPickedTilesRead() {
+        for appearance in Appearance.allCases {
+            let panel = rgb(Palette.Editor.panel, in: appearance)
+            for (name, under) in [("panel", panel), ("card", rgb(Palette.Editor.panelCard, in: appearance, over: panel))] {
+                let tile = rgb(Palette.Editor.accTile, in: appearance, over: under)
+                for token in [("accText", Palette.accText), ("ink", Palette.ink), ("ink2", Palette.ink2)] {
+                    let measured = ColorContrast.ratio(rgb(token.1, in: appearance, over: tile), tile)
+                    #expect(measured >= ColorContrast.textMinimum, "\(token.0) on a picked tile over the \(name), \(appearance): \(measured)")
+                }
+            }
+        }
+    }
+
     @Test func settingsSheetsOverTheCameraRead() {
         for appearance in Appearance.allCases {
             for token in textTokens {
@@ -383,6 +406,21 @@ struct PaletteContrastTests {
                 let text = rgb(token, in: .dark, over: glass)
                 #expect(ColorContrast.ratio(text, glass) >= ColorContrast.textMinimum, "text on solid glass")
             }
+        }
+    }
+
+    /// Cover Studio's crop guide label (white on its dark pill over the shade) and the dashed outline of a photo or video on
+    /// the preview (white over its dark halo), on the worst picture: white. The outline is a control boundary (3:1).
+    @Test func theCoverGuidesAndOverlayOutlinesReadOnAnyPicture() {
+        for picture in [ColorContrast.RGB(red: 0, green: 0, blue: 0), ColorContrast.RGB(red: 1, green: 1, blue: 1)] {
+            let shaded = rgb(Palette.Editor.cropShade, in: .dark, over: picture)
+            let pill = rgb(Palette.Editor.cropLabel, in: .dark, over: shaded)
+            let label = ColorContrast.ratio(rgb(Palette.ink, in: .dark, over: pill), pill)
+            #expect(label >= ColorContrast.textMinimum, "crop label: \(label)")
+            // The halo is a 1.5 pt shadow right under the line: the line is read against it.
+            let halo = rgb(Palette.Editor.overlayOutlineHalo, in: .dark, over: picture)
+            let outline = ColorContrast.ratio(rgb(Palette.Editor.overlayOutline, in: .dark, over: halo), halo)
+            #expect(outline >= 3, "overlay outline: \(outline)")
         }
     }
 

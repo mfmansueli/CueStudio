@@ -482,16 +482,52 @@ struct QuickCreatorViewModelTests {
         #expect(viewModel.edit.media[0].mediaDuration == 3)
     }
 
-    @Test func aSelectedMediaOffersEditReplaceAndDeleteAndReplaceAsksForTheLibrary() async {
+    @Test func aSelectedMediaOffersEditDuplicateReplaceAndDeleteAndReplaceAsksForTheLibrary() async {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
         viewModel.addMedia(photo())
         let id = viewModel.edit.media[0].id
         viewModel.selection = .media(id)
-        #expect(viewModel.toolbarItems.map(\.id) == ["editMedia", "replaceMedia", "delete"])
+        #expect(viewModel.toolbarItems.map(\.id) == ["editMedia", "duplicate", "replaceMedia", "delete"])
         viewModel.perform(.replaceMedia)
         #expect(viewModel.photoRequest?.purpose == .replaceMedia(id, kind: .photo))
         #expect(viewModel.photoRequest?.offersVideos == false)
+    }
+
+    @Test func duplicatingAMediaPutsACopyOnTopThatSharesTheFile() async throws {
+        let scenario = await makeScenario()
+        let viewModel = scenario.viewModel
+        viewModel.addMedia(photo())
+        let original = try #require(viewModel.edit.media.first)
+        viewModel.selection = .media(original.id)
+        let steps = viewModel.history.past.count
+        viewModel.perform(.duplicateMedia)
+        #expect(viewModel.edit.media.count == 2)
+        let copy = try #require(viewModel.edit.media.first { $0.id != original.id })
+        #expect(copy.fileName == original.fileName)
+        #expect(copy.span == original.span)
+        #expect(copy.stackOrder > original.stackOrder)
+        #expect(viewModel.selection == .media(copy.id))
+        #expect(viewModel.history.past.count == steps + 1)
+        #expect(scenario.toast.message == "Media duplicated")
+        // Deleting the copy keeps the file the original still shows.
+        viewModel.deleteMedia(copy.id)
+        #expect(viewModel.edit.media.map(\.fileName) == [original.fileName])
+        viewModel.undo()
+        #expect(viewModel.edit.media.count == 2)
+    }
+
+    @Test func aDuplicateNeverMakesMoreThanThreeShowAtOnce() async throws {
+        let scenario = await makeScenario()
+        let viewModel = scenario.viewModel
+        viewModel.addMedia(photo())
+        let original = try #require(viewModel.edit.media.first)
+        viewModel.duplicateMedia(original.id)
+        viewModel.duplicateMedia(original.id)
+        #expect(viewModel.edit.media.count == 3)
+        viewModel.duplicateMedia(original.id)
+        #expect(viewModel.edit.media.count == 3)
+        #expect(scenario.toast.message == "Max 3 photos or videos")
     }
 
     @Test func theMediaTrackSaysWhatItIsAndHowItShows() async {
@@ -637,7 +673,7 @@ struct QuickCreatorViewModelTests {
         let viewModel = scenario.viewModel
         scenario.player.seek(to: 20)
         viewModel.useFrameAsCover()
-        #expect(viewModel.edit.cover?.source == .frame(20))
+        #expect(viewModel.edit.cover?.source.frame?.time == 20)
         viewModel.setCoverTitle("3 erros que todo creator comete")
         viewModel.setCoverTitlePosition(2)
         #expect(viewModel.edit.cover?.title == "3 erros que todo creator comete")

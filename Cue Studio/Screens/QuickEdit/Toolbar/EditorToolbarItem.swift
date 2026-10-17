@@ -24,6 +24,11 @@ struct EditorToolbarItem: Identifiable, Hashable {
     let systemImage: String
     var style: Style = .normal
     let action: EditorAction
+    /// A short word on the icon saying it reaches past the picked item ("All": the whole video), so a tool shown with a clip
+    /// never looks like the clip's own.
+    var scopeBadge: String?
+    /// A thin line before it: the start of a group of tools of another reach.
+    var startsGroup = false
 
     /// Delete stays at the end of the bar while the other tools scroll.
     var isPinned: Bool { style == .destructive }

@@ -122,16 +122,55 @@ extension QuickEditViewModel {
         return up ? position < ordered.count - 1 : position > 0
     }
 
+    /// A copy of the photo or video on top of the others, a little lower when it doesn't fill the frame, picked. The file is
+    /// shared (it goes only when nothing names it).
+    func duplicateMedia(_ id: UUID) {
+        guard let original = edit.media.first(where: { $0.id == id }) else { return }
+        // The copy shows over the same moment: never more than the export draws at once.
+        let shown = mediaBars.first { $0.id == id }?.span ?? original.span
+        guard LayerLanes.peak(of: mediaBars.map(\.span), within: shown) < MediaOverlay.simultaneousLimit else {
+            toast.show(String(localized: "Max 3 photos or videos"))
+            return
+        }
+        var copy = original
+        copy.id = UUID()
+        copy.layer = (edit.media.map(\.stackOrder).max() ?? 0) + 1
+        if copy.layout != .fullFrame {
+            copy.center = OverlayPoint(x: original.center.x, y: min(0.9, original.center.y + 0.08)).clamped
+        }
+        change { $0.media.append(copy) }
+        selection = .media(copy.id)
+        toast.show(String(localized: "Media duplicated"))
+    }
+
     func deleteMedia(_ id: UUID) {
         change { $0.media.removeAll { $0.id == id } }
         toast.show(String(localized: "Media removed"))
     }
 
-    /// The photo or video showing at the playhead, for the preview's handles.
-    var visibleMedia: MediaOverlay? {
-        let time = player.currentTime
-        guard let bar = mediaBars.first(where: { $0.span.contains(time) }) else { return nil }
-        return edit.media.first { $0.id == bar.id }
+    // MARK: - The part of a video
+
+    /// Plays another part of the video (`start`, seconds of the file) in the same place of the edit, for as long as it shows
+    /// there; kept inside the file. A drag is one undo step (`beginChange`).
+    func slipMedia(_ id: UUID, toStart start: TimeInterval) {
+        guard let media = edit.media.first(where: { $0.id == id }), let length = media.mediaDuration,
+              let shown = mediaBars.first(where: { $0.id == id })?.span.duration else { return }
+        let clamped = min(max(0, start), max(0, length - shown))
+        updateMedia(id) { $0.mediaStart = clamped > 0.000_1 ? clamped : nil }
+    }
+
+    /// How long the photo or video shows, from where it starts in the edit: longer is as far as the video (from its part) and the
+    /// edit allow. One undo step per tap.
+    func setMediaLength(_ id: UUID, _ seconds: TimeInterval) {
+        guard let media = edit.media.first(where: { $0.id == id }), let bar = mediaBars.first(where: { $0.id == id }) else { return }
+        let longest = min(media.longestDuration, edit.editedDuration - bar.span.start)
+        let length = min(max(seconds, MediaOverlay.minimumDuration), longest)
+        guard abs(length - bar.span.duration) > 0.01 else { return }
+        let pinned = edit.pin(TimeSpan(start: bar.span.start, end: bar.span.start + length))
+        updateMedia(id) { item in
+            item.span = pinned.span
+            item.clipAnchor = pinned.anchor
+        }
     }
 
     /// Its place on a preview of `size` (from the top left), as the export places it.

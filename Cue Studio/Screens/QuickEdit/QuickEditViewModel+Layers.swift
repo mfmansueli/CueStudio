@@ -14,7 +14,9 @@ extension QuickEditViewModel {
     var textBars: [LayerBar] {
         edit.texts.compactMap { text in
             guard let span = TakeEdit.editedSpan(text.span, anchor: text.clipAnchor, in: edit.timeline) else { return nil }
-            let title = text.isEmpty ? text.role.label : text.displayText
+            let title = text.graphic.map { graphic in
+                graphic.kind.hasText && !text.isEmpty ? "\(graphic.kind.label) · \(text.displayText)" : graphic.kind.label
+            } ?? (text.isEmpty ? text.role.label : text.displayText)
             return LayerBar(
                 id: text.id, kind: .text, span: span, title: title, isSelected: text.id == selectedTextID,
                 keyframes: text.keyframes.map(\.time).filter { $0 <= span.duration }
@@ -163,7 +165,7 @@ extension QuickEditViewModel {
 
     private func longestLength(of bar: LayerBar) -> TimeInterval? {
         guard bar.kind == .media else { return nil }
-        return edit.media.first { $0.id == bar.id }?.mediaDuration
+        return edit.media.first { $0.id == bar.id }.flatMap { $0.mediaDuration == nil ? nil : $0.longestDuration }
     }
 
     /// Pins a bar to where it was dropped: to the take's seconds, or in an arranged edit to the
@@ -182,8 +184,14 @@ extension QuickEditViewModel {
                 item.clipAnchor = pinned.anchor
             }
         case .caption:
-            // A line stays with its recording: only its time on it changes.
-            moveCaption(captionCueID(forLine: bar.id), to: edit.timeline.anchoredSpan(forEdited: span).span)
+            // A line stays with its recording: only its time on it changes, and only over a clip of that recording.
+            let cueID = captionCueID(forLine: bar.id)
+            let target = edit.timeline.anchoredSpan(forEdited: span)
+            guard target.anchor.sourceID == edit.captions.first(where: { $0.id == cueID })?.sourceID else {
+                toast.show(String(localized: "A line stays on its own clip"))
+                return
+            }
+            moveCaption(cueID, to: target.span)
         case .voiceOver:
             change { snapshot in
                 guard let index = snapshot.voiceOvers.firstIndex(where: { $0.id == bar.id }) else { return }

@@ -10,10 +10,13 @@ import SwiftUI
 /// style opens. Dragging a text moves it, with yellow guides through the middle (it sticks there,
 /// with a tick) and the platform's safe area dashed; with keyframes, the drag sets the one at the
 /// playhead. Dragging the caption moves every caption up or down (sticking to top, middle and
-/// bottom). A photo or video in a window moves and pinches.
+/// bottom). Each photo or video in a window showing at the playhead has its handle, stacked as the video draws them (the
+/// picked one on top, so it can be moved even where another covers it); a tap goes to the one under the finger, and tapping
+/// again where several overlap goes to the next one down (`QuickEditViewModel.tapMedia`). It moves (with the same guides) and
+/// pinches.
 ///
-/// Texts and captions are drawn into the video exactly as they export; while a finger moves one, a
-/// copy follows it and the change lands when it lifts.
+/// Texts, photos and videos are drawn into the video exactly as they export; while a finger moves one, the video leaves it
+/// out (`beginOverlayDrag`) and a copy follows the finger, so it never shows twice; the change lands when it lifts.
 struct OverlayEditingLayer: View {
     let viewModel: QuickEditViewModel
     let size: CGSize
@@ -27,7 +30,12 @@ struct OverlayEditingLayer: View {
 
     @State private var drag: Drag?
     @State private var guides: (vertical: Bool, horizontal: Bool) = (false, false)
-    @State private var mediaScale: CGFloat = 1
+    /// The photo or video being pinched, and by how much.
+    @State private var pinch: (id: UUID, scale: CGFloat)?
+    /// The picture of the photo or video under the finger, while one moves.
+    @State private var proxy: (id: UUID, image: UIImage)?
+
+    @Environment(VideoThumbnailService.self) private var thumbnails
 
     var body: some View {
         ZStack(alignment: .topLeading) {
@@ -36,7 +44,7 @@ struct OverlayEditingLayer: View {
             if !viewModel.player.isPlaying, let caption = viewModel.previewCaption(in: size) {
                 captionHandle(caption.id, frame: caption.frame)
             }
-            if let media = viewModel.visibleMedia, media.layout == .window {
+            ForEach(handledMedia) { media in
                 mediaHandle(media)
             }
             ForEach(viewModel.visibleTexts) { text in
@@ -48,6 +56,13 @@ struct OverlayEditingLayer: View {
     }
 
     private static let space = "edit.preview.space"
+
+    /// The windows showing at the playhead, bottom to top, with the picked one last (on top, so it stays reachable).
+    private var handledMedia: [MediaOverlay] {
+        let windows = viewModel.visibleMediaStack.filter { $0.layout == .window }
+        let picked = viewModel.selection?.mediaID
+        return windows.filter { $0.id != picked } + windows.filter { $0.id == picked }
+    }
 
     // MARK: - Guides
 
@@ -85,10 +100,10 @@ struct OverlayEditingLayer: View {
         let isDragged = offset != .zero || scale != 1
         return ZStack {
             if isDragged, let image = viewModel.image(ofText: text, width: size.width) {
+                // The video leaves the text out while it moves: this is the only copy.
                 Image(uiImage: image)
                     .resizable()
                     .frame(width: rect.width * scale, height: rect.height * scale)
-                    .opacity(0.92)
             }
             Rectangle()
                 .fill(Color.clear)
@@ -141,6 +156,7 @@ struct OverlayEditingLayer: View {
                 if drag == nil {
                     viewModel.player.pause()
                     if viewModel.selection != .text(text.id) { viewModel.selection = .text(text.id) }
+                    viewModel.beginOverlayDrag(.text(text.id))
                 }
                 let shown = viewModel.motionState(of: .text(text.id)).center
                 let proposed = OverlayPoint(
@@ -163,18 +179,23 @@ struct OverlayEditingLayer: View {
                 )
                 viewModel.moveText(text.id, to: QuickEditViewModel.snapped(proposed).center)
                 endDrag()
+                viewModel.endOverlayDrag()
             }
     }
 
     private func scaleGesture(_ text: TextOverlay) -> some Gesture {
         DragGesture(minimumDistance: 1, coordinateSpace: .named(Self.space))
             .onChanged { value in
-                if drag == nil { viewModel.player.pause() }
+                if drag == nil {
+                    viewModel.player.pause()
+                    viewModel.beginOverlayDrag(.text(text.id))
+                }
                 drag = .scale(text.id, translation: value.translation)
             }
             .onEnded { value in
                 viewModel.scaleText(text.id, by: value.translation)
                 endDrag()
+                viewModel.endOverlayDrag()
             }
     }
 
@@ -235,41 +256,85 @@ struct OverlayEditingLayer: View {
         let rect = viewModel.frame(ofMedia: media, in: size)
         let isSelected = viewModel.selection == .media(media.id)
         let offset: CGSize = if case .media(media.id, let moved) = drag { moved } else { .zero }
-        return RoundedRectangle(cornerRadius: 4, style: .continuous)
-            .strokeBorder(isSelected ? Palette.acc : Palette.ink.opacity(0.6), style: StrokeStyle(lineWidth: 2, dash: isSelected ? [] : [5, 4]))
-            .frame(width: rect.width * mediaScale, height: rect.height * mediaScale)
-            .contentShape(Rectangle())
-            .onTapGesture { viewModel.selectMedia(media.id) }
-            .gesture(
-                DragGesture(minimumDistance: 3, coordinateSpace: .named(Self.space))
-                    .onChanged { value in
-                        if drag == nil {
-                            viewModel.player.pause()
-                            viewModel.selection = .media(media.id)
-                        }
-                        drag = .media(media.id, offset: value.translation)
-                    }
-                    .onEnded { value in
-                        let moved = OverlayPoint(
-                            x: Double(rect.midX + value.translation.width) / Double(max(1, size.width)),
-                            y: Double(rect.midY + value.translation.height) / Double(max(1, size.height))
-                        ).clamped
-                        viewModel.moveMedia(media.id, to: moved)
-                        endDrag()
-                    }
+        let scale: CGFloat = pinch?.id == media.id ? pinch?.scale ?? 1 : 1
+        let isMoving = offset != .zero || scale != 1
+        return ZStack {
+            if isMoving, let proxy, proxy.id == media.id {
+                // The video leaves it out while it moves: this is the only copy.
+                Image(uiImage: proxy.image)
+                    .resizable()
+                    .scaledToFill()
+                    .frame(width: rect.width * scale, height: rect.height * scale)
+                    .clipped()
+                    .allowsHitTesting(false)
+            }
+            RoundedRectangle(cornerRadius: 4, style: .continuous)
+                .strokeBorder(isSelected ? Palette.acc : Palette.Editor.overlayOutline, style: StrokeStyle(lineWidth: 2, dash: isSelected ? [] : [5, 4]))
+                .shadow(color: Palette.Editor.overlayOutlineHalo, radius: 1.5)
+                .frame(width: rect.width * scale, height: rect.height * scale)
+                .contentShape(Rectangle())
+        }
+        .onTapGesture(coordinateSpace: .named(Self.space)) { location in viewModel.tapMedia(at: location, in: size) }
+        .gesture(
+            DragGesture(minimumDistance: 3, coordinateSpace: .named(Self.space))
+                .onChanged { value in
+                    if drag == nil { beginMoving(media) }
+                    let proposed = OverlayPoint(
+                        x: Double(rect.midX + value.translation.width) / Double(max(1, size.width)),
+                        y: Double(rect.midY + value.translation.height) / Double(max(1, size.height))
+                    )
+                    let snapped = QuickEditViewModel.snapped(proposed)
+                    if (snapped.vertical && !guides.vertical) || (snapped.horizontal && !guides.horizontal) { Haptics.snap() }
+                    guides = (snapped.vertical, snapped.horizontal)
+                    drag = .media(media.id, offset: CGSize(
+                        width: CGFloat(snapped.center.x) * size.width - rect.midX,
+                        height: CGFloat(snapped.center.y) * size.height - rect.midY
+                    ))
+                }
+                .onEnded { value in
+                    let proposed = OverlayPoint(
+                        x: Double(rect.midX + value.translation.width) / Double(max(1, size.width)),
+                        y: Double(rect.midY + value.translation.height) / Double(max(1, size.height))
+                    )
+                    viewModel.moveMedia(media.id, to: QuickEditViewModel.snapped(proposed).center)
+                    endDrag()
+                    proxy = nil
+                    viewModel.endOverlayDrag()
+                }
+        )
+        .simultaneousGesture(
+            MagnifyGesture()
+                .onChanged { value in
+                    if pinch?.id != media.id { beginMoving(media) }
+                    pinch = (media.id, value.magnification)
+                }
+                .onEnded { value in
+                    viewModel.resizeMedia(media.id, by: Double(value.magnification))
+                    pinch = nil
+                    proxy = nil
+                    viewModel.endOverlayDrag()
+                }
+        )
+        .position(x: rect.midX + offset.width, y: rect.midY + offset.height)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(media.kind == .photo ? Text("Photo") : Text("Video"))
+        .accessibilityHint(isSelected ? Text("Drag to move, pinch to resize. Tap where another overlaps to pick it.") : Text("Tap to select"))
+        .accessibilityAddTraits(isSelected ? [.isButton, .isSelected] : .isButton)
+        .accessibilityAction { viewModel.tapMedia(at: CGPoint(x: rect.midX, y: rect.midY), in: size) }
+        .accessibilityIdentifier("edit.mediaHandle")
+    }
+
+    /// A finger started moving or pinching a photo or video: it's picked, the video leaves it out and its picture follows.
+    private func beginMoving(_ media: MediaOverlay) {
+        viewModel.player.pause()
+        if viewModel.selection != .media(media.id) { viewModel.selection = .media(media.id) }
+        viewModel.beginOverlayDrag(.media(media.id))
+        let local = max(0, viewModel.player.currentTime - (viewModel.mediaBars.first { $0.id == media.id }?.span.start ?? 0))
+        Task {
+            let image = await thumbnails.picture(
+                of: EditMediaFiles.url(for: media.fileName), isVideo: media.kind == .video, at: local, maxPixelSize: 720
             )
-            .simultaneousGesture(
-                MagnifyGesture()
-                    .onChanged { value in mediaScale = value.magnification }
-                    .onEnded { value in
-                        viewModel.resizeMedia(media.id, by: Double(value.magnification))
-                        mediaScale = 1
-                    }
-            )
-            .position(x: rect.midX + offset.width, y: rect.midY + offset.height)
-            .accessibilityElement(children: .ignore)
-            .accessibilityLabel(media.kind == .photo ? Text("Photo") : Text("Video"))
-            .accessibilityHint(Text("Drag to move, pinch to resize"))
-            .accessibilityIdentifier("edit.mediaHandle")
+            if let image, viewModel.draggedOverlay == .media(media.id) { proxy = (media.id, image) }
+        }
     }
 }

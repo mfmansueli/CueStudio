@@ -89,6 +89,8 @@ enum Palette {
     static let accAction = Color(hex: 0x8A6500)
     /// Text and icons on top of `acc`.
     static let accInk = Color.black
+    /// A second, quieter line on `acc` (under the Done question's yellow answer): about 6:1 on it.
+    static let accInk2 = Color.black.opacity(0.66)
     /// Secondary text on a white (chosen-chip) fill: 5:1 or more on white, where `inkHint` would vanish.
     static let inkOnLight = Color.black.opacity(0.62)
     static let accSoft = Color(hex: 0xFFD60A, opacity: 0.16)

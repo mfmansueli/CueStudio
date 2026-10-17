@@ -17,6 +17,8 @@ nonisolated struct EditSegment: Codable, Hashable, Identifiable, Sendable {
     /// How this piece takes over from the one before it; a hard cut by default. The first piece
     /// has nothing before it, so its transition is always `hardCut` (see `EditTimeline`).
     var transitionIn: EditTransition
+    /// How long that transition lasts; nil for its own length (`EditTransition.duration`).
+    var transitionDuration: TimeInterval?
     /// 1 plays the recording as filmed; 2 plays it twice as fast (half as long in the edit).
     var speed: Double
     /// The recording it comes from: nil for the take being edited, else another take or video in
@@ -86,7 +88,7 @@ nonisolated struct EditSegment: Codable, Hashable, Identifiable, Sendable {
     // MARK: - Coding
 
     private enum CodingKeys: String, CodingKey {
-        case id, sourceStart, sourceEnd, transitionIn, speed, sourceID, zoom, zoomAmount, volume, isMuted, keepsPitch, look
+        case id, sourceStart, sourceEnd, transitionIn, transitionDuration, speed, sourceID, zoom, zoomAmount, volume, isMuted, keepsPitch, look
     }
 
     /// Pieces saved before transitions or speed existed are hard cuts at 1×, and so is a
@@ -97,6 +99,7 @@ nonisolated struct EditSegment: Codable, Hashable, Identifiable, Sendable {
         sourceStart = try container.decode(TimeInterval.self, forKey: .sourceStart)
         sourceEnd = try container.decode(TimeInterval.self, forKey: .sourceEnd)
         transitionIn = (try? container.decodeIfPresent(EditTransition.self, forKey: .transitionIn)) ?? .hardCut
+        transitionDuration = try? container.decodeIfPresent(TimeInterval.self, forKey: .transitionDuration)
         speed = Self.clampedSpeed((try? container.decodeIfPresent(Double.self, forKey: .speed)) ?? 1)
         sourceID = try? container.decodeIfPresent(UUID.self, forKey: .sourceID)
         zoom = try? container.decodeIfPresent(SectionZoom.self, forKey: .zoom)

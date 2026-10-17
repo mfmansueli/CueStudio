@@ -19,6 +19,8 @@ final class TakeLibraryService {
     private let repository: TakeRepository
     private let now: () -> Date
     private let logger = Logger(subsystem: "studio.cue", category: "TakeLibrary")
+    /// False when the library on disk couldn't be read: writing would replace it with what's in memory.
+    @ObservationIgnored private var canSave = true
 
     init(repository: TakeRepository = LocalTakeRepository(), now: @escaping () -> Date = Date.init) {
         self.repository = repository
@@ -28,7 +30,11 @@ final class TakeLibraryService {
     func load() {
         do {
             takes = try repository.loadTakes().sorted { $0.recordedAt > $1.recordedAt }
+            canSave = true
         } catch {
+            // The library is there but couldn't be read (say, before the first unlock): saving now would write an empty
+            // library over it. Nothing is saved until a launch reads it.
+            canSave = false
             logger.error("Could not load takes: \(error.localizedDescription)")
         }
     }
@@ -200,6 +206,10 @@ final class TakeLibraryService {
     }
 
     private func persist() {
+        guard canSave else {
+            logger.error("Not saving takes: the library on disk couldn't be read at launch")
+            return
+        }
         do {
             try repository.saveTakes(takes)
         } catch {

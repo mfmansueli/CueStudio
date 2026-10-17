@@ -49,7 +49,6 @@ final class QuickEditViewModel {
             // Leaving Pauses without removing them puts them back.
             cancelPausePreview()
             if recorder.isRecording { stopVoiceOver() }
-            isPickingCoverFrame = false
             if oldValue == .transition { selectedJoinID = nil }
             if panel == .pauses { cleanUpMarks = [:] }
             if panel == nil { lookScopeIsClip = false }
@@ -102,7 +101,12 @@ final class QuickEditViewModel {
     /// The picked caption line's field takes the keyboard (a line was just added).
     var focusesCaptionField = false
     var edit: TakeEdit {
-        didSet { editDidChange() }
+        didSet {
+            // Edit by text picks words by their place in the list, which any change of the cuts moves (the sheet lets the
+            // timeline be used behind it).
+            if oldValue.timeline != edit.timeline { transcriptSelection = nil }
+            editDidChange()
+        }
     }
     private(set) var source: Source = .loading
     private(set) var history = EditHistory<EditSnapshot>()
@@ -136,6 +140,9 @@ final class QuickEditViewModel {
     var translationRequest: TranslationRequest?
     /// Auto measuring the clip (see `QuickEditViewModel+AutoLook`).
     var autoState: AutoAdjustState = .idle
+    /// The text or photo or video a finger is moving on the preview: the video leaves it out meanwhile
+    /// (`hidingDraggedOverlay(in:)`).
+    var draggedOverlay: EditorSelection?
     /// Adjust › Compare: the preview shows the picture without Auto, Adjust and Filters.
     var comparesPicture = false {
         didSet {
@@ -196,11 +203,20 @@ final class QuickEditViewModel {
     }
     /// Edited seconds where the voice-over being recorded started.
     var recordingStart: TimeInterval?
-    /// The cover as drawn, for the preview; nil until drawn or without a cover.
+    /// The cover as drawn, for the timeline's cover block; nil until drawn or without a cover.
     var coverImage: Data?
     var isDrawingCover = false
-    /// Cover: the video shows instead of the cover while another frame is picked.
-    var isPickingCoverFrame = false
+    /// Cover Studio, while it's open over the editor.
+    var coverStudio: CoverStudioViewModel?
+    /// "Copy look": what a clip's look was when copied; nil until one is.
+    var copiedLook: CopiedClipLook?
+    /// "Paste look": which parts go, and whether its sheet is open.
+    var pastesLookParts: Set<ClipLookPart> = Set(ClipLookPart.allCases)
+    var showsPasteLook = false
+    /// Edit by text: the picked words (indices in `transcriptWords`).
+    var transcriptSelection: ClosedRange<Int>?
+    /// Listening was asked for Edit by text: the captions it makes stay hidden if they were.
+    var keepsCaptionsHiddenAfterListening = false
     /// Remove Pauses: the edit before its preview, while the result plays without the pauses. Apply
     /// keeps it as one undo step; anything else puts it back.
     var pausePreviewBase: EditSnapshot?
@@ -208,12 +224,8 @@ final class QuickEditViewModel {
     var speedScope: SpeedScope = .whole
     /// The type the creator saved as "My style" (see `QuickEditViewModel+Style`).
     var myStyle: TextLook?
-    /// The cover style saved as "My cover style".
-    var myCoverLook: CoverLook?
-    /// The creator's handle, for the cover's "@handle" element (set by the screen).
+    /// The creator's handle, for the cover's "@handle" graphic and series (set by the screen).
     var creatorHandle = ""
-    /// Cover's preview: the cover as it will be posted, or inside a profile's grid.
-    var coverPreview: CoverPreviewMode = .feed
 
     // MARK: Background
     /// Whether this iPhone can find people in video; nil until checked.
@@ -250,6 +262,10 @@ final class QuickEditViewModel {
     let mediaImporter: EditMediaImporting
     let recorder: VoiceOverRecording
     let styles: TextStyleStoring
+    /// Cover Studio's pictures.
+    let coverPictures: CoverPicturing
+    /// Hears a sound effect before it's added.
+    let soundPreviews: SoundEffectPreviewing
     let translations: TranslationAvailabilityChecking
     /// The library of takes (a montage adds others from it).
     let takes: TakeLibraryService
@@ -269,6 +285,8 @@ final class QuickEditViewModel {
     /// Media files copied in while Quick edit is open, so what the edit doesn't keep is removed.
     @ObservationIgnored var importedFiles: Set<String> = []
     @ObservationIgnored var coverTask: Task<Void, Never>?
+    /// `TakeEdit.coverDrawingKey` of the cover block's drawing.
+    @ObservationIgnored var drawnCoverKey: Int?
     /// A short part playing to show a change (a zoom, a reveal, a pause heard).
     @ObservationIgnored var previewTask: Task<Void, Never>?
     @ObservationIgnored private var draftTask: Task<Void, Never>?
@@ -278,6 +296,7 @@ final class QuickEditViewModel {
         take: Take, takes: TakeLibraryService, library: ScriptLibraryService, editing: TakeEditing,
         drafts: QuickEditDraftStoring, toast: ToastService, player: EditPlayback? = nil,
         mediaImporter: EditMediaImporting? = nil, recorder: VoiceOverRecording? = nil, styles: TextStyleStoring? = nil,
+        coverPictures: CoverPicturing? = nil, soundPreviews: SoundEffectPreviewing? = nil,
         translations: TranslationAvailabilityChecking = AppleTranslationAvailability(),
         speechLanguage: @escaping (Script?) -> SpeechLanguageRequest = SpeechLanguageRequest.script,
         languageConflict: @escaping (Script?) -> SpeechLanguageConflict? = { _ in nil }
@@ -287,7 +306,8 @@ final class QuickEditViewModel {
         self.styles = styles ?? TextStyleStore()
         self.translations = translations
         myStyle = self.styles.myStyle
-        myCoverLook = self.styles.myCoverLook
+        self.coverPictures = coverPictures ?? CoverPictureService()
+        self.soundPreviews = soundPreviews ?? SoundEffectPreviewPlayer()
         speechLanguageFor = speechLanguage
         self.mediaImporter = mediaImporter ?? EditMediaImporter()
         self.recorder = recorder ?? VoiceOverRecorder()
@@ -330,10 +350,11 @@ final class QuickEditViewModel {
             toast.show(String(localized: "Draft restored"))
         }
         edit = start
-        if edit.cleanUpAnalyzed { analysis = .done }
+        if edit.cleanUpAnalyzed, edit.recordingsToCleanUp.isEmpty { analysis = .done }
         source = .ready
         player.show(edit)
         player.seek(to: playhead)
+        drawCover()
     }
 
     private func editDidChange() {
@@ -351,6 +372,7 @@ final class QuickEditViewModel {
         // A change is no longer what was being compared.
         if comparesPicture { comparesPicture = false }
         player.show(playedEdit)
+        if edit.coverDrawingKey != drawnCoverKey { drawCover() }
         scheduleDraftSave()
     }
 
@@ -511,6 +533,8 @@ final class QuickEditViewModel {
         endChange()
         guard let previous = history.undo(from: snapshot) else { return }
         restore(previous)
+        // Edit by text picks words by their place in the list, which an undone cut changes.
+        transcriptSelection = nil
     }
 
     func redo() {
@@ -518,6 +542,7 @@ final class QuickEditViewModel {
         endChange()
         guard let next = history.redo(from: snapshot) else { return }
         restore(next)
+        transcriptSelection = nil
     }
 
     /// What undo keeps of the edit: the timeline, the suggestions' decisions, what was added on top
@@ -538,10 +563,21 @@ final class QuickEditViewModel {
     /// already taken when it began. Changes with the same `key` in a quick row (a slider, typing)
     /// are one step (`EditHistory.coalescingInterval`).
     func commit(_ next: EditSnapshot, key: String? = nil) {
-        guard next != snapshot else { return }
-        if changeBase == nil { history.record(snapshot, key: key, at: .now) }
+        var next = next
+        // Sound effects follow the moment they were put on when the cuts change (and nothing moved them in this step). Inside
+        // a gesture, from where the gesture began, so dragging a handle out and back leaves them where they were.
+        let current = snapshot
+        let origin = changeBase ?? current
+        if next.timeline != current.timeline, next.music == current.music, let music = origin.music, music.contains(where: { $0.effect != nil }) {
+            let followed = MusicClip.following(music, from: origin.timeline, to: next.timeline)
+            next.music = current.music?.map { clip in
+                clip.effect == nil ? clip : (followed.first { $0.id == clip.id } ?? clip)
+            }
+        }
+        guard next != current else { return }
+        if changeBase == nil { history.record(current, key: key, at: .now) }
         var changed = edit
-        Self.apply(next, to: &changed)
+        changed.apply(next)
         edit = changed
     }
 
@@ -579,40 +615,13 @@ final class QuickEditViewModel {
     func restore(_ step: EditSnapshot) {
         let decisions = Dictionary(step.suggestions.map { ($0.id, $0.status) }, uniquingKeysWith: { first, _ in first })
         var changed = edit
-        Self.apply(step, to: &changed)
+        changed.apply(step)
         changed.suggestions = edit.suggestions.map { suggestion in
             var restored = suggestion
             restored.status = decisions[suggestion.id] ?? .pending
             return restored
         }
         edit = changed
-    }
-
-    /// Everything undo keeps, set on `edit`.
-    private static func apply(_ step: EditSnapshot, to edit: inout TakeEdit) {
-        edit.timeline = step.timeline
-        edit.suggestions = step.suggestions
-        edit.texts = step.texts
-        edit.media = step.media
-        edit.voiceOvers = step.voiceOvers
-        edit.cover = step.cover
-        edit.creatorStyle = step.creatorStyle
-        edit.captionStyle = step.captionStyle
-        edit.filter = step.filter
-        edit.textLook = step.textLook
-        edit.textPreset = step.textPreset
-        edit.captionLook = step.captionLook
-        edit.captionPreset = step.captionPreset
-        if step.captionCollectionVersion != nil { edit.captionCollection = step.captionCollection }
-        if let position = step.captionPosition { edit.captionPosition = position }
-        if let captions = step.captions { edit.captions = captions }
-        if let sources = step.sources { edit.sources = sources }
-        if let animation = step.captionAnimation { edit.captionAnimation = animation }
-        if let translations = step.captionTranslations { edit.captionTranslations = translations }
-        if let display = step.captionDisplay { edit.captionDisplay = display }
-        if let music = step.music { edit.music = music }
-        if let backgrounds = step.backgrounds { edit.backgrounds = backgrounds }
-        step.look?.apply(to: &edit)
     }
 
     /// The take's script, or nothing for a freestyle take.
@@ -745,7 +754,7 @@ final class QuickEditViewModel {
         guard source == .ready, !isClosed else { return }
         // A pauses preview that wasn't applied isn't part of the edit.
         var kept = edit
-        if let base = pausePreviewBase { Self.apply(base, to: &kept) }
+        if let base = pausePreviewBase { kept.apply(base) }
         if kept != original || forced {
             drafts.save(QuickEditDraft(takeID: take.id, edit: kept, playhead: player.currentTime, history: history, savedAt: .now))
         } else {

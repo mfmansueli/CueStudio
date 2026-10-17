@@ -21,7 +21,6 @@ extension QuickEditViewModel {
         photoRequest = nil
         switch request.purpose {
         case .background: await importBackgroundImage(item)
-        case .cover: await useCoverPhoto(item)
         case .replaceMedia(let id, _): await replaceMedia(id, importing: item)
         }
     }
@@ -57,6 +56,7 @@ extension QuickEditViewModel {
             media.fileName = imported.fileName
             media.aspect = imported.aspect.isFinite && imported.aspect > 0 ? imported.aspect : 1
             media.mediaDuration = imported.duration
+            media.mediaStart = nil
             if media.kind == .video {
                 media.hasSound = imported.hasSound
                 media.audioVolume = nil

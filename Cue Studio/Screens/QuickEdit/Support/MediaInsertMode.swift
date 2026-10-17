@@ -20,4 +20,12 @@ enum MediaInsertMode: String, CaseIterable, Identifiable {
         case .clip: String(localized: "Insert as clip")
         }
     }
+
+    /// What happens with the pick, under the choice.
+    var explanation: String {
+        switch self {
+        case .overlay: String(localized: "Plays over your video (B-roll) while your voice keeps going. Move and resize it on the preview.")
+        case .clip: String(localized: "Becomes a clip of its own in the sequence, after the clip at the playhead. Videos only.")
+        }
+    }
 }

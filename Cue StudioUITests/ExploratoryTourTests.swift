@@ -57,7 +57,7 @@ final class ExploratoryTourTests: XCTestCase {
         sleep(3)
         guard tap("review.editButton") else { return }
         sleep(4)
-        for item in ["edit", "audio", "text", "captions", "filters", "adjust", "crop", "background", "overlay", "smart"] {
+        for item in ["edit", "captions", "text", "smart", "addMedia", "audio", "format", "filters"] {
             let button = app.descendants(matching: .any)["edit.toolbar.\(item)"].firstMatch
             if !button.exists || !button.isHittable {
                 app.descendants(matching: .any)["edit.toolbar"].firstMatch.swipeLeft()

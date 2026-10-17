@@ -14,6 +14,8 @@ final class BrandStore {
 
     private let repository: BrandRepository
     private let logger = Logger(subsystem: "studio.cue", category: "BrandStore")
+    /// False when the brands on disk couldn't be read: writing would replace them with what's in memory.
+    @ObservationIgnored private var canSave = true
 
     init(repository: BrandRepository = LocalBrandRepository()) {
         self.repository = repository
@@ -22,7 +24,10 @@ final class BrandStore {
     func load() {
         do {
             brands = try repository.load()
+            canSave = true
         } catch {
+            // Saving now would write the brands in memory (none) over the ones on disk.
+            canSave = false
             logger.error("Could not load brands: \(error.localizedDescription)")
         }
     }
@@ -64,6 +69,10 @@ final class BrandStore {
     }
 
     private func persist() {
+        guard canSave else {
+            logger.error("Not saving brands: the ones on disk couldn't be read at launch")
+            return
+        }
         do {
             try repository.save(brands)
         } catch {

@@ -17,6 +17,7 @@ import SwiftUI
 struct EditorPanelContainer<Fixed: View, Content: View, Footer: View>: View {
     let title: String
     let subtitle: String
+    @Environment(\.dynamicTypeSize) private var typeSize
     var onReset: (() -> Void)?
     var expansion: Binding<Bool>?
     /// The content stops further above the Home Indicator and fades under it while it scrolls (always with `expansion`).
@@ -83,7 +84,8 @@ struct EditorPanelContainer<Fixed: View, Content: View, Footer: View>: View {
                 Text(subtitle)
                     .font(.system(.footnote))
                     .foregroundStyle(Palette.ink2)
-                    .lineLimit(1)
+                    // With the largest text sizes a long subtitle ("Whole video · format for where you post") wraps instead of being cut.
+                    .lineLimit(typeSize.isAccessibilitySize ? 2 : 1)
                     .minimumScaleFactor(0.85)
                     .accessibilityIdentifier("edit.panel.subtitle")
             }

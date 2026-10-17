@@ -25,6 +25,11 @@ struct AddMediaSheet: View {
             }
             .pickerStyle(.segmented)
             .accessibilityIdentifier("edit.mediaMode")
+            Text(viewModel.mediaInsertMode.explanation)
+                .font(.system(.footnote))
+                .foregroundStyle(Palette.ink2)
+                .fixedSize(horizontal: false, vertical: true)
+                .accessibilityIdentifier("edit.mediaModeExplanation")
             ZStack {
                 PhotosPicker(
                     selection: $picked,

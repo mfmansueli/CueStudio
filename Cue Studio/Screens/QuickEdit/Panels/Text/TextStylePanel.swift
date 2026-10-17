@@ -7,7 +7,8 @@ import SwiftUI
 import UIKit
 
 /// Text style for the picked text. Fixed on top: its words (the keyboard comes up when it was just
-/// added) and the tabs, Presets · Font · Color · Motion, spread over the width. Under the look's tabs,
+/// added) and the tabs, Presets · Font · Color · Motion, spread over the width (with the largest
+/// text sizes, only the tabs). Under the look's tabs,
 /// what the look changes ("This title" or "All texts · 3": the words, timing and motion are always
 /// this text's), the controls, and "Apply this style to captions", which copies the look onto the
 /// captions once, after asking. Motion is the picked text's alone. The panel expands (the header's
@@ -18,6 +19,7 @@ struct TextStylePanel: View {
     @Environment(VideoThumbnailService.self) private var thumbnails
     @State private var frame: UIImage?
     @FocusState private var writes: Bool
+    @Environment(\.dynamicTypeSize) private var typeSize
 
     /// What the preset cards say.
     private static let sample = "Big idea"
@@ -25,18 +27,28 @@ struct TextStylePanel: View {
     private static let swatchDiameter: CGFloat = 34
 
     var body: some View {
-        if let text = viewModel.selectedText {
+        if let text = viewModel.selectedText, let graphic = text.graphic {
+            GraphicStylePanel(viewModel: viewModel, text: text, graphic: graphic)
+        } else if let text = viewModel.selectedText {
             let tab = viewModel.textStyleTab
+            // With the largest text sizes only the tabs stay fixed: the words scroll with the rest, and
+            // the tab's own controls come before the scope, so Font and Color show what they are for.
+            let isLarge = typeSize.isAccessibilitySize
             PanelFrame(viewModel: viewModel, panel: .textStyle) {
-                fixed(text, tab: tab)
+                VStack(spacing: 0) {
+                    if !isLarge { field(text).padding(.horizontal, 16).padding(.bottom, 4) }
+                    PanelTabs(tabs: EditorPanelTab.textStyle, selection: tab) { viewModel.panelTab = $0 }
+                }
             } content: {
-                if viewModel.textStyleTabChangesLook { scope }
+                if isLarge { field(text) }
+                if viewModel.textStyleTabChangesLook, !isLarge { scope }
                 switch tab {
                 case .font: font(text)
                 case .color: color(text)
                 case .motion: MotionKeyframeControls(viewModel: viewModel)
                 default: presets(text)
                 }
+                if viewModel.textStyleTabChangesLook, isLarge { scope }
                 if viewModel.textStyleTabChangesLook, viewModel.canCopyStyleToCaptions { copyToCaptions }
             }
             .task {
@@ -70,24 +82,19 @@ struct TextStylePanel: View {
 
     // MARK: - Fixed rows
 
-    /// The words and the tabs: what stays in reach over the keyboard and while the content scrolls.
-    private func fixed(_ text: TextOverlay, tab: EditorPanelTab) -> some View {
-        VStack(spacing: 0) {
-            TextField(viewModel.textFieldPlaceholder, text: Binding(
-                get: { text.text },
-                set: { viewModel.setTextContent(text.id, $0) }
-            ))
-            .font(.system(.body))
-            .focused($writes)
-            .submitLabel(.done)
-            .padding(.horizontal, 14)
-            .frame(minHeight: Metrics.buttonHeight)
-            .background(Palette.surface2, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
-            .padding(.horizontal, 16)
-            .padding(.bottom, 4)
-            .accessibilityIdentifier("edit.textField")
-            PanelTabs(tabs: EditorPanelTab.textStyle, selection: tab) { viewModel.panelTab = $0 }
-        }
+    /// The words: over the tabs, in reach over the keyboard and while the content scrolls.
+    private func field(_ text: TextOverlay) -> some View {
+        TextField(viewModel.textFieldPlaceholder, text: Binding(
+            get: { text.text },
+            set: { viewModel.setTextContent(text.id, $0) }
+        ))
+        .font(.system(.body))
+        .focused($writes)
+        .submitLabel(.done)
+        .padding(.horizontal, 14)
+        .frame(minHeight: Metrics.buttonHeight)
+        .background(Palette.surface2, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+        .accessibilityIdentifier("edit.textField")
     }
 
     /// What the look changes: this text or every text. A note says what never follows the scope.

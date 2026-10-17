@@ -18,24 +18,23 @@ extension QuickEditViewModel {
     var acceptsSpaceToPlay: Bool {
         guard sheet == nil else { return false }
         switch panel {
-        case .textStyle?, .captions?, .cover?: return false
+        case .textStyle?, .captions?: return false
         default: return true
         }
     }
 
     func panelTitle(_ panel: EditorPanel) -> String {
-        if panel == .textStyle, let text = selectedText { return text.role.label }
+        if panel == .textStyle, let text = selectedText { return text.graphic?.kind.label ?? text.role.label }
         return panel.title
     }
 
     func panelSubtitle(_ panel: EditorPanel) -> String {
         switch panel {
         case .speed, .zoom, .volume: clipSubtitle(panel)
-        case .voice: String(localized: "Whole take")
+        case .voice: voiceScopeLabel
         case .adjust, .filters, .background: lookSubtitle(for: panel)
         case .pauses: String(localized: "Marked in yellow on the timeline")
-        case .crop: String(localized: "Format for where you post")
-        case .cover: String(localized: "Shown before the video plays")
+        case .crop: String(localized: "Whole video · format for where you post")
         case .captions, .autoCaptions, .captionStyle: captionSubtitle(panel)
         case .textStyle: textStyleSubtitle
         case .voiceOver: String(localized: "Records from the playhead · the video plays muted")

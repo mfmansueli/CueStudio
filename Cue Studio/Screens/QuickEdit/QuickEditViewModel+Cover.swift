@@ -4,113 +4,80 @@
 //
 
 import Foundation
-import PhotosUI
-import SwiftUI
 
-/// Cover: a frame of the edit (the one under the playhead) or a photo from the library, with an
-/// optional title in the project's style, dragged up or down. Drawn on the device and saved to
-/// Photos with each export, ready to pick as the post's cover.
+/// Cover: made in Cover Studio, which opens over the editor (the toolbar's Cover, the cover block on the timeline, a
+/// notification's "Try it"). The studio works on its own copy with its own undo; Done puts the cover in the edit as one undo
+/// step here, Cancel leaves it as it was. The cover is drawn on the device for the timeline's cover block and saved to Photos
+/// with each export, ready to pick as the post's cover.
 extension QuickEditViewModel {
-    /// The cover shows over the preview: the Cover tool is open, one was chosen and no other frame
-    /// is being picked.
-    var showsCoverImage: Bool {
-        panel == .cover && edit.cover != nil && !isPickingCoverFrame
+    // MARK: - Cover Studio
+
+    /// Opens Cover Studio on the cover, or on a new one from the frame under the playhead.
+    func openCoverStudio() {
+        guard isReady else { return }
+        player.pause()
+        selection = nil
+        toolMenu = nil
+        panel = nil
+        coverStudio = CoverStudioViewModel(
+            cover: edit.cover, frame: edit.coverFrame(atEdited: player.currentTime), edit: edit, videoURL: videoURL,
+            handle: creatorHandle, suggestions: coverSuggestions, pictures: coverPictures, importer: mediaImporter, styles: styles
+        )
     }
 
-    /// Uses the frame under the playhead.
+    /// Done: the studio's cover goes in the edit (one undo step), and the photos it copied in are kept with the edit.
+    func finishCoverStudio(_ studio: CoverStudioViewModel) {
+        importedFiles.formUnion(studio.importedFiles)
+        let cover = studio.finishedCover
+        let changed = cover != edit.cover
+        change { $0.cover = cover }
+        coverStudio = nil
+        guard changed else { return }
+        toast.show(cover == nil ? String(localized: "Cover removed") : String(localized: "Cover saved · Goes to Photos with the video"))
+    }
+
+    /// Cancel: the edit keeps its cover; every photo copied in this time goes, unless the edit already reads it.
+    func cancelCoverStudio(_ studio: CoverStudioViewModel) {
+        EditMediaFiles.remove(studio.importedFiles.subtracting(edit.mediaFileNames))
+        coverStudio = nil
+    }
+
+    // MARK: - Quick changes
+
+    /// The frame under the playhead becomes the cover's picture (a new cover in the saved style when there's none).
     func useFrameAsCover() {
         guard isReady else { return }
-        let time = edit.timeline.sourceTime(forEdited: player.currentTime)
-        setCoverSource(.frame(time))
-        isPickingCoverFrame = false
+        let frame = edit.coverFrame(atEdited: player.currentTime)
+        let handle = creatorHandle
+        let style = styles.myCoverStyle
+        change { snapshot in
+            if snapshot.cover == nil {
+                var cover = VideoCover(source: .clipFrame(frame), style: snapshot.creatorStyle ?? .bold)
+                cover.composition = style?.composition(title: "", handle: handle, episode: 1) ?? CoverComposition.make(.educational, title: "")
+                snapshot.cover = cover
+            } else {
+                snapshot.cover?.source = .clipFrame(frame)
+            }
+        }
         player.pause()
         toast.show(String(localized: "Cover set to this frame"))
     }
 
-    /// Copies the picked photo in and uses it.
-    func useCoverPhoto(_ item: PhotosPickerItem) async {
-        guard isReady, !isImportingMedia else { return }
-        isImportingMedia = true
-        defer { isImportingMedia = false }
-        do {
-            let imported = try await mediaImporter.importMedia(item)
-            importedFiles.insert(imported.fileName)
-            guard imported.kind == .photo else {
-                EditMediaFiles.remove([imported.fileName])
-                toast.show(String(localized: "Pick a photo for the cover"))
-                return
-            }
-            setCoverSource(.photo(fileName: imported.fileName))
-            isPickingCoverFrame = false
-        } catch {
-            toast.show(error.localizedDescription)
-        }
-    }
-
-    /// The words on the cover; a cover is made from the playhead's frame when there's none yet.
-    /// Typing in a row is one undo step.
+    /// The words on the cover; a cover is made from the playhead's frame when there's none yet. Typing in a row is one undo
+    /// step.
     func setCoverTitle(_ title: String) {
-        if edit.cover == nil {
-            guard isReady else { return }
-            setCoverSource(.frame(edit.timeline.sourceTime(forEdited: player.currentTime)))
-        }
+        if edit.cover == nil { useFrameAsCover() }
         change(key: "coverTitle") { $0.cover?.title = title }
     }
 
-    // MARK: - Cover panel
-
-    /// The cover is a photo (else a frame of the video).
-    var coverIsPhoto: Bool {
-        if case .photo? = edit.cover?.source { return true }
-        return false
-    }
-
-    /// Where the cover's frame is in the edit (edited seconds): the playhead while there's no
-    /// cover.
-    var coverEditedTime: TimeInterval {
-        guard case .frame(let time)? = edit.cover?.source else { return player.currentTime }
-        return min(max(0, edit.timeline.editedTime(following: time)), edit.editedDuration)
-    }
-
-    /// Frames along the edit for Cover's strip: the recording and second each one comes from.
-    func coverStripSamples(count: Int) -> [(url: URL, time: TimeInterval)] {
-        let timeline = edit.timeline
-        let total = edit.editedDuration
-        guard count > 0, total > 0, !timeline.segments.isEmpty else { return [] }
-        let others = clipSourceURLs
-        return (0..<count).map { index in
-            let edited = (Double(index) + 0.5) / Double(count) * total
-            let segment = timeline.segments[timeline.segmentIndex(atEdited: edited)]
-            let url = segment.sourceID.flatMap { others[$0] } ?? videoURL
-            return (url, timeline.sourceTime(forEdited: edited))
-        }
-    }
-
-    /// The finger is on Cover's strip: the video shows the frame under it.
-    func scrubCover(toEdited time: TimeInterval) {
-        guard isReady else { return }
-        isPickingCoverFrame = true
-        player.pause()
-        player.seek(to: min(max(0, time), edit.editedDuration))
-    }
-
-    /// The finger left the strip: that frame is the cover (one undo step).
-    func endCoverScrub(atEdited time: TimeInterval) {
-        guard isReady else { return }
-        let edited = min(max(0, time), edit.editedDuration)
-        setCoverSource(.frame(edit.timeline.sourceTime(forEdited: edited)))
-        isPickingCoverFrame = false
-    }
-
-    /// "Frame from video": back to a frame (the playhead's) after a photo.
-    func useVideoFrameForCover() {
-        guard coverIsPhoto || edit.cover == nil else { return }
-        useFrameAsCover()
-    }
-
+    /// Where the title sits, as a share of the cover's height from the top.
     func setCoverTitlePosition(_ y: Double) {
         guard edit.cover != nil else { return }
-        change { $0.cover?.titleY = min(max(y, OverlayPoint.margin), 1 - OverlayPoint.margin) }
+        let clamped = min(max(y, OverlayPoint.margin), 1 - OverlayPoint.margin)
+        change { snapshot in
+            snapshot.cover?.titleY = clamped
+            snapshot.cover?.composition?.title.center.y = clamped
+        }
     }
 
     func removeCover() {
@@ -118,11 +85,33 @@ extension QuickEditViewModel {
         coverImage = nil
     }
 
-    /// Draws the cover for the preview, a moment after the last change.
+    /// The cover's frame is from a part removed from the edit: it stays the cover (from its recording).
+    var coverFrameLeftTheEdit: Bool { edit.coverFrameLeftTheEdit }
+
+    /// Titles Cue can offer from the take's own words: a text on the video, the script's title and its first sentence, short
+    /// enough for a cover.
+    var coverSuggestions: [String] {
+        let sentence = captionScript.flatMap { script in
+            script.text.split(whereSeparator: { ".!?\n".contains($0) }).first.map { $0.trimmingCharacters(in: .whitespaces) }
+        }
+        var seen = Set<String>()
+        return [edit.texts.first { $0.graphic == nil }?.text, take.scriptTitle, sentence]
+            .compactMap { $0?.trimmingCharacters(in: .whitespacesAndNewlines) }
+            .filter { !$0.isEmpty && $0.count <= 60 && seen.insert($0.lowercased()).inserted }
+            .prefix(3)
+            .map { $0 }
+    }
+
+    // MARK: - Drawing
+
+    /// Draws the cover for the timeline's cover block, a moment after it changed.
     func drawCover() {
+        let key = edit.coverDrawingKey
+        guard drawnCoverKey != key || coverImage == nil else { return }
         coverTask?.cancel()
         guard let cover = edit.cover else {
             coverImage = nil
+            drawnCoverKey = nil
             isDrawingCover = false
             return
         }
@@ -134,21 +123,8 @@ extension QuickEditViewModel {
             let image = await self.editing.coverImage(cover, forVideoAt: self.videoURL, edit: current)
             guard !Task.isCancelled else { return }
             self.coverImage = image
+            self.drawnCoverKey = key
             self.isDrawingCover = false
-        }
-    }
-
-    private func setCoverSource(_ source: CoverSource) {
-        let startingDesign = newCoverDesign
-        change { snapshot in
-            if var cover = snapshot.cover {
-                cover.source = source
-                snapshot.cover = cover
-            } else {
-                var cover = VideoCover(source: source, style: snapshot.creatorStyle ?? .bold)
-                cover.design = startingDesign
-                snapshot.cover = cover
-            }
         }
     }
 }

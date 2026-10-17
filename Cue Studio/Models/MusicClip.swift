@@ -36,6 +36,8 @@ nonisolated struct MusicClip: Codable, Hashable, Identifiable, Sendable {
     var isMuted = false
     /// Goes down while the voice or a voice-over speaks.
     var ducksUnderVoice = true
+    /// The sound effect it is (`SoundEffectSynth`); nil for the creator's own file. Effects can play over music and each other.
+    var effect: SoundEffect?
 
     init(fileName: String, title: String, fileDuration: TimeInterval, start: TimeInterval, length: TimeInterval) {
         self.fileName = fileName

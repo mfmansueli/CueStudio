@@ -15,6 +15,10 @@ enum EditorSheet: String, Identifiable {
     case media
     /// Done's question: "Is it ready to post?".
     case done
+    /// Edit by text: cut words out of the video.
+    case transcript
+    /// Reorder: the clips in play order, to drag.
+    case clipOrder
 
     var id: String { rawValue }
 }

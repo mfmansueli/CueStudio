@@ -51,15 +51,36 @@ extension QuickEditViewModel {
         }
     }
 
-    /// The same transition on every cut, in one undo step.
+    /// How long the selected cut's transition lasts.
+    var selectedTransitionDuration: TimeInterval? {
+        guard let index = selectedJoinIndex, let transition = selectedTransition, transition != .hardCut else { return nil }
+        return edit.timeline.segments[index].transitionDuration ?? transition.duration
+    }
+
+    /// The selected cut's transition `seconds` long (a drag of the slider is one undo step). When a clip next to it is too short,
+    /// it plays shorter.
+    func setTransitionDuration(_ seconds: TimeInterval) {
+        guard isReady, let index = selectedJoinIndex else { return }
+        let clamped = min(max(seconds, EditTransition.durationRange.lowerBound), EditTransition.durationRange.upperBound)
+        var timeline = edit.timeline
+        guard timeline.setTransitionDuration(clamped, atJoin: index) else { return }
+        commit(timeline, key: "transitionDuration.\(index)")
+    }
+
+    /// The same transition on every cut, as long as the picked cut's, in one undo step. Already everywhere: a toast says so.
     func setTransitionOnEveryCut(_ transition: EditTransition) {
         guard isReady else { return }
+        let duration = selectedJoinIndex.flatMap { edit.timeline.segments[$0].transitionDuration }
         var timeline = edit.timeline
         var changed = false
-        for index in timeline.segments.indices.dropFirst() where timeline.setTransition(transition, atJoin: index) {
-            changed = true
+        for index in timeline.segments.indices.dropFirst() {
+            if timeline.setTransition(transition, atJoin: index) { changed = true }
+            if transition != .hardCut, timeline.setTransitionDuration(duration, atJoin: index) { changed = true }
         }
-        guard changed else { return }
+        guard changed else {
+            toast.show(String(localized: "Every cut already has it"))
+            return
+        }
         commit(timeline)
         toast.show(transition == .hardCut
             ? String(localized: "Every cut is a hard cut")

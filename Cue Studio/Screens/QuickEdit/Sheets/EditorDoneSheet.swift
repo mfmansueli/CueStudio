@@ -17,6 +17,20 @@ struct EditorDoneSheet: View {
     let onAnswer: (EditorOutcome) -> Void
 
     var body: some View {
+        // With the largest text sizes the answers are taller than the screen: the sheet stops at its
+        // full height and they scroll, starting at the top ("EDIT SAVED" and the question under the grabber).
+        ScrollView {
+            content
+        }
+        .scrollBounceBehavior(.basedOnSize)
+        // Centered in the sheet while it fits (as the sheet is a little taller than the answers); from the top when it scrolls.
+        .defaultScrollAnchor(.center, for: .alignment)
+        .defaultScrollAnchor(.top, for: .initialOffset)
+        .scrollIndicators(.hidden)
+        .accessibilityIdentifier("edit.doneSheet")
+    }
+
+    private var content: some View {
         VStack(alignment: .leading, spacing: 14) {
             VStack(alignment: .leading, spacing: 5) {
                 Text("Edit saved · \(duration)")
@@ -41,7 +55,6 @@ struct EditorDoneSheet: View {
         .fixedSize(horizontal: false, vertical: true)
         .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { onMeasure($0) }
         .accessibilityElement(children: .contain)
-        .accessibilityIdentifier("edit.doneSheet")
     }
 
     private func option(
@@ -54,7 +67,7 @@ struct EditorDoneSheet: View {
                     Text(title).font(.body.weight(.semibold))
                     Text(detail)
                         .font(.footnote)
-                        .foregroundStyle(isPrimary ? Palette.accInk.opacity(0.7) : Palette.ink2)
+                        .foregroundStyle(isPrimary ? Palette.accInk2 : Palette.ink2)
                 }
                 Spacer(minLength: 8)
                 pill(result, isPrimary: isPrimary)

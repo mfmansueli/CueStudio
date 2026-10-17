@@ -12,15 +12,13 @@ import Foundation
 @MainActor
 @Observable
 final class TakeEditService: TakeEditing {
-    /// Processed sounds kept at once; each is a file the length of a take.
-    private static let processedAudioLimit = 4
+    /// Audio-only copies, Studio Voice's treatments and levels: shared with the export, so trims and cuts (and the export
+    /// after them) reuse them instead of treating the whole take again.
+    private let sounds: RecordingSoundCache
 
-    /// Audio-only copies of takes, made once per session for analysis and processing.
-    private var extractedAudio: [URL: URL] = [:]
-    /// The Audio tool's result per recording and setting, so trims and cuts reuse it instead of
-    /// processing the whole take again.
-    private var processedAudio: [AudioRecipe: URL] = [:]
-    private var processedOrder: [AudioRecipe] = []
+    init(sounds: RecordingSoundCache = .shared) {
+        self.sounds = sounds
+    }
     /// What was heard in a take, for captions and Clean Up, so it is transcribed once.
     private var transcripts: [TranscriptKey: TakeTranscript] = [:]
     /// Where someone speaks in each recording, for music that ducks.
@@ -108,9 +106,9 @@ final class TakeEditService: TakeEditing {
     }
 
     func previewItem(forVideoAt url: URL, edit: TakeEdit, window: TimeSpan?) async throws -> AVPlayerItem {
-        let processed = try await processedAudio(for: url, edit: edit)
+        let treated = try await RecordingSounds.prepare(for: edit, takeURL: url, cache: sounds)
         let composition = try await EditedComposition.build(
-            source: url, edit: edit, processedAudio: processed, speech: await voiceActivity(for: url, edit: edit),
+            source: url, edit: edit, sound: treated, speech: await voiceActivity(for: url, edit: edit),
             options: .init(burnsInCaptions: true, shortSide: 1080, window: window)
         )
         let item = AVPlayerItem(asset: composition.asset)
@@ -126,6 +124,10 @@ final class TakeEditService: TakeEditing {
         return image?.jpegData(compressionQuality: 0.92)
     }
 
+    func stillClip(ofVideoAt url: URL, at time: TimeInterval, length: TimeInterval) async throws -> String {
+        try await StillClipWriter.write(frameOf: url, at: time, length: length)
+    }
+
     func matchedOriginalVolume(forVideoAt url: URL, edit: TakeEdit) async -> Double? {
         guard let treated = try? await processedAudio(for: url, edit: edit),
               let untreated = try? await audioFile(for: url) else { return nil }
@@ -136,26 +138,12 @@ final class TakeEditService: TakeEditing {
         return min(SpeechLoudness.volume(matching: level, to: target), 4)
     }
 
-    /// The Voice tool's changes rendered to a file, or nil when the sound is untouched or the take
+    /// The Voice tool's changes to the take's sound rendered to a file, or nil when the sound is untouched or the take
     /// has none.
     func processedAudio(for url: URL, edit: TakeEdit) async throws -> URL? {
         let processing = edit.voiceProcessing
         guard processing.isNeeded else { return nil }
-        let recipe = AudioRecipe(url: url, processing: processing)
-        if let cached = processedAudio[recipe], FileManager.default.fileExists(atPath: cached.path(percentEncoded: false)) {
-            return cached
-        }
-        let audio: URL
-        do {
-            audio = try await audioFile(for: url)
-        } catch AudioTrackExtractor.ExtractError.noAudio {
-            return nil
-        }
-        let processed = try await Task.detached {
-            try AudioEnhancer.process(audio, processing: processing)
-        }.value
-        remember(processed, for: recipe)
-        return processed
+        return try await sounds.treated(url, processing: processing)
     }
 
     /// Where someone speaks in the take and the other recordings the edit plays; nothing when no
@@ -180,10 +168,9 @@ final class TakeEditService: TakeEditing {
 
     // MARK: - Files
 
+    /// The recording's sound on its own; throws `AudioTrackExtractor.ExtractError.noAudio` when it has none.
     private func audioFile(for url: URL) async throws -> URL {
-        if let cached = extractedAudio[url], FileManager.default.fileExists(atPath: cached.path(percentEncoded: false)) { return cached }
-        let audio = try await AudioTrackExtractor.extract(from: url)
-        extractedAudio[url] = audio
+        guard let audio = try await sounds.audio(of: url) else { throw AudioTrackExtractor.ExtractError.noAudio }
         return audio
     }
 
@@ -200,27 +187,10 @@ final class TakeEditService: TakeEditing {
         return heard
     }
 
-    private func remember(_ file: URL, for recipe: AudioRecipe) {
-        processedAudio[recipe] = file
-        processedOrder.removeAll { $0 == recipe }
-        processedOrder.append(recipe)
-        while processedOrder.count > Self.processedAudioLimit {
-            let oldest = processedOrder.removeFirst()
-            if let stale = processedAudio.removeValue(forKey: oldest) {
-                try? FileManager.default.removeItem(at: stale)
-            }
-        }
-    }
-
     /// The language the take is heard in (the Voice Following language, or the script's).
     private struct TranscriptKey: Hashable {
         let audio: URL
         let language: SpeechLanguageRequest
         let script: String
-    }
-
-    private struct AudioRecipe: Hashable {
-        let url: URL
-        let processing: VoiceProcessing
     }
 }

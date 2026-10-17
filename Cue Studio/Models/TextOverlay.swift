@@ -41,8 +41,13 @@ nonisolated struct TextOverlay: Codable, Hashable, Identifiable, Sendable {
     /// In an arranged edit, the piece it is pinned to (`span` is then of that piece's recording);
     /// nil pins it to the take's own seconds.
     var clipAnchor: ClipAnchor?
+    /// A ready-made entrance (or exit) over its place and keyframes; nil for none.
+    var animation: OverlayAnimation?
     /// Where it goes, how big and how opaque over its own time; none stands still at `center`.
     var keyframes: [OverlayKeyframe] = []
+    /// A graphic (arrow, circle, tag) instead of words: drawn like Cover Studio's, in `color`, as big as `size` says, a tag
+    /// with `text`. Nil for a text.
+    var graphic: TextGraphic?
     /// The preset it was last set in; nil for a look set another way (a legacy style, "My
     /// style").
     var preset: TypePreset?
@@ -91,7 +96,20 @@ nonisolated struct TextOverlay: Codable, Hashable, Identifiable, Sendable {
     }
 
     /// Nothing to draw.
-    var isEmpty: Bool { displayText.isEmpty }
+    var isEmpty: Bool {
+        guard let graphic else { return displayText.isEmpty }
+        return graphic.kind.hasText && displayText.isEmpty
+    }
+
+    /// The graphic as Cover Studio draws it.
+    var coverItem: CoverItem? {
+        graphic.map { graphic in
+            CoverItem(
+                kind: graphic.kind, center: .center, scale: size / TextGraphic.baseSize, rotation: graphic.rotation, color: color,
+                text: graphic.kind == .handle ? text : displayText
+            )
+        }
+    }
 
     /// The look it has now.
     var look: TextLook { TextLook(of: self) }
@@ -100,7 +118,7 @@ nonisolated struct TextOverlay: Codable, Hashable, Identifiable, Sendable {
 
     private enum CodingKeys: String, CodingKey {
         case id, text, role, font, weight, size, tracking, isUppercase, alignment, color, background, backgroundColor
-        case backgroundOpacity, hasShadow, hasOutline, glow, center, span, preset, customized, clipAnchor, keyframes
+        case backgroundOpacity, hasShadow, hasOutline, glow, center, span, preset, customized, clipAnchor, keyframes, animation, graphic
     }
 
     /// Texts saved before letter spacing, fill opacity and presets read with none of them.
@@ -128,6 +146,8 @@ nonisolated struct TextOverlay: Codable, Hashable, Identifiable, Sendable {
         customized = Set(((try? container.decodeIfPresent([String].self, forKey: .customized)) ?? []).compactMap(TextLookField.init(rawValue:)))
         clipAnchor = try? container.decodeIfPresent(ClipAnchor.self, forKey: .clipAnchor)
         keyframes = (try? container.decodeIfPresent([OverlayKeyframe].self, forKey: .keyframes)) ?? []
+        animation = try? container.decodeIfPresent(OverlayAnimation.self, forKey: .animation)
+        graphic = try? container.decodeIfPresent(TextGraphic.self, forKey: .graphic)
     }
 
     func encode(to encoder: Encoder) throws {
@@ -156,5 +176,7 @@ nonisolated struct TextOverlay: Codable, Hashable, Identifiable, Sendable {
         try container.encode(customized.map(\.rawValue).sorted(), forKey: .customized)
         try container.encodeIfPresent(clipAnchor, forKey: .clipAnchor)
         if !keyframes.isEmpty { try container.encode(keyframes, forKey: .keyframes) }
+        try container.encodeIfPresent(animation, forKey: .animation)
+        try container.encodeIfPresent(graphic, forKey: .graphic)
     }
 }

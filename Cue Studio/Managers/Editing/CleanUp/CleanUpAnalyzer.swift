@@ -43,7 +43,8 @@ nonisolated enum CleanUpAnalyzer {
     /// one already sits.
     static func merged(_ found: [CleanUpSuggestion], into existing: [CleanUpSuggestion]) -> [CleanUpSuggestion] {
         let decided = existing.filter { $0.status != .pending }
-        let fresh = found.filter { new in !decided.contains { $0.span.overlaps(new.span) } }
+        // Only decisions about the same recording count: the same second of another one is another moment.
+        let fresh = found.filter { new in !decided.contains { $0.sourceID == new.sourceID && $0.span.overlaps(new.span) } }
         return (decided + fresh).sorted { $0.span.start < $1.span.start }
     }
 }

@@ -11,7 +11,7 @@ enum EditorPanel: String, CaseIterable, Identifiable {
     // The selected clip
     case speed, zoom, volume
     // The whole take
-    case voice, pauses, adjust, filters, crop, background, cover
+    case voice, pauses, adjust, filters, crop, background
     // Captions
     case captions, autoCaptions, captionStyle
     // Texts
@@ -29,8 +29,8 @@ enum EditorPanel: String, CaseIterable, Identifiable {
 
     var size: EditorPanelSize {
         switch self {
-        case .speed, .zoom, .volume, .filters, .crop, .voiceOver, .autoCaptions, .media, .transition, .smart: .mini
-        case .voice, .pauses, .captions, .adjust, .background, .cover: .medium
+        case .speed, .zoom, .volume, .filters, .crop, .voiceOver, .autoCaptions: .mini
+        case .voice, .pauses, .captions, .adjust, .background, .media, .smart, .transition: .medium
         case .textStyle, .captionStyle: .full
         }
     }
@@ -90,9 +90,8 @@ enum EditorPanel: String, CaseIterable, Identifiable {
         case .pauses: String(localized: "Pauses")
         case .adjust: String(localized: "Adjust")
         case .filters: String(localized: "Filters")
-        case .crop: String(localized: "Crop")
+        case .crop: String(localized: "Format")
         case .background: String(localized: "Background")
-        case .cover: String(localized: "Cover")
         case .captions: String(localized: "Captions")
         case .autoCaptions: String(localized: "Auto captions")
         case .captionStyle: String(localized: "Caption style")

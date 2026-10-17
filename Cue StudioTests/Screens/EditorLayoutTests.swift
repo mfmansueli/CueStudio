@@ -175,6 +175,26 @@ struct EditorLayoutTests {
         #expect(layout.preview >= 194)
     }
 
+    /// With large text a mini or medium panel grows (by half at most) and the video gives the room, down to its minimum; the
+    /// ruler and the video track stay. A styling panel keeps its size (it has its own expand).
+    @Test func largeTextGivesMiniAndMediumPanelsMoreRoom() {
+        for screen in Screen.allCases {
+            let usable = screen.rawValue
+            for size in [EditorPanelSize.mini, .medium] {
+                let standard = EditorLayout(usableHeight: usable, panel: size)
+                let large = EditorLayout(usableHeight: usable, panel: size, largeText: true)
+                #expect(large.panelPresentation == .inline, "\(screen) \(size)")
+                #expect(large.panel > standard.panel + 40, "\(screen) \(size)")
+                #expect(large.panel <= size.height(for: usable) * EditorLayout.largeTextPanelGrowth + 0.01, "\(screen) \(size)")
+                #expect(large.preview >= EditorLayout.previewMinimum(for: usable) - 0.01, "\(screen) \(size)")
+                #expect(large.showsTimeline, "\(screen) \(size)")
+                #expect(abs(large.preview + large.playerBar + large.timeline + large.panel - usable) < 0.5, "\(screen) \(size)")
+            }
+        }
+        let usable = Screen.iPhone16Pro.rawValue
+        #expect(EditorLayout(usableHeight: usable, panel: .full, largeText: true).panel == EditorLayout(usableHeight: usable, panel: .full).panel)
+    }
+
     @Test func aPanelAboutATrackKeepsThatTrackInView() {
         for screen in Screen.allCases {
             let layout = EditorLayout(usableHeight: screen.rawValue, panel: .medium, panelFocusesLane: true)

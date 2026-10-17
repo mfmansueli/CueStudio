@@ -328,9 +328,17 @@ nonisolated struct EditTimeline: Codable, Hashable, Sendable {
         return spans
     }
 
-    /// Whether nothing of `span` of the take plays any more.
-    func isRemoved(_ span: TimeSpan) -> Bool {
-        !segments.contains { $0.sourceID == nil && $0.span.overlaps(span) }
+    /// Whether nothing of `span` of the recording `source` (nil: the take) plays any more.
+    func isRemoved(_ span: TimeSpan, in source: UUID? = nil) -> Bool {
+        !segments.contains { $0.sourceID == source && $0.span.overlaps(span) }
+    }
+
+    /// From the earliest to the latest second of the recording `source` (nil: the take) that the edit can play: between the
+    /// handles for the take of a plain edit, and across all its clips in a montage. Nil when no clip plays it.
+    func playedExtent(of source: UUID?) -> TimeSpan? {
+        let pieces = segments.filter { $0.sourceID == source }
+        guard let start = pieces.map(\.sourceStart).min(), let end = pieces.map(\.sourceEnd).max() else { return nil }
+        return TimeSpan(start: start, end: end)
     }
 
     // MARK: - Editing
@@ -428,6 +436,15 @@ nonisolated struct EditTimeline: Codable, Hashable, Sendable {
         return true
     }
 
+    /// Sets how long the transition into the piece at `index` lasts (nil: its own length). False, and no change, for the first
+    /// piece or when nothing changes.
+    @discardableResult
+    mutating func setTransitionDuration(_ duration: TimeInterval?, atJoin index: Int) -> Bool {
+        guard index > 0, index < segments.count, segments[index].transitionDuration != duration else { return false }
+        segments[index].transitionDuration = duration
+        return true
+    }
+
     /// Cuts the piece playing at `time` (edited seconds) in two. False when either side would be
     /// shorter than `minimumDuration`: at an edge or right next to another cut.
     @discardableResult
@@ -443,6 +460,7 @@ nonisolated struct EditTimeline: Codable, Hashable, Sendable {
         right.id = UUID()
         right.sourceStart = cut
         right.transitionIn = .hardCut
+        right.transitionDuration = nil
         segments.insert(right, at: index + 1)
         return true
     }
@@ -481,15 +499,15 @@ nonisolated struct EditTimeline: Codable, Hashable, Sendable {
         return true
     }
 
-    /// Takes `spans` of the recording out of the pieces (Clean Up); slivers shorter than
-    /// `minimumDuration` go with them. False, and no change, when nothing would be left or
-    /// nothing changes.
+    /// Takes `spans` of the recording `source` (nil: the take) out of the pieces that play it (Clean Up), wherever they play
+    /// (or only in the pieces `only` names: Edit by text cuts the words of the clip they were read in, not of its copies);
+    /// slivers shorter than `minimumDuration` go with them. False, and no change, when nothing would be left or nothing changes.
     @discardableResult
-    mutating func remove(_ spans: [TimeSpan]) -> Bool {
+    mutating func remove(_ spans: [TimeSpan], in source: UUID? = nil, only: Set<UUID>? = nil) -> Bool {
         var result: [EditSegment] = []
         for segment in segments {
-            // Spans are of the take itself: pieces of other recordings stay whole.
-            guard segment.sourceID == nil else {
+            // Spans are of that recording: pieces of the others stay whole.
+            guard segment.sourceID == source, only?.contains(segment.id) ?? true else {
                 result.append(segment)
                 continue
             }
@@ -614,13 +632,16 @@ nonisolated struct EditTimeline: Codable, Hashable, Sendable {
     /// Adds `span` of another recording (`source`, `duration` long) to the montage, at `index`
     /// (the end by default). The edit becomes arranged. Returns the new piece's identity.
     @discardableResult
-    mutating func insertClip(source: UUID, duration: TimeInterval, span: TimeSpan? = nil, at index: Int? = nil) -> UUID? {
+    mutating func insertClip(
+        source: UUID, duration: TimeInterval, span: TimeSpan? = nil, at index: Int? = nil, look: ClipLook? = nil
+    ) -> UUID? {
         guard duration >= Self.minimumDuration else { return nil }
         otherSources[source] = duration
         let stretch = span ?? TimeSpan(start: 0, end: duration)
-        let piece = EditSegment(
+        var piece = EditSegment(
             span: TimeSpan(start: max(0, stretch.start), end: min(duration, stretch.end)), sourceID: source
         )
+        piece.look = look
         guard piece.sourceLength >= Self.minimumDuration else { return nil }
         isArranged = true
         segments.insert(piece, at: min(max(0, index ?? segments.count), segments.count))

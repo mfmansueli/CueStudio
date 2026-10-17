@@ -4,9 +4,11 @@
 //
 
 import AVFoundation
+import ImageIO
 import UIKit
 
-/// Poster frames and filmstrips for takes, cached in memory.
+/// Poster frames and filmstrips for takes, cached in memory, and the picture of a photo or video laid over a take (what the
+/// editor shows under the finger while one is dragged).
 @MainActor
 @Observable
 final class VideoThumbnailService {
@@ -43,6 +45,20 @@ final class VideoThumbnailService {
         }
         if frames.contains(where: { $0 != nil }) { remember(frames, for: key) }
         return frames
+    }
+
+    /// A photo, upright, or the frame of a video at `seconds`, at most `maxPixelSize` on its long side.
+    func picture(of url: URL, isVideo: Bool, at seconds: TimeInterval, maxPixelSize: CGFloat = 720) async -> UIImage? {
+        if isVideo { return await frame(of: url, at: seconds, maxPixelSize: maxPixelSize) }
+        return await Task.detached {
+            guard let source = CGImageSourceCreateWithURL(url as CFURL, nil) else { return nil }
+            let options: [CFString: Any] = [
+                kCGImageSourceCreateThumbnailFromImageAlways: true,
+                kCGImageSourceCreateThumbnailWithTransform: true,
+                kCGImageSourceThumbnailMaxPixelSize: maxPixelSize,
+            ]
+            return CGImageSourceCreateThumbnailAtIndex(source, 0, options as CFDictionary).map { UIImage(cgImage: $0) }
+        }.value
     }
 
     private func remember(_ frames: [UIImage?], for key: FramesKey) {

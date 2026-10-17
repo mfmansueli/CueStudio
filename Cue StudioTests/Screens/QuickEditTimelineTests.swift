@@ -96,7 +96,8 @@ struct QuickEditTimelineTests {
         viewModel.tapTimeline(nil)
         #expect(viewModel.selection == nil)
         viewModel.tapTimeline(.cover)
-        #expect(viewModel.panel == .cover)
+        #expect(viewModel.coverStudio != nil)
+        viewModel.coverStudio = nil
         viewModel.tapTimeline(.lane(.text))
         #expect(viewModel.toolMenu == .text)
         #expect(viewModel.panel == nil)
@@ -225,6 +226,55 @@ struct QuickEditTimelineTests {
         let now = try #require(viewModel.editedSpan(ofText: id))
         #expect(abs(now.end - (span.end + 1)) < 0.001)
         #expect(result.label.hasSuffix("s"))
+    }
+
+    /// Holding a picked text's body moves it in time, its length kept; it sticks to a cut by its start or its end, and the drag
+    /// is one undo step.
+    @Test func draggingATextsBodyMovesItKeepingItsLengthAndSnaps() async throws {
+        let scenario = await makeScenario()
+        let viewModel = scenario.viewModel
+        scenario.player.seek(to: 1)
+        viewModel.addStyledText(.title)
+        let id = try #require(viewModel.selectedTextID)
+        let span = try #require(viewModel.editedSpan(ofText: id))
+        let steps = viewModel.history.past.count
+        // Within the snapping distance of a cut (6 pt at 44 pt a second: about 0.14 s).
+        let reach = TimeInterval(TimelineSnapping.distance / TimelineGeometry.basePointsPerSecond)
+        viewModel.beginTimelineHandle(.move(.text, id), snapTimes: [span.start, span.end, 10, 15])
+        viewModel.moveTimelineHandle(by: 3)
+        var now = try #require(viewModel.editedSpan(ofText: id))
+        #expect(abs(now.start - (span.start + 3)) < 0.001)
+        #expect(abs(now.duration - span.duration) < 0.001)
+        // Its start comes near 10 s: it sticks there.
+        let result = viewModel.moveTimelineHandle(by: 10 - span.start - reach / 2)
+        now = try #require(viewModel.editedSpan(ofText: id))
+        #expect(abs(now.start - 10) < 0.001)
+        #expect(result.label == DurationText.editor(10))
+        // Its end comes near 15 s: it ends there.
+        viewModel.moveTimelineHandle(by: 15 - span.end + reach / 2)
+        now = try #require(viewModel.editedSpan(ofText: id))
+        #expect(abs(now.end - 15) < 0.001)
+        #expect(abs(now.duration - span.duration) < 0.001)
+        viewModel.endTimelineHandle()
+        #expect(viewModel.history.past.count == steps + 1)
+        viewModel.undo()
+        let back = try #require(viewModel.editedSpan(ofText: id))
+        #expect(abs(back.start - span.start) < 0.001)
+    }
+
+    @Test func aBodyDragPastTheEndStopsAtTheEnd() async throws {
+        let scenario = await makeScenario()
+        let viewModel = scenario.viewModel
+        scenario.player.seek(to: 1)
+        viewModel.addStyledText(.title)
+        let id = try #require(viewModel.selectedTextID)
+        let span = try #require(viewModel.editedSpan(ofText: id))
+        viewModel.beginTimelineHandle(.move(.text, id), snapTimes: [])
+        viewModel.moveTimelineHandle(by: 100)
+        viewModel.endTimelineHandle()
+        let now = try #require(viewModel.editedSpan(ofText: id))
+        #expect(abs(now.end - viewModel.edit.editedDuration) < 0.001)
+        #expect(abs(now.duration - span.duration) < 0.001)
     }
 
     /// Task 3: the end of a line moves +0.2 s, never into the next line.

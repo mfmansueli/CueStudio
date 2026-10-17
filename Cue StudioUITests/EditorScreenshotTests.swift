@@ -6,7 +6,8 @@
 import XCTest
 
 /// Captures every state of the editor on the design's demo take, for the phase reports. Opt-in:
-/// `TEST_RUNNER_CUE_SCREENSHOT_DIR=<folder> xcodebuild … -only-testing:"Cue StudioUITests/EditorScreenshotTests" test`.
+/// `TEST_RUNNER_CUE_SCREENSHOT_DIR=<folder> scripts/test.sh only "Cue StudioUITests/EditorScreenshotTests"` (another simulator:
+/// `CUE_SIMULATOR`; another text size: `TEST_RUNNER_CUE_SCREENSHOT_CONTENT_SIZE`).
 @MainActor
 final class EditorScreenshotTests: XCTestCase {
     func testCaptureEditorStates() throws {
@@ -15,8 +16,10 @@ final class EditorScreenshotTests: XCTestCase {
         }
         let directory = URL(fileURLWithPath: folder, isDirectory: true)
         try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
-        let device = UIDevice.current.name.replacingOccurrences(of: " ", with: "-")
-        let app = EditorApp.open(demo: true)
+        // `TEST_RUNNER_CUE_SCREENSHOT_CONTENT_SIZE=UICTContentSizeCategoryAccessibilityL` (for one) captures in that text size.
+        let size = ProcessInfo.processInfo.environment["CUE_SCREENSHOT_CONTENT_SIZE"]
+        let device = UIDevice.current.name.replacingOccurrences(of: " ", with: "-") + (size.map { "-\($0.suffix(16))" } ?? "")
+        let app = EditorApp.open(demo: true, arguments: size.map { ["-UIPreferredContentSizeCategoryName", $0] } ?? [])
         sleep(2)
         func capture(_ name: String) throws {
             sleep(1)
@@ -90,17 +93,25 @@ final class EditorScreenshotTests: XCTestCase {
         try capture("16-voice-over")
         apply()
         back()
-        for (index, tool) in ["adjust", "filters", "background", "crop"].enumerated() {
+        for (index, tool) in ["adjust", "filters", "background"].enumerated() {
             EditorApp.tapTool(app, tool)
             try capture("\(17 + index)-\(tool)")
             apply()
         }
         back()
-        for tool in ["smart", "cover"] {
-            EditorApp.tapTool(app, tool)
-            try capture("23-\(tool)")
-            apply()
-        }
+        // Format (the whole video's crop) is on the main bar.
+        EditorApp.tapTool(app, "format")
+        try capture("20-format")
+        apply()
+        EditorApp.tapTool(app, "smart")
+        try capture("23-smart")
+        app.buttons["edit.smart.section.templates"].tap()
+        try capture("23-smart-templates")
+        apply()
+        EditorApp.tapTool(app, "cover")
+        XCTAssertTrue(app.buttons["cover.done"].waitForExistence(timeout: 5))
+        try capture("23-cover")
+        app.buttons["cover.done"].tap()
         app.buttons["edit.doneButton"].tap()
         XCTAssertTrue(app.buttons["edit.done.share"].waitForExistence(timeout: 5))
         try capture("21-done-question")

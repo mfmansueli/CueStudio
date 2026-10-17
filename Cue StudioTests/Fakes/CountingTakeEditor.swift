@@ -53,4 +53,8 @@ final class CountingTakeEditor: TakeEditing {
     func coverImage(_ cover: VideoCover, forVideoAt url: URL, edit: TakeEdit) async -> Data? {
         await editing.coverImage(cover, forVideoAt: url, edit: edit)
     }
+
+    func stillClip(ofVideoAt url: URL, at time: TimeInterval, length: TimeInterval) async throws -> String {
+        try await editing.stillClip(ofVideoAt: url, at: time, length: length)
+    }
 }

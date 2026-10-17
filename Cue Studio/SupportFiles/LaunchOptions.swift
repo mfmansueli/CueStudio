@@ -13,7 +13,7 @@ import Foundation
 /// - `-uiTestPro`: starts on Cue Pro (read by `StoreManager`).
 /// - `-uiTestStubAI` / `-uiTestNoAI`: instant, predictable AI, or none at all.
 /// - `-uiTestDemoEdit`: "3 morning habits" Take 3 opens in the editor as the v10 design's demo
-///   (`SampleEdit`).
+///   (`SampleEdit`); with `-uiTestDemoTranscript` its words were heard too, for Edit by text.
 /// - `-uiTestSampleVideo`: with the sample takes, writes small real videos behind the "3 morning
 ///   habits" takes, so Quick edit can play, scrub and trim them.
 /// - `-uiTestDemoCamera`: the recorder's camera records with no hardware (a small real video per take), for the Simulator.
@@ -192,7 +192,7 @@ struct LaunchOptions {
             }) {
                 takes[index].duration = SampleEdit.duration
                 takes[index].fileName = "sample-demo-edit.mov"
-                takes[index].edit = SampleEdit.make(aspect: takes[index].aspect)
+                takes[index].edit = SampleEdit.make(aspect: takes[index].aspect, heard: arguments.contains("-uiTestDemoTranscript"))
             }
             let repository = InMemoryTakeRepository(takes: takes)
             options.takeRepository = repository

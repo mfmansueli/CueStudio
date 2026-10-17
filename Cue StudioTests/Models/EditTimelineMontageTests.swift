@@ -124,6 +124,34 @@ struct EditTimelineMontageTests {
         #expect(timeline.segments.last?.span == TimeSpan(start: 0, end: 10))
     }
 
+    @Test func aRemovalLimitedToSomePiecesLeavesTheCopiesWhole() throws {
+        var timeline = EditTimeline(sourceDuration: 30)
+        let original = timeline.segments[0].id
+        let duplicated = timeline.duplicateSegment(id: original)
+        let copy = try #require(duplicated)
+        // Edit by text: the words were read in the copy, so only the copy loses them.
+        let removed = timeline.remove([TimeSpan(start: 5, end: 6)], only: [copy])
+        #expect(removed)
+        #expect(timeline.editedDuration == 30 + 29)
+        #expect(timeline.segment(id: original)?.span == TimeSpan(start: 0, end: 30))
+        #expect(timeline.keptSpans == [TimeSpan(start: 0, end: 30), TimeSpan(start: 0, end: 5), TimeSpan(start: 6, end: 30)])
+    }
+
+    @Test func aRemovalLimitedToPiecesOfAnotherRecordingChangesNothing() throws {
+        var timeline = EditTimeline(sourceDuration: 30)
+        let added = timeline.insertClip(source: other, duration: 10)
+        let inserted = try #require(added)
+        let before = timeline
+        // The take's seconds, but only in the other recording's clip: nothing of the take is touched.
+        let removedThere = timeline.remove([TimeSpan(start: 5, end: 6)], only: [inserted])
+        #expect(!removedThere)
+        #expect(timeline == before)
+        // Without `only`, every piece of the take loses them, and the other recording stays whole.
+        let removedEverywhere = timeline.remove([TimeSpan(start: 5, end: 6)])
+        #expect(removedEverywhere)
+        #expect(timeline.editedDuration == 29 + 10)
+    }
+
     // MARK: - Mapping
 
     @Test func theTakesSecondsMapToTheFirstSectionThatPlaysThem() throws {

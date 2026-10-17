@@ -36,6 +36,13 @@ struct CaptionsPanel: View {
                             .accessibilityIdentifier("edit.captionsLanguageNote")
                     }
                     CaptionStatusRow(viewModel: viewModel)
+                    // Edit by text from where the words are: cut the video by its words.
+                    if picker == nil, !viewModel.edit.captions.isEmpty {
+                        PanelButton(
+                            label: String(localized: "Edit by text · cut words from the video"), systemImage: "text.badge.minus",
+                            identifier: "edit.captionsEditByText"
+                        ) { viewModel.perform(.editByText) }
+                    }
                     switch picker {
                     case .language: languageList
                     case .translation: translationList
@@ -61,52 +68,93 @@ struct CaptionsPanel: View {
 
     // MARK: - Controls
 
+    /// On one row when it fits; otherwise (a small screen, large text) the switch and Style on
+    /// top and the language and the translation under them, so every name reads whole.
     private var controls: some View {
-        HStack(spacing: 8) {
-            Button {
-                viewModel.toggleCaptions()
-            } label: {
-                PanelSwitch(isOn: viewModel.edit.showsCaptions && !viewModel.edit.captions.isEmpty)
-                    .frame(minHeight: Metrics.hitTarget)
-                    .contentShape(Rectangle())
+        ViewThatFits(in: .horizontal) {
+            HStack(spacing: 8) {
+                captionsSwitch
+                languageChip
+                translationChip
+                Spacer(minLength: 0)
+                styleButton
             }
-            .buttonStyle(.plain)
-            .accessibilityLabel(Text("Captions"))
-            .accessibilityValue(viewModel.edit.showsCaptions ? Text("On") : Text("Off"))
-            .accessibilityAddTraits(.isToggle)
-            .accessibilityIdentifier("edit.captionsToggle")
-            chip(viewModel.captionLanguageLabel, systemImage: "globe", isOn: picker == .language, identifier: "edit.captionsLanguage") {
-                picker = picker == .language ? nil : .language
-            }
-            .accessibilityLabel(Text("Spoken language"))
-            .accessibilityValue(Text(viewModel.captionLanguageLabel))
-            chip(
-                viewModel.captionTranslationLabel, systemImage: "translate", isOn: picker == .translation,
-                tinted: viewModel.edit.captionDisplay != .original, identifier: "edit.captionsTranslateButton"
-            ) {
-                picker = picker == .translation ? nil : .translation
-            }
-            .disabled(viewModel.edit.captions.isEmpty)
-            Spacer(minLength: 0)
-            Button {
-                viewModel.panel = .captionStyle
-            } label: {
-                HStack(spacing: 5) {
-                    Image(systemName: "textformat").font(.system(size: 12, weight: .bold))
-                    Text("Style").font(.system(.footnote, weight: .bold))
+            VStack(alignment: .leading, spacing: 0) {
+                HStack(spacing: 8) {
+                    captionsSwitch
+                    Spacer(minLength: 0)
+                    styleButton
                 }
-                .foregroundStyle(Color.black)
-                .padding(.horizontal, 12)
-                .frame(height: 32)
-                .background(Color.white, in: Capsule())
-                .frame(minHeight: Metrics.hitTarget)
-                .contentShape(Rectangle())
+                HStack(spacing: 8) {
+                    languageChip
+                    translationChip
+                }
             }
-            .buttonStyle(.plain)
-            .accessibilityIdentifier("edit.captionsStyleButton")
+            VStack(alignment: .leading, spacing: 0) {
+                HStack(spacing: 8) {
+                    captionsSwitch
+                    Spacer(minLength: 0)
+                    styleButton
+                }
+                languageChip
+                translationChip
+            }
         }
         .padding(.horizontal, 16)
         .padding(.bottom, 2)
+    }
+
+    private var captionsSwitch: some View {
+        Button {
+            viewModel.toggleCaptions()
+        } label: {
+            PanelSwitch(isOn: viewModel.edit.showsCaptions && !viewModel.edit.captions.isEmpty)
+                .frame(minHeight: Metrics.hitTarget)
+                .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel(Text("Captions"))
+        .accessibilityValue(viewModel.edit.showsCaptions ? Text("On") : Text("Off"))
+        .accessibilityAddTraits(.isToggle)
+        .accessibilityIdentifier("edit.captionsToggle")
+    }
+
+    private var languageChip: some View {
+        chip(viewModel.captionLanguageLabel, systemImage: "globe", isOn: picker == .language, identifier: "edit.captionsLanguage") {
+            picker = picker == .language ? nil : .language
+        }
+        .accessibilityLabel(Text("Spoken language"))
+        .accessibilityValue(Text(viewModel.captionLanguageLabel))
+    }
+
+    private var translationChip: some View {
+        chip(
+            viewModel.captionTranslationLabel, systemImage: "translate", isOn: picker == .translation,
+            tinted: viewModel.edit.captionDisplay != .original, identifier: "edit.captionsTranslateButton"
+        ) {
+            picker = picker == .translation ? nil : .translation
+        }
+        .disabled(viewModel.edit.captions.isEmpty)
+    }
+
+    private var styleButton: some View {
+        Button {
+            viewModel.panel = .captionStyle
+        } label: {
+            HStack(spacing: 5) {
+                Image(systemName: "textformat").font(.system(size: 12, weight: .bold))
+                Text("Style").font(.system(.footnote, weight: .bold)).lineLimit(1)
+            }
+            .foregroundStyle(Palette.chipOnInk)
+            .padding(.horizontal, 12)
+            .padding(.vertical, 6)
+            .frame(minHeight: 32)
+            .background(Palette.chipOn, in: Capsule())
+            .frame(minHeight: Metrics.hitTarget)
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .accessibilityIdentifier("edit.captionsStyleButton")
     }
 
     private func chip(
@@ -119,7 +167,8 @@ struct CaptionsPanel: View {
             }
             .foregroundStyle(tinted ? Palette.accText : Palette.ink)
             .padding(.horizontal, 11)
-            .frame(height: 32)
+            .padding(.vertical, 6)
+            .frame(minHeight: 32)
             .background(tinted ? Palette.accSoft : (isOn ? Palette.segmentOn : Palette.fill), in: Capsule())
             .frame(minHeight: Metrics.hitTarget)
             .contentShape(Rectangle())
@@ -187,7 +236,7 @@ struct CaptionsPanel: View {
             Button(action: viewModel.addCaptionAtPlayhead) {
                 Label("Add a line at the playhead", systemImage: "plus")
                     .font(.system(.subheadline, weight: .semibold))
-                    .foregroundStyle(Palette.ink.opacity(0.8))
+                    .foregroundStyle(Palette.ink2)
                     .frame(maxWidth: .infinity, minHeight: Metrics.hitTarget)
                     .overlay(Capsule().strokeBorder(Palette.Editor.laneGhostBorder, style: StrokeStyle(lineWidth: 1, dash: [4, 3])))
                     .contentShape(Capsule())

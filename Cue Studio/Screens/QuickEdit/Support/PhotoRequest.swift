@@ -12,8 +12,6 @@ nonisolated struct PhotoRequest: Equatable, Sendable {
     enum Purpose: Equatable, Sendable {
         /// The photo behind the creator (Background › Image).
         case background
-        /// The cover's photo.
-        case cover
         /// Another file for a photo or video already on the media track (`kind` is what it is now).
         case replaceMedia(UUID, kind: MediaKind)
     }

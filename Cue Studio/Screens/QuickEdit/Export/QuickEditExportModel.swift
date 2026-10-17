@@ -8,7 +8,8 @@ import UIKit
 
 /// Export from the editor: the edit as it is now, at 720p, 1080p or 4K and 30 or 60 fps (never
 /// more than the recording has), with its captions and texts burned in, saved to Photos with its
-/// cover. The free plan's exports count here like everywhere (5, then the paywall, no watermark): once, when the video is
+/// cover (whose outcome is kept apart: `cover`).
+/// The free plan's exports count here like everywhere (5, then the paywall, no watermark): once, when the video is
 /// saved to Photos (`ExportLedgerService`), so sharing the finished file afterwards never counts again.
 /// Progress is the export's own; leaving Cue while it runs asks the system for time to finish.
 @MainActor
@@ -28,6 +29,10 @@ final class QuickEditExportModel {
     var paywall: PaywallContext?
     /// The finished video, for the share sheet.
     var activity: ActivityShare?
+    /// The cover saved with the video, apart from it: a cover that fails never takes the video back.
+    private(set) var cover: CoverExportState = .none
+    /// The cover image, for the share sheet.
+    var coverActivity: URL?
 
     private let take: Take
     private let edit: () -> TakeEdit
@@ -39,7 +44,11 @@ final class QuickEditExportModel {
     private let photos: PhotoSaving
     private let editing: TakeEditing
     private let ledger: ExportLedgerService
+    /// Bytes free on the iPhone (`StorageSpace.available`); a test gives its own.
+    private let freeSpace: () -> Int64?
     private var pendsAfterPurchase = false
+    /// The cover drawn for this export, reused by "Try again" and removed when the export closes.
+    private var coverFile: URL?
     private var operationID: UUID?
     private var handledActivities: Set<UUID> = []
     /// The export was saved to Photos: a notification tells a creator who left Cue meanwhile.
@@ -48,9 +57,10 @@ final class QuickEditExportModel {
     init(
         take: Take, videoURL: URL, edit: @escaping () -> TakeEdit, takes: TakeLibraryService, quota: UsageQuotaService,
         tier: @escaping () -> MembershipTier, exporter: VideoExporting, photos: PhotoSaving, editing: TakeEditing,
-        ledger: ExportLedgerService
+        ledger: ExportLedgerService, freeSpace: @escaping () -> Int64? = { StorageSpace.available() }
     ) {
         self.take = take
+        self.freeSpace = freeSpace
         self.videoURL = videoURL
         self.edit = edit
         self.takes = takes
@@ -101,13 +111,16 @@ final class QuickEditExportModel {
 
     /// "≈ 48 MB": about 1.1 MB a second at 720p, 2.2 at 1080p and 6.5 at 4K, half again at 60 fps.
     var estimatedSize: String {
+        String(localized: "≈ \(Int(estimatedMegabytes)) MB")
+    }
+
+    private var estimatedMegabytes: Double {
         let perSecond = switch resolution {
         case .hd720: 1.1
         case .hd1080: 2.2
         case .uhd4K: 6.5
         }
-        let megabytes = max(1, (edit().editedDuration * perSecond * (frameRate >= 50 ? 1.5 : 1)).rounded())
-        return String(localized: "≈ \(Int(megabytes)) MB")
+        return max(1, (edit().editedDuration * perSecond * (frameRate >= 50 ? 1.5 : 1)).rounded())
     }
 
     /// "4 of 5 free exports left"; nil on Pro.
@@ -159,6 +172,11 @@ final class QuickEditExportModel {
                     paywall = .export
                     return
                 }
+                // A full iPhone is told now, with how much to free, never after minutes of work.
+                if let missing = StorageSpace.shortfall(forExportOf: estimatedMegabytes, available: freeSpace()) {
+                    phase = .failed(String(localized: "Not enough space on this iPhone. Free about \(missing) MB and try again."))
+                    return
+                }
                 let url = try await exporter.export(videoAt: videoURL, options: options) { [weak self] fraction in
                     guard let self, self.isExporting else { return }
                     self.phase = .exporting(min(max(fraction, 0), 1))
@@ -170,9 +188,9 @@ final class QuickEditExportModel {
             let assetID = try await photos.saveVideo(at: file)
             ledger.recordDelivery(.photoLibrary(assetID: assetID), for: operation.id, tier: currentTier)
             takes.markExported(take.id)
-            await saveCover(of: current)
             phase = .done(file)
             onFinished(take.id)
+            await saveCover(of: current)
         } catch {
             phase = .failed(UIApplication.shared.applicationState == .active
                 ? error.localizedDescription
@@ -194,9 +212,15 @@ final class QuickEditExportModel {
         ledger.recordDelivery(.activity(type: type), for: share.operationID, tier: tier())
     }
 
-    /// The editor's export closed with nothing in flight: the rendered file goes.
+    /// The editor's export closed with nothing in flight: the rendered file and the cover image go.
     func leave() {
-        guard !isExporting, activity == nil, let operationID else { return }
+        guard !isExporting, activity == nil else { return }
+        // The cover image stays while its share sheet is open.
+        if let coverFile, coverActivity == nil {
+            try? FileManager.default.removeItem(at: coverFile)
+            self.coverFile = nil
+        }
+        guard let operationID else { return }
         ledger.releaseFile(of: operationID)
     }
 
@@ -212,12 +236,50 @@ final class QuickEditExportModel {
         phase = .setup
     }
 
-    /// The cover goes to Photos with the video; a cover that can't be drawn doesn't stop it.
+    // MARK: - Cover
+
+    /// "Try again" on a cover that wasn't saved: drawn again only if it never was.
+    func retryCover() async {
+        if case .failed = cover { await saveCover(of: edit()) }
+    }
+
+    /// Opens the share sheet with the cover image (to post it, or save it somewhere else).
+    func shareCover() {
+        coverActivity = cover.file
+    }
+
+    /// The cover goes to Photos after the video, which is already saved by then: whatever happens here, the video stays, and
+    /// `cover` says what happened.
     private func saveCover(of edit: TakeEdit) async {
-        guard let cover = edit.cover, let data = await editing.coverImage(cover, forVideoAt: videoURL, edit: edit) else { return }
-        let url = URL.temporaryDirectory.appending(path: "Cue-cover-\(UUID().uuidString.prefix(8)).jpg")
-        guard (try? data.write(to: url, options: .atomic)) != nil else { return }
-        try? await photos.saveImage(at: url)
+        guard let design = edit.cover else {
+            cover = .none
+            return
+        }
+        cover = .saving
+        let file: URL
+        if let drawn = coverFile, FileManager.default.fileExists(atPath: drawn.path(percentEncoded: false)) {
+            file = drawn
+        } else {
+            guard let data = await editing.coverImage(design, forVideoAt: videoURL, edit: edit) else {
+                cover = .failed(message: String(localized: "Couldn't draw the cover from its picture."), file: nil)
+                return
+            }
+            let url = URL.temporaryDirectory.appending(path: "Cue-cover-\(UUID().uuidString.prefix(8)).jpg")
+            do {
+                try data.write(to: url, options: .atomic)
+            } catch {
+                cover = .failed(message: String(localized: "There's no room to save the cover."), file: nil)
+                return
+            }
+            file = url
+            coverFile = url
+        }
+        do {
+            try await photos.saveImage(at: file)
+            cover = .saved(file: file)
+        } catch {
+            cover = .failed(message: error.localizedDescription, file: file)
+        }
     }
 
     // MARK: - Private

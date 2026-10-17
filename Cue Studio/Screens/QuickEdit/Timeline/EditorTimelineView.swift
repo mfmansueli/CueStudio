@@ -33,8 +33,11 @@ struct EditorTimelineView: UIViewRepresentable {
 
     private var sources: TimelineContentView.Sources {
         var coverTime: TimeInterval = 0.5
-        if case .frame(let time)? = viewModel.edit.cover?.source { coverTime = time }
-        return TimelineContentView.Sources(take: viewModel.videoURL, others: viewModel.clipSourceURLs, coverTime: coverTime)
+        if let frame = viewModel.edit.cover?.source.frame, frame.sourceID == nil { coverTime = frame.time }
+        return TimelineContentView.Sources(
+            take: viewModel.videoURL, others: viewModel.clipSourceURLs, coverTime: coverTime,
+            coverImage: viewModel.coverImage.flatMap(UIImage.init(data:))
+        )
     }
 
     @MainActor
@@ -57,6 +60,10 @@ struct EditorTimelineView: UIViewRepresentable {
                 beginHandle: { viewModel.beginTimelineHandle($0, snapTimes: $1) },
                 moveHandle: { viewModel.moveTimelineHandle(by: $0) },
                 endHandle: { viewModel.endTimelineHandle() },
+                holdClip: { id in
+                    viewModel.selection = .clip(id)
+                    viewModel.openClipOrder()
+                },
                 zoom: { viewModel.setTimelineZoom($0) },
                 nudge: { viewModel.nudgePlayhead(by: $0) },
                 selectClipAtPlayhead: { viewModel.selectClipAtPlayhead() },

@@ -8,8 +8,9 @@ import Foundation
 /// How the take's own sound is treated before it's mixed: its volume, and (version 2) Enhance
 /// Voice and Reduce Background Noise, each off, soft or strong and independent of the other.
 /// Version 1 is the treatment edits made before these settings had (one switch each), kept so
-/// they sound as they did. Only the take's sound is treated: music, voice-overs and videos over
-/// the take are left as they are. The recording itself never changes.
+/// they sound as they did. The take's sound is treated, and in a montage the other recordings `TakeEdit.voiceReach` names
+/// (`TakeEdit.voiceProcessing(for:)`): music, voice-overs and videos over the take are left as they are. The recording itself
+/// never changes.
 nonisolated struct VoiceProcessing: Hashable, Sendable {
     /// What new edits get: 3, Reduce noise through Apple's voice isolation.
     static let currentVersion = 3
@@ -29,6 +30,11 @@ nonisolated struct VoiceProcessing: Hashable, Sendable {
     var isNeeded: Bool {
         guard abs(volume - 1) < 0.000_1 else { return true }
         return version == 1 ? (enhancesVoice || reducesNoise) : (enhancement != .off || noise != .off)
+    }
+
+    /// The same treatment at another volume.
+    func withVolume(_ volume: Double) -> VoiceProcessing {
+        VoiceProcessing(version: version, volume: volume, enhancesVoice: enhancesVoice, reducesNoise: reducesNoise, enhancement: enhancement, noise: noise)
     }
 
     /// The same volume, untreated: what "Compare with original" plays.

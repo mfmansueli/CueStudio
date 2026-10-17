@@ -54,6 +54,33 @@ struct QuickEditMontageTests {
 
     // MARK: - Copies and order
 
+    @Test func reorderNeedsMoreThanOneClip() async {
+        let scenario = await makeScenario()
+        let viewModel = scenario.viewModel
+        viewModel.perform(.selectClipAtPlayhead)
+        #expect(viewModel.toolbarItems.first { $0.id == "reorder" }?.style == .dimmed)
+        viewModel.perform(.reorderClips)
+        #expect(viewModel.sheet == nil)
+        #expect(scenario.toast.message == "Split or add a clip to reorder")
+    }
+
+    @Test func reorderOpensTheClipsInPlayOrderPaused() async {
+        let scenario = await makeScenario()
+        let viewModel = scenario.viewModel
+        scenario.player.currentTime = 32
+        viewModel.cut()
+        viewModel.perform(.selectClipAtPlayhead)
+        #expect(viewModel.toolbarItems.first { $0.id == "reorder" }?.style == .normal)
+        scenario.player.play()
+        viewModel.perform(.reorderClips)
+        #expect(viewModel.sheet == .clipOrder)
+        #expect(!scenario.player.isPlaying)
+        // Holding a clip on the timeline opens the same list.
+        viewModel.sheet = nil
+        viewModel.openClipOrder()
+        #expect(viewModel.sheet == .clipOrder)
+    }
+
     @Test func aCopiedSectionGetsItsOwnTextsInOneStep() async {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
@@ -180,5 +207,44 @@ struct QuickEditMontageTests {
         let spans = [TimeSpan(start: 0, end: 4), TimeSpan(start: 2, end: 6), TimeSpan(start: 5, end: 9)]
         #expect(LayerLanes.peak(of: spans, within: TimeSpan(start: 0, end: 10)) == 2)
         #expect(LayerLanes.peak(of: spans, within: TimeSpan(start: 6.5, end: 8)) == 1)
+    }
+}
+
+/// Picking the part of a video laid over the take, apart from where it shows.
+@MainActor
+@Suite("Quick edit B-roll part")
+struct QuickEditBrollPartTests {
+    @Test func slippingKeepsItsPlaceAndLengthStaysInsideTheFile() async throws {
+        var take = TestData.take(scriptID: nil, number: 3)
+        take.duration = 30
+        let takes = TakeLibraryService(repository: FakeTakeRepository(takes: [take]))
+        takes.load()
+        let library = ScriptLibraryService(repository: FakeScriptRepository(scripts: []))
+        library.load()
+        let editor = FakeTakeEditor()
+        editor.duration = 30
+        let player = FakeEditPlayback()
+        let viewModel = QuickEditViewModel(
+            take: takes.takes[0], takes: takes, library: library, editing: editor, drafts: FakeDraftStore(), toast: ToastService(),
+            player: player, mediaImporter: FakeMediaImporter(), recorder: FakeVoiceRecorder(), styles: FakeTextStyleStore()
+        )
+        await viewModel.prepare()
+        player.currentTime = 5
+        viewModel.addMedia(ImportedMedia(kind: .video, fileName: "v-\(UUID().uuidString).mov", aspect: 1, duration: 8))
+        let id = try #require(viewModel.edit.media.first?.id)
+        viewModel.setMediaLength(id, 3)
+        let place = viewModel.mediaBars.first { $0.id == id }?.span
+        #expect(place?.duration == 3)
+        viewModel.slipMedia(id, toStart: 4)
+        #expect(viewModel.edit.media.first?.startInFile == 4)
+        #expect(viewModel.mediaBars.first { $0.id == id }?.span == place)
+        // 8 s of video, 3 s shown: it can start at 5 at most.
+        viewModel.slipMedia(id, toStart: 7)
+        #expect(viewModel.edit.media.first?.startInFile == 5)
+        // From 5 s there are 3 s left: it can't play longer.
+        viewModel.setMediaLength(id, 6)
+        #expect(viewModel.mediaBars.first { $0.id == id }?.span.duration == 3)
+        viewModel.undo()
+        #expect(viewModel.edit.media.first?.startInFile == 4)
     }
 }

@@ -27,8 +27,9 @@ enum EditorApp {
 
     /// Taps a toolbar tool, scrolling the toolbar to it first when it's off screen.
     static func tapTool(_ app: XCUIApplication, _ id: String) {
-        // Adjust, Crop, Background and Overlay are Edit's clip tools in v29 (the main toolbar is Edit · Audio · Text · Captions · Filters · Smart · Cover).
-        if ["adjust", "crop", "background", "media"].contains(id), !app.buttons["edit.toolbar.\(id)"].exists,
+        // Adjust and Background are Edit's clip tools (the main toolbar is Edit · Captions · Text · ✦ Smart · Media · Audio · Format ·
+        // Filters · Cover); Format, the whole video's crop, is on the main bar.
+        if ["adjust", "background", "reorder", "freeze"].contains(id), !app.buttons["edit.toolbar.\(id)"].exists,
            app.buttons["edit.toolbar.edit"].exists {
             app.buttons["edit.toolbar.edit"].tap()
         }

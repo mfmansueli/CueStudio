@@ -22,7 +22,8 @@ final class FileExportLedgerStore: ExportLedgerStoring {
     func load() -> [ExportOperation] {
         guard let data = try? Data(contentsOf: url) else { return [] }
         do {
-            return try JSONDecoder().decode([ExportOperation].self, from: data)
+            // Entry by entry: one that can't be read stays out, never the whole record of what was exported.
+            return try JSONDecoder().decode(LossyList<ExportOperation>.self, from: data).elements
         } catch {
             logger.error("Could not read the export ledger: \(error.localizedDescription)")
             return []

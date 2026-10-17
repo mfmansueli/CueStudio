@@ -12,9 +12,13 @@ struct PanelTiles<Value: Hashable>: View {
     let selection: Value?
     let identifier: String
     let onSelect: (Value) -> Void
+    @Environment(\.dynamicTypeSize) private var typeSize
+
+    /// Up to five in a row; three with the largest text sizes, so a name like "Dissolve" is never cut.
+    private var columns: Int { max(1, min(options.count, typeSize.isAccessibilitySize ? 3 : 5)) }
 
     var body: some View {
-        LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 8), count: max(1, options.count)), spacing: 8) {
+        LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 8), count: columns), spacing: 8) {
             ForEach(options) { option in
                 let isOn = option.value == selection
                 Button {

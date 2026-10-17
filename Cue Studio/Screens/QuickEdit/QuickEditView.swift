@@ -85,6 +85,8 @@ struct QuickEditView: View {
             switch sheet {
             case .music: AddMusicSheet(viewModel: viewModel)
             case .media: AddMediaSheet(viewModel: viewModel)
+            case .transcript: TranscriptEditSheet(viewModel: viewModel)
+            case .clipOrder: ClipOrderSheet(viewModel: viewModel, thumbnails: services.thumbnails)
             case .export: QuickEditExportSheet(viewModel: viewModel, services: services)
             case .done:
                 EditorDoneSheet(
@@ -128,6 +130,15 @@ struct QuickEditView: View {
         }
         .sheet(isPresented: $viewModel.showsTranslation) {
             CaptionTranslationSheet(viewModel: viewModel)
+        }
+        .sheet(isPresented: $viewModel.showsPasteLook) {
+            PasteLookSheet(viewModel: viewModel)
+        }
+        .fullScreenCover(item: $viewModel.coverStudio) { studio in
+            CoverStudioView(
+                viewModel: studio, frameRate: Double(viewModel.take.frameRate.rawValue),
+                onDone: { viewModel.finishCoverStudio($0) }, onCancel: { viewModel.cancelCoverStudio($0) }
+            )
         }
         .onChange(of: scenePhase) { _, phase in
             if phase != .active { viewModel.pauseAndKeepDraft() }

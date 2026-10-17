@@ -183,6 +183,17 @@ struct CaptionCollectionRendererTests {
         }
     }
 
+    /// A short sentence that its balanced wrap would put on more lines than the theme allows widens its lines instead of
+    /// shrinking its type to a few points (Interview drew "Sua ideia merece ganhar vida." about 2 pt tall, in the preview and
+    /// the export).
+    @Test(arguments: CaptionTheme.allCases)
+    func aSentenceThatWrapsTooMuchWidensBeforeItShrinks(_ theme: CaptionTheme) throws {
+        let settings = CaptionSettings(theme: theme)
+        let short = try #require(CaptionCollectionRenderer.image("Sua ideia", settings: settings, frame: frame))
+        let sentence = try #require(CaptionCollectionRenderer.image("Sua ideia merece ganhar vida.", settings: settings, frame: frame))
+        #expect(sentence.size.height >= short.size.height * 0.9, "\(theme): \(sentence.size) vs \(short.size)")
+    }
+
     @Test func aCopiedLookIsDrawnInsteadOfThePreset() throws {
         let settings = CaptionSettings(theme: .cue)
         var copied = settings

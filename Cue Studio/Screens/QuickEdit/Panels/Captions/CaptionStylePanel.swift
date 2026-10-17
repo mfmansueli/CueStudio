@@ -20,6 +20,8 @@ struct CaptionStylePanel: View {
 
     /// The colors here are what the panel is for: larger than in other panels.
     private static let swatchDiameter: CGFloat = 34
+    /// A preset card's width (`PanelPresetCard`) and the least room beside it.
+    private static let presetCell: CGFloat = 104
 
     var body: some View {
         let tab = viewModel.captionStyleTab
@@ -56,23 +58,24 @@ struct CaptionStylePanel: View {
 
     // MARK: - Tabs
 
+    /// Every preset at once, in a grid that fills the panel (rows of three on an iPhone), with room
+    /// between the names however large the text.
     @ViewBuilder
     private var presets: some View {
-        ScrollView(.horizontal) {
-            HStack(spacing: 8) {
-                if let look = viewModel.captionCustomLook { customCard(look) }
-                ForEach(shownThemes) { theme in
-                    PanelPresetCard(
-                        name: theme.label, sample: CaptionThemePreview.image(theme), frame: frame,
-                        isSelected: viewModel.captionTheme == theme, identifier: "edit.captionPreset.\(theme.rawValue)"
-                    ) { viewModel.pickCaptionTheme(theme) }
-                }
+        LazyVGrid(
+            columns: [GridItem(.adaptive(minimum: Self.presetCell), spacing: 8, alignment: .top)],
+            spacing: 12
+        ) {
+            if let look = viewModel.captionCustomLook { customCard(look) }
+            ForEach(shownThemes) { theme in
+                PanelPresetCard(
+                    name: theme.label, sample: CaptionThemePreview.image(theme), frame: frame,
+                    isSelected: viewModel.captionTheme == theme, identifier: "edit.captionPreset.\(theme.rawValue)"
+                ) { viewModel.pickCaptionTheme(theme) }
             }
-            .padding(.horizontal, 16)
-            .padding(.vertical, 2)
         }
-        .scrollIndicators(.hidden)
-        .padding(.horizontal, -16)
+        .padding(.top, 2)
+        .accessibilityElement(children: .contain)
         .accessibilityIdentifier("edit.captionCatalog")
         if viewModel.captionCustomLook != nil {
             PanelNote(text: String(localized: "Custom style copied from a text. Pick a preset to replace it."))

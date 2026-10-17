@@ -13,6 +13,9 @@ struct MotionKeyframeControls: View {
 
     var body: some View {
         let here = viewModel.hasKeyframeAtPlayhead
+        MotionPresetPicker(viewModel: viewModel)
+        PanelRowLabel(label: String(localized: "Keyframes"), detail: String(localized: "To move it your own way"))
+            .padding(.top, 4)
         VStack(spacing: 6) {
             HStack(spacing: 8) {
                 arrow("chevron.left", label: Text("Previous keyframe"), enabled: viewModel.hasKeyframe(forward: false), identifier: "edit.keyframe.previous") {

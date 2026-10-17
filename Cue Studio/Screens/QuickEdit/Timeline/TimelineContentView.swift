@@ -18,8 +18,10 @@ final class TimelineContentView: UIView {
     struct Sources {
         var take: URL
         var others: [UUID: URL] = [:]
-        /// Seconds of the take shown on the cover block.
+        /// Seconds of the take shown on the cover block until the cover is drawn.
         var coverTime: TimeInterval = 0.5
+        /// The cover as drawn (`QuickEditViewModel.coverImage`): what the cover block shows once there is one.
+        var coverImage: UIImage?
 
         func url(for source: UUID?) -> URL { source.flatMap { others[$0] } ?? take }
     }
@@ -57,7 +59,7 @@ final class TimelineContentView: UIView {
     /// New geometry or sources: draws again.
     func show(_ geometry: TimelineGeometry, sources: Sources) {
         let changed = geometry != self.geometry || sources.take != self.sources?.take || sources.others != self.sources?.others
-            || sources.coverTime != self.sources?.coverTime
+            || sources.coverTime != self.sources?.coverTime || sources.coverImage !== self.sources?.coverImage
         self.geometry = geometry
         self.sources = sources
         if changed { redraw() }
@@ -141,13 +143,14 @@ final class TimelineContentView: UIView {
         cover.masksToBounds = true
         cover.backgroundColor = UIColor(Palette.surface2).cgColor
         let grid = TimelineFrameCache.grids[2]
-        if let image = frames.image(for: sources.take, at: sources.coverTime, grid: grid) {
+        if let image = sources.coverImage ?? frames.image(for: sources.take, at: sources.coverTime, grid: grid) {
             cover.contents = image.cgImage
             cover.contentsGravity = .resizeAspectFill
         }
+        // The label reads on any cover: a dark shade, lighter over a drawn cover so it can be recognized.
         let dim = CALayer()
         dim.frame = cover.bounds
-        dim.backgroundColor = UIColor.black.withAlphaComponent(0.45).cgColor
+        dim.backgroundColor = UIColor.black.withAlphaComponent(sources.coverImage == nil ? 0.45 : 0.4).cgColor
         cover.addSublayer(dim)
         let label = textLayer(String(localized: "Cover"), size: 10.5, weight: .bold, color: .white)
         let icon = symbolLayer("pencil", size: 12, color: .white)

@@ -6,8 +6,8 @@
 import SwiftUI
 
 /// A photo or video on top of the take, picked: full screen or in a window (its shape and size;
-/// on the preview, drag it to move it and pinch to resize it), its place among the others, and in
-/// Advanced its own sound (a video's) and keyframes.
+/// on the preview, drag it to move it and pinch to resize it), for a video which part of it plays and for how long
+/// (`MediaTrimStrip`), its place among the others, and in Advanced its own sound (a video's), a ready-made motion and keyframes.
 struct MediaPanel: View {
     @Bindable var viewModel: QuickEditViewModel
 
@@ -30,6 +30,9 @@ struct MediaPanel: View {
                         onChange: { width in viewModel.updateMedia(media.id) { $0.width = width / 100 } },
                         onEditingChanged: { editing in editing ? viewModel.beginChange() : viewModel.endChange() }
                     )
+                }
+                if media.kind == .video, media.mediaDuration != nil {
+                    MediaTrimStrip(viewModel: viewModel, media: media)
                 }
                 if viewModel.edit.media.count > 1 {
                     HStack(spacing: 8) {

@@ -160,14 +160,16 @@ final class CueVideoCompositor: NSObject, AVVideoCompositing, @unchecked Sendabl
             )
             // Before the cut the main track still shows the outgoing piece; after it, the incoming one.
             let (outgoing, incoming) = time < dissolve.cut ? (image, otherSide) : (otherSide, image)
-            if dissolve.transition == .slide {
-                image = slide(incoming, over: outgoing, amount: dissolve.slideProgress(at: time))
-            } else {
-                image = blend(outgoing, into: incoming, amount: dissolve.progress(at: time))
+            switch dissolve.transition {
+            case .slide: image = slide(incoming, over: outgoing, amount: dissolve.slideProgress(at: time))
+            case .dissolve, .hardCut, .fade: image = blend(outgoing, into: incoming, amount: dissolve.progress(at: time))
+            default: image = TransitionDrawing.draw(dissolve.transition, from: outgoing, to: incoming, progress: dissolve.progress(at: time))
             }
         }
-        // Every photo and video showing, lowest layer first.
-        for shown in instruction.media.filter({ $0.isVisible(at: time) }).sorted(by: { $0.layer < $1.layer }) {
+        // Every photo and video showing, lowest layer first; the same layer in the order they come in the edit, as the
+        // editor stacks them (`QuickEditViewModel.visibleMediaStack`).
+        let showing = instruction.media.enumerated().filter { $0.element.isVisible(at: time) }
+        for shown in showing.sorted(by: { ($0.element.layer, $0.offset) < ($1.element.layer, $1.offset) }).map(\.element) {
             image = laid(shown, frame: shown.trackID.flatMap { media[$0] }, over: image, at: time)
         }
         return decorated(image, instruction: instruction, at: time, cache: cache)
