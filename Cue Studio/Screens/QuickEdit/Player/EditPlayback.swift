@@ -26,6 +26,9 @@ protocol EditPlayback: AnyObject {
     /// audio session coming ready, a seek or rebuild landing, a preview of a change). Turning it off leaves the playhead where
     /// it was, paused: playback never starts on its own. Seeking still moves the playhead (the timeline edits around it).
     var isPlaybackBlocked: Bool { get set }
+    /// A finger is shaping a speed curve or dragging a handle: curved clips' sound is stretched in steps (instant) instead of
+    /// rendered along the curve; turned off, the edit is drawn again with the rendered sound.
+    var stepsCurveSound: Bool { get set }
 
     /// Plays `edit` from now on, keeping the playhead on the same moment of the recording (or
     /// where the edit picks up, when that moment was cut).

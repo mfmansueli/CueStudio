@@ -59,6 +59,17 @@ struct TransitionDrawingTests {
         segment.transitionDuration = nil
         #expect(try JSONDecoder().decode(EditSegment.self, from: JSONEncoder().encode(segment)).transitionDuration == nil)
     }
+
+    @Test func aSplitMakesAHardCutOfItsOwnLength() {
+        var timeline = EditTimeline(sourceDuration: 10)
+        timeline.split(atEdited: 5)
+        timeline.setTransition(.zoom, atJoin: 1)
+        timeline.setTransitionDuration(1.2, atJoin: 1)
+        // The clip after the join split again: the left part keeps the join's transition, the new seam is a plain cut.
+        timeline.split(atEdited: 7)
+        #expect(timeline.segments[1].transitionIn == .zoom && timeline.segments[1].transitionDuration == 1.2)
+        #expect(timeline.segments[2].transitionIn == .hardCut && timeline.segments[2].transitionDuration == nil)
+    }
 }
 
 /// The notice the adapted transitions need ships with the app.

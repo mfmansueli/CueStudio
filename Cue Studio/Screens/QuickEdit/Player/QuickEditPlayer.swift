@@ -45,6 +45,14 @@ final class QuickEditPlayer: EditPlayback {
         }
     }
 
+    var stepsCurveSound = false {
+        didSet {
+            // The finger lifted: the sound the item has in steps is rendered along the curves now.
+            guard oldValue, !stepsCurveSound, itemHasSteppedSound else { return }
+            rebuild(restarting: false)
+        }
+    }
+
     @ObservationIgnored let avPlayer = AVPlayer()
     @ObservationIgnored private let videoURL: URL
     @ObservationIgnored private let editing: TakeEditing
@@ -58,6 +66,8 @@ final class QuickEditPlayer: EditPlayback {
     @ObservationIgnored private var buildTask: Task<Void, Never>?
     /// The edit changed while a build ran: build again as soon as it's in.
     @ObservationIgnored private var rebuildsAfterBuild = false
+    /// The item (or the one being built) has a curved clip's sound stretched in steps (`stepsCurveSound`).
+    @ObservationIgnored private var itemHasSteppedSound = false
     /// The views showing the preview, which hold its picture while the item is swapped.
     @ObservationIgnored private var frameHolders: [FrameHolder] = []
     @ObservationIgnored private var timeObserver: Any?
@@ -262,10 +272,12 @@ final class QuickEditPlayer: EditPlayback {
         var playable = edit
         playable.timeline = edit.timeline.reachable
         let window = ItemKey.musicWindow(of: edit)
+        let rendersCurveSound = !stepsCurveSound
+        itemHasSteppedSound = stepsCurveSound && edit.timeline.segments.contains { $0.speedCurve != nil }
         buildTask = Task { [weak self, editing, videoURL] in
             self?.showProcessingIfSlow(generation)
             do {
-                let item = try await editing.previewItem(forVideoAt: videoURL, edit: playable, window: window)
+                let item = try await editing.previewItem(forVideoAt: videoURL, edit: playable, window: window, rendersCurveSound: rendersCurveSound)
                 self?.install(item, generation: generation)
             } catch {
                 self?.buildFailed(generation: generation)

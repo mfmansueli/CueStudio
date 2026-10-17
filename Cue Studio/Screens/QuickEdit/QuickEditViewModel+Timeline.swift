@@ -312,6 +312,7 @@ extension QuickEditViewModel {
         guard let drag = handleDrag else { return }
         handleDrag = nil
         lastHandleSnap = nil
+        updateCurveSoundStepping()
         endChange()
         player.endScrub()
         player.seek(to: min(drag.playhead, edit.editedDuration))

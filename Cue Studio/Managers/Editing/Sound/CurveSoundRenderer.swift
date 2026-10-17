@@ -8,75 +8,101 @@ import os
 
 /// The sound of a curved clip: played offline through Apple's time-pitch unit ("Keep voice pitch": the voice keeps its tone) or
 /// its varispeed (the pitch follows the speed, like tape), the rate following the curve a few milliseconds at a time, so it
-/// never drops out or clicks between steps (stretching the sound in steps in the composition does both). Written once into
-/// the temporary folder (`Cue-curve-…`, cleaned at the next launch with the other sounds) and reused while the clip doesn't
-/// change.
+/// never drops out or clicks between steps (stretching the sound in steps in the composition does both). Off the main thread,
+/// stopped as soon as the build that wants it is dropped, and streamed: the recording is read a second at a time and only a
+/// few seconds of it are ever held, whatever the clip's length. Written once into the temporary folder (`Cue-curve-…`,
+/// cleaned at the next launch with the other sounds) and reused while the clip doesn't change; a clip's older renders are
+/// removed as new ones replace them.
 nonisolated enum CurveSoundRenderer {
     /// Frames rendered between two rate changes (5.8 ms at 44.1 kHz).
     static let block: AVAudioFrameCount = 256
-    /// The rendered files of this session, by what they render.
-    private static let rendered = OSAllocatedUnfairLock(initialState: [String: URL]())
+    /// Seconds of the recording read and handed to the player at a time.
+    static let chunkSeconds = 1.0
+    /// Seconds of the recording kept queued ahead of what the player has played.
+    static let aheadSeconds = 2.0
+    /// Renders kept per clip: the newest, and the one before it (the preview may still be playing it while the new item is built).
+    static let keptPerClip = 2
+
+    /// The rendered files of this session, by what they render, and the names each clip used, oldest first.
+    private struct Rendered {
+        var files: [String: URL] = [:]
+        var byClip: [String: [String]] = [:]
+    }
+
+    private static let rendered = OSAllocatedUnfairLock(initialState: Rendered())
 
     enum RenderError: Error { case unreadable, cantRender }
 
-    /// The file playing `span` of the sound in `track` along `curve`, as long as the curve makes it.
-    static func render(_ track: AVAssetTrack, span: TimeSpan, curve: SpeedCurve, keepsPitch: Bool, key: String) async throws -> URL {
-        let name = "Cue-curve-\(stableHash("\(key)|\(span.start)|\(span.end)|\(curve.points)|\(keepsPitch)"))"
-        if let ready = rendered.withLock({ $0[name] }), FileManager.default.fileExists(atPath: ready.path(percentEncoded: false)) {
-            return ready
-        }
-        guard let asset = track.asset else { throw RenderError.unreadable }
-        let source = try await samples(of: asset, track: track, span: span)
+    /// The file playing `span` of the sound track `trackID` of `file` (a recording, or Studio Voice's treatment of it: a new
+    /// treatment is a new file) along `curve`, as long as the curve makes it. `clip` names the clip it's for, whose older
+    /// renders go once replaced. Throws `CancellationError` when the task is cancelled.
+    @concurrent
+    static func render(
+        file: URL, trackID: CMPersistentTrackID, span: TimeSpan, curve: SpeedCurve, keepsPitch: Bool, clip: String
+    ) async throws -> URL {
+        let key = "\(file.lastPathComponent)|\(trackID)|\(span.start)|\(span.end)|\(curve.points)|\(keepsPitch)"
+        let name = "Cue-curve-\(stableHash(key))"
         let url = URL.temporaryDirectory.appending(path: name + ".caf")
-        try renderFile(source, curve: curve, length: span.duration, keepsPitch: keepsPitch, to: url)
-        rendered.withLock { $0[name] = url }
+        if rendered.withLock({ $0.files[name] }) != nil, FileManager.default.fileExists(atPath: url.path(percentEncoded: false)) {
+            remember(name, at: url, for: clip)
+            return url
+        }
+        let asset = AVURLAsset(url: file)
+        guard let track = try await asset.loadTrack(withTrackID: trackID) else { throw RenderError.unreadable }
+        // Written under a name of its own and moved in when complete: a render stopped halfway never leaves a short file.
+        let partial = URL.temporaryDirectory.appending(path: "\(name)-\(UUID().uuidString.prefix(8)).caf")
+        do {
+            try await renderFile(asset: asset, track: track, span: span, curve: curve, keepsPitch: keepsPitch, to: partial)
+            try Task.checkCancellation()
+            if FileManager.default.fileExists(atPath: url.path(percentEncoded: false)) {
+                // Another build rendered the same sound meanwhile.
+                try? FileManager.default.removeItem(at: partial)
+            } else {
+                try FileManager.default.moveItem(at: partial, to: url)
+            }
+        } catch {
+            try? FileManager.default.removeItem(at: partial)
+            throw error
+        }
+        remember(name, at: url, for: clip)
         return url
     }
 
-    /// The stretch of sound as a buffer, at its own rate and channels (up to two).
-    private static func samples(of asset: AVAsset, track: AVAssetTrack, span: TimeSpan) async throws -> AVAudioPCMBuffer {
+    /// `name` is the clip's newest render; its renders older than the last `keptPerClip` that no other clip uses are removed.
+    private static func remember(_ name: String, at url: URL, for clip: String) {
+        let removed: [URL] = rendered.withLock { state in
+            state.files[name] = url
+            var names = state.byClip[clip] ?? []
+            names.removeAll { $0 == name }
+            names.append(name)
+            let dropped = names.count > keptPerClip ? Array(names.prefix(names.count - keptPerClip)) : []
+            names.removeFirst(dropped.count)
+            state.byClip[clip] = names
+            let stillUsed = Set(state.byClip.values.joined())
+            return dropped.filter { !stillUsed.contains($0) }.compactMap { old in state.files.removeValue(forKey: old) }
+        }
+        for url in removed { try? FileManager.default.removeItem(at: url) }
+    }
+
+    /// The format the sound is read and rendered in: its own rate, its channels (up to two), 32-bit float.
+    private static func format(of track: AVAssetTrack) async throws -> AVAudioFormat {
         let descriptions = try await track.load(.formatDescriptions)
         let basic = descriptions.first.flatMap { CMAudioFormatDescriptionGetStreamBasicDescription($0)?.pointee }
         let rate = basic.map { $0.mSampleRate > 0 ? $0.mSampleRate : 44_100 } ?? 44_100
         let channels = AVAudioChannelCount(min(2, max(1, Int(basic?.mChannelsPerFrame ?? 1))))
         guard let format = AVAudioFormat(standardFormatWithSampleRate: rate, channels: channels) else { throw RenderError.unreadable }
-        let reader = try AVAssetReader(asset: asset)
-        reader.timeRange = CMTimeRange(
-            start: CMTime(seconds: span.start, preferredTimescale: 600), end: CMTime(seconds: span.end, preferredTimescale: 600)
-        )
-        let output = AVAssetReaderTrackOutput(track: track, outputSettings: [
-            AVFormatIDKey: kAudioFormatLinearPCM, AVLinearPCMBitDepthKey: 32, AVLinearPCMIsFloatKey: true,
-            AVLinearPCMIsNonInterleaved: false, AVLinearPCMIsBigEndianKey: false, AVNumberOfChannelsKey: channels, AVSampleRateKey: rate,
-        ])
-        let provider = reader.outputProvider(for: output)
-        try reader.start()
-        var interleaved: [Float] = []
-        while let ready = try await provider.next() {
-            ready.withUnsafeSampleBuffer { sample in
-                guard let data = CMSampleBufferGetDataBuffer(sample) else { return }
-                let count = CMBlockBufferGetDataLength(data) / MemoryLayout<Float>.size
-                let start = interleaved.count
-                interleaved.append(contentsOf: repeatElement(0, count: count))
-                _ = interleaved.withUnsafeMutableBytes { bytes in
-                    CMBlockBufferCopyDataBytes(data, atOffset: 0, dataLength: count * MemoryLayout<Float>.size, destination: bytes.baseAddress! + start * 4)
-                }
-            }
-        }
-        let frames = AVAudioFrameCount(interleaved.count / Int(channels))
-        guard frames > 0, let buffer = AVAudioPCMBuffer(pcmFormat: format, frameCapacity: frames), let planes = buffer.floatChannelData else {
-            throw RenderError.unreadable
-        }
-        buffer.frameLength = frames
-        for frame in 0..<Int(frames) {
-            for channel in 0..<Int(channels) { planes[channel][frame] = interleaved[frame * Int(channels) + channel] }
-        }
-        return buffer
+        return format
     }
 
-    /// Plays `source` through the time-pitch unit, offline, its rate set from the curve before each block, until the curve's
-    /// length is written (the unit's own delay skipped at the start).
-    private static func renderFile(_ source: AVAudioPCMBuffer, curve: SpeedCurve, length: TimeInterval, keepsPitch: Bool, to url: URL) throws {
-        let format = source.format
+    /// Plays the stretch through the time-pitch unit, offline, its rate set from the curve before each block, until the
+    /// curve's length is written (the unit's own delay skipped at the start). The recording is read as the player needs it,
+    /// a second at a time, never more than `aheadSeconds` ahead.
+    private static func renderFile(
+        asset: AVAsset, track: AVAssetTrack, span: TimeSpan, curve: SpeedCurve, keepsPitch: Bool, to url: URL
+    ) async throws {
+        let format = try await Self.format(of: track)
+        let source = try SoundChunkReader(asset: asset, track: track, span: span, format: format, chunkSeconds: chunkSeconds)
+        defer { source.cancel() }
         let engine = AVAudioEngine()
         let player = AVAudioPlayerNode()
         let timePitch = AVAudioUnitTimePitch(), varispeed = AVAudioUnitVarispeed()
@@ -91,35 +117,48 @@ nonisolated enum CurveSoundRenderer {
             player.stop()
             engine.stop()
         }
-        player.scheduleBuffer(source, at: nil)
-        try player.playAudio()
         let rate = format.sampleRate
+        let ahead = rate * aheadSeconds
+        // Frames of the recording handed to the player, and played by it (as the rates say).
+        var scheduled = 0.0, consumed = 0.0
+        func feed() async throws {
+            while scheduled - consumed < ahead, let chunk = try await source.next() {
+                schedule(chunk, on: player)
+                scheduled += Double(chunk.frameLength)
+            }
+        }
+        try await feed()
+        try player.playAudio()
+        let length = span.duration
         let wanted = AVAudioFramePosition((curve.editedLength(sourceLength: length) * rate).rounded())
         let delay = AVAudioFramePosition((pitch.latency * rate).rounded())
         guard let output = AVAudioPCMBuffer(pcmFormat: engine.manualRenderingFormat, frameCapacity: block) else { throw RenderError.cantRender }
         let file = try AVAudioFile(forWriting: url, settings: format.settings, commonFormat: .pcmFormatFloat32, interleaved: false)
         var written: AVAudioFramePosition = 0
-        var rendered: AVAudioFramePosition = 0
+        var renderedFrames: AVAudioFramePosition = 0
         while written < wanted {
+            try Task.checkCancellation()
             // The speed where the sound is now: the edited moment of the next frame written.
-            let edited = Double(max(0, rendered - delay)) / rate
+            let edited = Double(max(0, renderedFrames - delay)) / rate
             let position = curve.sourceOffset(forEdited: edited, sourceLength: length) / max(0.001, length)
-            let speed = Float(curve.speed(at: position))
-            if keepsPitch { timePitch.rate = speed } else { varispeed.rate = speed }
+            let speed = curve.speed(at: position)
+            if keepsPitch { timePitch.rate = Float(speed) } else { varispeed.rate = Float(speed) }
             let status = try engine.renderOffline(block, to: output)
             guard status == .success else { throw RenderError.cantRender }
-            rendered += AVAudioFramePosition(output.frameLength)
+            let frames = AVAudioFramePosition(output.frameLength)
+            renderedFrames += frames
+            consumed += Double(frames) * speed
+            try await feed()
             // The unit's delay at the start isn't part of the sound.
-            let skip = max(0, delay - (rendered - AVAudioFramePosition(output.frameLength)))
-            let keep = min(AVAudioFramePosition(output.frameLength) - min(skip, AVAudioFramePosition(output.frameLength)), wanted - written)
+            let skip = min(max(0, delay - (renderedFrames - frames)), frames)
+            let keep = min(frames - skip, wanted - written)
             guard keep > 0 else { continue }
-            if skip > 0 || keep < AVAudioFramePosition(output.frameLength) {
+            if skip > 0 || keep < frames {
                 guard let part = AVAudioPCMBuffer(pcmFormat: output.format, frameCapacity: AVAudioFrameCount(keep)),
                       let from = output.floatChannelData, let into = part.floatChannelData else { throw RenderError.cantRender }
                 part.frameLength = AVAudioFrameCount(keep)
-                let offset = Int(min(skip, AVAudioFramePosition(output.frameLength)))
                 for channel in 0..<Int(output.format.channelCount) {
-                    into[channel].update(from: from[channel] + offset, count: Int(keep))
+                    into[channel].update(from: from[channel] + Int(skip), count: Int(keep))
                 }
                 try file.write(from: part)
             } else {
@@ -127,6 +166,12 @@ nonisolated enum CurveSoundRenderer {
             }
             written += keep
         }
+    }
+
+    /// Queues `buffer` on `player` without waiting for it to play (the async form returns only once it has played, which in
+    /// offline rendering is never before the next render).
+    private static func schedule(_ buffer: AVAudioPCMBuffer, on player: AVAudioPlayerNode) {
+        player.scheduleBuffer(buffer, at: nil, options: [], completionHandler: nil)
     }
 
     /// A hash that's the same on every launch (Swift's `hashValue` isn't).

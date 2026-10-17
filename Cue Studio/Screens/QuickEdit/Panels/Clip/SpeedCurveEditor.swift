@@ -73,7 +73,7 @@ struct SpeedCurveEditor: View {
                     .onChanged { value in
                         if dragged == nil {
                             dragged = index
-                            viewModel.beginChange()
+                            viewModel.beginCurveDrag()
                         }
                         let speed = Self.speed(forY: value.location.y, height: size.height)
                         viewModel.moveCurvePoint(index, to: speed, position: Double(value.location.x / max(1, size.width)))
@@ -93,7 +93,7 @@ struct SpeedCurveEditor: View {
             .accessibilityIdentifier("edit.speed.curvePoint.\(index)")
     }
 
-    /// Where a speed sits on the editor, from the top: 5× at the top, 0.2× at the bottom, 1× in the middle.
+    /// Where a speed sits on the editor, from the top: 4× at the top, 0.25× at the bottom, 1× in the middle.
     static func y(forSpeed speed: Double, height: CGFloat) -> CGFloat {
         let range = SpeedCurve.speedRange
         let share = (log(range.upperBound) - log(min(max(speed, range.lowerBound), range.upperBound))) / (log(range.upperBound) - log(range.lowerBound))

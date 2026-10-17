@@ -7,7 +7,8 @@ import Foundation
 
 /// Speed › Curve: the picked clip speeds up and slows down as it plays (Hero, Bullet, Ramp up, Ramp down, Montage, Flash in,
 /// Flash out, or a curve of the creator's own, shaped by dragging its points). Picking a curve plays the clip to show it; a
-/// drag of a point is one undo step. Picking a speed in Normal takes the curve away.
+/// drag of a point is one undo step. Picking a speed in Normal takes the curve away. While a point or a handle is dragged, the
+/// preview stretches curved clips' sound in steps (instant) and renders it along the curve when the finger lifts.
 extension QuickEditViewModel {
     /// Slowest and fastest a point can be dragged to.
     static let curveSpeedRange = SpeedCurve.speedRange
@@ -50,10 +51,26 @@ extension QuickEditViewModel {
         updateClip(key: "clip.curve") { $0.speedCurve = SpeedCurve(points: points) }
     }
 
+    /// A point of the curve is picked to be dragged: the drag is one undo step.
+    func beginCurveDrag() {
+        shapesCurve = true
+        beginChange()
+    }
+
     /// The point picked to be dragged ends its drag: the clip plays to show the new curve.
     func endCurveDrag() {
+        shapesCurve = false
+        updateCurveSoundStepping()
         endChange()
         previewTargetClip()
+    }
+
+    /// Curved clips' sound in steps while a finger shapes the timing (a curve's point, a clip's handle), rendered once it lifts.
+    func updateCurveSoundStepping() {
+        var holdsClipHandle = false
+        if case .clip? = handleDrag?.target { holdsClipHandle = true }
+        let steps = shapesCurve || holdsClipHandle || trimOrigin != nil
+        if player.stepsCurveSound != steps { player.stepsCurveSound = steps }
     }
 
     /// Where the playhead is along the picked clip's recording (0 to 1); nil when it's elsewhere.

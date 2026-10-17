@@ -105,11 +105,13 @@ final class TakeEditService: TakeEditing {
         )
     }
 
-    func previewItem(forVideoAt url: URL, edit: TakeEdit, window: TimeSpan?) async throws -> AVPlayerItem {
+    func previewItem(forVideoAt url: URL, edit: TakeEdit, window: TimeSpan?, rendersCurveSound: Bool) async throws -> AVPlayerItem {
         let treated = try await RecordingSounds.prepare(for: edit, takeURL: url, cache: sounds)
         let composition = try await EditedComposition.build(
             source: url, edit: edit, sound: treated, speech: await voiceActivity(for: url, edit: edit),
-            options: .init(burnsInCaptions: true, shortSide: 1080, window: window, analyzesMissingMotion: false)
+            options: .init(
+                burnsInCaptions: true, shortSide: 1080, window: window, analyzesMissingMotion: false, rendersCurveSound: rendersCurveSound
+            )
         )
         let item = AVPlayerItem(asset: composition.asset)
         item.videoComposition = composition.videoComposition
@@ -136,7 +138,9 @@ final class TakeEditService: TakeEditing {
             let treated = try await RecordingSounds.prepare(for: treatment.edit, takeURL: treatment.takeURL, cache: sounds)
             if let sound = treated.file(for: treatment.recording) { file = sound }
         }
-        return try await SoundExtractor.write(from: file, span: request.span, speed: request.speed, keepsPitch: request.keepsPitch)
+        return try await SoundExtractor.write(
+            from: file, span: request.span, speed: request.speed, keepsPitch: request.keepsPitch, curve: request.curve
+        )
     }
 
     func matchedOriginalVolume(forVideoAt url: URL, edit: TakeEdit) async -> Double? {

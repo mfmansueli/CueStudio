@@ -47,6 +47,9 @@ nonisolated struct EditedComposition: @unchecked Sendable {
         /// Makes the motion analyses Follow face and stabilization need when they're missing (an export); the preview draws
         /// with the ones ready.
         var analyzesMissingMotion = true
+        /// Renders curved clips' sound along their curves (`CurveSoundRenderer`); off, it's stretched in steps like the picture,
+        /// which is instant: the preview while a finger shapes a curve or drags a handle.
+        var rendersCurveSound = true
     }
 
     /// A volume ramp on the edited timeline.
@@ -59,6 +62,8 @@ nonisolated struct EditedComposition: @unchecked Sendable {
 
     enum BuildError: Error {
         case noVideoTrack
+        /// The iPhone got too hot to finish the motion analysis an export needs (`motionAnalyses`).
+        case tooWarm
     }
 
     /// `sound` replaces the sound of the recordings Studio Voice treated (`RecordingSounds`). A montage's
@@ -102,8 +107,9 @@ nonisolated struct EditedComposition: @unchecked Sendable {
         let varispeed = hasSound && edit.timeline.segments.contains(where: playsVarispeed)
             ? composition.addMutableTrack(withMediaType: .audio, preferredTrackID: kCMPersistentTrackID_Invalid)
             : nil
-        // Curved clips get their sound rendered along the curve (see `CurveSoundRenderer`).
-        let (curveAssets, curveSounds) = await curveSounds(for: edit.timeline, take: source, sound: recordingSound(of:))
+        // Curved clips get their sound rendered along the curve (see `CurveSoundRenderer`), unless it's wanted at once.
+        let curved = options.rendersCurveSound ? edit.timeline.segments : []
+        let (curveAssets, curveSounds) = try await curveSounds(for: curved, take: source, sound: recordingSound(of:))
         defer { withExtendedLifetime(curveAssets) {} }
         let cursor = try insertPieces(
             of: edit.timeline, recording: recording, sound: recordingSound(of:), curveSounds: curveSounds, video: video,
@@ -139,7 +145,7 @@ nonisolated struct EditedComposition: @unchecked Sendable {
             backgrounds[id] = BackgroundRender.prepare(effect, cacheKey: build + (id?.uuidString ?? "take"))
         }
         let ownBackgrounds = clipBackgrounds(of: edit.timeline, build: build)
-        let analyses = await motionAnalyses(take: source, edit: edit, analyzesMissing: options.analyzesMissingMotion)
+        let analyses = try await motionAnalyses(take: source, edit: edit, analyzesMissing: options.analyzesMissingMotion)
         var follows: [UUID?: FaceFollowPath] = [:]
         func frame(_ id: UUID?) -> SourceFrame {
             guard let played = recording(id) else { return SourceFrame(transform: .identity, crop: crop, scale: 1) }
@@ -161,7 +167,9 @@ nonisolated struct EditedComposition: @unchecked Sendable {
             if let own = ownBackgrounds[segment.id] { result.background = own }
             if let level = segment.stabilization, let analysis = analyses[segment.sourceID] {
                 let key = (segment.sourceID?.uuidString ?? "take") + level.rawValue
-                if steadyPaths[key] == nil { steadyPaths[key] = StabilizationPath.make(analysis, level: level) }
+                if steadyPaths[key] == nil {
+                    steadyPaths[key] = steadyPath(for: segment.sourceID, of: edit, take: source, analysis: analysis, level: level)
+                }
                 result.steady = steadyPaths[key]
             }
             return result
@@ -295,6 +303,9 @@ nonisolated struct EditedComposition: @unchecked Sendable {
     /// Steps a curve is played in, per edited second: the speed changes 30 times a second, a frame at a time, so neither the
     /// picture nor the sound shows a step.
     static let curveStepsPerSecond = 30.0
+    /// Most steps one curved clip is played in (50 s at 30 a second; a longer clip takes longer steps), so a long clip never
+    /// makes a composition of tens of thousands of pieces.
+    static let mostCurveSteps = 1500
 
     /// Stretches the piece just inserted at `start` (`inserted` long, as filmed) along `curve`, on the
     /// tracks given: step by step, each step of the recording scaled to the time the curve gives it. Returns its length in the
@@ -305,7 +316,7 @@ nonisolated struct EditedComposition: @unchecked Sendable {
         let scale: CMTimeScale = 60_000
         let sourceLength = inserted.seconds
         let edited = curve.editedLength(sourceLength: sourceLength)
-        let steps = max(4, Int((edited * curveStepsPerSecond).rounded(.up)))
+        let steps = min(mostCurveSteps, max(4, Int((edited * curveStepsPerSecond).rounded(.up))))
         var position = start
         var sourceDone = CMTime.zero
         var editedDone = CMTime.zero

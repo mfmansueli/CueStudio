@@ -51,7 +51,7 @@ struct BackgroundCompositionTests {
         var edit = TakeEdit(sourceDuration: 2, aspect: .portrait)
         edit.voiceEnhancement = .off
         if let effect { edit.setBackground(effect, for: nil) }
-        let item = try await TakeEditService().previewItem(forVideoAt: clip, edit: edit, window: nil)
+        let item = try await TakeEditService().previewItem(forVideoAt: clip, edit: edit)
         return try await image(item.asset, composition: item.videoComposition, at: 1)
     }
 

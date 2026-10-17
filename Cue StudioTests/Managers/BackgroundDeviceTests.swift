@@ -98,13 +98,13 @@ struct BackgroundDeviceTests {
         defer { try? FileManager.default.removeItem(at: clip) }
         var edit = TakeEdit(sourceDuration: 2, aspect: .portrait)
         edit.voiceEnhancement = .off
-        let before = try await TakeEditService().previewItem(forVideoAt: clip, edit: edit, window: nil)
+        let before = try await TakeEditService().previewItem(forVideoAt: clip, edit: edit)
         var effect = BackgroundEffect()
         effect.style = style
         effect.blur = 1
         effect.color = .blue
         edit.setBackground(effect, for: nil)
-        let after = try await TakeEditService().previewItem(forVideoAt: clip, edit: edit, window: nil)
+        let after = try await TakeEditService().previewItem(forVideoAt: clip, edit: edit)
         let plain = try await image(before.asset, composition: before.videoComposition, at: 1)
         let changed = try await image(after.asset, composition: after.videoComposition, at: 1)
         let difference = try meanDifference(plain, changed)

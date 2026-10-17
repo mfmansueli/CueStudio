@@ -242,6 +242,10 @@ final class QuickEditViewModel {
     /// Track: how far following the picked item's object is, 0 to 1; nil when it isn't (`QuickEditViewModel+Track`).
     var trackingProgress: Double?
     @ObservationIgnored var trackingTask: Task<Void, Never>?
+    /// The recordings whose motion analysis was last asked for while the edit used it (`requestMotionAnalysisIfNeeded`).
+    @ObservationIgnored var motionRequestedURLs: [URL] = []
+    /// A point of the speed curve is being dragged (`QuickEditViewModel+SpeedCurve`).
+    @ObservationIgnored var shapesCurve = false
 
     // MARK: Background
     /// Whether this iPhone can find people in video; nil until checked.
@@ -397,7 +401,9 @@ final class QuickEditViewModel {
         if comparesOriginal, edit.voiceProcessing != comparedProcessing { endComparison() }
         // A change is no longer what was being compared.
         if comparesPicture { comparesPicture = false }
+        updateCurveSoundStepping()
         player.show(playedEdit)
+        requestMotionAnalysisIfNeeded()
         if edit.coverDrawingKey != drawnCoverKey { drawCover() }
         scheduleDraftSave()
     }
@@ -680,11 +686,15 @@ final class QuickEditViewModel {
         if recorder.isRecording { stopVoiceOver() }
         // Done while the pauses preview plays keeps what was heard.
         if pausePreviewBase != nil { applyPauses() }
+        // Reversed videos nothing plays any more (a clip reversed and put back) were kept for undo; they go now.
+        var saved = edit
+        let played = Set(edit.timeline.segments.compactMap(\.sourceID))
+        saved.sources.removeAll { $0.reversal != nil && !played.contains($0.id) }
         if source == .ready, hasUnsavedChanges {
-            takes.applyEdit(edit, to: take.id)
+            takes.applyEdit(saved, to: take.id)
             toast.show(String(localized: "Edits saved to this take"))
         }
-        removeUnusedImports(keeping: edit.mediaFileNames)
+        removeUnusedImports(keeping: saved.mediaFileNames)
         close(keepingDraft: false)
     }
 
@@ -759,6 +769,8 @@ final class QuickEditViewModel {
         captionTask?.cancel()
         captionRequest = nil
         cancelAuto()
+        trackingTask?.cancel()
+        trackingTask = nil
         if !keepingDraft { drafts.discard(takeID: take.id) }
         player.stop()
     }

@@ -21,6 +21,7 @@ final class FakeEditPlayback: EditPlayback {
     var isPlaybackBlocked = false {
         didSet { if isPlaybackBlocked { isPlaying = false } }
     }
+    var stepsCurveSound = false
     private(set) var shown: [TakeEdit] = []
     private(set) var isScrubbing = false
     private(set) var isStopped = false

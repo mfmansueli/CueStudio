@@ -18,8 +18,9 @@ nonisolated struct SpeedCurve: Codable, Hashable, Sendable {
         var speed: Double
     }
 
-    /// Slowest and fastest a curve plays.
-    static let speedRange: ClosedRange<Double> = 0.2...5
+    /// Slowest and fastest a curve plays: the range Apple's varispeed plays (the sound of a curve without "Keep voice pitch"),
+    /// so the sound never drifts from the picture.
+    static let speedRange: ClosedRange<Double> = 0.25...4
     /// Steps of the table the timing is read from.
     static let steps = 240
 
@@ -80,22 +81,35 @@ nonisolated struct SpeedCurve: Codable, Hashable, Sendable {
         return sourceLength * (Double(low) + part) / Double(Self.steps)
     }
 
-    /// The curve over part of the clip (`from` to `to`, 0 to 1), as a curve of its own: what each side of a split keeps.
+    /// Most evenly spaced samples a part keeps of the curve's shape.
+    static let partSamples = 25
+    /// A part keeps the curve's own points inside it only when there are this many or fewer (the creator's points, a preset's);
+    /// a curve already sampled by an earlier split is sampled again instead, so splitting it again and again (Cut on the beats)
+    /// never grows it.
+    static let keptPoints = 8
+
+    /// The curve over part of the clip (`from` to `to`, 0 to 1), as a curve of its own: what each side of a split keeps. At most
+    /// `partSamples` evenly spaced samples of the shape, plus the points inside the part when there are few; it plays exactly as
+    /// long as that stretch did (whatever the sampling smoothed away is made up evenly), so the cuts after it stay put.
     func part(from start: Double, to end: Double) -> SpeedCurve {
         let low = min(max(start, 0), 1), high = min(max(end, low + 0.000_1), 1)
         let inside = points.filter { $0.position > low + 0.000_1 && $0.position < high - 0.000_1 }
-        let ends = [Point(position: low, speed: speed(at: low))] + inside + [Point(position: high, speed: speed(at: high))]
-        // Between the kept points, enough samples that the shape stays the same.
+        let last = Self.partSamples - 1
+        var positions = (0...last).map { low + (high - low) * Double($0) / Double(last) }
+        if inside.count <= Self.keptPoints { positions += inside.map(\.position) }
+        positions.sort()
         var sampled: [Point] = []
-        for (from, to) in zip(ends, ends.dropFirst()) {
-            sampled.append(from)
-            for step in 1..<8 {
-                let position = from.position + (to.position - from.position) * Double(step) / 8
-                sampled.append(Point(position: position, speed: speed(at: position)))
-            }
+        for position in positions {
+            // Two samples closer than this say the same thing.
+            if let previous = sampled.last, position - previous.position < (high - low) * 0.001 { continue }
+            sampled.append(Point(position: position, speed: speed(at: position)))
         }
-        sampled.append(ends[ends.count - 1])
-        return SpeedCurve(points: sampled.map { Point(position: ($0.position - low) / (high - low), speed: $0.speed) })
+        let part = SpeedCurve(points: sampled.map { Point(position: ($0.position - low) / (high - low), speed: $0.speed) })
+        // Every speed times the same factor moves the log curve without changing its shape, and divides its length by it.
+        let wanted = editedOffset(forSource: high, sourceLength: 1) - editedOffset(forSource: low, sourceLength: 1)
+        let made = part.editedLength(sourceLength: high - low)
+        guard wanted > 0, made > 0, abs(made / wanted - 1) > 0.000_001 else { return part }
+        return SpeedCurve(points: part.points.map { Point(position: $0.position, speed: $0.speed * made / wanted) })
     }
 
     // MARK: - Math

@@ -28,8 +28,9 @@ protocol TakeEditing: AnyObject {
         progress: @escaping @Sendable (CaptionProgress) -> Void
     ) async throws -> CaptionOutcome
     /// The edited take for a player. `window` is where the edit itself is when `edit`'s timeline
-    /// was grown to the whole recording (the edit's music is placed from its start).
-    func previewItem(forVideoAt url: URL, edit: TakeEdit, window: TimeSpan?) async throws -> AVPlayerItem
+    /// was grown to the whole recording (the edit's music is placed from its start). Without `rendersCurveSound`, curved clips'
+    /// sound is stretched in steps, which is instant (while a finger shapes a curve or drags a handle).
+    func previewItem(forVideoAt url: URL, edit: TakeEdit, window: TimeSpan?, rendersCurveSound: Bool) async throws -> AVPlayerItem
     /// The volume at which the take's untreated sound is as loud as the Voice tool's result, for
     /// "Compare with original"; nil when the take has no speech to measure.
     func matchedOriginalVolume(forVideoAt url: URL, edit: TakeEdit) async -> Double?
@@ -51,6 +52,6 @@ protocol TakeEditing: AnyObject {
 extension TakeEditing {
     /// The edited take for a player, when the timeline is the edit itself.
     func previewItem(forVideoAt url: URL, edit: TakeEdit) async throws -> AVPlayerItem {
-        try await previewItem(forVideoAt: url, edit: edit, window: nil)
+        try await previewItem(forVideoAt: url, edit: edit, window: nil, rendersCurveSound: true)
     }
 }

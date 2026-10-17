@@ -486,8 +486,10 @@ nonisolated struct EditTimeline: Codable, Hashable, Sendable {
         var left = segment.piece(TimeSpan(start: segment.sourceStart, end: cut), id: segment.id, transitionIn: segment.transitionIn)
         left.transitionDuration = segment.transitionDuration
         segments[index] = left
-        // The right part is the same clip from the cut on: speed, zoom and sound go with it.
-        let right = segment.piece(TimeSpan(start: cut, end: segment.sourceEnd))
+        // The right part is the same clip from the cut on: speed, zoom and sound go with it. Its seam is a new hard cut, with
+        // the default length for a transition put on it later.
+        var right = segment.piece(TimeSpan(start: cut, end: segment.sourceEnd))
+        right.transitionDuration = nil
         segments.insert(right, at: index + 1)
         return true
     }

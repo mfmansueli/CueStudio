@@ -107,7 +107,7 @@ final class FakeTakeEditor: TakeEditing {
         return captionOutcome ?? .captions(captions, transcript: CaptionTranscript(words: captions.flatMap(\.words), languageCode: "en"))
     }
 
-    func previewItem(forVideoAt url: URL, edit: TakeEdit, window: TimeSpan?) async throws -> AVPlayerItem {
+    func previewItem(forVideoAt url: URL, edit: TakeEdit, window: TimeSpan?, rendersCurveSound: Bool) async throws -> AVPlayerItem {
         AVPlayerItem(url: url)
     }
 
@@ -159,6 +159,7 @@ final class FakeTakeEditor: TakeEditing {
             whileExtracting()
         }
         if extractionHasNoSound { throw AudioTrackExtractor.ExtractError.noAudio }
-        return ExtractedSound(fileName: "sound-\(extractions.count).m4a", duration: request.span.duration / request.speed)
+        let duration = request.curve?.editedLength(sourceLength: request.span.duration) ?? request.span.duration / request.speed
+        return ExtractedSound(fileName: "sound-\(extractions.count).m4a", duration: duration)
     }
 }

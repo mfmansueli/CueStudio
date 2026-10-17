@@ -61,6 +61,31 @@ struct SpeedCurveTests {
         for (a, b) in zip(moments, after) { #expect(abs(a - b) < 0.02) }
     }
 
+    @Test func splittingAgainAndAgainKeepsTheCurveSmall() {
+        var timeline = EditTimeline(sourceDuration: 20)
+        var clip = timeline.segments[0]
+        clip.speedCurve = SpeedCurvePreset.hero.curve
+        _ = timeline.replaceSegment(clip)
+        let before = timeline.editedDuration
+        let moments = stride(from: 0.0, to: before, by: 0.25).map { timeline.sourceTime(forEdited: $0) }
+        // Cut on the beats: the rest of the clip cut again and again, so the last piece's curve is a part of a part, ten times.
+        for cut in 1...10 {
+            let split = timeline.split(atEdited: Double(cut) * 1.5)
+            #expect(split)
+        }
+        #expect(timeline.segments.count == 11)
+        for segment in timeline.segments {
+            #expect((segment.speedCurve?.points.count ?? 0) <= 40, "\(segment.speedCurve?.points.count ?? 0) points")
+        }
+        #expect(abs(timeline.editedDuration - before) < 0.05, "\(timeline.editedDuration) vs \(before)")
+        let after = stride(from: 0.0, to: before, by: 0.25).map { timeline.sourceTime(forEdited: $0) }
+        for (a, b) in zip(moments, after) { #expect(abs(a - b) < 0.03) }
+        // A part of a part, many times over, keeps the same small size.
+        var curve = SpeedCurvePreset.montage.curve
+        for _ in 0..<10 { curve = curve.part(from: 0.05, to: 0.97) }
+        #expect(curve.points.count <= SpeedCurve.partSamples + SpeedCurve.keptPoints)
+    }
+
     @Test func theTimelineMapsThroughACurve() throws {
         var timeline = EditTimeline(sourceDuration: 8)
         var clip = try #require(timeline.segments.first)
