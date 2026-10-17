@@ -25,6 +25,7 @@ final class EditorMotionUITests: XCTestCase {
         XCTAssertTrue(pace.waitForExistence(timeout: 5))
         pace.tap()
         XCTAssertTrue(pace.isSelected)
+        EditorApp.capture(app, "motion-follow-face")
         app.buttons["edit.undoButton"].tap()
         XCTAssertTrue(app.buttons["edit.crop.followPace.natural"].isSelected)
     }
@@ -36,6 +37,7 @@ final class EditorMotionUITests: XCTestCase {
         XCTAssertTrue(standard.waitForExistence(timeout: 5))
         standard.tap()
         XCTAssertTrue(standard.isSelected)
+        EditorApp.capture(app, "motion-stabilize")
         app.buttons["edit.panel.apply"].tap()
 
         openClipTool(app, "speed")
@@ -47,6 +49,7 @@ final class EditorMotionUITests: XCTestCase {
         hero.tap()
         XCTAssertTrue(hero.isSelected)
         XCTAssertTrue(app.descendants(matching: .any)["edit.speed.curvePoint.1"].exists)
+        EditorApp.capture(app, "motion-speed-curve")
         app.buttons["edit.panel.apply"].tap()
 
         openClipTool(app, "reverse")
