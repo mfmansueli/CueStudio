@@ -95,10 +95,15 @@ final class VideoExportService: VideoExporting {
         var edit = options.edit ?? TakeEdit(sourceDuration: duration, aspect: options.aspect)
         edit.aspect = options.aspect
         let treated = options.edit == nil ? RecordingSounds.none : try await RecordingSounds.prepare(for: edit, takeURL: source, cache: sounds)
-        let composition = try await EditedComposition.build(
-            source: source, edit: edit, sound: treated, speech: await voiceActivity(for: source, edit: edit),
-            options: .init(burnsInCaptions: options.burnsInCaptions, shortSide: options.shortSide, frameRate: options.frameRate)
-        )
+        let composition: EditedComposition
+        do {
+            composition = try await EditedComposition.build(
+                source: source, edit: edit, sound: treated, speech: await voiceActivity(for: source, edit: edit),
+                options: .init(burnsInCaptions: options.burnsInCaptions, shortSide: options.shortSide, frameRate: options.frameRate)
+            )
+        } catch EditedComposition.BuildError.tooWarm {
+            throw VideoExportError.tooWarm
+        }
         progress?(0.08)
         // More than the take's sound: mixed once through a limiter so nothing clips.
         let mixedDown = try await Mixdown.apply(to: composition)

@@ -81,6 +81,38 @@ struct MotionAnalysisServiceTests {
         await Wait.until { service.status(of: take) == .ready }
     }
 
+    @Test func anExportStopsAnalyzingWhenTheIPhoneIsHot() async throws {
+        let take = try recording()
+        defer { cleanUp([take]) }
+        var edit = TakeEdit(sourceDuration: 10, aspect: .portrait)
+        var timeline = edit.timeline
+        var clip = try #require(timeline.segments.first)
+        clip.stabilization = .standard
+        _ = timeline.replaceSegment(clip)
+        edit.timeline = timeline
+        // Hot: nothing is made, and the export says why instead of going on without Stabilize.
+        await #expect(throws: EditedComposition.BuildError.tooWarm) {
+            try await EditedComposition.motionAnalyses(
+                take: take, edit: edit, analyzesMissing: true, analyzer: FakeMotionAnalyzer(step: .milliseconds(1)), thermalState: { .serious }
+            )
+        }
+        // Cool: made, kept next to the recording.
+        let analyses = try await EditedComposition.motionAnalyses(
+            take: take, edit: edit, analyzesMissing: true, analyzer: FakeMotionAnalyzer(step: .milliseconds(1)), thermalState: { .nominal }
+        )
+        #expect(analyses[nil]?.isComplete == true)
+        #expect(MotionAnalysisStore.complete(forRecording: take) != nil)
+    }
+
+    @Test func nothingIsKeptForARecordingThatWasDeleted() throws {
+        let take = try recording()
+        try FileManager.default.removeItem(at: take)
+        var analysis = MotionAnalysis(duration: 2, width: 1080, height: 1920)
+        analysis.analyzedUntil = 1
+        MotionAnalysisStore.save(analysis, forRecording: take)
+        #expect(!FileManager.default.fileExists(atPath: MotionAnalysisStore.url(forRecording: take).path(percentEncoded: false)))
+    }
+
     @Test func thePauseReasons() {
         #expect(MotionAnalysisPause.reason(isActive: false, thermal: .nominal) == .background)
         #expect(MotionAnalysisPause.reason(isActive: true, thermal: .critical) == .heat)

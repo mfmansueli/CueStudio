@@ -35,8 +35,9 @@ extension QuickEditViewModel {
     var stabilizationZoomNote: String? {
         guard let clip = targetClip, let level = clip.stabilization else { return nil }
         let url = clip.sourceID.flatMap { id in edit.sources.first { $0.id == id } }.map { EditMediaFiles.url(for: $0.fileName) } ?? videoURL
-        guard let analysis = MotionAnalysisStore.complete(forRecording: url) else { return nil }
-        guard let path = StabilizationPath.make(analysis, level: level) else {
+        // Both read from memory while the analysis file doesn't change (the panel asks on every redraw).
+        guard MotionAnalysisStore.complete(forRecording: url) != nil else { return nil }
+        guard let path = MotionAnalysisStore.stabilizationPath(forRecording: url, level: level) else {
             return String(localized: "No shake found in this clip")
         }
         let percent = Int(((path.zoom - 1) * 100).rounded())

@@ -27,7 +27,9 @@ nonisolated enum BeatStore {
         return BeatTracker.Result(beats: stored.beats, tempo: stored.tempo)
     }
 
+    /// Keeps the beats next to the file; nothing when the file is gone (removed while its beats were being found).
     static func save(_ result: BeatTracker.Result, forSound fileName: String) {
+        guard FileManager.default.fileExists(atPath: EditMediaFiles.url(for: fileName).path(percentEncoded: false)) else { return }
         var file = url(forSound: fileName)
         guard let data = try? JSONEncoder().encode(Stored(tempo: result.tempo, beats: result.beats.map { ($0 * 1000).rounded() / 1000 })) else { return }
         try? data.write(to: file, options: .atomic)

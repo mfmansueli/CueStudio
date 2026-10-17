@@ -357623,6 +357623,125 @@
         }
       }
     },
+    "The video changed meanwhile · Track it again" : {
+      "comment" : "Toast: the video or the item changed while Track followed the object",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تغيّر الفيديو في الأثناء · تتبّعه مجددًا"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Videoen ændrede sig imens · Spor igen"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Das Video hat sich inzwischen geändert · Verfolge es noch einmal"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El video cambió mientras tanto · Vuelve a seguirlo"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La vidéo a changé entre-temps · Relancez le suivi"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "इस बीच वीडियो बदल गया · फिर से ट्रैक करें"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Video berubah sementara itu · Lacak lagi"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Il video è cambiato nel frattempo · Rifai il tracciamento"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "その間に動画が変わりました · もう一度トラッキングしてください"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "그사이 동영상이 바뀌었어요 · 다시 추적하세요"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Videoen endret seg imens · Spor på nytt"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "De video is intussen veranderd · Volg opnieuw"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O vídeo mudou nesse meio-tempo · Rastreie de novo"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Videon ändrades under tiden · Spåra igen"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "วิดีโอเปลี่ยนไประหว่างนั้น · ติดตามอีกครั้ง"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu arada video değişti · Yeniden takip et"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Video đã thay đổi trong lúc đó · Hãy theo dõi lại"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "视频在此期间已更改 · 请重新跟踪"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "影片在此期間已變更 · 請重新追蹤"
+          }
+        }
+      }
+    },
     "The video is exported without a cover image." : {
       "comment" : "Cover Studio: what removing the cover does",
       "localizations" : {
@@ -412104,6 +412223,125 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "你的想法，Cue 的草稿。"
+          }
+        }
+      }
+    },
+    "Your iPhone is too warm to finish this video. Let it cool down, then export again." : {
+      "comment" : "Error: the iPhone got too hot to finish the motion analysis Follow face or Stabilize needs for an export",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "جهاز iPhone ساخن جدًا لإنهاء هذا الفيديو. اتركه يبرد، ثم صدّر مجددًا."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Din iPhone er for varm til at gøre videoen færdig. Lad den køle af, og eksportér igen."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dein iPhone ist zu warm, um dieses Video fertigzustellen. Lass es abkühlen und exportiere dann erneut."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tu iPhone está demasiado caliente para terminar este video. Deja que se enfríe y vuelve a exportar."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Votre iPhone est trop chaud pour terminer cette vidéo. Laissez-le refroidir, puis exportez à nouveau."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "आपका iPhone यह वीडियो पूरा करने के लिए बहुत गर्म है। उसे ठंडा होने दें, फिर से एक्सपोर्ट करें।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iPhone Anda terlalu panas untuk menyelesaikan video ini. Biarkan dingin, lalu ekspor lagi."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Il tuo iPhone è troppo caldo per finire questo video. Lascialo raffreddare, poi esporta di nuovo."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iPhoneが熱くなりすぎて、この動画を仕上げられません。冷めてから、もう一度書き出してください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iPhone이 너무 뜨거워서 이 동영상을 완성할 수 없어요. 식힌 다음 다시 내보내세요."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iPhonen er for varm til å gjøre ferdig videoen. La den kjøle seg ned, og eksporter på nytt."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Je iPhone is te warm om deze video af te maken. Laat hem afkoelen en exporteer dan opnieuw."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seu iPhone está quente demais para terminar este vídeo. Deixe esfriar e exporte de novo."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Din iPhone är för varm för att göra klart videon. Låt den svalna och exportera sedan igen."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iPhone ของคุณร้อนเกินกว่าจะทำวิดีโอนี้ให้เสร็จ ปล่อยให้เย็นลงแล้วส่งออกอีกครั้ง"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iPhone'un bu videoyu bitirmek için fazla ısındı. Soğumasını bekle, sonra yeniden dışa aktar."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iPhone của bạn quá nóng để hoàn tất video này. Hãy để máy nguội rồi xuất lại."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iPhone 温度过高，无法完成此视频。请等它冷却后再导出。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iPhone 溫度過高，無法完成此影片。請等它冷卻後再匯出。"
           }
         }
       }

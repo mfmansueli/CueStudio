@@ -23,6 +23,7 @@ final class FakeMotionAnalyzer: MotionAnalyzing, @unchecked Sendable {
     /// Each call: the recording and where it started.
     var calls: [(URL, TimeInterval)] { state.withLock { $0 } }
 
+    @concurrent
     func analyze(
         videoAt url: URL, continuing analysis: MotionAnalysis?, shouldStop: @escaping @Sendable () -> Bool,
         checkpoint: @escaping @Sendable (MotionAnalysis) -> Void

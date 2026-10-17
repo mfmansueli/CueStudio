@@ -9,7 +9,8 @@ import Foundation
 nonisolated protocol MotionAnalyzing: Sendable {
     /// Analyzes the video at `url` from where `analysis` stopped (from the start without one, or with one of another version).
     /// Hands what's done to `checkpoint` every few seconds of video, and returns early, with what's done, as soon as
-    /// `shouldStop` says so. Throws when the video can't be read.
+    /// `shouldStop` says so. Throws when the video can't be read. Runs off the caller's actor (it reads the whole video).
+    @concurrent
     func analyze(
         videoAt url: URL, continuing analysis: MotionAnalysis?, shouldStop: @escaping @Sendable () -> Bool,
         checkpoint: @escaping @Sendable (MotionAnalysis) -> Void

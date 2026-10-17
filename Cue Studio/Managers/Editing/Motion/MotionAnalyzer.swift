@@ -17,7 +17,8 @@ nonisolated final class MotionAnalyzer: MotionAnalyzing, @unchecked Sendable {
 
     /// Long side of the copy every frame is analyzed on, in pixels.
     static let side: CGFloat = 512
-    /// Seconds of video between two checkpoints.
+    /// Least seconds of video between two checkpoints; a long video saves every twentieth of its length (each save writes
+    /// the whole analysis so far).
     private let checkpointInterval: TimeInterval
     private let context = CIContext(options: [.cacheIntermediates: false, .name: "studio.cue.motion"])
 
@@ -25,6 +26,7 @@ nonisolated final class MotionAnalyzer: MotionAnalyzing, @unchecked Sendable {
         self.checkpointInterval = checkpointInterval
     }
 
+    @concurrent
     func analyze(
         videoAt url: URL, continuing previous: MotionAnalysis?, shouldStop: @escaping @Sendable () -> Bool,
         checkpoint: @escaping @Sendable (MotionAnalysis) -> Void
@@ -77,7 +79,8 @@ nonisolated final class MotionAnalyzer: MotionAnalyzing, @unchecked Sendable {
         var lastSubject: SubjectSample?
         var lastFrame = -Double.infinity
         var nextSubject = analysis.subjects.last.map { $0.time + MotionAnalysis.subjectInterval } ?? 0
-        var nextCheckpoint = resumeAt + checkpointInterval
+        let interval = max(checkpointInterval, analysis.duration / 20)
+        var nextCheckpoint = resumeAt + interval
         let faces = VNDetectFaceRectanglesRequest()
         let bodies = VNDetectHumanRectanglesRequest()
         bodies.upperBodyOnly = false
@@ -113,7 +116,7 @@ nonisolated final class MotionAnalyzer: MotionAnalyzing, @unchecked Sendable {
             analysis.analyzedUntil = max(analysis.analyzedUntil, time)
             if time >= nextCheckpoint {
                 checkpoint(analysis)
-                nextCheckpoint = time + checkpointInterval
+                nextCheckpoint = time + interval
             }
         }
         analysis.analyzedUntil = analysis.duration

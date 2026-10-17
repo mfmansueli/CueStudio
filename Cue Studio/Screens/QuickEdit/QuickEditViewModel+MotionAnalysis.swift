@@ -6,7 +6,8 @@
 import Foundation
 
 /// The recordings' motion analysis (`MotionAnalysisService`): asked for every recording the edit plays when the editor opens
-/// (so Follow face and Stabilize are ready by the time they're wanted), and the preview drawn again when one is ready.
+/// (so Follow face and Stabilize are ready by the time they're wanted) and for each new one it plays while it uses them (a clip
+/// reversed or replaced, a new clip of a montage), and the preview drawn again when one is ready.
 extension QuickEditViewModel {
     /// The take's recording and the other recordings the edit plays.
     var playedRecordingURLs: [URL] {
@@ -18,7 +19,18 @@ extension QuickEditViewModel {
 
     /// Asks for the analysis of every recording the edit plays that doesn't have one.
     func requestMotionAnalysis() {
-        motion?.request(playedRecordingURLs)
+        let urls = playedRecordingURLs
+        motionRequestedURLs = urls
+        motion?.request(urls)
+    }
+
+    /// The edit changed: while Follow face or Stabilize is on, a recording it plays now that wasn't asked for is (so the
+    /// preview draws it as the export will).
+    func requestMotionAnalysisIfNeeded() {
+        guard motion != nil, EditedComposition.usesMotion(edit) else { return }
+        let urls = playedRecordingURLs
+        guard !Set(urls).isSubset(of: motionRequestedURLs) else { return }
+        requestMotionAnalysis()
     }
 
     /// An analysis is ready: the preview is drawn again when the edit reads one.
