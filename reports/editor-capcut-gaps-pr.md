@@ -32,8 +32,12 @@ Builds on `feature/editor-award` and `feature/export-reliability` (from `afce6f9
   `QuickEditReplaceClipTests`, `QuickEditExtractAudioTests`, `PluralStringsTests`; real files: `SoundExtractorTests`, `FreezeFrameHDRTests`
   (its HLG export case runs only on an iPhone: the Simulator's VideoToolbox can't convert HLG to BGRA, `-12905`).
 - New UI tests: `CaptionToolsUITests` (find and replace in `UISmoke`; select lines), `ExtractAudioUITests`.
-- Every touched suite passes on the Simulator with `scripts/test.sh only`. **Not run yet:** `scripts/check-warnings.sh`, the Full plan and the
-  device suites (the test phase that follows).
+- Test phase, run on `feature/editor-motion`, which contains this branch whole:
+  - `scripts/check-warnings.sh` reports no warnings on the Simulator, device and Release builds.
+  - Full: 3,862 tests passed. Two export tests timed out under the parallel plan's load and pass when run alone; one stale UI label was fixed.
+  - `FreezeFrameHDRTests`: 3/3 on an iPhone 15 Pro, including the HLG export.
+  - Contrast measured on captures of the new screens. The Find and replace prompt was raised from 4.3 to 5.1:1.
+  - Two review fixes: Replace keeps what plays on the other part of a cut clip, and Extract audio on a muted clip no longer doubles the voice.
 
 ## Not in this PR
 
