@@ -4,9 +4,8 @@ Branch `feature/editor-motion` (a partir de `afce6f9`, que tem `feature/editor-a
 (iPhone 15 Pro, iOS 27). Estado de cada tela: `DESIGN_PROJECT.md` §39 (e as barras em §37). Descrição do PR: `reports/editor-motion-pr.md`.
 
 **Mudança de prioridade no meio da tarefa (pedido do dono, pela sessão principal):** programar as seis funções, com só os protótipos de aparelho
-que decidem o desenho e os testes de unidade de cada pedaço. **Ficou para a fase de testes** (não rodei): `scripts/check-warnings.sh`, o plano
-Full, as rodadas de UI (rodei só `EditorMotionUITests`, 2/2), a instalação no iPhone e `xcrun simctl --set testing delete all` (outro agente
-usava o Simulador ao mesmo tempo; apagar os clones derrubaria os testes dele).
+que decidem o desenho e os testes de unidade de cada pedaço. A fase de testes (check-warnings, Full, UI, capturas e contraste, aparelho,
+instalação) foi feita depois pela sessão principal: ver "Fase de testes" no fim de "Testes rodados".
 
 Tudo no iPhone: Vision, AVFoundation, Core Image e Accelerate. Nenhuma dependência nova, nenhum serviço pago, nada na nuvem.
 
@@ -132,6 +131,19 @@ removido), Beats na barra da música (só música dos Files; efeitos sonoros e s
   rosto, Estabilizar, curvas e reverso: todas aprovadas.
 - **UI:** `EditorMotionUITests` 2/2 (Format › Follow face e ritmo com desfazer; Stabilize, Speed › Curve › Hero com o editor e Reverse).
 - **Aparelho:** `MotionAnalysisDeviceTests` 1/1, `EditorMotionDeviceTests` 6/6.
+- **Fase de testes (17/10, sessão principal, no estado final com `feature/editor-capcut-gaps` dentro):**
+  - `scripts/check-warnings.sh`: sem nenhum warning (Simulador, aparelho e Release).
+  - Full em `60cb278`: 3.862 aprovados, 3 falhas explicadas acima (duas exportações sob carga que passam sozinhas, um rótulo antigo corrigido).
+  - UI com capturas: `EditorMotionUITests` 2/2 e `CaptionToolsUITests` 2/2.
+  - **iago Lima iphone (15 Pro):** Seguir rosto e Track de novo no estado final, os dois aprovados. Seguir rosto: take de 33,8 s analisada em
+    9,7 s; exportação 1:1 em 3,9 s → 3,8 s com Seguir rosto, 16:9 em 3,3 s nos dois; o recorte anda no máximo 7,4 px por quadro. Track: 6 s
+    inteiros em 0,5 s (2,5 ms por quadro), a 21 px (p50) e 33 px (p90) do rosto.
+  - **Mansuelli iPhone 18 Pro Max:** `EditorMotionDeviceTests` 4/6.
+    - Estabilizar nos três níveis, a take sacudida e curva + reverso aprovados: curva Hero em 2,4 s contra 1,4 s sem curva, reverso de 10 s em
+      1,7 s, temperatura normal. Batidas: 3 min em 1,03 s, 123 BPM.
+    - Seguir rosto e Track falharam porque a take mais nova desse aparelho é **preta**: brilho médio de 0,0004 a 0,003, medido numa cópia,
+      sem rosto e sem movimento. Pelo mesmo motivo, os números de tremor ali saíram zero e não medem nada. Não é defeito do código: no 15 Pro
+      os mesmos testes passam numa take com rosto.
 - **Warnings:** build do Simulador com todos os arquivos mudados recompilados: 0; SwiftLint nos arquivos mudados: 0. Aparelho e Release não
   conferidos (`check-warnings.sh` fica para a fase de testes).
 - **Textos:** 68 novos nos 20 idiomas (`scripts/strings.py missing`: 0).
@@ -146,8 +158,17 @@ CapCut e InShot; Beats como as marcas de batida do CapCut, mais ímã e cortes a
 ## Contraste
 
 Nenhuma cor nova: tokens de `Palette` (`acc`, `accText` sobre `Editor.accTile`, `ink`, `ink2`, `Editor.panelCard`; `ink3` e `Editor.separator` só
-na grade decorativa do editor de curva; os risquinhos das batidas na cor do rótulo da faixa). Não medi capturas das telas novas (`tools/contrast/
-audit.py`): fica para a fase de testes.
+na grade decorativa do editor de curva; os risquinhos das batidas na cor do rótulo da faixa).
+
+**Medido na imagem renderizada:** as capturas de `EditorMotionUITests` (Format › Follow face, Stabilize, Speed › Curve), medidas pelo
+`tools/contrast/audit.py` e pelo pixel de cada texto.
+- Format › Follow face: "Follow face" e o ritmo escolhido passam de 9:1; Natural e Quick 5,3:1; subtítulo e aviso 6,2:1.
+- Stabilize: os níveis 14,8 a 16:1; Standard escolhido 10,4:1; "No shake found" 6,2:1.
+- Speed › Curve: Normal 5,3:1; Hero escolhido 10,5:1; o rótulo 4× do gráfico 6,2:1; o selo Hero na faixa 10,9:1.
+
+Nenhum par real abaixo do mínimo. As medidas baixas que o `audit.py` lista são de telas escondidas atrás do editor, que continuam na árvore de
+acessibilidade; conferi cada uma na imagem. O único texto real abaixo do mínimo estava em Find and replace (`feature/editor-capcut-gaps`, §7
+do relatório dela): corrigido de 4,3 para 5,1:1.
 
 ## O que NÃO foi validado
 
@@ -164,5 +185,8 @@ audit.py`): fica para a fase de testes.
 ## O que mudou no aparelho
 
 Nada nas takes nem no Fotos: todos os testes de aparelho trabalharam em **cópias** das takes mais novas, na pasta temporária, apagadas no fim de
-cada teste (análises, exportações, reversos e o vídeo sacudido também). O app de testes foi instalado e rodado no iago Lima iphone pelo
-`xcodebuild test` (o app do Cue Studio instalado é o do pacote de testes desta branch até a próxima instalação).
+cada teste (análises, exportações, reversos e o vídeo sacudido também). Para conferir a take preta do 18 Pro Max, baixei uma cópia dela
+para o Mac; a cópia foi apagada no fim e o original não foi tocado.
+
+**Instalado (17/10):** esta branch, com tudo dentro (editor-award, export-reliability, capcut-gaps e movimento), em build Debug, no **iago Lima
+iphone** (aberto) e no **Mansuelli iPhone 18 Pro Max** (instalado; não abriu porque estava bloqueado).

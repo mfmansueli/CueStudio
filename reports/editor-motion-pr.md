@@ -28,7 +28,7 @@ Six Quick edit tools that read the video's motion, all on the iPhone (Vision, AV
 
 Unit (Swift Testing): analyzer, service, paths, tracker, curves, beats, reverse, editor view models; real exports for Follow face, Stabilize, curves (frame timing and sound) and Reverse; UI `EditorMotionUITests`; device suites `MotionAnalysisDeviceTests`, `EditorMotionDeviceTests`.
 
-**Not run in this branch (left for the testing phase):** `scripts/check-warnings.sh`, the Full plan, the UI suites (only `EditorMotionUITests` ran, 2/2), installing on the iPhone. The Fast plan passed after the fixes (see the report).
+**Testing phase (with `feature/editor-capcut-gaps` merged in):** `scripts/check-warnings.sh` clean (Simulator, device, Release); Full 3,862 passed, the 3 failures explained in the report (two exports timing out under the parallel plan's load that pass alone, one stale UI label fixed); Fast passed after the review fixes; contrast measured on captures of the new panels (no pair under the minimum; one placeholder in Find and replace fixed from 4.3 to 5.1:1); Follow face and Track re-run on the iPhone 15 Pro, Stabilize, curves, Reverse and Beats on an iPhone 18 Pro Max (whose newest take is black, so its face checks are not a measure).
 
 **Not validated:** stabilization on a genuinely shaky take (the owner's are steady; validated on a real frame shaken in a known way), curve sound on real speech, Track on non-face objects, beats on real music, 60 fps and other devices' videos, the iPhone 15 (A16).
 
