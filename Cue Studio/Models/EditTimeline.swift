@@ -671,22 +671,25 @@ nonisolated struct EditTimeline: Codable, Hashable, Sendable {
     /// (after a split or a Clean Up cut the piece has a new identity). The stretch keeps its
     /// length at the piece's speed and can run past the piece; nil when no piece holds it.
     func editedSpan(forSource span: TimeSpan, anchoredTo anchor: ClipAnchor) -> TimeSpan? {
-        let holding = segments.indices.filter { index in
-            let segment = segments[index]
-            return segment.sourceID == anchor.sourceID && segment.sourceStart - 0.000_001 <= span.start && span.start < segment.sourceEnd
-        }
-        var chosen = holding.first { segments[$0].id == anchor.segmentID } ?? holding.first
-        // The start was trimmed off its piece: it shows from the piece's start while the rest plays.
-        if chosen == nil, let index = self.index(ofSegment: anchor.segmentID), segments[index].span.overlaps(span) {
-            chosen = index
-        }
-        guard let index = chosen else { return nil }
+        guard let index = segmentIndex(holding: span, anchoredTo: anchor) else { return nil }
         let segment = segments[index]
         let from = max(span.start, segment.sourceStart)
         let start = editedStart(ofSegmentAt: index) + (from - segment.sourceStart) / segment.speed
         let end = min(editedDuration, start + max(0, span.end - from) / segment.speed)
         guard end - start > 0.000_1 else { return nil }
         return TimeSpan(start: start, end: end)
+    }
+
+    /// The index of the piece a stretch pinned to `anchor` plays in (see above); nil when none holds it.
+    func segmentIndex(holding span: TimeSpan, anchoredTo anchor: ClipAnchor) -> Int? {
+        let holding = segments.indices.filter { index in
+            let segment = segments[index]
+            return segment.sourceID == anchor.sourceID && segment.sourceStart - 0.000_001 <= span.start && span.start < segment.sourceEnd
+        }
+        if let chosen = holding.first(where: { segments[$0].id == anchor.segmentID }) ?? holding.first { return chosen }
+        // The start was trimmed off its piece: it shows from the piece's start while the rest plays.
+        if let index = self.index(ofSegment: anchor.segmentID), segments[index].span.overlaps(span) { return index }
+        return nil
     }
 
     /// The piece and the stretch of its recording that play from `span`'s start (edited seconds),

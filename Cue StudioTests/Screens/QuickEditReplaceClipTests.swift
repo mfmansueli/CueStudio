@@ -130,6 +130,30 @@ struct QuickEditReplaceClipTests {
         #expect(abs(after.start - shown.start) < 0.000_1 && abs(after.end - shown.end) < 0.000_1)
     }
 
+    @Test func whatPlaysOnTheOtherPartOfACutClipStaysThere() async throws {
+        let scenario = await makeScenario()
+        let viewModel = scenario.viewModel
+        let id = middleClip(scenario)
+        // Replacing the first clip arranges the edit, so a text placed now is pinned to its clip.
+        viewModel.replaceClip(viewModel.edit.timeline.segments[0].id, with: video(30))
+        // A text 3 s into the middle clip (the take from 10 s, at 2×: the take's 16 s), then the clip cut 1 s in: the text
+        // plays on the right part, still pinned to the left one (a cut keeps the left part's identity).
+        let start = viewModel.edit.timeline.editedStart(ofSegmentAt: 1)
+        let pinned = viewModel.edit.pin(TimeSpan(start: start + 3, end: start + 4))
+        #expect(pinned.anchor?.segmentID == id)
+        var text = viewModel.edit.newText(.title, span: pinned.span)
+        text.clipAnchor = pinned.anchor
+        text.text = "Hello"
+        viewModel.change { $0.texts = [text] }
+        scenario.player.currentTime = start + 1
+        viewModel.cut()
+        let shown = try #require(viewModel.edit.editedTexts(in: viewModel.edit.timeline).first?.span)
+        viewModel.replaceClip(id, with: video(30))
+        #expect(viewModel.edit.texts.first?.clipAnchor == pinned.anchor)
+        let after = try #require(viewModel.edit.editedTexts(in: viewModel.edit.timeline).first?.span)
+        #expect(abs(after.start - shown.start) < 0.000_1 && abs(after.end - shown.end) < 0.000_1)
+    }
+
     @Test func replaceAsksPhotosForAVideoOfThePickedClip() async {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel

@@ -50,9 +50,10 @@ extension QuickEditViewModel {
         importedFiles.insert(imported.fileName)
         let source = ClipSource(fileName: imported.fileName, duration: duration, title: String(localized: "Video"))
         var next = arranged(edit)
+        let before = next.timeline
         guard let old = next.timeline.replaceSource(ofSegment: id, with: source.id, duration: duration) else { return }
         next.sources.append(source)
-        next.moveOverlays(onSegment: id, from: old, to: source.id)
+        next.moveOverlays(onSegment: id, from: old, to: source.id, in: before)
         commit(EditSnapshot(next))
         if let index = next.timeline.index(ofSegment: id) { player.seek(to: next.timeline.editedStart(ofSegmentAt: index)) }
         let shorter = duration + 0.05 < segment.sourceLength
