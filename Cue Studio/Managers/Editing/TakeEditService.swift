@@ -109,7 +109,7 @@ final class TakeEditService: TakeEditing {
         let treated = try await RecordingSounds.prepare(for: edit, takeURL: url, cache: sounds)
         let composition = try await EditedComposition.build(
             source: url, edit: edit, sound: treated, speech: await voiceActivity(for: url, edit: edit),
-            options: .init(burnsInCaptions: true, shortSide: 1080, window: window)
+            options: .init(burnsInCaptions: true, shortSide: 1080, window: window, analyzesMissingMotion: false)
         )
         let item = AVPlayerItem(asset: composition.asset)
         item.videoComposition = composition.videoComposition

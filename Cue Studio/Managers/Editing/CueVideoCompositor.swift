@@ -147,7 +147,7 @@ final class CueVideoCompositor: NSObject, AVVideoCompositing, @unchecked Sendabl
         let stretch = instruction.timeRange.start.seconds
         var image = framed(
             source, frame: instruction.frame, cropFit: instruction.edit.cropFit, look: instruction.look, faces: faces, key: "main-\(moment)",
-            moment: SmoothingMoment(stream: .main, stretch: stretch, time: time)
+            moment: SmoothingMoment(stream: .main, stretch: stretch, time: time), sourceTime: instruction.sourceTime(at: time)
         )
         if let zoom = instruction.zoom {
             image = zoomed(image, by: CGFloat(zoom.scale(at: time)))
@@ -156,7 +156,7 @@ final class CueVideoCompositor: NSObject, AVVideoCompositing, @unchecked Sendabl
             let otherSide = framed(
                 other, frame: instruction.blendFrame ?? instruction.frame, cropFit: instruction.edit.cropFit,
                 look: instruction.blendLook ?? instruction.look, faces: faces, key: "blend-\(moment)",
-                moment: SmoothingMoment(stream: .blend, stretch: stretch, time: time)
+                moment: SmoothingMoment(stream: .blend, stretch: stretch, time: time), sourceTime: dissolve.otherSideSourceTime(at: time)
             )
             // Before the cut the main track still shows the outgoing piece; after it, the incoming one.
             let (outgoing, incoming) = time < dissolve.cut ? (image, otherSide) : (otherSide, image)
@@ -205,20 +205,25 @@ final class CueVideoCompositor: NSObject, AVVideoCompositing, @unchecked Sendabl
         return image
     }
 
+    // swiftlint:disable function_parameter_count
     /// A frame of a recording upright, cropped and scaled to the take's frame, with its background
     /// effect, Adjust and Filters (`look`: the clip's own over the take's). `key` names the moment,
-    /// for the person masks kept.
+    /// for the person masks kept; `sourceTime` is the moment of the recording it shows (where Follow face has the crop).
     nonisolated private static func framed(
         _ source: CVPixelBuffer, frame: SourceFrame, cropFit: CropFit, look: LookSettings, faces: (masker: PersonMasker, skin: SkinSmoother),
-        key: String, moment: SmoothingMoment
+        key: String, moment: SmoothingMoment, sourceTime: TimeInterval
     ) -> CIImage {
         var image = CIImage(cvPixelBuffer: source).transformed(by: uprightTransform(frame.transform, sourceHeight: CGFloat(CVPixelBufferGetHeight(source))))
         image = image.transformed(by: CGAffineTransform(translationX: -image.extent.minX, y: -image.extent.minY))
+        if let steady = frame.steady {
+            image = steadied(image, by: steady, at: sourceTime)
+        }
         if cropFit == .fit {
             image = fitted(image, into: frame.crop.size)
         } else {
-            image = image.cropped(to: frame.crop)
-                .transformed(by: CGAffineTransform(translationX: -frame.crop.minX, y: -frame.crop.minY))
+            let crop = frame.cropRect(at: sourceTime)
+            image = image.cropped(to: crop)
+                .transformed(by: CGAffineTransform(translationX: -crop.minX, y: -crop.minY))
         }
         if abs(frame.scale - 1) > 0.000_1 {
             image = image.transformed(by: CGAffineTransform(scaleX: frame.scale, y: frame.scale))
@@ -231,6 +236,23 @@ final class CueVideoCompositor: NSObject, AVVideoCompositing, @unchecked Sendabl
             }
         }
         return FrameLook.apply(look, to: image, skin: smoothing)
+    }
+    // swiftlint:enable function_parameter_count
+
+    /// Stabilize: the upright frame moved and turned onto the smooth path, zoomed in to hide its edges, cut back to its size.
+    nonisolated static func steadied(_ image: CIImage, by path: StabilizationPath, at time: TimeInterval) -> CIImage {
+        let extent = image.extent
+        let correction = path.correction(at: time)
+        let center = CGPoint(x: extent.midX, y: extent.midY)
+        let zoom = CGFloat(path.zoom)
+        // Down on screen is −y in Core Image, clockwise is a negative angle.
+        let transform = CGAffineTransform(translationX: -center.x, y: -center.y)
+            .concatenating(CGAffineTransform(rotationAngle: -CGFloat(correction.angle)))
+            .concatenating(CGAffineTransform(scaleX: zoom, y: zoom))
+            .concatenating(CGAffineTransform(
+                translationX: center.x + CGFloat(correction.dx) * extent.width, y: center.y - CGFloat(correction.dy) * extent.height
+            ))
+        return image.clampedToExtent().transformed(by: transform).cropped(to: extent)
     }
 
     /// Crop › Fit: the whole upright frame scaled to fit in `size`, centered on black.

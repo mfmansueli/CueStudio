@@ -44,6 +44,9 @@ nonisolated struct EditedComposition: @unchecked Sendable {
         /// Where the edit itself is in `edit.timeline`: the preview plays the timeline grown to the
         /// whole recording and holds playback here. Nil when the timeline is the edit.
         var window: TimeSpan?
+        /// Makes the motion analyses Follow face and stabilization need when they're missing (an export); the preview draws
+        /// with the ones ready.
+        var analyzesMissingMotion = true
     }
 
     /// A volume ramp on the edited timeline.
@@ -95,12 +98,15 @@ nonisolated struct EditedComposition: @unchecked Sendable {
         let audio = hasSound ? composition.addMutableTrack(withMediaType: .audio, preferredTrackID: kCMPersistentTrackID_Invalid) : nil
         // Clips sped up or slowed down without "Keep voice pitch" play on their own sound track,
         // whose pitch follows the speed.
-        let playsVarispeed: (EditSegment) -> Bool = { !$0.keepsPitch && abs($0.speed - 1) > 0.000_1 }
+        let playsVarispeed: (EditSegment) -> Bool = { !$0.keepsPitch && $0.changesSpeed }
         let varispeed = hasSound && edit.timeline.segments.contains(where: playsVarispeed)
             ? composition.addMutableTrack(withMediaType: .audio, preferredTrackID: kCMPersistentTrackID_Invalid)
             : nil
+        // Curved clips get their sound rendered along the curve (see `CurveSoundRenderer`).
+        let (curveAssets, curveSounds) = await curveSounds(for: edit.timeline, take: source, sound: recordingSound(of:))
+        defer { withExtendedLifetime(curveAssets) {} }
         let cursor = try insertPieces(
-            of: edit.timeline, recording: recording, sound: recordingSound(of:), video: video,
+            of: edit.timeline, recording: recording, sound: recordingSound(of:), curveSounds: curveSounds, video: video,
             soundTrack: { playsVarispeed($0) ? varispeed : audio }
         )
         var takeTracks: [(track: AVMutableCompositionTrack, levels: [Fade], pitch: AVAudioTimePitchAlgorithm?)] = []
@@ -133,17 +139,31 @@ nonisolated struct EditedComposition: @unchecked Sendable {
             backgrounds[id] = BackgroundRender.prepare(effect, cacheKey: build + (id?.uuidString ?? "take"))
         }
         let ownBackgrounds = clipBackgrounds(of: edit.timeline, build: build)
+        let analyses = await motionAnalyses(take: source, edit: edit, analyzesMissing: options.analyzesMissingMotion)
+        var follows: [UUID?: FaceFollowPath] = [:]
         func frame(_ id: UUID?) -> SourceFrame {
             guard let played = recording(id) else { return SourceFrame(transform: .identity, crop: crop, scale: 1) }
             let own = id == nil ? crop : cropRect(for: played, edit: edit)
-            return SourceFrame(
+            var result = SourceFrame(
                 transform: played.transform, crop: own, scale: own.width > 0 ? crop.width / own.width : 1,
                 background: backgrounds[id] ?? nil
             )
+            result.uprightSize = played.uprightSize
+            if follows[id] == nil, let path = followPath(for: edit, analysis: analyses[id], crop: own, size: played.uprightSize) {
+                follows[id] = path
+            }
+            result.follow = follows[id]
+            return result
         }
+        var steadyPaths: [String: StabilizationPath] = [:]
         func frame(of segment: EditSegment) -> SourceFrame {
             var result = frame(segment.sourceID)
             if let own = ownBackgrounds[segment.id] { result.background = own }
+            if let level = segment.stabilization, let analysis = analyses[segment.sourceID] {
+                let key = (segment.sourceID?.uuidString ?? "take") + level.rawValue
+                if steadyPaths[key] == nil { steadyPaths[key] = StabilizationPath.make(analysis, level: level) }
+                result.steady = steadyPaths[key]
+            }
             return result
         }
         var overlays = TextOverlayRenderer.overlays(edit.editedTexts(in: edit.timeline), frame: crop.size)
@@ -225,8 +245,8 @@ nonisolated struct EditedComposition: @unchecked Sendable {
     /// Lays the timeline's pieces one after the other: picture on `video`, sound on the track
     /// `soundTrack` picks for each, each stretched to its speed. Returns where the edit ends.
     private static func insertPieces(
-        of timeline: EditTimeline, recording: (UUID?) -> Recording?, sound soundOf: (UUID?) -> AVAssetTrack?, video: AVMutableCompositionTrack,
-        soundTrack track: (EditSegment) -> AVMutableCompositionTrack?
+        of timeline: EditTimeline, recording: (UUID?) -> Recording?, sound soundOf: (UUID?) -> AVAssetTrack?,
+        curveSounds: [UUID: AVAssetTrack] = [:], video: AVMutableCompositionTrack, soundTrack track: (EditSegment) -> AVMutableCompositionTrack?
     ) throws -> CMTime {
         var cursor = CMTime.zero
         for segment in timeline.segments {
@@ -239,7 +259,13 @@ nonisolated struct EditedComposition: @unchecked Sendable {
             if let played = recording(segment.sourceID) {
                 try video.insertTimeRange(range, of: played.video, at: cursor)
                 let sound = soundOf(segment.sourceID)
-                if let soundTrack, let sound {
+                if let soundTrack, let rendered = curveSounds[segment.id] {
+                    // Already as long as the curve makes it: laid in as it is.
+                    let filled = soundTrack.timeRange.end
+                    if CMTimeCompare(cursor, filled) > 0 { soundTrack.insertEmptyTimeRange(CMTimeRange(start: filled, end: cursor)) }
+                    let length = CMTime(seconds: segment.duration, preferredTimescale: 60_000)
+                    try? soundTrack.insertTimeRange(CMTimeRange(start: .zero, duration: length), of: rendered, at: cursor)
+                } else if let soundTrack, let sound {
                     let filled = soundTrack.timeRange.end
                     if CMTimeCompare(cursor, filled) > 0 { soundTrack.insertEmptyTimeRange(CMTimeRange(start: filled, end: cursor)) }
                     soundInserted = (try? soundTrack.insertTimeRange(range, of: sound, at: cursor)) != nil
@@ -248,7 +274,13 @@ nonisolated struct EditedComposition: @unchecked Sendable {
                 video.insertEmptyTimeRange(CMTimeRange(start: cursor, duration: range.duration))
             }
             var length = range.duration
-            if abs(segment.speed - 1) > 0.000_1 {
+            if let curve = segment.speedCurve {
+                // Along a curve: stretched a short step at a time, each at the curve's speed there.
+                length = scaleAlong(
+                    curve, inserted: range.duration, at: cursor, video: recording(segment.sourceID) != nil ? video : nil,
+                    sound: soundInserted ? soundTrack : nil
+                )
+            } else if abs(segment.speed - 1) > 0.000_1 {
                 // Faster or slower: the piece is stretched in place, picture and sound together.
                 let inserted = CMTimeRange(start: cursor, duration: range.duration)
                 length = CMTime(seconds: segment.duration, preferredTimescale: 600)
@@ -258,6 +290,40 @@ nonisolated struct EditedComposition: @unchecked Sendable {
             cursor = CMTimeAdd(cursor, length)
         }
         return cursor
+    }
+
+    /// Steps a curve is played in, per edited second: the speed changes 30 times a second, a frame at a time, so neither the
+    /// picture nor the sound shows a step.
+    static let curveStepsPerSecond = 30.0
+
+    /// Stretches the piece just inserted at `start` (`inserted` long, as filmed) along `curve`, on the
+    /// tracks given: step by step, each step of the recording scaled to the time the curve gives it. Returns its length in the
+    /// edit.
+    private static func scaleAlong(
+        _ curve: SpeedCurve, inserted: CMTime, at start: CMTime, video: AVMutableCompositionTrack?, sound: AVMutableCompositionTrack?
+    ) -> CMTime {
+        let scale: CMTimeScale = 60_000
+        let sourceLength = inserted.seconds
+        let edited = curve.editedLength(sourceLength: sourceLength)
+        let steps = max(4, Int((edited * curveStepsPerSecond).rounded(.up)))
+        var position = start
+        var sourceDone = CMTime.zero
+        var editedDone = CMTime.zero
+        for step in 1...steps {
+            let editedEnd = CMTime(seconds: edited * Double(step) / Double(steps), preferredTimescale: scale)
+            let sourceEnd = step == steps
+                ? inserted
+                : CMTime(seconds: curve.sourceOffset(forEdited: editedEnd.seconds, sourceLength: sourceLength), preferredTimescale: scale)
+            let piece = CMTimeRange(start: position, duration: CMTimeSubtract(sourceEnd, sourceDone))
+            let target = CMTimeSubtract(editedEnd, editedDone)
+            guard CMTimeCompare(piece.duration, .zero) > 0, CMTimeCompare(target, .zero) > 0 else { continue }
+            video?.scaleTimeRange(piece, toDuration: target)
+            sound?.scaleTimeRange(piece, toDuration: target)
+            position = CMTimeAdd(position, target)
+            sourceDone = sourceEnd
+            editedDone = editedEnd
+        }
+        return CMTimeSubtract(position, start)
     }
 
     /// A recording's video and sound, and how its frames stand. Keeps its asset: its tracks can't
@@ -301,7 +367,7 @@ nonisolated struct EditedComposition: @unchecked Sendable {
         var marks: [CMTime] = []
         for index in segments.indices.dropFirst()
         where segments[index].sourceID != segments[index - 1].sourceID || segments[index].zoom != nil || segments[index - 1].zoom != nil
-            || segments[index].look != segments[index - 1].look {
+            || segments[index].look != segments[index - 1].look || segments[index].stabilization != segments[index - 1].stabilization {
             marks.append(CMTime(seconds: timeline.editedStart(ofSegmentAt: index), preferredTimescale: 600))
         }
         guard !marks.isEmpty else { return stretches }

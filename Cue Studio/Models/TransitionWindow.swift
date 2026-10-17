@@ -44,6 +44,12 @@ nonisolated struct TransitionWindow: Hashable, Sendable {
         return min(max(0, (time - start) / (2 * halfDuration)), 1)
     }
 
+    /// The moment of its recording the other side of a dissolve shows at `time`: before the cut, the incoming piece from before
+    /// its start; after it, the outgoing one running on past its end (each at its own speed).
+    func otherSideSourceTime(at time: TimeInterval) -> TimeInterval {
+        time < cut ? incomingStart - (cut - time) * incomingSpeed : outgoingEnd + (time - cut) * outgoingSpeed
+    }
+
     /// How dark a fade is at `time`: 0 outside it, 1 on the cut.
     func blackness(at time: TimeInterval) -> Double {
         guard transition == .fade, halfDuration > 0 else { return 0 }
@@ -78,13 +84,15 @@ nonisolated struct TransitionWindow: Hashable, Sendable {
             var half = min(asked / 2, outgoing.duration / 2 - margin, incoming.duration / 2 - margin)
             if transition.showsBothSides {
                 let outgoingLength = timeline.duration(ofSource: outgoing.sourceID)
-                half = min(half, (outgoingLength - outgoing.sourceEnd) / outgoing.speed, incoming.sourceStart / incoming.speed)
+                half = min(
+                    half, (outgoingLength - outgoing.sourceEnd) / outgoing.edgeSpeed(atStart: false), incoming.sourceStart / incoming.edgeSpeed(atStart: true)
+                )
             }
             guard 2 * half >= shortest - 0.000_1 else { continue }
             windows.append(TransitionWindow(
                 transition: transition, join: index, cut: cut, halfDuration: half,
                 outgoingEnd: outgoing.sourceEnd, incomingStart: incoming.sourceStart,
-                outgoingSpeed: outgoing.speed, incomingSpeed: incoming.speed,
+                outgoingSpeed: outgoing.edgeSpeed(atStart: false), incomingSpeed: incoming.edgeSpeed(atStart: true),
                 outgoingSource: outgoing.sourceID, incomingSource: incoming.sourceID
             ))
         }

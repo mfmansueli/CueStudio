@@ -68,4 +68,10 @@ final class CompositionInstruction: NSObject, AVVideoCompositionInstructionProto
         self.fades = fades
         requiredSourceTrackIDs = ([trackID] + [blendTrackID].compactMap { $0 } + mediaTrackIDs).map { NSNumber(value: $0) }
     }
+
+    /// The moment of its recording the main track shows at `time` (composition seconds): where Follow face and
+    /// stabilization read the recording's analysis.
+    func sourceTime(at time: TimeInterval) -> TimeInterval {
+        edit.timeline.sourceTime(forEdited: time)
+    }
 }

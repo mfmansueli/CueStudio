@@ -27,6 +27,13 @@ final class FakeEditPlayback: EditPlayback {
 
     private var duration: TimeInterval { shown.last?.editedDuration ?? 0 }
 
+    /// How many times the edit was drawn again without changing.
+    private(set) var redraws = 0
+
+    func redraw() {
+        redraws += 1
+    }
+
     func show(_ edit: TakeEdit) {
         if let previous = shown.last, previous.timeline != edit.timeline {
             currentTime = edit.timeline.editedTime(matching: currentTime, in: previous.timeline)

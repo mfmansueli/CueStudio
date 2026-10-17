@@ -30,6 +30,8 @@ protocol EditPlayback: AnyObject {
     /// Plays `edit` from now on, keeping the playhead on the same moment of the recording (or
     /// where the edit picks up, when that moment was cut).
     func show(_ edit: TakeEdit)
+    /// Draws the edit shown again (something it reads besides the edit changed: a recording's motion analysis came in).
+    func redraw()
     func play()
     func pause()
     func togglePlayback()

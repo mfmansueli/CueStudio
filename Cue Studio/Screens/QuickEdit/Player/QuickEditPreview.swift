@@ -170,6 +170,7 @@ struct QuickEditPreview: View {
         DragGesture()
             .onChanged { value in
                 let start = dragStartOffset ?? viewModel.edit.cropOffset
+                if dragStartOffset == nil { viewModel.cropMovedByHand() }
                 dragStartOffset = start
                 let wide = viewModel.edit.aspect.widthOverHeight > 9.0 / 16.0
                 let travel = wide ? value.translation.width / max(1, size.width) : value.translation.height / max(1, size.height)

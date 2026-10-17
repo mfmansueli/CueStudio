@@ -113,7 +113,8 @@ final class QuickEditPlayer: EditPlayback {
         if key != itemKey {
             // New pieces: the item on screen can't play them, so it holds still until the new one is
             // in, and a build still running for the old ones is dropped.
-            let newPieces = itemKey?.spans != key.spans || itemKey?.speeds != key.speeds || itemKey?.transitions != key.transitions
+            let newPieces = itemKey?.spans != key.spans || itemKey?.speeds != key.speeds || itemKey?.curves != key.curves
+                || itemKey?.transitions != key.transitions
             itemKey = key
             if newPieces, avPlayer.currentItem != nil {
                 awaitsItem = true
@@ -124,6 +125,11 @@ final class QuickEditPlayer: EditPlayback {
         } else if state == .ready, !awaitsItem, let shown = itemTime, abs(shown - (windowStart + currentTime)) > 0.001 {
             requestSeek(to: currentTime)
         }
+    }
+
+    func redraw() {
+        guard edit != nil else { return }
+        rebuild(restarting: false)
     }
 
     // MARK: - Transport
@@ -409,8 +415,10 @@ final class QuickEditPlayer: EditPlayback {
         let spans: [TimeSpan]
         /// One per span: pieces at different speeds never join.
         let speeds: [Double]
+        /// One per span: a curved piece's curve (its timing is new pieces).
+        let curves: [SpeedCurve?]
         let transitions: [TransitionWindow]
-        /// Each piece's sound and zoom (its volume, mute, pitch, zoom and strength): they change
+        /// Each piece's sound, zoom and steadiness (its volume, mute, pitch, zoom and strength, Stabilize): they change
         /// the item like a look does.
         let pieceSettings: [[Double]]
         /// What each piece changes of the take's look (Adjust, Filters, Background): a clip's own
@@ -437,21 +445,25 @@ final class QuickEditPlayer: EditPlayback {
             let reachable = edit.timeline.reachable
             var spans: [TimeSpan] = []
             var speeds: [Double] = []
+            var curves: [SpeedCurve?] = []
             for (index, segment) in reachable.segments.enumerated() {
                 if reachable.isSeamless(index) {
                     spans[spans.count - 1].end = segment.sourceEnd
                 } else {
                     spans.append(segment.span)
                     speeds.append(segment.speed)
+                    curves.append(segment.speedCurve)
                 }
             }
             self.spans = spans
             self.speeds = speeds
+            self.curves = curves
             transitions = TransitionWindow.windows(in: reachable)
             pieceSettings = edit.timeline.segments.map { segment in
                 [
                     segment.volume, segment.isMuted ? 1 : 0, segment.keepsPitch ? 1 : 0,
                     Double(SectionZoom.allCases.firstIndex { $0 == segment.zoom } ?? -1), segment.zoomAmount,
+                    Double(StabilizationLevel.allCases.firstIndex { $0 == segment.stabilization } ?? -1),
                 ]
             }
             clipLooks = edit.timeline.segments.map(\.look)
