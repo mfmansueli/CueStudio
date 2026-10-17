@@ -49,9 +49,9 @@ Números medidos:
 
 Nenhum token novo. Os textos novos usam tokens já medidos em `PaletteContrastTests`: `ink`, `ink2` e `accText` sobre `sheetNight` (Find and
 replace), `ink`/`accText` sobre `fill` e `accText` sobre `accSoft` (chip Emphasis ligado), `ink2`/`accText` sobre `panelCard`, `dangerText`
-sobre `dangerWash`, `inkHint` nos placeholders. A linha com Emphasis usa a cor que a palavra dita já usa em cada estilo (medida em
-`VideoTemplateCaptionContrastTests`, ≥ 3:1, texto grande); Size só aumenta (nunca abaixo do tamanho medido). **Não medido na imagem
-renderizada** (`tools/contrast/audit.py` sobre captura): fica para a fase de testes.
+sobre `dangerWash`, `ink2` nos placeholders. A linha com Emphasis usa a cor que a palavra dita já usa em cada estilo (medida em
+`VideoTemplateCaptionContrastTests`, ≥ 3:1, texto grande); Size só aumenta (nunca abaixo do tamanho medido). **Medido na imagem renderizada**
+(capturas de `CaptionToolsUITests`, `tools/contrast/audit.py` e o pixel de cada texto): ver §7.
 
 ## 4. O que NÃO foi validado, e por quê
 
@@ -94,3 +94,32 @@ renderizada** (`tools/contrast/audit.py` sobre captura): fica para a fase de tes
 3. No iPhone: `RealExports/FreezeFrameHDRTests` (o teste de exportação HLG) e um Extract audio numa take real com Studio Voice.
 4. Capturas das telas novas (Find and replace, Select com o rodapé) e `tools/contrast/audit.py`.
 5. `xcrun simctl --set testing delete all`.
+
+## 7. Fase de testes (17/10, sessão principal)
+
+Esta branch foi validada **dentro de `feature/editor-motion`**, que a contém inteira (merge `60cb278`, e de novo depois da correção abaixo):
+um Full só para as duas, em vez de um para cada (cada Full leva cerca de 2 h).
+
+- **`scripts/check-warnings.sh`:** sem nenhum warning (Simulador, aparelho e Release), no merge e de novo no estado final.
+- **Full** (`60cb278`): 3.862 aprovados, 3 falhas. Duas exportações estouraram o tempo sob a carga do plano em paralelo e passam sozinhas em
+  2,9 s e 2,7 s (`EditorExportMatchesPreviewTests`, `QuickCreatorExportTests`); um teste de UI esperava o rótulo antigo "(2)" de Edit by text
+  (corrigido para "2 words", passa).
+- **Revisão de código** (duas correções nesta branch):
+  - `1f517a0`: Replace clip num clipe cortado movia o que tocava na outra parte do corte (textos, mídia, som). Agora fica onde estava
+    (`TakeEdit+ReplaceClip.moveOverlays`, teste `whatPlaysOnTheOtherPartOfACutClipStaysThere`).
+  - `8cbe836`: Extract audio num clipe mudo (som já extraído ou desligado) criava uma segunda voz igual. Agora avisa "This clip is muted · Turn
+    its sound on to extract it" e não muda nada (teste `aMutedClipOrVideoHasNothingToExtract`).
+- **Contraste na imagem renderizada:**
+  - Find and replace: título 15:1, subtítulo, "1 match" e a linha encontrada 6,1:1; o botão Replace 13,3:1; Replace all 14,6:1.
+  - **Corrigido:** o texto de exemplo "New word" estava a **4,3:1** (`inkHint` sobre o campo, que é mais claro em cima da folha). Agora usa
+    `ink2`, como o `SearchField`, e mede **5,1:1** (commit `23ed9ed`).
+  - Select lines: o tempo de uma linha não marcada 5,7:1; a linha marcada em amarelo 11:1; Select all 13,4:1; Delete 4,9:1 (ícone, mínimo 3:1).
+  - As outras medidas abaixo do mínimo que o `audit.py` listou são de telas escondidas atrás do editor (a lista de takes, a revisão), que
+    continuam na árvore de acessibilidade. Conferi cada uma na imagem.
+- **No iPhone (iago Lima iphone, 15 Pro):** `RealExports/FreezeFrameHDRTests` 3/3, incluindo a exportação de uma gravação HLG com quadro
+  congelado, que o Simulador não roda. O HDR do quadro congelado está **validado**. Para isso, `scripts/test.sh device` agora aceita
+  `RealExports/<Suíte>`.
+- **Clones de simulador** apagados (`xcrun simctl --set testing delete all`) no fim.
+- **Continua não validado:** Extract audio numa take real com Studio Voice; Replace pelo Fotos com o dedo; VoiceOver, iPhone SE e texto
+  grande nas telas novas.
+
