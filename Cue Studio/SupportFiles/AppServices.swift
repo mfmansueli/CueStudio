@@ -47,6 +47,8 @@ struct AppServices {
     let photos: PhotoLibraryManager
     let thumbnails: VideoThumbnailService
     let editing: TakeEditService
+    /// Analyzes the recordings' motion (faces, bodies, shake) for Follow face and Stabilize, while Cue is open and cool.
+    let motion: MotionAnalysisService
     let drafts: QuickEditDraftStoring
     let apps: ExternalAppService
     /// Hands an exported video to a platform (Share Kit, Instagram's hand-off, the share sheet) and says what is known.
@@ -179,6 +181,7 @@ struct AppServices {
         photos = PhotoLibraryManager()
         thumbnails = VideoThumbnailService()
         editing = TakeEditService()
+        motion = MotionAnalysisService()
         drafts = options.draftStore
         let apps = ExternalAppService()
         self.apps = apps
