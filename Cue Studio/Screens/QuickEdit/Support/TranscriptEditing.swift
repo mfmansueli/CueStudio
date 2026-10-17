@@ -34,7 +34,7 @@ enum TranscriptEditing {
                     segmentID: playing.map { timeline.segments[$0].id },
                     editedStart: playing.map { position in
                         let segment = timeline.segments[position]
-                        return timeline.editedStart(ofSegmentAt: position) + max(0, word.start - segment.sourceStart) / segment.speed
+                        return timeline.editedStart(ofSegmentAt: position) + segment.editedOffset(forSource: max(0, word.start - segment.sourceStart))
                     }
                 )
             }
@@ -47,7 +47,7 @@ enum TranscriptEditing {
                 result.append(TranscriptWord(
                     id: "\(segment.id.uuidString)-\(index)", text: word.text, sourceID: segment.sourceID,
                     span: TimeSpan(start: word.start, end: word.end), index: index, segmentID: segment.id,
-                    editedStart: timeline.editedStart(ofSegmentAt: position) + max(0, word.start - segment.sourceStart) / segment.speed
+                    editedStart: timeline.editedStart(ofSegmentAt: position) + segment.editedOffset(forSource: max(0, word.start - segment.sourceStart))
                 ))
             }
         }

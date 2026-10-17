@@ -22,7 +22,9 @@ extension QuickEditViewModel {
             defer { start += segment.duration }
             return TimelineGeometry.ClipInput(
                 id: segment.id, start: start, duration: segment.duration,
-                sourceStart: segment.sourceStart, sourceEnd: segment.sourceEnd, speed: segment.speed,
+                // A curve draws its frames at its average pace.
+                sourceStart: segment.sourceStart, sourceEnd: segment.sourceEnd,
+                speed: segment.speedCurve == nil ? segment.speed : segment.sourceLength / max(0.001, segment.duration),
                 sourceID: segment.sourceID, badge: Self.badge(of: segment, background: edit.background(for: segment)), transition: segment.transitionIn
             )
         }
@@ -42,8 +44,11 @@ extension QuickEditViewModel {
         }
         input.showsCaptions = edit.showsCaptions
         input.music = edit.music.compactMap { clip in
-            clip.span(inEditOf: edit.editedDuration).map { TimelineGeometry.ItemInput(id: clip.id, span: $0, label: clip.title) }
+            clip.span(inEditOf: edit.editedDuration).map {
+                TimelineGeometry.ItemInput(id: clip.id, span: $0, label: clip.title, beats: musicBeats(of: clip))
+            }
         }
+        if edit.snapsToBeats { input.beatSnaps = editedBeats }
         input.voiceOvers = edit.voiceOvers.compactMap { clip in
             clip.editedSpan(in: timeline).map { TimelineGeometry.ItemInput(id: clip.id, span: $0, label: String(localized: "Voice-over")) }
         }
@@ -73,7 +78,9 @@ extension QuickEditViewModel {
     /// the take's look says nothing of it.
     static func badge(of segment: EditSegment, background: BackgroundEffect? = nil) -> String? {
         var parts: [String] = []
-        if abs(segment.speed - 1) > 0.001 {
+        if let curve = segment.speedCurve {
+            parts.append(curve.preset?.label ?? String(localized: "Curve"))
+        } else if abs(segment.speed - 1) > 0.001 {
             parts.append(segment.speed.formatted(.number.precision(.fractionLength(0...2)).locale(.interface)) + "×")
         }
         if let zoom = segment.zoom { parts.append(zoom.label) }
@@ -189,7 +196,7 @@ extension QuickEditViewModel {
             let keeps = switch panel {
             case .captions: item.captionID != nil
             case .textStyle: item.textID != nil
-            case .speed, .zoom, .volume, .voice: item.clipID != nil
+            case .speed, .zoom, .volume, .stabilize, .voice: item.clipID != nil
             default: false
             }
             if !keeps { self.panel = nil }

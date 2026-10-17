@@ -138,9 +138,36 @@ nonisolated struct EditTimeline: Codable, Hashable, Sendable {
     /// handles, so dragging a handle scrubs real frames without rebuilding anything.
     var reachable: EditTimeline {
         var copy = self
-        copy.segments[0].sourceStart = 0
-        copy.segments[copy.segments.count - 1].sourceEnd = duration(ofSource: segments[segments.count - 1].sourceID)
+        let first = segments[0], last = segments[segments.count - 1]
+        let end = duration(ofSource: last.sourceID)
+        // A curved piece keeps its curve on its own stretch: what the handles reach before or after it plays as a piece of its
+        // own, at the curve's speed there.
+        if first.speedCurve != nil {
+            if first.sourceStart > 0.000_1 { copy.segments.insert(Self.lead(of: first), at: 0) }
+        } else {
+            copy.segments[0].sourceStart = 0
+        }
+        if last.speedCurve != nil {
+            if end - last.sourceEnd > 0.000_1 {
+                var tail = last.piece(TimeSpan(start: last.sourceEnd, end: end))
+                tail.speedCurve = nil
+                tail.speed = EditSegment.clampedSpeed(last.edgeSpeed(atStart: false))
+                tail.zoom = nil
+                copy.segments.append(tail)
+            }
+        } else {
+            copy.segments[copy.segments.count - 1].sourceEnd = end
+        }
         return copy
+    }
+
+    /// What the start handle reaches before a curved first piece: its recording from 0, at the curve's first speed.
+    private static func lead(of first: EditSegment) -> EditSegment {
+        var lead = first.piece(TimeSpan(start: 0, end: first.sourceStart))
+        lead.speedCurve = nil
+        lead.speed = EditSegment.clampedSpeed(first.edgeSpeed(atStart: true))
+        lead.zoom = nil
+        return lead
     }
 
     /// The kept spans with pieces that follow on in the recording at the same speed joined: a cut
@@ -167,18 +194,18 @@ nonisolated struct EditTimeline: Codable, Hashable, Sendable {
     /// Whether the piece at `index` plays on from the one before it with nothing to hear or see at
     /// the seam: nothing was removed and both play at the same speed.
     func isSeamless(_ index: Int) -> Bool {
-        continuesFromPrevious(index) && segments[index].speed == segments[index - 1].speed
+        continuesFromPrevious(index) && segments[index].playsAtSamePace(as: segments[index - 1])
     }
 
     /// Edited seconds the trimmed start takes in `reachable` (where the preview's item begins):
     /// the edit starts this far into it.
     var reachableLeadIn: TimeInterval {
-        trimStart / segments[0].speed
+        segments[0].speedCurve == nil ? trimStart / segments[0].speed : Self.lead(of: segments[0]).duration
     }
 
     /// Whether any piece plays at another speed than filmed.
     var hasSpeedChanges: Bool {
-        segments.contains { abs($0.speed - 1) > 0.000_1 }
+        segments.contains(where: \.changesSpeed)
     }
 
     /// Where a stretch of the recording plays in the edit: from where its start plays (or where the
@@ -191,8 +218,9 @@ nonisolated struct EditTimeline: Codable, Hashable, Sendable {
         // Arranged, the end is looked for after the start: a copy earlier in the edit doesn't count.
         if isArranged, let startIndex = pieceIndex(holding: span.start, in: source) {
             let segment = segments[startIndex]
-            let from = editedStart(ofSegmentAt: startIndex) + max(0, span.start - segment.sourceStart) / segment.speed
-            let until = min(editedDuration, from + max(0, span.end - max(span.start, segment.sourceStart)) / segment.speed)
+            let pieceStart = editedStart(ofSegmentAt: startIndex)
+            let from = pieceStart + segment.editedOffset(forSource: max(0, span.start - segment.sourceStart))
+            let until = min(editedDuration, max(from, pieceStart + segment.extendedEditedOffset(forSource: span.end - segment.sourceStart)))
             guard until - from > 0.000_1 else { return nil }
             return TimeSpan(start: from, end: until)
         }
@@ -240,7 +268,7 @@ nonisolated struct EditTimeline: Codable, Hashable, Sendable {
         let index = segmentIndex(atEdited: time)
         let segment = segments[index]
         let offset = time - editedStart(ofSegmentAt: index)
-        return min(max(segment.sourceStart, segment.sourceStart + offset * segment.speed), segment.sourceEnd)
+        return min(max(segment.sourceStart, segment.sourceStart + segment.sourceOffset(forEdited: offset)), segment.sourceEnd)
     }
 
     /// Where a moment of the recording plays in the edit, or nil when it was cut. The end of the
@@ -256,7 +284,7 @@ nonisolated struct EditTimeline: Codable, Hashable, Sendable {
             let isLast = index == segments.count - 1
             let startsBefore = time >= segment.sourceStart - 0.000_001
             let endsAfter = time < segment.sourceEnd || (isLast && time <= segment.sourceEnd + 0.000_001)
-            if startsBefore, endsAfter { return elapsed + max(0, time - segment.sourceStart) / segment.speed }
+            if startsBefore, endsAfter { return elapsed + segment.editedOffset(forSource: max(0, time - segment.sourceStart)) }
             elapsed += segment.duration
         }
         return nil
@@ -296,7 +324,7 @@ nonisolated struct EditTimeline: Codable, Hashable, Sendable {
         let source = previous.sourceTime(forEdited: time)
         // The same piece still there (moved, copied, trimmed): the same moment of it.
         if let now = self.index(ofSegment: segment.id), segments[now].sourceStart - 0.000_1 <= source, source <= segments[now].sourceEnd + 0.000_1 {
-            return min(editedDuration, editedStart(ofSegmentAt: now) + max(0, source - segments[now].sourceStart) / segments[now].speed)
+            return min(editedDuration, editedStart(ofSegmentAt: now) + segments[now].editedOffset(forSource: max(0, source - segments[now].sourceStart)))
         }
         return editedTime(following: source, in: segment.sourceID)
     }
@@ -319,8 +347,8 @@ nonisolated struct EditTimeline: Codable, Hashable, Sendable {
             let end = min(range.upperBound, elapsed + segment.duration)
             if end > start {
                 spans.append(TimeSpan(
-                    start: segment.sourceStart + (start - elapsed) * segment.speed,
-                    end: min(segment.sourceEnd, segment.sourceStart + (end - elapsed) * segment.speed)
+                    start: segment.sourceStart + segment.sourceOffset(forEdited: start - elapsed),
+                    end: min(segment.sourceEnd, segment.sourceStart + segment.sourceOffset(forEdited: end - elapsed))
                 ))
             }
             elapsed += segment.duration
@@ -453,14 +481,13 @@ nonisolated struct EditTimeline: Codable, Hashable, Sendable {
         let segment = segments[index]
         let offset = time - editedStart(ofSegmentAt: index)
         guard offset >= Self.minimumDuration, segment.duration - offset >= Self.minimumDuration else { return false }
-        let cut = segment.sourceStart + offset * segment.speed
-        segments[index].sourceEnd = cut
+        let cut = segment.sourceStart + segment.sourceOffset(forEdited: offset)
+        // Each side keeps its part of a curve, so the clip plays as it did.
+        var left = segment.piece(TimeSpan(start: segment.sourceStart, end: cut), id: segment.id, transitionIn: segment.transitionIn)
+        left.transitionDuration = segment.transitionDuration
+        segments[index] = left
         // The right part is the same clip from the cut on: speed, zoom and sound go with it.
-        var right = segment
-        right.id = UUID()
-        right.sourceStart = cut
-        right.transitionIn = .hardCut
-        right.transitionDuration = nil
+        let right = segment.piece(TimeSpan(start: cut, end: segment.sourceEnd))
         segments.insert(right, at: index + 1)
         return true
     }
@@ -469,8 +496,10 @@ nonisolated struct EditTimeline: Codable, Hashable, Sendable {
     @discardableResult
     mutating func setSpeed(_ speed: Double, forSegmentAt index: Int) -> Bool {
         let speed = EditSegment.clampedSpeed(speed)
-        guard segments.indices.contains(index), abs(segments[index].speed - speed) > 0.000_1 else { return false }
+        guard segments.indices.contains(index), abs(segments[index].speed - speed) > 0.000_1 || segments[index].speedCurve != nil else { return false }
         segments[index].speed = speed
+        // A speed all along replaces a curve.
+        segments[index].speedCurve = nil
         return true
     }
 
@@ -541,8 +570,8 @@ nonisolated struct EditTimeline: Codable, Hashable, Sendable {
                 continue
             }
             let cut = TimeSpan(
-                start: segment.sourceStart + (from - elapsed) * segment.speed,
-                end: min(segment.sourceEnd, segment.sourceStart + (until - elapsed) * segment.speed)
+                start: segment.sourceStart + segment.sourceOffset(forEdited: from - elapsed),
+                end: min(segment.sourceEnd, segment.sourceStart + segment.sourceOffset(forEdited: until - elapsed))
             )
             let pieces = segment.span.subtracting([cut]).filter { $0.duration >= Self.minimumDuration }
             for (offset, piece) in pieces.enumerated() {
@@ -581,7 +610,7 @@ nonisolated struct EditTimeline: Codable, Hashable, Sendable {
             // `isRestored` on a joined piece says whether its end came back, so the next seam is
             // closed only when one side of it was restored.
             if let last = joined.last, abs(last.segment.sourceEnd - entry.segment.sourceStart) < 0.001, last.isRestored || entry.isRestored,
-               last.segment.speed == entry.segment.speed, last.segment.volume == entry.segment.volume,
+               last.segment.playsAtSamePace(as: entry.segment), last.segment.volume == entry.segment.volume,
                last.segment.isMuted == entry.segment.isMuted {
                 joined[joined.count - 1].segment.sourceEnd = entry.segment.sourceEnd
                 joined[joined.count - 1].isRestored = entry.isRestored
@@ -648,6 +677,22 @@ nonisolated struct EditTimeline: Codable, Hashable, Sendable {
         return piece.id
     }
 
+    /// The piece at `index` playing `span` of another recording (`source`, `duration` long; nil: the take), keeping its
+    /// identity, speed and look (Reverse). The edit becomes arranged. False, and no change, when there's no such piece or the
+    /// span is too short.
+    @discardableResult
+    mutating func replaceSource(ofSegmentAt index: Int, with source: UUID?, duration: TimeInterval, span: TimeSpan) -> Bool {
+        guard segments.indices.contains(index), span.duration >= Self.minimumDuration else { return false }
+        if let source { otherSources[source] = duration }
+        var piece = segments[index]
+        piece.sourceID = source
+        piece.sourceStart = max(0, span.start)
+        piece.sourceEnd = min(duration, span.end)
+        isArranged = true
+        segments[index] = piece
+        return true
+    }
+
     /// Where a stretch of a recording pinned to a piece (`anchor`) plays: in that piece when it
     /// still holds the stretch's start, else in the first piece of the same recording that does
     /// (after a split or a Clean Up cut the piece has a new identity). The stretch keeps its
@@ -665,8 +710,9 @@ nonisolated struct EditTimeline: Codable, Hashable, Sendable {
         guard let index = chosen else { return nil }
         let segment = segments[index]
         let from = max(span.start, segment.sourceStart)
-        let start = editedStart(ofSegmentAt: index) + (from - segment.sourceStart) / segment.speed
-        let end = min(editedDuration, start + max(0, span.end - from) / segment.speed)
+        let pieceStart = editedStart(ofSegmentAt: index)
+        let start = pieceStart + segment.editedOffset(forSource: from - segment.sourceStart)
+        let end = min(editedDuration, max(start, pieceStart + segment.extendedEditedOffset(forSource: span.end - segment.sourceStart)))
         guard end - start > 0.000_1 else { return nil }
         return TimeSpan(start: start, end: end)
     }
@@ -676,11 +722,10 @@ nonisolated struct EditTimeline: Codable, Hashable, Sendable {
     func anchoredSpan(forEdited span: TimeSpan) -> (anchor: ClipAnchor, span: TimeSpan) {
         let index = segmentIndex(atEdited: span.start)
         let segment = segments[index]
-        let start = min(segment.sourceEnd, segment.sourceStart + max(0, span.start - editedStart(ofSegmentAt: index)) * segment.speed)
-        return (
-            ClipAnchor(segmentID: segment.id, sourceID: segment.sourceID),
-            TimeSpan(start: start, end: start + span.duration * segment.speed)
-        )
+        let pieceStart = editedStart(ofSegmentAt: index)
+        let start = min(segment.sourceEnd, segment.sourceStart + segment.sourceOffset(forEdited: max(0, span.start - pieceStart)))
+        let end = segment.sourceStart + segment.extendedSourceOffset(forEdited: max(0, span.start - pieceStart) + span.duration)
+        return (ClipAnchor(segmentID: segment.id, sourceID: segment.sourceID), TimeSpan(start: start, end: max(start, end)))
     }
 
     /// Arranged: what comes back grows the piece of the take it touches (the one ending where it

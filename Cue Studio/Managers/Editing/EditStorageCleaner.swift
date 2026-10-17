@@ -11,7 +11,7 @@ import Foundation
 /// an exported video (`ExportLedgerService`).
 nonisolated enum EditStorageCleaner {
     /// Files of the sound cache, by the prefix their makers give them.
-    static let soundPrefixes = ["Cue-audio-", "Cue-level-", "Cue-master-", "Cue-mix-"]
+    static let soundPrefixes = ["Cue-audio-", "Cue-level-", "Cue-master-", "Cue-mix-", "Cue-curve-"]
 
     /// The sound cache files to remove: made before this launch.
     static func staleSounds(files: [String: Date], launchedAt: Date) -> Set<String> {

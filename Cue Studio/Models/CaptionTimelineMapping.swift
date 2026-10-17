@@ -13,9 +13,14 @@ nonisolated enum CaptionTimelineMapping {
         let sourceID: UUID?
         var span: TimeSpan
         let speed: Double
+        /// A curved piece's curve (such a piece is a window of its own).
+        let curve: SpeedCurve?
         let editedStart: Double
 
-        func edited(_ source: Double) -> Double { editedStart + (source - span.start) / speed }
+        func edited(_ source: Double) -> Double {
+            guard let curve else { return editedStart + (source - span.start) / speed }
+            return editedStart + curve.editedOffset(forSource: source - span.start, sourceLength: span.duration)
+        }
     }
 
     /// Shortest part of a line (seconds of its recording) that shows after a cut.
@@ -25,10 +30,10 @@ nonisolated enum CaptionTimelineMapping {
         var windows: [Window] = []
         for (index, segment) in timeline.segments.enumerated() {
             if let last = windows.last, last.sourceID == segment.sourceID,
-               abs(last.span.end - segment.sourceStart) < 0.000_001, last.speed == segment.speed {
+               abs(last.span.end - segment.sourceStart) < 0.000_001, last.speed == segment.speed, last.curve == nil, segment.speedCurve == nil {
                 windows[windows.count - 1].span.end = segment.sourceEnd
             } else {
-                windows.append(Window(id: segment.id, sourceID: segment.sourceID, span: segment.span, speed: segment.speed,
+                windows.append(Window(id: segment.id, sourceID: segment.sourceID, span: segment.span, speed: segment.speed, curve: segment.speedCurve,
                                       editedStart: timeline.editedStart(ofSegmentAt: index)))
             }
         }

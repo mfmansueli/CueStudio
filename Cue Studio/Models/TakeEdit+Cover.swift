@@ -32,7 +32,7 @@ nonisolated extension TakeEdit {
     /// Where `frame` plays in the edit (edited seconds); nil when it was cut out.
     func editedTime(of frame: CoverFrame) -> TimeInterval? {
         guard let (index, segment) = clip(showing: frame) else { return nil }
-        let offset = max(0, frame.time - segment.sourceStart) / segment.speed
+        let offset = segment.editedOffset(forSource: max(0, frame.time - segment.sourceStart))
         return min(editedDuration, timeline.editedStart(ofSegmentAt: index) + min(offset, segment.duration))
     }
 

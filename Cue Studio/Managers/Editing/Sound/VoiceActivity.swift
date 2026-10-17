@@ -63,8 +63,8 @@ nonisolated struct VoiceActivity: Hashable, Sendable {
             for span in spoken where span.overlaps(segment.span) {
                 let from = max(span.start, segment.sourceStart), until = min(span.end, segment.sourceEnd)
                 result.append(TimeSpan(
-                    start: elapsed + (from - segment.sourceStart) / segment.speed,
-                    end: elapsed + (until - segment.sourceStart) / segment.speed
+                    start: elapsed + segment.editedOffset(forSource: from - segment.sourceStart),
+                    end: elapsed + segment.editedOffset(forSource: until - segment.sourceStart)
                 ))
             }
             elapsed += segment.duration
