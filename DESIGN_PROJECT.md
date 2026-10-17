@@ -954,6 +954,8 @@ auditoria: `reports/editor-award-checklist.md`.
   transição e look. Textos, mídias e narrações presos ao clipe ficam no mesmo momento dele. Legendas e Studio Voice são da gravação: a nova não
   tem legendas até Auto captions ouvir de novo. A gravação antiga nunca muda; um Undo ("Clip replaced" · Undo) a traz de volta. Foto: "Pick a
   video first"; menos de 0,3 s: "Video too short to add".
+  Diferença que fica do CapCut (comparado em 17/10/2026): lá se escolhe que trecho do vídeo novo entra; aqui ele entra do começo e as alças do
+  clipe aparam. Próximo passo: a faixa "Part of the video" do B-roll (`MediaTrimStrip`) também para um clipe de outra gravação.
 - **Extract audio** (barra do clipe e, num vídeo com som por cima, a da mídia; `QuickEditViewModel+ExtractAudio`, `SoundExtractor`,
   `TakeEditing.extractSound`): o som do clipe sai para a faixa de música como um clipe próprio ("Sound · Clip 2" / "Sound · Video",
   `MusicClip.extractedFrom`), onde tocava, no volume do clipe (ou do vídeo), sem fades e sem abaixar sob a voz, e o clipe (ou o vídeo) fica mudo:
