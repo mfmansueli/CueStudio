@@ -32,10 +32,14 @@ nonisolated enum ReversedSound {
             ready.withUnsafeSampleBuffer { sample in
                 guard let data = CMSampleBufferGetDataBuffer(sample) else { return }
                 let count = CMBlockBufferGetDataLength(data) / MemoryLayout<Float>.size
+                guard count > 0 else { return }
                 let start = samples.count
                 samples.append(contentsOf: repeatElement(0, count: count))
-                _ = samples.withUnsafeMutableBytes { bytes in
-                    CMBlockBufferCopyDataBytes(data, atOffset: 0, dataLength: count * MemoryLayout<Float>.size, destination: bytes.baseAddress! + start * 4)
+                samples.withUnsafeMutableBytes { bytes in
+                    guard let base = bytes.baseAddress else { return }
+                    _ = CMBlockBufferCopyDataBytes(
+                        data, atOffset: 0, dataLength: count * MemoryLayout<Float>.size, destination: base + start * MemoryLayout<Float>.size
+                    )
                 }
             }
         }
@@ -73,7 +77,8 @@ nonisolated enum ReversedSound {
             )
             guard let block else { return }
             reversed.withUnsafeBytes { bytes in
-                _ = CMBlockBufferReplaceDataBytes(with: bytes.baseAddress!, blockBuffer: block, offsetIntoDestination: 0, dataLength: length)
+                guard let base = bytes.baseAddress else { return }
+                _ = CMBlockBufferReplaceDataBytes(with: base, blockBuffer: block, offsetIntoDestination: 0, dataLength: length)
             }
             var sample: CMSampleBuffer?
             CMAudioSampleBufferCreateReadyWithPacketDescriptions(
