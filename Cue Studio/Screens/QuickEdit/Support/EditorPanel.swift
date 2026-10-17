@@ -9,7 +9,7 @@ import Foundation
 /// changes show live in the preview.
 enum EditorPanel: String, CaseIterable, Identifiable {
     // The selected clip
-    case speed, zoom, volume
+    case speed, zoom, volume, stabilize
     // The whole take
     case voice, pauses, adjust, filters, crop, background
     // Captions
@@ -17,7 +17,7 @@ enum EditorPanel: String, CaseIterable, Identifiable {
     // Texts
     case textStyle
     // Audio
-    case voiceOver
+    case voiceOver, beats
     // Added on top: a photo or video over the take
     case media
     // The cut between two clips
@@ -29,8 +29,8 @@ enum EditorPanel: String, CaseIterable, Identifiable {
 
     var size: EditorPanelSize {
         switch self {
-        case .speed, .zoom, .volume, .filters, .crop, .voiceOver, .autoCaptions: .mini
-        case .voice, .pauses, .captions, .adjust, .background, .media, .smart, .transition: .medium
+        case .zoom, .volume, .filters, .voiceOver, .autoCaptions: .mini
+        case .speed, .voice, .pauses, .captions, .adjust, .background, .media, .smart, .transition, .crop, .stabilize, .beats: .medium
         case .textStyle, .captionStyle: .full
         }
     }
@@ -55,7 +55,7 @@ enum EditorPanel: String, CaseIterable, Identifiable {
     /// Panels that work on the selected item close when it's let go.
     var followsSelection: Bool {
         switch self {
-        case .speed, .zoom, .volume, .textStyle, .media, .transition: true
+        case .speed, .zoom, .volume, .stabilize, .beats, .textStyle, .media, .transition: true
         default: false
         }
     }
@@ -72,10 +72,11 @@ enum EditorPanel: String, CaseIterable, Identifiable {
     /// something it can't work on is picked).
     func accepts(_ selection: EditorSelection) -> Bool {
         switch self {
-        case .speed, .zoom: selection.clipID != nil
+        case .speed, .zoom, .stabilize: selection.clipID != nil
         case .volume: selection.clipID != nil || selection.musicID != nil || selection.voiceOverID != nil
         case .textStyle: selection.textID != nil
         case .media: selection.mediaID != nil
+        case .beats: selection.musicID != nil
         case .transition: false
         default: true
         }
@@ -85,6 +86,7 @@ enum EditorPanel: String, CaseIterable, Identifiable {
         switch self {
         case .speed: String(localized: "Speed")
         case .zoom: String(localized: "Zoom")
+        case .stabilize: String(localized: "Stabilize")
         case .volume: String(localized: "Volume")
         case .voice: String(localized: "Studio Voice")
         case .pauses: String(localized: "Pauses")
@@ -97,6 +99,7 @@ enum EditorPanel: String, CaseIterable, Identifiable {
         case .captionStyle: String(localized: "Caption style")
         case .textStyle: String(localized: "Text")
         case .voiceOver: String(localized: "Voice-over")
+        case .beats: String(localized: "Beats")
         case .media: String(localized: "Photo or video")
         case .transition: String(localized: "Transition")
         case .smart: String(localized: "✦ Smart")

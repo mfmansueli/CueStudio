@@ -30,7 +30,7 @@ extension QuickEditViewModel {
 
     func panelSubtitle(_ panel: EditorPanel) -> String {
         switch panel {
-        case .speed, .zoom, .volume: clipSubtitle(panel)
+        case .speed, .zoom, .volume, .stabilize: clipSubtitle(panel)
         case .voice: voiceScopeLabel
         case .adjust, .filters, .background: lookSubtitle(for: panel)
         case .pauses: String(localized: "Marked in yellow on the timeline")
@@ -38,6 +38,7 @@ extension QuickEditViewModel {
         case .captions, .autoCaptions, .captionStyle: captionSubtitle(panel)
         case .textStyle: textStyleSubtitle
         case .voiceOver: String(localized: "Records from the playhead · the video plays muted")
+        case .beats: beatsSubtitle
         case .media: String(localized: "On top of the video")
         case .transition: transitionSubtitle
         case .smart: String(localized: "Quick fixes, made on your iPhone")
@@ -52,6 +53,7 @@ extension QuickEditViewModel {
             let to = DurationText.editor(clip?.duration ?? 0)
             return String(localized: "This clip · \(from) → \(to)")
         case .zoom: return String(localized: "This clip · camera move while it plays")
+        case .stabilize: return String(localized: "This clip · steadies the camera’s shake")
         default:
             switch selection {
             case .music: return String(localized: "Music · under your voice")
