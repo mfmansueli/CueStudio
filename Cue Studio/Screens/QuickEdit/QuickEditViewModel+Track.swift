@@ -41,8 +41,8 @@ extension QuickEditViewModel {
         trackingProgress = 0
         Haptics.selection()
         trackingTask = Task { [weak self, tracker] in
-            guard let placement = await Self.placement(for: url, in: edit) else {
-                self?.trackingFinished(nil, item: item, span: span)
+            guard let placement = await Self.placement(for: url, in: edit, steadiedBy: segment.stabilization) else {
+                self?.trackingFinished(nil, item: item, span: span, timeline: timeline)
                 return
             }
             let sourceAt = segment.sourceStart + segment.sourceOffset(forEdited: playhead - clipStart)
@@ -68,9 +68,9 @@ extension QuickEditViewModel {
                         center: placement.videoPoint(for: sample.box.center, at: sample.time)
                     )
                 }
-                self?.trackingFinished(points, item: item, span: span, reached: (from - span.start)...(until - span.start))
+                self?.trackingFinished(points, item: item, span: span, timeline: timeline, reached: (from - span.start)...(until - span.start))
             } catch {
-                self?.trackingFinished(nil, item: item, span: span)
+                self?.trackingFinished(nil, item: item, span: span, timeline: timeline)
             }
         }
     }
@@ -82,13 +82,19 @@ extension QuickEditViewModel {
     }
 
     /// The tracked path on the item as keyframes, in one step: the keyframes it had inside the tracked part give way, the
-    /// others stay.
+    /// others stay. Dropped when the run was cancelled (a new one may have started meanwhile), the editor closed, or the
+    /// video or the item moved while it ran (the path was measured on what they were).
     private func trackingFinished(
-        _ points: [TrackedMotion.Point]?, item: MotionItem, span: TimeSpan, reached: ClosedRange<TimeInterval> = 0...0
+        _ points: [TrackedMotion.Point]?, item: MotionItem, span: TimeSpan, timeline: EditTimeline, reached: ClosedRange<TimeInterval> = 0...0
     ) {
-        guard trackingProgress != nil else { return }
+        guard !Task.isCancelled, trackingProgress != nil else { return }
         trackingProgress = nil
         trackingTask = nil
+        guard !isClosed else { return }
+        guard edit.timeline == timeline, editedSpan(of: item) == span else {
+            toast.show(String(localized: "The video changed meanwhile · Track it again"))
+            return
+        }
         guard let points, points.count > 1, let first = points.first, let last = points.last else {
             toast.show(String(localized: "Couldn’t follow anything there · Put it on what it should follow"))
             return
@@ -109,8 +115,10 @@ extension QuickEditViewModel {
             : String(localized: "Tracked · \(tracked.count) keyframes to adjust"))
     }
 
-    /// How the recording at `url` lands on the edit's frame (its crop, Follow face's path, or Fit).
-    private static func placement(for url: URL, in edit: TakeEdit) async -> FramePlacement? {
+    /// How the recording at `url` lands on the edit's frame (Stabilize's correction, its crop, Follow face's path, or Fit). Off
+    /// the main thread: it reads the recording's analysis.
+    @concurrent
+    private nonisolated static func placement(for url: URL, in edit: TakeEdit, steadiedBy level: StabilizationLevel?) async -> FramePlacement? {
         let asset = AVURLAsset(url: url)
         guard let track = try? await asset.loadTracks(withMediaType: .video).first,
               let (natural, transform) = try? await track.load(.naturalSize, .preferredTransform) else { return nil }
@@ -118,6 +126,7 @@ extension QuickEditViewModel {
         let size = CGSize(width: abs(rect.width), height: abs(rect.height))
         let crop = CropMath.crop(in: size, aspect: edit.aspect.widthOverHeight, offset: edit.cropOffset)
         var placement = FramePlacement(uprightSize: size, crop: crop, fits: edit.cropFit == .fit)
+        placement.steady = level.flatMap { MotionAnalysisStore.stabilizationPath(forRecording: url, level: $0) }
         if edit.faceFollow != nil, edit.cropFit == .fill {
             let coreImageCrop = CGRect(x: crop.minX, y: size.height - crop.maxY, width: crop.width, height: crop.height)
             placement.follow = EditedComposition.followPath(

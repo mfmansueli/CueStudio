@@ -21,6 +21,7 @@ nonisolated final class ObjectTracker: ObjectTracking, @unchecked Sendable {
 
     private let context = CIContext(options: [.cacheIntermediates: false, .name: "studio.cue.tracking"])
 
+    @concurrent
     func track(
         videoAt url: URL, box: NormalizedBox, at time: TimeInterval, until: TimeInterval, progress: @escaping @Sendable (Double) -> Void
     ) async throws -> [TrackSample] {

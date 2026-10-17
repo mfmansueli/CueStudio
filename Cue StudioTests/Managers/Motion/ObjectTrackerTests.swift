@@ -72,4 +72,26 @@ struct ObjectTrackerTests {
         let side = FramePlacement(uprightSize: size, crop: crop).recordingSize(forVideoWidth: 0.1)
         #expect(abs(side.width - 0.1) < 0.000_1 && abs(side.height - 0.1 * 1080 / 1920) < 0.000_1)
     }
+
+    @Test func aSteadiedClipPlacesPointsWhereTheCompositorDrawsThem() {
+        let size = CGSize(width: 1080, height: 1920)
+        let crop = CropMath.crop(in: size, aspect: 1, offset: 0)
+        var placement = FramePlacement(uprightSize: size, crop: crop)
+        placement.steady = StabilizationPath(times: [0, 1], dx: [0.02, 0.02], dy: [-0.01, -0.01], angles: [0.01, 0.01], zoom: 1.05)
+        let point = CGPoint(x: 0.3, y: 0.45)
+        // `CueVideoCompositor.steadied`'s transform, in Core Image's coordinates (y up), then the crop.
+        let center = CGPoint(x: size.width / 2, y: size.height / 2)
+        let transform = CGAffineTransform(translationX: -center.x, y: -center.y)
+            .concatenating(CGAffineTransform(rotationAngle: -0.01))
+            .concatenating(CGAffineTransform(scaleX: 1.05, y: 1.05))
+            .concatenating(CGAffineTransform(translationX: center.x + 0.02 * size.width, y: center.y + 0.01 * size.height))
+        let drawn = CGPoint(x: point.x * size.width, y: size.height - point.y * size.height).applying(transform)
+        let video = placement.videoPoint(for: point, at: 0.5)
+        #expect(abs(video.x - (drawn.x - crop.minX) / crop.width) < 0.000_1)
+        #expect(abs(video.y - (size.height - drawn.y - crop.minY) / crop.height) < 0.000_1)
+        let back = placement.recordingPoint(for: video, at: 0.5)
+        #expect(abs(back.x - point.x) < 0.000_1 && abs(back.y - point.y) < 0.000_1)
+        // Zoomed in, the same share of the video covers less of the recording.
+        #expect(abs(placement.recordingSize(forVideoWidth: 0.1).width - 0.1 / 1.05) < 0.000_1)
+    }
 }
