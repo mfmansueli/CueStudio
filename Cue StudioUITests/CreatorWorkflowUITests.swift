@@ -171,7 +171,7 @@ final class CreatorWorkflowUITests: XCTestCase {
         XCTAssertTrue(guide.label.hasPrefix("From"), guide.label)
         let cut = app.buttons["edit.transcript.cut"]
         XCTAssertTrue(flow.waits(for: cut, "Cut from video"))
-        XCTAssertTrue(cut.label.contains("(2)"), cut.label)
+        XCTAssertTrue(cut.label.contains("2 words"), cut.label)
 
         flow.step("Cut from video")
         flow.tap(cut, "Cut from video")

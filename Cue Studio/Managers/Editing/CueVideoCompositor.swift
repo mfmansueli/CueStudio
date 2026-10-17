@@ -146,17 +146,25 @@ final class CueVideoCompositor: NSObject, AVVideoCompositing, @unchecked Sendabl
         // The stretch of video this frame belongs to: the faces found in it carry from frame to frame, and are forgotten at its edges.
         let stretch = instruction.timeRange.start.seconds
         var image = framed(
-            source, frame: instruction.frame, cropFit: instruction.edit.cropFit, look: instruction.look, faces: faces, key: "main-\(moment)",
-            moment: SmoothingMoment(stream: .main, stretch: stretch, time: time), sourceTime: instruction.sourceTime(at: time)
+            source,
+            as: Framing(
+                frame: instruction.frame, cropFit: instruction.edit.cropFit, look: instruction.look, key: "main-\(moment)",
+                moment: SmoothingMoment(stream: .main, stretch: stretch, time: time), sourceTime: instruction.sourceTime(at: time)
+            ),
+            faces: faces
         )
         if let zoom = instruction.zoom {
             image = zoomed(image, by: CGFloat(zoom.scale(at: time)))
         }
         if let other, let dissolve = instruction.dissolve {
             let otherSide = framed(
-                other, frame: instruction.blendFrame ?? instruction.frame, cropFit: instruction.edit.cropFit,
-                look: instruction.blendLook ?? instruction.look, faces: faces, key: "blend-\(moment)",
-                moment: SmoothingMoment(stream: .blend, stretch: stretch, time: time), sourceTime: dissolve.otherSideSourceTime(at: time)
+                other,
+                as: Framing(
+                    frame: instruction.blendFrame ?? instruction.frame, cropFit: instruction.edit.cropFit,
+                    look: instruction.blendLook ?? instruction.look, key: "blend-\(moment)",
+                    moment: SmoothingMoment(stream: .blend, stretch: stretch, time: time), sourceTime: dissolve.otherSideSourceTime(at: time)
+                ),
+                faces: faces
             )
             // Before the cut the main track still shows the outgoing piece; after it, the incoming one.
             let (outgoing, incoming) = time < dissolve.cut ? (image, otherSide) : (otherSide, image)
@@ -205,20 +213,18 @@ final class CueVideoCompositor: NSObject, AVVideoCompositing, @unchecked Sendabl
         return image
     }
 
-    // swiftlint:disable function_parameter_count
-    /// A frame of a recording upright, cropped and scaled to the take's frame, with its background
-    /// effect, Adjust and Filters (`look`: the clip's own over the take's). `key` names the moment,
-    /// for the person masks kept; `sourceTime` is the moment of the recording it shows (where Follow face has the crop).
+    /// A frame of a recording upright, steadied, cropped and scaled to the take's frame, with its background effect, Adjust
+    /// and Filters, as `framing` says.
     nonisolated private static func framed(
-        _ source: CVPixelBuffer, frame: SourceFrame, cropFit: CropFit, look: LookSettings, faces: (masker: PersonMasker, skin: SkinSmoother),
-        key: String, moment: SmoothingMoment, sourceTime: TimeInterval
+        _ source: CVPixelBuffer, as framing: Framing, faces: (masker: PersonMasker, skin: SkinSmoother)
     ) -> CIImage {
+        let frame = framing.frame, look = framing.look, moment = framing.moment, sourceTime = framing.sourceTime
         var image = CIImage(cvPixelBuffer: source).transformed(by: uprightTransform(frame.transform, sourceHeight: CGFloat(CVPixelBufferGetHeight(source))))
         image = image.transformed(by: CGAffineTransform(translationX: -image.extent.minX, y: -image.extent.minY))
         if let steady = frame.steady {
             image = steadied(image, by: steady, at: sourceTime)
         }
-        if cropFit == .fit {
+        if framing.cropFit == .fit {
             image = fitted(image, into: frame.crop.size)
         } else {
             let crop = frame.cropRect(at: sourceTime)
@@ -232,12 +238,11 @@ final class CueVideoCompositor: NSObject, AVVideoCompositing, @unchecked Sendabl
         let smoothing = faces.skin.pass(for: image, value: look.skinSmoothing, stream: moment.stream, epoch: moment.stretch, time: moment.time)
         if let background = frame.background {
             image = BackgroundCompositing.apply(image, render: background) { image in
-                faces.masker.mask(for: image, key: background.cacheKey + key)
+                faces.masker.mask(for: image, key: background.cacheKey + framing.key)
             }
         }
         return FrameLook.apply(look, to: image, skin: smoothing)
     }
-    // swiftlint:enable function_parameter_count
 
     /// Stabilize: the upright frame moved and turned onto the smooth path, zoomed in to hide its edges, cut back to its size.
     nonisolated static func steadied(_ image: CIImage, by path: StabilizationPath, at time: TimeInterval) -> CIImage {
