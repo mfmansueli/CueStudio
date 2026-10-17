@@ -26,6 +26,10 @@ nonisolated enum DefaultsKey {
     static let customCues = "customCues"
     /// The script page's Cues switch (`Bool`; absent = on).
     static let showsCuesOnPage = "showsCuesOnPage"
+    /// Takes with an export running now (`[String]` of take ids).
+    static let exportsInFlight = "exportsInFlight"
+    /// Takes whose export was still running when Cue last stopped (`[String]` of take ids), until their review says so.
+    static let stoppedExports = "stoppedExports"
     /// The text size of the old full script editor ("Versions & options"). The editor is gone; removed at launch.
     static let legacyScriptEditorTextSize = "scriptEditorTextSize"
     /// The type the creator saved as "My style" in Quick edit (`TextLook`, JSON).

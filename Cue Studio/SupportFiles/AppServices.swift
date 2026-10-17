@@ -40,6 +40,10 @@ struct AppServices {
     let textRecognizer: TextRecognitionManager
     let importer: DocumentImportService
     let exporter: VideoExportService
+    /// What the review exports with: the exporter, slowed down in UI tests that look at the progress.
+    let reviewExporter: VideoExporting
+    /// Exports that go on when the creator leaves Cue (iOS's continued tasks, with the GPU); none in UI tests and previews.
+    let backgroundExports: BackgroundExportRunner
     let photos: PhotoLibraryManager
     let thumbnails: VideoThumbnailService
     let editing: TakeEditService
@@ -166,6 +170,12 @@ struct AppServices {
         textRecognizer = TextRecognitionManager()
         importer = DocumentImportService()
         exporter = VideoExportService()
+        #if DEBUG
+        reviewExporter = options.slowExports ? SlowVideoExporter(inner: exporter) : exporter
+        #else
+        reviewExporter = exporter
+        #endif
+        backgroundExports = BackgroundExportRunner(scheduler: options.usesContinuedTasks ? SystemContinuedTaskScheduler() : nil)
         photos = PhotoLibraryManager()
         thumbnails = VideoThumbnailService()
         editing = TakeEditService()

@@ -67,18 +67,23 @@ final class VideoExportService: VideoExporting {
     private static func run(
         _ session: AVAssetExportSession, to output: URL, progress: (@MainActor (Double) -> Void)?, from start: Double
     ) async throws {
-        guard let progress else {
-            try await session.export(to: output, as: .mov)
-            return
-        }
-        let watcher = Task { @MainActor in
-            for await state in session.states(updateInterval: 0.1) {
-                if case .exporting(let done) = state { progress(start + (1 - start) * done.fractionCompleted) }
+        let watcher = progress.map { progress in
+            Task { @MainActor in
+                for await state in session.states(updateInterval: 0.1) {
+                    if case .exporting(let done) = state { progress(start + (1 - start) * done.fractionCompleted) }
+                }
             }
         }
-        defer { watcher.cancel() }
-        try await session.export(to: output, as: .mov)
-        progress(1)
+        defer { watcher?.cancel() }
+        do {
+            try await session.export(to: output, as: .mov)
+        } catch {
+            // A stopped or failed export leaves no half-written file behind.
+            try? FileManager.default.removeItem(at: output)
+            if let error = error as? AVError, error.code == .operationInterrupted { throw VideoExportError.interrupted }
+            throw error
+        }
+        progress?(1)
     }
 
     // MARK: - Edited

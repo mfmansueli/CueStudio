@@ -87,7 +87,6 @@ struct QuickEditView: View {
             case .media: AddMediaSheet(viewModel: viewModel)
             case .transcript: TranscriptEditSheet(viewModel: viewModel)
             case .clipOrder: ClipOrderSheet(viewModel: viewModel, thumbnails: services.thumbnails)
-            case .export: QuickEditExportSheet(viewModel: viewModel, services: services)
             case .done:
                 EditorDoneSheet(
                     duration: DurationText.clock(viewModel.edit.editedDuration),

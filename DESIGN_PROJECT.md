@@ -912,9 +912,8 @@ auditoria: `reports/editor-award-checklist.md`.
 - **Estilo salvo** (`CoverStyle`, `DefaultsKey.myCoverStudioStyle`; o antigo `myCoverLook` é convertido): modelo, como o título é composto, efeito
   e força, gráficos (lugar, tamanho, giro, cor); nunca palavras, destaques, foto, enquadramento, texto do kicker ou de uma tag.
 - **Capas antigas** desenham como antes até serem abertas no estúdio; aí viram o modelo mais próximo (`CoverComposition(legacy:)`). Cancel não muda nada.
-- **Exportação: vídeo e capa separados** (`QuickEditExportModel.cover`, `CoverExportState`). "Saved to Photos" é do vídeo; embaixo, a linha da capa:
-  Saving the cover… / Cover saved to Photos / Cover not saved (com o motivo), **Tentar de novo** (só salva de novo; desenha só se nunca desenhou) e
-  **Share cover**. A imagem fica no temporário até a folha fechar e então é apagada.
+- **Exportação:** é a da revisão da take (Done › **Download video**, Save, Share), descrita em §38; o editor não tem folha de exportação própria
+  (a `QuickEditExportSheet`, que nada abria, saiu). A capa escolhida vai ao Fotos depois do vídeo (`saveCoverIfChosen`).
 - **Studio Voice na montagem** (`StudioVoiceReach`, `TakeEdit+Voice`, `RecordingSounds`, `RecordingSoundCache`): trata o take e as outras gravações
   (cada uma pode ficar de fora em "Applies to"; o take sempre). **Even out volume between clips** leva a fala de cada gravação ao nível do take (até
   +9 / −12 dB, nunca acima de −1 dBFS: uma gravação com pico alto sobe só o que cabe, `AudioCeiling.leveled`). Música, voice-over e som de fotos/vídeos
@@ -1008,10 +1007,8 @@ auditoria: `reports/editor-award-checklist.md`.
 - **Use on every cut** copia também a duração; se todos já têm, o toast diz "Every cut already has it".
 - **Edit by text numa montagem** corta só o clipe onde as palavras foram lidas (uma cópia as mantém); palavras com 44 pt; a nota diz que Undo traz
   de volta o que foi cortado.
-- **iPhone quente** (`DeviceHeat`, `thermalState` seguido com a folha aberta): em `.serious`/`.critical` a exportação diz "The iPhone is hot, so
-  the export takes longer. Let it cool down if you can." (`warnText`), na escolha e durante o progresso; a qualidade e as animações não mudam.
-- **Espaço e arquivos:** antes de exportar, "Not enough space on this iPhone. Free about N MB and try again." (`StorageSpace`, o dobro do tamanho
-  estimado + 150 MB); no lançamento, `EditStorageCleaner` apaga só os sons temporários de sessões passadas (as mídias das edições
+- **iPhone quente e espaço:** ficam na exportação da revisão (§38).
+- **Arquivos:** no lançamento, `EditStorageCleaner` apaga só os sons temporários de sessões passadas (as mídias das edições
   nunca são varridas: só a edição remove o que acrescentou; um varredor de "órfãos" foi descartado na revisão porque uma lista de takes que não
   carregasse apagaria tudo). **Bibliotecas:** takes, roteiros e as listas de uma edição (textos, mídias, músicas,
   legendas…) são lidos item por item (`LossyList`); um item ilegível fica de fora sozinho e o arquivo como era é guardado ao lado
@@ -1020,9 +1017,43 @@ auditoria: `reports/editor-award-checklist.md`.
   velocidade, cortes nas batidas da música, reenquadramento por rosto, estabilização e rastreamento.
 - **Testes:** `CoverTextLayoutTests` (títulos longos, árabe, tailandês, japonês, emoji, alemão), `CoverCompositionTests`, `CoverStudioViewModelTests`,
   `QuickEditCoverTests`, `CoverStudioUITests` (cinco etapas, cancelar, antes/depois), `CoverGalleryCaptureTests` (opt-in: todos os modelos × títulos ×
-  idiomas × foto clara/escura), `PaletteContrastTests.theCoverGuidesAndOverlayOutlinesReadOnAnyPicture`, `TakeEditCoverTests`, `CoverRendererTests` (vídeos reais), `QuickEditExportModelTests` (capa), `StudioVoiceReachTests`,
+  idiomas × foto clara/escura), `PaletteContrastTests.theCoverGuidesAndOverlayOutlinesReadOnAnyPicture`, `TakeEditCoverTests`, `CoverRendererTests` (vídeos reais), `StudioVoiceReachTests`,
   `StudioVoiceMontageExportTests` (áudio real: −9 dB → dentro de 2 dB), `QuickEditMontageCleanUpTests`, `QuickEditOverlayPickingTests`,
   `QuickEditMontageCaptionTests`, `OverlayAnimationTests`, `QuickEditMotionPresetTests`, `QuickEditCopyLookTests`, `BrollPartTests`/`BrollPartExportTests`,
   `SoundEffectSynthTests`/`SoundEffectExportTests`, `QuickEditSoundEffectTests`, `QuickEditGraphicsTests`, `QuickEditTranscriptEditTests`,
   `QuickEditVideoTemplateTests`, `TransitionDrawingTests`, `CodeCreditTests`, `QuickEditFreezeFrameTests`/`FreezeFrameExportTests`,
   `PaletteContrastTests.theEditorsPickedTilesRead`, `EditorUITests.testSmartHasTemplatesInATabOfTheirOwn`.
+
+## 38. Exportação confiável: fora do Cue, progresso, espaço e calor (16 de outubro de 2026; pedido do dono)
+
+A exportação é a da revisão da take (`TakeReviewViewModel`: Save, Share to universe, Share, e o Download video do editor). O arquivo e a entrega
+(Fotos, a rede) são **um só trabalho** (`BackgroundExportRunner`), para que nada pare entre os dois.
+
+- **Fora do Cue** (`BGContinuedProcessingTask`, iOS 26+; `SystemContinuedTaskScheduler` é o único arquivo que fala com `BackgroundTasks`):
+  - Num iPhone que dá GPU a uma tarefa em segundo plano (`BGTaskScheduler.supportedResources` contém `.gpu`; entitlement
+    `com.apple.developer.background-tasks.continued-processing.gpu` no perfil desde 16/10/2026), o Cue pede uma tarefa contínua com GPU (`.fail`,
+    identificador `com.cuestudioteleprompter.export.<uuid>`, registrado logo antes, handler na fila principal, 5 s para começar). O iOS mostra o
+    progresso numa Live Activity ("Exporting your video", a take); se o iOS encerrar a tarefa, o trabalho é cancelado, o arquivo parcial é apagado
+    e o toast diz "iOS stopped the export · Try again".
+  - Sem GPU em segundo plano, ou com o pedido recusado, a exportação roda como antes, com o tempo que o iOS dá a um app que sai
+    (`beginBackgroundTask`). **Nunca** uma tarefa só de CPU: medida no 15 Pro, ela mantinha o Cue acordado sem desenhar os quadros e a exportação
+    não terminava.
+  - **Medido no iago Lima iphone (iPhone 15 Pro, iOS 27):** `supportedResources` vazio (sem GPU em segundo plano); pedido com GPU recusado, sem GPU
+    aceito. Take de 2:30 em 1080p com legendas: 37 s com o Cue aberto, e pronta na volta depois de 60 s fora (Home + Câmera). Take de 6:40: 73% na
+    volta depois de 60 s fora, seguiu e terminou em 97 s, o mesmo tempo de com o Cue aberto. **Mansuelli iPhone 18 Pro Max:** também sem GPU
+    em segundo plano; 2:30 em 22 s com o Cue aberto; 6:40 com 60 s fora, 88% na volta e pronta em 71 s. Medido sob XCUITest; o uso à mão
+    confirma no roteiro do dono. iPhone 15 comum (A16) e o caminho com GPU e Live Activity: **não validados**.
+- **Na revisão, enquanto exporta** (`ExportProgressCard`, sobre `surface2`): "Exporting · N%" com barra; embaixo "You can leave Cue. The export goes
+  on." (tarefa aceita) ou "Keep Cue open until it’s done."; com o iPhone quente (`thermalState` `.serious`/`.critical`, `DeviceHeat`), "The iPhone
+  is hot, so the export takes longer. Let it cool down if you can." (`warnText`). A qualidade e as animações não mudam.
+- **Espaço:** antes de renderizar, "Not enough space on this iPhone. Free about N MB and try again." (`StorageSpace`: o dobro do tamanho estimado,
+  2,2 MB/s em 1080p e 6,5 em 4K, + 150 MB); nada começa.
+- **Parou com o Cue** (fechado pelo seletor de apps, ou encerrado pelo iOS): a take fica marcada enquanto exporta (`PreferencesService
+  .exportsInFlight`); marcada no lançamento seguinte vira `stoppedExports`, e a revisão dela mostra `ExportStoppedCard` (ícone, "The last export
+  stopped" e × numa linha; "Cue closed before it finished. Export again to get the video."; **Save video**). Um vídeo não continua do meio:
+  exportar de novo recomeça. Contraste medido na captura: título 15,7:1, texto `ink2` 5,6:1, barra amarela 11,1:1 sobre `surface2`.
+- **Interrompida pelo iOS** (`AVError.operationInterrupted` → `VideoExportError.interrupted`): o mesmo toast de tentar de novo; o arquivo parcial
+  é apagado.
+- **Testes:** `BackgroundExportRunnerTests`, `TakeReviewBackgroundExportTests`, `ContinuedTaskDeviceTests` (aparelho: o que o iOS responde),
+  `BackgroundExportDeviceUITests` (aparelho: take real com Save e Câmera; takes longas em memória, `-uiTestLongTake <s>`), `ExportProgressUITests`
+  (os dois cartões; `-uiTestSlowExport`, `-uiTestStoppedExport`).

@@ -67,7 +67,7 @@ struct TakeReviewView: View {
             takes: services.takes,
             quota: services.quota,
             tier: { store.tier },
-            exporter: services.exporter,
+            exporter: services.reviewExporter,
             photos: services.photos,
             sharing: services.sharing,
             ledger: services.ledger,
@@ -78,6 +78,7 @@ struct TakeReviewView: View {
             preferences: services.preferences,
             drafts: services.drafts,
             toast: services.toast,
+            background: services.backgroundExports,
             speechLanguage: { languages.captionRequest(for: $0) }
         )
         let notifications = services.notifications
@@ -300,6 +301,11 @@ struct TakeReviewView: View {
                     onShare: { shareToUniverse() }
                 )
                 .padding(.top, 22)
+                if let progress = viewModel.exportProgress {
+                    ExportProgressCard(progress: progress, mode: viewModel.exportMode).padding(.top, 10)
+                } else if viewModel.exportStopped {
+                    ExportStoppedCard(onSave: { Task { await viewModel.save() } }, onClose: viewModel.dismissStoppedExport).padding(.top, 10)
+                }
                 if viewModel.photosDenied {
                     PhotosDeniedCard { viewModel.photosDenied = false }.padding(.top, 10)
                 }
