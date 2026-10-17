@@ -325,6 +325,14 @@ final class TimelineContentView: UIView {
         let label = textLayer(item.label, size: 11.5, weight: .semibold, color: style.ink)
         label.frame = CGRect(x: x, y: (item.frame.height - label.frame.height) / 2, width: max(0, item.frame.width - x - 6), height: label.frame.height)
         box.addSublayer(label)
+        // The music's beats: short ticks along the bottom, in the label's color.
+        for offset in item.beatOffsets where offset >= 0 && offset <= item.frame.width {
+            let tick = CALayer()
+            tick.frame = CGRect(x: offset - 1, y: item.frame.height - 7, width: 2, height: 5)
+            tick.cornerRadius = 1
+            tick.backgroundColor = style.ink.cgColor
+            box.addSublayer(tick)
+        }
         for offset in item.keyframeOffsets {
             let diamond = CALayer()
             diamond.bounds = CGRect(x: 0, y: 0, width: 8, height: 8)

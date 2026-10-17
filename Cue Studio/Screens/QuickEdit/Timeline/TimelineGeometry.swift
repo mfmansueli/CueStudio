@@ -44,6 +44,8 @@ nonisolated struct TimelineGeometry: Equatable, Sendable {
         var activeLanes: Set<TimelineLane> = []
         var heightClass: EditorHeightClass = .regular
         var pointsPerSecond: CGFloat = TimelineGeometry.basePointsPerSecond
+        /// The music's beats the playhead and the handles stick to (Beats › Snap to beats); empty when off.
+        var beatSnaps: [TimeInterval] = []
     }
 
     struct ClipInput: Equatable, Sendable {
@@ -70,6 +72,8 @@ nonisolated struct TimelineGeometry: Equatable, Sendable {
         var label: String
         /// Edited seconds of its keyframes.
         var keyframes: [TimeInterval] = []
+        /// Edited seconds of its beats (music from Files).
+        var beats: [TimeInterval] = []
     }
 
     struct PauseInput: Equatable, Sendable {
@@ -125,6 +129,8 @@ nonisolated struct TimelineGeometry: Equatable, Sendable {
         var isDimmed: Bool
         /// Keyframe diamonds, from the item's left edge.
         var keyframeOffsets: [CGFloat]
+        /// Beat ticks (music), from the item's left edge.
+        var beatOffsets: [CGFloat] = []
     }
 
     struct Pause: Equatable, Sendable {
@@ -355,7 +361,8 @@ nonisolated struct TimelineGeometry: Equatable, Sendable {
                     label: item.label,
                     isSelected: isSelected,
                     isDimmed: selection != nil && !isSelected,
-                    keyframeOffsets: item.keyframes.map { CGFloat($0 - item.span.start) * pps }
+                    keyframeOffsets: item.keyframes.map { CGFloat($0 - item.span.start) * pps },
+                    beatOffsets: item.beats.map { CGFloat($0 - item.span.start) * pps }
                 ))
                 if isSelected, kind != .music, kind != .voiceOver {
                     handles.append(Self.handle(.item(kind, id, .start), x: x - Self.itemHandleWidth, width: Self.itemHandleWidth, lane: lane))
@@ -456,12 +463,13 @@ nonisolated struct TimelineGeometry: Equatable, Sendable {
     // MARK: - Snapping
 
     /// Edited seconds the playhead and the handles stick to: cuts between clips, the start and end
-    /// of the video, of every caption and text, and keyframes.
+    /// of the video, of every caption and text, keyframes, and the music's beats when they snap.
     var snapTimes: [TimeInterval] {
         var times: [TimeInterval] = [0, input.duration]
         times += input.clips.map(\.start)
         times += input.captions.flatMap { [$0.span.start, $0.span.end] }
         times += input.texts.flatMap { [$0.span.start, $0.span.end] + $0.keyframes }
+        times += input.beatSnaps
         return Array(Set(times)).sorted()
     }
 }

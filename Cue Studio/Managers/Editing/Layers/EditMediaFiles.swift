@@ -48,6 +48,9 @@ nonisolated enum EditMediaFiles {
     static func remove(_ names: Set<String>) {
         for name in names where !name.isEmpty && !name.contains("/") {
             try? FileManager.default.removeItem(at: url(for: name))
+            // A recording's motion analysis and a sound's beats go with it.
+            MotionAnalysisStore.remove(forRecording: url(for: name))
+            try? FileManager.default.removeItem(at: url(for: name).appendingPathExtension(BeatStore.pathExtension))
         }
     }
 }
