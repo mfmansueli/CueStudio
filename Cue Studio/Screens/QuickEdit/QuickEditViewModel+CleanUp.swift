@@ -131,7 +131,6 @@ extension QuickEditViewModel {
         let count = ignoredPauseCount
         switch count {
         case 0: return String(localized: "natural pauses stay")
-        case 1: return String(localized: "1 short pause kept")
         default: return String(localized: "\(count) short pauses kept")
         }
     }

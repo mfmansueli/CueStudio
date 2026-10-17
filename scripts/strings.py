@@ -19,6 +19,16 @@ NAME is Localizable (default), InfoPlist or AppShortcuts. The JSON for `add` map
 
 Every language the catalog has must be there (LOCALIZATION.md: all 20). A new key goes where Xcode would sort it
 (Foundation's localizedStandardCompare, asked of `swift` once per run).
+
+A string with a number that counts something varies by plural, the way Xcode's "Vary by Plural" writes it: the value is
+an object with the language's plural categories (CLDR: zero, one, two, few, many, other; "other" is required), and "en"
+gives the English forms (the key is the English "other"):
+
+  {"%lld lines deleted": {"comment": "…", "en": {"one": "%lld line deleted", "other": "%lld lines deleted"},
+                          "pt-BR": {"one": "%lld linha apagada", "other": "%lld linhas apagadas"}, "ja": "%lld 行を削除", …}}
+
+A language with one form (Japanese, Chinese, Korean, Thai, Vietnamese, Indonesian) takes a plain string. Every form keeps
+the key's placeholders.
 """
 
 import json
@@ -85,11 +95,51 @@ print(String(data: try! JSONEncoder().encode(points), encoding: .utf8)!)
     return json.loads(result.stdout.strip().splitlines()[-1])
 
 
+# The plural categories each language has for whole numbers (CLDR), the ones Xcode offers under "Vary by Plural".
+PLURAL_CATEGORIES = {
+    "ar": {"zero", "one", "two", "few", "many", "other"},
+    "da": {"one", "other"}, "de": {"one", "other"}, "en": {"one", "other"}, "nb": {"one", "other"},
+    "nl": {"one", "other"}, "sv": {"one", "other"}, "tr": {"one", "other"}, "hi": {"one", "other"},
+    "es": {"one", "many", "other"}, "fr": {"one", "many", "other"}, "it": {"one", "many", "other"},
+    "pt-BR": {"one", "many", "other"},
+    "id": {"other"}, "ja": {"other"}, "ko": {"other"}, "th": {"other"}, "vi": {"other"},
+    "zh-Hans": {"other"}, "zh-Hant": {"other"},
+}
+
+
+def unit(value):
+    return {"stringUnit": {"state": "translated", "value": value}}
+
+
+def localization(value):
+    """A language's entry: a plain value, or its plural forms as Xcode writes them (categories in sorted order)."""
+    if isinstance(value, str):
+        return unit(value)
+    return {"variations": {"plural": {category: unit(form) for category, form in sorted(value.items())}}}
+
+
+def check_value(key, language, value, problems):
+    """The value (or each plural form) keeps the key's placeholders; plural forms are the language's own categories."""
+    forms = {"": value} if isinstance(value, str) else value
+    if not isinstance(value, str):
+        if "other" not in forms:
+            problems.append(f"{key!r} [{language}]: a plural needs its \"other\" form")
+        allowed = PLURAL_CATEGORIES.get(language)
+        extra = sorted(set(forms) - allowed) if allowed else []
+        if extra:
+            problems.append(f"{key!r} [{language}]: {', '.join(extra)} isn't a plural category of {language}")
+    for category, form in forms.items():
+        # Same placeholders as the key; a translation may number them (%1$@, %2$@) to reorder them.
+        if not isinstance(form, str) or placeholder_kinds(form) != placeholder_kinds(key):
+            problems.append(f"{key!r} [{language}{'.' + category if category else ''}]: placeholders differ from the key")
+
+
 def add(name, json_path):
     path, catalog, newline = load(name)
     with open(json_path, encoding="utf-8") as handle:
         additions = json.load(handle)
     wanted = languages(catalog)
+    source = catalog["sourceLanguage"]
     problems = []
     for key, values in additions.items():
         missing = [language for language in wanted if not values.get(language)]
@@ -98,9 +148,10 @@ def add(name, json_path):
         for language, value in values.items():
             if language == "comment":
                 continue
-            # Same placeholders as the key; a translation may number them (%1$@, %2$@) to reorder them.
-            if placeholder_kinds(value) != placeholder_kinds(key):
-                problems.append(f"{key!r} [{language}]: placeholders differ from the key")
+            if language == source and isinstance(value, str):
+                problems.append(f"{key!r}: the source language is the key; give it only as plural forms")
+                continue
+            check_value(key, language, value, problems)
     if problems:
         sys.exit("Nothing written:\n  " + "\n  ".join(problems))
 
@@ -122,7 +173,9 @@ def add(name, json_path):
         # A language the JSON leaves out keeps what the catalog had (the source language's own value, for one).
         localizations = dict(entry.get("localizations", {}))
         for language in wanted:
-            localizations[language] = {"stringUnit": {"state": "translated", "value": values[language]}}
+            localizations[language] = localization(values[language])
+        if isinstance(values.get(source), dict):
+            localizations[source] = localization(values[source])
         updated["localizations"] = dict(sorted(localizations.items()))
         entry.clear()
         entry.update(sorted(updated.items()))
@@ -140,13 +193,20 @@ def missing(name):
             continue
         localizations = entry.get("localizations", {})
         absent = [language for language in wanted if language not in localizations]
-        new = [language for language, unit in localizations.items()
-               if language != catalog["sourceLanguage"]
-               and unit.get("stringUnit", {}).get("state") not in (None, "translated")]
+        new = [language for language, entry in localizations.items()
+               if language != catalog["sourceLanguage"] and not translated(entry)]
         if absent or new:
             count += 1
             print(f"{key!r}: missing {absent or '-'}; not translated yet {new or '-'}")
     print(f"{count} entr{'y' if count == 1 else 'ies'} to finish in {CATALOGS[name]}")
+
+
+def translated(entry):
+    """A language's entry is done: its value, or every plural form, translated."""
+    plural = entry.get("variations", {}).get("plural")
+    if plural:
+        return all(form.get("stringUnit", {}).get("state") == "translated" for form in plural.values())
+    return entry.get("stringUnit", {}).get("state") in (None, "translated")
 
 
 def app_text():

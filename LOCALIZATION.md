@@ -215,6 +215,14 @@ before a public release.
 - Arabic: the prompter reads the script right to left (`ScriptDirection`), and Voice Following
   matches it whatever the interface's direction; only the text's layout mirrors, never the reading
   guide, the timeline or the video.
+- Counts: a string with a number that counts something ("3 lines deleted", "Found 1 pause") varies by plural in the String
+  Catalog (Xcode's "Vary by Plural"; `scripts/strings.py add` takes the forms as an object: `{"one": …, "other": …}`, Arabic
+  `zero`, `one`, `two`, `few`, `many`, `other`; one plain string for the languages with one form: Japanese, Korean, Chinese,
+  Thai, Vietnamese, Indonesian). The code writes the count once (`String(localized: "\(count) lines deleted")`) and never
+  rewrites a sentence or adds a "1 …" key to dodge the plural; a zero with words of its own ("No long pauses") stays a branch.
+  Every form keeps the key's placeholders; with a second value (`%@`) the forms number them (`%1$lld`, `%2$@`).
+  `PluralStringsTests` reads the editor's counts in the 20 languages. Strings with two counts ("2 of 3 recordings") are left
+  without plural variations (they would need substitutions per argument).
 
 ## 4. Speech recognition by language
 

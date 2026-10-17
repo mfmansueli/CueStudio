@@ -43,6 +43,9 @@ protocol TakeEditing: AnyObject {
     /// Freeze frame: the frame at `time` of the recording at `url` as a silent video `length` seconds long, in the edit's
     /// media (`EditMediaFiles`). Returns its file name; throws when the frame can't be read or written.
     func stillClip(ofVideoAt url: URL, at time: TimeInterval, length: TimeInterval) async throws -> String
+    /// Extract audio: a stretch of a recording's sound as an audio file of its own in the edit's media, at the clip's speed and
+    /// as Studio Voice treats it (`SoundExtraction`). Throws `AudioTrackExtractor.ExtractError.noAudio` when it has no sound.
+    func extractSound(_ request: SoundExtraction) async throws -> ExtractedSound
 }
 
 extension TakeEditing {

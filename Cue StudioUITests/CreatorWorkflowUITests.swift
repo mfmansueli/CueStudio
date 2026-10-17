@@ -175,7 +175,7 @@ final class CreatorWorkflowUITests: XCTestCase {
 
         flow.step("Cut from video")
         flow.tap(cut, "Cut from video")
-        XCTAssertTrue(flow.toastSays("Words cut: 2"), "No toast after cutting \(words)")
+        XCTAssertTrue(flow.toastSays("2 words cut"), "No toast after cutting \(words)")
         XCTAssertNotEqual(EditorApp.length(app), fullLength, "Cutting \(words) didn't shorten the video")
 
         flow.step("Undo in the toast")
@@ -311,10 +311,11 @@ final class CreatorWorkflowUITests: XCTestCase {
         flow.tool("pasteLook")
         let everyClip = app.buttons["edit.pasteLook.all"]
         flow.tap(everyClip, "Every clip")
+        // The toast comes once the sheet has gone (0.35 s) and stays 2 s: it's looked for first, before anything else spends
+        // that time (waiting for the sheet to go took long enough, before, for the toast to be gone when it was looked for).
+        XCTAssertTrue(flow.toastSays("Every clip already looks like this"), "No toast after pasting a look that changes nothing")
         XCTAssertTrue(everyClip.waitForNonExistence(timeout: 5))
-        // Nothing changed: no undo step, the edit still unchanged. The toast that says so ("Every clip already looks like this")
-        // shows over the editor and is announced to VoiceOver, but right after a sheet closes XCUITest's snapshot doesn't list
-        // it; its words are checked in QuickEditCopyLookTests.aPasteThatChangesNothingSaysSo.
+        // Nothing changed: no undo step, the edit still unchanged.
         XCTAssertTrue(app.buttons["edit.toolbar.pasteLook"].waitForExistence(timeout: 5))
         XCTAssertFalse(app.buttons["edit.undoButton"].isEnabled, "Pasting an identical look added an undo step")
         flow.capture("after-every-clip")

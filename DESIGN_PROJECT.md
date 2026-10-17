@@ -929,12 +929,51 @@ auditoria: `reports/editor-award-checklist.md`.
 - **Legendas na montagem** (`CaptionJoin`): **Join next** junta só a próxima coisa dita na mesma gravação, pela ordem de reprodução; outra gravação
   ("The next line is from another clip") ou um momento anterior ("…said earlier in this clip") são recusados. O ajuste de início/fim fica dentro do
   clipe da linha; arrastar a barra para um clipe de outra gravação é recusado ("A line stays on its own clip"); Split funciona numa cópia.
+- **Localizar e trocar nas legendas** (`CaptionFindSheet`, `CaptionFindReplace`; Captions › **Find and replace** e o menu de legendas, como no
+  editor de legendas do CapCut): uma palavra em todas as linhas que tocam, na ordem em que tocam, sem diferenciar maiúsculas nem largura (acentos
+  contam: "e" não acha "é"). Cada resultado mostra a linha com a palavra em amarelo (`accText`, negrito) e **Replace**; **Replace all** troca
+  todas num passo de desfazer ("Replaced N times" · Undo). Só o texto muda: a linha guarda seus tempos e as palavras que continuam iguais, os da
+  voz (`CaptionRevision.retimed`); linhas de trechos cortados ficam como estão. Tocar num resultado leva a agulha à linha (a folha fica a meia
+  altura, com o vídeo à vista).
+- **Várias linhas de legenda de uma vez** (`CaptionPickTools`, `QuickEditViewModel+CaptionPicks`; Captions › **Select lines**, ou segurar uma
+  linha › Select lines, como a edição em lote do CapCut): cada linha ganha um círculo; tocar põe ou tira. Enquanto escolhe, o painel cresce até
+  a altura dos painéis de estilo (`openPanelSize`), no lugar da chave e dos chips fica "N selected", **Select all** / **Deselect all** e **Done**,
+  e as ações ficam fixas embaixo da lista (rodapé do painel, como no CapCut, que as mantém à mão enquanto a lista rola; decisão depois de
+  comparar: no topo da lista elas sumiam ao rolar e as linhas mal cabiam): chip **Emphasis** (a linha inteira na cor de destaque, como a palavra
+  dita; em caixa onde a revelação usa caixa; ligado em `accText` sobre `accSoft`), menu **Size** (Regular, Bigger 1,25×, Biggest 1,5×, nunca
+  menor, para não cair abaixo do tamanho em que as cores foram medidas; dentro do limite da coleção), ‹ › (**Move earlier / Move later**, 0,1 s
+  por toque, todas juntas, até onde a que tem menos espaço pode ir: dentro do seu clipe e sem encostar numa linha não escolhida; "The lines
+  can’t move further") e a lixeira ("N lines deleted" · Undo). Cada ação
+  é um passo de desfazer (toques seguidos de mover são um). O estilo fica na linha (`CaptionCue.lineStyle`, `CaptionLineStyle`; linhas antigas
+  sem ele) e é desenhado por `CaptionCollectionRenderer` na prévia e na exportação; legendas antigas sem coleção (`captionCollection` nil) não
+  separam estilo por linha e o painel diz "Pick a look in Style…". Dividir uma linha mantém o estilo nas duas metades; traduções mostram as
+  linhas sem o estilo. Sair da lista (outro painel) termina a seleção; a timeline continua mostrando uma linha escolhida por vez.
+- **Replace clip** (barra do clipe › **Replace**, `QuickEditViewModel+ReplaceClip`, `EditTimeline.replaceSource`, `TakeEdit.moveOverlays`; o
+  padrão do CapCut): o Fotos abre só com vídeos; o escolhido entra no lugar do clipe, do começo do vídeo, pela mesma duração (se o vídeo é mais
+  curto, o clipe fica do tamanho dele: "Clip replaced · the video is shorter, so the clip is too"), com a mesma velocidade, zoom, volume,
+  transição e look. Textos, mídias e narrações presos ao clipe ficam no mesmo momento dele. Legendas e Studio Voice são da gravação: a nova não
+  tem legendas até Auto captions ouvir de novo. A gravação antiga nunca muda; um Undo ("Clip replaced" · Undo) a traz de volta. Foto: "Pick a
+  video first"; menos de 0,3 s: "Video too short to add".
+  Diferença que fica do CapCut (comparado em 17/10/2026): lá se escolhe que trecho do vídeo novo entra; aqui ele entra do começo e as alças do
+  clipe aparam. Próximo passo: a faixa "Part of the video" do B-roll (`MediaTrimStrip`) também para um clipe de outra gravação.
+- **Extract audio** (barra do clipe e, num vídeo com som por cima, a da mídia; `QuickEditViewModel+ExtractAudio`, `SoundExtractor`,
+  `TakeEditing.extractSound`): o som do clipe sai para a faixa de música como um clipe próprio ("Sound · Clip 2" / "Sound · Video",
+  `MusicClip.extractedFrom`), onde tocava, no volume do clipe (ou do vídeo), sem fades e sem abaixar sob a voz, e o clipe (ou o vídeo) fica mudo:
+  nada toca duas vezes ("Sound on its own track · the clip is muted" · Undo; o novo som fica escolhido, com Volume, Replace e Delete). O som sai
+  como o Cue toca: do clipe, com o tratamento do Studio Voice e o nivelamento entre gravações (`RecordingSounds`), e na velocidade do clipe
+  (mantendo o tom da voz se o clipe mantém), num `.m4a` do próprio aparelho (AAC, `EditMediaFiles`). Na faixa de música ele se move, apara,
+  ganha fades e volume como uma música, mas, como um efeito sonoro, segue o seu momento quando algo antes dele é cortado e nunca ocupa o lugar
+  de uma música nova (`MusicClip.followsTheVideo`, `takesMusicRoom`). Sem som: "This clip has no sound"; num clipe ou vídeo mudo (o som já extraído, ou desligado), nada sai, para não tocar duas vezes ("This clip is muted · Turn its sound on to extract it"); se os cortes mudarem enquanto o som é
+  escrito, nada entra ("The video changed meanwhile · Extract the sound again").
+- **Contagens no plural certo** (String Catalog com variações de plural, `LOCALIZATION.md` §3): as frases com número do editor ("1 line
+  deleted", "Found 1 pause", "Cut 1 word from the video", "1 word cut · 0.8 s", "Frame frozen for 2 seconds", "3 matches"…) escolhem a forma
+  de cada idioma (árabe com as seis); o botão de Edit by text diz "Cut N words from the video" e o toast "N words cut · 0,8 s".
 - **Barras como um editor de celular (decisão do dono, 16/10/2026, depois de comparar com CapCut, Edits e InShot; diverge da ordem do quadro
   v29 · 7.2).** Principal: **Edit · Captions · Text · ✦ Smart · Media · Audio · Format · Filters · Cover** — a ordem em que um vídeo falado é feito, as
   cinco primeiras na tela do iPhone. **Format** (antes Crop, só na barra do clipe) abre o painel "Format" ("Whole video · format for where you post").
-  Clipe: **Split · Speed · Zoom · Volume · Duplicate · Freeze frame · Reorder · Adjust · Filters · Background · Copy look · Paste look · Delete**: só o
-  que é do clipe, o mais usado primeiro; o que muda o vídeo inteiro (Format, Studio Voice, Media) fica na principal. Texto ganha **Animation** (Style ›
-  Motion); mídia ganha **Duplicate** (por cima, mesmo arquivo).
+  Clipe: **Split · Speed · Zoom · Volume · Duplicate · Freeze frame · Replace · Extract audio · Reorder · Adjust · Filters · Background · Copy look ·
+  Paste look · Delete**: só o que é do clipe, o mais usado primeiro; o que muda o vídeo inteiro (Format, Studio Voice, Media) fica na principal. Texto
+  ganha **Animation** (Style › Motion); mídia ganha **Duplicate** (por cima, mesmo arquivo) e, num vídeo com som, **Extract audio**.
 - **Reordenar clipes** (`ClipOrderSheet`): **segurar um clipe** na timeline (0,45 s, toque háptico) ou **Reorder** na barra do clipe abre a lista dos
   clipes com quadro, número, origem e duração, arrastados pela alça; cada mudança é um passo de desfazer e o que toca no clipe vai junto. Um clipe só:
   "Split or add a clip to reorder".
@@ -963,7 +1002,7 @@ auditoria: `reports/editor-award-checklist.md`.
 - **Gráficos no vídeo** (`TextOverlay.graphic`, desenhados por `CoverCompositionRenderer` como na capa): o menu de texto ganha **Arrow, Circle e
   Tag**; mover, pinçar, girar, cor e animação como um texto (`GraphicStylePanel`); "Style all" não muda gráficos.
 - **Edit by text** (`TranscriptEditSheet`, `TranscriptEditing`, menu de legendas): **Listen to the video** transcreve no aparelho (Speech, nada sai
-  do iPhone); tocar uma palavra e outra escolhe o intervalo. **Cut from video · N words** corta o vídeo (com 0,05 s antes e 0,15 s depois, sem
+  do iPhone); tocar uma palavra e outra escolhe o intervalo. **Cut N words from the video** corta o vídeo (com 0,05 s antes e 0,15 s depois, sem
   invadir as palavras vizinhas); **Fix caption text** muda só o texto da legenda; palavras cortadas aparecem riscadas, com **Put back**. A
   explicação "Cut removes the words from the video. Fix caption text only changes what the caption says." fica na folha.
 - **✦ Smart em duas categorias** (`SmartPanelSection`, abas **Tools | Templates** no topo do painel): Tools são os blocos violeta (Auto captions,
@@ -1002,7 +1041,10 @@ auditoria: `reports/editor-award-checklist.md`.
 - **Freeze frame** (barra do clipe, `StillClipWriter`, fora da thread da interface, toast "Freezing the frame…"; se os cortes mudarem enquanto o
   quadro é feito, nada entra e o toast pede para congelar de novo): o quadro da agulha vira um vídeo
   mudo de 5 s na mídia da edição e entra como clipe de 2 s ali (o clipe é dividido; colado no início de um clipe, entra antes dele), com o look e o
-  fundo do clipe de origem; a alça do fim estica até 5 s. A música e as narrações continuam; a gravação nunca muda.
+  fundo do clipe de origem; a alça do fim estica até 5 s. A música e as narrações continuam; a gravação nunca muda. Numa gravação **HDR**
+  (`.containsHDRVideo`, como as do iPhone em HLG) o quadro congelado é o próprio quadro decodificado em 10 bits, gravado em HEVC Main 10 com as
+  mesmas primárias, função de transferência e matriz e a mesma rotação da gravação, para o editor convertê-lo como os clipes vizinhos; numa SDR,
+  uma imagem em pé em H.264. Se o HDR não puder ser gravado, o quadro congela em SDR (nunca falha por isso).
 - **Efeitos sonoros seguem o momento** (`MusicClip.following`): um corte antes de um efeito o traz junto, como textos e legendas; a música fica.
 - **Use on every cut** copia também a duração; se todos já têm, o toast diz "Every cut already has it".
 - **Edit by text numa montagem** corta só o clipe onde as palavras foram lidas (uma cópia as mantém); palavras com 44 pt; a nota diz que Undo traz

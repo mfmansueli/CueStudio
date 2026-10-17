@@ -239,9 +239,7 @@ extension QuickEditViewModel {
         captionState = unheard.isEmpty ? .idle : .missingLanguages(unheard)
         // Auto captions turns into the list of the new lines.
         if panel == .autoCaptions { panel = .captions }
-        toast.show(lines.count == 1
-            ? String(localized: "1 line to check")
-            : String(localized: "\(lines.count) lines to check"))
+        toast.show(String(localized: "\(lines.count) lines to check"))
     }
 
     // MARK: - Reading

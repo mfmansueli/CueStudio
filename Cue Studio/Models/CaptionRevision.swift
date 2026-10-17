@@ -133,6 +133,7 @@ nonisolated enum CaptionRevision {
                 origin: cue.origin, isRevised: true, needsTimingReview: cue.needsTimingReview
             )
             second.sourceID = cue.sourceID
+            second.lineStyle = cue.lineStyle
             second.start = max(second.start, first.end)
             first.isRevised = true
             return (first, second)
@@ -152,6 +153,7 @@ nonisolated enum CaptionRevision {
             text: CaptionText.joined(tail), start: cut, end: cue.end, origin: cue.origin, isRevised: true, needsTimingReview: true
         )
         second.sourceID = cue.sourceID
+        second.lineStyle = cue.lineStyle
         first.needsTimingReview = true
         return (first, second)
     }
