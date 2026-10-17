@@ -87,6 +87,7 @@ struct QuickEditView: View {
             case .music: AddMusicSheet(viewModel: viewModel)
             case .media: AddMediaSheet(viewModel: viewModel)
             case .transcript: TranscriptEditSheet(viewModel: viewModel)
+            case .findInCaptions: CaptionFindSheet(viewModel: viewModel)
             case .clipOrder: ClipOrderSheet(viewModel: viewModel, thumbnails: services.thumbnails)
             case .done:
                 EditorDoneSheet(
@@ -206,7 +207,7 @@ struct QuickEditView: View {
         EditorLayout(
             usableHeight: height,
             stableHeight: stableHeight > 0 ? stableHeight : nil,
-            panel: viewModel.panel?.size,
+            panel: viewModel.openPanelSize,
             panelFocusesLane: viewModel.panel?.focusedLane != nil,
             largeText: dynamicTypeSize >= .xxLarge,
             panelIsExpanded: viewModel.stylePanelIsExpanded && viewModel.panel?.isExpandable == true

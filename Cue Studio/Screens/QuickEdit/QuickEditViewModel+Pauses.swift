@@ -41,7 +41,6 @@ extension QuickEditViewModel {
     var pausesTitle: String {
         switch shownPauses.count {
         case 0: String(localized: "No long pauses")
-        case 1: String(localized: "Found 1 pause")
         default: String(localized: "Found \(shownPauses.count) pauses")
         }
     }
@@ -113,8 +112,6 @@ extension QuickEditViewModel {
 
     private func removedPausesMessage(count: Int, total: TimeInterval) -> String {
         let seconds = total.formatted(.number.precision(.fractionLength(1)).locale(.interface))
-        return count == 1
-            ? String(localized: "Removed 1 pause · \(seconds)s")
-            : String(localized: "Removed \(count) pauses · \(seconds)s")
+        return String(localized: "Removed \(count) pauses · \(seconds)s")
     }
 }

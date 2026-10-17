@@ -693,21 +693,30 @@ nonisolated struct EditTimeline: Codable, Hashable, Sendable {
         return true
     }
 
+    /// Replace clip: the piece `id` plays another recording (`source`, `duration` long) from its start, for as long as it did
+    /// (shorter when the new one is shorter), keeping its place, speed, zoom, sound and look. The edit becomes arranged.
+    /// Returns the stretch of its old recording it played, nil (and no change) when there's no such piece or the new
+    /// recording is too short.
+    @discardableResult
+    mutating func replaceSource(ofSegment id: UUID, with source: UUID, duration: TimeInterval) -> TimeSpan? {
+        guard let index = index(ofSegment: id), duration >= Self.minimumClipDuration else { return nil }
+        let old = segments[index]
+        otherSources[source] = duration
+        isArranged = true
+        var piece = old
+        piece.sourceID = source
+        piece.sourceStart = 0
+        piece.sourceEnd = min(old.sourceLength, duration)
+        segments[index] = piece
+        return old.span
+    }
+
     /// Where a stretch of a recording pinned to a piece (`anchor`) plays: in that piece when it
     /// still holds the stretch's start, else in the first piece of the same recording that does
     /// (after a split or a Clean Up cut the piece has a new identity). The stretch keeps its
     /// length at the piece's speed and can run past the piece; nil when no piece holds it.
     func editedSpan(forSource span: TimeSpan, anchoredTo anchor: ClipAnchor) -> TimeSpan? {
-        let holding = segments.indices.filter { index in
-            let segment = segments[index]
-            return segment.sourceID == anchor.sourceID && segment.sourceStart - 0.000_001 <= span.start && span.start < segment.sourceEnd
-        }
-        var chosen = holding.first { segments[$0].id == anchor.segmentID } ?? holding.first
-        // The start was trimmed off its piece: it shows from the piece's start while the rest plays.
-        if chosen == nil, let index = self.index(ofSegment: anchor.segmentID), segments[index].span.overlaps(span) {
-            chosen = index
-        }
-        guard let index = chosen else { return nil }
+        guard let index = segmentIndex(holding: span, anchoredTo: anchor) else { return nil }
         let segment = segments[index]
         let from = max(span.start, segment.sourceStart)
         let pieceStart = editedStart(ofSegmentAt: index)
@@ -715,6 +724,18 @@ nonisolated struct EditTimeline: Codable, Hashable, Sendable {
         let end = min(editedDuration, max(start, pieceStart + segment.extendedEditedOffset(forSource: span.end - segment.sourceStart)))
         guard end - start > 0.000_1 else { return nil }
         return TimeSpan(start: start, end: end)
+    }
+
+    /// The index of the piece a stretch pinned to `anchor` plays in (see above); nil when none holds it.
+    func segmentIndex(holding span: TimeSpan, anchoredTo anchor: ClipAnchor) -> Int? {
+        let holding = segments.indices.filter { index in
+            let segment = segments[index]
+            return segment.sourceID == anchor.sourceID && segment.sourceStart - 0.000_001 <= span.start && span.start < segment.sourceEnd
+        }
+        if let chosen = holding.first(where: { segments[$0].id == anchor.segmentID }) ?? holding.first { return chosen }
+        // The start was trimmed off its piece: it shows from the piece's start while the rest plays.
+        if let index = self.index(ofSegment: anchor.segmentID), segments[index].span.overlaps(span) { return index }
+        return nil
     }
 
     /// The piece and the stretch of its recording that play from `span`'s start (edited seconds),

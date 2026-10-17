@@ -265,8 +265,8 @@ struct QuickEditClipLookTests {
         scenario.viewModel.perform(.selectClipAtPlayhead)
         let ids = scenario.viewModel.toolbarItems.map(\.id)
         #expect(ids == [
-            "split", "speed", "zoom", "volume", "stabilize", "duplicate", "freeze", "reverse", "reorder", "adjust", "filters", "background", "copyLook",
-            "pasteLook", "delete",
+            "split", "speed", "zoom", "volume", "stabilize", "duplicate", "freeze", "reverse", "replace", "extractAudio", "reorder", "adjust",
+            "filters", "background", "copyLook", "pasteLook", "delete",
         ])
     }
 }

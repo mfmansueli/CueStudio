@@ -144,4 +144,21 @@ final class FakeTakeEditor: TakeEditing {
         if stillClipFails { throw CocoaError(.fileReadCorruptFile) }
         return "still-\(stillClips.count).mov"
     }
+
+    /// Sounds asked of Extract audio, in order.
+    private(set) var extractions: [SoundExtraction] = []
+    /// The recording has no sound.
+    var extractionHasNoSound = false
+    /// What the creator does while the sound is being written (the call suspends first, as the real one does).
+    var whileExtracting: (() -> Void)?
+
+    func extractSound(_ request: SoundExtraction) async throws -> ExtractedSound {
+        extractions.append(request)
+        if let whileExtracting {
+            await Task.yield()
+            whileExtracting()
+        }
+        if extractionHasNoSound { throw AudioTrackExtractor.ExtractError.noAudio }
+        return ExtractedSound(fileName: "sound-\(extractions.count).m4a", duration: request.span.duration / request.speed)
+    }
 }

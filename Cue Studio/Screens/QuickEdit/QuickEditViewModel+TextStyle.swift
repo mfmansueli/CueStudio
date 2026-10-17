@@ -103,7 +103,6 @@ extension QuickEditViewModel {
         let count = motionItem.map { keyframes(of: $0).count } ?? 0
         switch count {
         case 0: return String(localized: "No keyframes yet")
-        case 1: return String(localized: "1 keyframe")
         default: return String(localized: "\(count) keyframes")
         }
     }

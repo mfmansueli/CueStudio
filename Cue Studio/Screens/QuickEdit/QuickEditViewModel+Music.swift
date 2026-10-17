@@ -47,8 +47,8 @@ extension QuickEditViewModel {
             replaceMusic(replacing, with: imported)
             return
         }
-        // Sound effects can play over music: only music takes room.
-        let occupied = edit.music.filter { $0.effect == nil }.compactMap { $0.span(inEditOf: edit.editedDuration) }
+        // Sound effects and extracted sounds can play over music: only music takes room.
+        let occupied = edit.music.filter(\.takesMusicRoom).compactMap { $0.span(inEditOf: edit.editedDuration) }
         guard let slot = MusicPlacement.slot(playhead: player.currentTime, editDuration: edit.editedDuration, occupied: occupied) else {
             discard(imported)
             toast.show(String(localized: "No room · Move the playhead"))

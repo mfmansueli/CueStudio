@@ -26,6 +26,10 @@ enum EditorAction: Hashable {
     case freezeFrame
     /// Reverse: the clip plays backwards (or forward again).
     case reverseClip
+    /// Replace clip: another video from Photos in the clip's place, keeping its length and effects.
+    case replaceClip
+    /// Extract audio: the picked clip's (or video's) sound on a track of its own, the clip muted.
+    case extractAudio
     /// Reorder: the clips in a list to drag (also holding a clip on the timeline).
     case reorderClips
     case copyLook
@@ -51,6 +55,8 @@ enum EditorAction: Hashable {
     /// Edit by text: cut words out of the video.
     case editByText
     case deleteAllCaptions
+    /// Find and replace in every line.
+    case findInCaptions
     // Caption
     case editCaption
     case splitCaption

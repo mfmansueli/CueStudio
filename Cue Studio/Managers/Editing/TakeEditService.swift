@@ -128,6 +128,17 @@ final class TakeEditService: TakeEditing {
         try await StillClipWriter.write(frameOf: url, at: time, length: length)
     }
 
+    func extractSound(_ request: SoundExtraction) async throws -> ExtractedSound {
+        var file = request.videoURL
+        // What the clip sounds like in the edit: Studio Voice's treatment (and the leveling between recordings), the same file
+        // the preview and the export play.
+        if let treatment = request.treatment {
+            let treated = try await RecordingSounds.prepare(for: treatment.edit, takeURL: treatment.takeURL, cache: sounds)
+            if let sound = treated.file(for: treatment.recording) { file = sound }
+        }
+        return try await SoundExtractor.write(from: file, span: request.span, speed: request.speed, keepsPitch: request.keepsPitch)
+    }
+
     func matchedOriginalVolume(forVideoAt url: URL, edit: TakeEdit) async -> Double? {
         guard let treated = try? await processedAudio(for: url, edit: edit),
               let untreated = try? await audioFile(for: url) else { return nil }

@@ -64,12 +64,12 @@ extension QuickEditViewModel {
         DurationText.editor(edit.editedDuration) + " → " + DurationText.editor(max(0, edit.editedDuration - cleanUpSaving))
     }
 
-    /// "Remove 3 pauses", "Remove 1 pause", "Remove 4" with words in it, or "Nothing selected".
+    /// "Remove 3 pauses", "Remove 1 pause" (plural forms in the catalog), "Remove 4" with words in it, or "Nothing selected".
     var cleanUpApplyLabel: String {
         let marked = markedCleanUp
         guard !marked.isEmpty else { return String(localized: "Nothing selected") }
         if marked.allSatisfy({ $0.kind == .pause }) {
-            return marked.count == 1 ? String(localized: "Remove 1 pause") : String(localized: "Remove \(marked.count) pauses")
+            return String(localized: "Remove \(marked.count) pauses")
         }
         return String(localized: "Remove \(marked.count)")
     }
@@ -100,7 +100,7 @@ extension QuickEditViewModel {
         let seconds = DurationText.tenths(saving)
         let pauses = marked.filter { $0.kind == .pause }.count
         toast.show(pauses == marked.count
-            ? (pauses == 1 ? String(localized: "Removed 1 pause · \(seconds)") : String(localized: "Removed \(pauses) pauses · \(seconds)"))
+            ? String(localized: "Removed \(pauses) pauses · \(seconds)")
             : String(localized: "Removed \(marked.count) · \(seconds)"))
     }
 

@@ -20,23 +20,42 @@ nonisolated struct WordEmphasis: Hashable, Sendable {
     /// The word being said.
     let index: Int
     let style: Style
+    /// How many words from `index` are lit: 1 for the word being said, every word for a line lit whole
+    /// (`CaptionLineStyle.isEmphasized`).
+    var count = 1
 
-    /// Where the word is in `display` (the line as drawn: joined, in capitals when the look asks),
+    init(words: [String], index: Int, style: Style, count: Int = 1) {
+        self.words = words
+        self.index = index
+        self.style = style
+        self.count = max(1, count)
+    }
+
+    /// Every word of the line lit.
+    static func wholeLine(_ words: [String], style: Style) -> WordEmphasis {
+        WordEmphasis(words: words, index: 0, style: style, count: words.count)
+    }
+
+    /// Where the lit words are in `display` (the line as drawn: joined, in capitals when the look asks),
     /// or nil when the words don't make up that line.
     func range(in display: String, uppercased: Bool) -> NSRange? {
         guard words.indices.contains(index) else { return nil }
+        let last = min(words.count - 1, index + count - 1)
         var line = ""
-        var found: NSRange?
+        var start: Int?
+        var end = 0
         for (position, word) in words.enumerated() {
             let shown = uppercased ? word.uppercased() : word
-            if let last = line.unicodeScalars.last, let first = shown.unicodeScalars.first,
-               !(WordSegmenter.isUnspaced(last) && WordSegmenter.isUnspaced(first)) {
+            if let previous = line.unicodeScalars.last, let first = shown.unicodeScalars.first,
+               !(WordSegmenter.isUnspaced(previous) && WordSegmenter.isUnspaced(first)) {
                 line += " "
             }
-            let start = (line as NSString).length
+            let location = (line as NSString).length
             line += shown
-            if position == index { found = NSRange(location: start, length: (shown as NSString).length) }
+            if position == index { start = location }
+            if position == last { end = (line as NSString).length }
         }
-        return line == display ? found : nil
+        guard line == display, let start else { return nil }
+        return NSRange(location: start, length: end - start)
     }
 }

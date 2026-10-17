@@ -221,7 +221,7 @@ extension QuickEditViewModel {
     // MARK: - Private
 
     /// `edit` ready to be arranged: pinned to its sections the first time.
-    private func arranged(_ edit: TakeEdit) -> TakeEdit {
+    func arranged(_ edit: TakeEdit) -> TakeEdit {
         var next = edit
         if !next.timeline.isArranged { next.anchorOverlays() }
         return next
