@@ -44,6 +44,8 @@ struct RootView: View {
                 await services.session.verify()
             }
             .onChange(of: scenePhase) { _, phase in
+                // The motion analysis runs only while Cue is in front.
+                services.motion.setActive(phase == .active)
                 guard phase == .active else { return }
                 Task { await services.store.refreshEntitlements() }
                 // "Stop Using Apple ID" happens in Settings, outside Cue.

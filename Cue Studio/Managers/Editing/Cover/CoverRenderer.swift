@@ -109,10 +109,16 @@ nonisolated enum CoverRenderer {
         generator.requestedTimeToleranceAfter = .zero
         guard let result = try? await generator.image(at: CMTime(seconds: max(0, time), preferredTimescale: 600)) else { return nil }
         let full = result.image
-        let crop = CropMath.crop(
-            in: CGSize(width: full.width, height: full.height),
-            aspect: edit.aspect.widthOverHeight, offset: edit.cropOffset
-        )
+        let size = CGSize(width: full.width, height: full.height)
+        var crop = CropMath.crop(in: size, aspect: edit.aspect.widthOverHeight, offset: edit.cropOffset)
+        // Follow face: the crop where it is at that moment of the video.
+        if edit.faceFollow != nil, edit.cropFit == .fill {
+            let coreImageCrop = CGRect(x: crop.minX, y: size.height - crop.maxY, width: crop.width, height: crop.height)
+            let follow = EditedComposition.followPath(
+                for: edit, analysis: MotionAnalysisStore.complete(forRecording: url), crop: coreImageCrop, size: size
+            )
+            crop = FramePlacement(uprightSize: size, crop: crop, follow: follow).crop(at: time).integral
+        }
         guard let cropped = full.cropping(to: crop) else { return full }
         var image = CIImage(cgImage: cropped)
         if edit.cropFit == .fit {

@@ -13,6 +13,8 @@ import Foundation
 final class CountingTakeEditor: TakeEditing {
     private let editing: TakeEditing
     private(set) var previewItems = 0
+    /// Whether each build asked for curved clips' sound rendered along the curve.
+    private(set) var rendersCurveSound: [Bool] = []
 
     init(wrapping editing: TakeEditing) {
         self.editing = editing
@@ -37,9 +39,10 @@ final class CountingTakeEditor: TakeEditing {
         try await editing.captions(forVideoAt: url, script: script, language: language, progress: progress)
     }
 
-    func previewItem(forVideoAt url: URL, edit: TakeEdit, window: TimeSpan?) async throws -> AVPlayerItem {
+    func previewItem(forVideoAt url: URL, edit: TakeEdit, window: TimeSpan?, rendersCurveSound: Bool) async throws -> AVPlayerItem {
         previewItems += 1
-        return try await editing.previewItem(forVideoAt: url, edit: edit, window: window)
+        self.rendersCurveSound.append(rendersCurveSound)
+        return try await editing.previewItem(forVideoAt: url, edit: edit, window: window, rendersCurveSound: rendersCurveSound)
     }
 
     func matchedOriginalVolume(forVideoAt url: URL, edit: TakeEdit) async -> Double? {

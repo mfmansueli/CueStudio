@@ -107,4 +107,14 @@ enum EditorApp {
             .matching(NSPredicate(format: "label CONTAINS %@", text)).firstMatch
             .waitForExistence(timeout: timeout)
     }
+
+    /// A picture of the editor and its hierarchy, for `tools/contrast/audit.py`, when `TEST_RUNNER_CUE_FIDELITY_DIR=<folder>`
+    /// asks for them.
+    static func capture(_ app: XCUIApplication, _ name: String) {
+        guard let path = ProcessInfo.processInfo.environment["CUE_FIDELITY_DIR"] else { return }
+        let folder = URL(fileURLWithPath: path, isDirectory: true)
+        try? FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
+        try? app.screenshot().pngRepresentation.write(to: folder.appending(path: "\(name).png"))
+        try? app.debugDescription.write(to: folder.appending(path: "\(name).txt"), atomically: true, encoding: .utf8)
+    }
 }

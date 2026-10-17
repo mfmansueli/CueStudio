@@ -14,6 +14,7 @@ struct MotionKeyframeControls: View {
     var body: some View {
         let here = viewModel.hasKeyframeAtPlayhead
         MotionPresetPicker(viewModel: viewModel)
+        trackRow
         PanelRowLabel(label: String(localized: "Keyframes"), detail: String(localized: "To move it your own way"))
             .padding(.top, 4)
         VStack(spacing: 6) {
@@ -56,6 +57,35 @@ struct MotionKeyframeControls: View {
         PanelNote(text: viewModel.selectedMediaID == nil
             ? String(localized: "Add a keyframe, move the playhead, then drag the text in the video — Cue moves it between keyframes.")
             : String(localized: "Add a keyframe, move the playhead, then drag the photo or video — Cue moves it between keyframes."))
+    }
+
+    /// Track: follows what's under the item at the playhead; while it runs, how far it is and Cancel.
+    @ViewBuilder
+    private var trackRow: some View {
+        PanelRowLabel(label: String(localized: "Track"), detail: String(localized: "Follows what’s under it in the video"))
+            .padding(.top, 4)
+        if let label = viewModel.trackingLabel {
+            HStack(spacing: 12) {
+                VStack(alignment: .leading, spacing: 6) {
+                    Text(label)
+                        .font(.system(.subheadline, weight: .semibold))
+                        .foregroundStyle(Palette.ink)
+                        .accessibilityIdentifier("edit.track.progress")
+                    ProgressView(value: viewModel.trackingProgress ?? 0).tint(Palette.acc)
+                }
+                Button(String(localized: "Cancel"), action: viewModel.cancelTracking)
+                    .font(.system(.subheadline, weight: .semibold))
+                    .foregroundStyle(Palette.ink)
+                    .frame(minWidth: Metrics.hitTarget, minHeight: Metrics.hitTarget)
+                    .accessibilityIdentifier("edit.track.cancel")
+            }
+        } else {
+            PanelButton(
+                label: String(localized: "Track what’s under it"), systemImage: "scope", identifier: "edit.track",
+                action: viewModel.trackSelectedItem
+            )
+            PanelNote(text: String(localized: "Put it on what it should follow at the playhead, then tap Track. Cue makes keyframes you can adjust."))
+        }
     }
 
     private func arrow(_ symbol: String, label: Text, enabled: Bool, identifier: String, action: @escaping () -> Void) -> some View {

@@ -348,6 +348,9 @@ final class TakeReviewViewModel {
             toast.show(String(localized: "Not enough space on this iPhone. Free about \(megabytes) MB and try again."))
         case BackgroundExportError.stoppedBySystem, VideoExportError.interrupted:
             toast.show(String(localized: "iOS stopped the export · Try again"))
+        case VideoExportError.tooWarm:
+            // Follow face or Stabilize needed an analysis the iPhone was too hot to finish; it goes on from there next time.
+            toast.show(VideoExportError.tooWarm.localizedDescription)
         default:
             toast.show(String(localized: "Couldn't export · Try again"))
         }

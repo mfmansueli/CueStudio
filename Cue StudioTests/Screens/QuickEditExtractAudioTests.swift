@@ -73,6 +73,29 @@ struct QuickEditExtractAudioTests {
         #expect(viewModel.edit.timeline.segment(id: second.id)?.isMuted == false)
     }
 
+    @Test func aCurvedClipsSoundComesOutAlongItsCurveWithoutBeats() async throws {
+        let scenario = await makeScenario()
+        let viewModel = scenario.viewModel
+        scenario.player.currentTime = 10
+        viewModel.cut()
+        var timeline = viewModel.edit.timeline
+        var second = timeline.segments[1]
+        second.speedCurve = SpeedCurvePreset.hero.curve
+        timeline.replaceSegment(second)
+        viewModel.commit(timeline)
+        viewModel.selection = .clip(second.id)
+        await viewModel.extractAudio()
+        let request = try #require(scenario.editor.extractions.first)
+        #expect(request.curve == SpeedCurvePreset.hero.curve)
+        let clip = try #require(viewModel.edit.music.first)
+        // As long as the clip plays along its curve, so it stays in step with the picture.
+        #expect(abs(clip.length - second.duration) < 0.000_1)
+        // A sound taken out of the video has no Beats (only music from Files does).
+        #expect(viewModel.selection == .music(clip.id))
+        #expect(!viewModel.toolbarItems.map(\.id).contains("beats"))
+        #expect(viewModel.musicBeats(of: clip).isEmpty)
+    }
+
     @Test func theExtractedSoundFollowsACutBeforeIt() async throws {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel

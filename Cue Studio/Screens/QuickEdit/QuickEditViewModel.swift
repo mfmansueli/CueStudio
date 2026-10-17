@@ -231,6 +231,21 @@ final class QuickEditViewModel {
     var myStyle: TextLook?
     /// The creator's handle, for the cover's "@handle" graphic and series (set by the screen).
     var creatorHandle = ""
+    /// The beats found in the music files, by file (`QuickEditViewModel+Beats`); bumped `beatsFound` when one comes in.
+    @ObservationIgnored var beatCache: [String: BeatTracker.Result] = [:]
+    @ObservationIgnored var findingBeats: Set<String> = []
+    var beatsFound = 0
+    /// Beats › Cut on: every beat, every second or every fourth.
+    var beatCutEvery = 2
+    /// Speed shows its Curve tab (`QuickEditViewModel+SpeedCurve`).
+    var showsSpeedCurves = false
+    /// Track: how far following the picked item's object is, 0 to 1; nil when it isn't (`QuickEditViewModel+Track`).
+    var trackingProgress: Double?
+    @ObservationIgnored var trackingTask: Task<Void, Never>?
+    /// The recordings whose motion analysis was last asked for while the edit used it (`requestMotionAnalysisIfNeeded`).
+    @ObservationIgnored var motionRequestedURLs: [URL] = []
+    /// A point of the speed curve is being dragged (`QuickEditViewModel+SpeedCurve`).
+    @ObservationIgnored var shapesCurve = false
 
     // MARK: Background
     /// Whether this iPhone can find people in video; nil until checked.
@@ -274,6 +289,11 @@ final class QuickEditViewModel {
     let translations: TranslationAvailabilityChecking
     /// The library of takes (a montage adds others from it).
     let takes: TakeLibraryService
+    /// Analyzes the recordings' motion for Follow face and Stabilize (`QuickEditViewModel+MotionAnalysis`); nil in tests that
+    /// don't use it.
+    let motion: MotionAnalysisService?
+    /// Follows an object through a recording for Track.
+    let tracker: ObjectTracking
     private let drafts: QuickEditDraftStoring
     /// What a script is heard in for captions and Clean Up (`LanguageService.captionRequest(for:)`).
     let speechLanguageFor: (Script?) -> SpeechLanguageRequest
@@ -302,7 +322,8 @@ final class QuickEditViewModel {
         drafts: QuickEditDraftStoring, toast: ToastService, player: EditPlayback? = nil,
         mediaImporter: EditMediaImporting? = nil, recorder: VoiceOverRecording? = nil, styles: TextStyleStoring? = nil,
         coverPictures: CoverPicturing? = nil, soundPreviews: SoundEffectPreviewing? = nil,
-        translations: TranslationAvailabilityChecking = AppleTranslationAvailability(),
+        translations: TranslationAvailabilityChecking = AppleTranslationAvailability(), motion: MotionAnalysisService? = nil,
+        tracker: ObjectTracking = ObjectTracker(),
         speechLanguage: @escaping (Script?) -> SpeechLanguageRequest = SpeechLanguageRequest.script,
         languageConflict: @escaping (Script?) -> SpeechLanguageConflict? = { _ in nil }
     ) {
@@ -317,6 +338,8 @@ final class QuickEditViewModel {
         self.mediaImporter = mediaImporter ?? EditMediaImporter()
         self.recorder = recorder ?? VoiceOverRecorder()
         self.takes = takes
+        self.motion = motion
+        self.tracker = tracker
         self.library = library
         self.editing = editing
         self.drafts = drafts
@@ -360,6 +383,8 @@ final class QuickEditViewModel {
         player.show(edit)
         player.seek(to: playhead)
         drawCover()
+        requestMotionAnalysis()
+        findBeatsIfNeeded()
     }
 
     private func editDidChange() {
@@ -376,7 +401,9 @@ final class QuickEditViewModel {
         if comparesOriginal, edit.voiceProcessing != comparedProcessing { endComparison() }
         // A change is no longer what was being compared.
         if comparesPicture { comparesPicture = false }
+        updateCurveSoundStepping()
         player.show(playedEdit)
+        requestMotionAnalysisIfNeeded()
         if edit.coverDrawingKey != drawnCoverKey { drawCover() }
         scheduleDraftSave()
     }
@@ -659,11 +686,15 @@ final class QuickEditViewModel {
         if recorder.isRecording { stopVoiceOver() }
         // Done while the pauses preview plays keeps what was heard.
         if pausePreviewBase != nil { applyPauses() }
+        // Reversed videos nothing plays any more (a clip reversed and put back) were kept for undo; they go now.
+        var saved = edit
+        let played = Set(edit.timeline.segments.compactMap(\.sourceID))
+        saved.sources.removeAll { $0.reversal != nil && !played.contains($0.id) }
         if source == .ready, hasUnsavedChanges {
-            takes.applyEdit(edit, to: take.id)
+            takes.applyEdit(saved, to: take.id)
             toast.show(String(localized: "Edits saved to this take"))
         }
-        removeUnusedImports(keeping: edit.mediaFileNames)
+        removeUnusedImports(keeping: saved.mediaFileNames)
         close(keepingDraft: false)
     }
 
@@ -738,6 +769,8 @@ final class QuickEditViewModel {
         captionTask?.cancel()
         captionRequest = nil
         cancelAuto()
+        trackingTask?.cancel()
+        trackingTask = nil
         if !keepingDraft { drafts.discard(takeID: take.id) }
         player.stop()
     }

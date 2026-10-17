@@ -229,7 +229,7 @@ extension QuickEditViewModel {
         }
     }
 
-    private func updateKeyframes(of item: MotionItem, _ update: (inout [OverlayKeyframe]) -> Void) {
+    func updateKeyframes(of item: MotionItem, _ update: (inout [OverlayKeyframe]) -> Void) {
         switch item {
         case .text(let id):
             updateText(id) { text in

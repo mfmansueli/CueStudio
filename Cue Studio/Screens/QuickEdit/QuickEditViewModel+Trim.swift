@@ -133,6 +133,7 @@ extension QuickEditViewModel {
         guard let origin = trimOrigin else { return }
         trimOrigin = nil
         activeHandle = nil
+        updateCurveSoundStepping()
         if origin != edit.timeline {
             var before = snapshot
             before.timeline = origin

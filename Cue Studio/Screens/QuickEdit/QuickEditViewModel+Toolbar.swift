@@ -117,8 +117,12 @@ extension QuickEditViewModel {
                 EditorToolbarItem(id: "speed", label: String(localized: "Speed"), systemImage: "gauge.with.dots.needle.67percent", action: .open(.speed)),
                 EditorToolbarItem(id: "zoom", label: String(localized: "Zoom"), systemImage: "arrow.up.left.and.arrow.down.right", action: .open(.zoom)),
                 EditorToolbarItem(id: "volume", label: String(localized: "Volume"), systemImage: "speaker.wave.2", action: .open(.volume)),
+                EditorToolbarItem(
+                    id: "stabilize", label: String(localized: "Stabilize"), systemImage: "camera.metering.center.weighted", action: .open(.stabilize)
+                ),
                 EditorToolbarItem(id: "duplicate", label: String(localized: "Duplicate"), systemImage: "plus.square.on.square", action: .duplicateClip),
                 EditorToolbarItem(id: "freeze", label: String(localized: "Freeze frame"), systemImage: "pause.rectangle", action: .freezeFrame),
+                EditorToolbarItem(id: "reverse", label: String(localized: "Reverse"), systemImage: "backward.end.alt", action: .reverseClip),
                 EditorToolbarItem(id: "replace", label: String(localized: "Replace"), systemImage: "arrow.left.arrow.right", action: .replaceClip),
                 EditorToolbarItem(
                     id: "extractAudio", label: String(localized: "Extract audio"), systemImage: "waveform.badge.plus", action: .extractAudio
@@ -145,6 +149,7 @@ extension QuickEditViewModel {
                 EditorToolbarItem(id: "style", label: String(localized: "Style"), systemImage: "textformat.alt", action: .open(.textStyle)),
                 EditorToolbarItem(id: "animation", label: String(localized: "Animation"), systemImage: "sparkle.magnifyingglass", action: .openTextAnimation),
                 EditorToolbarItem(id: "keyframe", label: String(localized: "Keyframe"), systemImage: "diamond", action: .toggleKeyframe),
+                EditorToolbarItem(id: "track", label: String(localized: "Track"), systemImage: "scope", action: .trackItem),
                 EditorToolbarItem(id: "duplicate", label: String(localized: "Duplicate"), systemImage: "plus.square.on.square", action: .duplicateText),
                 EditorToolbarItem(id: "delete", label: delete, systemImage: "trash", style: .destructive, action: .deleteText),
             ]
@@ -160,9 +165,12 @@ extension QuickEditViewModel {
                 EditorToolbarItem(id: "style", label: String(localized: "Style"), systemImage: "textformat.alt", action: .open(.captionStyle)),
                 EditorToolbarItem(id: "delete", label: delete, systemImage: "trash", style: .destructive, action: .deleteCaption),
             ]
-        case .music:
+        case .music(let id):
+            // Beats for the creator's music from Files, not for a sound effect or a sound taken out of the video.
+            let isMusic = edit.music.first { $0.id == id }.map { !$0.followsTheVideo } ?? false
             return [
                 EditorToolbarItem(id: "volume", label: String(localized: "Volume"), systemImage: "speaker.wave.2", action: .open(.volume)),
+            ] + (isMusic ? [EditorToolbarItem(id: "beats", label: String(localized: "Beats"), systemImage: "metronome", action: .open(.beats))] : []) + [
                 EditorToolbarItem(id: "replace", label: String(localized: "Replace"), systemImage: "arrow.left.arrow.right", action: .replaceMusic),
                 EditorToolbarItem(id: "delete", label: delete, systemImage: "trash", style: .destructive, action: .deleteMusic),
             ]
@@ -175,6 +183,7 @@ extension QuickEditViewModel {
         case .media:
             var items = [
                 EditorToolbarItem(id: "editMedia", label: String(localized: "Edit"), systemImage: "pencil", action: .open(.media)),
+                EditorToolbarItem(id: "track", label: String(localized: "Track"), systemImage: "scope", action: .trackItem),
                 EditorToolbarItem(id: "duplicate", label: String(localized: "Duplicate"), systemImage: "plus.square.on.square", action: .duplicateMedia),
                 EditorToolbarItem(id: "replaceMedia", label: String(localized: "Replace"), systemImage: "arrow.left.arrow.right", action: .replaceMedia),
             ]
@@ -247,14 +256,9 @@ extension QuickEditViewModel {
 
     /// The actions on the picked item. False when `action` isn't one of them.
     private func performOnSelection(_ action: EditorAction) -> Bool {
-        if performOnClip(action) { return true }
+        if performOnClip(action) || performOnMotion(action) { return true }
         switch action {
-        case .toggleKeyframe: toggleKeyframe()
         case .duplicateText: selection?.textID.map(duplicateText)
-        case .openTextAnimation:
-            textStyleScope = .selected
-            panel = .textStyle
-            panelTab = .motion
         case .duplicateMedia: selection?.mediaID.map(duplicateMedia)
         case .deleteText: selection?.textID.map(deleteText)
         case .editCaption: panel = .captions
@@ -271,6 +275,20 @@ extension QuickEditViewModel {
         return true
     }
 
+    /// How the picked text or photo moves: keyframes, Track, ready animations. False when `action` isn't one of them.
+    private func performOnMotion(_ action: EditorAction) -> Bool {
+        switch action {
+        case .toggleKeyframe: toggleKeyframe()
+        case .trackItem: trackSelectedItem()
+        case .openTextAnimation:
+            textStyleScope = .selected
+            panel = .textStyle
+            panelTab = .motion
+        default: return false
+        }
+        return true
+    }
+
     /// The actions on a picked clip. False when `action` isn't one of them.
     private func performOnClip(_ action: EditorAction) -> Bool {
         switch action {
@@ -278,6 +296,7 @@ extension QuickEditViewModel {
         case .duplicateClip: selection?.clipID.map(duplicateClip)
         case .reorderClips: openClipOrder()
         case .freezeFrame: Task { await freezeFrame() }
+        case .reverseClip: Task { await reverseClip() }
         case .replaceClip: askToReplaceClip()
         case .extractAudio: Task { await extractAudio() }
         case .copyLook: copyClipLook()

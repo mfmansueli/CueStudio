@@ -24,6 +24,8 @@ enum EditorAction: Hashable {
     case duplicateClip
     /// Freeze frame: the frame under the playhead held as a clip of its own.
     case freezeFrame
+    /// Reverse: the clip plays backwards (or forward again).
+    case reverseClip
     /// Replace clip: another video from Photos in the clip's place, keeping its length and effects.
     case replaceClip
     /// Extract audio: the picked clip's (or video's) sound on a track of its own, the clip muted.
@@ -42,6 +44,8 @@ enum EditorAction: Hashable {
     case styleAllTexts
     case editText
     case toggleKeyframe
+    /// Track: the picked text, graphic or photo follows what's under it in the video.
+    case trackItem
     case duplicateText
     /// The picked text's Style › Motion, where its ready animations are.
     case openTextAnimation

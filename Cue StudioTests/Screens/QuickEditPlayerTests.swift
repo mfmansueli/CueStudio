@@ -354,6 +354,29 @@ struct QuickEditPlayerTests {
         #expect(editing.previewItems - before == 2)
     }
 
+    @Test func aCurvesSoundIsInStepsWhileAFingerShapesItAndRenderedOnceItLifts() async throws {
+        let editing = CountingTakeEditor(wrapping: TakeEditService())
+        let (player, edit, clip) = try await makePlayer(editing: editing)
+        defer {
+            player.stop()
+            try? FileManager.default.removeItem(at: clip)
+        }
+        var curved = edit
+        var segment = curved.timeline.segments[0]
+        segment.speedCurve = SpeedCurvePreset.hero.curve
+        curved.timeline.replaceSegment(segment)
+        player.stepsCurveSound = true
+        let before = editing.previewItems
+        player.show(curved)
+        await Wait.until { editing.previewItems > before && player.state == .ready && !player.isProcessing }
+        #expect(editing.rendersCurveSound.last == false)
+        // The finger lifts: the same edit, built again with the sound along the curve.
+        let shaped = editing.previewItems
+        player.stepsCurveSound = false
+        await Wait.until { editing.previewItems > shaped }
+        #expect(editing.rendersCurveSound.last == true)
+    }
+
     @Test func aMissingFileFails() async throws {
         let player = QuickEditPlayer(videoURL: URL.temporaryDirectory.appending(path: "gone-\(UUID()).mov"), editing: TakeEditService())
         player.show(TakeEdit(sourceDuration: 3, aspect: .portrait))

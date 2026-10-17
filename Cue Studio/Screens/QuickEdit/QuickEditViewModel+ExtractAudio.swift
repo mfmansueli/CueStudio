@@ -6,7 +6,7 @@
 import Foundation
 
 /// Extract audio (CapCut's way): the sound of the picked clip (the take or another recording, as Studio Voice treats it and at
-/// the clip's speed) or of a video over the take goes to a track of its own on the music track, where it plays right where
+/// the clip's speed or along its curve) or of a video over the take goes to a track of its own on the music track, where it plays right where
 /// it did and can be moved, trimmed, faded and turned up or down; the clip or the video is muted, so nothing plays twice. Like
 /// a sound effect, it follows its moment when something before it is cut. One undo step brings both back; the recording is
 /// never touched.
@@ -41,7 +41,8 @@ extension QuickEditViewModel {
         }
         let request = SoundExtraction(
             videoURL: segment.sourceID.flatMap { clipSourceURLs[$0] } ?? videoURL, span: segment.span, speed: segment.speed,
-            keepsPitch: segment.keepsPitch, treatment: .init(edit: edit, takeURL: videoURL, recording: segment.sourceID)
+            keepsPitch: segment.keepsPitch, curve: segment.speedCurve,
+            treatment: .init(edit: edit, takeURL: videoURL, recording: segment.sourceID)
         )
         guard let sound = await extract(request) else { return }
         // The sound took a moment: if the cuts changed meanwhile, the place it was for may be gone.

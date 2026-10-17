@@ -21,11 +21,19 @@ final class FakeEditPlayback: EditPlayback {
     var isPlaybackBlocked = false {
         didSet { if isPlaybackBlocked { isPlaying = false } }
     }
+    var stepsCurveSound = false
     private(set) var shown: [TakeEdit] = []
     private(set) var isScrubbing = false
     private(set) var isStopped = false
 
     private var duration: TimeInterval { shown.last?.editedDuration ?? 0 }
+
+    /// How many times the edit was drawn again without changing.
+    private(set) var redraws = 0
+
+    func redraw() {
+        redraws += 1
+    }
 
     func show(_ edit: TakeEdit) {
         if let previous = shown.last, previous.timeline != edit.timeline {

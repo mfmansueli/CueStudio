@@ -65,6 +65,7 @@ extension QuickEditViewModel {
         )
         clip.volume = Self.newMusicVolume
         change { $0.music = ($0.music ?? []) + [clip] }
+        findBeatsIfNeeded()
         selectedMusicID = clip.id
         player.pause()
         player.seek(to: slot.start)
@@ -92,6 +93,7 @@ extension QuickEditViewModel {
             clip.length = min(clip.length, imported.duration)
         }
         selectedMusicID = id
+        findBeatsIfNeeded()
         toast.show(String(localized: "Music replaced"))
     }
 

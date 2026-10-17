@@ -47,6 +47,8 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
     var evensOutVoices = true
     /// The creator's music and sounds, under the video.
     var music: [MusicClip] = []
+    /// Beats › Snap to beats: the playhead and the handles stick to the music's beats.
+    var snapsToBeats = true
     /// Backgrounds blurred or replaced, per recording.
     var backgrounds: [RecordingBackground] = []
 
@@ -83,6 +85,8 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
     var cropOffset: Double = 0
     /// Fill (crop) or Fit (the whole recording, with bars).
     var cropFit: CropFit = .fill
+    /// Follow face: a Fill crop moves with the creator's face (`FaceFollowPath`); nil keeps it where `cropOffset` puts it.
+    var faceFollow: FaceFollow?
 
     // MARK: Captions
     var showsCaptions = false
@@ -323,8 +327,9 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
     private enum CodingKeys: String, CodingKey {
         case timeline, sources, suggestions, cleanUpAnalyzed, cleanUpAnalyzedSources, volume, enhancesVoice, reducesNoise,
         audioVersion, voiceEnhancement, noiseReduction, voiceReach, evensOutVoices, music, backgrounds, exposure, contrast, warmth, filter
+        case snapsToBeats
         case saturation, highlights, shadows, sharpness, filterAmount, cropFit, pauseThreshold
-        case vibrance, tint, autoCorrection, autoAmount, lookVersion, skinSmoothing
+        case vibrance, tint, autoCorrection, autoAmount, lookVersion, skinSmoothing, faceFollow
         case aspect, cropOffset, showsCaptions, captionStyle, captionLook, captionPreset, captionPosition, captions
         case captionTranscript, sourceTranscripts, captionLanguage, captionAnimation, captionTranslations, captionDisplay
         case captionCollection
@@ -359,6 +364,7 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
         voiceReach = (try? container.decodeIfPresent(StudioVoiceReach.self, forKey: .voiceReach)) ?? .takeOnly
         evensOutVoices = (try? container.decodeIfPresent(Bool.self, forKey: .evensOutVoices)) ?? false
         music = container.decodeLossy([MusicClip].self, forKey: .music)
+        snapsToBeats = (try? container.decodeIfPresent(Bool.self, forKey: .snapsToBeats)) ?? true
         backgrounds = container.decodeLossy([RecordingBackground].self, forKey: .backgrounds)
         exposure = try container.decodeIfPresent(Double.self, forKey: .exposure) ?? 0
         contrast = try container.decodeIfPresent(Double.self, forKey: .contrast) ?? 0
@@ -377,6 +383,8 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
         autoCorrection = try? container.decodeIfPresent(AutoCorrection.self, forKey: .autoCorrection)
         autoAmount = (try? container.decodeIfPresent(Double.self, forKey: .autoAmount)) ?? 1
         cropFit = (try? container.decodeIfPresent(CropFit.self, forKey: .cropFit)) ?? .fill
+        // Added with Follow face: edits saved before keep their still crop.
+        faceFollow = try? container.decodeIfPresent(FaceFollow.self, forKey: .faceFollow)
         pauseThreshold = (try? container.decodeIfPresent(TimeInterval.self, forKey: .pauseThreshold)) ?? 0.7
         aspect = try container.decode(AspectRatio.self, forKey: .aspect)
         cropOffset = try container.decodeIfPresent(Double.self, forKey: .cropOffset) ?? 0

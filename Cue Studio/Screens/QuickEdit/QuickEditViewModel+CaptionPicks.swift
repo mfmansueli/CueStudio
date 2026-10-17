@@ -117,7 +117,8 @@ extension QuickEditViewModel {
         let timeline = edit.timeline
         let shown = editedCaptionLines
         // Each picked line where it first plays, with the room it has on both sides (edited seconds).
-        var moves: [(id: UUID, segment: EditSegment)] = []
+        // Each line with its clip and where in the clip it starts (edited seconds).
+        var moves: [(id: UUID, segment: EditSegment, offset: TimeInterval)] = []
         var earliest = -TimeInterval.greatestFiniteMagnitude
         var latest = TimeInterval.greatestFiniteMagnitude
         for (position, line) in shown.enumerated() where picks.contains(line.id) && !moves.contains(where: { $0.id == line.id }) {
@@ -128,20 +129,20 @@ extension QuickEditViewModel {
             let after = shown[(position + 1)...].first { !picks.contains($0.id) }?.start ?? edit.editedDuration
             earliest = max(earliest, max(before, pieceStart) - line.start)
             latest = min(latest, min(after, pieceStart + segment.duration) - line.end)
-            moves.append((line.id, segment))
+            moves.append((line.id, segment, line.start - pieceStart))
         }
         let shift = min(max(seconds, min(0, earliest)), max(0, latest))
         guard !moves.isEmpty, abs(shift) >= 0.005 else {
             toast.show(String(localized: "The lines can’t move further"))
             return false
         }
-        let segments = Dictionary(moves.map { ($0.id, $0.segment) }) { first, _ in first }
+        let segments = Dictionary(moves.map { ($0.id, (segment: $0.segment, offset: $0.offset)) }) { first, _ in first }
         change(key: "captionGroupMove") { snapshot in
             guard var lines = snapshot.captions else { return }
             for index in lines.indices {
-                guard let segment = segments[lines[index].id], segment.sourceID == lines[index].sourceID else { continue }
-                // Edited seconds become seconds of the line's recording at its clip's speed.
-                let source = shift * segment.speed
+                guard let piece = segments[lines[index].id], piece.segment.sourceID == lines[index].sourceID else { continue }
+                // Edited seconds become seconds of the line's recording at its clip's speed (along its curve, where it is).
+                let source = piece.segment.sourceOffset(forEdited: piece.offset + shift) - piece.segment.sourceOffset(forEdited: piece.offset)
                 var moved = lines[index]
                 moved.start += source
                 moved.end += source

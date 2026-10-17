@@ -26,6 +26,7 @@ final class CaptionToolsUITests: XCTestCase {
         let summary = app.staticTexts["edit.captionFind.summary"]
         XCTAssertTrue(summary.waitForExistence(timeout: 5))
         XCTAssertEqual(summary.label, "1 match")
+        EditorApp.capture(app, "captions-find")
         let replacement = app.textFields["edit.captionFind.replacement"]
         replacement.tap()
         replacement.typeText("caldo")
@@ -64,6 +65,7 @@ final class CaptionToolsUITests: XCTestCase {
         XCTAssertTrue(emphasis.waitForExistence(timeout: 5))
         emphasis.tap()
         XCTAssertTrue(["On", "1"].contains(emphasis.value as? String ?? ""), "Emphasis didn't turn on")
+        EditorApp.capture(app, "captions-select")
         app.buttons["edit.captionPicks.delete"].tap()
         XCTAssertTrue(EditorApp.toastSays(app, "7 lines deleted"), "No toast after deleting the picked lines")
         XCTAssertFalse(app.staticTexts["edit.captionPicks.count"].exists, "Picking didn't end after Delete")

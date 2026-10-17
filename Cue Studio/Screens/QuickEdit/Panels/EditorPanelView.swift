@@ -14,6 +14,7 @@ struct EditorPanelView: View {
         switch panel {
         case .speed: SpeedPanel(viewModel: viewModel)
         case .zoom: ZoomPanel(viewModel: viewModel)
+        case .stabilize: StabilizePanel(viewModel: viewModel)
         case .volume: VolumePanel(viewModel: viewModel)
         case .transition: TransitionPanel(viewModel: viewModel)
         case .voice: VoicePanel(viewModel: viewModel)
@@ -27,6 +28,7 @@ struct EditorPanelView: View {
         case .captionStyle: CaptionStylePanel(viewModel: viewModel)
         case .textStyle: TextStylePanel(viewModel: viewModel)
         case .voiceOver: VoiceOverPanel(viewModel: viewModel)
+        case .beats: BeatsPanel(viewModel: viewModel)
         case .media: MediaPanel(viewModel: viewModel)
         case .smart: SmartPanel(viewModel: viewModel)
         }

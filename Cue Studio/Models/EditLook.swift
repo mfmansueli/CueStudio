@@ -29,6 +29,11 @@ nonisolated struct EditLook: Codable, Hashable, Sendable {
     var aspect: AspectRatio
     var cropOffset: Double
     var cropFit: CropFit
+    /// Added with Follow face: `followsFaceKnown` is set in every step that has it (nil in steps saved before, which leave it).
+    var faceFollow: FaceFollow?
+    var followsFaceKnown: Bool?
+    /// Added with Beats: nil in steps saved before, which leave it as it is.
+    var snapsToBeats: Bool?
     var volume: Double
     var audioVersion: Int
     var enhancesVoice: Bool
@@ -59,6 +64,9 @@ nonisolated struct EditLook: Codable, Hashable, Sendable {
         aspect = edit.aspect
         cropOffset = edit.cropOffset
         cropFit = edit.cropFit
+        faceFollow = edit.faceFollow
+        followsFaceKnown = true
+        snapsToBeats = edit.snapsToBeats
         volume = edit.volume
         audioVersion = edit.audioVersion
         enhancesVoice = edit.enhancesVoice
@@ -92,6 +100,8 @@ nonisolated struct EditLook: Codable, Hashable, Sendable {
         edit.aspect = aspect
         edit.cropOffset = cropOffset
         edit.cropFit = cropFit
+        if followsFaceKnown == true { edit.faceFollow = faceFollow }
+        if let snapsToBeats { edit.snapsToBeats = snapsToBeats }
         edit.volume = volume
         edit.audioVersion = audioVersion
         edit.enhancesVoice = enhancesVoice

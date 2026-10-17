@@ -309,7 +309,7 @@ extension QuickEditViewModel {
         let floor = max(index > 0 ? lines[index - 1].end : 0, edge == .start ? pieceStart : 0)
         let ceiling = min(index + 1 < lines.count ? lines[index + 1].start : edit.editedDuration, pieceStart + segment.duration)
         func source(_ edited: TimeInterval) -> TimeInterval {
-            min(max(segment.sourceStart, segment.sourceStart + (edited - pieceStart) * segment.speed), segment.sourceEnd)
+            min(max(segment.sourceStart, segment.sourceStart + segment.sourceOffset(forEdited: edited - pieceStart)), segment.sourceEnd)
         }
         updateCaption(id, key: "captionNudge.\(id).\(edge)") { cue in
             var revised = cue
