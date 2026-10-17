@@ -18,9 +18,9 @@ extension QuickEditViewModel {
         return stored
     }
 
-    /// The beats of a music clip where they play in the edit; none for a sound effect.
+    /// The beats of a music clip where they play in the edit; none for a sound effect or a sound taken out of the video.
     func musicBeats(of clip: MusicClip) -> [TimeInterval] {
-        guard clip.effect == nil, let found = beats(ofFile: clip.fileName) else { return [] }
+        guard !clip.followsTheVideo, let found = beats(ofFile: clip.fileName) else { return [] }
         return BeatCuts.editedBeats(of: clip, beats: found.beats, editDuration: edit.editedDuration)
     }
 
@@ -31,7 +31,7 @@ extension QuickEditViewModel {
 
     /// Finds the beats of the music files that don't have them yet, one file at a time, off the main thread.
     func findBeatsIfNeeded() {
-        for clip in edit.music where clip.effect == nil {
+        for clip in edit.music where !clip.followsTheVideo {
             let name = clip.fileName
             guard beats(ofFile: name) == nil, !findingBeats.contains(name) else { continue }
             findingBeats.insert(name)
@@ -49,7 +49,7 @@ extension QuickEditViewModel {
     /// The picked music clip, when it's music from Files.
     private var pickedMusic: MusicClip? {
         guard let id = selectedMusicID else { return nil }
-        return edit.music.first { $0.id == id && $0.effect == nil }
+        return edit.music.first { $0.id == id && !$0.followsTheVideo }
     }
 
     /// The panel's subtitle: "Music · 112 BPM · 48 beats", or how finding them goes.

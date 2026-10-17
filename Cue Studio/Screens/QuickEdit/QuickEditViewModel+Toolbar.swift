@@ -166,8 +166,8 @@ extension QuickEditViewModel {
                 EditorToolbarItem(id: "delete", label: delete, systemImage: "trash", style: .destructive, action: .deleteCaption),
             ]
         case .music(let id):
-            // Beats for the creator's music from Files, not for a sound effect.
-            let isMusic = edit.music.first { $0.id == id }?.effect == nil
+            // Beats for the creator's music from Files, not for a sound effect or a sound taken out of the video.
+            let isMusic = edit.music.first { $0.id == id }.map { !$0.followsTheVideo } ?? false
             return [
                 EditorToolbarItem(id: "volume", label: String(localized: "Volume"), systemImage: "speaker.wave.2", action: .open(.volume)),
             ] + (isMusic ? [EditorToolbarItem(id: "beats", label: String(localized: "Beats"), systemImage: "metronome", action: .open(.beats))] : []) + [
