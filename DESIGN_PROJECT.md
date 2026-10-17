@@ -932,8 +932,8 @@ auditoria: `reports/editor-award-checklist.md`.
 - **Barras como um editor de celular (decisão do dono, 16/10/2026, depois de comparar com CapCut, Edits e InShot; diverge da ordem do quadro
   v29 · 7.2).** Principal: **Edit · Captions · Text · ✦ Smart · Media · Audio · Format · Filters · Cover** — a ordem em que um vídeo falado é feito, as
   cinco primeiras na tela do iPhone. **Format** (antes Crop, só na barra do clipe) abre o painel "Format" ("Whole video · format for where you post").
-  Clipe: **Split · Speed · Zoom · Volume · Duplicate · Freeze frame · Reorder · Adjust · Filters · Background · Copy look · Paste look · Delete**: só o
-  que é do clipe, o mais usado primeiro; o que muda o vídeo inteiro (Format, Studio Voice, Media) fica na principal. Texto ganha **Animation** (Style ›
+  Clipe: **Split · Speed · Zoom · Volume · Stabilize · Duplicate · Freeze frame · Reverse · Reorder · Adjust · Filters · Background · Copy look · Paste
+  look · Delete** (Stabilize e Reverse: §39): só o que é do clipe, o mais usado primeiro; o que muda o vídeo inteiro (Format, Studio Voice, Media) fica na principal. Texto ganha **Animation** (Style ›
   Motion); mídia ganha **Duplicate** (por cima, mesmo arquivo).
 - **Reordenar clipes** (`ClipOrderSheet`): **segurar um clipe** na timeline (0,45 s, toque háptico) ou **Reorder** na barra do clipe abre a lista dos
   clipes com quadro, número, origem e duração, arrastados pela alça; cada mudança é um passo de desfazer e o que toca no clipe vai junto. Um clipe só:
@@ -1013,8 +1013,7 @@ auditoria: `reports/editor-award-checklist.md`.
   carregasse apagaria tudo). **Bibliotecas:** takes, roteiros e as listas de uma edição (textos, mídias, músicas,
   legendas…) são lidos item por item (`LossyList`); um item ilegível fica de fora sozinho e o arquivo como era é guardado ao lado
   (`takes-kept-…`/`scripts-kept-…`); uma biblioteca que não pôde ser lida nunca é gravada por cima. Travamentos, CPU e escrita em disco medidos pelo MetricKit chegam ao Crashlytics como non-fatal (`DiagnosticsObserver`).
-- **Fora desta entrega** (avaliado, não feito para não entregar demonstração frágil; ver `reports/editor-award-checklist.md`): reverso, curvas de
-  velocidade, cortes nas batidas da música, reenquadramento por rosto, estabilização e rastreamento.
+- **Movimento** (seguir rosto no Format, Stabilize, Track, curvas de velocidade, Reverse e Beats): §39.
 - **Testes:** `CoverTextLayoutTests` (títulos longos, árabe, tailandês, japonês, emoji, alemão), `CoverCompositionTests`, `CoverStudioViewModelTests`,
   `QuickEditCoverTests`, `CoverStudioUITests` (cinco etapas, cancelar, antes/depois), `CoverGalleryCaptureTests` (opt-in: todos os modelos × títulos ×
   idiomas × foto clara/escura), `PaletteContrastTests.theCoverGuidesAndOverlayOutlinesReadOnAnyPicture`, `TakeEditCoverTests`, `CoverRendererTests` (vídeos reais), `StudioVoiceReachTests`,
@@ -1057,3 +1056,70 @@ A exportação é a da revisão da take (`TakeReviewViewModel`: Save, Share to u
 - **Testes:** `BackgroundExportRunnerTests`, `TakeReviewBackgroundExportTests`, `ContinuedTaskDeviceTests` (aparelho: o que o iOS responde),
   `BackgroundExportDeviceUITests` (aparelho: take real com Save e Câmera; takes longas em memória, `-uiTestLongTake <s>`), `ExportProgressUITests`
   (os dois cartões; `-uiTestSlowExport`, `-uiTestStoppedExport`).
+
+## 39. Quick edit: movimento (17 de outubro de 2026; pedido do dono)
+
+Seis ferramentas que leem o movimento do vídeo, todas no iPhone (Vision, AVFoundation e Accelerate; nada sai do aparelho, nenhum serviço pago).
+Prévia e exportação passam pelo mesmo compositor (`CueVideoCompositor`), então mostram o mesmo quadro. Relatório: `reports/editor-motion-report.md`.
+
+- **Análise de movimento** (`MotionAnalysisService`, `MotionAnalyzer`, `MotionAnalysis`): ao abrir o editor, cada gravação que a edição toca (a take
+  e as outras da montagem) é analisada em segundo plano do app, uma por vez, com prioridade baixa (`.utility`): cada quadro (até 30 por segundo)
+  é desenhado de pé numa cópia de 512 pontos; o movimento da câmera é medido numa grade de 4 × 6 blocos do fundo, sem os blocos que as pessoas
+  cobrem (`BackgroundTiles`) nem os lisos (céu, parede), e vale o deslize e o giro que melhor explicam os blocos, medidos de novo sem os que
+  destoam (`CameraMotion`: mínimos quadrados robustos; giro só com blocos espalhados e até 0,03 rad por quadro); 10 vezes por
+  segundo, rostos e corpos (`SubjectSample`). **Para** quando o Cue vai para o segundo plano (`scenePhase`) ou o iPhone esquenta (`thermalState`
+  sério ou crítico) e **continua de onde parou** (`analyzedUntil`; o que foi feito fica salvo a cada 5 s de vídeo). Fica **ao lado da gravação**
+  (`<gravação>.cuemotion`, fora do backup, versionado: `MotionAnalysis.currentVersion`; outra versão é refeita) e sai com ela (take apagada,
+  `EditMediaFiles.remove`). Nada da edição depende dela: sem análise, o vídeo toca como gravado. Exportar com Seguir rosto ou Estabilizar faz a
+  análise que faltar antes de começar. Os painéis dizem quanto falta: "Finding your face · 40%", "Measuring the shake · 40%", "Waiting for the
+  iPhone to cool down · 40%", "Goes on when Cue is open · 40%", "This video couldn’t be read".
+- **Format › Follow face** (`TakeEdit.faceFollow`, `FaceFollow`, `FollowPace`, `FaceFollowPath`): com Fill e um formato que corta (4:5, 1:1 ou 16:9 de
+  uma gravação 9:16; numa montagem, qualquer um), o recorte acompanha o rosto como um operador de câmera: fica parado enquanto o rosto anda numa
+  zona calma, vai atrás quando ele sai, nunca mais rápido que o ritmo, começa e para suave (caminho suavizado nos dois sentidos, sem atraso), com
+  os olhos um pouco acima do meio e sem sair da gravação. **Pace:** Calm · Natural · Quick. Segue o rosto mais próximo do que vinha seguindo (o
+  maior no começo); sem rosto, a cabeça do corpo. Arrastar o vídeo desliga ("Follow face is off · You moved the frame"). Sem espaço: "Pick 4:5,
+  1:1 or 16:9 to follow your face"; com Fit: "Follow face works with Fill"; sem rosto: "No face found in this video". A capa feita de um quadro
+  usa o recorte daquele momento. Um passo de desfazer (`EditLook`). O painel Format passou a `.medium`.
+- **Stabilize** (barra do clipe, entre Volume e Duplicate; `EditSegment.stabilization`, `StabilizationLevel`, `StabilizationPath`, `StabilizePanel`):
+  **Off · Gentle · Standard · Strong** (suavização de 0,25 / 0,6 / 1,2 s; zoom de no máximo 5 / 9 / 14%). O caminho da câmera é suavizado nos
+  dois sentidos; o zoom é o **menor** que esconde as bordas em 9 de cada 10 quadros; onde a câmera mexe mais (uma panorâmica), o caminho é mantido
+  dentro do corredor que esse zoom permite e suavizado de novo, então nunca aparece borda nem tranco. Cada quadro da gravação tem a sua
+  correção, mesmo quando a edição o segura (câmera lenta, gravação de 15 ou 24 quadros por segundo). Mostra "Zoomed in 6% to hide the edges",
+  "Steady already · no zoom needed" ou "No shake found in this clip"; **Use on every clip** num passo.
+- **Track** (texto, gráfico ou mídia: barra do item e o painel de movimento; `ObjectTracker`, `FramePlacement`, `TrackedMotion`): o criador põe o
+  item em cima do que ele deve seguir, na agulha, e toca **Track**; o Cue segue, com o Vision, o que está sob o centro do item (um quadrado de 14%
+  da largura do vídeo) para a frente e para trás, enquanto o item aparece no clipe da agulha ("Tracking · 40%", Cancel). O caminho vira
+  **keyframes editáveis** (os mínimos que ficam a 0,4% do caminho, em ritmo constante, mantendo tamanho e opacidade), num passo de desfazer;
+  os keyframes que havia no trecho seguido saem, os outros ficam. Se perde o objeto: "Lost it after 3.2 s · It holds from there".
+- **Speed › Curve** (`EditSegment.speedCurve`, `SpeedCurve`, `SpeedCurvePreset`, `SpeedCurvePanel`, `SpeedCurveEditor`): o painel Speed tem
+  **Normal | Curve**. Curve: None, **Hero, Bullet, Ramp up, Ramp down, Montage, Flash in, Flash out** (cada cartão desenha a curva) e **Custom**
+  (cinco pontos a 1×); o editor mostra a curva (0,2× a 5×, escala logarítmica, linha de 1×, agulha) e os pontos: arrastar para cima acelera,
+  para baixo desacelera, os de dentro também andam para os lados (VoiceOver: ajustável). A velocidade flui entre os pontos (cúbica monótona em
+  escala log, sem passar dos pontos) e o tempo de cada momento é a integral de 1/velocidade, numa tabela fina: a imagem é esticada em 30 passos
+  por segundo (sem degraus) e **o som é renderizado inteiro ao longo da curva** (`CurveSoundRenderer`: unidade de time-pitch da Apple com "Keep
+  voice pitch", varispeed sem), sem cortes nem estalos. Dividir um clipe curvo mantém a parte da curva de cada lado; aparar pelas alças estica a curva
+  no que sobrou; na prévia, as alças alcançam o resto da gravação na velocidade da ponta. Escolher uma velocidade em Normal tira a curva. Selo do clipe: o nome da curva ou "Curve".
+- **Reverse** (barra do clipe, depois de Freeze frame; `ReversedClipWriter`, `ReversedSound`, `ClipReversal`): o trecho do clipe é escrito de trás
+  para a frente, imagem e som, como um vídeo próprio na mídia da edição (HEVC no tamanho, quadros por segundo e orientação da gravação; alguns
+  quadros por vez, no máximo ~100 MB na memória), e o clipe passa a tocá-lo, com a mesma velocidade, look e lugar; textos e mídias em cima ficam
+  onde estavam no vídeo. **Reverse de novo** volta ao original. Até 2 minutos ("Reverse works on clips up to 2 minutes · Split it first"). Um passo
+  de desfazer; a gravação nunca muda.
+- **Beats** (só para música trazida dos Files: o Cue não tem biblioteca de música; `BeatDetector`, `BeatTracker`, `BeatStore`, `BeatCuts`,
+  `BeatsPanel`): as batidas são achadas no iPhone quando a música entra (fluxo espectral, tempo pela autocorrelação entre 60 e 200 BPM, batidas
+  por programação dinâmica), guardadas ao lado do arquivo (`<arquivo>.cuebeats`) e aparecem como risquinhos na faixa da música. **Beats** na barra
+  da música: **Snap to beats** (a agulha e as bordas grudam nas batidas; `TakeEdit.snapsToBeats`, ligado), **Move cuts to the beats** (cada corte
+  vai para a batida mais próxima, até 0,5 s, encurtando ou alongando o clipe antes dele, nunca além da gravação nem para dentro da parte seguinte)
+  e **Cut on** Every beat · Every 2 · Every 4 › **Cut the video on the beats**. Subtítulo: "112 BPM · 48 beats in the video", "Finding the
+  beats…" ou "No steady beat in this music". Cada ação é um passo de desfazer.
+- **Barras:** Clipe: Split · Speed · Zoom · Volume · **Stabilize** · Duplicate · Freeze frame · **Reverse** · Reorder · Adjust · Filters · Background ·
+  Copy look · Paste look · Delete. Texto: Edit · Style · Animation · Keyframe · **Track** · Duplicate · Delete. Mídia: Edit · **Track** · Duplicate ·
+  Replace · Delete. Música: Volume · **Beats** · Replace · Delete (efeitos sonoros sem Beats).
+- **Comparação com CapCut, Edits e InShot** (17/10/2026): Follow face é o "Auto reframe" do CapCut (formato + velocidade do acompanhamento), no
+  painel de formato; Stabilize tem três níveis como o do CapCut, por clipe, e ganha "Use on every clip"; Track: no CapCut se arrasta uma caixa
+  sobre o objeto; no Cue o próprio item é a caixa (põe e toca Track), um passo a menos, sem caixa de tamanho ajustável; Speed com Normal | Curve
+  e Reverse na barra do clipe como no CapCut e no InShot; Beats como as marcas de batida do CapCut, com o ímã e os cortes automáticos. Nenhuma
+  diferença pediu mudança de layout além das descritas.
+- **Testes:** `MotionAnalyzerTests`, `MotionAnalysisServiceTests`, `FaceFollowPathTests`, `StabilizationPathTests`, `ObjectTrackerTests`,
+  `QuickEditTrackTests`, `SpeedCurveTests`, `BeatTrackerTests`, `QuickEditReverseTests`; exportações reais `MotionExportTests` (o recorte segue,
+  o tremor cai), `SpeedCurveExportTests` (cada quadro no momento da curva; som sem queda nem estalo), `ReverseExportTests`; UI `EditorMotionUITests`;
+  aparelho `MotionAnalysisDeviceTests`, `EditorMotionDeviceTests` (`CUE_DEVICE=… scripts/test.sh device …`, cópias das takes).
