@@ -34,6 +34,11 @@ extension QuickEditViewModel {
         let timeline = edit.timeline
         guard let index = timeline.index(ofSegment: id) else { return }
         let segment = timeline.segments[index]
+        // A muted clip (its sound already taken out, or turned off) has nothing to extract: its sound would play again.
+        guard !segment.isMuted, segment.volume > 0 else {
+            toast.show(String(localized: "This clip is muted · Turn its sound on to extract it"))
+            return
+        }
         let request = SoundExtraction(
             videoURL: segment.sourceID.flatMap { clipSourceURLs[$0] } ?? videoURL, span: segment.span, speed: segment.speed,
             keepsPitch: segment.keepsPitch, treatment: .init(edit: edit, takeURL: videoURL, recording: segment.sourceID)
@@ -63,6 +68,10 @@ extension QuickEditViewModel {
             toast.show(String(localized: "This video has no sound"))
             return
         }
+        guard let volume = media.audioVolume, volume > 0 else {
+            toast.show(String(localized: "This video is muted · Turn its sound on to extract it"))
+            return
+        }
         let start = media.startInFile
         let request = SoundExtraction(
             videoURL: EditMediaFiles.url(for: media.fileName), span: TimeSpan(start: start, end: start + placed.span.duration)
@@ -71,7 +80,7 @@ extension QuickEditViewModel {
         guard edit.timeline == timeline, edit.media.contains(where: { $0.id == id }) else { return discardExtracted(sound) }
         var clip = extractedClip(sound, title: String(localized: "Sound · Video"), start: placed.span.start)
         clip.extractedFrom = .media
-        clip.volume = media.audioVolume ?? 1
+        clip.volume = volume
         change { snapshot in
             guard let index = snapshot.media.firstIndex(where: { $0.id == id }) else { return }
             snapshot.media[index].audioVolume = nil

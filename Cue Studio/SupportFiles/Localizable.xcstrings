@@ -352977,6 +352977,125 @@
         }
       }
     },
+    "This clip is muted · Turn its sound on to extract it" : {
+      "comment" : "Toast: Extract audio on a clip whose sound is off",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "هذا المقطع مكتوم · شغّل صوته لاستخراجه"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klippet er slået fra · Slå lyden til for at udtrække den"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dieser Clip ist stumm · Schalte den Ton ein, um ihn zu extrahieren"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Este clip está silenciado · Activa su sonido para extraerlo"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ce clip est muet · Active son son pour l’extraire"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "यह क्लिप म्यूट है · निकालने के लिए इसकी आवाज़ चालू करें"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klip ini dibisukan · Nyalakan suaranya untuk mengekstraknya"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Questa clip è muta · Attiva l’audio per estrarlo"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このクリップはミュート中です · 抽出するには音声をオンにしてください"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이 클립은 음소거 상태예요 · 추출하려면 소리를 켜세요"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dette klippet er dempet · Slå på lyden for å hente den ut"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deze clip is gedempt · Zet het geluid aan om het te extraheren"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Este clipe está mudo · Ligue o som dele para extrair"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Klippet är tystat · Slå på ljudet för att extrahera det"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "คลิปนี้ปิดเสียงอยู่ · เปิดเสียงก่อนเพื่อแยกเสียงออก"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu klibin sesi kapalı · Ayıklamak için sesini aç"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clip này đang tắt tiếng · Bật âm thanh để tách ra"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "这个片段已静音 · 先打开它的声音再提取"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "這個片段已靜音 · 先打開它的聲音再擷取"
+          }
+        }
+      }
+    },
     "This device has no camera Cue can use." : {
       "localizations" : {
         "ar" : {
@@ -356526,6 +356645,125 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "這部影片沒有聲音"
+          }
+        }
+      }
+    },
+    "This video is muted · Turn its sound on to extract it" : {
+      "comment" : "Toast: Extract audio on a video over the take whose sound is off",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "هذا الفيديو مكتوم · شغّل صوته لاستخراجه"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Videoen er slået fra · Slå lyden til for at udtrække den"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dieses Video ist stumm · Schalte den Ton ein, um ihn zu extrahieren"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Este video está silenciado · Activa su sonido para extraerlo"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cette vidéo est muette · Active son son pour l’extraire"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "यह वीडियो म्यूट है · निकालने के लिए इसकी आवाज़ चालू करें"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Video ini dibisukan · Nyalakan suaranya untuk mengekstraknya"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Questo video è muto · Attiva l’audio per estrarlo"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "この動画はミュート中です · 抽出するには音声をオンにしてください"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이 동영상은 음소거 상태예요 · 추출하려면 소리를 켜세요"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Denne videoen er dempet · Slå på lyden for å hente den ut"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deze video is gedempt · Zet het geluid aan om het te extraheren"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Este vídeo está mudo · Ligue o som dele para extrair"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Videon är tystad · Slå på ljudet för att extrahera det"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "วิดีโอนี้ปิดเสียงอยู่ · เปิดเสียงก่อนเพื่อแยกเสียงออก"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu videonun sesi kapalı · Ayıklamak için sesini aç"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Video này đang tắt tiếng · Bật âm thanh để tách ra"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "这个视频已静音 · 先打开它的声音再提取"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "這部影片已靜音 · 先打開它的聲音再擷取"
           }
         }
       }

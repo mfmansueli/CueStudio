@@ -133,6 +133,26 @@ struct QuickEditExtractAudioTests {
         #expect(scenario.toast.message == "This clip has no sound")
     }
 
+    @Test func aMutedClipOrVideoHasNothingToExtract() async {
+        let scenario = await makeScenario()
+        let viewModel = scenario.viewModel
+        viewModel.perform(.selectClipAtPlayhead)
+        await viewModel.extractAudio()
+        #expect(viewModel.edit.music.count == 1)
+        // A second time the clip is muted: its sound would play twice.
+        viewModel.perform(.selectClipAtPlayhead)
+        await viewModel.extractAudio()
+        #expect(viewModel.edit.music.count == 1 && scenario.editor.extractions.count == 1)
+        #expect(scenario.toast.message == "This clip is muted · Turn its sound on to extract it")
+        var video = MediaOverlay(kind: .video, fileName: "loud.mov", aspect: 1, mediaDuration: 8, span: TimeSpan(start: 4, end: 7))
+        video.hasSound = true
+        viewModel.change { $0.media = [video] }
+        viewModel.selection = .media(video.id)
+        await viewModel.extractAudio()
+        #expect(viewModel.edit.music.count == 1 && scenario.editor.extractions.count == 1)
+        #expect(scenario.toast.message == "This video is muted · Turn its sound on to extract it")
+    }
+
     @Test func aCutWhileExtractingAddsNothing() async {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
