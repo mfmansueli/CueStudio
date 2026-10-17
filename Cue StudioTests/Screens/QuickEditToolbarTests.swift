@@ -95,8 +95,8 @@ struct QuickEditToolbarTests {
         #expect(viewModel.selection == .clip(viewModel.edit.timeline.segments[0].id))
         #expect(viewModel.toolbarContextLabel == "Clip")
         #expect(ids(viewModel) == [
-            "split", "speed", "zoom", "volume", "duplicate", "freeze", "reorder", "adjust", "filters", "background", "copyLook", "pasteLook",
-            "delete",
+            "split", "speed", "zoom", "volume", "stabilize", "duplicate", "freeze", "reverse", "reorder", "adjust", "filters", "background", "copyLook",
+            "pasteLook", "delete",
         ])
         #expect(viewModel.toolbarItems.last?.style == .destructive)
     }
@@ -112,7 +112,7 @@ struct QuickEditToolbarTests {
         let viewModel = await makeScenario().viewModel
         viewModel.perform(.addText(.title))
         #expect(viewModel.toolbarContextLabel == "Text")
-        #expect(ids(viewModel) == ["editText", "style", "animation", "keyframe", "duplicate", "delete"])
+        #expect(ids(viewModel) == ["editText", "style", "animation", "keyframe", "track", "duplicate", "delete"])
         let line = CaptionCue(text: "Massa fina, muito recheio", start: 12.4, end: 14.6, origin: .manual)
         viewModel.edit.captions = [line]
         viewModel.selection = .caption(line.id)
@@ -121,7 +121,7 @@ struct QuickEditToolbarTests {
         let music = MusicClip(fileName: "m.m4a", title: "Morning loop", fileDuration: 60, start: 0, length: 10)
         viewModel.edit.music = [music]
         viewModel.selection = .music(music.id)
-        #expect(ids(viewModel) == ["volume", "replace", "delete"])
+        #expect(ids(viewModel) == ["volume", "beats", "replace", "delete"])
         let voice = VoiceOverClip(fileName: "v.m4a", duration: 2, anchor: 1)
         viewModel.edit.voiceOvers = [voice]
         viewModel.selection = .voiceOver(voice.id)
@@ -146,7 +146,7 @@ struct QuickEditToolbarTests {
         let media = MediaOverlay(kind: .photo, fileName: "p.jpg", aspect: 1, mediaDuration: nil, span: TimeSpan(start: 2, end: 5))
         viewModel.edit.media = [media]
         viewModel.selection = .media(media.id)
-        #expect(ids(viewModel) == ["editMedia", "duplicate", "replaceMedia", "delete"])
+        #expect(ids(viewModel) == ["editMedia", "track", "duplicate", "replaceMedia", "delete"])
         viewModel.perform(.duplicateMedia)
         #expect(viewModel.edit.media.count == 2)
         #expect(viewModel.selection != .media(media.id))
