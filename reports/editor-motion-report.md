@@ -25,9 +25,13 @@ blocos que as pessoas cobrem nem os lisos, combinados por mínimos quadrados rob
 take real sacudido com movimento conhecido, o caminho medido erra 0,54% (x) e 0,29% (y) do quadro e 0,003 rad, para uma oscilação de 1,5%.
 
 **O que entrou:** `MotionAnalyzer` (Vision: rostos e corpos 10×/s, registro por blocos a cada quadro até 30/s, numa cópia de 512 pontos),
-`MotionAnalysisService` (uma gravação por vez, para no segundo plano e com o iPhone quente, retoma de onde parou, guarda a cada 5 s de vídeo),
-`MotionAnalysisStore` (`<gravação>.cuemotion` ao lado da gravação, fora do backup, versionado; sai com a take e com a mídia da edição). O editor
-pede a análise de todas as gravações que toca ao abrir; a prévia é redesenhada quando uma fica pronta; a exportação faz a que faltar.
+`MotionAnalysisService` (uma gravação por vez, para no segundo plano e com o iPhone quente, retoma de onde parou, guarda a cada 5 s de vídeo ou
+a cada vigésimo da duração num vídeo longo), `MotionAnalysisStore` (`<gravação>.cuemotion` ao lado da gravação, fora do backup, versionado; sai
+com a take e com a mídia da edição; nada é salvo de uma gravação já apagada; as últimas 6 análises lidas ficam na memória com a data do arquivo e
+os caminhos do Stabilize, então os painéis e cada build da prévia não decodificam o JSON de novo). O editor pede a análise de todas as gravações
+que toca ao abrir, e de cada gravação nova (Reverse, Replace, clipe novo) enquanto Seguir rosto ou Estabilizar estão ligados; a prévia é
+redesenhada quando uma fica pronta; a exportação faz a que faltar fora da thread principal e, se o iPhone esquenta (sério ou crítico), para
+(o feito fica salvo) e diz "Your iPhone is too warm to finish this video. Let it cool down, then export again."
 
 **Testes:** `MotionAnalyzerTests` (deslize e giro em vídeos de movimento conhecido, blocos, ajuste robusto, parar e retomar sem medir quadro duas
 vezes, arquivo e versão), `MotionAnalysisServiceTests` (fila, segundo plano, calor).
@@ -48,9 +52,10 @@ compositor (`SourceFrame.cropRect(at:)`), capa do quadro com o recorte daquele m
 **Medido no aparelho:** o rosto da take seguido por 6 s em 1,1 s (6,0 ms por quadro), os 6 s inteiros, a 21 px (p50) e 33 px (p90) do rosto que a
 análise acha, num quadro de 1080 px.
 
-**O que entrou:** `ObjectTracker` (`VNTrackObjectRequest` preciso, para a frente e para trás um segundo por vez), `FramePlacement` (ponto da
-gravação ↔ ponto do vídeo, com recorte, Seguir rosto ou Fit), `TrackedMotion` (Ramer–Douglas–Peucker a 0,4%), Track nas barras de texto e mídia
-e no painel de movimento, com progresso e Cancel; um passo de desfazer.
+**O que entrou:** `ObjectTracker` (`VNTrackObjectRequest` preciso, para a frente e para trás um segundo por vez, fora da thread principal),
+`FramePlacement` (ponto da gravação ↔ ponto do vídeo, com a correção do Stabilize, recorte, Seguir rosto ou Fit), `TrackedMotion` (Ramer–Douglas–Peucker a 0,4%), Track nas barras de texto e mídia
+e no painel de movimento, com progresso e Cancel; um passo de desfazer. Um resultado só entra se é da corrida em curso, com o editor aberto e o
+vídeo e o item como estavam ("The video changed meanwhile · Track it again"); fechar o editor cancela.
 
 **Testes:** `ObjectTrackerTests` (quadrado nos dois sentidos, keyframes mínimos dentro da tolerância, ida e volta de pontos),
 `QuickEditTrackTests` (texto no quadrado segue, um passo de desfazer).
@@ -85,10 +90,16 @@ quando a edição o segura (sem isso, uma gravação de 15 qps ou câmera lenta 
 time-pitch da Apple ou varispeed, offline, a taxa mudando a cada 5,8 ms): sem estalos, e com o tom mantido no máximo uma queda de 20 ms num tom
 puro de 6 s (a fala não foi medida assim).
 
-**O que entrou:** `SpeedCurve` (cúbica monótona em escala log, tempo = integral de 1/velocidade numa tabela de 240 passos, partes ao dividir),
-7 curvas prontas e Custom com pontos arrastáveis, Normal | Curve no painel Speed, imagem esticada em 30 passos por segundo, prévia ao alcançar
+**O que entrou:** `SpeedCurve` (0,25× a 4×, a faixa do varispeed da Apple; cúbica monótona em escala log, tempo = integral de 1/velocidade numa
+tabela de 240 passos; cada parte ao dividir guarda no máximo 25 amostras mais os pontos de dentro quando são até 8, então dez divisões seguidas
+ficam com no máximo 33 pontos), 7 curvas prontas e Custom com pontos arrastáveis, Normal | Curve no painel Speed, imagem esticada em 30 passos por
+segundo (no máximo 1.500 por clipe), som renderizado fora da thread principal, lendo a gravação um segundo por vez (no máximo ~3 s na memória),
+parado quando a prévia é refeita, os renders antigos de cada clipe apagados (ficam os 2 últimos); enquanto um dedo arrasta um ponto da curva ou
+uma alça de clipe, a prévia estica o som em passos e o renderiza quando o dedo solta; Extract audio de um clipe curvo sai ao longo da curva; prévia ao alcançar
 além das alças na velocidade da ponta, todas as contas de tempo do app passando pela curva (legendas, transcrição, capa, transições, quadros,
-voz). Reverso: `ReversedClipWriter` (passos de quadros copiados, no máximo ~100 MB), `ReversedSound`, `ClipReversal` (Reverse de novo volta).
+voz). Reverso: `ReversedClipWriter` (passos de quadros copiados, no máximo ~100 MB), `ReversedSound`, `ClipReversal` (Reverse de novo volta; mais
+uma vez reaproveita o vídeo invertido já escrito; os que nada toca saem no Done; editor fechado durante a escrita: o arquivo é apagado); textos,
+mídias e voice-overs no clipe ficam onde estavam.
 
 **Testes:** `SpeedCurveTests` (9), `SpeedCurveExportTests` (cada quadro no momento da curva; som com e sem tom mantido), `ReverseExportTests`
 (imagem e som de trás para a frente), `QuickEditReverseTests` (um passo, textos no lugar, volta ao original).
@@ -98,13 +109,21 @@ voz). Reverso: `ReversedClipWriter` (passos de quadros copiados, no máximo ~100
 **Medido no aparelho:** 3 min de música (faixa de cliques a 124 BPM) em 1,63 s: 123,0 BPM, 371 batidas.
 
 **O que entrou:** `BeatTracker` (fluxo espectral, tempo por autocorrelação com preferência por 120 BPM e teste de pulso, batidas por programação
-dinâmica), `BeatDetector` (lê o arquivo, até 10 min), `BeatStore` (`.cuebeats` ao lado do arquivo), Beats na barra da música (só música dos
-Files): Snap to beats, Move cuts to the beats, Cut the video on every 1, 2 ou 4 batidas; risquinhos na faixa da música.
+dinâmica), `BeatDetector` (lê o arquivo, até 10 min), `BeatStore` (`.cuebeats` ao lado do arquivo; nada salvo de um arquivo já
+removido), Beats na barra da música (só música dos Files; efeitos sonoros e sons extraídos do vídeo não têm): Snap to beats, Move cuts to the beats, Cut the video on every 1, 2 ou 4 batidas; risquinhos na faixa da música.
 
 **Testes:** `BeatTrackerTests` (90, 120, 128 e 150 BPM com cada batida a até 25 ms; nenhuma no silêncio; ruído sem pulso).
 
 ## Testes rodados
 
+- **Revisão de código (17/10, depois do Full em `60cb278`):** `scripts/check-warnings.sh` sem nenhum warning (Simulador, aparelho e Release);
+  SwiftLint nos arquivos mudados: 0. Suítes de unidade da revisão (curvas, análise, serviço, rastreador, Track, Reverse, Extract audio, transições,
+  player, seleção de legendas, composição, caminhos, batidas): 124 aprovados. Exportações reais `SoundExtractorTests`, `SpeedCurveExportTests`,
+  `ReverseExportTests`, `MotionExportTests`: todas aprovadas. UI: `EditorMotionUITests` 2/2 e `CreatorWorkflowUITests/testEditByTextCuts…` 1/1.
+  As duas exportações que estouraram o tempo no Full (`EditorExportMatchesPreviewTests/cutsTextsCaptionsAndLookExportAsPreviewed`,
+  `QuickCreatorExportTests/aVoiceOverIsHeardFromWhereItStarts`) passam sozinhas em 2,9 s e 2,7 s: não usam curva nem movimento (a análise e
+  o som de curva nem entram nesses builds), foi a carga do plano em paralelo. Plano Fast: 3.523 aprovados, 2 falhas de tempo sob carga que
+  passam sozinhas (`QuickEditCopyLookTests/aPasteThatChangesNothingSaysSo`, `QuickEditPlayerTests/playingFromTheEndStartsAgain`: 37/37).
 - **Plano Fast** (unidade sem as exportações reais), no fim: **3.474 aprovados**, 2 falhas que passam sozinhas (`CoverRendererTests`
   estourou 5 min e `QuickEditCopyLookTests` leu o aviso antes da hora, os dois sob a carga do plano em paralelo; reexecutados: 9/9). Na primeira
   rodada, 8 falhas: 6 expectativas das barras (as ferramentas novas), o teste de pausa do serviço de análise (corrida de tempo; o analisador
