@@ -49,6 +49,8 @@ struct AppServices {
     let editing: TakeEditService
     /// Analyzes the recordings' motion (faces, bodies, shake) for Follow face and Stabilize, while Cue is open and cool.
     let motion: MotionAnalysisService
+    /// Finds the creator's eyes in the recordings an edit with Eye Contact plays.
+    let eyes: EyeContactAnalysisService
     let drafts: QuickEditDraftStoring
     let apps: ExternalAppService
     /// Hands an exported video to a platform (Share Kit, Instagram's hand-off, the share sheet) and says what is known.
@@ -182,6 +184,7 @@ struct AppServices {
         thumbnails = VideoThumbnailService()
         editing = TakeEditService()
         motion = MotionAnalysisService()
+        eyes = EyeContactAnalysisService()
         drafts = options.draftStore
         let apps = ExternalAppService()
         self.apps = apps

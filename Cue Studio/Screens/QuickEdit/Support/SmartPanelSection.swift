@@ -5,7 +5,7 @@
 
 import Foundation
 
-/// The two parts of ✦ Smart: the one-tap tools (captions, pauses, Studio Voice, Auto adjust, Background) and the video
+/// The two parts of ✦ Smart: the one-tap tools (captions, pauses, Studio Voice, Auto adjust, Background, Eye Contact) and the video
 /// templates, each a category of its own so a template never reads as part of a tool.
 enum SmartPanelSection: String, CaseIterable, Identifiable {
     case tools, templates

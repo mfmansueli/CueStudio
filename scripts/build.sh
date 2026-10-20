@@ -6,6 +6,7 @@
 #   scripts/build.sh device     app + tests for a generic iPhone, unsigned (the device SDK flags concurrency differently)
 #   scripts/build.sh release    the app in Release for the simulator (Release has to compile too)
 #   scripts/build.sh install    the signed app on the iPhone named in CUE_DEVICE (xcrun devicectl list devices): builds, installs, launches
+#                               (Debug; CUE_CONFIGURATION=Release for what ships, e.g. to judge work that is slow without optimization)
 
 source "$(dirname "$0")/_xcode.sh"
 
@@ -25,15 +26,16 @@ case "$mode" in
         else
             destination="platform=iOS,name=$CUE_DEVICE"
         fi
-        xcb "build-install" -destination "$destination" -allowProvisioningUpdates build
-        app="$DERIVED_DATA/Build/Products/Debug-iphoneos/Cue Studio.app"
+        configuration="${CUE_CONFIGURATION:-Debug}"
+        xcb "build-install" -configuration "$configuration" -destination "$destination" -allowProvisioningUpdates build
+        app="$DERIVED_DATA/Build/Products/$configuration-iphoneos/Cue Studio.app"
         echo "▸ Installing on $CUE_DEVICE"
         xcrun devicectl device install app --device "$CUE_DEVICE" "$app"
         xcrun devicectl device process launch --device "$CUE_DEVICE" --terminate-existing com.cuestudioteleprompter ||
             echo "Installed, but it could not be opened: unlock the iPhone and open Cue Studio."
         ;;
     *)
-        sed -n '2,8p' "$0"
+        sed -n '2,9p' "$0"
         exit 64
         ;;
 esac

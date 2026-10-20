@@ -11,7 +11,7 @@
 #   scripts/test.sh only <id>…       chosen tests: "Cue StudioTests/DockFoldTests", "Cue StudioUITests/TabBarUITests/testTabs()"
 #   scripts/test.sh device <suite>   a device-only suite on the iPhone named by CUE_DEVICE (name or id), one set at a time
 #                                    (VoiceFollowingSpeechTests, VoiceFollowingLatencyTests, CaptionSpeechTests, EditByTextDeviceTests,
-#                                    LanguageModelDeviceTests, ScriptGenerationFlowDeviceTests, VoicePersonaDeviceTests,
+#                                    SpokenLanguageDeviceTests, LanguageModelDeviceTests, ScriptGenerationFlowDeviceTests, VoicePersonaDeviceTests,
 #                                    PromptBudgetDeviceTests, WritingImportDeviceTests, PlatformLengthDeviceTests,
 #                                    LengthVariantsDeviceTests, ScriptToolsDeviceTests, IdeaRelevanceDeviceTests, IdeaSuggestionsDeviceTests, CreatorDayDeviceTests,
 #                                    InspirationDeviceTests, QuickEditPreviewLatencyTests, EditorExportDeviceTests, SkinSmoothingDeviceTests,
@@ -25,6 +25,20 @@ source "$(dirname "$0")/_xcode.sh"
 usage() {
     sed -n '2,21p' "$0"
     exit 64
+}
+
+# A locked device leaves xcodebuild waiting for it ("Unlock … to Continue") for as long as nobody unlocks it, so a device run
+# stops at once when the device needs its passcode.
+require_unlocked() {
+    local state
+    state="$(mktemp)"
+    if xcrun devicectl device info lockState --device "$CUE_DEVICE" --json-output "$state" >/dev/null 2>&1 &&
+        python3 -c 'import json, sys; sys.exit(0 if json.load(open(sys.argv[1]))["result"]["passcodeRequired"] else 1)' "$state"; then
+        rm -f "$state"
+        echo "✘ $CUE_DEVICE is locked: unlock it (and keep its screen on) before a device run." >&2
+        exit 75
+    fi
+    rm -f "$state"
 }
 
 mode="${1:-fast}"
@@ -65,9 +79,10 @@ case "$mode" in
             echo "Set CUE_DEVICE to the iPhone's name or id (xcrun devicectl list devices)." >&2
             exit 64
         fi
+        require_unlocked
         # The suites skip themselves unless their flag is on (TEST_RUNNER_ reaches the tests without the prefix).
         case "${ids[0]}" in
-            VoiceFollowingSpeechTests* | VoiceFollowingLatencyTests* | CaptionSpeechTests* | EditByTextDeviceTests*) export TEST_RUNNER_CUE_SPEECH_E2E=1 ;;
+            VoiceFollowingSpeechTests* | VoiceFollowingLatencyTests* | CaptionSpeechTests* | SpokenLanguageDeviceTests* | EditByTextDeviceTests*) export TEST_RUNNER_CUE_SPEECH_E2E=1 ;;
             LanguageModelDeviceTests* | ScriptGenerationFlowDeviceTests* | VoicePersonaDeviceTests* | PromptBudgetDeviceTests* | WritingImportDeviceTests* | PlatformLengthDeviceTests* | LengthVariantsDeviceTests* | ScriptToolsDeviceTests* | IdeaRelevanceDeviceTests* | IdeaSuggestionsDeviceTests* | CreatorDayDeviceTests* | InspirationDeviceTests* | ScriptQualityDeviceTests*)
                 export TEST_RUNNER_CUE_AI_E2E=1 ;;
             QuickEditPreviewLatencyTests*) export TEST_RUNNER_CUE_PREVIEW_LATENCY=1 ;;
@@ -77,6 +92,9 @@ case "$mode" in
             MotionAnalysisDeviceTests* | EditorMotionDeviceTests*) export TEST_RUNNER_CUE_MOTION_E2E=1 ;;
             # A portrait in the app's Documents on the device: TEST_RUNNER_CUE_SKIN_MEDIA=Documents/skin.jpg (see SkinSmoothingDeviceTests).
             SkinSmoothingDeviceTests* | BackgroundDeviceTests*) export TEST_RUNNER_CUE_SKIN_E2E=1 ;;
+            # Eye Contact on a COPY of this iPhone's newest take (TEST_RUNNER_CUE_EYES_TAKE=<file> picks another); the corrected video
+            # goes to the app's Documents.
+            EyeContactDeviceTests*) export TEST_RUNNER_CUE_EYES_E2E=1 ;;
             # Real exports that only an iPhone can run (an HLG take: the Simulator's VideoToolbox can't convert it), with no flag.
             RealExports/*) ;;
             *) usage ;;
@@ -95,6 +113,7 @@ case "$mode" in
             echo "Set CUE_DEVICE to the iPhone's name or id (xcrun devicectl list devices)." >&2
             exit 64
         fi
+        require_unlocked
         if [[ "$CUE_DEVICE" =~ ^[0-9A-Fa-f-]{20,}$ ]]; then
             destination="platform=iOS,id=$CUE_DEVICE"
         else

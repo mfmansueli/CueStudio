@@ -38,6 +38,8 @@ final class FakeTakeEditor: TakeEditing {
     var captionFails = false
     private(set) var captionScript: String?
     private(set) var captionLanguage: SpeechLanguageRequest?
+    /// The likely languages the last captions were asked to choose among.
+    private(set) var captionCandidates: [CueLanguage] = []
     private(set) var captionRequests = 0
 
     /// The script Clean Up read the language from, when it was left to detect it.
@@ -95,11 +97,12 @@ final class FakeTakeEditor: TakeEditing {
     }
 
     func captions(
-        forVideoAt url: URL, script: String, language: SpeechLanguageRequest,
+        forVideoAt url: URL, script: String, language: SpeechLanguageRequest, spokenAmong candidates: [CueLanguage],
         progress: @escaping @Sendable (CaptionProgress) -> Void
     ) async throws -> CaptionOutcome {
         captionScript = script
         captionLanguage = language
+        captionCandidates = candidates
         captionRequests += 1
         for step in captionProgress { progress(step) }
         if let captionDelay { try await Task.sleep(for: captionDelay) }

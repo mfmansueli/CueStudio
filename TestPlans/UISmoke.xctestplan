@@ -31,6 +31,7 @@
         "RecorderV29UITests/testTheBoxOpensNearTheTop()",
         "TakesUITests/testDeletingATakeMovesToAnother()",
         "EditorUITests/testTheEditorOpensWithTheMainTools()",
+        "EyeContactUITests/testTurningEyeContactOnFromSmart()",
         "CaptionToolsUITests/testFindAndReplaceFixesAWordInEveryLine()",
         "FirstRunUITests/testRecordingWithoutAScript()",
         "FreePlanUITests/testSuggestBestPicksATake()",

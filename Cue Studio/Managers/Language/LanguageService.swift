@@ -102,6 +102,22 @@ final class LanguageService {
         )
     }
 
+    /// The languages a take without a script is most likely spoken in, for captions to hear its first seconds in each
+    /// (`SpokenLanguageIdentifier`): the one `captionRequest(for: nil)` hears first, the iPhone's languages, the interface's and
+    /// English, four at most. None for a take with a script: it was read in the script's language.
+    func likelySpokenLanguages(for script: Script?) -> [CueLanguage] {
+        guard script == nil else { return [] }
+        var languages: [CueLanguage] = []
+        if let first = SpeechLocaleResolver.target(for: captionRequest(for: nil))?.language { languages.append(first) }
+        languages += store.systemLanguages.compactMap(CueLanguage.matching(languageCode:))
+        languages += [interfaceLanguage, .english]
+        var seen = Set<CueLanguage>()
+        return Array(languages.filter { seen.insert($0).inserted }.prefix(Self.likelySpokenLanguageLimit))
+    }
+
+    /// Each language costs a fraction of a second to hear (`TranscriberLanguageListener`).
+    static let likelySpokenLanguageLimit = 4
+
     // MARK: - Dictation
 
     /// What an idea spoken into the empty Scripts card is heard in: the language the script will be

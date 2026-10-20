@@ -53,6 +53,17 @@ direction and whether it's written without spaces.
   else the iPhone's), through the same resolver and recognizers. Never Voice Following's language:
   when Voice Following listens in another one (picked in Language & Region), Captions say so
   (`SpeechLanguageConflict`) next to the language picker, so the two never disagree silently.
+- **The language spoken** (captions only, `SpokenLanguageIdentifier`): a take **without a script** on Auto is not trusted to be
+  in the guessed language. Its first 10 s of speech are heard in up to four likely languages
+  (`LanguageService.likelySpokenLanguages`: the guess above, the iPhone's languages, the interface's, English) and the take is
+  captioned in the one `SpeechTranscriber` understood best by its own word confidence (the guess keeps a tie within 0.02; another
+  language must reach 0.85 to win). A language **picked unlike the script's** is most likely a slip (the take was read in the
+  script's): the two are compared the same way, and the picker then shows the one heard. A take with a script on Auto is heard
+  in the script's language straight away. Only the guess may download its model; another language is compared only when its
+  model is on the iPhone. Dictation doesn't rate its words reliably (no confidence on some results, measured on an iPad Pro
+  A12Z), so a language only dictation hears (id, ar, tr, th, vi, nl, sv, da, nb on an iPhone; all of them on a device without
+  `SpeechTranscriber`) is never judged: the take is heard in the guess, as before. The status line says "Finding the language
+  you speak…" meanwhile.
 - **Words:** `WordTokenizer` is the one tokenizer for the script, what Voice Following hears,
   caption transcription and Clean Up. Text with spaces splits at anything that isn't a letter or a
   number (English and Portuguese split exactly as before); Japanese, Chinese and Thai are split
@@ -152,6 +163,10 @@ names in **bold** stay in English in every language.
   video over the take has its Sound: where a language has one word for all of them (ar *الصوت*, tr
   *Ses*), the Voice tool uses the word for speech (ar *الكلام*, tr *Konuşma*) so the tool never
   repeats its category's name.
+- **Eye Contact** (✦ Smart) is a feature name translated as what it does for the creator: pt-BR *Corrigir olhar* (the owner's name for it), es
+  *Contacto visual*, fr *Contact visuel*, de *Blickkontakt*, it *Contatto visivo*, ja *アイコンタクト*, ko *시선 맞춤*, zh *眼神交流*, ar *التواصل البصري*,
+  hi *आई कॉन्टैक्ट*, id *Kontak Mata*, nl *Oogcontact*, sv *Ögonkontakt*, da *Øjenkontakt*, nb *Øyekontakt*, tr *Göz Teması*, th *สบตากล้อง*,
+  vi *Nhìn vào ống kính*; the same word in the tile, the panel, its messages and Acknowledgements.
 - Type preset names (Cue, Impact, Editorial, Soft, Minimal, Label, Pop) are translated where the
   word has a natural equivalent; **Cue** stays as the brand.
 
@@ -316,7 +331,13 @@ no markdown, and the catchphrase present, in en, pt-BR, es, fr, de, ja, zh-TW an
 - *Captions after Voice Following* failed in a sixth language ("Too many allocated locales, 5 maximum"): captions now reserve
   the language they need (`SpeechLocaleReservation`).
 - *Hindi captions* were timed at about half their real moments by the dictation model (10 s of speech finished at 5 s):
-  such times are spread over the spoken stretch and marked estimated (`TranscriptTimingCheck`).
+  such times are spread over the spoken stretch and marked estimated (`TranscriptTimingCheck`). Spread words used to make a
+  line each (an iPad's dictation, or a language picked unlike the one spoken); they now make lines like measured ones.
+- *The language spoken* (iPhone 15 Pro, 20 Oct 2026, `SpokenLanguageDeviceTests`, each recording compared from a wrong first
+  guess among pt-BR, en, es and its own): found in all 11 languages `SpeechTranscriber` hears (en, es, pt-BR, fr, de, it, ja,
+  ko, zh-CN, zh-TW, hi), in 1.0–2.7 s; the language spoken scored 0.86 (hi) to 0.99, the others 0.00–0.75 (0.95 for English
+  heard as Spanish, 0.89 for Italian heard as Spanish). The 9 dictation-only languages are not validated. Real takes in
+  Portuguese: 0.96 against 0.16–0.68.
 - *A Japanese idea written in English* (the creator's English catchphrase pulled the model): refused, then tried once more
   with the language stated firmly; the same for "In my voice". *Scripts a third of the length asked*: the minimum is now
   in the prompt (44 to 82 words before, 89 to 179 after, for 150 to 225 asked). *"Context size exceeded" on short requests*:

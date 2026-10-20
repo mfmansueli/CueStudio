@@ -74,4 +74,10 @@ Toda tela, componente ou cor nova **precisa passar** no contraste antes de ser e
   "platform=iOS,id=<UDID>" -only-testing:"Cue StudioTests/SkinSmoothingDeviceTests" test`, com uma foto de retrato em `Documents` do app (`xcrun devicectl
   device copy to … --domain-type appDataContainer --domain-identifier com.cuestudioteleprompter --destination Documents/skin.jpg`). Mede o custo de um quadro
   em 1080p e 4K, se o rosto fica firme com movimento e se a prévia e a exportação saem iguais; os resultados vão como anexos (`SKIN SMOOTHING …`) do xcresult.
+- **Eye Contact** (✦ Smart) tem uma medição opt-in no aparelho: `CUE_DEVICE="<iPhone>" scripts/test.sh device EyeContactDeviceTests` (o Face Mesh em
+  Core ML e o desenho na CPU de verdade numa cópia da tomada mais nova, ou `TEST_RUNNER_CUE_EYES_TAKE=<arquivo>`): carga e execução do modelo, tempo
+  da análise por quadro, quanto do vídeo é corrigido e por quê, custo do desenho por quadro; o vídeo corrigido e a análise ficam em `Documents` do
+  app para comparar quadro a quadro (`TEST_RUNNER_CUE_EYES_CLEANUP=1` com `removesWhatTheseRunsLeft()` apaga). O Face Mesh precisa de um rosto de
+  verdade: os testes de unidade usam olhos desenhados (`EyeTestData`) e quadros pintados. O desenho foi feito antes no Mac
+  (`tools/eyecontact/prototype.py`, `bench.py`), onde se mede o tremor que ele acrescenta.
 - Compras são testadas localmente com `CueStudio.storekit` (selecionado no scheme).

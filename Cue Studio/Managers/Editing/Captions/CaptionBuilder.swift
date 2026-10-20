@@ -47,8 +47,11 @@ nonisolated enum CaptionBuilder {
     }
 
     /// Words grouped into lines: a new line after a sentence ends, after a pause, and when a line is
-    /// full.
+    /// full. Words that share one time (a recognizer's run of several) are never split and start a new
+    /// line after them; words with times of their own, measured or spread over the speech
+    /// (`TranscriptTimingCheck`), are grouped alike.
     static func group(_ words: [CaptionWord]) -> [CaptionCue] {
+        let words = words.filter { !$0.text.isEmpty }
         var cues: [CaptionCue] = []
         var current: [CaptionWord] = []
         func flush() {
@@ -56,9 +59,8 @@ nonisolated enum CaptionBuilder {
             cues.append(CaptionCue(words: current))
             current = []
         }
-        for word in words where !word.text.isEmpty {
-            if let last = current.last, last.isEstimated,
-               last.start != word.start || last.end != word.end { flush() }
+        for (index, word) in words.enumerated() {
+            if let last = current.last, last.isEstimated, !sharesTime(last, word), index >= 2, sharesTime(words[index - 2], last) { flush() }
             if let last = current.last, word.start - last.end > pauseBreak { flush() }
             current.append(word)
             let texts = current.map(\.text)
@@ -66,10 +68,15 @@ nonisolated enum CaptionBuilder {
             let isFull = unspaced
                 ? CaptionText.length(texts) >= maximumUnspacedCharacters
                 : current.count >= maximumWords || CaptionText.length(texts) >= maximumCharacters
-            if !word.isEstimated, isFull || endsSentence(word.text) { flush() }
+            let splitsRun = index + 1 < words.count && sharesTime(words[index + 1], word)
+            if !splitsRun, isFull || endsSentence(word.text) { flush() }
         }
         flush()
         return cues
+    }
+
+    private static func sharesTime(_ a: CaptionWord, _ b: CaptionWord) -> Bool {
+        a.start == b.start && a.end == b.end
     }
 
     private static func endsSentence(_ word: String) -> Bool {

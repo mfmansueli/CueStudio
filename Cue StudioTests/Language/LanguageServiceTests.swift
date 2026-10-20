@@ -174,6 +174,21 @@ struct LanguageServiceTests {
         #expect(service.captionRequest(for: nil) == .language(.spanish))
     }
 
+    /// A take without a script is compared in the languages it's likely spoken in, the one it would be heard in first; one with a
+    /// script never is (it was read in the script's language).
+    @Test func aTakeWithoutAScriptIsComparedInItsLikelyLanguages() {
+        let defaults = TestDefaults()
+        defer { defaults.tearDown() }
+        let service = makeService(defaults: defaults)
+        #expect(service.likelySpokenLanguages(for: nil) == [.italian, .english])
+        let traveller = makeService(
+            defaults: defaults, store: InMemoryAppLanguageStore(systemLocalization: "pt-BR", systemLanguages: ["pt-BR", "en-GB", "es-ES"])
+        )
+        traveller.scriptLanguage = .french
+        #expect(traveller.likelySpokenLanguages(for: nil) == [.french, .portugueseBrazil, .english, .spanish])
+        #expect(traveller.likelySpokenLanguages(for: TestData.script(text: "Oi, gente!")).isEmpty)
+    }
+
     /// Voice Following and captions never disagree silently.
     @Test func aDifferentVoiceFollowingLanguageIsAConflict() {
         let defaults = TestDefaults()

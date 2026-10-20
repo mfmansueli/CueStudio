@@ -20,11 +20,13 @@ protocol TakeEditing: AnyObject {
     /// Captions from what is said in the take, heard in `language`. The voice decides the words and
     /// when; `script` (empty for a take without one) only lends its spelling where it reliably
     /// matches. Nothing is ever spread over the take: without sound, speech or a model for the
-    /// language, the outcome says so. Reports where it is through `progress`; throws
+    /// language, the outcome says so. With `spokenAmong` (the language it would be heard in first,
+    /// then other likely ones), the first seconds are heard in each and the take is heard in the one
+    /// spoken (`SpokenLanguageIdentifier`). Reports where it is through `progress`; throws
     /// `CancellationError` when the task is cancelled, and other errors when the sound can't be
     /// read.
     func captions(
-        forVideoAt url: URL, script: String, language: SpeechLanguageRequest,
+        forVideoAt url: URL, script: String, language: SpeechLanguageRequest, spokenAmong candidates: [CueLanguage],
         progress: @escaping @Sendable (CaptionProgress) -> Void
     ) async throws -> CaptionOutcome
     /// The edited take for a player. `window` is where the edit itself is when `edit`'s timeline

@@ -97,3 +97,56 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ```
+
+## MediaPipe Face Mesh V2 (Eye Contact's face landmarks: Google's weights, converted for Core ML; Apache 2.0, ships with the app)
+
+✦ Smart › Eye Contact finds each eye's outline and iris, frame by frame, with the face landmark model of MediaPipe's Face Landmarker
+(Face Mesh V2, 478 points with both irises; model card: <https://storage.googleapis.com/mediapipe-assets/Model%20Card%20MediaPipe%20Face%20Mesh%20V2.pdf>,
+"Licensed under Apache License, Version 2.0").
+
+**What ships.** `Cue Studio/Managers/Editing/EyeContact/FaceMeshV2.mlpackage` (2.9 MB): `face_landmarks_detector.tflite` from
+`face_landmarker.task` (<https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/latest/face_landmarker.task>,
+sha256 `64184e22…6e0bc9ff`), converted TFLite → ONNX (tf2onnx) → PyTorch (onnx2torch) → Core ML program in float16, input taken as a
+256 × 256 image. Reproduce with `tools/eyecontact/landmarks.py`; `tools/eyecontact/verify_landmarks.py` compares it with MediaPipe's
+own runtime on a video. Weights sha256 of the shipped model: `03487a67…6cf935ba1` (`EyeContactEngine.weights`). Only the landmark model
+ships: Vision finds the face, and the face detector and blendshape models of the `.task` are not used.
+
+**License.** Apache 2.0: the license and the notice of what was changed travel with the app in Settings › Acknowledgements
+(`SupportFiles/Licenses/mediapipe-Apache-2.0.txt`, `CodeCredit`), as section 4 asks.
+
+**Data.** Trained by Google; its model card documents the evaluation across regions, skin tones and genders, and warns of jitter in
+poor light, which Cue smooths over time (`EyeTrackSmoother`). No dataset ships with Cue.
+
+## Locked Gaze (Eye Contact's rules: read, rewritten; MIT, no code copied)
+
+[albond/locked-gaze](https://github.com/albond/locked-gaze) @ `ee65b15a6e8bde26d6b363d465e3f10049e63a2d` (MIT) is an open macOS
+host for NVIDIA Maxine's eye contact models (which it doesn't ship and Cue doesn't use). Its frame pipeline shows how Maxine decides and
+blends: a blink when the eye's opening falls under 0.65 of its running mean, the correction fading with a quintic between 20° and 30° of
+gaze or head turn, never changing more than 0.1 a frame, a One-Euro filter on the landmarks, and only the difference blended in, over
+the old and new lids' outlines grown and feathered. Cue's `EyeGazePlan`, `EyeTrackSmoother` and `EyeRedraw` follow those rules in
+their own code (both ways in time, since a recording is already filmed); the credit and its license are in Settings › Acknowledgements.
+
+**Drawing.** Cue's own (`EyeRedraw`, prototyped in `tools/eyecontact/prototype.py`): the upper lid raised by a smooth lift, the iris moved
+as one piece of its own pixels with what the lids hid completed from the iris itself, the white filled from the eye's own white, the
+cornea's reflections kept in place. No model generates pixels.
+
+**Patents (not legal advice).** A search found Intel's US10423830, US10664949 and US11024002 (eye-region warping by a learned vector
+field: close to the first Eye Contact, which used Hsu's warping network and was removed) and Snap's US11468544 (an eye texture built from
+iris extraction and sclera segmentation in video: close to Cue's drawing). Their claims weren't read; a freedom-to-operate check is
+advised before release.
+
+**Looked at and not used.**
+
+| Project | What it is | Why it isn't in Cue |
+|---|---|---|
+| [chihfanhsu/gaze_correction](https://github.com/chihfanhsu/gaze_correction) @ `7cc76e4` (BSD-3) | "Look at Me!" (Hsu et al. 2019): a warping network on a 64 × 48 eye crop | Shipped in Eye Contact's first version and removed: on the iPhone its per-frame flow made lids and lashes wobble (owner's test, 18/10/2026; +0.56 px of flow a frame on a real take against +0.18 now), and its training data's terms are not stated |
+| [KypMon/coreml-eye-contact](https://github.com/KypMon/coreml-eye-contact) @ `e9d5ae5` | Hsu's model converted to ONNX | No license |
+| [zhengyuf/STED-gaze](https://github.com/zhengyuf/STED-gaze) | ST-ED (NVIDIA) gaze redirection | GPL/NVIDIA source licenses, weights unlicensed, trained on GazeCapture |
+| [GazeNeRF](https://github.com/AlessandroRuzzi/GazeNeRF), [GazeGaussian](https://github.com/ucwxb/GazeGaussian), [RTGaze](https://github.com/hengfei-wang/RTGaze) | 3D-aware redirection | No license; trained on ETH-XGaze (CC BY-NC-SA); far too slow for a phone |
+| [HzDmS/gaze_redirection](https://github.com/HzDmS/gaze_redirection), interpGaze | GAN redirection | Trained on Columbia Gaze (non-commercial) |
+| [zhangqianhui/GazeAnimationV2](https://github.com/zhangqianhui/GazeAnimationV2) | Eye inpainting | Research-only training data; regenerates the whole eye, which flickers |
+| LivePortrait | Face re-synthesis | Its face detector is non-commercial; re-synthesizes the whole face |
+| [GazeFlow](https://github.com/CVI-SZU/GazeFlow) (MIT code) | Gaze redirection with ETH-XGaze models | ETH-XGaze forbids commercial use |
+| dlib's 68-point predictor | Landmarks | iBUG 300-W's terms exclude commercial use |
+| [GazeLock](https://github.com/devkoriel/gazelock), [CursorGaze](https://github.com/Sahil-Bhoite/CursorGaze) | Swift/Core ML projects | Not working yet, or no model files to verify |
+| NVIDIA Maxine / Broadcast, Apple FaceTime, CapCut, Captions, Descript | Products | Closed; studied only through their published descriptions and output |

@@ -9,7 +9,8 @@ import Foundation
 /// How a recording's frames become the edit's frame: its track's transform (portrait recordings
 /// upright), the part of the upright frame to keep, and the scale that brings it to the take's
 /// frame size (1 for the take itself; another take or video of a montage is scaled to match), and
-/// its background effect. With Follow face, the part kept moves over time (`follow`).
+/// its background effect. With Follow face, the part kept moves over time (`follow`); with Eye Contact, the eyes of each frame are
+/// moved first (`eyes`).
 nonisolated struct SourceFrame: Sendable {
     let transform: CGAffineTransform
     /// Core Image coordinates.
@@ -22,6 +23,8 @@ nonisolated struct SourceFrame: Sendable {
     var uprightSize: CGSize = .zero
     /// Stabilize: how each moment of the recording is held steady; nil plays it as filmed.
     var steady: StabilizationPath?
+    /// Eye Contact: the eyes moved toward the lens on each frame of the recording it decided for; nil plays it as filmed.
+    var eyes: EyeContactTrack?
 
     init(transform: CGAffineTransform, crop: CGRect, scale: CGFloat, background: BackgroundRender? = nil) {
         self.transform = transform

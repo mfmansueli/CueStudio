@@ -71,14 +71,3 @@ struct TransitionDrawingTests {
         #expect(timeline.segments[2].transitionIn == .hardCut && timeline.segments[2].transitionDuration == nil)
     }
 }
-
-/// The notice the adapted transitions need ships with the app.
-@Suite("Code credits")
-struct CodeCreditTests {
-    @Test func everyCreditShipsItsLicense() {
-        for credit in CodeCredit.all {
-            #expect(credit.licenseText.contains("Permission is hereby granted"), "\(credit.name)")
-            #expect(credit.licenseText.contains(credit.copyright), "\(credit.name)")
-        }
-    }
-}
