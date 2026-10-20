@@ -23,8 +23,8 @@ nonisolated struct PrompterSections: Equatable, Sendable {
         self.markers = markers
     }
 
-    init(text: String, structure: ScriptStructure, speed: Double) {
-        let shape = ScriptShape(text: text, structure: structure, speed: speed, suggestsCTA: false)
+    init(text: String, structure: ScriptStructure) {
+        let shape = ScriptShape(text: text, structure: structure, suggestsCTA: false)
         markers = shape.sections.filter { !$0.isMissingCTA }.map { Marker(label: $0.label, firstParagraph: $0.firstParagraph) }
     }
 
@@ -50,6 +50,6 @@ extension PrompterViewModel {
     /// The script's sections, for the rail.
     func makeSections() -> PrompterSections {
         guard let script else { return PrompterSections(markers: []) }
-        return PrompterSections(text: script.text, structure: script.structure, speed: session.prompter.speed)
+        return PrompterSections(text: script.text, structure: script.structure)
     }
 }

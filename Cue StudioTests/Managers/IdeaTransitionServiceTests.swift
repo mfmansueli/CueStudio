@@ -65,7 +65,7 @@ struct IdeaTransitionServiceTests {
         #expect(service.phase == .idle && !service.isActive)
         begin(service, calls)
         #expect(service.phase == .rising && service.isActive)
-        await clock.advance(0.59)
+        await clock.advance(IdeaTransitionService.riseDuration - 0.01)
         #expect(service.phase == .rising)
         await clock.advance(0.02)
         #expect(service.phase == .waiting)
@@ -75,15 +75,16 @@ struct IdeaTransitionServiceTests {
     @Test func aFastAnswerStillTakesThreeSecondsFromTheTap() async {
         let (service, clock, calls) = make()
         begin(service, calls)
-        await clock.advance(0.7)
+        let early = IdeaTransitionService.riseDuration + 0.1
+        await clock.advance(early)
         let finished = ready(service)
-        await clock.advance(2.0)
-        #expect(service.phase == .waiting, "2.7 s: still waiting for the minimum")
+        await clock.advance(IdeaTransitionService.minimumDuration - 0.3 - early)
+        #expect(service.phase == .waiting, "0.3 s short of the minimum: still waiting")
         #expect(calls.arrived == 0)
         await clock.advance(0.31)
         #expect(service.phase == .revealing)
         #expect(calls.arrived == 1 && calls.aborted == 0)
-        // The page may start writing once the cover and the ring are done (0.64 s).
+        // The page may start writing once the cover and the ring are done (`revealLead`).
         await clock.advance(IdeaTransitionService.revealLead + 0.01)
         await finished.value
     }
@@ -155,11 +156,12 @@ struct IdeaTransitionServiceTests {
         let (service, clock, calls) = make()
         service.speed = 0.5
         begin(service, calls)
-        await clock.advance(0.31)
+        let risen = IdeaTransitionService.riseDuration / 2 + 0.01
+        await clock.advance(risen)
         #expect(service.phase == .waiting)
         let finished = ready(service)
-        await clock.advance(1.2)
-        #expect(service.phase == .revealing, "1.5 s is the minimum at half speed")
+        await clock.advance(IdeaTransitionService.minimumDuration / 2 - risen + 0.01)
+        #expect(service.phase == .revealing, "half the minimum at half speed")
         await clock.advance(IdeaTransitionService.revealLead)
         await finished.value
     }

@@ -45,7 +45,6 @@ struct ScriptDetailView: View {
                     script: script,
                     folders: library.folders,
                     actions: actions,
-                    onBack: { dismiss() },
                     onRecord: { presentation.openPrompter(scriptID: script.id, mode: .selfie) },
                     onOpenTake: { presentation.openReview(of: $0) }
                 )
@@ -55,7 +54,10 @@ struct ScriptDetailView: View {
         }
         .background(Palette.bg)
         .navigationBarTitleDisplayMode(.inline)
-        .hidesCueTabBar()
+        // The system's own way for a pushed page to hide the tab bar: it goes and comes back with the push and the pop (and follows a
+        // back swipe), so Scripts comes back whole. Through `hidesCueTabBar` it only came back after the page had gone, and the dock
+        // and the bar jumped as it did (the owner saw it on Back and on the star's Cancel, 20/10/2026).
+        .toolbarVisibility(.hidden, for: .tabBar)
         .task { viewModel.beginWritingIfNeeded() }
         .onDisappear(perform: offerReminderInvite)
         .alert("Couldn't draft the script", isPresented: Binding(

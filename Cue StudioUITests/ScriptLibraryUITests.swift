@@ -51,9 +51,7 @@ final class ScriptLibraryUITests: XCTestCase {
         app.buttons["scripts.selectButton"].tap()
         XCTAssertTrue(prompt.waitForExistence(timeout: 5))
 
-        let search = app.scriptsSearchField
-        XCTAssertTrue(search.waitForExistence(timeout: 5))
-        search.tap()
+        let search = app.openScriptsSearch(timeout: 5)
         search.typeText("nothing matches this")
         XCTAssertTrue(element(app, "scripts.empty").waitForExistence(timeout: 5))
         XCTAssertTrue(prompt.exists, "the dock stays while searching")
@@ -133,10 +131,7 @@ final class ScriptLibraryUITests: XCTestCase {
 
     func testSearch() {
         let app = CueApp.launch(seeded: true)
-        // The search is a field at the top of the list, always there.
-        let search = app.scriptsSearchField
-        XCTAssertTrue(search.waitForExistence(timeout: 15))
-        search.tap()
+        let search = app.openScriptsSearch()
         search.typeText("Q&A")
         XCTAssertTrue(app.staticTexts["Weekly Q&A — episode 12"].waitForExistence(timeout: 5))
         XCTAssertFalse(app.staticTexts[Self.lamp].exists)
@@ -250,7 +245,7 @@ final class ScriptLibraryUITests: XCTestCase {
         openScript(app, "Oat & Co. — sponsored read")
         XCTAssertTrue(element(app, "page.strip").waitForExistence(timeout: 5))
         XCTAssertTrue(element(app, "page.lengthBar").exists)
-        XCTAssertTrue(element(app, "page.meter").label.localizedCaseInsensitiveContains("words"))
+        XCTAssertTrue((element(app, "page.lengthBar").value as? String)?.localizedCaseInsensitiveContains("words") == true)
         XCTAssertTrue(element(app, "page.editor").exists)
         // The Draft | Shaped switch is gone; Record is the page's only one.
         XCTAssertFalse(app.buttons["page.mode.draft"].exists || app.buttons["page.mode.shaped"].exists)
@@ -352,19 +347,20 @@ final class ScriptLibraryUITests: XCTestCase {
         XCTAssertTrue(format.waitForExistence(timeout: 5))
     }
 
-    func testTheMenuLeadsToImproveAndDetails() {
+    func testImproveIsOnThePageAndTheMenuLeadsToDetails() {
         let app = CueApp.launch(seeded: true)
         openScript(app, Self.lamp)
 
-        app.buttons["page.menuButton"].tap()
-        XCTAssertTrue(app.buttons["Improve with Cue"].waitForExistence(timeout: 5))
-        // The old full editor is gone: the page is where the words are written.
-        XCTAssertFalse(app.buttons["Versions & options"].exists)
-        app.buttons["Improve with Cue"].tap()
+        // Improve is on the page itself, and the menu doesn't repeat it.
+        app.buttons["page.improveButton"].tap()
         XCTAssertTrue(app.buttons["improve.tool.inMyVoice"].waitForExistence(timeout: 5))
         app.buttons["sheet.closeButton"].tap()
 
         app.buttons["page.menuButton"].tap()
+        XCTAssertTrue(app.buttons["Script details"].waitForExistence(timeout: 5))
+        XCTAssertFalse(app.buttons["Improve with Cue"].exists)
+        // The old full editor is gone: the page is where the words are written.
+        XCTAssertFalse(app.buttons["Versions & options"].exists)
         app.buttons["Script details"].tap()
         let type = app.buttons["details.type"]
         XCTAssertTrue(type.waitForExistence(timeout: 5))

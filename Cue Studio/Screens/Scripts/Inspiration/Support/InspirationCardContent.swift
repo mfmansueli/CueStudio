@@ -6,7 +6,7 @@
 import Foundation
 
 /// What the featured card of Find inspiration says about one idea: a small category line ("PERSONAL FINANCE · EXPLAINER"), the video's
-/// title (the strongest line), and, for an idea with a brief, "Your angle" and "Opening line". An idea without a brief (a starter written
+/// title (the strongest line), and, for an idea with a brief, "Your point of view" and "Opening line". An idea without a brief (a starter written
 /// before briefs, a note from the Logbook) is its title alone: nothing is made up to fill the card.
 nonisolated struct InspirationCardContent: Hashable, Sendable {
     /// The topic, the subtopic when the brief has one, and the kind of video, joined by " · " (shown in capitals).

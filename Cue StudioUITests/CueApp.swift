@@ -76,11 +76,26 @@ extension XCUIApplication {
         XCTAssertLessThanOrEqual(element.frame.maxY, limit, "\(element) is under the tab bar", file: file, line: line)
     }
 
+    /// The script page's "Ready to record" switch (a toggle to VoiceOver, so not among `buttons`).
+    var pageReadyToggle: XCUIElement { descendants(matching: .any)["page.readyToggle"].firstMatch }
+
     /// The script page's back button: the navigation bar's own (v30).
     var pageBackButton: XCUIElement { navigationBars.buttons["BackButton"].firstMatch }
 
-    /// The search at the top of Scripts' list (always there, the dock stays): its field.
+    /// The search at the top of Scripts' list (opened by the bar's magnifier, the dock stays): its field.
     var scriptsSearchField: XCUIElement { descendants(matching: .any)["scripts.search"].searchFields.firstMatch }
+
+    /// Opens Scripts' search with the bar's magnifier and returns its field, which has the keyboard.
+    @discardableResult
+    func openScriptsSearch(timeout: TimeInterval = 15) -> XCUIElement {
+        let magnifier = navigationBars.buttons["scripts.searchButton"]
+        XCTAssertTrue(magnifier.waitForExistence(timeout: timeout), "No magnifier in Scripts' bar")
+        magnifier.tap()
+        let field = scriptsSearchField
+        XCTAssertTrue(field.waitForExistence(timeout: 5), "The magnifier didn't open the search")
+        XCTAssertTrue(keyboards.firstMatch.waitForExistence(timeout: 5), "The search opened without the keyboard")
+        return field
+    }
 
     /// The system tab bar: its buttons are the five tabs, in order Scripts, Takes, Record, Profile, Settings.
     var cueTabBar: XCUIElement { tabBars.firstMatch }

@@ -29,17 +29,19 @@ final class IdeaTransitionService {
 
     // MARK: - Timings (09 §8)
 
-    static let riseDuration: TimeInterval = 0.6
+    /// Slower than the board's 0.6 s (the owner's call, 20/10/2026): the idea's stream of light and the star's rise are meant to be seen,
+    /// and the script is being written all the while.
+    static let riseDuration: TimeInterval = 1.1
     /// The shortest the transition lasts from the tap, even when the AI answers sooner.
     static let minimumDuration: TimeInterval = 3.0
     /// Seconds each phrase stays.
     static let phraseInterval: TimeInterval = 1.6
     /// The overlay darkens to cover the screen (0.22 s) before the ring opens.
-    static let coverDuration: TimeInterval = 0.22
-    static let ringDuration: TimeInterval = 0.42
+    static let coverDuration: TimeInterval = 0.3
+    static let ringDuration: TimeInterval = 0.8
     /// The star flying to the caret, and the caret blinking for a moment.
-    static let landingDuration: TimeInterval = 0.44
-    static let caretHold: TimeInterval = 0.4
+    static let landingDuration: TimeInterval = 0.9
+    static let caretHold: TimeInterval = 0.5
     /// Cancel's exit: the star falls (0.3 s), then the overlay fades (0.22 s).
     static let fallDuration: TimeInterval = 0.3
     static let leaveFadeDuration: TimeInterval = 0.22
@@ -113,7 +115,6 @@ final class IdeaTransitionService {
         if remaining > 0 { await sleeper(remaining) }
         guard phase == .rising || phase == .waiting else { return }
         phase = .revealing
-        Haptics.success()
         onArrive?()
         onArrive = nil
         onAbort = nil

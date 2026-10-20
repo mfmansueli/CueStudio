@@ -10,8 +10,9 @@ import SwiftUI
 /// caret blinks after the last word (1 s, on for the first half). It grows as `text` grows: the words already on the page stay, only the new ones
 /// arrive. Under Reduce Motion the new words fade in together and the caret stays lit. Never for what the creator types.
 ///
-/// The words can come styled (`AttributedString`): a script's page hands in its text as its editor draws it, cues as tags, so the words
-/// arrive looking the way they will stay.
+/// The words can come styled (`AttributedString`): a script's page hands in its text as its editor draws it, cues as chips (`TextChip`, drawn
+/// by `ArrivalRenderer` behind their words), so the words arrive looking the way they will stay. A chip arrives whole, as one word, however
+/// many spaces its words have ("[look at camera]").
 struct ArrivingText: View {
     let text: AttributedString
     var size: CGFloat = 19
@@ -35,6 +36,9 @@ struct ArrivingText: View {
     /// Seconds a word takes to arrive, and until its glow is gone.
     static let arrive = 0.3
     static let glowFade = 0.8
+    /// Seconds from the last words handed in until every one of them has arrived sharp (they run at most half a second behind, a few apart,
+    /// and take `arrive`); their glow is still fading then. What shows the words waits this long before it hands over to something else.
+    static let settleTime = 1.3
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var clock = ArrivalClock()
@@ -47,19 +51,42 @@ struct ArrivingText: View {
                 .font(.system(size: size))
                 .lineSpacing(lineSpacing)
                 .foregroundStyle(color)
-                .textRenderer(ArrivalRenderer(now: now, arrivals: clock.arrivals(for: words.count, now: now), reduceMotion: reduceMotion))
+                .textRenderer(
+                    ArrivalRenderer(
+                        now: now,
+                        arrivals: clock.arrivals(for: words.count, now: now),
+                        reduceMotion: reduceMotion,
+                        chipMetrics: TextChipMetrics(textSize: size)
+                    )
+                )
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(Text(String(text.characters)))
     }
 
-    /// The styled text cut the way `tokens(of:)` cuts its characters, each piece keeping its style.
+    /// The styled text cut the way `tokens(of:)` cuts its characters, each piece keeping its style, except that a chip is never cut:
+    /// the words of "[look at camera]" stay one piece.
     static func tokens(of text: AttributedString) -> [AttributedString] {
         let characters = text.characters
+        var chips: [Range<Int>] = []
+        for (chip, range) in text.runs[TextChipAttribute.self] where chip != nil {
+            let lower = characters.distance(from: characters.startIndex, to: range.lowerBound)
+            chips.append(lower..<(lower + characters.distance(from: range.lowerBound, to: range.upperBound)))
+        }
+        var lengths: [Int] = []
+        var offset = 0
+        for token in tokens(of: String(characters)) {
+            if !lengths.isEmpty, chips.contains(where: { $0.lowerBound < offset && offset < $0.upperBound }) {
+                lengths[lengths.count - 1] += token.count
+            } else {
+                lengths.append(token.count)
+            }
+            offset += token.count
+        }
         var start = characters.startIndex
-        return tokens(of: String(characters)).map { token in
-            let end = characters.index(start, offsetBy: token.count)
+        return lengths.map { length in
+            let end = characters.index(start, offsetBy: length)
             defer { start = end }
             return AttributedString(text[start..<end])
         }
@@ -83,75 +110,24 @@ struct ArrivingText: View {
         return tokens
     }
 
-    /// The tokens as one `Text`, each marked with its place (the renderer draws the caret after the last word to have arrived).
+    /// The tokens as one `Text`, each marked with its place (the renderer draws the caret after the last word to have arrived), and the
+    /// runs of a chip marked with it (the renderer draws the chip behind them).
     static func marked(_ words: [AttributedString]) -> Text {
-        Text.joined(words.enumerated().map { Text($0.element).customAttribute(ArrivalIndex(index: $0.offset)) })
+        Text.joined(words.enumerated().map { piece($0.element).customAttribute(ArrivalIndex(index: $0.offset)) })
     }
-}
 
-/// When each word came on to the page: a word seen for the first time is given the next free slot after the one before it.
-@MainActor
-private final class ArrivalClock {
-    private var times: [Double] = []
-
-    /// New words are given slots 0.17 s apart (closer when many come at once), but never further than half a second from now, so the page
-    /// never trails the model by more than about a second however long the script is.
-    func arrivals(for count: Int, now: TimeInterval) -> [Double] {
-        if count > times.count {
-            let added = count - times.count
-            let start = times.isEmpty ? now : min(max(now, (times.last ?? now) + ArrivingText.stagger), now + 0.5)
-            let spacing = min(ArrivingText.stagger, 0.7 / Double(added))
-            for offset in 0..<added { times.append(start + Double(offset) * spacing) }
-        }
-        if count < times.count { times.removeLast(times.count - count) }
-        return times
-    }
-}
-
-struct ArrivalIndex: TextAttribute {
-    var index: Int
-}
-
-private struct ArrivalRenderer: TextRenderer {
-    var now: Double
-    var arrivals: [Double]
-    var reduceMotion: Bool
-
-    func draw(layout: Text.Layout, in context: inout GraphicsContext) {
-        // The caret follows the last word that has started to arrive, and sits at the start of the page until one does.
-        var caretAt: CGRect?
-        for line in layout {
-            for run in line {
-                guard let mark = run[ArrivalIndex.self] else { context.draw(run); continue }
-                let age = mark.index < arrivals.count ? now - arrivals[mark.index] : 0
-                let progress = reduceMotion ? min(1, max(0, age / 0.2)) : Self.ease(min(1, max(0, age / ArrivingText.arrive)))
-                let glow = reduceMotion ? 0 : max(0, 1 - max(0, age - ArrivingText.arrive) / ArrivingText.glowFade)
-                let bounds = run.typographicBounds.rect
-                if caretAt == nil { caretAt = CGRect(x: bounds.minX, y: bounds.minY, width: 0, height: bounds.height) }
-                if progress > 0 { caretAt = CGRect(x: bounds.maxX, y: bounds.minY, width: 0, height: bounds.height) }
-                var copy = context
-                copy.opacity = progress
-                if !reduceMotion {
-                    copy.translateBy(x: 0, y: 5 * (1 - progress))
-                    copy.addFilter(.blur(radius: 7 * (1 - progress)))
-                }
-                if glow > 0, progress > 0 {
-                    copy.addFilter(.shadow(color: Color(hex: 0xC4B8FF, opacity: 0.95 * glow), radius: 14 * glow))
-                }
-                copy.draw(run)
+    /// A word as `Text`, a chip's runs marked with it. A chip's spaces are drawn as non-breaking ones (one for one, so nothing moves):
+    /// `Text` can't be told where not to wrap, and the editor never splits a chip across two lines either.
+    private static func piece(_ word: AttributedString) -> Text {
+        let runs = word.runs[TextChipAttribute.self]
+        guard runs.contains(where: { $0.0 != nil }) else { return Text(word) }
+        return Text.joined(runs.map { chip, range in
+            guard let chip else { return Text(AttributedString(word[range])) }
+            var run = AttributedString(word[range])
+            while let space = run.characters.firstIndex(of: " ") {
+                run.characters.replaceSubrange(space...space, with: "\u{00A0}")
             }
-        }
-        guard let caretAt else { return }
-        // `blink 1s`: lit for the first half of every second, in the AI's violet.
-        let lit = reduceMotion || now.truncatingRemainder(dividingBy: 1) < 0.5
-        var caret = context
-        caret.opacity = lit ? 1 : 0
-        caret.addFilter(.shadow(color: Palette.aiText.opacity(0.9), radius: 6))
-        caret.fill(Path(CGRect(x: caretAt.minX + 1, y: caretAt.minY + 2, width: 2, height: caretAt.height - 4)), with: .color(Color(hex: 0xB4A7FF)))
-    }
-
-    /// `cubic-bezier(.16, 1, .3, 1)`, close enough as an ease-out.
-    private static func ease(_ t: Double) -> Double {
-        1 - pow(1 - t, 3.4)
+            return Text(run).customAttribute(chip)
+        })
     }
 }

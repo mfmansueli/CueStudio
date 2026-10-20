@@ -6,8 +6,8 @@
 import SwiftUI
 
 /// Find inspiration (the empty Scripts' first way in, the dock's lightbulb, "+ › Let Cue draft it" and the ideas notification): a large
-/// sheet with "Find inspiration" and "Ideas to start from.", the topics as chips, one featured idea (`InspirationCard`) with a small
-/// orbit beside it, then "Another idea", the yellow "Start with it" and a line saying where it goes. "Start with it" puts the idea's brief in
+/// sheet with "Find inspiration" and "Ideas to start from.", the topics as chips, one featured idea (`InspirationCard`), and at the bottom
+/// "Another idea" (a glass circle) beside the yellow "Start with it", and a line saying where it goes. "Start with it" puts the idea's brief in
 /// the dock's composer, to change before anything is written (what was there comes back with Undo); "Draft it now", quieter under
 /// it, writes it as it is and the star rises. Without Apple Intelligence the ideas are the starters, said so, and the direct way is
 /// "Write it yourself" (a blank draft with the idea as its title). Nothing is presented as a trend or as research: they are suggestions.
@@ -41,6 +41,18 @@ struct FindInspirationSheet: View {
     @State private var focusesComposer = false
     /// "Start with it" took the place of the creator's words: the Undo toast comes once the sheet has gone, so all of its time is seen.
     @State private var offersUndo = false
+    /// How far the card is dragged sideways: it follows the finger, leaning, and past `swipeThreshold` lets go for the next idea.
+    @State private var dragOffset: CGFloat = 0
+    /// Which way the drag went first: only a sideways one moves the card (an upward one scrolls the sheet).
+    @State private var dragAxis: Axis?
+    /// The drag is past the point where letting go turns the card (a click says so, and another when it comes back).
+    @State private var isPastThreshold = false
+    /// The side the leaving card goes to (−1 leading, 1 trailing), and whether it was thrown there (it flies off) or tapped away.
+    @State private var leavesTowards: CGFloat = -1
+    @State private var wasThrown = false
+
+    /// How far the card has to be dragged for letting go to turn it.
+    private static let swipeThreshold: CGFloat = 90
 
     init(services: AppServices) {
         _viewModel = State(initialValue: FindInspirationViewModel(
@@ -67,16 +79,12 @@ struct FindInspirationSheet: View {
                     .padding(.horizontal, Metrics.gutter)
                 cardArea
                     .padding(.horizontal, Metrics.gutter)
-                    .padding(.top, showsOrbit ? 38 : 18)
+                    .padding(.top, 18)
                 if viewModel.couldNotFindMore {
                     couldNotFindMoreNote
                         .padding(.horizontal, Metrics.gutter)
                         .padding(.top, 8)
                 }
-                // Right under the card it turns: the two read as one control, and the space between them is gone.
-                anotherButton
-                    .frame(maxWidth: .infinity)
-                    .padding(.top, 14)
                 if typeSize.isAccessibilitySize {
                     // At the biggest sizes the actions scroll with the card: pinned, they would take most of the screen.
                     actions.padding(.top, 20)
@@ -151,14 +159,13 @@ struct FindInspirationSheet: View {
 
     // MARK: - The card
 
-    /// The orbit sits above the card's corner when there is room for it (not at the biggest text sizes).
-    private var showsOrbit: Bool { !typeSize.isAccessibilitySize }
-
     private var cardArea: some View {
         ZStack(alignment: .top) {
             switch viewModel.content {
             case .idea(let idea):
                 InspirationCard(content: viewModel.card(for: idea), worldColor: OnboardingTopic.color(at: viewModel.worldIndex(of: idea)))
+                    .offset(x: dragOffset)
+                    .rotationEffect(.degrees(reduceMotion ? 0 : Double(dragOffset) / 24), anchor: .bottom)
                     .id(idea.id)
                     .transition(cardTransition)
                     .simultaneousGesture(swipe)
@@ -174,19 +181,20 @@ struct FindInspirationSheet: View {
                     .transition(.opacity)
             }
         }
-        .overlay { InspirationStarBurst(trigger: viewModel.turn) }
-        .overlay(alignment: .topTrailing) {
-            if showsOrbit { InspirationOrbit().offset(x: 4, y: -40) }
-        }
-        .animation(reduceMotion ? .easeInOut(duration: 0.2) : .smooth(duration: 0.32), value: contentKey)
+        // The stars come out a little past the card's edge.
+        .overlay { InspirationStarBurst(trigger: viewModel.turn).padding(-InspirationStarBurst.reach) }
+        .animation(reduceMotion ? .easeInOut(duration: 0.2) : CueMotion.inspirationTurn, value: contentKey)
     }
 
-    /// The idea that leaves breaks into the burst and blurs away; the next slides in from the trailing side. Reduce Motion: a cross-fade.
+    /// The idea that leaves drifts to the leading side (or flies off the side it was thrown to) and blurs away under the sparkles; the next
+    /// comes in from the other side, a touch smaller, and settles on a spring while its lines rise in (`InspirationCard`). Reduce Motion: a
+    /// cross-fade.
     private var cardTransition: AnyTransition {
         guard !reduceMotion else { return .opacity }
         return .asymmetric(
-            insertion: .opacity.combined(with: .offset(x: 28)).combined(with: .scale(scale: 0.98)),
-            removal: AnyTransition(.blurReplace).combined(with: .scale(scale: 0.96))
+            insertion: .opacity.combined(with: .offset(x: -leavesTowards * 36)).combined(with: .scale(scale: 0.97)),
+            removal: AnyTransition(.blurReplace).combined(with: .offset(x: leavesTowards * (wasThrown ? 260 : 28)))
+                .combined(with: .scale(scale: 0.95))
         )
     }
 
@@ -205,13 +213,40 @@ struct FindInspirationSheet: View {
         viewModel.options.first { $0.id == viewModel.selectedOptionID }?.label
     }
 
-    /// A sideways swipe on the card is "Another idea" too.
+    /// The card follows a sideways drag, leaning; let go past `swipeThreshold` (or thrown) it is "Another idea", flying off that side.
+    /// Short of it, it springs back. A click when the drag passes the point, and a lighter one if it comes back.
     private var swipe: some Gesture {
-        DragGesture(minimumDistance: 24).onEnded { value in
-            let distance = value.translation
-            guard abs(distance.width) > 70, abs(distance.width) > abs(distance.height) * 1.5 else { return }
-            another()
-        }
+        DragGesture(minimumDistance: 12)
+            .onChanged { value in
+                let distance = value.translation
+                if dragAxis == nil { dragAxis = abs(distance.width) > abs(distance.height) ? .horizontal : .vertical }
+                guard dragAxis == .horizontal, viewModel.idea != nil else { return }
+                dragOffset = distance.width
+                let isPast = abs(distance.width) > Self.swipeThreshold
+                if isPast != isPastThreshold {
+                    isPastThreshold = isPast
+                    if isPast { Haptics.rigid() } else { Haptics.selection() }
+                }
+            }
+            .onEnded { value in
+                defer {
+                    dragAxis = nil
+                    isPastThreshold = false
+                }
+                guard dragAxis == .horizontal else { return }
+                let width = value.translation.width
+                let isThrown = abs(width) > Self.swipeThreshold || abs(value.predictedEndTranslation.width) > Self.swipeThreshold * 2.2
+                if isThrown, viewModel.idea != nil {
+                    another(towards: width < 0 ? -1 : 1, thrown: true)
+                } else {
+                    settleCard()
+                }
+            }
+    }
+
+    /// The dragged card back in its place, on a spring.
+    private func settleCard() {
+        withAnimation(reduceMotion ? .easeOut(duration: 0.2) : .spring(response: 0.38, dampingFraction: 0.72)) { dragOffset = 0 }
     }
 
     /// Nothing to show: the ideas asked for didn't come (`failed`, with "Try again"), or nothing can come (no Apple Intelligence and nothing
@@ -288,38 +323,48 @@ struct FindInspirationSheet: View {
 
     // MARK: - Actions
 
-    /// "Another idea", under the card.
+    /// "Another idea": a Liquid Glass circle beside "Start with it", where it stays whatever the size of the idea above (under the card it
+    /// went up and down with each one). At the end of the ready ideas, the next are on their way: the card stays and the circle spins.
     private var anotherButton: some View {
-        Button(action: another) {
-            if viewModel.isFindingMore {
-                // At the end of the ready ideas, the next are on their way: the card stays and the button says so.
-                HStack(spacing: 8) {
-                    ProgressView().controlSize(.small).tint(Palette.aiText)
-                    Text("Finding more ideas…")
+        Button { another() } label: {
+            Group {
+                if viewModel.isFindingMore {
+                    ProgressView().tint(Palette.ink)
+                } else {
+                    Image(systemName: "arrow.triangle.2.circlepath")
+                        .font(.title3.weight(.semibold))
+                        .foregroundStyle(Palette.ink)
+                        .symbolEffect(.rotate.clockwise.byLayer, options: .speed(1.6), value: viewModel.turn)
                 }
-            } else {
-                Label("Another idea", systemImage: "arrow.triangle.2.circlepath")
             }
+            .frame(width: Metrics.largeButtonHeight, height: Metrics.largeButtonHeight)
+            .contentShape(Circle())
         }
-        .buttonStyle(.cueSecondary(.medium, expands: false))
+        .buttonStyle(.plain)
+        .glassEffect(.regular.interactive(), in: Circle())
         .disabled(viewModel.idea == nil || viewModel.isFindingMore)
+        .opacity(viewModel.idea == nil ? 0.4 : 1)
+        .accessibilityLabel(viewModel.isFindingMore ? Text("Finding more ideas…") : Text("Another idea"))
         .accessibilityHint(Text("Shows the next idea."))
         .accessibilityIdentifier("inspiration.another")
     }
 
-    /// The yellow "Start with it", what it does, and the quieter direct way.
+    /// "Another idea" and the yellow "Start with it", what it does, and the quieter direct way.
     private var actions: some View {
         let idea = viewModel.idea
         return VStack(spacing: 10) {
-            Button {
-                if let idea { use(idea) }
-            } label: {
-                Text("Start with it")
+            HStack(spacing: 10) {
+                anotherButton
+                Button {
+                    if let idea { use(idea) }
+                } label: {
+                    Text("Start with it")
+                }
+                .buttonStyle(.cuePrimary(.large))
+                .disabled(idea == nil || transition.isActive)
+                .accessibilityHint(Text("Puts it in the composer to make it yours."))
+                .accessibilityIdentifier("inspiration.use")
             }
-            .buttonStyle(.cuePrimary(.large))
-            .disabled(idea == nil || transition.isActive)
-            .accessibilityHint(Text("Puts it in the composer to make it yours."))
-            .accessibilityIdentifier("inspiration.use")
             Text("It goes into the composer. Make it yours first.")
                 .font(.footnote)
                 .foregroundStyle(Palette.ink2)
@@ -371,16 +416,22 @@ struct FindInspirationSheet: View {
         hasAI ? "Drafts it now. Change anything after." : "Opens a blank draft with this idea as its title."
     }
 
-    private func another() {
+    /// The next idea: the card leaves `towards` a side (thrown there by a drag, or tapped away to the leading side), with the sparkles and
+    /// their ticks when a new one comes (at the end of what is ready the card stays and goes back to its place).
+    private func another(towards side: CGFloat = -1, thrown: Bool = false) {
         guard viewModel.idea != nil else { return }
-        Haptics.selection()
+        leavesTowards = side
+        wasThrown = thrown
+        let turn = viewModel.turn
         viewModel.another()
+        if viewModel.turn != turn { HapticPatterns.playSparkles() } else { Haptics.selection() }
+        settleCard()
     }
 
     /// The brief goes into the composer on Scripts, and the composer takes the keyboard once the sheet has gone. Words the creator had
     /// there are never lost silently: a toast says so, with Undo.
     private func use(_ idea: ThemeIdea) {
-        Haptics.light()
+        HapticPatterns.playCommit()
         notifications.recordUse(.ideas)
         let replaced = viewModel.use(idea)
         presentation.selectedTab = .scripts
@@ -403,7 +454,7 @@ struct FindInspirationSheet: View {
             presentation.openScript(script.id, editing: true)
             return
         }
-        Haptics.medium()
+        HapticPatterns.playTakeoff()
         let note = idea.logbookID
         starter.write(
             idea: FindInspirationViewModel.writingText(of: idea), length: idea.brief == nil ? idea.length : nil, brief: idea.brief,

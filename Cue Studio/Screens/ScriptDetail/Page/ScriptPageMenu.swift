@@ -5,15 +5,12 @@
 
 import SwiftUI
 
-/// The ••• of the script page: ✦ Improve with Cue (with Apple Intelligence), Script details, Studio mode and Remind me…, then what
-/// every script menu has.
+/// The ••• of the script page: Script details, Studio mode and Remind me…, then what every script menu has. Improve is on the page
+/// itself (its tools row), not here too.
 struct ScriptPageMenu: View {
     let script: Script
     let folders: [String]
     let actions: ScriptActions
-    /// Apple Intelligence can write: without it there is no Improve.
-    var hasAI = true
-    let onImprove: () -> Void
     let onDetails: () -> Void
     /// "Remind me…": a reminder to come back to this script.
     let onRemind: () -> Void
@@ -22,7 +19,6 @@ struct ScriptPageMenu: View {
     @Environment(ScriptLibraryService.self) private var library
 
     var body: some View {
-        if hasAI { Button(action: onImprove) { Label("Improve with Cue", systemImage: "sparkles") } }
         Button(action: onDetails) { Label("Script details", systemImage: "info.circle") }
         Button { actions.studio(script) } label: { Label("Studio mode", systemImage: "text.alignleft") }
         Button(action: onRemind) { Label("Remind me…", systemImage: "bell") }

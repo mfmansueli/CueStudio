@@ -98,11 +98,13 @@ struct MainView: View {
                     ScriptsView(
                         library: services.library, toast: services.toast, writer: services.writer, drafts: services.drafts, defaults: services.defaults
                     )
+                        // On the list (its selection hides the bar), not on the stack: the script page pushed over it hides the bar
+                        // itself, the system's way, which a stack-wide setting would override.
+                        .toolbarVisibility(barVisibility, for: .tabBar)
                         .navigationDestination(for: ScriptRoute.self) { route in
                             ScriptDetailView(route: route, services: services)
                         }
                 }
-                .toolbarVisibility(barVisibility, for: .tabBar)
             } label: {
                 Label { Text("Scripts") } icon: { Image(uiImage: CueTabImage.template(.scripts)) }
             }

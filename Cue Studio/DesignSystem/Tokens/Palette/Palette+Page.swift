@@ -27,6 +27,10 @@ extension Palette {
         static let stripFill = Color(hex: 0x0E101C, opacity: 0.92)
         static let stripRim = Color(hex: 0xB4A7FF, opacity: 0.3)
 
+        /// "Ready to record" switched on: `successText` on green at 18% (6.7:1 over the page's night), a 0.5 pt green rim.
+        static let readyFill = Color(hex: 0x34C759, opacity: 0.18)
+        static let readyRim = Color(hex: 0x34C759, opacity: 0.55)
+
         // The state chip (READY · DRAFT · RECORDED): ink on a fill, 4.5:1 over every surface.
         static let stateReadyInk = Color(hex: 0x34C759)
         static let stateReadyFill = Color(hex: 0x34C759, opacity: 0.14)

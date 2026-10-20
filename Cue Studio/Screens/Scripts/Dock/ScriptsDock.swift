@@ -9,6 +9,8 @@ import SwiftUI
 /// the voice), and once there are scripts a lightbulb to Find inspiration; row 2 is the idea itself (two lines, opening to five while it
 /// is edited, the suggested idea while it is empty, and up to `IdeaPromptDraft.maxCharacters` characters), "↻ another idea", the microphone
 /// and the yellow arrow. Scrolling the list down folds row 1 away (09 §6); focusing the field raises the dock with the keyboard.
+/// Apple Intelligence's light (`DockGlow`) turns round the glass while a dictation listens, breathing with the voice, and runs round it
+/// once when an idea is sent; a new suggestion arrives word by word out of the light (`WordsFromLight`).
 ///
 /// The text is the one draft kept by `IdeaDraftService`. The microphone dictates into the field (speak, see the words, review,
 /// edit: it never sends anything itself). The dock owns the microphone while it is on screen: it lets go when the app leaves the
@@ -48,6 +50,10 @@ struct ScriptsDock: View {
     @State private var voiceSetup: VoiceSetupSheet.Mode?
     /// Where the arrow is on the screen: the star leaves from there.
     @State private var sendCenter = CGPoint.zero
+    /// Goes up with each idea sent: the light runs round the dock once.
+    @State private var sendTurn = 0
+    /// Goes up with each "↻": its arrows turn once.
+    @State private var anotherTurn = 0
     /// The height of a line of the field's text, which grows with Dynamic Type.
     @ScaledMetric(relativeTo: .body) private var lineHeight = 21.0
 
@@ -58,6 +64,8 @@ struct ScriptsDock: View {
     /// Row 1: 30 pt chips with a 36 pt touch area.
     private static let topRowHeight: CGFloat = 36
     private static let rowSpacing: CGFloat = 10
+    /// A new suggestion's words, one after the other: quicker than a script's (it is a line to glance at, not to read along).
+    private static let suggestionStagger = 0.05
     /// How much shorter the dock is with row 1 folded away.
     static let foldHeight = topRowHeight + rowSpacing
 
@@ -115,6 +123,7 @@ struct ScriptsDock: View {
         }
         .padding(EdgeInsets(top: 16, leading: 12, bottom: 12, trailing: 12))
         .dockSurface()
+        .overlay { DockGlow(isListening: dictation.isActive, level: dictation.level, sendTurn: sendTurn) }
         .animation(.smooth(duration: 0.2), value: dictation.notice)
         .animation(reduceMotion ? nil : .smooth(duration: 0.25), value: isExpanded)
         .accessibilityElement(children: .contain)
@@ -317,9 +326,12 @@ struct ScriptsDock: View {
         // The suggestion is shown as the board shows it: white words over two lines (a text field's prompt keeps to one).
         ZStack(alignment: .topLeading) {
             if let suggestion {
-                Text(suggestion)
-                    .font(.system(size: 16, weight: .medium))
-                    .foregroundStyle(Palette.ink)
+                // A new suggestion (↻, or the next after one was sent) arrives word by word out of the AI's light; the one already there
+                // when Scripts opens is simply there.
+                WordsFromLight(
+                    text: suggestion, font: .system(size: 16, weight: .medium), color: Palette.ink, stagger: Self.suggestionStagger,
+                    playsFirst: false
+                )
                     .lineLimit(Self.minLines)
                     .padding(.vertical, 6)
                     .allowsHitTesting(false)
@@ -380,6 +392,7 @@ struct ScriptsDock: View {
     private var anotherIdeaButton: some View {
         Button {
             Haptics.selection()
+            anotherTurn += 1
             suggestions.another()
         } label: {
             // At the end of the ideas, with more on their way: the arrow turns into a wait instead of going quiet.
@@ -387,7 +400,10 @@ struct ScriptsDock: View {
                 if suggestions.isWaiting {
                     ProgressView().controlSize(.small).tint(Palette.aiTextStrong)
                 } else {
-                    Text(verbatim: "↻").font(.system(size: 17)).foregroundStyle(Palette.aiTextStrong.opacity(0.75))
+                    Image(systemName: "arrow.triangle.2.circlepath")
+                        .font(.system(size: 15, weight: .semibold))
+                        .foregroundStyle(Palette.aiTextStrong.opacity(0.75))
+                        .symbolEffect(.rotate.clockwise.byLayer, options: .speed(1.6), value: anotherTurn)
                 }
             }
             .frame(width: 32, height: Metrics.hitTarget)
@@ -500,7 +516,8 @@ struct ScriptsDock: View {
             return
         }
         let idea = hasTypedIdea ? nil : suggestion
-        Haptics.medium()
+        HapticPatterns.playTakeoff()
+        sendTurn += 1
         guard idea != nil else {
             starter.write(idea: nil, from: sendCenter)
             return

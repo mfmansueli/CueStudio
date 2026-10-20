@@ -5,8 +5,9 @@
 
 import Foundation
 
-/// What the state strip on the script page says (v29 · 4.1): the state (READY, DRAFT or RECORDED), the format and how many cues,
-/// and the one next step. Pure, so every state of 04 · F2 is tested.
+/// What the state strip on the script page says: the "Ready to record" switch (a draft or ready script) or RECORDED, then the format
+/// and how many cues ("Draft · List · 4 cues"), and "✦ Shape" when there are none. Leaving the page never changes the state: only the
+/// switch does (and recording). Pure, so every state is tested.
 nonisolated struct ScriptStrip: Equatable, Sendable {
     let state: ScriptState
     /// The script's format; nil says "Your script".
@@ -14,7 +15,7 @@ nonisolated struct ScriptStrip: Equatable, Sendable {
     let cueCount: Int
     /// The number of the latest take, when the words changed after it ("CHANGED SINCE TAKE 3").
     let changedSinceTake: Int?
-    /// The words were edited this visit and Done wasn't tapped.
+    /// The words were edited this visit (a recorded script has moved on from its take).
     let isEdited: Bool
     let canShape: Bool
 
@@ -32,22 +33,23 @@ nonisolated struct ScriptStrip: Equatable, Sendable {
         canShape = hasAI && cueCount == 0 && !script.isEmpty
     }
 
-    /// The mono line: "LIST · 4 CUES", "EDITED · TAP DONE", "CHANGED SINCE TAKE 3".
+    /// The line beside the switch: "Draft · List · 4 cues", "List · 4 cues" once ready, "Changed since take 3" after a take.
     var info: [String] {
         if state == .recorded, let take = changedSinceTake {
             return [String(localized: "Changed since take \(take)")]
         }
-        if isEdited, state != .recorded {
-            return [String(localized: "Edited"), String(localized: "Tap Done")]
-        }
-        return [formatLabel ?? String(localized: "Your script"), ScriptRowLine.cues(cueCount)]
+        let details = [formatLabel ?? String(localized: "Your script"), ScriptRowLine.cues(cueCount)]
+        return state == .draft ? [String(localized: "Draft")] + details : details
     }
 
     /// The line is a signal (yellow) when the script has moved on from its take.
     var isSignal: Bool { state == .recorded && changedSinceTake != nil }
 
-    /// DRAFT and READY have Done (a button for a draft, plain text once ready); a recorded script has none.
-    var showsDone: Bool { state != .recorded }
+    /// A draft or ready script has the "Ready to record" switch; a recorded one says RECORDED (recording moved it there).
+    var showsReadySwitch: Bool { state != .recorded }
+
+    /// The switch is on.
+    var isReady: Bool { state == .ready }
 
     /// Retake once there is a take; Record before.
     var recordsAgain: Bool { state == .recorded }

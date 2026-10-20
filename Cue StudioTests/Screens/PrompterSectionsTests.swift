@@ -14,13 +14,13 @@ struct PrompterSectionsTests {
     private let text = "Hook line.\n\nBody one.\n\nBody two.\n\nFollow me for more."
 
     @Test func aTalkingVideoHasAHookABodyAndACTA() {
-        let sections = PrompterSections(text: text, structure: .generic, speed: 0.7)
+        let sections = PrompterSections(text: text, structure: .generic)
         #expect(sections.markers.map(\.firstParagraph) == [0, 1, 3])
         #expect(sections.isMeaningful)
     }
 
     @Test func theSectionFollowsTheParagraphBeingRead() {
-        let sections = PrompterSections(text: text, structure: .generic, speed: 0.7)
+        let sections = PrompterSections(text: text, structure: .generic)
         #expect([0, 1, 2, 3].map { sections.index(atParagraph: $0) } == [0, 1, 1, 2])
         #expect(sections.index(atParagraph: 99) == 2)
     }
@@ -35,13 +35,13 @@ struct PrompterSectionsTests {
     }
 
     @Test func aScriptOfOneParagraphNeedsNoRail() {
-        let one = PrompterSections(text: "Just one paragraph.", structure: .generic, speed: 0.7)
+        let one = PrompterSections(text: "Just one paragraph.", structure: .generic)
         #expect(!one.isMeaningful)
         #expect(!PrompterSections(markers: []).isMeaningful)
     }
 
     @Test func aMissingCTAIsNotAStar() {
-        let sections = PrompterSections(text: "Hook.\n\nBody only here.", structure: .generic, speed: 0.7)
+        let sections = PrompterSections(text: "Hook.\n\nBody only here.", structure: .generic)
         #expect(sections.markers.allSatisfy { $0.firstParagraph < 2 })
     }
 

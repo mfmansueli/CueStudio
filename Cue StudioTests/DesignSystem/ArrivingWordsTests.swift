@@ -30,9 +30,24 @@ struct ArrivingWordsTests {
         let styled = ScriptTextEditor.styled("Hello [pause] there.\n\nNext", passage: nil, size: 19)
         let words = ArrivingText.tokens(of: styled)
         #expect(words.map { String($0.characters) } == ["Hello ", "[pause] ", "there.\n\n", "Next"])
-        // The cue is a tag, as in the editor; the words around it aren't.
-        typealias Background = AttributeScopes.SwiftUIAttributes.BackgroundColorAttribute
-        #expect(words[1].runs.first?[Background.self] == Palette.accSoft)
-        #expect(words[0].runs.first?[Background.self] == nil)
+        // The cue is a chip, as in the editor; the words around it aren't.
+        #expect(words[1].runs.first?[TextChipAttribute.self]?.symbol == "pause.fill")
+        #expect(words[0].runs.first?[TextChipAttribute.self] == nil)
+    }
+
+    /// "[look at camera]" arrives as one word, so its chip arrives whole; the words around it still arrive one by one.
+    @Test func aChipArrivesAsOneWord() {
+        let styled = ScriptTextEditor.styled("Now [look at camera] and smile", passage: nil, size: 19)
+        let words = ArrivingText.tokens(of: styled)
+        #expect(words.map { String($0.characters) } == ["Now ", "[look at camera] ", "and ", "smile"])
+        // With the Cues switch off there is no chip, and the hidden cue's words are cut as any others.
+        let hidden = ArrivingText.tokens(of: ScriptTextEditor.styled("Now [look at camera] and", passage: nil, size: 19, showsCues: false))
+        #expect(hidden.count == 5)
+    }
+
+    @Test func wordsWithChipsAreDrawn() {
+        let styled = ScriptTextEditor.styled("Hook. [look at camera] Then [pause] the rest [laugh] here.", passage: nil, size: 19)
+        let words = ArrivingText.tokens(of: styled)
+        #expect(ImageRenderer(content: ArrivingText.marked(words).frame(width: 120)).uiImage != nil)
     }
 }

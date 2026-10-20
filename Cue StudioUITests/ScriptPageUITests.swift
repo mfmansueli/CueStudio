@@ -29,6 +29,12 @@ final class ScriptPageUITests: XCTestCase {
         app.descendants(matching: .any)[id].firstMatch
     }
 
+    /// The ready switch is on ("On" as the page says it, or "1" as a toggle reports it).
+    private func isOn(_ toggle: XCUIElement) -> Bool {
+        let value = toggle.value as? String
+        return value == "On" || value == "1"
+    }
+
     private func strip(_ app: XCUIApplication) -> String {
         element(app, "page.strip.info").label
     }
@@ -37,57 +43,95 @@ final class ScriptPageUITests: XCTestCase {
         let app = CueApp.launch(seeded: true)
         app.openScriptPage(titled: Self.ready)
         XCTAssertTrue(element(app, "page.strip").waitForExistence(timeout: 5))
-        XCTAssertTrue(app.descendants(matching: .any).matching(NSPredicate(format: "label ==[c] 'Ready'")).firstMatch.exists)
+        XCTAssertTrue(isOn(app.pageReadyToggle), "a ready script has its switch on")
         XCTAssertEqual(app.buttons.matching(identifier: "detail.recordButton").count, 1)
         XCTAssertEqual(app.buttons["detail.recordButton"].label, "Record")
         try capture(app, "4.1_ready")
     }
 
-    func testADraftOpensWritingAndDoneMakesItReady() throws {
+    func testADraftBecomesReadyWithItsSwitchAndBack() throws {
         let app = CueApp.launch(seeded: true)
         app.openScriptPage(titled: Self.draft)
         XCTAssertTrue(element(app, "page.strip").waitForExistence(timeout: 5))
         try capture(app, "4.2_draft")
-        // The strip says DRAFT; Done makes it READY and the words stay.
-        XCTAssertTrue(app.buttons["page.doneButton"].waitForExistence(timeout: 5))
-        app.buttons["page.doneButton"].tap()
-        // A storytime has four sections and this one has a single line: Done asks first.
+        // The strip says Draft beside the switch; switching it on makes the script ready and the words stay.
+        let ready = app.pageReadyToggle
+        XCTAssertTrue(ready.waitForExistence(timeout: 5))
+        XCTAssertFalse(isOn(ready))
+        XCTAssertTrue(strip(app).hasPrefix("Draft"))
+        ready.tap()
+        // A storytime has four sections and this one has a single line: the switch asks first.
         XCTAssertTrue(app.alerts.firstMatch.waitForExistence(timeout: 5))
-        app.alerts.buttons["Done anyway"].tap()
-        XCTAssertTrue(app.staticTexts.matching(NSPredicate(format: "label BEGINSWITH 'Ready to record'")).firstMatch.waitForExistence(timeout: 5))
+        app.alerts.buttons["Mark ready anyway"].tap()
+        XCTAssertTrue(isOn(ready))
+        XCTAssertFalse(strip(app).hasPrefix("Draft"))
+        // And back to a draft with one more tap.
+        ready.tap()
+        XCTAssertFalse(isOn(ready))
     }
 
-    func testEditingAReadyScriptAndGoingBackMakesItADraft() throws {
+    /// Back is how creators leave: it saves and never changes the state (the owner's call, 20/10/2026).
+    func testEditingAReadyScriptAndGoingBackKeepsItReady() throws {
         let app = CueApp.launch(seeded: true)
         app.openScriptPage(titled: Self.ready)
         let text = element(app, "page.editor")
         XCTAssertTrue(text.waitForExistence(timeout: 5))
         text.tap()
         text.typeText(" One more line.")
-        XCTAssertEqual(strip(app).uppercased(), "EDITED · TAP DONE")
+        XCTAssertTrue(app.buttons["page.hideKeyboard"].exists, "while typing, the bar's ✓ only hides the keyboard")
+        app.buttons["page.hideKeyboard"].tap()
+        XCTAssertTrue(isOn(app.pageReadyToggle))
         app.pageBackButton.tap()
-        XCTAssertTrue(app.staticTexts["Saved as draft"].waitForExistence(timeout: 5))
-        XCTAssertTrue(element(app, "scripts.group.draft").waitForExistence(timeout: 5))
+        app.openScriptPage(titled: Self.ready)
+        XCTAssertTrue(isOn(app.pageReadyToggle), "leaving made it a draft")
     }
 
-    func testDoneWithNoTextSavesNothing() throws {
+    /// The page has the screen to itself: the tab bar goes with the push and is back as soon as the page has gone (the system's own
+    /// hiding, so it never comes back late and makes the dock jump).
+    func testThePageHidesTheTabBarAndBackBringsItAtOnce() throws {
+        let app = CueApp.launch(seeded: true)
+        XCTAssertTrue(app.cueTabBar.waitForExistence(timeout: 15))
+        app.openScriptPage(titled: Self.ready)
+        XCTAssertTrue(element(app, "page.strip").waitForExistence(timeout: 5))
+        XCTAssertFalse(app.cueTabBar.isHittable, "the tab bar is over the page")
+        app.pageBackButton.tap()
+        XCTAssertTrue(app.cueTabBar.waitForExistence(timeout: 2) && app.cueTabBar.isHittable)
+    }
+
+    /// Undo and Redo on the cues bar over the keyboard: what was typed goes and comes back.
+    func testUndoAndRedoOnTheCuesBar() throws {
+        let app = CueApp.launch(seeded: true)
+        app.openScriptPage(titled: Self.ready)
+        let text = element(app, "page.editor")
+        XCTAssertTrue(text.waitForExistence(timeout: 5))
+        text.tap()
+        let undo = app.buttons["cuesBar.undo"], redo = app.buttons["cuesBar.redo"]
+        XCTAssertTrue(undo.waitForExistence(timeout: 5))
+        XCTAssertFalse(undo.isEnabled, "nothing to undo yet")
+        text.typeText(" Zebra")
+        XCTAssertTrue(undo.isEnabled)
+        undo.tap()
+        XCTAssertFalse((text.value as? String ?? "").contains("Zebra"), "Undo didn't take the words away")
+        XCTAssertTrue(redo.isEnabled)
+        redo.tap()
+        XCTAssertTrue((text.value as? String ?? "").contains("Zebra"), "Redo didn't bring them back")
+    }
+
+    func testAnEmptyPageCannotBeMarkedReady() throws {
         let app = CueApp.launch(seeded: true)
         app.buttons["scripts.newButton"].tap()
         app.buttons["newScript.write"].tap()
         XCTAssertTrue(app.textFields["page.titleField"].waitForExistence(timeout: 10))
-        app.textFields["page.titleField"].typeText("\n")
-        XCTAssertTrue(app.buttons["page.doneButton"].waitForExistence(timeout: 5) || element(app, "page.cuesBar").waitForExistence(timeout: 5))
-        // The cues bar is up with the keyboard; put it away to reach Done.
-        element(app, "page.strip").tap()
-        app.buttons["page.doneButton"].tap()
-        XCTAssertTrue(app.staticTexts["Nothing to save yet"].waitForExistence(timeout: 5))
+        let ready = app.pageReadyToggle
+        XCTAssertTrue(ready.waitForExistence(timeout: 5))
+        XCTAssertFalse(ready.isEnabled, "nothing to make ready yet")
     }
 
     func testARecordedScriptSaysChangedSinceTheTakeAfterAnEdit() throws {
         let app = CueApp.launch(seeded: true)
         app.openScriptPage(titled: Self.recorded)
         XCTAssertEqual(app.buttons["detail.recordButton"].label, "Retake")
-        XCTAssertFalse(app.buttons["page.doneButton"].exists, "a recorded script has no Done")
+        XCTAssertFalse(app.pageReadyToggle.exists, "a recorded script has no ready switch: recording moved it on")
         try capture(app, "4.1_recorded")
         let text = element(app, "page.editor")
         text.tap()

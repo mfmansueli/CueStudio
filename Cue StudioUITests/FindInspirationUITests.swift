@@ -100,9 +100,13 @@ final class FindInspirationUITests: XCTestCase {
         let title = element(app, "inspiration.card.title")
         XCTAssertTrue(title.waitForExistence(timeout: 10))
         let first = title.label
+        // The button is beside "Start with it", at the bottom: it stays where it is whatever the size of the idea above it.
+        let place = app.buttons["inspiration.another"].frame
         app.buttons["inspiration.another"].tap()
         let changed = NSPredicate { _, _ in title.exists && title.label != first }
         XCTAssertEqual(XCTWaiter().wait(for: [expectation(for: changed, evaluatedWith: nil)], timeout: 5), .completed, "The card stayed \(first)")
+        XCTAssertEqual(app.buttons["inspiration.another"].frame, place, "Another idea moved with the idea")
+        XCTAssertEqual(app.buttons["inspiration.another"].frame.midY, app.buttons["inspiration.use"].frame.midY, accuracy: 1)
         // A swipe on the card is "Another idea" too.
         let second = title.label
         element(app, "inspiration.card").swipeLeft()

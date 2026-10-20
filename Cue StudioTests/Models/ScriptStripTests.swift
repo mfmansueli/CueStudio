@@ -21,7 +21,7 @@ struct ScriptStripTests {
         let strip = ScriptStrip(script: script, takes: [], hasAI: true, isEdited: false)
         #expect(strip.state == .ready)
         #expect(strip.info == ["Tips / list", "No cues"])
-        #expect(strip.canShape && strip.showsDone && !strip.recordsAgain && strip.recordIsPrimary)
+        #expect(strip.canShape && strip.showsReadySwitch && strip.isReady && !strip.recordsAgain && strip.recordIsPrimary)
     }
 
     @Test func shapeIsNotOfferedWithCuesOrWithoutAI() {
@@ -32,12 +32,14 @@ struct ScriptStripTests {
         #expect(!ScriptStrip(script: none, takes: [], hasAI: false, isEdited: false).canShape)
     }
 
-    @Test func aDraftSaysEditedUntilDone() {
+    @Test func aDraftSaysSoBesideItsSwitchEditedOrNot() {
         let draft = TestData.script(text: "Some words", isFinished: false)
-        let strip = ScriptStrip(script: draft, takes: [], hasAI: true, isEdited: true)
-        #expect(strip.state == .draft)
-        #expect(strip.info == ["Edited", "Tap Done"])
-        #expect(strip.showsDone)
+        for edited in [false, true] {
+            let strip = ScriptStrip(script: draft, takes: [], hasAI: true, isEdited: edited)
+            #expect(strip.state == .draft)
+            #expect(strip.info == ["Draft", "Your script", "No cues"])
+            #expect(strip.showsReadySwitch && !strip.isReady)
+        }
     }
 
     @Test func aScriptWithNoFormatSaysYourScript() {
@@ -49,7 +51,7 @@ struct ScriptStripTests {
         let script = TestData.script(text: "Words", isFinished: false)
         let strip = ScriptStrip(script: script, takes: [take(script, number: 1)], hasAI: true, isEdited: false)
         #expect(strip.state == .recorded)
-        #expect(!strip.showsDone && strip.recordsAgain)
+        #expect(!strip.showsReadySwitch && strip.recordsAgain)
         #expect(!strip.recordIsPrimary, "unchanged since its take: the record button stays quiet")
         #expect(!strip.isSignal)
     }
@@ -79,13 +81,6 @@ struct ScriptPageRulesTests {
     @Test func emptySectionsAreTheFormatsSectionsMinusTheParagraphsWritten() {
         #expect(ScriptPageRules.emptySections(text: "A.\n\nB.", type: .pov) == 1)
         #expect(ScriptPageRules.emptySections(text: "A.\n\nB.\n\nC.\n\nD.\n\nE.", type: .pov) == 0)
-    }
-
-    @Test func leavingWithEditsMakesADraftExceptAfterATake() {
-        #expect(ScriptPageRules.leavesAsDraft(state: .ready, wasEdited: true))
-        #expect(ScriptPageRules.leavesAsDraft(state: .draft, wasEdited: true))
-        #expect(!ScriptPageRules.leavesAsDraft(state: .recorded, wasEdited: true))
-        #expect(!ScriptPageRules.leavesAsDraft(state: .ready, wasEdited: false))
     }
 }
 

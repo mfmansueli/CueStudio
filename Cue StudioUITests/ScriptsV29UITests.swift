@@ -43,10 +43,7 @@ final class ScriptsV29UITests: XCTestCase {
 
     func testASearchWithNoResultShowsTheEmptyStateAndTheWayOut() throws {
         let app = CueApp.launch(seeded: true)
-        // The search is a field at the top of the list, always there.
-        let field = app.scriptsSearchField
-        XCTAssertTrue(field.waitForExistence(timeout: 15))
-        field.tap()
+        let field = app.openScriptsSearch()
         field.typeText("zzzzzz")
         XCTAssertTrue(element(app, "scripts.empty").waitForExistence(timeout: 5))
         XCTAssertFalse(element(app, "scripts.group.ready").exists)
@@ -55,20 +52,19 @@ final class ScriptsV29UITests: XCTestCase {
         XCTAssertTrue(element(app, "scripts.group.ready").waitForExistence(timeout: 5))
     }
 
-    /// The search is a field at the top of the list, always there, and the dock stays while searching: typing narrows the list, and the
-    /// field's ✕ gives the whole list back.
-    func testTheSearchIsAlwaysThereAndTheDockStays() {
+    /// The search is the bar's magnifier, beside the Logbook and "+": it opens a field at the top of the list with the keyboard, typing narrows
+    /// the list while the dock stays, the field's ✕ gives the whole list back, and the field goes once the keyboard does.
+    func testTheMagnifierOpensTheSearchAndTheDockStays() {
         let app = CueApp.launch(seeded: true)
         let dock = element(app, "scripts.promptCard")
         XCTAssertTrue(dock.waitForExistence(timeout: 15))
-        let field = app.scriptsSearchField
-        XCTAssertTrue(field.exists, "the search is there without opening anything")
+        XCTAssertFalse(app.scriptsSearchField.exists, "the search waits for the magnifier")
+        XCTAssertTrue(app.navigationBars.buttons["scripts.logbookButton"].exists)
         XCTAssertTrue(app.navigationBars.buttons["scripts.newButton"].exists)
-        XCTAssertFalse(app.navigationBars.buttons["Search"].exists, "no magnifier in the bar")
         let draft = app.staticTexts["Cold showers: one month in"]
         XCTAssertTrue(draft.exists)
 
-        field.tap()
+        let field = app.openScriptsSearch()
         field.typeText("Oat")
         XCTAssertTrue(app.staticTexts["Oat & Co. — sponsored read"].waitForExistence(timeout: 5))
         XCTAssertFalse(draft.exists)
@@ -77,6 +73,10 @@ final class ScriptsV29UITests: XCTestCase {
         element(app, "scripts.search").buttons["Clear search"].tap()
         XCTAssertTrue(draft.waitForExistence(timeout: 5), "the whole list is back")
         XCTAssertTrue(dock.exists)
+
+        // Without words, the field goes with the keyboard (a scroll sends the keyboard away).
+        app.swipeDown()
+        XCTAssertTrue(field.waitForNonExistence(timeout: 5), "the empty search stayed after the keyboard went")
     }
 
     func testTheFirstVisitOffersItsWaysIn() throws {

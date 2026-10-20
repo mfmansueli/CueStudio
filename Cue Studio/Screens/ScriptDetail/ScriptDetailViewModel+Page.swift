@@ -80,22 +80,13 @@ extension ScriptDetailViewModel {
         }
     }
 
-    /// The page goes away (back, or another tab): what was written is kept, a writing in progress stops.
+    /// The page goes away (back, or another tab): what was written is kept, a writing in progress stops. Leaving never changes the
+    /// script's state (the owner's call, 20/10/2026: Back is how creators leave, and it must not decide that a script is a draft or ready);
+    /// only the "Ready to record" switch does, and recording. A recorded script's strip says "Changed since take" after edits.
     func leavePage() {
         endVoicePreview()
         stopWriting()
         commitPage()
-        leaveAsDraftIfEdited()
-    }
-
-    /// Leaving after edits without Done: a script that isn't recorded becomes a draft, once, with a toast (04 · F2).
-    /// A recorded script stays recorded and its strip says "Changed since take".
-    func leaveAsDraftIfEdited() {
-        guard let script, page.isEdited, !page.isDone else { return }
-        page.isEdited = false
-        guard ScriptPageRules.leavesAsDraft(state: script.state(takeCount: scriptTakes.count), wasEdited: true) else { return }
-        if script.isFinished { library.setFinished(false, of: scriptID) }
-        toast.show(String(localized: "Saved as draft"))
     }
 
     // MARK: - The strip
@@ -121,8 +112,17 @@ extension ScriptDetailViewModel {
     }
 
     /// Done: READY. With no text nothing is saved; with a format's sections still empty it asks first.
-    func done() {
+    /// The "Ready to record" switch. On: the script is ready (a format with empty sections asks first, an empty page has nothing to make
+    /// ready). Off: it is a draft again.
+    func setReady(_ ready: Bool) {
         guard !page.isWriting else { return }
+        guard !ready else { return done() }
+        commitPage()
+        library.setFinished(false, of: scriptID)
+        Haptics.selection()
+    }
+
+    private func done() {
         switch ScriptPageRules.done(text: page.text, type: script?.type) {
         case .nothingToSave:
             toast.show(String(localized: "Nothing to save yet"))
@@ -133,50 +133,16 @@ extension ScriptDetailViewModel {
         }
     }
 
-    /// "Done anyway", or Done with everything filled in.
+    /// "Mark ready anyway", or the switch turned on with everything filled in: the switch lights up (`ReadyToggle`) with two soft taps;
+    /// a script with no cues is told Shape can add them.
     func finish() {
         page.emptySectionsToConfirm = nil
         commitPage()
         library.setFinished(true, of: scriptID)
         page.isDone = true
         page.isEdited = false
-        toast.show(strip?.canShape == true
-            ? String(localized: "Ready to record · Shape adds cues")
-            : String(localized: "Ready to record"))
-    }
-
-    // MARK: - Reading
-
-    /// What the Shaped face shows: the words as sections, with the advice.
-    var shaped: ScriptShape {
-        ScriptShape(text: page.text, structure: structure, speed: preferences.prompter.speed)
-    }
-
-    /// The tip for a section, unless the creator waved it off.
-    func visibleTip(_ tip: ScriptShape.Tip?) -> ScriptShape.Tip? {
-        guard let tip, !page.dismissedTips.contains(tip.id) else { return nil }
-        return tip
-    }
-
-    func dismiss(_ tip: ScriptShape.Tip) {
-        page.dismissedTips.insert(tip.id)
-    }
-
-    /// "Fix" and "Split": the words change in the Draft, so the creator can see it.
-    func apply(_ tip: ScriptShape.Tip) {
-        switch tip {
-        case .longHook:
-            page.text = ScriptShape.shortenedHook(in: page.text)
-        case .longSentence(let sentence):
-            page.text = ScriptShape.splitting(sentence, in: page.text)
-        }
-        commitPage()
-    }
-
-    /// "✦ No CTA yet · Suggest one".
-    func suggestCTA() {
-        page.text = ScriptShape.addingCTA(to: page.text)
-        commitPage()
+        HapticPatterns.playFinish()
+        if strip?.canShape == true { toast.show(String(localized: "Ready to record · Shape adds cues")) }
     }
 
     /// The length is past what the platform likes: Rec asks once whether to shape it first.
@@ -214,9 +180,11 @@ extension ScriptDetailViewModel {
         ScriptCue.bar.map(\.name) + preferences.customCues
     }
 
-    /// A cue from the bar above the keyboard, where the caret is (over the selection, if there is one).
+    /// A cue from the bar above the keyboard, where the caret is (over the selection, if there is one). With the cues hidden, adding one
+    /// shows them again: a cue put in out of sight was only an empty gap in the words (the owner's call, 20/10/2026).
     func insertCue(named name: String) {
         guard !page.isWriting else { return }
+        if !showsCues { showsCues = true }
         var text = page.text
         let characters = text.count
         let range = page.selection ?? characters..<characters
@@ -226,6 +194,8 @@ extension ScriptDetailViewModel {
         let needsSpace = offset > 0 && !text[text.index(before: lower)].isWhitespace
         let insertion = (needsSpace ? " " : "") + "[\(name)] "
         text.replaceSubrange(lower..<upper, with: insertion)
+        // The cue dropping in is felt.
+        Haptics.selection()
         page.text = text
         page.selection = (offset + insertion.count)..<(offset + insertion.count)
         pageDidEdit()
@@ -364,6 +334,8 @@ extension ScriptDetailViewModel {
 extension ScriptDetailViewModel {
     /// Words that arrive per step while the model's answer is shown.
     static let wordsPerStep = 4
+    /// The title's head start on the words under it.
+    static let titleLead: Duration = .milliseconds(450)
 
     /// A script opened from the card's arrow: the words are written into the page, in violet,
     /// the title first, with Stop within reach.
@@ -397,7 +369,12 @@ extension ScriptDetailViewModel {
                 // What the written page shows around the words is in place before they arrive: the fact check and the voice question.
                 if generated.needsFactCheck { library.update(scriptID) { $0.factCheck = true } }
                 beginVoicePreview(for: request)
+                // The title arrives first, word by word (`ScriptPageHeader`), then the words under it.
+                if revealPause > .zero { try? await Task.sleep(for: Self.titleLead) }
                 await reveal(generated.text)
+                guard !Task.isCancelled else { return }
+                // The last words finish arriving before the page becomes the editor (which takes over in a crossfade, `ScriptPageView`).
+                if revealPause > .zero { try? await Task.sleep(for: .seconds(ArrivingText.settleTime)) }
                 guard !Task.isCancelled else { return }
                 finishWriting(generated)
                 GenerationLog.report(
@@ -456,12 +433,15 @@ extension ScriptDetailViewModel {
         page.isWriting = false
         pageWritingTask = nil
         pendingRequest = nil
+        // Written: two soft taps as the page becomes the creator's.
+        HapticPatterns.playFinish()
         library.update(scriptID) { script in
             script.title = generated.title
             script.text = generated.text
             script.factCheck = generated.needsFactCheck
-            // The AI delivered a complete script: it is READY to record (04 · F2).
-            script.isFinished = true
+            // The AI drafts for the creator: what it writes is a draft until they switch it to "Ready to record" (the owner's call,
+            // 20/10/2026).
+            script.isFinished = false
         }
         // The idea became a script: the card starts empty the next time.
         clearDraft(writtenFrom: request)

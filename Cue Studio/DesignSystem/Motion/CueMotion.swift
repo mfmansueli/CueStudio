@@ -48,6 +48,13 @@ nonisolated enum CueMotion {
     static let sliderSnap = Animation.spring(response: 0.28, dampingFraction: 0.72)
     /// Cards, sheets and rows.
     static let card = Animation.smooth(duration: 0.3)
+    /// Find inspiration's card turning to the next idea: a soft spring, so the new card arrives and settles instead of stopping.
+    static let inspirationTurn = Animation.spring(response: 0.46, dampingFraction: 0.84)
+    /// A line of the new idea rising into place (each a beat after the one above, `inspirationLineStagger`).
+    static let inspirationLine = light(duration: 0.5)
+    static let inspirationLineStagger = 0.06
+    /// The light crossing the new idea's card once.
+    static let inspirationSweep = Animation.timingCurve(0.45, 0, 0.25, 1, duration: 0.8)
 
     // MARK: - Curves
 

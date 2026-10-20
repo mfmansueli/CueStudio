@@ -19,9 +19,14 @@ struct WordsFromLight: View {
     var trigger = 0
     /// The violet glow each word carries as it arrives (the AI's own words); ours fade in plainly.
     var glows = true
+    /// The first text plays too. False: the first one is simply there, and only the texts that come after it arrive (a suggestion that was
+    /// already there when the screen opened isn't news).
+    var playsFirst = true
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var elapsed = 0.0
+    /// The text and trigger last played: seen again (the view came back on screen), it is simply there.
+    @State private var played: String?
 
     private var words: [Substring] { text.split(separator: " ", omittingEmptySubsequences: true) }
 
@@ -37,8 +42,11 @@ struct WordsFromLight: View {
             .textRenderer(WordsRenderer(elapsed: elapsed, stagger: stagger, reduceMotion: reduceMotion, glows: glows))
             .accessibilityLabel(Text(text))
             .task(id: "\(text)\(trigger)") {
+                let key = "\(text)\(trigger)"
+                let isNews = played != key && (played != nil || playsFirst)
+                played = key
                 elapsed = 0
-                guard !reduceMotion else { elapsed = totalDuration; return }
+                guard isNews, !reduceMotion else { elapsed = totalDuration; return }
                 withAnimation(.linear(duration: totalDuration)) { elapsed = totalDuration }
             }
     }

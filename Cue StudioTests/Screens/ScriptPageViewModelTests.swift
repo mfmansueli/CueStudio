@@ -123,26 +123,6 @@ struct ScriptPageViewModelTests {
         #expect(scenario.library.script(id: scenario.viewModel.scriptID)?.text == "Rewritten with energy!")
     }
 
-    // MARK: - Shaped
-
-    @Test func theTipsAreDismissedForGood() {
-        let scenario = makeScenario(script: TestData.script(text: "Okay " + TestData.words(30) + ".\n\nBody.\n\nFollow me."))
-        defer { scenario.defaults.tearDown() }
-        let tip = scenario.viewModel.visibleTip(scenario.viewModel.shaped.hookTip)
-        #expect(tip != nil)
-        scenario.viewModel.dismiss(tip!)
-        #expect(scenario.viewModel.visibleTip(scenario.viewModel.shaped.hookTip) == nil)
-    }
-
-    @Test func fixingTheHookAndSuggestingACTAChangeTheWordsAndSaveThem() {
-        let scenario = makeScenario(script: TestData.script(text: "One two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen, seventeen.\n\nBody."))
-        defer { scenario.defaults.tearDown() }
-        scenario.viewModel.apply(.longHook(seconds: 6))
-        #expect(scenario.library.script(id: scenario.viewModel.scriptID)?.text.hasPrefix("One two three four five six seven eight.") == true)
-        scenario.viewModel.suggestCTA()
-        #expect(scenario.viewModel.page.text.hasSuffix(ScriptShape.suggestedCTA))
-    }
-
     @Test func recordingAPastTheIdealRangeScriptAsksOnce() {
         let long = TestData.script(text: TestData.words(400))
         let scenario = makeScenario(script: long)
@@ -180,6 +160,15 @@ struct ScriptPageViewModelTests {
         scenario.viewModel.insertCue(named: ScriptCue.smile.name)
         #expect(scenario.viewModel.page.text == "Hello [smile]  world")
         #expect(scenario.viewModel.page.selection == 14..<14)
+    }
+
+    @Test func addingACueWithTheCuesHiddenShowsThemAgain() {
+        let scenario = makeScenario(script: TestData.script(text: "Hello there"))
+        defer { scenario.defaults.tearDown() }
+        scenario.viewModel.showsCues = false
+        scenario.viewModel.insertCue(named: ScriptCue.pause.name)
+        #expect(scenario.viewModel.showsCues, "the cue went in out of sight")
+        #expect(scenario.viewModel.page.text == "Hello there [pause] ")
     }
 
     @Test func theBarHasTheFourCuesOfTheBoard() {
@@ -225,7 +214,12 @@ struct ScriptPageViewModelTests {
         #expect(String(hidden.characters) == text)
         let cue = hidden.range(of: "[smile]")!
         #expect(hidden[cue].foregroundColor == .clear)
-        #expect(shown[shown.range(of: "[smile]")!].foregroundColor == Palette.accText)
+        #expect(hidden[cue][TextChipAttribute.self] == nil)
+        // Shown, the cue is a chip: its name in the cue's yellow, the brackets clear.
+        #expect(String(shown.characters) == text)
+        #expect(shown[shown.range(of: "[smile]")!][TextChipAttribute.self] != nil)
+        #expect(shown[shown.range(of: "smile")!].foregroundColor == Palette.Cues.chipInk)
+        #expect(shown[shown.range(of: "[")!].foregroundColor == .clear)
     }
 
     @Test func aCreatorsCueCanLeaveTheBarAndTheScriptsKeepIt() {
@@ -363,28 +357,31 @@ struct ScriptPageViewModelTests {
 
     // MARK: - State (04 · F2)
 
-    @Test func doneMakesADraftReadyAndKeepsTheWords() {
-        let scenario = makeScenario(script: TestData.script(text: "One.\n\nTwo.", isFinished: false))
+    @Test func theSwitchMakesADraftReadyAndBackKeepingTheWords() {
+        let scenario = makeScenario(script: TestData.script(text: "One.\n\nTwo. [pause]", isFinished: false))
         defer { scenario.defaults.tearDown() }
         #expect(scenario.viewModel.strip?.state == .draft)
-        scenario.viewModel.done()
+        scenario.viewModel.setReady(true)
         #expect(scenario.library.script(id: scenario.viewModel.scriptID)?.isFinished == true)
         #expect(scenario.viewModel.strip?.state == .ready)
-        #expect(scenario.toast.message?.hasPrefix("Ready to record") == true)
+        #expect(scenario.toast.message == nil, "the switch lighting up says it; no toast")
+        scenario.viewModel.setReady(false)
+        #expect(scenario.viewModel.strip?.state == .draft)
+        #expect(scenario.library.script(id: scenario.viewModel.scriptID)?.text == "One.\n\nTwo. [pause]")
     }
 
-    @Test func doneWithNoTextSavesNothing() {
+    @Test func theSwitchOnAnEmptyPageMakesNothingReady() {
         let scenario = makeScenario(script: TestData.script(title: "", text: ""))
         defer { scenario.defaults.tearDown() }
-        scenario.viewModel.done()
+        scenario.viewModel.setReady(true)
         #expect(scenario.toast.message == "Nothing to save yet")
         #expect(scenario.library.script(id: scenario.viewModel.scriptID)?.isFinished == false)
     }
 
-    @Test func doneWithEmptySectionsAsksFirstAndDoneAnywayFinishes() {
+    @Test func theSwitchWithEmptySectionsAsksFirstAndMarkReadyAnywayFinishes() {
         let scenario = makeScenario(script: TestData.script(text: "Only a hook.", type: .tutorial, isFinished: false))
         defer { scenario.defaults.tearDown() }
-        scenario.viewModel.done()
+        scenario.viewModel.setReady(true)
         #expect(scenario.viewModel.page.emptySectionsToConfirm == 3)
         #expect(scenario.library.script(id: scenario.viewModel.scriptID)?.isFinished == false)
         scenario.viewModel.finish()
@@ -392,27 +389,25 @@ struct ScriptPageViewModelTests {
         #expect(scenario.library.script(id: scenario.viewModel.scriptID)?.isFinished == true)
     }
 
-    @Test func editingAReadyScriptAndLeavingWithoutDoneMakesItADraft() {
+    @Test func editingAReadyScriptAndLeavingKeepsItReady() {
         let scenario = makeScenario(script: TestData.script(text: "One.\n\nTwo."))
         defer { scenario.defaults.tearDown() }
         #expect(scenario.viewModel.strip?.state == .ready)
         scenario.viewModel.page.text = "One.\n\nTwo and more."
         scenario.viewModel.pageDidEdit()
-        #expect(scenario.viewModel.strip?.isEdited == true)
         scenario.viewModel.leavePage()
-        #expect(scenario.library.script(id: scenario.viewModel.scriptID)?.isFinished == false)
-        #expect(scenario.toast.message == "Saved as draft")
+        let saved = scenario.library.script(id: scenario.viewModel.scriptID)
+        #expect(saved?.isFinished == true && saved?.text == "One.\n\nTwo and more.")
+        #expect(scenario.toast.message == nil)
     }
 
-    @Test func editingThenDoneThenLeavingStaysReady() {
-        let scenario = makeScenario(script: TestData.script(text: "One.\n\nTwo."))
+    @Test func editingADraftAndLeavingKeepsItADraft() {
+        let scenario = makeScenario(script: TestData.script(text: "One.\n\nTwo.", isFinished: false))
         defer { scenario.defaults.tearDown() }
         scenario.viewModel.page.text = "One.\n\nTwo and more."
         scenario.viewModel.pageDidEdit()
-        scenario.viewModel.done()
         scenario.viewModel.leavePage()
-        #expect(scenario.library.script(id: scenario.viewModel.scriptID)?.isFinished == true)
-        #expect(scenario.toast.message?.hasPrefix("Ready to record") == true)
+        #expect(scenario.library.script(id: scenario.viewModel.scriptID)?.isFinished == false)
     }
 
     @Test func editingAfterRecordingStaysRecordedAndTheStripSaysChanged() {
@@ -426,7 +421,6 @@ struct ScriptPageViewModelTests {
         #expect(strip?.state == .recorded)
         #expect(strip?.changedSinceTake == 2)
         #expect(strip?.info == ["Changed since take 2"])
-        #expect(scenario.toast.message != "Saved as draft")
     }
 
     @Test func recordingADraftSendsItToTheCameraAsReady() {
@@ -457,7 +451,7 @@ struct ScriptPageViewModelTests {
         #expect(scenario.viewModel.page.isWriting)
         await scenario.viewModel.pageWritingTask?.value
         #expect(!scenario.viewModel.page.isWriting && scenario.viewModel.page.revealed == nil)
-        #expect(scenario.library.script(id: scenario.viewModel.scriptID)?.isFinished == true, "the AI delivered a complete script: READY")
+        #expect(scenario.library.script(id: scenario.viewModel.scriptID)?.isFinished == false, "the AI drafts: a draft until the creator says ready")
         let saved = scenario.library.script(id: scenario.viewModel.scriptID)
         #expect(saved?.title == "Carnival" && saved?.text == scenario.writer.generatedText)
         #expect(scenario.ideaDraft.isEmpty)
@@ -471,7 +465,7 @@ struct ScriptPageViewModelTests {
         scenario.ideaDraft.text = "my own half idea"
         scenario.viewModel.beginWritingIfNeeded()
         await scenario.viewModel.pageWritingTask?.value
-        #expect(scenario.library.script(id: scenario.viewModel.scriptID)?.isFinished == true)
+        #expect(scenario.library.script(id: scenario.viewModel.scriptID)?.isFinished == false)
         #expect(scenario.ideaDraft.text == "my own half idea")
     }
 

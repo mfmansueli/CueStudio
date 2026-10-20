@@ -468,6 +468,16 @@ struct PaletteContrastTests {
         }
     }
 
+    /// A cue on the script page: its name and symbol in `chipInk` on the chip's 14% yellow, over the page or a card.
+    @Test func theCueChipsReadOnTheirFill() {
+        for appearance in Appearance.allCases {
+            for surface in surfaces {
+                let value = ratio(Palette.Cues.chipInk, onTint: Palette.Cues.chipFill, over: surface.color, in: appearance)
+                #expect(value >= ColorContrast.textMinimum, "a cue chip on \(surface.name), \(appearance): \(value)")
+            }
+        }
+    }
+
     @Test func textRewrittenByTheAIReadsBeforeItIsKept() {
         for appearance in Appearance.allCases {
             for surface in surfaces {

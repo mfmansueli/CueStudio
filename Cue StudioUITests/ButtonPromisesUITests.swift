@@ -113,7 +113,7 @@ final class ButtonPromisesUITests: XCTestCase {
 
     // MARK: - The tools of "Improve script"
 
-    /// The page's own "Improve" chip: the same sheet as the menu's "Improve with Cue", without a system menu in the way.
+    /// The page's own "Improve" chip (the only way into Improve: the menu doesn't repeat it).
     private func openImprove(_ app: XCUIApplication) {
         let chip = app.buttons["page.improveButton"]
         XCTAssertTrue(chip.waitForExistence(timeout: 5), "The page has no Improve button")
