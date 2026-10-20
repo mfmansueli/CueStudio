@@ -101,13 +101,19 @@ struct QuickEditCopyLookTests {
         let steps = viewModel.history.past.count
         viewModel.pasteLook(on: true)
         #expect(viewModel.history.past.count == steps)
-        // Said once the sheet has gone.
-        try await Task.sleep(for: .milliseconds(500))
-        #expect(viewModel.toast.message == "Every clip already looks like this")
+        // Said once the sheet has gone (0.35 s later; a busy simulator can take longer, so wait for it rather than a fixed time).
+        #expect(try await toast(of: viewModel, becomes: "Every clip already looks like this"))
         viewModel.selection = .clip(viewModel.edit.timeline.segments[1].id)
         viewModel.pasteLook(on: false)
-        try await Task.sleep(for: .milliseconds(500))
-        #expect(viewModel.toast.message == "This clip already looks like this")
+        #expect(try await toast(of: viewModel, becomes: "This clip already looks like this"))
+    }
+
+    /// Whether the toast says `message` within 3 seconds.
+    private func toast(of viewModel: QuickEditViewModel, becomes message: String) async throws -> Bool {
+        for _ in 0..<60 where viewModel.toast.message != message {
+            try await Task.sleep(for: .milliseconds(50))
+        }
+        return viewModel.toast.message == message
     }
 
     @Test func aPasteOnOneClipKeepsOnlyWhatDiffersFromTheVideo() async throws {

@@ -45,9 +45,9 @@ struct SetupSummaryCard: View {
         .accessibilityIdentifier("settings.setupCard")
     }
 
+    /// The text size in points, as the slider of Settings › Prompter writes it.
     private var textValue: String {
-        guard let preset = PrompterTextSize(points: prompter.size) else { return String(localized: "\(Int(prompter.size.rounded())) pt") }
-        return preset.label
+        String(localized: "\(Int(prompter.size.rounded())) pt")
     }
 
     /// The default format in proportion, as a phone with a few lines of script, and its name.

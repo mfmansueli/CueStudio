@@ -47,11 +47,13 @@ struct DisplaySettingsControls: View {
     private var quickSliders: some View {
         GroupedCard(background: Palette.surface2, radius: 22) {
             if showsCoreControls {
+                // Whole points over the range Settings › Prompter has (12 to 56), written as there.
                 ValueSlider(
                     title: String(localized: "Text size"),
-                    valueText: "\(Int(settings.size))",
+                    valueText: String(localized: "\(Int(settings.size.rounded())) pt"),
                     value: $settings.size,
-                    range: PrompterSettings.sizeRange
+                    range: PrompterSettings.sizeRange,
+                    identifier: "display.textSize"
                 )
                 .padding(.horizontal, 16)
             }

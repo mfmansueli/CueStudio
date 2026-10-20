@@ -5,15 +5,17 @@
 
 import Foundation
 
-/// Where a script's read time falls against its destination's ideal range and monetization minimum.
+/// Where a script's read time falls against its destination's ideal range and monetization minimum. Timed at the natural speaking pace
+/// (`ReadTime.naturalSpeed`, 150 words a minute), the pace the writer aims for: the prompter's scroll speed is how fast the text moves, not
+/// how long the video runs (a creator at 0.4× would otherwise read a one-minute script as 2:28 and be told to cut it).
 nonisolated struct LengthZone: Equatable, Sendable {
     let words: Int
     let seconds: TimeInterval
     let preset: PlatformPreset
 
-    init(text: String, preset: PlatformPreset, speed: Double) {
+    init(text: String, preset: PlatformPreset) {
         words = ReadTime.wordCount(in: text)
-        seconds = ReadTime.seconds(for: text, speed: speed)
+        seconds = ReadTime.seconds(for: text)
         self.preset = preset
     }
 

@@ -487,12 +487,13 @@ struct PaletteContrastTests {
         }
     }
 
-    /// The AI bar over a selection (a night violet at 97%, over the page or a card) and the state strip (night at
-    /// 92%): their labels read over any surface behind them.
-    @Test func theSelectionBarAndTheStateStripReadOverTheScreen() {
+    /// The AI bar over a selection (a night violet at 97%, over the page or a card) and the "Ready to record" switch (on: green at
+    /// 18%; off: the control fill): their labels read over any surface behind them.
+    @Test func theSelectionBarAndTheReadySwitchReadOverTheScreen() {
         let bars: [(name: String, fill: Color, text: [Color])] = [
             ("selection bar", Palette.Page.selectionBar, [Palette.ink, Palette.aiText, Palette.aiTextStrong]),
-            ("state strip", Palette.Page.stripFill, [Palette.ink, Palette.ink2, Palette.accText, Palette.successText, Palette.aiText]),
+            ("Ready to record switch, on", Palette.Page.readyFill, [Palette.successText]),
+            ("Ready to record switch, off", Palette.fill, [Palette.ink]),
         ]
         for appearance in Appearance.allCases {
             for bar in bars {

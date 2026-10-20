@@ -145,8 +145,9 @@ final class UserReportCaptureTests: XCTestCase {
         XCTAssertTrue(element(app, "settings.followVoice").waitForExistence(timeout: 5))
         try shot(app, "u20_prompter-sheet-1")
         for index in 2...4 {
-            let from = app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.85))
-            from.press(forDuration: 0.1, thenDragTo: app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.55)))
+            // Along the left edge: the sliders' thumbs in the middle would take the drag.
+            let from = app.coordinate(withNormalizedOffset: CGVector(dx: 0.05, dy: 0.85))
+            from.press(forDuration: 0.1, thenDragTo: app.coordinate(withNormalizedOffset: CGVector(dx: 0.05, dy: 0.55)))
             try shot(app, "u20_prompter-sheet-\(index)")
         }
         if let path = ProcessInfo.processInfo.environment["CUE_FIDELITY_DIR"] {

@@ -10,7 +10,6 @@ struct ScriptDetailView: View {
 
     @Environment(ScriptLibraryService.self) private var library
     @Environment(PresentationService.self) private var presentation
-    @Environment(PreferencesService.self) private var preferences
     @Environment(ToastService.self) private var toast
     @Environment(NotificationService.self) private var notifications
     @Environment(TakeLibraryService.self) private var takes
@@ -82,7 +81,6 @@ struct ScriptDetailView: View {
                 HooksSheet(
                     currentHook: viewModel.currentHook,
                     options: viewModel.hookOptions,
-                    speed: preferences.prompter.speed,
                     isLoading: viewModel.isLoadingHooks,
                     onPick: { viewModel.replaceHook(with: $0) },
                     onMore: { Task { await viewModel.showMoreHooks() } }

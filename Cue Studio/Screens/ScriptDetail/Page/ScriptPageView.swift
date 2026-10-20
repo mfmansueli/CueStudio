@@ -44,6 +44,8 @@ struct ScriptPageView: View {
 
     /// The words have the keyboard: what is around them steps back (`dimmedWhileTyping`).
     private var isTyping: Bool { focus == .text }
+    /// Between the lines of the arriving words, as within one (`ArrivingText`'s line spacing).
+    private static let arrivingLineSpacing: CGFloat = 6
     /// The crossfade from the arriving words to the editor.
     private static let handOverDuration = 0.7
 
@@ -363,10 +365,15 @@ struct ScriptPageView: View {
 
     /// The AI's words arrive from light, one after another (4.1), drawn the way the editor that comes back will draw them: the same insets,
     /// size and cue tags, so they arrive where they stay. Once written, they are the page's text (the same words, so none arrives again).
+    /// Drawn a line of the script at a time (`ArrivingLines`), so a long script never grows too tall to draw.
     private var arrivingWords: some View {
         let size = viewModel.page.textSize.points
-        let words = viewModel.page.revealed ?? viewModel.page.text
-        return ArrivingText(styled: ScriptTextEditor.styled(words, passage: nil, size: size, showsCues: viewModel.showsCues), size: size)
+        let lines = (viewModel.page.revealed ?? viewModel.page.text).components(separatedBy: "\n")
+        return ArrivingLines(
+            // An empty line keeps a line's height, as the blank line between two paragraphs does in the editor.
+            lines: lines.map { ScriptTextEditor.styled($0.isEmpty ? " " : $0, passage: nil, size: size, showsCues: viewModel.showsCues) },
+            size: size, lineSpacing: Self.arrivingLineSpacing
+        )
             .padding(ScriptTextEditor.textInsets)
             .frame(minHeight: editorMinimumHeight, alignment: .topLeading)
             .accessibilityHidden(!viewModel.page.isWriting)

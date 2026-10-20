@@ -106,9 +106,60 @@ final class SettingsUITests: XCTestCase {
         row(app, "settings.prompter").tap()
         XCTAssertTrue(row(app, "settings.followVoice").waitForExistence(timeout: 5))
         XCTAssertTrue(row(app, "settings.prompterPreview").exists)
+        capture(app, name: "Settings · Prompter")
         let mirror = row(app, "settings.mirrorText")
         app.scroll(to: mirror)
         XCTAssertTrue(row(app, "settings.flipVertically").exists)
+    }
+
+    /// Speed goes from 0.2× to 2×, and Text size is a slider in points from 12 to 56 (owner's decision, 20/10/2026). The setup card's Text
+    /// tile shows the points. The ends are reached on the same rows opened by Aa in the recorder: in the Settings tab the synthesized drag
+    /// of `adjust(toNormalizedSliderPosition:)` doesn't move the sliders of this page (any of them, line spacing included).
+    func testPrompterSpeedAndTextSizeSlidersReachTheirEnds() {
+        let app = CueApp.launch(seeded: true)
+        tab(app, label: "Settings").tap()
+        let text = app.buttons["settings.setup.text"]
+        XCTAssertTrue(text.waitForExistence(timeout: 5))
+        XCTAssertTrue(text.label.contains("36 pt"), text.label)
+        row(app, "settings.prompter").tap()
+        XCTAssertTrue(row(app, "settings.followVoice").waitForExistence(timeout: 5))
+        // A Settings slider answers to its row's identifier (`PrompterEntryRow` names the whole row, slider included).
+        let speed = app.sliders["settings.speed"]
+        app.scroll(to: speed)
+        XCTAssertEqual(speed.value as? String, "1×")
+        let size = app.sliders["settings.textSize"]
+        app.scroll(to: size)
+        XCTAssertEqual(size.value as? String, "36 pt")
+
+        tab(app, label: "Scripts").tap()
+        let record = app.buttons["row.recordButton"].firstMatch
+        XCTAssertTrue(record.waitForExistence(timeout: 10))
+        record.tap()
+        let display = app.buttons["prompter.displayButton"]
+        XCTAssertTrue(display.waitForExistence(timeout: 10))
+        display.tap()
+        XCTAssertTrue(row(app, "settings.followVoice").waitForExistence(timeout: 5))
+        let sheetSpeed = app.sliders["settings.speed"]
+        XCTAssertTrue(sheetSpeed.waitForExistence(timeout: 5))
+        sheetSpeed.adjust(toNormalizedSliderPosition: 0)
+        // The region decides the separator ("0.2×", "0,2×").
+        XCTAssertTrue(["0.2×", "0,2×"].contains(sheetSpeed.value as? String ?? ""), "\(String(describing: sheetSpeed.value))")
+        sheetSpeed.adjust(toNormalizedSliderPosition: 1)
+        XCTAssertEqual(sheetSpeed.value as? String, "2×")
+        let sheetSize = app.sliders["settings.textSize"]
+        // The list is under the sheet's handle: drag from its lower half, where the rows are, along the left edge (the sliders' thumbs
+        // in the middle would take the drag).
+        for _ in 0..<6 where !(sheetSize.exists && sheetSize.isHittable) {
+            let from = app.coordinate(withNormalizedOffset: CGVector(dx: 0.05, dy: 0.85))
+            from.press(forDuration: 0.1, thenDragTo: app.coordinate(withNormalizedOffset: CGVector(dx: 0.05, dy: 0.6)))
+        }
+        sheetSize.adjust(toNormalizedSliderPosition: 0)
+        XCTAssertEqual(sheetSize.value as? String, "12 pt")
+        sheetSize.adjust(toNormalizedSliderPosition: 1)
+        // A synthesized drag can stop a point or two short of the end.
+        let largest = Int((sheetSize.value as? String ?? "").filter(\.isNumber)) ?? 0
+        XCTAssertGreaterThanOrEqual(largest, 50, "\(String(describing: sheetSize.value))")
+        app.buttons["display.doneButton"].tap()
     }
 
     func testLongTranslationsKeepAllFiveTabsVisible() {

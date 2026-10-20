@@ -174,7 +174,7 @@ nonisolated enum SettingsEntry: String, CaseIterable, Identifiable, Sendable {
         case .followVoice: ["voice following", "speech", "scroll"]
         case .speed: ["pace", "wpm", "words", "scroll", "slow", "fast"]
         case .aiCoach: ["cues", "pause", "smile", "coach"]
-        case .textSize: ["size", "small", "medium", "large", "bigger"]
+        case .textSize: ["size", "smaller", "bigger", "points", "font size"]
         case .font: ["typeface", "lexend", "atkinson", "serif", "rounded", "new york"]
         case .lineSpacing: ["leading", "tight", "airy", "gap"]
         case .alignment: ["left", "center", "right"]

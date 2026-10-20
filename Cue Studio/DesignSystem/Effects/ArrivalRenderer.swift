@@ -13,6 +13,7 @@ struct ArrivalRenderer: TextRenderer {
     var arrivals: [Double]
     var reduceMotion: Bool
     var chipMetrics: TextChipMetrics
+    var showsCaret = true
 
     func draw(layout: Text.Layout, in context: inout GraphicsContext) {
         // The caret follows the last word that has started to arrive, and sits at the start of the page until one does.
@@ -28,18 +29,18 @@ struct ArrivalRenderer: TextRenderer {
                 if state.progress > 0 { caretAt = CGRect(x: bounds.maxX, y: bounds.minY, width: 0, height: bounds.height) }
                 var copy = arriving(context, progress: state.progress)
                 if state.glow > 0, state.progress > 0 {
-                    copy.addFilter(.shadow(color: Color(hex: 0xC4B8FF, opacity: 0.95 * state.glow), radius: 14 * state.glow))
+                    copy.addFilter(.shadow(color: Palette.Page.arrivalGlow.opacity(0.95 * state.glow), radius: 14 * state.glow))
                 }
                 copy.draw(run)
             }
         }
-        guard let caretAt else { return }
+        guard showsCaret, let caretAt else { return }
         // `blink 1s`: lit for the first half of every second, in the AI's violet.
         let lit = reduceMotion || now.truncatingRemainder(dividingBy: 1) < 0.5
         var caret = context
         caret.opacity = lit ? 1 : 0
         caret.addFilter(.shadow(color: Palette.aiText.opacity(0.9), radius: 6))
-        caret.fill(Path(CGRect(x: caretAt.minX + 1, y: caretAt.minY + 2, width: 2, height: caretAt.height - 4)), with: .color(Color(hex: 0xB4A7FF)))
+        caret.fill(Path(CGRect(x: caretAt.minX + 1, y: caretAt.minY + 2, width: 2, height: caretAt.height - 4)), with: .color(Palette.Page.arrivalCaret))
     }
 
     /// How far a word has arrived (0…1) and how much of its glow is left.

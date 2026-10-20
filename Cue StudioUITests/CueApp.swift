@@ -58,7 +58,10 @@ extension XCUIApplication {
             if let container, container.exists {
                 container.swipeUp()
             } else {
-                swipeUp()
+                // Along the left edge, clear of the rows' controls: a swipe through the middle can land on a slider's thumb, which takes
+                // the drag (its fine adjustment) instead of scrolling the page.
+                let from = coordinate(withNormalizedOffset: CGVector(dx: 0.05, dy: 0.72))
+                from.press(forDuration: 0.05, thenDragTo: coordinate(withNormalizedOffset: CGVector(dx: 0.05, dy: 0.3)))
             }
             swipes += 1
         }

@@ -6,8 +6,8 @@
 import SwiftUI
 
 /// "SPEED  1×": the speed of the prompter's bars as a multiple of the natural reading pace (`SpeedScale`), on the system's slider. It moves
-/// from stop to stop (0.5× · 0.8× · 1× · 1.2× · 1.5× · 2× · 3× · 4× · 5×), and each stop it reaches is felt as a light tick. The value is always
-/// written.
+/// from stop to stop, every 0.1× from 0.2× to 2× (the same stops as Settings › Prompter and the remote), and each stop it reaches is felt as a
+/// light tick. The value is always written above the track, so the 19 stops need no marks of their own.
 struct SpeedSlider: View {
     let speed: Double
     let onChange: @MainActor @Sendable (Double) -> Void

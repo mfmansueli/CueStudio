@@ -495,8 +495,8 @@ final class PrompterViewModel {
         }
     }
 
-    /// The speed slider: tenths, within the range. For this session; the default speed is in
-    /// Creator Setup.
+    /// The speed slider and the remote's − and +: on a 5-word step, within 0.2× to 2× (`PrompterSettings.speedRange`). For this session;
+    /// the default speed is in Creator Setup.
     func setSpeed(_ value: Double) {
         bar.touch()
         let speed = PrompterSettings.clampedSpeed(value)

@@ -7,9 +7,11 @@ import Foundation
 
 /// How the prompter looks and scrolls. Shared by Selfie and Studio mode.
 nonisolated struct PrompterSettings: Codable, Hashable, Sendable {
-    /// From 0.3 to 3.5 times 215 words a minute: the 5× the speed slider ends on (`SpeedScale`) is 3.49 of those.
-    static let speedRange: ClosedRange<Double> = 0.3...3.5
-    static let sizeRange: ClosedRange<Double> = 16...56
+    /// The speeds of the slider's ends, 0.2× and 2× (`SpeedScale`): 30 to 300 words a minute, 0.14 to 1.4 of the stored scale. Taken from the
+    /// scale so the range and the stops never disagree.
+    static let speedRange: ClosedRange<Double> = SpeedScale.slowestSpeed...SpeedScale.fastestSpeed
+    /// Selfie text in points, 12 (a long script in a small window) to 56; Studio reads it 1.35× bigger.
+    static let sizeRange: ClosedRange<Double> = 12...56
     static let lineSpacingRange: ClosedRange<Double> = 1...2
     static let marginRange: ClosedRange<Double> = 8...40
     static let backgroundOpacityRange: ClosedRange<Double> = 0...1
@@ -24,7 +26,8 @@ nonisolated struct PrompterSettings: Codable, Hashable, Sendable {
     /// Studio mode is read from further away, so its text is bigger than the selfie panel's.
     static let studioScale: Double = 1.35
 
-    /// 1.0× is 215 words a minute (`ReadTime`); the default is a natural 150 (0.698×, written 0.7×).
+    /// Stored as a multiple of `ReadTime.wordsPerMinuteAtOneX` (215 words a minute at 1.0); the default, a natural 150 words a minute (0.698
+    /// stored), reads 1× (`SpeedScale`).
     var speed: Double = ReadTime.naturalSpeed
     var font: PrompterFont = .lexend
     var size: Double = 36
@@ -122,8 +125,8 @@ nonisolated struct PrompterSettings: Codable, Hashable, Sendable {
         speed * ReadTime.wordsPerMinuteAtOneX
     }
 
-    /// The same reading pace, expressed on the current scale: 1.0× saved at 150 words a minute
-    /// becomes 0.7× at 215.
+    /// The same reading pace, expressed on the current stored scale: 1.0 saved at 150 words a minute
+    /// becomes 0.698 at 215. A speed past today's range (the 3×, 4× and 5× the slider had before 20/10/2026) opens on the nearest end, 2×.
     static func recalibrated(_ speed: Double, savedAt wordsPerMinute: Double) -> Double {
         // Saved on the current scale: kept exactly as it was (only held to the range).
         guard wordsPerMinute != ReadTime.wordsPerMinuteAtOneX else {
@@ -148,7 +151,8 @@ nonisolated struct PrompterSettings: Codable, Hashable, Sendable {
         let savedAt = try container.decodeIfPresent(Double.self, forKey: .speedCalibration) ?? Self.legacyWordsPerMinute
         speed = try container.decodeIfPresent(Double.self, forKey: .speed).map { Self.recalibrated($0, savedAt: savedAt) } ?? defaults.speed
         font = (try? container.decodeIfPresent(PrompterFont.self, forKey: .font)) ?? defaults.font
-        size = try container.decodeIfPresent(Double.self, forKey: .size) ?? defaults.size
+        let storedSize = try container.decodeIfPresent(Double.self, forKey: .size) ?? defaults.size
+        size = min(Self.sizeRange.upperBound, max(Self.sizeRange.lowerBound, storedSize))
         lineSpacing = try container.decodeIfPresent(Double.self, forKey: .lineSpacing) ?? defaults.lineSpacing
         alignment = (try? container.decodeIfPresent(PrompterAlignment.self, forKey: .alignment)) ?? defaults.alignment
         textColor = (try? container.decodeIfPresent(PrompterTextColor.self, forKey: .textColor)) ?? defaults.textColor

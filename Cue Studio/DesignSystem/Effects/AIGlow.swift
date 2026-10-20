@@ -1,27 +1,29 @@
 //
-//  DockGlow.swift
+//  AIGlow.swift
 //  Cue Studio
 //
 
 import SwiftUI
 
-/// Apple Intelligence's light on the Scripts dock: a thin rim of colour (`Palette.Scripts.dockGlow`) turning round the glass, with a soft
-/// halo round it. While a dictation listens it stays, turning slowly, and breathes with the voice (`level`); when an idea is sent it runs
-/// once round the dock, fast, as the star leaves the arrow (`sendTurn`). The halo is thin and fades within a few points of the edge, clear
-/// of the dock's words.
+/// Apple Intelligence's light on a surface that listens or sends to the AI: a thin rim of colour (`Palette.Scripts.dockGlow`) turning
+/// round `shape`, with a soft halo round it. While a dictation listens it stays, turning slowly, and breathes with the voice (`level`);
+/// when an idea is sent it runs once round, fast, as the star leaves (`sendTurn`). The halo is thin and fades within a few points of the
+/// edge, clear of the words inside. Used on the Scripts dock (its glass); any shape fits.
 /// Reduce Motion: the light doesn't turn; it fades in and out. Decorative.
-struct DockGlow: View {
+struct AIGlow<Outline: InsettableShape>: View {
+    /// The surface's outline: the light is drawn on it and inside it, never past its frame.
+    let shape: Outline
     /// A dictation is listening.
     var isListening: Bool
     /// The voice's level, 0…1, while listening.
     var level: Double
     /// Goes up with each idea sent: each value runs the light round once.
-    var sendTurn: Int
+    var sendTurn: Int = 0
 
-    /// One run round the dock for a sent idea, about the star's rise (`IdeaTransitionService.riseDuration`).
-    private static let sendDuration: TimeInterval = 1.2
+    /// One run round for a sent idea, about the star's rise (`IdeaTransitionService.riseDuration`).
+    private static var sendDuration: TimeInterval { 1.2 }
     /// One slow turn while listening.
-    private static let listeningTurn: TimeInterval = 5
+    private static var listeningTurn: TimeInterval { 5 }
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var sentAt: Date?
@@ -42,8 +44,8 @@ struct DockGlow: View {
         .animation(.easeInOut(duration: 0.35), value: isListening)
         .allowsHitTesting(false)
         .accessibilityHidden(true)
-        // Only a new send runs it: `onChange`, not a task keyed on the count, which would run again each time the dock comes back on screen
-        // (back from the script's page) and light it for nothing.
+        // Only a new send runs it: `onChange`, not a task keyed on the count, which would run again each time the surface comes back on
+        // screen (back from the script's page) and light it for nothing.
         .onChange(of: sendTurn) {
             let started = Date.now
             sentAt = started
@@ -67,13 +69,12 @@ struct DockGlow: View {
         return (.degrees(turn), 0.45 + 0.55 * min(1, max(0, level)))
     }
 
-    /// The rim and its halo, laid out exactly on the dock (a bigger frame changed the dock's own size to the system). The halo is the
-    /// same colours, blurred, which spills past the glass without taking room; it is thin, so inside it fades well before the words.
+    /// The rim and its halo, laid out exactly on the surface (a bigger frame changed the dock's own size to the system). The halo is the
+    /// same colours, blurred, which spills past the edge without taking room; it is thin, so inside it fades well before the words.
     private func rim(angle: Angle) -> some View {
-        let shape = RoundedRectangle(cornerRadius: Metrics.dockRadius, style: .continuous)
         let colors = AngularGradient(colors: Palette.Scripts.dockGlow, center: .center, angle: angle)
         return ZStack {
-            // Inside the edge (a stroke on it would reach past the dock's frame); the blur spreads it both ways without taking room.
+            // Inside the edge (a stroke on it would reach past the frame); the blur spreads it both ways without taking room.
             shape
                 .strokeBorder(colors, lineWidth: 5)
                 .blur(radius: 9)

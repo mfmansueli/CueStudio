@@ -6,9 +6,10 @@
 import SwiftUI
 
 /// The words of a script as the AI writes them into the page (v30 · 4.1, `sc1…`): each word comes in from blur 7 pt and 5 pt below in 0.3 s
-/// (`(.16, 1, .3, 1)`), flashing a 14 pt violet glow (`#C4B8FF` at 95%) that is gone 0.8 s later, 0.17 s after the word before it. A 2 pt violet
-/// caret blinks after the last word (1 s, on for the first half). It grows as `text` grows: the words already on the page stay, only the new ones
-/// arrive. Under Reduce Motion the new words fade in together and the caret stays lit. Never for what the creator types.
+/// (`(.16, 1, .3, 1)`), flashing a 14 pt violet glow (`Palette.Page.arrivalGlow` at 95%) that is gone 0.8 s later, 0.17 s after the word
+/// before it. A 2 pt violet caret (`arrivalCaret`) blinks after the last word (1 s, on for the first half). It grows as `text` grows: the
+/// words already on the page stay, only the new ones arrive. Under Reduce Motion the new words fade in together and the caret stays lit.
+/// Never for what the creator types.
 ///
 /// The words can come styled (`AttributedString`): a script's page hands in its text as its editor draws it, cues as chips (`TextChip`, drawn
 /// by `ArrivalRenderer` behind their words), so the words arrive looking the way they will stay. A chip arrives whole, as one word, however
@@ -18,17 +19,23 @@ struct ArrivingText: View {
     var size: CGFloat = 19
     var lineSpacing: CGFloat = 6
     var color: Color = Palette.ink
+    /// A line of a longer text arriving a line at a time (`ArrivingLines`): its words' slots on the whole text's clock, and when the caret is
+    /// on it. Nil: the text keeps its own clock and its caret.
+    var schedule: ArrivalSchedule?
 
     init(text: String, size: CGFloat = 19, lineSpacing: CGFloat = 6, color: Color = Palette.ink) {
         self.init(styled: AttributedString(text), size: size, lineSpacing: lineSpacing, color: color)
     }
 
     /// Words with their own fonts and colours where they have them; the rest takes `size` and `color`.
-    init(styled text: AttributedString, size: CGFloat = 19, lineSpacing: CGFloat = 6, color: Color = Palette.ink) {
+    init(
+        styled text: AttributedString, size: CGFloat = 19, lineSpacing: CGFloat = 6, color: Color = Palette.ink, schedule: ArrivalSchedule? = nil
+    ) {
         self.text = text
         self.size = size
         self.lineSpacing = lineSpacing
         self.color = color
+        self.schedule = schedule
     }
 
     /// Seconds between one word's arrival and the next.
@@ -54,9 +61,10 @@ struct ArrivingText: View {
                 .textRenderer(
                     ArrivalRenderer(
                         now: now,
-                        arrivals: clock.arrivals(for: words.count, now: now),
+                        arrivals: schedule?.times ?? clock.arrivals(for: words.count, now: now),
                         reduceMotion: reduceMotion,
-                        chipMetrics: TextChipMetrics(textSize: size)
+                        chipMetrics: TextChipMetrics(textSize: size),
+                        showsCaret: schedule?.holdsCaret(at: now) ?? true
                     )
                 )
         }

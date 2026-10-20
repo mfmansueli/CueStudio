@@ -52,11 +52,11 @@ struct SettingsSearchTests {
         }
     }
 
-    @Test func theTextSizeSegmentsAreSmallMediumLargeAndXL() {
-        #expect(PrompterTextSize.allCases.map(\.shortLabel) == ["Small", "Medium", "Large", "XL"])
-        #expect(PrompterTextSize.nearest(to: 40) == .large)
-        #expect(PrompterTextSize.nearest(to: 17) == .small)
-        #expect(PrompterTextSize.nearest(to: 56) == .extraLarge)
+    /// Text size is a slider now: searching for a smaller or bigger text still finds its row.
+    @Test func textSizeIsFoundBySmallerAndBigger() {
+        for word in ["size", "smaller", "bigger"] {
+            #expect(SettingsSearchGroup.results(for: word).flatMap(\.entries).contains(.textSize), "\(word)")
+        }
     }
 }
 

@@ -49,6 +49,12 @@ enum HapticPatterns {
         Beat(time: 0.17, intensity: 0.18, sharpness: 0.95),
     ]
 
+    /// The microphone starts listening: two quick light taps, as Siri does.
+    static let listen: [Beat] = [
+        Beat(time: 0, intensity: 0.5, sharpness: 0.7),
+        Beat(time: 0.09, intensity: 0.5, sharpness: 0.7),
+    ]
+
     /// A script written into its page: two soft taps, the second lighter, as the words settle.
     static let finish: [Beat] = [
         Beat(time: 0, intensity: 0.45, sharpness: 0.3),
@@ -68,6 +74,7 @@ enum HapticPatterns {
     static func playLanding() { play(landing, fallback: Haptics.success) }
     static func playCommit() { play(commit, fallback: Haptics.light) }
     static func playFinish() { play(finish, fallback: Haptics.soft) }
+    static func playListen() { play(listen, fallback: Haptics.selection) }
 
     private static func play(_ beats: [Beat], fallback: () -> Void) {
         guard Haptics.isEnabled else { return }

@@ -19,8 +19,9 @@ extension Palette {
         static let dockAuroraViolet = Color(hex: 0x9D8CFF, opacity: 0.36)
         static let dockAuroraIndigo = Color(hex: 0x5E4EE0, opacity: 0.40)
         static let dockRim = Color(hex: 0xC4B8FF, opacity: 0.5)
-        /// Apple Intelligence's light around the dock while it listens and when an idea is sent (`DockGlow`): the app's violets, a rose, the
-        /// yellow of the star and a cold blue, round the rim and back to the start. Decorative: drawn on the rim and outside the glass only.
+        /// Apple Intelligence's light around the dock while it listens, and when an idea is sent (`AIGlow`):
+        /// the app's violets, a rose, the yellow of the star and a cold blue, round the rim and back to the start. Decorative: a thin rim and
+        /// a halo that fades within a few points of it.
         static let dockGlow: [Color] = [
             Color(hex: 0xB4A7FF), Color(hex: 0x7B6CFF), Color(hex: 0xFF8FD0), Color(hex: 0xFFD60A), Color(hex: 0x8FD3FF), Color(hex: 0xB4A7FF),
         ]

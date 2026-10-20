@@ -14,7 +14,6 @@ struct ScriptsView: View {
     @Environment(ScriptLibraryService.self) private var library
     @Environment(TakeLibraryService.self) private var takes
     @Environment(PresentationService.self) private var presentation
-    @Environment(PreferencesService.self) private var preferences
     @Environment(CreatorProfileService.self) private var profile
     @Environment(LanguageService.self) private var languages
     @Environment(TopicTaggingService.self) private var tagging
@@ -506,7 +505,7 @@ struct ScriptsView: View {
     }
 
     private func readSeconds(_ script: Script) -> TimeInterval {
-        ReadTime.seconds(for: script.text, speed: preferences.prompter.speed)
+        ReadTime.seconds(for: script.text)
     }
 
     private func line(of script: Script, state: ScriptState) -> ScriptRowLine {

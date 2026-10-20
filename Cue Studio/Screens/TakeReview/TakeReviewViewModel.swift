@@ -263,7 +263,7 @@ final class TakeReviewViewModel {
         guard let take, let script = library.script(id: take.scriptID) else { return nil }
         let platform = take.platform ?? script.platform
         let preset = rules.preset(for: platform, monetizationGoals: profile.profile.monetizationGoals)
-        let expected = ReadTime.seconds(for: script.text, speed: preferences.prompter.speed)
+        let expected = ReadTime.seconds(for: script.text)
         guard let best = BestTakeSuggester.suggestion(among: siblings, expectedDuration: expected, idealRange: preset.idealRange) else {
             return nil
         }

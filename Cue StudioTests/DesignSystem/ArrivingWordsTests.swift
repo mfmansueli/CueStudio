@@ -50,4 +50,16 @@ struct ArrivingWordsTests {
         let words = ArrivingText.tokens(of: styled)
         #expect(ImageRenderer(content: ArrivingText.marked(words).frame(width: 120)).uiImage != nil)
     }
+
+    /// A script drawn a line at a time keeps one clock: the words of a line take the slots after the line above, and the caret is on the
+    /// line whose words are arriving (the first line until anything starts, the last for good).
+    @Test func linesShareOneClockAndPassTheCaretDown() {
+        let times: [Double] = [10, 10.17, 10.34, 10.51, 10.68]
+        let lines = ArrivalSchedule.split(times, counts: [2, 1, 2])
+        #expect(lines.map(\.times) == [[10, 10.17], [10.34], [10.51, 10.68]])
+        #expect(lines[0].holdsCaret(at: 9) && !lines[1].holdsCaret(at: 9))
+        #expect(lines[0].holdsCaret(at: 10.2) && !lines[1].holdsCaret(at: 10.2))
+        #expect(!lines[0].holdsCaret(at: 10.4) && lines[1].holdsCaret(at: 10.4) && !lines[2].holdsCaret(at: 10.4))
+        #expect(lines[2].holdsCaret(at: 60) && !lines[0].holdsCaret(at: 60) && !lines[1].holdsCaret(at: 60))
+    }
 }

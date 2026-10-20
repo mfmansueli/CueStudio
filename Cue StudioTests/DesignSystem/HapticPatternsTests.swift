@@ -27,7 +27,11 @@ struct HapticPatternsTests {
     }
 
     @Test func everyPatternIsShortAndInRange() {
-        for beats in [HapticPatterns.sparkles, HapticPatterns.takeoff, HapticPatterns.landing, HapticPatterns.commit, HapticPatterns.finish] {
+        let patterns = [
+            HapticPatterns.sparkles, HapticPatterns.takeoff, HapticPatterns.landing, HapticPatterns.commit, HapticPatterns.finish,
+            HapticPatterns.listen,
+        ]
+        for beats in patterns {
             #expect(beats.first?.time == 0, "Starts with the touch")
             #expect(beats.map { $0.time + ($0.duration ?? 0) }.max() ?? 0 <= IdeaTransitionService.riseDuration)
             #expect(beats.allSatisfy { (0...1).contains($0.intensity) && (0...1).contains($0.sharpness) })

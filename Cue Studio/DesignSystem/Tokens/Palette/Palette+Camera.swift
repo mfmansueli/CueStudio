@@ -42,5 +42,11 @@ extension Palette {
         /// The "● REC" pill: a 1 pt inset ring, a 6 pt red dot (`record`) and the label in `ink`.
         static let recPillRing = Color(hex: 0xE1E4F5, opacity: 0.22)
         static let recPillDot = Palette.record
+
+        /// Settings › Prompter's preview: a stand-in for the camera behind the text window (a dim room with a warm light), so the window's
+        /// darkness and blur read as they do over the real camera. Decorative; the text over it is measured on the window's own black.
+        static let previewSceneTop = Color(hex: 0x2A2E3D)
+        static let previewSceneBottom = Color(hex: 0x14161F)
+        static let previewSceneLight = Color(hex: 0xC8936A, opacity: 0.55)
     }
 }

@@ -47,8 +47,6 @@ enum Palette {
     static let neutralAction = Color(hex: 0x636366)
     /// The sheets of the share flow and "Your video is ready": navy, a little translucent, as the board draws them.
     static let sheetNight = Color(hex: 0x14162A, opacity: 0.96)
-    /// Content cards over the sky (07 §3): translucent, so the stars show through. Solid under Reduce Transparency (`cardRowBackground()`).
-    static let card = Color(hex: 0x161826, opacity: 0.64)
     /// The selected segment of a segmented control.
     static let segmentOn = Color(hex: 0x636366)
         /// A selected text chip: white with black text.

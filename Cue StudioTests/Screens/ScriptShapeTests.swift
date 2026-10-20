@@ -18,19 +18,17 @@ struct ScriptShapeTests {
         let result = shape("Okay, real talk.\n\nFirst point.\n\nSecond point.\n\nFollow for part two.")
         #expect(result.sections.map(\.label) == ["Hook", "Body", "CTA"])
         #expect(result.sections[1].paragraphs.count == 2)
-        #expect(result.sections.allSatisfy { !$0.isMissingCTA })
         #expect(result.sections[0].isHook && !result.sections[1].isHook)
     }
 
-    @Test func aScriptThatDoesntCloseOnACallToActionSaysSo() {
+    @Test func aScriptThatDoesntCloseOnACallToActionHasNoCTA() {
         let result = shape("Okay, real talk.\n\nFirst point.\n\nSecond point.")
-        // The last paragraph is body, and an empty CTA is offered.
-        #expect(result.sections.map(\.label) == ["Hook", "Body", "CTA"])
+        // The last paragraph is body.
+        #expect(result.sections.map(\.label) == ["Hook", "Body"])
         #expect(result.sections[1].paragraphs.count == 2)
-        #expect(result.sections[2].isMissingCTA && result.sections[2].paragraphs.isEmpty)
     }
 
-    @Test func anEmptyScriptHasNoSectionsAndNothingMissing() {
+    @Test func anEmptyScriptHasNoSections() {
         #expect(shape("").sections.isEmpty)
         #expect(shape("  \n ").sections.isEmpty)
     }

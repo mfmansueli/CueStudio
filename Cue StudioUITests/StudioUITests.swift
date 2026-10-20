@@ -53,6 +53,11 @@ final class StudioUITests: XCTestCase {
         size.tap()
         XCTAssertTrue(element(app, "studio.slider.size").waitForExistence(timeout: 3))
         XCTAssertTrue(size.isSelected)
+        // Points, over the range of Settings › Prompter (12 to 56).
+        let sizeSlider = app.sliders["studio.slider.size"]
+        XCTAssertEqual(sizeSlider.value as? String, "36 pt")
+        sizeSlider.adjust(toNormalizedSliderPosition: 0)
+        XCTAssertEqual(sizeSlider.value as? String, "12 pt")
         try capture(app, "studio_size")
 
         app.buttons["studio.adjust.line"].tap()

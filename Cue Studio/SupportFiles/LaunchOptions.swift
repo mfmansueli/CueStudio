@@ -39,6 +39,8 @@ import Foundation
 ///   tip stays away in UI tests (they open the app on one day).
 /// - `-uiTestStarTransition`: the idea's star transition keeps its real timings (3 s at least); UI tests shorten it otherwise.
 /// - `-uiTestSlowWriting`: with the stub writer, the script's words arrive on the page slowly enough to look at the page mid-writing.
+/// - `-uiTestRealWriting`: the words arrive at the real pace (55 ms a step), and `-uiTestLongScript` makes the stub's script run well past
+///   a minute and a half: together, how a long script is written, followed and settled on the page.
 /// - `-uiTestFastAnimations`: with the above, no animations (UIKit's sheets and pushes, SwiftUI's transactions), so a UI test
 ///   never waits for one to end; `CueApp.launch` passes it unless a test asks for real animations.
 /// - `-uiTestExportsLeft <0...5>`: the free exports that are left (5 without it): 1 is the last one, 0 asks "Your video is ready" on export.
@@ -302,11 +304,13 @@ struct LaunchOptions {
             if arguments.contains("-uiTestStubAI") || arguments.contains("-uiTestNoAI") {
                 options.writer = StubScriptWriter(
                     available: !arguments.contains("-uiTestNoAI"), stalls: arguments.contains("-uiTestWriterStalls"),
-                    ideasDelay: arguments.contains("-uiTestIdeasSlow") ? .seconds(12) : nil, ideasFail: arguments.contains("-uiTestIdeasFail")
+                    ideasDelay: arguments.contains("-uiTestIdeasSlow") ? .seconds(12) : nil, ideasFail: arguments.contains("-uiTestIdeasFail"),
+                    writesLong: arguments.contains("-uiTestLongScript")
                 )
                 options.styleReader = arguments.contains("-uiTestNoAI") ? NoStyleReader() : StubStyleReader()
-                // A test never waits for words to arrive one by one, unless it is looking at them arrive.
-                options.scriptRevealPause = arguments.contains("-uiTestSlowWriting") ? .milliseconds(2_000) : .zero
+                // A test never waits for words to arrive one by one, unless it is looking at them arrive (slowly, or at the real pace).
+                options.scriptRevealPause = arguments.contains("-uiTestSlowWriting") ? .milliseconds(2_000)
+                    : arguments.contains("-uiTestRealWriting") ? .milliseconds(55) : .zero
             }
         }
         #endif

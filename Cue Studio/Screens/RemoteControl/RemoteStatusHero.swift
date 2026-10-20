@@ -48,7 +48,7 @@ struct RemoteStatusHero: View {
         .frame(maxWidth: .infinity)
         .padding(.vertical, 18)
         .padding(.horizontal, 16)
-        .background(Palette.card, in: RoundedRectangle(cornerRadius: Metrics.cardRadius, style: .continuous))
+        .background(Palette.surface, in: RoundedRectangle(cornerRadius: Metrics.cardRadius, style: .continuous))
         .overlay(RoundedRectangle(cornerRadius: Metrics.cardRadius, style: .continuous).strokeBorder(Palette.glassBorder.opacity(0.6), lineWidth: 0.5))
         .accessibilityElement(children: .combine)
         .accessibilityIdentifier("remote.statusHero")

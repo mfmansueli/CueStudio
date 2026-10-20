@@ -157,7 +157,7 @@ struct PrompterView: View {
             StartRecordingSheet(
                 mode: .attach,
                 recent: Array(library.scripts.prefix(StartRecordingSheet.recentLimit)),
-                readSeconds: { ReadTime.seconds(for: $0.text, speed: viewModel.session.prompter.speed) },
+                readSeconds: { ReadTime.seconds(for: $0.text) },
                 onPick: { viewModel.attach($0) },
                 onNewScript: { viewModel.sheet = .newScript }
             )

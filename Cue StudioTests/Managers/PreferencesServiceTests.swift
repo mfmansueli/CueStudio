@@ -54,13 +54,14 @@ struct PreferencesServiceTests {
         let store = TestDefaults()
         defer { store.tearDown() }
         let service = PreferencesService(defaults: store.defaults)
-        service.creatorSetup.textSize = PrompterTextSize.small.points
+        // The smallest size of the slider survives a relaunch.
+        service.creatorSetup.textSize = PrompterSettings.sizeRange.lowerBound
         service.creatorSetup.speed = 1.1
         service.creatorSetup.readingLine = .offset(150)
         service.creatorSetup.isMirrored = true
         service.creatorSetup.showsSafeZones = false
         let reloaded = PreferencesService(defaults: store.defaults).creatorSetup
-        #expect(reloaded.textSize == 24)
+        #expect(reloaded.textSize == 12)
         #expect(reloaded.speed == 1.1)
         #expect(reloaded.readingLine == .offset(150))
         #expect(reloaded.isMirrored)

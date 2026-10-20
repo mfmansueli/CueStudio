@@ -5,8 +5,7 @@
 
 import Foundation
 
-/// A script read as sections (HOOK, BODY, CTA…), for the teleprompter's markers. It never rewrites the words: it reads them. (The
-/// page no longer gives advice under the words: Improve is where the creator asks for changes, the owner's call, 20/10/2026.)
+/// A script read as sections (HOOK, BODY, CTA…), for the teleprompter's markers. It never rewrites the words: it reads them.
 nonisolated struct ScriptShape: Equatable, Sendable {
     struct Section: Equatable, Identifiable, Sendable {
         let label: String
@@ -14,8 +13,6 @@ nonisolated struct ScriptShape: Equatable, Sendable {
         /// Where the section starts, as the index of its first paragraph.
         let firstParagraph: Int
         let isHook: Bool
-        /// The closing block the script doesn't have yet: "No CTA yet · Suggest one".
-        let isMissingCTA: Bool
 
         var id: Int { firstParagraph }
     }
@@ -28,8 +25,7 @@ nonisolated struct ScriptShape: Equatable, Sendable {
     /// - Parameters:
     ///   - structure: the script's format; the generic one ("Talking video") calls the last
     ///     paragraph a CTA only when it sounds like one.
-    ///   - suggestsCTA: whether a script with no call to action is told so.
-    init(text: String, structure: ScriptStructure, suggestsCTA: Bool = true) {
+    init(text: String, structure: ScriptStructure) {
         let paragraphs = CueParser.paragraphs(in: text)
         let closingLabel = structure.blocks.last ?? ""
         let isGeneric = structure.blocks == ScriptStructure.generic.blocks
@@ -47,17 +43,14 @@ nonisolated struct ScriptShape: Equatable, Sendable {
             if let last = built.last, last.label == labels[index] {
                 built[built.count - 1] = Section(
                     label: last.label, paragraphs: last.paragraphs + [paragraph], firstParagraph: last.firstParagraph,
-                    isHook: last.isHook, isMissingCTA: false
+                    isHook: last.isHook
                 )
             } else {
                 built.append(Section(
                     label: labels[index], paragraphs: [paragraph], firstParagraph: index,
-                    isHook: index == 0 && !structure.isSerious, isMissingCTA: false
+                    isHook: index == 0 && !structure.isSerious
                 ))
             }
-        }
-        if suggestsCTA, isGeneric, !paragraphs.isEmpty, !hasCTA {
-            built.append(Section(label: closingLabel, paragraphs: [], firstParagraph: paragraphs.count, isHook: false, isMissingCTA: true))
         }
         sections = built
     }

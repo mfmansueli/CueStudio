@@ -28,10 +28,10 @@ nonisolated struct CueSliderSpec: Equatable, Sendable {
 
     // MARK: - Settings › Prompter and the recorder (Steady only)
 
-    /// Words a minute: 80–220, in 5s, 150 is the natural pace.
-    static let speed = CueSliderSpec(80...220, step: 5, default: 150)
-    /// Small · Medium · Large · Extra large: 24 / 30 / 36 / 44 pt, Large by default.
-    static let textSize = steps(4, default: 2)
+    /// Words a minute: 30–300 (0.2× to 2× of `SpeedScale`), a stop every 15 (0.1×), 150 is the natural pace.
+    static let speed = CueSliderSpec(30...300, step: 15, default: 150)
+    /// Selfie points, 12–56 in whole points (`PrompterSettings.sizeRange`), 36 by default.
+    static let textSize = CueSliderSpec(PrompterSettings.sizeRange, step: 1, default: PrompterSettings().size)
     /// Percent of the screen's height, from the camera (10%) to the middle (50%).
     static let readingLine = CueSliderSpec(10...50, step: 1, default: 22)
     /// Points on each side of the text.

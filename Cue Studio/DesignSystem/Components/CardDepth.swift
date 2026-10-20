@@ -7,7 +7,7 @@ import SwiftUI
 
 /// What makes a card in a list look a little 3D and well defined: a wide soft shadow and a tight one under it, a line of light on its top
 /// edge and the faint violet hairline all around (`Palette.Depth`), the edge of the Scripts and Profile cards. The shadow is drawn only
-/// outside the card, so the card can be translucent (`Palette.card`) and the sky still shows through it. Apply it last, after the card's
+/// outside the card, so a translucent card would still let the sky show through it. Apply it last, after the card's
 /// own background and border.
 ///
 /// `openEdges` are the sides where the card goes on into another one (the rows of one group card in a `List`, each drawn by its own
@@ -32,7 +32,7 @@ struct CardDepth<S: InsettableShape>: ViewModifier {
             .shadow(color: Palette.Depth.contact, radius: 2, y: 1.5)
             .mask {
                 // Room for the shadow all around (cut at the open edges), minus the card itself: a translucent card on top
-                // (`Palette.card`) would otherwise show the black shape under it.
+                // would otherwise show the black shape under it.
                 ZStack {
                     Rectangle().padding(.depthMask(openEdges: openEdges, closed: -EdgeInsets.depthReachDistance, open: 0))
                     shape.fill(.black).blendMode(.destinationOut)

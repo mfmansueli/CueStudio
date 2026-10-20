@@ -11,8 +11,8 @@ import Foundation
 nonisolated enum RemoteCommand: String, Codable, CaseIterable, Sendable {
     case togglePlay, play, pause, faster, slower, forward, backward, restart
 
-    /// One tap of − or +, like a step of the speed slider.
-    static let speedStep = 0.1
+    /// Stops of the speed scale per tap of − or +: one, like a step of the speed slider (`SpeedScale`, 0.1×).
+    static let speedStops = 1
     /// Lines per tap of ‹‹ or ››, like Studio mode's buttons.
     static let jumpLines = 3
 

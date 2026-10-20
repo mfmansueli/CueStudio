@@ -242,14 +242,14 @@ struct PrompterViewModelSetupTests {
 
         scenario.transport.emit(.received(.command(.togglePlay)))
         #expect(scenario.viewModel.isPlaying)
-        // Each press is 0.1×, held on the 5 words-a-minute step.
-        let faster = PrompterSettings.clampedSpeed(1.2 + 0.1)
+        // Each press is one stop of the speed slider (0.1× of the natural pace, `SpeedScale`), from the stop the speed is nearest.
+        let start = SpeedScale.nearestStop(toSpeed: scenario.viewModel.session.prompter.speed)
+        let faster = SpeedScale.speed(forMultiple: SpeedScale.stops[start + 1])
         scenario.transport.emit(.received(.command(.faster)))
         #expect(scenario.viewModel.session.prompter.speed == faster)
         scenario.transport.emit(.received(.command(.slower)))
-        let slower = PrompterSettings.clampedSpeed(faster - 0.1)
         scenario.transport.emit(.received(.command(.slower)))
-        let slowest = PrompterSettings.clampedSpeed(slower - 0.1)
+        let slowest = SpeedScale.speed(forMultiple: SpeedScale.stops[start - 1])
         #expect(scenario.viewModel.session.prompter.speed == slowest)
         scenario.transport.emit(.received(.command(.pause)))
         #expect(!scenario.viewModel.isPlaying)

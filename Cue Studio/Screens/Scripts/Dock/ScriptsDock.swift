@@ -9,7 +9,7 @@ import SwiftUI
 /// the voice), and once there are scripts a lightbulb to Find inspiration; row 2 is the idea itself (two lines, opening to five while it
 /// is edited, the suggested idea while it is empty, and up to `IdeaPromptDraft.maxCharacters` characters), "↻ another idea", the microphone
 /// and the yellow arrow. Scrolling the list down folds row 1 away (09 §6); focusing the field raises the dock with the keyboard.
-/// Apple Intelligence's light (`DockGlow`) turns round the glass while a dictation listens, breathing with the voice, and runs round it
+/// Apple Intelligence's light (`AIGlow`) turns round the glass while a dictation listens, breathing with the voice, and runs round it
 /// once when an idea is sent; a new suggestion arrives word by word out of the light (`WordsFromLight`).
 ///
 /// The text is the one draft kept by `IdeaDraftService`. The microphone dictates into the field (speak, see the words, review,
@@ -123,7 +123,12 @@ struct ScriptsDock: View {
         }
         .padding(EdgeInsets(top: 16, leading: 12, bottom: 12, trailing: 12))
         .dockSurface()
-        .overlay { DockGlow(isListening: dictation.isActive, level: dictation.level, sendTurn: sendTurn) }
+        .overlay {
+            AIGlow(
+                shape: RoundedRectangle(cornerRadius: Metrics.dockRadius, style: .continuous),
+                isListening: dictation.isActive, level: dictation.level, sendTurn: sendTurn
+            )
+        }
         .animation(.smooth(duration: 0.2), value: dictation.notice)
         .animation(reduceMotion ? nil : .smooth(duration: 0.25), value: isExpanded)
         .accessibilityElement(children: .contain)
