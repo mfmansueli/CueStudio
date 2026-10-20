@@ -1007,8 +1007,8 @@ auditoria: `reports/editor-award-checklist.md`.
   do iPhone); tocar uma palavra e outra escolhe o intervalo. **Cut N words from the video** corta o vídeo (com 0,05 s antes e 0,15 s depois, sem
   invadir as palavras vizinhas); **Fix caption text** muda só o texto da legenda; palavras cortadas aparecem riscadas, com **Put back**. A
   explicação "Cut removes the words from the video. Fix caption text only changes what the caption says." fica na folha.
-- **✦ Smart em duas categorias** (`SmartPanelSection`, abas **Tools | Templates** no topo do painel): Tools são os blocos violeta (Auto captions,
-  Remove pauses, Studio Voice, Auto adjust, Background); Templates é a lista de modelos, cada um num cartão com o que muda ("Big captions that light
+- **✦ Smart em duas categorias** (`SmartPanelSection`, abas **Tools | Templates** no topo do painel): Tools são os blocos violeta (Edit by text, Auto captions,
+  Remove pauses, Studio Voice, Auto adjust, Background, Eye Contact §40); Templates é a lista de modelos, cada um num cartão com o que muda ("Big captions that light
   each word · a hook that pops in") e o ✓ amarelo no que a edição está usando (`appliedVideoTemplate`).
 - **Texto grande** (tamanhos de acessibilidade, conferido no iPhone SE em AX L): blocos de opção em 3 colunas, subtítulo do painel em até 2 linhas;
   no Cover Studio, "Next" sem o nome da etapa, "Video" no lugar de "Frame from video" e a barra de etapas só com ícones. Na linha de cima das
@@ -1183,3 +1183,88 @@ Prévia e exportação passam pelo mesmo compositor (`CueVideoCompositor`), ent�
   `QuickEditExtractAudioTests` (clipe curvo, sem Beats), `QuickEditPlayerTests` (som em passos durante o arraste), `SoundExtractorTests`; exportações reais `MotionExportTests` (o recorte segue,
   o tremor cai), `SpeedCurveExportTests` (cada quadro no momento da curva; som sem queda nem estalo), `ReverseExportTests`; UI `EditorMotionUITests`;
   aparelho `MotionAnalysisDeviceTests`, `EditorMotionDeviceTests` (`CUE_DEVICE=… scripts/test.sh device …`, cópias das takes).
+
+## 40. ✦ Smart › Eye Contact / Corrigir olhar (17 e 18 de outubro de 2026; pedido do dono)
+
+Move os olhos do criador em direção à lente onde ele lê o roteiro abaixo dela, depois da gravação, também em vídeos importados de uma montagem.
+Tudo no iPhone (Vision, Core ML e a CPU): nada sai do aparelho, sem Apple Intelligence, sem serviço pago. Desligado por padrão; não destrutivo
+(a receita guarda só a intenção: `TakeEdit.eyeContact`, `EyeContactSettings` com força 0,2–1 e versão do motor; edições antigas e um valor
+ilegível leem desligado). Vale para todas as gravações da linha do tempo principal; nunca para fotos e vídeos por cima (B-roll).
+
+O dono rejeitou a primeira versão (rede de Hsu: a pálpebra e os cílios tremiam e deformavam a cada quadro) e aprovou esta no protótipo do Mac
+com a tomada de Paris (18/10). Referência de natural: o Eye Contact do CapCut. As regras de quando e quanto corrigir seguem o NVIDIA Maxine (lido
+no código aberto do Locked Gaze, MIT, reescrito; `THIRD_PARTY_NOTICES.md`); o desenho é nosso e nenhum modelo inventa pixels.
+
+- **Pontos dos olhos** (`FaceMeshModel`, `FaceMeshV2.mlpackage`, 2,9 MB): o Face Mesh V2 do MediaPipe (Apache 2.0), convertido por nós para Core ML
+  (`tools/eyecontact/landmarks.py`; fp16 contra PyTorch: 0,2 px no máximo), 478 pontos com as íris: 16 no contorno de cada olho e o círculo da
+  íris (`EyeShape`). Muito mais preciso que os 6 pontos do Vision: a íris encaixa na borda real e o contorno fecha certo numa piscada. O próprio
+  modelo varia 1,6–2,2% da largura do olho conforme o recorte (`verify_landmarks.py`), por isso o recorte segue os pontos e os pontos são
+  suavizados no tempo.
+- **Análise** (`EyeContactAnalyzer`, `FaceRegion`, `FaceCrop`, `EyeContactAnalysisService`, `EyeContactAnalysisStore`): cada quadro (até 60 por
+  segundo) é lido em BGRA; um quadrado girado pela linha dos olhos (1,4× a extensão dos pontos do quadro anterior) é recortado em 256 px **na CPU**
+  (vImage: funciona numa exportação em segundo plano, onde o 15 Pro não tem GPU) e vai ao modelo. O Vision procura rostos num quadro de cada 10
+  (para achar de novo a pessoa principal e marcar o quadro com outra pessoa de pelo menos 60% da largura) e quando o modelo perde o rosto. Guarda
+  também a nitidez dos olhos (variância do Laplaciano no recorte) para notar borrão de movimento. Fica **ao lado da gravação**
+  (`<gravação>.cueeyes`, binário compacto; fora do backup; versionado e com a impressão do arquivo). Começa pelo **trecho da agulha** (2 s antes a
+  15 s depois), depois o resto; mover a agulha leva o trabalho para lá; para no calor e em segundo plano e continua de onde parou.
+- **Decisões** (`EyeGazePlan`, `EyeTrackSmoother`, puras e determinísticas, para a gravação inteira): os pontos passam por um filtro One-Euro **nos
+  dois sentidos do tempo** (parado quando o olho descansa, rápido quando ele se move de verdade, sem atraso), quebrado onde o rosto some ou pula;
+  o raio da íris é a mediana da gravação. O **ângulo** vem da distância do rosto (a íris tem ~11,7 mm em todo mundo) e do lugar do texto abaixo da
+  lente (35 mm, campo de visão 65°; ainda não medidos por iPhone), no máximo 20°: 11,5° em Paris, 13,4° na tomada do dono. Corrige onde há um rosto
+  confiável, sozinho, olhos de pelo menos 28 px (cheio a partir de 40), abertos (abaixo de 0,65 da abertura habitual de ±2 s é piscada, como o
+  Maxine), nítidos (abaixo de 0,45–0,7 da nitidez habitual sai), cabeça quase frontal e olhar a até 10–18° do lugar habitual de leitura. A
+  correção nunca muda mais de 10% por quadro, calculado para frente e para trás (a saída antes de uma piscada já começou quando ela chega).
+- **Desenho** (`EyeContactRenderer`, `EyeRedraw`, `EyeRedrawScene`, `EyePatch`, `EyePatchFilters`; protótipo `tools/eyecontact/prototype.py`): no
+  compositor (`CueVideoCompositor.framed`), **antes** de endireitar, estabilizar, recortar, Skin Smoothing, fundo, ajuste, filtro, transições e
+  overlays, em cada lado de uma transição; a prévia, a exportação e a capa feita de um quadro (`EyeContactStill`) usam o mesmo código. Na CPU, num
+  recorte em pé de cada olho em pixels inteiros (o que não muda volta idêntico, bit a bit): a **pálpebra superior sobe** (70% do quanto a íris
+  sobe, pico sobre a íris, zero nos cantos; a pele acima acompanha e se apaga meia largura de olho acima), a **íris sobe inteira** com os próprios
+  pixels (a faixa que a pálpebra de baixo escondia vem da **mesma coluna** da íris refletida na última linha vista, e se apaga para a cor da íris
+  naquela distância do centro a 0,35 raio da emenda, para não repetir a pupila nem um reflexo; o resto espelhado da própria íris, anel a anel; sem
+  nada para espelhar, a cor da íris naquela distância), o **branco** que ela deixa vem do branco do próprio olho na mesma linha, os **reflexos** da
+  córnea ficam parados (pontos mais claros que o branco, dentro da íris), a sombra da pálpebra e os cílios voltam por cima, e só a diferença
+  entra, numa máscara que junta o contorno antigo e o novo, alargada e esfumada. A **borda** da íris e da abertura sai tão suave quanto a filmada
+  (com pouca luz ou foco mole a borda real ocupa 4–9 px: medida no próprio quadro pela inclinação mais forte nos lados da íris, entre 1,2 px e 0,3
+  raio); sem isso a íris virava um disco escuro de borda dura. Num olho estreito a íris sobe no máximo 40% da abertura. Desligado = nada é feito. Foto escolhida como capa nunca
+  é tocada.
+- **Painel** (`EyeContactPanel`, `.medium`; bloco "Eye Contact" / "Corrigir olhar" no fim das ferramentas da ✦ Smart, `edit.smart.eyeContact`):
+  chave "Ajusta seu olhar em direção à câmera", **Strength** (20–100%, padrão 100% = o ângulo medido, um arraste = um passo de desfazer; Reset
+  volta a 100%), **After | Before** por toque (só a correção sai da prévia; nada entra na receita nem no histórico), uma linha de estado e
+  **✦ Smart** para voltar. Estados (`EyeContactState`): "Finding your eyes · 42%", "Ready here · finding your eyes in the rest · 42%", "Waiting for
+  the iPhone to cool down · 42%", "Goes on when Cue is open · 42%", "Corrects 87% of the video. Blinks and looks away stay as filmed." (só quando
+  tudo foi analisado), "No face clear enough to correct" / "More than one person in the frame: nothing was corrected" / "Your eyes are too small in
+  the frame to correct" / "Your head is turned too far to correct", "This video couldn’t be read", "Eye Contact isn’t available on this iPhone";
+  **Cancel** enquanto trabalha. No bloco: a porcentagem, "On", "No face" ou "Unavailable".
+- **Exportação:** a análise que faltar é feita antes (primeiros 8% da barra); no calor para e diz o que a exportação já diz. A impressão da
+  exportação inclui modelo, pesos, desenho e versão da análise (`EyeContactEngine.identity`).
+- **Medido no Mac** (bancada `tools/eyecontact/bench.py`, fluxo óptico entre quadros dentro dos olhos, 20 s de cada tomada): tremor acrescentado
+  **0,18 px** em Paris e **0,19 px** na tomada do dono com pouca luz (p95 0,47; antes da borda medida e das colunas: 0,24 e p95 0,66; a primeira
+  versão: 0,56 px); pálpebras e cílios mudam só pelo levantamento suave. O Swift desenha o mesmo que o protótipo nas duas tomadas (conferido no
+  Simulator com a geometria do MediaPipe do Mac: o Vision não acha rostos no Simulator). Quadros tremidos ficam como gravados.
+- **Não medido ainda no iPhone** (os aparelhos estavam fora em 18/10): tempo da análise com o modelo novo, do desenho na CPU por quadro (em Debug
+  e Release), memória e calor em 5 minutos, e a prévia ao vivo. Nem validado: rostos diversos (pele, olhos claros, óculos, maquiagem, luz
+  lateral), 4K e 60 fps, o lugar do texto e o campo de visão por iPhone, bateria. Patentes (Intel, Snap) a conferir antes de lançar.
+- **Testes:** `EyeContactSettingsTests`, `EyeContactAnalysisTests` (empacotamento, trechos em qualquer ordem, arquivo trocado, cache apagado),
+  `EyeGazePlanTests` (ângulo pela distância, piscada com rampa, sem rosto, outra pessoa, olhos pequenos, cabeça virada, olhar longe, borrão, rosto
+  que pula, trecho não analisado, quadro mostrado, determinismo, filtro One-Euro), `EyeContactAnalyzerTests` (ordem, região girada, recorte do
+  vImage num quadro guardado de lado, malha → dois olhos, nitidez, rosto principal, orientação), `EyeContactRendererTests` (a pupila sobe o
+  esperado; fora dos olhos nem um bit muda; gravação de lado = de pé; nada a fazer), `EyeRedrawSceneTests` (borda suave medida como filmada;
+  a faixa escondida vem da mesma coluna), `EyeContactStateTests`, `EyeContactAnalysisServiceTests`,
+  `QuickEditEyeContactTests`, `EyeContactCompositionTests`, `CodeCreditTests`, `ExportFingerprintTests`, exportação real
+  `EditorExportMatchesPreviewTests/eyeContactExportsAsPreviewed`; UI `EyeContactUITests` (também no UISmoke); aparelho `EyeContactDeviceTests`.
+
+## 41. Legendas: o idioma falado (20 de outubro de 2026; pedido do dono)
+
+- **Vídeo sem roteiro, idioma em Auto:** antes de ouvir, as legendas ouvem os primeiros 10 s de fala em até quatro idiomas
+  prováveis (o padrão de antes, os do iPhone, o do app e inglês) e legendam no que o reconhecedor entendeu melhor
+  (`SpokenLanguageIdentifier`, regras em `LOCALIZATION.md` §1, medidas no §5). A linha de estado diz "Finding the language you speak…" / "Descobrindo o
+  idioma que você fala…" (1–3 s num iPhone 15 Pro). Também vale para as legendas feitas na exportação de um vídeo nunca editado.
+- **Com roteiro:** no Auto, o idioma do roteiro, sem espera. Um idioma escolhido no seletor diferente do roteiro é tratado como
+  engano provável: compara os dois, legenda no falado e o seletor passa a mostrar esse. Sem aviso (decisão do dono).
+- **Onde não julga:** idiomas que só o ditado ouve (id, ar, tr, th, vi, nl, sv, da, nb no iPhone; todos num aparelho sem
+  `SpeechTranscriber`, como o iPad Pro A12Z) seguem no idioma de antes.
+- **Linhas:** palavras com horários redistribuídos (o reconhecedor errou os horários) formam linhas como as medidas, nunca uma palavra
+  por linha.
+- **Testes:** `SpokenLanguageIdentifierTests`, `LanguageServiceTests/aTakeWithoutAScriptIsComparedInItsLikelyLanguages`,
+  `QuickEditLanguageTests/aLanguagePickedUnlikeTheScriptsIsCheckedAgainstIt`, `CaptionBuilderTests/wordsSpreadOverTheSpeechMakeWholeLines`;
+  aparelho `SpokenLanguageDeviceTests`.

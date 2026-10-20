@@ -30,6 +30,7 @@ enum CaptionState: Equatable {
         switch self {
         case .idle: nil
         case .working(.preparing): String(localized: "Getting ready to listen…")
+        case .working(.findingLanguage): String(localized: "Finding the language you speak…")
         case .working(.downloading(let fraction?)):
             String(localized: "Downloading the speech model… \(fraction.formatted(.percent.precision(.fractionLength(0)).locale(.interface)))")
         case .working(.downloading(nil)): String(localized: "Downloading the speech model…")

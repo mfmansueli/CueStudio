@@ -8,8 +8,8 @@ import CoreImage
 import CoreImage.CIFilterBuiltins
 import os
 
-/// Renders each frame of an edited take with Core Image: upright, cropped to the take's frame,
-/// with its background blurred or replaced (the person found by Vision, or a chroma key), with
+/// Renders each frame of an edited take with Core Image: its eyes moved toward the lens (Eye Contact), upright, cropped to the
+/// take's frame, with its background blurred or replaced (the person found by Vision, or a chroma key), with
 /// Adjust and Filters, blended, slid or darkened by a transition, with the photo or video laid
 /// over it (B-roll), then texts and captions. Used by the Quick
 /// edit preview and by exports, so both show exactly the same thing.
@@ -21,6 +21,8 @@ final class CueVideoCompositor: NSObject, AVVideoCompositing, @unchecked Sendabl
     private let masker = PersonMasker()
     /// Where the faces are, for Skin Smoothing; only asked while a clip's dial is above 0.
     private let skin: SkinSmoother
+    /// Eye Contact: only asked for the frames its decisions correct (never while it's off).
+    private let eyes = EyeContactRenderer()
     /// The frame composed last, which the preview holds on screen while it swaps to a new item.
     private let lastComposed = OSAllocatedUnfairLock<CVReadOnlyPixelBuffer?>(initialState: nil)
     /// One autorelease pool per frame: Core Image and Vision (Skin Smoothing, the person mask) leave autoreleased objects behind on every
@@ -35,8 +37,11 @@ final class CueVideoCompositor: NSObject, AVVideoCompositing, @unchecked Sendabl
         super.init()
     }
 
+    /// In IOSurfaces Metal can read in place (Eye Contact's GPU passes read the recording's own frame).
     nonisolated let sourcePixelBufferAttributes: [String: any Sendable]? = [
         kCVPixelBufferPixelFormatTypeKey as String: kCVPixelFormatType_32BGRA,
+        kCVPixelBufferIOSurfacePropertiesKey as String: [String: String](),
+        kCVPixelBufferMetalCompatibilityKey as String: true,
     ]
     nonisolated let requiredPixelBufferAttributesForRenderContext: [String: any Sendable] = [
         kCVPixelBufferPixelFormatTypeKey as String: kCVPixelFormatType_32BGRA,
@@ -45,7 +50,7 @@ final class CueVideoCompositor: NSObject, AVVideoCompositing, @unchecked Sendabl
     nonisolated func renderContextChanged(_ newRenderContext: AVVideoCompositionRenderContext) {}
 
     nonisolated func startRequest(_ request: AVAsynchronousVideoCompositionRequest) {
-        queue.async { [context, overlayCache, masker, skin, lastComposed] in
+        queue.async { [context, overlayCache, masker, skin, eyes, lastComposed] in
             guard let instruction = request.videoCompositionInstruction as? CompositionInstruction else {
                 request.finish(with: NSError(domain: "studio.cue.compositor", code: 1))
                 return
@@ -87,14 +92,14 @@ final class CueVideoCompositor: NSObject, AVVideoCompositing, @unchecked Sendabl
                             other.withUnsafeBuffer { other in
                                 let image = Self.composedImage(
                                     from: source, blending: other, media: media, instruction: instruction, at: time,
-                                    cache: overlayCache, faces: (masker, skin)
+                                    cache: overlayCache, faces: (masker, skin, eyes)
                                 )
                                 context.render(image.cropped(to: bounds), to: output)
                             }
                         } else {
                             let image = Self.composedImage(
                                 from: source, blending: nil, media: media, instruction: instruction, at: time,
-                                cache: overlayCache, faces: (masker, skin)
+                                cache: overlayCache, faces: (masker, skin, eyes)
                             )
                             context.render(image.cropped(to: bounds), to: output)
                         }
@@ -140,7 +145,8 @@ final class CueVideoCompositor: NSObject, AVVideoCompositing, @unchecked Sendabl
     /// darkened inside a fade; then the texts and captions visible at `time` and the output scale.
     nonisolated private static func composedImage(
         from source: CVPixelBuffer, blending other: CVPixelBuffer?, media: [CMPersistentTrackID: CVPixelBuffer],
-        instruction: CompositionInstruction, at time: TimeInterval, cache: OverlayImageCache, faces: (masker: PersonMasker, skin: SkinSmoother)
+        instruction: CompositionInstruction, at time: TimeInterval, cache: OverlayImageCache,
+        faces: (masker: PersonMasker, skin: SkinSmoother, eyes: EyeContactRenderer)
     ) -> CIImage {
         let moment = Int((time * 1000).rounded())
         // The stretch of video this frame belongs to: the faces found in it carry from frame to frame, and are forgotten at its edges.
@@ -216,10 +222,16 @@ final class CueVideoCompositor: NSObject, AVVideoCompositing, @unchecked Sendabl
     /// A frame of a recording upright, steadied, cropped and scaled to the take's frame, with its background effect, Adjust
     /// and Filters, as `framing` says.
     nonisolated private static func framed(
-        _ source: CVPixelBuffer, as framing: Framing, faces: (masker: PersonMasker, skin: SkinSmoother)
+        _ source: CVPixelBuffer, as framing: Framing, faces: (masker: PersonMasker, skin: SkinSmoother, eyes: EyeContactRenderer)
     ) -> CIImage {
         let frame = framing.frame, look = framing.look, moment = framing.moment, sourceTime = framing.sourceTime
-        var image = CIImage(cvPixelBuffer: source).transformed(by: uprightTransform(frame.transform, sourceHeight: CGFloat(CVPixelBufferGetHeight(source))))
+        var image = CIImage(cvPixelBuffer: source)
+        // Eye Contact first, on the recording's own pixels, so every later step (and the other side of a transition) sees the same
+        // eyes, at any output size.
+        if let eyes = frame.eyes?.frame(at: sourceTime) {
+            image = faces.eyes.corrected(image, source: source, transform: frame.transform, frame: eyes)
+        }
+        image = image.transformed(by: uprightTransform(frame.transform, sourceHeight: CGFloat(CVPixelBufferGetHeight(source))))
         image = image.transformed(by: CGAffineTransform(translationX: -image.extent.minX, y: -image.extent.minY))
         if let steady = frame.steady {
             image = steadied(image, by: steady, at: sourceTime)

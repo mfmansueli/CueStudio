@@ -47,6 +47,7 @@ extension QuickEditViewModel {
         let request = UUID()
         captionRequest = request
         let recordings = captionRecordings
+        let isAuto = edit.captionLanguage == nil
         captionState = .working(.preparing)
         // Progress arrives from the recognizer's own tasks; it only lands while this request is on.
         let report: @Sendable (CaptionProgress) -> Void = { [weak self] progress in
@@ -58,7 +59,7 @@ extension QuickEditViewModel {
                 for recording in recordings {
                     try Task.checkCancellation()
                     let outcome: CaptionOutcome
-                    if let cached = transcript(of: recording.source), canReuse(cached, for: recording.language) {
+                    if let cached = transcript(of: recording.source), canReuse(cached, for: recording.language, among: isAuto ? recording.candidates : []) {
                         // Lining the words up with the script (spelling, languages) is the same work
                         // `TakeEditService` does after listening: off the main actor, like there.
                         let words = cached.words
@@ -69,7 +70,8 @@ extension QuickEditViewModel {
                         outcome = .captions(lines, transcript: cached)
                     } else {
                         outcome = try await editing.captions(
-                            forVideoAt: recording.url, script: recording.script, language: recording.language, progress: report
+                            forVideoAt: recording.url, script: recording.script, language: recording.language,
+                            spokenAmong: recording.candidates, progress: report
                         )
                     }
                     outcomes.append((recording.source, outcome))
@@ -81,28 +83,48 @@ extension QuickEditViewModel {
                 finishCaptions(request, with: .failed)
                 return
             }
-            finishCaptions(request, outcomes: outcomes)
+            finishCaptions(request, outcomes: outcomes, takeCandidates: recordings.first?.candidates ?? [])
         }
+    }
+
+    /// The languages captions hear the first seconds of a recording in, to listen to it in the one spoken (none: it's heard in
+    /// `language` straight away). On Auto, a take without a script: its likely languages. A language picked unlike the script's
+    /// (most likely by mistake, as the take was read in the script's): the script's first, then the one picked.
+    private func spokenCandidates(for script: Script?) -> [CueLanguage] {
+        guard let chosen = edit.captionLanguage else { return likelySpokenLanguagesFor(script) }
+        guard script != nil, let written = SpeechLocaleResolver.target(for: speechLanguageFor(script))?.language, written != chosen else {
+            return []
+        }
+        return [written, chosen]
     }
 
     /// What captions listen to: the take (with its script), then each other recording the montage
     /// plays (a library take with its own script, a video with none).
-    private var captionRecordings: [(source: UUID?, url: URL, script: String, language: SpeechLanguageRequest)] {
-        var result: [(source: UUID?, url: URL, script: String, language: SpeechLanguageRequest)] = [(nil, videoURL, scriptText, captionSpeechLanguage)]
+    private var captionRecordings: [CaptionRecording] {
+        let take = CaptionRecording(
+            source: nil, url: videoURL, script: scriptText, language: captionSpeechLanguage, candidates: spokenCandidates(for: captionScript)
+        )
+        var result = [take]
         for source in edit.sources where edit.timeline.segments.contains(where: { $0.sourceID == source.id }) {
             let script = source.scriptReference ?? source.takeID
                 .flatMap { id in takes.takes.first { $0.id == id } }
                 .flatMap { $0.captionScript(current: library.script(id: $0.scriptID)) }
             let language = edit.captionLanguage.map(SpeechLanguageRequest.language) ?? speechLanguageFor(script)
-            result.append((source.id, EditMediaFiles.url(for: source.fileName), script?.text ?? "", language))
+            result.append(CaptionRecording(
+                source: source.id, url: EditMediaFiles.url(for: source.fileName), script: script?.text ?? "", language: language,
+                candidates: spokenCandidates(for: script)
+            ))
         }
         return result
     }
 
-    private func canReuse(_ transcript: CaptionTranscript, for language: SpeechLanguageRequest) -> Bool {
+    /// A transcript already made: in the language asked for, or (on Auto) in one of the languages the recording is likely spoken in.
+    private func canReuse(_ transcript: CaptionTranscript, for language: SpeechLanguageRequest, among candidates: [CueLanguage]) -> Bool {
         guard transcript.isCurrent else { return false }
+        let heard = CueLanguage.matching(languageCode: transcript.languageCode)
+        if let heard, candidates.contains(heard) { return true }
         switch language {
-        case .language(let chosen): return CueLanguage.matching(languageCode: transcript.languageCode) == chosen
+        case .language(let chosen): return heard == chosen
         case .detect: return true
         }
     }
@@ -204,7 +226,7 @@ extension QuickEditViewModel {
     }
 
     /// Lines from every recording that gave some; when none did, the take's own reason.
-    private func finishCaptions(_ request: UUID, outcomes: [(source: UUID?, outcome: CaptionOutcome)]) {
+    private func finishCaptions(_ request: UUID, outcomes: [(source: UUID?, outcome: CaptionOutcome)], takeCandidates: [CueLanguage]) {
         guard captionRequest == request, !isClosed else { return }
         captionRequest = nil
         var lines: [CaptionCue] = []
@@ -232,6 +254,11 @@ extension QuickEditViewModel {
         }
         change { $0.captions = lines.sorted { $0.start < $1.start } }
         edit.captionTranscript = takeTranscript
+        // A language picked unlike the one spoken: the picker now says the one the captions were heard in.
+        if edit.captionLanguage != nil, let code = takeTranscript?.languageCode,
+           let spoken = takeCandidates.first(where: { CueLanguage.matching(languageCode: code) == $0 }), spoken != edit.captionLanguage {
+            edit.captionLanguage = spoken
+        }
         edit.sourceTranscripts = others
         edit.showsCaptions = !keepsCaptionsHiddenAfterListening
         keepsCaptionsHiddenAfterListening = false

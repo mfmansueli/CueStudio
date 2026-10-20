@@ -45,6 +45,7 @@ final class QuickEditViewModel {
             // Leaving Adjust (or opening it again) never leaves a measurement running or the picture compared.
             if panel != .adjust { cancelAuto() }
             comparesPicture = false
+            comparesEyeContact = false
             endChange()
             // Leaving Pauses without removing them puts them back.
             cancelPausePreview()
@@ -152,6 +153,13 @@ final class QuickEditViewModel {
     var comparesPicture = false {
         didSet {
             guard comparesPicture != oldValue else { return }
+            player.show(playedEdit)
+        }
+    }
+    /// Eye Contact › Before: the preview shows the eyes as filmed, everything else as edited. Never part of the edit or of undo.
+    var comparesEyeContact = false {
+        didSet {
+            guard comparesEyeContact != oldValue else { return }
             player.show(playedEdit)
         }
     }
@@ -292,11 +300,15 @@ final class QuickEditViewModel {
     /// Analyzes the recordings' motion for Follow face and Stabilize (`QuickEditViewModel+MotionAnalysis`); nil in tests that
     /// don't use it.
     let motion: MotionAnalysisService?
+    /// Finds the eyes for Eye Contact (`QuickEditViewModel+EyeContact`); nil in tests that don't use it.
+    let eyes: EyeContactAnalysisService?
     /// Follows an object through a recording for Track.
     let tracker: ObjectTracking
     private let drafts: QuickEditDraftStoring
     /// What a script is heard in for captions and Clean Up (`LanguageService.captionRequest(for:)`).
     let speechLanguageFor: (Script?) -> SpeechLanguageRequest
+    /// The languages a take without a script is likely spoken in (`LanguageService.likelySpokenLanguages(for:)`).
+    let likelySpokenLanguagesFor: (Script?) -> [CueLanguage]
     /// Voice Following's language when it differs from the captions' (`LanguageService.languageConflict(for:)`).
     private let languageConflictFor: (Script?) -> SpeechLanguageConflict?
     /// The take's edit when Quick edit opened.
@@ -323,8 +335,9 @@ final class QuickEditViewModel {
         mediaImporter: EditMediaImporting? = nil, recorder: VoiceOverRecording? = nil, styles: TextStyleStoring? = nil,
         coverPictures: CoverPicturing? = nil, soundPreviews: SoundEffectPreviewing? = nil,
         translations: TranslationAvailabilityChecking = AppleTranslationAvailability(), motion: MotionAnalysisService? = nil,
-        tracker: ObjectTracking = ObjectTracker(),
+        eyes: EyeContactAnalysisService? = nil, tracker: ObjectTracking = ObjectTracker(),
         speechLanguage: @escaping (Script?) -> SpeechLanguageRequest = SpeechLanguageRequest.script,
+        likelySpokenLanguages: @escaping (Script?) -> [CueLanguage] = { _ in [] },
         languageConflict: @escaping (Script?) -> SpeechLanguageConflict? = { _ in nil }
     ) {
         self.take = take
@@ -335,10 +348,12 @@ final class QuickEditViewModel {
         self.coverPictures = coverPictures ?? CoverPictureService()
         self.soundPreviews = soundPreviews ?? SoundEffectPreviewPlayer()
         speechLanguageFor = speechLanguage
+        likelySpokenLanguagesFor = likelySpokenLanguages
         self.mediaImporter = mediaImporter ?? EditMediaImporter()
         self.recorder = recorder ?? VoiceOverRecorder()
         self.takes = takes
         self.motion = motion
+        self.eyes = eyes
         self.tracker = tracker
         self.library = library
         self.editing = editing
@@ -384,6 +399,7 @@ final class QuickEditViewModel {
         player.seek(to: playhead)
         drawCover()
         requestMotionAnalysis()
+        requestEyeContactAnalysisIfNeeded()
         findBeatsIfNeeded()
     }
 
@@ -401,9 +417,11 @@ final class QuickEditViewModel {
         if comparesOriginal, edit.voiceProcessing != comparedProcessing { endComparison() }
         // A change is no longer what was being compared.
         if comparesPicture { comparesPicture = false }
+        if comparesEyeContact { comparesEyeContact = false }
         updateCurveSoundStepping()
         player.show(playedEdit)
         requestMotionAnalysisIfNeeded()
+        requestEyeContactAnalysisIfNeeded()
         if edit.coverDrawingKey != drawnCoverKey { drawCover() }
         scheduleDraftSave()
     }
@@ -501,6 +519,7 @@ final class QuickEditViewModel {
 
     func endScrub() {
         player.endScrub()
+        refocusEyeContact()
     }
 
     /// VoiceOver: moves the playhead by `seconds`.

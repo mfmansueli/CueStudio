@@ -50,6 +50,27 @@ struct QuickEditLanguageTests {
         return editor
     }
 
+    // MARK: - The language spoken
+
+    /// A language picked unlike the script's was most likely a slip: the first seconds are heard in both, and the picker then says
+    /// the one the captions were heard in.
+    @Test func aLanguagePickedUnlikeTheScriptsIsCheckedAgainstIt() async {
+        let editor = FakeTakeEditor()
+        let words = [CaptionWord(text: "Okay,", start: 0, end: 0.4), CaptionWord(text: "real", start: 0.4, end: 0.7)]
+        editor.captionOutcome = .captions([CaptionCue(words: words)], transcript: CaptionTranscript(words: words, languageCode: "en"))
+        let scenario = await makeScenario(editor: editor, makesCaptions: false)
+        let viewModel = scenario.viewModel
+        viewModel.setCaptionLanguage(.portugueseBrazil)
+        viewModel.makeCaptions()
+        await viewModel.captionTask?.value
+        #expect(editor.captionCandidates == [.english, .portugueseBrazil])
+        #expect(viewModel.edit.captionLanguage == .english)
+        // Now picked like the script's: what was heard is used again, nothing is compared.
+        viewModel.makeCaptions(replacingRevised: true)
+        await viewModel.captionTask?.value
+        #expect(editor.captionRequests == 1)
+    }
+
     // MARK: - The writing system Chinese was heard in
 
     @Test func traditionalChineseCaptionsAreTranslatedFromTraditionalNotSimplified() async {

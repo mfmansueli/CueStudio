@@ -9,6 +9,8 @@ import Foundation
 nonisolated enum CaptionProgress: Equatable, Sendable {
     /// Reading the sound and finding a speech model for the language.
     case preparing
+    /// Hearing the first seconds in a few likely languages, to listen to the take in the one spoken.
+    case findingLanguage
     /// Downloading the language's speech model (the system's own download), 0 to 1 when known.
     case downloading(Double?)
     /// Listening to the take, 0 to 1 of its length.

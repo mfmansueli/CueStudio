@@ -130,6 +130,24 @@ struct CaptionBuilderTests {
         #expect(single.first?.isEstimated == false)
     }
 
+    /// Times the recognizer got wrong are spread over the speech and marked estimated, one time per word (an iPad's dictation
+    /// model): they make lines like measured ones, not a line a word.
+    @Test func wordsSpreadOverTheSpeechMakeWholeLines() {
+        let spread = heard("An idea is good. Seeing it become a video is even better.").map { word in
+            var word = word
+            word.isEstimated = true
+            return word
+        }
+        let lines = CaptionBuilder.group(spread)
+        #expect(lines.map(\.text) == ["An idea is good.", "Seeing it become a video", "is even better."])
+        // A run that shares one time still stays whole.
+        let run = CaptionTranscriber.spread("one two three four five six", start: 0, end: 2).map {
+            CaptionWord(text: $0.text, start: $0.start, end: $0.end, isEstimated: $0.isEstimated)
+        }
+        let after = heard("and then more", from: 2.2)
+        #expect(CaptionBuilder.group(run + after).map(\.text) == ["one two three four five six", "and then more"])
+    }
+
     @Test func nothingHeardMakesNoLines() {
         #expect(CaptionBuilder.captions(heard: [], script: "A whole script that was never said.").isEmpty)
     }

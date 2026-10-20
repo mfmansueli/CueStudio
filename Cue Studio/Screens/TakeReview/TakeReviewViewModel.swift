@@ -91,6 +91,8 @@ final class TakeReviewViewModel {
     private let freeSpace: () -> Int64?
     /// What a script is heard in for captions (`LanguageService.captionRequest(for:)`).
     private let speechLanguageFor: (Script?) -> SpeechLanguageRequest
+    /// The languages a take without a script is likely spoken in (`LanguageService.likelySpokenLanguages(for:)`).
+    private let likelySpokenLanguagesFor: (Script?) -> [CueLanguage]
 
     init(
         takeID: UUID,
@@ -110,9 +112,11 @@ final class TakeReviewViewModel {
         toast: ToastService,
         background: BackgroundExportRunning? = nil,
         freeSpace: @escaping () -> Int64? = { StorageSpace.available() },
-        speechLanguage: @escaping (Script?) -> SpeechLanguageRequest = SpeechLanguageRequest.script
+        speechLanguage: @escaping (Script?) -> SpeechLanguageRequest = SpeechLanguageRequest.script,
+        likelySpokenLanguages: @escaping (Script?) -> [CueLanguage] = { _ in [] }
     ) {
         speechLanguageFor = speechLanguage
+        likelySpokenLanguagesFor = likelySpokenLanguages
         self.takeID = takeID
         self.takes = takes
         self.quota = quota
@@ -667,8 +671,11 @@ final class TakeReviewViewModel {
         if edit.captions.isEmpty {
             let script = take.captionScript(current: library.script(id: take.scriptID))
             let language = edit.captionLanguage.map(SpeechLanguageRequest.language) ?? speechLanguageFor(script)
+            // On Auto, a take without a script is heard in the language it's spoken in.
+            let candidates = edit.captionLanguage == nil ? likelySpokenLanguagesFor(script) : []
             let outcome = try? await editing.captions(
-                forVideoAt: takes.videoURL(for: take), script: script?.text ?? "", language: language, progress: { _ in }
+                forVideoAt: takes.videoURL(for: take), script: script?.text ?? "", language: language, spokenAmong: candidates,
+                progress: { _ in }
             )
             switch outcome {
             case .captions(let lines, let transcript)?:

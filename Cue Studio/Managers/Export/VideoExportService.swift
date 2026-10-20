@@ -95,11 +95,18 @@ final class VideoExportService: VideoExporting {
         var edit = options.edit ?? TakeEdit(sourceDuration: duration, aspect: options.aspect)
         edit.aspect = options.aspect
         let treated = options.edit == nil ? RecordingSounds.none : try await RecordingSounds.prepare(for: edit, takeURL: source, cache: sounds)
+        // Eye Contact's analysis still missing (the editor usually made it already) fills the first part of the bar.
+        let analysisProgress: (@Sendable (Double) -> Void)? = progress.map { report in
+            { @Sendable done in Task { @MainActor in report(0.08 * done) } }
+        }
         let composition: EditedComposition
         do {
             composition = try await EditedComposition.build(
                 source: source, edit: edit, sound: treated, speech: await voiceActivity(for: source, edit: edit),
-                options: .init(burnsInCaptions: options.burnsInCaptions, shortSide: options.shortSide, frameRate: options.frameRate)
+                options: .init(
+                    burnsInCaptions: options.burnsInCaptions, shortSide: options.shortSide, frameRate: options.frameRate,
+                    analysisProgress: analysisProgress
+                )
             )
         } catch EditedComposition.BuildError.tooWarm {
             throw VideoExportError.tooWarm

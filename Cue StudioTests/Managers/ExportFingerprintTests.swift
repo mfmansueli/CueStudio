@@ -43,6 +43,16 @@ struct ExportFingerprintTests {
         #expect(fingerprint(base, take: UUID()) != fingerprint(base))
     }
 
+    @Test func eyeContactAndItsStrengthChangeIt() {
+        let edit = TakeEdit(sourceDuration: 20, aspect: .portrait)
+        var on = edit
+        on.eyeContact = EyeContactSettings()
+        var stronger = on
+        stronger.eyeContact?.strength = 0.9
+        let prints = [edit, on, stronger].map { fingerprint(ExportOptions(aspect: .portrait, edit: $0, burnsInCaptions: false, shortSide: nil)) }
+        #expect(Set(prints).count == 3)
+    }
+
     @Test func aDifferentRecordingUnderTheSameNameIsADifferentExport() throws {
         let url = URL.temporaryDirectory.appending(path: "fingerprint-\(UUID().uuidString).mov")
         defer { try? FileManager.default.removeItem(at: url) }

@@ -15,14 +15,24 @@ final class TakeEditService: TakeEditing {
     /// Audio-only copies, Studio Voice's treatments and levels: shared with the export, so trims and cuts (and the export
     /// after them) reuse them instead of treating the whole take again.
     private let sounds: RecordingSoundCache
+    /// Which language a take without a script is spoken in.
+    private let spokenLanguages: SpokenLanguageIdentifier
 
-    init(sounds: RecordingSoundCache = .shared) {
+    init(sounds: RecordingSoundCache = .shared, spokenLanguages: SpokenLanguageIdentifier = SpokenLanguageIdentifier()) {
         self.sounds = sounds
+        self.spokenLanguages = spokenLanguages
     }
     /// What was heard in a take, for captions and Clean Up, so it is transcribed once.
     private var transcripts: [TranscriptKey: TakeTranscript] = [:]
     /// Where someone speaks in each recording, for music that ducks.
     private var speech: [URL: [TimeSpan]] = [:]
+    /// The language each recording was found to be spoken in, among the candidates asked (nil: couldn't tell).
+    private var spoken: [SpokenKey: CueLanguage?] = [:]
+
+    private struct SpokenKey: Hashable {
+        let audio: URL
+        let candidates: [CueLanguage]
+    }
     /// What Auto measured, per recording and stretch, so measuring the same clip twice is free.
     private var autoCorrections: [AutoKey: AutoCorrection] = [:]
     private var autoOrder: [AutoKey] = []
@@ -76,7 +86,7 @@ final class TakeEditService: TakeEditing {
     }
 
     func captions(
-        forVideoAt url: URL, script: String, language: SpeechLanguageRequest,
+        forVideoAt url: URL, script: String, language: SpeechLanguageRequest, spokenAmong candidates: [CueLanguage],
         progress: @escaping @Sendable (CaptionProgress) -> Void
     ) async throws -> CaptionOutcome {
         progress(.preparing)
@@ -86,9 +96,14 @@ final class TakeEditService: TakeEditing {
         } catch AudioTrackExtractor.ExtractError.noAudio {
             return .noAudio
         }
+        var request = language
+        if candidates.count > 1 {
+            progress(.findingLanguage)
+            if let spoken = try await spokenLanguage(in: audio, among: candidates) { request = .language(spoken) }
+        }
         let heard: TakeTranscript
         do {
-            heard = try await transcript(of: audio, language: language, script: script, progress: progress)
+            heard = try await transcript(of: audio, language: request, script: script, progress: progress)
         } catch let reason as SpeechUnavailableReason {
             return .unavailable(reason)
         }
@@ -110,7 +125,8 @@ final class TakeEditService: TakeEditing {
         let composition = try await EditedComposition.build(
             source: url, edit: edit, sound: treated, speech: await voiceActivity(for: url, edit: edit),
             options: .init(
-                burnsInCaptions: true, shortSide: 1080, window: window, analyzesMissingMotion: false, rendersCurveSound: rendersCurveSound
+                burnsInCaptions: true, shortSide: 1080, window: window, analyzesMissingMotion: false, analyzesMissingEyes: false,
+                rendersCurveSound: rendersCurveSound
             )
         )
         let item = AVPlayerItem(asset: composition.asset)
@@ -179,6 +195,15 @@ final class TakeEditService: TakeEditing {
         let spans = await Task.detached { (try? VoiceActivity.spans(inAudio: audio)) ?? [] }.value
         speech[video] = spans
         return spans
+    }
+
+    /// The language the take is spoken in among `candidates`, found once per recording and list.
+    private func spokenLanguage(in audio: URL, among candidates: [CueLanguage]) async throws -> CueLanguage? {
+        let key = SpokenKey(audio: audio, candidates: candidates)
+        if let found = spoken[key] { return found }
+        let found = try await spokenLanguages.spokenLanguage(in: audio, among: candidates)
+        spoken[key] = found
+        return found
     }
 
     // MARK: - Files

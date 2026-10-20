@@ -79,7 +79,8 @@ struct TakeReviewView: View {
             drafts: services.drafts,
             toast: services.toast,
             background: services.backgroundExports,
-            speechLanguage: { languages.captionRequest(for: $0) }
+            speechLanguage: { languages.captionRequest(for: $0) },
+            likelySpokenLanguages: { languages.likelySpokenLanguages(for: $0) }
         )
         let notifications = services.notifications
         model.onExported = { takeID, saved in Task { await notifications.exportFinished(takeID: takeID, savedToPhotos: saved) } }

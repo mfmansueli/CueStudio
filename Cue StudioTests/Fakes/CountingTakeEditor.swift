@@ -33,10 +33,10 @@ final class CountingTakeEditor: TakeEditing {
     }
 
     func captions(
-        forVideoAt url: URL, script: String, language: SpeechLanguageRequest,
+        forVideoAt url: URL, script: String, language: SpeechLanguageRequest, spokenAmong candidates: [CueLanguage],
         progress: @escaping @Sendable (CaptionProgress) -> Void
     ) async throws -> CaptionOutcome {
-        try await editing.captions(forVideoAt: url, script: script, language: language, progress: progress)
+        try await editing.captions(forVideoAt: url, script: script, language: language, spokenAmong: candidates, progress: progress)
     }
 
     func previewItem(forVideoAt url: URL, edit: TakeEdit, window: TimeSpan?, rendersCurveSound: Bool) async throws -> AVPlayerItem {

@@ -84,17 +84,19 @@ Toda tela, componente ou cor nova **precisa passar** no contraste antes de ser e
 ### Testes no aparelho (opt-in)
 
 Sempre `CUE_DEVICE="<iPhone>" scripts/test.sh device <Suite>`: um conjunto por vez, iPhone desbloqueado e com a tela acesa (o modelo da Apple é
-limitado em segundo plano e dois conjuntos de fala disputam os 5 idiomas). O script liga a variável `TEST_RUNNER_CUE_…` certa. Um teste de
+limitado em segundo plano e dois conjuntos de fala disputam os 5 idiomas; bloqueado, o script para na hora, senão o `xcodebuild` esperaria o
+desbloqueio para sempre). O script liga a variável `TEST_RUNNER_CUE_…` certa. Um teste de
 aparelho tem 5 minutos, por isso os conjuntos pegam poucos casos por execução (variáveis `TEST_RUNNER_CUE_…` de cada suíte). Um idioma que o
 aparelho não roda aparece como **não validado** (teste cancelado), nunca aprovado.
 
 | Assunto | Suítes | Onde ficam os resultados |
 |---|---|---|
-| Fala (o Simulator não roda o reconhecimento) | `VoiceFollowingSpeechTests` (inclui `availabilityOnThisDevice()`), `VoiceFollowingLatencyTests`, `CaptionSpeechTests` | `LOCALIZATION.md` §5 |
+| Fala (o Simulator não roda o reconhecimento) | `VoiceFollowingSpeechTests` (inclui `availabilityOnThisDevice()`), `VoiceFollowingLatencyTests`, `CaptionSpeechTests`, `SpokenLanguageDeviceTests` (idioma falado num vídeo sem roteiro) | `LOCALIZATION.md` §5 |
 | Apple Intelligence | `LanguageModelDeviceTests`, `ScriptGenerationFlowDeviceTests` | `LOCALIZATION.md` §5 |
 | My Cue Voice e roteirista | `VoicePersonaDeviceTests` (`tools/voice/collect_runs.py`, `make_pairs.py`), `PromptBudgetDeviceTests`, `WritingImportDeviceTests`, `PlatformLengthDeviceTests`, `LengthVariantsDeviceTests`, `ScriptToolsDeviceTests`, `IdeaRelevanceDeviceTests`, `IdeaSuggestionsDeviceTests`, `CreatorDayDeviceTests`, `InspirationDeviceTests` | `DESIGN_PROJECT.md` §4, §23, §30 |
 | Qualidade de roteiros e ideias (PT/EN/ES, voz completa, meia e sem voz) | `ScriptQualityDeviceTests` (`TEST_RUNNER_CUE_QUALITY_RUN=<nome>`; `tools/quality/collect.py`, `report.py`; reaplicar a lógica pura nos textos: `QualityReplayTests`) | `DESIGN_PROJECT.md` §4.1 |
 | Quick edit | `QuickEditPreviewLatencyTests`; `SkinSmoothingDeviceTests` e `BackgroundDeviceTests` (Vision de verdade; foto de retrato em `Documents` do app via `xcrun devicectl device copy to … --domain-identifier com.cuestudioteleprompter`, `TEST_RUNNER_CUE_SKIN_MEDIA=Documents/skin.jpg`) | `DESIGN_PROJECT.md` §20, §31 |
+| Eye Contact (✦ Smart) | `EyeContactDeviceTests` (o Face Mesh em Core ML e o desenho na CPU de verdade numa CÓPIA da tomada mais nova; `TEST_RUNNER_CUE_EYES_TAKE=<arquivo>` escolhe outra, `…_SECONDS`, `…_STRENGTH`; o vídeo corrigido e a análise vão para `Documents` do app; `TEST_RUNNER_CUE_EYES_CLEANUP=1` com `EyeContactDeviceTests/removesWhatTheseRunsLeft()` apaga o que ficou lá) | `DESIGN_PROJECT.md` §40 |
 
 ## Espaço em disco (não encher o Mac)
 

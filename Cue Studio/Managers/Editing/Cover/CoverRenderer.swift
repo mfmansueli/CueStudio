@@ -108,7 +108,11 @@ nonisolated enum CoverRenderer {
         generator.requestedTimeToleranceBefore = .zero
         generator.requestedTimeToleranceAfter = .zero
         guard let result = try? await generator.image(at: CMTime(seconds: max(0, time), preferredTimescale: 600)) else { return nil }
-        let full = result.image
+        let context = CIContext(options: [.cacheIntermediates: false])
+        // Eye Contact like the video's at that moment (the frame the generator gave, upright, before the crop).
+        let full = EyeContactStill.corrected(
+            result.image, recording: url, at: result.actualTime.seconds, settings: edit.eyeContact, context: context
+        )
         let size = CGSize(width: full.width, height: full.height)
         var crop = CropMath.crop(in: size, aspect: edit.aspect.widthOverHeight, offset: edit.cropOffset)
         // Follow face: the crop where it is at that moment of the video.
@@ -129,7 +133,6 @@ nonisolated enum CoverRenderer {
         let clip = edit.clip(showing: picked)?.segment
         let effect = clip.map { edit.background(for: $0) } ?? edit.background(for: picked.sourceID)
         let look = clip.map { edit.lookSettings(for: $0) } ?? LookSettings(edit)
-        let context = CIContext(options: [.cacheIntermediates: false])
         // Skin Smoothing like the video's: the faces of this frame, found on the frame as recorded (before a background goes behind the creator).
         let skin = SkinSmoother(context: context).pass(for: image, value: look.skinSmoothing, stream: .main, epoch: 0, time: time)
         if let effect, let render = BackgroundRender.prepare(effect, cacheKey: "cover") {

@@ -87,6 +87,8 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
     var cropFit: CropFit = .fill
     /// Follow face: a Fill crop moves with the creator's face (`FaceFollowPath`); nil keeps it where `cropOffset` puts it.
     var faceFollow: FaceFollow?
+    /// ✦ Smart › Eye Contact: the eyes moved toward the lens on every recording the edit plays; nil is off.
+    var eyeContact: EyeContactSettings?
 
     // MARK: Captions
     var showsCaptions = false
@@ -329,7 +331,7 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
         audioVersion, voiceEnhancement, noiseReduction, voiceReach, evensOutVoices, music, backgrounds, exposure, contrast, warmth, filter
         case snapsToBeats
         case saturation, highlights, shadows, sharpness, filterAmount, cropFit, pauseThreshold
-        case vibrance, tint, autoCorrection, autoAmount, lookVersion, skinSmoothing, faceFollow
+        case vibrance, tint, autoCorrection, autoAmount, lookVersion, skinSmoothing, faceFollow, eyeContact
         case aspect, cropOffset, showsCaptions, captionStyle, captionLook, captionPreset, captionPosition, captions
         case captionTranscript, sourceTranscripts, captionLanguage, captionAnimation, captionTranslations, captionDisplay
         case captionCollection
@@ -385,6 +387,8 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
         cropFit = (try? container.decodeIfPresent(CropFit.self, forKey: .cropFit)) ?? .fill
         // Added with Follow face: edits saved before keep their still crop.
         faceFollow = try? container.decodeIfPresent(FaceFollow.self, forKey: .faceFollow)
+        // Added with Eye Contact: edits saved before (and one that can't be read) have it off.
+        eyeContact = try? container.decodeIfPresent(EyeContactSettings.self, forKey: .eyeContact)
         pauseThreshold = (try? container.decodeIfPresent(TimeInterval.self, forKey: .pauseThreshold)) ?? 0.7
         aspect = try container.decode(AspectRatio.self, forKey: .aspect)
         cropOffset = try container.decodeIfPresent(Double.self, forKey: .cropOffset) ?? 0
