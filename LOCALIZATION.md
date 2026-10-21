@@ -187,8 +187,8 @@ Teleprompter / Teleprompter / 提詞機*, Hook stays *hook* in nl/sv/da/nb (zh-H
 *Stem volgen / Följ rösten / Følg stemmen / Følg stemmen / 跟隨語音*. Brand and feature names stay in
 English as above. zh-Hant uses Taiwan wording (照片, 檔案, 儲存, 螢幕), not the zh-Hans glyph swap. None
 of the five is right to left; Traditional Chinese is written without spaces (`WordSegmenter`).
-Strings are translated by the model that built the app and marked for review by a native speaker
-before a public release.
+Strings are translated by the model that built the app. In October 2026 every language had an AI review in a native
+speaker's role (below); a human native review is still welcome before a public release.
 
 | English | es | pt-BR | fr | de | it | ja | ko | zh-Hans | hi | id | ar | tr | th | vi |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
@@ -222,6 +222,36 @@ before a public release.
 | Color key | Clave de color | Chroma key | Incrustation | Farbschlüssel | Chroma key | カラーキー | 컬러 키 | 色键抠像 | कलर की | Kunci warna | مفتاح اللون | Renk anahtarı | คีย์สี | Tách màu nền |
 | Draft | Borrador | Rascunho | Brouillon | Entwurf | Bozza | 下書き | 초안 | 草稿 | ड्राफ़्ट | Draf | مسودة | Taslak | ฉบับร่าง | Bản nháp |
 | Language & Region | Idioma y región | Idioma e região | Langue et région | Sprache & Region | Lingua e area geografica | 言語と地域 | 언어 및 지역 | 语言与地区 | भाषा और क्षेत्र | Bahasa & Wilayah | اللغة والمنطقة | Dil ve Bölge | ภาษาและภูมิภาค | Ngôn ngữ & Vùng |
+
+### 2.1 The October 2026 review
+
+Each of the 19 languages was read in full (about 3,500 strings each) by an AI reviewer in the role of a demanding native
+speaker who knows Apple's wording, with the code at hand for strings without a comment; 7,410 strings changed (between 6% and 17% per language,
+most of them consistency and the rules below; true meaning errors were 1–2% per language). The
+tool is `tools/l10n/review.py` (`export` one language, `check`, `apply` only that language's values); each language's
+report, with the terms it settled on and the questions left for the owner, is in `tools/l10n/reports/2026-10-<lang>.md`.
+Those term lists extend the table above. What the review taught, for every language and every new string:
+
+- **A cue in brackets inside a template uses exactly the cue's own translated name** (`ScriptCueSymbol` recognizes a cue
+  by it). The cue "beat" is a short pause in every language (es *pausa corta*, pt *pausa curta*, de *kurze Pause*…).
+- **One key, one meaning.** A word with two uses gets two English keys (Front/Rear vs. Back; Ratio vs. ✦ Shape; Closing vs.
+  Close; Post caption vs. Caption). Keys still shared and reported for a split: Format, Quick, Line, Fade, Fade in, Words,
+  Voice, Mono, Pop, Reveal, Next, Time, Keep mine, OFF.
+- **Placeholders in another order are numbered** (`%2$@ … %1$lld`): unnumbered ones fill in order, and a number in a
+  `%@` breaks the string. `LocalizationCatalogTests` fails on a translation that moves unnumbered placeholders of
+  different kinds; two of the same kind (`%lld of %lld`) can't be checked by a test, so a reviewer looks.
+- **The app never speaks as "I" or "we"**, and never says a video was posted. Buttons where Cue's AI writes (✦ Write,
+  Draft my reply, Write the ad) use the draft word too.
+- **No em dashes** in any language (a colon, a comma, a full stop or " · "). The English source still has about 40;
+  every reviewer had to rewrite them.
+- **Feature names stay in English** like the brand: ✦ Smart, ✦ Shape, Selfie, Studio, My Cue Voice, Cue Voice, and the
+  Clean caption collection. Whether Studio Voice is one of them is still the owner's call (ja, ko, hi keep it in English).
+- **A language's name may already contain the word "language"** (vi *Tiếng Anh*): a template never adds it again.
+- **Lines the creator says to camera** (templates, starters) avoid a gendered first person where the language marks it
+  (hi), and address the audience the way creators do (fr *vous*); the interface keeps the register above (ko 해요체
+  throughout, 합니다체 only in the system permission prompts).
+- Languages Apple Intelligence doesn't write (id, th, hi, ar) are translated faithfully like the rest; the app explains
+  at draft time.
 
 ## 3. Right to left and longer text
 
