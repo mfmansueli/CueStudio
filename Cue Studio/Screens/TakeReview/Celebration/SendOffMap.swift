@@ -150,26 +150,22 @@ struct SendOffMap: View {
         let halo = 10 * scale, rim = 6 * scale, core = 5 * scale
         context.drawLayer { layer in
             layer.addFilter(.blur(radius: 7))
-            layer.fill(disc(point, halo), with: .color(Palette.acc.opacity(0.8 * opacity)))
+            layer.fill(LightFX.disc(point, halo), with: .color(Palette.acc.opacity(0.8 * opacity)))
         }
         context.drawLayer { layer in
             layer.addFilter(.blur(radius: 1.5))
-            layer.fill(disc(point, rim), with: .color(Palette.Universe.starGold.opacity(opacity)))
+            layer.fill(LightFX.disc(point, rim), with: .color(Palette.Universe.starGold.opacity(opacity)))
         }
-        context.fill(disc(point, core), with: .color(.white.opacity(opacity)))
+        context.fill(LightFX.disc(point, core), with: .color(.white.opacity(opacity)))
     }
 
     /// The new star: a 5 pt dot of `starGold` in a glow (`0 0 8px 2px rgba(255,214,10,.7)`).
     private func glowDot(_ context: inout GraphicsContext, at point: CGPoint, radius: Double, opacity: Double) {
         context.drawLayer { layer in
             layer.addFilter(.blur(radius: 4))
-            layer.fill(disc(point, radius + 2), with: .color(Palette.acc.opacity(0.7 * opacity)))
+            layer.fill(LightFX.disc(point, radius + 2), with: .color(Palette.acc.opacity(0.7 * opacity)))
         }
-        context.fill(disc(point, radius), with: .color(Palette.Universe.starGold.opacity(opacity)))
-    }
-
-    private func disc(_ center: CGPoint, _ radius: Double) -> Path {
-        Path(ellipseIn: CGRect(x: center.x - radius, y: center.y - radius, width: radius * 2, height: radius * 2))
+        context.fill(LightFX.disc(point, radius), with: .color(Palette.Universe.starGold.opacity(opacity)))
     }
 
     // MARK: - "+1"

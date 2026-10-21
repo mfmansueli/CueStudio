@@ -51,7 +51,6 @@ struct ScriptStarterBriefTests {
         var reported: [IdeaBrief] = []
         scenario.starter.briefWritten = { reported.append($0) }
         scenario.ideaDraft.use(idea)
-        #expect(scenario.ideaDraft.submittedBrief == idea.brief)
         scenario.starter.write(from: .zero)
         #expect(scenario.presentation.scriptsPath.first?.writing?.brief == idea.brief)
         #expect(reported.isEmpty, "not before it is written")

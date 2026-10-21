@@ -30,8 +30,6 @@ nonisolated struct VoiceRunMetrics: Sendable {
         var openingFollowed = 0
         var openingJudged = 0
 
-        /// Scripts that broke at least one hard constraint the creator asked for (avoid, "I" or "we", a catchphrase or a style's name as the opening).
-        var hard: Int { avoided + pronoun + catchphraseFirst + styleName + emoji }
         var averageWords: Double { written == 0 ? 0 : Double(totalWords) / Double(written) }
         var topicRate: Double { written == 0 ? 0 : Double(topicHits) / Double(written) }
         var sentenceRate: Double { sentenceJudged == 0 ? 0 : Double(sentenceFits) / Double(sentenceJudged) }

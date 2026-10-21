@@ -22,8 +22,6 @@ final class NotificationService {
     private(set) var authorization: NotificationAuthorization = .notDetermined
     /// Cue's requests waiting in the system (Debug diagnostics and tests).
     var pendingIdentifiers: [String] = []
-    /// How the stored state was found at launch (a damaged one started over).
-    let loaded: NotificationStateStore.Loaded
 
     @ObservationIgnored let center: NotificationCenterClient
     @ObservationIgnored let factsSource: NotificationFactsSource
@@ -63,7 +61,6 @@ final class NotificationService {
         self.calendar = calendar
         let (state, loaded) = store.load(now: now())
         self.state = state
-        self.loaded = loaded
         if loaded != .restored { store.save(state) }
     }
 
@@ -76,17 +73,6 @@ final class NotificationService {
     // MARK: - Consent
 
     func isOn(_ category: NotificationCategory) -> Bool { state.isOn(category) }
-
-    /// Turns a category on or off. Turning one on asks iOS when it hasn't been asked yet; a no from iOS keeps the choice (the creator may allow
-    /// Cue in Settings later) and nothing is scheduled. Off cancels what that category had waiting.
-    @discardableResult
-    func setCategory(_ category: NotificationCategory, isOn: Bool) async -> NotificationAuthorization {
-        mutate { $0.consent[category.rawValue] = isOn }
-        if !isOn { measure(.optedOut, campaign: "category.\(category.rawValue)", category: category) }
-        let authorization = isOn ? await requestAuthorizationIfNeeded() : authorization
-        await reconcile()
-        return authorization
-    }
 
     // MARK: - Permission
 

@@ -68,7 +68,7 @@ struct QuickEditMontageTests {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
         scenario.player.currentTime = 32
-        viewModel.cut()
+        viewModel.splitClip()
         viewModel.perform(.selectClipAtPlayhead)
         #expect(viewModel.toolbarItems.first { $0.id == "reorder" }?.style == .normal)
         scenario.player.play()
@@ -85,12 +85,11 @@ struct QuickEditMontageTests {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
         scenario.player.currentTime = 32
-        viewModel.cut()
+        viewModel.splitClip()
         scenario.player.currentTime = 5
         viewModel.addText(.title)
         let steps = viewModel.history.past.count
-        viewModel.tapTimeline(onPiece: 0)
-        viewModel.duplicateSection()
+        viewModel.duplicateClip(viewModel.edit.timeline.segments[0].id)
         #expect(viewModel.history.past.count == steps + 1)
         #expect(viewModel.edit.timeline.segments.count == 3)
         #expect(viewModel.edit.texts.count == 2)
@@ -109,7 +108,7 @@ struct QuickEditMontageTests {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
         scenario.player.currentTime = 32
-        viewModel.cut()
+        viewModel.splitClip()
         scenario.player.currentTime = 40
         viewModel.addText(.hook)
         viewModel.moveSection(from: 1, to: 0)
@@ -137,7 +136,7 @@ struct QuickEditMontageTests {
         #expect(viewModel.clips.last?.title == "B-roll walk · Take 1")
 
         let section = try #require(viewModel.edit.timeline.segments.last?.id)
-        viewModel.removeSection(section)
+        viewModel.deleteClip(section)
         #expect(viewModel.edit.timeline.segments.count == 1)
         #expect(FileManager.default.fileExists(atPath: original.path(percentEncoded: false)))
     }
@@ -172,7 +171,7 @@ struct QuickEditMontageTests {
         #expect(Set(instances.map(\.line.id)).count == 2)
         #expect(Set(instances.map(\.cueID)) == [viewModel.edit.captions[0].id])
         // Picking the copy's line picks the line both show.
-        viewModel.selectBar(viewModel.captionBars[1])
+        viewModel.tapTimeline(.item(.caption, viewModel.timelineInput(heightClass: .regular).captions[1].id))
         #expect(viewModel.selectedCaptionID == viewModel.edit.captions[0].id)
     }
 

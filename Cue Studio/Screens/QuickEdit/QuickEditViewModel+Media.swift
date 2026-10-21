@@ -84,14 +84,6 @@ extension QuickEditViewModel {
         updateMedia(id) { $0.audioVolume = clamped > 0.001 ? clamped : nil }
     }
 
-    func selectMedia(_ id: UUID?) {
-        selectedMediaID = selectedMediaID == id ? nil : id
-        if let id, let bar = mediaBars.first(where: { $0.id == id }), !bar.span.contains(player.currentTime) {
-            player.pause()
-            player.seek(to: bar.span.start)
-        }
-    }
-
     func updateMedia(_ id: UUID, _ update: (inout MediaOverlay) -> Void) {
         change { snapshot in
             guard let index = snapshot.media.firstIndex(where: { $0.id == id }) else { return }

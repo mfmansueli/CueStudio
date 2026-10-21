@@ -12,6 +12,4 @@ nonisolated struct AmbientTime: Sendable {
     let seconds: TimeInterval
     /// The moment being drawn, for what runs on its own time (since a tap, since a pick).
     let date: Date
-    /// Nothing moves: the loop is paused or stilled.
-    let isStill: Bool
 }

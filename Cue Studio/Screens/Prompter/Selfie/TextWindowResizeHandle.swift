@@ -92,15 +92,17 @@ struct TextWindowResizeHandle: View {
     }
 }
 
-/// The "L" in the window's bottom-right corner: a right edge and a bottom edge joined by a rounded corner.
-private nonisolated struct CornerMark: Shape {
-    func path(in rect: CGRect) -> Path {
-        var path = Path()
-        let radius: CGFloat = 6
-        path.move(to: CGPoint(x: rect.maxX, y: rect.minY))
-        path.addLine(to: CGPoint(x: rect.maxX, y: rect.maxY - radius))
-        path.addQuadCurve(to: CGPoint(x: rect.maxX - radius, y: rect.maxY), control: CGPoint(x: rect.maxX, y: rect.maxY))
-        path.addLine(to: CGPoint(x: rect.minX, y: rect.maxY))
-        return path
+extension TextWindowResizeHandle {
+    /// The "L" in the window's bottom-right corner: a right edge and a bottom edge joined by a rounded corner.
+    private nonisolated struct CornerMark: Shape {
+        func path(in rect: CGRect) -> Path {
+            var path = Path()
+            let radius: CGFloat = 6
+            path.move(to: CGPoint(x: rect.maxX, y: rect.minY))
+            path.addLine(to: CGPoint(x: rect.maxX, y: rect.maxY - radius))
+            path.addQuadCurve(to: CGPoint(x: rect.maxX - radius, y: rect.maxY), control: CGPoint(x: rect.maxX, y: rect.maxY))
+            path.addLine(to: CGPoint(x: rect.minX, y: rect.maxY))
+            return path
+        }
     }
 }

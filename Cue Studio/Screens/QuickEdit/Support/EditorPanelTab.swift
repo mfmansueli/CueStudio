@@ -15,9 +15,6 @@ enum EditorPanelTab: String, CaseIterable, Identifiable {
     static let textStyle: [EditorPanelTab] = [.presets, .font, .color, .motion]
     static let captionStyle: [EditorPanelTab] = [.presets, .reveal, .position, .font]
 
-    /// The tab a panel opens on.
-    static func first(for panel: EditorPanel) -> EditorPanelTab { .presets }
-
     var label: String {
         switch self {
         case .presets: String(localized: "Presets")

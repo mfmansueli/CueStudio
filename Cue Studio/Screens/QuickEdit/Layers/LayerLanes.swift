@@ -5,41 +5,13 @@
 
 import Foundation
 
-/// Stacks bars that overlap in time into lanes, so two texts on screen at once are both
-/// reachable. Pure, so it's tested without a screen.
+/// How many bars overlap in time, so a track never holds more photos or videos on screen at once
+/// than it can show. Pure, so it's tested without a screen.
 enum LayerLanes {
-    /// Most lanes a track shows; more overlapping bars share the last one.
-    static let maximum = 3
-
-    /// The lane of each bar, by id: the first one free when it starts, in start order.
-    static func lanes(for bars: [LayerBar]) -> [UUID: Int] {
-        var ends: [TimeInterval] = []
-        var result: [UUID: Int] = [:]
-        for bar in bars.sorted(by: { $0.span.start < $1.span.start }) {
-            if let free = ends.firstIndex(where: { $0 <= bar.span.start + 0.001 }) {
-                ends[free] = bar.span.end
-                result[bar.id] = free
-            } else if ends.count < maximum {
-                ends.append(bar.span.end)
-                result[bar.id] = ends.count - 1
-            } else {
-                let last = maximum - 1
-                ends[last] = max(ends[last], bar.span.end)
-                result[bar.id] = last
-            }
-        }
-        return result
-    }
-
     /// The most of `spans` that play at the same moment anywhere inside `within`.
     static func peak(of spans: [TimeSpan], within: TimeSpan) -> Int {
         let inside = spans.filter { $0.overlaps(within) }
         let moments = inside.map { max($0.start, within.start) } + [within.start]
         return moments.map { moment in inside.filter { $0.start <= moment + 0.000_1 && moment < $0.end - 0.000_1 }.count }.max() ?? 0
-    }
-
-    /// How many lanes `lanes` uses (at least one).
-    static func count(_ lanes: [UUID: Int]) -> Int {
-        (lanes.values.max() ?? 0) + 1
     }
 }

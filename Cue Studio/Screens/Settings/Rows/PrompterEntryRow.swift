@@ -52,7 +52,7 @@ struct PrompterEntryRow: View {
             )
         case .alignment:
             SettingsSegmentedRow(
-                title: entry.title, selection: settings.alignment, options: PrompterAlignment.allCases, label: \.label,
+                title: entry.title, selection: settings.alignment, options: LineAlignment.allCases, label: \.label,
                 identifier: "settings.alignmentPicker"
             )
         case .textColor:

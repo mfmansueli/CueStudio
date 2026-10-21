@@ -8,7 +8,7 @@ import Foundation
 
 /// Quick edit of one take. The edit is a recipe (`TakeEdit`) on top of the recording, which is
 /// never changed, and the player (`EditPlayback`) plays it and owns the playhead. Timeline changes
-/// (trim, remove part, cut, delete, speed, transitions, Clean Up, Remove Pauses) are undoable,
+/// (trim, split, delete, speed, transitions, Pauses) are undoable,
 /// together with what was decided about Clean Up's suggestions, what was added on top (texts,
 /// media, voice-overs, cover) and the look a style sets (`EditSnapshot`); Audio and Adjust set the
 /// sound and light directly. A gesture or a sheet that changes something many times in a row is
@@ -16,7 +16,7 @@ import Foundation
 /// with Cancel; Done saves the edit on the take.
 ///
 /// Each tool's work is in its own extension (`QuickEditViewModel+Text`, `+Media`, `+VoiceOver`,
-/// `+Speed`, `+Pauses`, `+Style`, `+Cover`, `+CleanUp`).
+/// `+ClipSettings`, `+PausesPanel`, `+Style`, `+Cover`, `+CleanUp`).
 @MainActor
 @Observable
 final class QuickEditViewModel {
@@ -40,15 +40,13 @@ final class QuickEditViewModel {
         didSet {
             guard panel != oldValue else { return }
             showsAdvanced = false
-            panelTab = panel.map(EditorPanelTab.first(for:)) ?? .presets
+            panelTab = .presets
             if oldValue == .voice { endComparison() }
             // Leaving Adjust (or opening it again) never leaves a measurement running or the picture compared.
             if panel != .adjust { cancelAuto() }
             comparesPicture = false
             comparesEyeContact = false
             endChange()
-            // Leaving Pauses without removing them puts them back.
-            cancelPausePreview()
             if recorder.isRecording { stopVoiceOver() }
             if oldValue == .transition { selectedJoinID = nil }
             if panel == .pauses { cleanUpMarks = [:] }
@@ -125,14 +123,10 @@ final class QuickEditViewModel {
             if selectedJoinID == nil, panel == .transition { panel = nil }
         }
     }
-    /// The trim handle being dragged.
-    var activeHandle: TrimHandle?
     /// Captions listening to the take (see `QuickEditViewModel+Captions`).
     var captionState: CaptionState = .idle
     /// Asking before new captions replace lines the creator corrected or wrote.
     var confirmsCaptionReplacement = false
-    /// The caption line open in its sheet.
-    var editingCaptionID: UUID?
     /// Captions › Select: the lines picked to be styled, moved or deleted together (`QuickEditViewModel+CaptionPicks`); nil
     /// while lines are picked one at a time.
     var captionPicks: Set<UUID>?
@@ -185,10 +179,6 @@ final class QuickEditViewModel {
     var cleanUpMarks: [UUID: Bool] = [:]
     /// The pause or word being listened to in Pauses.
     var listeningID: UUID?
-    /// Clean Up's view: the pauses, or the words to review. Switching lets go of a pause preview.
-    var cleanUpSection: CleanUpSection = .pauses {
-        didSet { if cleanUpSection != oldValue { cancelPausePreview() } }
-    }
 
     // MARK: Added on top
     /// The text picked on the preview or its track.
@@ -230,11 +220,6 @@ final class QuickEditViewModel {
     var transcriptSelection: ClosedRange<Int>?
     /// Listening was asked for Edit by text: the captions it makes stay hidden if they were.
     var keepsCaptionsHiddenAfterListening = false
-    /// Remove Pauses: the edit before its preview, while the result plays without the pauses. Apply
-    /// keeps it as one undo step; anything else puts it back.
-    var pausePreviewBase: EditSnapshot?
-    /// Speed: the section under the playhead (or selected), or the whole video.
-    var speedScope: SpeedScope = .whole
     /// The type the creator saved as "My style" (see `QuickEditViewModel+Style`).
     var myStyle: TextLook?
     /// The creator's handle, for the cover's "@handle" graphic and series (set by the screen).
@@ -313,10 +298,6 @@ final class QuickEditViewModel {
     private let languageConflictFor: (Script?) -> SpeechLanguageConflict?
     /// The take's edit when Quick edit opened.
     private var original: TakeEdit
-    /// The timeline when a handle drag started. Every move of the drag starts again from it, so a
-    /// handle dragged past a cut and back brings the cut back, and the whole drag is one undo step.
-    /// The timeline strip keeps drawing it until the finger lifts, so nothing shifts under it.
-    var trimOrigin: EditTimeline?
     /// The undo step a gesture or a sheet started from (see `beginChange`).
     @ObservationIgnored private(set) var changeBase: EditSnapshot?
     /// Media files copied in while Quick edit is open, so what the edit doesn't keep is removed.
@@ -443,15 +424,6 @@ final class QuickEditViewModel {
     /// The recording is open and the preview can play.
     var isReady: Bool { source == .ready && player.state != .failed }
 
-    /// "Original · 1:04" until something is cut, then "1:04 → 0:58".
-    var durationChange: String {
-        let source = DurationText.clock(edit.sourceDuration)
-        guard abs(edit.sourceDuration - edit.editedDuration) >= 0.05 else {
-            return String(localized: "Original · \(source)")
-        }
-        return source + " → " + DurationText.clock(edit.editedDuration)
-    }
-
     /// "00:04.1": where the playhead is. It reads the player's clock, so only the small views that
     /// show it redraw while the video plays.
     var currentTimeLabel: String {
@@ -463,20 +435,11 @@ final class QuickEditViewModel {
         DurationText.editor(edit.editedDuration)
     }
 
-    /// The recording's frames in time.
-    var frameGrid: FrameGrid { FrameGrid(rate: frameRate) }
-
-    /// The frame nearest to `time` (edited seconds): where a finger on the timeline lands.
-    func frameSnapped(edited time: TimeInterval) -> TimeInterval {
-        frameGrid.snapped(edited: time, in: edit.timeline)
-    }
-
     /// "00:04.1 / 00:11.0"
     var timeLabel: String { currentTimeLabel + " / " + durationLabel }
 
-    var canUndo: Bool { (history.canUndo || pausePreviewBase != nil) && activeHandle == nil && !recorder.isRecording }
-    var canRedo: Bool { history.canRedo && activeHandle == nil && pausePreviewBase == nil && !recorder.isRecording }
-    var canDeleteSelection: Bool { selectedSegmentID != nil && edit.timeline.segments.count > 1 }
+    var canUndo: Bool { history.canUndo && !recorder.isRecording }
+    var canRedo: Bool { history.canRedo && !recorder.isRecording }
     var hasUnsavedChanges: Bool { edit != original }
 
     var selectedSegmentIndex: Int? {
@@ -509,17 +472,6 @@ final class QuickEditViewModel {
     func togglePlayback() {
         guard isReady else { return }
         player.togglePlayback()
-    }
-
-    /// Follows a finger on the timeline; the video stays paused.
-    func scrub(to time: TimeInterval) {
-        guard isReady else { return }
-        player.scrub(to: time)
-    }
-
-    func endScrub() {
-        player.endScrub()
-        refocusEyeContact()
     }
 
     /// VoiceOver: moves the playhead by `seconds`.
@@ -555,32 +507,10 @@ final class QuickEditViewModel {
         }
     }
 
-    // MARK: - Selection
-
-    /// A tap on the timeline (the playhead already went there): selects the section under it, or
-    /// lets go of it when it was already selected or the tap was beside the sections. Nothing to
-    /// select while there is one section.
-    func tapTimeline(onPiece index: Int?) {
-        clearLayerSelection()
-        guard let index, edit.timeline.segments.count > 1, edit.timeline.segments.indices.contains(index) else {
-            selectedSegmentID = nil
-            selectedJoinID = nil
-            return
-        }
-        let id = edit.timeline.segments[index].id
-        selectedJoinID = nil
-        selectedSegmentID = selectedSegmentID == id ? nil : id
-    }
-
     // MARK: - Undo
 
     func undo() {
         guard canUndo else { return }
-        // A pauses preview is taken back first, like it was never applied.
-        if pausePreviewBase != nil {
-            cancelPausePreview()
-            return
-        }
         endChange()
         guard let previous = history.undo(from: snapshot) else { return }
         restore(previous)
@@ -630,13 +560,6 @@ final class QuickEditViewModel {
         var changed = edit
         changed.apply(next)
         edit = changed
-    }
-
-    /// Keeps `step` as the state to go back to, without changing the edit (Remove Pauses' Apply,
-    /// after its preview already changed it).
-    func recordUndoStep(_ step: EditSnapshot) {
-        guard step != snapshot else { return }
-        history.record(step)
     }
 
     /// Changes what undo keeps (texts, media, voice-overs, the cover, the style) as one step;
@@ -700,11 +623,8 @@ final class QuickEditViewModel {
 
     /// Saves the edit on the take (its new length, marked Edited) when anything changed.
     func done() {
-        endTrim()
         endChange()
         if recorder.isRecording { stopVoiceOver() }
-        // Done while the pauses preview plays keeps what was heard.
-        if pausePreviewBase != nil { applyPauses() }
         // Reversed videos nothing plays any more (a clip reversed and put back) were kept for undo; they go now.
         var saved = edit
         let played = Set(edit.timeline.segments.compactMap(\.sourceID))
@@ -741,10 +661,8 @@ final class QuickEditViewModel {
 
     /// "Not yet, I'll come back": the draft stays even if nothing changed, so the video is in edit.
     private func keepForLater() {
-        endTrim()
         endChange()
         if recorder.isRecording { cancelVoiceOver() }
-        cancelPausePreview()
         saveDraft(forced: true)
         close(keepingDraft: true)
     }
@@ -752,10 +670,8 @@ final class QuickEditViewModel {
     /// Leaves without saving on the take. Changes stay in a draft that Edit picks up again; the take
     /// is as it was.
     func cancel() {
-        endTrim()
         endChange()
         if recorder.isRecording { cancelVoiceOver() }
-        cancelPausePreview()
         guard source == .ready, hasUnsavedChanges else {
             removeUnusedImports(keeping: original.mediaFileNames)
             close(keepingDraft: false)
@@ -809,11 +725,8 @@ final class QuickEditViewModel {
     /// Keeps the edit, the playhead and the undo steps, or drops the draft when nothing changed.
     func saveDraft(forced: Bool = false) {
         guard source == .ready, !isClosed else { return }
-        // A pauses preview that wasn't applied isn't part of the edit.
-        var kept = edit
-        if let base = pausePreviewBase { kept.apply(base) }
-        if kept != original || forced {
-            drafts.save(QuickEditDraft(takeID: take.id, edit: kept, playhead: player.currentTime, history: history, savedAt: .now))
+        if edit != original || forced {
+            drafts.save(QuickEditDraft(takeID: take.id, edit: edit, playhead: player.currentTime, history: history, savedAt: .now))
         } else {
             drafts.discard(takeID: take.id)
         }

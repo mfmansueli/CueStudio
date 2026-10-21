@@ -115,7 +115,7 @@ struct NotificationServiceOpeningTests {
         facts.takes = [Fixtures.take(scriptID: nil)]
         let harness = NotificationServiceHarness(facts: facts)
         #expect(await harness.service.inAppIntro(afterSession: true) == nil)
-        await harness.service.setCategory(.discovery, isOn: true)
+        await harness.service.setGroup(.news, isOn: true)
         let intro = await harness.service.inAppIntro(afterSession: true)
         #expect(intro != nil && intro?.source == .inApp)
         if let intro { harness.service.introShown(intro) }

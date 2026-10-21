@@ -45,7 +45,7 @@ struct WelcomeStarPainter {
             context.stroke(path.trimmedPath(from: 0, to: leg), with: .color(Palette.acc.opacity(0.7)), style: StrokeStyle(lineWidth: 1.4, lineCap: .round))
         }
         let dim = WelcomeScript.dimCue.pose(at: time).opacity
-        if dim > 0.01 { context.fill(circle(WelcomeScript.cue, 3.3), with: .color(Palette.aiTextStrong.opacity(dim))) }
+        if dim > 0.01 { context.fill(LightFX.disc(WelcomeScript.cue, 3.3), with: .color(Palette.aiTextStrong.opacity(dim))) }
     }
 
     /// A dot: a soft halo, the coloured light and a white-hot centre, bigger and brighter at the hit, then breathing (`shine`) and glinting
@@ -60,16 +60,16 @@ struct WelcomeStarPainter {
             glow(at: dot.point, radius: dot.radius * (3 + 3 * flash + 1.2 * shine), color: dot.color, opacity: halo, in: &context)
             context.drawLayer { layer in
                 layer.addFilter(.shadow(color: dot.color.opacity(0.8), radius: dot.radius * (0.9 + 0.9 * shine + 1.6 * flash)))
-                layer.fill(circle(dot.point, size), with: .color(dot.color.opacity(pop.opacity)))
+                layer.fill(LightFX.disc(dot.point, size), with: .color(dot.color.opacity(pop.opacity)))
             }
-            context.fill(circle(dot.point, size * 0.45), with: .color(.white.opacity((0.55 + 0.45 * max(shine, flash)) * pop.opacity)))
+            context.fill(LightFX.disc(dot.point, size * 0.45), with: .color(.white.opacity((0.55 + 0.45 * max(shine, flash)) * pop.opacity)))
             let glint = WelcomeScript.glint(of: index, lit: dot.hit, at: ambient)
             let sparkle = Pose(opacity: glint, scale: 0.5 + 0.5 * glint, rotation: dot.twinkles ? 45 : 0)
             cross(at: dot.point, horizontal: dot.radius * 6, vertical: dot.radius * 6, thickness: 1.2, color: .white, pose: sparkle, in: &context)
         }
         let ring = dot.ring.pose(at: time)
         if ring.opacity > 0.01 {
-            context.stroke(circle(dot.point, 6 * ring.scale), with: .color(.white.opacity(ring.opacity)), lineWidth: 1.3)
+            context.stroke(LightFX.disc(dot.point, 6 * ring.scale), with: .color(.white.opacity(ring.opacity)), lineWidth: 1.3)
         }
         cross(at: dot.point, horizontal: 44, vertical: 30.8, thickness: 1.8, color: .white, pose: dot.flare.pose(at: time), in: &context)
     }
@@ -89,7 +89,7 @@ struct WelcomeStarPainter {
     private func drawSparks(in context: inout GraphicsContext) {
         for dot in WelcomeScript.dots { sparks(dot.sparks, from: dot.point, in: &context) }
         for (index, hit) in WelcomeScript.wordHits.enumerated() {
-            sparks(WelcomeScript.wordSparks[index], from: wordCentre(index, hit: hit), in: &context)
+            sparks(WelcomeScript.wordSparks[index], from: wordCentre(hit: hit), in: &context)
         }
         sparks(WelcomeScript.explosionSparks, from: WelcomeScript.cue, in: &context)
     }
@@ -102,13 +102,13 @@ struct WelcomeStarPainter {
             let point = CGPoint(x: centre.x + cos(radians) * pose.x, y: centre.y + sin(radians) * pose.x)
             context.drawLayer { layer in
                 layer.addFilter(.shadow(color: spark.color.opacity(0.95), radius: 6))
-                layer.fill(circle(point, spark.size / 2 * pose.scale), with: .color(spark.color.opacity(pose.opacity)))
+                layer.fill(LightFX.disc(point, spark.size / 2 * pose.scale), with: .color(spark.color.opacity(pose.opacity)))
             }
         }
     }
 
     /// Where the star lands on a word: the point of the path at the second it arrives.
-    private func wordCentre(_ index: Int, hit: Double) -> CGPoint {
+    private func wordCentre(hit: Double) -> CGPoint {
         let pose = starPath.pose(at: hit)
         return CGPoint(x: pose.x, y: pose.y)
     }
@@ -134,12 +134,12 @@ struct WelcomeStarPainter {
         let core = WelcomeScript.core.pose(at: time).scale * (1 + 0.12 * shine)
         if core > 0.01 {
             glow(at: centre, radius: 26 * core, color: Palette.acc, opacity: 0.18 + 0.2 * shine, in: &context)
-            context.fill(circle(centre, 16 * core), with: .color(Palette.acc.opacity(0.22)))
+            context.fill(LightFX.disc(centre, 16 * core), with: .color(Palette.acc.opacity(0.22)))
             context.drawLayer { layer in
                 layer.addFilter(.shadow(color: Palette.acc.opacity(0.6), radius: 6))
-                layer.fill(circle(centre, 6.5 * core), with: .color(Palette.acc))
+                layer.fill(LightFX.disc(centre, 6.5 * core), with: .color(Palette.acc))
             }
-            context.fill(circle(centre, 2.6 * core), with: .color(Palette.Universe.starCream))
+            context.fill(LightFX.disc(centre, 2.6 * core), with: .color(Palette.Universe.starCream))
         }
         let glint = WelcomeScript.glint(of: 5, lit: WelcomeScript.explosionTime + 0.2, at: ambient)
         cross(
@@ -147,10 +147,10 @@ struct WelcomeStarPainter {
             pose: Pose(opacity: glint, scale: 0.5 + 0.5 * glint), in: &context
         )
         let ring = WelcomeScript.ring.pose(at: time)
-        if ring.opacity > 0.01 { context.stroke(circle(centre, 10 * ring.scale), with: .color(Palette.acc.opacity(ring.opacity)), lineWidth: 1.2) }
+        if ring.opacity > 0.01 { context.stroke(LightFX.disc(centre, 10 * ring.scale), with: .color(Palette.acc.opacity(ring.opacity)), lineWidth: 1.2) }
         let second = WelcomeScript.secondRing.pose(at: time)
         if second.opacity > 0.01 {
-            context.stroke(circle(centre, 10 * second.scale), with: .color(Palette.Universe.starCream.opacity(second.opacity)), lineWidth: 1)
+            context.stroke(LightFX.disc(centre, 10 * second.scale), with: .color(Palette.Universe.starCream.opacity(second.opacity)), lineWidth: 1)
         }
         cross(
             at: centre, horizontal: 150, vertical: 105, thickness: 1.8, color: Palette.Universe.starGold, pose: WelcomeScript.flare.pose(at: time),
@@ -166,11 +166,7 @@ struct WelcomeStarPainter {
         let shading = GraphicsContext.Shading.radialGradient(
             Gradient(colors: [color.opacity(opacity), color.opacity(0)]), center: centre, startRadius: 0, endRadius: radius
         )
-        context.fill(circle(centre, radius), with: shading)
-    }
-
-    private func circle(_ centre: CGPoint, _ radius: CGFloat) -> Path {
-        Path(ellipseIn: CGRect(x: centre.x - radius, y: centre.y - radius, width: radius * 2, height: radius * 2))
+        context.fill(LightFX.disc(centre, radius), with: shading)
     }
 
     /// A four-point cross of light: two thin bars that fade out at their ends, turned, scaled and faded by `pose`.

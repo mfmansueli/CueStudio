@@ -78,8 +78,6 @@ final class PrompterViewModel {
     // MARK: Selfie layout (see PrompterViewModel+Layout)
     /// What the Selfie screen measured on this device.
     var screenMetrics = SelfieScreenMetrics()
-    /// The safe zone picked in Display › Layout, for this session.
-    var safeZonePick: SafeZoneChoice?
 
     /// This recording's setup. Views read and bind `session.camera` / `session.prompter`.
     let session: SessionSetupService
@@ -574,7 +572,7 @@ final class PrompterViewModel {
         // The phone does not buzz while the take records: it could be heard in its audio (`AudioRoute.allowHapticsDuringRecording`).
         AudioRoute.allowHapticsDuringRecording(false)
         do {
-            try await camera.startRecording(settings: session.camera)
+            try await camera.startRecording()
         } catch {
             AudioRoute.allowHapticsDuringRecording(true)
             toast.show(error.localizedDescription)

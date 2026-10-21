@@ -92,8 +92,8 @@ struct PrompterSettingsTests {
     @Test func theSpeedRangeIsTheScalesEnds() {
         #expect(PrompterSettings.speedRange.lowerBound == SpeedScale.speed(forMultiple: 0.2))
         #expect(PrompterSettings.speedRange.upperBound == SpeedScale.speed(forMultiple: 2))
-        #expect(PrompterSettings.wordsPerMinute(forSpeed: PrompterSettings.speedRange.lowerBound).rounded() == 30)
-        #expect(PrompterSettings.wordsPerMinute(forSpeed: PrompterSettings.speedRange.upperBound).rounded() == 300)
+        #expect(ReadTime.wordsPerMinute(speed: PrompterSettings.speedRange.lowerBound).rounded() == 30)
+        #expect(ReadTime.wordsPerMinute(speed: PrompterSettings.speedRange.upperBound).rounded() == 300)
     }
 
     /// The 3×, 4× and 5× the slider had before 20/10/2026 open on 2×; a speed inside the range opens as it was saved.

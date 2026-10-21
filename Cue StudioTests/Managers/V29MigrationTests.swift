@@ -84,37 +84,6 @@ struct V29MigrationTests {
         #expect(!decoded.isFinished)
     }
 
-    // MARK: - Ad brief
-
-    @Test func anOldAdBriefBecomesABrandOnce() {
-        let store = BrandStore(repository: InMemoryBrandRepository())
-        let legacy = [
-            "brand": "Oat & Co. barista oat milk", "pain": "Oat milk that never foams",
-            "benefit": "Foams like dairy, zero aftertaste", "proof": "A latte-art pour", "offer": "Code MORNING for 20% off",
-        ]
-        let first = store.adopt(legacyAdBrief: legacy)
-        let second = store.adopt(legacyAdBrief: legacy)
-        #expect(store.brands.count == 1)
-        #expect(first?.id == second?.id)
-        #expect(first?.name == "Oat & Co. barista oat milk")
-        #expect(first?.mustSay == "Foams like dairy, zero aftertaste")
-        #expect(first?.code == "Code MORNING for 20% off")
-        #expect(first?.isUsable == true)
-    }
-
-    @Test func anOldAdBriefWithALinkKeepsItAsTheLink() {
-        let brief = BrandBrief(legacyAdBrief: ["brand": "Oat & Co.", "offer": "oatandco.com/maya"])
-        #expect(brief.link == "oatandco.com/maya")
-        #expect(brief.code.isEmpty)
-        #expect(brief.product == "Oat & Co.")
-    }
-
-    @Test func anOldAdBriefWithNoBrandAddsNothing() {
-        let store = BrandStore(repository: InMemoryBrandRepository())
-        #expect(store.adopt(legacyAdBrief: ["pain": "x"]) == nil)
-        #expect(store.brands.isEmpty)
-    }
-
     // MARK: - Profile
 
     private let v27Profile = """

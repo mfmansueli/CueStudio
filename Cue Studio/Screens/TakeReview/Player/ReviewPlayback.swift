@@ -43,10 +43,6 @@ final class ReviewPlayback {
         progress = 0
     }
 
-    func toggle() {
-        if isPlaying { pause() } else { play() }
-    }
-
     func play() {
         guard !isPlaybackBlocked else { return }
         startTask?.cancel()

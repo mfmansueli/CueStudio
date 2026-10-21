@@ -178,7 +178,7 @@ struct VoiceChapter: View {
             Button {
                 Haptics.selection()
                 if state == .denied {
-                    if let url = URL(string: UIApplication.openSettingsURLString) { openURL(url) }
+                    openURL.openAppSettings()
                 } else {
                     ask()
                 }

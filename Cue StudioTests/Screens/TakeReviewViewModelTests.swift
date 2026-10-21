@@ -247,26 +247,33 @@ struct TakeReviewViewModelTests {
         #expect(free.viewModel.paywall == nil)
     }
 
+    /// What "Ready to travel" says the saved file is: "1080P · 9:16".
+    private func savedFormat(_ viewModel: TakeReviewViewModel) -> String? {
+        guard case .readyToTravel(let video)? = viewModel.celebration else { return nil }
+        return video.formatLabel
+    }
+
     @Test func qualityOnlyScalesDown() async {
         var take = TestData.take(scriptID: nil)
         take.resolution = .uhd4K
         let scenario = makeScenario(tier: .subscriber, take: take)
         defer { scenario.defaults.tearDown() }
-        #expect(scenario.viewModel.shareMeta == "0:30 · 9:16 · 1080p")
         await scenario.viewModel.save()
         #expect(scenario.exporter.exports.last?.shortSide == 1080)
+        #expect(savedFormat(scenario.viewModel) == "1080P · 9:16")
 
         scenario.viewModel.setQuality(.uhd4K)
-        #expect(scenario.viewModel.shareMeta == "0:30 · 9:16 · 4K")
         await scenario.viewModel.save()
         #expect(scenario.exporter.exports.last?.shortSide == nil)
+        #expect(savedFormat(scenario.viewModel) == "4K · 9:16")
     }
 
-    @Test func fourKOfA1080pTakeStays1080p() {
+    @Test func fourKOfA1080pTakeStays1080p() async {
         let scenario = makeScenario(tier: .subscriber)
         defer { scenario.defaults.tearDown() }
         scenario.viewModel.setQuality(.uhd4K)
-        #expect(scenario.viewModel.shareMeta == "0:30 · 9:16 · 1080p")
+        await scenario.viewModel.save()
+        #expect(savedFormat(scenario.viewModel) == "1080P · 9:16")
     }
 
     @Test func markingTheBestTake() {
@@ -417,12 +424,6 @@ struct TakeReviewViewModelTests {
         #expect(copied == ["#ad"])
     }
 
-    @Test func metaLineShowsWhenPlatformFrameAndQuality() {
-        let scenario = makeScenario()
-        defer { scenario.defaults.tearDown() }
-        #expect(scenario.viewModel.metaLine.hasSuffix("· TikTok · 9:16 · 1080p"))
-    }
-
     // MARK: - The v26 review: stage, compare, length
 
     private func makeVideoScenario(
@@ -446,10 +447,9 @@ struct TakeReviewViewModelTests {
         return (viewModel, all, defaults, drafts)
     }
 
-    @Test func theChipSaysWhereTheTakeIsAndTheNeighborsAreTheOthersByNumber() {
+    @Test func theNeighborsAreTheOtherTakesByNumber() {
         let scenario = makeVideoScenario()
         defer { scenario.defaults.tearDown() }
-        #expect(scenario.viewModel.placeLabel == "2 / 3")
         #expect(scenario.viewModel.neighbor(-1)?.number == 1)
         #expect(scenario.viewModel.neighbor(1)?.number == 3)
     }
@@ -463,10 +463,9 @@ struct TakeReviewViewModelTests {
         #expect(last.viewModel.neighbor(1) == nil)
     }
 
-    @Test func aSingleTakeHasNoChip() {
+    @Test func aSingleTakeHasNoNeighbor() {
         let scenario = makeVideoScenario(numbers: [1], current: 1)
         defer { scenario.defaults.tearDown() }
-        #expect(scenario.viewModel.placeLabel == nil)
         #expect(scenario.viewModel.neighbor(1) == nil)
     }
 

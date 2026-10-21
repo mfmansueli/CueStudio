@@ -38,8 +38,7 @@ struct SkinSmoothingModelTests {
         take.skinSmoothing = 30
         #expect(!LookSettings(take).isNeutral)
         #expect(take.hasPictureLook)
-        #expect(take.differs(from: .portrait))
-        #expect(!edit().differs(from: .portrait))
+        #expect(take != edit())
     }
 
     // MARK: - Saved edits

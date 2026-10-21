@@ -99,7 +99,8 @@ struct QuickEditSoundTests {
         scenario.player.currentTime = 10
         viewModel.addMusic(song())
         let original = try #require(viewModel.edit.music.first)
-        viewModel.setMusicVolume(original.id, 0.8)
+        viewModel.selection = .music(original.id)
+        viewModel.setTargetVolume(0.8)
         viewModel.musicReplacementID = original.id
         let other = ImportedAudio(fileName: "other.m4a", title: "Other loop", duration: 30)
         viewModel.addMusic(other)
@@ -164,28 +165,32 @@ struct QuickEditSoundTests {
         let viewModel = scenario.viewModel
         viewModel.addMusic(song())
         let id = try #require(viewModel.edit.music.first?.id)
+        viewModel.selection = .music(id)
         let steps = viewModel.history.past.count
         viewModel.beginChange()
-        for volume in stride(from: 0.5, through: 0.9, by: 0.1) { viewModel.setMusicVolume(id, volume) }
+        for volume in stride(from: 0.5, through: 0.9, by: 0.1) { viewModel.setTargetVolume(volume) }
         viewModel.endChange()
         #expect(viewModel.history.past.count == steps + 1)
         #expect(abs((viewModel.edit.music.first?.volume ?? 0) - 0.9) < 0.001)
-        viewModel.setMusicMuted(id, true)
+        #expect(abs(viewModel.targetVolume - 0.9) < 0.001)
+        // Volume never goes past 200%.
+        viewModel.setTargetVolume(5)
+        #expect(viewModel.edit.music.first?.volume == 2)
         viewModel.setMusicDucks(id, false)
         viewModel.setMusicFadeIn(id, 9)
         let clip = try #require(viewModel.edit.music.first)
-        #expect(clip.isMuted && !clip.ducksUnderVoice && clip.fadeIn == MusicClip.fadeRange.upperBound)
+        #expect(!clip.ducksUnderVoice && clip.fadeIn == MusicClip.fadeRange.upperBound)
     }
 
     @Test func musicIsOnTheSharedTimelineAndCanBeDeleted() async throws {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
         viewModel.addMusic(song())
-        viewModel.clearLayerSelection()
+        viewModel.selection = nil
         let bar = try #require(viewModel.musicBars.first)
-        viewModel.selectBar(bar)
+        viewModel.tapTimeline(.item(.music, bar.id))
         #expect(viewModel.selectedLayer?.kind == .music)
-        viewModel.deleteSelectedLayer()
+        viewModel.perform(.deleteMusic)
         #expect(viewModel.edit.music.isEmpty)
     }
 

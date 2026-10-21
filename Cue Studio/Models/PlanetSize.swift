@@ -26,8 +26,6 @@ nonisolated enum PlanetSize {
         }
     }
 
-    static let maximum: CGFloat = 38
-
     /// The diameter for `videos` shared; 0 for none (no planet is drawn).
     static func diameter(videos: Int) -> CGFloat {
         guard videos > 0 else { return 0 }

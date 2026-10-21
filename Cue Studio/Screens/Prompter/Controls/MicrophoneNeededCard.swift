@@ -21,7 +21,7 @@ struct MicrophoneNeededCard: View {
                 .font(.subheadline.weight(.semibold))
                 .frame(maxWidth: .infinity, alignment: .leading)
             Button("Open Settings") {
-                if let url = URL(string: UIApplication.openSettingsURLString) { openURL(url) }
+                openURL.openAppSettings()
             }
             .buttonStyle(.cueGlass(.compact, expands: false))
             .accessibilityIdentifier("prompter.openSettingsButton")

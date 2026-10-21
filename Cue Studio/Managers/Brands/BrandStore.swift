@@ -53,21 +53,6 @@ final class BrandStore {
         persist()
     }
 
-    func brand(id: UUID?) -> BrandBrief? {
-        guard let id else { return nil }
-        return brands.first { $0.id == id }
-    }
-
-    /// The brief an `ad` script saved before v29 carried, saved once as a brand. Doing it again for the same brand
-    /// changes nothing. Returns the brand, or nil when the old brief had no brand.
-    @discardableResult
-    func adopt(legacyAdBrief brief: [String: String]) -> BrandBrief? {
-        let legacy = BrandBrief(legacyAdBrief: brief)
-        guard legacy.isUsable else { return nil }
-        if let existing = brands.first(where: { $0.name.caseInsensitiveCompare(legacy.name) == .orderedSame }) { return existing }
-        return save(legacy)
-    }
-
     private func persist() {
         guard canSave else {
             logger.error("Not saving brands: the ones on disk couldn't be read at launch")

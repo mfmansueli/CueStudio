@@ -195,7 +195,6 @@ struct ScriptDetailViewModelTests {
         let script = TestData.script(title: "Habits", platform: .tiktok)
         let scenario = makeScenario(script: script)
         defer { scenario.defaults.tearDown() }
-        #expect(!scenario.viewModel.versionPlatforms.contains(.tiktok))
         scenario.writer.rewrittenText = "Short and punchy."
         await scenario.viewModel.makeVersion(for: .reels)
         let copy = scenario.library.scripts.first { $0.id != script.id }

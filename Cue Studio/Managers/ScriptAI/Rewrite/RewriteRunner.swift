@@ -5,19 +5,6 @@
 
 import Foundation
 
-/// What a tool made of a script.
-nonisolated struct RewriteResult: Equatable, Sendable {
-    /// The script as it is now.
-    var text: String
-    /// How many parts the script was edited in.
-    var parts: Int
-    /// Parts left as the creator wrote them: the model refused them or couldn't do what the tool says, and a part is never swapped for something worse.
-    var leftAsWritten: Int
-
-    /// Nothing the creator wrote was touched.
-    var isUntouched: Bool { leftAsWritten >= parts }
-}
-
 /// Edits a script with a tool a part at a time and holds every part to what the tool promises (`RewriteOutcome`): a part that misses is asked again, once,
 /// with what it got wrong; a part that misses twice is left as it was written, never replaced by a cut or a made-up version. The model is asked through
 /// `ask`, so that this is the whole of the logic and a test can stand in for the model.

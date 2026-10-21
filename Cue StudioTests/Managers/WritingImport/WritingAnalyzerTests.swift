@@ -93,7 +93,7 @@ struct WritingAnalyzerTests {
     }
 
     @Test func nothingToReadGivesAnEmptyAnalysis() {
-        #expect(WritingAnalyzer.analyze([]).isEmpty)
+        #expect(WritingAnalyzer.analyze([]).pieceCount == 0)
     }
 
     @Test func languagesWrittenWithoutSpacesGetNoSentenceLength() {

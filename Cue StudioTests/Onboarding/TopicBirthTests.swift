@@ -82,11 +82,11 @@ struct TopicBirthTests {
 
     @Test func thePlanetSpringsOutAtTheLandingAndSettlesAtItsSize() {
         #expect(TopicBirth.pose(TopicBirth.planet, at: 1.0).opacity == 0)
-        #expect(TopicBirth.pose(TopicBirth.planet, at: 1.95).scale > 2, "×2.4 at the first beat")
-        #expect(TopicBirth.pose(TopicBirth.planet, at: 2.15).scale < 1, "the spring goes under 1 (×0.82)…")
-        #expect(TopicBirth.pose(TopicBirth.planet, at: 2.33).scale > 1, "…and over it (×1.1)…")
-        #expect(TopicBirth.pose(TopicBirth.planet, at: 2.6).scale == 1, "…before it rests")
-        #expect(TopicBirth.pose(TopicBirth.planet, at: TopicBirth.duration).scale == 1)
+        #expect(TopicBirth.pose(TopicBirth.planet, at: 1.95).sx > 2, "×2.4 at the first beat")
+        #expect(TopicBirth.pose(TopicBirth.planet, at: 2.15).sx < 1, "the spring goes under 1 (×0.82)…")
+        #expect(TopicBirth.pose(TopicBirth.planet, at: 2.33).sx > 1, "…and over it (×1.1)…")
+        #expect(TopicBirth.pose(TopicBirth.planet, at: 2.6).sx == 1, "…before it rests")
+        #expect(TopicBirth.pose(TopicBirth.planet, at: TopicBirth.duration).sx == 1)
     }
 
     @Test func theOrbitDrawsAfterTheLandingAndTheNameArrivesLast() {
@@ -114,13 +114,6 @@ struct TopicBirthTests {
     }
 
     // MARK: - What the app adds
-
-    @Test func theChipBarPopsInWithAnOvershoot() {
-        #expect(TopicBirth.bar.pose(at: 0).scale == 0)
-        #expect(TopicBirth.bar.pose(at: 0.30).scale == 1)
-        let overshoot = (1...24).map { TopicBirth.bar.pose(at: 0.05 + Double($0) * 0.01).scale }.max() ?? 0
-        #expect(overshoot > 1, "the spring goes past 1 before it settles")
-    }
 
     @Test func theLightAcrossTheChipAndTheRingOfTheButtonPlayOnce() {
         #expect(TopicBirth.sweep.pose(at: 0).opacity == 0 && TopicBirth.sweep.pose(at: 0.3).opacity == 1 && TopicBirth.sweep.pose(at: 1).opacity == 0)

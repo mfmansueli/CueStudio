@@ -68,7 +68,7 @@ struct ProOpeningCanvas: View {
             // A soft gold light round a small white-hot heart, and the star's cross turning: a star, not a blob.
             let glow = 34 * core.scale
             canvas.fill(
-                disc(centre, glow),
+                LightFX.disc(centre, glow),
                 with: .radialGradient(
                     Gradient(colors: [Palette.acc.opacity(0.75 * core.opacity), Palette.acc.opacity(0.22 * core.opacity), Palette.acc.opacity(0)]),
                     center: centre, startRadius: 0, endRadius: glow
@@ -78,7 +78,7 @@ struct ProOpeningCanvas: View {
         }
         let wave = ProOpeningScript.shockwave.pose(at: time)
         if wave.opacity > 0.01 {
-            canvas.stroke(disc(focus, 12 * wave.scale), with: .color(Palette.acc.opacity(wave.opacity)), lineWidth: 1.2)
+            canvas.stroke(LightFX.disc(focus, 12 * wave.scale), with: .color(Palette.acc.opacity(wave.opacity)), lineWidth: 1.2)
         }
     }
 
@@ -89,14 +89,14 @@ struct ProOpeningCanvas: View {
         if gather.opacity > 0.01 {
             canvas.drawLayer { layer in
                 layer.addFilter(.shadow(color: Palette.acc.opacity(0.9 * gather.opacity), radius: 8))
-                layer.stroke(disc(centre, radius * gather.scale), with: .color(Palette.Universe.starCream.opacity(gather.opacity)), lineWidth: 1.6)
+                layer.stroke(LightFX.disc(centre, radius * gather.scale), with: .color(Palette.Universe.starCream.opacity(gather.opacity)), lineWidth: 1.6)
             }
         }
         let bloom = ProOpeningScript.birthBloom.pose(at: time)
         if bloom.opacity > 0.01 {
             let reach = 120 * bloom.scale
             canvas.fill(
-                disc(centre, reach),
+                LightFX.disc(centre, reach),
                 with: .radialGradient(
                     Gradient(colors: [.white.opacity(bloom.opacity), Palette.acc.opacity(0.45 * bloom.opacity), Palette.acc.opacity(0)]),
                     center: centre, startRadius: 0, endRadius: reach
@@ -112,13 +112,9 @@ struct ProOpeningCanvas: View {
             let color = index.isMultiple(of: 3) ? Color.white : Palette.Universe.starGold
             canvas.drawLayer { layer in
                 layer.addFilter(.shadow(color: color.opacity(sparks.opacity), radius: 4))
-                layer.fill(disc(point, 1.8 * (1 - 0.6 * sparks.scale) + 0.4), with: .color(color.opacity(sparks.opacity)))
+                layer.fill(LightFX.disc(point, 1.8 * (1 - 0.6 * sparks.scale) + 0.4), with: .color(color.opacity(sparks.opacity)))
             }
         }
-    }
-
-    private func disc(_ centre: CGPoint, _ radius: CGFloat) -> Path {
-        Path(ellipseIn: CGRect(x: centre.x - radius, y: centre.y - radius, width: radius * 2, height: radius * 2))
     }
 
     private func drawFlash(in canvas: inout GraphicsContext, size: CGSize, focus: CGPoint) {

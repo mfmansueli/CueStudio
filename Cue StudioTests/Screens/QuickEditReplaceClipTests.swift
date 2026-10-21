@@ -45,9 +45,9 @@ struct QuickEditReplaceClipTests {
     private func middleClip(_ scenario: Scenario) -> UUID {
         let viewModel = scenario.viewModel
         scenario.player.currentTime = 10
-        viewModel.cut()
+        viewModel.splitClip()
         scenario.player.currentTime = 20
-        viewModel.cut()
+        viewModel.splitClip()
         var timeline = viewModel.edit.timeline
         var middle = timeline.segments[1]
         middle.speed = 2
@@ -146,7 +146,7 @@ struct QuickEditReplaceClipTests {
         text.text = "Hello"
         viewModel.change { $0.texts = [text] }
         scenario.player.currentTime = start + 1
-        viewModel.cut()
+        viewModel.splitClip()
         let shown = try #require(viewModel.edit.editedTexts(in: viewModel.edit.timeline).first?.span)
         viewModel.replaceClip(id, with: video(30))
         #expect(viewModel.edit.texts.first?.clipAnchor == pinned.anchor)

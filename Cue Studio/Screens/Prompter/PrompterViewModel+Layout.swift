@@ -42,20 +42,13 @@ extension PrompterViewModel {
 
     // MARK: - Safe zone
 
-    /// Chips in Display › Layout for the current frame.
-    var safeZoneOptions: [SafeZoneChoice] {
-        SafeZoneChoice.options(for: session.camera.aspect, rules: rules.rules)
-    }
-
-    /// The zone for this frame: the pick, else the one chosen in Settings › Social safe zone, else the script's platform, else Reels (9:16)
-    /// or LinkedIn (4:5). None for horizontal video.
+    /// The zone for this frame: the one chosen in Settings › Social safe zone, else the script's platform, else Reels (9:16) or
+    /// LinkedIn (4:5). None for horizontal video.
     var safeZone: SafeZoneChoice? {
-        SafeZoneChoice.resolve(pick: effectiveSafeZonePick, scriptPlatform: script?.platform, aspect: session.camera.aspect, rules: rules.rules)
-    }
-
-    /// This take's pick, or the one the creator chose in Settings.
-    private var effectiveSafeZonePick: SafeZoneChoice? {
-        safeZonePick ?? SafeZoneChoice.pick(fromKey: session.prompter.safeZoneKey)
+        SafeZoneChoice.resolve(
+            pick: SafeZoneChoice.pick(fromKey: session.prompter.safeZoneKey), scriptPlatform: script?.platform,
+            aspect: session.camera.aspect, rules: rules.rules
+        )
     }
 
     /// The part of the frame the zone leaves clear, on screen.
@@ -147,20 +140,6 @@ extension PrompterViewModel {
         hasScript && mode == .selfie && !isRecording && sheet == nil
     }
 
-    /// Line, window, speed and safe zone back to what Cue recommends for this script. Line, speed and
-    /// safe zone change for this session only; Creator Setup keeps the creator's defaults.
-    func resetLayout() {
-        var prompter = session.prompter
-        prompter.readingLineOffset = nil
-        prompter.textWindowHeight = PrompterSettings.defaultTextWindowHeight
-        prompter.readingWidth = PrompterSettings.defaultReadingWidth
-        prompter.speed = ReadTime.naturalSpeed
-        session.prompter = prompter
-        session.camera.showsSafeZones = true
-        forgetSafeZonePick()
-        toast.show(String(localized: "Back to recommended layout"))
-    }
-
     /// The preview layer reports where it drew the camera image.
     func cameraImageMoved(to rect: CGRect) {
         measured { $0.videoRect = rect }
@@ -174,14 +153,5 @@ extension PrompterViewModel {
         update(&metrics)
         guard metrics != screenMetrics else { return }
         screenMetrics = metrics
-    }
-
-    func pickSafeZone(_ choice: SafeZoneChoice) {
-        safeZonePick = choice
-    }
-
-    /// "Reset to Recommended" also forgets the safe zone picked in this session.
-    func forgetSafeZonePick() {
-        safeZonePick = nil
     }
 }

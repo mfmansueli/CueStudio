@@ -28,11 +28,13 @@ final class DataEraserService {
     @ObservationIgnored private let notifications: NotificationService?
     @ObservationIgnored private let voyage: FirstVoyageService?
     @ObservationIgnored private let draftLearning: DraftLearningService?
+    @ObservationIgnored private let voiceQuestions: VoiceQuestionScheduler?
 
     init(
         library: ScriptLibraryService, takes: TakeLibraryService, drafts: QuickEditDraftStoring, logbook: LogbookService,
         brands: BrandStore, sky: SkyMemory, profile: CreatorProfileService, preferences: PreferencesService, defaults: UserDefaults = .standard,
-        notifications: NotificationService? = nil, voyage: FirstVoyageService? = nil, draftLearning: DraftLearningService? = nil
+        notifications: NotificationService? = nil, voyage: FirstVoyageService? = nil, draftLearning: DraftLearningService? = nil,
+        voiceQuestions: VoiceQuestionScheduler? = nil
     ) {
         self.library = library
         self.takes = takes
@@ -46,6 +48,7 @@ final class DataEraserService {
         self.notifications = notifications
         self.voyage = voyage
         self.draftLearning = draftLearning
+        self.voiceQuestions = voiceQuestions
     }
 
     func eraseEverything() {
@@ -66,6 +69,8 @@ final class DataEraserService {
         ] {
             defaults.removeObject(forKey: key)
         }
+        // The tips' memory lives in the scheduler too: left there, its next save would write it back.
+        voiceQuestions?.reset()
         // With nothing made, the first voyage starts over (a video shared before still counts: it stays off then).
         voyage?.reset()
         // Cue's drafts waiting for a take, so nothing is learned from scripts that are gone.

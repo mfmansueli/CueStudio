@@ -198,38 +198,40 @@ struct MilestoneView: View {
     }
 }
 
-/// Twelve rays, each 8° wide at its foot, in pale gold at 18%, fading out from 30% to 68% of the way (the board's conic gradient, masked).
-private struct Rays: View {
-    var body: some View {
-        let stops: [Gradient.Stop] = (0..<12).flatMap { ray -> [Gradient.Stop] in
-            let base = Double(ray) / 12
-            let step = 1.0 / 360
-            return [
-                .init(color: .clear, location: base + 12 * step), .init(color: Palette.Universe.starCream.opacity(0.18), location: base + 16 * step),
-                .init(color: .clear, location: base + 20 * step),
-            ]
+extension MilestoneView {
+    /// Twelve rays, each 8° wide at its foot, in pale gold at 18%, fading out from 30% to 68% of the way (the board's conic gradient, masked).
+    private struct Rays: View {
+        var body: some View {
+            let stops: [Gradient.Stop] = (0..<12).flatMap { ray -> [Gradient.Stop] in
+                let base = Double(ray) / 12
+                let step = 1.0 / 360
+                return [
+                    .init(color: .clear, location: base + 12 * step), .init(color: Palette.Universe.starCream.opacity(0.18), location: base + 16 * step),
+                    .init(color: .clear, location: base + 20 * step),
+                ]
+            }
+            return Circle()
+                .fill(AngularGradient(stops: [.init(color: .clear, location: 0)] + stops + [.init(color: .clear, location: 1)], center: .center))
+                .mask(RadialGradient(
+                    stops: [.init(color: .black, location: 0), .init(color: .black, location: 0.3), .init(color: .clear, location: 0.68)],
+                    center: .center, startRadius: 0, endRadius: 141
+                ))
         }
-        return Circle()
-            .fill(AngularGradient(stops: [.init(color: .clear, location: 0)] + stops + [.init(color: .clear, location: 1)], center: .center))
-            .mask(RadialGradient(
-                stops: [.init(color: .black, location: 0), .init(color: .black, location: 0.3), .init(color: .clear, location: 0.68)],
-                center: .center, startRadius: 0, endRadius: 141
-            ))
     }
-}
 
-/// The cross of light over the icon: two thin bars of pale gold, fading out to their ends, with a glow.
-private struct LightCross: View {
-    var body: some View {
-        let fade = Gradient(stops: [
-            .init(color: Palette.Universe.starGold.opacity(0), location: 0), .init(color: Palette.Universe.starGold.opacity(0.45), location: 0.3),
-            .init(color: Palette.Universe.starGold, location: 0.5), .init(color: Palette.Universe.starGold.opacity(0.45), location: 0.7),
-            .init(color: Palette.Universe.starGold.opacity(0), location: 1),
-        ])
-        ZStack {
-            Capsule().fill(LinearGradient(gradient: fade, startPoint: .leading, endPoint: .trailing)).frame(height: 1.8)
-            Capsule().fill(LinearGradient(gradient: fade, startPoint: .top, endPoint: .bottom)).frame(width: 1.8, height: 154)
+    /// The cross of light over the icon: two thin bars of pale gold, fading out to their ends, with a glow.
+    private struct LightCross: View {
+        var body: some View {
+            let fade = Gradient(stops: [
+                .init(color: Palette.Universe.starGold.opacity(0), location: 0), .init(color: Palette.Universe.starGold.opacity(0.45), location: 0.3),
+                .init(color: Palette.Universe.starGold, location: 0.5), .init(color: Palette.Universe.starGold.opacity(0.45), location: 0.7),
+                .init(color: Palette.Universe.starGold.opacity(0), location: 1),
+            ])
+            ZStack {
+                Capsule().fill(LinearGradient(gradient: fade, startPoint: .leading, endPoint: .trailing)).frame(height: 1.8)
+                Capsule().fill(LinearGradient(gradient: fade, startPoint: .top, endPoint: .bottom)).frame(width: 1.8, height: 154)
+            }
+            .shadow(color: Palette.Universe.starGold.opacity(0.8), radius: 6)
         }
-        .shadow(color: Palette.Universe.starGold.opacity(0.8), radius: 6)
     }
 }

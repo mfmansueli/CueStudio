@@ -33,29 +33,6 @@ struct IdeaPromptDraftTests {
         #expect(!draft.canSubmit(isAvailable: false))
     }
 
-    /// With nothing written the arrow asks for ideas instead (Find inspiration), with or without a
-    /// model (the ideas are local), but never while a dictation is still writing, and never with an idea
-    /// already typed: then it sends.
-    @Test func withNothingWrittenTheArrowAsksForIdeas() {
-        var draft = IdeaPromptDraft()
-        #expect(draft.canAskForIdea())
-        draft.text = "  \n "
-        #expect(draft.canAskForIdea())
-        #expect(!draft.canAskForIdea(isDictating: true))
-        draft.text = "Three ways to focus"
-        #expect(!draft.canAskForIdea())
-        #expect(draft.canSubmit(isAvailable: true))
-    }
-
-    @Test func theServiceAsksForIdeasOnlyWhileTheDraftIsEmpty() {
-        let service = IdeaDraftService()
-        #expect(service.canAskForIdea(isDictating: false))
-        service.text = "Carnival in Salvador"
-        #expect(!service.canAskForIdea(isDictating: false))
-        service.clear()
-        #expect(service.canAskForIdea(isDictating: false))
-    }
-
     // MARK: - One draft
 
     @Test func theServiceIsTheOneCopyOfTheText() {

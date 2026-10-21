@@ -15,13 +15,11 @@ struct LengthFitTests {
         #expect(LengthFit(seconds: 60, ideal: ideal).verdict == .fits)
         #expect(LengthFit(seconds: 75, ideal: ideal).verdict == .fits)
         #expect(LengthFit(seconds: 90, ideal: ideal).verdict == .fits)
-        #expect(LengthFit(seconds: 75, ideal: ideal).fits)
     }
 
     @Test func shorterOrLongerSaysByHowMuch() {
         #expect(LengthFit(seconds: 48, ideal: ideal).verdict == .under(12))
         #expect(LengthFit(seconds: 98, ideal: ideal).verdict == .over(8))
-        #expect(!LengthFit(seconds: 48, ideal: ideal).fits)
     }
 
     @Test func theRangeReadsAsClockTimes() {

@@ -87,4 +87,11 @@ nonisolated enum WordSegmenter {
         finish()
         return count
     }
+
+    /// A quick count for judging how much text there is (no word segmentation): words with a letter in them, and two letters to a word in
+    /// a script written without spaces.
+    static func roughWordCount(of text: String) -> Int {
+        if containsUnspacedScript(text) { return text.filter(\.isLetter).count / 2 }
+        return text.split(whereSeparator: \.isWhitespace).filter { $0.contains(where: \.isLetter) }.count
+    }
 }

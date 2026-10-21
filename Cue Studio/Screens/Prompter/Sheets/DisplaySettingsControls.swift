@@ -146,7 +146,7 @@ struct DisplaySettingsControls: View {
             .padding(.horizontal, 16)
             row(String(localized: "Alignment")) {
                 Picker("Alignment", selection: $settings.alignment) {
-                    ForEach(PrompterAlignment.allCases) { Text($0.label).tag($0) }
+                    ForEach(LineAlignment.allCases) { Text($0.label).tag($0) }
                 }
                 .pickerStyle(.segmented)
                 .fixedSize()

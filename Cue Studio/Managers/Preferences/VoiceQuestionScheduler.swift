@@ -183,12 +183,10 @@ final class VoiceQuestionScheduler {
         save()
     }
 
-    /// "Reset My Cue Voice" on the full page: the history of the tips starts over (snoozes, pauses, skips, counts).
+    /// "Delete my Cue data": the tips start over as on a fresh install (snoozes, pauses, skips, counts and the days opened).
     func reset() {
-        let opened = state.firstEligibleDays
         state = VoiceQuestionState()
-        state.firstEligibleDays = opened
-        save()
+        defaults.removeObject(forKey: DefaultsKey.voiceQuestionState)
     }
 
     // MARK: - Storage

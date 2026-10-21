@@ -143,9 +143,4 @@ struct CaptionRevisionTests {
         #expect(!cue.isRevised)
         #expect(!cue.hasWordTiming)
     }
-
-    @Test func theTranscriptKeepsWhatWasHeard() {
-        let transcript = CaptionTranscript(words: line.words, languageCode: "pt")
-        #expect(transcript.text(in: TimeSpan(start: 1.65, end: 2.6)) == "mostrar duas")
-    }
 }

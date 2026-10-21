@@ -10,11 +10,9 @@ import Foundation
 @MainActor
 final class FakeTextStyleStore: TextStyleStoring {
     var myStyle: TextLook?
-    var myCoverLook: CoverLook?
     var myCoverStyle: CoverStyle?
 
-    init(myStyle: TextLook? = nil, myCoverLook: CoverLook? = nil) {
+    init(myStyle: TextLook? = nil) {
         self.myStyle = myStyle
-        self.myCoverLook = myCoverLook
     }
 }

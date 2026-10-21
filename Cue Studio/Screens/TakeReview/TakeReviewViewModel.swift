@@ -153,14 +153,6 @@ final class TakeReviewViewModel {
     /// This take and the others of the same script, by number ("Your takes · 3").
     var siblings: [Take] { take.map(takes.siblings(of:)) ?? [] }
 
-    /// "Today · 9:25 AM · TikTok · 9:16 · 1080p"
-    var metaLine: String {
-        guard let take else { return "" }
-        let when = take.recordedAt.formatted(.relative(presentation: .named).locale(.interface))
-        let platform = take.platform?.label ?? String(localized: "Freestyle")
-        return "\(when) · \(platform) · \(take.aspect.label) · \(take.resolution.label)"
-    }
-
     var videoURL: URL? { take.map(takes.videoURL(for:)) }
 
     /// Where this video is on its way out (the takes of its script): derived, never set by hand.
@@ -186,17 +178,11 @@ final class TakeReviewViewModel {
         return "v\(version)"
     }
 
-    /// The sibling `offset` takes away (by number), for the swipe and the "2 / 3" chip; nil at the ends.
+    /// The sibling `offset` takes away (by number), for the swipe; nil at the ends.
     func neighbor(_ offset: Int) -> Take? {
         guard let take, let index = siblings.firstIndex(where: { $0.id == take.id }) else { return nil }
         let target = index + offset
         return siblings.indices.contains(target) ? siblings[target] : nil
-    }
-
-    /// "2 / 3": this take's place among the video's takes.
-    var placeLabel: String? {
-        guard siblings.count > 1, let take, let index = siblings.firstIndex(where: { $0.id == take.id }) else { return nil }
-        return "\(index + 1) / \(siblings.count)"
     }
 
     /// Nil when unlimited.
@@ -226,12 +212,6 @@ final class TakeReviewViewModel {
     @ObservationIgnored var proDelay: Duration = .milliseconds(450)
 
     var exportsExhausted: Bool { exportsLeft == 0 }
-
-    /// "0:44 · 9:16 · 1080p"
-    var shareMeta: String {
-        guard let take else { return "" }
-        return "\(DurationText.clock(take.edit?.editedDuration ?? take.duration)) · \(take.outputAspect.label) · \(outputResolutionLabel(for: take))"
-    }
 
     /// 4K keeps the recording's resolution (a 1080p take isn't upscaled); 1080p scales 4K down.
     /// About 2.2 MB a second at 1080p and 6.5 at 4K (the export's HEVC), for the space check.

@@ -70,19 +70,3 @@ struct SectionRail: View {
             .frame(maxHeight: .infinity, alignment: .top)
     }
 }
-
-/// "HOOK · 1 OF 3" under the text, changing with a crossfade as the reading moves on.
-struct SectionLabel: View {
-    let title: String
-
-    var body: some View {
-        Text(title)
-            .font(CueStudioFont.hud)
-            .tracking(1.2)
-            .foregroundStyle(Palette.accText)
-            .shadow(color: Palette.textShadow, radius: 1.5, y: 1)
-            .contentTransition(.opacity)
-            .animation(.easeInOut(duration: 0.3), value: title)
-            .accessibilityHidden(true)
-    }
-}

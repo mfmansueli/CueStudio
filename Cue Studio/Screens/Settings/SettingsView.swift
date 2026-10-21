@@ -16,9 +16,6 @@ struct SettingsView: View {
     @State private var query = ""
     @State private var confirmsReset = false
 
-    /// Every row is shown. The privacy policy opens its link when one is set (`AppLinks`), and Cue's own summary of it until then.
-    static func isShown(_ entry: SettingsEntry) -> Bool { true }
-
     var body: some View {
         @Bindable var preferences = preferences
         let bindings = SettingsBindings(prompter: $preferences.prompter, camera: $preferences.camera)
@@ -70,7 +67,7 @@ struct SettingsView: View {
 
     private func section(_ title: String, _ entries: [SettingsEntry], _ bindings: SettingsBindings, footer: String? = nil) -> some View {
         Section {
-            SettingsEntryRows(entries: entries.filter(Self.isShown), bindings: bindings)
+            SettingsEntryRows(entries: entries, bindings: bindings)
         } header: {
             CueSectionHeader(verbatim: title)
         } footer: {

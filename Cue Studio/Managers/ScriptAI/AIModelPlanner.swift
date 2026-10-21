@@ -34,7 +34,7 @@ nonisolated struct AIModelPlanner: Sendable {
         if let route = AIModelRoute.choose(for: task, onDeviceAvailable: deviceUsable, privateCloudAvailable: cloudUsable) {
             return .success(AIPlan(route: route, usable: usable))
         }
-        return .failure(Self.failure(device: device, deviceMissing: deviceMissing, cloud: cloud, cloudMissing: cloudMissing))
+        return .failure(Self.failure(device: device, deviceMissing: deviceMissing, cloudMissing: cloudMissing))
     }
 
     /// What can be told at once, without waiting for a request: why no model can take `languages`, or
@@ -45,13 +45,13 @@ nonisolated struct AIModelPlanner: Sendable {
         let deviceMissing = languages.first { !capabilities.deviceSupports($0) }
         if device == .available, deviceMissing == nil { return nil }
         if capabilities.cloudStatus == .available { return nil }
-        return Self.failure(device: device, deviceMissing: deviceMissing, cloud: capabilities.cloudStatus, cloudMissing: nil)
+        return Self.failure(device: device, deviceMissing: deviceMissing, cloudMissing: nil)
     }
 
     /// The reason to tell: a device that can't run Apple Intelligence, or has it off, says so whatever
     /// the language; otherwise a language no available model writes; otherwise the model is getting ready.
     private static func failure(
-        device: AIModelStatus, deviceMissing: Locale?, cloud: AIModelStatus?, cloudMissing: Locale?
+        device: AIModelStatus, deviceMissing: Locale?, cloudMissing: Locale?
     ) -> AIPlanFailure {
         switch device {
         case .deviceNotEligible: return .deviceNotSupported

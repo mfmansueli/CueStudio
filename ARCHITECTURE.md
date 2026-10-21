@@ -16,7 +16,7 @@
 | Item | Padrão |
 |------|--------|
 | UI | SwiftUI puro. UIKit só via `UIViewRepresentable` / `@UIApplicationDelegateAdaptor` |
-| Plataforma | iOS 26+ (Liquid Glass). Multiplataforma iOS + macOS quando fizer sentido |
+| Plataforma | iOS 27+ (Liquid Glass). Multiplataforma iOS + macOS quando fizer sentido |
 | Linguagem | Swift 6 com strict concurrency |
 | Estado | Observation (`@Observable`). Sem `ObservableObject`, `@Published` ou Combine |
 | Projeto Xcode | Pastas sincronizadas (*folder references* do Xcode 16+): a pasta no disco **é** o grupo no Xcode. Criar o arquivo na pasta certa já o coloca no target |
@@ -259,7 +259,7 @@ Cue Studio/
 │       └── <Conceito>/                 # infra com várias peças (ex.: ImageLoading/)
 ├── Cue StudioTests/                    # Swift Testing, espelha subpastas quando cresce (DesignSystem/)
 ├── Cue StudioUITests/                  # XCUITest, um arquivo por fluxo
-└── DESIGN_PROJECT.md                   # fonte de verdade do design (ver seção 5)
+└── DESIGN_PROJECT.md                   # como o app está hoje, por tela (ver seção 5)
 ```
 
 **Subpastas de uma feature:** só crie a subpasta quando houver arquivo para ela. Uma feature pequena
@@ -399,10 +399,10 @@ struct HomeView: View {
   - nenhuma cor hex, fonte ou raio ad-hoc em `Screens/`: se faltar, crie o token;
   - um componente só entra no Design System se for genérico (sem regra de negócio);
   - um único estilo "primário" por tela.
-- **`DESIGN_PROJECT.md` na raiz** é a fonte de verdade do design: identidade, cores, tipografia,
-  espaçamento, formas, ícones (SF Symbols por significado), biblioteca de componentes, inventário de
-  telas, árvore de navegação, estados vazios/loading/erro, motion, acessibilidade, do's & don'ts e
-  checklist. Atualize junto com a UI.
+- A fonte de verdade do design é `design/cue-v30/handoff-telas/` (comece por `LEIA-ME.md` e `docs/09-Decisions.md`).
+  **`DESIGN_PROJECT.md` na raiz** diz como o app está hoje e as decisões do dono que divergem do quadro, por tela:
+  identidade, cores, tipografia, espaçamento, formas, ícones (SF Symbols por significado), biblioteca de componentes,
+  inventário de telas, navegação, estados vazios/loading/erro, motion, acessibilidade. Atualize junto com a UI.
 
 ---
 

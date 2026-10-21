@@ -32,7 +32,7 @@ struct VoyageProgressTests {
         let progress = VoyageProgress(scripts: 1, takes: [], shares: 0, marks: practiced)
         #expect(progress.done == [.write, .practice])
         #expect(progress.current == .record)
-        #expect(progress.doneCount == 2)
+        #expect(progress.done.count == 2)
     }
 
     @Test func recordingCountsAsPracticeSoSkippingItNeverLeavesTheStepBehind() {
@@ -68,7 +68,7 @@ struct VoyageProgressTests {
         let progress = VoyageProgress(scripts: 0, takes: [], shares: 1, marks: marks)
         #expect(progress.isComplete)
         #expect(progress.current == nil)
-        #expect(progress.doneCount == VoyageProgress.stepCount)
+        #expect(progress.done.count == VoyageProgress.stepCount)
     }
 
     @Test func aStepDoneOutOfOrderCountsAndTheCardNamesTheFirstAhead() {

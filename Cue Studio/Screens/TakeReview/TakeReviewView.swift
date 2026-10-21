@@ -340,7 +340,7 @@ struct TakeReviewView: View {
             },
             onPrevious: viewModel.neighbor(-1) == nil ? nil : { selectNeighbor(-1) },
             onNext: viewModel.neighbor(1) == nil ? nil : { selectNeighbor(1) },
-            onSuggest: viewModel.offersBestSuggestion ? { suggestBest(from: take) } : nil,
+            onSuggest: viewModel.offersBestSuggestion ? { suggestBest() } : nil,
             bestBursts: bestBursts
         )
     }
@@ -455,7 +455,7 @@ struct TakeReviewView: View {
         case .editTool(let tool):
             editingTool = tool
             editingTake = take
-        case .pickBest: suggestBest(from: take)
+        case .pickBest: suggestBest()
         }
     }
 
@@ -468,7 +468,7 @@ struct TakeReviewView: View {
                 .modifier(ExportPresentations(viewModel: viewModel, isActive: flow.step == nil))
         case .sentOff(let video, let networks):
             SendOffView(
-                video: video, networks: networks, snapshot: sentOffSnapshot(networks),
+                video: video, networks: networks, snapshot: sentOffSnapshot(),
                 onShareAgain: { shareAfterClosing(video) },
                 onUniverse: { viewModel.celebration = nil; services.presentation.selectedTab = .profile; onBack() },
                 onDone: { doneWithSendOff() }
@@ -511,7 +511,7 @@ struct TakeReviewView: View {
     }
 
     /// The year's universe with the shares just confirmed in it.
-    private func sentOffSnapshot(_ networks: [ShareDestination]) -> UniverseSnapshot {
+    private func sentOffSnapshot() -> UniverseSnapshot {
         let videos = UniverseVideo.resolve(
             records: milestones.records, takes: services.takes.takes, scripts: services.library.scripts, fallbackDate: milestones.firstShareDate ?? .now
         )
@@ -568,10 +568,10 @@ struct TakeReviewView: View {
     private var pickTip: some View {
         VoyageTipCard(
             step: .pick, symbol: VoyageStep.pick.symbol, title: VoyageStep.pick.tipTitle(), message: VoyageStep.pick.tipMessage(),
-            primary: comparableTake.map { take in
+            primary: comparableTake.map { _ in
                 (VoyageStep.pick.tipAction(canCompare: true), {
                     services.voyage.tipActed(.pick, at: .review)
-                    suggestBest(from: take)
+                    suggestBest()
                 })
             },
             onClose: { withAnimation(.smooth(duration: 0.25)) { services.voyage.closeTip(.pick, at: .review) } }
@@ -641,7 +641,7 @@ struct TakeReviewView: View {
     }
 
     /// Opens "Pick your best take" with Cue's suggestion.
-    private func suggestBest(from take: Take) {
+    private func suggestBest() {
         guard let found = viewModel.bestProposal() else { return }
         playback.pause()
         proposal = found

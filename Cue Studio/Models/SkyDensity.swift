@@ -27,9 +27,6 @@ nonisolated enum SkyDensity: String, CaseIterable, Identifiable, Sendable {
 
     var id: String { rawValue }
 
-    /// The position on its four steps.
-    var step: Int { Self.allCases.firstIndex(of: self) ?? 1 }
-
     /// How many twinkling stars a screen has: 14 at Adrift and Interstellar (`motion/README.md`), none at Serene.
     var twinkleCount: Int {
         switch self {

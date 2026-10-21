@@ -215,7 +215,7 @@ struct AppServices {
         eraser = DataEraserService(
             library: library, takes: takes, drafts: options.draftStore, logbook: logbook, brands: brands, sky: sky,
             profile: profile, preferences: preferences, defaults: options.defaults, notifications: notifications, voyage: voyage,
-            draftLearning: draftLearning
+            draftLearning: draftLearning, voiceQuestions: voiceQuestions
         )
         topicTagging = TopicTaggingService(library: library, profile: profile, personalization: personalization, writer: writer)
     }

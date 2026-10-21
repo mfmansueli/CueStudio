@@ -150,7 +150,7 @@ struct VoiceFollowingLatencyTests {
         var results: [String] = []
         for round in 1...12 {
             let speech = SpeechRecognitionManager()
-            guard case .listening(let transcription, _) = await speech.start(script: script, language: .language(.english)) else {
+            guard case .listening(let transcription, _) = await speech.start(script: script, language: .language(.english), preparation: { _ in }) else {
                 results.append("\(round): didn't start")
                 continue
             }

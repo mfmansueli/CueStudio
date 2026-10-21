@@ -37,7 +37,7 @@ extension RealExports {
             let clip = try await TestClip.make(seconds: 4, loudSeconds: [1, 3])
             defer { try? FileManager.default.removeItem(at: clip) }
             var edit = TakeEdit(sourceDuration: 4, aspect: .portrait)
-            edit.timeline.setSpeed(2)
+            edit.timeline.setSpeed(2, forSegmentAt: 0)
             edit.voiceEnhancement = .off
 
             let output = try await export(edit, of: clip)

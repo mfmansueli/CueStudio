@@ -165,13 +165,4 @@ struct CoverStudioViewModelTests {
         #expect(other.cover.title == "Tea time")
         #expect(other.composition.title.accent == .mint)
     }
-
-    @Test func aPhotoCopiedInButNotKeptIsCleanedUp() async {
-        let studio = makeStudio()
-        await studio.start()
-        studio.remember(imported: "photo.jpg")
-        #expect(studio.unusedImports == ["photo.jpg"])
-        studio.change { $0.source = .photo(fileName: "photo.jpg") }
-        #expect(studio.unusedImports.isEmpty)
-    }
 }

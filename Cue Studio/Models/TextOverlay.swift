@@ -24,7 +24,7 @@ nonisolated struct TextOverlay: Codable, Hashable, Identifiable, Sendable {
     /// Letter spacing as a fraction of the size (`TextLook.trackingRange`).
     var tracking: Double = 0
     var isUppercase = false
-    var alignment: TextOverlayAlignment = .center
+    var alignment: LineAlignment = .center
     var color: OverlayColor = .white
     var background: TextOverlayBackground = .none
     var backgroundColor: OverlayColor = .black
@@ -132,7 +132,7 @@ nonisolated struct TextOverlay: Codable, Hashable, Identifiable, Sendable {
         size = try container.decode(Double.self, forKey: .size)
         tracking = (try? container.decodeIfPresent(Double.self, forKey: .tracking)) ?? 0
         isUppercase = try container.decodeIfPresent(Bool.self, forKey: .isUppercase) ?? false
-        alignment = try container.decodeIfPresent(TextOverlayAlignment.self, forKey: .alignment) ?? .center
+        alignment = try container.decodeIfPresent(LineAlignment.self, forKey: .alignment) ?? .center
         color = try container.decodeIfPresent(OverlayColor.self, forKey: .color) ?? .white
         background = try container.decodeIfPresent(TextOverlayBackground.self, forKey: .background) ?? .none
         backgroundColor = try container.decodeIfPresent(OverlayColor.self, forKey: .backgroundColor) ?? .black

@@ -149,7 +149,7 @@ struct LayerModelTests {
         edit.voiceOvers = [VoiceOverClip(fileName: "v.m4a", duration: 3, anchor: 1)]
         edit.creatorStyle = .social
         edit.cover = VideoCover(source: .photo(fileName: "cover.jpg"))
-        edit.timeline.setSpeed(1.5)
+        edit.timeline.setSpeed(1.5, forSegmentAt: 0)
         let decoded = try JSONDecoder().decode(TakeEdit.self, from: JSONEncoder().encode(edit))
         #expect(decoded == edit)
         #expect(decoded.mediaFileNames == ["p.jpg", "v.m4a", "cover.jpg"])

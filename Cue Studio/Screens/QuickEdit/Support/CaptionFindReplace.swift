@@ -34,11 +34,6 @@ nonisolated enum CaptionFindReplace {
         return found
     }
 
-    /// How many times `query` is in `text`.
-    static func count(of query: String, in text: String) -> Int {
-        ranges(of: query, in: text).count
-    }
-
     /// `text` with the `occurrence`-th match of `query` (from 0) replaced, or every match when `occurrence` is nil. The
     /// text as it was when there is no such match. Spaces doubled by the replacement (an emptied word) are folded.
     static func replacing(_ query: String, with replacement: String, in text: String, occurrence: Int? = nil) -> String {

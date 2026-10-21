@@ -28,14 +28,6 @@ enum VoiceFollowStatus: Equatable {
         }
     }
 
-    var followsWords: Bool { self == .followingWords }
-
-    /// The tag before the status in the Selfie pill: "AUTO" when the voice sets the pace, the
-    /// speed ("0.7×") when the text moves at it.
-    func tag(speedLabel: String) -> String {
-        followsWords ? String(localized: "AUTO") : speedLabel
-    }
-
     /// The short status next to the waveform in Selfie.
     func shortLabel(isListening: Bool) -> String {
         switch self {

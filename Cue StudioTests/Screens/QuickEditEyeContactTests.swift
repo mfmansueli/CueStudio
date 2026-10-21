@@ -8,7 +8,8 @@ import Testing
 @testable import Cue_Studio
 
 /// ✦ Smart › Eye Contact in the editor: off by default, each change one undo step (Off included, a slider drag once), Before never
-/// part of the edit, Cancel turning it off and stopping the work, the analysis asked from the playhead, and the draft keeping it.
+/// part of the edit, Cancel turning it off and stopping the work, the analysis asked from the playhead (and moved there when a
+/// scrub ends), and the draft keeping it.
 @MainActor
 @Suite("Quick edit Eye Contact")
 struct QuickEditEyeContactTests {
@@ -114,6 +115,21 @@ struct QuickEditEyeContactTests {
         let call = scenario.analyzer.calls.first
         #expect(call?.0.standardizedFileURL == viewModel.videoURL.standardizedFileURL)
         #expect(call?.1 == 4)
+    }
+
+    @Test func scrubbingTheTimelineMovesTheAnalysisWhereThePlayheadStops() async {
+        let analyzer = FakeEyeContactAnalyzer(step: .milliseconds(5), holdsAfter: 2)
+        let scenario = await makeScenario(analyzer: analyzer)
+        let viewModel = scenario.viewModel
+        viewModel.setEyeContact(true)
+        await Wait.until { scenario.eyes.status(of: viewModel.videoURL)?.progress ?? 0 >= 0.2 }
+        viewModel.scrubTimeline(to: 8)
+        // While the finger moves, the analysis stays where it was.
+        #expect(analyzer.calls.count == 1)
+        viewModel.endTimelineScrub()
+        await Wait.until { analyzer.calls.count == 2 }
+        #expect(analyzer.calls.last?.1 == 8)
+        viewModel.cancelEyeContact()
     }
 
     @Test func cancelTurnsItOffAndStopsTheWork() async {

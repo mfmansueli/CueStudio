@@ -21,8 +21,6 @@ struct VoiceSetupSheet: View {
     let mode: Mode
     /// The idea waiting on the card: the last question's button then writes it.
     var ideaText: String?
-    /// The question to open on (an editable row of the profile); nil starts at the first.
-    var startAt: VoiceSetupStep?
     /// Saved: `writesScript` is true when the creator asked for the idea to be written.
     var onSaved: (_ writesScript: Bool) -> Void = { _ in }
 
@@ -38,7 +36,6 @@ struct VoiceSetupSheet: View {
     ) {
         self.mode = mode
         self.ideaText = ideaText
-        self.startAt = startAt
         self.onSaved = onSaved
         let plan = VoiceSetupPlan(profile: profile, steps: mode == .edit ? VoiceSetupStep.allCases : nil)
         _index = State(initialValue: startAt.flatMap { plan.steps.firstIndex(of: $0) } ?? 0)

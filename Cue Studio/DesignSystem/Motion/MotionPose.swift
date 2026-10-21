@@ -35,6 +35,4 @@ nonisolated struct MotionPose: Sendable {
 
     /// The part of an SVG stroke that is drawn (`Shape.trim(from: 0, to:)`).
     var drawn: Double { 1 - (dash ?? 0) / 100 }
-
-    var scale: Double { (sx + sy) / 2 }
 }

@@ -107,6 +107,11 @@ struct PrompterViewModelSetupTests {
     }
 
     /// Test 4: Use Recommended → this session in 1080p; the default stays 4K.
+    /// The resolution the camera was last set up with (applied, or started with): what it records in.
+    private func cameraResolution(_ scenario: Scenario) -> VideoResolution? {
+        (scenario.camera.appliedSettings.last ?? scenario.camera.startedSettings.last)?.resolution
+    }
+
     @Test func useRecommendedChangesThisSessionOnly() async {
         let scenario = makeScenario()
         defer { scenario.defaults.tearDown() }
@@ -119,8 +124,10 @@ struct PrompterViewModelSetupTests {
         #expect(!scenario.viewModel.showsRecommendation)
         #expect(scenario.toast.message == "Using TikTok setup")
 
+        // The screen hands the session's camera to the camera when it changes (`cameraSettingsChanged`).
+        await scenario.viewModel.cameraSettingsChanged()
         await scenario.viewModel.recordButtonTapped()
-        #expect(scenario.camera.recordedSettings.last?.resolution == .hd1080)
+        #expect(cameraResolution(scenario) == .hd1080)
         await scenario.viewModel.stopRecording(openReview: false)
         #expect(scenario.takes.takes.first?.resolution == .hd1080)
         await scenario.viewModel.disappear()
@@ -134,8 +141,9 @@ struct PrompterViewModelSetupTests {
         scenario.viewModel.keepCreatorSetup()
         #expect(scenario.viewModel.session.camera.resolution == .uhd4K)
         #expect(!scenario.viewModel.showsRecommendation)
+        await scenario.viewModel.cameraSettingsChanged()
         await scenario.viewModel.recordButtonTapped()
-        #expect(scenario.camera.recordedSettings.last?.resolution == .uhd4K)
+        #expect(cameraResolution(scenario) == .uhd4K)
         await scenario.viewModel.disappear()
     }
 
@@ -144,7 +152,7 @@ struct PrompterViewModelSetupTests {
         defer { scenario.defaults.tearDown() }
         await scenario.viewModel.appear()
         await scenario.viewModel.recordButtonTapped()
-        #expect(scenario.camera.recordedSettings.last?.resolution == .uhd4K)
+        #expect(cameraResolution(scenario) == .uhd4K)
         #expect(scenario.viewModel.session.choice == .keepCreatorSetup)
         await scenario.viewModel.stopRecording(openReview: false)
         #expect(!scenario.viewModel.showsRecommendation)

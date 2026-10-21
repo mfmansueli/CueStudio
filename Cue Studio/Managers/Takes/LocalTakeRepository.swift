@@ -48,8 +48,9 @@ struct LocalTakeRepository: TakeRepository {
 
     func deleteVideo(named fileName: String) throws {
         let url = videoURL(named: fileName)
-        // Its motion analysis goes with it.
+        // Its motion and eye analyses go with it.
         MotionAnalysisStore.remove(forRecording: url)
+        EyeContactAnalysisStore.remove(forRecording: url)
         guard FileManager.default.fileExists(atPath: url.path(percentEncoded: false)) else { return }
         try FileManager.default.removeItem(at: url)
     }

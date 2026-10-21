@@ -8,8 +8,7 @@ import Testing
 @testable import Cue_Studio
 
 /// The editor's side of the cover: Cover Studio opens from the toolbar, the timeline and a notification; Done puts the cover in
-/// the edit as one undo step, Cancel leaves it as it was, Remove cover takes it away; and the quick ways (the playhead's frame,
-/// a title) still work without the studio.
+/// the edit as one undo step, Cancel leaves it as it was, Remove cover takes it away.
 @MainActor
 @Suite("Quick edit cover")
 struct QuickEditCoverTests {
@@ -70,13 +69,28 @@ struct QuickEditCoverTests {
 
     @Test func removeCoverTakesItAway() async throws {
         let (viewModel, _, _) = await makeViewModel()
-        viewModel.useFrameAsCover()
+        viewModel.openCoverStudio()
+        viewModel.finishCoverStudio(try #require(viewModel.coverStudio))
+        #expect(viewModel.edit.cover != nil)
         viewModel.openCoverStudio()
         let studio = try #require(viewModel.coverStudio)
         #expect(studio.hadCover)
         studio.removeCover()
         viewModel.finishCoverStudio(studio)
         #expect(viewModel.edit.cover == nil)
+    }
+
+    @Test func aPhotoCopiedInIsCleanedUpWhenTheStudioIsCancelled() async throws {
+        let (viewModel, _, _) = await makeViewModel()
+        let file = try EditMediaFiles.newFile(pathExtension: "jpg")
+        try Data([0]).write(to: file.url)
+        defer { EditMediaFiles.remove([file.name]) }
+        viewModel.openCoverStudio()
+        let studio = try #require(viewModel.coverStudio)
+        studio.remember(imported: file.name)
+        studio.change { $0.source = .photo(fileName: file.name) }
+        viewModel.cancelCoverStudio(studio)
+        #expect(!EditMediaFiles.exists(file.name))
     }
 
     @Test func theTimelineAndANotificationOpenTheStudio() async {
@@ -86,19 +100,6 @@ struct QuickEditCoverTests {
         viewModel.coverStudio = nil
         viewModel.open(.cover)
         #expect(viewModel.coverStudio != nil)
-    }
-
-    @Test func aTitleMakesACoverFromThePlayhead() async {
-        let (viewModel, player, _) = await makeViewModel()
-        player.seek(to: 5)
-        viewModel.setCoverTitle("5 comidas de SP")
-        #expect(viewModel.edit.cover?.source.frame?.time == 5)
-        #expect(viewModel.edit.cover?.title == "5 comidas de SP")
-        #expect(viewModel.edit.cover?.composition != nil)
-        viewModel.setCoverTitlePosition(0.7)
-        #expect(viewModel.edit.cover?.composition?.title.center.y == 0.7)
-        viewModel.removeCover()
-        #expect(viewModel.edit.cover == nil)
     }
 
     @Test func aNewCoverStartsInMyStyle() async throws {

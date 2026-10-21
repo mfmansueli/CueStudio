@@ -30,13 +30,13 @@ struct NotificationServiceTests {
         #expect(!service.isOn(.discovery) && !service.isOn(.whatsNew))
     }
 
-    @Test func turningACategoryOnAsksOnceAndADeniedIsNeverAskedAgain() async {
+    @Test func turnOnAsksOnceAndADeniedIsNeverAskedAgain() async {
         let harness = NotificationServiceHarness(status: .notDetermined)
         harness.center.allowsWhenAsked = false
-        #expect(await harness.service.setCategory(.discovery, isOn: true) == .denied)
-        #expect(await harness.service.setCategory(.whatsNew, isOn: true) == .denied)
+        #expect(await harness.service.allowEverything() == .denied)
+        #expect(await harness.service.allowEverything() == .denied)
         #expect(harness.center.requestCount == 1)
-        #expect(harness.service.isOn(.discovery), "The choice is kept: iOS may allow Cue later")
+        #expect(!harness.service.isOn(.discovery), "A no from iOS turns nothing on")
     }
 
     // MARK: - Reminders
@@ -154,7 +154,7 @@ struct NotificationServiceTests {
         let harness = NotificationServiceHarness(facts: facts)
         await harness.service.reconcile()
         #expect(harness.center.requests(of: .feature).isEmpty)
-        await harness.service.setCategory(.discovery, isOn: true)
+        await harness.service.setGroup(.news, isOn: true)
         let tool = harness.center.requests(of: .feature).first
         #expect(tool?.payload.feature == .myCueVoice && tool?.isPassive == true)
     }
@@ -164,7 +164,7 @@ struct NotificationServiceTests {
         harness.addReadyScript()
         await harness.service.reconcile()
         #expect(!harness.automatic().isEmpty)
-        await harness.service.setCategory(.projects, isOn: false)
+        await harness.service.setGroup(.finish, isOn: false)
         #expect(harness.automatic().isEmpty)
         #expect(harness.service.state.counters["category.projects.opted_out"] == 1)
     }
@@ -177,7 +177,7 @@ struct NotificationServiceTests {
         #expect(held.count == NotificationCategory.allCases.count - 1)
         #expect(Set(held) == Set(NotificationCategory.allCases).subtracting([.reminders]))
         let harness = NotificationServiceHarness()
-        await harness.service.setCategory(.reminders, isOn: false)
+        for group in NotificationGroup.allCases { await harness.service.setGroup(group, isOn: false) }
         #expect(harness.service.isOn(.reminders))
     }
 
@@ -237,7 +237,7 @@ struct NotificationServiceTests {
     @Test func erasingTakesEverythingBackButKeepsTheChoices() async {
         let harness = NotificationServiceHarness()
         let script = harness.addReadyScript()
-        await harness.service.setCategory(.discovery, isOn: true)
+        await harness.service.setGroup(.news, isOn: true)
         _ = await harness.service.setReminder(.script(script), title: "A", at: harness.tomorrowAtTen())
         await harness.service.eraseAll()
         #expect(harness.center.requests.isEmpty)

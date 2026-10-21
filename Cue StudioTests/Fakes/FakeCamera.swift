@@ -21,7 +21,6 @@ final class FakeCamera: CameraControlling {
     private(set) var stopCount = 0
     private(set) var appliedSettings: [CameraSettings] = []
     private(set) var startedSettings: [CameraSettings] = []
-    private(set) var recordedSettings: [CameraSettings] = []
     private(set) var recordingsStarted = 0
     private(set) var audioHandler: (@Sendable (AVAudioPCMBuffer) -> Void)?
     private(set) var levelHandler: (@Sendable (AudioLevelSample) -> Void)?
@@ -46,10 +45,9 @@ final class FakeCamera: CameraControlling {
         stopCount += 1
     }
 
-    func startRecording(settings: CameraSettings) async throws {
+    func startRecording() async throws {
         if failsToRecord { throw CaptureEngineError.notRunning }
         recordingsStarted += 1
-        recordedSettings.append(settings)
         isRecording = true
     }
 

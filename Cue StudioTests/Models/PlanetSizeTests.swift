@@ -19,7 +19,7 @@ struct PlanetSizeTests {
     }
 
     @Test func aPlanetNeverPassesTheCore() {
-        #expect(PlanetSize.diameter(videos: 5_000) == PlanetSize.maximum)
+        #expect(PlanetSize.diameter(videos: 5_000) == PlanetSize.diameter(videos: 365))
         #expect(PlanetSize.diameter(videos: 0) == 0, "no videos, no planet")
     }
 

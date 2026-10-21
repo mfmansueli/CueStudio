@@ -49,7 +49,7 @@ struct SpeedCurveEditor: View {
         }
         .overlay(alignment: .topLeading) {
             ForEach([4.0, 1, 0.25], id: \.self) { speed in
-                Text(SpeedPanel.label(speed))
+                Text(SpeedScale.label(forMultiple: speed))
                     .font(.system(.caption2, design: .monospaced))
                     .foregroundStyle(Palette.ink2)
                     .fixedSize()
@@ -85,7 +85,7 @@ struct SpeedCurveEditor: View {
             )
             .accessibilityElement()
             .accessibilityLabel(Text("Point \(index + 1) of \(curve.points.count)"))
-            .accessibilityValue(Text(SpeedPanel.label(point.speed)))
+            .accessibilityValue(Text(SpeedScale.label(forMultiple: point.speed)))
             .accessibilityAdjustableAction { direction in
                 let factor = direction == .increment ? 1.25 : 0.8
                 viewModel.moveCurvePoint(index, to: point.speed * factor)

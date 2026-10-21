@@ -278,11 +278,6 @@ nonisolated enum ScriptPromptBuilder {
         return VoiceBriefBuilder.brief(for: profile.voice)
     }
 
-    /// The text of `brief(for:)`.
-    static func voiceBrief(_ profile: CreatorProfile) -> String {
-        brief(for: profile).text
-    }
-
     // MARK: - Sponsored ads
 
     /// The brand brief of a sponsored ad: the only things the ad may claim. Nothing is invented, and the paid
@@ -337,7 +332,7 @@ nonisolated enum ScriptPromptBuilder {
     ///   inspiration and the card show them; false asks for titles alone (`ThemeSuggestions`), what the card had before, kept to measure the two
     ///   against each other on a device.
     static func themesPrompt(
-        slots: [IdeaSlot], voice: CreatorVoice? = nil, language: CueLanguage? = nil, inspiration: [String] = [], asBriefs: Bool = false
+        slots: [IdeaSlot], language: CueLanguage? = nil, inspiration: [String] = [], asBriefs: Bool = false
     ) -> String {
         func name(_ topic: IdeaTopic) -> String {
             topic.subtopics.isEmpty ? topic.name : "\(topic.name) (\(topic.subtopics.joined(separator: ", ")))"

@@ -10,8 +10,6 @@ import Foundation
 @MainActor
 protocol TextStyleStoring: AnyObject {
     var myStyle: TextLook? { get set }
-    /// Layout, typeface, effect and series tag of a cover (v26): what Cover Studio's style starts from when there's none.
-    var myCoverLook: CoverLook? { get set }
     /// Cover Studio's "My cover style": new covers start in it.
     var myCoverStyle: CoverStyle? { get set }
 }

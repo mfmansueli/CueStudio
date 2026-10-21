@@ -41,6 +41,11 @@ struct QuickEditTranslationTests {
         return Scenario(viewModel: viewModel, availability: availability, toast: toast)
     }
 
+    /// Lines of the Spanish translation whose original changed since (what the Translate sheet marks).
+    private func outdatedSpanish(_ viewModel: QuickEditViewModel) -> [TranslatedCaptionLine] {
+        viewModel.translation(.spanish)?.outdatedLines(against: viewModel.edit.captions) ?? []
+    }
+
     @Test func captionsAreTranslatedSentenceBySentenceAsOneStep() async throws {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
@@ -105,14 +110,14 @@ struct QuickEditTranslationTests {
         let viewModel = scenario.viewModel
         await viewModel.translateCaptions(to: .spanish)
         await viewModel.performTranslation(try #require(viewModel.translationRequest), with: FakeTranslationSession())
-        #expect(viewModel.outdatedLines(.spanish).isEmpty)
+        #expect(outdatedSpanish(viewModel).isEmpty)
         viewModel.setCaptionText(viewModel.edit.captions[0].id, "Okay, so real talk.")
-        let outdated = viewModel.outdatedLines(.spanish)
+        let outdated = outdatedSpanish(viewModel)
         #expect(outdated.count == 1)
         // The correction isn't thrown away: the line is still there, marked.
         #expect(viewModel.translation(.spanish)?.lines.count == 1)
         viewModel.markTranslationCurrent(.spanish, line: outdated[0].id)
-        #expect(viewModel.outdatedLines(.spanish).isEmpty)
+        #expect(outdatedSpanish(viewModel).isEmpty)
     }
 
     @Test func theDisplayChoosesWhatShowsAndGoesBackWithItsTranslation() async throws {

@@ -22,8 +22,8 @@ struct DictationNoticeView: View {
             }
             .font(.footnote)
             .foregroundStyle(Palette.ink2)
-            if notice.offersSettings, let url = URL(string: UIApplication.openSettingsURLString) {
-                Button("Open Settings") { openURL(url) }
+            if notice.offersSettings {
+                Button("Open Settings") { openURL.openAppSettings() }
                     .buttonStyle(.cueSecondary(.compact, expands: false))
             }
         }

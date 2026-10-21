@@ -47,7 +47,6 @@ struct BrandStoreTests {
         let saved = try #require(store.save(brand("Oat & Co.")))
         store.remove(saved.id)
         #expect(store.brands.isEmpty)
-        #expect(store.brand(id: saved.id) == nil)
     }
 
     @Test func theLocalRepositoryWritesJSONThatReadsBack() throws {

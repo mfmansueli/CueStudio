@@ -119,7 +119,7 @@ struct VoiceQuestionAnswerTests {
     @Test func theBriefTellsTheModelWhatTheNewFieldsSay() {
         var profile = VoiceQuestionSchedulerTests.fullProfile()
         profile.avoid = ["Clickbait", "Politics"]
-        let brief = ScriptPromptBuilder.voiceBrief(profile)
+        let brief = ScriptPromptBuilder.brief(for: profile).text
         #expect(brief.contains("Rules: no clickbait"))
         #expect(brief.contains("no politics"))
         #expect(brief.contains("energy: high and lively"))

@@ -42,7 +42,7 @@ struct QuickEditBackgroundTests {
     @Test func theTakesBackgroundIsOneUndoStep() async {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
-        #expect(viewModel.backgroundTargetTitle == "This take")
+        #expect(viewModel.backgroundSourceID == nil)
         viewModel.setBackgroundStyle(.blur)
         #expect(viewModel.edit.background(for: nil)?.style == .blur)
         viewModel.beginChange()
@@ -66,7 +66,6 @@ struct QuickEditBackgroundTests {
         viewModel.edit = changed
         scenario.player.currentTime = 70
         #expect(viewModel.backgroundSourceID == source.id)
-        #expect(viewModel.backgroundTargetTitle == "Walk")
         viewModel.setBackgroundCutout(.colorKey)
         viewModel.setBackgroundStyle(.color)
         #expect(viewModel.edit.background(for: source.id)?.cutout == .colorKey)

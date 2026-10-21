@@ -28,7 +28,7 @@ struct TopicBirthPainter {
         let centre = birth.from
         let ring = pose(TopicBirth.chipRing)
         if ring.opacity > 0.01 {
-            context.stroke(circle(centre, 17 * ring.sx), with: .color(birth.color.opacity(ring.opacity)), lineWidth: 1.5)
+            context.stroke(LightFX.disc(centre, 17 * ring.sx), with: .color(birth.color.opacity(ring.opacity)), lineWidth: 1.5)
         }
         cross(at: centre, size: 52, pose: pose(TopicBirth.chipCross), in: &context)
         let sizes: [CGFloat] = [3, 2, 2.5]
@@ -85,7 +85,7 @@ struct TopicBirthPainter {
         guard head.opacity > 0.01, let along = head.along else { return }
         let point = point(onRouteAt: along)
         context.fill(
-            circle(point, 14),
+            LightFX.disc(point, 14),
             with: .radialGradient(
                 Gradient(stops: [
                     .init(color: hot.opacity(head.opacity), location: 0), .init(color: hot.opacity(head.opacity), location: 0.16 / 0.7),
@@ -125,7 +125,7 @@ struct TopicBirthPainter {
         for (layer, ring) in zip(TopicBirth.rings, rings) {
             let pose = pose(layer)
             guard pose.opacity > 0.01 else { continue }
-            context.stroke(circle(centre, ring.radius * pose.sx), with: .color(ring.color.opacity(pose.opacity)), lineWidth: ring.width)
+            context.stroke(LightFX.disc(centre, ring.radius * pose.sx), with: .color(ring.color.opacity(pose.opacity)), lineWidth: ring.width)
         }
         cross(at: centre, size: 70, pose: pose(TopicBirth.landingCross), in: &context)
     }
@@ -139,8 +139,6 @@ struct TopicBirthPainter {
     private func streak(_ pose: MotionPose, at centre: CGPoint, in context: inout GraphicsContext) {
         LightFX.streak(pose, at: centre, from: birth.color, in: &context)
     }
-
-    private func circle(_ centre: CGPoint, _ radius: CGFloat) -> Path { LightFX.disc(centre, radius) }
 
     /// A cross of light in the topic's colour, `size` across.
     private func cross(

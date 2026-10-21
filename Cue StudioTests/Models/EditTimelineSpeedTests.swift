@@ -20,12 +20,12 @@ struct EditTimelineSpeedTests {
 
     @Test func doubleSpeedHalvesTheEdit() {
         var timeline = EditTimeline(sourceDuration: 60)
-        let changed = timeline.setSpeed(2)
+        let changed = timeline.setSpeed(2, forSegmentAt: 0)
         #expect(changed)
         #expect(near(timeline.editedDuration, 30))
         #expect(near(timeline.sourceTime(forEdited: 10), 20))
         #expect(timeline.editedTime(forSource: 20).map { near($0, 10) } == true)
-        let again = timeline.setSpeed(2)
+        let again = timeline.setSpeed(2, forSegmentAt: 0)
         #expect(!again)
     }
 
@@ -43,7 +43,7 @@ struct EditTimelineSpeedTests {
 
     @Test func splittingKeepsTheSpeed() {
         var timeline = EditTimeline(sourceDuration: 60)
-        timeline.setSpeed(2)
+        timeline.setSpeed(2, forSegmentAt: 0)
         let split = timeline.split(atEdited: 10)
         #expect(split)
         #expect(timeline.segments.count == 2)
@@ -75,7 +75,7 @@ struct EditTimelineSpeedTests {
         var timeline = EditTimeline(sourceDuration: 60)
         timeline.trimStart(to: 10)
         #expect(near(timeline.reachableLeadIn, 10))
-        timeline.setSpeed(0.5)
+        timeline.setSpeed(0.5, forSegmentAt: 0)
         #expect(near(timeline.reachableLeadIn, 20))
         #expect(near(timeline.reachable.editedTime(forSource: 10) ?? -1, 20))
     }
@@ -86,7 +86,7 @@ struct EditTimelineSpeedTests {
         #expect(timeline.editedSpan(forSource: text) == text)
         timeline.removeEdited(5...10)
         #expect(timeline.editedSpan(forSource: text) == TimeSpan(start: 15, end: 18))
-        timeline.setSpeed(2)
+        for index in timeline.segments.indices { timeline.setSpeed(2, forSegmentAt: index) }
         let sped = timeline.editedSpan(forSource: text)
         #expect(sped.map { near($0.start, 7.5) && near($0.end, 9) } == true)
         // Placed on the edit, pinned back to the recording.
@@ -102,7 +102,7 @@ struct EditTimelineSpeedTests {
 
     @Test func framesSnapAtTheSectionsSpeed() {
         var timeline = EditTimeline(sourceDuration: 60)
-        timeline.setSpeed(2)
+        timeline.setSpeed(2, forSegmentAt: 0)
         let grid = FrameGrid(rate: 30)
         // 0.51 s of the edit is 1.02 s of the recording: the nearest frame is 1.0333 s (0.5167 s edited).
         #expect(near(grid.snapped(edited: 0.51, in: timeline), 31.0 / 30 / 2))
@@ -117,13 +117,8 @@ struct EditTimelineSpeedTests {
 
     @Test func speedIsKeptInRange() {
         var timeline = EditTimeline(sourceDuration: 10)
-        timeline.setSpeed(100)
+        timeline.setSpeed(100, forSegmentAt: 0)
         #expect(timeline.segments[0].speed == EditSegment.speedRange.upperBound)
         #expect(EditSegment.clampedSpeed(.nan) == 1)
-    }
-
-    @Test func presetsHaveShortLabels() {
-        #expect(PlaybackSpeed.double.label == "2×")
-        #expect(PlaybackSpeed.nearest(to: 1.3) == .oneAndAQuarter)
     }
 }

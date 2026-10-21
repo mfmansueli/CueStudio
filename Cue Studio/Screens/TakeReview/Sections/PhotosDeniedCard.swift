@@ -26,11 +26,9 @@ struct PhotosDeniedCard: View {
                     .foregroundStyle(Palette.ink2)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
-            if let url = URL(string: UIApplication.openSettingsURLString) {
-                Button("Open Settings") { openURL(url) }
-                    .buttonStyle(.cueSecondary(.compact, expands: false))
-                    .accessibilityIdentifier("review.photosDenied.settings")
-            }
+            Button("Open Settings") { openURL.openAppSettings() }
+                .buttonStyle(.cueSecondary(.compact, expands: false))
+                .accessibilityIdentifier("review.photosDenied.settings")
             Button(action: onClose) {
                 Image(systemName: "xmark")
                     .font(.system(size: 13, weight: .bold))

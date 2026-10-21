@@ -50,8 +50,8 @@ SWIFT_EMIT_LOC_STRINGS                          = YES
 SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES
 SWIFT_VERSION                                   = 6.0
 
-// Core ML: Eye Contact's model (Managers/Editing/EyeContact/EyeContactWarp.mlpackage) is compiled into the app and loaded by
-// name (EyeContactWarpModel); no generated Swift class.
+// Core ML: Eye Contact's model (FaceMeshV2.mlpackage) is compiled into the app and loaded by name (FaceMeshModel); no
+// generated Swift class.
 COREML_CODEGEN_LANGUAGE = None
 
 // Everything else
@@ -59,4 +59,3 @@ ENABLE_PREVIEWS                 = YES
 ENABLE_USER_SCRIPT_SANDBOXING   = NO
 LD_RUNPATH_SEARCH_PATHS         = @executable_path/Frameworks
 OTHER_LDFLAGS                   = $(inherited) -ObjC
-STRING_CATALOG_GENERATE_SYMBOLS = NO

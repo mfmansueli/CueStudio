@@ -23,8 +23,6 @@ nonisolated struct LengthFit: Equatable, Sendable {
         return .fits
     }
 
-    var fits: Bool { verdict == .fits }
-
     /// "1:00–1:30"
     var rangeLabel: String {
         DurationText.clock(ideal.lowerBound) + "–" + DurationText.clock(ideal.upperBound)

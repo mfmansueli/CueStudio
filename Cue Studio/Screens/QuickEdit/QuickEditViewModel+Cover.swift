@@ -42,51 +42,7 @@ extension QuickEditViewModel {
         coverStudio = nil
     }
 
-    // MARK: - Quick changes
-
-    /// The frame under the playhead becomes the cover's picture (a new cover in the saved style when there's none).
-    func useFrameAsCover() {
-        guard isReady else { return }
-        let frame = edit.coverFrame(atEdited: player.currentTime)
-        let handle = creatorHandle
-        let style = styles.myCoverStyle
-        change { snapshot in
-            if snapshot.cover == nil {
-                var cover = VideoCover(source: .clipFrame(frame), style: snapshot.creatorStyle ?? .bold)
-                cover.composition = style?.composition(title: "", handle: handle, episode: 1) ?? CoverComposition.make(.educational, title: "")
-                snapshot.cover = cover
-            } else {
-                snapshot.cover?.source = .clipFrame(frame)
-            }
-        }
-        player.pause()
-        toast.show(String(localized: "Cover set to this frame"))
-    }
-
-    /// The words on the cover; a cover is made from the playhead's frame when there's none yet. Typing in a row is one undo
-    /// step.
-    func setCoverTitle(_ title: String) {
-        if edit.cover == nil { useFrameAsCover() }
-        change(key: "coverTitle") { $0.cover?.title = title }
-    }
-
-    /// Where the title sits, as a share of the cover's height from the top.
-    func setCoverTitlePosition(_ y: Double) {
-        guard edit.cover != nil else { return }
-        let clamped = min(max(y, OverlayPoint.margin), 1 - OverlayPoint.margin)
-        change { snapshot in
-            snapshot.cover?.titleY = clamped
-            snapshot.cover?.composition?.title.center.y = clamped
-        }
-    }
-
-    func removeCover() {
-        change { $0.cover = nil }
-        coverImage = nil
-    }
-
-    /// The cover's frame is from a part removed from the edit: it stays the cover (from its recording).
-    var coverFrameLeftTheEdit: Bool { edit.coverFrameLeftTheEdit }
+    // MARK: - Suggestions
 
     /// Titles Cue can offer from the take's own words: a text on the video, the script's title and its first sentence, short
     /// enough for a cover.

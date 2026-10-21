@@ -48,10 +48,13 @@ struct QuickEditViewModelTests {
         viewModel.edit.keptSpans.map { [$0.start, $0.end] }
     }
 
+    /// Drags an outer handle (the first clip's start, the last clip's end) to `time` of the recording, as one gesture.
     private func dragHandle(_ handle: TrimHandle, to time: TimeInterval, on viewModel: QuickEditViewModel) {
-        viewModel.beginTrim(handle)
-        viewModel.trim(handle, toSource: time)
-        viewModel.endTrim()
+        let segments = viewModel.edit.timeline.segments
+        guard let clip = handle == .start ? segments.first : segments.last else { return }
+        viewModel.beginTimelineHandle(.clip(clip.id, handle), snapTimes: [])
+        viewModel.moveTimelineHandle(by: (time - (handle == .start ? clip.sourceStart : clip.sourceEnd)) / clip.speed)
+        viewModel.endTimelineHandle()
     }
 
     // MARK: - Opening
@@ -59,7 +62,6 @@ struct QuickEditViewModelTests {
     @Test func startsFromTheWholeTake() async {
         let scenario = await makeScenario()
         #expect(scenario.viewModel.source == .ready)
-        #expect(scenario.viewModel.durationChange == "Original · 1:04")
         #expect(scenario.viewModel.timeLabel == "00:00.0 / 01:04.0")
         #expect(scenario.viewModel.edit.aspect == .portrait)
         #expect(scenario.player.shown.last == scenario.viewModel.edit)
@@ -71,7 +73,7 @@ struct QuickEditViewModelTests {
         let scenario = await makeScenario(editor: editor)
         #expect(scenario.viewModel.source == .unavailable)
         #expect(!scenario.viewModel.isReady)
-        scenario.viewModel.cut()
+        scenario.viewModel.splitClip()
         #expect(scenario.viewModel.edit.timeline.segments.count == 1)
         scenario.viewModel.cancel()
         #expect(scenario.drafts.drafts.isEmpty)
@@ -88,54 +90,18 @@ struct QuickEditViewModelTests {
 
     // MARK: - Trim
 
-    @Test func handlesTrimAndTheirPlayheadFollows() async {
-        let scenario = await makeScenario()
-        scenario.player.seek(to: 1)
-        dragHandle(.start, to: 2, on: scenario.viewModel)
-        #expect(scenario.viewModel.edit.timeline.trimStart == 2)
-        #expect(scenario.player.currentTime == 0)
-        scenario.player.seek(to: 60)
-        dragHandle(.end, to: 9, on: scenario.viewModel)
-        #expect(spans(scenario.viewModel) == [[2, 9]])
-        #expect(scenario.player.currentTime == 7)
-        #expect(scenario.viewModel.timeLabel == "00:07.0 / 00:07.0")
-        #expect(scenario.viewModel.durationChange == "1:04 → 0:07")
-        #expect(!scenario.player.isScrubbing)
-    }
-
     @Test func aHandleDragIsOneUndoStepAndHandlesNeverCross() async {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
-        viewModel.beginTrim(.start)
-        #expect(viewModel.activeHandle == .start)
+        viewModel.beginTimelineHandle(.clip(viewModel.edit.timeline.segments[0].id, .start), snapTimes: [])
         #expect(!viewModel.canUndo)
-        for time in [5.0, 20, 80] { viewModel.trim(.start, toSource: time) }
-        viewModel.endTrim()
-        #expect(viewModel.activeHandle == nil)
+        for offset in [5.0, 20, 80] { viewModel.moveTimelineHandle(by: offset) }
+        viewModel.endTimelineHandle()
+        #expect(viewModel.handleDrag == nil)
         #expect(viewModel.edit.timeline.trimStart < viewModel.edit.timeline.trimEnd)
         #expect(viewModel.history.past.count == 1)
         viewModel.undo()
         #expect(viewModel.edit.timeline.isWhole)
-    }
-
-    @Test func theStartHandleLeavesTheStartAndComesBackWithThePlayheadThere() async {
-        let scenario = await makeScenario()
-        let viewModel = scenario.viewModel
-        #expect(scenario.player.currentTime == 0)
-        viewModel.beginTrim(.start)
-        viewModel.trim(.start, toSource: 5)
-        #expect(viewModel.edit.timeline.trimStart == 5)
-        #expect(viewModel.durationChange == "1:04 → 0:59")
-        viewModel.trim(.start, toSource: 0)
-        viewModel.endTrim()
-        #expect(viewModel.edit.timeline.isWhole)
-        // Out and back again changes nothing, so there is nothing to undo.
-        #expect(!viewModel.canUndo)
-
-        dragHandle(.start, to: 5, on: viewModel)
-        dragHandle(.start, to: 0, on: viewModel)
-        #expect(viewModel.edit.timeline.isWhole)
-        #expect(viewModel.history.past.count == 2)
     }
 
     @Test func thePlayheadMovesWithoutTouchingTheHandles() async {
@@ -144,8 +110,8 @@ struct QuickEditViewModelTests {
         dragHandle(.start, to: 5, on: viewModel)
         dragHandle(.end, to: 30, on: viewModel)
         for time in [0.0, 10, 100] {
-            viewModel.scrub(to: time)
-            viewModel.endScrub()
+            viewModel.scrubTimeline(to: time)
+            viewModel.endTimelineScrub()
         }
         #expect(spans(viewModel) == [[5, 30]])
         // Held between the handles: 25 s is the end of the edit.
@@ -155,7 +121,7 @@ struct QuickEditViewModelTests {
 
     @Test func aHandleOnlyMovesWhileItsDragIsOn() async {
         let scenario = await makeScenario()
-        scenario.viewModel.trim(.start, toSource: 10)
+        scenario.viewModel.moveTimelineHandle(by: 10)
         #expect(scenario.viewModel.edit.timeline.isWhole)
     }
 
@@ -164,7 +130,7 @@ struct QuickEditViewModelTests {
     /// Cut at 20 s of the 64 s take: [A | B], with B selected.
     private func cutAtTwenty(_ scenario: Scenario) {
         scenario.player.seek(to: 20)
-        scenario.viewModel.cut()
+        scenario.viewModel.splitClip()
     }
 
     @Test func aCutMakesTwoSections() async {
@@ -185,52 +151,12 @@ struct QuickEditViewModelTests {
         #expect(spans(viewModel) == [[5, 20], [20, 50]])
     }
 
-    @Test func aHandleDraggedPastACutKeepsTrimming() async {
-        // Case D: the cut is no barrier; A leaves the edit and the division goes with it.
-        let scenario = await makeScenario()
-        let viewModel = scenario.viewModel
-        cutAtTwenty(scenario)
-        dragHandle(.start, to: 30, on: viewModel)
-        #expect(spans(viewModel) == [[30, 64]])
-        #expect(viewModel.edit.timeline.segments.count == 1)
-        #expect(viewModel.selectedSegmentIndex == nil)
-        #expect(viewModel.durationChange == "1:04 → 0:34")
-        dragHandle(.end, to: 40, on: viewModel)
-        #expect(spans(viewModel) == [[30, 40]])
-    }
-
-    @Test func theEndHandleCrossesACutToo() async {
-        let scenario = await makeScenario()
-        let viewModel = scenario.viewModel
-        cutAtTwenty(scenario)
-        dragHandle(.end, to: 12, on: viewModel)
-        #expect(spans(viewModel) == [[0, 12]])
-    }
-
-    @Test func goingBackBeforeLettingGoBringsTheCutBack() async {
-        let scenario = await makeScenario()
-        let viewModel = scenario.viewModel
-        cutAtTwenty(scenario)
-        let ids = viewModel.edit.timeline.segments.map(\.id)
-        viewModel.beginTrim(.start)
-        viewModel.trim(.start, toSource: 30)
-        #expect(spans(viewModel) == [[30, 64]])
-        // The strip keeps drawing the timeline the drag began with.
-        #expect(viewModel.trimOrigin?.segments.map(\.id) == ids)
-        viewModel.trim(.start, toSource: 10)
-        viewModel.endTrim()
-        #expect(spans(viewModel) == [[10, 20], [20, 64]])
-        #expect(viewModel.edit.timeline.segments.map(\.id) == ids)
-        #expect(viewModel.trimOrigin == nil)
-        #expect(viewModel.history.past.count == 2)
-    }
-
     @Test func deletingTheSecondSectionLeavesOnlyTheFirst() async {
         // Case E: the cut selected B; Delete leaves A alone, with no cut left behind.
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
         cutAtTwenty(scenario)
-        viewModel.removeSelection()
+        viewModel.perform(.deleteClip)
         #expect(spans(viewModel) == [[0, 20]])
         #expect(viewModel.edit.timeline.segments.count == 1)
         #expect(viewModel.edit.timeline.tail == TimeSpan(start: 20, end: 64))
@@ -244,36 +170,19 @@ struct QuickEditViewModelTests {
         dragHandle(.start, to: 5, on: viewModel)
         // 30 s into the edit is 35 s into the recording.
         scenario.player.seek(to: 30)
-        viewModel.cut()
+        viewModel.splitClip()
         #expect(spans(viewModel) == [[5, 20], [20, 35], [35, 64]])
-        dragHandle(.start, to: 25, on: viewModel)
-        #expect(spans(viewModel) == [[25, 35], [35, 64]])
     }
 
-    @Test func aTrimAcrossSeveralCutsLeavesNoGhosts() async {
-        // Case G: [A][B][C][D], the start handle dragged into C, then the end handle into C.
-        let scenario = await makeScenario()
-        let viewModel = scenario.viewModel
-        for cut in [16.0, 32, 48] {
-            scenario.player.seek(to: cut)
-            viewModel.cut()
-        }
-        #expect(viewModel.edit.timeline.segments.count == 4)
-        dragHandle(.start, to: 40, on: viewModel)
-        #expect(spans(viewModel) == [[40, 48], [48, 64]])
-        dragHandle(.end, to: 44, on: viewModel)
-        #expect(spans(viewModel) == [[40, 44]])
-        #expect(viewModel.edit.editedDuration == 4)
-    }
-
-    @Test func undoAndRedoATrimAcrossACut() async {
+    @Test func undoAndRedoATrimAfterACut() async {
         // Case H: the cut, and the sections it made, come back with undo.
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
         cutAtTwenty(scenario)
         let cut = viewModel.edit.timeline
-        dragHandle(.start, to: 30, on: viewModel)
+        dragHandle(.start, to: 10, on: viewModel)
         let trimmed = viewModel.edit.timeline
+        #expect(spans(viewModel) == [[10, 20], [20, 64]])
         viewModel.undo()
         #expect(viewModel.edit.timeline == cut)
         viewModel.redo()
@@ -292,8 +201,9 @@ struct QuickEditViewModelTests {
         #expect(viewModel.edit.timeline.transition(atJoin: 1) == .hardCut)
         #expect(viewModel.selectedTransition == nil)
 
-        viewModel.tapJoin(1)
+        viewModel.tapTimeline(.join(viewModel.edit.timeline.segments[1].id))
         #expect(viewModel.selectedJoinIndex == 1)
+        #expect(viewModel.panel == .transition)
         #expect(viewModel.selectedSegmentIndex == nil)
         #expect(viewModel.selectedTransition == .hardCut)
         #expect(viewModel.transitionNote == nil)
@@ -309,7 +219,8 @@ struct QuickEditViewModelTests {
         viewModel.redo()
         #expect(viewModel.edit.timeline.transition(atJoin: 1) == .fade)
 
-        viewModel.closeTransitions()
+        // Closing the transitions lets go of the cut.
+        viewModel.panel = nil
         #expect(viewModel.selectedTransition == nil)
         viewModel.done()
         #expect(scenario.takes.takes[0].edit?.timeline.transition(atJoin: 1) == .fade)
@@ -319,7 +230,7 @@ struct QuickEditViewModelTests {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
         cutAtTwenty(scenario)
-        viewModel.tapJoin(1)
+        viewModel.pickJoin(viewModel.edit.timeline.segments[1].id)
         viewModel.setTransition(.dissolve)
         #expect(viewModel.transitionNote == "Nothing was cut out here, so Dissolve won't show")
     }
@@ -328,32 +239,16 @@ struct QuickEditViewModelTests {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
         cutAtTwenty(scenario)
-        viewModel.tapJoin(1)
-        viewModel.tapTimeline(onPiece: 0)
+        let segments = viewModel.edit.timeline.segments
+        viewModel.tapTimeline(.join(segments[1].id))
+        viewModel.tapTimeline(.clip(segments[0].id))
         #expect(viewModel.selectedJoinIndex == nil)
         #expect(viewModel.selectedSegmentIndex == 0)
-        viewModel.tapJoin(1)
+        viewModel.tapTimeline(.join(segments[1].id))
         #expect(viewModel.selectedSegmentIndex == nil)
-        // Tapping the same cut again lets go of it; the first section has no cut before it.
-        viewModel.tapJoin(1)
+        // Tapping the same cut again lets go of it.
+        viewModel.tapTimeline(.join(segments[1].id))
         #expect(viewModel.selectedJoinIndex == nil)
-        viewModel.tapJoin(0)
-        #expect(viewModel.selectedJoinIndex == nil)
-    }
-
-    @Test func aTrimThatTakesTheCutTakesItsTransition() async {
-        let scenario = await makeScenario()
-        let viewModel = scenario.viewModel
-        cutAtTwenty(scenario)
-        viewModel.tapJoin(1)
-        viewModel.setTransition(.dissolve)
-        dragHandle(.start, to: 30, on: viewModel)
-        #expect(viewModel.selectedTransition == nil)
-        #expect(viewModel.edit.timeline.segments.count == 1)
-        #expect(viewModel.edit.timeline.segments[0].transitionIn == .hardCut)
-        // Undo brings back the cut with its dissolve.
-        viewModel.undo()
-        #expect(viewModel.edit.timeline.transition(atJoin: 1) == .dissolve)
     }
 
     // MARK: - Frames
@@ -363,7 +258,6 @@ struct QuickEditViewModelTests {
         editor.nominalFrameRate = 60
         let scenario = await makeScenario(editor: editor)
         #expect(scenario.viewModel.frameRate == 60)
-        #expect(abs(scenario.viewModel.frameSnapped(edited: 10.44) - 626.0 / 60) < 0.000_1)
     }
 
     @Test func withoutARateInTheFileItUsesTheTakes() async {
@@ -371,80 +265,65 @@ struct QuickEditViewModelTests {
         editor.nominalFrameRate = nil
         let scenario = await makeScenario(editor: editor)
         #expect(scenario.viewModel.frameRate == 30)
-        #expect(abs(scenario.viewModel.frameSnapped(edited: 10.44) - 313.0 / 30) < 0.000_1)
     }
 
-    // MARK: - Cut and delete
+    // MARK: - Split and delete
 
-    @Test func cutSplitsAtThePlayheadAndSelectsTheSecondHalf() async {
+    @Test func splitCutsAtThePlayheadAndPicksTheSecondHalf() async {
         let scenario = await makeScenario()
         scenario.player.seek(to: 20)
-        scenario.viewModel.cut()
+        scenario.viewModel.splitClip()
         #expect(spans(scenario.viewModel) == [[0, 20], [20, 64]])
         #expect(scenario.viewModel.edit.editedDuration == 64)
         #expect(scenario.viewModel.selectedSegmentIndex == 1)
-        #expect(scenario.viewModel.canDeleteSelection)
-        #expect(scenario.toast.message == "Cut at 00:20.00 · Tap a side")
+        #expect(scenario.toast.message == "Split at \(DurationText.editor(20))")
     }
 
-    @Test func cuttingAtAnEdgeExplains() async {
+    @Test func splittingAtAnEdgeExplains() async {
         let scenario = await makeScenario()
-        scenario.viewModel.cut()
+        scenario.viewModel.splitClip()
         #expect(scenario.viewModel.edit.timeline.segments.count == 1)
-        #expect(scenario.toast.message == "Move playhead off the edge")
+        #expect(scenario.toast.message == "Move playhead onto the clip")
     }
 
-    @Test func cuttingAtTheEndExplainsToo() async {
+    @Test func splittingAtTheEndExplainsToo() async {
         let scenario = await makeScenario()
         scenario.player.seek(to: 64)
-        scenario.viewModel.cut()
+        scenario.viewModel.splitClip()
         #expect(scenario.viewModel.edit.timeline.segments.count == 1)
-        #expect(scenario.toast.message == "Move playhead off the edge")
+        #expect(scenario.toast.message == "Move playhead onto the clip")
         #expect(!scenario.viewModel.canUndo)
     }
 
-    @Test func deletingTheSelectedSection() async {
+    @Test func deletingThePickedClip() async {
         let scenario = await makeScenario()
         scenario.player.seek(to: 20)
-        scenario.viewModel.cut()
-        scenario.viewModel.removeSelection()
+        scenario.viewModel.splitClip()
+        scenario.viewModel.perform(.deleteClip)
         #expect(spans(scenario.viewModel) == [[0, 20]])
-        #expect(scenario.viewModel.durationChange == "1:04 → 0:20")
+        #expect(scenario.viewModel.edit.editedDuration == 20)
         #expect(scenario.viewModel.selectedSegmentID == nil)
-        #expect(scenario.toast.message == "Section deleted")
+        #expect(scenario.toast.message == "Clip deleted · Tap Undo")
         #expect(scenario.player.shown.last?.keptSpans == [TimeSpan(start: 0, end: 20)])
     }
 
-    @Test func tappingASelectedSectionLetsItGo() async {
+    @Test func theLastClipStays() async {
         let scenario = await makeScenario()
-        scenario.player.seek(to: 20)
-        scenario.viewModel.cut()
-        scenario.viewModel.tapTimeline(onPiece: 1)
-        #expect(scenario.viewModel.selectedSegmentID == nil)
-        scenario.viewModel.tapTimeline(onPiece: 0)
-        #expect(scenario.viewModel.selectedSegmentIndex == 0)
-    }
-
-    @Test func deleteNeedsASelectionAndThereIsNoneWithOneSection() async {
-        let scenario = await makeScenario()
-        scenario.viewModel.removeSelection()
-        #expect(scenario.toast.message == "Tap a section first")
-        scenario.viewModel.tapTimeline(onPiece: 0)
-        #expect(scenario.viewModel.selectedSegmentID == nil)
-        #expect(!scenario.viewModel.canDeleteSelection)
+        scenario.viewModel.deleteClip(scenario.viewModel.edit.timeline.segments[0].id)
+        #expect(scenario.toast.message == "Keep at least one clip")
         #expect(scenario.viewModel.edit.timeline.isWhole)
+        #expect(!scenario.viewModel.canUndo)
     }
 
     @Test func deletingBAndDLeavesAAndC() async {
         let scenario = await makeScenario()
         for cut in [16.0, 32, 48] {
             scenario.player.seek(to: cut)
-            scenario.viewModel.cut()
+            scenario.viewModel.splitClip()
         }
-        // The last cut left D selected.
-        scenario.viewModel.removeSelection()
-        scenario.viewModel.tapTimeline(onPiece: 1)
-        scenario.viewModel.removeSelection()
+        // The last split left D picked.
+        scenario.viewModel.perform(.deleteClip)
+        scenario.viewModel.deleteClip(scenario.viewModel.edit.timeline.segments[1].id)
         #expect(spans(scenario.viewModel) == [[0, 16], [32, 48]])
         #expect(scenario.viewModel.edit.editedDuration == 32)
     }
@@ -452,12 +331,12 @@ struct QuickEditViewModelTests {
     @Test func theSelectionIsNotThePlayhead() async {
         let scenario = await makeScenario()
         scenario.player.seek(to: 20)
-        scenario.viewModel.cut()
-        scenario.viewModel.tapTimeline(onPiece: 0)
-        scenario.viewModel.scrub(to: 40)
-        scenario.viewModel.endScrub()
+        scenario.viewModel.splitClip()
+        scenario.viewModel.tapTimeline(.clip(scenario.viewModel.edit.timeline.segments[0].id))
+        scenario.viewModel.scrubTimeline(to: 40)
+        scenario.viewModel.endTimelineScrub()
         #expect(scenario.viewModel.selectedSegmentIndex == 0)
-        scenario.viewModel.tapTimeline(onPiece: nil)
+        scenario.viewModel.tapTimeline(nil)
         #expect(scenario.viewModel.selectedSegmentID == nil)
     }
 
@@ -465,20 +344,21 @@ struct QuickEditViewModelTests {
         let scenario = await makeScenario()
         scenario.viewModel.togglePlayback()
         #expect(scenario.player.isPlaying)
-        scenario.viewModel.scrub(to: 6.18)
+        scenario.viewModel.scrubTimeline(to: 6.18)
         #expect(!scenario.player.isPlaying)
+        #expect(scenario.player.isScrubbing)
         #expect(scenario.player.currentTime == 6.18)
-        scenario.viewModel.endScrub()
+        scenario.viewModel.endTimelineScrub()
+        #expect(!scenario.player.isScrubbing)
         #expect(!scenario.player.isPlaying)
     }
 
-    @Test func deletingAnEarlierSectionKeepsThePlayheadOnItsFrame() async {
+    @Test func deletingAnEarlierClipKeepsThePlayheadOnItsFrame() async {
         let scenario = await makeScenario()
         scenario.player.seek(to: 10)
-        scenario.viewModel.cut()
+        scenario.viewModel.splitClip()
         scenario.player.seek(to: 30)
-        scenario.viewModel.tapTimeline(onPiece: 0)
-        scenario.viewModel.removeSelection()
+        scenario.viewModel.deleteClip(scenario.viewModel.edit.timeline.segments[0].id)
         #expect(scenario.player.currentTime == 20)
     }
 
@@ -489,8 +369,8 @@ struct QuickEditViewModelTests {
         let viewModel = scenario.viewModel
         dragHandle(.start, to: 4, on: viewModel)
         scenario.player.seek(to: 16)
-        viewModel.cut()
-        viewModel.removeSelection()
+        viewModel.splitClip()
+        viewModel.perform(.deleteClip)
         #expect(spans(viewModel) == [[4, 20]])
 
         viewModel.undo()
@@ -517,12 +397,12 @@ struct QuickEditViewModelTests {
 
         // 7 s into the edit is 12 s into the recording.
         scenario.player.seek(to: 7)
-        viewModel.cut()
+        viewModel.splitClip()
         #expect(spans(viewModel) == [[5, 12], [12, 30]])
-        viewModel.tapTimeline(onPiece: 0)
-        viewModel.removeSelection()
+        viewModel.tapTimeline(.clip(viewModel.edit.timeline.segments[0].id))
+        viewModel.perform(.deleteClip)
         #expect(spans(viewModel) == [[12, 30]])
-        #expect(viewModel.durationChange == "1:04 → 0:18")
+        #expect(viewModel.edit.editedDuration == 18)
         #expect(scenario.player.shown.last?.keptSpans == [TimeSpan(start: 12, end: 30)])
 
         viewModel.undo()
@@ -583,9 +463,6 @@ struct QuickEditViewModelTests {
         #expect(scenario.editor.cleanUpScript == "Okay, real talk.")
         #expect(scenario.viewModel.cleanUpSuggestions.map(\.span) == [TimeSpan(start: 10, end: 12), TimeSpan(start: 30, end: 31)])
         #expect(scenario.viewModel.edit.timeline.isWhole)
-        #expect(scenario.viewModel.reviewTitle == "2 to review")
-        #expect(scenario.viewModel.removeAllLabel == "Remove all · 2")
-        #expect(scenario.viewModel.cleanUpBadge == 2)
     }
 
     @Test func cleanUpListensOnce() async {
@@ -612,88 +489,21 @@ struct QuickEditViewModelTests {
         let scenario = await makeScenario(editor: editor)
         await scenario.viewModel.analyzeIfNeeded()
         #expect(scenario.viewModel.analysis == .done)
-        #expect(scenario.viewModel.reviewTitle == "All clean")
-        #expect(scenario.viewModel.removeAllLabel == "Done")
-        #expect(scenario.viewModel.cleanUpBadge == nil)
+        #expect(scenario.viewModel.pauseCandidates.isEmpty && scenario.viewModel.wordCandidates.isEmpty)
+        #expect(scenario.viewModel.cleanUpApplyLabel == "Nothing selected")
     }
 
-    @Test func removingASuggestionIsOneUndoStepWithItsDecision() async {
-        let scenario = await makeScenario()
-        await scenario.viewModel.analyzeIfNeeded()
-        let first = scenario.viewModel.cleanUpSuggestions[0]
-        scenario.viewModel.removeSuggestion(first.id)
-        #expect(spans(scenario.viewModel) == [[0, 10], [12, 64]])
-        #expect(scenario.viewModel.cleanUpSuggestions[0].status == .removed)
-        #expect(scenario.toast.message == "Pause removed")
-        #expect(scenario.viewModel.reviewTitle == "1 to review")
-
-        scenario.viewModel.undo()
-        #expect(scenario.viewModel.edit.timeline.isWhole)
-        #expect(scenario.viewModel.cleanUpSuggestions[0].status == .pending)
-        scenario.viewModel.redo()
-        #expect(scenario.viewModel.cleanUpSuggestions[0].status == .removed)
-    }
-
-    @Test func keptSuggestionsStayAndCanBeReviewedAgain() async {
-        let scenario = await makeScenario()
-        await scenario.viewModel.analyzeIfNeeded()
-        let first = scenario.viewModel.cleanUpSuggestions[0]
-        scenario.viewModel.keepSuggestion(first.id)
-        #expect(scenario.viewModel.cleanUpSuggestions[0].status == .kept)
-        #expect(scenario.viewModel.edit.timeline.isWhole)
-        #expect(scenario.viewModel.removeAllLabel == "Remove all · 1")
-        scenario.viewModel.reviewAgain(first.id)
-        #expect(scenario.viewModel.cleanUpSuggestions[0].status == .pending)
-        scenario.viewModel.keepSuggestion(first.id)
-        scenario.viewModel.undo()
-        #expect(scenario.viewModel.cleanUpSuggestions[0].status == .pending)
-    }
-
-    @Test func aRemovedSuggestionComesBackWithUndoOnly() async {
-        let scenario = await makeScenario()
-        await scenario.viewModel.analyzeIfNeeded()
-        let first = scenario.viewModel.cleanUpSuggestions[0]
-        scenario.viewModel.removeSuggestion(first.id)
-        scenario.viewModel.reviewAgain(first.id)
-        #expect(scenario.toast.message == "Use Undo to bring it back")
-        #expect(scenario.viewModel.cleanUpSuggestions[0].status == .removed)
-    }
-
-    @Test func removeAllTakesOnlyWhatCleanUpIsSureAbout() async {
-        let editor = FakeTakeEditor()
-        // A 2.24 s pause and a 0.54 s one (the cut keeps 0.12 s each side).
-        editor.silences = [TimeSpan(start: 10, end: 12), TimeSpan(start: 30, end: 30.3)]
-        let scenario = await makeScenario(editor: editor)
-        await scenario.viewModel.analyzeIfNeeded()
-        // The short one hides under "Pauses longer than 0.7s".
-        #expect(scenario.viewModel.cleanUpSuggestions.count == 1)
-        #expect(scenario.viewModel.ignoredPausesLabel == "1 short pause kept")
-        scenario.viewModel.lowerPauseThreshold()
-        scenario.viewModel.lowerPauseThreshold()
-        #expect(scenario.viewModel.pauseThresholdLabel == "\(TestData.decimal("0.5"))s")
-        #expect(scenario.viewModel.cleanUpSuggestions.count == 2)
-        #expect(scenario.viewModel.ignoredPausesLabel == "natural pauses stay")
-
-        scenario.viewModel.removeAllSureSuggestions()
-        #expect(spans(scenario.viewModel) == [[0, 10], [12, 64]])
-        #expect(scenario.toast.message == "Removed 1 · 1 to review")
-        #expect(scenario.viewModel.pendingSuggestions.map(\.span.start) == [30])
-        #expect(scenario.viewModel.removeAllLabel == "Done")
-    }
-
-    @Test func tappingASuggestionMovesThePlayheadThere() async {
+    @Test func tappingASuggestionMovesThePlayheadThere() async throws {
         let scenario = await makeScenario()
         await scenario.viewModel.analyzeIfNeeded()
         let found = scenario.viewModel.cleanUpSuggestions
         scenario.viewModel.togglePlayback()
-        scenario.viewModel.seek(toSuggestion: found[1].id)
-        #expect(scenario.player.currentTime == 30)
+        scenario.viewModel.tapCleanUpCard(found[1].id)
+        let start = try #require(scenario.viewModel.edit.timeline.editedSpan(of: found[1])?.start)
+        #expect(abs(scenario.player.currentTime - (start - 0.4)) < 0.000_1)
         #expect(!scenario.player.isPlaying)
-        scenario.viewModel.removeSuggestion(found[0].id)
-        scenario.viewModel.seek(toSuggestion: found[1].id)
-        #expect(scenario.player.currentTime == 28)
-        scenario.viewModel.seek(toSuggestion: found[0].id)
-        #expect(scenario.toast.message == "Already removed")
+        // The tap also switches its mark.
+        #expect(!scenario.viewModel.isMarked(found[1]))
     }
 
     @Test func suggestionsOutsideTheHandlesArentListed() async {
@@ -733,14 +543,6 @@ struct QuickEditViewModelTests {
         #expect(scenario.viewModel.edit.showsCaptions)
         #expect(scenario.editor.captionScript == "Okay, real talk.")
         #expect(scenario.viewModel.edit.captions.count == 1)
-    }
-
-    @Test func pickingAPresetTurnsCaptionsOn() async {
-        let scenario = await makeScenario()
-        await scenario.viewModel.setCaptionPreset(.label)
-        #expect(scenario.viewModel.edit.showsCaptions)
-        #expect(scenario.viewModel.edit.captionPreset == .label)
-        #expect(scenario.viewModel.edit.captionLook == TypePreset.label.look(for: .caption))
     }
 
     // MARK: - Leaving
@@ -836,11 +638,6 @@ struct QuickEditViewModelTests {
         changed.viewModel.finish(.back)
         #expect(changed.drafts.drafts.count == 1)
         #expect(!changed.takes.takes[0].isEdited)
-    }
-
-    @Test func eachAnswerSaysWhatItDoesToTheVideo() {
-        #expect(EditorOutcome.allCases.filter(\.savesTheEdit) == [.share, .download, .ready])
-        #expect(EditorOutcome.allCases.filter(\.exportsTheVideo) == [.share, .download])
     }
 
     @Test func theTopBarSaysWhetherAnythingChanged() async {

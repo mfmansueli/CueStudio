@@ -76,7 +76,7 @@ struct PracticeBottomBar: View {
                 .fixedSize(horizontal: false, vertical: true)
             Spacer(minLength: 0)
             Button("Open Settings") {
-                if let url = URL(string: UIApplication.openSettingsURLString) { openURL(url) }
+                openURL.openAppSettings()
             }
             .buttonStyle(.cueGlass(.compact, expands: false))
             .accessibilityIdentifier("practice.openSettings")

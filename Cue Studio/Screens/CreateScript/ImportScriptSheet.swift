@@ -90,7 +90,7 @@ struct ImportScriptSheet: View {
             DocumentScannerView(
                 onScanned: { images in
                     showsScanner = false
-                    recognize(images, as: String(localized: "Scan"))
+                    recognize(images)
                 },
                 onCancel: { showsScanner = false }
             )
@@ -167,7 +167,7 @@ struct ImportScriptSheet: View {
                 .foregroundStyle(Palette.ink)
             Spacer(minLength: 8)
             Button("Open Settings") {
-                if let url = URL(string: UIApplication.openSettingsURLString) { openURL(url) }
+                openURL.openAppSettings()
             }
             .font(.subheadline.weight(.semibold))
             .foregroundStyle(Palette.accText)
@@ -217,7 +217,7 @@ struct ImportScriptSheet: View {
             take(try importer.importDocument(at: url))
         } catch DocumentImportError.noText where url.pathExtension.lowercased() == "pdf" {
             // A scanned PDF has no text layer: read its pages like photos.
-            recognize(importer.pageImages(ofPDFAt: url, maxPages: 10), as: "PDF")
+            recognize(importer.pageImages(ofPDFAt: url, maxPages: 10))
         } catch {
             errorMessage = error.localizedDescription
         }
@@ -232,10 +232,10 @@ struct ImportScriptSheet: View {
             }
         }
         photoItems = []
-        recognize(images, as: String(localized: "Photo"))
+        recognize(images)
     }
 
-    private func recognize(_ images: [CGImage], as kind: String) {
+    private func recognize(_ images: [CGImage]) {
         guard !images.isEmpty else {
             errorMessage = DocumentImportError.noText.localizedDescription
             return

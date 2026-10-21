@@ -37,9 +37,6 @@ struct TopicBirth: Sendable {
         .init(0.12, opacity: 0, scale: 0), .init(0.16, opacity: 1, scale: 0), .init(0.62, opacity: 1, scale: 1), .init(0.64, opacity: 0, scale: 1),
     ])
 
-    /// The bar that marks the chip pops in, 0.05–0.30 s, with a spring's overshoot.
-    static let bar = PoseTrack(curve: .css(0.3, 1.5, 0.5, 1), [.init(0.05, opacity: 0, scale: 0), .init(0.30)])
-
     /// The ring of light round "Continue" after the landing (1.6–2.9 s: 0 → 6 pt at 35%, then 16 pt at 0%).
     static let button = PoseTrack(curve: .cssEaseOut, [
         .init(1.6, opacity: 0, scale: 0), .init(1.9, opacity: 0.35, scale: 6), .init(2.9, opacity: 0, scale: 16),

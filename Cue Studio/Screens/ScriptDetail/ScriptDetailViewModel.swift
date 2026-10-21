@@ -146,11 +146,6 @@ final class ScriptDetailViewModel {
     /// The tools above the keyboard: "In my voice" first, then the format's own.
     var tools: [ScriptTool] { [.inMyVoice] + structure.tools }
 
-    /// Platforms "Make a version for…" offers: every one but the script's.
-    var versionPlatforms: [Platform] {
-        Platform.allCases.filter { $0 != script?.platform }
-    }
-
     var rewriteContext: RewriteContext {
         RewriteContext(
             structure: structure,

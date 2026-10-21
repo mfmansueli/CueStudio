@@ -113,7 +113,6 @@ extension QuickEditViewModel {
         }
         panel = .captions
         pickCaptionLine(line.id, at: start)
-        editingCaptionID = line.id
     }
 
     /// Listens to the video for its words (as captions do), when there is no transcript yet. Captions that weren't showing stay

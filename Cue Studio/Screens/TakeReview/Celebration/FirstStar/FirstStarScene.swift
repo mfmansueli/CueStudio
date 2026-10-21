@@ -58,7 +58,7 @@ struct FirstStarScene: View {
             glow(&canvas, at: point, radius: size, colors: [world(orbit.tone).opacity(0.5), world(orbit.tone).opacity(0)], inner: size / 2)
             let highlight = CGPoint(x: point.x - size * 0.16, y: point.y - size * 0.2)
             canvas.fill(
-                Self.disc(point, radius: size / 2),
+                LightFX.disc(point, size / 2),
                 with: .radialGradient(stops(sphere(orbit.tone), at: [0, 0.45, 1]), center: highlight, startRadius: 0, endRadius: size * 0.9)
             )
         }
@@ -71,14 +71,14 @@ struct FirstStarScene: View {
         light(&canvas, at: center, reach: 11 + 20 + 12 * pulse, blur: 60 + 24 * pulse, color: Palette.Universe.nightViolet.opacity(0.45 + 0.15 * pulse))
         light(&canvas, at: center, reach: 11 + 6 + 4 * pulse, blur: 18 + 8 * pulse, color: .white.opacity(0.5 + 0.2 * pulse))
         let ball = stops(Palette.World.youCore, at: [0, 0.5, 1])
-        canvas.fill(Self.disc(center, radius: 11), with: .radialGradient(ball, center: center, startRadius: 0, endRadius: 11))
+        canvas.fill(LightFX.disc(center, 11), with: .radialGradient(ball, center: center, startRadius: 0, endRadius: 11))
     }
 
     /// A CSS `box-shadow` of a disc: the ball grown by its spread (`reach` is that radius), blurred by half its blur value.
     private func light(_ canvas: inout GraphicsContext, at center: CGPoint, reach: Double, blur: Double, color: Color) {
         canvas.drawLayer { layer in
             layer.addFilter(.blur(radius: blur / 2))
-            layer.fill(Self.disc(center, radius: reach), with: .color(color))
+            layer.fill(LightFX.disc(center, reach), with: .color(color))
         }
     }
 
@@ -104,7 +104,7 @@ struct FirstStarScene: View {
         let star = FirstStarScript.star
         let bead = CGPoint(x: core.x + (star.x - core.x) * drawn, y: core.y + (star.y - core.y) * drawn)
         glow(&canvas, at: bead, radius: 9, colors: [Palette.Universe.starCream.opacity(0.9), Palette.acc.opacity(0)], inner: 0)
-        canvas.fill(Self.disc(bead, radius: 1.8), with: .color(.white))
+        canvas.fill(LightFX.disc(bead, 1.8), with: .color(.white))
     }
 
     /// Where the take becomes light: a horizontal lens flare (a thinner upright one with it) and a shockwave ring.
@@ -132,7 +132,7 @@ struct FirstStarScene: View {
             }
         }
         if fold.waveOpacity > 0.01 {
-            canvas.stroke(Self.disc(center, radius: fold.wave), with: .color(Palette.Universe.starCream.opacity(fold.waveOpacity)), lineWidth: 1.4)
+            canvas.stroke(LightFX.disc(center, fold.wave), with: .color(Palette.Universe.starCream.opacity(fold.waveOpacity)), lineWidth: 1.4)
         }
     }
 
@@ -146,7 +146,7 @@ struct FirstStarScene: View {
                 .init(color: Palette.Universe.starCream.opacity(comet.orb), location: 0.16), .init(color: Palette.acc.opacity(0.6 * comet.orb), location: 0.32),
                 .init(color: Palette.acc.opacity(0), location: 0.7),
             ])
-            canvas.fill(Self.disc(point, radius: 17), with: .radialGradient(orb, center: point, startRadius: 0, endRadius: 17))
+            canvas.fill(LightFX.disc(point, 17), with: .radialGradient(orb, center: point, startRadius: 0, endRadius: 17))
             StarRibbon.head(at: point, opacity: comet.orb, spin: story, in: &canvas)
         }
         let flash = FirstStarScript.glow(at: story)
@@ -158,7 +158,7 @@ struct FirstStarScene: View {
                 .init(color: Palette.acc.opacity(0.6 * flash.opacity), location: 0.35),
                 .init(color: Palette.acc.opacity(0), location: 1),
             ])
-            canvas.fill(Self.disc(center, radius: radius), with: .radialGradient(gradient, center: center, startRadius: 0, endRadius: radius))
+            canvas.fill(LightFX.disc(center, radius), with: .radialGradient(gradient, center: center, startRadius: 0, endRadius: radius))
         }
         for item in FirstStarScript.sparkles {
             let pose = FirstStarScript.sparkle(item, at: story)
@@ -173,7 +173,7 @@ struct FirstStarScene: View {
         if bloom.opacity > 0.01 {
             let colors = [Color.white.opacity(bloom.opacity), Palette.Universe.starGold.opacity(0.55 * bloom.opacity), Palette.acc.opacity(0)]
             canvas.fill(
-                Self.disc(FirstStarScript.star, radius: bloom.radius),
+                LightFX.disc(FirstStarScript.star, bloom.radius),
                 with: .radialGradient(stops(colors, at: [0, 0.25, 1]), center: FirstStarScript.star, startRadius: 0, endRadius: bloom.radius)
             )
         }
@@ -181,7 +181,7 @@ struct FirstStarScene: View {
         let star = FirstStarScript.star
         for ring in FirstStarScript.rings(at: story) where ring.opacity > 0.01 {
             let color = ring.isGold ? Palette.acc : Palette.Universe.starCream.opacity(0.85)
-            canvas.stroke(Self.disc(star, radius: 20 * ring.scale), with: .color(color.opacity(ring.opacity)), lineWidth: ring.width)
+            canvas.stroke(LightFX.disc(star, 20 * ring.scale), with: .color(color.opacity(ring.opacity)), lineWidth: ring.width)
         }
         drawCross(&canvas)
         let pose = FirstStarScript.starPose(at: story)
@@ -192,7 +192,7 @@ struct FirstStarScene: View {
         let strength = 0.45 * (0.22 + 0.18 * breath) / 0.4 * pose.opacity
         glow(&canvas, at: star, radius: halo, colors: [Palette.acc.opacity(strength), Palette.acc.opacity(0)], inner: 0)
         canvas.fill(Self.fourPointStar(center: star, size: 20 * pose.scale * (1 + 0.12 * breath)), with: .color(Palette.acc.opacity(pose.opacity)))
-        canvas.fill(Self.disc(star, radius: 2.2 * pose.scale), with: .color(Palette.Universe.starCream.opacity(pose.opacity * (0.7 + 0.3 * glint))))
+        canvas.fill(LightFX.disc(star, 2.2 * pose.scale), with: .color(Palette.Universe.starCream.opacity(pose.opacity * (0.7 + 0.3 * glint))))
     }
 
     /// The ten specks that fly out as the star lights.
@@ -205,7 +205,7 @@ struct FirstStarScene: View {
             let color = (index.isMultiple(of: 2) ? Color.white : Palette.Universe.starGold).opacity(burst.opacity)
             canvas.drawLayer { layer in
                 layer.addFilter(.shadow(color: color, radius: 3.5))
-                layer.fill(Self.disc(center, radius: 2 * (1 - 0.7 * burst.progress)), with: .color(color))
+                layer.fill(LightFX.disc(center, 2 * (1 - 0.7 * burst.progress)), with: .color(color))
             }
         }
     }
@@ -273,7 +273,7 @@ struct FirstStarScene: View {
             canvas.drawLayer { layer in
                 layer.addFilter(.shadow(color: Palette.acc.opacity(pose.opacity), radius: 2))
                 layer.fill(
-                    Self.disc(CGPoint(x: item.origin.x, y: item.origin.y + pose.drop), radius: 1),
+                    LightFX.disc(CGPoint(x: item.origin.x, y: item.origin.y + pose.drop), 1),
                     with: .color(Palette.Universe.starGold.opacity(pose.opacity))
                 )
             }
@@ -284,17 +284,13 @@ struct FirstStarScene: View {
 
     private func glow(_ canvas: inout GraphicsContext, at center: CGPoint, radius: Double, colors: [Color], inner: Double, reach: Double? = nil) {
         canvas.fill(
-            Self.disc(center, radius: radius),
+            LightFX.disc(center, radius),
             with: .radialGradient(Gradient(colors: colors), center: center, startRadius: inner, endRadius: reach ?? radius)
         )
     }
 
     private func stops(_ colors: [Color], at locations: [Double]) -> Gradient {
         Gradient(stops: zip(colors, locations).map { Gradient.Stop(color: $0, location: $1) })
-    }
-
-    private static func disc(_ center: CGPoint, radius: Double) -> Path {
-        Path(ellipseIn: CGRect(x: center.x - radius, y: center.y - radius, width: radius * 2, height: radius * 2))
     }
 
     /// "FIRST TAKE · TODAY", centered over the star.

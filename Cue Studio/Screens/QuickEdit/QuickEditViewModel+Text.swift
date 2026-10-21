@@ -93,15 +93,6 @@ extension QuickEditViewModel {
         toast.show(String(localized: "Text duplicated"))
     }
 
-    func selectText(_ id: UUID?) {
-        selectedTextID = selectedTextID == id ? nil : id
-        if let id, let span = editedSpan(ofText: id), !span.contains(player.currentTime) {
-            // Shows it on the preview.
-            player.pause()
-            player.seek(to: span.start)
-        }
-    }
-
     func updateText(_ id: UUID, key: String? = nil, _ update: (inout TextOverlay) -> Void) {
         change(key: key) { snapshot in
             guard let index = snapshot.texts.firstIndex(where: { $0.id == id }) else { return }

@@ -1,11 +1,11 @@
 //
-//  PrompterAlignment+Layout.swift
+//  LineAlignment+Layout.swift
 //  Cue Studio
 //
 
 import SwiftUI
 
-extension PrompterAlignment {
+extension LineAlignment {
     var textAlignment: TextAlignment {
         switch self {
         case .leading: .leading

@@ -30,7 +30,5 @@ nonisolated enum NotificationIdentifier {
 
     static func isAutomatic(_ identifier: String) -> Bool { identifier.hasPrefix(automaticPrefix) }
 
-    static func isRoutine(_ identifier: String) -> Bool { identifier.hasPrefix(routinePrefix) }
-
     static func isReminder(_ identifier: String) -> Bool { identifier.hasPrefix(reminderPrefix) }
 }

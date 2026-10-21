@@ -42,7 +42,7 @@ struct CoverTitleStep: View {
                     onChange: { value in viewModel.updateTitle { $0.width = value / 100 } }, onEditingChanged: gesture
                 )
                 PanelSegmented(
-                    options: TextOverlayAlignment.allCases.map { PanelOption($0, $0.label, systemImage: $0.systemImage) },
+                    options: LineAlignment.allCases.map { PanelOption($0, $0.label, systemImage: $0.systemImage) },
                     selection: style.alignment, identifier: "cover.alignment"
                 ) { alignment in viewModel.updateTitle { $0.alignment = alignment } }
                 PanelToggleRow(label: String(localized: "Capitals"), isOn: style.uppercase, identifier: "cover.uppercase") {

@@ -30,7 +30,7 @@ final class IdeaDraftService {
     /// "Let Cue draft it" in Start a video: the card takes the keyboard (it turns false again once it has).
     var wantsFocus = false
     /// The inspiration the text came from ("Start with it" in Find inspiration). Kept as it was given; what is sent is only what the text
-    /// still says of it (`submittedBrief`), so a creator who changes the idea's direction is never overridden by the card.
+    /// still says of it (`ScriptRequestFactory`), so a creator who changes the idea's direction is never overridden by the card.
     private(set) var brief: IdeaBrief?
     /// What the field held before "Start with it" replaced it: Undo puts it back.
     private(set) var replacedText: String?
@@ -51,12 +51,6 @@ final class IdeaDraftService {
 
     /// What the generation flow writes from; nil while there is nothing to send.
     var submission: String? { draft.submission }
-
-    /// The brief that goes with `submission`: what of it the text still says.
-    var submittedBrief: IdeaBrief? {
-        guard let text = submission else { return nil }
-        return brief?.standing(in: text)
-    }
 
     // MARK: - Inspiration
 
@@ -84,10 +78,6 @@ final class IdeaDraftService {
 
     func canSubmit(isAvailable: Bool, isDictating: Bool) -> Bool {
         draft.canSubmit(isAvailable: isAvailable, isDictating: isDictating)
-    }
-
-    func canAskForIdea(isDictating: Bool) -> Bool {
-        draft.canAskForIdea(isDictating: isDictating)
     }
 
     // MARK: - Dictation

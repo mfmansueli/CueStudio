@@ -81,7 +81,7 @@ extension QuickEditViewModel {
         if let curve = segment.speedCurve {
             parts.append(curve.preset?.label ?? String(localized: "Curve"))
         } else if abs(segment.speed - 1) > 0.001 {
-            parts.append(segment.speed.formatted(.number.precision(.fractionLength(0...2)).locale(.interface)) + "×")
+            parts.append(SpeedScale.label(forMultiple: segment.speed))
         }
         if let zoom = segment.zoom { parts.append(zoom.label) }
         if segment.isMuted { parts.append(String(localized: "Muted")) }
@@ -217,8 +217,10 @@ extension QuickEditViewModel {
         player.scrub(to: min(max(0, time), edit.editedDuration))
     }
 
+    /// The finger let go of the content: the eye analysis moves to where the playhead stopped.
     func endTimelineScrub() {
         player.endScrub()
+        refocusEyeContact()
     }
 
     // MARK: - Handles

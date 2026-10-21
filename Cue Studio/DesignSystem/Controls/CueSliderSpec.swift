@@ -36,10 +36,6 @@ nonisolated struct CueSliderSpec: Equatable, Sendable {
     static let readingLine = CueSliderSpec(10...50, step: 1, default: 22)
     /// Points on each side of the text.
     static let margins = CueSliderSpec(8...40, step: 2, default: 20)
-    /// Off · 3 s · 5 s · 10 s.
-    static let countdown = steps(4, default: 1)
-    /// Off · Soft · Full.
-    static let starrySky = steps(3, default: 2)
 
     // MARK: - Editor
 

@@ -51,4 +51,28 @@ struct DataEraserServiceTests {
         // The 3 exports used are still used: deleting data can't hand back free exports.
         #expect(quota.exportsLeft(for: .free) == 2)
     }
+
+    @Test func theVoiceTipsStartOverAndTheirOldHistoryIsNeverWrittenBack() {
+        let defaults = TestDefaults()
+        defer { defaults.tearDown() }
+        let profile = CreatorProfileService(defaults: defaults.defaults)
+        let scheduler = VoiceQuestionScheduler(profile: profile, defaults: defaults.defaults)
+        scheduler.registerAppOpen()
+        scheduler.skipped(.openings)
+        let eraser = DataEraserService(
+            library: ScriptLibraryService(repository: FakeScriptRepository(scripts: [])), takes: TakeLibraryService(repository: FakeTakeRepository()),
+            drafts: FakeDraftStore(), logbook: LogbookService(defaults: defaults.defaults), brands: BrandStore(repository: InMemoryBrandRepository()),
+            sky: SkyMemory(defaults: defaults.defaults), profile: profile, preferences: PreferencesService(defaults: defaults.defaults),
+            defaults: defaults.defaults, voiceQuestions: scheduler
+        )
+
+        eraser.eraseEverything()
+
+        #expect(scheduler.state == VoiceQuestionState())
+        // The scheduler's next save (any tip event) keeps only what happened after the erase.
+        scheduler.skipped(.endings)
+        let relaunched = VoiceQuestionScheduler(profile: profile, defaults: defaults.defaults)
+        #expect(relaunched.state.skipped == [VoiceQuestion.endings.rawValue])
+        #expect(relaunched.state.firstEligibleDays.isEmpty)
+    }
 }

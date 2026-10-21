@@ -19,7 +19,7 @@ nonisolated struct CoverTitleStyle: Codable, Hashable, Sendable {
     var width = 0.86
     /// The size of the words, as a share of the cover's width, before fitting.
     var size = 0.12
-    var alignment: TextOverlayAlignment = .center
+    var alignment: LineAlignment = .center
     var font: CoverFont = .anton
     var textColor: OverlayColor = .white
     /// The highlighted words' color, or their box's.

@@ -33,7 +33,7 @@ struct CaptionTimelineMappingTests {
         edit.captions = [CaptionCue(words: [CaptionWord(text: "word", start: 1, end: 3)])]
         edit.timeline.trimStart(to: 1.5)
         edit.timeline.trimEnd(to: 2.5)
-        edit.timeline.setSpeed(2)
+        edit.timeline.setSpeed(2, forSegmentAt: 0)
         #expect(edit.editedCaptions[0].span == TimeSpan(start: 0, end: 0.5))
         #expect(edit.editedCaptions[0].words[0].start == 0)
         #expect(edit.editedCaptions[0].words[0].end == 0.5)

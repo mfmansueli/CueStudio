@@ -69,7 +69,7 @@ extension QuickEditViewModel {
     func updateCurveSoundStepping() {
         var holdsClipHandle = false
         if case .clip? = handleDrag?.target { holdsClipHandle = true }
-        let steps = shapesCurve || holdsClipHandle || trimOrigin != nil
+        let steps = shapesCurve || holdsClipHandle
         if player.stepsCurveSound != steps { player.stepsCurveSound = steps }
     }
 

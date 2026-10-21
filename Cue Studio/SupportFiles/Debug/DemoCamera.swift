@@ -23,7 +23,7 @@ final class DemoCamera: CameraControlling {
 
     func stop() async {}
 
-    func startRecording(settings: CameraSettings) async throws {
+    func startRecording() async throws {
         isRecording = true
         startedAt = .now
     }

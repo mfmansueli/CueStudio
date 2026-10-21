@@ -59,28 +59,4 @@ nonisolated enum TextStyleEdit: Equatable, Sendable {
             text.glow = min(max(glow, 0), 1)
         }
     }
-
-    func apply(to look: inout TextLook) {
-        switch self {
-        case .font(let font):
-            look.font = font
-            if !font.weights.contains(look.weight) { look.weight = font.weights[0] }
-        case .weight(let weight):
-            if look.font.weights.contains(weight) { look.weight = weight }
-        case .size:
-            break
-        case .color(let color):
-            look.color = color
-        case .background(let background):
-            look.background = background
-            if background != .none, look.backgroundOpacity < 0.05 { look.backgroundOpacity = 1 }
-        case .backgroundColor(let color):
-            look.backgroundColor = color
-        case .shadow(let shadow):
-            look.hasShadow = shadow.hasShadow
-            look.hasOutline = shadow.hasOutline
-        case .glow(let glow):
-            look.glow = min(max(glow, 0), 1)
-        }
-    }
 }

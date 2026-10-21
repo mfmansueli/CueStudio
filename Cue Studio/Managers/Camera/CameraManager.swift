@@ -112,7 +112,7 @@ final class CameraManager: CameraControlling {
 
     // MARK: - Recording
 
-    func startRecording(settings: CameraSettings) async throws {
+    func startRecording() async throws {
         let url = URL.temporaryDirectory.appending(path: "take-\(UUID().uuidString).mov")
         await engine.setRecordingEndedHandler { [weak self] clip, reason in
             Task { @MainActor in

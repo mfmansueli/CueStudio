@@ -182,9 +182,11 @@ struct FindInspirationViewModelTests {
         defer { rig.defaults.tearDown() }
         rig.model.use(briefIdea())
         rig.draft.text = "Saving: for students\nOpen with: “Saving isn't about willpower.”"
-        #expect(rig.draft.submittedBrief?.subject == "Saving")
-        #expect(rig.draft.submittedBrief?.angle.isEmpty == true, "the angle the creator changed is not sent")
-        #expect(rig.draft.submittedBrief?.openingLine == "Saving isn't about willpower.")
+        // What the request sends of it (`ScriptRequestFactory`): what the text still says.
+        let sent = rig.draft.brief?.standing(in: rig.draft.submission ?? "")
+        #expect(sent?.subject == "Saving")
+        #expect(sent?.angle.isEmpty == true, "the angle the creator changed is not sent")
+        #expect(sent?.openingLine == "Saving isn't about willpower.")
     }
 
     @Test func anIdeaWithoutABriefIsUsedByItsTitle() {
@@ -206,7 +208,6 @@ struct FindInspirationViewModelTests {
         #expect(card.title == "Why saving feels harder than spending")
         #expect(card.angle == "one small habit that makes it easier")
         #expect(card.openingLine == "Saving isn't about willpower.")
-        #expect(card.hasBrief)
     }
 
     @Test func theCardDrawsItsOwnQuotesAndLeavesOutWhatIsNotThere() {
@@ -224,7 +225,7 @@ struct FindInspirationViewModelTests {
         let card = InspirationCardContent(idea: idea, topics: [], logbookLabel: "From your Logbook")
         #expect(card.isLogbookNote)
         #expect(card.category == "From your Logbook")
-        #expect(!card.hasBrief)
+        #expect(card.angle == nil && card.openingLine == nil)
         #expect(FindInspirationViewModel.writingText(of: idea) == "film the market at dawn")
     }
 }

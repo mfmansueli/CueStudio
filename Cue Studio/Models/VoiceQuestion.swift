@@ -5,43 +5,6 @@
 
 import Foundation
 
-/// The weights of `voiceStrength` (08 §1, total 100): what My Cue Voice counts as filled.
-nonisolated enum VoiceField: String, CaseIterable, Identifiable, Sendable {
-    case role, topics, audience, tone
-    case style, formats, openings, endings, phrases, avoid, reach
-    case examples
-
-    var id: String { rawValue }
-
-    var weight: Int {
-        switch self {
-        case .role, .topics, .audience, .tone: 10
-        case .style, .formats, .openings, .endings, .phrases: 6
-        case .avoid, .reach: 5
-        case .examples: 20
-        }
-    }
-
-    var layer: VoiceLayer {
-        switch self {
-        case .role, .topics, .audience, .tone: .essentials
-        case .examples: .proof
-        default: .personality
-        }
-    }
-}
-
-nonisolated enum VoiceLayer: String, CaseIterable, Sendable {
-    case essentials, personality, proof
-}
-
-/// One answer on a question: what it is called and what it is for (a line that sounds like it, the creator types it).
-nonisolated struct VoiceOption: Identifiable, Hashable, Sendable {
-    let id: String
-    let label: String
-    var detail: String?
-}
-
 /// The question bank of My Cue Voice (08 §2), in queue order: the Essentials (E1–E4), Personality (P1–P12) and Proof (X1). The tip
 /// asks them one at a time, the full page (9.3) opens any of them.
 nonisolated enum VoiceQuestion: String, CaseIterable, Identifiable, Sendable {
