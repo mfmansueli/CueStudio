@@ -12,7 +12,7 @@ nonisolated struct Reminder: Codable, Identifiable, Hashable, Sendable {
     var subject: ReminderSubject
     var time: LocalDateTime
     var createdAt: Date
-    /// The project's title when it was set, for the list in Settings (shown in a notification only with "Show titles in previews").
+    /// The project's title when it was set, for the list in Settings (never in the notification itself: it says "your script").
     var title: String
     /// The system accepted it (`UNUserNotificationCenter.add` succeeded). False while notifications are off, or while it waits for a
     /// free place (the nearest reminders go first, `NotificationPolicy.reminderCapacity`).

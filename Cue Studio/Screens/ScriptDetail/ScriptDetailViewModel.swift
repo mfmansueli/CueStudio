@@ -118,13 +118,13 @@ final class ScriptDetailViewModel {
     }
 
     var blocks: [ScriptBlock] {
-        ScriptBlocks.blocks(for: workingText, structure: structure, speed: preferences.prompter.speed)
+        ScriptBlocks.blocks(for: workingText, structure: structure)
     }
 
     var summaries: [BlockSummary] { ScriptBlocks.summaries(of: blocks) }
 
     var zone: LengthZone {
-        LengthZone(text: workingText, preset: preset, speed: preferences.prompter.speed)
+        LengthZone(text: workingText, preset: preset)
     }
 
     /// Seconds the hook runs when it is too long.
@@ -181,7 +181,7 @@ final class ScriptDetailViewModel {
         library.update(scriptID) { $0.text = ScriptTextEditing.replacingOpening(of: $0.text, with: hook) }
         syncPage()
         sheet = nil
-        toast.show(String(localized: "Hook replaced · ~\(DurationText.short(ReadTime.seconds(for: hook, speed: preferences.prompter.speed)))"))
+        toast.show(String(localized: "Hook replaced · ~\(DurationText.short(ReadTime.seconds(for: hook)))"))
     }
 
     /// "Pick a new hook": the model writes three for this script when it can; otherwise the

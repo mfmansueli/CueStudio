@@ -20,7 +20,7 @@ removida); só o **Reduzir Movimento** mostra o estado final. `speed` só serve 
 | Controles | `Menu`, `Picker` (`.segmented` em Selfie \| Studio, Voice \| Steady, List \| Grid, Camera \| Recording), `.contextMenu`, `Slider` do sistema (`LabeledSlider`), botões redondos `.glass` (`glassIconButton()`) |
 
 **Vidro customizado (exceções do `07` §2):** o dock de Scripts (`DockSurface`), a barra e as folhas sobre a câmera (`GlassNight`, precisam ler sobre
-vídeo), os painéis e a barra do editor, a faixa de estado da página do script, a barra de IA sobre uma seleção (o menu de edição do `UITextView` não
+vídeo), os painéis e a barra do editor, a barra de IA sobre uma seleção (o menu de edição do `UITextView` não
 reproduz a pílula violeta), o toast e a dica do My Cue Voice (`VoiceTipViewStyle`). Confirmações destrutivas: `CueActionSheet` (§17).
 
 ## 2. Scripts (3.1, 3.2) — o dock
@@ -28,15 +28,23 @@ reproduz a pílula violeta), o toast e a dica do My Cue Voice (`VoiceTipViewStyl
 `Screens/Scripts/Dock/ScriptsDock.swift`: vidro limpo (sem céu dentro, `09` §2), em `.safeAreaInset(.bottom)` acima da tab bar.
 - **Linha 1:** Format ⌄ · For {Rede} ⌄ · ✦ Voz nn% · lâmpada do Find inspiration (§30). Chips de 36 pt de toque; aparecem também na primeira visita.
 - **Linha 2:** o campo (2 linhas em repouso, até 5 editando, 200 caracteres: §25; a ideia sugerida enquanto vazio), ↻, microfone e a seta amarela
-  (**Write it** sem Apple Intelligence).
+  (**Write it** sem Apple Intelligence). Uma sugestão nova (↻, ou a seguinte depois de enviar) chega palavra por palavra saindo da luz violeta
+  (`WordsFromLight`, 50 ms entre palavras; a que já estava quando Scripts abre só aparece); o ↻ é `arrow.triangle.2.circlepath` e gira a cada toque.
+- **Luz do Apple Intelligence** (`AIGlow`, cores `dockGlow`; a mesma do microfone do Logbook): borda fina colorida girando em volta do vidro, com um halo
+  desfocado fino que some a poucos pontos da borda (não chega aos textos; desenhado no tamanho do próprio dock, que não muda de altura). Ditando: fica, uma volta a cada 5 s, mais forte com a voz (`dictation.level`). Enviando: uma volta rápida junto
+  com a subida da estrela (1,2 s). Reduzir Movimento: não gira, só acende e apaga.
+- **Vibração** (`HapticPatterns`, Core Haptics; cai num toque simples sem Taptic Engine): enviar = toque firme + zumbido que cresce enquanto a
+  estrela sobe (1,1 s) + toque na ignição; a estrela pousando como cursor = baque suave + dois brilhos (§3).
 - **Dobra** (`DockFold`, `ScriptsView.foldDock`): a linha 1 recolhe ao rolar para baixo (passa de 40 pt e mais de 2 pt de movimento, somando passos
   pequenos), volta em qualquer subida, nunca com o campo focado; 0,28 s `(0.2,0.8,0.2,1)`, um movimento só (o vidro fecha sobre os chips, que somem em
   0,2 s). **O espaço reservado embaixo da lista não muda com a dobra**: quando mudava, a lista pulava ~205 pt e o dock abria e fechava sem parar. O quique
   no fim não conta como subida. Lista curta (rola < 80 pt) recolhe ao passar da metade; uma que rola < 16 pt nunca recolhe. Log: `studio.cue` / `DockFold`.
 - Campo focado: a lista escurece e desfoca (0,25 s). Durante a seleção o dock sai.
-- **Busca:** `SearchField` sempre visível no topo da lista (entre "6 SCRIPTS · 1 READY" e os filtros, rola com ela); o dock fica durante a busca e, com o
-  teclado da busca, fica embaixo dele. Por que não `.searchable`: com `.searchToolbarBehavior(.minimize)` o ✕ do iOS 27 só minimizava a busca (a lista
-  ficava filtrada e o dock não voltava). Dica do campo em `ink2`.
+- **Busca:** lupa na barra, no mesmo vidro do Logbook e do "+" (à esquerda deles; só com a lista, não no Scripts vazio). Ela abre o `SearchField` no
+  topo da lista (entre "6 SCRIPTS · 1 READY" e os filtros, rola com ela), já com o teclado, e leva a lista ao topo; o campo some quando fica sem
+  teclado e sem palavras (teclado fechado, ✕ ou "Clear search"); com palavras ele fica. O dock fica durante a busca e, com o teclado da busca, fica
+  embaixo dele. Por que não `.searchable`: com `.searchToolbarBehavior(.minimize)` o ✕ do iOS 27 só minimizava a busca (a lista ficava filtrada e o
+  dock não voltava). Dica do campo em `ink2`.
 - **Linhas:** um toque abre a página do roteiro em qualquer estado (rascunho já abre escrevendo); a ponta direita é a ação do estado: **● REC** grava,
   **Continue ›** é só rótulo, **×3 ›** (com takes) é botão para Takes. Deslizar mostra **Record** (vermelho) e **More** (cinza), sem deslize longo; More abre
   `ScriptActionsPopover` na linha (Record, Studio mode, Edit · Duplicate, Move to folder, Script Language, Share · Delete); o que abre outra coisa fecha
@@ -53,9 +61,14 @@ reproduz a pílula violeta), o toast e a dica do My Cue Voice (`VoiceTipViewStyl
 ## 3. A estrela é a transição (`09` §8)
 
 `IdeaTransitionService` (relógio e estado) + `StarTransitionOverlay` (em `MainView`) + `ScriptStarter.write(from:)`: a estrela sobe da seta ao centro
-(0,6 s), o app atrás escurece (brilho 0,35, desfoque 10 pt, escala 0,94), halo, 12 partículas, "Writing in your voice", a ideia e 7 frases a cada 1,6 s,
-Cancel. Dura **no mínimo 3,0 s**; quando o roteiro chega: frase final, capa sólida (0,22 s), anel (0,42 s), a estrela pousa como cursor amarelo onde
-começa o título (0,44 s) e a página escreve (§5.2). O teclado desce quando a estrela sobe e a página não o pede de volta. **Cancel ou erro:** a estrela
+(**1,1 s**, mais lento que o quadro por decisão do dono: os efeitos têm de ser vistos e o roteiro é escrito por trás) enquanto 34 pontos de luz saem do
+campo do dock, um após o outro (0,7 s), e correm em curva até ela (1 s cada); ela **acende** onde para (clarão e anel de luz, 1,1 s); o app atrás
+escurece (brilho −0,4, saturação 0,7, desfoque 10 pt, escala 0,94), halo, 12 partículas, "Writing in your voice", a ideia e 7 frases a cada 1,6 s, a porcentagem e,
+em volta da estrela, uma **órbita de progresso** (`ProgressOrbit`, cores `dockGlow`, que fecha com a porcentagem), Cancel. Dura **no mínimo 3,0 s**;
+quando o roteiro chega: frase final, capa sólida (0,3 s), anel (0,8 s) com uma faixa de luz descendo pela página (1,4 s, `transitionSweep`), a estrela
+voa até o cursor amarelo onde começa o título deixando um **rastro de cometa** (`CometTrail`, 0,9 s) e a página escreve (§5.2). **Vibração:** a
+decolagem do dock (zumbido que cresce na subida, toque na ignição), um toque leve a cada 25% escrito, o pouso (baque + dois brilhos) quando a estrela
+vira cursor, um toque suave no Cancel. O teclado desce quando a estrela sobe e a página não o pede de volta. **Cancel ou erro:** a estrela
 cai 40 pt e some (0,3 s), nenhum roteiro fica, a ideia continua no campo (erro: toast "Couldn’t draft it · Try again"). Reduzir Movimento: fade de 0,2 s.
 Sem Apple Intelligence não há overlay. Idioma que o modelo não escreve: a estrela nem sai (§8). A estrela vira uma estrela do céu (`SkyMemory`); Scripts
 mostra só o céu de fundo (`skyBackground()`), nada desenha estrelas por cima.
@@ -228,12 +241,16 @@ perto de onde ele está agora). Forma: a foto do protótipo animado que o dono m
 
 ## 5.2. A IA escrevendo na página (4.1)
 
-Enquanto o roteiro é escrito, `ArrivingText` substitui o editor: cada palavra entra de blur 7 pt e 5 pt abaixo em 0,3 s, com brilho violeta (`#C4B8FF`
-95%, some em 0,8 s), a cada 0,17 s (mais rápido quando chegam muitas, nunca > ~1 s atrás do modelo); cursor violeta de 2 pt pisca depois da última.
+Enquanto o roteiro é escrito, `ArrivingText` substitui o editor: cada palavra entra de blur 7 pt e 5 pt abaixo em 0,3 s, com brilho violeta (`Palette.Page.arrivalGlow`
+a 95%, some em 0,8 s), a cada 0,17 s (mais rápido quando chegam muitas, nunca > ~1 s atrás do modelo); cursor violeta de 2 pt pisca depois da última.
 Pílula **"✦ Drafting in your voice"** (`ScriptWritingPill`, 34 pt): brilho de borda 2,4 s e brilho branco a cada 1,6 s; sem a estrela por cima (Try again)
-mostra a porcentagem até as palavras chegarem. **A página escrevendo é a página escrita:** título, contador, faixa de estado (com **Stop** no lugar do
-Done), "Does it sound like you?" e o aviso de fatos (desabilitados) já no lugar, com as margens do editor (`ScriptTextEditor.textInsets`); nada se move
-ao terminar. Parar tira a pergunta da voz. Reduzir Movimento: fade de 0,2 s, cursor aceso, pílula parada. `-uiTestCatalogue writing`. A barra de 3 pt por
+mostra a porcentagem até as palavras chegarem. **A página escrevendo é a página escrita:** título, duração, faixa de estado (com **Stop** no lugar de
+Shape), "Does it sound like you?" e o aviso de fatos (desabilitados) já no lugar, com as margens do editor (`ScriptTextEditor.textInsets`); nada se move
+ao terminar. **Acabamento (pedido do dono, 20/10/2026):** o título chega primeiro, palavra por palavra (`WordsFromLight` sobre o campo), e o texto começa
+0,45 s depois; a página rola sozinha (0,8 s, a cada ~160 caracteres) para manter as palavras novas à vista; no fim espera as últimas chegarem
+(`ArrivingText.settleTime`, 1,3 s) e passa ao editor num fade cruzado de 0,7 s (as palavras que chegaram somem por cima enquanto o editor aparece por
+baixo), com dois toques suaves; a pílula sai e o Record acorda num movimento só (0,5 s). Parar tira a pergunta da voz. Reduzir Movimento: fade de 0,2 s,
+cursor aceso, pílula parada, sem espera nem fade cruzado. `-uiTestCatalogue writing`. A barra de 3 pt por
 seção do quadro (`sc10`) não existe (a página não tem seções).
 
 ## 5.3. Onboarding: o roteiro de prática, permissões, tópicos, prática
@@ -260,7 +277,7 @@ realce de palavras. Ficam a linha de leitura, o trilho de seções e o chip de v
 **Studio** (`Screens/Prompter/Studio`): sem câmera, sem gravar, sem permissão de câmera; para ensaiar, ajustar o texto ou ler com outra câmera filmando
 (espelho e Remote continuam). Gravar é do Selfie. Texto `PrompterTextView` em tela cheia com a linha em `guidePosition`; um toque toca ou pausa.
 **Barra** (`StudioControlPanel`, vidro noturno, alça que guarda e ⌃ que traz): (1) Voice | Steady, ‹‹ 3 linhas, play, 3 linhas ››; (2) velocidade ou linha
-de voz e estado; (3) chips **Size · Line · Margin · Mirror · Aa More** (`StudioAdjustBar`): um slider por vez (S–XL, linha 10–70%, margens 8–40 pt; o slider
+de voz e estado; (3) chips **Size · Line · Margin · Mirror · Aa More** (`StudioAdjustBar`): um slider por vez (tamanho 12–56 pt, linha 10–70%, margens 8–40 pt; o slider
 só existe aberto, `showsSlider`), Mirror para rig, Aa abre o Display. Acima do texto, "0:42 LEFT" e "1:12 · IDEAL 1:00–1:30" (`StudioTimeLine`).
 **Contagem:** play do começo usa a de Settings › Prompter (Off, 3, 5, 10 s); a barra some e um toque cancela; retomar toca na hora. Voice Following ouve
 pelo medidor do microfone.
@@ -306,15 +323,62 @@ to post it"); Instagram: "Opened X with your video · Cue can't see if you post 
 **Settings** (`09` §11): `List` `.insetGrouped` sobre o céu (`cueGroupedList()`, `cardRowBackground()`, `CueSectionHeader`), toda página empurrada
 (`SettingsRoute`; nenhuma sheet). Título grande do sistema (`.large`); a busca (`SettingsSearchField`) é a primeira linha da lista e rola com ela, e os
 resultados são seções da mesma lista (o teclado não cai). Cada linha é um `SettingsEntry` (título, detalhe, caminho, palavras-chave) desenhado por
-`SettingsEntryRow`, igual na página e na busca (`SettingsSearchGroup`); linhas de 52 pt, ícones 30 pt raio 8 nas cores do `09` §11; rodapé ≤ 60
-caracteres, sem botão amarelo sólido. Páginas: Recording, Prompter, Remote, Personalize (céu §5, Getting started §32; os 5 ícones e as regras de marco do
+`SettingsEntryRow`, igual na página e na busca (`SettingsSearchGroup`); linhas de 52 pt; rodapé ≤ 60 caracteres, sem botão amarelo sólido. A raiz
+começa em Create (sem card de setup: cada linha já diz o que está escolhido, "Front · 1080p", "Voice"; decisão do dono, 21/10/2026). **Ícones**
+(`SettingsIcon`, escolha do dono 21/10/2026): desenhos próprios do Cue em `Assets › SettingsIcons` (SVG de 24 pt, modelo; duotom: corpo a 28%,
+contorno de 1,7 e um detalhe sólido do app: o ponto de gravação, a linha de leitura passando da janela, o play transmitindo do Remote, a estrela do Cue,
+o pincel do Personalize, o cadeado da política…), em azulejo de 32 pt raio 9 com degradê e um fio de luz no topo, em três famílias: **amarelo** para o
+que grava (Recording, Prompter, Remote), **violeta** para a IA (My Cue Voice, Personalize), **cinza** para o resto, e Cue Pro em azulejo amarelo cheio
+(`Palette.Settings`, medidos em `PaletteContrastTests`). Páginas: Recording, Prompter, Remote, Personalize (céu §5, Getting started §32; os 5 ícones e as regras de marco do
 app, não as do protótipo), Language & Region (idioma do app abre os Ajustes; Voice following e Script language são menus), Notifications (§27), Privacy &
 AI data (**On-device AI** é a chave de todos os recursos de IA: `PrivacyPreferencesService` → `ScriptWriting.isEnabled`; Help improve Cue decide se os eventos
 vão ao Analytics), Permissions (`PermissionsService`), Acknowledgements. **Reset Creator Setup fica como está** (decisão pendente, `09` §13).
-**Prompter** (`SettingsPrompterView`): na aba, com prévia no topo e céu; pelo **Aa** do Selfie abre como `PrompterSettingsSheet` (`.medium`/`.large`,
+**Remote** (`SettingsRemoteView`, redesenho do dono 21/10/2026, conceito "dois aparelhos"): `ScrollView` sobre o céu. No topo a cena
+(`RemoteHero`, posições em `RemoteSceneLayout`, aparelhos em `RemotePhone`, tudo num relógio só): o teleprompter à esquerda (roteiro subindo
+sob a linha de leitura amarela, que passa das laterais e respira) e o controle à direita (play cujo halo chama a cada 3,2 s), flutuando fora de
+compasso, com uma linha pontilhada que corre do controle ao teleprompter, quebrada no meio. **Esperando:** o teleprompter desliza ao centro e
+cresce (mola criticamente amortecida, sem quique), o roteiro vira o QR em papel branco e a linha de leitura encurta e o varre como um leitor;
+anéis saem dele a cada 0,87 s; o controle se afasta. Embaixo, o código em seis caixinhas que sobem do desfoque uma a uma (`RemoteCodeChips`),
+"Waiting for your other device…" com os três pontos acendendo em sequência, os passos no outro aparelho e Cancel. **Conectado:** o controle
+volta, os dois se inclinam um para o outro, a ligação se desenha em verde do controle ao teleprompter, um ✓ estala no alto com um anel de luz
+e luzes correm pela ligação (os comandos); o brilho de fundo passa de amarelo a verde; CONNECTED, o nome do aparelho, "Press play on …" e
+Disconnect; os ícones de "From the remote you can" acendem verdes em sequência. Desconectar recolhe a ligação para o controle. **Sem controle:**
+"No remote yet", Connect a device amarelo grande, os cartões Enter a code / Scan the code (`RemoteJoinCards`, mesmo fluxo da busca:
+`RemoteJoinFlow`), o que o controle faz (`RemoteCapabilities`) e Coming next. Vibrações (Core Haptics, `HapticPatterns`): Connect = toque firme
+e um brilho quando o primeiro anel sai; dois tiques quase imperceptíveis nos anéis seguintes; ao conectar, tique + clique + assentar junto com o
+✓; Disconnect = queda surda. O texto não promete mais Apple Watch (o app não tem). Reduzir Movimento: mesmas posições, nada se move, estados
+trocam na hora. Cores em `Palette.Remote`.
+**Personalize** (`PersonalizeView`, redesenho do dono 21/10/2026, "vitrine"): `ScrollView` sobre o céu. No topo, "seu Cue" ao vivo
+(`PersonalizeHero`): o céu escolhido (`SkyMiniature`: o mesmo `BgWash` + `StarfieldView` da navegação, estrelas no brilho dos quadros), a luz
+do universo respirando na cor escolhida (`CoreColor.glow`) e o ícone escolhido flutuando (`AppIconArt`; o padrão desenhado das camadas de
+`AppIcon.icon`), com a legenda "Default · Serene sky · Gold light"; trocar o céu esmaece, a luz muda de cor devagar, o ícone entra numa mola.
+**App icon** (`AppIconPicker`, a página própria saiu): os cinco ícones lado a lado como coleção, anel amarelo que desliza (matched geometry) e ✓
+no escolhido, bloqueados apagados com cadeado que balança ao toque (e o aviso de quantos vídeos faltam), "10 · Pro"; Pro sem plano abre os planos.
+**Starry sky** (`SkyPicker`): quatro cartões 2×2, cada um com o próprio céu ao vivo, nome e o que tem. **Your universe's light**: as
+amostras do Profile (`CoreColorSwatches`). **Feel** (`PersonalizeFeelRow`): Celebrations e Haptics com ícone e o que fazem; ligar responde na
+hora (as fagulhas sentidas; o primeiro toque). **Your topics** (`PersonalizeTopics`): os tópicos como etiquetas nas cores de Scripts, Edit (folha
+do My Cue Voice) e a marcação automática. **Getting started** só até o primeiro vídeo. A busca leva aos mesmos lugares (`SettingsRoute.appIcon`
+abre Personalize).
+**Prompter** (`SettingsPrompterView`): na aba, com prévia no topo e céu. **A prévia** (`PrompterPreviewCard`, pedido do dono, 20/10/2026) é o topo da
+tela deste iPhone no Selfie como o gravador o monta (o mesmo `ReadingLayout`: a linha de leitura sob a lente, onde o criador a pôs ou a 118 pt, e a
+janela em volta dela, na largura e altura dele), reduzido para caber num cartão de 236 pt sobre uma câmera de mentira (`Palette.Camera.previewScene*`)
+que ocupa o cartão inteiro: a ilha da câmera, a janela escura e desfocada como no gravador, a linha atravessando a tela, e o texto desenhado pelo próprio
+teleprompter (`PrompterParagraphs`) rolando na velocidade escolhida (o já lido apaga acima da linha; Reduzir Movimento: parado; o texto de exemplo vem no idioma da interface, cues incluídas); pelo **Aa** do Selfie abre como `PrompterSettingsSheet` (`.medium`/`.large`,
 `sheetMaxHeight`, fundo `Palette.surface`, sem prévia, `isRecorderSheet`), sobre os ajustes daquela gravação, medindo a linha de leitura pela tela e lente
 do gravador (`SettingsPrompterView.screen`). Faixas de `PrompterSettings`: altura 160–380, largura 50–93%, margens 8–40, espaçamento 1–2;
 `isFlippedVertically`, `safeZoneKey`, `showsCues` (desligado por padrão).
+**Velocidade e tamanho do texto** (decisão do dono, 20/10/2026): a velocidade vai de **0,2× a 2×** em paradas de 0,1× (19 paradas, `SpeedScale`;
+1× = 150 palavras por minuto, o padrão; cada parada é um número inteiro de passos de 5 palavras, então o valor salvo é o da parada) e
+`PrompterSettings.speedRange` são as duas pontas, tiradas da escala. Todo lugar segue as mesmas paradas, com um tique em cada uma: o slider de
+Settings › Prompter (pontas "0.2×" e "2×"), o do gravador (`SpeedSlider`, Selfie e Studio, sem marcas no trilho: o valor
+está escrito acima) e o − / + do Remote (uma parada por toque). Uma velocidade salva acima de 2× (os 3×, 4× e 5× de antes) abre em 2×.
+**Text size** é um slider em pontos, de **12 a 56 pt** de 1 em 1 (valor "36 pt", pontas "12" e "56 pt"), o mesmo
+alcance do Size do Studio (`studio.slider.size`) e do Text size do Display do gravador (`display.textSize`); o Studio desenha 1,35× maior. Um
+tamanho salvo fora da faixa abre na ponta mais próxima. Não há tamanhos com nome (Small, Medium, Large, XL): o bloco Text do cartão de setup
+e a folha de setup do gravador mostram os pontos ("36 pt") e a velocidade como o slider ("1×"). Para os testes de UI, os sliders da página
+respondem pelo identificador da linha (`settings.speed`, `settings.textSize`: o `accessibilityIdentifier` de `PrompterEntryRow` cobre o do
+slider); na aba Settings o arrasto sintético do XCUITest não move os sliders desta página (nenhum deles), então as pontas são testadas pelo Aa
+do gravador.
 
 **1.1 Welcome** (`09` §12): `WelcomeScript` escreve a cena de 390 × 844 como `PoseTrack`s: a estrela entra pela direita, acende 5 pontos do C (0,2 s
 entre eles), cai em TELEPROMPTER, AUTO CAPTIONS, ✦ AI SCRIPTS, volta e explode no sexto ponto; depois "CUE STUDIO", o título palavra a palavra, o subtítulo
@@ -353,14 +417,26 @@ a exportação segue sozinha. Pro e teste: "PRO · UNLIMITED EXPORTS", sem Go Pr
 
 ## 13. Profile (9.1) e Edit Profile
 
-Rolagem de blocos sobre o céu (`profileBlock()`): **Edit** na toolbar, identidade (avatar de 60 pt: foto, inicial num degradê violeta, ou, sem nome nem
-foto, o astronauta `AstronautMark`; nome, "@usuário · tipo de criador"), **Your universe** (`ProfileUniverseRow`, núcleo `ProfileMiniCore`: bola de 14 pt que
-respira em 6 s num anel de 30 pt com uma luz que dá a volta em 7 s; "2026 · 3 topics", "23 videos"; "Starts with your first share" numa conta nova;
-quantos vídeos faltam para o próximo marco), o cartão My Cue Voice e o plano. Toque longo na identidade: Copy @handle · Share profile link · Edit profile.
-**`EditProfileSheet`** (`.large`, Cancel / Done): foto de 96 pt (`PhotosPicker`, 512 px, `CreatorProfile.photoData`), Name, Username, Creator type,
-"Shown on the universe cards you share."; `ProfileDraft` valida (nome 1–40, usuário 2–24 de a–z 0–9 . _, minúsculas) e **Done só vale com tudo válido**
-("Profile updated"). Abaixo, **Create for**, **Monetization goals** (`EditProfilePreferences`) e **Sign in with Apple** (`EditProfileAccount`, ação
-imediata, fora do Cancel / Done).
+Rolagem de blocos sólidos sobre o céu (`profileBlock()`; redesenho do dono 21/10/2026, **enxuto**: "muita informação escrita"; **Plan e My Cue
+Voice ficam como eram**). Sem Edit na toolbar: ele fica no cartão. **Você** (`ProfileIdentityContent`): avatar de 72 pt (foto, inicial ou o
+astronauta) num anel da luz do universo que respira; nome; "@usuário · tipo" (o próprio, `customRole`, ou o da lista), ou, sem nenhum dos dois,
+"+ Add a username" em amarelo (sem números: o dono os tirou). Perfil vazio: o astronauta, "Your name" apagado e **Set up your profile**. **Your universe**
+(`ProfileUniverseRow`): o universo em miniatura ao vivo (`ProfileMiniUniverse`, 104 pt com folga da borda: o núcleo na cor escolhida respirando, três órbitas e **um planeta por
+rede** compartilhada no ano, na cor da rede, a mais usada mais perto, com uma lua), o título e uma linha ("2026 · 1 video", singular/plural no
+catálogo); conta nova: "Your universe is waiting", órbitas pontilhadas girando e um planeta tracejado esperando. Os marcos e ícones não aparecem
+no Profile (saíram a pedido do dono). Toque longo na identidade: Copy @handle · Share profile link · Edit profile. As animações ambientes (`AmbientTimeline`) já andam ao
+abrir a tela: o primeiro aviso de visibilidade do scroll, que chega antes do layout dizendo "invisível", não as para mais.
+**`EditProfileSheet`** (`.large`, Cancel / Done; redesenho do dono 21/10/2026). **Tudo é opcional:** `ProfileDraft` aceita nome e usuário
+vazios (digitados, nome até 40, usuário 2–24 de a–z 0–9 . _, minúsculas, com o erro embaixo) e **Done só desliga com algo digitado fora do
+formato** (antes exigia os dois preenchidos, e um perfil vazio não salvava mais nada: bug do dono). No topo, **"How you appear"**
+(`EditProfilePhoto`): o cartão do universo compartilhado ao vivo (o céu do criador, ou Serene se desligado; a foto flutuando com um selo de
+câmera amarelo, que abre Choose Photo / Remove Photo; nome, @usuário e o tipo de criador, com o texto de exemplo até ser preenchido). **You:** Name
+e Username alinhados igual, contador do nome perto do limite, ✓ verde quando o usuário serve. **What you make** (`CreatorTypePicker`): os tipos
+como etiquetas (um por vez, tocar de novo tira) e **"+ Add your own"**, que vira um campo na própria etiqueta e guarda um tipo próprio
+(`CreatorProfile.customRole`, o mesmo do My Cue Voice e do roteirista; vale no lugar da lista e aparece no perfil), com × para tirar. **When you
+create** (`EditProfilePreferences`): as plataformas como galáxias na cor de cada uma (`Platform.tint`), anel amarelo que desliza, e Monetization
+goals com o que muda ("Script lengths aim at what earns on TikTok"). **Account** (`EditProfileAccount`, ação imediata, fora do Cancel / Done): um
+cartão discreto dizendo que é opcional e só preenche o nome, com o botão branco da Apple (o estilo pedido em fundo escuro), mais baixo.
 
 ## 14. Your universe, um por ano (9.2)
 
@@ -505,8 +581,28 @@ separadores, o astronauta (§5.0.1).
 
 ## 22. Página do roteiro, revisão, Quick edit e gravador (pedidos do dono)
 
-**Página do roteiro (o único editor):** Text size pelo **Aa**; salva enquanto se escreve; ••• tem "Make a version for…" (cópia para outra rede), Remind me…
-(§27) e Delete (com Undo, como a lista). A versão do roteiro (v2, v3…) liga as takes ao texto lido.
+**Página do roteiro (o único editor):** Text size pelo botão redondo `textformat.size`; salva enquanto se escreve; ••• tem Script details, Studio mode,
+Remind me… (§27), "Make a version for…" (cópia para outra rede) e Delete (com Undo, como a lista); Improve fica só na página. A versão do roteiro (v2,
+v3…) liga as takes ao texto lido. O texto é **corrido**, sem rótulos de estrutura nem régua de tempo (decisão do dono, 20/10/2026: o criador tem de se
+sentir livre para escrever como quiser). **Sem dicas embaixo do texto** (gancho longo, frase longa, "No CTA yet"): quem quiser mudanças usa o Improve
+(decisão do dono, 20/10/2026).
+- **Rascunho ou pronto (decisão do dono, 20/10/2026):** a faixa sob o título (`ScriptStateStrip`, sem caixa) tem o interruptor **"Ready to record"**
+  (`ReadyToggle`; RECORDED num roteiro gravado) e "Draft · Formato · n cues" em `ink2`, mais ✦ Shape sem cues e Stop enquanto a IA escreve. Ligar: verde
+  (`readyFill`/`readyRim`, `successText` 6,7:1), acende uma vez e dá dois toques suaves (`HapticPatterns.finish`); formato com seções vazias pergunta
+  ("Mark ready anyway" / "Keep writing"); página vazia: desativado. Desligar volta a rascunho. **Sair nunca muda o estado** (voltar só salva; editar um
+  roteiro pronto não o rebaixa); só o interruptor muda, e gravar (leva a pronto e depois a gravado). **O roteiro que a IA escreve começa como rascunho**
+  ("AI is drafting for you"). A página não tem "Done": digitando, o ✓ da barra só fecha o teclado (e a plataforma e o ••• voltam).
+- **Duração numa linha** (`ScriptLengthBar`): "113 WORDS · ~0:45" à esquerda, "IDEAL 1:00–1:30" à direita, trilho de 5 pt; amarelo abaixo do ideal,
+  verde dentro (com ✓, brilha uma vez e toque leve ao entrar), laranja acima ("CUT 6S", toque firme). Cresce numa mola; os toques são só do que o criador
+  digita (não da IA). O título não tem contador embaixo.
+  O tempo é sempre no **ritmo natural de fala** (150 palavras por minuto, o mesmo em que a IA escreve), não na velocidade de rolagem do
+  teleprompter (decisão do dono, 20/10/2026: a 0,4× um roteiro de 1 min aparecia como 2:28 e "CUT 58S"). Vale também para a duração na lista,
+  no Hook, no "Start recording" e na melhor tomada; só o tempo dentro do gravador (Studio) segue a velocidade escolhida.
+- **Tab bar:** a página a esconde do jeito do sistema (`toolbarVisibility(.hidden, for: .tabBar)` na página; a da lista fica na raiz da pilha, não na
+  pilha toda), então ela sai e volta junto com a animação de entrar e sair, sem o dock e a barra pularem (no voltar e no Cancel da estrela).
+- **Título na barra:** rolando além do título, a barra mostra o título pequeno com "WORDS · ~TEMPO" embaixo (como Notas e Mail).
+- **Foco ao digitar:** com o teclado no texto, faixa, duração, voz, aviso de fatos e ferramentas ficam a 30% (continuam funcionando); voltam ao fechar.
+- **Ferramentas:** Hook (`text.quote`), ✦ Improve, Cues e o Aa redondo, todos com ícone. Inserir uma cue pela barra do teclado dá um tick.
 - **Record preso ao pé** (`ScriptRecordButton`, no `safeAreaBar`): cápsula de largura toda (`CueStudioButtonStyle` grande, Liquid Glass amarelo; vidro sem
   tinta num roteiro gravado e sem mudança) sobre o efeito de borda do sistema. Sempre visível (sobe com o teclado do título); o teclado do texto põe as cues
   no lugar dele; apagado enquanto a IA escreve. (A barra de baixo do sistema não dá largura toda.)
@@ -515,12 +611,26 @@ separadores, o astronauta (§5.0.1).
   para todos os roteiros depois das quatro do quadro (`PreferencesService.customCues`); segurar uma do criador: "Remove from bar". (O
   `ToolbarItem(placement: .keyboard)` não dá largura e deixava as cues sem fundo.)
 - **Cues ligadas/desligadas** (botão **Cues** ao lado de Improve, `Toggle` `.button`; `PreferencesService.showsCuesOnPage`, ligado por padrão): desligado,
-  as cues ficam no texto mas transparentes e com 1 pt. O teleprompter tem o seu (`PrompterSettings.showsCues`).
+  as cues ficam no texto mas transparentes e com 1 pt. Inserir uma cue pela barra liga o botão de novo (senão ela entrava invisível, só um espaço
+  vazio). O teleprompter tem o seu (`PrompterSettings.showsCues`).
 - **Apagar uma cue apaga a cue inteira** (`ScriptCueDeletion`), com o cursor onde ela estava.
+- **Cues como chips** (pedido do dono, 20/10/2026): no editor (um `UITextView` TextKit 2, `ScriptTextView`) e nas palavras que a IA escreve
+  (`ArrivingText`), cada cue é um chip arredondado (amarelo a 14% com borda de 0,5 pt a 35%, `Palette.Cues`) com o nome em seminegrito a 72% do texto e um
+  ícone para as cues conhecidas (pause, eye, hand.point.up, face.smiling, exclamationmark…, em qualquer dos 20 idiomas; as do criador sem ícone); os colchetes
+  ficam invisíveis, o texto guardado continua `[pause]`, e o chip nunca quebra de linha.
+- **Desfazer e refazer** na barra das cues (`ScriptEditorUndo`), à esquerda, desativados quando não há o que desfazer.
 - **"AI can get facts wrong"** (`FactCheckBanner`): centrado na vertical, texto `ink`.
 
 **Revisão da take (6.3):** barra de navegação do sistema (`ReviewToolbar`, `NavigationStack` próprio, fundo escondido sobre o vídeo): voltar, "TAKE 2 OF 3 ✦ ⌄"
 como título com menu (takes vizinhas, Suggest best) numa cápsula de vidro, estrela (`star` / `star.fill`) e lixeira numa cápsula à direita.
+Refinamento do dono (22/10/2026, canvas "Revisão da take, refinada"): **Play** fica no meio do espaço livre do vídeo, acima dos controles (nunca sobre a
+linha do tempo, como no 15 Pro), encolhe e some ao tocar (`Haptics.light`); tocar no vídeo tocando pausa e pisca o sinal de pausa (`ReviewPauseFlash`,
+`Haptics.soft`). **Linha do tempo** (`ReviewScrubber`): segurando, a bolinha cresce para 24 pt e um balão branco diz o tempo; um tique a cada segundo
+cruzado e um toque firme no início e no fim. **Trocar de take** deslizando: a outra take aparece num esmaecer (o dono rejeitou o cartão que seguia o
+dedo, 22/10/2026), com um tique e "Take 2 of 3" por 1,4 s. **Estrela**: pula e solta faíscas amarelas (`BestTakeSparkles`, `HapticPatterns.bestTake`).
+**Informações** (`ReviewInfoPanel`): só "● TikTok · 0:10 ›"; o toque abre "1080p · 9:16 · 51s shorter than TikTok’s sweet spot · From script v1".
+**Trilha**: a barra do estágio atual se preenche ao abrir e quando avança (`Haptics.success` ao subir). **Save**: gira enquanto salva e mostra ✓ verde
+"Saved" por 2,2 s quando o vídeo chega às Fotos (depois de fechar "Ready to travel"). Reduzir Movimento: sem pulos, faíscas nem preenchimento.
 
 **Quick edit:** barra do sistema (`EditorTopBar` como `ToolbarContent`, `NavigationStack` próprio): voltar, "● IN EDIT · AUTOSAVED", **Done** em
 `.glassProminent` amarelo com texto `accInk` (`ink2` enquanto carrega). Some em tela cheia. `EditorLayout` usa a altura sob a barra (`EditorHeightClass`:
@@ -536,8 +646,16 @@ cobre o painel: as ações (`setScrollMode`, `setSpeed`, `togglePlay`, `rewind`)
 VoiceOver (`SelfieControlSheet`); a área de toque da folha é contêiner de acessibilidade (`ControlSheet`).
 
 **Logbook:** título grande (`.large`) com "Catch it now. Write it later."; segurar o botão grava e um toque começa/termina ("Tap the button again to
-finish"; onde nada pode ouvir, diz por quê). Enquanto ouve, a linha embaixo é só "Listening…" e as palavras entram no campo (cresce até 4 linhas; Return
-salva). Uma ideia salva rola para cima do teclado. Siri sem abrir o app (`AddToLogbookIntent`: "Add an idea to Cue" / "Save an idea in Cue", pergunta
+finish"; onde nada pode ouvir, diz por quê); embaixo dele, "Hold to talk · tap to start". Enquanto ouve, a linha embaixo é só "Listening…", os anéis
+seguem a voz e as palavras entram no campo. O campo tem a mesma altura vazio ou digitando (ícone centrado; cresce até 4 linhas só com ideia longa;
+cursor amarelo; Return salva). **Digitando** (pedido do dono, 20/10/2026): o microfone grande sai, o título vai para a barra e ao lado do campo fica
+um botão amarelo de 56 pt, como no Mensagens: microfone com o campo vazio, seta ↑ que salva no Logbook quando há palavras (o microfone ali parecia o
+botão de confirmar). As ideias ficam **por dia** (TODAY, YESTERDAY, o dia da semana, a data; `LogbookDays`), cada uma com "SPOKEN · 0:06 · 2 HR.
+AGO" ou "TYPED · 9:40 PM"; a recém-salva entra no topo com contorno amarelo por 1,4 s. Vibração: dois toques ao começar a ouvir
+(`HapticPatterns.listen`), um suave ao parar. **Movimento:** ao abrir, o círculo respira uma vez (1,08); sob o dedo afunda (0,92) e volta numa mola;
+ao começar a ouvir o microfone pula (1,25) e três ondas saem do círculo e somem, mais longe com a voz mais alta (`LogbookRipples`); digitando, o círculo
+encolhe em direção ao botão do lado do campo, que cresce de lá; microfone ↔ seta com um pulo (1,14) e um tick; ✦ Write acende o cartão em violeta e a estrela sai do próprio botão; apagar dá um toque
+firme e a lista fecha numa mola. Reduzir Movimento: sem ondas, pulos nem respiração. Uma ideia salva rola para cima do teclado. Siri sem abrir o app (`AddToLogbookIntent`: "Add an idea to Cue" / "Save an idea in Cue", pergunta
 "What's the idea?", responde "Saved in your Logbook."). Uma nota aberta por notificação vem ao centro com contorno `acc` de 1,5 pt.
 
 ## 23. Ferramentas de IA: o botão faz o que diz
@@ -576,7 +694,8 @@ encurtar 102 → 63 em 6 s, 3 ganchos 3 s, tradução 5 s, YouTube 102 → 563 p
 
 `cardDepth` (`DesignSystem/Components/CardDepth.swift`, tokens `Palette.Depth`): duas sombras (14 pt de desfoque e 8 de deslocamento; 2 pt e 1,5), **luz na
 borda de cima** (violeta `B4A7FF` 38%, some até 60% da altura) e borda fina violeta (`Palette.Depth.edge`, 0,5 pt; quem já tem borda passa `edge: nil`).
-Decoração fora do texto: nenhum par de contraste muda. A sombra só existe fora do cartão (o cartão translúcido de Settings deixa as estrelas passarem).
+Decoração fora do texto: nenhum par de contraste muda. A sombra só existe fora do cartão. **Todos os cartões são `surface` sólido** (Scripts, Takes,
+Profile, todas as páginas de Settings, Remote): o translúcido de Settings deixava o céu passar e destoava (pedido do dono, 20/10/2026).
 - **Um cartão feito de linhas** (`CardRowPosition`, `CardRowSlice`): cada linha desenha a sua fatia (só a primeira tem luz e cantos de cima, só a última
   sombra e cantos de baixo, `openEdges`). **A posição é passada à linha ao criá-la** (`CardRowPosition(index:count:)`; `SettingsEntryRows`;
   `cardRowBackground(position:)` / `cardRowSurface(_:position:)`): uma `List` avalia cada linha isolada e `listRowBackground` não vê o ambiente, então a
@@ -626,11 +745,18 @@ opaco e o player para. Grátis e Pro, sem interruptor.
 ## 27. Notificações, lembretes e introdução de ferramentas
 
 Sistema completo em `NOTIFICATIONS.md`. Na interface:
-- **Settings › Notifications** (`NotificationsSettingsView`, ícone `bell.badge.fill` em `Palette.danger`, valor "Off" ou "Reminders: n"): **On this iPhone**
-  (`NotificationPermissionSection`: **Allow notifications** com o estado On / Delivered quietly / Off in iOS Settings / Not asked yet; o toque pede uma vez ou
-  abre os Ajustes), **What Cue sends** (cinco categorias; ferramentas e novidades desligadas), **Days and time** (só com a rotina: chips de dia na ordem da
-  semana do iPhone, `acc`/`accInk` escolhido, `surface3`/`ink` não; `DatePicker`), **My reminders** (toque edita, deslizar remove; Set, Kept in Cue, Due),
-  **Automatic notifications** (quiet hours, pausa de 7/30 dias) e **Show titles in previews**. Em Debug, uma seção DEBUG.
+- **Settings › Notifications** (`NotificationsSettingsView`, redesenho do dono 22/10/2026: curta e direta, a versão B do canvas; valor "Off" ou
+  "Reminders: n"): no topo, **o interruptor do iOS** (`NotificationPermissionRow`): sino em contorno `accText` que balança de leve a cada ~5 s enquanto
+  está desligado; "Notifications are off · Cue can’t remind you yet." / "Notifications are off in iOS · Allow Cue in iOS Settings." / "Notifications
+  arrive quietly · Without a banner or a sound." / "Notifications are on · Cue only reaches out when it helps." (com um ✓ verde no sino). Ligar sem
+  nunca ter sido perguntado traz a pergunta do iOS, e o sim **liga tudo junto** (`NotificationService.allowEverything`): o sino toca, os interruptores
+  de baixo acendem um a um com um tique cada (`HapticPatterns.notificationsOn`, `NotificationsCascade`) e a rotina abre seus dias. Qualquer outra
+  mudança abre o Cue nos Ajustes do iOS; voltar de lá liberado depois de um não também liga tudo. **From Cue**: dois interruptores (`NotificationGroup`):
+  **Help me finish what I start** ("When a script or video is waiting.") e **Tools and news** ("Now and then, something new for you."); rodapé "At most
+  one a day, never at night. Your reminders always arrive." **Creation routine**: **Remind me to create**, que abre os dias (chips `acc`/`accInk` e
+  `surface3`/`ink`, chegando em cascata; tique e mola a cada toque; o último dia não sai) e **Time**. **Your reminders** (toque edita, deslizar remove; Set,
+  Kept in Cue, Due). Sem ícones nas linhas. Não são mais escolhas: os lembretes do criador (sempre chegam), quiet hours (21h–9h fixas), pausa e títulos nas
+  notificações (nunca: "your script"). Em Debug, uma seção DEBUG.
 - **Remind me…** (••• da página e menu de um vídeo): `ReminderSheet` (`fittedSheet`): Tonight (até 19:30), Tomorrow, **Pick a date and time** (`DatePicker` +
   **Set reminder**), nota de quiet hours, lembretes marcados com ✕. Toast "Reminder set · Tomorrow 10:00 AM" só quando o sistema aceitou.
 - **Introdução de uma ferramenta** (`FeatureIntroSheet`): ícone `aiText` em azulejo `surface2`, nome, benefício, o que ela usa ("Free. Nothing changes until
@@ -682,9 +808,16 @@ nada de história, resultado, número ou tendência inventados).
   estado de Scripts**, contorno amarelo em vidro discreto, 44 pt, "Find inspiration"; dobra com a linha. Sem largura, o chip da rede perde o "For" e depois os
   chips rolam com a lâmpada fixa. Sem dica de primeiro uso.
 - **A folha** (`Screens/Scripts/Inspiration/`; abre pela lâmpada, por + › Let Cue draft it e pela notificação de ideia): título, "Ideas to start from.",
-  chips de tema ("All my topics" e os salvos, escolhido em violeta; "Topics" abre o editor do My Cue Voice), órbita parada, **um cartão** violeta (TEMA ·
-  SUBTEMA · TIPO, título, YOUR ANGLE, OPENING LINE), **Another idea** logo abaixo (ou deslizar; explosão de estrelas de 0,35 s, fade de 0,2 s com Reduzir
-  Movimento), **Start with it** em amarelo embaixo, a linha que diz que a ideia vai para o campo, e "✦ Draft it now". Estados: esqueleto, "Finding more
+  chips de tema ("All my topics" e os salvos, escolhido em violeta; "Topics" abre o editor do My Cue Voice), **um cartão** violeta (TEMA ·
+  SUBTEMA · TIPO, título, YOUR POINT OF VIEW, OPENING LINE), e embaixo, fixos, **Another idea** (círculo de vidro ↻ de 54 pt à esquerda; não sobe
+  e desce com o tamanho da ideia; deslizar no cartão também troca) e **Start with it** em amarelo, a linha que diz que a ideia vai para o campo, e
+  "✦ Draft it now". **Arrastar:** o cartão segue o dedo para o lado, inclinando (1° a cada 24 pt); passou de 90 pt, um clique (`Haptics.rigid`) e,
+  soltando (ou jogando), ele voa para aquele lado e vem a próxima; antes disso volta numa mola. O ↻ gira a cada troca. **Vibração:** cinco ticks que
+  enfraquecem junto com os brilhos; Start with it = toque firme + um suave quando a ideia cai no campo; Draft it now = a decolagem do dock.
+  **Troca de ideia:** o cartão que sai vai para a esquerda e se desfaz em blur (−28 pt, 95%); 14 brilhos de quatro pontas acendem um
+  após o outro em volta da borda e se afastam ~7–18 pt (0,65 s; violeta, branco e um amarelo; `InspirationStarBurst`); o novo entra da direita (+36 pt,
+  97%) numa mola (`CueMotion.inspirationTurn`); as linhas sobem 8 pt saindo do blur, uma a cada 60 ms; uma faixa de luz cruza o cartão uma vez (0,8 s,
+  `inspirationSweep`). Reduzir Movimento: só fade de 0,2 s. Estados: esqueleto, "Finding more
   ideas…", falha com **Try again**, sem temas, sem Apple Intelligence (ideias de partida para escrever à mão).
 - **Do cartão ao roteiro:** *Start with it* põe o brief no campo em três linhas (título / "Angle: …" / "Open with: “…”", ≤ 200 caracteres, corta em fim de
   palavra), cursor no fim, mantém formato, rede e voz; se havia texto, toast com **Undo**. Só vai ao modelo a parte do brief que o texto ainda diz
@@ -700,7 +833,7 @@ nada de história, resultado, número ou tendência inventados).
 - O ↻ do campo e a lâmpada tiram do mesmo pool (o ↻ troca a sugestão sem abrir nada).
 - **Medido** (`InspirationDeviceTests`): lote de 6 briefs 8,6 s (6 títulos: 8,3 s); nenhum cortado, nenhuma abertura com afirmação; o roteiro abriu com a
   frase em 2 de 2. **Falta no aparelho:** a explosão de estrelas, o foco do teclado depois de Start with it, o VoiceOver do cartão, uma rodada maior.
-- Contraste: tokens `inspirationCard`, `…Glow`, `…Border`, `inspirationChipOn`, `inspirationOrbit` em
+- Contraste: tokens `inspirationCard`, `…Glow`, `…Border`, `inspirationChipOn` em
   `PaletteContrastTests.findInspirationReadsOnItsCardItsChipsAndItsWaysIn`; rótulos de seção em `ink2` (`inkHint` dava ~4,2 sob o brilho).
 
 ## 31. Background (Quick edit)

@@ -24,9 +24,12 @@ final class StubScriptWriter: ScriptWriting {
     let ideasDelay: Duration?
     /// Every batch of ideas fails (`-uiTestIdeasFail`): "Couldn't get new ideas · Try again".
     let ideasFail: Bool
+    /// A script well past a minute and a half (`-uiTestLongScript`): how the page writes, follows and settles a long one.
+    let writesLong: Bool
 
-    init(available: Bool, stalls: Bool = false, ideasDelay: Duration? = nil, ideasFail: Bool = false) {
+    init(available: Bool, stalls: Bool = false, ideasDelay: Duration? = nil, ideasFail: Bool = false, writesLong: Bool = false) {
         self.stalls = stalls
+        self.writesLong = writesLong
         self.ideasDelay = ideasDelay
         self.ideasFail = ideasFail
         availability = available
@@ -41,7 +44,7 @@ final class StubScriptWriter: ScriptWriting {
             guard availability.isAvailable else { throw ScriptAIError.modelUnavailable(availability.reason ?? "") }
             return GeneratedScript(
                 title: String(text.prefix(40)),
-                text: "[confident] Let's talk about this. [pause]\n\nHere's the short version.\n\nSave this for later. [look at camera]",
+                text: writesLong ? Self.longScript : "[confident] Let's talk about this. [pause]\n\nHere's the short version.\n\nSave this for later. [look at camera]",
                 usedLanguageModel: true,
                 needsFactCheck: request.isFactualTopic,
                 model: .privateCloud
@@ -53,6 +56,14 @@ final class StubScriptWriter: ScriptWriting {
             )
         }
     }
+
+    /// About 280 words in eight paragraphs, with cues: well past a minute and a half at the natural pace.
+    private static let longScript: String = {
+        let paragraph = "I tried waking up an hour earlier for thirty days, and the first week was honestly rough. [pause] "
+            + "My coffee got stronger, my patience got shorter, and my phone kept pulling me back into bed with one more scroll. "
+            + "Then something small changed the whole thing. [smile]"
+        return (1...8).map { "\($0). " + paragraph }.joined(separator: "\n\n")
+    }()
 
     /// Stalling, the words still come in, six every 0.4 s, and the script never ends: the star's percentage moves while it waits.
     func generate(_ request: ScriptRequest, reporting meter: WritingProgressMeter?) async throws -> GeneratedScript {

@@ -6,7 +6,8 @@
 import StoreKit
 import SwiftUI
 
-/// 9.1 · Profile, four blocks on the night sky: who this is, "Your universe", "My Cue Voice" and the plan. Everything else the
+/// 9.1 · Profile, on the night sky (owner's redesign, 21/10/2026, kept short): who this is (Edit in the card), "Your universe" live, "My Cue
+/// Voice" and the plan (those two as they were). Everything else the
 /// old Profile held lives one tap away: name, handle, sign in and defaults in the profile sheet (tap the first block), the
 /// fine-tuning of the voice under My Cue Voice (Edit voice), the plans in the paywall (tap the plan).
 struct ProfileView: View {
@@ -36,8 +37,7 @@ struct ProfileView: View {
         return ProfileUniverseSummary(
             total: videos.count, sharedThisYear: thisYear, year: year, lastYear: lastYear,
             lastYearCount: videos.filter { $0.isIn(year: lastYear) }.count,
-            topics: profile.profile.niches.count + profile.profile.customTopics.count,
-            toNextMilestone: milestones.nextMilestone.map { $0 - milestones.yearShares }
+            networks: ProfileUniverseSummary.networks(of: videos.filter { $0.isIn(year: year) }.map(\.platforms))
         )
     }
 
@@ -45,19 +45,13 @@ struct ProfileView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 0) {
                 ProfileIdentityRow(profile: profile.profile, onEdit: { showsEditProfile = true }, onMenu: { showsMenu = true })
-                    .onGeometryChange(for: CGRect.self) { $0.frame(in: .named(Self.space)) } action: { identityFrame = $0 }
-                    .opacity(showsMenu ? 0 : 1)
-                    .accessibilityIdentifier("profile.creatorCard")
+                .onGeometryChange(for: CGRect.self) { $0.frame(in: .named(Self.space)) } action: { identityFrame = $0 }
+                .opacity(showsMenu ? 0 : 1)
 
                 ProfileBlockLabel(text: "YOUR UNIVERSE")
                 NavigationLink { YourUniverseView() } label: { ProfileUniverseRow(summary: universeSummary) }
                     .buttonStyle(.plain)
                     .accessibilityIdentifier("profile.universeLink")
-                Text(universeSummary.footer)
-                    .font(.system(size: 12.5))
-                    .foregroundStyle(Palette.ink2)
-                    .padding(EdgeInsets(top: 8, leading: 16, bottom: 0, trailing: 12))
-                    .accessibilityIdentifier("profile.universeFooter")
 
                 ProfileBlockLabel(text: "MY CUE VOICE")
                 MyCueVoiceCard(setup: $voiceSetup, onPreview: { showsVoicePreview = true })
@@ -77,13 +71,6 @@ struct ProfileView: View {
         }
         .navigationTitle("Profile")
         .toolbarTitleDisplayMode(.inlineLarge)
-        .toolbar {
-            ToolbarItem(placement: .primaryAction) {
-                Button("Edit") { showsEditProfile = true }
-                    .foregroundStyle(Palette.ink)
-                    .accessibilityIdentifier("profile.editButton")
-            }
-        }
         .task {
             await store.loadProducts()
             trialDays = await store.freeTrialDays(for: .annual)

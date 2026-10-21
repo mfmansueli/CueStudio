@@ -18,7 +18,8 @@ struct CueSliderSpecTests {
     }
 
     fileprivate static let rows = [
-        Row(name: "speed", spec: .speed, expected: CueSliderSpec(80...220, step: 5, default: 150)),
+        Row(name: "speed", spec: .speed, expected: CueSliderSpec(30...300, step: 15, default: 150)),
+        Row(name: "textSize", spec: .textSize, expected: CueSliderSpec(12...56, step: 1, default: 36)),
         Row(name: "readingLine", spec: .readingLine, expected: CueSliderSpec(10...50, step: 1, default: 22)),
         Row(name: "margins", spec: .margins, expected: CueSliderSpec(8...40, step: 2, default: 20)),
         Row(name: "textPoints", spec: .textPoints, expected: CueSliderSpec(24...120, step: 2, default: 64)),
@@ -37,16 +38,15 @@ struct CueSliderSpecTests {
 
     @Test func steppedControlsCountPositionsFromZero() {
         // S/M/L/XL (Large), Off/3/5/10 s (3 s), Off/Soft/Full (Full), Off/Light/Strong (Light).
-        #expect(CueSliderSpec.textSize == .steps(4, default: 2))
         #expect(CueSliderSpec.captionSize == .steps(4, default: 2))
         #expect(CueSliderSpec.countdown == .steps(4, default: 1))
         #expect(CueSliderSpec.starrySky == .steps(3, default: 2))
         #expect(CueSliderSpec.cleanUpVoice == .steps(3, default: 1))
-        #expect(CueSliderSpec.textSize.range == 0...3 && CueSliderSpec.textSize.step == 1)
+        #expect(CueSliderSpec.captionSize.range == 0...3 && CueSliderSpec.captionSize.step == 1)
     }
 
     @Test func theDefaultsLandOnAStep() {
-        for spec in [CueSliderSpec.speed, .margins, .textPoints, .textGlow, .voice, .music, .clipSpeed, .filterIntensity] {
+        for spec in [CueSliderSpec.speed, .textSize, .margins, .textPoints, .textGlow, .voice, .music, .clipSpeed, .filterIntensity] {
             let math = OrbSliderMath(range: spec.range, step: spec.step, defaultValue: spec.defaultValue)
             #expect(math.snapped(spec.defaultValue) == spec.defaultValue, "\(spec)")
         }
@@ -55,6 +55,14 @@ struct CueSliderSpecTests {
     @Test func theNaturalPaceIsTheSpeedDefault() {
         #expect(PrompterSettings.wordsPerMinute(forSpeed: ReadTime.naturalSpeed) == CueSliderSpec.speed.defaultValue)
         #expect(PrompterSettings.speed(forWordsPerMinute: 150) == ReadTime.naturalSpeed)
+    }
+
+    /// The table's speed is the prompter's: its ends are the range's, and its step is one stop of `SpeedScale`.
+    @Test func theSpeedRowIsThePrompterScale() {
+        #expect(PrompterSettings.speed(forWordsPerMinute: CueSliderSpec.speed.range.lowerBound) == PrompterSettings.speedRange.lowerBound)
+        #expect(PrompterSettings.speed(forWordsPerMinute: CueSliderSpec.speed.range.upperBound) == PrompterSettings.speedRange.upperBound)
+        #expect(CueSliderSpec.speed.step == SpeedScale.wordsPerMinuteAtOneX / 10)
+        #expect(CueSliderSpec.textSize.range == PrompterSettings.sizeRange)
     }
 
     @Test func wordsAMinuteConvertToAStoredSpeedOnTheStep() {

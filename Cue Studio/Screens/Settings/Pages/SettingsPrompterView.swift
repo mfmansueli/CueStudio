@@ -5,9 +5,10 @@
 
 import SwiftUI
 
-/// Settings › Prompter: a preview that stays on top and, under it, how the text reads and looks, over the sky. The same page opens from
-/// Aa in the recorder, over the settings of that recording (`bindings`), as a sheet like the camera's: no preview there (the real text
-/// window is right behind the sheet) and the sheet's still background instead of the sky.
+/// Settings › Prompter: a preview that stays on top (the real text window, scaled down: `PrompterPreviewCard`) and, under it, how the
+/// text reads and looks, over the sky. The same page opens from Aa in the recorder, over the settings of that recording (`bindings`), as a
+/// sheet like the camera's: no preview there (the real text window is right behind the sheet) and the sheet's still background instead
+/// of the sky.
 struct SettingsPrompterView: View {
     let bindings: SettingsBindings
     /// The mode of the recording the page opened from: the "· Selfie" sections show with Selfie, "Studio" with Studio. Settings

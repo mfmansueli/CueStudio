@@ -8,14 +8,14 @@ import Testing
 
 @Suite("CreatorSetup")
 struct CreatorSetupTests {
-    /// The setup from the spec: Front, AirPods, 4K, 9:16, Large text.
+    /// The setup from the spec: Front, AirPods, 4K, 9:16, 36 pt text.
     static func usual() -> CreatorSetup {
         var setup = CreatorSetup()
         setup.lens = .front
         setup.microphone = .input(id: "airpods-pro", name: "AirPods Pro")
         setup.resolution = .uhd4K
         setup.aspect = .portrait
-        setup.textSize = PrompterTextSize.large.points
+        setup.textSize = 36
         setup.speed = 1.2
         return setup
     }
@@ -69,14 +69,18 @@ struct CreatorSetupTests {
         #expect(setup.label(for: .microphone) == "AirPods Pro")
         #expect(setup.label(for: .quality) == "4K")
         #expect(setup.label(for: .frameRate) == "30 fps")
-        #expect(setup.label(for: .textSize) == "Large · 36 pt")
+        #expect(setup.label(for: .textSize) == "36 pt")
         #expect(setup.summary(of: [.quality, .format]) == "9:16 · 4K")
         #expect(setup.captureSummary == "4K · 9:16")
     }
 
-    @Test func textSizePresetsMatchTheirPoints() {
-        #expect(PrompterTextSize(points: 30) == .medium)
-        #expect(PrompterTextSize(points: 28) == nil)
-        #expect(PrompterTextSize(points: 44) == .extraLarge)
+    /// The size and the speed read as their sliders write them: points, and multiples of the natural pace.
+    @Test func sizeAndSpeedReadLikeTheirSliders() {
+        var setup = CreatorSetup()
+        setup.textSize = 12
+        #expect(setup.label(for: .textSize) == "12 pt")
+        #expect(setup.label(for: .speed) == "1×")
+        setup.speed = SpeedScale.speed(forMultiple: 0.2)
+        #expect(setup.label(for: .speed) == SpeedScale.label(forMultiple: 0.2))
     }
 }

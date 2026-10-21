@@ -136,4 +136,38 @@ final class StarTransitionUITests: XCTestCase {
         expectation(for: gone, evaluatedWith: cancel)
         waitForExpectations(timeout: 10)
     }
+
+    /// Cancel brings Scripts back still: the dock and the tab bar come back once and stay, they don't bounce up and down (the owner saw
+    /// them jump after a Cancel, 20/10/2026).
+    func testAfterCancelTheDockAndTheTabBarStayStill() {
+        let app = CueApp.launch(seeded: true, extraArguments: ["-uiTestStarTransition", "-uiTestWriterStalls"])
+        let send = app.buttons["ideaCard.submit"]
+        XCTAssertTrue(send.waitForExistence(timeout: 15))
+        send.tap()
+        let cancel = app.buttons["transition.cancel"]
+        XCTAssertTrue(cancel.waitForExistence(timeout: 10), "No transition")
+        Thread.sleep(forTimeInterval: 1.5)
+        cancel.tap()
+        let dock = app.descendants(matching: .any)["scripts.promptCard"].firstMatch
+        let tabs = app.cueTabBar
+        var samples: [(dock: CGFloat, tabs: CGFloat)] = []
+        for _ in 0..<40 {
+            samples.append((dock.exists ? dock.frame.minY : -1, tabs.exists ? tabs.frame.minY : -1))
+            Thread.sleep(forTimeInterval: 0.1)
+        }
+        let trace = samples.map { "\(Int($0.dock))/\(Int($0.tabs))" }.joined(separator: " ")
+        print("CANCEL TRACE dock/tabs minY: \(trace)")
+        // They come back in one movement (at most one way, then still): never up, then down, then up.
+        XCTAssertLessThanOrEqual(Self.turns(samples.map(\.dock)), 1, "The dock bounced after Cancel: \(trace)")
+        XCTAssertLessThanOrEqual(Self.turns(samples.map(\.tabs)), 1, "The tab bar bounced after Cancel: \(trace)")
+        let settled = samples.dropFirst(12)
+        XCTAssertEqual(Set(settled.map(\.dock)).count, 1, "The dock kept moving after Cancel: \(trace)")
+        XCTAssertEqual(Set(settled.map(\.tabs)).count, 1, "The tab bar kept moving after Cancel: \(trace)")
+    }
+
+    /// How many times a series of positions changes direction (a move up then down is one turn).
+    private static func turns(_ values: [CGFloat]) -> Int {
+        let steps = zip(values, values.dropFirst()).map { $1 - $0 }.filter { abs($0) > 0.5 }
+        return zip(steps, steps.dropFirst()).filter { ($0 > 0) != ($1 > 0) }.count
+    }
 }

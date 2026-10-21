@@ -102,10 +102,12 @@ final class GenerateScriptUITests: XCTestCase {
         field.tap()
         field.typeText("Why I quit coffee for 30 days")
         app.buttons["ideaCard.submit"].tap()
-        // The stub answers at once, so by the time the page is up the writing is done and Stop is gone: the strip has Done in its
-        // place (the "Draft ready" toast is too short-lived to wait for; the view model's tests check it).
+        // The stub answers at once, so by the time the page is up the writing is done and Stop is gone: the strip has the ready switch,
+        // off, since the AI drafts (the "Draft ready" toast is too short-lived to wait for; the view model's tests check it).
         XCTAssertTrue(app.pageBackButton.waitForExistence(timeout: 10))
-        XCTAssertTrue(app.buttons["page.doneButton"].waitForExistence(timeout: 10))
+        let ready = app.pageReadyToggle
+        XCTAssertTrue(ready.waitForExistence(timeout: 10))
+        XCTAssertTrue(["Off", "0"].contains(ready.value as? String ?? ""), "the AI drafts: the switch starts off")
         XCTAssertFalse(app.buttons["page.stopButton"].exists)
     }
 
@@ -124,5 +126,34 @@ final class GenerateScriptUITests: XCTestCase {
 
     private func element(_ app: XCUIApplication, _ identifier: String) -> XCUIElement {
         app.descendants(matching: .any)[identifier].firstMatch
+    }
+
+    /// A long script (past a minute and a half) written at the real pace: pictures every 0.4 s while the words arrive and as the page
+    /// becomes the editor, to look at how it settles. Opt-in: `TEST_RUNNER_CUE_SCREENSHOT_DIR=<folder>`.
+    func testALongScriptWritesAndSettlesOnThePage() throws {
+        guard let folder = ProcessInfo.processInfo.environment["CUE_SCREENSHOT_DIR"] else {
+            throw XCTSkip("Set TEST_RUNNER_CUE_SCREENSHOT_DIR to look at a long script being written")
+        }
+        let directory = URL(fileURLWithPath: folder, isDirectory: true)
+        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+        let app = CueApp.launch(seeded: true, extraArguments: ["-uiTestLongScript", "-uiTestRealWriting"])
+        // As the owner had it: the cues hidden on the page (a setting for every script).
+        if ProcessInfo.processInfo.environment["CUE_CUES_HIDDEN"] != nil {
+            app.openScriptPage(titled: "Oat & Co. — sponsored read")
+            let cues = app.descendants(matching: .any)["page.cuesToggle"].firstMatch
+            XCTAssertTrue(cues.waitForExistence(timeout: 5))
+            cues.tap()
+            app.pageBackButton.tap()
+        }
+        let field = app.descendants(matching: .any)["ideaCard.field"].firstMatch
+        XCTAssertTrue(field.waitForExistence(timeout: 15))
+        field.tap()
+        field.typeText("Waking up an hour earlier for 30 days")
+        app.buttons["ideaCard.submit"].tap()
+        XCTAssertTrue(app.pageBackButton.waitForExistence(timeout: 15))
+        for index in 0..<45 {
+            try app.screenshot().pngRepresentation.write(to: directory.appending(path: String(format: "long-%02d.png", index)))
+            Thread.sleep(forTimeInterval: 0.25)
+        }
     }
 }

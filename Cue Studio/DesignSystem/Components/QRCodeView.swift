@@ -30,7 +30,8 @@ struct QRCodeView: View {
         .background(Color.white, in: RoundedRectangle(cornerRadius: Metrics.fieldRadius, style: .continuous))
     }
 
-    private static func makeImage(for text: String) -> UIImage? {
+    /// The code as an image, black on white, 10 pt a module: made once by what draws it many times (`RemoteHero`, every frame).
+    static func makeImage(for text: String) -> UIImage? {
         let filter = CIFilter.qrCodeGenerator()
         filter.message = Data(text.utf8)
         filter.correctionLevel = "M"

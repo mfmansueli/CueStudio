@@ -41,7 +41,7 @@ struct NotificationDiagnosticsSection: View {
             Text(verbatim: "DEBUG")
         }
         .foregroundStyle(Palette.ink)
-        .listRowBackground(Palette.card)
+        .listRowBackground(Palette.surface)
     }
 
     /// Debug words stay in English (they are not in the String Catalog).

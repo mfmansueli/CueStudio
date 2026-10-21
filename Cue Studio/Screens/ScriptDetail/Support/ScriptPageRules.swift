@@ -27,10 +27,4 @@ nonisolated enum ScriptPageRules {
         let empty = emptySections(text: text, type: type)
         return empty > 0 ? .confirmEmptySections(empty) : .finish
     }
-
-    /// Leaving with edits and no Done turns a script that wasn't recorded into a draft, with the toast "Saved as draft".
-    /// A recorded script stays recorded.
-    static func leavesAsDraft(state: ScriptState, wasEdited: Bool) -> Bool {
-        wasEdited && state != .recorded
-    }
 }

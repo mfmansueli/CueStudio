@@ -6,15 +6,14 @@
 import SwiftUI
 
 /// Home (v30 · 3.1, 3.2): the scripts on top, each at its stage on the way to a posted video, and the AI dock fixed at the bottom
-/// (`ScriptsDock`). The title, the Logbook and "+" are the system's navigation bar; the search is a field at the top of the list, always
-/// there, and the dock stays while searching. Tap opens, swipe for actions, hold to preview.
+/// (`ScriptsDock`). The title, the search's magnifier, the Logbook and "+" are the system's navigation bar; the magnifier opens the search field
+/// at the top of the list, and the dock stays while searching. Tap opens, swipe for actions, hold to preview.
 struct ScriptsView: View {
     @State private var viewModel: ScriptsViewModel
 
     @Environment(ScriptLibraryService.self) private var library
     @Environment(TakeLibraryService.self) private var takes
     @Environment(PresentationService.self) private var presentation
-    @Environment(PreferencesService.self) private var preferences
     @Environment(CreatorProfileService.self) private var profile
     @Environment(LanguageService.self) private var languages
     @Environment(TopicTaggingService.self) private var tagging
@@ -30,6 +29,10 @@ struct ScriptsView: View {
     @State private var pendingAction: (() -> Void)?
     /// The search field at the top of the list has the keyboard.
     @FocusState private var isSearchFocused: Bool
+    /// The magnifier opened the search field; it goes again once it has neither the keyboard nor words.
+    @State private var isSearchOpen = false
+    /// The field takes the keyboard when it appears (only right after the magnifier, not when a scroll brings it back).
+    @State private var focusesSearchOnAppear = false
     /// Whether the dock's first row is folded away by the list scrolling.
     @State private var isDockFolded = false
     /// Reads the scroll for the fold. It changes on every frame of a scroll without redrawing the screen; only `isDockFolded` does.
@@ -136,10 +139,39 @@ struct ScriptsView: View {
         withAnimation(reduceMotion ? nil : CueMotion.dockFold) { isDockFolded = folded }
     }
 
-    /// Logbook and "+" in the bar's glass.
+    /// The search field is in the list: opened by the magnifier, or still holding words.
+    private var showsSearch: Bool {
+        isSearchOpen || !viewModel.query.isEmpty
+    }
+
+    /// The magnifier: opens the search field at the top of the list with the keyboard (or gives an open one the keyboard back).
+    private func openSearch() {
+        if showsSearch {
+            isSearchFocused = true
+        } else {
+            focusesSearchOnAppear = true
+            withAnimation(reduceMotion ? nil : .smooth(duration: 0.25)) { isSearchOpen = true }
+        }
+    }
+
+    /// The field goes once it has neither the keyboard nor words (the keyboard dismissed, its ✕, or "Clear search").
+    private func closeSearchIfDone() {
+        guard isSearchOpen, !isSearchFocused, viewModel.query.isEmpty else { return }
+        withAnimation(reduceMotion ? nil : .smooth(duration: 0.25)) { isSearchOpen = false }
+    }
+
+    /// The search's magnifier, Logbook and "+" in the bar's glass.
     @ToolbarContentBuilder
     private var toolbarItems: some ToolbarContent {
         ToolbarItemGroup(placement: .topBarTrailing) {
+            // Only with scripts to search (the empty Scripts has no list).
+            if emptyState == .list {
+                Button(action: openSearch) {
+                    Image(systemName: "magnifyingglass")
+                }
+                .accessibilityLabel(Text("Search"))
+                .accessibilityIdentifier("scripts.searchButton")
+            }
             // Always there, the first visit included (the owner's call, 6/10/2026: the empty Scripts has its Logbook too).
             Button { presentation.present(.logbook) } label: {
                 CueIconView(.logbook, size: 20)
@@ -203,85 +235,106 @@ struct ScriptsView: View {
     private var scriptList: some View {
         @Bindable var viewModel = viewModel
         let groups = viewModel.groups(takeCount: { takes.count(for: $0) })
-        return List {
-            // The count under the large title ("8 SCRIPTS · 3 READY"), the search, then the platform filters: free blocks.
-            blockRow(top: 0) {
-                HUDLine(values: viewModel.summaryValues(takeCount: { takes.count(for: $0) }))
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(.horizontal, 4)
-                    .accessibilityIdentifier("scripts.summary")
-            }
-            blockRow(top: 14) {
-                SearchField(text: $viewModel.query, prompt: "Search scripts", isFocused: $isSearchFocused)
-                    .accessibilityIdentifier("scripts.search")
-            }
-            blockRow(top: 16, horizontal: 0) {
-                // Platform first: it is how creators think about their day.
-                PlatformFilterChips(
-                    filters: viewModel.filters, selection: $viewModel.filter, count: { viewModel.count(for: $0) }
-                )
-            }
-            if let empty = viewModel.emptyResult {
-                Section { emptyResultView(empty) }
-            } else {
-                ForEach(Array(groups.enumerated()), id: \.element.id) { index, group in
-                    Section {
-                        groupHeader(group, showsSelect: index == 0)
-                            .listRowInsets(EdgeInsets(top: 22, leading: Metrics.gutter, bottom: 0, trailing: Metrics.gutter))
-                            .listRowBackground(Color.clear)
-                            .listRowSeparator(.hidden)
-                        ForEach(Array(group.scripts.enumerated()), id: \.element.id) { position, script in
-                            row(for: script, state: group.state)
-                                .listRowInsets(EdgeInsets(top: 0, leading: Metrics.gutter, bottom: 0, trailing: Metrics.gutter))
-                                .listRowBackground(
-                                    ScriptRowBackground(position: CardRowPosition(index: position, count: group.scripts.count))
-                                        .padding(.horizontal, Metrics.gutter)
-                                )
-                                .listRowSeparator(.hidden)
-                        }
+        return ScrollViewReader { proxy in
+            List {
+                // The count under the large title ("8 SCRIPTS · 3 READY"), the search (once the magnifier opened it), then the platform filters:
+                // free blocks.
+                blockRow(top: 0) {
+                    HUDLine(values: viewModel.summaryValues(takeCount: { takes.count(for: $0) }))
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(.horizontal, 4)
+                        .accessibilityIdentifier("scripts.summary")
+                }
+                .id(Self.listTop)
+                if showsSearch {
+                    blockRow(top: 14) {
+                        SearchField(text: $viewModel.query, prompt: "Search scripts", isFocused: $isSearchFocused)
+                            .accessibilityIdentifier("scripts.search")
+                            .onAppear {
+                                guard focusesSearchOnAppear else { return }
+                                focusesSearchOnAppear = false
+                                isSearchFocused = true
+                            }
                     }
-                    .listSectionSeparator(.hidden)
+                    .transition(.opacity)
                 }
-                if viewModel.filter == .all, !viewModel.isSelecting, viewModel.query.isEmpty {
-                    // The ideas waiting in the Logbook, at the end of the list.
-                    blockRow(top: 22) { ScriptsLogbookSection() }
+                blockRow(top: 16, horizontal: 0) {
+                    // Platform first: it is how creators think about their day.
+                    PlatformFilterChips(
+                        filters: viewModel.filters, selection: $viewModel.filter, count: { viewModel.count(for: $0) }
+                    )
+                }
+                if let empty = viewModel.emptyResult {
+                    Section { emptyResultView(empty) }
+                } else {
+                    ForEach(Array(groups.enumerated()), id: \.element.id) { index, group in
+                        Section {
+                            groupHeader(group, showsSelect: index == 0)
+                                .listRowInsets(EdgeInsets(top: 22, leading: Metrics.gutter, bottom: 0, trailing: Metrics.gutter))
+                                .listRowBackground(Color.clear)
+                                .listRowSeparator(.hidden)
+                            ForEach(Array(group.scripts.enumerated()), id: \.element.id) { position, script in
+                                row(for: script, state: group.state)
+                                    .listRowInsets(EdgeInsets(top: 0, leading: Metrics.gutter, bottom: 0, trailing: Metrics.gutter))
+                                    .listRowBackground(
+                                        ScriptRowBackground(position: CardRowPosition(index: position, count: group.scripts.count))
+                                            .padding(.horizontal, Metrics.gutter)
+                                    )
+                                    .listRowSeparator(.hidden)
+                            }
+                        }
+                        .listSectionSeparator(.hidden)
+                    }
+                    if viewModel.filter == .all, !viewModel.isSelecting, viewModel.query.isEmpty {
+                        // The ideas waiting in the Logbook, at the end of the list.
+                        blockRow(top: 22) { ScriptsLogbookSection() }
+                    }
                 }
             }
-        }
-        .listStyle(.plain)
-        .listSectionSpacing(0)
-        .environment(\.defaultMinListRowHeight, 0)
-        .scrollContentBackground(.hidden)
-        .scrollDismissesKeyboard(.immediately)
-        .onScrollGeometryChange(for: DockFold.Position.self) { geometry in
-            // From the top of the list (0) to the farthest it scrolls, whatever the bars above and the dock below cover.
-            DockFold.Position(
-                offset: geometry.contentOffset.y + geometry.contentInsets.top,
-                end: geometry.contentSize.height + geometry.contentInsets.top + geometry.contentInsets.bottom - geometry.containerSize.height
-            )
-        } action: { _, position in
-            foldDock(dockFold.update(position, isEditing: isDockEditing))
-        }
-        .onScrollPhaseChange { _, phase in dockFold.phase = "\(phase)" }
-        .onChange(of: isDockEditing) { _, editing in
-            if editing { foldDock(dockFold.unfold()) }
-        }
-        .safeAreaInset(edge: .bottom) {
-            if viewModel.isSelecting {
-                SelectionBar(
-                    count: viewModel.selection.count,
-                    folders: library.folders,
-                    onMove: { viewModel.moveSelection(to: $0) },
-                    onNewFolder: { viewModel.startNewFolder(moving: viewModel.selection) },
-                    onDuplicate: viewModel.duplicateSelection,
-                    onDelete: viewModel.deleteSelection
+            .listStyle(.plain)
+            .listSectionSpacing(0)
+            .environment(\.defaultMinListRowHeight, 0)
+            .scrollContentBackground(.hidden)
+            .scrollDismissesKeyboard(.immediately)
+            .onScrollGeometryChange(for: DockFold.Position.self) { geometry in
+                // From the top of the list (0) to the farthest it scrolls, whatever the bars above and the dock below cover.
+                DockFold.Position(
+                    offset: geometry.contentOffset.y + geometry.contentInsets.top,
+                    end: geometry.contentSize.height + geometry.contentInsets.top + geometry.contentInsets.bottom - geometry.containerSize.height
                 )
-                .transition(.move(edge: .bottom).combined(with: .opacity))
+            } action: { _, position in
+                foldDock(dockFold.update(position, isEditing: isDockEditing))
             }
+            .onScrollPhaseChange { _, phase in dockFold.phase = "\(phase)" }
+            .onChange(of: isDockEditing) { _, editing in
+                if editing { foldDock(dockFold.unfold()) }
+            }
+            .safeAreaInset(edge: .bottom) {
+                if viewModel.isSelecting {
+                    SelectionBar(
+                        count: viewModel.selection.count,
+                        folders: library.folders,
+                        onMove: { viewModel.moveSelection(to: $0) },
+                        onNewFolder: { viewModel.startNewFolder(moving: viewModel.selection) },
+                        onDuplicate: viewModel.duplicateSelection,
+                        onDelete: viewModel.deleteSelection
+                    )
+                    .transition(.move(edge: .bottom).combined(with: .opacity))
+                }
+            }
+            .hidesCueTabBar(viewModel.isSelecting)
+            .animation(.smooth(duration: 0.25), value: viewModel.isSelecting)
+            // The magnifier brings the field into sight from anywhere in the list.
+            .onChange(of: isSearchOpen) { _, open in
+                if open { withAnimation(reduceMotion ? nil : .smooth(duration: 0.25)) { proxy.scrollTo(Self.listTop, anchor: .top) } }
+            }
+            .onChange(of: isSearchFocused) { closeSearchIfDone() }
+            .onChange(of: viewModel.query) { closeSearchIfDone() }
         }
-        .hidesCueTabBar(viewModel.isSelecting)
-        .animation(.smooth(duration: 0.25), value: viewModel.isSelecting)
     }
+
+    /// The list's first row, where the magnifier scrolls to.
+    private static let listTop = "scripts.top"
 
     /// A free block of the list (no card behind it, no separator): the header, the idea card, the filters.
     private func blockRow<Content: View>(top: CGFloat, horizontal: CGFloat = Metrics.gutter, @ViewBuilder content: () -> Content) -> some View {
@@ -452,7 +505,7 @@ struct ScriptsView: View {
     }
 
     private func readSeconds(_ script: Script) -> TimeInterval {
-        ReadTime.seconds(for: script.text, speed: preferences.prompter.speed)
+        ReadTime.seconds(for: script.text)
     }
 
     private func line(of script: Script, state: ScriptState) -> ScriptRowLine {

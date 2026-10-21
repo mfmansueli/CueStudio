@@ -19,6 +19,12 @@ extension Palette {
         static let dockAuroraViolet = Color(hex: 0x9D8CFF, opacity: 0.36)
         static let dockAuroraIndigo = Color(hex: 0x5E4EE0, opacity: 0.40)
         static let dockRim = Color(hex: 0xC4B8FF, opacity: 0.5)
+        /// Apple Intelligence's light around the dock while it listens, and when an idea is sent (`AIGlow`):
+        /// the app's violets, a rose, the yellow of the star and a cold blue, round the rim and back to the start. Decorative: a thin rim and
+        /// a halo that fades within a few points of it.
+        static let dockGlow: [Color] = [
+            Color(hex: 0xB4A7FF), Color(hex: 0x7B6CFF), Color(hex: 0xFF8FD0), Color(hex: 0xFFD60A), Color(hex: 0x8FD3FF), Color(hex: 0xB4A7FF),
+        ]
 
         /// The My Cue Voice tip's ✦ and the circle behind it (09 §3).
         static let tipGlyph = Color(hex: 0xC4B8FF)
@@ -28,6 +34,10 @@ extension Palette {
         static let transitionCover = Color(hex: 0x07080E)
         static let transitionHalo = Color(hex: 0x9D8CFF, opacity: 0.34)
         static let transitionPhrase = Color(hex: 0xC4B8FF)
+        /// The faint full circle under the progress orbit round the star (decorative).
+        static let transitionOrbitTrack = Color(hex: 0xEBEBF5, opacity: 0.1)
+        /// The light that crosses the page once as the star opens it (added over it, `plusLighter`; decorative, gone in 0.8 s).
+        static let transitionSweep = Color(hex: 0xCFC6FF, opacity: 0.12)
         /// The idea and Cancel under the star: a soft white (`PaletteContrastTests` measures it on the cover over a white screen).
         static let transitionInk = Color(normal: Color(hex: 0xEBEBF5, opacity: 0.86), increasedContrast: Color(hex: 0xEBEBF5))
         static let dockField = Color(hex: 0x05060C, opacity: 0.45)
@@ -50,8 +60,8 @@ extension Palette {
         static let inspirationCardGlow = Color(hex: 0x9D8CFF, opacity: 0.16)
         static let inspirationCardBorder = Color(hex: 0xB4A7FF, opacity: 0.34)
         static let inspirationChipOn = Color(hex: 0x6A5AE0)
-        /// The decorative orbit beside the card.
-        static let inspirationOrbit = Color(hex: 0xB4A7FF, opacity: 0.28)
+        /// The light that crosses a new idea's card once (added over it, `plusLighter`; decorative, gone in 0.8 s).
+        static let inspirationSweep = Color(hex: 0xCFC6FF, opacity: 0.16)
 
         // The empty-state mark: a ring, a violet core and a star that orbits it.
         static let emptyRing = Color(hex: 0xB4A7FF, opacity: 0.22)

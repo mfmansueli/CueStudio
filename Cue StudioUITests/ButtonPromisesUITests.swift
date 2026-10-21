@@ -113,7 +113,7 @@ final class ButtonPromisesUITests: XCTestCase {
 
     // MARK: - The tools of "Improve script"
 
-    /// The page's own "Improve" chip: the same sheet as the menu's "Improve with Cue", without a system menu in the way.
+    /// The page's own "Improve" chip (the only way into Improve: the menu doesn't repeat it).
     private func openImprove(_ app: XCUIApplication) {
         let chip = app.buttons["page.improveButton"]
         XCTAssertTrue(chip.waitForExistence(timeout: 5), "The page has no Improve button")
@@ -210,6 +210,9 @@ final class ButtonPromisesUITests: XCTestCase {
         let app = CueApp.launch(seeded: true)
         app.buttons["scripts.newButton"].tap()
         app.buttons["newScript.write"].tap()
+        // A blank script opens with the keyboard on its title: the bar has the ✓ that hides it, and the menu comes back once it is down.
+        let hideKeyboard = app.buttons["page.hideKeyboard"]
+        if hideKeyboard.waitForExistence(timeout: 5) { hideKeyboard.tap() }
         XCTAssertTrue(app.buttons["page.menuButton"].waitForExistence(timeout: 5))
         openImprove(app)
         scrollSheet(app, to: app.buttons["improve.tool.moreEnergy"])

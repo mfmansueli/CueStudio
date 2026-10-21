@@ -50,7 +50,7 @@ struct ValueSlider: View {
 #if DEBUG
 #Preview {
     @Previewable @State var size = 28.0
-    ValueSlider(title: "Text size", valueText: "\(Int(size))", value: $size, range: 16...56)
+    ValueSlider(title: "Text size", valueText: "\(Int(size)) pt", value: $size, range: PrompterSettings.sizeRange)
         .padding()
         .background(Palette.surface2)
 }

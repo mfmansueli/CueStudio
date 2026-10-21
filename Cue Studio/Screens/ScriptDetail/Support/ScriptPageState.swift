@@ -22,11 +22,10 @@ struct ScriptPageState {
     var isEdited = false
     /// Done was tapped this visit.
     var isDone = false
-    /// "{n} sections are still empty": Done anyway / Keep writing.
+    /// "{n} sections are still empty": Mark ready anyway / Keep writing.
     var emptySectionsToConfirm: Int?
     /// Asked for the text to take the keyboard (a draft opened with "Continue").
     var focusesText = false
-    var dismissedTips: Set<String> = []
     /// The "A bit long for TikTok" question was asked once for this page.
     var askedAboutLength = false
     var showsLengthNudge = false

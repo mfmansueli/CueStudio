@@ -97,9 +97,6 @@ enum Metrics {
     /// The AI bar over a selection.
     static let selectionBarHeight: CGFloat = 40
     static let selectionBarRadius: CGFloat = 20
-    /// The state strip of the script page.
-    static let stripHeight: CGFloat = 44
-    static let stripRadius: CGFloat = 16
     /// The state chip.
     static let stateChipHeight: CGFloat = 22
 

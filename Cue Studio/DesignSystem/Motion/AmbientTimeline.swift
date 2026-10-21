@@ -23,7 +23,9 @@ struct AmbientTimeline<Content: View>: View {
     @Environment(\.scenePhase) private var scenePhase
     @State private var isOnScreen = false
     @State private var isScrollVisible = true
-    @State private var clock = MotionClock()
+    @State private var hasBeenScrollVisible = false
+    /// By reference: each frame reads the clock as it is, not the copy its closure was made with (`MotionClockReference`).
+    @State private var clock = MotionClockReference()
 
     private var isStilled: Bool { stillsWithReduceMotion && reduceMotion }
 
@@ -33,14 +35,19 @@ struct AmbientTimeline<Content: View>: View {
 
     var body: some View {
         TimelineView(.animation(minimumInterval: interval, paused: !isRunning)) { context in
-            content(AmbientTime(seconds: isStilled ? 0 : clock.elapsed(at: context.date), date: context.date, isStill: !isRunning))
+            content(AmbientTime(seconds: isStilled ? 0 : clock.clock.elapsed(at: context.date), date: context.date, isStill: !isRunning))
         }
         .onAppear { isOnScreen = true }
         .onDisappear {
             isOnScreen = false
-            clock.setRunning(false, at: .now)
+            clock.clock.setRunning(false, at: .now)
         }
-        .onScrollVisibilityChange(threshold: 0.01) { isScrollVisible = $0 }
-        .onChange(of: isRunning, initial: true) { _, running in clock.setRunning(running, at: .now) }
+        // The first report can come before the scroll view is laid out, saying "not visible" for a loop that is on screen, and nothing
+        // reports again until something scrolls. So only a loop that has been seen is stopped by scrolling out of sight.
+        .onScrollVisibilityChange(threshold: 0.01) { visible in
+            if visible { hasBeenScrollVisible = true }
+            isScrollVisible = visible || !hasBeenScrollVisible
+        }
+        .onChange(of: isRunning, initial: true) { _, running in clock.clock.setRunning(running, at: .now) }
     }
 }

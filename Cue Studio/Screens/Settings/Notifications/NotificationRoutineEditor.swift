@@ -5,12 +5,14 @@
 
 import SwiftUI
 
-/// "My creation routine": the days (a chip for each, in the iPhone's week order) and the time. A time inside the quiet hours is kept (the
-/// creator chose it) and said.
+/// "Remind me to create", opened under its switch: the days (a chip for each, in the iPhone's week order) and the time. The chips arrive one
+/// after another when the routine is switched on, and each answers its tap with a tick and a small spring; the last day can't be taken away.
 struct NotificationRoutineEditor: View {
     let routine: CreationRoutine
-    let isInQuietHours: Bool
     let onChange: (CreationRoutine) -> Void
+
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @State private var arrived = false
 
     private var calendar: Calendar { .current }
 
@@ -30,39 +32,54 @@ struct NotificationRoutineEditor: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
+        VStack(alignment: .leading, spacing: 8) {
             HStack(spacing: 6) {
-                ForEach(weekdays, id: \.self) { weekday in
-                    let isOn = routine.weekdays.contains(weekday)
-                    Button {
-                        var days = routine.weekdays
-                        if isOn { days.remove(weekday) } else { days.insert(weekday) }
-                        guard !days.isEmpty else { return }
-                        onChange(CreationRoutine(weekdays: days, hour: routine.hour, minute: routine.minute))
-                    } label: {
-                        Text(calendar.veryShortStandaloneWeekdaySymbols[weekday - 1])
-                            .font(.subheadline.weight(.semibold))
-                            .frame(maxWidth: .infinity, minHeight: Metrics.hitTarget)
-                            .foregroundStyle(isOn ? Palette.accInk : Palette.ink)
-                            .background(isOn ? Palette.acc : Palette.surface3, in: Circle())
-                    }
-                    .buttonStyle(.plain)
-                    .accessibilityLabel(Text(calendar.standaloneWeekdaySymbols[weekday - 1]))
-                    .accessibilityAddTraits(isOn ? .isSelected : [])
-                    .accessibilityIdentifier("notifications.routine.day.\(weekday)")
+                ForEach(Array(weekdays.enumerated()), id: \.element) { index, weekday in
+                    day(weekday)
+                        .scaleEffect(arrived ? 1 : 0.5)
+                        .opacity(arrived ? 1 : 0)
+                        .animation(.spring(response: 0.42, dampingFraction: 0.68).delay(Double(index) * 0.035), value: arrived)
                 }
             }
+            Rectangle().fill(Palette.separator).frame(height: 0.5).padding(.trailing, -16)
             DatePicker("Time", selection: time, displayedComponents: .hourAndMinute)
                 .foregroundStyle(Palette.ink)
                 .tint(Palette.accText)
+                .frame(minHeight: Metrics.hitTarget)
                 .accessibilityIdentifier("notifications.routine.time")
-            if isInQuietHours {
-                Text("This is during your quiet hours. Your routine still rings, since you chose this time.")
-                    .font(.footnote)
-                    .foregroundStyle(Palette.ink2)
-                    .fixedSize(horizontal: false, vertical: true)
-            }
         }
-        .padding(.vertical, 8)
+        .padding(.horizontal, 16)
+        .padding(.top, 2)
+        .padding(.bottom, 4)
+        .onAppear {
+            if reduceMotion { arrived = true } else { Task { @MainActor in arrived = true } }
+        }
+    }
+
+    private func day(_ weekday: Int) -> some View {
+        let isOn = routine.weekdays.contains(weekday)
+        return Button {
+            var days = routine.weekdays
+            if isOn { days.remove(weekday) } else { days.insert(weekday) }
+            guard !days.isEmpty else {
+                Haptics.rigid()
+                return
+            }
+            Haptics.selection()
+            withAnimation(.spring(response: 0.3, dampingFraction: 0.62)) {
+                onChange(CreationRoutine(weekdays: days, hour: routine.hour, minute: routine.minute))
+            }
+        } label: {
+            Text(calendar.veryShortStandaloneWeekdaySymbols[weekday - 1])
+                .font(.subheadline.weight(.semibold))
+                .frame(maxWidth: .infinity, minHeight: Metrics.hitTarget)
+                .foregroundStyle(isOn ? Palette.accInk : Palette.ink)
+                .background(isOn ? Palette.acc : Palette.surface3, in: Circle())
+                .scaleEffect(isOn ? 1 : 0.92)
+        }
+        .buttonStyle(.cuePress)
+        .accessibilityLabel(Text(calendar.standaloneWeekdaySymbols[weekday - 1]))
+        .accessibilityAddTraits(isOn ? .isSelected : [])
+        .accessibilityIdentifier("notifications.routine.day.\(weekday)")
     }
 }

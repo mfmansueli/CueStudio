@@ -130,10 +130,11 @@ final class PrompterUITests: XCTestCase {
         app.buttons["prompter.displayButton"].tap()
         let position = app.sliders["settings.readingLinePosition"]
         XCTAssertTrue(element(app, "settings.followVoice").waitForExistence(timeout: 5))
-        // The list is under the sheet's handle: drag from its lower half, where the rows are.
+        // The list is under the sheet's handle: drag from its lower half, where the rows are, along the left edge (the sliders' thumbs
+        // in the middle would take the drag).
         for _ in 0..<6 where !(position.exists && position.isHittable) {
-            let from = app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.85))
-            from.press(forDuration: 0.1, thenDragTo: app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.55)))
+            let from = app.coordinate(withNormalizedOffset: CGVector(dx: 0.05, dy: 0.85))
+            from.press(forDuration: 0.1, thenDragTo: app.coordinate(withNormalizedOffset: CGVector(dx: 0.05, dy: 0.55)))
         }
         XCTAssertTrue(position.waitForExistence(timeout: 5))
         position.adjust(toNormalizedSliderPosition: 0.9)
@@ -314,6 +315,12 @@ final class PrompterUITests: XCTestCase {
         let before = speed.value as? String
         speed.adjust(toNormalizedSliderPosition: 0.8)
         XCTAssertNotEqual(speed.value as? String, before)
+        // The same ends as Settings › Prompter: 0.2× to 2×.
+        speed.adjust(toNormalizedSliderPosition: 1)
+        XCTAssertEqual(speed.value as? String, "2×")
+        speed.adjust(toNormalizedSliderPosition: 0)
+        // The region decides the separator ("0.2×", "0,2×").
+        XCTAssertTrue(["0.2×", "0,2×"].contains(speed.value as? String ?? ""), "\(String(describing: speed.value))")
         app.buttons["prompter.closeButton"].tap()
     }
 

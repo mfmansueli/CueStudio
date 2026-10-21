@@ -21,16 +21,14 @@ struct StudioAdjustSlider: View {
         }
     }
 
-    /// Small · Medium · Large · Extra large, as in Settings (Studio reads them 1.35× bigger).
+    /// The text size in Selfie points, 12 to 56 in whole points, written as Settings › Prompter writes it (Studio draws it 1.35× bigger).
     private var sizeSlider: some View {
-        let sizes = PrompterTextSize.allCases
-        let current = sizes.indices.min { abs(sizes[$0].points - session.prompter.size) < abs(sizes[$1].points - session.prompter.size) } ?? 2
         let spec = CueSliderSpec.textSize
         return LabeledSlider(
-            label: String(localized: "Size"), valueText: sizes[current].label,
+            label: String(localized: "Size"), valueText: String(localized: "\(Int(session.prompter.size.rounded())) pt"),
             value: Binding(
-                get: { Double(current) },
-                set: { session.prompter.size = sizes[max(0, min(sizes.count - 1, Int($0.rounded())))].points }
+                get: { session.prompter.size },
+                set: { session.prompter.size = min(spec.range.upperBound, max(spec.range.lowerBound, $0.rounded())) }
             ),
             range: spec.range, step: spec.step,
             accessibilityIdentifier: "studio.slider.size"

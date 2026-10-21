@@ -34,9 +34,10 @@ struct PrompterEntryRow: View {
         case .aiCoach:
             SettingsListToggle(title: entry.title, detail: entry.detail, isOn: settings.showsCues)
         case .textSize:
-            SettingsSegmentedRow(
-                title: entry.title, selection: textSize, options: PrompterTextSize.allCases, label: \.shortLabel,
-                identifier: "settings.textSizePicker"
+            SettingsSliderRow(
+                title: entry.title, valueText: String(localized: "\(Int(settings.wrappedValue.size.rounded())) pt"), value: settings.size,
+                range: PrompterSettings.sizeRange, step: 1, minLabel: Int(PrompterSettings.sizeRange.lowerBound).formatted(.number.locale(.interface)),
+                maxLabel: String(localized: "\(Int(PrompterSettings.sizeRange.upperBound)) pt"), identifier: "settings.textSizeSlider"
             )
         case .font:
             NavigationLink(value: SettingsRoute.font) {
@@ -139,7 +140,7 @@ struct PrompterEntryRow: View {
         )
     }
 
-    /// The stop of `SpeedScale` the speed is nearest to (0.5× … 5×), a light tick at each one; stored as a speed.
+    /// The stop of `SpeedScale` the speed is nearest to (0.2× … 2×, every 0.1×), a light tick at each one; stored as a speed.
     private var speed: Binding<Double> {
         Binding(
             get: { Double(SpeedScale.nearestStop(toSpeed: settings.wrappedValue.speed)) },
@@ -149,13 +150,6 @@ struct PrompterEntryRow: View {
                 Haptics.selection()
                 settings.wrappedValue.speed = SpeedScale.speed(forMultiple: SpeedScale.stops[index])
             }
-        )
-    }
-
-    private var textSize: Binding<PrompterTextSize> {
-        Binding(
-            get: { PrompterTextSize.nearest(to: settings.wrappedValue.size) },
-            set: { settings.wrappedValue.size = $0.points }
         )
     }
 

@@ -14,6 +14,8 @@ struct PrompterView: View {
     @State private var safeAreaBottom: CGFloat = 0
     /// The Takes tab's Share or Edit, taken once by the first review that opens.
     @State private var launchActionTaken = false
+    /// The review on screen was reached by a swipe from another take.
+    @State private var arrivedFromNeighbor = false
     private let services: AppServices
 
     @Environment(PresentationService.self) private var presentation
@@ -54,8 +56,12 @@ struct PrompterView: View {
                     services: services,
                     onRetake: { Task { await viewModel.retake() } },
                     onBack: leaveReview,
-                    onSelect: { viewModel.reviewingTake = $0 },
+                    onSelect: { next in
+                        arrivedFromNeighbor = true
+                        viewModel.reviewingTake = next
+                    },
                     onDeleted: { next in
+                        arrivedFromNeighbor = false
                         if let next {
                             viewModel.reviewingTake = next
                         } else {
@@ -67,7 +73,8 @@ struct PrompterView: View {
                         presentation.openScript(id)
                     },
                     launchAction: launchActionTaken ? nil : (viewModel.reviewStartsWithPick ? .pickBest : presentation.prompter?.reviewAction),
-                    onLaunchActionDone: { launchActionTaken = true }
+                    onLaunchActionDone: { launchActionTaken = true },
+                    arrivedFromNeighbor: arrivedFromNeighbor
                 )
                 .id(take.id)
                 .transition(.opacity)
@@ -157,7 +164,7 @@ struct PrompterView: View {
             StartRecordingSheet(
                 mode: .attach,
                 recent: Array(library.scripts.prefix(StartRecordingSheet.recentLimit)),
-                readSeconds: { ReadTime.seconds(for: $0.text, speed: viewModel.session.prompter.speed) },
+                readSeconds: { ReadTime.seconds(for: $0.text) },
                 onPick: { viewModel.attach($0) },
                 onNewScript: { viewModel.sheet = .newScript }
             )
@@ -188,6 +195,7 @@ struct PrompterView: View {
     /// Back from a take: to the Takes tab when the review was opened from there, otherwise to the
     /// camera for another take.
     private func leaveReview() {
+        arrivedFromNeighbor = false
         if viewModel.openedOnReview {
             presentation.closePrompter()
         } else {

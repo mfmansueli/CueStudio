@@ -5,26 +5,31 @@
 
 import SwiftUI
 
-/// The state strip (v29 · 4.1): the state as a chip (READY, DRAFT, RECORDED), the format and the cues in mono, "✦ Shape" when
-/// there are none, and the next step: Done (plain text) for a script that can be finished. The Record button is the page's
-/// own, at the bottom: one per screen. While the AI writes the strip is already there, with Stop where the next step will be.
+/// The state strip under the title: the "Ready to record" switch (`ReadyToggle`; a recorded script shows RECORDED instead), then what
+/// the script is in a quiet line ("Draft · List · 4 cues"), and "✦ Shape" when there are no cues. Light, with no box of its own, so it
+/// reads as part of the page. The Record button is the page's own, at the bottom: one per screen. While the AI writes the strip is
+/// already there, with Stop in place of Shape.
 struct ScriptStateStrip: View {
     let strip: ScriptStrip
+    /// The page has words: an empty one has nothing to make ready.
+    var canBeReady = true
     let onShape: () -> Void
-    let onDone: () -> Void
-    /// The AI is writing: Stop takes the place of Shape and Done.
+    let onReady: (Bool) -> Void
+    /// The AI is writing: Stop takes the place of Shape.
     var onStop: (() -> Void)?
 
     @Environment(\.dynamicTypeSize) private var typeSize
 
     var body: some View {
-        HStack(spacing: 8) {
-            StateChip(kind: kind)
+        HStack(spacing: 10) {
+            if strip.showsReadySwitch {
+                ReadyToggle(isOn: strip.isReady, isEnabled: canBeReady && onStop == nil, onChange: onReady)
+            } else {
+                StateChip(kind: .recorded)
+            }
             Text(strip.info.joined(separator: " · "))
-                .font(.system(size: 9.5, weight: .semibold, design: .monospaced))
-                .textCase(.uppercase)
-                .tracking(0.6)
-                .foregroundStyle(strip.isSignal ? Palette.accText : Palette.inkHint)
+                .font(.subheadline)
+                .foregroundStyle(strip.isSignal ? Palette.accText : Palette.ink2)
                 .lineLimit(typeSize.isAccessibilitySize ? nil : 1)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .accessibilityIdentifier("page.strip.info")
@@ -41,59 +46,29 @@ struct ScriptStateStrip: View {
                 }
                 .buttonStyle(.plain)
                 .accessibilityIdentifier("page.stopButton")
-            } else {
-                nextSteps
+            } else if strip.canShape {
+                shapeButton
             }
         }
-        .padding(.leading, 12)
-        .padding(.trailing, 4)
-        .frame(minHeight: Metrics.stripHeight)
-        .background(Palette.Page.stripFill, in: RoundedRectangle(cornerRadius: Metrics.stripRadius, style: .continuous))
-        .overlay(RoundedRectangle(cornerRadius: Metrics.stripRadius, style: .continuous).strokeBorder(Palette.Page.stripRim, lineWidth: 0.5))
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("page.strip")
     }
 
-    /// "✦ Shape" when there are no cues, and Done.
-    @ViewBuilder
-    private var nextSteps: some View {
-        if strip.canShape {
-            Button(action: onShape) {
-                HStack(spacing: 4) {
-                    Image(systemName: "sparkles").font(.system(size: 11, weight: .bold))
-                    Text("Shape").font(.system(size: 14, weight: .semibold))
-                }
-                .foregroundStyle(Palette.aiTextStrong)
-                .padding(.horizontal, 11)
-                .frame(height: 32)
-                .background(Palette.aiFill, in: Capsule())
-                .frame(minHeight: Metrics.hitTarget)
-                .contentShape(Capsule())
+    /// "✦ Shape" when there are no cues.
+    private var shapeButton: some View {
+        Button(action: onShape) {
+            HStack(spacing: 4) {
+                Image(systemName: "sparkles").font(.system(size: 11, weight: .bold))
+                Text("Shape").font(.system(size: 14, weight: .semibold))
             }
-            .buttonStyle(.plain)
-            .accessibilityIdentifier("page.shapeButton")
+            .foregroundStyle(Palette.aiTextStrong)
+            .padding(.horizontal, 11)
+            .frame(height: 32)
+            .background(Palette.aiFill, in: Capsule())
+            .frame(minHeight: Metrics.hitTarget)
+            .contentShape(Capsule())
         }
-        if strip.showsDone {
-            Button(action: onDone) {
-                Text("Done")
-                    .font(.system(size: 14, weight: .semibold))
-                    .foregroundStyle(strip.state == .draft ? Palette.ink : Palette.ink2)
-                    .padding(.horizontal, 10)
-                    .frame(height: 32)
-                    .background(strip.state == .draft ? Palette.fill : .clear, in: Capsule())
-                    .frame(minHeight: Metrics.hitTarget)
-                    .contentShape(Capsule())
-            }
-            .buttonStyle(.plain)
-            .accessibilityIdentifier("page.doneButton")
-        }
-    }
-
-    private var kind: StateChip.Kind {
-        switch strip.state {
-        case .ready: .ready
-        case .draft: .draft
-        case .recorded: .recorded
-        }
+        .buttonStyle(.plain)
+        .accessibilityIdentifier("page.shapeButton")
     }
 }

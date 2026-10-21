@@ -103,7 +103,8 @@ final class HandoffCaptureTests: XCTestCase {
         app.coordinate(withNormalizedOffset: CGVector(dx: 0.1, dy: 0.85)).tap()
         back(app)
         open(app, "settings.personalize")
-        open(app, "settings.appIcon")
+        // The icons are on Personalize itself, a collection under its hero.
+        XCTAssertTrue(element(app, "settings.appIcon").waitForExistence(timeout: 5))
         try shot(app, "11.1_app-icon")
     }
 

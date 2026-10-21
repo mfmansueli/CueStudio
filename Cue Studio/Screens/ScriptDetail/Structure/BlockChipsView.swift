@@ -50,7 +50,7 @@ struct BlockChipsView: View {
 #if DEBUG
 #Preview {
     let structure = ScriptType.list.structure
-    let blocks = ScriptBlocks.blocks(for: SampleScripts.morningHabits.text, structure: structure, speed: 1)
+    let blocks = ScriptBlocks.blocks(for: SampleScripts.morningHabits.text, structure: structure)
     BlockChipsView(summaries: ScriptBlocks.summaries(of: blocks), isSerious: false, hookRunsLong: true, onTap: { _ in })
         .padding()
         .background(Palette.surface)

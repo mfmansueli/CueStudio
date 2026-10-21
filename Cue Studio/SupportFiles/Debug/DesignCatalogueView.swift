@@ -188,7 +188,7 @@ struct DesignCatalogueView: View {
             ("YouTube", Palette.Platform.youTube), ("LinkedIn", Palette.Platform.linkedIn), ("Stories", Palette.Platform.stories),
             ("recPillRing", Palette.Camera.recPillRing),
             ("Slider.track", Palette.Slider.track), ("Slider.fill", Palette.Slider.fill), ("Slider.thumb", Palette.Slider.thumb),
-            ("selectionBar", Palette.Page.selectionBar), ("aiReplacedFill", Palette.Page.aiReplacedFill), ("stripFill", Palette.Page.stripFill),
+            ("selectionBar", Palette.Page.selectionBar), ("aiReplacedFill", Palette.Page.aiReplacedFill), ("readyFill", Palette.Page.readyFill),
             ("stateReady", Palette.Page.stateReadyFill), ("stateDraft", Palette.Page.stateDraftFill), ("adTag", Palette.Scripts.adTagFill),
             ("emptyRing", Palette.Scripts.emptyRing), ("emptyOrbiter", Palette.Scripts.emptyOrbiter), ("skyStarYou", Palette.World.skyStarYou),
         ]
@@ -262,24 +262,24 @@ struct DesignCatalogueView: View {
         VStack(alignment: .leading, spacing: 26) {
             heading("Min · default · max")
             CueSlider(
-                value: .constant(80), range: CueSliderSpec.speed.range, step: CueSliderSpec.speed.step,
-                defaultValue: CueSliderSpec.speed.defaultValue, label: "Speed", valueText: "80 wpm", systemIcon: .speed,
-                minCaption: "80 wpm", maxCaption: "220 wpm", accessibilityIdentifier: "catalogue.slider.min"
+                value: .constant(30), range: CueSliderSpec.speed.range, step: CueSliderSpec.speed.step,
+                defaultValue: CueSliderSpec.speed.defaultValue, label: "Speed", valueText: "30 wpm", systemIcon: .speed,
+                minCaption: "30 wpm", maxCaption: "300 wpm", accessibilityIdentifier: "catalogue.slider.min"
             )
             CueSlider(
                 value: .constant(150), range: CueSliderSpec.speed.range, step: CueSliderSpec.speed.step,
                 defaultValue: CueSliderSpec.speed.defaultValue, label: "Speed", valueText: "150 wpm", systemIcon: .speed,
-                minCaption: "80 wpm", maxCaption: "220 wpm", accessibilityIdentifier: "catalogue.slider.default"
+                minCaption: "30 wpm", maxCaption: "300 wpm", accessibilityIdentifier: "catalogue.slider.default"
             )
             CueSlider(
-                value: .constant(220), range: CueSliderSpec.speed.range, step: CueSliderSpec.speed.step,
-                defaultValue: CueSliderSpec.speed.defaultValue, label: "Speed", valueText: "220 wpm", systemIcon: .speed,
-                minCaption: "80 wpm", maxCaption: "220 wpm", accessibilityIdentifier: "catalogue.slider.max"
+                value: .constant(300), range: CueSliderSpec.speed.range, step: CueSliderSpec.speed.step,
+                defaultValue: CueSliderSpec.speed.defaultValue, label: "Speed", valueText: "300 wpm", systemIcon: .speed,
+                minCaption: "30 wpm", maxCaption: "300 wpm", accessibilityIdentifier: "catalogue.slider.max"
             )
             heading("Continuous · default detent")
             CueSlider(
-                value: $speed, range: 80...220, defaultValue: 150, label: "Speed", valueText: "\(Int(speed)) wpm",
-                spokenValue: "\(Int(speed)) words per minute", systemIcon: .speed, minCaption: "80 wpm", maxCaption: "220 wpm",
+                value: $speed, range: CueSliderSpec.speed.range, defaultValue: 150, label: "Speed", valueText: "\(Int(speed)) wpm",
+                spokenValue: "\(Int(speed)) words per minute", systemIcon: .speed, minCaption: "30 wpm", maxCaption: "300 wpm",
                 allowsTyping: true, accessibilityIdentifier: "catalogue.slider.speed"
             )
             heading("Stepped")
@@ -442,44 +442,6 @@ struct DesignCatalogueView: View {
     private func heading(_ text: String) -> some View {
         Text(text).font(CueStudioFont.hud).textCase(.uppercase).foregroundStyle(Palette.accText)
     }
-}
-
-/// The transition over a mock Scripts (the dock at the bottom), in a box.
-private struct TransitionDemo: View {
-    let run: Int
-    let ready: Int
-
-    @State private var transition = IdeaTransitionService()
-
-    var body: some View {
-        ZStack {
-            Palette.bg
-            VStack(alignment: .leading, spacing: 10) {
-                Text("Scripts").font(.largeTitle.bold()).foregroundStyle(Palette.ink)
-                ForEach(0..<4, id: \.self) { _ in
-                    RoundedRectangle(cornerRadius: 18, style: .continuous).fill(Palette.surface).frame(height: 64)
-                }
-                Spacer()
-                Text("3 things I stopped buying this year").padding(16).frame(maxWidth: .infinity, alignment: .leading)
-                    .dockSurface().foregroundStyle(Palette.ink)
-            }
-            .padding(16)
-            .scaleEffect(dims ? 0.94 : 1, anchor: UnitPoint(x: 0.5, y: 0.4))
-            .brightness(dims ? -0.4 : 0)
-            .saturation(dims ? 0.7 : 1)
-            .blur(radius: dims ? 10 : 0)
-            .animation(.timingCurve(0.2, 0.8, 0.2, 1, duration: IdeaTransitionService.riseDuration), value: dims)
-            StarTransitionOverlay(transition: transition)
-        }
-        .onAppear {
-            transition.begin(
-                from: CGPoint(x: 330, y: 560), idea: "3 things I stopped buying this year", platformName: "TikTok", abort: {}, arrive: {}
-            )
-        }
-        .onChange(of: ready) { Task { await transition.contentReady() } }
-    }
-
-    private var dims: Bool { transition.phase == .rising || transition.phase == .waiting }
 }
 
 #Preview {

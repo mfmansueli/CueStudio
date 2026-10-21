@@ -5,36 +5,57 @@
 
 import SwiftUI
 
-/// Settings › Notifications: whether iOS allows Cue (a switch, `NotificationPermissionSection`), the five kinds of notification (tools and
-/// news start off), the routine's days and time, the reminders set (edit with a tap, remove with a swipe), quiet hours, a pause for the
-/// automatic ones, and whether a project's title may appear in a notification (off: "your script"). A Debug build adds what is scheduled
-/// and counted.
+/// Settings › Notifications (owner's redesign, 22/10/2026: short and direct). On top, whether iOS lets Cue speak, as a switch
+/// (`NotificationPermissionRow`); switched on the first time, everything turns on together: the bell rings and takes a ✓, and the switches
+/// below light one after another with a tick each. Then **From Cue** (two switches,
+/// `NotificationGroup`), **Creation routine** (its switch opens the days and the time) and **Your reminders** (they always arrive; edit with
+/// a tap, remove with a swipe). Quiet hours (9 PM to 9 AM), the caps and the titles kept out of notifications are Cue's, not choices. A Debug
+/// build adds what is scheduled and counted.
 struct NotificationsSettingsView: View {
     @Environment(NotificationService.self) private var notifications
     @Environment(\.scenePhase) private var scenePhase
+    @Environment(\.openURL) private var openURL
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     @State private var editing: Reminder?
+    /// iOS is being asked: the switches hold still until it answers.
+    @State private var isAsking = false
+    @State private var rangAt: Date?
+    /// How many switches show their state: during the cascade they light one by one.
+    @State private var lit = NotificationGroup.allCases.count
 
-    private var calendar: Calendar { .current }
+    private var canSchedule: Bool { notifications.authorization.canSchedule && !isAsking }
+
+    private var mood: NotificationPermissionRow.Mood {
+        if isAsking { return .notAsked }
+        switch notifications.authorization {
+        case .notDetermined: return .notAsked
+        case .denied: return .refused
+        case .provisional: return .quiet
+        case .authorized, .ephemeral: return .allowed
+        }
+    }
+
+    /// The switch on top: what iOS allows. Switched on while never asked, iOS asks; any other change opens Cue in iOS Settings.
+    private var permission: Binding<Bool> {
+        Binding(
+            get: { isAsking || notifications.authorization.canSchedule },
+            set: { wants in
+                if wants, notifications.authorization == .notDetermined { turnOn() } else { openSettings() }
+            }
+        )
+    }
 
     var body: some View {
         List {
-            NotificationPermissionSection()
-            categories
-            if notifications.isOn(.routine) { routine }
-            reminders
-            automatic
             Section {
-                SettingsListToggle(
-                    title: String(localized: "Show titles in previews"),
-                    detail: String(localized: "Off: “your script” instead of its name"),
-                    isOn: Binding(get: { notifications.state.showsTitles }, set: { notifications.setShowsTitles($0) })
-                )
-                .cardRowBackground(position: .only)
-                .accessibilityIdentifier("notifications.showsTitles")
-            } footer: {
-                Text("Scripts, comments and your imported writing are never in a notification.")
+                NotificationPermissionRow(mood: mood, rangAt: rangAt, isOn: permission)
+                    .listRowInsets(EdgeInsets())
+                    .cardRowBackground(position: .only)
             }
+            fromCue
+            routine
+            reminders
             #if DEBUG
             NotificationDiagnosticsSection()
             #endif
@@ -48,43 +69,129 @@ struct NotificationsSettingsView: View {
             // Back from iOS Settings: what it allows may have changed.
             if phase == .active { Task { await notifications.refreshAuthorization() } }
         }
+        .onChange(of: notifications.authorization) { old, new in
+            // Allowed in iOS Settings after a no: as the first time, everything turns on.
+            guard old == .denied, new.canSchedule else { return }
+            lit = 0
+            notifications.turnEverythingOn()
+            celebrate()
+        }
         .sheet(item: $editing) { reminder in
             ReminderSheet(subject: reminder.subject, title: reminder.title, editing: reminder)
         }
         .accessibilityIdentifier("notifications.screen")
     }
 
-    // MARK: - Sections
+    // MARK: - From Cue and the routine
 
-    private var categories: some View {
-        Section {
-            ForEach(Array(NotificationCategory.allCases.enumerated()), id: \.element) { index, category in
-                SettingsListToggle(title: category.title, detail: category.detail, isOn: binding(for: category))
-                    .cardRowBackground(position: CardRowPosition(index: index, count: NotificationCategory.allCases.count))
-                    .accessibilityIdentifier("notifications.category.\(category.rawValue)")
+    /// The order the switches light in when everything turns on: as they stand on the page.
+    private static let order: [NotificationGroup] = [.finish, .news, .routine]
+
+    private var fromCue: some View {
+        let groups: [NotificationGroup] = [.finish, .news]
+        return Section {
+            ForEach(Array(groups.enumerated()), id: \.element) { index, group in
+                NotificationGroupRow(group: group, isOn: binding(for: group))
+                    .listRowInsets(EdgeInsets())
+                    .cardRowBackground(position: CardRowPosition(index: index, count: groups.count))
             }
         } header: {
-            CueSectionHeader(verbatim: String(localized: "What Cue sends"))
+            CueSectionHeader(verbatim: String(localized: "From Cue"))
         } footer: {
-            Text("Tools and news stay off until you turn them on.")
+            Text("At most one a day, never at night. Your reminders always arrive.")
         }
     }
 
     private var routine: some View {
-        Section {
-            NotificationRoutineEditor(
-                routine: notifications.state.routine ?? CreationRoutine(),
-                isInQuietHours: notifications.state.quietHours.contains(minuteOfDay: (notifications.state.routine ?? CreationRoutine()).minuteOfDay)
-            ) { routine in
-                Task { await notifications.setRoutine(routine) }
+        let opens = isLit(.routine) && notifications.isOn(.routine)
+        return Section {
+            VStack(spacing: 0) {
+                NotificationGroupRow(group: .routine, isOn: binding(for: .routine))
+                if opens, let routine = notifications.state.routine {
+                    NotificationRoutineEditor(routine: routine) { routine in
+                        Task { await notifications.setRoutine(routine) }
+                    }
+                    .transition(.opacity.combined(with: .move(edge: .top)))
+                }
             }
+            .animation(.spring(response: 0.45, dampingFraction: 0.86), value: opens)
+            .listRowInsets(EdgeInsets())
             .cardRowBackground(position: .only)
         } header: {
-            CueSectionHeader(verbatim: String(localized: "Days and time"))
-        } footer: {
-            Text("On those days Cue opens on your next step.")
+            CueSectionHeader(verbatim: String(localized: "Creation routine"))
         }
     }
+
+    /// The switch shows its state: iOS lets Cue speak and, during the cascade, its turn has come.
+    private func isLit(_ group: NotificationGroup) -> Bool {
+        canSchedule && (Self.order.firstIndex(of: group) ?? 0) < lit
+    }
+
+    private func binding(for group: NotificationGroup) -> Binding<Bool> {
+        Binding(
+            get: { isLit(group) && notifications.isGroupOn(group) },
+            set: { isOn in
+                switch notifications.authorization {
+                case .notDetermined:
+                    turnOn()
+                case .denied:
+                    openSettings()
+                case .authorized, .provisional, .ephemeral:
+                    if isOn { HapticPatterns.playChime() } else { Haptics.selection() }
+                    Task {
+                        await notifications.setGroup(group, isOn: isOn)
+                    }
+                }
+            }
+        )
+    }
+
+    // MARK: - Allowing
+
+    /// The switch on top (or one below) while iOS was never asked: iOS asks once; its yes turns everything on, and the page celebrates it.
+    private func turnOn() {
+        guard !isAsking else { return }
+        isAsking = true
+        lit = 0
+        Task {
+            let answer = await notifications.allowEverything()
+            if answer.canSchedule {
+                celebrate()
+            } else {
+                lit = NotificationGroup.allCases.count
+            }
+            isAsking = false
+        }
+    }
+
+    /// The bell rings and takes its ✓; the switches light one after another, each with its tick (`HapticPatterns.notificationsOn`).
+    private func celebrate() {
+        let count = NotificationGroup.allCases.count
+        HapticPatterns.playNotificationsOn()
+        withAnimation(.spring(response: 0.4, dampingFraction: 0.7)) { rangAt = .now }
+        Task { @MainActor in
+            // The ring is over: the bell rests (and its clock stops).
+            try? await Task.sleep(for: .seconds(1.5))
+            rangAt = nil
+        }
+        guard !reduceMotion else {
+            lit = count
+            return
+        }
+        Task { @MainActor in
+            try? await Task.sleep(for: .seconds(NotificationsCascade.firstSwitch))
+            for step in 1...count {
+                withAnimation(.spring(response: 0.42, dampingFraction: 0.8)) { lit = step }
+                try? await Task.sleep(for: .seconds(NotificationsCascade.step))
+            }
+        }
+    }
+
+    private func openSettings() {
+        if let url = URL(string: UIApplication.openNotificationSettingsURLString) { openURL(url) }
+    }
+
+    // MARK: - Your reminders
 
     @ViewBuilder
     private var reminders: some View {
@@ -109,81 +216,8 @@ struct NotificationsSettingsView: View {
                     }
             }
         } header: {
-            CueSectionHeader(verbatim: String(localized: "My reminders"))
+            CueSectionHeader(verbatim: String(localized: "Your reminders"))
         }
-    }
-
-    private var automatic: some View {
-        Section {
-            quietTime(String(localized: "Quiet from"), minute: \.startMinute, id: "notifications.quietStart")
-                .cardRowBackground(position: .first)
-            quietTime(String(localized: "Until"), minute: \.endMinute, id: "notifications.quietEnd")
-                .cardRowBackground(position: .middle)
-            pauseRow.cardRowBackground(position: .last)
-        } header: {
-            CueSectionHeader(verbatim: String(localized: "Automatic notifications"))
-        } footer: {
-            Text("At most one a day and two a week. Your reminders and routine aren’t affected.")
-        }
-    }
-
-    private func quietTime(_ title: String, minute: WritableKeyPath<QuietHours, Int>, id: String) -> some View {
-        let binding = Binding<Date>(
-            get: {
-                let value = notifications.state.quietHours[keyPath: minute]
-                return calendar.date(bySettingHour: value / 60, minute: value % 60, second: 0, of: .now) ?? .now
-            },
-            set: { date in
-                let parts = calendar.dateComponents([.hour, .minute], from: date)
-                var hours = notifications.state.quietHours
-                hours[keyPath: minute] = (parts.hour ?? 0) * 60 + (parts.minute ?? 0)
-                notifications.setQuietHours(QuietHours(startMinute: hours.startMinute, endMinute: hours.endMinute))
-            }
-        )
-        return DatePicker(title, selection: binding, displayedComponents: .hourAndMinute)
-            .foregroundStyle(Palette.ink)
-            .tint(Palette.accText)
-            .frame(minHeight: Metrics.listRowContent)
-            .accessibilityIdentifier(id)
-    }
-
-    private var pauseRow: some View {
-        HStack {
-            VStack(alignment: .leading, spacing: 2) {
-                Text("Pause automatic notifications").foregroundStyle(Palette.ink)
-                if let until = notifications.pausedUntil {
-                    Text("Paused until \(until.formatted(Date.FormatStyle(date: .abbreviated, time: .omitted).locale(.interface)))")
-                        .font(.footnote)
-                        .foregroundStyle(Palette.ink2)
-                }
-            }
-            Spacer(minLength: 8)
-            Menu {
-                Button("7 days") { notifications.pauseAutomatic(days: 7) }
-                Button("30 days") { notifications.pauseAutomatic(days: 30) }
-                if notifications.pausedUntil != nil { Button("Resume now") { notifications.resumeAutomatic() } }
-            } label: {
-                Text(notifications.pausedUntil == nil ? String(localized: "Pause for…") : String(localized: "Change"))
-                    .foregroundStyle(Palette.accText)
-            }
-            .accessibilityIdentifier("notifications.pause")
-        }
-        .frame(minHeight: Metrics.listRowContent)
-    }
-
-    private func binding(for category: NotificationCategory) -> Binding<Bool> {
-        Binding(
-            get: { notifications.isOn(category) },
-            set: { isOn in
-                Task {
-                    if category == .routine, isOn, notifications.state.routine == nil {
-                        await notifications.setRoutine(CreationRoutine())
-                    } else {
-                        await notifications.setCategory(category, isOn: isOn)
-                    }
-                }
-            }
-        )
     }
 }
 

@@ -6,34 +6,38 @@
 import Testing
 @testable import Cue_Studio
 
-/// The "Your universe" row of the Profile (9.1) in its three states.
+/// The "Your universe" card of the Profile (9.1) in its three states, and the planets of its mini universe.
 @Suite("Profile universe summary")
 struct ProfileUniverseSummaryTests {
     @Test func aUniverseWithVideos() {
-        let summary = ProfileUniverseSummary(total: 23, sharedThisYear: 23, year: 2026, lastYear: 2026, lastYearCount: 23, topics: 3, toNextMilestone: 2)
-        #expect(summary.trailing == "23 videos")
-        #expect(summary.detail == "2026 · 3 topics")
-        #expect(summary.footer == "2 more videos to your next milestone.")
-    }
-
-    @Test func aNewAccountStartsWithTheFirstShare() {
-        let summary = ProfileUniverseSummary(total: 0, sharedThisYear: 0, year: 2026, lastYear: 2026, lastYearCount: 0, topics: 3, toNextMilestone: 1)
-        #expect(summary.isNewAccount && !summary.isNewYear)
-        #expect(summary.trailing == "0 videos")
-        #expect(summary.detail == "Starts with your first share")
-        #expect(summary.footer == "Share a video to light your first star.")
-    }
-
-    @Test func aNewYearSaysWhatLastYearHad() {
-        let summary = ProfileUniverseSummary(total: 23, sharedThisYear: 0, year: 2027, lastYear: 2026, lastYearCount: 23, topics: 3, toNextMilestone: 2)
-        #expect(summary.isNewYear)
-        #expect(summary.trailing == "0 videos")
+        let summary = ProfileUniverseSummary(total: 23, sharedThisYear: 23, year: 2026, lastYear: 2026, lastYearCount: 23)
+        #expect(summary.title == "Your universe")
         #expect(summary.detail == "2026 · 23 videos")
-        #expect(summary.footer == "Your 2027 universe starts with your first share.")
     }
 
-    @Test func afterTheLastMilestoneThereIsNothingLeftToCount() {
-        let summary = ProfileUniverseSummary(total: 600, sharedThisYear: 40, year: 2026, lastYear: 2025, lastYearCount: 560, topics: 3, toNextMilestone: nil)
-        #expect(summary.footer == "Every milestone is behind you")
+    @Test func oneVideoIsSingular() {
+        let summary = ProfileUniverseSummary(total: 1, sharedThisYear: 1, year: 2026, lastYear: 2026, lastYearCount: 1)
+        #expect(summary.detail == "2026 · 1 video")
+    }
+
+    @Test func aNewAccountIsWaiting() {
+        let summary = ProfileUniverseSummary(total: 0, sharedThisYear: 0, year: 2026, lastYear: 2026, lastYearCount: 0)
+        #expect(summary.isNewAccount && !summary.isNewYear)
+        #expect(summary.title == "Your universe is waiting")
+        #expect(summary.detail == "Share your first video and its planet appears here.")
+    }
+
+    @Test func aNewYearStartsWithItsFirstShare() {
+        let summary = ProfileUniverseSummary(total: 23, sharedThisYear: 0, year: 2027, lastYear: 2026, lastYearCount: 23)
+        #expect(summary.isNewYear)
+        #expect(summary.title == "Your universe")
+        #expect(summary.detail == "Your 2027 universe starts with your first share.")
+    }
+
+    /// One planet per network, the most shared first; a video sent to two networks counts for both.
+    @Test func thePlanetsAreTheNetworksMostSharedFirst() {
+        let networks = ProfileUniverseSummary.networks(of: [[.tiktok], [.reels, .tiktok], [.shorts], [.tiktok]])
+        #expect(networks == [.tiktok, .reels, .shorts])
+        #expect(ProfileUniverseSummary.networks(of: []).isEmpty)
     }
 }

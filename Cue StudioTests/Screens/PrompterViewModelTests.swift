@@ -469,12 +469,28 @@ struct PrompterViewModelTests {
         defer { scenario.defaults.tearDown() }
         scenario.viewModel.setSpeed(1.04)
         #expect(scenario.viewModel.session.prompter.speed == 225 / ReadTime.wordsPerMinuteAtOneX)
-        // Past the ends, the range's ends (0.3× to 3.5× since the speed went to multiples).
+        // Past the ends, the range's ends: 0.2× and 2× of the natural pace (30 and 300 words a minute).
         scenario.viewModel.setSpeed(5)
         #expect(scenario.viewModel.session.prompter.speed == PrompterSettings.speedRange.upperBound)
         scenario.viewModel.setSpeed(0.1)
         #expect(scenario.viewModel.session.prompter.speed == PrompterSettings.speedRange.lowerBound)
         #expect(scenario.preferences.prompter.speed == ReadTime.naturalSpeed)
+    }
+
+    /// The remote's − and + move one stop of the slider (0.1×), and stop at its ends.
+    @Test func theRemoteMovesTheSpeedOneStopATap() {
+        let scenario = makeScenario()
+        defer { scenario.defaults.tearDown() }
+        scenario.viewModel.handle(.faster)
+        #expect(scenario.viewModel.session.prompter.speed == SpeedScale.speed(forMultiple: 1.1))
+        scenario.viewModel.handle(.slower)
+        scenario.viewModel.handle(.slower)
+        #expect(scenario.viewModel.session.prompter.speed == SpeedScale.speed(forMultiple: 0.9))
+        for _ in 0..<30 { scenario.viewModel.handle(.faster) }
+        #expect(scenario.viewModel.session.prompter.speed == PrompterSettings.speedRange.upperBound)
+        #expect(scenario.viewModel.session.prompter.speedLabel == "2×")
+        for _ in 0..<30 { scenario.viewModel.handle(.slower) }
+        #expect(scenario.viewModel.session.prompter.speedLabel == SpeedScale.label(forMultiple: 0.2))
     }
 
     @Test func attachingAScriptToFreestyle() {

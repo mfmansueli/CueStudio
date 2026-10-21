@@ -321,14 +321,14 @@ struct CueSlider: View {
 #if DEBUG
 #Preview {
     @Previewable @State var speed = 150.0
-    @Previewable @State var size = 2.0
+    @Previewable @State var size = 36.0
     VStack(spacing: 28) {
         CueSlider(
-            value: $speed, range: 80...220, step: 5, defaultValue: 150, label: "Speed", valueText: "\(Int(speed)) wpm",
-            systemIcon: .speed, minCaption: "80 wpm", maxCaption: "220 wpm"
+            value: $speed, range: 30...300, step: 15, defaultValue: 150, label: "Speed", valueText: "\(Int(speed)) wpm",
+            systemIcon: .speed, minCaption: "30 wpm", maxCaption: "300 wpm"
         )
-        CueSlider(value: $size, range: 0...3, step: 1, label: "Text size", valueText: ["S", "M", "L", "XL"][Int(size)], systemIcon: .textSize)
-        CueSlider(value: $speed, range: 80...220, style: .compact, label: "Speed", valueText: "\(Int(speed))")
+        CueSlider(value: $size, range: 12...56, step: 1, label: "Text size", valueText: "\(Int(size)) pt", systemIcon: .textSize)
+        CueSlider(value: $speed, range: 30...300, style: .compact, label: "Speed", valueText: "\(Int(speed))")
     }
     .padding()
     .background(Palette.bg)

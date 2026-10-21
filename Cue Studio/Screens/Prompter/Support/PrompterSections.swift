@@ -6,7 +6,7 @@
 import Foundation
 
 /// The script as the sections the creator moves through while reading (Hook, Body, CTA… as its format has them),
-/// for the rail beside the text and the label under it. The same split as the script page's Shaped view.
+/// for the rail beside the text and the label under it (`ScriptShape`).
 nonisolated struct PrompterSections: Equatable, Sendable {
     struct Marker: Equatable, Sendable {
         let label: String
@@ -23,9 +23,8 @@ nonisolated struct PrompterSections: Equatable, Sendable {
         self.markers = markers
     }
 
-    init(text: String, structure: ScriptStructure, speed: Double) {
-        let shape = ScriptShape(text: text, structure: structure, speed: speed, suggestsCTA: false)
-        markers = shape.sections.filter { !$0.isMissingCTA }.map { Marker(label: $0.label, firstParagraph: $0.firstParagraph) }
+    init(text: String, structure: ScriptStructure) {
+        markers = ScriptShape(text: text, structure: structure).sections.map { Marker(label: $0.label, firstParagraph: $0.firstParagraph) }
     }
 
     /// The section that holds `paragraph`.
@@ -50,6 +49,6 @@ extension PrompterViewModel {
     /// The script's sections, for the rail.
     func makeSections() -> PrompterSections {
         guard let script else { return PrompterSections(markers: []) }
-        return PrompterSections(text: script.text, structure: script.structure, speed: session.prompter.speed)
+        return PrompterSections(text: script.text, structure: script.structure)
     }
 }

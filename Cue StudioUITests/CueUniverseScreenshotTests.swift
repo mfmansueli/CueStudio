@@ -56,13 +56,10 @@ final class CueUniverseScreenshotTests: XCTestCase {
         personalize.tap()
         XCTAssertTrue(element(app, "settings.appIcon").waitForExistence(timeout: 5))
         capture(app, "settings-2-personalize")
-        let sky = element(app, "settings.starrySky")
-        XCTAssertEqual(sky.value as? String, "Serene")
-        element(app, "settings.appIcon").tap()
-        // Default is the one lit; the others open with videos shared.
+        // Default is the icon lit (the others open with videos shared), Serene the sky.
         XCTAssertTrue(app.buttons["settings.appIcon.standard"].waitForExistence(timeout: 5))
         XCTAssertTrue(app.buttons["settings.appIcon.standard"].isSelected)
-        app.navigationBars.buttons.firstMatch.tap()
+        XCTAssertTrue(app.buttons["settings.starrySky.serene"].isSelected)
         app.navigationBars.buttons.firstMatch.tap()
         element(app, "settings.prompter").tap()
         XCTAssertTrue(element(app, "settings.followVoice").waitForExistence(timeout: 5))

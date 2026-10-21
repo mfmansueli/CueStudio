@@ -6,11 +6,13 @@
 import SwiftUI
 
 /// Edit (or Continue, when an edit is open) · Retake · Save · Script as four glass tiles (icon over name, 54 pt high), and below, the screen's one yellow
-/// action: **Share to universe**.
+/// action: **Share to universe**. Save turns, while it works, and shows a green ✓ "Saved" for a moment once the video is in Photos.
 struct ReviewActionBar: View {
     let runningAction: TakeReviewViewModel.ExportAction?
     /// Share glows for a moment after "Ready, I'll post later": it is the next step.
     var glowsShare = false
+    /// The video just reached Photos: Save shows its ✓.
+    var justSaved = false
     /// "Continue" when an edit is waiting, "Edit" otherwise.
     let editTitle: String
     var onEdit: (() -> Void)?
@@ -25,7 +27,10 @@ struct ReviewActionBar: View {
             HStack(spacing: 8) {
                 tile(editTitle, systemImage: "scissors", identifier: "review.editButton", isEnabled: onEdit != nil, action: onEdit ?? {})
                 tile("Retake", systemImage: "arrow.clockwise", identifier: "review.retakeButton", action: onRetake)
-                tile("Save", systemImage: "arrow.down.to.line", identifier: "review.saveButton", isRunning: runningAction == .save, action: onSave)
+                tile(
+                    justSaved ? String(localized: "Saved") : String(localized: "Save"), systemImage: "arrow.down.to.line", identifier: "review.saveButton",
+                    isRunning: runningAction == .save, isDone: justSaved, action: onSave
+                )
                 tile("Script", systemImage: "doc.text", identifier: "review.scriptButton", isEnabled: onScript != nil, action: onScript ?? {})
             }
             Button(action: onShare) {
@@ -47,15 +52,28 @@ struct ReviewActionBar: View {
     }
 
     private func tile(
-        _ title: String, systemImage: String, identifier: String, isRunning: Bool = false, isEnabled: Bool = true, action: @escaping () -> Void
+        _ title: String, systemImage: String, identifier: String, isRunning: Bool = false, isDone: Bool = false, isEnabled: Bool = true,
+        action: @escaping () -> Void
     ) -> some View {
         Button(action: action) {
             VStack(spacing: 4) {
                 Group {
-                    if isRunning { ProgressView().tint(Palette.ink) } else { Image(systemName: systemImage).font(.system(size: 17, weight: .semibold)) }
+                    if isRunning {
+                        ProgressView().tint(Palette.ink)
+                    } else if isDone {
+                        Image(systemName: "checkmark.circle.fill")
+                            .font(.system(size: 19, weight: .semibold))
+                            .symbolRenderingMode(.palette)
+                            .foregroundStyle(Color.black, Palette.success)
+                            .transition(.scale(scale: 0.3).combined(with: .opacity))
+                    } else {
+                        Image(systemName: systemImage).font(.system(size: 17, weight: .semibold))
+                    }
                 }
                 .frame(height: 20)
-                Text(title).font(.system(size: 12.5, weight: .semibold))
+                Text(title)
+                    .font(.system(size: 12.5, weight: .semibold))
+                    .contentTransition(.opacity)
             }
             .foregroundStyle(Palette.ink)
             .frame(maxWidth: .infinity)

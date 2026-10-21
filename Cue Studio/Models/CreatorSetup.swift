@@ -21,7 +21,7 @@ nonisolated struct CreatorSetup: Hashable, Sendable {
     var aspect: AspectRatio
     /// Selfie text size in points.
     var textSize: Double
-    /// Default scroll speed (1.0× = 215 words a minute).
+    /// Default scroll speed, on the stored scale (`ReadTime`): the natural pace, 150 words a minute, is 0.698 there and reads "1×" (`SpeedScale`).
     var speed: Double
     var readingLine: ReadingLinePlacement
     var isMirrored: Bool
@@ -108,7 +108,8 @@ nonisolated struct CreatorSetup: Hashable, Sendable {
 
     // MARK: - Labels
 
-    /// How a field reads on screen: "Front", "4K", "30 fps", "9:16", "Large · 36 pt".
+    /// How a field reads on screen: "Front", "4K", "30 fps", "9:16", "36 pt", "1×". The text size and the speed read as their sliders write
+    /// them (Settings › Prompter, the recorder), in points and in multiples of the natural pace.
     func label(for field: SetupField) -> String {
         switch field {
         case .camera:
@@ -122,11 +123,9 @@ nonisolated struct CreatorSetup: Hashable, Sendable {
         case .frameRate:
             return String(localized: "\(frameRate.rawValue) fps")
         case .textSize:
-            let points = Int(textSize.rounded())
-            guard let preset = PrompterTextSize(points: textSize) else { return String(localized: "\(points) pt") }
-            return String(localized: "\(preset.label) · \(points) pt")
+            return String(localized: "\(Int(textSize.rounded())) pt")
         case .speed:
-            return speed.formatted(.number.precision(.fractionLength(1)).locale(.interface)) + "×"
+            return SpeedScale.label(forSpeed: speed)
         case .readingLine:
             guard let offset = readingLine.offset else { return String(localized: "Recommended") }
             return String(localized: "\(Int(offset)) pt below the camera")

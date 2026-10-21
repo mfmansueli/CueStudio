@@ -23,6 +23,8 @@ struct TakeReviewView: View {
     /// the caller it has been taken, so another take of the video doesn't repeat it.
     var launchAction: ReviewLaunchAction?
     var onLaunchActionDone: () -> Void = {}
+    /// Reached by a swipe from another take of the video: "Take 2 of 3" shows for a moment.
+    var arrivedFromNeighbor = false
 
     @State private var flow: ShareFlow
     @State private var playback = ReviewPlayback()
@@ -52,13 +54,22 @@ struct TakeReviewView: View {
     @State private var tellsMilestone = false
     /// The first take ever: its star, told once.
     @State private var tellsFirstStar = false
+    /// Pauses by a tap on the video: the pause sign blinks at each (`ReviewPauseFlash`).
+    @State private var pauseFlashes = 0
+    /// Times the take was made the best here: the star's sparks.
+    @State private var bestBursts = 0
+    /// Save's ✓, for a moment once the video is in Photos (after "Ready to travel" closes, so it is seen).
+    @State private var justSaved = false
+    @State private var awaitsSavedCheck = false
+    /// "Take 2 of 3" under the bar, after a swipe.
+    @State private var showsPlace = false
 
     init(
         takeID: UUID, services: AppServices,
         onRetake: @escaping () -> Void, onBack: @escaping () -> Void,
         onSelect: @escaping (Take) -> Void, onDeleted: @escaping (Take?) -> Void,
         onOpenScript: @escaping (UUID) -> Void = { _ in },
-        launchAction: ReviewLaunchAction? = nil, onLaunchActionDone: @escaping () -> Void = {}
+        launchAction: ReviewLaunchAction? = nil, onLaunchActionDone: @escaping () -> Void = {}, arrivedFromNeighbor: Bool = false
     ) {
         let store = services.store
         let languages = services.languages
@@ -97,6 +108,7 @@ struct TakeReviewView: View {
         self.onOpenScript = onOpenScript
         self.launchAction = launchAction
         self.onLaunchActionDone = onLaunchActionDone
+        self.arrivedFromNeighbor = arrivedFromNeighbor
     }
 
     var body: some View {
@@ -110,6 +122,13 @@ struct TakeReviewView: View {
                     chrome(for: take)
                 } else {
                     ContentUnavailableView("This take was deleted", systemImage: "film")
+                }
+            }
+            .overlay(alignment: .top) {
+                if showsPlace, let take = viewModel.take {
+                    placeChip(for: take)
+                        .padding(.top, 10)
+                        .transition(.opacity.combined(with: .move(edge: .top)))
                 }
             }
             .overlay(alignment: .top) {
@@ -199,7 +218,12 @@ struct TakeReviewView: View {
                 )
             }
         }
-        .onAppear { connectFlow(); applyLaunchAction(); considerFirstStar(); showStoriesForTests() }
+        .onAppear { connectFlow(); applyLaunchAction(); considerFirstStar(); showStoriesForTests(); announcePlace() }
+        .onChange(of: viewModel.savesToPhotos) { _, _ in
+            awaitsSavedCheck = true
+            showSavedCheck()
+        }
+        .onChange(of: viewModel.celebration == nil) { _, _ in showSavedCheck() }
         .onDisappear { playback.pause(); viewModel.leave() }
         .modifier(ExportPresentations(viewModel: viewModel, isActive: viewModel.celebration == nil))
     }
@@ -231,7 +255,7 @@ struct TakeReviewView: View {
         // Under the shield the swipe to another take still works; a tap asks a held player to play and nothing happens.
         .captureShielded(isSceneCaptured)
         .contentShape(Rectangle())
-        .onTapGesture { playback.toggle() }
+        .onTapGesture { tapVideo() }
         .simultaneousGesture(
             DragGesture(minimumDistance: 40).onEnded { drag in
                 // A clear horizontal swipe goes to the next (left) or the previous (right) take.
@@ -239,15 +263,53 @@ struct TakeReviewView: View {
                 selectNeighbor(drag.translation.width < 0 ? 1 : -1)
             }
         )
-        .overlay {
+    }
+
+    /// Play, while the take is paused: in the middle of the video's free space, above the controls (centred on the whole screen, it sat on
+    /// the playhead of a shorter iPhone, like the 15 Pro). Played, it shrinks away; a tap on the video that pauses blinks the pause sign
+    /// there (`ReviewPauseFlash`).
+    private var playButton: some View {
+        ZStack {
+            ReviewPauseFlash(trigger: pauseFlashes)
             if !playback.isPlaying, !isSceneCaptured {
-                Button { playback.toggle() } label: {
+                Button {
+                    Haptics.light()
+                    playback.play()
+                } label: {
                     Image(systemName: "play.fill").offset(x: 2)
                 }
                 .buttonStyle(.cueIcon(.glass, diameter: 64))
                 .accessibilityLabel(Text("Play"))
+                .transition(.scale(scale: 0.55).combined(with: .opacity))
             }
         }
+        .animation(.spring(response: 0.3, dampingFraction: 0.72), value: playback.isPlaying)
+    }
+
+    /// A tap on the video plays it, or pauses it and blinks the pause sign.
+    private func tapVideo() {
+        if playback.isPlaying {
+            playback.pause()
+            Haptics.soft()
+            pauseFlashes += 1
+        } else {
+            Haptics.light()
+            playback.play()
+        }
+    }
+
+    /// "Take 2 of 3", for a moment after a swipe.
+    private func placeChip(for take: Take) -> some View {
+        let siblings = viewModel.siblings
+        let index = (siblings.firstIndex { $0.id == take.id } ?? 0) + 1
+        return Text("Take \(index) of \(siblings.count)")
+            .font(.footnote.weight(.semibold))
+            .foregroundStyle(Palette.ink)
+            .padding(.horizontal, 12)
+            .padding(.vertical, 6)
+            .background(Color.black.opacity(0.55), in: Capsule())
+            .overlay(Capsule().stroke(Color.white.opacity(0.16), lineWidth: 1))
+            .allowsHitTesting(false)
     }
 
     /// Portrait takes fill the screen; other frames are shown at their crop, letterboxed.
@@ -264,7 +326,13 @@ struct TakeReviewView: View {
             take: take,
             placeLabel: placeLabel(for: take),
             onBack: onBack,
-            onToggleBest: viewModel.toggleBest,
+            onToggleBest: {
+                if !take.isBest {
+                    HapticPatterns.playBestTake()
+                    bestBursts += 1
+                }
+                viewModel.toggleBest()
+            },
             // Gone at once, with 4 s of Undo in the toast (04 · F4): no question first.
             onDelete: {
                 playback.pause()
@@ -272,14 +340,18 @@ struct TakeReviewView: View {
             },
             onPrevious: viewModel.neighbor(-1) == nil ? nil : { selectNeighbor(-1) },
             onNext: viewModel.neighbor(1) == nil ? nil : { selectNeighbor(1) },
-            onSuggest: viewModel.offersBestSuggestion ? { suggestBest(from: take) } : nil
+            onSuggest: viewModel.offersBestSuggestion ? { suggestBest(from: take) } : nil,
+            bestBursts: bestBursts
         )
     }
 
     private func chrome(for take: Take) -> some View {
         _ = editorVisits
         return VStack(spacing: 0) {
-            Spacer()
+            // The free space above the controls (clear, so a tap still reaches the video): Play sits in its middle.
+            Color.clear
+                .frame(minHeight: 80)
+                .overlay { playButton }
             VStack(alignment: .leading, spacing: 0) {
                 ReviewScrubber(progress: playback.progress, duration: take.duration) { playback.seek(to: $0, of: take.duration) }
                 Rectangle().fill(Color.white.opacity(0.1)).frame(height: 0.5).padding(.top, 14)
@@ -291,6 +363,7 @@ struct TakeReviewView: View {
                 ReviewActionBar(
                     runningAction: viewModel.runningAction,
                     glowsShare: glowsShare,
+                    justSaved: justSaved,
                     editTitle: viewModel.hasOpenEdit ? String(localized: "Continue") : String(localized: "Edit"),
                     onEdit: {
                         playback.pause()
@@ -343,6 +416,7 @@ struct TakeReviewView: View {
     /// Swipe or the chip: another take of the same video, paused.
     private func selectNeighbor(_ offset: Int) {
         guard let next = viewModel.neighbor(offset) else { return }
+        Haptics.selection()
         playback.pause()
         onSelect(next)
     }
@@ -445,6 +519,29 @@ struct TakeReviewView: View {
     }
 
     /// UI tests (`-uiTestFirstStar`, `-uiTestMilestone`): the stories open on their own, to be looked at.
+    /// After a swipe, "Take 2 of 3" shows for a moment.
+    private func announcePlace() {
+        guard arrivedFromNeighbor, viewModel.siblings.count > 1 else { return }
+        withAnimation(.spring(response: 0.35, dampingFraction: 0.85)) { showsPlace = true }
+        Task { @MainActor in
+            try? await Task.sleep(for: .seconds(1.4))
+            withAnimation(.easeOut(duration: 0.3)) { showsPlace = false }
+        }
+    }
+
+    /// Save's ✓ once the video is in Photos, when nothing covers the screen ("Ready to travel" opens after a save): a light tap, then
+    /// back to Save after a moment.
+    private func showSavedCheck() {
+        guard awaitsSavedCheck, viewModel.celebration == nil else { return }
+        awaitsSavedCheck = false
+        Haptics.light()
+        withAnimation(.spring(response: 0.35, dampingFraction: 0.62)) { justSaved = true }
+        Task { @MainActor in
+            try? await Task.sleep(for: .seconds(2.2))
+            withAnimation(.easeOut(duration: 0.3)) { justSaved = false }
+        }
+    }
+
     private func showStoriesForTests() {
         #if DEBUG
         if services.showsFirstStar { tellsFirstStar = true }

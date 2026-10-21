@@ -110,7 +110,7 @@ nonisolated enum SettingsEntry: String, CaseIterable, Identifiable, Sendable {
         case .aiCoach: String(localized: "Cues like PAUSE or SMILE in the text")
         case .mirrorText: String(localized: "For beam-splitter glass")
         case .flipVertically: String(localized: "For rigs that reflect from below")
-        case .appIcon: String(localized: "Aurora and First Light unlock with milestones")
+        case .appIcon: String(localized: "Unlock with milestones. Some come with Pro.")
         case .topics: String(localized: "Edit them in My Cue Voice")
         case .autoTag: String(localized: "Cue picks the topic on this iPhone")
         case .firstVoyage: String(localized: "Your next step, until your first video is out")
@@ -143,8 +143,9 @@ nonisolated enum SettingsEntry: String, CaseIterable, Identifiable, Sendable {
         case .connectDevice: Self.path(.remote, String(localized: "Connect a device"))
         case .enterCode, .scanCode: Self.path(.remote, String(localized: "Use this iPhone as a remote"))
         case .appIcon: Self.path(.personalize, String(localized: "App icon"))
-        case .topics, .autoTag: Self.path(.personalize, String(localized: "Topics & colors"))
-        case .starrySky, .celebrations, .haptics: Self.path(.personalize, String(localized: "Motion"))
+        case .topics, .autoTag: Self.path(.personalize, String(localized: "Your topics"))
+        case .starrySky: Self.path(.personalize, String(localized: "Starry sky"))
+        case .celebrations, .haptics: Self.path(.personalize, String(localized: "Feel"))
         case .firstVoyage: Self.path(.personalize, String(localized: "Getting started"))
         case .appLanguage, .voiceFollowingLanguage, .scriptLanguage: SettingsEntry.languageRegion.title
         case .onDeviceAI, .helpImprove, .permissions, .deleteData: SettingsEntry.privacy.title
@@ -160,7 +161,7 @@ nonisolated enum SettingsEntry: String, CaseIterable, Identifiable, Sendable {
         case .myCueVoice: ["voice", "style", "tone"]
         case .personalize: ["icon", "sky", "haptics"]
         case .languageRegion: ["language", "locale", "translate"]
-        case .notifications: ["reminders", "routine", "alerts", "quiet hours", "pause"]
+        case .notifications: ["reminders", "routine", "alerts", "tools", "news"]
         case .privacy: ["data", "ai", "delete", "permissions"]
         case .cuePro: ["pro", "subscription", "plan", "upgrade", "trial"]
         case .restorePurchases: ["purchase", "subscription"]
@@ -174,7 +175,7 @@ nonisolated enum SettingsEntry: String, CaseIterable, Identifiable, Sendable {
         case .followVoice: ["voice following", "speech", "scroll"]
         case .speed: ["pace", "wpm", "words", "scroll", "slow", "fast"]
         case .aiCoach: ["cues", "pause", "smile", "coach"]
-        case .textSize: ["size", "small", "medium", "large", "bigger"]
+        case .textSize: ["size", "smaller", "bigger", "points", "font size"]
         case .font: ["typeface", "lexend", "atkinson", "serif", "rounded", "new york"]
         case .lineSpacing: ["leading", "tight", "airy", "gap"]
         case .alignment: ["left", "center", "right"]

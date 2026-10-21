@@ -5,36 +5,20 @@
 
 import SwiftUI
 
-/// The rows of Settings › Remote: connect another device to this teleprompter, or make this iPhone the remote of another one.
+/// The Remote rows that Settings' search finds: connect another device to this teleprompter, or make this iPhone the remote of another
+/// one (the page itself draws them its own way, `SettingsRemoteView`).
 struct RemoteEntryRow: View {
     let entry: SettingsEntry
 
     @Environment(RemoteControlService.self) private var remote
-    @Environment(PresentationService.self) private var presentation
-    @Environment(ToastService.self) private var toast
 
     @State private var isEnteringCode = false
-    @State private var typedCode = ""
     @State private var isScanning = false
 
     var body: some View {
         content
             .accessibilityIdentifier("settings.\(entry.rawValue)")
-            .alert("Enter the code", isPresented: $isEnteringCode) {
-                TextField("ABC 234", text: $typedCode)
-                    .textInputAutocapitalization(.characters)
-                    .autocorrectionDisabled()
-                Button("Cancel", role: .cancel) {}
-                Button("Connect") { join(typedCode) }
-            } message: {
-                Text("The six letters and numbers under the QR code on the teleprompter.")
-            }
-            .sheet(isPresented: $isScanning) {
-                QRScannerSheet { payload in
-                    isScanning = false
-                    join(payload)
-                }
-            }
+            .remoteJoinFlow(isEnteringCode: $isEnteringCode, isScanning: $isScanning)
     }
 
     @ViewBuilder
@@ -44,7 +28,6 @@ struct RemoteEntryRow: View {
             connect
         case .enterCode:
             Button {
-                typedCode = ""
                 isEnteringCode = true
             } label: {
                 chevronLabel
@@ -76,9 +59,7 @@ struct RemoteEntryRow: View {
         switch (remote.role, remote.state) {
         case (nil, _):
             Button { remote.startHosting() } label: {
-                SettingsIconLabel(
-                    systemImage: "iphone.radiowaves.left.and.right", tint: Palette.Settings.iconBlue, title: entry.title, titleColor: Palette.accText
-                )
+                SettingsIconLabel(icon: .remote, title: entry.title, titleColor: Palette.accText)
             }
             .buttonStyle(.plain)
         case (.teleprompter?, .connected(let deviceName)):
@@ -95,13 +76,5 @@ struct RemoteEntryRow: View {
             RemotePairingPanel()
                 .padding(.vertical, 6)
         }
-    }
-
-    private func join(_ text: String) {
-        guard remote.join(code: text) else {
-            toast.show(String(localized: "Wrong code · Try again"))
-            return
-        }
-        presentation.openRemoteController()
     }
 }

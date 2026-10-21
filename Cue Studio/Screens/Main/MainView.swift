@@ -12,7 +12,6 @@ struct MainView: View {
 
     @Environment(PresentationService.self) private var presentation
     @Environment(ScriptLibraryService.self) private var library
-    @Environment(PreferencesService.self) private var preferences
     @Environment(CreatorProfileService.self) private var profile
     @Environment(ToastService.self) private var toast
     @Environment(LanguageService.self) private var languages
@@ -98,11 +97,13 @@ struct MainView: View {
                     ScriptsView(
                         library: services.library, toast: services.toast, writer: services.writer, drafts: services.drafts, defaults: services.defaults
                     )
+                        // On the list (its selection hides the bar), not on the stack: the script page pushed over it hides the bar
+                        // itself, the system's way, which a stack-wide setting would override.
+                        .toolbarVisibility(barVisibility, for: .tabBar)
                         .navigationDestination(for: ScriptRoute.self) { route in
                             ScriptDetailView(route: route, services: services)
                         }
                 }
-                .toolbarVisibility(barVisibility, for: .tabBar)
             } label: {
                 Label { Text("Scripts") } icon: { Image(uiImage: CueTabImage.template(.scripts)) }
             }
@@ -172,7 +173,7 @@ struct MainView: View {
             StartRecordingSheet(
                 mode: .new,
                 recent: Array(library.scripts.prefix(StartRecordingSheet.recentLimit)),
-                readSeconds: { ReadTime.seconds(for: $0.text, speed: preferences.prompter.speed) },
+                readSeconds: { ReadTime.seconds(for: $0.text) },
                 onPick: { presentation.openPrompter(scriptID: $0.id, mode: .selfie) },
                 onNewScript: { presentation.present(.newScript) },
                 onSkip: { presentation.openPrompter(scriptID: nil, mode: .selfie) }

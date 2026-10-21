@@ -10,7 +10,6 @@ import SwiftUI
 struct HooksSheet: View {
     let currentHook: String
     let options: [String]
-    let speed: Double
     /// The model is writing new options.
     var isLoading = false
     let onPick: (String) -> Void
@@ -28,7 +27,7 @@ struct HooksSheet: View {
                     HStack {
                         Text("Current")
                         Spacer()
-                        Text("~\(DurationText.short(ReadTime.seconds(for: currentHook, speed: speed)))")
+                        Text("~\(DurationText.short(ReadTime.seconds(for: currentHook)))")
                             .foregroundStyle(Palette.warnText)
                     }
                     .font(.caption2.weight(.bold))
@@ -62,7 +61,7 @@ struct HooksSheet: View {
                                         .font(.body.weight(.medium))
                                         .foregroundStyle(Palette.ink)
                                         .frame(maxWidth: .infinity, alignment: .leading)
-                                    Text("~\(DurationText.short(ReadTime.seconds(for: hook, speed: speed)))")
+                                    Text("~\(DurationText.short(ReadTime.seconds(for: hook)))")
                                         .font(.footnote.weight(.semibold).monospacedDigit())
                                         .foregroundStyle(Palette.accText)
                                 }
@@ -97,7 +96,7 @@ struct HooksSheet: View {
         HooksSheet(
             currentHook: "Okay, real talk. [pause] Three tiny habits completely changed my mornings.",
             options: ScriptStructure.generic.hooks.prefix(3).map { $0 },
-            speed: 1, onPick: { _ in }, onMore: {}
+            onPick: { _ in }, onMore: {}
         )
     }
 }

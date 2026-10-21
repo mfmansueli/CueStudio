@@ -6,9 +6,12 @@
 import SwiftUI
 
 /// The script's words as one editable page (v29 · 4.1 and 4.2). The words are the `text` the page keeps (cues are written in
-/// square brackets); the editor draws them: cues as small yellow tags, and the words the AI has just written in place of a
-/// selection in violet, until the creator keeps them. Typing, the selection and the caret go both ways between the editor and
-/// the page, in characters from the start of the text.
+/// square brackets); the editor draws them: cues as small yellow chips with their symbol (the brackets hidden, the words still the
+/// text), and the words the AI has just written in place of a selection in violet, until the creator keeps them. Typing, the
+/// selection and the caret go both ways between the editor and the page, in characters from the start of the text.
+///
+/// A TextKit 2 text view (`ScriptTextView`): SwiftUI's `TextEditor` can't draw a chip behind a run of its text, and it clears its undo
+/// history whenever the page restyles the words.
 struct ScriptTextEditor: View {
     @Binding var text: String
     @Binding var selection: Range<Int>?
@@ -20,12 +23,8 @@ struct ScriptTextEditor: View {
     let isLocked: Bool
     var focus: FocusState<ScriptPageFocus?>.Binding
     let onEdit: () -> Void
-
-    @State private var attributed = AttributedString()
-    @State private var attributedSelection = AttributedTextSelection()
-    /// What the editor last told the page, so the page's own echo isn't taken for a change from outside.
-    @State private var lastReported = ""
-    @State private var lastReportedSelection: Range<Int>?
+    /// Undo and Redo on the cues bar act on this editor's history when the page hands the bar the same one.
+    var undo: ScriptEditorUndo?
 
     @ScaledMetric(relativeTo: .body) private var minimumHeight = 300.0
 
@@ -34,134 +33,71 @@ struct ScriptTextEditor: View {
     static let textInsets = EdgeInsets(top: 8, leading: 5, bottom: 8, trailing: 5)
 
     var body: some View {
-        TextEditor(text: $attributed, selection: $attributedSelection)
-            .font(.system(size: textSize.points))
-            .lineSpacing(6)
-            .foregroundStyle(Palette.ink)
-            .tint(Palette.accText)
-            .scrollContentBackground(.hidden)
-            .scrollDisabled(true)
-            .focused(focus, equals: .text)
-            .allowsHitTesting(!isLocked)
-            .frame(minHeight: minimumHeight, alignment: .top)
-            .overlay(alignment: .topLeading) {
-                if text.isEmpty {
-                    Text("Just start talking…")
-                        .font(.system(size: textSize.points))
-                        .foregroundStyle(Palette.ink2)
-                        .padding(.top, Self.textInsets.top)
-                        .padding(.leading, Self.textInsets.leading)
-                        .allowsHitTesting(false)
-                }
+        ScriptTextViewRepresentable(
+            text: $text,
+            selection: $selection,
+            style: ScriptTextStyle(size: textSize.points, passage: passage, showsCues: showsCues),
+            minimumHeight: minimumHeight,
+            focus: focus,
+            undo: undo,
+            onEdit: onEdit
+        )
+        .focused(focus, equals: .text)
+        .allowsHitTesting(!isLocked)
+        .frame(minHeight: minimumHeight, alignment: .top)
+        .overlay(alignment: .topLeading) {
+            if text.isEmpty {
+                Text("Just start talking…")
+                    .font(.system(size: textSize.points))
+                    .foregroundStyle(Palette.ink2)
+                    .padding(.top, Self.textInsets.top)
+                    .padding(.leading, Self.textInsets.leading)
+                    .allowsHitTesting(false)
             }
-            .writingToolsBehavior(.limited)
-            .onAppear { reload() }
-            .onChange(of: text) { _, new in
-                // A change from outside (the AI writing, a tool, a cue from the bar): the editor follows.
-                if new != lastReported { reload() }
-            }
-            .onChange(of: passage) { _, _ in restyle() }
-            .onChange(of: textSize) { _, _ in reload() }
-            .onChange(of: showsCues) { _, _ in reload() }
-            .onChange(of: attributed) { _, new in report(new) }
-            .onChange(of: attributedSelection) { _, _ in reportSelection() }
-            .onChange(of: selection) { _, new in
-                if new != lastReportedSelection { pushSelection(new) }
-            }
-            .accessibilityLabel(Text("Script text"))
-            .accessibilityIdentifier("page.editor")
+        }
     }
 
     // MARK: - Words
 
-    private func reload() {
-        attributed = Self.styled(text, passage: passage, size: textSize.points, showsCues: showsCues)
-        lastReported = text
-    }
-
-    private func restyle() {
-        let styled = Self.styled(String(attributed.characters), passage: passage, size: textSize.points, showsCues: showsCues)
-        if styled != attributed { attributed = styled }
-    }
-
-    /// The creator typed: the page gets the words, and the cues in them get their tags. Deleting into a cue deletes all of it.
-    private func report(_ new: AttributedString) {
-        var plain = String(new.characters)
-        let completed = ScriptCueDeletion.completing(from: lastReported, to: plain)
-        if let completed { plain = completed.text }
-        if plain != lastReported {
-            lastReported = plain
-            text = plain
-            onEdit()
-        }
-        let styled = Self.styled(plain, passage: passage, size: textSize.points, showsCues: showsCues)
-        if styled != new { attributed = styled }
-        if let completed {
-            pushSelection(completed.caret..<completed.caret)
-            selection = completed.caret..<completed.caret
-        }
-    }
-
-    /// The text with its cues tagged (or, with the Cues switch off, kept but not drawn: clear and a point high, so the words close up
-    /// around them and editing still sees them) and the AI's passage in violet.
+    /// The text as the editor draws it, for SwiftUI (`ArrivingText` hands the AI's words in this way, so they arrive looking as they
+    /// will stay): each cue a `TextChip` (its name semibold in yellow, the brackets clear and given the chip's insets as kern), or,
+    /// with the Cues switch off, kept but not drawn (clear and a point high, so the words close up around them); the AI's passage in
+    /// violet. `ScriptTextStyle` is the same for the text view.
     static func styled(_ text: String, passage: Range<Int>?, size: Double, showsCues: Bool = true) -> AttributedString {
         var result = AttributedString(text)
         result.font = .system(size: size)
         result.foregroundColor = Palette.ink
         let characters = result.characters
-        for match in text.matches(of: /\[[^\]\n]+\]/) {
-            let lower = text.distance(from: text.startIndex, to: match.range.lowerBound)
-            let upper = text.distance(from: text.startIndex, to: match.range.upperBound)
-            let start = characters.index(characters.startIndex, offsetBy: lower)
-            let end = characters.index(characters.startIndex, offsetBy: upper)
-            guard showsCues else {
-                result[start..<end].font = .system(size: 1)
-                result[start..<end].foregroundColor = .clear
-                continue
-            }
-            result[start..<end].font = .system(size: size * 0.72, weight: .bold, design: .monospaced)
-            result[start..<end].foregroundColor = Palette.accText
-            result[start..<end].backgroundColor = Palette.accSoft
-        }
         if let passage, passage.upperBound <= text.count, !passage.isEmpty {
             let start = characters.index(characters.startIndex, offsetBy: passage.lowerBound)
             let end = characters.index(characters.startIndex, offsetBy: passage.upperBound)
             result[start..<end].foregroundColor = Palette.Page.aiReplacedInk
             result[start..<end].backgroundColor = Palette.Page.aiReplacedFill
         }
-        return result
-    }
-
-    // MARK: - Selection
-
-    private func reportSelection() {
-        let range = Self.offsets(of: attributedSelection, in: attributed)
-        lastReportedSelection = range
-        if selection != range { selection = range }
-    }
-
-    private func pushSelection(_ range: Range<Int>?) {
-        guard let range, range.upperBound <= attributed.characters.count else { return }
-        let characters = attributed.characters
-        let lower = characters.index(characters.startIndex, offsetBy: range.lowerBound)
-        let upper = characters.index(characters.startIndex, offsetBy: range.upperBound)
-        attributedSelection = AttributedTextSelection(range: lower..<upper)
-        lastReportedSelection = range
-    }
-
-    /// The selection as characters from the start (a caret is an empty range).
-    static func offsets(of selection: AttributedTextSelection, in text: AttributedString) -> Range<Int>? {
-        let characters = text.characters
-        switch selection.indices(in: text) {
-        case .insertionPoint(let index):
-            let offset = characters.distance(from: characters.startIndex, to: index)
-            return offset..<offset
-        case .ranges(let ranges):
-            guard let first = ranges.ranges.first else { return nil }
-            return characters.distance(from: characters.startIndex, to: first.lowerBound)
-                ..< characters.distance(from: characters.startIndex, to: first.upperBound)
-        @unknown default:
-            return nil
+        let metrics = TextChipMetrics(textSize: size)
+        for match in text.matches(of: ScriptTextStyle.cuePattern) {
+            let lower = text.distance(from: text.startIndex, to: match.range.lowerBound)
+            let upper = text.distance(from: text.startIndex, to: match.range.upperBound)
+            let start = characters.index(characters.startIndex, offsetBy: lower)
+            let end = characters.index(characters.startIndex, offsetBy: upper)
+            result[start..<end].backgroundColor = nil
+            guard showsCues else {
+                result[start..<end].font = .system(size: 1)
+                result[start..<end].foregroundColor = .clear
+                continue
+            }
+            let symbol = ScriptCueSymbol.name(forCue: String(match.output.dropFirst().dropLast()))
+            result[start..<end].font = .system(size: metrics.fontSize, weight: .semibold)
+            result[start..<end].foregroundColor = Palette.Cues.chipInk
+            result[start..<end].baselineOffset = metrics.baselineOffset
+            result[start..<end][TextChipAttribute.self] = TextChip(id: lower, symbol: symbol)
+            let opening = start..<characters.index(after: start)
+            let closing = characters.index(before: end)..<end
+            result[opening].foregroundColor = .clear
+            result[opening].kern = metrics.leadingKern(after: "[", symbol: symbol)
+            result[closing].foregroundColor = .clear
+            result[closing].kern = metrics.trailingKern(after: "]")
         }
+        return result
     }
 }

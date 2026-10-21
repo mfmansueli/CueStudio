@@ -19,9 +19,14 @@ struct WordsFromLight: View {
     var trigger = 0
     /// The violet glow each word carries as it arrives (the AI's own words); ours fade in plainly.
     var glows = true
+    /// The first text plays too. False: the first one is simply there, and only the texts that come after it arrive (a suggestion that was
+    /// already there when the screen opened isn't news).
+    var playsFirst = true
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var elapsed = 0.0
+    /// The text and trigger last played: seen again (the view came back on screen), it is simply there.
+    @State private var played: String?
 
     private var words: [Substring] { text.split(separator: " ", omittingEmptySubsequences: true) }
 
@@ -37,8 +42,11 @@ struct WordsFromLight: View {
             .textRenderer(WordsRenderer(elapsed: elapsed, stagger: stagger, reduceMotion: reduceMotion, glows: glows))
             .accessibilityLabel(Text(text))
             .task(id: "\(text)\(trigger)") {
+                let key = "\(text)\(trigger)"
+                let isNews = played != key && (played != nil || playsFirst)
+                played = key
                 elapsed = 0
-                guard !reduceMotion else { elapsed = totalDuration; return }
+                guard isNews, !reduceMotion else { elapsed = totalDuration; return }
                 withAnimation(.linear(duration: totalDuration)) { elapsed = totalDuration }
             }
     }
@@ -48,46 +56,5 @@ struct WordsFromLight: View {
         Text.joined(words.enumerated().map { index, word in
             Text(verbatim: index == 0 ? String(word) : " " + word).customAttribute(WordIndexAttribute(index: index))
         })
-    }
-}
-
-/// Marks a run of text with the index of the word it holds.
-private struct WordIndexAttribute: TextAttribute {
-    var index: Int
-}
-
-private struct WordsRenderer: TextRenderer {
-    var elapsed: Double
-    var stagger: Double
-    var reduceMotion: Bool
-    var glows: Bool
-
-    var animatableData: Double {
-        get { elapsed }
-        set { elapsed = newValue }
-    }
-
-    func draw(layout: Text.Layout, in context: inout GraphicsContext) {
-        for line in layout {
-            for run in line {
-                let index = run[WordIndexAttribute.self]?.index ?? 0
-                let age = elapsed - Double(index) * stagger
-                let progress = reduceMotion ? min(1, max(0, elapsed / 0.4)) : min(1, max(0, age / CueMotion.Duration.wordFromLight))
-                let glow = reduceMotion || !glows ? 0 : max(0, 1 - max(0, age - CueMotion.Duration.wordFromLight) / 0.9)
-                var copy = context
-                copy.opacity = progress
-                if !reduceMotion {
-                    copy.translateBy(x: 0, y: 6 * (1 - progress))
-                    copy.addFilter(.blur(radius: 8 * (1 - progress)))
-                }
-                if glow > 0, progress > 0 {
-                    var glowing = copy
-                    glowing.addFilter(.shadow(color: Palette.aiText.opacity(0.9 * glow), radius: 6))
-                    glowing.draw(run)
-                } else {
-                    copy.draw(run)
-                }
-            }
-        }
     }
 }
