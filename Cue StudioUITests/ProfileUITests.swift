@@ -95,7 +95,7 @@ final class ProfileUITests: XCTestCase {
         handle.typeText("mayacooks")
         let goals = app.switches["profile.monetizationGoalsToggle"]
         app.scroll(to: goals)
-        XCTAssertTrue(app.buttons["profile.defaultPlatformPicker"].exists)
+        XCTAssertTrue(app.descendants(matching: .any)["profile.defaultPlatformPicker"].firstMatch.exists)
         goals.tap()
         let saved = goals.value as? String
         app.buttons["editProfile.doneButton"].tap()
@@ -111,7 +111,90 @@ final class ProfileUITests: XCTestCase {
         XCTAssertEqual(again.value as? String, saved)
     }
 
-    /// Edit Profile (9.1): Done waits for a valid name and username; it saves them and says so.
+    /// The owner's report (21/10/2026): with no name and no username, Done was off and nothing else could be saved. Both are optional now.
+    func testDoneSavesWithoutANameOrAUsername() {
+        let app = openProfile()
+        app.descendants(matching: .any)["profile.creatorCard"].firstMatch.tap()
+        let done = app.buttons["editProfile.doneButton"]
+        XCTAssertTrue(done.waitForExistence(timeout: 5))
+        XCTAssertTrue(done.isEnabled)
+        done.tap()
+        XCTAssertTrue(app.staticTexts["Profile updated"].waitForExistence(timeout: 5))
+    }
+
+    /// Pictures of the Profile, empty (a new install) and with a year in it (`CUE_SCREENSHOT_DIR`); without the folder it only checks the cards.
+    func testTheProfileEmptyAndFull() throws {
+        for (name, arguments) in [("profile_empty", [String]()), ("profile_full", ["-uiTestUniverse", "sample"])] {
+            let app = CueApp.launch(seeded: !arguments.isEmpty, extraArguments: arguments)
+            let tab = app.cueTabBar.buttons["Profile"]
+            XCTAssertTrue(tab.waitForExistence(timeout: 15))
+            tab.tap()
+            XCTAssertTrue(app.descendants(matching: .any)["profile.creatorCard"].firstMatch.waitForExistence(timeout: 5))
+            XCTAssertTrue(app.descendants(matching: .any)["profile.universeLink"].firstMatch.exists)
+            if let folder = ProcessInfo.processInfo.environment["CUE_SCREENSHOT_DIR"] {
+                sleep(2)
+                try app.screenshot().pngRepresentation.write(to: URL(fileURLWithPath: folder).appending(path: "\(name).png"))
+            }
+            app.terminate()
+        }
+    }
+
+    /// The mini universe moves as soon as the Profile opens (owner's report, 21/10/2026: it stood still until the universe screen had been
+    /// opened and left): two pictures of its card, 1.5 s apart, differ.
+    func testTheMiniUniverseMovesAsSoonAsTheProfileOpens() {
+        let app = CueApp.launch(seeded: true, extraArguments: ["-uiTestUniverse", "sample"])
+        app.cueTabBar.buttons["Profile"].tap()
+        let card = app.descendants(matching: .any)["profile.universeLink"].firstMatch
+        XCTAssertTrue(card.waitForExistence(timeout: 5))
+        sleep(1)
+        let first = card.screenshot().pngRepresentation
+        Thread.sleep(forTimeInterval: 1.5)
+        XCTAssertNotEqual(first, card.screenshot().pngRepresentation, "the mini universe stood still")
+    }
+
+    /// The camera badge opens the photo library (owner's report, 21/10/2026: inside a menu, the picker never opened).
+    func testTheCameraBadgeOpensThePhotoLibrary() throws {
+        let app = openProfile()
+        app.descendants(matching: .any)["profile.creatorCard"].firstMatch.tap()
+        let badge = app.buttons["editProfile.photoButton"]
+        XCTAssertTrue(badge.waitForExistence(timeout: 5))
+        badge.tap()
+        // The library is another process: the sheet under it stops being the one in front, so its Done can no longer be reached.
+        let covered = XCTNSPredicateExpectation(predicate: NSPredicate(format: "isHittable == false"), object: app.buttons["editProfile.doneButton"])
+        XCTAssertEqual(XCTWaiter.wait(for: [covered], timeout: 8), .completed, "the photo library didn't open")
+        if let folder = ProcessInfo.processInfo.environment["CUE_SCREENSHOT_DIR"] {
+            sleep(2)
+            try XCUIScreen.main.screenshot().pngRepresentation.write(to: URL(fileURLWithPath: folder).appending(path: "edit_profile_picker.png"))
+        }
+    }
+
+    /// "What you make" takes a type of the creator's own (owner's ask, 21/10/2026): typed into the chip, chosen, shown on the preview and,
+    /// once saved, on the profile.
+    func testAddingACreatorTypeOfYourOwn() throws {
+        let app = openProfile()
+        app.descendants(matching: .any)["profile.creatorCard"].firstMatch.tap()
+        let add = app.buttons["editProfile.role.add"]
+        app.scroll(to: add)
+        if let folder = ProcessInfo.processInfo.environment["CUE_SCREENSHOT_DIR"] {
+            sleep(1)
+            try app.screenshot().pngRepresentation.write(to: URL(fileURLWithPath: folder).appending(path: "edit_profile_1.png"))
+        }
+        add.tap()
+        let field = app.textFields["editProfile.role.field"]
+        XCTAssertTrue(field.waitForExistence(timeout: 5))
+        field.typeText("Podcaster\n")
+        XCTAssertTrue(app.descendants(matching: .any)["editProfile.role.own"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.staticTexts["Podcaster"].exists)
+        if let folder = ProcessInfo.processInfo.environment["CUE_SCREENSHOT_DIR"] {
+            sleep(1)
+            try app.screenshot().pngRepresentation.write(to: URL(fileURLWithPath: folder).appending(path: "edit_profile_2.png"))
+        }
+        app.buttons["editProfile.doneButton"].tap()
+        XCTAssertTrue(app.staticTexts["Profile updated"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.staticTexts.containing(NSPredicate(format: "label CONTAINS 'Podcaster'")).firstMatch.waitForExistence(timeout: 5))
+    }
+
+    /// Edit Profile (9.1): a username typed must fit (2–24 of a–z 0–9 . _); Done saves name and username and says so.
     func testEditProfileSavesAValidDraftAndRefusesAnInvalidOne() {
         let app = openProfile()
         let identity = app.descendants(matching: .any)["profile.creatorCard"].firstMatch
@@ -149,7 +232,8 @@ final class ProfileUITests: XCTestCase {
     /// Edit in the toolbar and the long press on the identity open the same sheet (9.1).
     func testEditButtonAndContextMenuOpenEditProfile() {
         let app = openProfile()
-        app.buttons["profile.editButton"].tap()
+        // The seeded profile is empty: its card offers "Set up your profile" where a filled one has Edit.
+        app.buttons["profile.setUpButton"].tap()
         XCTAssertTrue(app.buttons["editProfile.doneButton"].waitForExistence(timeout: 5))
         app.buttons["editProfile.cancelButton"].tap()
         let identity = app.descendants(matching: .any)["profile.creatorCard"].firstMatch

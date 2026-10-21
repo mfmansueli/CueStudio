@@ -5,8 +5,9 @@
 
 import Foundation
 
-/// The "Your universe" row of the Profile and the line under it (9.1): "2026 · 3 topics", "23 videos", "2 more videos to your next milestone." and
-/// its two empty states: a new account ("0 videos", "Starts with your first share") and a new year ("0 videos", "2026 · 23 videos", the year before).
+/// The "Your universe" card of the Profile (9.1; owner's redesign, 21/10/2026, kept short): its title, its line ("2026 · 1 video") and the
+/// planets its mini universe draws (the networks shared to this year, most first), in its three states: a universe with videos, a new
+/// account ("Your universe is waiting") and a new year, whose universe starts with its first share. Pure, so tested.
 nonisolated struct ProfileUniverseSummary: Equatable, Sendable {
     /// Videos shared, ever, and in the year that is live; and how many the latest earlier year has.
     let total: Int
@@ -14,32 +15,33 @@ nonisolated struct ProfileUniverseSummary: Equatable, Sendable {
     let year: Int
     let lastYear: Int
     let lastYearCount: Int
-    let topics: Int
-    /// How many more videos to the next milestone; nil after the last.
-    let toNextMilestone: Int?
+    /// The networks this year's videos went to, the most shared first: one planet each.
+    var networks: [Platform] = []
 
     /// The year has begun and nothing has been shared in it yet, though earlier years have videos.
     var isNewYear: Bool { total > 0 && sharedThisYear == 0 }
     var isNewAccount: Bool { total == 0 }
 
-    /// The trailing count: "23 videos" (this year's), or "0 videos".
-    var trailing: String {
-        let count = isNewAccount || isNewYear ? 0 : sharedThisYear
-        return String(localized: "\(count) videos")
+    var title: String {
+        isNewAccount ? String(localized: "Your universe is waiting") : String(localized: "Your universe")
     }
 
-    /// The row's second line.
+    /// The card's line.
     var detail: String {
-        if isNewAccount { return String(localized: "Starts with your first share") }
-        if isNewYear { return String(localized: "\(String(lastYear)) · \(lastYearCount) videos") }
-        return String(localized: "\(String(year)) · \(topics) topics")
+        if isNewAccount { return String(localized: "Share your first video and its planet appears here.") }
+        if isNewYear { return String(localized: "Your \(String(year)) universe starts with your first share.") }
+        return String(year) + " · " + Self.videos(sharedThisYear)
     }
 
-    /// Under the row.
-    var footer: String {
-        if isNewAccount { return String(localized: "Share a video to light your first star.") }
-        if isNewYear { return String(localized: "Your \(String(year)) universe starts with your first share.") }
-        guard let toNextMilestone else { return String(localized: "Every milestone is behind you") }
-        return String(localized: "\(toNextMilestone) more videos to your next milestone.")
+    /// "1 video", "23 videos" (plural forms in the String Catalog).
+    static func videos(_ count: Int) -> String { String(localized: "\(count) videos") }
+
+    /// The networks of `videos` in the year, the most shared first (a video sent to two counts for both).
+    static func networks(of platforms: [[Platform]]) -> [Platform] {
+        var counts: [Platform: Int] = [:]
+        for list in platforms {
+            for platform in list { counts[platform, default: 0] += 1 }
+        }
+        return counts.sorted { $0.value == $1.value ? $0.key.rawValue < $1.key.rawValue : $0.value > $1.value }.map(\.key)
     }
 }

@@ -5,8 +5,9 @@
 
 import SwiftUI
 
-/// 9.1 · "Your universe": the 30 pt core (a ball in a ring with a bead that goes round in 7 s), "Your universe" with "2026 · 3 topics" under it, the videos of the year on the right and a chevron. A new
-/// account says "0 videos · Starts with your first share"; a new year, "0 videos · 2027 · last year 23 videos".
+/// 9.1 · "Your universe" (owner's redesign, 21/10/2026, kept short), on the solid surface of the other cards: the universe in small, live
+/// (`ProfileMiniUniverse`: the core in the creator's light, a planet per network shared to), its title and one line ("2026 · 1 video",
+/// `ProfileUniverseSummary`). Empty: "Your universe is waiting".
 struct ProfileUniverseRow: View {
     let summary: ProfileUniverseSummary
 
@@ -14,29 +15,24 @@ struct ProfileUniverseRow: View {
 
     var body: some View {
         HStack(spacing: 14) {
-            ProfileMiniCore(color: personalization.coreColor)
-            VStack(alignment: .leading, spacing: 2) {
-                Text("Your universe")
-                    .font(.system(size: 16, weight: .semibold))
+            ProfileMiniUniverse(core: personalization.coreColor, networks: summary.networks)
+            VStack(alignment: .leading, spacing: 4) {
+                Text(verbatim: summary.title)
+                    .font(.title3.bold())
                     .foregroundStyle(Palette.ink)
-                Text(summary.detail)
-                    .font(.system(size: 13))
+                    .fixedSize(horizontal: false, vertical: true)
+                Text(verbatim: summary.detail)
+                    .font(.subheadline)
                     .foregroundStyle(Palette.ink2)
-                    .lineLimit(2)
+                    .fixedSize(horizontal: false, vertical: true)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
-            Text(summary.trailing)
-                .font(.system(size: 15))
-                .foregroundStyle(Palette.ink2)
-                .lineLimit(1)
-                .fixedSize()
             Image(systemName: "chevron.forward")
                 .font(.footnote.weight(.semibold))
                 .foregroundStyle(Palette.ink3)
                 .accessibilityHidden(true)
         }
-        .padding(EdgeInsets(top: 0, leading: 16, bottom: 0, trailing: 14))
-        .frame(minHeight: 56)
+        .padding(EdgeInsets(top: 14, leading: 14, bottom: 14, trailing: 14))
         .profileBlock()
         .contentShape(Rectangle())
         .accessibilityElement(children: .combine)

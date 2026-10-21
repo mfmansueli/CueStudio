@@ -417,14 +417,26 @@ a exportação segue sozinha. Pro e teste: "PRO · UNLIMITED EXPORTS", sem Go Pr
 
 ## 13. Profile (9.1) e Edit Profile
 
-Rolagem de blocos sobre o céu (`profileBlock()`): **Edit** na toolbar, identidade (avatar de 60 pt: foto, inicial num degradê violeta, ou, sem nome nem
-foto, o astronauta `AstronautMark`; nome, "@usuário · tipo de criador"), **Your universe** (`ProfileUniverseRow`, núcleo `ProfileMiniCore`: bola de 14 pt que
-respira em 6 s num anel de 30 pt com uma luz que dá a volta em 7 s; "2026 · 3 topics", "23 videos"; "Starts with your first share" numa conta nova;
-quantos vídeos faltam para o próximo marco), o cartão My Cue Voice e o plano. Toque longo na identidade: Copy @handle · Share profile link · Edit profile.
-**`EditProfileSheet`** (`.large`, Cancel / Done): foto de 96 pt (`PhotosPicker`, 512 px, `CreatorProfile.photoData`), Name, Username, Creator type,
-"Shown on the universe cards you share."; `ProfileDraft` valida (nome 1–40, usuário 2–24 de a–z 0–9 . _, minúsculas) e **Done só vale com tudo válido**
-("Profile updated"). Abaixo, **Create for**, **Monetization goals** (`EditProfilePreferences`) e **Sign in with Apple** (`EditProfileAccount`, ação
-imediata, fora do Cancel / Done).
+Rolagem de blocos sólidos sobre o céu (`profileBlock()`; redesenho do dono 21/10/2026, **enxuto**: "muita informação escrita"; **Plan e My Cue
+Voice ficam como eram**). Sem Edit na toolbar: ele fica no cartão. **Você** (`ProfileIdentityContent`): avatar de 72 pt (foto, inicial ou o
+astronauta) num anel da luz do universo que respira; nome; "@usuário · tipo" (o próprio, `customRole`, ou o da lista), ou, sem nenhum dos dois,
+"+ Add a username" em amarelo (sem números: o dono os tirou). Perfil vazio: o astronauta, "Your name" apagado e **Set up your profile**. **Your universe**
+(`ProfileUniverseRow`): o universo em miniatura ao vivo (`ProfileMiniUniverse`, 104 pt com folga da borda: o núcleo na cor escolhida respirando, três órbitas e **um planeta por
+rede** compartilhada no ano, na cor da rede, a mais usada mais perto, com uma lua), o título e uma linha ("2026 · 1 video", singular/plural no
+catálogo); conta nova: "Your universe is waiting", órbitas pontilhadas girando e um planeta tracejado esperando. Os marcos e ícones não aparecem
+no Profile (saíram a pedido do dono). Toque longo na identidade: Copy @handle · Share profile link · Edit profile. As animações ambientes (`AmbientTimeline`) já andam ao
+abrir a tela: o primeiro aviso de visibilidade do scroll, que chega antes do layout dizendo "invisível", não as para mais.
+**`EditProfileSheet`** (`.large`, Cancel / Done; redesenho do dono 21/10/2026). **Tudo é opcional:** `ProfileDraft` aceita nome e usuário
+vazios (digitados, nome até 40, usuário 2–24 de a–z 0–9 . _, minúsculas, com o erro embaixo) e **Done só desliga com algo digitado fora do
+formato** (antes exigia os dois preenchidos, e um perfil vazio não salvava mais nada: bug do dono). No topo, **"How you appear"**
+(`EditProfilePhoto`): o cartão do universo compartilhado ao vivo (o céu do criador, ou Serene se desligado; a foto flutuando com um selo de
+câmera amarelo, que abre Choose Photo / Remove Photo; nome, @usuário e o tipo de criador, com o texto de exemplo até ser preenchido). **You:** Name
+e Username alinhados igual, contador do nome perto do limite, ✓ verde quando o usuário serve. **What you make** (`CreatorTypePicker`): os tipos
+como etiquetas (um por vez, tocar de novo tira) e **"+ Add your own"**, que vira um campo na própria etiqueta e guarda um tipo próprio
+(`CreatorProfile.customRole`, o mesmo do My Cue Voice e do roteirista; vale no lugar da lista e aparece no perfil), com × para tirar. **When you
+create** (`EditProfilePreferences`): as plataformas como galáxias na cor de cada uma (`Platform.tint`), anel amarelo que desliza, e Monetization
+goals com o que muda ("Script lengths aim at what earns on TikTok"). **Account** (`EditProfileAccount`, ação imediata, fora do Cancel / Done): um
+cartão discreto dizendo que é opcional e só preenche o nome, com o botão branco da Apple (o estilo pedido em fundo escuro), mais baixo.
 
 ## 14. Your universe, um por ano (9.2)
 

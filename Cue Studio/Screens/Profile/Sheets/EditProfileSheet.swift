@@ -6,8 +6,10 @@
 import PhotosUI
 import SwiftUI
 
-/// 9.1 · Edit Profile (large): Cancel and Done (off while the draft is invalid), the photo (96 pt) with "Edit Photo", one card with Name, Username and Creator
-/// type, and "Shown on the universe cards you share." under it. Nothing reaches the profile until Done, which says "Profile updated".
+/// 9.1 · Edit Profile (large; owner's redesign, 21/10/2026): Cancel and Done (off only while something typed doesn't fit; everything here
+/// is optional), "how you appear" on top (the card of the shared universe, live, with the photo's camera badge: `EditProfilePhoto`), then
+/// You (name and username, the same alignment, a ✓ when the username fits), What you make (`CreatorTypePicker`, with their own type),
+/// When you create (`EditProfilePreferences`) and the account. Nothing reaches the profile until Done, which says "Profile updated".
 struct EditProfileSheet: View {
     @Environment(CreatorProfileService.self) private var profile
     @Environment(ToastService.self) private var toast
@@ -20,39 +22,19 @@ struct EditProfileSheet: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(spacing: 0) {
-                    EditProfilePhoto(draft: $draft, item: $photoItem).padding(.top, 14).padding(.bottom, 26)
-                    VStack(spacing: 0) {
-                        row("Name") {
-                            TextField("Name", text: $draft.name)
-                                .multilineTextAlignment(.trailing)
-                                .textContentType(.name)
-                                .accessibilityIdentifier("editProfile.nameField")
-                        }
-                        divider
-                        row("Username") {
-                            HStack(spacing: 6) {
-                                Text(verbatim: "@").foregroundStyle(Palette.ink2)
-                                TextField("username", text: $draft.handle)
-                                    // The field shows what is kept: typed capitals and spaces are replaced as they arrive (a binding that cleans in its
-                                    // setter leaves the typed text on screen, and the username kept differs from the one shown).
-                                    .onChange(of: draft.handle) { _, typed in
-                                        let kept = ProfileDraft.sanitized(typed)
-                                        if kept != typed { draft.handle = kept }
-                                    }
-                                    .textInputAutocapitalization(.never)
-                                    .autocorrectionDisabled()
-                                    .textContentType(.username)
-                                    .accessibilityIdentifier("editProfile.handleField")
-                            }
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                        }
-                        divider
-                        roleRow
-                    }
-                    .background(Color.white.opacity(0.07), in: RoundedRectangle(cornerRadius: 22, style: .continuous))
+                VStack(alignment: .leading, spacing: 0) {
+                    EditProfilePhoto(draft: $draft, item: $photoItem).padding(.top, 8)
+                    Text("The card on the universe you share. Everything here is optional.")
+                        .font(.footnote)
+                        .foregroundStyle(Palette.ink2)
+                        .padding(.horizontal, Metrics.textGutter)
+                        .padding(.top, 8)
+                    sectionTitle(String(localized: "You"))
+                    identity
                     footer.padding(.top, 8)
-                    sectionTitle(String(localized: "Creator preferences"))
+                    sectionTitle(String(localized: "What you make"))
+                    CreatorTypePicker(draft: $draft)
+                    sectionTitle(String(localized: "When you create"))
                     EditProfilePreferences(draft: $draft)
                     sectionTitle(String(localized: "Account"))
                     EditProfileAccount { name in if draft.name.isEmpty { draft.name = name } }
@@ -83,25 +65,66 @@ struct EditProfileSheet: View {
         }
     }
 
-    // MARK: - Rows
+    // MARK: - You
+
+    /// Name and username, their fields starting at the same place; the username shows a ✓ once it fits, the name its count near the end.
+    private var identity: some View {
+        VStack(spacing: 0) {
+            row("Name") {
+                TextField("Your name", text: $draft.name)
+                    .textContentType(.name)
+                    .accessibilityIdentifier("editProfile.nameField")
+                if draft.trimmedName.count > ProfileDraft.nameLimit.upperBound - 10 {
+                    Text(verbatim: "\(draft.trimmedName.count)/\(ProfileDraft.nameLimit.upperBound)")
+                        .font(.caption)
+                        .foregroundStyle(draft.isNameValid ? Palette.ink2 : Palette.warnText)
+                        .monospacedDigit()
+                }
+            }
+            divider
+            row("Username") {
+                Text(verbatim: "@").foregroundStyle(Palette.ink2)
+                TextField("username", text: $draft.handle)
+                    // The field shows what is kept: typed capitals and spaces are replaced as they arrive (a binding that cleans in its
+                    // setter leaves the typed text on screen, and the username kept differs from the one shown).
+                    .onChange(of: draft.handle) { _, typed in
+                        let kept = ProfileDraft.sanitized(typed)
+                        if kept != typed { draft.handle = kept }
+                    }
+                    .textInputAutocapitalization(.never)
+                    .autocorrectionDisabled()
+                    .textContentType(.username)
+                    .accessibilityIdentifier("editProfile.handleField")
+                if !draft.handle.isEmpty, draft.isHandleValid {
+                    Image(systemName: "checkmark.circle.fill")
+                        .foregroundStyle(Palette.successText)
+                        .transition(.scale.combined(with: .opacity))
+                        .accessibilityLabel(Text("Valid"))
+                }
+            }
+        }
+        .animation(.spring(response: 0.3, dampingFraction: 0.7), value: draft.isHandleValid && !draft.handle.isEmpty)
+        .background(Palette.surface2, in: RoundedRectangle(cornerRadius: Metrics.groupedListRadius, style: .continuous))
+    }
 
     private func row<Value: View>(_ title: LocalizedStringKey, @ViewBuilder value: () -> Value) -> some View {
-        HStack(spacing: 12) {
-            Text(title).font(.system(size: 17)).foregroundStyle(Palette.ink).frame(width: 104, alignment: .leading)
-            value().font(.system(size: 17)).foregroundStyle(Palette.ink)
+        HStack(spacing: 8) {
+            Text(title).foregroundStyle(Palette.ink).frame(width: 96, alignment: .leading)
+            value()
         }
+        .font(.system(size: 17))
+        .foregroundStyle(Palette.ink)
         .padding(.horizontal, 16)
         .frame(minHeight: 52)
     }
 
     private func sectionTitle(_ title: String) -> some View {
         Text(title)
-            .font(.system(size: 12, weight: .semibold))
+            .font(.footnote.weight(.semibold))
             .textCase(.uppercase)
-            .tracking(0.6)
             .foregroundStyle(Palette.ink2)
             .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(EdgeInsets(top: 22, leading: 16, bottom: 8, trailing: 16))
+            .padding(EdgeInsets(top: 26, leading: Metrics.textGutter, bottom: 8, trailing: Metrics.textGutter))
             .accessibilityAddTraits(.isHeader)
     }
 
@@ -109,38 +132,15 @@ struct EditProfileSheet: View {
         Rectangle().fill(Palette.separator).frame(height: 0.5).padding(.leading, 16)
     }
 
-    private var roleRow: some View {
-        Menu {
-            Picker("Creator type", selection: $draft.role) {
-                Text("Not set").tag(CreatorRole?.none)
-                ForEach(CreatorRole.allCases) { Text($0.creatorLabel).tag(CreatorRole?.some($0)) }
-            }
-        } label: {
-            HStack(spacing: 12) {
-                Text("Creator type").font(.system(size: 17)).foregroundStyle(Palette.ink)
-                Spacer(minLength: 8)
-                Text(draft.role?.creatorLabel ?? String(localized: "Not set")).font(.system(size: 17)).foregroundStyle(Palette.ink2)
-                Image(systemName: "chevron.forward").font(.footnote.weight(.semibold)).foregroundStyle(Palette.ink3)
-            }
-            .padding(.horizontal, 16)
-            .frame(minHeight: 52)
-            .contentShape(Rectangle())
-        }
-        .accessibilityIdentifier("editProfile.rolePicker")
-    }
-
     @ViewBuilder
     private var footer: some View {
-        Group {
-            if let error = draft.handleError {
-                Text(error).foregroundStyle(Palette.warnText).accessibilityIdentifier("editProfile.handleError")
-            } else {
-                Text("Shown on the universe cards you share.").foregroundStyle(Palette.ink2)
-            }
+        if let error = draft.nameError ?? draft.handleError {
+            Text(error)
+                .font(.footnote)
+                .foregroundStyle(Palette.warnText)
+                .padding(.horizontal, Metrics.textGutter)
+                .accessibilityIdentifier("editProfile.handleError")
         }
-        .font(.system(size: 13))
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.horizontal, 16)
     }
 
     // MARK: - Draft
